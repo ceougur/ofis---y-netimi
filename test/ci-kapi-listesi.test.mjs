@@ -55,3 +55,51 @@ describe("Doğrulama Kapısı — beklenen liste ↔ CI adımları", () => {
     assert.deepEqual(missing, [], `release.yml'de koşmayan arayüz senaryosu: ${missing.join(", ")}`);
   });
 });
+
+// Uzun Doğrulama iş akışı (10.10.2026): matris (os × taban × tohum + include) açılınca çıkan kayıt adları "Uzun Doğrulama Kapısı"nın
+// beklenen listesiyle aynı olmalı; yoksa bir tohum hiç koşmasa da kapı fark etmez.
+describe("Uzun Doğrulama Kapısı — beklenen liste ↔ matris", () => {
+  const uzun = readFileSync(path.join(ROOT, ".github", "workflows", "uzun-dogrulama.yml"), "utf8").replace(/\r/g, "");
+  const blockOf = job => {
+    const start = uzun.indexOf(`\n  ${job}:\n`);
+    assert.ok(start >= 0, `iş bulunamadı: ${job}`);
+    const rest = uzun.slice(start + 1);
+    const next = rest.slice(1).search(/\n {2}[a-z_]+:\n/);
+    return next < 0 ? rest : rest.slice(0, next + 1);
+  };
+  const namesOf = job => {
+    const block = blockOf(job);
+    const arr = key => (block.match(new RegExp(`^ {8}${key}:\\s*\\[([^\\]]*)\\]`, "m"))?.[1] || "").split(",").map(item => item.trim()).filter(Boolean);
+    const keys = ["os", "taban", "tohum"].filter(key => arr(key).length);
+    let combos = [{}];
+    for (const key of keys) combos = combos.flatMap(combo => arr(key).map(value => ({ ...combo, [key]: value })));
+    // include listesi: "include:" satırından sonra girintisi 10 ve üstü olan satırlar; her "- " yeni bir birleşim.
+    const after = (block.split(/\n {8}include:\n/)[1] || "").split("\n");
+    const stop = after.findIndex(line => line.trim() && line.search(/\S/) < 10);
+    const include = `\n${after.slice(0, stop < 0 ? after.length : stop).join("\n")}`;
+    for (const item of include.split(/\n {10}- /).slice(1)) {
+      const combo = {};
+      for (const line of `  ${item}`.split("\n")) {
+        const kv = line.match(/^\s*([a-z]+):\s*(\S+)\s*$/);
+        if (kv) combo[kv[1]] = kv[2];
+      }
+      combos.push(combo);
+    }
+    const template = block.match(/kanit\.mjs kos ((?:\$\{\{[^}]*\}\}|\S)+)/)?.[1];
+    assert.ok(template, `${job}: kanıt aracıyla koşan adım`);
+    return combos.map(combo => template.replace(/\$\{\{\s*matrix\.([a-z]+)\s*\}\}/g, (_, key) => {
+      assert.ok(key in combo, `${job}: matriste ${key} yok (${JSON.stringify(combo)})`);
+      return combo[key];
+    }));
+  };
+  it("mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor", () => {
+    const ran = new Set([...namesOf("mutabakat"), ...namesOf("guvenilirlik")]);
+    const expected = new Set((uzun.match(/--beklenen (\S+)/)?.[1] || "").split(","));
+    assert.deepEqual([...ran].filter(name => !expected.has(name)), [], "koşuyor ama kapı beklemiyor");
+    assert.deepEqual([...expected].filter(name => !ran.has(name)), [], "kapı bekliyor ama koşmuyor");
+    assert.ok([...ran].filter(name => name.startsWith("mutabakat-ubuntu")).length >= 10, "mutabakat en az 10 tohum (plan §10.7)");
+    assert.ok([...ran].filter(name => name.startsWith("guvenilirlik-ubuntu")).length >= 10, "güvenilirlik 5 tohum × 2 taban");
+    assert.match(uzun, /MUTABAKAT_ISLEM: \$\{\{ inputs\.mutabakat_islem \|\| '5000' \}\}/, "mutabakat varsayılanı 5.000 işlem");
+    assert.match(uzun, /GUVENILIRLIK_ISLEM: \$\{\{ inputs\.guvenilirlik_islem \|\| '10000' \}\}/, "güvenilirlik varsayılanı 10.000 işlem");
+  });
+});
