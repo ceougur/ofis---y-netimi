@@ -32,7 +32,7 @@ describe("başlık yazımı (madde 7)", () => {
     assert.equal(titleCase("Personel raporu"), "Personel Raporu");
     assert.equal(titleCase("PDF indir"), "PDF İndir", "Türkçe büyük İ; kısaltma aynen");
     assert.equal(titleCase("ilk vade"), "İlk Vade");
-    assert.equal(titleCase("Drive bağlantısı ya da klasör yolu"), "Drive Bağlantısı ya da Klasör Yolu");
+    assert.equal(titleCase("Sheets bağlantısı ya da dosya yolu"), "Sheets Bağlantısı ya da Dosya Yolu");
     assert.equal(titleCase("Açık (portföyde / ödenecek)"), "Açık (portföyde / ödenecek)");
     assert.equal(titleCase("çek / senet no"), "Çek / Senet No");
     assert.equal(titleCase("ve ile başlayan"), "Ve ile Başlayan", "ilk sözcük bağlaç olsa da büyük");

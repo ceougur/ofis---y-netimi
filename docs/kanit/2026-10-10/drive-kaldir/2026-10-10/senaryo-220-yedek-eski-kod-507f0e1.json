@@ -1,0 +1,43 @@
+{
+  "ad": "senaryo-220-yedek-eski-kod-507f0e1",
+  "komut": "npm run test:senaryo-220-yedek",
+  "commit": "9c44bf0f1fec35ad55a1902b5151473ac4551400",
+  "dal": "worktree-agent-abb0f20f3c0d93af1",
+  "kirli": 9,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:48:39.237Z",
+  "sure_sn": 8.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 28,
+    "gecen": 26,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Yedekler ekranında Drive yok (bölüm, yazı, ayar kutusu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Yönetim sayfası kaldırılan Drive uçlarını çağırmaz — Yedek Al, Geri Yükle, Şirketler boyunca (GET http://127.0.0.1:36097/api/admin/backups/cloud?hofCompany=sirket-001, GET http://127.0.0.1:36097/api/admin/backups/cloud?hofCompany=sirket-001)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/drive-kaldir/2026-10-10/senaryo-220-yedek-eski-kod-507f0e1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abb0f20f3c0d93af1",
+  "ham_cikti_sha256": "45b9d24de3be2e4146be8ff51129d72ccda6a9e3bb4c1c9cf44b3b4c4bceb126",
+  "ham_cikti_bayt": 2776
+}

@@ -348,7 +348,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     if (registry.sharesRoot?.(company)) throw new HttpError(409, `“${labelOf(company)}” ilk şirketin (001) veri dosyasını gösteriyor; yedeği alınmaz (001'in yedeği alınıyor). Önce Yönetim → Şirketler → Ayır.`, { code: "company-shared" });
     return withDb(company, db => createBackup(db, folderOf(company), { label, keep: keepCount ?? keep, company: identityOf(company), stamp })) || null;
   }
-  // Aynı turda alınan yedekler aynı zamanı taşır (Drive'da ve klasörlerde birlikte görünür).
+  // Aynı turda alınan yedekler aynı zamanı taşır (klasörlerde birlikte görünür).
   function backupMany(companies, { label = "" } = {}) {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
     return companies.map(company => {

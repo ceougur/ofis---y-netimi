@@ -65,19 +65,6 @@
       <div class="adm-card adm-backup-pending" id="adm-backup-pending" hidden></div>
       <div class="adm-card adm-backup-audit" id="adm-backup-audit-out" hidden></div>
       <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Şirket</th><th>Yedek Dosyası</th><th>Tarih</th><th class="adm-right">Boyut</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-backups"></tbody></table></div></div>
-      <div class="adm-card" id="adm-cloud">
-        <h2>Drive'a da Yedekle</h2>
-        <p>Her yedek bilgisayarınızdaki yedek klasörüne alındıktan sonra bir de buraya kopyalanır. Program klasörün içinde <b>DestekOfis Yedekleri</b> adlı bir klasör açar; her şirketin yedeği orada da kendi klasörüne gider (ör. 001 - Şirket 1).</p>
-        <ul class="adm-hints">
-          <li><b>Google Drive masaüstü uygulaması kuruluysa (önerilen):</b> Drive klasörünüzün bilgisayardaki yolunu yapıştırın, ör. <code>G:\Drive'ım\Yedekler</code>. OneDrive ve Dropbox klasörleri de olur.</li>
-          <li><b>Drive Bağlantısı:</b> <code>https://drive.google.com/drive/folders/…</code> bağlantısını yapıştırın ve klasörü "Bağlantıya sahip herkes: Düzenleyen" yapın. Yükleme DestekOfis servisi üzerinden yapılır.</li>
-        </ul>
-        <form id="adm-cloud-form" class="adm-inline-form">
-          <label class="hof-field"><span>Drive Bağlantısı ya da Klasör Yolu</span><input type="text" id="adm-cloud-target" placeholder="https://drive.google.com/drive/folders/… veya G:\Drive'ım\Yedekler" maxlength="500" autocomplete="off"></label>
-          <div class="adm-actions"><button type="submit" class="hof-button">Kaydet ve Bağla</button><button type="button" class="hof-button hof-button-ghost" id="adm-cloud-test">Şimdi Dene</button><button type="button" class="hof-button hof-button-ghost" id="adm-cloud-off">Bağlantıyı Kaldır</button></div>
-        </form>
-        <p id="adm-cloud-status" class="adm-muted">Bağlı değil.</p>
-      </div>
     </section>
 
     <section class="adm-panel" data-panel="audit" role="tabpanel" hidden>

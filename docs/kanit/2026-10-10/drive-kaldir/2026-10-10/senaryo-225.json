@@ -1,0 +1,32 @@
+{
+  "ad": "senaryo-225",
+  "komut": "npm run test:senaryo-225",
+  "commit": "9c44bf0f1fec35ad55a1902b5151473ac4551400",
+  "dal": "worktree-agent-abb0f20f3c0d93af1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:47:59.415Z",
+  "sure_sn": 33.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/drive-kaldir/2026-10-10/senaryo-225.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abb0f20f3c0d93af1",
+  "ham_cikti_sha256": "4d6653d19003467c634ed1dbbb944525842e0bfb4e4f150d2226749e9dfa3550",
+  "ham_cikti_bayt": 3949
+}

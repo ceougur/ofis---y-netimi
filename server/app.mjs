@@ -10,7 +10,6 @@ import { createChat } from "./lib/chat.mjs";
 import { createChatArchive } from "./lib/chat-archive.mjs";
 import { createEventHub } from "./lib/events.mjs";
 import { runDueBackups, startBackupScheduler } from "./lib/backup.mjs";
-import { createCloudBackup } from "./lib/cloud-backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
 import { createDatasetService } from "./lib/dataset.mjs";
@@ -183,41 +182,8 @@ export function createApp(overrides = {}) {
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
   // o sürede durur. Uygulama nesnesi aşağıda kurulduğundan eşitleme denetimi geç bağlanır.
   let license = null;
-  // Drive'a yedek (v2.0.2): kullanıcı Drive bağlantısı/klasörü bağladıysa her yedek oraya da kopyalanır. Lisans nesnesi
-  // aşağıda kurulduğundan geç bağlanır; kopya hatası yerel yedeği hiçbir zaman engellemez.
-  // v2.0.20: Drive ayarı ortak katmanda (hub) tek; bütün şirketlerin yedekleri oraya, her şirket kendi klasörüne kopyalanır.
-  // Kopyalar sırayla yapılır (aynı anda iki kopya durum kaydını ezmesin).
-  // Drive bağlantısı ortak katmanda tek (v2.0.20). 2.0.17–2.0.19'da bağlantı seçili şirketin dosyasına yazılıyordu: 002
-  // seçiliyken bağlanan Drive ayarı ortak katmanda yoksa ondan alınır (gözden geçirme bulgusu: kopyalar sessizce duruyordu).
-  if (!hub) {
-    try {
-      if (!store.setting("backup.cloud", "")) {
-        for (const company of companies.list().filter(item => item.id !== ROOT_COMPANY_ID)) {
-          const value = withCompanyDb(company, companyDb => companyDb.prepare("SELECT value FROM settings WHERE key = 'backup.cloud'").get()?.value || "");
-          if (value) {
-            store.setSetting("backup.cloud", value);
-            log.info?.(`Drive yedek bağlantısı ${company.code} · ${company.name} şirketinin ayarından ortak katmana alındı.`);
-            break;
-          }
-        }
-      }
-    } catch (error) {
-      log.warn?.(`Drive yedek ayarı şirketlerden okunamadı: ${error.message}`);
-    }
-  }
-  const cloudBackup = hub ? hub.cloudBackup : createCloudBackup({ store, log, services: config.licenseServices.split(",").map(item => item.trim()).filter(Boolean), keep: config.backupKeep, license: { summary: () => license?.summary?.() } });
-  let mirrorQueue = Promise.resolve();
-  const mirrorNow = result => {
-    const run = mirrorQueue.then(() => cloudBackup.mirror(result));
-    mirrorQueue = run.catch(() => {});
-    return run;
-  };
-  const mirrorBackup = hub
-    ? hub.mirrorBackup
-    : result => {
-        if (!result?.path) return;
-        mirrorNow(result).catch(error => log.warn(`Drive kopyası başarısız: ${error.message}`));
-      };
+  // Drive'a yedek (v2.0.2–2.0.26) 2.1.0'da kaldırıldı (kullanıcı kararı, 10.10.2026): yedekler yalnız yerel yedek klasöründe.
+  // Eski kurulumun veri tabanındaki "backup.cloud" ayarı okunmaz, silinmez; hiçbir yere kopya alınmaz.
   // Kalıcı çalışma verisi: içeri alınan Excel/Sheets satırları + bağlı Sheet'in zamanlanmış eşitlemesi.
   const dataset = createDatasetService({
     store,
@@ -231,7 +197,6 @@ export function createApp(overrides = {}) {
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
     canWrite: () => !license || license.writable(),
-    afterBackup: mirrorBackup,
   });
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
@@ -272,14 +237,14 @@ export function createApp(overrides = {}) {
     return true;
   };
   const context = {
-    config, log, store, bank, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup, companies, companyId, company: () => companies.get(companyId),
+    config, log, store, bank, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, companies, companyId, company: () => companies.get(companyId),
     // İş saati (v2.1.0; lib/clock.mjs): modüller "bugün"ü ve zaman damgalarını buradan okur (config.now; testlerde sahte saat).
     now: config.now,
     // Tek kaynak (v2.1.0, K5; lib/bank/money-lines.mjs): Kasa, Banka ve POS, ANLIK DURUM ve Ana Defter'in beklenenleri buradan okur.
     // verify (testlerde gateVerify): K7'nin yazımdan sonra sakladığı toplam ve "tarihten sonra satır yok" kısayolu tam sorguyla denetlenir.
     money: createMoneyLines(store, { verify: config.gateVerify }),
-    // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde; Drive kopyası sıralı.
-    backups, backupDir: backupDirNow, withCompanyDb, mirrorNow: hub ? hub.mirrorNow : mirrorNow, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
+    // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde.
+    backups, backupDir: backupDirNow, withCompanyDb, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
   };
   if (stagedRestore) {
     const actor = stagedRestore.by ? { id: stagedRestore.by, display_name: stagedRestore.byName } : null;
@@ -443,7 +408,7 @@ export function createApp(overrides = {}) {
         scheduleBackups: false,
         // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
         now: config.now,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, cloudBackup, mirrorBackup, mirrorNow, requestRestart, closeCompany },
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -527,9 +492,9 @@ export function createApp(overrides = {}) {
   server.requestTimeout = 5 * 60_000;
 
   // Otomatik yedek (v2.0.20): ortak katmanda tek zamanlayıcı BÜTÜN şirketleri yedekler — bu açılışta hiç açılmamış şirket
-  // de (veri tabanı kısa süreliğine salt okunur açılır); her şirket kendi klasörüne, Drive'a da kendi klasörüne.
+  // de (veri tabanı kısa süreliğine salt okunur açılır); her şirket kendi klasörüne.
   const stopBackups = config.scheduleBackups && !hub
-    ? startBackupScheduler({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log, onBackup: mirrorBackup })
+    ? startBackupScheduler({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log })
     : () => {};
   if (overrides.startLicenseTimers !== false && !hub) license.start();
   // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).
@@ -651,7 +616,7 @@ export function createApp(overrides = {}) {
     backups,
     backupDir: backupDirNow,
     // Zamanlayıcının bir turu (zamanı gelen bütün şirketler); zamanlayıcı kapalıyken de çalışır.
-    runDueBackups: () => (hub ? [] : runDueBackups({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, log, onBackup: mirrorBackup })),
+    runDueBackups: () => (hub ? [] : runDueBackups({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, log })),
     stagedRestore,
     openCompanyIds: () => (hub ? [] : [...children.keys()]),
     // Servis yöneticisi altında server.mjs bağlar: 001 geri yüklemesi için uygulama kendini düzgün kapatır, servis
