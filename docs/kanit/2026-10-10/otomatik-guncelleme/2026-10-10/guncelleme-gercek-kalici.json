@@ -1,0 +1,32 @@
+{
+  "ad": "guncelleme-gercek-kalici",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/guncelleme-gercek.test.mjs",
+  "commit": "2849d21551d5cd66fed9e32fe1d9e1dd75b6d7de",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 8,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:08:03.703Z",
+  "sure_sn": 32.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/guncelleme-gercek-kalici.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "6ea0de2151c753aca0ef5d2359a35c3efb87ea8f7c09fc64df954d861672894c",
+  "ham_cikti_bayt": 1782
+}

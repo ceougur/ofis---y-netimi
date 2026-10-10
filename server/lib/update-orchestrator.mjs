@@ -1,11 +1,17 @@
 // Otomatik güncellemenin akışı (servis yöneticisi içinde çalışır).
 //
-// Açılışta:  uygulama hemen başlatılır → güncelleme arka planda denetlenir (ağ yoksa ilk 30 dakikada birkaç kez
-//            yeniden denenir) → yeni sürüm varsa uygulama çalışırken indirilip doğrulanır → kısa bir bakım
-//            penceresinde ("Sistem güncelleniyor…") eski sürüm durdurulur, veritabanı yedeklenir, yeni sürüm
-//            deneme kipinde açılır → sağlık kontrolü geçerse onaylanır; geçmezse önceki sürüme dönülür ve o sürüm
-//            bir daha kendiliğinden denenmez. Gün içinde kendiliğinden güncelleme yapılmaz; yönetici panelden
-//            "Şimdi güncelle" diyebilir.
+// Denetim: servis açılışında (uygulama önce başlatılır, denetim arka planda; ağ yoksa ilk 30 dakikada birkaç kez yeniden
+//          denenir) ve servis açıkken 6 saatte bir (+ 30 dakikaya kadar rastgele kayma). "Kendiliğinden kur" ayarı
+//          KAPALIYKEN de denetlenir (2.1.0): bulunan sürüm kurulmaz, yöneticiye Yönetim → Sistem → Güncellemeler'de
+//          "Yeni sürüm hazır" olarak görünür; "Şimdi Güncelle" ile kurulur.
+// Kurulum ("kendiliğinden kur" AÇIKKEN): sunucu boştaysa (servis yöneticisine son 15 dakikadır sağlık/keşif dışında istek
+//          gelmediyse) ya da mesai dışındaysa (hafta içi 20:00–07:00, hafta sonu; sunucunun yerel saati) hemen kurulur.
+//          Açılışta henüz istek gelmemiş olduğundan açılışta bulunan sürüm hemen kurulur. Mesai içinde kullanıcılar
+//          çalışırken bulunursa ertelenir ve saatte bir yeniden bakılır: o anda boşta ya da mesai dışıysa kurulur (son
+//          istekten sonra gerçek bekleme 15 dakika ile ~75 dakika arasıdır). Yönetici her zaman "Şimdi Güncelle" diyebilir.
+// Kurulum adımları: yeni sürüm uygulama çalışırken indirilip doğrulanır → kısa bir bakım penceresinde ("Sistem
+//          güncelleniyor…") eski sürüm durdurulur, veritabanı yedeklenir, yeni sürüm deneme kipinde açılır → sağlık
+//          kontrolü geçerse onaylanır; geçmezse önceki sürüme dönülür ve o sürüm bir daha kendiliğinden denenmez.
 import { isInstalledVersion, pruneVersions, readCurrent, versionDir, writeCurrent } from "./app-layout.mjs";
 import { compareVersions } from "./semver.mjs";
 import { UpdateError } from "./update-envelope.mjs";
@@ -106,17 +112,19 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     }
     return result;
   }
-  // Mesai içinde bulunan sürüm: hemen kurulmaz (kullanıcılar çalışıyor); yönetici panelinde "hazır" görünür, saatte bir
-  // yeniden bakılır — mesai dışına çıkınca (ya da sunucu boşsa) kendiliğinden kurulur.
+  // Hemen kurulmayan sürüm: yönetici panelinde "hazır" görünür. "Kendiliğinden kur" kapalıysa öyle kalır (yönetici Şimdi
+  // Güncelle der). Açıksa (mesai içinde kullanıcılar çalışıyordu) saatte bir yeniden bakılır — o anda sunucu 15 dakikadır
+  // boşsa ya da mesai dışıysa kendiliğinden kurulur.
   function defer(found) {
     if (!deferred || deferred.version !== found.version) {
       deferred = { version: found.version, since: now() };
-      log.info(`${found.version} sürümü hazır; ${updater.config().enabled ? "mesai dışında kendiliğinden kurulacak" : "kendiliğinden kurulum kapalı"} (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).`);
+      log.info(`${found.version} sürümü hazır; ${updater.config().enabled ? "kullanıcılar çalışıyor; sunucu 15 dakika boş kalınca ya da mesai dışında kendiliğinden kurulacak (saatte bir bakılır)" : "kendiliğinden kurulum kapalı, kurulmayacak"} (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).`);
     }
     clearTimeout(deferTimer);
     if (!updater.config().enabled || stopped) return;
     deferTimer = setTimeout(() => {
-      if (stopped || job) return;
+      // Bu arada yönetici "kendiliğinden kur"u kapattıysa ertelenen sürüm kurulmaz (yalnız "hazır" görünür).
+      if (stopped || job || !updater.config().enabled) return;
       if (status.lastFound && newer(status.lastFound) && (quietTime() || !controller.busy?.())) install(status.lastFound);
       else runCheck({ auto: true }).catch(() => {});
     }, deferRecheckMs);
@@ -128,7 +136,8 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     const delay = periodicCheckMs + Math.floor(random() * periodicJitterMs);
     periodicTimer = setTimeout(() => {
       schedulePeriodic();
-      if (job || !updater.config().enabled) return;
+      // "Kendiliğinden kur" kapalıyken de denetlenir; kurulup kurulmayacağına runCheck karar verir.
+      if (job) return;
       runCheck({ auto: true }).catch(error => log.error("Periyodik güncelleme denetimi hatası", error));
     }, delay);
     periodicTimer.unref?.();
@@ -256,7 +265,8 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     } else {
       await controller.start();
     }
-    if (updater.config().enabled && !stopped) runCheck({ auto: true }).catch(error => log.error("Güncelleme denetimi hatası", error));
+    // "Kendiliğinden kur" kapalıyken de açılışta denetlenir (2.1.0); kapalıysa bulunan sürüm yalnız "hazır" görünür.
+    if (!stopped) runCheck({ auto: true }).catch(error => log.error("Güncelleme denetimi hatası", error));
     schedulePeriodic();
   }
 
@@ -269,6 +279,9 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     }
     if (action === "config") {
       updater.saveConfig(payload);
+      // Ayar değişince bekleyen sürümün zamanlayıcısı yeniden kurulur: açıldıysa saatlik bakış başlar, kapandıysa durur.
+      if (status.lastFound && newer(status.lastFound) && !job) defer(status.lastFound);
+      else if (!updater.config().enabled) clearTimeout(deferTimer);
       return publicStatus();
     }
     if (action === "apply") {

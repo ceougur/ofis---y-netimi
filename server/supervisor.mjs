@@ -280,7 +280,9 @@ export async function startSupervisor(options = {}) {
   // v2.0.17: son kullanıcı isteği (sağlık/keşif hariç). Güncelleme orkestratörü mesai içinde bulduğu sürümü kullanıcı
   // çalışırken kurmaz; 15 dakikadır istek yoksa "boşta" sayılır.
   let lastActivityAt = 0;
-  const IDLE_MS = 15 * 60_000;
+  // Süreler yalnız testlerden kısaltılabilir (startSupervisor seçeneği; ortam değişkeni yok — üretimde hep 15 dk / 6 sa / 60 dk).
+  const timings = options.updateTimings || {};
+  const IDLE_MS = timings.idleMs ?? 15 * 60_000;
   const controller = {
     busy: () => Date.now() - lastActivityAt < IDLE_MS,
     appDir: () => appDir,
@@ -347,6 +349,7 @@ export async function startSupervisor(options = {}) {
       fetchImpl: options.fetchImpl,
       trustedKeys: options.trustedKeys,
       githubApi: options.githubApi,
+      githubWeb: options.githubWeb,
       defaultFeed: options.updateFeed,
       bootstrapVersion: Number(env.HUKUK_BOOTSTRAP_VERSION || 1),
       log,
@@ -360,6 +363,10 @@ export async function startSupervisor(options = {}) {
       log,
       retryDelays: options.updateRetryDelays,
       trialTimeoutMs: options.trialTimeoutMs ?? readyTimeoutMs,
+      ...(timings.periodicCheckMs !== undefined ? { periodicCheckMs: timings.periodicCheckMs } : {}),
+      ...(timings.periodicJitterMs !== undefined ? { periodicJitterMs: timings.periodicJitterMs } : {}),
+      ...(timings.deferRecheckMs !== undefined ? { deferRecheckMs: timings.deferRecheckMs } : {}),
+      ...(options.quietTime ? { quietTime: options.quietTime } : {}),
     });
   }
   const updateUnavailable = layout.installed
@@ -492,6 +499,8 @@ export async function startSupervisor(options = {}) {
     discoveryPort: boundDiscoveryPort,
     stop,
     updates: orchestrator,
+    // Güncelleme kararındaki "kullanıcı etkinliği" (son istek; sağlık/keşif hariç) — testler ve tanılama için, ağa açık değil.
+    activity: () => ({ lastActivityAt: lastActivityAt ? new Date(lastActivityAt).toISOString() : null, busy: controller.busy(), idleMs: IDLE_MS }),
     // Bakım kipine geçip uygulamayı yeniden başlatır (isteğe bağlı olarak başka bir sürüm klasörüyle).
     async restartApp({ phase = "restarting", detail = "", nextAppDir } = {}) {
       state.phase = phase;

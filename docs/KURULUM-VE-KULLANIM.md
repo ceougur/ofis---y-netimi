@@ -316,9 +316,9 @@ Yetkiler: hücre ve başlık yazmayı herkes, satır/kolon/sayfa eklemeyi ekleme
 
 ## 14. Güncelleme
 
-**Otomatik (önerilen, varsayılan):** Sunucu her açıldığında yeni sürüm olup olmadığına bakar. Yeni sürüm varsa DestekOfis çalışmaya devam ederken arka planda indirilir ve doğrulanır; ardından yaklaşık bir dakikalık bir geçişle yeni sürüme geçilir. Bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir. Geçiş çok kısa sürdüyse yönetim paneli kendiliğinden yenilenir; dosya takip ekranında ise yazılan not kaybolmasın diye *"DestekOfis … sürümüne güncellendi"* şeridi çıkar, *Yenile*'ye basmanız yeterlidir.
+**Otomatik (önerilen, varsayılan):** Sunucu her açıldığında ve açık kaldığı sürece 6 saatte bir yeni sürüm olup olmadığına bakar. Yeni sürüm varsa DestekOfis çalışmaya devam ederken arka planda indirilir ve doğrulanır; ardından yaklaşık bir dakikalık bir geçişle yeni sürüme geçilir. Bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir. Geçiş çok kısa sürdüyse yönetim paneli kendiliğinden yenilenir; dosya takip ekranında ise yazılan not kaybolmasın diye *"DestekOfis … sürümüne güncellendi"* şeridi çıkar, *Yenile*'ye basmanız yeterlidir.
 
-- Güncelleme yalnızca sunucu açılışında yapılır; gün içinde çalışırken kendiliğinden güncellenmez.
+- Ne zaman kurulur: sunucu açılışında bulunan sürüm hemen kurulur. Sunucu açıkken bulunan sürüm, kimse kullanmıyorsa (son 15 dakikadır sunucuya istek gelmediyse) ya da mesai dışında (hafta içi 20:00–07:00, hafta sonu; sunucunun saati) kurulur. Mesai içinde kullanıcılar çalışırken kurulmaz; panelde "hazır" görünür ve saatte bir yeniden bakılır. Not: ekranı açık bırakılmış (simge durumuna küçültülmemiş) bir DestekOfis sayfası düzenli yenileme istekleri gönderdiği için sunucu "kullanılıyor" sayılır; bu durumda kurulum mesai dışına kalır.
 - `data` ve `backups` klasörlerine dokunulmaz. Geçişten hemen önce veritabanının tam yedeği alınır (`backups\...-guncelleme-oncesi-<sürüm>.sqlite`).
 - Yeni sürüm açılamazsa sistem **kendiliğinden önceki sürüme döner** ve o sürümü bir daha denemez; yönetim paneli durumu bildirir.
 - Güncellemeler dijital olarak imzalıdır; imzası veya içeriği tutmayan paketler kurulmaz.
@@ -326,7 +326,7 @@ Yetkiler: hücre ve başlık yazmayı herkes, satır/kolon/sayfa eklemeyi ekleme
 **Yönetim paneli → Sistem → Güncellemeler:** kurulu sürümü, son denetimi ve bulunan yeni sürümün notlarını gösterir.
 
 - *Güncellemeleri denetle* ile hemen bakabilir, *Şimdi güncelle* ile beklemeden kurabilirsiniz (kullanıcıların az olduğu bir saatte yapın).
-- *Sunucu açılışında yeni sürümü kendiliğinden kur* seçeneğini kapatırsanız güncellemeler yalnızca siz *Şimdi güncelle* dediğinizde kurulur.
+- *Yeni sürümü kendiliğinden kur* seçeneğini kapatırsanız sunucu yine denetler ve yeni sürümü panelde "hazır" olarak gösterir, ama yalnızca siz *Şimdi güncelle* dediğinizde kurulur.
 - *Güncelleme kanalı*: **Kararlı** (önerilen) veya **Deneme (beta)**. Beta kanalı yeni özellikleri herkesten önce alır; üretimde kararlı kanal önerilir.
 - Bir sürüm çalışma zamanı değişikliği gerektiriyorsa panel bunu bildirir; o sürümü kurulum dosyasıyla kurun.
 
