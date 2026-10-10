@@ -454,6 +454,9 @@
     const transfer = Boolean(entry?.transferId);
     // v2.0.17: yol seçilmez — Kasa'ya yalnız nakit. Eski (2.0.16 öncesi) nakit dışı kayıt düzeltilirken yolu salt okunur.
     const methodText = transfer ? `Nakit (${entry.kind === "in" ? "bankadan kasaya aktarım" : "kasadan bankaya yatırma"})` : HOF.methodName(entry?.method || "cash", incoming ? "in" : "out");
+    // Hakem K3 (plan §3.10/1): istek kimliği form açılışında üretilir; yanıt gecikip yeniden Kaydet'e basılırsa (ya da ağ isteği yinelerse) sunucu
+    // ikinci kez yazmaz. Başarılı kayıttan sonra form kapanır; yeni form yeni kimlik alır.
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: transfer ? "Transferi Düzelt" : entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Kasaya Tahsilat Ekle" : "Kasadan Ödeme Ekle",
       eyebrow: "KASA",
@@ -475,10 +478,12 @@
       onSubmit: async data => {
         const { methodLabel: _ignored, ...rest } = data;
         const body = { ...rest, kind: entry?.kind || kind };
-        if (entry && transfer) await HOF.bank.withConfirms(flags => HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body: { ...body, ...flags } }));
-        else if (entry) await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body });
-        else await HOF.api("/api/workspace/cash", { method: "POST", body });
-        HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
+        let result;
+        if (entry && transfer) result = await HOF.bank.withConfirms(flags => HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body: { ...body, ...flags }, requestId }));
+        else if (entry) result = await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body, requestId });
+        else result = await HOF.api("/api/workspace/cash", { method: "POST", body, requestId });
+        if (result?.replayed) HOF.toast(`Bu işlem zaten kaydedildi${result.no ? ` (${result.no})` : ""}; ikinci kez yazılmadı.`, { type: "info" });
+        else HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
         HOF.emit("cash-changed");
         after?.();
       },
