@@ -20,8 +20,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 
+// ROOT: aracın kendi deposu (imzalı paket kapısı onu denetler). WORK: aracın ÇAĞRILDIĞI klasörün deposu — kos komutu orada koşar, commit
+// ve kirli dosya oradan okunur (10.10.2026: ana depodaki araç başka bir worktree'den çağrılınca komut ana depoda koşmuş, kayıt ana deponun
+// commit'ini yazmıştı — doğrulama yanlış kodu koştu; kayıttaki commit alanı sayesinde fark edildi).
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const KANIT = process.env.KANIT_DIR ? path.resolve(process.env.KANIT_DIR) : path.join(ROOT, "docs", "kanit");
 const GZIP_OVER = 1024 * 1024;
 
 const gitIn = cwd => (...args) => {
@@ -31,7 +33,15 @@ const gitIn = cwd => (...args) => {
     return null;
   }
 };
-const git = gitIn(ROOT);
+const WORK = (() => {
+  try {
+    return execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: process.cwd(), encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim() || process.cwd();
+  } catch {
+    return process.cwd();
+  }
+})();
+const git = gitIn(WORK);
+const KANIT = process.env.KANIT_DIR ? path.resolve(process.env.KANIT_DIR) : path.join(WORK, "docs", "kanit");
 
 const last = (text, regex) => {
   let match = null;
@@ -137,7 +147,7 @@ async function run(name, command, minutes) {
   const { exitCode, signal } = target.error
     ? (chunks.push(Buffer.from(`[kanit] başlatılamadı: ${target.error}\n`)), { exitCode: null, signal: null })
     : await new Promise(resolve => {
-        const child = spawn(target.file, target.args, { cwd: ROOT, env: process.env });
+        const child = spawn(target.file, target.args, { cwd: process.cwd(), env: process.env });
         if (minutes) timer = setTimeout(() => { timedOut = true; child.kill("SIGKILL"); }, minutes * 60_000);
         for (const stream of [child.stdout, child.stderr]) {
           stream.on("data", data => {
@@ -168,7 +178,8 @@ async function run(name, command, minutes) {
     zaman_asimi: timedOut,
     ozet: summary,
     ...result,
-    ham_cikti: path.relative(ROOT, path.join(dir, logName)).split(path.sep).join("/"),
+    ham_cikti: path.relative(WORK, path.join(dir, logName)).split(path.sep).join("/"),
+    klasor: WORK,
     ham_cikti_sha256: createHash("sha256").update(raw).digest("hex"),
     ham_cikti_bayt: raw.length,
   };
@@ -355,7 +366,7 @@ export function hookDecision(input, state) {
 
 // tools/release.mjs ve release.yml için: imzalı paket yalnız temiz çalışma ağacından ve CI'si (Windows dahil, kapı işiyle) YEŞİL
 // commit'ten üretilir. Atlatma seçeneği yoktur.
-export function releaseGate({ gitFn = git, ciFn = ciState } = {}) {
+export function releaseGate({ gitFn = gitIn(ROOT), ciFn = ciState } = {}) {
   const problems = [];
   const status = gitFn("status", "--porcelain");
   if (status === null) problems.push("git durumu okunamadı");

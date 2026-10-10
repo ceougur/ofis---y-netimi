@@ -267,3 +267,27 @@ describe("doğrulama kapısı: kanca komutu (Stop / SubagentStop)", () => {
     }
   });
 });
+
+describe("kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)", () => {
+  it("komut ve commit, aracın deposu değil çağrılan klasörün deposu", () => {
+    const repo = mkdtempSync(path.join(os.tmpdir(), "kanit-depo-"));
+    const out = mkdtempSync(path.join(os.tmpdir(), "kanit-"));
+    try {
+      const sh = (...args) => spawnSync("git", args, { cwd: repo, encoding: "utf8" });
+      sh("init", "-q");
+      sh("-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "--allow-empty", "-m", "deneme");
+      const head = sh("rev-parse", "HEAD").stdout.trim();
+      assert.match(head, /^[0-9a-f]{40}$/);
+      const script = "console.log('klasor=' + process.cwd()); console.log('# tests 1\\n# pass 1\\n# fail 0\\n# cancelled 0')";
+      const result = spawnSync(process.execPath, [TOOL, "kos", "yer", process.execPath, "-e", script], { cwd: repo, env: { ...process.env, KANIT_DIR: out }, encoding: "utf8" });
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      const record = JSON.parse(readFileSync(path.join(out, readdirSync(out)[0], "yer.json"), "utf8"));
+      assert.equal(record.commit, head, "kayıttaki commit çağrılan deponun HEAD'i");
+      assert.notEqual(record.commit, spawnSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).stdout.trim());
+      assert.match(result.stdout, new RegExp(`klasor=${repo.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&")}`), "komut çağrılan klasörde koştu");
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+      rmSync(out, { recursive: true, force: true });
+    }
+  });
+});
