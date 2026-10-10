@@ -1021,7 +1021,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       R1 CANLI (v2.0.23–2.0.26'da da var): iadenin müşteriye geri ödenen kısmı fatura kapamada BAŞKA açık satış faturasını "Ödendi"
       gösteriyor / aynı carinin alış faturasını ödüyordu (1249a0c). R2: Gider Raporu bütün gider türlerini TEK satırda birleştiriyordu
       (SQL takma ad çakışması; b5f2ba3). R3: ekstreyle eşleşmiş satırda çek geri alma ve fatura Düzenle/İptal/Sil 409 yerine 200
-      (31b7117; eşleşme 2.1.0'da ekrandan yapılamadığı için canlı etkisi yok).
+      (31b7117; eşleşme 2.1.0'da ekrandan yapılamadığı için canlı etkisi yok). R4 CANLI (v2.0.20–2.0.26; büyük/küçük harf duyarlı
+      dosya sisteminde): şirket adı yalnız büyük/küçük harf farkıyla değişince silinmiş şirketten kalan yedek klasörü veriliyor, yedekler
+      oraya taşınıyordu (güvenilirlik tohum 2 işlem 2331; f241559 → af83d46). R5 CANLI (v2.0.24–2.0.26): fazla tahsilatlı taksit kartında
+      iade iptali kartı faturanın açığına kadar büyütmüyordu (açık 1.500 ↔ kart kalanı 1.000; mutabakat 5.000 tohum 2 işlem 3414;
+      9340b9c → 326b87b). R4/R5 kullanıcıya listelendi (10.10.2026); ana oturum kırmızı/yeşil doğrulaması birleştirmeden önce.
   İSTEK (kullanıcı, 09.10.2026): "tüm işlemler bitince bağımsız yargıç ve yargıç kararını eleştirmenden tekrar geçir, sonra plana
       uy!" → 2.1.0'ın BÜTÜN işleri (düzeltme turu, eksik testler, transfer, raporlar, K10, yetki, kabul 1–16, kılavuz) bitince, paketten
       ÖNCE: (1) bağımsız YARGIÇ (kod değiştirmez; bütün 2.1.0'ı ve bulguları yeniden üreterek doğrular, önem + teslime engel kararı);
