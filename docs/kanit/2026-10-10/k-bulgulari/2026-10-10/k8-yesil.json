@@ -1,0 +1,31 @@
+{
+  "ad": "k8-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/hakem-k8-kredi.test.mjs",
+  "commit": "9ddd7be2db292994dd8bd8377912ec1c9eb4daba",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:18:27.255Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/k8-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "ebff904ed49ed645351a81c9823b1dede716add9dac85c21833857323c640d17",
+  "ham_cikti_bayt": 2946
+}

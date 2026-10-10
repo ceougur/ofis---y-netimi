@@ -27,13 +27,15 @@ import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
 
+// limit: hesabın limit alanı (plan §3.5 "KMH Limiti alanı" yalnız Vadesiz; §3.9 "KMH ya da kart limiti"; Kredi Hesabı'nda ekranın "Kredi Limiti" bilgi
+// alanı — eksi bakiye denetimine girmez). Limit alanı olmayan türde 0'dan büyük limit 400 bank-limit (hakem K7).
 export const ACCOUNT_KINDS = Object.freeze({
-  demand: { label: "Vadesiz", forms: ["bank"], negativeOpening: true },
+  demand: { label: "Vadesiz", forms: ["bank"], negativeOpening: true, limit: "KMH Limiti" },
   commercial: { label: "Ticari", forms: ["bank"] },
   time: { label: "Vadeli", forms: [] },
   fx: { label: "Döviz", forms: ["fx"] },
-  loan: { label: "Kredi Hesabı", forms: [] },
-  card: { label: "Kurumsal Kredi Kartı", forms: ["card"] },
+  loan: { label: "Kredi Hesabı", forms: [], limit: "Kredi Limiti" },
+  card: { label: "Kurumsal Kredi Kartı", forms: ["card"], limit: "Kart Limiti" },
   other: { label: "Diğer", forms: ["bank"] },
 });
 /** ANLIK DURUM, Genel Bakış ve Birleşik Rapor'da aynı adlar (K10). */
@@ -310,6 +312,14 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return policy;
   }
   const limitOf = value => (value === undefined || value === null || value === "" ? 0 : parseMinor(value, { label: "Limit", allowZero: true }));
+  /**
+   * Hakem K7 (plan §3.5): limit yalnız limit alanı olan türde (ACCOUNT_KINDS[].limit: Vadesiz KMH, kart, kredi). Önceden API Ticari, Diğer, Vadeli ve
+   * Döviz hesapta da KMH saklıyor, eksi bakiye denetimi (vouchers.mjs) onu sayıyordu.
+   */
+  function kindLimit(kind, minor) {
+    if (minor > 0 && !ACCOUNT_KINDS[kind]?.limit) throw new HttpError(400, `${ACCOUNT_KINDS[kind]?.label || kind} hesapta limit (KMH) olmaz; KMH Limiti yalnız Vadesiz hesapta, kart limiti Kurumsal Kredi Kartı'nda girilir.`, { code: "bank-limit", field: "creditLimit" });
+    return minor;
+  }
   /** Bilgi alanları (kartın parası ve türü değil). */
   function infoOf(body, current = {}) {
     const pick = (key, column, max, label) => (body[key] === undefined ? current[column] ?? "" : limited(body[key], max, label));
@@ -368,7 +378,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const code = text(body.code);
     if (code) codeShape(code);
     const info = infoOf(body);
-    const creditLimit = limitOf(body.creditLimit);
+    const creditLimit = kindLimit(kind, limitOf(body.creditLimit));
     const negativePolicy = policyOf(body.negativePolicy);
     const id = `bacc-${randomUUID()}`;
     const draft = { id, kind, currency, gl: KIND_GL[kind], gl_sub: "" };
@@ -425,10 +435,14 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         if (movementInfo(row.id).count || opening?.lines) throw new HttpError(409, "Bu hesabın hareketi ya da açılış bakiyesi var; türü ve para birimi değiştirilemez. Yeni hesap açın.", { code: "bank-account-has-movements" });
         next.kind = kind;
         next.currency = currency;
+        // Hakem K7: limit alanı olmayan türe çevrilen hesabın limiti sıfırlanır (KMH'li Vadesiz → Ticari'de gizli KMH Engelle'yi atlatıyordu;
+        // ekran Ticari'de limit göndermez). Tür yalnız hareketsiz ve açılışı sıfır hesapta değişir: bakiye 0, KMH'ye dayanan eksi yoktur.
+        if (!ACCOUNT_KINDS[kind].limit && body.creditLimit === undefined) next.credit_limit_minor = 0;
         // Sıfır açılışın para birimi yenilenir (satırsız açılış iptal, yenisi yeni para biriminde).
         if (opening) reopen = opening;
       }
     }
+    if (body.creditLimit !== undefined || next.kind !== row.kind) kindLimit(next.kind, Number(next.credit_limit_minor) || 0);
     const changed = Object.keys(next).filter(key => next[key] !== row[key]);
     if (!changed.length) return view(row);
     const previous = Object.fromEntries(changed.map(key => [key, row[key]]));

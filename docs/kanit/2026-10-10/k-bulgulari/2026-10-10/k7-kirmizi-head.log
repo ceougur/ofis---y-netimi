@@ -1,0 +1,137 @@
+TAP version 13
+# Subtest: K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde)
+    # Subtest: N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz
+    not ok 1 - N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz
+      ---
+      duration_ms: 45.101695
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:31:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        commercial KMH: 200 {"id":"bacc-7530d052-7fd7-4c7a-b669-c4a38b08a07d","code":"DEN-TL","gl":"102","glSub":"102.01","kind":"commercial","kindLabel":"Ticari","bankName":"Denizbank","name":"KMH commercial","label":"Denizbank · KMH commercial","currency":"TRY","iban":"","ibanText":"","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","description":"","openingDate":"2026-10-01","balanceConfirmed":true,"c 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:36:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır
+    not ok 2 - N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır
+      ---
+      duration_ms: 40.872175
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:41:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ticari'ye KMH: 200 {"id":"bacc-3bf73326-b0e4-4944-ba42-722fc3ed9a0e","code":"DEN-TL-2","gl":"102","glSub":"102.02","kind":"commercial","kindLabel":"Ticari","bankName":"Denizbank","name":"Ticari Hesap","label":"Denizbank · Ticari Hesap","currency":"TRY","iban":"","ibanText":"","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","description":"","openingDate":"2026-10-01","balanceConfirmed":true,"cre 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:43:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N5: Vadesiz KMH, Kurumsal Kredi Kartı limiti ve Kredi Hesabı limiti → 200 (limit saklanır)
+    ok 3 - N5: Vadesiz KMH, Kurumsal Kredi Kartı limiti ve Kredi Hesabı limiti → 200 (limit saklanır)
+      ---
+      duration_ms: 89.876127
+      type: 'test'
+      ...
+    1..3
+not ok 1 - K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde)
+  ---
+  duration_ms: 572.567947
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz)
+    # Subtest: N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır
+    not ok 1 - N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır
+      ---
+      duration_ms: 29.214597
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ticari + KMH: 200 {"id":"bacc-5ebc1650-b5d9-492a-93b0-ca3077329d63","code":"DEN-TL","gl":"102","glSub":"102.01","kind":"commercial","kindLabel":"Ticari","bankName":"Denizbank","name":"Ticari Hesap B5","label":"Denizbank · Ticari Hesap B5","currency":"TRY","iban":"","ibanText":"","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","description":"","openingDate":"2026-10-01","balanceConfirmed":true, 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:68:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır
+    not ok 2 - N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır
+      ---
+      duration_ms: 15.132157
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ticari'de KMH yok
+        
+        2305900 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2305900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:78:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz)
+  ---
+  duration_ms: 393.9384
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base/test/hakem-k7-kmh.test.mjs:58:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 1
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1395.474847
