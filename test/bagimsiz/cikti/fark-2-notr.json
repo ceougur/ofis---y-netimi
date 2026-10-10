@@ -50,8 +50,8 @@
     "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/senaryolar/rastgele-2-500-notr.json --cikti test/bagimsiz/cikti/ham/rastgele-2-500-notr.program.json"
   },
   "programEk": {
-    "calismaAgaciDegisikDosya": 106,
-    "commit": "9edd6b0bc4ca8865ab118d6d15a7fca000539592",
+    "calismaAgaciDegisikDosya": 25,
+    "commit": "e336003ec6f4e9dc45ace42c43fb7e8c4f376811",
     "eslenemeyenler": [],
     "kaynakFarklari": [],
     "okumaHatalari": [],
@@ -65,9 +65,9 @@
   "senaryoDosyasi": "test/bagimsiz/cikti/senaryolar/rastgele-2-500-notr.json",
   "siniflar": {},
   "sureler": {
-    "a": 1.44,
-    "b": 12.23,
-    "program": 65.31
+    "a": 0.32,
+    "b": 12.8,
+    "program": 58.41
   },
   "ucTarafSayilari": {
     "a": {

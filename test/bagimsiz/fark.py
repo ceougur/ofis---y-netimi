@@ -335,6 +335,11 @@ SINIF_ACIKLAMALARI = {
                         "('Vadesiz, Ticari ya da Diğer TL hesap'), dil §4.20–4.23 '102 türü hesap' diyerek kabul ediyor. "
                         "PLAN §3.5 tablosu 'Vadeli … Hayır; yalnız transfer ve faiz' programı destekliyor (faiz gideri "
                         "de reddediliyor; 'faiz' faiz geliri mi ikisi mi açık değil) → DİL/KÂHİN eksiği, dil sürüm 2.",
+    "ACILIS-EKSI-KMH": "Ticari ve Diğer türü hesapta eksi açılış bakiyesi (KMH) programda 400 amount-range ('Açılış "
+                       "Bakiyesi eksi olamaz'); vadesizde kabul. PLAN §3.5 tablosunda 'KMH Limiti alanı' yalnız Vadesiz "
+                       "satırında; dil §3.3/§4.4 vadesiz/ticari/diğer'e eksi açılış ve kmhLimiti veriyor → DİL/KÂHİN "
+                       "geniş, program planla uyumlu (dil sürüm 2). Reddedilen hesaba bağlı sonraki adımlar programda "
+                       "atlanır (zincir).",
     "KREDI-ANAPARA-ASIMI": "Kredi geri ödemesinde anapara kalan kredi borcunu aşınca program 409 bank-loan-exceeds; dilde "
                            "bu kural yok (kâhinler kabul edip kredi hesabını borçlu yapıyor). Program davranışı makul → "
                            "DİL eksiği (sürüm 2'ye kural) + üreteç gerçekçi tutar seçmeli.",
@@ -533,6 +538,9 @@ def birincil_sinif(f, bag):
                 return "KART-HESABI-BAGLANMIYOR"
             if "bank-loan-exceeds" in pv:
                 return "KREDI-ANAPARA-ASIMI"
+            if x.get("islem") in ("hesap_ac", "acilis_duzelt") and str(x.get("acilisBakiyesi", "")).startswith("-") \
+                    and "amount-range" in pv and av == "geçti":
+                return "ACILIS-EKSI-KMH"
             if "bank-account-invalid" in pv and av == "geçti" and bv == "geçti":
                 hd = bag["adimlar"].get(bag["tanim"].get(x.get("hesap")), {})
                 if hd.get("tur") == "vadeli":
@@ -544,11 +552,24 @@ def birincil_sinif(f, bag):
                 if z:
                     return z
         return None
+    if t[0] in ("faturalar", "taksitKartlari", "bankaHesaplari", "hesapKodlari", "eksiBakiyeDenetimi", "cariler",
+                "stok") and len(t) >= 2 and (f["a"] == YOK or f["program"] == YOK or f["b"] == YOK):
+        d = bag["tanim"].get(t[1])
+        if d in bag["adim_sinifi"]:
+            return bag["adim_sinifi"][d]
+        if d in bag["p_atlanan"]:
+            z = _atlama_sinifi(bag, d)
+            if z:
+                return z
+    if t[0] == "hesapKodlari" and desen == "A=B≠P":
+        # alt hesap numarası kayması: önce açılan aynı ana koddaki bir hesap programda reddedildi
+        d0 = bag["tanim"].get(t[1])
+        for ad_, d in bag["tanim"].items():
+            x_ = bag["adimlar"].get(d, {})
+            if x_.get("islem") == "hesap_ac" and d in bag["adim_sinifi"] and bag["sira"].get(d, 0) < bag["sira"].get(d0, 0):
+                return bag["adim_sinifi"][d]
     if t[0] in ("faturalar", "taksitKartlari") and len(t) >= 2:
         ad = t[1]
-        d = bag["tanim"].get(ad)
-        if d in bag["adim_sinifi"] and (f["a"] == YOK or f["program"] == YOK or f["b"] == YOK):
-            return bag["adim_sinifi"][d]
         if ad in bag["alis_yineleme_ad"] or (ad in bag["yineleme_ad"] and bag["yineleme_ad"][ad] in bag["fatura"]
                                              and bag["fatura"][bag["yineleme_ad"][ad]].get("tur") == "alis"
                                              and desen == "B≠A=P"):
@@ -574,10 +595,18 @@ ZINCIR_KODLARI = ("cash-negative", "cash-blocked", "bank-negative", "bank-blocke
 def _atlama_sinifi(bag, sid):
     """Programda atlanan adım: andığı takma adı tanımlayan adımın sınıfı."""
     x = bag["adimlar"].get(sid, {})
-    for alan in ("hedef", "hesap", "cari", "kart", "asilFatura", "kapatilacakFatura", "kaynak", "kredi"):
-        d = bag["tanim"].get(x.get(alan))
+    adlar = [x.get(a_) for a_ in ("hedef", "hesap", "cari", "kart", "asilFatura", "kapatilacakFatura", "kaynak",
+                                   "kredi", "saglayici")]
+    adlar += [r_.get("hesap") for r_ in (x.get("odeme") or {}).get("pesin") or []]
+    adlar += [(x.get("geri") or {}).get("hesap")] + [k_.get("urun") for k_ in x.get("kalemler") or []]
+    for ad_ in adlar:
+        d = bag["tanim"].get(ad_)
         if d and d in bag["adim_sinifi"]:
             return bag["adim_sinifi"][d]
+        if d and d in bag["p_atlanan"] and d != sid:
+            z = _atlama_sinifi(bag, d)
+            if z:
+                return z
     return None
 
 

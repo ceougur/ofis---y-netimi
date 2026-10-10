@@ -1,0 +1,371 @@
+{
+  "aciklama": "uretici.py ile tohum 1'den üretildi (500 işlem, kontrol aralığı 25). Gerçekçi sıra, kasıtlı retler, istek kimliği yinelemeleri, eşzamanlı gruplar.",
+  "ad": "rastgele-1-500-o50",
+  "adimlar": [
+    {
+      "ad": "U1",
+      "birim": "Adet",
+      "id": "1",
+      "islem": "urun_ac",
+      "urunAdi": "Adaptör U1"
+    },
+    {
+      "id": "2",
+      "islem": "stok_giris",
+      "miktar": 23,
+      "urun": "U1"
+    },
+    {
+      "ad": "U2",
+      "birim": "Adet",
+      "id": "3",
+      "islem": "urun_ac",
+      "urunAdi": "Lamba U2"
+    },
+    {
+      "id": "4",
+      "islem": "stok_giris",
+      "miktar": 67,
+      "urun": "U2"
+    },
+    {
+      "ad": "U3",
+      "birim": "Adet",
+      "id": "5",
+      "islem": "urun_ac",
+      "urunAdi": "Kulaklık U3"
+    },
+    {
+      "id": "6",
+      "islem": "stok_giris",
+      "miktar": 26,
+      "urun": "U3"
+    },
+    {
+      "ad": "U4",
+      "birim": "Adet",
+      "id": "7",
+      "islem": "urun_ac",
+      "urunAdi": "Hoparlör U4"
+    },
+    {
+      "id": "8",
+      "islem": "stok_giris",
+      "miktar": 17,
+      "urun": "U4"
+    },
+    {
+      "ad": "U5",
+      "birim": "Adet",
+      "id": "9",
+      "islem": "urun_ac",
+      "urunAdi": "Toner U5"
+    },
+    {
+      "id": "10",
+      "islem": "stok_giris",
+      "miktar": 120,
+      "urun": "U5"
+    },
+    {
+      "ad": "U6",
+      "birim": "Adet",
+      "id": "11",
+      "islem": "urun_ac",
+      "urunAdi": "Sandalye U6"
+    },
+    {
+      "id": "12",
+      "islem": "stok_giris",
+      "miktar": 126,
+      "urun": "U6"
+    },
+    {
+      "ad": "U7",
+      "birim": "Adet",
+      "id": "13",
+      "islem": "urun_ac",
+      "urunAdi": "Kulaklık U7"
+    },
+    {
+      "id": "14",
+      "islem": "stok_giris",
+      "miktar": 28,
+      "urun": "U7"
+    },
+    {
+      "ad": "U8",
+      "birim": "Adet",
+      "id": "15",
+      "islem": "urun_ac",
+      "urunAdi": "Defter U8"
+    },
+    {
+      "id": "16",
+      "islem": "stok_giris",
+      "miktar": 15,
+      "urun": "U8"
+    },
+    {
+      "ad": "U9",
+      "birim": "Adet",
+      "id": "17",
+      "islem": "urun_ac",
+      "urunAdi": "Lamba U9"
+    },
+    {
+      "ad": "U10",
+      "birim": "Adet",
+      "id": "18",
+      "islem": "urun_ac",
+      "urunAdi": "Sandalye U10"
+    },
+    {
+      "ad": "U11",
+      "birim": "Adet",
+      "id": "19",
+      "islem": "urun_ac",
+      "urunAdi": "Adaptör U11"
+    },
+    {
+      "id": "20",
+      "islem": "stok_giris",
+      "miktar": 71,
+      "urun": "U11"
+    },
+    {
+      "ad": "C1",
+      "id": "21",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Bereket Danışmanlık C1"
+    },
+    {
+      "ad": "C2",
+      "id": "22",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Ayşe Yılmaz C2"
+    },
+    {
+      "ad": "C3",
+      "id": "23",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Emine Kılıç C3"
+    },
+    {
+      "ad": "C4",
+      "id": "24",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Ege Kırtasiye C4"
+    },
+    {
+      "ad": "C5",
+      "id": "25",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Hüseyin Doğan C5"
+    },
+    {
+      "ad": "C6",
+      "id": "26",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Gül Özdemir C6"
+    },
+    {
+      "ad": "C7",
+      "id": "27",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Kuzey Otomotiv A.Ş. C7"
+    },
+    {
+      "ad": "C8",
+      "id": "28",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Hasan Polat C8"
+    },
+    {
+      "ad": "C9",
+      "iban": "TR670006703419254122482447",
+      "id": "29",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Anadolu Kırtasiye C9"
+    },
+    {
+      "ad": "C10",
+      "id": "30",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Batı Makine Ltd. C10"
+    },
+    {
+      "ad": "C11",
+      "id": "31",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Pınar Tekstil A.Ş. C11"
+    },
+    {
+      "ad": "C12",
+      "iban": "TR290006407868387380695604",
+      "id": "32",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Çınar Yapı Ltd. C12"
+    },
+    {
+      "ad": "C13",
+      "id": "33",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Marmara Gıda A.Ş. C13"
+    },
+    {
+      "ad": "C14",
+      "iban": "TR450001009397298063513969",
+      "id": "34",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Doğu Yapı Ltd. C14"
+    },
+    {
+      "ad": "C15",
+      "id": "35",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Zeynep Şahin C15"
+    },
+    {
+      "ad": "C16",
+      "iban": "TR590001209256341685878310",
+      "id": "36",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Batı Ticaret Ltd. C16"
+    },
+    {
+      "ad": "C17",
+      "id": "37",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Ali Çelik C17"
+    },
+    {
+      "ad": "C18",
+      "iban": "TR290004609729815061622519",
+      "id": "38",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Yıldız Danışmanlık C18"
+    },
+    {
+      "ad": "C19",
+      "id": "39",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Umut Tekstil A.Ş. C19"
+    },
+    {
+      "ad": "C20",
+      "id": "40",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Umut Gıda A.Ş. C20"
+    },
+    {
+      "ad": "C21",
+      "id": "41",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Ayşe Yılmaz C21"
+    },
+    {
+      "ad": "C22",
+      "iban": "TR140004609621723216684847",
+      "id": "42",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Gül Özdemir C22"
+    },
+    {
+      "ad": "C23",
+      "iban": "TR300006709576561159714398",
+      "id": "43",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Ege Ticaret Ltd. C23"
+    },
+    {
+      "ad": "C24",
+      "iban": "TR790004604335141719536405",
+      "id": "44",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Kardelen Lojistik Ltd. C24"
+    },
+    {
+      "ad": "C25",
+      "iban": "TR120006208999133036148110",
+      "id": "45",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Bereket Lojistik Ltd. C25"
+    },
+    {
+      "ad": "C26",
+      "id": "46",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Kardelen Kırtasiye C26"
+    },
+    {
+      "ad": "C27",
+      "id": "47",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Yıldız Gıda A.Ş. C27"
+    },
+    {
+      "ad": "C28",
+      "id": "48",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Toros Yapı Ltd. C28"
+    },
+    {
+      "ad": "C29",
+      "id": "49",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Pınar Bilişim Ltd. C29"
+    },
+    {
+      "ad": "C30",
+      "id": "50",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Ege Danışmanlık C30"
+    }
+  ],
+  "baslangic": {
+    "ayarlar": {
+      "benzerIslemUyarisi": "acik",
+      "kasaEksiBakiye": "uyar"
+    },
+    "bugun": "11.03.2025",
+    "kullanicilar": {
+      "MU": "muhasebe",
+      "PE": "personel",
+      "Y": "yonetici"
+    },
+    "sirket": "bos"
+  },
+  "dayanak": "SENARYO-DILI §3–§13 (rastgele senaryo)",
+  "dil": "destekofis-senaryo/1"
+}

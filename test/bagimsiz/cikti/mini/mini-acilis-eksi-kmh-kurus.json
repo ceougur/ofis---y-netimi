@@ -1,0 +1,29 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "mini-acilis-eksi-kmh-kurus",
+  "aciklama": "KMH eksi açılış varyantı: kurus",
+  "dayanak": "fark.py",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "kullanicilar": {
+      "Y": "yonetici",
+      "MU": "muhasebe"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "hesap_ac",
+      "ad": "Z1",
+      "banka": "Ziraat Bankası",
+      "hesapAdi": "Ana",
+      "tur": "vadesiz",
+      "paraBirimi": "TRY",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "-11529,50",
+      "kmhLimiti": "23059",
+      "bakiyeDogrulandi": true
+    }
+  ]
+}

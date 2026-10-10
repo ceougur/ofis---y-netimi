@@ -1,0 +1,191 @@
+{
+  "adimSayisi": 620,
+  "atlananBelirsizYaprak": 1421,
+  "belirsizSayisi": {
+    "a": 1439,
+    "b": 1439
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 1
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 1,
+  "farklar": [
+    {
+      "a": "409 cash-negative",
+      "adim": {
+        "cari": "C12",
+        "hesap": "B3",
+        "id": "500",
+        "islem": "cari_odeme",
+        "tutar": "140845,09",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.500",
+      "b": "409 cash-negative",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "500",
+        "500"
+      ],
+      "program": "409 bank-negative",
+      "programIletisi": "VakıfBank · Ticari Hesap B3 hesabında 128.537,09 TL var; bu işlemle bakiye 140.845,09 TL azalır ve −12.308,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "tetik": "500",
+      "yol": [
+        "retler",
+        "500"
+      ]
+    }
+  ],
+  "islemSayisi": 500,
+  "islemTurleri": {
+    "acilis_duzelt": 3,
+    "ayar": 4,
+    "banka_masraf": 9,
+    "cari_ac": 18,
+    "cari_odeme": 79,
+    "cari_tahsilat": 41,
+    "diger_gelir": 1,
+    "diger_gider": 1,
+    "faiz_geliri": 6,
+    "faiz_gideri": 5,
+    "fatura": 168,
+    "hesap_ac": 14,
+    "hesap_durum": 4,
+    "hesap_eksi_politika": 5,
+    "iade": 1,
+    "kasa_banka": 11,
+    "kasa_hareket": 28,
+    "kontrol": 19,
+    "kredi_kullanim": 7,
+    "kredi_odeme": 3,
+    "saat": 101,
+    "sil": 25,
+    "stok_giris": 10,
+    "taksit_tahsilat": 29,
+    "ters_kayit": 6,
+    "transfer": 14,
+    "urun_ac": 8
+  },
+  "karsilastirilanYaprak": 7795,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/senaryolar/rastgele-5-500-notr.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/senaryolar/rastgele-5-500-notr.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/senaryolar/rastgele-5-500-notr.json --cikti test/bagimsiz/cikti/ham/rastgele-5-500-notr.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 37,
+    "commit": "e336003ec6f4e9dc45ace42c43fb7e8c4f376811",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "rastgele-5-500-notr",
+  "senaryoDosyasi": "test/bagimsiz/cikti/senaryolar/rastgele-5-500-notr.json",
+  "siniflar": {
+    "BANKA-EKSI-KODU": {
+      "aileler": {
+        "retler:cari_odeme": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 1
+      },
+      "enErkenPencere": [
+        "500",
+        "500"
+      ],
+      "ornekler": [
+        {
+          "a": "409 cash-negative",
+          "alan": "retler.500",
+          "b": "409 cash-negative",
+          "desen": "A=B≠P",
+          "pencere": [
+            "500",
+            "500"
+          ],
+          "program": "409 bank-negative"
+        }
+      ],
+      "sonDurumYaprak": 1,
+      "yaprak": 1
+    }
+  },
+  "sureler": {
+    "a": 0.34,
+    "b": 11.5,
+    "program": 66.67
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 41504967,
+      "atlananSayisi": 0,
+      "bankaToplam": 130393976,
+      "cariToplam": 28144152,
+      "faturaSayisi": 171,
+      "kasa": -2014361,
+      "mizanAlacakToplam": 274762806,
+      "mizanBorcToplam": 274762806,
+      "ozet": {
+        "gercekBanka": 166599291,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 36205315,
+        "kasaVeGercekBanka": 164584930
+      },
+      "retSayisi": 28,
+      "taksitKalanToplam": 7756792,
+      "yinelenenSayisi": 4
+    },
+    "b": {
+      "acikFaturaToplam": 41504967,
+      "atlananSayisi": 0,
+      "bankaToplam": 130393976,
+      "cariToplam": 28144152,
+      "faturaSayisi": 171,
+      "kasa": -2014361,
+      "mizanAlacakToplam": 274762806,
+      "mizanBorcToplam": 274762806,
+      "ozet": {
+        "gercekBanka": 166599291,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 36205315,
+        "kasaVeGercekBanka": 164584930
+      },
+      "retSayisi": 28,
+      "taksitKalanToplam": 7756792,
+      "yinelenenSayisi": 4
+    },
+    "program": {
+      "acikFaturaToplam": 41504967,
+      "atlananSayisi": 0,
+      "bankaToplam": 130393976,
+      "cariToplam": 28144152,
+      "faturaSayisi": 171,
+      "kasa": -2014361,
+      "mizanAlacakToplam": 274762806,
+      "mizanBorcToplam": 274762806,
+      "ozet": {
+        "gercekBanka": 166599291,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 36205315,
+        "kasaVeGercekBanka": 164584930
+      },
+      "retSayisi": 28,
+      "taksitKalanToplam": 7756792,
+      "yinelenenSayisi": 4
+    }
+  }
+}
