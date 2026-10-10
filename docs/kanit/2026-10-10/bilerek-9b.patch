@@ -1,0 +1,10 @@
+# CI 460 kanıtı: adım 9b'yi bilerek düşürme (geçici; depoya girmez). İki kayıtta kullanıldı:
+#   senaryo-banka-210-once-orijinal-bilerek-9b  = 8effa45'in (test dosyası 12ade2d ile aynı) test/e2e/senaryo-banka-210.mjs'i + aşağıdaki satır
+#                                                 (koşulan geçici dosya: test/e2e/_gecici-eski-bilerek.mjs; koşudan sonra silindi)
+#   senaryo-banka-210-sonra-bilerek-9b          = 8da9200'ün test/e2e/senaryo-banka-210.mjs'i + aşağıdaki satır
+#                                                 (koşulan geçici dosya: test/e2e/_gecici-yeni-bilerek.mjs; koşudan sonra silindi)
+# Satır, 9b'de 05.10 POS girişinden hemen sonra (CI 460'ın düştüğü yerin hemen öncesi) eklenir:
+     await must("05.10 POS", api.post(`/api/workspace/accounts/${party.id}/entries?${q}`, { kind: "in", amount: "1.500", method: "card", date: "2026-10-05" }));
++    throw new Error("BİLEREK DÜŞÜRÜLDÜ (CI 460 kanıtı): adım 9b şirket 002'deyken yarıda kaldı");
+# Sonuç: eski testte 287/319 (32 başarısız: 1 bilerek + 22 zincirleme 12–24b, 002'de + 8 adım 41–48 analiz penceresi + 1 adım 25
+# tarayıcı hatası); yeni testte 370/371 (yalnız bilerek düşürülen; 10–25 "· şirket 001" başlıklı).

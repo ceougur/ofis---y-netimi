@@ -17,7 +17,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, before, describe, it } from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { createStore } from "../server/lib/db.mjs";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
 
@@ -25,7 +25,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 let lib = null;
 const load = async () => {
   try {
-    lib = await import(path.join(ROOT, "server/lib/bank/event-no.mjs"));
+    lib = await import(pathToFileURL(path.join(ROOT, "server/lib/bank/event-no.mjs")).href);
   } catch {
     lib = null;
   }

@@ -28,20 +28,26 @@ describe("istemci başlatıcısı (Go)", { skip: !hasGo && "Go kurulu değil" },
   let server;
   let responder;
   let port;
+  let udpPort;
 
   before(async () => {
     work = mkdtempSync(path.join(tmpdir(), "destekofis-launcher-"));
     binary = path.join(work, process.platform === "win32" ? "launcher.exe" : "launcher");
     execFileSync("go", ["test", "./..."], { cwd: path.join(root, "launcher"), stdio: "pipe", env: { ...process.env, GOTOOLCHAIN: "local" } });
     execFileSync("go", ["build", "-o", binary, "."], { cwd: path.join(root, "launcher"), stdio: "pipe", env: { ...process.env, GOTOOLCHAIN: "local" } });
+    // Portlar (10.10.2026): HTTP sunucusu TCP'den, keşif yanıtlayıcısı UDP'den işletim sisteminin KENDİ boş portunu alır (ikisi de 0).
+    // Önceden TCP'nin verdiği numara UDP'de de kullanılıyordu; Windows TCP portlarını SIRAYLA dağıtır ve o numaralar UDP için
+    // dışlanmış bir bloğa (Hyper-V/WinNAT) denk gelince bağlama "EACCES" verir — yeniden denemek de aynı blokta dolaşır
+    // (CI koşu 448 / 6fad463 ve 488 / 622249b, Windows Node 24: 5 test iptal). Keşif yanıtı HTTP portunu kendisi taşır
+    // (Reply.Port → ServerURL), bu yüzden iki numaranın aynı olması gerekmez; aynı numarada (yerel kısa yol) bulma ayrı testte.
     server = http.createServer((req, res) => {
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify({ ok: true, data: { service: "destekofis-merkezi", status: "ok" } }));
     });
     await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
     port = server.address().port;
-    responder = startDiscoveryResponder({ port, httpPort: port, host: "127.0.0.1", getInfo: () => ({ instanceId: "kurulum-abc", version: "1.2.0", officeName: "Deneme Hukuk" }) });
-    await responder.ready;
+    responder = startDiscoveryResponder({ port: 0, httpPort: port, host: "127.0.0.1", getInfo: () => ({ instanceId: "kurulum-abc", version: "1.2.0", officeName: "Deneme Hukuk" }) });
+    udpPort = (await responder.ready).port;
   });
   after(async () => {
     await responder?.close();
@@ -52,7 +58,7 @@ describe("istemci başlatıcısı (Go)", { skip: !hasGo && "Go kurulu değil" },
   const env = () => ({ ...process.env, DESTEKOFIS_CONFIG_DIR: path.join(work, "ayar") });
 
   it("'-kesfet' ağdaki sunucuyu ofis adı ve kurulum kimliğiyle bulur", async () => {
-    const { stdout } = await run(binary, ["-kesfet", "-port", String(port), "-hedef", "127.0.0.1"], { env: env() });
+    const { stdout } = await run(binary, ["-kesfet", "-port", String(udpPort), "-hedef", "127.0.0.1"], { env: env() });
     const replies = JSON.parse(stdout);
     assert.equal(replies.length, 1);
     assert.equal(replies[0].name, "Deneme Hukuk");
@@ -62,7 +68,7 @@ describe("istemci başlatıcısı (Go)", { skip: !hasGo && "Go kurulu değil" },
 
   it("'-kesfet-dosya' sonucu kurulum sihirbazının okuyacağı dosyaya yazar", async () => {
     const file = path.join(work, "kesif.json");
-    await run(binary, ["-kesfet-dosya", file, "-port", String(port), "-hedef", "127.0.0.1"], { env: env() });
+    await run(binary, ["-kesfet-dosya", file, "-port", String(udpPort), "-hedef", "127.0.0.1"], { env: env() });
     const text = readFileSync(file, "utf8");
     // Kurulum sihirbazı (Inno Setup) alanları '"host": "' ve '"from": "' kalıplarıyla arar.
     assert.match(text, /"host": "[^"]*"/);
@@ -73,8 +79,14 @@ describe("istemci başlatıcısı (Go)", { skip: !hasGo && "Go kurulu değil" },
     assert.deepEqual(JSON.parse(readFileSync(none, "utf8")), [], "sunucu yoksa boş liste yazılır");
   });
 
+  it("aynı bilgisayardaki sunucuyu (HTTP portu = -port) keşifsiz bulur", async () => {
+    const local = JSON.parse((await run(binary, ["-sifirla", "-acma", "-port", String(port), "-hedef", "127.0.0.1"], { env: { ...env(), DESTEKOFIS_CONFIG_DIR: path.join(work, "yerel") } })).stdout);
+    assert.equal(local.url, `http://127.0.0.1:${port}`);
+  });
+
   it("bulunan sunucuyu kaydeder ve sonraki açılışta doğrudan kullanır", async () => {
-    const first = JSON.parse((await run(binary, ["-sifirla", "-acma", "-port", String(port), "-hedef", "127.0.0.1"], { env: env() })).stdout);
+    // -port keşif (UDP) portu; sunucu HTTP'de başka portta → adres keşif yanıtındaki porttan kurulur.
+    const first = JSON.parse((await run(binary, ["-sifirla", "-acma", "-port", String(udpPort), "-hedef", "127.0.0.1"], { env: env() })).stdout);
     assert.equal(first.url, `http://127.0.0.1:${port}`);
     const saved = JSON.parse(readFileSync(path.join(work, "ayar", "istemci.json"), "utf8"));
     assert.equal(saved.server, `http://127.0.0.1:${port}`);

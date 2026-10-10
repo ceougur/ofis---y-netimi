@@ -26,11 +26,24 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - run: npm test
+      # Kanıt kaydı (10.10.2026): sonuç çıkış kodu + test sayılarıyla kaydedilir; çıkış kodu ile sayılar çelişirse, hiç test
+      # koşmazsa ya da özet okunamazsa adım kırmızıdır. Kayıt "Doğrulama Kapısı" işinde platformlar arası karşılaştırılır.
+      - name: npm test (kanıt kaydıyla)
+        run: node tools/kanit.mjs kos npm-test-${{ matrix.os }}-node${{ matrix.node }} npm test
+        env:
+          KANIT_DIR: kanit-cikti
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kanit-${{ matrix.os }}-node${{ matrix.node }}
+          path: kanit-cikti/
+          if-no-files-found: warn
 
   e2e:
     name: Uçtan uca (Chromium)
     runs-on: ubuntu-latest
+    env:
+      KANIT_DIR: kanit-cikti
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -39,30 +52,64 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
-      - run: npm run test:senaryo-219
-      - run: npm run test:senaryo-220
-      - run: npm run test:senaryo-220-yedek
-      - run: npm run test:senaryo-221
-      - run: npm run test:senaryo-222
-      - run: npm run test:senaryo-223
-      - run: npm run test:senaryo-224
-      - run: npm run test:senaryo-225
-      - run: npm run test:senaryo-226
-      - run: npm run test:senaryo-banka-210
-      - run: npm run test:senaryo-banka-210b
-      - run: npm run test:banka-210-saat
+      - run: node tools/kanit.mjs kos e2e-e2e npm run test:e2e
+      - run: node tools/kanit.mjs kos e2e-senaryo-219 npm run test:senaryo-219
+      - run: node tools/kanit.mjs kos e2e-senaryo-220 npm run test:senaryo-220
+      - run: node tools/kanit.mjs kos e2e-senaryo-220-yedek npm run test:senaryo-220-yedek
+      - run: node tools/kanit.mjs kos e2e-senaryo-221 npm run test:senaryo-221
+      - run: node tools/kanit.mjs kos e2e-senaryo-222 npm run test:senaryo-222
+      - run: node tools/kanit.mjs kos e2e-senaryo-223 npm run test:senaryo-223
+      - run: node tools/kanit.mjs kos e2e-senaryo-224 npm run test:senaryo-224
+      - run: node tools/kanit.mjs kos e2e-senaryo-225 npm run test:senaryo-225
+      - run: node tools/kanit.mjs kos e2e-senaryo-226 npm run test:senaryo-226
+      - run: node tools/kanit.mjs kos e2e-senaryo-banka-210 npm run test:senaryo-banka-210
+      - run: node tools/kanit.mjs kos e2e-senaryo-banka-210b npm run test:senaryo-banka-210b
+      - run: node tools/kanit.mjs kos e2e-banka-210-saat npm run test:banka-210-saat
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: e2e-ekran-goruntuleri
           path: test/e2e/artifacts/
           if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kanit-e2e
+          path: kanit-cikti/
+          if-no-files-found: warn
+
+  # Doğrulama Kapısı (10.10.2026): "doğrulandı" yalnız bu iş yeşilse söylenir. Test işlerinin kendi sonucu (needs) ve kanıt
+  # kayıtları birlikte okunur: dört platform (Linux/Windows × Node 22/24) ve bütün uçtan uca senaryolar bu commit'te GEÇTİ,
+  # Linux ile Windows aynı sayıda test koştu, hiçbir test atlanmadı. Eksik platform, çelişki ya da atlanan test = kırmızı.
+  # Yayın (release.yml) ve imzalı paket (tools/release.mjs) bu işin yeşil olmasını şart koşar.
+  kapi:
+    name: Doğrulama Kapısı
+    runs-on: ubuntu-latest
+    needs: [test, e2e]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: kanit-*
+          path: kanit
+          merge-multiple: true
+      - name: Kapı
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: >-
+          node tools/kanit.mjs kapi kanit --commit "$GITHUB_SHA"
+          --beklenen npm-test-ubuntu-latest-node22,npm-test-ubuntu-latest-node24,npm-test-windows-latest-node22,npm-test-windows-latest-node24,e2e-e2e,e2e-senaryo-219,e2e-senaryo-220,e2e-senaryo-220-yedek,e2e-senaryo-221,e2e-senaryo-222,e2e-senaryo-223,e2e-senaryo-224,e2e-senaryo-225,e2e-senaryo-226,e2e-senaryo-banka-210,e2e-banka-210-saat
+          --ayni-sayi npm-test-
+          --atlanan-yok npm-test-
 
   package:
     name: Dağıtım paketi
     runs-on: ubuntu-latest
-    needs: [test, e2e]
+    needs: [kapi]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

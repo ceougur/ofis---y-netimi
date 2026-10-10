@@ -1,0 +1,198 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "kabul-1-16",
+  "aciklama": "Plan §12.5 kabul testi, 2.1.0 kapsamındaki adım 1–16. Ön koşullar: boş şirket; sahte saat 08.10.2026 Perşembe; Ürün A 10 Adet ve Ürün B 25 Adet parasız giriş; Kasa 0; dönem kilidi yok; satış fiyatları KDV %20 dahil. Kasa'dan çıkış olmadığı için kasaEksiBakiye ayarı gerekmez (SENARYO-DILI §3.1, BELİRSİZ-1).",
+  "dayanak": "docs/BANKA-MODULU-PLAN.md §12.5 (ön koşullar ve adım 1–16); docs/BANKA-MODULU-TALIMAT.md madde 43 adım 1–16",
+  "baslangic": {
+    "bugun": "08.10.2026",
+    "sirket": "bos",
+    "kullanicilar": { "Y": "yonetici" }
+  },
+  "adimlar": [
+    {
+      "id": "on-1",
+      "islem": "urun_ac",
+      "ad": "URA",
+      "urunAdi": "Ürün A",
+      "birim": "Adet",
+      "not": "Ön koşul: Ürün A"
+    },
+    {
+      "id": "on-2",
+      "islem": "stok_giris",
+      "urun": "URA",
+      "miktar": 10,
+      "not": "Ön koşul: Ürün A 10 Adet (parasız giriş)"
+    },
+    {
+      "id": "on-3",
+      "islem": "urun_ac",
+      "ad": "URB",
+      "urunAdi": "Ürün B",
+      "birim": "Adet",
+      "not": "Ön koşul: Ürün B"
+    },
+    {
+      "id": "on-4",
+      "islem": "stok_giris",
+      "urun": "URB",
+      "miktar": 25,
+      "not": "Ön koşul: Ürün B 25 Adet (parasız giriş)"
+    },
+    {
+      "id": "k-on",
+      "islem": "kontrol",
+      "planMetni": "Stok: Ürün A 10 Adet, Ürün B 25 Adet (parasız giriş). Kasa 0. Dönem kilidi yok.",
+      "planBeklenen": {
+        "stok": { "URA": 10, "URB": 25 },
+        "kasa": 0
+      }
+    },
+    {
+      "id": "1-2",
+      "islem": "hesap_ac",
+      "ad": "ZIR",
+      "banka": "Ziraat Bankası",
+      "hesapAdi": "Ana TL Hesabı",
+      "tur": "vadesiz",
+      "paraBirimi": "TRY",
+      "kod": "ZRT-TL",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "100000",
+      "bakiyeDogrulandi": true,
+      "not": "Plan adım 1–2: Ziraat Bankası · Ana TL Hesabı (Vadesiz, açılış 01.10.2026, 100.000, \"Bakiye Doğrulandı\")"
+    },
+    {
+      "id": "k1-2",
+      "islem": "kontrol",
+      "planMetni": "102.01 = 100.000; denetim Uyar",
+      "planBeklenen": {
+        "mizan": { "102.01": { "borc": 10000000, "alacak": 0 } },
+        "hesapKodlari": { "ZIR": "102.01" },
+        "eksiBakiyeDenetimi": { "ZIR": "uyar" }
+      }
+    },
+    {
+      "id": "3-4",
+      "islem": "hesap_ac",
+      "ad": "GAR",
+      "banka": "Garanti BBVA",
+      "hesapAdi": "Ana TL Hesabı",
+      "tur": "vadesiz",
+      "paraBirimi": "TRY",
+      "kod": "GRN-TL",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "50000",
+      "bakiyeDogrulandi": true,
+      "not": "Plan adım 3–4: Garanti BBVA · Ana TL Hesabı (açılış 01.10.2026, 50.000, \"Bakiye Doğrulandı\")"
+    },
+    {
+      "id": "k3-4",
+      "islem": "kontrol",
+      "planMetni": "102.02 = 50.000; denetim Uyar; Gerçek Banka 150.000; 500 = −150.000",
+      "planBeklenen": {
+        "mizan": {
+          "102.02": { "borc": 5000000, "alacak": 0 },
+          "500": { "borc": 0, "alacak": 15000000 }
+        },
+        "hesapKodlari": { "GAR": "102.02" },
+        "eksiBakiyeDenetimi": { "GAR": "uyar" },
+        "ozet": { "gercekBanka": 15000000 }
+      }
+    },
+    {
+      "id": "5",
+      "islem": "cari_ac",
+      "ad": "ABC",
+      "unvan": "ABC Ltd.",
+      "tur": "musteri",
+      "iban": "TR880006200000006298765432",
+      "not": "Plan adım 5: + Yeni Cari: ABC Ltd. (Müşteri, IBAN ile). IBAN uydurma ama mod 97 geçerli bir test numarasıdır."
+    },
+    {
+      "id": "6",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "ABC",
+      "kalemler": [
+        { "urun": "URA", "miktar": 1, "birimFiyat": "20000", "kdvOrani": 20, "kdvDahil": true }
+      ],
+      "not": "Plan adım 6: Satış Faturası: Ürün A 1 Adet × 20.000, ödeme açık (odeme alanı yok = tamamı açık)"
+    },
+    {
+      "id": "k6",
+      "islem": "kontrol",
+      "planMetni": "Matrah 16.666,67, KDV 3.333,33, Toplam 20.000",
+      "planBeklenen": {
+        "faturalar": { "F1": { "toplam": 2000000, "matrah": 1666667, "kdv": 333333 } }
+      }
+    },
+    {
+      "id": "k7-8",
+      "islem": "kontrol",
+      "planMetni": "Ürün A 9; ABC borçlu 20.000; Gerçek Banka 150.000",
+      "planBeklenen": {
+        "stok": { "URA": 9 },
+        "cariler": { "ABC": 2000000 },
+        "ozet": { "gercekBanka": 15000000 }
+      }
+    },
+    {
+      "id": "9-12",
+      "islem": "cari_tahsilat",
+      "ad": "TH1",
+      "cari": "ABC",
+      "tutar": "20000",
+      "yol": "havale",
+      "hesap": "ZIR",
+      "not": "Plan adım 9–12: Cari kartı → Tahsilat 20.000, Havale/EFT, Ziraat. Kapatılacak Fatura seçilmez (Otomatik, En Eski). İki hesap tanımlı olduğu için hesap zorunlu (SENARYO-DILI §5.2/3)."
+    },
+    {
+      "id": "k9-12",
+      "islem": "kontrol",
+      "planMetni": "Ziraat 120.000; ABC 0; fatura \"Ödendi\"",
+      "planBeklenen": {
+        "bankaHesaplari": { "ZIR": 12000000 },
+        "cariler": { "ABC": 0 },
+        "faturalar": { "F1": { "acik": 0 } }
+      }
+    },
+    {
+      "id": "13-14",
+      "islem": "kasa_banka",
+      "ad": "KB1",
+      "yon": "bankadan_kasaya",
+      "hesap": "ZIR",
+      "tutar": "10000",
+      "not": "Plan adım 13–14: Kasa → Bankadan Kasaya Aktar 10.000 (Ziraat)"
+    },
+    {
+      "id": "k13-14",
+      "islem": "kontrol",
+      "planMetni": "Ziraat 110.000; Kasa 10.000; Kasa penceresinde yalnız nakit satırı (son cümle ekran denetimidir; bu dilin çıktısına girmez)",
+      "planBeklenen": {
+        "bankaHesaplari": { "ZIR": 11000000 },
+        "kasa": 1000000
+      }
+    },
+    {
+      "id": "15-16",
+      "islem": "transfer",
+      "ad": "TR1",
+      "kaynak": "ZIR",
+      "hedef": "GAR",
+      "tutar": "20000",
+      "not": "Plan adım 15–16: Transfer Ziraat → Garanti 20.000, ücret 0 (ucret alanı yok = ücretsiz)"
+    },
+    {
+      "id": "k15-16",
+      "islem": "kontrol",
+      "planMetni": "Ziraat 90.000; Garanti 70.000; Kasa + Banka 170.000 (= 150.000 + 20.000)",
+      "planBeklenen": {
+        "bankaHesaplari": { "ZIR": 9000000, "GAR": 7000000 },
+        "ozet": { "kasaVeGercekBanka": 17000000 }
+      }
+    }
+  ]
+}

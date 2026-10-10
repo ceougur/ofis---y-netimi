@@ -462,7 +462,8 @@
 
   // ---------- Hesabı Atanmamış Eski Hareketler (§10.3) ----------
   const rowKey = row => `${row.table}:${row.id}`;
-  const bindableAccounts = () => (view.list?.accounts || []).filter(account => account.status === "active" && account.currency === "TRY" && BINDABLE_KINDS.has(account.kind));
+  const bindableOf = list => (list?.accounts || []).filter(account => account.status === "active" && account.currency === "TRY" && BINDABLE_KINDS.has(account.kind));
+  const bindableAccounts = () => bindableOf(view.list);
   const legacyTarget = () => bindableAccounts().find(account => account.id === view.legacyTarget) || bindableAccounts()[0] || null;
   // Seçilebilen satır: sunucunun "atanabilir" dediği (havale, açık dönem) ve seçili hesabın açılış gününde ya da sonrasında olan (öncesi
   // açılış bakiyesinin içindedir; sunucu 409 bank-before-opening verir).
@@ -870,11 +871,27 @@
       HOF.toastError(error);
     }
   }
-  function reclassForm(mode) {
-    const accounts = mode === "bank" ? bindableAccounts() : (view.list?.accounts || []).filter(account => account.kind === "card" && account.status === "active");
+  // CI 460 (10.10.2026): form açılıp açılmayacağı ve önerilen tutar tıklama anında SUNUCUDAN okunur. Eski Hareketler'e dönüşte ekran önce
+  // önceki ziyaretin verisiyle çizilir ve yenileme gelene kadar (yavaş sunucuda saniyeler) düğme o veriyle durur; başka yerden açılıştan sonra
+  // girilmiş POS varken eski önbellekle "bankaya geçmemiş POS tahsilatı yok" deniyordu. Çift tıklama tek istek, tek form.
+  let reclassBusy = false;
+  async function reclassForm(mode) {
+    if (reclassBusy) return;
+    reclassBusy = true;
+    let legacy;
+    let list;
+    try {
+      [legacy, list] = await Promise.all([api("/legacy"), api("/accounts?status=all")]);
+    } catch (error) {
+      return HOF.toastError(error);
+    } finally {
+      reclassBusy = false;
+    }
+    if (!modal) return;
+    const accounts = mode === "bank" ? bindableOf(list) : (list?.accounts || []).filter(account => account.kind === "card" && account.status === "active");
     if (!accounts.length) return HOF.toast(mode === "bank" ? "Önce etkin bir TL vadesiz, ticari ya da diğer banka hesabı açın." : "Önce Kurumsal Kredi Kartı türünde hesap açın.", { type: "error" });
     // GG2: aktarılabilir tutar hesap bazında (açılıştan ve Devir Kapanışı'ndan sonraki satırlar; tahsilat ve kartla ödeme ayrı) — sunucunun hesabı.
-    const availableOf = id => Math.abs(view.legacy?.reclassable?.[id]?.minor || 0);
+    const availableOf = id => Math.abs(legacy?.reclassable?.[id]?.minor || 0);
     const first = accounts.find(account => availableOf(account.id) > 0) || accounts[0];
     if (!accounts.some(account => availableOf(account.id) > 0)) {
       return HOF.toast(mode === "bank" ? "Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır)." : "Kart hesaplarının açılışından sonra kart borcuna aktarılmamış kartla ödeme yok. Açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır).", { type: "error" });

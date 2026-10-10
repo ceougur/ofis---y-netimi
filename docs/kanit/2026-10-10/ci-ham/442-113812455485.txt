@@ -1,0 +1,6 @@
+# koşu 442 commit 8dfea5b iş 113812455485 — Test (ubuntu-latest, Node 24) (adım: Run npm test)
+# biçim spec; günlük 2506 satır, okunan son 2506 satır (tamamı)
+# sayılar {"tests": "1538", "suites": "352", "pass": "1536", "fail": "2", "cancelled": "0", "skipped": "0", "todo": "0", "duration_ms": "357863.351758"}
+
+test/banka-210-altin.test.mjs:182	v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)	Error: banka hesabı açılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+test/banka-210-gg-cari.test.mjs:39	rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç bulgusu yok, her cari eşit	AssertionError [ERR_ASSERTION]: motor: her işlemde tutarlı | + actual - expected | + [

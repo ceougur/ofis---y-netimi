@@ -10,6 +10,8 @@ on:
 
 permissions:
   contents: write
+  # Doğrulama kapısı CI koşularını okur (tools/kanit.mjs ci).
+  actions: read
 
 jobs:
   test:
@@ -64,6 +66,12 @@ jobs:
         with:
           name: destekofis-kurulum
           path: dist
+      # Doğrulama kapısı (10.10.2026): etiketlenen commit'in CI'si (Linux + Windows × Node 22/24, uçtan uca, "Doğrulama Kapısı")
+      # YEŞİL değilse yayın yok. CI hâlâ sürüyorsa en çok 90 dk beklenir.
+      - name: Doğrulama kapısı (CI yeşil mi?)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/kanit.mjs ci "$GITHUB_SHA" --bekle 90
       # Yayın web arayüzünden elle açıldıysa (etiket orada oluşturulduysa) eksik dosyalar eklenir: Windows'ta sınanmış
       # kurulum dosyası (sürümlü ve sitenin indirdiği sürümsüz adla), kullanım kılavuzu ve — DESTEKOFIS_RELEASE_KEY
       # tanımlıysa ve yayında yoksa — imzalı güncelleme paketi. Yayında zaten olan dosyalara dokunulmaz.

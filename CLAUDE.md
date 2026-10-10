@@ -31,6 +31,104 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   tohum + 20.000 işlemlik uzun koşu (her işlemde doğrulama); `test:guvenilirlik` 10.000 işlem × 5 tohum × iki taban; Aşama 16
   ölçeği (10/20/30 eşzamanlı kullanıcı, 100.000 ve 1.000.000 para satırı, 2 şirket, yedekleme sırasında yük; sunucu + ekran);
   BÜTÜN arayüz senaryoları (senaryo-whatsapp ve ui-ux-217 dahil, atlanmaz); kabul adımları ekrandan. Süre kısıt sayılmaz.
+- (10.10.2026, kullanıcı: "ajanların birbirlerinin sonuçlarını doğrulaması tek başına yeterli değil; aynı yanlış varsayıma
+  dayanabilirler; bağımsız ve tekrarlanabilir testlerin yerini tutmaz") KANIT KURALI — bir iş ancak şunlarla "bitti" sayılır:
+  1. BAĞIMSIZ KOŞUCU: GitHub CI (Linux + WINDOWS × Node 22/24 + Chromium e2e) o commit'te YEŞİL; sonucu ana oturum kendisi okur
+     (ajan raporu kanıt değil). DERS: CI'nin Windows işi 08.10 e10f598'den 10.10'a kadar 34 koşu kırmızıydı (testlerde
+     import(path.join) Windows'ta yüklenmiyordu), ajanlar "npm test geçti" (yalnız Linux) dedi, kimse bakmadı (düzeltme d9b1044).
+  2. AJANDAN BAĞIMSIZ BEKLENEN (kâhin): planın/talimatın önceden yazılmış sayıları (§12.5 kabul, aşama satırları), programın
+     kodunu GÖRMEDEN plandan yazılmış ayrı dilde (Python) "temiz oda" modeli, eski sürümün gerçek kodu (fark testi). Programla aynı
+     elden çıkan model tek başına kâhin sayılmaz (DERS: Canlı Hata 2'de mutabakat modeli programla aynı yanlış formülü taşıyordu).
+  3. TESTİN DİŞİ VAR MI: kırmızı kanıt (eski kodda kırmızı) + para çekirdeğinde MUTASYON testi (bilerek hata enjekte → testler
+     yakalamalı; yakalanmayan mutasyon = eksik test).
+  4. TEKRARLANABİLİRLİK: tohumlu koşular, komut + tohum + commit + ham çıktı dosyası depoda (docs/kanit/…); ana oturum en az bir
+     kez kendisi yeniden koşar.
+  5. İNSAN: yayından önce kullanıcıya kısa elle kabul listesi (adım + beklenen sayı) verilir; kullanıcı kendi ekranında doğrular.
+  ZORUNLU GÖREV (kullanıcı, 10.10.2026, "CI başarısızlıklarını gider, Windows uyumluluğunu doğrula ve denetim sistemini düzelt";
+  8 başlık): CI'yi gerçekten yeşile getir (Windows ayrı doğrulanır; gerçek Windows erişimi yalnız GitHub CI — yerelde yok, Wine
+  sayılmaz); 08.10'dan beri kırmızı koşuları commit commit incele; ajan raporlarını CI ile karşılaştır; kalıcı önlem (gerçek çıkış
+  kodu + sayılar, belirsiz/yarıda kalan açıkça, ajan onayı bağımsız değil, CI kırmızıyken "doğrulandı" yok, çelişki = başarısız);
+  muhasebe bütünlüğünü yeniden doğrula (Kasa/cari/taksit/fatura/stok/banka bağı, silme/iptal/düzeltme, kuruş/sıfır/eksi/büyük
+  tutar, çift işlem, eşzamanlılık, mutabakat, yedek/geri yükleme, gerileme); her hata: üret → kök neden → en küçük düzeltme →
+  ilgili + gerileme + tam paket → gerçek sonuç kaydı; son rapor 8 başlık (Linux ve Windows AYRI; başarısız/atlanan/doğrulanmayan).
+
+### Doğrulama kapısı — teknik zorunluluk (kullanıcı, 10.10.2026: "ajanların başarılı rapor vermesini engelleyen, gerçek test
+sonuçlarına dayalı teknik bir zorunluluk var mı, yoksa yalnız talimatlara mı güveniyoruz? kod ve CI yapılandırmasıyla kanıtla, eksik
+mekanizmayı uygula, Windows'taki gerçek CI sonucuyla doğrula")
+- Durum (10.10.2026 öncesi, koddan): YOKTU. ci.yml hiçbir şeyi durdurmuyordu (yalnız `package` needs test+e2e); release.yml testleri
+  yalnız ubuntu'da koşuyordu (Windows npm test yayını durdurmuyordu); tools/release.mjs hiç denetim yapmıyordu; master'da kural seti
+  yok (API `rulesets` → []), klasik dal koruması bu oturumun yetkisiyle okunamıyor (403); depoda Claude Code kancası yoktu.
+- Kurulan: (1) ci.yml → her test adımı `tools/kanit.mjs kos` ile (çıkış kodu + sayılar; çelişki/özetsiz/0 test = kırmızı), kayıtlar
+  yüklenir; "Doğrulama Kapısı" işi needs sonuçlarını + kayıtları okur: 4 platform (Linux/Windows × Node 22/24) + bütün e2e bu commit'te
+  GEÇTİ, Linux ve Windows AYNI sayıda test, atlanan test yok; `package` kapıya bağlı. (2) `tools/kanit.mjs ci <sha>` → yalnız ci.yml,
+  kapı işi yeşil değilse YEŞİL demez. (3) tools/release.mjs → temiz ağaç + CI YEŞİL değilse imzalı paket ÜRETMEZ (atlatma yok).
+  (4) release.yml → yayımdan önce `kanit.mjs ci "$GITHUB_SHA" --bekle 90`. (5) `.claude/settings.json` Stop + SubagentStop kancası → durum
+  yeşil değilse yanıtı bir kez durdurur, makine durumunu (CI işleri, gönderilmemiş commit, değişmiş dosya; ajanda kendi worktree'si)
+  modele dayatır.
+- Sınır (dürüst): kanca ve yerel araç, kodu değiştirebilen biri tarafından değiştirilebilir (değişiklik git geçmişinde görünür).
+  Sunucu tarafında bağlayıcı olan tek şey master için "Doğrulama Kapısı" zorunlu durum denetimi (GitHub → Settings → Rules) —
+  bunu yalnız depo sahibi açabilir (bu oturumun belirteci yönetim yetkisine sahip değil, 403).
+  Kullanıcı (10.10.2026: "link ver yapmaya çalışayım") → kural seti bağlantısı + adımlar verildi (ad "Doğrulama Kapısı", hedef
+  varsayılan dal, atlatma listesi BOŞ, PR zorunlu, durum denetimi "Doğrulama Kapısı" kaynağı GitHub Actions). Kullanıcı "yaptım"
+  deyince `gh api repos/ceougur/ofis---y-netimi/rulesets` ve `…/rules/branches/master` ile okunup doğrulanır.
+  AÇILDI (kullanıcı, 10.10.2026 09:34 UTC; API'den okundu): kural seti 24836150 "Doğrulama Kapısı", enforcement active, hedef
+  ~DEFAULT_BRANCH (yalnız master), bypass_actors [] ve bu oturum için current_user_can_bypass "never"; kurallar: deletion,
+  non_fast_forward, pull_request (0 onay), required_status_checks [Doğrulama Kapısı] strict. Çalışma dalında kural 0 (push sürer).
+  KAYNAK (kullanıcı, 10.10.2026 09:42 UTC; API'den okundu): required_status_checks [{context "Doğrulama Kapısı", integration_id
+  15368 = GitHub Actions}] — başka uygulama aynı adla durum gönderip kapıyı geçemez. İlk kapı koşusu (CI 474, 180a8a5) gerçek
+  Windows hatasında GEÇMEDİ dedi (Linux 1763/1763, Windows 1760/1763).
+
+### Geçmiş test hatalarından dersler (kullanıcı, 10.10.2026: "bundan sonraki testlerde geçmişte yapılan hatalardan ders alalım")
+Her test planı bu listeden geçirilerek yazılır; teslimdeki DENENEN/DENENMEYEN bölümü hangi maddelerin uygulandığını söyler.
+Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir yasaktır, öneri değil.
+1. YALNIZ LİNUX "GEÇTİ" DEĞİLDİR. CI'nin BÜTÜN işleri (Linux, Windows × Node 22/24, e2e, paket) ana oturumca okunur; biri kırmızı
+   ya da sürüyorsa "doğrulandı" denmez. (Windows 34 koşu kırmızı kaldı, 08–10.10; `test/platform-tasinabilirlik.test.mjs`.)
+2. ÇIKIŞ KODU VE SAYI. Sonuç, komutun gerçek çıkış kodu + `# tests/pass/fail/cancelled/skipped/todo` satırlarından okunur; boru
+   (`| tail`) arkasındaki `$?` kuyruğun kodudur, kanıt değil (çıktı dosyaya yazılır, kod ayrıca alınır). tests = 0, cancelled > 0,
+   yarıda kalan koşu = BAŞARISIZ/BELİRSİZ, "geçti" yazılmaz. ARAÇ: `node tools/kanit.mjs kos <ad> -- <komut>` (çıkış kodu + sayılar +
+   ham çıktı + commit/platform → `docs/kanit/<gün>/`; çıkış ile özet çelişirse ÇELİŞKİ), `node tools/kanit.mjs ci <commit>` (CI'nin
+   bütün işleri; biri sürüyor/atlanmış/kırmızıysa yeşil DEĞİL), `node tools/kanit.mjs ozet` (biri geçmediyse çıkış 1).
+3. REDDEDİLEN İSTEK BAŞARI DEĞİLDİR. Her adımda yanıt kodu + gövdesi + veri tabanındaki sayı okunur. (Excel denetimi 04.10: salt
+   okunur lisansla hiçbir kayıt girilmedi, test "✅" saydı, uydurma mali rapor teslim edildi.)
+4. OKUNAMAYAN VERİ "BOŞ" DEĞİLDİR. Günlük/dosya okunamadıysa tablo "bilinmiyor" der; boş sonuç başarı sayılmaz. (10.10: CI günlüğü
+   403 → boş başarısızlık tablosu üretildi.)
+5. KÂHİN BAĞIMSIZ OLUR. Beklenen sayı programın kodundan ya da onu yazan elden türetilmez (Canlı Hata 2: mutabakat modeli programla
+   aynı yanlış formülü taşıyıp hatayı 3 sürüm gizledi). Programın kendi "Mutabakat Testi tamam" demesi de kanıt değildir
+   (Taksite Aktar → sil → geri al → geri yükle: Kasa çift, Mutabakat Testi "tamam").
+6. UYUŞMAZLIK ÖNCE HATADIR. Fark çıkınca "bilinen sınır/kural farkı" demeden önce yeniden üretilir, eski sürümün gerçek koduyla
+   karşılaştırılır, kök neden yazılır. (Mutabakat tohum 1 önce "K8 sınırı" sanıldı; Canlı Hata 2 çıktı, 2.0.24–26'da canlı.)
+7. TESTİN DİŞİ. Her yeni test eski kodda kırmızı görülür; kırmızısı görülmeyen test kanıt sayılmaz. Para çekirdeğinde mutasyon.
+8. BÜTÜN SENARYOLAR KOŞULUR. CI'de olmayan arayüz senaryosu elle koşulur, sonucu yazılır; atlanan senaryo adıyla DENENMEYEN'e
+   yazılır. (senaryo-213 CI'de olmadığı için 2.0.21'den beri kırıktı; 2.0.26'da senaryo-whatsapp/ui-ux-217 koşulmadı.)
+9. DEĞİŞEN KODUN BÜTÜN YOLLARI. Kod kaldırılınca/değişince o koda dokunan her arayüz yolu (toplu yükleme, Excel/Sheets, toplu
+   işlem, geri yükleme) koşulur. (2.0.18 Tablodan Al kalkınca Excel cari yükleme ReferenceError → 2.0.19.)
+10. DÜZELTMENİN KOMŞULARI. Düzeltmeden sonra aynı formülü kullanan komşu senaryolar da denenir (2.0.24 G1: iade düzeltmesi
+    paralı iadede kartı küçültmeye başladı; Canlı Hata 2 de G1 düzeltmesinin gerilemesiydi).
+11. HER SÜZGEÇ, HER SEÇENEK. Rapor yalnız varsayılan süzgeçle açılmaz; her süzgeç seçeneği ve toplam = satırlar. (Banka ve POS
+    "Yol" süzgeci 2.0.17'den 2.0.23'e hiç çalışmadı; senaryo yalnız varsayılanı açıyordu.)
+12. İNSAN HIZI VE KLAVYE. Form testleri gerçek tıklama + Tab + insan hızında yazımla da koşulur; "veri bozulmaz" iddiası kayıttan
+    sonra veri tabanı okunarak verilir. (Fatura ödeme alanı: Tab ile girilen senet sessizce kayboluyordu; ilk raporda "veri
+    bozulmaz" yanlış yazıldı.)
+13. TARİHE BAĞLI TEST YOK. Göreli tarih + sahte saat (`config.now`); ayın 1'i, ay sonu, yıl dönümü, hafta sonu/bayram ayrıca.
+    (2.0.13: ayın 1'inde kırılan senaryolar.)
+14. TEST ORTAMI ≠ GERÇEK KURULUM. Testte kapatılan/değiştirilen ayar (lisans, saat, vekil sunucu) bulgu yazılmadan önce gerçek
+    kurulum koşuluyla denenir. (Excel denetimi Bulgu 6 "salt okunur uyarı" testin kendi lisans ayarıydı.)
+15. ÖLÇÜMLER TEK TEK. Aynı makinede iki ölçüm/yük koşusu aynı anda çalışmaz (`flock`); önce/sonra aynı veri kopyasıyla.
+    (2.0.22: iki ölçüm üst üste koştu, sayılar atıldı.)
+16. AJAN ONAYI KANIT DEĞİL. Ajan "geçti" derse ana oturum ham çıktıyı/CI'yi kendisi okur; ajanlar arası onay bağımsız doğrulama
+    sayılmaz; ajan raporu ↔ CI çelişirse sonuç BAŞARISIZ'dır, çelişki giderilene kadar.
+17. SIRA VE GEÇMİŞ VERİ. Şirket/yedek/sil-geri yükle gibi durumlu işler rastgele sırayla ve eski sürümlerin gerçek verisiyle
+    denenir. (2.0.20 gözden geçirmesi 2.0.17'den kalan "iki şirket aynı veri dosyası" hatasını buldu; tek sıralı testler görmedi.)
+18. BENZETİM GERÇEK PLATFORM DEĞİLDİR. Platforma özgü bir hatanın düzeltmesi, o platformun gerçek koşusunda (Windows → GitHub
+    CI) en az iki koşuda yeşil görülmeden "düzeldi" diye yazılmaz. (10.10: launcher EACCES'i Linux'ta EADDRINUSE benzetimiyle
+    "düzeldi" dendi — 12ade2d; gerçek Windows'ta koşu 488'de tekrarladı: Windows TCP portlarını SIRAYLA verir, yeniden deneme
+    UDP'de dışlanmış aynı blokta dolaştı. Kök neden ancak gerçek günlükle bulundu.)
+19. ZİNCİRDE HATA DURDURUR. Birden çok adımı tek komutta zincirlerken `set -euo pipefail`; bir adım düşerse commit/push/rapor
+    yapılmaz. (10.10: belge betiği düştü, commit yine çalıştı ve iletisi yapılmamış işi "yapıldı" diye yazdı — d2f9ddc.)
+20. ARA SIRA KIRMIZI ZORLA ÜRETİLİR. "Ara sıra" kırmızı adım yeniden deneme ya da bekleme süresi uzatmayla geçiştirilmez: yarışın
+    ön koşulu zorla oluşturulan bir betikle (ör. olayı gecikmenin içine denk getir, CPU yavaşlat) önce kırmızı üretilir; düzeltmenin
+    yeşili yalnız ön koşulun GERÇEKTEN oluştuğu denemelerde sayılır; düşen isteğin kimin olduğu (kullanıcı/arka plan) kayıttan okunur.
+    (10.10: senaryo-222 CI'de 2/~12 kırmızı; ürün sanıldı, testin kendi yarışıydı — `test/e2e/senaryo-222-yaris.mjs`.)
 
 ## Kullanıcının tekrar eden şikâyetleri (aynı hataya düşme)
 1. "Onca test yaptım deyip mantık hatalarını görmüyorsun." → Test sayısı değil senaryo çeşidi; kartları aç, kullan.
@@ -927,7 +1025,17 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       R1 CANLI (v2.0.23–2.0.26'da da var): iadenin müşteriye geri ödenen kısmı fatura kapamada BAŞKA açık satış faturasını "Ödendi"
       gösteriyor / aynı carinin alış faturasını ödüyordu (1249a0c). R2: Gider Raporu bütün gider türlerini TEK satırda birleştiriyordu
       (SQL takma ad çakışması; b5f2ba3). R3: ekstreyle eşleşmiş satırda çek geri alma ve fatura Düzenle/İptal/Sil 409 yerine 200
-      (31b7117; eşleşme 2.1.0'da ekrandan yapılamadığı için canlı etkisi yok).
+      (31b7117; eşleşme 2.1.0'da ekrandan yapılamadığı için canlı etkisi yok). R4 CANLI (v2.0.20–2.0.26; büyük/küçük harf duyarlı
+      dosya sisteminde): şirket adı yalnız büyük/küçük harf farkıyla değişince silinmiş şirketten kalan yedek klasörü veriliyor, yedekler
+      oraya taşınıyordu (güvenilirlik tohum 2 işlem 2331; f241559 → af83d46). R5 CANLI (v2.0.24–2.0.26): fazla tahsilatlı taksit kartında
+      iade iptali kartı faturanın açığına kadar büyütmüyordu (açık 1.500 ↔ kart kalanı 1.000; mutabakat 5.000 tohum 2 işlem 3414;
+      9340b9c → 326b87b). R4/R5 kullanıcıya listelendi (10.10.2026); ana oturum kırmızı/yeşil doğrulaması birleştirmeden önce.
+  BAĞIMSIZ KÂHİN ÖN BULGULARI (10.10.2026; temiz oda iki Python modeli + program, kabul 1–16 + tohum 1–33; sınıflama kâhinin fark
+      ajanından, HAKEM HÜKMÜ BEKLENİYOR; kabul 1–16'da üç taraf fark 0): K-A Kasa elle hareketi (POST /api/workspace/cash) istek kimliğini
+      yok sayıyor — aynı istek iki kez yazılır (ana oturum koddan doğruladı: `cash.mjs` 220, requestIdOf yalnız transfer/düzeltmede;
+      plan §3.3 "yazan her uç x-hof-request alır"); K-B iade kapanışı (Σ açık ≠ cari bakiye; R1 ile aynı kök mü — birleşmeden sonra
+      yeniden koşulacak); K-C kartla ödeme kurumsal kart hesabına (309) bağlanmıyor (bilinen açık iş, F izi); İNCELE: KDV dahil iskontoda
+      ±1 kuruş, Kasa açılışı 649 ↔ 500, banka eksi kodu; dil/kâhin eksikleri: KMH açılışı, kredi anapara aşımı, vadeli hesap fişi.
   İSTEK (kullanıcı, 09.10.2026): "tüm işlemler bitince bağımsız yargıç ve yargıç kararını eleştirmenden tekrar geçir, sonra plana
       uy!" → 2.1.0'ın BÜTÜN işleri (düzeltme turu, eksik testler, transfer, raporlar, K10, yetki, kabul 1–16, kılavuz) bitince, paketten
       ÖNCE: (1) bağımsız YARGIÇ (kod değiştirmez; bütün 2.1.0'ı ve bulguları yeniden üreterek doğrular, önem + teslime engel kararı);
@@ -960,6 +1068,17 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       Kalan izler: Aşama 13 döviz; Aşama 8 kalanı (K8 taksit kuralları, Bankaya Tahsile Ver); Aşama 7 kalanı (iade/iptal bankalı
       ayrıntı §4.6, Fatura Ayarları → Banka Hesapları, gider türleri 770/653, toplu kesim, bağ türleri, TCMB önerisi); Aşama 14–15
       kalanı (§8.10 raporları, Nakit Akış K10, Vade Takip/zil, SOURCE_LABELS/EVENT_LABELS, Silinenler kuralı); kılavuz; kabul.
+- KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
+  POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
+  `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
+  çıkış → kartla ödeme bankadan çıkmış gibi Banka/POS toplamını düşürüyor (yanlış: kartla ödeme kart BORCUDUR, para ekstre ödenince
+  bankadan çıkar). 2.1.0 DALINDA ÖLÇÜLDÜ (`docs/kanit/2026-10-10/kart-pos-sonda.mjs`, aynı rakamlar): Gerçek Banka 10.000 (kart
+  ödemesi düşmüyor), 8.656 "Hesabı Atanmamış Eski Hareketler" uyarısında (hiçbir toplamda değil); "Kart Borcuna Aktar" ile kurumsal
+  kart hesabına → "Kart ve Kredi Borcu 8.656", mutabakat tamam. AÇIK (2.1.0'da plan gereği yapılacak, §4.6 / madde 27 / §3.5 tablo
+  satır 3 ve 5): yeni kartla ödemede kurumsal kart hesabı SEÇİLEMİYOR — `pickRef` yalnız havaleyi bağlıyor, gönderilen
+  bankAccountId sessizce yok sayılıyor (ölçüldü: 500 TL yine Hesabı Atanmamış'a düştü); düzeltme: ödeme formlarında (cari ödeme,
+  alış faturası, stok, çek değil) "Kredi Kartı" seçilince kurumsal kart seçimi → 309; POS tahsilatı (108, komisyon, valör,
+  blokeli) 2.2.0. Yanıt kullanıcıya verildi.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

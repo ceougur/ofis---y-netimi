@@ -1,0 +1,7 @@
+# koşu 448 commit 6fad463 iş 113962951348 — Test (windows-latest, Node 22) (adım: Run npm test)
+# biçim tap; günlük 13460 satır, okunan son 5000 satır (ilk 8460 satır MCP 5000 satır sınırı yüzünden okunamadı)
+# sayılar {"tests": "1646", "suites": "391", "pass": "1608", "fail": "38", "cancelled": "0", "skipped": "0", "todo": "0", "duration_ms": "1075856.9841"}
+# okunan kısım üst düzey test 'ok 246' ile başlıyor (toplam 1..395); okunan kısımda başarısız test: 0
+# aynı koşunun Test (windows-latest, Node 24) (spec, tam günlük) sayıları: 1646/1603/38/5 → FARKLI
+# Node 24 ikizinde fazladan olan launcher.test.mjs hatası (bind EACCES) burada YOK: launcher testleri okunan kısımda 'ok'. Node 22'nin 38 başarısızı = Node 24'teki üç dosyanın 38'i (sayı eşitliği; doğrudan görülmedi).
+

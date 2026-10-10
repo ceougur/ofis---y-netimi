@@ -1,0 +1,30 @@
+{
+  "ad": "yaris-sonra-gecikme1500",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-yaris.mjs --kip gecikme --gecikme 1500 --deneme 10",
+  "commit": "8da9200aedcb1b351a2710e313b8c20773626ab9",
+  "dal": "worktree-agent-a14d0e27ddfab9b03",
+  "kirli": 0,
+  "izlenmeyen": 21,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T10:26:09.084Z",
+  "sure_sn": 114.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/yaris-sonra-gecikme1500.log",
+  "ham_cikti_sha256": "3f624e60195f2fd67b44dc4d71fa0815c5b610aef4c532d86235fe17a281505a",
+  "ham_cikti_bayt": 6147
+}

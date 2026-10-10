@@ -32,7 +32,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, before, describe, it } from "node:test";
 import { DatabaseSync } from "node:sqlite";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { createStore } from "../server/lib/db.mjs";
 import { LATEST_VERSION, MIGRATIONS, runMigrations } from "../server/lib/migrations.mjs";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
@@ -45,7 +45,7 @@ const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r
 // Yeni modüller dinamik: eski kodda (2.0.26) yoksa testler hatayla değil, eksik denetimiyle kırmızı olur.
 const optional = async (file, name) => {
   try {
-    return (await import(path.join(ROOT, file)))[name];
+    return (await import(pathToFileURL(path.join(ROOT, file)).href))[name];
   } catch {
     return undefined;
   }
@@ -473,7 +473,9 @@ describe("göç ortasında kesinti (SIGKILL)", () => {
       const factsBefore = dbFacts(root.file);
       const migrationBackups = mkdtempSync(path.join(tmpdir(), "goc-kesinti-yedek-"));
       const child = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(ROOT, "test/guvenilirlik/goc-kesinti.mjs"), root.file, migrationBackups, JSON.stringify(root.companies[0]), "6"], { encoding: "utf8" });
-      assert.equal(child.signal, "SIGKILL", `süreç göç ortasında ölmeliydi (${child.status} ${child.stderr || child.stdout})`);
+      // Windows'ta process.kill(…, "SIGKILL") süreci zorla sonlandırır ama sinyal adı dönmez (signal null, status 1).
+      const killed = child.signal === "SIGKILL" || (process.platform === "win32" && child.status === 1 && !String(child.stdout).includes("göç bitti"));
+      assert.ok(killed, `süreç göç ortasında ölmeliydi (${child.status} ${child.signal} ${child.stderr || child.stdout})`);
       const db = new DatabaseSync(root.file);
       try {
         assert.equal(db.prepare("PRAGMA user_version").get().user_version, 19, "yarım göç işlenmedi");
