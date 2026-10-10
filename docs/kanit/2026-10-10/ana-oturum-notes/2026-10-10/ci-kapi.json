@@ -1,0 +1,32 @@
+{
+  "ad": "ci-kapi",
+  "komut": "node --test test/ci-kapi-listesi.test.mjs",
+  "commit": "aa50991015c2f15960ffe343d9021d93aa27b3ce",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T22:13:17.519Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-notes/2026-10-10/ci-kapi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "f640ae58866ee7651957a0133c92ae381a17f7b4c53b68bfc065f5a7956baff9",
+  "ham_cikti_bayt": 1342
+}
