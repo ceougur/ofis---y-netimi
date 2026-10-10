@@ -224,6 +224,9 @@
       else if (payload.code === "PASSWORD_CHANGE_REQUIRED") HOF.emit("password-required", error);
       else if (response.status === 503 && payload.code === "MAINTENANCE") HOF.emit("maintenance", payload);
       else if (response.status === 403 && payload.code === "LICENSE_READ_ONLY") HOF.emit("license-read-only", payload);
+      // Banka m1 (10.10.2026): sunucu "hesap/kart seçin" dediyse ekranın hesap listesi eskidir (başka oturum hesap açtı, olay henüz gelmedi);
+      // açık formların seçicileri taze listeyle yeniden kurulur (hof-bank.js refreshPickers, hof-invoices.js peşin satır hücreleri).
+      else if (payload.code === "bank-account-required") HOF.emit("bank-choices-stale", payload);
       throw error;
     }
     if (method !== "GET") noteLedgerChange(path);

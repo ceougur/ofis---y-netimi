@@ -34,10 +34,10 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
 // legacy (2.1.0 temel sürüm, küçük düzeltmeler): eski sürümden kalan, hesaba atanmamış İLERİ TARİHLİ havale / POS satırı (102.00 / 108.00).
 // Önceden "Kasa (ileri tarihli)" yazılıyordu (Nakit Kasa'da olmayan bir hareket). Ekran (hof-overview.js ROW_LABELS), PDF ve Excel aynı adı yazar.
-const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
+const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
 const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "table", "promise", "deadline"];
-const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu ay", upcoming: "Yaklaşan" };
+const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu Ay", upcoming: "Yaklaşan" };
 const GROUPS = new Set(["day", "week", "month"]);
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -512,16 +512,19 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
    * Önceden Kasa'nın BÜTÜN yollarındaki ileri tarihli satırlar "Kasa (ileri tarihli)" adıyla giriyordu (eski havale Kasa adıyla; hesaba atanmış
    * satır iki kez; kart borcu nakit çıkışı). Satırlar tek kaynaktan (moneyLines; yol ve hesap orada türetilir); yoksa Kasa'nın satırları.
    */
-  function aheadFlows(day) {
+  // bank: banka satırları (legacy) bu kişiye gösterilir mi (m7, plan §8.9 "Vade Takip / Zil / Takvim: banka kalemleri bank.view ile", §9/6 banka rakamı
+  // bank.view ∨ overview.view). Nakit Akış overview.view ister → hep true; Vade Takip'te yalnız Kasa ve rapor yetkili kişi banka satırını görmez.
+  function aheadFlows(day, { bank = true } = {}) {
     const lines = moneyLines();
-    if (!lines?.lines || !lines?.shape) return (cash()?.entries ? cash().entries({ after: day }) : []).map(cashFlow);
+    if (!lines?.lines || !lines?.shape) return (cash()?.entries ? cash().entries({ after: day }) : []).filter(entry => bank || !entry.method || entry.method === "cash").map(cashFlow);
     const out = [];
-    for (const line of lines.lines({ after: day, ways: ["cash", "bank", "card"] })) {
+    for (const line of lines.lines({ after: day, ways: bank ? ["cash", "bank", "card"] : ["cash"] })) {
       if (line.way === "cash") out.push(cashFlow(lines.shape(line)));
       else if (!line.ref) out.push({ ...cashFlow(lines.shape(line)), source: "legacy" });
     }
     return out;
   }
+  const canSeeBank = user => canUser(user, "overview.view") || canUser(user, "bank.view");
   function cashFlow(entry) {
     const ref = entry.source === "account" && entry.accountId ? { type: "account", id: entry.accountId } : entry.source === "plan" && entry.planId ? { type: "plan", id: entry.planId } : entry.source === "cheque" && entry.chequeId ? { type: "cheque", id: entry.chequeId } : { type: "cash" };
     return { date: entry.date, direction: entry.kind === "out" ? "out" : "in", amount: entry.amount, source: "cash", label: entry.description || (entry.kind === "in" ? "Tahsilat" : "Ödeme"), party: entry.accountName || entry.planName || entry.caseTitle || "", ref };
@@ -555,7 +558,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     }
     if ((sources.has("cheque") || sources.has("note")) && cheques()?.flows) for (const flow of cheques().flows()) if (sources.has(flow.source)) items.push(flow);
     if (sources.has("invoice") && invoices()?.openItems) for (const item of invoices().openItems(day, { net: true })) items.push(invoiceFlow(item));
-    if (sources.has("cash")) items.push(...aheadFlows(day));
+    if (sources.has("cash")) items.push(...aheadFlows(day, { bank: canSeeBank(user) }));
     let dormant = [];
     if (sources.has("table") || sources.has("promise") || sources.has("deadline")) {
       const calendar = tables()?.calendar ? await tables().calendar(clock()) : { items: [], dormant: [] };
@@ -581,7 +584,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const data = await vadeTakip(user, url.searchParams);
     ok(res, { ...data, rows: data.rows.slice(0, 5000), rowTotal: data.rows.length });
   });
-  const vadeState = row => (row.state === "overdue" ? `${Math.abs(row.days)} gün gecikti` : row.state === "today" ? "Bugün" : row.state === "month" ? "Bu ay" : `${row.days} gün kaldı`);
+  const vadeState = row => (row.state === "overdue" ? `${Math.abs(row.days)} gün gecikti` : row.state === "today" ? "Bugün" : row.state === "month" ? "Bu Ay" : `${row.days} gün kaldı`);
   const vadeRows = data => data.rows.map(row => [dayText(row.date), vadeState(row), row.party || "", SOURCE_TEXT[row.source] || row.source, [row.label, row.detail].filter(Boolean).join(" · "), row.direction === "in" && row.amount !== null ? tl(row.amount) : "", row.direction === "out" && row.amount !== null ? tl(row.amount) : ""]);
   const vadeSummary = data => [
     ["Kalem", String(data.totals.count)],

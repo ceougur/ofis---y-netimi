@@ -334,7 +334,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   });
 
   // Liste PDF'i (v2.0.5): ekrandaki süzgeçler ve sıralamayla (durum, grup › alt grup, arama). Yazdır düğmesi de bunu kullanır.
-  const STATUS_TEXT = { active: "Devam eden", overdue: "Geciken", done: "Biten", closed: "Kapalı", all: "Tümü" };
+  const STATUS_TEXT = { active: "Devam Eden", overdue: "Geciken", done: "Biten", closed: "Kapalı", all: "Tümü" };
   const STATE_TEXT = { overdue: "Gecikti", active: "Devam ediyor", done: "Tamamlandı", closed: "Kapalı" };
   router.get("/api/workspace/plans/liste.pdf", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "plans.view");

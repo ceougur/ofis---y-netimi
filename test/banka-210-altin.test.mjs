@@ -141,6 +141,44 @@ function withoutPageHeads(text) {
   return out.join("\n");
 }
 const apiLike = api => ({ get: async url => unwrap(await api.client.get(url)) });
+/**
+ * 2.1.0 ikinci küçük düzeltmeler m6 (bilerek): PDF alt başlığı artık kesilmez (en çok üç satır) ve özet kutusu değeri önce küçülür, sonra kesilir.
+ * v2.0.26 aynı metni "…" ile kesiyordu ("2.825.083,6…", "… bu satırları büyütem…"); alt başlık uzayınca tablo sayfalara başka yerden bölünür.
+ * Katı karşılaştırma tutmazsa: iki tarafta da sayfa yapısı (alt bilgi + "Sayfa n / m" + devam başlığı + tekrarlanan kolon başlıkları) atılır,
+ * boşluk tek boşluğa indirgenir; eski metinde "…" ile kesilen her yerde yeni metin yalnız o kesik parçanın DEVAMINI içerebilir (kesiğin
+ * öncesi ve sonrası birebir aynı olmalı). Başka her fark yine fark sayılır.
+ */
+function pdfFlow(text) {
+  const lines = text.split("\n");
+  const out = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    if (!/^Sayfa \d+ \/ \d+$/.test(lines[index])) {
+      out.push(lines[index]);
+      continue;
+    }
+    out.pop(); // alt bilgi: "Ofis · Rapor"
+    if (index + 1 >= lines.length) continue;
+    index += 1; // devam sayfasının başlığı: "Rapor · alt başlık"
+    // Tekrarlanan kolon başlıkları: ilk sayfadaki bloğun aynısı (en uzun eşleşen ardışık blok).
+    let best = 0;
+    for (let at = 0; at < out.length; at += 1) {
+      let k = 0;
+      while (at + k < out.length && index + 1 + k < lines.length && out[at + k] === lines[index + 1 + k] && !/^Sayfa \d+ \/ \d+$/.test(lines[index + 1 + k])) k += 1;
+      best = Math.max(best, k);
+    }
+    index += best;
+  }
+  return out.join(" ").replace(/\s+/g, " ").trim();
+}
+function pdfUntruncatedEqual(oldText, newText) {
+  const left = pdfFlow(oldText);
+  const right = pdfFlow(newText);
+  if (left === right) return true;
+  if (!left.includes("…")) return false;
+  const escape = value => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = left.split("…");
+  return new RegExp(`^${parts.map(escape).join("[^]*?")}$`).test(right);
+}
 const MONEY_CELL = /^−?(?:\d{1,3}(?:\.\d{3})*|\d+),\d{2} TL$/;
 /** Banka ve POS Hareketleri'nin bu dönemi iç hareket içeriyor mu (yeni ekran)? İçeriyorsa PDF/Excel aynı dönemin ekranıyla karşılaştırılır. */
 async function bankPosSelfCheck(api, request) {
@@ -192,7 +230,7 @@ async function compare(oldServer, newServer, { companies, label, skip = () => fa
           try {
             assert.deepStrictEqual(right.body, left.body);
           } catch (error) {
-            problems.push(`${where}: ${String(error.message).slice(0, 1500)}`);
+            if (!(request.kind === "pdf" && typeof left.body === "string" && typeof right.body === "string" && pdfUntruncatedEqual(left.body, right.body))) problems.push(`${where}: ${String(error.message).slice(0, 1500)}`);
           }
         }
       }

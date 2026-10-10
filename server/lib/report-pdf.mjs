@@ -95,10 +95,14 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
     if (first) {
       if (officeName) page.text(M, top + 8, doc.fit(officeName, W * 0.6, "bold", 9), { font: "bold", size: 9, color: muted });
       page.text(M, top + 30, title, { font: "bold", size: 18, color: ink });
-      if (subtitle) page.text(M, top + 46, doc.fit(subtitle, W, "regular", 10), { size: 10, color: "#374151" });
+      // m6 (10.10.2026): uzun alt başlık kesilmez, sözcük sınırından en çok üç satıra iner (Nakit Akış'ın başlangıç tanımı "… Gerçek Banka…" diye
+      // kesiliyordu). Sığan alt başlık bugünkü gibi tek satırdır (yerleşim aynı).
+      const subLines = subtitle ? doc.wrap(subtitle, W, "regular", 10) : [];
+      const shownSub = subLines.length > 3 ? [...subLines.slice(0, 2), doc.fit(subLines.slice(2).join(" "), W, "regular", 10)] : subLines;
+      shownSub.forEach((line, index) => page.text(M, top + 46 + index * 12, line, { size: 10, color: "#374151" }));
       page.text(M, top + 8, `Oluşturma: ${created}`, { size: 8, color: muted, align: "right", width: W });
       if (userName) page.text(M, top + 20, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
-      top += subtitle ? 58 : 44;
+      top += shownSub.length ? 58 + (shownSub.length - 1) * 12 : 44;
       if (summary.length) {
         const gap = 6;
         // v2.1.0 Aşama 14: altıdan çok özet kutusu iki (ya da daha çok) sıraya dizilir; tek sırada tutar kutuya sığmayıp kesiliyordu
@@ -143,7 +147,11 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
           page.rect(left, y, cardWidth, cardHeight, { fill: "#f9fafb", stroke: "#e5e7eb", radius: 5 });
           const { size, lines } = labels[index];
           lines.forEach((line, lineIndex) => page.text(left + 8, y + 13 + lineIndex * (size + 1.5), line, { size, color: muted }));
-          page.text(left + 8, y + cardHeight - 8, doc.fit(value, cardWidth - 16, "bold", 10), { font: "bold", size: 10, color: ink });
+          // m6 komşusu: sığmayan değer önce küçülür (en az 7 punto), ancak yine sığmazsa kesilir ("10.000,00 TL (1…" tarihi yutuyordu).
+          const valueWidth = cardWidth - 16;
+          const wide = doc.measure(String(value ?? ""), "bold", 10);
+          const valueSize = wide > valueWidth ? Math.max(7, Math.floor(((10 * valueWidth) / wide) * 10) / 10) : 10;
+          page.text(left + 8, y + cardHeight - 8, doc.fit(value, valueWidth, "bold", valueSize), { font: "bold", size: valueSize, color: ink });
         });
         top += Math.ceil(summary.length / perRow) * (cardHeight + gap) - gap + 10;
       }

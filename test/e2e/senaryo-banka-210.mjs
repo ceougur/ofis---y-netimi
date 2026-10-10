@@ -549,7 +549,8 @@ try {
       const picked = HOF.bank.pickerHtml(await HOF.bank.choices(true));
       return { mode: picked.mode, html: picked.html };
     });
-    ok(single.mode === "single" && single.html.includes('type="hidden"') && single.html.includes("Ziraat Bankası · Ana TL Hesabı hesabına yazılır"), "tek hesap: seçici gizli, bilgi satırı");
+    // Banka m1 (10.10.2026): tek hesapta form alanı yok, kimlik gönderilmez (sunucu tek uygun hesabı kendisi seçer; ekranın eski listesi seçimi ezmez).
+    ok(single.mode === "single" && !/<input|<select/.test(single.html) && single.html.includes("data-bank-single") && single.html.includes("Ziraat Bankası · Ana TL Hesabı hesabına yazılır"), "tek hesap: seçici yok, bilgi satırı (kimlik gönderilmez)");
     await must("etkinleştir", api.post(`/api/workspace/bank/accounts/${garanti.id}/status`, { status: "active" }));
   });
 

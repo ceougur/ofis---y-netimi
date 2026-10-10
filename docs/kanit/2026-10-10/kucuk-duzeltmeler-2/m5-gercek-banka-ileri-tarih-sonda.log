@@ -1,0 +1,10 @@
+(node:1510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+başlangıç Gerçek Banka 1000
+1a cari havale 2026-10-20: 400 {"ok":false,"error":"İleri tarihli hareket girilemez (20.10.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.","code":"date-fu
+1b banka fişi 2026-10-20: 400 {"ok":false,"error":"İleri tarihli hareket girilemez (20.10.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.","code":"date-fu
+1c açılış 2026-10-20: 400 {"ok":false,"error":"İleri tarihli hareket girilemez (20.10.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.","code":"date-fu
+2 bugün havale: 200 
+Gerçek Banka (bugün 200 sonrası) 1200
+3 saat geri: Gerçek Banka 1200 · ileri tarihli eski kova {"count":0,"bankMinor":0,"cardMinor":0,"totalMinor":0,"firstDate":""}
+çıkış 0
