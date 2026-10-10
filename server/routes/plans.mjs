@@ -466,6 +466,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const row = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     return row ? roundMoney(Math.max(0, (Number(row.total) || 0) - Math.max(0, netPaid(planId)))) : 0;
   }
+  // v2.1.0 (Y2): kırpılmamış kalan — fazla tahsilatlı kartta (ödenen > toplam; fazlası avans) eksidir.
+  function signedLeftOf(planId) {
+    const row = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
+    return row ? roundMoney((Number(row.total) || 0) - Math.max(0, netPaid(planId))) : 0;
+  }
   // v2.0.13 (simülasyon bulgusu "iade taksitten düşmüyor"): cariye alacak yazılınca (müşteri iadesi) borç, mevcut borcu
   // taksitlendiren kartların kalanından küçük kalabilir. Kartlar borçtan büyük kalmasın: fazlası en yeni karttan
   // başlayarak, son taksitten geriye doğru düşülür (ödenmiş taksitlere dokunulmaz). Aynı işlemin içinde çalışır.
@@ -1476,5 +1481,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, closeDayOf, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, assertCloseOpen, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
 }

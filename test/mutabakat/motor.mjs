@@ -132,7 +132,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const open = ownTarget(inv, p.paid).target;
     const left = planLeft(p);
     if (left === open) return;
-    p.total = open > left ? Math.max(p.total, Math.min(inv.rest, p.total + open - left)) : p.total - (left - open);
+    // Y2 (2.1.0): fazla tahsilatlı kartta büyüme imzalı kalandan (toplam − ödenen, eksi olabilir) hesaplanır.
+    const signed = Math.min(left, p.total - Math.max(0, p.paid));
+    p.total = open > left ? Math.max(p.total, Math.min(inv.rest, p.total + open - signed)) : p.total - (left - open);
   }
   const uncovered = accountId => Math.max(0, (M.cari.get(accountId) || 0) - [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && p.status === "active").reduce((s, p) => s + planLeft(p), 0));
   // Kasa'ya etkiler (tarihli): nakit eksi korumasının modeli ve işlem zinciri denetimi bunlardan hesaplanır.
