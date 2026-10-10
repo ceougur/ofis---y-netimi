@@ -65,6 +65,7 @@ jobs:
       - run: node tools/kanit.mjs kos e2e-senaryo-223 npm run test:senaryo-223
       - run: node tools/kanit.mjs kos e2e-senaryo-224 npm run test:senaryo-224
       - run: node tools/kanit.mjs kos e2e-senaryo-225 npm run test:senaryo-225
+      - run: node tools/kanit.mjs kos e2e-senaryo-225-uyari npm run test:senaryo-225-uyari
       - run: node tools/kanit.mjs kos e2e-senaryo-226 npm run test:senaryo-226
       - run: node tools/kanit.mjs kos e2e-senaryo-banka-210 npm run test:senaryo-banka-210
       - run: node tools/kanit.mjs kos e2e-senaryo-banka-210b npm run test:senaryo-banka-210b
@@ -111,7 +112,7 @@ jobs:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: >-
           node tools/kanit.mjs kapi kanit --commit "$GITHUB_SHA"
-          --beklenen npm-test-ubuntu-latest-node22,npm-test-ubuntu-latest-node24,npm-test-windows-latest-node22,npm-test-windows-latest-node24,e2e-e2e,e2e-senaryo-219,e2e-senaryo-220,e2e-senaryo-220-yedek,e2e-senaryo-221,e2e-senaryo-222,e2e-senaryo-223,e2e-senaryo-224,e2e-senaryo-225,e2e-senaryo-226,e2e-senaryo-banka-210,e2e-senaryo-banka-210b,e2e-senaryo-banka-210-temel,e2e-banka-210-saat,e2e-banka-210-kart-onbellek,e2e-acilis-yanit-yaris,e2e-banka-210-ekran-aciklama,e2e-guncelleme-gercek
+          --beklenen npm-test-ubuntu-latest-node22,npm-test-ubuntu-latest-node24,npm-test-windows-latest-node22,npm-test-windows-latest-node24,e2e-e2e,e2e-senaryo-219,e2e-senaryo-220,e2e-senaryo-220-yedek,e2e-senaryo-221,e2e-senaryo-222,e2e-senaryo-223,e2e-senaryo-224,e2e-senaryo-225,e2e-senaryo-225-uyari,e2e-senaryo-226,e2e-senaryo-banka-210,e2e-senaryo-banka-210b,e2e-senaryo-banka-210-temel,e2e-banka-210-saat,e2e-banka-210-kart-onbellek,e2e-acilis-yanit-yaris,e2e-banka-210-ekran-aciklama,e2e-guncelleme-gercek
           --ayni-sayi npm-test-
           --atlanan-yok npm-test-
 
