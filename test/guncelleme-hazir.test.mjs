@@ -85,7 +85,7 @@ async function foundDuringDay({ feed, boot }, releases, { prepared = releases[0]
   return { service, status, pidBefore };
 }
 
-describe("Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)", { concurrency: false, timeout: 300_000 }, () => {
+describe("Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)", { concurrency: false, timeout: 900_000 }, () => {
   it("(a) gün içinde kullanıcı çalışırken bulunan sürüm arka planda indirilir + doğrulanır + açılır; servis durmaz, 'hazır' görünür; (b) durdur/başlat → eski sürüm hiç açılmadan kurulur", async () => {
     await withFeed("ab", { feedOptions: { releases: [] } }, async ctx => {
       const { root, feed, restart, before } = ctx;

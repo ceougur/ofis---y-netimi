@@ -116,7 +116,7 @@ jobs:
           if ($login.data.username -ne 'kalici') { throw 'Kullanıcı kaybolmuş' }
           if ($login.data.name -ne 'Kalıcı Kullanıcı') { throw "Türkçe karakterler bozulmuş: $($login.data.name)" }
 
-      - name: Otomatik güncelleme gerçek kurulumda (açılışta sorgu; kapalıyken kurmaz, açıkken kendiliğinden kurar)
+      - name: Otomatik güncelleme gerçek kurulumda (açılışta sorgu; kapalıyken kurmaz, açıkken kurar; gün içinde arka planda indirir, sonraki açılışta kurar)
         env:
           KANIT_DIR: kanit-cikti
         run: |

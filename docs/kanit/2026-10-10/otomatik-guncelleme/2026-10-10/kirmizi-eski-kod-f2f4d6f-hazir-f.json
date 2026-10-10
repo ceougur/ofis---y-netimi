@@ -1,0 +1,38 @@
+{
+  "ad": "kirmizi-eski-kod-f2f4d6f-hazir-f",
+  "komut": "node --test --test-name-pattern=^\\(f\\) /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs",
+  "commit": "8ebc7f7cc42bf3c81a36ad94e05cd6631146f742",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 2,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T20:56:47.530Z",
+  "sure_sn": 63.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler) › (f) bozuk (SHA-256 tutmayan) ya da yanlış imzalı hazır paket → kurulmaz, eski sürüm açılır, kayıt düşülür, hazır paket silinir",
+      "konum": "test/guncelleme-hazir.test.mjs:212:3",
+      "hata": "Beklenen durum oluşmadı: {\"error\":\"hazır değil: undefined\"}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/kirmizi-eski-kod-f2f4d6f-hazir-f.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "4d94a73b35e52e1df843d83197f9ccff09b9933ccfdfbe0a67a22ae39fe3bdfd",
+  "ham_cikti_bayt": 8867
+}
