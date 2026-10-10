@@ -44,6 +44,13 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   4. TEKRARLANABİLİRLİK: tohumlu koşular, komut + tohum + commit + ham çıktı dosyası depoda (docs/kanit/…); ana oturum en az bir
      kez kendisi yeniden koşar.
   5. İNSAN: yayından önce kullanıcıya kısa elle kabul listesi (adım + beklenen sayı) verilir; kullanıcı kendi ekranında doğrular.
+  ZORUNLU GÖREV (kullanıcı, 10.10.2026, "CI başarısızlıklarını gider, Windows uyumluluğunu doğrula ve denetim sistemini düzelt";
+  8 başlık): CI'yi gerçekten yeşile getir (Windows ayrı doğrulanır; gerçek Windows erişimi yalnız GitHub CI — yerelde yok, Wine
+  sayılmaz); 08.10'dan beri kırmızı koşuları commit commit incele; ajan raporlarını CI ile karşılaştır; kalıcı önlem (gerçek çıkış
+  kodu + sayılar, belirsiz/yarıda kalan açıkça, ajan onayı bağımsız değil, CI kırmızıyken "doğrulandı" yok, çelişki = başarısız);
+  muhasebe bütünlüğünü yeniden doğrula (Kasa/cari/taksit/fatura/stok/banka bağı, silme/iptal/düzeltme, kuruş/sıfır/eksi/büyük
+  tutar, çift işlem, eşzamanlılık, mutabakat, yedek/geri yükleme, gerileme); her hata: üret → kök neden → en küçük düzeltme →
+  ilgili + gerileme + tam paket → gerçek sonuç kaydı; son rapor 8 başlık (Linux ve Windows AYRI; başarısız/atlanan/doğrulanmayan).
 
 ## Kullanıcının tekrar eden şikâyetleri (aynı hataya düşme)
 1. "Onca test yaptım deyip mantık hatalarını görmüyorsun." → Test sayısı değil senaryo çeşidi; kartları aç, kullan.
