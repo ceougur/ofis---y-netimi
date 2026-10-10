@@ -4,7 +4,8 @@
 // KARAR (plan §8.4 "Hesabı Atanmamış Eski Hareketler … bugüne kadar" (K10), §8.10 "Banka Bakiye Raporu: gerçek, bekleyen ve hesabı atanmamış
 // ayrı", A13 / karar 42 "eski ileri tarihli satır … tarihi gelince atanır"; T4 kararı "Hesabı Atanmamış bugüne kadar"): rapor bakiyesi DÖNEM SONU
 // İTİBARIYLA, ama dönem sonu bugünden sonraysa bugünden sonraki (tarihi gelmemiş) eski hareket bakiyeye ve giriş/çıkışa KARIŞMAZ; Genel Bakış'la
-// aynı kuralla ayrı bilgi olarak ("Tarihi Gelince Atanabilir": sayı, tutar, ilk tarih; toplamlara girmez) özette görünür. TOPLAM = satırlar.
+// aynı kuralla ayrı bilgi olarak özette görünür ("Tarihi Gelince Atanabilir": tutar; "Tarihi Gelmemiş Eski Hareket": sayı · ilk tarih; toplamlara
+// girmez). TOPLAM = satırlar.
 // Ekran, PDF ve Excel aynı.
 //
 // TEST VERİSİ: GERÇEK v2.0.23 kodu (git etiketi) API'sinden; tarihler göreli (D0 = bugün), güncel kodda sahte saat D0 (ders 13).
@@ -134,11 +135,11 @@ describe("Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye kar�
         const note = summaryOf(data, "Tarihi Gelince Atanabilir");
         if (ahead.length) {
           const total = ahead.reduce((acc, item) => acc + item.minor, 0);
+          const detail = summaryOf(data, "Tarihi Gelmemiş Eski Hareket");
           assert.ok(note, `${tag}: ileri tarihli eski hareket ayrı bilgi yok (${JSON.stringify(data.summary)})`);
-          assert.match(note, new RegExp(`^${ahead.length} hareket`), `${tag}: sayı (${note})`);
-          assert.equal(minorOf(note.split("·")[1]), total, `${tag}: tutar (${note})`);
-          assert.ok(note.includes(dmy(ahead[0].date)) && /toplamlara girmez/.test(note), `${tag}: ilk tarih ve neden (${note})`);
-        } else assert.equal(note, undefined, `${tag}: ileri tarihli bilgi olmamalı (${note})`);
+          assert.equal(minorOf(note), total, `${tag}: tutar (${note})`);
+          assert.equal(detail, `${ahead.length} · ilk ${dmy(ahead[0].date)}`, `${tag}: sayı ve ilk tarih`);
+        } else assert.deepEqual([note, summaryOf(data, "Tarihi Gelmemiş Eski Hareket")], [undefined, undefined], `${tag}: ileri tarihli bilgi olmamalı (${note})`);
       }
     });
   }
@@ -151,10 +152,14 @@ describe("Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye kar�
     const pdf = await api.client.raw("GET", "/api/workspace/report-center/banka-bakiye/pdf?bankGroup=all");
     assert.equal(pdf.status, 200);
     const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
-    assert.ok(text.includes("Tarihi Gelince Atanabilir") && text.includes(note), `PDF özet: ${note}`);
+    const detail = summaryOf(data, "Tarihi Gelmemiş Eski Hareket");
+    const at = text.indexOf("Tarihi Gelince Atanabilir");
+    assert.ok(at >= 0 && text.includes(`Tarihi Gelince Atanabilir ${note}`) && text.includes(`Tarihi Gelmemiş Eski Hareket ${detail}`), `PDF özet: ${note} / ${detail} — PDF'te: ${at >= 0 ? text.slice(at, at + 160) : text.slice(0, 600)}`);
     const xlsx = await api.client.raw("GET", "/api/workspace/report-center/banka-bakiye/xlsx?bankGroup=all");
     assert.equal(xlsx.status, 200);
     const ozet = Object.fromEntries((xlsxSheets(xlsx.buffer)["Özet"] || []).map(([key, value]) => [key, value]));
-    assert.equal(ozet["Tarihi Gelince Atanabilir"], note, "Excel Özet");
+    const cell = ozet["Tarihi Gelince Atanabilir"];
+    assert.equal(typeof cell === "number" ? Math.round(cell * 100) : minorOf(cell), minorOf(note), `Excel Özet tutar (${cell})`);
+    assert.equal(ozet["Tarihi Gelmemiş Eski Hareket"], detail, "Excel Özet sayı ve ilk tarih");
   });
 });
