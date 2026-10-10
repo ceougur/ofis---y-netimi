@@ -288,6 +288,9 @@ try {
     ok((await page.$eval(bankSel, node => node.value)) === ACC.z.id, "Düzenle formunda peşin satırı Ziraat'le açıldı");
     await page.selectOption(bankSel, ACC.g.id);
     await pause(800);
+    // D2 (bu turda bulundu): Düzenle formu "Kaydedilince Verilecek No" diye SIRADAKİ numarayı gösteriyordu; düzenleme numarayı değiştirmez.
+    const noText = await page.$eval(`${inv} [data-next]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+    ok(!noText.includes("Kaydedilince Verilecek") && noText.includes(movedDoc.number), `Düzenle formunda belgenin kendi numarası (${noText || "boş"}; beklenen ${movedDoc.number})`);
     await shot("fatura-duzenle-hesap-tasima");
     await page.click(`${inv} [data-act="issue"]`);
     await yesToAll(6);
