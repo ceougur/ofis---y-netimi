@@ -1,0 +1,22 @@
+2026-10-10T18:17:36.689Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:43333
+2026-10-10T18:17:36.692Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 34919)
+2026-10-10T18:17:36.737Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+2026-10-10T18:17:36.742Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+2026-10-10T18:17:36.742Z [INFO] Güncelleme denetimi 60 sn sonra yeniden denenecek.
+2026-10-10T18:17:37.071Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+[uygulama] 2026-10-10T18:17:40.066Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T18:18:36.758Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+2026-10-10T18:18:36.759Z [INFO] 9.0.1 sürümü hazır; kullanıcılar çalışıyor; sunucu 15 dakika boş kalınca ya da mesai dışında kendiliğinden kurulacak (saatte bir bakılır) (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).
+[uygulama] 2026-10-10T18:19:40.074Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T18:29:40.076Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T18:59:40.080Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T19:18:36.763Z [INFO] 9.0.1 sürümü indiriliyor (4769 KB)…
+2026-10-10T19:18:36.972Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 45513)
+2026-10-10T19:18:37.448Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+2026-10-10T19:18:37.493Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+[uygulama] 2026-10-10T19:18:40.447Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T19:20:40.449Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T19:30:40.452Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T20:00:40.455Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T20:30:40.459Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T20:33:48.637Z [INFO] Servis yöneticisi kapatılıyor…

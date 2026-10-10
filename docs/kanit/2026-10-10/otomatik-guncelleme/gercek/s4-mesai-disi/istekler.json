@@ -1,0 +1,779 @@
+[
+  {
+    "at": "2026-10-10T18:12:22.031Z",
+    "method": "GET",
+    "path": "/",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.074Z",
+    "method": "GET",
+    "path": "/assets/app-8cf49bb5a6.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.104Z",
+    "method": "GET",
+    "path": "/assets/hukuk-ofisi-enhancements.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.106Z",
+    "method": "GET",
+    "path": "/assets/hof-ui.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.107Z",
+    "method": "GET",
+    "path": "/assets/hof-core.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.107Z",
+    "method": "GET",
+    "path": "/assets/hof-auth.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.108Z",
+    "method": "GET",
+    "path": "/assets/hof-boot.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.116Z",
+    "method": "GET",
+    "path": "/assets/hof-live.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.125Z",
+    "method": "GET",
+    "path": "/assets/hof-workspace.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.134Z",
+    "method": "GET",
+    "path": "/assets/brand/destekofis-mark.svg",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.164Z",
+    "method": "GET",
+    "path": "/assets/hof-plans.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.167Z",
+    "method": "GET",
+    "path": "/assets/hof-plan-transfer.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.198Z",
+    "method": "GET",
+    "path": "/assets/fonts/dm-sans-latin-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.221Z",
+    "method": "GET",
+    "path": "/assets/hof-accounts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.257Z",
+    "method": "GET",
+    "path": "/assets/hof-whatsapp.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.258Z",
+    "method": "GET",
+    "path": "/assets/hof-stock.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.262Z",
+    "method": "GET",
+    "path": "/assets/hof-cheques.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.272Z",
+    "method": "GET",
+    "path": "/assets/hof-invoices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.294Z",
+    "method": "GET",
+    "path": "/assets/hof-bank.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.309Z",
+    "method": "GET",
+    "path": "/assets/hof-overview.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.323Z",
+    "method": "GET",
+    "path": "/assets/hof-report-center.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.354Z",
+    "method": "GET",
+    "path": "/assets/hof-chat.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.368Z",
+    "method": "GET",
+    "path": "/assets/hof-choices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.394Z",
+    "method": "GET",
+    "path": "/api/auth/me",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.418Z",
+    "method": "GET",
+    "path": "/assets/hof-table.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.435Z",
+    "method": "GET",
+    "path": "/assets/hof-grid.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.447Z",
+    "method": "GET",
+    "path": "/assets/hof-colops.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.484Z",
+    "method": "GET",
+    "path": "/assets/hof-chips.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.485Z",
+    "method": "GET",
+    "path": "/assets/hof-reports.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.498Z",
+    "method": "GET",
+    "path": "/api/public/info",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.509Z",
+    "method": "GET",
+    "path": "/assets/hof-sections.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.536Z",
+    "method": "GET",
+    "path": "/assets/fonts/manrope-latin-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.538Z",
+    "method": "GET",
+    "path": "/assets/fonts/dm-sans-latin-ext-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.549Z",
+    "method": "GET",
+    "path": "/assets/fonts/manrope-latin-ext-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.553Z",
+    "method": "GET",
+    "path": "/assets/hof-sources.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.567Z",
+    "method": "GET",
+    "path": "/assets/hof-companies.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.578Z",
+    "method": "GET",
+    "path": "/assets/hof-sessions.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.579Z",
+    "method": "GET",
+    "path": "/assets/hof-insight.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.606Z",
+    "method": "GET",
+    "path": "/assets/hof-columns.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.615Z",
+    "method": "GET",
+    "path": "/assets/hof-free.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.616Z",
+    "method": "GET",
+    "path": "/assets/hof-tabs.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.619Z",
+    "method": "GET",
+    "path": "/assets/hof-checks.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.634Z",
+    "method": "GET",
+    "path": "/assets/hof-promises.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.652Z",
+    "method": "GET",
+    "path": "/assets/hof-alerts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.678Z",
+    "method": "GET",
+    "path": "/assets/hof-search.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.687Z",
+    "method": "GET",
+    "path": "/assets/hof-export.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.706Z",
+    "method": "GET",
+    "path": "/assets/hof-documents.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.741Z",
+    "method": "GET",
+    "path": "/assets/hof-license.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:22.947Z",
+    "method": "POST",
+    "path": "/api/auth/login",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.023Z",
+    "method": "GET",
+    "path": "/",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.036Z",
+    "method": "GET",
+    "path": "/assets/app-8cf49bb5a6.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.044Z",
+    "method": "GET",
+    "path": "/assets/hukuk-ofisi-enhancements.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.045Z",
+    "method": "GET",
+    "path": "/assets/hof-ui.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.049Z",
+    "method": "GET",
+    "path": "/assets/hof-core.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.050Z",
+    "method": "GET",
+    "path": "/assets/hof-auth.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.050Z",
+    "method": "GET",
+    "path": "/assets/hof-boot.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.071Z",
+    "method": "GET",
+    "path": "/assets/hof-live.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.072Z",
+    "method": "GET",
+    "path": "/assets/hof-workspace.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.072Z",
+    "method": "GET",
+    "path": "/assets/hof-plans.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.074Z",
+    "method": "GET",
+    "path": "/assets/hof-plan-transfer.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.074Z",
+    "method": "GET",
+    "path": "/assets/hof-accounts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.074Z",
+    "method": "GET",
+    "path": "/assets/brand/destekofis-mark.svg",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.086Z",
+    "method": "GET",
+    "path": "/api/auth/me",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.089Z",
+    "method": "GET",
+    "path": "/assets/hof-whatsapp.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.090Z",
+    "method": "GET",
+    "path": "/assets/hof-stock.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.100Z",
+    "method": "GET",
+    "path": "/assets/hof-cheques.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.103Z",
+    "method": "GET",
+    "path": "/assets/hof-invoices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.104Z",
+    "method": "GET",
+    "path": "/assets/hof-bank.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.107Z",
+    "method": "GET",
+    "path": "/assets/hof-overview.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.108Z",
+    "method": "GET",
+    "path": "/assets/hof-report-center.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.109Z",
+    "method": "GET",
+    "path": "/assets/hof-chat.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.115Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.116Z",
+    "method": "GET",
+    "path": "/assets/hof-choices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.123Z",
+    "method": "GET",
+    "path": "/assets/hof-table.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.124Z",
+    "method": "GET",
+    "path": "/assets/hof-grid.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.124Z",
+    "method": "GET",
+    "path": "/assets/hof-colops.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.125Z",
+    "method": "GET",
+    "path": "/assets/hof-chips.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.143Z",
+    "method": "GET",
+    "path": "/assets/hof-reports.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.143Z",
+    "method": "GET",
+    "path": "/assets/hof-sections.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.144Z",
+    "method": "GET",
+    "path": "/assets/hof-sources.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.144Z",
+    "method": "GET",
+    "path": "/assets/hof-companies.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.145Z",
+    "method": "GET",
+    "path": "/assets/hof-sessions.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.145Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.159Z",
+    "method": "GET",
+    "path": "/assets/hof-insight.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.160Z",
+    "method": "GET",
+    "path": "/assets/hof-columns.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.166Z",
+    "method": "GET",
+    "path": "/assets/hof-free.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.167Z",
+    "method": "GET",
+    "path": "/assets/hof-tabs.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.169Z",
+    "method": "GET",
+    "path": "/assets/hof-checks.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.170Z",
+    "method": "GET",
+    "path": "/assets/hof-promises.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.188Z",
+    "method": "GET",
+    "path": "/api/workspace/users",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.189Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.190Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.191Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.191Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.192Z",
+    "method": "GET",
+    "path": "/assets/app-185ffb28c4.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.215Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:12:23.219Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.219Z",
+    "method": "GET",
+    "path": "/assets/hof-alerts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.234Z",
+    "method": "GET",
+    "path": "/assets/hof-search.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.238Z",
+    "method": "GET",
+    "path": "/assets/hof-export.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.309Z",
+    "method": "GET",
+    "path": "/assets/hof-documents.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.323Z",
+    "method": "GET",
+    "path": "/assets/hof-license.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.325Z",
+    "method": "GET",
+    "path": "/api/workspace/alerts/dismissed",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.420Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.422Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:23.447Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:24.073Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:24.128Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:25.942Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:12:27.074Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:13:08.173Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  }
+]

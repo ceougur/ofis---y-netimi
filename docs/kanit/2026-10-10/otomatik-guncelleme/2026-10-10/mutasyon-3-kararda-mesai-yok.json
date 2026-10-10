@@ -1,0 +1,38 @@
+{
+  "ad": "mutasyon-3-kararda-mesai-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/guncelleme-gercek.test.mjs",
+  "commit": "1f499e69458eae7751ddc80c473b2eb7801e8ca5",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 3,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:39:41.373Z",
+  "sure_sn": 91,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "otomatik güncelleme — gerçek süreçlerle › S4 mesai dışı (sunucunun gerçek saati; mesai dışındaki bir saat dilimi): kullanıcı çalışırken de kurulur",
+      "konum": "test/guncelleme-gercek.test.mjs:100:3",
+      "hata": "9.0.1 sürümüne geçilmedi: {\"error\":\"sürüm 9.0.0\"}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/mutasyon-3-kararda-mesai-yok.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "c23ff62253750aa42636972dc6b31358fbbb5811c74d51a45ba71c9aa26d2956",
+  "ham_cikti_bayt": 9368
+}

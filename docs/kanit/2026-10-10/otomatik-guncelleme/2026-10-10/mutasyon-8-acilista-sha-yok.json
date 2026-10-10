@@ -1,0 +1,38 @@
+{
+  "ad": "mutasyon-8-acilista-sha-yok",
+  "komut": "node --test --test-name-pattern=^\\(f\\) /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m8/test/guncelleme-hazir.test.mjs",
+  "commit": "8ebc7f7cc42bf3c81a36ad94e05cd6631146f742",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 3,
+  "izlenmeyen": 25,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T21:08:04.427Z",
+  "sure_sn": 5.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler) › (f) bozuk (SHA-256 tutmayan) ya da yanlış imzalı hazır paket → kurulmaz, eski sürüm açılır, kayıt düşülür, hazır paket silinir",
+      "konum": "test/guncelleme-hazir.test.mjs:212:3",
+      "hata": "The input did not match the regular expression /Hazırdaki güncelleme paketi \\(9\\.0\\.1\\) kurulmadı/. Input: · '2026-10-10T21:08:08.972Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:44205\\n' + · '2026-10-10T21:08:08.976Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).\\n' + (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/mutasyon-8-acilista-sha-yok.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "7808bf28d7f08193ed585a52efbd5730c4aeed9aa0b7ca41d530b13ab93f983f",
+  "ham_cikti_bayt": 6336
+}

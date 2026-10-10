@@ -40,6 +40,7 @@
     "test:banka-210-ekran-aciklama": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-ekran-aciklama-yetki.mjs",
     "test:banka-210-saat": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-saat.mjs",
     "test:senaryo-whatsapp": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp.mjs",
+    "test:guncelleme-gercek": "node --disable-warning=ExperimentalWarning test/e2e/guncelleme-gercek.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "test:guvenilirlik": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs",
     "mutabakat": "node --disable-warning=ExperimentalWarning tools/mutabakat.mjs",

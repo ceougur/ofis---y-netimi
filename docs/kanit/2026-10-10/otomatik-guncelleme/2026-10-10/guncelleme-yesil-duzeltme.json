@@ -1,0 +1,32 @@
+{
+  "ad": "guncelleme-yesil-duzeltme",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/guncelleme-217.test.mjs test/update-flow.test.mjs test/yazim-duzeni.test.mjs test/supervisor.test.mjs",
+  "commit": "2849d21551d5cd66fed9e32fe1d9e1dd75b6d7de",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 8,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:03:33.922Z",
+  "sure_sn": 26.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/guncelleme-yesil-duzeltme.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "d069218f763dd69a69296ca90df1725eae0010fdcc83476a2c7b65a241af21a6",
+  "ham_cikti_bayt": 7252
+}

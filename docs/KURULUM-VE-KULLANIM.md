@@ -316,17 +316,21 @@ Yetkiler: hücre ve başlık yazmayı herkes, satır/kolon/sayfa eklemeyi ekleme
 
 ## 14. Güncelleme
 
-**Otomatik (önerilen, varsayılan):** Sunucu her açıldığında yeni sürüm olup olmadığına bakar. Yeni sürüm varsa DestekOfis çalışmaya devam ederken arka planda indirilir ve doğrulanır; ardından yaklaşık bir dakikalık bir geçişle yeni sürüme geçilir. Bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir. Geçiş çok kısa sürdüyse yönetim paneli kendiliğinden yenilenir; dosya takip ekranında ise yazılan not kaybolmasın diye *"DestekOfis … sürümüne güncellendi"* şeridi çıkar, *Yenile*'ye basmanız yeterlidir.
+**Otomatik (önerilen, varsayılan):** Sunucu her açıldığında ve açık kaldığı sürece saatte bir yeni sürüm olup olmadığına bakar. Kurulum yaklaşık bir dakikalık bir geçiştir; bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir. Geçiş çok kısa sürdüyse yönetim paneli kendiliğinden yenilenir; dosya takip ekranında ise yazılan not kaybolmasın diye *"DestekOfis … sürümüne güncellendi"* şeridi çıkar, *Yenile*'ye basmanız yeterlidir.
 
-- Güncelleme yalnızca sunucu açılışında yapılır; gün içinde çalışırken kendiliğinden güncellenmez.
+- Ne zaman kurulur:
+  - **Sunucu açılışında** bulunan sürüm, kullanıcılar bağlanmadan hemen kurulur.
+  - **Gün içinde** bulunan sürüm kullanıcılar çalışırken kurulmaz: DestekOfis çalışmaya devam ederken arka planda **indirilir ve doğrulanır**, panelde ve yöneticinin zilinde "hazır — sunucu bir sonraki açılışında kuracak" görünür. Sunucu bilgisayarı kapatılıp açılınca (ör. ertesi sabah) hazır sürüm DestekOfis açılmadan önce kurulur; o anda internet olmasa da kurulur. Açılışta daha yeni bir sürüm çıkmışsa (en çok 1 dakika beklenir) doğrudan o kurulur; aradaki sürüm ayrıca kurulmaz.
+  - Sunucu hiç kapatılmıyorsa hazır sürüm, kimse kullanmıyorken (son 15 dakikadır sunucuya istek gelmediyse) ya da mesai dışında (hafta içi 20:00–07:00, hafta sonu; sunucunun saati) saatlik bakışta kurulur. Herhangi bir bilgisayarda açık duran bir DestekOfis sayfası (simge durumuna küçültülmüş ya da arka planda olsa bile) düzenli yenileme istekleri gönderdiği için sunucu "kullanılıyor" sayılır; bu durumda kurulum mesai dışına ya da sunucunun bir sonraki açılışına kalır.
+  - Bekleyen yalnız en yeni sürümdür: daha yenisi çıkarsa o indirilip doğrulandıktan sonra eskisi silinir; yeni indirme yarıda kalırsa eldeki hazır sürüm yerinde kalır.
 - `data` ve `backups` klasörlerine dokunulmaz. Geçişten hemen önce veritabanının tam yedeği alınır (`backups\...-guncelleme-oncesi-<sürüm>.sqlite`).
 - Yeni sürüm açılamazsa sistem **kendiliğinden önceki sürüme döner** ve o sürümü bir daha denemez; yönetim paneli durumu bildirir.
-- Güncellemeler dijital olarak imzalıdır; imzası veya içeriği tutmayan paketler kurulmaz.
+- Güncellemeler dijital olarak imzalıdır; imzası veya içeriği tutmayan paketler kurulmaz. Hazır bekleyen paket açılışta yeniden doğrulanır; bozulmuşsa kurulmaz, silinir ve sistem kurulu sürümle açılır.
 
 **Yönetim paneli → Sistem → Güncellemeler:** kurulu sürümü, son denetimi ve bulunan yeni sürümün notlarını gösterir.
 
 - *Güncellemeleri denetle* ile hemen bakabilir, *Şimdi güncelle* ile beklemeden kurabilirsiniz (kullanıcıların az olduğu bir saatte yapın).
-- *Sunucu açılışında yeni sürümü kendiliğinden kur* seçeneğini kapatırsanız güncellemeler yalnızca siz *Şimdi güncelle* dediğinizde kurulur.
+- *Yeni sürümü kendiliğinden kur* seçeneğini kapatırsanız sunucu yine saatte bir denetler ve yeni sürümü panelde ve zilde "hazır" olarak gösterir, ama paketi indirmez; yalnızca siz *Şimdi güncelle* dediğinizde indirilip kurulur.
 - *Güncelleme kanalı*: **Kararlı** (önerilen) veya **Deneme (beta)**. Beta kanalı yeni özellikleri herkesten önce alır; üretimde kararlı kanal önerilir.
 - Bir sürüm çalışma zamanı değişikliği gerektiriyorsa panel bunu bildirir; o sürümü kurulum dosyasıyla kurun.
 

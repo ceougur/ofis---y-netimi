@@ -150,6 +150,59 @@ describe("orkestratör: periyodik denetim ve mesai içinde erteleme", () => {
     idleOffice.stop();
   });
 
+  // 2.1.0 (kullanıcı, 10.10.2026: "kendiliğinden kur kapalıyken hiç sorulmuyor"): kapalıyken de açılışta ve periyodik denetlenir;
+  // bulunan sürüm KURULMAZ, yöneticiye "hazır" görünür. Eski kodda kapalıyken updater.check hiç çağrılmıyordu.
+  it("kendiliğinden kur KAPALIYKEN de açılışta ve 6 saatte bir denetlenir; bulunan sürüm kurulmaz, 'hazır' görünür", async () => {
+    const updater = fakeUpdater(found, { enabled: false });
+    let downloads = 0;
+    updater.download = async () => {
+      downloads += 1;
+      throw new Error("kapalıyken indirme olmamalı");
+    };
+    // Sunucu boşta ve mesai dışı: kurulum için en elverişli an; yine de kurulmamalı.
+    const orchestrator = createUpdateOrchestrator({ updater, controller: controller(false), appsDir: path.join(tmpdir(), "destekofis-yok-kapali"), runningVersion: "9.0.0", log: quiet, quietTime: () => true, periodicCheckMs: 30, periodicJitterMs: 5, deferRecheckMs: 20, retryDelays: [] });
+    await orchestrator.startup();
+    await orchestrator.idle();
+    assert.equal(updater.calls.length, 1, "açılışta denetim yapılmalı (kapalıyken de)");
+    await sleep(140);
+    orchestrator.stop();
+    await orchestrator.idle();
+    assert.ok(updater.calls.length >= 3, `periyodik denetim kapalıyken de sürmeli (${updater.calls.length})`);
+    const status = orchestrator.status();
+    assert.equal(status.autoUpdate, false);
+    assert.equal(status.available?.version, "9.0.1", "bulunan sürüm yöneticiye 'hazır' görünür");
+    assert.equal(status.deferred?.version, "9.0.1");
+    assert.equal(status.lastResult, null, "kurulum denenmedi");
+    assert.equal(downloads, 0, "indirme başlamadı");
+  });
+
+  it("ertelenmiş sürüm, yönetici bu arada 'kendiliğinden kur'u kapatırsa saatlik bakışta kurulmaz", async () => {
+    let enabled = true;
+    const updater = fakeUpdater(found);
+    updater.config = () => ({ enabled, channel: "stable", feed: "github:test/repo" });
+    updater.saveConfig = changes => {
+      if (changes.enabled !== undefined) enabled = Boolean(changes.enabled);
+    };
+    let downloads = 0;
+    updater.download = async () => {
+      downloads += 1;
+      throw new Error("kapatıldıktan sonra indirme olmamalı");
+    };
+    let busy = true;
+    const ctrl = { ...controller(), busy: () => busy };
+    const orchestrator = createUpdateOrchestrator({ updater, controller: ctrl, appsDir: "/tmp/x", runningVersion: "9.0.0", log: quiet, quietTime: () => false, deferRecheckMs: 40, periodicCheckMs: 0, retryDelays: [] });
+    await orchestrator.runCheck({ auto: true });
+    assert.equal(orchestrator.status().deferred?.version, "9.0.1", "kullanıcı çalışırken ertelendi");
+    await orchestrator.handle("config", { enabled: false });
+    busy = false;
+    await sleep(150);
+    await orchestrator.idle();
+    orchestrator.stop();
+    assert.equal(downloads, 0, "kapatılan ayara rağmen kurulum başladı");
+    assert.equal(orchestrator.status().lastResult, null);
+    assert.equal(orchestrator.status().available?.version, "9.0.1", "sürüm 'hazır' kalır");
+  });
+
   it("elle denetim 3 deneme ister; mesai dışı tanımı: hafta içi 20:00–07:00 ve hafta sonu", async () => {
     const updater = fakeUpdater({ status: "up-to-date" });
     const orchestrator = createUpdateOrchestrator({ updater, controller: controller(), appsDir: "/tmp/x", runningVersion: "9.0.0", log: quiet, retryDelays: [] });
