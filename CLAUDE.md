@@ -148,6 +148,9 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     (10.10: CI 514 85a7b50 yalnız CLAUDE.md değişmişken Windows Node 22 kırmızı — supervisor.test.mjs EBUSY, asıl hata gizli —
     yarım saat okunmadı; sonraki push'ların CI'si izlendi.)
 
+## Dil (kullanıcı, 10.10.2026: "türkçe yaz", "türkçe yaz bildirimlerini")
+- Kullanıcıya giden HER yanıt, durum bildirimi ve liste Türkçe yazılır (İngilizce ara rapor yok).
+
 ## Kullanıcının tekrar eden şikâyetleri (aynı hataya düşme)
 1. "Onca test yaptım deyip mantık hatalarını görmüyorsun." → Test sayısı değil senaryo çeşidi; kartları aç, kullan.
 2. "Yayın öncesi sağlama" → GitHub'a birleştirme/yayın yok; önce paket, kullanıcı doğrular.
@@ -1177,6 +1180,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   "Bu Yıl"da ileri tarihli eski havaleyi Hesabı Atanmamış sayıyor ↔ Genel Bakış 0, Planlı İşlemler düğmesinde olası yarış) madde 4'e
   eklendi; "İleri tarihli hareket" tarama uyarısı hata değil (saat geri alınınca çıkar). CI 536 (098eb56) e2e kırmızısı = 534'le aynı
   test yarışı, düzeltmesi 15d5631'de.
+  6 BİTTİ (a375e80; kâhin dili sürüm 2): iade artanı kuralı + cash-negative + kart 309 + yineleme; BAŞ MİMAR KARARI: D5 (KMH yalnız Vadesiz)
+  ve D6 (Vadeli'de yalnız transfer ve faiz) plan §3.5 tablo satır 316/318 dayanaklı → ONAYLANDI; BELİRSİZ-23..26 kâhin dışı. Sonuç: kabul 1–16
+  fark 0 (plan 28/28); tohum 1–5×500, 31×2000, yoğun 1–5 → açıklanamayan 0; kalan iki bilinen sınıf: KDV-DAHIL-ISKONTO (hakem: program doğru,
+  kâhin kuralı 1 kuruş sapıyor; programdan türetilmiş kural temiz odaya konmaz) ve KASA-ACILIS-649 (K6, 2.1.1'e ertelendi — BİLİNEN SINIR).
+  Ana oturum yeniden koşusu: tohum 3 + ajanın koşmadığı tohum 7 (nötrlü) + kabul + birim.
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
