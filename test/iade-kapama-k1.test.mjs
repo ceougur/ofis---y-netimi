@@ -28,6 +28,7 @@
 //   N12 sıra: iade önce açık kaydedilip sonra Düzenle ile geri ödeme eklenir / geri ödeme kaldırılır
 //   N13 açık iade sonradan cari kartından bağsız ödemeyle müşteriye geri verilir → iade belgesinin açığı kapanır
 //   N14 liste (toplu yol, 8'den çok cari) = fatura kartı (cari başına yol); her caride Σ belge açığı (işaretli) = cari bakiye
+//   N15 sıra: taksitli faturada kart fazla tahsil edilmişken iki iade — iadeler bağlı ödemelerden SONRA mahsup edilir (artan iade açığıdır)
 //   (hesaba bağlı havaleyle geri ödeme: R1b ve iade-210 G aynı yolu kapsar; eski veri: iade-210-onarim.)
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
@@ -295,6 +296,22 @@ describe("K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, a
     assert.equal((await h.doc(r1.id)).open, 0, "iade açığı ödemeyle kapandı");
     assert.equal(await h.balance(acc), 0);
     assert.deepEqual([(await h.openReport(acc)).alacak, (await h.openReport(acc)).borc], [0, 0]);
+  }));
+
+  test("N15: sıra — taksitli 3.000 (2.000 peşin) → R1 1.000 açık → karttan 1.500 (fazla) → R2 1.000 + 300 geri: iadeler bağlı ödemelerden SONRA mahsup", () => scenario(async (api, h) => {
+    // Elle (kural: asılAçık = peşin ve bağlı ödemelerden — kart tahsilatı dahil — sonra kalan; iadeler ondan düşülür, artanı iade açığı):
+    // asılAçık = 3.000 − 2.000 − 1.500 = −500 → 0; R1 mahsup 1.000 → iade açığı 1.000; R2 mahsup 1.000 − 300 = 700 → iade açığı 700.
+    // cari = 3.000 − 2.000 − 1.000 − 1.500 − 1.000 + 300 = −2.200 = −(1.000 + 700) − 500 (kart tahsilatının avansı, belgesiz).
+    const acc = await h.account("N15 Müşteri");
+    const f1 = await h.sale(acc, { qty: 3, price: 1000, cash: nakit(2000), date: dayOf(-40), installments: { count: 1, firstDue: dayOf(20), everyMonths: 1 } });
+    const r1 = await h.giveBack(acc, f1, 1, [], { date: dayOf(-30) });
+    await must("kart tahsilatı (fazla)", api.post(`/api/workspace/plans/${f1.planId}/entries`, { kind: "in", amount: "1500", method: "cash", date: dayOf(-29) }));
+    const r2 = await h.giveBack(acc, f1, 1, nakit(300), { date: dayOf(-28) });
+    const doc = await h.doc(f1.id);
+    const plan = await must("kart", api.get(`/api/workspace/plans/${f1.planId}`));
+    assert.deepEqual([doc.open, plan.totals.remaining], [0, 0], "fatura açığı = kartın kalanı = 0");
+    assert.deepEqual([(await h.doc(r1.id)).open, (await h.doc(r2.id)).open], [1000, 700], "iade açıkları 1.000 ve 700");
+    assert.equal(await h.balance(acc), -2200);
   }));
 
   describe("N14: toplu yol (liste, 8'den çok cari) = fatura kartı; Σ işaretli belge açığı = cari bakiye", () => {
