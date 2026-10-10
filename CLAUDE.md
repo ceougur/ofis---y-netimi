@@ -1170,6 +1170,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   sonrası eski liste) · 5 kılavuz (Banka bölümü + Drive'ı çıkar) · 6 kâhin güncellemesi (iade kuralı) · 7 yargıç + eleştirmen · 8 son
   doğrulama (Uzun Doğrulama, ölçek 10/20, bütün e2e, göç) · 9 paket (sürüm, CHANGELOG/KANIT, imzalı, kurulum, PDF, PR, elle kabul listesi) ·
   10 yayın (birleştir, 5 dosya, bağlantı, site kılavuz PR'ı).
+  DURUM (10.10.2026 akşam): 1 BİTTİ (f30a75b, CI yeşil) · 2 BİTTİ (1e23940) · 3 gerçek Windows 1/2 yeşil (windows.yml #38, 740be05:
+  hizmet çalışırken yedek bütünlük ok) — ikinci gerçek Windows koşusu bekleniyor · 5 BİTTİ (9201af0; 8. Banka bölümü, PDF 34 sayfa
+  ee64ce5f…, ana oturum yeniden üretti: metin aynı, pdf-denetle 28/28). Kılavuz ajanının ekranda gördüğü 5 küçük bulgu (Eksi Bakiye
+  Denetimi metni eskimiş, cari Ödeme formu yol ne olursa olsun "Kasa'dan çıkar", ANLIK DURUM ipucunda olmayan menü, Banka Bakiye Raporu
+  "Bu Yıl"da ileri tarihli eski havaleyi Hesabı Atanmamış sayıyor ↔ Genel Bakış 0, Planlı İşlemler düğmesinde olası yarış) madde 4'e
+  eklendi; "İleri tarihli hareket" tarama uyarısı hata değil (saat geri alınınca çıkar). CI 536 (098eb56) e2e kırmızısı = 534'le aynı
+  test yarışı, düzeltmesi 15d5631'de.
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
