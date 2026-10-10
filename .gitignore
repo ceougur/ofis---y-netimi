@@ -28,3 +28,5 @@ test/excel-denetim/cikti/odeme-alani-kaydet/
 # Kanıt kaydı (tools/kanit.mjs): CI'de geçici çıktı klasörü depo dışı sayılır; docs/kanit altındaki ham çıktılar depoda kalır.
 kanit-cikti/
 !docs/kanit/**/*.log
+__pycache__/
+*.pyc
