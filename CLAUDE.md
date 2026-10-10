@@ -1054,6 +1054,17 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       Kalan izler: Aşama 13 döviz; Aşama 8 kalanı (K8 taksit kuralları, Bankaya Tahsile Ver); Aşama 7 kalanı (iade/iptal bankalı
       ayrıntı §4.6, Fatura Ayarları → Banka Hesapları, gider türleri 770/653, toplu kesim, bağ türleri, TCMB önerisi); Aşama 14–15
       kalanı (§8.10 raporları, Nakit Akış K10, Vade Takip/zil, SOURCE_LABELS/EVENT_LABELS, Silinenler kuralı); kılavuz; kabul.
+- KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
+  POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
+  `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
+  çıkış → kartla ödeme bankadan çıkmış gibi Banka/POS toplamını düşürüyor (yanlış: kartla ödeme kart BORCUDUR, para ekstre ödenince
+  bankadan çıkar). 2.1.0 DALINDA ÖLÇÜLDÜ (`docs/kanit/2026-10-10/kart-pos-sonda.mjs`, aynı rakamlar): Gerçek Banka 10.000 (kart
+  ödemesi düşmüyor), 8.656 "Hesabı Atanmamış Eski Hareketler" uyarısında (hiçbir toplamda değil); "Kart Borcuna Aktar" ile kurumsal
+  kart hesabına → "Kart ve Kredi Borcu 8.656", mutabakat tamam. AÇIK (2.1.0'da plan gereği yapılacak, §4.6 / madde 27 / §3.5 tablo
+  satır 3 ve 5): yeni kartla ödemede kurumsal kart hesabı SEÇİLEMİYOR — `pickRef` yalnız havaleyi bağlıyor, gönderilen
+  bankAccountId sessizce yok sayılıyor (ölçüldü: 500 TL yine Hesabı Atanmamış'a düştü); düzeltme: ödeme formlarında (cari ödeme,
+  alış faturası, stok, çek değil) "Kredi Kartı" seçilince kurumsal kart seçimi → 309; POS tahsilatı (108, komisyon, valör,
+  blokeli) 2.2.0. Yanıt kullanıcıya verildi.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
