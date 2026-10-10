@@ -1,0 +1,63 @@
+{
+  "ad": "ek-kirmizi-banka-bakiye-ileri-tarihli",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-bakiye-ileri-tarihli.test.mjs",
+  "commit": "f3edc1604e270724c568b5307087c31adb6c756b",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T19:29:57.722Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 5,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye karışmaz (gerçek v2.0.23 verisi) › varsayılan (Bu Yıl): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar",
+      "konum": "test/banka-bakiye-ileri-tarihli.test.mjs:110:5",
+      "hata": "varsayılan (Bu Yıl) · unassigned: 102.00 sayıları (ileri tarihli satır bakiyeye ve giriş/çıkışa karışmaz) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye karışmaz (gerçek v2.0.23 verisi) › Bu Ay: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar",
+      "konum": "test/banka-bakiye-ileri-tarihli.test.mjs:110:5",
+      "hata": "Bu Ay · unassigned: 102.00 sayıları (ileri tarihli satır bakiyeye ve giriş/çıkışa karışmaz) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye karışmaz (gerçek v2.0.23 verisi) › geleceğe uzanan (D−10 … D+30): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar",
+      "konum": "test/banka-bakiye-ileri-tarihli.test.mjs:110:5",
+      "hata": "geleceğe uzanan (D−10 … D+30) · unassigned: 102.00 sayıları (ileri tarihli satır bakiyeye ve giriş/çıkışa karışmaz) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye karışmaz (gerçek v2.0.23 verisi) › yalnız ilk ileri satır (D−10 … D+7): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar",
+      "konum": "test/banka-bakiye-ileri-tarihli.test.mjs:110:5",
+      "hata": "yalnız ilk ileri satır (D−10 … D+7) · unassigned: 102.00 sayıları (ileri tarihli satır bakiyeye ve giriş/çıkışa karışmaz) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye karışmaz (gerçek v2.0.23 verisi) › tamamen gelecekte (D+1 … D+30): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar",
+      "konum": "test/banka-bakiye-ileri-tarihli.test.mjs:110:5",
+      "hata": "tamamen gelecekte (D+1 … D+30) · unassigned: 102.00 sayıları (ileri tarihli satır bakiyeye ve giriş/çıkışa karışmaz) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye karışmaz (gerçek v2.0.23 verisi) › Bu Yıl: rapor Hesabı Atanmamış = Banka Genel Bakış (aynı gün aynı sayı); PDF ve Excel ekranla aynı",
+      "konum": "test/banka-bakiye-ileri-tarihli.test.mjs:147:3",
+      "hata": "rapor = Genel Bakış · 85000 !== 25000 (beklenen 25000, gelen 85000)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler/2026-10-10/ek-kirmizi-banka-bakiye-ileri-tarihli.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627",
+  "ham_cikti_sha256": "f52b494bca700051c5b8ee08a4391c18e28bd2a1bcb4cad365c23c21ed0bfa20",
+  "ham_cikti_bayt": 11393
+}

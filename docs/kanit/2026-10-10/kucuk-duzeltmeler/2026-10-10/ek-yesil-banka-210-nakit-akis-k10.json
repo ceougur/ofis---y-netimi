@@ -1,0 +1,32 @@
+{
+  "ad": "ek-yesil-banka-210-nakit-akis-k10",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-nakit-akis-k10.test.mjs",
+  "commit": "715d998f79d11ec8c242067cc931f052768e5163",
+  "dal": "worktree-agent-a9dfb657bd3683627",
+  "kirli": 0,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T19:32:33.314Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler/2026-10-10/ek-yesil-banka-210-nakit-akis-k10.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627",
+  "ham_cikti_sha256": "d1adeed64551a0d779a1e7e6052c59dc7b15fd2d0396789b0b9d7fcdb952d3a8",
+  "ham_cikti_bayt": 2795
+}

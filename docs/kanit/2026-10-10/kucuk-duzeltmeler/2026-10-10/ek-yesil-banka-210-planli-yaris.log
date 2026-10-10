@@ -1,0 +1,36 @@
+  K1#1: ön koşul (kayıt yanıtı tıklama anında tutuluyor): true (tutulan 1)
+  ✓ K1#1: ön koşul oluştu (kayıt sürerken tıklama denendi)
+  K1#1: kayıt 200; tıklama yapılamadı (form penceresi üstte); önce "false" → sonra true; yeni planlı işlem listede: true; istekler ["GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/movements -ms","GET /api/workspace/bank/movements -ms","POST /api/workspace/bank/plans -ms","GET /api/workspace/bank/plans 1317ms","GET /api/workspace/bank/plans 1797ms"]
+  ✓ K1#1: kayıt sürerken tıklama form penceresi nedeniyle yapılamadı; kayıttan sonra Planlı İşlemler açık ve yeni işlem listede
+  K1#2: ön koşul (kayıt yanıtı tıklama anında tutuluyor): true (tutulan 1)
+  ✓ K1#2: ön koşul oluştu (kayıt sürerken tıklama denendi)
+  K1#2: kayıt 200; tıklama yapılamadı (form penceresi üstte); önce "false" → sonra true; yeni planlı işlem listede: true; istekler ["GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/movements -ms","GET /api/workspace/bank/movements -ms","POST /api/workspace/bank/plans -ms","GET /api/workspace/bank/plans 1293ms","GET /api/workspace/bank/plans 1810ms"]
+  ✓ K1#2: kayıt sürerken tıklama form penceresi nedeniyle yapılamadı; kayıttan sonra Planlı İşlemler açık ve yeni işlem listede
+  K1#3: ön koşul (kayıt yanıtı tıklama anında tutuluyor): true (tutulan 1)
+  ✓ K1#3: ön koşul oluştu (kayıt sürerken tıklama denendi)
+  K1#3: kayıt 200; tıklama yapılamadı (form penceresi üstte); önce "false" → sonra true; yeni planlı işlem listede: true; istekler ["GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/movements -ms","GET /api/workspace/bank/movements -ms","POST /api/workspace/bank/plans -ms","GET /api/workspace/bank/plans 1319ms","GET /api/workspace/bank/plans 1799ms"]
+  ✓ K1#3: kayıt sürerken tıklama form penceresi nedeniyle yapılamadı; kayıttan sonra Planlı İşlemler açık ve yeni işlem listede
+  ✓ K2#1: ön koşul oluştu (liste isteği tıklama sırasında tutuldu: 2)
+  K2#1: kayıt 200; tıklama anında düğme true → beklenen false, sonra false; satırlar []; istekler ["GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/movements -ms","GET /api/workspace/bank/movements -ms","POST /api/workspace/bank/plans -ms","GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/plans 50ms","GET /api/workspace/bank/movements 211ms"]
+  ✓ K2#1: tıklama, tıklama anında görünen düğmeye göre işledi (true → false)
+  ✓ K2#2: ön koşul oluştu (liste isteği tıklama sırasında tutuldu: 1)
+  K2#2: kayıt 200; tıklama anında düğme true → beklenen false, sonra false; satırlar []; istekler ["GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/movements -ms","GET /api/workspace/bank/movements -ms","POST /api/workspace/bank/plans -ms","GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/movements 216ms","GET /api/workspace/bank/movements 333ms"]
+  ✓ K2#2: tıklama, tıklama anında görünen düğmeye göre işledi (true → false)
+  ✓ K2#3: ön koşul oluştu (liste isteği tıklama sırasında tutuldu: 1)
+  K2#3: kayıt 200; tıklama anında düğme true → beklenen false, sonra false; satırlar []; istekler ["GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/movements -ms","GET /api/workspace/bank/movements -ms","POST /api/workspace/bank/plans -ms","GET /api/workspace/bank/plans -ms","GET /api/workspace/bank/movements 209ms","GET /api/workspace/bank/movements 252ms"]
+  ✓ K2#3: tıklama, tıklama anında görünen düğmeye göre işledi (true → false)
+  K3#1: form kapandıktan 800 ms sonra düğme true (kılavuz betiği bu durumda basılı değilse tıklıyordu); 3,5 sn sonra true; yeni planlı işlem listede: true
+  ✓ K3#1: kayıttan sonra kendiliğinden Planlı İşlemler (düğme basılı) ve yeni işlem listede
+  K3#2: form kapandıktan 800 ms sonra düğme true (kılavuz betiği bu durumda basılı değilse tıklıyordu); 3,5 sn sonra true; yeni planlı işlem listede: true
+  ✓ K3#2: kayıttan sonra kendiliğinden Planlı İşlemler (düğme basılı) ve yeni işlem listede
+  K3#3: form kapandıktan 800 ms sonra düğme true (kılavuz betiği bu durumda basılı değilse tıklıyordu); 3,5 sn sonra true; yeni planlı işlem listede: true
+  ✓ K3#3: kayıttan sonra kendiliğinden Planlı İşlemler (düğme basılı) ve yeni işlem listede
+  K4#1: form kapandıktan 800 ms sonra düğme true (kılavuz betiği bu durumda basılı değilse tıklıyordu); 3,5 sn sonra true; yeni planlı işlem listede: true
+  ✓ K4#1: kayıttan sonra kendiliğinden Planlı İşlemler (düğme basılı) ve yeni işlem listede
+  K4#2: form kapandıktan 800 ms sonra düğme true (kılavuz betiği bu durumda basılı değilse tıklıyordu); 3,5 sn sonra true; yeni planlı işlem listede: true
+  ✓ K4#2: kayıttan sonra kendiliğinden Planlı İşlemler (düğme basılı) ve yeni işlem listede
+  K4#3: form kapandıktan 800 ms sonra düğme true (kılavuz betiği bu durumda basılı değilse tıklıyordu); 3,5 sn sonra true; yeni planlı işlem listede: true
+  ✓ K4#3: kayıttan sonra kendiliğinden Planlı İşlemler (düğme basılı) ve yeni işlem listede
+  ✓ sayfa hatası yok
+
+✓ banka-210-planli-yaris: 19 geçti, 0 kaldı

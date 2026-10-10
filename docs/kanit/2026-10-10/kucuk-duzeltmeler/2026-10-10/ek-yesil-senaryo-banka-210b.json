@@ -1,0 +1,58 @@
+{
+  "ad": "ek-yesil-senaryo-banka-210b",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210b.mjs",
+  "commit": "715d998f79d11ec8c242067cc931f052768e5163",
+  "dal": "worktree-agent-a9dfb657bd3683627",
+  "kirli": 0,
+  "izlenmeyen": 23,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T19:52:25.219Z",
+  "sure_sn": 102.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 84,
+    "gecen": 80,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Kart ve Kredi Borcu 600 (beklenen 850)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Genel Bakış Kart ve Kredi Borcu: “₺600,00”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Banka Bakiye Raporu: Kart ve Kredi Borcu | Yapı Kredi | Kurumsal Kart 2 | 309.02 | 0,00 TL | 0,00 TL | 600,00 TL | 0,00 TL | 0,00 TL | 0,00 TL | -600,00 TL",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-banka-210b: 80 geçti, 4 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627/test/e2e/artifacts/senaryo-banka-210b",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler/2026-10-10/ek-yesil-senaryo-banka-210b.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627",
+  "ham_cikti_sha256": "1b418475defeb2658903fae7f6d0687d18388d338707dcf3720d2bcd12af29f6",
+  "ham_cikti_bayt": 8771
+}

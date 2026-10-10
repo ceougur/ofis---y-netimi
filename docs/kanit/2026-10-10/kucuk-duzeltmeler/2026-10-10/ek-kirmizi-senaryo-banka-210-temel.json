@@ -1,0 +1,68 @@
+{
+  "ad": "ek-kirmizi-senaryo-banka-210-temel",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210-temel.mjs",
+  "commit": "f4d42fffda854da519cef5953d19a506d9d911bc",
+  "dal": "worktree-agent-a9dfb657bd3683627",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T19:25:57.938Z",
+  "sure_sn": 64,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 79,
+    "gecen": 73,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ANLIK DURUM Gerçek Banka ipucu gerçek yolu söyler: “Gerçek Banka: banka hesaplarınızın (102) bakiyesi ₺10.000,00. Bugün giriş ₺0,00, çıkış ₺0,00; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz. Kart ve Kredi Borcu ₺0,00 ayrıdır. Hesabı Ata",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ödeme · Havale / EFT: “Cariye para verildi (ör. tedarikçiye ödeme, iade): Kasa'dan çıkar.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ödeme · Kredi Kartı: “Cariye para verildi (ör. tedarikçiye ödeme, iade): Kasa'dan çıkar.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tahsilat · Havale / EFT: “Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tahsilat · POS: “Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Yönetim → Eksi Bakiye Denetimi metni: “Eksi Bakiye Denetimi Bir ödeme, iade ya da düzeltme nakit kasayı eksiye düşürecekse ne olsun? Uyar: program sorar, onaylarsanız kaydeder. Engelle: kaydetmez. Kontrol Yok: sormaz. Havale/EFT ve POS için denetim yoktur; banka bakiyesi programda tutulmaz (Banka mo",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-banka-210-temel: 73 geçti, 6 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627/test/e2e/artifacts/senaryo-banka-210-temel",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler/2026-10-10/ek-kirmizi-senaryo-banka-210-temel.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627",
+  "ham_cikti_sha256": "541100dac8f99cea28f09495212c4794bd12db579b801f344c909c9a5cd5023f",
+  "ham_cikti_bayt": 11620
+}
