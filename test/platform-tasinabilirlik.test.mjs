@@ -5,6 +5,8 @@
 //   2. new URL(…, import.meta.url).pathname — Windows'ta "/D:/…" verir; fileURLToPath kullanılır.
 //   3. Çocuk sürecin signal'ının "SIGKILL" olduğunu iddia etmek — Windows'ta zorla sonlandırılan sürecin sinyal adı dönmez
 //      (signal null, status 1); iddia process.platform === "win32" koluyla birlikte yazılır.
+//   4. path.relative(…) sonucunu ayırıcısı çevrilmeden bir alana atamak — Windows'ta "server\\routes\\x.mjs" olur, "server/routes/x.mjs"
+//      ile karşılaştırma düşer (CI 515/516: banka-210-post-statik); .split(path.sep).join("/") ile çevrilir.
 import { strict as assert } from "node:assert";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
@@ -48,6 +50,10 @@ const RULES = [
   {
     name: "signal === \"SIGKILL\" iddiası Windows kolu olmadan (process.platform === \"win32\")",
     test: line => /\.signal\s*(?:,|===|==)\s*["']SIGKILL["']/.test(line) && !/win32/.test(line),
+  },
+  {
+    name: "path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join(\"/\"))",
+    test: line => /\b\w+\s*:\s*path\.relative\([^()]*(?:\([^()]*\)[^()]*)*\)(?!\s*\.split\(\s*path\.sep\s*\))/.test(line),
   },
 ];
 

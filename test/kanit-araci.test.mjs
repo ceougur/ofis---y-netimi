@@ -349,6 +349,7 @@ describe("kanıt aracı: başarısız testlerin adı, yeri ve hatası", () => {
     assert.deepEqual(failedTests(tap), [{ ad: "x", konum: "test/a.test.mjs:3:5", hata: "olmadı" }]);
     assert.deepEqual(failedTests("  ✓ iyi\n  ✗ Düzenle formunda numara (beklenen 1)\n✗ senaryo: 62 geçti, 1 kaldı").map(item => item.ad), ["Düzenle formunda numara (beklenen 1)", "senaryo: 62 geçti, 1 kaldı"]);
     assert.deepEqual(failedTests("# tests 3\n# pass 3\n# fail 0"), []);
+    assert.deepEqual(failedTests("not ok 1 - beklenen eksik # TODO K10 (ayrı iş)\n  ---\n  error: 'x'\n  ...\nnot ok 2 - atlanan # SKIP\n"), [], "TODO/SKIP yönergeli satır başarısız sayılmaz (CI 516'da listeye girmişti)");
   });
   it("kapı özeti başarısız testleri adıyla yazar", () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-kapi-"));

@@ -157,7 +157,7 @@ describe("K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli
     assert.ok(allowedKinds.has("collect") && allowedKinds.has("pay"), [...allowedKinds].join(","));
     const inserts = serverFiles().flatMap(file => {
       const source = readFileSync(file, "utf8");
-      return [...source.matchAll(/(INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE)\s+cheque_events\b([^"`]*)/gi)].map(m => ({ file: path.relative(ROOT, file), verb: m[1].toUpperCase().split(/\s+/)[0], rest: m[2] }));
+      return [...source.matchAll(/(INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE)\s+cheque_events\b([^"`]*)/gi)].map(m => ({ file: path.relative(ROOT, file).split(path.sep).join("/"), verb: m[1].toUpperCase().split(/\s+/)[0], rest: m[2] }));
     });
     const insertSites = inserts.filter(site => site.verb === "INSERT");
     assert.deepEqual(insertSites.map(site => site.file), ["server/routes/cheques.mjs"], `cheque_events'e INSERT yalnız cheques.mjs writeEvent'te: ${JSON.stringify(insertSites)}`);

@@ -108,7 +108,8 @@ export function failedTests(text, limit = 25) {
       continue;
     }
     const bad = lines[i].match(/^(\s*)not ok \d+ - (.*)$/);
-    if (!bad) continue;
+    // "# TODO"/"# SKIP" yönergeli test beklenen başarısızlıktır, sayımda da başarısız değildir.
+    if (!bad || /\s#\s*(?:TODO|SKIP)\b/i.test(bad[2])) continue;
     const depth = bad[1].length;
     const field = {};
     if (/^\s*---\s*$/.test(lines[i + 1] || "")) {
