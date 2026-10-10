@@ -1,0 +1,32 @@
+{
+  "ad": "backup-test-YESIL",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/backup.test.mjs",
+  "commit": "3bfd94c0450fbec0d2589f2be33ed19a9ffbbd98",
+  "dal": "worktree-agent-a74e5bc4761482223",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:24:56.680Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/windows-yedek-io/2026-10-10/backup-test-YESIL.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a74e5bc4761482223",
+  "ham_cikti_sha256": "8859d44138b282baeb38ed0a34340de88e94ad7f2f0033027bb15e04d4bfc1d1",
+  "ham_cikti_bayt": 2509
+}

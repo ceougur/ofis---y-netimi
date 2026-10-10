@@ -1,0 +1,32 @@
+{
+  "ad": "packaging-ONKOSUL-sigterm-yok-yeni-test",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/packaging.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:26:00.574Z",
+  "sure_sn": 17,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a74e5bc4761482223/docs/kanit/2026-10-10/windows-yedek-io/2026-10-10/packaging-ONKOSUL-sigterm-yok-yeni-test.log",
+  "klasor": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wy-mut",
+  "ham_cikti_sha256": "beef4ea4899ffeffd82368daf1dcd26dd8bacd7df08429b0d1a377ff35b8bfa2",
+  "ham_cikti_bayt": 3849
+}
