@@ -74,7 +74,7 @@
   let wizardOffered = false;
   let choicesCache = null;
   let metaCache = null;
-  const view = { tab: "overview", mode: "tab", accountId: "", status: "active", summary: null, list: null, account: null, settings: null, choices: null, legacy: null, runs: null, error: "", advanced: false, dirty: false, selected: new Set(), legacyTarget: "", eventRef: "", event: null, eventBack: "movements", meta: null, due: null, latest: null };
+  const view = { tab: "overview", mode: "tab", accountId: "", status: "active", summary: null, list: null, account: null, settings: null, choices: null, legacy: null, legacyStale: false, runs: null, error: "", advanced: false, dirty: false, selected: new Set(), legacyTarget: "", eventRef: "", event: null, eventBack: "movements", meta: null, due: null, latest: null };
   // Hareket listeleri (Aşama 4): Hareketler sekmesi ve Hesap Detayı ayrı durum ve ayrı liste kapısıyla (HOF.listGate: eski yanıt yeni
   // süzgeci ezmez; süzgeç yüklenirken "Daha Fazla" yok sayılır).
   const PAGE = 50;
@@ -145,11 +145,23 @@
     if (accountId) {
       view.mode = "account";
       view.accountId = accountId;
-    } else if (legacy) view.mode = "legacy";
+    } else if (legacy) enterLegacy();
     render();
     return reload({ first: true });
   }
   const viewKey = () => `${view.mode}|${view.tab}|${view.accountId}|${view.eventRef}`;
+  /**
+   * Eski Hareketler görünümüne geçiş. CI 460 kararı: önceki ziyaretin listesi (önbellek) hemen çizilir, sunucunun yanıtı gelince yenilenir.
+   * 2.1.0 temel sürüm (küçük düzeltmeler): önbellekten çizilen liste taze yanıt gelene kadar SEÇİLEMEZ (legacyStale; canPick). Arada Kurulum
+   * Sihirbazı, Bu Hesaba Ata ya da başka bir pencere satırı bağlamış olabilir; önceden önbellekteki satır seçilip Bu Hesaba Ata'ya basılabiliyordu
+   * (sunucu 409 bank-already-assigned; veri bozulmaz ama kullanıcı yanlış uyarı görür). Bankaya Geçmiş Say / Kart Borcuna Aktar formları zaten
+   * tıklama anında sunucudan okur (CI 460); onlar önbellekle durabilir.
+   */
+  function enterLegacy() {
+    view.mode = "legacy";
+    view.selected = new Set();
+    view.legacyStale = Boolean(view.legacy);
+  }
 
   /** Pencerenin verisi: özet ve hesaplar her zaman; görünüme göre hesap kartı, eski hareketler ya da ayarlar. */
   async function reload({ quiet = false, first = false } = {}) {
@@ -165,7 +177,10 @@
         if (accountMoves.filter.account !== view.accountId) accountMoves = newMoves("account", { account: view.accountId });
         await loadMoves(accountMoves, { quiet, paint: false });
       }
-      if (view.mode === "legacy") [next.legacy, next.runs] = await Promise.all([api("/legacy", options), api("/setup", options).then(data => data.runs)]);
+      if (view.mode === "legacy") {
+        [next.legacy, next.runs] = await Promise.all([api("/legacy", options), api("/setup", options).then(data => data.runs)]);
+        next.legacyStale = false;
+      }
       const settingsTab = view.mode === "tab" && view.tab === "settings";
       if (settingsTab && !view.dirty) [next.settings, next.choices] = await Promise.all([api("/settings", options), api("/choices", options)]);
       if (view.mode === "tab" && view.tab === "overview") {
@@ -473,7 +488,8 @@
   const legacyTarget = () => bindableAccounts().find(account => account.id === view.legacyTarget) || bindableAccounts()[0] || null;
   // Seçilebilen satır: sunucunun "atanabilir" dediği (havale, açık dönem) ve seçili hesabın açılış gününde ya da sonrasında olan (öncesi
   // açılış bakiyesinin içindedir; sunucu 409 bank-before-opening verir).
-  const canPick = (row, target = legacyTarget()) => Boolean(row.assignable && target && row.date >= target.openingDate);
+  // Önbellekten çizilen liste (legacyStale) taze yanıt gelene kadar seçilemez (enterLegacy).
+  const canPick = (row, target = legacyTarget()) => Boolean(!view.legacyStale && row.assignable && target && row.date >= target.openingDate);
   function legacyHtml() {
     const back = '<button type="button" class="hof-plan-back" data-act="back-overview">← Genel Bakış</button>';
     const data = view.legacy;
@@ -486,7 +502,7 @@
     const rows = data.rows
       .map(
         row => `<tr class="${row.kind === "in" ? "is-in" : "is-out"}">
-          <td class="hof-bank-check">${pickable(row) && canAccounts() ? `<input type="checkbox" data-pick="${esc(rowKey(row))}" ${view.selected.has(rowKey(row)) ? "checked" : ""} aria-label="Seç">` : row.future && canAccounts() ? `<input type="checkbox" disabled data-pick-later aria-label="Seçilemez: ${esc(row.reason || "")}" title="${esc(row.reason || "")}">` : ""}</td>
+          <td class="hof-bank-check">${pickable(row) && canAccounts() ? `<input type="checkbox" data-pick="${esc(rowKey(row))}" ${view.selected.has(rowKey(row)) ? "checked" : ""} aria-label="Seç">` : row.future && canAccounts() ? `<input type="checkbox" disabled data-pick-later aria-label="Seçilemez: ${esc(row.reason || "")}" title="${esc(row.reason || "")}">` : view.legacyStale && row.assignable && canAccounts() ? '<input type="checkbox" disabled data-pick-stale aria-label="Liste güncelleniyor; güncel liste gelince seçilebilir">' : ""}</td>
           ${td("Tarih", esc(dateText(row.date)))}
           ${td("Yol", row.way === "bank" ? "Havale / EFT" : "POS / Kart")}
           ${td("Cari / Açıklama", `${esc(row.partyName || "—")}${row.description ? `<small>${esc(row.description)}</small>` : ""}`)}
@@ -512,6 +528,7 @@
     return `<div class="hof-bank-detail-head">${back}<div class="hof-plan-title"><h3>Hesabı Atanmamış Eski Hareketler</h3><small>Banka hesabı tanımlanmadan girilmiş havale / EFT ve POS hareketleri. Gerçek Banka'ya girmez.</small></div></div>
       <div class="hof-rep-stats hof-bank-stats"><div class="hof-rep-stat"><span>Havale / EFT (102.00)</span><strong>${esc(fmt(data.totals.bankMinor))}</strong></div><div class="hof-rep-stat"><span>POS / Kart (108.00)</span><strong>${esc(fmt(data.totals.cardMinor))}</strong></div><div class="hof-rep-stat"><span>Kilitli Dönem — Atanamaz</span><strong>${data.lockedCount}</strong><small>${data.count} hareket</small></div>${data.future?.count ? `<div class="hof-rep-stat" data-legacy-future-stat><span>Tarihi Gelince Atanabilir</span><strong>${data.future.count}</strong><small>${esc(signed(data.future.totalMinor))} · ilk ${esc(dateText(data.future.firstDate))} · toplamlara girmez</small></div>` : ""}</div>
       ${tools}
+      ${view.legacyStale && canAccounts() ? (view.error ? HOF.listPending(view.error) : '<p class="hof-rep-note" data-legacy-stale role="status">Liste güncelleniyor; hareketler güncel liste gelince seçilebilir.</p>') : ""}
       <div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table hof-bank-legacy"><thead><tr><th class="hof-bank-check">${canAccounts() && assignable.length ? `<input type="checkbox" data-pick-all ${allOn ? "checked" : ""} aria-label="Hepsini seç">` : ""}</th><th>Tarih</th><th>Yol</th><th>Cari / Açıklama</th><th>İşlem No</th><th class="num">Tutar</th><th>Durum</th></tr></thead><tbody>${rows || '<tr><td colspan="7" class="hof-empty">Hesabı atanmamış eski hareket yok.</td></tr>'}</tbody></table></div>
       <p class="hof-rep-note">Bir hareket yalnız hesabın açılış tarihinde ya da sonrasındaysa ve dönemi açıksa atanır; açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır). Tarihi gelmemiş eski hareket (eski sürümde ileri tarihle girilmiş) o gün atanır; o güne kadar toplamlara girmez. POS ve kart bakiyesi Bankaya Geçmiş Say ya da Kart Borcuna Aktar ile taşınır.</p>
       ${runs ? `<h4 class="hof-bank-subtitle">Kurulum Geçmişi</h4><div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table"><thead><tr><th>Tarih</th><th>Hesap</th><th>İşlem No</th><th>Aktarılan</th><th>Durum</th><th></th></tr></thead><tbody>${runs}</tbody></table></div>` : ""}`;
@@ -2028,8 +2045,7 @@
         case "wizard":
           return openWizard();
         case "legacy":
-          view.mode = "legacy";
-          view.selected = new Set();
+          enterLegacy();
           render();
           return reload();
         case "back":

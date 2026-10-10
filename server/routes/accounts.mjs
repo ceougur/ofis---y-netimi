@@ -794,7 +794,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
     const pdf = tablePdf({
       now: clock(),
-      title: `${title} listesi`,
+      title: `${title} Listesi`,
       subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Bilgi Notu"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
@@ -839,7 +839,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       return row;
     });
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
-    const buffer = buildXlsx([{ name: title.slice(0, 31), columns: [...base, ...extras], rows }], { now: clock(), title: `${title} listesi` });
+    const buffer = buildXlsx([{ name: title.slice(0, 31), columns: [...base, ...extras], rows }], { now: clock(), title: `${title} Listesi` });
     audit(user, "account.list.exported", "xlsx", { ...query, count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-listesi ${dayText(today())}.xlsx` });
   });

@@ -121,6 +121,14 @@ function violations(file, { server = false } = {}) {
   // Düğme yazısı sonradan geri konurken ("Giriş Yap" → hata → "Giriş yap") yazım kaymasın.
   for (const m of src.matchAll(/\.textContent\s*=\s*"([^"\n]{3,60})"/g)) check(m[1], "textContent");
   if (server) for (const m of src.matchAll(/\b(headers|columns|head)\s*[:=]\s*\[([^\]\n]{0,1200})\]/g)) for (const n of m[2].matchAll(/"([^"\n]{3,60})"/g)) check(n[1], m[1]);
+  if (server) {
+    // 2.1.0 (küçük düzeltmeler, 10.10.2026): Nakit Akış Excel'inin "Aylık toplamlar" sayfa adı yakalanmıyordu — denetim yalnız title/label
+    // anahtarlarının düz metnine ve kolon dizilerine bakıyordu; Excel SAYFA ADI (buildXlsx'in { name, columns } nesnesi) ve ŞABLON METİNLE
+    // kurulan başlık (title: `${title} listesi`) hiç okunmuyordu. Şablonun değişken kısmı "Ad" yerine konup denetlenir ("Ad toplamlar" kırılır).
+    const literal = text => text.replace(/\$\{[^}]*\}/g, "Ad");
+    for (const m of src.matchAll(/\{\s*name:\s*(?:"([^"\n]{3,40})"|`([^`\n]{3,60})`)(?:\.slice\([^)]*\))?\s*,\s*columns\b/g)) check(m[1] ?? literal(m[2]), "Excel sayfa adı");
+    for (const m of src.matchAll(/\btitle\s*:\s*`([^`\n]{3,70})`/g)) check(literal(m[1]), "şablon başlık");
+  }
   return found;
 }
 

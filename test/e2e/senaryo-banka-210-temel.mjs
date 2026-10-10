@@ -16,6 +16,8 @@
 // 10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi, ayrı sunucu): Hesabı Atanmamış 250 (ileri tarihli 1.000 ayrı bilgi); listede
 //     "Tarihi Gelince Atanabilir", seçim kutusu pasif, nedeni görünür; sihirbaz geçmişi aktarır, ileri tarihliyi atlar ve söyler (409 yok);
 //     saat 21.10.2026'ya alınınca Bu Hesaba Ata 200, Gerçek Banka 11.250, mutabakat temiz. (v2.0.23 etiketi gerekir: CI e2e işi etiketleri çeker.)
+//     Küçük düzeltmeler (10.10.2026): Nakit Akış'ta eski havalenin kaynağı "Hesabı Atanmamış (ileri tarihli)" (Kasa değil); Eski Hareketler'e
+//     dönüşte önceki ziyaretin listesi taze yanıt gelene kadar seçilemez (sihirbazın bağladığı satır seçilip 409 alınamaz).
 // Çalıştırma: npm run test:senaryo-banka-210-temel (ekran görüntüleri artifacts/senaryo-banka-210-temel/).
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -155,6 +157,22 @@ async function legacyFutureSection() {
     await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
     await pause(800);
 
+    // Küçük düzeltmeler (10.10.2026, bulgu 1): Raporlar → Nakit Akış'ta ileri tarihli eski hesapsız havale kendi gününde, "Hesabı Atanmamış
+    // (ileri tarihli)" kaynağıyla (önceden "Kasa" yazıyordu; Nakit Kasa'da olmayan bir hareket). Başlangıca girmez; PDF ve Excel aynı ad
+    // (test/nakit-akis-ileri-tarihli-yol.test.mjs).
+    await page.click('#hof-sidecard [data-action="analytics"]');
+    await page.waitForSelector(`${modal} .hof-rep [data-tab="flow"]`, { timeout: 15000 });
+    await page.click(`${modal} .hof-rep [data-tab="flow"]`);
+    await page.waitForSelector(`${modal} [data-chart] svg`, { timeout: 15000, state: "attached" });
+    await pause(500);
+    const legacyFlowRows = await page.$$eval(`${modal} .hof-rep-table tbody tr`, nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ").trim()).filter(text => text.startsWith("20.10.2026")));
+    const legacyChip = await page.$$eval(`${modal} .hof-rep-table tbody tr`, nodes => nodes.filter(node => node.innerText.trim().startsWith("20.10.2026")).map(node => node.querySelector(".hof-rep-src")?.textContent.trim() || ""));
+    ok(legacyFlowRows.length === 1 && legacyChip[0] === "Hesabı Atanmamış (ileri tarihli)" && legacyFlowRows[0].includes(money(1000)), `Nakit Akış: 20.10 eski havale bir kez, kaynağı "Hesabı Atanmamış (ileri tarihli)" (Kasa değil): ${legacyFlowRows.join(" | ")} · kaynak ${legacyChip.join(", ")}`);
+    const flowStart = await page.$$eval(`${modal} .hof-rep-stat`, nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ").trim()).find(text => text.startsWith("Bugünkü Nakit ve Banka")) || "");
+    ok(flowStart.includes(money(10000)), `başlangıç 10.000 (eski havale girmez): ${flowStart}`);
+    await shot("ileri-eski-nakit-akis");
+    await closeAll();
+
     // Genel Bakış: Hesabı Atanmamış 250 (bugüne kadar); ileri tarihli 1.000 ayrı satır bilgisinde.
     await openBank();
     await page.waitForSelector(`${bankWin} [data-bank-unassigned]`, { timeout: 10000 });
@@ -217,15 +235,41 @@ async function legacyFutureSection() {
     await tab("accounts");
     // CI 534 (ders 20): Eski Hareketler'e dönüşte ekran önce ÖNCEKİ ziyaretin listesini çizer (hof-bank.js "legacy": render, sonra reload;
     // CI 460 kararı), sunucunun yanıtı gelince yeniden çizer. Önceki ziyarette satır "Tarihi Gelince Atanabilir"di; test yanıtı beklemeden
-    // ekranı okuduğunda (yavaş koşucu) eski işareti görüp kırmızı oluyordu. Ön koşul burada ZORLA oluşturulur (GET 1,5 sn gecikir) ve
+    // ekranı okuduğunda (yavaş koşucu) eski işareti görüp kırmızı oluyordu. Ön koşul burada ZORLA oluşturulur (GET kapıyla tutulur) ve
     // oluştuğu denetlenir; denetim TAZE yanıt geldikten ve ekran onunla çizildikten sonra yapılır. Hata iletisinde teşhis: sunucunun bugünü,
     // yanıttaki satırlar, ekrandaki satırlar, açık Banka penceresi sayısı.
+    // Küçük düzeltmeler (10.10.2026): yanıt süreyle (1,5 sn) değil KAPIYLA tutulur (ders 20): ekran önbellekten çizilmiş durumdayken okunur,
+    // sonra yanıt bırakılır.
     const isLegacyGet = url => /\/api\/workspace\/bank\/legacy(\?|$)/.test(url);
-    const slowLegacy = route => (route.request().method() === "GET" ? setTimeout(() => route.continue().catch(() => null), 1500) : route.continue());
-    await page.route(url => isLegacyGet(url.href), slowLegacy);
-    const freshResponse = page.waitForResponse(response => isLegacyGet(response.url()) && response.request().method() === "GET", { timeout: 30000 });
-    await page.click(`${bankWin} [data-act="legacy"]`);
-    const staleSeen = await page.waitForSelector(`${bankWin} [data-legacy-future]`, { timeout: 1200 }).then(() => true).catch(() => false);
+    // Eski Hareketler'e kapılı dönüş: /bank/legacy GET'i bırakılana kadar tutulur; ekran o arada önbellekten çizilir. Dönüş: { drawn, stale, staleWhile, release, freshResponse, unroute }.
+    const gatedLegacy = async (waitFor = `${bankWin} .hof-bank-legacy tbody tr`) => {
+      let release = () => {};
+      const gate = new Promise(resolve => (release = resolve));
+      const hold = async route => {
+        if (route.request().method() !== "GET") return route.continue();
+        await Promise.race([gate, new Promise(resolve => setTimeout(resolve, 15000))]);
+        return route.continue().catch(() => null);
+      };
+      const matcher = url => isLegacyGet(url.href);
+      await page.route(matcher, hold);
+      const freshResponse = page.waitForResponse(response => isLegacyGet(response.url()) && response.request().method() === "GET", { timeout: 30000 });
+      let arrived = false;
+      freshResponse.then(() => (arrived = true)).catch(() => null);
+      await page.click(`${bankWin} [data-act="legacy"]`);
+      const drawn = await page.waitForSelector(waitFor, { timeout: 1200 }).then(() => true).catch(() => false);
+      const stale = await page.evaluate(sel => {
+        const win = document.querySelector(sel);
+        const rows = [...win.querySelectorAll(".hof-bank-legacy tbody tr")].map(node => ({ text: node.innerText.replace(/\s+/g, " ").trim(), pick: Boolean(node.querySelector("input[data-pick]:not([disabled])")) }));
+        const assign = win.querySelector('[data-act="assign"]');
+        const note = win.querySelector("[data-legacy-stale]");
+        return { rows, assignDisabled: assign ? assign.disabled : null, note: note && note.offsetParent !== null ? note.textContent.replace(/\s+/g, " ").trim() : "" };
+      }, bankWin);
+      return { drawn, stale, staleWhile: !arrived, release: () => release(), freshResponse, unroute: () => page.unroute(matcher, hold).catch(() => null) };
+    };
+    const ci534 = await gatedLegacy(`${bankWin} [data-legacy-future]`);
+    const staleSeen = ci534.drawn && ci534.staleWhile;
+    ci534.release();
+    const freshResponse = ci534.freshResponse;
     const fresh = await (await freshResponse).json().catch(() => null);
     await page.unrouteAll({ behavior: "ignoreErrors" });
     const freshRows = fresh?.data?.rows || [];
@@ -254,6 +298,62 @@ async function legacyFutureSection() {
     const integrity = await must("Mutabakat Testi", api2.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, `mutabakat temiz${integrity.ok ? "" : `: ${JSON.stringify(integrity.failures).slice(0, 300)}`}`);
     ok(account.id && summary.accounts.count === 1, "tek hesap");
+
+    // Küçük düzeltmeler (10.10.2026, bulgu 3): Eski Hareketler'e dönüşte önceki ziyaretin listesi (önbellek; CI 460 kararı) taze yanıt gelene
+    // kadar SEÇİLEMEZ. Gerçek kullanıcı yolu: Kurulum Geçmişi → Geri Al (06.10 havalesi yeniden Hesabı Atanmamış; liste onu "atanabilir" diye
+    // önbelleğe alır) → ← Genel Bakış → Hesaplar → Kurulum Sihirbazı → Aktar (sihirbaz 06.10'u bağlar; Genel Bakış'a dönülür, liste yenilenmez)
+    // → Hesaplar → Eski Hareketler. Önceden önbellekteki 06.10 satırı seçilip Bu Hesaba Ata'ya basılabiliyordu (sunucu 409 bank-already-assigned;
+    // veri bozulmaz, kullanıcı yanlış uyarı görür). Ön koşul (önbellekte atanabilir satır + sunucuda bağlı) ZORLA kurulur ve okunur (ders 20).
+    const undoButton = await page.$(`${bankWin} [data-act="undo"]`);
+    ok(Boolean(undoButton), "Kurulum Geçmişi'nde Geri Al düğmesi");
+    await undoButton?.click();
+    await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    const undone = page.waitForResponse(response => /\/api\/workspace\/bank\/setup\/[^/]+\/undo/.test(response.url()) && response.request().method() === "POST", { timeout: 30000 });
+    await page.click(`${top} [data-answer="yes"]`);
+    ok((await undone).status() === 200, "Kurulum Geçmişi → Geri Al 200");
+    const cachedPick = await page.waitForSelector(`${bankWin} .hof-bank-legacy tbody input[data-pick]`, { timeout: 10000 }).then(() => true).catch(() => false);
+    const cachedRows = await page.$$eval(`${bankWin} .hof-bank-legacy tbody tr`, nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ").trim())).catch(() => []);
+    ok(cachedPick && cachedRows.some(text => text.startsWith("06.10.2026")), `geri alınca 06.10 havalesi listede atanabilir (önbellek bununla dolar): ${cachedRows.join(" | ")}`);
+    await page.click(`${bankWin} [data-act="back-overview"]`);
+    await pause(500);
+    await tab("accounts");
+    await page.click(`${bankWin} [data-act="wizard"]`);
+    await page.waitForSelector(`${wiz} [data-wiz="skip"]`, { timeout: 10000 });
+    await page.click(`${wiz} [data-wiz="skip"]`);
+    await page.waitForSelector(`${wiz} [data-wiz-preview]`, { timeout: 10000 });
+    const setup2 = page.waitForResponse(response => response.url().includes("/api/workspace/bank/setup") && !response.url().includes("dryRun") && response.request().method() === "POST", { timeout: 30000 });
+    await page.click(`${wiz} [data-wiz="transfer"]`);
+    ok((await setup2).status() === 200, "Hesaplar → Kurulum Sihirbazı → Aktar 200 (06.10 havalesi bağlandı)");
+    await page.waitForSelector(`${wiz} [data-wiz-done]`, { timeout: 10000 });
+    await page.click(`${wiz} [data-wiz="finish"]`);
+    await pause(800);
+    const bound = await must("Hesabı Atanmamış (sunucu)", api2.get("/api/workspace/bank/legacy"));
+    ok(!bound.rows.length, `sunucuda bağlanmamış satır yok: ${JSON.stringify(bound.rows)}`);
+    await tab("accounts");
+    const visit = await gatedLegacy();
+    let wrongAssign = "";
+    // Eski kodda kullanıcının göreceği sonuç kanıt olarak okunur: önbellekteki satırı seç → Bu Hesaba Ata → onay → yanıt.
+    if (visit.stale.rows.some(row => row.pick)) {
+      await page.check(`${bankWin} .hof-bank-legacy tbody input[data-pick]`).catch(() => null);
+      const tried = page.waitForResponse(response => response.url().includes("/api/workspace/bank/legacy/assign") && response.request().method() === "POST", { timeout: 8000 }).catch(() => null);
+      await page.click(`${bankWin} [data-act="assign"]`).catch(() => null);
+      await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 4000 }).then(() => page.click(`${top} [data-answer="yes"]`)).catch(() => null);
+      const response = await tried;
+      wrongAssign = response ? `${response.status()} ${(await response.text().catch(() => "")).slice(0, 200)}` : "yanıt yok";
+    }
+    ok(visit.drawn && visit.staleWhile && visit.stale.rows.some(row => row.text.startsWith("06.10.2026")), `ön koşul: taze yanıt tutulurken önbellekteki liste çizildi ve sihirbazın bağladığı 06.10 satırı içinde (${visit.stale.rows.map(row => row.text.slice(0, 44)).join(" | ")})`);
+    ok(!visit.stale.rows.some(row => row.pick) && visit.stale.assignDisabled !== false, `önbellekten çizilen liste seçilemez (kutular ve Bu Hesaba Ata pasif)${wrongAssign ? ` — eski davranış: sihirbazın bağladığı satır seçilip atandı → ${wrongAssign}` : ""}: ${JSON.stringify(visit.stale)}`);
+    ok(/güncelleniyor/i.test(visit.stale.note), `nedeni görünür yazıyla: "${visit.stale.note}"`);
+    await shot("eski-hareketler-onbellek-secilemez");
+    visit.release();
+    await visit.freshResponse.catch(() => null);
+    await visit.unroute();
+    const emptied = await page.waitForFunction(() => !document.querySelector(".hof-bank-modal .hof-bank-legacy tbody input[data-pick]") && !document.querySelector(".hof-bank-modal [data-legacy-stale]") && /Hesabı atanmamış eski hareket yok/.test(document.querySelector(".hof-bank-modal .hof-bank-legacy tbody")?.textContent || ""), null, { timeout: 10000 }).then(() => true).catch(() => false);
+    ok(emptied, "taze yanıt gelince liste boş (06.10 bağlı), güncelleniyor yazısı kalktı");
+    summary = await must("özet", api2.get("/api/workspace/bank/summary"));
+    ok(summary.realBank.minor === 1_125_000 && summary.unassigned.totalMinor === 0, `sonra: Gerçek Banka ${summary.realBank.minor / 100} (11.250), Hesabı Atanmamış ${summary.unassigned.totalMinor / 100}`);
+    const integrity2 = await must("Mutabakat Testi", api2.get("/api/workspace/ledger/integrity"));
+    ok(integrity2.ok === true, `mutabakat temiz${integrity2.ok ? "" : `: ${JSON.stringify(integrity2.failures).slice(0, 300)}`}`);
   } finally {
     await context2?.close().catch(() => null);
     page = mainPage;
@@ -481,6 +581,77 @@ try {
     ok(/Tahsil/.test(text) && !/Tahsile Ver|Bankaya Tahsil/.test(text), `çek kartında Bankaya Tahsile Ver yok (${text.slice(0, 160)})`);
     await shot("cek-karti");
     await closeAll();
+  });
+
+  // Ek iş (ana oturum, 10.10.2026; kılavuz ajanının ekranda bulduğu metinler): ekrandaki açıklamalar yola ve gerçek menü adlarına göre.
+  //  A. Yönetim → Sistem → Eksi Bakiye Denetimi: "Havale/EFT ve POS için denetim yoktur … (Banka modülüyle gelecek)" eskimişti; banka hesapları
+  //     için denetim Banka → Ayarlar → Eksi Bakiye'de ve hesap kartında (Düzenle → Eksi Bakiye Denetimi).
+  //  B. Cari → Ödeme / Tahsilat formunun açıklaması yol ne olursa olsun "Kasa'dan çıkar" / "Kasa'ya … girer" diyordu (k39 ekranı: Kredi Kartı
+  //     seçiliyken "Kasa'dan çıkar"). Yola göre: Nakit → Kasa; Havale/EFT → seçilen banka hesabı; Kredi Kartı → seçilen kurumsal kartın borcu.
+  //  C. ANLIK DURUM Gerçek Banka ipucu "Banka → Kurulum ve Aktarım ile hesaba atayın" diyordu; böyle bir menü yok. Gerçek yol: Banka → Genel
+  //     Bakış → Hesabı Atanmamış Eski Hareketler → Şimdi Düzenle (adlar ekrandan okunur).
+  await step("9b. Metinler: Eksi Bakiye Denetimi (Yönetim), cari Ödeme/Tahsilat açıklaması yola göre, ANLIK DURUM Gerçek Banka ipucu gerçek yol", async () => {
+    // Kurumsal kart (Kredi Kartı yolu "seçilen kurumsal kartın borcuna yazılır" desin diye bir kart).
+    await must("kurumsal kart", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Kurumsal Kart", kind: "card", creditLimit: "20.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } }));
+    await page.goto(`${BASE}/`);
+    await page.waitForSelector("#hof-sidecard", { timeout: 20000 });
+    await pause(800);
+    // C: ANLIK DURUM Gerçek Banka kutusunun ipucu ve ekrandaki gerçek yolun adları.
+    // Kutu, ANLIK DURUM kartı küçültülmüşse gizlidir; ipucu (title) yine aynıdır.
+    await page.waitForSelector('#hof-pulse [data-pulse-go="bank"]', { state: "attached", timeout: 15000 });
+    const hint = (await page.getAttribute('#hof-pulse [data-pulse-go="bank"]', "title")) || "";
+    await openBank();
+    const overviewTab = await textOf(`${bankWin} .hof-bank-tabs [data-tab="overview"]`);
+    const rowName = await textOf(`${bankWin} [data-bank-unassigned] b`);
+    const editName = await textOf(`${bankWin} [data-bank-unassigned] [data-act="legacy"]`);
+    const realPath = `Banka → ${overviewTab} → ${rowName} → ${editName}`;
+    ok(realPath === "Banka → Genel Bakış → Hesabı Atanmamış Eski Hareketler → Şimdi Düzenle", `ekrandaki gerçek yol: ${realPath}`);
+    ok(hint.includes(realPath) && !/Kurulum ve Aktarım/.test(hint), `ANLIK DURUM Gerçek Banka ipucu gerçek yolu söyler: “${hint}”`);
+    // A için ekrandaki adlar: Banka → Ayarlar → Eksi Bakiye; hesap kartında Eksi Bakiye Denetimi.
+    await tab("settings");
+    const settingsText = await textOf(bankWin);
+    ok(/Eksi Bakiye/.test(settingsText), "Banka → Ayarlar'da Eksi Bakiye grubu var");
+    await closeAll();
+    // B: cari Ödeme ve Tahsilat formunun açıklaması yola göre.
+    const entryForm = async kind => {
+      await page.click('#hof-sidecard [data-action="accounts"]');
+      await page.waitForSelector(`.hof-accounts-modal tr[data-account="${abc.id}"]`, { timeout: 10000 });
+      await page.click(`.hof-accounts-modal tr[data-account="${abc.id}"]`);
+      await page.waitForSelector(`.hof-accounts-modal [data-entry="${kind}"]`, { timeout: 10000 });
+      await page.click(`.hof-accounts-modal [data-entry="${kind}"]`);
+      await page.waitForSelector(`${top} .hof-form select[name="method"]`, { timeout: 8000 });
+      await pause(600);
+    };
+    const introFor = async method => {
+      await page.selectOption(`${top} .hof-form select[name="method"]`, method);
+      await pause(300);
+      return textOf(`${top} .hof-modal-text`);
+    };
+    await entryForm("out");
+    const outCash = await introFor("cash");
+    const outBank = await introFor("bank");
+    const outCard = await introFor("card");
+    await shot("cari-odeme-kredi-karti-aciklama");
+    ok(/Kasa'dan çıkar/.test(outCash), `Ödeme · Nakit: “${outCash}”`);
+    ok(/seçilen banka hesabından çıkar/.test(outBank) && !/Kasa/.test(outBank), `Ödeme · Havale / EFT: “${outBank}”`);
+    ok(/seçilen kurumsal kartın borcuna yazılır/.test(outCard) && !/Kasa/.test(outCard), `Ödeme · Kredi Kartı: “${outCard}”`);
+    await closeAll();
+    await entryForm("in");
+    const inCash = await introFor("cash");
+    const inBank = await introFor("bank");
+    const inCard = await introFor("card");
+    ok(/Kasa'ya/.test(inCash), `Tahsilat · Nakit: “${inCash}”`);
+    ok(/seçilen banka hesabına girer/.test(inBank) && !/Kasa'ya/.test(inBank), `Tahsilat · Havale / EFT: “${inBank}”`);
+    ok(/POS/.test(inCard) && !/Kasa'ya .*girer/.test(inCard), `Tahsilat · POS: “${inCard}”`);
+    await closeAll();
+    // A: Yönetim → Sistem → Eksi Bakiye Denetimi.
+    await page.goto(`${BASE}/admin.html`);
+    await page.waitForSelector("#adm-negative", { state: "attached", timeout: 15000 });
+    const admin = await page.$eval("#adm-negative", node => node.textContent.replace(/\s+/g, " ").trim());
+    ok(!/Banka modülüyle gelecek|banka bakiyesi programda tutulmaz/.test(admin) && /Banka → Ayarlar → Eksi Bakiye/.test(admin) && /Eksi Bakiye Denetimi/.test(admin), `Yönetim → Eksi Bakiye Denetimi metni: “${admin}”`);
+    await page.goto(`${BASE}/`);
+    await page.waitForSelector("#hof-sidecard", { timeout: 20000 });
+    await pause(500);
   });
 
   await step("10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi): liste 'Tarihi Gelince Atanabilir', sihirbaz atlar ve söyler, tarih gelince atanır", async () => {

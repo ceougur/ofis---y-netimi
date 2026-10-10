@@ -1,0 +1,94 @@
+  ✓ kurulum: Gerçek Banka 10000, Hesabı Atanmamış 900
+
+■ 1. Banka penceresi sekmeleri: yalnız Genel Bakış · Hesaplar · Hareketler · Ayarlar
+  ✓ sekmeler: Genel Bakış, Hesaplar, Hareketler, Ayarlar
+
+■ 2. Genel Bakış: Gerçek Banka 10.000; Hesabı Atanmamış ayrı satır (900); POS Bekleyen / Blokeli POS / Güncel Kurla / Eşleşmeyen yok
+  ✓ Gerçek Banka 10.000,00
+  ✓ Hesabı Atanmamış Eski Hareketler 900,00 ayrı satırda
+  ✓ ertelenen özellik görünmüyor
+  ✓ Banka Hesapları sütunları (yalnız TL hesapta döviz sütunu yok): Banka, Hesap, Gerçek Bakiye, Son Hareket, Dönem, Giriş, Çıkış, Transfer Giriş, Transfer Çıkış, Banka Masrafları, Tarih, İşlem No, Tür, Hesap, Açıklama, Tutar
+  ✓ Gerçek Banka kutusunda "TL karşılığı" notu yok (yalnız TL)
+
+■ 3. Hesaplar → + Yeni Hesap: Hesap Türü'nde Döviz yok; Para Birimi ve Açılış Kuru yok (Vadesiz/Ticari/Vadeli/Kredi/Kart/Diğer)
+  ✓ Hesaplar listesinde ertelenen özellik yok
+  ✓ Hesap Türü seçenekleri: Vadesiz, Ticari, Vadeli, Kredi Hesabı, Kurumsal Kredi Kartı, Diğer
+  ✓ Para Birimi alanı yok (yalnız TL)
+  ✓ hiçbir hesap türünde Açılış Kuru (TL) alanı görünmüyor
+  ✓ formda döviz yok
+
+■ 3b. Kurulum Sihirbazı: hesap adımında da Döviz türü ve Para Birimi yok
+  ✓ sihirbaz Hesap Türü: Vadesiz, Ticari, Vadeli, Kredi Hesabı, Kurumsal Kredi Kartı, Diğer
+  ✓ sihirbazda Para Birimi alanı yok
+
+■ 4. Hesap Detayı: + Masraf, + Faiz, + Diğer İşlem, Transfer; Ekstre Yükle / Döviz Al-Sat / POS yok
+  ✓ düğmeler: + Masraf, + Faiz, + Diğer İşlem, Transfer, Düzenle, Açılışı Düzelt, Pasife Al, Sil
+  ✓ Ekstre Yükle, Döviz Al/Sat, POS, Değerleme düğmesi yok
+  ✓ Hesap Detayı'nda ertelenen özellik yok
+
+■ 5. Hareketler: İşlem Türü süzgecinde ve Planlı İşlem formunda döviz, değerleme, POS, tahsile verme yok
+  ✓ İşlem Türü: Tümü, Banka Masrafı, Faiz, Diğer Gelir ve Gider, Kart Borcu Ödemesi, Kredi, Açılış Bakiyesi, Ters Kayıt, Cari Tahsilat ve Ödeme, Fatura Tahsilat ve Ödeme, Taksit Tahsilat ve İadesi, Kayıt Tahsilatı, Stok Satış ve Alımı, Çek ve Senet, Kasa ile Banka Arası, Bankalar Arası Transfer, Kurulum ve Aktarım
+  ✓ Hareketler düğmeleri: Genel Bakış, Hesaplar, Hareketler, Ayarlar, + Masraf, + Faiz, + Diğer İşlem, Transfer, + Planlı İşlem, Planlı İşlemler
+  ✓ Planlı İşlem türleri: Banka Masrafı, Faiz Geliri, Faiz Gideri, Diğer Gelir, Diğer Gider
+  ✓ Diğer İşlem formunda Kambiyo/Elle Banka Fişi yok
+
+■ 6. Ayarlar: Temel ve Gelişmiş — POS, Ekstre, Döviz, Hareket (Kanal Alanı), Elle Banka Fişi, Bağdaştırıcılar, Kambiyo yok
+  ✓ Temel bölümler: Hesap, Eksi Bakiye, Mükerrer, Masraf, Tatil
+  ✓ Temel ayarlarda ertelenen özellik yok
+  ✓ bütün görünen bölümler: Hesap, Eksi Bakiye, Mükerrer, Masraf, Tatil, Faiz, Tatil, Hesap Eşlemeleri, Diğer
+  ✓ Gelişmiş ayarlarda ertelenen özellik yok
+  ✓ Diğer Gelir eşlemesi plan beyaz listesinden (642, 646, 649)
+  ✓ gizli ayar kalemlerinin hiçbiri ekranda yok
+
+■ 7. Raporlar → Tüm Raporlar: Banka grubunda yalnız Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı
+  ✓ Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı
+  ✓ ertelenen §8.10 raporu listede yok
+
+■ 8. Raporlar → Nakit Akış: Bugünkü Nakit ve Banka 12.000 (Nakit 2.000 + Gerçek Banka 10.000); Hesabı Atanmamış 900 ayrı, başlangıca girmez
+  ✓ başlangıç kutusu: Bugünkü Nakit ve Banka ₺12.000,00 Nakit Kasa ₺2.000,00 · Gerçek Banka ₺10.000,00
+  ✓ Hesabı Atanmamış kutusu: Hesabı Atanmamış Eski Hareketler ₺900,00 Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın
+  ✓ eski 'Bugünkü Kasa' etiketi yok
+  ✓ Nakit Akış adları (grafik başlığı sunucunun dönem başıyla: 2026-10-08): Bugünkü Nakit ve Banka | Hesabı Atanmamış Eski Hareketler | Beklenen Giriş | Beklenen Çıkış | Tahmini Nakit ve Banka · 07.11.2026 | En Düşük Tahmini Nakit ve Banka | Tahmini Nakit ve Banka · 08.10.2026 – 07.11.2026 | Vade | Kaynak | Açıklama | Giriş | Çıkış | Beklenen Nakit ve Banka
+  ✓ eski 'kasa' adları yok (Tahmini Kasa, Beklenen Kasa, grafik)
+  ✓ Başlangıç satırı: 08.10.2026 Başlangıç Bugünkü nakit ve banka ₺12.000,00
+  ✓ API: başlangıç 12000 = ANLIK DURUM Nakit 2000 + Gerçek Banka 10000
+
+■ 9. Çek/Senet kartı: Bankaya Tahsile Ver yok (Tahsil Edildi, Ciro Et, Karşılıksız / İade)
+  ✓ çek kartında Bankaya Tahsile Ver yok (× OPERASYON Çek / Senet ← Liste Alınan Çek No TMP-1 Portföyde ABC Ltd. Tutar ₺1.000,00 VADE 05.11.2026 28 gün kaldı ALIŞ TARİHİ 05.10.2026 CARİ ABC Ltd. Tahsil )
+
+■ 10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi): liste 'Tarihi Gelince Atanabilir', sihirbaz atlar ve söyler, tarih gelince atanır
+2026-10-10T18:51:58.919Z [WARN] Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez.
+  ✓ Nakit Akış: 20.10 eski havale bir kez, kaynağı "Hesabı Atanmamış (ileri tarihli)" (Kasa değil): 20.10.2026 Hesabı Atanmamış (ileri tarihli) Çek tahsili · No ILR-E2E · Çekli Müşteri ₺1.000,00 ₺11.000,00 · kaynak Hesabı Atanmamış (ileri tarihli)
+  ✓ başlangıç 10.000 (eski havale girmez): Bugünkü Nakit ve Banka ₺10.000,00 Nakit Kasa ₺0,00 · Gerçek Banka ₺10.000,00
+  ✓ Genel Bakış: Hesabı Atanmamış 250 (ileri tarihli 1.000 toplama girmez): Hesabı Atanmamış Eski Hareketler ₺250,00 Havale / EFT (102.00) ₺250,00 · POS / Kart (108.00) ₺0,00 — Gerçek Banka'ya ve hiçbir toplama girmez. Tarihi gelmemiş 1 eski hareket (+₺1.000,00, ilk 20.10.2026) bu toplama girmez
+  ✓ ileri tarihli satır ayrı bilgi: Tarihi gelmemiş 1 eski hareket (+₺1.000,00, ilk 20.10.2026) bu toplama girmez; tarihi gelince atanabilir.
+  ✓ ileri tarihli satır: 20.10.2026 Havale / EFT Çekli Müşteri — +₺1.000,00 Tarihi Gelince Atanabilir Tarihi gelmedi (20.10.2026); o gün hesaba atanabilir.
+  ✓ neden görünür yazıyla (yalnız title değil)
+  ✓ ileri tarihli satırın seçim kutusu pasif ({"disabled":true,"pick":false})
+  ✓ seçilebilen satır yalnız geçmiş havale (1)
+  ✓ istatistikler: Havale / EFT (102.00) ₺250,00 POS / Kart (108.00) ₺0,00 Kilitli Dönem — Atanamaz 0 2 hareket Tarihi Gelince Atanabilir 1 +₺1.000,00 · ilk 20.10.2026 · toplamlara girmez
+  ✓ sihirbaz önizlemesi: DEVİR KAPANIŞI Havale / EFT ₺0,00 · POS / Kart ₺0,00 BAĞLANACAK HAREKET 1 hareket · net +₺250,00 KİLİTLİ DÖNEM — ATANAMAZ 0 TARİHİ GELMEMİŞ — SONRA ATANIR 1 hareket · net +₺1.000,00 · ilk 20.10.2026 SONRA HESAP BAKİYESİ ₺10.250,00 SONRA HESABI ATANMAMIŞ Havale / EFT ₺0,00 · POS / Kart ₺0,00 | Tarihi Gelmemiş — Sonra Atanır1 hareket · net +₺1.000,00 · ilk 20.10.2026
+  ✓ Aktar: POST /bank/setup 200 (önceden 409 ledger-integrity)
+  ✓ sihirbaz sonucu: Kurulum Tamamlandı Eski hareketler aktarıldı: 1 hareket hesaba bağlandı. Tarihi gelmemiş 1 eski hareket atlandı (ilk 20.10.2026); tarihi gelince Hesabı Atanmamış Eski Hareketler'den hesaba atayın. Gerçek Banka: ₺10.250,00 Genel Bakış'taki “Kurulumu Tamamla” il
+  ✓ sihirbazdan sonra: Gerçek Banka 10250, Hesabı Atanmamış 0, ileri tarihli 1
+  ✓ ön koşul oluştu: taze yanıt gelmeden önceki ziyaretin listesi çizildi ("Tarihi Gelince Atanabilir" görüldü) — sunucunun bugünü 2026-10-21; yanıt 1 satır [2026-10-20 1000 atanabilir=true ileri=false]; ekran [20.10.2026 Havale / EFT Çekli Müşteri — +₺1.000,00]; Banka penceresi 1
+  ✓ tarih gelince sunucu satırı atanabilir der — sunucunun bugünü 2026-10-21; yanıt 1 satır [2026-10-20 1000 atanabilir=true ileri=false]; ekran [20.10.2026 Havale / EFT Çekli Müşteri — +₺1.000,00]; Banka penceresi 1
+  ✓ tarih gelince (taze listede) 'Tarihi Gelince Atanabilir' işareti kalktı — sunucunun bugünü 2026-10-21; yanıt 1 satır [2026-10-20 1000 atanabilir=true ileri=false]; ekran [20.10.2026 Havale / EFT Çekli Müşteri — +₺1.000,00]; Banka penceresi 1
+  ✓ tarih gelince Bu Hesaba Ata: POST /legacy/assign 200
+  ✓ atandıktan sonra: Gerçek Banka 11250 (10.000 + 250 + 1.000), Hesabı Atanmamış 0
+  ✓ mutabakat temiz
+  ✓ tek hesap
+  ✓ Kurulum Geçmişi'nde Geri Al düğmesi
+  ✓ Kurulum Geçmişi → Geri Al 200
+  ✓ geri alınca 06.10 havalesi listede atanabilir (önbellek bununla dolar): 06.10.2026 Havale / EFT Çekli Müşteri BNK-2026-000003 +₺250,00
+  ✓ Hesaplar → Kurulum Sihirbazı → Aktar 200 (06.10 havalesi bağlandı)
+  ✓ sunucuda bağlanmamış satır yok: []
+  ✓ ön koşul: taze yanıt tutulurken önbellekteki liste çizildi ve sihirbazın bağladığı 06.10 satırı içinde (06.10.2026 Havale / EFT Çekli Müşteri BNK-20)
+  ✓ önbellekten çizilen liste seçilemez (kutular ve Bu Hesaba Ata pasif): {"rows":[{"text":"06.10.2026 Havale / EFT Çekli Müşteri BNK-2026-000003 +₺250,00","pick":false}],"assignDisabled":true,"note":"Liste güncelleniyor; hareketler güncel liste gelince seçilebilir."}
+  ✓ nedeni görünür yazıyla: "Liste güncelleniyor; hareketler güncel liste gelince seçilebilir."
+  ✓ taze yanıt gelince liste boş (06.10 bağlı), güncelleniyor yazısı kalktı
+  ✓ sonra: Gerçek Banka 11250 (11.250), Hesabı Atanmamış 0
+  ✓ mutabakat temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-banka-210-temel: 69 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627/test/e2e/artifacts/senaryo-banka-210-temel

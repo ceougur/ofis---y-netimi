@@ -240,7 +240,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Stok";
     const pdf = tablePdf({
       now: clock(),
-      title: `${title} durumu`,
+      title: `${title} Durumu`,
       subtitle: [query.state === "low" ? "Kritik seviyede" : query.state === "out" ? "Tükenen" : query.state === "negative" ? "Eksi stoktakiler" : "Tüm ürünler", query.category, query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["Stok Kodu", "Ürün", "Kategori", "Mevcut", "Birim", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Durum"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text", "text"],
@@ -261,7 +261,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const money = value => moneyFormat.format(value || 0);
     const columns = ["Stok Kodu", "Ürün", "Kategori", "Birim", "Mevcut", "Toplam Giriş", "Toplam Çıkış", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Not"];
     const rows = data.items.map(item => ({ Kod: item.code, Ürün: item.name, Kategori: item.category, Birim: item.unit, Mevcut: number(item.qty), "Toplam Giriş": number(item.qtyIn), "Toplam Çıkış": number(item.qtyOut), "Kritik Seviye": number(item.minQty), "Birim Fiyat": money(item.unitPrice), Değer: money(item.value), "Son Hareket": dayText(item.lastMove), Not: item.note }));
-    const buffer = buildXlsx([{ name: title.slice(0, 31), columns, rows }], { now: clock(), title: `${title} durumu` });
+    const buffer = buildXlsx([{ name: title.slice(0, 31), columns, rows }], { now: clock(), title: `${title} Durumu` });
     audit(user, "stock.list.exported", "xlsx", { count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-durumu ${dayText(today())}.xlsx` });
   });

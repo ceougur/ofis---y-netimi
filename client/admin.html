@@ -142,7 +142,7 @@
       </form>
       <form class="adm-card adm-negative" id="adm-negative" novalidate aria-labelledby="adm-negative-title">
         <h2 id="adm-negative-title">Eksi Bakiye Denetimi</h2>
-        <p class="adm-muted">Bir ödeme, iade ya da düzeltme nakit kasayı eksiye düşürecekse ne olsun? <b>Uyar</b>: program sorar, onaylarsanız kaydeder. <b>Engelle</b>: kaydetmez. <b>Kontrol Yok</b>: sormaz. Havale/EFT ve POS için denetim yoktur; banka bakiyesi programda tutulmaz (Banka modülüyle gelecek).</p>
+        <p class="adm-muted">Bir ödeme, iade ya da düzeltme nakit kasayı eksiye düşürecekse ne olsun? <b>Uyar</b>: program sorar, onaylarsanız kaydeder. <b>Engelle</b>: kaydetmez. <b>Kontrol Yok</b>: sormaz. Bu ayar yalnız Nakit Kasa içindir. Banka hesapları ve kurumsal kartlar için denetim Banka → Ayarlar → Eksi Bakiye'dedir (KMH ve kart limitine kadar serbest); bir hesap için ayrıca Banka → Hesaplar → hesap → Düzenle → Eksi Bakiye Denetimi'nden değiştirilir. Açılış bakiyesi doğrulanana kadar o hesapta denetim kapalıdır.</p>
         <div class="adm-inline">
           <label class="hof-field"><span>Nakit Kasa</span><select id="adm-negative-cash" name="cash"><option value="warn">Uyar (Sorulur)</option><option value="block">Engelle</option><option value="off">Kontrol Yok</option></select></label>
           <button type="submit" class="hof-button" id="adm-negative-save">Kaydet</button>

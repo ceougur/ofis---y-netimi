@@ -345,7 +345,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const subtitle = [STATUS_TEXT[query.status], query.group ? groupName(query.group) : "Tüm gruplar", query.subgroup ? groupName(query.subgroup) : "", query.q ? `“${query.q}”` : ""].filter(Boolean).join(" · ");
     const pdf = tablePdf({
       now: clock(),
-      title: `${title} listesi`,
+      title: `${title} Listesi`,
       subtitle,
       // v2.0.6: kayıt tarihi ve bilgi notu da basılır (yatay sayfada notun yeri var; uzun not satır içinde sarılır).
       headers: ["No", "Ad Soyad", "Grup", "Telefon", "Kayıt", "Toplam", "Ödenen", "Kalan", "Sıradaki Vade", "Durum", "Bilgi Notu"],

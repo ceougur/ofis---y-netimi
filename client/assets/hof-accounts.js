@@ -40,6 +40,32 @@
     in: "Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır.",
     out: "Cariye para verildi (ör. tedarikçiye ödeme, iade): Kasa'dan çıkar.",
   };
+  // 2.1.0 temel sürüm (ek iş B, 10.10.2026): tahsilat/ödeme açıklaması seçilen YOLA göre (önceden yol ne olursa olsun "Kasa'dan çıkar" /
+  // "Kasa'ya girer" yazıyordu; kılavuz ekranı k39: Kredi Kartı seçiliyken "Kasa'dan çıkar"). picked: formda o yolun hesap/kart seçicisi var mı
+  // (yoksa hesap tanımlanmamıştır; satır Hesabı Atanmamış Eski Hareketler'e yazılır — plan K10).
+  const ENTRY_HELP_BY_METHOD = {
+    in: {
+      cash: () => ENTRY_HELP.in,
+      bank: picked => (picked ? "Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır." : "Cariden para alındı: bakiyeden düşer; banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır, makbuzu alınır."),
+      card: () => "Cariden POS ile tahsil edildi: bakiyeden düşer; Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır.",
+      cheque: () => "Cariden çek / senet alındı: evrak formu açılır; evrak portföye girer, carinin bakiyesinden düşer, Kasa değişmez.",
+    },
+    out: {
+      cash: () => ENTRY_HELP.out,
+      bank: picked => (picked ? "Cariye para verildi (ör. tedarikçiye ödeme, iade): seçilen banka hesabından çıkar." : "Cariye para verildi (ör. tedarikçiye ödeme, iade): banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır."),
+      card: picked => (picked ? "Cariye kurumsal kredi kartıyla ödendi: seçilen kurumsal kartın borcuna yazılır; bankadan, kart ekstresi ödenince çıkar." : "Cariye kredi kartıyla ödendi: kurumsal kart tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (POS / Kart) yazılır."),
+      cheque: () => "Cariye çek / senet verildi: evrak formu açılır; carinin bakiyesi evrakla düşer, Kasa değişmez.",
+    },
+  };
+  /** Formun açıklamasını seçili yola göre yazar (yol değişince ve hesap seçici yerleşince). */
+  function syncEntryHelp(dialog, type) {
+    const form = dialog?.querySelector("form");
+    const intro = dialog?.querySelector(".hof-modal-text");
+    const method = form?.querySelector('[name="method"]')?.value || "cash";
+    const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" ? form?.querySelector('[data-bank-pick="card"]') : null;
+    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick));
+    if (intro && text) intro.textContent = text;
+  }
   const LEDGER_FILTERS = [
     ["all", "Tümü", () => true],
     ["debit", "Borç", line => line.debit > 0],
@@ -312,7 +338,7 @@
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3>${account.refNo ? `<span class="hof-plan-refno" title="Cari No">No ${esc(account.refNo)}</span>` : ""}${esc(account.name)} ${typeBadge(account.type)}${active ? "" : badgeMuted("Pasif")}</h3><small>${esc(whereText(account) || "Grupsuz")}${account.phone ? ` · ${esc(account.phone)}` : ""}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Cari işlemleri">
-          <span class="hof-plan-toolgroup">${collect ? '<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="debt" title="Cari size borçlanır">Borç Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="credit" title="Siz cariye borçlanırsınız">Alacak Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="out" title="Cariye para verildi (Kasa’dan çıkar)">− Ödeme</button>' : ""}${canPlan() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="newPlan" title="Bu cariye taksit kartı aç">+ Taksit Planı</button>' : ""}</span>
+          <span class="hof-plan-toolgroup">${collect ? '<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="debt" title="Cari size borçlanır">Borç Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="credit" title="Siz cariye borçlanırsınız">Alacak Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="out" title="Cariye para verildi (Kasa, banka hesabı ya da kurumsal kart)">− Ödeme</button>' : ""}${canPlan() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="newPlan" title="Bu cariye taksit kartı aç">+ Taksit Planı</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(account), "card", "Cari Ekstre - PDF") : ""}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
           ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${active ? "passive" : "activate"}" title="${active ? "Pasif cari listede Pasif altında durur; hareketleri korunur" : ""}">${active ? "Pasife Al" : "Aktif Yap"}</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>` : ""}
         </div></div>
@@ -750,7 +776,13 @@
       onOpen: dialog => {
         // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
         const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
-        if (money_ && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card });
+        const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card }) : null;
+        // Ek iş B: açıklama yola göre (seçici yerleşince ve yol değişince).
+        if (money_) {
+          dialog.querySelector('[name="method"]')?.addEventListener("change", () => syncEntryHelp(dialog, type));
+          syncEntryHelp(dialog, type);
+          Promise.resolve(picker).then(() => syncEntryHelp(dialog, type)).catch(() => null);
+        }
       },
       onSubmit: async data => {
         if (data.method === "cheque") {

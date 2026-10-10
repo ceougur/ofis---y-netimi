@@ -118,7 +118,7 @@
           tone: defined && b.balance < 0 ? "is-bad" : "",
           sub: lines.join("<br>"),
           title: defined
-            ? `${labels.realBank}: banka hesaplarınızın (102) bakiyesi ${money(b.balance)}. Bugün giriş ${money(b.today?.in || 0)}, çıkış ${money(b.today?.out || 0)}; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz.${b.debt?.shown ? ` ${labels.debt} ${money(b.debt.total)} ayrıdır.` : ""}${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez; Banka → Kurulum ve Aktarım ile hesaba atayın.` : ""}${futureNote(b)}`
+            ? `${labels.realBank}: banka hesaplarınızın (102) bakiyesi ${money(b.balance)}. Bugün giriş ${money(b.today?.in || 0)}, çıkış ${money(b.today?.out || 0)}; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz.${b.debt?.shown ? ` ${labels.debt} ${money(b.debt.total)} ayrıdır.` : ""}${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez; Banka → Genel Bakış → ${labels.unassigned} → Şimdi Düzenle ile hesaba atayın.` : ""}${futureNote(b)}`
             : `Banka hesabı tanımlanmadı. Banka penceresinden hesaplarınızı ve açılış bakiyelerini girin.${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez.` : ""}${futureNote(b)}`,
         });
       }
@@ -285,6 +285,9 @@
     ["open", "Tüm Açık"],
   ];
   const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", cash: "Kasa", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
+  // Satırın kaynak adı (süzgeç seçeneği değil): eski sürümden kalan, hesaba atanmamış ileri tarihli havale / POS (sunucu SOURCE_TEXT.legacy ile aynı
+  // ad; PDF ve Excel de böyle yazar). Kasa süzgeciyle gelir; önceden "Kasa" yazıyordu (2.1.0 temel sürüm, küçük düzeltmeler).
+  const ROW_LABELS = { ...SOURCE_LABELS, legacy: "Hesabı Atanmamış (ileri tarihli)" };
   const SOURCE_HINTS = {
     plan: "Taksit kartlarının kalan taksitleri",
     cheque: "Portföydeki alınan ve ödenecek verilen çekler",
@@ -511,7 +514,7 @@
     const d = s.data;
     const t = d.totals;
     const rows = d.rows
-      .map((row, index) => `<tr class="is-${row.state}" data-due-row="${index}" tabindex="0" title="${esc(row.ref?.type === "record" ? "Kaydı tabloda göster" : "Kaynağını aç")}"><td>${esc(HOF.formatDate(row.date))}<small class="hof-rep-days is-${row.state}">${esc(dueDays(row))}</small></td><td><b>${esc(row.party || "—")}</b></td><td><span class="hof-rep-src is-${esc(row.source)}">${esc(SOURCE_LABELS[row.source] || row.source)}</span></td><td>${esc(row.label || "")}${row.detail ? `<small>${esc(row.detail)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" && row.amount !== null ? esc(money(row.amount)) : row.direction === "in" ? '<span class="hof-muted">tutar yok</span>' : ""}</td><td class="num hof-cash-out">${row.direction === "out" && row.amount !== null ? esc(money(row.amount)) : ""}</td></tr>`)
+      .map((row, index) => `<tr class="is-${row.state}" data-due-row="${index}" tabindex="0" title="${esc(row.ref?.type === "record" ? "Kaydı tabloda göster" : "Kaynağını aç")}"><td>${esc(HOF.formatDate(row.date))}<small class="hof-rep-days is-${row.state}">${esc(dueDays(row))}</small></td><td><b>${esc(row.party || "—")}</b></td><td><span class="hof-rep-src is-${esc(row.source)}">${esc(ROW_LABELS[row.source] || row.source)}</span></td><td>${esc(row.label || "")}${row.detail ? `<small>${esc(row.detail)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" && row.amount !== null ? esc(money(row.amount)) : row.direction === "in" ? '<span class="hof-muted">tutar yok</span>' : ""}</td><td class="num hof-cash-out">${row.direction === "out" && row.amount !== null ? esc(money(row.amount)) : ""}</td></tr>`)
       .join("");
     const dormant = d.dormant?.length
       ? `<details class="hof-rep-overdue"><summary>${ICONS.warn} Tabloda ödemesi kesilmiş olabilecek ${d.dormant.length} kayıt (son yazılı aydan sonra üst üste boş aylar)</summary><div class="hof-rep-table"><table class="hof-table"><tbody>${d.dormant.map((item, index) => `<tr data-dormant-row="${index}" tabindex="0" title="Kaydı tabloda göster"><td><b>${esc(item.party || "—")}</b><small>${esc(item.detail || "")}</small></td><td>Son ödeme: ${esc(item.lastPaidText || "—")}</td><td class="num">${esc(String(item.emptyMonths))} boş ay</td></tr>`).join("")}</tbody></table></div></details>`
@@ -541,17 +544,17 @@
     if (!s.data) return `${filters}<p class="hof-empty">Projeksiyon hazırlanıyor…</p>`;
     const d = s.data;
     const low = d.lowest;
-    const rows = d.rows.map(row => `<tr class="is-${row.direction}"><td>${esc(HOF.formatDate(row.date))}</td><td><span class="hof-rep-src is-${esc(row.source)}">${esc(SOURCE_LABELS[row.source] || row.source)}</span></td><td><b>${esc(row.label)}</b>${row.party ? `<small>${esc(row.party)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" ? esc(money(row.amount)) : ""}</td><td class="num hof-cash-out">${row.direction === "out" ? esc(money(row.amount)) : ""}</td><td class="num ${row.balance < 0 ? "hof-cash-out" : ""}"><b>${esc(money(row.balance))}</b></td></tr>`).join("");
+    const rows = d.rows.map(row => `<tr class="is-${row.direction}"><td>${esc(HOF.formatDate(row.date))}</td><td><span class="hof-rep-src is-${esc(row.source)}">${esc(ROW_LABELS[row.source] || row.source)}</span></td><td><b>${esc(row.label)}</b>${row.party ? `<small>${esc(row.party)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" ? esc(money(row.amount)) : ""}</td><td class="num hof-cash-out">${row.direction === "out" ? esc(money(row.amount)) : ""}</td><td class="num ${row.balance < 0 ? "hof-cash-out" : ""}"><b>${esc(money(row.balance))}</b></td></tr>`).join("");
     const overdue = d.overdue.length
-      ? `<details class="hof-rep-overdue"><summary>${ICONS.warn} Vadesi geçmiş, kapanmamış: <b>${esc(money(d.overdueTotals.in))}</b> alacak · <b>${esc(money(d.overdueTotals.out))}</b> ödeme (${d.overdue.length} kalem) — ${d.includeOverdue ? "başlangıca eklendi" : "tahmine dahil değil"}</summary><div class="hof-rep-table"><table class="hof-table"><tbody>${d.overdue.map(row => `<tr><td>${esc(HOF.formatDate(row.date))}</td><td>${esc(SOURCE_LABELS[row.source] || row.source)}</td><td><b>${esc(row.label)}</b>${row.party ? `<small>${esc(row.party)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" ? esc(money(row.amount)) : ""}</td><td class="num hof-cash-out">${row.direction === "out" ? esc(money(row.amount)) : ""}</td></tr>`).join("")}</tbody></table></div></details>`
+      ? `<details class="hof-rep-overdue"><summary>${ICONS.warn} Vadesi geçmiş, kapanmamış: <b>${esc(money(d.overdueTotals.in))}</b> alacak · <b>${esc(money(d.overdueTotals.out))}</b> ödeme (${d.overdue.length} kalem) — ${d.includeOverdue ? "başlangıca eklendi" : "tahmine dahil değil"}</summary><div class="hof-rep-table"><table class="hof-table"><tbody>${d.overdue.map(row => `<tr><td>${esc(HOF.formatDate(row.date))}</td><td>${esc(ROW_LABELS[row.source] || row.source)}</td><td><b>${esc(row.label)}</b>${row.party ? `<small>${esc(row.party)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" ? esc(money(row.amount)) : ""}</td><td class="num hof-cash-out">${row.direction === "out" ? esc(money(row.amount)) : ""}</td></tr>`).join("")}</tbody></table></div></details>`
       : "";
     return `${filters}
       ${statTiles([
         // K10 (plan §8.9): başlangıç = Nakit Kasa + Gerçek Banka; Hesabı Atanmamış Eski Hareketler ayrı, başlangıca girmez.
         { label: "Bugünkü Nakit ve Banka", html: moneyHtml(d.cashToday), help: d.start && d.start.realBank !== null && d.start.realBank !== undefined ? `Nakit Kasa ${esc(money(d.start.cash))} · ${esc(d.start.labels?.realBank || "Gerçek Banka")} ${d.start.defined ? esc(money(d.start.realBank)) : "—"}` : "" },
         // Hesabı Atanmamış: bugüne kadarki satırlar (Banka Genel Bakış ile aynı formül). Eski sürümden kalan ileri tarihli satır ayrı bilgi; akışta
-        // kendi gününde beklenen hareket olarak yer alır.
-        d.start && (Math.abs(d.start.unassigned || 0) > 0.005 || d.start.unassignedFuture) ? { label: d.start.labels?.unassigned || "Hesabı Atanmamış Eski Hareketler", html: moneyHtml(d.start.unassigned || 0), help: `Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın${d.start.unassignedFuture ? ` · tarihi gelmemiş ${d.start.unassignedFuture.count} eski hareket (${esc(money(d.start.unassignedFuture.total))}, ilk ${esc(HOF.formatDate(d.start.unassignedFuture.firstDate))}) bu tutara girmez` : ""}` } : null,
+        // kendi gününde beklenen hareket olarak, ayrı kaynak adıyla ("Hesabı Atanmamış (ileri tarihli)"; Kasa değil) yer alır.
+        d.start && (Math.abs(d.start.unassigned || 0) > 0.005 || d.start.unassignedFuture) ? { label: d.start.labels?.unassigned || "Hesabı Atanmamış Eski Hareketler", html: moneyHtml(d.start.unassigned || 0), help: `Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın${d.start.unassignedFuture ? ` · tarihi gelmemiş ${d.start.unassignedFuture.count} eski hareket (${esc(money(d.start.unassignedFuture.total))}, ilk ${esc(HOF.formatDate(d.start.unassignedFuture.firstDate))}) bu tutara girmez; akışta kendi gününde “${esc(ROW_LABELS.legacy)}” satırıdır` : ""}` } : null,
         { label: "Beklenen Giriş", html: moneyHtml(d.totals.in), tone: "is-in" },
         { label: "Beklenen Çıkış", html: moneyHtml(d.totals.out), tone: "is-out" },
         // 2.1.0 temel sürüm (K10): projeksiyonun bakiyesi Nakit Kasa + Gerçek Banka'dır; adlar "kasa" demez (PDF ve Excel ile aynı).

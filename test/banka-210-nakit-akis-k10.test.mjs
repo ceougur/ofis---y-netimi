@@ -85,7 +85,7 @@ describe("Nakit Akış adları (K10): bakiye Nakit ve Banka — ekran, PDF ve Ex
   });
 
   it("Excel: Özet ve sütun adları aynı; eski 'kasa' adı yok", async () => {
-    for (const [query, sheet, head] of [["preset=next30&table=0", "Nakit Akışı", "Beklenen Nakit ve Banka"], ["preset=next30&table=0&group=month", "Aylık toplamlar", "Dönem Sonu Nakit ve Banka"]]) {
+    for (const [query, sheet, head] of [["preset=next30&table=0", "Nakit Akışı", "Beklenen Nakit ve Banka"], ["preset=next30&table=0&group=month", "Aylık Toplamlar", "Dönem Sonu Nakit ve Banka"]]) {
       const xlsx = await ctx.api.raw("GET", `/api/workspace/overview/nakit-akisi.xlsx?${query}`);
       assert.equal(xlsx.status, 200);
       const sheets = xlsxSheets(xlsx.buffer);
@@ -93,6 +93,24 @@ describe("Nakit Akış adları (K10): bakiye Nakit ve Banka — ekran, PDF ve Ex
       for (const label of ["Başlangıç (Nakit ve Banka)", "Dönem Sonu Tahmini Nakit ve Banka", "En Düşük Tahmini Nakit ve Banka"]) assert.ok(labels.includes(label), `Excel Özet (${query}): "${label}" yok (${labels.join(" | ")})`);
       assert.ok((sheets[sheet] || []).some(cells => cells.includes(head)), `Excel ${sheet}: "${head}" sütunu yok (${JSON.stringify((sheets[sheet] || []).slice(0, 2))})`);
       assert.doesNotMatch(JSON.stringify(sheets), OLD, `Excel (${query}): eski "kasa" adı kaldı`);
+    }
+  });
+
+  // Yazım düzeni (küçük düzeltmeler, 10.10.2026; ders 11 — her süzgeç seçeneği): görünüm adı ekrandaki seçenekle aynı ("Günlük Toplamlar",
+  // "Haftalık Toplamlar", "Aylık Toplamlar"); Excel sayfa adı ve PDF alt başlığı önceden "… toplamlar" yazıyordu.
+  it("Excel sayfa adı ve PDF alt başlığı her görünümde ekrandaki seçenekle aynı: Günlük / Haftalık / Aylık Toplamlar", async () => {
+    const screen = readFileSync(new URL("../client/assets/hof-overview.js", import.meta.url), "utf8");
+    for (const [group, name] of [["day", "Günlük Toplamlar"], ["week", "Haftalık Toplamlar"], ["month", "Aylık Toplamlar"]]) {
+      assert.ok(screen.includes(`<option value="${group}" \${s.group === "${group}" ? "selected" : ""}>${name}</option>`), `ekran seçeneği: ${name}`);
+      const xlsx = await ctx.api.raw("GET", `/api/workspace/overview/nakit-akisi.xlsx?preset=next30&table=0&group=${group}`);
+      assert.equal(xlsx.status, 200);
+      const names = Object.keys(xlsxSheets(xlsx.buffer));
+      assert.ok(names.includes(name), `Excel (${group}) sayfa adı "${name}" yok: ${names.join(" | ")}`);
+      const pdf = await ctx.api.raw("GET", `/api/workspace/overview/nakit-akisi.pdf?preset=next30&table=0&group=${group}`);
+      assert.equal(pdf.status, 200);
+      const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
+      assert.ok(text.includes(name), `PDF (${group}) alt başlığında "${name}" yok: ${text.slice(0, 300)}`);
+      assert.doesNotMatch(`${names.join(" ")} ${text}`, /(Günlük|Haftalık|Aylık) toplamlar/, `(${group}) küçük harfli eski ad kaldı`);
     }
   });
 

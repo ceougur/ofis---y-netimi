@@ -1,0 +1,32 @@
+{
+  "ad": "ek-yesil-senaryo-banka-210b-tekrar",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210b.mjs",
+  "commit": "715d998f79d11ec8c242067cc931f052768e5163",
+  "dal": "worktree-agent-a9dfb657bd3683627",
+  "kirli": 0,
+  "izlenmeyen": 27,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T19:59:56.653Z",
+  "sure_sn": 95.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 89,
+    "gecen": 89,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler/2026-10-10/ek-yesil-senaryo-banka-210b-tekrar.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627",
+  "ham_cikti_sha256": "76ce26d17989506da0e8b92dfa100a02adbc39ecb54a9bea4f025500ae7eb47c",
+  "ham_cikti_bayt": 8578
+}

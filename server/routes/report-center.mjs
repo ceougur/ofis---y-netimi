@@ -542,7 +542,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "banka-bakiye",
       group: "Banka",
       title: "Banka Bakiye Raporu",
-      description: "Her banka hesabının dönem başı ve dönem sonu bakiyesi; dönemdeki giriş, çıkış ve transferleri. Gerçek Banka, Kart ve Kredi Borcu ve Hesabı Atanmamış Eski Hareketler ayrı gruplardır; kart ve kredi borcu ile hesabı atanmamış hareketler Gerçek Banka toplamına girmez.",
+      description: "Her banka hesabının dönem başı ve dönem sonu bakiyesi; dönemdeki giriş, çıkış ve transferleri. Gerçek Banka, Kart ve Kredi Borcu ve Hesabı Atanmamış Eski Hareketler ayrı gruplardır; kart ve kredi borcu ile hesabı atanmamış hareketler Gerçek Banka toplamına girmez. Eski sürümden kalan, tarihi gelmemiş hesapsız hareketler bakiyeye girmez; özette Tarihi Gelince Atanabilir olarak ayrı yazılır.",
       params: ["range", "bankGroup"],
       preset: "thisYear",
       permission: "bank.reports",
@@ -558,7 +558,19 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           return sums.get(key);
         };
         const lines = moneyLines()?.classified ? moneyLines().classified({ ways: ["bank", "card", "ccard", "loan"], until: range.to, light: true }) : [];
+        // Ek iş D (2.1.0 temel sürüm; plan §8.4 K10 "Hesabı Atanmamış … bugüne kadar", A13 / karar 42): eski sürümden kalan, hesaba atanmamış
+        // İLERİ TARİHLİ satır (dönem sonu bugünden sonraysa ya da Tüm Zamanlar) bakiyeye ve giriş/çıkışa karışmaz; Banka Genel Bakış'la aynı
+        // kuralla ayrı bilgi ("Tarihi Gelince Atanabilir"; toplamlara girmez). Önceden "Bu Yıl" raporu Hesabı Atanmamış'a ileri tarihli satırı
+        // katıyor, Banka Genel Bakış aynı anda bugüne kadarki tutarı gösteriyordu.
+        const day = today();
+        const ahead = { count: 0, cents: 0, first: "" };
         for (const line of lines) {
+          if (!line.ref && line.date > day) {
+            ahead.count += 1;
+            ahead.cents += line.kind === "in" ? Number(line.cents) : -Number(line.cents);
+            if (!ahead.first || line.date < ahead.first) ahead.first = line.date;
+            continue;
+          }
           const key = line.ref || `u:${line.way}`;
           const b = bucket(key);
           const signed = line.kind === "in" ? Number(line.cents) : -Number(line.cents);
@@ -602,6 +614,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
             [K10_LABELS.realBank, hasReal ? cents(total.real) : "Banka Hesabı Tanımlanmadı"],
             ...(hasDebt ? [[K10_LABELS.debt, cents(total.debt)]] : []),
             ...(total.unassigned || sums.has("u:bank") || sums.has("u:card") ? [[K10_LABELS.unassigned, cents(total.unassigned)]] : []),
+            // PDF özet hücresi kısa tutulur (uzun değer "…" ile kesiliyordu): tutar ve sayı/ilk gün iki satır.
+            ...(ahead.count ? [["Tarihi Gelince Atanabilir", cents(ahead.cents)], ["Tarihi Gelmemiş Eski Hareket", `${ahead.count} · ilk ${dayText(ahead.first)}`]] : []),
             ["Hesap", String(rows.length)],
           ],
           // Gruplar (varlık, borç, hesabı atanmamış) birbirine toplanmaz: TOPLAM yalnız tek grup gösterilirken.
