@@ -39,8 +39,12 @@
   const dateFormat = new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
   const dateTimeFormat = new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
   const moneyFormat = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 2 });
+  // Yalnız gün ("YYYY-AA-GG") YEREL gün olarak okunur. new Date("2026-10-08") UTC gece yarısıdır; UTC'nin batısındaki saat diliminde
+  // (ör. America/Los_Angeles) bir önceki gün görünüyordu (CI 534 incelemesi, TZ denemesi: Nakit Akış "07.10.2026 – 06.11.2026").
+  const DAY_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/;
   const safeDate = value => {
-    const date = value instanceof Date ? value : new Date(value);
+    const day = typeof value === "string" ? DAY_ONLY.exec(value) : null;
+    const date = value instanceof Date ? value : day ? new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3])) : new Date(value);
     return Number.isNaN(date.getTime()) ? null : date;
   };
   HOF.formatDate = value => (safeDate(value) ? dateFormat.format(safeDate(value)) : "—");
