@@ -1213,7 +1213,7 @@
   }
 
   // ---------- Lisans ----------
-  const STATE_LABELS = { none: "Etkinleştirilmedi", transition: "Geçiş dönemi", trial: "Deneme", licensed: "Lisanslı", expired: "Süresi doldu", blocked: "Engellendi", verify: "Doğrulanamadı", clock: "Saat hatası" };
+  const STATE_LABELS = { none: "Etkinleştirilmedi", transition: "Geçiş Dönemi", trial: "Deneme", licensed: "Lisanslı", expired: "Süresi doldu", blocked: "Engellendi", verify: "Doğrulanamadı", clock: "Saat Hatası" };
   function renderLicense(status) {
     const tone = !status.writable ? "error" : status.severity === "warn" ? "warn" : "ok";
     const row = (label, value) => (value ? `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>` : "");

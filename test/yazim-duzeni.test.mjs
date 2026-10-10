@@ -89,7 +89,9 @@ const SENTENCES = new Set([
     "İlk vade yazılmayan satırlar için",
     "İlk vadesi yazılmayanlar için ilk vade",
     "İncele ve karar ver",
-    "Şimdilik yok"
+    "Şimdilik yok",
+    // Kesin olmayan sektör önerisinin göstergesi: ad + kısa talimat (m3, 10.10.2026; "kontrol edin" cümle düzeninde kalır).
+    "Orta Güven — kontrol edin"
   ]);
 
 function eligible(text) {

@@ -12,7 +12,7 @@ import { systemClock } from "../lib/clock.mjs";
 // Raporlar ileriye bir yıl bakar (takvim ve bildirimler bu ay + 7 gün): açıkça tarihi yazılı ödeme ve sözler aralık
 // seçilince görünür. Geçmiş için takvimin kuralı geçerlidir (90 gün; son tarihler 30 gün).
 const AHEAD = Object.freeze({ aheadDays: 366, promiseDays: 366 });
-const TITLES = { "cari-ekstre": "Cari ekstre", "vade-takip": "Vade takip", "nakit-akis": "Nakit akış" };
+const TITLES = { "cari-ekstre": "Cari Ekstre", "vade-takip": "Vade Takip", "nakit-akis": "Nakit Akış" };
 const ascii = value => String(value).replace(/[ıİşŞğĞçÇöÖüÜ]/g, char => ({ ı: "i", İ: "I", ş: "s", Ş: "S", ğ: "g", Ğ: "G", ç: "c", Ç: "C", ö: "o", Ö: "O", ü: "u", Ü: "U" })[char]);
 
 export function registerReportRoutes(router, { auth, store, dataset, profile, plans, now: clock = systemClock }) {
