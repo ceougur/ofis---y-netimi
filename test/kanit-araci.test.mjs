@@ -215,3 +215,27 @@ describe("doğrulama kapısı: Stop kancası ve imzalı paket kapısı", () => {
     assert.doesNotMatch(result.stderr, /ENOENT|anahtar/i, "kapı anahtardan önce");
   });
 });
+
+describe("doğrulama kapısı: kanca komutu (Stop / SubagentStop)", () => {
+  const hook = input => spawnSync(process.execPath, [TOOL, "durum", "--hook"], { input: JSON.stringify(input), encoding: "utf8", timeout: 90_000 });
+  it("kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "kanca-"));
+    try {
+      const first = hook({ stop_hook_active: false, cwd: dir });
+      assert.equal(first.status, 2, first.stderr);
+      assert.match(first.stderr, /KANIT KAPISI/);
+      assert.match(first.stderr, /git durumu okunamadı/);
+      assert.match(first.stderr, /CI BELİRSİZ/);
+      assert.equal(hook({ stop_hook_active: true, cwd: dir }).status, 0);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+  it("depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar", () => {
+    const settings = JSON.parse(readFileSync(path.join(ROOT, ".claude", "settings.json"), "utf8"));
+    for (const event of ["Stop", "SubagentStop"]) {
+      const commands = (settings.hooks?.[event] || []).flatMap(group => group.hooks.map(item => item.command));
+      assert.ok(commands.some(command => /tools\/kanit\.mjs" durum --hook$/.test(command)), `${event}: ${commands.join(", ")}`);
+    }
+  });
+});

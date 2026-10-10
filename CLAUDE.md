@@ -62,8 +62,9 @@ mekanizmayı uygula, Windows'taki gerçek CI sonucuyla doğrula")
   yüklenir; "Doğrulama Kapısı" işi needs sonuçlarını + kayıtları okur: 4 platform (Linux/Windows × Node 22/24) + bütün e2e bu commit'te
   GEÇTİ, Linux ve Windows AYNI sayıda test, atlanan test yok; `package` kapıya bağlı. (2) `tools/kanit.mjs ci <sha>` → yalnız ci.yml,
   kapı işi yeşil değilse YEŞİL demez. (3) tools/release.mjs → temiz ağaç + CI YEŞİL değilse imzalı paket ÜRETMEZ (atlatma yok).
-  (4) release.yml → yayımdan önce `kanit.mjs ci "$GITHUB_SHA" --bekle 90`. (5) `.claude/settings.json` Stop kancası → durum yeşil
-  değilse yanıtı bir kez durdurur, makine durumunu (CI işleri, gönderilmemiş commit, değişmiş dosya) modele dayatır.
+  (4) release.yml → yayımdan önce `kanit.mjs ci "$GITHUB_SHA" --bekle 90`. (5) `.claude/settings.json` Stop + SubagentStop kancası → durum
+  yeşil değilse yanıtı bir kez durdurur, makine durumunu (CI işleri, gönderilmemiş commit, değişmiş dosya; ajanda kendi worktree'si)
+  modele dayatır.
 - Sınır (dürüst): kanca ve yerel araç, kodu değiştirebilen biri tarafından değiştirilebilir (değişiklik git geçmişinde görünür).
   Sunucu tarafında bağlayıcı olan tek şey master için "Doğrulama Kapısı" zorunlu durum denetimi (GitHub → Settings → Rules) —
   bunu yalnız depo sahibi açabilir (bu oturumun belirteci yönetim yetkisine sahip değil, 403).

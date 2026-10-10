@@ -24,13 +24,14 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const KANIT = process.env.KANIT_DIR ? path.resolve(process.env.KANIT_DIR) : path.join(ROOT, "docs", "kanit");
 const GZIP_OVER = 1024 * 1024;
 
-const git = (...args) => {
+const gitIn = cwd => (...args) => {
   try {
-    return execFileSync("git", args, { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    return execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
   } catch {
     return null;
   }
 };
+const git = gitIn(ROOT);
 
 const last = (text, regex) => {
   let match = null;
@@ -361,7 +362,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   else if (cmd === "ozet") code = summaryOf(rest[0]);
   else if (cmd === "kapi") code = gateCommand(rest);
   else if (cmd === "durum") {
-    const state = machineState();
     if (rest.includes("--hook")) {
       let input = {};
       try {
@@ -369,10 +369,13 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       } catch {
         input = {};
       }
+      // Kancada durum, kancayı tetikleyen oturumun (ya da yardımcı ajanın kendi worktree'sinin) klasöründen okunur.
+      const state = machineState({ gitFn: input.cwd ? gitIn(input.cwd) : git });
       const decision = hookDecision(input, state);
       if (decision.message) process.stderr.write(`${decision.message}\n`);
       code = decision.code;
     } else {
+      const state = machineState();
       console.log(state.line);
       for (const job of state.jobs) console.log(`  - ${job}`);
       code = state.green ? 0 : 1;
