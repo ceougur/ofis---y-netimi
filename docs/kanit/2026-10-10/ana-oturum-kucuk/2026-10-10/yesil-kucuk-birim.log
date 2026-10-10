@@ -1,0 +1,215 @@
+TAP version 13
+# (node:27349) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Nakit Akış başlangıcı (K10): bankasız kurulum
+    # Subtest: başlangıç = Nakit Kasa 500; hesapsız havale 300 başlangıca girmez, ayrı satırda; ANLIK DURUM Kasa ile aynı
+    ok 1 - başlangıç = Nakit Kasa 500; hesapsız havale 300 başlangıca girmez, ayrı satırda; ANLIK DURUM Kasa ile aynı
+      ---
+      duration_ms: 29.483727
+      type: 'test'
+      ...
+    1..1
+ok 1 - Nakit Akış başlangıcı (K10): bankasız kurulum
+  ---
+  duration_ms: 571.797577
+  type: 'suite'
+  ...
+# Subtest: Nakit Akış başlangıcı (K10): ileri tarihli eski hesapsız havale başlangıca girmez, akışta bir kez
+    # Subtest: başlangıç = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; kira −1.000 akışta bir kez (18.10), dönem sonu 11.000
+    ok 1 - başlangıç = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; kira −1.000 akışta bir kez (18.10), dönem sonu 11.000
+      ---
+      duration_ms: 24.997858
+      type: 'test'
+      ...
+    1..1
+ok 2 - Nakit Akış başlangıcı (K10): ileri tarihli eski hesapsız havale başlangıca girmez, akışta bir kez
+  ---
+  duration_ms: 446.125522
+  type: 'suite'
+  ...
+# Subtest: Nakit Akış adları (K10): bakiye Nakit ve Banka — ekran, PDF ve Excel aynı
+    # Subtest: PDF: Başlangıç (Nakit ve Banka) · Dönem Sonu Tahmini Nakit ve Banka · En Düşük Tahmini Nakit ve Banka · Beklenen Nakit ve Banka; aylıkta Dönem Sonu Nakit ve Banka
+    ok 1 - PDF: Başlangıç (Nakit ve Banka) · Dönem Sonu Tahmini Nakit ve Banka · En Düşük Tahmini Nakit ve Banka · Beklenen Nakit ve Banka; aylıkta Dönem Sonu Nakit ve Banka
+      ---
+      duration_ms: 66.942661
+      type: 'test'
+      ...
+    # Subtest: Excel: Özet ve sütun adları aynı; eski 'kasa' adı yok
+    ok 2 - Excel: Özet ve sütun adları aynı; eski 'kasa' adı yok
+      ---
+      duration_ms: 28.940919
+      type: 'test'
+      ...
+    # Subtest: Excel sayfa adı ve PDF alt başlığı her görünümde ekrandaki seçenekle aynı: Günlük / Haftalık / Aylık Toplamlar
+    ok 3 - Excel sayfa adı ve PDF alt başlığı her görünümde ekrandaki seçenekle aynı: Günlük / Haftalık / Aylık Toplamlar
+      ---
+      duration_ms: 94.793087
+      type: 'test'
+      ...
+    # Subtest: Ekran (istemci kaynağı): Nakit Akış kutuları, tablo başlıkları ve grafik 'Nakit ve Banka' der
+    ok 4 - Ekran (istemci kaynağı): Nakit Akış kutuları, tablo başlıkları ve grafik 'Nakit ve Banka' der
+      ---
+      duration_ms: 1.760376
+      type: 'test'
+      ...
+    1..4
+ok 3 - Nakit Akış adları (K10): bakiye Nakit ve Banka — ekran, PDF ve Excel aynı
+  ---
+  duration_ms: 538.095614
+  type: 'suite'
+  ...
+# (node:27350) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye karışmaz (gerçek v2.0.23 verisi)
+    # Subtest: Banka Genel Bakış: Hesabı Atanmamış 250 (bugüne kadar); ileri tarihli 2 satır (+600) ayrı
+    ok 1 - Banka Genel Bakış: Hesabı Atanmamış 250 (bugüne kadar); ileri tarihli 2 satır (+600) ayrı
+      ---
+      duration_ms: 25.016187
+      type: 'test'
+      ...
+    # Subtest: varsayılan (Bu Yıl): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 2 - varsayılan (Bu Yıl): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 24.281164
+      type: 'test'
+      ...
+    # Subtest: Bu Ay: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 3 - Bu Ay: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 20.119408
+      type: 'test'
+      ...
+    # Subtest: Geçen Ay: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 4 - Geçen Ay: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 14.42899
+      type: 'test'
+      ...
+    # Subtest: Son 30 Gün: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 5 - Son 30 Gün: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 16.457582
+      type: 'test'
+      ...
+    # Subtest: Tüm Zamanlar: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 6 - Tüm Zamanlar: Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 13.433428
+      type: 'test'
+      ...
+    # Subtest: geleceğe uzanan (D−10 … D+30): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 7 - geleceğe uzanan (D−10 … D+30): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 13.73739
+      type: 'test'
+      ...
+    # Subtest: yalnız ilk ileri satır (D−10 … D+7): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 8 - yalnız ilk ileri satır (D−10 … D+7): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 12.951057
+      type: 'test'
+      ...
+    # Subtest: geçmişte biten (D−10 … D−3): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 9 - geçmişte biten (D−10 … D−3): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 12.706501
+      type: 'test'
+      ...
+    # Subtest: tamamen gelecekte (D+1 … D+30): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+    ok 10 - tamamen gelecekte (D+1 … D+30): Hesabı Atanmamış = dönem sonu ile bugünden hangisi önceyse o güne kadar; ileri tarihli ayrı bilgi; TOPLAM = satırlar
+      ---
+      duration_ms: 15.899149
+      type: 'test'
+      ...
+    # Subtest: Bu Yıl: rapor Hesabı Atanmamış = Banka Genel Bakış (aynı gün aynı sayı); PDF ve Excel ekranla aynı
+    ok 11 - Bu Yıl: rapor Hesabı Atanmamış = Banka Genel Bakış (aynı gün aynı sayı); PDF ve Excel ekranla aynı
+      ---
+      duration_ms: 68.653745
+      type: 'test'
+      ...
+    1..11
+ok 4 - Banka Bakiye Raporu: ileri tarihli eski hesapsız havale bakiyeye karışmaz (gerçek v2.0.23 verisi)
+  ---
+  duration_ms: 1360.987826
+  type: 'suite'
+  ...
+# (node:27351) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Nakit Akış / Vade Takip: ileri tarihli satırın kaynağı yoluna göre (gerçek v2.0.23 verisi)
+    # Subtest: B1+B2 API: nakit 'Kasa (ileri tarihli)', hesapsız eski havale 'Hesabı Atanmamış (ileri tarihli)'; her satır bir kez; toplamlar bağımsız defterle
+    ok 1 - B1+B2 API: nakit 'Kasa (ileri tarihli)', hesapsız eski havale 'Hesabı Atanmamış (ileri tarihli)'; her satır bir kez; toplamlar bağımsız defterle
+      ---
+      duration_ms: 2.629922
+      type: 'test'
+      ...
+    # Subtest: B1 PDF ve Excel: Kaynak kolonu ekranla aynı ad (Kasa yalnız nakitte)
+    ok 2 - B1 PDF ve Excel: Kaynak kolonu ekranla aynı ad (Kasa yalnız nakitte)
+      ---
+      duration_ms: 62.605944
+      type: 'test'
+      ...
+    # Subtest: B1 ekran: istemcinin satır adı sunucuyla aynı ('Hesabı Atanmamış (ileri tarihli)'; Kasa kutusu süzgeci değişmez)
+    ok 3 - B1 ekran: istemcinin satır adı sunucuyla aynı ('Hesabı Atanmamış (ileri tarihli)'; Kasa kutusu süzgeci değişmez)
+      ---
+      duration_ms: 0.979864
+      type: 'test'
+      ...
+    # Subtest: B4 Vade Takip (komşu): aynı satırlar aynı adla; Kasa süzgeci Kasa'nın satırlarını ve hesapsız eski satırları ayrı adla verir
+    ok 4 - B4 Vade Takip (komşu): aynı satırlar aynı adla; Kasa süzgeci Kasa'nın satırlarını ve hesapsız eski satırları ayrı adla verir
+      ---
+      duration_ms: 16.428997
+      type: 'test'
+      ...
+    # Subtest: B3 tutarlılık: D+11'de eski satırlar hesaba atanınca başlangıç = D0 projeksiyonunun dönem sonu (11.700)
+    ok 5 - B3 tutarlılık: D+11'de eski satırlar hesaba atanınca başlangıç = D0 projeksiyonunun dönem sonu (11.700)
+      ---
+      duration_ms: 44.571467
+      type: 'test'
+      ...
+    1..5
+ok 5 - Nakit Akış / Vade Takip: ileri tarihli satırın kaynağı yoluna göre (gerçek v2.0.23 verisi)
+  ---
+  duration_ms: 1140.404102
+  type: 'suite'
+  ...
+# Subtest: Nakit Akış: hesaba atanmış ileri tarihli banka ve kurumsal kart satırı (ham veri)
+    # Subtest: B5 dönem sonu = Nakit 2.000 + Ziraat (10.000 − 700) = 11.300; havale bir kez, kart borcu hiç
+    ok 1 - B5 dönem sonu = Nakit 2.000 + Ziraat (10.000 − 700) = 11.300; havale bir kez, kart borcu hiç
+      ---
+      duration_ms: 23.268897
+      type: 'test'
+      ...
+    1..1
+ok 6 - Nakit Akış: hesaba atanmış ileri tarihli banka ve kurumsal kart satırı (ham veri)
+  ---
+  duration_ms: 478.628661
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 80.48074
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 2 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 28.812675
+      type: 'test'
+      ...
+    1..2
+ok 7 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 110.80756
+  type: 'suite'
+  ...
+1..7
+# tests 25
+# suites 7
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2067.809848
