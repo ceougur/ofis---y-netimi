@@ -55,6 +55,7 @@ import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
 import { pdfText, xlsxSheets } from "../banka-210-ortak.mjs";
+import { fetchCutWatch } from "./tarayici-kesme.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -69,6 +70,8 @@ const BASE = `http://127.0.0.1:${port}`;
 const clock = app.config.now;
 const browser = await chromium.launch();
 const errors = [];
+// Gezinme/kapanmayla tarayıcının kestiği istekten doğan "Failed to fetch" hatası sayılmaz; eşleşmeyen sayılır (tarayici-kesme.mjs).
+const cutWatches = [];
 
 /** Geçerli Türkiye IBAN'ı (mod 97). */
 function trIban(bankCode, account) {
@@ -133,9 +136,11 @@ const newPage = async ({ width = 1440, height = 1000 } = {}) => {
   await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
   const page = await context.newPage();
   page.on("pageerror", error => errors.push(`pageerror ${error.message}`));
+  const cut = fetchCutWatch(page);
+  cutWatches.push(cut);
   // Beklenen retler (geçersiz IBAN 400, personelin yetkisiz isteği 403, girişten önceki oturum yoklaması 401) hata sayılmaz.
   page.on("console", message => {
-    if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`)) errors.push(`console ${message.text()}`);
+    if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`) && !cut.defer(`console ${message.text()}`)) errors.push(`console ${message.text()}`);
   });
   await installPageClock(page, clock);
   return page;
@@ -2435,7 +2440,8 @@ try {
     ok(problems.length === 0, problems.length ? `küçük harfle başlayan ad: ${problems.join(" ; ")}` : "gezilen bütün banka ekranlarında adlar başlık yazımıyla");
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, "son durumda mutabakat ok");
-    ok(errors.length === 0, errors.length ? `tarayıcı hataları: ${errors.join(" | ")}` : "hiçbir ekranda tarayıcı hatası yok");
+    const found = [...errors, ...cutWatches.flatMap(watch => watch.unexplained())];
+    ok(found.length === 0, found.length ? `tarayıcı hataları: ${found.join(" | ")}` : "hiçbir ekranda tarayıcı hatası yok");
   });
   // ---------- Kabul 1–16 sonu mizanı EKRANDAN (plan §12.5 "Adım 33 sonunda mizan"ın 2.1.0'a düşen adımlarla karşılığı) ----------
   // Bu dosyanın Kabul Şirketi adım 32–40'la ilerlediği için (aynı gün) adım 16 sonu ayrıca kurulur: ayrı sunucu, boş şirket, plan

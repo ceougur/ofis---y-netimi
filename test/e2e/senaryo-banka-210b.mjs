@@ -24,6 +24,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
+import { fetchCutWatch } from "./tarayici-kesme.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210b");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -48,6 +49,7 @@ const ok = (cond, what) => {
   return Boolean(cond);
 };
 let page = null;
+let cutWatch = null;
 const shot = async name => {
   shotNo += 1;
   await page.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`) });
@@ -176,8 +178,10 @@ try {
   await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
   page = await context.newPage();
   page.on("pageerror", error => errors.push(`pageerror ${error.message}`));
+  // Gezinmeyle tarayıcının kestiği istekten doğan "Failed to fetch" sayılmaz; eşleşmeyen sayılır (tarayici-kesme.mjs, senaryo-banka-210 ile aynı).
+  cutWatch = fetchCutWatch(page);
   page.on("console", message => {
-    if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`)) errors.push(`console ${message.text()}`);
+    if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`) && !cutWatch.defer(`console ${message.text()}`)) errors.push(`console ${message.text()}`);
   });
   await installPageClock(page, app.config.now);
   await page.goto(`${BASE}/`);
@@ -613,6 +617,7 @@ try {
   failed += 1;
   console.log(`✗ kurulum hatası: ${error.stack || error.message}`);
 } finally {
+  if (cutWatch) errors.push(...cutWatch.unexplained());
   ok(errors.length === 0, `sayfa hatası yok${errors.length ? `: ${errors.slice(0, 5).join(" | ")}` : ""}`);
   console.log(`\n${failed ? "✗" : "✓"} senaryo-banka-210b: ${passed} geçti, ${failed} kaldı · ekran görüntüleri ${OUT}`);
   await browser.close();
