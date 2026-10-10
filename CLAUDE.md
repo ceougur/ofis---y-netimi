@@ -1164,6 +1164,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   Eski kurulumda kayıtlı Drive ayarı yok sayılır (veri silinmez, kopya alınmaz). KILAVUZ'dan Drive anlatımı ve SİTE'den (ceougur/destekofis)
   Drive yedeği vaadi kalkar (site PR'ı yayın teslimiyle). Teslim notunda açıkça yazılır: "Drive'a yedek kaldırıldı; yedekler bilgisayardaki
   backups klasöründe". "Google Drive'a Bağlan" (OAuth) ileride, kullanıcı isterse.
+  KALAN İŞ LİSTESİ (kullanıcı, 10.10.2026: "temel paket için kalan işleri kısa başlıklar olarak söyle" → "işlem yapılıp bittikçe maddenin
+  üzerini çiz, bildir"): her madde bitince listenin tamamı ~~üzeri çizili~~ biçimde yeniden gönderilir. Liste: 1 kurumsal kart bağı ·
+  2 Drive yedeğinin kaldırılması · 3 Windows ara sıra "yedek alınamadı" · 4 küçük düzeltmeler (Nakit Akış kaynak adı, başlık yazımı, sihirbaz
+  sonrası eski liste) · 5 kılavuz (Banka bölümü + Drive'ı çıkar) · 6 kâhin güncellemesi (iade kuralı) · 7 yargıç + eleştirmen · 8 son
+  doğrulama (Uzun Doğrulama, ölçek 10/20, bütün e2e, göç) · 9 paket (sürüm, CHANGELOG/KANIT, imzalı, kurulum, PDF, PR, elle kabul listesi) ·
+  10 yayın (birleştir, 5 dosya, bağlantı, site kılavuz PR'ı).
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
