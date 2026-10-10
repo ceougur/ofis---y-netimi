@@ -59,7 +59,13 @@ export function classifyLine(line, { invoiceKind = "", chequeEvent = "" } = {}) 
   if (!debit && !credit) return role;
   switch (line.origin) {
     case "invoice":
-      if (line.kind === "in") role.recvPay = true;
+      // v2.1.0 (R1): iadenin GERİ ÖDEMESİ ödeme değil, iadenin alacağını geri alan yükümlülüktür — satıştan iadede müşteriye ödenen para
+      // (çıkış) alacak tarafında yükümlülük, alıştan iadede tedarikçiden geri alınan para (giriş) borç tarafında yükümlülük. Önceden karşı
+      // tarafta ÖDEME sayılıyordu: iade alacağı en eski açık satışı FIFO ile kapatıp geri ödeme onu yeniden açmıyordu (bakiye var, açık
+      // fatura yok) ve aynı carinin açık alış faturası müşteriye yapılan geri ödemeyle "Ödendi" görünüyordu.
+      if (line.kind === "out" && invoiceKind === "sale_return") role.recvDue = true;
+      else if (line.kind === "in" && invoiceKind === "purchase_return") role.payDue = true;
+      else if (line.kind === "in") role.recvPay = true;
       else if (line.kind === "out") role.payPay = true;
       else if (invoiceKind === "sale_return") role.recvPay = credit;
       else if (invoiceKind === "purchase_return") role.payPay = debit;
@@ -188,7 +194,9 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
         const own = line.origin === "invoice" && kinds.has(kindOf(line)) ? line.sourceId : refund ? planOwner.get(line.planId) || "" : "";
         const cover = refund && coverIds.has(line.planId) ? line.planId : "";
         // Taksitli fatura (kendi kartı var) yalnız bağlı ödemeyle kapanır; en eski borç sırasında atlanır.
-        obligations.push({ invoiceId: own, lineId: line.id, bornAt: born, free: cover ? 0 : amount, covered: new Map(cover ? [[cover, amount]] : []), closers: [], planned: Boolean(own && byId.get(own)?.planId) });
+        // R1: iadenin geri ödemesi (returnOf = asıl fatura) önce o faturaya bağlı ödemelerden artanı (iade alacağı) tüketir (adım 1a).
+        const returnOf = line.origin === "invoice" && ["sale_return", "purchase_return"].includes(kindOf(line)) ? ownerOf(line) : "";
+        obligations.push({ invoiceId: own, lineId: line.id, bornAt: born, free: cover ? 0 : amount, covered: new Map(cover ? [[cover, amount]] : []), closers: [], planned: Boolean(own && byId.get(own)?.planId), returnOf });
       }
       if (role[payKey]) pool.push({ line, owner: ownerOf(line), cover: line.origin === "plan" && coverIds.has(line.planId) ? line.planId : "", amount, left: amount, mode: links.has(line.id) ? "linked" : "" });
     }
@@ -271,6 +279,15 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     // İmzalı açık = açık − bu tutar; iadenin geri ödemesi önce bundan düşülür (faturanın kendi kartı yeniden büyümesin).
     const overpaid = new Map();
     for (const payment of pool) if (payment.left > 0 && payment.owner && target.has(payment.owner)) overpaid.set(payment.owner, (overpaid.get(payment.owner) || 0) + payment.left);
+    // 1a (v2.1.0, R1): iadenin geri ödemesi aynı faturaya bağlı ödemelerden artanla (iadenin alacağı, fazla peşin) kapanır — yaygın programlardaki
+    // iade/geri ödeme mahsubu. Artan yoksa en eski borç sırasına girer. (Yukarıdaki "excess" bundan önce hesaplanır: kart kuralı aynı kalır.)
+    for (const item of obligations) {
+      if (!item.returnOf || item.free <= 0) continue;
+      for (const payment of pool) {
+        if (item.free <= 0) break;
+        if (payment.owner === item.returnOf && payment.left > 0) close(item, payment, Math.min(item.free, payment.left), "linked");
+      }
+    }
     // 1b. Mevcut Borç kartının tahsilatı ve kapatılması kartın kapsadığı borca (en eskiden); artanı genel sıraya kalır.
     const coveredBy = new Map();
     for (const item of obligations) {

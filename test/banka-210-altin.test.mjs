@@ -206,6 +206,12 @@ async function sideBySide(sourceData, sourceBackups, label, companies) {
   try {
     assert.equal(newServer.app.store.get("PRAGMA user_version").user_version, 20, "bu dal v20'de");
     assert.equal(oldServer.app.store.get("PRAGMA user_version").user_version, 19, "v2.0.26 v19'da");
+    // Canlı Hata 2'nin açılış onarımı (iade + geri ödemeyle yanlış büyümüş kartı küçültür) bu dalın BİLEREK farklı gösterdiği tek veri durumudur:
+    // onarılan kart Nakit Akış, Vade Takip ve taksit görünümlerinde 2.0.26'dan farklı olur. Karşılaştırma onarımsız veriyle anlamlıdır; motorun
+    // rastgele sırası değişip veri böyle bir kart içerirse bu denetim farkın nedenini söyler (10.10.2026: yeni motor işlemleri sırayı değiştirince
+    // FIS2026000000002'nin kartı 2.658,37 → 0 onarıldı ve Nakit Akış "plan:in" farkı olarak görünmüştü).
+    const repaired = newServer.app.store.all("SELECT entity_id, payload_json FROM audit_events WHERE type = 'plan.repaired'");
+    assert.deepEqual(repaired, [], `${label}: açılış onarımı (Canlı Hata 2) kart değiştirdi — veri bu karşılaştırma için uygun değil (bilerek fark)`);
     return await compare(oldServer, newServer, { companies, label });
   } finally {
     await oldServer.close();

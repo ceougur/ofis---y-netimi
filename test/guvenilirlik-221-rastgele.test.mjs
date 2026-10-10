@@ -7,8 +7,11 @@ import { describe, test } from "node:test";
 import { runRandom } from "./guvenilirlik/rastgele.mjs";
 
 describe("şirket ve yedek işlemleri rastgele sırayla: değişmez kurallar her işlemden sonra", () => {
-  test("boş kurulum, tohum 1, 120 işlem", async () => {
-    const report = await runRandom({ seed: 1, operations: 120, base: "bos" });
+  // Tohum 5 (önceden 1): 2.1.0'da rastgele sıraya hesaba bağlı modül havaleleri (bankModuleOther) girince tohum 1'in sırası değişti ve
+  // 120 (160) işlemde "yanlış şirkete geri yükleme" hiç denenemedi (seçildiği anlarda tek şirket vardı: wrongRestores 0). Bu kısa koşunun
+  // amacı geri yükleme + yanlış geri yükleme + yedeğin birlikte denenmesi; tohum 5: 9 geri yükleme, 6 yanlış geri yükleme, 10 yedek.
+  test("boş kurulum, tohum 5, 120 işlem", async () => {
+    const report = await runRandom({ seed: 5, operations: 120, base: "bos" });
     assert.equal(report.checks, 121);
     assert.ok(report.restores > 0 && report.wrongRestores > 0 && report.backups > 0, JSON.stringify(report.byKind));
   });

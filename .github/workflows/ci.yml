@@ -63,6 +63,7 @@ jobs:
       - run: node tools/kanit.mjs kos e2e-senaryo-225 npm run test:senaryo-225
       - run: node tools/kanit.mjs kos e2e-senaryo-226 npm run test:senaryo-226
       - run: node tools/kanit.mjs kos e2e-senaryo-banka-210 npm run test:senaryo-banka-210
+      - run: node tools/kanit.mjs kos e2e-senaryo-banka-210b npm run test:senaryo-banka-210b
       - run: node tools/kanit.mjs kos e2e-banka-210-saat npm run test:banka-210-saat
       - uses: actions/upload-artifact@v4
         if: always()

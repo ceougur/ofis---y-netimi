@@ -1,0 +1,31 @@
+{
+  "ad": "e2e-senaryo-212",
+  "komut": "npm run -s test:senaryo-212",
+  "commit": "b498cad246365472b0e808e512e831924f680511",
+  "dal": "worktree-agent-a9996cccca67b1040",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T13:24:26.538Z",
+  "sure_sn": 31,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/eksik-tur-210/2026-10-10/e2e-senaryo-212.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9996cccca67b1040",
+  "ham_cikti_sha256": "6e4f5e738980063fe6184ddccaa81f6e6934d9d78ed9f76d1998ba7dcd499ca7",
+  "ham_cikti_bayt": 1956
+}

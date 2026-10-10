@@ -1316,7 +1316,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (p.shrinkPlan(user, original.planId, roundMoney(left - open), note) > 0) touched.plans.add(original.planId);
     } else if (open > left + 0.005 && p.growForInvoice) {
       const rest = Number(parseJson(original.paymentJson, {}).rest) || 0;
-      if (p.growForInvoice(user, original.planId, roundMoney(open - left), rest, note)) touched.plans.add(original.planId);
+      // v2.1.0 (R5; 2.0.24'ten beri): kart fazla tahsilatlıysa (iade kartı 0'a indirdikten sonra tahsilat almış; ödenen > toplam) eksi
+      // kalan da kapanır — büyüme = hedef − imzalı kalan. Önceden kalan 0'da kırpılı okunuyor, kart avansa dönen tahsilat kadar kısa büyüyordu
+      // (fatura açığı 1.500 ↔ kartın kalanı 1.000).
+      const signed = p.signedLeftOf ? Math.min(left, p.signedLeftOf(original.planId)) : left;
+      if (p.growForInvoice(user, original.planId, roundMoney(open - signed), rest, note)) touched.plans.add(original.planId);
     }
   }
   // Açılış onarımı (v2.1.0, Canlı Hata 2; plan §10.6 düzeni): 2.0.24–2.0.26 eski kuralla (hedef = açık + geri ödenen) yanlış

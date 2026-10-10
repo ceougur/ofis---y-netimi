@@ -38,7 +38,7 @@ import { toMinor } from "../minor.mjs";
 import { bankPassiveError } from "./module-ref.mjs";
 import { voucherCopy } from "./voucher.mjs";
 import { FREE_COLUMNS, LEDGER_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
-import { eventRows, isTransferPair, refreshEvent } from "./event-copy.mjs";
+import { eventDigest, eventRows, isTransferPair, refreshEvent } from "./event-copy.mjs";
 
 // Olayın satırının bulunduğu yer (kullanıcının bildiği ad; 409 metni).
 const ROW_LABEL = {
@@ -166,7 +166,18 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         const where = [...new Set(rows.map(item => ROW_LABEL[item.table] || item.table))].join(", ");
         throw new HttpError(409, `Bu para hareketi${event?.no ? ` (İşlem No ${event.no})` : ""} zaten kayıtlı (${where}); aynı hareket ikinci kez yazılamaz. Hiçbir değişiklik yapılmadı.`, { code: "event-in-use", eventId: id, rows: rows.map(item => `${item.table}:${item.row.id}`) });
       }
+      // Plan §3.8 / §3.13 (eşleşmiş satır): ekstreyle eşleşmiş olayın özeti (tutar, yön, hesap, tarih, para birimi, yol) ya da durumu bu
+      // işlemde değişiyorsa 409 bank-reconciled. Önceden yalnız önceki hâli olay kimliği taşıyan yollar (cari, Kasa, kayıt, taksit, stok)
+      // korunuyordu; çek tahsilini/ödemesini geri alma ve fatura Düzenle/İptal/Sil eşleşmiş olayı sessizce iptal ediyordu. Yalnız açıklaması
+      // değişen satır (özet aynı) serbesttir (plan §3.8 "Yalnız kalem açıklaması değişen düzenleme serbest").
+      const prior = ctx.created.has(id) ? null : store.get("SELECT status, amount_minor, direction, bank_ref, date, currency, method FROM fin_events WHERE id = ?", id);
       refreshEvent(store, id, { stamp: ctx.created.has(id) ? null : stamp });
+      if (prior && store.get("SELECT 1 AS found FROM bank_matches WHERE event_id = ? AND undone_at IS NULL", id)) {
+        const after = store.get("SELECT status, amount_minor, direction, bank_ref, date, currency, method FROM fin_events WHERE id = ?", id);
+        if (!after || after.status !== prior.status || eventDigest(after) !== eventDigest(prior)) {
+          throw new HttpError(409, "Bu hareket banka ekstresiyle eşleştirilmiş; önce eşleşmeyi kaldırın.", { code: "bank-reconciled", eventId: id });
+        }
+      }
     }
   }
 
@@ -296,7 +307,8 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       if (!item || typeof item !== "object") continue;
       const finRef = String(item.fin_ref ?? item.finRef ?? "");
       const eventId = String(item.event_id ?? item.eventId ?? "");
-      if (eventId && store.get("SELECT 1 AS found FROM bank_matches WHERE event_id = ? AND undone_at IS NULL", eventId)) {
+      // Silmede erken engel; düzeltmede karar yazımdan sonra özetle verilir (finalize: yalnız açıklaması değişen satır serbest).
+      if (op === "delete" && eventId && store.get("SELECT 1 AS found FROM bank_matches WHERE event_id = ? AND undone_at IS NULL", eventId)) {
         throw new HttpError(409, "Bu hareket banka ekstresiyle eşleştirilmiş; önce eşleşmeyi kaldırın.", { code: "bank-reconciled", eventId });
       }
       // GG2: K4 çapraz yetki asıl olarak yazımdan sonra GERÇEK satırla (boundRules): önceki hâl nesnelerinin çoğu fin_ref taşımıyordu (modül
