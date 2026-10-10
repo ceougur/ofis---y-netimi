@@ -613,6 +613,138 @@ try {
     await shot("son-durum-genel-bakis");
     await closeAll();
   });
+
+  // K2 (bağımsız kâhin + hakem; plan §3.5, §3.7 #3 #5 #16, §4.6, §8.4, §8.9): kurumsal kredi kartıyla ödeme kart hesabına (309.NN) bağlanır.
+  // Beklenen sayılar adımın kendi farkları (elle): kart borcu = Σ kartla ödeme − Σ Kart Borcu Ödemesi; 108.00 değişmez; Gerçek Banka yalnız
+  // Kart Borcu Ödemesi kadar düşer.
+  const CARD = {};
+  const cardDebt = async () => (await must("Banka Genel Bakış", api.get("/api/workspace/bank/summary"))).debt.cardMinor / 100;
+  const cardBalance = async acc => ((await must("kart", api.get(`/api/workspace/bank/accounts/${acc.id}`))).balanceMinor || 0) / 100;
+  const sub108 = async () => Math.round(((await must("alt hesap", api.get("/api/workspace/bank/sub-trial"))).rows.find(row => row.sub === "108.00")?.balance || 0) * 100) / 100;
+  const openPayment = async party => {
+    await page.click('#hof-sidecard [data-action="accounts"]');
+    await page.waitForSelector(`.hof-accounts-modal tr[data-account="${party.id}"]`, { timeout: 10000 });
+    await page.click(`.hof-accounts-modal tr[data-account="${party.id}"]`);
+    await page.waitForSelector('.hof-accounts-modal [data-entry="out"]', { timeout: 10000 });
+    await page.click('.hof-accounts-modal [data-entry="out"]');
+    await page.waitForSelector(`${top} .hof-form input[name="amount"]`, { timeout: 8000 });
+    return `${top} .hof-form`;
+  };
+  let xyzParty = null;
+  await step("15. Kurumsal kart (tek kart): cari ödeme Kredi Kartı → Kurumsal Kart bilgi satırı (Banka Hesabı gizli) → kart borcu +750, 108.00 aynı", async () => {
+    xyzParty = (await must("cariler", api.get("/api/workspace/accounts?status=all&limit=500"))).accounts.find(row => row.name === "XYZ Tedarik");
+    CARD.k = await must("Kurumsal Kart", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Kurumsal Kart", kind: "card", creditLimit: "20.000", opening: { date: "2026-10-01", amount: "0" } }));
+    const before = { debt: await cardDebt(), u108: await sub108(), bank: await balances() };
+    const form = await openPayment(xyzParty);
+    ok(!(await page.$(`${form} [data-bank-pick]:not([hidden])`)), "Nakit seçiliyken hesap ve kart alanı görünmez");
+    await page.click(`${form} input[name="amount"]`);
+    await page.keyboard.type("750", { delay: 60 });
+    await page.selectOption(`${form} select[name="method"]`, "card");
+    await page.waitForSelector(`${form} [data-bank-pick="card"]:not([hidden])`, { timeout: 8000 });
+    const note = await textOf(`${form} [data-bank-pick="card"] .hof-bank-pick-note`);
+    ok(has(note, "Garanti BBVA · Kurumsal Kart") && has(note, "kurumsal kartına yazılır"), `tek kart bilgi satırı: “${note}”`);
+    ok(!(await page.$(`${form} [data-bank-pick]:not([data-bank-pick="card"]):not([hidden])`)), "Kredi Kartı yolunda Banka Hesabı gizli");
+    await shot("kurumsal-kart-tek-kart");
+    await page.click(`${form} button[type="submit"]`);
+    await yesToAll(3);
+    await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible .hof-form input[name="amount"]'), null, { timeout: 10000 });
+    await pause(700);
+    const entry = (await must("XYZ", api.get(`/api/workspace/accounts/${xyzParty.id}`))).entries.find(row => row.amount === 750 && row.method === "card");
+    ok(entry?.finRef === CARD.k.id, `ödeme kurumsal karta bağlı (${entry?.finRef === CARD.k.id})`);
+    ok((await cardDebt()) === before.debt + 750, `Kart ve Kredi Borcu ${await cardDebt()} (beklenen ${before.debt + 750})`);
+    ok((await sub108()) === before.u108, `108.00 değişmedi (${await sub108()})`);
+    ok((await cardBalance(CARD.k)) === -750, `Kurumsal Kart bakiyesi ${await cardBalance(CARD.k)}`);
+    const after = await balances();
+    ok(Object.keys(after).every(key => after[key] === before.bank[key]), "banka hesapları değişmedi (kartla ödeme bankadan çıkmaz)");
+    await closeAll();
+  });
+
+  await step("16. İki kurumsal kart: seçimsiz kaydedilmez; Tab ile Kurumsal Kart alanına geçilir, ikinci kart seçilir → yalnız o kart +250", async () => {
+    CARD.k2 = await must("Kurumsal Kart 2", api.post("/api/workspace/bank/accounts", { bankName: "Yapı Kredi", name: "Kurumsal Kart 2", kind: "card", creditLimit: "5.000", opening: { date: "2026-10-01", amount: "0" } }));
+    const before = { k: await cardBalance(CARD.k), k2: await cardBalance(CARD.k2) };
+    const form = await openPayment(xyzParty);
+    await page.click(`${form} input[name="amount"]`);
+    await page.keyboard.type("250", { delay: 60 });
+    await page.keyboard.press("Tab");
+    await pause(200);
+    await page.selectOption(`${form} select[name="method"]`, "card");
+    await page.waitForSelector(`${form} [data-bank-pick="card"]:not([hidden]) select[name="cardAccountId"]`, { timeout: 8000 });
+    const options = await page.$$eval(`${form} select[name="cardAccountId"] option`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(options[0] === "Kart Seçin" && options.length === 3 && options.every((text, index) => !index || /Kurumsal Kart/.test(text)), `seçicide iki kurumsal kart, ön seçim yok: ${options.join(" | ")}`);
+    await page.click(`${form} button[type="submit"]`);
+    await pause(600);
+    const error = await textOf(`${form} .hof-form-error`);
+    ok(has(error, "Kurumsal Kart") && (await cardBalance(CARD.k2)) === before.k2, `kart seçilmeden kaydedilmedi: “${error}”`);
+    // Klavye: yol kutusundan Tab → Kurumsal Kart (gizli Banka Hesabı atlanır; alan yeniden çizilmez, değer kaybolmaz).
+    await page.focus(`${form} select[name="method"]`);
+    const picker = await page.$(`${form} select[name="cardAccountId"]`);
+    await page.keyboard.press("Tab");
+    await pause(200);
+    const focused = await page.evaluate(() => document.activeElement?.getAttribute("name") || "");
+    ok(focused === "cardAccountId", `Tab ile Kurumsal Kart alanına geçildi (${focused})`);
+    await page.selectOption(`${form} select[name="cardAccountId"]`, CARD.k2.id);
+    await page.keyboard.press("Tab");
+    await pause(300);
+    ok(await picker.evaluate((node, id) => node.isConnected && node.value === id, CARD.k2.id), "seçilen kart alanda kaldı (yeniden çizilmedi)");
+    ok((await page.$eval(`${form} input[name="amount"]`, node => node.value)) === "250", "tutar kaybolmadı");
+    await shot("kurumsal-kart-iki-kart");
+    await page.click(`${form} button[type="submit"]`);
+    await yesToAll(3);
+    await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible .hof-form input[name="amount"]'), null, { timeout: 10000 });
+    await pause(700);
+    ok((await cardBalance(CARD.k2)) === before.k2 - 250 && (await cardBalance(CARD.k)) === before.k, `yalnız Kurumsal Kart 2 −250 (${await cardBalance(CARD.k2)} / ${await cardBalance(CARD.k)})`);
+    await closeAll();
+  });
+
+  await step("17. Alış faturası Düzenle: peşin kartla (Kurumsal Kart) satırı Kurumsal Kart 2'ye taşınır; yol Havale/EFT ↔ Kredi Kartı geçişinde hücre doğru aile", async () => {
+    const doc = await must("kartla alış", api.post("/api/workspace/invoices", { kind: "purchase", accountId: xyzParty.id, number: "AL-KART-E2E", issueDate: TODAY, pricesIncludeVat: true, lines: [{ name: "Kırtasiye", qty: 1, unitPrice: 600, discountRate: 0, vatRate: 0, expenseCode: "office" }], payment: { cash: [{ amount: "600", method: "card", bankAccountId: CARD.k.id, lineKey: "e2e-kart-1" }], cheques: [], endorse: [], rest: "open" }, force: true }));
+    const before = { k: await cardBalance(CARD.k), k2: await cardBalance(CARD.k2), bank: await balances() };
+    const inv = `${modal} .hof-invoices-modal`;
+    await page.evaluate(id => window.HOF.invoices.openDoc(id), doc.id);
+    await page.waitForSelector(`${inv} [data-act="modify"]:not([disabled])`, { timeout: 10000 });
+    await page.click(`${inv} [data-act="modify"]`);
+    const cell = `${inv} [data-bank-cell="0"]`;
+    await page.waitForSelector(`${cell}[data-bank-kind="card"] select`, { timeout: 10000 });
+    ok((await textOf(`${cell} span`)) === "Kurumsal Kart" && (await page.$eval(`${cell} select`, node => node.value)) === CARD.k.id, "Düzenle formunda peşin satırı Kurumsal Kart alanıyla açıldı");
+    const method = `${inv} select[data-pay="cash"][data-i="0"][data-f="method"]`;
+    await page.selectOption(method, "bank");
+    await page.waitForSelector(`${cell}[data-bank-kind="bank"]`, { timeout: 8000 });
+    ok(has(await textOf(cell), "Banka Hesabı") || has(await textOf(cell), "hesabına yazılır"), `Havale/EFT'de hücre Banka Hesabı: “${await textOf(cell)}”`);
+    await page.selectOption(method, "card");
+    await page.waitForSelector(`${cell}[data-bank-kind="card"] select`, { timeout: 8000 });
+    ok((await page.$eval(`${cell} select`, node => node.value)) === "", "karta dönüşte kart yeniden seçilir (önceki hesap taşınmaz)");
+    await page.selectOption(`${cell} select`, CARD.k2.id);
+    await pause(600);
+    await shot("alis-faturasi-kurumsal-kart");
+    await page.click(`${inv} [data-act="issue"]`);
+    await yesToAll(6);
+    await pause(900);
+    const saved = await must("fatura", api.get(`/api/workspace/invoices/${doc.id}`));
+    ok(saved.payments?.[0]?.finRef === CARD.k2.id && saved.payment?.cash?.[0]?.bankAccountId === CARD.k2.id, "peşin satır Kurumsal Kart 2'ye bağlı");
+    ok((await cardBalance(CARD.k)) === before.k + 600 && (await cardBalance(CARD.k2)) === before.k2 - 600, `Kurumsal Kart +600, Kurumsal Kart 2 −600 (${await cardBalance(CARD.k)} / ${await cardBalance(CARD.k2)})`);
+    const after = await balances();
+    ok(Object.keys(after).every(key => after[key] === before.bank[key]), "banka hesapları değişmedi");
+    await closeAll();
+  });
+
+  await step("18. Kart Borcu Ödemesi (Ziraat → Kurumsal Kart 750; alış faturası 17. adımda Kurumsal Kart 2'ye taşındı) → kart 0; Genel Bakış ve Banka Bakiye Raporu'nda Kart ve Kredi Borcu; Mutabakat Testi", async () => {
+    const before = await balances();
+    await must("Kart Borcu Ödemesi", api.post("/api/workspace/bank/vouchers", { type: "card_payment", accountId: ACC.z.id, cardAccountId: CARD.k.id, amount: "750", date: TODAY }));
+    ok((await cardBalance(CARD.k)) === 0, `Kurumsal Kart 0 (${await cardBalance(CARD.k)})`);
+    await expectDelta(before, { z: -750 }, "Ziraat −750");
+    // Kart ve Kredi Borcu (elle): Kurumsal Kart 750 − 750 = 0; Kurumsal Kart 2 = 250 + 600 (17. adımda taşınan peşin) = 850.
+    ok((await cardDebt()) === 850, `Kart ve Kredi Borcu ${await cardDebt()} (beklenen 850)`);
+    await openBank();
+    const tile = await textOf(`${bankWin} [data-bank-debt]`);
+    ok(has(tile, "850,00"), `Genel Bakış Kart ve Kredi Borcu: “${tile}”`);
+    await shot("kart-ve-kredi-borcu-genel-bakis");
+    const report = await must("Banka Bakiye", api.get(`/api/workspace/report-center/banka-bakiye?from=2026-10-01&to=${TODAY}&bankGroup=debt`));
+    const row = report.rows.find(cells => cells[3] === CARD.k2.glSub);
+    ok(row?.[report.headers.indexOf("Dönem Sonu")] === "-850,00 TL" && report.summary.find(([key]) => key === "Kart ve Kredi Borcu")?.[1] === "850,00 TL", `Banka Bakiye Raporu: ${row?.join(" | ")}`);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, `Mutabakat Testi ${integrity.ok ? "tutarlı" : JSON.stringify(integrity.checks.filter(item => !item.ok)).slice(0, 300)}`);
+    await closeAll();
+  });
 } catch (error) {
   failed += 1;
   console.log(`✗ kurulum hatası: ${error.stack || error.message}`);
