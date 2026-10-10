@@ -1089,6 +1089,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       Kalan izler: Aşama 13 döviz; Aşama 8 kalanı (K8 taksit kuralları, Bankaya Tahsile Ver); Aşama 7 kalanı (iade/iptal bankalı
       ayrıntı §4.6, Fatura Ayarları → Banka Hesapları, gider türleri 770/653, toplu kesim, bağ türleri, TCMB önerisi); Aşama 14–15
       kalanı (§8.10 raporları, Nakit Akış K10, Vade Takip/zil, SOURCE_LABELS/EVENT_LABELS, Silinenler kuralı); kılavuz; kabul.
+- SÜRE VE TEMEL BANKA SÜRÜMÜ (kullanıcı, 10.10.2026): "kaç gündür 1-2 gün diyordun, şimdi 6-9 gün; nedeni, nasıl iyileştiririz?" → neden
+  (kapsam 10.10'da tam plana döndü, doğrulama çıtası, bulunan ~15 hata, benim madde saymadan verdiğim tahminler) ve öneriler (sürümü böl,
+  uzun koşuları GitHub CI'de paralel, ağır doğrulama bir kez, günlük plan↔gerçek tablosu) verildi; seçim sorusu kullanıcı tarafından
+  kapatıldı. Ardından: "müşterilerin kullanacağı TEMEL banka modülünü bitirip yüklesek mi, ne kadar sürer? HEMEN YAPMA, ÖNCE KONUŞALIM"
+  → kapsam/süre önerisi verildi; KARAR BEKLENİYOR, başlanmadı.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
