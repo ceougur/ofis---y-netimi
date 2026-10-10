@@ -141,4 +141,49 @@ describe("K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli
     for (const [table, row] of samples) assert.ok(EVENT_TYPES.has(typeOf(table, row)), `${table} ${JSON.stringify(row)} → ${typeOf(table, row)}`);
     for (const type of ["opening", "fee", "transfer", "cash_transfer", "party_in", "party_out", "invoice_cash", "plan_in", "plan_out", "record_in", "stock_cash", "cheque_collect", "cheque_pay", "reversal"]) assert.ok(EVENT_TYPES.has(type), type);
   });
+
+  // Plan §12.3 Aşama 8 "Nasıl Bozarım": "Statik test: cheque_events.kind'e yazılan bütün değerler CHECK listesinde" (eşleme 106). CHECK'e uymayan
+  // tür SQLite'ta işlemi ancak çalışma anında düşürür (o yolu hiçbir test koşmazsa sahada); bu test kaynakta yakalar. Yöntem: (1) cheque_events'e
+  // tek yazım yeri cheques.mjs writeEvent; (2) writeEvent'in her çağrısındaki kind ya düz dize, ya initialEvent(direction), ya ACTIONS anahtarı
+  // (transition() ile süzülen action); (3) bunların hepsi göçteki CHECK listesinde; (4) her türün ekran adı (EVENT_LABELS) ve olay türü (typeOf) var.
+  // NASIL BOZARIM: yeni bir writeEvent(…, { kind: "deposit" }) ya da ACTIONS'a CHECK'te olmayan bir anahtar → kırılır; başka dosyadan ham
+  // INSERT INTO cheque_events → kırılır; çağrıda tanınmayan ifade (kind: someVar) → kırılır.
+  it("cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)", async () => {
+    const migrations = readFileSync(path.join(ROOT, "server/lib/migrations.mjs"), "utf8");
+    const table = /CREATE TABLE IF NOT EXISTS cheque_events \(([\s\S]*?)\n\s*\);/.exec(migrations)?.[1] || "";
+    const check = /kind TEXT NOT NULL CHECK \(kind IN \(([^)]*)\)\)/.exec(table)?.[1];
+    assert.ok(check, "cheque_events.kind CHECK listesi göçte bulunamadı");
+    const allowedKinds = new Set([...check.matchAll(/'([a-z_]+)'/g)].map(m => m[1]));
+    assert.ok(allowedKinds.has("collect") && allowedKinds.has("pay"), [...allowedKinds].join(","));
+    const inserts = serverFiles().flatMap(file => {
+      const source = readFileSync(file, "utf8");
+      return [...source.matchAll(/(INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE)\s+cheque_events\b([^"`]*)/gi)].map(m => ({ file: path.relative(ROOT, file), verb: m[1].toUpperCase().split(/\s+/)[0], rest: m[2] }));
+    });
+    const insertSites = inserts.filter(site => site.verb === "INSERT");
+    assert.deepEqual(insertSites.map(site => site.file), ["server/routes/cheques.mjs"], `cheque_events'e INSERT yalnız cheques.mjs writeEvent'te: ${JSON.stringify(insertSites)}`);
+    for (const site of inserts.filter(item => item.verb === "UPDATE")) assert.ok(!/\bkind\s*=/.test(site.rest), `cheque_events.kind UPDATE ile değiştirilmez: ${site.file} ${site.rest}`);
+    const source = readFileSync(path.join(ROOT, "server/routes/cheques.mjs"), "utf8");
+    assert.match(functionBodies(source, "writeEvent"), /INSERT INTO cheque_events/, "INSERT writeEvent'in içinde");
+    const lib = await import("../server/lib/cheques.mjs");
+    const calls = [...source.matchAll(/writeEvent\(user, cheque, \{\s*kind(?:\s*:\s*([^,]+))?,/g)];
+    assert.ok(calls.length >= 3, `writeEvent çağrıları: ${calls.length}`);
+    const written = new Set();
+    for (const [, expr] of calls) {
+      if (expr === undefined) {
+        // { kind, ... } kısaltması: insertCheque'te const kind = initialEvent(input.direction).
+        assert.match(source, /const kind = initialEvent\(input\.direction\);/, "kısaltmalı kind initialEvent'ten gelir");
+        for (const direction of ["in", "out"]) written.add(lib.initialEvent(direction));
+      } else if (/^"[a-z_]+"$/.test(expr.trim())) written.add(expr.trim().slice(1, -1));
+      else if (expr.trim() === "action") {
+        assert.match(source, /const rule = transition\(cheque, action\);/, "action transition() ile süzülür (yalnız ACTIONS anahtarı)");
+        for (const key of Object.keys(lib.ACTIONS)) written.add(key);
+      } else assert.fail(`writeEvent çağrısında tanınmayan kind ifadesi: ${expr}`);
+    }
+    for (const kind of written) {
+      assert.ok(allowedKinds.has(kind), `cheque_events.kind "${kind}" CHECK listesinde yok (${[...allowedKinds].join(", ")})`);
+      assert.ok(lib.EVENT_LABELS[kind], `"${kind}" için ekran adı (EVENT_LABELS) yok`);
+      assert.ok(EVENT_TYPES.has(typeOf("cheque_events", { kind })), `"${kind}" olay türü sözlükte yok`);
+    }
+    assert.deepEqual([...allowedKinds].sort(), Object.keys(lib.EVENT_LABELS).sort(), "CHECK listesi ile ekran adları aynı türler");
+  });
 });
