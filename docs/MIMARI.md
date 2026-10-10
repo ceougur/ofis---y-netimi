@@ -237,7 +237,7 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 - *Uçlar:* `GET /api/workspace/reports/:kind` (izin `reports.view`; tüm oturumlar `dataset.withKey` ile sırayla, ≤ 5.000 satır/oturum), `POST …/export {format: xlsx|pdf}` (`buildXlsx`, `tablePdf`: > 7 sütunda yatay sayfa, p90 genişlik, özet kartları, sayfa numarası). Yazdırma istemcide gizli iframe ile.
 - İstemci penceresi: tür sekmeleri, filtre formu, özet kartları, tablo; olay `workspace.changed` sonrası yeniden sorgu.
 
-**Drive'a yedek** (`server/lib/cloud-backup.mjs`, `docs/DRIVE-YEDEK.md`).
+**Drive'a yedek** (`server/lib/cloud-backup.mjs`, `docs/DRIVE-YEDEK.md`) — **2.1.0'da kaldırıldı** (kullanıcı kararı 10.10.2026; modül silindi, uçlar 404, eski `backup.cloud` ayarı okunmaz). Aşağısı tarihçe.
 - Ayar `backup.cloud` (JSON): kip `folder` (bilgisayardaki Drive/OneDrive/Dropbox klasörü → içinde `DestekOfis Yedekleri`, en fazla `backupKeep` kopya) ya da `link` (Drive klasör kimliği → lisans servisi `POST /v1/yedek/oturum` ile Google *resumable upload* adresi, dosya doğrudan Google'a PUT; sır programda yok).
 - Kanca: `createBackup` sonrası `mirror(result)` — zamanlayıcı (`startBackupScheduler {onBackup}`), veri seti (`afterBackup`), elle ve deneme yedeği (`routes/admin.mjs`). Asla fırlatmaz; son kopya/hata ayarda ve panelde. Aynı ad ikinci kez kopyalanmaz.
 
@@ -544,7 +544,7 @@ için iki istek aynı işlemin içine karışamaz; denetim ve COMMIT aynı kilit
 
 ## Yedekleme
 
-Drive'a kopya (v2.0.2): yukarıdaki *Drive'a yedek* başlığı; her yerel yedekten sonra bağlanan klasöre/Drive'a kopyalanır.
+Drive'a kopya (v2.0.2–2.0.26; 2.1.0'da kaldırıldı): yukarıdaki *Drive'a yedek* başlığı.
 
 `VACUUM INTO` ile tutarlı anlık kopya; açılışta ve 6 saatte bir (son yedek eskiyse), son 30 yedek. Elle: yönetim paneli veya `npm run backup` (salt okunur bağlantı, sunucu çalışırken güvenli). Yedek adları `destekofis-<zaman>[-<neden>].sqlite`. 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenir ve adına göre değil zaman damgasına göre sıralanıp temizlenir.
 
@@ -567,9 +567,9 @@ tablosunda (yalnız kopyada; geri yüklemede düşürülür). 001'in VERİ dosya
   …/:name?company=`, `POST …/restore` (`name`, `company` = bulunduğu klasörün şirketi, `target`, onay kod/ad + parola),
   `DELETE …/restore` (bekleyen 001 geri yüklemesinden vazgeç), `GET /api/companies/storage` (veri dosyası, boyut,
   cari/kayıt sayısı, son yedek, yedek klasörü). Hepsi `system.manage` + şirket erişimi.
-- Otomatik yedek ve Drive: tek zamanlayıcı hub'da (`runDueBackups` + `backups.scheduleTargets()`); hiç açılmamış şirketin
-  veri tabanı kısa süreliğine salt okunur açılıp kapatılır (`withCompanyDb`; örnek açılmaz). Drive ayarı hub'da tek;
-  kopyalar sırayla (`mirrorNow` kuyruğu) ve klasör kipinde `DestekOfis Yedekleri/<kod> - <ad>/` altına, budama klasör başına.
+- Otomatik yedek: tek zamanlayıcı hub'da (`runDueBackups` + `backups.scheduleTargets()`); hiç açılmamış şirketin
+  veri tabanı kısa süreliğine salt okunur açılıp kapatılır (`withCompanyDb`; örnek açılmaz). (2.0.20–2.0.26'daki Drive kopyası
+  — `mirrorNow` kuyruğu, `DestekOfis Yedekleri/<kod> - <ad>/` — 2.1.0'da kaldırıldı.)
 - Geri yükleme: yedekteki kimlik hedef şirketten farklıysa 409 (`company-mismatch`); kimliksiz eski yedek yalnız
   bulunduğu klasörün şirketine (`company-unknown`); daha yeni şema 409. 002+: şirket "meşgul" (istek 503, başka şirketin
   verisi gösterilmez) → örnek kapatılır → `prepareRestoreFile` (kopya, `quick_check`, son sürüme göç, `backup_meta`

@@ -47,7 +47,6 @@ const SENTENCES = new Set([
     "Excel/Sheets tablolarınızdaki",
     "Eşleşen kayıt yok",
     "Geçiş dönemi doldu",
-    "Google Drive masaüstü uygulaması kuruluysa (önerilen):",
     "Grup kolonu yoksa hepsi bu gruba",
     "Gösterilmeyen kartlar ve nedenleri",
     "Hayır — carinin borcundan düş",

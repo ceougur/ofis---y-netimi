@@ -27,6 +27,11 @@ const context = await browser.newContext({ viewport: { width: 1440, height: 1000
 const page = await context.newPage();
 const errors = [];
 page.on("pageerror", error => errors.push(`pageerror ${error.message}`));
+// 2.1.0: Drive'a yedek kaldırıldı — Yönetim sayfası kaldırılan uçları hiç çağırmamalı (404 konsolda süzüldüğü için ayrıca sayılır).
+const cloudCalls = [];
+page.on("request", request => {
+  if (/\/api\/admin\/backups\/cloud/.test(request.url())) cloudCalls.push(`${request.method()} ${request.url()}`);
+});
 page.on("console", message => {
   if (message.type() === "error" && !/api\/auth\/me|Failed to load resource/.test(`${message.location().url} ${message.text()}`)) errors.push(`${message.text()} @ ${message.location().url}`);
 });
@@ -108,6 +113,10 @@ try {
   ok(/backups.001 - Şirket 1/.test(where) && /backups.002 - Şirket 2/.test(where), `açıklama: ${where.trim()}`);
   const heads = await page.$$eval('.adm-panel[data-panel="backups"] thead th', nodes => nodes.map(node => node.textContent.trim()));
   ok(heads.join("|") === "Şirket|Yedek Dosyası|Tarih|Boyut|İşlemler" && heads.every(head => titleCase(head) === head), `kolonlar: ${heads.join(", ")}`);
+  // 2.1.0 (kullanıcı kararı 10.10.2026): Drive'a yedek kaldırıldı — Yedekler ekranında Drive bölümü, sözcüğü ve ayar kutusu yok.
+  const panelText = await page.$eval('.adm-panel[data-panel="backups"]', node => node.innerText);
+  const pageText = await page.evaluate(() => document.body.textContent);
+  ok(!/drive|bulut/i.test(panelText) && !/drive/i.test(pageText) && !(await page.$("#adm-cloud, #adm-cloud-form, #adm-cloud-target")), "Yedekler ekranında Drive yok (bölüm, yazı, ayar kutusu)");
   await page.click("#adm-backup-now");
   await page.waitForSelector(`${modal} select[name="scope"]`);
   const options = await page.$$eval(`${modal} select[name="scope"] option`, nodes => nodes.map(node => [node.value, node.textContent.trim(), node.selected]));
@@ -198,6 +207,7 @@ try {
   ok(/002 - Gayri Resmi Ş Ç/.test(await page.textContent("#adm-backup-where")), "açıklama satırı yeni klasörü gösterir");
   await shot("yedekler-ad-degisti");
 
+  ok(cloudCalls.length === 0, `Yönetim sayfası kaldırılan Drive uçlarını çağırmaz — Yedek Al, Geri Yükle, Şirketler boyunca (${cloudCalls.length ? cloudCalls.join(", ") : "0 istek"})`);
   ok(!errors.length, `sayfada JavaScript hatası yok${errors.length ? `: ${errors.join(" ; ")}` : ""}`);
 } catch (error) {
   failed += 1;

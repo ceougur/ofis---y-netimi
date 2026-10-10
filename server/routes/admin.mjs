@@ -308,7 +308,6 @@ export function registerAdminRoutes(router, context) {
   // Yönetici bütün şirketleri görür; liste ve indirme yine de kullanıcının görebildiği şirketlerle sınırlıdır.
   const backups = context.backups;
   const companies = context.companies;
-  const mirror = result => (context.mirrorNow ? context.mirrorNow(result) : context.cloudBackup ? context.cloudBackup.mirror(result) : Promise.resolve(null));
   const companyView = (admin, company) => ({ id: company.id, code: company.code, name: company.name, label: company.label || `${company.code} · ${company.name}`, root: Boolean(company.root), current: company.id === companies.selectedFor(admin), folder: backups.folderOf(company) });
   const backupView = ({ mtimeMs, dir, ...item }) => ({ ...item, folder: dir });
   const companyFor = (admin, id) => {
@@ -356,18 +355,14 @@ export function registerAdminRoutes(router, context) {
     // Veri dosyası paylaşan şirket (v2.0.21) bir hata değil, yöneticinin yapacağı iş: 409 ve nedeni.
     if (!done.length) throw new HttpError(failed.length && failed.every(item => item.code === "company-shared") ? 409 : 500, `Yedek alınamadı: ${failed.map(item => `${item.company}: ${item.error}`).join("; ") || "bilinmeyen hata"}`, { code: failed[0]?.code || "" });
     for (const item of done) audit(admin, "system.backup_created", item.name, { size: item.size, company: item.company?.code || "", scope });
-    const clouds = [];
-    for (const item of done) clouds.push(await mirror(item).catch(error => ({ ok: false, error: error.message })));
     const selected = companies.selectedFor(admin);
-    const primaryIndex = Math.max(0, done.findIndex(item => item.companyId === selected));
-    const primary = done[primaryIndex];
+    const primary = done.find(item => item.companyId === selected) || done[0];
     ok(res, {
       scope,
       name: primary.name,
       size: primary.size,
       company: primary.company,
-      cloud: clouds[primaryIndex] || null,
-      backups: done.map((item, index) => ({ companyId: item.companyId, company: `${item.company.code} · ${item.company.name}`, code: item.company.code, name: item.name, size: item.size, folder: path.dirname(item.path), cloud: clouds[index] || null })),
+      backups: done.map(item => ({ companyId: item.companyId, company: `${item.company.code} · ${item.company.name}`, code: item.company.code, name: item.name, size: item.size, folder: path.dirname(item.path) })),
       failed,
     });
   });
@@ -404,39 +399,14 @@ export function registerAdminRoutes(router, context) {
     ok(res, { cancelled });
   });
 
-  // Drive'a yedek (v2.0.2): bağlantı/klasör bağlama, durum ve deneme. ":name" yolundan önce kayıtlı olmalı.
-  router.get("/api/admin/backups/cloud", async ({ req, res }) => {
-    auth.requirePermission(req, "system.manage");
-    ok(res, context.cloudBackup ? context.cloudBackup.status() : { enabled: false });
-  });
-
-  router.post("/api/admin/backups/cloud", async ({ req, res }) => {
-    const admin = auth.requirePermission(req, "system.manage");
-    if (!context.cloudBackup) throw new HttpError(503, "Drive yedeği bu kurulumda kapalı.");
-    const body = await readJson(req);
-    const target = String(body.target ?? "").trim();
-    if (target.length > 500) throw new HttpError(400, "Bağlantı ya da yol çok uzun.");
-    let status;
-    try {
-      status = context.cloudBackup.configure(admin, target);
-    } catch (error) {
-      throw new HttpError(error.status || 400, error.message);
-    }
-    audit(admin, status.enabled ? "system.cloud_backup_set" : "system.cloud_backup_cleared", status.mode || "", { value: status.value || "" });
-    ok(res, status);
-  });
-
-  router.post("/api/admin/backups/cloud/test", async ({ req, res }) => {
-    const admin = auth.requirePermission(req, "system.manage");
-    if (!context.cloudBackup?.status().enabled) throw new HttpError(400, "Önce bir Drive bağlantısı ya da klasör yolu bağlayın.");
-    // Deneme: seçili şirketin yedeği alınır ve Drive'a kopyalanır.
-    const company = companyFor(admin, companies.selectedFor(admin));
-    const result = backups.backup(company, { label: "drive-deneme" });
-    if (!result) throw new HttpError(500, "Şirketin veri dosyası bulunamadı; yedek alınamadı.");
-    audit(admin, "system.backup_created", result.name, { size: result.size, test: true, company: company.code });
-    const cloud = await mirror(result);
-    ok(res, { ok: Boolean(cloud?.ok), name: result.name, error: cloud?.error || null, status: context.cloudBackup.status() });
-  });
+  // Drive'a yedek 2.1.0'da kaldırıldı (kullanıcı kararı, 10.10.2026; bağlantı kipi hiç çalışmadı). Eski uçlar 404 döner —
+  // eski sürümün açık kalmış Yönetim sayfası da "bulunamadı" alır; ":name" (indirme) yolu "cloud"u yedek adı sanıp 400 vermesin.
+  const removed = async () => {
+    throw new HttpError(404, "Bu özellik kaldırıldı. Yedekler sunucu bilgisayardaki yedek klasöründedir.");
+  };
+  router.get("/api/admin/backups/cloud", removed);
+  router.post("/api/admin/backups/cloud", removed);
+  router.post("/api/admin/backups/cloud/test", removed);
 
   // İndir: ?company=<şirket kimliği> (Yedekler listesi gönderir); verilmezse görebildiği şirketlerde aranır.
   router.get("/api/admin/backups/:name", async ({ req, res, params, url }) => {

@@ -92,37 +92,6 @@ describe("yedekleme", () => {
     assert.equal(invalid.status, 400);
   });
 
-  it("yönetici Drive klasörü bağlar; elle ve deneme yedekleri oraya da kopyalanır; bağlantı kaldırılır (v2.0.2)", async () => {
-    const drive = mkdtempSync(path.join(tmpdir(), "drive-"));
-    try {
-      const before = await admin.get("/api/admin/backups/cloud");
-      assert.equal(before.status, 200);
-      assert.equal(before.data.data.enabled, false);
-      const bad = await admin.post("/api/admin/backups/cloud", { target: "rastgele yazı" });
-      assert.equal(bad.status, 400);
-      const set = await admin.post("/api/admin/backups/cloud", { target: drive });
-      assert.equal(set.status, 200, JSON.stringify(set.data));
-      assert.equal(set.data.data.mode, "folder");
-      assert.ok(existsSync(path.join(drive, "DestekOfis Yedekleri")));
-      const created = await admin.post("/api/admin/backups");
-      assert.equal(created.status, 200);
-      assert.equal(created.data.data.cloud?.ok, true, JSON.stringify(created.data.data));
-      // v2.0.20: Drive'da da her şirket kendi klasöründe ("DestekOfis Yedekleri/001 - <ad>/").
-      assert.ok(existsSync(path.join(drive, "DestekOfis Yedekleri", path.basename(server.app.backupDir()), created.data.data.name)));
-      const test = await admin.post("/api/admin/backups/cloud/test");
-      assert.equal(test.status, 200);
-      assert.equal(test.data.data.ok, true);
-      const status = await admin.get("/api/admin/backups/cloud");
-      assert.equal(status.data.data.copies, 2);
-      assert.equal(status.data.data.lastError, null);
-      const cleared = await admin.post("/api/admin/backups/cloud", { target: "" });
-      assert.equal(cleared.data.data.enabled, false);
-      assert.equal((await admin.post("/api/admin/backups/cloud/test")).status, 400);
-    } finally {
-      rmSync(drive, { recursive: true, force: true });
-    }
-  });
-
   it("sistem bilgisini döndürür", async () => {
     const info = await admin.get("/api/admin/system");
     assert.equal(info.status, 200);

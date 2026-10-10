@@ -115,6 +115,9 @@
     "system.backup_restore_staged": "Yedekten geri yüklemeyi başlattı",
     "system.backup_restore_cancelled": "Bekleyen geri yüklemeden vazgeçti",
     "system.backup_restore_failed": "Yedekten geri yükleme yapılamadı",
+    // Drive'a yedek 2.1.0'da kaldırıldı; eski sürümlerde yazılmış kayıtlar işlem geçmişinde okunur kalır.
+    "system.cloud_backup_set": "Drive yedeğini bağladı (eski sürüm)",
+    "system.cloud_backup_cleared": "Drive yedeğini kaldırdı (eski sürüm)",
     "system.update_checked": "Güncellemeleri denetledi",
     "system.update_requested": "Güncellemeyi başlattı",
     "system.update_settings": "Güncelleme ayarını değiştirdi",
@@ -715,7 +718,6 @@
     HOF.toast(count > 1 ? `${count} şirketin yedeği alındı; her biri kendi klasöründe.` : `Yedek alındı: ${result.name}`, { type: "success" });
     if (result.failed?.length) HOF.toast(`Yedeği alınamayan şirket: ${result.failed.map(item => `${item.company} (${item.error})`).join("; ")}`, { type: "error", timeout: 8000 });
     loadBackups();
-    loadCloud();
   }
   // Yedekleri Denetle (v2.0.21): her şirketin yedekleri kendi adını taşıyan klasörde ve içlerindeki kimlik o şirketin mi?
   // Yalnız okur; hiçbir dosyaya dokunmaz.
@@ -828,66 +830,6 @@
       await HOF.api("/api/admin/backups/restore", { method: "DELETE" });
       HOF.toast("Bekleyen geri yükleme kaldırıldı.", { type: "success" });
       loadBackups();
-    } catch (error) {
-      HOF.toastError(error);
-    }
-  });
-
-  // ---------- Drive'a yedek (v2.0.2) ----------
-  async function loadCloud() {
-    const status = $("#adm-cloud-status");
-    if (!status) return;
-    try {
-      const info = await HOF.api("/api/admin/backups/cloud");
-      if (!info.enabled) {
-        status.textContent = "Bağlı değil. Yedekler yalnızca bu bilgisayarda tutuluyor.";
-        status.className = "adm-muted";
-        return;
-      }
-      const where = info.mode === "folder" ? `Klasör: ${info.path}` : `Drive klasörü: ${info.folderId}`;
-      const last = info.lastAt ? `Son kopya: ${HOF.formatDateTime(info.lastAt)} (${info.lastName})` : "Henüz kopya alınmadı; ilk yedekte alınır.";
-      status.innerHTML = `<b>${esc(where)}</b> · ${esc(last)} · ${esc(String(info.copies))} kopya${info.lastError ? `<br><span class="adm-error">Son Hata: ${esc(info.lastError)}</span>` : ""}`;
-      status.className = info.lastError ? "adm-warn" : "adm-ok";
-      const input = $("#adm-cloud-target");
-      if (input && !input.value) input.value = info.value || "";
-    } catch (error) {
-      status.textContent = error.message;
-    }
-  }
-  $("#adm-cloud-form")?.addEventListener("submit", async event => {
-    event.preventDefault();
-    const button = event.currentTarget.querySelector('button[type="submit"]');
-    button.disabled = true;
-    try {
-      await HOF.api("/api/admin/backups/cloud", { method: "POST", body: { target: $("#adm-cloud-target").value } });
-      HOF.toast("Drive yedeği bağlandı. Bir sonraki yedek oraya da kopyalanacak.", { type: "success" });
-      loadCloud();
-    } catch (error) {
-      HOF.toastError(error);
-    } finally {
-      button.disabled = false;
-    }
-  });
-  $("#adm-cloud-test")?.addEventListener("click", async event => {
-    const button = event.currentTarget;
-    button.disabled = true;
-    try {
-      const result = await HOF.api("/api/admin/backups/cloud/test", { method: "POST" });
-      HOF.toast(result.ok ? `Deneme başarılı: ${result.name}` : `Kopya alınamadı: ${result.error}`, { type: result.ok ? "success" : "error" });
-      loadCloud();
-      loadBackups();
-    } catch (error) {
-      HOF.toastError(error);
-    } finally {
-      button.disabled = false;
-    }
-  });
-  $("#adm-cloud-off")?.addEventListener("click", async () => {
-    try {
-      await HOF.api("/api/admin/backups/cloud", { method: "POST", body: { target: "" } });
-      $("#adm-cloud-target").value = "";
-      HOF.toast("Drive yedeği kaldırıldı.");
-      loadCloud();
     } catch (error) {
       HOF.toastError(error);
     }
