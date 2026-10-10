@@ -26,6 +26,19 @@
   let clientVersion = 0;
   let notesCursor = "";
   let appLoaded = false;
+  // 10.10.2026 (test/e2e/acilis-yanit-yaris.mjs): sayfa ayrılırken (yenileme, gezinme) tarayıcı açılışın yolda kalan isteklerini keser.
+  // Kesilen istek açılışı düşürür; sayfa zaten gidiyordur — "Sunucuya bağlanılamadı" ekranı ve konsol hatası yanıltıcıdır, yazılmaz.
+  // Geri/ileri önbelleğinden dönen sayfada (pageshow persisted) işaret kalkar.
+  let leaving = false;
+  addEventListener("pagehide", () => {
+    leaving = true;
+  });
+  addEventListener("pageshow", event => {
+    if (event.persisted) leaving = false;
+  });
+  // Beklenen biçimde olmayan yanıt (ör. JSON olmayan gövde → `{}`) uygulanmaz: client-state'te ayarlar nesnesi, notlarda dizi olmalı.
+  const isClientState = state => Boolean(state && typeof state === "object" && state.settings && typeof state.settings === "object");
+  const notesOf = payload => (payload && Array.isArray(payload.notes) ? payload.notes : null);
 
   const splash = () => document.getElementById("hof-splash");
   const hideSplash = () => {
@@ -49,12 +62,14 @@
     else localRemove("hukuk-ofisi-ai-mapping");
   };
   HOF.applyClientState = state => {
+    if (!isClientState(state)) return false;
     clientVersion = state.version;
     // Seçili veri oturumu (v2.0.1; hof-live.js başka oturumun olaylarını süzer, hof-sessions.js seçiciyi çizer).
     if (state.datasetKey) HOF.datasetKey = state.datasetKey;
     if (state.sessionCount) HOF.sessionCount = state.sessionCount;
     applySettings(state.settings);
     HOF.emit("settings", HOF.settings);
+    return true;
   };
 
   const parseNotes = value => {
@@ -68,13 +83,15 @@
 
   async function loadClientState() {
     let state = await HOF.api("/api/workspace/client-state");
+    if (!isClientState(state)) throw new Error("Sunucunun yanıtı okunamadı. Sayfayı yenileyin.");
     const legacySheet = localGet("hukuk-ofisi-sheet-url");
     // v1.0.0'dan geçiş: kaynak henüz sunucuda yoksa, bu tarayıcıdaki kaynak yetkili kullanıcı tarafından ofise taşınır.
     // v2.0.17: yalnız gerçek bir Google Sheets bağlantısı taşınır. Programın kendi iç anahtarı ("dataset://…") şirket
     // değişince tarayıcıda kalır; boş şirkete taşınsaydı şirket "Google Sheets'e bağlı" görünürdü (sahte kaynak).
     if (!state.sheetUrlSet && legacySheet && /^https?:\/\//i.test(legacySheet) && HOF.can("sources.manage")) {
       try {
-        state = await HOF.api("/api/workspace/client-state", { method: "PUT", body: { key: "sheetUrl", value: legacySheet } });
+        const saved = await HOF.api("/api/workspace/client-state", { method: "PUT", body: { key: "sheetUrl", value: legacySheet } });
+        if (isClientState(saved)) state = saved;
         HOF.toast("Bu bilgisayardaki veri kaynağı ofisin ortak kaynağı yapıldı.", { type: "success" });
       } catch (error) {
         console.warn("[DestekOfis] Kaynak aktarılamadı", error);
@@ -98,11 +115,14 @@
       }
       localSet(importFlag, "1");
     }
+    // Notlar okunamazsa açılış durmaz: bu tarayıcıdaki notlar kalır, imleç boş kalır ve ilk eşitleme (poll) hepsini yeniden alır.
     const notes = await HOF.api("/api/workspace/case-notes");
+    const list = notesOf(notes);
+    if (!list) return;
     const map = {};
-    for (const item of notes.notes) map[item.caseKey] = item.note;
+    for (const item of list) map[item.caseKey] = item.note;
     localSet(NOTES_KEY, JSON.stringify(map));
-    notesCursor = notes.serverTime;
+    notesCursor = notes.serverTime || "";
   }
 
   const MANAGED = new Set(["sheetUrl", "syncMinutes", "aiMapping"]);
@@ -160,6 +180,7 @@
     if (document.hidden) return;
     try {
       const state = await HOF.api("/api/workspace/client-state");
+      if (!isClientState(state)) return;
       // Sunucu arada güncellendiyse (bakım ekranı görülmeden bile) eski arayüzle çalışmamak için yenileme öner.
       const bootVersion = HOF.user?.product?.version;
       if (state.appVersion && bootVersion && state.appVersion !== bootVersion) {
@@ -174,14 +195,16 @@
         else if (sourceChanged && appLoaded) showReloadBanner("Veri kaynağı değiştirildi. Güncel tabloyu görmek için yenileyin.");
       }
       const notes = await HOF.api(`/api/workspace/case-notes?since=${encodeURIComponent(notesCursor)}`);
-      if (notes.notes.length) {
+      const list = notesOf(notes);
+      if (!list) return;
+      if (list.length) {
         const map = parseNotes(localGet(NOTES_KEY));
-        for (const item of notes.notes) map[item.caseKey] = item.note;
+        for (const item of list) map[item.caseKey] = item.note;
         localSet(NOTES_KEY, JSON.stringify(map));
       }
-      notesCursor = notes.serverTime;
+      notesCursor = notes.serverTime || notesCursor;
     } catch (error) {
-      if (error.status !== 401) console.warn("[DestekOfis] Eşitleme", error.message);
+      if (error.status !== 401 && !leaving) console.warn("[DestekOfis] Eşitleme", error.message);
     }
   }
 
@@ -316,6 +339,7 @@
     try {
       me = await HOF.api("/api/auth/me");
     } catch (error) {
+      if (leaving) return;
       if (error.status === 401) return HOF.showLogin();
       if (error.status === 503 && error.data.code === "MAINTENANCE") {
         hideSplash();
@@ -349,6 +373,7 @@
       setInterval(poll, 60_000);
       document.addEventListener("visibilitychange", () => !document.hidden && poll());
     } catch (error) {
+      if (leaving) return;
       console.error(error);
       showFatal(error.message || "Uygulama başlatılamadı.");
     } finally {
