@@ -1,0 +1,31 @@
+{
+  "ad": "k1-npm-test-son",
+  "komut": "npm test",
+  "commit": "1231cd21280a3935d5a8c33a044bbdf5131b6338",
+  "dal": "worktree-agent-ac6660b9cab091377",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:03:59.821Z",
+  "sure_sn": 969.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1898,
+    "gecen": 1897,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 1
+  },
+  "hukum": "GEÇTİ",
+  "neden": "1 atlanan/todo",
+  "ham_cikti": "docs/kanit/2026-10-10/k1-iade-kapanisi/2026-10-10/k1-npm-test-son.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac6660b9cab091377",
+  "ham_cikti_sha256": "a85c895246e684475c66b353fe2f1639ddf0acf4d380521ff44c315936b8d59d",
+  "ham_cikti_bayt": 631219
+}
