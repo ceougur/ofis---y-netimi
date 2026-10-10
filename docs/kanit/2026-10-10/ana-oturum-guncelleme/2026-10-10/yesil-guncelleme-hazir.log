@@ -1,0 +1,263 @@
+TAP version 13
+# (node:20646) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+    # Subtest: (a) gün içinde kullanıcı çalışırken bulunan sürüm arka planda indirilir + doğrulanır + açılır; servis durmaz, 'hazır' görünür; (b) durdur/başlat → eski sürüm hiç açılmadan kurulur
+    ok 1 - (a) gün içinde kullanıcı çalışırken bulunan sürüm arka planda indirilir + doğrulanır + açılır; servis durmaz, 'hazır' görünür; (b) durdur/başlat → eski sürüm hiç açılmadan kurulur
+      ---
+      duration_ms: 5753.384516
+      type: 'test'
+      ...
+    # Subtest: (c) açılışta ağ yok (yayın kaynağı kapalı) → hazırdaki sürüm kurulur
+    ok 2 - (c) açılışta ağ yok (yayın kaynağı kapalı) → hazırdaki sürüm kurulur
+      ---
+      duration_ms: 2497.901962
+      type: 'test'
+      ...
+    # Subtest: (d) açılışta daha yeni sürüm var → o indirilip kurulur; tek geçiş, ara sürüm kurulmaz
+    ok 3 - (d) açılışta daha yeni sürüm var → o indirilip kurulur; tek geçiş, ara sürüm kurulmaz
+      ---
+      duration_ms: 2940.208459
+      type: 'test'
+      ...
+    # Subtest: (e)+(k) hazırken daha yeni sürüm çıkar → önce yenisi tamamen hazırlanır, SONRA eski hazır paket (klasör + zip) silinir; çalışan ve önceki sürüm durur
+    ok 4 - (e)+(k) hazırken daha yeni sürüm çıkar → önce yenisi tamamen hazırlanır, SONRA eski hazır paket (klasör + zip) silinir; çalışan ve önceki sürüm durur
+      ---
+      duration_ms: 3545.992403
+      type: 'test'
+      ...
+    # Subtest: (j) hazır 9.0.1 varken 9.0.2 indirmesi yarıda kesilir ya da özeti tutmaz → 9.0.1 hazır kalır (hiçbir an hazır paketsiz değil); açılışta 9.0.1 kurulur
+    ok 5 - (j) hazır 9.0.1 varken 9.0.2 indirmesi yarıda kesilir ya da özeti tutmaz → 9.0.1 hazır kalır (hiçbir an hazır paketsiz değil); açılışta 9.0.1 kurulur
+      ---
+      duration_ms: 5077.11454
+      type: 'test'
+      ...
+    # Subtest: (f) bozuk (SHA-256 tutmayan) ya da yanlış imzalı hazır paket → kurulmaz, eski sürüm açılır, kayıt düşülür, hazır paket silinir
+    ok 6 - (f) bozuk (SHA-256 tutmayan) ya da yanlış imzalı hazır paket → kurulmaz, eski sürüm açılır, kayıt düşülür, hazır paket silinir
+      ---
+      duration_ms: 4676.859066
+      type: 'test'
+      ...
+    # Subtest: (g) yeni sürümün deneme açılışı başarısız → önceki sürüme dönülür, 'kurulamadı' işaretlenir; sonraki açılışta aynı sürüm yeniden denenmez
+    ok 7 - (g) yeni sürümün deneme açılışı başarısız → önceki sürüme dönülür, 'kurulamadı' işaretlenir; sonraki açılışta aynı sürüm yeniden denenmez
+      ---
+      duration_ms: 5398.508069
+      type: 'test'
+      ...
+    # Subtest: (h) kendiliğinden kur KAPALI → bulunan sürüm indirilmez, hazırlanmaz, yalnız 'hazır' bildirilir; (i) saatlik denetim sürer
+    ok 8 - (h) kendiliğinden kur KAPALI → bulunan sürüm indirilmez, hazırlanmaz, yalnız 'hazır' bildirilir; (i) saatlik denetim sürer
+      ---
+      duration_ms: 8282.305114
+      type: 'test'
+      ...
+    # Subtest: (l) iki indirme aynı anda başlamaz: yavaş indirme sürerken saatlik denetimler ve yöneticinin elle 'Denetle'si yeni indirme başlatmaz
+    ok 9 - (l) iki indirme aynı anda başlamaz: yavaş indirme sürerken saatlik denetimler ve yöneticinin elle 'Denetle'si yeni indirme başlatmaz
+      ---
+      duration_ms: 7553.563566
+      type: 'test'
+      ...
+    1..9
+ok 1 - Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+  ---
+  duration_ms: 45728.247415
+  type: 'suite'
+  ...
+# (node:20647) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: otomatik güncelleme akışı
+    # Subtest: açılışta yeni sürüm indirilir, bakım sayfası gösterilir, yeni sürüme geçilir; veriler korunur
+    ok 1 - açılışta yeni sürüm indirilir, bakım sayfası gösterilir, yeni sürüme geçilir; veriler korunur
+      ---
+      duration_ms: 3630.664402
+      type: 'test'
+      ...
+    # Subtest: yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez
+    ok 2 - yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez
+      ---
+      duration_ms: 1989.572209
+      type: 'test'
+      ...
+    # Subtest: otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir
+    ok 3 - otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir
+      ---
+      duration_ms: 4989.351503
+      type: 'test'
+      ...
+    # Subtest: elektrik kesintisinden kalan onaylanmamış sürüm açılışta denenir, açılmazsa önceki sürüme dönülür
+    ok 4 - elektrik kesintisinden kalan onaylanmamış sürüm açılışta denenir, açılmazsa önceki sürüme dönülür
+      ---
+      duration_ms: 1008.297189
+      type: 'test'
+      ...
+    # Subtest: güncelleme sunucusuna ulaşılamazsa uygulama normal açılır
+    ok 5 - güncelleme sunucusuna ulaşılamazsa uygulama normal açılır
+      ---
+      duration_ms: 653.529252
+      type: 'test'
+      ...
+    1..5
+ok 2 - otomatik güncelleme akışı
+  ---
+  duration_ms: 12273.374926
+  type: 'suite'
+  ...
+# (node:20653) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: güncelleme: kurulu sürüm yeniden önerilmez (uygulama tarafı)
+    # Subtest: çalışan sürümle aynı öneri gizlenir ve kurulum başlatılmaz
+    ok 1 - çalışan sürümle aynı öneri gizlenir ve kurulum başlatılmaz
+      ---
+      duration_ms: 13.648868
+      type: 'test'
+      ...
+    # Subtest: gerçekten yeni sürüm önerilir ve kurulabilir
+    ok 2 - gerçekten yeni sürüm önerilir ve kurulabilir
+      ---
+      duration_ms: 10.123827
+      type: 'test'
+      ...
+    1..2
+ok 3 - güncelleme: kurulu sürüm yeniden önerilmez (uygulama tarafı)
+  ---
+  duration_ms: 411.115717
+  type: 'suite'
+  ...
+# Subtest: sürüm karşılaştırma
+    # Subtest: anlamsal sürüm kurallarına uyar
+    ok 1 - anlamsal sürüm kurallarına uyar
+      ---
+      duration_ms: 1.09475
+      type: 'test'
+      ...
+    1..1
+ok 4 - sürüm karşılaştırma
+  ---
+  duration_ms: 2.010256
+  type: 'suite'
+  ...
+# Subtest: imzalı güncelleme bildirgesi
+    # Subtest: güvenilen anahtarla imzalı bildirgeyi kabul eder
+    ok 1 - güvenilen anahtarla imzalı bildirgeyi kabul eder
+      ---
+      duration_ms: 2.561393
+      type: 'test'
+      ...
+    # Subtest: değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+    ok 2 - değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+      ---
+      duration_ms: 1.750341
+      type: 'test'
+      ...
+    # Subtest: geçersiz bildirge alanları reddedilir
+    ok 3 - geçersiz bildirge alanları reddedilir
+      ---
+      duration_ms: 2.107106
+      type: 'test'
+      ...
+    # Subtest: uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+    ok 4 - uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+      ---
+      duration_ms: 1.243293
+      type: 'test'
+      ...
+    # Subtest: ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+    ok 5 - ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+      ---
+      duration_ms: 0.612992
+      type: 'test'
+      ...
+    # Subtest: sürüm notları CHANGELOG'dan çıkarılır
+    ok 6 - sürüm notları CHANGELOG'dan çıkarılır
+      ---
+      duration_ms: 1.126769
+      type: 'test'
+      ...
+    1..6
+ok 5 - imzalı güncelleme bildirgesi
+  ---
+  duration_ms: 10.094344
+  type: 'suite'
+  ...
+# Subtest: güncelleyici (sahte GitHub ile)
+    # Subtest: kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+    ok 1 - kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+      ---
+      duration_ms: 72.297224
+      type: 'test'
+      ...
+    # Subtest: indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+    ok 2 - indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+      ---
+      duration_ms: 260.643897
+      type: 'test'
+      ...
+    # Subtest: kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+    ok 3 - kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+      ---
+      duration_ms: 257.796151
+      type: 'test'
+      ...
+    # Subtest: paket özeti tutmazsa hiçbir şey kurulmaz
+    ok 4 - paket özeti tutmazsa hiçbir şey kurulmaz
+      ---
+      duration_ms: 83.341774
+      type: 'test'
+      ...
+    # Subtest: yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+    ok 5 - yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+      ---
+      duration_ms: 635.331919
+      type: 'test'
+      ...
+    # Subtest: daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+    ok 6 - daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+      ---
+      duration_ms: 22.640411
+      type: 'test'
+      ...
+    # Subtest: ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+    ok 7 - ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+      ---
+      duration_ms: 119.072458
+      type: 'test'
+      ...
+    # Subtest: imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+    ok 8 - imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+      ---
+      duration_ms: 174.81829
+      type: 'test'
+      ...
+    # Subtest: paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+    ok 9 - paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+      ---
+      duration_ms: 2.232858
+      type: 'test'
+      ...
+    1..9
+ok 6 - güncelleyici (sahte GitHub ile)
+  ---
+  duration_ms: 3014.829523
+  type: 'suite'
+  ...
+# Subtest: kurulum düzeni yardımcıları
+    # Subtest: current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+    ok 1 - current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+      ---
+      duration_ms: 4.19971
+      type: 'test'
+      ...
+    1..1
+ok 7 - kurulum düzeni yardımcıları
+  ---
+  duration_ms: 4.36039
+  type: 'suite'
+  ...
+1..7
+# tests 33
+# suites 7
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 48914.15173

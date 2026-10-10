@@ -1,0 +1,32 @@
+{
+  "ad": "yesil-guncelleme-hazir",
+  "komut": "node --test test/guncelleme-hazir.test.mjs test/update-flow.test.mjs test/update-guard.test.mjs test/updater.test.mjs",
+  "commit": "23dbf6ebd8846cb14e358bc5b4f47f6b4ccb8357",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T21:31:18.027Z",
+  "sure_sn": 49,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 33,
+    "gecen": 33,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-guncelleme/2026-10-10/yesil-guncelleme-hazir.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "1735324c3c159cac2f33724aa16fabe1a94a0753ee9eb8026c790112e9fb3938",
+  "ham_cikti_bayt": 11132
+}
