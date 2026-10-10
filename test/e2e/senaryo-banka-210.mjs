@@ -69,6 +69,8 @@ const BASE = `http://127.0.0.1:${port}`;
 const clock = app.config.now;
 const browser = await chromium.launch();
 const errors = [];
+// Tarayıcı hatası hangi adımda oldu (10.10.2026; hakem K3/K5 koşusunda bir kez görülen "TRPCClientError: Failed to fetch"in yerini bulmak için).
+let stepNow = "";
 
 /** Geçerli Türkiye IBAN'ı (mod 97). */
 function trIban(bankCode, account) {
@@ -110,7 +112,20 @@ const companyTag = async () => {
 // after: adım yarıda kalsa da koşan son iş (ör. 001'e dönüş). CI 460: adım 9b şirket 002'deyken düştü, 001'e dönüş satırları koşmadı ve
 // sonraki 22 denetim 002'de zincirleme kırıldı; artık dönüş finally'de, adımın kendi hatası tek başına sayılır.
 const step = async (title, fn, { after = null } = {}) => {
+  stepNow = title.split(" ")[0];
   console.log(`\n■ ${title}${await companyTag()}`);
+  // Ders 20: NET_LATENCY=ms ve NET_STEPS="41.,48." verilirse bu adımlarda yönetici sayfasının ağı yavaşlatılır (CDP; istek gerçekten yolda
+  // kalır — page.route gecikmesi sayfa betiğine "Failed to fetch" düşürmüyordu). Gezinti, açılıştaki tablo isteğini yolda keser mi?
+  const slow = Number(process.env.NET_LATENCY) > 0 && String(process.env.NET_STEPS || "").split(",").includes(stepNow) && admin;
+  const cdp = slow ? await admin.context().newCDPSession(admin) : null;
+  if (cdp) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: Number(process.env.NET_LATENCY), downloadThroughput: -1, uploadThroughput: -1 });
+  try {
+    await stepBody(fn, after);
+  } finally {
+    if (cdp) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }).catch(() => null);
+  }
+};
+const stepBody = async (fn, after) => {
   try {
     await fn();
   } catch (error) {
@@ -132,14 +147,31 @@ const newPage = async ({ width = 1440, height = 1000 } = {}) => {
   const context = await browser.newContext({ viewport: { width, height }, locale: "tr-TR" });
   await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
   const page = await context.newPage();
-  page.on("pageerror", error => errors.push(`pageerror ${error.message}`));
+  page.on("pageerror", error => errors.push(`pageerror [adım ${stepNow}] ${error.message}`));
   // Beklenen retler (geçersiz IBAN 400, personelin yetkisiz isteği 403, girişten önceki oturum yoklaması 401) hata sayılmaz.
   page.on("console", message => {
-    if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`)) errors.push(`console ${message.text()}`);
+    if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`)) errors.push(`console [adım ${stepNow}] ${message.text()}`);
   });
+  // E2E_TANI=1: kesilen /api/ isteklerinin adımı ve nedeni (hata ayıklama satırı; denetim değil).
+  if (process.env.E2E_TANI === "1" || Number(process.env.TRPC_DELAY) > 0 || Number(process.env.NET_LATENCY) > 0) {
+    page.on("requestfailed", request => {
+      if (new URL(request.url()).pathname.startsWith("/api/")) console.log(`  · [adım ${stepNow}] kesilen istek ${request.method()} ${new URL(request.url()).pathname}: ${request.failure()?.errorText || ""}`);
+    });
+  }
+  // Ders 20 (10.10.2026): TRPC_DELAY=ms verilirse ana tablonun /api/trpc/sheets.getRows yanıtı geciktirilir — "sayfa açıldıktan 700 ms
+  // sonra yeniden gezinti, tablo isteği hâlâ yolda" ön koşulu zorla kurulur (TRPCClientError: Failed to fetch yarışı).
+  if (Number(process.env.TRPC_DELAY) > 0) {
+    await page.route(url => new URL(url).pathname === "/api/trpc/sheets.getRows", async route => {
+      trpcDelayed += 1;
+      console.log(`  · [adım ${stepNow}] sheets.getRows geciktiriliyor (${process.env.TRPC_DELAY} ms)`);
+      await new Promise(resolve => setTimeout(resolve, Number(process.env.TRPC_DELAY)));
+      await route.continue().catch(() => null);
+    });
+  }
   await installPageClock(page, clock);
   return page;
 };
+let trpcDelayed = 0;
 const login = async (page, username, password) => {
   await page.goto(`${BASE}/`);
   await page.fill("#hof-auth input[name=username]", username);
@@ -2542,5 +2574,6 @@ try {
   await app.close();
   fs.rmSync(root, { recursive: true, force: true });
 }
+if (Number(process.env.TRPC_DELAY) > 0) console.log(`\nTRPC_DELAY=${process.env.TRPC_DELAY}: geciktirilen sheets.getRows isteği ${trpcDelayed}`);
 console.log(`\n${failed ? "BAŞARISIZ" : "TAMAM"}: ${passed} denetim geçti, ${failed} başarısız. Ekran görüntüleri: ${OUT}`);
 process.exitCode = failed ? 1 : 0;
