@@ -326,7 +326,10 @@ SINIF_ACIKLAMALARI = {
                                    "request-id-reused (programın davranışı tutarlı; koşucu eşlemesi yanlış).",
     "KAHIN-K4-YINELENEN-AD": "KÂHİNLER AYRIŞIYOR: istek kimliğiyle yinelenen faturanın yeni takma adı çıktıya model_b'de "
                              "ve programda yazılıyor (K4), model_a'da yazılmıyor (K-4). Dil §5.4 'ad'ı önceki adımın "
-                             "hareketini anar' iki yoruma açık → dil sürüm 2'de netleşmeli.",
+                             "hareketini anar' iki yoruma açık → dil sürüm 2'de netleşmeli. Program yinelemeyi "
+                             "reddettiğinde (alış yinelemesinde koşucunun 409'u, KDV dahil iskontolu peşinli satışta "
+                             "payment-exceeds) yaprak B≠A=P görünür ve bileşik sınıfa yazılır "
+                             "(KAHIN-K4-YINELENEN-AD+<programdaki sınıf>).",
     "IADE-KAPAMA": "İade belgesinin kapanışı: program iadeyi geri ödense de asıl faturanın açığından düşüyor (geri ödeme "
                    "ayrıca carinin öbür belgelerini kapatıyor) ve geri ödenmemiş iadede asıl kapalıysa iade belgesinin "
                    "açığını 0 gösteriyor. Dil §7 kural 2 ve 5 [YAYGIN]. Mini senaryolarda programın açıkları kendi cari "
@@ -559,7 +562,13 @@ def birincil_sinif(f, bag):
                 "stok") and len(t) >= 2 and (f["a"] == YOK or f["program"] == YOK or f["b"] == YOK):
         d = bag["tanim"].get(t[1])
         if d in bag["adim_sinifi"]:
-            return bag["adim_sinifi"][d]
+            s_ = bag["adim_sinifi"][d]
+            if t[0] == "faturalar" and t[1] in bag["yineleme_ad"] and desen == "B≠A=P" and f["a"] == YOK \
+                    and f["b"] != YOK and s_ != "KAHIN-K4-YINELENEN-AD":
+                # Yinelenen faturanın takma adı: program yinelemeyi reddettiği için yazmıyor (s_), model_a da K-4
+                # gereği yazmıyor; model_b yazıyor (K4). İki neden birlikte → bileşik sınıf.
+                return "+".join(sorted({"KAHIN-K4-YINELENEN-AD", s_}))
+            return s_
         if d in bag["p_atlanan"]:
             z = _atlama_sinifi(bag, d)
             if z:
@@ -576,8 +585,20 @@ def birincil_sinif(f, bag):
         if ad in bag["alis_yineleme_ad"] or (ad in bag["yineleme_ad"] and bag["yineleme_ad"][ad] in bag["fatura"]
                                              and bag["fatura"][bag["yineleme_ad"][ad]].get("tur") == "alis"
                                              and desen == "B≠A=P"):
+            if desen == "B≠A=P" and f["a"] == YOK and f["b"] != YOK:
+                return "KAHIN-K4-YINELENEN-AD+KOSUCU-ALIS-YINELEME-NUMARA"
             return "KOSUCU-ALIS-YINELEME-NUMARA"
         if ad in bag["yineleme_ad"]:
+            if desen == "A≠B≠P" and f["a"] == YOK:
+                # Takma ad satırı asıl belgenin değerini taşır: B ile programın ayrılığı asıl belgenin aynı alanındaki
+                # farkla aynı kökten gelir → K4 + asıl belgenin o alandaki sınıfı.
+                ix = len(f["yol"]) - len(t) + 1
+                f2 = {"yol": f["yol"][:ix] + [bag["yineleme_ad"][ad]] + f["yol"][ix + 1:], "a": f["b"], "b": f["b"],
+                      "program": f["program"], "desen": "A=B≠P", "aile": f["aile"]}
+                f2["alan"] = yol_metni(f2["yol"])
+                s2 = kok_sinif(f2, bag)
+                if not s2.startswith(("ACIKLANMAMIS", "SINIFLANMAMIS")):
+                    return "+".join(sorted({"KAHIN-K4-YINELENEN-AD"} | set(kok_ana(s2))))
             return "KAHIN-K4-YINELENEN-AD"
         if t[0] == "faturalar" and desen == "A=B≠P" and ad in bag["dahil_isk"] and t[2] in ("toplam", "matrah", "kdv"):
             if isinstance(f["a"], int) and isinstance(f["program"], int) and abs(f["a"] - f["program"]) <= 3:
@@ -795,7 +816,7 @@ def kok_sinif(f, bag):
     s = birincil_sinif(f, bag)
     if s:
         if f["yol"][0] != "araDurumlar":
-            f["tetik"] = tetik_adim(f, bag, s)
+            f["tetik"] = tetik_adim(f, bag, s) if "+" not in s else {k: tetik_adim(f, bag, k) for k in kok_ana(s)}
         return s
     if any(f["aile"].startswith(x) or f["aile"] == x for x in TUREV_AILELER):
         s, olay = turev_sinif(f, bag)
@@ -1135,10 +1156,9 @@ def ozet_yaz():
                 g["kosular"][r["senaryo"]] += 1
                 if ks.startswith("TUREV:"):
                     g["turevYaprak"] += 1
-                    tet = (f.get("tetik") or {}).get(k) if isinstance(f.get("tetik"), dict) else None
                 else:
                     g["birincilYaprak"] += 1
-                    tet = f.get("tetik")
+                tet = (f.get("tetik") or {}).get(k) if isinstance(f.get("tetik"), dict) else f.get("tetik")
                 anahtar = [tohum if tohum is not None else -1, r.get("islemSayisi") or 0,
                            0 if not ks.startswith("TUREV:") else 1, sira.get(tet, 10 ** 9)]
                 if g["enKucukTohum"] is None or anahtar < g["enKucukTohum"]["anahtar"]:

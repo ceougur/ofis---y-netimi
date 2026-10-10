@@ -1030,6 +1030,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       oraya taşınıyordu (güvenilirlik tohum 2 işlem 2331; f241559 → af83d46). R5 CANLI (v2.0.24–2.0.26): fazla tahsilatlı taksit kartında
       iade iptali kartı faturanın açığına kadar büyütmüyordu (açık 1.500 ↔ kart kalanı 1.000; mutabakat 5.000 tohum 2 işlem 3414;
       9340b9c → 326b87b). R4/R5 kullanıcıya listelendi (10.10.2026); ana oturum kırmızı/yeşil doğrulaması birleştirmeden önce.
+  BAĞIMSIZ KÂHİN ÖN BULGULARI (10.10.2026; temiz oda iki Python modeli + program, kabul 1–16 + tohum 1–33; sınıflama kâhinin fark
+      ajanından, HAKEM HÜKMÜ BEKLENİYOR; kabul 1–16'da üç taraf fark 0): K-A Kasa elle hareketi (POST /api/workspace/cash) istek kimliğini
+      yok sayıyor — aynı istek iki kez yazılır (ana oturum koddan doğruladı: `cash.mjs` 220, requestIdOf yalnız transfer/düzeltmede;
+      plan §3.3 "yazan her uç x-hof-request alır"); K-B iade kapanışı (Σ açık ≠ cari bakiye; R1 ile aynı kök mü — birleşmeden sonra
+      yeniden koşulacak); K-C kartla ödeme kurumsal kart hesabına (309) bağlanmıyor (bilinen açık iş, F izi); İNCELE: KDV dahil iskontoda
+      ±1 kuruş, Kasa açılışı 649 ↔ 500, banka eksi kodu; dil/kâhin eksikleri: KMH açılışı, kredi anapara aşımı, vadeli hesap fişi.
   İSTEK (kullanıcı, 09.10.2026): "tüm işlemler bitince bağımsız yargıç ve yargıç kararını eleştirmenden tekrar geçir, sonra plana
       uy!" → 2.1.0'ın BÜTÜN işleri (düzeltme turu, eksik testler, transfer, raporlar, K10, yetki, kabul 1–16, kılavuz) bitince, paketten
       ÖNCE: (1) bağımsız YARGIÇ (kod değiştirmez; bütün 2.1.0'ı ve bulguları yeniden üreterek doğrular, önem + teslime engel kararı);
