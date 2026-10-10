@@ -30,3 +30,5 @@ kanit-cikti/
 !docs/kanit/**/*.log
 __pycache__/
 *.pyc
+# Bağımsız kâhinin ham çıktıları (program/model durum dökümleri, ~45 MB): üreticiyle yeniden üretilir; depoda yalnız senaryolar ve fark özetleri.
+test/bagimsiz/cikti/ham/
