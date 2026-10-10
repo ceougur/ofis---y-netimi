@@ -34,14 +34,32 @@ describe("istemci başlatıcısı (Go)", { skip: !hasGo && "Go kurulu değil" },
     binary = path.join(work, process.platform === "win32" ? "launcher.exe" : "launcher");
     execFileSync("go", ["test", "./..."], { cwd: path.join(root, "launcher"), stdio: "pipe", env: { ...process.env, GOTOOLCHAIN: "local" } });
     execFileSync("go", ["build", "-o", binary, "."], { cwd: path.join(root, "launcher"), stdio: "pipe", env: { ...process.env, GOTOOLCHAIN: "local" } });
-    server = http.createServer((req, res) => {
-      res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify({ ok: true, data: { service: "destekofis-merkezi", status: "ok" } }));
-    });
-    await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
-    port = server.address().port;
-    responder = startDiscoveryResponder({ port, httpPort: port, host: "127.0.0.1", getInfo: () => ({ instanceId: "kurulum-abc", version: "1.2.0", officeName: "Deneme Hukuk" }) });
-    await responder.ready;
+    // Başlatıcı HTTP ve UDP keşfi için AYNI port numarasını kullanır (-port). İşletim sisteminin TCP için verdiği boş port UDP'de
+    // kullanılamayabilir: Windows'ta (Hyper-V/WinNAT dışlanmış port aralıkları) UDP bağlama "EACCES" verir — CI koşu 448'de
+    // (6fad463, Windows Node 24) hazırlık bu yüzden düştü, 5 test iptal oldu. İki protokolde de bağlanabilen numara bulunana dek
+    // yeni port denenir; başka bir hata hemen yükseltilir.
+    for (let attempt = 1; ; attempt += 1) {
+      server = http.createServer((req, res) => {
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({ ok: true, data: { service: "destekofis-merkezi", status: "ok" } }));
+      });
+      await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+      port = server.address().port;
+      responder = startDiscoveryResponder({ port, httpPort: port, host: "127.0.0.1", getInfo: () => ({ instanceId: "kurulum-abc", version: "1.2.0", officeName: "Deneme Hukuk" }) });
+      try {
+        await responder.ready;
+        break;
+      } catch (error) {
+        await new Promise(resolve => server.close(resolve));
+        try {
+          await responder.close();
+        } catch {
+          // bağlanamamış soket zaten kapalı olabilir
+        }
+        responder = null;
+        if (!["EACCES", "EADDRINUSE"].includes(error.code) || attempt >= 20) throw error;
+      }
+    }
   });
   after(async () => {
     await responder?.close();
