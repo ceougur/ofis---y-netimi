@@ -6,6 +6,9 @@ name: Uzun Doğrulama
 # Her push'ta koşmaz (dakika ve süre): sürüm adayında ya commit iletisinde "[uzun-dogrulama]" ile push edilerek ya da (iş akışı varsayılan
 # dalda olduktan sonra) elle tetiklenir. 20.000 işlemlik tek sıralı koşu GitHub'ın 6 saatlik iş sınırına sığmayabilir; o yerelde koşulur.
 # Her koşu kanıt aracıyla (çıkış kodu + sayılar + başarısız testler); sonda "Uzun Doğrulama Kapısı" bütün kayıtları ister.
+# Maliyet ve sınır (kullanıcı, 10.10.2026: "maliyet çıksın istemiyorum"): depo herkese açık → standart koşucular ücretsiz (faturalanan
+# süre 0, GitHub'dan okundu). Depo özel yapılırsa dakikalar ücretli kotadan düşer — o zaman bu işler HİÇ başlamaz (if: private değil). Hesabın aynı anda koşabilen iş sınırı (Free: 20)
+# normal CI ile paylaşılır; uzun koşular normal CI'yi bekletmesin diye her matris en çok 6 iş (toplam 12; CI'ye 8 yuva kalır).
 on:
   push:
     branches: ["**"]
@@ -25,12 +28,13 @@ env:
 
 jobs:
   mutabakat:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]')
+    if: (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
     name: Mutabakat (${{ matrix.os }}, tohum ${{ matrix.tohum }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 345
     strategy:
       fail-fast: false
+      max-parallel: 6
       matrix:
         os: [ubuntu-latest]
         tohum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -57,12 +61,13 @@ jobs:
           if-no-files-found: warn
 
   guvenilirlik:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]')
+    if: (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
     name: Güvenilirlik (${{ matrix.os }}, ${{ matrix.taban }}, tohum ${{ matrix.tohum }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 345
     strategy:
       fail-fast: false
+      max-parallel: 6
       matrix:
         os: [ubuntu-latest]
         taban: [bos, surum-2.0.19-zincir]
@@ -91,7 +96,7 @@ jobs:
           if-no-files-found: warn
 
   kapi:
-    if: always() && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
+    if: always() && (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
     name: Uzun Doğrulama Kapısı
     runs-on: ubuntu-latest
     needs: [mutabakat, guvenilirlik]

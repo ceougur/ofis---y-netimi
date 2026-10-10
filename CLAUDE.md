@@ -1102,6 +1102,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   döviz/kur/değerleme (Aşama 13), Bankaya Tahsile Ver, K8 taksit avans/fazla ödeme kuralları, faturanın bankalı iade/iptal ayrıntısı ve
   toplu kesim, kalan §8.10 raporları, Kasa açılış/devir (K6); POS 2.2.0, ekstre 2.3.0 yerinde. Tahmin 3–4 iş günü. Plan sırası bu
   kararla değişti (döviz 2.1.0'dan çıktı).
+  MALİYET (kullanıcı, 10.10.2026: "GitHub'da Hobby planım, limitimi etkileyemiyor doğru mu? maliyet çıksın istemiyorum"): depo HERKESE
+  AÇIK → standart Linux/Windows koşucuları ücretsiz; GitHub'dan okundu: CI 509 19,5 dk sürdü, faturalanan 0 ms; Uzun Doğrulama ve CI 521
+  faturalanan 0. Gerçek sınır eşzamanlı iş sayısı (Free: 20, CI ile paylaşılır) → Uzun Doğrulama #1 (22 iş aynı anda) İPTAL edildi;
+  iş akışı her matriste en çok 6 iş (CI'ye 8 yuva kalır) ve depo özel yapılırsa HİÇ başlamaz (if: private değil). Test ci-kapi-listesi
+  bunları denetler. Kural: ücretli koşucu (büyük/GPU), özel depoda uzun iş, ücretli eylem yok.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart

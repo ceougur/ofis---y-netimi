@@ -101,5 +101,9 @@ describe("Uzun Doğrulama Kapısı — beklenen liste ↔ matris", () => {
     assert.ok([...ran].filter(name => name.startsWith("guvenilirlik-ubuntu")).length >= 10, "güvenilirlik 5 tohum × 2 taban");
     assert.match(uzun, /MUTABAKAT_ISLEM: \$\{\{ inputs\.mutabakat_islem \|\| '5000' \}\}/, "mutabakat varsayılanı 5.000 işlem");
     assert.match(uzun, /GUVENILIRLIK_ISLEM: \$\{\{ inputs\.guvenilirlik_islem \|\| '10000' \}\}/, "güvenilirlik varsayılanı 10.000 işlem");
+    // Hesabın eşzamanlı iş sınırı (Free: 20) normal CI ile paylaşılır: uzun koşular en çok 6 + 6 iş.
+    for (const job of ["mutabakat", "guvenilirlik"]) assert.match(blockOf(job), /\n {6}max-parallel: [1-6]\n/, `${job}: max-parallel en çok 6`);
+    // Maliyet güvencesi: depo özel yapılırsa (dakikalar ücretli) uzun işler hiç başlamaz.
+    for (const job of ["mutabakat", "guvenilirlik", "kapi"]) assert.match(blockOf(job), /\n {4}if: .*\(!github\.event\.repository\.private\)/, `${job}: yalnız herkese açık depoda`);
   });
 });
