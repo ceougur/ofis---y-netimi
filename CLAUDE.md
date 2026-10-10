@@ -1030,12 +1030,24 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       oraya taşınıyordu (güvenilirlik tohum 2 işlem 2331; f241559 → af83d46). R5 CANLI (v2.0.24–2.0.26): fazla tahsilatlı taksit kartında
       iade iptali kartı faturanın açığına kadar büyütmüyordu (açık 1.500 ↔ kart kalanı 1.000; mutabakat 5.000 tohum 2 işlem 3414;
       9340b9c → 326b87b). R4/R5 kullanıcıya listelendi (10.10.2026); ana oturum kırmızı/yeşil doğrulaması birleştirmeden önce.
-  BAĞIMSIZ KÂHİN ÖN BULGULARI (10.10.2026; temiz oda iki Python modeli + program, kabul 1–16 + tohum 1–33; sınıflama kâhinin fark
-      ajanından, HAKEM HÜKMÜ BEKLENİYOR; kabul 1–16'da üç taraf fark 0): K-A Kasa elle hareketi (POST /api/workspace/cash) istek kimliğini
-      yok sayıyor — aynı istek iki kez yazılır (ana oturum koddan doğruladı: `cash.mjs` 220, requestIdOf yalnız transfer/düzeltmede;
-      plan §3.3 "yazan her uç x-hof-request alır"); K-B iade kapanışı (Σ açık ≠ cari bakiye; R1 ile aynı kök mü — birleşmeden sonra
-      yeniden koşulacak); K-C kartla ödeme kurumsal kart hesabına (309) bağlanmıyor (bilinen açık iş, F izi); İNCELE: KDV dahil iskontoda
-      ±1 kuruş, Kasa açılışı 649 ↔ 500, banka eksi kodu; dil/kâhin eksikleri: KMH açılışı, kredi anapara aşımı, vadeli hesap fişi.
+  BAĞIMSIZ KÂHİN + HAKEM (10.10.2026; `test/bagimsiz/`, kanıt `docs/kanit/2026-10-10/kahin/`): plandan, program kodunu görmeden iki
+      Python modeli + program; kabul 1–16 üç tarafta fark 0 (planın 28 sayısı); tohum 1–30 × 500 + 31–33 × 2.000 işlem → 13 fark sınıfı,
+      açıklanamayan 0; bilinen nedenler nötrlenince 474.000 yaprakta yalnız 259 fark (BANKA-EKSI-KODU). HAKEM (her sınıf en küçük
+      senaryoya indirildi, v2.0.26 gerçek koduyla ölçüldü) — PROGRAM YANLIŞ, kullanıcıya listelendi, DÜZELTİLECEK:
+      K1 İADE KAPANIŞI (orta, v2.0.26'da VAR; R1'den AYRI kök): geri ödenen iade asıl faturanın açığından da düşüyor (aynı alacak iki
+         kez) → "ödenen 240" hayalet kapatan, kalan alacak hiçbir açık belgede/yaşlandırmada yok; taksitli komşuda fatura 360 ↔ kart 600.
+      K2 KARTLA ÖDEME KURUMSAL KART HESABINA BAĞLANMIYOR (YÜKSEK, 2.1.0 teslime engel; plan §3.5/§3.7 #3 #5): pickRef yalnız havale;
+         satır 108.00'e düşüyor, kart limiti (K7) çalışmıyor, iki kartta seçim istenmiyor, yanlış türde hesap sessizce kabul.
+      K3 KASA ELLE HAREKETİ İSTEK KİMLİĞİ YOK (orta, v2.0.26'da VAR; plan §7/§3.10): çift gönderimde Kasa + 770 çift; istemci de göndermiyor.
+      K4 Nakit ön denetimi istek kimliğinden ÖNCE (düşük–orta; plan §3.3 sırası): Kasa'yı sıfırlayan ödemenin yeniden gönderimi 409
+         "Kasa eksiye düşer" (accounts.mjs:655, cash.mjs:274; plans/stock/cheques aynı kalıp, koşulmadı).
+      K5 Banka eksi bakiye ret kodu bank-negative/bank-blocked + negativeOk (düşük; plan §7 cash-negative/cash-blocked + accountId, cashForce).
+      K6 Kasa açılışı/devir yolu yok — devreden nakit 649'a (gelir) yazılıyor (düşük, v2.0.26'da VAR; plan susuyor → yaygın: 500).
+      K7 KMH: API Ticari/Diğer/Vadeli'de KMH kabul ediyor; Vadesiz→Ticari çevrilince KMH kalıyor → Engelle atlatılıyor (düşük, ekrandan).
+      K8 Kredi: Ters Kaydet/Düzelt'te yanlış ret metni; geri ödeme tarihe bakmıyor (ara dönemde ters bakiye); Açılışı Düzelt deliği (düşük).
+      TEST AÇIKLARI: vadeli hesapta other_in/other_out/interest_out → 400 kalıcı testte yok; rastgele kâhin koşusunda Kasa elle hareketi
+      silinmedi (model_b hatası). PROGRAM DOĞRU çıkanlar: KDV dahil iskonto (dil yanlıştı), vadeli fiş, kredi anapara aşımı, KMH açılışı.
+      Kâhin araç hataları (düzeltilecek): model_a K-4, koşucu alış numarası, model_b Kasa silme geçerliliği.
   İSTEK (kullanıcı, 09.10.2026): "tüm işlemler bitince bağımsız yargıç ve yargıç kararını eleştirmenden tekrar geçir, sonra plana
       uy!" → 2.1.0'ın BÜTÜN işleri (düzeltme turu, eksik testler, transfer, raporlar, K10, yetki, kabul 1–16, kılavuz) bitince, paketten
       ÖNCE: (1) bağımsız YARGIÇ (kod değiştirmez; bütün 2.1.0'ı ve bulguları yeniden üreterek doğrular, önem + teslime engel kararı);
