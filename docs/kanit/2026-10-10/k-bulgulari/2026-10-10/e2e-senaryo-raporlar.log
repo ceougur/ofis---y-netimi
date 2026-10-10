@@ -1,0 +1,105 @@
+
+■ A. Boş veri: sol menüden Raporlar (cari yok)
+✓ sol menüde Raporlar görünür (yönetici)
+✓ sekmeler: Cari Ekstre, Vade Takip, Nakit Akış, Çek / Senet, Tüm Raporlar, Tablo Raporları
+✓ boş defterde yol gösterir: Cari ekranını aç
+✓ Vade takip boş: açıklayıcı satır
+
+■ B1. Excel yüklenir (okul servisi, aylık ücret ve ödeme sözleri)
+✓ tablo takvimi: 6 kalem
+
+■ B1b. Excel var, cari yok: Raporlar Cari ekranına yönlendirir (2.0.18: Tablodaki Kişileri Cari Yap ve Tablodan Al kalktı)
+✓ boş defter: yalnız “Cari Ekranını Aç” düğmesi
+✓ “Tablodaki Kişileri Cari Yap” düğmesi yok
+✓ Cari penceresinde “Tablodan Al” düğmesi yok
+✓ hiçbir cari kendiliğinden açılmadı
+
+■ B2. Cari, taksit, çek/senet, ileri tarihli Kasa (aynı adlı iki cari)
+✓ üç cari açıldı (ikisi aynı adla, farklı telefon)
+✓ aynı adlı iki cari ayrı numara aldı: 1 / 2
+✓ Ahmet (1): 1.500 tahsilat
+✓ Tedarik: 2.000 fatura (alacak)
+✓ Tedarik: 500 ödeme
+✓ Ahmet (2): 3.000 / 3 taksit kartı
+✓ alınan çek 1.000 (+10 gün)
+✓ verilen çek 800 (+20 gün)
+✓ alınan senet 700 (+45 gün)
+2026-10-10T16:00:53.499Z [WARN] Mutabakat: güncelleme öncesinden kalan 2 sapma var (İleri tarihli hareket (Kasa Hareketleri); İşlem Başlığı Olmayan Para Satırı (v20'den sonra)). Yeni işlemler bu sapmayı büyütemez.
+✓ bugün Kasa girişi 250
+
+■ C1. Cari ekstre: mizan bakiyeleri = Cari listesi; ekstre = Cari kartı
+✓ mizanda 3 cari (tüm zamanlar): 1 Ahmet Yılmaz Müşteri ₺0,00 ₺5.000,00 ₺ | 2 Ahmet Yılmaz Müşteri ₺0,00 ₺3.000,00 ₺ | 3 Tedarik Ltd. Tedarikçi ₺0,00 ₺1.300,00
+✓ mizan bakiyesi = Cari listesi: Ahmet Yılmaz 1 → 2.500,00
+✓ mizan bakiyesi = Cari listesi: Ahmet Yılmaz 2 → 2.300,00
+✓ mizan bakiyesi = Cari listesi: Tedarik Ltd. 3 → -700,00
+✓ aynı adlı iki cari mizanda ayrı satır
+✓ ekstre satırları: açılış, çek, tahsilat
+✓ ekstre dönem sonu = Cari kartı bakiyesi: 2.500,00
+✓ “Cari kartını aç” cari kartını açar
+✓ telefonla arama: 0544 999 → Ahmet Yılmaz (2)
+
+■ C2. Vade takip: taksit + çek/senet + ileri tarihli Kasa + tablo; kaynağa git
+✓ kaynaklar: table, plan, deadline, cheque, cash
+✓ gecikmiş taksit (20 gün önce) 1.000 başta
+✓ 45 gün sonraki senet 30 günlük aralıkta yok
+✓ tahsil edilecek toplamı satırların toplamı: 25.000,00
+✓ ödenecek: kira 4.000 + verilen çek 800 = 4.800,00
+✓ takvimdeki 6 tablo kalemi raporda aynı tarih/tutar/durumla (6 tablo satırı)
+✓ tablo kalem sayısı takvimle aynı: 6
+✓ telefonla arama: 0312 555 → yalnız Tedarik Ltd.'nin verilen çeki
+✓ tablo kalemi telefonu taşır: Mert Çelik 0537 410 60 60
+✓ telefonla arama: 0537 410 60 60 → Mert Çelik
+✓ yalnız ödenecek: 2 satır (kira, verilen çek)
+✓ Tablo kaynağı kapatılınca tablo satırları listeden çıkar
+✓ “Gecikmiş”: yalnız vadesi geçmiş kalemler
+✓ 90 gün: 45 gün sonraki senet listede
+✓ taksit satırı taksit kartını açar
+
+■ C3. Nakit akış: bugünkü kasa + beklenenler; tablo kaynağı; aylık toplamlar
+✓ başlangıç = ANLIK DURUM kasası: 1.250,00
+✓ bugünkü kasa = 1.500 − 500 + 250 = 1.250,00
+✓ tablodaki ödeme günleri beklenen girişte (bu ayınkiler bugünde, eskiler gecikmişte)
+✓ bu ayın tablo kalemi gecikmiş listesinde değil
+✓ “Tablodaki ödeme günlerini ekle” kapalı: tablo kalemi yok
+✓ tahmini kasa farkı = aralıktaki tablo kalemleri (13.700,00; çift sayım yok)
+✓ aylık toplamlarda son dönem kasası = tahmini kasa 12.150,00
+
+■ C4. Tüm raporlar: modül modül hazır raporlar; yeni raporların rakamları ekranlarla aynı
+✓ stok kalemi: A4 kağıt, açılış 10 paket × 50 ₺ (40 gün önce)
+✓ bugün 3 paket çıkış
+✓ modüller: ₺Kasa, •Ana Defter, ▣Banka, ☰Cari, •Fatura, ▤Taksit, ✎Çek / Senet, ▦Stok, ≡Kayıtlar, ◷Ofis
+✓ yeni raporlar katalogda (47 rapor)
+✓ aylık kasa: giriş 1.750,00 TL, çıkış 4.500,00 TL
+✓ bu ayın ay sonu kasası -2.750,00 (Kasa hareketlerinden)
+✓ cari bazında tahsilat: 1 | Ahmet Yılmaz | 1.500,00 TL |  | 1.000,00 TL |  | 2.500,00 TL | 2 | 10.10.2026 / 2 | Ahmet Yılmaz |  |  | 700,00 TL |  | 700,00 TL | 1 | 10.10.2026
+✓ taksit performansı: vadesi gelen 3.000,00 TL, geciken 1.000,00 TL
+✓ çek/senet vade dağılımı: tahsil 1.700,00 TL, ödeme 800,00 TL
+✓ stok özeti:  | A4 kağıt |  | Paket | 10 | 0 | 3 | 7 | 50,00 TL | 350,00 TL
+✓ dönem sonu = Stok ekranı (7 paket, 350,00)
+✓ ön izleme; PDF ve Excel bağlantıları
+
+■ C5. Tablo raporları sekmesi pencere içinde, taşmadan
+✓ sekmede yatay taşma yok (0px)
+✓ geniş tablo kendi çerçevesinde kaydırılır (pencere dışına taşmaz)
+✓ süzgeç kutuları kartın içinde (Durum taşmıyor)
+
+■ D. Yetki: personel görmez; uzman Vade takip, Tablo raporları ve İşlem geçmişi
+✓ personel hesabı
+✓ uzman (avukat) hesabı
+✓ personel: sol menüde Raporlar yok
+✓ personel: Vade takip API 403
+✓ personel: mizan API 403
+✓ uzman sekmeleri: Vade Takip, Tüm Raporlar, Tablo Raporları
+✓ uzman: mizan API 403 (finans raporları yetkisi yok)
+✓ uzman: Tüm raporlar'da İşlem geçmişi ve Banka grubu, finans raporu yok (banka-bakiye, banka-hareket, banka-masraf, alt-hesap-mizani, islem-gecmisi)
+✓ personel'e ANLIK DURUM yetkisi verildi
+✓ yetki verilen personel: sol menüde Raporlar görünür
+✓ yetki verilen personel sekmeleri: mizan, vade, flow, all (Çek / Senet ve Tablo raporları yok)
+✓ “mizan” sekmesi hatasız açılır
+✓ “vade” sekmesi hatasız açılır
+✓ “flow” sekmesi hatasız açılır
+✓ “all” sekmesi hatasız açılır
+✓ yetki verilen personelde tarayıcı hatası yok
+✓ tarayıcı hatası yok
+
+82/82 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616/test/e2e/artifacts/senaryo-rapor
