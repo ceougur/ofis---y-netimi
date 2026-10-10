@@ -51,7 +51,7 @@ Ana oturumun kendi koşuları (her biri `node tools/kanit.mjs kos <ad> -- <komut
 | 481 | 093d0d6 | 1768/1768 | 1768/1768 | 1768/1768 | 1768/1768 | 12 senaryo | GEÇTİ |
 | 488 | 622249b | success | success | iş success ama 1 test atlandı | failure: `bind EACCES`, 5 iptal | success | GEÇMEDİ (atlanan test ve iptal yakalandı); paket işi atlandı |
 | 503 | 13ac319 | 1770/1770 (v22.23.3) | 1770/1770 (v24.21.0) | 1770/1770 (v22.23.3) | 1770/1770 (v24.21.0) | 12 kayıt, hepsi GEÇTİ (senaryo-banka-210 375/375) | GEÇTİ (kapı günlüğünden okundu) |
-| (a8fc5c4) | a8fc5c4 | BEKLİYOR | BEKLİYOR | BEKLİYOR | BEKLİYOR | BEKLİYOR | BEKLİYOR |
+| 509 | a8fc5c4 (senaryo-222 düzeltmesi birleşik) | 1770/1770 (v22.23.3) | 1770/1770 (v24.21.0) | 1770/1770 (v22.23.3) | 1770/1770 (v24.21.0) | 12 kayıt, hepsi GEÇTİ (senaryo-222 56/56) | GEÇTİ (kapı günlüğünden okundu) |
 
 ## 4. Geçmiş kırmızı koşular (08.10'dan beri)
 
