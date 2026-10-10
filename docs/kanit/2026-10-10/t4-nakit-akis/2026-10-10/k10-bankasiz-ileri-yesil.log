@@ -1,0 +1,36 @@
+TAP version 13
+# Subtest: Nakit Akış başlangıcı (K10): bankasız kurulum
+    # Subtest: başlangıç = Nakit Kasa 500; hesapsız havale 300 başlangıca girmez, ayrı satırda; ANLIK DURUM Kasa ile aynı
+    ok 1 - başlangıç = Nakit Kasa 500; hesapsız havale 300 başlangıca girmez, ayrı satırda; ANLIK DURUM Kasa ile aynı
+      ---
+      duration_ms: 37.414162
+      type: 'test'
+      ...
+    1..1
+ok 1 - Nakit Akış başlangıcı (K10): bankasız kurulum
+  ---
+  duration_ms: 516.807331
+  type: 'suite'
+  ...
+# Subtest: Nakit Akış başlangıcı (K10): ileri tarihli eski hesapsız havale başlangıca girmez, akışta bir kez
+    # Subtest: başlangıç = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; kira −1.000 akışta bir kez (18.10), dönem sonu 11.000
+    ok 1 - başlangıç = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; kira −1.000 akışta bir kez (18.10), dönem sonu 11.000
+      ---
+      duration_ms: 18.552339
+      type: 'test'
+      ...
+    1..1
+ok 2 - Nakit Akış başlangıcı (K10): ileri tarihli eski hesapsız havale başlangıca girmez, akışta bir kez
+  ---
+  duration_ms: 411.17211
+  type: 'suite'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1399.136001

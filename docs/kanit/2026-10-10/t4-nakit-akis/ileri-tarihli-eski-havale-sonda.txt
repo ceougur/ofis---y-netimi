@@ -1,0 +1,6 @@
+Hesabı Atanmamış satırlar: 2026-10-18 1000 atanabilir=true | 2026-10-05 250 atanabilir=true
+(a) Bu Hesaba Ata (ileri tarihli) → 409 ledger-integrity İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Kasa Hareketleri)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.
+(b) Kurulum Sihirbazı ön izleme → 200  {"rows":[{"table":"cash_entries","id":"747ff043-c16e-4e9a-a083-3722b84c4431","da
+(b) Kurulum Sihirbazı (tümü) → 409 ledger-integrity İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Kasa Hareketleri)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.
+sonra Hesabı Atanmamış satır sayısı: 2 (geçmiş tarihli 250 de aktarıldı mı: false )
+Nakit Akış: başlangıç 10000 kırılım {"total":10000,"cash":0,"realBank":10000,"unassigned":-1250,"defined":true,"labels":{"realBank":"Gerçek Banka","posPending":"POS Bekleyen (Net)","posBlocked":"Blokeli POS","debt":"Kart ve Kredi Borcu","unassigned":"Hesabı Atanmamış Eski Hareketler"}} ileri tarihli satır akışta: out 1000 dönem sonu 9000

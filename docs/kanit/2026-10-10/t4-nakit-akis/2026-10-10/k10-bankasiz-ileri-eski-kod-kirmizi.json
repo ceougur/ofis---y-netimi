@@ -1,0 +1,43 @@
+{
+  "ad": "k10-bankasiz-ileri-eski-kod-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-nakit-akis-k10.test.mjs",
+  "commit": "33e9ee1aafa968e7747d3903e457ef01c10fbe1b",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 1,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:01:05.525Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Nakit Akış başlangıcı (K10): bankasız kurulum › başlangıç = Nakit Kasa 500; hesapsız havale 300 başlangıca girmez, ayrı satırda; ANLIK DURUM Kasa ile aynı",
+      "konum": "test/banka-210-nakit-akis-k10.test.mjs:28:3",
+      "hata": "başlangıç yalnız nakit (Gerçek Banka tanımlanmadı) · 800 !== 500 (beklenen 500, gelen 800)"
+    },
+    {
+      "ad": "Nakit Akış başlangıcı (K10): ileri tarihli eski hesapsız havale başlangıca girmez, akışta bir kez › başlangıç = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; kira −1.000 akışta bir kez (18.10), dönem sonu 11.000",
+      "konum": "test/banka-210-nakit-akis-k10.test.mjs:48:3",
+      "hata": "kırılım: Hesabı Atanmamış ayrı (başlangıca girmez) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/k10-bankasiz-ileri-eski-kod-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "33bd450b06cb5d83dc4dac9abe48030a9469d5ab793d5a073ad067e1b59a9686",
+  "ham_cikti_bayt": 3732
+}

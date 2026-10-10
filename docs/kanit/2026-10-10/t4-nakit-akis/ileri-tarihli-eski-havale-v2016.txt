@@ -1,0 +1,7 @@
+v2.0.16 Kasa ileri tarihli Havale/EFT ödeme (2026-10-20) → 400 date-future
+v2.0.16 Kasa geçmiş tarihli Havale/EFT tahsilat (2026-10-08) → 200 
+güncel: hesap aç → 200
+güncel: Hesabı Atanmamış → 2026-10-08 in 250 atanabilir=true
+güncel: Kurulum Sihirbazı (tümü) → 200  
+güncel: sonra Hesabı Atanmamış satır: 0
+güncel: Nakit Akış başlangıç 10250 kırılım {"cash":0,"realBank":10250,"unassigned":0} dönem sonu 10250
