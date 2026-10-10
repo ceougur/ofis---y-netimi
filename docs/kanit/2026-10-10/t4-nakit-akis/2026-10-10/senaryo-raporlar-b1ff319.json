@@ -1,0 +1,32 @@
+{
+  "ad": "senaryo-raporlar-b1ff319",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-raporlar.mjs",
+  "commit": "b1ff319b7de3f3fdeed0a5c05f0c9315a113b3ba",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:06:51.912Z",
+  "sure_sn": 45.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 82,
+    "gecen": 82,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/senaryo-raporlar-b1ff319.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "21f2f2d49d1ffa92edd74f32cf8f638a5cd59a6b72998005f91c977ddb940fb3",
+  "ham_cikti_bayt": 5941
+}
