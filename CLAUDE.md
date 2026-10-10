@@ -68,6 +68,9 @@ mekanizmayı uygula, Windows'taki gerçek CI sonucuyla doğrula")
 - Sınır (dürüst): kanca ve yerel araç, kodu değiştirebilen biri tarafından değiştirilebilir (değişiklik git geçmişinde görünür).
   Sunucu tarafında bağlayıcı olan tek şey master için "Doğrulama Kapısı" zorunlu durum denetimi (GitHub → Settings → Rules) —
   bunu yalnız depo sahibi açabilir (bu oturumun belirteci yönetim yetkisine sahip değil, 403).
+  Kullanıcı (10.10.2026: "link ver yapmaya çalışayım") → kural seti bağlantısı + adımlar verildi (ad "Doğrulama Kapısı", hedef
+  varsayılan dal, atlatma listesi BOŞ, PR zorunlu, durum denetimi "Doğrulama Kapısı" kaynağı GitHub Actions). Kullanıcı "yaptım"
+  deyince `gh api repos/ceougur/ofis---y-netimi/rulesets` ve `…/rules/branches/master` ile okunup doğrulanır.
 
 ### Geçmiş test hatalarından dersler (kullanıcı, 10.10.2026: "bundan sonraki testlerde geçmişte yapılan hatalardan ders alalım")
 Her test planı bu listeden geçirilerek yazılır; teslimdeki DENENEN/DENENMEYEN bölümü hangi maddelerin uygulandığını söyler.
