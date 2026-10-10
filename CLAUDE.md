@@ -1220,6 +1220,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   7 gün ufukla, ÖBÜR sayfanınkiler ufuksuz (dues.mjs) → 1. sayfadayken 2. sayfanın 200+ gün sonraki kayıtları "SON GÜNE 2xx GÜN" uyarısı verir
   (müşterinin "42 gün" ekranı bu yoldan); hangisi doğru kullanıcıya soruldu; (3) iki pencerede sayfa seçimi kullanıcı başına (düşük); (4) yeni
   sayfa açılınca açık pencerenin takvimi yenilenmiyor (düşük). senaryo-225 C kırmızısı = testin kendi yarışı (216f76e, yalnız test; zorla 6/6).
+  (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
+  `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
+  eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
+  penceresi yeni sayfa açılınca "sayfa silindi" diyor — ek bulgu, kullanıcıya listelendi.
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
