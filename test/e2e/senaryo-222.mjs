@@ -281,11 +281,35 @@ try {
     const colleague = createClient(BASE);
     await colleague.login("muhasebe2", STAFF);
     const lonely = unwrap(await api.post("/api/workspace/accounts", { name: "Silinecek Cari", type: "customer" })).id;
+    const isList = url => new URL(url).pathname === "/api/workspace/accounts";
+    // Ağ, kullanıcının KENDİ liste yüklemeleri (pencere açılışı, arama) bittikten sonra kesilir. Arama kutusu yazmayı 250 ms
+    // bekleyip yükler (hof-accounts.js onInput). O arada gelen bir arka plan yenilemesi (ör. az önce API'den açılan "Silinecek
+    // Cari"nin overview.changed olayı) aynı aramayla 9 satırı kullanıcının aramasından ÖNCE gösterebilir; ağ o anda kesilirse
+    // kesilen istek kullanıcının kendi araması olur ve ürün kuralı gereği liste yerine "Liste alınamadı… Yeniden Dene" çıkar
+    // (hof-core.js HOF.listGate / HOF.listPending). CI'de ara sıra kırmızı buydu (run 465 ac19490, run 38039979492 5a7d903);
+    // test bunu arka plan yenilemesinin hatası sanıyordu. Yeniden üretim: test/e2e/senaryo-222-yaris.mjs (MODE=forced WAIT=old
+    // her denemede kırmızı, WAIT=new yeşil); kanıt docs/kanit/2026-10-10/s222-*.
+    const listInFlight = new Set();
+    const onListRequest = request => {
+      if (request.method() === "GET" && isList(request.url())) listInFlight.add(request);
+    };
+    const onListDone = request => listInFlight.delete(request);
+    admin.on("request", onListRequest);
+    admin.on("requestfinished", onListDone);
+    admin.on("requestfailed", onListDone);
     await admin.click("#hof-sidecard [data-action=accounts]");
     await admin.waitForSelector(`${modal} tr[data-account]`);
     await admin.fill(`${modal} input[data-filter=q]`, "Müşteri 0");
+    // Sayfada arama gecikmesinden (250 ms) uzun bir zamanlayıcı: tarayıcı zamanlayıcıları vade sırasıyla çalıştırır, bu
+    // döndüğünde kullanıcının arama isteği gönderilmiştir. Sonra uçuştaki bütün liste istekleri (arama dahil) bitmelidir.
+    await admin.evaluate(() => new Promise(resolve => setTimeout(resolve, 1000)));
     await admin.waitForFunction(sel => [...document.querySelectorAll(`${sel} tr[data-account]`)].length === 9, modal, { timeout: 10000 });
-    const isList = url => new URL(url).pathname === "/api/workspace/accounts";
+    const settleBy = Date.now() + 15000;
+    while (listInFlight.size && Date.now() < settleBy) await new Promise(resolve => setTimeout(resolve, 25));
+    admin.off("request", onListRequest);
+    admin.off("requestfinished", onListDone);
+    admin.off("requestfailed", onListDone);
+    if (listInFlight.size) throw new Error(`kullanıcının liste yüklemeleri 15 sn'de bitmedi (${listInFlight.size} istek uçuşta)`);
     let failedCalls = 0;
     await admin.route(isList, route => {
       if (route.request().method() !== "GET") return route.continue();
