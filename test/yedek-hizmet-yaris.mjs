@@ -185,4 +185,8 @@ for (const kip of [...new Set(results.map(row => row.kip))]) {
 }
 const failed = results.filter(row => row.kod !== 0).length;
 console.log(`# deneme ${results.length} · onkosul ${results.filter(row => row.onkosul).length} · basarisiz ${failed}`);
+// Kanıt aracının (tools/kanit.mjs) okuduğu özet: her deneme bir "test"; ön koşulu oluşmayan başarılı deneme "atlanan" sayılır
+// (ders 20: yeşil yalnız ön koşulun GERÇEKTEN oluştuğu denemelerde sayılır); yedek düşen her deneme "fail".
+const skipped = results.filter(row => row.kod === 0 && !row.onkosul).length;
+console.log(`# tests ${results.length}\n# pass ${results.length - failed - skipped}\n# fail ${failed}\n# cancelled 0\n# skipped ${skipped}\n# todo 0`);
 process.exitCode = failed ? 1 : 0;

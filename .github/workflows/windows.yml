@@ -102,6 +102,31 @@ jobs:
           Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/change-password -ContentType 'application/json' -Body '{"currentPassword":"Ofis2026!","newPassword":"Windows-Testi-2026"}' -WebSession $session | Out-Null
           Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/admin/users -ContentType 'application/json; charset=utf-8' -Body '{"username":"kalici","name":"Kalıcı Kullanıcı","role":"personel","password":"Kalici-Parola-2026","mustChangePassword":false}' -WebSession $session | Out-Null
 
+      # Müşterinin olağan kullanımı: servis ÇALIŞIRKEN Başlat → DestekOfis → "Yedek al" (yedek-al.cmd → bootstrap.mjs yedek).
+      # CI 532'de (npm test, Windows) bu komut "disk I/O error" ile düşmüştü; gerçek kurulumda (servis hesabı, klasör izinleri,
+      # nssm) servis açıkken yedeğin alındığı, servisin durmadığı ve yedeğin bütün olduğu burada sınanır.
+      - name: Servis çalışırken elle yedek (Başlat → Yedek al)
+        run: |
+          $out = & 'C:\DestekOfis\runtime\node.exe' --disable-warning=ExperimentalWarning 'C:\DestekOfis\bootstrap.mjs' yedek 2>&1
+          $code = $LASTEXITCODE
+          $out | ForEach-Object { "$_" }
+          if ($code -ne 0) { throw "Servis çalışırken yedek alınamadı (çıkış $code)" }
+          if ((Get-Service DestekOfis).Status -ne 'Running') { throw 'Yedek sırasında servis durdu' }
+          if ((Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5123/api/health).StatusCode -ne 200) { throw 'Yedekten sonra sağlık kontrolü başarısız' }
+          $file = "$($out | Select-Object -First 1)".Trim()
+          if (-not ($file -like 'C:\DestekOfis\backups\001 - *\destekofis-001-*-manuel.sqlite') -or -not (Test-Path $file)) { throw "Yedek dosyası beklenen yerde değil: $file" }
+          $check = Join-Path $env:RUNNER_TEMP 'yedek-denetim.cjs'
+          Set-Content -Path $check -Encoding utf8 -Value @'
+          const { DatabaseSync } = require("node:sqlite");
+          const db = new DatabaseSync(process.argv[2], { readOnly: true });
+          const integrity = db.prepare("PRAGMA integrity_check").get().integrity_check;
+          const users = db.prepare("SELECT COUNT(*) AS n FROM users WHERE username = 'kalici'").get().n;
+          console.log(`bütünlük: ${integrity}; kalici kullanıcısı: ${users}`);
+          if (integrity !== "ok" || users !== 1) process.exit(1);
+          '@
+          & 'C:\DestekOfis\runtime\node.exe' --disable-warning=ExperimentalWarning $check $file
+          if ($LASTEXITCODE -ne 0) { throw 'Servis çalışırken alınan yedek bütün değil ya da son kayıt yok' }
+
       - name: Servis yeniden başlatılınca veri korunur
         run: |
           Restart-Service DestekOfis

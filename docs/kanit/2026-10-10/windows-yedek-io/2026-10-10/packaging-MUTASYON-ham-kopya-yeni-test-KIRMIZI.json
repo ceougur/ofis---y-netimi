@@ -1,0 +1,38 @@
+{
+  "ad": "packaging-MUTASYON-ham-kopya-yeni-test-KIRMIZI",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/packaging.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:25:16.305Z",
+  "sure_sn": 12.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 10,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Windows kurulum düzeni (bootstrap) › hizmet ÇALIŞIRKEN ve yazarken 'yedek' alınır; yedek bütün ve okunur",
+      "konum": "test/packaging.test.mjs:238:3",
+      "hata": "yedek, yedek başlamadan önce yazılmış oturumu içermeli (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a74e5bc4761482223/docs/kanit/2026-10-10/windows-yedek-io/2026-10-10/packaging-MUTASYON-ham-kopya-yeni-test-KIRMIZI.log",
+  "klasor": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wy-mut",
+  "ham_cikti_sha256": "f3d186169fffcd5f5a38c870f7b284074443170edf4762e5876cf58ebc209751",
+  "ham_cikti_bayt": 5020
+}
