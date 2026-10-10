@@ -1185,6 +1185,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   fark 0 (plan 28/28); tohum 1–5×500, 31×2000, yoğun 1–5 → açıklanamayan 0; kalan iki bilinen sınıf: KDV-DAHIL-ISKONTO (hakem: program doğru,
   kâhin kuralı 1 kuruş sapıyor; programdan türetilmiş kural temiz odaya konmaz) ve KASA-ACILIS-649 (K6, 2.1.1'e ertelendi — BİLİNEN SINIR).
   Ana oturum yeniden koşusu: tohum 3 + ajanın koşmadığı tohum 7 (nötrlü) + kabul + birim.
+  Kâhin yeniden koşusu SONUÇ: birim 18/18, kabul fark 0, tohum 3 ajanınkiyle birebir (148, açıklanamayan 0), tohum 7 nötrlü 8.069 yaprak fark 0.
+  4 BİRLEŞTİ (ede7049; ana oturum kırmızı c8ec274 5/6, f3edc16 6/11 → yeşil 25/25): Nakit Akış/Vade Takip ileri tarihli satır kaynağı,
+  Toplamlar yazımı, Eski Hareketler önbelleği, A–D (Eksi Bakiye metni, cari Ödeme açıklaması yola göre, ANLIK DURUM ipucu, Banka Bakiye
+  Raporu ileri tarihli eski havale); E (Planlı İşlemler yarışı) zorlamayla ÜRETİLEMEDİ. Aynı ajanın YENİ bulguları (kullanıcıya listelendi,
+  ikinci küçük bulgular ajanında): kurumsal kart seçicisi önbelleği bayat (ikinci kart açılınca ödeme yanlış karta gidebilir — ÖNCELİKLİ;
+  senaryo-banka-210b bir koşuda kırmızı), istemcide "invoice" kaynak adı ham, rapor başlıkları küçük harf (Cari ekstre/Vade takip/Nakit akış),
+  fatura Tahsilat/Ödeme formu ve Bankadan Kasaya Aktar açıklaması eskimiş, Gerçek Banka toplamına tarih sınırı yok (üretilebilirliği
+  denetlenecek), Nakit Akış PDF alt başlığı kesik, Vade Takip'te hesapsız eski banka satırları banka yetkisi olmayana görünüyor.
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
