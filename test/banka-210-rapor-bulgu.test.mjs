@@ -1,14 +1,15 @@
 // 2.1.0 — Plan testlerinin eksiklerini tamamlarken (raporlar-210-banka, bankalı veriyle bütün raporlar) bulunan iki rapor hatası; önce
 // kırmızı test, sonra en küçük düzeltme (docs/2.1.0-KANIT.md "Plan Testleri — Eksiklerin Tamamlanması").
 //
-// R1 (Orta–Yüksek; v2.0.23 ve v2.0.26'da da VAR — gerçek etiket koduyla ölçüldü): satıştan iadenin GERİ ÖDEMESİ (müşteriye nakit/havale) fatura
+// R1 (Orta–Yüksek; v2.0.17'den v2.0.26'ya kadar VAR — v2.0.17/22/23/26 gerçek etiket koduyla ölçüldü: test/guvenilirlik/kirmizi-r1-r2.mjs):
+//    satıştan iadenin GERİ ÖDEMESİ (müşteriye nakit/havale) fatura
 //    kapamada yanlış tarafta sayılıyordu (lib/invoice-settle.mjs classifyLine: kaynağı fatura olan "out" satırı → borç tarafında ÖDEME). Sonuç:
 //    (a) iade alacağı en eski AÇIK satış faturasını FIFO ile "Ödendi" yapıyor, geri ödeme bunu geri açmıyor → müşteri borçlu (bakiye 120) ama
 //        Açık Faturalar, Alacak Yaşlandırma, Vade Takip ve zil/takvimde alacak yok;
 //    (b) aynı cariye açık ALIŞ faturası varsa müşteriye yapılan geri ödeme onu "Ödendi" gösteriyordu (hayalet ödeme, 2.0.17 m5'in akrabası).
 //    Simetrik: alıştan iadenin tedarikçiden geri alınan parası satış faturasını kapatıyordu.
 //    Değişmez (plan §3.4, 2.0.23 Bulgu 2): açık fatura + kart kalanı = cari bakiye.
-// R2 (Orta; 2.0.15'ten beri): Gider Raporu (Türüne Göre) aynı aydaki bütün gider türlerini tek satırda birleştiriyordu: SQL'deki
+// R2 (Orta; 2.0.15'ten beri — v2.0.17/22/23/26'da ölçüldü, aynı betik): Gider Raporu (Türüne Göre) aynı aydaki bütün gider türlerini tek satırda birleştiriyordu: SQL'deki
 //    "GROUP BY month, code" takma ad yerine invoice_lines.code (ürün kodu, giderde boş) kolonunu alıyor; satır adı rastgele bir türün adı
 //    ("Kira 2.100" ya da "Diğer Giderler"). KDV'li banka masrafının türü ("Banka Masrafları") raporun ad listesinde de yoktu. Toplam doğruydu.
 import assert from "node:assert/strict";
