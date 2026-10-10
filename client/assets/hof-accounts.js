@@ -57,14 +57,18 @@
       cheque: () => "Cariye çek / senet verildi: evrak formu açılır; carinin bakiyesi evrakla düşer, Kasa değişmez.",
     },
   };
-  /** Formun açıklamasını seçili yola göre yazar (yol değişince ve hesap seçici yerleşince). */
-  function syncEntryHelp(dialog, type) {
+  /**
+   * Formun açıklamasını seçili yola göre yazar (yol değişince ve hesap seçici yerleşince). m4 (10.10.2026): fatura Tahsilat Ekle / Ödeme Yap formu da
+   * aynı metni kullanır (HOF.accounts.syncEntryHelp; önceden yol ne olursa olsun "Kayıt cariye ve Kasa'ya yazılır" diyordu). wrap: metnin önüne/ardına
+   * eklenecek (faturanın açık tutarı ve kapama kuralı).
+   */
+  function syncEntryHelp(dialog, type, wrap = text => text) {
     const form = dialog?.querySelector("form");
     const intro = dialog?.querySelector(".hof-modal-text");
     const method = form?.querySelector('[name="method"]')?.value || "cash";
     const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" ? form?.querySelector('[data-bank-pick="card"]') : null;
     const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick));
-    if (intro && text) intro.textContent = text;
+    if (intro && text) intro.textContent = wrap(text);
   }
   const LEDGER_FILTERS = [
     ["all", "Tümü", () => true],
@@ -1246,6 +1250,7 @@
     open,
     picker,
     bulkPlanForm,
+    syncEntryHelp,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: (preset, options = {}) => (canManage() ? editAccount(null, preset, options) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     collect: async accountId => {

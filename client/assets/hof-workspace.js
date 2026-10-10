@@ -418,6 +418,11 @@
   const cashView = { method: "cash" };
   const methodTag = entry => (entry.method && entry.method !== "cash" ? ` · <span class="hof-method-tag is-${esc(entry.method)}">${esc(HOF.methodLabel(entry.method, entry.kind))}</span>` : "");
   const TRANSFER_TITLE = { "to-cash": "Bankadan Kasaya Aktar", "to-bank": "Kasadan Bankaya Yatır" };
+  /** Transfer formunun açıklaması: account — banka hesabı tanımlı mı (seçici var mı). */
+  const transferIntro = (toCash, account) => {
+    const bank = account ? (toCash ? "seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler)" : "seçilen banka hesabına aynı tutar girer (Banka → Hareketler)") : "banka hesabı tanımlanmadığı için banka tarafı Hesabı Atanmamış Eski Hareketler'e yazılır";
+    return toCash ? `Bankadan çekilen nakit Kasa'ya girer; ${bank}.` : `Kasadaki nakit bankaya yatırılır; ${bank}. Nakit Kasa yetmiyorsa program sorar.`;
+  };
 
   // Kasa ↔ Banka transferi: tek işlemde Kasa'da nakit giriş/çıkış + banka tarafında karşı hareket.
   // v2.1.0 Aşama 6: banka tarafının hesabı (Banka Hesabı; tek hesapta gizli, hiç hesap yoksa bugünkü görünüm), istek kimliği (aynı gönderim
@@ -428,7 +433,9 @@
     HOF.formModal({
       title: TRANSFER_TITLE[direction] || "Transfer",
       eyebrow: "KASA",
-      intro: toCash ? "Bankadan çekilen nakit kasaya girer; banka tarafında aynı tutar çıkış olarak yazılır (Raporlar → Banka ve POS Hareketleri)." : "Kasadaki nakit bankaya yatırılır; banka tarafında aynı tutar giriş olarak yazılır. Nakit kasa yetmiyorsa program sorar.",
+      // m4 (10.10.2026): banka tarafı artık seçilen banka hesabına yazılır (Banka → Hareketler); hesap tanımlanmamışsa Hesabı Atanmamış Eski Hareketler'e.
+      // Önceki metin "Raporlar → Banka ve POS Hareketleri" diyordu (banka modülünden önceki yer).
+      intro: transferIntro(toCash, true),
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 5.000,00", autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: dayText(new Date()) },
@@ -437,7 +444,12 @@
       submitLabel: toCash ? "Kasaya Aktar" : "Bankaya Yatır",
       onOpen: dialog => {
         const form = dialog.querySelector("form");
-        HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="amount"]')?.closest(".hof-field"), label: toCash ? "Çekilen Banka Hesabı" : "Yatırılan Banka Hesabı" });
+        Promise.resolve(HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="amount"]')?.closest(".hof-field"), label: toCash ? "Çekilen Banka Hesabı" : "Yatırılan Banka Hesabı" }))
+          .then(mode => {
+            const intro = dialog.querySelector(".hof-modal-text");
+            if (intro && mode === "none") intro.textContent = transferIntro(toCash, false);
+          })
+          .catch(() => null);
       },
       onSubmit: async data => {
         const send = flags => HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction, ...flags }, requestId });
