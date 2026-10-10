@@ -1,0 +1,32 @@
+{
+  "ad": "yaris-forced-old",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-225-yaris.mjs",
+  "commit": "d2d75c63cbdc954a6789eab148863e64c023874b",
+  "dal": "worktree-agent-ab1a8048188c43910",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T22:36:40.408Z",
+  "sure_sn": 242.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/senaryo-225-yaris/2026-10-10/yaris-forced-old.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab1a8048188c43910",
+  "ham_cikti_sha256": "ae5e3269bf7f8ea1d70d0c11e6e73a4c0d1f449ec8fc529d2444f06fc9a722cc",
+  "ham_cikti_bayt": 1790
+}

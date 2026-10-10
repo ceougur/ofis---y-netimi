@@ -1,0 +1,11 @@
+# senaryo-225 C yarışı: MODE=forced FIX=old CPU=1 TRIALS=6
+ok 1 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 6 "2. sayfa açıldıktan sonra" t=1204 ms]; son yüklemeden önce "görüldü" kaydında 61 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); 1. sayfada uyarı: 30 sn'de GÖRÜNMEDİ
+ok 2 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 6 "2. sayfa açıldıktan sonra" t=1206 ms]; son yüklemeden önce "görüldü" kaydında 61 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); 1. sayfada uyarı: 30 sn'de GÖRÜNMEDİ
+ok 3 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 6 "2. sayfa açıldıktan sonra" t=1204 ms]; son yüklemeden önce "görüldü" kaydında 61 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); 1. sayfada uyarı: 30 sn'de GÖRÜNMEDİ
+ok 4 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 6 "2. sayfa açıldıktan sonra" t=1287 ms]; son yüklemeden önce "görüldü" kaydında 61 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); 1. sayfada uyarı: 30 sn'de GÖRÜNMEDİ
+ok 5 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 6 "2. sayfa açıldıktan sonra" t=1209 ms]; son yüklemeden önce "görüldü" kaydında 61 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); 1. sayfada uyarı: 30 sn'de GÖRÜNMEDİ
+ok 6 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 6 "2. sayfa açıldıktan sonra" t=1217 ms]; son yüklemeden önce "görüldü" kaydında 61 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); 1. sayfada uyarı: 30 sn'de GÖRÜNMEDİ
+# ön koşulun oluştuğu deneme: 6/6
+# tests 6
+# pass 6
+# fail 0

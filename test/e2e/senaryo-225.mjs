@@ -106,8 +106,17 @@ try {
   const p1 = pages.find(item => item.name !== "Müşteriler Yeni");
   const p2 = pages.find(item => item.name === "Müşteriler Yeni");
   ok(p2?.rowCount === 65, `2. sayfa 65 kayıt (${p2?.rowCount})`);
-  await api("/api/workspace/sessions/select", { key: p1.key });
-  await page.waitForTimeout(800);
+  // C adımının ön koşulu: hedef uyarı bu tarayıcıda henüz sağ altta GÖSTERİLMEDİ. Önceden 1. sayfa, 2. sayfayı gösteren
+  // pencere AÇIKKEN seçiliyordu; o pencere takvimi seçimden sonra yeniden alırsa (seçim kullanıcı başına; 2. sayfanın
+  // kalemleri artık "öbür sayfa" olarak gelir) uyarıyı orada gösterip "görüldü" yazıyordu ve hof-alerts.js kuralı gereği
+  // (3 saat sağ altta tekrarlanmaz) 1. sayfada gelmiyordu → 10.10.2026'daki 39/40 kırmızı (testin kendi yarışı; yeniden
+  // üretim test/e2e/senaryo-225-yaris.mjs). Şimdi seçim uygulama sayfası açık değilken (aynı kökenli stil dosyası) yapılır ve
+  // bu kullanıcının "görüldü" kaydı silinir: ön koşul her koşuda aynı. Bekleme süreleri ve yeniden deneme yok/değişmedi.
+  await page.goto(`${BASE}/assets/hof-ui.css`, { waitUntil: "load" });
+  ok((await api("/api/workspace/sessions/select", { key: p1.key })).status === 200, "1. sayfa seçildi (uygulama penceresi kapalıyken)");
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) if (key.startsWith("hof-notices:")) localStorage.removeItem(key);
+  });
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await ready();
   ok(/TÜM REHBER/.test(await currentPill()), `1. sayfadayız (${await currentPill()})`);

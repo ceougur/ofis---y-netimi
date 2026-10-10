@@ -1,0 +1,11 @@
+# senaryo-225 C yarışı: MODE=natural FIX=old CPU=1 TRIALS=6
+ok 1 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); 1. sayfada uyarı: GÖRÜNDÜ
+ok 2 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 6 "2. sayfa açıldıktan sonra" t=1252 ms]; son yüklemeden önce "görüldü" kaydında 61 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); 1. sayfada uyarı: 30 sn'de GÖRÜNMEDİ
+ok 3 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); 1. sayfada uyarı: GÖRÜNDÜ
+ok 4 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); 1. sayfada uyarı: GÖRÜNDÜ
+ok 5 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); 1. sayfada uyarı: GÖRÜNDÜ
+ok 6 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); 1. sayfada uyarı: GÖRÜNDÜ
+# ön koşulun oluştuğu deneme: 1/6
+# tests 6
+# pass 6
+# fail 0
