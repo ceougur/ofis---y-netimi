@@ -284,7 +284,9 @@
     ["next90", "90 Gün"],
     ["open", "Tüm Açık"],
   ];
-  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", cash: "Kasa", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
+  // m2 (10.10.2026; plan §8.9): "invoice" eksikti — vadeli fatura satırı ekranda ham "invoice", süzgeç seçeneği adsız çiziliyordu. Ad PDF/Excel ile
+  // aynı (server/routes/overview.mjs SOURCE_TEXT); "Ödeme Sözü" ve "Son Tarih" yazım düzeninde (m3).
+  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
   // Satırın kaynak adı (süzgeç seçeneği değil): eski sürümden kalan, hesaba atanmamış ileri tarihli havale / POS (sunucu SOURCE_TEXT.legacy ile aynı
   // ad; PDF ve Excel de böyle yazar). Kasa süzgeciyle gelir; önceden "Kasa" yazıyordu (2.1.0 temel sürüm, küçük düzeltmeler).
   const ROW_LABELS = { ...SOURCE_LABELS, legacy: "Hesabı Atanmamış (ileri tarihli)" };
@@ -292,6 +294,7 @@
     plan: "Taksit kartlarının kalan taksitleri",
     cheque: "Portföydeki alınan ve ödenecek verilen çekler",
     note: "Portföydeki alınan ve ödenecek verilen senetler",
+    invoice: "Vadeli (açık hesap) satış ve alış faturalarının ödenmemiş kısmı",
     cash: "Kasa'ya ileri tarihle girilen giriş ve çıkışlar (kira, maaş…)",
     table: "Excel/Sheets tablolarındaki ödeme günleri (tahsilat takvimiyle aynı kalemler)",
     promise: "Tablolarda yazılı ödeme sözleri",
@@ -330,7 +333,7 @@
   // ANLIK DURUM ya da rapor yetkisiyle; Çek / Senet portföyü ayrıca çek yetkisiyle; Tablo raporları rapor yetkisiyle.
   const TABS = [
     ["mizan", "Cari Ekstre", "Cari mizanı; satıra tıklayınca o carinin ekstresi (Cari kartındaki defterle aynı)", () => canSee()],
-    ["vade", "Vade Takip", "Vadesi olan her açık kalem: taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
+    ["vade", "Vade Takip", "Vadesi olan her açık kalem: taksit, çek/senet, vadeli fatura, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
     ["flow", "Nakit Akış", "Bugünkü nakit ve bankadan başlayan tahmini bakiye: beklenen giriş ve çıkışlar", () => canSee()],
     ["cheques", "Çek / Senet", "Alınan ve verilen evrak portföyü", () => canSee() && HOF.can("cheques.view")],
     // İşlem geçmişi yetkisi olan (uzman) finans yetkisi olmasa da burada yalnız "İşlem geçmişi" raporunu görür (v2.0.10).
@@ -502,7 +505,7 @@
   // --- Vade takip (v2.0.9) ---
   const dueDays = row => (row.state === "overdue" ? `${Math.abs(row.days)} gün geçti` : row.state === "today" ? "bugün" : row.state === "month" ? "bu ay" : `${row.days} gün`);
   function vadeView(s) {
-    const allowed = s.data?.allowed || Object.keys(SOURCE_LABELS).filter(id => canSee() || !["cheque", "note", "cash"].includes(id) || (id === "cash" ? HOF.can("cash.view") : HOF.can("cheques.view")));
+    const allowed = s.data?.allowed || Object.keys(SOURCE_LABELS).filter(id => canSee() || !["cheque", "note", "cash", "invoice"].includes(id) || (id === "cash" ? HOF.can("cash.view") : id === "invoice" ? HOF.can("invoices.view") : HOF.can("cheques.view")));
     const chosen = new Set(s.sources.length ? s.sources : allowed);
     const params = { ...(s.preset ? { preset: s.preset } : { from: s.from, to: s.to }), direction: s.direction, sources: s.sources.join(","), q: s.q, late: s.late ? "" : "0" };
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_DUE)}${exportButtons(`/api/workspace/overview/vade-takip.pdf?${query(params)}`, `/api/workspace/overview/vade-takip.xlsx?${query(params)}`)}</div>
