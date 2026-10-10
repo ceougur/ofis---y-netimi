@@ -1137,6 +1137,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kullanıcıya listelendi, düzeltme ajanda): ORTA — ileri tarihli eski hesapsız havale Kurulum Sihirbazı'nı ve "Bu Hesaba Ata"yı 409
   ledger-integrity ile kilitliyor (geçmiş tarihliler de aktarılamıyor; plan madde 42/A13'e aykırı); DÜŞÜK — Hesabı Atanmamış toplamı
   ileri tarihliyi sayıyor; DÜŞÜK — Nakit Akış "Tahmini Kasa" adları artık nakit+banka. Kılavuz satırı ("bugünkü kasadan başlayan") T5'e.
+  K1 BİRLEŞTİ (10.10.2026; ca8ea75; ana oturum: birleşik kodda 177/177, yeni test eski kodda 16/18 kırmızı): geri ödenen iade asıl faturaya
+  mahsup edilmez (aynı alacak iki kez kullanılmıyor); kart kalanı = fatura açığı; mahsup edilmemiş iade belgesinin açığı fatura kartında ve
+  Açık Faturalar raporunda görünür (yaşlandırma/nakit akış/vade takip/ANLIK DURUM'a girmez — bakiye zaten net). Açılış onarımı gerekmedi
+  (ödeme durumu saklanmıyor, her açılışta yeniden hesaplanıyor). KARAR (baş mimar; plan susuyor → yaygın): kâhinde kalan tek desen —
+  geri ödenmemiş iadenin asıl faturayı AŞAN alacağı carinin en eski açık borcunu kapatır (2.0.15'ten beri R1c; 2.0.17 m5 yön kuralıyla
+  tutarlı; Logo/Mikro otomatik kapaması gibi). Kâhin dili §7 kural 6'ya bu SPEC olarak eklenir (programdan türetilmiş beklenen değil);
+  modelleri program kodunu görmeyen ajan günceller (T6/T7 son kâhin koşusundan önce).
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
