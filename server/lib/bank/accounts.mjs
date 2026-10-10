@@ -516,6 +516,14 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     let reversed = null;
     bank.post({
       user, module: "bank", op: existing ? "update" : "create", prev: existing || undefined,
+      // Hakem K8 (c): kredi hesabı (300) borç bakiyesine geçemez — Kredi Geri Ödemesi'nin kuralı (vouchers.mjs guardNegative) Açılışı Düzelt'te
+      // atlatılıyordu: açılış borcu 5.000, 5.000 ödendi, açılış 3.000'e düzeltildi → 200, 300'de 2.000 ters bakiye. Yazımdan sonraki son durumla.
+      guard: () => {
+        if (row.kind !== "loan") return;
+        const total = money.refTotal({ ref: row.id }).cents;
+        if (total <= 0) return;
+        throw new HttpError(409, `Açılış borcu ${moneyText(opening.tryMinor)} olamaz: ${labelOf(row)} kredisine açılıştan sonra ödenen anapara bu borcu ${moneyText(total)} aşar (kredi hesabı borç bakiyesine geçemez). Önce Kredi Geri Ödemesi'ni düzeltin ya da ters kaydedin.`, { code: "bank-loan-exceeds", accountId: row.id, leftMinor: 0, field: "amount" });
+      },
       write: () => {
         if (existing) {
           bank.reverse(existing.eventId, { date: existing.date, description: `Açılışı Düzelt · ${existing.no}` });
