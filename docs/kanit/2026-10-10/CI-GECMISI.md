@@ -63,3 +63,5 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
 - Ana oturumun günlükten bizzat okudukları: 442 Linux Node 22 sayıları (1538/1536/2), 468 Windows Node 24 ve 22 (1728/1728),
   474 Windows Node 24 başarısız testleri, 474 ve 481 kapı tabloları. Öbür satırlar ajanın okumasıdır.
 - 528 (c383f03, 16:11–16:37 UTC): T4 birleşmesi — dört platform 1899/1899, atlanan 0, 13 e2e yeşil; **Doğrulama Kapısı ilk kez GEÇTİ** (todo kalktı).
+- 529 (8b3c65c) YEŞİL, 530 (4152133) YEŞİL, 531 (ca8ea75, K1) YEŞİL, 533 (5663010) YEŞİL — kapı GEÇTİ.
+- 532 (eb1437e, yalnız CLAUDE.md): Windows Node 22 KIRMIZI 1916/1917 — packaging.test.mjs:134 "'surum' ve 'yedek' alt komutları": bootstrap yedek → "001 · Şirket 1: yedek alınamadı (disk I/O error)". Aynı kod 531/533'te yeşil → ara sıra; ders 20 gereği kök neden ajanda (öksüz alt süreç / hizmet açıkken yedek şüphesi). Geçiştirilmedi.
