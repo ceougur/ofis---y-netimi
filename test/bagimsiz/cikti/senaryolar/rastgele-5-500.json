@@ -1,0 +1,7567 @@
+{
+  "aciklama": "uretici.py ile tohum 5'den üretildi (500 işlem, kontrol aralığı 25). Gerçekçi sıra, kasıtlı retler, istek kimliği yinelemeleri.",
+  "ad": "rastgele-5-500",
+  "adimlar": [
+    {
+      "ad": "U1",
+      "birim": "Adet",
+      "id": "1",
+      "islem": "urun_ac",
+      "urunAdi": "Masa U1"
+    },
+    {
+      "id": "2",
+      "islem": "stok_giris",
+      "miktar": 70,
+      "urun": "U1"
+    },
+    {
+      "ad": "U2",
+      "birim": "Adet",
+      "id": "3",
+      "islem": "urun_ac",
+      "urunAdi": "Kalem Seti U2"
+    },
+    {
+      "ad": "U3",
+      "birim": "Adet",
+      "id": "4",
+      "islem": "urun_ac",
+      "urunAdi": "Yazıcı U3"
+    },
+    {
+      "id": "5",
+      "islem": "stok_giris",
+      "miktar": 24,
+      "urun": "U3"
+    },
+    {
+      "ad": "U4",
+      "birim": "Adet",
+      "id": "6",
+      "islem": "urun_ac",
+      "urunAdi": "Klavye U4"
+    },
+    {
+      "id": "7",
+      "islem": "stok_giris",
+      "miktar": 15,
+      "urun": "U4"
+    },
+    {
+      "ad": "U5",
+      "birim": "Adet",
+      "id": "8",
+      "islem": "urun_ac",
+      "urunAdi": "Kâğıt A4 U5"
+    },
+    {
+      "id": "9",
+      "islem": "stok_giris",
+      "miktar": 97,
+      "urun": "U5"
+    },
+    {
+      "ad": "U6",
+      "birim": "Adet",
+      "id": "10",
+      "islem": "urun_ac",
+      "urunAdi": "Defter U6"
+    },
+    {
+      "id": "11",
+      "islem": "stok_giris",
+      "miktar": 26,
+      "urun": "U6"
+    },
+    {
+      "ad": "U7",
+      "birim": "Adet",
+      "id": "12",
+      "islem": "urun_ac",
+      "urunAdi": "Çanta U7"
+    },
+    {
+      "id": "13",
+      "islem": "stok_giris",
+      "miktar": 143,
+      "urun": "U7"
+    },
+    {
+      "ad": "U8",
+      "birim": "Adet",
+      "id": "14",
+      "islem": "urun_ac",
+      "urunAdi": "Sandalye U8"
+    },
+    {
+      "id": "15",
+      "islem": "stok_giris",
+      "miktar": 16,
+      "urun": "U8"
+    },
+    {
+      "ad": "C1",
+      "id": "16",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Anadolu Danışmanlık C1"
+    },
+    {
+      "ad": "C2",
+      "id": "17",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Bereket Ticaret Ltd. C2"
+    },
+    {
+      "ad": "C3",
+      "id": "18",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Mehmet Demir C3"
+    },
+    {
+      "ad": "C4",
+      "id": "19",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Kardelen Otomotiv A.Ş. C4"
+    },
+    {
+      "ad": "C5",
+      "id": "20",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Mustafa Öztürk C5"
+    },
+    {
+      "ad": "C6",
+      "id": "21",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Yıldız Otomotiv A.Ş. C6"
+    },
+    {
+      "ad": "C7",
+      "iban": "TR760001204212472019860395",
+      "id": "22",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Emine Kılıç C7"
+    },
+    {
+      "ad": "C8",
+      "id": "23",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Toros Ticaret Ltd. C8"
+    },
+    {
+      "ad": "C9",
+      "iban": "TR860006406126520642792877",
+      "id": "24",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Yıldız Tekstil A.Ş. C9"
+    },
+    {
+      "ad": "C10",
+      "id": "25",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Doğu Lojistik Ltd. C10"
+    },
+    {
+      "ad": "C11",
+      "id": "26",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Umut Yapı Ltd. C11"
+    },
+    {
+      "ad": "C12",
+      "id": "27",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Marmara Kırtasiye C12"
+    },
+    {
+      "ad": "C13",
+      "id": "28",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Kardelen Gıda A.Ş. C13"
+    },
+    {
+      "ad": "C14",
+      "id": "29",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Ege Lojistik Ltd. C14"
+    },
+    {
+      "ad": "C15",
+      "id": "30",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Sedir Lojistik Ltd. C15"
+    },
+    {
+      "ad": "C16",
+      "id": "31",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Yıldız Yapı Ltd. C16"
+    },
+    {
+      "id": "32",
+      "islem": "kasa_acilis",
+      "tutar": "19639"
+    },
+    {
+      "acilisBakiyesi": "483339,48",
+      "acilisTarihi": "28.12.2025",
+      "ad": "B1",
+      "bakiyeDogrulandi": false,
+      "banka": "VakıfBank",
+      "hesapAdi": "Ana TL Hesabı B1",
+      "iban": "TR270001507558282357416299",
+      "id": "33",
+      "islem": "hesap_ac",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "acilisBakiyesi": "66015",
+      "acilisTarihi": "02.01.2026",
+      "ad": "B2",
+      "bakiyeDogrulandi": true,
+      "banka": "Ziraat Bankası",
+      "hesapAdi": "Ana TL Hesabı B2",
+      "iban": "TR140001002320732021527380",
+      "id": "34",
+      "islem": "hesap_ac",
+      "kmhLimiti": "14422",
+      "kod": "ZRT-B2",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "acilisBakiyesi": "70265,42",
+      "acilisTarihi": "05.01.2026",
+      "ad": "B3",
+      "bakiyeDogrulandi": true,
+      "banka": "VakıfBank",
+      "hesapAdi": "Ticari Hesap B3",
+      "iban": "TR450001500894148859452669",
+      "id": "35",
+      "islem": "hesap_ac",
+      "paraBirimi": "TRY",
+      "tur": "ticari"
+    },
+    {
+      "hesap": "B2",
+      "id": "36",
+      "islem": "hesap_eksi_politika",
+      "politika": "kontrol_yok"
+    },
+    {
+      "id": "k1",
+      "islem": "kontrol"
+    },
+    {
+      "ad": "H1",
+      "cari": "C8",
+      "hesap": "B2",
+      "id": "38",
+      "islem": "cari_odeme",
+      "tutar": "2803",
+      "yol": "havale"
+    },
+    {
+      "hedef": "H1",
+      "id": "39",
+      "islem": "sil"
+    },
+    {
+      "bugun": "09.01.2026",
+      "id": "40",
+      "islem": "saat"
+    },
+    {
+      "acilisBakiyesi": "481406",
+      "acilisTarihi": "09.01.2026",
+      "ad": "B4",
+      "bakiyeDogrulandi": true,
+      "banka": "Halkbank",
+      "hesapAdi": "Ana TL Hesabı B4",
+      "iban": "TR580001204270197340260788",
+      "id": "41",
+      "islem": "hesap_ac",
+      "kmhLimiti": "16154",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "cari": "C3",
+      "hesap": "B4",
+      "id": "42",
+      "islem": "cari_tahsilat",
+      "tarih": "08.01.2026",
+      "tutar": "84",
+      "yol": "havale"
+    },
+    {
+      "ad": "H2",
+      "hedef": "B4",
+      "id": "43",
+      "islem": "transfer",
+      "kaynak": "B1",
+      "tutar": "23712,64",
+      "ucret": "3,37",
+      "ucretVergi": "bsmv_dahil"
+    },
+    {
+      "ad": "F1",
+      "cari": "C4",
+      "id": "44",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1818,50",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 7,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B4",
+            "tutar": "10105,74",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "13.01.2026",
+      "id": "45",
+      "islem": "saat"
+    },
+    {
+      "durum": "pasif",
+      "hesap": "B4",
+      "id": "46",
+      "islem": "hesap_durum",
+      "kullanici": "MU"
+    },
+    {
+      "ad": "F2",
+      "cari": "C5",
+      "id": "47",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "3801",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 9,
+          "urun": "U5"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "34209",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F3",
+      "cari": "C3",
+      "id": "48",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "43",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 2,
+          "urun": "U8"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "C17",
+      "id": "49",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Kuzey Makine Ltd. C17"
+    },
+    {
+      "ad": "H3",
+      "cari": "C14",
+      "id": "50",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-1",
+      "tutar": "299,00",
+      "yol": "nakit"
+    },
+    {
+      "bugun": "14.01.2026",
+      "id": "51",
+      "islem": "saat"
+    },
+    {
+      "aciklama": "Çay Ocağı",
+      "ad": "H4",
+      "id": "52",
+      "islem": "kasa_hareket",
+      "tutar": "45,78",
+      "yon": "cikis"
+    },
+    {
+      "acilisBakiyesi": "93520,41",
+      "acilisTarihi": "12.01.2026",
+      "ad": "B5",
+      "bakiyeDogrulandi": false,
+      "banka": "Yapı Kredi",
+      "hesapAdi": "Ticari Hesap B5",
+      "iban": "TR950006704823576220519011",
+      "id": "53",
+      "islem": "hesap_ac",
+      "kod": "YKB-B5",
+      "paraBirimi": "TRY",
+      "tur": "ticari"
+    },
+    {
+      "cari": "C12",
+      "hesap": "B1",
+      "id": "54",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "11363",
+      "yol": "havale"
+    },
+    {
+      "bugun": "15.01.2026",
+      "id": "55",
+      "islem": "saat"
+    },
+    {
+      "ad": "H5",
+      "cari": "C3",
+      "id": "56",
+      "islem": "cari_tahsilat",
+      "tutar": "2535,60",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H6",
+      "cari": "C13",
+      "id": "57",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-2",
+      "tutar": "5691,75",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H7",
+      "cari": "C8",
+      "hesap": "B1",
+      "id": "58",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-3",
+      "tutar": "1012",
+      "yol": "havale"
+    },
+    {
+      "hedef": "H7",
+      "id": "59",
+      "islem": "sil"
+    },
+    {
+      "ad": "F4",
+      "cari": "C2",
+      "id": "60",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "82,71",
+          "hizmet": "Bakım",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B3",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "19.01.2026",
+      "id": "61",
+      "islem": "saat"
+    },
+    {
+      "ad": "F5",
+      "cari": "C1",
+      "id": "62",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "34,32",
+          "hizmet": "Montaj",
+          "iskontoOrani": "2,5",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B2",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F6",
+      "cari": "C3",
+      "id": "63",
+      "islem": "fatura",
+      "istekKimligi": "ik-4",
+      "kalemler": [
+        {
+          "birimFiyat": "48,00",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U1"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "Z1",
+      "cari": "C3",
+      "id": "64",
+      "islem": "fatura",
+      "istekKimligi": "ik-4",
+      "kalemler": [
+        {
+          "birimFiyat": "48,00",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U1"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "F7",
+      "cari": "C3",
+      "id": "65",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "723,74",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 9,
+          "urun": "U7"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "4146,07",
+            "yol": "nakit"
+          }
+        ],
+        "taksit": {
+          "ad": "K1",
+          "sayi": 12
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F8",
+      "cari": "C5",
+      "id": "66",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1278",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3,
+          "urun": "U7"
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K2",
+          "ilkVade": "03.02.2026",
+          "sayi": 3
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F9",
+      "cari": "C6",
+      "id": "67",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "6449",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 7,
+          "urun": "U8"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "id": "k2",
+      "islem": "kontrol"
+    },
+    {
+      "bugun": "22.01.2026",
+      "id": "69",
+      "islem": "saat"
+    },
+    {
+      "hedef": "H3",
+      "id": "70",
+      "islem": "sil"
+    },
+    {
+      "ad": "H8",
+      "cari": "C13",
+      "hesap": "B1",
+      "id": "71",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "6450",
+      "yol": "havale"
+    },
+    {
+      "ad": "F10",
+      "cari": "C5",
+      "id": "72",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "14,02",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 2,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B1",
+            "tutar": "19,45",
+            "yol": "havale"
+          }
+        ],
+        "taksit": {
+          "ad": "K3",
+          "ilkVade": "06.02.2026",
+          "sayi": 3
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "R1",
+      "asilFatura": "F1",
+      "geri": {
+        "yol": "nakit"
+      },
+      "id": "73",
+      "islem": "iade",
+      "kalemler": [
+        {
+          "kalem": 1,
+          "miktar": 5
+        }
+      ]
+    },
+    {
+      "ad": "F11",
+      "cari": "C10",
+      "id": "74",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "22,03",
+          "hizmet": "Yazılım Desteği",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B2",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F12",
+      "cari": "C6",
+      "id": "75",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "138,06",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 6,
+          "urun": "U5"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "23.01.2026",
+      "id": "76",
+      "islem": "saat"
+    },
+    {
+      "ad": "F13",
+      "cari": "C9",
+      "id": "77",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "128,15",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 16,
+          "urun": "U4"
+        },
+        {
+          "birimFiyat": "2052",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Bakım",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 2
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "F14",
+      "cari": "C5",
+      "id": "78",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "129,24",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 9,
+          "urun": "U4"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B1",
+            "tutar": "1395,79",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "hesap": "B3",
+      "id": "79",
+      "islem": "faiz_gideri",
+      "tutar": "4464,59"
+    },
+    {
+      "ad": "F15",
+      "cari": "C5",
+      "id": "80",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "16",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 4,
+          "urun": "U7"
+        },
+        {
+          "birimFiyat": "593,92",
+          "hizmet": "Montaj",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 5
+        },
+        {
+          "birimFiyat": "6753,00",
+          "hizmet": "Kurulum",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 3
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "24095,51",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "acilisBakiyesi": "0",
+      "acilisTarihi": "01.01.2026",
+      "ad": "B6",
+      "bakiyeDogrulandi": false,
+      "banka": "Garanti BBVA",
+      "hesapAdi": "Ticari Hesap B6",
+      "id": "81",
+      "islem": "hesap_ac",
+      "kmhLimiti": "11963",
+      "paraBirimi": "TRY",
+      "tur": "ticari"
+    },
+    {
+      "bugun": "13.02.2026",
+      "id": "82",
+      "islem": "saat"
+    },
+    {
+      "ad": "H9",
+      "cari": "C13",
+      "id": "83",
+      "islem": "cari_odeme",
+      "tutar": "1642,92",
+      "yol": "nakit"
+    },
+    {
+      "bugun": "16.02.2026",
+      "id": "84",
+      "islem": "saat"
+    },
+    {
+      "hedef": "H8",
+      "id": "85",
+      "islem": "sil"
+    },
+    {
+      "bugun": "17.02.2026",
+      "id": "86",
+      "islem": "saat"
+    },
+    {
+      "ad": "F16",
+      "cari": "C5",
+      "id": "87",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "90,87",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 6,
+          "urun": "U8"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "18.02.2026",
+      "id": "88",
+      "islem": "saat"
+    },
+    {
+      "hesap": "B3",
+      "id": "89",
+      "islem": "hesap_eksi_politika",
+      "politika": "engelle"
+    },
+    {
+      "aciklama": "Diğer Nakit Giriş",
+      "id": "90",
+      "islem": "kasa_hareket",
+      "tutar": "149,49",
+      "yon": "giris"
+    },
+    {
+      "bugun": "23.02.2026",
+      "id": "91",
+      "islem": "saat"
+    },
+    {
+      "ad": "H10",
+      "hesap": "B6",
+      "id": "92",
+      "islem": "kasa_banka",
+      "tutar": "2478",
+      "yon": "bankadan_kasaya"
+    },
+    {
+      "ad": "F17",
+      "cari": "C17",
+      "id": "93",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "7015",
+          "iskontoOrani": "5",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B3",
+            "tutar": "5145,23",
+            "yol": "havale"
+          },
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "H11",
+      "hedef": "B5",
+      "id": "94",
+      "islem": "transfer",
+      "istekKimligi": "ik-5",
+      "kaynak": "B3",
+      "tutar": "1025",
+      "ucret": "1,56",
+      "ucretVergi": "bsmv_haric"
+    },
+    {
+      "hedef": "B5",
+      "id": "95",
+      "islem": "transfer",
+      "istekKimligi": "ik-5",
+      "kaynak": "B3",
+      "tutar": "1367",
+      "ucret": "1,56",
+      "ucretVergi": "bsmv_haric"
+    },
+    {
+      "ad": "H12",
+      "hesap": "B2",
+      "id": "96",
+      "islem": "kasa_banka",
+      "tutar": "34685",
+      "yon": "kasadan_bankaya"
+    },
+    {
+      "hedef": "H11",
+      "id": "97",
+      "islem": "ters_kayit"
+    },
+    {
+      "ad": "F18",
+      "cari": "C3",
+      "id": "98",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "6612,89",
+          "hizmet": "Danışmanlık",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "16.03.2026",
+      "id": "99",
+      "islem": "saat"
+    },
+    {
+      "ad": "H13",
+      "cari": "C2",
+      "id": "100",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "6927",
+      "yol": "kart"
+    },
+    {
+      "cari": "C6",
+      "hesap": "B2",
+      "id": "101",
+      "islem": "cari_tahsilat",
+      "tutar": "9709,34",
+      "yol": "havale"
+    },
+    {
+      "id": "k3",
+      "islem": "kontrol"
+    },
+    {
+      "ad": "H14",
+      "brut": "2597,42",
+      "hesap": "B5",
+      "id": "103",
+      "islem": "faiz_geliri",
+      "stopajOrani": "15"
+    },
+    {
+      "cari": "C13",
+      "hesap": "B5",
+      "id": "104",
+      "islem": "cari_odeme",
+      "tutar": "110,05",
+      "yol": "havale"
+    },
+    {
+      "bugun": "17.03.2026",
+      "id": "105",
+      "islem": "saat"
+    },
+    {
+      "ad": "H15",
+      "cari": "C8",
+      "id": "106",
+      "islem": "cari_odeme",
+      "tutar": "515,00",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H16",
+      "cari": "C3",
+      "hesap": "B5",
+      "id": "107",
+      "islem": "cari_tahsilat",
+      "tutar": "15452",
+      "yol": "havale"
+    },
+    {
+      "id": "108",
+      "islem": "taksit_tahsilat",
+      "kart": "K1",
+      "taksitNo": 8,
+      "tutar": "169,34",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F19",
+      "cari": "C2",
+      "id": "109",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "3687",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 7,
+          "urun": "U1"
+        },
+        {
+          "birimFiyat": "447,73",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 6,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B3",
+            "tutar": "8189,99",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "H17",
+      "hesap": "B2",
+      "id": "110",
+      "islem": "taksit_tahsilat",
+      "kart": "K3",
+      "tutar": "8,59",
+      "yol": "havale"
+    },
+    {
+      "ad": "H18",
+      "cari": "C8",
+      "hesap": "B1",
+      "id": "111",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-6",
+      "tutar": "472,06",
+      "yol": "havale"
+    },
+    {
+      "bugun": "18.03.2026",
+      "id": "112",
+      "islem": "saat"
+    },
+    {
+      "cari": "C8",
+      "id": "113",
+      "islem": "cari_odeme",
+      "tutar": "249,59",
+      "yol": "nakit"
+    },
+    {
+      "hesap": "B6",
+      "id": "114",
+      "islem": "taksit_tahsilat",
+      "istekKimligi": "ik-7",
+      "kart": "K2",
+      "tutar": "1138,35",
+      "yol": "havale"
+    },
+    {
+      "hesap": "B6",
+      "id": "115",
+      "islem": "taksit_tahsilat",
+      "istekKimligi": "ik-7",
+      "kart": "K2",
+      "tutar": "1138,35",
+      "yol": "havale"
+    },
+    {
+      "ad": "H19",
+      "cari": "C8",
+      "hesap": "B2",
+      "id": "116",
+      "islem": "cari_odeme",
+      "tutar": "2162,21",
+      "yol": "havale"
+    },
+    {
+      "bugun": "24.03.2026",
+      "id": "117",
+      "islem": "saat"
+    },
+    {
+      "hesap": "B6",
+      "id": "118",
+      "islem": "taksit_tahsilat",
+      "kart": "K1",
+      "kullanici": "PE",
+      "taksitNo": 11,
+      "tutar": "2198,25",
+      "yol": "havale"
+    },
+    {
+      "ad": "F20",
+      "cari": "C11",
+      "id": "119",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "28,26",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 4
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "37,49",
+            "yol": "nakit"
+          },
+          {
+            "tutar": "28,9",
+            "yol": "kart"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H20",
+      "cari": "C7",
+      "hesap": "B3",
+      "id": "120",
+      "islem": "cari_tahsilat",
+      "tutarHam": "148,006",
+      "yol": "havale"
+    },
+    {
+      "ad": "Z2",
+      "cari": "C5",
+      "id": "121",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "171",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 5,
+          "urun": "U3"
+        },
+        {
+          "birimFiyat": "1005,08",
+          "hizmet": "Danışmanlık",
+          "iskontoOrani": "2,5",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "1879,96",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F21",
+      "cari": "C4",
+      "id": "122",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "15",
+          "hizmet": "Danışmanlık",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "25.03.2026",
+      "id": "123",
+      "islem": "saat"
+    },
+    {
+      "ad": "H21",
+      "hesap": "B6",
+      "id": "124",
+      "islem": "faiz_gideri",
+      "tutar": "89,33"
+    },
+    {
+      "ad": "H22",
+      "cari": "C13",
+      "id": "125",
+      "islem": "cari_odeme",
+      "tutar": "395,48",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H23",
+      "hesap": "B6",
+      "id": "126",
+      "islem": "taksit_tahsilat",
+      "kart": "K2",
+      "tutar": "2695,65",
+      "yol": "havale"
+    },
+    {
+      "ad": "F22",
+      "cari": "C17",
+      "id": "127",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "25,4",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B3",
+            "tutar": "25,40",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "cari": "C13",
+      "hesap": "B5",
+      "id": "128",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "93,00",
+      "yol": "havale"
+    },
+    {
+      "ad": "F23",
+      "cari": "C5",
+      "id": "129",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "3709",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 10,
+          "urun": "U4"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "H24",
+      "cari": "C13",
+      "hesap": "B2",
+      "id": "130",
+      "islem": "cari_odeme",
+      "tutar": "72,4",
+      "yol": "havale"
+    },
+    {
+      "ad": "F24",
+      "cari": "C2",
+      "id": "131",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "96",
+          "hizmet": "Montaj",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "260,84",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "id": "k4",
+      "islem": "kontrol"
+    },
+    {
+      "bugun": "27.03.2026",
+      "id": "133",
+      "islem": "saat"
+    },
+    {
+      "ad": "H25",
+      "cari": "C11",
+      "id": "134",
+      "islem": "cari_odeme",
+      "tutar": "214,11",
+      "yol": "kart"
+    },
+    {
+      "aciklama": "Kira Geliri",
+      "id": "135",
+      "islem": "kasa_hareket",
+      "tutar": "36,89",
+      "yon": "giris"
+    },
+    {
+      "ad": "F25",
+      "cari": "C8",
+      "id": "136",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "415",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 12,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B1",
+            "tutar": "1365,66",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "F26",
+      "cari": "C5",
+      "id": "137",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "16",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 9,
+          "urun": "U3"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "144",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "31.03.2026",
+      "id": "138",
+      "islem": "saat"
+    },
+    {
+      "ad": "H26",
+      "cari": "C13",
+      "id": "139",
+      "islem": "cari_odeme",
+      "tutar": "180,00",
+      "yol": "kart"
+    },
+    {
+      "hedef": "H22",
+      "id": "140",
+      "islem": "sil"
+    },
+    {
+      "ad": "F27",
+      "cari": "C7",
+      "id": "141",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "210",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 5,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "120,70",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "durum": "aktif",
+      "hesap": "B4",
+      "id": "142",
+      "islem": "hesap_durum"
+    },
+    {
+      "bugun": "01.04.2026",
+      "id": "143",
+      "islem": "saat"
+    },
+    {
+      "ad": "H27",
+      "hesap": "B1",
+      "id": "144",
+      "islem": "kasa_banka",
+      "tutar": "18269",
+      "yon": "bankadan_kasaya"
+    },
+    {
+      "aciklama": "Çay Ocağı",
+      "ad": "H28",
+      "id": "145",
+      "islem": "kasa_hareket",
+      "tutar": "2647",
+      "yon": "cikis"
+    },
+    {
+      "ad": "F28",
+      "cari": "C4",
+      "id": "146",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "118",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 10,
+          "urun": "U1"
+        },
+        {
+          "birimFiyat": "6514,16",
+          "hizmet": "Bakım",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 5
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B4",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F29",
+      "cari": "C2",
+      "id": "147",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "104",
+          "iskontoOrani": "2,5",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U2"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "02.04.2026",
+      "id": "148",
+      "islem": "saat"
+    },
+    {
+      "ad": "C18",
+      "id": "149",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Marmara Ticaret Ltd. C18"
+    },
+    {
+      "ad": "F30",
+      "cari": "C13",
+      "id": "150",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "16,27",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Nakliye",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 3
+        },
+        {
+          "birimFiyat": "7398,00",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 3,
+          "urun": "U7"
+        },
+        {
+          "birimFiyat": "12",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 11,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "kart"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "hedef": "H27",
+      "id": "151",
+      "islem": "sil"
+    },
+    {
+      "ad": "H29",
+      "cari": "C6",
+      "hesap": "B4",
+      "id": "152",
+      "islem": "cari_tahsilat",
+      "istekKimligi": "ik-8",
+      "kullanici": "MU",
+      "tutar": "1913,31",
+      "yol": "havale"
+    },
+    {
+      "cari": "C6",
+      "hesap": "B4",
+      "id": "153",
+      "islem": "cari_tahsilat",
+      "istekKimligi": "ik-8",
+      "kullanici": "MU",
+      "tutar": "2316,31",
+      "yol": "havale"
+    },
+    {
+      "ad": "H30",
+      "cari": "C5",
+      "id": "154",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F16",
+      "tutar": "545,22",
+      "yol": "nakit"
+    },
+    {
+      "bugun": "03.04.2026",
+      "id": "155",
+      "islem": "saat"
+    },
+    {
+      "ad": "F31",
+      "cari": "C12",
+      "id": "156",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "225,7",
+          "iskontoOrani": "12,5",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U7"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "F32",
+      "cari": "C3",
+      "id": "157",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "26",
+          "hizmet": "Bakım",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 2
+        },
+        {
+          "birimFiyat": "5073,95",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U7"
+        },
+        {
+          "birimFiyat": "314,58",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 10,
+          "urun": "U7"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "H31",
+      "cari": "C7",
+      "id": "158",
+      "islem": "cari_tahsilat",
+      "tutar": "3583,48",
+      "yol": "nakit"
+    },
+    {
+      "hedef": "H2",
+      "id": "159",
+      "islem": "ters_kayit"
+    },
+    {
+      "ad": "F33",
+      "cari": "C8",
+      "id": "160",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "22,6",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 23,
+          "urun": "U1"
+        },
+        {
+          "birimFiyat": "20",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 21,
+          "urun": "U2"
+        },
+        {
+          "birimFiyat": "54,99",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Yazılım Desteği",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "H32",
+      "hesap": "B4",
+      "id": "161",
+      "islem": "kasa_banka",
+      "tutar": "14416,00",
+      "yon": "bankadan_kasaya"
+    },
+    {
+      "ad": "H33",
+      "hedef": "B2",
+      "id": "162",
+      "islem": "transfer",
+      "kaynak": "B5",
+      "kullanici": "MU",
+      "tutar": "3498,00",
+      "ucret": "6,51",
+      "ucretVergi": "bsmv_haric"
+    },
+    {
+      "id": "k5",
+      "islem": "kontrol"
+    },
+    {
+      "ad": "F34",
+      "cari": "C8",
+      "id": "164",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "42",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 21,
+          "urun": "U5"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B1",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "bugun": "06.04.2026",
+      "id": "165",
+      "islem": "saat"
+    },
+    {
+      "ad": "H34",
+      "cari": "C2",
+      "hesap": "B5",
+      "id": "166",
+      "islem": "cari_tahsilat",
+      "tutar": "10890,99",
+      "yol": "havale"
+    },
+    {
+      "ad": "H35",
+      "cari": "C13",
+      "id": "167",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-9",
+      "tutar": "4151,13",
+      "yol": "nakit"
+    },
+    {
+      "bugun": "07.04.2026",
+      "id": "168",
+      "islem": "saat"
+    },
+    {
+      "cari": "C11",
+      "hesap": "B4",
+      "id": "169",
+      "islem": "cari_odeme",
+      "tutar": "1795",
+      "yol": "havale"
+    },
+    {
+      "ad": "F35",
+      "cari": "C13",
+      "id": "170",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "60,76",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 7,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "209,65",
+            "yol": "havale"
+          },
+          {
+            "hesap": "B2",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H36",
+      "hesap": "B4",
+      "id": "171",
+      "islem": "diger_gider",
+      "tutar": "114,88"
+    },
+    {
+      "aciklama": "Ulaşım Gideri",
+      "id": "172",
+      "islem": "kasa_hareket",
+      "tutar": "349",
+      "yon": "cikis"
+    },
+    {
+      "bugun": "08.04.2026",
+      "id": "173",
+      "islem": "saat"
+    },
+    {
+      "ad": "F36",
+      "cari": "C9",
+      "id": "174",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "439",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Montaj",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 2
+        },
+        {
+          "birimFiyat": "246",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 4
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B2",
+            "tutar": "1862",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H37",
+      "hesap": "B2",
+      "id": "175",
+      "islem": "kasa_banka",
+      "tutar": "856",
+      "yon": "bankadan_kasaya"
+    },
+    {
+      "ad": "F37",
+      "cari": "C1",
+      "id": "176",
+      "islem": "fatura",
+      "istekKimligi": "ik-10",
+      "kalemler": [
+        {
+          "birimFiyat": "2784,97",
+          "hizmet": "Yazılım Desteği",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "cari": "C4",
+      "id": "177",
+      "islem": "cari_tahsilat",
+      "tutar": "6289,22",
+      "yol": "nakit"
+    },
+    {
+      "ad": "R2",
+      "asilFatura": "F24",
+      "geri": {
+        "hesap": "B2",
+        "yol": "havale"
+      },
+      "id": "178",
+      "islem": "iade",
+      "kalemler": [
+        {
+          "kalem": 1,
+          "miktar": 4
+        }
+      ]
+    },
+    {
+      "ad": "F38",
+      "cari": "C2",
+      "id": "179",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "89,96",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 4,
+          "urun": "U8"
+        },
+        {
+          "birimFiyat": "48,87",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 3,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B1",
+            "tutar": "163,72",
+            "yol": "havale"
+          }
+        ],
+        "taksit": {
+          "ad": "K4",
+          "ilkVade": "15.04.2026",
+          "sayi": 12
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "10.04.2026",
+      "id": "180",
+      "islem": "saat"
+    },
+    {
+      "aciklama": "Yemek Gideri",
+      "ad": "H38",
+      "id": "181",
+      "islem": "kasa_hareket",
+      "tutar": "36,65",
+      "yon": "cikis"
+    },
+    {
+      "bugun": "05.05.2026",
+      "id": "182",
+      "islem": "saat"
+    },
+    {
+      "hesap": "B3",
+      "id": "183",
+      "islem": "hesap_eksi_politika",
+      "politika": "kontrol_yok"
+    },
+    {
+      "bugun": "06.05.2026",
+      "id": "184",
+      "islem": "saat"
+    },
+    {
+      "ad": "H39",
+      "hesap": "B6",
+      "id": "185",
+      "islem": "kasa_banka",
+      "tutar": "17478,2",
+      "yon": "bankadan_kasaya"
+    },
+    {
+      "acilisBakiyesi": "16079,33",
+      "acilisTarihi": "27.04.2026",
+      "ad": "B7",
+      "bakiyeDogrulandi": true,
+      "banka": "Denizbank",
+      "hesapAdi": "Kurumsal Kart B7",
+      "id": "186",
+      "islem": "hesap_ac",
+      "kartLimiti": "48238",
+      "kod": "DNZ-B7",
+      "paraBirimi": "TRY",
+      "tur": "kurumsal_kart"
+    },
+    {
+      "ad": "H40",
+      "hedef": "B1",
+      "id": "187",
+      "islem": "transfer",
+      "kaynak": "B4",
+      "tutar": "2382",
+      "ucret": "2",
+      "ucretVergi": "yok"
+    },
+    {
+      "ad": "H41",
+      "cari": "C9",
+      "hesap": "B4",
+      "id": "188",
+      "islem": "cari_odeme",
+      "tutar": "4715,32",
+      "yol": "havale"
+    },
+    {
+      "ad": "F39",
+      "cari": "C9",
+      "id": "189",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "180,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 23,
+          "urun": "U5"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "H42",
+      "cari": "C8",
+      "hesap": "B6",
+      "id": "190",
+      "islem": "cari_odeme",
+      "tutar": "473",
+      "yol": "havale"
+    },
+    {
+      "cari": "C8",
+      "hesap": "B4",
+      "id": "191",
+      "islem": "cari_odeme",
+      "tutar": "523568,47",
+      "yol": "havale"
+    },
+    {
+      "ad": "F40",
+      "cari": "C13",
+      "id": "192",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "100,41",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 12,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B4",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "F41",
+      "cari": "C14",
+      "id": "193",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "335,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 25,
+          "urun": "U7"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "2301,26",
+            "yol": "havale"
+          },
+          {
+            "hesap": "B3",
+            "tutar": "385,08",
+            "yol": "havale"
+          },
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "F42",
+      "cari": "C9",
+      "id": "194",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "6366,15",
+          "iskontoOrani": "12,5",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U8"
+        },
+        {
+          "birimFiyat": "945,8",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 25,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "1091,05",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "id": "k6",
+      "islem": "kontrol"
+    },
+    {
+      "bugun": "07.05.2026",
+      "id": "196",
+      "islem": "saat"
+    },
+    {
+      "ad": "H43",
+      "cari": "C13",
+      "hesap": "B4",
+      "id": "197",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-11",
+      "kullanici": "MU",
+      "tutar": "4383",
+      "yol": "havale"
+    },
+    {
+      "cari": "C13",
+      "hesap": "B4",
+      "id": "198",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-11",
+      "kullanici": "MU",
+      "tutar": "4383",
+      "yol": "havale"
+    },
+    {
+      "ad": "H44",
+      "hesap": "B6",
+      "id": "199",
+      "islem": "banka_masraf",
+      "masrafTuru": "FAST",
+      "tutar": "14",
+      "vergi": "yok"
+    },
+    {
+      "ad": "F43",
+      "cari": "C14",
+      "id": "200",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "584",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 16,
+          "urun": "U7"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "875,36",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H45",
+      "hesap": "B4",
+      "id": "201",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "tutar": "25,58",
+      "yol": "havale"
+    },
+    {
+      "ad": "F44",
+      "cari": "C18",
+      "id": "202",
+      "islem": "fatura",
+      "istekKimligi": "ik-12",
+      "kalemler": [
+        {
+          "birimFiyat": "23,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 16,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "245,09",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "Z3",
+      "cari": "C18",
+      "id": "203",
+      "islem": "fatura",
+      "istekKimligi": "ik-12",
+      "kalemler": [
+        {
+          "birimFiyat": "23,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 16,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "245,09",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "bugun": "08.05.2026",
+      "id": "204",
+      "islem": "saat"
+    },
+    {
+      "acilisBakiyesi": "568969,25",
+      "acilisTarihi": "05.05.2026",
+      "ad": "B8",
+      "bakiyeDogrulandi": true,
+      "banka": "Ziraat Bankası",
+      "hesapAdi": "Ana TL Hesabı B8",
+      "id": "205",
+      "islem": "hesap_ac",
+      "kod": "ZRT-B8",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "bugun": "11.05.2026",
+      "id": "206",
+      "islem": "saat"
+    },
+    {
+      "ad": "F45",
+      "cari": "C13",
+      "id": "207",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "59,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 21,
+          "urun": "U7"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "aciklama": "Çay Ocağı",
+      "ad": "H46",
+      "id": "208",
+      "islem": "kasa_hareket",
+      "tutar": "377",
+      "yon": "cikis"
+    },
+    {
+      "ad": "F46",
+      "cari": "C7",
+      "id": "209",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "5188,26",
+          "hizmet": "Nakliye",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "1670,85",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "12.05.2026",
+      "id": "210",
+      "islem": "saat"
+    },
+    {
+      "ad": "F47",
+      "cari": "C1",
+      "id": "211",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "7130,02",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 4,
+          "urun": "U6"
+        },
+        {
+          "birimFiyat": "59",
+          "hizmet": "Montaj",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3
+        },
+        {
+          "birimFiyat": "518,85",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 3,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "2010,22",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F48",
+      "cari": "C8",
+      "id": "212",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "15,23",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Danışmanlık",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 5
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "38,81",
+            "yol": "kart"
+          },
+          {
+            "hesap": "B4",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "aciklama": "Kira Geliri",
+      "id": "213",
+      "islem": "kasa_hareket",
+      "tutar": "39",
+      "yon": "giris"
+    },
+    {
+      "cari": "C12",
+      "hesap": "B2",
+      "id": "214",
+      "islem": "cari_odeme",
+      "tutar": "25",
+      "yol": "kart"
+    },
+    {
+      "hedef": "H10",
+      "id": "215",
+      "islem": "sil"
+    },
+    {
+      "bugun": "14.05.2026",
+      "id": "216",
+      "islem": "saat"
+    },
+    {
+      "ad": "H47",
+      "cari": "C10",
+      "id": "217",
+      "islem": "cari_odeme",
+      "tutar": "2240,21",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F49",
+      "cari": "C2",
+      "id": "218",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1640",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3,
+          "urun": "U6"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "F50",
+      "cari": "C8",
+      "id": "219",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "14,52",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 9,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "38,31",
+            "yol": "havale"
+          },
+          {
+            "tutar": "13,24",
+            "yol": "nakit"
+          },
+          {
+            "hesap": "B6",
+            "tutar": "54,35",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "bugun": "11.06.2026",
+      "id": "220",
+      "islem": "saat"
+    },
+    {
+      "cari": "C1",
+      "hesap": "B3",
+      "id": "221",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F37",
+      "kullanici": "MU",
+      "tutar": "1696,87",
+      "yol": "havale"
+    },
+    {
+      "bugun": "12.06.2026",
+      "id": "222",
+      "islem": "saat"
+    },
+    {
+      "ad": "H48",
+      "cari": "C11",
+      "id": "223",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-13",
+      "kullanici": "MU",
+      "tutar": "3501,66",
+      "yol": "kart"
+    },
+    {
+      "cari": "C11",
+      "id": "224",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-13",
+      "kullanici": "MU",
+      "tutar": "3501,66",
+      "yol": "kart"
+    },
+    {
+      "ad": "H49",
+      "cari": "C8",
+      "id": "225",
+      "islem": "cari_odeme",
+      "tutar": "247,56",
+      "yol": "nakit"
+    },
+    {
+      "hesap": "B3",
+      "id": "226",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "kullanici": "MU",
+      "taksitNo": 7,
+      "tutar": "34,24",
+      "yol": "havale"
+    },
+    {
+      "ad": "F51",
+      "cari": "C3",
+      "id": "227",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "290,05",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Bakım",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 2
+        },
+        {
+          "birimFiyat": "24",
+          "iskontoOrani": "12,5",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U7"
+        },
+        {
+          "birimFiyat": "804",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 22,
+          "urun": "U2"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "id": "k7",
+      "islem": "kontrol"
+    },
+    {
+      "ad": "H50",
+      "cari": "C13",
+      "hesap": "B3",
+      "id": "229",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "1203,11",
+      "yol": "havale"
+    },
+    {
+      "ad": "H51",
+      "cari": "C8",
+      "id": "230",
+      "islem": "cari_tahsilat",
+      "kullanici": "MU",
+      "tutar": "94",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H52",
+      "hesap": "B2",
+      "id": "231",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "tutar": "25,81",
+      "yol": "havale"
+    },
+    {
+      "ad": "F52",
+      "cari": "C1",
+      "id": "232",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "646",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 7,
+          "urun": "U4"
+        },
+        {
+          "birimFiyat": "1116,24",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "3411,99",
+            "yol": "nakit"
+          }
+        ],
+        "taksit": {
+          "ad": "K5",
+          "sayi": 12
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "17.06.2026",
+      "id": "233",
+      "islem": "saat"
+    },
+    {
+      "cari": "C7",
+      "id": "234",
+      "islem": "cari_tahsilat",
+      "kullanici": "PE",
+      "tutar": "1220,73",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F53",
+      "cari": "C3",
+      "id": "235",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "15",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 4
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "brut": "761",
+      "hesap": "B1",
+      "id": "236",
+      "islem": "faiz_geliri",
+      "stopajOrani": "15"
+    },
+    {
+      "ad": "H53",
+      "cari": "C8",
+      "hesap": "B4",
+      "id": "237",
+      "islem": "cari_odeme",
+      "tutar": "1743",
+      "yol": "havale"
+    },
+    {
+      "hesap": "B6",
+      "id": "238",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "tutar": "26,95",
+      "yol": "havale"
+    },
+    {
+      "bugun": "22.06.2026",
+      "id": "239",
+      "islem": "saat"
+    },
+    {
+      "ad": "F54",
+      "cari": "C11",
+      "id": "240",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1853,42",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 5,
+          "urun": "U7"
+        },
+        {
+          "birimFiyat": "90,41",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U3"
+        },
+        {
+          "birimFiyat": "95,31",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 2
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "9548,13",
+            "yol": "kart"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "aciklama": "Kırtasiye Gideri",
+      "ad": "H54",
+      "id": "241",
+      "islem": "kasa_hareket",
+      "tutar": "1419",
+      "yon": "cikis"
+    },
+    {
+      "bugun": "23.06.2026",
+      "id": "242",
+      "islem": "saat"
+    },
+    {
+      "ad": "H55",
+      "cari": "C3",
+      "hesap": "B2",
+      "id": "243",
+      "islem": "cari_tahsilat",
+      "kullanici": "MU",
+      "tutar": "4177",
+      "yol": "havale"
+    },
+    {
+      "ad": "F55",
+      "cari": "C7",
+      "id": "244",
+      "islem": "fatura",
+      "istekKimligi": "ik-14",
+      "kalemler": [
+        {
+          "birimFiyat": "96",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "H56",
+      "hedef": "B2",
+      "id": "245",
+      "islem": "transfer",
+      "kaynak": "B1",
+      "tutar": "1400"
+    },
+    {
+      "ad": "F56",
+      "cari": "C14",
+      "id": "246",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "3001,02",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Danışmanlık",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 4
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "aciklama": "Hurda Satışı",
+      "ad": "H57",
+      "id": "247",
+      "islem": "kasa_hareket",
+      "tutar": "937",
+      "yon": "giris"
+    },
+    {
+      "bugun": "30.06.2026",
+      "id": "248",
+      "islem": "saat"
+    },
+    {
+      "id": "249",
+      "islem": "kart_borcu_odeme",
+      "kart": "B7",
+      "kaynak": "B6",
+      "tutar": "25588,53"
+    },
+    {
+      "durum": "pasif",
+      "hesap": "B7",
+      "id": "250",
+      "islem": "hesap_durum"
+    },
+    {
+      "ad": "F57",
+      "cari": "C17",
+      "id": "251",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "76",
+          "iskontoOrani": "5",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U5"
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K6",
+          "ilkVade": "30.07.2026",
+          "sayi": 3
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F58",
+      "cari": "C2",
+      "id": "252",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1068,94",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 6,
+          "urun": "U3"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "acilisBakiyesi": "32456",
+      "acilisTarihi": "22.06.2026",
+      "ad": "B9",
+      "bakiyeDogrulandi": true,
+      "banka": "QNB",
+      "hesapAdi": "Ticari Hesap B9",
+      "id": "253",
+      "islem": "hesap_ac",
+      "kod": "QNB-B9",
+      "kullanici": "MU",
+      "paraBirimi": "TRY",
+      "tur": "ticari"
+    },
+    {
+      "ad": "F59",
+      "cari": "C2",
+      "id": "254",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1038,05",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U6"
+        },
+        {
+          "birimFiyat": "349",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "hedef": "H2",
+      "id": "255",
+      "islem": "ters_kayit"
+    },
+    {
+      "ad": "F60",
+      "cari": "C11",
+      "id": "256",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "73,51",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 14,
+          "urun": "U5"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "bugun": "02.07.2026",
+      "id": "257",
+      "islem": "saat"
+    },
+    {
+      "id": "258",
+      "islem": "stok_giris",
+      "miktar": 44,
+      "urun": "U6"
+    },
+    {
+      "id": "k8",
+      "islem": "kontrol"
+    },
+    {
+      "bugun": "03.07.2026",
+      "id": "260",
+      "islem": "saat"
+    },
+    {
+      "ad": "F61",
+      "cari": "C11",
+      "id": "261",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "628,43",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 16,
+          "urun": "U8"
+        },
+        {
+          "birimFiyat": "76",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 26,
+          "urun": "U5"
+        },
+        {
+          "birimFiyat": "36",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Yazılım Desteği",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 4
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B8",
+            "tutar": "14220,02",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "aciklama": "Yemek Gideri",
+      "ad": "H58",
+      "id": "262",
+      "islem": "kasa_hareket",
+      "tutar": "418",
+      "yon": "cikis"
+    },
+    {
+      "bugun": "07.07.2026",
+      "id": "263",
+      "islem": "saat"
+    },
+    {
+      "ad": "F62",
+      "cari": "C5",
+      "id": "264",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "27,44",
+          "hizmet": "Kurulum",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "F63",
+      "cari": "C2",
+      "id": "265",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "11",
+          "hizmet": "Nakliye",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 5
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "16,12",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "cari": "C9",
+      "hesap": "B6",
+      "id": "266",
+      "islem": "cari_odeme",
+      "tutar": "19995,37",
+      "yol": "havale"
+    },
+    {
+      "bugun": "14.07.2026",
+      "id": "267",
+      "islem": "saat"
+    },
+    {
+      "cari": "C13",
+      "hesap": "B6",
+      "id": "268",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-15",
+      "tutar": "68",
+      "yol": "havale"
+    },
+    {
+      "cari": "C13",
+      "hesap": "B6",
+      "id": "269",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-15",
+      "tutar": "68",
+      "yol": "havale"
+    },
+    {
+      "bugun": "16.07.2026",
+      "id": "270",
+      "islem": "saat"
+    },
+    {
+      "cari": "C5",
+      "id": "271",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F62",
+      "kullanici": "PE",
+      "tutar": "8,96",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H59",
+      "cari": "C9",
+      "id": "272",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-16",
+      "tutar": "21385",
+      "yol": "nakit"
+    },
+    {
+      "cari": "C9",
+      "id": "273",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-16",
+      "tutar": "21641",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H60",
+      "hedef": "B4",
+      "id": "274",
+      "islem": "transfer",
+      "kaynak": "B5",
+      "kullanici": "MU",
+      "tutar": "1917,24"
+    },
+    {
+      "ad": "H61",
+      "cari": "C8",
+      "hesap": "B1",
+      "id": "275",
+      "islem": "cari_odeme",
+      "tutar": "2165,00",
+      "yol": "havale"
+    },
+    {
+      "bugun": "23.07.2026",
+      "id": "276",
+      "islem": "saat"
+    },
+    {
+      "hedef": "B3",
+      "id": "277",
+      "islem": "transfer",
+      "kaynak": "B2",
+      "tutar": "8849"
+    },
+    {
+      "ad": "H62",
+      "cari": "C13",
+      "hesap": "B9",
+      "id": "278",
+      "islem": "cari_odeme",
+      "tutarHam": "307,004",
+      "yol": "havale"
+    },
+    {
+      "aciklama": "Temizlik Gideri",
+      "ad": "H63",
+      "id": "279",
+      "islem": "kasa_hareket",
+      "tutar": "107,24",
+      "yon": "cikis"
+    },
+    {
+      "ad": "F64",
+      "cari": "C5",
+      "id": "280",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "2730,13",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 2,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "6006,29",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F65",
+      "cari": "C3",
+      "id": "281",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "15,85",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 2
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "hesap": "B3",
+      "id": "282",
+      "islem": "hesap_eksi_politika",
+      "politika": "uyar"
+    },
+    {
+      "ad": "H64",
+      "brut": "141",
+      "hesap": "B5",
+      "id": "283",
+      "islem": "faiz_geliri",
+      "kullanici": "MU",
+      "stopajOrani": "0"
+    },
+    {
+      "ad": "H65",
+      "cari": "C15",
+      "hesap": "B2",
+      "id": "284",
+      "islem": "cari_odeme",
+      "tutar": "16265",
+      "yol": "havale"
+    },
+    {
+      "fatura": "G1",
+      "hesap": "B4",
+      "id": "285",
+      "islem": "banka_masraf",
+      "kdvOrani": 20,
+      "masrafTuru": "SWIFT",
+      "saglayici": "C12",
+      "tutar": "41,23",
+      "vergi": "kdv_dahil"
+    },
+    {
+      "hedef": "B5",
+      "id": "286",
+      "islem": "transfer",
+      "kaynak": "B3",
+      "tutar": "611"
+    },
+    {
+      "bugun": "24.07.2026",
+      "id": "287",
+      "islem": "saat"
+    },
+    {
+      "ad": "H66",
+      "cari": "C8",
+      "hesap": "B6",
+      "id": "288",
+      "islem": "cari_tahsilat",
+      "tutar": "55,00",
+      "yol": "havale"
+    },
+    {
+      "ad": "H67",
+      "cari": "C5",
+      "hesap": "B3",
+      "id": "289",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F62",
+      "kullanici": "MU",
+      "tutar": "6,96",
+      "yol": "havale"
+    },
+    {
+      "ad": "F66",
+      "cari": "C3",
+      "id": "290",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1068,22",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 14,
+          "urun": "U4"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "id": "k9",
+      "islem": "kontrol"
+    },
+    {
+      "ad": "H68",
+      "cari": "C15",
+      "hesap": "B5",
+      "id": "292",
+      "islem": "cari_odeme",
+      "tutar": "11373,00",
+      "yol": "havale"
+    },
+    {
+      "bugun": "27.07.2026",
+      "id": "293",
+      "islem": "saat"
+    },
+    {
+      "ad": "H69",
+      "hesap": "B2",
+      "id": "294",
+      "islem": "diger_gider",
+      "tutar": "97"
+    },
+    {
+      "ad": "F67",
+      "cari": "C14",
+      "id": "295",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "2728,86",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Eğitim",
+          "iskontoOrani": "15",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "2783,44",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "F68",
+      "cari": "C13",
+      "id": "296",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "300,67",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 7,
+          "urun": "U1"
+        },
+        {
+          "birimFiyat": "53,06",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 12,
+          "urun": "U8"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "H70",
+      "cari": "C3",
+      "hesap": "B3",
+      "id": "297",
+      "islem": "cari_tahsilat",
+      "tutar": "1812,45",
+      "yol": "havale"
+    },
+    {
+      "ad": "H71",
+      "hedef": "B4",
+      "id": "298",
+      "islem": "transfer",
+      "kaynak": "B9",
+      "tutar": "3807",
+      "ucret": "2,00",
+      "ucretVergi": "bsmv_dahil"
+    },
+    {
+      "ad": "F69",
+      "cari": "C5",
+      "id": "299",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "16,97",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 2,
+          "urun": "U2"
+        },
+        {
+          "birimFiyat": "196",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 2,
+          "urun": "U8"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "03.08.2026",
+      "id": "300",
+      "islem": "saat"
+    },
+    {
+      "ad": "H72",
+      "cari": "C18",
+      "hesap": "B5",
+      "id": "301",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "28740",
+      "yol": "havale"
+    },
+    {
+      "ad": "H73",
+      "cari": "C4",
+      "hesap": "B6",
+      "id": "302",
+      "islem": "cari_tahsilat",
+      "tutar": "3078",
+      "yol": "havale"
+    },
+    {
+      "ad": "H74",
+      "cari": "C9",
+      "hesap": "B2",
+      "id": "303",
+      "islem": "cari_odeme",
+      "tutar": "687",
+      "yol": "havale"
+    },
+    {
+      "ad": "H75",
+      "cari": "C3",
+      "hesap": "B2",
+      "id": "304",
+      "islem": "cari_tahsilat",
+      "istekKimligi": "ik-17",
+      "tutar": "6486",
+      "yol": "havale"
+    },
+    {
+      "cari": "C3",
+      "hesap": "B2",
+      "id": "305",
+      "islem": "cari_tahsilat",
+      "istekKimligi": "ik-17",
+      "tutar": "6486",
+      "yol": "havale"
+    },
+    {
+      "ad": "H76",
+      "cari": "C5",
+      "id": "306",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F69",
+      "tutar": "350,96",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F70",
+      "cari": "C2",
+      "id": "307",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "645",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3,
+          "urun": "U5"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "04.08.2026",
+      "id": "308",
+      "islem": "saat"
+    },
+    {
+      "ad": "Z4",
+      "cari": "C7",
+      "id": "309",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "597,27",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 10,
+          "urun": "U5"
+        },
+        {
+          "birimFiyat": "466,33",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 2,
+          "urun": "U7"
+        },
+        {
+          "birimFiyat": "3572,36",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 9,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "39066,60",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "aciklama": "Kırtasiye Gideri",
+      "id": "310",
+      "islem": "kasa_hareket",
+      "tutar": "74,29",
+      "yon": "cikis"
+    },
+    {
+      "ad": "F71",
+      "cari": "C17",
+      "id": "311",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "516,88",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U1"
+        },
+        {
+          "birimFiyat": "7275",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 3,
+          "urun": "U5"
+        },
+        {
+          "birimFiyat": "593,00",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U5"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B8",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "hedef": "H33",
+      "id": "312",
+      "islem": "ters_kayit",
+      "kullanici": "MU"
+    },
+    {
+      "cari": "C2",
+      "hesap": "B7",
+      "id": "313",
+      "islem": "cari_tahsilat",
+      "tutar": "38",
+      "yol": "havale"
+    },
+    {
+      "ad": "F72",
+      "cari": "C5",
+      "id": "314",
+      "islem": "fatura",
+      "istekKimligi": "ik-18",
+      "kalemler": [
+        {
+          "birimFiyat": "1405,73",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 6,
+          "urun": "U4"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B3",
+            "tutar": "2467,14",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "Z5",
+      "cari": "C5",
+      "id": "315",
+      "islem": "fatura",
+      "istekKimligi": "ik-18",
+      "kalemler": [
+        {
+          "birimFiyat": "1405,73",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 6,
+          "urun": "U4"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B3",
+            "tutar": "2467,14",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F73",
+      "cari": "C1",
+      "id": "316",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1334",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4,
+          "urun": "U5"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "aciklama": "Çay Ocağı",
+      "ad": "H77",
+      "id": "317",
+      "islem": "kasa_hareket",
+      "tutar": "298",
+      "yon": "cikis"
+    },
+    {
+      "ad": "F74",
+      "cari": "C12",
+      "id": "318",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "526,53",
+          "iskontoOrani": "12,5",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "79,47",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H78",
+      "cari": "C9",
+      "hesap": "B5",
+      "id": "319",
+      "islem": "cari_odeme",
+      "tutar": "70",
+      "yol": "havale"
+    },
+    {
+      "id": "k10",
+      "islem": "kontrol"
+    },
+    {
+      "bugun": "07.08.2026",
+      "id": "321",
+      "islem": "saat"
+    },
+    {
+      "ad": "Z6",
+      "cari": "C6",
+      "id": "322",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1868,00",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 2,
+          "urun": "U5"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "3754",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "hedef": "H70",
+      "id": "323",
+      "islem": "sil"
+    },
+    {
+      "ad": "H79",
+      "cari": "C9",
+      "id": "324",
+      "islem": "cari_odeme",
+      "tutar": "2645,41",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F75",
+      "cari": "C12",
+      "id": "325",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "129,24",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4,
+          "urun": "U5"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B9",
+            "tutar": "620,35",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "11.08.2026",
+      "id": "326",
+      "islem": "saat"
+    },
+    {
+      "ad": "H80",
+      "cari": "C6",
+      "hesap": "B4",
+      "id": "327",
+      "islem": "cari_tahsilat",
+      "tutar": "10936",
+      "yol": "havale"
+    },
+    {
+      "bugun": "12.08.2026",
+      "id": "328",
+      "islem": "saat"
+    },
+    {
+      "ad": "H81",
+      "hesap": "B8",
+      "id": "329",
+      "islem": "taksit_tahsilat",
+      "kart": "K5",
+      "taksitNo": 4,
+      "tutar": "2058,81",
+      "yol": "havale"
+    },
+    {
+      "ad": "H82",
+      "cari": "C2",
+      "id": "330",
+      "islem": "cari_tahsilat",
+      "tutar": "2585,26",
+      "yol": "nakit"
+    },
+    {
+      "hedef": "H55",
+      "id": "331",
+      "islem": "sil"
+    },
+    {
+      "hedef": "B2",
+      "id": "332",
+      "islem": "transfer",
+      "kaynak": "B6",
+      "kullanici": "MU",
+      "tutar": "10932,11",
+      "ucret": "59,93",
+      "ucretVergi": "bsmv_dahil"
+    },
+    {
+      "ad": "F76",
+      "cari": "C3",
+      "id": "333",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "29",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 15,
+          "urun": "U8"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "cari": "C3",
+      "hesap": "B8",
+      "id": "334",
+      "islem": "cari_tahsilat",
+      "kullanici": "MU",
+      "tutar": "6534",
+      "yol": "havale"
+    },
+    {
+      "bugun": "17.08.2026",
+      "id": "335",
+      "islem": "saat"
+    },
+    {
+      "ad": "H83",
+      "id": "336",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "kullanici": "PE",
+      "tutar": "25,53",
+      "yol": "nakit"
+    },
+    {
+      "hedef": "H80",
+      "id": "337",
+      "islem": "sil"
+    },
+    {
+      "ad": "F77",
+      "cari": "C1",
+      "id": "338",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "37,00",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 6,
+          "urun": "U3"
+        },
+        {
+          "birimFiyat": "899",
+          "hizmet": "Nakliye",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "hesap": "B8",
+      "id": "339",
+      "islem": "banka_masraf",
+      "kullanici": "PE",
+      "masrafTuru": "EFT",
+      "tutar": "2",
+      "vergi": "yok"
+    },
+    {
+      "bugun": "18.08.2026",
+      "id": "340",
+      "islem": "saat"
+    },
+    {
+      "ad": "H84",
+      "brut": "758",
+      "hesap": "B3",
+      "id": "341",
+      "islem": "faiz_geliri",
+      "stopajOrani": "15"
+    },
+    {
+      "hedef": "H74",
+      "id": "342",
+      "islem": "sil"
+    },
+    {
+      "cari": "C1",
+      "hesap": "B4",
+      "id": "343",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F37",
+      "kullanici": "PE",
+      "tutar": "1115,95",
+      "yol": "havale"
+    },
+    {
+      "ad": "H85",
+      "cari": "C11",
+      "hesap": "B3",
+      "id": "344",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-19",
+      "tutarHam": "12764,001",
+      "yol": "havale"
+    },
+    {
+      "bugun": "19.08.2026",
+      "id": "345",
+      "islem": "saat"
+    },
+    {
+      "ad": "H86",
+      "cari": "C7",
+      "hesap": "B4",
+      "id": "346",
+      "islem": "cari_tahsilat",
+      "kullanici": "PE",
+      "tutar": "22393",
+      "yol": "havale"
+    },
+    {
+      "hedef": "H76",
+      "id": "347",
+      "islem": "sil"
+    },
+    {
+      "ad": "H87",
+      "id": "348",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "taksitNo": 2,
+      "tutar": "29,74",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F78",
+      "cari": "C12",
+      "id": "349",
+      "islem": "fatura",
+      "istekKimligi": "ik-20",
+      "kalemler": [
+        {
+          "birimFiyat": "50,22",
+          "iskontoOrani": "20",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "26,02",
+            "yol": "kart"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "bugun": "24.08.2026",
+      "id": "350",
+      "islem": "saat"
+    },
+    {
+      "id": "351",
+      "islem": "stok_giris",
+      "miktar": 47,
+      "urun": "U1"
+    },
+    {
+      "ad": "F79",
+      "cari": "C3",
+      "id": "352",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "405,95",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 2,
+          "urun": "U3"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "id": "k11",
+      "islem": "kontrol"
+    },
+    {
+      "hesap": "B2",
+      "id": "354",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "taksitNo": 10,
+      "tutar": "32,52",
+      "yol": "havale"
+    },
+    {
+      "ad": "H88",
+      "cari": "C15",
+      "id": "355",
+      "islem": "cari_odeme",
+      "tutar": "286",
+      "yol": "kart"
+    },
+    {
+      "ad": "F80",
+      "cari": "C5",
+      "id": "356",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "19,76",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U3"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B1",
+            "tutar": "13,57",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "acilisBakiyesi": "1000",
+      "acilisTarihi": "24.08.2026",
+      "ad": "Z7",
+      "banka": "QNB",
+      "hesapAdi": "Aynı Kod",
+      "id": "357",
+      "islem": "hesap_ac",
+      "kod": "QNB-B9",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "bugun": "25.08.2026",
+      "id": "358",
+      "islem": "saat"
+    },
+    {
+      "hesap": "B8",
+      "id": "359",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "kullanici": "MU",
+      "tutar": "24,49",
+      "yol": "havale"
+    },
+    {
+      "cari": "C2",
+      "id": "360",
+      "islem": "cari_tahsilat",
+      "tutar": "676,39",
+      "yol": "havale"
+    },
+    {
+      "bugun": "15.09.2026",
+      "id": "361",
+      "islem": "saat"
+    },
+    {
+      "ad": "F81",
+      "cari": "C5",
+      "id": "362",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "3108",
+          "hizmet": "Nakliye",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "296,03",
+            "yol": "nakit"
+          }
+        ],
+        "taksit": {
+          "ad": "K7",
+          "sayi": 4
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F82",
+      "cari": "C8",
+      "id": "363",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "94",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Kurulum",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 5
+        },
+        {
+          "birimFiyat": "293,52",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 2,
+          "urun": "U2"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "H89",
+      "hesap": "B8",
+      "id": "364",
+      "islem": "taksit_tahsilat",
+      "kart": "K6",
+      "tutar": "27,79",
+      "yol": "havale"
+    },
+    {
+      "bugun": "16.09.2026",
+      "id": "365",
+      "islem": "saat"
+    },
+    {
+      "ad": "H90",
+      "hesap": "B8",
+      "id": "366",
+      "islem": "taksit_tahsilat",
+      "kart": "K7",
+      "kullanici": "PE",
+      "taksitNo": 4,
+      "tutar": "811,65",
+      "yol": "havale"
+    },
+    {
+      "bugun": "17.09.2026",
+      "id": "367",
+      "islem": "saat"
+    },
+    {
+      "cari": "C7",
+      "id": "368",
+      "islem": "cari_tahsilat",
+      "tutar": "86",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F83",
+      "cari": "C5",
+      "id": "369",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "3905",
+          "hizmet": "Kurulum",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "H91",
+      "cari": "C1",
+      "hesap": "B1",
+      "id": "370",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F73",
+      "tutar": "2326,08",
+      "yol": "havale"
+    },
+    {
+      "ad": "H92",
+      "hesap": "B9",
+      "id": "371",
+      "islem": "taksit_tahsilat",
+      "kart": "K6",
+      "tutar": "58,85",
+      "yol": "havale"
+    },
+    {
+      "bugun": "18.09.2026",
+      "id": "372",
+      "islem": "saat"
+    },
+    {
+      "ad": "F84",
+      "cari": "C16",
+      "id": "373",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "173,46",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 2,
+          "urun": "U8"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "F85",
+      "cari": "C3",
+      "id": "374",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "81,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 7,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "105,61",
+            "yol": "nakit"
+          }
+        ],
+        "taksit": {
+          "ad": "K8",
+          "ilkVade": "25.09.2026",
+          "sayi": 3
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F86",
+      "cari": "C6",
+      "id": "375",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "61,17",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 3,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B1",
+            "tutar": "74,12",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "aciklama": "Çay Ocağı",
+      "id": "376",
+      "islem": "kasa_hareket",
+      "tutar": "26,00",
+      "yon": "cikis"
+    },
+    {
+      "id": "377",
+      "islem": "taksit_tahsilat",
+      "kart": "K7",
+      "tutar": "2621,92",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H93",
+      "hedef": "B1",
+      "id": "378",
+      "islem": "transfer",
+      "kaynak": "B4",
+      "tutar": "25510,00"
+    },
+    {
+      "acilisBakiyesi": "1000",
+      "acilisTarihi": "18.09.2026",
+      "ad": "Z8",
+      "banka": "QNB",
+      "hesapAdi": "Aynı IBAN",
+      "iban": "TR950006704823576220519011",
+      "id": "379",
+      "islem": "hesap_ac",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "ad": "F87",
+      "cari": "C1",
+      "id": "380",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1669,34",
+          "iskontoOrani": "12,5",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "415,65",
+            "yol": "havale"
+          }
+        ],
+        "taksit": {
+          "ad": "K9",
+          "ilkVade": "02.11.2026",
+          "sayi": 12
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "25.09.2026",
+      "id": "381",
+      "islem": "saat"
+    },
+    {
+      "ad": "F88",
+      "cari": "C5",
+      "id": "382",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "54",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3,
+          "urun": "U6"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "hedef": "H3",
+      "id": "383",
+      "islem": "sil"
+    },
+    {
+      "ad": "H94",
+      "cari": "C10",
+      "hesap": "B4",
+      "id": "384",
+      "islem": "cari_odeme",
+      "tutar": "2488,70",
+      "yol": "havale"
+    },
+    {
+      "id": "k12",
+      "islem": "kontrol"
+    },
+    {
+      "hedef": "H68",
+      "id": "386",
+      "islem": "sil"
+    },
+    {
+      "bugun": "28.09.2026",
+      "id": "387",
+      "islem": "saat"
+    },
+    {
+      "cari": "C3",
+      "id": "388",
+      "islem": "cari_tahsilat",
+      "tutar": "25020",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F89",
+      "cari": "C1",
+      "id": "389",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "29",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 9,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "98,5",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F90",
+      "cari": "C4",
+      "id": "390",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "55",
+          "hizmet": "Bakım",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 5
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "29.09.2026",
+      "id": "391",
+      "islem": "saat"
+    },
+    {
+      "ad": "F91",
+      "cari": "C8",
+      "id": "392",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "4644,73",
+          "iskontoOrani": "5",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "153,77",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "cari": "C7",
+      "hesap": "B1",
+      "id": "393",
+      "islem": "cari_tahsilat",
+      "tutar": "766,04",
+      "yol": "havale"
+    },
+    {
+      "ad": "H95",
+      "cari": "C18",
+      "id": "394",
+      "islem": "cari_odeme",
+      "tutar": "23321",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F92",
+      "cari": "C17",
+      "id": "395",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "105",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 8,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K10",
+          "sayi": 3
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "02.10.2026",
+      "id": "396",
+      "islem": "saat"
+    },
+    {
+      "fatura": "G2",
+      "hesap": "B2",
+      "id": "397",
+      "islem": "banka_masraf",
+      "masrafTuru": "Hesap İşletim",
+      "saglayici": "C14",
+      "tutar": "298,31",
+      "vergi": "kdv_dahil"
+    },
+    {
+      "ad": "F93",
+      "cari": "C5",
+      "id": "398",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "49",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 6,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B8",
+            "tutar": "200,44",
+            "yol": "havale"
+          }
+        ],
+        "taksit": {
+          "ad": "K11",
+          "sayi": 2
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F94",
+      "cari": "C2",
+      "id": "399",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "6015,51",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 2
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "id": "400",
+      "islem": "taksit_tahsilat",
+      "kart": "K11",
+      "tutar": "53,08",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F95",
+      "cari": "C2",
+      "id": "401",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "4300,78",
+          "hizmet": "Nakliye",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4
+        },
+        {
+          "birimFiyat": "404",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 4,
+          "urun": "U4"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "acilisBakiyesi": "1000",
+      "acilisTarihi": "02.10.2026",
+      "ad": "Z9",
+      "banka": "VakıfBank",
+      "hesapAdi": "Aynı IBAN",
+      "iban": "TR950006704823576220519011",
+      "id": "402",
+      "islem": "hesap_ac",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "ad": "F96",
+      "cari": "C13",
+      "id": "403",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "23",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 5,
+          "urun": "U4"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H96",
+      "hesap": "B5",
+      "id": "404",
+      "islem": "taksit_tahsilat",
+      "istekKimligi": "ik-21",
+      "kart": "K8",
+      "tutar": "194,23",
+      "yol": "havale"
+    },
+    {
+      "bugun": "05.10.2026",
+      "id": "405",
+      "islem": "saat"
+    },
+    {
+      "ad": "F97",
+      "cari": "C11",
+      "id": "406",
+      "islem": "fatura",
+      "istekKimligi": "ik-22",
+      "kalemler": [
+        {
+          "birimFiyat": "2228",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 16,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "kart"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "acilisBakiyesi": "217",
+      "acilisTarihi": "14.03.2026",
+      "hesap": "B6",
+      "id": "407",
+      "islem": "acilis_duzelt"
+    },
+    {
+      "ad": "F98",
+      "cari": "C6",
+      "id": "408",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "34",
+          "hizmet": "Nakliye",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 5
+        },
+        {
+          "birimFiyat": "126,57",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 10,
+          "urun": "U4"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "813,67",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "hedef": "B6",
+      "id": "409",
+      "islem": "transfer",
+      "kaynak": "B8",
+      "tutar": "21757"
+    },
+    {
+      "cari": "C13",
+      "hesap": "B2",
+      "id": "410",
+      "islem": "cari_odeme",
+      "tutarHam": "14028,001",
+      "yol": "havale"
+    },
+    {
+      "ad": "H97",
+      "hedef": "B3",
+      "id": "411",
+      "islem": "transfer",
+      "kaynak": "B6",
+      "kullanici": "MU",
+      "tutar": "9851,4"
+    },
+    {
+      "bugun": "08.10.2026",
+      "id": "412",
+      "islem": "saat"
+    },
+    {
+      "ad": "F99",
+      "cari": "C6",
+      "id": "413",
+      "islem": "fatura",
+      "istekKimligi": "ik-23",
+      "kalemler": [
+        {
+          "birimFiyat": "2095",
+          "iskontoOrani": "12,5",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U8"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "aciklama": "Ortaktan Nakit",
+      "ad": "H98",
+      "id": "414",
+      "islem": "kasa_hareket",
+      "istekKimligi": "ik-24",
+      "tutar": "4418,49",
+      "yon": "giris"
+    },
+    {
+      "ad": "H99",
+      "cari": "C11",
+      "id": "415",
+      "islem": "cari_odeme",
+      "tutar": "717,00",
+      "yol": "kart"
+    },
+    {
+      "id": "k13",
+      "islem": "kontrol"
+    },
+    {
+      "ad": "F100",
+      "cari": "C17",
+      "id": "417",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "2235,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 8,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "21456",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F101",
+      "cari": "C3",
+      "id": "418",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "21,56",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 7,
+          "urun": "U2"
+        },
+        {
+          "birimFiyat": "410",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 9,
+          "urun": "U7"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "F102",
+      "cari": "C4",
+      "id": "419",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "844",
+          "hizmet": "Nakliye",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "09.10.2026",
+      "id": "420",
+      "islem": "saat"
+    },
+    {
+      "ad": "Z10",
+      "cari": "C8",
+      "id": "421",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "64",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "12.10.2026",
+      "id": "422",
+      "islem": "saat"
+    },
+    {
+      "ad": "F103",
+      "cari": "C5",
+      "id": "423",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "272,80",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U8"
+        },
+        {
+          "birimFiyat": "240",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U3"
+        },
+        {
+          "birimFiyat": "1926,04",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U6"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "13.10.2026",
+      "id": "424",
+      "islem": "saat"
+    },
+    {
+      "ad": "F104",
+      "cari": "C3",
+      "id": "425",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "3273,35",
+          "hizmet": "Nakliye",
+          "iskontoOrani": "2,5",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "14.10.2026",
+      "id": "426",
+      "islem": "saat"
+    },
+    {
+      "durum": "aktif",
+      "hesap": "B7",
+      "id": "427",
+      "islem": "hesap_durum"
+    },
+    {
+      "ad": "F105",
+      "cari": "C2",
+      "id": "428",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "95,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F106",
+      "cari": "C16",
+      "id": "429",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "23",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 27,
+          "urun": "U1"
+        },
+        {
+          "birimFiyat": "396",
+          "iskontoOrani": "10",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U1"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "bugun": "19.10.2026",
+      "id": "430",
+      "islem": "saat"
+    },
+    {
+      "ad": "H100",
+      "cari": "C14",
+      "hesap": "B8",
+      "id": "431",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "839,00",
+      "yol": "havale"
+    },
+    {
+      "ad": "F107",
+      "cari": "C9",
+      "id": "432",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "216,99",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U5"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "hesap": "B8",
+      "id": "433",
+      "islem": "faiz_gideri",
+      "tutarHam": "-175,41"
+    },
+    {
+      "hedef": "H13",
+      "id": "434",
+      "islem": "sil"
+    },
+    {
+      "bugun": "20.10.2026",
+      "id": "435",
+      "islem": "saat"
+    },
+    {
+      "ad": "H101",
+      "cari": "C16",
+      "hesap": "B9",
+      "id": "436",
+      "islem": "cari_odeme",
+      "kapatilacakFatura": "F106",
+      "tutar": "977,40",
+      "yol": "havale"
+    },
+    {
+      "bugun": "23.10.2026",
+      "id": "437",
+      "islem": "saat"
+    },
+    {
+      "ad": "F108",
+      "cari": "C5",
+      "id": "438",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "6386,9",
+          "iskontoOrani": "5",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "6674,31",
+            "yol": "kart"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "hedef": "H26",
+      "id": "439",
+      "islem": "sil"
+    },
+    {
+      "ad": "H102",
+      "cari": "C3",
+      "hesap": "B9",
+      "id": "440",
+      "islem": "cari_tahsilat",
+      "tutar": "678",
+      "yol": "havale"
+    },
+    {
+      "ad": "F109",
+      "cari": "C16",
+      "id": "441",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "324",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 5,
+          "urun": "U8"
+        },
+        {
+          "birimFiyat": "917,00",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 12,
+          "urun": "U7"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B7",
+            "tutar": "tamami",
+            "yol": "kart"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "F110",
+      "cari": "C4",
+      "id": "442",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "110",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3,
+          "urun": "U6"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "bugun": "26.10.2026",
+      "id": "443",
+      "islem": "saat"
+    },
+    {
+      "ad": "F111",
+      "cari": "C3",
+      "id": "444",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1607,99",
+          "hizmet": "Eğitim",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K12",
+          "ilkVade": "25.12.2026",
+          "sayi": 3
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "acilisBakiyesi": "1000",
+      "acilisTarihi": "26.10.2026",
+      "ad": "Z11",
+      "banka": "VakıfBank",
+      "hesapAdi": "Hatalı IBAN",
+      "iban": "TR450001508906000076145093",
+      "id": "445",
+      "islem": "hesap_ac",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "ad": "F112",
+      "cari": "C5",
+      "id": "446",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "970,84",
+          "hizmet": "Bakım",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 2
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K13",
+          "ilkVade": "10.11.2026",
+          "sayi": 4
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "27.10.2026",
+      "id": "447",
+      "islem": "saat"
+    },
+    {
+      "ad": "H103",
+      "cari": "C1",
+      "hesap": "B1",
+      "id": "448",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F89",
+      "kullanici": "MU",
+      "tutar": "162,50",
+      "yol": "havale"
+    },
+    {
+      "bugun": "30.10.2026",
+      "id": "449",
+      "islem": "saat"
+    },
+    {
+      "ad": "R3",
+      "asilFatura": "F72",
+      "geri": {
+        "yol": "acik"
+      },
+      "id": "450",
+      "islem": "iade",
+      "kalemler": [
+        {
+          "kalem": 1,
+          "miktar": 3
+        }
+      ]
+    },
+    {
+      "ad": "F113",
+      "cari": "C11",
+      "id": "451",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "10,19",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 4,
+          "urun": "U2"
+        },
+        {
+          "birimFiyat": "338",
+          "hizmet": "Kurulum",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K14",
+          "ilkVade": "29.11.2026",
+          "sayi": 2
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "id": "k14",
+      "islem": "kontrol"
+    },
+    {
+      "cari": "C5",
+      "hesap": "B9",
+      "id": "453",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F103",
+      "kullanici": "PE",
+      "tutar": "269,45",
+      "yol": "havale"
+    },
+    {
+      "bugun": "02.11.2026",
+      "id": "454",
+      "islem": "saat"
+    },
+    {
+      "acilisBakiyesi": "485549,99",
+      "acilisTarihi": "30.12.2025",
+      "hesap": "B4",
+      "id": "455",
+      "islem": "acilis_duzelt"
+    },
+    {
+      "ad": "F114",
+      "cari": "C13",
+      "id": "456",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1387",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 16,
+          "urun": "U5"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "10582,38",
+            "yol": "havale"
+          },
+          {
+            "hesap": "B1",
+            "tutar": "5214,8",
+            "yol": "havale"
+          },
+          {
+            "tutar": "1230,76",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H104",
+      "cari": "C8",
+      "hesap": "B9",
+      "id": "457",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-25",
+      "tutar": "2810",
+      "yol": "havale"
+    },
+    {
+      "ad": "H105",
+      "hesap": "B2",
+      "id": "458",
+      "islem": "taksit_tahsilat",
+      "kart": "K10",
+      "tutar": "840",
+      "yol": "havale"
+    },
+    {
+      "bugun": "05.11.2026",
+      "id": "459",
+      "islem": "saat"
+    },
+    {
+      "ad": "H106",
+      "cari": "C11",
+      "hesap": "B2",
+      "id": "460",
+      "islem": "cari_odeme",
+      "tutar": "25276,29",
+      "yol": "havale"
+    },
+    {
+      "acilisBakiyesi": "1000",
+      "acilisTarihi": "05.11.2026",
+      "ad": "Z12",
+      "banka": "QNB",
+      "hesapAdi": "Aynı Kod",
+      "id": "461",
+      "islem": "hesap_ac",
+      "kod": "ZRT-B8",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "ad": "F115",
+      "cari": "C5",
+      "id": "462",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "79,00",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 4,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B9",
+            "tutar": "316",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "aciklama": "Kira Geliri",
+      "id": "463",
+      "islem": "kasa_hareket",
+      "tutar": "838,43",
+      "yon": "giris"
+    },
+    {
+      "hedef": "B8",
+      "id": "464",
+      "islem": "transfer",
+      "kaynak": "B8",
+      "tutar": "22"
+    },
+    {
+      "bugun": "06.11.2026",
+      "id": "465",
+      "islem": "saat"
+    },
+    {
+      "ad": "H107",
+      "hesap": "B6",
+      "id": "466",
+      "islem": "taksit_tahsilat",
+      "kart": "K13",
+      "taksitNo": 1,
+      "tutar": "611,63",
+      "yol": "havale"
+    },
+    {
+      "ad": "F116",
+      "cari": "C5",
+      "id": "467",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "47,00",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 2,
+          "urun": "U5"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "H108",
+      "hedef": "B2",
+      "id": "468",
+      "islem": "transfer",
+      "kaynak": "B3",
+      "tutar": "6636"
+    },
+    {
+      "cari": "C5",
+      "id": "469",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F103",
+      "tutar": "2263,93",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F117",
+      "cari": "C13",
+      "id": "470",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "2949",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 22,
+          "urun": "U5"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "F118",
+      "cari": "C5",
+      "id": "471",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "415,84",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 6,
+          "urun": "U4"
+        },
+        {
+          "birimFiyat": "21",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "2512,89",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "09.11.2026",
+      "id": "472",
+      "islem": "saat"
+    },
+    {
+      "ad": "F119",
+      "cari": "C3",
+      "id": "473",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "11,78",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 6,
+          "urun": "U6"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "H109",
+      "cari": "C4",
+      "id": "474",
+      "islem": "cari_tahsilat",
+      "tutar": "233",
+      "yol": "nakit"
+    },
+    {
+      "cari": "C2",
+      "hesap": "B7",
+      "id": "475",
+      "islem": "cari_tahsilat",
+      "tutar": "24",
+      "yol": "havale"
+    },
+    {
+      "bugun": "10.11.2026",
+      "id": "476",
+      "islem": "saat"
+    },
+    {
+      "acilisBakiyesi": "1000",
+      "acilisTarihi": "10.11.2026",
+      "ad": "Z13",
+      "banka": "Halkbank",
+      "hesapAdi": "Hatalı IBAN",
+      "iban": "TR540001200656950011104856",
+      "id": "477",
+      "islem": "hesap_ac",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "id": "478",
+      "islem": "taksit_tahsilat",
+      "kart": "K11",
+      "kullanici": "PE",
+      "taksitNo": 2,
+      "tutar": "40,48",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F120",
+      "cari": "C4",
+      "id": "479",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "5236",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 10,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K15",
+          "sayi": 6
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "11.11.2026",
+      "id": "480",
+      "islem": "saat"
+    },
+    {
+      "cari": "C16",
+      "id": "481",
+      "islem": "cari_odeme",
+      "kapatilacakFatura": "F84",
+      "tutar": "346,92",
+      "yol": "nakit"
+    },
+    {
+      "bugun": "12.11.2026",
+      "id": "482",
+      "islem": "saat"
+    },
+    {
+      "ad": "H110",
+      "cari": "C8",
+      "id": "483",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-26",
+      "tutar": "992",
+      "yol": "nakit"
+    },
+    {
+      "cari": "C8",
+      "id": "484",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-26",
+      "tutar": "992",
+      "yol": "nakit"
+    },
+    {
+      "id": "k15",
+      "islem": "kontrol"
+    },
+    {
+      "cari": "C7",
+      "hesap": "B4",
+      "id": "486",
+      "islem": "cari_tahsilat",
+      "tutar": "507",
+      "yol": "havale"
+    },
+    {
+      "bugun": "13.11.2026",
+      "id": "487",
+      "islem": "saat"
+    },
+    {
+      "hedef": "H85",
+      "id": "488",
+      "islem": "sil"
+    },
+    {
+      "ad": "F121",
+      "cari": "C16",
+      "id": "489",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "23,95",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 10,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B1",
+            "tutar": "287,4",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "F122",
+      "cari": "C2",
+      "id": "490",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "11,16",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 5,
+          "urun": "U2"
+        },
+        {
+          "birimFiyat": "3386,01",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 2,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K16",
+          "ilkVade": "14.12.2026",
+          "sayi": 9
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "16.11.2026",
+      "id": "491",
+      "islem": "saat"
+    },
+    {
+      "ad": "F123",
+      "cari": "C3",
+      "id": "492",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "719",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 4,
+          "urun": "U6"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "id": "493",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "kullanici": "MU",
+      "taksitNo": 7,
+      "tutar": "34,10",
+      "yol": "nakit"
+    },
+    {
+      "acilisBakiyesi": "33769",
+      "acilisTarihi": "23.08.2026",
+      "hesap": "B9",
+      "id": "494",
+      "islem": "acilis_duzelt"
+    },
+    {
+      "ad": "F124",
+      "cari": "C12",
+      "id": "495",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "134,14",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Nakliye",
+          "iskontoOrani": "12,5",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1
+        },
+        {
+          "birimFiyat": "23,74",
+          "iskontoOrani": "10",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1,
+          "urun": "U5"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "F125",
+      "cari": "C8",
+      "id": "496",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "13",
+          "iskontoOrani": "10",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U8"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "bugun": "23.11.2026",
+      "id": "497",
+      "islem": "saat"
+    },
+    {
+      "hedef": "H105",
+      "id": "498",
+      "islem": "sil"
+    },
+    {
+      "ad": "F126",
+      "cari": "C5",
+      "id": "499",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "11",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 10,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "48,59",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "hedef": "H42",
+      "id": "500",
+      "islem": "sil"
+    },
+    {
+      "ad": "C19",
+      "id": "501",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "Anadolu Kırtasiye C19"
+    },
+    {
+      "bugun": "26.11.2026",
+      "id": "502",
+      "islem": "saat"
+    },
+    {
+      "ad": "F127",
+      "cari": "C14",
+      "id": "503",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "109",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "H111",
+      "cari": "C5",
+      "hesap": "B9",
+      "id": "504",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F83",
+      "kullanici": "PE",
+      "tutar": "18744",
+      "yol": "havale"
+    },
+    {
+      "bugun": "27.11.2026",
+      "id": "505",
+      "islem": "saat"
+    },
+    {
+      "ad": "H112",
+      "brut": "4470,84",
+      "hesap": "B4",
+      "id": "506",
+      "islem": "faiz_geliri",
+      "stopajOrani": "5"
+    },
+    {
+      "ad": "F128",
+      "cari": "C1",
+      "id": "507",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "23",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U4"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B8",
+            "tutar": "14,28",
+            "yol": "havale"
+          }
+        ],
+        "taksit": {
+          "ad": "K17",
+          "sayi": 12
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "aciklama": "Yemek Gideri",
+      "ad": "H113",
+      "id": "508",
+      "islem": "kasa_hareket",
+      "tutar": "1728,81",
+      "yon": "cikis"
+    },
+    {
+      "ad": "H114",
+      "hesap": "B3",
+      "id": "509",
+      "islem": "faiz_gideri",
+      "tutar": "60,94"
+    },
+    {
+      "ad": "H115",
+      "cari": "C8",
+      "id": "510",
+      "islem": "cari_odeme",
+      "tutar": "50,10",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H116",
+      "hesap": "B4",
+      "id": "511",
+      "islem": "banka_masraf",
+      "masrafTuru": "SWIFT",
+      "tutar": "6,86",
+      "vergi": "bsmv_dahil"
+    },
+    {
+      "ad": "F129",
+      "cari": "C1",
+      "id": "512",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "4842,49",
+          "hizmet": "Danışmanlık",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "4842,49",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F130",
+      "cari": "C8",
+      "id": "513",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "199",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 25,
+          "urun": "U4"
+        },
+        {
+          "birimFiyat": "16,92",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 19,
+          "urun": "U6"
+        },
+        {
+          "birimFiyat": "2864",
+          "iskontoOrani": "2,5",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B7",
+            "tutar": "1102,29",
+            "yol": "kart"
+          },
+          {
+            "hesap": "B3",
+            "tutar": "147,58",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "bugun": "30.11.2026",
+      "id": "514",
+      "islem": "saat"
+    },
+    {
+      "ad": "H117",
+      "id": "515",
+      "islem": "taksit_tahsilat",
+      "kart": "K17",
+      "tutar": "1",
+      "yol": "nakit"
+    },
+    {
+      "ad": "H118",
+      "id": "516",
+      "islem": "taksit_tahsilat",
+      "kart": "K16",
+      "tutar": "6906,7",
+      "yol": "nakit"
+    },
+    {
+      "id": "k16",
+      "islem": "kontrol"
+    },
+    {
+      "ad": "F131",
+      "cari": "C6",
+      "id": "518",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "41",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U4"
+        },
+        {
+          "birimFiyat": "2972",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 2,
+          "urun": "U6"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B4",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "01.12.2026",
+      "id": "519",
+      "islem": "saat"
+    },
+    {
+      "ad": "H119",
+      "hedef": "B9",
+      "id": "520",
+      "islem": "transfer",
+      "kaynak": "B2",
+      "kullanici": "MU",
+      "tutar": "1468,89"
+    },
+    {
+      "ad": "F132",
+      "cari": "C8",
+      "id": "521",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "16",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Nakliye",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 5
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H120",
+      "cari": "C12",
+      "hesap": "B4",
+      "id": "522",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutarHam": "3588,009",
+      "yol": "havale"
+    },
+    {
+      "ad": "F133",
+      "cari": "C5",
+      "id": "523",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "857,49",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 1,
+          "urun": "U4"
+        },
+        {
+          "birimFiyat": "829",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 2,
+          "urun": "U5"
+        },
+        {
+          "birimFiyat": "11,51",
+          "hizmet": "Bakım",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 3
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "H121",
+      "cari": "C4",
+      "hesap": "B4",
+      "id": "524",
+      "islem": "cari_tahsilat",
+      "tutar": "81,54",
+      "yol": "havale"
+    },
+    {
+      "ad": "F134",
+      "cari": "C2",
+      "id": "525",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "22,74",
+          "hizmet": "Kurulum",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 5
+        },
+        {
+          "birimFiyat": "2422",
+          "hizmet": "Kurulum",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 4
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K18",
+          "sayi": 12
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "02.12.2026",
+      "id": "526",
+      "islem": "saat"
+    },
+    {
+      "ad": "Z14",
+      "hedef": "H40",
+      "id": "527",
+      "islem": "ters_kayit"
+    },
+    {
+      "hedef": "B5",
+      "id": "528",
+      "islem": "transfer",
+      "kaynak": "B3",
+      "tutar": "1320",
+      "ucret": "1,07",
+      "ucretVergi": "bsmv_dahil"
+    },
+    {
+      "ad": "H122",
+      "cari": "C4",
+      "hesap": "B1",
+      "id": "529",
+      "islem": "cari_tahsilat",
+      "tutar": "98,24",
+      "yol": "havale"
+    },
+    {
+      "ad": "F135",
+      "cari": "C3",
+      "id": "530",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "95,01",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 9,
+          "urun": "U6"
+        },
+        {
+          "birimFiyat": "572,98",
+          "hizmet": "Eğitim",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "F136",
+      "cari": "C9",
+      "id": "531",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "70,00",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Montaj",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 5
+        },
+        {
+          "birimFiyat": "33,47",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 25,
+          "urun": "U3"
+        },
+        {
+          "birimFiyat": "1645,59",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 19,
+          "urun": "U5"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "F137",
+      "cari": "C12",
+      "id": "532",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "106,00",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 23,
+          "urun": "U8"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "cari": "C1",
+      "hesap": "B8",
+      "id": "533",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F47",
+      "tutar": "28243,41",
+      "yol": "havale"
+    },
+    {
+      "cari": "C1",
+      "hesap": "B8",
+      "id": "534",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F73",
+      "tutar": "957,10",
+      "yol": "havale"
+    },
+    {
+      "bugun": "03.12.2026",
+      "id": "535",
+      "islem": "saat"
+    },
+    {
+      "ad": "F138",
+      "cari": "C6",
+      "id": "536",
+      "islem": "fatura",
+      "istekKimligi": "ik-27",
+      "kalemler": [
+        {
+          "birimFiyat": "651,00",
+          "hizmet": "Montaj",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 2
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K19",
+          "sayi": 9
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "H123",
+      "cari": "C12",
+      "hesap": "B7",
+      "id": "537",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutarHam": "91,009",
+      "yol": "kart"
+    },
+    {
+      "hedef": "H7",
+      "id": "538",
+      "islem": "sil"
+    },
+    {
+      "ad": "F139",
+      "cari": "C2",
+      "id": "539",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "758",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 3,
+          "urun": "U4"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "H124",
+      "cari": "C3",
+      "hesap": "B6",
+      "id": "540",
+      "islem": "cari_tahsilat",
+      "tutar": "3594",
+      "yol": "havale"
+    },
+    {
+      "bugun": "04.12.2026",
+      "id": "541",
+      "islem": "saat"
+    },
+    {
+      "ad": "F140",
+      "cari": "C6",
+      "id": "542",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "30",
+          "iskontoOrani": "10",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "26,99",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "H125",
+      "cari": "C3",
+      "hesap": "B3",
+      "id": "543",
+      "islem": "cari_tahsilat",
+      "tutar": "512",
+      "yol": "havale"
+    },
+    {
+      "ad": "F141",
+      "cari": "C7",
+      "id": "544",
+      "islem": "fatura",
+      "istekKimligi": "ik-28",
+      "kalemler": [
+        {
+          "birimFiyat": "159,93",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B2",
+            "tutar": "479,79",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "Z15",
+      "cari": "C7",
+      "id": "545",
+      "islem": "fatura",
+      "istekKimligi": "ik-28",
+      "kalemler": [
+        {
+          "birimFiyat": "159,93",
+          "hizmet": "Eğitim",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B2",
+            "tutar": "479,79",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F142",
+      "cari": "C12",
+      "id": "546",
+      "islem": "fatura",
+      "istekKimligi": "ik-29",
+      "kalemler": [
+        {
+          "birimFiyat": "374,01",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 28,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "Z16",
+      "cari": "C12",
+      "id": "547",
+      "islem": "fatura",
+      "istekKimligi": "ik-29",
+      "kalemler": [
+        {
+          "birimFiyat": "374,01",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 28,
+          "urun": "U8"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "id": "k17",
+      "islem": "kontrol"
+    },
+    {
+      "bugun": "07.12.2026",
+      "id": "549",
+      "islem": "saat"
+    },
+    {
+      "id": "550",
+      "islem": "stok_giris",
+      "miktar": 33,
+      "urun": "U3"
+    },
+    {
+      "acilisBakiyesi": "93701,41",
+      "acilisTarihi": "11.08.2026",
+      "hesap": "B5",
+      "id": "551",
+      "islem": "acilis_duzelt"
+    },
+    {
+      "aciklama": "Kira Geliri",
+      "ad": "H126",
+      "id": "552",
+      "islem": "kasa_hareket",
+      "tutar": "211,40",
+      "yon": "giris"
+    },
+    {
+      "cari": "C3",
+      "hesap": "B7",
+      "id": "553",
+      "islem": "cari_tahsilat",
+      "tutar": "15,88",
+      "yol": "havale"
+    },
+    {
+      "acilisBakiyesi": "1000",
+      "acilisTarihi": "07.12.2026",
+      "ad": "Z17",
+      "banka": "Denizbank",
+      "hesapAdi": "Aynı Kod",
+      "id": "554",
+      "islem": "hesap_ac",
+      "kod": "ZRT-B8",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "fatura": "G3",
+      "hesap": "B3",
+      "id": "555",
+      "islem": "banka_masraf",
+      "masrafTuru": "Diğer",
+      "saglayici": "C12",
+      "tutar": "5",
+      "vergi": "kdv_haric"
+    },
+    {
+      "aciklama": "Temizlik Gideri",
+      "id": "556",
+      "islem": "kasa_hareket",
+      "tutar": "73",
+      "yon": "cikis"
+    },
+    {
+      "id": "557",
+      "islem": "stok_giris",
+      "miktar": 8,
+      "urun": "U4"
+    },
+    {
+      "ad": "F143",
+      "cari": "C6",
+      "id": "558",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "492,65",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 5,
+          "urun": "U4"
+        },
+        {
+          "birimFiyat": "72,21",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 5,
+          "urun": "U4"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "hedef": "H79",
+      "id": "559",
+      "islem": "sil"
+    },
+    {
+      "bugun": "08.12.2026",
+      "id": "560",
+      "islem": "saat"
+    },
+    {
+      "ad": "H127",
+      "cari": "C1",
+      "hesap": "B9",
+      "id": "561",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F73",
+      "tutar": "476,09",
+      "yol": "havale"
+    },
+    {
+      "aciklama": "Diğer Nakit Giriş",
+      "ad": "H128",
+      "id": "562",
+      "islem": "kasa_hareket",
+      "istekKimligi": "ik-30",
+      "tutar": "1630,85",
+      "yon": "giris"
+    },
+    {
+      "ad": "H129",
+      "cari": "C10",
+      "hesap": "B9",
+      "id": "563",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "840,83",
+      "yol": "havale"
+    },
+    {
+      "ad": "Z18",
+      "hedef": "H36",
+      "id": "564",
+      "islem": "ters_kayit"
+    },
+    {
+      "ad": "F144",
+      "cari": "C12",
+      "id": "565",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "313",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 18,
+          "urun": "U7"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "354,52",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H130",
+      "hesap": "B1",
+      "id": "566",
+      "islem": "taksit_tahsilat",
+      "kart": "K18",
+      "taksitNo": 8,
+      "tutar": "771,71",
+      "yol": "havale"
+    },
+    {
+      "ad": "F145",
+      "cari": "C14",
+      "id": "567",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "55,2",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 24,
+          "urun": "U1"
+        },
+        {
+          "birimFiyat": "177",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 24,
+          "urun": "U5"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "1615,07",
+            "yol": "nakit"
+          },
+          {
+            "hesap": "B2",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "ad": "H131",
+      "cari": "C13",
+      "hesap": "B4",
+      "id": "568",
+      "islem": "cari_odeme",
+      "tutar": "178,53",
+      "yol": "havale"
+    },
+    {
+      "bugun": "13.01.2027",
+      "id": "569",
+      "islem": "saat"
+    },
+    {
+      "ad": "F146",
+      "cari": "C5",
+      "id": "570",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "120",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 10,
+          "urun": "U2"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B5",
+            "tutar": "1200",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "H132",
+      "cari": "C4",
+      "hesap": "B3",
+      "id": "571",
+      "islem": "cari_tahsilat",
+      "kullanici": "PE",
+      "tutar": "1813",
+      "yol": "havale"
+    },
+    {
+      "aciklama": "Kırtasiye Gideri",
+      "id": "572",
+      "islem": "kasa_hareket",
+      "tutar": "138,56",
+      "yon": "cikis"
+    },
+    {
+      "bugun": "14.01.2027",
+      "id": "573",
+      "islem": "saat"
+    },
+    {
+      "ad": "H133",
+      "cari": "C5",
+      "hesap": "B6",
+      "id": "574",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F80",
+      "tutar": "4,44",
+      "yol": "havale"
+    },
+    {
+      "hesap": "B2",
+      "id": "575",
+      "islem": "taksit_tahsilat",
+      "kart": "K9",
+      "taksitNo": 10,
+      "tutar": "1045,03",
+      "yol": "havale"
+    },
+    {
+      "ad": "H134",
+      "id": "576",
+      "islem": "taksit_tahsilat",
+      "kart": "K14",
+      "tutar": "1663,57",
+      "yol": "nakit"
+    },
+    {
+      "ad": "F147",
+      "cari": "C1",
+      "id": "577",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "18",
+          "hizmet": "Bakım",
+          "iskontoOrani": "20",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1
+        },
+        {
+          "birimFiyat": "92",
+          "hizmet": "Kurulum",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 3
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "204,24",
+            "yol": "nakit"
+          }
+        ],
+        "taksit": {
+          "ad": "K20",
+          "sayi": 3
+        }
+      },
+      "tur": "satis"
+    },
+    {
+      "id": "k18",
+      "islem": "kontrol"
+    },
+    {
+      "aciklama": "Hurda Satışı",
+      "id": "579",
+      "islem": "kasa_hareket",
+      "tutar": "1248,5",
+      "yon": "giris"
+    },
+    {
+      "aciklama": "Kira Geliri",
+      "ad": "H135",
+      "id": "580",
+      "islem": "kasa_hareket",
+      "tutar": "20",
+      "yon": "giris"
+    },
+    {
+      "ad": "F148",
+      "cari": "C1",
+      "id": "581",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "2652,68",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 9,
+          "urun": "U3"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "F149",
+      "cari": "C2",
+      "id": "582",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "23",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 6,
+          "urun": "U8"
+        },
+        {
+          "birimFiyat": "955",
+          "kdvDahil": false,
+          "kdvOrani": 10,
+          "miktar": 1,
+          "urun": "U7"
+        },
+        {
+          "birimFiyat": "984,00",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 10,
+          "urun": "U3"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B4",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "bugun": "15.01.2027",
+      "id": "583",
+      "islem": "saat"
+    },
+    {
+      "hedef": "H120",
+      "id": "584",
+      "islem": "sil"
+    },
+    {
+      "bugun": "19.01.2027",
+      "id": "585",
+      "islem": "saat"
+    },
+    {
+      "hedef": "H109",
+      "id": "586",
+      "islem": "sil"
+    },
+    {
+      "hesap": "B8",
+      "id": "587",
+      "islem": "taksit_tahsilat",
+      "kart": "K4",
+      "kullanici": "PE",
+      "tutar": "83,77",
+      "yol": "havale"
+    },
+    {
+      "bugun": "26.01.2027",
+      "id": "588",
+      "islem": "saat"
+    },
+    {
+      "acilisBakiyesi": "322",
+      "acilisTarihi": "26.09.2026",
+      "hesap": "B6",
+      "id": "589",
+      "islem": "acilis_duzelt"
+    },
+    {
+      "ad": "F150",
+      "cari": "C14",
+      "id": "590",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "6546,69",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 30,
+          "urun": "U7"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "53953,60",
+            "yol": "nakit"
+          },
+          {
+            "hesap": "B5",
+            "tutar": "45884,39",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "cari": "C13",
+      "hesap": "B1",
+      "id": "591",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "72,00",
+      "yol": "havale"
+    },
+    {
+      "ad": "F151",
+      "cari": "C5",
+      "id": "592",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1183,86",
+          "hizmet": "Bakım",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 2
+        },
+        {
+          "birimFiyat": "11",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 8,
+          "urun": "U8"
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "H136",
+      "cari": "C8",
+      "hesap": "B2",
+      "id": "593",
+      "islem": "cari_odeme",
+      "tutar": "344",
+      "yol": "havale"
+    },
+    {
+      "ad": "F152",
+      "cari": "C15",
+      "id": "594",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "5490",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 6,
+          "urun": "U8"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "F153",
+      "cari": "C16",
+      "id": "595",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "11,8",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 13,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "46,65",
+            "yol": "kart"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "hedef": "H55",
+      "id": "596",
+      "islem": "sil"
+    },
+    {
+      "bugun": "27.01.2027",
+      "id": "597",
+      "islem": "saat"
+    },
+    {
+      "ad": "H137",
+      "cari": "C10",
+      "hesap": "B8",
+      "id": "598",
+      "islem": "cari_odeme",
+      "kullanici": "MU",
+      "tutar": "608440,52",
+      "yineDeKaydet": true,
+      "yol": "havale"
+    },
+    {
+      "brut": "165",
+      "hesap": "B1",
+      "id": "599",
+      "islem": "faiz_geliri",
+      "kullanici": "MU",
+      "stopajOrani": "10"
+    },
+    {
+      "ad": "H138",
+      "cari": "C12",
+      "hesap": "B4",
+      "id": "600",
+      "islem": "cari_odeme",
+      "tutar": "4052",
+      "yol": "havale"
+    },
+    {
+      "ad": "F154",
+      "cari": "C5",
+      "id": "601",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "2951",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 4,
+          "urun": "U1"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B6",
+            "tutar": "7632,19",
+            "yol": "havale"
+          },
+          {
+            "hesap": "B9",
+            "tutar": "1221,26",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "id": "602",
+      "islem": "taksit_tahsilat",
+      "kart": "K19",
+      "taksitNo": 6,
+      "tutar": "1562,4",
+      "yol": "nakit"
+    },
+    {
+      "ad": "C20",
+      "id": "603",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Ayşe Yılmaz C20"
+    },
+    {
+      "ad": "R4",
+      "asilFatura": "F27",
+      "geri": {
+        "hesap": "B6",
+        "yol": "havale"
+      },
+      "id": "604",
+      "islem": "iade",
+      "kalemler": [
+        {
+          "kalem": 1,
+          "miktar": 2
+        }
+      ]
+    },
+    {
+      "ad": "F156",
+      "cari": "C17",
+      "id": "605",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "323,47",
+          "kdvDahil": false,
+          "kdvOrani": 1,
+          "miktar": 5,
+          "urun": "U7"
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "hesap": "B9",
+            "tutar": "tamami",
+            "yol": "havale"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "aciklama": "Çay Ocağı",
+      "id": "606",
+      "islem": "kasa_hareket",
+      "tutar": "2610,97",
+      "yon": "cikis"
+    },
+    {
+      "ad": "F157",
+      "cari": "C8",
+      "id": "607",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "2925",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Bakım",
+          "kdvDahil": true,
+          "kdvOrani": 1,
+          "miktar": 2
+        },
+        {
+          "birimFiyat": "784",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 20,
+          "urun": "U8"
+        },
+        {
+          "birimFiyat": "67",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Montaj",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 3
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "alis"
+    },
+    {
+      "id": "k19",
+      "islem": "kontrol"
+    },
+    {
+      "bugun": "28.01.2027",
+      "id": "609",
+      "islem": "saat"
+    },
+    {
+      "hesap": "B8",
+      "id": "610",
+      "islem": "hesap_eksi_politika",
+      "politika": "engelle"
+    },
+    {
+      "cari": "C18",
+      "hesap": "B2",
+      "id": "611",
+      "islem": "cari_odeme",
+      "tutar": "17",
+      "yol": "kart"
+    },
+    {
+      "bugun": "01.02.2027",
+      "id": "612",
+      "islem": "saat"
+    },
+    {
+      "ad": "R5",
+      "asilFatura": "F123",
+      "geri": {
+        "hesap": "B1",
+        "yol": "havale"
+      },
+      "id": "613",
+      "islem": "iade",
+      "kalemler": [
+        {
+          "kalem": 1,
+          "miktar": 3
+        }
+      ]
+    },
+    {
+      "bugun": "04.02.2027",
+      "id": "614",
+      "islem": "saat"
+    },
+    {
+      "acilisBakiyesi": "69065",
+      "acilisTarihi": "04.02.2027",
+      "ad": "B10",
+      "bakiyeDogrulandi": true,
+      "banka": "QNB",
+      "hesapAdi": "Ana TL Hesabı B10",
+      "iban": "TR730011109141887832785539",
+      "id": "615",
+      "islem": "hesap_ac",
+      "paraBirimi": "TRY",
+      "tur": "vadesiz"
+    },
+    {
+      "cari": "C2",
+      "hesap": "B10",
+      "id": "616",
+      "islem": "cari_tahsilat",
+      "tarih": "03.02.2027",
+      "tutar": "353",
+      "yol": "havale"
+    },
+    {
+      "ad": "F158",
+      "cari": "C16",
+      "id": "617",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "98,1",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 22,
+          "urun": "U3"
+        }
+      ],
+      "tur": "alis"
+    },
+    {
+      "ad": "H139",
+      "hesap": "B2",
+      "id": "618",
+      "islem": "kasa_banka",
+      "tutar": "501,69",
+      "yon": "bankadan_kasaya"
+    },
+    {
+      "bugun": "11.02.2027",
+      "id": "619",
+      "islem": "saat"
+    },
+    {
+      "ad": "H140",
+      "cari": "C8",
+      "hesap": "B10",
+      "id": "620",
+      "islem": "cari_odeme",
+      "istekKimligi": "ik-31",
+      "kullanici": "MU",
+      "tutarHam": "2706,005",
+      "yol": "havale"
+    },
+    {
+      "ad": "H141",
+      "cari": "C16",
+      "hesap": "B10",
+      "id": "621",
+      "islem": "cari_odeme",
+      "kapatilacakFatura": "F158",
+      "tutar": "1152,74",
+      "yol": "havale"
+    },
+    {
+      "aciklama": "Kargo Ücreti",
+      "ad": "H142",
+      "id": "622",
+      "islem": "kasa_hareket",
+      "tutar": "5455,62",
+      "yon": "cikis"
+    },
+    {
+      "cari": "C1",
+      "hesap": "B5",
+      "id": "623",
+      "islem": "cari_tahsilat",
+      "kapatilacakFatura": "F73",
+      "kullanici": "PE",
+      "tutar": "2643,93",
+      "yol": "havale"
+    },
+    {
+      "bugun": "12.02.2027",
+      "id": "624",
+      "islem": "saat"
+    },
+    {
+      "hesap": "B4",
+      "id": "625",
+      "islem": "kasa_banka",
+      "tutar": "4255",
+      "yon": "bankadan_kasaya"
+    },
+    {
+      "ad": "H143",
+      "cari": "C2",
+      "hesap": "B9",
+      "id": "626",
+      "islem": "cari_tahsilat",
+      "kullanici": "PE",
+      "tutar": "4660",
+      "yol": "havale"
+    }
+  ],
+  "baslangic": {
+    "ayarlar": {
+      "benzerIslemUyarisi": "kapali",
+      "kasaEksiBakiye": "engelle"
+    },
+    "bugun": "08.01.2026",
+    "kullanicilar": {
+      "MU": "muhasebe",
+      "PE": "personel",
+      "Y": "yonetici"
+    },
+    "sirket": "bos"
+  },
+  "dayanak": "SENARYO-DILI §3–§13 (rastgele senaryo)",
+  "dil": "destekofis-senaryo/1"
+}
