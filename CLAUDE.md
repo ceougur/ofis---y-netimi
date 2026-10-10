@@ -1109,7 +1109,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kararı) + Nakit Akış K10 başlangıcı + ertelenenlerin görünmediği denetimi + kılavuz Banka bölümü + yargıç/eleştirmen + plan alt
   sınırında son doğrulama (UZUN KOŞULAR GitHub CI'de paralel — önerim; depo herkese açık, dakika ücretsiz) + paket. TAHMİN DÜZELTMESİ (kullanıcı
   "paketi 2 dk'da veriyordun, neden 0,5 gün?"): paket 1–2 saat (iş 30–45 dk + PR CI ~25 dk; Wine/Inno/windres kurulu); 0,5 gün
-  şişirilmiş pay idi. Kritik yol kart → yargıç/eleştirmen → son doğrulama → paket: toplam 2,5–3,5 iş günü. ERTELENEN 2.1.1/2.2.0:
+  şişirilmiş pay idi. Kritik yol kart → yargıç/eleştirmen → son doğrulama → paket: toplam 2,5–3,5 iş günü.
+  KAZANÇ (kullanıcı "bu iki önerim zaman kazandıracak mı?"): zorunlu görevi CI 517 ile kapatmak birkaç saat + odak; ağır testleri
+  sona ve GitHub'a almak ~1 gün (20.000 yerel 5–8 sa ve ölçek 30/1M 3–5 sa kritik yoldan çıktı; ajanların ara uzun koşuları kısaltıldı,
+  K1 ve K2 ajanlarına iletildi). YENİ TAHMİN 2–3 iş günü. ERTELENEN 2.1.1/2.2.0:
   döviz/kur/değerleme (Aşama 13), Bankaya Tahsile Ver, K8 taksit avans/fazla ödeme kuralları, faturanın bankalı iade/iptal ayrıntısı ve
   toplu kesim, kalan §8.10 raporları, Kasa açılış/devir (K6); POS 2.2.0, ekstre 2.3.0 yerinde. Tahmin 3–4 iş günü. Plan sırası bu
   kararla değişti (döviz 2.1.0'dan çıktı).
