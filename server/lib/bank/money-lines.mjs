@@ -416,22 +416,26 @@ export function createMoneyLines(store, { verify = false } = {}) {
    * (kısmi indeks; select'in unbound süzgeci); sonuç refTotal gibi saklanır (veri değişince yeniden). GG2: önceden Genel Bakış, rozet, Hesaplar
    * ve sihirbaz bütün para satırlarını grupluyordu (1.000.000 harekette istek başına ~4 sn, sunucu o sürede başka isteğe yanıt vermiyordu).
    */
-  function unassigned() {
-    const ways = unassignedWays();
-    return { bank: ways.bank?.cents || 0, card: ways.card?.cents || 0 };
+  // 2.1.0 temel sürüm (ileri tarihli eski havale; plan A13 / karar 42): until (bugün) verilirse yalnız o güne kadarki satırlar — bugünkü bakiye
+  // gösteren her ekran (Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor) bununla okur; after verilirse yalnız o günden
+  // SONRAKİ (eski sürümden kalan ileri tarihli) satırlar, ayrı bilgi olarak. İkisi de yoksa tüm zamanlar (Alt Hesap Mizanı, Ana Defter gibi).
+  function unassigned({ until = "", after = "" } = {}) {
+    const ways = unassignedWays({ until, after });
+    return { bank: ways.bank?.cents || 0, card: ways.card?.cents || 0, count: (ways.bank?.count || 0) + (ways.card?.count || 0), first: [ways.bank?.first, ways.card?.first].filter(Boolean).sort()[0] || "" };
   }
-  /** Bağsız satırlar yol bazında: { [yol]: { cents, debit, credit } } (saklanır; Alt Hesap Mizanı'nın 102.00 / 108.00 satırları). */
-  function unassignedWays() {
+  /** Bağsız satırlar yol bazında: { [yol]: { cents, debit, credit, count, first } } (saklanır; Alt Hesap Mizanı'nın 102.00 / 108.00 satırları). */
+  function unassignedWays({ until = "", after = "" } = {}) {
     const stamp = stampOf();
-    const hit = stamp ? totals.get("|unassigned|") : null;
+    const key = `|unassigned|${until}|${after}`;
+    const hit = stamp ? totals.get(key) : null;
     if (hit && hit.stamp === stamp) return hit.ways;
     const ways = {};
-    for (const group of store.all(`SELECT w.way AS way, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE 0 END), 0) AS debit, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN 0 ELSE w.cents END), 0) AS credit FROM (${waySql({ light: true, unbound: true })}) w WHERE w.ref = '' GROUP BY w.way`)) {
-      ways[group.way] = { cents: Number(group.cents) || 0, debit: Number(group.debit) || 0, credit: Number(group.credit) || 0 };
+    for (const group of store.all(`SELECT w.way AS way, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE 0 END), 0) AS debit, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN 0 ELSE w.cents END), 0) AS credit, COUNT(*) AS count, MIN(w.date) AS first FROM (${waySql({ light: true, unbound: true, until, after })}) w WHERE w.ref = '' GROUP BY w.way`, params({ until, after }))) {
+      ways[group.way] = { cents: Number(group.cents) || 0, debit: Number(group.debit) || 0, credit: Number(group.credit) || 0, count: Number(group.count) || 0, first: group.first || "" };
     }
     if (stamp && keep()) {
       if (totals.size > 200) totals.clear();
-      totals.set("|unassigned|", { stamp, ways });
+      totals.set(key, { stamp, ways });
     }
     return ways;
   }

@@ -284,9 +284,11 @@
       );
     }
     const unassigned = s.unassigned || { totalMinor: 0 };
-    if (unassigned.totalMinor || unassigned.newCount) {
+    // Toplam bugüne kadarki satırlardır; eski sürümden kalan ileri tarihli satırlar ayrı bilgi (tarihi gelince atanır; 2.1.0 temel sürüm).
+    const ahead = unassigned.future?.count ? unassigned.future : null;
+    if (unassigned.totalMinor || unassigned.newCount || ahead) {
       rows.push(`<div class="hof-bank-row is-unassigned" data-bank-unassigned><div><b>${esc(labels.unassigned || "Hesabı Atanmamış Eski Hareketler")}</b> <strong>${esc(fmt(unassigned.totalMinor))}</strong>
-        <small>Havale / EFT (102.00) ${esc(fmt(unassigned.bankMinor))} · POS / Kart (108.00) ${esc(fmt(unassigned.cardMinor))} — Gerçek Banka'ya ve hiçbir toplama girmez.${unassigned.newCount ? ` Hesabı belirsiz yeni hareket: ${unassigned.newCount}.` : ""}</small></div>
+        <small>Havale / EFT (102.00) ${esc(fmt(unassigned.bankMinor))} · POS / Kart (108.00) ${esc(fmt(unassigned.cardMinor))} — Gerçek Banka'ya ve hiçbir toplama girmez.${unassigned.newCount ? ` Hesabı belirsiz yeni hareket: ${unassigned.newCount}.` : ""}</small>${ahead ? `<small data-bank-unassigned-future>Tarihi gelmemiş ${ahead.count} eski hareket (${esc(signed(ahead.totalMinor))}, ilk ${esc(dateText(ahead.firstDate))}) bu toplama girmez; tarihi gelince atanabilir.</small>` : ""}</div>
         <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="legacy">Şimdi Düzenle</button></div>`);
     }
     // Vadesi gelen planlı işlemler (rozette sayılır; Aşama 4): deftere kendiliğinden yazılmaz, kullanıcı Gerçekleştir ile kaydeder.
@@ -359,7 +361,7 @@
       canAccounts() ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Hesap</button>' : "",
       canAccounts() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="wizard">Kurulum Sihirbazı</button>' : "",
       // Hesabı atanmamış eski hareket ya da geri alınabilir kurulum varsa (Genel Bakış'taki satır bakiye sıfırken görünmez).
-      canAccounts() && (view.summary?.unassigned?.totalMinor || view.summary?.setup?.runs) ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="legacy">Eski Hareketler</button>' : "",
+      canAccounts() && (view.summary?.unassigned?.totalMinor || view.summary?.unassigned?.future?.count || view.summary?.setup?.runs) ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="legacy">Eski Hareketler</button>' : "",
       HOF.can("bank.reports") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="subtrial">Alt Hesap Mizanı</button>' : "",
     ].join("");
     const rows = shown
@@ -484,13 +486,13 @@
     const rows = data.rows
       .map(
         row => `<tr class="${row.kind === "in" ? "is-in" : "is-out"}">
-          <td class="hof-bank-check">${pickable(row) && canAccounts() ? `<input type="checkbox" data-pick="${esc(rowKey(row))}" ${view.selected.has(rowKey(row)) ? "checked" : ""} aria-label="Seç">` : ""}</td>
+          <td class="hof-bank-check">${pickable(row) && canAccounts() ? `<input type="checkbox" data-pick="${esc(rowKey(row))}" ${view.selected.has(rowKey(row)) ? "checked" : ""} aria-label="Seç">` : row.future && canAccounts() ? `<input type="checkbox" disabled data-pick-later aria-label="Seçilemez: ${esc(row.reason || "")}" title="${esc(row.reason || "")}">` : ""}</td>
           ${td("Tarih", esc(dateText(row.date)))}
           ${td("Yol", row.way === "bank" ? "Havale / EFT" : "POS / Kart")}
           ${td("Cari / Açıklama", `${esc(row.partyName || "—")}${row.description ? `<small>${esc(row.description)}</small>` : ""}`)}
           ${td("İşlem No", row.eventNo ? `<span class="hof-plan-refno">${esc(row.eventNo)}</span>` : "—")}
           ${td("Tutar", `<b>${esc(signed(row.kind === "in" ? row.amountMinor : -row.amountMinor))}</b>`, "num")}
-          ${td("Durum", row.locked ? '<span class="hof-plan-badge is-muted">Kilitli Dönem — Atanamaz</span>' : row.closed ? `<span class="hof-plan-badge is-muted" title="${esc(row.reason || "")}">Devir Kapanışı'yla Kapandı</span>` : row.way !== "bank" ? '<span class="hof-plan-badge is-info">Bankaya Geçmiş Say</span>' : target && row.date < target.openingDate ? `<span class="hof-plan-badge is-muted" title="Hesabın açılışı ${esc(dateText(target.openingDate))}; bu hareket açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır).">Açılıştan Önce</span>` : "")}
+          ${td("Durum", row.future ? `<span class="hof-plan-badge is-muted" data-legacy-future>Tarihi Gelince Atanabilir</span><small class="hof-bank-why">${esc(row.reason || "")}</small>` : row.locked ? '<span class="hof-plan-badge is-muted">Kilitli Dönem — Atanamaz</span>' : row.closed ? `<span class="hof-plan-badge is-muted" title="${esc(row.reason || "")}">Devir Kapanışı'yla Kapandı</span>` : row.way !== "bank" ? '<span class="hof-plan-badge is-info">Bankaya Geçmiş Say</span>' : target && row.date < target.openingDate ? `<span class="hof-plan-badge is-muted" title="Hesabın açılışı ${esc(dateText(target.openingDate))}; bu hareket açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır).">Açılıştan Önce</span>` : "")}
         </tr>`,
       )
       .join("");
@@ -508,10 +510,10 @@
         </div>`
       : "";
     return `<div class="hof-bank-detail-head">${back}<div class="hof-plan-title"><h3>Hesabı Atanmamış Eski Hareketler</h3><small>Banka hesabı tanımlanmadan girilmiş havale / EFT ve POS hareketleri. Gerçek Banka'ya girmez.</small></div></div>
-      <div class="hof-rep-stats hof-bank-stats"><div class="hof-rep-stat"><span>Havale / EFT (102.00)</span><strong>${esc(fmt(data.totals.bankMinor))}</strong></div><div class="hof-rep-stat"><span>POS / Kart (108.00)</span><strong>${esc(fmt(data.totals.cardMinor))}</strong></div><div class="hof-rep-stat"><span>Kilitli Dönem — Atanamaz</span><strong>${data.lockedCount}</strong><small>${data.count} hareket</small></div></div>
+      <div class="hof-rep-stats hof-bank-stats"><div class="hof-rep-stat"><span>Havale / EFT (102.00)</span><strong>${esc(fmt(data.totals.bankMinor))}</strong></div><div class="hof-rep-stat"><span>POS / Kart (108.00)</span><strong>${esc(fmt(data.totals.cardMinor))}</strong></div><div class="hof-rep-stat"><span>Kilitli Dönem — Atanamaz</span><strong>${data.lockedCount}</strong><small>${data.count} hareket</small></div>${data.future?.count ? `<div class="hof-rep-stat" data-legacy-future-stat><span>Tarihi Gelince Atanabilir</span><strong>${data.future.count}</strong><small>${esc(signed(data.future.totalMinor))} · ilk ${esc(dateText(data.future.firstDate))} · toplamlara girmez</small></div>` : ""}</div>
       ${tools}
       <div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table hof-bank-legacy"><thead><tr><th class="hof-bank-check">${canAccounts() && assignable.length ? `<input type="checkbox" data-pick-all ${allOn ? "checked" : ""} aria-label="Hepsini seç">` : ""}</th><th>Tarih</th><th>Yol</th><th>Cari / Açıklama</th><th>İşlem No</th><th class="num">Tutar</th><th>Durum</th></tr></thead><tbody>${rows || '<tr><td colspan="7" class="hof-empty">Hesabı atanmamış eski hareket yok.</td></tr>'}</tbody></table></div>
-      <p class="hof-rep-note">Bir hareket yalnız hesabın açılış tarihinde ya da sonrasındaysa ve dönemi açıksa atanır; açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır). POS ve kart bakiyesi Bankaya Geçmiş Say ya da Kart Borcuna Aktar ile taşınır.</p>
+      <p class="hof-rep-note">Bir hareket yalnız hesabın açılış tarihinde ya da sonrasındaysa ve dönemi açıksa atanır; açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır). Tarihi gelmemiş eski hareket (eski sürümde ileri tarihle girilmiş) o gün atanır; o güne kadar toplamlara girmez. POS ve kart bakiyesi Bankaya Geçmiş Say ya da Kart Borcuna Aktar ile taşınır.</p>
       ${runs ? `<h4 class="hof-bank-subtitle">Kurulum Geçmişi</h4><div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table"><thead><tr><th>Tarih</th><th>Hesap</th><th>İşlem No</th><th>Aktarılan</th><th>Durum</th><th></th></tr></thead><tbody>${runs}</tbody></table></div>` : ""}`;
   }
 
@@ -1041,6 +1043,7 @@
               <div><dt>Devir Kapanışı</dt><dd>Havale / EFT ${esc(fmt(p.carry.bankMinor))} · POS / Kart ${esc(fmt(p.carry.cardMinor))}</dd></div>
               <div><dt>Bağlanacak Hareket</dt><dd>${p.assign.count} hareket · net ${esc(signed(p.assign.amountMinor))}</dd></div>
               <div><dt>Kilitli Dönem — Atanamaz</dt><dd>${p.skipped.locked}</dd></div>
+              ${p.skipped.future ? `<div data-wiz-future><dt>Tarihi Gelmemiş — Sonra Atanır</dt><dd>${p.skipped.future} hareket · net ${esc(signed(p.skipped.futureMinor))} · ilk ${esc(dateText(p.skipped.futureFirst))}</dd></div>` : ""}
               <div><dt>Sonra Hesap Bakiyesi</dt><dd>${esc(fmt(p.after.accountMinor))}</dd></div>
               <div><dt>Sonra Hesabı Atanmamış</dt><dd>Havale / EFT ${esc(fmt(p.after.unassignedBankMinor))} · POS / Kart ${esc(fmt(p.after.unassignedCardMinor))}</dd></div>
             </dl>`
@@ -1063,6 +1066,7 @@
           <h4>${state.saved.length || state.done ? "Kurulum Tamamlandı" : "Kurulum Atlandı"}</h4>
           ${saved}
           ${state.done ? `<p>Eski hareketler aktarıldı: ${state.done.assigned} hareket hesaba bağlandı${state.done.carryNo ? `; Devir Kapanışı ${esc(state.done.carryNo)}` : ""}.</p>` : ""}
+          ${state.done?.skipped?.future ? `<p data-wiz-done-future>Tarihi gelmemiş ${state.done.skipped.future} eski hareket atlandı (ilk ${esc(dateText(state.done.skipped.futureFirst))}); tarihi gelince Hesabı Atanmamış Eski Hareketler'den hesaba atayın.</p>` : ""}
           ${s?.realBank?.defined ? `<p class="hof-bank-wiz-real">Gerçek Banka: <b data-wiz-real>${esc(fmt(s.realBank.minor))}</b></p>` : ""}
           <p>${state.saved.length ? "Hesapları Hesaplar sekmesinden düzenleyebilir, yeni hesap ekleyebilirsiniz." : "Genel Bakış'taki “Kurulumu Tamamla” ile istediğiniz zaman devam edebilirsiniz."}</p>
         </div>

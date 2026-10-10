@@ -1,0 +1,98 @@
+{
+  "ad": "kirmizi-8b3c65c-ileri-tarihli-eski",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-ileri-tarihli-eski.test.mjs",
+  "commit": "8b3c65cbee6893099ee84106d2b7fa13bec9241a",
+  "dal": "worktree-agent-a22d2972509bc7e85",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:23:42.897Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 1,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B6 liste: ileri tarihli iki satır ayrı işaretli, atanamaz, nedeni ve günü yazılı; geçmiş satır atanabilir",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:123:3",
+      "hata": "[{\"table\":\"cheque_events\",\"id\":\"cevent-da7484d6-c0c3-4a35-b477-bbbb2545cf76\",\"date\":\"2026-10-20\",\"kind\":\"in\",\"amountMinor\":100000,\"method\":\"bank\",\"way\":\"bank\",\"partyId\":\"account-0141bfef-64f3-4847-8b75-0d3a9ffd28d1\",\"partyName\":\"Çekli Müşteri\",\"description\":\"\",\"eventId\":\"\",\"eventNo\":\"\",\"locked\":false,\"closed\":false,\"assignable\":true,\"reason\":\"\"},{\"table\":\"cheque_events\",\"id\":\"cevent-f3d3db28-b0a0-435c-8757-4197f7790042\",\"date\":\"2026-10-15\",\"kind\":\"out\",\"amountMinor\":40000,\"method\":\"bank\",\"way\":\"bank\",\"partyId\":\"account-5dd10c8d-4251-4510-9629-8c5156a99ad5\",\"partyName\":\"Verilen Çek Tedarikçisi\",\"description\":\"\",\"eventId\":\"\",\"eventNo\":\"\",\"locked\":false,\"closed\":false,\"assignable\":true,\"reason\":\"\"},{\"table\":\"account_entries\",\"id\":\"aentry-b7d93d5f-83a0-48d9-b9ca-e2cae7dd4303\",\"date\":\"2026-10-08\",\"kind\":\"in\",\"amountMinor\":25000,\"method\":\"bank\",\"way\":\"bank\",\"partyId\":\"account-0141bfef-64f3-4847-8b75-0d3a9ffd28d1\",\"partyName\":\"Çekli Müşteri\",\"description\":\"\",\"eventId\":\"\",\"eventNo\":\"\",\"locked\":false,\"closed\":false,\"assignable\":true,\"reason\":\"\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B6 toplamlar tek formülden: Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor = 250 (bugüne kadar); ileri tarihli ayrı",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:136:3",
+      "hata": "Banka Genel Bakış 85000 · 85000 !== 25000 (beklenen 25000, gelen 85000)"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B3 Bu Hesaba Ata ileri tarihli → 409 bank-legacy-future (ledger-integrity değil), mesajda gün",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:155:3",
+      "hata": "ileri tarihli ata: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.) · + actual - expected · + 'ledger-integrity' (beklenen bank-legacy-future, gelen ledger-integrity)"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B4 Bu Hesaba Ata [geçmiş + ileri] tek istekte → 409; geçmiş satır da bağlanmaz",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:163:3",
+      "hata": "karışık ata: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.) · + actual - expected · + 'ledger-integrity' (beklenen bank-legacy-future, gelen ledger-integrity)"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B5 sihirbaz seçili satır listesiyle ileri tarihli satır → 409 bank-legacy-future",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:172:3",
+      "hata": "sihirbaz seçili ileri tarihli: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.) · + actual - expected · + 'ledger-integrity' (beklenen bank-legacy-future, gelen ledger-integrity)"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B1 sihirbaz ön izleme: 1 satır bağlanacak (250), ileri tarihli 2 atlanacak (net 600, ilk D+5)",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:177:3",
+      "hata": "{\"rows\":[{\"table\":\"account_entries\",\"id\":\"aentry-b7d93d5f-83a0-48d9-b9ca-e2cae7dd4303\",\"date\":\"2026-10-08\",\"kind\":\"in\",\"amountMinor\":25000},{\"table\":\"cheque_events\",\"id\":\"cevent-f3d3db28-b0a0-435c-8757-4197f7790042\",\"date\":\"2026-10-15\",\"kind\":\"out\",\"amountMinor\":40000},{\"table\":\"cheque_events\",\"id\":\"cevent-da7484d6-c0c3-4a35-b477-bbbb2545cf76\",\"date\":\"2026-10-20\",\"kind\":\"in\",\"amountMinor\":100000}],\"count\":3,\"amountMinor\":85000} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B1 + B11 sihirbaz 'tümü' → 200: geçmiş bağlandı, ileri tarihliler atlandı (yanıtta); aynı istek kimliğiyle tek çalışma",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:185:3",
+      "hata": "sihirbaz tümü: 409 {\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.\",\"code\":\"ledger-integrity\",\"failures\":[{\"code\":\"dates:future:fin_events\",\"name\":\"İleri tarihli hareket (Finansal İşlemler)\",\"ok\":false,\"count\":2,\"gateCount\":2,\"tables\":[\"fin_events\",\"account_entries\",\"cheque_events\"]}]} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B2 yalnız ileri tarihli kaldı → sihirbaz 409 bank-setup-empty (mesaj ileri tarihliyi söyler); ön izleme 200",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:202:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B10 iki şirket: 002'nin ileri tarihli satırı 001'de yok; 002'de sihirbaz yalnız geçmiş 50'yi aktarır",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:216:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B8 gün D+5: verilen çek ödemesi (bugün) atanabilir → Bu Hesaba Ata 200; havale tahsilat 200 (A13); D+10 satırı hâlâ ileri",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:232:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B9 gün D+11: kilitli döneme denk gelen satır atanamaz (409 period-locked), kilit kalkınca 200; mutabakat temiz",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:262:3",
+      "hata": "{\"table\":\"cheque_events\",\"id\":\"cevent-da7484d6-c0c3-4a35-b477-bbbb2545cf76\",\"date\":\"2026-10-20\",\"kind\":\"in\",\"amountMinor\":100000,\"method\":\"bank\",\"way\":\"bank\",\"partyId\":\"account-0141bfef-64f3-4847-8b75-0d3a9ffd28d1\",\"partyName\":\"Çekli Müşteri\",\"description\":\"\",\"eventId\":\"\",\"eventNo\":\"\",\"locked\":true,\"closed\":false,\"assignable\":false,\"reason\":\"Kilitli dönemde; atanamaz.\"} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B11 Geri Al: sihirbazın bağladığı geçmiş satır geri döner; sonradan atanan satırlara dokunulmaz",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:277:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu) › B12 aynı v2.0.23 verisi test kipinde (moneyStrict + gateVerify): ileri tarihli 409 bank-legacy-future, sihirbaz 200, tarih gelince 200",
+      "konum": "test/banka-210-ileri-tarihli-eski.test.mjs:287:3",
+      "hata": "test kipi ileri tarihli: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.) · + actual - expected · + 'ledger-integrity' (beklenen bank-legacy-future, gelen ledger-integrity)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/ileri-tarihli-eski-havale/2026-10-10/kirmizi-8b3c65c-ileri-tarihli-eski.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85",
+  "ham_cikti_sha256": "55a677024b1751b903403bc23ed3f0f6b2881ea79dcb6404ac50797c12316fb2",
+  "ham_cikti_bayt": 20766
+}

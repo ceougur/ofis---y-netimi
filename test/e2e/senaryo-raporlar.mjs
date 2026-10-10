@@ -285,7 +285,7 @@ try {
     ok(![...noTable.rows, ...noTable.overdue].some(isTable), "“Tablodaki ödeme günlerini ekle” kapalı: tablo kalemi yok");
     ok(round(flow.closing - noTable.closing) === round(flow.rows.filter(isTable).reduce((sum, row) => sum + row.amount, 0)), `tahmini kasa farkı = aralıktaki tablo kalemleri (${money(round(flow.closing - noTable.closing))}; çift sayım yok)`);
     await page.selectOption(`${modal} [data-field="group"]`, "month");
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-table thead")].some(node => /Dönem sonu kasa/i.test(node.textContent)), null, { timeout: 10000 });
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-table thead")].some(node => /Dönem Sonu Nakit ve Banka/.test(node.textContent)), null, { timeout: 10000 });
     const monthly = (await api(`/api/workspace/overview/nakit-akisi?from=${TODAY}&to=${local(30)}&group=month`)).data;
     ok(monthly.periods.at(-1).closing === monthly.closing, `aylık toplamlarda son dönem kasası = tahmini kasa ${money(monthly.closing)}`);
     await shot("nakit-akis-aylik");

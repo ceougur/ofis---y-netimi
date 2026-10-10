@@ -93,6 +93,10 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   const bankService = () => (typeof bankAccounts === "function" ? bankAccounts() : bankAccounts);
   const moneyLines = () => (typeof moneyApi === "function" ? moneyApi() : moneyApi);
   const minorTl = minor => roundMoney((Number(minor) || 0) / 100);
+  const futureOf = summary => {
+    const future = summary?.unassigned?.future;
+    return future?.count ? { count: future.count, total: minorTl(future.totalMinor), firstDate: future.firstDate } : null;
+  };
   function bankBlock(day, legacy) {
     const service = bankService();
     const summary = service?.summary ? service.summary() : null;
@@ -110,7 +114,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       transfer: { in: today.transferIn, out: today.transferOut },
       month,
       debt: { card: minorTl(summary.debt.cardMinor), loan: minorTl(summary.debt.loanMinor), total: minorTl(summary.debt.totalMinor), shown: kinds.some(kind => kind === "card" || kind === "loan") },
-      unassigned: { bank: minorTl(summary.unassigned.bankMinor), card: minorTl(summary.unassigned.cardMinor), total: minorTl(summary.unassigned.totalMinor) },
+      // Hesabı Atanmamış: bugüne kadarki satırlar (bankAccounts.summary; tek formül). Eski sürümden kalan ileri tarihli satırlar ayrı bilgi.
+      unassigned: { bank: minorTl(summary.unassigned.bankMinor), card: minorTl(summary.unassigned.cardMinor), total: minorTl(summary.unassigned.totalMinor), future: futureOf(summary) },
       posNet: minorTl(summary.posPending?.netMinor),
       posBlocked: minorTl(summary.posPending?.blockedMinor),
       pos: false,
@@ -365,9 +370,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const totals = cash()?.summary ? cash().summary(day) : null;
     const nakit = roundMoney(totals?.cashOnly?.balanceToday ?? totals?.balanceToday ?? 0);
     const summary = bankService()?.summary ? bankService().summary() : null;
-    if (!summary) return { total: roundMoney(totals?.balanceToday ?? 0), cash: nakit, realBank: null, unassigned: 0, defined: false, labels: null };
+    if (!summary) return { total: roundMoney(totals?.balanceToday ?? 0), cash: nakit, realBank: null, unassigned: 0, unassignedFuture: null, defined: false, labels: null };
     const realBank = minorTl(summary.realBank.minor);
-    return { total: roundMoney(nakit + realBank), cash: nakit, realBank, unassigned: minorTl(summary.unassigned.totalMinor), defined: summary.realBank.defined, labels: summary.labels };
+    return { total: roundMoney(nakit + realBank), cash: nakit, realBank, unassigned: minorTl(summary.unassigned.totalMinor), unassignedFuture: futureOf(summary), defined: summary.realBank.defined, labels: summary.labels };
   }
   router.get("/api/workspace/overview/nakit-akisi", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
@@ -395,11 +400,12 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   const flowSummary = data => [
     ...startSummary(data),
     ...(data.carried.in || data.carried.out ? [["Başlangıca Kadar Beklenen", `+${tl(data.carried.in)} / −${tl(data.carried.out)}`]] : []),
-    ["Başlangıç Kasası", tl(data.opening)],
+    // 2.1.0 temel sürüm (K10): projeksiyonun bakiyesi Nakit Kasa + Gerçek Banka'dır; adlar "kasa" demez (ekran, PDF ve Excel aynı).
+    ["Başlangıç (Nakit ve Banka)", tl(data.opening)],
     ["Beklenen Giriş", tl(data.totals.in)],
     ["Beklenen Çıkış", tl(data.totals.out)],
-    ["Dönem Sonu Tahmini Kasa", tl(data.closing)],
-    ["En Düşük Tahmini Kasa", `${tl(data.lowest.balance)} (${dayText(data.lowest.date)})`],
+    ["Dönem Sonu Tahmini Nakit ve Banka", tl(data.closing)],
+    ["En Düşük Tahmini Nakit ve Banka", `${tl(data.lowest.balance)} (${dayText(data.lowest.date)})`],
     ["Gecikmiş Alacak / Borç", `${tl(data.overdueTotals.in)} / ${tl(data.overdueTotals.out)}`],
   ];
   router.get("/api/workspace/overview/nakit-akisi.pdf", async ({ req, res, url }) => {
@@ -410,8 +416,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       title: "Nakit Akış Projeksiyonu",
       subtitle: [`${dayText(data.from)} – ${dayText(data.to)}`, `Taksit, çek/senet${data.withTable ? ", tablodaki ödeme günleri" : ""} ve ileri tarihli Kasa hareketleri`, "Başlangıç: Nakit Kasa + Gerçek Banka (hesaba atanmamış eski hareketler girmez)", data.group ? `${GROUP_TEXT[data.group]} toplamlar` : "Aynı gün önce çıkışlar yazılır"].join(" · "),
       ...(data.group
-        ? { headers: [GROUP_HEAD[data.group], "Hareket", "Giriş", "Çıkış", "Net", "Dönem sonu kasa"], types: ["", "number", "money", "money", "money", "money"], rows: periodRows(data) }
-        : { headers: ["Vade", "Kaynak", "Açıklama", "Kimden / Kime", "Giriş", "Çıkış", "Beklenen Kasa"], types: ["", "", "", "", "money", "money", "money"], rows: flowRows(data) }),
+        ? { headers: [GROUP_HEAD[data.group], "Hareket", "Giriş", "Çıkış", "Net", "Dönem Sonu Nakit ve Banka"], types: ["", "number", "money", "money", "money", "money"], rows: periodRows(data) }
+        : { headers: ["Vade", "Kaynak", "Açıklama", "Kimden / Kime", "Giriş", "Çıkış", "Beklenen Nakit ve Banka"], types: ["", "", "", "", "money", "money", "money"], rows: flowRows(data) }),
       summary: flowSummary(data),
       officeName: office(),
       userName: userName(user),
@@ -424,14 +430,14 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const user = auth.requirePermission(req, "overview.view");
     const data = await cashflow(user, url.searchParams);
     const money = value => MONEY_FORMAT.format(value || 0);
-    const columns = ["Vade", "Kaynak", "Açıklama", "Kimden / Kime", "Giriş", "Çıkış", "Beklenen Kasa"];
+    const columns = ["Vade", "Kaynak", "Açıklama", "Kimden / Kime", "Giriş", "Çıkış", "Beklenen Nakit ve Banka"];
     const rows = [
-      { Vade: dayText(data.from), Kaynak: "Başlangıç", Açıklama: "Bugünkü nakit ve banka" + (data.carried.in || data.carried.out ? " + başlangıca kadar beklenenler" : "") + (data.includeOverdue ? " + gecikmişler" : ""), "Kimden / Kime": "", Giriş: "", Çıkış: "", "Beklenen Kasa": money(data.opening) },
-      ...data.rows.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / Kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen Kasa": money(row.balance) })),
+      { Vade: dayText(data.from), Kaynak: "Başlangıç", Açıklama: "Bugünkü nakit ve banka" + (data.carried.in || data.carried.out ? " + başlangıca kadar beklenenler" : "") + (data.includeOverdue ? " + gecikmişler" : ""), "Kimden / Kime": "", Giriş: "", Çıkış: "", "Beklenen Nakit ve Banka": money(data.opening) },
+      ...data.rows.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / Kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen Nakit ve Banka": money(row.balance) })),
     ];
-    const overdue = data.overdue.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / Kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen Kasa": "" }));
+    const overdue = data.overdue.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / Kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen Nakit ve Banka": "" }));
     const summary = flowSummary(data).map(([label, value]) => ({ Kalem: label, Tutar: value }));
-    const periodColumns = [GROUP_HEAD[data.group || "month"], "Hareket", "Giriş", "Çıkış", "Net", "Dönem sonu kasa"];
+    const periodColumns = [GROUP_HEAD[data.group || "month"], "Hareket", "Giriş", "Çıkış", "Net", "Dönem Sonu Nakit ve Banka"];
     const periods = data.group ? periodRows(data).map(row => Object.fromEntries(periodColumns.map((column, index) => [column, row[index]]))) : [];
     const buffer = buildXlsx(
       [

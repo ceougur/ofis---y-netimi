@@ -13,14 +13,18 @@
 //  8. Raporlar → Nakit Akış: "Bugünkü Nakit ve Banka" = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; Hesabı Atanmamış (POS 900) ayrı kutu,
 //     başlangıca girmez; tablonun Başlangıç satırı 12.000.
 //  9. Çek/Senet kartı: Bankaya Tahsile Ver düğmesi yok.
+// 10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi, ayrı sunucu): Hesabı Atanmamış 250 (ileri tarihli 1.000 ayrı bilgi); listede
+//     "Tarihi Gelince Atanabilir", seçim kutusu pasif, nedeni görünür; sihirbaz geçmişi aktarır, ileri tarihliyi atlar ve söyler (409 yok);
+//     saat 21.10.2026'ya alınınca Bu Hesaba Ata 200, Gerçek Banka 11.250, mutabakat temiz. (v2.0.23 etiketi gerekir: CI e2e işi etiketleri çeker.)
 // Çalıştırma: npm run test:senaryo-banka-210-temel (ekran görüntüleri artifacts/senaryo-banka-210-temel/).
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
-import { createClient, installPageClock } from "../helpers.mjs";
+import { createClient, installPageClock, moveClock } from "../helpers.mjs";
+import { checkoutTag, tagCommit } from "../guvenilirlik/surumler.mjs";
 import { fetchCutWatch } from "./tarayici-kesme.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210-temel");
@@ -95,6 +99,146 @@ const tab = async id => {
 };
 const optionsOf = selector => page.$$eval(`${selector} option`, nodes => nodes.map(node => node.textContent.trim())).catch(() => []);
 const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+
+// 10. İleri tarihli eski hesapsız havale (2.1.0 temel sürüm; plan A13 / karar 42). Veri GERÇEK v2.0.23 koduyla (git etiketi) girilir: alınan çek
+// bankaya İLERİ TARİHLE (20.10.2026) tahsil + geçmiş havale tahsilat (06.10.2026). Güncel kod aynı klasörü sahte saat 08.10.2026 ile açar (ayrı
+// sunucu, ayrı tarayıcı bağlamı; adım 1–9'un sayıları değişmez). Beklenen: Genel Bakış'ta Hesabı Atanmamış 250 (ileri tarihli 1.000 bu tutara
+// girmez, ayrı yazılır); listede ileri tarihli satır "Tarihi Gelince Atanabilir", seçim kutusu pasif, nedeni görünür; sihirbaz önizlemesi ve
+// sonucu atlanan satırı söyler (409 ledger-integrity YOK); saat 21.10.2026'ya alınınca satır seçilir, Bu Hesaba Ata 200, mutabakat temiz.
+async function legacyFutureSection() {
+  const OLD = "v2.0.23";
+  if (!tagCommit(OLD)) {
+    ok(false, `${OLD} etiketi bu depoda yok (git fetch --tags); ileri tarihli eski havale bölümü GERÇEK eski sürüm verisi olmadan koşulmaz`);
+    return;
+  }
+  const root2 = mkdtempSync(path.join(tmpdir(), "destekofis-banka-210-ileri-eski-"));
+  const dirs = { dataDir: path.join(root2, "data"), backupDir: path.join(root2, "backups") };
+  const common = { ...dirs, logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f42" } };
+  const mainPage = page;
+  let app2 = null;
+  let context2 = null;
+  try {
+    // Eski sürüm (gerçek saat; tarihler mutlak — 20.10.2026 ileri, 06.10.2026 geçmiş: eski sürüm ikisini de kabul eder).
+    const { createApp: createOld } = await import(pathToFileURL(path.join(checkoutTag(OLD).dir, "server", "app.mjs")).href);
+    const old = createOld({ ...common, startLicenseTimers: false });
+    const oldAddress = await old.listen(0, "127.0.0.1");
+    try {
+      const oldApi = createClient(`http://127.0.0.1:${oldAddress.port}`);
+      await oldApi.login("admin", PASS);
+      const party = await must(`${OLD} cari`, oldApi.post("/api/workspace/accounts", { name: "Çekli Müşteri", type: "customer" }));
+      const chq = await must(`${OLD} çek`, oldApi.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: 1000, issueDate: "2026-10-05", dueDate: "2026-10-20", serialNo: "ILR-E2E", accountId: party.id }));
+      await must(`${OLD} çek bankaya ileri tarihle tahsil`, oldApi.post(`/api/workspace/cheques/${chq.id}/actions`, { action: "collect", date: "2026-10-20", method: "bank", status: "portfolio" }));
+      await must(`${OLD} geçmiş havale`, oldApi.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: 250, date: "2026-10-06", method: "bank" }));
+    } finally {
+      await old.close();
+    }
+    app2 = createApp({ ...common, now: NOW, maxCompanies: 2 });
+    const { port: port2 } = await app2.listen(0, "127.0.0.1");
+    const base2 = `http://127.0.0.1:${port2}`;
+    const api2 = createClient(base2);
+    await api2.login("admin", PASS);
+    await must("sihirbazı kapat", api2.post("/api/workspace/bank/setup/dismiss", {}));
+    const account = await must("Ziraat", api2.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "10.000", confirmed: true } }));
+
+    context2 = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
+    await context2.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
+    page = await context2.newPage();
+    page.on("pageerror", error => errors.push(`pageerror (ileri tarihli eski) ${error.message}`));
+    page.on("console", message => {
+      if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`)) errors.push(`console (ileri tarihli eski) ${message.text()}`);
+    });
+    await installPageClock(page, app2.config.now);
+    await page.goto(`${base2}/`);
+    await page.fill("#hof-auth input[name=username]", "admin");
+    await page.fill("#hof-auth input[name=password]", PASS);
+    await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+    await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    await pause(800);
+
+    // Genel Bakış: Hesabı Atanmamış 250 (bugüne kadar); ileri tarihli 1.000 ayrı satır bilgisinde.
+    await openBank();
+    await page.waitForSelector(`${bankWin} [data-bank-unassigned]`, { timeout: 10000 });
+    const row = await textOf(`${bankWin} [data-bank-unassigned]`);
+    ok(row.includes(money(250)) && !row.includes(money(1250)), `Genel Bakış: Hesabı Atanmamış 250 (ileri tarihli 1.000 toplama girmez): ${row.slice(0, 220)}`);
+    const later = await textOf(`${bankWin} [data-bank-unassigned-future]`);
+    ok(/Tarihi gelmemiş 1 eski hareket/.test(later) && later.includes(money(1000)) && later.includes("20.10.2026"), `ileri tarihli satır ayrı bilgi: ${later}`);
+    await shot("ileri-eski-genel-bakis");
+
+    // Hesabı Atanmamış Eski Hareketler: ileri tarihli satır işaretli, seçilemez, nedeni görünür; geçmiş satır seçilebilir.
+    await page.click(`${bankWin} [data-bank-unassigned] [data-act="legacy"]`);
+    await page.waitForSelector(`${bankWin} .hof-bank-legacy tbody tr`, { timeout: 10000 });
+    await page.waitForSelector(`${bankWin} [data-legacy-future]`, { timeout: 10000 });
+    const futureRow = await page.$eval(`${bankWin} [data-legacy-future]`, node => node.closest("tr").innerText.replace(/\s+/g, " ").trim());
+    ok(/Tarihi Gelince Atanabilir/.test(futureRow) && /Tarihi gelmedi \(20\.10\.2026\); o gün hesaba atanabilir/.test(futureRow), `ileri tarihli satır: ${futureRow}`);
+    const reasonVisible = await page.$eval(`${bankWin} [data-legacy-future]`, node => {
+      const why = node.parentElement.querySelector("small");
+      return Boolean(why && why.offsetParent !== null && why.textContent.includes("20.10.2026"));
+    });
+    ok(reasonVisible, "neden görünür yazıyla (yalnız title değil)");
+    const later2 = await page.$eval(`${bankWin} [data-legacy-future]`, node => {
+      const box = node.closest("tr").querySelector('input[type="checkbox"]');
+      return box ? { disabled: box.disabled, pick: box.hasAttribute("data-pick") } : null;
+    });
+    ok(later2 && later2.disabled && !later2.pick, `ileri tarihli satırın seçim kutusu pasif (${JSON.stringify(later2)})`);
+    const pickable = await page.$$eval(`${bankWin} .hof-bank-legacy tbody input[data-pick]`, list => list.length);
+    ok(pickable === 1, `seçilebilen satır yalnız geçmiş havale (${pickable})`);
+    const stats = await textOf(`${bankWin} .hof-bank-stats`);
+    ok(/Tarihi Gelince Atanabilir\s*1/.test(stats) && stats.includes(money(250)), `istatistikler: ${stats}`);
+    await shot("ileri-eski-liste");
+
+    // Kurulum Sihirbazı: önizleme ve sonuç atlanan ileri tarihli satırı söyler; 409 ledger-integrity yok.
+    const wiz = ".hof-bank-wiz-modal";
+    await page.click(`${bankWin} [data-act="wizard"]`);
+    await page.waitForSelector(`${wiz} [data-wiz="skip"]`, { timeout: 10000 });
+    await page.click(`${wiz} [data-wiz="skip"]`);
+    await page.waitForSelector(`${wiz} [data-wiz-preview]`, { timeout: 10000 });
+    const preview = await textOf(`${wiz} [data-wiz-preview]`);
+    // Başlıklar (dt) CSS ile büyük harf gösterilir; adın kendisi textContent'ten okunur (yazım düzeni).
+    const futureLine = await page.$eval(`${wiz} [data-wiz-future]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+    ok(/1 hareket · net \+₺250,00/.test(preview) && /^Tarihi Gelmemiş — Sonra Atanır ?1 hareket · net \+₺1\.000,00 · ilk 20\.10\.2026$/.test(futureLine), `sihirbaz önizlemesi: ${preview} | ${futureLine}`);
+    await shot("ileri-eski-sihirbaz-onizleme");
+    const setup = page.waitForResponse(response => response.url().includes("/api/workspace/bank/setup") && !response.url().includes("dryRun") && response.request().method() === "POST", { timeout: 30000 });
+    await page.click(`${wiz} [data-wiz="transfer"]`);
+    const setupResponse = await setup;
+    ok(setupResponse.status() === 200, `Aktar: POST /bank/setup ${setupResponse.status()} (önceden 409 ledger-integrity)`);
+    await page.waitForSelector(`${wiz} [data-wiz-done]`, { timeout: 10000 });
+    const done = await textOf(`${wiz} [data-wiz-done]`);
+    ok(done.includes("1 hareket hesaba bağlandı") && /Tarihi gelmemiş 1 eski hareket atlandı \(ilk 20\.10\.2026\)/.test(done), `sihirbaz sonucu: ${done.slice(0, 260)}`);
+    await shot("ileri-eski-sihirbaz-sonuc");
+    await page.click(`${wiz} [data-wiz="finish"]`);
+    await pause(800);
+    let summary = await must("özet", api2.get("/api/workspace/bank/summary"));
+    ok(summary.realBank.minor === 1_025_000 && summary.unassigned.totalMinor === 0 && summary.unassigned.future?.count === 1, `sihirbazdan sonra: Gerçek Banka ${summary.realBank.minor / 100}, Hesabı Atanmamış ${summary.unassigned.totalMinor / 100}, ileri tarihli ${summary.unassigned.future?.count}`);
+
+    // Tarih gelince (sahte saat 21.10.2026): satır seçilir, Bu Hesaba Ata 200, mutabakat temiz.
+    await moveClock(app2.config.now, page, "2026-10-21T12:00:00+03:00");
+    await closeAll();
+    await openBank();
+    await tab("accounts");
+    await page.click(`${bankWin} [data-act="legacy"]`);
+    await page.waitForSelector(`${bankWin} .hof-bank-legacy tbody input[data-pick]`, { timeout: 10000 });
+    ok(!(await page.$(`${bankWin} [data-legacy-future]`)), "tarih gelince 'Tarihi Gelince Atanabilir' işareti kalktı");
+    await page.check(`${bankWin} .hof-bank-legacy tbody input[data-pick]`);
+    await pause(300);
+    const assigned = page.waitForResponse(response => response.url().includes("/api/workspace/bank/legacy/assign") && response.request().method() === "POST", { timeout: 30000 });
+    await page.click(`${bankWin} [data-act="assign"]`);
+    await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    await page.click(`${top} [data-answer="yes"]`);
+    ok((await assigned).status() === 200, "tarih gelince Bu Hesaba Ata: POST /legacy/assign 200");
+    await pause(600);
+    await shot("ileri-eski-tarih-gelince-atandi");
+    summary = await must("özet", api2.get("/api/workspace/bank/summary"));
+    ok(summary.realBank.minor === 1_125_000 && summary.unassigned.totalMinor === 0 && !summary.unassigned.future?.count, `atandıktan sonra: Gerçek Banka ${summary.realBank.minor / 100} (10.000 + 250 + 1.000), Hesabı Atanmamış ${summary.unassigned.totalMinor / 100}`);
+    const integrity = await must("Mutabakat Testi", api2.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, `mutabakat temiz${integrity.ok ? "" : `: ${JSON.stringify(integrity.failures).slice(0, 300)}`}`);
+    ok(account.id && summary.accounts.count === 1, "tek hesap");
+  } finally {
+    await context2?.close().catch(() => null);
+    page = mainPage;
+    await app2?.close().catch(() => null);
+    fs.rmSync(root2, { recursive: true, force: true });
+  }
+}
 
 try {
   await api.login("admin", PASS);
@@ -280,6 +424,11 @@ try {
     const loose = tiles.find(item => item.startsWith("Hesabı Atanmamış Eski Hareketler")) || "";
     ok(loose.includes(money(900)) && /Başlangıca girmez/.test(loose), `Hesabı Atanmamış kutusu: ${loose}`);
     ok(!tiles.some(item => item.startsWith("Bugünkü Kasa")), "eski 'Bugünkü Kasa' etiketi yok");
+    // Adlar (2.1.0 temel sürüm): projeksiyonun bakiyesi Nakit Kasa + Gerçek Banka; kutular, tablo başlığı ve grafik "Nakit ve Banka" der.
+    const names = await page.$$eval(`${modal} .hof-rep-stat > span, ${modal} .hof-rep-stat .hof-rep-stat-label, ${modal} .hof-rep-table thead th, ${modal} [data-chart] figcaption`, nodes => nodes.map(node => node.textContent.replace(/\s+/g, " ").trim()));
+    const joined = names.join(" | ");
+    ok(/Tahmini Nakit ve Banka · /.test(joined) && /En Düşük Tahmini Nakit ve Banka/.test(joined) && names.includes("Beklenen Nakit ve Banka") && /Tahmini Nakit ve Banka · 08\.10\.2026/.test(joined), `Nakit Akış adları: ${joined}`);
+    ok(!/Tahmini Kasa|Beklenen Kasa|Tahmini kasa|Dönem Sonu Kasa/.test(`${joined} ${await textOf(modal)}`), "eski 'kasa' adları yok (Tahmini Kasa, Beklenen Kasa, grafik)");
     const opening = await textOf(`${modal} .hof-rep-table tr.is-opening`);
     ok(opening.includes(money(12000)) && /Bugünkü nakit ve banka/.test(opening), `Başlangıç satırı: ${opening}`);
     const flow = await must("nakit akış", api.get("/api/workspace/overview/nakit-akisi?preset=next30"));
@@ -307,6 +456,10 @@ try {
     ok(/Tahsil/.test(text) && !/Tahsile Ver|Bankaya Tahsil/.test(text), `çek kartında Bankaya Tahsile Ver yok (${text.slice(0, 160)})`);
     await shot("cek-karti");
     await closeAll();
+  });
+
+  await step("10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi): liste 'Tarihi Gelince Atanabilir', sihirbaz atlar ve söyler, tarih gelince atanır", async () => {
+    await legacyFutureSection();
   });
 } catch (error) {
   failed += 1;

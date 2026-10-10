@@ -1,0 +1,53 @@
+{
+  "ad": "kirmizi-8b3c65c-arsiv-nakit-akis-k10-adlar",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-8b3c65c/test/banka-210-nakit-akis-k10.test.mjs",
+  "commit": "8b3c65cbee6893099ee84106d2b7fa13bec9241a",
+  "dal": "worktree-agent-a22d2972509bc7e85",
+  "kirli": 12,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:35:18.087Z",
+  "sure_sn": 2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 1,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Nakit Akış başlangıcı (K10): ileri tarihli eski hesapsız havale başlangıca girmez, akışta bir kez › başlangıç = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; kira −1.000 akışta bir kez (18.10), dönem sonu 11.000",
+      "konum": "test/banka-210-nakit-akis-k10.test.mjs:49:3",
+      "hata": "kırılım: Hesabı Atanmamış ayrı (başlangıca girmez; ileri tarihli satır bugünkü tutara girmez) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Nakit Akış adları (K10): bakiye Nakit ve Banka — ekran, PDF ve Excel aynı › PDF: Başlangıç (Nakit ve Banka) · Dönem Sonu Tahmini Nakit ve Banka · En Düşük Tahmini Nakit ve Banka · Beklenen Nakit ve Banka; aylıkta Dönem Sonu Nakit ve Banka",
+      "konum": "test/banka-210-nakit-akis-k10.test.mjs:77:3",
+      "hata": "PDF (preset=next30&table=0): \"Başlangıç (Nakit ve Banka)\" yok (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Nakit Akış adları (K10): bakiye Nakit ve Banka — ekran, PDF ve Excel aynı › Excel: Özet ve sütun adları aynı; eski 'kasa' adı yok",
+      "konum": "test/banka-210-nakit-akis-k10.test.mjs:87:3",
+      "hata": "Excel Özet (preset=next30&table=0): \"Başlangıç (Nakit ve Banka)\" yok (Kalem | Bugünkü Nakit ve Banka | Nakit Kasa | Gerçek Banka | Başlangıç Kasası | Beklenen Giriş | Beklenen Çıkış | Dönem Sonu Tahmini Kasa | En Düşük Tahmini Kasa | Gecikmiş Alacak / Borç) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Nakit Akış adları (K10): bakiye Nakit ve Banka — ekran, PDF ve Excel aynı › Ekran (istemci kaynağı): Nakit Akış kutuları, tablo başlıkları ve grafik 'Nakit ve Banka' der",
+      "konum": "test/banka-210-nakit-akis-k10.test.mjs:99:3",
+      "hata": "hof-overview.js: \"Tahmini Nakit ve Banka · \" yok (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/ileri-tarihli-eski-havale/2026-10-10/kirmizi-8b3c65c-arsiv-nakit-akis-k10-adlar.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85",
+  "ham_cikti_sha256": "16d1f7fa4cd7e4a081b94c74141edf52f0c461c0a0d36cabaed657f4dca5838d",
+  "ham_cikti_bayt": 6881
+}
