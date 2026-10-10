@@ -1,0 +1,33 @@
+✓ PDF sayfa sayısı: 34
+✓ PDF'teki resim sayısı 39 ≥ kılavuzdaki farklı ekran 39
+✓ PDF metninde: “8. Banka”
+✓ PDF metninde: “Kurulum Sihirbazı”
+✓ PDF metninde: “Hesabı Atanmamış Eski Hareketler”
+✓ PDF metninde: “Tarihi Gelince Atanabilir”
+✓ PDF metninde: “Seçilenleri Bu Hesaba Ata”
+✓ PDF metninde: “Kurumsal Kredi Kartı”
+✓ PDF metninde: “Kurumsal Kart”
+✓ PDF metninde: “Kart ve Kredi Borcu”
+✓ PDF metninde: “+ Kart Borcu Ödemesi”
+✓ PDF metninde: “Bankalar Arası Transfer”
+✓ PDF metninde: “Ters Kaydet”
+✓ PDF metninde: “Gerçek Banka”
+✓ PDF metninde: “Bugünkü Nakit ve Banka”
+✓ PDF metninde: “Banka Bakiye Raporu”
+✓ PDF metninde: “Alt Hesap Mizanı”
+✓ PDF metninde: “Banka ve POS”
+✓ PDF metninde: “Yine de Kaydet”
+✓ PDF metninde YOK: “Drive”
+✓ PDF metninde YOK: “OneDrive”
+✓ PDF metninde YOK: “Kasa ve Banka”
+✓ PDF metninde YOK: “bugünkü kasadan”
+✓ PDF metninde YOK: “Banka / POS”
+✓ client/kilavuz kopyası aynı dosya (sha256 ee64ce5fd539d90eed22114bfbb5027178e26efe67fe4937d52c037b425f7613)
+(node:9678) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ açılış ekranında “Resimli kullanım kılavuzunu açın” bağlantısı /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+✓ sunucunun verdiği kılavuz: 200 application/pdf sha256 ee64ce5fd539d90eed22114bfbb5027178e26efe67fe4937d52c037b425f7613
+✓ sol menü “Kullanım Kılavuzu” → yeni sekme /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+# tests 28
+# pass 28
+# fail 0
