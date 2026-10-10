@@ -19,11 +19,18 @@
 // NASIL BOZARIM: göç bir satıra dokunursa (ör. eski satıra varsayılan hesap atamak, 649'un tutarını değiştirmek), yeni bir denetim
 // eski veride sapma bulursa ya da kilitli dönemin bir satırı kayarsa bu test kırılır. (SIGKILL ve satır satır karşılaştırma:
 // banka-210-goc.test.mjs.)
+// K1 (iade kapanışı, 2.1.0; bilerek değişen görünüm): K1 faturaların ödeme durumunu (dolayısıyla ANLIK DURUM'un fatura kutusunu ve Açık
+// Faturalar'ı) iadesi olan carilerde bilerek değiştirdi. 2.0.26 ile birebir karşılaştırma K1 öncesi kapamayla yapılır (createApp
+// legacyClosing: test/guvenilirlik/kapama-k1-oncesi.mjs, dondurulmuş kopya) — göçün etkisi eskisi kadar sıkı ölçülür. Sonra aynı veri güncel
+// kuralla açılır: para olguları (kapı imzası, mizan, Kasa, cari bakiyeleri) yine 2.0.26 ile aynı; ödeme durumu değişen her fatura iadesi olan
+// bir carinindir, taksitliyse açığı kartın kalanına eşittir (kapama-k1-fark.mjs); dosya olguları iki açılıştan sonra denetlenir.
 import assert from "node:assert/strict";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { fileFacts, ledgerFacts } from "./guvenilirlik/defter-olgulari.mjs";
+import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
+import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
 import { verifyUpgrade } from "./guvenilirlik/dogrula.mjs";
 import { fixtureExists, readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
@@ -41,18 +48,34 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
       const fixture = unpackFixture(name);
       try {
         // Güncel kod, ölçünün alındığı günde (sahte saat): "bugün"e bağlı denetimler (ileri tarih) ve raporlar aynı günü görür.
-        const server = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: `${before.today}T12:00:00+03:00` });
+        const server = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: `${before.today}T12:00:00+03:00`, legacyClosing: settleK1Oncesi });
         const after = {};
+        const legacyStates = {};
         try {
           assert.equal(server.app.store.get("PRAGMA user_version").user_version, 20, "güncel kod v20 göçünü uygulamalı");
           const api = await server.login();
           for (const [id, expected] of Object.entries(before.companies)) {
             assert.equal((await api.post("/api/companies/select", { id })).status, 200, `${expected.code} seçilemedi`);
             after[id] = await ledgerFacts(api);
+            legacyStates[id] = await invoiceStates(api);
           }
           await api.post("/api/companies/select", { id: "sirket-001" });
         } finally {
           await server.close();
+        }
+        // K1: aynı veri güncel kapama kuralıyla (ikinci açılış; göç uygulanmış).
+        const current = await bootVersion(CURRENT, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10, now: `${before.today}T12:00:00+03:00` });
+        const k1 = {};
+        try {
+          const api = await current.login();
+          for (const [id, expected] of Object.entries(before.companies)) {
+            assert.equal((await api.post("/api/companies/select", { id })).status, 200, `${expected.code} seçilemedi`);
+            const facts = await ledgerFacts(api);
+            k1[id] = { facts, ...(await k1Check(legacyStates[id], api)) };
+          }
+          await api.post("/api/companies/select", { id: "sirket-001" });
+        } finally {
+          await current.close();
         }
         const { lockDigestOf } = await import(pathToFileURL(path.join(ROOT, "server/lib/integrity.mjs")).href);
         assert.equal(typeof lockDigestOf, "function", "integrity.lockDigestOf yok");
@@ -78,6 +101,11 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
           assert.equal(got.invoiceCount, expected.invoiceCount, `${label}: fatura sayısı`);
           assert.equal(got.invoices, expected.invoices, `${label}: faturaların ödeme durumu farklı`);
           assert.deepEqual(got.reports, expected.reports, `${label}: raporlar farklı`);
+          // K1 (güncel kural): para olguları 2.0.26 ile aynı; ödeme durumundaki fark yalnız iadesi olan carilerde ve K1'in kuralıyla.
+          const now = k1[id];
+          for (const key of ["integrity", "trial", "trialTotals", "reconciliation", "cash", "overviewCash", "accounts", "invoiceCount"]) assert.deepEqual(now.facts[key], expected[key], `${label}: K1 güncel kuralında ${key} farklı`);
+          assert.deepEqual(now.problems, [], `${label}: K1 denetimi (${now.changed.length} belgenin durumu değişti)`);
+          console.log(`K1 ${label}: durumu değişen belge ${now.changed.length}${now.changed.length ? ` — ${now.changed.slice(0, 6).map(item => `${item.number} ${JSON.stringify(item.before)}→${JSON.stringify(item.after)}`).join("; ")}` : ""}`);
           const dbFile = companyDbFile(fixture.dataDir, registry.find(entry => entry.id === id) || { id, dir: "" });
           const file = fileFacts(dbFile, lockDigestOf);
           assert.equal(file.version, 20, `${label}: veri dosyası v20'de değil`);

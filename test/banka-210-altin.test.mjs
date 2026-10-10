@@ -18,6 +18,10 @@
 // NASIL BOZARIM: tek kaynak bir kaynağı (silinmiş carinin satırı, faturası olmayan peşin, stokta yön), sırayı (aynı damgalı satırlar),
 // bir alanı (açıklama, işlemi yapan, düzenlenebilirlik), bir süzgeci (yol, tarih) ya da bir toplamı (bugün/bu ay, banka kutusu) farklı
 // okursa bu test kırılır.
+// K1 (iade kapanışı, 2.1.0; bilerek değişen görünüm): K1 iadesi olan carilerde faturaların ödeme durumunu (ANLIK DURUM'un fatura kutusu,
+// Nakit Akış ve Vade Takip'in fatura kalemleri) bilerek değiştirdi. Birebir karşılaştırma K1 öncesi kapamayla yapılır (createApp legacyClosing:
+// test/guvenilirlik/kapama-k1-oncesi.mjs, dondurulmuş kopya). Üçüncü kopya güncel kuralla açılır: fatura kapamasına bağlı üç görünüm dışındaki
+// her yanıt yine 2.0.26 ile aynı; ödeme durumu değişen her fatura iadesi olan bir carinin, taksitliyse açığı kartın kalanı (kapama-k1-fark.mjs).
 import assert from "node:assert/strict";
 import { cpSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -28,6 +32,8 @@ import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { runReconciliation } from "./mutabakat/motor.mjs";
 import { legacyBankBox, legacyBankPos } from "./guvenilirlik/defter-olgulari.mjs";
+import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
+import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
 
 const OLD = "v2.0.26";
 const skip = tagsAvailable([OLD]) ? false : `${OLD} etiketi bu depoda yok (git fetch --tags)`;
@@ -150,7 +156,10 @@ async function login(server, who) {
 }
 
 /** İki sunucuya aynı istekleri gönderip yanıtları karşılaştırır; farkları döndürür. */
-async function compare(oldServer, newServer, { companies, label }) {
+// K1'in bilerek değiştirdiği görünümler (fatura kapamasına bağlı): ANLIK DURUM (fatura kutusu), Nakit Akış ve Vade Takip (fatura kalemleri).
+const K1_VIEWS = ["/api/workspace/overview", "/api/workspace/overview/nakit-akisi", "/api/workspace/overview/vade-takip"];
+const k1View = url => K1_VIEWS.includes(url.split("?")[0]);
+async function compare(oldServer, newServer, { companies, label, skip = () => false }) {
   const problems = [];
   let compared = 0;
   for (const company of companies) {
@@ -158,10 +167,9 @@ async function compare(oldServer, newServer, { companies, label }) {
       if (who === "staff" && company.id !== "sirket-001") continue; // personelin şirket yetkisi yalnız 001
       const a = await login(oldServer, who);
       const b = await login(newServer, who);
-      if (company.id !== "sirket-001") {
-        for (const api of [a, b]) assert.equal((await api.post("/api/companies/select", { id: company.id })).status, 200, `${company.code} seçilemedi`);
-      }
-      for (const request of requests().filter(item => (item.who || "admin") === who)) {
+      // Şirket seçimi kullanıcı başına sunucuda saklanır: 001 de açıkça seçilir (K1 karşılaştırması aynı sunucuya ikinci kez girer).
+      for (const api of [a, b]) assert.equal((await api.post("/api/companies/select", { id: company.id })).status, 200, `${company.code} seçilemedi`);
+      for (const request of requests().filter(item => (item.who || "admin") === who && !skip(item.url))) {
         const where = `${label} · ${company.code} · ${who} · ${request.kind} ${request.url}`;
         if (request.kind !== "json" && request.url.includes("/banka-pos-hareketleri/")) {
           const self = await bankPosSelfCheck(b, request);
@@ -197,12 +205,13 @@ async function prepareStaff(server) {
 async function sideBySide(sourceData, sourceBackups, label, companies) {
   const root = mkdtempSync(path.join(tmpdir(), "altin-210-"));
   const dirs = side => ({ dataDir: path.join(root, side, "data"), backupDir: path.join(root, side, "backups") });
-  for (const side of ["eski", "yeni"]) {
+  for (const side of ["eski", "yeni", "guncel"]) {
     cpSync(sourceData, dirs(side).dataDir, { recursive: true });
     cpSync(sourceBackups, dirs(side).backupDir, { recursive: true });
   }
   const oldServer = await bootVersion(OLD, { ...dirs("eski"), maxCompanies: 10 });
-  const newServer = await bootVersion(CURRENT, { ...dirs("yeni"), maxCompanies: 10 });
+  const newServer = await bootVersion(CURRENT, { ...dirs("yeni"), maxCompanies: 10, legacyClosing: settleK1Oncesi });
+  const currentServer = await bootVersion(CURRENT, { ...dirs("guncel"), maxCompanies: 10 });
   try {
     assert.equal(newServer.app.store.get("PRAGMA user_version").user_version, 20, "bu dal v20'de");
     assert.equal(oldServer.app.store.get("PRAGMA user_version").user_version, 19, "v2.0.26 v19'da");
@@ -210,12 +219,28 @@ async function sideBySide(sourceData, sourceBackups, label, companies) {
     // onarılan kart Nakit Akış, Vade Takip ve taksit görünümlerinde 2.0.26'dan farklı olur. Karşılaştırma onarımsız veriyle anlamlıdır; motorun
     // rastgele sırası değişip veri böyle bir kart içerirse bu denetim farkın nedenini söyler (10.10.2026: yeni motor işlemleri sırayı değiştirince
     // FIS2026000000002'nin kartı 2.658,37 → 0 onarıldı ve Nakit Akış "plan:in" farkı olarak görünmüştü).
-    const repaired = newServer.app.store.all("SELECT entity_id, payload_json FROM audit_events WHERE type = 'plan.repaired'");
-    assert.deepEqual(repaired, [], `${label}: açılış onarımı (Canlı Hata 2) kart değiştirdi — veri bu karşılaştırma için uygun değil (bilerek fark)`);
-    return await compare(oldServer, newServer, { companies, label });
+    for (const server of [newServer, currentServer]) {
+      const repaired = server.app.store.all("SELECT entity_id, payload_json FROM audit_events WHERE type = 'plan.repaired'");
+      assert.deepEqual(repaired, [], `${label}: açılış onarımı (Canlı Hata 2) kart değiştirdi — veri bu karşılaştırma için uygun değil (bilerek fark)`);
+    }
+    const result = await compare(oldServer, newServer, { companies, label });
+    // K1 (güncel kural): fatura kapamasına bağlı üç görünüm dışındaki her yanıt 2.0.26 ile aynı; ödeme durumu farkı yalnız iadesi olan carilerde.
+    const k1 = await compare(oldServer, currentServer, { companies, label: `${label} · K1 güncel kural`, skip: k1View });
+    result.problems.push(...k1.problems);
+    result.compared += k1.compared;
+    result.k1Changed = 0;
+    for (const company of companies) {
+      const [legacyApi, currentApi] = [await newServer.login(), await currentServer.login()];
+      for (const api of [legacyApi, currentApi]) assert.equal((await api.post("/api/companies/select", { id: company.id })).status, 200, `${company.code} seçilemedi`);
+      const check = await k1Check(await invoiceStates(legacyApi), currentApi);
+      result.k1Changed += check.changed.length;
+      result.problems.push(...check.problems.map(text => `${label} · ${company.code} · K1: ${text}`));
+    }
+    return result;
   } finally {
     await oldServer.close();
     await newServer.close();
+    await currentServer.close();
     rmSync(root, { recursive: true, force: true });
   }
 }
@@ -235,7 +260,8 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
         await prep.close();
       }
       assert.ok(companies.length >= 4, `şirketler: ${JSON.stringify(companies)}`);
-      const { problems, compared } = await sideBySide(fixture.dataDir, fixture.backupDir, "zincir", companies);
+      const { problems, compared, k1Changed } = await sideBySide(fixture.dataDir, fixture.backupDir, "zincir", companies);
+      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}`);
       assert.ok(compared >= 280, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {
@@ -283,7 +309,8 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
       } finally {
         await old.close();
       }
-      const { problems, compared } = await sideBySide(dataDir, backupDir, "motor", [{ id: "sirket-001", code: "001" }]);
+      const { problems, compared, k1Changed } = await sideBySide(dataDir, backupDir, "motor", [{ id: "sirket-001", code: "001" }]);
+      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}`);
       assert.ok(compared >= 75, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {

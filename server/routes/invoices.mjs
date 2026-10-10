@@ -89,6 +89,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
+  // Fatura kapaması (lib/invoice-settle.mjs). config.legacyClosing yalnız testlerde: K1 öncesi kural (2.0.26 ile birebir karşılaştırmalar);
+  // o kuralda iadenin geri ödenen kısmı da faturadan düşülür ve kartın hedefine geri eklenir (ownTarget, açılış onarımı, retarget).
+  const settle = config.legacyClosing || settleInvoices;
+  const legacyClosing = Boolean(config.legacyClosing);
   const requireEdoc = () => {
     if (!edocEnabled) throw new HttpError(404, "e-Belge (e-Fatura / e-Arşiv) bağlantısı bu kurulumda kapalı. Belgeler bilgi amaçlı müşteri fişi olarak kaydedilir.", { code: "edoc-disabled" });
   };
@@ -383,7 +387,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
       const offsets = (offsetsOf.get(accountId) || []).map(({ accountId: _, ...offset }) => ({ ...offset, label: offsetLabel(offset) }));
       const invoices = all.map(({ accountId: _, ...item }) => (item.planId ? { ...item, planTotal: planTotals.get(item.planId) || 0, schedule: (scheduleOf.get(item.planId) || []).map(({ planId: __, ...row }) => row) } : item));
-      const states = settleInvoices({ lines: ledgers.get(accountId) || [], invoices, links, chequeEvents, offsets, today: day });
+      const states = settle({ lines: ledgers.get(accountId) || [], invoices, links, chequeEvents, offsets, today: day });
       for (const [id, state] of states) map.set(id, state);
     }
     if (!inTx) statesCache = { key, map };
@@ -435,7 +439,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         const schedule = store.all("SELECT due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date", invoice.planId);
         plansById.set(invoice.id, { planTotal: Number(plan?.total) || 0, schedule });
       }
-      const states = settleInvoices({ lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, offsets, today: day });
+      const states = settle({ lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, offsets, today: day });
       for (const row of list) out.set(row.id, states.get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open });
     }
     return out;
@@ -1305,7 +1309,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // geri ödemeyi geri ekliyordu (fatura 360 ↔ kart 600).
   function ownTarget(originalId) {
     const state = coverState(originalId);
-    return roundMoney(Math.max(0, (state?.open ?? 0) - (state?.excess ?? 0)));
+    return roundMoney(Math.max(0, (state?.open ?? 0) - (state?.excess ?? 0) + (legacyClosing ? refundsFor(originalId) : 0)));
   }
   function ownCard(user, original, touched, note) {
     if (!original?.planId) return;
@@ -1346,7 +1350,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (!state) continue;
       // İmzalı açık (K1: geri ödenen iade faturadan düşülmez). Yeni hedef = max(0, imzalı açık); eski kuralın (2.0.24–2.0.26) hedefi = o
       // sürümlerin açığı (geri ödenen iade de düşülmüş, 0'da kırpılı) + geri ödenen.
-      const signed = roundMoney(state.open - state.excess);
+      const signed = roundMoney(state.open - state.excess + (legacyClosing ? refunds : 0));
       const target = roundMoney(Math.max(0, signed));
       const before = roundMoney(Math.max(0, signed - refunds) + refunds);
       const left = p.leftOf(row.planId);
@@ -1384,9 +1388,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     ownCard(user, pre.row, touched, note);
     const cuts = {};
     // Geri ödenen kısım borcu düşürmez (G1): K1'den beri kapama onu asıl faturaya hiç mahsup etmez, kartın payındaki azalış yalnız
-    // mahsup edilen kısımdır (önceden azalıştan geri ödeme ayrıca düşülüyordu).
+    // mahsup edilen kısımdır (önceden — K1 öncesi kural, yalnız testlerde — azalıştan geri ödeme ayrıca düşülüyordu).
+    let refund = legacyClosing && returnId ? refundOf(returnId) : 0;
     for (const planId of Object.keys(pre.coveredBy)) {
-      const delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
+      let delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
+      const offset = Math.min(refund, Math.max(0, delta));
+      delta = roundMoney(delta - offset);
+      refund = roundMoney(refund - offset);
       if (!(delta > 0.005)) continue;
       const cut = plans().shrinkPlan(user, planId, delta, note);
       if (cut > 0) {
