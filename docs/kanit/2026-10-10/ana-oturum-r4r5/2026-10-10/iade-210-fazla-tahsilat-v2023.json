@@ -1,0 +1,31 @@
+{
+  "ad": "iade-210-fazla-tahsilat-v2023",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/iade-210-fazla-tahsilat.test.mjs",
+  "commit": "58798e94c16c59eff049ddccea8288bcc032af1f",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T12:09:14.610Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/docs/kanit/2026-10-10/ana-oturum-r4r5/2026-10-10/iade-210-fazla-tahsilat-v2023.log",
+  "klasor": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r45/v2023",
+  "ham_cikti_sha256": "52e0d55e9d8ef5e27662281a6ab0ab73ee2a7be2aaf6f1e006b1a32f38be45e5",
+  "ham_cikti_bayt": 782
+}
