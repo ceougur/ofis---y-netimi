@@ -1,0 +1,78 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "mini-kahin-a-yineleme-sirasi",
+  "aciklama": "Kartın tamamını ödeyen taksit tahsilatı aynı istek kimliğiyle yinelenir (dil §5.4: yineleme etkisizdir).",
+  "dayanak": "fark.py kâhin denetimi",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "urun_ac",
+      "ad": "U1",
+      "urunAdi": "Ürün 1",
+      "birim": "Adet"
+    },
+    {
+      "id": "2",
+      "islem": "stok_giris",
+      "urun": "U1",
+      "miktar": 5
+    },
+    {
+      "id": "3",
+      "islem": "cari_ac",
+      "ad": "M1",
+      "unvan": "Müşteri 1",
+      "tur": "musteri"
+    },
+    {
+      "id": "4",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "urun": "U1",
+          "miktar": 1,
+          "birimFiyat": "100",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K1",
+          "sayi": 2
+        }
+      }
+    },
+    {
+      "id": "5",
+      "islem": "taksit_tahsilat",
+      "ad": "H1",
+      "kart": "K1",
+      "tutar": "120",
+      "yol": "nakit",
+      "istekKimligi": "t1"
+    },
+    {
+      "id": "6",
+      "islem": "taksit_tahsilat",
+      "kart": "K1",
+      "tutar": "120",
+      "yol": "nakit",
+      "istekKimligi": "t1"
+    }
+  ]
+}

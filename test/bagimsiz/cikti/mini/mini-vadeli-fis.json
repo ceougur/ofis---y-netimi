@@ -1,0 +1,63 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "mini-vadeli-fis",
+  "aciklama": "Vadeli hesapta Banka Fişleri (dil §4.20–4.23: '102 türü hesap').",
+  "dayanak": "fark.py sınıf küçültmesi",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "hesap_ac",
+      "ad": "V1",
+      "banka": "Garanti BBVA",
+      "hesapAdi": "Vadeli",
+      "tur": "vadeli",
+      "paraBirimi": "TRY",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "50000"
+    },
+    {
+      "id": "2",
+      "islem": "banka_masraf",
+      "hesap": "V1",
+      "tutar": "10",
+      "masrafTuru": "EFT",
+      "vergi": "yok"
+    },
+    {
+      "id": "3",
+      "islem": "diger_gelir",
+      "hesap": "V1",
+      "tutar": "20"
+    },
+    {
+      "id": "4",
+      "islem": "diger_gider",
+      "hesap": "V1",
+      "tutar": "30"
+    },
+    {
+      "id": "5",
+      "islem": "faiz_gideri",
+      "hesap": "V1",
+      "tutar": "40"
+    },
+    {
+      "id": "6",
+      "islem": "faiz_geliri",
+      "hesap": "V1",
+      "brut": "50",
+      "stopajOrani": "15"
+    }
+  ]
+}

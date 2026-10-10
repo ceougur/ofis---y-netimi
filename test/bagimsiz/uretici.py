@@ -164,8 +164,18 @@ def oran_bp(metin):
 # ───────────────────────────────────────────────────────────── üreteç
 
 class Uretec:
-    def __init__(self, tohum, islem, kontrol_araligi, eszamanli=None):
+    def __init__(self, tohum, islem, kontrol_araligi, eszamanli=None, notr=()):
         self.R = random.Random(tohum)
+        # Nötrleştirme (fark.py --notr): bilinen fark kökleri kapatılmış varyant; rastgele akış olabildiğince aynı kalır.
+        #   iskonto_dahil   KDV dahil kalemde iskonto yazılmaz (çekiliş yine yapılır)
+        #   kasa_acilis     Kasa açılışı yerine aynı tutarda Kasa elle girişi ("Ortaktan Nakit")
+        #   kart            kart yolu (kurumsal kartla ödeme) havale olarak yazılır; yanlış hesaplı kart reti kurulmaz
+        #   fatura_yineleme fatura istek kimliği yinelemesi kurulmaz
+        #   iade            iade yalnız "bağlı" carinin açığı iadeyi karşılayan faturasına, geri ödemesiz (dil §7 kural 5)
+        #   kasa_yineleme   Kasa elle hareketinde istek kimliği yinelemesi kurulmaz
+        #   vadeli          vadeli hesapta yalnız transfer ve faiz geliri (PLAN §3.5); masraf/diğer/faiz gideri başka hesapta
+        #   kredi           kredi anaparası kalan kredi borcunu aşmaz
+        self.notr = set(notr)
         self.tohum = tohum
         self.hedef_islem = islem
         self.kontrol_araligi = kontrol_araligi
@@ -426,7 +436,10 @@ class Uretec:
             self.yeni_cari("tedarikci")
         if R.random() < 0.85:
             T = self.tutar(2000, 60000, 0.3)
-            self.ekle({"islem": "kasa_acilis", "tutar": tl(T, R)})
+            if "kasa_acilis" in self.notr:
+                self.ekle({"islem": "kasa_hareket", "yon": "giris", "tutar": tl(T, R), "aciklama": "Ortaktan Nakit"})
+            else:
+                self.ekle({"islem": "kasa_acilis", "tutar": tl(T, R)})
             self.uygula_etkiler([("KASA", self.bugun, T)])
         # bazı tohumlarda banka hesapları birkaç gün sonra açılır (önce 102.00'a düşen havaleler)
         self.gec_hesap = R.random() < 0.25
@@ -571,8 +584,9 @@ class Uretec:
             if R.random() < 0.15:
                 q = 1   # BELİRSİZ-13: iskontolu kalemde miktar 1 (stok değişimi aşağıda özetten yeniden hesaplanır)
                 isk = R.choice(["5", "10", "12,5", "15", "20", "2,5"])
-                k["iskontoOrani"] = isk
-                p = oran_bp(isk)
+                if not (dahil and "iskonto_dahil" in self.notr):
+                    k["iskontoOrani"] = isk
+                    p = oran_bp(isk)
             k["miktar"] = q
             k["birimFiyat"] = tl(f, R)
             k["kdvOrani"] = r
@@ -642,8 +656,11 @@ class Uretec:
         yollar = ["nakit", "havale"] + (["kart"] if tur == "alis" else [])
         agir = [4, 6] + ([2] if tur == "alis" else [])
         Pt = 0
+        def yol_sec():
+            y_ = R.choices(yollar, agir)[0]
+            return "havale" if (y_ == "kart" and "kart" in self.notr) else y_
         if secim == "tam":
-            yol = R.choices(yollar, agir)[0]
+            yol = yol_sec()
             if R.random() < 0.5:
                 sat = self.odeme_satiri(yol, "tamami", R)
             else:
@@ -662,7 +679,7 @@ class Uretec:
                 P = R.randint(1, max(1, kalan * 7 // 10))
                 if P < 100:
                     P = min(100, kalan - 1)
-                yol = R.choices(yollar, agir)[0]
+                yol = yol_sec()
                 if secim == "coklu" and i == n - 1 and R.random() < 0.5 and secim != "pesin_taksit":
                     sat = self.odeme_satiri(yol, "tamami", R)
                     P = kalan
@@ -726,7 +743,7 @@ class Uretec:
         if taksit:
             self.kartlar[taksit["ad"]] = {"fatura": ad, "cari": cari, "toplam": T - Pt, "odenen": 0, "sayi": taksit["sayi"]}
         stok_yeter = tur != "satis" or all(self.urunler[u]["stok"] - d >= 0 for u, d in stok_deg.items())
-        if "istekKimligi" in adim and R.random() < 0.5 and stok_yeter:
+        if "istekKimligi" in adim and R.random() < 0.5 and stok_yeter and "fatura_yineleme" not in self.notr:
             # aynı faturanın yeniden gönderilmesi (çift tıklama) → yinelenen. Fatura için `ad` zorunlu olduğundan yinelemeye
             # hiç anılmayan yeni bir ad (Z…) verilir; taksit kartı adı da öyle. (İki kâhin bu adın çıktıya yazılışında
             # ayrışıyor: K-4 / K4; bilinen ayrışma.)
@@ -744,6 +761,10 @@ class Uretec:
                    and not f["taksitli"] and any(o["q"] - f["iade_q"][o["n"]] > 0 for o in f["kalemler"])]
         if not adaylar:
             return False
+        if "iade" in self.notr and not kasitli_fazla:
+            adaylar = [a for a in adaylar if self.cariler[self.faturalar[a]["cari"]]["stil"] == "bagli"]
+            if not adaylar:
+                return False
         fa = R.choice(adaylar)
         f = self.faturalar[fa]
         kal = [o for o in f["kalemler"] if o["q"] - f["iade_q"][o["n"]] > 0]
@@ -768,6 +789,10 @@ class Uretec:
                     return False
         ad = self.yeni_ad("Z" if kasitli_fazla else "R")
         geri_yol = R.choices(["acik", "nakit", "havale"], [4, 3, 3])[0]
+        if "iade" in self.notr and not kasitli_fazla:
+            geri_yol = "acik"
+            if self.kapasite(fa) < toplamT + 100:
+                return False
         geri = {"yol": geri_yol}
         etkiler = []
         isaret = -1 if f["tur"] == "satis" else 1
@@ -841,6 +866,8 @@ class Uretec:
             kul = self.kullanici(["Y", "MU", "PE"])
         else:
             yol = R.choices(["nakit", "havale", "kart"], [3, 6, 1.5])[0]
+            if yol == "kart" and "kart" in self.notr:
+                yol = "havale"
             kul = "Y" if yol == "nakit" else self.kullanici(["Y", "MU"])
         ham = None
         if R.random() < 0.03 and kf is None:
@@ -996,7 +1023,9 @@ class Uretec:
             self.hareket_kaydet(had, islem="kasa_hareket", kullanici="Y", etkiler=etkiler, tarih=self.bugun, tutar=T,
                                 benzer=None, nakit_tipi=True, hesaplar=set())
         if "istekKimligi" in adim and R.random() < 0.6:
-            self.yineleme_ekle(adim, farkli=R.random() < 0.3)
+            farkli = R.random() < 0.3
+            if "kasa_yineleme" not in self.notr:
+                self.yineleme_ekle(adim, farkli=farkli)
         return True
 
     def op_kasa_banka(self):
@@ -1090,6 +1119,11 @@ class Uretec:
         if not h:
             return False
         H = R.choice(h)
+        if "vadeli" in self.notr and self.hesaplar[H]["tur"] == "vadeli":
+            h2 = [a for a in h if self.hesaplar[a]["tur"] != "vadeli"]
+            if not h2:
+                return False
+            H = h2[0]
         U = self.tutar(2, 900, 0.8)
         adim = {"islem": "banka_masraf"}
         if R.random() < 0.6 and not kdv:
@@ -1152,6 +1186,11 @@ class Uretec:
             if not h:
                 return False
             H = R.choice(h)
+            if "vadeli" in self.notr and self.hesaplar[H]["tur"] == "vadeli":
+                h2 = [a for a in h if self.hesaplar[a]["tur"] != "vadeli"]
+                if not h2:
+                    return False
+                H = h2[0]
             T = self.tutar(5, 6000, 0.6)
             adim = {"islem": islem}
             if R.random() < 0.6:
@@ -1196,6 +1235,11 @@ class Uretec:
                 return False
             K, Ky = R.choice(kr), R.choice(ky)
             T = self.tutar(1000, 40000, 0.4)
+            if "kredi" in self.notr:
+                borc = -self.bakiye(K)
+                if borc < 100000:
+                    return False
+                T = min(T, borc)
             adim = {"islem": islem}
             if R.random() < 0.6:
                 adim["ad"] = self.yeni_ad("H")
@@ -1663,6 +1707,8 @@ class Uretec:
         return True
 
     def ret_kart_yanlis_hesap(self):
+        if "kart" in self.notr:
+            return False
         h = self.aktif(HAVALE_TURLERI)
         ted = self.cari_sec("tedarikci", "bagsiz")
         if not h or ted is None:
@@ -1765,10 +1811,12 @@ class Uretec:
                 self.gun_ilerlet()
         return {
             "dil": DIL,
-            "ad": "rastgele-%d-%d" % (self.tohum, self.hedef_islem),
+            "ad": "rastgele-%d-%d" % (self.tohum, self.hedef_islem) + ("-notr" if self.notr else ""),
             "aciklama": ("uretici.py ile tohum %d'den üretildi (%d işlem, kontrol aralığı %d). Gerçekçi sıra, kasıtlı "
-                         "retler, istek kimliği yinelemeleri%s." % (self.tohum, self.hedef_islem, self.kontrol_araligi,
-                                                                   ", eşzamanlı gruplar" if self.eszamanli else "")),
+                         "retler, istek kimliği yinelemeleri%s.%s" % (
+                             self.tohum, self.hedef_islem, self.kontrol_araligi,
+                             ", eşzamanlı gruplar" if self.eszamanli else "",
+                             (" Nötrleştirilmiş: " + ", ".join(sorted(self.notr)) + ".") if self.notr else "")),
             "dayanak": "SENARYO-DILI §3–§13 (rastgele senaryo)",
             "baslangic": {
                 "bugun": tarih_metni(self.baslangic),
@@ -1833,8 +1881,8 @@ class Uretec:
         raise ValueError(op)
 
 
-def uret(tohum, islem=500, kontrol_araligi=25, eszamanli=None):
-    u = Uretec(tohum, islem, kontrol_araligi, eszamanli)
+def uret(tohum, islem=500, kontrol_araligi=25, eszamanli=None, notr=()):
+    u = Uretec(tohum, islem, kontrol_araligi, eszamanli, notr)
     u.ilk_kasa_politika = u.kasa_politika
     u.ilk_benzer = u.benzer_acik
     return u.uret()
@@ -1846,10 +1894,11 @@ def main(argv):
     ap.add_argument("--islem", type=int, default=500)
     ap.add_argument("--kontrol", type=int, default=25, help="kaç işlemde bir kontrol adımı")
     ap.add_argument("--cikti", default=None)
+    ap.add_argument("--notr", default="", help="virgülle: iskonto_dahil,kasa_acilis,kart,fatura_yineleme")
     a = ap.parse_args(argv[1:])
     if not 1 <= a.islem <= 100000:
         ap.error("islem 1..100000")
-    sen = uret(a.tohum, a.islem, a.kontrol)
+    sen = uret(a.tohum, a.islem, a.kontrol, notr=[x for x in a.notr.split(",") if x])
     yol = a.cikti or os.path.join(os.path.dirname(os.path.abspath(__file__)), "cikti", "senaryolar", sen["ad"] + ".json")
     os.makedirs(os.path.dirname(yol), exist_ok=True)
     with open(yol, "w", encoding="utf-8") as fh:

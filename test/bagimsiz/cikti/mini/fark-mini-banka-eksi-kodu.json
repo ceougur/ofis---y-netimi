@@ -1,0 +1,202 @@
+{
+  "adimSayisi": 5,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 2
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 2,
+  "farklar": [
+    {
+      "a": "409 cash-negative",
+      "adim": {
+        "cari": "T1",
+        "id": "3",
+        "islem": "cari_odeme",
+        "tutar": "5000",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.3",
+      "b": "409 cash-negative",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "3",
+        "3"
+      ],
+      "program": "409 bank-negative",
+      "programIletisi": "Ziraat Bankası · Ana hesabında 1.000,00 TL var; bu işlemle bakiye 5.000,00 TL azalır ve −4.000,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "yol": [
+        "retler",
+        "3"
+      ]
+    },
+    {
+      "a": "409 cash-blocked",
+      "adim": {
+        "cari": "T1",
+        "id": "5",
+        "islem": "cari_odeme",
+        "tutar": "5001",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.5",
+      "b": "409 cash-blocked",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "5",
+        "5"
+      ],
+      "program": "409 bank-blocked",
+      "programIletisi": "Ziraat Bankası · Ana hesabında 1.000,00 TL var; bu işlemle bakiye 5.001,00 TL azalır ve −4.001,00 TL olur (eksi bakiye). Bu hesapta eksi bakiyeye izin verilmiyor (Hesap Detayı → Düzenle → Eksi Bakiye ya da Banka Ayarları → Eksi Bakiye).",
+      "yol": [
+        "retler",
+        "5"
+      ]
+    }
+  ],
+  "islemSayisi": 5,
+  "islemTurleri": {
+    "cari_ac": 1,
+    "cari_odeme": 2,
+    "hesap_ac": 1,
+    "hesap_eksi_politika": 1
+  },
+  "karsilastirilanYaprak": 13,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/mini/mini-banka-eksi-kodu.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/mini/mini-banka-eksi-kodu.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/mini/mini-banka-eksi-kodu.json --cikti test/bagimsiz/cikti/ham/mini-banka-eksi-kodu.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 34,
+    "commit": "9edd6b0bc4ca8865ab118d6d15a7fca000539592",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "mini-banka-eksi-kodu",
+  "senaryoDosyasi": "test/bagimsiz/cikti/mini/mini-banka-eksi-kodu.json",
+  "siniflar": {
+    "BANKA-EKSI-KODU": {
+      "aileler": {
+        "retler:cari_odeme": 2
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 2
+      },
+      "enErkenPencere": [
+        "3",
+        "3"
+      ],
+      "ornekler": [
+        {
+          "a": "409 cash-negative",
+          "alan": "retler.3",
+          "b": "409 cash-negative",
+          "desen": "A=B≠P",
+          "pencere": [
+            "3",
+            "3"
+          ],
+          "program": "409 bank-negative"
+        },
+        {
+          "a": "409 cash-blocked",
+          "alan": "retler.5",
+          "b": "409 cash-blocked",
+          "desen": "A=B≠P",
+          "pencere": [
+            "5",
+            "5"
+          ],
+          "program": "409 bank-blocked"
+        }
+      ],
+      "sonDurumYaprak": 2,
+      "yaprak": 2
+    }
+  },
+  "sureler": {
+    "a": 0.22,
+    "b": 0.13,
+    "program": 3.23
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 100000,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 100000,
+      "mizanBorcToplam": 100000,
+      "ozet": {
+        "gercekBanka": 100000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 100000
+      },
+      "retSayisi": 2,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "b": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 100000,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 100000,
+      "mizanBorcToplam": 100000,
+      "ozet": {
+        "gercekBanka": 100000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 100000
+      },
+      "retSayisi": 2,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "program": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 100000,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 100000,
+      "mizanBorcToplam": 100000,
+      "ozet": {
+        "gercekBanka": 100000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 100000
+      },
+      "retSayisi": 2,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}
