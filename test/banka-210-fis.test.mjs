@@ -236,6 +236,12 @@ describe("Aşama 4 — Banka Fişi: nasıl bozarım", () => {
     expectStatus(await post({ ...fee, accountId: set.card.id }), 400, "bank-account-invalid", "kart hesabına masraf");
     const time = await openAccount(ctx.api, { bankName: "İş Bankası", name: "Vadeli", kind: "time", opening: { date: "2026-10-01", amount: "1.000" } });
     expectStatus(await post({ ...fee, accountId: time.id }), 400, "bank-account-invalid", "vadeliye masraf");
+    // Hakem (VADELI-HESAP-FIS, 10.10.2026; plan §3.5 Vadeli "Hayır; yalnız transfer ve faiz" — faiz geliri, §3.7 #14): vadeli hesapta masrafın
+    // BSMV kipi, diğer gelir, diğer gider ve faiz gideri de 400 (davranış doğruydu, kalıcı test yoktu; kural TYPE_RULES'ta, vouchers.mjs).
+    expectStatus(await post({ ...fee, tax: "bsmv_incl", accountId: time.id }), 400, "bank-account-invalid", "vadeliye masraf (BSMV Dahil)");
+    expectStatus(await post({ type: "other_in", accountId: time.id, amount: "18,57", description: "Promosyon" }), 400, "bank-account-invalid", "vadeliye diğer gelir");
+    expectStatus(await post({ type: "other_out", accountId: time.id, amount: "5", gl: "659" }), 400, "bank-account-invalid", "vadeliden diğer gider");
+    expectStatus(await post({ type: "interest_out", accountId: time.id, amount: "5" }), 400, "bank-account-invalid", "vadeliden faiz gideri");
     await voucher(ctx.api, { type: "interest_in", accountId: time.id, amount: "10", stoppageRate: "0" }, "vadeliye faiz serbest");
     expectStatus(await post({ type: "card_payment", accountId: set.ziraat.id, cardAccountId: set.garanti.id, amount: "1" }), 400, "bank-account-invalid", "kart yerine vadesiz");
     expectStatus(await post({ type: "loan_draw", accountId: set.ziraat.id, loanAccountId: set.card.id, amount: "1" }), 400, "bank-account-invalid", "kredi yerine kart");
