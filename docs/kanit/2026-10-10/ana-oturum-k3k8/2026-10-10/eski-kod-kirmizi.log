@@ -1,0 +1,891 @@
+TAP version 13
+# (node:28781) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1)
+    # Subtest: B1: aynı kimlik + aynı içerik → 200 replayed, aynı id, tek satır; Kasa 788, 770 = 212
+    not ok 1 - B1: aynı kimlik + aynı içerik → 200 replayed, aynı id, tek satır; Kasa 788, 770 = 212
+      ---
+      duration_ms: 89.931497
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:44:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yineleme replayed:true dönmeli: {"ok":true,"data":{"id":"cash-07632f10-d502-4e02-a80b-caef638050ed"}}
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:49:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B2: aynı kimlik + farklı içerik (250) → 409 request-id-reused; satır yazılmaz
+    not ok 2 - B2: aynı kimlik + farklı içerik (250) → 409 request-id-reused; satır yazılmaz
+      ---
+      duration_ms: 45.814243
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        farklı içerik: 200 {"ok":true,"data":{"id":"cash-5af9367f-2ecd-4527-8988-13ca45be1d5e"}}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:61:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B3: aynı kimlikle iki istek AYNI ANDA → tek satır (biri yazar, öbürü onun sonucunu görür)
+    not ok 3 - B3: aynı kimlikle iki istek AYNI ANDA → tek satır (biri yazar, öbürü onun sonucunu görür)
+      ---
+      duration_ms: 39.984884
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        biri replayed
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:70:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B4: giriş yönünde aynı kimlik iki kez → tek giriş (Kasa ve 649 bir kez)
+    not ok 4 - B4: giriş yönünde aynı kimlik iki kez → tek giriş (Kasa ve 649 bir kez)
+      ---
+      duration_ms: 50.268473
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:76:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        giriş yinelemesi replayed:true: {"ok":true,"data":{"id":"cash-188f2d8e-f810-455f-b2b0-0f041ba224e2"}}
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:81:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B5: kimliksiz iki aynı istek iki ayrı ödemedir (eski davranış: ikisi de yazılır)
+    not ok 5 - B5: kimliksiz iki aynı istek iki ayrı ödemedir (eski davranış: ikisi de yazılır)
+      ---
+      duration_ms: 72.416324
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        396 !== 818
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 818
+      actual: 396
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:89:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Mutabakat Testi tamam
+    ok 6 - Mutabakat Testi tamam
+      ---
+      duration_ms: 28.278636
+      type: 'test'
+      ...
+    1..6
+not ok 1 - K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1)
+  ---
+  duration_ms: 1338.181337
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k3-kasa-istek-kimligi.test.mjs:29:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:28782) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar)
+    # Subtest: B1: cari nakit ödemesi 100 (Kasa 100 → 0) aynı kimlikle yeniden → 200 replayed; Kasa 0, tek satır
+    not ok 1 - B1: cari nakit ödemesi 100 (Kasa 100 → 0) aynı kimlikle yeniden → 200 replayed; Kasa 0, tek satır
+      ---
+      duration_ms: 1034.182827
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari ödeme yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":0,"after":-100}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:83:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B10: Kasa 0 iken ödeme sorulur (409 cash-negative; ön denetim kaybolmadı); onayla (cashForce) yazılır; onaylı isteğin yinelemesi de yinelemedir
+    not ok 2 - B10: Kasa 0 iken ödeme sorulur (409 cash-negative; ön denetim kaybolmadı); onayla (cashForce) yazılır; onaylı isteğin yinelemesi de yinelemedir
+      ---
+      duration_ms: 459.408277
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        409 {"ok":false,"error":"Nakit kasada -10,00 TL var; 10,00 TL çıkış bakiyeyi -20,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":-10,"after":-20}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:98:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B2: Kasadan Bankaya Yatır 50 (Kasa 50 → 0) aynı kimlikle yeniden → 200 replayed; tek transfer
+    not ok 3 - B2: Kasadan Bankaya Yatır 50 (Kasa 50 → 0) aynı kimlikle yeniden → 200 replayed; tek transfer
+      ---
+      duration_ms: 397.630312
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasadan Bankaya yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 50,00 TL çıkış bakiyeyi -50,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":0,"after":-50}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:106:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B5: Kasa elle çıkış 40 (Kasa 40 → 0) aynı kimlikle yeniden → 200 replayed
+    not ok 4 - B5: Kasa elle çıkış 40 (Kasa 40 → 0) aynı kimlikle yeniden → 200 replayed
+      ---
+      duration_ms: 406.786794
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasa elle çıkış yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 40,00 TL çıkış bakiyeyi -40,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":0,"after":-40}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:115:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B4: stok nakit alımı 3 × 10 (Kasa 30 → 0) aynı kimlikle yeniden → 200 replayed; stok 3
+    not ok 5 - B4: stok nakit alımı 3 × 10 (Kasa 30 → 0) aynı kimlikle yeniden → 200 replayed; stok 3
+      ---
+      duration_ms: 893.911197
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok alımı yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 30,00 TL çıkış bakiyeyi -30,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":0,"after":-30}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:123:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B6 (komşu): stoğu bitiren satış (3 → 0) aynı kimlikle yeniden → 200 replayed (409 stock-negative değil); stok 0
+    not ok 6 - B6 (komşu): stoğu bitiren satış (3 → 0) aynı kimlikle yeniden → 200 replayed (409 stock-negative değil); stok 0
+      ---
+      duration_ms: 602.445924
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok satışı yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Stokta 0 Adet var; 3 Adet çıkış stoğu eksiye düşürür. Kayıttan sonra stok: -3 Adet olacak.","code":"stock-negative","available":0,"after":-3}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:132:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B3 (komşu): taksit iadesi 80 (kartın net tahsilatı ve Kasa 80 → 0) aynı kimlikle yeniden → 200 replayed
+    not ok 7 - B3 (komşu): taksit iadesi 80 (kartın net tahsilatı ve Kasa 80 → 0) aynı kimlikle yeniden → 200 replayed
+      ---
+      duration_ms: 400.498266
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:137:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit iadesi yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 400 {"ok":false,"error":"Bu kartta tahsil edilen net tutar 0,00 TL; iade ya da düzeltme sonrası -80,00 TL olur. İade tahsil edilenden fazla olamaz.","code":"refund-exceeds"}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:142:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B8 (karşılaştırma): verilen çekin nakit ödemesi (Kasa 70 → 0) yeniden → 200 replayed (Kasa denetimi yazımın içinde)
+    ok 8 - B8 (karşılaştırma): verilen çekin nakit ödemesi (Kasa 70 → 0) yeniden → 200 replayed (Kasa denetimi yazımın içinde)
+      ---
+      duration_ms: 485.071373
+      type: 'test'
+      ...
+    1..8
+not ok 2 - K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar)
+  ---
+  duration_ms: 4682.59157
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:67:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K4 — Engelle politikasında yineleme
+    # Subtest: B7: Kasa Engelle; cari nakit ödemesi Kasa'yı 0'a indirir; aynı kimlikle yeniden → 200 replayed (409 cash-blocked değil)
+    not ok 1 - B7: Kasa Engelle; cari nakit ödemesi Kasa'yı 0'a indirir; aynı kimlikle yeniden → 200 replayed (409 cash-blocked değil)
+      ---
+      duration_ms: 88.891451
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:167:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Engelle cari ödeme yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).","code":"cash-blocked","method":"cash","balance":0,"after":-100}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:171:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - K4 — Engelle politikasında yineleme
+  ---
+  duration_ms: 411.34844
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k4-yineleme-sirasi.test.mjs:159:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K4 — karşılaştırma: banka hesabında aynı durum (K7 bank.post adım 8)
+    # Subtest: B9: havale ödemesi hesabı 100 → 0 indirir; aynı kimlikle yeniden → 200 replayed
+    ok 1 - B9: havale ödemesi hesabı 100 → 0 indirir; aynı kimlikle yeniden → 200 replayed
+      ---
+      duration_ms: 44.185264
+      type: 'test'
+      ...
+    1..1
+ok 4 - K4 — karşılaştırma: banka hesabında aynı durum (K7 bank.post adım 8)
+  ---
+  duration_ms: 355.014231
+  type: 'suite'
+  ...
+# (node:28783) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı)
+    # Subtest: N1: Uyar — 150 havale ödemesi (bakiye 100) → 409 cash-negative + accountId; yalnız cashForce → 200 (planın bayrağı)
+    not ok 1 - N1: Uyar — 150 havale ödemesi (bakiye 100) → 409 cash-negative + accountId; yalnız cashForce → 200 (planın bayrağı)
+      ---
+      duration_ms: 38.50998
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:38:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Uyar: kod bank-negative (Garanti BBVA · Ana TL Hesabı hesabında 100,00 TL var; bu işlemle bakiye 150,00 TL azalır ve −50,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?)
+        + actual - expected
+        
+        + 'bank-negative'
+        - 'cash-negative'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'cash-negative'
+      actual: 'bank-negative'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:54:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:41:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N1b: eski istemcinin negativeOk'u eşanlamlı → 200; Banka Fişi'nde de aynı kod ve onay
+    not ok 2 - N1b: eski istemcinin negativeOk'u eşanlamlı → 200; Banka Fişi'nde de aynı kod ve onay
+      ---
+      duration_ms: 61.63647
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:48:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        90 !== -60
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -60
+      actual: 90
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:50:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N4a: cashForce + negativeOk:false (ekranın Kasa onayı) banka hesabını geçmez → 409 cash-negative + accountId
+    not ok 3 - N4a: cashForce + negativeOk:false (ekranın Kasa onayı) banka hesabını geçmez → 409 cash-negative + accountId
+      ---
+      duration_ms: 23.186054
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yalnız Kasa onayı: 200 {"id":"account-3c49719d-dc4b-48a4-bf0d-c53e67e59b76","refNo":"1","type":"supplier","name":"XYZ Tedarik","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"" 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:61:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N3: silmede ?cashForce=1 banka hesabını da geçer (HOF.api silmede adrese ekler); ?cashForce=1&negativeOk=0 geçmez
+    not ok 4 - N3: silmede ?cashForce=1 banka hesabını da geçer (HOF.api silmede adrese ekler); ?cashForce=1&negativeOk=0 geçmez
+      ---
+      duration_ms: 100.597036
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silme Uyar: 200 {"id":"account-3c49719d-dc4b-48a4-bf0d-c53e67e59b76","refNo":"1","type":"supplier","name":"XYZ Tedarik","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"" 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:69:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N2: Engelle — 409 cash-blocked + accountId; cashForce ve negativeOk birlikte de geçmez; hiçbir şey yazılmaz
+    not ok 5 - N2: Engelle — 409 cash-blocked + accountId; cashForce ve negativeOk birlikte de geçmez; hiçbir şey yazılmaz
+      ---
+      duration_ms: 45.933005
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Engelle: kod bank-similar (Aynı iş gününde aynı hesapta aynı tutarda benzer bir işlem kayıtlı (BNK-2026-000003, 08.10.2026, Ofis yöneticisi). Gerçekten ikinci bir işlemse "Yine de Kaydet" ile kaydedin.)
+        + actual - expected
+        
+        + 'bank-similar'
+        - 'cash-blocked'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'cash-blocked'
+      actual: 'bank-similar'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:54:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:79:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N5: Kasa'nın kendi reddi değişmedi — cash-negative, accountId yok, method cash
+    ok 6 - N5: Kasa'nın kendi reddi değişmedi — cash-negative, accountId yok, method cash
+      ---
+      duration_ms: 12.75907
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi tamam
+    ok 7 - Mutabakat Testi tamam
+      ---
+      duration_ms: 13.905963
+      type: 'test'
+      ...
+    1..7
+not ok 5 - K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı)
+  ---
+  duration_ms: 1294.2575
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K5 — aynı istekte Kasa ve banka hesabı eksiye düşerse (satış faturası iptali: nakit + havale peşin)
+    # Subtest: N4b: önce Kasa sorulur (cash-negative, accountId yok); Kasa onayı (cashForce + negativeOk:false) banka hesabını ayrıca sorar; fatura yerinde
+    not ok 1 - N4b: önce Kasa sorulur (cash-negative, accountId yok); Kasa onayı (cashForce + negativeOk:false) banka hesabını ayrıca sorar; fatura yerinde
+      ---
+      duration_ms: 17.675522
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iptal: banka hesabı ayrıca: kod bank-negative (Garanti BBVA · Ana TL Hesabı hesabında 0,00 TL var; bu işlemle bakiye 100,00 TL azalır ve −100,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?)
+        + actual - expected
+        
+        + 'bank-negative'
+        - 'cash-negative'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'cash-negative'
+      actual: 'bank-negative'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:54:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:122:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N4c: yalnız cashForce (planın tek onayı) ikisini birlikte geçer → fatura iptal; Kasa −100, Garanti −100
+    not ok 2 - N4c: yalnız cashForce (planın tek onayı) ikisini birlikte geçer → fatura iptal; Kasa −100, Garanti −100
+      ---
+      duration_ms: 9.133806
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iptal: 409 {"ok":false,"error":"Garanti BBVA · Ana TL Hesabı hesabında 0,00 TL var; bu işlemle bakiye 100,00 TL azalır ve −100,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?","code":"bank-negative","accountId":"bacc-d2772273-276a-41da-ab18-85573dcb6a65","balanceMinor":0,"afterMinor":-10000,"limitMinor":0,"field":"amount"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:128:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 6 - K5 — aynı istekte Kasa ve banka hesabı eksiye düşerse (satış faturası iptali: nakit + havale peşin)
+  ---
+  duration_ms: 556.371937
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k5-banka-eksi-kodu.test.mjs:99:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:28826) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde)
+    # Subtest: N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz
+    not ok 1 - N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz
+      ---
+      duration_ms: 78.621845
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:31:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        commercial KMH: 200 {"id":"bacc-e1d159d1-b235-43af-8a28-5c6aa54cbdc1","code":"DEN-TL","gl":"102","glSub":"102.01","kind":"commercial","kindLabel":"Ticari","bankName":"Denizbank","name":"KMH commercial","label":"Denizbank · KMH commercial","currency":"TRY","iban":"","ibanText":"","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","description":"","openingDate":"2026-10-01","balanceConfirmed":true,"c 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:36:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır
+    not ok 2 - N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır
+      ---
+      duration_ms: 96.041433
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:41:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ticari'ye KMH: 200 {"id":"bacc-2c10db6b-c7fd-4cc2-9110-79068652fecf","code":"DEN-TL-2","gl":"102","glSub":"102.02","kind":"commercial","kindLabel":"Ticari","bankName":"Denizbank","name":"Ticari Hesap","label":"Denizbank · Ticari Hesap","currency":"TRY","iban":"","ibanText":"","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","description":"","openingDate":"2026-10-01","balanceConfirmed":true,"cre 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:43:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N5: Vadesiz KMH, Kurumsal Kredi Kartı limiti ve Kredi Hesabı limiti → 200 (limit saklanır)
+    ok 3 - N5: Vadesiz KMH, Kurumsal Kredi Kartı limiti ve Kredi Hesabı limiti → 200 (limit saklanır)
+      ---
+      duration_ms: 173.573505
+      type: 'test'
+      ...
+    1..3
+not ok 7 - K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde)
+  ---
+  duration_ms: 915.334608
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz)
+    # Subtest: N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır
+    not ok 1 - N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır
+      ---
+      duration_ms: 52.584322
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ticari + KMH: 200 {"id":"bacc-58b04655-0a01-47c3-b0e3-e372bb4ad7ac","code":"DEN-TL","gl":"102","glSub":"102.01","kind":"commercial","kindLabel":"Ticari","bankName":"Denizbank","name":"Ticari Hesap B5","label":"Denizbank · Ticari Hesap B5","currency":"TRY","iban":"","ibanText":"","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","description":"","openingDate":"2026-10-01","balanceConfirmed":true, 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:68:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır
+    not ok 2 - N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır
+      ---
+      duration_ms: 16.831736
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ticari'de KMH yok
+        
+        2305900 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2305900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:78:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 8 - K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz)
+  ---
+  duration_ms: 747.279601
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k7-kmh.test.mjs:58:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:28833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K8 (a) — Kredi Kullanımı'nın Ters Kaydet ve Düzelt'inde ret metni işleme uygun
+    # Subtest: N1a: ödenmiş kredinin kullanımı Ters Kaydet → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın ters kaydını anlatır; hiçbir şey yazılmaz
+    not ok 1 - N1a: ödenmiş kredinin kullanımı Ters Kaydet → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın ters kaydını anlatır; hiçbir şey yazılmaz
+      ---
+      duration_ms: 52.714699
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:39:3'
+      failureType: 'testCodeFailure'
+      error: "metin geri ödemeyi anlatıyor: Kredi Geri Ödemesi'nde anapara (1.000,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır."
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "Kredi Geri Ödemesi'nde anapara (1.000,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır."
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:43:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N1b: kullanımı 400'e Düzelt → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın düzeltilmesini anlatır
+    not ok 2 - N1b: kullanımı 400'e Düzelt → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın düzeltilmesini anlatır
+      ---
+      duration_ms: 29.284192
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:50:3'
+      failureType: 'testCodeFailure'
+      error: "metin geri ödemeyi anlatıyor: Kredi Geri Ödemesi'nde anapara (600,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır."
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "Kredi Geri Ödemesi'nde anapara (600,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır."
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:53:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N4a: kalan borcu aşan geri ödeme → 409, metin yine geri ödemeyi anlatır (değişmedi)
+    ok 3 - N4a: kalan borcu aşan geri ödeme → 409, metin yine geri ödemeyi anlatır (değişmedi)
+      ---
+      duration_ms: 20.201657
+      type: 'test'
+      ...
+    1..3
+not ok 9 - K8 (a) — Kredi Kullanımı'nın Ters Kaydet ve Düzelt'inde ret metni işleme uygun
+  ---
+  duration_ms: 864.281864
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:29:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 (b) — geri ödeme işlem günündeki kalan borcu aşamaz (plan §3.9 yaklaşımı)
+    # Subtest: N2: kullanım 07.10, geri ödeme 03.10 → 409 bank-loan-exceeds (03.10'da kalan borç 0); 05.10 mizanında 300 = 0
+    not ok 1 - N2: kullanım 07.10, geri ödeme 03.10 → 409 bank-loan-exceeds (03.10'da kalan borç 0); 05.10 mizanında 300 = 0
+      ---
+      duration_ms: 33.259476
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kullanımdan önceki geri ödeme: 200 {"id":"ev-0mv2o43810000-71365e31-4dcc-4bef","no":"BNK-2026-000004","type":"loan_repay","typeLabel":"Kredi Geri Ödemesi","status":"active","statusLabel":"Etkin","date":"2026-10-03","valueDate":"","direction":"out","tryMinor":100000,"amountMinor":100000,"currency":"TRY","method":"bank","description":"","reference":"","channel":"","origin":"manual","internal":true,"account":{"id":"bacc-d4f99da6-e1ef- 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:77:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N4b: aynı gün (07.10) geri ödeme → 200; kredi 0
+    not ok 2 - N4b: aynı gün (07.10) geri ödeme → 200; kredi 0
+      ---
+      duration_ms: 16.127745
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı gün: 409 {"ok":false,"error":"Kredi Geri Ödemesi'nde anapara (1.000,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır.","code":"bank-loan-exceeds","accountId":"bacc-c213e8f7-3547-41ba-a52b-3085706a8de3","leftMinor":0,"field":"amount"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:85:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 10 - K8 (b) — geri ödeme işlem günündeki kalan borcu aşamaz (plan §3.9 yaklaşımı)
+  ---
+  duration_ms: 743.108456
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:66:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 (c) — kredi hesabında Açılışı Düzelt ödenen anaparanın altına inemez
+    # Subtest: N3: açılış borcu 5.000 → 3.000 (5.000 ödenmiş) → 409 bank-loan-exceeds; açılış ve bakiye değişmez
+    not ok 1 - N3: açılış borcu 5.000 → 3.000 (5.000 ödenmiş) → 409 bank-loan-exceeds; açılış ve bakiye değişmez
+      ---
+      duration_ms: 24.319208
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılışı küçült: 200 {"account":{"id":"bacc-6fe1ddfe-e89a-44d1-90e3-af44a175625c","code":"AKB-KREDI-2","gl":"300","glSub":"300.02","kind":"loan","kindLabel":"Kredi Hesabı","bankName":"Akbank","name":"Kredi Açılışlı","label":"Akbank · Kredi Açılışlı","currency":"TRY","iban":"","ibanText":"","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","description":"","openingDate":"2026-10-01","balanceConfirme 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:104:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N4c: açılış borcunu 6.000'e büyüt → 200; kalan borç 1.000
+    ok 2 - N4c: açılış borcunu 6.000'e büyüt → 200; kalan borç 1.000
+      ---
+      duration_ms: 29.333069
+      type: 'test'
+      ...
+    1..2
+not ok 11 - K8 (c) — kredi hesabında Açılışı Düzelt ödenen anaparanın altına inemez
+  ---
+  duration_ms: 480.607551
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38/test/hakem-k8-kredi.test.mjs:91:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..11
+# tests 37
+# suites 11
+# pass 8
+# fail 29
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6284.835799

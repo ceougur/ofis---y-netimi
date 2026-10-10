@@ -5,13 +5,13 @@
 //   F1  İki hesapta fatura peşini havale, hesap seçilmedi → para hangi hesaba? (400 bank-account-required "Banka hesabı seçilmedi"; belge yazılmaz)
 //   F2  Seçilen hesaba yazılır mı, satır anahtarı (lineKey) saklanır mı? (Garanti +; payment_json'da lineKey ve hesap)
 //   F3  Düzenle'de peşin satırların sırası değişir / ilki silinir → olaylar yanlış satıra geçer mi? (lineKey ile doğru: olay korunur/iptal)
-//   F4  Düzenle'de alış peşinini Ziraat'ten Garanti'ye taşı → Garanti için K7 (Uyar 409 → negativeOk; Engelle 409 bank-blocked)
+//   F4  Düzenle'de alış peşinini Ziraat'ten Garanti'ye taşı → Garanti için K7 (Uyar 409 → negativeOk; Engelle 409 cash-blocked)
 //   F5  İki hesap tanımlıyken eski (hesapsız) peşinli faturayı düzenle → yalnız not: bağsız kalır; tutar değişirse 400 hesap seç
 //   F6  Toplu kesimde biri hesapsız → yalnız o "Banka hesabı seçilmedi" ile düşer, öbürleri kesilir
 //   F7  Bankadan çıkış yetkisi (bank.move) olmayan muhasebe alış faturasını peşin havaleyle öder → 403 bank-permission
 //   F8  Aynı gün aynı müşteriye aynı tutarda aynı hesaba ikinci peşinli fatura → gereksiz uyarı? (hedef fatura farklı: uyarısız, plan §3.10/2)
 //   T1  Taksit tahsilatı havale, iki hesapta seçimsiz → 400; seçilen hesaba; aynı istek iki kez → tek satır (replayed); benzer → 409 bank-similar
-//   T2  Bakiye Doğrulandı + Engelle hesapta tahsilatı silmek hesabı eksiye düşürür → 409 bank-blocked; Silinenler'den geri yükle → aynı fin_ref
+//   T2  Bakiye Doğrulandı + Engelle hesapta tahsilatı silmek hesabı eksiye düşürür → 409 cash-blocked; Silinenler'den geri yükle → aynı fin_ref
 //   T3  Eski bağsız taksit tahsilatının açıklaması → bağsız kalır; tutarı → 400 hesap seç
 //   P1  Kayıt (detay kartı) tahsilatı: seçimsiz 400; Garanti; aynı istek iki kez → tek satır; sil → geri yükle → aynı hesap
 //   S1  Stok peşin satış havale: seçimsiz 400; Ziraat +; peşin alım bank.move'suz 403; müşteri iadesi Engelle'deki hesabı eksiye düşürür → 409
@@ -107,16 +107,16 @@ describe("Aşama 7 — fatura peşini: hesap seçimi, satır anahtarı, Düzenle
     await integrityOk(ctx.api, "F3");
   });
 
-  it("F4: alış peşini Ziraat → Garanti taşınır: Garanti Uyar'da 409 bank-negative → negativeOk; Engelle'de 409 bank-blocked", async () => {
+  it("F4: alış peşini Ziraat → Garanti taşınır: Garanti Uyar'da 409 cash-negative → negativeOk; Engelle'de 409 cash-blocked", async () => {
     const doc = await must("alış", ctx.api.post(INV, invoice(seller.id, "purchase", 80000, [{ amount: "80.000", method: "bank", bankAccountId: acc.ziraat.id, lineKey: "p1" }])));
     let b = await balances(ctx.api, { ziraat: acc.ziraat, garanti: acc.garanti });
     assert.deepEqual([b.ziraat, b.garanti], [20000, 71000]);
     const body = { ...invoice(seller.id, "purchase", 80000, [{ amount: "80.000", method: "bank", bankAccountId: acc.garanti.id, lineKey: "p1" }]), number: ctx.store.get("SELECT number FROM invoices WHERE id = ?", doc.id).number };
     const warn = await ctx.api.post(`${INV}/${doc.id}/edit`, body);
-    expectStatus(warn, 409, "bank-negative", "Garanti Uyar");
+    expectStatus(warn, 409, "cash-negative", "Garanti Uyar");
     assert.deepEqual(cashRows(ctx.store, doc.id).map(row => row.finRef), [acc.ziraat.id], "yazılmadı");
     await setPolicy(ctx.api, acc.garanti, "block");
-    expectStatus(await ctx.api.post(`${INV}/${doc.id}/edit`, { ...body, negativeOk: true }), 409, "bank-blocked", "Garanti Engelle");
+    expectStatus(await ctx.api.post(`${INV}/${doc.id}/edit`, { ...body, negativeOk: true }), 409, "cash-blocked", "Garanti Engelle");
     await setPolicy(ctx.api, acc.garanti, "warn");
     await must("Yine de Kaydet", ctx.api.post(`${INV}/${doc.id}/edit`, { ...body, negativeOk: true }));
     b = await balances(ctx.api, { ziraat: acc.ziraat, garanti: acc.garanti });
@@ -198,15 +198,15 @@ describe("Aşama 8 — taksit tahsilatı ve kayıt (detay kartı) tahsilatı", (
     await integrityOk(ctx.api, "T1");
   });
 
-  it("T2: Engelle'deki Garanti'ye bağlı tahsilatı silmek eksiye düşürür → 409 bank-blocked; Uyar'da sil → geri yükle → aynı fin_ref ve olay", async () => {
+  it("T2: Engelle'deki Garanti'ye bağlı tahsilatı silmek eksiye düşürür → 409 cash-blocked; Uyar'da sil → geri yükle → aynı fin_ref ve olay", async () => {
     const res = await must("Garanti tahsilat", ctx.api.post(entries(), { kind: "in", amount: "5.000", method: "bank", bankAccountId: acc.garanti.id, date: TODAY }));
     const xyz = await must("tedarikçi", ctx.api.post("/api/workspace/accounts", { name: "XYZ", type: "supplier", registeredOn: "2026-10-01" }));
     await must("Garanti ödeme", ctx.api.post(`/api/workspace/accounts/${xyz.id}/entries`, { kind: "out", amount: "52.000", method: "bank", bankAccountId: acc.garanti.id, date: TODAY }));
     assert.equal((await balances(ctx.api, { garanti: acc.garanti })).garanti, 3000);
     await setPolicy(ctx.api, acc.garanti, "block");
-    expectStatus(await ctx.api.del(`${entries()}/${res.entryId}`), 409, "bank-blocked", "silme eksiye düşürür");
+    expectStatus(await ctx.api.del(`${entries()}/${res.entryId}`), 409, "cash-blocked", "silme eksiye düşürür");
     await setPolicy(ctx.api, acc.garanti, "warn");
-    expectStatus(await ctx.api.del(`${entries()}/${res.entryId}`), 409, "bank-negative", "Uyar");
+    expectStatus(await ctx.api.del(`${entries()}/${res.entryId}`), 409, "cash-negative", "Uyar");
     const row = ctx.store.get("SELECT event_id, fin_ref FROM plan_entries WHERE id = ?", res.entryId);
     await must("Yine de sil", ctx.api.del(`${entries()}/${res.entryId}?negativeOk=1`));
     assert.equal((await balances(ctx.api, { garanti: acc.garanti })).garanti, -2000);
@@ -266,9 +266,9 @@ describe("Aşama 8 — stok peşini ve çek tahsil/ödeme", () => {
     await integrityOk(ctx.api, "S1");
   });
 
-  it("S1b: müşteri iadesi (havale) Engelle'deki Garanti'yi eksiye düşürür → 409 bank-blocked; Ziraat'ten iade 200", async () => {
+  it("S1b: müşteri iadesi (havale) Engelle'deki Garanti'yi eksiye düşürür → 409 cash-blocked; Ziraat'ten iade 200", async () => {
     await setPolicy(ctx.api, acc.garanti, "block");
-    expectStatus(await ctx.api.post(moves(), { kind: "in", reason: "return", qty: "1", unitPrice: "60.000", pay: "cash", method: "bank", bankAccountId: acc.garanti.id, date: TODAY }), 409, "bank-blocked", "iade Garanti");
+    expectStatus(await ctx.api.post(moves(), { kind: "in", reason: "return", qty: "1", unitPrice: "60.000", pay: "cash", method: "bank", bankAccountId: acc.garanti.id, date: TODAY }), 409, "cash-blocked", "iade Garanti");
     await must("Ziraat'ten iade", ctx.api.post(moves(), { kind: "in", reason: "return", qty: "1", unitPrice: "1.500", pay: "cash", method: "bank", bankAccountId: acc.ziraat.id, date: TODAY }));
     const b = await balances(ctx.api, { ziraat: acc.ziraat, garanti: acc.garanti });
     assert.deepEqual([b.ziraat, b.garanti], [101500, 50000]);
@@ -287,7 +287,7 @@ describe("Aşama 8 — stok peşini ve çek tahsil/ödeme", () => {
     const xyz = await must("tedarikçi", ctx.api.post("/api/workspace/accounts", { name: "XYZ", type: "supplier", registeredOn: "2026-10-01" }));
     await must("Garanti ödeme", ctx.api.post(`/api/workspace/accounts/${xyz.id}/entries`, { kind: "out", amount: "52.000", method: "bank", bankAccountId: acc.garanti.id, date: TODAY }));
     await setPolicy(ctx.api, acc.garanti, "block");
-    expectStatus(await ctx.api.post(`/api/workspace/cheques/${cheque.id}/undo`, {}), 409, "bank-blocked", "tahsili geri al");
+    expectStatus(await ctx.api.post(`/api/workspace/cheques/${cheque.id}/undo`, {}), 409, "cash-blocked", "tahsili geri al");
     assert.equal(ctx.store.get("SELECT status FROM cheques WHERE id = ?", cheque.id).status, "collected");
     await setPolicy(ctx.api, acc.garanti, "warn");
     const given = await must("verilen çek", ctx.api.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "1.000", issueDate: TODAY, dueDate: "2026-12-31", accountId: xyz.id, serialNo: "V-1" }));

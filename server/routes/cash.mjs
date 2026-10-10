@@ -12,6 +12,7 @@ import { canUser } from "../lib/permissions.mjs";
 import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, readNegativePolicy, methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { createMoneyLines, waysFor } from "../lib/bank/money-lines.mjs";
+import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 
 // Banka Fişi'nin para hareketi olmayan türleri (açılış, Devir Kapanışı, eski bakiye aktarımı): raporda "Açılış ve Devir Düzeltmeleri".
 const ADJUST_TYPES = new Set(["opening", "carry_close", "legacy_reclass"]);
@@ -217,23 +218,43 @@ export function registerCashRoutes(router, context) {
     return { kind, amount: roundMoney(amount), date, description, method: "cash" };
   };
 
+  // Kalıcı istek kimliği (x-hof-request ya da gövdede requestId; plan §3.10/1).
+  const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
+  // İşlem No (BNK-yıl-sıra): yinelemede "Bu işlem zaten kaydedildi (BNK-…); ikinci kez yazılmadı." için (plan §3.10/1).
+  const eventNoOf = id => store.get("SELECT e.no FROM cash_entries c JOIN fin_events e ON e.id = c.event_id WHERE c.id = ?", id)?.no || "";
+
   router.post("/api/workspace/cash", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cash.manage");
     const body = await readJson(req);
     const entry = input(body);
-    if (entry.kind === "out") guardOut(entry.amount, entry.date, body.cashForce === true, entry.method);
     const id = auth.newId("cash");
     // v2.1.0 (bank.post, plan §3.3): satır, İşlem No'lu işlem başlığı ve işlem geçmişi tek işlemde.
-    bank.post({
+    // Hakem K3 (10.10.2026; plan §7 "Yazan her uç x-hof-request alır", §3.3 adım 1): elle Kasa hareketi de istek kimliğiyle — aynı kimlik + aynı
+    // içerik ikinci kez yazılmaz (replayed), farklı içerik 409 request-id-reused. Önceden kimlik bank.post'a verilmiyordu; zaman aşımından sonra
+    // yeniden gönderimde Kasa ve 770 iki kez yazılıyor, mizan dengede kaldığı için Mutabakat Testi görmüyordu (v2.0.26'da da).
+    const result = bank.post({
       user,
       module: "cash",
       op: "create",
+      requestId: requestIdOf(req, body),
+      scope: "cash.entry.create",
+      body,
+      // Hakem K4 (plan §3.3 sırası): eksi bakiye ön denetimi istek kimliği bakışından sonra, işlemin içinde (yineleme 409 almaz).
+      prepare: () => {
+        if (entry.kind === "out") guardOut(entry.amount, entry.date, body.cashForce === true, entry.method);
+      },
       write: () => {
         store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", id, entry.kind, entry.amount, entry.date, entry.description, entry.method, bank.eventFor("cash_entries", entry), user.id, now());
         audit(user, "cash.entry.created", id, entry);
+        return { id };
       },
     });
+    if (result?.replayed) {
+      const no = eventNoOf(result.refId);
+      return ok(res, { id: result.refId, ...(no ? { no } : {}), replayed: true });
+    }
     changed(user);
+    // Yanıt gövdesi 2.0.26 ile aynı ({ id }; test/banka-210-post.test.mjs); İşlem No yalnız yinelemede.
     ok(res, { id });
   });
 
@@ -252,8 +273,7 @@ export function registerCashRoutes(router, context) {
   const TRANSFER_TEXT = { "to-cash": "Bankadan Kasaya Aktarım", "to-bank": "Kasadan Bankaya Yatırma" };
   // v2.1.0 Aşama 6 (plan §3.7 #10, §8.9): banka tarafı seçilen banka hesabına bağlanır (tek hesapta kendiliğinden, birden çokta seçim
   // zorunlu; hiç hesap yoksa bugünkü gibi hesapsız). Yetki: Kasa Yönetimi + Transfer Yapma (göç bugün Kasa yöneteni olan herkese verdi).
-  // Kalıcı istek kimliği (aynı istek ikinci kez yazılmaz); bankadan kasaya aktarımda hesabın eksi bakiye denetimi (K7).
-  const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
+  // Kalıcı istek kimliği (requestIdOf, yukarıda; aynı istek ikinci kez yazılmaz); bankadan kasaya aktarımda hesabın eksi bakiye denetimi (K7).
   const banking = () => context.bankAccounts?.module || null;
   const noGuard = { capture() {}, guard: null, prime() {} };
   const requireTransfer = user => {
@@ -271,10 +291,9 @@ export function registerCashRoutes(router, context) {
     if (!validDate(date)) throw new HttpError(400, "Geçerli bir tarih girin.");
     const description = limited(body.description, 300, "Açıklama") || TRANSFER_TEXT[direction];
     const cashKind = direction === "to-cash" ? "in" : "out";
-    if (cashKind === "out") guardOut(roundMoney(amount), date, body.cashForce === true, "cash");
     const finRef = banking()?.pickRef({ method: "bank", value: body.bankAccountId, date }) || "";
     // Bankadan kasaya: banka hesabından çıkış (K7). Kasadan bankaya: hesap artar, denetlenmez.
-    const k7 = cashKind === "in" ? banking()?.negative({ refs: [finRef], date, force: body.negativeOk === true }) || noGuard : noGuard;
+    const k7 = cashKind === "in" ? banking()?.negative({ refs: [finRef], date, force: negativeConfirmed(body) }) || noGuard : noGuard;
     const transferId = auth.newId("trf");
     const cashId = auth.newId("cash");
     const bankId = auth.newId("cash");
@@ -288,6 +307,10 @@ export function registerCashRoutes(router, context) {
       scope: "cash.transfer.create",
       body,
       similarOk: body.similarOk === true,
+      // Hakem K4: kasadan bankaya yatırmada nakit eksi bakiye ön denetimi istek kimliği bakışından sonra (plan §3.3 sırası).
+      prepare: () => {
+        if (cashKind === "out") guardOut(roundMoney(amount), date, body.cashForce === true, "cash");
+      },
       write: () => {
         k7.capture();
         const eventId = bank.eventFor("cash_entries", { kind: cashKind, date, method: "cash", transfer_id: transferId });
@@ -326,7 +349,7 @@ export function registerCashRoutes(router, context) {
     if (bankLeg && banking()) {
       const moved = Math.abs(roundMoney(bankLeg.amount) - entry.amount) > 0.004 || bankLeg.date !== entry.date;
       finRef = banking().pickRef({ method: "bank", value: body.bankAccountId, date: entry.date, previous: bankLeg, changed: moved });
-      k7 = banking().negative({ refs: [bankLeg.finRef, finRef], date: bankLeg.date < entry.date ? bankLeg.date : entry.date, force: body.negativeOk === true });
+      k7 = banking().negative({ refs: [bankLeg.finRef, finRef], date: bankLeg.date < entry.date ? bankLeg.date : entry.date, force: negativeConfirmed(body) });
     }
     const result = bank.post({
       user,
@@ -364,7 +387,7 @@ export function registerCashRoutes(router, context) {
     const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
     // v2.1.0 Aşama 6: kasadan bankaya yatırmanın silinmesi banka hesabını azaltır (K7).
     const bankLeg = [full, twinFull].find(item => item?.method === "bank" && item.finRef);
-    const k7 = bankLeg ? banking()?.negative({ refs: [bankLeg.finRef], date: bankLeg.date, force: url.searchParams.get("negativeOk") === "1" }) || noGuard : noGuard;
+    const k7 = bankLeg ? banking()?.negative({ refs: [bankLeg.finRef], date: bankLeg.date, force: negativeConfirmed(null, url) }) || noGuard : noGuard;
     // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse hiçbiri yazılmaz (önceden hareket
     // silinip Silinenler'e yazılamadan kesinti olursa geri getirilemiyordu). v2.1.0: işlem başlığı "iptal" olur (kopyası kalır);
     // Silinenler'den geri yüklenince aynı olay yeniden etkinleşir.

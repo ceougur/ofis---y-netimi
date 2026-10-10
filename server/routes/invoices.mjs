@@ -24,7 +24,7 @@ import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCE
 import { CLOSER_MODES, PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
-import { bankForm } from "../lib/bank/module-ref.mjs";
+import { bankForm, negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
@@ -1745,8 +1745,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     publishAll(user, touched, row.id);
     return row;
     function runCancel() {
-      // Hızlı Nasıl Bozarım (H1/H2): iptal ve silme bağlı peşini hesaptan düşer → K7 (Engelle 409 bank-blocked, Uyar 409 bank-negative →
-      // negativeOk). Önceden iptal Engelle'deki hesabı sessizce eksiye düşürüyordu (taksit/kayıt tahsilatının silmesi 409 veriyordu).
+      // Hızlı Nasıl Bozarım (H1/H2): iptal ve silme bağlı peşini hesaptan düşer → K7 (Engelle 409 cash-blocked, Uyar 409 cash-negative +
+      // accountId → cashForce / negativeOk; hakem K5). Önceden iptal Engelle'deki hesabı sessizce eksiye düşürüyordu (taksit/kayıt tahsilatının silmesi 409 veriyordu).
       const head = invoiceRow(id);
       const refs = store.all("SELECT DISTINCT fin_ref AS ref FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') AND fin_ref <> ''", head.id).map(row => row.ref);
       const k7 = banking.negative(refs, head.issueDate, force?.negative === true);
@@ -1862,7 +1862,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // ---------- Yollar ----------
   const requireView = req => auth.requirePermission(req, "invoices.view");
   const requireManage = req => auth.requirePermission(req, "invoices.manage");
-  const forceOf = body => ({ stock: body?.force === true || body?.stockForce === true, cash: body?.cashForce === true, negative: body?.negativeOk === true, similar: body?.similarOk === true });
+  // Hakem K5: banka hesabının eksi bakiye onayı cashForce (plan §3.9) ya da eşanlamlı negativeOk (module-ref.mjs negativeConfirmed).
+  const forceOf = body => ({ stock: body?.force === true || body?.stockForce === true, cash: body?.cashForce === true, negative: negativeConfirmed(body), similar: body?.similarOk === true });
 
   router.get("/api/workspace/invoices/meta", async ({ req, res }) => {
     const user = requireView(req);
@@ -2130,7 +2131,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Toplu işlemler (v2.0.15, QA A6): seçilen taslaklar tarih sırasıyla kesilir, seçilen belgeler iptal edilir. Her belge
   // kendi işleminde (biri düşerse diğerleri etkilenmez); sonuç belge belge döner. En çok 200 belge.
   const bulkIds = body => [...new Set((Array.isArray(body.ids) ? body.ids : []).map(value => text(value)).filter(Boolean))].slice(0, 200);
-  const bulkError = error => ({ ok: false, message: error?.message || String(error), code: error?.extra?.code || "", status: error?.status || 500 });
+  // Hakem K5: banka hesabının eksi bakiye reddi Kasa'nınkiyle aynı kodu (cash-negative) taşır; accountId istemcinin sorusunu ayırır.
+  const bulkError = error => ({ ok: false, message: error?.message || String(error), code: error?.extra?.code || "", status: error?.status || 500, ...(error?.extra?.accountId ? { accountId: error.extra.accountId } : {}) });
   router.post("/api/workspace/invoices/bulk-issue", async ({ req, res }) => {
     const user = requireManage(req);
     const body = await readJson(req);
@@ -2166,8 +2168,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const body = await readJson(req);
     const ids = bulkIds(body);
     if (!ids.length) fail400("İptal edilecek belge seçilmedi.", "ids");
-    // Yargıç K3: gövdedeki negativeOk (Uyar'daki hesap için "Yine de İptal Et") toplu silmedeki gibi işlenir; Engelle hiçbir koşulda delinmez.
-    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, negativeOk: body.negativeOk === true, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true };
+    // Yargıç K3: gövdedeki negativeOk / cashForce (Uyar'daki hesap için "Yine de İptal Et"; hakem K5 negativeConfirmed) toplu silmedeki gibi işlenir; Engelle hiçbir koşulda delinmez.
+    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, negativeOk: typeof body.negativeOk === "boolean" ? body.negativeOk : undefined, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true };
     const results = [];
     // Yeni tarihli belge önce iptal edilir (iade faturası asıl faturadan önce; aynı seçimde ikisi de varsa sıra tutar).
     const rows = ids.map(id => {
@@ -2275,7 +2277,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   router.delete("/api/workspace/invoices/:id", async ({ req, res, params, url }) => {
     const user = requireManage(req);
-    const row = deleteInvoice(user, params.id, { reason: text(url.searchParams.get("reason")).slice(0, 300), force: { stock: url.searchParams.get("force") === "1", cash: url.searchParams.get("cashForce") === "1", negative: url.searchParams.get("negativeOk") === "1" } });
+    const row = deleteInvoice(user, params.id, { reason: text(url.searchParams.get("reason")).slice(0, 300), force: { stock: url.searchParams.get("force") === "1", cash: url.searchParams.get("cashForce") === "1", negative: negativeConfirmed(null, url) } });
     ok(res, { id: row.id, number: row.number, status: row.status });
   });
   // Toplu silme: iade belgeleri önce (yeni tarihli önce), sonra öbürleri yeni tarihliden eskiye (serinin son numarası

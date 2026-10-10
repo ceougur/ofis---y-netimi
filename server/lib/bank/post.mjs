@@ -5,7 +5,8 @@
 //   op: 'create' | 'update' | 'delete' | 'move' (Taksite Aktar ve geri alması) | 'restore' (Silinenler) | 'assign' (yalnız bağ)
 // Tek BEGIN IMMEDIATE (store.tx; iç içe çağrı SAVEPOINT) içinde:
 //    1  istek kimliği: aynı kimlik + aynı içerik → yazmadan { replayed, refId }; farklı içerik → 409 (request_keys, kalıcı)
-//    2  prepare(ctx): modülün hedef kuralları (Aşama 2'de modüller bugünkü kurallarını kendi rotalarında uygular; kanca)
+//    2  prepare(ctx): modülün hedef kuralları ve yazımdan önceki denetimleri (Kasa eksi bakiye, eksi stok, iade sınırı) — istek kimliği
+//       bakışından SONRA çalışır: yinelenen istek bu denetimlere takılmaz (hakem K4, 10.10.2026)
 //    3  assertMutable: hesaba bağlı (fin_ref dolu) satırda çapraz yetki (bank.move / bank.cancel), eşleşmiş olayda 409 (iskelet:
 //       Aşama 2'de hesaba bağlı satır yazılmaz; Aşama 5'te etkin)
 //    4  similar: Benzer İşlem (K8; Aşama 4) — yalnız hesaba bağlı yeni olaylarda; olay kopyası yazımdan sonra kurulduğu için 5'ten SONRA, aynı

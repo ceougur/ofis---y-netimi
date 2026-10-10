@@ -1,0 +1,31 @@
+{
+  "ad": "test-mutabakat-1000x2-degisen-alan",
+  "komut": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 1000 --tohumlar 2",
+  "commit": "cf9496a3457b5a3606f91596f6b7c8360c54b8a2",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:54:33.176Z",
+  "sure_sn": 324,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/test-mutabakat-1000x2-degisen-alan.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "bccfe7228ba5e800be7486fadfadb3de0c454d75a4865a34324281bf87aba45f",
+  "ham_cikti_bayt": 4079
+}

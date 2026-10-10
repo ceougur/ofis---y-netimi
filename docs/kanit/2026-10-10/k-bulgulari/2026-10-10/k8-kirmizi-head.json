@@ -1,0 +1,31 @@
+{
+  "ad": "k8-kirmizi-head",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/hakem-k8-kredi.test.mjs",
+  "commit": "85a7b50b7aa402c5966477ba58b3c9cd7e0df30f",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:15:37.293Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 2,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616/docs/kanit/2026-10-10/k-bulgulari/2026-10-10/k8-kirmizi-head.log",
+  "klasor": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/base",
+  "ham_cikti_sha256": "537e15a2fac8038d4fe67e58f1f8a486cad61df90b8b7a11c042a5edae823479",
+  "ham_cikti_bayt": 9915
+}

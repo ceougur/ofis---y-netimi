@@ -1,0 +1,97 @@
+
+■ Kurulum: yönetici girer, Excel yüklenir; cariler açılır (biri sabit hatlı, biri numarasız)
+✓ cari: Tülay Arıkan
+✓ cari: Kemal Bakkal
+✓ cari: Sabit Hatlı Büfe
+✓ cari: Numarasız Müşteri
+✓ cari: Hesabı Kapalı Ayşe
+✓ cari: Anadolu Gıda
+
+■ 1. Cari → üç cari seçilir → WhatsApp Ekstre: alıcılar, geçersiz numara nedeni, kişiye özel ekstre ön izlemesi
+✓ seçim yokken: süzgeçteki hepsine gönderim düğmeleri
+✓ seçim çubuğu: 3 cari seçildi Seçilenlere Taksit Planı WhatsApp Ekstre WhatsApp Mesaj Seçimi Temizle
+✓ özet: 3 Cari 2 Geçerli Numara 1 Numarası Yok / Hatalı 2 Gönderilecek
+✓ sabit hat nedeniyle ayrıldı
+✓ ön izleme kişiye özel
+✓ ekstre metni bakiyeyi içerir: Sayın Tülay Arıkan,
+cari hesap ekstreniz (01.10.2026 – 10.10.2026):
+
+10.10.2026 Borç · Açılış bakiyesi: +1.250,00 TL
+
+Güncel bakiye: 1.250,0
+✓ satıra tıklayınca o kişinin ekstresi (Tüm Hareketler)
+
+■ 2. Gönderime Başla → sıra: 1 / 2, WhatsApp'ta Aç ve Sıradakine Geç; her gönderim cari kartına yazılır
+✓ ilerleme 1 / 2
+✓ Ekstre PDF bağlantısı
+✓ v2.0.14: 'Ekstre PDF'ini kendiliğinden indir' varsayılan açık
+✓ ekstre PDF'i indirme adresi: /api/workspace/accounts/account-24f192f0-f948-4cbf-8fae-384516220bc5/ekstre.pdf?download=1&hofCompany=sirket-001
+✓ ekstre PDF'i pencerenin şirketinden indi (sirket-001)
+✓ ekstre PDF'i kişinin adıyla kendiliğinden indi: Cari-ekstre Tülay Arıkan.pdf
+✓ ilerleme 2 / 2
+✓ tamamlandı: 2 kişiye gönderildi
+✓ wa.me adresleri: https://wa.me/905374546576?text=Say%C4%B | https://wa.me/905327776655?text=Say%C4%B
+✓ mesaj metni ekstre
+✓ Tülay'ın kartına ekstre gönderimi yazıldı
+✓ sabit hatlıya gönderilmedi
+
+■ 3. Seçim yok → Tümüne WhatsApp Mesaj: şablon, değişken, yalnız borçlular; biri atlanır
+✓ hepsi: 6 Cari 4 Geçerli Numara 2 Numarası Yok / Hatalı 4 Gönderilecek
+✓ yalnız borçlular (tedarikçi ve kapalı hesap çıkar): 6 Cari 4 Geçerli Numara 2 Numarası Yok / Hatalı 2 Gönderilecek
+✓ v2.0.14: değişken pili eklenince odak metin kutusunda, imleç eklenenin sonunda
+✓ değişkenler doldu: Merhaba Tülay Arıkan, güncel bakiyeniz ₺1.250,00. Hafta sonu indirimimiz başladı.
+✓ özet: 1 gönderildi, 1 atlandı
+✓ kişiye özel düzeltme gönderildi
+
+■ 4. Cari kartı → WhatsApp: Ekstre Gönder / Mesaj Gönder / Sohbeti Aç ve Son Gönderimler
+✓ üç seçenek
+✓ kartta gönderim geçmişi
+✓ tek cari: onay sorulmadan sıraya geçer
+✓ Tülay: toplu ve tek ekstre, ikisi de kartında
+
+■ 5. Cari kartı → + Tahsilat → Tahsilat Yolu POS (2.0.16: tahsilatta POS): Kasa ve Banka'da POS / Kredi Kartı sekmesine düşer, nakde değil
+✓ tahsilat yolları: Nakit, Havale / EFT, POS, Çek / Senet (portföye alınır)
+✓ Kemal bakiyesi 4.800 − 1.000 = 3.800
+✓ banka tarafı: kart 1000, nakit 0
+✓ Kasa penceresi yalnız nakit; yol sekmesi yok; POS tahsilatı listede değil
+✓ POS tahsilatı banka tarafında (Banka ve POS Hareketleri)
+
+■ 6. Stok: satış fiyatı hazır gelir; Kredi Kartı ile satış; nakit iadede Kasa eksiye düşecekse sorulur
+✓ ürün: alış 300, satış 400
+✓ satış birim fiyatı 400,00 hazır
+✓ kart tahsilatı 1.000 + 800
+✓ nakit kasada para yok: onay soruldu
+✓ vazgeçince iade yazılmadı
+✓ açık hesaba iade: Tülay 1.250 − 400 = 850
+✓ stok 50 − 2 + 1 = 49
+
+■ 7. Veresiye satışı taksitlendir: borç cariye bir kez yazılır (çift borç yok)
+✓ Kemal: 3.800 + 1.200 = 5000 (6.200 değil)
+✓ taksit kartı mevcut borcu taksitlendiriyor (1.200)
+
+■ 8. Cari kartı → + Taksit Planı: Borcun Kaynağı carinin mevcut borcu; bakiye değişmez
+✓ Borcun Kaynağı: Carinin Mevcut Borcu
+✓ tutar bakiyeden: 850,00
+✓ Tülay bakiyesi 850 (ikinci kez borç yazılmadı)
+
+■ 9. Aynı adla ikinci cari: yazarken uyarı
+✓ uyarı: 1 cari aynı adla kayıtlı: No 1 · 0537 454 65 76. Aynı kişiyse yeni cari açmayın; mevcut cariyi açın.
+
+■ 10. Raporlar → Ana Defter → Defter Mutabakatı: her hesap tutarlı; Hesap Planı Mizanı dengede
+✓ Defter Mutabakatı: fark yok
+✓ mizan dengede (borç 18900 = alacak 18900)
+
+■ 11. Dönem Kilidi: Yönetim → Sistem'de kilitle; kapalı güne hareket reddedilir; formlarda ileri tarih seçilemez; kilit kaldırılır
+✓ cari hareket formunda tarih seçici bugünden ileriyi göstermez (max = 2026-10-10)
+✓ kartta mutabakat durumu: Mutabakat: 62 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tu
+✓ kilit tarihi bugünden ileri seçilemez
+✓ kilitlendi: 09.10.2026 ve öncesi kilitli.
+✓ kapalı güne Kasa hareketi reddedildi: Hareket 09.10.2026 tarihli; 09.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.
+✓ kilit kaldırıldı
+✓ Eksi Bakiye Denetimi: yalnız Nakit Kasa, varsayılan Uyar (cash=warn)
+✓ kaydedildi: {"cash":"block","bank":"off","card":"off"}
+
+■ Tarayıcı hataları
+✓ hiçbir ekranda tarayıcı hatası yok
+
+64 / 64 kontrol geçti.

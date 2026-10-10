@@ -1,0 +1,31 @@
+{
+  "ad": "e2e-senaryo-banka-210",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.mjs",
+  "commit": "1bf422fbe62ac60d4c592521333165a262034dff",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:01:44.113Z",
+  "sure_sn": 296.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 396,
+    "gecen": 395,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/e2e-senaryo-banka-210.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "5074159d057cbfb624b01442237aa34eca8b81104fa6abca3ed23083bd2cc873",
+  "ham_cikti_bayt": 42331
+}

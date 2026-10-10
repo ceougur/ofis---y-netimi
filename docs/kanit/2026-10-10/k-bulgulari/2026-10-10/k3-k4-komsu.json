@@ -1,0 +1,31 @@
+{
+  "ad": "k3-k4-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/accounts-stock.test.mjs test/asama0-226-kesinti.test.mjs test/asama0-226-saat.test.mjs test/asama0-226.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-210-asama6-kasa.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-benzer.test.mjs test/banka-210-bozarim.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-istek-kimligi.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-planli.test.mjs test/banka-210-yargic.test.mjs test/cash.test.mjs test/donem-213.test.mjs test/eksi-stok-217.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/istek-kimligi-222.test.mjs test/odeme-yolu-222.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/banka-210-post.test.mjs test/banka-210-altin.test.mjs test/hakem-k3-kasa-istek-kimligi.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs",
+  "commit": "07ab898adcca368eb3635449002919c333b3c1c9",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:08:43.163Z",
+  "sure_sn": 117.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 364,
+    "gecen": 364,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/k3-k4-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "6629049e33c20afab4b55c9745564920fc0d3c45ec36973d54b20fe1b3d4eadc",
+  "ham_cikti_bayt": 128137
+}

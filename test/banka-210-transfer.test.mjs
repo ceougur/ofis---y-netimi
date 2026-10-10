@@ -6,7 +6,7 @@
 //       yapılamaz"; ertelenen Döviz Al/Sat önerilmez (yarım özellik görünmez)
 //   B2  Kaynak = hedef → 400
 //   B3  İki AYRI oturumdan, iki AYRI bağlantıdan aynı anda iki transfer (Engelle'deki hesap; ikisi ayrı ayrı sığar, birlikte sığmaz) → biri 200,
-//       öbürü 409 bank-blocked; hesap eksiye düşmez
+//       öbürü 409 cash-blocked; hesap eksiye düşmez
 //   B4  Ters Kaydet → iki hesap eski hâline; ikinci Ters Kaydet 409; ters kaydın ters kaydı 409; Düzelt (ters + yeni, tek işlem)
 //   B5  Kredi / vadeli / kart hesabından cari ödemesi → 400; kredi ya da kart hesabına "Bankalar Arası Transfer" → 400 (kredi kullanımı ve kart
 //       borcu kendi türleriyle)
@@ -21,7 +21,7 @@
 //       403
 //   B12 Ekstreyle eşleşmiş transferi Ters Kaydet / Düzelt → 409 bank-reconciled
 //   B13 Banka fişi silinmez (DELETE yolu yok); "sil → geri yükle" transferde Ters Kaydet + yeni transferdir
-//   B14 K7 Uyar: gönderen eksiye düşerse 409 bank-negative → "Yine de Kaydet" (negativeOk) 200; Engelle: negativeOk ile de 409
+//   B14 K7 Uyar: gönderen eksiye düşerse 409 cash-negative → "Yine de Kaydet" (negativeOk) 200; Engelle: negativeOk ile de 409
 //   B15 Planlı transfer: bakiye değişmez; Gerçekleştir → iki bacak; plan ilerler; aynı hesaplı plan 400
 //   B16 Kapı bank:transfer: ham yazımla (bank.post dışı) tek B / tek A kuralı bozulan transfer Mutabakat Testi'nde görünür
 //   B17 Ekstreyle eşleşmiş Kasa ↔ Banka transferini sil / düzelt → 409 bank-reconciled; personel silemez (plan Aşama 6 #80–81)
@@ -325,18 +325,18 @@ describe("Aşama 9 — nasıl bozarım", () => {
     await integrityOk(ctx.api, "B13");
   });
 
-  it("B14: K7 Uyar → 409 bank-negative → negativeOk 200; Engelle → negativeOk ile de 409 bank-blocked", async () => {
+  it("B14: K7 Uyar → 409 cash-negative → negativeOk 200; Engelle → negativeOk ile de 409 cash-blocked", async () => {
     const z = await balance(ctx.api, acc.ziraat);
     const over = String((z + 100_000) / 100).replace(".", ",");
-    expectStatus(await post({ ...base(), amount: over }), 409, "bank-negative", "Uyar");
+    expectStatus(await post({ ...base(), amount: over }), 409, "cash-negative", "Uyar");
     await setPolicy(ctx.api, acc.garanti, "block");
     const g = await balance(ctx.api, acc.garanti);
-    expectStatus(await post({ ...base(), accountId: acc.garanti.id, toAccountId: acc.ziraat.id, amount: String((g + 100) / 100).replace(".", ","), negativeOk: true }), 409, "bank-blocked", "Engelle");
+    expectStatus(await post({ ...base(), accountId: acc.garanti.id, toAccountId: acc.ziraat.id, amount: String((g + 100) / 100).replace(".", ","), negativeOk: true }), 409, "cash-blocked", "Engelle");
     const moved = await transfer(ctx.api, { ...base(), amount: over, negativeOk: true }, "Yine de Kaydet");
     assert.equal(await balance(ctx.api, acc.ziraat), z - (z + 100_000), "Uyar'da onayla eksiye düşer");
-    // Ters kaydı alıcıyı (Garanti, Engelle) eksiye düşürecekse 409 bank-blocked.
+    // Ters kaydı alıcıyı (Garanti, Engelle) eksiye düşürecekse 409 cash-blocked.
     await transfer(ctx.api, { accountId: acc.garanti.id, toAccountId: acc.ziraat.id, amount: String((await balance(ctx.api, acc.garanti)) / 100).replace(".", ","), date: TODAY, similarOk: true }, "Garanti'yi boşalt");
-    expectStatus(await ctx.api.post(`${BANK}/events/${moved.id}/reverse`, { negativeOk: true }), 409, "bank-blocked", "ters kayıt Engelle'deki alıcıyı eksiye düşürür");
+    expectStatus(await ctx.api.post(`${BANK}/events/${moved.id}/reverse`, { negativeOk: true }), 409, "cash-blocked", "ters kayıt Engelle'deki alıcıyı eksiye düşürür");
     await setPolicy(ctx.api, acc.garanti, "");
     await integrityOk(ctx.api, "B14");
   });
@@ -359,7 +359,7 @@ describe("Aşama 9 — nasıl bozarım", () => {
     await integrityOk(ctx.api, "B15");
   });
 
-  it("B3: iki AYRI oturum ve bağlantıdan aynı anda iki transfer (Engelle) → biri 200, öbürü 409 bank-blocked; hesap eksiye düşmez", async () => {
+  it("B3: iki AYRI oturum ve bağlantıdan aynı anda iki transfer (Engelle) → biri 200, öbürü 409 cash-blocked; hesap eksiye düşmez", async () => {
     const third = await openAccount(ctx.api, { bankName: "Denizbank", name: "Yarış", kind: "demand", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     // Garanti'yi 70.000'e getir (Ziraat'ten), Engelle.
     const g = await balance(ctx.api, acc.garanti);
@@ -382,7 +382,7 @@ describe("Aşama 9 — nasıl bozarım", () => {
     assert.ok(sent.every(at => at < firstReply), "iki istek de ilk yanıttan önce gönderildi");
     const statuses = results.map(res => res.status).sort();
     assert.deepEqual(statuses, [200, 409], JSON.stringify(results.map(res => [res.status, res.code])));
-    assert.equal(results.find(res => res.status === 409).code, "bank-blocked");
+    assert.equal(results.find(res => res.status === 409).code, "cash-blocked");
     assert.equal(await balance(ctx.api, acc.garanti), 3_000_000, "Garanti 30.000; eksiye düşmedi");
     await setPolicy(ctx.api, acc.garanti, "");
     await integrityOk(ctx.api, "B3");

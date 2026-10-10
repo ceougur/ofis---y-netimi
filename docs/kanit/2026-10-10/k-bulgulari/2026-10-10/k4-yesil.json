@@ -1,0 +1,31 @@
+{
+  "ad": "k4-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/hakem-k4-yineleme-sirasi.test.mjs",
+  "commit": "07ab898adcca368eb3635449002919c333b3c1c9",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:08:32.660Z",
+  "sure_sn": 4.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/k4-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "869f439c65c5ef177d5d7e037b5a7b95927d62ac7f4c46a1a5d82cbb86169deb",
+  "ham_cikti_bayt": 3899
+}

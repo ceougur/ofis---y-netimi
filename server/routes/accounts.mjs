@@ -6,6 +6,7 @@
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
 import { randomUUID } from "node:crypto";
 import { methodInput } from "../lib/pay-method.mjs";
+import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -628,7 +629,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   }
   // v2.1.0 Aşama 5 (plan §3.5, §3.9, §3.10): havale/EFT tahsilat ve ödemesinin banka hesabı (fin_ref; tek hesapta kendiliğinden, birden çokta
   // seçim zorunlu), kalıcı istek kimliği (x-hof-request: aynı istek ikinci kez yazılmaz), Benzer İşlem (hesaba bağlı satırda; similarOk),
-  // hesap bazında eksi bakiye (K7; Bakiye Doğrulandı hesapta Uyar/Engelle; negativeOk). Nakit satır bugünkü kuralla (Kasa eksi bakiye).
+  // hesap bazında eksi bakiye (K7; Bakiye Doğrulandı hesapta Uyar/Engelle; onay cashForce ya da negativeOk). Nakit satır bugünkü kuralla (Kasa eksi bakiye).
   const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
   const banking = () => bankModule?.() || null;
   const isMoney = kind => kind === "in" || kind === "out";
@@ -643,7 +644,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed });
   };
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
-  const negativeForced = (body, url) => body?.negativeOk === true || url?.searchParams.get("negativeOk") === "1";
+  // Hakem K5: onay cashForce (plan §3.9) ya da eşanlamlı negativeOk (module-ref.mjs negativeConfirmed).
+  const negativeForced = (body, url) => negativeConfirmed(body, url);
   router.post("/api/workspace/accounts/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const account = accountRow(params.id);
@@ -652,7 +654,6 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     requireKindRight(user, input.kind);
     const finRef = refOf(input, body);
     requireBankOut(user, input.kind, finRef);
-    if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
     const k7 = negativeOf([finRef], input.date, negativeForced(body));
     const created = bank.post({
       user,
@@ -662,6 +663,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       scope: "account.entry.create",
       body: { ...body, accountId: account.id },
       similarOk: body.similarOk === true,
+      // Hakem K4 (plan §3.3 sırası "1 istek kimliği → 2 prepare", C12 "eksi bakiye işlemin içindedir"): Kasa ön denetimi istek kimliği bakışından
+      // SONRA. Önceden önce çalışıyordu: Kasa'yı 0'a indiren ödemenin yinelemesi kaydedilmiş ödemeye 409 "Kasa eksiye düşer" diyordu.
+      prepare: () => {
+        if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+      },
       write: () => {
         k7.capture();
         const entry = addEntry(user, account.id, { ...input, finRef });

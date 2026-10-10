@@ -18,8 +18,10 @@
 //     verilen tarihle) fiş yazılır. Kendiliğinden deftere yazma yok (bankanın talimatı gerçekten işleyip işlemediği ekstreyle görülür).
 //   - Fiş yalnız TL hesapta (döviz hesabı Aşama 13'te).
 //   - Eksi bakiye (K7, plan §3.9; GG2): fiş, Düzelt ve Planlı Gerçekleştir yazımdan SONRAKİ son durumla, hesap bazında denetlenir: bakiye =
-//     min(işlem günündeki, bütün hareketlerle) + KMH / kart limiti. Bakiye Doğrulandı olmayan hesapta Kontrol Yok; Uyar → 409 bank-negative
-//     ("Yine de Kaydet" = negativeOk), Engelle → 409 bank-blocked (onayla da geçmez). Bakiyeyi artıran hesap denetlenmez.
+//     min(işlem günündeki, bütün hareketlerle) + KMH / kart limiti. Bakiye Doğrulandı olmayan hesapta Kontrol Yok; Uyar → 409 cash-negative
+//     + accountId ("Yine de Kaydet" = cashForce; eşanlamlı negativeOk — module-ref.mjs negativeConfirmed), Engelle → 409 cash-blocked +
+//     accountId (onayla da geçmez). Bakiyeyi artıran hesap denetlenmez. (Hakem K5, 10.10.2026: önceden bank-negative / bank-blocked ve yalnız
+//     negativeOk; plan §7 "Mevcut cash-negative ve cash-blocked kodlarına accountId alanı eklenir", §3.9 cashForce, §12.5 adım 37.)
 import { randomUUID } from "node:crypto";
 import { HttpError, limited, text } from "../http.mjs";
 import { systemClock } from "../clock.mjs";
@@ -27,6 +29,7 @@ import { addCalendarDays, addMonths } from "../business-days.mjs";
 import { isIsoDate } from "../period.mjs";
 import { mulPpm, parseMinor, parsePpm } from "../minor.mjs";
 import { ACCOUNT_KINDS } from "./accounts.mjs";
+import { negativeConfirmed } from "./module-ref.mjs";
 import { GROUP_LABELS, VOUCHER_TYPES, isVoucherType, typeLabel } from "./event-types.mjs";
 import { CHART } from "../general-ledger.mjs";
 import { ROLE_GL, assertLines, cardPaymentLines, feeLines, feeSplit, interestInLines, interestOutLines, loanDrawLines, loanRepayLines, otherLines, roleOfAccount, transferLines } from "./voucher.mjs";
@@ -382,10 +385,22 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     for (const [ref, values] of settled) money.prime(ref, values);
   }
   /**
-   * bank.post adım 8 (guard): hesap bazında son durum. Bakiyesi azalan hesapta bakiye = min(date günündeki, bütün hareketlerle) + limit (KMH ya da
-   * kart limiti) eksiyse Uyar → 409 bank-negative (negativeOk geçer), Engelle → 409 bank-blocked. Kredi hesabında anapara kalan borcu aşamaz.
+   * Hakem K8 (a): kredi hesabının borç bakiyesine geçmesinin (409 bank-loan-exceeds) metni işleme göre. Önceden her işlemde "Kredi Geri Ödemesi'nde
+   * anapara … aşamaz" yazıyordu; Kredi Kullanımı'nın Ters Kaydet'i ve Düzelt'i de bu metni alıyordu. action: işlemin türü (create ve Planlı
+   * İşlemler'de fişin türü; Ters Kaydet'te "reverse:<tür>", Düzelt'te "correct:<tür>").
    */
-  function guardNegative(before, { date, force = false, ctx = null, settled = null }) {
+  function loanExceedsText(action, { label, change, left, when }) {
+    if (action === "reverse:loan_draw") return `Bu Kredi Kullanımı ters kaydedilemez: ${label} kredisinin ${when}kalan borcu ${left}; ters kayıt borcu ${change} azaltır ve ödenen anapara kullanılan krediyi aşar. Önce ilgili Kredi Geri Ödemesi'ni ters kaydedin.`;
+    if (action === "correct:loan_draw") return `Kredi Kullanımı bu tutara düzeltilemez: ${label} kredisinin ${when}kalan borcu ${left}; düzeltme borcu ${change} azaltır ve ödenen anapara kullanılan krediyi aşar. Önce ilgili Kredi Geri Ödemesi'ni düzeltin ya da ters kaydedin.`;
+    if (action === "correct:loan_repay") return `Kredi Geri Ödemesi bu tutara düzeltilemez: anapara ${change} artar ve ${label} kredisinin ${when}kalan borcunu (${left}) aşar. Faiz ayrı alana (Faiz) yazılır.`;
+    if (action === "loan_repay") return `Kredi Geri Ödemesi'nde anapara (${change}) ${label} kredisinin ${when}kalan borcunu (${left}) aşamaz. Faiz ayrı alana (Faiz) yazılır.`;
+    return `Bu işlem ${label} kredisinin ${when}kalan borcunu (${left}) ${change} azaltır; kredi hesabı borç bakiyesine geçemez (ödenen anapara kullanılan krediyi aşar).`;
+  }
+  /**
+   * bank.post adım 8 (guard): hesap bazında son durum. Bakiyesi azalan hesapta bakiye = min(date günündeki, bütün hareketlerle) + limit (KMH ya da
+   * kart limiti) eksiyse Uyar → 409 cash-negative + accountId (cashForce / negativeOk geçer), Engelle → 409 cash-blocked + accountId (hakem K5). Kredi hesabında anapara kalan borcu aşamaz.
+   */
+  function guardNegative(before, { date, force = false, ctx = null, settled = null, action = "" }) {
     if (!before?.size || !date) return;
     const fallback = settings().negative?.policy || "warn";
     for (const [ref, wasTotal] of before) {
@@ -397,9 +412,15 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       if (change > 0) {
         // GG2 (düşük): Kredi Geri Ödemesi'nde anapara kalan kredi borcunu aşamaz (300 borç bakiyesi artıya geçmez).
         const loan = accounts.rowOf(ref);
-        if (loan?.kind !== "loan" || total <= 0) continue;
-        const left = Math.max(0, -was);
-        throw bad(409, `Kredi Geri Ödemesi'nde anapara (${tlText(change)}) ${labelOf(loan)} kredisinin kalan borcunu (${tlText(left)}) aşamaz. Faiz ayrı alana (Faiz) yazılır.`, "bank-loan-exceeds", { accountId: loan.id, leftMinor: left, field: "amount" });
+        if (loan?.kind !== "loan") continue;
+        // Hakem K8 (b) (plan §3.9 "min(işlem günündeki, bütün hareketlerle)"): kalan borç işlem gününde de aşılmaz. Önceden yalnız bütün
+        // hareketlerle bakılıyordu: kullanım 07.10, geri ödeme 03.10 → 200, 03–06.10 arasında 300 ters (borç) bakiye.
+        const atDay = total > 0 || money.afterIsEmpty(ref, date) ? total : total - money.refTotal({ ref, after: date }).cents;
+        if (total <= 0 && atDay <= 0) continue;
+        const onDay = total <= 0;
+        const left = Math.max(0, -((onDay ? atDay : total) - change));
+        const when = onDay ? `${dayText(date)} tarihindeki ` : "";
+        throw bad(409, loanExceedsText(action, { label: labelOf(loan), change: tlText(change), left: tlText(left), when }), "bank-loan-exceeds", { accountId: loan.id, leftMinor: left, field: "amount", ...(onDay ? { date } : {}) });
       }
       if (change === 0) continue;
       const row = accounts.rowOf(ref);
@@ -415,8 +436,8 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       const limitText = limit ? ` (${row.kind === "card" ? "kart" : "KMH"} limiti ${tlText(limit)} dahil kullanılabilir ${tlText(prior + limit)})` : "";
       const base = `${labelOf(row)} hesabında ${tlText(prior)} var${limitText}; bu işlemle bakiye ${tlText(-change)} azalır ve ${tlText(after)} olur (eksi bakiye).`;
       const extra = { accountId: row.id, balanceMinor: prior, afterMinor: after, limitMinor: limit, field: "amount" };
-      if (policy === "block") throw bad(409, `${base} Bu hesapta eksi bakiyeye izin verilmiyor (Hesap Detayı → Düzenle → Eksi Bakiye ya da Banka Ayarları → Eksi Bakiye).`, "bank-blocked", extra);
-      throw bad(409, `${base} Yine de kaydedilsin mi?`, "bank-negative", extra);
+      if (policy === "block") throw bad(409, `${base} Bu hesapta eksi bakiyeye izin verilmiyor (Hesap Detayı → Düzenle → Eksi Bakiye ya da Banka Ayarları → Eksi Bakiye).`, "cash-blocked", extra);
+      throw bad(409, `${base} Yine de kaydedilsin mi?`, "cash-negative", extra);
     }
   }
 
@@ -446,7 +467,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
         Object.assign(auditEntry.payload, auditOf(spec, written));
         return { id: written.id };
       },
-      guard: (_, ctx) => guardNegative(before, { date, force: body?.negativeOk === true, ctx, settled }),
+      guard: (_, ctx) => guardNegative(before, { date, force: negativeConfirmed(body), ctx, settled, action: kind }),
       audit: auditEntry,
     });
     primeTotals(settled, result);
@@ -496,13 +517,15 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const auditEntry = { type: "bank.voucher.reversed", entityId: event.id, payload: {} };
     let date = "";
     let before = null;
+    let action = "";
     const settled = new Map();
     const result = bank.post({
       user, module: "bank", op: "delete", requestId, scope: "bank.event.reverse", body: { ...(body || {}), eventId: event.id }, prev: prevOf(event),
       // K7: gelir fişinin (faiz geliri, kredi kullanımı…) ters kaydı da hesabı eksiye düşürebilir.
-      guard: (_, ctx) => guardNegative(before, { date, force: body?.negativeOk === true, ctx, settled }),
+      guard: (_, ctx) => guardNegative(before, { date, force: negativeConfirmed(body), ctx, settled, action }),
       write: () => {
         const current = fresh(event.id);
+        action = `reverse:${current.type}`;
         before = balancesOf([current.bank_ref, current.counter_ref]);
         const done = reverseInside(user, current, { reason: limited(body?.reason, 300, "Neden") });
         date = fresh(done.id)?.date || current.date;
@@ -526,12 +549,14 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     let reversalId = "";
     let date = "";
     let before = null;
+    let action = "";
     const settled = new Map();
     const result = bank.post({
       user, module: "bank", op: "update", requestId, scope: "bank.event.correct", body: { ...(body || {}), eventId: event.id }, prev: prevOf(event),
-      guard: (_, ctx) => guardNegative(before, { date, force: body?.negativeOk === true, ctx, settled }),
+      guard: (_, ctx) => guardNegative(before, { date, force: negativeConfirmed(body), ctx, settled, action }),
       write: () => {
         const current = fresh(event.id);
+        action = `correct:${current.type}`;
         assertReversible(current);
         if (given(body?.type) && text(body.type) !== current.type) throw bad(400, "Düzelt'te işlemin türü değişmez. Başka türde işlem için Ters Kaydet ile iptal edip yeni işlem girin.", "bank-correct-type", { field: "type" });
         const card = movements.cardOf(current);
@@ -716,12 +741,14 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const similarOk = body?.similarOk === true;
     let date = "";
     let before = null;
+    let action = "";
     const settled = new Map();
     const result = bank.post({
       user, module: "bank", op: "create", requestId, scope: "bank.plan.execute", body: { ...(body || {}), planId: id }, similarOk,
-      guard: (_, ctx) => guardNegative(before, { date, force: body?.negativeOk === true, ctx, settled }),
+      guard: (_, ctx) => guardNegative(before, { date, force: negativeConfirmed(body), ctx, settled, action }),
       write: () => {
         const plan = mustPlan(id);
+        action = plan.kind;
         if (plan.status === "done") throw bad(409, "Bu planlı işlem zaten gerçekleşti.", "bank-plan-done", { planId: id });
         if (plan.status === "cancelled") throw bad(409, "Bu planlı işlem iptal edilmiş.", "bank-plan-cancelled", { planId: id });
         assertExpected(plan, body);

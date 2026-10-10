@@ -1,0 +1,31 @@
+{
+  "ad": "statik-tarayicilar-ed9ad15",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/kanit-araci.test.mjs",
+  "commit": "ed9ad15bbe5045d54a6c94dc43f0c0d42982a352",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 22,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:04:04.022Z",
+  "sure_sn": 3.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 43,
+    "gecen": 43,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/statik-tarayicilar-ed9ad15.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "8c47fe59a4f18365645fc7c9af4f772021fafafa71cf13eaa3a90f7b9227083b",
+  "ham_cikti_bayt": 11824
+}

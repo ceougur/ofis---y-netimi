@@ -1144,6 +1144,26 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   geri ödenmemiş iadenin asıl faturayı AŞAN alacağı carinin en eski açık borcunu kapatır (2.0.15'ten beri R1c; 2.0.17 m5 yön kuralıyla
   tutarlı; Logo/Mikro otomatik kapaması gibi). Kâhin dili §7 kural 6'ya bu SPEC olarak eklenir (programdan türetilmiş beklenen değil);
   modelleri program kodunu görmeyen ajan günceller (T6/T7 son kâhin koşusundan önce).
+  İSTEK (kullanıcı, 10.10.2026: "sheets bağlanırsa programın oraya da yedek alıp almadığını da denetle"). KODDAN İLK BAKIŞ: program
+  Sheets'e HİÇ yazmaz (sheets.mjs yalnız dışa aktarım adresinden okur; yedek kodunda Sheets yok); bulut yedeği ayrı ayar (Yönetim → Drive:
+  klasör yolu ya da Drive bağlantısı, cloud-backup.mjs). Sheets'ten gelen tablo satırları şirket veri tabanına kopyalanır → yedeğin içinde
+  olmalı. DENETİM ajanda (test: Sheets bağlı şirkette yedek → Sheets'e yazma isteği yok, yedek dosyasında tablo satırları var, Drive
+  kapalıyken yalnız yerel, Drive klasörü açıkken kopya orada, iki şirket, geri yükleme sonrası Sheets bağı); sonuç kullanıcıya.
+  ŞİKÂYET (kullanıcı, 10.10.2026: "yedek için Drive bağlanınca Drive'a otomatik yedek ya da Şimdi Yedek Al ile yedek almadığı
+  kanaatindeyim") → İLK ÖNCELİK, aynı ajanda: klasör ve bağlantı kipi × Şimdi Yedek Al (Tüm/Yalnız), otomatik, güvenlik yedeği,
+  bootstrap yedek, iki şirket; bağlantı kipinin lisans servisi ucu üretimde var mı; 2.0.20 şirket klasörü taşımasından sonra gerileme
+  var mı. Hata çıkarsa önce kullanıcıya listelenir, kırmızı test → düzeltme (temel 2.1.0'a).
+  İLK BULGU (ana oturum, 10.10.2026; GitHub'dan + koddan): Google Drive BAĞLANTISI kipi (https://drive.google.com/drive/folders/…) hiç
+  çalışmıyor — program lisans servisinden `POST /v1/yedek/oturum` ister, ama site deposu ceougur/destekofis `web/api/lisans/v1/` altında
+  yalnız activate/check/durum var, yedek/oturum YOK (docs/DRIVE-YEDEK.md'de tasarlanmış, hiç yapılmamış). 2.0.2'den (27.09.2026) beri bu
+  kipte hiçbir yedek Drive'a gitmedi; yerel yedek alınıyor, hata yalnız Yönetim'deki durum satırında (lastError). KLASÖR kipi (Drive
+  masaüstü uygulamasının senkron klasörü) ayrı; ölçümü ajanda. Kullanıcıya bildirildi.
+  KARAR (kullanıcı, 10.10.2026: "programın Drive yedekleme bölümünü kaldıralım, kılavuzdan ve web sitesinden de kaldıralım; şimdilik gerek
+  yok; müşterileri de yanlış yönlendirmiş olmayalım"): Drive yedeği (bağlantı ve klasör kipi) 2.1.0'da PROGRAMDAN KALKAR — Yönetim'deki
+  bölüm, ayar ucu, yedek sonrası kopya (afterBackup/mirror), ilgili bildirim/yazılar; yerel yedek (backups\<kod> - <ad>\) aynen kalır.
+  Eski kurulumda kayıtlı Drive ayarı yok sayılır (veri silinmez, kopya alınmaz). KILAVUZ'dan Drive anlatımı ve SİTE'den (ceougur/destekofis)
+  Drive yedeği vaadi kalkar (site PR'ı yayın teslimiyle). Teslim notunda açıkça yazılır: "Drive'a yedek kaldırıldı; yedekler bilgisayardaki
+  backups klasöründe". "Google Drive'a Bağlan" (OAuth) ileride, kullanıcı isterse.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart

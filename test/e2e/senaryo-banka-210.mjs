@@ -72,6 +72,8 @@ const browser = await chromium.launch();
 const errors = [];
 // Gezinme/kapanmayla tarayıcının kestiği istekten doğan "Failed to fetch" hatası sayılmaz; eşleşmeyen sayılır (tarayici-kesme.mjs).
 const cutWatches = [];
+// Tarayıcı hatası hangi adımda oldu (10.10.2026; hakem K3/K5 koşusunda bir kez görülen "TRPCClientError: Failed to fetch"in yerini bulmak için).
+let stepNow = "";
 
 /** Geçerli Türkiye IBAN'ı (mod 97). */
 function trIban(bankCode, account) {
@@ -113,7 +115,20 @@ const companyTag = async () => {
 // after: adım yarıda kalsa da koşan son iş (ör. 001'e dönüş). CI 460: adım 9b şirket 002'deyken düştü, 001'e dönüş satırları koşmadı ve
 // sonraki 22 denetim 002'de zincirleme kırıldı; artık dönüş finally'de, adımın kendi hatası tek başına sayılır.
 const step = async (title, fn, { after = null } = {}) => {
+  stepNow = title.split(" ")[0];
   console.log(`\n■ ${title}${await companyTag()}`);
+  // Ders 20: NET_LATENCY=ms ve NET_STEPS="41.,48." verilirse bu adımlarda yönetici sayfasının ağı yavaşlatılır (CDP; istek gerçekten yolda
+  // kalır — page.route gecikmesi sayfa betiğine "Failed to fetch" düşürmüyordu). Gezinti, açılıştaki tablo isteğini yolda keser mi?
+  const slow = Number(process.env.NET_LATENCY) > 0 && String(process.env.NET_STEPS || "").split(",").includes(stepNow) && admin;
+  const cdp = slow ? await admin.context().newCDPSession(admin) : null;
+  if (cdp) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: Number(process.env.NET_LATENCY), downloadThroughput: -1, uploadThroughput: -1 });
+  try {
+    await stepBody(fn, after);
+  } finally {
+    if (cdp) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }).catch(() => null);
+  }
+};
+const stepBody = async (fn, after) => {
   try {
     await fn();
   } catch (error) {
@@ -135,16 +150,33 @@ const newPage = async ({ width = 1440, height = 1000 } = {}) => {
   const context = await browser.newContext({ viewport: { width, height }, locale: "tr-TR" });
   await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
   const page = await context.newPage();
-  page.on("pageerror", error => errors.push(`pageerror ${error.message}`));
+  page.on("pageerror", error => errors.push(`pageerror [adım ${stepNow}] ${error.message}`));
   const cut = fetchCutWatch(page);
   cutWatches.push(cut);
   // Beklenen retler (geçersiz IBAN 400, personelin yetkisiz isteği 403, girişten önceki oturum yoklaması 401) hata sayılmaz.
   page.on("console", message => {
-    if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`) && !cut.defer(`console ${message.text()}`)) errors.push(`console ${message.text()}`);
+    if (message.type() === "error" && !/status of 40[0139]|api\/auth\/me|Failed to load resource/.test(`${message.text()} ${message.location().url}`) && !cut.defer(`console [adım ${stepNow}] ${message.text()}`)) errors.push(`console [adım ${stepNow}] ${message.text()}`);
   });
+  // E2E_TANI=1: kesilen /api/ isteklerinin adımı ve nedeni (hata ayıklama satırı; denetim değil).
+  if (process.env.E2E_TANI === "1" || Number(process.env.TRPC_DELAY) > 0 || Number(process.env.NET_LATENCY) > 0) {
+    page.on("requestfailed", request => {
+      if (new URL(request.url()).pathname.startsWith("/api/")) console.log(`  · [adım ${stepNow}] kesilen istek ${request.method()} ${new URL(request.url()).pathname}: ${request.failure()?.errorText || ""}`);
+    });
+  }
+  // Ders 20 (10.10.2026): TRPC_DELAY=ms verilirse ana tablonun /api/trpc/sheets.getRows yanıtı geciktirilir — "sayfa açıldıktan 700 ms
+  // sonra yeniden gezinti, tablo isteği hâlâ yolda" ön koşulu zorla kurulur (TRPCClientError: Failed to fetch yarışı).
+  if (Number(process.env.TRPC_DELAY) > 0) {
+    await page.route(url => new URL(url).pathname === "/api/trpc/sheets.getRows", async route => {
+      trpcDelayed += 1;
+      console.log(`  · [adım ${stepNow}] sheets.getRows geciktiriliyor (${process.env.TRPC_DELAY} ms)`);
+      await new Promise(resolve => setTimeout(resolve, Number(process.env.TRPC_DELAY)));
+      await route.continue().catch(() => null);
+    });
+  }
   await installPageClock(page, clock);
   return page;
 };
+let trpcDelayed = 0;
 const login = async (page, username, password) => {
   await page.goto(`${BASE}/`);
   await page.fill("#hof-auth input[name=username]", username);
@@ -1425,8 +1457,9 @@ try {
     ok((await eventsOf(NEG.id)) === before + 1 && (await balanceOf(NEG.id)) === -40_000, `Yine de Kaydet: tek fiş, bakiye −400 (${(await balanceOf(NEG.id)) / 100})`);
     // Engelle (hesap bazında): soru yok, kayıt yok.
     await must("Engelle", api.put(`/api/workspace/bank/accounts/${NEG.id}`, { negativePolicy: "block" }));
-    const blocked = await api.post("/api/workspace/bank/vouchers", { type: "other_out", accountId: NEG.id, amount: "1", description: "Engelli", negativeOk: true });
-    ok(blocked.status === 409 && JSON.stringify(blocked.data).includes("bank-blocked") && (await balanceOf(NEG.id)) === -40_000, `Engelle: negativeOk ile bile 409 bank-blocked (${blocked.status})`);
+    // Hakem K5 (plan §7, §12.5 adım 37): hesap bazlı ret cash-blocked + accountId; onay bayrakları (cashForce, eşanlamlı negativeOk) geçmez.
+    const blocked = await api.post("/api/workspace/bank/vouchers", { type: "other_out", accountId: NEG.id, amount: "1", description: "Engelli", negativeOk: true, cashForce: true });
+    ok(blocked.status === 409 && JSON.stringify(blocked.data).includes("cash-blocked") && JSON.stringify(blocked.data).includes(NEG.id) && (await balanceOf(NEG.id)) === -40_000, `Engelle: cashForce ve negativeOk ile bile 409 cash-blocked + accountId (${blocked.status})`);
   });
 
   await step("24f. GG2 (L6/L9/F10): Ayarlar'da kaydedilmemiş değişiklikle Esc soru sorar; Vazgeç pencerede kalır; yeniden açılışta Gelişmiş kapalı", async () => {
@@ -2179,6 +2212,101 @@ try {
     ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (bölüm 5)");
   }, { after: backToFirst });
 
+  // Hakem K5 (10.10.2026; plan §7 "cash-negative ve cash-blocked kodlarına accountId", §3.9 cashForce): banka hesabının eksi bakiye reddi Kasa'nınkiyle
+  // aynı kod + accountId. Aynı istekte Kasa ve banka hesabı eksiye düşerse önce Kasa sorulur (HOF.api); Kasa'nın onayı banka hesabını sessizce geçmez
+  // (HOF.api negativeOk:false ekler) — Garanti'nin sorusu işlemin adıyla ("Yine de İptal Et"), hesabın adı ve bakiyesiyle ayrıca gelir.
+  // act: "cancel" (İptal Et; gövdeli istek) ya da "delete" (Sil; silmede onay adrese eklenir: ?cashForce=1&negativeOk=0).
+  const mixedNegative = async act => {
+    const words = act === "cancel" ? { ask: "Yine de iptal edilsin mi?", yes: "Yine de İptal Et", status: "cancelled" } : { ask: "Yine de silinsin mi?", yes: "Yine de Sil", status: "silindi" };
+    await selectKabul();
+    const kasa = async () => (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash;
+    const k0 = await kasa();
+    // Kasa tam 0'a (önceki adım onu −5.000'de bırakır): eksideyse giriş, artıdaysa çıkış.
+    if (k0 !== 0) await must("Kasa'yı sıfırla", api.post("/api/workspace/cash", { kind: k0 > 0 ? "out" : "in", amount: Math.abs(k0).toFixed(2).replace(".", ","), date: "2026-10-08", description: `K5 sıfırlama ${act}`, cashForce: true }));
+    const g0 = await kabulBalance("Garanti BBVA");
+    const doc = await must("nakit + havale peşinli satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: kabul.abc.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ name: `Hizmet K5 ${act}`, qty: 1, unitPrice: 10000, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount: "5000", method: "cash", lineKey: `k5-nakit-${act}` }, { amount: "5000", method: "bank", bankAccountId: kabul.garanti.id, lineKey: `k5-havale-${act}` }], cheques: [], endorse: [], rest: "open" }, force: true, similarOk: true }));
+    await must("Kasa'dan ödeme", api.post("/api/workspace/cash", { kind: "out", amount: "5000", date: "2026-10-08", description: `K5 kira ${act}` }));
+    ok((await kasa()) === 0 && (await kabulBalance("Garanti BBVA")) === g0 + 5000, `hazırlık: Kasa 0, Garanti ${g0 + 5000} (${await kabulBalance("Garanti BBVA")})`);
+    const inv = `${modal} .hof-invoices-modal`;
+    await admin.evaluate(id => window.HOF.invoices.openDoc(id), doc.id);
+    await admin.waitForSelector(`${inv} [data-act="${act}"]`, { timeout: 10000 });
+    await admin.click(`${inv} [data-act="${act}"]`);
+    await admin.waitForSelector(`${reasonForm} [name="reason"]`, { timeout: 8000 });
+    await admin.fill(`${reasonForm} [name="reason"]`, `hakem K5 ekran denemesi (${act})`);
+    await admin.click(`${reasonForm} button[type="submit"]`);
+    // Gelen bütün soruları sırayla oku ve onayla (en çok 4).
+    const asked = [];
+    for (let round = 0; round < 4; round += 1) {
+      const appeared = await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: round ? 4000 : 8000 }).then(() => true).catch(() => false);
+      if (!appeared) break;
+      asked.push({ title: await textOf(admin, `${top} .hof-modal-title`), text: await textOf(admin, `${top} .hof-modal-text`), yes: await textOf(admin, `${top} [data-answer="yes"]`) });
+      if (asked.length === 2) await shot(admin, `hakem-k5-kasa-sonra-garanti-sorusu-${act}`);
+      await admin.waitForTimeout(400);
+      await admin.click(`${top} [data-answer="yes"]`);
+      await admin.waitForTimeout(1000);
+    }
+    ok(asked.length >= 2, `en az iki soru (Kasa ve Garanti): ${asked.map(q => q.title).join(" → ")}`);
+    ok(asked[0]?.title === "Kasa Eksiye Düşecek" && !has(asked[0]?.text, "Garanti"), `ilk soru Kasa'nın: ${asked[0]?.title} · ${asked[0]?.text?.slice(0, 120)}`);
+    const bankQuestion = asked.find(q => q.title === "Eksi Bakiye");
+    ok(Boolean(bankQuestion), `Kasa onayından sonra Garanti ayrıca soruldu: ${asked.map(q => q.title).join(" → ")}`);
+    ok(has(bankQuestion?.text, `Garanti BBVA · Ana TL Hesabı hesabında`) && has(bankQuestion?.text, words.ask) && bankQuestion?.yes === words.yes, `Garanti sorusu hesabın adı ve bakiyesiyle, işlemin adıyla: ${bankQuestion?.text?.slice(0, 200)} · “${bankQuestion?.yes}”`);
+    ok((await docStatus(doc.id)) === words.status, `onaylarla fatura ${words.status} (${await docStatus(doc.id)})`);
+    ok((await kasa()) === -5000 && (await kabulBalance("Garanti BBVA")) === g0, `Kasa −5.000, Garanti ${g0} (${await kasa()} · ${await kabulBalance("Garanti BBVA")})`);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, `Kabul Şirketi'nde mutabakat ok (hakem K5, ${act})`);
+    await closeAll(admin);
+  };
+  await step("40b. Hakem K5: aynı iptalde Kasa ve Garanti eksiye düşer → önce Kasa sorusu, Kasa onayı Garanti'yi sessizce geçmez: Garanti'nin Eksi Bakiye sorusu (“Yine de İptal Et”, adı ve bakiyesiyle); onaylarla iptal; Kasa −5.000, Garanti aynı", () => mixedNegative("cancel"), { after: backToFirst });
+  await step("40c. Hakem K5: aynı kalıp Fatura Sil'de (onay adreste: ?cashForce=1&negativeOk=0) → Kasa sorusu, sonra Garanti'nin “Yine de Sil” sorusu; onaylarla silinir", () => mixedNegative("delete"), { after: backToFirst });
+
+  // Hakem K3 (10.10.2026; plan §7 "Yazan her uç x-hof-request alır", §3.10/1): Kasa elle hareketi formu istek kimliğini açılışta üretir ve her
+  // gönderimde aynısını yollar. İlk yanıt ağda kaybolur (kayıt sunucuda yazıldı); kullanıcı yeniden Kaydet'e basar → ikinci satır yazılmaz, ekran
+  // "Bu işlem zaten kaydedildi (BNK-…); ikinci kez yazılmadı." der. Önceden kimlik gönderilmiyordu ve sunucu da yok sayıyordu: Kasa ve 770 çift.
+  await step("40d. Hakem K3: Kasadan Ödeme — ilk yanıt ağda kaybolur, Kaydet'e yeniden basılır → aynı istek kimliği, tek satır; “Bu işlem zaten kaydedildi (BNK-…)”", async () => {
+    await selectKabul();
+    const kasa = async () => (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash;
+    const rows = async () => (await must("Kasa", api.get("/api/workspace/cash"))).entries.filter(entry => entry.source === "manual" && entry.description === "K3 Kırtasiye").length;
+    const k0 = await kasa();
+    if (k0 < 1000) await must("Kasa'ya giriş", api.post("/api/workspace/cash", { kind: "in", amount: (1000 - k0).toFixed(2).replace(".", ","), date: "2026-10-08", description: "K3 sermaye" }));
+    const k1 = await kasa();
+    await admin.evaluate(() => HOF.workspace.openCash());
+    await admin.waitForSelector(`${modal} [data-add="out"]`, { timeout: 10000 });
+    await admin.click(`${modal} [data-add="out"]`);
+    const form = `${top} .hof-form`;
+    await admin.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await admin.fill(`${form} input[name="amount"]`, "250");
+    await admin.fill(`${form} input[name="description"]`, "K3 Kırtasiye");
+    const isCashPost = url => new URL(url).pathname === "/api/workspace/cash";
+    const headers = [];
+    let dropped = false;
+    await admin.route(isCashPost, async route => {
+      const request = route.request();
+      if (request.method() !== "POST") return route.continue();
+      headers.push(request.headers()["x-hof-request"] || "");
+      if (dropped) return route.continue();
+      dropped = true;
+      await route.fetch(); // istek sunucuya ulaşır ve yazılır; yanıt tarayıcıya ulaşmaz (ağ kopması)
+      return route.abort("connectionreset");
+    });
+    try {
+      await admin.click(`${form} button[type="submit"]`);
+      await admin.waitForTimeout(1500);
+      const firstError = await textOf(admin, `${form} .hof-form-error`);
+      ok((await rows()) === 1 && (await kasa()) === k1 - 250, `ilk gönderim sunucuda yazıldı, yanıt kayboldu; form açık: “${firstError}”`);
+      await admin.click(`${form} button[type="submit"]`);
+      const toast = await lastToast(admin, /zaten kaydedildi/);
+      ok(headers.length === 2 && /^[0-9a-f]{32}$/.test(headers[0]) && headers[0] === headers[1], `iki gönderim aynı istek kimliğiyle: ${headers.join(" · ")}`);
+      ok((await rows()) === 1 && (await kasa()) === k1 - 250, `tek satır, Kasa ${k1 - 250} (${await rows()} satır · ${await kasa()})`);
+      ok(/^Bu işlem zaten kaydedildi \(BNK-\d{4}-\d+\); ikinci kez yazılmadı\.$/.test(toast), `ekran bildirimi: “${toast}”`);
+      await shot(admin, "hakem-k3-kasa-yineleme");
+    } finally {
+      await admin.unroute(isCashPost);
+    }
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (hakem K3)");
+    await closeAll(admin);
+  }, { after: backToFirst });
+
   // ---------- Bölüm 6 (Aşama 14, daraltılmış: Banka Raporları ve K10; plan §8.4, §8.9, §8.10, §3.4) ----------
   // Bağımsız beklenen (elle): Ziraat 100.000 + 20.000 − 10.000 − 20.005,25 − 10,50 − 2.000 = 87.984,25; Garanti 50.000 + 20.000 + 1.500 + 1.000
   // = 72.500; Gerçek Banka 160.484,25; Kart ve Kredi Borcu 5.000 − 2.000 = 3.000; Hesabı Atanmamış 5.000 (eski havale). Bu yıl (Gerçek Banka):
@@ -2529,5 +2657,6 @@ try {
   await app.close();
   fs.rmSync(root, { recursive: true, force: true });
 }
+if (Number(process.env.TRPC_DELAY) > 0) console.log(`\nTRPC_DELAY=${process.env.TRPC_DELAY}: geciktirilen sheets.getRows isteği ${trpcDelayed}`);
 console.log(`\n${failed ? "BAŞARISIZ" : "TAMAM"}: ${passed} denetim geçti, ${failed} başarısız. Ekran görüntüleri: ${OUT}`);
 process.exitCode = failed ? 1 : 0;

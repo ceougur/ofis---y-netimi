@@ -29,6 +29,19 @@ export const bankPassiveError = row =>
 const PERMISSION_LABEL = new Map(PERMISSION_GROUPS.flatMap(group => group.items.map(([key, label]) => [key, label])));
 
 /**
+ * Hakem K5 (plan §3.9 "Uyarıyı geçmek ("Yine de Kaydet", cashForce)", §7): hesap bazlı eksi bakiye uyarısının (409 cash-negative + accountId) onayı.
+ * Planın bayrağı cashForce (gövde ya da ?cashForce=1); eski istemcinin negativeOk'u (?negativeOk=1) eşanlamlı. Ekran Kasa sorusunu onaylayıp aynı
+ * isteği yeniden gönderirken (HOF.api) banka hesabının sorusunu henüz görmediyse negativeOk:false (?negativeOk=0) ekler: o zaman cashForce yalnız
+ * Kasa'yı geçer, banka hesabı ayrıca sorulur (tek onay iki hesabı birden sessizce geçmesin). Engelle'yi hiçbir bayrak geçmez (vouchers.mjs).
+ */
+export function negativeConfirmed(body, url = null) {
+  const query = url?.searchParams;
+  if (body?.negativeOk === true || query?.get("negativeOk") === "1") return true;
+  if (body?.negativeOk === false || query?.get("negativeOk") === "0") return false;
+  return body?.cashForce === true || query?.get("cashForce") === "1";
+}
+
+/**
  * @param {{ store, accounts, negative: { balancesOf, guardNegative, primeTotals } }} options  accounts: banka hesap servisi (rowOf, carryBoundary)
  */
 export function createModuleBank({ store, accounts, negative, legacy = () => false }) {
@@ -107,7 +120,7 @@ const NOOP_GUARD = Object.freeze({ capture() {}, guard: null, prime() {} });
  *   ref({ method, value, date, previous, changed })  → fin_ref (pickRef; banka modülü yoksa '')
  *   negative(refs, date, force)                     → K7 { capture, guard, prime } (banka modülü yoksa etkisiz)
  *   requireOut(user, out, ref)                      → bankadan çıkış "Banka Hareketi Girme ve Bankadan Çıkış" (bank.move) ister (403 bank-permission)
- *   forced(body, url)                               → negativeOk (gövde ya da ?negativeOk=1)
+ *   forced(body, url)                               → eksi bakiye onayı (negativeConfirmed: cashForce ya da eşanlamlı negativeOk)
  *   requestId(req, body)                            → x-hof-request ya da gövdedeki requestId
  *   eligible()                                      → seçilebilir hesaplar (K7 ön yakalamada "tek hesapta kendiliğinden" seçimi kapsamak için)
  *   restore(user, { refs, date, force, permission }) → Silinenler'den geri yükleme (plan §3.8, §9.2/7): banka bağlı satırda kaynak modül yetkisi +
@@ -121,7 +134,7 @@ export function bankForm(bankModule = () => null) {
     requireOut(user, out, ref) {
       if (out && ref && !canUser(user, "bank.move")) throw new HttpError(403, "Bankadan ödeme için \"Banka Hareketi Girme ve Bankadan Çıkış\" yetkisi gerekir.", { code: "bank-permission", permission: "bank.move" });
     },
-    forced: (body, url) => body?.negativeOk === true || url?.searchParams?.get("negativeOk") === "1",
+    forced: (body, url) => negativeConfirmed(body, url),
     requestId: (req, body) => text(req?.headers?.["x-hof-request"]) || text(body?.requestId),
     eligible: () => module()?.eligible() || [],
     restore(user, { refs = [], date = "", force = false, permission = "" } = {}) {

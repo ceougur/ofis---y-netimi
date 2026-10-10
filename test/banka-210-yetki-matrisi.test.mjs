@@ -302,7 +302,7 @@ describe("Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yön�
   });
   after(() => ctx?.server.close());
 
-  it("Y3: iki ayrı muhasebe kullanıcısı (iki oturum, iki bağlantı) aynı anda Engelle'deki Garanti'den XYZ ve KLM'ye 40.000 → biri 200, öbürü 409 bank-blocked", async () => {
+  it("Y3: iki ayrı muhasebe kullanıcısı (iki oturum, iki bağlantı) aynı anda Engelle'deki Garanti'den XYZ ve KLM'ye 40.000 → biri 200, öbürü 409 cash-blocked", async () => {
     const xyz = await must("XYZ", ctx.api.post("/api/workspace/accounts", { name: "XYZ Ltd.", type: "supplier", registeredOn: "2026-09-01" }));
     const klm = await must("KLM", ctx.api.post("/api/workspace/accounts", { name: "KLM Ltd.", type: "supplier", registeredOn: "2026-09-01" }));
     // Garanti 50.000 → 70.000 (Ziraat'ten), Engelle.
@@ -322,7 +322,7 @@ describe("Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yön�
     const firstReply = results.map(res => res.received).sort((a, b) => (a < b ? -1 : 1))[0];
     assert.ok(sent.every(at => at < firstReply), "iki istek de ilk yanıttan önce gönderildi");
     assert.deepEqual(results.map(res => res.status).sort(), [200, 409], JSON.stringify(results.map(res => [res.status, res.code])));
-    assert.equal(results.find(res => res.status === 409).code, "bank-blocked");
+    assert.equal(results.find(res => res.status === 409).code, "cash-blocked");
     const garanti = await must("Garanti", ctx.api.get(`${BANK}/accounts/${acc.garanti.id}`));
     assert.equal(garanti.balanceMinor, 3_000_000, "Garanti 70.000 − 40.000 = 30.000; eksiye düşmedi");
     const paid = ctx.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id IN (?, ?) AND kind = 'out'", xyz.id, klm.id).n;

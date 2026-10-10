@@ -6,7 +6,7 @@
 //   K2  Aynı istek iki kez (çift tıklama) → iki transfer? (tek transfer, replayed)
 //   K3  USD hesaba / pasif hesaba transfer (400 bank-currency / 400 bank-account-invalid); açılıştan önceki tarih (409)
 //   K4  "Transfer Yapma" yetkisi kaldırılmış Kasa yöneticisi transfer yapar (403); göçün verdiği muhasebe yapar (200); personel (403)
-//   K5  Bankadan kasaya aktarımla Bakiye Doğrulandı hesabı eksiye düşür: Uyar (409 bank-negative → negativeOk 200), Engelle (409 bank-blocked)
+//   K5  Bankadan kasaya aktarımla Bakiye Doğrulandı hesabı eksiye düşür: Uyar (409 cash-negative → negativeOk 200), Engelle (409 cash-blocked)
 //   K6  Kasadan bankaya yatırmayı sil → hesap eksiye düşer mi? (K7 sorar)
 //   K7  Kasa penceresine banka satırı sızar mı? (yalnız nakit satır; Kasa "Bugün Giriş" nakit bacağı sayar)
 //   K8  Kasa elle girişinde havale yolu (400 cash-method — mevcut kural)
@@ -134,22 +134,22 @@ describe("Aşama 6 — hesap kuralları, yetki, K7", () => {
     assert.equal(ctx.store.get("SELECT fin_ref FROM cash_entries WHERE transfer_id = (SELECT transfer_id FROM cash_entries WHERE id = ?) AND method = 'bank'", old.id).fin_ref, "");
   });
 
-  it("K5: Uyar'da eksiye düşüren aktarım 409 bank-negative → negativeOk 200; Engelle 409 bank-blocked", async () => {
+  it("K5: Uyar'da eksiye düşüren aktarım 409 cash-negative → negativeOk 200; Engelle 409 cash-blocked", async () => {
     // A: 5.000 açılış + 500 yatırma = 5.500
     const warn = await ctx.api.post(TRANSFER, { direction: "to-cash", amount: "6.000", date: TODAY, bankAccountId: a.id });
-    expectStatus(warn, 409, "bank-negative", "Uyar");
+    expectStatus(warn, 409, "cash-negative", "Uyar");
     await must("Yine de Kaydet", ctx.api.post(TRANSFER, { direction: "to-cash", amount: "6.000", date: TODAY, bankAccountId: a.id, negativeOk: true }));
     assert.equal(await balanceOf(ctx.api, a), -500);
     await must("Engelle", ctx.api.put(`${BANK}/accounts/${a.id}`, { negativePolicy: "block" }));
-    expectStatus(await ctx.api.post(TRANSFER, { direction: "to-cash", amount: "1", date: TODAY, bankAccountId: a.id, negativeOk: true }), 409, "bank-blocked", "Engelle");
+    expectStatus(await ctx.api.post(TRANSFER, { direction: "to-cash", amount: "1", date: TODAY, bankAccountId: a.id, negativeOk: true }), 409, "cash-blocked", "Engelle");
     // Kasadan bankaya yatırma hesabı artırır: Engelle'de de geçer.
     await must("yatır", ctx.api.post(TRANSFER, { direction: "to-bank", amount: "2.000", date: TODAY, bankAccountId: a.id }));
     assert.equal(await balanceOf(ctx.api, a), 1500);
   });
 
-  it("K6: kasadan bankaya yatırmayı silmek Engelle'deki hesabı eksiye düşürürse 409 bank-blocked", async () => {
+  it("K6: kasadan bankaya yatırmayı silmek Engelle'deki hesabı eksiye düşürürse 409 cash-blocked", async () => {
     const id = ctx.store.get("SELECT id FROM cash_entries WHERE method = 'cash' AND kind = 'out' AND amount = 2000").id;
-    expectStatus(await ctx.api.del(`/api/workspace/cash/${id}`), 409, "bank-blocked", "yatırmayı sil");
+    expectStatus(await ctx.api.del(`/api/workspace/cash/${id}`), 409, "cash-blocked", "yatırmayı sil");
     assert.equal(await balanceOf(ctx.api, a), 1500);
     await integrityOk(ctx.api, "K6");
   });

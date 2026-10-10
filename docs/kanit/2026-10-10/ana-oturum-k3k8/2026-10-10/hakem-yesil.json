@@ -1,0 +1,32 @@
+{
+  "ad": "hakem-yesil",
+  "komut": "node --test test/hakem-k3-kasa-istek-kimligi.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs test/hakem-k5-banka-eksi-kodu.test.mjs test/hakem-k7-kmh.test.mjs test/hakem-k8-kredi.test.mjs",
+  "commit": "507f0e16101462e29f0e30eb18c458eedbe32942",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 115,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:28:18.500Z",
+  "sure_sn": 6.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 37,
+    "gecen": 37,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-k3k8/2026-10-10/hakem-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "445720d55fe16a4bd3d2afaf70329ee5bb5d4b2bd16c34abdc07ede9e7382fb2",
+  "ham_cikti_bayt": 14594
+}
