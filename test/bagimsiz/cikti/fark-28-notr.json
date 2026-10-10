@@ -1,0 +1,377 @@
+{
+  "adimSayisi": 620,
+  "alternatifSecimi": {
+    "a": {
+      "programlaFark": 6,
+      "secilen": 3,
+      "toplam": 4
+    },
+    "b": {
+      "programlaFark": 6,
+      "secilen": 3,
+      "toplam": 4
+    },
+    "kumelerAyni": true
+  },
+  "atlananBelirsizYaprak": 1112,
+  "belirsizSayisi": {
+    "a": 1112,
+    "b": 1112
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 6
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 6,
+  "farklar": [
+    {
+      "a": "409 cash-negative",
+      "adim": {
+        "ayniAnda": "g139",
+        "cari": "C14",
+        "hesap": "B4",
+        "id": "141",
+        "islem": "cari_odeme",
+        "kullanici": "MU",
+        "tutar": "27000,18",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.141",
+      "b": "409 cash-negative",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "141",
+        "141"
+      ],
+      "program": "409 bank-negative",
+      "programIletisi": "Ziraat Bankası · Ticari Hesap B4 hesabında −4.606,00 TL var (KMH limiti 10.998,00 TL dahil kullanılabilir 6.392,00 TL); bu işlemle bakiye 27.000,18 TL azalır ve −31.606,18 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "tetik": "141",
+      "yol": [
+        "retler",
+        "141"
+      ]
+    },
+    {
+      "a": "409 cash-negative",
+      "adim": {
+        "ayniAnda": "g252",
+        "cari": "C8",
+        "hesap": "B4",
+        "id": "254",
+        "islem": "cari_odeme",
+        "kullanici": "MU",
+        "tutar": "11528,04",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.254",
+      "b": "409 cash-negative",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "254",
+        "254"
+      ],
+      "program": "409 bank-negative",
+      "programIletisi": "Ziraat Bankası · Ticari Hesap B4 hesabında −7.671,00 TL var (KMH limiti 10.998,00 TL dahil kullanılabilir 3.327,00 TL); bu işlemle bakiye 11.528,04 TL azalır ve −19.199,04 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "tetik": "254",
+      "yol": [
+        "retler",
+        "254"
+      ]
+    },
+    {
+      "a": "409 cash-negative",
+      "adim": {
+        "cari": "C14",
+        "hesap": "B4",
+        "id": "290",
+        "islem": "cari_odeme",
+        "kullanici": "MU",
+        "tutar": "50095,13",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.290",
+      "b": "409 cash-negative",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "290",
+        "290"
+      ],
+      "program": "409 bank-negative",
+      "programIletisi": "Ziraat Bankası · Ticari Hesap B4 hesabında 21.999,53 TL var (KMH limiti 10.998,00 TL dahil kullanılabilir 32.997,53 TL); bu işlemle bakiye 50.095,13 TL azalır ve −28.095,60 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "tetik": "290",
+      "yol": [
+        "retler",
+        "290"
+      ]
+    },
+    {
+      "a": "409 cash-negative",
+      "adim": {
+        "cari": "C11",
+        "hesap": "B4",
+        "id": "374",
+        "islem": "cari_odeme",
+        "kullanici": "MU",
+        "tutar": "46848,82",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.374",
+      "b": "409 cash-negative",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "374",
+        "374"
+      ],
+      "program": "409 bank-negative",
+      "programIletisi": "Ziraat Bankası · Ticari Hesap B4 hesabında 34.705,82 TL var (KMH limiti 10.998,00 TL dahil kullanılabilir 45.703,82 TL); bu işlemle bakiye 46.848,82 TL azalır ve −12.143,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "tetik": "374",
+      "yol": [
+        "retler",
+        "374"
+      ]
+    },
+    {
+      "a": "409 cash-blocked",
+      "adim": {
+        "cari": "C8",
+        "hesap": "B4",
+        "id": "605",
+        "islem": "cari_odeme",
+        "tutar": "12562,45",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.605",
+      "b": "409 cash-blocked",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "605",
+        "605"
+      ],
+      "program": "409 bank-blocked",
+      "programIletisi": "Ziraat Bankası · Ticari Hesap B4 hesabında −1.438,03 TL var (KMH limiti 10.998,00 TL dahil kullanılabilir 9.559,97 TL); bu işlemle bakiye 12.562,45 TL azalır ve −14.000,48 TL olur (eksi bakiye). Bu hesapta eksi bakiyeye izin verilmiyor (Hesap Detayı → Düzenle → Eksi Bakiye ya da Banka Ayarları → Eksi Bakiye).",
+      "tetik": "605",
+      "yol": [
+        "retler",
+        "605"
+      ]
+    },
+    {
+      "a": "409 cash-negative",
+      "adim": {
+        "cari": "C10",
+        "hesap": "B5",
+        "id": "613",
+        "islem": "cari_odeme",
+        "tutar": "563095,4",
+        "yol": "havale"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.613",
+      "b": "409 cash-negative",
+      "desen": "A=B≠P",
+      "kokSinif": "BANKA-EKSI-KODU",
+      "pencere": [
+        "613",
+        "613"
+      ],
+      "program": "409 bank-negative",
+      "programIletisi": "Ziraat Bankası · Ticari Hesap B5 hesabında 546.554,40 TL var; bu işlemle bakiye 563.095,40 TL azalır ve −16.541,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "tetik": "613",
+      "yol": [
+        "retler",
+        "613"
+      ]
+    }
+  ],
+  "islemSayisi": 500,
+  "islemTurleri": {
+    "acilis_duzelt": 17,
+    "ayar": 3,
+    "banka_masraf": 25,
+    "cari_ac": 23,
+    "cari_odeme": 30,
+    "cari_tahsilat": 78,
+    "diger_gelir": 4,
+    "diger_gider": 7,
+    "faiz_geliri": 4,
+    "faiz_gideri": 7,
+    "fatura": 127,
+    "hesap_ac": 9,
+    "hesap_durum": 5,
+    "hesap_eksi_politika": 4,
+    "iade": 12,
+    "kasa_banka": 17,
+    "kasa_hareket": 36,
+    "kontrol": 19,
+    "kredi_odeme": 2,
+    "saat": 101,
+    "sil": 15,
+    "stok_giris": 13,
+    "taksit_tahsilat": 22,
+    "ters_kayit": 12,
+    "transfer": 16,
+    "urun_ac": 12
+  },
+  "karsilastirilanYaprak": 6874,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/senaryolar/rastgele-28-500-notr.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/senaryolar/rastgele-28-500-notr.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/senaryolar/rastgele-28-500-notr.json --cikti test/bagimsiz/cikti/ham/rastgele-28-500-notr.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 4,
+    "commit": "c51ebf82c2584efbce1aae7729d942b4bed0469c",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "rastgele-28-500-notr",
+  "senaryoDosyasi": "test/bagimsiz/cikti/senaryolar/rastgele-28-500-notr.json",
+  "siniflar": {
+    "BANKA-EKSI-KODU": {
+      "aileler": {
+        "retler:cari_odeme": 6
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 6
+      },
+      "enErkenPencere": [
+        "141",
+        "141"
+      ],
+      "ornekler": [
+        {
+          "a": "409 cash-negative",
+          "alan": "retler.141",
+          "b": "409 cash-negative",
+          "desen": "A=B≠P",
+          "pencere": [
+            "141",
+            "141"
+          ],
+          "program": "409 bank-negative"
+        },
+        {
+          "a": "409 cash-negative",
+          "alan": "retler.254",
+          "b": "409 cash-negative",
+          "desen": "A=B≠P",
+          "pencere": [
+            "254",
+            "254"
+          ],
+          "program": "409 bank-negative"
+        },
+        {
+          "a": "409 cash-negative",
+          "alan": "retler.290",
+          "b": "409 cash-negative",
+          "desen": "A=B≠P",
+          "pencere": [
+            "290",
+            "290"
+          ],
+          "program": "409 bank-negative"
+        },
+        {
+          "a": "409 cash-negative",
+          "alan": "retler.374",
+          "b": "409 cash-negative",
+          "desen": "A=B≠P",
+          "pencere": [
+            "374",
+            "374"
+          ],
+          "program": "409 bank-negative"
+        }
+      ],
+      "sonDurumYaprak": 6,
+      "yaprak": 6
+    }
+  },
+  "sureler": {
+    "a": 0.94,
+    "b": 28.55,
+    "program": 44.54
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 74201710,
+      "atlananSayisi": 0,
+      "bankaToplam": 70518033,
+      "cariToplam": -39893246,
+      "faturaSayisi": 141,
+      "kasa": 7133553,
+      "mizanAlacakToplam": 222729446,
+      "mizanBorcToplam": 222729446,
+      "ozet": {
+        "gercekBanka": 72778299,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 2260266,
+        "kasaVeGercekBanka": 79911852
+      },
+      "retSayisi": 34,
+      "taksitKalanToplam": 2187073,
+      "yinelenenSayisi": 5
+    },
+    "b": {
+      "acikFaturaToplam": 74201710,
+      "atlananSayisi": 0,
+      "bankaToplam": 70518033,
+      "cariToplam": -39893246,
+      "faturaSayisi": 141,
+      "kasa": 7133553,
+      "mizanAlacakToplam": 222729446,
+      "mizanBorcToplam": 222729446,
+      "ozet": {
+        "gercekBanka": 72778299,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 2260266,
+        "kasaVeGercekBanka": 79911852
+      },
+      "retSayisi": 34,
+      "taksitKalanToplam": 2187073,
+      "yinelenenSayisi": 5
+    },
+    "program": {
+      "acikFaturaToplam": 74201710,
+      "atlananSayisi": 0,
+      "bankaToplam": 70518033,
+      "cariToplam": -39893246,
+      "faturaSayisi": 141,
+      "kasa": 7133553,
+      "mizanAlacakToplam": 222729446,
+      "mizanBorcToplam": 222729446,
+      "ozet": {
+        "gercekBanka": 72778299,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 2260266,
+        "kasaVeGercekBanka": 79911852
+      },
+      "retSayisi": 34,
+      "taksitKalanToplam": 2187073,
+      "yinelenenSayisi": 5
+    }
+  }
+}
