@@ -9,9 +9,10 @@ const arg = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`);
   return i > 0 ? Number(process.argv[i + 1]) : fallback;
 };
-const operations = arg("islem", 2000);
+// Varsayılan planın alt sınırı (docs/BANKA-MODULU-PLAN.md §10.7: --islem 5000 --tohumlar 2); üst sınır yok.
+const operations = arg("islem", 5000);
 const firstSeed = arg("tohum", 1);
-const seeds = arg("tohumlar", 1);
+const seeds = arg("tohumlar", 2);
 const every = arg("her", 1);
 const burst = arg("eszamanli", 60);
 let failed = 0;
