@@ -197,8 +197,9 @@
       const notes = await HOF.api(`/api/workspace/case-notes?since=${encodeURIComponent(notesCursor)}`);
       const list = notesOf(notes);
       if (!list) return;
-      if (list.length) {
-        const map = parseNotes(localGet(NOTES_KEY));
+      // İmleç boşsa (açılışta notlar okunamadı) yanıt bütün notlardır: tarayıcıdaki eski liste birleştirilmez, yerine yazılır.
+      if (list.length || !notesCursor) {
+        const map = notesCursor ? parseNotes(localGet(NOTES_KEY)) : {};
         for (const item of list) map[item.caseKey] = item.note;
         localSet(NOTES_KEY, JSON.stringify(map));
       }
