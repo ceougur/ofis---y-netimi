@@ -2397,7 +2397,7 @@ try {
   // Bu dosyanın Kabul Şirketi adım 32–40'la ilerlediği için (aynı gün) adım 16 sonu ayrıca kurulur: ayrı sunucu, boş şirket, plan
   // §12.5 ön koşulları (Ürün A 10, Ürün B 25 parasız), kabul 1–16 API'den (ekrandan sınanışı adım 26–31b); mizan EKRANDAN okunur:
   // Raporlar → Tüm Raporlar → Hesap Planı Mizanı ve Banka → Alt Hesap Mizanı. Bağımsız beklenen: plan tablosu (elle yazıldı).
-  await step("41. Kabul 1–16 sonu mizanı ekrandan: Hesap Planı Mizanı 100 = 10.000 B · 102 = 160.000 B · 120 = 0 · 391 = 3.333,33 A · 500 = 150.000 A · 600 = 16.666,67 A; Fark 0; Alt Hesap Mizanı 102.01 = 90.000, 102.02 = 70.000", async () => {
+  await step("50. Kabul 1–16 sonu mizanı ekrandan: Hesap Planı Mizanı 100 = 10.000 B · 102 = 160.000 B · 120 = 0 · 391 = 3.333,33 A · 500 = 150.000 A · 600 = 16.666,67 A; Fark 0; Alt Hesap Mizanı 102.01 = 90.000, 102.02 = 70.000", async () => {
     const root2 = mkdtempSync(path.join(tmpdir(), "destekofis-banka-210-mizan-"));
     const app2 = createApp({ dataDir: path.join(root2, "data"), backupDir: path.join(root2, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f41" } });
     const base2 = `http://127.0.0.1:${(await app2.listen(0, "127.0.0.1")).port}`;
