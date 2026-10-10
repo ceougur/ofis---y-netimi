@@ -2184,7 +2184,8 @@ try {
     await selectKabul();
     const kasa = async () => (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash;
     const k0 = await kasa();
-    if (k0 > 0) await must("Kasa'yı sıfırla", api.post("/api/workspace/cash", { kind: "out", amount: k0.toFixed(2).replace(".", ","), date: "2026-10-08", description: `K5 sıfırlama ${act}` }));
+    // Kasa tam 0'a (önceki adım onu −5.000'de bırakır): eksideyse giriş, artıdaysa çıkış.
+    if (k0 !== 0) await must("Kasa'yı sıfırla", api.post("/api/workspace/cash", { kind: k0 > 0 ? "out" : "in", amount: Math.abs(k0).toFixed(2).replace(".", ","), date: "2026-10-08", description: `K5 sıfırlama ${act}`, cashForce: true }));
     const g0 = await kabulBalance("Garanti BBVA");
     const doc = await must("nakit + havale peşinli satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: kabul.abc.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ name: `Hizmet K5 ${act}`, qty: 1, unitPrice: 10000, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount: "5000", method: "cash", lineKey: `k5-nakit-${act}` }, { amount: "5000", method: "bank", bankAccountId: kabul.garanti.id, lineKey: `k5-havale-${act}` }], cheques: [], endorse: [], rest: "open" }, force: true, similarOk: true }));
     await must("Kasa'dan ödeme", api.post("/api/workspace/cash", { kind: "out", amount: "5000", date: "2026-10-08", description: `K5 kira ${act}` }));
