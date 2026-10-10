@@ -1,0 +1,4 @@
+rastgele-3-500: çıkış a=0 b=0 program=0 · karşılaştırılan 7388 · atlanan 679 · fark 148 {'A=B≠P': 148}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                              40 yaprak  {'A=B≠P': 40}
+  TUREV:KDV-DAHIL-ISKONTO                                        68 yaprak  {'A=B≠P': 68}

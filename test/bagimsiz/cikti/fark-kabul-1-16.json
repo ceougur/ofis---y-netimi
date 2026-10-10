@@ -37,8 +37,8 @@
     "yaprak": 28
   },
   "programEk": {
-    "calismaAgaciDegisikDosya": 13,
-    "commit": "740be0518c71eb92f0cc02c998626c363c060c3a",
+    "calismaAgaciDegisikDosya": 1,
+    "commit": "a375e80acc179457764fd2ee076fe813ac26f3bc",
     "eslenemeyenler": [],
     "kaynakFarklari": [],
     "okumaHatalari": [],
@@ -52,9 +52,9 @@
   "senaryoDosyasi": "test/bagimsiz/senaryolar/kabul-1-16.json",
   "siniflar": {},
   "sureler": {
-    "a": 0.08,
+    "a": 0.05,
     "b": 0.06,
-    "program": 1.68
+    "program": 1.12
   },
   "ucTarafSayilari": {
     "a": {
