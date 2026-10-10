@@ -1,5 +1,6 @@
 // Kısa kullanım kılavuzunun ekran görüntüleri: tek okul servisi örneğiyle, sıfırdan kurulan geçici bir sunucuda.
 // Kullanım: node docs/kilavuz/ekran-cek.mjs [çıktı klasörü] [yalnız-bunlar,virgülle]
+// Banka bölümü ile k08 (Kasa) ve k10 (ANLIK DURUM): node docs/kilavuz/ekran-banka.mjs (sahte saatle).
 // Sonra: node docs/kilavuz/pdf-uret.mjs docs/kilavuz DestekOfis-Kullanim-Kilavuzu && cp docs/kilavuz/*.pdf client/kilavuz/
 // Örnek dosyalar (docs/kilavuz/ornek/) uydurma verilerdir; gerçek müşteri verisi kullanılmaz.
 import { createRequire } from "node:module";
@@ -138,7 +139,7 @@ await step("k08", async () => {
   await page.waitForSelector(".hof-cash-table tbody tr[data-kind]", { timeout: 10000 });
   await page.waitForTimeout(900);
   await quiet();
-  await shot("k08-kasa", { clip: pad(await topBox(), 4) });
+  // v2.1.0: k08-kasa (Bankadan Kasaya Aktar / Kasadan Bankaya Yatır düğmeleriyle) ekran-banka.mjs'de çekilir.
   await closeAll();
 });
 
@@ -230,7 +231,7 @@ await step("k10", async () => {
   await page.waitForSelector("#hof-pulse", { timeout: 15000 });
   await page.waitForTimeout(2200);
   await page.evaluate(() => document.querySelectorAll(".hof-notice, .hof-toast").forEach(n => n.remove()));
-  if (want("k10-anlik-durum")) { await (await page.$("#hof-pulse")).screenshot({ path: `${OUT}/k10-anlik-durum.jpg`, type: "jpeg", quality: 84 }); console.log("✓ k10-anlik-durum"); }
+  // v2.1.0: k10-anlik-durum (Nakit Kasa ve Gerçek Banka ayrı kutular) ekran-banka.mjs'de çekilir.
 });
 
 await step("k11-k12", async () => {
