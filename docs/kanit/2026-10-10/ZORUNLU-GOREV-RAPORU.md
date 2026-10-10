@@ -127,3 +127,10 @@ Açık kalan her şey 2.1.0 temel sürüm iş listesine devredildi (CLAUDE.md "K
 1. T4 Nakit Akış K10 → kapı yeşile döner (o koşu bu rapora ek olarak yazılır).
 2. T2/T3 K1–K8 düzeltmeleri → ana oturum kırmızı/yeşil → birleştir → CI.
 3. T6 yargıç + eleştirmen; T7 son doğrulama (Uzun Doğrulama, 20.000 işlem, bütün e2e, ölçek) + paket.
+
+## Ek (10.10.2026 16:37 UTC) — Doğrulama Kapısı ilk kez tamamen YEŞİL
+- CI 528 (c383f03, T4 Nakit Akış K10 birleşmesi): bütün işler yeşil — Test Linux/Windows × Node 22/24, Uçtan uca, **Doğrulama Kapısı GEÇTİ**,
+  Dağıtım paketi. Kapı tablosu (ana oturum günlükten okudu, iş 114260662677): npm test ubuntu N22 1899/1899, ubuntu N24 1899/1899,
+  windows N22 1899/1899 (1285,7 sn), windows N24 1899/1899 (1266,1 sn); başarısız 0, iptal 0, atlanan 0, todo 0; Linux ve Windows aynı sayı.
+  13 arayüz kaydı GEÇTİ (senaryo-banka-210 386/386, banka-210b 63/63, 222 56/56 …).
+- Kapıyı kırmızı tutan tek şey (Nakit Akış K10 `todo`) T4 ile kapandı; karantina/atlama kullanılmadı. Madde 1 KAPANDI.

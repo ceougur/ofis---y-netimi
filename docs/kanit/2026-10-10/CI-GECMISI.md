@@ -62,3 +62,4 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
 - Ham günlüklerin tamamı (51 MB) depoya konmadı; GitHub'da saklama süresi boyunca (90 gün) iş sayfalarından okunabilir.
 - Ana oturumun günlükten bizzat okudukları: 442 Linux Node 22 sayıları (1538/1536/2), 468 Windows Node 24 ve 22 (1728/1728),
   474 Windows Node 24 başarısız testleri, 474 ve 481 kapı tabloları. Öbür satırlar ajanın okumasıdır.
+- 528 (c383f03, 16:11–16:37 UTC): T4 birleşmesi — dört platform 1899/1899, atlanan 0, 13 e2e yeşil; **Doğrulama Kapısı ilk kez GEÇTİ** (todo kalktı).
