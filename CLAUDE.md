@@ -1199,6 +1199,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   duran DestekOfis sayfası GİZLİ sekmede bile 5 dk'da bir istek atıyor (çalışma tablosu eşitleme zamanlayıcısı) → herhangi bir bilgisayarda
   sayfa açıksa sunucu 15 dk boşta sayılmaz, kendiliğinden kurulum MESAİ DIŞINA (hafta içi 20:00–07:00, hafta sonu) kalır. Ürün kodu
   değişmedi; önerim: BÖYLE KALSIN (form doldururken servis yeniden başlamasın; güvenli taraf) — kullanıcıya bildirildi, karar onda.
+  KULLANICI SORUSU (10.10.2026): "5 dk'da bir istek varsa mesai dışında da sürmüyor mu, güncelleme nasıl alınacak?" → koddan cevap
+  (update-orchestrator.mjs:103/120): kural "mesai dışıysa YA DA 15 dk boştaysa kur" — mesai dışında boşta sorusu SORULMAZ, açık sekme
+  engellemez. KULLANICI: "genelde kullanıcılar mesai bitince ve hafta sonu sunucu bilgisayarı kapatır" → pratikte tek yol AÇILIŞ
+  (startup → runCheck → install; açılışta etkinlik 0). Zayıflıklar: (a) açılışta ağ hazır değilse yeniden denemeler (1/3/10/20 dk)
+  personel çalışmaya başlayınca "hazır" bekler, akşam kapanınca hiç kurulmaz; (b) indirme sabah iş başında; (c) gün içinde bulunan
+  sürüm indirilmez. ÖNERİM (kullanıcının onayı bekleniyor): "arka planda indir, sonraki açılışta kur" — gün içinde indir + imza/sha256
+  doğrula + hazırla (servis durmaz), zilde "2.x hazır, sonraki açılışta kurulacak / Şimdi Güncelle"; açılışta hazır paket uygulama
+  kullanıcılara açılmadan ÖNCE kurulur (ağ gerekmez), deneme açılışı + geri dönüş aynen; mesai dışı kuralı açık kalan sunucularda sürer.
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
