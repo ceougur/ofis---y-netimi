@@ -1694,6 +1694,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     }
   }
 
+  // bank: false (altın test, v2.0.26'ya karşı): yalnız eski motorun işlemleri — rastgele sıra eski motorla birebir aynı kalır. 2.1.0'da eklenen
+  // işlemler (yargıç: kart silme, geri yükleme; plan testleri: kayıt tahsilatı ve düzeltme/silmesi, çek işlemini geri alma) yalnız banka ekseniyle.
+  const BANK_ERA = new Set(["kart-sil", "geri-yukle", "kayit-tahsil", "kayit-duzelt", "kayit-sil", "cek-geri-al"]);
   const WEIGHTS = [
     ["satis", 20], ["alim", 11], ["kasa", 9], ["cari", 11], ["taksit-tahsil", 11], ["kart", 6], ["iade", 5],
     ["kasa-duzelt", 3], ["kasa-sil", 2], ["cari-duzelt", 4], ["cari-sil", 2], ["hareket-duzelt", 3], ["hareket-sil", 2], ["taksit-sil", 3], ["kart-kapat", 2],
@@ -1710,7 +1713,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
     // Bankalar Arası Transfer (v2.1.0 Aşama 9): transfer (+ saha hataları), Ters Kaydet.
     ["banka-transfer", 3], ["banka-transfer-ters", 1],
-  ].filter(([k]) => bank || !(k.startsWith("banka-") || k === "kart-sil" || k === "geri-yukle"));
+  ].filter(([k]) => bank || !(k.startsWith("banka-") || BANK_ERA.has(k)));
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
   if (bank) {
     const meta = (await api("GET", "/api/workspace/bank/voucher-meta")).data || {};
