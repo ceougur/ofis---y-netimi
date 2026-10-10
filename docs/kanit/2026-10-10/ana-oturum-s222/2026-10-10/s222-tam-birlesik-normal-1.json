@@ -1,0 +1,31 @@
+{
+  "ad": "s222-tam-birlesik-normal-1",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-222.mjs",
+  "commit": "ed0210799a994ec89b3f11c3974afe307a5b5df1",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T12:15:35.750Z",
+  "sure_sn": 118.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-s222/2026-10-10/s222-tam-birlesik-normal-1.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "c9c65242fa8e6348a1569b0c7acb4caca661470670e04bf3a12761a2f43e94bf",
+  "ham_cikti_bayt": 5735
+}
