@@ -566,10 +566,14 @@ class TarihKilit(unittest.TestCase):
                          {"id": "a1", "islem": "acilis_duzelt", "hesap": "ZIR", "acilisTarihi": "06.10.2026",
                           "acilisBakiyesi": "80000"},
                          {"id": "a2", "islem": "acilis_duzelt", "hesap": "ZIR", "acilisTarihi": "02.10.2026",
+                          "acilisBakiyesi": "80000"},
+                         # PLAN §3.8 "Yeni tarih hesaba bağlı ilk hareketten SONRA olamaz" → aynı gün izinli
+                         {"id": "a3", "islem": "acilis_duzelt", "hesap": "ZIR", "acilisTarihi": "05.10.2026",
                           "acilisBakiyesi": "80000"}])
         self.assertEqual(ret_of(c, "a1"), {"adim": "a1", "durum": 409, "kod": "bank-opening-after-first",
                                            "kodDayanak": "PLAN"})
         self.assertIsNone(ret_of(c, "a2"))
+        self.assertIsNone(ret_of(c, "a3"))
         self.assertEqual(miz(c, "102.01"), {"borc": 8100000, "alacak": 0})
         self.assertEqual(miz(c, "500"), {"borc": 0, "alacak": 8000000})
 
