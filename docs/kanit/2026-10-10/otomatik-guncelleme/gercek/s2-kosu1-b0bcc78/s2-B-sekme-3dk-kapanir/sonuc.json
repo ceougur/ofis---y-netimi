@@ -1,0 +1,158 @@
+{
+  "senaryo": "s2-B-sekme-3dk-kapanir",
+  "ozet": {
+    "ertelemeAni": "2026-10-10T18:18:36.759Z",
+    "sekmeKapandiDk": 3.16,
+    "sekmeGizlendiDk": null,
+    "kurulduDk": 60.01,
+    "sekmeKapaninca_GizlenincedenKurulumaDk": 56.86,
+    "sonKullaniciIsteginden_KurulumaDk": 56.97,
+    "servisinGorduguSonIstek": "2026-10-10T18:21:39.540Z",
+    "surum": "9.0.1"
+  },
+  "olaylar": [
+    {
+      "at": "2026-10-10T18:18:36.885Z",
+      "olay": "ertelendi (hazır)",
+      "t0": "2026-10-10T18:18:36.759Z",
+      "mesgul": true,
+      "sonEtkinlik": "2026-10-10T18:18:23.318Z"
+    },
+    {
+      "at": "2026-10-10T18:18:46.069Z",
+      "olay": "kaynak sorgulandı",
+      "dk": 0.16,
+      "sorgu": 2,
+      "mesgul": true,
+      "sonEtkinlik": "2026-10-10T18:18:38.513Z",
+      "surum": "9.0.0"
+    },
+    {
+      "at": "2026-10-10T18:21:46.148Z",
+      "olay": "sekme kapatıldı",
+      "dk": 3.16
+    },
+    {
+      "at": "2026-10-10T19:18:47.417Z",
+      "olay": "kuruldu",
+      "dk": 60.01,
+      "surum": "9.0.1"
+    }
+  ],
+  "sekmeIstekleri_acikGorunur": {
+    "istek": 20,
+    "enUzunAraSn": 45,
+    "ortalamaAraSn": 10,
+    "yollar": {
+      "/api/workspace/client-state": 4,
+      "/api/workspace/case-notes": 4,
+      "/api/chat": 4,
+      "/api/workspace/tasks": 2,
+      "/api/workspace/liens": 2,
+      "/api/workspace/plans": 2,
+      "/api/workspace/stock/alerts": 2
+    }
+  },
+  "sekmeIstekleri_gizliyken": null,
+  "ekran": null,
+  "sayfaHatalari": [],
+  "sonDurum": {
+    "type": "durum",
+    "id": 248,
+    "updates": {
+      "enabled": true,
+      "autoUpdate": true,
+      "channel": "stable",
+      "currentVersion": "9.0.1",
+      "state": "idle",
+      "progress": null,
+      "available": null,
+      "incompatible": null,
+      "lastCheck": {
+        "at": "2026-10-10T18:18:36.743Z",
+        "status": "up-to-date",
+        "version": "9.0.1",
+        "reason": null
+      },
+      "lastResult": {
+        "outcome": "success",
+        "version": "9.0.1",
+        "previous": "9.0.0",
+        "at": "2026-10-10T19:18:37.493Z"
+      },
+      "lastError": null,
+      "failedVersions": [],
+      "deferred": null,
+      "periodicCheckMs": 21600000,
+      "skippedVersions": [],
+      "history": [
+        {
+          "at": "2026-10-10T19:18:37.492Z",
+          "event": "installed",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        },
+        {
+          "at": "2026-10-10T19:18:36.971Z",
+          "event": "activated",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        }
+      ]
+    },
+    "activity": {
+      "lastActivityAt": "2026-10-10T18:21:39.540Z",
+      "busy": false,
+      "idleMs": 900000
+    },
+    "phase": "ready",
+    "version": "9.0.1",
+    "localTime": "Sat Oct 10 2026 20:33:48 GMT+0000 (Coordinated Universal Time)",
+    "timeZone": "UTC",
+    "offsetMinutes": 0,
+    "quietNow": true
+  },
+  "verilerOnce": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "verilerSonra": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "yedekler": [
+    "destekofis-001-2026-10-10T18-18-37-072Z.sqlite",
+    "destekofis-001-2026-10-10T19-18-36-946Z-guncelleme-oncesi-9-0-0.sqlite"
+  ],
+  "kaynakIstekleri": [
+    {
+      "at": "2026-10-10T18:17:36.728Z",
+      "path": "/repos/test/repo/releases",
+      "status": 503
+    },
+    {
+      "at": "2026-10-10T18:17:36.740Z",
+      "path": "/test/repo/releases/latest/download/destekofis-guncelleme.json",
+      "status": 503
+    },
+    {
+      "at": "2026-10-10T18:18:36.746Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:18:36.754Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T19:18:36.767Z",
+      "path": "/download/9.0.1/destekofis-guncelleme-9.0.1.zip",
+      "status": 200
+    }
+  ]
+}

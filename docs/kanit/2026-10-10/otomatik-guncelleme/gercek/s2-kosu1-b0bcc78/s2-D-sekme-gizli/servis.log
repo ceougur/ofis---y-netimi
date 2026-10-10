@@ -1,0 +1,18 @@
+2026-10-10T18:17:41.789Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:33745
+2026-10-10T18:17:41.792Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 41629)
+2026-10-10T18:17:41.838Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+2026-10-10T18:17:41.847Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+2026-10-10T18:17:41.847Z [INFO] Güncelleme denetimi 60 sn sonra yeniden denenecek.
+2026-10-10T18:17:42.199Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+[uygulama] 2026-10-10T18:17:45.192Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T18:18:41.860Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+2026-10-10T18:18:41.860Z [INFO] 9.0.1 sürümü hazır; kullanıcılar çalışıyor; sunucu 15 dakika boş kalınca ya da mesai dışında kendiliğinden kurulacak (saatte bir bakılır) (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).
+[uygulama] 2026-10-10T18:19:45.194Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T18:29:45.196Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T18:59:45.200Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T19:18:41.909Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+[uygulama] 2026-10-10T19:29:45.203Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T19:59:45.206Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T20:18:41.926Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+[uygulama] 2026-10-10T20:29:45.208Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T20:33:48.740Z [INFO] Servis yöneticisi kapatılıyor…
