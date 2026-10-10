@@ -1,0 +1,547 @@
+
+> destekofis@2.0.26 test:senaryo-banka-210
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.mjs
+
+
+■ 1. Boş şirket: menüde Banka Taksitler'in hemen altında; ilk açılışta Kurulum Sihirbazı (POS adımı yok) · şirket 001
+  ✓ Banka Taksitler'in hemen altında (editSide, tasks, messages, newTask, accounts, cash, stock, invoices, cheques, plans, bank, analytics, reports, guide, profile, password, logout)
+  ✓ menü adı Banka
+  ✓ sunucu ve tarayıcı sahte günde (08.10.2026)
+  ✓ sihirbaz adımları: 1 Hesap ve Açılış › 2 Bitti (eski hareket yok, POS adımı yok)
+  ✓ POS adımı görünmez (2.1.0)
+  ✓ adım atlanınca: Kurulum Atlandı
+  ✓ sihirbaz kapandı
+  ✓ boş şirkette Gerçek Banka "—" ve "Banka Hesabı Tanımlanmadı" (—)
+  ✓ Genel Bakış'ta Kurulumu Tamamla
+  ✓ boş durum metni görünür
+  ✓ Hesabı Atanmamış Eski Hareketler satırı yok (eski hareket yok)
+  ✓ sekmeler: Genel Bakış · Hesaplar · Hareketler · Ayarlar (Hareketler Aşama 4'te; POS ve Ekstre bu sürümde yok)
+  ✓ sihirbazın kapatıldığı sunucuda kayıtlı
+  ✓ pencere yeniden açılınca sihirbaz kendiliğinden gelmez
+
+■ 2. Kurulumu Tamamla: geçersiz IBAN ekranda hata; Ziraat 100.000 + Garanti 50.000 sihirbazdan (kabul 1–4) · şirket 001
+  ✓ geçersiz IBAN ekranda: “IBAN geçersiz: TR ile başlayan 26 karakter olmalı ve denetim haneleri tutmalı.”
+  ✓ IBAN alanı işaretli
+  ✓ geçersiz IBAN'la hesap açılmadı
+  ✓ Ziraat kaydedildi: ✓ Ziraat Bankası · Ana TL Hesabı · ZIR-TL · 102.01 · ₺100.000,00 · Bakiye Doğrulandı
+  ✓ form yeni hesap için boşaldı
+  ✓ Kurulum Tamamlandı; Garanti 102.02
+  ✓ sihirbazın sonunda Gerçek Banka 150.000,00
+  ✓ kabul 1–2: 102.01 = 100.000, Bakiye Doğrulandı, denetim Uyar
+  ✓ kabul 3–4: 102.02 = 50.000, Bakiye Doğrulandı, denetim Uyar
+  ✓ mizan: 102 = 150000, 500 = -150000
+  ✓ mutabakat ok
+
+■ 3. Genel Bakış (Gerçek Banka 150.000), Hesaplar, Alt Hesap Mizanı, Hesap Detayı · şirket 001
+  ✓ Genel Bakış: Gerçek Banka 150.000,00
+  ✓ Kurulumu Tamamla satırı kalktı
+  ✓ Banka Hesapları tablosu: iki hesap ve bakiyeleri
+  ✓ Toplam TL 150.000,00
+  ✓ kart/kredi hesabı yokken Kart ve Kredi Borcu kutusu yok
+  ✓ Hesaplar: ZIR-TL Ziraat Bankası · Ana TL Hesabı Va | GAR-TL Garanti BBVA · Ana TL Hesabı Vade
+  ✓ iki hesap da Bakiye Doğrulandı
+  ✓ IBAN dörtlü gruplarla
+  ✓ Alt Hesap Mizanı: 102.01 = 100.000, 102.02 = 50.000
+  ✓ ana hesap = alt hesaplar toplamı (✓)
+  ✓ Hesap Detayı: Gerçek Bakiye 100.000,00
+  ✓ son hareketler: 01.10.2026 BNK-2026-000001 Açılış Bakiyesi Açılış Bakiyesi · Ziraat Bankası · Ana TL Hesabı +₺100.000,00 ₺100.000,00
+  ✓ Eksi Bakiye Denetimi Uyar; IBAN
+  ✓ Bakiye Doğrulandı yazısı
+  ✓ Açılışı Düzelt etkin
+  ✓ kilitli açılışta Açılışı Düzelt pasif
+  ✓ neden ekranda: Açılışı Düzelt kapalı: Açılış (01.10.2026) kilitli dönemde; 02.10.2026 tarihine kadar kayıtlar değiştirilemez.Sil kapalı: Hesabın açılışı kilitli dönemde; hesap silinemez.
+  ✓ ileri tarihli açılış ekranda hata, alan işaretli: “İleri tarihli hareket girilemez (09.10.2026). Gelecekteki öd”
+  ✓ Açılışı Düzelt: Gerçek Bakiye 100.500,00
+  ✓ ters kayıt ve yeni açılış son hareketlerde (3 satır)
+  ✓ geri düzeltildi: Ziraat 100.000, Gerçek Banka 150.000
+  ✓ açılışı olan hesapta Hesap Türü salt okunur
+  ✓ başka hesabın kodu (harf büyüklüğü farkıyla) ekranda hata: “gar-tl kodu başka bir hesapta kullanılıyor; Hesap Kodu tekil olmalı.”
+  ✓ Düzenle: şube kaydedildi, Bakiye Doğrulandı korundu
+  ✓ sunucuda şube Kızılay Şubesi, kod ve bakiye aynı
+
+■ 4. Nasıl bozarım: HTML adlı hesap kaçışlı; sil → aynı adla yeniden aç (yeni alt hesap kodu) · şirket 001
+  ✓ HTML ad metin olarak görünür, çalışmaz
+  ✓ yeni hesap 102.03 / HAL-TL (102.03 / HAL-TL)
+  ✓ hesap silindi
+  ✓ aynı adla yeniden açıldı; alt hesap kodu yeniden verilmedi (102.04, HAL-TL)
+  ✓ silindikten sonra Hesaplar listesine dönüldü
+
+■ 5. Ayarlar: Temel ve Gelişmiş, POS/Ekstre görünmez, kaydet, geçersiz değer, Tümünü Varsayılanlara Dön · şirket 001
+  ✓ Temel bölümler: Hesap, Eksi Bakiye, Mükerrer, Masraf, Tatil
+  ✓ Gelişmiş ayarlar kapalı gelir
+  ✓ Varsayılan POS ve Tatile Düşen Valör görünmez
+  ✓ standartlar seçili: Uyar, Benzer İşlem Açık
+  ✓ Gelişmiş: hesap eşlemeleri adlarıyla; Ekstre bölümü yok
+  ✓ etkisiz/ertelenen ayarlar görünmez (Döviz, Kanal Alanı, Elle Banka Fişi, Kambiyo eşlemeleri)
+  ✓ Banka Masrafları eşlemesi yalnız 770 ya da 653 (770, 653)
+  ✓ kaydedilmemiş değişiklik yazısı
+  ✓ canlı yenileme kaydedilmemiş ayarı ezmedi
+  ✓ Kaydet: Engelle ve Benzer İşlem Kapalı sunucuda
+  ✓ geçersiz değer ekranda: “İşlem No Öneki: 2–6 büyük harf (A–Z).”
+  ✓ hatalı alan işaretli
+  ✓ geçersiz değer kaydedilmedi
+  ✓ Tümünü Varsayılanlara Dön: Uyar, Benzer İşlem Açık
+  ✓ ekran da varsayılana döndü
+
+■ 6. Ortak hesap seçici: iki hesapta seçim zorunlu, tek hesapta gizli, kart hesabı yokken boş · şirket 001
+  ✓ iki hesap: seçim zorunlu (2 hesap + boş seçenek)
+  ✓ kurumsal kart yokken seçici yok (bugünkü görünüm)
+  ✓ tek hesap: seçici yok, bilgi satırı (kimlik gönderilmez)
+
+■ 7. Yetki: personel Banka'yı görmez; uzman görür ama hesap açamaz, ayarları değiştiremez · şirket 001
+  ✓ personelin menüsünde Banka yok
+  ✓ personel pencereyi açamaz
+  ✓ personelin özet isteği 403
+  ✓ uzman Banka'yı görür
+  ✓ uzmana sihirbaz açılmaz (hesap tanımlama yetkisi yok)
+  ✓ uzmanda + Yeni Hesap yok
+  ✓ uzmanda ayarlar salt okunur (Kaydet yok)
+
+■ 8. Canlı yenileme: muhasebe Hesaplar'ı açıkken yönetici başka yerden hesap açar · şirket 001
+  ✓ kurulum yapılmış şirkette muhasebeye sihirbaz açılmaz
+  ✓ muhasebenin listesi kendiliğinden yenilendi (2 → 3)
+
+■ 9. Boş ikinci şirket: sihirbaz o şirkette ilk girişte gelir; Genel Bakış boş durum · şirket 001
+  ✓ ikinci şirkette Banka ilk açılışında sihirbaz geldi
+  ✓ ikinci şirkette Gerçek Banka “—”, boş durum
+  ✓ Hesaplar boş durum metni
+  ✓ boş şirkette Alt Hesap Mizanı açılır, boş
+  ✓ hesapsız şirkette Hareketler: “Henüz banka hareketi yok.”
+  ✓ hesapsız şirkette + Masraf form açmaz, neden: Bu işlem için uygun, etkin bir TL banka hesabı yok. Önce Hesaplar'dan hesap açın.
+  ✓ hesapsız şirkette hiçbir hareket yazılmadı (0)
+
+■ 9b. Eski hareketleri aktar (ikinci şirkette): sihirbaz 3 adım, önizleme, Aktar, Kurulum Geçmişi'nden Geri Al, Bu Hesaba Ata, Bankaya Geçmiş Say · şirket 002
+  ✓ Hesabı Atanmamış Eski Hareketler ayrı satırda: Hesabı Atanmamış Eski Hareketler ₺10.000,00 Havale / EFT (102.00) ₺7.000,00 · POS / Kart (108.00) ₺3.000,00 — Gerçek Banka'ya ve hiçbir topl
+  ✓ Gerçek Banka'ya girmez (hesap yok: “—”)
+  ✓ eski hareket varken 3 adım: 1 Hesap ve Açılış › 2 Eski Hareketleri Aktar › 3 Bitti
+  ✓ Fatura Ayarları'ndaki banka önerisi forma doldu
+  ✓ önizleme: Devir KapanışıHavale / EFT ₺5.000,00 · POS / Kart ₺3.000,00 Bağlanacak Hareket1 hareket · net +₺2.000,00 Kilitli Dönem — Atanamaz0 Sonra Hesap Bakiyesi₺102.000,00 Sonra Hesabı AtanmamışHavale / EFT ₺0,00 · POS / Kart ₺0,00
+  ✓ aktarıldı: Kurulum Tamamlandı ✓ Ziraat Bankası · Ana TL Hesabı · ZIR-TL · 102.01 · ₺100.000,00 · Bakiye Doğrulandı Eski hareketler aktarıldı: 1 hareket hesaba bağlandı; Devir Kapanışı BNK-2026-000006. Gerçek Ban
+  ✓ Gerçek Banka 102.000; hesabı atanmamış satır kalmadı
+  ✓ ikinci şirkette mutabakat ok (sihirbazdan sonra)
+  ✓ Geri Al: eski hâl (Havale 7.000, POS 3.000): Havale / EFT (102.00)₺7.000,00POS / Kart (108.00)₺3.000,00Kilitli Dönem — Atanamaz03 hareket
+  ✓ Kurulum Geçmişi'nde Geri Alındı
+  ✓ seçilebilen satır yalnız açılıştan sonraki havale (1)
+  ✓ Bu Hesaba Ata: POST /legacy/assign 200
+  ✓ Bu Hesaba Ata: Gerçek Banka 102000, Hesabı Atanmamış havale 5000
+  ✓ açılıştan önceki POS için form açılmaz (toast): Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır).×
+  ✓ yavaş sunucuda (Eski Hareketler'in verisi 1,5 sn gecikmeli) Bankaya Geçmiş Say formu açıldı (form)
+  ✓ Bankaya Geçmiş Say tutarı açılıştan sonraki POS ile önerili (1.500,00): Hesap tanımlanmadan girilmiş POS tahsilatlarının bankaya geçmiş tutarını hesaba aktarır. Seçilen hesabın açılışından sonraki satırlar aktarılır (en çok ₺1.500,00).
+  ✓ Bankaya Geçmiş Say: POST /legacy/reclass 200
+  ✓ Bankaya Geçmiş Say: Gerçek Banka 103500 (102.000 + 1.500), POS 108.00 3000 (açılış öncesi 3.000 kalır)
+  ✓ ikinci şirkette mutabakat ok (geri al, ata, aktar)
+
+■ 10. Mobil (390 px): Genel Bakış, Hesaplar ve Hesap Detayı yatay kaydırmasız · şirket 001
+  ✓ Genel Bakış yatay kaydırmasız []
+  ✓ Hesaplar yatay kaydırmasız []
+  ✓ Hesap Detayı yatay kaydırmasız []
+  ✓ Ayarlar yatay kaydırmasız []
+
+■ 12. Hareketler sekmesi; Ziraat'e masraf 10,50 BSMV Dahil EKRANDAN (önizleme), İşlem Kartı · şirket 001
+  ✓ sekmeler: Genel Bakış · Hesaplar · Hareketler · Ayarlar (Hareketler Hesaplar'dan sonra)
+  ✓ Ziraat'in hareketleri (açılış ve düzeltmeleri) yürüyen bakiyeyle: opening 100000 → 100000 | reversal -100500 → 0 | opening 100500 → 100500 | reversal -100000 → 0 | opening 100000 → 100000
+  ✓ vergi varsayılanı Banka Ayarları'ndan: BSMV Dahil
+  ✓ önizleme: Gider ₺10,00 · BSMV ₺0,50 · Bankadan Çıkan ₺10,50 · Hesap 770 · Genel Giderler ve Alış Faturaları
+  ✓ ilk satır Banka Masrafı −10,50, bakiye 99.989,50 (08.10.2026 BNK-2026-000011 Banka Masrafı — −₺10,50 ₺99.989,50)
+  ✓ sunucuda Ziraat 99.989,50
+  ✓ İşlem Kartı fiş satırları: 102|C|1050, 770|D|1000, 770|D|50 (770 10,00 + 770 0,50 BSMV / 102.01 10,50)
+  ✓ İşlem Kartı: tür, hesap, masraf türü, İşlem No, Kaynak → Hedef
+  ✓ Ters Kaydet etkin
+
+■ 13. KDV Dahil 120 (faturalı masraf): cari ve Fatura No zorunlu; fatura + havale tek işlemde; KDV 191 = 20; Fatura penceresinde nedenler · şirket 001
+  ✓ KDV kipinde Faturayı Kesen (Cari) ve Fatura No alanları açıldı
+  ✓ cari seçilmeden: “Faturalı masrafta faturayı kesen cariyi seçin.”
+  ✓ hatalı formda hiçbir hareket yazılmadı
+  ✓ önizleme: Matrah ₺100,00 · KDV ₺20,00 · Bankadan Çıkan ₺120,00 · Hizmet ve Gider Alışı faturası kaydedilir
+  ✓ Ziraat 99.869,50 (−120)
+  ✓ KDV Özeti indirilecek KDV 20,00 (20,00 TL)
+  ✓ faturalı masrafın ödeme satırında Ters Kaydet pasif, nedeni yazılı: Ters Kaydet ve Düzelt kapalı: Bu ödeme Banka masrafının faturasına ait; masrafın İşlem Kartı'ndan (BNK-2026-000013) Ters Kaydet ile iptal edilir.Açıklamayı Düzelt kapalı: Bu ödeme Banka masrafının faturasına ait; masrafın İşlem Kartı'ndan (BNK-2026-000013) Ters Kaydet ile iptal edilir. Açıklaması da orada değiştirilir.
+  ✓ ödeme kartında fatura numarası
+  ✓ masrafın İşlem Kartı: matrah, KDV, cari (← Hareketler Banka Masrafı BNK-2026-000013 EtkinZiraat Bankası · Ana TL Hesabı (Banka) → Ziraat Bankası A.Ş. (Cari) Tutar₺120,00 İşlem NoBNK-2026-000013 TürBank)
+  ✓ faturalı masrafın İşlem Kartı'nda tutar 120,00 (fatura ödenecek tutarı)
+  ✓ Fatura penceresinde nedenler görünür yazıyla: Düzenle kapalı: Bu fatura Banka penceresinden girilen masrafın faturasıdır (İşlem No BNK-2026-000013); Banka → İşlem Kartı → Ters Kaydet ile iptal edilir (kilit
+
+■ 14. Faiz geliri 1.000 / %15 ekrandan: net 850, stopaj 150 (193), 642 = 1.000 · şirket 001
+  ✓ hiç faiz yokken stopaj oranı önerisi boş (koda sabit oran yazılmaz)
+  ✓ önizleme: Bankaya Giren (Net) ₺850,00 · Stopaj ₺150,00 (193) · Faiz Geliri ₺1.000,00
+  ✓ Ziraat 100.719,50 (+850)
+  ✓ mizan 642 = -1000, 193 = 150
+
+■ 15. Hareketler: satırlar ve yürüyen bakiye bağımsız beklenenle; süzgeçler (tür, arama, İşlem No, tutar); boş süzgeç · şirket 001
+  ✓ satır tutarları modelle aynı: 850, -120, -10.5, 100000, -100500, 100500, -100000, 100000
+  ✓ yürüyen bakiye her satırda bağımsız hesapla aynı (en üst 100719.5 = model 102.01 100719.5; en alttan önce 0)
+  ✓ tek hesap ve süzgeçsizken Bakiye kolonu var
+  ✓ Masraf süzgeci: BSMV'li masraf + faturalı masrafın ödemesi; yürüyen bakiye yok (invoice_cash, fee)
+  ✓ boş süzgeç: boş durum metni
+  ✓ İşlem No ile arama: yalnız BNK-2026-000011
+  ✓ Tutar süzgeci (en az 100): 7 satır
+  ✓ eksi tutar süzgeci ekranda hata: Liste alınamadı: En Az Tutar eksi olamaz. Yeniden Dene
+  ✓ hata alınca süzgeç alanları yerinde
+
+■ 16. Ters Kaydet: BSMV masrafı → bakiye eski hâl; kart Ters Kaydedildi; düğmeler pasif + nedeni görünür; ters kaydın kartı · şirket 001
+  ✓ onay penceresi İşlem No'yu ve sonucu söyler: BNK-2026-000011 (Banka Masrafı, ₺10,50) ters kaydedilir: aynı tutarda ters fiş yazılır, hesabın bakiyesi işlemden önceki hâline döner. İşlem
+  ✓ Ziraat 100.730,00 (masraf geri)
+  ✓ Ters Kaydet ve Düzelt pasif
+  ✓ neden görünür yazıyla: Ters Kaydet ve Düzelt kapalı: Bu işlem ters kaydedilmiş (BNK-2026-000015); yeniden ters kaydedilmez.
+  ✓ ters kaydın kartı asıl işlemi gösterir
+  ✓ ters kaydın Ters Kaydet'i pasif, nedeni yazılı
+
+■ 17. Benzer İşlem: ters kaydedilenle aynı masraf kaydedilir; ikinci kez → pencere (BNK-… ve giren); Vazgeç yazmaz; Yine de Kaydet tek fiş · şirket 001
+  ✓ ters kaydedilen masrafla aynı masraf uyarısız kaydedildi (100.719,50)
+  ✓ Benzer İşlem penceresi önceki İşlem No'yu söyler: Aynı iş gününde aynı hesapta aynı tutarda benzer bir işlem kayıtlı (BNK-2026-000016, 08.10.2026, Ofis yöneticisi). Gerçekten ikinci bir işlemse "Yine de Kaydet" ile kaydedin.
+  ✓ düğme: Yine de Kaydet
+  ✓ Vazgeç: form açık kalır, hiçbir şey yazılmaz
+  ✓ Yine de Kaydet: tek yeni fiş (iki değil)
+  ✓ Ziraat 100.709,00
+
+■ 18. Düzelt: faiz 1.000 → 2.000 (stopaj oranı %15 korunur); tür değiştirilemez; mizan · şirket 001
+  ✓ Düzelt formu kayıtlı değerlerle açılır (1.000,00 · %15)
+  ✓ işlem türü Düzelt'te değiştirilemez
+  ✓ önizleme net 1.700
+  ✓ Ziraat 101.559,00
+  ✓ mizan 642 = -2000, 193 = 300
+
+■ 19. Açıklamayı Düzelt (HTML kaçışlı); kilitli dönemdeki masraf: Ters Kaydet bugün tarihli, kilitli dönem değişmez · şirket 001
+  ✓ HTML açıklama metin olarak görünür, çalışmaz
+  ✓ kart kilitli dönemde olduğunu söyler
+  ✓ onay: ters fiş bugün tarihli (BNK-2026-000020 (Banka Masrafı, ₺5,25) ters kaydedilir: aynı tutarda ters fiş yazılır, hesabın bakiyesi işlemden önceki hâline döner. İşlem silinmez; asıl işlem ve ters kaydı hareketlerde ve İşlem Geç)
+  ✓ ters fiş bugün (08.10.2026) tarihli: 2026-10-08
+  ✓ kilitli dönemde yeni satır yok, tutarlar aynı
+
+■ 20. Planlı İşlem: + Planlı İşlem (aylık Hesap İşletim 25) → Planlı görünüm, bakiye değişmez, Vadesi Geldi; Gerçekleştir → fiş, plan bir ay ileri; Sil · şirket 001
+  ✓ planlı formda KDV'li (faturalı) seçenek yok: bsmv_incl, bsmv_excl, none
+  ✓ planlı işlem deftere girmez (bakiye aynı)
+  ✓ Planlı görünüm: 08.10.2026 Banka Masrafı Ziraat Bankası · Ana TL Hesabı Aylık Hesap işletim ücreti −₺25,00 Vadesi Geldi GerçekleştirAtlaSil
+  ✓ rozet vadesi gelen planı sayar
+  ✓ Gerçekleştir tarihi planlı tarih (08.10.2026)
+  ✓ Gerçekleştir: Ziraat −25
+  ✓ aylık plan bir ay ileri (08.11.2026), vadesi gelmedi
+  ✓ tekrarsız planda Atla yok
+  ✓ Sil: plan İptal Edildi
+
+■ 21. Daha Fazla Göster: Garanti'de 60 fiş → 50 + 11; tekrar yok; yürüyen bakiye sayfa sınırında sürekli · şirket 001
+  ✓ ilk sayfa 50 satır, Daha Fazla Göster görünür (50)
+  ✓ 61 satır, tekrarsız, bakiye sürekli; en üst 48170 = model 48170
+  ✓ son sayfadan sonra Daha Fazla yok
+
+■ 22. Yetki: bank.cancel ve Fatura Yönetimi kaldırılan muhasebe → Ters Kaydet pasif + yetki nedeni, KDV'li seçenek yok; bank.move kaldırılınca + Masraf yok · şirket 001
+  ✓ bank.cancel yokken Ters Kaydet pasif: Ters Kaydet kapalı: Ters Kaydet için Banka Hareketi Silme, İptal ve Ters Kayıt yetkisi gerekir.Düzelt kapalı: Düzelt için Banka Hareketi Silme, İptal ve Ters Kayıt yetkisi gerekir.
+  ✓ Fatura Yönetimi yokken KDV'li seçenek yok: bsmv_incl, bsmv_excl, none
+  ✓ bank.move yokken + Masraf ve + Planlı İşlem yok
+
+■ 23. Mobil (390 px): Hareketler, İşlem Kartı ve Masraf formu yatay kaydırmasız; Hesap Detayı'nda hesabın hareketleri · şirket 001
+  ✓ Hareketler yatay kaydırmasız []
+  ✓ İşlem Kartı yatay kaydırmasız []
+  ✓ Masraf formu taşmaz (0)
+  ✓ Hesap Detayı: hesabın hareketleri, en üst bakiye 101534 = Gerçek Bakiye
+  ✓ Hesap Detayı'ndan + Masraf o hesap seçili açılır
+
+■ 23b. Diğer Gelir (Gelişmiş: 646), Faiz Gideri (BSMV/KKDF), Kart Borcu Ödemesi, Kredi Kullanımı ve Geri Ödemesi EKRANDAN; alt hesaplar modelle · şirket 001
+  ✓ Diğer İşlem türleri: Diğer Gelir, Diğer Gider, Kart Borcu Ödemesi, Kredi Kullanımı, Kredi Geri Ödemesi
+  ✓ Gelir Hesabı seçenekleri beyaz listeden (642, 646, 649), varsayılan 649
+  ✓ önizleme toplam 315: Bankadan Çıkan ₺315,00 · Faiz ₺300,00 · BSMV / KKDF ₺15,00
+  ✓ önizleme toplam 1.100: Bankadan Çıkan ₺1.100,00 · Anapara ₺1.000,00 · Faiz ₺100,00
+  ✓ alt hesap 102.02: program 55005 · model 55005
+  ✓ alt hesap 309.01: program -3000 · model -3000
+  ✓ alt hesap 300.01: program -9000 · model -9000
+  ✓ mizan 646: program -250 · model -250
+  ✓ mizan 780: program 415 · model 415
+  ✓ kart borcu 3.000 (-3000)
+  ✓ kredi borcu 9.000 (-9000)
+  ✓ Hareketler (Garanti) en üst bakiye 55005 = model 55005
+  ✓ mutabakat ok (Diğer İşlem, Faiz Gideri, kart, kredi)
+
+■ 24. Son durum bağımsız modelle: alt hesaplar, 770, 191, 193, 642, 646, 659, 780; kart ve kredi; mutabakat ok · şirket 001
+  ✓ mizan 770: program 146 · model 146
+  ✓ mizan 191: program 20 · model 20
+  ✓ mizan 193: program 300 · model 300
+  ✓ mizan 642: program -2000 · model -2000
+  ✓ mizan 646: program -250 · model -250
+  ✓ mizan 659: program 1830 · model 1830
+  ✓ mizan 780: program 415 · model 415
+  ✓ alt hesaplar: 102.01 101534 / 101534, 102.02 55005 / 55005
+  ✓ alt hesap 309.01: program -3000 · model -3000
+  ✓ alt hesap 300.01: program -9000 · model -9000
+  ✓ mutabakat ok (bölüm 2 sonu)
+
+■ 24b. GG2 (F3/L7): kart hesabında Borç artı; Açılışı Düzelt formu artı borçla dolu; değiştirmeden kaydet yeni fiş yazmaz · şirket 001
+  ✓ başlık: Borç₺3.000,00 (kart borcu 3.000 artı)
+  ✓ Açılıştaki Borç artı 5.000: Kart Limiti₺50.000,00 Açılıştaki Borç₺5.000,00 · 01.10.2026 · BNK-2026-000083 Eksi Bakiye DenetimiUyar (Banka Ayarlarındaki)
+  ✓ hesabın hareketlerinde yürüyen kolon "Borç" ve artı (Borç: ₺3.000,00)
+  ✓ Açılışı Düzelt formu
+  ✓ form artı borçla dolu: 5.000,00
+  ✓ değiştirmeden kaydet: yeni fiş yok (2 → 2), kart borcu aynı
+
+■ 24c. GG2 (F12/L12): + Yeni Hesap'ta Para Birimi yok; sıfır açılışlı hesapta Açılış Bakiyesi Gir (Açılışı Düzelt değil) · şirket 001
+  ✓ hesap formunda Para Birimi yok, Açılış Kuru görünmez (döviz hesabı bu sürümde kapalı)
+  ✓ API'den USD hesap 400 bank-currency-later (400)
+  ✓ sıfır açılışlı hesapta düğme “Açılış Bakiyesi Gir”, etkin
+  ✓ HTML adlı hesap kaçışlı (img öğesi yok, betik çalışmadı)
+
+■ 24d. GG2 (F7/F6): HTML adlı hesabın planında Gerçekleştir giriş metni kaçışlı; Atla çift tıklamada tek dönem ilerler · şirket 001
+  ✓ Gerçekleştir giriş metninde hesap adı düz yazı (öğe değil)
+  ✓ çift tıklama tek dönem: sonraki tarih 2026-11-08 (beklenen 2026-11-08, 2026-12-08 değil)
+  ✓ eski ekrandan ikinci Atla 409 bank-plan-moved (409)
+
+■ 24e. GG2 (F9): Banka Fişi K7 eksi bakiye: Bakiye Doğrulandı hesapta çıkış soru sorar; Vazgeç yazmaz; Yine de Kaydet tek fiş · şirket 001
+  ✓ soru: Garanti BBVA · Eksi Deneme hesabında 100,00 TL var; bu işlemle bakiye 500,00 TL azalır ve −400,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?
+  ✓ Vazgeç: form açık, fiş yok, bakiye 100
+  ✓ Yine de Kaydet: tek fiş, bakiye −400 (-400)
+  ✓ Engelle: cashForce ve negativeOk ile bile 409 cash-blocked + accountId (409)
+
+■ 24f. GG2 (L6/L9/F10): Ayarlar'da kaydedilmemiş değişiklikle Esc soru sorar; Vazgeç pencerede kalır; yeniden açılışta Gelişmiş kapalı · şirket 001
+  ✓ Vazgeç: Banka penceresi açık, değişiklik duruyor
+  ✓ Kaydetmeden Çık: ayar değişmedi
+  ✓ yeniden açılışta Gelişmiş Ayarlar kapalı
+
+■ 24g. GG2 (sihirbaz): doldurulmuş hesap formunda Bu Adımı Atla soru sorar; Kaydetmeden Atla hesap açmaz · şirket 001
+  ✓ Vazgeç: form ve yazılanlar duruyor
+  ✓ Kaydetmeden Atla: hesap açılmadı
+
+■ 24h. GG2 (L4/L8): 390 px Hesabı Atanmamış Eski Hareketler yatay kaydırmasız; hesaba bağlanan cari havalesinde Açıklamayı Düzelt pasif ve nedeni · şirket 001
+  ✓ Hesabı Atanmamış Eski Hareketler 390 px'te yatay kaydırmasız []
+  ✓ cari havalesinde Açıklamayı Düzelt pasif: Ters Kaydet ve Düzelt kapalı: Bu hareket Cari kartından girildi; Cari penceresinden düzeltilir ya da silinir.Açıklamayı Düzelt kapalı: Bu hareket Cari kartından girildi; Cari penceresinden düzeltilir ya da silinir. Açıklaması da orada değiştirilir.
+
+■ 24i. GG2 (L10): KDV Özeti Rapor Merkezi ekranından: İndirilecek KDV (191) = Ana Defter 191 = model · şirket 001
+  ✓ ekranda İndirilecek KDV 20,00 TL = Ana Defter 191 20 = model 20
+
+■ 26. Kabul Şirketi: boş şirket, Ziraat 100.000 + Garanti 50.000 (Bakiye Doğrulandı), Ürün A 10 Adet · şirket 001
+  ✓ kabul 1–4: Ziraat 100.000, Garanti 50.000, Gerçek Banka 150.000
+
+■ 27. Kabul 5: + Yeni Cari ABC Ltd. (Cari penceresinden) · şirket 003
+  ✓ ABC Ltd. ekrandan açıldı (tek cari)
+
+■ 28. Kabul 6–8: Satış Faturası Ürün A 1 Adet × 20.000 (KDV %20 dahil), ödeme açık — ekrandan; Ürün A 9, ABC borçlu 20.000, banka aynı · şirket 003
+  ✓ fatura kaydedildi
+  ✓ kabul 6: Matrah 16666.67, KDV 3333.33, Toplam 20000
+  ✓ kabul 7–8: Ürün A 9, ABC 20000 borçlu, Gerçek Banka 150000
+
+■ 29. Kabul 9–12: cari kartından Tahsilat 20.000 Havale/EFT → Banka Hesabı seçici (iki hesap: zorunlu; Nakit'te gizli); boş seçim kaydedilmez; Ziraat → Ziraat 120.000, ABC 0, fatura Ödendi · şirket 003
+  ✓ Nakit seçiliyken Banka Hesabı alanı görünmez
+  ✓ Havale/EFT'de Banka Hesabı seçici: Hesap Seçin | Ziraat Bankası · Ana TL Hesabı (ZIR-TL) | Garanti BBVA · Ana TL Hesabı (GAR-TL)
+  ✓ hesap seçilmeden kaydedilmedi: “"Banka Hesabı" alanı boş bırakılamaz.”
+  ✓ tahsilat Ziraat hesabına bağlı (fin_ref)
+  ✓ kabul 9–12: Ziraat 120000, Garanti 50000, ABC 0, fatura paid
+  ✓ Kasa 0 (havale Kasa'ya düşmedi)
+
+■ 30. Kabul 13–14: Kasa → Bankadan Kasaya Aktar 10.000 (Ziraat; çift tıklama tek kayıt) → Ziraat 110.000, Kasa 10.000; Kasa'da yalnız nakit satırı; Banka'da Kasa ile Banka Arası · şirket 003
+  ✓ çift tıklama tek transfer; Kasa penceresinde yalnız nakit satırı (1), Kasa 10000
+  ✓ kabul 13–14: Ziraat 110000, Garanti 50.000
+  ✓ Kasa penceresi: tek nakit satırı (“08.10.2026Bankadan Kasaya AktarımBankadan kasaya aktarım · Ofis yöneticisi₺10.000,00₺10.000,00✎×”), Nakit Kasa 10.000 (₺10.000,00Nakit Kasa₺10.000,00Tahsilat · Bu Ay₺0,00Ödeme · Bu Ay₺10.000,00Fark · Bu Ay)
+  ✓ Kasa Bugün Giriş 10.000 (nakit bacağı)
+  ✓ Banka → Hareketler'de transfer “Kasa ile Banka Arası” satırında
+
+■ 31. Nasıl bozarım (ekrandan): Garanti'den 60.000 aktar → Eksi Bakiye sorusu; Vazgeç yazmaz; mutabakat ok · şirket 003
+  ✓ Eksi Bakiye sorusu: × ONAY Eksi Bakiye Garanti BBVA · Ana TL Hesabı hesabında 50.000,00 TL var; bu işlemle bakiye 60.000,00 TL azalır ve −10.000,00 TL olur (eksi bakiye). Yine de k
+  ✓ Vazgeç: yazılmadı (Kaydedilmedi: işlem hesabın bakiyesini eksiye düşürüyor.)
+  ✓ Kabul Şirketi'nde mutabakat ok
+
+■ 31a. Kabul 13–14 (Banka tarafı): Genel Bakış → Bugün Giriş 20.000 (ABC), Bugün Çıkış 0 — Kasa'ya aktarılan 10.000 Transfer Çıkış'ta · şirket 003
+  ✓ Bugün: Giriş 20000, Çıkış 0, Transfer Çıkış 10000
+  ✓ Bu Ay: Giriş 20000 (açılışlar giriş sayılmaz), Çıkış 0
+
+■ 31b. Kabul 15–16: Banka → Transfer: Ziraat → Garanti 20.000, ücret 0 (Kanal Virman; çift tıklama tek kayıt) → Ziraat 90.000, Garanti 70.000; Kasa + Banka 170.000; mizan bağımsız modelle · şirket 003
+  ✓ Alıcı Hesap listesinde gönderen yok (kaynak = hedef seçilemez): 1 seçenek
+  ✓ önizleme: Alıcıya Giren 20.000,00 · Gönderenden Çıkan 20.000,00
+  ✓ ücret yazılmadan Ücret Vergisi gizli
+  ✓ çift tıklama tek transfer; iki bacak: Garanti BBVA · Ana TL Hesabı 20000 | Ziraat Bankası · Ana TL Hesabı -20000
+  ✓ kabul 15–16: Ziraat 90000, Garanti 70000
+  ✓ Kasa + Banka 170000 (= 150.000 + 20.000)
+  ✓ mizan bağımsız modelle aynı (100, 102, 120, 391, 500, 600)
+  ✓ alt hesaplar 102.01 90000, 102.02 70000
+  ✓ Gerçek Banka ekranda ₺160.000,00
+  ✓ Bugün Çıkış transferi saymaz (0); Transfer Giriş 20000 · Çıkış 30000
+  ✓ Hareketler'de iki bacak, karşı hesapla: 08.10.2026 BNK-2026-000005 Bankalar Arası Transfer Garanti BBVA · Ana TL Hesabı Karşı Hesa | 08.10.2026 BNK-2026-000005 Bankalar Arası Transfer Ziraat Bankası · Ana TL Hesabı Karşı He
+  ✓ İşlem Kartı: ← Hareketler Bankalar Arası Transfer BNK-2026-000005 EtkinZiraat Bankası · Ana TL Hesabı (Banka) → Garanti BBVA · Ana TL Hesabı (Vadesiz) Tutar₺20.000,00 İşlem NoBNK-2026-000005 TürBankalar Arası Transfer Tarih08.10.2026
+  ✓ fiş satırları B 102.02 / A 102.01: 102|C|2000000, 102|D|2000000
+  ✓ mutabakat ok; bank:transfer denetimi temiz (Transfer ve Kasa ile Banka İkizi)
+
+■ 31c. Transferi Ters Kaydet (İşlem Kartı'ndan) → Ziraat 110.000, Garanti 50.000; Bugün Giriş/Çıkış değişmez · şirket 003
+  ✓ ters kayıtla iki hesap eski hâlinde
+  ✓ ters kayıt dış giriş/çıkış sayılmaz (Giriş 20000, Çıkış 0)
+
+■ 31d. Ücretli örnek: Transfer 20.000 + Ücret 5,00 BSMV Hariç (EFT) → önizleme 20.005,25; Ziraat 89.994,75, Garanti 70.000; 770 = 5,25; Bugün Çıkış 5,25 · şirket 003
+  ✓ ücret yazılınca Ücret Vergisi ve Ücret Türü açılır
+  ✓ önizleme: Alıcıya Giren 20.000,00 · Ücret 5,25 (5,00 + BSMV 0,25) · Gönderenden Çıkan 20.005,25
+  ✓ Ziraat 89994.75 (89.994,75), Garanti 70000
+  ✓ 770 Banka Masrafları 5.25
+  ✓ Bugün Çıkış 5.25 (ücret dış çıkış), Bu Ay Banka Masrafları 5.25
+  ✓ İşlem Kartı: Tutar ₺20.000,00, Ücret 5.25, Gönderenden Çıkan 20005.25
+  ✓ fiş satırları (plan §3.7 #11): 102|C|2000525, 102|D|2000000, 770|D|25, 770|D|500
+
+■ 31e. Ücretli transferi Ters Kaydet → Ziraat 110.000, Garanti 50.000, 770 = 0; mutabakat ok (bölüm 4 adım 31 sonundaki sayılarla başlar) · şirket 003
+  ✓ Ziraat 110000, Garanti 50000, 770 0
+  ✓ Kabul Şirketi'nde mutabakat ok (bölüm 3b)
+
+■ 32. Aşama 7: Satış Faturası Ürün A 1 × 5.000 peşin Havale/EFT — satırda Banka Hesabı; Tab ile Garanti seçilir, tutar ve alanlar yeniden çizilmez; Garanti 55.000 · şirket 003
+  ✓ Nakit yolda satırda Banka Hesabı görünmez
+  ✓ Tab: tutardan Tahsilat Yolu'na
+  ✓ satırda Banka Hesabı seçici: Hesap Seçin | Ziraat Bankası · Ana TL Hesabı (ZIR-TL) | Garanti BBVA · Ana TL Hesabı (GAR-TL)
+  ✓ havaleye geçince varsayılan hesap (Ziraat) önerilir
+  ✓ Tab: Tahsilat Yolu'ndan Banka Hesabı'na
+  ✓ hesap seçimi ve Tab sonrası satır yeniden çizilmedi (tutar, yol, hesap düğümleri yerinde: true/true/true); klavyeyle seçim yazarak
+  ✓ tutar 5000, yol Havale/EFT, hesap Garanti kayıpsız
+  ✓ odak sayfaya düşmedi
+  ✓ peşinli fatura kaydedildi
+  ✓ peşin Garanti hesabına bağlı (fin_ref), fatura paid
+  ✓ Garanti 55000, Ziraat 110000, ABC 0, Kasa 10.000
+
+■ 33. Aşama 8: taksit kartı (ABC, 12.000 / 3) → + Tahsilat 4.000 Havale/EFT → Banka Hesabı Ziraat → Ziraat 114.000, ABC 8.000 · şirket 003
+  ✓ Nakit seçiliyken Banka Hesabı görünmez
+  ✓ taksit tahsilatı Ziraat'e bağlı; kalan 8000
+  ✓ Ziraat 114000, Garanti 55000, ABC 8000
+
+■ 34. Aşama 8: Çek (ABC, 3.000) → Tahsil Et → Banka (Havale / EFT) → Banka Hesabı Garanti → Garanti 58.000; Kasa aynı; mutabakat ok · şirket 003
+  ✓ Nakit Kasa seçilince Banka Hesabı gizlenir
+  ✓ çek Tahsil Edildi; olay Garanti'ye bağlı (true)
+  ✓ Garanti 58000, Ziraat 114000, ABC 5000, Kasa 10.000
+  ✓ Banka → Hareketler'de fatura peşini, taksit tahsilatı ve çek tahsili
+  ✓ Gerçek Banka 172.000 (172000)
+  ✓ Kabul Şirketi'nde mutabakat ok (bölüm 4)
+
+■ 35. Yargıç: Fatura İptal Et — Garanti'yi eksiye düşüren iptal sorulur (“Yine de İptal Et”); Vazgeç kırmızı hata yazmaz (bilgi “İptal edilmedi”), fatura yerinde; onayla iptal (negativeOk) · şirket 001
+  ✓ başlangıç Garanti 8.000 (8000)
+  ✓ soru metni iptale uygun: Garanti BBVA · Ana TL Hesabı hesabında 8.000,00 TL var; bu işlemle bakiye 30.000,00 TL azalır ve −22.000,00 TL olur (eksi bakiye). Yine de iptal edilsin mi?
+  ✓ onay düğmesi “Yine de İptal Et”
+  ✓ Vazgeç: formda kırmızı hata yok (“”)
+  ✓ Vazgeç bildirimi bilgi: “İptal edilmedi: işlem hesabın bakiyesini eksiye düşürüyor.”
+  ✓ Vazgeç: fatura Kaydedildi, Garanti 8.000
+  ✓ Yine de İptal Et: fatura İptal Edildi, Garanti −22.000 (-22000)
+
+■ 36. Yargıç: Fatura Sil — aynı kalıp (“Yine de Sil”; Vazgeç bilgi “Silinmedi”); onayla silinir (?negativeOk=1) · şirket 003
+  ✓ satış sonrası Garanti −7.000
+  ✓ soru ve düğme silmeye uygun (“Yine de Sil”)
+  ✓ Vazgeç: formda kırmızı hata yok (“”)
+  ✓ Vazgeç bildirimi bilgi: “Silinmedi: işlem hesabın bakiyesini eksiye düşürüyor.”
+  ✓ Vazgeç: fatura yerinde
+  ✓ Yine de Sil: fatura silindi, Garanti −22.000 (-22000)
+
+■ 37. Yargıç: toplu iptal — eksiye düşüren 2 belge için TEK soru (“Yine de İptal Et”), onayla ikisi iptal; Garanti −22.000 · şirket 003
+  ✓ satışlar sonrası Garanti −19.000
+  ✓ tek soru: Seçilenlerden 2 belge banka hesabını eksiye düşürüyor (FIS2026000000005: Garanti BBVA · Ana TL Hesabı hesabında −19.000,00 TL var; bu işlemle bakiye 2.000,00 TL · “Yine de İptal Et”
+  ✓ iki belge İptal Edildi; Garanti -22000
+
+■ 38. Yargıç: peşin satırların satır anahtarı ekranda tekil (iki peşin satır); kayıt 200 · şirket 003
+  ✓ gönderilen peşin satır anahtarları tekil: kd6kkmdjn7mq8, kii4ubunp7mvn
+  ✓ iki peşin satırlı fatura kaydedildi
+
+■ 39. Yargıç: taksit kartında banka bağlı tahsilat varken Sil pasif ve nedeni kartta yazılı (409 plan-bank-linked) · şirket 003
+  ✓ Sil pasif; neden: Sil Kapalı: Bu kartta banka hesabına bağlı 1 tahsilat/iade var; kart silinmez. Önce o hareketleri karttan tek tek silin (banka hesabından düşer, eksi bakiye denetlenir), sonra kartı silin.
+  ✓ API de 409 plan-bank-linked (409)
+
+■ 40. Yargıç: Silinenler'den geri yükleme Garanti'yi eksiye düşürüyor → “Yine de Geri Yükle” sorusu; Vazgeç geri yüklemez; onayla geri gelir; mutabakat ok · şirket 003
+  ✓ silme sonrası Garanti −22.000
+  ✓ soru: Garanti BBVA · Ana TL Hesabı hesabında −22.000,00 TL var; bu işlemle bakiye 1.000,00 TL azalır ve −23.000,00 TL olur (eksi bakiye). Yine de geri yüklensin mi? · “Yine de Geri Yükle”
+  ✓ Vazgeç bildirimi bilgi: “Geri yüklenmedi: işlem banka hesabının bakiyesini eksiye düşürüyor.”
+  ✓ Vazgeç: geri yüklenmedi
+  ✓ Yine de Geri Yükle: ödeme geri geldi, Garanti −23.000 (-23000)
+  ✓ Kabul Şirketi'nde mutabakat ok (bölüm 5)
+
+■ 40b. Hakem K5: aynı iptalde Kasa ve Garanti eksiye düşer → önce Kasa sorusu, Kasa onayı Garanti'yi sessizce geçmez: Garanti'nin Eksi Bakiye sorusu (“Yine de İptal Et”, adı ve bakiyesiyle); onaylarla iptal; Kasa −5.000, Garanti aynı · şirket 001
+  ✓ hazırlık: Kasa 0, Garanti -18000 (-18000)
+  ✓ en az iki soru (Kasa ve Garanti): Kasa Eksiye Düşecek → Eksi Bakiye → Kasa Eksiye Düşecek
+  ✓ ilk soru Kasa'nın: Kasa Eksiye Düşecek · Nakit kasada 0,00 TL var; 5.000,00 TL çıkış bakiyeyi -5.000,00 TL eksiye düşürür. Ödeme bankadan ya da başka bir kasadan
+  ✓ Kasa onayından sonra Garanti ayrıca soruldu: Kasa Eksiye Düşecek → Eksi Bakiye → Kasa Eksiye Düşecek
+  ✓ Garanti sorusu hesabın adı ve bakiyesiyle, işlemin adıyla: Garanti BBVA · Ana TL Hesabı hesabında −18.000,00 TL var; bu işlemle bakiye 5.000,00 TL azalır ve −23.000,00 TL olur (eksi bakiye). Yine de iptal edilsin mi? · “Yine de İptal Et”
+  ✓ onaylarla fatura cancelled (cancelled)
+  ✓ Kasa −5.000, Garanti -23000 (-5000 · -23000)
+  ✓ Kabul Şirketi'nde mutabakat ok (hakem K5, cancel)
+
+■ 40c. Hakem K5: aynı kalıp Fatura Sil'de (onay adreste: ?cashForce=1&negativeOk=0) → Kasa sorusu, sonra Garanti'nin “Yine de Sil” sorusu; onaylarla silinir · şirket 001
+  ✓ hazırlık: Kasa 0, Garanti -18000 (-18000)
+  ✓ en az iki soru (Kasa ve Garanti): Kasa Eksiye Düşecek → Eksi Bakiye → Kasa Eksiye Düşecek
+  ✓ ilk soru Kasa'nın: Kasa Eksiye Düşecek · Nakit kasada 0,00 TL var; 5.000,00 TL çıkış bakiyeyi -5.000,00 TL eksiye düşürür. Yine de silinsin mi?
+  ✓ Kasa onayından sonra Garanti ayrıca soruldu: Kasa Eksiye Düşecek → Eksi Bakiye → Kasa Eksiye Düşecek
+  ✓ Garanti sorusu hesabın adı ve bakiyesiyle, işlemin adıyla: Garanti BBVA · Ana TL Hesabı hesabında −18.000,00 TL var; bu işlemle bakiye 5.000,00 TL azalır ve −23.000,00 TL olur (eksi bakiye). Yine de silinsin mi? · “Yine de Sil”
+  ✓ onaylarla fatura silindi (silindi)
+  ✓ Kasa −5.000, Garanti -23000 (-5000 · -23000)
+  ✓ Kabul Şirketi'nde mutabakat ok (hakem K5, delete)
+
+■ 40d. Hakem K3: Kasadan Ödeme — ilk yanıt ağda kaybolur, Kaydet'e yeniden basılır → aynı istek kimliği, tek satır; “Bu işlem zaten kaydedildi (BNK-…)” · şirket 001
+  ✓ ilk gönderim sunucuda yazıldı, yanıt kayboldu; form açık: “Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.”
+  ✓ iki gönderim aynı istek kimliğiyle: 7d106b0457b16476b94d8b9602b3f3b1 · 7d106b0457b16476b94d8b9602b3f3b1
+  ✓ tek satır, Kasa 750 (1 satır · 750)
+  ✓ ekran bildirimi: “Bu işlem zaten kaydedildi (BNK-2026-000029); ikinci kez yazılmadı.”
+  ✓ Kabul Şirketi'nde mutabakat ok (hakem K3)
+
+■ 41. Rapor Şirketi (bilinen veri) → ANLIK DURUM Banka kutusu: Gerçek Banka 160.484,25; bugün +1.500 · −0, Transfer +1.000; Kart ve Kredi Borcu 3.000; Hesabı Atanmamış 5.000 ayrı; tıklayınca Banka · şirket 001
+  ✓ kutunun adı K10 adıyla: “Gerçek Banka”
+  ✓ Gerçek Banka 160.484,25 (kart borcu ve hesabı atanmamış hariç): Gerçek Banka: banka hesaplarınızın (102) bakiyesi ₺160.484,25. Bugün giriş ₺1.500,00, çıkış ₺0,00; kendi hesaplarınız ar
+  ✓ bugün giriş 1.500 (dış): “Bugün +₺1.500 · −₺0Transfer +₺1.000 · −₺0Kart ve Kredi Borcu ₺3.000Hesabı Atanmamış Eski Hareketler ₺5.000”
+  ✓ bugün çıkış 0 (Kasa'dan gelen 1.000 transfer sayılmaz)
+  ✓ Transfer satırı ayrı: “Transfer +₺1.000 · −₺0”
+  ✓ Kart ve Kredi Borcu ayrı satır: “Kart ve Kredi Borcu ₺3.000”
+  ✓ Hesabı Atanmamış ayrı satır: “Hesabı Atanmamış Eski Hareketler ₺5.000”
+  ✓ API ile aynı: Gerçek Banka 160484.25, borç 3000, atanmamış 5000, Nakit Kasa 9000
+  ✓ kutuya tıklayınca Banka penceresi açılır
+  ✓ Banka Genel Bakış'ta da Gerçek Banka 160.484,25 (₺160.484,25)
+
+■ 42. Raporlar → Tüm Raporlar → Banka grubu → Banka Bakiye Raporu: Ziraat 87.984,25, Garanti 72.500, TOPLAM 160.484,25; Hesap Grubu Tümü (kart, atanmamış ayrı; TOPLAM yok); PDF ve Excel · şirket 004
+  ✓ Banka grubu: ₺Kasa, •Ana Defter, ▣Banka, ☰Cari, •Fatura, ▤Taksit, ✎Çek / Senet, ▦Stok, ≡Kayıtlar, ◷Ofis
+  ✓ Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı
+  ✓ hesaplar: Ziraat Bankası 87.984,25 TL · Garanti BBVA 72.500,00 TL
+  ✓ TOPLAM: TOPLAM |  |  |  | 0,00 TL | 21.500,00 TL | 15,75 TL | 21.000,00 TL | 32.000,00 TL | 150.000,00 TL | 160.484,25 TL
+  ✓ özet K10 adlarıyla: {"Gerçek Banka":"160.484,25 TL","Kart ve Kredi Borcu":"3.000,00 TL","Hesabı Atanmamış Eski Hareketler":"5.000,00 TL","Hesap":"3"}
+  ✓ PDF ve Excel bu pencerenin şirketinden iner (/api/workspace/report-center/banka-bakiye/pdf?from=2026-01-01&to=2026-12-31&bankGroup=real&hofCompany=sirket-fea7e420-b7da-4a5b-9d61-b3740c7d9ddd)
+  ✓ PDF: başlık, şirket, hesap ve TOPLAM tutarı
+  ✓ Excel: kolonlar ekranla aynı, TOPLAM 160.484,25 (TOPLAM |  |  |  | 0 | 21500 | 15.75 | 21000 | 32000 | 150000 | 160484.25)
+  ✓ Tümü: kart ve atanmamış ayrı grup, TOPLAM yok (Gerçek Banka 102.01 87.984,25 TL · Gerçek Banka 102.02 72.500,00 TL · Kart ve Kredi Borcu 309.01 -3.000,00 TL · Hesabı Atanmamış Eski Hareketler 102.00 5.000,00 TL)
+
+■ 43. Banka Hareket Raporu: Hesap Ziraat + Transfer (İç Hareketler) → Kasa'ya 10.000, Garanti'ye 20.000 (ücret 5,25 Çıkış'ta), kart 2.000; yürüyen bakiye · şirket 004
+  ✓ Banka Hesabı seçenekleri: Gerçek Banka (Tüm Hesaplar) | Ziraat Bankası · Ana TL Hesabı · 102.01 | Garanti BBVA · Ana TL Hesabı · 102.02 | Ziraat Bankası · Şirket Kartı · 309.01 (Kurumsal Kredi Kartı) | Hesabı Atanmamış Eski Hareketler
+  ✓ Transfer Çıkış satırları: Kasa ile Banka Arası 10.000,00 TL · Bankalar Arası Transfer 20.000,00 TL · Kart Borcu Ödemesi 2.000,00 TL
+  ✓ ücretli transferin ücreti dış Çıkış'ta (5,25)
+  ✓ yürüyen bakiye hesabın gerçek bakiyesi (87.984,25 TL)
+  ✓ özet: {"Hesap":"Ziraat Bankası · Ana TL Hesabı (102.01)","Devir":"0,00 TL","Giriş":"20.000,00 TL","Çıkış":"15,75 TL","Transfer Giriş":"0,00 TL","Transfer Çıkış":"32.000,00 TL","Açılış ve Devir Düzeltmeleri":"100.000,00 TL","Dönem Sonu":"87.984,25 TL","Hesaba Giren (Tümü)":"120.000,00 TL","Hesaptan Çıkan (Tümü)":"32.015,75 TL"}
+  ✓ her satırda İşlem No
+
+■ 44. Banka Masraf Raporu: transfer ücreti 5,25 (5,00 + BSMV 0,25) + masraf 10,50 (10,00 + 0,50) = 15,75; 770 · şirket 004
+  ✓ masraflar: EFT (Transfer Ücreti) 5,25 TL · EFT 10,50 TL · TOPLAM 15,75 TL
+  ✓ transfer ücreti satırı; hesap 770
+  ✓ Hesap Planı Mizanı 770 = 15,75
+
+■ 45. Alt Hesap Mizanı: 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak) · şirket 004
+  ✓ alt hesaplar: 102.00 5.000,00 TL Borç · 102.01 87.984,25 TL Borç · 102.02 72.500,00 TL Borç · 309.01 3.000,00 TL Alacak
+  ✓ ana hesaplar alt hesaplarının toplamına eşit
+
+■ 46. Banka ve POS Hareketleri: Dönem Giriş 26.500 (eski havale 5.000 dahil), Çıkış 15,75; Transfer Giriş 21.000 / Çıkış 32.000 ayrı (giriş-çıkış şişmez) · şirket 004
+  ✓ özet: {"Devir":"0,00 TL","Dönem Giriş":"26.500,00 TL","Dönem Çıkış":"15,75 TL","Dönem Net":"26.484,25 TL","Transfer Giriş":"21.000,00 TL","Transfer Çıkış":"32.000,00 TL","Açılış ve Devir Düzeltmeleri":"150.000,00 TL","Dönem Sonu":"165.484,25 TL","Banka (tüm hareketler)":"165.484,25 TL","POS / Kredi Kartı (tüm hareketler)":"0,00 TL"}
+  ✓ TOPLAM = dış giriş/çıkış (TOPLAM |  |  |  | 26.500,00 TL | 15,75 TL |  | )
+  ✓ ücretli transfer satırı: Çıkış 5,25, transfer tutarı açıklamada
+
+■ 47. Canlı yenileme: açık Banka Bakiye Raporu ve ANLIK DURUM — başka oturumdan Garanti'ye masraf 100 → ikisi de yeni sayıyı kendiliğinden gösterir · şirket 004
+  ✓ başka oturumdan masraf 100 (Garanti)
+  ✓ açık rapor kendiliğinden yenilendi: 160.384,25 TL
+  ✓ ANLIK DURUM kendiliğinden yeni sayı (Gerçek Banka: banka hesaplarınızın (102) bakiyesi ₺160.384,25. Bugün giriş ₺1.50)
+
+■ 48. Birleşik Rapor (Yönetim → Şirketler): Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış Eski Hareketler sütunları ANLIK DURUM'la aynı ad ve sayı · şirket 004
+  ✓ sütunlar: Şirket | Nakit Kasa | Gerçek Banka | Kart ve Kredi Borcu | Hesabı Atanmamış Eski Hareketler | Cari Alacak | Cari Borç | Geciken Taksit | Stok Değeri | Açık Satış Faturası | Açık Alış Faturası | Bu Ay Satış | Bu Ay Alış
+  ✓ Rapor Şirketi satırı: ₺160.384,25 · ₺3.000,00 · ₺5.000,00
+
+■ 49. Yetki: muhasebe Raporlar'da yalnız Banka grubunu görür (Finans Raporları yok); personelde Banka raporu 403 · şirket 004
+  ✓ muhasebe menüde Raporlar'ı görür (Banka Raporları yetkisi)
+  ✓ muhasebenin Tüm Raporlar'ı: ▣Banka
+  ✓ muhasebe Banka Bakiye Raporu'nu açar
+  ✓ personel Banka Bakiye Raporu 403 (403)
+
+■ 25. Kalemle ad (side.bank) ve yazım düzeni · şirket 001
+  ✓ menüde yeni ad
+  ✓ pencere başlığında yeni ad
+  ✓ gezilen bütün banka ekranlarında adlar başlık yazımıyla
+  ✓ son durumda mutabakat ok
+  ✓ hiçbir ekranda tarayıcı hatası yok
+
+■ 50. Kabul 1–16 sonu mizanı ekrandan: Hesap Planı Mizanı 100 = 10.000 B · 102 = 160.000 B · 120 = 0 · 391 = 3.333,33 A · 500 = 150.000 A · 600 = 16.666,67 A; Fark 0; Alt Hesap Mizanı 102.01 = 90.000, 102.02 = 70.000 · şirket 001
+  ✓ ekranda 100: 10.000,00 TL Borç (beklenen 10000 Borç)
+  ✓ ekranda 102: 160.000,00 TL Borç (beklenen 160000 Borç)
+  ✓ ekranda 391: 3.333,33 TL Alacak (beklenen 3333.33 Alacak)
+  ✓ ekranda 500: 150.000,00 TL Alacak (beklenen 150000 Alacak)
+  ✓ ekranda 600: 16.666,67 TL Alacak (beklenen 16666.67 Alacak)
+  ✓ ekranda 120 ABC: borç 20.000,00 TL · alacak 20.000,00 TL · bakiye 0,00 TL (beklenen 20.000 / 20.000 / 0)
+  ✓ başka bakiyeli hesap yok (770 = 0, 153/621 yok)
+  ✓ özet: Dönem Borç 220.000,00 TL = Dönem Alacak 220.000,00 TL · Fark 0,00 TL
+  ✓ ekranda Alt Hesap Mizanı: 102.01 = 90.000, 102.02 = 70.000; ana hesap = alt hesaplar (✓)
+  ✓ Ürün A 9 (beklenen 9)
+  ✓ kabul 16 sonu mutabakat ok
+
+TAMAM: 407 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-ac656f0bbd0c62958/test/e2e/artifacts/senaryo-banka-210
