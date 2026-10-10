@@ -1,0 +1,13 @@
+1) cari ödeme kart 579 + bankAccountId: 200 {"ok":true,"data":{"id":"account-22040ded-8271-42cc-93eb-557cc8f8ce8b","refNo":"1","type":"supplier","name":"Tedarikçi C
+2) cari ödeme kart 100: 200
+3) alış faturası 240 peşin kart: 200 
+4) cari ödeme kart 50: 200
+Mizan (GET /api/workspace/ledger; ağaç .):
+  108 Kredi Kartı Tahsilatları (POS) borç 0 alacak 969 bakiye -969
+  191 İndirilecek KDV borç 40 alacak 0 bakiye 40
+  320 Satıcılar (Tedarikçi Carileri) borç 969 alacak 240 bakiye 729
+  770 Genel Giderler ve Alış Faturaları borç 200 alacak 0 bakiye 200
+ANLIK DURUM Banka/POS (cash.bank): {"labels":{"realBank":"Gerçek Banka","posPending":"POS Bekleyen (Net)","posBlocked":"Blokeli POS","debt":"Kart ve Kredi Borcu","unassigned":"Hesabı Atanmamış Eski Hareketler"},"defined":false,"balance":0,"today":{"in":0,"out":0},"transfer":{"in":0,"out":0},"month":{"in":0,"out":0,"transferIn":0,"transferOut":0},"debt":{"card":0,"loan":0,"total":0,"shown":false},"unassigned":{"bank":0,"card":-969,"total":-969},"posNet":0,"posBlocked":0,"pos":false}
+ANLIK DURUM yol kırılımı (cash.byMethod): {"cash":0,"bank":0,"card":-969}
+Cari bakiye: [["Tedarikçi C25",729]]
+Mutabakat Testi: tamam

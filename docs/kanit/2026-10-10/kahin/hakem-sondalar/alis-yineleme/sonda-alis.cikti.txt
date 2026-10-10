@@ -1,0 +1,66 @@
+{
+ "login": 200,
+ "cari": 200,
+ "urun": 200,
+ "ilk": {
+  "durum": 200,
+  "id": "invoice-9b709ab9-1289-4e13-bfa2-e9f50e5306dc",
+  "number": "F1"
+ },
+ "ayniGovde": {
+  "durum": 200,
+  "ayniBelge": true,
+  "replayed": true
+ },
+ "yalnizNumaraFarkli": {
+  "durum": 409,
+  "kod": "request-id-reused",
+  "ileti": "Bu alış faturası zaten kaydedildi (F1); sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın."
+ },
+ "kayitliAlisFaturasi": [
+  [
+   "F1",
+   null
+  ]
+ ],
+ "stok": [
+  [
+   "Ürün 1",
+   10
+  ]
+ ],
+ "cariBakiye": "[[\"Tedarikçi 1\",-1200]]"
+}
+{
+ "login": 200,
+ "cari": 200,
+ "urun": 200,
+ "ilk": {
+  "durum": 200,
+  "id": "invoice-6213dcfc-df8f-4296-bcea-ccd3229806ee",
+  "number": "F1"
+ },
+ "ayniGovde": {
+  "durum": 200,
+  "ayniBelge": true,
+  "replayed": true
+ },
+ "yalnizNumaraFarkli": {
+  "durum": 409,
+  "kod": "request-id-reused",
+  "ileti": "Bu alış faturası zaten kaydedildi (F1); sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın."
+ },
+ "kayitliAlisFaturasi": [
+  [
+   "F1",
+   null
+  ]
+ ],
+ "stok": [
+  [
+   "Ürün 1",
+   10
+  ]
+ ],
+ "cariBakiye": "[[\"Tedarikçi 1\",-1200]]"
+}

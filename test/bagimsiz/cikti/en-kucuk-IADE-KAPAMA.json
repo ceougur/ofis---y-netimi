@@ -1,0 +1,33 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-IADE-KAPAMA",
+  "aciklama": "rastgele-1-500 adım 1–121'den küçültüldü (C25/F6/U11'e dokunan adımlar; sonra açgözlü adım çıkarma: stok girişi, iki saat adımı ve eksi Kasa ayar adımı farkı değiştirmedi — ayar başlangıca alındı). Alış F6 23,93 (9,84 nakit peşin, açık 14,09); F6'nın tamamı iade edilir, geri ödenmez (R1, geri: acik). Tedarikçi bize 9,84 borçlu kalır.",
+  "dayanak": "hakem: fark sınıfı IADE-KAPAMA (fark-ozet.json enKucukTohum [1, 500, 1, 120], alan faturalar.R1.acik, A=B 984, program 0). Adım kimlikleri özgün senaryodakiyle aynı.",
+  "baslangic": {
+    "bugun": "11.03.2025",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "kontrol_yok",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    { "id": "19", "islem": "urun_ac", "ad": "U11", "urunAdi": "Adaptör U11", "birim": "Adet" },
+    { "id": "45", "islem": "cari_ac", "ad": "C25", "unvan": "Bereket Lojistik Ltd. C25", "tur": "tedarikci" },
+    {
+      "id": "78",
+      "islem": "fatura",
+      "ad": "F6",
+      "tur": "alis",
+      "cari": "C25",
+      "kalemler": [
+        { "urun": "U11", "miktar": 1, "birimFiyat": "20,99", "iskontoOrani": "5", "kdvOrani": 20, "kdvDahil": false }
+      ],
+      "odeme": { "pesin": [ { "tutar": "9,84", "yol": "nakit" } ] }
+    },
+    { "id": "121", "islem": "iade", "ad": "R1", "asilFatura": "F6", "kalemler": [ { "kalem": 1, "miktar": 1 } ], "geri": { "yol": "acik" } }
+  ]
+}

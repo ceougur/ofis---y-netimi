@@ -1,0 +1,145 @@
+{
+  "kok": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/v2026",
+  "vakalar": {
+    "CO-uyar": {
+      "politika": {
+        "durum": 200,
+        "kod": null
+      },
+      "kasaGirisi": {
+        "durum": 200,
+        "kod": null
+      },
+      "r1": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "aentry-c129f26f-3d35-4300-8dcb-a42f3b0b947e"
+      },
+      "r2_ayniKimlik": {
+        "durum": 409,
+        "kod": "cash-negative",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.",
+        "replayed": null,
+        "id": null
+      },
+      "r3_ayniKimlik_cashForce": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "aentry-8c1547fb-34d9-4f0b-a305-40b80fafc080"
+      },
+      "kasaBakiye": -100,
+      "kasaHareketSayisi": 3,
+      "cariBakiye": 200,
+      "mutabakatTesti": true
+    },
+    "CO-engelle": {
+      "politika": {
+        "durum": 200,
+        "kod": null
+      },
+      "kasaGirisi": {
+        "durum": 200,
+        "kod": null
+      },
+      "r1": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "aentry-772711d4-21b3-447c-bca1-27bc32378b57"
+      },
+      "r2_ayniKimlik": {
+        "durum": 409,
+        "kod": "cash-blocked",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi)",
+        "replayed": null,
+        "id": null
+      },
+      "r3_ayniKimlik_cashForce": {
+        "durum": 409,
+        "kod": "cash-blocked",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi)",
+        "replayed": null,
+        "id": null
+      },
+      "kasaBakiye": 0,
+      "kasaHareketSayisi": 2,
+      "cariBakiye": 100,
+      "mutabakatTesti": true
+    },
+    "KB-uyar": {
+      "politika": {
+        "durum": 200,
+        "kod": null
+      },
+      "kasaGirisi": {
+        "durum": 200,
+        "kod": null
+      },
+      "r1": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "cash-15e5c4f1-8d8b-4581-a101-b0219e9860b6"
+      },
+      "r2_ayniKimlik": {
+        "durum": 409,
+        "kod": "cash-negative",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.",
+        "replayed": null,
+        "id": null
+      },
+      "r3_ayniKimlik_cashForce": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "cash-fe04632b-ac8f-42b7-acfe-252624118279"
+      },
+      "kasaBakiye": -100,
+      "kasaHareketSayisi": 3,
+      "cariBakiye": null,
+      "mutabakatTesti": true
+    },
+    "KB-engelle": {
+      "politika": {
+        "durum": 200,
+        "kod": null
+      },
+      "kasaGirisi": {
+        "durum": 200,
+        "kod": null
+      },
+      "r1": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "cash-4a8edeb5-520b-4f37-877f-c4e431ad206f"
+      },
+      "r2_ayniKimlik": {
+        "durum": 409,
+        "kod": "cash-blocked",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi)",
+        "replayed": null,
+        "id": null
+      },
+      "r3_ayniKimlik_cashForce": {
+        "durum": 409,
+        "kod": "cash-blocked",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi)",
+        "replayed": null,
+        "id": null
+      },
+      "kasaBakiye": 0,
+      "kasaHareketSayisi": 2,
+      "cariBakiye": null,
+      "mutabakatTesti": true
+    }
+  }
+}

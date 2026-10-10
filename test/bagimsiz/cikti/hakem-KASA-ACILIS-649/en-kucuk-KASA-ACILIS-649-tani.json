@@ -1,0 +1,22 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KASA-ACILIS-649-tani",
+  "aciklama": "Hakem tanı: farkı yalıtır. (1) Kasa açılışı 49.505 (açıklama 'Açılış Bakiyesi'), (2) Kasa'ya elle giriş 100 (açılış sözcüğü yok), (3) banka hesabı açılışı 1.000 (doğrulanmış). Beklenen ayrışma yalnız (1)'in karşı hesabında; (2) ve (3)'te üç taraf aynı olmalı.",
+  "dayanak": "hakem: KASA-ACILIS-649 tanı senaryosu",
+  "baslangic": {
+    "bugun": "11.03.2025",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    { "id": "1", "islem": "kasa_acilis", "tutar": "49505" },
+    { "id": "2", "islem": "kasa_hareket", "ad": "KH1", "yon": "giris", "tutar": "100", "aciklama": "Kasaya Giriş" },
+    { "id": "3", "islem": "hesap_ac", "ad": "B1", "tur": "vadesiz", "banka": "Akbank", "hesapAdi": "Ana TL Hesabı B1", "paraBirimi": "TRY", "acilisTarihi": "03.03.2025", "acilisBakiyesi": "1000", "bakiyeDogrulandi": true }
+  ]
+}

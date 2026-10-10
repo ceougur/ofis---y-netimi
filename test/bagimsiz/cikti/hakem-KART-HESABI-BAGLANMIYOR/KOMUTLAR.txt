@@ -1,0 +1,12 @@
+Hakem — fark sınıfı KART-HESABI-BAGLANMIYOR (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KART-HESABI-BAGLANMIYOR.json
+      # en küçük: 11 fark (A=B≠P 8, KOSUCU 3). A=B: 272 → 400 bank-account-invalid; 309.01 A 390,00; KK −390,00; Kart ve Kredi Borcu 390,00;
+      #   108.00 0; C25 +150,00. Program: 272 geçti; 108.00 A 969,00; KK 0; Kart ve Kredi Borcu 0; Hesabı Atanmamış −969,00; C25 +729,00.
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-KART-HESABI-BAGLANMIYOR/en-kucuk-KART-HESABI-BAGLANMIYOR-tani.json
+      # tanı: Kart Borcu Ödemesi sonrası program KK +100 (borç bakiyesi, "Kart ve Kredi Borcu" −100), 108.00 −25.110;
+      #   kart limiti aşan 25.000 ödeme A/B 409 cash-negative, program 200; iki kurumsal kartta hesapsız kart ödemesi A/B 400 bank-account-required, program 200.
+  git worktree add --detach <yer>/v2026 v2.0.26 && node test/bagimsiz/cikti/hakem-KART-HESABI-BAGLANMIYOR/canli.mjs <yer>/v2026   # canlı sürüm (yalnız 2.1.0 öncesi işlemler)
+  node test/bagimsiz/cikti/hakem-KART-HESABI-BAGLANMIYOR/canli.mjs .                                                               # HEAD, aynı işlemler (banka hesabı yok)
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+Not: fark.py çıktısını cikti/fark-<ad>.json'a yazar; fark-ozet.json'u kirletmesin diye iki fark dosyası ve tanı senaryosu bu klasörde.
+Ham çıktılar: cikti/ham/en-kucuk-KART-HESABI-BAGLANMIYOR*.{a,b,program}.json.

@@ -1,0 +1,7 @@
+{"dahilIskontoluKalem": 469, "kesinTutarliKalem": 228, "dilKuraliKesindenSapan": 80, "programKuraliKesindenSapan": 0}
+('rastgele-1-500.json', 'F21', '1142', '20', 10, 'kesin', 91360, 'dil', 91359, 'program', 91360)
+('rastgele-1-500.json', 'F37', '185', '20', 20, 'kesin', 14800, 'dil', 14801, 'program', 14800)
+('rastgele-1-500.json', 'F59', '15', '5', 20, 'kesin', 1425, 'dil', 1424, 'program', 1425)
+('rastgele-1-500.json', 'F74', '315', '5', 10, 'kesin', 29925, 'dil', 29924, 'program', 29925)
+('rastgele-10-500.json', 'F120', '86', '5', 20, 'kesin', 8170, 'dil', 8171, 'program', 8170)
+('rastgele-12-500.json', 'F13', '965', '5', 1, 'kesin', 91675, 'dil', 91676, 'program', 91675)

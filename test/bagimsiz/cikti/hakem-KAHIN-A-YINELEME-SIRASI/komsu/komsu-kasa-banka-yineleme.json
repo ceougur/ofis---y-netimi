@@ -1,0 +1,48 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "komsu-kasa-banka-yineleme",
+  "aciklama": "Bankadan Kasaya 100 aynı istek kimliğiyle iki kez (BELİRSİZ-4 alanı: aynı gün/hesap/tutar).",
+  "dayanak": "SENARYO-DILI §5.4, §5.6; hakem KAHIN-A-YINELEME-SIRASI komşu denetimi (aynı sıralama, başka BELİRSİZ denetimi)",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "hesap_ac",
+      "ad": "ZIR",
+      "banka": "Ziraat Bankası",
+      "hesapAdi": "Ana TL Hesabı",
+      "tur": "vadesiz",
+      "paraBirimi": "TRY",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "1000",
+      "bakiyeDogrulandi": true
+    },
+    {
+      "id": "2",
+      "islem": "kasa_banka",
+      "ad": "KB1",
+      "yon": "bankadan_kasaya",
+      "hesap": "ZIR",
+      "tutar": "100",
+      "istekKimligi": "k1"
+    },
+    {
+      "id": "3",
+      "islem": "kasa_banka",
+      "yon": "bankadan_kasaya",
+      "hesap": "ZIR",
+      "tutar": "100",
+      "istekKimligi": "k1"
+    }
+  ]
+}

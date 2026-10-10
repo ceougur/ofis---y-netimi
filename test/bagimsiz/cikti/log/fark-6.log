@@ -1,0 +1,19 @@
+rastgele-6-500: çıkış a=0 b=0 program=0 · karşılaştırılan 5819 · atlanan 750 · fark 555 {'A=B≠P': 554, 'KOSUCU': 1}
+  ACIKLANMAMIS:A=B≠P:bankaHesaplari.*                            14 yaprak  {'A=B≠P': 14}
+  ACIKLANMAMIS:A=B≠P:faturalar.*.acik                            55 yaprak  {'A=B≠P': 55}
+  ACIKLANMAMIS:A=B≠P:mizan.102.NN                                14 yaprak  {'A=B≠P': 14}
+  ACIKLANMAMIS:A=B≠P:mizan.649                                   14 yaprak  {'A=B≠P': 14}
+  ACIKLANMAMIS:A=B≠P:mizan.770                                    3 yaprak  {'A=B≠P': 3}
+  ACIKLANMAMIS:A=B≠P:mizan.780                                    6 yaprak  {'A=B≠P': 6}
+  ACIKLANMAMIS:A=B≠P:ozet.gercekBanka                            14 yaprak  {'A=B≠P': 14}
+  ACIKLANMAMIS:A=B≠P:ozet.kasaVeGercekBanka                      16 yaprak  {'A=B≠P': 16}
+  BANKA-EKSI-KODU                                                 3 yaprak  {'A=B≠P': 3}
+  KART-HESABI-BAGLANMIYOR                                         2 yaprak  {'A=B≠P': 1, 'KOSUCU': 1}
+  KDV-DAHIL-ISKONTO                                             192 yaprak  {'A=B≠P': 192}
+  SINIFLANMAMIS:A=B≠P:atlananlar:ters_kayit                       1 yaprak  {'A=B≠P': 1}
+  SINIFLANMAMIS:A=B≠P:retler:banka_masraf                         2 yaprak  {'A=B≠P': 2}
+  SINIFLANMAMIS:A=B≠P:retler:diger_gelir                          2 yaprak  {'A=B≠P': 2}
+  SINIFLANMAMIS:A=B≠P:retler:faiz_gideri                          1 yaprak  {'A=B≠P': 1}
+  TUREV:KART-HESABI-BAGLANMIYOR                                   9 yaprak  {'A=B≠P': 9}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO                51 yaprak  {'A=B≠P': 51}
+  TUREV:KDV-DAHIL-ISKONTO                                       156 yaprak  {'A=B≠P': 156}

@@ -1,0 +1,33 @@
+{
+  "kok": "/tmp/v2026",
+  "bugun": "2026-10-10",
+  "vakalar": [
+    {
+      "ad": "P0 GET /api/workspace/bank/accounts",
+      "durum": 404
+    },
+    {
+      "ad": "L0 POST /api/workspace/bank/vouchers (diğer gelir)",
+      "durum": 404,
+      "kod": null,
+      "ileti": "Endpoint bulunamadı."
+    },
+    {
+      "ad": "L1 GET /api/workspace/bank/accounts?kind=time",
+      "durum": 404
+    },
+    {
+      "ad": "L2 Kasa'ya 'bank' yolundan elle giriş 18,57",
+      "durum": 400,
+      "kod": "cash-method",
+      "ileti": "Kasa'ya yalnız nakit tahsilat ve ödeme girilir. Havale/EFT, POS ve kredi kartı hareketleri cari, fatura, taksit, stok ve çek/senet ekranlarından girilir; banka ile para geçişi için Kasa'daki Aktar / Yatır düğmelerini kullanın."
+    },
+    {
+      "ad": "L2 Kasa'ya 'bank' yolundan elle çıkış 18,57",
+      "durum": 400,
+      "kod": "cash-method",
+      "ileti": "Kasa'ya yalnız nakit tahsilat ve ödeme girilir. Havale/EFT, POS ve kredi kartı hareketleri cari, fatura, taksit, stok ve çek/senet ekranlarından girilir; banka ile para geçişi için Kasa'daki Aktar / Yatır düğmelerini kullanın."
+    }
+  ],
+  "bankaModulu": false
+}

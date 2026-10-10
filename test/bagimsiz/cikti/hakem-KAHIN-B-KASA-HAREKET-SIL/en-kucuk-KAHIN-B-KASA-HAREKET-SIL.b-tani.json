@@ -1,0 +1,25 @@
+{
+  "araDurumlar": {},
+  "atlananlar": [],
+  "bankaHesaplari": {},
+  "belirsizler": [],
+  "cariler": {},
+  "dil": "destekofis-senaryo/1",
+  "eksiBakiyeDenetimi": {},
+  "faturalar": {},
+  "hesapKodlari": {},
+  "kasa": 0,
+  "kaynak": "kahin",
+  "mizan": {},
+  "ozet": {
+    "gercekBanka": 0,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": 0
+  },
+  "retler": [],
+  "senaryo": "en-kucuk-KAHIN-B-KASA-HAREKET-SIL",
+  "stok": {},
+  "taksitKartlari": {},
+  "yinelenenler": []
+}

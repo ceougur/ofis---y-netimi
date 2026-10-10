@@ -1,0 +1,388 @@
+{
+  "adimSayisi": 3,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 5
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 5,
+  "farklar": [
+    {
+      "a": 78800,
+      "aile": "kasa",
+      "alan": "kasa",
+      "b": 78800,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KASA-ISTEK-KIMLIGI",
+      "olaylar": [
+        {
+          "degisim": -21200,
+          "neden": [
+            "KASA-ISTEK-KIMLIGI"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 57600,
+      "tetik": {
+        "KASA-ISTEK-KIMLIGI": "388"
+      },
+      "yol": [
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 78800
+      },
+      "aile": "mizan.100",
+      "alan": "mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 78800
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KASA-ISTEK-KIMLIGI",
+      "olaylar": [
+        {
+          "degisim": -21200,
+          "neden": [
+            "KASA-ISTEK-KIMLIGI"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 57600
+      },
+      "tetik": {
+        "KASA-ISTEK-KIMLIGI": "388"
+      },
+      "yol": [
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 21200
+      },
+      "aile": "mizan.770",
+      "alan": "mizan.770",
+      "b": {
+        "alacak": 0,
+        "borc": 21200
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KASA-ISTEK-KIMLIGI",
+      "olaylar": [
+        {
+          "degisim": 21200,
+          "neden": [
+            "KASA-ISTEK-KIMLIGI"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 42400
+      },
+      "tetik": {
+        "KASA-ISTEK-KIMLIGI": "388"
+      },
+      "yol": [
+        "mizan",
+        "770"
+      ]
+    },
+    {
+      "a": 78800,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "ozet.kasaVeGercekBanka",
+      "b": 78800,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KASA-ISTEK-KIMLIGI",
+      "olaylar": [
+        {
+          "degisim": -21200,
+          "neden": [
+            "KASA-ISTEK-KIMLIGI"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 57600,
+      "tetik": {
+        "KASA-ISTEK-KIMLIGI": "388"
+      },
+      "yol": [
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": true,
+      "adim": {
+        "aciklama": "Temizlik Gideri",
+        "id": "388",
+        "islem": "kasa_hareket",
+        "istekKimligi": "ik-13",
+        "tutar": "212",
+        "yon": "cikis"
+      },
+      "aile": "yinelenenler:kasa_hareket",
+      "alan": "yinelenenler.388",
+      "b": true,
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ISTEK-KIMLIGI",
+      "pencere": [
+        "388",
+        "388"
+      ],
+      "program": false,
+      "tetik": "388",
+      "yol": [
+        "yinelenenler",
+        "388"
+      ]
+    }
+  ],
+  "islemSayisi": 3,
+  "islemTurleri": {
+    "kasa_hareket": 3
+  },
+  "karsilastirilanYaprak": 9,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/en-kucuk-KASA-ISTEK-KIMLIGI.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/en-kucuk-KASA-ISTEK-KIMLIGI.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/en-kucuk-KASA-ISTEK-KIMLIGI.json --cikti test/bagimsiz/cikti/ham/en-kucuk-KASA-ISTEK-KIMLIGI.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "en-kucuk-KASA-ISTEK-KIMLIGI",
+  "senaryoDosyasi": "test/bagimsiz/cikti/en-kucuk-KASA-ISTEK-KIMLIGI.json",
+  "siniflar": {
+    "KASA-ISTEK-KIMLIGI": {
+      "aileler": {
+        "yinelenenler:kasa_hareket": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 1
+      },
+      "enErkenPencere": [
+        "388",
+        "388"
+      ],
+      "ornekler": [
+        {
+          "a": true,
+          "alan": "yinelenenler.388",
+          "b": true,
+          "desen": "A=B≠P",
+          "pencere": [
+            "388",
+            "388"
+          ],
+          "program": false
+        }
+      ],
+      "sonDurumYaprak": 1,
+      "yaprak": 1
+    },
+    "TUREV:KASA-ISTEK-KIMLIGI": {
+      "aileler": {
+        "kasa": 1,
+        "mizan.100": 1,
+        "mizan.770": 1,
+        "ozet.kasaVeGercekBanka": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 4
+      },
+      "enErkenPencere": null,
+      "ornekler": [
+        {
+          "a": 78800,
+          "alan": "kasa",
+          "b": 78800,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 57600
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 78800
+          },
+          "alan": "mizan.100",
+          "b": {
+            "alacak": 0,
+            "borc": 78800
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 57600
+          }
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 21200
+          },
+          "alan": "mizan.770",
+          "b": {
+            "alacak": 0,
+            "borc": 21200
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 42400
+          }
+        },
+        {
+          "a": 78800,
+          "alan": "ozet.kasaVeGercekBanka",
+          "b": 78800,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 57600
+        }
+      ],
+      "sonDurumYaprak": 4,
+      "yaprak": 4
+    }
+  },
+  "sureler": {
+    "a": 0.05,
+    "b": 0.06,
+    "program": 0.83
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 78800,
+      "mizanAlacakToplam": 100000,
+      "mizanBorcToplam": 100000,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 78800
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 1
+    },
+    "b": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 78800,
+      "mizanAlacakToplam": 100000,
+      "mizanBorcToplam": 100000,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 78800
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 1
+    },
+    "program": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 57600,
+      "mizanAlacakToplam": 100000,
+      "mizanBorcToplam": 100000,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 57600
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}

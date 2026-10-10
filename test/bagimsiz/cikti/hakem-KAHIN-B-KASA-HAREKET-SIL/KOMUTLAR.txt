@@ -1,0 +1,20 @@
+Hakem — fark sınıfı KAHIN-B-KASA-HAREKET-SIL (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KAHIN-B-KASA-HAREKET-SIL.json
+      # en küçük (2 adım: Kasa elle girişi H1 100 → sil H1): çıkış a=0 b=2 program=0. A ve P: Kasa 0, mizan boş (100/649 sıfır).
+      # B: {"hata":"senaryo-gecersiz","neden":"2: 'H1' daha önce tanımlanmamış"} — kâhin geçerlilik denetimi hatası, programla ilgisiz.
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-KAHIN-B-KASA-HAREKET-SIL/en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani.json
+      # tanı (16 adım; giriş/çıkış silme, ikinci silme, kilitli satır, eksiye düşüren silme ± Yine de Kaydet): A = P alan alan aynı,
+      # B yine exit 2. Elle beklenen (plan): Kasa −450 TL; mizan 100 A 450, 649 A 1.050, 770 B 1.500; ret 4→409 period-locked,
+      # 9→404, 12→409 cash-negative; k1 Kasa 950 · k2 1.050 · k3 50.
+  python3 -I test/bagimsiz/cikti/hakem-KAHIN-B-KASA-HAREKET-SIL/model_b_tani.py <senaryo>   (her iki senaryo + cikti/mini/mini-kahin-b-kasa-hareket-sil.json)
+      # TANI KOPYASI: model_b + tek satır (geçerlilik denetiminde kasa_hareket 'ad'ı T_HAREKET olarak tanımlanır). Asıl model_b DEĞİŞMEDİ.
+      # Sonuç: B-tani = A = P (en küçük ve tanı; kasa, mizan, retler, araDurumlar, ozet). B'nin çalışma kuralları doğru; hata yalnız doğrulayıcıda.
+  git archive v2.0.26 | tar -x -C <yer>/hk-kbsil-v2026 && node test/bagimsiz/cikti/hakem-KAHIN-B-KASA-HAREKET-SIL/canli.mjs <yer>/hk-kbsil-v2026 > canli-v2026.json
+  node test/bagimsiz/cikti/hakem-KAHIN-B-KASA-HAREKET-SIL/canli.mjs . > canli-head.json
+      # gerçek HTTP API (POST/DELETE /api/workspace/cash, PUT /api/admin/period-lock, GET cash/ledger/overview/trash/integrity):
+      # İKİ SÜRÜMDE DE aynı: en küçük Kasa 0, mizan boş, Silinenler'de "Hurda Satışı"; tanı Kasa −450 (ANLIK DURUM −450),
+      # 100 B 1.050 / A 1.500, 649 A 1.050, 770 B 1.500; 409 period-locked, 404, 409 cash-negative ("Nakit Kasa 50,00 TL iken −450,00 TL olur"),
+      # cashForce ile 200; Silinenler 3 Kasa satırı; Mutabakat Testi ok.
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+Not: fark.py fark dosyalarını cikti/'ye yazar; fark-ozet.json kirlenmesin diye ikisi bu klasöre taşındı. Ham: cikti/ham/en-kucuk-KAHIN-B-KASA-HAREKET-SIL*.{a,program}.json.
+Kapsam açığı: uretici.py KASA_HAREKET_SILINMEZ = True (satır 42–47) — bu kâhin hatası yüzünden rastgele koşularda Kasa elle hareketi hiç silinmedi.

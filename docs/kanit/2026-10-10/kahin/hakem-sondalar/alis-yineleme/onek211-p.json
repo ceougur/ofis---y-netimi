@@ -1,0 +1,2227 @@
+{
+  "araDurumlar": {
+    "k1": {
+      "bankaHesaplari": {
+        "B1": 8638639,
+        "B2": 16059216,
+        "B3": -8395200
+      },
+      "cariler": {
+        "C1": 0,
+        "C10": 0,
+        "C11": 0,
+        "C12": 0,
+        "C13": 0,
+        "C14": 0,
+        "C15": 0,
+        "C16": 0,
+        "C17": 0,
+        "C18": 0,
+        "C19": 0,
+        "C2": 0,
+        "C20": 0,
+        "C21": 0,
+        "C22": 0,
+        "C23": 0,
+        "C24": 0,
+        "C25": 0,
+        "C26": 0,
+        "C27": 0,
+        "C28": 0,
+        "C29": 0,
+        "C3": 0,
+        "C30": 0,
+        "C4": 0,
+        "C5": 0,
+        "C6": 0,
+        "C7": 0,
+        "C8": 0,
+        "C9": 0
+      },
+      "eksiBakiyeDenetimi": {
+        "B1": "uyar",
+        "B2": "uyar",
+        "B3": "kontrol_yok"
+      },
+      "faturalar": {},
+      "hesapKodlari": {
+        "B1": "102.01",
+        "B2": "102.02",
+        "B3": "300.01"
+      },
+      "kasa": 4950500,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 4950500
+        },
+        "102.01": {
+          "alacak": 0,
+          "borc": 8638639
+        },
+        "102.02": {
+          "alacak": 0,
+          "borc": 16059216
+        },
+        "193": {
+          "alacak": 0,
+          "borc": 160
+        },
+        "300.01": {
+          "alacak": 8395200,
+          "borc": 0
+        },
+        "500": {
+          "alacak": 16301215,
+          "borc": 0
+        },
+        "642": {
+          "alacak": 1600,
+          "borc": 0
+        },
+        "649": {
+          "alacak": 4950500,
+          "borc": 0
+        }
+      },
+      "ozet": {
+        "gercekBanka": 24697855,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 8395200,
+        "kasaVeGercekBanka": 29648355
+      },
+      "stok": {
+        "U1": 23,
+        "U10": 0,
+        "U11": 71,
+        "U2": 67,
+        "U3": 26,
+        "U4": 17,
+        "U5": 120,
+        "U6": 126,
+        "U7": 28,
+        "U8": 15,
+        "U9": 0
+      },
+      "taksitKartlari": {}
+    },
+    "k2": {
+      "bankaHesaplari": {
+        "B1": 11832995,
+        "B2": 4270884,
+        "B3": -8395200,
+        "B4": 6693700
+      },
+      "cariler": {
+        "C1": 0,
+        "C10": 0,
+        "C11": 0,
+        "C12": 0,
+        "C13": 0,
+        "C14": 0,
+        "C15": 0,
+        "C16": 0,
+        "C17": 0,
+        "C18": 1192800,
+        "C19": 0,
+        "C2": 0,
+        "C20": 0,
+        "C21": 0,
+        "C22": 0,
+        "C23": 0,
+        "C24": 0,
+        "C25": -1409,
+        "C26": 0,
+        "C27": 0,
+        "C28": 0,
+        "C29": 0,
+        "C3": 0,
+        "C30": -3994214,
+        "C31": 0,
+        "C4": 0,
+        "C5": 0,
+        "C6": 0,
+        "C7": 0,
+        "C8": 0,
+        "C9": -1116300
+      },
+      "eksiBakiyeDenetimi": {
+        "B1": "kontrol_yok",
+        "B2": "uyar",
+        "B3": "kontrol_yok",
+        "B4": "uyar"
+      },
+      "faturalar": {
+        "F1": {
+          "acik": 0,
+          "kdv": 741,
+          "matrah": 51067,
+          "toplam": 51808
+        },
+        "F2": {
+          "acik": 0,
+          "kdv": 217380,
+          "matrah": 1086900,
+          "toplam": 1304280
+        },
+        "F3": {
+          "acik": 0,
+          "kdv": 88312,
+          "matrah": 883120,
+          "toplam": 971432
+        },
+        "F4": {
+          "acik": 0,
+          "kdv": 7130,
+          "matrah": 71300,
+          "toplam": 78430
+        },
+        "F5": {
+          "acik": 3994214,
+          "kdv": 53835,
+          "matrah": 5383465,
+          "toplam": 5437300
+        },
+        "F6": {
+          "acik": 1409,
+          "kdv": 399,
+          "matrah": 1994,
+          "toplam": 2393
+        },
+        "F7": {
+          "acik": 0,
+          "kdv": 170800,
+          "matrah": 854000,
+          "toplam": 1024800
+        },
+        "F8": {
+          "acik": 0,
+          "kdv": 1642233,
+          "matrah": 8211167,
+          "toplam": 9853400
+        },
+        "F9": {
+          "acik": 1192800,
+          "kdv": 198800,
+          "matrah": 994000,
+          "toplam": 1192800
+        },
+        "G1": {
+          "acik": 0,
+          "kdv": 98,
+          "matrah": 493,
+          "toplam": 591
+        }
+      },
+      "hesapKodlari": {
+        "B1": "102.01",
+        "B2": "102.02",
+        "B3": "300.01",
+        "B4": "102.03"
+      },
+      "kasa": 4584187,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 4584187
+        },
+        "102.01": {
+          "alacak": 0,
+          "borc": 11832995
+        },
+        "102.02": {
+          "alacak": 0,
+          "borc": 4270884
+        },
+        "102.03": {
+          "alacak": 0,
+          "borc": 6693700
+        },
+        "120": {
+          "alacak": 0,
+          "borc": 76500
+        },
+        "153": {
+          "alacak": 0,
+          "borc": 14521926
+        },
+        "191": {
+          "alacak": 0,
+          "borc": 1874495
+        },
+        "193": {
+          "alacak": 0,
+          "borc": 0
+        },
+        "300.01": {
+          "alacak": 8395200,
+          "borc": 0
+        },
+        "320": {
+          "alacak": 3995623,
+          "borc": 0
+        },
+        "391": {
+          "alacak": 505233,
+          "borc": 0
+        },
+        "500": {
+          "alacak": 22994915,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 3015087,
+          "borc": 0
+        },
+        "642": {
+          "alacak": 0,
+          "borc": 0
+        },
+        "649": {
+          "alacak": 4950500,
+          "borc": 0
+        },
+        "659": {
+          "alacak": 0,
+          "borc": 1100
+        },
+        "770": {
+          "alacak": 0,
+          "borc": 771
+        }
+      },
+      "ozet": {
+        "gercekBanka": 22797579,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 8395200,
+        "kasaVeGercekBanka": 27381766
+      },
+      "stok": {
+        "U1": 15,
+        "U10": 0,
+        "U11": 83,
+        "U2": 86,
+        "U3": 26,
+        "U4": 17,
+        "U5": 116,
+        "U6": 128,
+        "U7": 51,
+        "U8": 10,
+        "U9": 0
+      },
+      "taksitKartlari": {
+        "K1": {
+          "kalan": 0,
+          "odenen": 1128140,
+          "toplam": 1128140
+        },
+        "K2": {
+          "kalan": 1192800,
+          "odenen": 0,
+          "toplam": 1192800
+        }
+      }
+    },
+    "k3": {
+      "bankaHesaplari": {
+        "B1": 12855354,
+        "B2": 4196305,
+        "B3": -8395200,
+        "B4": 6693700
+      },
+      "cariler": {
+        "C1": 0,
+        "C10": 0,
+        "C11": 0,
+        "C12": 0,
+        "C13": -18200,
+        "C14": 0,
+        "C15": 0,
+        "C16": 999300,
+        "C17": -5908,
+        "C18": 0,
+        "C19": 0,
+        "C2": -34100,
+        "C20": 0,
+        "C21": 374130,
+        "C22": 0,
+        "C23": -375948,
+        "C24": -6575,
+        "C25": -1409,
+        "C26": -542000,
+        "C27": 14626,
+        "C28": 0,
+        "C29": 0,
+        "C3": 0,
+        "C30": -3076214,
+        "C31": 0,
+        "C4": 0,
+        "C5": -13000,
+        "C6": 0,
+        "C7": 59095,
+        "C8": 932800,
+        "C9": -1116300
+      },
+      "eksiBakiyeDenetimi": {
+        "B1": "kontrol_yok",
+        "B2": "uyar",
+        "B3": "kontrol_yok",
+        "B4": "uyar"
+      },
+      "faturalar": {
+        "F1": {
+          "acik": 0,
+          "kdv": 741,
+          "matrah": 51067,
+          "toplam": 51808
+        },
+        "F10": {
+          "acik": 0,
+          "kdv": 1556,
+          "matrah": 15556,
+          "toplam": 17112
+        },
+        "F11": {
+          "acik": 932800,
+          "kdv": 155467,
+          "matrah": 777333,
+          "toplam": 932800
+        },
+        "F12": {
+          "acik": 542000,
+          "kdv": 49273,
+          "matrah": 492727,
+          "toplam": 542000
+        },
+        "F13": {
+          "acik": 0,
+          "kdv": 224536,
+          "matrah": 1421417,
+          "toplam": 1645953
+        },
+        "F14": {
+          "acik": 59095,
+          "kdv": 37582,
+          "matrah": 214468,
+          "toplam": 252050
+        },
+        "F15": {
+          "acik": 374130,
+          "kdv": 78000,
+          "matrah": 390000,
+          "toplam": 468000
+        },
+        "F16": {
+          "acik": 999300,
+          "kdv": 166550,
+          "matrah": 832750,
+          "toplam": 999300
+        },
+        "F17": {
+          "acik": 0,
+          "kdv": 4987,
+          "matrah": 24933,
+          "toplam": 29920
+        },
+        "F18": {
+          "acik": 124600,
+          "kdv": 20767,
+          "matrah": 103833,
+          "toplam": 124600
+        },
+        "F19": {
+          "acik": 6575,
+          "kdv": 1096,
+          "matrah": 5479,
+          "toplam": 6575
+        },
+        "F2": {
+          "acik": 0,
+          "kdv": 217380,
+          "matrah": 1086900,
+          "toplam": 1304280
+        },
+        "F20": {
+          "acik": 375948,
+          "kdv": 62658,
+          "matrah": 313290,
+          "toplam": 375948
+        },
+        "F3": {
+          "acik": 0,
+          "kdv": 88312,
+          "matrah": 883120,
+          "toplam": 971432
+        },
+        "F4": {
+          "acik": 0,
+          "kdv": 7130,
+          "matrah": 71300,
+          "toplam": 78430
+        },
+        "F5": {
+          "acik": 2951614,
+          "kdv": 53835,
+          "matrah": 5383465,
+          "toplam": 5437300
+        },
+        "F6": {
+          "acik": 1409,
+          "kdv": 399,
+          "matrah": 1994,
+          "toplam": 2393
+        },
+        "F7": {
+          "acik": 0,
+          "kdv": 170800,
+          "matrah": 854000,
+          "toplam": 1024800
+        },
+        "F8": {
+          "acik": 0,
+          "kdv": 1642233,
+          "matrah": 8211167,
+          "toplam": 9853400
+        },
+        "F9": {
+          "acik": 0,
+          "kdv": 198800,
+          "matrah": 994000,
+          "toplam": 1192800
+        },
+        "G1": {
+          "acik": 0,
+          "kdv": 98,
+          "matrah": 493,
+          "toplam": 591
+        }
+      },
+      "hesapKodlari": {
+        "B1": "102.01",
+        "B2": "102.02",
+        "B3": "300.01",
+        "B4": "102.03"
+      },
+      "kasa": 4612071,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 4612071
+        },
+        "102.01": {
+          "alacak": 0,
+          "borc": 12855354
+        },
+        "102.02": {
+          "alacak": 0,
+          "borc": 4196305
+        },
+        "102.03": {
+          "alacak": 0,
+          "borc": 6693700
+        },
+        "108.00": {
+          "alacak": 1645953,
+          "borc": 0
+        },
+        "120": {
+          "alacak": 0,
+          "borc": 1177817
+        },
+        "153": {
+          "alacak": 0,
+          "borc": 16479776
+        },
+        "191": {
+          "alacak": 0,
+          "borc": 2232825
+        },
+        "193": {
+          "alacak": 0,
+          "borc": 78212
+        },
+        "300.01": {
+          "alacak": 8395200,
+          "borc": 0
+        },
+        "320": {
+          "alacak": 3987520,
+          "borc": 0
+        },
+        "391": {
+          "alacak": 949375,
+          "borc": 0
+        },
+        "500": {
+          "alacak": 22994915,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 5270127,
+          "borc": 0
+        },
+        "642": {
+          "alacak": 521415,
+          "borc": 0
+        },
+        "649": {
+          "alacak": 4962700,
+          "borc": 0
+        },
+        "659": {
+          "alacak": 0,
+          "borc": 1100
+        },
+        "770": {
+          "alacak": 0,
+          "borc": 400045
+        }
+      },
+      "ozet": {
+        "gercekBanka": 23745359,
+        "hesabiAtanmamis": -1645953,
+        "kartVeKrediBorcu": 8395200,
+        "kasaVeGercekBanka": 28357430
+      },
+      "stok": {
+        "U1": 15,
+        "U10": 0,
+        "U11": 83,
+        "U2": 86,
+        "U3": 21,
+        "U4": 17,
+        "U5": 116,
+        "U6": 162,
+        "U7": 65,
+        "U8": 9,
+        "U9": 0
+      },
+      "taksitKartlari": {
+        "K1": {
+          "kalan": 0,
+          "odenen": 1128140,
+          "toplam": 1128140
+        },
+        "K2": {
+          "kalan": 0,
+          "odenen": 1192800,
+          "toplam": 1192800
+        },
+        "K3": {
+          "kalan": 999300,
+          "odenen": 0,
+          "toplam": 999300
+        }
+      }
+    },
+    "k4": {
+      "bankaHesaplari": {
+        "B1": 11306215,
+        "B2": 4735035,
+        "B3": -8395200,
+        "B4": 6729328
+      },
+      "cariler": {
+        "C1": 0,
+        "C10": 59873,
+        "C11": 0,
+        "C12": 0,
+        "C13": -18200,
+        "C14": 0,
+        "C15": 0,
+        "C16": 671487,
+        "C17": -5908,
+        "C18": 0,
+        "C19": 0,
+        "C2": -34100,
+        "C20": 0,
+        "C21": 396106,
+        "C22": 0,
+        "C23": -176781,
+        "C24": -6575,
+        "C25": 984,
+        "C26": -542000,
+        "C27": 14626,
+        "C28": 16800,
+        "C29": 0,
+        "C3": -488450,
+        "C30": -8625615,
+        "C31": 0,
+        "C4": 0,
+        "C5": -13000,
+        "C6": 0,
+        "C7": 59095,
+        "C8": 932800,
+        "C9": -1116300
+      },
+      "eksiBakiyeDenetimi": {
+        "B1": "kontrol_yok",
+        "B2": "uyar",
+        "B3": "kontrol_yok",
+        "B4": "uyar"
+      },
+      "faturalar": {
+        "F1": {
+          "acik": 0,
+          "kdv": 741,
+          "matrah": 51067,
+          "toplam": 51808
+        },
+        "F10": {
+          "acik": 0,
+          "kdv": 1556,
+          "matrah": 15556,
+          "toplam": 17112
+        },
+        "F11": {
+          "acik": 932800,
+          "kdv": 155467,
+          "matrah": 777333,
+          "toplam": 932800
+        },
+        "F12": {
+          "acik": 542000,
+          "kdv": 49273,
+          "matrah": 492727,
+          "toplam": 542000
+        },
+        "F13": {
+          "acik": 0,
+          "kdv": 224536,
+          "matrah": 1421417,
+          "toplam": 1645953
+        },
+        "F14": {
+          "acik": 59095,
+          "kdv": 37582,
+          "matrah": 214468,
+          "toplam": 252050
+        },
+        "F15": {
+          "acik": 374130,
+          "kdv": 78000,
+          "matrah": 390000,
+          "toplam": 468000
+        },
+        "F16": {
+          "acik": 671487,
+          "kdv": 166550,
+          "matrah": 832750,
+          "toplam": 999300
+        },
+        "F17": {
+          "acik": 0,
+          "kdv": 4987,
+          "matrah": 24933,
+          "toplam": 29920
+        },
+        "F18": {
+          "acik": 124600,
+          "kdv": 20767,
+          "matrah": 103833,
+          "toplam": 124600
+        },
+        "F19": {
+          "acik": 6575,
+          "kdv": 1096,
+          "matrah": 5479,
+          "toplam": 6575
+        },
+        "F2": {
+          "acik": 0,
+          "kdv": 217380,
+          "matrah": 1086900,
+          "toplam": 1304280
+        },
+        "F20": {
+          "acik": 172648,
+          "kdv": 62658,
+          "matrah": 313290,
+          "toplam": 375948
+        },
+        "F21": {
+          "acik": 1,
+          "kdv": 8305,
+          "matrah": 83055,
+          "toplam": 91360
+        },
+        "F22": {
+          "acik": 0,
+          "kdv": 36874,
+          "matrah": 532248,
+          "toplam": 569122
+        },
+        "F23": {
+          "acik": 59872,
+          "kdv": 12362,
+          "matrah": 61811,
+          "toplam": 74173
+        },
+        "F24": {
+          "acik": 21976,
+          "kdv": 15648,
+          "matrah": 144738,
+          "toplam": 160386
+        },
+        "F25": {
+          "acik": 4495639,
+          "kdv": 60882,
+          "matrah": 6030600,
+          "toplam": 6091482
+        },
+        "F26": {
+          "acik": 0,
+          "kdv": 20115,
+          "matrah": 106027,
+          "toplam": 126142
+        },
+        "F27": {
+          "acik": 0,
+          "kdv": 5499,
+          "matrah": 27495,
+          "toplam": 32994
+        },
+        "F28": {
+          "acik": 1053762,
+          "kdv": 95797,
+          "matrah": 957965,
+          "toplam": 1053762
+        },
+        "F29": {
+          "acik": 4133,
+          "kdv": 70,
+          "matrah": 7000,
+          "toplam": 7070
+        },
+        "F3": {
+          "acik": 0,
+          "kdv": 88312,
+          "matrah": 883120,
+          "toplam": 971432
+        },
+        "F4": {
+          "acik": 0,
+          "kdv": 7130,
+          "matrah": 71300,
+          "toplam": 78430
+        },
+        "F5": {
+          "acik": 2951614,
+          "kdv": 53835,
+          "matrah": 5383465,
+          "toplam": 5437300
+        },
+        "F6": {
+          "acik": 0,
+          "kdv": 399,
+          "matrah": 1994,
+          "toplam": 2393
+        },
+        "F7": {
+          "acik": 0,
+          "kdv": 170800,
+          "matrah": 854000,
+          "toplam": 1024800
+        },
+        "F8": {
+          "acik": 0,
+          "kdv": 1642233,
+          "matrah": 8211167,
+          "toplam": 9853400
+        },
+        "F9": {
+          "acik": 0,
+          "kdv": 198800,
+          "matrah": 994000,
+          "toplam": 1192800
+        },
+        "G1": {
+          "acik": 0,
+          "kdv": 98,
+          "matrah": 493,
+          "toplam": 591
+        },
+        "R1": {
+          "acik": 0,
+          "kdv": 399,
+          "matrah": 1994,
+          "toplam": 2393
+        }
+      },
+      "hesapKodlari": {
+        "B1": "102.01",
+        "B2": "102.02",
+        "B3": "300.01",
+        "B4": "102.03"
+      },
+      "kasa": 5657091,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 5657091
+        },
+        "102.01": {
+          "alacak": 0,
+          "borc": 11306215
+        },
+        "102.02": {
+          "alacak": 0,
+          "borc": 4735035
+        },
+        "102.03": {
+          "alacak": 0,
+          "borc": 6729328
+        },
+        "108.00": {
+          "alacak": 1646875,
+          "borc": 0
+        },
+        "120": {
+          "alacak": 0,
+          "borc": 443403
+        },
+        "153": {
+          "alacak": 0,
+          "borc": 23459947
+        },
+        "191": {
+          "alacak": 0,
+          "borc": 2389175
+        },
+        "193": {
+          "alacak": 0,
+          "borc": 81155
+        },
+        "300.01": {
+          "alacak": 8395200,
+          "borc": 0
+        },
+        "320": {
+          "alacak": 9318561,
+          "borc": 0
+        },
+        "391": {
+          "alacak": 1048178,
+          "borc": 0
+        },
+        "500": {
+          "alacak": 22994915,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 6225501,
+          "borc": 0
+        },
+        "642": {
+          "alacak": 559986,
+          "borc": 0
+        },
+        "649": {
+          "alacak": 5069774,
+          "borc": 0
+        },
+        "659": {
+          "alacak": 0,
+          "borc": 1100
+        },
+        "770": {
+          "alacak": 0,
+          "borc": 428686
+        },
+        "780": {
+          "alacak": 0,
+          "borc": 27855
+        }
+      },
+      "ozet": {
+        "gercekBanka": 22770578,
+        "hesabiAtanmamis": -1646875,
+        "kartVeKrediBorcu": 8395200,
+        "kasaVeGercekBanka": 28427669
+      },
+      "stok": {
+        "U1": 14,
+        "U10": 0,
+        "U11": 82,
+        "U2": 91,
+        "U3": 8,
+        "U4": 17,
+        "U5": 116,
+        "U6": 176,
+        "U7": 65,
+        "U8": 0,
+        "U9": 0
+      },
+      "taksitKartlari": {
+        "K1": {
+          "kalan": 0,
+          "odenen": 1128140,
+          "toplam": 1128140
+        },
+        "K2": {
+          "kalan": 0,
+          "odenen": 1192800,
+          "toplam": 1192800
+        },
+        "K3": {
+          "kalan": 671487,
+          "odenen": 327813,
+          "toplam": 999300
+        },
+        "K4": {
+          "kalan": 59872,
+          "odenen": 14301,
+          "toplam": 74173
+        }
+      }
+    },
+    "k5": {
+      "bankaHesaplari": {
+        "B1": 9845986,
+        "B2": 5952804,
+        "B3": -8395200,
+        "B4": 6732718
+      },
+      "cariler": {
+        "C1": 0,
+        "C10": 1,
+        "C11": 715111,
+        "C12": 0,
+        "C13": 2899744,
+        "C14": 0,
+        "C15": 0,
+        "C16": 615529,
+        "C17": -5908,
+        "C18": 0,
+        "C19": 0,
+        "C2": 1121766,
+        "C20": 0,
+        "C21": 182249,
+        "C22": 50988,
+        "C23": -176781,
+        "C24": -6575,
+        "C25": 984,
+        "C26": -542000,
+        "C27": 14626,
+        "C28": 16800,
+        "C29": 0,
+        "C3": -488450,
+        "C30": -9668215,
+        "C31": -1008614,
+        "C4": 0,
+        "C5": -13000,
+        "C6": 0,
+        "C7": 59095,
+        "C8": 932800,
+        "C9": -1116300
+      },
+      "eksiBakiyeDenetimi": {
+        "B1": "kontrol_yok",
+        "B2": "uyar",
+        "B3": "kontrol_yok",
+        "B4": "uyar"
+      },
+      "faturalar": {
+        "F1": {
+          "acik": 0,
+          "kdv": 741,
+          "matrah": 51067,
+          "toplam": 51808
+        },
+        "F10": {
+          "acik": 0,
+          "kdv": 1556,
+          "matrah": 15556,
+          "toplam": 17112
+        },
+        "F11": {
+          "acik": 932800,
+          "kdv": 155467,
+          "matrah": 777333,
+          "toplam": 932800
+        },
+        "F12": {
+          "acik": 487800,
+          "kdv": 49273,
+          "matrah": 492727,
+          "toplam": 542000
+        },
+        "F13": {
+          "acik": 0,
+          "kdv": 224536,
+          "matrah": 1421417,
+          "toplam": 1645953
+        },
+        "F14": {
+          "acik": 59095,
+          "kdv": 37582,
+          "matrah": 214468,
+          "toplam": 252050
+        },
+        "F15": {
+          "acik": 160273,
+          "kdv": 78000,
+          "matrah": 390000,
+          "toplam": 468000
+        },
+        "F16": {
+          "acik": 615529,
+          "kdv": 166550,
+          "matrah": 832750,
+          "toplam": 999300
+        },
+        "F17": {
+          "acik": 0,
+          "kdv": 4987,
+          "matrah": 24933,
+          "toplam": 29920
+        },
+        "F18": {
+          "acik": 124600,
+          "kdv": 20767,
+          "matrah": 103833,
+          "toplam": 124600
+        },
+        "F19": {
+          "acik": 6575,
+          "kdv": 1096,
+          "matrah": 5479,
+          "toplam": 6575
+        },
+        "F2": {
+          "acik": 0,
+          "kdv": 217380,
+          "matrah": 1086900,
+          "toplam": 1304280
+        },
+        "F20": {
+          "acik": 172648,
+          "kdv": 62658,
+          "matrah": 313290,
+          "toplam": 375948
+        },
+        "F21": {
+          "acik": 1,
+          "kdv": 8305,
+          "matrah": 83055,
+          "toplam": 91360
+        },
+        "F22": {
+          "acik": 0,
+          "kdv": 36874,
+          "matrah": 532248,
+          "toplam": 569122
+        },
+        "F23": {
+          "acik": 0,
+          "kdv": 12362,
+          "matrah": 61811,
+          "toplam": 74173
+        },
+        "F24": {
+          "acik": 21976,
+          "kdv": 15648,
+          "matrah": 144738,
+          "toplam": 160386
+        },
+        "F25": {
+          "acik": 4495639,
+          "kdv": 60882,
+          "matrah": 6030600,
+          "toplam": 6091482
+        },
+        "F26": {
+          "acik": 0,
+          "kdv": 20115,
+          "matrah": 106027,
+          "toplam": 126142
+        },
+        "F27": {
+          "acik": 0,
+          "kdv": 5499,
+          "matrah": 27495,
+          "toplam": 32994
+        },
+        "F28": {
+          "acik": 1053762,
+          "kdv": 95797,
+          "matrah": 957965,
+          "toplam": 1053762
+        },
+        "F29": {
+          "acik": 4133,
+          "kdv": 70,
+          "matrah": 7000,
+          "toplam": 7070
+        },
+        "F3": {
+          "acik": 0,
+          "kdv": 88312,
+          "matrah": 883120,
+          "toplam": 971432
+        },
+        "F30": {
+          "acik": 542561,
+          "kdv": 49324,
+          "matrah": 493237,
+          "toplam": 542561
+        },
+        "F31": {
+          "acik": 0,
+          "kdv": 128,
+          "matrah": 1280,
+          "toplam": 1408
+        },
+        "F32": {
+          "acik": 0,
+          "kdv": 74469,
+          "matrah": 744692,
+          "toplam": 819161
+        },
+        "F33": {
+          "acik": 2899744,
+          "kdv": 29180,
+          "matrah": 2918020,
+          "toplam": 2947200
+        },
+        "F34": {
+          "acik": 1008614,
+          "kdv": 288200,
+          "matrah": 1441000,
+          "toplam": 1729200
+        },
+        "F35": {
+          "acik": 0,
+          "kdv": 273240,
+          "matrah": 1366200,
+          "toplam": 1639440
+        },
+        "F36": {
+          "acik": 50988,
+          "kdv": 19512,
+          "matrah": 97560,
+          "toplam": 117072
+        },
+        "F38": {
+          "acik": 1121766,
+          "kdv": 11954,
+          "matrah": 1143912,
+          "toplam": 1155866
+        },
+        "F39": {
+          "acik": 172550,
+          "kdv": 28758,
+          "matrah": 143792,
+          "toplam": 172550
+        },
+        "F4": {
+          "acik": 0,
+          "kdv": 7130,
+          "matrah": 71300,
+          "toplam": 78430
+        },
+        "F5": {
+          "acik": 3994214,
+          "kdv": 53835,
+          "matrah": 5383465,
+          "toplam": 5437300
+        },
+        "F6": {
+          "acik": 0,
+          "kdv": 399,
+          "matrah": 1994,
+          "toplam": 2393
+        },
+        "F7": {
+          "acik": 0,
+          "kdv": 170800,
+          "matrah": 854000,
+          "toplam": 1024800
+        },
+        "F8": {
+          "acik": 0,
+          "kdv": 1642233,
+          "matrah": 8211167,
+          "toplam": 9853400
+        },
+        "F9": {
+          "acik": 0,
+          "kdv": 198800,
+          "matrah": 994000,
+          "toplam": 1192800
+        },
+        "G1": {
+          "acik": 0,
+          "kdv": 98,
+          "matrah": 493,
+          "toplam": 591
+        },
+        "R1": {
+          "acik": 0,
+          "kdv": 399,
+          "matrah": 1994,
+          "toplam": 2393
+        },
+        "R2": {
+          "acik": 0,
+          "kdv": 85400,
+          "matrah": 427000,
+          "toplam": 512400
+        },
+        "R3": {
+          "acik": 0,
+          "kdv": 4927,
+          "matrah": 49273,
+          "toplam": 54200
+        }
+      },
+      "hesapKodlari": {
+        "B1": "102.01",
+        "B2": "102.02",
+        "B3": "300.01",
+        "B4": "102.03"
+      },
+      "kasa": 5884991,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 5884991
+        },
+        "102.01": {
+          "alacak": 0,
+          "borc": 9845986
+        },
+        "102.02": {
+          "alacak": 0,
+          "borc": 5952804
+        },
+        "102.03": {
+          "alacak": 0,
+          "borc": 6732718
+        },
+        "108.00": {
+          "alacak": 1646875,
+          "borc": 0
+        },
+        "120": {
+          "alacak": 0,
+          "borc": 4953625
+        },
+        "153": {
+          "alacak": 0,
+          "borc": 25790874
+        },
+        "191": {
+          "alacak": 0,
+          "borc": 2860288
+        },
+        "193": {
+          "alacak": 0,
+          "borc": 81155
+        },
+        "300.01": {
+          "alacak": 8395200,
+          "borc": 0
+        },
+        "320": {
+          "alacak": 11369775,
+          "borc": 0
+        },
+        "391": {
+          "alacak": 1261503,
+          "borc": 0
+        },
+        "500": {
+          "alacak": 22994915,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 11767994,
+          "borc": 0
+        },
+        "642": {
+          "alacak": 563376,
+          "borc": 0
+        },
+        "649": {
+          "alacak": 5073374,
+          "borc": 0
+        },
+        "659": {
+          "alacak": 0,
+          "borc": 514030
+        },
+        "770": {
+          "alacak": 0,
+          "borc": 428686
+        },
+        "780": {
+          "alacak": 0,
+          "borc": 27855
+        }
+      },
+      "ozet": {
+        "gercekBanka": 22531508,
+        "hesabiAtanmamis": -1646875,
+        "kartVeKrediBorcu": 8395200,
+        "kasaVeGercekBanka": 28416499
+      },
+      "stok": {
+        "U1": 13,
+        "U10": 0,
+        "U11": 82,
+        "U2": 122,
+        "U3": 8,
+        "U4": 9,
+        "U5": 100,
+        "U6": 173,
+        "U7": 65,
+        "U8": 0,
+        "U9": 0
+      },
+      "taksitKartlari": {
+        "K1": {
+          "kalan": 0,
+          "odenen": 1128140,
+          "toplam": 1128140
+        },
+        "K2": {
+          "kalan": 0,
+          "odenen": 1192800,
+          "toplam": 1192800
+        },
+        "K3": {
+          "kalan": 615529,
+          "odenen": 383771,
+          "toplam": 999300
+        },
+        "K4": {
+          "kalan": 0,
+          "odenen": 74173,
+          "toplam": 74173
+        }
+      }
+    }
+  },
+  "atlamaAyrinti": [],
+  "atlananlar": [],
+  "bankaHesaplari": {
+    "B1": 15905219,
+    "B2": 6326598,
+    "B3": -8395200,
+    "B4": 6732718
+  },
+  "belirsizler": [],
+  "calismaAgaciDegisikDosya": 0,
+  "cariler": {
+    "C1": 16025,
+    "C10": 14302,
+    "C11": 715111,
+    "C12": 0,
+    "C13": 2899744,
+    "C14": 0,
+    "C15": 0,
+    "C16": 458436,
+    "C17": -5908,
+    "C18": -123742,
+    "C19": 0,
+    "C2": 1187326,
+    "C20": 0,
+    "C21": 182249,
+    "C22": 50988,
+    "C23": -176781,
+    "C24": -6575,
+    "C25": 984,
+    "C26": -542000,
+    "C27": -623294,
+    "C28": 16800,
+    "C29": 0,
+    "C3": -488450,
+    "C30": -9695815,
+    "C31": -1008614,
+    "C4": 0,
+    "C5": -13000,
+    "C6": 0,
+    "C7": 59095,
+    "C8": 548476,
+    "C9": -1116300
+  },
+  "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+  "dil": "destekofis-senaryo/1",
+  "ekBilgi": {
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "sunucu": "test/helpers.mjs startTestServer: sahte saat (yerel öğlen, akar), lisans denetimi kapalı, moneyStrict ve gateVerify açık (test kipi)."
+  },
+  "eksiBakiyeDenetimi": {
+    "B1": "engelle",
+    "B2": "uyar",
+    "B3": "kontrol_yok",
+    "B4": "uyar"
+  },
+  "eslenemeyenler": [],
+  "faturalar": {
+    "F1": {
+      "acik": 0,
+      "kdv": 741,
+      "matrah": 51067,
+      "toplam": 51808
+    },
+    "F10": {
+      "acik": 0,
+      "kdv": 1556,
+      "matrah": 15556,
+      "toplam": 17112
+    },
+    "F11": {
+      "acik": 544156,
+      "kdv": 155467,
+      "matrah": 777333,
+      "toplam": 932800
+    },
+    "F12": {
+      "acik": 487800,
+      "kdv": 49273,
+      "matrah": 492727,
+      "toplam": 542000
+    },
+    "F13": {
+      "acik": 0,
+      "kdv": 224536,
+      "matrah": 1421417,
+      "toplam": 1645953
+    },
+    "F14": {
+      "acik": 59095,
+      "kdv": 37582,
+      "matrah": 214468,
+      "toplam": 252050
+    },
+    "F15": {
+      "acik": 160273,
+      "kdv": 78000,
+      "matrah": 390000,
+      "toplam": 468000
+    },
+    "F16": {
+      "acik": 458436,
+      "kdv": 166550,
+      "matrah": 832750,
+      "toplam": 999300
+    },
+    "F17": {
+      "acik": 0,
+      "kdv": 4987,
+      "matrah": 24933,
+      "toplam": 29920
+    },
+    "F18": {
+      "acik": 124600,
+      "kdv": 20767,
+      "matrah": 103833,
+      "toplam": 124600
+    },
+    "F19": {
+      "acik": 6575,
+      "kdv": 1096,
+      "matrah": 5479,
+      "toplam": 6575
+    },
+    "F2": {
+      "acik": 0,
+      "kdv": 217380,
+      "matrah": 1086900,
+      "toplam": 1304280
+    },
+    "F20": {
+      "acik": 172648,
+      "kdv": 62658,
+      "matrah": 313290,
+      "toplam": 375948
+    },
+    "F21": {
+      "acik": 1,
+      "kdv": 8305,
+      "matrah": 83055,
+      "toplam": 91360
+    },
+    "F22": {
+      "acik": 0,
+      "kdv": 36874,
+      "matrah": 532248,
+      "toplam": 569122
+    },
+    "F23": {
+      "acik": 14301,
+      "kdv": 12362,
+      "matrah": 61811,
+      "toplam": 74173
+    },
+    "F24": {
+      "acik": 21976,
+      "kdv": 15648,
+      "matrah": 144738,
+      "toplam": 160386
+    },
+    "F25": {
+      "acik": 4495639,
+      "kdv": 60882,
+      "matrah": 6030600,
+      "toplam": 6091482
+    },
+    "F26": {
+      "acik": 0,
+      "kdv": 20115,
+      "matrah": 106027,
+      "toplam": 126142
+    },
+    "F27": {
+      "acik": 0,
+      "kdv": 5499,
+      "matrah": 27495,
+      "toplam": 32994
+    },
+    "F28": {
+      "acik": 1053762,
+      "kdv": 95797,
+      "matrah": 957965,
+      "toplam": 1053762
+    },
+    "F29": {
+      "acik": 4133,
+      "kdv": 70,
+      "matrah": 7000,
+      "toplam": 7070
+    },
+    "F3": {
+      "acik": 0,
+      "kdv": 88312,
+      "matrah": 883120,
+      "toplam": 971432
+    },
+    "F30": {
+      "acik": 542561,
+      "kdv": 49324,
+      "matrah": 493237,
+      "toplam": 542561
+    },
+    "F31": {
+      "acik": 0,
+      "kdv": 128,
+      "matrah": 1280,
+      "toplam": 1408
+    },
+    "F32": {
+      "acik": 0,
+      "kdv": 74469,
+      "matrah": 744692,
+      "toplam": 819161
+    },
+    "F33": {
+      "acik": 2899744,
+      "kdv": 29180,
+      "matrah": 2918020,
+      "toplam": 2947200
+    },
+    "F34": {
+      "acik": 1008614,
+      "kdv": 288200,
+      "matrah": 1441000,
+      "toplam": 1729200
+    },
+    "F35": {
+      "acik": 0,
+      "kdv": 273240,
+      "matrah": 1366200,
+      "toplam": 1639440
+    },
+    "F36": {
+      "acik": 50988,
+      "kdv": 19512,
+      "matrah": 97560,
+      "toplam": 117072
+    },
+    "F38": {
+      "acik": 1121766,
+      "kdv": 11954,
+      "matrah": 1143912,
+      "toplam": 1155866
+    },
+    "F39": {
+      "acik": 172550,
+      "kdv": 28758,
+      "matrah": 143792,
+      "toplam": 172550
+    },
+    "F4": {
+      "acik": 0,
+      "kdv": 7130,
+      "matrah": 71300,
+      "toplam": 78430
+    },
+    "F40": {
+      "acik": 0,
+      "kdv": 1200,
+      "matrah": 6000,
+      "toplam": 7200
+    },
+    "F41": {
+      "acik": 0,
+      "kdv": 829080,
+      "matrah": 8290800,
+      "toplam": 9119880
+    },
+    "F42": {
+      "acik": 4320,
+      "kdv": 720,
+      "matrah": 3600,
+      "toplam": 4320
+    },
+    "F43": {
+      "acik": 0,
+      "kdv": 38842,
+      "matrah": 194212,
+      "toplam": 233054
+    },
+    "F44": {
+      "acik": 16025,
+      "kdv": 6333,
+      "matrah": 31667,
+      "toplam": 38000
+    },
+    "F45": {
+      "acik": 0,
+      "kdv": 939600,
+      "matrah": 4698000,
+      "toplam": 5637600
+    },
+    "F46": {
+      "acik": 65560,
+      "kdv": 10927,
+      "matrah": 54633,
+      "toplam": 65560
+    },
+    "F47": {
+      "acik": 0,
+      "kdv": 637,
+      "matrah": 63743,
+      "toplam": 64380
+    },
+    "F48": {
+      "acik": 623294,
+      "kdv": 106320,
+      "matrah": 531600,
+      "toplam": 637920
+    },
+    "F49": {
+      "acik": 0,
+      "kdv": 54245,
+      "matrah": 271227,
+      "toplam": 325472
+    },
+    "F5": {
+      "acik": 3994214,
+      "kdv": 53835,
+      "matrah": 5383465,
+      "toplam": 5437300
+    },
+    "F50": {
+      "acik": 0,
+      "kdv": 314168,
+      "matrah": 1570842,
+      "toplam": 1885010
+    },
+    "F51": {
+      "acik": 27600,
+      "kdv": 4600,
+      "matrah": 23000,
+      "toplam": 27600
+    },
+    "F6": {
+      "acik": 0,
+      "kdv": 399,
+      "matrah": 1994,
+      "toplam": 2393
+    },
+    "F7": {
+      "acik": 0,
+      "kdv": 170800,
+      "matrah": 854000,
+      "toplam": 1024800
+    },
+    "F8": {
+      "acik": 0,
+      "kdv": 1642233,
+      "matrah": 8211167,
+      "toplam": 9853400
+    },
+    "F9": {
+      "acik": 0,
+      "kdv": 198800,
+      "matrah": 994000,
+      "toplam": 1192800
+    },
+    "G1": {
+      "acik": 0,
+      "kdv": 98,
+      "matrah": 493,
+      "toplam": 591
+    },
+    "G2": {
+      "acik": 0,
+      "kdv": 91,
+      "matrah": 458,
+      "toplam": 549
+    },
+    "R1": {
+      "acik": 0,
+      "kdv": 399,
+      "matrah": 1994,
+      "toplam": 2393
+    },
+    "R2": {
+      "acik": 0,
+      "kdv": 85400,
+      "matrah": 427000,
+      "toplam": 512400
+    },
+    "R3": {
+      "acik": 0,
+      "kdv": 4927,
+      "matrah": 49273,
+      "toplam": 54200
+    },
+    "R4": {
+      "acik": 0,
+      "kdv": 19897,
+      "matrah": 103845,
+      "toplam": 123742
+    }
+  },
+  "hesapKodlari": {
+    "B1": "102.01",
+    "B2": "102.02",
+    "B3": "300.01",
+    "B4": "102.03"
+  },
+  "hesaplananAlanlar": [
+    "Program TL sayıları (mizan, Kasa, cari, fatura, taksit) kuruşa çevrildi: round(TL × 100).",
+    "mizan değerleri bakiyeden bakiye sütunlarına ayrıldı (borc/alacak).",
+    "ozet.kasaVeGercekBanka = ANLIK DURUM Nakit Kasa + Gerçek Banka (program bu toplamı tek sayı olarak göstermiyor; iki ekran sayısının toplamı)."
+  ],
+  "kasa": -980231,
+  "kaynak": "program",
+  "kaynakFarklari": [],
+  "kullanilanUclar": [
+    {
+      "islemler": [
+        "sil"
+      ],
+      "uc": "DELETE /api/workspace/accounts/:id/entries/:entryId"
+    },
+    {
+      "islemler": [
+        "sil"
+      ],
+      "uc": "DELETE /api/workspace/cash/:id"
+    },
+    {
+      "islemler": [
+        "sil"
+      ],
+      "uc": "DELETE /api/workspace/plans/:id/entries/:entryId"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/accounts"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/bank/accounts"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/bank/sub-trial"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/bank/summary"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/cash"
+    },
+    {
+      "islemler": [
+        "iade",
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/invoices/:id"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/ledger"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/ledger/integrity"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/overview"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/plans"
+    },
+    {
+      "islemler": [
+        "taksit_tahsilat"
+      ],
+      "uc": "GET /api/workspace/plans/:id"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/stock"
+    },
+    {
+      "islemler": [
+        "kullanici"
+      ],
+      "uc": "POST /api/admin/users"
+    },
+    {
+      "islemler": [
+        "cari_ac"
+      ],
+      "uc": "POST /api/workspace/accounts"
+    },
+    {
+      "islemler": [
+        "cari_odeme",
+        "cari_tahsilat"
+      ],
+      "uc": "POST /api/workspace/accounts/:id/entries"
+    },
+    {
+      "islemler": [
+        "hesap_ac"
+      ],
+      "uc": "POST /api/workspace/bank/accounts"
+    },
+    {
+      "islemler": [
+        "ters_kayit"
+      ],
+      "uc": "POST /api/workspace/bank/events/:id/reverse"
+    },
+    {
+      "islemler": [
+        "transfer"
+      ],
+      "uc": "POST /api/workspace/bank/transfers"
+    },
+    {
+      "islemler": [
+        "banka_masraf",
+        "diger_gelir",
+        "diger_gider",
+        "faiz_geliri",
+        "faiz_gideri"
+      ],
+      "uc": "POST /api/workspace/bank/vouchers"
+    },
+    {
+      "islemler": [
+        "kasa_acilis",
+        "kasa_hareket"
+      ],
+      "uc": "POST /api/workspace/cash"
+    },
+    {
+      "islemler": [
+        "kasa_banka"
+      ],
+      "uc": "POST /api/workspace/cash/transfer"
+    },
+    {
+      "islemler": [
+        "fatura",
+        "iade"
+      ],
+      "uc": "POST /api/workspace/invoices"
+    },
+    {
+      "islemler": [
+        "fatura",
+        "iade"
+      ],
+      "uc": "POST /api/workspace/invoices/calc"
+    },
+    {
+      "islemler": [
+        "taksit_tahsilat"
+      ],
+      "uc": "POST /api/workspace/plans/:id/entries"
+    },
+    {
+      "islemler": [
+        "urun_ac"
+      ],
+      "uc": "POST /api/workspace/stock"
+    },
+    {
+      "islemler": [
+        "stok_giris"
+      ],
+      "uc": "POST /api/workspace/stock/:id/moves"
+    },
+    {
+      "islemler": [
+        "ayar",
+        "baslangic"
+      ],
+      "uc": "PUT /api/admin/negative-policy"
+    },
+    {
+      "islemler": [
+        "hesap_eksi_politika"
+      ],
+      "uc": "PUT /api/workspace/bank/accounts/:id"
+    },
+    {
+      "islemler": [
+        "baslangic"
+      ],
+      "uc": "PUT /api/workspace/bank/settings"
+    }
+  ],
+  "mizan": {
+    "100": {
+      "alacak": 980231,
+      "borc": 0
+    },
+    "102.01": {
+      "alacak": 0,
+      "borc": 15905219
+    },
+    "102.02": {
+      "alacak": 0,
+      "borc": 6326598
+    },
+    "102.03": {
+      "alacak": 0,
+      "borc": 6732718
+    },
+    "108.00": {
+      "alacak": 1646875,
+      "borc": 0
+    },
+    "120": {
+      "alacak": 0,
+      "borc": 4384352
+    },
+    "153": {
+      "alacak": 0,
+      "borc": 34948244
+    },
+    "191": {
+      "alacak": 0,
+      "borc": 3855261
+    },
+    "193": {
+      "alacak": 0,
+      "borc": 81155
+    },
+    "300.01": {
+      "alacak": 8395200,
+      "borc": 0
+    },
+    "320": {
+      "alacak": 12035295,
+      "borc": 0
+    },
+    "391": {
+      "alacak": 2553396,
+      "borc": 0
+    },
+    "500": {
+      "alacak": 22994915,
+      "borc": 0
+    },
+    "600": {
+      "alacak": 18326948,
+      "borc": 0
+    },
+    "610": {
+      "alacak": 0,
+      "borc": 103845
+    },
+    "642": {
+      "alacak": 563376,
+      "borc": 0
+    },
+    "649": {
+      "alacak": 5825674,
+      "borc": 0
+    },
+    "659": {
+      "alacak": 0,
+      "borc": 514030
+    },
+    "770": {
+      "alacak": 0,
+      "borc": 442633
+    },
+    "780": {
+      "alacak": 0,
+      "borc": 27855
+    }
+  },
+  "okumaHatalari": [],
+  "okumaKaynaklari": {
+    "bankaHesaplari": "GET /api/workspace/bank/accounts?status=all (Banka → Hesaplar, accounts[].balanceMinor); Alt Hesap Mizanı satırıyla karşılaştırılır.",
+    "cariler": "GET /api/workspace/accounts?status=all&limit=5000 (Cari penceresi listesi, accounts[].balance; borçlu +).",
+    "eksiBakiyeDenetimi": "GET /api/workspace/bank/accounts?status=all (accounts[].policy: warn → uyar, block → engelle, off → kontrol_yok; doğrulanmamış hesapta program off döner).",
+    "faturalar": "GET /api/workspace/invoices/:id (fatura kartı: payableTotal → toplam, netTotal → matrah, vatTotal → kdv, open → acik).",
+    "hesapKodlari": "GET /api/workspace/bank/accounts?status=all (accounts[].glSub).",
+    "kasa": "GET /api/workspace/cash (Kasa penceresi, yalnız nakit, totals.balance); ANLIK DURUM (GET /api/workspace/overview cash.allEntries) ile karşılaştırılır.",
+    "mizan": "GET /api/workspace/ledger (Ana Defter → Hesap Planı Mizanı, trial.accounts[].balance; ana hesaplar) + GET /api/workspace/bank/sub-trial (Banka → Alt Hesap Mizanı, rows[].balance; 102/108/300/309 yaprakları). Bakiye TL → kuruş; borc = max(0, bakiye), alacak = max(0, −bakiye).",
+    "ozet": "GET /api/workspace/bank/summary (Banka Genel Bakış K10: realBank.minor → gercekBanka, unassigned.totalMinor → hesabiAtanmamis, debt.totalMinor → kartVeKrediBorcu); kasaVeGercekBanka = GET /api/workspace/overview (ANLIK DURUM) cash.balance + cash.bank.balance.",
+    "retler": "Yanıtın HTTP durumu + gövdedeki code (ret iletisi retAyrinti'de).",
+    "stok": "GET /api/workspace/stock?limit=5000 (Stok penceresi listesi, items[].qty).",
+    "taksitKartlari": "GET /api/workspace/plans?status=all (Taksitler penceresi listesi, plans[].totals: total → toplam, paid → odenen, remaining → kalan)."
+  },
+  "ozet": {
+    "gercekBanka": 28964535,
+    "hesabiAtanmamis": -1646875,
+    "kartVeKrediBorcu": 8395200,
+    "kasaVeGercekBanka": 27984304
+  },
+  "programSurumu": "2.0.26",
+  "retAyrinti": [
+    {
+      "adim": "178",
+      "durum": 400,
+      "islem": "fatura",
+      "kod": "payment-exceeds",
+      "mesaj": "Ödemeler (148,01 TL) faturanın ödenecek tutarını (148,00 TL) aşıyor."
+    },
+    {
+      "adim": "182",
+      "durum": 400,
+      "islem": "diger_gelir",
+      "kod": "bank-account-invalid",
+      "mesaj": "Garanti BBVA · Vadeli Mevduat B4 (Vadeli): diğer gelir Vadesiz, Ticari ya da Diğer TL hesaba girilir."
+    },
+    {
+      "adim": "184",
+      "durum": 400,
+      "islem": "diger_gelir",
+      "kod": "bank-account-invalid",
+      "mesaj": "Garanti BBVA · Vadeli Mevduat B4 (Vadeli): diğer gelir Vadesiz, Ticari ya da Diğer TL hesaba girilir."
+    },
+    {
+      "adim": "188",
+      "durum": 400,
+      "islem": "banka_masraf",
+      "kod": "bank-account-invalid",
+      "mesaj": "Garanti BBVA · Vadeli Mevduat B4 (Vadeli): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir."
+    },
+    {
+      "adim": "211",
+      "durum": 409,
+      "islem": "fatura",
+      "kod": "request-id-reused",
+      "mesaj": "Bu alış faturası zaten kaydedildi (F51); sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın."
+    }
+  ],
+  "retler": [
+    {
+      "adim": "178",
+      "durum": 400,
+      "kod": "payment-exceeds"
+    },
+    {
+      "adim": "182",
+      "durum": 400,
+      "kod": "bank-account-invalid"
+    },
+    {
+      "adim": "184",
+      "durum": 400,
+      "kod": "bank-account-invalid"
+    },
+    {
+      "adim": "188",
+      "durum": 400,
+      "kod": "bank-account-invalid"
+    },
+    {
+      "adim": "211",
+      "durum": 409,
+      "kod": "request-id-reused"
+    }
+  ],
+  "senaryo": "hakem-tohum1-onek211",
+  "stok": {
+    "U1": 13,
+    "U10": 0,
+    "U11": 82,
+    "U2": 136,
+    "U3": 1,
+    "U4": 9,
+    "U5": 90,
+    "U6": 173,
+    "U7": 101,
+    "U8": 0,
+    "U9": 0
+  },
+  "taksitKartlari": {
+    "K1": {
+      "kalan": 0,
+      "odenen": 1128140,
+      "toplam": 1128140
+    },
+    "K2": {
+      "kalan": 0,
+      "odenen": 1192800,
+      "toplam": 1192800
+    },
+    "K3": {
+      "kalan": 458436,
+      "odenen": 540864,
+      "toplam": 999300
+    },
+    "K4": {
+      "kalan": 14301,
+      "odenen": 59872,
+      "toplam": 74173
+    }
+  },
+  "yinelenenler": [
+    "146"
+  ]
+}

@@ -1,0 +1,29 @@
+rastgele-7-500: çıkış a=0 b=0 program=0 · karşılaştırılan 8321 · atlanan 1351 · fark 1028 {'A=B≠P': 701, 'A≠B=P': 205, 'A≠B≠P': 21, 'B≠A=P': 97, 'KOSUCU': 4}
+  ACIKLANMAMIS:A=B≠P:bankaHesaplari.*                            36 yaprak  {'A=B≠P': 36}
+  ACIKLANMAMIS:A=B≠P:faturalar.*.acik                           133 yaprak  {'A=B≠P': 133}
+  ACIKLANMAMIS:A=B≠P:kasa                                        13 yaprak  {'A=B≠P': 13}
+  ACIKLANMAMIS:A=B≠P:mizan.100                                   13 yaprak  {'A=B≠P': 13}
+  ACIKLANMAMIS:A=B≠P:mizan.102.NN                                22 yaprak  {'A=B≠P': 22}
+  ACIKLANMAMIS:A=B≠P:mizan.300.NN                                14 yaprak  {'A=B≠P': 14}
+  ACIKLANMAMIS:A=B≠P:mizan.391                                    8 yaprak  {'A=B≠P': 8}
+  ACIKLANMAMIS:A=B≠P:mizan.600                                   19 yaprak  {'A=B≠P': 19}
+  ACIKLANMAMIS:A=B≠P:mizan.770                                   13 yaprak  {'A=B≠P': 13}
+  ACIKLANMAMIS:A=B≠P:mizan.780                                   14 yaprak  {'A=B≠P': 14}
+  ACIKLANMAMIS:A=B≠P:ozet.gercekBanka                            14 yaprak  {'A=B≠P': 14}
+  ACIKLANMAMIS:A=B≠P:ozet.kasaVeGercekBanka                      14 yaprak  {'A=B≠P': 14}
+  BANKA-EKSI-KODU                                                 4 yaprak  {'A=B≠P': 4}
+  KAHIN-K4-YINELENEN-AD                                         250 yaprak  {'A≠B=P': 205, 'B≠A=P': 24, 'A≠B≠P': 21}
+  KART-HESABI-BAGLANMIYOR                                        79 yaprak  {'A=B≠P': 75, 'KOSUCU': 4}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                             116 yaprak  {'A=B≠P': 116}
+  KOSUCU-ALIS-YINELEME-NUMARA                                    77 yaprak  {'B≠A=P': 73, 'A=B≠P': 4}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.kdv                             8 yaprak  {'A=B≠P': 8}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.matrah                          8 yaprak  {'A=B≠P': 8}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.toplam                          8 yaprak  {'A=B≠P': 8}
+  SINIFLANMAMIS:A=B≠P:retler:fatura                               2 yaprak  {'A=B≠P': 2}
+  SINIFLANMAMIS:A=B≠P:retler:kasa_hareket                         2 yaprak  {'A=B≠P': 2}
+  SINIFLANMAMIS:A=B≠P:retler:kredi_odeme                          1 yaprak  {'A=B≠P': 1}
+  SINIFLANMAMIS:A=B≠P:yinelenenler:fatura                         1 yaprak  {'A=B≠P': 1}
+  SINIFLANMAMIS:A=B≠P:yinelenenler:kasa_hareket                   1 yaprak  {'A=B≠P': 1}
+  TUREV:KART-HESABI-BAGLANMIYOR                                  37 yaprak  {'A=B≠P': 37}
+  TUREV:KDV-DAHIL-ISKONTO                                        81 yaprak  {'A=B≠P': 81}

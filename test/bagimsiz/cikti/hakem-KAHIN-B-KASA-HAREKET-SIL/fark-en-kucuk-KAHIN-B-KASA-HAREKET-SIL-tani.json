@@ -1,0 +1,42 @@
+{
+  "adimSayisi": 16,
+  "b_stderr": "{\"hata\": \"senaryo-gecersiz\", \"neden\": \"4: 'H5' daha önce tanımlanmamış\"}",
+  "cikisKodlari": {
+    "a": 0,
+    "b": 2,
+    "program": 0
+  },
+  "durum": "EKSIK: en az bir taraf çıktı üretmedi; karşılaştırma yapılmadı",
+  "farklar": [],
+  "islemSayisi": 13,
+  "islemTurleri": {
+    "donem_kilidi": 1,
+    "kasa_hareket": 6,
+    "kontrol": 3,
+    "sil": 6
+  },
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/hakem-KAHIN-B-KASA-HAREKET-SIL/en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/hakem-KAHIN-B-KASA-HAREKET-SIL/en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/hakem-KAHIN-B-KASA-HAREKET-SIL/en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani.json --cikti test/bagimsiz/cikti/ham/en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani",
+  "senaryoDosyasi": "test/bagimsiz/cikti/hakem-KAHIN-B-KASA-HAREKET-SIL/en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani.json",
+  "sureler": {
+    "a": 0.06,
+    "b": 0.05,
+    "program": 1.2
+  }
+}

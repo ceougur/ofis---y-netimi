@@ -1,0 +1,64 @@
+Kâhin, kabul 1–16'da planın 28 sayısının hepsini veriyor. Çıktısı elle yazılmış `kabul-1-16.beklenen.json` ile de alan alan aynı (`kaynak` ve `notlar` dışında). Commit ve push yapmadım.
+
+**Dosyalar**
+- `/home/user/ofis---y-netimi/test/bagimsiz/model_a/model.py`: kâhin. Komut: `python3 -I model.py <senaryo.json> [--plan-denetimi]`. Yalnız standart kütüphane kullanıyor; tutarlar tamsayı kuruş, kayan nokta yok. Aynı senaryoya her koşuda bayt bayt aynı çıktıyı veriyor.
+  - **Denetimler:** Her fişte borç = alacak, mizanın dengesi ve cari değişmezi (SENARYO-DILI §7) her `kontrol` adımında ve sonda denetleniyor.
+  - **Çıkış kodları:** 0 başarılı; 1 kullanım hatası; 2 senaryo geçersiz (neden stderr'de); 3 kâhinin bir değişmezi bozuldu; 4 `--plan-denetimi` ile planın bir sayısı tutmadı.
+- `/home/user/ofis---y-netimi/test/bagimsiz/model_a/test_model.py`: unittest, 42 test, hepsi geçiyor. Beklenen sayılar elle, planın §3.7 #3 ve #11–#18, §3.9, §12.5 adım 6/27/37 ve SENARYO-DILI §14 örneklerinden hesaplandı.
+- `/home/user/ofis---y-netimi/test/bagimsiz/model_a/KARARLAR.md`: 33 karar (K-1…K-33), her biri plan ya da SENARYO-DILI alıntısıyla.
+
+**Kabul sonucu**
+- `--plan-denetimi` çıkış 0: "28 yaprak, hepsi tuttu".
+- **Plan ile yorumum arasında çelişki çıkmadı.** İlk denetim koşusu 4 fark gösterdi. Neden ne planın sayısıydı ne de modelin yorumu: denetim aracı `mizan.102.01` yolunu noktadan bölüyordu. Araç düzeltildi; model değişmedi.
+
+**Testlerin dişi var mı:** Modele bilerek 14 hata enjekte ettim. İlk turda 13'ünü testler yakaladı. Sağ kalan, KDV dahil kalemde KDV'yi matrahtan yeniden yuvarlayan hataydı; testteki tutarlarda iki formül aynı sonucu veriyordu. İkisini ayıran bir kalem ekledim (100,05 TL, %20 dahil: matrah 8.338, KDV 1.667). Sonra 14'ün hepsi yakalandı.
+
+**Bilmeniz gerekenler**
+- **Çıkış 2 sık görülecek.** Planın ya da senaryo dilinin karar vermediği her durumda kâhin cevap uydurmuyor, senaryoyu geçersiz sayıyor. Örnekler: eksi stok, kalanı aşan taksit tahsilatı, planda olmayan yetki birleşimi, KDV kipli masrafta vadeli hesap, pasif hesaptaki satırın silinmesi.
+- **Bir adımda birden çok ihlal varsa** ret `durum: "4xx", kod: null` olarak yazılıyor ve `belirsizler`e "BELİRSİZ-17" ekleniyor; yalnız 403 tek başına ve kesin.
+- **Benzer İşlem:** Hesaba bağlı fatura peşini ve iade geri ödemesi kendileri hiç ret almıyor. Ama aynı gün, aynı hesap, cari ve tutarla o belgeyi "Kapatılacak Fatura" seçen bir tahsilat `bank-similar` alıyor (K-5). Bu planın hedef tanımından çıkarım; program farklıysa incelenmeli.
+- **Bilinen sınır:** Hafta sonu yalnız hesaba bağlı cari tahsilat/ödeme ve taksit tahsilatında denetleniyor; resmî tatil hiç denetlenmiyor, çünkü tatil listesi kaynaklarda yok. Program tatildeki satırı sonraki iş gününe sayıyorsa kâhin bir Benzer İşlem uyarısını kaçırabilir (K-22).
+- **Temiz oda:** CLAUDE.md oturuma kendiliğinden yüklendi ve programın davranışını anlatıyor; kaynak olarak kullanmadım.
+- **Git:** Ana oturum `model.py` ile `test_model.py`'nin ara hâlini zaten commit etmiş (2341045); çalışma ağacı o commit'le aynı. Commit edilmemiş tek dosya `KARARLAR.md`.
+
+=====
+
+Model, testler ve karar dosyası hazır. Kabul 1–16'da planın 28 sayısının 28'i tuttu, fark yok; bunun için planın sayısında da kendi yorumumda da düzeltme gerekmedi. Commit ve push yapmadım.
+
+**Dosyalar** (hepsi `/home/user/ofis---y-netimi/test/bagimsiz/model_b/` altında):
+- `model.py`: kâhin. `python3 -I model.py <senaryo.json>` çıktıyı SENARYO-DILI §8 biçiminde stdout'a yazar. Saf Python 3, tutarlar tamsayı kuruş, dildeki 29 işlemin hepsi var.
+  - Kendini denetler: her fişte borç = alacak, mizan dengesi, §7'deki cari eşitliği. Biri bozulursa çıkış kodu 3 ile durur.
+  - Geçersiz senaryoda çıkış kodu 2, stdout boş, neden stderr'de.
+- `test_model.py`: 46 unittest, hepsi geçti. Beklenen sayılar plandan elle hesaplandı, model çıktısından alınmadı.
+- `mutasyon.py`: modelin kopyalarına bilerek 22 hata koyar; testler 22'sini de yakaladı. İlk turda bir hata kaçtı (açılışı düzeltirken tarih ilk hareketle aynı gün olabilir mi), o sınır için test ekleyince kapandı.
+- `KARARLAR.md`: 40 karar (K1–K40), her biri plan ya da dil belgesi alıntısıyla.
+
+**Kabul 1–16 sonucu**
+- `kontrol` adımlarındaki plan sayıları: 28/28 aynı.
+- Kendi çıktımı ürettikten sonra elle yazılmış `kabul-1-16.beklenen.json` ile karşılaştırdım: 252 yaprak aynı. Yalnız `kaynak` alanı ve o dosyanın serbest not alanı farklı.
+- Aynı senaryo iki kez koşunca çıktı bayt bayt aynı.
+- Planın başka sayıları da ayrı test senaryolarıyla tuttu:
+  - ücretli transfer: Ziraat 89.994,75
+  - masraf, faiz ve kredi örnekleri (§3.7 #12–18)
+  - adım 33 mizanında ödeme yolundan bağımsız satırlar: 600 = 35.000, 610 = 2.500, 391 = 6.500
+  - adım 37: Engelle'deki iki eşzamanlı ödeme iki ayrı olası sonuç verdi
+  - talimat madde 11 (taksit tahsilatı)
+
+**Bilmeniz gerekenler**
+- **Dil belgesinde bir çelişki var (K3):** `ucretVergi` ya da KDV kipinde `saglayici` eksikse §13/8 "geçersiz senaryo", §4.20 ve §5.6 ise "ret" diyor. Ben ret uyguladım (400 ve "4xx"). Dilin bir sonraki sürümünde netleşmeli.
+- **Kendi modelimde bulup düzelttiğim hata (K37):** aynı istek kimliğiyle tekrarlanan faturada, yalnız senaryoda var olan taksit kartı adı istek gövdesine giriyordu. Sonuç tekrar sayılması yerine 409 oluyordu. Düzelttim ve test ekledim.
+- **Programla karşılaştırırken farkı "incele" sayılacak yerler** (plan susuyor, ben karar verdim):
+  - K1: açılış satırları eksi bakiye denetimine girmiyor.
+  - K4: tekrarlanan adımın ikinci takma adı da çıktıya yazılıyor; koşucu da iki adı yazmazsa fark çıkar.
+  - K5: bağlı ödemesi olan açık iadede kural 5'i değişmez tutsun diye yorumladım.
+  - K20: Benzer İşlem havuzunda peşin satırlar da var.
+  - Kasa açılışında 500 hesabı (program 649 yazarsa).
+- **Temiz oda:** `model_a`'nın, program kodunun, KANIT ve EŞLEME belgelerinin içeriğini okumadım. Proje talimat dosyası (CLAUDE.md) oturuma kendiliğinden yüklendi; kaynak olarak kullanmadım ve bunu KARARLAR'a yazdım.
+- **Git durumu:** `.py` dosyaları ana oturumun "ara hâl" commit'leriyle zaten depoda, çalışma ağacında değişiklik yok. Yalnız `KARARLAR.md` henüz eklenmemiş (untracked).
+
+Kendi doğrulamam için koşturduğum komutlar:
+```
+python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/senaryolar/kabul-1-16.json
+python3 -I test/bagimsiz/model_b/test_model.py
+python3 -I test/bagimsiz/model_b/mutasyon.py
+```

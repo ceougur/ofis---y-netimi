@@ -1,0 +1,9 @@
+1129a1130,1137
+>         except SenaryoHatasi:
+>             # TANI (hakem): aynı gövdeli yineleme hedef/BELİRSİZ denetimlerinden önce tanınsın (dil §5.6: 3 → 4)
+>             anahtar = (kul, islem, adim.get("istekKimligi"))
+>             if "istekKimligi" in adim and anahtar in self.istekler and self.istekler[anahtar][0] == self.govde(adim, tarih):
+>                 self.yinelenenler.append(i)
+>                 self._yineleme_adlari(adim, self.istekler[anahtar][1])
+>                 return
+>             raise

@@ -1,0 +1,59 @@
+{
+  "araDurumlar": {},
+  "atlananlar": [],
+  "bankaHesaplari": {},
+  "belirsizler": [],
+  "cariler": {
+    "C25": 984
+  },
+  "dil": "destekofis-senaryo/1",
+  "eksiBakiyeDenetimi": {},
+  "faturalar": {
+    "F6": {
+      "acik": 0,
+      "kdv": 399,
+      "matrah": 1994,
+      "toplam": 2393
+    },
+    "R1": {
+      "acik": 984,
+      "kdv": 399,
+      "matrah": 1994,
+      "toplam": 2393
+    }
+  },
+  "hesapKodlari": {},
+  "kasa": -984,
+  "kaynak": "kahin",
+  "mizan": {
+    "100": {
+      "alacak": 984,
+      "borc": 0
+    },
+    "153": {
+      "alacak": 0,
+      "borc": 0
+    },
+    "191": {
+      "alacak": 0,
+      "borc": 0
+    },
+    "320": {
+      "alacak": 0,
+      "borc": 984
+    }
+  },
+  "ozet": {
+    "gercekBanka": 0,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": -984
+  },
+  "retler": [],
+  "senaryo": "en-kucuk-IADE-KAPAMA",
+  "stok": {
+    "U11": 71
+  },
+  "taksitKartlari": {},
+  "yinelenenler": []
+}

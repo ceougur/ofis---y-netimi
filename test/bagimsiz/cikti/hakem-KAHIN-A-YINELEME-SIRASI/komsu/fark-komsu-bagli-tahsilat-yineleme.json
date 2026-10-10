@@ -1,0 +1,41 @@
+{
+  "a_stderr": "SENARYO GEÇERSİZ: adım 4: BELİRSİZ-10 — bağlı tutar belgenin açığını aşıyor",
+  "adimSayisi": 4,
+  "cikisKodlari": {
+    "a": 2,
+    "b": 0,
+    "program": 0
+  },
+  "durum": "EKSIK: en az bir taraf çıktı üretmedi; karşılaştırma yapılmadı",
+  "farklar": [],
+  "islemSayisi": 4,
+  "islemTurleri": {
+    "cari_ac": 1,
+    "cari_tahsilat": 2,
+    "fatura": 1
+  },
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/komsu-bagli-tahsilat-yineleme.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/komsu-bagli-tahsilat-yineleme.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/komsu-bagli-tahsilat-yineleme.json --cikti test/bagimsiz/cikti/ham/komsu-bagli-tahsilat-yineleme.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "komsu-bagli-tahsilat-yineleme",
+  "senaryoDosyasi": "test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/komsu-bagli-tahsilat-yineleme.json",
+  "sureler": {
+    "a": 0.06,
+    "b": 0.07,
+    "program": 0.92
+  }
+}

@@ -1,0 +1,27 @@
+(node:26440) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+=== P1 mini: kullanım 1.000, geri ödeme anapara 1.500 + faiz 10
+kullanım 200  
+ödeme 1.500+10 409 bank-loan-exceeds Kredi Geri Ödemesi'nde anapara (1.500,00 TL) Akbank · Kredi kredisinin kalan borcunu (1.000,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır.
+  sayaç önce/sonra { events: 3, lines: 4 } { events: 3, lines: 4 } kredi -1000 ziraat 51000 { '102': 51000, '300': -1000, '500': -50000, '780': 0 }
+ödeme 1.000+10 (tam) 200  
+  kredi 0 ziraat 49990 { '102': 49990, '300': 0, '500': -50000, '780': 10 }
+komşu: ödenmiş kredinin KULLANIMINI Ters Kaydet 409 bank-loan-exceeds Kredi Geri Ödemesi'nde anapara (1.000,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır.
+  kredi 0 { '102': 49990, '300': 0, '500': -50000, '780': 10 }
+
+=== P2 en küçük: hiç kullanılmamış (0) kredi, anapara 9.637,68 + faiz 434,61
+ödeme 409 bank-loan-exceeds Kredi Geri Ödemesi'nde anapara (9.637,68 TL) Akbank · B7 kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır.
+  sayaç önce/sonra { events: 2, lines: 2 } { events: 2, lines: 2 } kredi 0 B3 -16800.5
+yalnız faiz (anapara 0) 400 amount-range Tutar sıfırdan büyük olmalı.
+
+=== P3 açılışta borçlu kredi 5.000: 6.000 → ?, 5.000 → ?
+  açılış sonrası kredi -5000
+6.000 409 bank-loan-exceeds Kredi Geri Ödemesi'nde anapara (6.000,00 TL) Akbank · Kredi kredisinin kalan borcunu (5.000,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır.
+5.000 200  
+  kredi 0
+
+=== P4 komşu: geri ödeme kullanımdan ÖNCEKİ tarihle (kullanım 20.10? değil: 07.10, ödeme 03.10)
+kullanım 07.10 200  
+ödeme 03.10 (kullanımdan önce) 200  
+  kredi bugün 0 · 05.10 itibarıyla mizan 300: 1000
