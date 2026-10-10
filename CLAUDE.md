@@ -1104,6 +1104,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   döviz/kur/değerleme (Aşama 13), Bankaya Tahsile Ver, K8 taksit avans/fazla ödeme kuralları, faturanın bankalı iade/iptal ayrıntısı ve
   toplu kesim, kalan §8.10 raporları, Kasa açılış/devir (K6); POS 2.2.0, ekstre 2.3.0 yerinde. Tahmin 3–4 iş günü. Plan sırası bu
   kararla değişti (döviz 2.1.0'dan çıktı).
+  ZORUNLU GÖREV KAPANDI (kullanıcı önerisi, 10.10.2026: "CI 517 ile zorunlu görevi mühürle ve kapat; tek kararsız test için süreci
+  durdurma, gerekiyorsa karantinaya al" — karar bende): KAPATILDI, KARANTİNA YOK. Mühür CI 517 + art arda 518–521 (dört platform
+  1885/1886, Windows 5 koşu yeşil). Kapıyı kırmızı tutan tek şey bilinçli `todo` (Nakit Akış K10) — kararsız test değil; atlamak kapının
+  "atlanan = doğrulanmadı" kuralını deler. T4 ile kapanır. Rapor `docs/kanit/2026-10-10/ZORUNLU-GOREV-RAPORU.md` (8 başlık, açıklar 7.).
   MALİYET (kullanıcı, 10.10.2026: "GitHub'da Hobby planım, limitimi etkileyemiyor doğru mu? maliyet çıksın istemiyorum"): depo HERKESE
   AÇIK → standart Linux/Windows koşucuları ücretsiz; GitHub'dan okundu: CI 509 19,5 dk sürdü, faturalanan 0 ms; Uzun Doğrulama ve CI 521
   faturalanan 0. Gerçek sınır eşzamanlı iş sayısı (Free: 20, CI ile paylaşılır) → Uzun Doğrulama #1 (22 iş aynı anda) İPTAL edildi;
