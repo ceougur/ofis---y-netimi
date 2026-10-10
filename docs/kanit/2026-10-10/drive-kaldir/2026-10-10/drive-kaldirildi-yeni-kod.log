@@ -1,0 +1,60 @@
+TAP version 13
+# Subtest: Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum
+    # Subtest: kaldırılan uçlar 404: GET/POST /api/admin/backups/cloud ve POST …/cloud/test (yönetici ve oturumsuz)
+    ok 1 - kaldırılan uçlar 404: GET/POST /api/admin/backups/cloud ve POST …/cloud/test (yönetici ve oturumsuz)
+      ---
+      duration_ms: 21.883106
+      type: 'test'
+      ...
+    # Subtest: Şimdi Yedek Al — Tüm Şirketler ve Yalnız 001: yerel yedek alınır, Drive klasörüne dosya gitmez, yanıtta Drive alanı yok
+    ok 2 - Şimdi Yedek Al — Tüm Şirketler ve Yalnız 001: yerel yedek alınır, Drive klasörüne dosya gitmez, yanıtta Drive alanı yok
+      ---
+      duration_ms: 486.811265
+      type: 'test'
+      ...
+    # Subtest: veri yükleme öncesi yedek (001 ve 002): yerel yedek alınır, kopya yok
+    ok 3 - veri yükleme öncesi yedek (001 ve 002): yerel yedek alınır, kopya yok
+      ---
+      duration_ms: 570.904977
+      type: 'test'
+      ...
+    # Subtest: otomatik zamanlayıcı (son yedek 7 saat önce: zamanı gelmiş): iki şirket yedeklenir, kopya yok
+    ok 4 - otomatik zamanlayıcı (son yedek 7 saat önce: zamanı gelmiş): iki şirket yedeklenir, kopya yok
+      ---
+      duration_ms: 442.485085
+      type: 'test'
+      ...
+    # Subtest: Drive ayarı okunmaz, silinmez, değişmez (001 ve 002); gerçek zamanlayıcı ve bootstrap `yedek` de kopyalamaz
+    ok 5 - Drive ayarı okunmaz, silinmez, değişmez (001 ve 002); gerçek zamanlayıcı ve bootstrap `yedek` de kopyalamaz
+      ---
+      duration_ms: 740.69953
+      type: 'test'
+      ...
+    1..5
+ok 1 - Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum
+  ---
+  duration_ms: 2909.013742
+  type: 'suite'
+  ...
+# Subtest: Drive'a yedek kaldırıldı — bağlantı kipi ayarı dolu eski kurulum (sahte lisans servisi)
+    # Subtest: Şimdi Yedek Al (Tüm + Yalnız) ve otomatik tur: yerel yedek var, servise ve Google'a tek istek yok; ayar ortak katmana taşınmaz
+    ok 1 - Şimdi Yedek Al (Tüm + Yalnız) ve otomatik tur: yerel yedek var, servise ve Google'a tek istek yok; ayar ortak katmana taşınmaz
+      ---
+      duration_ms: 542.158075
+      type: 'test'
+      ...
+    1..1
+ok 2 - Drive'a yedek kaldırıldı — bağlantı kipi ayarı dolu eski kurulum (sahte lisans servisi)
+  ---
+  duration_ms: 1074.507451
+  type: 'suite'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4363.970333

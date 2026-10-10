@@ -1,0 +1,63 @@
+{
+  "ad": "drive-kaldirildi-eski-kod-507f0e1",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/drive-kaldirildi.test.mjs",
+  "commit": "9c44bf0f1fec35ad55a1902b5151473ac4551400",
+  "dal": "worktree-agent-abb0f20f3c0d93af1",
+  "kirli": 9,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:32:55.334Z",
+  "sure_sn": 3.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 0,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum › kaldırılan uçlar 404: GET/POST /api/admin/backups/cloud ve POST …/cloud/test (yönetici ve oturumsuz)",
+      "konum": "test/drive-kaldirildi.test.mjs:101:3",
+      "hata": "GET cloud · 200 !== 404 (beklenen 404, gelen 200)"
+    },
+    {
+      "ad": "Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum › Şimdi Yedek Al — Tüm Şirketler ve Yalnız 001: yerel yedek alınır, Drive klasörüne dosya gitmez, yanıtta Drive alanı yok",
+      "konum": "test/drive-kaldirildi.test.mjs:113:3",
+      "hata": "yanıtta cloud alanı yok: {\"scope\":\"all\",\"name\":\"destekofis-001-2026-10-10T17-32-56-597Z-manuel.sqlite\",\"size\":1167360,\"company\":{\"id\":\"sirket-001\",\"code\":\"001\",\"name\":\"Şirket 1\"},\"cloud\":{\"ok\":true,\"name\":\"destekofis-001-2026-10-10T17-32-56-597Z-manuel.sqlite\"},\"backups\":[{\"companyId\":\"sirket-001\",\"company\":\"001 · Şirket 1\",\"code\":\"001\",\"name\":\"destekofis-001-2026-10-10T17-32-56-597Z-manuel.sqlite\",\"size\":1167360,\"folder\":\"/tmp/destekofis-drive-yok-IfVmrj/backups/001 - Şirket 1\",\"cloud\":{\"ok\":true,\"name\":\"destekofis-001-2026-10-10T17-32-56-597Z-manuel.sqlite\"}},{\"companyId\":\"sirket-ff31840d-4408-452e-b794-77130a8d02d4\",\"company\":\"002 · İkinci Şirket\",\"code\":\"002\",\"name\":\"destekofis-002-2026-10-10T17-32-56-597Z-manuel.sqlite\",\"size\":1167360,\"folder\":\"/tmp/destekofis-drive-yok-IfVmrj/backups/002 - İkinci Şirket\",\"cloud\":{\"ok\":true,\"name\":\"destekofis-002-2026-10-10T17-32-56-597Z-manuel.sqlite\"}}],\"failed\":[]} (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum › veri yükleme öncesi yedek (001 ve 002): yerel yedek alınır, kopya yok",
+      "konum": "test/drive-kaldirildi.test.mjs:128:3",
+      "hata": "Drive klasörü boş · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum › otomatik zamanlayıcı (son yedek 7 saat önce: zamanı gelmiş): iki şirket yedeklenir, kopya yok",
+      "konum": "test/drive-kaldirildi.test.mjs:145:3",
+      "hata": "Drive klasörü boş · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum › Drive ayarı okunmaz, silinmez, değişmez (001 ve 002); gerçek zamanlayıcı ve bootstrap `yedek` de kopyalamaz",
+      "konum": "test/drive-kaldirildi.test.mjs:155:3",
+      "hata": "001'deki ayar aynen duruyor · + actual - expected · + `{\"enabled\":true,\"mode\":\"folder\",\"value\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler\",\"folderId\":null,\"path\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler\",\"resolvedPath\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler/DestekOfis Yedekleri\",\"configuredBy\":null,\"configuredAt\":\"2026-10-01T09:00:00.000Z\",\"lastAt\":\"2026-10-10T17:32:57.294Z\",\"lastError\":null,\"lastName\":\"destekofis-002-2026-10-10T17-32-57-272Z.sqlite\",\"copies\":6}` (beklenen `{\"enabled\":true,\"mode\":\"folder\",\"value\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler\",\"folderId\":null,\"path\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler\",\"resolvedPath\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler/DestekOfis Yedekleri\",\"configuredBy\":null,\"configuredAt\":\"2026-10-01T09:00:00.000Z\",\"lastAt\":null,\"lastError\":null,\"lastName\":null,\"copies\":0}`, gelen `{\"enabled\":true,\"mode\":\"folder\",\"value\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler\",\"folderId\":null,\"path\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler\",\"resolvedPath\":\"/tmp/destekofis-drive-yok-IfVmrj/Drive'ım/Yedekler/DestekOfis Yedekleri\",\"configuredBy\":null,\"configuredAt\":\"2026-10-01T09:00:00.000Z\",\"lastAt\":\"2026-10-10T17:32:57.294Z\",\"lastError\":null,\"lastName\":\"destekofis-002-2026-10-10T17-32-57-272Z.sqlite\",\"copies\":6}`)"
+    },
+    {
+      "ad": "Drive'a yedek kaldırıldı — bağlantı kipi ayarı dolu eski kurulum (sahte lisans servisi) › Şimdi Yedek Al (Tüm + Yalnız) ve otomatik tur: yerel yedek var, servise ve Google'a tek istek yok; ayar ortak katmana taşınmaz",
+      "konum": "test/drive-kaldirildi.test.mjs:221:3",
+      "hata": "sahte servise yedek isteği gitmedi (bütün istekler: POST /v1/yedek/oturum, PUT /yukle, POST /v1/yedek/oturum, PUT /yukle, POST /v1/yedek/oturum, PUT /yukle, POST /v1/yedek/oturum, PUT /yukle, POST /v1/yedek/oturum, PUT /yukle) · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/drive-kaldir/2026-10-10/drive-kaldirildi-eski-kod-507f0e1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abb0f20f3c0d93af1",
+  "ham_cikti_sha256": "52edfb7619cee6a3652f19e6eaa314627ad887939213e8346b5fe742945d9c7b",
+  "ham_cikti_bayt": 13777
+}

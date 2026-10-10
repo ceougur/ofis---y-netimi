@@ -1,0 +1,46 @@
+
+> destekofis@2.0.26 test:senaryo-220-yedek
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-220-yedek.mjs
+
+
+■ Kurulum: yönetici girer; 001'de 3, 002'de 2 cari
+  ✓ 001: 3 cari, 002: 2 cari
+
+■ Yönetim → Yedekler: açıklama satırı ve Şimdi Yedek Al (Tüm Şirketler)
+  ✓ açıklama: Her şirketin yedeği kendi klasöründe: …/backups/001 - Şirket 1 …/backups/002 - Şirket 2
+  ✓ kolonlar: Şirket, Yedek Dosyası, Tarih, Boyut, İşlemler
+  ✓ Yedekler ekranında Drive yok (bölüm, yazı, ayar kutusu)
+  ✓ Yedek Al seçenekleri: Tüm Şirketler (2) / Yalnız 001 · Şirket 1 (varsayılan Tüm Şirketler)
+  ✓ bildirim: 2 şirketin yedeği alındı; her biri kendi klasöründe.×
+  ✓ Şirket kolonu: 002 · Şirket 2, 001 · Şirket 1
+  ✓ dosya adında kendi şirketinin kodu
+  ✓ diskte: 001 - Şirket 1 (1), 002 - Şirket 2 (1), kökte 0
+  ✓ yedeklerin içi: 001 → 3 cari, 002 → 2 cari (karışma yok)
+
+■ Şimdi Yedek Al → Yalnız 001 · Şirket 1
+  ✓ yalnız 001 yedeklendi (001: 2, 002: 1)
+
+■ 002 yedekten geri yüklenir (onay kod + parola); 001 etkilenmez
+  ✓ 002'ye yedekten sonra bir cari eklendi (3)
+  ✓ pencere: yedek yalnız kendi şirketine yüklenir
+  ✓ bildirim: “002 · Şirket 2” yedekten geri yüklendi. Önceki veri yedeklendi: destekofis-002-2026-10-10T17-46-32-512Z-geri-yukleme-oncesi-002.sqlite×
+  ✓ 002 yedekteki hâline döndü (2 cari)
+  ✓ 001 aynı (3 cari)
+  ✓ geri yükleme öncesi yedek 002'nin klasöründe
+
+■ Yanlış şirket: 002'nin yedeği elle 001'in klasörüne kopyalanmış → reddedilir
+  ✓ ret: Bu yedek “002 · Şirket 2” şirketine ait; “001 · Şirket 1” şirketine geri yüklenemez. Yedeği kendi şirketine geri yükleyin.
+  ✓ 001'e hiçbir şey yüklenmedi
+
+■ Yönetim → Şirketler: Veri ve Yedek Klasörleri; ad değişince klasör de değişir
+  ✓ iki şirket satırı (2)
+  ✓ veri dosyaları: /tmp/destekofis-220-8cHc00/data/destekofis.sqlite · /tmp/destekofis-220-8cHc00/data/sirketler/002/destekofis.sqlite
+  ✓ cari sayıları: 3, 2
+  ✓ son yedek ve yedek klasörü yazıyor
+  ✓ kolonlar: Şirket, Veri Dosyası, Boyut, Cari, Kayıt, Son Yedek, Yedek Klasörü
+  ✓ klasör yeniden adlandırıldı: 002 - Gayri Resmi Ş Ç (2 yedek korundu: manuel + geri yükleme öncesi)
+  ✓ açıklama satırı yeni klasörü gösterir
+  ✓ Yönetim sayfası kaldırılan Drive uçlarını çağırmaz — Yedek Al, Geri Yükle, Şirketler boyunca (0 istek)
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo 2.0.20 (yedek): 28 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek
