@@ -13,23 +13,29 @@ const R = path.resolve(HERE, "..", "..");
 const S = path.join(HERE, "ornek");
 const { chromium } = createRequire(`${R}/`)("playwright");
 const { createApp } = await import(`${R}/server/app.mjs`);
+const { installPageClock } = await import(`${R}/test/helpers.mjs`);
+// Sahte saat (ekran-banka.mjs ile aynı gün): ekran görüntüleri tarihe bağlı değişmez.
+const NOW = "2026-10-08T12:00:00+03:00";
 const OUT = process.argv[2] || `${R}/docs/kilavuz/ekran`;
 const ONLY = process.argv[3] ? new Set(process.argv[3].split(",")) : null;
 mkdirSync(OUT, { recursive: true });
 const root = mkdtempSync(path.join(tmpdir(), "kilavuz211-"));
 const PASS = "Kilavuz-Admin-2026";
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "b"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "7f3a91c24be05d6e8a1b2c3d4e5f6071" } });
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "b"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "7f3a91c24be05d6e8a1b2c3d4e5f6071" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const base = `http://127.0.0.1:${port}`;
-const browser = await chromium.launch();
-const ctx = await browser.newContext({ viewport: { width: 1360, height: 860 }, locale: "tr-TR", deviceScaleFactor: 1.5 });
+// LANG: tarih kutuları Türkçe biçimde (gg.aa.yyyy) görünsün.
+const browser = await chromium.launch({ args: ["--lang=tr-TR"], env: { ...process.env, LANG: "tr_TR.UTF-8", LANGUAGE: "tr", LC_ALL: "tr_TR.UTF-8" } });
+const ctx = await browser.newContext({ viewport: { width: 1360, height: 860 }, locale: "tr-TR", timezoneId: "Europe/Istanbul", deviceScaleFactor: 1.5 });
 await ctx.addInitScript(() => { const st = document.createElement("style"); st.textContent = "#hof-license-bar,.hof-license-notice{display:none!important}"; document.addEventListener("DOMContentLoaded", () => document.head.appendChild(st)); });
 const page = await ctx.newPage();
+await installPageClock(page, app.config.now);
 const errors = [];
 const failed = [];
 page.on("pageerror", e => errors.push(e.message));
 const want = name => !ONLY || ONLY.has(name);
-const shot = async (name, options = {}, on = page) => { if (!want(name)) return; await on.screenshot({ path: `${OUT}/${name}.jpg`, type: "jpeg", quality: 84, ...options }); console.log("✓", name); };
+let shots = 0;
+const shot = async (name, options = {}, on = page) => { if (!want(name)) return; await on.screenshot({ path: `${OUT}/${name}.jpg`, type: "jpeg", quality: 84, ...options }); shots += 1; console.log("✓", name); };
 const quiet = (on = page) => on.evaluate(() => document.querySelectorAll(".hof-toast").forEach(n => n.remove()));
 const box = async (selector, on = page) => on.$eval(selector, n => { const r = n.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; });
 const topBox = async (on = page) => on.$$eval(".hof-modal-backdrop.is-visible .hof-modal", list => { const r = list.at(-1).getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; });
@@ -38,7 +44,7 @@ const api = (url, body, method = body ? "POST" : "GET") => page.evaluate(async (
 const closeTop = async () => { await page.keyboard.press("Escape"); await page.waitForTimeout(350); };
 const closeAll = async () => { for (let i = 0; i < 4 && await page.$(".hof-modal-backdrop.is-visible"); i += 1) await closeTop(); };
 const step = async (name, fn) => { try { await fn(); } catch (error) { failed.push(`${name}: ${error.message.split("\n")[0]}`); console.log("✗", name, error.message.split("\n")[0]); await page.screenshot({ path: path.join(tmpdir(), `kilavuz-hata-${name}.png`) }).catch(() => {}); await closeAll().catch(() => {}); } };
-const day = offset => { const d = new Date(); d.setDate(d.getDate() + offset); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const day = offset => { const d = new Date(app.config.now.ms()); d.setDate(d.getDate() + offset); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 
 // 1) Giriş
 await page.goto(`${base}/`);
@@ -317,7 +323,7 @@ await step("k17-k20", async () => {
   await page.waitForSelector("#adm-users tr[data-id]");
   await page.evaluate(() => { document.querySelector(".adm-top").style.position = "static"; });
   await page.waitForTimeout(300);
-  if (want("k20-kurtarma-karti")) { await (await page.$("#adm-recovery")).screenshot({ path: `${OUT}/k20-kurtarma-karti.jpg`, type: "jpeg", quality: 84 }); console.log("✓ k20-kurtarma-karti"); }
+  if (want("k20-kurtarma-karti")) { await (await page.$("#adm-recovery")).screenshot({ path: `${OUT}/k20-kurtarma-karti.jpg`, type: "jpeg", quality: 84 }); shots += 1; console.log("✓ k20-kurtarma-karti"); }
   const row = page.locator("#adm-users tr[data-id]", { hasText: "Ayşe" });
   await row.locator("[data-perms]").click();
   await page.waitForSelector(".adm-perm-row .adm-perm-panel");
@@ -338,8 +344,9 @@ await step("k17-k20", async () => {
 });
 
 await step("k18", async () => {
-  const other = await browser.newContext({ viewport: { width: 1100, height: 1000 }, deviceScaleFactor: 1.5, locale: "tr-TR" });
+  const other = await browser.newContext({ viewport: { width: 1100, height: 1000 }, deviceScaleFactor: 1.5, locale: "tr-TR", timezoneId: "Europe/Istanbul" });
   const p = await other.newPage();
+  await installPageClock(p, app.config.now);
   await p.goto(`${base}/`);
   await p.click("#hof-auth [data-forgot]");
   await p.waitForSelector("#hof-auth [data-local]");
@@ -351,6 +358,9 @@ await step("k18", async () => {
 
 console.log("sayfa hataları:", errors.length ? errors.join(" | ") : "yok");
 console.log("başarısız adımlar:", failed.length ? failed.join(" | ") : "yok");
+// Özet (tools/kanit.mjs tanır): çekilen ekranlar; başarısız adım ve sayfa hatası başarısız sayılır.
+console.log(`${shots} denetim geçti, ${failed.length + errors.length} başarısız`);
 await browser.close();
 await app.close();
 rmSync(root, { recursive: true, force: true });
+if (failed.length || errors.length) process.exitCode = 1;
