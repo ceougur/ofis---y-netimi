@@ -1,0 +1,32 @@
+{
+  "ad": "vade-takip-pdf-enc",
+  "komut": "node --test test/vade-takip-kaynak-yetki-210.test.mjs",
+  "commit": "e91774a5f6e727f8bbcae1599d4bdc7593c8f103",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T23:04:26.781Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/vade-takip-pdf-enc.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "4c86b33c9d4bb3601284a21645f93dc77079f86cebe17eb272adc26ed0fb598f",
+  "ham_cikti_bayt": 2582
+}

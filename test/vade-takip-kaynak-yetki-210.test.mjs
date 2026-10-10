@@ -153,7 +153,7 @@ describe("m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı 
     try {
       const file = path.join(root, "nakit.pdf");
       writeFileSync(file, pdf.buffer);
-      tool = execFileSync("pdftotext", ["-layout", file, "-"], { encoding: "utf8" }).replace(/\s+/g, " ");
+      tool = execFileSync("pdftotext", ["-enc", "UTF-8", "-layout", file, "-"], { encoding: "utf8" }).replace(/\s+/g, " ");
     } catch {
       tool = "";
     }
