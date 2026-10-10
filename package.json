@@ -32,6 +32,7 @@
     "test:senaryo-223": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-223.mjs",
     "test:senaryo-224": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-224.mjs",
     "test:senaryo-225": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-225.mjs",
+    "test:senaryo-225-uyari": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-225-uyari.mjs",
     "test:senaryo-226": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-226.mjs",
     "test:senaryo-banka-210": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.mjs",
     "test:senaryo-banka-210b": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210b.mjs",

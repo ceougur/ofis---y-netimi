@@ -30,7 +30,7 @@
   let remaining = SHOW_MS;
   let startedAt = 0;
   let shownThisLoad = 0;
-  let summaryShown = false;
+  let summaryNo = 0;
   let roundStart = 0;
   let lastHiddenAt = 0;
   let waitTimer = 0;
@@ -417,7 +417,9 @@
     remaining = SHOW_MS;
     startedAt = Date.now();
     timer = setTimeout(() => hide(node), SHOW_MS);
-    if (!alert.summary) markSeen([alert.id]);
+    // Özet (10.10.2026): taşıdığı bildirimler ancak özet ekrana çıkınca "görüldü" olur; özet sırası gelmeden sayfa değişir ya da
+    // kapanırsa bir sonraki açılışta yeniden gelirler (önceden kuyruğa girerken yazılıyordu, hiç gösterilmeden 3 saat susuyorlardı).
+    markSeen(alert.summary ? alert.carried.map(item => item.id) : [alert.id]);
   }
 
   function hide(node) {
@@ -447,7 +449,9 @@
     // v2.0.10: kapanan kalemin (tahsilat girildi, çek ödendi, taksit alındı, başka bilgisayarda kapatıldı) bekleyen ve
     // ekrandaki bildirimi de düşer; program yeniden açılmayı beklemez.
     const current = new Set(all.map(item => item.id));
-    queue = queue.filter(item => item.summary || current.has(item.id));
+    queue = queue
+      .map(item => (item.summary ? summaryItem(item.id, item.carried.filter(carried => current.has(carried.id))) : item))
+      .filter(item => (item.summary ? item.carried.length : current.has(item.id)));
     if (showing && !showing.summary && !current.has(showing.id)) {
       const node = document.querySelector("#hof-notices .hof-notice.is-visible") || document.querySelector("#hof-notices .hof-notice");
       if (node) hide(node);
@@ -456,10 +460,9 @@
     if (Date.now() - roundStart >= REPEAT_MS) {
       roundStart = Date.now();
       shownThisLoad = 0;
-      summaryShown = false;
     }
     const seen = seenRecently();
-    const queued = new Set(queue.map(item => item.id));
+    const queued = new Set(queue.flatMap(item => (item.summary ? item.carried.map(carried => carried.id) : [item.id])));
     const fresh = all.filter(item => !seen.has(item.id) && !queued.has(item.id) && item.id !== showing?.id && item.type !== "upcoming");
     const upcoming = all.filter(item => !seen.has(item.id) && !queued.has(item.id) && item.id !== showing?.id && item.type === "upcoming");
     // Acil görev (v2.0.5) tur sınırına takılmaz: kuyruğun başına girer ve sıradaki bildirim olarak gösterilir.
@@ -478,13 +481,17 @@
     const total = batch.length;
     batch.forEach((item, index) => queue.push({ ...item, position: index + 1, total }));
     shownThisLoad += batch.length;
-    if (rest.length && !summaryShown) {
-      summaryShown = true;
-      const late = rest.filter(item => item.type === "unpaid").length + rest.filter(item => item.urgent).length;
-      queue.push({ id: `summary|${roundStart}`, summary: true, tone: late ? "late" : "info", type: "summary", eyebrow: "BİLDİRİMLER", title: `${rest.length} bildirim daha var`, text: late ? `${late} acil iş ya da alınmayan tahsilat; diğerleri son günü yaklaşan işler.` : "Son günü yaklaşan işler ve yaklaşan tahsilatlar." });
-      markSeen(rest.map(item => item.id));
-    } else if (rest.length) markSeen(rest.map(item => item.id));
+    // Tura sığmayanlar özetle gelir; özet bekliyorsa ona eklenir, turun özeti gösterildiyse yenileri için yeni özet gelir.
+    if (rest.length) {
+      const pending = queue.findIndex(item => item.summary);
+      if (pending >= 0) queue[pending] = summaryItem(queue[pending].id, [...queue[pending].carried, ...rest]);
+      else queue.push(summaryItem(`summary|${roundStart}|${(summaryNo += 1)}`, rest));
+    }
     schedule();
+  }
+  function summaryItem(id, carried) {
+    const late = carried.filter(item => item.type === "unpaid").length + carried.filter(item => item.urgent).length;
+    return { id, summary: true, carried, tone: late ? "late" : "info", type: "summary", eyebrow: "BİLDİRİMLER", title: `${carried.length} bildirim daha var`, text: late ? `${late} acil iş ya da alınmayan tahsilat; diğerleri son günü yaklaşan işler.` : "Son günü yaklaşan işler ve yaklaşan tahsilatlar." };
   }
 
   // ---------- Zil: tüm liste ----------

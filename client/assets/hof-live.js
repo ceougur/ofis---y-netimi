@@ -57,8 +57,13 @@
       source.addEventListener(type, event => {
         if (event.lastEventId) lastId = event.lastEventId;
         const data = parse(event);
-        // Başka bir veri oturumundaki tablo değişikliği bu ekranı ilgilendirmez (v2.0.1).
-        if (type === "workspace.changed" && data?.datasetKey && HOF.datasetKey && data.datasetKey !== HOF.datasetKey) return;
+        // Başka bir sayfanın (v2.0.1 "veri oturumu") tablo değişikliği bu ekranın TABLOSUNU ilgilendirmez; ama 2.0.17'den beri takvim,
+        // zil, sağ alt bildirimler ve sayfa şeridi şirketin bütün sayfalarını kapsar → ayrı olay (10.10.2026: önceden hiç iletilmiyordu,
+        // başka sayfaya eklenen son tarih açık pencereye sayfa seçimi değişene kadar gelmiyordu).
+        if (type === "workspace.changed" && data?.datasetKey && HOF.datasetKey && data.datasetKey !== HOF.datasetKey) {
+          HOF.emit("live:page.changed", data);
+          return;
+        }
         HOF.emit(`live:${type}`, data);
       });
     }
