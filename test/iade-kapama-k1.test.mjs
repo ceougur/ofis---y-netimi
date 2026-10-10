@@ -29,6 +29,7 @@
 //   N13 açık iade sonradan cari kartından bağsız ödemeyle müşteriye geri verilir → iade belgesinin açığı kapanır
 //   N14 liste (toplu yol, 8'den çok cari) = fatura kartı (cari başına yol); her caride Σ belge açığı (işaretli) = cari bakiye
 //   N15 sıra: taksitli faturada kart fazla tahsil edilmişken iki iade — iadeler bağlı ödemelerden SONRA mahsup edilir (artan iade açığıdır)
+//   N16 Mevcut Borç kartının kapsadığı faturada paralı iade: kart yalnız mahsup kadar küçülür (carinin başka açık borcu varken)
 //   (hesaba bağlı havaleyle geri ödeme: R1b ve iade-210 G aynı yolu kapsar; eski veri: iade-210-onarim.)
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
@@ -312,6 +313,22 @@ describe("K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, a
     assert.deepEqual([doc.open, plan.totals.remaining], [0, 0], "fatura açığı = kartın kalanı = 0");
     assert.deepEqual([(await h.doc(r1.id)).open, (await h.doc(r2.id)).open], [1000, 700], "iade açıkları 1.000 ve 700");
     assert.equal(await h.balance(acc), -2200);
+  }));
+
+  test("N16: Mevcut Borç kartı kapsadığı faturanın paralı iadesinde yalnız mahsup kadar küçülür (carinin başka açık borcu varken)", () => scenario(async (api, h) => {
+    // Elle: satış 1.000 (500 peşin) → açık 500, "Carinin Mevcut Borcu" kartı 500 bu açığı kapsar; sonra kapsanmayan açık satış 1.000.
+    // 500 iade + 250 nakit geri → mahsup 250 → fatura açığı 1.000 − 500 − 250 = 250 = kartın kalanı (kart 500 → 250); öbür satış 1.000;
+    // cari = 1.000 − 500 − 500 + 250 + 1.000 = 1.250 = kart 250 + kapsanmayan 1.000. (Carinin borcu kartı aştığı için genel kırpma
+    // — trimCovers — devreye girmez; kartı yalnız iadenin mahsubu küçültür.)
+    const acc = await h.account("N16 Müşteri");
+    const f1 = await h.sale(acc, { qty: 10, price: 100, cash: nakit(500), date: dayOf(-60) });
+    const card = await must("Mevcut Borç kartı", api.post("/api/workspace/plans", { name: "N16 kart", registeredOn: dayOf(-55), total: "500", accountId: acc.id, mode: "auto", count: "2", firstDue: dayOf(10), coversBalance: true }));
+    const f2 = await h.sale(acc, { qty: 1, price: 1000, date: dayOf(-50) });
+    await h.giveBack(acc, f1, 5, nakit(250));
+    const plan = await must("kart", api.get(`/api/workspace/plans/${card.id}`));
+    assert.deepEqual([plan.totals.total, plan.totals.remaining], [250, 250], "kart 250 (yalnız mahsup kadar küçüldü)");
+    assert.deepEqual([(await h.doc(f1.id)).open, (await h.doc(f2.id)).open], [250, 1000]);
+    assert.equal(await h.balance(acc), 1250);
   }));
 
   describe("N14: toplu yol (liste, 8'den çok cari) = fatura kartı; Σ işaretli belge açığı = cari bakiye", () => {
