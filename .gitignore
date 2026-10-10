@@ -25,3 +25,6 @@ test/qa/artifacts/
 test/excel-denetim/cikti/ekran-hafta/
 test/excel-denetim/cikti/rapor-ekstre-secim/
 test/excel-denetim/cikti/odeme-alani-kaydet/
+# Kanıt kaydı (tools/kanit.mjs): CI'de geçici çıktı klasörü depo dışı sayılır; docs/kanit altındaki ham çıktılar depoda kalır.
+kanit-cikti/
+!docs/kanit/**/*.log

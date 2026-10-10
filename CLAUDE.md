@@ -52,6 +52,22 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   tutar, çift işlem, eşzamanlılık, mutabakat, yedek/geri yükleme, gerileme); her hata: üret → kök neden → en küçük düzeltme →
   ilgili + gerileme + tam paket → gerçek sonuç kaydı; son rapor 8 başlık (Linux ve Windows AYRI; başarısız/atlanan/doğrulanmayan).
 
+### Doğrulama kapısı — teknik zorunluluk (kullanıcı, 10.10.2026: "ajanların başarılı rapor vermesini engelleyen, gerçek test
+sonuçlarına dayalı teknik bir zorunluluk var mı, yoksa yalnız talimatlara mı güveniyoruz? kod ve CI yapılandırmasıyla kanıtla, eksik
+mekanizmayı uygula, Windows'taki gerçek CI sonucuyla doğrula")
+- Durum (10.10.2026 öncesi, koddan): YOKTU. ci.yml hiçbir şeyi durdurmuyordu (yalnız `package` needs test+e2e); release.yml testleri
+  yalnız ubuntu'da koşuyordu (Windows npm test yayını durdurmuyordu); tools/release.mjs hiç denetim yapmıyordu; master'da kural seti
+  yok (API `rulesets` → []), klasik dal koruması bu oturumun yetkisiyle okunamıyor (403); depoda Claude Code kancası yoktu.
+- Kurulan: (1) ci.yml → her test adımı `tools/kanit.mjs kos` ile (çıkış kodu + sayılar; çelişki/özetsiz/0 test = kırmızı), kayıtlar
+  yüklenir; "Doğrulama Kapısı" işi needs sonuçlarını + kayıtları okur: 4 platform (Linux/Windows × Node 22/24) + bütün e2e bu commit'te
+  GEÇTİ, Linux ve Windows AYNI sayıda test, atlanan test yok; `package` kapıya bağlı. (2) `tools/kanit.mjs ci <sha>` → yalnız ci.yml,
+  kapı işi yeşil değilse YEŞİL demez. (3) tools/release.mjs → temiz ağaç + CI YEŞİL değilse imzalı paket ÜRETMEZ (atlatma yok).
+  (4) release.yml → yayımdan önce `kanit.mjs ci "$GITHUB_SHA" --bekle 90`. (5) `.claude/settings.json` Stop kancası → durum yeşil
+  değilse yanıtı bir kez durdurur, makine durumunu (CI işleri, gönderilmemiş commit, değişmiş dosya) modele dayatır.
+- Sınır (dürüst): kanca ve yerel araç, kodu değiştirebilen biri tarafından değiştirilebilir (değişiklik git geçmişinde görünür).
+  Sunucu tarafında bağlayıcı olan tek şey master için "Doğrulama Kapısı" zorunlu durum denetimi (GitHub → Settings → Rules) —
+  bunu yalnız depo sahibi açabilir (bu oturumun belirteci yönetim yetkisine sahip değil, 403).
+
 ### Geçmiş test hatalarından dersler (kullanıcı, 10.10.2026: "bundan sonraki testlerde geçmişte yapılan hatalardan ders alalım")
 Her test planı bu listeden geçirilerek yazılır; teslimdeki DENENEN/DENENMEYEN bölümü hangi maddelerin uygulandığını söyler.
 Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir yasaktır, öneri değil.
