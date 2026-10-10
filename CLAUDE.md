@@ -77,6 +77,9 @@ mekanizmayı uygula, Windows'taki gerçek CI sonucuyla doğrula")
   KAYNAK (kullanıcı, 10.10.2026 09:42 UTC; API'den okundu): required_status_checks [{context "Doğrulama Kapısı", integration_id
   15368 = GitHub Actions}] — başka uygulama aynı adla durum gönderip kapıyı geçemez. İlk kapı koşusu (CI 474, 180a8a5) gerçek
   Windows hatasında GEÇMEDİ dedi (Linux 1763/1763, Windows 1760/1763).
+  KARAR (kullanıcı, 10.10.2026): ağ erişim ayarı (*.blob.core.windows.net) EKLENMEZ — tam CI günlüğü ve kanıt dosyaları (artifact)
+  indirilemez; alternatif yol: kanıt aracı başarısız testlerin adını/yerini/hatasını çıktının SONUNA ve kapı özetine yazar, GitHub
+  aracından son 5.000 satır + kapı tablosu okunur; ilk 5.000 satırın dışında kalan bilgi "okunamadı" diye yazılır (ders 4).
 
 ### Geçmiş test hatalarından dersler (kullanıcı, 10.10.2026: "bundan sonraki testlerde geçmişte yapılan hatalardan ders alalım")
 Her test planı bu listeden geçirilerek yazılır; teslimdeki DENENEN/DENENMEYEN bölümü hangi maddelerin uygulandığını söyler.
