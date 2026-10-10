@@ -802,8 +802,6 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const body = await readJson(req);
     const input = store.tx(() => entryInput(body, plan.id));
     if (input.kind === "out" && !canUser(user, "plans.manage")) throw new HttpError(403, "Ödeme/iade girişi yönetici, uzman ve muhasebe yetkisidir.");
-    if (input.kind === "out") assertNetPaid(plan.id, -input.amount);
-    if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
     const finRef = banking.ref({ method: input.method, value: body.bankAccountId, date: input.date });
     banking.requireOut(user, input.kind === "out", finRef);
     const k7 = banking.negative([finRef], input.date, banking.forced(body));
@@ -817,6 +815,14 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       scope: "plan.entry.create",
       body: { ...body, planId: plan.id },
       similarOk: body.similarOk === true,
+      // Hakem K4 (plan §3.3 sırası "1 istek kimliği → 2 prepare/hedef kuralları"): iadenin kart ve Kasa ön denetimleri istek kimliği bakışından
+      // SONRA, işlemin içinde. Önceden önce çalışıyordu: kartın net tahsilatını ve Kasa'yı 0'a indiren iadenin yinelemesi 400 "iade tahsil
+      // edilenden fazla" ya da 409 "Kasa eksiye düşer" alıyordu.
+      prepare: () => {
+        if (input.kind !== "out") return;
+        assertNetPaid(plan.id, -input.amount);
+        cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+      },
       write: () => {
         k7.capture();
         const receiptNo = input.kind === "in" ? nextReceipt() : null;

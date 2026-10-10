@@ -226,7 +226,6 @@ export function registerCashRoutes(router, context) {
     const user = auth.requirePermission(req, "cash.manage");
     const body = await readJson(req);
     const entry = input(body);
-    if (entry.kind === "out") guardOut(entry.amount, entry.date, body.cashForce === true, entry.method);
     const id = auth.newId("cash");
     // v2.1.0 (bank.post, plan §3.3): satır, İşlem No'lu işlem başlığı ve işlem geçmişi tek işlemde.
     // Hakem K3 (10.10.2026; plan §7 "Yazan her uç x-hof-request alır", §3.3 adım 1): elle Kasa hareketi de istek kimliğiyle — aynı kimlik + aynı
@@ -239,6 +238,10 @@ export function registerCashRoutes(router, context) {
       requestId: requestIdOf(req, body),
       scope: "cash.entry.create",
       body,
+      // Hakem K4 (plan §3.3 sırası): eksi bakiye ön denetimi istek kimliği bakışından sonra, işlemin içinde (yineleme 409 almaz).
+      prepare: () => {
+        if (entry.kind === "out") guardOut(entry.amount, entry.date, body.cashForce === true, entry.method);
+      },
       write: () => {
         store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", id, entry.kind, entry.amount, entry.date, entry.description, entry.method, bank.eventFor("cash_entries", entry), user.id, now());
         audit(user, "cash.entry.created", id, entry);
@@ -287,7 +290,6 @@ export function registerCashRoutes(router, context) {
     if (!validDate(date)) throw new HttpError(400, "Geçerli bir tarih girin.");
     const description = limited(body.description, 300, "Açıklama") || TRANSFER_TEXT[direction];
     const cashKind = direction === "to-cash" ? "in" : "out";
-    if (cashKind === "out") guardOut(roundMoney(amount), date, body.cashForce === true, "cash");
     const finRef = banking()?.pickRef({ method: "bank", value: body.bankAccountId, date }) || "";
     // Bankadan kasaya: banka hesabından çıkış (K7). Kasadan bankaya: hesap artar, denetlenmez.
     const k7 = cashKind === "in" ? banking()?.negative({ refs: [finRef], date, force: body.negativeOk === true }) || noGuard : noGuard;
@@ -304,6 +306,10 @@ export function registerCashRoutes(router, context) {
       scope: "cash.transfer.create",
       body,
       similarOk: body.similarOk === true,
+      // Hakem K4: kasadan bankaya yatırmada nakit eksi bakiye ön denetimi istek kimliği bakışından sonra (plan §3.3 sırası).
+      prepare: () => {
+        if (cashKind === "out") guardOut(roundMoney(amount), date, body.cashForce === true, "cash");
+      },
       write: () => {
         k7.capture();
         const eventId = bank.eventFor("cash_entries", { kind: cashKind, date, method: "cash", transfer_id: transferId });

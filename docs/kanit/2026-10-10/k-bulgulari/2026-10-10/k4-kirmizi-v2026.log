@@ -1,0 +1,264 @@
+TAP version 13
+# Subtest: K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar)
+    # Subtest: B1: cari nakit ödemesi 100 (Kasa 100 → 0) aynı kimlikle yeniden → 200 replayed; Kasa 0, tek satır
+    not ok 1 - B1: cari nakit ödemesi 100 (Kasa 100 → 0) aynı kimlikle yeniden → 200 replayed; Kasa 0, tek satır
+      ---
+      duration_ms: 322.010616
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari ödeme yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":0,"after":-100}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:83:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B10: Kasa 0 iken ödeme sorulur (409 cash-negative; ön denetim kaybolmadı); onayla (cashForce) yazılır; onaylı isteğin yinelemesi de yinelemedir
+    not ok 2 - B10: Kasa 0 iken ödeme sorulur (409 cash-negative; ön denetim kaybolmadı); onayla (cashForce) yazılır; onaylı isteğin yinelemesi de yinelemedir
+      ---
+      duration_ms: 239.539385
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        409 {"ok":false,"error":"Nakit kasada -10,00 TL var; 10,00 TL çıkış bakiyeyi -20,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":-10,"after":-20}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:98:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B2: Kasadan Bankaya Yatır 50 (Kasa 50 → 0) aynı kimlikle yeniden → 200 replayed; tek transfer
+    not ok 3 - B2: Kasadan Bankaya Yatır 50 (Kasa 50 → 0) aynı kimlikle yeniden → 200 replayed; tek transfer
+      ---
+      duration_ms: 226.099377
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasadan Bankaya yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 50,00 TL çıkış bakiyeyi -50,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":0,"after":-50}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:106:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B5: Kasa elle çıkış 40 (Kasa 40 → 0) aynı kimlikle yeniden → 200 replayed
+    not ok 4 - B5: Kasa elle çıkış 40 (Kasa 40 → 0) aynı kimlikle yeniden → 200 replayed
+      ---
+      duration_ms: 241.097787
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasa elle çıkış yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 40,00 TL çıkış bakiyeyi -40,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":0,"after":-40}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:115:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B4: stok nakit alımı 3 × 10 (Kasa 30 → 0) aynı kimlikle yeniden → 200 replayed; stok 3
+    not ok 5 - B4: stok nakit alımı 3 × 10 (Kasa 30 → 0) aynı kimlikle yeniden → 200 replayed; stok 3
+      ---
+      duration_ms: 251.285221
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok alımı yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 30,00 TL çıkış bakiyeyi -30,00 TL eksiye düşürür.","code":"cash-negative","method":"cash","balance":0,"after":-30}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:123:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B6 (komşu): stoğu bitiren satış (3 → 0) aynı kimlikle yeniden → 200 replayed (409 stock-negative değil); stok 0
+    not ok 6 - B6 (komşu): stoğu bitiren satış (3 → 0) aynı kimlikle yeniden → 200 replayed (409 stock-negative değil); stok 0
+      ---
+      duration_ms: 218.339102
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok satışı yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Stokta 0 Adet var; 3 Adet çıkış stoğu eksiye düşürür. Kayıttan sonra stok: -3 Adet olacak.","code":"stock-negative","available":0,"after":-3}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:132:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B3 (komşu): taksit iadesi 80 (kartın net tahsilatı ve Kasa 80 → 0) aynı kimlikle yeniden → 200 replayed
+    not ok 7 - B3 (komşu): taksit iadesi 80 (kartın net tahsilatı ve Kasa 80 → 0) aynı kimlikle yeniden → 200 replayed
+      ---
+      duration_ms: 228.675173
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:137:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit iadesi yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 400 {"ok":false,"error":"Bu kartta tahsil edilen net tutar 0,00 TL; iade ya da düzeltme sonrası -80,00 TL olur. İade tahsil edilenden fazla olamaz.","code":"refund-exceeds"}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:142:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B8 (karşılaştırma): verilen çekin nakit ödemesi (Kasa 70 → 0) yeniden → 200 replayed (Kasa denetimi yazımın içinde)
+    not ok 8 - B8 (karşılaştırma): verilen çekin nakit ödemesi (Kasa 70 → 0) yeniden → 200 replayed (Kasa denetimi yazımın içinde)
+      ---
+      duration_ms: 238.437086
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:148:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çek ödemesi yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Bu çek bu arada “Ödendi” oldu. Kartı yenileyin.","code":"cheque-stale"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:153:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar)
+  ---
+  duration_ms: 1968.344145
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:67:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K4 — Engelle politikasında yineleme
+    # Subtest: B7: Kasa Engelle; cari nakit ödemesi Kasa'yı 0'a indirir; aynı kimlikle yeniden → 200 replayed (409 cash-blocked değil)
+    not ok 1 - B7: Kasa Engelle; cari nakit ödemesi Kasa'yı 0'a indirir; aynı kimlikle yeniden → 200 replayed (409 cash-blocked değil)
+      ---
+      duration_ms: 42.433654
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:167:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Engelle cari ödeme yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {"ok":false,"error":"Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).","code":"cash-blocked","method":"cash","balance":0,"after":-100}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        replayOk (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:61:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:171:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - K4 — Engelle politikasında yineleme
+  ---
+  duration_ms: 267.982548
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/k-a8a4/v2026/test/hakem-k4-yineleme-sirasi.test.mjs:159:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K4 — karşılaştırma: banka hesabında aynı durum (K7 bank.post adım 8)
+    # Subtest: B9: havale ödemesi hesabı 100 → 0 indirir; aynı kimlikle yeniden → 200 replayed
+    ok 1 - B9: havale ödemesi hesabı 100 → 0 indirir; aynı kimlikle yeniden → 200 replayed # SKIP banka modülü yok (v2.0.26)
+      ---
+      duration_ms: 0.935633
+      type: 'test'
+      ...
+    1..1
+ok 3 - K4 — karşılaştırma: banka hesabında aynı durum (K7 bank.post adım 8)
+  ---
+  duration_ms: 279.994621
+  type: 'suite'
+  ...
+1..3
+# tests 10
+# suites 3
+# pass 0
+# fail 9
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 2934.717267

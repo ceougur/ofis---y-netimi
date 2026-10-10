@@ -652,7 +652,6 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     requireKindRight(user, input.kind);
     const finRef = refOf(input, body);
     requireBankOut(user, input.kind, finRef);
-    if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
     const k7 = negativeOf([finRef], input.date, negativeForced(body));
     const created = bank.post({
       user,
@@ -662,6 +661,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       scope: "account.entry.create",
       body: { ...body, accountId: account.id },
       similarOk: body.similarOk === true,
+      // Hakem K4 (plan §3.3 sırası "1 istek kimliği → 2 prepare", C12 "eksi bakiye işlemin içindedir"): Kasa ön denetimi istek kimliği bakışından
+      // SONRA. Önceden önce çalışıyordu: Kasa'yı 0'a indiren ödemenin yinelemesi kaydedilmiş ödemeye 409 "Kasa eksiye düşer" diyordu.
+      prepare: () => {
+        if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+      },
       write: () => {
         k7.capture();
         const entry = addEntry(user, account.id, { ...input, finRef });

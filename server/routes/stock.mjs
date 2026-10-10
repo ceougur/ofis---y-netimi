@@ -365,14 +365,18 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const item = itemRow(params.id);
     const body = await readJson(req);
     const input = moveInput(body, user, item);
-    assertAvailable(item, input, null, body.force === true);
-    if (input.kind === "in" && input.pay === "cash") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
     input.finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date }) : "";
     banking.requireOut(user, bankOut(input), input.finRef);
     const k7 = banking.negative([input.finRef], input.date, banking.forced(body));
     let touched = [];
     let trimmed = [];
-    const posted = bank.post({ user, module: "stock", op: "create", requestId: banking.requestId(req, body), scope: "stock.move.create", body: { ...body, itemId: item.id }, similarOk: body.similarOk === true, guard: k7.guard, write: () => {
+    // Hakem K4 (plan §3.3 sırası "1 istek kimliği → 2 prepare"): eksi stok ve Kasa ön denetimleri istek kimliği bakışından SONRA, işlemin içinde.
+    // Önceden önce çalışıyordu: stoğu ya da Kasa'yı 0'a indiren hareketin yinelemesi 409 stock-negative / cash-negative alıyordu.
+    const prepare = () => {
+      assertAvailable(item, input, null, body.force === true);
+      if (input.kind === "in" && input.pay === "cash") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+    };
+    const posted = bank.post({ user, module: "stock", op: "create", requestId: banking.requestId(req, body), scope: "stock.move.create", body: { ...body, itemId: item.id }, similarOk: body.similarOk === true, prepare, guard: k7.guard, write: () => {
       k7.capture();
       const moveId = insertMove(user, item.id, input);
       touched = syncAccount(user, item, moveId, input);
