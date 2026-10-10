@@ -1125,6 +1125,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   faturalanan 0. Gerçek sınır eşzamanlı iş sayısı (Free: 20, CI ile paylaşılır) → Uzun Doğrulama #1 (22 iş aynı anda) İPTAL edildi;
   iş akışı her matriste en çok 6 iş (CI'ye 8 yuva kalır) ve depo özel yapılırsa HİÇ başlamaz (if: private değil). Test ci-kapi-listesi
   bunları denetler. Kural: ücretli koşucu (büyük/GPU), özel depoda uzun iş, ücretli eylem yok.
+  YAYIN KARARI (kullanıcı, 10.10.2026: "eski ve yeni hataları düzeltilmiş temel paket banka modülü bitince yükleyelim"): ayrı ara
+  düzeltme sürümü (2.0.27) YOK; canlıdaki eski hatalar (Canlı Hata Kasa çift sayım, Canlı Hata 2, R1, R4, R5, K1, K3 — v2.0.26'da da var)
+  ve yeni hatalar 2.1.0 TEMEL SÜRÜMLE birlikte gider. Temel sürüm bitince (kapsam yukarıda; yargıç + eleştirmen + son doğrulama temiz,
+  CI ve Uzun Doğrulama Kapısı yeşil) 2.0.26'daki "birlikte yükleyip canlıya alalım" düzeniyle: paket + PR + CI yeşil → birleştir →
+  5 dosya + yayın bağlantısı + elle kabul listesi → kullanıcı yayımlar → bayt bayt + güncelleyici → site kılavuz PR'ı. Teslimde
+  "bitti" demeden önce kullanıcıya DENENEN / DENENMEYEN / BİLİNEN SINIRLAR ve ertelenenler listesi açıkça verilir.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
