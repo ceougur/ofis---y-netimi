@@ -583,6 +583,76 @@ try {
     await closeAll();
   });
 
+  // Ek iş (ana oturum, 10.10.2026; kılavuz ajanının ekranda bulduğu metinler): ekrandaki açıklamalar yola ve gerçek menü adlarına göre.
+  //  A. Yönetim → Sistem → Eksi Bakiye Denetimi: "Havale/EFT ve POS için denetim yoktur … (Banka modülüyle gelecek)" eskimişti; banka hesapları
+  //     için denetim Banka → Ayarlar → Eksi Bakiye'de ve hesap kartında (Düzenle → Eksi Bakiye Denetimi).
+  //  B. Cari → Ödeme / Tahsilat formunun açıklaması yol ne olursa olsun "Kasa'dan çıkar" / "Kasa'ya … girer" diyordu (k39 ekranı: Kredi Kartı
+  //     seçiliyken "Kasa'dan çıkar"). Yola göre: Nakit → Kasa; Havale/EFT → seçilen banka hesabı; Kredi Kartı → seçilen kurumsal kartın borcu.
+  //  C. ANLIK DURUM Gerçek Banka ipucu "Banka → Kurulum ve Aktarım ile hesaba atayın" diyordu; böyle bir menü yok. Gerçek yol: Banka → Genel
+  //     Bakış → Hesabı Atanmamış Eski Hareketler → Şimdi Düzenle (adlar ekrandan okunur).
+  await step("9b. Metinler: Eksi Bakiye Denetimi (Yönetim), cari Ödeme/Tahsilat açıklaması yola göre, ANLIK DURUM Gerçek Banka ipucu gerçek yol", async () => {
+    // Kurumsal kart (Kredi Kartı yolu "seçilen kurumsal kartın borcuna yazılır" desin diye bir kart).
+    await must("kurumsal kart", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Kurumsal Kart", kind: "card", creditLimit: "20.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } }));
+    await page.goto(`${BASE}/`);
+    await page.waitForSelector("#hof-sidecard", { timeout: 20000 });
+    await pause(800);
+    // C: ANLIK DURUM Gerçek Banka kutusunun ipucu ve ekrandaki gerçek yolun adları.
+    await page.waitForSelector('#hof-pulse [data-pulse-go="bank"]', { timeout: 15000 });
+    const hint = (await page.getAttribute('#hof-pulse [data-pulse-go="bank"]', "title")) || "";
+    await openBank();
+    const overviewTab = await textOf(`${bankWin} .hof-bank-tabs [data-tab="overview"]`);
+    const rowName = await textOf(`${bankWin} [data-bank-unassigned] b`);
+    const editName = await textOf(`${bankWin} [data-bank-unassigned] [data-act="legacy"]`);
+    const realPath = `Banka → ${overviewTab} → ${rowName} → ${editName}`;
+    ok(realPath === "Banka → Genel Bakış → Hesabı Atanmamış Eski Hareketler → Şimdi Düzenle", `ekrandaki gerçek yol: ${realPath}`);
+    ok(hint.includes(realPath) && !/Kurulum ve Aktarım/.test(hint), `ANLIK DURUM Gerçek Banka ipucu gerçek yolu söyler: “${hint}”`);
+    // A için ekrandaki adlar: Banka → Ayarlar → Eksi Bakiye; hesap kartında Eksi Bakiye Denetimi.
+    await tab("settings");
+    const settingsText = await textOf(bankWin);
+    ok(/Eksi Bakiye/.test(settingsText), "Banka → Ayarlar'da Eksi Bakiye grubu var");
+    await closeAll();
+    // B: cari Ödeme ve Tahsilat formunun açıklaması yola göre.
+    const entryForm = async kind => {
+      await page.click('#hof-sidecard [data-action="accounts"]');
+      await page.waitForSelector(`.hof-accounts-modal tr[data-account="${abc.id}"]`, { timeout: 10000 });
+      await page.click(`.hof-accounts-modal tr[data-account="${abc.id}"]`);
+      await page.waitForSelector(`.hof-accounts-modal [data-entry="${kind}"]`, { timeout: 10000 });
+      await page.click(`.hof-accounts-modal [data-entry="${kind}"]`);
+      await page.waitForSelector(`${top} .hof-form select[name="method"]`, { timeout: 8000 });
+      await pause(600);
+    };
+    const introFor = async method => {
+      await page.selectOption(`${top} .hof-form select[name="method"]`, method);
+      await pause(300);
+      return textOf(`${top} .hof-modal-text`);
+    };
+    await entryForm("out");
+    const outCash = await introFor("cash");
+    const outBank = await introFor("bank");
+    const outCard = await introFor("card");
+    await shot("cari-odeme-kredi-karti-aciklama");
+    ok(/Kasa'dan çıkar/.test(outCash), `Ödeme · Nakit: “${outCash}”`);
+    ok(/seçilen banka hesabından çıkar/.test(outBank) && !/Kasa/.test(outBank), `Ödeme · Havale / EFT: “${outBank}”`);
+    ok(/seçilen kurumsal kartın borcuna yazılır/.test(outCard) && !/Kasa/.test(outCard), `Ödeme · Kredi Kartı: “${outCard}”`);
+    await closeAll();
+    await entryForm("in");
+    const inCash = await introFor("cash");
+    const inBank = await introFor("bank");
+    const inCard = await introFor("card");
+    ok(/Kasa'ya/.test(inCash), `Tahsilat · Nakit: “${inCash}”`);
+    ok(/seçilen banka hesabına girer/.test(inBank) && !/Kasa'ya/.test(inBank), `Tahsilat · Havale / EFT: “${inBank}”`);
+    ok(/POS/.test(inCard) && !/Kasa'ya .*girer/.test(inCard), `Tahsilat · POS: “${inCard}”`);
+    await closeAll();
+    // A: Yönetim → Sistem → Eksi Bakiye Denetimi.
+    await page.goto(`${BASE}/admin.html`);
+    await page.waitForSelector("#adm-negative", { state: "attached", timeout: 15000 });
+    const admin = await page.$eval("#adm-negative", node => node.textContent.replace(/\s+/g, " ").trim());
+    ok(!/Banka modülüyle gelecek|banka bakiyesi programda tutulmaz/.test(admin) && /Banka → Ayarlar → Eksi Bakiye/.test(admin) && /Eksi Bakiye Denetimi/.test(admin), `Yönetim → Eksi Bakiye Denetimi metni: “${admin}”`);
+    await page.goto(`${BASE}/`);
+    await page.waitForSelector("#hof-sidecard", { timeout: 20000 });
+    await pause(500);
+  });
+
   await step("10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi): liste 'Tarihi Gelince Atanabilir', sihirbaz atlar ve söyler, tarih gelince atanır", async () => {
     await legacyFutureSection();
   });
