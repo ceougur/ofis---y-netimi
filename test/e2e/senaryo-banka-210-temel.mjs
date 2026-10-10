@@ -597,7 +597,8 @@ try {
     await page.waitForSelector("#hof-sidecard", { timeout: 20000 });
     await pause(800);
     // C: ANLIK DURUM Gerçek Banka kutusunun ipucu ve ekrandaki gerçek yolun adları.
-    await page.waitForSelector('#hof-pulse [data-pulse-go="bank"]', { timeout: 15000 });
+    // Kutu, ANLIK DURUM kartı küçültülmüşse gizlidir; ipucu (title) yine aynıdır.
+    await page.waitForSelector('#hof-pulse [data-pulse-go="bank"]', { state: "attached", timeout: 15000 });
     const hint = (await page.getAttribute('#hof-pulse [data-pulse-go="bank"]', "title")) || "";
     await openBank();
     const overviewTab = await textOf(`${bankWin} .hof-bank-tabs [data-tab="overview"]`);
