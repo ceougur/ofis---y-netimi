@@ -11,7 +11,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const TOOL = path.join(ROOT, "tools", "kanit.mjs");
-const { parseSummary, verdict } = await import(pathToFileURL(TOOL).href);
+const { parseSummary, verdict, resolveCommand } = await import(pathToFileURL(TOOL).href);
 
 describe("kanıt aracı: özet satırları", () => {
   it("node:test TAP ve spec biçimleri; son özet alınır", () => {
@@ -58,6 +58,34 @@ describe("kanıt aracı: hüküm", () => {
     assert.equal(verdict({ exitCode: null, summary: null }).hukum, "BAŞARISIZ");
     assert.equal(verdict({ exitCode: null, signal: "SIGKILL", summary: sum() }).hukum, "YARIDA");
     assert.equal(verdict({ exitCode: null, timedOut: true, summary: null }).hukum, "YARIDA");
+  });
+});
+
+describe("kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)", () => {
+  it("Linux/macOS: komut olduğu gibi", () => assert.deepEqual(resolveCommand(["npm", "test"], { platform: "linux" }), { file: "npm", args: ["test"] }));
+  it("Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir", () => {
+    const execPath = "C:\\node\\node.exe";
+    const cli = "C:\\node\\node_modules\\npm\\bin\\npm-cli.js";
+    const opts = { platform: "win32", execPath, env: {}, exists: file => file === cli || file.endsWith("npx-cli.js") };
+    assert.deepEqual(resolveCommand(["node", "-e", "console.log('a b')"], opts), { file: execPath, args: ["-e", "console.log('a b')"] });
+    assert.deepEqual(resolveCommand(["npm", "run", "test:e2e"], opts), { file: execPath, args: [cli, "run", "test:e2e"] });
+    assert.equal(resolveCommand(["npx", "playwright"], opts).args[0].endsWith("npx-cli.js"), true);
+    assert.deepEqual(resolveCommand(["npm", "test"], { ...opts, env: { npm_execpath: "D:\\npm\\bin\\npm-cli.js" }, exists: () => true }).args[0], "D:\\npm\\bin\\npm-cli.js");
+    assert.match(resolveCommand(["npm", "test"], { ...opts, exists: () => false }).error, /bulunamadı/);
+    assert.match(resolveCommand(["araç.cmd", "x"], opts).error, /kabuksuz/);
+    assert.deepEqual(resolveCommand(["git", "status"], opts), { file: "git", args: ["status"] });
+  });
+  it("gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-"));
+    try {
+      const result = spawnSync(process.execPath, [TOOL, "kos", "npm-surum", "npm", "--version"], { env: { ...process.env, KANIT_DIR: dir }, encoding: "utf8" });
+      const day = readdirSync(dir)[0];
+      const record = JSON.parse(readFileSync(path.join(dir, day, "npm-surum.json"), "utf8"));
+      assert.equal(record.cikis_kodu, 0, result.stdout + result.stderr);
+      assert.equal(record.hukum, "BELİRSİZ");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 

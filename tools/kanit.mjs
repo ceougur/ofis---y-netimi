@@ -14,7 +14,7 @@
 // özette başarısız varsa (ya da tersi) ÇELİŞKİ — ikisi de geçmedi sayılır. Zaman aşımı/sinyal YARIDA.
 import { spawn, execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -101,6 +101,28 @@ function environment() {
   };
 }
 
+// Komut KABUKSUZ çalıştırılır: Windows'ta shell: true argümanları kaçışsız birleştirir (boşluklu argüman bölünür; CI koşu 474,
+// 180a8a5, Windows Node 24). Windows'ta npm/npx birer .cmd dosyasıdır ve kabuksuz çalışmaz; onlar bu Node'un kendi npm-cli.js /
+// npx-cli.js'iyle çalıştırılır. Başka .cmd/.bat komutu güvenle çalıştırılamaz, açıkça reddedilir.
+export function resolveCommand(command, { platform = process.platform, execPath = process.execPath, env = process.env, exists = existsSync } = {}) {
+  const [file, ...args] = command;
+  if (!file) return { error: "komut yok" };
+  if (platform !== "win32") return { file, args };
+  const base = path.win32.basename(file).toLowerCase().replace(/\.(cmd|bat|exe)$/, "");
+  if (base === "node") return { file: execPath, args };
+  if (base === "npm" || base === "npx") {
+    const candidates = [
+      base === "npm" && env.npm_execpath && /npm-cli\.js$/i.test(env.npm_execpath) ? env.npm_execpath : null,
+      path.win32.join(path.win32.dirname(execPath), "node_modules", "npm", "bin", `${base}-cli.js`),
+    ].filter(Boolean);
+    const cli = candidates.find(item => exists(item));
+    if (!cli) return { error: `${base}-cli.js bulunamadı (${candidates.join(", ")}); komut kabuksuz çalıştırılamadı` };
+    return { file: execPath, args: [cli, ...args] };
+  }
+  if (/\.(cmd|bat)$/i.test(file)) return { error: `${file}: Windows'ta .cmd/.bat komutu kabuksuz çalıştırılamaz` };
+  return { file, args };
+}
+
 async function run(name, command, minutes) {
   if (!name || !command.length) throw new Error("kullanım: kos <ad> [--sure <dk>] -- <komut> [arg…]");
   const day = new Date().toISOString().slice(0, 10);
@@ -109,22 +131,26 @@ async function run(name, command, minutes) {
   const env = environment();
   const started = new Date();
   const chunks = [];
-  const child = spawn(command[0], command.slice(1), { cwd: ROOT, shell: process.platform === "win32", env: process.env });
+  const target = resolveCommand(command);
   let timedOut = false;
-  const timer = minutes ? setTimeout(() => { timedOut = true; child.kill("SIGKILL"); }, minutes * 60_000) : null;
-  for (const stream of [child.stdout, child.stderr]) {
-    stream.on("data", data => {
-      chunks.push(data);
-      process.stdout.write(data);
-    });
-  }
-  const { exitCode, signal } = await new Promise(resolve => {
-    child.on("error", error => {
-      chunks.push(Buffer.from(`\n[kanit] başlatılamadı: ${error.message}\n`));
-      resolve({ exitCode: null, signal: null });
-    });
-    child.on("close", (code, sig) => resolve({ exitCode: code, signal: sig }));
-  });
+  let timer = null;
+  const { exitCode, signal } = target.error
+    ? (chunks.push(Buffer.from(`[kanit] başlatılamadı: ${target.error}\n`)), { exitCode: null, signal: null })
+    : await new Promise(resolve => {
+        const child = spawn(target.file, target.args, { cwd: ROOT, env: process.env });
+        if (minutes) timer = setTimeout(() => { timedOut = true; child.kill("SIGKILL"); }, minutes * 60_000);
+        for (const stream of [child.stdout, child.stderr]) {
+          stream.on("data", data => {
+            chunks.push(data);
+            process.stdout.write(data);
+          });
+        }
+        child.on("error", error => {
+          chunks.push(Buffer.from(`\n[kanit] başlatılamadı: ${error.message}\n`));
+          resolve({ exitCode: null, signal: null });
+        });
+        child.on("close", (code, sig) => resolve({ exitCode: code, signal: sig }));
+      });
   if (timer) clearTimeout(timer);
   const raw = Buffer.concat(chunks);
   const summary = parseSummary(raw.toString("utf8"));
