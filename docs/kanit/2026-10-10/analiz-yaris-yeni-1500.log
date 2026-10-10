@@ -1,0 +1,7 @@
+✓ deneme 1 (yeni, /api/auth/me +1500 ms): yenilenmeden hemen sonra işaret "initial" duruyordu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 2 (yeni, /api/auth/me +1500 ms): yenilenmeden hemen sonra işaret "initial" duruyordu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 3 (yeni, /api/auth/me +1500 ms): yenilenmeden hemen sonra işaret "initial" duruyordu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 4 (yeni, /api/auth/me +1500 ms): yenilenmeden hemen sonra işaret "initial" duruyordu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 5 (yeni, /api/auth/me +1500 ms): yenilenmeden hemen sonra işaret "initial" duruyordu; ikinci yüklemede "Veriniz hazır" açılmadı
+
+TAMAM: 5 denetim geçti, 0 başarısız.
