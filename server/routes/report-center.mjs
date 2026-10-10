@@ -1165,18 +1165,19 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "acik-faturalar",
       group: "Fatura",
       title: "Açık Faturalar ve Yaşlandırma",
-      description: "Ödenmemiş (kısmen ödenmiş dahil) satış ve alış faturaları; vade ve gecikme günü (kapama: bağlı ödeme önce kendi faturasına, kalan en eskiye).",
+      description: "Ödenmemiş (kısmen ödenmiş dahil) satış ve alış faturaları ve mahsup edilmemiş iade alacakları; vade ve gecikme günü (kapama: bağlı ödeme önce kendi faturasına, kalan en eskiye).",
       params: ["account"],
       build(query) {
         const day = today();
-        const list = (invoices()?.openItems ? invoices().openItems(day) : []).filter(item => !query.account || item.accountId === query.account).sort((a, b) => a.days - b.days);
+        // v2.1.0 (K1): iade belgesinin açığı da (satıştan iade: müşterinin alacağı → Açık Borç; alıştan iade: tedarikçinin borcu → Açık Alacak).
+        const list = (invoices()?.openItems ? invoices().openItems(day, { returns: true }) : []).filter(item => !query.account || item.accountId === query.account).sort((a, b) => a.days - b.days);
         const bucket = days => (days >= 0 ? "Vadesi Gelmemiş" : days >= -30 ? "1–30 Gün" : days >= -60 ? "31–60 Gün" : days >= -90 ? "61–90 Gün" : "90+ Gün");
         const sum = side => roundMoney(list.filter(item => item.side === side).reduce((total, item) => total + item.open, 0));
         return {
           subtitle: `${dayText(day)} itibarıyla · taksitli faturalar taksit kartında izlenir`,
           headers: ["Vade", "Fatura No", "Taraf", "Cari", "Fatura Tarihi", "Fatura Tutarı", "Kalan", "Gecikme", "Dilim"],
           types: ["", "", "", "", "", "money", "money", "", ""],
-          rows: list.map(item => [dayText(item.dueDate), item.number, item.side === "sale" ? "Alacak (Satış)" : "Borç (Alış)", item.accountName, dayText(item.issueDate), money(item.payable), money(item.open), item.days < 0 ? `${-item.days} gün` : "", bucket(item.days)]),
+          rows: list.map(item => [dayText(item.dueDate), item.number, item.isReturn ? (item.side === "sale" ? "Alacak (Alıştan İade)" : "Borç (Satıştan İade)") : item.side === "sale" ? "Alacak (Satış)" : "Borç (Alış)", item.accountName, dayText(item.issueDate), money(item.payable), money(item.open), item.days < 0 && !item.isReturn ? `${-item.days} gün` : "", bucket(item.days)]),
           summary: [["Açık Alacak", money(sum("sale"))], ["Açık Borç", money(sum("purchase"))]],
           footerUniform: "Taraf", // alacak (satış) ve borç (alış) faturaları toplanmaz; cari süzülünce tek taraf kalır
         };

@@ -1,0 +1,32 @@
+{
+  "ad": "k1-birlesik-yesil",
+  "komut": "node --test test/iade-kapama-k1.test.mjs test/iade-210.test.mjs test/banka-210-altin.test.mjs test/banka-210-goc-zinciri.test.mjs test/raporlar-210-banka.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/cheques-overview.test.mjs test/iade-224.test.mjs test/bulgu-223.test.mjs",
+  "commit": "415213313605eb302461685ce28c593075d47c27",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 108,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:21:50.804Z",
+  "sure_sn": 81,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 177,
+    "gecen": 177,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-k1/2026-10-10/k1-birlesik-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8e44c088ecac4b70eec3457d3639a306c40e3c0ca6050b8f68e9c3300562c78a",
+  "ham_cikti_bayt": 64578
+}

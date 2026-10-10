@@ -1,0 +1,216 @@
+{
+  "adimSayisi": 6,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 2
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 2,
+  "farklar": [
+    {
+      "a": 60000,
+      "aile": "faturalar.*.acik",
+      "alan": "faturalar.F2.acik",
+      "b": 60000,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:IADE-KAPAMA",
+      "olaylar": [
+        {
+          "degisim": -60000,
+          "neden": [
+            "IADE-KAPAMA"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 0,
+      "tetik": {
+        "IADE-KAPAMA": "5"
+      },
+      "yol": [
+        "faturalar",
+        "F2",
+        "acik"
+      ]
+    },
+    {
+      "a": 60000,
+      "aile": "faturalar.*.acik",
+      "alan": "faturalar.R1.acik",
+      "b": 60000,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:IADE-KAPAMA",
+      "olaylar": [
+        {
+          "degisim": -60000,
+          "neden": [
+            "IADE-KAPAMA"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 0,
+      "tetik": {
+        "IADE-KAPAMA": "5"
+      },
+      "yol": [
+        "faturalar",
+        "R1",
+        "acik"
+      ]
+    }
+  ],
+  "islemSayisi": 6,
+  "islemTurleri": {
+    "cari_ac": 1,
+    "fatura": 2,
+    "iade": 1,
+    "stok_giris": 1,
+    "urun_ac": 1
+  },
+  "karsilastirilanYaprak": 24,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py docs/kanit/2026-10-10/k1-iade-kapanisi/kahin/artan-fifo/en-kucuk-IADE-ARTAN-FIFO.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py docs/kanit/2026-10-10/k1-iade-kapanisi/kahin/artan-fifo/en-kucuk-IADE-ARTAN-FIFO.json",
+    "program": "node test/bagimsiz/surucu.mjs docs/kanit/2026-10-10/k1-iade-kapanisi/kahin/artan-fifo/en-kucuk-IADE-ARTAN-FIFO.json --cikti test/bagimsiz/cikti/ham/en-kucuk-IADE-ARTAN-FIFO.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 8,
+    "commit": "4bdfa6539fcfbd4dcded17c28cee60d9e9be4696",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "en-kucuk-IADE-ARTAN-FIFO",
+  "senaryoDosyasi": "docs/kanit/2026-10-10/k1-iade-kapanisi/kahin/artan-fifo/en-kucuk-IADE-ARTAN-FIFO.json",
+  "siniflar": {
+    "TUREV:IADE-KAPAMA": {
+      "aileler": {
+        "faturalar.*.acik": 2
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 2
+      },
+      "enErkenPencere": null,
+      "ornekler": [
+        {
+          "a": 60000,
+          "alan": "faturalar.F2.acik",
+          "b": 60000,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 0
+        },
+        {
+          "a": 60000,
+          "alan": "faturalar.R1.acik",
+          "b": 60000,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 0
+        }
+      ],
+      "sonDurumYaprak": 2,
+      "yaprak": 2
+    }
+  },
+  "sureler": {
+    "a": 0.07,
+    "b": 0.06,
+    "program": 1.72
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 120000,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 0,
+      "faturaSayisi": 3,
+      "kasa": 60000,
+      "mizanAlacakToplam": 110000,
+      "mizanBorcToplam": 110000,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 60000
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "b": {
+      "acikFaturaToplam": 120000,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 0,
+      "faturaSayisi": 3,
+      "kasa": 60000,
+      "mizanAlacakToplam": 110000,
+      "mizanBorcToplam": 110000,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 60000
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "program": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 0,
+      "faturaSayisi": 3,
+      "kasa": 60000,
+      "mizanAlacakToplam": 110000,
+      "mizanBorcToplam": 110000,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 60000
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}

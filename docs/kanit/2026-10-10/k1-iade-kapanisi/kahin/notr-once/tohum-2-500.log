@@ -1,0 +1,5 @@
+### K1 öncesi (aee0906) tohum 2 × 500 --notr iskonto_dahil,kasa_acilis,kart,fatura_yineleme,kasa_yineleme,vadeli,kredi
+rastgele-2-500-notr: çıkış a=0 b=0 program=0 · karşılaştırılan 7503 · atlanan 523 · fark 78 {'A=B≠P': 78}
+  BANKA-EKSI-KODU                                                 1 yaprak  {'A=B≠P': 1}
+  TUREV:IADE-KAPAMA                                              77 yaprak  {'A=B≠P': 77}
+### çıkış 0

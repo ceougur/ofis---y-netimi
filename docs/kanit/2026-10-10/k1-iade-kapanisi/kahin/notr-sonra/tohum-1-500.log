@@ -1,0 +1,5 @@
+### sonra tohum 1 × 500 --notr iskonto_dahil,kasa_acilis,kart,fatura_yineleme,kasa_yineleme,vadeli,kredi (kök /home/user/ofis---y-netimi/.claude/worktrees/agent-ac6660b9cab091377)
+rastgele-1-500-notr: çıkış a=0 b=0 program=0 · karşılaştırılan 7813 · atlanan 1025 · fark 44 {'A=B≠P': 44}
+  BANKA-EKSI-KODU                                                 1 yaprak  {'A=B≠P': 1}
+  TUREV:IADE-KAPAMA                                              43 yaprak  {'A=B≠P': 43}
+### çıkış 0

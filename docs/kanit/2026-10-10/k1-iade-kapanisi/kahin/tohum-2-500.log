@@ -1,0 +1,24 @@
+### tohum-2-500: python3 -I test/bagimsiz/fark.py --tohum 2 --islem 500
+rastgele-2-500: çıkış a=0 b=0 program=0 · karşılaştırılan 7965 · atlanan 688 · fark 984 {'A=B≠P': 629, 'A≠B=P': 266, 'B≠A=P': 84, 'KOSUCU': 5}
+  KAHIN-K4-YINELENEN-AD                                         266 yaprak  {'A≠B=P': 266}
+  KAHIN-K4-YINELENEN-AD+KOSUCU-ALIS-YINELEME-NUMARA              84 yaprak  {'B≠A=P': 84}
+  KART-HESABI-BAGLANMIYOR                                        87 yaprak  {'A=B≠P': 82, 'KOSUCU': 5}
+  KASA-ACILIS-649                                                38 yaprak  {'A=B≠P': 38}
+  KASA-ISTEK-KIMLIGI                                              2 yaprak  {'A=B≠P': 2}
+  KDV-DAHIL-ISKONTO                                             158 yaprak  {'A=B≠P': 158}
+  KOSUCU-ALIS-YINELEME-NUMARA                                     6 yaprak  {'A=B≠P': 6}
+  KREDI-ANAPARA-ASIMI                                             1 yaprak  {'A=B≠P': 1}
+  TUREV:IADE-KAPAMA+KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+VADEL   12 yaprak  {'A=B≠P': 12}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                            42 yaprak  {'A=B≠P': 42}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS            4 yaprak  {'A=B≠P': 4}
+  TUREV:KART-HESABI-BAGLANMIYOR+KASA-ISTEK-KIMLIGI+KDV-DAHIL-I   11 yaprak  {'A=B≠P': 11}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO                57 yaprak  {'A=B≠P': 57}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO+VADELI-HESAP    3 yaprak  {'A=B≠P': 3}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASI   20 yaprak  {'A=B≠P': 20}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASI   28 yaprak  {'A=B≠P': 28}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS    64 yaprak  {'A=B≠P': 64}
+  TUREV:KDV-DAHIL-ISKONTO                                        64 yaprak  {'A=B≠P': 64}
+  TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI                    24 yaprak  {'A=B≠P': 24}
+  TUREV:KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS                        7 yaprak  {'A=B≠P': 7}
+  VADELI-HESAP-FIS                                                6 yaprak  {'A=B≠P': 6}
+### çıkış 0

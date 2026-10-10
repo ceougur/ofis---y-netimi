@@ -284,15 +284,16 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       const inv = (await api("GET", `/api/workspace/invoices/${m.invoiceId}`)).data;
       if (!inv || inv.status !== "issued") continue;
       const left = Math.max(0, centsOf(p.totals.total) - Math.max(0, centsOf(p.totals.paid)));
-      // Parası geri verilen iade borcu düşürmez: kartın kalanı = max(0, imzalı açık + geri ödenen) (Canlı Hata 2: önce
-      // avansa dönen iadeden düşülür), taksite kalanı aşmadan. Programın kendi kart tahsilatıyla hesaplanır; fatura
-      // açığı (0'da kırpılı) yalnız hedef 0'dan büyükken onunla aynı olmalı.
+      // Parası geri verilen iade borcu düşürmez: kartın kalanı = max(0, imzalı açık), imzalı açık = taksite kalan − kart tahsilatı − iadelerin
+      // mahsup edilen kısmı (iade − geri ödenen; Canlı Hata 2: geri ödeme önce avansa dönen iadeden düşülür), taksite kalanı aşmadan. K1 (2.1.0;
+      // kâhin + hakem IADE-KAPAMA): faturanın açığı AYNI formüldür (geri ödenen iade faturaya mahsup edilmez) → açık = kartın kalanı = hedef.
+      // Önceki denetim "açık + geri ödenen = hedef" programın aynı alacağı iki kez kullanan hatasını taşıyordu (ders 5).
       const mi = M.invoices.get(m.invoiceId);
       if (!mi) continue;
       const { target, refunds } = ownTarget(mi, centsOf(p.totals.paid));
       const want = Math.min(target, Math.max(0, mi.rest - Math.max(0, centsOf(p.totals.paid))));
-      if (target > refunds && Math.abs(centsOf(inv.open) + refunds - target) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} + geri ödenen ${tl(refunds)} ≠ imzalı açık hedefi ${tl(target)}`);
-      if (Math.abs(want - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} (+ geri ödenen ${tl(refunds)}) ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      if (Math.abs(centsOf(inv.open) - want) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} ≠ imzalı açık hedefi ${tl(want)} (geri ödenen ${tl(refunds)}) · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      if (Math.abs(want - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} (geri ödenen ${tl(refunds)}) ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
     }
     // Fatura: her belge programda ve modelde aynı durumda, aynı TL ödenecekle; programda olup modelde olmayan (yetim) belge yok.
     const invs = (await api("GET", "/api/workspace/invoices?tab=all&limit=5000")).data.invoices || [];

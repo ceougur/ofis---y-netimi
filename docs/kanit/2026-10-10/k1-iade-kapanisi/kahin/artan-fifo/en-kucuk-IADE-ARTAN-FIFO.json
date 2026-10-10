@@ -1,0 +1,15 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-IADE-ARTAN-FIFO",
+  "aciklama": "K1 sonrası kalan IADE-KAPAMA yaprakları (tohum 1, 2, 31) bu desenden: geri ödenmemiş iadenin asıl faturayı aşan artanı. Satış F1 600 tamamı peşin; F1'in tamamı iade edilir, geri ödenmez (R1 artanı 600); sonra aynı cariye açık satış F2 600. Dil §7 kural 6 yalnız bağsız satırları dağıtır (R1 açık kalır, F2 açık); program 2.0.15'ten beri artanı en eski açık borca kapatır (R1c testi).",
+  "dayanak": "K1 düzeltmesi sonrası kalan fark; kök neden ajan raporunda.",
+  "baslangic": { "bugun": "11.03.2025", "sirket": "bos", "ayarlar": { "kasaEksiBakiye": "kontrol_yok", "benzerIslemUyarisi": "acik" }, "kullanicilar": { "Y": "yonetici" } },
+  "adimlar": [
+    { "id": "1", "islem": "urun_ac", "ad": "U1", "urunAdi": "Ürün U1", "birim": "Adet" },
+    { "id": "2", "islem": "stok_giris", "urun": "U1", "miktar": 5 },
+    { "id": "3", "islem": "cari_ac", "ad": "C1", "unvan": "Artan Müşteri C1", "tur": "musteri" },
+    { "id": "4", "islem": "fatura", "ad": "F1", "tur": "satis", "cari": "C1", "kalemler": [ { "urun": "U1", "miktar": 1, "birimFiyat": "600", "kdvOrani": 20, "kdvDahil": true } ], "odeme": { "pesin": [ { "yol": "nakit", "tutar": "tamami" } ] } },
+    { "id": "5", "islem": "iade", "ad": "R1", "asilFatura": "F1", "kalemler": [ { "kalem": 1, "miktar": 1 } ], "geri": { "yol": "acik" } },
+    { "id": "6", "islem": "fatura", "ad": "F2", "tur": "satis", "cari": "C1", "kalemler": [ { "urun": "U1", "miktar": 1, "birimFiyat": "600", "kdvOrani": 20, "kdvDahil": true } ] }
+  ]
+}

@@ -1,0 +1,87 @@
+  ✓ kurulum: avans faturası açık 0, kart kalan 0, bakiye -500 (beklenen 0 / 0 / −500)
+
+■ 1a. Taksitli satış faturasının kartından 1 adet Satıştan İade (ekrandan)
+  ✓ fatura kartında İade düğmesi açık
+  ✓ iade formu kalan iade edilebilir miktarı önerir (3; beklenen 3)
+  ✓ iade tutarı 1.000 carinin bakiyesinden düşülecek ("Kalan ₺1.000,00 carinin bakiyesinden düşülür (mahsup).")
+  ✓ iade faturası kaydedildi: IAD2026000000002 · 1000
+
+■ 1b. Taksitler: faturanın kendi kartı Kalan 2.000; öbür fatura Açık 2.000; cari bakiye 4.000 (ekrandan)
+  ✓ Taksitler listesinde kartın Kalan'ı 2.000,00 (beklenen 2.000,00)
+  ✓ kart açılınca Kalan 2.000,00 (beklenen 2.000,00)
+  ✓ taksitsiz fatura ekranda "Açık: ₺2.000,00" (beklenen Açık 2.000,00)
+  ✓ taksitli fatura ekranda "Açık: ₺2.000,00 · ödenen ₺1.000,00" (beklenen Açık 2.000,00)
+  ✓ Cari listesinde bakiye "₺4.000,00 Borçlu" (beklenen 4.000,00 Borçlu)
+  ✓ API ile aynı: fatura açık 2000, kart 2000, öbür 2000, bakiye 4000
+
+■ 1c. İade faturası ekrandan iptal edilir → kart Kalan 3.000, bakiye 5.000
+  ✓ iade kartında İptal Et açık
+  ✓ iade iptal edildi; kartta "10.10.2026 15:05 tarihinde iptal edildi: Senaryo: iade yanlı…"
+  ✓ kart Kalan liste 3.000,00 · kart 3.000,00 (beklenen 3.000,00)
+  ✓ cari bakiye "₺5.000,00 Borçlu" (beklenen 5.000,00 Borçlu)
+  ✓ API: taksitli fatura açık 3000 (3.000), öbür 2000 (2.000)
+
+■ 5. Avansa taşmış iadeden sonra taksit kartında tahsilat ekrandan silinir → kart Kalan = fatura Açık
+  ✓ silmeden önce kart Kalan 0,00 (beklenen 0,00)
+  ✓ silinecek satır tahsilat 2.500 ("23.09.2026 Tahsilat Makbuz 1 Ofis yöneticisi ₺2.500,00 Makbuz✎×")
+  ✓ bildirim: "Hareket silindi."
+  ✓ kart Kalan 2.000,00 = fatura "Açık: ₺2.000,00 · ödenen ₺1.000,00"
+  ✓ ikisi de 2.000,00 (3.000 − 1.000 iade; tahsilat yok)
+  ✓ cari bakiye "₺2.000,00 Borçlu" (beklenen 2.000,00 Borçlu)
+  ✓ API: fatura açık 2000, kart kalan 2000
+
+■ 3. Cari Mizanı → Bakiye: Geciken Taksiti Olan → yalnız geciken taksiti olan cari
+  ✓ süzgeçsiz mizanda 5 cari (Toptan Tedarikçi, Geciken Müşteri, Kârlılık Müşteri, İade Müşteri, Avans Müşteri)
+  ✓ rapor kapsamında süzgeç yazıyor ("Tüm hareketler · 10.10.2026 tarihine kadar · Tüm cariler · Geciken taksiti olan")
+  ✓ yalnız geciken taksiti olan cari listelendi (Geciken Müşteri)
+  ✓ özet Cari Sayısı 1 (beklenen 1)
+  ✓ Geciken Müşteri bakiyesi 3.000,00 TL (beklenen 3.000,00)
+  ✓ API aynı (Geciken Müşteri)
+
+■ 4. Ürün Satış Kârlılığı → özet Brüt Kâr (Stoklu Ürünler) = TOPLAM Brüt Kâr; Hizmet Satışı (Maliyetsiz) ayrı
+  ✓ tablonun altında TOPLAM satırı (TOPLAM |  | 12 |  | 10.300,00 TL | 200,00 TL | 100,00 TL | %33,3)
+  ✓ özet Brüt Kâr (Stoklu Ürünler) 100,00 TL = TOPLAM Brüt Kâr 100,00 TL
+  ✓ brüt kâr bağımsız hesapla aynı: 2 × (150 − 100) = 100 (100,00)
+  ✓ özet Hizmet Satışı (Maliyetsiz) 10.000,00 TL (beklenen 10.000,00)
+  ✓ özet Net Satış 10.300,00 TL = TOPLAM 10.300,00 TL (beklenen 10.300,00)
+  ✓ hizmet satırında maliyet/kâr boş (HZM | Danışmanlık Hizmeti | 10 | Adet | 10.000,00 TL |  |  | )
+
+■ 2a. Çek ekrandan alınır; ileri tarihli Tahsil Et reddedilir, neden ekranda, durum ve Kasa aynı
+  ✓ çek portföyde: CK-224-A 1500 portfolio
+  ✓ çeki veren cari "₺1.500,00 Alacaklı" (beklenen 1.500,00 Alacaklı)
+  ✓ formda neden yazıyor: "İleri tarihli hareket girilemez (15.10.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın."
+  ✓ kartta durum değişmedi ("Alınan Çek No CK-224-A Portföyde")
+  ✓ API: durum portfolio, Nakit Kasa 0,00 → 0,00
+
+■ 2b. Tahsil edilmiş çek, dönem kilitlenince Geri Al reddedilir; kilit kalkınca geri alınır
+  ✓ ikinci çek portföyde, alış 2026-09-28
+  ✓ geçmiş tarihli (2026-09-30) tahsil kaydedildi
+  ✓ tahsil edildi, Nakit Kasa +800 (0,00 → 800,00)
+  ✓ kilitlendi: 02.10.2026 ve öncesi kilitli.
+  ✓ kartta Geri Al düğmesi var
+  ✓ ekranda ret nedeni: "Bu çek/senet işlemi 30.09.2026 tarihli; 02.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."
+  ✓ ret bildirimi pencerenin üstünde, okunur (en üstte)
+  ✓ kartta durum aynı ("Alınan Çek No CK-224-B Tahsil Edildi")
+  ✓ API: durum collected, Nakit Kasa 800,00 (değişmedi)
+  ✓ kilit ekrandan kaldırıldı (Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.)
+  ✓ kilit kalkınca geri alındı: "Son işlem geri alındı.", durum portfolio, Nakit Kasa 0,00 (tahsil öncesi 0,00)
+
+■ 6a. K1: açık satış 600 → ekrandan 240 iade + 240 nakit geri ödeme → asıl fatura Açık 600, hayalet kapatan yok
+  ✓ iade faturası kaydedildi: IAD2026000000003 · 240
+  ✗ asıl fatura ekranda "Açık: ₺360,00 · ödenen ₺240,00" (beklenen Açık 600,00; K1 öncesi 360,00)
+  ✗ "Bu Faturayı Kapatanlar"da iadeden gelen "Fatura 240" yok (["10.10.2026 · Fatura Satıştan İade Faturası IAD2026000000003 ₺240,00 Bağlı"])
+  ✓ iade kartı kapandı ("İade")
+  ✗ API ile aynı: fatura açık 360 / ödenen 240, iade açık 0, cari 600 (beklenen 600 / 0 / 0 / 600)
+
+■ 6b. K1: tamamı peşin satış 600 → ekrandan 240 iade (geri ödenmez) → iade kartında müşterinin alacağı 240; Açık Faturalar borç 240
+  ✓ iade faturası kaydedildi: IAD2026000000004
+  ✓ asıl fatura ekranda "Ödendi" (beklenen kapandı)
+  ✗ iade kartında "İade" (beklenen müşterinin alacağı 240,00)
+  ✗ Açık Faturalar: Açık Borç 0,00, iade satırı undefined
+  ✗ API: iade açık 0, cari -240 (beklenen 240 / −240)
+
+■ Mutabakat
+  ✓ ana defter ↔ Kasa/Cari/Stok/Taksit/Çek tutarlı
+  ✓ sayfa hatası yok
+
+BAŞARISIZ: 57 denetim geçti, 6 başarısız.

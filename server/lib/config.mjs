@@ -68,6 +68,10 @@ export function loadConfig(overrides = {}) {
     // Eski sürüm gibi hesapsız havale (v2.1.0 Aşama 5–6): yalnız testler açar. Aşama 2–4 testleri "eski sürümden gelen hesabı atanmamış
     // hareketi" banka hesabı tanımlıyken modül uçlarından yazar; açıkken cari/Kasa formunda hesap verilmezse satır hesapsız yazılır.
     bankPickLegacy: overrides.bankPickLegacy === true,
+    // K1 öncesi fatura kapaması (v2.1.0): yalnız testler verir (test/guvenilirlik/kapama-k1-oncesi.mjs, dondurulmuş kopya). Altın test ve göç
+    // zinciri aynı veride 2.0.26'nın gerçek koduyla birebir karşılaştırır; K1 iade kapanışını bilerek değiştirdiği için o karşılaştırmalar bu
+    // kuralla koşar (göçün ve tek kaynağın etkisi ölçülür), K1'in etkisi ayrıca güncel kuralla denetlenir. Üretimde yok (ortam değişkeni yok).
+    legacyClosing: typeof overrides.legacyClosing === "function" ? overrides.legacyClosing : null,
     scheduleBackups: overrides.scheduleBackups ?? true,
     // Sunucunun iş saati (v2.1.0; lib/clock.mjs): "bugün" ve iş kayıtlarının zaman damgaları tek kaynaktan. Üretimde gerçek
     // saat; sahte saat yalnız programdan (testler, kabul senaryoları) verilir — ortam değişkeni yok. Şirketler aynı saati paylaşır.
