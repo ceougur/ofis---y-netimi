@@ -10,9 +10,9 @@
 // belgeler, tablo verisi ve işlem geçmişi hariç); ek olarak Kasa Dökümü PDF, Nakit Akış, Vade Takip, zil/takvim (dues).
 // Nasıl bozarım: boş dönem, tek kayıt (ayrı şirket), geçmiş/ileri tarih, ileri tarihli hareket denemesi (400; rapor değişmez), yetkisiz kullanıcı
 // (ekran/PDF/Excel 403, dosya sızmaz), ?hofCompany= (yetkisiz şirket 403; şirketler birbirine sızmaz), geçersiz tarih/aralık 400.
-// Not (K10, ayrı iş): "Banka ve POS Hareketleri"nde bankalar arası transfer bacakları gösterilecek (CLAUDE.md, Aşama 9 sırası). Bu test
-// bacak satırlarının YA hiç olmadığını YA da tam iki bacak (doğru tutarlarla) olduğunu kabul eder; Dönem Net, Devir, Dönem Sonu ve transfer
-// dışı satırlar iki durumda da kesin.
+// "Banka ve POS Hareketleri" (Aşama 14, plan §3.4 / K10 ile kesinleşti): şirketin kendi hesapları arasındaki para — Kasa ↔ Banka'nın banka
+// bacağı ve bankalar arası transferin iki bacağı — satır olarak görünür, bakiyeye girer, ama Dönem Giriş/Çıkış'a SAYILMAZ; özetteki
+// "Transfer Giriş / Çıkış" satırlarındadır (yalnız dönemde iç hareket varsa). Defterde bu satırlar `internal`.
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
@@ -82,7 +82,8 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
   // ---------- BAĞIMSIZ DEFTER ----------
   const E = {
     cash: [], // { d, amt } nakit Kasa
-    bank: [], // { d, amt, acc: 'Z'|'G', adjust?, transfer? } havale/EFT (adjust = hesap açılışı; transfer = bankalar arası bacak)
+    bank: [], // { d, amt, acc: 'Z'|'G', adjust?, transfer?, internal? } havale/EFT (adjust = hesap açılışı; transfer = bankalar arası bacak;
+    // internal = iç hareket: bankalar arası bacak ve Kasa ↔ Banka'nın banka bacağı)
     card: [], // POS
     cari: [], // { d, acc, debit, credit, tag }
     inv: [], // { d, kind, acc, net, vat, pay, stoppage, cancelled, expense }
@@ -207,13 +208,13 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     // 13) 90: Kasadan Bankaya 300 (ZİRAAT); 85: Bankadan Kasaya 200 (GARANTİ).
     await must("kasadan bankaya", api.post("/api/workspace/cash/transfer", { direction: "to-bank", amount: "300", date: ago(90), description: "Bankaya yatırma", bankAccountId: BK("Z") }));
     E.cash.push({ d: ago(90), amt: -300 });
-    E.bank.push({ d: ago(90), amt: 300, acc: "Z" });
+    E.bank.push({ d: ago(90), amt: 300, acc: "Z", internal: true });
     await must("bankadan kasaya", api.post("/api/workspace/cash/transfer", { direction: "to-cash", amount: "200", date: ago(85), description: "Bankadan çekim", bankAccountId: BK("G") }));
     E.cash.push({ d: ago(85), amt: 200 });
-    E.bank.push({ d: ago(85), amt: -200, acc: "G" });
+    E.bank.push({ d: ago(85), amt: -200, acc: "G", internal: true });
     // 14) 80: Bankalar arası transfer Ziraat → Garanti 5.000 (ücret yok).
     await must("transfer", api.post("/api/workspace/bank/transfers", { accountId: BK("Z"), toAccountId: BK("G"), amount: "5.000", date: ago(80), channel: "virman", description: "Garanti'ye aktarım" }));
-    E.bank.push({ d: ago(80), amt: -5000, acc: "Z", transfer: true }, { d: ago(80), amt: 5000, acc: "G", transfer: true });
+    E.bank.push({ d: ago(80), amt: -5000, acc: "Z", transfer: true, internal: true }, { d: ago(80), amt: 5000, acc: "G", transfer: true, internal: true });
     // 15) 70: Ayşe'nin mevcut borcunun 150'si 3 taksitli karta; 60 gün önce 100 nakit.
     const firstDue = ago(40);
     const cover = await must("mevcut borç kartı", api.post("/api/workspace/plans", { name: accName.A, registeredOn: ago(70), total: "150", accountId: ids.A, mode: "auto", count: "3", firstDue, coversBalance: true }));
@@ -426,16 +427,18 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
       const list = c.payMethod === "bank" ? bankList : c.payMethod === "card" ? E.card : [...bankList, ...E.card];
       const m = movement(list, range);
       assert.equal(summaryOf(data, "Devir"), m.opening, "banka devri (açılışlar dahil)");
-      // Transfer bacakları: ya hiç satır yok ya tam iki bacak (yukarıdaki not). Dönem Net ikisinde de aynı.
-      const legs = list.filter(r => r.transfer && within(r.d, range));
+      // İç hareket (Kasa ↔ Banka banka bacağı, bankalar arası transfer bacakları; ücretsiz): Dönem Giriş/Çıkış'a girmez, Transfer satırında.
+      const legs = list.filter(r => r.internal && within(r.d, range));
       const legIn = sum(legs.filter(r => r.amt > 0), r => r.amt);
       const legOut = sum(legs.filter(r => r.amt < 0), r => -r.amt);
-      const gotIn = summaryOf(data, "Dönem Giriş");
-      const gotOut = summaryOf(data, "Dönem Çıkış");
-      const withoutLegs = gotIn === r2(m.in - legIn) && gotOut === r2(m.out - legOut);
-      const withLegs = gotIn === m.in && gotOut === m.out;
-      assert.ok(withoutLegs || withLegs, `banka giriş/çıkış ${gotIn}/${gotOut}: bacaksız ${r2(m.in - legIn)}/${r2(m.out - legOut)} ya da bacaklı ${m.in}/${m.out}`);
-      assert.equal(summaryOf(data, "Dönem Net"), r2(m.in - m.out), "Dönem Net (transfer net 0)");
+      assert.equal(summaryOf(data, "Dönem Giriş"), r2(m.in - legIn), "Dönem Giriş (iç hareket hariç)");
+      assert.equal(summaryOf(data, "Dönem Çıkış"), r2(m.out - legOut), "Dönem Çıkış (iç hareket hariç)");
+      assert.equal(summaryOf(data, "Dönem Net"), r2(m.in - legIn - (m.out - legOut)), "Dönem Net = Dönem Giriş − Dönem Çıkış");
+      assert.equal(data.summary.some(([name]) => name === "Transfer Giriş"), legs.length > 0, "Transfer satırı yalnız dönemde iç hareket varsa");
+      if (legs.length) {
+        assert.equal(summaryOf(data, "Transfer Giriş"), legIn, "Transfer Giriş");
+        assert.equal(summaryOf(data, "Transfer Çıkış"), legOut, "Transfer Çıkış");
+      }
       if (m.adjust || data.summary.some(([name]) => name === "Açılış ve Devir Düzeltmeleri")) assert.equal(summaryOf(data, "Açılış ve Devir Düzeltmeleri"), m.adjust, "açılışlar giriş sayılmaz, ayrı satırda");
       assert.equal(summaryOf(data, "Dönem Sonu"), r2(m.opening + m.in - m.out + m.adjust), "Dönem Sonu");
       assert.equal(summaryOf(data, "Banka (tüm hareketler)"), sum(E.bank, r => r.amt), "Banka (tüm) = açılışlar + bütün bağlı hareketler = Gerçek Banka");
@@ -444,8 +447,8 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
       const allowed = c.payMethod === "bank" ? ["Havale / EFT"] : c.payMethod === "card" ? ["POS", "Kredi Kartı"] : ["Havale / EFT", "POS", "Kredi Kartı"];
       const body = data.rows.filter(row => !isDevir(row));
       for (const row of body) assert.ok(allowed.includes(row[yol]) || row[yol] === "", `Yol süzgeci ${c.payMethod}: satır ${row[yol]}`);
-      const plain = list.filter(r => within(r.d, range) && !r.transfer).length;
-      assert.ok(body.length === plain || body.length === plain + legs.length, `banka satır sayısı ${body.length}: transfer dışı ${plain} (+ bacak ${legs.length})`);
+      // İç hareket de satır olarak görünür (tutarı açıklamada, bakiyede).
+      assert.equal(body.length, list.filter(r => within(r.d, range)).length, "banka satır sayısı (iç hareket satırları dahil)");
     },
     "hesap-mizani"(data, c, range) {
       assert.equal(summaryOf(data, "Fark"), 0, "Borç = Alacak");
