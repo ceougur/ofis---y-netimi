@@ -1,0 +1,35 @@
+
+> destekofis@2.0.26 test:guncelleme-gercek
+> node --disable-warning=ExperimentalWarning test/e2e/guncelleme-gercek.mjs
+
+
+■ 1. Personel sekmesi açık; yeni sürüm yayımlanır → bulunur, kurulmaz, 'hazır'
+  ✓ başlangıç sürümü 9.0.0
+  ✓ 9.0.1 bulundu ve ertelendi (kullanıcı çalışıyor)
+  ✓ servis yöneticisi sunucuyu meşgul görüyor
+  ✓ Yönetim → Sistem → Güncellemeler: 'Yeni sürüm hazır: DestekOfis 9.0.1'
+  ✓ neden ekranda: kullanıcılar çalışırken bulundu
+  ✓ Şimdi Güncelle düğmesi görünür
+
+■ 2. Sekme açık ve görünür kalır (153 sn > boşta süresi 90 sn) → kurulmaz
+  ✓ açık sekme kendiliğinden istek gönderdi (11 istek: /api/chat, /api/workspace/client-state, /api/workspace/case-notes, /api/workspace/tasks, /api/workspace/liens, /api/workspace/plans, /api/workspace/stock/alerts)
+  ✓ açık sekmenin istekleri arasındaki en uzun ara 30 sn < 90 sn
+  ✓ bu sürede denetim/yeniden bakış sürdü (20 sorgu)
+  ✓ açık sekme varken kurulmadı
+  ✓ paket indirilmedi
+  ✓ hâlâ meşgul ve 'hazır' bekliyor
+
+■ 3. Sekme gizlenir (arka plan) → istek kesilir → boşta süresi dolunca kendiliğinden kurulur
+  ✓ gizli sekme (65 sn sonra) istek göndermedi (yok)
+  ✓ son kullanıcı isteğinden 99 sn sonra kuruldu (≥ 90 sn)
+  ✓ boşta süresi dolduktan sonra yeniden bakışta kuruldu (9 sn gecikme)
+  · gizlenmeden kuruluma 66 sn
+
+■ 4. Yeni sürüm sağlıklı, veriler aynı, yedek alındı
+  ✓ çalışan sürüm 9.0.1
+  ✓ kullanıcı/cari/Kasa sayıları ve Kasa toplamı aynı ({"kullanici":2,"cari":1,"kasa":1,"kasaToplam":1250})
+  ✓ güncelleme öncesi yedek alındı
+  ✓ Yönetim → Sistem: '9.0.1 sürümüne güncellendi'
+  ✓ sayfa hatası yok
+
+TAMAM: 20 denetim geçti, 0 başarısız.

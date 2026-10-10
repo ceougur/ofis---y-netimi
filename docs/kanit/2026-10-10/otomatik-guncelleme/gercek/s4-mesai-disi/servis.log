@@ -1,0 +1,13 @@
+2026-10-10T18:12:21.442Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:45791
+2026-10-10T18:12:21.444Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 36559)
+2026-10-10T18:12:21.490Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+2026-10-10T18:12:21.500Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+2026-10-10T18:12:21.500Z [INFO] Güncelleme denetimi 60 sn sonra yeniden denenecek.
+2026-10-10T18:12:21.860Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+[uygulama] 2026-10-10T18:12:24.858Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T18:13:21.515Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+2026-10-10T18:13:21.516Z [INFO] 9.0.1 sürümü indiriliyor (4769 KB)…
+2026-10-10T18:13:21.741Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 40589)
+2026-10-10T18:13:22.145Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+2026-10-10T18:13:22.173Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+2026-10-10T18:13:22.215Z [INFO] Servis yöneticisi kapatılıyor…

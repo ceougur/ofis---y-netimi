@@ -1,0 +1,14 @@
+{
+  "s1": {
+    "acilistanKurulumaSn": 1,
+    "surum": "9.0.1"
+  },
+  "s4": {
+    "saatDilimi": "Etc/GMT-7",
+    "servisYerelSaat": "Sun Oct 11 2026 01:12:21 GMT+0700 (GMT+07:00)",
+    "mesaiDisi": true,
+    "kurulumdanOnceSonIstekSn": 14,
+    "acilistanKurulumaSn": 61,
+    "surum": "9.0.1"
+  }
+}
