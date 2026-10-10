@@ -1,0 +1,13 @@
+# koşu 434 commit e10f598 iş 113469677678 — Test (windows-latest, Node 22) (adım: Run npm test)
+# biçim tap; günlük 10864 satır, okunan son 5000 satır (ilk 5864 satır MCP 5000 satır sınırı yüzünden okunamadı)
+# sayılar {"tests": "1301", "suites": "286", "pass": "1257", "fail": "44", "cancelled": "0", "skipped": "0", "todo": "0", "duration_ms": "6679590.1776"}
+# okunan kısım üst düzey test 'ok 144' ile başlıyor (toplam 1..290); okunan kısımda başarısız test: 4
+# aynı koşunun Test (windows-latest, Node 24) (spec, tam günlük) sayıları: 1301/1264/37/0 → FARKLI
+# DİKKAT: # fail 44, Node 24 ikizinde 37. Okunan kısımda 4 başarısız test (aşağıda). Kalan 40'ın 37'si üç banka-210 dosyası (Node'dan bağımsız Windows hatası) varsayılırsa 3 başarısız test KİMLİĞİ BİLİNMİYOR (günlüğün okunamayan ilk 5.864 satırında). Bu iş 6.680 sn sürdü (diğer Windows işleri 800–1.540 sn): yavaş koşucu; görünen 4 hata zamana bağlı.
+
+test/reasoning.test.mjs:109:3	200 bin satırda makul sürede biter	testCodeFailure	'38792 ms'
+[SUITE ind=0] test/reasoning.test.mjs:21:1	mantık denetimi: kural öğrenme	subtestsFailed	'1 subtest failed'
+test/updater.test.mjs:199:3	yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz	testCodeFailure	The input did not match the regular expression /imza/. Input: | 'Güncelleme sunucusuna bağlanılamadı.'
+test/updater.test.mjs:213:3	daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir	testCodeFailure	Expected values to be strictly equal: | + actual - expected
+test/updater.test.mjs:238:3	imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir	testCodeFailure	Expected values to be strictly equal: | + actual - expected
+[SUITE ind=0] test/updater.test.mjs:96:1	güncelleyici (sahte GitHub ile)	subtestsFailed	'3 subtests failed'

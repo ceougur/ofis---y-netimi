@@ -1,0 +1,51 @@
+# koşu 460 iş 114043723547 — Uçtan uca (Chromium), başarısız adım: npm run test:senaryo-banka-210
+# günlük 1517 satır (tamamı okundu); aşağıda adımın ■ başlıkları, ✗ satırları ve hata yığınının ilk satırları
+
+■ 9b. Eski hareketleri aktar (ikinci şirkette): sihirbaz 3 adım, önizleme, Aktar, Kurulum Geçmişi'nden Geri Al, Bu Hesaba Ata, Bankaya Geçmiş Say
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 30000ms exceeded.
+Call log:
+■ 12. Hareketler sekmesi; Ziraat'e masraf 10,50 BSMV Dahil EKRANDAN (önizleme), İşlem Kartı
+  ✗ Ziraat'in hareketleri (açılış ve düzeltmeleri) yürüyen bakiyeyle: party_in 2000 → 102000 | opening 100000 → 100000
+  ✗ ilk satır Banka Masrafı −10,50, bakiye 99.989,50 (08.10.2026 BNK-2026-000009 Banka Masrafı — −₺10,50 ₺101.989,50)
+■ 13. KDV Dahil 120 (faturalı masraf): cari ve Fatura No zorunlu; fatura + havale tek işlemde; KDV 191 = 20; Fatura penceresinde nedenler
+  ✗ Ziraat 99.869,50 (−120)
+■ 14. Faiz geliri 1.000 / %15 ekrandan: net 850, stopaj 150 (193), 642 = 1.000
+  ✗ Ziraat 100.719,50 (+850)
+■ 15. Hareketler: satırlar ve yürüyen bakiye bağımsız beklenenle; süzgeçler (tür, arama, İşlem No, tutar); boş süzgeç
+  ✗ yürüyen bakiye her satırda bağımsız hesapla aynı (en üst 102719.5 = model 102.01 100719.5; en alttan önce 0)
+  ✗ Tutar süzgeci (en az 100): 4 satır
+  ✗ beklenmeyen hata: page.waitForFunction: Timeout 10000ms exceeded.
+    at waitMoves (/home/runner/work/ofis---y-netimi/ofis---y-netimi/test/e2e/senaryo-banka-210.mjs:704:71)
+■ 16. Ters Kaydet: BSMV masrafı → bakiye eski hâl; kart Ters Kaydedildi; düğmeler pasif + nedeni görünür; ters kaydın kartı
+  ✗ Ziraat 100.730,00 (masraf geri)
+■ 17. Benzer İşlem: ters kaydedilenle aynı masraf kaydedilir; ikinci kez → pencere (BNK-… ve giren); Vazgeç yazmaz; Yine de Kaydet tek fiş
+  ✗ ters kaydedilen masrafla aynı masraf uyarısız kaydedildi (100.719,50)
+  ✗ Ziraat 100.709,00
+■ 18. Düzelt: faiz 1.000 → 2.000 (stopaj oranı %15 korunur); tür değiştirilemez; mizan
+  ✗ beklenmeyen hata: page.waitForFunction: Timeout 10000ms exceeded.
+    at waitMoves (/home/runner/work/ofis---y-netimi/ofis---y-netimi/test/e2e/senaryo-banka-210.mjs:704:71)
+■ 19. Açıklamayı Düzelt (HTML kaçışlı); kilitli dönemdeki masraf: Ters Kaydet bugün tarihli, kilitli dönem değişmez
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 30000ms exceeded.
+Call log:
+■ 20. Planlı İşlem: + Planlı İşlem (aylık Hesap İşletim 25) → Planlı görünüm, bakiye değişmez, Vadesi Geldi; Gerçekleştir → fiş, plan bir ay ileri; Sil
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+■ 21. Daha Fazla Göster: Garanti'de 60 fiş → 50 + 11; tekrar yok; yürüyen bakiye sayfa sınırında sürekli
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///home/runner/work/ofis---y-netimi/ofis---y-netimi/test/e2e/senaryo-banka-210.mjs:1074:163
+■ 22. Yetki: bank.cancel ve Fatura Yönetimi kaldırılan muhasebe → Ters Kaydet pasif + yetki nedeni, KDV'li seçenek yok; bank.move kaldırılınca + Masraf yok
+  ✗ beklenmeyen hata: page.selectOption: Timeout 30000ms exceeded.
+Call log:
+■ 23. Mobil (390 px): Hareketler, İşlem Kartı ve Masraf formu yatay kaydırmasız; Hesap Detayı'nda hesabın hareketleri
+  ✗ Hesap Detayı: hesabın hareketleri, en üst bakiye 102709 = Gerçek Bakiye
+■ 23b. Diğer Gelir (Gelişmiş: 646), Faiz Gideri (BSMV/KKDF), Kart Borcu Ödemesi, Kredi Kullanımı ve Geri Ödemesi EKRANDAN; alt hesaplar modelle
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///home/runner/work/ofis---y-netimi/ofis---y-netimi/test/e2e/senaryo-banka-210.mjs:1182:69
+■ 24. Son durum bağımsız modelle: alt hesaplar, 770, 191, 193, 642, 646, 659, 780; kart ve kredi; mutabakat ok
+  ✗ alt hesaplar: 102.01 102709 / 100709, 102.02 NaN / 50000
+■ 24b. GG2 (F3/L7): kart hesabında Borç artı; Açılışı Düzelt formu artı borçla dolu; değiştirmeden kaydet yeni fiş yazmaz
+  ✗ başlık: Borç₺5.000,00 (kart borcu 3.000 artı)
+  ✗ hesabın hareketlerinde yürüyen kolon "Borç" ve artı (Borç: ₺5.000,00)
+  ✗ değiştirmeden kaydet: yeni fiş yok (1 → 1), kart borcu aynı
+BAŞARISIZ: 275 denetim geçti, 23 başarısız. Ekran görüntüleri: /home/runner/work/ofis---y-netimi/ofis---y-netimi/test/e2e/artifacts/senaryo-banka-210
+##[error]Process completed with exit code 1.

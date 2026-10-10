@@ -1,0 +1,7 @@
+# koşu 465 commit ac19490 iş 114160739067 — Test (windows-latest, Node 22) (adım: Run npm test)
+# biçim tap; günlük 14044 satır, okunan son 5000 satır (ilk 9044 satır MCP 5000 satır sınırı yüzünden okunamadı)
+# sayılar {"tests": "1728", "suites": "404", "pass": "1690", "fail": "38", "cancelled": "0", "skipped": "0", "todo": "0", "duration_ms": "1314327.3674"}
+# okunan kısım üst düzey test 'ok 262' ile başlıyor (toplam 1..408); okunan kısımda başarısız test: 0
+# aynı koşunun Test (windows-latest, Node 24) (spec, tam günlük) sayıları: 1728/1690/38/0 → AYNI
+# Okunamayan baştaki 38 başarısız test, sayı eşitliği ve hatanın Node sürümünden bağımsız olması nedeniyle Test (windows-latest, Node 24) listesindekilerle aynı kabul edildi (ham/465-114160738991.txt) — doğrudan görülmedi.
+
