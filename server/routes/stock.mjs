@@ -360,6 +360,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   // (alım ve iade bankadan çıkar), bankadan çıkış bank.move ister. Stok girişi (alım ya da müşteri iadesi) = bankadan çıkış.
   const banking = bankForm(bankModule);
   const bankOut = move => move.kind === "in";
+  // K2 (plan §3.7 #8, §4.6): stok alımında kart yolu kurumsal kartla ödemedir (309); satışta POS, müşteri iadesinde POS iadesi (2.2.0).
+  const corporate = move => move.kind === "in" && move.reason !== "return";
   router.post("/api/workspace/stock/:id/moves", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "stock.move");
     const item = itemRow(params.id);
@@ -367,7 +369,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const input = moveInput(body, user, item);
     assertAvailable(item, input, null, body.force === true);
     if (input.kind === "in" && input.pay === "cash") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
-    input.finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date }) : "";
+    input.finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, corporate: corporate(input) }) : "";
     banking.requireOut(user, bankOut(input), input.finRef);
     const k7 = banking.negative([input.finRef], input.date, banking.forced(body));
     let touched = [];
@@ -428,7 +430,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
     const before = { method: previous.pay === "cash" ? previous.method || "cash" : "", finRef: previous.finRef };
     const moved = previous.pay !== input.pay || (previous.method || "cash") !== (input.method || "cash") || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
-    const finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: before, changed: moved }) : "";
+    const finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: before, changed: moved, corporate: corporate(input) }) : "";
     if (finRef !== (previous.finRef || "")) banking.requireOut(user, bankOut(previous), finRef);
     const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
     let touched = [];

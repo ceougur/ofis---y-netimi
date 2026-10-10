@@ -640,7 +640,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const module = banking();
     if (!module || !isMoney(input.kind)) return "";
     const changed = !previous || previous.method !== input.method || Math.abs(roundMoney(previous.amount) - roundMoney(input.amount)) > 0.004 || previous.date !== input.date;
-    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed });
+    // K2 (plan §3.7 #3, §4.6): cari ödemesinde kart yolu kurumsal kartla ödemedir (309); tahsilatta POS (2.2.0).
+    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: input.kind === "out" });
   };
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
   const negativeForced = (body, url) => body?.negativeOk === true || url?.searchParams.get("negativeOk") === "1";
