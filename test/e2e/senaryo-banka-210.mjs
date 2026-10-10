@@ -96,14 +96,36 @@ const shot = async (page, name, options = {}) => {
   await page.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`), ...options });
 };
 let current = null;
-const step = async (title, fn) => {
-  console.log(`\n■ ${title}`);
+// Adımın koştuğu şirket başlıkta (yönetici sayfasının şirketi): bir adımın hatası sonrakileri başka şirkette koşturursa raporda görünür.
+const companyTag = async () => {
+  if (!admin) return "";
+  try {
+    const id = await admin.evaluate(() => window.HOF?.companyId || "");
+    const code = unwrap(await api.get("/api/companies"))?.companies?.find(company => company.id === id)?.code;
+    return code ? ` · şirket ${code}` : "";
+  } catch {
+    return "";
+  }
+};
+// after: adım yarıda kalsa da koşan son iş (ör. 001'e dönüş). CI 460: adım 9b şirket 002'deyken düştü, 001'e dönüş satırları koşmadı ve
+// sonraki 22 denetim 002'de zincirleme kırıldı; artık dönüş finally'de, adımın kendi hatası tek başına sayılır.
+const step = async (title, fn, { after = null } = {}) => {
+  console.log(`\n■ ${title}${await companyTag()}`);
   try {
     await fn();
   } catch (error) {
     failed += 1;
     console.log(`  ✗ beklenmeyen hata: ${error.stack || error.message}`);
     if (current) await shot(current, "hata").catch(() => null);
+  } finally {
+    if (after) {
+      try {
+        await after();
+      } catch (error) {
+        failed += 1;
+        console.log(`  ✗ adım sonu (geri dönüş) yapılamadı: ${error.stack || error.message}`);
+      }
+    }
   }
 };
 const newPage = async ({ width = 1440, height = 1000 } = {}) => {
@@ -195,6 +217,15 @@ async function auditLabels(page, where) {
 
 let admin = null;
 let secondCompany = "";
+// Başka şirkette koşan bölümün son adımı bunu `after` ile verir: sonraki adımlar 001'de (yönetici sayfası ve API istemcisi aynı kullanıcı;
+// seçim sunucuda tutulur), adım yarıda kalsa da.
+const backToFirst = async () => {
+  const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
+  await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
+  await admin.goto(`${BASE}/`, { waitUntil: "load" });
+  await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+  await admin.waitForTimeout(700);
+};
 try {
   await api.login("admin", PASS);
   for (const [username, role] of [["muhasebe1", "muhasebe"], ["personel1", "personel"], ["uzman1", "avukat"]]) await must(`kullanıcı ${username}`, api.post("/api/admin/users", { username, name: username, role, password: USER_PASS, mustChangePassword: false }));
@@ -536,6 +567,8 @@ try {
   await step("9. Boş ikinci şirket: sihirbaz o şirkette ilk girişte gelir; Genel Bakış boş durum", async () => {
     const created = await must("şirket", api.post("/api/companies", { name: "İkinci Şirket" }));
     const second = created.company.id;
+    // 9b bu şirkette koşar (adım 9'un bir denetimi düşse de); 001'e dönüş 9b'nin `after`ında.
+    secondCompany = second;
     await closeTop(admin);
     await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), second);
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
@@ -566,7 +599,6 @@ try {
     const events = await must("olay sayısı", api.get(`/api/workspace/bank/movements?hofCompany=${encodeURIComponent(second)}`));
     ok(events.rows.length === 0, `hesapsız şirkette hiçbir hareket yazılmadı (${events.rows.length})`);
     await tab(admin, "overview");
-    secondCompany = second;
   });
 
   await step("9b. Eski hareketleri aktar (ikinci şirkette): sihirbaz 3 adım, önizleme, Aktar, Kurulum Geçmişi'nden Geri Al, Bu Hesaba Ata, Bankaya Geçmiş Say", async () => {
@@ -608,7 +640,8 @@ try {
     ok(has(done, "1 hareket hesaba bağlandı") && /Devir Kapanışı BNK-2026-\d{6}/.test(done) && has(done, "102.000,00"), `aktarıldı: ${done.slice(0, 200)}`);
     await shot(admin, "sihirbaz-eski-hareketler-aktarildi");
     await admin.click(`${wiz} [data-wiz="finish"]`);
-    await admin.waitForTimeout(900);
+    // Sabit bekleme değil: Genel Bakış'ın yenilenmesi beklenir (yavaş sunucuda 900 ms yetmeyebilir); gelmezse denetim nedeniyle düşer.
+    await admin.waitForFunction(() => /102\.000,00/.test(document.querySelector(".hof-bank-modal [data-bank-real]")?.textContent || ""), null, { timeout: 15000 }).catch(() => null);
     ok(has(await textOf(admin, `${bankWin} [data-bank-real]`), "102.000,00") && !(await admin.$(`${bankWin} [data-bank-unassigned]`)), "Gerçek Banka 102.000; hesabı atanmamış satır kalmadı");
     let integrity = await must("Mutabakat Testi", api.get(`/api/workspace/ledger/integrity?${q}`));
     ok(integrity.ok === true, "ikinci şirkette mutabakat ok (sihirbazdan sonra)");
@@ -628,39 +661,61 @@ try {
     ok(pickable === 1, `seçilebilen satır yalnız açılıştan sonraki havale (${pickable})`);
     await admin.check(`${bankWin} .hof-bank-legacy tbody input[data-pick]`);
     await admin.waitForTimeout(300);
+    // Atama yanıtı beklenir (sabit bekleme değil), sonra sunucunun özeti okunur.
+    const assigned = admin.waitForResponse(response => response.url().includes("/api/workspace/bank/legacy/assign") && response.request().method() === "POST", { timeout: 30000 });
     await admin.click(`${bankWin} [data-act="assign"]`);
     await answerYes(admin);
-    await admin.waitForTimeout(900);
+    ok((await assigned).status() === 200, "Bu Hesaba Ata: POST /legacy/assign 200");
     let summary = await must("özet", api.get(`/api/workspace/bank/summary?${q}`));
     ok(summary.realBank.minor === 10_200_000 && summary.unassigned.bankMinor === 500_000, `Bu Hesaba Ata: Gerçek Banka ${summary.realBank.minor / 100}, Hesabı Atanmamış havale ${summary.unassigned.bankMinor / 100}`);
     // Bankaya Geçmiş Say (GG2 F4): yalnız hesabın açılışından sonraki POS tahsilatı aktarılır. 22.09'daki 3.000 açılıştan (01.10) önce:
     // açılış bakiyesinin içinde, Devir Kapanışı'nın konusu — form açılmaz, nedeni söylenir.
-    await admin.click(`${bankWin} [data-act="reclass-bank"]`);
-    await admin.waitForTimeout(500);
-    ok(!(await admin.$(`${top} form [name="amount"]`)) && has(await textOf(admin, "#hof-toasts .hof-toast:last-child"), "açılışından sonra bankaya geçmemiş POS tahsilatı yok"), `açılıştan önceki POS için form açılmaz: ${await textOf(admin, "#hof-toasts .hof-toast:last-child")}`);
-    // Açılıştan sonra (05.10) 1.500 POS: form 1.500 ile dolar (108.00'ın bütün bakiyesi 4.500 değil).
+    // Bankaya Geçmiş Say tıklamasının sonucu: form ya da YENİ "yok" bildirimi (hangisi önce gelirse; sabit bekleme değil, bildirim
+    // kendiliğinden kaybolmadan okunur).
+    const NO_POS = "açılışından sonra bankaya geçmemiş POS tahsilatı yok";
+    const reclassClick = async () => {
+      // Önceki bildirimler işaretlenir; yalnız tıklamadan sonra gelen bildirim sayılır.
+      await admin.$$eval("#hof-toasts .hof-toast", nodes => nodes.forEach(node => node.setAttribute("data-seen", "")));
+      await admin.click(`${bankWin} [data-act="reclass-bank"]`);
+      const fresh = "#hof-toasts .hof-toast:not([data-seen])";
+      const outcome = await admin
+        .waitForFunction(([form, toasts, text]) => (document.querySelector(form) ? "form" : [...document.querySelectorAll(toasts)].some(node => node.textContent.includes(text)) ? "toast" : null), [`${top} form [name="amount"]`, fresh, NO_POS], { timeout: 15000 })
+        .then(handle => handle.jsonValue())
+        .catch(() => "none");
+      return { outcome, toast: await admin.$$eval(fresh, nodes => nodes.at(-1)?.textContent.replace(/\s+/g, " ").trim() || "") };
+    };
+    const early = await reclassClick();
+    ok(early.outcome === "toast" && !(await admin.$(`${top} form [name="amount"]`)), `açılıştan önceki POS için form açılmaz (${early.outcome}): ${early.toast}`);
+    // Açılıştan sonra (05.10) 1.500 POS başka yerden girilir: form 1.500 ile dolar (108.00'ın bütün bakiyesi 4.500 değil).
+    // Nasıl bozarım (CI 460'ın kök nedeni): yavaş sunucu — Eski Hareketler'e dönüşte /bank/legacy yanıtı 1,5 sn gecikir; ekran bu sürede
+    // önceki ziyaretin verisini (yalnız açılıştan önceki POS) gösterir ve düğme o veriyle durur. O anda basılan Bankaya Geçmiş Say, sunucunun
+    // güncel verisiyle formu açmalı ("POS tahsilatı yok" dememeli). Gecikme yalnız bu tıklama için; sonra kaldırılır.
     await must("05.10 POS", api.post(`/api/workspace/accounts/${party.id}/entries?${q}`, { kind: "in", amount: "1.500", method: "card", date: "2026-10-05" }));
-    await tab(admin, "accounts");
-    await admin.click(`${bankWin} [data-act="legacy"]`);
-    await admin.waitForSelector(`${bankWin} [data-act="reclass-bank"]`, { timeout: 8000 });
-    await admin.click(`${bankWin} [data-act="reclass-bank"]`);
-    await admin.waitForSelector(`${top} form [name="amount"]`);
+    const slowLegacy = route => (route.request().method() === "GET" ? setTimeout(() => route.continue().catch(() => null), 1500) : route.continue());
+    await admin.route("**/api/workspace/bank/legacy*", slowLegacy);
+    let late;
+    try {
+      await tab(admin, "accounts");
+      await admin.click(`${bankWin} [data-act="legacy"]`);
+      await admin.waitForSelector(`${bankWin} [data-act="reclass-bank"]`, { timeout: 8000 });
+      late = await reclassClick();
+    } finally {
+      await admin.unroute("**/api/workspace/bank/legacy*", slowLegacy);
+    }
+    ok(late.outcome === "form", `yavaş sunucuda (Eski Hareketler'in verisi 1,5 sn gecikmeli) Bankaya Geçmiş Say formu açıldı (${late.outcome})${late.outcome === "form" ? "" : `: ${late.toast}`}`);
+    // Adımın kalanı forma bağlı: form yoksa tek başarısızlık yukarıdaki denetimdir (001'e dönüş `after`ta yine yapılır).
+    if (late.outcome !== "form") return;
     ok((await admin.$eval(`${top} form [name="amount"]`, node => node.value)) === "1.500,00" && has(await textOf(admin, `${top} .hof-modal-text`), "en çok ₺1.500,00"), `Bankaya Geçmiş Say tutarı açılıştan sonraki POS ile önerili (1.500,00): ${await textOf(admin, `${top} .hof-modal-text`)}`);
     await auditLabels(admin, "Bankaya Geçmiş Say");
+    const reclassed = admin.waitForResponse(response => response.url().includes("/api/workspace/bank/legacy/reclass") && response.request().method() === "POST", { timeout: 30000 });
     await admin.click(`${top} form button[type="submit"]`);
-    await admin.waitForTimeout(900);
+    ok((await reclassed).status() === 200, "Bankaya Geçmiş Say: POST /legacy/reclass 200");
     summary = await must("özet", api.get(`/api/workspace/bank/summary?${q}`));
     ok(summary.realBank.minor === 10_350_000 && summary.unassigned.cardMinor === 300_000, `Bankaya Geçmiş Say: Gerçek Banka ${summary.realBank.minor / 100} (102.000 + 1.500), POS 108.00 ${summary.unassigned.cardMinor / 100} (açılış öncesi 3.000 kalır)`);
     await shot(admin, "eski-hareketler-sonra");
     integrity = await must("Mutabakat Testi", api.get(`/api/workspace/ledger/integrity?${q}`));
     ok(integrity.ok === true, "ikinci şirkette mutabakat ok (geri al, ata, aktar)");
-    const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
-    await closeTop(admin);
-    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
-    await admin.goto(`${BASE}/`, { waitUntil: "load" });
-    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
-    await admin.waitForTimeout(700);
-  });
+  }, { after: backToFirst });
 
   await step("10. Mobil (390 px): Genel Bakış, Hesaplar ve Hesap Detayı yatay kaydırmasız", async () => {
     const phone = await newPage({ width: 390, height: 844 });
@@ -1918,12 +1973,7 @@ try {
     ok(summary.realBank.minor === 17_200_000, `Gerçek Banka 172.000 (${summary.realBank.minor / 100})`);
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (bölüm 4)");
-    const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
-    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
-    await admin.goto(`${BASE}/`, { waitUntil: "load" });
-    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
-    await admin.waitForTimeout(700);
-  });
+  }, { after: backToFirst });
 
   // ---------- Bölüm 5 (Yargıç ve Eleştirmen bulguları; docs/2.1.0-KANIT.md "Yargıç ve Eleştirmen Bulguları") ----------
   // Aynı Kabul Şirketi (bölüm 4 sonu: Ziraat 114.000, Garanti 58.000, Kasa 10.000, ABC 5.000). Fatura İptal Et / Sil / toplu iptal sorusu
@@ -2122,12 +2172,7 @@ try {
     ok((await kabulBalance("Garanti BBVA")) === -23000, `Yine de Geri Yükle: ödeme geri geldi, Garanti −23.000 (${await kabulBalance("Garanti BBVA")})`);
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (bölüm 5)");
-    const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
-    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
-    await admin.goto(`${BASE}/`, { waitUntil: "load" });
-    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
-    await admin.waitForTimeout(700);
-  });
+  }, { after: backToFirst });
 
   // ---------- Bölüm 6 (Aşama 14, daraltılmış: Banka Raporları ve K10; plan §8.4, §8.9, §8.10, §3.4) ----------
   // Bağımsız beklenen (elle): Ziraat 100.000 + 20.000 − 10.000 − 20.005,25 − 10,50 − 2.000 = 87.984,25; Garanti 50.000 + 20.000 + 1.500 + 1.000
@@ -2205,6 +2250,11 @@ try {
     await (await admin.$("#hof-start .hof-drop input[type=file]")).setInputFiles(path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "fixtures", "rehber.xlsx"));
     await admin.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
     await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click(`${modal} [data-mode="replace"]`)]);
+    // İçe aktarmadan sonra yenilenen sayfa "Akıllı Analiz — Veriniz hazır" penceresini açar (sessionStorage "hof-analyze"; uygulama hazır
+    // olunca okunup silinir). Sayfa hazır olmadan yeniden yüklenince işaret kalıyor, pencere sonraki yüklemede ANLIK DURUM kutusunun
+    // üstüne açılıp tıklamayı kesiyordu (yerel koşu 10.10.2026: adım 41–47 "modal-backdrop intercepts pointer events"). Bu adım analizi
+    // değil ANLIK DURUM'u sınar: işaret kaldırılır, pencere açılmaz.
+    await admin.evaluate(() => sessionStorage.removeItem("hof-analyze"));
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
     await admin.waitForSelector("#hof-pulse", { timeout: 30000 });
     if (await admin.$("#hof-pulse.is-collapsed")) await admin.click("#hof-pulse [data-pulse='toggle']");
@@ -2369,13 +2419,7 @@ try {
     ok(status === 403, `personel Banka Bakiye Raporu 403 (${status})`);
     await personel.context().close();
     current = admin;
-    // Sonraki adımlar 001'de.
-    const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
-    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
-    await admin.goto(`${BASE}/`, { waitUntil: "load" });
-    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
-    await admin.waitForTimeout(700);
-  });
+  }, { after: backToFirst });
 
   await step("25. Kalemle ad (side.bank) ve yazım düzeni", async () => {
     await must("ad", api.put("/api/workspace/labels/batch", { labels: { "side.bank": "Bankalar" } }));

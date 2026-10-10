@@ -1,0 +1,30 @@
+{
+  "ad": "analiz-yaris-yeni-1500",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-analiz-yaris.mjs --kip yeni --gecikme 1500 --deneme 5",
+  "commit": "79afb85555df208fe5785710c06d777ccae6032e",
+  "dal": "worktree-agent-a14d0e27ddfab9b03",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T11:11:18.713Z",
+  "sure_sn": 77.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/analiz-yaris-yeni-1500.log",
+  "ham_cikti_sha256": "04b01c86aa9baaac82d08a3e83b9538d2e8e7df061368d560cb109e240670fc2",
+  "ham_cikti_bayt": 767
+}

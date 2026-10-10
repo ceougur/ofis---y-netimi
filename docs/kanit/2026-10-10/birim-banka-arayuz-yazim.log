@@ -1,0 +1,183 @@
+TAP version 13
+# Subtest: Aşama 4 (dilim 4) — Banka arayüzünün kaynak kuralları
+    # Subtest: Hareketler sekmesi Hesaplar'dan hemen sonra; POS ve Ekstre sekmesi yok
+    ok 1 - Hareketler sekmesi Hesaplar'dan hemen sonra; POS ve Ekstre sekmesi yok
+      ---
+      duration_ms: 3.27709
+      type: 'test'
+      ...
+    # Subtest: Hareketler imleçli ve liste kapılı; satır İşlem Kartı'nı açar
+    ok 2 - Hareketler imleçli ve liste kapılı; satır İşlem Kartı'nı açar
+      ---
+      duration_ms: 1.482847
+      type: 'test'
+      ...
+    # Subtest: fiş formu: Benzer İşlem → aynı istek kimliğiyle similarOk; Ters Kaydet, Düzelt, Açıklama, Planlı uçları; pasif neden görünür
+    ok 3 - fiş formu: Benzer İşlem → aynı istek kimliğiyle similarOk; Ters Kaydet, Düzelt, Açıklama, Planlı uçları; pasif neden görünür
+      ---
+      duration_ms: 1.911656
+      type: 'test'
+      ...
+    # Subtest: Yönetim → İşlem Geçmişi ve İşlem Kartı: Aşama 4'ün işlem geçmişi türlerinin (fiş, ters kayıt, düzelt, açıklama, planlı) adı var
+    ok 4 - Yönetim → İşlem Geçmişi ve İşlem Kartı: Aşama 4'ün işlem geçmişi türlerinin (fiş, ters kayıt, düzelt, açıklama, planlı) adı var
+      ---
+      duration_ms: 7.834992
+      type: 'test'
+      ...
+    1..4
+ok 1 - Aşama 4 (dilim 4) — Banka arayüzünün kaynak kuralları
+  ---
+  duration_ms: 15.915119
+  type: 'suite'
+  ...
+# Subtest: Aşama 4 (dilim 4) — arayüzün sunucu ekleri
+    # Subtest: tutar süzgeci (min / max): yalnız aralıktaki olaylar; sınır dahil; yürüyen bakiye verilmez; İşlem No yolu da uyar
+    ok 1 - tutar süzgeci (min / max): yalnız aralıktaki olaylar; sınır dahil; yürüyen bakiye verilmez; İşlem No yolu da uyar
+      ---
+      duration_ms: 198.330734
+      type: 'test'
+      ...
+    # Subtest: aynı günün hareketleri giriş sırasıyla (en yeni üstte); yürüyen bakiye gün içinde de kayıt sırasını izler
+    ok 2 - aynı günün hareketleri giriş sırasıyla (en yeni üstte); yürüyen bakiye gün içinde de kayıt sırasını izler
+      ---
+      duration_ms: 321.720145
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: tutar süzgecine eksi, metin, üç ondalık, ters aralık → 400; süzgeci değişmiş imleç → 400
+    ok 3 - nasıl bozarım: tutar süzgecine eksi, metin, üç ondalık, ters aralık → 400; süzgeci değişmiş imleç → 400
+      ---
+      duration_ms: 132.994975
+      type: 'test'
+      ...
+    # Subtest: fiş formunun seçenekleri: süzgeç türlerinin ve hesapların adları; son kullanılan stopaj oranı (ters kaydedilen sayılmaz)
+    ok 4 - fiş formunun seçenekleri: süzgeç türlerinin ve hesapların adları; son kullanılan stopaj oranı (ters kaydedilen sayılmaz)
+      ---
+      duration_ms: 87.996857
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: Fatura Yönetimi yetkisi olmayan kişi BSMV'li masrafı Düzelt'te KDV'li (faturalı) masrafa çeviremez → 403, hiçbir şey yazılmaz
+    ok 5 - nasıl bozarım: Fatura Yönetimi yetkisi olmayan kişi BSMV'li masrafı Düzelt'te KDV'li (faturalı) masrafa çeviremez → 403, hiçbir şey yazılmaz
+      ---
+      duration_ms: 283.67258
+      type: 'test'
+      ...
+    # Subtest: planlı kredi geri ödemesi: faiz ve referans planda saklanır; Gerçekleştir 780 faizle fiş yazar
+    ok 6 - planlı kredi geri ödemesi: faiz ve referans planda saklanır; Gerçekleştir 780 faizle fiş yazar
+      ---
+      duration_ms: 148.315798
+      type: 'test'
+      ...
+    1..6
+ok 2 - Aşama 4 (dilim 4) — arayüzün sunucu ekleri
+  ---
+  duration_ms: 2368.945791
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+    # Subtest: sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+    ok 1 - sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+      ---
+      duration_ms: 2.180666
+      type: 'test'
+      ...
+    # Subtest: hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+    ok 2 - hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+      ---
+      duration_ms: 2.804621
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+    ok 3 - canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+      ---
+      duration_ms: 5.707667
+      type: 'test'
+      ...
+    # Subtest: Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+    ok 4 - Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+      ---
+      duration_ms: 3.203511
+      type: 'test'
+      ...
+    1..4
+ok 3 - Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+  ---
+  duration_ms: 15.247189
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+    # Subtest: kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+    ok 1 - kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+      ---
+      duration_ms: 40.88156
+      type: 'test'
+      ...
+    # Subtest: rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+    ok 2 - rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+      ---
+      duration_ms: 18.925316
+      type: 'test'
+      ...
+    # Subtest: Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+    ok 3 - Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+      ---
+      duration_ms: 232.010518
+      type: 'test'
+      ...
+    # Subtest: Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+    ok 4 - Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+      ---
+      duration_ms: 121.452926
+      type: 'test'
+      ...
+    # Subtest: Ayarlar ekranı verisi: POS ve Ekstre 2.1.0'da görünmez (available false); hesap eşlemelerinde adlar
+    ok 5 - Ayarlar ekranı verisi: POS ve Ekstre 2.1.0'da görünmez (available false); hesap eşlemelerinde adlar
+      ---
+      duration_ms: 8.54449
+      type: 'test'
+      ...
+    # Subtest: Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+    ok 6 - Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+      ---
+      duration_ms: 19.183021
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+    ok 7 - canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+      ---
+      duration_ms: 273.602792
+      type: 'test'
+      ...
+    1..7
+ok 4 - Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+  ---
+  duration_ms: 2120.45811
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 68.296797
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 2 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 30.983946
+      type: 'test'
+      ...
+    1..2
+ok 5 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 100.335368
+  type: 'suite'
+  ...
+1..5
+# tests 23
+# suites 5
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6022.425085
