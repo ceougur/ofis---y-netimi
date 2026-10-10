@@ -151,14 +151,19 @@ describe("2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını b
     const acc = await customer(ctx.api, "D Müşteri");
     const inv = await sale(ctx.api, acc);
     await giveBack(ctx.api, acc, inv, 4, nakit(400));
-    await expectCard(ctx, acc, inv, { left: 1000, balance: 1000, open: 600 }, "D");
+    // K1 (2.1.0; kâhin + hakem IADE-KAPAMA): fatura açığı 600 değil 1.000. Elle: cari = 1.000 − 400 (iade) + 400 (geri ödeme) = 1.000; iadenin
+    // tamamı geri ödendi → mahsup = 400 − 400 = 0, açık = 1.000 − 0 = 1.000 = kartın kalanı. 600, programın geri ödenen iadeyi faturadan da
+    // düştüğü (aynı alacak iki kez) yanlış değerdi; bu beklenti programla aynı elden yazılmıştı (ders 5).
+    await expectCard(ctx, acc, inv, { left: 1000, balance: 1000, open: 1000 }, "D");
   }));
 
   test("E (korunur): 1.000 (500 peşin) → 300 iade + 300 nakit geri → kart 500 kalır", () => scenario(async ctx => {
     const acc = await customer(ctx.api, "E Müşteri");
     const inv = await sale(ctx.api, acc, { cash: nakit(500) });
     await giveBack(ctx.api, acc, inv, 3, nakit(300));
-    await expectCard(ctx, acc, inv, { left: 500, balance: 500, open: 200 }, "E");
+    // K1: açık 200 değil 500. Elle: cari = 1.000 − 500 (peşin) − 300 (iade) + 300 (geri ödeme) = 500; mahsup = 300 − 300 = 0; açık =
+    // 1.000 − 500 = 500 = kartın kalanı (müşterinin borcu değişmedi). 200 aynı alacağı iki kez kullanan yanlış değerdi.
+    await expectCard(ctx, acc, inv, { left: 500, balance: 500, open: 500 }, "E");
   }));
 
   test("F: peşin çekle (500) alınmış; malın tamamı iade + 500 nakit geri → kart 0", () => scenario(async ctx => {
@@ -190,7 +195,9 @@ describe("2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını b
     const acc = await customer(ctx.api, "H Müşteri");
     const inv = await sale(ctx.api, acc, { cash: nakit(500) });
     await giveBack(ctx.api, acc, inv, 5, nakit(250));
-    await expectCard(ctx, acc, inv, { left: 250, balance: 250 }, "H iade-1");
+    // K1: iade-1'den sonra fatura açığı 0 değil 250. Elle: cari = 1.000 − 500 − 500 + 250 = 250; mahsup = 500 − 250 = 250; açık = (1.000 −
+    // 500 peşin) − 250 = 250 = kartın kalanı. Önceki beklenti (açık 0, kart 250) "taksitli faturanın açığı = kartın kalanı" kuralını bozuyordu.
+    await expectCard(ctx, acc, inv, { left: 250, balance: 250, open: 250 }, "H iade-1");
     await giveBack(ctx.api, acc, inv, 5, nakit(250));
     await expectCard(ctx, acc, inv, { left: 0, balance: 0 }, "H iade-2");
   }));
@@ -232,8 +239,10 @@ describe("2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını b
     const plan = await must("kart", ctx.api.post("/api/workspace/plans", { name: "K kart", registeredOn: "2026-08-04", total: "500", accountId: acc.id, mode: "auto", count: "2", firstDue: "2026-09-01", coversBalance: true }));
     const inv = { id: doc.id, planId: plan.id, lineId: doc.lines[0].id };
     await giveBack(ctx.api, acc, inv, 5, nakit(250));
-    // Faturanın kendisi kapanır (peşin 500 + iade 500); geri ödenen 250 carinin borcudur ve kartta kalır.
-    await expectCard(ctx, acc, inv, { left: 250, balance: 250 }, "K iade-1");
+    // K1: geri ödenen 250 faturaya mahsup edilmez; fatura açığı 250 (= 1.000 − 500 peşin − 250 mahsup), kartın kapsadığı kısım; kart 250.
+    // Elle: cari = 1.000 − 500 − 500 + 250 = 250. (Önceden "faturanın kendisi kapanır" deniyordu: iadenin tamamı faturayı kapatıyor, geri
+    // ödeme ayrıca sayılıyordu — aynı alacak iki kez.)
+    await expectCard(ctx, acc, inv, { left: 250, balance: 250, open: 250 }, "K iade-1");
     await giveBack(ctx.api, acc, inv, 5, nakit(250));
     await expectCard(ctx, acc, inv, { left: 0, balance: 0 }, "K iade-2");
   }));

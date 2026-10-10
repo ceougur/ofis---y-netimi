@@ -1294,18 +1294,18 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   //  - kapsayan Mevcut Borç kartı, faturadaki payı ne kadar azaldıysa o kadar küçülür. Küçülen tutar iade belgesinde
   //    (payment_json.coverCuts) saklanır; iade iptal edilince ya da düzenlenince kart aynı tutarda geri büyür.
   // Başka kartlara dokunulmaz. Aynı veri tabanı işleminin içinde çalışır.
-  // Parası geri verilen iade (nakit/banka/POS iadesi) müşterinin borcunu düşürmez: iade satırı faturayı kapatır, geri ödeme
-  // satırı (çıkış) yeniden borçlandırır. Kart bu tutar kadar küçülmez (gözden geçirme G1).
+  // Parası geri verilen iade (nakit/banka/POS iadesi) müşterinin borcunu düşürmez: iadenin geri ödenen kısmı iade belgesini kapatır, asıl
+  // faturaya mahsup edilmez (v2.1.0 K1, lib/invoice-settle.mjs adım R). Kart bu tutar kadar küçülmez (gözden geçirme G1).
   const refundOf = returnId => roundMoney(store.all("SELECT amount FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'out'", returnId).reduce((sum, row) => sum + (Number(row.amount) || 0), 0));
   const refundsFor = originalId => roundMoney(store.all("SELECT id FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND original_id = ?", originalId).reduce((sum, row) => sum + refundOf(row.id), 0));
-  // v2.1.0 (Canlı Hata 2, 2.0.24 G1'in gerilemesi): hedef = max(0, imzalı açık + geri ödenen). İmzalı açık, faturaya bağlı
-  // ödemeler ve iadeler faturayı aşınca eksidir (açık 0'da kırpılmaz); geri ödeme önce iadenin faturayı aşıp avansa dönen
-  // kısmından düşülür (yaygın programlardaki iade/geri ödeme mahsubu). 2.0.24–2.0.26'da hedef = açık(0'da kırpılı) + geri
-  // ödenen idi: peşinli taksitli faturada malın tamamı iade edilip peşin geri ödenince kart yeniden büyüyor, borçsuz müşteri
-  // gecikmiş görünüyordu.
+  // v2.1.0 (Canlı Hata 2, 2.0.24 G1'in gerilemesi; K1): hedef = max(0, imzalı açık). İmzalı açık = fatura − (peşin + kart tahsilatı +
+  // çek/senet + iadelerin mahsup edilen kısmı); faturaya bağlı ödemeler faturayı aşınca eksidir (açık 0'da kırpılmaz). Faturanın açığı aynı
+  // kuralla hesaplanır: kartın kalanı = faturanın açığı. 2.0.24–2.0.26'da hedef = açık(0'da kırpılı) + geri ödenen idi (peşinli taksitli
+  // faturada malın tamamı iade edilip peşin geri ödenince kart yeniden büyüyordu); K1'e kadar açık geri ödenen iadeyi de düşüyor, hedef
+  // geri ödemeyi geri ekliyordu (fatura 360 ↔ kart 600).
   function ownTarget(originalId) {
     const state = coverState(originalId);
-    return roundMoney(Math.max(0, (state?.open ?? 0) - (state?.excess ?? 0) + refundsFor(originalId)));
+    return roundMoney(Math.max(0, (state?.open ?? 0) - (state?.excess ?? 0)));
   }
   function ownCard(user, original, touched, note) {
     if (!original?.planId) return;
@@ -1344,8 +1344,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (!(refunds > 0.005)) continue;
       const state = coverState(row.id);
       if (!state) continue;
-      const target = roundMoney(Math.max(0, state.open - state.excess + refunds));
-      const before = roundMoney(state.open + refunds);
+      // İmzalı açık (K1: geri ödenen iade faturadan düşülmez). Yeni hedef = max(0, imzalı açık); eski kuralın (2.0.24–2.0.26) hedefi = o
+      // sürümlerin açığı (geri ödenen iade de düşülmüş, 0'da kırpılı) + geri ödenen.
+      const signed = roundMoney(state.open - state.excess);
+      const target = roundMoney(Math.max(0, signed));
+      const before = roundMoney(Math.max(0, signed - refunds) + refunds);
       const left = p.leftOf(row.planId);
       if (!(left > target + 0.005) || left > before + 0.005) continue;
       const cut = roundMoney(left - target);
@@ -1380,13 +1383,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!post) return;
     ownCard(user, pre.row, touched, note);
     const cuts = {};
-    // Geri ödenen kısım borcu düşürmez: önce kartın payındaki azalıştan düşülür (G1).
-    let refund = returnId ? refundOf(returnId) : 0;
+    // Geri ödenen kısım borcu düşürmez (G1): K1'den beri kapama onu asıl faturaya hiç mahsup etmez, kartın payındaki azalış yalnız
+    // mahsup edilen kısımdır (önceden azalıştan geri ödeme ayrıca düşülüyordu).
     for (const planId of Object.keys(pre.coveredBy)) {
-      let delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
-      const offset = Math.min(refund, Math.max(0, delta));
-      delta = roundMoney(delta - offset);
-      refund = roundMoney(refund - offset);
+      const delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
       if (!(delta > 0.005)) continue;
       const cut = plans().shrinkPlan(user, planId, delta, note);
       if (cut > 0) {
@@ -2919,14 +2919,18 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // taksitlendirebilir; fatura açığının kartça kapsanan kısmı (kapama, covered) kartın taksitleriyle aynı paradır. Birleşik
   // listeler (yaşlandırma, nakit akış, vade takip, takvim/bildirim) { net: true } ile ister: o kısım faturadan düşülür, kartın
   // taksitleri gösterir. Açık Faturalar raporu ve fatura kartı faturanın kendi açığını gösterir (net istemez).
-  function openItems(day = today(), { net = false } = {}) {
-    const rows = store.all(`${INVOICE_SQL} WHERE i.status = 'issued' AND i.kind IN ('sale', 'smm', 'purchase') AND i.plan_id = ''`);
+  // returns (v2.1.0, K1): Açık Faturalar raporu mahsup edilmemiş iade belgelerini de gösterir (iade belgesinin açığı; satıştan iade
+  // müşterinin alacağı → borç tarafı, alıştan iade tedarikçinin borcu → alacak tarafı). Birleşik listeler (yaşlandırma, nakit akış, vade
+  // takip, takvim/bildirim, ANLIK DURUM) iade belgesi istemez: orada iade alacağı carinin avansı gibidir (bakiye zaten net).
+  const RETURN_SIDE = { sale_return: "purchase", purchase_return: "sale" };
+  function openItems(day = today(), { net = false, returns = false } = {}) {
+    const rows = store.all(`${INVOICE_SQL} WHERE i.status = 'issued' AND i.kind IN ('sale', 'smm', 'purchase'${returns ? ", 'sale_return', 'purchase_return'" : ""}) AND i.plan_id = ''`);
     const states = paymentStates(rows);
     return rows
       .map(row => ({ row, state: states.get(row.id) }))
       .map(({ row, state }) => ({ row, state, open: state ? roundMoney(state.open - (net ? state.covered || 0 : 0)) : 0 }))
       .filter(({ state, open }) => state && open > 0.005)
-      .map(({ row, state, open }) => ({ id: row.id, number: row.number, kind: row.kind, side: INVOICE_KINDS[row.kind].side, accountId: row.accountId, accountName: parseJson(row.partyJson, {}).name || row.accountName, phone: row.accountPhone, dueDate: row.dueDate || row.issueDate, issueDate: row.issueDate, payable: row.tryPayable, open, ...(net && state.covered > 0.005 ? { coveredByPlan: state.covered } : {}), state: state.state, days: Math.round((Date.parse(`${row.dueDate || row.issueDate}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000) }));
+      .map(({ row, state, open }) => ({ id: row.id, number: row.number, kind: row.kind, side: RETURN_SIDE[row.kind] || INVOICE_KINDS[row.kind].side, ...(RETURN_SIDE[row.kind] ? { isReturn: true } : {}), accountId: row.accountId, accountName: parseJson(row.partyJson, {}).name || row.accountName, phone: row.accountPhone, dueDate: row.dueDate || row.issueDate, issueDate: row.issueDate, payable: row.tryPayable, open, ...(net && state.covered > 0.005 ? { coveredByPlan: state.covered } : {}), state: state.state, days: Math.round((Date.parse(`${row.dueDate || row.issueDate}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000) }));
   }
   // Tahsilat takvimi ve sağ alt bildirimler: vadesi geçen, bugün ve 7 gün içinde vadesi gelen açık faturalar.
   function dueItems(day = today()) {

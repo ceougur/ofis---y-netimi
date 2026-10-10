@@ -29,11 +29,21 @@
 //     tahsilatı yalnız kapsadığı borcu kapatır; kapsanan kısım en eski borç sırasına girmez; sonradan doğan borç kapsanmaz.
 //     Faturanın kapsanan açığı (covered) birleşik listelerde (yaşlandırma, nakit akış, vade takip, takvim) bir kez, kartın
 //     taksitleriyle sayılır.
+//
+// v2.1.0 (K1, bağımsız kâhin + hakem "IADE-KAPAMA"; v2.0.26'da da vardı): iade belgesi bir alacak notudur — ya asıl faturaya mahsup edilir
+// ya geri ödenir, ikisi birden olmaz (yaygın açık kalem kapaması; test/bagimsiz/SENARYO-DILI.md §7 kural 2 ve 5). Kuruşla:
+//   mahsup = iade − geri ödenen;  asıl.açık = max(0, asılAçık − mahsup);  iade.açık = max(0, mahsup − asılAçık)
+// (asılAçık: peşin ve faturaya bağlı öbür ödemelerden sonra kalan). Önceden iadenin tamamı asıl faturayı kapatıyor, geri ödenen kısım
+// da ayrıca ödeniyordu (aynı alacak iki kez: faturada kimsenin ödemediği "Fatura" kapatanı, Σ açık ≠ cari bakiye) ve asıl faturayı aşan
+// artan hiçbir belgede görünmüyordu (iade belgesinin açığı hep 0). Artan alacak notu 2.0.15'ten beri olduğu gibi carinin en eski açık
+// borcunu kapatır (R1c); kapatamadığı kalan iade belgesinin açığıdır ve cariye yapılan bağsız ödeme/tahsilatla (müşteriye iade bedeli
+// ödendi, tedarikçi borcunu ödedi) kapanır. Taksitli faturada kartın kalanı = faturanın açığı (routes/invoices.mjs ownTarget aynı formül).
 import { roundMoney } from "./money.mjs";
 
 const cents = value => Math.round((Number(value) || 0) * 100);
 const RECEIVABLE = new Set(["sale", "smm"]);
 const PAYABLE = new Set(["purchase"]);
+const RETURNS = new Set(["sale_return", "purchase_return"]);
 export const PAY_STATES = Object.freeze({
   paid: "Ödendi",
   partial: "Kısmen Ödendi",
@@ -194,11 +204,13 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
         const own = line.origin === "invoice" && kinds.has(kindOf(line)) ? line.sourceId : refund ? planOwner.get(line.planId) || "" : "";
         const cover = refund && coverIds.has(line.planId) ? line.planId : "";
         // Taksitli fatura (kendi kartı var) yalnız bağlı ödemeyle kapanır; en eski borç sırasında atlanır.
-        // R1: iadenin geri ödemesi (returnOf = asıl fatura) önce o faturaya bağlı ödemelerden artanı (iade alacağı) tüketir (adım 1a).
-        const returnOf = line.origin === "invoice" && ["sale_return", "purchase_return"].includes(kindOf(line)) ? ownerOf(line) : "";
-        obligations.push({ invoiceId: own, lineId: line.id, bornAt: born, free: cover ? 0 : amount, covered: new Map(cover ? [[cover, amount]] : []), closers: [], planned: Boolean(own && byId.get(own)?.planId), returnOf });
+        // R1 + K1: iadenin geri ödemesi (refundOf = iade belgesi) iade belgesinin kendi alacağıyla kapanır (adım R).
+        const refundOf = line.origin === "invoice" && RETURNS.has(kindOf(line)) ? line.sourceId : "";
+        obligations.push({ invoiceId: own, lineId: line.id, line, bornAt: born, free: cover ? 0 : amount, covered: new Map(cover ? [[cover, amount]] : []), closers: [], planned: Boolean(own && byId.get(own)?.planId), refundOf });
       }
-      if (role[payKey]) pool.push({ line, owner: ownerOf(line), cover: line.origin === "plan" && coverIds.has(line.planId) ? line.planId : "", amount, left: amount, mode: links.has(line.id) ? "linked" : "" });
+      // K1: iade belgesinin alacak satırı (returnId): önce kendi geri ödemesini, sonra asıl faturayı kapatır; artanı en eski borca, kalanı iade açığı.
+      const returnId = role[payKey] && line.origin === "invoice" && RETURNS.has(kindOf(line)) ? line.sourceId : "";
+      if (role[payKey]) pool.push({ line, owner: ownerOf(line), returnId, uses: [], cover: line.origin === "plan" && coverIds.has(line.planId) ? line.planId : "", amount, left: amount, mode: links.has(line.id) ? "linked" : "" });
     }
     // Kartın borcunu aşan tahsilat (artan) genel havuza: son tahsilatın tarihiyle, tarih sırası korunarak.
     let excess = false;
@@ -235,6 +247,8 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       else item.free -= take;
       payment.left -= take;
       if (track) item.closers.push({ id: payment.line.id, date: payment.line.date, label: payment.line.label || "", note: payment.line.note || "", method: payment.line.method || "", amount: roundMoney(take / 100), mode });
+      // K1: iade belgesinin alacağının nereye kullanıldığı (iade belgesinin kendi kapatanları: geri ödeme, asıl fatura, en eski borç).
+      if (track && payment.returnId) payment.uses.push({ item, take, mode });
     };
     // Faturaya bağlı ödeme: önce açık (kapsanmamış) kısım, sonra kartların kapsadığı kısımlar.
     const closeInvoice = (items, payment, mode) => {
@@ -247,6 +261,15 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
         }
       }
     };
+    // R (v2.1.0, K1). İadenin geri ödemesi iade belgesini kapatır: iade alacağının geri ödenen kısmı asıl faturaya mahsup EDİLMEZ
+    // (geri ödeme ≤ iade tutarı; fatura modülü aşanı reddeder). Kalan alacak (mahsup) 1. adımda asıl faturaya gider.
+    for (const item of obligations) {
+      if (!item.refundOf) continue;
+      for (const payment of pool) {
+        if (item.free <= 0) break;
+        if (payment.returnId === item.refundOf && payment.left > 0) close(item, payment, Math.min(item.free, payment.left), "linked");
+      }
+    }
     // 0. Mahsup fişleri: iki tarafı da bağlı kapatır (fatura ↔ karşı belge).
     for (const [invoiceId, items] of target) {
       for (const { offset, amount } of offsetsOf(invoiceId, side, offsetList)) {
@@ -270,24 +293,19 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
         rest -= cut;
       }
     }
-    // 1. Bağlı ödemeler kendi faturasına.
-    for (const payment of pool) {
-      const own = payment.owner && target.get(payment.owner);
-      if (own) closeInvoice(own, payment, payment.mode || "linked");
-    }
-    // v2.1.0 (Canlı Hata 2): faturaya bağlı ödemelerin ve iadelerin faturayı AŞAN kısmı (fazla ödenen / avansa dönen iade).
-    // İmzalı açık = açık − bu tutar; iadenin geri ödemesi önce bundan düşülür (faturanın kendi kartı yeniden büyümesin).
-    const overpaid = new Map();
-    for (const payment of pool) if (payment.left > 0 && payment.owner && target.has(payment.owner)) overpaid.set(payment.owner, (overpaid.get(payment.owner) || 0) + payment.left);
-    // 1a (v2.1.0, R1): iadenin geri ödemesi aynı faturaya bağlı ödemelerden artanla (iadenin alacağı, fazla peşin) kapanır — yaygın programlardaki
-    // iade/geri ödeme mahsubu. Artan yoksa en eski borç sırasına girer. (Yukarıdaki "excess" bundan önce hesaplanır: kart kuralı aynı kalır.)
-    for (const item of obligations) {
-      if (!item.returnOf || item.free <= 0) continue;
+    // 1. Bağlı ödemeler kendi faturasına: önce peşin, kart tahsilatı, çek/senet ve seçilerek bağlanan ödemeler; iadelerin mahsubu
+    // (geri ödenmemiş kısım) en son, kalan açıktan (K1: asılAçık = peşin ve bağlı ödemelerden sonra kalan; iade.açık = artan).
+    for (const returns of [false, true]) {
       for (const payment of pool) {
-        if (item.free <= 0) break;
-        if (payment.owner === item.returnOf && payment.left > 0) close(item, payment, Math.min(item.free, payment.left), "linked");
+        if (Boolean(payment.returnId) !== returns) continue;
+        const own = payment.owner && target.get(payment.owner);
+        if (own) closeInvoice(own, payment, payment.mode || "linked");
       }
     }
+    // v2.1.0 (Canlı Hata 2): faturaya bağlı ödemelerin ve iadelerin (mahsup edilen kısmının) faturayı AŞAN kısmı (fazla ödenen / avansa
+    // dönen iade). İmzalı açık = açık − bu tutar (faturanın kendi kartının hedefi; geri ödenen iade adım R'de düşüldü, buraya girmez).
+    const overpaid = new Map();
+    for (const payment of pool) if (payment.left > 0 && payment.owner && target.has(payment.owner)) overpaid.set(payment.owner, (overpaid.get(payment.owner) || 0) + payment.left);
     // 1b. Mevcut Borç kartının tahsilatı ve kapatılması kartın kapsadığı borca (en eskiden); artanı genel sıraya kalır.
     const coveredBy = new Map();
     for (const item of obligations) {
@@ -318,7 +336,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       }
       if (cursor >= pool.length) break;
     }
-    return { obligations, target, overpaid };
+    return { obligations, target, overpaid, pool };
   }
   // Kapsam: kartlar açılış sırasıyla; her kart, kendi açıldığı ana kadar kaydedilmiş satırlarla (önceki kartların kapsamı
   // dahil) kapama yapılınca açık kalan, kapsanmamış borcu en son kaydedilenden başlayarak alır (stoktan taksitli satışın kartı,
@@ -342,8 +360,10 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     }
     coverage.set(plan.planId, parts);
   }
+  const pools = {};
   for (const side of ["receivable", "payable"]) {
-    const { target, overpaid } = runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets);
+    const { target, overpaid, pool } = runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets);
+    pools[side] = pool;
     for (const [invoiceId, items] of target) {
       const invoice = byId.get(invoiceId);
       const payable = cents(invoice.payable);
@@ -356,6 +376,51 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       // excess (v2.1.0): bağlı ödeme ve iadelerin faturayı aşan kısmı (açık 0 iken); imzalı açık = open − excess.
       out.set(invoiceId, { payable: roundMoney(payable / 100), paid: roundMoney((payable - open) / 100), open: roundMoney(open / 100), excess: roundMoney((overpaid.get(invoiceId) || 0) / 100), covered: roundMoney(covered / 100), coveredBy, closers: items.flatMap(item => item.closers) });
     }
+  }
+  // K1: iade belgelerinin açığı. İadenin alacağından geri ödeme (adım R), asıl fatura (1) ve en eski borçlar (2) kapandıktan sonra kalan,
+  // iade belgesinin açığıdır (satıştan iadede müşterinin alacağı, alıştan iadede tedarikçinin borcu). Karşı tarafta dağıtılamamış bağsız
+  // ödeme/tahsilat (cari kartından müşteriye ödenen iade bedeli, tedarikçinin ödediği borç; verilen/alınan çek) onu en eskiden kapatır
+  // (dil §7 kural 6: bağsız çıkış borç belgesini — satıştan iadeyi —, bağsız giriş alacak belgesini — alıştan iadeyi — kapatır).
+  const freeMoney = payment => !payment.returnId && (payment.line.origin === "account" || payment.line.origin === "cheque") && payment.left > 0;
+  for (const [side, other] of [["receivable", "payable"], ["payable", "receivable"]]) {
+    const free = pools[other].filter(freeMoney);
+    let cursor = 0;
+    for (const note of pools[side]) {
+      if (!note.returnId) continue;
+      while (note.left > 0 && cursor < free.length) {
+        const payment = free[cursor];
+        if (payment.left <= 0) {
+          cursor += 1;
+          continue;
+        }
+        const take = Math.min(note.left, payment.left);
+        note.left -= take;
+        payment.left -= take;
+        note.uses.push({ cross: payment, take, mode: "auto" });
+      }
+    }
+  }
+  const returnRows = new Map();
+  for (const side of ["receivable", "payable"]) {
+    for (const payment of pools[side]) {
+      if (!payment.returnId) continue;
+      const row = returnRows.get(payment.returnId) || { left: 0, closers: [] };
+      row.left += payment.left;
+      for (const use of payment.uses) {
+        // Kapatan: geri ödeme satırı, karşı taraftaki ödeme ya da alacağın kapattığı borç (asıl fatura, en eski borç).
+        const line = use.cross ? use.cross.line : use.item.line;
+        const money = Boolean(use.cross || use.item.refundOf);
+        row.closers.push({ id: line.id, date: line.date, label: line.label || "", note: line.note || "", method: money ? line.method || "" : "", amount: roundMoney(use.take / 100), mode: use.mode });
+      }
+      returnRows.set(payment.returnId, row);
+    }
+  }
+  for (const [returnId, { left, closers }] of returnRows) {
+    const invoice = byId.get(returnId);
+    if (!invoice) continue;
+    const payable = cents(invoice.payable);
+    const open = Math.max(0, Math.min(payable, left));
+    out.set(returnId, { payable: roundMoney(payable / 100), paid: roundMoney((payable - open) / 100), open: roundMoney(open / 100), closers });
   }
   for (const invoice of invoices) {
     let row = out.get(invoice.id) || { payable: roundMoney(Number(invoice.payable) || 0), paid: 0, open: 0, closers: [] };
