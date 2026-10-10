@@ -1,0 +1,79 @@
+TAP version 13
+# Subtest: servis yöneticisi (supervisor)
+    # Subtest: bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+    ok 1 - bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+      ---
+      duration_ms: 1.336435
+      type: 'test'
+      ...
+    # Subtest: istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+    ok 2 - istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+      ---
+      duration_ms: 103.552048
+      type: 'test'
+      ...
+    # Subtest: canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+    ok 3 - canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+      ---
+      duration_ms: 91.501974
+      type: 'test'
+      ...
+    # Subtest: UDP keşif sinyaline sunucu adresiyle yanıt verir
+    ok 4 - UDP keşif sinyaline sunucu adresiyle yanıt verir
+      ---
+      duration_ms: 801.912437
+      type: 'test'
+      ...
+    # Subtest: uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+    ok 5 - uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+      ---
+      duration_ms: 1447.329817
+      type: 'test'
+      ...
+    # Subtest: güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+    ok 6 - güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+      ---
+      duration_ms: 543.041853
+      type: 'test'
+      ...
+    1..6
+ok 1 - servis yöneticisi (supervisor)
+  ---
+  duration_ms: 3567.699288
+  type: 'suite'
+  ...
+# Subtest: servis günlükleri
+    # Subtest: nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+    ok 1 - nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+      ---
+      duration_ms: 3.714812
+      type: 'test'
+      ...
+    1..1
+ok 2 - servis günlükleri
+  ---
+  duration_ms: 4.16814
+  type: 'suite'
+  ...
+# Subtest: öksüz süreç koruması
+    # Subtest: servis yöneticisi zorla kapatılınca uygulama da kapanır
+    ok 1 - servis yöneticisi zorla kapatılınca uygulama da kapanır
+      ---
+      duration_ms: 7666.583861
+      type: 'test'
+      ...
+    1..1
+ok 3 - öksüz süreç koruması
+  ---
+  duration_ms: 7666.995281
+  type: 'suite'
+  ...
+1..3
+# tests 8
+# suites 3
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11474.623195

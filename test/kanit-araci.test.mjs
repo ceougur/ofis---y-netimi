@@ -3,7 +3,7 @@
 // üretildi. Bu test aracın o yanlışları yapmadığını sınar (CLAUDE.md → "Geçmiş test hatalarından dersler" 2, 4, 16).
 import { strict as assert } from "node:assert";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
@@ -289,5 +289,87 @@ describe("kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den 
       rmSync(repo, { recursive: true, force: true });
       rmSync(out, { recursive: true, force: true });
     }
+  });
+});
+
+// ---- Başarısız testlerin adları (10.10.2026): CI günlüğünün yalnız son 5.000 satırı okunabiliyor; TAP'ta başarısız test ortada kalınca
+// hangi testin düştüğü bilinemedi (CI 514, Windows Node 22, 1/1770). Liste çıktının sonuna, kayda ve kapı özetine yazılır. ----
+const { failedTests, shouldWait } = await import(pathToFileURL(TOOL).href);
+
+describe("kanıt aracı: başarısız testlerin adı, yeri ve hatası", () => {
+  const SAMPLE = [
+    'import assert from "node:assert/strict";',
+    'import { describe, it } from "node:test";',
+    'describe("Üst Grup", () => {',
+    '  it("geçen", () => {});',
+    '  describe("İç Grup", () => {',
+    '    it("düşen test", () => assert.equal(1, 2, "bir iki değil"));',
+    "  });",
+    "});",
+    'it("tek başına düşen", () => { throw new Error("patladı"); });',
+  ].join("\n");
+  // node --test içinden başlatılan çocuk test koşucusu NODE_TEST_CONTEXT'i görünce TAP/spec yerine ikili akış yazar; gerçek CI koşusu
+  // gibi olsun diye kaldırılır.
+  const childEnv = kanitDir => {
+    const env = { ...process.env, KANIT_DIR: kanitDir };
+    delete env.NODE_TEST_CONTEXT;
+    return env;
+  };
+  const realRun = reporter => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-bt-"));
+    try {
+      const file = path.join(dir, "dusen.test.mjs");
+      writeFileSync(file, SAMPLE);
+      const out = spawnSync(process.execPath, [TOOL, "kos", `bt-${reporter}`, "--", process.execPath, "--test", `--test-reporter=${reporter}`, file], { env: childEnv(path.join(dir, "kanit")), encoding: "utf8", cwd: dir });
+      const day = readdirSync(path.join(dir, "kanit"))[0];
+      return { out, record: JSON.parse(readFileSync(path.join(dir, "kanit", day, `bt-${reporter}.json`), "utf8")) };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+  for (const reporter of ["tap", "spec"]) {
+    it(`gerçek node --test (${reporter}): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda`, () => {
+      const { out, record } = realRun(reporter);
+      assert.equal(record.hukum, "BAŞARISIZ");
+      const names = record.basarisiz_testler.map(item => item.ad);
+      assert.equal(names.length, 2, JSON.stringify(record.basarisiz_testler));
+      // TAP üst grup adlarını verir; spec'in "failing tests" bölümü yalnız testin adını ve dosya:satır'ını verir.
+      assert.ok(names.some(name => name.endsWith("düşen test") && (reporter === "spec" || name.includes("Üst Grup › İç Grup"))), names.join(" | "));
+      assert.ok(names.includes("tek başına düşen"), names.join(" | "));
+      const inner = record.basarisiz_testler.find(item => item.ad.endsWith("düşen test"));
+      assert.match(inner.konum, /dusen\.test\.mjs:6:\d+$/);
+      assert.match(inner.hata, /bir iki değil/);
+      assert.ok(!names.some(name => /^Üst Grup$|^İç Grup$/.test(name)), "suite satırı ('1 subtest failed') listeye girmez");
+      const tail = out.stdout.trimEnd().split("\n").slice(-4).join("\n");
+      assert.match(tail, /✖ .*düşen test/, "liste çıktının son satırlarında (CI günlüğünün kuyruğunda okunur)");
+    });
+  }
+  it("Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş", () => {
+    const tap = "    not ok 1 - x\n      ---\n      location: 'D:\\\\a\\\\repo\\\\test\\\\a.test.mjs:3:5'\n      failureType: 'testCodeFailure'\n      error: 'olmadı'\n      ...\n";
+    assert.deepEqual(failedTests(tap), [{ ad: "x", konum: "test/a.test.mjs:3:5", hata: "olmadı" }]);
+    assert.deepEqual(failedTests("  ✓ iyi\n  ✗ Düzenle formunda numara (beklenen 1)\n✗ senaryo: 62 geçti, 1 kaldı").map(item => item.ad), ["Düzenle formunda numara (beklenen 1)", "senaryo: 62 geçti, 1 kaldı"]);
+    assert.deepEqual(failedTests("# tests 3\n# pass 3\n# fail 0"), []);
+  });
+  it("kapı özeti başarısız testleri adıyla yazar", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-kapi-"));
+    try {
+      const rec = { ad: "npm-test-windows-latest-node22", hukum: "BAŞARISIZ", neden: "çıkış 1; 1 başarısız", commit: SHA, kirli: 0, platform: "win32 10", node: "v22", sure_sn: 1, cikis_kodu: 1, ozet: { toplam: 2, gecen: 1, basarisiz: 1, iptal: 0, atlanan: 0 }, basarisiz_testler: [{ ad: "Grup › düşen", konum: "test/a.test.mjs:3:5", hata: "olmadı" }] };
+      writeFileSync(path.join(dir, "r.json"), JSON.stringify(rec));
+      const out = spawnSync(process.execPath, [TOOL, "kapi", dir, "--commit", SHA, "--beklenen", rec.ad], { encoding: "utf8", env: { ...process.env, GITHUB_STEP_SUMMARY: "" } });
+      assert.equal(out.status, 1);
+      assert.match(out.stdout, /### Başarısız testler\n- npm-test-windows-latest-node22: Grup › düşen \[test\/a\.test\.mjs:3:5\] — olmadı/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler", () => {
+  it("sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme", () => {
+    assert.equal(shouldWait({ result: "BEKLİYOR", reason: "1 iş sürüyor", runs: [{}] }), true);
+    assert.equal(shouldWait({ result: "BELİRSİZ", reason: "bu commit için CI koşusu yok (gönderilmemiş olabilir)", runs: [] }), true);
+    assert.equal(shouldWait({ result: "BELİRSİZ", reason: "GitHub okunamadı: 403", runs: [] }), false);
+    assert.equal(shouldWait({ result: "YEŞİL", reason: "", runs: [{}] }), false);
+    assert.equal(shouldWait({ result: "KIRMIZI", reason: "1 iş yeşil değil", runs: [{}] }), false);
   });
 });

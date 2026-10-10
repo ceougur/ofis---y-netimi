@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: öksüz süreç koruması
+    # Subtest: servis yöneticisi zorla kapatılınca uygulama da kapanır
+    not ok 1 - servis yöneticisi zorla kapatılınca uygulama da kapanır
+      ---
+      duration_ms: 5228.029083
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/supervisor-mutasyon-gecici.test.mjs:143:3'
+      failureType: 'testCodeFailure'
+      error: 'uygulama hazır olmadı: Beklenen durum oluşmadı (3208 ms; servis yöneticisi çıktısının sonu: "] 2026-10-10T14:24:34.029Z [INFO] Veritabanı göçü uygulandı: 13 (v2.0.7 çek/senet portföyü, hizmet kalemi)\\n[uygulama] 2026-10-10T14:24:34.031Z [INFO] Veritabanı göçü uygulandı: 14 (v2.0.8 tablodan taksit kartına aktarma, açılış bakiyesi)\\n[uygulama] 2026-10-10T14:24:34.034Z [INFO] Veritabanı göçü uygulandı: 15 (v2.0.10 özel roller, kişiye özel yetki, kullanıcı silme)\\n[uygulama] 2026-10-10T14:24:34.035Z [INFO] Veritabanı göçü uygulandı: 16 (v2.0.11 stok birimlerinin tek yazımı)\\n[uygulama] 2026-10-10T14:24:34.042Z [INFO] Veritabanı göçü uygulandı: 17 (v2.0.13 mevcut borcu taksitlendirme, satış iadesi, satış fiyatı, WhatsApp gönderim kaydı, mutabakat günlüğü)\\n[uygulama] 2026-10-10T14:24:34.059Z [INFO] Veritabanı göçü uygulandı: 18 (v2.0.15 fatura modülü (satış, alış, iadeler; e-Fatura / e-Arşiv / UBL-TR), carinin vergi kimliği ve adresi)\\n[uygulama] 2026-10-10T14:24:34.064Z [INFO] Veritabanı göçü uygulandı: 19 (v2.0.17 Kasa ↔ Banka transferi; fatura kapama bağı ve mahsup fişi)\\n[uygulama] 2026-10-10T14:24:34.103Z [INFO] Veritabanı göçü uygulandı: 20 (v2.1.0 banka ve POS çekirdeği: işlem başlığı (İşlem No), banka fişi, hesap ve POS kartları, ekstre, kur, tatil, kalıcı istek kimliği; para satırlarına hesap ve işlem bağı; banka yetki göçü)\\n[uygulama] 2026-10-10T14:24:34.153Z [INFO] İlk yönetici hesabı oluşturuldu: admin\\n[uygulama] 2026-10-10T14:24:34.221Z [INFO] DestekOfis 2.0.26 merkezi sunucusu http://127.0.0.1:43225\\n2026-10-10T14:24:34.223Z [INFO] Uygulama hazır: DestekOfis 2.0.26\\n")'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        step (file:///home/user/ofis---y-netimi/test/supervisor-mutasyon-gecici.test.mjs:157:15)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/supervisor-mutasyon-gecici.test.mjs:165:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - öksüz süreç koruması
+  ---
+  duration_ms: 5230.200844
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/supervisor-mutasyon-gecici.test.mjs:138:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5488.465094

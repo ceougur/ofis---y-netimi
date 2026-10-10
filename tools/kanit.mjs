@@ -84,6 +84,80 @@ export function parseSummary(text) {
   return null;
 }
 
+// Başarısız testlerin adları, yeri ve hata satırı (10.10.2026). CI günlüğünün tamamı her zaman okunamıyor (GitHub aracı yalnız son 5.000
+// satırı veriyor, tam günlük indirmesi bu ortamda ağ politikasıyla kapalı); node:test TAP'ta başarısız test günlüğün ortasında kalır.
+// Bu liste çıktının SONUNA, kayda ve kapının özetine yazılır ki hangi testin düştüğü kısa günlükten okunabilsin. En içteki başarısız
+// test alınır ("N subtests failed" diyen üst suite değil); tanınmayan biçimde liste boş kalır (özet hükmü değişmez).
+export function failedTests(text, limit = 25) {
+  const clean = String(text).replace(/\x1b\[[0-9;]*m/g, "").replace(/\r/g, "");
+  const lines = clean.split("\n");
+  const short = loc => {
+    const value = String(loc || "").replace(/^'|'$/g, "").replace(/\\+/g, "/");
+    const at = value.lastIndexOf("/test/");
+    return at >= 0 ? value.slice(at + 1) : value;
+  };
+  const out = [];
+  // node:test TAP: "<girinti>not ok N - ad" ve ardından YAML bloğu.
+  const parents = [];
+  for (let i = 0; i < lines.length && out.length < limit; i += 1) {
+    const sub = lines[i].match(/^(\s*)# Subtest: (.*)$/);
+    if (sub) {
+      const depth = sub[1].length;
+      while (parents.length && parents[parents.length - 1].depth >= depth) parents.pop();
+      parents.push({ depth, name: sub[2].trim() });
+      continue;
+    }
+    const bad = lines[i].match(/^(\s*)not ok \d+ - (.*)$/);
+    if (!bad) continue;
+    const depth = bad[1].length;
+    const field = {};
+    if (/^\s*---\s*$/.test(lines[i + 1] || "")) {
+      let j = i + 2;
+      for (; j < lines.length && !/^\s*\.\.\.\s*$/.test(lines[j]); j += 1) {
+        const kv = lines[j].match(/^\s*(location|failureType|error|expected|actual|type):\s?(.*)$/);
+        if (!kv) continue;
+        if (kv[1] === "error" && /^\|-?$/.test(kv[2].trim())) {
+          const body = [];
+          for (let k = j + 1; k < lines.length && body.length < 3; k += 1) {
+            if (/^\s*[a-zA-Z_]+:\s/.test(lines[k]) && lines[k].search(/\S/) <= lines[j].search(/\S/)) break;
+            if (lines[k].trim()) body.push(lines[k].trim());
+          }
+          field.error = body.join(" · ");
+        } else field[kv[1]] = kv[2].trim().replace(/^['"]|['"]$/g, "");
+      }
+    }
+    if (field.failureType === "subtestsFailed" || /^\d+ subtests? failed$/.test(field.error || "")) continue;
+    const path_ = parents.filter(item => item.depth < depth).map(item => item.name);
+    const name = bad[2].trim();
+    if (path_.length && path_[path_.length - 1] === name) path_.pop();
+    const extra = field.expected !== undefined && field.actual !== undefined ? ` (beklenen ${field.expected}, gelen ${field.actual})` : "";
+    out.push({ ad: [...path_, name].join(" › "), konum: short(field.location), hata: `${field.error || field.failureType || ""}${extra}`.trim() });
+  }
+  if (out.length) return out;
+  // node:test spec: "✖ failing tests:" bölümü — "test at <yer>" + "✖ ad (süre)" + girintili hata.
+  const start = lines.findIndex(line => /^✖ failing tests:/.test(line.trim()));
+  if (start >= 0) {
+    for (let i = start + 1; i < lines.length && out.length < limit; i += 1) {
+      const at = lines[i].match(/^test at (.+)$/);
+      if (!at) continue;
+      const head = (lines[i + 1] || "").match(/^\s*✖ (.+?)(?: \([\d.]+m?s\))?$/);
+      if (!head) continue;
+      const body = [];
+      for (let k = i + 2; k < lines.length && body.length < 2 && !/^test at /.test(lines[k]); k += 1) if (lines[k].trim()) body.push(lines[k].trim());
+      if (/^\d+ subtests? failed$/.test(body[0] || "")) continue;
+      out.push({ ad: head[1].trim(), konum: short(at[1]), hata: body.join(" · ") });
+    }
+    if (out.length) return out;
+  }
+  // Projenin senaryo/mutabakat/güvenilirlik koşucuları: "✗ …" satırları.
+  for (const line of lines) {
+    const m = line.match(/^\s*✗ (.+)$/);
+    if (m) out.push({ ad: m[1].trim().slice(0, 300), konum: "", hata: "" });
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
 export function verdict({ exitCode, signal, timedOut, summary }) {
   if (timedOut || signal) return { hukum: "YARIDA", neden: timedOut ? "zaman aşımı" : `sinyal ${signal}` };
   if (!summary) return { hukum: exitCode === 0 ? "BELİRSİZ" : "BAŞARISIZ", neden: "özet satırı tanınmadı" };
@@ -165,6 +239,7 @@ async function run(name, command, minutes) {
   const raw = Buffer.concat(chunks);
   const summary = parseSummary(raw.toString("utf8"));
   const result = verdict({ exitCode, signal, timedOut, summary });
+  const failures = result.hukum === "GEÇTİ" ? [] : failedTests(raw.toString("utf8"));
   const logName = raw.length > GZIP_OVER ? `${name}.log.gz` : `${name}.log`;
   writeFileSync(path.join(dir, logName), raw.length > GZIP_OVER ? gzipSync(raw) : raw);
   const record = {
@@ -178,12 +253,17 @@ async function run(name, command, minutes) {
     zaman_asimi: timedOut,
     ozet: summary,
     ...result,
+    basarisiz_testler: failures,
     ham_cikti: path.relative(WORK, path.join(dir, logName)).split(path.sep).join("/"),
     klasor: WORK,
     ham_cikti_sha256: createHash("sha256").update(raw).digest("hex"),
     ham_cikti_bayt: raw.length,
   };
   writeFileSync(path.join(dir, `${name}.json`), `${JSON.stringify(record, null, 2)}\n`);
+  if (failures.length) {
+    console.log(`\n[kanit] başarısız testler (${failures.length}${failures.length >= 25 ? "+" : ""}):`);
+    for (const item of failures) console.log(`  ✖ ${item.ad}${item.konum ? ` [${item.konum}]` : ""}${item.hata ? ` — ${item.hata}` : ""}`);
+  }
   const s = summary ? `${summary.gecen}/${summary.toplam} geçti, ${summary.basarisiz} başarısız, ${summary.iptal} iptal, ${summary.atlanan} atlanan` : "özet yok";
   console.log(`\n[kanit] ${name}: ${result.hukum}${result.neden ? ` (${result.neden})` : ""} · çıkış ${exitCode} · ${s} · commit ${env.commit?.slice(0, 7)}${env.kirli ? ` +${env.kirli} değişmiş dosya` : ""}${env.izlenmeyen ? ` +${env.izlenmeyen} izlenmeyen` : ""} · ${env.platform} · Node ${env.node}`);
   return result.hukum === "GEÇTİ" ? 0 : 1;
@@ -255,10 +335,13 @@ function printCi(state) {
   console.log(`\n${String(state.commit).slice(0, 7)}: CI ${state.result}${state.reason ? ` (${state.reason})` : ""}`);
 }
 
+// --bekle: koşu sürüyorsa ya da push'tan hemen sonra koşu henüz oluşmadıysa beklenir; GitHub okunamıyorsa beklenmez (BELİRSİZ).
+export const shouldWait = state => state.result === "BEKLİYOR" || (state.result === "BELİRSİZ" && !state.runs.length && /koşusu yok/.test(state.reason));
+
 async function ciCommand(sha, waitMinutes) {
   const until = Date.now() + waitMinutes * 60_000;
   let state = ciState(sha);
-  while (state.result === "BEKLİYOR" && Date.now() < until) {
+  while (shouldWait(state) && Date.now() < until) {
     await new Promise(resolve => setTimeout(resolve, 30_000));
     state = ciState(sha);
   }
@@ -326,6 +409,11 @@ function gateCommand(args) {
     lines.push(`| ${r.ad} | ${r.hukum} | ${r.ozet?.toplam ?? "-"} | ${r.ozet?.gecen ?? "-"} | ${r.ozet?.basarisiz ?? "-"} | ${r.ozet?.iptal ?? "-"} | ${r.ozet?.atlanan ?? "-"} | ${r.cikis_kodu} | ${r.platform.split(" ")[0]} | ${r.node} | ${r.sure_sn} sn |`);
   }
   if (!result.ok) lines.push("", "### Sorunlar", ...result.problems.map(item => `- ${item}`));
+  const failed = records.filter(r => r.basarisiz_testler?.length);
+  if (failed.length) {
+    lines.push("", "### Başarısız testler");
+    for (const r of failed) for (const item of r.basarisiz_testler) lines.push(`- ${r.ad}: ${item.ad}${item.konum ? ` [${item.konum}]` : ""}${item.hata ? ` — ${item.hata}` : ""}`);
+  }
   const text = lines.join("\n");
   console.log(text);
   if (process.env.GITHUB_STEP_SUMMARY) writeFileSync(process.env.GITHUB_STEP_SUMMARY, `${text}\n`, { flag: "a" });

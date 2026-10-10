@@ -1,0 +1,32 @@
+{
+  "ad": "kanit-araci-yeni-3",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kanit-araci.test.mjs",
+  "commit": "c7a0ccf4aaf8a1677932d2c6fd683337dd56f047",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:23:29.397Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 42,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-kanit-araci/2026-10-10/kanit-araci-yeni-3.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "7cf3ac319ca34c5f4ef3cd834b24d8fbbe4e5886b80ea7b6be70bfbfcc710b7e",
+  "ham_cikti_bayt": 11970
+}
