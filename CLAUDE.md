@@ -942,6 +942,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   testler + kabul 1–16 + gözden geçirme temizse canlıya (Kasa çift sayım düzeltmesi de erken gider). KARAR (kullanıcı,
   09.10.2026: "önerdiğin yoldan devam edelim") → daraltılmış 2.1.0 temiz çıkınca CANLIYA; ertelenenler 15.10 sonrası.
   Planlı test (trig_0144BJLRwsZFizXTTYrJVszA) kullanıcı isteğiyle Pazar 11.10'dan CUMA 16.10.2026 09:00 TR'ye (06:00 UTC) ertelendi.
+  KARAR (kullanıcı, 10.10.2026: "limit sorunumuz ortadan kalktı, daraltılmış olarak değil plana uygun olarak devam et") → KAPSAM
+      DARALTMASI KALKTI: 2.1.0 planın §12.1'deki tam hâli (Aşama 2–9 + 13 döviz + 14–16 dilimleri; Bankaya Tahsile Ver, fatura
+      iade/iptalinin bankalı ayrıntısı + TCMB önerisi, K8 taksit kuralları, toplu kesim ayrıntısı, kalan banka raporları DAHİL).
+      POS (2.2.0) ve ekstre (2.3.0) planın kendi sırasında kalır. Not: aynı anda iki ajan "haftalık sınır, 14.10 23:00 UTC'de
+      sıfırlanır" hatasıyla durdu (eksik test turu, kılavuz); yarım işleri worktree'de ve ana ağaçta yerinde.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
