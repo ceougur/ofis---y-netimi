@@ -1,0 +1,28 @@
+
+> destekofis@2.0.26 test:banka-210-ekran-aciklama
+> node --disable-warning=ExperimentalWarning test/e2e/banka-210-ekran-aciklama-yetki.mjs
+
+2026-10-10T21:22:13.910Z [WARN] Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez.
+
+■ m2 Vade Takip: vadeli fatura satırı ve süzgeç seçeneğinin adı
+  ✓ süzgeç seçeneği: invoice=Fatura (vadeli) (tümü: plan=Taksit, cheque=Çek, note=Senet, invoice=Fatura (vadeli), cash=Kasa, table=Tablo, promise=Ödeme Sözü, deadline=Son Tarih)
+  ✓ satırların kaynak adı: Kasa, Fatura (vadeli), Hesabı Atanmamış (ileri tarihli)
+  ✓ yönetici hesapsız eski banka satırını görür (aşırı düzeltme yok)
+
+■ m4 Fatura → + Tahsilat Ekle: açıklama yola göre
+  ✓ Nakit: “Açık tutar ₺700,00. Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır. Bu faturaya bağlı kapatılır (fazlası carinin en eski açık faturasına gider).”
+  ✓ Havale / EFT: “Açık tutar ₺700,00. Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır. Bu faturaya bağlı kapatılır (fazlası carinin en eski açık faturasına gider).”
+
+■ m4 Kasa → Bankadan Kasaya Aktar: açıklama
+  ✓ Bankadan Kasaya Aktar: “Bankadan çekilen nakit Kasa'ya girer; seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler).”
+
+■ m4 Çek / Senet penceresi alt başlığı
+  ✓ alt başlık bankayı da söyler: “Alınan evrak portföye girer, tahsil edilince banka hesabına ya da Kasa'ya; verilen evrak ödenince bankadan ya da Kasa'dan çıkar.”
+
+■ m7 banka yetkisiz (Kasa + rapor) kişinin Vade Takip'i
+  ✓ ön koşul: bank.view false, cash.view true
+  ✓ hesapsız eski banka satırı yok (2 satır: 14.10.20264 gün — Kasa Çek tahsili · No EA-1 · Vade Müşterisi ₺300,00 | 15.10.20265 gün Vade Müşterisi Fatura (vadeli) Satış faturası FIS2026000000001 (kalan) Fatura tarihi 10.10.2026 ₺700,00)
+  ✓ Kasa'nın ileri tarihli nakit satırı görünür
+  ✓ sayfa hatası yok
+
+✓ banka-210-ekran-aciklama-yetki: 11 geçti, 0 kaldı
