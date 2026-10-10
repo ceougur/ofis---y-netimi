@@ -4,14 +4,19 @@
 // Tek zorlanan koşul S2'de "mesai içi"dir: koşu günü (10.10.2026) Cumartesi olduğundan gerçek saate göre her an mesai dışıdır;
 // mesai içi davranışı (kullanıcı çalışırken kurulmaz) ancak mesai kuralını "hep mesai içi" yaparak gözlenebilir.
 //
-// Senaryolar (--senaryo s1,s4,s5,s2; varsayılan hepsi):
+// Senaryolar (--senaryo s1,s4,s5,s2,s6; varsayılan s1,s4,s5,s2 — s6 ~6,5 saat sürdüğü için yalnız açıkça istenirse):
 //  s1  açılışta yeni sürüm → kimse kullanmıyor → kurulur (gerçek saat).
 //  s4  mesai dışı saat dilimi (TZ) + açık sekme (kullanıcı etkin) → yine de kurulur.
 //  s5  kendiliğinden kur kapalı → açılışta bulunur, "hazır" görünür, 3 dk beklenir kurulmaz → ekrandan Şimdi Güncelle → kurulur.
 //  s2  dört servis birlikte (her biri ayrı kurulum kökü): açılışta internet yok → 60 sn sonra yeniden denemede sürüm, sekme açıkken
 //      bulunur → ertelenir. A: sekme açık kalır (60. dk'da kurulmamalı), 62. dk'da kapanır; B: sekme 3. dk'da kapanır; C: sekme
 //      50. dk'da kapanır (60. dk'da boşta süresi 10 dk < 15 dk); D: sekme 3. dk'dan sonra GİZLİ (sayfanın görünürlük bilgisi
-//      sayfa içinden taklit edilir — bu ortamda gerçek pencere küçültme yok). Kurulum anları ölçülür.
+//      sayfa içinden taklit edilir — bu ortamda gerçek pencere küçültme yok). Kurulum anları ölçülür. D'de beklenen (ölçüm,
+//      gizli-sekme-olcum.mjs): gizli sekme 5 dk'da bir tablo eşitlemesi isteği gönderdiği için sunucu hiç 15 dk boş kalmaz →
+//      mesai içinde KURULMAZ (ürün davranışı; karar ana oturumda).
+//  s6  6 saatlik periyodik denetim, ÜRETİM süresiyle (6 sa + 0–30 dk rastgele kayma; kısaltma yok): iki servis (kendiliğinden
+//      kur AÇIK ve KAPALI), kimse bağlı değil. Açılışta kaynakta yeni sürüm YOK; açılış denetimi bitince 9.0.1 yayımlanır →
+//      sonraki sorgu yalnız 6 saatlik zamanlayıcıdan gelebilir. Açıkta kurulur; kapalıda "hazır" görünür, kurulmaz.
 // Çıktı: docs/kanit/2026-10-10/otomatik-guncelleme/gercek/<senaryo>/ (sonuc.json, servis.log, istekler.json, ekran görüntüleri).
 import { copyFileSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import http from "node:http";
@@ -199,6 +204,76 @@ try {
     await page.locator("#adm-update").screenshot({ path: path.join(ctx.dir, "2-kuruldu-yonetim-sistem-guncellemeler.png") }).catch(() => null);
     await context.close();
     results.s5 = await finish(ctx, { ozet: { bulunmaSonrasi3DkSurum: stillOld, ucDkIcindePaketIndirme: zipBefore, simdiGuncelleTiklamadanKurulumaSn: Math.round((done - clickedAt) / 1000), surum: await ctx.service.appVersion(), bulunmaAni: new Date(foundAt).toISOString() }, ekran: screens });
+  }
+
+  if (wanted.includes("s6")) {
+    // S6: 6 saatlik periyodik denetim — üretim süresi, gerçek saat, kimse bağlı değil.
+    const H = 60 * MIN;
+    const runs = [];
+    for (const plan of [{ name: "s6-6sa-kur-acik" }, { name: "s6-6sa-kur-kapali", config: { enabled: false } }]) {
+      const ctx = await setup(plan.name, { config: plan.config, feed: { releases: [] } });
+      // Açılış denetimi (kaynakta yeni sürüm yok) bitsin; sonra 9.0.1 yayımlanır.
+      const status = await waitFor(async () => {
+        const value = await ctx.service.status();
+        return ctx.feed.listHits() >= 1 && value.updates?.state === "idle" && value.updates?.lastCheck ? value : Promise.reject(new Error("açılış denetimi bitmedi"));
+      }, { timeoutMs: 5 * MIN, interval: 500 });
+      const firstCheck = Date.parse(ctx.feed.hits.find(hit => hit.path === "/repos/test/repo/releases").at);
+      ctx.feed.setReleases([release]);
+      const run = { plan, ctx, firstCheck, publishedAt: Date.now(), lastListHits: ctx.feed.listHits(), events: [] };
+      run.events.push({ at: stamp(), olay: "açılış denetimi (kaynakta yeni sürüm yok)", sorgu: run.lastListHits, ilkSorgu: new Date(firstCheck).toISOString(), sonuc: status.updates.available ? "bulundu" : "yok", periodicCheckMs: status.updates.periodicCheckMs, kendiligindenKur: status.updates.autoUpdate });
+      run.events.push({ at: stamp(), olay: "9.0.1 yayımlandı (kaynakta)" });
+      console.log(`[${stamp()}] ${plan.name}: açılış denetimi ${new Date(firstCheck).toISOString()}, 9.0.1 yayımlandı`);
+      runs.push(run);
+    }
+    const deadline = Math.min(...runs.map(run => run.firstCheck)) + 7 * H;
+    const done = run => (run.plan.config ? run.afterCheck : run.installedAt);
+    while (Date.now() < deadline && runs.some(run => !done(run))) {
+      for (const run of runs) {
+        if (done(run)) continue;
+        const status = await run.ctx.service.status();
+        const listHits = run.ctx.feed.listHits();
+        if (listHits !== run.lastListHits) {
+          const hit = run.ctx.feed.hits.filter(item => item.path === "/repos/test/repo/releases").at(-1);
+          const hours = Math.round(((Date.parse(hit.at) - run.firstCheck) / H) * 1000) / 1000;
+          run.events.push({ at: stamp(), olay: "kaynak sorgulandı", sorgu: listHits, sorguAni: hit.at, ilkSorgudanSaat: hours, mesaiDisi: status.quietNow, mesgul: status.activity.busy, durum: status.updates?.state, bulunan: status.updates?.available?.version || null, surum: status.version });
+          console.log(`[${stamp()}] ${run.plan.name}: kaynak sorgulandı #${listHits} (ilk sorgudan ${hours} sa)`);
+          run.lastListHits = listHits;
+          run.periodicHitAt ||= Date.parse(hit.at);
+        }
+        if (!run.foundAt && status.updates?.available) {
+          run.foundAt = Date.now();
+          run.events.push({ at: stamp(), olay: "hazır (bulundu)", surum: status.version, ertelendi: status.updates.deferred });
+        }
+        if (!run.plan.config && status.updates?.lastResult?.outcome === "success") {
+          run.installedAt = Date.parse(status.updates.lastResult.at);
+          run.events.push({ at: stamp(), olay: "kuruldu", ilkSorgudanSaat: Math.round(((run.installedAt - run.firstCheck) / H) * 1000) / 1000, surum: await run.ctx.service.appVersion() });
+          console.log(`[${stamp()}] ${run.plan.name}: KURULDU`);
+        }
+        if (run.plan.config && run.foundAt && !run.afterCheck && Date.now() - run.foundAt >= 5 * MIN) {
+          run.afterCheck = { bulunmaSonrasi5DkSurum: await run.ctx.service.appVersion(), paketIndirme: run.ctx.feed.zipHits() };
+          run.screens = await adminScreens(browser, run.ctx.recorder.url, run.ctx.dir, "hazir-6sa-sonra");
+          run.events.push({ at: stamp(), olay: "bulunduktan 5 dk sonra", ...run.afterCheck });
+        }
+      }
+      await sleep(30_000);
+    }
+    for (const run of runs) {
+      results[run.plan.name] = await finish(run.ctx, {
+        ozet: {
+          kendiligindenKur: !run.plan.config,
+          ilkSorgu: new Date(run.firstCheck).toISOString(),
+          ikinciSorgu: run.periodicHitAt ? new Date(run.periodicHitAt).toISOString() : null,
+          ikiSorguArasiSaat: run.periodicHitAt ? Math.round(((run.periodicHitAt - run.firstCheck) / H) * 1000) / 1000 : null,
+          beklenenAralikSaat: "6,000–6,500 (6 sa + 0–30 dk kayma)",
+          kurulduIlkSorgudanSaat: run.installedAt ? Math.round(((run.installedAt - run.firstCheck) / H) * 1000) / 1000 : null,
+          bulunduHazirGorundu: run.plan.config ? Boolean(run.foundAt) : "kendiliğinden kur açık — bulunduğu anda kuruldu",
+          ...(run.afterCheck || {}),
+          surum: await run.ctx.service.appVersion(),
+        },
+        olaylar: run.events,
+        ekran: run.screens || null,
+      });
+    }
   }
 
   if (wanted.includes("s2")) {
