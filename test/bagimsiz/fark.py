@@ -179,6 +179,9 @@ def esit(yol, x, y, model_program=False):
 
 
 def belirsiz_mi(yol, belirsizler):
+    """yol, belirsiz yollardan birinin altında mı (önek). Küme üzerinde önek araması: O(len(yol))."""
+    if isinstance(belirsizler, (set, frozenset)):
+        return any(yol[:n] in belirsizler for n in range(1, len(yol) + 1))
     for b in belirsizler:
         if yol[:len(b)] == b:
             return True
@@ -638,18 +641,28 @@ def _zincir_sinifi(bag, x, pv):
     return "+".join(sorted(kokler)) if len(kokler) == 1 else (("ZINCIR:" + "+".join(sorted(kokler))) if kokler else None)
 
 
+def _yaprak_onbellek(bag, key, k):
+    ob = bag.setdefault("_yaprak", {})
+    if (key, k) not in ob:
+        c = bag[key]
+        d = c if k == "son" else (c.get("araDurumlar") or {}).get(k)
+        ob[(key, k)] = durum_yapraklari(d) if d is not None else None
+    return ob[(key, k)]
+
+
 def _seri(bag, taban, x_key, y_key):
     """Kontrol noktaları boyunca (y − x) farkı: [(kontrol id ya da 'son', fark)]."""
+    ob = bag.setdefault("_seri", {})
+    if (taban, x_key, y_key) in ob:
+        return ob[(taban, x_key, y_key)]
     out = []
-    for k in bag["kontroller"]:
+    for k in bag["kontroller"] + ["son"]:
         vals = []
         for key in (x_key, y_key):
-            c = bag[key]
-            ara = (c.get("araDurumlar") or {}).get(k)
-            vals.append(_num(durum_yapraklari(ara).get(taban, bos_deger(taban))) if ara is not None else 0)
+            y = _yaprak_onbellek(bag, key, k)
+            vals.append(_num(y.get(taban, bos_deger(taban))) if y is not None else 0)
         out.append((k, vals[1] - vals[0]))
-    vals = [_num(durum_yapraklari(bag[key]).get(taban, bos_deger(taban))) for key in (x_key, y_key)]
-    out.append(("son", vals[1] - vals[0]))
+    ob[(taban, x_key, y_key)] = out
     return out
 
 
@@ -704,11 +717,18 @@ def _olay_acikla(bag, delta, adimlar, aile_=""):
 
 
 def turev_sinif(f, bag):
-    """Türev yaprak için (sınıf, olaylar)."""
+    """Türev yaprak için (sınıf, olaylar). Aynı taban yol + desen için bir kez hesaplanır (araDurumlar tekrarları)."""
     if bag.get("a") is None:
         return None, []
     taban = _taban(f["yol"])
     desen = f["desen"]
+    ob = bag.setdefault("_turev", {})
+    if (taban, desen) not in ob:
+        ob[(taban, desen)] = _turev_hesapla(f, bag, taban, desen)
+    return ob[(taban, desen)]
+
+
+def _turev_hesapla(f, bag, taban, desen):
     x_key, y_key = ("a", "p") if desen in ("A=B≠P", "A≠B≠P") else (("a", "b") if desen == "A≠B=P" else ("b", "a"))
     seri = _seri(bag, taban, x_key, y_key)
     olaylar = []
@@ -799,17 +819,28 @@ def kok_ana(sinif):
 
 # ───────────────────────────────────────────────────────────── tek koşu
 
-def tek_kosu(senaryo_yolu, cikti_adi, kucuk_rapor=False):
+def _hamdan(ham, ad, etiket):
+    """Önceki koşunun ham çıktısı (yeniden karşılaştırma için; koşu yapılmaz)."""
+    yol = os.path.join(ham, "%s.%s.json" % (ad, etiket))
+    with open(yol, encoding="utf-8") as fh:
+        metin = fh.read()
+    return {"cikis": 0, "sure": None, "stderr": "", "veri": json.loads(metin), "stdout": metin, "hamdan": True}
+
+
+def tek_kosu(senaryo_yolu, cikti_adi, kucuk_rapor=False, hamdan=False):
     with open(senaryo_yolu, encoding="utf-8") as fh:
         sen = json.load(fh)
     ad = sen["ad"]
     ham = os.path.join(CIKTI, "ham")
     os.makedirs(ham, exist_ok=True)
-    A = model_kos("model_a", senaryo_yolu)
-    B = model_kos("model_b", senaryo_yolu)
-    P = program_kos(senaryo_yolu, os.path.join(ham, ad + ".program.json"))
+    if hamdan:
+        A, B, P = _hamdan(ham, ad, "a"), _hamdan(ham, ad, "b"), _hamdan(ham, ad, "program")
+    else:
+        A = model_kos("model_a", senaryo_yolu)
+        B = model_kos("model_b", senaryo_yolu)
+        P = program_kos(senaryo_yolu, os.path.join(ham, ad + ".program.json"))
     for etiket, r in (("a", A), ("b", B)):
-        if r["cikis"] == 0:
+        if r["cikis"] == 0 and not r.get("hamdan"):
             with open(os.path.join(ham, "%s.%s.json" % (ad, etiket)), "w", encoding="utf-8") as fh:
                 fh.write(r["stdout"])
     adimlar = {a["id"]: a for a in sen["adimlar"]}
@@ -833,6 +864,8 @@ def tek_kosu(senaryo_yolu, cikti_adi, kucuk_rapor=False):
         "cikisKodlari": {"a": A["cikis"], "b": B["cikis"], "program": P["cikis"]},
         "sureler": {"a": A["sure"], "b": B["sure"], "program": P["sure"]},
     }
+    if hamdan:
+        rapor["hamdan"] = "üç taraf yeniden koşulmadı; cikti/ham'daki son ham çıktılar yeniden karşılaştırıldı"
     if A["cikis"] != 0:
         rapor["a_stderr"] = A["stderr"]
     if B["cikis"] != 0:
@@ -1139,6 +1172,7 @@ def main(argv):
     ap.add_argument("--onek", type=int)
     ap.add_argument("--notr", default="", help="uretici nötrleştirme (virgülle): iskonto_dahil,kasa_acilis,kart,fatura_yineleme")
     ap.add_argument("--kucult")
+    ap.add_argument("--hamdan", action="store_true", help="koşmadan, cikti/ham'daki son çıktılarla yeniden karşılaştır")
     a = ap.parse_args(argv[1:])
     if a.ozet:
         o = ozet_yaz()
@@ -1169,7 +1203,7 @@ def main(argv):
     if a.onek:
         yol = onek_senaryo(yol, a.onek)
         cikti_adi = "onek/fark-%s-o%d.json" % (onek_adi, a.onek)
-    r, kod = tek_kosu(yol, cikti_adi)
+    r, kod = tek_kosu(yol, cikti_adi, hamdan=a.hamdan)
     sys.stdout.write("%s: çıkış a=%s b=%s program=%s · karşılaştırılan %s · atlanan %s · fark %s %s\n" % (
         r["senaryo"], r["cikisKodlari"]["a"], r["cikisKodlari"]["b"], r["cikisKodlari"]["program"],
         r.get("karsilastirilanYaprak"), r.get("atlananBelirsizYaprak"), r.get("farkSayisi"), r.get("desenSayilari")))
