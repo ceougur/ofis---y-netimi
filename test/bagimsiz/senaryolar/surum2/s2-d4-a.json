@@ -1,0 +1,59 @@
+{
+  "aciklama": "SENARYO-DILI sürüm 2 testi (test/bagimsiz/test_surum2.py) — programla karşılaştırma için",
+  "ad": "s2-d4-a",
+  "adimlar": [
+    {
+      "ad": "M",
+      "id": "1",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "M Ltd."
+    },
+    {
+      "ad": "F1",
+      "cari": "M",
+      "id": "2",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "100",
+          "hizmet": "Danışmanlık",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "K1",
+          "sayi": 2
+        }
+      },
+      "tarih": "01.10.2026",
+      "tur": "satis"
+    },
+    {
+      "id": "3",
+      "islem": "taksit_tahsilat",
+      "istekKimligi": "t1",
+      "kart": "K1",
+      "tarih": "05.10.2026",
+      "tutar": "120",
+      "yol": "nakit"
+    },
+    {
+      "id": "4",
+      "islem": "taksit_tahsilat",
+      "istekKimligi": "t1",
+      "kart": "K1",
+      "tarih": "05.10.2026",
+      "tutar": "120",
+      "yol": "nakit"
+    }
+  ],
+  "baslangic": {
+    "bugun": "08.10.2026",
+    "sirket": "bos"
+  },
+  "dil": "destekofis-senaryo/2"
+}

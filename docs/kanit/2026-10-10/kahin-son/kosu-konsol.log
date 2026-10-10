@@ -1,0 +1,51 @@
+rastgele-2-500: çıkış a=0 b=0 program=0 · karşılaştırılan 8350 · atlanan 650 · fark 528 {'A=B≠P': 528}
+  KASA-ACILIS-649                                                38 yaprak  {'A=B≠P': 38}
+  KDV-DAHIL-ISKONTO                                             198 yaprak  {'A=B≠P': 198}
+  TUREV:KDV-DAHIL-ISKONTO                                       292 yaprak  {'A=B≠P': 292}
+rastgele-3-500: çıkış a=0 b=0 program=0 · karşılaştırılan 7388 · atlanan 679 · fark 148 {'A=B≠P': 148}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                              40 yaprak  {'A=B≠P': 40}
+  TUREV:KDV-DAHIL-ISKONTO                                        68 yaprak  {'A=B≠P': 68}
+rastgele-4-500: çıkış a=0 b=0 program=0 · karşılaştırılan 5791 · atlanan 831 · fark 195 {'A=B≠P': 195}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                              57 yaprak  {'A=B≠P': 57}
+  TUREV:KDV-DAHIL-ISKONTO                                        98 yaprak  {'A=B≠P': 98}
+rastgele-5-500: çıkış a=0 b=0 program=0 · karşılaştırılan 8006 · atlanan 1050 · fark 404 {'A=B≠P': 404}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                             153 yaprak  {'A=B≠P': 153}
+  TUREV:KDV-DAHIL-ISKONTO                                       211 yaprak  {'A=B≠P': 211}
+
+[exited with code 0]
+rastgele-31-2000: çıkış a=0 b=0 program=0 · karşılaştırılan 92080 · atlanan 22638 · fark 3999 {'A=B≠P': 3999}
+  ACIKLANMAMIS:A=B≠P:bankaHesaplari.*                            44 yaprak  {'A=B≠P': 44}
+  ACIKLANMAMIS:A=B≠P:cariler.*                                   18 yaprak  {'A=B≠P': 18}
+  ACIKLANMAMIS:A=B≠P:mizan.102.NN                                44 yaprak  {'A=B≠P': 44}
+  ACIKLANMAMIS:A=B≠P:mizan.320                                   69 yaprak  {'A=B≠P': 69}
+  ACIKLANMAMIS:A=B≠P:ozet.gercekBanka                            44 yaprak  {'A=B≠P': 44}
+  ACIKLANMAMIS:A=B≠P:ozet.kasaVeGercekBanka                      64 yaprak  {'A=B≠P': 64}
+  KASA-ACILIS-649                                               160 yaprak  {'A=B≠P': 160}
+  KDV-DAHIL-ISKONTO                                            2386 yaprak  {'A=B≠P': 2386}
+  SINIFLANMAMIS:A=B≠P:retler:cari_odeme                           1 yaprak  {'A=B≠P': 1}
+  TUREV:KDV-DAHIL-ISKONTO                                      1169 yaprak  {'A=B≠P': 1169}
+rastgele-2-500-yogun: çıkış a=0 b=0 program=0 · karşılaştırılan 9548 · atlanan 727 · fark 417 {'A=B≠P': 417}
+  KASA-ACILIS-649                                                38 yaprak  {'A=B≠P': 38}
+  KDV-DAHIL-ISKONTO                                             210 yaprak  {'A=B≠P': 210}
+  TUREV:KDV-DAHIL-ISKONTO                                       169 yaprak  {'A=B≠P': 169}
+rastgele-3-500-yogun: çıkış a=0 b=0 program=0 · karşılaştırılan 7764 · atlanan 1357 · fark 134 {'A=B≠P': 134}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                              34 yaprak  {'A=B≠P': 34}
+  TUREV:KDV-DAHIL-ISKONTO                                        60 yaprak  {'A=B≠P': 60}
+rastgele-4-500-yogun: çıkış a=0 b=0 program=0 · karşılaştırılan 7498 · atlanan 949 · fark 100 {'A=B≠P': 100}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                              20 yaprak  {'A=B≠P': 20}
+  TUREV:KDV-DAHIL-ISKONTO                                        40 yaprak  {'A=B≠P': 40}
+rastgele-5-500-yogun: çıkış a=0 b=0 program=0 · karşılaştırılan 7012 · atlanan 1463 · fark 369 {'A=B≠P': 369}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                             136 yaprak  {'A=B≠P': 136}
+  TUREV:KDV-DAHIL-ISKONTO                                       193 yaprak  {'A=B≠P': 193}
+rastgele-1-500-notr: çıkış a=0 b=0 program=0 · karşılaştırılan 7812 · atlanan 1032 · fark 0 {}
+rastgele-2-500-notr: çıkış a=0 b=0 program=0 · karşılaştırılan 7917 · atlanan 833 · fark 0 {}
+rastgele-3-500-notr: çıkış a=0 b=0 program=0 · karşılaştırılan 7687 · atlanan 861 · fark 0 {}
+rastgele-4-500-notr: çıkış a=0 b=0 program=0 · karşılaştırılan 5790 · atlanan 831 · fark 0 {}
+rastgele-5-500-notr: çıkış a=0 b=0 program=0 · karşılaştırılan 7978 · atlanan 1087 · fark 0 {}
+rastgele-31-2000-notr: çıkış a=0 b=0 program=0 · karşılaştırılan 92966 · atlanan 22439 · fark 0 {}

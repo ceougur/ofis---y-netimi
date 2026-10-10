@@ -733,7 +733,7 @@ class GecersizSenaryo(unittest.TestCase):
 
     def test_dil_ad_alan(self):
         s = senaryo("g1", [cari("ABC")])
-        s["dil"] = "destekofis-senaryo/2"
+        s["dil"] = "destekofis-senaryo/3"
         self.gecersiz(s, "g1")
         self.gecersiz(senaryo("g2", [cari("ABC")]), "baska-ad")
         self.gecersiz(senaryo("g3", [cari("ABC"), cari("ABC")]), "g3")                 # takma ad iki kez (id de)

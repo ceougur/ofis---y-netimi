@@ -1,0 +1,34 @@
+rastgele-1-500 {"  … programda da yineleme": 10, "geri ödenmemiş iade": 9, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 5, "istek kimliği yinelemesi (kâhin)": 10, "kartla alış peşini": 4, "kartla cari ödeme": 3, "kasa_hareket silme (başarılı, kâhin)": 4, "kasa_hareket silme adımı": 4}
+rastgele-2-500 {"  … programda aynı kod": 2, "  … programda da yineleme": 12, "eksi bakiye reti cash-blocked (Kasa)": 2, "geri ödenmemiş iade": 13, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 5, "iade artanı kalan (iade belgesi açık > 0, karşılaştırıldı)": 3, "istek kimliği yinelemesi (kâhin)": 12, "kartla alış peşini": 5, "kartla cari ödeme": 9, "kasa_hareket silme (başarılı, kâhin)": 5, "kasa_hareket silme adımı": 5}
+rastgele-3-500 {"  … programda da yineleme": 15, "geri ödenmemiş iade": 6, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 5, "istek kimliği yinelemesi (kâhin)": 15, "kartla alış peşini": 7, "kartla cari ödeme": 6, "kasa_hareket silme (başarılı, kâhin)": 1, "kasa_hareket silme adımı": 1}
+rastgele-4-500 {"  … programda aynı kod": 5, "  … programda da yineleme": 11, "eksi bakiye reti cash-blocked (Kasa)": 1, "eksi bakiye reti cash-blocked (banka)": 1, "eksi bakiye reti cash-negative (Kasa)": 1, "eksi bakiye reti cash-negative (banka)": 2, "geri ödenmemiş iade": 4, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 3, "istek kimliği yinelemesi (kâhin)": 11, "kartla alış peşini": 2, "kartla cari ödeme": 8, "kasa_hareket silme (başarılı, kâhin)": 7, "kasa_hareket silme adımı": 7}
+rastgele-5-500 {"  … iki tarafta da kabul edildi (banka)": 1, "  … programda aynı kod": 3, "  … programda da yineleme": 14, "eksi bakiye reti cash-blocked (Kasa)": 2, "eksi bakiye reti cash-negative (banka)": 1, "geri ödenmemiş iade": 1, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 1, "istek kimliği yinelemesi (kâhin)": 14, "kartla alış peşini": 9, "kartla cari ödeme": 9, "kasa_hareket silme (başarılı, kâhin)": 3, "kasa_hareket silme adımı": 3, "yineDeKaydet (cashForce) adımı — banka": 1}
+rastgele-31-2000 {"  … iki tarafta da kabul edildi (banka)": 1, "  … programda aynı kod": 7, "  … programda da yineleme": 48, "eksi bakiye reti cash-blocked (Kasa)": 2, "eksi bakiye reti cash-blocked (banka)": 4, "eksi bakiye reti cash-negative (Kasa)": 1, "eksi bakiye reti cash-negative (banka)": 1, "geri ödenmemiş iade": 34, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 24, "iade artanı kalan (iade belgesi açık > 0, karşılaştırıldı)": 1, "istek kimliği yinelemesi (kâhin)": 48, "kartla alış peşini": 44, "kartla cari ödeme": 24, "kasa_hareket silme (başarılı, kâhin)": 3, "kasa_hareket silme adımı": 3, "yineDeKaydet (cashForce) adımı — banka": 1}
+rastgele-1-500-yogun {"  … iki tarafta da kabul edildi (banka)": 1, "  … programda aynı kod": 7, "  … programda da yineleme": 8, "eksi bakiye reti cash-negative (Kasa)": 3, "eksi bakiye reti cash-negative (banka)": 4, "geri ödenmemiş iade": 42, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 24, "iade artanı kalan (iade belgesi açık > 0, karşılaştırıldı)": 6, "istek kimliği yinelemesi (kâhin)": 8, "kartla alış peşini": 5, "kartla cari ödeme": 1, "kasa_hareket silme (başarılı, kâhin)": 3, "kasa_hareket silme adımı": 3, "yineDeKaydet (cashForce) adımı — banka": 1}
+rastgele-2-500-yogun {"  … iki tarafta da kabul edildi (Kasa)": 1, "  … iki tarafta da kabul edildi (banka)": 1, "  … iki tarafta da kabul edildi (kart)": 1, "  … programda aynı kod": 6, "  … programda da yineleme": 6, "eksi bakiye reti cash-negative (banka)": 4, "eksi bakiye reti cash-negative (kart)": 2, "geri ödenmemiş iade": 48, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 23, "iade artanı kalan (iade belgesi açık > 0, karşılaştırıldı)": 2, "istek kimliği yinelemesi (kâhin)": 6, "kartla alış peşini": 5, "kartla cari ödeme": 7, "kasa_hareket silme (başarılı, kâhin)": 4, "kasa_hareket silme adımı": 5, "yineDeKaydet (cashForce) adımı — Kasa": 1, "yineDeKaydet (cashForce) adımı — banka": 1, "yineDeKaydet (cashForce) adımı — kart": 1}
+rastgele-3-500-yogun {"  … programda aynı kod": 9, "  … programda da yineleme": 12, "eksi bakiye reti cash-blocked (banka)": 3, "eksi bakiye reti cash-negative (banka)": 6, "geri ödenmemiş iade": 32, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 18, "iade artanı kalan (iade belgesi açık > 0, karşılaştırıldı)": 4, "istek kimliği yinelemesi (kâhin)": 12, "kartla alış peşini": 1, "kartla cari ödeme": 2}
+rastgele-4-500-yogun {"  … iki tarafta da kabul edildi (Kasa)": 1, "  … iki tarafta da kabul edildi (banka)": 3, "  … programda aynı kod": 6, "  … programda da yineleme": 8, "eksi bakiye reti cash-blocked (banka)": 1, "eksi bakiye reti cash-negative (Kasa)": 1, "eksi bakiye reti cash-negative (banka)": 4, "geri ödenmemiş iade": 30, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 12, "iade artanı kalan (iade belgesi açık > 0, karşılaştırıldı)": 3, "istek kimliği yinelemesi (kâhin)": 8, "kartla alış peşini": 2, "kartla cari ödeme": 8, "kasa_hareket silme (başarılı, kâhin)": 5, "kasa_hareket silme adımı": 5, "yineDeKaydet (cashForce) adımı — Kasa": 1, "yineDeKaydet (cashForce) adımı — banka": 3}
+rastgele-5-500-yogun {"  … iki tarafta da kabul edildi (banka)": 2, "  … programda aynı kod": 19, "  … programda da yineleme": 18, "eksi bakiye reti cash-blocked (Kasa)": 7, "eksi bakiye reti cash-blocked (banka)": 3, "eksi bakiye reti cash-negative (banka)": 9, "geri ödenmemiş iade": 7, "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 4, "istek kimliği yinelemesi (kâhin)": 18, "kartla alış peşini": 1, "kartla cari ödeme": 5, "kasa_hareket silme (başarılı, kâhin)": 2, "kasa_hareket silme adımı": 2, "yineDeKaydet (cashForce) adımı — banka": 2}
+TOPLAM {
+ "  … iki tarafta da kabul edildi (Kasa)": 2,
+ "  … iki tarafta da kabul edildi (banka)": 9,
+ "  … iki tarafta da kabul edildi (kart)": 1,
+ "  … programda aynı kod": 64,
+ "  … programda da yineleme": 162,
+ "eksi bakiye reti cash-blocked (Kasa)": 14,
+ "eksi bakiye reti cash-blocked (banka)": 12,
+ "eksi bakiye reti cash-negative (Kasa)": 6,
+ "eksi bakiye reti cash-negative (banka)": 31,
+ "eksi bakiye reti cash-negative (kart)": 2,
+ "geri ödenmemiş iade": 226,
+ "geri ödenmemiş iade — açığı belirsiz (BELİRSİZ-7/11)": 124,
+ "iade artanı kalan (iade belgesi açık > 0, karşılaştırıldı)": 19,
+ "istek kimliği yinelemesi (kâhin)": 162,
+ "kartla alış peşini": 85,
+ "kartla cari ödeme": 82,
+ "kasa_hareket silme (başarılı, kâhin)": 37,
+ "kasa_hareket silme adımı": 38,
+ "yineDeKaydet (cashForce) adımı — Kasa": 2,
+ "yineDeKaydet (cashForce) adımı — banka": 9,
+ "yineDeKaydet (cashForce) adımı — kart": 1
+}

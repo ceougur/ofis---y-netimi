@@ -1,7 +1,22 @@
 # Bağımsız Senaryo Dili ve Çıktı Biçimi
 
-Dil sürümü: **`destekofis-senaryo/1`** · Yazıldığı gün: 10.10.2026 · Kapsam: 2.1.0 (Banka İlk Teslim) içinden, **döviz, POS,
-ekstre/mutabakat, K8 taksit kuralları ve Bankaya Tahsile Ver HARİÇ** işlemler.
+Dil sürümü: **`destekofis-senaryo/2`** · Yazıldığı gün: 10.10.2026 (sürüm 2: aynı gün) · Kapsam: 2.1.0 (Banka İlk Teslim)
+içinden, **döviz, POS, ekstre/mutabakat, K8 taksit kuralları ve Bankaya Tahsile Ver HARİÇ** işlemler.
+
+### Sürüm 2 değişiklikleri (10.10.2026)
+
+Sürüm 1'deki kurallar aşağıdakiler dışında aynen geçerlidir. Her madde dayanağını taşır; **[KARAR]** = baş mimarın 10.10.2026
+kararı (plan susuyordu ya da plan sözcüğü yoruma açıktı; karar programın kodundan değil, yaygın uygulamadan ve plandan verildi).
+
+| # | Yer | Sürüm 1 | Sürüm 2 | Dayanak |
+|---|---|---|---|---|
+| D1 | §7 kural 5–7, §12 BELİRSİZ-7/9 | Geri ödenmemiş iadenin asıl faturayı aşan kısmı iade belgesinin açığı; iade + bağsız satır → BELİRSİZ-9 | Aşan kısım ("artan") aynı carinin aynı yöndeki (asıl faturayla aynı türdeki) en eski açık belgesini kapatır (otomatik en eskiden kapama, yeni kural 6); kapatamadığı kalan iade belgesinin açığıdır. Bağsız satırların dağıtımı kural 7 oldu. BELİRSİZ-9 kalktı (sıra artık tanımlı; durum BELİRSİZ-11 ile zaten kapsanıyor); BELİRSİZ-7 iade artanını da kapsar | [KARAR] |
+| D2 | §3.2, §5.3, §10 | `yineDeKaydet` → `cashForce` | Aynı; ayrıca açıkça: koşucu yalnız `cashForce:true` gönderir; `cashForce` banka ve kart hesabının "Uyar"ını da geçer. Ret kodu banka/kart hesabında da `cash-negative` / `cash-blocked` (+ `accountId`) | [KARAR] + [ÇIKARIM §7] |
+| D3 | §5.2, §4.16, §4.13 | (değişmedi) kartla ödeme kart hesabına (309.NN) | Aynı; karar olarak teyit: cari ödeme, alış peşini (stok alımı dahil) kart hesabına bağlanır; kart limiti kadar eksiye serbest | [KARAR] + [PLAN §3.5, §3.11] |
+| D4 | §5.4, §8.3 | "ad'ı önceki adımın hareketini anar" (iki okumaya açıktı) | Yinelenen adımın her takma adı (`ad`, `odeme.taksit.ad`, `banka_masraf.fatura`) önceki adımın varlığını anar **ve çıktı haritalarında ikinci ad olarak aynı değerle yer alır**. İç içe ad tanımları gövdeye girmez | [ÇIKARIM §5.4 + §8.3] |
+| D5 | §4.4, §4.7 | `kmhLimiti` vadesiz/ticari/diğer; eksi açılış bu türlerde | `kmhLimiti` ve eksi açılış **yalnız vadesiz** hesapta; öbür türde 4xx | [ÇIKARIM §3.5 tablo "Vadesiz … KMH Limiti alanı var" (yalnız bu satırda); §3.7 #1 "KMH'de eksi açılış ters"] |
+| D6 | §4.20, §4.23, §4.22, §4.24–4.26 | "102 türü hesap" (vadeli dahil) | Vadeli hesapta banka masrafı ve diğer gelir/gider → 400 `bank-account-invalid`; vadeli hesapta faiz gideri, kart borcu kaynağı, kredi hedefi/kaynağı → [BELİRSİZ-24] | [ÇIKARIM §3.5 "Vadeli … Hayır; yalnız transfer ve faiz"] |
+| D7 | §4.26, §4.27 | kredi anaparası sınırsız | Anaparanın kredinin o anki borcunu aşması ve kredi hesabını borç bakiyesine çeviren ters kayıt → [BELİRSİZ-25] | Plan susuyor |
 
 ---
 
@@ -17,7 +32,7 @@ kurallarla yazılır; böylece program ile kâhin aynı yanlış varsayımı pay
 
 Programın kodu (`server/`, `client/`, `tools/`, `test/`), git geçmişi, `docs/*KANIT*.md` ve `docs/*ESLEME*.md` okunmadı. Kâhini
 yazacak kişi ya da ajan da aynı kurala uyar: kaynağı bu belge + plan + talimattır. Bu belgede bir kural eksik ya da yanlışsa
-programın koduna bakılarak değil, plana bakılarak düzeltilir; düzeltme dil sürümünü artırır (`destekofis-senaryo/2`).
+programın koduna bakılarak değil, plana bakılarak düzeltilir; düzeltme dil sürümünü artırır (sürüm 1 → 2: yukarıdaki tablo; sonraki `destekofis-senaryo/3`).
 
 **Üç el, üç karşılaştırma.**
 1. **Plan sayıları** (`kontrol` adımlarındaki `planBeklenen`): planda yazılı sayılar.
@@ -76,7 +91,7 @@ dosyası okunabilsin.
 
 ```json
 {
-  "dil": "destekofis-senaryo/1",
+  "dil": "destekofis-senaryo/2",
   "ad": "kabul-1-16",
   "aciklama": "…",
   "dayanak": "PLAN §12.5 adım 1–16",
@@ -92,7 +107,7 @@ dosyası okunabilsin.
 
 | Alan | Zorunlu | Anlamı |
 |---|---|---|
-| `dil` | evet | Tam olarak `"destekofis-senaryo/1"`. Başka değerde kâhin ve koşucu çalışmaz. |
+| `dil` | evet | Tam olarak `"destekofis-senaryo/2"`. Başka değerde kâhin ve koşucu çalışmaz (sürüm 1 senaryoları yalnız `dil` değiştirilerek sürüm 2 kurallarıyla koşulur). |
 | `ad` | evet | Dosya adıyla aynı (`kabul-1-16`). |
 | `baslangic.bugun` | evet | Sahte saatin başlangıç günü (`gg.aa.yyyy`). [PLAN §12.5 "sahte saat 08.10.2026 Perşembe (sunucu `config.now` + Playwright `page.clock`)"] |
 | `baslangic.sirket` | evet | Yalnız `"bos"`: yeni, boş şirket (hesap, cari, ürün, hareket yok; dönem kilidi yok). |
@@ -112,7 +127,7 @@ dosyası okunabilsin.
 | `ad` | işleme göre | Bu adımın oluşturduğu varlığın ya da hareketin takma adı (§3.3). Sonraki adımlar bu adla anar. |
 | `istekKimligi` | hayır | İstek kimliği (§5.4). Koşucu programa istek kimliği olarak gönderir ([PLAN §7 "Yazan her uç `x-hof-request` alır"]). |
 | `benzerOnay` | hayır | `true` ise Benzer İşlem uyarısı geçilir (programda `similarOk:true`). [PLAN §3.10/2] |
-| `yineDeKaydet` | hayır | `true` ise eksi bakiye "Uyar" sorusu geçilir (programda "Yine de Kaydet", `cashForce`). [PLAN §3.9] |
+| `yineDeKaydet` | hayır | `true` ise eksi bakiye "Uyar" sorusu geçilir (programda "Yine de Kaydet", `cashForce`). Koşucu yalnız `cashForce:true` gönderir; bu Kasa'nın, banka hesabının ve kurumsal kartın "Uyar"ını birlikte geçer (`negativeOk` gönderilmez; programda `negativeOk:false` açıkça gönderilirse banka/kart Uyar'ı geçilmez) [PLAN §3.9; KARAR D2] |
 | `ayniAnda` | hayır | Eşzamanlı grup adı (§5.8). |
 | `not` | hayır | Serbest açıklama; kâhin ve koşucu yok sayar. |
 
@@ -194,9 +209,9 @@ döneme yazılmaz, kilitli dönemdeki kayıt değiştirilmez"; Aşama 0 "Kilitli
 | `kod` | hayır | Hesap Kodu (ör. "ZRT-TL"); verilmezse koşucu tekil bir kod üretir |
 | `iban` | hayır | `kurumsal_kart` ve `kredi` dışındaki türlerde |
 | `acilisTarihi` | evet | Açılış günü D |
-| `acilisBakiyesi` | evet | S (`"0"` olabilir). 102 türlerinde bankadaki bakiye (KMH'de `-` olabilir); kart ve kredide **borç tutarı** (artı yazılır) |
+| `acilisBakiyesi` | evet | S (`"0"` olabilir). 102 türlerinde bankadaki bakiye (yalnız vadesiz hesapta, KMH ile `-` olabilir; D5); kart ve kredide **borç tutarı** (artı yazılır) |
 | `bakiyeDogrulandi` | hayır | `true`/`false` (varsayılan `false`); "Bu tutar bankadaki gerçek bakiyedir" kutusu [PLAN §3.9] |
-| `kmhLimiti` | hayır | vadesiz/ticari/diğer; varsayılan `"0"` |
+| `kmhLimiti` | hayır | **yalnız vadesiz** (sürüm 2, D5); varsayılan `"0"` |
 | `kartLimiti` | hayır | kurumsal_kart; varsayılan `"0"` |
 
 **Alt hesap kodu** [ÇIKARIM §3.5 "`gl_sub` alt hesap kodunu sistem verir; değişmez"; §3.7 #1 "B 102.01 … Kart: B 500 / A 309.01.
@@ -222,6 +237,9 @@ Kredi: B 500 / A 300.01"; §12.5 "Ziraat (102.01), Garanti (102.02)"]:
 | aynı IBAN silinmemiş başka hesapta | 409 | [PLAN Aşama 3 "Aynı IBAN → 409"] |
 | aynı `kod` silinmemiş başka hesapta | 4xx | [ÇIKARIM §3.5 "Hesap Kodu … silinmemiş hesaplar arasında tekildir"] |
 | `acilisBakiyesiHam` 2'den çok ondalık | 400 | [PLAN §5.1 "Banka uçlarında … 2'den çok ondalık 400"] |
+| `kmhLimiti` > 0 ve tür vadesiz değil | 4xx | [ÇIKARIM §3.5 tablo: "KMH Limiti alanı var" yalnız Vadesiz satırında] (sürüm 2, D5) |
+| S < 0 ve tür vadesiz değil | 4xx | [ÇIKARIM §3.5; §3.7 #1 "KMH'de eksi açılış ters"] (sürüm 2, D5) |
+| vadesiz, S < 0 ve \|S\| > `kmhLimiti` | senaryo kurmaz | [BELİRSİZ-23] |
 
 Aynı bankada aynı adlı iki hesap **izinlidir**. [PLAN Aşama 3 "Aynı bankada aynı adlı iki hesap → izinli, kod tekil"]
 
@@ -260,6 +278,8 @@ değişmiş gibi. Hesabın açılış tarihi D' olur. [PLAN §3.8 "'Açılışı
 | D' hesaba bağlı ilk hareketin tarihinden sonra | 409 `bank-opening-after-first` | [PLAN §3.8] |
 | eski D ≤ kilit | 409 | [PLAN §3.8 "Kilitli açılış düzeltilmez"] |
 | D' > bugün | 400 | §5.1 |
+| S' < 0 ve hesap vadesiz değil | 4xx | §4.4 (sürüm 2, D5) |
+| vadesiz, S' < 0 ve \|S'\| > `kmhLimiti` | senaryo kurmaz | [BELİRSİZ-23] |
 
 ### 4.8 `kasa_acilis` — Kasa açılış bakiyesi
 
@@ -521,6 +541,8 @@ Masrafları' → 770) + peşin havale … KDV Dahil 120: B 770 100 · B 191 20 /
 |---|---|---|
 | KDV kipinde `saglayici` yok | 4xx | [ÇIKARIM §3.7 #13] |
 | `tutarHam` 2'den çok ondalık | 400 | [PLAN §5.1] |
+| `hesap` vadeli (BSMV ve Yok kipleri) | 400 `bank-account-invalid` | [ÇIKARIM §3.5 "Vadeli … Hayır; yalnız transfer ve faiz"] (sürüm 2, D6) |
+| `hesap` vadeli (KDV kipleri) | senaryo kurmaz | [BELİRSİZ-24] |
 
 Eksi bakiye denetimi hesapta (çıkan toplam).
 
@@ -542,7 +564,8 @@ kullanıcıdan): B 102.04 850 · B 193 150 / A 642 1.000"]
 |---|---|
 | `ad`, `hesap`, `tutar` | |
 
-Yevmiye: `B 780 T / A b(H) T`. [PLAN §3.7 #15 "B 780 / A 102.01"]
+Yevmiye: `B 780 T / A b(H) T`. [PLAN §3.7 #15 "B 780 / A 102.01"]. Vadeli hesapta faiz gideri kurulmaz [BELİRSİZ-24] (sürüm 2,
+D6: plandaki "yalnız transfer ve faiz" faiz gelirini mi ikisini mi kapsıyor açık değil).
 
 ### 4.23 `diger_gelir` / `diger_gider`
 
@@ -552,12 +575,16 @@ Yevmiye: `B 780 T / A b(H) T`. [PLAN §3.7 #15 "B 780 / A 102.01"]
 
 Yevmiye: gelir `B b(H) T / A 649 T`; gider `B 659 T / A b(H) T`. [PLAN §3.7 #18 "B 102 / A 649; B 659 / A 102"]
 
+| Durum | Sonuç | Dayanak |
+|---|---|---|
+| `hesap` vadeli | 400 `bank-account-invalid` | [ÇIKARIM §3.5 "Vadeli … yalnız transfer ve faiz"] (sürüm 2, D6) |
+
 ### 4.24 `kart_borcu_odeme` — kurumsal kart borcu ödemesi
 
 | Parametre | Anlamı |
 |---|---|
 | `ad` | ters kaydedilecekse |
-| `kaynak` | 102 türü hesap |
+| `kaynak` | 102 türü hesap (vadeli değil: [BELİRSİZ-24], sürüm 2) |
 | `kart` | kurumsal_kart hesabı |
 | `tutar` | |
 
@@ -567,7 +594,7 @@ Yevmiye: `B b(kart) T / A b(kaynak) T`. [PLAN §3.7 #16 "B 309.01 / A 102.01"]. 
 
 | Parametre | Anlamı |
 |---|---|
-| `ad`, `kredi` (kredi hesabı), `hedef` (102 türü hesap), `tutar` | |
+| `ad`, `kredi` (kredi hesabı), `hedef` (102 türü hesap; vadeli değil: [BELİRSİZ-24], sürüm 2), `tutar` | |
 
 Yevmiye: `B b(hedef) T / A b(kredi) T`. [PLAN §3.7 #17 "B 102.01 / A 300.01"]. Kredi hesabında eksi bakiye denetimi yok
 [BELİRSİZ-2].
@@ -576,10 +603,10 @@ Yevmiye: `B b(hedef) T / A b(kredi) T`. [PLAN §3.7 #17 "B 102.01 / A 300.01"]. 
 
 | Parametre | Anlamı |
 |---|---|
-| `ad`, `kredi`, `kaynak` (102 türü), `anapara`, `faiz` (hayır) | |
+| `ad`, `kredi`, `kaynak` (102 türü; vadeli değil: [BELİRSİZ-24], sürüm 2), `anapara`, `faiz` (hayır) | |
 
 Yevmiye: `B b(kredi) anapara / B 780 faiz / A b(kaynak) anapara + faiz`. [PLAN §3.7 #17 "B 300.01 · B 780 / A 102.01"]. Eksi bakiye
-denetimi kaynakta.
+denetimi kaynakta. Anapara, kredi hesabının o anki borcunu (−bakiye(300.NN), bütün satırlarla) aşmaz [BELİRSİZ-25] (sürüm 2, D7).
 
 ### 4.27 `ters_kayit` — Ters Kaydet
 
@@ -596,6 +623,7 @@ dönemdeyse aynı tarih, kilitliyse bugün."; §3.11 bank:voucher "ters fiş as�
 |---|---|---|
 | hedef zaten ters kaydedilmiş | 409 | [PLAN Aşama 4 "Ters kaydı iki kez → 409"] |
 | hedef listede olmayan bir işlem | 4xx | [PLAN §3.8] (KDV kipi, Kasa↔Banka ve ters kaydın ters kaydı: [BELİRSİZ-16]) |
+| ters kayıt bir kredi hesabını borç bakiyesine (bakiye(300.NN) > 0) çevirir | senaryo kurmaz | [BELİRSİZ-25] (sürüm 2, D7) |
 
 Eksi bakiye denetimi azalan hesaplarda (§5.3) [ÇIKARIM §3.3 adım 8 "`guardFinal(prep)` ← K7: yazımdan SONRA hesap bazında son
 durum"].
@@ -647,6 +675,8 @@ sonra kâhin ↔ program.
 - `havale` yolu ve `kasa_banka`: tür ∈ {vadesiz, ticari, diger}. [PLAN §3.5 tablo "Vadesiz … Evet", "Ticari … Evet", "Diğer …
   Evet", "Vadeli … Hayır; yalnız transfer ve faiz", "Kredi Hesabı … Hayır"]
 - `kart` yolu (yalnız ödeme yönü): tür = kurumsal_kart. [PLAN §3.5 "Kurumsal Kredi Kartı … Ödemede ve kurumsal karta gelen iadede"]
+  Sürüm 2 (D3 [KARAR]) teyit: cari ödemesi ve alış faturası peşini (stoklu alış dahil) kartla yapılınca satır seçilen kart
+  hesabına (309.NN) yazılır; kart hesabı kart limiti kadar eksiye serbesttir (§5.3, L = kartLimiti).
 
 **Kurallar** (her para satırı için, kategori bazında):
 1. Hiç uygun hesap yoksa satır hesapsız yazılır: havale → **102.00**, kart → **108.00**. Adımda `hesap` verilmişse → 400. [PLAN §3.5/1
@@ -695,15 +725,28 @@ m < 0 ise ihlal
 
 İhlal yoksa `yineDeKaydet` etkisizdir.
 
+**Ret kodu her hesap türünde aynıdır** (sürüm 2, D2 [KARAR]): Kasa, 102.NN ve 309.NN için `cash-negative` (Uyar) ve `cash-blocked`
+(Engelle); banka/kart hesabında yanıt ihlal eden hesabın `accountId`'sini de taşır (çıktıda karşılaştırılmaz). `bank-negative`,
+`bank-blocked` gibi başka bir kod farktır (BULGU). Onay bayrağı tektir: `cashForce` (koşucu `yineDeKaydet: true` için yalnız bunu
+gönderir) Kasa'nın ve banka/kart hesabının Uyar'ını birlikte geçer.
+
 ### 5.4 İstek kimliği ve Benzer İşlem
 
 **İstek kimliği** [PLAN §3.3 adım 1 "`request_keys` kalıcı, aynı işlem; aynı kimlik + farklı içerik → 409"; §3.10/1 "anahtar
 kullanıcı\|kapsam\|kimlik"]:
 - Anahtar = (kullanıcı, `islem`, `istekKimligi`).
-- Gövde = adımın `id`, `ad`, `not`, `istekKimligi`, `benzerOnay`, `yineDeKaydet`, `ayniAnda` dışındaki bütün alanları.
+- Gövde = adımın `id`, `ad`, `not`, `istekKimligi`, `benzerOnay`, `yineDeKaydet`, `ayniAnda` dışındaki bütün alanları. İç içe takma ad
+  tanımları da gövdeye girmez: `odeme.taksit.ad` ve `banka_masraf.fatura` (sürüm 2, D4). Anılan takma adlar andıkları varlık olarak
+  karşılaştırılır (yinelemenin ikinci adıyla anılan varlık, ilk adla anılanla aynıdır). `kullanici` yoksa `Y`; deftere yazan işlemde
+  `tarih` yoksa o günün tarihi.
 - Aynı anahtarlı **başarılı** önceki adım varsa:
   - gövde aynıysa bu adım etkisizdir; `yinelenenler`e yazılır, ret değildir; `ad`'ı önceki adımın hareketini anar. [PLAN §3.10/1
-    "Sunucu `replayed:true` döndüğünde arayüz yazar: 'Bu işlem zaten kaydedildi …; ikinci kez yazılmadı.'"]
+    "Sunucu `replayed:true` döndüğünde arayüz yazar: 'Bu işlem zaten kaydedildi …; ikinci kez yazılmadı.'"] Yinelemenin tanımladığı
+    her takma ad (`ad`, `odeme.taksit.ad`, `banka_masraf.fatura`) önceki adımın aynı türdeki varlığına bağlanır ve **çıktı haritalarında
+    (`faturalar`, `taksitKartlari`, `bankaHesaplari`, `hesapKodlari`, `eksiBakiyeDenetimi`, `cariler`, `stok`) ikinci anahtar olarak
+    aynı değerle yer alır** (sürüm 2, D4; §8.3 "her … adı"). Mizan ve özet hesap kodundan hesaplandığı için çift sayılmaz.
+  - Yineleme tanıma, adımın "senaryo kurmaz" denetimlerinden (BELİRSİZ-4, 6, 10, 14 …) **önce** yapılır: aynı gövdeli yineleme
+    etkisiz olduğundan ikinci kez uygulansaydı sınırı aşacak olması onu geçersiz yapmaz (sürüm 2; §5.6 sırası 3 → 4).
   - gövde farklıysa **409** (kod planda yok).
 - Reddedilmiş adımın kimliği hatırlanmaz; aynı kimlikle yeniden gönderim yeni istek gibi değerlendirilir. [ÇIKARIM §3.3 adım 10
   "`requests.remember(key, hash, ref)` ← aynı işlemde" — başarısız işlem geri alınır]
@@ -776,6 +819,8 @@ Kâhin `retler`e (§8.5) şu değerleri yazar. `kodDayanak: "PLAN"` = plan bu du
 | Geçersiz IBAN (§4.4) | 400 | null | null |
 | Aynı IBAN (§4.4) | 409 | null | null |
 | Aynı hesap kodu (§4.4) | `"4xx"` | null | null |
+| KMH limiti ya da eksi açılış vadesiz dışı hesapta (§4.4, §4.7; sürüm 2) | `"4xx"` | null | null |
+| Vadeli hesapta banka masrafı (BSMV/Yok), diğer gelir/gider (§4.20, §4.23; sürüm 2) | 400 | `bank-account-invalid` | CIKARIM |
 | Transferde kaynak = hedef (§4.19) | 400 | null | null |
 | Kilitli tarih (§4.3, §5.1) | 409 | `period-locked` | CIKARIM |
 | Açılış öncesi tarih (§5.1) | `"4xx"` | `bank-before-opening` | CIKARIM |
@@ -874,15 +919,25 @@ Belge: satış faturası, alış faturası, satıştan iade, alıştan iade, KDV
 3. Taksitli satış faturasının açığı = taksit kartının kalanı (= T − Σ peşin − Σ kart tahsilatı). [YAYGIN]
 4. `kapatilacakFatura` ile bağlı satır o belgeyi kapatır. [PLAN §4.3/2 "Bu öğe yalnız 1. adımda (bağlı ödemeler …) kendi faturasına
    kapar"; §8.10 "Bağ türü: Peşin · Kapatılacak Fatura · Otomatik (En Eski) · Komisyon Kesintisi (Bağlı)"]
-5. Geri ödenmemiş iadenin (`geri: acik`) tutarı, asıl faturanın 1–4'ten sonra kalan açığından düşülür (en çok o açık kadar); artanı
-   iade belgesinin açığıdır. [YAYGIN]
-6. Bağsız giriş satırlarının toplamı, **taksitsiz** alacak belgelerinin kalan açıklarına; bağsız çıkış satırlarının toplamı borç
-   belgelerinin kalan açıklarına **en eski belgeden** başlayarak dağıtılır (belge tarihi, eşitse adım sırası). Dağıtılamayan artan
+5. Geri ödenmemiş iadenin (`geri: acik`) tutarı, asıl faturanın 1–4'ten sonra kalan açığından düşülür (en çok o açık kadar). Aynı
+   asıl faturanın birden çok iadesi belge sırasıyla (tarih, eşitse adım sırası) düşülür. Düşülemeyen kısım iadenin **artanıdır**.
+   [YAYGIN]. Geri ödenen iade (kural 2) asıl faturaya hiç düşülmez.
+6. **İade artanı — otomatik en eskiden kapama** (sürüm 2, D1 [KARAR, 10.10.2026: "geri ödenmemiş satıştan iadenin (ya da alıştan
+   iadenin) asıl faturayı aşan alacağı, aynı carinin aynı yöndeki en eski açık belgesini kapatır; kapatamadığı kalan iade belgesinin
+   açığıdır" — yaygın programlardaki otomatik en eskiden kapama]):
+   - Satıştan iadenin artanı, aynı carinin **taksitsiz satış faturalarının** 1–5 sonrası kalan açıklarına; alıştan iadenin artanı aynı
+     carinin **alış faturalarının ve KDV'li masraf faturalarının** kalan açıklarına **en eski belgeden** başlayarak dağıtılır (belge
+     tarihi, eşitse adım sırası). Hedef yalnız asıl belge türüdür; iade belgeleri birbirini bu kuralla kapatmaz.
+   - Birden çok iadenin artanı iade belge sırasıyla (tarih, adım sırası) dağıtılır.
+   - Dağıtılamayan artan, o iade belgesinin açığı olarak kalır (avans sayılmaz).
+7. **Bağsız satırlar — otomatik en eskiden kapama:** bağsız giriş satırlarının toplamı **taksitsiz** alacak belgelerinin (satış
+   faturası, alıştan iade); bağsız çıkış satırlarının toplamı borç belgelerinin (alış faturası, satıştan iade, KDV'li masraf faturası)
+   1–6 sonrası kalan açıklarına **en eski belgeden** başlayarak dağıtılır (belge tarihi, eşitse adım sırası). Dağıtılamayan artan
    avanstır. [PLAN §8.10 "Otomatik (En Eski)"; §4.3/2 "2. adım (FIFO, en eski yükümlülük)"; §12.5 adım 9–12 "Tahsilat 20.000 …
-   fatura 'Ödendi'"; belge tarihi ve adım sırası: YAYGIN]
+   fatura 'Ödendi'"; belge tarihi ve adım sırası: YAYGIN] (Sürüm 1'in kural 6'sı; sürüm 2'de iade artanından sonra uygulanır.)
 
 ```
-açık(b) = 1–6 sonrası kalan, ≥ 0
+açık(b) = 1–7 sonrası kalan, ≥ 0
 taksitKartlari[k].toplam = T − Σpeşin ; odenen = Σ etkin taksit_tahsilat ; kalan = toplam − odenen
 ```
 
@@ -894,9 +949,11 @@ cariBakiye(C) = Σ açık(alacak belgeleri) − Σ açık(borç belgeleri) − d
 
 **Kesinlik.** Aşağıdakilerden biri bir caride varsa o carinin bütün `faturalar.*.acik` ve `taksitKartlari.*` alanları
 `belirsizler`e yazılır ve karşılaştırılmaz:
-- taksitli satış faturası + bağsız giriş satırı [BELİRSİZ-7]
-- geri ödenmemiş iade + herhangi bir bağsız satır [BELİRSİZ-9]
+- taksitli satış faturası + (bağsız giriş satırı ya da kural 5 sonrası artanı sıfırdan büyük satıştan iade) [BELİRSİZ-7] (sürüm 2:
+  iade artanının taksitli faturayı / taksit kartını kapatıp kapatmadığı planda yok)
 - bağsız giriş + borç belgesi, ya da bağsız çıkış + alacak belgesi [BELİRSİZ-11]
+- (BELİRSİZ-9 sürüm 2'de kalktı: iade artanı ile bağsız satırın sırası kural 6 → 7 ile tanımlı; iadesi olan caride her bağsız satır
+  zaten BELİRSİZ-11'e girer, çünkü iade belgesi ve asıl fatura karşı yönlerdedir.)
 
 ---
 
@@ -908,7 +965,7 @@ cariBakiye(C) = Σ açık(alacak belgeleri) − Σ açık(borç belgeleri) − d
 
 ```json
 {
-  "dil": "destekofis-senaryo/1",
+  "dil": "destekofis-senaryo/2",
   "senaryo": "kabul-1-16",
   "kaynak": "kahin",
   "mizan":            { "100": { "borc": 1000000, "alacak": 0 }, "102.01": { "borc": 9000000, "alacak": 0 },
@@ -960,7 +1017,8 @@ cariBakiye(C) = Σ açık(alacak belgeleri) − Σ açık(borç belgeleri) − d
 | `faturalar` | her `fatura`, `iade` ve KDV kipli `banka_masraf`'ın `fatura` adı | `{toplam, matrah, kdv, acik}`; hepsi ≥ 0, belgenin kendi tutarları (iade de artı yazılır) |
 | `taksitKartlari` | her taksit kartı | `{toplam, odenen, kalan}` |
 
-Reddedilen adımın oluşturacağı varlık çıktıda **yer almaz**.
+Reddedilen adımın oluşturacağı varlık çıktıda **yer almaz**. İstek kimliğiyle yinelenen adımın takma adları ise çıktıda asıl
+varlığın değeriyle yer alır (§5.4, sürüm 2 D4).
 
 ### 8.4 Ek alanlar
 
@@ -1041,8 +1099,12 @@ Karşılaştırıcı bu yolları (araDurumlar içindekiler dahil: `araDurumlar.k
   - `eksiBakiyeDenetimi` ← hesap kartı ("Bakiye Doğrulandı" / "Açılış bakiyesi doğrulanmadı; eksi bakiye denetimi kapalı") [PLAN §3.9]
   Okunan her alanın kaynağı `okumaKaynaklari`na yazılır. İki kaynak aynı alanı farklı gösterirse ikisi de yazılır ve fark bulgudur.
 - Ret: HTTP durum kodu ve yanıttaki `code` okunur. Reddedilen istek başarı sayılmaz; yanıt gövdesi ve sonraki okumayla doğrulanır.
-- `yineDeKaydet` → programın "Yine de Kaydet" (`cashForce`); `benzerOnay` → `similarOk:true`; `istekKimligi` → istek kimliği başlığı.
-  Bu alanlar yoksa koşucu onları göndermez (program soru sorarsa adım ret sayılır).
+- `yineDeKaydet` → programın "Yine de Kaydet": yalnız `cashForce:true` (silmede `?cashForce=1`); `negativeOk` gönderilmez (sürüm 2, D2);
+  `benzerOnay` → `similarOk:true`; `istekKimligi` → istek kimliği başlığı. Bu alanlar yoksa koşucu onları göndermez (program soru
+  sorarsa adım ret sayılır).
+- İstek kimliğiyle yinelenen adımın programa giden gövdesi asıl adımınkiyle aynı olmalıdır (§5.4: `ad` gövdeye girmez). Koşucunun
+  takma addan türettiği bir alan varsa (ör. alış faturasında tedarikçinin belge numarası) yinelemede asıl adımın değeri gönderilir
+  (sürüm 2; hakem KOSUCU-ALIS-YINELEME-NUMARA).
 - `bugun` ve `saat` → programın sahte saati. Koşucu sunucuyu sahte saatle başlatır.
 - Takma kullanıcılar için o rolde kullanıcı açar.
 - `kontrol` adımında bütün alanları okur ve `araDurumlar[id]`'ye yazar.
@@ -1090,9 +1152,9 @@ Kapsam dışı (bu dil sürümünde hiç yazılmaz): 101, 103, 108.NN (POS), 127
 | 4 | Benzer İşlem: Kasa↔Banka, transfer, Banka Fişi | §3.10/2 anahtarda "hedef" var; bu işlemlerin hedefi tanımlı değil | Kâhin bunlarda `bank-similar` üretmez; senaryo aynı gün/hesap/tutarlı ikinciyi yalnız `benzerOnay: true` ile yazar |
 | 5 | "Aynı iş günü" ve hafta sonu | §3.10/2 "Pencere aynı iş günüdür" | Hesaba bağlı tahsilat/ödeme hafta içi tarihle yazılır |
 | 6 | Kalanı aşan / kapanmış karta taksit tahsilatı | §3.10/3 (K8) bu 2.1.0 dilimi dışında | Senaryo kurmaz |
-| 7 | Taksitli faturası olan caride bağsız tahsilat | Plan faturanın kendi taksit kartıyla bağsız tahsilat ilişkisini tanımlamıyor | O carinin açık ve kart alanları `belirsizler`e |
+| 7 | Taksitli faturası olan caride bağsız tahsilat ya da artanı olan satıştan iade | Plan faturanın kendi taksit kartıyla bağsız tahsilat / iade artanı ilişkisini tanımlamıyor | O carinin açık ve kart alanları `belirsizler`e |
 | 8 | Taksitli faturanın iadesi | Plan susuyor | Senaryo kurmaz |
-| 9 | Geri ödenmemiş iade ile FIFO sırası | Plan susuyor (§7 kural 5 mi 6 mı önce) | O carinin açıkları `belirsizler`e |
+| 9 | ~~Geri ödenmemiş iade ile FIFO sırası~~ | Sürüm 2'de kalktı: sıra §7 kural 5 → 6 → 7 (D1 [KARAR]) | — (bağsız satırlı caride BELİRSİZ-11 zaten geçerli) |
 | 10 | Bağlı ödemenin belge açığını aşması | Plan susuyor | Senaryo kurmaz |
 | 11 | Karşı yönde bağsız satır (müşteriye bağsız ödeme, tedarikçiden bağsız tahsilat) | §2.5 yalnız "ödeme rolü (`recvPay`/`payPay`)" diyor; §4.3/2 komisyon iadesi için "eksi tutarlı `payPay`" örneği var | O carinin açıkları `belirsizler`e |
 | 12 | Aynı KDV oranında çok kalem (satır mı oran grubu mu yuvarlanır) | Plan yalnız tek kalemli fatura örnekliyor | Belge başına her (oran, dahil/hariç) için en çok bir kalem |
@@ -1106,6 +1168,10 @@ Kapsam dışı (bu dil sürümünde hiç yazılmaz): 101, 103, 108.NN (POS), 127
 | 20 | Kasa'da geriye tarihli çıkış ve min formülü | §3.9 formülü banka hesabı için yazılı | Senaryo Kasa hareketlerini tarih sırasıyla yazar |
 | 21 | Vadeli/diğer hesabın Kasa↔Banka'da kullanımı | §3.5 "Vadeli … yalnız transfer ve faiz" | Kasa↔Banka'da vadesiz ya da ticari hesap |
 | 22 | Kasa↔Banka, taksit, iade gibi uçlarda 3 ondalıklı girdi | §5.1 "banka uçları" ile "mevcut modül uçları" ayrımı bu uçlar için açık değil | `<alan>Ham` yalnız §6.2'de sayılan işlemlerde |
+| 23 | Vadesiz hesapta KMH limitini aşan eksi açılış | §3.7 #1 yalnız "KMH'de eksi açılış ters" diyor | Senaryo kurmaz (sürüm 2) |
+| 24 | Vadeli hesapta faiz gideri, kart borcu kaynağı, kredi hedefi/kaynağı ve KDV kipli masraf | §3.5 "Vadeli … Hayır; yalnız transfer ve faiz" — "faiz"in gideri de kapsayıp kapsamadığı ve öbür banka fişleri açık değil | Senaryo kurmaz (sürüm 2) |
+| 25 | Kredi anaparasının kalan kredi borcunu aşması; kredi hesabını borç bakiyesine çeviren ters kayıt | Plan susuyor | Senaryo kurmaz (sürüm 2) |
+| 26 | Aynı türde (satış / alış / iade) belgenin, o türde daha önce girilmiş belgeden eski tarihli girilmesi | Plan susuyor (belge numarası ile tarih sırası) | Senaryo belgeleri tür içinde tarih sırasıyla yazar (sürüm 2; kâhin denetlemez) |
 
 ---
 
@@ -1118,7 +1184,7 @@ Kâhin ve koşucu senaryoyu çalıştırmadan önce şunları denetler; biri tut
 3. Takma adlar biçime uygun ve bir kez tanımlı; anılan her takma ad daha önceki bir adımda tanımlı ve türü doğru.
 4. Tutar, oran, tarih ve miktar biçimleri §3.3'e uygun.
 5. `saat` geri gitmiyor; `ayniAnda` grupları ardışık, ≤ 4 adım, içinde `kontrol` yok.
-6. §12'deki "senaryo kurmaz" kurallarına uyuluyor (BELİRSİZ-1, 2, 3, 4, 5, 6, 8, 10, 12, 13, 14, 16, 18, 19, 20, 21, 22).
+6. §12'deki "senaryo kurmaz" kurallarına uyuluyor (BELİRSİZ-1, 2, 3, 4, 5, 6, 8, 10, 12, 13, 14, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26).
 7. `kart` yolu yalnız ödeme yönünde; `taksit` yalnız satış faturasında; `pesin` ≤ 3 satır, `"tamami"` taksitle birlikte değil.
 8. `transfer`'de `ucret` varsa `ucretVergi` var; `banka_masraf` KDV kipinde `saglayici` ve `fatura` var.
 
@@ -1128,7 +1194,7 @@ Kâhin ve koşucu senaryoyu çalıştırmadan önce şunları denetler; biri tut
 
 ```json
 {
-  "dil": "destekofis-senaryo/1",
+  "dil": "destekofis-senaryo/2",
   "ad": "ornek-masraf",
   "baslangic": { "bugun": "09.10.2026", "sirket": "bos" },
   "adimlar": [

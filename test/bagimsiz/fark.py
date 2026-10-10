@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Üç taraflı fark: model_a ↔ model_b ↔ program (koşucu) — dil `destekofis-senaryo/1` (SENARYO-DILI.md §9).
+"""Üç taraflı fark: model_a ↔ model_b ↔ program (koşucu) — dil `destekofis-senaryo/2` (SENARYO-DILI.md §9).
 
 Kullanım (depo kökünden):
   python3 test/bagimsiz/fark.py --tohum 7 [--islem 500] [--kontrol 25]     # uretici.py ile üretir, üçünü koşar
@@ -312,48 +312,36 @@ def ret_ozeti(v):
 SINIF_ACIKLAMALARI = {
     "KDV-DAHIL-ISKONTO": "KDV dahil fiyatlı iskontolu kalemde program iskontoyu KDV dahil brüte uygulayıp sonra matrahı "
                          "ayırıyor; dil §6.3 önce matrahı ayırıp iskontoyu matraha uyguluyor [YAYGIN] → ±1 kuruş "
-                         "(matrah/KDV/toplam, peşin 'tamami', taksit kartı, cari, banka). Sınıf: İNCELE.",
+                         "(matrah/KDV/toplam, peşin 'tamami', taksit kartı, cari, banka). Hakem (10.10.2026): PROGRAM DOĞRU, "
+                         "dil kuralı yanlış; dil düzeltmesi baş mimar kararı bekliyor. Sınıf: İNCELE (bilinen dil hatası).",
     "KASA-ACILIS-649": "Kasa açılışı ('Açılış Bakiyesi' açıklamalı Kasa girişi) programda 649'a, kâhinlerde 500'e yazılıyor "
-                       "(dil §4.8 [YAYGIN]; plan A8 'Açılış hesabını açıklama metni belirliyor'). Sınıf: İNCELE.",
-    "KART-HESABI-BAGLANMIYOR": "Modül uçlarında (cari ödeme, alış faturası peşini) kurumsal kart yolu verilen hesabı "
-                               "bağlamıyor ve denetlemiyor: satır 108.00'e (hesabı atanmamış) yazılıyor, 309.NN'ye değil; "
-                               "kart yolunda 102 hesabı verilse de 400 yok. Dil §5.2 [PLAN §3.5, §3.11 moneyAccount "
-                               "'card kurumsal kart → 309.NN']. Sınıf: BULGU.",
-    "BANKA-EKSI-KODU": "Banka hesabında eksi bakiye 'Uyar' reddinin kodu programda bank-negative, dilde cash-negative "
-                       "[ÇIKARIM §7: mevcut kodlara accountId eklenir]. Durum (409) aynı. Sınıf: İNCELE.",
-    "KOSUCU-ALIS-YINELEME-NUMARA": "KOŞUCU: surucu.mjs alış faturasında belge numarası olarak takma adı (`number: step.ad`) "
-                                   "gönderiyor; yinelemenin adı farklı olduğundan gövde farklı → program 409 "
-                                   "request-id-reused (programın davranışı tutarlı; koşucu eşlemesi yanlış).",
-    "KAHIN-K4-YINELENEN-AD": "KÂHİNLER AYRIŞIYOR: istek kimliğiyle yinelenen faturanın yeni takma adı çıktıya model_b'de "
-                             "ve programda yazılıyor (K4), model_a'da yazılmıyor (K-4). Dil §5.4 'ad'ı önceki adımın "
-                             "hareketini anar' iki yoruma açık → dil sürüm 2'de netleşmeli. Program yinelemeyi "
-                             "reddettiğinde (alış yinelemesinde koşucunun 409'u, KDV dahil iskontolu peşinli satışta "
-                             "payment-exceeds) yaprak B≠A=P görünür ve bileşik sınıfa yazılır "
-                             "(KAHIN-K4-YINELENEN-AD+<programdaki sınıf>).",
-    "IADE-KAPAMA": "İade belgesinin kapanışı: program iadeyi geri ödense de asıl faturanın açığından düşüyor (geri ödeme "
-                   "ayrıca carinin öbür belgelerini kapatıyor) ve geri ödenmemiş iadede asıl kapalıysa iade belgesinin "
-                   "açığını 0 gösteriyor. Dil §7 kural 2 ve 5 [YAYGIN]. Mini senaryolarda programın açıkları kendi cari "
-                   "bakiyesini tutmuyor (Σ açık ≠ bakiye, avans yok) → Sınıf: BULGU.",
-    "KASA-ISTEK-KIMLIGI": "Kasa elle hareketi (POST /api/workspace/cash) istek kimliğini (x-hof-request) dikkate almıyor: "
-                          "aynı kimlik + aynı gövde ikinci kez yazılıyor, farklı gövde 409 yerine kabul ediliyor. "
-                          "PLAN §7 'Yazan her uç x-hof-request alır'; §3.3 adım 1. Sınıf: BULGU.",
-    "VADELI-HESAP-FIS": "Vadeli hesapta banka masrafı, diğer gelir/gider ve faiz gideri: program 400 bank-account-invalid "
-                        "('Vadesiz, Ticari ya da Diğer TL hesap'), dil §4.20–4.23 '102 türü hesap' diyerek kabul ediyor. "
-                        "PLAN §3.5 tablosu 'Vadeli … Hayır; yalnız transfer ve faiz' programı destekliyor (faiz gideri "
-                        "de reddediliyor; 'faiz' faiz geliri mi ikisi mi açık değil) → DİL/KÂHİN eksiği, dil sürüm 2.",
-    "ACILIS-EKSI-KMH": "Ticari ve Diğer türü hesapta eksi açılış bakiyesi (KMH) programda 400 amount-range ('Açılış "
-                       "Bakiyesi eksi olamaz'); vadesizde kabul. PLAN §3.5 tablosunda 'KMH Limiti alanı' yalnız Vadesiz "
-                       "satırında; dil §3.3/§4.4 vadesiz/ticari/diğer'e eksi açılış ve kmhLimiti veriyor → DİL/KÂHİN "
-                       "geniş, program planla uyumlu (dil sürüm 2). Reddedilen hesaba bağlı sonraki adımlar programda "
-                       "atlanır (zincir).",
-    "KREDI-ANAPARA-ASIMI": "Kredi geri ödemesinde anapara kalan kredi borcunu aşınca program 409 bank-loan-exceeds; dilde "
-                           "bu kural yok (kâhinler kabul edip kredi hesabını borçlu yapıyor). Program davranışı makul → "
-                           "DİL eksiği (sürüm 2'ye kural) + üreteç gerçekçi tutar seçmeli.",
+                       "(dil §4.8 [YAYGIN]; plan A8 'Açılış hesabını açıklama metni belirliyor'). Hakem K6: program yanlış, "
+                       "temel 2.1.0'dan ERTELENDİ (Kasa açılış/devir 2.1.1). Sınıf: İNCELE (bilinen, ertelenmiş).",
+}
+
+# Sürüm 1 koşularında görülen, sonra kapanan sınıflar (10.10.2026). Kuralları SİLİNDİ: aynı desen yeniden görülürse artık
+# SINIFLANMAMIS/ACIKLANMAMIS çıkar ve elle incelenir (gerileme ya da yeni hata gizlenmesin).
+KAPANAN_SINIFLAR = {
+    "IADE-KAPAMA": "PROGRAM (K1, ca8ea75): geri ödenen iade asıl faturaya mahsup edilmez. Artan alacak için dil sürüm 2 §7 "
+                   "kural 6 (D1 KARAR).",
+    "KART-HESABI-BAGLANMIYOR": "PROGRAM (K2, f30a75b): kurumsal kartla ödeme kart hesabına bağlanır. Genel kart kuralı (A=B≠P "
+                               "her 108.00/309/kart farkını bu sınıfa yazıyordu) yanlış etiket koyduğu için kaldırıldı.",
+    "KASA-ISTEK-KIMLIGI": "PROGRAM (K3, 098eb56): Kasa elle hareketi istek kimliğini dikkate alır.",
+    "BANKA-EKSI-KODU": "PROGRAM (K5, 098eb56) + dil sürüm 2 D2 KARAR: banka/kart eksi bakiye kodu cash-negative/cash-blocked; "
+                       "nötrleme kaldırıldı.",
+    "ACILIS-EKSI-KMH": "DİL sürüm 2 D5: KMH ve eksi açılış yalnız vadesiz (4xx); üreteç kurmaz.",
+    "VADELI-HESAP-FIS": "DİL sürüm 2 D6: vadeli hesapta masraf/diğer gelir-gider 400 bank-account-invalid; faiz gideri "
+                        "BELİRSİZ-24; üreteç kurmaz.",
+    "KREDI-ANAPARA-ASIMI": "DİL sürüm 2 D7: BELİRSİZ-25; üreteç kurmaz.",
+    "KOSUCU-ALIS-YINELEME-NUMARA": "KOŞUCU: surucu.mjs yinelemede asıl adımın tedarikçi belge numarasını gönderir.",
+    "KAHIN-K4-YINELENEN-AD": "KÂHİN (model_a K-4): yinelenen adımın takma adları çıktıda (dil sürüm 2 D4).",
+    "KAHIN-A-YINELEME-SIRASI": "KÂHİN (model_a): yineleme 'senaryo kurmaz' denetimlerinden önce tanınır.",
+    "KAHIN-B-KASA-HAREKET-SIL": "KÂHİN (model_b): kasa_hareket adı tanımlanır; üreteç Kasa elle hareketini de siler.",
 }
 
 # Durum değiştirmeyen sınıflar (iki taraf da reddediyor ya da kâhin yinelemeyi etkisiz sayıyor, program 409 veriyor):
 # türev olayları açıklamaz.
-DURUMSUZ_SINIFLAR = {"BANKA-EKSI-KODU", "KOSUCU-ALIS-YINELEME-NUMARA"}
+DURUMSUZ_SINIFLAR = set()
 
 TUREV_AILELER = ("cariler.*", "bankaHesaplari.*", "kasa", "mizan.", "ozet.", "taksitKartlari.*.", "faturalar.*.acik",
                  "stok.*")
@@ -518,43 +506,27 @@ def birincil_sinif(f, bag):
     t = _taban(yol)
     desen = f["desen"]
     if yol[0] in ("eslenemeyen",):
-        neden = str((f.get("program") or {}).get("neden", ""))
-        if "Kart yolunda" in neden:
-            return "KART-HESABI-BAGLANMIYOR"
         return None
     if t[0] == "atlananlar" or (t[0] == "retler" and t[1] in bag["p_atlanan"]):
         return _atlama_sinifi(bag, t[1])
     if t[0] in ("retler", "yinelenenler"):
         sid = t[1]
         x = bag["adimlar"].get(sid, {})
-        if sid in bag["alis_yineleme"]:
-            return "KOSUCU-ALIS-YINELEME-NUMARA"
         asil = bag["yineleme"].get(sid)
         if asil in bag["adim_sinifi"]:
             return bag["adim_sinifi"][asil]   # asıl istek programda reddedildi → yineleme yeni istek sayıldı
-        if x.get("islem") == "kasa_hareket" and "istekKimligi" in x:
-            return "KASA-ISTEK-KIMLIGI"
         if t[0] == "retler":
             av, bv, pv = (_ret_metni(f[k]) for k in ("a", "b", "program"))
-            if "cash-negative" in av and "cash-negative" in bv and "bank-negative" in pv:
-                return "BANKA-EKSI-KODU"
-            if "cash-blocked" in av and "cash-blocked" in bv and "bank-blocked" in pv:
-                return "BANKA-EKSI-KODU"
-            if sid in bag["kart_adim"]:
-                return "KART-HESABI-BAGLANMIYOR"
-            if "bank-loan-exceeds" in pv:
-                return "KREDI-ANAPARA-ASIMI"
-            if x.get("islem") in ("hesap_ac", "acilis_duzelt") and str(x.get("acilisBakiyesi", "")).startswith("-") \
-                    and "amount-range" in pv and av == "geçti":
-                return "ACILIS-EKSI-KMH"
-            if "bank-account-invalid" in pv and av == "geçti" and bv == "geçti":
-                hd = bag["adimlar"].get(bag["tanim"].get(x.get("hesap")), {})
-                if hd.get("tur") == "vadeli":
-                    return "VADELI-HESAP-FIS"
             if "payment-exceeds" in pv and x.get("ad") in bag["dahil_isk"]:
                 return "KDV-DAHIL-ISKONTO"
             if av == "geçti" and bv == "geçti" and any(k in pv for k in ZINCIR_KODLARI):
                 z = _zincir_sinifi(bag, x, pv)
+                if z:
+                    return z
+            if pv == "geçti" and av == bv and any(k in av for k in ZINCIR_KODLARI):
+                # ters zincir: kâhinler bakiye/stok reddi veriyor, program (önceki bir bilinen farkla bakiyesi farklı
+                # olduğu için) kabul ediyor
+                z = _zincir_sinifi(bag, x, av)
                 if z:
                     return z
         return None
@@ -562,13 +534,7 @@ def birincil_sinif(f, bag):
                 "stok") and len(t) >= 2 and (f["a"] == YOK or f["program"] == YOK or f["b"] == YOK):
         d = bag["tanim"].get(t[1])
         if d in bag["adim_sinifi"]:
-            s_ = bag["adim_sinifi"][d]
-            if t[0] == "faturalar" and t[1] in bag["yineleme_ad"] and desen == "B≠A=P" and f["a"] == YOK \
-                    and f["b"] != YOK and s_ != "KAHIN-K4-YINELENEN-AD":
-                # Yinelenen faturanın takma adı: program yinelemeyi reddettiği için yazmıyor (s_), model_a da K-4
-                # gereği yazmıyor; model_b yazıyor (K4). İki neden birlikte → bileşik sınıf.
-                return "+".join(sorted({"KAHIN-K4-YINELENEN-AD", s_}))
-            return s_
+            return bag["adim_sinifi"][d]
         if d in bag["p_atlanan"]:
             z = _atlama_sinifi(bag, d)
             if z:
@@ -582,34 +548,20 @@ def birincil_sinif(f, bag):
                 return bag["adim_sinifi"][d]
     if t[0] in ("faturalar", "taksitKartlari") and len(t) >= 2:
         ad = t[1]
-        if ad in bag["alis_yineleme_ad"] or (ad in bag["yineleme_ad"] and bag["yineleme_ad"][ad] in bag["fatura"]
-                                             and bag["fatura"][bag["yineleme_ad"][ad]].get("tur") == "alis"
-                                             and desen == "B≠A=P"):
-            if desen == "B≠A=P" and f["a"] == YOK and f["b"] != YOK:
-                return "KAHIN-K4-YINELENEN-AD+KOSUCU-ALIS-YINELEME-NUMARA"
-            return "KOSUCU-ALIS-YINELEME-NUMARA"
-        if ad in bag["yineleme_ad"]:
-            if desen == "A≠B≠P" and f["a"] == YOK:
-                # Takma ad satırı asıl belgenin değerini taşır: B ile programın ayrılığı asıl belgenin aynı alanındaki
-                # farkla aynı kökten gelir → K4 + asıl belgenin o alandaki sınıfı.
-                ix = len(f["yol"]) - len(t) + 1
-                f2 = {"yol": f["yol"][:ix] + [bag["yineleme_ad"][ad]] + f["yol"][ix + 1:], "a": f["b"], "b": f["b"],
-                      "program": f["program"], "desen": "A=B≠P", "aile": f["aile"]}
-                f2["alan"] = yol_metni(f2["yol"])
-                s2 = kok_sinif(f2, bag)
-                if not s2.startswith(("ACIKLANMAMIS", "SINIFLANMAMIS")):
-                    return "+".join(sorted({"KAHIN-K4-YINELENEN-AD"} | set(kok_ana(s2))))
-            return "KAHIN-K4-YINELENEN-AD"
+        if ad in bag["yineleme_ad"] and desen == "A=B≠P":
+            # yinelemenin ikinci adı asıl belgenin değerini taşır: farkı asıl belgenin aynı alanındaki farkın sınıfıdır
+            ix = len(f["yol"]) - len(t) + 1
+            f2 = dict(f)
+            f2["yol"] = f["yol"][:ix] + [bag["yineleme_ad"][ad]] + f["yol"][ix + 1:]
+            f2["alan"] = yol_metni(f2["yol"])
+            s2 = kok_sinif(f2, bag)
+            if not s2.startswith(("ACIKLANMAMIS", "SINIFLANMAMIS")):
+                return s2
         if t[0] == "faturalar" and desen == "A=B≠P" and ad in bag["dahil_isk"] and t[2] in ("toplam", "matrah", "kdv"):
             if isinstance(f["a"], int) and isinstance(f["program"], int) and abs(f["a"] - f["program"]) <= 3:
                 return "KDV-DAHIL-ISKONTO"
     if t[0] == "mizan" and t[1] in ("500", "649") and desen == "A=B≠P" and bag["kasa_acilis"]:
         return "KASA-ACILIS-649"
-    if desen == "A=B≠P" and bag["kart_adim"] and bag["kart_hesaplari"]:
-        if (t[0] == "mizan" and (t[1] == "108.00" or t[1].startswith("309."))) or \
-                (t[0] == "ozet" and t[1] in ("hesabiAtanmamis", "kartVeKrediBorcu")) or \
-                (t[0] == "bankaHesaplari" and t[1] in bag["kart_hesaplari"]):
-            return "KART-HESABI-BAGLANMIYOR"
     return None
 
 
@@ -635,10 +587,15 @@ def _atlama_sinifi(bag, sid):
 
 
 def _zincir_sinifi(bag, x, pv):
-    """Programın bakiye/stok reddi kâhinlerde yoksa: o Kasa/banka/stok yaprağında adımdan ÖNCEKİ farkların kökü (zincir)."""
+    """Bir tarafın bakiye/stok reddi öbüründe yoksa (program reddetti kâhin geçirdi YA DA kâhin reddetti program geçirdi):
+    o Kasa/banka/stok yaprağında adımdan ÖNCEKİ farkların kökü (zincir). pv: reddeden tarafın ret metni."""
     yapraklar_ = []
     if "cash-" in pv:
-        yapraklar_ = [("kasa",)]
+        # Dil sürüm 2 D2: cash-negative/cash-blocked banka ve kart hesabında da → adımın andığı hesaplar (yoksa hepsi) + Kasa
+        anilan = {x.get(k_) for k_ in ("hesap", "kaynak")} | {r_.get("hesap") for r_ in (x.get("odeme") or {}).get("pesin") or []}
+        anilan |= {(x.get("geri") or {}).get("hesap")}
+        anilan = {h for h in anilan if h in bag["banka_hesaplari"]}
+        yapraklar_ = [("kasa",)] + [("bankaHesaplari", h) for h in (anilan or bag["banka_hesaplari"])]
     elif "bank-" in pv:
         yapraklar_ = [("bankaHesaplari", h) for h in bag["kart_hesaplari"] | bag["banka_hesaplari"]]
     elif "stock-" in pv:
@@ -713,27 +670,11 @@ def _olay_acikla(bag, delta, adimlar, aile_=""):
     isk = [i for i in adimlar if i in bag["isk_adim"]]
     if ret:
         return ret + (["KDV-DAHIL-ISKONTO"] if isk and "KDV-DAHIL-ISKONTO" not in ret else [])
-    # 2) iade kapaması yalnız açık alanlarını etkiler (bakiye değişmez)
-    if aile_ in ("faturalar.*.acik",) and any(i in bag["iade_adim"] for i in adimlar):
-        return ["IADE-KAPAMA"] + (["KDV-DAHIL-ISKONTO"] if isk else [])
-    kart = [i for i in adimlar if i in bag["kart_adim"]]
+    # 2) KDV dahil iskontolu belgeye dokunan adımın kuruş sapması (belge sayısı kadar)
     tol = max(2, 2 * max([bag["isk_sayisi"].get(i, 0) for i in adimlar] or [0])) if isk else 0
-    nedenler = []
     if isk and abs(delta) <= tol:
         return ["KDV-DAHIL-ISKONTO"]
-    if kart:
-        tutarlar = [_tutar_kurus(bag["kart_adim"][i]) for i in kart]
-        if any(t is None for t in tutarlar):
-            nedenler = ["KART-HESABI-BAGLANMIYOR"] + (["KDV-DAHIL-ISKONTO"] if isk else [])
-            return nedenler
-        n = len(tutarlar)
-        if n <= 14:
-            for maske in range(1, 1 << n):
-                top = sum(tutarlar[j] for j in range(n) if maske >> j & 1)
-                if abs(abs(delta) - top) <= tol:
-                    return ["KART-HESABI-BAGLANMIYOR"] + (["KDV-DAHIL-ISKONTO"] if isk and abs(delta) != top else [])
-        else:
-            return ["KART-HESABI-BAGLANMIYOR"] + (["KDV-DAHIL-ISKONTO"] if isk else [])
+    # 3) Kasa açılışı (500 ↔ 649) yalnız mizan.500/649'u etkiler; birincil kuralda
     return None
 
 
@@ -1190,7 +1131,9 @@ def main(argv):
     ap.add_argument("--islem", type=int, default=500)
     ap.add_argument("--kontrol", type=int, default=25)
     ap.add_argument("--onek", type=int)
-    ap.add_argument("--notr", default="", help="uretici nötrleştirme (virgülle): iskonto_dahil,kasa_acilis,kart,fatura_yineleme")
+    ap.add_argument("--notr", default="", help="uretici nötrleştirme (virgülle): iskonto_dahil,kasa_acilis "
+                    "(bilinen iki açık sınıf); kart,fatura_yineleme,iade,kasa_yineleme eski sınıflar için duruyor")
+    ap.add_argument("--yogun", action="store_true", help="uretici --yogun (iade, ret, eksi bakiye ağırlıklı)")
     ap.add_argument("--kucult")
     ap.add_argument("--hamdan", action="store_true", help="koşmadan, cikti/ham'daki son çıktılarla yeniden karşılaştır")
     a = ap.parse_args(argv[1:])
@@ -1204,11 +1147,12 @@ def main(argv):
     if a.tohum is not None:
         u = uretici_yukle()
         notr = [x for x in a.notr.split(",") if x]
-        sen = u.uret(a.tohum, a.islem, a.kontrol, notr=notr)
+        sen = u.uret(a.tohum, a.islem, a.kontrol, notr=notr, yogun=a.yogun)
         yol = os.path.join(CIKTI, "senaryolar", sen["ad"] + ".json")
         yaz_json(yol, sen)
-        cikti_adi = "fark-%d%s.json" % (a.tohum, "-notr" if notr else "")
-        onek_adi = str(a.tohum) + ("-notr" if notr else "")
+        ek = ("-notr" if notr else "") + ("-yogun" if a.yogun else "")
+        cikti_adi = "fark-%d%s.json" % (a.tohum, ek)
+        onek_adi = str(a.tohum) + ek
     else:
         yol = os.path.abspath(a.senaryo)
         with open(yol, encoding="utf-8") as fh:

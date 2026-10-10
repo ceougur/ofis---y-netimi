@@ -1,6 +1,6 @@
 # Model A: Kararlar
 
-Model A, `destekofis-senaryo/1` senaryolarını işleyen bağımsız bir muhasebe kâhinidir. Bu belge, kâhinin kendi verdiği
+Model A, `destekofis-senaryo/2` (sürüm 1'den güncelleme: en altta) senaryolarını işleyen bağımsız bir muhasebe kâhinidir. Bu belge, kâhinin kendi verdiği
 kararları sayar. Kurallar `test/bagimsiz/SENARYO-DILI.md` belgesindedir. Bu kararlar ise o belgenin açık bıraktığı ya da
 yalnız "senaryo kurmaz" dediği yerlerde kâhinin nasıl davrandığını anlatır. Her kararda dayanak alıntısı ve kararın
 etiketi var (SENARYO-DILI §1'deki anlamlarla).
@@ -119,10 +119,12 @@ Kâhinin stderr iletileri ve `belirsizler` alanı bu numaraları anar.
 ### K-4 · Yinelenen adımın takma adları ve çıktıdaki ad
 
 - **Dayanak:** SENARYO-DILI §5.4: "ad'ı önceki adımın hareketini anar".
-- **Davranış:** Yinelenen adımın her takma adı, önceki başarılı adımın oluşturduğu varlığı anar (`ad`, taksit kartı adı,
-  KDV'li masrafın fatura adı). Çıktıda bir varlık hep **ilk tanımlandığı** adla yazılır. Örnek: `F2`, `F1`'in yinelemesi
-  ise `faturalar` yalnız `F1`'i taşır.
-- **Etiket:** YAYGIN. Senaryo yazarlarına öneri: yinelenen adımda yeni `ad` vermeyin.
+- **Davranış (sürüm 2, D4 — hakem KAHIN-K4-YINELENEN-AD üzerine DEĞİŞTİ):** Yinelenen adımın her takma adı, önceki
+  başarılı adımın oluşturduğu varlığı anar (`ad`, taksit kartı adı, KDV'li masrafın fatura adı) **ve çıktı haritalarında
+  ikinci anahtar olarak aynı değerle yazılır** (`faturalar`, `taksitKartlari`, `bankaHesaplari`, `hesapKodlari`,
+  `eksiBakiyeDenetimi`, `cariler`, `stok`). Örnek: `F2`, `F1`'in yinelemesi ise `faturalar` hem `F1`'i hem `F2`'yi aynı
+  değerle taşır. (Sürüm 1'deki "yalnız ilk ad" kararı dilin §8.3 "her … adı" kuralına aykırıydı.)
+- **Etiket:** ÇIKARIM (§5.4 + §8.3).
 
 ### K-5 · Benzer İşlem dizinine peşin satırlar ve iade geri ödemeleri de girer
 
@@ -355,3 +357,20 @@ Kâhinin stderr iletileri ve `belirsizler` alanı bu numaraları anar.
 - `"tamami"` = toplam − öbür peşin satırlar. Sonuç eksiyse "Σ peşin > toplam" → "4xx"; sıfırsa senaryo hatasıdır.
 - Satışta `kart` yolu ve alışta taksit, statik olarak senaryo hatasıdır (§13/7).
 - Peşin satırın hesabı §5.2'ye göre seçilir. Açılıştan önceki tarih → `bank-before-opening`.
+
+## Sürüm 2 güncellemesi (10.10.2026, dil `destekofis-senaryo/2`)
+
+Güncelleyen: bağımsız kâhin ajanı (temiz oda: `server/` ve `client/` okunmadı; kaynak SENARYO-DILI.md sürüm 2, plan ve baş
+mimarın 10.10.2026 kararları). Değişiklikler dilin "Sürüm 2 değişiklikleri" tablosundaki D1–D7'yi uygular:
+
+- **D1 (§7 kural 6, KARAR):** geri ödenmemiş iadenin kural 5'ten artanı, aynı carinin asıl türdeki (satıştan iade → taksitsiz
+  satış faturaları; alıştan iade → alış ve KDV'li masraf faturaları) en eski açık belgelerini kapatır; kalan iade belgesinin
+  açığıdır. Bağsız satırların dağıtımı kural 7 oldu. BELİRSİZ-9 kalktı; BELİRSİZ-7 artanı olan satıştan iadeyi de kapsar.
+- **D4 (§5.4, §8.3):** yinelenen adımın takma adları çıktıda ikinci anahtar olarak (K-4 değişti, yukarıda); gövde kuralı K-3 zaten böyleydi.
+- **D5–D7:** KMH limiti ve eksi açılış vadesiz dışında 4xx; KMH'yi aşan eksi açılış BELİRSİZ-23; vadeli hesapta banka masrafı
+  (BSMV/Yok) ve diğer gelir/gider 400 `bank-account-invalid`, faiz gideri / kart borcu kaynağı / kredi hedefi-kaynağı / KDV
+  kipli masraf BELİRSİZ-24; kredi anaparası kalan borcu aşarsa ve ters kayıt kredi hesabını borç bakiyesine çevirirse
+  BELİRSİZ-25 (çıkış 2).
+- **Hakem bulgusu KAHIN-A-YINELEME-SIRASI düzeltildi:** işlem fonksiyonu bir "senaryo kurmaz" denetimiyle (BELİRSİZ-4, 6, 10, 14, 24, 25 …) durursa ve adım başarılı önceki adımın aynı gövdeli yinelemesiyse adım etkisiz yinelemedir (dil §5.4 son madde; §5.6 sırası 3 → 4).
+- Testler: `test/bagimsiz/test_surum2.py` (iki kâhine ortak, 18 test, beklenenler dilden elle) + bu klasördeki testler;
+  mutasyon: sürüm 2 kurallarına konan 16 hatanın 16'sı yakalandı (model_a 9, model_b 7).

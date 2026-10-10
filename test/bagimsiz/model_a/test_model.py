@@ -35,7 +35,7 @@ def sen(ad, adimlar, bugun="08.10.2026", ayarlar=None, kullanicilar=None):
         b["ayarlar"] = ayarlar
     if kullanicilar:
         b["kullanicilar"] = kullanicilar
-    return {"dil": "destekofis-senaryo/1", "ad": ad, "baslangic": b, "adimlar": adimlar}
+    return {"dil": "destekofis-senaryo/2", "ad": ad, "baslangic": b, "adimlar": adimlar}
 
 
 def hesap(aid, ad, tutar, tarih="01.10.2026", dog=True, tur="vadesiz", **kw):
@@ -802,7 +802,7 @@ class HamVeRetler(unittest.TestCase):
         self.assertEqual(o["bankaHesaplari"], {"ZIR": 101000, "GAR": 0})
 
     def test_yinelenen_fatura_takma_adi(self):
-        """§5.4: yinelenen adımın `ad`'ı önceki adımın varlığını anar; çıktıda ilk ad kullanılır."""
+        """§5.4 (sürüm 2, D4): yinelenen adımın `ad`'ı önceki adımın varlığını anar; çıktıda iki ad da aynı değerle."""
         s = sen("yinelenen-fatura", [
             cari("1", "ABC"),
             hizmet_satis("2", "F1", "ABC", "100", istekKimligi="f"),
@@ -812,8 +812,9 @@ class HamVeRetler(unittest.TestCase):
         ])
         o = kos(s)
         self.assertEqual(o["yinelenenler"], ["3"])
-        self.assertEqual(list(o["faturalar"]), ["F1"])
+        self.assertEqual(sorted(o["faturalar"]), ["F1", "F2"])
         self.assertEqual(o["faturalar"]["F1"]["acik"], 6000)
+        self.assertEqual(o["faturalar"]["F2"], o["faturalar"]["F1"])
 
 
 # ------------------------------------------------------------------ senaryo geçerliliği (§13)

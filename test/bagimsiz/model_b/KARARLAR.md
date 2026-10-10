@@ -1,7 +1,7 @@
 # model_b — Kâhinin Kararları
 
 Kâhin: `test/bagimsiz/model_b/model.py` (Python 3, yalnız standart kütüphane, tamsayı kuruş, ağ ve saat yok).
-Dil sürümü: `destekofis-senaryo/1`.
+Dil sürümü: `destekofis-senaryo/2` (sürüm 1'den güncelleme: en altta).
 
 ## Temiz oda beyanı
 
@@ -286,3 +286,20 @@ Biçim: **K-no. Karar.** — dayanak (plan ya da dil alıntısı) ve gerekçe. K
 - **K5:** bağlı ödemeli açık iade.
 - **K20:** peşinli faturaya aynı gün aynı tutarda bağlı tahsilat.
 - **§4.8 Kasa açılışı:** kâhin `B 100 / A 500` yazar (YAYGIN). Program 649 yazarsa İNCELE.
+
+## Sürüm 2 güncellemesi (10.10.2026, dil `destekofis-senaryo/2`)
+
+Güncelleyen: bağımsız kâhin ajanı (temiz oda: `server/` ve `client/` okunmadı; kaynak SENARYO-DILI.md sürüm 2, plan ve baş
+mimarın 10.10.2026 kararları). Değişiklikler dilin "Sürüm 2 değişiklikleri" tablosundaki D1–D7'yi uygular:
+
+- **D1 (§7 kural 6, KARAR):** geri ödenmemiş iadenin kural 5'ten artanı, aynı carinin asıl türdeki (satıştan iade → taksitsiz
+  satış faturaları; alıştan iade → alış ve KDV'li masraf faturaları) en eski açık belgelerini kapatır; kalan iade belgesinin
+  açığıdır. Bağsız satırların dağıtımı kural 7 oldu. BELİRSİZ-9 kalktı; BELİRSİZ-7 artanı olan satıştan iadeyi de kapsar.
+- **D4 (§5.4, §8.3):** yinelenen adımın takma adları çıktıda zaten yazılıyordu (K4); gövdede anılan takma adlar artık varlık kimliğine çevrilir ve deftere yazan işlemde `tarih` o günün tarihiyle gövdeye girer (model_a K-3 ile aynı anlam).
+- **D5–D7:** KMH limiti ve eksi açılış vadesiz dışında 4xx; KMH'yi aşan eksi açılış BELİRSİZ-23; vadeli hesapta banka masrafı
+  (BSMV/Yok) ve diğer gelir/gider 400 `bank-account-invalid`, faiz gideri / kart borcu kaynağı / kredi hedefi-kaynağı / KDV
+  kipli masraf BELİRSİZ-24; kredi anaparası kalan borcu aşarsa ve ters kayıt kredi hesabını borç bakiyesine çevirirse
+  BELİRSİZ-25 (çıkış 2).
+- **Hakem bulgusu KAHIN-B-KASA-HAREKET-SIL düzeltildi:** doğrulayıcı `kasa_hareket`'in `ad`ını hareket olarak tanımlar (§4.9 "silinecekse zorunlu"); Kasa elle hareketi silinebilir.
+- Testler: `test/bagimsiz/test_surum2.py` (iki kâhine ortak, 18 test, beklenenler dilden elle) + bu klasördeki testler;
+  mutasyon: sürüm 2 kurallarına konan 16 hatanın 16'sı yakalandı (model_a 9, model_b 7).

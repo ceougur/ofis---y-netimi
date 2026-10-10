@@ -1,0 +1,144 @@
+{
+  "adimSayisi": 2531,
+  "alternatifSecimi": {
+    "a": {
+      "programlaFark": 150,
+      "secilen": 0,
+      "toplam": 2
+    },
+    "b": {
+      "programlaFark": 150,
+      "secilen": 0,
+      "toplam": 2
+    },
+    "kumelerAyni": true
+  },
+  "atlananBelirsizYaprak": 22439,
+  "belirsizSayisi": {
+    "a": 22439,
+    "b": 22439
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {},
+  "durum": "TAMAM",
+  "farkSayisi": 0,
+  "farklar": [],
+  "islemSayisi": 2000,
+  "islemTurleri": {
+    "acilis_duzelt": 28,
+    "ayar": 11,
+    "banka_masraf": 140,
+    "cari_ac": 38,
+    "cari_odeme": 109,
+    "cari_tahsilat": 454,
+    "diger_gelir": 25,
+    "diger_gider": 25,
+    "faiz_geliri": 47,
+    "faiz_gideri": 18,
+    "fatura": 539,
+    "hesap_ac": 22,
+    "hesap_durum": 15,
+    "hesap_eksi_politika": 9,
+    "iade": 90,
+    "kart_borcu_odeme": 54,
+    "kasa_banka": 33,
+    "kasa_hareket": 43,
+    "kontrol": 79,
+    "saat": 452,
+    "sil": 76,
+    "stok_giris": 13,
+    "taksit_tahsilat": 104,
+    "ters_kayit": 37,
+    "transfer": 64,
+    "urun_ac": 6
+  },
+  "karsilastirilanYaprak": 92966,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/senaryolar/rastgele-31-2000-notr.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/senaryolar/rastgele-31-2000-notr.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/senaryolar/rastgele-31-2000-notr.json --cikti test/bagimsiz/cikti/ham/rastgele-31-2000-notr.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 18,
+    "commit": "740be0518c71eb92f0cc02c998626c363c060c3a",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "rastgele-31-2000-notr",
+  "senaryoDosyasi": "test/bagimsiz/cikti/senaryolar/rastgele-31-2000-notr.json",
+  "siniflar": {},
+  "sureler": {
+    "a": 5.89,
+    "b": 351.86,
+    "program": 179.64
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 179235661,
+      "atlananSayisi": 0,
+      "bankaToplam": 94687534,
+      "cariToplam": -282061530,
+      "faturaSayisi": 647,
+      "kasa": 1303370,
+      "mizanAlacakToplam": 590191511,
+      "mizanBorcToplam": 590191511,
+      "ozet": {
+        "gercekBanka": 97060820,
+        "hesabiAtanmamis": -2656868,
+        "kartVeKrediBorcu": 2373286,
+        "kasaVeGercekBanka": 98364190
+      },
+      "retSayisi": 92,
+      "taksitKalanToplam": 27840,
+      "yinelenenSayisi": 42
+    },
+    "b": {
+      "acikFaturaToplam": 179235661,
+      "atlananSayisi": 0,
+      "bankaToplam": 94687534,
+      "cariToplam": -282061530,
+      "faturaSayisi": 647,
+      "kasa": 1303370,
+      "mizanAlacakToplam": 590191511,
+      "mizanBorcToplam": 590191511,
+      "ozet": {
+        "gercekBanka": 97060820,
+        "hesabiAtanmamis": -2656868,
+        "kartVeKrediBorcu": 2373286,
+        "kasaVeGercekBanka": 98364190
+      },
+      "retSayisi": 92,
+      "taksitKalanToplam": 27840,
+      "yinelenenSayisi": 42
+    },
+    "program": {
+      "acikFaturaToplam": 179739677,
+      "atlananSayisi": 0,
+      "bankaToplam": 94687534,
+      "cariToplam": -282061530,
+      "faturaSayisi": 647,
+      "kasa": 1303370,
+      "mizanAlacakToplam": 590191511,
+      "mizanBorcToplam": 590191511,
+      "ozet": {
+        "gercekBanka": 97060820,
+        "hesabiAtanmamis": -2656868,
+        "kartVeKrediBorcu": 2373286,
+        "kasaVeGercekBanka": 98364190
+      },
+      "retSayisi": 92,
+      "taksitKalanToplam": 27840,
+      "yinelenenSayisi": 42
+    }
+  }
+}

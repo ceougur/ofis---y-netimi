@@ -2,7 +2,7 @@
 """Bağımsız muhasebe kâhini — model_b (temiz oda).
 
 Kaynak YALNIZ: docs/BANKA-MODULU-PLAN.md, docs/BANKA-MODULU-TALIMAT.md ve test/bagimsiz/SENARYO-DILI.md
-(dil sürümü destekofis-senaryo/1). Programın kodu okunmadı, içe aktarılmadı.
+(dil sürümü destekofis-senaryo/2). Programın kodu okunmadı, içe aktarılmadı.
 
 Kullanım:  python3 -I model.py <senaryo.json>   → stdout'a SENARYO-DILI §8 biçiminde JSON
 
@@ -22,7 +22,7 @@ import os
 import re
 import sys
 
-DIL = "destekofis-senaryo/1"
+DIL = "destekofis-senaryo/2"
 EN_BUYUK_KURUS = 10 ** 14          # 1e12 TL (SENARYO-DILI §3.3; PLAN §2.1)
 GECIKME = object()                 # hesap seçimi başarısız (bağımlı denetimler atlanır)
 
@@ -449,6 +449,8 @@ def senaryo_dogrula(sen, dosya_adi):
                 raise SenaryoHatasi(f"{aid}: yon geçersiz")
             if not isinstance(a["aciklama"], str) or "açılış" in a["aciklama"].lower():
                 raise SenaryoHatasi(f"{aid}: aciklama 'açılış' içeremez (SENARYO-DILI §4.9)")
+            if "ad" in a:
+                tanimla(aid, a["ad"], T_HAREKET, op)   # §4.9 "ad: silinecekse zorunlu" — sil hedefi olabilir
         elif op == "cari_ac":
             if a["tur"] not in ("musteri", "tedarikci"):
                 raise SenaryoHatasi(f"{aid}: cari türü geçersiz")
@@ -921,7 +923,7 @@ class Baglam:
         onceki = self.d.istekler.get(anahtar)
         if onceki is None:
             return
-        if onceki["govde"] == govde(self.a):
+        if onceki["govde"] == govde(self.a, self.d):
             if not any(i[0] <= 2 for i in self.ihlaller):
                 raise Yineleme(onceki)
         else:
@@ -943,10 +945,28 @@ def _uygun(h, kategori):
     raise KahinHatasi(kategori)
 
 
-def govde(a):
+GOVDE_REF = {"hesap", "cari", "urun", "asilFatura", "kapatilacakFatura", "kart", "kaynak", "hedef", "kredi", "saglayici"}
+
+
+def govde(a, d=None):
     """§5.4 gövde: adımın alanları − GOVDE_DISI. K37: yalnız senaryoda var olan takma ad TANIMLARI (fatura
-    ödemesindeki `taksit.ad`, KDV'li masraftaki `fatura`) programa gönderilmez, gövdeye girmez."""
+    ödemesindeki `taksit.ad`, KDV'li masraftaki `fatura`) programa gönderilmez, gövdeye girmez.
+    Sürüm 2 (§5.4): anılan takma adlar andıkları varlık olarak karşılaştırılır (yinelemenin ikinci adıyla anılan varlık
+    ilk adla anılanla aynıdır); deftere yazan işlemde `tarih` yoksa o günün tarihi gövdeye girer."""
     g = {k: v for k, v in a.items() if k not in GOVDE_DISI}
+    if d is not None:
+        if SEMA.get(a.get("islem"), (None, None, False))[2]:
+            g["tarih"] = (tarih_coz(g["tarih"]) if "tarih" in g else d.bugun).isoformat()
+
+        def coz(x, ust=None):
+            if isinstance(x, dict):
+                return {k: coz(v, k) for k, v in x.items()}
+            if isinstance(x, list):
+                return [coz(v, ust) for v in x]
+            if isinstance(x, str) and ust in GOVDE_REF and x in d.takma:
+                return "#" + str(d.takma[x][1])
+            return x
+        g = coz(g)
     if a.get("islem") == "banka_masraf":
         g.pop("fatura", None)
     if a.get("islem") == "fatura" and isinstance(g.get("odeme"), dict) and isinstance(g["odeme"].get("taksit"), dict):
@@ -1134,6 +1154,9 @@ def h_hesap_ac(c):
         limit = kurus(a["kmhLimiti"])
     if "kartLimiti" in a:
         limit = kurus(a["kartLimiti"])
+    # sürüm 2 D5: KMH limiti ve eksi açılış yalnız vadesiz hesapta [ÇIKARIM §3.5 tablo, §3.7 #1]
+    if tur != "vadesiz" and ((tur in HAVALE_TURLERI and limit > 0) or (s is not None and s < 0)):
+        c.ekle(2, "4xx")
     c.istek()
     if d.kilit is not None and acilis <= d.kilit:
         c.ekle(4, 409, "period-locked", "CIKARIM")
@@ -1148,6 +1171,8 @@ def h_hesap_ac(c):
                 c.ekle(4, "4xx")
                 break
     c.on_kapi()
+    if tur == "vadesiz" and s is not None and s < 0 and -s > limit:
+        raise SenaryoHatasi(f"{a['id']}: eksi açılış KMH limitini aşıyor (BELİRSİZ-23)")
     ana = "102" if tur in TUR_102 else ("309" if tur == "kurumsal_kart" else "300")
     d.alt_sayac[ana] += 1
     alt = f"{ana}.{d.alt_sayac[ana]:02d}"
@@ -1205,6 +1230,8 @@ def h_acilis_duzelt(c):
     yeni = tarih_coz(a["acilisTarihi"])
     if yeni > d.bugun:
         c.ekle(2, 400)
+    if s is not None and s < 0 and h["tur"] != "vadesiz":
+        c.ekle(2, "4xx")                                         # sürüm 2 D5
     c.istek()
     if d.kilit is not None and h["acilis_tarihi"] <= d.kilit:
         c.ekle(4, 409)                                           # kilitli açılış düzeltilmez (PLAN §3.8)
@@ -1214,6 +1241,8 @@ def h_acilis_duzelt(c):
     if ilk is not None and yeni > ilk:
         c.ekle(4, 409, "bank-opening-after-first", "PLAN")
     c.on_kapi()
+    if s is not None and s < 0 and -s > h["limit"]:
+        raise SenaryoHatasi(f"{a['id']}: eksi açılış KMH limitini aşıyor (BELİRSİZ-23)")
     eski = d.fis(h["acilis_fis"])
     if eski["satirlar"]:
         d.fis_yaz("acilis_ters", eski["tarih"], [(k, "A" if t == "B" else "B", u, cc) for k, t, u, cc in eski["satirlar"]],
@@ -1645,6 +1674,8 @@ def h_banka_masraf(c):
     u = c.tutar("tutar", "banka")
     tarih = c.tarih()
     if kdv:
+        if d.hesaplar[d.coz(a["hesap"], T_HESAP)]["tur"] == "vadeli":
+            raise SenaryoHatasi(f"{a['id']}: KDV kipli masraf vadeli hesapta (BELİRSİZ-24)")
         hk = c.hesap_sec("havale", a["hesap"])
         sk = None
         if "saglayici" not in a:
@@ -1652,7 +1683,7 @@ def h_banka_masraf(c):
         else:
             sk = d.coz(a["saglayici"], T_CARI)
     else:
-        hk = c.fis_hesabi(a["hesap"], TUR_102)
+        hk = c.fis_hesabi(a["hesap"], TUR_102 - {"vadeli"})      # sürüm 2 D6: vadelide 400 bank-account-invalid
     c.istek()
     c.kilit(tarih)
     c.acilis_oncesi(hk, tarih)
@@ -1713,7 +1744,12 @@ def h_faiz_geliri(c):
 def _tek_hesap_fisi(c, islem, satir_kur):
     a, d = c.a, c.d
     c.yetki("banka_fisi")
-    hk = c.fis_hesabi(a["hesap"], TUR_102)
+    if islem == "faiz_gideri":
+        if d.hesaplar[d.coz(a["hesap"], T_HESAP)]["tur"] == "vadeli":
+            raise SenaryoHatasi(f"{a['id']}: vadeli hesapta faiz gideri (BELİRSİZ-24)")
+        hk = c.fis_hesabi(a["hesap"], TUR_102)
+    else:
+        hk = c.fis_hesabi(a["hesap"], TUR_102 - {"vadeli"})     # sürüm 2 D6: diğer gelir/gider vadelide 400
     t = c.tutar("tutar", "banka")
     tarih = c.tarih()
     c.istek()
@@ -1742,6 +1778,8 @@ def h_diger_gider(c):
 def h_kart_borcu_odeme(c):
     a, d = c.a, c.d
     c.yetki("banka_fisi")
+    if d.hesaplar[d.coz(a["kaynak"], T_HESAP)]["tur"] == "vadeli":
+        raise SenaryoHatasi(f"{a['id']}: vadeli hesaptan kart borcu ödemesi (BELİRSİZ-24)")
     kaynak = c.fis_hesabi(a["kaynak"], TUR_102)
     kart = c.fis_hesabi(a["kart"], {"kurumsal_kart"})
     t = c.tutar("tutar", "banka")
@@ -1761,6 +1799,8 @@ def h_kart_borcu_odeme(c):
 def h_kredi_kullanim(c):
     a, d = c.a, c.d
     c.yetki("kredi_kullanim")
+    if d.hesaplar[d.coz(a["hedef"], T_HESAP)]["tur"] == "vadeli":
+        raise SenaryoHatasi(f"{a['id']}: kredi vadeli hesaba (BELİRSİZ-24)")
     kredi = c.fis_hesabi(a["kredi"], {"kredi"})
     hedef = c.fis_hesabi(a["hedef"], TUR_102)
     t = c.tutar("tutar", "banka")
@@ -1780,6 +1820,8 @@ def h_kredi_kullanim(c):
 def h_kredi_odeme(c):
     a, d = c.a, c.d
     c.yetki("kredi_odeme")
+    if d.hesaplar[d.coz(a["kaynak"], T_HESAP)]["tur"] == "vadeli":
+        raise SenaryoHatasi(f"{a['id']}: vadeli hesaptan kredi ödemesi (BELİRSİZ-24)")
     kredi = c.fis_hesabi(a["kredi"], {"kredi"})
     kaynak = c.fis_hesabi(a["kaynak"], TUR_102)
     anapara = c.tutar("anapara", "banka")
@@ -1792,6 +1834,8 @@ def h_kredi_odeme(c):
     c.acilis_oncesi(kredi, tarih)
     c.acilis_oncesi(kaynak, tarih)
     c.on_kapi()
+    if anapara > -d.bakiye(d.hesap_alt(kredi)):
+        raise SenaryoHatasi(f"{a['id']}: anapara kalan kredi borcunu aşıyor (BELİRSİZ-25)")
     duble_denetle(c, "kredi_odeme", tarih, [kredi, kaynak], anapara)
     satirlar = [(d.hesap_alt(kredi), "B", anapara, None), ("780", "B", faiz, None),
                 (d.hesap_alt(kaynak), "A", anapara + faiz, None)]
@@ -1821,6 +1865,10 @@ def h_ters_kayit(c):
     for fid in h["fisler"]:
         for k, t, u, cc in d.fis(fid)["satirlar"]:
             satirlar.append((k, "A" if t == "B" else "B", u, cc))
+    for k in {s_[0] for s_ in satirlar if s_[0].startswith("300.")}:   # sürüm 2 D7
+        fark = sum(u if t == "B" else -u for k2, t, u, _ in satirlar if k2 == k)
+        if d.bakiye(k) + fark > 0:
+            raise SenaryoHatasi(f"{a['id']}: ters kayıt kredi hesabını borç bakiyesine çeviriyor (BELİRSİZ-25)")
     fid = d.fis_yaz("ters", tarih, satirlar, c.sira)
     h["ters"] = fid
     yeni_hareket(c, "ters_kayit", tarih, [fid], hesapli=True, hedef=mk)
@@ -1919,7 +1967,7 @@ def anilan_adlar(a):
 # ────────────────────────────────────────────────────────────────────────── fatura açığı (§7) ve çıktı
 
 def faturalari_hesapla(d):
-    """SENARYO-DILI §7 kuralları 1–6; dönüş: (açıklar, belirsiz cariler, dağıtılmamış giriş/çıkış)."""
+    """SENARYO-DILI §7 kuralları 1–7 (sürüm 2); dönüş: (açıklar, belirsiz cariler, dağıtılmamış giriş/çıkış)."""
     acik = {bk: b["T"] for bk, b in d.belgeler.items()}
     # 1 peşin
     for bk, b in d.belgeler.items():
@@ -1946,7 +1994,25 @@ def faturalari_hesapla(d):
         x = min(acik[ik], acik[asil])
         acik[asil] -= x
         acik[ik] -= x
-    # 6 bağsız satırlar FIFO
+    # 6 (sürüm 2, D1 [KARAR]) iade artanı: aynı carinin asıl türdeki en eski açık belgelerini kapatır
+    #   satıştan iade → taksitsiz satış faturaları; alıştan iade → alış faturaları (KDV'li masraf faturası dahil)
+    artanli_satis_iade = set()
+    for _, _, ik in iadeler:
+        if acik[ik] <= 0:
+            continue
+        ib = d.belgeler[ik]
+        if ib["tur"] == "satis_iade":
+            artanli_satis_iade.add(ib["cari"])
+            hedef = sorted((b["tarih"], b["sira"], bk) for bk, b in d.belgeler.items()
+                           if b["cari"] == ib["cari"] and b["tur"] == "satis" and b["kart"] is None)
+        else:
+            hedef = sorted((b["tarih"], b["sira"], bk) for bk, b in d.belgeler.items()
+                           if b["cari"] == ib["cari"] and b["tur"] == "alis")
+        for _, _, bk in hedef:
+            x = min(acik[ik], acik[bk])
+            acik[bk] -= x
+            acik[ik] -= x
+    # 7 bağsız satırlar FIFO
     dagitilmamis = {}
     for ck in d.cariler:
         giris = sum(p["tutar"] for p in d.para if p["etkin"] and p["cari"] == ck and p["tur"] == "cari_tahsilat"
@@ -1978,11 +2044,8 @@ def faturalari_hesapla(d):
         bagsiz_cikis = any(p["etkin"] and p["cari"] == ck and p["tur"] == "cari_odeme" and not p.get("bagli")
                            for p in d.para)
         nedenler = []
-        if bagsiz_giris and any(b["kart"] is not None for b in belgeler):
-            nedenler.append("BELİRSİZ-7")
-        if (bagsiz_giris or bagsiz_cikis) and any(b["tur"] in ("satis_iade", "alis_iade") and b["geri"] == "acik"
-                                                  for b in belgeler):
-            nedenler.append("BELİRSİZ-9")
+        if (bagsiz_giris or ck in artanli_satis_iade) and any(b["kart"] is not None for b in belgeler):
+            nedenler.append("BELİRSİZ-7")          # sürüm 2: iade artanı da (BELİRSİZ-9 kalktı)
         if (bagsiz_giris and any(b["tur"] in ("alis", "satis_iade") for b in belgeler)) or \
                 (bagsiz_cikis and any(b["tur"] in ("satis", "alis_iade") for b in belgeler)):
             nedenler.append("BELİRSİZ-11")
@@ -2104,7 +2167,7 @@ def adim_isle(d, a, sira):
         if alan in tanim_alan:
             yeni.takma_ver(tanim_alan[alan], tur, k)
     if "istekKimligi" in a:
-        yeni.istekler[(c.kullanici, op, a["istekKimligi"])] = {"govde": govde(a), "tanimlar": c.tanimlar,
+        yeni.istekler[(c.kullanici, op, a["istekKimligi"])] = {"govde": govde(a, d), "tanimlar": c.tanimlar,
                                                                "adim": a["id"]}
     return yeni
 

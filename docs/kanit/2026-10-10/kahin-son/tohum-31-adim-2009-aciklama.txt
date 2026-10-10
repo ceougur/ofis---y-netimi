@@ -1,0 +1,15 @@
+Tohum 31 × 2000, ilk sınıflamada açıklanamayan tek kök: retler.2009 (cari_odeme, havale, B6 hesabından 375.175,64 TL, kullanıcı MU)
+Kâhinler: 409 cash-blocked · Program: kabul (geçti) · Türevleri: B6 / 102.05 / gercekBanka / kasaVeGercekBanka / C28 / 320 (−37.517.564 kuruş)
+
+El ile inceleme (model_a'yı adım 2008'e kadar koşup B6'nın durumunu okuyarak; betik scratchpad'de, sonuç aşağıda):
+- B6: ticari, 102.05, KMH 0, politika "engelle" (adım 1274), bakiye doğrulanmış; ileri tarihli satır yok.
+- Kâhinde adım 2009'dan önce B6 = 37.408.669 kuruş (374.086,69 TL) → 374.086,69 − 375.175,64 = −1.088,95 < 0 → Engelle → 409 cash-blocked.
+- Programda B6 aynı anda 2.209,38 TL fazla: adım 1184 (F233 alış faturası, KDV dahil + iskontolu kalem, peşin 2.209,38 havale B6)
+  programda 400 payment-exceeds ile reddedildi ("Ödemeler (2.209,38 TL) faturanın ödenecek tutarını (2.209,37 TL) aşıyor") — bu
+  KDV-DAHIL-ISKONTO sınıfıdır (hakem 10.10.2026: program doğru, dil §6.3 kuralı 1 kuruş sapıyor). Peşin ödeme programda yazılmadığı için
+  B6 programda 37.408.669 + 220.938 = 37.629.607 → 376.296,07 − 375.175,64 = +1.120,43 ≥ 0 → ihlal yok → program doğru olarak kabul etti.
+- Kontrol: program − kâhin farkı B6'da +220.938 (k36–k37, adım 1184) ve −37.517.564 (k62–k63, adım 2009) olarak birebir izleniyor.
+SONUÇ: Program hatası değil; KDV-DAHIL-ISKONTO zincirinin "ters" yönü (kâhin reddediyor, program kabul ediyor). fark.py'ye bu yön için
+zincir kuralı eklendi (_zincir_sinifi artık cash-negative/cash-blocked kodunda adımın andığı banka hesabının yaprağını da izler; dil sürüm 2
+D2 gereği bu kodlar banka hesabında da çıkar). Kanıt: aynı tohum KDV dahil iskonto nötrlenerek koşulunca (notr-31) fark kalmıyor mu —
+bkz. fark-31-notr.json.
