@@ -72,3 +72,5 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
 
 - CI 557 (20e531d): e2e senaryo-banka-210b 80/84 — kart önbelleği ürün hatası (541 ile aynı), düzeltme f3c1b3f'de; Windows 2028/2028 ×2 (keşif sınırlayıcı düzeltmesiyle 1. gerçek Windows yeşili).
 - CI 558 (c1dc92d): Windows ×2 yalnız m6 (vade-takip-kaynak-yetki-210) kırmızı — Windows pdftotext çıktıyı yerel kod sayfasıyla veriyor (Türkçe harf bozuk); TEST hatası, `-enc UTF-8` ile düzeltildi. Keşif testi 2. gerçek Windows koşusunda yeşil.
+- CI 559–562 (a1c96f5, 66cfca2, d2d75c6, e91774a): yalnız Windows ×2 m6 (558 ile aynı test hatası); 562'de Linux 2049/2049 ×2, bütün e2e yeşil.
+- CI 563 (5b1525f): BÜTÜN işler YEŞİL — Linux + Windows × Node 22/24, e2e, Doğrulama Kapısı, Dağıtım paketi (ana oturum okudu).
