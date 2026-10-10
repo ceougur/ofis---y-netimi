@@ -1,0 +1,30 @@
+{
+  "ad": "senaryo-banka-210-once-orijinal-bilerek-9b",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/_gecici-eski-bilerek.mjs",
+  "commit": "8effa451a3a2662b9f1e4b18f69c3bf1609666dd",
+  "dal": "worktree-agent-a14d0e27ddfab9b03",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T09:38:20.615Z",
+  "sure_sn": 599.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 319,
+    "gecen": 287,
+    "basarisiz": 32,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 32 başarısız, 0 iptal",
+  "ham_cikti": "docs/kanit/2026-10-10/senaryo-banka-210-once-orijinal-bilerek-9b.log",
+  "ham_cikti_sha256": "6bf237e62e8c767b3dd623c43ad2b115f1af9ce14ab5a9a73e385cd4927e6213",
+  "ham_cikti_bayt": 45464
+}

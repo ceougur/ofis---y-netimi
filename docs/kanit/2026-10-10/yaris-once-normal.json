@@ -1,0 +1,30 @@
+{
+  "ad": "yaris-once-normal",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-yaris.mjs --kip normal --deneme 20",
+  "commit": "8effa451a3a2662b9f1e4b18f69c3bf1609666dd",
+  "dal": "worktree-agent-a14d0e27ddfab9b03",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T09:25:19.067Z",
+  "sure_sn": 137.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/yaris-once-normal.log",
+  "ham_cikti_sha256": "f99bf656a63dd37b21864454a495a3dc287c5b228244bd2f128747a90c83a748",
+  "ham_cikti_bayt": 9114
+}
