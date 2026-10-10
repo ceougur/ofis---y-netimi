@@ -977,8 +977,9 @@
         result = await send();
       } catch (error) {
         // Yargıç K2 (plan §3.8, §3.9 K7): banka hesabını eksiye düşüren geri yükleme Uyar'daki hesapta sorulur ("Yine de Geri Yükle" →
-        // negativeOk). Engelle (bank-blocked), pasif hesap ve yetki engeli sorulmaz; nedeni bildirilir.
-        if (error?.data?.code !== "bank-negative") throw error;
+        // negativeOk). Engelle (cash-blocked), pasif hesap ve yetki engeli sorulmaz; nedeni bildirilir. Hakem K5: banka hesabının reddi
+        // cash-negative + accountId (plan §7).
+        if (error?.data?.code !== "cash-negative" || !error.data.accountId) throw error;
         const go = await HOF.confirm({ title: "Eksi Bakiye", message: String(error.message || "").replace(/Yine de kaydedilsin mi\?\s*$/, "Yine de geri yüklensin mi?"), confirmLabel: "Yine de Geri Yükle", cancelLabel: "Vazgeç", danger: true });
         if (!go) throw new HOF.ApiError("Geri yüklenmedi: işlem banka hesabının bakiyesini eksiye düşürüyor.", 409, { code: "bank-negative-cancelled" });
         result = await send({ negativeOk: true });

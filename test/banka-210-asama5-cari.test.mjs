@@ -11,7 +11,7 @@
 //   B7  Aynı adlı iki cari, aynı gün aynı tutar aynı hesap → uyarı/karışma? (cari farklı: ikisi 200, bakiyeler ayrı)
 //   B8  Pasif hesaba, döviz hesabına, başka şirketin/olmayan hesaba yaz → (400 / 400 bank-currency / 404)
 //   B9  Hesabın açılışından önceki tarih; Devir Kapanışı sınırından önceki tarih → para iki kez sayılır mı? (409 before-opening / carry-closed)
-//   B10 Bakiye Doğrulandı hesapta eksiye düşüren ödeme: Uyar (409 bank-negative → negativeOk 200), Engelle (409 bank-blocked, onayla da yok)
+//   B10 Bakiye Doğrulandı hesapta eksiye düşüren ödeme: Uyar (409 cash-negative → negativeOk 200), Engelle (409 cash-blocked, onayla da yok)
 //   B11 Engelle'de aynı hesaptan aynı anda iki ödeme (farklı cariler) → ikisi birden geçer mi? (biri 200, öbürü 409)
 //   B12 Personel ödeme girer (403); kendi havale tahsilatını siler / nakde çevirir / hesabını değiştirir (403); açıklamasını düzeltir (200)
 //   B13 bank.move'u kaldırılmış muhasebe bankadan ödeme yapar (403)
@@ -164,25 +164,25 @@ describe("Aşama 5 — K7 eksi bakiye, eşzamanlı ödeme, düzeltme ve silme", 
   });
   after(() => ctx.server.close());
 
-  it("B10: Uyar → 409 bank-negative, negativeOk → 200; Engelle → 409 bank-blocked (negativeOk da geçmez)", async () => {
+  it("B10: Uyar → 409 cash-negative, negativeOk → 200; Engelle → 409 cash-blocked (negativeOk da geçmez)", async () => {
     const warn = await ctx.api.post(entries(xyz.id), { kind: "out", amount: "60.000", method: "bank", bankAccountId: acc.garanti.id, date: TODAY });
-    expectStatus(warn, 409, "bank-negative", "Uyar");
+    expectStatus(warn, 409, "cash-negative", "Uyar");
     assert.match(warn.error, /Garanti BBVA · Ana TL Hesabı hesabında 50\.000,00 TL var/);
     await must("Yine de Kaydet", ctx.api.post(entries(xyz.id), { kind: "out", amount: "60.000", method: "bank", bankAccountId: acc.garanti.id, date: TODAY, negativeOk: true }));
     assert.equal((await balances(ctx.api, { garanti: acc.garanti })).garanti, -10000);
     await setPolicy(ctx.api, acc.ziraat, "block");
     const block = await ctx.api.post(entries(xyz.id), { kind: "out", amount: "100.000,01", method: "bank", bankAccountId: acc.ziraat.id, date: TODAY, negativeOk: true });
-    expectStatus(block, 409, "bank-blocked", "Engelle");
+    expectStatus(block, 409, "cash-blocked", "Engelle");
     assert.equal((await balances(ctx.api, { ziraat: acc.ziraat })).ziraat, 100000);
   });
 
-  it("B11: Engelle'de aynı hesaptan aynı anda iki ödeme (60.000 + 60.000, farklı cariler) → biri 200, öbürü 409 bank-blocked", async () => {
+  it("B11: Engelle'de aynı hesaptan aynı anda iki ödeme (60.000 + 60.000, farklı cariler) → biri 200, öbürü 409 cash-blocked", async () => {
     const [r1, r2] = await Promise.all([
       ctx.api.post(entries(xyz.id), { kind: "out", amount: "60.000", method: "bank", bankAccountId: acc.ziraat.id, date: TODAY }),
       ctx.api.post(entries(klm.id), { kind: "out", amount: "60.000", method: "bank", bankAccountId: acc.ziraat.id, date: TODAY }),
     ]);
     assert.deepEqual([r1.status, r2.status].sort(), [200, 409]);
-    assert.equal([r1, r2].find(r => r.status === 409).code, "bank-blocked");
+    assert.equal([r1, r2].find(r => r.status === 409).code, "cash-blocked");
     assert.equal((await balances(ctx.api, { ziraat: acc.ziraat })).ziraat, 40000);
     await integrityOk(ctx.api, "B11");
   });
@@ -198,7 +198,7 @@ describe("Aşama 5 — K7 eksi bakiye, eşzamanlı ödeme, düzeltme ve silme", 
     // Ziraat (Engelle) 45.000: 5.000'lik tahsilatı silmek 40.000 bırakır (geçer); 50.000'lik ödemeyi Ziraat'e taşımak eksiye düşürür (409).
     const pay = await must("Garanti ödeme", ctx.api.post(entries(xyz.id), { kind: "out", amount: "50.000", method: "bank", bankAccountId: acc.garanti.id, date: TODAY, negativeOk: true }));
     const paidId = ctx.store.get("SELECT id FROM account_entries WHERE account_id = ? AND amount = 50000", xyz.id).id;
-    expectStatus(await ctx.api.put(`${entries(xyz.id)}/${paidId}`, { kind: "out", amount: "50.000", method: "bank", bankAccountId: acc.ziraat.id }), 409, "bank-blocked", "Engelle'ye taşı");
+    expectStatus(await ctx.api.put(`${entries(xyz.id)}/${paidId}`, { kind: "out", amount: "50.000", method: "bank", bankAccountId: acc.ziraat.id }), 409, "cash-blocked", "Engelle'ye taşı");
     assert.ok(pay);
     await integrityOk(ctx.api, "B16");
   });

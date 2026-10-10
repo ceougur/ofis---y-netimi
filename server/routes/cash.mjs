@@ -12,6 +12,7 @@ import { canUser } from "../lib/permissions.mjs";
 import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, readNegativePolicy, methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { createMoneyLines, waysFor } from "../lib/bank/money-lines.mjs";
+import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 
 // Banka Fişi'nin para hareketi olmayan türleri (açılış, Devir Kapanışı, eski bakiye aktarımı): raporda "Açılış ve Devir Düzeltmeleri".
 const ADJUST_TYPES = new Set(["opening", "carry_close", "legacy_reclass"]);
@@ -292,7 +293,7 @@ export function registerCashRoutes(router, context) {
     const cashKind = direction === "to-cash" ? "in" : "out";
     const finRef = banking()?.pickRef({ method: "bank", value: body.bankAccountId, date }) || "";
     // Bankadan kasaya: banka hesabından çıkış (K7). Kasadan bankaya: hesap artar, denetlenmez.
-    const k7 = cashKind === "in" ? banking()?.negative({ refs: [finRef], date, force: body.negativeOk === true }) || noGuard : noGuard;
+    const k7 = cashKind === "in" ? banking()?.negative({ refs: [finRef], date, force: negativeConfirmed(body) }) || noGuard : noGuard;
     const transferId = auth.newId("trf");
     const cashId = auth.newId("cash");
     const bankId = auth.newId("cash");
@@ -348,7 +349,7 @@ export function registerCashRoutes(router, context) {
     if (bankLeg && banking()) {
       const moved = Math.abs(roundMoney(bankLeg.amount) - entry.amount) > 0.004 || bankLeg.date !== entry.date;
       finRef = banking().pickRef({ method: "bank", value: body.bankAccountId, date: entry.date, previous: bankLeg, changed: moved });
-      k7 = banking().negative({ refs: [bankLeg.finRef, finRef], date: bankLeg.date < entry.date ? bankLeg.date : entry.date, force: body.negativeOk === true });
+      k7 = banking().negative({ refs: [bankLeg.finRef, finRef], date: bankLeg.date < entry.date ? bankLeg.date : entry.date, force: negativeConfirmed(body) });
     }
     const result = bank.post({
       user,
@@ -386,7 +387,7 @@ export function registerCashRoutes(router, context) {
     const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
     // v2.1.0 Aşama 6: kasadan bankaya yatırmanın silinmesi banka hesabını azaltır (K7).
     const bankLeg = [full, twinFull].find(item => item?.method === "bank" && item.finRef);
-    const k7 = bankLeg ? banking()?.negative({ refs: [bankLeg.finRef], date: bankLeg.date, force: url.searchParams.get("negativeOk") === "1" }) || noGuard : noGuard;
+    const k7 = bankLeg ? banking()?.negative({ refs: [bankLeg.finRef], date: bankLeg.date, force: negativeConfirmed(null, url) }) || noGuard : noGuard;
     // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse hiçbiri yazılmaz (önceden hareket
     // silinip Silinenler'e yazılamadan kesinti olursa geri getirilemiyordu). v2.1.0: işlem başlığı "iptal" olur (kopyası kalır);
     // Silinenler'den geri yüklenince aynı olay yeniden etkinleşir.

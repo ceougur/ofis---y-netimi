@@ -453,12 +453,12 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       opLog.push(`#${report.operations} Banka Fişi (${tag(company)}): ${bank.name} ${type}${tax ? ` ${tax}` : ""} ${tl(value)}`);
       const signed = type === "other_in" ? value : -value;
       const body = { type, accountId: bankId, date: today, amount: tl(value).replace(".", ","), ...(tax ? { tax } : {}), similarOk: true };
-      // K7 (2.1.0 GG2): Bakiye Doğrulandı hesapta (açılış "confirmed") bakiyeyi eksiye düşüren çıkış önce 409 bank-negative ("Uyar"),
+      // K7 (2.1.0 GG2): Bakiye Doğrulandı hesapta (açılış "confirmed") bakiyeyi eksiye düşüren çıkış önce 409 cash-negative ("Uyar"),
       // sonra "Yine de Kaydet" (negativeOk) ile tek fiş.
       if (bank.confirmed && signed < 0 && bank.cents + signed < 0) {
         const warned = await actor.post("/api/workspace/bank/vouchers", body);
         expectStatus(warned, 409, "Banka Fişi eksi bakiye");
-        if (warned.data?.code !== "bank-negative") fail(`Banka Fişi eksi bakiye: kod ${warned.data?.code}`);
+        if (warned.data?.code !== "cash-negative") fail(`Banka Fişi eksi bakiye: kod ${warned.data?.code}`);
         body.negativeOk = true;
       }
       const data = expectStatus(await actor.post("/api/workspace/bank/vouchers", body), 200, "Banka Fişi");
@@ -482,7 +482,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
         // K7: gelir fişinin ters kaydı da hesabı eksiye düşürebilir.
         const warned = await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, {});
         expectStatus(warned, 409, "Ters Kaydet eksi bakiye");
-        if (warned.data?.code !== "bank-negative") fail(`Ters Kaydet eksi bakiye: kod ${warned.data?.code}`);
+        if (warned.data?.code !== "cash-negative") fail(`Ters Kaydet eksi bakiye: kod ${warned.data?.code}`);
         body.negativeOk = true;
       }
       expectStatus(await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, body), 200, "Ters Kaydet");
@@ -491,7 +491,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       if (target) target.cents -= voucher.toCents;
     },
     // v2.1.0 Aşama 9: Bankalar Arası Transfer — gönderen −(tutar + ücret), alıcı +tutar; başka şirketin hesabına 404; Bakiye Doğrulandı gönderen
-    // eksiye düşerse 409 bank-negative → "Yine de Kaydet".
+    // eksiye düşerse 409 cash-negative → "Yine de Kaydet".
     async bankTransfer() {
       const company = selected();
       if (company.banks.size < 2) return ops.bankAccount();
@@ -518,7 +518,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       if (from.confirmed && from.cents - value - fee < 0) {
         const warned = await actor.post("/api/workspace/bank/transfers", body);
         expectStatus(warned, 409, "transfer eksi bakiye");
-        if (warned.data?.code !== "bank-negative") fail(`transfer eksi bakiye: kod ${warned.data?.code}`);
+        if (warned.data?.code !== "cash-negative") fail(`transfer eksi bakiye: kod ${warned.data?.code}`);
         body.negativeOk = true;
       }
       const data = expectStatus(await actor.post("/api/workspace/bank/transfers", body), 200, "transfer");
@@ -529,7 +529,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       company.vouchers.push({ id: data.id, bankId: fromId, cents: -(value + fee), toId, toCents: value, status: "active" });
     },
     // 2.1.0 Aşama 5–8: modül formundan havale (cari tahsilat/ödeme) seçilen banka hesabına bağlanır; tek hesapta seçimsiz de o hesaba, birden
-    // çokta seçimsiz 400 bank-account-required; başka şirketin hesabı 404; Bakiye Doğrulandı hesabı eksiye düşüren ödeme 409 bank-negative →
+    // çokta seçimsiz 400 bank-account-required; başka şirketin hesabı 404; Bakiye Doğrulandı hesabı eksiye düşüren ödeme 409 cash-negative →
     // "Yine de Kaydet". Değişmez: hesap bakiyesi = model (açılış + fiş + bağlı modül havaleleri); şirketler ayrı.
     async bankModule() {
       const company = selected();
@@ -562,7 +562,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       if (bank.confirmed && signed < 0 && bank.cents + signed < 0) {
         const warned = await actor.post(url, body);
         expectStatus(warned, 409, "havale eksi bakiye");
-        if (warned.data?.code !== "bank-negative") fail(`havale eksi bakiye: kod ${warned.data?.code}`);
+        if (warned.data?.code !== "cash-negative") fail(`havale eksi bakiye: kod ${warned.data?.code}`);
         body.negativeOk = true;
       }
       expectStatus(await actor.post(url, body), 200, "havale");

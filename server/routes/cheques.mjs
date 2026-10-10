@@ -491,7 +491,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       if (body.eventId && body.eventId !== last.id) throw new HttpError(409, "Bu evrakta bu arada başka bir işlem yapıldı. Kartı yenileyin.", { code: "cheque-stale" });
       // v2.0.24: kilitli dönemdeki işlem geri alınmaz (Kasa/cari etkisi kapanmış ayı değiştirirdi).
       period?.assertOpen(last.date, "Bu çek/senet işlemi");
-      k7 = banking.negative([store.get("SELECT fin_ref AS f FROM cheque_events WHERE id = ?", last.id)?.f || ""], last.date, body.negativeOk === true);
+      k7 = banking.negative([store.get("SELECT fin_ref AS f FROM cheque_events WHERE id = ?", last.id)?.f || ""], last.date, banking.forced(body));
       k7.capture();
       const effects = effectsOf(last);
       revertEffects(effects, user);

@@ -5,7 +5,7 @@
 //       tahsilatlar silinir (bank.cancel, K7). Önceden kart silinince bağlı tahsilat sessizce hesaptan düşüyordu (Engelle'deki hesap eksiye,
 //       bank.cancel'sız personel de silebiliyordu). Eski veride bağlı satırla silinmiş kartın geri yüklemesi K2'nin kapılarından geçer.
 //   K2  Silinenler'den geri yükleme (plan §3.8 "Silinenler'den geri yükleme", §9.2/7, §3.9 K7): banka bağlı satırda kaynak modül yetkisi +
-//       bank.move; K7 son durumla (Engelle 409 bank-blocked, Uyar 409 bank-negative → negativeOk); pasif hesap 400 (Hesabı Atanmamış'a
+//       bank.move; K7 son durumla (Engelle 409 cash-blocked, Uyar 409 cash-negative → negativeOk); pasif hesap 400 (Hesabı Atanmamış'a
 //       düşürülmez). Önceden Engelle'deki Ziraat −50.000'e düşüyordu, satır pasif hesaba geri bağlanıyordu.
 //   Y1  Pasif hesabın bakiyesini değiştiren her işlem 400 bank-account-passive (silme, nakde çevirme, fatura iptal/sil/Düzenle'de satırın
 //       kalkması ya da başka hesaba taşınması, geri yükleme); yalnız açıklama değişir. Önceden silme/taşıma serbestti.
@@ -88,9 +88,9 @@ describe("K1: banka bağlı tahsilatı olan taksit kartı silinmez (plan §3.8, 
     const { ctx, acc } = s;
     const plan = ctx.store.get("SELECT id FROM plans WHERE name = 'ABC kart' AND deleted_at IS NULL");
     const bound = ctx.store.get("SELECT id FROM plan_entries WHERE plan_id = ? AND fin_ref <> ''", plan.id);
-    expectStatus(await ctx.api.del(`/api/workspace/plans/${plan.id}/entries/${bound.id}`), 409, "bank-blocked", "Engelle tahsilat sil");
+    expectStatus(await ctx.api.del(`/api/workspace/plans/${plan.id}/entries/${bound.id}`), 409, "cash-blocked", "Engelle tahsilat sil");
     await setPolicy(ctx.api, acc.garanti, "warn");
-    expectStatus(await ctx.api.del(`/api/workspace/plans/${plan.id}/entries/${bound.id}`), 409, "bank-negative", "Uyar tahsilat sil");
+    expectStatus(await ctx.api.del(`/api/workspace/plans/${plan.id}/entries/${bound.id}`), 409, "cash-negative", "Uyar tahsilat sil");
     await must("Yine de Sil", ctx.api.del(`/api/workspace/plans/${plan.id}/entries/${bound.id}?negativeOk=1`));
     assert.equal(await balance(ctx.api, acc.garanti), -5000);
     const detail = await must("kart ayrıntısı", ctx.api.get(`/api/workspace/plans/${plan.id}`));
@@ -136,20 +136,20 @@ describe("K2: Silinenler'den geri yükleme K7'den, pasif hesap ve yetki kurallar
   });
   after(() => s.ctx.server.close());
 
-  it("bağlı cari ödemesi Engelle'deki hesaba geri yüklenemez (409 bank-blocked; satır ve Silinenler kaydı yerinde); Uyar 409 bank-negative → negativeOk 200", async () => {
+  it("bağlı cari ödemesi Engelle'deki hesaba geri yüklenemez (409 cash-blocked; satır ve Silinenler kaydı yerinde); Uyar 409 cash-negative → negativeOk 200", async () => {
     const { ctx, acc, seller, level } = s;
     const out = (await must("ödeme", ctx.api.post(entries(seller.id), { kind: "out", amount: "60.000", method: "bank", bankAccountId: acc.ziraat.id, date: TODAY, description: "geri yüklenecek" }))).entryId;
     await must("sil", ctx.api.del(`${entries(seller.id)}/${out}`));
     await level(acc.ziraat, 10000);
     await setPolicy(ctx.api, acc.ziraat, "block");
     const id = trashId(ctx.store, out);
-    expectStatus(await restore(ctx.api, id), 409, "bank-blocked", "Engelle geri yükle");
-    expectStatus(await restore(ctx.api, id, { negativeOk: true }), 409, "bank-blocked", "Engelle geri yükle (negativeOk geçmez)");
+    expectStatus(await restore(ctx.api, id), 409, "cash-blocked", "Engelle geri yükle");
+    expectStatus(await restore(ctx.api, id, { negativeOk: true }), 409, "cash-blocked", "Engelle geri yükle (negativeOk geçmez)");
     assert.equal(ctx.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE id = ?", out).n, 0);
     assert.equal(await balance(ctx.api, acc.ziraat), 10000);
     await setPolicy(ctx.api, acc.ziraat, "warn");
     const warn = await restore(ctx.api, id);
-    expectStatus(warn, 409, "bank-negative", "Uyar geri yükle");
+    expectStatus(warn, 409, "cash-negative", "Uyar geri yükle");
     assert.match(warn.error, /Yine de/);
     await must("Yine de Geri Yükle", restore(ctx.api, id, { negativeOk: true }));
     assert.equal(ctx.store.get("SELECT fin_ref AS r FROM account_entries WHERE id = ?", out).r, acc.ziraat.id);
@@ -158,7 +158,7 @@ describe("K2: Silinenler'den geri yükleme K7'den, pasif hesap ve yetki kurallar
     await integrityOk(ctx.api, "K2 cari");
   });
 
-  it("stok alımı (bankadan peşin) ve Bankadan Kasaya transfer de: Engelle 409 bank-blocked, Uyar 409 bank-negative → negativeOk", async () => {
+  it("stok alımı (bankadan peşin) ve Bankadan Kasaya transfer de: Engelle 409 cash-blocked, Uyar 409 cash-negative → negativeOk", async () => {
     const { ctx, acc, level } = s;
     const item = await must("ürün", ctx.api.post("/api/workspace/stock", { name: "Ürün K2", unit: "Adet", openingQty: "10", unitPrice: "100" }));
     const move = await must("alım", ctx.api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: "5", unitPrice: "2.000", pay: "cash", method: "bank", bankAccountId: acc.garanti.id, date: TODAY }));
@@ -167,15 +167,15 @@ describe("K2: Silinenler'den geri yükleme K7'den, pasif hesap ve yetki kurallar
     await must("transferi sil", ctx.api.del(`/api/workspace/cash/${tr.id}?cashForce=1`));
     await level(acc.garanti, 5000);
     await setPolicy(ctx.api, acc.garanti, "block");
-    expectStatus(await restore(ctx.api, trashId(ctx.store, move.moveId)), 409, "bank-blocked", "Engelle stok alımı geri yükle");
-    expectStatus(await restore(ctx.api, trashId(ctx.store, tr.id)), 409, "bank-blocked", "Engelle transfer geri yükle");
+    expectStatus(await restore(ctx.api, trashId(ctx.store, move.moveId)), 409, "cash-blocked", "Engelle stok alımı geri yükle");
+    expectStatus(await restore(ctx.api, trashId(ctx.store, tr.id)), 409, "cash-blocked", "Engelle transfer geri yükle");
     assert.equal(ctx.store.get("SELECT COUNT(*) AS n FROM stock_moves WHERE id = ?", move.moveId).n, 0);
     assert.equal(ctx.store.get("SELECT COUNT(*) AS n FROM cash_entries WHERE transfer_id = ?", tr.transferId).n, 0);
     await setPolicy(ctx.api, acc.garanti, "warn");
-    expectStatus(await restore(ctx.api, trashId(ctx.store, tr.id)), 409, "bank-negative", "Uyar transfer geri yükle");
+    expectStatus(await restore(ctx.api, trashId(ctx.store, tr.id)), 409, "cash-negative", "Uyar transfer geri yükle");
     await must("Yine de Geri Yükle (transfer)", restore(ctx.api, trashId(ctx.store, tr.id), { negativeOk: true }));
     assert.equal(await balance(ctx.api, acc.garanti), -3000);
-    expectStatus(await restore(ctx.api, trashId(ctx.store, move.moveId)), 409, "bank-negative", "Uyar stok alımı geri yükle");
+    expectStatus(await restore(ctx.api, trashId(ctx.store, move.moveId)), 409, "cash-negative", "Uyar stok alımı geri yükle");
     await must("Yine de Geri Yükle (stok)", restore(ctx.api, trashId(ctx.store, move.moveId), { negativeOk: true }));
     assert.equal(await balance(ctx.api, acc.garanti), -13000);
     await level(acc.garanti, 50000);
@@ -330,7 +330,7 @@ describe("K3–K4: toplu iptal negativeOk; yinelenen satır anahtarı", () => {
   });
   after(() => s.ctx.server.close());
 
-  it("Uyar: toplu iptal ve toplu silme gövdedeki negativeOk ile geçer; Engelle ikisinde de 409 bank-blocked kalır", async () => {
+  it("Uyar: toplu iptal ve toplu silme gövdedeki negativeOk ile geçer; Engelle ikisinde de 409 cash-blocked kalır", async () => {
     const { ctx, acc, buyer, level } = s;
     const z = acc.ziraat.id;
     const d1 = await must("f1", ctx.api.post(INV, sale(buyer.id, 7000, [{ amount: "7000", method: "bank", bankAccountId: z }])));
@@ -339,11 +339,11 @@ describe("K3–K4: toplu iptal negativeOk; yinelenen satır anahtarı", () => {
     await setPolicy(ctx.api, acc.ziraat, "block");
     for (const url of [`${INV}/bulk-cancel`, `${INV}/bulk-delete`]) {
       const res = await must(url, ctx.api.post(url, { ids: [d1.id], reason: "x", negativeOk: true }));
-      assert.deepEqual([res.results[0].ok, res.results[0].code], [false, "bank-blocked"], `${url} Engelle`);
+      assert.deepEqual([res.results[0].ok, res.results[0].code], [false, "cash-blocked"], `${url} Engelle`);
     }
     await setPolicy(ctx.api, acc.ziraat, "warn");
     const ask = await must("toplu iptal sorusuz", ctx.api.post(`${INV}/bulk-cancel`, { ids: [d1.id], reason: "x" }));
-    assert.deepEqual([ask.results[0].ok, ask.results[0].code], [false, "bank-negative"]);
+    assert.deepEqual([ask.results[0].ok, ask.results[0].code], [false, "cash-negative"]);
     const cancelled = await must("toplu iptal negativeOk", ctx.api.post(`${INV}/bulk-cancel`, { ids: [d1.id], reason: "x", negativeOk: true }));
     assert.equal(cancelled.results[0].ok, true, JSON.stringify(cancelled.results[0]));
     assert.equal(await balance(ctx.api, acc.ziraat), -6000);
@@ -449,7 +449,7 @@ describe("D1: Engelle'deki hesaptan iki ayrı oturumdan, iki ayrı bağlantıyla
   });
   after(() => s.ctx.server.close());
 
-  it("iki istek de ilk yanıttan önce gönderilir; biri 200, öbürü 409 bank-blocked; hesap eksiye düşmez; mutabakat tutarlı", async () => {
+  it("iki istek de ilk yanıttan önce gönderilir; biri 200, öbürü 409 cash-blocked; hesap eksiye düşmez; mutabakat tutarlı", async () => {
     const { ctx, acc, seller } = s;
     await setPolicy(ctx.api, acc.ziraat, "block");
     const z = await balance(ctx.api, acc.ziraat);
@@ -471,7 +471,7 @@ describe("D1: Engelle'deki hesaptan iki ayrı oturumdan, iki ayrı bağlantıyla
     assert.ok(sent.every(at => at < firstReply), "iki istek de ilk yanıttan önce gönderildi");
     // Sunucu tek süreçtir; iki istek BEGIN IMMEDIATE işleminde sıraya girer ve ikincisi birincinin yazdığı bakiyeyi görür.
     assert.deepEqual(results.map(res => res.status).sort(), [200, 409]);
-    assert.equal(results.find(res => res.status === 409).code, "bank-blocked");
+    assert.equal(results.find(res => res.status === 409).code, "cash-blocked");
     assert.ok((await balance(ctx.api, acc.ziraat)) >= 0);
     await setPolicy(ctx.api, acc.ziraat, "warn");
     await integrityOk(ctx.api, "D1");

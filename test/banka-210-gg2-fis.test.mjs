@@ -4,8 +4,8 @@
 //   - (orta) Planlı İşlemler'de "Atla"ya çift tıklayınca plan iki dönem ilerliyordu (bir ayın talimatı sessizce kayboluyordu). Kural: Atla ve
 //     Gerçekleştir planın beklenen tarihini taşır (expectedDate); plan bu arada ilerlediyse 409 bank-plan-moved.
 //   - (orta) Eksi Bakiye Denetimi ekranda "Engelle/Uyar" görünüyor ama Banka Fişi'nde uygulanmıyordu (K7). Kural (plan §3.9): yazımdan sonraki
-//     son durumla, hesap bazında; bakiye = min(işlem günündeki, bütün hareketlerle) + KMH limiti; Uyar → 409 bank-negative ("Yine de Kaydet"
-//     negativeOk), Engelle → 409 bank-blocked; Bakiye Doğrulandı olmayan hesapta Kontrol Yok. Fiş, Düzelt ve Planlı Gerçekleştir aynı kural.
+//     son durumla, hesap bazında; bakiye = min(işlem günündeki, bütün hareketlerle) + KMH limiti; Uyar → 409 cash-negative ("Yine de Kaydet"
+//     negativeOk), Engelle → 409 cash-blocked; Bakiye Doğrulandı olmayan hesapta Kontrol Yok. Fiş, Düzelt ve Planlı Gerçekleştir aynı kural.
 //   - (orta) Kilitli dönemdeki KDV'li (faturalı) masrafın hiçbir düzeltme yolu yoktu. Kural (yaygın uygulama): Ters Kaydet bugün tarihli Alıştan
 //     İade faturası + bu hesaba iade girişi yazar (kapanmış dönem değişmez); fatura penceresi kapalı yolu göstermez.
 //   - (düşük) Kredi Geri Ödemesi'nde anapara kalan kredi borcunu aşabiliyordu (300 borç bakiyesi). Kural: 409 bank-loan-exceeds.
@@ -64,17 +64,17 @@ describe("GG2 — K7 eksi bakiye Banka Fişi'nde (fiş, Düzelt, Planlı Gerçek
   });
   after(() => ctx.server.close());
 
-  it("Engelle: 50.000 çıkış → 409 bank-blocked, hiçbir şey yazılmaz; negativeOk da geçmez", async () => {
+  it("Engelle: 50.000 çıkış → 409 cash-blocked, hiçbir şey yazılmaz; negativeOk da geçmez", async () => {
     const before = events(ctx.store);
-    expectStatus(await voucher(ctx.api, { type: "other_out", accountId: blocked.id, amount: "50.000", gl: "659", date: "2026-10-05" }), 409, "bank-blocked", "engelle");
-    expectStatus(await voucher(ctx.api, { type: "other_out", accountId: blocked.id, amount: "50.000", gl: "659", date: "2026-10-05", negativeOk: true }), 409, "bank-blocked", "engelle + onay");
+    expectStatus(await voucher(ctx.api, { type: "other_out", accountId: blocked.id, amount: "50.000", gl: "659", date: "2026-10-05" }), 409, "cash-blocked", "engelle");
+    expectStatus(await voucher(ctx.api, { type: "other_out", accountId: blocked.id, amount: "50.000", gl: "659", date: "2026-10-05", negativeOk: true }), 409, "cash-blocked", "engelle + onay");
     assert.equal(events(ctx.store), before);
     await must("bakiye içinde", voucher(ctx.api, { type: "other_out", accountId: blocked.id, amount: "900", gl: "659", date: "2026-10-05" }));
   });
 
-  it("Uyar: 409 bank-negative (bakiye ve sonuç metinde); Yine de Kaydet (negativeOk) 200 ve bakiye −49.000", async () => {
+  it("Uyar: 409 cash-negative (bakiye ve sonuç metinde); Yine de Kaydet (negativeOk) 200 ve bakiye −49.000", async () => {
     const res = await voucher(ctx.api, { type: "other_out", accountId: warned.id, amount: "50.000", gl: "659", date: "2026-10-05" });
-    expectStatus(res, 409, "bank-negative", "uyar");
+    expectStatus(res, 409, "cash-negative", "uyar");
     assert.match(res.error, /1\.000,00/);
     assert.match(res.error, /−49\.000,00|-49\.000,00/);
     await must("yine de kaydet", voucher(ctx.api, { type: "other_out", accountId: warned.id, amount: "50.000", gl: "659", date: "2026-10-05", negativeOk: true }));
@@ -84,14 +84,14 @@ describe("GG2 — K7 eksi bakiye Banka Fişi'nde (fiş, Düzelt, Planlı Gerçek
   it("Bakiye Doğrulandı olmayan hesapta denetim yok; KMH limiti içinde serbest, aşınca engel", async () => {
     await must("doğrulanmamış", voucher(ctx.api, { type: "other_out", accountId: open.id, amount: "50.000", gl: "659", date: "2026-10-05" }));
     await must("KMH içinde", voucher(ctx.api, { type: "other_out", accountId: kmh.id, amount: "50.000", gl: "659", date: "2026-10-05" }));
-    expectStatus(await voucher(ctx.api, { type: "other_out", accountId: kmh.id, amount: "20.000", gl: "659", date: "2026-10-06" }), 409, "bank-blocked", "KMH aşımı");
+    expectStatus(await voucher(ctx.api, { type: "other_out", accountId: kmh.id, amount: "20.000", gl: "659", date: "2026-10-06" }), 409, "cash-blocked", "KMH aşımı");
   });
 
   it("Düzelt ve Planlı Gerçekleştir de aynı kural", async () => {
     const small = await must("küçük çıkış", voucher(ctx.api, { type: "other_out", accountId: blocked.id, amount: "50", gl: "659", date: "2026-10-06" }));
-    expectStatus(await ctx.api.post(`${BANK}/events/${small.id}/correct`, { amount: "5.000" }), 409, "bank-blocked", "Düzelt");
+    expectStatus(await ctx.api.post(`${BANK}/events/${small.id}/correct`, { amount: "5.000" }), 409, "cash-blocked", "Düzelt");
     const plan = await must("plan", ctx.api.post(`${BANK}/plans`, { type: "other_out", accountId: blocked.id, amount: "7.000", gl: "659", plannedDate: "2026-10-07", repeat: "none" }));
-    expectStatus(await ctx.api.post(`${BANK}/plans/${plan.id}/execute`, { expectedDate: "2026-10-07" }), 409, "bank-blocked", "Gerçekleştir");
+    expectStatus(await ctx.api.post(`${BANK}/plans/${plan.id}/execute`, { expectedDate: "2026-10-07" }), 409, "cash-blocked", "Gerçekleştir");
     await integrityOk(ctx.api, "K7");
   });
 });

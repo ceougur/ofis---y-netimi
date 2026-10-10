@@ -2007,11 +2007,12 @@
       },
     });
   }
-  // Yargıç K3: toplu iptal/silmede Uyar'daki banka hesabını eksiye düşüren belgeler (409 bank-negative) için TEK soru; onaylanırsa yalnız o
-  // belgeler negativeOk ile yeniden gönderilir. Engelle'deki (bank-blocked) belge sorulmaz, nedeniyle "yapılamadı" listelenir.
+  // Yargıç K3: toplu iptal/silmede Uyar'daki banka hesabını eksiye düşüren belgeler (409 cash-negative + accountId) için TEK soru; onaylanırsa yalnız o
+  // belgeler negativeOk ile yeniden gönderilir. Engelle'deki (cash-blocked) belge sorulmaz, nedeniyle "yapılamadı" listelenir.
   async function bulkWithNegative(url, body, verb) {
     const result = await HOF.api(url, { method: "POST", body });
-    const risky = (result.results || []).filter(item => !item.ok && item.code === "bank-negative");
+    // Hakem K5: banka hesabının reddi cash-negative + accountId (Kasa'nınki accountId'siz; toplu işlemde Kasa sorulmaz, "yapılamadı" listelenir).
+    const risky = (result.results || []).filter(item => !item.ok && item.code === "cash-negative" && item.accountId);
     if (!risky.length) return result;
     const [yes, no, word] = verb === "cancel" ? ["Yine de İptal Et", "İptal edilmedi", "iptal edilsin"] : ["Yine de Sil", "Silinmedi", "silinsin"];
     const go = await HOF.confirm({ title: "Eksi Bakiye", message: `Seçilenlerden ${risky.length.toLocaleString("tr-TR")} belge banka hesabını eksiye düşürüyor (${risky[0].number || risky[0].displayNo || ""}: ${String(risky[0].message || "").replace(/\s*Yine de kaydedilsin mi\?\s*$/, "")}). Bu belgeler yine de ${word} mi?`, confirmLabel: yes, cancelLabel: "Vazgeç", danger: true });

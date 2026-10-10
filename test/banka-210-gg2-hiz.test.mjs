@@ -163,7 +163,7 @@ describe("GG2 — Banka Fişi kaydında hesabın bütün satırları yeniden top
       assert.equal(await balance(), 94_975);
       let mark = full;
       const blocked = await api.post(`${BANK}/vouchers`, { type: "other_out", accountId: account.id, amount: "1.000", description: "Fazla", similarOk: true });
-      expectStatus(blocked, 409, "bank-negative", "eksi bakiye");
+      expectStatus(blocked, 409, "cash-negative", "eksi bakiye");
       assert.equal(full, mark, "reddedilen fiş tam toplam istemedi");
       assert.equal(await balance(), 94_975, "reddedilen fiş bakiyeyi değiştirmedi (saklanan toplam geri alınan işlemden gelmez)");
       mark = full;

@@ -4,7 +4,7 @@
 //   H2  Kayıtlı faturayı SİLME (DELETE) aynı açık; Uyar'da ?negativeOk=1 ile "Yine de Sil"
 //   H3  Bağlı satırın tarihi hesap açılışından önceye ya da pasif hesaptaki satırın tutarı — hesap kimliği gövdeden çıkarılınca denetimsiz geçiyordu
 //       (açılış öncesi genel "defterler arasında sapma … yöneticinize bildirin" 409'una düşüyordu; pasifte kabul ediliyordu)
-//   D1  Engelle'deki hesaptan aynı anda iki ödeme (ikisi ayrı ayrı sığar, birlikte sığmaz) → biri 409 bank-blocked, hesap eksiye düşmez
+//   D1  Engelle'deki hesaptan aynı anda iki ödeme (ikisi ayrı ayrı sığar, birlikte sığmaz) → biri 409 cash-blocked, hesap eksiye düşmez
 //   D2  Aynı istek kimliği farklı gövde (başka tutar/hesap) → 409 request-id-reused, ikinci satır yazılmaz
 //   D3  Başka şirketin hesap kimliği (iki yönde, ?hofCompany=) → 404 bank-account-missing
 //   D4  bank.move'suz personel bağlı satırın yolunu nakde çevirip bağı koparamaz (403), yalnız açıklamayı düzeltir
@@ -37,18 +37,18 @@ describe("Hızlı Nasıl Bozarım — hesap seçimi", () => {
   });
   after(() => ctx.server.close());
 
-  it("H1: fatura iptali bağlı peşini Engelle'deki hesaptan düşüremez (409 bank-blocked, fatura Kaydedildi kalır); Uyar'da sorulur → negativeOk", async () => {
+  it("H1: fatura iptali bağlı peşini Engelle'deki hesaptan düşüremez (409 cash-blocked, fatura Kaydedildi kalır); Uyar'da sorulur → negativeOk", async () => {
     const doc = await must("satış", ctx.api.post(INV, sale(buyer.id, 20000, acc.garanti.id)));
     const g = await balance(ctx.api, acc.garanti);
     assert.equal(g, 70000);
     await must("ödeme", ctx.api.post(entries(seller.id), { kind: "out", amount: "60.000", method: "bank", bankAccountId: acc.garanti.id, date: TODAY }));
     await setPolicy(ctx.api, acc.garanti, "block");
-    expectStatus(await ctx.api.post(`${INV}/${doc.id}/cancel`, { reason: "deneme" }), 409, "bank-blocked", "Engelle iptal");
-    expectStatus(await ctx.api.post(`${INV}/${doc.id}/cancel`, { reason: "deneme", negativeOk: true }), 409, "bank-blocked", "Engelle iptal (negativeOk geçmez)");
+    expectStatus(await ctx.api.post(`${INV}/${doc.id}/cancel`, { reason: "deneme" }), 409, "cash-blocked", "Engelle iptal");
+    expectStatus(await ctx.api.post(`${INV}/${doc.id}/cancel`, { reason: "deneme", negativeOk: true }), 409, "cash-blocked", "Engelle iptal (negativeOk geçmez)");
     assert.equal(ctx.store.get("SELECT status FROM invoices WHERE id = ?", doc.id).status, "issued");
     assert.equal(await balance(ctx.api, acc.garanti), 10000);
     await setPolicy(ctx.api, acc.garanti, "warn");
-    expectStatus(await ctx.api.post(`${INV}/${doc.id}/cancel`, { reason: "deneme" }), 409, "bank-negative", "Uyar iptal");
+    expectStatus(await ctx.api.post(`${INV}/${doc.id}/cancel`, { reason: "deneme" }), 409, "cash-negative", "Uyar iptal");
     await must("Yine de İptal Et", ctx.api.post(`${INV}/${doc.id}/cancel`, { reason: "deneme", negativeOk: true }));
     assert.equal(await balance(ctx.api, acc.garanti), -10000);
     await integrityOk(ctx.api, "H1");
@@ -59,11 +59,11 @@ describe("Hızlı Nasıl Bozarım — hesap seçimi", () => {
     const z = await balance(ctx.api, acc.ziraat);
     await must("ödeme", ctx.api.post(entries(seller.id), { kind: "out", amount: String(z - 1000), method: "bank", bankAccountId: acc.ziraat.id, date: TODAY }));
     await setPolicy(ctx.api, acc.ziraat, "block");
-    expectStatus(await ctx.api.del(`${INV}/${doc.id}`), 409, "bank-blocked", "Engelle sil");
+    expectStatus(await ctx.api.del(`${INV}/${doc.id}`), 409, "cash-blocked", "Engelle sil");
     assert.equal(ctx.store.get("SELECT status FROM invoices WHERE id = ?", doc.id).status, "issued");
     assert.equal(await balance(ctx.api, acc.ziraat), 1000);
     await setPolicy(ctx.api, acc.ziraat, "warn");
-    expectStatus(await ctx.api.del(`${INV}/${doc.id}`), 409, "bank-negative", "Uyar sil");
+    expectStatus(await ctx.api.del(`${INV}/${doc.id}`), 409, "cash-negative", "Uyar sil");
     await must("Yine de Sil", ctx.api.del(`${INV}/${doc.id}?negativeOk=1`));
     assert.equal(ctx.store.get("SELECT COUNT(*) AS n FROM invoices WHERE id = ?", doc.id).n, 0);
     assert.equal(await balance(ctx.api, acc.ziraat), -4000);
@@ -97,13 +97,13 @@ describe("Hızlı Nasıl Bozarım — hesap seçimi", () => {
     await integrityOk(ctx.api, "H3b");
   });
 
-  it("D1: Engelle'deki hesaptan aynı anda iki ödeme → biri 409 bank-blocked; hesap eksiye düşmez", async () => {
+  it("D1: Engelle'deki hesaptan aynı anda iki ödeme → biri 409 cash-blocked; hesap eksiye düşmez", async () => {
     await setPolicy(ctx.api, acc.ziraat, "block");
     const z = await balance(ctx.api, acc.ziraat);
     const part = Math.round(z * 0.6);
     const results = await Promise.all([1, 2].map(i => ctx.api.post(entries(seller.id), { kind: "out", amount: String(part + i), method: "bank", bankAccountId: acc.ziraat.id, date: TODAY, description: `yarış ${i}` })));
     assert.deepEqual(results.map(res => res.status).sort(), [200, 409]);
-    assert.equal(results.find(res => res.status === 409).code, "bank-blocked");
+    assert.equal(results.find(res => res.status === 409).code, "cash-blocked");
     assert.ok((await balance(ctx.api, acc.ziraat)) >= 0);
     await setPolicy(ctx.api, acc.ziraat, "warn");
     await integrityOk(ctx.api, "D1");

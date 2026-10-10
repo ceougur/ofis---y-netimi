@@ -1420,8 +1420,9 @@ try {
     ok((await eventsOf(NEG.id)) === before + 1 && (await balanceOf(NEG.id)) === -40_000, `Yine de Kaydet: tek fiş, bakiye −400 (${(await balanceOf(NEG.id)) / 100})`);
     // Engelle (hesap bazında): soru yok, kayıt yok.
     await must("Engelle", api.put(`/api/workspace/bank/accounts/${NEG.id}`, { negativePolicy: "block" }));
-    const blocked = await api.post("/api/workspace/bank/vouchers", { type: "other_out", accountId: NEG.id, amount: "1", description: "Engelli", negativeOk: true });
-    ok(blocked.status === 409 && JSON.stringify(blocked.data).includes("bank-blocked") && (await balanceOf(NEG.id)) === -40_000, `Engelle: negativeOk ile bile 409 bank-blocked (${blocked.status})`);
+    // Hakem K5 (plan §7, §12.5 adım 37): hesap bazlı ret cash-blocked + accountId; onay bayrakları (cashForce, eşanlamlı negativeOk) geçmez.
+    const blocked = await api.post("/api/workspace/bank/vouchers", { type: "other_out", accountId: NEG.id, amount: "1", description: "Engelli", negativeOk: true, cashForce: true });
+    ok(blocked.status === 409 && JSON.stringify(blocked.data).includes("cash-blocked") && JSON.stringify(blocked.data).includes(NEG.id) && (await balanceOf(NEG.id)) === -40_000, `Engelle: cashForce ve negativeOk ile bile 409 cash-blocked + accountId (${blocked.status})`);
   });
 
   await step("24f. GG2 (L6/L9/F10): Ayarlar'da kaydedilmemiş değişiklikle Esc soru sorar; Vazgeç pencerede kalır; yeniden açılışta Gelişmiş kapalı", async () => {
@@ -2172,6 +2173,48 @@ try {
     ok((await kabulBalance("Garanti BBVA")) === -23000, `Yine de Geri Yükle: ödeme geri geldi, Garanti −23.000 (${await kabulBalance("Garanti BBVA")})`);
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (bölüm 5)");
+  }, { after: backToFirst });
+
+  // Hakem K5 (10.10.2026; plan §7 "cash-negative ve cash-blocked kodlarına accountId", §3.9 cashForce): banka hesabının eksi bakiye reddi Kasa'nınkiyle
+  // aynı kod + accountId. Aynı istekte Kasa ve banka hesabı eksiye düşerse önce Kasa sorulur (HOF.api); Kasa'nın onayı banka hesabını sessizce geçmez
+  // (HOF.api negativeOk:false ekler) — Garanti'nin sorusu işlemin adıyla ("Yine de İptal Et"), hesabın adı ve bakiyesiyle ayrıca gelir.
+  await step("40b. Hakem K5: aynı iptalde Kasa ve Garanti eksiye düşer → önce Kasa sorusu, Kasa onayı Garanti'yi sessizce geçmez: Garanti'nin Eksi Bakiye sorusu (“Yine de İptal Et”, adı ve bakiyesiyle); onaylarla iptal; Kasa −5.000, Garanti −23.000", async () => {
+    await selectKabul();
+    const kasa = async () => (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash;
+    const k0 = await kasa();
+    if (k0 > 0) await must("Kasa'yı sıfırla", api.post("/api/workspace/cash", { kind: "out", amount: k0.toFixed(2).replace(".", ","), date: "2026-10-08", description: "K5 sıfırlama" }));
+    const g0 = await kabulBalance("Garanti BBVA");
+    const doc = await must("nakit + havale peşinli satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: kabul.abc.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ name: "Hizmet K5", qty: 1, unitPrice: 10000, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount: "5000", method: "cash", lineKey: "k5-nakit" }, { amount: "5000", method: "bank", bankAccountId: kabul.garanti.id, lineKey: "k5-havale" }], cheques: [], endorse: [], rest: "open" }, force: true, similarOk: true }));
+    await must("Kasa'dan ödeme", api.post("/api/workspace/cash", { kind: "out", amount: "5000", date: "2026-10-08", description: "K5 kira" }));
+    ok((await kasa()) === 0 && (await kabulBalance("Garanti BBVA")) === g0 + 5000, `hazırlık: Kasa 0, Garanti ${g0 + 5000} (${await kabulBalance("Garanti BBVA")})`);
+    const inv = `${modal} .hof-invoices-modal`;
+    await admin.evaluate(id => window.HOF.invoices.openDoc(id), doc.id);
+    await admin.waitForSelector(`${inv} [data-act="cancel"]`, { timeout: 10000 });
+    await admin.click(`${inv} [data-act="cancel"]`);
+    await admin.waitForSelector(`${reasonForm} [name="reason"]`, { timeout: 8000 });
+    await admin.fill(`${reasonForm} [name="reason"]`, "hakem K5 ekran denemesi");
+    await admin.click(`${reasonForm} button[type="submit"]`);
+    // Gelen bütün soruları sırayla oku ve onayla (en çok 4).
+    const asked = [];
+    for (let round = 0; round < 4; round += 1) {
+      const appeared = await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: round ? 4000 : 8000 }).then(() => true).catch(() => false);
+      if (!appeared) break;
+      asked.push({ title: await textOf(admin, `${top} .hof-modal-title`), text: await textOf(admin, `${top} .hof-modal-text`), yes: await textOf(admin, `${top} [data-answer="yes"]`) });
+      if (asked.length === 2) await shot(admin, "hakem-k5-kasa-sonra-garanti-sorusu");
+      await admin.waitForTimeout(400);
+      await admin.click(`${top} [data-answer="yes"]`);
+      await admin.waitForTimeout(1000);
+    }
+    ok(asked.length >= 2, `en az iki soru (Kasa ve Garanti): ${asked.map(q => q.title).join(" → ")}`);
+    ok(asked[0]?.title === "Kasa Eksiye Düşecek" && !has(asked[0]?.text, "Garanti"), `ilk soru Kasa'nın: ${asked[0]?.title} · ${asked[0]?.text?.slice(0, 120)}`);
+    const bankQuestion = asked.find(q => q.title === "Eksi Bakiye");
+    ok(Boolean(bankQuestion), `Kasa onayından sonra Garanti ayrıca soruldu: ${asked.map(q => q.title).join(" → ")}`);
+    ok(has(bankQuestion?.text, `Garanti BBVA · Ana TL Hesabı hesabında`) && has(bankQuestion?.text, "Yine de iptal edilsin mi?") && bankQuestion?.yes === "Yine de İptal Et", `Garanti sorusu hesabın adı ve bakiyesiyle, işlemin adıyla: ${bankQuestion?.text?.slice(0, 200)} · “${bankQuestion?.yes}”`);
+    ok((await docStatus(doc.id)) === "cancelled", "onaylarla fatura İptal Edildi");
+    ok((await kasa()) === -5000 && (await kabulBalance("Garanti BBVA")) === g0, `Kasa −5.000, Garanti ${g0} (${await kasa()} · ${await kabulBalance("Garanti BBVA")})`);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (hakem K5)");
+    await closeAll(admin);
   }, { after: backToFirst });
 
   // ---------- Bölüm 6 (Aşama 14, daraltılmış: Banka Raporları ve K10; plan §8.4, §8.9, §8.10, §3.4) ----------

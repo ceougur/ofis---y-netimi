@@ -1678,8 +1678,9 @@
   }
   /** Benzer İşlem (409 bank-similar): önceki işlemin İşlem No'su ve gireniyle sorar; "Yine de Kaydet" aynı istek kimliğiyle similarOk. */
   /**
-   * Benzer İşlem (409 bank-similar) ve eksi bakiye uyarısı (409 bank-negative, K7; GG2) aynı kalıpla sorulur: "Yine de Kaydet" aynı istek
-   * kimliğiyle similarOk / negativeOk gönderir. Engelle (409 bank-blocked) sorulmaz, nedeni formda görünür. send(flags) gövdeye flags'i ekler.
+   * Benzer İşlem (409 bank-similar) ve banka hesabının eksi bakiye uyarısı (409 cash-negative + accountId, K7; GG2; hakem K5) aynı kalıpla
+   * sorulur: "Yine de Kaydet" aynı istek kimliğiyle similarOk / negativeOk (sunucuda cashForce'un eşanlamlısı) gönderir. Engelle (409
+   * cash-blocked + accountId) sorulmaz, nedeni formda görünür. send(flags) gövdeye flags'i ekler.
    */
   // Yargıç (2.1.0): soru ve "Vazgeç" bildirimi işlemin adıyla (İptal Et / Sil / Geri Yükle); Vazgeç kırmızı hata değil, bilgi (2.0.26 İ6 kalıbı).
   const CONFIRM_VERBS = {
@@ -1702,7 +1703,8 @@
           flags.similarOk = true;
           continue;
         }
-        if (code === "bank-negative" && !flags.negativeOk) {
+        // Hakem K5 (plan §7): banka hesabının eksi bakiye reddi cash-negative + accountId (Kasa'nınki accountId'siz; onu HOF.api sorar).
+        if (code === "cash-negative" && error?.data?.accountId && !flags.negativeOk) {
           const go = await HOF.confirm({ title: "Eksi Bakiye", message: String(error.message || "").replace(/Yine de kaydedilsin mi\?\s*$/, words.ask), confirmLabel: words.yes, cancelLabel: "Vazgeç" });
           if (!go) throw new HOF.ApiError(`${words.no}: işlem hesabın bakiyesini eksiye düşürüyor.`, 409, { code: "bank-negative-cancelled", field: "amount" });
           flags.negativeOk = true;

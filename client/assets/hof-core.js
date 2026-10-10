@@ -147,6 +147,9 @@
       const body = options.body;
       const removing = String(options.method || "").toUpperCase() === "DELETE";
       if (error?.status !== 409 || error.data?.code !== "cash-negative" || (!removing && (!body || typeof body !== "object"))) throw error;
+      // Hakem K5 (plan §7): banka hesabının eksi bakiye reddi de cash-negative'dir ama accountId taşır; onu formun kendi sorusu sorar
+      // (HOF.bank.withConfirms: hesabın adı ve bakiyesiyle, işlemin adıyla "Yine de İptal Et / Sil / Geri Yükle"). Burada yalnız Kasa sorulur.
+      if (error.data?.accountId) throw error;
       // Yola göre başlık ve öneri (Nakit Kasa, Banka, Kredi Kartı). "Engelle" ayarında sunucu cash-blocked döner, sorulmaz.
       const where = { cash: ["Kasa Eksiye Düşecek", "Ödeme bankadan ya da başka bir kasadan yapıldıysa yolu değiştirin."], bank: ["Banka Bakiyesi Eksiye Düşecek", "Hesapta kredili mevduat varsa ya da tahsilat henüz girilmediyse kaydedebilirsiniz."], card: ["Kredi Kartı Bakiyesi Eksiye Düşecek", "İade tutarını ve ödeme yolunu kontrol edin."] }[error.data?.method] || ["Bakiye Eksiye Düşecek", ""];
       // v2.0.26 (G7): silmede sunucu nedeni söyler ("… silinince Nakit Kasa'dan … düşer"); yol değiştirme önerisi silmeye uymaz.
@@ -156,9 +159,10 @@
       const go = await HOF.confirm({ title: where[0], message: question.replace(/\s+/g, " "), confirmLabel: removing ? "Yine de Sil" : "Yine de Kaydet", danger: true });
       // İ6: silmede "Silinmedi"; kullanıcı bilerek vazgeçtiği için bildirim hata değil bilgi (HOF.toastError, aşağıda).
       if (!go) throw new ApiError(removing ? "Silinmedi: bakiye eksiye düşecekti." : "Kaydedilmedi: bakiye eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
-      // Silmede gövde yok: onay adrese eklenir.
-      if (removing) return rawApi(`${path}${path.includes("?") ? "&" : "?"}cashForce=1`, options);
-      return rawApi(path, { ...options, body: { ...body, cashForce: true } });
+      // Silmede gövde yok: onay adrese eklenir. Hakem K5: cashForce banka hesabının uyarısını da geçer (plan §3.9); bu onay yalnız Kasa'nın
+      // sorusuna verildiği için banka hesabı henüz sorulmadıysa negativeOk:false (?negativeOk=0) eklenir — banka hesabı ayrıca sorulur.
+      if (removing) return rawApi(`${path}${path.includes("?") ? "&" : "?"}cashForce=1${/[?&]negativeOk=1\b/.test(path) ? "" : "&negativeOk=0"}`, options);
+      return rawApi(path, { ...options, body: { ...body, cashForce: true, negativeOk: body.negativeOk === true } });
     }
   };
   // v2.0.22 (Excel denetimi, yük ölçümü): arka plan istekleri (rozetler, vade takvimi, ANLIK DURUM, başka bilgisayardaki
