@@ -1,0 +1,32 @@
+{
+  "ad": "t4-degisen-testler-yesil",
+  "komut": "node --test test/banka-210-nakit-akis-k10.test.mjs test/banka-210-ertelenen.test.mjs test/raporlar-210-banka.test.mjs test/cheques-overview.test.mjs test/banka-210-altin.test.mjs test/banka-210-arayuz.test.mjs test/banka-210-ayarlar.test.mjs test/banka-210-fis.test.mjs",
+  "commit": "2f89d81bf0d50b0ef0d3cb1675be76c0b1515a30",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:09:46.466Z",
+  "sure_sn": 63,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 115,
+    "gecen": 115,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-t4/2026-10-10/t4-degisen-testler-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e678466a2c2efc5034ae9f769738dec28828fd33f9a800f21015228cdaf9bfcc",
+  "ham_cikti_bayt": 40709
+}
