@@ -1,0 +1,28 @@
+  100 işlem · 5 şirket · 6 yedek · 6 geri yükleme · 12.0 sn
+  200 işlem · 5 şirket · 24 yedek · 14 geri yükleme · 30.3 sn
+  300 işlem · 6 şirket · 38 yedek · 17 geri yükleme · 48.5 sn
+  400 işlem · 5 şirket · 60 yedek · 22 geri yükleme · 72.0 sn
+  500 işlem · 2 şirket · 66 yedek · 32 geri yükleme · 88.6 sn
+  600 işlem · 2 şirket · 77 yedek · 40 geri yükleme · 104.8 sn
+  700 işlem · 3 şirket · 92 yedek · 45 geri yükleme · 127.0 sn
+  800 işlem · 5 şirket · 111 yedek · 49 geri yükleme · 156.9 sn
+  900 işlem · 4 şirket · 127 yedek · 56 geri yükleme · 186.7 sn
+  1000 işlem · 6 şirket · 138 yedek · 63 geri yükleme · 218.3 sn
+
+✓ Tohum 1 · taban bos: 1000 işlem, 1001 değişmez kural turu, 138 yedek, 63 geri yükleme, 38 yanlış şirkete deneme (hepsi 409), 33 yeniden başlatma · 219.0 sn
+  İşlem türleri: account 120, entry 149, backupOne 62, restore 56, reset 24, remove 38, rename 53, restoreRoot 12, bankAccount 21, select 61, bankVoucher 46, bankModule 65, restart 21, create 56, wrongRestore 38, recode 39, bankTransfer 31, cash 54, backupAll 16, bankReverse 17, bankWrongCompany 21
+  Son durum: 003 · Ünal & Öztürk Hukuk (2 cari) | 045 · Şahin İnşaat (0 cari) | 011 · Doğu "Batı" Lojistik (1 cari) | 031 · MAVİ GIDA (1 cari) | 034 · Işık Turizm (2 cari) | 002 · Iğdır Tarım|Hayvancılık (0 cari)
+  100 işlem · 5 şirket · 5 yedek · 9 geri yükleme · 18.3 sn
+  200 işlem · 5 şirket · 23 yedek · 15 geri yükleme · 39.1 sn
+  300 işlem · 6 şirket · 36 yedek · 19 geri yükleme · 60.4 sn
+  400 işlem · 5 şirket · 57 yedek · 24 geri yükleme · 87.3 sn
+  500 işlem · 2 şirket · 63 yedek · 34 geri yükleme · 107.3 sn
+  600 işlem · 2 şirket · 74 yedek · 42 geri yükleme · 127.1 sn
+  700 işlem · 3 şirket · 89 yedek · 47 geri yükleme · 148.4 sn
+  800 işlem · 5 şirket · 108 yedek · 51 geri yükleme · 175.8 sn
+  900 işlem · 4 şirket · 124 yedek · 58 geri yükleme · 206.2 sn
+  1000 işlem · 6 şirket · 135 yedek · 65 geri yükleme · 234.9 sn
+
+✓ Tohum 1 · taban surum-2.0.19-zincir: 1000 işlem, 1001 değişmez kural turu, 135 yedek, 65 geri yükleme, 35 yanlış şirkete deneme (hepsi 409), 36 yeniden başlatma · 235.6 sn
+  İşlem türleri: account 121, entry 154, backupOne 61, restore 55, reset 25, bankReverse 19, select 60, bankAccount 21, rename 54, remove 37, restoreRoot 13, bankVoucher 42, bankModule 64, restart 23, recode 40, create 54, wrongRestore 35, bankTransfer 31, cash 55, backupAll 16, bankWrongCompany 20
+  Son durum: 060 · Ünal & Öztürk Hukuk (2 cari) | 045 · Doğu "Batı" Lojistik (0 cari) | 011 · MAVİ GIDA (5 cari) | 024 · Ağaoğlu Yapı? (1 cari) | 031 · Işık Turizm (2 cari) | 002 · Iğdır Tarım|Hayvancılık (0 cari)
