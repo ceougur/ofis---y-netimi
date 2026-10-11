@@ -1,7 +1,7 @@
 // Tahsilat takvimi ve son tarihi yaklaşan işler (v2.0.1). Kayan ödeme şeridi ve sağ alt bildirimler bunu kullanır.
 // Sonuç; veri, tahsilatlar, elle kapatılan kalemler ve gün değişene kadar oturum başına önbellektedir.
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
-import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
+import { computeDeadlines, computeDues, DUE_WINDOW } from "../lib/insight/dues.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
@@ -81,8 +81,12 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
         for (const item of all.items || []) {
           if (!item.session || item.session === session) continue;
           const tagged = { ...item, foreign: true, pageName: item.sessionName || "" };
-          if (item.deadline) foreignDeadlines.push(tagged);
-          else if (!item.carded) foreignItems.push(tagged);
+          // Kullanıcı kararı "A" (11.10.2026): uyarı ufku bütün sayfalarda aynı. Raporların takvimi ileriye bir yıl bakar
+          // (routes/reports.mjs AHEAD); öbür sayfanın son tarihi de açık sayfanınki gibi (computeDeadlines) yalnız son 7 gün kala
+          // uyarır. Geçmiş taraf aynı (30 gün); Vade Takip raporu değişmez.
+          if (item.deadline) {
+            if (item.days <= DUE_WINDOW.aheadDays) foreignDeadlines.push(tagged);
+          } else if (!item.carded) foreignItems.push(tagged);
         }
       } catch (error) {
         // öbür sayfalar okunamazsa açık sayfanın takvimi yine verilir

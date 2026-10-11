@@ -87,8 +87,10 @@ try {
   await page.waitForTimeout(1500);
   const rehber = [["Öğrenci No", "Adı", "Soyadı", "Telefonu"]];
   for (let i = 0; i < 30; i += 1) rehber.push([String(22821911000 + i), ["Mehmet", "İrem", "Cihat", "Rahman"][i % 4], ["Türkoğlu", "Eroğlu", "Şenyurt", "Koyuncu"][i % 4], `0532${String(1000000 + i)}`]);
+  // Hedefin son tarihi 5 gün sonra: uyarı ufku bütün sayfalarda 7 gün (kullanıcı kararı "A", 11.10.2026); öbür firmalar 200+ gün
+  // sonra, uyarı vermez (önceden öbür sayfa ufuksuzdu, hedef 10 gündeydi).
   const musteri = [["Vergi No", "Firma Adı", "Telefon", "Lisans Bitiş Tarihi"]];
-  for (let i = 0; i < 60; i += 1) musteri.push(i === 44 ? [TARGET_NO, TARGET, "05321234567", dmy(10)] : [String(300000000 + i), `Firma ${i + 1} Ltd.`, `0533${String(2000000 + i)}`, dmy(200 + i)]);
+  for (let i = 0; i < 60; i += 1) musteri.push(i === 44 ? [TARGET_NO, TARGET, "05321234567", dmy(5)] : [String(300000000 + i), `Firma ${i + 1} Ltd.`, `0533${String(2000000 + i)}`, dmy(200 + i)]);
   const arsiv = [["Vergi No", "Firma Adı", "Telefon", "Lisans Bitiş Tarihi"]];
   for (let i = 0; i < 5; i += 1) arsiv.push([String(400000000 + i), `Arşiv Firma ${i + 1}`, `0534${String(3000000 + i)}`, dmy(300 + i)]);
   const first = await api("/api/workspace/dataset/stage", { kind: "excel", fileName: "TÜM REHBER.xlsx", sheets: [{ name: "REHBER", matrix: rehber }] });

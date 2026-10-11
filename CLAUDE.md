@@ -1250,6 +1250,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   penceresi yeni sayfa açılınca "sayfa silindi" diyor — ek bulgu, kullanıcıya listelendi.
   KARAR (kullanıcı, 11.10.2026: "A"): uyarı ufku BÜTÜN sayfalarda aynı — her kayıt yalnız son 7 gün kala uyarır (öbür sayfaların ufuksuz
   uyarısı kalkar; müşterinin "SON GÜNE 42 GÜN" ekranı bu yoldandı). Uygulama: önce kırmızı test → düzeltme (2.1.0'a).
+  DÜZELDİ (11.10.2026): kök neden routes/dues.mjs — öbür sayfaların son tarihleri raporların bir yıllık takviminden (reports.mjs AHEAD
+  366 gün) süzülmeden geliyordu; açık sayfanınki computeDeadlines 7 gün (sabit DUE_WINDOW.aheadDays, ayar YOK). Öbür sayfa son tarihi de
+  days ≤ 7 süzülür; geçmiş taraf (30 gün) aynı; Tahsilat Takvimi kalemleri ve Vade Takip değişmedi. Kırmızı: uyari-ufku-225 eski kodda
+  2/4, senaryo-225-uyari eski sunucuda 33/36 ("SON GÜNE 42 GÜN · Öbür 42 Gün Firması" sağ altta ve zilde) → 4/4, 36/36; senaryo-225
+  hedefi 10 → 5 gün (46/46), npm test 2069/2069. Kanıt docs/kanit/2026-10-11/uyari-ufku.
   HESAPSIZ METNİ + KILAVUZ (9f82aec, b08a17a; birleşme): "Hesapsız (Açılıştan Önce)" seçilince cari/fatura/Kasa↔Banka açıklaması ve seçici notu
   doğru; kılavuz 8. Banka'ya iki kısa bilgi, PDF b326df68… (34 sayfa). Ana oturum: eski istemcide senaryo-banka-210-eski-satir 20/25 → 25/25,
   senaryo-banka-210 407/407, yazım 2/2.

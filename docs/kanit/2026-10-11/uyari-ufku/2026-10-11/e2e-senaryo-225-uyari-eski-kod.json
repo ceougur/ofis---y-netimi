@@ -1,0 +1,48 @@
+{
+  "ad": "e2e-senaryo-225-uyari-eski-kod",
+  "komut": "npm run test:senaryo-225-uyari",
+  "commit": "742c8112104cdb1427aaae6982d24a230a4960eb",
+  "dal": "worktree-agent-ae060f41b27875c73",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:36:53.652Z",
+  "sure_sn": 145.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 36,
+    "gecen": 33,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "öbür sayfanın 42 gün sonraki kaydı sağ altta YOK",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "öbür sayfanın 42 gün sonraki kaydı zilde YOK",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "“SON GÜNE 42 GÜN” uyarısı hiçbir yerde yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/uyari-ufku/2026-10-11/e2e-senaryo-225-uyari-eski-kod.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae060f41b27875c73",
+  "ham_cikti_sha256": "705e65f63c51ed3831852fa0bfd25529b4ce0bfd67def7b051913da24afcd3a4",
+  "ham_cikti_bayt": 3835
+}

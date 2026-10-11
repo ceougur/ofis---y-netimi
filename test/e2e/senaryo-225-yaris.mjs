@@ -13,6 +13,11 @@
 // sonra 1. sayfayı açıp uyarıyı bekler; 3 saat kuralı gereği gelmez → 30 sn sonra kırmızı (10.10.2026, 39/40). Uyarı
 // kullanıcıya gösterilmiştir (ekrandaydı); ürün kuralı çalışıyor, beklenti testin kendi önceki penceresi yüzünden bozuluyor.
 //
+// 11.10.2026 (kullanıcı kararı "A"): uyarı ufku bütün sayfalarda 7 gün; öbür sayfanın son tarihi artık ufuksuz DEĞİL. Hedef 10 günden
+// 5 güne alındı (10 gün hiçbir sayfada uyarmaz); bu yüzden hedef 2. sayfa seçiliyken de (kendi kalemi olarak) gösterilir ve
+// ön koşul her denemede kendiliğinden oluşur. FIX=new (görüldü kaydı silinir) her denemede yeşil olmalıdır; FIX=old artık
+// yarışı değil, 3 saat kuralını gösterir.
+//
 // Bu betik her denemede senaryonun kurulumunu AYNI sırayla koşar ve her sayfa yüklemesinde hedef uyarının ekrana çıkıp
 // çıkmadığını kaydeder (init betiği → console). Ön koşul = hedef uyarı son (1. sayfa) yüklemeden ÖNCE gösterildi.
 //   MODE=natural  senaryodaki sıra (ön koşul kendiliğinden oluşursa oluşur; ~1/3 deneme)
@@ -113,7 +118,7 @@ for (let trial = 1; trial <= TRIALS; trial += 1) {
     const rehber = [["Öğrenci No", "Adı", "Soyadı", "Telefonu"]];
     for (let i = 0; i < 30; i += 1) rehber.push([String(22821911000 + i), ["Mehmet", "İrem", "Cihat", "Rahman"][i % 4], ["Türkoğlu", "Eroğlu", "Şenyurt", "Koyuncu"][i % 4], `0532${String(1000000 + i)}`]);
     const musteri = [["Vergi No", "Firma Adı", "Telefon", "Lisans Bitiş Tarihi"]];
-    for (let i = 0; i < 60; i += 1) musteri.push(i === 44 ? [TARGET_NO, TARGET, "05321234567", dmy(10)] : [String(300000000 + i), `Firma ${i + 1} Ltd.`, `0533${String(2000000 + i)}`, dmy(200 + i)]);
+    for (let i = 0; i < 60; i += 1) musteri.push(i === 44 ? [TARGET_NO, TARGET, "05321234567", dmy(5)] : [String(300000000 + i), `Firma ${i + 1} Ltd.`, `0533${String(2000000 + i)}`, dmy(200 + i)]);
     const arsiv = [["Vergi No", "Firma Adı", "Telefon", "Lisans Bitiş Tarihi"]];
     for (let i = 0; i < 5; i += 1) arsiv.push([String(400000000 + i), `Arşiv Firma ${i + 1}`, `0534${String(3000000 + i)}`, dmy(300 + i)]);
     const first = await api("/api/workspace/dataset/stage", { kind: "excel", fileName: "TÜM REHBER.xlsx", sheets: [{ name: "REHBER", matrix: rehber }] });
@@ -140,7 +145,7 @@ for (let trial = 1; trial <= TRIALS; trial += 1) {
     if (FIX === "old") await page.waitForTimeout(800);
     // Son yüklemeden önce "görüldü" kaydı: kaç kimlik var, hedefinki var mı (ekrana çıkan bildirim sayısıyla karşılaştırılır).
     const seenIds = await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith("hof-notices:")).flatMap(key => Object.keys(JSON.parse(localStorage.getItem(key) || "{}").shown || {})));
-    const targetSeen = seenIds.some(id => id.includes("Lisans Bitiş Tarihi") && id.endsWith(dmy(10).split(".").reverse().join("-")));
+    const targetSeen = seenIds.some(id => id.includes("Lisans Bitiş Tarihi") && id.endsWith(dmy(5).split(".").reverse().join("-")));
     let cleared = null;
     if (FIX === "new") {
       // senaryo-225.mjs düzeltmesi (C adımının ön koşulu her koşuda aynı): uygulama sayfasından çıkılır (aynı kökenden bir
