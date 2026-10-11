@@ -80,3 +80,9 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
 - CI 566 (106394f): Linux ×2 duzeltmeler-212 "yeni kişi: bugün" 2026-10-10 ↔ 2026-10-11 — testte sabit ilk vade "10.10.2026" 11.10'dan beri
   geçmişte; kayıt tarihi ilk vadeyi aşamaz → 10.10 (program doğru). Yerelde de her gün kırmızı (11.10 00:18 UTC: 4/5). TARİHE BAĞLI TEST (ders 13);
   ilk vade bugünden +10 gün → 5/5. Taramada başka sabit tarihli test sahte saatsiz değil (banka-210-* NOW ile).
+- windows.yml #39 (5b1525f, elle başlatıldı; iptal ettim 00:44): kurulum, servis, UDP, giriş, SERVİS ÇALIŞIRKEN YEDEK (madde 3, 2. gerçek
+  Windows yeşili: bütünlük ok) ve yeniden başlatma GEÇTİ; otomatik güncelleme W1 (kapalı → hazır, kurmaz) + W2 (açık → kurar, yedek, veri)
+  GEÇTİ. W3 (cumartesi → saat 35 sa ileri, Set-Date yolu ilk kez) 4 denetim kırmızı, sonra süreç 1,5 sa kapanmadı. Kök neden TEST: (1) hata
+  yolunda "personel çalışıyor" döngüsü durmuyordu → süreç açık kaldı; (2) bekleme süreleri duvar saatiyle (saat atlamasında bozulur);
+  (3) .hazir yokken robocopy 16 → sınama çöktü. Ürün günlüğü: açılış internetsiz (beklenen), 60 sn yeniden deneme beklenmeden test bitti.
+  Düzeltme: performance.now() süreleri, yok klasör = boş liste, finally'de working=false + process.exit. Linux kuru koşu 29/29.

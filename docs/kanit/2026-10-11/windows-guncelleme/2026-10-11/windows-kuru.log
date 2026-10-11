@@ -1,0 +1,46 @@
+(node:29121) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Kurulu sürüm 2.0.26; sınama sürümü 2.0.27; kurulum kökü /tmp/destekofis-win-kuru-ePHaRm/DestekOfis
+  ✓ kurulu kopyaya test anahtarı eklendi (yalnız bu CI makinesinde)
+
+■ W1 Kendiliğinden kur KAPALI: servis yeniden başlar → açılışta denetler, 'hazır' gösterir, kurmaz
+  ✓ açılışta güncelleme kaynağı sorgulandı (1 istek)
+  ✓ ayar: kendiliğinden kur kapalı
+  ✓ Yönetim → Sistem: yeni sürüm hazır (2.0.27)
+  ✓ paket indirilmedi
+  ✓ kurulmadı (çalışan 2.0.26)
+
+■ W2 Kendiliğinden kur AÇIK: servis yeniden başlar → açılışta bulunur, kimse kullanmıyor → kurulur
+  ✓ servis kendiliğinden 2.0.27 sürümüne geçti (4 sn)
+  ✓ paket bir kez indirildi (1)
+  ✓ app\current.json etkin 2.0.27, önceki 2.0.26, onaylı
+  ✓ güncelleme öncesi yedek (001 - Şirket 1: destekofis-001-2026-10-11T00-45-50-996Z-guncelleme-oncesi-2-0-26.sqlite)
+  ✓ güncelleme öncesi kullanıcı giriş yapıyor (veri korundu)
+  ✓ Yönetim → Sistem: 2.0.27 sürümüne güncellendi
+  ✓ servis günlüğü: yeni sürüm bulundu
+  ✓ servis günlüğü: güncellendi
+2026-10-11T00:45:32.486Z [INFO] Yeni sürüm bulundu: 2.0.27 (kurulu 2.0.26)
+2026-10-11T00:45:32.487Z [INFO] 2.0.27 sürümü hazır; kendiliğinden kurulum kapalı, kurulmayacak (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).
+2026-10-11T00:45:50.644Z [INFO] Yeni sürüm bulundu: 2.0.27 (kurulu 2.0.26)
+2026-10-11T00:45:50.645Z [INFO] 2.0.27 sürümü indiriliyor (6573 KB)…
+2026-10-11T00:45:51.448Z [INFO] DestekOfis 2.0.27 sürümüne güncellendi (önceki 2.0.26).
+
+■ W3 Arka planda indir, sonraki açılışta kur (2.0.26 çalışırken 2.0.28 yayımlanır)
+  · mesai içi: kuru koşu: servis saati Mon Oct 12 2026 10:00:00 GMT+0000 (Coordinated Universal Time) olacak şekilde kaydırıldı
+  ✓ W3: personel giriş yaptı
+  ✓ W3: 2.0.28 arka planda indirildi ve doğrulandı ('hazır'; {"version":"2.0.28","stagedAt":"2026-10-12T10:01:00.407Z"})
+  ✓ W3: kullanıcı çalışırken kurulmadı (ertelendi)
+  ✓ W3: çalışan sürüm hâlâ 2.0.26
+  ✓ W3: uygulama süreci değişmedi (29204 → 29204)
+  ✓ W3: paket bir kez indirildi (1)
+  ✓ W3: app\.hazir\2.0.28 var (2.0.28)
+  ✓ W3: yeniden başlatmada hazır 2.0.28 kuruldu (3 sn; internet yok)
+  ✓ W3: açılışta paket yeniden indirilmedi
+  ✓ W3: bu açılışta uygulama yalnız yeni sürümle başlatıldı (app/2.0.28)
+  ✓ W3: servis günlüğü 'Açılışta hazır güncelleme var'
+  ✓ W3: Yönetim → Sistem: 2.0.28 sürümüne güncellendi, hazır paket kalmadı
+  ✓ W3: hazır paket kurulduktan sonra silindi
+  ✓ W3: etkin 2.0.28, önceki 2.0.26; 2.0.26 klasörü duruyor
+  ✓ kurulum eski hâline döndü (servis 2.0.26)
+
+TAMAM: 29 denetim geçti, 0 başarısız.

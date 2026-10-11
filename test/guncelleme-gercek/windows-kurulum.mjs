@@ -30,6 +30,8 @@ const ADMIN = { username: "admin", password: process.argv[3] || "Windows-Testi-2
 const STAFF = { username: "kalici", password: "Kalici-Parola-2026" };
 const BASE = "http://127.0.0.1:5123";
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+// Bekleme süreleri saatten bağımsız sayaçla (W3 makinenin saatini ileri alır; duvar saatiyle hesaplanan süre atlamada bozulur — windows.yml #39).
+const clock = () => performance.now();
 let passed = 0;
 let failed = 0;
 const ok = (cond, what) => {
@@ -70,6 +72,8 @@ function listDir(dir) {
   try {
     return readdirSync(dir);
   } catch {
+    // Klasör yoksa boş (robocopy kaynak yokken 16 döner ve sınamayı durdururdu — windows.yml #39).
+    if (!existsSync(dir)) return [];
     const copy = mkdtempSync(path.join(work, "liste-"));
     try {
       execFileSync("robocopy", [dir, copy, "/B", "/L", "/R:0", "/W:0", "/NJH", "/NJS", "/NDL", "/NC", "/NS"], { encoding: "utf8" });
@@ -90,9 +94,9 @@ async function health() {
   }
 }
 async function waitHealth(check, timeoutMs, what) {
-  const until = Date.now() + timeoutMs;
+  const until = clock() + timeoutMs;
   let last = null;
-  while (Date.now() < until) {
+  while (clock() < until) {
     last = await health();
     if (last && check(last)) return last;
     await sleep(1000);
@@ -194,6 +198,8 @@ function forceWorkHours() {
 }
 
 let workHoursRestore = null;
+// W3 "personel çalışıyor" döngüsü: hata yolunda da durur (durmazsa süreç kapanmıyordu — windows.yml #39, 1,5 sa takıldı).
+let working = false;
 try {
   writeFile(keysFile, keysBefore.replace(/export const TRUSTED_UPDATE_KEYS = Object\.freeze\(\{/, `export const TRUSTED_UPDATE_KEYS = Object.freeze({\n  "ci-windows-test": "${keys.publicB64}",`));
   ok(readFile(keysFile).includes("ci-windows-test"), "kurulu kopyaya test anahtarı eklendi (yalnız bu CI makinesinde)");
@@ -203,8 +209,8 @@ try {
   writeFile(configFile, JSON.stringify({ enabled: false, channel: "stable", feed }));
   restartService();
   await waitHealth(data => data.version === installed, 120_000, "servis açılmadı");
-  const deadline = Date.now() + 60_000;
-  while (Date.now() < deadline && !manifestHits()) await sleep(500);
+  const deadline = clock() + 60_000;
+  while (clock() < deadline && !manifestHits()) await sleep(500);
   ok(manifestHits() >= 1, `açılışta güncelleme kaynağı sorgulandı (${manifestHits()} istek)`);
   await sleep(15_000);
   const w1 = await adminStatus();
@@ -215,10 +221,10 @@ try {
 
   console.log("\n■ W2 Kendiliğinden kur AÇIK: servis yeniden başlar → açılışta bulunur, kimse kullanmıyor → kurulur");
   writeFile(configFile, JSON.stringify({ enabled: true, channel: "stable", feed }));
-  const restartedAt = Date.now();
+  const restartedAt = clock();
   restartService();
   const after = await waitHealth(data => data.version === next, 240_000, `${next} sürümüne geçilmedi`);
-  ok(after.version === next, `servis kendiliğinden ${next} sürümüne geçti (${Math.round((Date.now() - restartedAt) / 1000)} sn)`);
+  ok(after.version === next, `servis kendiliğinden ${next} sürümüne geçti (${Math.round((clock() - restartedAt) / 1000)} sn)`);
   ok(zipHits() === 1, `paket bir kez indirildi (${zipHits()})`);
   const active = JSON.parse(readFile(path.join(appsDir, "current.json")));
   ok(active.version === next && active.previous === installed && !active.pending, `app\\current.json etkin ${active.version}, önceki ${active.previous}, onaylı`);
@@ -249,7 +255,7 @@ try {
   // Personel çalışıyor: giriş + 2 sn'de bir ekran isteği.
   const staff3 = await login(STAFF);
   ok(staff3.status === 200, "W3: personel giriş yaptı");
-  let working = true;
+  working = true;
   const activity = (async () => {
     while (working) {
       await fetch(`${BASE}/api/workspace/client-state`, { headers: { cookie: staff3.cookie } }).catch(() => null);
@@ -259,8 +265,8 @@ try {
   const pidBefore = (await supervisorHealth())?.childPid;
   feedDown = false;
   let w3status = null;
-  const until3 = Date.now() + 6 * 60_000;
-  while (Date.now() < until3) {
+  const until3 = clock() + 6 * 60_000;
+  while (clock() < until3) {
     w3status = await adminStatus().catch(() => null);
     if (w3status?.prepared?.version === next2) break;
     await sleep(3000);
@@ -276,10 +282,10 @@ try {
   await activity;
   // Akşam kapatılır, sabah internetsiz açılır.
   feedDown = true;
-  const restarted3 = Date.now();
+  const restarted3 = clock();
   restartService();
   const after3 = await waitHealth(data => data.version === next2, 300_000, `W3: açılışta ${next2} kurulmadı`);
-  ok(after3.version === next2, `W3: yeniden başlatmada hazır ${next2} kuruldu (${Math.round((Date.now() - restarted3) / 1000)} sn; internet yok)`);
+  ok(after3.version === next2, `W3: yeniden başlatmada hazır ${next2} kuruldu (${Math.round((clock() - restarted3) / 1000)} sn; internet yok)`);
   ok(zipHits(next2) === 1, "W3: açılışta paket yeniden indirilmedi");
   const boot3 = lastBoot();
   ok(appStarts(boot3).length >= 1 && appStarts(boot3)[0].includes(next2), `W3: bu açılışta uygulama yalnız yeni sürümle başlatıldı (${appStarts(boot3).join(", ")})`);
@@ -293,6 +299,7 @@ try {
   failed += 1;
   console.log(`✗ sınama durdu: ${error.stack || error.message}`);
 } finally {
+  working = false;
   // Kurulumu eski hâline döndür: sonraki iş adımları (aynı paketle yeniden kurulum, kaldırma…) sınama öncesi düzenle sürer.
   try {
     if (workHoursRestore) workHoursRestore();
@@ -333,4 +340,5 @@ try {
   rmSync(work, { recursive: true, force: true });
 }
 console.log(`\n${failed ? "BAŞARISIZ" : "TAMAM"}: ${passed} denetim geçti, ${failed} başarısız.`);
-process.exitCode = failed ? 1 : 0;
+// Açık kalan bağlantı/zamanlayıcı süreci tutmasın: sonuç yazıldıktan sonra kesin çıkış.
+process.exit(failed ? 1 : 0);
