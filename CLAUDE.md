@@ -1255,7 +1255,8 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   1.048.576 TL üstü ondalıklı birim fiyatların ~%10'u ve 16.777.216 üstü ondalıklı miktarlar "en çok dört/üç ondalık" diye REDDEDİLİYORDU
   (invoice-math.mjs computeLine: x × 10.000 − yuvarlanmış > 1e-6 mutlak tolerans; 1.234.567,89 × 10.000 = 12345678900,000002). Ekrandan da
   olur. Düzeltme 3069b26 (basamak 15 anlamlı basamakta artığı silinmiş en kısa gösterimden). Ana oturum: eski kopya 779c6a9'da 3/4 kırmızı,
-  0a733dd'de 4/4 + komşu fatura testleri 68/68. Kullanıcıya listelendi. Tohum 4 5.000 işlem yeniden koşusu + CI sırada.
+  0a733dd'de 4/4 + komşu fatura testleri 68/68. Kullanıcıya listelendi. TOHUM 4 YENİDEN (ana oturum, 52ea195): 5.000 işlem, 5.002
+  doğrulama, her işlemden sonra tutarlı, GEÇTİ çıkış 0 (yerelde 61,7 dk; GitHub'da ~43 dk); CI 592 (52ea195) ve 2824f22 dört platform + e2e YEŞİL.
   ÖLÇEK (11.10.2026; tools/olcek-210.mjs, 001'de 100.000 + 002'de 12.000 para satırı, gerçek API'den; kanıt docs/kanit/2026-10-11/olcek):
   DOĞRULUK tamam (10/20 kullanıcı: mutabakat TAMAM, bağımsız Kasa/banka farkı 0,00, yedekler bütün). HIZ plan bütçesini AŞIYOR (§3.11 madde 5:
   "Hareketler sayfası ve arama 1.000.000 satırda < 1 sn"): 100.000'de tek kullanıcıda bile Banka Hareketleri p50 2,7 sn, Cari arama 1,9 sn;

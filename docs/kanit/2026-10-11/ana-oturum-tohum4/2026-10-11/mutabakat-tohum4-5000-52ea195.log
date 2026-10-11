@@ -1,0 +1,12 @@
+
+> destekofis@2.1.0 test:mutabakat
+> node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 5000 --tohum 4 --tohumlar 1
+
+
+Tohum 4: 5000 işlem, 5002 doğrulama, 1177 beklenen ret (eksiye düşürme / aşım), eşzamanlı 60 istek · 3701.2 sn
+  Beklenen retler: period-locked 215, due-before-start 110, date-invalid 101, date-missing 88, date-future 81, cash-negative 61, invoice-linked 57, stock-negative 38, cheque-duplicate 38, 400 35, bank-similar 33, refund-exceeds 31, cash-method 27, issueDate 26, invoice-cancelled 21, vatRate 19, return-before-original 17, invoice-has-returns 15, cheque-not-in-portfolio 15, payment.rest 14, payment-exceeds 12, payment.cheques 12, invoice-duplicate 11, return-exceeds 11, cheque-due-before-issue 9, originalId 9, bank-account-invalid 8, lines 8, 404 7, bank-already-reversed 7, chronology 7, cheque-moved 6, bank-before-opening 6, cash-blocked 6, amount-precision 5, bank-reversal-of-reversal 5, bank-correct-type 2, bank-channel 2, 409 1, plan-has-payments 1
+  İşlem türleri: alim 297, kasa 221, cari-duzelt 107, fatura-satis 356, fatura-acid 106, kilit-ihlali 105, fatura-alis 216, taksit-tahsil 279, banka-transfer 92, hareket-duzelt 72, kart 133, fatura-iade 150, cari 312, satis 481, tarih-hatasi 212, fatura-hatasi 229, kayit-sil 54, kayit-duzelt 56, fatura-taslak 77, fatura-iptal 142, taksit-sil 73, banka-fis 177, hareket-sil 46, iade 115, kasa-duzelt 82, banka-benzer 34, banka-ters 48, kayit-tahsil 86, vade-hatasi 110, cek-ode 62, banka-duzelt 50, cek-geri-al 39, cek-tahsil 83, cari-sil 53, geri-yukle 46, kart-sil 47, kasa-sil 59, fatura-bagli 31, kart-kapat 51, banka-transfer-ters 22
+  Model: {"kasa":{"cash":"1261070,80","bank":"119542,97","card":"-1216328,84"},"cariler":12,"urunler":10,"kartlar":230,"kasaHareketi":181,"bankaSatiri":447,"bankaTersKayit":118,"bankalarArasiTransfer":68,"cariHareketi":303,"stokHareketi":1721,"taksitHareketi":174,"hesabaBagliModulHavalesi":293,"kurumsalKartaBagli":49,"kurumsalKartBakiyesi":"-2138946,69"}
+  Fatura: {"kesilen":662,"iptal":45,"taslak":1,"turler":{"purchase":210,"purchase_return":54,"sale":322,"sale_return":95,"smm":26},"cek":284} · seriler {"FIS2026":376,"SMM2026":26,"IAD2026":49} · tekil ETTN 708
+  Mutabakat kapısı süresi: ortanca 77 ms, en çok 257 ms
+  ✓ Her işlemden sonra Kasa, cariler, stok, taksit kartları, faturalar, çek/senet ve ana defter kuruşu kuruşuna tutarlı.
