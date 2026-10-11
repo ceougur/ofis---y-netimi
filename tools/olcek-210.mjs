@@ -54,6 +54,8 @@ const SECONDS = Number(opt("sure", "240"));
 const WINDOWS = Number(opt("pencere", "3"));
 const THINK = String(opt("bekleme", "500-1500")).split("-").map(Number);
 const JSON_OUT = opt("json", "");
+// --profil: sunucu sürecinin CPU profili (node --cpu-prof); özet (kapsayıcı süre, server/ işlevleri) sonuca yazılır.
+const PROFILE = argv.includes("--profil");
 const PASS = "Olcek-210-Yonetici!";
 const STAFF_PASS = "Olcek-210-Personel!";
 const STAFF = 20;
@@ -143,8 +145,9 @@ if (process.env.OLCEK_SUNUCU) {
   await main();
 }
 
-function startServer(dataDir, now) {
-  const child = fork(SELF, [], { env: { ...process.env, OLCEK_SUNUCU: JSON.stringify({ dataDir, now }) }, stdio: ["ignore", "inherit", "inherit", "ipc"], execArgv: ["--disable-warning=ExperimentalWarning"] });
+function startServer(dataDir, now, profileDir = "") {
+  const execArgv = ["--disable-warning=ExperimentalWarning", ...(profileDir ? ["--cpu-prof", `--cpu-prof-dir=${profileDir}`, "--cpu-prof-interval=1000"] : [])];
+  const child = fork(SELF, [], { env: { ...process.env, OLCEK_SUNUCU: JSON.stringify({ dataDir, now }) }, stdio: ["ignore", "inherit", "inherit", "ipc"], execArgv });
   const waiters = new Map();
   child.on("message", message => {
     const list = waiters.get(message.cmd) || [];
@@ -377,7 +380,9 @@ async function level(users, info) {
   const backupDir = path.join(work, "backups");
   log(`\n===== ${users} eşzamanlı kullanıcı · ${SECONDS} sn · ${WINDOWS} pencere =====`);
   const openAt = performance.now();
-  const server = await startServer(dataDir, motorNow());
+  const profileDir = PROFILE ? path.join(DIR, `profil-${users}`) : "";
+  if (profileDir) rmSync(profileDir, { recursive: true, force: true });
+  const server = await startServer(dataDir, motorNow(), profileDir);
   const openMs = performance.now() - openAt;
   const BASE = server.base;
   const hatalar = [];
@@ -683,23 +688,39 @@ async function level(users, info) {
       n += 1;
       const item = { n, inBackup: Boolean(backupWindow && backupWindow.to === null) };
       try {
-        // Hesap süzgeci
+        // Hesap süzgeci. Seçicinin hesap seçenekleri Hesaplar listesinden gelir (view.list); seçenek görünene dek geçen süre ayrıca ölçülür,
+        // süzgeç başarısız olsa da yinelemenin kalanı (Kaydet → listede, başkasının kaydı) koşar. Başarısızlıkta seçicinin durumu kaydedilir.
         const account = n % 3 === 0 ? "" : demand[n % 2].id;
-        t = performance.now();
-        await page.selectOption(`${bankWin} [data-mv="account"]`, account);
-        await page.waitForFunction(id => {
-          const rows = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
-          return rows.length > 0 && (document.querySelector(".hof-bank-modal [data-moves]")?.dataset.account || "") === id;
-        }, account, { timeout: 30000 });
-        item.suzgecMs = r0(performance.now() - t);
-        // Kaydırma + Daha Fazla
-        const more = await page.$(`${bankWin} [data-act="mv-more"]`);
-        if (more) {
-          const before = await page.$$eval(rowsSel, list => list.length);
+        try {
           t = performance.now();
-          await clickRetry(page, `${bankWin} [data-act="mv-more"]`, "Daha Fazla Göster");
-          await page.waitForFunction(count => document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length > count, before, { timeout: 30000 });
-          item.dahaFazlaMs = r0(performance.now() - t);
+          await page.waitForFunction(({ id }) => {
+            const select = document.querySelector('.hof-bank-modal [data-mv="account"]');
+            return Boolean(select && !select.disabled && [...select.options].some(option => option.value === id));
+          }, { id: account }, { timeout: 60000 });
+          item.secenekMs = r0(performance.now() - t);
+          await page.selectOption(`${bankWin} [data-mv="account"]`, account, { timeout: 30000 });
+          await page.waitForFunction(id => {
+            const rows = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
+            return rows.length > 0 && (document.querySelector(".hof-bank-modal [data-moves]")?.dataset.account || "") === id;
+          }, account, { timeout: 30000 });
+          item.suzgecMs = r0(performance.now() - t);
+          // Kaydırma + Daha Fazla
+          const more = await page.$(`${bankWin} [data-act="mv-more"]`);
+          if (more) {
+            const before = await page.$$eval(rowsSel, list => list.length);
+            t = performance.now();
+            await clickRetry(page, `${bankWin} [data-act="mv-more"]`, "Daha Fazla Göster");
+            await page.waitForFunction(count => document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length > count, before, { timeout: 30000 });
+            item.dahaFazlaMs = r0(performance.now() - t);
+          }
+        } catch (error) {
+          item.suzgecHata = String(error.message || error).split("\n")[0].slice(0, 160);
+          item.suzgecDurum = await page.evaluate(() => {
+            const select = document.querySelector('.hof-bank-modal [data-mv="account"]');
+            const box = document.querySelector(".hof-bank-modal [data-moves]");
+            return { secici: Boolean(select), pasif: Boolean(select?.disabled), secenek: select ? select.options.length : 0, satir: document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length, hesap: box?.dataset.account ?? null, yukleniyor: Boolean(document.querySelector(".hof-bank-modal .is-loading, .hof-bank-modal [aria-busy=true]")), sekme: document.querySelector(".hof-bank-modal .hof-bank-tabs [aria-selected=true]")?.textContent?.trim() || "" };
+          }).catch(() => null);
+          screen.hatalar.push(`banka süzgeç: ${item.suzgecHata} · ${JSON.stringify(item.suzgecDurum)}`);
         }
         // Ekrandan + Masraf → Kaydet → listede görünme (hesap süzgeci Tüm Hesaplar).
         if (n % 2 === 1) {
@@ -890,6 +911,11 @@ async function level(users, info) {
     for (const row of accountRows) check(row.program === row.bagimsiz, `${code} ${row.hesap}: program ${tl(row.program)} ≠ bağımsız ${tl(row.bagimsiz)}`);
   }
   await server.ask("close");
+  if (profileDir) {
+    await new Promise(resolve => (server.child.exitCode !== null ? resolve() : server.child.once("exit", resolve)));
+    const file = readdirSync(profileDir).find(name => name.endsWith(".cpuprofile"));
+    result.sunucuProfil = file ? summarizeProfile(path.join(profileDir, file)) : "profil dosyası yok";
+  }
   const moneyAfter = {};
   for (const company of companyFiles(dataDir)) moneyAfter[company.code] = (await countMoney(company.file)).money;
   // İzli (marker) yazımların veri tabanındaki sayısı = yük üreticisinin 200 saydığı yazımlar (kayıp/çift kayıt yok).
@@ -963,6 +989,9 @@ async function level(users, info) {
     cariAramaZamanAsimi: cariSearch.filter(value => value < 0).length + cariLags.filter(value => value < 0).length,
     hareketSuzgec: stat(field(screen.banka, "suzgecMs")),
     hareketDahaFazla: stat(field(screen.banka, "dahaFazlaMs")),
+    hesapSecenegi: stat(field(screen.banka, "secenekMs")),
+    suzgecBasarisiz: screen.banka.filter(item => item.suzgecHata).length,
+    suzgecDurumlari: screen.banka.filter(item => item.suzgecDurum).slice(0, 3).map(item => item.suzgecDurum),
     kaydetListede: stat(field(screen.banka, "kaydetListedeMs")),
     kaydetGorunmedi: screen.banka.filter(item => item.kaydetListedeMs === -1).length,
     baskasininKaydiListede: stat(field(screen.banka, "baskasininKaydiMs")),
@@ -994,6 +1023,32 @@ async function level(users, info) {
   log(`hatalar: ${hatalar.length ? hatalar.join(" | ") : "yok"}`);
   rmSync(work, { recursive: true, force: true });
   return result;
+}
+
+// CPU profili özeti: server/ altındaki işlevlerin kapsayıcı payı (%), en çok 25.
+function summarizeProfile(file) {
+  const profile = JSON.parse(readFileSync(file, "utf8"));
+  const nodes = new Map(profile.nodes.map(node => [node.id, node]));
+  const parent = new Map();
+  for (const node of profile.nodes) for (const child of node.children || []) parent.set(child, node.id);
+  const counts = new Map();
+  for (const sample of profile.samples) counts.set(sample, (counts.get(sample) || 0) + 1);
+  const key = node => `${node.callFrame.functionName || "(anon)"} ${node.callFrame.url.replace(/^.*\/(server)\//, "$1/")}:${node.callFrame.lineNumber + 1}`;
+  const incl = new Map();
+  let busy = 0;
+  for (const [nodeId, n] of counts) {
+    if (nodes.get(nodeId).callFrame.functionName === "(idle)") continue;
+    busy += n;
+    const seen = new Set();
+    for (let cur = nodeId; cur; cur = parent.get(cur)) {
+      const k = key(nodes.get(cur));
+      if (seen.has(k)) continue;
+      seen.add(k);
+      incl.set(k, (incl.get(k) || 0) + n);
+    }
+  }
+  const total = profile.samples.length;
+  return { ornek: total, mesgulYuzde: +((busy / total) * 100).toFixed(1), kapsayici: [...incl].filter(([k]) => k.includes("server/")).sort((a, b) => b[1] - a[1]).slice(0, 25).map(([k, v]) => `${((v / total) * 100).toFixed(1)}% ${k}`) };
 }
 
 function findBackup(dir, name) {
