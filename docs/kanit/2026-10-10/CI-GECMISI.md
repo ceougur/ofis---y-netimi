@@ -86,3 +86,7 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
   yolunda "personel çalışıyor" döngüsü durmuyordu → süreç açık kaldı; (2) bekleme süreleri duvar saatiyle (saat atlamasında bozulur);
   (3) .hazir yokken robocopy 16 → sınama çöktü. Ürün günlüğü: açılış internetsiz (beklenen), 60 sn yeniden deneme beklenmeden test bitti.
   Düzeltme: performance.now() süreleri, yok klasör = boş liste, finally'de working=false + process.exit. Linux kuru koşu 29/29.
+- windows.yml #40 (ce244dd): BÜTÜN adımlar YEŞİL (gerçek Windows): servis çalışırken yedek (madde 3, 3. yeşil), otomatik güncelleme 29/29
+  — W1, W2 ve W3 (saat 33 sa ileri; 2.0.28 arka planda indirildi, çalışırken kurulmadı, süreç aynı, internetsiz yeniden başlatmada 9 sn'de
+  kuruldu, yeniden indirilmedi, hazır paket silindi, önceki sürüm klasörü duruyor), yeniden kurulum, kaldırma, eski klasör. Özet
+  docs/kanit/2026-10-11/windows-guncelleme/windows-yml-40-ozet.txt (ana oturum günlükten okudu). CI 568 (ce244dd) de bütün işler yeşil.
