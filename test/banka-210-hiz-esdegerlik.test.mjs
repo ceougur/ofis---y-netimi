@@ -28,6 +28,8 @@ import { loginAdmin } from "./helpers.mjs";
 import { runReconciliation } from "./mutabakat/motor.mjs";
 import { BANK, bootBank, must, openAccount } from "./banka-210-hesap-ortak.mjs";
 import { registerCashRoutes } from "../server/routes/cash.mjs";
+import { createBankAccounts } from "../server/lib/bank/accounts.mjs";
+import { createBankMovements } from "../server/lib/bank/movements.mjs";
 import { createMoneyLines as createOldMoneyLines } from "./fixtures/hiz-210-eski/money-lines.mjs";
 import { registerReportCenter as registerOldReportCenter } from "./fixtures/hiz-210-eski/report-center.mjs";
 
@@ -43,13 +45,43 @@ function adminOf(app) {
   user.roleKey = app.context.access.roleKeyOf(user);
   return user;
 }
-// Eski yol: eski moneyLines + onunla kurulan Kasa servisi + eski rapor merkezi (aynı veri tabanı, aynı servisler).
+// Eski yol: eski moneyLines + onunla kurulan Kasa servisi + onunla kurulan banka hesapları/hareketleri okuyucusu + eski rapor merkezi (aynı
+// veri tabanı). Bağımsız inceleme H7 (11.10.2026): önceden banka okuyucusu ctx'ten (YENİ moneyLines'la kurulmuş) geliyordu — Alt Hesap Mizanı
+// eski yolda yeni money.periodGroups'u çağırıyordu (o raporda kâhin yeniyle yeniydi). Okuyucu (lib/bank/accounts.mjs, movements.mjs) hız
+// düzeltmesinde değişmedi; burada eski moneyLines'la, sunucudakiyle aynı ayarlarla kurulur.
 function oldPath(app) {
   const ctx = app.context;
   const money = createOldMoneyLines(ctx.store);
   const cash = registerCashRoutes(noRouter(), { ...ctx, money });
-  const center = registerOldReportCenter(noRouter(), { ...ctx, money, cash: () => cash, accounts: () => ctx.accounts, plans: () => ctx.plans, stock: () => ctx.stock, cheques: () => ctx.cheques, invoices: () => ctx.invoices, overview: () => ctx.overview, ledger: () => ctx.ledger, integrity: () => ctx.integrity });
+  const bankAccounts = createBankAccounts({ store: ctx.store, bank: ctx.bank, period: ctx.period, money, ledger: () => ctx.ledger, now: ctx.now, fxEnabled: () => app.config.fxEnabled === true, laterOk: () => app.config.bankLater === true });
+  bankAccounts.movements = createBankMovements({ store: ctx.store, money, accounts: bankAccounts, ledger: () => ctx.ledger, period: ctx.period, now: ctx.now });
+  const center = registerOldReportCenter(noRouter(), { ...ctx, money, bankAccounts, cash: () => cash, accounts: () => ctx.accounts, plans: () => ctx.plans, stock: () => ctx.stock, cheques: () => ctx.cheques, invoices: () => ctx.invoices, overview: () => ctx.overview, ledger: () => ctx.ledger, integrity: () => ctx.integrity });
   return { money, cash, center };
+}
+// H7: eski yol hiçbir raporda YENİ moneyLines'ı çağırmamalı (kâhin karışmasın). Yeni moneyLines'ın bütün uçları sayılır.
+async function newMoneyCallsOnOldPath(app, ids) {
+  const user = adminOf(app);
+  const old = oldPath(app);
+  const fresh = app.context.money;
+  const originals = Object.entries(fresh).filter(([, value]) => typeof value === "function");
+  const calls = {};
+  for (const [name, original] of originals) {
+    fresh[name] = (...args) => {
+      calls[name] = (calls[name] || 0) + 1;
+      return original(...args);
+    };
+  }
+  const out = {};
+  try {
+    for (const id of ids) {
+      for (const key of Object.keys(calls)) delete calls[key];
+      await old.center.run(user, id, new URLSearchParams({ preset: "all" }));
+      out[id] = { ...calls };
+    }
+  } finally {
+    for (const [name, original] of originals) fresh[name] = original;
+  }
+  return out;
 }
 
 const addDays = (iso, days) => {
@@ -332,6 +364,22 @@ async function compareSearch(ctx, label) {
   }
   return checks;
 }
+
+describe("kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz", () => {
+  it("Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0", async () => {
+    const ctx = await bootBank({ now: NOW, bankPickLegacy: true });
+    try {
+      const bank = await openAccount(ctx.api, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "1.000", confirmed: true } });
+      const ids = [...new Set(reportCases([bank]).map(([id]) => id))];
+      assert.ok(ids.includes("alt-hesap-mizani") && ids.length >= 7, ids.join(", "));
+      const calls = await newMoneyCallsOnOldPath(ctx.app, ids);
+      const leaked = Object.entries(calls).filter(([, counts]) => Object.keys(counts).length);
+      assert.deepEqual(leaked, [], `eski yolda yeni moneyLines çağrısı: ${JSON.stringify(leaked)}`);
+    } finally {
+      await ctx.server.close();
+    }
+  });
+});
 
 for (const [seedNo, operations] of [[21, 300], [22, 300]]) {
   describe(`hız düzeltmesi eşdeğerliği — tohum ${seedNo} (${operations} motor işlemi + elle banka işlemleri)`, () => {

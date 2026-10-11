@@ -12,6 +12,7 @@ import { createBankAccounts } from "./bank/accounts.mjs";
 import { createBankMovements } from "./bank/movements.mjs";
 import { createMoneyLines } from "./bank/money-lines.mjs";
 import { createRouter } from "./router.mjs";
+import { HttpError } from "./http.mjs";
 import { registerReportCenter } from "../routes/report-center.mjs";
 
 const { dbPath, time, id, query, user, limit, fx = false, later = false } = workerData || {};
@@ -37,7 +38,10 @@ try {
   // limit: yalnız ilk n satır taşınır (ön izleme 200; toplam sayı ve TOPLAM satırı bütün satırlardan, iş parçacığında hesaplandı).
   reply = { ok: true, data: limit ? { ...data, rows: data.rows.slice(0, limit) } : data };
 } catch (error) {
-  reply = { ok: false, status: Number(error?.status) || 500, message: error?.message || String(error), extra: error?.extra || {} };
+  // http: rapor kodunun bilinçli hatası (HttpError: 400 süzgeç, 404 hesap…) aynı durum koduyla döner; öbürü (SQLite, TypeError…) beklenmeyen
+  // hatadır — ana iş parçacığı günlüğe yığınıyla yazar, kullanıcıya genel ileti gider (lib/report-runner.mjs H3).
+  const http = error instanceof HttpError;
+  reply = { ok: false, http, status: http ? Number(error.status) || 500 : 500, message: error?.message || String(error), extra: http ? error.extra || {} : {}, name: error?.name || "Error", stack: http ? "" : String(error?.stack || "") };
 } finally {
   // Bağlantı yanıttan ÖNCE kapanır: ana iş parçacığı yanıtı alıp iş parçacığını sonlandırdığında dosya serbesttir (Windows'ta şirket geri
   // yüklemesi/silmesi açık tanıtıcı yüzünden EBUSY almasın).
