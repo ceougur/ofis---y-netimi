@@ -1289,6 +1289,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   şirket ayrımı/yetki/denetim kaydı (26 sorgu × 2 yol fark 0), SQL eşdeğerliği (2 tohum × 1.443 + uç durumlar + 3 eski sürüm fikstürü fark 0),
   cari arama ve eksi bakiye kararları eski kodla aynı. KARAR (plan: engel değil ama yeni kod + ucuz): H1–H5 + H7 + araç etiketi düzeltilir
   (ajan, kırmızı test → düzeltme); H6 bilinen sınır.
+  SÜRE (kullanıcı, 11.10.2026: "tüm işlemler 5 saat sürer mi?") → sıralı 7–8 sa; KARAR (baş mimar, kullanıcıya söylendi): Uzun Doğrulama
+  ŞİMDİ 3c9f8d3'te başlatıldı (koşu 38149023983, #82; "yalnız son adayda" kuralından BİLİNÇLİ sapma: kalan düzeltmeler rapor iş parçacığı + banka istemcisi; mutabakat/
+  güvenilirlik koşuları ikisini de kullanmıyor). Birleşmeden sonra diff para/şirket yoluna (server/ altında report-runner/worker dışı) dokunursa
+  ilgili Uzun Doğrulama işleri son adayda YENİDEN koşulur. Hedef toplam ~4,5–5 sa.
   (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
