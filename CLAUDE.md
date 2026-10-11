@@ -1275,6 +1275,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   7,5 sn; doğruluk her düzeyde tamam) YETERLİ → ek hız işi YOK. Bütçeyi az aşan kalanlar (10 kişide arama p95 1,1 sn / döngü 1,3 sn, 20 kişide
   rapor bekleyişi, kart/masraf raporunun iş parçacığı payı) teslimde BİLİNEN SINIRLAR'a yazılır. Doğrulama (eşdeğerlik, mutasyon, ana oturum
   ölçümü, ekran hataları, CI, e2e) aynen yapılır — karar yalnız hız yeterliliği içindir.
+  SÜRÜM NOTU (kullanıcı, 11.10.2026: "sürüm notunda sadece; iyileştirmeler ve banka temel modülü eklendi gibi kısa yapalım"): CHANGELOG
+  2.1.0 = iki satır (Banka modülü eklendi + iyileştirmeler ve hata düzeltmeleri); GitHub yayın metni de aynı kısalıkta. Ayrıntılı liste
+  `docs/2.1.0-DEGISIKLIKLER.md` (müşteriye gösterilmez). Bu karar 10.10'daki "teslim notunda Drive kaldırıldı yazılır" satırını sürüm notu için
+  DEĞİŞTİRDİ (Drive kaldırıldığı ayrıntılı listede ve kılavuzda yok/yazılı; kullanıcıya söylendi).
   KAPSAM SORUSU (kullanıcı, 11.10.2026: "neredeyse bütün program elden geçti diyebilir miyiz?") → HAYIR: para çekirdeği + banka derin;
   geri kalanı sürüm sürüm değişen yer kadar; satır kapsamı en son 2.0.21'de (%95,2 / dal %79,9 / arayüz %79,8; 52 yüksek riskli testsiz yer).
   KARAR (kullanıcı, aynı gün): kapsam ölçümü 2.1.0 temel banka sürümü CANLIYA ALINDIKTAN SONRA yapılır; kullanıcı yeni sürümü kendisi ve

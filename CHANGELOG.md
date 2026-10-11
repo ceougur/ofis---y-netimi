@@ -4,83 +4,8 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
 
 ## 2.1.0 — Banka Modülü (Temel Sürüm)
 
-Bankanın günlük kullanılan kısmı geldi; döviz, POS, ekstre ve birkaç ayrıntı sonraki sürümlerde (ekranda görünmez). Önceki sürümlerde
-de olan hatalar bu sürümle düzelir (ayrı 2.0.27 yok). Ayrıntı: `docs/2.1.0-KANIT.md` → Teslim Özeti.
-
-### Yeni: Banka Modülü
-
-- **Sol menüde Taksitler'in altında "Banka":** Genel Bakış, Hesaplar, Hareketler, Ayarlar.
-- **Kurulum Sihirbazı:** hesaplar açılış bakiyesiyle girilir ("Kaydet ve Yeni Hesap Ekle", "Kaydet ve İlerle"); adımlar atlanabilir, sonra
-  "Kurulumu Tamamla" ile sürer. Eski hareket aktarımı Kurulum Geçmişi'nden Geri Alınır.
-- **Banka hesapları:** Vadesiz, Ticari, Vadeli, Kredi Hesabı, Kurumsal Kredi Kartı, Diğer; IBAN, KMH ve kart limiti; her hesabın alt hesabı
-  (102.01, 102.02 …). Açılış Bakiyesi, "Bakiye Doğrulandı", "Açılışı Düzelt"; kullanılmayan hesap Pasife Alınır.
-- **Banka Fişi:** "+ Masraf" (BSMV Dahil / Hariç; faturalı ise KDV), "+ Faiz" (stopaj, BSMV/KKDF), "+ Diğer İşlem", Kart Borcu Ödemesi,
-  Kredi Kullanımı ve Geri Ödemesi; önizlemeli; her işlemin İşlem No'su (BNK-yıl-sıra).
-- **Ters Kaydet ve Düzelt:** banka işlemi silinmez; ters kayıt yazılır, ikisi de görünür. Pasif düğmenin nedeni yanında yazar.
-- **Hareketler ve İşlem Kartı:** süzgeç, yürüyen bakiye, "Daha Fazla Göster". **Benzer İşlem:** aynı gün aynı hesaptan aynı tutar sorulur.
-  **Planlı İşlemler:** "+ Planlı İşlem", Gerçekleştir / Atla / Sil.
-- **Bankalar arası transfer:** Kanal, isteğe bağlı Ücret (BSMV Dahil / Hariç / Yok); önizleme "Alıcıya Giren · Ücret · Gönderenden Çıkan".
-- **Her formda havale / EFT için Banka Hesabı:** cari, fatura peşini (Düzenle dahil), kayıt ve taksit tahsilatı, stok, çek/senet, Kasa ↔ Banka
-  ("Bankadan Kasaya Aktar", "Kasadan Bankaya Yatır"). Tek hesapta kendiliğinden; birden çok hesapta seçilmeden kaydedilmez.
-- **Kurumsal kredi kartı:** ödemede "Kredi Kartı" seçilince Kurumsal Kart seçilir (cari ödemesi, alış faturası, stok alımı); para bankadan
-  çıkmaz, "Kart ve Kredi Borcu"na yazılır, Kart Borcu Ödemesi ile kapanır. (POS ile tahsilat 2.2.0'da.)
-- **"Hesapsız (Açılıştan Önce)":** hesabın açılışından önceki tarihli havale için.
-- **Banka eksi bakiye denetimi:** Banka → Ayarlar ve hesap bazında (Uyar / Engelle / Kontrol Yok); KMH (yalnız Vadesiz) ve kart limiti kadar
-  serbest. Yönetim'deki ayar yalnız Nakit Kasa içindir.
-- **Hesabı Atanmamış Eski Hareketler:** önceki sürümlerde hesapsız girilen havale ve kart hareketleri hiçbir toplama girmez; "Bu Hesaba Ata",
-  "Bankaya Geçmiş Say", "Kart Borcuna Aktar" ve Devir Kapanışı ile aktarılır.
-- **Raporlar → Banka:** Banka Bakiye, Banka Hareket, Banka Masraf Raporu ve Alt Hesap Mizanı (PDF, Excel). Banka ve POS Hareketleri'nde
-  transfer ayrı gösterilir.
-- **ANLIK DURUM'da "Gerçek Banka"** (Kart ve Kredi Borcu ve Hesabı Atanmamış ayrı satır); Birleşik Rapor'da banka sütunları; Nakit Akış
-  başlangıcı = Nakit Kasa + Gerçek Banka.
-- **Yetkiler:** yeni Banka yetkileri; kimsenin bugün yapabildiği para işlemi elinden alınmaz, personel Banka'yı görmez. Mutabakat Testi banka
-  hesaplarını da denetler. Kılavuzda "8. Banka" bölümü.
-
-### Değişenler
-
-- **Google Drive'a yedek KALDIRILDI.** Yedekler bilgisayardaki `backups\<kod> - <ad>\` klasöründe; dışarıya kopyayı siz alın. Eski Drive
-  ayarı yok sayılır, hiçbir şey silinmez. ("Drive bağlantısı" kipi 2.0.2'den beri yedek göndermiyordu.)
-- **Otomatik güncelleme:** saatte bir bakar; yeni sürümü arka planda indirip doğrular, sunucunun bir sonraki açılışında internetsiz kurar.
-  Aynı gün birden çok sürümde yalnız en yenisi. "Kendiliğinden kur" kapalıyken de bakar, yöneticiye "hazır" der. Yayından geri çekilen sürüm
-  kurulmaz.
-- **Tarih uyarıları bütün sayfalarda son 7 gün** (öbür sayfaların kayıtları aylar önceden uyarıyordu).
-- **Büyük veride hız:** 100.000 para satırında 10 kullanıcıyla Banka Hareketleri 12,1 sn → 0,95 sn, Cari arama 10,8 sn → 1,1 sn (p95);
-  rapor çıktıları eskisiyle birebir aynı.
-- **Kartla ödeme artık POS sayılmaz:** ANLIK DURUM'daki "Banka / POS" kutusu (kartla ödemede POS eksiye düşüyordu) yerine "Gerçek Banka";
-  eski kart ödemeleri Hesabı Atanmamış'ta, "Kart Borcuna Aktar" ile karta aktarılır.
-
-### Düzeltilen Hatalar — Önceki Sürümlerde de Olanlar
-
-- **Kasa çift sayım (2.0.26):** Taksite Aktar → tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle sırasında Kasa iki kez sayılıyordu.
-- **İade + peşin geri ödemesi (2.0.24–2.0.26):** taksit kartı yeniden büyüyor, borçsuz müşteri gecikmiş görünüyordu; eski kartlar açılışta düzelir.
-- **Geri ödenen iade (2.0.17–2.0.26):** başka açık faturayı ya da alış faturasını "Ödendi" gösteriyordu. Güncellemeden sonra bazı faturalar
-  "Ödendi"den "Açık"a dönebilir; doğrusu budur.
-- **Geri ödenen iade asıl faturadan iki kez düşüyordu (2.0.26)**; mahsup edilmemiş iadenin açığı fatura kartında ve Açık Faturalar'da görünür.
-- **Fazla tahsilatlı kartta iade iptali kartı eksik büyütüyordu (2.0.24–2.0.26)** (açık 1.500, kart 1.000).
-- **Yedek klasörü başka şirkete verilebiliyordu (2.0.20–2.0.26)**: ad yalnız büyük/küçük harfle değişince (harf ayıran diskte).
-- **Kasa'da aynı tahsilat/ödeme iki kez yazılabiliyordu (2.0.26)**: yanıt kaybolup yeniden "Kaydet"e basılınca.
-- **Büyük tutarlı faturada yanlış "en çok dört ondalık" reddi (2.0.15'ten beri)**: 1.048.576 TL üstü kuruşlu fiyatlar.
-- **Gider Raporu türleri tek satırda topluyordu (2.0.15'ten beri).** **Fatura Düzenle sıradaki numarayı gösteriyordu (2.0.16'dan beri).**
-- **"Daha Fazla Göster" sırasında hareket kayboluyordu:** Banka'da bulundu; Cari, Fatura, Stok ve Çek/Senet listeleri de düzeltildi.
-- **"SON GÜNE 42 GÜN" (müşteri ekranı):** başka sayfanın kayıtları 7 gün sınırı olmadan uyarıyordu. Özet bildirimdeki uyarılar görülmeden
-  "görüldü" sayılıyordu; başka sayfadaki değişiklik açık takvimi yenilemiyordu.
-
-### Düzeltilen Hatalar — 2.1.0 Geliştirme Sırasında Bulunanlar
-
-- Açılıştan önceki eski havale düzeltilemiyordu; aktarılmış eski kart ödemesi düzeltilince kart borcu iki kez sayılıyordu.
-- Sihirbazın Geri Al'ı ve Bu Hesaba Ata eksi bakiye "Engelle"yi ve pasif hesabı delebiliyordu; ikinci kurumsal kart açılınca ödeme birinci
-  karta yazılabiliyordu; ileri tarihli eski havale sihirbazı kilitliyordu.
-- Kasa'yı sıfırlayan ödemenin yeniden gönderimi, KMH ve kredi hesabı kuralları, rapor sürerken geri yükleme hatası, "+ Masraf"tan sonra
-  listenin 50 satıra dönmesi, açılışta yarıda kesilen yanıt, işlem geçmişinin titremesi ve birkaç yazı/başlık düzeltmesi.
-
-### Bilinen Sınırlar
-
-- **Sonraki sürümlerde (ekranda görünmez):** döviz ve kur, Bankaya Tahsile Ver, taksitte avans, faturanın banka hesaplı iade/iptal ayrıntısı
-  ve toplu kesim, öbür banka raporları, Kasa açılış/devir; POS (2.2.0); ekstre ve mutabakat (2.3.0).
-- **Ölçek:** 100.000 satırda 10 kullanıcıda Cari arama 1,1 sn, en uzun takılma 1,3 sn; 20 kullanıcıda rapor ~7,5 sn bekler. 30 kullanıcı ve
-  1.000.000 satır ölçülmedi. Yedek alma 100.000 satırda ~1 sn sunucuyu tutar.
-- **Kasa açılışı** bugün 649 (diğer gelir) hesabına yazılır. **Otomatik kurulum:** bir bilgisayarda DestekOfis açıksa sunucu boşta
-  sayılmaz; kurulum mesai dışında ya da açılışta olur. **Banka listesi** yenilemede en çok 200 satırı korur.
+- Banka modülü eklendi (temel sürüm): sol menüde Taksitler'in altında "Banka". Kullanımı Kullanım Kılavuzu → 8. Banka bölümünde.
+- İyileştirmeler ve hata düzeltmeleri yapıldı.
 
 ## 2.0.26 — Ön düzeltmeler (banka modülü öncesi)
 
