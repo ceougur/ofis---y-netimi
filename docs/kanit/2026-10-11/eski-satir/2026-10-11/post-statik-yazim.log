@@ -1,0 +1,347 @@
+TAP version 13
+# Subtest: B3/B4 — 001: sıfırlama öncesi yedeğine dönüş (gerçek 2.0.26 verisiyle)
+    # Subtest: geri yüklenen dosya kendi eski satır işaretini korur: Mutabakat Testi temiz, onarım uyarısı yok; İşlem No geri gitmez
+    ok 1 - geri yüklenen dosya kendi eski satır işaretini korur: Mutabakat Testi temiz, onarım uyarısı yok; İşlem No geri gitmez
+      ---
+      duration_ms: 985.504683
+      type: 'test'
+      ...
+    1..1
+ok 1 - B3/B4 — 001: sıfırlama öncesi yedeğine dönüş (gerçek 2.0.26 verisiyle)
+  ---
+  duration_ms: 986.65254
+  type: 'suite'
+  ...
+# Subtest: B4 — 002: İşlem No sayacı geri yüklemede geri gitmez (001 ile aynı kural)
+    # Subtest: yedek → 3 yeni hareket → geri yükle → yeni hareketin numarası öncekilerden büyük, tekrar yok
+    ok 1 - yedek → 3 yeni hareket → geri yükle → yeni hareketin numarası öncekilerden büyük, tekrar yok
+      ---
+      duration_ms: 567.624706
+      type: 'test'
+      ...
+    1..1
+ok 2 - B4 — 002: İşlem No sayacı geri yüklemede geri gitmez (001 ile aynı kural)
+  ---
+  duration_ms: 568.053886
+  type: 'suite'
+  ...
+# Subtest: GG2 — iki hesap, farklı açılış günü (A 01.10 önce, B 15.09 sonra)
+    # Subtest: A'nın sihirbazı 01.10'dan önceki 8.000'i kapatır
+    ok 1 - A'nın sihirbazı 01.10'dan önceki 8.000'i kapatır
+      ---
+      duration_ms: 76.151255
+      type: 'test'
+      ...
+    # Subtest: kapanmış satır listede atanamaz; başka hesaba Bu Hesaba Ata → 409 bank-carry-closed
+    ok 2 - kapanmış satır listede atanamaz; başka hesaba Bu Hesaba Ata → 409 bank-carry-closed
+      ---
+      duration_ms: 60.488883
+      type: 'test'
+      ...
+    # Subtest: B'nin (daha erken açılışlı) sihirbazı ikinci kez kapatmaz: önizleme 0, çalıştırma boş
+    ok 3 - B'nin (daha erken açılışlı) sihirbazı ikinci kez kapatmaz: önizleme 0, çalıştırma boş
+      ---
+      duration_ms: 31.200328
+      type: 'test'
+      ...
+    1..3
+ok 3 - GG2 — iki hesap, farklı açılış günü (A 01.10 önce, B 15.09 sonra)
+  ---
+  duration_ms: 555.399934
+  type: 'suite'
+  ...
+# Subtest: GG2 — iki hesap, ters sıra (B 15.09 önce, A 01.10 sonra); kurulumlar sondan başa geri alınır
+    # Subtest: B'nin sihirbazı 10.09'u kapatır, 20.09'u B'ye bağlar; A'nın sihirbazında kapatılacak bir şey kalmaz
+    ok 1 - B'nin sihirbazı 10.09'u kapatır, 20.09'u B'ye bağlar; A'nın sihirbazında kapatılacak bir şey kalmaz
+      ---
+      duration_ms: 44.460545
+      type: 'test'
+      ...
+    # Subtest: A'ya sonradan bağlanan satır ikinci kurulum; önce B geri alınamaz (409 bank-setup-order), sondan başa geri alınır
+    ok 2 - A'ya sonradan bağlanan satır ikinci kurulum; önce B geri alınamaz (409 bank-setup-order), sondan başa geri alınır
+      ---
+      duration_ms: 155.400003
+      type: 'test'
+      ...
+    1..2
+ok 4 - GG2 — iki hesap, ters sıra (B 15.09 önce, A 01.10 sonra); kurulumlar sondan başa geri alınır
+  ---
+  duration_ms: 507.86215
+  type: 'suite'
+  ...
+# Subtest: GG2 — kurulumlu hesapta Açılışı Düzelt (tarih) ve Sil → aynı adla yeniden aç
+    # Subtest: Açılışı Düzelt tarihi değiştiremez (409 bank-opening-setup); aynı gün tutar değişebilir
+    ok 1 - Açılışı Düzelt tarihi değiştiremez (409 bank-opening-setup); aynı gün tutar değişebilir
+      ---
+      duration_ms: 45.785872
+      type: 'test'
+      ...
+    # Subtest: kurulumlu hesap silinmez (409 bank-account-has-setup); Geri Al → sil → aynı adla daha erken aç → sihirbaz: tek kez kapanır
+    ok 2 - kurulumlu hesap silinmez (409 bank-account-has-setup); Geri Al → sil → aynı adla daha erken aç → sihirbaz: tek kez kapanır
+      ---
+      duration_ms: 88.698868
+      type: 'test'
+      ...
+    1..2
+ok 5 - GG2 — kurulumlu hesapta Açılışı Düzelt (tarih) ve Sil → aynı adla yeniden aç
+  ---
+  duration_ms: 439.22821
+  type: 'suite'
+  ...
+# Subtest: GG2 — kapı: etkin Devir Kapanışları tarihçe geriye gitmez (bank:carry)
+    # Subtest: 01.10 kapanışından sonra 15.09 tarihli Devir Kapanışı yazmak (bank.post içinden) → 409, hiçbir şey yazılmaz
+    ok 1 - 01.10 kapanışından sonra 15.09 tarihli Devir Kapanışı yazmak (bank.post içinden) → 409, hiçbir şey yazılmaz
+      ---
+      duration_ms: 12.217875
+      type: 'test'
+      ...
+    1..1
+ok 6 - GG2 — kapı: etkin Devir Kapanışları tarihçe geriye gitmez (bank:carry)
+  ---
+  duration_ms: 297.737122
+  type: 'suite'
+  ...
+# Subtest: GG2 — Bankaya Geçmiş Say / Kart Borcuna Aktar: yalnız açılıştan sonraki, yönüne göre ayrı havuz
+    # Subtest: açılıştan önceki POS bakiyesi bankaya geçmiş sayılmaz (409 bank-legacy-exceeds); Devir Kapanışı'nın konusudur
+    ok 1 - açılıştan önceki POS bakiyesi bankaya geçmiş sayılmaz (409 bank-legacy-exceeds); Devir Kapanışı'nın konusudur
+      ---
+      duration_ms: 14.010511
+      type: 'test'
+      ...
+    # Subtest: açılıştan sonra POS 3.000 + kartla ödeme 1.000: bankaya 3.000 ve karta 1.000 ayrı ayrı aktarılır, fazlası 409
+    ok 2 - açılıştan sonra POS 3.000 + kartla ödeme 1.000: bankaya 3.000 ve karta 1.000 ayrı ayrı aktarılır, fazlası 409
+      ---
+      duration_ms: 106.846529
+      type: 'test'
+      ...
+    1..2
+ok 7 - GG2 — Bankaya Geçmiş Say / Kart Borcuna Aktar: yalnız açılıştan sonraki, yönüne göre ayrı havuz
+  ---
+  duration_ms: 429.156622
+  type: 'suite'
+  ...
+# Subtest: K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+    # Subtest: tarayıcı kendini sınar
+    ok 1 - tarayıcı kendini sınar
+      ---
+      duration_ms: 5.530687
+      type: 'test'
+      ...
+    # Subtest: izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+    ok 2 - izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+      ---
+      duration_ms: 0.371855
+      type: 'test'
+      ...
+    # Subtest: gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+    ok 3 - gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+      ---
+      duration_ms: 492.841659
+      type: 'test'
+      ...
+    # Subtest: 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+    ok 4 - 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+      ---
+      duration_ms: 433.602981
+      type: 'test'
+      ...
+    # Subtest: olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+    ok 5 - olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+      ---
+      duration_ms: 0.495709
+      type: 'test'
+      ...
+    # Subtest: cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+    ok 6 - cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+      ---
+      duration_ms: 31.981475
+      type: 'test'
+      ...
+    1..6
+ok 8 - K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+  ---
+  duration_ms: 966.265736
+  type: 'suite'
+  ...
+# Subtest: bank.post — bütün para yazıcıları işlem başlığı yazar (çalışıyor mu)
+    # Subtest: Kasa elle giriş: cash_in / cash_out; yanıt gövdesi aynı ({ id }); düzelt = aynı olay; sil → cancelled; geri yükle → aynı olay active
+    ok 1 - Kasa elle giriş: cash_in / cash_out; yanıt gövdesi aynı ({ id }); düzelt = aynı olay; sil → cancelled; geri yükle → aynı olay active
+      ---
+      duration_ms: 129.178231
+      type: 'test'
+      ...
+    # Subtest: Kasa ↔ Banka transferi: iki bacak tek olay (cash_transfer, kopya banka bacağından); sil → iptal; geri yükle → ikisi aynı olayda
+    ok 2 - Kasa ↔ Banka transferi: iki bacak tek olay (cash_transfer, kopya banka bacağından); sil → iptal; geri yükle → ikisi aynı olayda
+      ---
+      duration_ms: 88.16643
+      type: 'test'
+      ...
+    # Subtest: kayıt tahsilatı: record_in, yol korunur; düzelt / sil / geri yükle aynı olay
+    ok 3 - kayıt tahsilatı: record_in, yol korunur; düzelt / sil / geri yükle aynı olay
+      ---
+      duration_ms: 79.62969
+      type: 'test'
+      ...
+    # Subtest: cari: tahsilat party_in, ödeme party_out (cari = kopyada); Borç Yaz / Alacak Yaz / açılış olay almaz
+    ok 4 - cari: tahsilat party_in, ödeme party_out (cari = kopyada); Borç Yaz / Alacak Yaz / açılış olay almaz
+      ---
+      duration_ms: 167.858697
+      type: 'test'
+      ...
+    # Subtest: fatura peşini: invoice_cash (fatura bağı kopyada); fatura borcu olaysız; iptal → peşin olayı cancelled; düzenle → eski iptal, yeni etkin
+    ok 5 - fatura peşini: invoice_cash (fatura bağı kopyada); fatura borcu olaysız; iptal → peşin olayı cancelled; düzenle → eski iptal, yeni etkin
+      ---
+      duration_ms: 91.738138
+      type: 'test'
+      ...
+    # Subtest: taksit: tahsilat plan_in (kart ve cari kopyada); Excel açılışı (opening=1) ve çekli taksit satırı olaysız
+    ok 6 - taksit: tahsilat plan_in (kart ve cari kopyada); Excel açılışı (opening=1) ve çekli taksit satırı olaysız
+      ---
+      duration_ms: 196.273912
+      type: 'test'
+      ...
+    # Subtest: stok: peşin satış stock_cash (yön Kasa'ya göre); açık hesap olaysız; peşin → açık hesap → peşin geçişinde olay iptal / yeni
+    ok 7 - stok: peşin satış stock_cash (yön Kasa'ya göre); açık hesap olaysız; peşin → açık hesap → peşin geçişinde olay iptal / yeni
+      ---
+      duration_ms: 122.108142
+      type: 'test'
+      ...
+    # Subtest: çek: alındı / ciro / karşılıksız olaysız; tahsil cheque_collect, ödeme cheque_pay; geri al → cancelled
+    ok 8 - çek: alındı / ciro / karşılıksız olaysız; tahsil cheque_collect, ödeme cheque_pay; geri al → cancelled
+      ---
+      duration_ms: 168.475464
+      type: 'test'
+      ...
+    # Subtest: eski sürümden kalan olaysız para satırı düzeltilince olay alır (K11)
+    ok 9 - eski sürümden kalan olaysız para satırı düzeltilince olay alır (K11)
+      ---
+      duration_ms: 14.575721
+      type: 'test'
+      ...
+    # Subtest: İşlem No'lar tekil ve boşluksuz; Mutabakat Testi'nin denetim listesi değişmedi (işlem başlığı tarih denetimi görünmez)
+    ok 10 - İşlem No'lar tekil ve boşluksuz; Mutabakat Testi'nin denetim listesi değişmedi (işlem başlığı tarih denetimi görünmez)
+      ---
+      duration_ms: 264.925287
+      type: 'test'
+      ...
+    1..10
+ok 9 - bank.post — bütün para yazıcıları işlem başlığı yazar (çalışıyor mu)
+  ---
+  duration_ms: 1708.440033
+  type: 'suite'
+  ...
+# Subtest: bank.post — Taksite Aktar (op 'move') olayı taşır, geri alma geri getirir
+    # Subtest: kayıt tahsilatı karta taşınır: aynı olay, kaynak tablo plan_entries, yol aynı; geri al → payments, aynı olay
+    ok 1 - kayıt tahsilatı karta taşınır: aynı olay, kaynak tablo plan_entries, yol aynı; geri al → payments, aynı olay
+      ---
+      duration_ms: 161.353755
+      type: 'test'
+      ...
+    1..1
+ok 10 - bank.post — Taksite Aktar (op 'move') olayı taşır, geri alma geri getirir
+  ---
+  duration_ms: 451.721222
+  type: 'suite'
+  ...
+# Subtest: K6 — test kipinde ihlal işlemi geri alır (nasıl bozarım)
+    # Subtest: 1. bank.post dışından para satırı (geçerli Kasa girişi) → money:event, ROLLBACK
+    ok 1 - 1. bank.post dışından para satırı (geçerli Kasa girişi) → money:event, ROLLBACK
+      ---
+      duration_ms: 68.997882
+      type: 'test'
+      ...
+    # Subtest: 2. para olmayan satır bank.post dışından yazılır → yanlış alarm yok (Borç Yaz, açılış, çekli taksit, stok açık hesap)
+    ok 2 - 2. para olmayan satır bank.post dışından yazılır → yanlış alarm yok (Borç Yaz, açılış, çekli taksit, stok açık hesap)
+      ---
+      duration_ms: 28.151032
+      type: 'test'
+      ...
+    # Subtest: 3. izinli listedeki para dışı yazıcı para satırı yazar → assertNonMoney test kipinde hata
+    ok 3 - 3. izinli listedeki para dışı yazıcı para satırı yazar → assertNonMoney test kipinde hata
+      ---
+      duration_ms: 0.803696
+      type: 'test'
+      ...
+    # Subtest: 4. store.raw dışından para tablosuna UPDATE / DELETE → test kipinde hata, değişiklik geri alınır; raw ve yalnız açıklama serbest
+    ok 4 - 4. store.raw dışından para tablosuna UPDATE / DELETE → test kipinde hata, değişiklik geri alınır; raw ve yalnız açıklama serbest
+      ---
+      duration_ms: 65.829347
+      type: 'test'
+      ...
+    # Subtest: 6. aynı istek kimliği iki kez → tek satır (ikincisi replayed); aynı kimlik farklı gövde → 409
+    ok 5 - 6. aynı istek kimliği iki kez → tek satır (ikincisi replayed); aynı kimlik farklı gövde → 409
+      ---
+      duration_ms: 17.101028
+      type: 'test'
+      ...
+    # Subtest: 7. eşzamanlı 12 Kasa girişi → 12 olay, numaralar tekil ve boşluksuz
+    ok 6 - 7. eşzamanlı 12 Kasa girişi → 12 olay, numaralar tekil ve boşluksuz
+      ---
+      duration_ms: 197.076104
+      type: 'test'
+      ...
+    # Subtest: 8. yarıda kesilme: yazımdan sonra hata → olay, satır, istek kaydı, işlem geçmişi ve İşlem No sayacı yazılmaz
+    ok 7 - 8. yarıda kesilme: yazımdan sonra hata → olay, satır, istek kaydı, işlem geçmişi ve İşlem No sayacı yazılmaz
+      ---
+      duration_ms: 2.347416
+      type: 'test'
+      ...
+    # Subtest: 9. sözleşme: prev'siz düzeltme/silme/taşıma/geri yükleme/atama, bilinmeyen tür, bank.post dışında olay → hata
+    ok 8 - 9. sözleşme: prev'siz düzeltme/silme/taşıma/geri yükleme/atama, bilinmeyen tür, bank.post dışında olay → hata
+      ---
+      duration_ms: 0.595158
+      type: 'test'
+      ...
+    1..8
+ok 11 - K6 — test kipinde ihlal işlemi geri alır (nasıl bozarım)
+  ---
+  duration_ms: 623.746404
+  type: 'suite'
+  ...
+# Subtest: K6 — üretim kipinde ihlal işi durdurmaz, günlüğe düşer (nasıl bozarım 5)
+    # Subtest: para olmayan API işlemleri günlüğe hiçbir şey yazmaz (Borç Yaz, Alacak Yaz, açılış, taksit kartı, stok açık hesap)
+    ok 1 - para olmayan API işlemleri günlüğe hiçbir şey yazmaz (Borç Yaz, Alacak Yaz, açılış, taksit kartı, stok açık hesap)
+      ---
+      duration_ms: 99.623133
+      type: 'test'
+      ...
+    # Subtest: kaçak para satırı ve ham UPDATE: iş durmaz, meta.bank.integrity günlüğüne düşer
+    ok 2 - kaçak para satırı ve ham UPDATE: iş durmaz, meta.bank.integrity günlüğüne düşer
+      ---
+      duration_ms: 16.104465
+      type: 'test'
+      ...
+    1..2
+ok 12 - K6 — üretim kipinde ihlal işi durdurmaz, günlüğe düşer (nasıl bozarım 5)
+  ---
+  duration_ms: 347.966499
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 78.731622
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 2 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 47.747681
+      type: 'test'
+      ...
+    1..2
+ok 13 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 127.844275
+  type: 'suite'
+  ...
+1..13
+# tests 41
+# suites 13
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9309.656398

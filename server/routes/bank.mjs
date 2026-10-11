@@ -43,6 +43,8 @@ export function registerBankRoutes(router, context) {
   const service = createBankAccounts({ store, bank, period, money, ledger: () => context.ledger, now: context.now, fxEnabled: () => context.config?.fxEnabled === true, laterOk: () => context.config?.bankLater === true });
   const movements = createBankMovements({ store, money, accounts: service, ledger: () => context.ledger, period, now: context.now });
   const vouchers = createBankVouchers({ store, bank, period, money, accounts: service, movements, invoices: () => context.invoices, parties: () => context.accounts, audit, now: context.now });
+  // Yargıç B2: Bu Hesaba Ata, Kurulum Sihirbazı ve Geri Al K7'yi Banka Fişi'nin eksi bakiye denetimiyle yapar.
+  service.useNegative(vouchers.negative);
   const changed = (user, extra = {}) => events?.publish("workspace.changed", { kind: "bank", actorId: user.id, actorName: user.display_name, ...extra }, { except: user.id });
   const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
   const mustAccount = id => {
@@ -142,7 +144,9 @@ export function registerBankRoutes(router, context) {
   });
   router.post(`${BASE}/setup/:id/undo`, async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "bank.accounts");
-    const result = service.undo(user, params.id);
+    // Yargıç B2: Geri Al'ın eksi bakiye sorusu (409 cash-negative) "Yine de Kaydet" ile negativeOk / cashForce taşır.
+    const body = await readJson(req);
+    const result = service.undo(user, params.id, body);
     changed(user);
     ok(res, result);
   });

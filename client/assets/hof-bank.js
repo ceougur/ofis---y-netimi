@@ -886,7 +886,8 @@
     const go = await HOF.confirm({ title: "Hesaba Ata", message: `${rows.length} hareket ${account ? accountLabel(account) : "seçilen hesap"} hesabına bağlanacak ve Gerçek Banka'ya girecek. Bu atama Kurulum Geçmişi'nde görünmez ve geri alınmaz. Devam edilsin mi?`, confirmLabel: "Hesaba Ata" });
     if (!go) return;
     try {
-      const result = await api("/legacy/assign", { method: "POST", body: { accountId: target, rows }, requestId: HOF.requestId() });
+      const requestId = HOF.requestId();
+      const result = await withConfirms(flags => api("/legacy/assign", { method: "POST", body: { accountId: target, rows, ...flags }, requestId }));
       view.selected = new Set();
       HOF.toast(`${result.assigned ?? rows.length} hareket hesaba atandı.`, { type: "success" });
       await reload();
@@ -951,7 +952,7 @@
     const go = await HOF.confirm({ title: "Kurulumu Geri Al", message: "Bu kurulumun fişleri ters kaydedilir ve hesaba bağlanan hareketler yeniden “Hesabı Atanmamış”a döner. Devam edilsin mi?", confirmLabel: "Geri Al", danger: true });
     if (!go) return;
     try {
-      const result = await api(`/setup/${encodeURIComponent(id)}/undo`, { method: "POST", body: {} });
+      const result = await withConfirms(flags => api(`/setup/${encodeURIComponent(id)}/undo`, { method: "POST", body: { ...flags } }), { verb: "cancel" });
       HOF.toast(`Geri alındı: ${result.unassigned} hareket yeniden hesabı atanmamış.`, { type: "success" });
       await reload();
     } catch (error) {
@@ -1170,7 +1171,8 @@
     const button = wizardNode()?.querySelector('[data-wiz="transfer"]');
     if (button) button.disabled = true;
     try {
-      const result = await api("/setup", { method: "POST", body, requestId: state.setupRequestId });
+      // Yargıç B2: bağlama hesabı eksiye düşürecekse (K7 Uyar) soru sorulur; Engelle'de neden yazılır.
+      const result = await withConfirms(flags => api("/setup", { method: "POST", body: { ...body, ...flags }, requestId: state.setupRequestId }));
       state.done = result.replayed ? { assigned: 0, carryNo: "" } : result;
       state.setupRequestId = HOF.requestId();
       await goWizard(state, "done");
@@ -2251,7 +2253,10 @@
     const list = current && !accounts.some(account => account.id === current.id) ? [current, ...accounts] : accounts;
     const selected = value && list.some(account => account.id === value) ? value : keepLabel || !preselect ? "" : meta.defaultId || "";
     const first = keepLabel ? { value: "", label: keepLabel } : { value: "", label: choose };
-    return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: !keepLabel, value: selected, options: [first, ...list.map(account => ({ value: account.id, label: `${account.label} (${account.code})` }))] }) };
+    // Yargıç B1 (plan §3.5 kural 1): hareket seçilecek hesabın açılışından önceyse (o gün tutulan hesap yok) satır hesapsız kalır; sunucu bu seçimi
+    // yalnız tarih bir hesabın açılışından önceyse kabul eder. Tek hesapta seçici yoktur, sunucu açılıştan önceki tarihi kendisi hesapsız yazar.
+    const none = { value: "none", label: "Hesapsız (Açılıştan Önce)" };
+    return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: !keepLabel, value: selected, options: [first, ...list.map(account => ({ value: account.id, label: `${account.label} (${account.code})` })), none] }) };
   }
   /** Kurumsal kart seçicisinin ayarları (form "card"; alan cardAccountId — gönderimde accountBody bankAccountId'ye taşır). */
   const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kurumsal Kart", choose: "Kart Seçin", preselect: false, note: label => `${label} kurumsal kartına yazılır.` });

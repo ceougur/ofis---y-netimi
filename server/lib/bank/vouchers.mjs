@@ -29,7 +29,7 @@ import { addCalendarDays, addMonths } from "../business-days.mjs";
 import { isIsoDate } from "../period.mjs";
 import { mulPpm, parseMinor, parsePpm } from "../minor.mjs";
 import { ACCOUNT_KINDS } from "./accounts.mjs";
-import { negativeConfirmed } from "./module-ref.mjs";
+import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
 import { GROUP_LABELS, VOUCHER_TYPES, isVoucherType, typeLabel } from "./event-types.mjs";
 import { CHART } from "../general-ledger.mjs";
 import { ROLE_GL, assertLines, cardPaymentLines, feeLines, feeSplit, interestInLines, interestOutLines, loanDrawLines, loanRepayLines, otherLines, roleOfAccount, transferLines } from "./voucher.mjs";
@@ -510,6 +510,17 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     return { id: reversal.id, reversalId: reversal.id, cancelled: false };
   }
   const fresh = id => store.get("SELECT * FROM fin_events WHERE id = ?", id);
+  /**
+   * Yargıç B3 (plan §3.5 "Pasif hesap → 400"; modül satırıyla aynı kural, post.mjs passiveRules): Ters Kaydet ve Düzelt fişin hesaplarının
+   * (hesap ve karşı hesap — transferin alıcısı) bakiyesini değiştirir; biri pasifse 400 bank-account-passive. Önceden pasif hesabın masraf fişi
+   * ters kaydedilebiliyor, transferin alıcısı pasifken transfer geri alınabiliyordu.
+   */
+  function assertActiveRefs(event) {
+    for (const ref of [event.bank_ref, event.counter_ref]) {
+      const row = ref ? accounts.rowOf(ref) : null;
+      if (row && row.status !== "active") throw bankPassiveError(row);
+    }
+  }
 
   /** POST /bank/events/:id/reverse → { original, reversal (ya da null: faturalı masraf iptal edildi) }. */
   function reverse(user, ref, body = {}, { requestId = "" } = {}) {
@@ -526,6 +537,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       write: () => {
         const current = fresh(event.id);
         action = `reverse:${current.type}`;
+        assertActiveRefs(current);
         before = balancesOf([current.bank_ref, current.counter_ref]);
         const done = reverseInside(user, current, { reason: limited(body?.reason, 300, "Neden") });
         date = fresh(done.id)?.date || current.date;
@@ -558,6 +570,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
         const current = fresh(event.id);
         action = `correct:${current.type}`;
         assertReversible(current);
+        assertActiveRefs(current);
         if (given(body?.type) && text(body.type) !== current.type) throw bad(400, "Düzelt'te işlemin türü değişmez. Başka türde işlem için Ters Kaydet ile iptal edip yeni işlem girin.", "bank-correct-type", { field: "type" });
         const card = movements.cardOf(current);
         const lock = period.lockedUntil();

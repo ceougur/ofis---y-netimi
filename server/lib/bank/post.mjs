@@ -213,7 +213,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
   /** keepRef'in düştüğü bağın kullanıcıya söylenen nedeni ("" = bağ korundu). */
   const droppedText = reason => (reason === "deleted" ? "Bağlı olduğu banka hesabı silindiği için hareket Banka → Hesabı Atanmamış Eski Hareketler'e döndü." : reason === "before-opening" ? "Hareket bağlı olduğu banka hesabının açılışından önce olduğu için Hesabı Atanmamış Eski Hareketler'e döndü." : "");
   // Para alanı sayılmayan kolonlar (K4: yalnız bunlar değiştiyse modül yetkisi yeter): serbest kolonlar + damgalar + olay bağı.
-  const IGNORED = new Set(["updated_by", "updated_at", "event_id", "__rowid"]);
+  const IGNORED = new Set(["updated_by", "updated_at", "event_id", "__rowid", "__seq"]);
   const moneyChanged = (table, before, after) => Object.keys(before).some(key => !IGNORED.has(key) && !FREE_COLUMNS[table]?.has(key) && String(before[key] ?? "") !== String(after[key] ?? ""));
   const BOUND_TEXT = {
     "bank.cancel": "Bu hareket bir banka hesabına bağlı; silmek için \"Banka Hareketi Silme, İptal ve Ters Kayıt\" yetkisi gerekir.",
@@ -295,6 +295,108 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       if (!item.minor && item.dates.size <= 1) continue;
       const account = accountRowOf(ref);
       if (account && !account.deletedAt && account.status && account.status !== "active" && account.kind !== "pos") throw bankPassiveError(account);
+    }
+  }
+
+  // ---------- Yargıç Y1 + eleştirmen B4/Y2 (2.1.0; plan §10.3): Devir Kapanışı ve eski bakiye aktarımı havuzu ----------
+  // Devir Kapanışı (carry_close, gün C) C'den önceki hesabı atanmamış havale ve POS / kart satırlarının (102.00 / 108.00) bakiyesini 500'e kapatır;
+  // "Kart Borcuna Aktar" (B 108.00 / A 309.k) ve "Bankaya Geçmiş Say" (B 102.k / A 108.00) hedef hesabın açılışından (ve C'den) aktarım gününe
+  // kadarki hesapsız kartla ödemeleri ya da POS tahsilatlarını hesaba aktarır. Fiş, yazıldığı andaki havuzun tutarıdır. Önceden havuzdaki eski
+  // satırın tutarı/yolu değişince ya da satır silinince fiş netlenmiyordu: kart borcu iki kez (Kart Borcuna Aktar 500 + düzeltilen satırın karta
+  // kendiliğinden bağlanan 450 = 950), 108.00/102.00'da takılı artık, yanlış K7 engeli; Mutabakat Testi "tamam" diyordu.
+  // KARAR (en küçük ve güvenli): havuzdaki satırın parasını değiştiren işlem 409 bank-reclass-active; doğru yol Kurulum Geçmişi'nden ilgili
+  // kurulumu/aktarımı Geri Al → düzelt → yeniden çalıştır (planın kendi "Sihirbazı Geri Al" yolu). Aynı yazımda fiş netlemesi seçilmedi: fiş
+  // tarihi geçmiş bir günde ve kilitli dönemde olabilir, kurulum geçmişindeki tutar ile fiş ayrışır, Geri Al'ın tersi bozulurdu.
+  // Kural (havuz bazında net etki, kuruş): Devir Kapanışı havuzunda (C'den önceki hesapsız havale ve POS / kart) net etki sıfır olmalı — tutar,
+  // yol, hesap, silme, geri yükleme ve C'den önceki tarihle yeni hesapsız satır durur; havuz içinde tarih ya da açıklama değişimi ve Taksite
+  // Aktar (satır tablo değiştirir) serbest. Aktarım havuzunda var olan satırın etkisi değişemez; yalnız YENİ satır (havuz büyür, aktarılabilir
+  // tutar artar, fiş geçerli kalır) serbest. Op 'assign' (sihirbaz, Bu Hesaba Ata, aktarım ve Geri Al'ın kendisi) havuzu bilerek değiştirir.
+  let captureSeq = 0;
+  const dayText = iso => String(iso || "").split("-").reverse().join(".");
+  function readPools() {
+    try {
+      const carry = store.get("SELECT id, no, date FROM fin_events WHERE type = 'carry_close' AND +status = 'active' ORDER BY date DESC, rowid DESC LIMIT 1") || null;
+      const reclass = store
+        .all(
+          `SELECT e.id, e.no, e.date, l.side, COALESCE(a.opening_date, '') AS opening, COALESCE(a.bank_name, '') AS bankName, COALESCE(a.name, '') AS name
+           FROM fin_events e JOIN bank_lines l ON l.event_id = e.id AND l.role = 'pos' AND l.ref = '' LEFT JOIN bank_accounts a ON a.id = e.bank_ref
+           WHERE e.type = 'legacy_reclass' AND +e.status = 'active'`,
+        )
+        // Devir Kapanışı'ndan önce kalan aktarımın satırları zaten kapanıştadır (Devir Kapanışı havuzu onları korur).
+        .filter(row => !(carry && row.date < carry.date))
+        .map(row => ({ ...row, side: row.side === "C" ? "in" : "out", mode: row.side === "C" ? "bank" : "card", since: carry && carry.date > row.opening ? carry.date : row.opening }));
+      return carry || reclass.length ? { carry, reclass } : null;
+    } catch {
+      return null;
+    }
+  }
+  /** Satırın girdiği havuzlar: [[anahtar, işaretli kuruş, { pool, event }]] (hesaba bağlı, para dışı, nakit satır hiçbir havuzda değildir). */
+  function poolHits(table, row, pools) {
+    if (!row || String(row.fin_ref || "") || !isMoneyRow(table, row)) return [];
+    const method = String(row.method || "");
+    if (method !== "bank" && method !== "card") return [];
+    const cents = signedMinor(table, row);
+    if (!cents) return [];
+    const date = String(row.date || "");
+    const out = [];
+    if (pools.carry && date < pools.carry.date) out.push([`carry:${method}`, cents, { pool: "carry", event: pools.carry, date }]);
+    if (method === "card") {
+      for (const item of pools.reclass) if (date >= item.since && date <= item.date && (cents > 0 ? "in" : "out") === item.side) out.push([`reclass:${item.id}`, cents, { pool: item.mode, event: item, date }]);
+    }
+    return out;
+  }
+  function poolError(hit) {
+    const { pool, event, date } = hit;
+    // Kurulum Geçmişi satırı kurulum başlığının İşlem No'suyla görünür (fişinkiyle değil): metin o numarayı söyler.
+    let setupNo = "";
+    try {
+      setupNo = store.get("SELECT COALESCE(h.no, '') AS no FROM bank_jobs j JOIN fin_events h ON h.id = j.ref WHERE j.kind = 'setup' AND j.status = 'done' AND (json_extract(j.payload_json, '$.carryEventId') = ? OR json_extract(j.payload_json, '$.reclassEventId') = ?) LIMIT 1", event.id, event.id)?.no || "";
+    } catch {
+      setupNo = "";
+    }
+    const back = `Banka → Hesabı Atanmamış Eski Hareketler → Kurulum Geçmişi'nden ${setupNo ? `${setupNo} kaydını` : "ilgili kaydı"}`;
+    if (pool === "carry") {
+      return new HttpError(409, `Bu hareket (${dayText(date)}) ${dayText(event.date)} tarihli Devir Kapanışı'yla (${event.no}) açılış bakiyelerinin içinde kapanan eski banka ve POS hareketlerinden; parası (tutar, yol, hesap, Devir Kapanışı'ndan sonraya tarih) değiştirilemez, silinemez, geri yüklenemez ve Devir Kapanışı'ndan önceki tarihle yeni hesapsız hareket girilemez (kapanış ile hareketler tutarsız kalır). Önce ${back} Geri Alın, hareketi düzeltip Kurulum Sihirbazı'nı yeniden çalıştırın.`, { code: "bank-reclass-active", pool, eventId: event.id, eventNo: event.no, setupNo, date });
+    }
+    const name = pool === "card" ? "Kart Borcuna Aktar" : "Bankaya Geçmiş Say";
+    const label = event.bankName || event.name ? `${event.bankName} · ${event.name}` : "hesaba";
+    return new HttpError(409, `Bu hareket (${dayText(date)}) ${dayText(event.date)} tarihli ${name} (${event.no}) ile ${label} hesabına aktarılan Hesabı Atanmamış POS / Kart tutarının içinde; parası (tutar, yol, hesap, tarih) değiştirilemez, silinemez (aktarım fişi ile hareketler tutarsız kalır). Önce ${back} Geri Alın, hareketi düzeltip aktarımı yeniden yapın.`, { code: "bank-reclass-active", pool, eventId: event.id, eventNo: event.no, setupNo, date });
+  }
+  function poolRules(ctx) {
+    if (ctx.op === "assign") return;
+    // Satırın İLK önceki hâli (bağlı ve bağsız yakalamalardan en erken olanı; aynı işlemde bağlanıp çözülen satır bir kez sayılır).
+    const priors = new Map();
+    for (const row of [...ctx.boundRows.values(), ...ctx.handedBound.values(), ...ctx.looseRows.values()]) {
+      const key = `${row.__table}:${row.__rowid}`;
+      const seen = priors.get(key);
+      if (!seen || (row.__seq ?? 0) < (seen.__seq ?? 0)) priors.set(key, row);
+    }
+    const inserted = new Map();
+    for (const source of [ctx.insertedRows, ctx.handedInserted]) for (const [table, rowids] of source) for (const rowid of rowids) inserted.set(`${table}:${rowid}`, [table, rowid]);
+    if (!priors.size && !inserted.size) return;
+    if (ctx.pools === undefined) ctx.pools = readPools();
+    const pools = ctx.pools;
+    if (!pools) return;
+    const delta = new Map();
+    const add = (hits, sign, prior) => {
+      for (const [key, cents, info] of hits) {
+        const item = delta.get(key) || { prior: 0, total: 0, sample: info };
+        item.total += sign * cents;
+        if (prior) item.prior += sign * cents;
+        delta.set(key, item);
+      }
+    };
+    for (const before of priors.values()) {
+      const { __table, __new, __seq, ...prior } = before;
+      if (__new) continue;
+      add(poolHits(__table, prior, pools), -1, true);
+      const after = store.get(`SELECT * FROM ${__table} WHERE rowid = ?`, before.__rowid);
+      if (after && after.id === prior.id && !insertedIn(ctx, __table, before.__rowid)) add(poolHits(__table, after, pools), 1, true);
+    }
+    for (const [table, rowid] of inserted.values()) add(poolHits(table, store.get(`SELECT * FROM ${table} WHERE rowid = ?`, rowid), pools), 1, false);
+    for (const [key, item] of delta) {
+      if (!item.total) continue;
+      if (key.startsWith("carry:") || item.prior) throw poolError(item.sample);
     }
   }
 
@@ -478,7 +580,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         const hit = requests.lookup(key, hash);
         if (hit) return { replayed: true, refId: hit.refId };
       }
-      const ctx = { user, module, op, origin, events: new Set(), created: new Set(), boundRows: new Map(), insertedRows: new Map(), handedBound: new Map(), handedInserted: new Map() };
+      const ctx = { user, module, op, origin, events: new Set(), created: new Set(), boundRows: new Map(), insertedRows: new Map(), handedBound: new Map(), handedInserted: new Map(), looseRows: new Map(), pools: undefined };
       ctx.affected = ids => ids.forEach(id => ctx.events.add(id));
       // GG2: bağlı satırın önceki hâli (ilk dokunuşta) ve eklenen satırlar (lib/db.mjs kancaları).
       ctx.bound = (table, rowids) => {
@@ -487,7 +589,21 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
           if (ctx.boundRows.has(key)) continue;
           const row = store.get(`SELECT rowid AS __rowid, * FROM ${table} WHERE rowid = ?`, rowid);
           // __new: satır bu işlemde (dıştaki bank.post'lar dahil) eklendi; önceki hâli işlem öncesi değil, pasif hesap kuralında eklenenlerle sayılır.
-          if (row) ctx.boundRows.set(key, { ...row, __table: table, __new: stack.some(item => insertedIn(item, table, rowid)) });
+          if (row) ctx.boundRows.set(key, { ...row, __table: table, __new: stack.some(item => insertedIn(item, table, rowid)), __seq: ++captureSeq });
+        }
+      };
+      // Yargıç Y1: hesabı atanmamış satırın önceki hâli — yalnız etkin bir Devir Kapanışı ya da eski bakiye aktarımı varsa (havuz kuralı en dıştaki
+      // bank.post'ta; iç içe çağrının satırları doğrudan en dıştakine yazılır). Aktarım yoksa hiçbir satır okunmaz.
+      ctx.loose = (table, rowids) => {
+        const root = stack[0] || ctx;
+        if (root.op === "assign") return;
+        if (root.pools === undefined) root.pools = readPools();
+        if (!root.pools) return;
+        for (const rowid of rowids) {
+          const key = `${table}:${rowid}`;
+          if (root.looseRows.has(key)) continue;
+          const row = store.get(`SELECT rowid AS __rowid, * FROM ${table} WHERE rowid = ?`, rowid);
+          if (row) root.looseRows.set(key, { ...row, __table: table, __new: stack.some(item => insertedIn(item, table, rowid)), __seq: ++captureSeq });
         }
       };
       ctx.inserted = (table, rowids) => {
@@ -503,7 +619,10 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         const result = write(ctx); // 5–6
         boundRules(ctx); // 3 (GG2): bağlı satırlar — K4 yetkisi ve bağın yolla uyumu (yazımdan sonra, gerçek satırla)
         if (stack.length > 1) handOver(stack[stack.length - 2], ctx);
-        else passiveRules(ctx); // 3 (Yargıç Y1): pasif hesabın bakiyesi değişmez
+        else {
+          passiveRules(ctx); // 3 (Yargıç Y1): pasif hesabın bakiyesi değişmez
+          poolRules(ctx); // 3 (Yargıç Y1, eleştirmen B4/Y2): Devir Kapanışı ve eski bakiye aktarımı havuzundaki satırın parası değişmez
+        }
         finalize(ctx); // 5: olay kopyası, iptal, yeniden etkin
         similar(ctx, similarOk); // 4: yeni olayların kopyası üzerinden (aynı işlemde; yukarıdaki not)
         posHooks(ctx); // 7

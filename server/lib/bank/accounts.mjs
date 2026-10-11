@@ -26,6 +26,7 @@ import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
+import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
 
 // limit: hesabın limit alanı (plan §3.5 "KMH Limiti alanı" yalnız Vadesiz; §3.9 "KMH ya da kart limiti"; Kredi Hesabı'nda ekranın "Kredi Limiti" bilgi
 // alanı — eksi bakiye denetimine girmez). Limit alanı olmayan türde 0'dan büyük limit 400 bank-limit (hakem K7).
@@ -526,6 +527,9 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         return { account: view(rowOf(row.id)), reversed: null };
       }
     }
+    // Yargıç B3 (plan §3.5 "Pasif hesap → 400"): Açılış Bakiyesi Gir / Açılışı Düzelt pasif hesabın bakiyesini değiştirir (yalnız "Bakiye
+    // Doğrulandı" işareti — para değişmeden — yukarıda serbest).
+    assertActive(row);
     assertBeforeFirst(row.id, opening.date);
     let reversed = null;
     bank.post({
@@ -745,10 +749,45 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     // totals: bugüne kadarki bakiye (Banka Genel Bakış ile aynı formül); future: eski sürümden kalan ileri tarihli satırlar (listede, ayrı bilgi).
     return { rows, count: lines.length, lockedCount: lines.filter(line => locked && line.date <= locked).length, closedThrough: closed, totals: { bankMinor: totals.bank, cardMinor: totals.card }, future: futureUnassigned(), reclassable, newCount: newCount() };
   }
+  /**
+   * Yargıç B2 (plan §3.9 K7; emsal: Silinenler geri yüklemesinin K7'si, hakem K1): "Bu Hesaba Ata", Kurulum Sihirbazı'nın bağlaması ve Geri Al
+   * hesabın bakiyesini değiştirir (eski ödeme bağlanınca azalır, eski tahsilatın bağı kalkınca azalır). Önceden K7'ye bakılmıyordu: Engelle'deki
+   * hesap −1.000 / −1.500'e düşüyordu. Denetim modül satırlarınınkiyle aynı (Banka Fişi'nin guardNegative'i, yazımdan sonraki son durumla,
+   * işlemin en erken satır gününde): Engelle → 409 cash-blocked, Uyar → 409 cash-negative + negativeOk / cashForce ile onay. K7 servisi Banka
+   * Fişi servisiyle birlikte kurulur (routes/bank.mjs useNegative).
+   */
+  let k7 = null;
+  function useNegative(negative) {
+    k7 = negative || null;
+  }
+  function negativeFor(refs, force) {
+    const settled = new Map();
+    let before = null;
+    let date = "";
+    return {
+      capture(day) {
+        if (!k7 || !day) return;
+        before = k7.balancesOf(refs.filter(Boolean));
+        date = day;
+      },
+      guard: (_, ctx) => {
+        if (k7 && before && date) k7.guardNegative(before, { date, force, ctx, settled });
+      },
+      prime(result) {
+        k7?.primeTotals(settled, result);
+      },
+    };
+  }
+  const earliest = dates => dates.filter(Boolean).sort()[0] || "";
+  /** Yargıç B2 (plan §3.5 "Pasif hesap → 400"): pasif hesabın bakiyesini değiştiren banka penceresi işlemi 400 bank-account-passive. */
+  function assertActive(row) {
+    if (row && !row.deleted_at && row.status !== "active") throw bankPassiveError(row);
+  }
   /** Havale seçicisinde seçilebilen (eski havaleyi alabilen) hesap: etkin, TL, Vadesiz/Ticari/Diğer. */
   function bindable(id) {
     const row = rowOf(id);
     if (!row) throw new HttpError(404, "Banka hesabı bulunamadı.", { code: "bank-account-missing" });
+    assertActive(row);
     if (!bankFormOk(row)) throw new HttpError(400, `${labelOf(row)}: eski havale hareketleri yalnız etkin TL Vadesiz, Ticari ya da Diğer hesaba bağlanır.`, { code: "bank-account-invalid", accountId: row.id });
     return row;
   }
@@ -784,11 +823,14 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (!Array.isArray(body.rows) || !body.rows.length || body.rows.length > 5000) throw new HttpError(400, "Bağlanacak hareketleri seçin (en çok 5.000).", { code: "bank-legacy-rows" });
     const account = bindable(body.accountId);
     const previous = [];
+    const guard = negativeFor([account.id], negativeConfirmed(body));
     const result = bank.post({
       user, module: "bank", op: "assign", requestId, scope: "bank.legacy.assign", body, prev: previous,
+      guard: guard.guard,
       write: () => {
         // Satır denetimleri işlemin içinde (istek kimliğiyle yinelenen istek önce yanıtını alır; aynı anda iki atama).
         const items = body.rows.map(item => legacyRow(item, account));
+        guard.capture(earliest(items.map(item => item.row.date)));
         for (const item of items) {
           previous.push({ table: item.table, id: item.row.id, fin_ref: item.row.fin_ref, event_id: item.row.event_id });
           bindRow(item.table, store.get(`SELECT * FROM ${item.table} WHERE id = ?`, item.row.id), account.id);
@@ -797,6 +839,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       },
       audit: { type: "bank.legacy.assigned", entityId: account.id, payload: { rows: body.rows.map(item => `${text(item?.table)}:${text(item?.id)}`), previous } },
     });
+    guard.prime(result);
     if (result?.replayed) return { replayed: true, assigned: 0 };
     return { assigned: result.assigned, account: view(rowOf(account.id)) };
   }
@@ -876,14 +919,17 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   }
   function setup(user, body = {}, { dryRun = false, requestId = "" } = {}) {
     if (dryRun) return setupPlan(body).preview;
-    bindable(body.accountId);
+    const target = bindable(body.accountId);
     const previous = [];
     const auditPayload = { previous };
+    const guard = negativeFor([target.id], negativeConfirmed(body));
     const result = bank.post({
       user, module: "bank", op: "assign", requestId, scope: "bank.setup", body, prev: previous,
+      guard: guard.guard,
       write: () => {
         // Plan işlemin içinde kurulur: istek kimliğiyle yinelenen istek önce yanıtını alır; aynı anda iki sihirbaz aynı bakiyeyi iki kez kapatamaz.
         const { account, date, carry, rows, skipped } = setupPlan(body);
+        guard.capture(earliest(rows.map(line => line.date)));
         const later = skipped.future ? ` Tarihi gelmemiş ${skipped.future} havale hareketi (ilk ${dayText(skipped.futureFirst)}) var; tarihi gelince Hesabı Atanmamış Eski Hareketler'den atanır.` : "";
         if (!carry.bank && !carry.card && !rows.length) throw new HttpError(409, `Aktarılacak eski hareket yok: açılıştan önceki Hesabı Atanmamış bakiye sıfır ve açılıştan sonra bağlanacak havale hareketi yok.${later}`, { code: "bank-setup-empty", future: skipped.future, futureFirst: skipped.futureFirst });
         if (carry.bank || carry.card) period?.assertOpen(date, "Devir Kapanışı (açılış günü)");
@@ -909,6 +955,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       },
       audit: { type: "bank.setup", entityId: String(body.accountId || ""), payload: auditPayload },
     });
+    guard.prime(result);
     if (result?.replayed) return { replayed: true, id: result.refId };
     return result;
   }
@@ -925,7 +972,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       });
   }
   /** Sihirbazı (ya da Bankaya Geçmiş Say / Kart Borcuna Aktar'ı) Geri Al: fişler ters kaydedilir, bağlar kaldırılır; tek işlem. */
-  function undo(user, id) {
+  function undo(user, id, body = {}) {
     const job = store.get("SELECT rowid AS seq, * FROM bank_jobs WHERE kind = 'setup' AND ref = ?", String(id || ""));
     if (!job) throw new HttpError(404, "Kurulum kaydı bulunamadı.", { code: "bank-setup-missing" });
     if (job.status !== "done") throw new HttpError(409, "Bu kurulum zaten geri alınmış.", { code: "bank-setup-undone" });
@@ -941,12 +988,23 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (later) throw new HttpError(409, `Bu kurulumdan sonra Devir Kapanışı yazan bir kurulum var${later.no ? ` (${later.no})` : ""}; kurulumlar sondan başa geri alınır. Önce onu geri alın.`, { code: "bank-setup-order", eventNo: later.no });
     const payload = parseExtra(job.payload_json);
     period?.assertOpen(payload.date, "Bu kurulum");
+    // Yargıç B2: Geri Al hesabın bakiyesini değiştirir (bağlar kalkar, aktarım fişi ters kaydedilir): pasif hesapta 400, K7 (Engelle/Uyar).
+    // Yalnız Devir Kapanışı'ndan oluşan kurulum hesaba dokunmaz.
+    const touchesAccount = Boolean((payload.rows || []).length || payload.reclassEventId);
+    if (touchesAccount) assertActive(rowOf(payload.accountId));
+    const guard = negativeFor(touchesAccount ? [payload.accountId] : [], negativeConfirmed(body));
     const reversed = [];
     let unassigned = 0;
     let skipped = 0;
-    bank.post({
+    const result = bank.post({
       user, module: "bank", op: "assign", prev: payload,
+      guard: guard.guard,
       write: () => {
+        if (touchesAccount) {
+          const reclassDate = payload.reclassEventId ? store.get("SELECT date FROM fin_events WHERE id = ?", payload.reclassEventId)?.date || "" : "";
+          const rowDates = (payload.rows || []).filter(item => MODULE_TABLES.includes(item.table)).map(item => store.get(`SELECT date FROM ${item.table} WHERE id = ?`, item.id)?.date || "");
+          guard.capture(earliest([reclassDate, ...rowDates]));
+        }
         for (const eventId of [payload.carryEventId, payload.reclassEventId].filter(Boolean)) {
           const event = store.get("SELECT status, date FROM fin_events WHERE id = ?", eventId);
           if (!event || event.status !== "active") continue;
@@ -969,6 +1027,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       },
       audit: { type: "bank.setup.undone", entityId: job.ref, payload: { previous: payload } },
     });
+    guard.prime(result);
     return { undone: true, unassigned, skipped, reversed };
   }
 
@@ -998,6 +1057,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (!["bank", "card"].includes(mode)) throw new HttpError(400, "Aktarım Bankaya Geçmiş Say (bank) ya da Kart Borcuna Aktar (card) olmalı.", { code: "bank-legacy-mode", field: "mode" });
     const account = rowOf(body.accountId);
     if (!account) throw new HttpError(404, "Banka hesabı bulunamadı.", { code: "bank-account-missing" });
+    assertActive(account);
     if (mode === "bank" ? !bankFormOk(account) : !(account.kind === "card" && account.status === "active")) throw new HttpError(400, mode === "bank" ? `${labelOf(account)}: POS bakiyesi yalnız etkin TL Vadesiz, Ticari ya da Diğer hesaba aktarılır.` : `${labelOf(account)} kurumsal kredi kartı hesabı değil.`, { code: "bank-account-invalid" });
     const date = period ? period.movementDate(body, { label: "Tarih" }) : today();
     if (date < account.opening_date) throw new HttpError(409, `Tarih hesabın açılışından (${account.opening_date.split("-").reverse().join(".")}) önce olamaz.`, { code: "bank-before-opening" });
@@ -1081,5 +1141,5 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return { rows, mains, from, to };
   }
 
-  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain, newCount, badgeCount, carryBoundary };
+  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, useNegative, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain, newCount, badgeCount, carryBoundary };
 }
