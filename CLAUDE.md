@@ -1251,6 +1251,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   e2e NOT ADIMI (11.10, son aday yerel koşusu): ÜRÜN — analiz yanıtının "profil" olayı işlem geçmişini yeniden yüklerken listeyi
   "Yükleniyor…" ile siliyordu (başka bilgisayardaki tablo değişikliğinde açık geçmiş titriyordu); 4af88bd aynı kayıtta eski liste kalır.
   Zorla betik test/e2e/e2e-not-yaris.mjs (ajan: eski 0/6, yeni 6/6; doğal 10/10 iki kodda).
+  MUTABAKAT TOHUM 4 (Uzun Doğrulama, 582409c; 22/23 yeşil, tek kırmızı): ÜRÜN HATASI, v2.0.26'da da VAR (2.0.15'ten beri) — faturada
+  1.048.576 TL üstü ondalıklı birim fiyatların ~%10'u ve 16.777.216 üstü ondalıklı miktarlar "en çok dört/üç ondalık" diye REDDEDİLİYORDU
+  (invoice-math.mjs computeLine: x × 10.000 − yuvarlanmış > 1e-6 mutlak tolerans; 1.234.567,89 × 10.000 = 12345678900,000002). Ekrandan da
+  olur. Düzeltme 3069b26 (basamak 15 anlamlı basamakta artığı silinmiş en kısa gösterimden). Ana oturum: eski kopya 779c6a9'da 3/4 kırmızı,
+  0a733dd'de 4/4 + komşu fatura testleri 68/68. Kullanıcıya listelendi. Tohum 4 5.000 işlem yeniden koşusu + CI sırada.
   (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
