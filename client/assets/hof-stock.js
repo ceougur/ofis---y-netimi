@@ -63,18 +63,24 @@
   const listXlsxUrl = () => `/api/workspace/stock/export.xlsx?${query()}&title=${encodeURIComponent(moduleName())}`;
   const cardPdfUrl = item => `/api/workspace/stock/${encodeURIComponent(item.id)}/hareketler.pdf`;
 
-  async function loadList({ more = false, quiet = false } = {}) {
+  // 2.1.0 (bağımsız inceleme H4): Daha Fazla ile arka plan yenilemesi çakışınca yanıt yalnız isteğin gittiği listeye eklenir (HOF.listGate
+  // retry); arka plan yenilemesi Daha Fazla ile açılan satırları korur (önceden ilk sayfaya dönüyordu).
+  function loadList(options = {}) {
+    return HOF.listRetry(() => loadListOnce(options));
+  }
+  async function loadListOnce({ more = false, quiet = false } = {}) {
     // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
     const load = lists.start({ quiet, more });
-    if (!load) return;
+    if (!load) return false;
     if (!quiet && !more && view.listError) {
       view.listError = "";
       if (!view.list && view.mode === "list") renderList();
     }
     const offset = more && view.list ? view.list.items.length : 0;
+    const limit = quiet && view.list ? Math.min(5000, Math.max(PAGE, view.list.items.length)) : PAGE;
     try {
-      const data = await HOF.api(`/api/workspace/stock?${query()}&limit=${PAGE}&offset=${offset}`, quiet ? { background: true } : {});
-      if (!load.current()) return;
+      const data = await HOF.api(`/api/workspace/stock?${query()}&limit=${limit}&offset=${offset}`, quiet ? { background: true } : {});
+      if (!load.current()) return load.retry();
       load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, items: [...view.list.items, ...data.items] } : data;

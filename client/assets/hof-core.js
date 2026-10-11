@@ -317,28 +317,54 @@
   //  - aynı sıradaki iki yanıttan, sonra başlamış olan ekrana yazıldıysa önce başlamış olanınki yazılmaz (eski okuma
   //    yeni veriyi ezmesin);
   //  - süzgeç yüklemesi sürerken "Daha Fazla" yok sayılır (eski listenin uzunluğu yeni süzgece uygulanmasın).
+  // 2.1.0 (bağımsız inceleme H4, 11.10.2026): "Daha Fazla"nın yanıtı yalnız isteğin gittiği listeye eklenir. Önceden Daha Fazla sürerken
+  // arka plan yenilemesi listeyi taze ilk sayfayla değiştirirse Daha Fazla'nın yanıtı (eski listenin devamı) yeni listeye ekleniyordu: sayfa
+  // sınırındaki kayıt ekranda hiç görünmüyordu (Banka → Hareketler'de üretildi; Cari, Fatura, Stok, Çek/Senet aynı kapıyı kullanır). Kural:
+  //  - her yazılan yanıt listenin sürümünü artırır; Daha Fazla başladığı sürüm değiştiyse yazılmaz, retry() → çağıran Daha Fazla'yı YENİ
+  //    listenin sonundan yeniden ister;
+  //  - arka plan yenilemesi (quiet) başladıktan sonra Daha Fazla yazıldıysa (liste uzadı) yazılmaz, retry() → yeni uzunlukla yeniden ister
+  //    (Daha Fazla ile açılan satırlar geri alınmasın); daha yeni bir yenileme yazıldıysa yalnız düşer;
+  //  - Daha Fazla artık arka plan yenilemesini geçersiz saymaz (ikisi de yazılır, sırası ne olursa olsun sonuç: taze + uzamış liste).
   HOF.listGate = () => {
     let ticket = 0;
     let seq = 0;
     let applied = 0;
     let pending = 0;
+    let more = 0;
+    let version = 0;
+    let grown = 0;
     return {
-      start({ quiet = false, more = false } = {}) {
-        if (more && pending) return null;
-        const own = quiet ? ticket : ++ticket;
+      start({ quiet = false, more: isMore = false } = {}) {
+        if (isMore && pending) return null;
+        // Kullanıcının yüklemesi (yeni arama, süzgeç, sekme) bütün eski yanıtları geçersiz sayar; Daha Fazla yalnız önceki Daha Fazla'yı.
+        const own = quiet || isMore ? ticket : ++ticket;
+        const ownMore = isMore ? ++more : more;
         const order = ++seq;
-        if (!quiet && !more) pending = own;
+        const base = version;
+        if (!quiet && !isMore) pending = own;
+        const alive = () => own === ticket && (!isMore || ownMore === more);
+        // Daha Fazla: başladığından beri herhangi bir yanıt yazıldıysa eski. Arka plan yenilemesi: başladığından beri Daha Fazla yazıldıysa eski.
+        const stale = () => (isMore ? version !== base : quiet && grown > base);
+        const ordered = () => isMore || order >= applied;
         return {
-          current: () => own === ticket && (more || order >= applied),
+          current: () => alive() && ordered() && !stale(),
+          // Yanıt yazılmadı ama istek hâlâ geçerli (yalnız liste arada değişti): aynı türden istek yeni listeyle yinelenir.
+          retry: () => alive() && ordered() && stale(),
           applied: () => {
-            if (!more) applied = order;
+            version += 1;
+            if (isMore) grown = version;
+            else applied = order;
           },
           done: () => {
-            if (!quiet && !more && pending === own) pending = 0;
+            if (!quiet && !isMore && pending === own) pending = 0;
           },
         };
       },
     };
+  };
+  // Liste yüklemesini kapının retry() kararıyla en çok 3 kez yineler (load: tek deneme; true dönerse liste arada değişmiştir).
+  HOF.listRetry = async load => {
+    for (let attempt = 0; attempt < 3; attempt += 1) if (!(await load())) return;
   };
   HOF.listPending = message =>
     message

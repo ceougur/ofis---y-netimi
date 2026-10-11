@@ -164,18 +164,24 @@
   const listParams = (extra = {}) =>
     new URLSearchParams(Object.fromEntries(Object.entries({ tab: view.tab, q: view.q, from: view.from, to: view.to, pay: view.pay, profile: view.profile, account: view.account?.id || "", ...extra }).filter(([, value]) => value !== "" && value !== undefined && value !== null))).toString();
 
-  async function loadList(more = false, { quiet = false } = {}) {
+  // 2.1.0 (bağımsız inceleme H4): Daha Fazla ile arka plan yenilemesi çakışınca yanıt yalnız isteğin gittiği listeye eklenir (HOF.listGate
+  // retry); arka plan yenilemesi Daha Fazla ile açılan satırları korur (önceden ilk 200'e dönüyordu).
+  function loadList(more = false, options = {}) {
+    return HOF.listRetry(() => loadListOnce(more, options));
+  }
+  async function loadListOnce(more = false, { quiet = false } = {}) {
     // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
     const load = lists.start({ quiet, more });
-    if (!load) return;
+    if (!load) return false;
     if (!quiet && !more && view.listError) {
       view.listError = "";
       if (!view.list && view.mode === "list") renderList();
     }
     try {
       const offset = more && view.list ? view.list.invoices.length : 0;
-      const data = await HOF.api(`/api/workspace/invoices?${listParams({ offset, limit: 200 })}`, quiet ? { background: true } : {});
-      if (!load.current()) return;
+      const limit = quiet && view.list ? Math.min(5000, Math.max(200, view.list.invoices.length)) : 200;
+      const data = await HOF.api(`/api/workspace/invoices?${listParams({ offset, limit })}`, quiet ? { background: true } : {});
+      if (!load.current()) return load.retry();
       load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, invoices: [...view.list.invoices, ...data.invoices] } : data;
