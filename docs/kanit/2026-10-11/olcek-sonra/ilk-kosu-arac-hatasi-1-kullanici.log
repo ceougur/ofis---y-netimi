@@ -1,0 +1,226 @@
+
+===== 1 eşzamanlı kullanıcı · 180 sn · 3 pencere =====
+raporlar (Muhasebe rolüyle 200): banka-bakiye, banka-hareket, banka-masraf · dışında: {"banka-pos-hareketleri":"403 Bu rapor için yetkiniz yok.","kasa-hareketleri":"403 Bu rapor için yetkiniz yok.","cari-mizan":"404 Rapor bulunamadı."}
+{
+ "kullanici": 1,
+ "sunucu": {
+  "istek": 144,
+  "istekSn": 0.7,
+  "yazimBasarili": 86,
+  "genel": {
+   "p50": 79,
+   "p95": 1119,
+   "enCok": 2753
+  },
+  "yedekSirasinda": {
+   "adet": 2,
+   "p50": 557,
+   "p95": 951,
+   "enCok": 951
+  },
+  "yedekDisinda": {
+   "p50": 76,
+   "p95": 1119,
+   "enCok": 2753
+  },
+  "beklenen409": {},
+  "beklenmeyen": {},
+  "olayDongusu": {
+   "p50": 10.2,
+   "p95": 14.7,
+   "p99": 214.8,
+   "enCok": 1108,
+   "rssMB": 265
+  }
+ },
+ "ekran": {
+  "girisMs": [
+   1164,
+   571,
+   739
+  ],
+  "cariPencereAcilisMs": 965,
+  "bankaPencereAcilisMs": 146,
+  "hareketlerIlkMs": 1664,
+  "cariTusHarf": {
+   "adet": 176,
+   "p50": 6,
+   "p95": 27,
+   "enCok": 110
+  },
+  "cariAramaSonucu": {
+   "adet": 44,
+   "p50": 587,
+   "p95": 812,
+   "enCok": 842
+  },
+  "cariAramaZamanAsimi": 0,
+  "hareketSuzgec": {
+   "adet": 21,
+   "p50": 95,
+   "p95": 283,
+   "enCok": 375
+  },
+  "hareketDahaFazla": {
+   "adet": 20,
+   "p50": 343,
+   "p95": 615,
+   "enCok": 735
+  },
+  "hesapSecenegi": {
+   "adet": 21,
+   "p50": 4,
+   "p95": 20,
+   "enCok": 52
+  },
+  "suzgecBasarisiz": 2,
+  "suzgecDurumlari": [
+   {
+    "secici": true,
+    "pasif": false,
+    "secenek": 4,
+    "satir": 50,
+    "hesap": "",
+    "yukleniyor": false,
+    "sekme": "Hareketler"
+   },
+   {
+    "secici": false,
+    "pasif": false,
+    "secenek": 0,
+    "satir": 0,
+    "hesap": null,
+    "yukleniyor": false,
+    "sekme": ""
+   }
+  ],
+  "kaydetListede": {
+   "adet": 11,
+   "p50": 1611,
+   "p95": 2742,
+   "enCok": 2742
+  },
+  "kaydetGorunmedi": 0,
+  "baskasininKaydiListede": {
+   "adet": 10,
+   "p50": 590,
+   "p95": 2292,
+   "enCok": 2292
+  },
+  "baskasininKaydiGorunmedi": 0,
+  "raporlarAcilis": {
+   "adet": 30,
+   "p50": 652,
+   "p95": 1500,
+   "enCok": 1501
+  },
+  "bankaBakiyeOnIzleme": {
+   "adet": 30,
+   "p50": 808,
+   "p95": 1061,
+   "enCok": 1561
+  },
+  "pdf": {
+   "adet": 30,
+   "p50": 501,
+   "p95": 759,
+   "enCok": 1069,
+   "durumlar": [
+    200
+   ],
+   "bayt": 35107
+  },
+  "excel": {
+   "adet": 30,
+   "p50": 520,
+   "p95": 782,
+   "enCok": 783,
+   "durumlar": [
+    200
+   ],
+   "bayt": 4903
+  },
+  "yedekSirasindaCari": {
+   "adet": 0,
+   "p50": null,
+   "p95": null,
+   "enCok": null
+  },
+  "yedekSirasindaRapor": {
+   "adet": 0,
+   "p50": null,
+   "p95": null,
+   "enCok": null
+  },
+  "donma": {
+   "ekran1": {
+    "toplamMs": 10304,
+    "enUzunMs": 151
+   },
+   "ekran2": {
+    "toplamMs": 0,
+    "enUzunMs": 0
+   },
+   "ekran3": {
+    "toplamMs": 0,
+    "enUzunMs": 0
+   }
+  },
+  "bellekMB": {
+   "ekran1": {
+    "bas": {
+     "jsHeapMB": 6.3,
+     "nodes": 2431,
+     "listeners": 661
+    },
+    "son": {
+     "jsHeapMB": 5,
+     "nodes": 17141,
+     "listeners": 508
+    }
+   },
+   "ekran2": {
+    "bas": {
+     "jsHeapMB": 6.2,
+     "nodes": 2431,
+     "listeners": 661
+    },
+    "son": {
+     "jsHeapMB": 6,
+     "nodes": 31229,
+     "listeners": 668
+    }
+   },
+   "ekran3": {
+    "bas": {
+     "jsHeapMB": 5.8,
+     "nodes": 2392,
+     "listeners": 656
+    },
+    "son": {
+     "jsHeapMB": 6,
+     "nodes": 13291,
+     "listeners": 750
+    }
+   }
+  },
+  "kararsizTiklama": {},
+  "hatalar": 3
+ }
+}
+turler: Satış faturası (peşin nakit) n=18 p50=41 p95=951 max=951 {"200":18}
+        Cari arama n=22 p50=54 p95=376 max=557 {"200":22}
+        Cari tahsilat (nakit) n=25 p50=28 p95=487 max=592 {"200":25}
+        Banka Hareketleri listesi n=17 p50=13 p95=221 max=221 {"200":17}
+        Rapor açma n=19 p50=1100 p95=2753 max=2753 {"200":19}
+        Banka Fişi (masraf) n=8 p50=55 p95=129 max=129 {"200":8}
+        Cari tahsilat (havale) n=16 p50=126 p95=442 max=442 {"200":16}
+        Cari ödeme (nakit) n=12 p50=84 p95=235 max=235 {"200":12}
+        Bankalar arası transfer n=7 p50=247 p95=270 max=270 {"200":7}
+yedek: otomatik (zamanlayıcı turu) 810 ms 001 - Şirket 1/destekofis-001-2026-10-11T11-06-45-514Z.sqlite ok 100097, 002 - Ölçek İkinci Şirket/destekofis-002-2026-10-11T11-06-46-202Z.sqlite ok 12122 | elle (Şimdi Yedek Al — Tüm Şirketler) 1107 ms 001 - Şirket 1/destekofis-001-2026-10-11T11-07-49-325Z-manuel.sqlite ok 100128, 002 - Ölçek İkinci Şirket/destekofis-002-2026-10-11T11-07-49-325Z-manuel.sqlite ok 12131
+sonra: {"001":{"mutabakatTesti":"TAMAM","mutabakatTestiMs":4637,"kasa":{"program":"11.969.836,03","bagimsiz":"11.969.836,03","fark":"0,00"},"banka102":{"program":"40.861.411,19","bagimsiz":"40.861.418,86","fark":"-7,67"},"hesaplar":[{"hesap":"Ziraat Bankası · Ana TL Hesabı T2101","program":"20.817.549,11","bagimsiz":"20.817.549,11","fark":"0,00"},{"hesap":"Garanti BBVA · Ana TL Hesabı T2101","program":"20.541.199,56","bagimsiz":"20.541.207,23","fark":"-7,67"}],"yukDefteri":{"kasa":"6.567,36","banka":"16.532,60"}},"002":{"mutabakatTesti":"TAMAM","mutabakatTestiMs":465,"kasa":{"program":"1.471.318,38","bagimsiz":"1.471.318,38","fark":"0,00"},"banka102":{"program":"4.646.227,59","bagimsiz":"4.646.227,59","fark":"0,00"},"hesaplar":[{"hesap":"Ziraat Bankası · Ana TL Hesabı T2102","program":"2.422.593,04","bagimsiz":"2.422.593,04","fark":"0,00"},{"hesap":"Garanti BBVA · Ana TL Hesabı T2102","program":"2.511.251,34","bagimsiz":"2.511.251,34","fark":"0,00"}],"yukDefteri":{"kasa":"2.258,45","banka":"2.500,76"}}}
+izli kayıt: {"001":{"cariHareketi":41,"fatura":16,"bankaOlayi":33,"beklenen":{"cariHareketi":41,"fatura":16,"bankaOlayi":32}},"002":{"cariHareketi":12,"fatura":2,"bankaOlayi":3,"beklenen":{"cariHareketi":12,"fatura":2,"bankaOlayi":3}}} · para satırı önce {"001":100067,"002":12117} sonra {"001":100162,"002":12136}
+hatalar: ekrandan masraf OLCEK-1-mv3pw0dn-E1 veritabanında 5 kez (çift kayıt) | 001 Banka (102): program 40.861.411,19 ≠ bağımsız 40.861.418,86 | 001 Garanti BBVA · Ana TL Hesabı T2101: program 20.541.199,56 ≠ bağımsız 20.541.207,23 | 001 izli bankaOlayi: veri tabanında 33 ≠ 200 dönen 32
+
+===== 10 eşzamanlı kullanıcı · 180 sn · 3 pencere =====
+raporlar (Muhasebe rolüyle 200): banka-bakiye, banka-hareket, banka-masraf · dışında: {"banka-pos-hareketleri":"403 Bu rapor için yetkiniz yok.","kasa-hareketleri":"403 Bu rapor için yetkiniz yok.","cari-mizan":"404 Rapor bulunamadı."}

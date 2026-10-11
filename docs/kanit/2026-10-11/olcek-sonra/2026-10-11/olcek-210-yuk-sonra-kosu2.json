@@ -1,0 +1,32 @@
+{
+  "ad": "olcek-210-yuk-sonra",
+  "komut": "node --disable-warning=ExperimentalWarning tools/olcek-210.mjs --asama yuk --klasor /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam --kullanici 1,10,20 --sure 180 --pencere 3 --json docs/kanit/2026-10-11/olcek-sonra/olcek-210-sonuc.json",
+  "commit": "be429b69bd1e97803aed8188b9ca027a8786dd2d",
+  "dal": "worktree-agent-abebd705e2a893684",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T11:13:10.739Z",
+  "sure_sn": 708.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 87,
+    "gecen": 87,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/olcek-sonra/2026-10-11/olcek-210-yuk-sonra.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abebd705e2a893684",
+  "ham_cikti_sha256": "af637c33714e24ae6260dd33c3502e1585f51612808fcfa42580655f8f498f3e",
+  "ham_cikti_bayt": 18557
+}

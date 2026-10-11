@@ -1,0 +1,19 @@
+{
+ "tarih": "2026-10-11T12:58:23.504Z",
+ "sonuc": [
+  {
+   "durum": "arka plan yazımı YOK (kontrol)",
+   "tur": 40,
+   "basarisiz": 0,
+   "arkaPlanYazimi": 0,
+   "ornekler": []
+  },
+  {
+   "durum": "arka plan yazımı VAR (başka oturum 250 ms'de bir masraf)",
+   "tur": 40,
+   "basarisiz": 0,
+   "arkaPlanYazimi": 383,
+   "ornekler": []
+  }
+ ]
+}

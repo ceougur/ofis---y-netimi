@@ -1,0 +1,51 @@
+[once] sunucu açıldı (7218 ms), kod /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/hiz/kod-once
+[once] banka-bakiye thisYear real                       HTTP p50   1654 ms · döngü en çok   1741 ms · build p50   1708 ms · 2 satır · ad57f081ea1bd2aa
+[once] banka-bakiye thisYear debt                       HTTP p50   1612 ms · döngü en çok   1731 ms · build p50   1744 ms · 1 satır · 3c58f1871473c4dc
+[once] banka-bakiye thisYear unassigned                 HTTP p50   1709 ms · döngü en çok   1761 ms · build p50   1676 ms · 2 satır · 091a7e98869981e5
+[once] banka-bakiye thisYear all                        HTTP p50   1669 ms · döngü en çok   1717 ms · build p50   1830 ms · 5 satır · 05b3972a6c94b741
+[once] banka-bakiye all real                            HTTP p50   1772 ms · döngü en çok   1892 ms · build p50   1743 ms · 2 satır · ddfb9a41ab5f03bd
+[once] banka-bakiye all debt                            HTTP p50   1726 ms · döngü en çok   1782 ms · build p50   1760 ms · 1 satır · 342d7d8794703b2c
+[once] banka-bakiye all unassigned                      HTTP p50   1616 ms · döngü en çok   1688 ms · build p50   1639 ms · 2 satır · cbdbca5078dfead2
+[once] banka-bakiye all all                             HTTP p50   1588 ms · döngü en çok   1714 ms · build p50   1653 ms · 5 satır · 54f8c0646477095b
+[once] banka-hareket thisYear tüm hepsi                 HTTP p50   2574 ms · döngü en çok   2650 ms · build p50   2624 ms · 55418 satır · f58cbc134d10e032
+[once] banka-hareket thisYear tüm external              HTTP p50   2409 ms · döngü en çok   2476 ms · build p50   2476 ms · 32982 satır · 2675e55d5983400c
+[once] banka-hareket thisYear tüm internal              HTTP p50   2408 ms · döngü en çok   2538 ms · build p50   2426 ms · 22444 satır · e3cadcaac0f0a651
+[once] banka-hareket thisYear vadesiz-1 hepsi           HTTP p50   1184 ms · döngü en çok   1277 ms · build p50   1162 ms · 27689 satır · 9e433513cd32dd0b
+[once] banka-hareket thisYear vadesiz-1 external        HTTP p50   1122 ms · döngü en çok   1185 ms · build p50   1041 ms · 16469 satır · 1d653b2b09074c40
+[once] banka-hareket thisYear vadesiz-1 internal        HTTP p50   1140 ms · döngü en çok   1312 ms · build p50   1123 ms · 11222 satır · 7819b5b2351713cb
+[once] banka-hareket thisYear vadesiz-2 hepsi           HTTP p50   1145 ms · döngü en çok   1204 ms · build p50   1162 ms · 27729 satır · 4ad4e6df69744855
+[once] banka-hareket thisYear vadesiz-2 external        HTTP p50   1105 ms · döngü en çok   1185 ms · build p50   1054 ms · 16513 satır · e327b65c36929d12
+[once] banka-hareket thisYear vadesiz-2 internal        HTTP p50    990 ms · döngü en çok   1123 ms · build p50   1008 ms · 11222 satır · 5d3fd943d7a1ee22
+[once] banka-hareket thisYear kart hepsi                HTTP p50      3 ms · döngü en çok      6 ms · build p50      2 ms · 17 satır · 71710441503b4285
+[once] banka-hareket thisYear kart external             HTTP p50      3 ms · döngü en çok      7 ms · build p50      1 ms · 17 satır · 6b7c6371768905ef
+[once] banka-hareket thisYear kart internal             HTTP p50      3 ms · döngü en çok      7 ms · build p50      1 ms · 1 satır · e981d1d782abd381
+[once] banka-hareket thisYear atanmamış hepsi           HTTP p50   2166 ms · döngü en çok   2316 ms · build p50   2147 ms · 180 satır · 9f9957c3103d6adb
+[once] banka-hareket thisYear atanmamış external        HTTP p50   2168 ms · döngü en çok   2249 ms · build p50   2242 ms · 164 satır · c973e6d64b995962
+[once] banka-hareket thisYear atanmamış internal        HTTP p50   2286 ms · döngü en çok   2602 ms · build p50   2237 ms · 18 satır · be2d979434335b4b
+[once] banka-hareket all tüm hepsi                      HTTP p50   2719 ms · döngü en çok   2866 ms · build p50   2731 ms · 70582 satır · f96d85d147723cf6
+[once] banka-hareket all vadesiz-1 hepsi                HTTP p50   1233 ms · döngü en çok   1262 ms · build p50   1219 ms · 35303 satır · 1ef338c3c395f288
+[once] banka-hareket lastMonth vadesiz-1 hepsi          HTTP p50    971 ms · döngü en çok   1012 ms · build p50    941 ms · 2886 satır · aaf47a0637c85650
+[once] banka-masraf thisYear                            HTTP p50    836 ms · döngü en çok    859 ms · build p50    737 ms · 11255 satır · d4694f8534f4b96e
+[once] alt-hesap-mizani thisYear                        HTTP p50    507 ms · döngü en çok    560 ms · build p50    510 ms · 5 satır · 314c664d3989459e
+[once] alt-hesap-mizani all                             HTTP p50    526 ms · döngü en çok    627 ms · build p50    499 ms · 5 satır · 235c36d41d1a6a76
+[once] banka-pos-hareketleri thisYear hepsi             HTTP p50   4564 ms · döngü en çok   4877 ms · build p50   4480 ms · 55595 satır · e461b45b84a60988
+[once] banka-pos-hareketleri thisYear bank              HTTP p50   4712 ms · döngü en çok   4822 ms · build p50   4454 ms · 55499 satır · c50b9e09e3b165cb
+[once] banka-pos-hareketleri thisYear card              HTTP p50   1404 ms · döngü en çok   1786 ms · build p50   1353 ms · 97 satır · c74d7edb1e3485ad
+[once] kasa-hareketleri thisYear                        HTTP p50   1762 ms · döngü en çok   1826 ms · build p50   1734 ms · 23075 satır · fe7061065db91286
+[once] Banka Hareketleri (tüm hesaplar, 50)             HTTP p50      7 ms · döngü en çok      9 ms · 50 satır · 84f63865d9f6a4f0
+[once] Banka Hareketleri (vadesiz-1, 50)                HTTP p50      6 ms · döngü en çok      7 ms · 50 satır · cf798bcce36ec5b8
+[once] Banka Hareketleri (kart, 50)                     HTTP p50     26 ms · döngü en çok     28 ms · 18 satır · fae8cb9fdbddb633
+[once] Banka Hareketleri (arama 'Doldurma')             HTTP p50      8 ms · döngü en çok      9 ms · 50 satır · ffaf70f31d35e83f
+[once] Cari arama (2 harf 'Mü')                         HTTP p50    184 ms · döngü en çok    234 ms · 8 satır · a44f54b894acc304
+[once] Cari arama (5 harf 'Müşte')                      HTTP p50    195 ms · döngü en çok    199 ms · 8 satır · a44f54b894acc304
+[once] Cari arama (tam ad)                              HTTP p50    187 ms · döngü en çok    217 ms · 1 satır · 9366fc254e38268b
+[once] Cari arama (telefon 0532)                        HTTP p50    196 ms · döngü en çok    232 ms · 20 satır · 375854a6dfe271d5
+[once] Cari arama (tedarikçi öne)                       HTTP p50    204 ms · döngü en çok    213 ms · 8 satır · a44f54b894acc304
+[once] Cari listesi (300)                               HTTP p50    197 ms · döngü en çok    197 ms · 300 satır · 728ef7166e150dc5
+[once] Banka Genel Bakış                                HTTP p50    120 ms · döngü en çok    138 ms · null satır · e0d82e4b4ba02bb8
+[once] Cari tahsilat (nakit)                            p50     17 ms · {"200":6}
+[once] Cari tahsilat (havale)                           p50     18 ms · {"200":6}
+[once] Cari ödeme (nakit)                               p50    783 ms · {"200":6}
+[once] Satış faturası (peşin nakit)                     p50     34 ms · {"200":6}
+[once] Banka Fişi (masraf)                              p50     11 ms · {"200":6}
+[once] Bankalar arası transfer                          p50     14 ms · {"200":6}
