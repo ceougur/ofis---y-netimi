@@ -1,0 +1,37 @@
+
+> destekofis@2.1.0 test:e2e
+> node --disable-warning=ExperimentalWarning test/e2e/run.mjs
+
+DestekOfis e2e — http://127.0.0.1:42415
+  ✓ giriş ekranı açılır, hatalı parola reddedilir (1143 ms)
+  ✓ yönetici giriş yapar, uygulama ve operasyon kartı yüklenir (509 ms)
+  ✓ ücretsiz deneme program açılınca kendiliğinden başlar; lisans ekranı sadeleşir (1983 ms)
+  ✓ veri yokken ortada 'başlayalım' kartı; paketin yükleme düğmeleri gizli (218 ms)
+  ✓ Excel başlangıç kartından yüklenir ve ofisin kalıcı verisi olur (1496 ms)
+  ✓ akıllı analiz ekranı adım adım açılır; sektör önerisi kanıtıyla gelir, kendiliğinden uygulanmaz (3721 ms)
+  ✓ sektör seçici: kelimeyle aranır, klavyeyle gezilir, Esc ile kapanır (589 ms)
+  ✓ öneri onaylanınca görünüm sektör diline geçer; göstergeler kolon adlarıyla (680 ms)
+  ✓ kolon genişliği başlığın kenarından sürüklenir, hatırlanır; çift tık otomatik genişliğe döndürür (926 ms)
+  ✓ akıllı özet kartı tıklanınca kayıt listesi açılır; kayda gidilir ve satır belirginleşir (1142 ms)
+  ✓ kartın 'Nasıl hesaplandı?' açıklaması ve dağılımdan kayıt listesi (1427 ms)
+  ✓ başlık kalemle değiştirilir, kalıcıdır ve varsayılana döndürülebilir; ana ekranda 'Dosya özeti' bloğu yok (v2.0.10) (2059 ms)
+  ✓ satırlar sunucu kimliği taşır, sayfalama 20 satır gösterir (285 ms)
+  ✓ sekmeler kendi kolonlarıyla; arama tüm sekmeleri sayar, Enter başka sekmedeki kayda gider (1236 ms)
+  ✓ hücre düzenlenir; tablo yenilenir ve seçim korunur (1981 ms)
+  ✓ satır silinir ve geri alınır (780 ms)
+  ✓ yeni kayıt açık sekmenin kolonlarıyla oluşturulur, o sekmede en üste gelir ve seçilir (868 ms)
+  ✗ dosyaya not eklenir; işlem geçmişinde işlemi yapanla görünür
+    Error: işlemi yapan görünmeli
+    at expect (file:///home/user/ofis---y-netimi/test/e2e/run.mjs:85:25)
+    at file:///home/user/ofis---y-netimi/test/e2e/run.mjs:472:5
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17)
+    at async step (file:///home/user/ofis---y-netimi/test/e2e/run.mjs:60:5)
+    at async file:///home/user/ofis---y-netimi/test/e2e/run.mjs:465:3
+    sayfa 0: {"url":"http://127.0.0.1:42415/","auth":false,"modals":[],"splash":false,"root":2,"badge":"","user":"Ofis yöneticisi","tasks":{"ok":true,"data":[]}}
+
+Konsol kayıtları:
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:42415/api/auth/me
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:42415/api/auth/login
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:42415/api/auth/me
