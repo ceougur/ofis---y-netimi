@@ -11,6 +11,8 @@ const soonDue = (() => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 })();
 
+// Excel biçimi (GG.AA.YYYY). Sabit "10.10.2026" 11.10.2026'dan beri geçmişte: kayıt tarihi ilk vadeyi aşamadığı için 10.10 yazılıyordu (CI 566).
+const soonDueTr = soonDue.split("-").reverse().join(".");
 const data = response => response.data.data;
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 
@@ -57,7 +59,7 @@ describe("taksit kartının kayıt tarihi carinin tarihidir (2.0.12)", () => {
   });
   it("Excel'den yükleme: Excel'de kayıt tarihi yoksa bağlanan mevcut carinin tarihi; varsa Excel'deki", async () => {
     await admin.post("/api/workspace/accounts", { name: "Hakan Demir", type: "customer", phone: "0533 444 55 66", registeredOn: "2026-01-08" });
-    const matrix = [["Ad Soyad", "Telefon", "Toplam Tutar", "Taksit Sayısı", "İlk Vade"], ["Hakan Demir", "0533 444 55 66", "6000", "3", "10.10.2026"], ["Yeni Kişi", "0533 999 00 00", "3000", "3", "10.10.2026"]];
+    const matrix = [["Ad Soyad", "Telefon", "Toplam Tutar", "Taksit Sayısı", "İlk Vade"], ["Hakan Demir", "0533 444 55 66", "6000", "3", soonDueTr], ["Yeni Kişi", "0533 999 00 00", "3000", "3", soonDueTr]];
     const preview = data(await admin.post("/api/workspace/plans/import/preview", { matrix }));
     const result = await admin.post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, fileName: "kartlar.xlsx" });
     assert.equal(result.status, 200, JSON.stringify(result.data));

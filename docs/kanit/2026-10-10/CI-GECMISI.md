@@ -77,3 +77,6 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
 - CI 565 (c8d596b): Linux Node 24 mutabakat-cekirdek tohum 2 kırmızı — test 23:59:56 UTC'de başlayıp gece yarısını geçti; model "bugün"ü
   başta okuyordu, program ters kaydı yeni günle yazdı (program doğru). Zorla üretildi (test/mutabakat-gece-yarisi.mjs: gün değişti, 2 uyuşmazlık);
   düzeltme: motorNow() sahte saati + koşu sonunda gün değişimi denetimi (ders 22). Kanıt docs/kanit/2026-10-11/mutabakat-gece-yarisi/.
+- CI 566 (106394f): Linux ×2 duzeltmeler-212 "yeni kişi: bugün" 2026-10-10 ↔ 2026-10-11 — testte sabit ilk vade "10.10.2026" 11.10'dan beri
+  geçmişte; kayıt tarihi ilk vadeyi aşamaz → 10.10 (program doğru). Yerelde de her gün kırmızı (11.10 00:18 UTC: 4/5). TARİHE BAĞLI TEST (ders 13);
+  ilk vade bugünden +10 gün → 5/5. Taramada başka sabit tarihli test sahte saatsiz değil (banka-210-* NOW ile).
