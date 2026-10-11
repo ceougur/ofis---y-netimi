@@ -1,0 +1,253 @@
+TAP version 13
+# (node:30905) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+    # Subtest: Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+    ok 1 - Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+      ---
+      duration_ms: 406.069973
+      type: 'test'
+      ...
+    1..1
+ok 1 - kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+  ---
+  duration_ms: 407.254041
+  type: 'suite'
+  ...
+# (node:30905) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 4.327588
+      type: 'test'
+      ...
+# (node:30905) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 14103.415267
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5020
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 486.246299
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 796.383773
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1641.420045
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5348, moneyLines denetimi 493
+    1..5
+ok 2 - hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 25961.159535
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 3.363573
+      type: 'test'
+      ...
+# (node:30905) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 14320.594299
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5121
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 501.44391
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 883.605049
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 2304.520088
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5418, moneyLines denetimi 493
+    1..5
+ok 3 - hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 26448.89903
+  type: 'suite'
+  ...
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+    # Subtest: H1: şirket kapanışında çalışan ve sıradaki rapor 503 report-interrupted (Türkçe neden); sunucu kapanışında 503 report-closed
+    ok 1 - H1: şirket kapanışında çalışan ve sıradaki rapor 503 report-interrupted (Türkçe neden); sunucu kapanışında 503 report-closed
+      ---
+      duration_ms: 614.035241
+      type: 'test'
+      ...
+    # Subtest: H2: zaman aşımında istek hemen 503 alır ama sorgusu süren iş parçacığı yuvayı tutar (en çok max); close() onu bekler, dosya serbest
+    ok 2 - H2: zaman aşımında istek hemen 503 alır ama sorgusu süren iş parçacığı yuvayı tutar (en çok max); close() onu bekler, dosya serbest
+      ---
+      duration_ms: 2150.161379
+      type: 'test'
+      ...
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: H3: iş parçacığındaki beklenmeyen hata HttpError değil (günlüğe yazılsın, kullanıcıya genel ileti); yığın iş parçacığının
+    ok 3 - H3: iş parçacığındaki beklenmeyen hata HttpError değil (günlüğe yazılsın, kullanıcıya genel ileti); yığın iş parçacığının
+      ---
+      duration_ms: 110.793216
+      type: 'test'
+      ...
+    1..3
+ok 4 - rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+  ---
+  duration_ms: 2877.809703
+  type: 'suite'
+  ...
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rapor iş parçacığı (sunucu üzerinden): şirket geri yükleme/silme sırasında rapor, beklenmeyen hata
+    # Subtest: H1: 002 geri yüklenirken ve silinirken açık raporlar 503 report-interrupted (çalışan + sıradaki); işlem 200; günlükte ERROR yok
+    ok 1 - H1: 002 geri yüklenirken ve silinirken açık raporlar 503 report-interrupted (çalışan + sıradaki); işlem 200; günlükte ERROR yok
+      ---
+      duration_ms: 1458.279605
+      type: 'test'
+      ...
+# (node:30906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: H3: iş parçacığında SQLite hatası → 500 'Sunucu işlemi tamamlayamadı.' (ham ileti yok) ve günlükte yığınlı ERROR; 404 hesap aynen
+    ok 2 - H3: iş parçacığında SQLite hatası → 500 'Sunucu işlemi tamamlayamadı.' (ham ileti yok) ve günlükte yığınlı ERROR; 404 hesap aynen
+      ---
+      duration_ms: 263.347045
+      type: 'test'
+      ...
+    1..2
+ok 5 - rapor iş parçacığı (sunucu üzerinden): şirket geri yükleme/silme sırasında rapor, beklenmeyen hata
+  ---
+  duration_ms: 2317.90701
+  type: 'suite'
+  ...
+# (node:30912) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30912) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar yerinde hazırlanan raporla aynı
+    # Subtest: ön izleme JSON'u: ilk 200 satır, toplam sayı ve TOPLAM bütün satırlardan — yerinde hazırlananla aynı; iş parçacığında hazırlandı
+    ok 1 - ön izleme JSON'u: ilk 200 satır, toplam sayı ve TOPLAM bütün satırlardan — yerinde hazırlananla aynı; iş parçacığında hazırlandı
+      ---
+      duration_ms: 1226.358486
+      type: 'test'
+      ...
+    # Subtest: Excel: bütün satırlar ve TOPLAM yerinde hazırlananla aynı; PDF açılır
+    ok 2 - Excel: bütün satırlar ve TOPLAM yerinde hazırlananla aynı; PDF açılır
+      ---
+      duration_ms: 328.381156
+      type: 'test'
+      ...
+    # Subtest: hatalar aynı durum koduyla ve metinle: olmayan hesap 404, tanınmayan süzgeç 400, ters aralık 400
+    ok 3 - hatalar aynı durum koduyla ve metinle: olmayan hesap 404, tanınmayan süzgeç 400, ters aralık 400
+      ---
+      duration_ms: 538.31344
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı iş parçacığına ulaşmaz (403; sayaç artmaz)
+    ok 4 - yetkisiz kullanıcı iş parçacığına ulaşmaz (403; sayaç artmaz)
+      ---
+      duration_ms: 160.807193
+      type: 'test'
+      ...
+    # Subtest: yazımdan hemen sonra açılan rapor yeni satırı gösterir; sahte saatin günü iş parçacığında da aynı
+    ok 5 - yazımdan hemen sonra açılan rapor yeni satırı gösterir; sahte saatin günü iş parçacığında da aynı
+      ---
+      duration_ms: 372.460185
+      type: 'test'
+      ...
+    # Subtest: sunucu kapanırken bekleyen rapor asılı kalmaz (503 report-closed ya da tamamlanır; düz 500 değil)
+    ok 6 - sunucu kapanırken bekleyen rapor asılı kalmaz (503 report-closed ya da tamamlanır; düz 500 değil)
+      ---
+      duration_ms: 9.924972
+      type: 'test'
+      ...
+    1..6
+ok 6 - Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar yerinde hazırlanan raporla aynı
+  ---
+  duration_ms: 9156.333004
+  type: 'suite'
+  ...
+# Subtest: liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+    # Subtest: Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+    ok 1 - Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+      ---
+      duration_ms: 5.782735
+      type: 'test'
+      ...
+    # Subtest: arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+    ok 2 - arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+      ---
+      duration_ms: 6.585488
+      type: 'test'
+      ...
+    # Subtest: aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+    ok 3 - aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+      ---
+      duration_ms: 1.319683
+      type: 'test'
+      ...
+    # Subtest: rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+    ok 4 - rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+      ---
+      duration_ms: 74.091974
+      type: 'test'
+      ...
+    1..4
+ok 7 - liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+  ---
+  duration_ms: 89.3309
+  type: 'suite'
+  ...
+1..7
+# tests 26
+# suites 7
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 53300.299618

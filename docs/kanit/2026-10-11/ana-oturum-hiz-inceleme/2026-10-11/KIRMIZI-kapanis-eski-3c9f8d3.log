@@ -1,0 +1,155 @@
+TAP version 13
+# (node:30809) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30809) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+    # Subtest: H1: şirket kapanışında çalışan ve sıradaki rapor 503 report-interrupted (Türkçe neden); sunucu kapanışında 503 report-closed
+    not ok 1 - H1: şirket kapanışında çalışan ve sıradaki rapor 503 report-interrupted (Türkçe neden); sunucu kapanışında 503 report-closed
+      ---
+      duration_ms: 311.88716
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çalışan: HttpError (500'e dönmesin): rapor iş parçacığı kapandı (kod 1)
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:56:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: H2: zaman aşımında istek hemen 503 alır ama sorgusu süren iş parçacığı yuvayı tutar (en çok max); close() onu bekler, dosya serbest
+    not ok 2 - H2: zaman aşımında istek hemen 503 alır ama sorgusu süren iş parçacığı yuvayı tutar (en çok max); close() onu bekler, dosya serbest
+      ---
+      duration_ms: 704.88284
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: 'zaman aşımından sonra yeni iş parçacığı açılmadı: başlayan 4 (en çok 2)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:90:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: H3: iş parçacığındaki beklenmeyen hata HttpError değil (günlüğe yazılsın, kullanıcıya genel ileti); yığın iş parçacığının
+    not ok 3 - H3: iş parçacığındaki beklenmeyen hata HttpError değil (günlüğe yazılsın, kullanıcıya genel ileti); yığın iş parçacığının
+      ---
+      duration_ms: 178.47517
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        beklenmeyen hata HttpError olarak dönmemeli (ham ileti kullanıcıya gider): 500 unable to open database file
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:117:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+  ---
+  duration_ms: 1204.269982
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:42:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:30809) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:30809) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rapor iş parçacığı (sunucu üzerinden): şirket geri yükleme/silme sırasında rapor, beklenmeyen hata
+    # Subtest: H1: 002 geri yüklenirken ve silinirken açık raporlar 503 report-interrupted (çalışan + sıradaki); işlem 200; günlükte ERROR yok
+    not ok 1 - H1: 002 geri yüklenirken ve silinirken açık raporlar 503 report-interrupted (çalışan + sıradaki); işlem 200; günlükte ERROR yok
+      ---
+      duration_ms: 703.003028
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yükleme: rapor {"status":500,"error":"Sunucu işlemi tamamlayamadı."}
+        
+        500 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 500
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:170:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: H3: iş parçacığında SQLite hatası → 500 'Sunucu işlemi tamamlayamadı.' (ham ileti yok) ve günlükte yığınlı ERROR; 404 hesap aynen
+    not ok 2 - H3: iş parçacığında SQLite hatası → 500 'Sunucu işlemi tamamlayamadı.' (ham ileti yok) ve günlükte yığınlı ERROR; 404 hesap aynen
+      ---
+      duration_ms: 113.732215
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:182:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kullanıcıya ham ileti gitmemeli: unable to open database file
+        + actual - expected
+        
+        + 'unable to open database file'
+        - 'Sunucu işlemi tamamlayamadı.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Sunucu işlemi tamamlayamadı.'
+      actual: 'unable to open database file'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:188:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - rapor iş parçacığı (sunucu üzerinden): şirket geri yükleme/silme sırasında rapor, beklenmeyen hata
+  ---
+  duration_ms: 1841.058733
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ana-eski-3c9f8d3/test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:123:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3513.188791

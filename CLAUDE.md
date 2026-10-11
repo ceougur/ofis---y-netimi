@@ -1293,6 +1293,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   ŞİMDİ 3c9f8d3'te başlatıldı (koşu 38149023983, #82; "yalnız son adayda" kuralından BİLİNÇLİ sapma: kalan düzeltmeler rapor iş parçacığı + banka istemcisi; mutabakat/
   güvenilirlik koşuları ikisini de kullanmıyor). Birleşmeden sonra diff para/şirket yoluna (server/ altında report-runner/worker dışı) dokunursa
   ilgili Uzun Doğrulama işleri son adayda YENİDEN koşulur. Hedef toplam ~4,5–5 sa.
+  H1–H5 + H7 DÜZELDİ (ajan 16ec9cf, 9cb72bc, 7ee39f4; birleşme 39698bd). Ana oturum kendi ayrı kopyasında (git archive 3c9f8d3 + yalnız sınama
+  girişi yaması, diff ile denetlendi): kapanış 0/5, liste kapısı 1/4, kâhin 0/1, e2e Daha Fazla yarışı 16/31 (15 değişkenin 15'i) KIRMIZI →
+  39698bd'de 26/26 ve 31/31 YEŞİL. Ajan: npm test 2099/2099, senaryo-banka-210 407, 210b 89, 210-temel 79, ekran-aciklama 11, 222 56, 216 53.
+  H4 komşuları da kapandı (Cari, Fatura, Stok, Çek/Senet listeleri aynı liste kapısında; Fatura/Stok/Çek arka plan yenilemesi Daha Fazla
+  satırlarını korur). server/app.mjs değişikliği yalnız kapanış nedeni (reportWorker kapalı test sunucularında etkisiz) → Uzun Doğrulama
+  (3c9f8d3) para/şirket yolu için geçerli, yeniden koşu GEREKMEZ. İstemci değiştiği için CI dışı e2e (210–218, rapor, taslak, whatsapp,
+  ui-ux-217, senaryo) son adayda yeniden koşulur. Denenmeyen: Fatura/Stok/Çek pencerelerinde e2e yarış testi yok (kapı birim testi + 216/222).
   (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür

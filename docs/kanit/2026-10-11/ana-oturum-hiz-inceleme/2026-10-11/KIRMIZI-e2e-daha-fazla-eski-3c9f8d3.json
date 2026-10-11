@@ -1,0 +1,113 @@
+{
+  "ad": "KIRMIZI-e2e-daha-fazla-eski-3c9f8d3",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-daha-fazla-yaris.mjs",
+  "commit": "39698bdefb14d4fe47ca620133355511e4bf565d",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T15:49:49.720Z",
+  "sure_sn": 104.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 31,
+    "gecen": 16,
+    "basarisiz": 15,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 15 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B1: liste = sunucunun ilk 100 hareketi (eksik [\"BNK-2026-000123\"], çift [], fazla [\"BNK-2026-000073\"])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A1: liste = sunucunun ilk 100 hareketi (eksik [\"BNK-2026-000174\"], çift [], fazla [\"BNK-2026-000074\"])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C1 (Daha Fazla geri alınmadı): listede 50 hareket (en az 100)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D1 (yükleme sırasındaki tıklama yok sayılmadı): listede 50 hareket (en az 100)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B2: liste = sunucunun ilk 100 hareketi (eksik [\"BNK-2026-000127\"], çift [], fazla [\"BNK-2026-000077\"])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A2: liste = sunucunun ilk 100 hareketi (eksik [\"BNK-2026-000178\"], çift [], fazla [\"BNK-2026-000078\"])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C2 (Daha Fazla geri alınmadı): listede 50 hareket (en az 100)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D2 (yükleme sırasındaki tıklama yok sayılmadı): listede 50 hareket (en az 100)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B3: liste = sunucunun ilk 100 hareketi (eksik [\"BNK-2026-000131\"], çift [], fazla [\"BNK-2026-000081\"])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A3: liste = sunucunun ilk 100 hareketi (eksik [\"BNK-2026-000182\"], çift [], fazla [\"BNK-2026-000082\"])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C3 (Daha Fazla geri alınmadı): listede 50 hareket (en az 100)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D3 (yükleme sırasındaki tıklama yok sayılmadı): listede 50 hareket (en az 100)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E1: liste = sunucunun ilk 330 carisi (çift 1, eksik 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E2: liste = sunucunun ilk 329 carisi (çift 1, eksik 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E3: liste = sunucunun ilk 328 carisi (çift 1, eksik 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "banka-210-daha-fazla-yaris: 16 geçti, 15 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-hiz-inceleme/2026-10-11/KIRMIZI-e2e-daha-fazla-eski-3c9f8d3.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "3cb739573cb81e6a2390afc111ec500a5d0d894c6b97a26b1925c8c56b59bc12",
+  "ham_cikti_bayt": 5505
+}
