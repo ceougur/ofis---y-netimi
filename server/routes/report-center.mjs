@@ -714,6 +714,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       preset: "thisYear",
       permission: "bank.reports",
       standalone: true,
+      // 11.10.2026 hız düzeltmesi: 100.000 para satırında Bu Yıl ~0,8 sn ana iş parçacığını tutuyordu → ayrı iş parçacığında (banka hareketleri
+      // okuyucusu orada salt okunur kurulur; lib/report-worker.mjs).
+      worker: true,
       build(query) {
         const range = rangeOf(query, "thisYear");
         const service = bankService()?.movements;

@@ -136,11 +136,13 @@ function reportCases(banks) {
   const accounts = ["", ...banks.map(bank => bank.id), "unassigned"];
   for (const bankAccount of accounts) for (const bankMove of ["", "external", "internal"]) out.push(["banka-hareket", { ...(bankAccount ? { bankAccount } : {}), ...(bankMove ? { bankMove } : {}) }]);
   for (const payMethod of ["", "bank", "card"]) out.push(["banka-pos-hareketleri", payMethod ? { payMethod } : {}]);
-  out.push(["kasa-hareketleri", {}], ["kasa-gunluk", {}], ["alt-hesap-mizani", {}], ["banka-masraf", {}]);
+  out.push(["kasa-hareketleri", {}], ["kasa-gunluk", {}], ["alt-hesap-mizani", {}]);
+  // Banka Masraf Raporu: tüm hesaplar, her hesap ve olmayan hesap (404 aynı metinle).
+  for (const feeAccount of ["", ...banks.map(bank => bank.id), "bacc-yok"]) out.push(["banka-masraf", feeAccount ? { feeAccount } : {}]);
   return out;
 }
 
-// Büyük banka raporları (Banka Bakiye, Banka Hareket) üretimde ayrı iş parçacığında hazırlanır (lib/report-worker.mjs; testte açık:
+// Büyük banka raporları (Banka Bakiye, Banka Hareket, Banka Masraf) üretimde ayrı iş parçacığında hazırlanır (lib/report-worker.mjs; testte açık:
 // reportWorker). Her karşılaştırma yerinde yolla (inline) yapılır; iş parçacığı yolu ayrıca iki dönemde (varsayılan Bu Yıl, dönem başı = ilk gün),
 // varsayılan dönemde ön izleme sınırıyla da (ilk n satır; toplam sayı ve TOPLAM bütün satırlardan). Saat ileri karşılaştırması yerinde yolla.
 const WORKER_PERIODS = new Set(["varsayılan (Bu Yıl)", "dönem başı = ilk hareket günü"]);
@@ -148,7 +150,7 @@ async function compareReports(app, label, today, firstDay, banks, { viaWorker: u
   const user = adminOf(app);
   const old = oldPath(app);
   const center = app.context.reportCenter;
-  const worker = new Set(["banka-bakiye", "banka-hareket"]);
+  const worker = new Set(["banka-bakiye", "banka-hareket", "banka-masraf"]);
   let compared = 0;
   let viaWorker = 0;
   let rows = 0;
@@ -166,7 +168,8 @@ async function compareReports(app, label, today, firstDay, banks, { viaWorker: u
       }
       for (const [way, options] of paths) {
         if (error) {
-          await assert.rejects(() => center.run(user, id, new URLSearchParams(query), options), { message: error.message }, `${tag} (${way}): eski yol hata verdi, yeni de aynı hatayı vermeli`);
+          await assert.rejects(() => center.run(user, id, new URLSearchParams(query), options), { message: error.message, status: error.status }, `${tag} (${way}): eski yol hata verdi, yeni de aynı hatayı vermeli`);
+          if (!options.inline) viaWorker += 1;
         } else {
           const actual = plain(await center.run(user, id, new URLSearchParams(query), options));
           assert.deepStrictEqual(actual, options.limit ? { ...expected, rows: expected.rows.slice(0, options.limit) } : expected, `${tag} (${way})`);
@@ -363,7 +366,7 @@ for (const [seedNo, operations] of [[21, 300], [22, 300]]) {
       assert.ok(new Set(firsts.map(row => row.d)).size < firsts.length, "aynı gün açılan iki hesap yok");
     });
 
-    it("Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)", async () => {
+    it("Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)", async t => {
       const runner = data.ctx.app.context.reportRunner;
       assert.ok(runner, "rapor iş parçacığı açık (reportWorker)");
       const before = runner.stats.started;
@@ -372,25 +375,29 @@ for (const [seedNo, operations] of [[21, 300], [22, 300]]) {
       assert.ok(result.rows > 1000, `karşılaştırılan satır ${result.rows}`);
       assert.ok(result.viaWorker >= 2 * 20, `iş parçacığı karşılaştırması ${result.viaWorker}`);
       assert.equal(runner.stats.started - before, result.viaWorker, "iş parçacığı yolundaki her rapor gerçekten iş parçacığında hazırlandı");
+      t.diagnostic(`rapor karşılaştırması ${result.compared} (iş parçacığında ${result.viaWorker}), karşılaştırılan satır ${result.rows}`);
     });
 
-    it("moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)", () => {
+    it("moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)", t => {
       const checks = compareMoney(data.ctx.app, `tohum ${seedNo} bugün`, data.today, data.firstDay, data.banks);
       assert.ok(checks > 200, `denetim sayısı ${checks}`);
+      t.diagnostic(`moneyLines denetimi ${checks}`);
     });
 
-    it("cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı", async () => {
+    it("cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı", async t => {
       const checks = await compareSearch(data.ctx, `tohum ${seedNo}`);
       assert.ok(checks >= 100, `denetim sayısı ${checks}`);
+      t.diagnostic(`cari arama denetimi ${checks}`);
     });
 
-    it("saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir", async () => {
+    it("saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir", async t => {
       data.ctx.server.clock.set(LATER);
       const later = (await must("bugün", data.ctx.api.get("/api/workspace/ledger/lock"))).today;
       assert.equal(later, "2026-10-23");
       const result = await compareReports(data.ctx.app, `tohum ${seedNo} +15 gün`, later, data.firstDay, data.banks, { viaWorker: false });
       assert.ok(result.compared >= 13 * 30);
-      compareMoney(data.ctx.app, `tohum ${seedNo} +15 gün`, later, data.firstDay, data.banks);
+      const checks = compareMoney(data.ctx.app, `tohum ${seedNo} +15 gün`, later, data.firstDay, data.banks);
+      t.diagnostic(`+15 gün: rapor karşılaştırması ${result.compared}, satır ${result.rows}, moneyLines denetimi ${checks}`);
       data.ctx.server.clock.set(NOW);
     });
   });

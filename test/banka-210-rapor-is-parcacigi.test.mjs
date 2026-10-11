@@ -1,5 +1,5 @@
 // 2.1.0 — büyük banka raporlarının ayrı iş parçacığı (11.10.2026 hız düzeltmesi; lib/report-runner.mjs, lib/report-worker.mjs; §3.11 madde 5).
-// Banka Bakiye ve Banka Hareket Raporu üretimde ana iş parçacığının dışında, salt okunur anlık görüntüden hazırlanır. Ekranın gördüğü (ön
+// Banka Bakiye, Banka Hareket ve Banka Masraf Raporu üretimde ana iş parçacığının dışında, salt okunur anlık görüntüden hazırlanır. Ekranın gördüğü (ön
 // izleme JSON'u), PDF ve Excel yerinde hazırlanan raporla AYNI olmalı; süzgeç ve hesap hataları aynı durum koduyla ve metinle dönmeli.
 // NASIL BOZARIM: (1) ön izleme sınırı TOPLAM'ı ya da toplam sayıyı ilk 200 satırdan hesaplatır; (2) PDF'in "ilk 20.000 satır" alt başlığı
 // sınırla kaybolur; (3) iş parçacığındaki hata 500'e döner (404 hesap / 400 süzgeç kaybolur); (4) yetkisiz kullanıcı iş parçacığına ulaşır;
@@ -40,13 +40,17 @@ describe("Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar y
 
   it("ön izleme JSON'u: ilk 200 satır, toplam sayı ve TOPLAM bütün satırlardan — yerinde hazırlananla aynı; iş parçacığında hazırlandı", async () => {
     const started = ctx.app.context.reportRunner.stats.started;
-    for (const query of [{ id: "banka-hareket", q: {} }, { id: "banka-hareket", q: { bankAccount: ziraat.id } }, { id: "banka-hareket", q: { bankAccount: "unassigned", preset: "all" } }, { id: "banka-hareket", q: { bankMove: "internal" } }, { id: "banka-bakiye", q: { bankGroup: "all" } }, { id: "banka-bakiye", q: { from: "2026-10-03", to: "2026-10-05" } }]) {
+    const queries = [{ id: "banka-hareket", q: {} }, { id: "banka-hareket", q: { bankAccount: ziraat.id } }, { id: "banka-hareket", q: { bankAccount: "unassigned", preset: "all" } }, { id: "banka-hareket", q: { bankMove: "internal" } }, { id: "banka-bakiye", q: { bankGroup: "all" } }, { id: "banka-bakiye", q: { from: "2026-10-03", to: "2026-10-05" } }, { id: "banka-masraf", q: {} }, { id: "banka-masraf", q: { feeAccount: ziraat.id } }];
+    for (const query of queries) {
       const expected = plain(await inline(query));
       const shown = await must(`${query.id} ${qs(query.q)}`, api.get(`${RC}/${query.id}?${qs(query.q)}`));
       assert.deepEqual(plain(shown), { ...expected, rows: expected.rows.slice(0, 200) }, `${query.id} ${qs(query.q)}`);
       if (query.id === "banka-hareket" && !query.q.bankAccount && !query.q.bankMove) assert.ok(expected.total > 200, `ön izleme sınırı aşıldı (${expected.total})`);
     }
-    assert.equal(ctx.app.context.reportRunner.stats.started - started, 6, "altı rapor da iş parçacığında hazırlandı");
+    assert.equal(ctx.app.context.reportRunner.stats.started - started, queries.length, "her rapor iş parçacığında hazırlandı");
+    // Banka Masraf Raporu: transfer ücreti (5 TL + BSMV) satırı iş parçacığında da var.
+    const fee = await must("masraf", api.get(`${RC}/banka-masraf?${qs({ feeAccount: ziraat.id })}`));
+    assert.equal(fee.total, 1, "Ziraat'ten ücretli transfer: bir masraf satırı");
   });
 
   it("Excel: bütün satırlar ve TOPLAM yerinde hazırlananla aynı; PDF açılır", async () => {
@@ -81,6 +85,19 @@ describe("Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar y
     const group = await api.get(`${RC}/banka-bakiye?bankGroup=xyz`);
     assert.equal(group.status, 400);
     assert.equal(group.code, "bank-filter");
+    // Banka Masraf Raporu: olmayan hesap 404 (banka hareketleri okuyucusunun kendi denetimi, iş parçacığında da).
+    let feeExpected;
+    try {
+      await inline({ id: "banka-masraf", q: { feeAccount: "bacc-yok" } });
+      assert.fail("yerinde 404 vermeliydi");
+    } catch (error) {
+      feeExpected = error;
+    }
+    const feeMissing = await api.get(`${RC}/banka-masraf?feeAccount=bacc-yok`);
+    assert.equal(feeMissing.status, 404);
+    assert.equal(feeMissing.status, feeExpected.status);
+    assert.equal(feeMissing.error, feeExpected.message);
+    assert.equal(feeMissing.code, "bank-account-missing");
   });
 
   it("yetkisiz kullanıcı iş parçacığına ulaşmaz (403; sayaç artmaz)", async () => {
@@ -88,7 +105,7 @@ describe("Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar y
     await admin.login("admin", "Test-Admin-2026!");
     const clerk = apiOf(await createUser(ctx.server, admin, { username: "yetkisiz-is", role: "personel" }));
     const started = ctx.app.context.reportRunner.stats.started;
-    for (const id of ["banka-hareket", "banka-bakiye"]) assert.equal((await clerk.get(`${RC}/${id}`)).status, 403);
+    for (const id of ["banka-hareket", "banka-bakiye", "banka-masraf"]) assert.equal((await clerk.get(`${RC}/${id}`)).status, 403);
     assert.equal(ctx.app.context.reportRunner.stats.started, started);
   });
 
