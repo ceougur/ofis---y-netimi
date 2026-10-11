@@ -96,3 +96,4 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
   "yayından kaldırıldı", 2.0.28 açıldı) gerçek Windows'ta ilk yeşil. CI 574 (699266f, banka eski satır düzeltmesi birleşmesi) bütün işler yeşil.
 - windows.yml #43 (7ec525b, banka eski satır düzeltmeleri dahil): bütün adımlar YEŞİL; güncelleme 41/41 — W4 gerçek Windows'ta İKİNCİ yeşil (ders 18).
 - CI 578 (742c811, Hesapsız metni + kılavuz): bütün işler YEŞİL.
+- e372a00: kanıt commit'ine yanlışlıkla eski hof-workspace.js girdi (ders 23); ca966fb geri aldı. Bu iki commit arasındaki CI sonucu düzeltmeyi kapsamaz.

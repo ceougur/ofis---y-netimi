@@ -151,6 +151,10 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     (motorNow(): yerel bugün 06:00'dan akar) başlatılır ve motor koşu sonunda gün değiştiyse sonucu GEÇERSİZ sayar. (11.10: CI 565 c8d596b
     mutabakat-cekirdek tohum 2 23:59:56 UTC'de başlayıp 00:00:00'da kırmızı; program doğruydu — ters kaydı yeni günle yazdı; zorla
     `test/mutabakat-gece-yarisi.mjs` ile üretildi.)
+23. ESKİ KOD AYRI KOPYADA. Kırmızı kanıt için eski kod çalışma ağacında `git checkout <eski> -- dosya` ile denenmez: dosya hazırlık
+    alanına girer, sonraki commit'e karışır ve aynı ağaçta koşan öbür testler eski kodu görür. Eski kod `git archive <eski> | tar -x` ya da
+    `git worktree` kopyasında koşulur. (11.10: e372a00 kanıt commit'ine eski hof-workspace.js girdi ve gönderildi — ca966fb ile geri alındı;
+    o arada başlatılan arka plan koşuları durduruldu, kanıtları silinip ayrı kopyada yeniden koşuldu.)
 
 ## Dil (kullanıcı, 10.10.2026: "türkçe yaz", "türkçe yaz bildirimlerini")
 - Kullanıcıya giden HER yanıt, durum bildirimi ve liste Türkçe yazılır (İngilizce ara rapor yok).
@@ -1244,6 +1248,9 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   7 gün ufukla, ÖBÜR sayfanınkiler ufuksuz (dues.mjs) → 1. sayfadayken 2. sayfanın 200+ gün sonraki kayıtları "SON GÜNE 2xx GÜN" uyarısı verir
   (müşterinin "42 gün" ekranı bu yoldan); hangisi doğru kullanıcıya soruldu; (3) iki pencerede sayfa seçimi kullanıcı başına (düşük); (4) yeni
   sayfa açılınca açık pencerenin takvimi yenilenmiyor (düşük). senaryo-225 C kırmızısı = testin kendi yarışı (216f76e, yalnız test; zorla 6/6).
+  e2e NOT ADIMI (11.10, son aday yerel koşusu): ÜRÜN — analiz yanıtının "profil" olayı işlem geçmişini yeniden yüklerken listeyi
+  "Yükleniyor…" ile siliyordu (başka bilgisayardaki tablo değişikliğinde açık geçmiş titriyordu); 4af88bd aynı kayıtta eski liste kalır.
+  Zorla betik test/e2e/e2e-not-yaris.mjs (ajan: eski 0/6, yeni 6/6; doğal 10/10 iki kodda).
   (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
