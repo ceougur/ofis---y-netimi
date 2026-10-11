@@ -1,0 +1,38 @@
+{
+  "ad": "e2e-senaryo-211",
+  "komut": "npm run test:senaryo-211",
+  "commit": "cbccb3976da461b10a9a90ea8d7a04fbcc9690aa",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T15:55:53.505Z",
+  "sure_sn": 90.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 56,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "tarayıcı hataları: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:34095/assets/app-185ffb28c4.js @ http://127.0.0.1:34095/assets/hof-boot.js",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/son-aday-e2e-2/2026-10-11/e2e-senaryo-211.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "722f18be90ca628b1b61ac1df59f12137705b92843e7c6034a8a1ba3f127b2b4",
+  "ham_cikti_bayt": 5647
+}
