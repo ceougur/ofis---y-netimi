@@ -221,6 +221,8 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   "Pro'ya özel" derse Pro kilidine girer. Ayrıntı: `docs/PRO-UZAKTAN-GORUNTULEME.md` → "Paket kuralları".
 
 ## Açık iş
+- BANKA DEVAMI (kullanıcı, 11.10.2026: "banka kalan işleri, sürümleri ve düzeltme ertelemelerini banka adında bir dosyaya al; banka
+  sürümüne devam edelim dediğimde oradan devam edersin") → kökteki `BANKA.md`. Kullanıcı ara verdi; kullanıcı testleri 12.10'da onda.
 - 2.0.12 yayımlandı (PR ceougur/ofis---y-netimi#12, `v2.0.12`; beş dosya bayt bayt doğrulandı; müşteri: taksit kartının
   Kayıt Tarihi carinin tarihinden gelir).
 - 2.0.13 yayımlandı (01.10.2026; PR ceougur/ofis---y-netimi#13, `v2.0.13` = 20e110d; beş dosya bayt bayt doğrulandı, latest/DestekOfis-Kurulum.exe
