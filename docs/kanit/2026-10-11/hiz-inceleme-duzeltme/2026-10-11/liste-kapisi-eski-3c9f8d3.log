@@ -1,0 +1,137 @@
+TAP version 13
+# Subtest: liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+    # Subtest: Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+    not ok 1 - Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+      ---
+      duration_ms: 6.947893
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-3c9f8d3/test/liste-kapisi-daha-fazla.test.mjs:77:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ekrandaki liste sunucunun ilk 6 satırı olmalı (eksik: h7)
+        + actual - expected
+        
+          [
+            'h10',
+            'h9',
+            'h8',
+        -   'h7',
+            'h6',
+            'h5',
+        +   'h4'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'h10'
+        1: 'h9'
+        2: 'h8'
+        3: 'h7'
+        4: 'h6'
+        5: 'h5'
+      actual:
+        0: 'h10'
+        1: 'h9'
+        2: 'h8'
+        3: 'h6'
+        4: 'h5'
+        5: 'h4'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-3c9f8d3/test/liste-kapisi-daha-fazla.test.mjs:92:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+    not ok 2 - arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+      ---
+      duration_ms: 7.744762
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-3c9f8d3/test/liste-kapisi-daha-fazla.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        liste taze ve 6 satır olmalı: h9,h8,h7,h6,h5,h4
+        + actual - expected
+        
+          [
+        -   'h10',
+            'h9',
+            'h8',
+            'h7',
+            'h6',
+            'h5',
+        +   'h4'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'h10'
+        1: 'h9'
+        2: 'h8'
+        3: 'h7'
+        4: 'h6'
+        5: 'h5'
+      actual:
+        0: 'h9'
+        1: 'h8'
+        2: 'h7'
+        3: 'h6'
+        4: 'h5'
+        5: 'h4'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-3c9f8d3/test/liste-kapisi-daha-fazla.test.mjs:110:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+    ok 3 - aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+      ---
+      duration_ms: 1.365129
+      type: 'test'
+      ...
+    # Subtest: rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+    not ok 4 - rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+      ---
+      duration_ms: 38.633332
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-3c9f8d3/test/liste-kapisi-daha-fazla.test.mjs:136:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bitişik olmayan (atlanmış/çift satırlı) liste: 15 tur; örnek [{"round":31,"rows":["h31","h30","h29","h27","h26","h25"],"server":["h31","h30","h29","h28","h27","h26","h25","h24"]},{"round":74,"rows":["h32","h31","h30","h27","h26","h25"],"server":["h32","h31","h30","h29","h28","h27","h26","h25"]},{"round":75,"rows":["h32","h31","h30","h27","h26","h25"],"server":["h32","h31","h30","h29","h28","h27","h26","h25"]}]
+        
+        15 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 15
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-3c9f8d3/test/liste-kapisi-daha-fazla.test.mjs:176:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+  ---
+  duration_ms: 56.617373
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-3c9f8d3/test/liste-kapisi-daha-fazla.test.mjs:76:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 146.700451
