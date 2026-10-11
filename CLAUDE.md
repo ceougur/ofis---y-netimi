@@ -1256,6 +1256,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   (invoice-math.mjs computeLine: x × 10.000 − yuvarlanmış > 1e-6 mutlak tolerans; 1.234.567,89 × 10.000 = 12345678900,000002). Ekrandan da
   olur. Düzeltme 3069b26 (basamak 15 anlamlı basamakta artığı silinmiş en kısa gösterimden). Ana oturum: eski kopya 779c6a9'da 3/4 kırmızı,
   0a733dd'de 4/4 + komşu fatura testleri 68/68. Kullanıcıya listelendi. Tohum 4 5.000 işlem yeniden koşusu + CI sırada.
+  ÖLÇEK (11.10.2026; tools/olcek-210.mjs, 001'de 100.000 + 002'de 12.000 para satırı, gerçek API'den; kanıt docs/kanit/2026-10-11/olcek):
+  DOĞRULUK tamam (10/20 kullanıcı: mutabakat TAMAM, bağımsız Kasa/banka farkı 0,00, yedekler bütün). HIZ plan bütçesini AŞIYOR (§3.11 madde 5:
+  "Hareketler sayfası ve arama 1.000.000 satırda < 1 sn"): 100.000'de tek kullanıcıda bile Banka Hareketleri p50 2,7 sn, Cari arama 1,9 sn;
+  10 kişide p95 9,8–12,1 sn, 20 kişide en çok 87 sn; olay döngüsü 6 sn'ye kadar tıkanıyor. KÖK NEDEN (CPU profili 1/3/5 kullanıcı, ana
+  oturum çözümledi): meşgul sürenin %45–55'i banka raporlarında (report-center banka-bakiye/banka-hareket → money-lines classified: bütün
+  para satırları her açılışta sıralanıp JS nesnesine çevriliyor, ilişkili alt sorgu; SQLite eşzamanlı → herkes bekliyor), %12–14 cari
+  listesi (her aramada bütün cariler + toplamlar). 2.1.0'ın yeni banka raporları getirdi. KARAR (plana uy: bütçe kabul ölçütü): teslimden
+  ÖNCE düzeltilir (ajan, worktree): rapor toplamları SQL'de, dönem öncesi devir toplamla, yalnız dönem satırları; eşdeğerlik testi (eski ↔
+  yeni çıktı birebir) + aynı veriyle önce/sonra ölçüm. Kullanıcıya listelendi.
   (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
