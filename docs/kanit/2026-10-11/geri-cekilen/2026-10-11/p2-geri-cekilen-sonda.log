@@ -1,0 +1,11 @@
+(node:3685) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ilk sürüm 9.0.0
+9.0.1 hazırlandı (gün içinde)
+yeniden açılış sonrası çalışan sürüm: 9.0.0
+açılış günlüğü (ilgili satırlar):
+   2026-10-11T01:47:23.412Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).
+   2026-10-11T01:47:23.432Z [WARN] 9.0.1 sürümü yayından kaldırıldığı için kurulmadı (son denetim: yayında daha yeni sürüm yok); hazırdaki paket silindi.
+   2026-10-11T01:47:23.447Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.1
+   2026-10-11T01:47:23.823Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+lastCheck: {"at":"2026-10-11T01:47:23.414Z","status":"up-to-date","version":"9.0.0","reason":null} lastResult: {"outcome":"withdrawn","version":"9.0.1","reason":"9.0.1 sürümü yayından kaldırıldığı için kurulmadı (son denetim: yayında daha yeni sürüm yok); hazırdaki paket silindi.","at":"2026-10-11T01:47:23.447Z"}

@@ -16,6 +16,9 @@
 //     (hafta sonu penceresi) saat eşitleme servisleri durdurulup saat bir sonraki hafta içi 10:00'a alınır (Set-Date). Sonunda
 //     saat dilimi / saat ve eşitleme servisleri eski hâline döner. (Linux kuru koşusunda saat, sahte servis denetiminin
 //     başlatıcısında kaydırılır — bkz. gercek/windows-kuru.)
+//  W4 (2.1.0, yargıç B5) gün içinde hazırlanan sürüm yayından GERİ ÇEKİLİR: personel çalışırken daha yeni sürüm arka planda
+//     hazırlanır; sonra kaynak yalnız eski bir sürümü gösterir (çalışandan eski → "güncel") → servis yeniden başlatılınca hazır
+//     sürüm KURULMAZ, app\.hazir'dan silinir, Yönetim → Sistem'de "yayından kaldırıldığı için kurulmadı" görünür.
 // Sonunda kurulum eski hâline döndürülür (etkin sürüm, anahtar dosyası, ayar, hazır paket), servis eski sürümle açılır.
 // Çıktı: "N denetim geçti, M başarısız" (kanıt aracının tanıdığı özet).
 import { execFileSync } from "node:child_process";
@@ -121,6 +124,7 @@ const installed = current.version;
 const [major, minor, patch] = installed.split("-")[0].split(".").map(Number);
 const next = `${major}.${minor}.${patch + 1}`;
 const next2 = `${major}.${minor}.${patch + 2}`;
+const next3 = `${major}.${minor}.${patch + 3}`;
 const keysFile = path.join(appsDir, installed, "server", "lib", "update-keys.mjs");
 const configFile = path.join(ROOT, "config", "guncelleme.json");
 const keysBefore = readFile(keysFile);
@@ -131,6 +135,7 @@ console.log(`Kurulu sürüm ${installed}; sınama sürümü ${next}; kurulum kö
 const keys = makeKeys("ci-windows-test");
 const built = buildRelease(makeVersion(path.join(work, "kaynak"), next), path.join(work, "yayin"), keys);
 const built2 = buildRelease(makeVersion(path.join(work, "kaynak2"), next2), path.join(work, "yayin2"), keys);
+const built3 = buildRelease(makeVersion(path.join(work, "kaynak3"), next3), path.join(work, "yayin3"), keys);
 const hits = [];
 let feedDown = false;
 let activeRelease = built;
@@ -142,7 +147,7 @@ const server = http.createServer((req, res) => {
     req.socket.destroy();
     return;
   }
-  const file = name === "destekofis-guncelleme.json" ? activeRelease.manifestPath : [built, built2].map(item => item.zipPath).find(zip => path.basename(zip) === name) || null;
+  const file = name === "destekofis-guncelleme.json" ? activeRelease.manifestPath : [built, built2, built3].map(item => item.zipPath).find(zip => path.basename(zip) === name) || null;
   if (!file) {
     res.writeHead(404);
     res.end();
@@ -295,6 +300,59 @@ try {
   ok(!listDir(path.join(appsDir, ".hazir")).includes(next2), "W3: hazır paket kurulduktan sonra silindi");
   const active3 = JSON.parse(readFile(path.join(appsDir, "current.json")));
   ok(active3.version === next2 && active3.previous === installed && listDir(appsDir).includes(installed), `W3: etkin ${active3.version}, önceki ${active3.previous}; ${installed} klasörü duruyor`);
+
+  console.log(`\n■ W4 Hazır sürüm yayından geri çekilir (${next2} çalışırken ${next3} hazırlanır, sonra kaynak yalnız ${next} gösterir)`);
+  // Çalışan ${next2} test paketinden açıldı; onun anahtar dosyasına da TEST açık anahtarı eklenir (klasör sonunda silinir).
+  const keysFile2 = path.join(appsDir, next2, "server", "lib", "update-keys.mjs");
+  writeFile(keysFile2, readFile(keysFile2).replace(/export const TRUSTED_UPDATE_KEYS = Object\.freeze\(\{/, `export const TRUSTED_UPDATE_KEYS = Object.freeze({\n  "ci-windows-test": "${keys.publicB64}",`));
+  ok(readFile(keysFile2).includes("ci-windows-test"), `W4: ${next2} kopyasına test anahtarı eklendi`);
+  // Servis internetsiz açılır (açılış denetimi düşer, 60 sn'lik üretim yeniden denemesi bekler); personel çalışmaya başlar; internet gelir.
+  feedDown = true;
+  activeRelease = built3;
+  restartService();
+  await waitHealth(data => data.version === next2, 120_000, "W4: servis açılmadı");
+  const staff4 = await login(STAFF);
+  ok(staff4.status === 200, "W4: personel giriş yaptı");
+  working = true;
+  const activity4 = (async () => {
+    while (working) {
+      await fetch(`${BASE}/api/workspace/client-state`, { headers: { cookie: staff4.cookie } }).catch(() => null);
+      await sleep(2000);
+    }
+  })();
+  feedDown = false;
+  let w4status = null;
+  const until4 = clock() + 6 * 60_000;
+  while (clock() < until4) {
+    w4status = await adminStatus().catch(() => null);
+    if (w4status?.prepared?.version === next3) break;
+    await sleep(3000);
+  }
+  ok(w4status?.prepared?.version === next3, `W4: ${next3} arka planda hazırlandı (${JSON.stringify(w4status?.prepared || w4status?.lastError || w4status?.lastCheck)})`);
+  ok(listDir(path.join(appsDir, ".hazir")).includes(next3), `W4: app\\.hazir\\${next3} var`);
+  working = false;
+  await activity4;
+  // Yayıncı ${next3}'ü geri çeker: kaynak artık yalnız ${next} bildirgesini veriyor (çalışan ${next2}'den eski → "güncel").
+  activeRelease = built;
+  const restarted4 = clock();
+  restartService();
+  let w4after = null;
+  const until4b = clock() + 180_000;
+  while (clock() < until4b) {
+    w4after = await adminStatus().catch(() => null);
+    if (w4after?.lastResult?.version === next3) break;
+    await sleep(2000);
+  }
+  ok(w4after?.lastResult?.outcome === "withdrawn" && w4after?.lastResult?.version === next3, `W4: Yönetim → Sistem: ${next3} yayından kaldırıldığı için kurulmadı (${JSON.stringify(w4after?.lastResult)}; ${Math.round((clock() - restarted4) / 1000)} sn)`);
+  ok((await health())?.version === next2, `W4: çalışan sürüm hâlâ ${next2} (geri çekilen ${next3} kurulmadı)`);
+  ok(!w4after?.prepared, "W4: hazır paket kalmadı");
+  ok(!listDir(path.join(appsDir, ".hazir")).includes(next3) && !listDir(appsDir).includes(next3), `W4: app\\.hazir\\${next3} ve app\\${next3} silindi`);
+  const boot4 = lastBoot();
+  ok(appStarts(boot4).every(item => item.includes(next2)), `W4: bu açılışta uygulama yalnız ${next2} ile başlatıldı (${appStarts(boot4).join(", ")})`);
+  ok(new RegExp(`${next3.replace(/\./g, "\\.")} sürümü yayından kaldırıldığı için kurulmadı`).test(boot4), "W4: servis günlüğü 'yayından kaldırıldığı için kurulmadı'");
+  ok(zipHits(next3) === 1, `W4: ${next3} paketi bir kez indirildi (${zipHits(next3)})`);
+  const active4 = JSON.parse(readFile(path.join(appsDir, "current.json")));
+  ok(active4.version === next2 && !active4.pending, `W4: etkin sürüm ${active4.version} (değişmedi)`);
 } catch (error) {
   failed += 1;
   console.log(`✗ sınama durdu: ${error.stack || error.message}`);
@@ -313,7 +371,7 @@ try {
     writeFile(keysFile, keysBefore);
     if (configBefore === null) writeFile(configFile, "{}");
     else writeFile(configFile, configBefore);
-    for (const dir of [next, next2, ".hazir", ".indirilen"]) {
+    for (const dir of [next, next2, next3, ".hazir", ".indirilen"]) {
       try {
         rmSync(path.join(appsDir, dir), { recursive: true, force: true, maxRetries: 3 });
       } catch (error) {
