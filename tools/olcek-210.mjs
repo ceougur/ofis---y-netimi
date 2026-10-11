@@ -683,8 +683,34 @@ async function level(users, info) {
     await page.waitForSelector(rowsSel, { timeout: 60000 });
     screen.hareketlerIlkMs = r0(performance.now() - t);
     const demand = ctx["001"].demand;
+    // Banka penceresinin istek sırası (bağımsız inceleme 11.10.2026: "banka süzgeç" 30 sn hatası aslında Daha Fazla'nın zaman aşımıydı; kayıtta
+    // hangi adımın düştüğü, hedef hesap ve istek sırası yoktu). Son 30 banka isteği: başlangıç (ms, turun başına göre), yol, imleç/limit,
+    // kullanıcı ya da arka plan (X-HOF-Background yok sayılır; sorgudan okunur), bitiş/durum.
+    const bankRequests = [];
+    let turStart = performance.now();
+    const shortUrl = url => {
+      const u = new URL(url);
+      const keys = ["account", "cursor", "limit"].filter(key => u.searchParams.has(key)).map(key => `${key}=${key === "cursor" ? "…" : u.searchParams.get(key)}`);
+      return `${u.pathname.replace("/api/workspace/bank", "")}${keys.length ? `?${keys.join("&")}` : ""}`;
+    };
+    page.on("request", request => {
+      if (!request.url().includes("/api/workspace/bank/")) return;
+      bankRequests.push({ at: r0(performance.now() - turStart), url: shortUrl(request.url()), method: request.method(), req: request });
+      if (bankRequests.length > 30) bankRequests.shift();
+    });
+    page.on("requestfinished", request => {
+      const item = bankRequests.find(entry => entry.req === request);
+      if (item) item.done = r0(performance.now() - turStart);
+    });
+    page.on("requestfailed", request => {
+      const item = bankRequests.find(entry => entry.req === request);
+      if (item) item.failed = request.failure()?.errorText || "failed";
+    });
+    const requestTrail = () => bankRequests.map(({ req, ...rest }) => rest);
     let n = 0;
     while (!stop) {
+      turStart = performance.now();
+      bankRequests.length = 0;
       n += 1;
       const item = { n, inBackup: Boolean(backupWindow && backupWindow.to === null) };
       try {
@@ -700,6 +726,8 @@ async function level(users, info) {
         // Hesap süzgeci. Seçicinin hesap seçenekleri Hesaplar listesinden gelir (view.list); seçenek görünene dek geçen süre ayrıca ölçülür,
         // süzgeç başarısız olsa da yinelemenin kalanı (Kaydet → listede, başkasının kaydı) koşar. Başarısızlıkta seçicinin durumu kaydedilir.
         const account = n % 3 === 0 ? "" : demand[n % 2].id;
+        // Adım: hangi bekleyişin düştüğü ayrı etiketlenir (secenek → suzgec → dahaFazla); hata kaydında hedef hesap ve istek sırası.
+        let step = "secenek";
         try {
           t = performance.now();
           await page.waitForFunction(({ id }) => {
@@ -707,6 +735,7 @@ async function level(users, info) {
             return Boolean(select && !select.disabled && [...select.options].some(option => option.value === id));
           }, { id: account }, { timeout: 60000 });
           item.secenekMs = r0(performance.now() - t);
+          step = "suzgec";
           await page.selectOption(`${bankWin} [data-mv="account"]`, account, { timeout: 30000 });
           await page.waitForFunction(id => {
             const rows = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
@@ -716,20 +745,31 @@ async function level(users, info) {
           // Kaydırma + Daha Fazla
           const more = await page.$(`${bankWin} [data-act="mv-more"]`);
           if (more) {
+            step = "dahaFazla";
             const before = await page.$$eval(rowsSel, list => list.length);
+            item.dahaFazlaOnce = before;
             t = performance.now();
             await clickRetry(page, `${bankWin} [data-act="mv-more"]`, "Daha Fazla Göster");
             await page.waitForFunction(count => document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length > count, before, { timeout: 30000 });
             item.dahaFazlaMs = r0(performance.now() - t);
           }
         } catch (error) {
-          item.suzgecHata = String(error.message || error).split("\n")[0].slice(0, 160);
-          item.suzgecDurum = await page.evaluate(() => {
+          const message = String(error.message || error).split("\n")[0].slice(0, 160);
+          const state = await page.evaluate(() => {
             const select = document.querySelector('.hof-bank-modal [data-mv="account"]');
             const box = document.querySelector(".hof-bank-modal [data-moves]");
-            return { secici: Boolean(select), pasif: Boolean(select?.disabled), secenek: select ? select.options.length : 0, satir: document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length, hesap: box?.dataset.account ?? null, yukleniyor: Boolean(document.querySelector(".hof-bank-modal .is-loading, .hof-bank-modal [aria-busy=true]")), sekme: document.querySelector(".hof-bank-modal .hof-bank-tabs [aria-selected=true]")?.textContent?.trim() || "" };
+            return { secici: Boolean(select), pasif: Boolean(select?.disabled), secenek: select ? select.options.length : 0, seciliDeger: select?.value ?? null, satir: document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length, hesap: box?.dataset.account ?? null, yukleniyor: Boolean(document.querySelector(".hof-bank-modal .is-loading, .hof-bank-modal [aria-busy=true]")), sekme: document.querySelector(".hof-bank-modal .hof-bank-tabs [aria-selected=true]")?.textContent?.trim() || "" };
           }).catch(() => null);
-          screen.hatalar.push(`banka süzgeç: ${item.suzgecHata} · ${JSON.stringify(item.suzgecDurum)}`);
+          const record = { adim: step, hedefHesap: account, ...(state || {}), istekler: requestTrail() };
+          if (step === "dahaFazla") {
+            item.dahaFazlaHata = message;
+            item.dahaFazlaDurum = record;
+            screen.hatalar.push(`banka Daha Fazla: ${message} · ${JSON.stringify(record)}`);
+          } else {
+            item.suzgecHata = message;
+            item.suzgecDurum = record;
+            screen.hatalar.push(`banka süzgeç (${step === "secenek" ? "hesap seçeneği" : "süzgeç yanıtı"}): ${message} · ${JSON.stringify(record)}`);
+          }
         }
         // Ekrandan + Masraf → Kaydet → listede görünme (hesap süzgeci Tüm Hesaplar).
         if (n % 2 === 1) {
@@ -1007,6 +1047,8 @@ async function level(users, info) {
     hesapSecenegi: stat(field(screen.banka, "secenekMs")),
     suzgecBasarisiz: screen.banka.filter(item => item.suzgecHata).length,
     suzgecDurumlari: screen.banka.filter(item => item.suzgecDurum).slice(0, 3).map(item => item.suzgecDurum),
+    dahaFazlaBasarisiz: screen.banka.filter(item => item.dahaFazlaHata).length,
+    dahaFazlaDurumlari: screen.banka.filter(item => item.dahaFazlaDurum).slice(0, 3).map(item => item.dahaFazlaDurum),
     kaydetListede: stat(field(screen.banka, "kaydetListedeMs")),
     kaydetGorunmedi: screen.banka.filter(item => item.kaydetListedeMs === -1).length,
     bankaTur: screen.banka.length,

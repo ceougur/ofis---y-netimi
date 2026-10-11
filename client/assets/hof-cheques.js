@@ -66,18 +66,24 @@
     loadList();
   }
 
-  async function loadList(more = false, { quiet = false } = {}) {
+  // 2.1.0 (bağımsız inceleme H4): Daha Fazla ile arka plan yenilemesi çakışınca yanıt yalnız isteğin gittiği listeye eklenir (HOF.listGate
+  // retry); arka plan yenilemesi Daha Fazla ile açılan satırları korur (önceden ilk 300'e dönüyordu).
+  function loadList(more = false, options = {}) {
+    return HOF.listRetry(() => loadListOnce(more, options));
+  }
+  async function loadListOnce(more = false, { quiet = false } = {}) {
     // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
     const load = lists.start({ quiet, more });
-    if (!load) return;
+    if (!load) return false;
     if (!quiet && !more && view.listError) {
       view.listError = "";
       if (!view.list && view.mode === "list") renderList();
     }
     try {
       const offset = more && view.list ? view.list.cheques.length : 0;
-      const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit: 300 })}`, quiet ? { background: true } : {});
-      if (!load.current()) return;
+      const limit = quiet && view.list ? Math.min(5000, Math.max(300, view.list.cheques.length)) : 300;
+      const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit })}`, quiet ? { background: true } : {});
+      if (!load.current()) return load.retry();
       load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, cheques: [...view.list.cheques, ...data.cheques] } : data;

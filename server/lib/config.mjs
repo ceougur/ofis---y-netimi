@@ -90,5 +90,8 @@ export function loadConfig(overrides = {}) {
     // Büyük banka raporları ayrı iş parçacığında (11.10.2026 hız düzeltmesi; lib/report-runner.mjs): üretimde açık. Testler yardımcısı
     // (test/helpers.mjs) hızı için kapatır; iş parçacığı yolunu sınayan testler açar. Çıktı iki yolda aynıdır (test/banka-210-hiz-esdegerlik).
     reportWorker: overrides.reportWorker !== false,
+    // İş parçacığının dosyası: yalnız testler değiştirir (programdan; ortam değişkeni yok) — kapanış/zaman aşımı/hata yollarını gerçek
+    // sunucuda zorla sınamak için (test/fixtures/rapor-is-parcacigi-sinama.mjs). Üretimde lib/report-worker.mjs.
+    reportWorkerEntry: overrides.reportWorkerEntry instanceof URL ? overrides.reportWorkerEntry : null,
   });
 }

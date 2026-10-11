@@ -123,13 +123,16 @@ describe("Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar y
     assert.match(next.subtitle, /2027/);
   });
 
-  it("sunucu kapanırken bekleyen rapor asılı kalmaz (503 ya da tamamlanır)", async () => {
+  it("sunucu kapanırken bekleyen rapor asılı kalmaz (503 report-closed ya da tamamlanır; düz 500 değil)", async () => {
     const runner = ctx.app.context.reportRunner;
-    const pending = Array.from({ length: 4 }, () => runner.run({ dbPath: ctx.app.config.dbPath, time: new Date().toISOString(), id: "banka-hareket", query: {}, user: { id: user.id, perms: user.perms }, limit: 1 }).then(() => "bitti", error => error.status || error.message));
+    const pending = Array.from({ length: 4 }, () => runner.run({ dbPath: ctx.app.config.dbPath, time: new Date().toISOString(), id: "banka-hareket", query: {}, user: { id: user.id, perms: user.perms }, limit: 1 }).then(() => "bitti", error => `${error.status ?? "durumsuz"} ${error.extra?.code ?? "kodsuz"} ${error.message}`));
     await runner.close();
-    // Kapanış, çalışan iş parçacıkları sonlanınca biter (veri dosyasında açık tanıtıcı kalmaz; Windows'ta geri yükleme EBUSY almasın).
+    // Kapanış, çalışan iş parçacıkları GERÇEKTEN sonlanınca biter (veri dosyasında açık tanıtıcı kalmaz; Windows'ta geri yükleme EBUSY almasın).
     assert.equal(runner.stats.active, 0, "kapanıştan sonra çalışan iş parçacığı yok");
+    assert.equal(runner.stats.live, 0, "kapanıştan sonra yaşayan iş parçacığı yok");
     const results = await Promise.all(pending);
-    for (const result of results) assert.ok(result === "bitti" || result === 503 || /kapandı/.test(String(result)), String(result));
+    // İnceleme H1 (11.10.2026): çalışan rapor önceden düz Error ("rapor iş parçacığı kapandı") ile 500'e dönüyordu; bu test onu kabul ediyordu.
+    // Şirket geri yükleme/silme ve zaman aşımı yolları: banka-210-rapor-is-parcacigi-kapanis.test.mjs.
+    for (const result of results) assert.ok(result === "bitti" || result.startsWith("503 report-closed Sunucu kapanıyor"), result);
   });
 });

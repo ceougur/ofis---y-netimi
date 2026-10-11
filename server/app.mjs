@@ -322,7 +322,7 @@ export function createApp(overrides = {}) {
   // Rapor merkezi (v2.0.7): programdaki her bilginin hazır raporu; ekranda ön izleme, PDF ve Excel.
   // 11.10.2026 hız düzeltmesi (§3.11 madde 5): büyük banka raporları ayrı iş parçacığında, bu şirketin veri dosyasının salt okunur anlık
   // görüntüsünden (lib/report-runner.mjs; aynı kod, aynı çıktı). Bellek içi veri tabanında (dosyası yok) ve kapalıyken yerinde hazırlanır.
-  const reportRunner = config.reportWorker && config.dbPath && config.dbPath !== ":memory:" ? createReportRunner() : null;
+  const reportRunner = config.reportWorker && config.dbPath && config.dbPath !== ":memory:" ? createReportRunner(config.reportWorkerEntry ? { entry: config.reportWorkerEntry } : {}) : null;
   context.reportRunner = reportRunner;
   context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity, offload: reportRunner ? job => reportRunner.run({ ...job, dbPath: config.dbPath, fx: config.fxEnabled === true, later: config.bankLater === true }) : null });
   registerDueRoutes(router, { ...context, calendar: () => context.tableReports?.calendar });
@@ -483,7 +483,9 @@ export function createApp(overrides = {}) {
     const child = children.get(id);
     if (!child) return false;
     children.delete(id);
-    await child.close();
+    // Yalnız bu şirketin örneği kapanıyor (geri yükleme, silme, Ayır): sürmekte olan rapor "Sunucu kapanıyor" değil "şirket verisi
+    // değiştiriliyor" der (lib/report-runner.mjs H1).
+    await child.close({ reason: "company" });
     return true;
   }
   const server = createServer((req, res) => {
@@ -642,7 +644,7 @@ export function createApp(overrides = {}) {
         });
       });
     },
-    async close() {
+    async close({ reason = "shutdown" } = {}) {
       if (closed) return;
       closed = true;
       stopBackups();
@@ -663,7 +665,7 @@ export function createApp(overrides = {}) {
         server.closeAllConnections?.();
       });
       await analysisRunner.close();
-      await reportRunner?.close();
+      await reportRunner?.close({ reason });
       for (const child of children.values()) await child.close();
       db.close();
     },

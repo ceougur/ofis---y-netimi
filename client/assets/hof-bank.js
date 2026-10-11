@@ -1248,41 +1248,63 @@
    * yüklenmiş satır sayısını korur (en çok 200); "Daha Fazla" imleçle sonraki sayfayı ekler, süzgeç yüklenirken yok sayılır. İmleç geçersizse
    * (sunucu yeniden başladı ya da süzgeç değişti) liste baştan açılır. paint: false → yalnız veri (pencere çizimiyle birlikte gösterilir).
    */
-  async function loadMoves(state, { more = false, quiet = false, paint = true } = {}) {
+  // Bağımsız inceleme H4/H5 (11.10.2026): (H4) Daha Fazla'nın yanıtı yalnız isteğin gittiği listeye eklenir — arada arka plan yenilemesi listeyi
+  // değiştirdiyse Daha Fazla yeni listenin sonundan yeniden istenir (HOF.listGate retry; önceden sayfa sınırındaki hareket ekranda görünmüyordu).
+  // (H5) aynı süzgeçteki her yeniden yükleme (kayıttan sonraki pencere yenilemesi dahil) yüklü satır sayısını korur (en çok 200; önceden
+  // + Masraf kaydı Daha Fazla ile açılan satırları 50'ye geri alıyordu); yükleme sürerken tıklanan Daha Fazla yok sayılmaz, aynı süzgeçteki
+  // yükleme bitince çalışır (süzgeç değiştiyse eski listenin uzunluğu yeni süzgece uygulanmaz — HOF.listGate kuralı).
+  const movesSign = state => JSON.stringify([state.planned, state.filter]);
+  async function loadMoves(state, options = {}) {
+    await HOF.listRetry(() => loadMovesOnce(state, options));
+    // Yükleme sürerken tıklanan Daha Fazla: yükleme bittiğinde (yazılmış ya da daha yeni bir yenilemeye yenilmiş) ekrandaki liste tıklandığı
+    // süzgeçteyse şimdi çalışır; başka bir yükleme hâlâ sürüyorsa yine sıraya girer (o bitince).
+    if (!options.more && !options.quiet && state.moreAfter) {
+      const wanted = state.moreAfter;
+      state.moreAfter = "";
+      if (state.sign === wanted && state.hasMore && !state.planned) loadMoves(state, { more: true });
+    }
+  }
+  /** Tek deneme; true → liste arada değişti, aynı istek yeni listeyle yinelenir (HOF.listRetry). */
+  async function loadMovesOnce(state, { more = false, quiet = false, paint = true } = {}) {
     const run = state.gate.start({ quiet, more });
-    if (!run) return;
+    if (!run) {
+      if (more) state.moreAfter = movesSign(state);
+      return false;
+    }
+    const sign = movesSign(state);
     const options = quiet ? { background: true } : {};
     try {
       if (state.planned) {
         const query = new URLSearchParams();
         if (state.filter.account) query.set("account", state.filter.account);
         const data = await api(`/plans${String(query) ? `?${query}` : ""}`, options);
-        if (!run.current()) return;
+        if (!run.current()) return run.retry();
         run.applied();
-        Object.assign(state, { plans: data.plans || [], loaded: true, error: "", account: state.filter.account, hasMore: false });
+        Object.assign(state, { plans: data.plans || [], loaded: true, error: "", account: state.filter.account, hasMore: false, sign });
       } else {
         const query = new URLSearchParams();
         for (const [key, value] of Object.entries(state.filter)) if (String(value ?? "").trim()) query.set(key, String(value).trim());
         if (more) query.set("cursor", state.cursor || "");
-        else if (quiet && state.rows.length > PAGE) query.set("limit", String(Math.min(200, state.rows.length)));
+        else if ((quiet || sign === state.sign) && state.rows.length > PAGE) query.set("limit", String(Math.min(200, state.rows.length)));
         const data = await api(`/movements?${query}`, options);
-        if (!run.current()) return;
+        if (!run.current()) return run.retry();
         run.applied();
-        Object.assign(state, { rows: more ? [...state.rows, ...data.rows] : data.rows, cursor: data.nextCursor || null, hasMore: Boolean(data.hasMore), balance: Boolean(data.balance), loaded: true, error: "", account: data.account || "" });
+        Object.assign(state, { rows: more ? [...state.rows, ...data.rows] : data.rows, cursor: data.nextCursor || null, hasMore: Boolean(data.hasMore), balance: Boolean(data.balance), loaded: true, error: "", account: data.account || "", sign });
       }
     } catch (error) {
-      if (!run.current()) return;
+      if (!run.current()) return false;
       if (more) {
         HOF.toastError(error);
-        if (error?.data?.code === "bank-cursor") return loadMoves(state, { paint });
-        return;
+        if (error?.data?.code === "bank-cursor") await loadMoves(state, { paint });
+        return false;
       }
       if (quiet && !HOF.lostRecord(error)) throw error;
-      Object.assign(state, { rows: [], plans: [], loaded: true, error: error.message, hasMore: false, cursor: null });
+      Object.assign(state, { rows: [], plans: [], loaded: true, error: error.message, hasMore: false, cursor: null, sign: "" });
     } finally {
       run.done();
     }
     if (paint) paintMoves(state);
+    return false;
   }
   function paintMoves(state) {
     const node = root()?.querySelector(`[data-moves="${state.key}"]`);

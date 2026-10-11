@@ -117,9 +117,14 @@
   // "Tümünü Seç" korunur (önceden ilk sayfaya dönüyor, seçim sıfırlanıyordu); yalnız silinen cari seçimden düşer.
   // Arka plan yenilemesi kullanıcının araması/süzgeci/sayfası sürerken onu geçersiz saymaz (sıra numarası artmaz): yazarken
   // gelen yenileme aramanın yanıtını bekletmesin. Yanıt listede görüneni değiştirmiyorsa liste yeniden çizilmez.
-  async function loadList({ more = false, keep = false } = {}) {
+  // 2.1.0 (bağımsız inceleme H4): Daha Fazla sürerken arka plan yenilemesi listeyi değiştirdiyse Daha Fazla'nın yanıtı eklenmez, yeni listenin
+  // sonundan yeniden istenir; Daha Fazla'dan sonra yazılacak arka plan yenilemesi yeni uzunlukla yinelenir (HOF.listGate retry).
+  function loadList(options = {}) {
+    return HOF.listRetry(() => loadListOnce(options));
+  }
+  async function loadListOnce({ more = false, keep = false } = {}) {
     const load = lists.start({ quiet: keep, more });
-    if (!load) return;
+    if (!load) return false;
     if (!keep && !more && view.listError) {
       view.listError = "";
       if (!view.list && view.mode === "list") renderList();
@@ -128,7 +133,7 @@
     const limit = keep && view.list ? Math.min(5000, Math.max(PAGE, view.list.accounts.length)) : PAGE;
     try {
       const data = await HOF.api(`/api/workspace/accounts?${query()}&limit=${limit}&offset=${offset}`, keep ? { background: true } : {});
-      if (!load.current()) return;
+      if (!load.current()) return load.retry();
       load.applied();
       view.listError = "";
       const sign = more ? "" : JSON.stringify(data);
