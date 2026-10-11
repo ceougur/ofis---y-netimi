@@ -1010,7 +1010,10 @@
     if (activityKey === selected.key) return;
     activityKey = selected.key;
     const request = ++activityRequest;
-    box.innerHTML = '<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3></div><p class="hof-empty">Yükleniyor…</p>';
+    // v2.1.0: aynı kaydın geçmişi yeniden yüklenirken (kendi notu, başka bilgisayardaki işlem — canlı olay) eski liste
+    // yeni liste gelene kadar yerinde kalır; kutu bir an boşalıp "Yükleniyor…" yazmaz (titreme). Kayıt değişince boşalır.
+    if (box.dataset.hofKey !== selected.key) box.innerHTML = '<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3></div><p class="hof-empty">Yükleniyor…</p>';
+    box.dataset.hofKey = selected.key;
     try {
       const result = await HOF.api(caseUrl(selected.key, "activity"));
       if (request !== activityRequest) return;
