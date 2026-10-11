@@ -1283,6 +1283,7 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   2.1.0 teslimde elle kabul listesi VERİLMEZ (kanıt kuralı madde 5'ten kullanıcı kararıyla sapma; kullanıcı canlıda kendisi dener). Listeyi
   ekrandan doğrulayan ajan durduruldu (worktree agent-a4337a23…, birleştirilmedi). `docs/2.1.0-ELLE-KABUL.md` depoda yalnız arşiv. Ajanın
   bulduğu tek şüphe kullanıcıya listelendi: Rapor Merkezi Excel çıktısında şirket adı/kodu yok (PDF'te var; v2.0.26'da da aynı; 2.0.17 m2).
+  KARAR (kullanıcı, aynı gün): 2.1.1'e bırakıldı → 2.1.0 teslimde BİLİNEN SINIRLAR'a yazılır (report-center.mjs xlsx ucu; PDF office.name kullanıyor).
   KAPSAM SORUSU (kullanıcı, 11.10.2026: "neredeyse bütün program elden geçti diyebilir miyiz?") → HAYIR: para çekirdeği + banka derin;
   geri kalanı sürüm sürüm değişen yer kadar; satır kapsamı en son 2.0.21'de (%95,2 / dal %79,9 / arayüz %79,8; 52 yüksek riskli testsiz yer).
   KARAR (kullanıcı, aynı gün): kapsam ölçümü 2.1.0 temel banka sürümü CANLIYA ALINDIKTAN SONRA yapılır; kullanıcı yeni sürümü kendisi ve
