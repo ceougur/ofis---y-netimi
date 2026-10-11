@@ -41,6 +41,9 @@ export async function startTestServer(options = {}) {
     // kapı reddederse 500 "gate-equivalence". Üretim yolunu (yalnız süzgeç) sınayan testler { gateVerify: false } verir.
     gateVerify: options.gateVerify ?? true,
     ...(options.scopePartyRows !== undefined ? { scopePartyRows: options.scopePartyRows } : {}),
+    // Büyük banka raporlarının iş parçacığı (11.10.2026 hız düzeltmesi): testlerde hız için kapalı (rapor yerinde, aynı kodla hazırlanır);
+    // iş parçacığı yolunu sınayan testler (test/banka-210-hiz-esdegerlik, banka-210-rapor-is-parcacigi) { reportWorker: true } verir.
+    reportWorker: options.reportWorker ?? false,
   });
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;

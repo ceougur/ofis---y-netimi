@@ -137,7 +137,7 @@ export function footerRow({ headers = [], types = [], rows = [], footer, footerU
   return out;
 }
 
-export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const admin = { id: "", role: "admin" };
@@ -558,6 +558,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       preset: "thisYear",
       permission: "bank.reports",
       standalone: true,
+      // 11.10.2026 hız düzeltmesi: ayrı iş parçacığında, salt okunur bağlantıyla (lib/report-worker.mjs); yalnız veri tabanı ve tek kaynak okur.
+      worker: true,
       build(query) {
         const range = rangeOf(query, "thisYear");
         const group = query.bankGroup || "real";
@@ -628,6 +630,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       preset: "thisYear",
       permission: "bank.reports",
       standalone: true,
+      worker: true,
       build(query) {
         const range = rangeOf(query, "thisYear");
         const move = query.bankMove || "";
@@ -1742,11 +1745,17 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     }
     return query;
   };
-  async function run(user, id, params) {
+  // İş parçacığına giden kullanıcı: yetki kümesi ve kimlik (yapılandırılmış kopya; işlev taşımaz).
+  const workerUser = user => ({ id: user?.id || "", username: user?.username || "", display_name: user?.display_name || "", role: user?.role || "", role_key: user?.role_key ?? null, roleKey: user?.roleKey ?? null, grants_json: user?.grants_json ?? null, ...(user?.perms instanceof Set ? { perms: user.perms } : {}) });
+  // limit (yalnız iş parçacığında): ilk n satır taşınır; toplam sayı ve TOPLAM satırı bütün satırlardan. inline: iş parçacığının kendisi.
+  async function run(user, id, params, { limit = 0, inline = false } = {}) {
     const report = REGISTRY.get(String(id || ""));
     if (!report) throw new HttpError(404, "Rapor bulunamadı.");
     if (!allowed(user, report)) throw new HttpError(403, "Bu rapor için yetkiniz yok.");
     const query = queryOf(params);
+    // 11.10.2026 hız düzeltmesi: büyük banka raporu ayrı iş parçacığında (aynı kod, salt okunur anlık görüntü); ana iş parçacığı bu sürede
+    // öbür isteklere yanıt verir. İşlem içinde (yazımın ortasında) çağrılırsa yerinde hazırlanır.
+    if (report.worker && offload && !inline && !store.inTransaction) return offload({ id: report.id, query, user: workerUser(user), limit, time: clock().toISOString() });
     const result = await report.build(query, user);
     const rows = result.rows.slice(0, MAX_ROWS);
     const footer = footerRow({ headers: result.headers, types: result.types || [], rows, footer: result.footer, footerUniform: result.footerUniform });
@@ -1774,13 +1783,14 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
   });
   router.get("/api/workspace/report-center/:id", async ({ req, res, params, url }) => {
     const user = enter(req);
-    const data = await run(user, params.id, url.searchParams);
+    const data = await run(user, params.id, url.searchParams, { limit: PREVIEW_ROWS });
     ok(res, { ...data, rows: data.rows.slice(0, PREVIEW_ROWS), total: data.total });
   });
   const fileBase = data => `${data.title.replace(/[\\/:*?"<>|]+/g, " ").trim()} ${dayText(today())}`;
   router.get("/api/workspace/report-center/:id/pdf", async ({ req, res, params, url }) => {
     const user = enter(req);
-    const data = await run(user, params.id, url.searchParams);
+    // PDF_ROWS + 1: kırpılıp kırpılmadığı (alt başlık) satır sayısından anlaşılır.
+    const data = await run(user, params.id, url.searchParams, { limit: PDF_ROWS + 1 });
     const clipped = data.rows.length > PDF_ROWS;
     const pdf = tablePdf({
       now: clock(),

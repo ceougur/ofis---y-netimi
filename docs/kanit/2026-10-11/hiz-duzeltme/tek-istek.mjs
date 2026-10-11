@@ -113,11 +113,13 @@ function client(base) {
   };
   return { get: url => request("GET", url), post: (url, body) => request("POST", url, body ?? {}) };
 }
-const unwrap = response => (response.data && typeof response.data === "object" && "ok" in response.data ? response.data.data : response.data);
-const stats = list => {
+function unwrap(response) {
+  return response.data && typeof response.data === "object" && "ok" in response.data ? response.data.data : response.data;
+}
+function stats(list) {
   const sorted = list.slice().sort((a, b) => a - b);
   return { min: Math.round(sorted[0]), p50: Math.round(sorted[Math.floor((sorted.length - 1) / 2)]), max: Math.round(sorted.at(-1)) };
-};
+}
 
 async function main() {
   const kod = path.resolve(opt("kod", ROOT));

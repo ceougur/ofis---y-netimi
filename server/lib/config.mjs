@@ -87,5 +87,8 @@ export function loadConfig(overrides = {}) {
     // toplamıyla (ledger.partyTotals) denetlenir; az olanınki yevmiye maddeleri kurularak (2.0.26 yolu). Testler 0 vererek her cariyi
     // SQL toplamıyla denetletebilir (iki yolun eşdeğerliği).
     scopePartyRows: Number.isSafeInteger(overrides.scopePartyRows) && overrides.scopePartyRows >= 0 ? overrides.scopePartyRows : 2000,
+    // Büyük banka raporları ayrı iş parçacığında (11.10.2026 hız düzeltmesi; lib/report-runner.mjs): üretimde açık. Testler yardımcısı
+    // (test/helpers.mjs) hızı için kapatır; iş parçacığı yolunu sınayan testler açar. Çıktı iki yolda aynıdır (test/banka-210-hiz-esdegerlik).
+    reportWorker: overrides.reportWorker !== false,
   });
 }
