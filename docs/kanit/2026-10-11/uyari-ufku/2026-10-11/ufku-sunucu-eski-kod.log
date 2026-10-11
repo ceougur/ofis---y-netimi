@@ -1,0 +1,111 @@
+TAP version 13
+# Subtest: uyarı ufku: her sayfanın son tarihi yalnız 7 gün kala uyarır
+    # Subtest: çalışıyor mu: 1. sayfadayken açık ve öbür sayfanın son tarihleri aynı kuralla (5, 7 gün ve gecikmiş var; 8 ve 42 gün yok)
+    not ok 1 - çalışıyor mu: 1. sayfadayken açık ve öbür sayfanın son tarihleri aynı kuralla (5, 7 gün ve gecikmiş var; 8 ve 42 gün yok)
+      ---
+      duration_ms: 33.075855
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae060f41b27875c73/test/uyari-ufku-225.test.mjs:51:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        öbür sayfa: aynı 7 gün ufku (42 ve 8 gün uyarmaz)
+        + actual - expected
+        
+          [
+        +   'Öbür 42 Gün',
+            'Öbür 5 Gün',
+            'Öbür 7 Gün',
+        +   'Öbür 8 Gün',
+            'Öbür Geçmiş'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Öbür 5 Gün'
+        1: 'Öbür 7 Gün'
+        2: 'Öbür Geçmiş'
+      actual:
+        0: 'Öbür 42 Gün'
+        1: 'Öbür 5 Gün'
+        2: 'Öbür 7 Gün'
+        3: 'Öbür 8 Gün'
+        4: 'Öbür Geçmiş'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae060f41b27875c73/test/uyari-ufku-225.test.mjs:57:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: nasıl bozarım: 2. sayfaya geçince bu kez 1. sayfanın 42 günlük kaydı uyarmaz (kural iki yönde)
+    not ok 2 - nasıl bozarım: 2. sayfaya geçince bu kez 1. sayfanın 42 günlük kaydı uyarmaz (kural iki yönde)
+      ---
+      duration_ms: 18.357201
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae060f41b27875c73/test/uyari-ufku-225.test.mjs:63:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'Açık 42 Gün',
+            'Açık 5 Gün',
+            'Açık 7 Gün',
+        +   'Açık 8 Gün',
+            'Açık Geçmiş'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Açık 5 Gün'
+        1: 'Açık 7 Gün'
+        2: 'Açık Geçmiş'
+      actual:
+        0: 'Açık 42 Gün'
+        1: 'Açık 5 Gün'
+        2: 'Açık 7 Gün'
+        3: 'Açık 8 Gün'
+        4: 'Açık Geçmiş'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae060f41b27875c73/test/uyari-ufku-225.test.mjs:67:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: nasıl bozarım: saat ilerleyince (35 gün sonra) 42 günlük kayıt 7 gün kala her iki sayfada uyarır
+    ok 3 - nasıl bozarım: saat ilerleyince (35 gün sonra) 42 günlük kayıt 7 gün kala her iki sayfada uyarır
+      ---
+      duration_ms: 17.720028
+      type: 'test'
+      ...
+    # Subtest: değişmez: Vade Takip raporu öbür sayfanın 42 günlük kaydını yine gösterir (ileriye bir yıl)
+    ok 4 - değişmez: Vade Takip raporu öbür sayfanın 42 günlük kaydını yine gösterir (ileriye bir yıl)
+      ---
+      duration_ms: 17.828388
+      type: 'test'
+      ...
+    1..4
+not ok 1 - uyarı ufku: her sayfanın son tarihi yalnız 7 gün kala uyarır
+  ---
+  duration_ms: 500.895201
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae060f41b27875c73/test/uyari-ufku-225.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 887.874421

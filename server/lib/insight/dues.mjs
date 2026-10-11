@@ -485,7 +485,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
 
 // Son tarihi yaklaşan işler (bildirim için): ödeme takvimi dışındaki son tarih kolonları (yenileme, bitiş, teslim,
 // duruşma…) bugünden itibaren `aheadDays` gün içinde.
-export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays = 7, pastDays = 30, exclude = [], forced = null }) {
+export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays = DUE_WINDOW.aheadDays, pastDays = 30, exclude = [], forced = null }) {
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const since = today - pastDays * DAY;
   const until = today + aheadDays * DAY;

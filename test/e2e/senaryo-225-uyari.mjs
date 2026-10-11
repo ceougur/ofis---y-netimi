@@ -10,6 +10,9 @@
 //     "workspace.changed" olayını (v2.0.1 kuralı: "başka oturumun değişikliği bu ekranı ilgilendirmez") hiç iletmiyordu. Başka
 //     bir sayfaya veri/sekme eklenince açık pencerenin takvimi (ve sayfa şeridindeki sayısı) sayfa seçimi değişene ya da 5 dk'lık
 //     yedek yenilemeye kadar eski kalıyordu.
+//  2. UYARI UFKU SAYFAYA GÖRE TUTARSIZ (server/routes/dues.mjs; kullanıcı kararı "A", 11.10.2026): açık sayfanın son tarihleri
+//     7 gün ufukla, öbür sayfalarınki raporların bir yıllık takviminden ufuksuz geliyordu → 1. sayfadayken 2. sayfanın 42 gün
+//     sonraki kaydı "SON GÜNE 42 GÜN" diye uyarıyordu (müşteri ekranı). Beklenen: her sayfada yalnız son 7 gün kala (ve geçmişse).
 //
 // Ön koşullar zorla kurulur ve ayrıca denetlenir (ders 20): bildirim sayısı > 5; özet ekrana çıkmadan sayfa yenilenir; turun özeti
 // verildikten sonra yeni bir son tarih eklenir; izleyen pencere başka sayfada (HOF.datasetKey ≠ değişen sayfa) ve değişiklikten
@@ -211,6 +214,76 @@ try {
   const pillText = await staff.evaluate(key => document.querySelector(`#hof-pages [data-pick="${CSS.escape(key)}"]`)?.textContent || "", p2.key);
   ok(pill, `izleyen penceredeki sayfa şeridinde 2. sayfanın sayısı güncellendi (“${pillText.replace(/\s+/g, " ").trim()}”)`);
   await staff.screenshot({ path: path.join(OUT, "4-izleyen-pencere.png") });
+
+  // ---------------- HATA 2: uyarı ufku sayfaya göre tutarsız (kullanıcı kararı "A", 11.10.2026) ----------------
+  // Müşteri ekranı: 1. sayfadayken 2. sayfadaki "Lisans Bitiş Tarihi" kaydı sağ altta "SON GÜNE 42 GÜN" dedi. Beklenen: her sayfada
+  // kayıt yalnız son 7 gün kala (geçmişse gecikmiş olarak) uyarır. Ayrı, temiz bir sunucuda (bildirim sayısı 5'in altında kalsın,
+  // her bildirim tek başına sağ alta çıksın): iki sayfada aynı üç firma (42 gün, 5 gün, 3 gün geçmiş); pencere 1. sayfada.
+  console.log("# HATA 2: öbür sayfanın 42 gün sonraki son tarihi sağ altta ve zilde");
+  const root2 = mkdtempSync(path.join(tmpdir(), "destekofis-225-ufuk-"));
+  const app2 = createApp({ dataDir: path.join(root2, "data"), backupDir: path.join(root2, "backups"), logLevel: "error", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f26" } });
+  const port2 = (await app2.listen(0, "127.0.0.1")).port;
+  const BASE2 = `http://127.0.0.1:${port2}`;
+  try {
+    const setup = await newWindow();
+    await setup.goto(`${BASE2}/`);
+    await setup.fill("#hof-auth input[name=username]", "admin");
+    await setup.fill("#hof-auth input[name=password]", PASS);
+    await Promise.all([setup.waitForEvent("load"), setup.click('#hof-auth button[type="submit"]')]);
+    await setup.waitForTimeout(1500);
+    const matrix = prefix => [
+      ["Vergi No", "Firma Adı", "Telefon", "Lisans Bitiş Tarihi"],
+      ["202092758", `${prefix} 42 Gün Firması`, "05321112230", dmy(42)],
+      ["202092759", `${prefix} 5 Gün Firması`, "05321112231", dmy(5)],
+      ["202092760", `${prefix} Geçmiş Firması`, "05321112232", dmy(-3)],
+    ];
+    const s1 = await api(setup, "/api/workspace/dataset/stage", { kind: "excel", fileName: "Bu Sayfa.xlsx", sheets: [{ name: "Firmalar", matrix: matrix("Açık") }] });
+    ok((await api(setup, "/api/workspace/dataset/commit", { stageId: s1.data.stageId, mode: "replace" })).status === 200, "kurulum: 1. sayfa (Açık 42 gün / 5 gün / 3 gün geçmiş)");
+    const s2 = await api(setup, "/api/workspace/dataset/stage", { kind: "excel", fileName: "Öbür Sayfa.xlsx", sheets: [{ name: "Firmalar", matrix: matrix("Öbür") }] });
+    ok((await api(setup, "/api/workspace/dataset/commit", { stageId: s2.data.stageId, mode: "session", name: "Öbür Sayfa" })).status === 200, "kurulum: 2. sayfa (Öbür 42 gün / 5 gün / 3 gün geçmiş)");
+    await setup.waitForTimeout(1500);
+    const list2 = (await api(setup, "/api/workspace/sessions")).data.sessions;
+    const q1 = list2.find(item => item.name !== "Öbür Sayfa");
+    ok((await api(setup, "/api/workspace/sessions/select", { key: q1.key })).status === 200, "yönetici 1. sayfayı seçti");
+    await setup.context().close();
+    // Temiz pencere (bildirim kayıtları boş): 1. sayfa açık.
+    const viewer = await newWindow();
+    await viewer.goto(`${BASE2}/`);
+    await viewer.fill("#hof-auth input[name=username]", "admin");
+    await viewer.fill("#hof-auth input[name=password]", PASS);
+    await Promise.all([viewer.waitForEvent("load"), viewer.click('#hof-auth button[type="submit"]')]);
+    await viewer.waitForFunction(() => window.HOF?.dues?.data?.()?.generatedAt, null, { timeout: 30000 }).catch(() => {});
+    ok((await viewer.evaluate(() => window.HOF.datasetKey)) === q1.key, "ön koşul: pencere 1. sayfada");
+    const server2 = await api(viewer, "/api/workspace/dues");
+    const foreignNames = (server2.data.deadlines || []).filter(item => item.foreign).map(item => item.person);
+    ok(foreignNames.includes("Öbür 5 Gün Firması") && foreignNames.includes("Öbür Geçmiş Firması"), `ön koşul: öbür sayfanın kalemleri sunucudan geliyor (${foreignNames.join(", ")})`);
+    // Sağ alt: bildirimler tek tek gelir; her biri kapatılır, 15 sn yeni gelmeyene kadar.
+    const titles = [];
+    for (let step = 0; step < 8; step += 1) {
+      const node = await viewer.waitForSelector("#hof-notices .hof-notice.is-visible", { timeout: 15000 }).catch(() => null);
+      if (!node) break;
+      titles.push(`${await node.$eval(".hof-notice-eyebrow", item => item.textContent).catch(() => "")} · ${await node.$eval(".hof-notice-title", item => item.textContent).catch(() => "")}`);
+      await node.$eval('[data-act="close"]', button => button.click()).catch(() => {});
+      await viewer.waitForSelector("#hof-notices .hof-notice", { state: "detached", timeout: 5000 }).catch(() => {});
+    }
+    console.log(`# sağ altta görülen: ${titles.join(" | ")}`);
+    const bell2 = await viewer.evaluate(() => window.HOF.alerts.list().map(item => `${item.eyebrow} · ${item.title}`));
+    console.log(`# zilde: ${bell2.join(" | ")}`);
+    const has = (list, name) => list.some(text => text.includes(name));
+    ok(!has(titles, "Öbür 42 Gün Firması"), "öbür sayfanın 42 gün sonraki kaydı sağ altta YOK");
+    ok(!has(bell2, "Öbür 42 Gün Firması"), "öbür sayfanın 42 gün sonraki kaydı zilde YOK");
+    ok(!has(titles, "Açık 42 Gün Firması") && !has(bell2, "Açık 42 Gün Firması"), "açık sayfanın 42 gün sonraki kaydı da yok (aynı kural)");
+    ok(!titles.some(text => /SON GÜNE 42 GÜN/.test(text)) && !bell2.some(text => /SON GÜNE 42 GÜN/.test(text)), "“SON GÜNE 42 GÜN” uyarısı hiçbir yerde yok");
+    ok(has(titles, "Öbür 5 Gün Firması") && has(bell2, "Öbür 5 Gün Firması"), "öbür sayfanın 5 gün sonraki kaydı sağ altta ve zilde VAR");
+    ok(has(titles, "Açık 5 Gün Firması") && has(bell2, "Açık 5 Gün Firması"), "açık sayfanın 5 gün sonraki kaydı sağ altta ve zilde VAR");
+    ok(has(bell2, "Öbür Geçmiş Firması") && bell2.some(text => text.includes("Öbür Geçmiş Firması") && /SÜRESİ GEÇTİ · 3 GÜN/.test(text)), "öbür sayfanın süresi geçen kaydı zilde gecikmiş olarak (SÜRESİ GEÇTİ · 3 GÜN)");
+    ok(titles.length === bell2.length, `zildeki her bildirim sağ alta tek başına çıktı (${titles.length}/${bell2.length})`);
+    await viewer.screenshot({ path: path.join(OUT, "2-ufuk.png") });
+    await viewer.context().close();
+  } finally {
+    await app2.close?.().catch?.(() => {});
+    rmSync(root2, { recursive: true, force: true });
+  }
 } catch (error) {
   ok(false, `hata: ${error.stack || error.message}`);
 } finally {
