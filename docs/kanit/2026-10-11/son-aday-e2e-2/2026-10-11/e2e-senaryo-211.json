@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-211",
+  "komut": "npm run test:senaryo-211",
+  "commit": "b6122acad84332773069cdf58e6bb91751afd0c3",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T16:02:15.304Z",
+  "sure_sn": 89.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 57,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/son-aday-e2e-2/2026-10-11/e2e-senaryo-211.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "6fad05fcb681e98d2593e53c964bf39c83628f81a0b43b0e5681591ee4100d0b",
+  "ham_cikti_bayt": 4837
+}
