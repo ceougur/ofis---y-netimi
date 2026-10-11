@@ -97,3 +97,6 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
 - windows.yml #43 (7ec525b, banka eski satır düzeltmeleri dahil): bütün adımlar YEŞİL; güncelleme 41/41 — W4 gerçek Windows'ta İKİNCİ yeşil (ders 18).
 - CI 578 (742c811, Hesapsız metni + kılavuz): bütün işler YEŞİL.
 - e372a00: kanıt commit'ine yanlışlıkla eski hof-workspace.js girdi (ders 23); ca966fb geri aldı. Bu iki commit arasındaki CI sonucu düzeltmeyi kapsamaz.
+- Uzun Doğrulama run 38112396581 (582409c, son aday): 23 işten 22'si YEŞİL — mutabakat Linux tohum 1–3, 5–10 + Windows tohum 1, tek sıralı
+  10.000 işlem (3 sa), güvenilirlik 10.000 × 5 tohum × 2 taban + Windows. KIRMIZI: mutabakat tohum 4 (5.000 işlemde 2 uyuşmazlık: işlem 4655 ve
+  4766 fatura-acid/kasa — program 400 "birim fiyat en çok dört ondalık", model kabul bekliyor). İnceleniyor (ders 6); kapı bu yüzden kırmızı.
