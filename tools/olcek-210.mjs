@@ -688,6 +688,15 @@ async function level(users, info) {
       n += 1;
       const item = { n, inBackup: Boolean(backupWindow && backupWindow.to === null) };
       try {
+        // Banka penceresi kapandıysa (önceki turun hatası/Escape) yeniden açılır; sayısı sonuçta (bankaYenidenAcilis).
+        if (!(await page.$(`${bankWin} [data-bank] .hof-bank-tabs`))) {
+          item.yenidenAcildi = true;
+          for (let i = 0; i < 4 && (await page.$(MODAL)); i += 1) await closeTop(page);
+          await clickRetry(page, '#hof-sidecard [data-action="bank"]', "Banka menüsü");
+          await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 60000 });
+          await clickRetry(page, `${bankWin} .hof-bank-tabs [data-tab="movements"]`, "Hareketler sekmesi");
+          await page.waitForSelector(rowsSel, { timeout: 60000 });
+        }
         // Hesap süzgeci. Seçicinin hesap seçenekleri Hesaplar listesinden gelir (view.list); seçenek görünene dek geçen süre ayrıca ölçülür,
         // süzgeç başarısız olsa da yinelemenin kalanı (Kaydet → listede, başkasının kaydı) koşar. Başarısızlıkta seçicinin durumu kaydedilir.
         const account = n % 3 === 0 ? "" : demand[n % 2].id;
@@ -743,7 +752,10 @@ async function level(users, info) {
           item.kaydetHesap = bank.id;
           item.kaydetTutar = amount;
           item.kaydetIz = own;
-          if (await page.$("form.hof-bank-voucher")) await closeTop(page);
+          // Form kayıttan sonra kendiliğinden kapanır; kapanmadıysa (5 sn) Escape. Önceden "form var mı?" denetimi ile Escape arasında form
+          // kapanınca Escape Banka penceresini kapatıyor, sonraki turlar "seçici yok" ile düşüyordu (ölçek araç sınırı, 10/20 kullanıcıda 1 tur).
+          const formOpen = await page.waitForSelector("form.hof-bank-voucher", { state: "detached", timeout: 5000 }).then(() => false).catch(() => true);
+          if (formOpen && (await page.$("form.hof-bank-voucher"))) await closeTop(page);
         } else {
           // Başka personelin (API) kaydı açık listede görünme süresi.
           await page.selectOption(`${bankWin} [data-mv="account"]`, "");
@@ -997,6 +1009,8 @@ async function level(users, info) {
     suzgecDurumlari: screen.banka.filter(item => item.suzgecDurum).slice(0, 3).map(item => item.suzgecDurum),
     kaydetListede: stat(field(screen.banka, "kaydetListedeMs")),
     kaydetGorunmedi: screen.banka.filter(item => item.kaydetListedeMs === -1).length,
+    bankaTur: screen.banka.length,
+    bankaYenidenAcilis: screen.banka.filter(item => item.yenidenAcildi).length,
     // Ekrandan kaydedilen her masraf: iz, tutar (kuruş), veri tabanında kaç kez (1 olmalı), listede görünme süresi.
     kaydedilenler: screen.banka.filter(item => item.kaydetIz).map(item => ({ iz: item.kaydetIz, kurus: item.kaydetTutar, veritabaninda: item.veritabaninda, listedeMs: item.kaydetListedeMs })),
     baskasininKaydiListede: stat(field(screen.banka, "baskasininKaydiMs")),
