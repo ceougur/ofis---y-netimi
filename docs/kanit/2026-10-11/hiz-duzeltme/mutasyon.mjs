@@ -38,6 +38,7 @@ const MUTATIONS = [
   { ad: "M13 iş parçacığı: ön izleme sınırı TOPLAM'dan önce uygulanır (toplam sayı ve TOPLAM ilk n satırdan)", file: RW, find: "data = await center.run(user, id, new URLSearchParams(query), { inline: true });", replace: "data = await center.run(user, id, new URLSearchParams(query), { inline: true });\n    if (limit) data = { ...data, total: Math.min(data.total, limit) };", tests: TESTS_WORKER },
   { ad: "M14 iş parçacığı: sunucunun (sahte) saati yerine gerçek saat", file: RW, find: "now: createClock({ time, fixed: true })", replace: "now: createClock({})", tests: TESTS_WORKER },
   { ad: "M15 iş parçacığı: rapor hatası durum kodunu kaybeder (her hata 500)", file: RR, find: "finish(new HttpError(message?.status || 500,", replace: "finish(new HttpError(500,", tests: TESTS_WORKER },
+  { ad: "M16 Kasa eksi bakiye denetimi: yolun bakiyesi iki kez okunur (İ10 gerilemesi)", file: "server/routes/cash.mjs", find: "const totals = lines.wayBalance ? lines.wayBalance(key, day || \"9999-12-31\") :", replace: "const totals = lines.wayBalance ? (lines.wayBalance(key, day || \"9999-12-31\"), lines.wayBalance(key, day || \"9999-12-31\")) :", tests: ["test/inceleme-226-2.test.mjs"] },
 ];
 
 const results = [];
