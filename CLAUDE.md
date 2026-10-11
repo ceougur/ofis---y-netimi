@@ -1266,6 +1266,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   listesi (her aramada bütün cariler + toplamlar). 2.1.0'ın yeni banka raporları getirdi. KARAR (plana uy: bütçe kabul ölçütü): teslimden
   ÖNCE düzeltilir (ajan, worktree): rapor toplamları SQL'de, dönem öncesi devir toplamla, yalnız dönem satırları; eşdeğerlik testi (eski ↔
   yeni çıktı birebir) + aynı veriyle önce/sonra ölçüm. Kullanıcıya listelendi.
+  KARAR (kullanıcı, 11.10.2026: "benim müşteri portföyüme göre sonraki ölçümler yeterli"): ajanın SONRA ölçümü (1 kişi tüm istekler p50 0,09
+  sn; 10 kişi Cari arama p95 1,1 sn, Banka Hareketleri p95 0,95 sn, olay döngüsü en çok 1,3 sn; 20 kişi en uzun istek 15,7 sn, rapor açan p50
+  7,5 sn; doğruluk her düzeyde tamam) YETERLİ → ek hız işi YOK. Bütçeyi az aşan kalanlar (10 kişide arama p95 1,1 sn / döngü 1,3 sn, 20 kişide
+  rapor bekleyişi, kart/masraf raporunun iş parçacığı payı) teslimde BİLİNEN SINIRLAR'a yazılır. Doğrulama (eşdeğerlik, mutasyon, ana oturum
+  ölçümü, ekran hataları, CI, e2e) aynen yapılır — karar yalnız hız yeterliliği içindir.
   (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
