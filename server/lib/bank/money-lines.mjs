@@ -79,6 +79,10 @@ export const MONEY_SOURCES = Object.freeze([
       created: "fe.created_at", updated: "fe.updated_at", actor: "fe.created_by", eventId: "l.event_id", valueDate: "fe.value_date", fxMinor: "l.fx_minor", currency: "l.currency",
       // baseType: ters kaydın asıl işlem türü (raporlarda açılış/Devir Kapanışı zincirinin ters kaydı da düzeltme sayılır).
       extra: "json_object('description', fe.description, 'eventType', fe.type, 'eventNo', fe.no, 'baseType', CASE WHEN fe.type = 'reversal' THEN (SELECT o.type FROM fin_events o WHERE o.id = fe.reversal_of) ELSE fe.type END)",
+      // Sınıflamanın başlık girdileri (classifiedTotals; satırın kendi işlem başlığından, ikinci kez okunmadan): asıl işlem türü (satır yolundaki
+      // COALESCE(fo.type, fe.type, '') ile aynı) ve gönderen hesap (bank_ref).
+      headBase: "COALESCE(CASE WHEN fe.type = 'reversal' THEN COALESCE((SELECT o.type FROM fin_events o WHERE o.id = fe.reversal_of), fe.type) ELSE fe.type END, '')",
+      headBank: "fe.bank_ref",
     },
   },
 ]);
@@ -223,7 +227,8 @@ export function createMoneyLines(store, { verify = false } = {}) {
 
   // Kaynağın SELECT'i. light: yalnız özet kolonları; filter: kaynağa itilen koşullar (:after, :events, :ids_<tablo>).
   // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu satırlar ({ tablo: kimlikler }); Banka Fişi satırları events ile (verilmezse yok).
-  function select(source, { light, after, events, ids, ref = null, lean = false, unbound = false, since = "", until = "" }) {
+  // refs (11.10.2026 hız düzeltmesi): yalnız bu hesapların satırları (hesap listesi; '' hiçbir zaman). before: yalnız bu tarihten ÖNCEKİ satırlar.
+  function select(source, { light, after, events, ids, ref = null, refs = null, lean = false, unbound = false, since = "", until = "", before = "", ways = null, heads = false }) {
     const { has, tables } = load();
     const r = source.read;
     const a = r.alias;
@@ -240,6 +245,8 @@ export function createMoneyLines(store, { verify = false } = {}) {
       `${r.method || `${a}.method`} AS method`, `${r.ref || col("fin_ref", "''")} AS ref`, `${r.party} AS party_id`, `${r.internal} AS internal`,
       `${r.wayHint || "NULL"} AS way_hint`, `${r.created || `${a}.created_at`} AS created_at`,
     ];
+    // heads (yalnız classifiedTotals): sınıflamanın başlık girdileri; modül satırında boş (sınıflama başlığa yalnız fiş satırında bakar).
+    if (heads && !lean) parts.push(`${r.headBase || "''"} AS head_base`, `${r.headBank || "''"} AS head_bank`);
     if (!light && !lean) {
       parts.push(
         `${r.updated || `${a}.updated_at`} AS updated_at`, `${r.actor || `${a}.created_by`} AS actor_id`, `${r.extra} AS extra`,
@@ -248,15 +255,23 @@ export function createMoneyLines(store, { verify = false } = {}) {
         `${r.currency || (r.fx && has(source.table, "fx_currency") ? `CASE WHEN ${a}.fx_currency <> '' THEN ${a}.fx_currency ELSE 'TRY' END` : "'TRY'")} AS currency`,
       );
     }
-    const where = [conditionSql(source, a)];
-    // Süzgeçli okumada (ids/events: kapının dokunulan satırları) satır tablosu dış döngüdür: istatistiksiz planlayıcı görünürlük JOIN'inin
-    // indeksini (accounts.deleted_at gibi) seçip bütün tabloyu dolaşıyordu (100.000 satırda ~100 ms/kaynak). CROSS JOIN yalnız sırayı
-    // belirler; sonuç aynı iç birleşimdir.
+    // Para satırı koşulu (moneyWhere ile aynı ifade) + aynı anlamdaki dizinlenebilir eşitlik (11.10.2026 hız düzeltmesi): tek değerli koşulda
+    // boşluk değeri izinli değerlerden değilse COALESCE(k, boş) IN (d…) ≡ k IN (d…) (NULL iki yazımda da düşer). COALESCE'li yazım dizini
+    // kullandırmıyordu: fatura ve banka kaynakları (account_entries source 'invoice' / 'bank') her okumada bütün cari hareketlerini dolaşıyordu
+    // (100.000 satırda kaynak başına ~100 ms → ~0,2 ms, idx_account_entries_source). Kapının koşulu (moneyWhere) değişmez. Yalnız geniş okumada
+    // (kimlik, olay ve hesap süzgeci yokken): süzgeçli okumada istatistiksiz planlayıcı bu dizini kimlik/hesap dizinine yeğleyebilirdi.
     const byRef = ref !== null && ref !== undefined && String(ref) !== "";
-    const from = ids || events || byRef ? r.from.replace(/(^|\s)JOIN\s/g, "$1CROSS JOIN ") : r.from;
+    const narrow = Boolean(ids || events || byRef || refs);
+    const where = [conditionSql(source, a), ...(narrow ? [] : source.when.filter(([, values, empty]) => !values.includes(empty)).map(([column, values]) => `${a}.${column} IN (${values.map(quote).join(", ")})`))];
+    // Satır tablosu her okumada dış döngüdür: istatistiksiz planlayıcı görünürlük JOIN'inin indeksini (accounts.deleted_at gibi) seçip satırları
+    // carinin dizininden tek tek okuyordu (kapının ids/events okumasında 100.000 satırda ~100 ms/kaynak; 11.10.2026 ölçeği: bütün satırları
+    // okuyan rapor ve özetlerde de aynı — cari hareketleri tablo taramasıyla ~40 ms, dizinle ~100 ms). CROSS JOIN yalnız sırayı belirler; sonuç
+    // aynı iç birleşimdir (satır sırası her okumada dıştaki ORDER BY ya da toplamla belirlenir).
+    const from = r.from.replace(/(^|\s)JOIN\s/g, "$1CROSS JOIN ");
     if (after) where.push(`${date} > :after`);
     if (since) where.push(`${date} >= :since`);
     if (until) where.push(`${date} <= :until`);
+    if (before) where.push(`${date} < :before`);
     // GG2 (Hesabı Atanmamış Eski Hareketler, 1.000.000 hareket ölçümü): yalnız hesabı atanmamış havale/POS satırları. Koşul DÜZ metinle yazılır
     // (kısmi indeks idx_<tablo>_unbound … WHERE fin_ref = '' AND method IN ('bank', 'card') yalnız aynı metinle seçilir); fiş satırında bağsız
     // para satırı (Devir Kapanışı, Eski Bakiye Aktarımı) idx_bank_lines_ref ile. Önceden bütün para satırları okunup dışarıda süzülüyordu.
@@ -265,6 +280,16 @@ export function createMoneyLines(store, { verify = false } = {}) {
       else if (has(source.table, "fin_ref")) where.push(`${a}.fin_ref = '' AND ${a}.method IN ('bank', 'card')`);
       else where.push(`${a}.method IN ('bank', 'card')`);
     }
+    // Yol süzgecinin gerekli koşulu kaynağa itilir (11.10.2026 hız düzeltmesi; yol yine dışarıda, WAY_SQL ile süzülür — sonuç aynı): modül
+    // satırında yol yöntemden (cash → cash; bank → bank; card → card ya da ccard), fiş satırında rolden (bank, pos → card, card → ccard, loan).
+    // Önceden "yalnız banka" okuması da bütün nakit satırlarını birleştirip dışarıda atıyordu. Tanınmayan yol (unknown) istenirse itilmez.
+    if (ways && !ways.includes("unknown")) {
+      const wanted = source.table === "bank_lines"
+        ? [...new Set(ways.flatMap(way => ({ bank: ["bank"], card: ["pos"], ccard: ["card"], loan: ["loan"] })[way] || []))]
+        : [...new Set(ways.flatMap(way => ({ cash: ["cash"], bank: ["bank"], card: ["card"], ccard: ["card"] })[way] || []))];
+      const column = source.table === "bank_lines" ? "l.role" : r.method || `${a}.method`;
+      where.push(wanted.length ? `${column} IN (${wanted.map(quote).join(", ")})` : "0");
+    }
     // Hesap süzgeci kaynağa itilir (v2.1.0 Aşama 4): satır tablosunun (fin_ref, date) / bank_lines (ref, event_id) indeksiyle okunur; önceden
     // bütün para satırları okunup dışarıda süzülüyordu (Hesap Detayı, Hareketler'in bakiyesi).
     // Kısmi indeks (idx_<tablo>_fin_ref … WHERE fin_ref <> '') parametreli eşitlikten çıkarılamaz: "<> ''" ayrıca yazılır.
@@ -272,6 +297,8 @@ export function createMoneyLines(store, { verify = false } = {}) {
     // planlayıcı aksi hâlde hesabın indeksini seçip hesabın bütün satırlarını dolaşıyordu (1.000.000 satırlık hesapta sayfa başına ~650 ms).
     const refColumn = r.ref || col("fin_ref", "''");
     if (ref !== null && ref !== undefined) where.push(ids || events ? `+${refColumn} = :ref` : byRef ? `${refColumn} = :ref AND ${refColumn} <> ''` : `${refColumn} = :ref`);
+    // Hesap listesi (Banka Hareket Raporu "Gerçek Banka (Tüm Hesaplar)"): aynı dizinle; boş liste hiçbir satır.
+    if (refs) where.push(refs.length ? `${refColumn} IN (SELECT value FROM json_each(:refs)) AND ${refColumn} <> ''` : "0");
     if (ids) {
       if (source.table === "bank_lines") where.push(events ? `${eventId} IN (SELECT value FROM json_each(:events))` : "0");
       else where.push(ids[source.table]?.length ? `${a}.id IN (SELECT value FROM json_each(:ids_${source.table}))` : "0");
@@ -293,13 +320,16 @@ export function createMoneyLines(store, { verify = false } = {}) {
     const needed = source => !options.ids || (source.table === "bank_lines" ? Boolean(options.events) : Boolean(options.ids[source.table]?.length));
     const chosen = MONEY_SOURCES.filter(needed);
     const union = (chosen.length ? chosen : MONEY_SOURCES.slice(0, 1)).map(source => select(source, options)).filter(Boolean).join("\n UNION ALL ");
-    return `SELECT u.*, ${WAY_SQL(bankAccounts)} AS way FROM (${union}) u${bankAccounts ? " LEFT JOIN bank_accounts ba ON u.ref <> '' AND ba.id = u.ref" : ""}`;
+    // heads (classifiedTotals): hesabın türü de (yolu belirleyen aynı birleşimden; sınıflamanın gider payı koşulu).
+    return `SELECT u.*, ${WAY_SQL(bankAccounts)} AS way${options.heads ? `, ${bankAccounts ? "COALESCE(ba.kind, '')" : "''"} AS ref_kind` : ""} FROM (${union}) u${bankAccounts ? " LEFT JOIN bank_accounts ba ON u.ref <> '' AND ba.id = u.ref" : ""}`;
   }
-  const params = ({ after, events, ids, ref = null, since = "", until = "" }) => ({
+  const params = ({ after, events, ids, ref = null, refs = null, since = "", until = "", before = "" }) => ({
     ...(after ? { after } : {}),
     ...(since ? { since } : {}),
     ...(until ? { until } : {}),
+    ...(before ? { before } : {}),
     ...(ref !== null && ref !== undefined ? { ref: String(ref) } : {}),
+    ...(refs?.length ? { refs: JSON.stringify([...refs].map(String)) } : {}),
     ...(events ? { events: JSON.stringify([...events]) } : {}),
     ...(ids ? Object.fromEntries(Object.entries(ids).filter(([, list]) => list?.length).map(([table, list]) => [`ids_${table}`, JSON.stringify([...list])])) : {}),
   });
@@ -309,10 +339,10 @@ export function createMoneyLines(store, { verify = false } = {}) {
    * Ham satırlar (yol, hesap, iç hareket, İşlem No); tarih ve giriş sırasıyla. ways: yol listesi (null = hepsi); after: tarihten sonra; events:
    * olay kimlikleri; ref: yalnız bu hesabın (ya da POS'un) satırları (v2.1.0 Aşama 3: Hesap Detayı'ndaki son hareketler).
    */
-  function lines({ ways = null, after = "", events = null, ids = null, light = false, ref = null, unbound = false, since = "", until = "" } = {}) {
+  function lines({ ways = null, after = "", events = null, ids = null, light = false, ref = null, refs = null, unbound = false, since = "", until = "", before = "" } = {}) {
     const filters = [wayFilter(ways)].filter(Boolean);
-    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids, ref, unbound, since, until })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
-    return store.all(sql, params({ after, events, ids, ref, since, until }));
+    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids, ref, refs, unbound, since, until, before, ways })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
+    return store.all(sql, params({ after, events, ids, ref, refs, since, until, before }));
   }
   /** Kasa'nın satır nesneleri (2.0.26 ile aynı biçim). */
   const rows = (options = {}) => lines({ ...options, light: false }).map(shape);
@@ -502,6 +532,17 @@ export function createMoneyLines(store, { verify = false } = {}) {
   }
 
   /**
+   * Tek yolun bakiyesi (TL): { all (bütün tarihler), at (day dahil o güne kadar) } — summary(day)'in byMethod[yol] ve byMethodAt[yol] değerleriyle
+   * aynı toplam, yalnız o yolun satırlarından (yol kaynağa itilir). Kasa'nın eksi bakiye denetimi (her nakit çıkışında) önceden bütün para
+   * satırlarının tam özetini kuruyordu (11.10.2026 ölçeği: 100.000 satırda yazım başına ~0,5–0,8 sn).
+   */
+  function wayBalance(way, day) {
+    const signed = "CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END";
+    const row = store.get(`SELECT COALESCE(SUM(${signed}), 0) AS allCents, COALESCE(SUM(CASE WHEN w.date <= :day THEN (${signed}) END), 0) AS atCents FROM (${waySql({ light: true, ways: [way] })}) w WHERE w.way = :way`, { day, way });
+    return { all: tl(row.allCents), at: tl(row.atCents) };
+  }
+
+  /**
    * Banka görünümlerinin Bugün ve Bu Ay giriş-çıkışı (§3.4 "Bugün ve Bu Ay toplamlarında iç hareket", §8.4 K10; Aşama 9), kuruş:
    *   { today | month: { inMinor, outMinor, transferInMinor, transferOutMinor } }.
    * Yalnız Gerçek Banka (hesaba atanmış 102; hesabı atanmamış eski hareketler ve kart/kredi borcu girmez). Giriş/Çıkış dış hareketlerdir
@@ -555,43 +596,107 @@ export function createMoneyLines(store, { verify = false } = {}) {
    *     ücreti ve BSMV'si, kredi faizi) gönderen hesabın (işlem başlığındaki bank_ref; kart/kredi hesabı değil) satırında dış Çıkış'tır (ters
    *     kaydında dış Giriş), Transfer'den düşülür;
    *   - geri kalan her şey dış Giriş/Çıkış.
-   * Dönüş: satır nesneleri (lines'ın kolonları) + { event_type, event_no, base_type, ext_in, ext_out, tr_in, tr_out, adjust } (kuruş; adjust işaretli).
-   * ways / ref / until: lines ile aynı süzgeçler. Dört pay toplamı her satırda satırın işaretli tutarına eşittir (bakiye değişmez).
+   * TEK TANIM (11.10.2026 hız düzeltmesi): sınıflama SQL'dedir (CLASS_SQL); satır yolu (classified) ve toplam yolu (classifiedTotals: Banka Bakiye
+   * Raporu) aynı ifadeyi kullanır. Önceden satırlar JS'te sınıflanıyor, rapor bütün satırları her açılışta JS nesnesine çeviriyordu (100.000
+   * satırda ~2 sn; SQLite eşzamanlı olduğundan o sürede bütün istekler bekliyordu). Gider payı (fee_cents) olay başına önceden toplanmış tablodan
+   * (satır başına ilişkili alt sorgu yerine; sonuç aynı).
+   * Dönüş: satır nesneleri (lines'ın kolonları) + { event_type, event_no, base_type, fee_cents, ext_in, ext_out, tr_in, tr_out, adjust } (kuruş;
+   * adjust işaretli). ways / ref / refs / unbound / since / until: lines ile aynı süzgeçler (unbound: yalnız hesabı atanmamış satırlar). Dört pay
+   * toplamı her satırda satırın işaretli tutarına eşittir (bakiye değişmez).
    */
-  function classified({ ways = null, ref = null, until = "", light = false } = {}) {
+  const CLASS_KEYS = Object.freeze(["ext_in", "ext_out", "tr_in", "tr_out", "adjust"]);
+  // Sınıflama — TEK TANIM. x: girdi ifadeleri { src, kind, cents, internal, base (asıl işlem türü), fee (gider payı) }; dönüş: CLASS_KEYS
+  // ifadeleri. Satır yolu (classified) bunları sınıflanmış satırın kolonlarıyla, toplam yolu (classifiedTotals) satır başına aynı ifadeyi
+  // toplayarak kullanır.
+  function classColumns(x) {
+    const into = `COALESCE(${x.kind}, '') = 'in'`;
+    const cents = `COALESCE(${x.cents}, 0)`;
+    const fee = `COALESCE(${x.fee}, 0)`;
+    const internal = `COALESCE(${x.internal}, 0) = 1`;
+    const adjust = `(${x.src} = 9 AND ${x.base} IN (${ADJUST_SQL}))`;
+    // İç hareketin dış payı: gider payı satırın yönündeyse (gönderende çıkış, ters kaydında giriş) dış harekettir; tutarı aşamaz.
+    const feeIn = `CASE WHEN ${fee} < 0 THEN MIN(-${fee}, ${cents}) ELSE 0 END`;
+    const feeOut = `CASE WHEN ${fee} > 0 THEN MIN(${fee}, ${cents}) ELSE 0 END`;
+    return {
+      ext_in: `CASE WHEN ${adjust} OR NOT (${into}) THEN 0 WHEN ${internal} THEN ${feeIn} ELSE ${cents} END`,
+      ext_out: `CASE WHEN ${adjust} OR ${into} THEN 0 WHEN ${internal} THEN ${feeOut} ELSE ${cents} END`,
+      tr_in: `CASE WHEN ${adjust} OR NOT (${into}) OR NOT (${internal}) THEN 0 ELSE ${cents} - ${feeIn} END`,
+      tr_out: `CASE WHEN ${adjust} OR ${into} OR NOT (${internal}) THEN 0 ELSE ${cents} - ${feeOut} END`,
+      adjust: `CASE WHEN ${adjust} THEN (CASE WHEN ${into} THEN ${cents} ELSE -${cents} END) ELSE 0 END`,
+    };
+  }
+  // Gider payı — TEK TANIM: iç hareketin fiş satırı, işlem başlığındaki gönderen hesabın (bank_ref) satırı, hesap kart/kredi değil →
+  // işlemin gider satırlarının (expense, tax) işaretli toplamı (olay başına önceden toplanmış: fx). bank / kind: başlığın bank_ref'i ve hesabın türü.
+  const feeSql = ({ bank, kind }) => `CASE WHEN w.src = 9 AND w.internal = 1 AND w.ref <> '' AND w.ref = ${bank} AND COALESCE(${kind}, '') NOT IN ('card', 'loan') THEN COALESCE(fx.fee, 0) ELSE 0 END`;
+  const feeJoin = on => `LEFT JOIN (SELECT x.event_id AS event_id, SUM(CASE WHEN x.side = 'D' THEN x.try_minor ELSE -x.try_minor END) AS fee FROM bank_lines x WHERE x.role IN ('expense', 'tax') GROUP BY x.event_id) fx ON ${on}`;
+  // Sınıflanacak satırlar (c): yol süzgeçli satırlar + işlem türü, İşlem No, asıl işlem türü (ters kayıtta), gider payı.
+  function classified({ ways = null, ref = null, refs = null, unbound = false, since = "", until = "", light = false } = {}) {
     const { bankAccounts, tables } = load();
     const events = tables.has("fin_events");
-    const filters = [wayFilter(ways)].filter(Boolean);
-    const sql = `SELECT w.*, ${events ? "COALESCE(fe.type, '')" : "''"} AS event_type, ${events ? "COALESCE(fe.no, '')" : "''"} AS event_no,
-        ${events ? "COALESCE(fo.type, fe.type, '')" : "''"} AS base_type,
-        ${events && bankAccounts ? `CASE WHEN w.src = 9 AND w.internal = 1 AND w.ref <> '' AND w.ref = fe.bank_ref AND COALESCE(bk.kind, '') NOT IN ('card', 'loan')
-          THEN COALESCE((SELECT SUM(CASE WHEN x.side = 'D' THEN x.try_minor ELSE -x.try_minor END) FROM bank_lines x WHERE x.event_id = fe.id AND x.role IN ('expense', 'tax')), 0) ELSE 0 END` : "0"} AS fee_cents
-      FROM (${waySql({ light, ref, until })}) w
+    const fee = events && bankAccounts;
+    const filters = [wayFilter(ways), unbound ? "w.ref = ''" : ""].filter(Boolean);
+    const columns = classColumns({ src: "c.src", kind: "c.kind", cents: "c.cents", internal: "c.internal", base: "c.base_type", fee: "c.fee_cents" });
+    const sql = `SELECT c.*, ${CLASS_KEYS.map(key => `${columns[key]} AS ${key}`).join(", ")} FROM (SELECT w.*, ${events ? "COALESCE(fe.type, '')" : "''"} AS event_type, ${events ? "COALESCE(fe.no, '')" : "''"} AS event_no,
+        ${events ? "COALESCE(fo.type, fe.type, '')" : "''"} AS base_type, ${fee ? feeSql({ bank: "fe.bank_ref", kind: "bk.kind" }) : "0"} AS fee_cents
+      FROM (${waySql({ light, ref, refs, unbound, since, until, ways })}) w
       ${events ? "LEFT JOIN fin_events fe ON w.event_id <> '' AND fe.id = w.event_id LEFT JOIN fin_events fo ON fe.type = 'reversal' AND fo.id = fe.reversal_of" : ""}
-      ${events && bankAccounts ? "LEFT JOIN bank_accounts bk ON w.ref <> '' AND bk.id = w.ref" : ""}
+      ${fee ? "LEFT JOIN bank_accounts bk ON w.ref <> '' AND bk.id = w.ref" : ""}
+      ${fee ? feeJoin("w.src = 9 AND fx.event_id = fe.id") : ""}
+      ${filters.length ? `WHERE ${filters.join(" AND ")}` : ""}) c
+      ORDER BY c.date, c.created_at, c.rank, c.rid`;
+    return store.all(sql, params({ ref, refs, since, until }));
+  }
+  const KEY_SQL = alias => `CASE WHEN ${alias}.ref <> '' THEN ${alias}.ref ELSE 'u:' || ${alias}.way END`;
+  const SIGNED_SQL = alias => `CASE WHEN ${alias}.kind = 'in' THEN ${alias}.cents ELSE -${alias}.cents END`;
+  /**
+   * Banka Bakiye Raporu'nun toplam yolu: classified ile AYNI satırlar ve AYNI sınıflama (classColumns, feeSql), anahtar bazında (hesap; hesabı
+   * atanmamışta "u:" + yol) toplam — satırlar JS'e çekilmez. Sınıflamanın başlık girdileri satırın kendi kaynağından (heads: asıl işlem türü,
+   * gönderen hesap; hesabın türü yolu belirleyen birleşimden) — işlem başlığı ikinci kez okunmaz. from: dönem başı (öncesi opening'e girer,
+   * paylara girmez; "" = dönem başı yok). day verilirse hesabı atanmamış ve day'den SONRAKİ satırlar ayrı grupta (ahead = 1; eski sürümden kalan
+   * ileri tarihli hareket). Dönüş: [{ key, ahead, lines, closing, opening, ext_in, ext_out, tr_in, tr_out, adjust, first }] (kuruş).
+   */
+  function classifiedTotals({ ways = null, ref = null, refs = null, unbound = false, until = "", from = "", day = "" } = {}) {
+    const { bankAccounts, tables } = load();
+    const fee = tables.has("fin_events") && bankAccounts;
+    const filters = [wayFilter(ways), unbound ? "w.ref = ''" : ""].filter(Boolean);
+    const columns = classColumns({ src: "w.src", kind: "w.kind", cents: "w.cents", internal: "w.internal", base: "w.head_base", fee: fee ? feeSql({ bank: "w.head_bank", kind: "w.ref_kind" }) : "0" });
+    const pre = "(:pfrom <> '' AND w.date < :pfrom)";
+    const sql = `SELECT ${KEY_SQL("w")} AS key, CASE WHEN :pday <> '' AND w.ref = '' AND w.date > :pday THEN 1 ELSE 0 END AS ahead, COUNT(*) AS lines,
+        COALESCE(SUM(${SIGNED_SQL("w")}), 0) AS closing, COALESCE(SUM(CASE WHEN ${pre} THEN ${SIGNED_SQL("w")} ELSE 0 END), 0) AS opening,
+        ${CLASS_KEYS.map(key => `COALESCE(SUM(CASE WHEN ${pre} THEN 0 ELSE ${columns[key]} END), 0) AS ${key}`).join(", ")}, MIN(w.date) AS first
+      FROM (${waySql({ light: true, heads: true, ref, refs, unbound, until, ways })}) w
+      ${fee ? feeJoin("w.src = 9 AND fx.event_id = w.event_id") : ""}
       ${filters.length ? `WHERE ${filters.join(" AND ")}` : ""}
-      ORDER BY w.date, w.created_at, w.rank, w.rid`;
-    const ADJUST = new Set(["opening", "carry_close", "legacy_reclass"]);
-    return store.all(sql, params({ ref, until })).map(line => {
-      const cents = Number(line.cents) || 0;
-      const into = line.kind === "in";
-      const out = { ...line, ext_in: 0, ext_out: 0, tr_in: 0, tr_out: 0, adjust: 0 };
-      if (Number(line.src) === 9 && ADJUST.has(line.base_type)) {
-        out.adjust = into ? cents : -cents;
-        return out;
+      GROUP BY 1, 2 ORDER BY 1, 2`;
+    return store.all(sql, { ...params({ ref, refs, until }), pfrom: from || "", pday: day || "" });
+  }
+  /**
+   * Anahtar bazında (classifiedTotals'taki anahtar) satır toplamı, ilk görünme sırasıyla — Banka Hareket Raporu'nun dönem başı devri (before: dönem
+   * başı): lines ile aynı satırlar; [{ key, cents (işaretli toplam), count }]; lines'ın sırasında (tarih, giriş zamanı, kaynak, satır) ilk satırı
+   * önce gelen anahtar önce. Satırlar JS'e çekilmez; ilk satırı aynı güne düşen anahtarlar o günün satırlarıyla sıralanır.
+   */
+  function keyTotals({ ways = null, ref = null, refs = null, unbound = false, before = "", until = "" } = {}) {
+    const options = { light: true, ways, ref, refs, unbound, before, until };
+    const filters = [wayFilter(ways), unbound ? "w.ref = ''" : ""].filter(Boolean);
+    const groups = store.all(`SELECT ${KEY_SQL("w")} AS key, COALESCE(SUM(${SIGNED_SQL("w")}), 0) AS cents, COUNT(*) AS count, MIN(w.date) AS first FROM (${waySql(options)}) w${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} GROUP BY 1`, params(options));
+    const byDay = new Map();
+    for (const group of groups) byDay.set(group.first, [...(byDay.get(group.first) || []), group.key]);
+    // rank: yalnız aynı gün başlayan anahtarlar, o günün satır sırasındaki ilk yerleriyle (anahtarın sonraki günlerdeki satırları sayılmaz).
+    const rank = new Map();
+    for (const [day, keys] of byDay) {
+      if (keys.length < 2) continue;
+      const tied = new Set(keys);
+      let index = 0;
+      for (const line of lines({ ways, ref, refs, unbound, since: day, until: day, light: true })) {
+        if (unbound && line.ref) continue;
+        const key = line.ref || `u:${line.way}`;
+        if (tied.has(key) && !rank.has(key)) rank.set(key, index);
+        index += 1;
       }
-      if (Number(line.internal) === 1) {
-        // Gider payı satırın yönündeyse (gönderende çıkış, ters kaydında giriş) dış harekettir; tutarı aşamaz.
-        const fee = Number(line.fee_cents) || 0;
-        const ext = (fee > 0 && !into) || (fee < 0 && into) ? Math.min(Math.abs(fee), cents) : 0;
-        if (into) Object.assign(out, { ext_in: ext, tr_in: cents - ext });
-        else Object.assign(out, { ext_out: ext, tr_out: cents - ext });
-        return out;
-      }
-      if (into) out.ext_in = cents;
-      else out.ext_out = cents;
-      return out;
-    });
+    }
+    return groups
+      .sort((a, b) => (a.first < b.first ? -1 : a.first > b.first ? 1 : (rank.get(a.key) ?? 0) - (rank.get(b.key) ?? 0)))
+      .map(group => ({ key: group.key, cents: Number(group.cents) || 0, count: Number(group.count) || 0 }));
   }
   /** Satır sorgusunun kaynak adı (shape'teki source) → src numarası: Kasa/rapor satırını classified satırıyla eşlemek için. */
   const SOURCE_NAMES = Object.freeze({ 1: "payment", 2: "manual", 3: "account", 4: "invoice", 5: "bank", 6: "plan", 7: "stock", 8: "cheque", 9: "bankLine" });
@@ -615,7 +720,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     return out;
   }
 
-  return { lines, rows, shape, classified, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };

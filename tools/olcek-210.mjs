@@ -688,6 +688,15 @@ async function level(users, info) {
       n += 1;
       const item = { n, inBackup: Boolean(backupWindow && backupWindow.to === null) };
       try {
+        // Banka penceresi kapandıysa (önceki turun hatası/Escape) yeniden açılır; sayısı sonuçta (bankaYenidenAcilis).
+        if (!(await page.$(`${bankWin} [data-bank] .hof-bank-tabs`))) {
+          item.yenidenAcildi = true;
+          for (let i = 0; i < 4 && (await page.$(MODAL)); i += 1) await closeTop(page);
+          await clickRetry(page, '#hof-sidecard [data-action="bank"]', "Banka menüsü");
+          await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 60000 });
+          await clickRetry(page, `${bankWin} .hof-bank-tabs [data-tab="movements"]`, "Hareketler sekmesi");
+          await page.waitForSelector(rowsSel, { timeout: 60000 });
+        }
         // Hesap süzgeci. Seçicinin hesap seçenekleri Hesaplar listesinden gelir (view.list); seçenek görünene dek geçen süre ayrıca ölçülür,
         // süzgeç başarısız olsa da yinelemenin kalanı (Kaydet → listede, başkasının kaydı) koşar. Başarısızlıkta seçicinin durumu kaydedilir.
         const account = n % 3 === 0 ? "" : demand[n % 2].id;
@@ -738,12 +747,15 @@ async function level(users, info) {
           t = performance.now();
           await page.click('form.hof-bank-voucher button[type="submit"]');
           await answerConfirms(page);
-          const seen = await page.waitForFunction(needle => [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")].some(row => row.textContent.includes(needle)), own, { timeout: 30000 }).then(() => true).catch(() => false);
+          const seen = await page.waitForFunction(needle => [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")].some(row => new RegExp(`${needle}(?![0-9])`).test(row.textContent)), own, { timeout: 30000 }).then(() => true).catch(() => false);
           item.kaydetListedeMs = seen ? r0(performance.now() - t) : -1;
           item.kaydetHesap = bank.id;
           item.kaydetTutar = amount;
           item.kaydetIz = own;
-          if (await page.$("form.hof-bank-voucher")) await closeTop(page);
+          // Form kayıttan sonra kendiliğinden kapanır; kapanmadıysa (5 sn) Escape. Önceden "form var mı?" denetimi ile Escape arasında form
+          // kapanınca Escape Banka penceresini kapatıyor, sonraki turlar "seçici yok" ile düşüyordu (ölçek araç sınırı, 10/20 kullanıcıda 1 tur).
+          const formOpen = await page.waitForSelector("form.hof-bank-voucher", { state: "detached", timeout: 5000 }).then(() => false).catch(() => true);
+          if (formOpen && (await page.$("form.hof-bank-voucher"))) await closeTop(page);
         } else {
           // Başka personelin (API) kaydı açık listede görünme süresi.
           await page.selectOption(`${bankWin} [data-mv="account"]`, "");
@@ -757,7 +769,7 @@ async function level(users, info) {
           item.baskasininDurum = response.status;
           if (response.status === 200) book("001", "bank", -amount, bank.id);
           else screen.hatalar.push(`başkasının masrafı ${response.status} ${JSON.stringify(response.data).slice(0, 160)}`);
-          const seen = await page.waitForFunction(needle => [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")].some(row => row.textContent.includes(needle)), other, { timeout: 30000 }).then(() => true).catch(() => false);
+          const seen = await page.waitForFunction(needle => [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")].some(row => new RegExp(`${needle}(?![0-9])`).test(row.textContent)), other, { timeout: 30000 }).then(() => true).catch(() => false);
           item.baskasininKaydiMs = seen ? r0(performance.now() - posted) : -1;
           item.baskasininApiMs = r0(apiMs);
         }
@@ -853,9 +865,12 @@ async function level(users, info) {
   }
   await browser.close();
   // Ekrandan yazılan masraflar: bağımsız deftere (listede göründüyse kaydedilmiştir; görünmeyenler veri tabanından denetlenir).
+  // İz TAM eşleşir: "…-E1" "…-E11", "…-E13"ün öneki olduğundan alt dize araması (11.10.2026 hız düzeltmesinden sonra ekran 11 masraf
+  // kaydedebildi; önceden sunucu yavaşken düzey başına 1) tek kaydı "5 kez (çift kayıt)" sayıp bağımsız deftere yazmıyordu (yanlış fark).
+  const exact = mark => new RegExp(`${mark.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![0-9])`);
   for (const item of screen.banka.filter(row => row.kaydetIz)) {
-    const found = unwrap(await admin.get(at(`/api/workspace/bank/movements?status=all&limit=5&q=${encodeURIComponent(item.kaydetIz)}`, ctx["001"].id)));
-    const rows = (found?.rows || []).filter(row => JSON.stringify(row).includes(item.kaydetIz));
+    const found = unwrap(await admin.get(at(`/api/workspace/bank/movements?status=all&limit=50&q=${encodeURIComponent(item.kaydetIz)}`, ctx["001"].id)));
+    const rows = (found?.rows || []).filter(row => exact(item.kaydetIz).test(JSON.stringify(row)));
     item.veritabaninda = rows.length;
     if (rows.length === 1) book("001", "bank", -item.kaydetTutar, item.kaydetHesap);
     else if (rows.length > 1) hatalar.push(`ekrandan masraf ${item.kaydetIz} veritabanında ${rows.length} kez (çift kayıt)`);
@@ -994,6 +1009,10 @@ async function level(users, info) {
     suzgecDurumlari: screen.banka.filter(item => item.suzgecDurum).slice(0, 3).map(item => item.suzgecDurum),
     kaydetListede: stat(field(screen.banka, "kaydetListedeMs")),
     kaydetGorunmedi: screen.banka.filter(item => item.kaydetListedeMs === -1).length,
+    bankaTur: screen.banka.length,
+    bankaYenidenAcilis: screen.banka.filter(item => item.yenidenAcildi).length,
+    // Ekrandan kaydedilen her masraf: iz, tutar (kuruş), veri tabanında kaç kez (1 olmalı), listede görünme süresi.
+    kaydedilenler: screen.banka.filter(item => item.kaydetIz).map(item => ({ iz: item.kaydetIz, kurus: item.kaydetTutar, veritabaninda: item.veritabaninda, listedeMs: item.kaydetListedeMs })),
     baskasininKaydiListede: stat(field(screen.banka, "baskasininKaydiMs")),
     baskasininKaydiGorunmedi: screen.banka.filter(item => item.baskasininKaydiMs === -1).length,
     raporlarAcilis: stat(field(screen.rapor, "raporlarAcilisMs")),

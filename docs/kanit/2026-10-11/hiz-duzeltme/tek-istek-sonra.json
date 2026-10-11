@@ -1,0 +1,1032 @@
+{
+ "etiket": "sonra",
+ "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abebd705e2a893684",
+ "kaynak": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam",
+ "simdi": "2026-10-11T12:00:00+03:00",
+ "tekrar": 5,
+ "acilisMs": 6240,
+ "olcumler": [
+  {
+   "ad": "banka-bakiye thisYear real",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 409,
+    "p50": 462,
+    "max": 473
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 6,
+    "max": 8
+   },
+   "build": {
+    "min": 392,
+    "p50": 421,
+    "max": 450
+   },
+   "satir": 2,
+   "ozet": "ad57f081ea1bd2aa"
+  },
+  {
+   "ad": "banka-bakiye thisYear debt",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 408,
+    "p50": 447,
+    "max": 495
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 7,
+    "max": 9
+   },
+   "build": {
+    "min": 425,
+    "p50": 461,
+    "max": 483
+   },
+   "satir": 1,
+   "ozet": "3c58f1871473c4dc"
+  },
+  {
+   "ad": "banka-bakiye thisYear unassigned",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 429,
+    "p50": 441,
+    "max": 462
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 7,
+    "max": 9
+   },
+   "build": {
+    "min": 387,
+    "p50": 435,
+    "max": 472
+   },
+   "satir": 2,
+   "ozet": "091a7e98869981e5"
+  },
+  {
+   "ad": "banka-bakiye thisYear all",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 403,
+    "p50": 439,
+    "max": 504
+   },
+   "dongu": {
+    "min": 7,
+    "p50": 8,
+    "max": 13
+   },
+   "build": {
+    "min": 397,
+    "p50": 446,
+    "max": 478
+   },
+   "satir": 5,
+   "ozet": "05b3972a6c94b741"
+  },
+  {
+   "ad": "banka-bakiye all real",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 449,
+    "p50": 461,
+    "max": 468
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 7,
+    "max": 9
+   },
+   "build": {
+    "min": 436,
+    "p50": 465,
+    "max": 494
+   },
+   "satir": 2,
+   "ozet": "ddfb9a41ab5f03bd"
+  },
+  {
+   "ad": "banka-bakiye all debt",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 407,
+    "p50": 422,
+    "max": 504
+   },
+   "dongu": {
+    "min": 5,
+    "p50": 7,
+    "max": 9
+   },
+   "build": {
+    "min": 402,
+    "p50": 422,
+    "max": 474
+   },
+   "satir": 1,
+   "ozet": "342d7d8794703b2c"
+  },
+  {
+   "ad": "banka-bakiye all unassigned",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 398,
+    "p50": 436,
+    "max": 482
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 6,
+    "max": 8
+   },
+   "build": {
+    "min": 388,
+    "p50": 418,
+    "max": 436
+   },
+   "satir": 2,
+   "ozet": "cbdbca5078dfead2"
+  },
+  {
+   "ad": "banka-bakiye all all",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 404,
+    "p50": 408,
+    "max": 432
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 7,
+    "max": 9
+   },
+   "build": {
+    "min": 400,
+    "p50": 426,
+    "max": 469
+   },
+   "satir": 5,
+   "ozet": "54f8c0646477095b"
+  },
+  {
+   "ad": "banka-hareket thisYear tüm hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 2021,
+    "p50": 2052,
+    "max": 2182
+   },
+   "dongu": {
+    "min": 7,
+    "p50": 9,
+    "max": 11
+   },
+   "build": {
+    "min": 2112,
+    "p50": 2241,
+    "max": 2314
+   },
+   "satir": 55418,
+   "ozet": "f58cbc134d10e032"
+  },
+  {
+   "ad": "banka-hareket thisYear tüm external",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 1935,
+    "p50": 1953,
+    "max": 2141
+   },
+   "dongu": {
+    "min": 7,
+    "p50": 8,
+    "max": 10
+   },
+   "build": {
+    "min": 1982,
+    "p50": 2017,
+    "max": 2197
+   },
+   "satir": 32982,
+   "ozet": "2675e55d5983400c"
+  },
+  {
+   "ad": "banka-hareket thisYear tüm internal",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 1834,
+    "p50": 1908,
+    "max": 1937
+   },
+   "dongu": {
+    "min": 7,
+    "p50": 8,
+    "max": 20
+   },
+   "build": {
+    "min": 1739,
+    "p50": 1869,
+    "max": 2091
+   },
+   "satir": 22444,
+   "ozet": "e3cadcaac0f0a651"
+  },
+  {
+   "ad": "banka-hareket thisYear vadesiz-1 hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 990,
+    "p50": 1055,
+    "max": 1112
+   },
+   "dongu": {
+    "min": 7,
+    "p50": 11,
+    "max": 15
+   },
+   "build": {
+    "min": 1137,
+    "p50": 1162,
+    "max": 1180
+   },
+   "satir": 27689,
+   "ozet": "9e433513cd32dd0b"
+  },
+  {
+   "ad": "banka-hareket thisYear vadesiz-1 external",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 938,
+    "p50": 970,
+    "max": 1051
+   },
+   "dongu": {
+    "min": 8,
+    "p50": 8,
+    "max": 9
+   },
+   "build": {
+    "min": 1004,
+    "p50": 1049,
+    "max": 1126
+   },
+   "satir": 16469,
+   "ozet": "1d653b2b09074c40"
+  },
+  {
+   "ad": "banka-hareket thisYear vadesiz-1 internal",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 896,
+    "p50": 942,
+    "max": 1224
+   },
+   "dongu": {
+    "min": 8,
+    "p50": 9,
+    "max": 42
+   },
+   "build": {
+    "min": 952,
+    "p50": 979,
+    "max": 1029
+   },
+   "satir": 11222,
+   "ozet": "7819b5b2351713cb"
+  },
+  {
+   "ad": "banka-hareket thisYear vadesiz-2 hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 1012,
+    "p50": 1049,
+    "max": 1104
+   },
+   "dongu": {
+    "min": 8,
+    "p50": 8,
+    "max": 10
+   },
+   "build": {
+    "min": 1037,
+    "p50": 1101,
+    "max": 1148
+   },
+   "satir": 27729,
+   "ozet": "4ad4e6df69744855"
+  },
+  {
+   "ad": "banka-hareket thisYear vadesiz-2 external",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 967,
+    "p50": 1019,
+    "max": 1068
+   },
+   "dongu": {
+    "min": 7,
+    "p50": 8,
+    "max": 11
+   },
+   "build": {
+    "min": 985,
+    "p50": 1035,
+    "max": 1159
+   },
+   "satir": 16513,
+   "ozet": "e327b65c36929d12"
+  },
+  {
+   "ad": "banka-hareket thisYear vadesiz-2 internal",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 962,
+    "p50": 1028,
+    "max": 1041
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 8,
+    "max": 34
+   },
+   "build": {
+    "min": 955,
+    "p50": 1015,
+    "max": 1075
+   },
+   "satir": 11222,
+   "ozet": "5d3fd943d7a1ee22"
+  },
+  {
+   "ad": "banka-hareket thisYear kart hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 125,
+    "p50": 128,
+    "max": 150
+   },
+   "dongu": {
+    "min": 5,
+    "p50": 6,
+    "max": 7
+   },
+   "build": {
+    "min": 119,
+    "p50": 123,
+    "max": 141
+   },
+   "satir": 17,
+   "ozet": "71710441503b4285"
+  },
+  {
+   "ad": "banka-hareket thisYear kart external",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 126,
+    "p50": 138,
+    "max": 171
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 6,
+    "max": 7
+   },
+   "build": {
+    "min": 125,
+    "p50": 133,
+    "max": 136
+   },
+   "satir": 17,
+   "ozet": "6b7c6371768905ef"
+  },
+  {
+   "ad": "banka-hareket thisYear kart internal",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 115,
+    "p50": 124,
+    "max": 139
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 6,
+    "max": 7
+   },
+   "build": {
+    "min": 110,
+    "p50": 124,
+    "max": 169
+   },
+   "satir": 1,
+   "ozet": "e981d1d782abd381"
+  },
+  {
+   "ad": "banka-hareket thisYear atanmamış hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 174,
+    "p50": 193,
+    "max": 206
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 6,
+    "max": 6
+   },
+   "build": {
+    "min": 177,
+    "p50": 186,
+    "max": 206
+   },
+   "satir": 180,
+   "ozet": "9f9957c3103d6adb"
+  },
+  {
+   "ad": "banka-hareket thisYear atanmamış external",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 184,
+    "p50": 190,
+    "max": 208
+   },
+   "dongu": {
+    "min": 5,
+    "p50": 6,
+    "max": 6
+   },
+   "build": {
+    "min": 177,
+    "p50": 183,
+    "max": 187
+   },
+   "satir": 164,
+   "ozet": "c973e6d64b995962"
+  },
+  {
+   "ad": "banka-hareket thisYear atanmamış internal",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 184,
+    "p50": 189,
+    "max": 235
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 6,
+    "max": 6
+   },
+   "build": {
+    "min": 170,
+    "p50": 189,
+    "max": 231
+   },
+   "satir": 18,
+   "ozet": "be2d979434335b4b"
+  },
+  {
+   "ad": "banka-hareket all tüm hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 2400,
+    "p50": 2422,
+    "max": 2446
+   },
+   "dongu": {
+    "min": 8,
+    "p50": 9,
+    "max": 11
+   },
+   "build": {
+    "min": 2587,
+    "p50": 2665,
+    "max": 2754
+   },
+   "satir": 70582,
+   "ozet": "f96d85d147723cf6"
+  },
+  {
+   "ad": "banka-hareket all vadesiz-1 hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 1225,
+    "p50": 1284,
+    "max": 1345
+   },
+   "dongu": {
+    "min": 8,
+    "p50": 9,
+    "max": 10
+   },
+   "build": {
+    "min": 1329,
+    "p50": 1395,
+    "max": 1474
+   },
+   "satir": 35303,
+   "ozet": "1ef338c3c395f288"
+  },
+  {
+   "ad": "banka-hareket lastMonth vadesiz-1 hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 358,
+    "p50": 375,
+    "max": 404
+   },
+   "dongu": {
+    "min": 6,
+    "p50": 6,
+    "max": 8
+   },
+   "build": {
+    "min": 349,
+    "p50": 379,
+    "max": 423
+   },
+   "satir": 2886,
+   "ozet": "aaf47a0637c85650"
+  },
+  {
+   "ad": "banka-masraf thisYear",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 969,
+    "p50": 1009,
+    "max": 1114
+   },
+   "dongu": {
+    "min": 8,
+    "p50": 9,
+    "max": 10
+   },
+   "build": {
+    "min": 967,
+    "p50": 1040,
+    "max": 1126
+   },
+   "satir": 11255,
+   "ozet": "d4694f8534f4b96e"
+  },
+  {
+   "ad": "alt-hesap-mizani thisYear",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 207,
+    "p50": 213,
+    "max": 222
+   },
+   "dongu": {
+    "min": 207,
+    "p50": 213,
+    "max": 222
+   },
+   "build": {
+    "min": 205,
+    "p50": 211,
+    "max": 219
+   },
+   "satir": 5,
+   "ozet": "314c664d3989459e"
+  },
+  {
+   "ad": "alt-hesap-mizani all",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 213,
+    "p50": 234,
+    "max": 256
+   },
+   "dongu": {
+    "min": 213,
+    "p50": 234,
+    "max": 256
+   },
+   "build": {
+    "min": 211,
+    "p50": 219,
+    "max": 235
+   },
+   "satir": 5,
+   "ozet": "235c36d41d1a6a76"
+  },
+  {
+   "ad": "banka-pos-hareketleri thisYear hepsi",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 3030,
+    "p50": 3113,
+    "max": 3238
+   },
+   "dongu": {
+    "min": 3033,
+    "p50": 3117,
+    "max": 3237
+   },
+   "build": {
+    "min": 2875,
+    "p50": 3026,
+    "max": 3099
+   },
+   "satir": 55595,
+   "ozet": "e461b45b84a60988"
+  },
+  {
+   "ad": "banka-pos-hareketleri thisYear bank",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 2981,
+    "p50": 3065,
+    "max": 3192
+   },
+   "dongu": {
+    "min": 2981,
+    "p50": 3065,
+    "max": 3192
+   },
+   "build": {
+    "min": 2912,
+    "p50": 2969,
+    "max": 3043
+   },
+   "satir": 55499,
+   "ozet": "c50b9e09e3b165cb"
+  },
+  {
+   "ad": "banka-pos-hareketleri thisYear card",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 248,
+    "p50": 265,
+    "max": 339
+   },
+   "dongu": {
+    "min": 248,
+    "p50": 265,
+    "max": 339
+   },
+   "build": {
+    "min": 245,
+    "p50": 277,
+    "max": 347
+   },
+   "satir": 97,
+   "ozet": "c74d7edb1e3485ad"
+  },
+  {
+   "ad": "kasa-hareketleri thisYear",
+   "tur": "rapor",
+   "durum": 200,
+   "http": {
+    "min": 1006,
+    "p50": 1052,
+    "max": 1080
+   },
+   "dongu": {
+    "min": 1008,
+    "p50": 1052,
+    "max": 1079
+   },
+   "build": {
+    "min": 979,
+    "p50": 1046,
+    "max": 1067
+   },
+   "satir": 23075,
+   "ozet": "fe7061065db91286"
+  },
+  {
+   "ad": "Banka Hareketleri (tüm hesaplar, 50)",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 7,
+    "p50": 8,
+    "max": 8
+   },
+   "dongu": {
+    "min": 7,
+    "p50": 9,
+    "max": 10
+   },
+   "satir": 50,
+   "ozet": "84f63865d9f6a4f0"
+  },
+  {
+   "ad": "Banka Hareketleri (vadesiz-1, 50)",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 5,
+    "p50": 6,
+    "max": 6
+   },
+   "dongu": {
+    "min": 5,
+    "p50": 7,
+    "max": 8
+   },
+   "satir": 50,
+   "ozet": "cf798bcce36ec5b8"
+  },
+  {
+   "ad": "Banka Hareketleri (kart, 50)",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 24,
+    "p50": 25,
+    "max": 31
+   },
+   "dongu": {
+    "min": 25,
+    "p50": 27,
+    "max": 31
+   },
+   "satir": 18,
+   "ozet": "fae8cb9fdbddb633"
+  },
+  {
+   "ad": "Banka Hareketleri (arama 'Doldurma')",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 8,
+    "p50": 9,
+    "max": 14
+   },
+   "dongu": {
+    "min": 9,
+    "p50": 10,
+    "max": 16
+   },
+   "satir": 50,
+   "ozet": "ffaf70f31d35e83f"
+  },
+  {
+   "ad": "Cari arama (2 harf 'Mü')",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 47,
+    "p50": 52,
+    "max": 59
+   },
+   "dongu": {
+    "min": 48,
+    "p50": 52,
+    "max": 59
+   },
+   "satir": 8,
+   "ozet": "a44f54b894acc304"
+  },
+  {
+   "ad": "Cari arama (5 harf 'Müşte')",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 47,
+    "p50": 51,
+    "max": 54
+   },
+   "dongu": {
+    "min": 49,
+    "p50": 52,
+    "max": 53
+   },
+   "satir": 8,
+   "ozet": "a44f54b894acc304"
+  },
+  {
+   "ad": "Cari arama (tam ad)",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 45,
+    "p50": 45,
+    "max": 50
+   },
+   "dongu": {
+    "min": 44,
+    "p50": 46,
+    "max": 51
+   },
+   "satir": 1,
+   "ozet": "9366fc254e38268b"
+  },
+  {
+   "ad": "Cari arama (telefon 0532)",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 56,
+    "p50": 57,
+    "max": 58
+   },
+   "dongu": {
+    "min": 56,
+    "p50": 58,
+    "max": 58
+   },
+   "satir": 20,
+   "ozet": "375854a6dfe271d5"
+  },
+  {
+   "ad": "Cari arama (tedarikçi öne)",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 50,
+    "p50": 55,
+    "max": 62
+   },
+   "dongu": {
+    "min": 51,
+    "p50": 54,
+    "max": 62
+   },
+   "satir": 8,
+   "ozet": "a44f54b894acc304"
+  },
+  {
+   "ad": "Cari listesi (300)",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 176,
+    "p50": 188,
+    "max": 212
+   },
+   "dongu": {
+    "min": 173,
+    "p50": 190,
+    "max": 210
+   },
+   "satir": 300,
+   "ozet": "728ef7166e150dc5"
+  },
+  {
+   "ad": "Banka Genel Bakış",
+   "tur": "liste",
+   "durum": 200,
+   "http": {
+    "min": 82,
+    "p50": 86,
+    "max": 88
+   },
+   "dongu": {
+    "min": 83,
+    "p50": 87,
+    "max": 88
+   },
+   "satir": null,
+   "ozet": "e0d82e4b4ba02bb8"
+  }
+ ],
+ "yazimlar": [
+  {
+   "ad": "Cari tahsilat (nakit)",
+   "tur": "yazim",
+   "http": {
+    "min": 14,
+    "p50": 19,
+    "max": 21
+   },
+   "dongu": {
+    "min": 14,
+    "p50": 18,
+    "max": 23
+   },
+   "durum": {
+    "200": 6
+   }
+  },
+  {
+   "ad": "Cari tahsilat (havale)",
+   "tur": "yazim",
+   "http": {
+    "min": 14,
+    "p50": 15,
+    "max": 23
+   },
+   "dongu": {
+    "min": 14,
+    "p50": 16,
+    "max": 22
+   },
+   "durum": {
+    "200": 6
+   }
+  },
+  {
+   "ad": "Cari ödeme (nakit)",
+   "tur": "yazim",
+   "http": {
+    "min": 58,
+    "p50": 59,
+    "max": 62
+   },
+   "dongu": {
+    "min": 58,
+    "p50": 60,
+    "max": 63
+   },
+   "durum": {
+    "200": 6
+   }
+  },
+  {
+   "ad": "Satış faturası (peşin nakit)",
+   "tur": "yazim",
+   "http": {
+    "min": 32,
+    "p50": 34,
+    "max": 51
+   },
+   "dongu": {
+    "min": 31,
+    "p50": 36,
+    "max": 52
+   },
+   "durum": {
+    "200": 6
+   }
+  },
+  {
+   "ad": "Banka Fişi (masraf)",
+   "tur": "yazim",
+   "http": {
+    "min": 10,
+    "p50": 11,
+    "max": 12
+   },
+   "dongu": {
+    "min": 9,
+    "p50": 12,
+    "max": 13
+   },
+   "durum": {
+    "200": 6
+   }
+  },
+  {
+   "ad": "Bankalar arası transfer",
+   "tur": "yazim",
+   "http": {
+    "min": 10,
+    "p50": 11,
+    "max": 14
+   },
+   "dongu": {
+    "min": 10,
+    "p50": 11,
+    "max": 14
+   },
+   "durum": {
+    "200": 6
+   }
+  }
+ ],
+ "hesaplar": [
+  "demand Ziraat Bankası · Ana TL Hesabı T2101",
+  "demand Garanti BBVA · Ana TL Hesabı T2101",
+  "card Garanti BBVA · Kurumsal Kart T2101"
+ ]
+}

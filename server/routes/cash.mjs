@@ -70,10 +70,11 @@ export function registerCashRoutes(router, context) {
     if (!NEGATIVE_GUARDED.includes(key)) return;
     const policy = negativePolicy()[key];
     if (!(amount > 0) || policy === "off" || (policy === "warn" && force)) return;
-    // Hareketin günündeki bakiye ile (ileri tarihliler dahil) son bakiyeden azı. Tek özet: summary(gün) son bakiyeyi de (byMethod,
-    // bütün tarihler) verir — 2. gözden geçirme İ10: önceden aynı özet iki kez hesaplanıyordu (10.000 caride ~70 ms/işlem).
-    const totals = summary(day || "9999-12-31");
-    const balance = Math.min(totals.byMethodAt[key], totals.byMethod[key] || 0);
+    // Hareketin günündeki bakiye ile (ileri tarihliler dahil) son bakiyeden azı. Tek sorgu: o yolun gün sonu ve son bakiyesi — 2. gözden geçirme
+    // İ10: önceden aynı özet iki kez hesaplanıyordu (10.000 caride ~70 ms/işlem); 11.10.2026 hız düzeltmesi: summary(gün)'ün byMethodAt/byMethod
+    // değerleri yalnız o yolun satırlarından (lines.wayBalance; tam özet bütün yolların ~25 toplamını kuruyordu). Sonuç aynı.
+    const totals = lines.wayBalance ? lines.wayBalance(key, day || "9999-12-31") : (all => ({ at: all.byMethodAt[key], all: all.byMethod[key] }))(summary(day || "9999-12-31"));
+    const balance = Math.min(totals.at, totals.all || 0);
     const after = roundMoney(balance - amount);
     if (after < -0.005) {
       const base = subject

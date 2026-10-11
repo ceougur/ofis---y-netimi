@@ -133,6 +133,27 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const { fieldsJson, ...rest } = item;
     return { ...rest, extra: parseFields(fieldsJson).slice(0, 3) };
   };
+  // Arama ve kart süzgeci (listede ve seçici aramasında AYNI kural): durum, tür, grup, alt grup ve arama metni (ad, not, adres, grup, ek
+  // alanlar; telefon ve VKN/TCKN rakamla; Cari No tam). Bakiyeye bakmaz.
+  const searchOf = q => {
+    const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
+    return { needle, numbers: needle.replace(/\D/g, "") };
+  };
+  function rowMatches(row, { status, type, group, subgroup }, { needle, numbers }) {
+    if (status !== "all" && row.status !== status) return false;
+    if (type && row.type !== type) return false;
+    if (group && row.groupId !== group) return false;
+    if (subgroup && row.subgroupId !== subgroup) return false;
+    if (needle) {
+      // Ek alanlar ham JSON metninde aranır (200 bin caride her satırı ayrıştırmadan); ad, not, adres, grup ayrıca.
+      const hay = `${row.name} ${row.note} ${row.address} ${row.city} ${row.district} ${row.taxOffice} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${row.fieldsJson}`.toLocaleLowerCase("tr-TR");
+      // v2.0.15: VKN/TCKN ile de bulunur (faturada cari çoğu zaman vergi numarasıyla aranır).
+      const phoneHit = numbers.length >= 3 && (digits(row.phone).includes(numbers) || (numbers.length >= 5 && String(row.taxNo || "").includes(numbers)));
+      const refHit = String(row.refNo || "").toLocaleLowerCase("tr-TR") === needle;
+      if (!hay.includes(needle) && !phoneHit && !refHit) return false;
+    }
+    return true;
+  }
   // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu carilerin satırları ve bakiyeleri (kapı dokunulan carileri denetler); hesap her
   // cari için aynıdır.
   function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null } = {}) {
@@ -145,24 +166,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       sums.get(row.accountId)[row.kind] = Number(row.amount) || 0;
     }
     const planMap = plans()?.summariesByAccount ? plans().summariesByAccount(ids) : new Map();
-    const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
-    const numbers = needle.replace(/\D/g, "");
+    const search = searchOf(q);
     const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0 };
     const labels = new Set();
     const out = [];
     for (const row of rows) {
-      if (status !== "all" && row.status !== status) continue;
-      if (type && row.type !== type) continue;
-      if (group && row.groupId !== group) continue;
-      if (subgroup && row.subgroupId !== subgroup) continue;
-      if (needle) {
-        // Ek alanlar ham JSON metninde aranır (200 bin caride her satırı ayrıştırmadan); ad, not, adres, grup ayrıca.
-        const hay = `${row.name} ${row.note} ${row.address} ${row.city} ${row.district} ${row.taxOffice} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${row.fieldsJson}`.toLocaleLowerCase("tr-TR");
-        // v2.0.15: VKN/TCKN ile de bulunur (faturada cari çoğu zaman vergi numarasıyla aranır).
-        const phoneHit = numbers.length >= 3 && (digits(row.phone).includes(numbers) || (numbers.length >= 5 && String(row.taxNo || "").includes(numbers)));
-        const refHit = String(row.refNo || "").toLocaleLowerCase("tr-TR") === needle;
-        if (!hay.includes(needle) && !phoneHit && !refHit) continue;
-      }
+      if (!rowMatches(row, { status, type, group, subgroup }, search)) continue;
       // Ek alanlar sayfaya girerken ayrıştırılır (200 bin satırda hepsini ayrıştırmak boşuna); etiketler ham metinden.
       if (row.fieldsJson && row.fieldsJson !== "[]") for (const match of row.fieldsJson.matchAll(/"label":"((?:[^"\\]|\\.)*)"/g)) labels.add(JSON.parse(`"${match[1]}"`));
       const sum = sums.get(row.id) || { debt: 0, credit: 0, in: 0, out: 0 };
@@ -280,15 +289,31 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const user = auth.requirePermission(req, "accounts.view");
     ok(res, pageOf(list(user, listQuery(url.searchParams)), "accounts", url.searchParams));
   });
+  // Seçici araması (11.10.2026 hız düzeltmesi; plan §3.11 madde 5 "arama < 1 sn"): eşleşen cariler listedeki kuralla (rowMatches) ve listedeki
+  // sırayla (Cari No, ad) bulunur; bakiye ve taksit özeti YALNIZ gösterilecek ilk `limit` cari için hesaplanır (list'in ids kipi — kapının
+  // da kullandığı, cari başına aynı hesap). Önceden her harfte bütün carilerin hareket toplamları ve taksit özetleri kuruluyordu (100.000 para
+  // satırında istek başına ~0,3 sn; çok kullanıcıda saniyeler). Sonuç aynı.
+  function searchAccounts(user, { q = "", type = "", prefer = "", limit = 20 } = {}) {
+    const search = searchOf(q);
+    const byName = (a, b) => collator.compare(a.name, b.name);
+    const matched = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`)
+      .filter(row => rowMatches(row, { status: "all", type, group: "", subgroup: "" }, search))
+      .map(row => ({ id: row.id, refNo: row.refNo || "", name: row.name, type: row.type }))
+      .sort((a, b) => refCompare(a, b) || byName(a, b));
+    // v2.0.17 (müşteri: çek cirosunda cari bulunmuyor): tür KISITI yerine "prefer" — o türdekiler üstte, bütün cariler listede
+    // (müşteriye de ciro edilir: borç ödemesi, mal alımı). Ciro, tahsil/ödeme ve teminat seçicileri bunu kullanır.
+    if (prefer) matched.sort((a, b) => Number(b.type === prefer) - Number(a.type === prefer));
+    const top = matched.slice(0, limit);
+    if (!top.length) return [];
+    const byId = new Map(list(user, { q, status: "all", type, ids: top.map(item => item.id) }).accounts.map(item => [item.id, item]));
+    return top.map(item => byId.get(item.id)).filter(Boolean);
+  }
   // Seçici (taksit kartı formu, stok hareketi): hafif arama, en çok 20 sonuç.
   router.get("/api/workspace/accounts/search", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
-    const data = list(user, { q: text(url.searchParams.get("q")).slice(0, 120), status: "all", type: isAccountType(text(url.searchParams.get("type"))) ? text(url.searchParams.get("type")) : "" });
-    // v2.0.17 (müşteri: çek cirosunda cari bulunmuyor): tür KISITI yerine "prefer" — o türdekiler üstte, bütün cariler listede
-    // (müşteriye de ciro edilir: borç ödemesi, mal alımı). Ciro, tahsil/ödeme ve teminat seçicileri bunu kullanır.
     const prefer = isAccountType(text(url.searchParams.get("prefer"))) ? text(url.searchParams.get("prefer")) : "";
-    if (prefer) data.accounts.sort((a, b) => Number(b.type === prefer) - Number(a.type === prefer));
-    ok(res, data.accounts.slice(0, 20).map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, registeredOn: item.registeredOn || "", groupId: item.groupId || "", subgroupId: item.subgroupId || "", groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status, caseKey: item.caseKey || "", caseSource: item.caseSource || "", caseTitle: item.caseTitle || "" })));
+    const found = searchAccounts(user, { q: text(url.searchParams.get("q")).slice(0, 120), type: isAccountType(text(url.searchParams.get("type"))) ? text(url.searchParams.get("type")) : "", prefer });
+    ok(res, found.map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, registeredOn: item.registeredOn || "", groupId: item.groupId || "", subgroupId: item.subgroupId || "", groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status, caseKey: item.caseKey || "", caseSource: item.caseSource || "", caseTitle: item.caseTitle || "" })));
   });
 
   // ---------- Yazma ----------
