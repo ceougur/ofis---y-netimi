@@ -1,0 +1,5 @@
+birim fiyat 4000000.02 (geçerli, 2 ondalık) → 200  · doğru (kabul)
+birim fiyat 5000000.02 (geçerli, 2 ondalık) → 400 {"ok":false,"error":"1. kalem: birim fiyat en çok dört ondalık basamak olabilir.","code":"invoice-invalid","field":"unitPrice"} · YANLIŞ RET
+birim fiyat 12345678.91 (geçerli, 2 ondalık) → 200  · doğru (kabul)
+birim fiyat 5000000.12345 (geçersiz, 5 ondalık) → 200  · YANLIŞ KABUL
+2 yanlış sonuç (hata yeniden üretildi)

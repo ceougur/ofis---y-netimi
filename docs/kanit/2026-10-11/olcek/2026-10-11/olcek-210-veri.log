@@ -1,0 +1,4 @@
+  [001] ✗ işlem 2518 fatura-acid: fatura-acid/kasa: yanlış ret 400 {"ok":false,"error":"1. kalem: birim fiyat en çok dört ondalık basamak olabilir.","code":"invoice-invalid","field":"unitPrice"}
+  [001] ✗ işlem 2746 fatura-acid: fatura-acid/kasa: yanlış ret 400 {"ok":false,"error":"1. kalem: birim fiyat en çok dört ondalık basamak olabilir.","code":"invoice-invalid","field":"unitPrice"}
+  [001] ✗ işlem 3046 fatura-acid: fatura-acid/kasa: yanlış ret 400 {"ok":false,"error":"1. kalem: birim fiyat en çok dört ondalık basamak olabilir.","code":"invoice-invalid","field":"unitPrice"}
+  [001] ✗ işlem 4072 fatura-acid: fatura-acid/kasa: yanlış ret 400 {"ok":false,"error":"1. kalem: birim fiyat en çok dört ondalık basamak olabilir.","code":"invoice-invalid","field":"unitPrice"}
