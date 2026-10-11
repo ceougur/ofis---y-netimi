@@ -1,0 +1,27 @@
+(node:26789) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ön koşul: gün 2026-10-11 → 2026-10-12 (GERÇEKLEŞTİ)
+uyuşmazlık: 3
+[
+ {
+  "at": "işlem 113 (banka-duzelt, 2026-07-28)",
+  "problems": [
+   "banka-duzelt: ters kayıt 2026-10-12 -731,34 · model 2026-10-11 -731,34"
+  ]
+ },
+ {
+  "at": "işlem 113 (banka-duzelt, 2026-07-28)",
+  "problems": [
+   "Kasa bank: program 44821.26 · model 44543,95",
+   "İşlem zinciri Kasa/bankLine: program 15 satır 65020,37 · model 13 satır 64743,06",
+   "Banka hesabı Garanti BBVA: program 28246,76 · model 27969,45",
+   "Ana defter kasa hesapları ≠ model: 100 8617.62, 102 44821.26, 108 60228.47 (model 108 60228,47)"
+  ]
+ },
+ {
+  "at": "koşu sonu",
+  "problems": [
+   "sunucunun günü koşu sırasında değişti (2026-10-11 → 2026-10-12); sonuç geçersiz — sunucuyu motorNow() sahte saatiyle başlatın"
+  ]
+ }
+]

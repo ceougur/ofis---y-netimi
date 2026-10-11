@@ -4,7 +4,7 @@
 // Daha uzun koşu: npm run test:mutabakat -- --islem 5000 --tohum 7
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { lineCents, rng, runReconciliation } from "./mutabakat/motor.mjs";
+import { lineCents, motorNow, rng, runReconciliation } from "./mutabakat/motor.mjs";
 import { roundMoney, sumMoney } from "../server/lib/money.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 
@@ -33,7 +33,7 @@ describe("kuruş aritmetiği", () => {
 describe("dört çekirdek mutabakatı (model tabanlı)", () => {
   for (const seed of [1, 2]) {
     it(`tohum ${seed}: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı`, async () => {
-      const server = await startTestServer({ bankPickLegacy: true });
+      const server = await startTestServer({ bankPickLegacy: true, now: motorNow() });
       try {
         const admin = await loginAdmin(server);
         const report = await runReconciliation({ client: admin, seed, operations: 300, burst: 40, reportEvery: 60 });

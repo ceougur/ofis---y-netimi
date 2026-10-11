@@ -1,0 +1,32 @@
+{
+  "ad": "mutabakat-kos-kisa",
+  "komut": "node test/mutabakat/kos.mjs --islem 300 --tohum 2 --tohumlar 1",
+  "commit": "c8d596b6dc3e335274b2864aeb5319bae22d72f8",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T00:06:13.071Z",
+  "sure_sn": 28.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/mutabakat-gece-yarisi/2026-10-11/mutabakat-kos-kisa.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "fe8c00e422f7e3a382d0c1d30ff48b1c90b72a27ac824a45cd184ea740e443df",
+  "ham_cikti_bayt": 1950
+}

@@ -90,6 +90,11 @@ export const addDays = (iso, days) => {
 
 // bank: banka ekseni (v2.1.0; banka hesabı ve Banka Fişi). Banka modülü olmayan eski sürüme karşı koşan testler (altın test: v2.0.26)
 // false verir; o zaman rastgele sıra da eski motorla birebir aynıdır.
+// Motorun sahte saati (ders 13; CI 565: tohum 2 23:59:56'da başlayıp gece yarısını geçti). Motor "bugün"ü (T) başta bir kez okur;
+// sunucunun günü koşu sırasında değişirse program (doğru olarak) yeni günle yazar, model eski günde kalır → sahte uyuşmazlık. Sunucuyu
+// bu saatle başlatın: yerel bugün 06:00'dan akar (en uzun koşu 6 sa iş sınırına sığar, gece yarısına ulaşmaz).
+export const motorNow = (base = new Date()) => new Date(base.getFullYear(), base.getMonth(), base.getDate(), 6, 0, 0, 0).getTime();
+
 export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
@@ -1881,5 +1886,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   // Deney sonrası kilidi kaldır (aynı veritabanında başka koşu olabilir).
   if (lock) await api("PUT", "/api/admin/period-lock", { lockedUntil: "" });
   await api("PUT", "/api/admin/negative-policy", { cash: "warn", bank: "warn", card: "warn" });
+  // Koşu boyunca sunucunun günü değiştiyse model ile program farklı "bugün"e bakmıştır: sonuç geçersiz, sessizce yeşil sayılmaz.
+  const lastDay = (await api("GET", "/api/workspace/ledger/lock")).data?.today;
+  if (lastDay && lastDay !== T) report.mismatches.push({ at: "koşu sonu", problems: [`sunucunun günü koşu sırasında değişti (${T} → ${lastDay}); sonuç geçersiz — sunucuyu motorNow() sahte saatiyle başlatın`] });
   return report;
 }

@@ -74,3 +74,6 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
 - CI 558 (c1dc92d): Windows ×2 yalnız m6 (vade-takip-kaynak-yetki-210) kırmızı — Windows pdftotext çıktıyı yerel kod sayfasıyla veriyor (Türkçe harf bozuk); TEST hatası, `-enc UTF-8` ile düzeltildi. Keşif testi 2. gerçek Windows koşusunda yeşil.
 - CI 559–562 (a1c96f5, 66cfca2, d2d75c6, e91774a): yalnız Windows ×2 m6 (558 ile aynı test hatası); 562'de Linux 2049/2049 ×2, bütün e2e yeşil.
 - CI 563 (5b1525f): BÜTÜN işler YEŞİL — Linux + Windows × Node 22/24, e2e, Doğrulama Kapısı, Dağıtım paketi (ana oturum okudu).
+- CI 565 (c8d596b): Linux Node 24 mutabakat-cekirdek tohum 2 kırmızı — test 23:59:56 UTC'de başlayıp gece yarısını geçti; model "bugün"ü
+  başta okuyordu, program ters kaydı yeni günle yazdı (program doğru). Zorla üretildi (test/mutabakat-gece-yarisi.mjs: gün değişti, 2 uyuşmazlık);
+  düzeltme: motorNow() sahte saati + koşu sonunda gün değişimi denetimi (ders 22). Kanıt docs/kanit/2026-10-11/mutabakat-gece-yarisi/.

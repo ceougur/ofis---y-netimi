@@ -1,0 +1,50 @@
+TAP version 13
+# (node:26823) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kuruş aritmetiği
+    # Subtest: roundMoney yarım kuruşu sıfırdan uzağa yuvarlar; kayan nokta artığı taşımaz; −0 üretmez
+    ok 1 - roundMoney yarım kuruşu sıfırdan uzağa yuvarlar; kayan nokta artığı taşımaz; −0 üretmez
+      ---
+      duration_ms: 1.719201
+      type: 'test'
+      ...
+    # Subtest: satır tutarı (miktar × birim fiyat) programda ve bağımsız tam sayı hesabında aynı
+    ok 2 - satır tutarı (miktar × birim fiyat) programda ve bağımsız tam sayı hesabında aynı
+      ---
+      duration_ms: 26.782823
+      type: 'test'
+      ...
+    1..2
+ok 1 - kuruş aritmetiği
+  ---
+  duration_ms: 29.467619
+  type: 'suite'
+  ...
+# Subtest: dört çekirdek mutabakatı (model tabanlı)
+    # Subtest: tohum 1: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+    ok 1 - tohum 1: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+      ---
+      duration_ms: 27049.408217
+      type: 'test'
+      ...
+    # Subtest: tohum 2: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+    ok 2 - tohum 2: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+      ---
+      duration_ms: 25190.279436
+      type: 'test'
+      ...
+    1..2
+ok 2 - dört çekirdek mutabakatı (model tabanlı)
+  ---
+  duration_ms: 52240.629816
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 52701.898075
