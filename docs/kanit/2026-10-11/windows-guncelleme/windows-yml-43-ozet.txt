@@ -1,0 +1,48 @@
+  ✓ kurulu kopyaya test anahtarı eklendi (yalnız bu CI makinesinde)
+■ W1 Kendiliğinden kur KAPALI: servis yeniden başlar → açılışta denetler, 'hazır' gösterir, kurmaz
+  ✓ açılışta güncelleme kaynağı sorgulandı (1 istek)
+  ✓ ayar: kendiliğinden kur kapalı
+  ✓ Yönetim → Sistem: yeni sürüm hazır (2.0.27)
+  ✓ paket indirilmedi
+  ✓ kurulmadı (çalışan 2.0.26)
+■ W2 Kendiliğinden kur AÇIK: servis yeniden başlar → açılışta bulunur, kimse kullanmıyor → kurulur
+  ✓ servis kendiliğinden 2.0.27 sürümüne geçti (7 sn)
+  ✓ paket bir kez indirildi (1)
+  ✓ app\current.json etkin 2.0.27, önceki 2.0.26, onaylı
+  ✓ güncelleme öncesi yedek (001 - Şirket 1: destekofis-001-2026-10-11T03-16-05-465Z-guncelleme-oncesi-2-0-26.sqlite)
+  ✓ güncelleme öncesi kullanıcı giriş yapıyor (veri korundu)
+  ✓ Yönetim → Sistem: 2.0.27 sürümüne güncellendi
+  ✓ servis günlüğü: yeni sürüm bulundu
+  ✓ servis günlüğü: güncellendi
+■ W3 Arka planda indir, sonraki açılışta kur (2.0.26 çalışırken 2.0.28 yayımlanır)
+  · mesai içi: hiçbir saat diliminde mesai içi değil; saat 31 sa ileri alındı (eşitleme servisleri durduruldu)
+  ✓ W3: personel giriş yaptı
+  ✓ W3: 2.0.28 arka planda indirildi ve doğrulandı ('hazır'; {"version":"2.0.28","stagedAt":"2026-10-12T10:01:07.347Z"})
+  ✓ W3: kullanıcı çalışırken kurulmadı (ertelendi)
+  ✓ W3: çalışan sürüm hâlâ 2.0.26
+  ✓ W3: uygulama süreci değişmedi (9160 → 9160)
+  ✓ W3: paket bir kez indirildi (1)
+  ✓ W3: app\.hazir\2.0.28 var (2.0.28)
+  ✓ W3: yeniden başlatmada hazır 2.0.28 kuruldu (7 sn; internet yok)
+  ✓ W3: açılışta paket yeniden indirilmedi
+  ✓ W3: bu açılışta uygulama yalnız yeni sürümle başlatıldı (app/2.0.28)
+  ✓ W3: servis günlüğü 'Açılışta hazır güncelleme var'
+  ✓ W3: Yönetim → Sistem: 2.0.28 sürümüne güncellendi, hazır paket kalmadı
+  ✓ W3: hazır paket kurulduktan sonra silindi
+  ✓ W3: etkin 2.0.28, önceki 2.0.26; 2.0.26 klasörü duruyor
+■ W4 Hazır sürüm yayından geri çekilir (2.0.28 çalışırken 2.0.29 hazırlanır, sonra kaynak yalnız 2.0.27 gösterir)
+  ✓ W4: 2.0.28 kopyasına test anahtarı eklendi
+  ✓ W4: personel giriş yaptı
+  ✓ W4: 2.0.29 arka planda hazırlandı ({"version":"2.0.29","stagedAt":"2026-10-12T10:02:23.450Z"})
+  ✓ W4: app\.hazir\2.0.29 var
+  ✓ W4: Yönetim → Sistem: 2.0.29 yayından kaldırıldığı için kurulmadı ({"outcome":"withdrawn","version":"2.0.29","reason":"2.0.29 sürümü yayından kaldırıldığı için kurulmadı (son denetim: yayında daha
+  ✓ W4: çalışan sürüm hâlâ 2.0.28 (geri çekilen 2.0.29 kurulmadı)
+  ✓ W4: hazır paket kalmadı
+  ✓ W4: app\.hazir\2.0.29 ve app\2.0.29 silindi
+  ✓ W4: bu açılışta uygulama yalnız 2.0.28 ile başlatıldı (app/2.0.28)
+  ✓ W4: servis günlüğü 'yayından kaldırıldığı için kurulmadı'
+  ✓ W4: 2.0.29 paketi bir kez indirildi (1)
+  ✓ W4: etkin sürüm 2.0.28 (değişmedi)
+  ✓ kurulum eski hâline döndü (servis 2.0.26)
+TAMAM: 41 denetim geçti, 0 başarısız.
+[kanit] windows-guncelleme-gercek: GEÇTİ · çıkış 0 · 41/41 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7ec525b +1 izlenmeyen · win32 10.0.26100 x64 · Node v24.21.0
