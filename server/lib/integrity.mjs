@@ -557,6 +557,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const report = scoped && !touched.size ? [] : bank().reportMismatches(scope);
       bankItems.push({ code: "money:report", name: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)", ok: report.length === 0, count: report.length, ...(scoped ? { scoped: true, gateCount: report.length } : {}), sample: report.slice(0, 5).map(item => `${item.key}: satırlar ${item.rows / 100} / özet ${item.summary / 100}`) });
       if (!scoped) {
+        // Yargıç Y1 (2.1.0): Devir Kapanışı ve eski bakiye aktarımı fişleri havuzlarıyla tutarlı (yazımdaki karşılığı bank.post'ta 409
+        // bank-reclass-active; burada store dışı yazım ve eski veri).
+        const pool = bank().poolProblems();
+        bankItems.push({ code: "bank:pool", name: "Devir Kapanışı ve Eski Bakiye Aktarımı (fiş = eski hareketler)", ok: pool.length === 0, count: pool.length, sample: pool.slice(0, 5).map(item => item.sample) });
         const eventless = bank().eventless();
         const fresh = eventless.filter(item => !legacyEventless.has(item.key));
         const old = eventless.length - fresh.length;

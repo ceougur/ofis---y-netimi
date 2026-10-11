@@ -520,8 +520,14 @@ describe("K2 · Benzer İşlem, istek kimliği, eşzamanlı limit, açılış ö
     assert.equal(await balanceOf(ctx.api, kk), -65_000, "KK −400 −100 −100 −50");
   });
 
-  it("[K20] kartın açılışından (05.10) önceki tarih → 409 bank-before-opening", async () => {
-    expectStatus(await pay(ctx.api, party, { amount: "10", date: "2026-10-04" }), 409, "bank-before-opening", "açılış öncesi");
+  // Yargıç B1 (11.10.2026; plan §3.5 kural 1): tarih kartın açılışından önceyse o gün tutulan kart yoktur — satır hesapsız (108.00) kalır;
+  // önceden tek kart kendiliğinden seçilip 409 bank-before-opening veriliyordu (eski tarihli kartla ödeme girilemiyordu). Kart AÇIKÇA seçilirse 409.
+  it("[K20] kartın açılışından (05.10) önceki tarih: kart verilmezse hesapsız (108.00), kart açıkça seçilirse 409 bank-before-opening", async () => {
+    expectStatus(await pay(ctx.api, party, { amount: "10", date: "2026-10-04", bankAccountId: kk.id }), 409, "bank-before-opening", "açılış öncesi, kart seçili");
+    const loose = await pay(ctx.api, party, { amount: "10", date: "2026-10-04" });
+    expectStatus(loose, 200, "", "açılış öncesi, kart verilmeden");
+    assert.equal(ctx.store.get("SELECT fin_ref AS f FROM account_entries WHERE id = ?", loose.data.entryId).f, "", "hesapsız");
+    assert.equal(await balanceOf(ctx.api, kk), -65_000, "KK değişmedi");
   });
 
   it("[K8] aynı anda iki 300'lük ödeme (kalan limit 350): biri 200, öbürü 409; kart limiti delinmez", async () => {

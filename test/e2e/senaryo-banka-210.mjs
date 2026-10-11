@@ -541,7 +541,8 @@ try {
       const card = HOF.bank.pickerHtml(data, { form: "card" });
       return { many: many.mode, manyOptions: (many.html.match(/<option/g) || []).length, required: /required/.test(many.html), defaultId: many.accountId, card: card.mode, ids: data.forms.bank.ids };
     });
-    ok(result.many === "many" && result.manyOptions === 3 && result.required, `iki hesap: seçim zorunlu (${result.manyOptions - 1} hesap + boş seçenek)`);
+    // Yargıç B1 (11.10.2026): boş seçenek + 2 hesap + "Hesapsız (Açılıştan Önce)".
+    ok(result.many === "many" && result.manyOptions === 4 && result.required, `iki hesap: seçim zorunlu (${result.manyOptions - 2} hesap + boş seçenek + Hesapsız (Açılıştan Önce))`);
     ok(result.card === "none", "kurumsal kart yokken seçici yok (bugünkü görünüm)");
     const garanti = (await must("hesaplar", api.get("/api/workspace/bank/accounts?status=all"))).accounts.find(account => account.bankName === "Garanti BBVA");
     await must("pasife al", api.post(`/api/workspace/bank/accounts/${garanti.id}/status`, { status: "passive" }));
@@ -1652,7 +1653,8 @@ try {
     await admin.selectOption(`${form} select[name="method"]`, "bank");
     await admin.waitForSelector(`${form} [data-bank-pick]:not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
     const options = await admin.$$eval(`${form} select[name="bankAccountId"] option`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(options.length === 3 && options[0] === "Hesap Seçin" && options.some(text => text.startsWith("Ziraat Bankası · Ana TL Hesabı")) && options.some(text => text.startsWith("Garanti BBVA · Ana TL Hesabı")), `Havale/EFT'de Banka Hesabı seçici: ${options.join(" | ")}`);
+    // Yargıç B1 (11.10.2026): son seçenek "Hesapsız (Açılıştan Önce)" — hesapların açılışından önceki eski hareket için (sunucu tarihi denetler).
+    ok(options.length === 4 && options[0] === "Hesap Seçin" && options.some(text => text.startsWith("Ziraat Bankası · Ana TL Hesabı")) && options.some(text => text.startsWith("Garanti BBVA · Ana TL Hesabı")) && options[3] === "Hesapsız (Açılıştan Önce)", `Havale/EFT'de Banka Hesabı seçici: ${options.join(" | ")}`);
     await auditLabels(admin, "cari tahsilat formu (havale)");
     // Nasıl bozarım: hesap boş bırakılır → kaydedilmez.
     await admin.selectOption(`${form} select[name="bankAccountId"]`, "");
@@ -1915,7 +1917,7 @@ try {
     // Yeniden çizim izi: satırın alanları işaretlenir; hesap seçiminden sonra aynı düğümler yerinde olmalı (2.0.23 Bulgu 1).
     await admin.evaluate(selectors => selectors.forEach(selector => (document.querySelector(selector).dataset.e2eMark = "1")), [amount, method, bankSel]);
     const options = await admin.$$eval(`${bankSel} option`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(options.length === 3 && options[0] === "Hesap Seçin" && options.some(text => text.startsWith("Ziraat Bankası · Ana TL Hesabı")) && options.some(text => text.startsWith("Garanti BBVA · Ana TL Hesabı")), `satırda Banka Hesabı seçici: ${options.join(" | ")}`);
+    ok(options.length === 4 && options[0] === "Hesap Seçin" && options.some(text => text.startsWith("Ziraat Bankası · Ana TL Hesabı")) && options.some(text => text.startsWith("Garanti BBVA · Ana TL Hesabı")) && options[3] === "Hesapsız (Açılıştan Önce)", `satırda Banka Hesabı seçici: ${options.join(" | ")}`);
     ok((await admin.$eval(bankSel, node => node.value)) === kabul.ziraat.id, "havaleye geçince varsayılan hesap (Ziraat) önerilir");
     await admin.focus(method);
     await admin.keyboard.press("Tab");

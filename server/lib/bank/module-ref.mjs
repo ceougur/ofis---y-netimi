@@ -25,6 +25,9 @@ const BANK_FORM_KINDS = new Set(["demand", "commercial", "other"]);
 const dayText = iso => (iso ? iso.split("-").reverse().join(".") : "");
 const labelOf = row => `${row.bank_name} · ${row.name}`;
 const bad = (status, message, code, extra = {}) => new HttpError(status, message, { code, field: "bankAccountId", ...extra });
+/** Hesap seçicideki "Hesapsız (Açılıştan Önce)" seçeneğinin değeri ve adı (Yargıç B1). */
+export const NONE = "none";
+export const NONE_LABEL = "Hesapsız (Açılıştan Önce)";
 
 /**
  * Yargıç Y1 (plan §3.5 "Pasif hesap → 400"; en yaygın kalıp: pasif hesapta önce yeniden etkinleştirme): pasif hesabın bakiyesini değiştiren her
@@ -70,7 +73,7 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
       if (!BANK_FORM_KINDS.has(row.kind)) throw bad(400, `${labelOf(row)}: havale/EFT yalnız Vadesiz, Ticari ya da Diğer TL hesapla yapılır.`, "bank-account-invalid", { accountId: row.id });
     }
     if (date && row.opening_date && date < row.opening_date) {
-      throw bad(409, `İşlem tarihi (${dayText(date)}) ${labelOf(row)} hesabının açılışından (${dayText(row.opening_date)}) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin ya da başka hesap seçin.`, "bank-before-opening", { accountId: row.id });
+      throw bad(409, `İşlem tarihi (${dayText(date)}) ${labelOf(row)} hesabının açılışından (${dayText(row.opening_date)}) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin, başka hesap seçin ya da hareket bu hesabın açılışından önceyse ${family === "card" ? "Kurumsal Kart" : "Banka Hesabı"} alanında "${NONE_LABEL}" seçin (satır Hesabı Atanmamış Eski Hareketler'de kalır).`, "bank-before-opening", { accountId: row.id });
     }
     const closed = accounts.carryBoundary();
     if (date && closed && date < closed) {
@@ -83,10 +86,14 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
    * Satırın banka hesabı (fin_ref). previous: { method, finRef } (düzeltmede); changed: yol, tutar ya da tarih değişti mi. corporate: kart yolu bu
    * belgede kurumsal kartla ödeme ya da kurumsal karta iade mi (cari ödeme, alış faturası ve alıştan iade, stok alımı); değilse kart yolu POS'tur.
    */
-  function pickRef({ method, value = "", date = "", previous = null, changed = true, corporate = false } = {}) {
+  function pickRef({ method, value, date = "", previous = null, changed = true, corporate = false } = {}) {
     const way = String(method || "");
     const family = way === "bank" ? "bank" : way === "card" && corporate ? "card" : "";
-    const id = text(value);
+    // Yargıç B1: "none" (ekrandaki "Hesapsız (Açılıştan Önce)") ya da API'de açıkça boş verilen alan ("") hesapsız isteğidir; alan hiç yoksa
+    // (undefined) istek yoktur. İstek yalnız tarih bir uygun hesabın açılışından (ya da Devir Kapanışı gününden) önceyse kabul edilir (aşağıda).
+    const raw = value === undefined || value === null ? null : text(value);
+    const none = raw === NONE || raw === "";
+    const id = raw && raw !== NONE ? raw : "";
     if (!family) {
       // K2: POS tahsilatı / POS iadesi 2.2.0'da POS'a bağlanır; bugün hesaba bağlanmaz. Kimlik verilmişse yanlış türde bağdır (önceden yok sayılıyordu).
       if (id && way === "card") throw bad(400, "POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; Banka Hesabı alanını boş bırakın (kurumsal kart yalnız ödemede ve kurumsal karta gelen iadede seçilir).", "bank-account-invalid");
@@ -107,8 +114,26 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
     if (legacy()) return "";
     const ids = eligible(family);
     if (!ids.length) return "";
-    if (ids.length > 1) throw bad(400, family === "card" ? "Kurumsal Kart seçin: kartla ödeme hangi kurumsal karttan yapıldı (ya da iade hangi karta geldi)?" : "Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?", "bank-account-required");
-    return check(ids[0], date, family);
+    // Yargıç B1 (plan §3.5 kural 1 "Hiç uygun hesap yoksa eski davranış sürer"; §10.3 "Açılış tarihi D'nin gün başındaki bakiye; D'den önceki
+    // hareketler bu bakiyenin içinde"): uygunluk satırın TARİHİNDE değerlendirilir. Tarih bütün uygun hesapların açılışından (ya da etkin Devir
+    // Kapanışı gününden) önceyse o gün tutulan hesap yoktur: satır hesapsız kalır (102.00 / 108.00). Önceden tek hesap kendiliğinden seçilip
+    // açılış denetimine düşüyordu (409 bank-before-opening): hesap açılınca eski hesapsız satırın tutarı/tarihi düzeltilemiyor, eski tarihli havale
+    // girilemiyordu (v2.0.26'da yoktu; gerileme). Devir Kapanışı'ndan önceki satırı Devir Kapanışı kuralı (bank.post, 409 bank-reclass-active) korur.
+    const closed = accounts.carryBoundary();
+    const openingOf = accountId => accounts.rowOf(accountId)?.opening_date || "";
+    const preClosed = Boolean(date && closed && date < closed);
+    const open = preClosed ? [] : ids.filter(accountId => !date || !openingOf(accountId) || date >= openingOf(accountId));
+    const beforeSome = preClosed || Boolean(date && ids.some(accountId => openingOf(accountId) && date < openingOf(accountId)));
+    // Açıkça hesapsız: tarih bir uygun hesabın açılışından önceyse kabul (çok hesapta hareket henüz tutulmayan hesaba girmiş olabilir). Değilse
+    // "none" 400; API'nin boş alanı ("") eski anlamıyla (verilmemiş) sürer.
+    if (none && beforeSome) return "";
+    if (raw === NONE) throw bad(400, `"${NONE_LABEL}" yalnız hesapların açılışından önceki hareket için seçilir; ${dayText(date)} tarihli ${family === "card" ? "kartla ödemenin kurumsal kartını" : "havale/EFT'nin hesabını"} seçin.`, "bank-account-required");
+    if (!open.length) return "";
+    if (open.length > 1) {
+      const hint = beforeSome ? ` Hareket seçilecek hesabın açılışından önceyse "${NONE_LABEL}" seçin.` : "";
+      throw bad(400, `${family === "card" ? "Kurumsal Kart seçin: kartla ödeme hangi kurumsal karttan yapıldı (ya da iade hangi karta geldi)?" : "Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?"}${hint}`, "bank-account-required");
+    }
+    return check(open[0], date, family);
   }
 
   /** K7 (yukarıdaki not). refs: dokunulacak hesaplar (önceki ve yeni bağ); boşsa hiçbir şey yapmaz. */

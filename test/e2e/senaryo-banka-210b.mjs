@@ -213,7 +213,8 @@ try {
     await page.selectOption(`${form} select[name="method"]`, "bank");
     await page.waitForSelector(`${form} [data-bank-pick]:not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
     const options = await page.$$eval(`${form} select[name="bankAccountId"] option`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(options[0] === "Hesap Seçin" && options.length === 3 && !options.some(text => text.includes("Vadeli")), `seçicide iki vadesiz hesap, vadeli yok: ${options.join(" | ")}`);
+    // Yargıç B1 (11.10.2026): son seçenek "Hesapsız (Açılıştan Önce)".
+    ok(options[0] === "Hesap Seçin" && options.length === 4 && options[3] === "Hesapsız (Açılıştan Önce)" && !options.some(text => text.includes("Vadeli")), `seçicide iki vadesiz hesap, vadeli yok: ${options.join(" | ")}`);
     await page.selectOption(`${form} select[name="bankAccountId"]`, "");
     await page.click(`${form} button[type="submit"]`);
     await pause(600);
@@ -670,7 +671,8 @@ try {
     await page.selectOption(`${form} select[name="method"]`, "card");
     await page.waitForSelector(`${form} [data-bank-pick="card"]:not([hidden]) select[name="cardAccountId"]`, { timeout: 8000 });
     const options = await page.$$eval(`${form} select[name="cardAccountId"] option`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(options[0] === "Kart Seçin" && options.length === 3 && options.every((text, index) => !index || /Kurumsal Kart/.test(text)), `seçicide iki kurumsal kart, ön seçim yok: ${options.join(" | ")}`);
+    // Yargıç B1 (11.10.2026): son seçenek "Hesapsız (Açılıştan Önce)".
+    ok(options[0] === "Kart Seçin" && options.length === 4 && options[3] === "Hesapsız (Açılıştan Önce)" && options.slice(1, 3).every(text => /Kurumsal Kart/.test(text)), `seçicide iki kurumsal kart, ön seçim yok: ${options.join(" | ")}`);
     await page.click(`${form} button[type="submit"]`);
     await pause(600);
     const error = await textOf(`${form} .hof-form-error`);

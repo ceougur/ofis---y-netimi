@@ -348,6 +348,47 @@ export function createBankChecks({ store, money }) {
   }
 
   /**
+   * bank:pool (Yargıç Y1, eleştirmen B4/Y2; yalnız tam taramada: açılış, Mutabakat Testi, 15 dakikalık tarama) — Devir Kapanışı ve eski bakiye
+   * aktarımı fişleri yazıldıkları havuzla tutarlı mı:
+   *   - etkin en geç Devir Kapanışı (gün C): C'den önceki hesabı atanmamış havale (102.00) ve POS / kart (108.00) bakiyesi, C günündeki kapanış
+   *     zinciriyle birlikte SIFIR (kapanış yazıldığı anda öyledir; sonradan havuzdaki satır değiştiyse artık kalır);
+   *   - Kart Borcuna Aktar / Bankaya Geçmiş Say: yazım sırasıyla, aynı türdeki etkin aktarımların birikimli tutarı her aktarımın havuzunu
+   *     (hedef hesabın açılışından ve C'den aktarım gününe kadarki hesapsız kartla ödeme ya da POS tahsilatı) aşmaz (aktarımın kendi kuralı).
+   * Bank.post bu sapmayı yazımda engeller (409 bank-reclass-active); denetim store dışı yazımı ve eski veriyi görür.
+   */
+  function poolProblems() {
+    if (!ready() || !tables().has("bank_lines")) return [];
+    const out = [];
+    const carry = store.get("SELECT id, no, date FROM fin_events WHERE type = 'carry_close' AND +status = 'active' ORDER BY date DESC, rowid DESC LIMIT 1");
+    if (carry) {
+      const chain = new Set(store.all("SELECT e.id FROM fin_events e WHERE e.date = ? AND (e.type = 'carry_close' OR (e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'carry_close')))", carry.date).map(row => row.id));
+      const left = { bank: 0, card: 0 };
+      for (const line of money.lines({ ways: ["bank", "card"], light: true, unbound: true, until: carry.date })) {
+        if (line.ref) continue;
+        if (line.date < carry.date || (Number(line.src) === 9 && line.date === carry.date && chain.has(line.event_id))) left[line.way === "bank" ? "bank" : "card"] += (line.kind === "in" ? 1 : -1) * Number(line.cents);
+      }
+      for (const way of ["bank", "card"]) {
+        if (left[way]) out.push({ key: `${carry.id}:${way}`, ref: "", sample: `${carry.no} Devir Kapanışı (${carry.date}): ${way === "bank" ? "102.00" : "108.00"} kapanıştan önce ${left[way] / 100} artık (kapanıştan sonra değişen eski hareket)` });
+      }
+    }
+    const events = store.all(
+      `SELECT e.id, e.no, e.date, l.side, l.try_minor AS amount, COALESCE(a.opening_date, '') AS opening
+       FROM fin_events e JOIN bank_lines l ON l.event_id = e.id AND l.role = 'pos' AND l.ref = '' LEFT JOIN bank_accounts a ON a.id = e.bank_ref
+       WHERE e.type = 'legacy_reclass' AND +e.status = 'active' ORDER BY e.rowid`,
+    );
+    const used = { C: 0, D: 0 };
+    for (const event of events) {
+      used[event.side] = (used[event.side] || 0) + Number(event.amount);
+      if (carry && event.date < carry.date) continue;
+      const since = carry && carry.date > event.opening ? carry.date : event.opening;
+      const kind = event.side === "C" ? "in" : "out";
+      const pool = money.lines({ ways: ["card"], light: true, unbound: true, since, until: event.date }).filter(line => !line.ref && Number(line.src) !== 9 && line.kind === kind).reduce((sum, line) => sum + Number(line.cents), 0);
+      if (used[event.side] > pool) out.push({ key: `${event.id}:reclass`, ref: "", sample: `${event.no} ${event.side === "C" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar"} (${event.date}): aktarılan ${used[event.side] / 100}, havuzdaki eski hareketler ${pool / 100}` });
+    }
+    return out;
+  }
+
+  /**
    * bank:ref (GG2) — hesaba bağlı (fin_ref dolu) modül satırı hâlâ para satırıdır ve yolu hesabın türünün yoludur: 102 ailesi havale (bank),
    * kurumsal kart kart yolu (card); kredi hesabına ve silinmiş/bilinmeyen hesaba modül satırı bağlanmaz. Önceden yolu Nakit/POS yapılan havale
    * hesaba bağlı kalıyor, tutar hem Kasa'da hem hesabın bakiyesinde sayılıyordu. rows: [{ table, row }] verilirse yalnız onlar (COMMIT'te
@@ -447,7 +488,7 @@ export function createBankChecks({ store, money }) {
     return out;
   }
 
-  return { ready, inUse, marks, eventless, unknownWays, brokenEvents, reportMismatches, openingProblems, voucherProblems, carryProblems, refProblems, transferProblems };
+  return { ready, inUse, marks, eventless, unknownWays, brokenEvents, reportMismatches, openingProblems, voucherProblems, carryProblems, poolProblems, refProblems, transferProblems };
 }
 
 /** Hesap bazında gruplanmış denetim kalemleri (varlık kodu): '' (Hesabı Atanmamış) → code, hesap → code:hesap. */

@@ -1176,7 +1176,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     };
     const cashList = (Array.isArray(p.cash) ? p.cash : p.cash && typeof p.cash === "object" ? [p.cash] : [])
       .slice(0, 3)
-      .map((item, index) => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodInput(item?.method), lineKey: LINE_KEY.test(text(item?.lineKey)) ? text(item.lineKey) : `i${index}`, given: LINE_KEY.test(text(item?.lineKey)), bankAccountId: text(item?.bankAccountId).slice(0, 120), index }))
+      .map((item, index) => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodInput(item?.method), lineKey: LINE_KEY.test(text(item?.lineKey)) ? text(item.lineKey) : `i${index}`, given: LINE_KEY.test(text(item?.lineKey)), bankAccountId: item?.bankAccountId === undefined || item?.bankAccountId === null ? undefined : text(item.bankAccountId).slice(0, 120), index }))
       .filter(item => item.amount > 0);
     // Yargıç K4: istemcinin verdiği satır anahtarı tekil olmalı (Düzenle'de olay eşleşmesi anahtarla); yinelenen anahtar 400. Anahtarsız satıra
     // (eski istemci) sunucunun verdiği i<n> başka satırın anahtarıyla çakışırsa tekilleştirilir.

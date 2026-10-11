@@ -149,6 +149,10 @@ export function createStore(db) {
       // bağın yolla uyumunu denetler (önceki hâl bu andaki satırdır).
       const bound = rows.filter(row => row.f).map(row => row.r);
       if (bound.length) posts.at(-1).bound?.(table, bound);
+      // Yargıç Y1 (2.1.0): hesabı atanmamış satırın önceki hâli de (Devir Kapanışı / eski bakiye aktarımı havuzu; bank.post yalnız etkin bir
+      // aktarım varsa saklar).
+      const loose = rows.filter(row => !row.f).map(row => row.r);
+      if (loose.length) posts.at(-1).loose?.(table, loose);
     }
   }
   // ---------- Kapı kapsamı (v2.1.0, §3.11 kararı; lib/integrity.mjs "dokunulan varlıklar") ----------
