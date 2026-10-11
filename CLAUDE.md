@@ -1271,6 +1271,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   7,5 sn; doğruluk her düzeyde tamam) YETERLİ → ek hız işi YOK. Bütçeyi az aşan kalanlar (10 kişide arama p95 1,1 sn / döngü 1,3 sn, 20 kişide
   rapor bekleyişi, kart/masraf raporunun iş parçacığı payı) teslimde BİLİNEN SINIRLAR'a yazılır. Doğrulama (eşdeğerlik, mutasyon, ana oturum
   ölçümü, ekran hataları, CI, e2e) aynen yapılır — karar yalnız hız yeterliliği içindir.
+  KAPSAM SORUSU (kullanıcı, 11.10.2026: "neredeyse bütün program elden geçti diyebilir miyiz?") → HAYIR: para çekirdeği + banka derin;
+  geri kalanı sürüm sürüm değişen yer kadar; satır kapsamı en son 2.0.21'de (%95,2 / dal %79,9 / arayüz %79,8; 52 yüksek riskli testsiz yer).
+  KARAR (kullanıcı, aynı gün): kapsam ölçümü 2.1.0 temel banka sürümü CANLIYA ALINDIKTAN SONRA yapılır; kullanıcı yeni sürümü kendisi ve
+  müşterilerde kullanarak dener. Teslimde DENENMEYEN'e yazılır: 2.1.0 kapsam ölçümü yok (yayın sonrası iş).
   (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
