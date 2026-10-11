@@ -1116,6 +1116,7 @@
     const last = status.lastResult;
     if (last?.outcome === "success") parts.push(`<p class="adm-update-ok">✓ ${esc(last.version)} sürümüne güncellendi · ${esc(HOF.formatDateTime(last.at))}</p>`);
     else if (last?.outcome === "rolled-back") parts.push(`<p class="adm-update-warn">${esc(last.version)} sürümü açılamadı; ${esc(last.previous || "önceki")} sürümüne dönüldü. ${esc(last.reason || "")}</p>`);
+    else if (last?.outcome === "withdrawn") parts.push(`<p class="adm-update-warn">${esc(last.version)} sürümü yayından kaldırıldığı için kurulmadı; hazırdaki paket silindi.</p>`);
     else if (last?.outcome === "failed") parts.push(`<p class="adm-update-warn">Güncelleme tamamlanamadı: ${esc(last.reason || "")}</p>`);
     if (status.lastError && !status.available && !busy) parts.push(`<p class="adm-update-warn">Son denetim başarısız: ${esc(status.lastError)}</p>`);
     body.innerHTML = parts.join("");

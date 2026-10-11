@@ -9,7 +9,9 @@
 //          Mesai içinde kullanıcılar çalışırken bulunursa kurulmaz: paket HEMEN arka planda indirilir, doğrulanır ve açılır
 //          (servis durmaz; "hazır — sunucu bir sonraki açılışta kuracak"); saatte bir yeniden bakılır, o anda boşta ya da
 //          mesai dışıysa kurulur. Sunucu kapatılıp açılınca (çoğu ofiste her sabah) hazır paket uygulama BAŞLAMADAN kurulur:
-//          önce en çok 60 sn'lik son denetim — daha yeni sürüm varsa o indirilip kurulur, ağ yoksa hazırdaki kurulur. Hazır
+//          önce en çok 60 sn'lik son denetim — daha yeni sürüm varsa o indirilip kurulur, ağ yoksa hazırdaki kurulur; denetim
+//          hatasız döner ama hazırdaki sürüm yayında artık kurulabilir en yeni değilse (yayından geri çekildi) kurulmaz, silinir
+//          ve Yönetim → Sistem'de "yayından kaldırıldığı için kurulmadı" görünür (yayındaki en yeni çalışandan yeniyse o kurulur). Hazır
 //          paket yoksa açılışta uygulama başlar, denetim arka planda yapılır; bulunan sürüm (henüz istek gelmediği için)
 //          hemen kurulur. Yönetici her zaman "Şimdi Güncelle" diyebilir.
 // Kurulum adımları: yeni sürüm uygulama çalışırken indirilip doğrulanır → kısa bir bakım penceresinde ("Sistem
@@ -245,12 +247,13 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
       const version = found.version;
       let activated = false;
       try {
-        status.state = "downloading";
-        status.progress = { received: 0, total: found.manifest.package.size };
-        log.info(`${version} sürümü indiriliyor (${Math.ceil(found.manifest.package.size / 1024)} KB)…`);
         // Hazır pakette yeniden indirilmez (yeniden doğrulanır).
         const ready = !found.zipPath && updater.loadPrepared ? updater.loadPrepared() : null;
         const source = ready?.ok && ready.found.version === version ? { ...found, zipPath: ready.found.zipPath } : found;
+        status.state = "downloading";
+        status.progress = { received: 0, total: found.manifest.package.size };
+        if (source.zipPath) log.info(`${version} sürümü hazırdaki paketten kuruluyor (paket yeniden doğrulanıyor; indirme yok)…`);
+        else log.info(`${version} sürümü indiriliyor (${Math.ceil(found.manifest.package.size / 1024)} KB)…`);
         const zip = await updater.download(source, { signal: aborter.signal, onProgress: progress => (status.progress = progress) });
         status.state = "installing";
         status.progress = null;
@@ -337,6 +340,19 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     log.info(`Açılışta hazır güncelleme var (${target.version}); kurmadan önce son denetim (en çok ${Math.round(startupCheckMs / 1000)} sn).`);
     const deadline = AbortSignal.any([aborter.signal, AbortSignal.timeout(startupCheckMs)]);
     const latest = await runCheck({ signal: deadline }).catch(error => ({ status: "error", reason: error.message }));
+    // Son denetim HATASIZ döndü ama hazırdaki sürüm yayın listesinde kurulabilir en yeni değil (yayından geri çekildi: kaynak
+    // "güncel" diyor ya da en yeni yayın hazırdakinden eski): hazır paket kurulmaz, silinir. Daha eski ama çalışandan yeni bir
+    // sürüm yayındaysa o indirilip kurulur (tek geçiş). Ağ hatasında bu karar verilemez → hazırdaki kurulur (aşağıda).
+    if (latest.status !== "error" && !(latest.status === "available" && compareVersions(latest.version, target.version) >= 0)) {
+      const reason = `${target.version} sürümü yayından kaldırıldığı için kurulmadı (son denetim: ${latest.status === "available" ? `yayındaki en yeni ${latest.version}` : latest.status === "up-to-date" ? "yayında daha yeni sürüm yok" : latest.reason || latest.status}); hazırdaki paket silindi.`;
+      log.warn?.(reason);
+      updater.addHistory("prepared-withdrawn", { version: target.version, reason });
+      updater.discardPrepared({ all: true, protectedDirs: [controller.appDir(), runningDir] });
+      status.lastResult = { outcome: "withdrawn", version: target.version, reason, at: now() };
+      if (stopped || latest.status !== "available" || !newer(latest)) return true;
+      await install(latest);
+      return true;
+    }
     if (latest.status === "available" && compareVersions(latest.version, target.version) > 0) {
       try {
         await updater.prepare(latest, { signal: deadline, protectedDirs: [controller.appDir(), runningDir] });
