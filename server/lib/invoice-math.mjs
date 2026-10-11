@@ -139,6 +139,15 @@ const toCentsExact = value => {
   if (!Number.isFinite(number) || number === 0) return 0;
   return Math.sign(number) * Math.round(Number((Math.abs(number) * 100).toPrecision(15)));
 };
+// Sayının ondalık basamak sayısı: kayan nokta artığı 15 anlamlı basamakta silinir (toCentsExact gibi; 12,340000000000002 → 2), sonra en
+// kısa ondalık gösterim (String) sayılır (lib/minor.mjs numberParts gibi; "1.5e-7" → 8).
+// 2.1.0 (Uzun Doğrulama, mutabakat tohum 4): "x × 10.000 tamsayıdan 1e-6'dan çok sapıyor mu" denetimi büyük tutarda kayan nokta artığını
+// basamak sanıyordu — 1.234.567,89 × 10.000 = 12345678900,000002 → 1.048.576 TL üstü ondalıklı fiyatların ~%10'u, 16.777.216 üstü
+// ondalıklı miktarlar "en çok dört/üç ondalık" diye reddediliyordu (2.0.15'ten beri; sunucunun kendi 4 ondalığa yuvarladığı fiyat da).
+const decimalsOf = number => {
+  const [mantissa, exponent = "0"] = String(Math.abs(Number(number.toPrecision(15)))).toLowerCase().split("e");
+  return Math.max(0, (mantissa.split(".")[1] || "").length - Number(exponent));
+};
 // a × p / q, yarım yukarı (pozitif tamsayılar için tam bölme; kayan nokta yok).
 const mulDiv = (a, p, q) => (a <= 0 ? 0 : Math.floor((2 * a * p + q) / (2 * q)));
 export const cents = value => toCentsExact(value);
@@ -173,10 +182,10 @@ export function computeLine(input, { pricesIncludeVat = false, index = 0, extraD
   const at = `${index + 1}. kalem`;
   const qty = Number(input.qty);
   if (!Number.isFinite(qty) || qty <= 0) fail(`${at}: miktar sıfırdan büyük olmalı.`, "qty");
-  if (Math.abs(qty * 1000 - Math.round(qty * 1000)) > 1e-6) fail(`${at}: miktar en çok üç ondalık basamak olabilir.`, "qty");
+  if (decimalsOf(qty) > 3) fail(`${at}: miktar en çok üç ondalık basamak olabilir.`, "qty");
   const unitPrice = Number(input.unitPrice);
   if (!Number.isFinite(unitPrice) || unitPrice < 0) fail(`${at}: birim fiyat eksi olamaz.`, "unitPrice");
-  if (Math.abs(unitPrice * 10000 - Math.round(unitPrice * 10000)) > 1e-6) fail(`${at}: birim fiyat en çok dört ondalık basamak olabilir.`, "unitPrice");
+  if (decimalsOf(unitPrice) > 4) fail(`${at}: birim fiyat en çok dört ondalık basamak olabilir.`, "unitPrice");
   const discountRate = Number(input.discountRate || 0);
   if (!Number.isFinite(discountRate) || discountRate < 0 || discountRate > 100) fail(`${at}: iskonto oranı 0 ile 100 arasında olmalı.`, "discountRate");
   const vatRate = Number(input.vatRate);
