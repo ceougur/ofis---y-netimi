@@ -1218,6 +1218,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   indirilip kurulur, ağ yoksa hazırdaki kurulur → tek yeniden başlatma, ara sürüm kurulmaz; (3) periyodik denetim 6 sa → 1 sa (gün
   içi yayın akşamdan önce iner); (4) deneme açılışı/geri dönüş/başarısız sürüm işareti aynen. Yayın kuralı: her yayın tam paket,
   sürüm numarası öncekinden büyük (release.mjs zaten öyle).
+  YARGIÇ (11.10.2026, HEAD 3d0a2c8; betikler docs/kanit/2026-10-11/yargic/p1..p12; ana oturum B1/B2/B5'i yeniden üretti, sayılar aynı;
+  kullanıcıya listelendi): B1 ORTA ENGEL — banka hesabı açılınca açılıştan önceki hesapsız havale/kart satırının tutarı/tarihi düzeltilemiyor,
+  eski tarihli havale girilemiyor (409 bank-before-opening; v2.0.26'da yok = gerileme; gerçek 2.0.26 verisi göçünde de; module-ref.mjs 72-74,
+  101-112); B2 ORTA/DÜŞÜK — Kurulum Sihirbazı Geri Al K7 Engelle'yi (−1.000) ve pasif hesabı deliyor; B3 DÜŞÜK — banka fişi Ters Kaydet /
+  Açılışı Düzelt pasif hesabı değiştiriyor; B4 DÜŞÜK — Kart Borcuna Aktar / Devir Kapanışı yapılmış eski satır silinince karşı kayıt takılı
+  kalıyor; B5 DÜŞÜK/ORTA — gün içinde hazırlanan güncelleme yayından geri çekilse de açılışta kuruluyor. Temiz: K7 15 yol, rapor 101/101,
+  kurumsal kart, Drive. Sırada: eleştirmen (yargıç kararını denetler), sonra plana göre düzeltme (kırmızı test → düzeltme).
   UYARI BULGULARI (10.10.2026 gece; senaryo-225 incelemesinde, kullanıcıya listelendi; karar bekleyenler): (1) sağ alt bildirimde ilk 5'ten
   sonrası, özet bildirimi ekrana çıkmadan "görüldü" yazılıyor (hof-alerts.js enqueue) → sayfa erken değişirse bunlar 3 sa sağ altta görünmez,
   yalnız zilde (görmeden görüldü — düzeltilecek: özet gösterilince işaretle); (2) uyarı ufku sayfaya göre tutarsız: açık sayfanın son tarihleri
