@@ -1,0 +1,32 @@
+{
+  "ad": "fatura-buyuk-tutar-210-YESIL-3069b26",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/fatura-buyuk-tutar-210.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-durum-222.test.mjs test/fatura-model.test.mjs",
+  "commit": "3069b26cf7d2931d5b61f0d9723830990b82f771",
+  "dal": "worktree-agent-af167f81cc32838c6",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T08:48:32.083Z",
+  "sure_sn": 20.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 46,
+    "gecen": 46,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/mutabakat-tohum4/2026-10-11/fatura-buyuk-tutar-210-YESIL-3069b26.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af167f81cc32838c6",
+  "ham_cikti_sha256": "8c790d3ed2eea1a8d12b426e62037441ab6c441d77df49efb3af2bec4eaa8223",
+  "ham_cikti_bayt": 17170
+}
