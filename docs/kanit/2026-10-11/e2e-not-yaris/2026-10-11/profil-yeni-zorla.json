@@ -1,0 +1,32 @@
+{
+  "ad": "profil-yeni-zorla",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/e2e-not-yaris.mjs",
+  "commit": "b489088a7b7abf5b002705847f8b503e0ad667b1",
+  "dal": "worktree-agent-ae4b2398a007435c3",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T07:13:05.719Z",
+  "sure_sn": 42.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/e2e-not-yaris/2026-10-11/profil-yeni-zorla.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae4b2398a007435c3",
+  "ham_cikti_sha256": "359878a9d8b5dca69618bac414734df1a4b170806e601b81f789a2047401acb2",
+  "ham_cikti_bayt": 2915
+}

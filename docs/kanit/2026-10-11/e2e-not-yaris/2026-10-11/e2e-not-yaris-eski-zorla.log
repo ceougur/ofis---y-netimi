@@ -1,0 +1,14 @@
+  ✓ deneme 1: okuma 2177 ms; ön koşul (okuma anında uçuşta yükleme) oluşmadı; istekler [{"t":2090,"end":2099,"origin":"form (afterCaseChange)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 1 ödeme sözü alındı 1791702187143Ofis yöneticisi · 11.10.2026 07:03"
+  ✓ deneme 2: okuma 5592 ms; ön koşul (okuma anında uçuşta yükleme) oluşmadı; istekler [{"t":5478,"end":5492,"origin":"form (afterCaseChange)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 2 ödeme sözü alındı 1791702190519Ofis yöneticisi · 11.10.2026 07:03"
+  ✓ deneme 3: okuma 8886 ms; ön koşul (okuma anında uçuşta yükleme) oluşmadı; istekler [{"t":8811,"end":8827,"origin":"form (afterCaseChange)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 3 ödeme sözü alındı 1791702193904Ofis yöneticisi · 11.10.2026 07:03"
+  ✓ deneme 4: okuma 12442 ms; ön koşul (okuma anında uçuşta yükleme) oluşmadı; istekler [{"t":12316,"end":12335,"origin":"form (afterCaseChange)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 1 ödeme sözü alındı 1791702187143Ofis yöneticisi · 11.10.2026 07:03✎Not "
+  ✓ deneme 5: okuma 15850 ms; ön koşul (okuma anında uçuşta yükleme) oluşmadı; istekler [{"t":15723,"end":15737,"origin":"form (afterCaseChange)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 2 ödeme sözü alındı 1791702190519Ofis yöneticisi · 11.10.2026 07:03✎Not "
+  ✓ deneme 6: okuma 19286 ms; ön koşul (okuma anında uçuşta yükleme) oluşmadı; istekler [{"t":19197,"end":19223,"origin":"form (afterCaseChange)"}]; okunan: "İŞLEM GEÇMİŞİ✎Not 3 ödeme sözü alındı 1791702193904Ofis yöneticisi · 11.10.2026 07:03✎Not "
+
+MODE=forced DELAY=1500: 6 geçti, 0 kaldı; ön koşul 0/6 denemede oluştu, ön koşullu geçen 0
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

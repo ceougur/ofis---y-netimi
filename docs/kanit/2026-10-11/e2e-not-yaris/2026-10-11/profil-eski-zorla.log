@@ -1,0 +1,14 @@
+  ✗ deneme 1: okuma 5911 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":5675,"end":5689,"origin":"not formu (afterCaseChange)"},{"t":5817,"end":7326,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+  ✗ deneme 2: okuma 10778 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":9599,"end":9660,"origin":"seçim (renderActivity)"},{"t":10342,"end":10364,"origin":"not formu (afterCaseChange)"},{"t":10761,"end":12271,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+  ✗ deneme 3: okuma 16187 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":15055,"end":15103,"origin":"seçim (renderActivity)"},{"t":15828,"end":15840,"origin":"not formu (afterCaseChange)"},{"t":16140,"end":17649,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+  ✗ deneme 4: okuma 21443 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":20643,"end":20657,"origin":"not formu (afterCaseChange)"},{"t":21380,"end":22887,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+  ✗ deneme 5: okuma 26629 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":25581,"end":25624,"origin":"seçim (renderActivity)"},{"t":25780,"end":25793,"origin":"not formu (afterCaseChange)"},{"t":26617,"end":28124,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+  ✗ deneme 6: okuma 31727 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":30923,"end":30937,"origin":"not formu (afterCaseChange)"},{"t":31708,"end":33215,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+
+MODE=forced DELAY=1500: 0 geçti, 6 kaldı; ön koşul 6/6 denemede oluştu (ön koşullu: 0 geçti, 6 kaldı)
+# tests 6
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
