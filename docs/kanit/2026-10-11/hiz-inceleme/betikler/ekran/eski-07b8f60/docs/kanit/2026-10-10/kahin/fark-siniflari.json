@@ -1,0 +1,135 @@
+{
+ "summary": "KOŞU ÖZETİ (10.10.2026; commit yapılmadı, push yapılmadı)\n\nAraçlar: /home/user/ofis---y-netimi/test/bagimsiz/uretici.py (random.Random(tohum), SENARYO-DILI.md'ye uygun, tarihler artan, kilit yok, ret durumları, istek kimliği yinelemeleri ve 13 senaryoda ayniAnda grupları; 29 işlem türü) ve /home/user/ofis---y-netimi/test/bagimsiz/fark.py (model_a + model_b + surucu.mjs koşar, alan alan üçlü karşılaştırma, kök sınıflandırma). uretici.py commit'tekiyle aynı. fark.py'de commit edilmemiş fark var (yaklaşık 30 satır): belirsiz yol araması kümeyle yapılıyor (2000 işlemlik karşılaştırma 30 dakikadan uzun sürüyordu: 168 milyon len çağrısı, şimdi 3–6 sn), türev atama önbelleği, --hamdan seçeneği (koşmadan cikti/ham'dan yeniden karşılaştırır; raporda \"hamdan\" alanı yazılır), yinelenen takma ad yaprakları için bileşik sınıf (K4 + programdaki sınıf).\n\nSonuçlar:\n- Kabul (kabul-1-16.json): 182 yaprak, üç tarafta fark 0, plan denetimi 28/28, program Mutabakat Testi geçti.\n- Tohum 1..30 × 500 işlem: 227.801 yaprak karşılaştırıldı, 34.097 belirsiz yaprak atlandı, 21.452 fark çıktı.\n- Tohum 31..33 × 2000 işlem: 256.416 yaprak karşılaştırıldı, 62.386 atlandı, 19.999 fark çıktı (31: 5.952; 32: 6.167; 33: 7.880).\n- Toplam: 34 koşu, 11 kök sınıf, açıklanamayan yaprak 0 (cikti/fark-ozet.json). 67 koşunun hepsinde üç tarafın çıkış kodu 0, programın kendi Mutabakat Testi de 67'sinde geçti.\n- Desen dağılımı (ana koşular): A=B≠P 30.602, A≠B=P 5.510, B≠A=P 5.019, A≠B≠P 162, KOŞUCU 158.\n\nÜç tarafın sayıları (A / B / P; tutarlar TL):\n- Tohum 31: ret 95/95/100; yinelenen 41/41/31; fatura 665/676/662; Kasa A=B −46.190,41, P −32.003,17; banka A=B 988.095,21, P 1.060.783,04; mizan A=B 6.768.002,82, P 6.822.798,66.\n- Tohum 32: ret 144/144/142; yinelenen 47/47/37; fatura 417/432/421; Kasa −57.832,90 / P −55.413,08; banka 1.436.394,62 / P 1.428.072,52; mizan 4.279.545,75 / P 4.272.030,40.\n- Tohum 33: ret 138/138/137; yinelenen 53/53/42; fatura 563/579/571; Kasa 42.042,06 / P 39.908,01; banka 877.946,15 / P 1.248.210,52; mizan 4.831.355,00 / P 5.178.714,94.\n- B'nin fatura sayısı fazla: yinelenen faturanın takma adını da yazıyor (K4).\n\nKANITLAR (aynı yanlış varsayıma karşı):\n(1) Nötrleştirme: üretici, bilinen 8 nedeni kapatarak 33 ayrı koşu üretti (--notr iskonto_dahil,kasa_acilis,kart,fatura_yineleme,iade,kasa_yineleme,vadeli,kredi). 473.943 yaprakta yalnız 259 fark kaldı ve hepsi nötrleştirilmeyen iki sınıftan: BANKA-EKSI-KODU ile ACILIS-EKSI-KMH (notr 7 ve 19). 2000 işlemlik nötr koşularda fark 2/6/6, hepsi BANKA-EKSI-KODU. Bu koşularda Kasa, banka, cari, mizan, açık fatura, ret ve yinelenen sayıları üç tarafta birebir aynı (ör. notr-31: Kasa −131.773,65, banka 1.966.757,87, mizan 9.646.318,00).\n(2) Önek denetimi: 11 sınıfın 11'i en küçük tohumun tetik adımı k'ye kadar kesilen senaryoda var, k−1'de yok (cikti/onek/onek-dogrulama.json).\n(3) Mini senaryolar: 23 senaryo cikti/mini/ altında; hepsi yeniden sınıflandı, açıklanamayan yaprak yok.\n(4) Sabit commit ile tekrar: ana dizindeki koşular sırasında başka ajanlar ağacı değiştiriyordu (9edd6b0 → ed02107 arası 7 commit, 169'a kadar kirli dosya). Bu yüzden 34 koşunun tamamını ed02107'de temiz bir klonda üç tarafıyla baştan koştum. 34/34 koşu yaprak yaprak aynı çıktı (cikti/sabit-ed02107/hareketli-sabit-karsilastirma.txt).\n(5) Üretici belirlenimci: aynı tohum aynı senaryoyu veriyor (31, 33 ve 5 bayt bayt denendi).\n\nŞeffaflık notu: tohum 31–33'ün ilk karşılaştırma süreçleri eski, yavaş kodla takıldığı için durduruldu (hepsi.log'da çıkış 143). Bu tohumlar aynı koşunun ham çıktılarından --hamdan ile karşılaştırıldı. Ardından sabit commit koşusu üç tarafı sıfırdan çalıştırdı ve sonuç aynı çıktı.\n\nDENENMEYEN:\n- kasa_hareket silme (model_b'deki hata yüzünden üretici kullanmıyor).\n- Sınırı aşacak istek kimliği yinelemesi (model_a'daki sıra hatası yüzünden).\n- Dönem kilidi.\n- ayniAnda grupları 20 senaryoda yok.\n- Nötr koşular sabit commit'te yeniden koşulmadı; hareketli ağaçta koşuldular.\n\nBİLİNEN SINIRLAR:\n- Sınıflandırma kurallara dayanıyor; kanıt ondan bağımsız olarak nötr koşular, önek denetimi ve mini senaryolarla verildi.\n- K4 ve VADELI/KREDI/ACILIS sınıfları dil boşlukları; dil sürüm 2'de netleşmeli.\n\nKomutlar (depo kökünden):\n- python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/senaryolar/kabul-1-16.json\n- python3 test/bagimsiz/fark.py --tohum <t> --islem 500|2000 [--notr …] [--onek k] [--hamdan]\n- python3 test/bagimsiz/fark.py --yeniden-sinifla ve --ozet\n\nÇıktılar: /home/user/ofis---y-netimi/test/bagimsiz/cikti/ — fark-<t>.json, fark-<t>-notr.json, fark-ozet.json, ham/, senaryolar/, onek/, mini/, log/, sabit-ed02107/. Bu klasör .gitignore'da.",
+ "classes": [
+  {
+   "id": "KDV-DAHIL-ISKONTO",
+   "field": "faturalar.*.matrah/toplam/kdv/acik; retler (400 payment-exceeds); türevleri: cariler, mizan.120/600/391, stok eksi zinciri",
+   "seed": "tohum 1 (500 işlem); 33 koşunun 33'ünde var",
+   "ops": "adım 1–104 (F14: KDV dahil + iskontolu satış kalemi); önek 103'te yok",
+   "modelA": "F14.matrah 214469, toplam 252051 kuruş; mini: matrah 5859, toplam/açık/cari 7031",
+   "modelB": "A ile aynı (214469 / 252051; mini 5859 / 7031)",
+   "program": "F14.matrah 214468, toplam 252050; mini: 5858 / 7030 (1 kuruş düşük)",
+   "note": "İNCELE — dil §6.3 [YAYGIN]: KDV dahil fiyatta iskontonun yuvarlama sırası farklı. Sonuçları: peşin tutar kâhin toplamına eşitse program 400 payment-exceeds veriyor, stok eksi zinciri oluşuyor, 1 kuruşluk taksit fazlası kabul ediliyor (tohum 5, adım 575). Mini: cikti/mini/mini-kdv-dahil-iskonto.json. Nötr koşularda görülmedi."
+  },
+  {
+   "id": "IADE-KAPAMA",
+   "field": "faturalar.<iade/asıl>.acik (+ türevleri: cariler, mizan)",
+   "seed": "tohum 1 (500); 29/33",
+   "ops": "adım 1–121 (R1 iadesi); önek 120'de yok",
+   "modelA": "R1.acik 984; mini: alış iade nakit F1.acik 120000, satış 60000; asıl ödenmişken açık iade R1.acik 24000",
+   "modelB": "A ile aynı",
+   "program": "R1.acik 0; mini: 96000 / 36000 / 0",
+   "note": "BULGU — program, geri ödenen iadeyi de asıl faturanın açığından düşüyor; asıl fatura kapalıysa iade belgesinin açığını 0 gösteriyor. Dil §7 kural 2 ve 5 [YAYGIN]. Minilerde programın açıklar toplamı kendi cari bakiyesini tutmuyor. Miniler: cikti/mini/mini-iade-*.json (6 senaryo)."
+  },
+  {
+   "id": "KASA-ACILIS-649",
+   "field": "mizan.500 / mizan.649",
+   "seed": "tohum 1 (500); 28/33",
+   "ops": "adım 1–51 (kasa_acilis 495,05 TL); önek 50'de yok",
+   "modelA": "mizan.500 alacak 58.679.415 kuruş (son durum); mini: 500 alacak 1.000.000, 649 alacak 0",
+   "modelB": "A ile aynı",
+   "program": "mizan.500 alacak 53.728.915; mini: 500 alacak 0, 649 alacak 1.000.000",
+   "note": "İNCELE — Kasa açılışının karşı hesabı dilde 500 Sermaye, programda 649. Kasa ve bakiye aynı; yalnız mizan sınıflaması ayrışıyor. Mini: cikti/mini/mini-kasa-acilis.json."
+  },
+  {
+   "id": "KART-HESABI-BAGLANMIYOR",
+   "field": "retler (kart yolu + 102 hesabında 400 beklenir); mizan.108.00/309.NN; ozet.hesabiAtanmamis/kartVeKrediBorcu; bankaHesaplari.<kart>; eslenemeyen",
+   "seed": "tohum 1 (500); 28/33",
+   "ops": "adım 1–272; önek 271'de yok",
+   "modelA": "retler.272: 400 bank-account-invalid; mini: KK −10000, 309.01 alacak 10000",
+   "modelB": "A ile aynı",
+   "program": "retler.272: geçti; mini: KK 0, 108.00 alacak 15000, hesabiAtanmamis −15000",
+   "note": "BULGU — modül uçları (cari ödeme, alış peşini) kurumsal kart yolunda verilen hesabı bağlamıyor ve denetlemiyor; satır 108.00'e düşüyor. PLAN §3.5, §3.11 (card → 309.NN). Mini: cikti/mini/mini-kart-odeme.json."
+  },
+  {
+   "id": "KAHIN-K4-YINELENEN-AD",
+   "field": "faturalar.<takma ad>.*, taksitKartlari.<takma ad>.*",
+   "seed": "tohum 1 (500); 32/33",
+   "ops": "bileşik hâli adım 1–211 (alış yinelemesi Z3, önek 210'da yok); saf hâli adım 1–282 (satış yinelemesi Z5)",
+   "modelA": "takma ad yok (<yok>)",
+   "modelB": "takma ad var; mini F2.toplam 60000",
+   "program": "B ile aynı (60000)",
+   "note": "KÂHİNLER AYRIŞIYOR — dil §5.4'teki \"ad'ı önceki adımın hareketini anar\" iki türlü okunuyor; dil sürüm 2'de netleşmeli. Program yinelemeyi reddettiğinde yaprak B≠A=P ya da A≠B≠P görünür ve bileşik sınıfa yazılır (K4 + KOSUCU-ALIS, K4 + KDV…). Mini: cikti/mini/mini-satis-yineleme.json."
+  },
+  {
+   "id": "KOSUCU-ALIS-YINELEME-NUMARA",
+   "field": "retler / yinelenenler (alış faturası yinelemesi)",
+   "seed": "tohum 1 (500); 27/33",
+   "ops": "adım 1–211; önek 210'da yok",
+   "modelA": "geçti, yinelenen true",
+   "modelB": "geçti, yinelenen true",
+   "program": "409 request-id-reused, yinelenen false",
+   "note": "KOŞUCU HATASI — surucu.mjs alış faturasında belge numarası olarak adımın adını (number: step.ad) gönderiyor; yinelemede ad farklı olduğu için gövde farklı sayılıyor. Programın davranışı tutarlı. Mini: cikti/mini/mini-alis-yineleme.json."
+  },
+  {
+   "id": "KASA-ISTEK-KIMLIGI",
+   "field": "yinelenenler / retler (kasa_hareket) + türevleri: kasa, mizan.100/770",
+   "seed": "tohum 1 (500); 21/33",
+   "ops": "adım 1–388; önek 387'de yok",
+   "modelA": "yinelenen true; mini Kasa 990000; farklı gövde → 409",
+   "modelB": "A ile aynı",
+   "program": "yinelenen false (ikinci kez yazıldı); mini Kasa 965000; farklı gövde → geçti",
+   "note": "BULGU — POST /api/workspace/cash istek kimliğini (x-hof-request) dikkate almıyor. PLAN §7. Mini: cikti/mini/mini-kasa-yineleme.json."
+  },
+  {
+   "id": "BANKA-EKSI-KODU",
+   "field": "retler (yalnız ret kodu)",
+   "seed": "tohum 1 (500); 21/33 ana koşu + nötr koşular",
+   "ops": "adım 1–399; önek 398'de yok",
+   "modelA": "409 cash-negative (ve cash-blocked)",
+   "modelB": "A ile aynı",
+   "program": "409 bank-negative (ve bank-blocked)",
+   "note": "İNCELE — dil kodu ÇIKARIM (§7). Durum kodu aynı, veri durumuna etkisi yok. Nötrleştirilmeyen tek ortak sınıf. Mini: cikti/mini/mini-banka-eksi-kodu.json."
+  },
+  {
+   "id": "VADELI-HESAP-FIS",
+   "field": "retler (vadeli hesapta diger_gelir/diger_gider/banka_masraf/faiz_gideri) + türevleri: bankaHesaplari, mizan.649/659/770/780",
+   "seed": "tohum 1 (500); 14/33",
+   "ops": "adım 1–182 (diğer gelir 18,57 TL, vadeli B4 hesabı); önek 181'de yok",
+   "modelA": "geçti; mini V1 4.998.250",
+   "modelB": "A ile aynı",
+   "program": "400 bank-account-invalid; mini V1 5.004.250",
+   "note": "DİL/KÂHİN BOŞLUĞU — PLAN §3.5'e göre vadeli hesapta yalnız transfer ve faiz var; program plana uygun, dil fişe izin veriyor. faiz_gideri de reddediliyor; plandaki 'faiz' ifadesi netleşmeli. Mini: cikti/mini/mini-vadeli-fis.json."
+  },
+  {
+   "id": "KREDI-ANAPARA-ASIMI",
+   "field": "retler (kredi_odeme) + türevleri: bankaHesaplari.<kredi>, mizan.300.NN/780/102",
+   "seed": "tohum 2 (500); 6/33",
+   "ops": "adım 1–407; önek 406'da yok",
+   "modelA": "geçti; mini KR +50000 (fazla ödeme), 300.01 borç 50000",
+   "modelB": "A ile aynı",
+   "program": "409 bank-loan-exceeds; mini KR −100000, 300.01 alacak 100000",
+   "note": "DİL EKSİĞİ — dil, kredi anaparasını aşan ödemeyi reddetmiyor; programın reddi makul. Mini: cikti/mini/mini-kredi-fazla-odeme.json."
+  },
+  {
+   "id": "ACILIS-EKSI-KMH",
+   "field": "retler (hesap_ac / acilis_duzelt eksi açılış) + hesabın bütün türev alanları",
+   "seed": "tohum 22 (500); 1/33 (nötr 7 ve 19'da da var)",
+   "ops": "adım 1–306 (açılış −11.529,50, KMH 23.059); önek 305'te yok",
+   "modelA": "geçti; mini (ticari/diğer tür) Z1 −500000",
+   "modelB": "A ile aynı",
+   "program": "400 amount-range; mini Z1 açılmadı",
+   "note": "DİL BOŞLUĞU — program eksi açılışı yalnız KMH limitli vadesiz hesapta kabul ediyor (PLAN §3.5: KMH yalnız vadesiz). Dil hesap türüne bakmıyor. Vadesiz KMH minilerinde 4/4 fark 0."
+  },
+  {
+   "id": "KAHIN-A-YINELEME-SIRASI",
+   "field": "model_a çıkışı (exit 2)",
+   "seed": "rastgele koşularda yok (üretici kaçınıyor); yalnız mini",
+   "ops": "cikti/mini/mini-kahin-a-yineleme-sirasi.json, adım 1–6 (aynı istek kimliğiyle taksit tahsilatı tekrarı)",
+   "modelA": "exit 2: 'adım 6: BELİRSİZ-6 — kalanı aşan / kapanmış karta tahsilat'",
+   "modelB": "yinelenenler ['6'], Kasa 12000, K1 ödenen 12000 kalan 0",
+   "program": "B ile aynı",
+   "note": "KÂHİN HATASI (model_a) — BELİRSİZ denetimini yineleme tanımadan önce yapıyor; dil §5.4'e göre aynı gövdeli yineleme etkisiz olmalı. Bu yüzden sınırı aşacak yinelemeler DENENMEDİ."
+  },
+  {
+   "id": "KAHIN-B-KASA-HAREKET-SIL",
+   "field": "model_b çıkışı (exit 2)",
+   "seed": "rastgele koşularda yok (üretici kasa_hareket silmiyor); yalnız mini",
+   "ops": "cikti/mini/mini-kahin-b-kasa-hareket-sil.json, adım 1–3",
+   "modelA": "Kasa 100000 (H1 silindi)",
+   "modelB": "exit 2: \"3: 'H1' daha önce tanımlanmamış\"",
+   "program": "Kasa 100000",
+   "note": "KÂHİN HATASI (model_b) — kasa_hareket adını tanımlı sayı olarak kaydetmiyor. Bu yüzden kasa hareketi silme DENENMEDİ."
+  }
+ ]
+}

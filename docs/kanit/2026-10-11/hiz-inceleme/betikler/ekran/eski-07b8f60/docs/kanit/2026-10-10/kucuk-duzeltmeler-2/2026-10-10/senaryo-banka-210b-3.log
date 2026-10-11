@@ -1,0 +1,131 @@
+
+> destekofis@2.0.26 test:senaryo-banka-210b
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210b.mjs
+
+  ✓ başlangıç Ziraat 100000, Garanti 50000, Vadeli 0
+  ✓ tablo yüklendi (1 kayıt)
+
+■ 1. Kayıt tahsilatı: tablodaki kayıt → Tahsilat 1.500 Havale/EFT → Banka Hesabı Ziraat (seçilmeden kaydedilmez) → Ziraat +1.500, Kasa aynı
+  ✓ kayıt tabloda açıldı
+  ✓ Nakit seçiliyken Banka Hesabı görünmez
+  ✓ seçicide iki vadesiz hesap, vadeli yok: Hesap Seçin | Ziraat Bankası · Ana TL Hesabı (ZIR-TL) | Garanti BBVA · Ana TL Hesabı (GAR-TL)
+  ✓ hesap seçilmeden kaydedilmedi: “"Banka Hesabı" alanı boş bırakılamaz.”
+  ✓ Ziraat +1.500: z 101500, g 50000, v 0
+  ✓ Kasa değişmedi (0)
+  ✓ Ziraat hareketlerinde kayıt tahsilatı: Kayıt Tahsilatı 1500 | Açılış Bakiyesi 100000
+
+■ 2. Stok çıkışı 2 Adet × 1.000 peşin Havale/EFT → Garanti → Garanti +2.000, Ürün A 8
+  ✓ Garanti +2.000: z 101500, g 52000, v 0
+  ✓ Ürün A 8
+
+■ 3. Verilen çek 5.000 (XYZ) → Öde → Banka (Havale / EFT) → Ziraat → Ziraat −5.000; çek Ödendi
+  ✓ çek paid; ödeme Ziraat'e bağlı (true)
+  ✓ Ziraat −5.000: z 96500, g 52000, v 0
+
+■ 4. Fatura Düzenle: peşin 3.000 Havale/EFT Ziraat → Garanti'ye taşı; numara aynı; Ziraat −3.000, Garanti +3.000
+  ✓ Düzenle formunda peşin satırı Ziraat'le açıldı
+  ✓ Düzenle formunda belgenin kendi numarası (Belge NoFIS2026000000001; beklenen FIS2026000000001)
+  ✓ numara aynı (FIS2026000000001); peşin Garanti'ye bağlı
+  ✓ Ziraat −3.000, Garanti +3.000: z 96500, g 55000, v 0
+
+■ 5. Toplu kesim: iki taslak (peşin 1.000 Ziraat, 2.000 Garanti) → Seçilenleri Kaydet → peşinler kendi hesaplarında
+  ✓ taslak bakiyeyi değiştirmez
+  ✓ iki taslak Kaydedildi; peşinler Ziraat / Garanti (true/true)
+  ✓ Ziraat +1.000, Garanti +2.000: z 97500, g 57000, v 0
+
+■ 6. Cari tahsilatı Düzelt (Ziraat → Garanti) ve Sil: ABC 4.000 Havale/EFT
+  ✓ düzelt formu Ziraat'le açıldı
+  ✓ Düzelt: Ziraat −4.000, Garanti +4.000: z 97500, g 61000, v 0
+  ✓ hareket Garanti'ye bağlı, tutar 4000
+  ✓ Sil: Garanti −4.000: z 97500, g 57000, v 0
+
+■ 7. Banka transferini Düzelt: Ziraat → Garanti 10.000 → İşlem Kartı → Düzelt 12.000 → ters kayıt + yeni işlem
+  ✓ Düzelt formu alıcı Garanti'yle dolu
+  ✓ eski transfer (BNK-2026-000012) ters kaydedildi
+  ✓ Ziraat −2.000, Garanti +2.000 (10.000 → 12.000): z 85500, g 69000, v 0
+
+■ 8. Planlı transfer Ziraat → Garanti 5.000: Planla → bakiye değişmez → Gerçekleştir → Ziraat −5.000, Garanti +5.000
+  ✓ plan yazıldı (Bankalar Arası Transfer)
+  ✓ Planla: bakiyeler aynı: z 85500, g 69000, v 0
+  ✓ Gerçekleştir: Ziraat −5.000, Garanti +5.000: z 80500, g 74000, v 0
+
+■ 9. Vadeli hesaba transfer: Ziraat → Ziraat Bankası · Vadeli 20.000 → Ziraat −20.000, Vadeli +20.000; Gerçek Banka aynı
+  ✓ Alıcı Hesap listesinde vadeli hesap var
+  ✓ Ziraat −20.000, Vadeli +20.000: z 60500, g 74000, v 20000
+  ✓ Gerçek Banka değişmedi (iç transfer)
+
+■ 10. Transfer formunda Eksi Bakiye sorusu (Vazgeç yazmaz) ve Benzer İşlem sorusu (Yine de Kaydet ikinci kayıt)
+  ✓ Eksi Bakiye sorusu: Garanti BBVA · Ana TL Hesabı hesabında 74.000,00 TL var; bu işlemle bakiye 75.000,00 TL azalır ve −1.000,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?
+  ✓ Vazgeç: bakiyeler aynı: z 60500, g 74000, v 20000
+  ✓ ilk transfer 1.000: z 59500, g 75000, v 20000
+  ✓ Benzer İşlem sorusu: Aynı iş gününde aynı hesapta aynı tutarda benzer bir işlem kayıtlı (BNK-2026-000017, 08.10.2026, Ofis yöneticisi). Gerçekten ikinci bir işlemse "Yine de Kaydet"
+  ✓ Benzer İşlem'de Vazgeç yazmaz: z 59500, g 75000, v 20000
+  ✓ onay düğmesi “Yine de Kaydet”
+  ✓ Yine de Kaydet: tek ikinci transfer: z 58500, g 76000, v 20000
+
+■ 11. Silinenler: XYZ ödemesi (Garanti) geri yüklenirken Engelle → açık neden, geri yüklenmez; pasif hesapta açık neden; Uyar'da Yine de Geri Yükle
+  ✓ Garanti 6.000 (6000)
+  ✓ Engelle: açık neden “Garanti BBVA · Ana TL Hesabı hesabında 6.000,00 TL var; bu işlemle bakiye 76.000,00 TL azalır ve −70.000,00 TL olur (eksi bakiye). Bu hesapta eksi bakiyeye izin”
+  ✓ Engelle: geri yüklenmedi: z 128500, g 6000, v 20000
+  ✓ pasif hesap: açık neden “Garanti BBVA · Ana TL Hesabı hesabı pasif; bu hesabın bakiyesini değiştiren işlem (silme, tutar, tarih, yol ya da hesap değişikliği, geri yükleme) yapılmaz. Önc”
+  ✓ pasif: geri yüklenmedi: z 128500, g 6000, v 20000
+  ✓ Uyar: “Yine de Geri Yükle”
+  ✓ Yine de Geri Yükle: Garanti −76000: z 128500, g -70000, v 20000
+
+■ 12. Taksit kartı geri yükleme: kart (ABC 6.000/3) + havale tahsilatı 2.000 Ziraat → tahsilat ve kart silinir → önce tahsilat (kart yokken) → kart → tahsilat
+  ✓ silmeler: Ziraat −2.000: z 128500, g -70000, v 20000
+  ✓ kart yokken tahsilat geri yüklenmedi (Ziraat 128500); neden ““Kart Geri Yükleme” kartı silinmiş. Önce kartı geri yükleyin.”
+  ✓ kart geri geldi; kalan 6000
+  ✓ tahsilat geri geldi, Ziraat'e bağlı; kalan 4000
+  ✓ geri yükleme: Ziraat +2.000: z 130500, g -70000, v 20000
+
+■ 13. Toplu silme: Garanti'yi eksiye düşüren iki peşinli belge için TEK soru (“Yine de Sil”); onayla ikisi silinir
+  ✓ Garanti -67000 (silme eksiye düşürür)
+  ✓ tek soru: Seçilenlerden 2 belge banka hesabını eksiye düşürüyor (FIS2026000000005: Garanti BBVA · Ana TL Hesabı hesabında −67.000,00 TL var; bu işlemle bakiye 2.000,00 TL · “Yine de Sil”
+  ✓ ikinci soru gelmedi
+  ✓ iki belge silindi
+  ✓ Garanti −3.000: z 130500, g -70000, v 20000
+
+■ 14. Son durum: birikimli bağımsız model, Alt Hesap Mizanı, Hesap Planı Mizanı 102, Mutabakat Testi
+  ✓ birikimli model: z 130500 / 130500, g -70000 / -70000, v 20000 / 20000
+  ✓ Alt Hesap Mizanı: 102.01 130500, 102.02 -70000, 102.03 20000
+  ✓ Hesap Planı Mizanı 102 = 80500 (model 80500)
+  ✓ Kasa hiç değişmedi (bütün işlemler banka)
+  ✓ Mutabakat Testi tutarlı
+
+■ 15. Kurumsal kart (tek kart): cari ödeme Kredi Kartı → Kurumsal Kart bilgi satırı (Banka Hesabı gizli) → kart borcu +750, 108.00 aynı
+  ✓ Nakit seçiliyken hesap ve kart alanı görünmez
+  ✓ tek kart bilgi satırı: “Garanti BBVA · Kurumsal Kart kurumsal kartına yazılır.”
+  ✓ Kredi Kartı yolunda Banka Hesabı gizli
+  ✓ ödeme kurumsal karta bağlı (true)
+  ✓ Kart ve Kredi Borcu 750 (beklenen 750)
+  ✓ 108.00 değişmedi (0)
+  ✓ Kurumsal Kart bakiyesi -750
+  ✓ banka hesapları değişmedi (kartla ödeme bankadan çıkmaz)
+
+■ 16. İki kurumsal kart: seçimsiz kaydedilmez; Tab ile Kurumsal Kart alanına geçilir, ikinci kart seçilir → yalnız o kart +250
+  ✓ seçicide iki kurumsal kart, ön seçim yok: Kart Seçin | Garanti BBVA · Kurumsal Kart (GAR-KART) | Yapı Kredi · Kurumsal Kart 2 (YAP-KART)
+  ✓ kart seçilmeden kaydedilmedi: “"Kurumsal Kart" alanı boş bırakılamaz.”
+  ✓ Tab ile Kurumsal Kart alanına geçildi (cardAccountId)
+  ✓ seçilen kart alanda kaldı (yeniden çizilmedi)
+  ✓ tutar kaybolmadı
+  ✓ yalnız Kurumsal Kart 2 −250 (-250 / -750)
+
+■ 17. Alış faturası Düzenle: peşin kartla (Kurumsal Kart) satırı Kurumsal Kart 2'ye taşınır; yol Havale/EFT ↔ Kredi Kartı geçişinde hücre doğru aile
+  ✓ Düzenle formunda peşin satırı Kurumsal Kart alanıyla açıldı
+  ✓ Havale/EFT'de hücre Banka Hesabı: “Banka HesabıHesap SeçinZiraat Bankası · Ana TL Hesabı (ZIR-TL)Garanti BBVA · Ana TL Hesabı (GAR-TL)”
+  ✓ karta dönüşte kart yeniden seçilir (önceki hesap taşınmaz)
+  ✓ peşin satır Kurumsal Kart 2'ye bağlı
+  ✓ Kurumsal Kart +600, Kurumsal Kart 2 −600 (-750 / -850)
+  ✓ banka hesapları değişmedi
+
+■ 18. Kart Borcu Ödemesi (Ziraat → Kurumsal Kart 750; alış faturası 17. adımda Kurumsal Kart 2'ye taşındı) → kart 0; Genel Bakış ve Banka Bakiye Raporu'nda Kart ve Kredi Borcu; Mutabakat Testi
+  ✓ Kurumsal Kart 0 (0)
+  ✓ Ziraat −750: z 129750, g -70000, v 20000
+  ✓ Kart ve Kredi Borcu 850 (beklenen 850)
+  ✓ Genel Bakış Kart ve Kredi Borcu: “₺850,00”
+  ✓ Banka Bakiye Raporu: Kart ve Kredi Borcu | Yapı Kredi | Kurumsal Kart 2 | 309.02 | 0,00 TL | 0,00 TL | 850,00 TL | 0,00 TL | 0,00 TL | 0,00 TL | -850,00 TL
+  ✓ Mutabakat Testi tutarlı
+  ✓ sayfa hatası yok
+
+✓ senaryo-banka-210b: 89 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/e2e/artifacts/senaryo-banka-210b

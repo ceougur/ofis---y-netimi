@@ -1,0 +1,38 @@
+{
+  "ad": "mutasyon-7-tek-hazirlik-yok",
+  "komut": "node --test --test-name-pattern=^\\(l\\) /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m7/test/guncelleme-hazir.test.mjs",
+  "commit": "8ebc7f7cc42bf3c81a36ad94e05cd6631146f742",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 3,
+  "izlenmeyen": 23,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T21:06:59.814Z",
+  "sure_sn": 64.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler) › (l) iki indirme aynı anda başlamaz: yavaş indirme sürerken saatlik denetimler ve yöneticinin elle 'Denetle'si yeni indirme başlatmaz",
+      "konum": "test/guncelleme-hazir.test.mjs:294:3",
+      "hata": "Beklenen durum oluşmadı: {\"error\":\"hazır değil\"}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/mutasyon-7-tek-hazirlik-yok.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "2c6d579c48d56157a9b9ce8fdc3aabc5ee1e4292bb6dfb49fc1ece64fc2604dd",
+  "ham_cikti_bayt": 8665
+}

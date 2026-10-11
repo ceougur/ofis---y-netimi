@@ -1,0 +1,42 @@
+{
+  "s2-A-sekme-acik-kalir": {
+    "ertelemeAni": "2026-10-10T18:18:34.328Z",
+    "sekmeKapandiDk": 62.22,
+    "sekmeGizlendiDk": null,
+    "kurulduDk": 120.01,
+    "sekmeKapaninca_GizlenincedenKurulumaDk": 57.79,
+    "sonKullaniciIsteginden_KurulumaDk": 57.98,
+    "servisinGorduguSonIstek": "2026-10-10T19:20:36.072Z",
+    "surum": "9.0.1"
+  },
+  "s2-B-sekme-3dk-kapanir": {
+    "ertelemeAni": "2026-10-10T18:18:36.759Z",
+    "sekmeKapandiDk": 3.16,
+    "sekmeGizlendiDk": null,
+    "kurulduDk": 60.01,
+    "sekmeKapaninca_GizlenincedenKurulumaDk": 56.86,
+    "sonKullaniciIsteginden_KurulumaDk": 56.97,
+    "servisinGorduguSonIstek": "2026-10-10T18:21:39.540Z",
+    "surum": "9.0.1"
+  },
+  "s2-C-sekme-50dk-kapanir": {
+    "ertelemeAni": "2026-10-10T18:18:39.336Z",
+    "sekmeKapandiDk": 50.13,
+    "sekmeGizlendiDk": null,
+    "kurulduDk": 120.01,
+    "sekmeKapaninca_GizlenincedenKurulumaDk": 69.88,
+    "sonKullaniciIsteginden_KurulumaDk": 69.98,
+    "servisinGorduguSonIstek": "2026-10-10T19:08:41.006Z",
+    "surum": "9.0.1"
+  },
+  "s2-D-sekme-gizli": {
+    "ertelemeAni": "2026-10-10T18:18:41.860Z",
+    "sekmeKapandiDk": null,
+    "sekmeGizlendiDk": 3.07,
+    "kurulduDk": null,
+    "sekmeKapaninca_GizlenincedenKurulumaDk": null,
+    "sonKullaniciIsteginden_KurulumaDk": null,
+    "servisinGorduguSonIstek": "2026-10-10T20:32:44.564Z",
+    "surum": "9.0.0"
+  }
+}

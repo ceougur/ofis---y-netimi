@@ -1,0 +1,1459 @@
+// Kalıcı çalışma verisi (v1.5.0). Excel veya Google Sheets'ten içeri alınan satırlar sunucunun veritabanında saklanır;
+// ofisin sonradan yaptığı düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevler bu verinin üstünde birikir. Veri,
+// yönetici kaldırmadıkça korunur: dosyanın adı değişse, Sheet'e ulaşılamasa veya Sheet'ten satır silinse bile.
+//
+// İçeri alma iki adımlıdır: önce dosya okunur ve mevcut veriyle karşılaştırılır (önizleme), yönetici "devamı olarak
+// ekle" ya da "yerine koy" der, sonra uygulanır. Bağlı bir Google Sheets varsa belirli aralıklarla "eşitleme" yapılır:
+// yeni ve değişen satırlar eklenir/güncellenir; Sheet'te artık olmayan satırlar silinmez, "Sheet'te yok" olarak
+// işaretlenip yöneticiye sunulur. Sheet'in yapısı toptan değişmiş görünüyorsa eşitleme kendiliğinden uygulanmaz,
+// yönetici onayı beklenir.
+import { randomUUID } from "node:crypto";
+import { createBackup } from "./backup.mjs";
+import { applyIndexedCombos, cleanChoices, comboRulesFromParts, listOnlySheets, listRulesFromXml, mergeChoices, resolveChoices } from "./choices.mjs";
+import { HttpError, parseJson } from "./http.mjs";
+import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
+import { computeFormulas } from "./formula/compute.mjs";
+import { analyzeColumns } from "./insight/columns.mjs";
+import { brokenRowReason, cellCheck, typedColumnsOf } from "./insight/quality.mjs";
+import { matchColumns, renameKeys } from "./schema-map.mjs";
+import { healNote, healRows } from "./heal.mjs";
+import { matrixToRecords } from "./sections.mjs";
+import { currentScope, runScoped } from "./session-scope.mjs";
+import { spreadsheetId } from "./sheets.mjs";
+import { applyPatch } from "./sources.mjs";
+import { LEGACY_IDENTITY, detectIdentity, legacyFits, rowHash, rowIdentities, sameIdentity } from "./dataset-identity.mjs";
+import { columnOrder } from "./sources.mjs";
+
+export const DATASET_KEY = "dataset://ofis";
+// Veri oturumları (v2.0.1): farklı konudaki bir Excel/Sheets yeni bir oturumda açılır; her oturumun satırları,
+// düzeltmeleri, silinenleri, yeni kayıtları ve ayarları ayrıdır. İlk (eski) veri "dataset://ofis" oturumudur.
+// Her kullanıcı kendi seçtiği oturumda çalışır (istek kapsamı: session-scope.mjs).
+export const SESSION_PREFIX = "dataset://oturum-";
+export const MAX_ROWS = 200_000;
+// Sekmeli veride hiçbir sekmeyle ortak alanı olmayan kayıtların sekmeleri (v1.7.0: "Tümü" sekmesi kaldırıldı).
+export const APP_TAB = "Uygulamada eklenenler";
+export const UNTABBED_TAB = "Sekmesiz kayıtlar";
+const STAGE_TTL_MS = 30 * 60_000;
+const MAX_STAGES = 3;
+const SYSTEM_ACTOR = { id: "system", display_name: "Otomatik eşitleme", role: "admin" };
+
+const S = {
+  label: "dataset.label",
+  linkedUrl: "dataset.linkedSheetUrl",
+  lastSyncAt: "dataset.lastSyncAt",
+  lastSyncOkAt: "dataset.lastSyncOkAt",
+  lastSyncError: "dataset.lastSyncError",
+  needsInitialSync: "dataset.needsInitialSync",
+  syncHold: "dataset.syncHold",
+  changedAt: "dataset.changedAt",
+  identity: "dataset.identity",
+  // v2.0.2: kalemle verilen sekme adları ({asıl ad: görünen ad}) ve silinen (gizlenen) sekmeler ({asıl ad: {by, at}}).
+  tabAlias: "dataset.tabs.alias",
+  tabHidden: "dataset.tabs.hidden",
+  // v2.0.2: Excel/Sheets açılır listeleri ({sekme etiketi: {kolon: {options, strict}}}).
+  choices: "dataset.choices",
+  // v2.0.2: kullanıcının "Sorun yok" dediği işaretli kayıtlar ({kayıt anahtarı: {by, at}}).
+  unflagged: "dataset.unflagged",
+  // v2.0.6: ortadaki tabloda eklenen ve silinen sütunlar ({asıl sekme: {added: [{name, after, by, at}], hidden: {kolon: {...}}}}).
+  columnLayout: "dataset.columns.layout",
+};
+const MAX_ADDED_COLUMNS = 60;
+const COLUMN_NAME_MAX = 60;
+const ROLE_TEXT = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. kimlik no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra no", responsible: "sorumlu", text: "metin" };
+const FLAG_TEXT = { shifted: "Hücreler yan kolona kaymış görünüyor (telefon tarih kolonunda, tarih tutar kolonunda)", invalid: "Biçimli hücrelerin çoğu geçersiz (tarih, telefon ya da tutar okunamıyor)" };
+// Alt tablolu sekmelerde kayıt "Sekme › Alt tablo" adını taşır (sections.mjs).
+const TAB_SEP = " › ";
+
+const isSheetUrl = value => /^https:\/\/docs\.google\.com\/spreadsheets\//i.test(String(value || "").trim());
+
+export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true, makeBackup = null }) {
+  // Değişiklik öncesi yedek (v2.0.20): şirket uygulaması kendi yedekleyicisini verir (şirketin klasörü, kodlu ad, kimlik);
+  // verilmezse eski davranış (backupDir'e kodsuz ad).
+  const takeBackup = makeBackup || (backupDir ? label => createBackup(store.db, backupDir, { label, keep: backupKeep }) : null);
+  const stages = new Map();
+  const caches = new Map(); // oturum → { rows, byId } — veritabanındaki satırların ayrıştırılmış hâli
+  const syncing = new Map(); // oturum → süren eşitleme
+  let timer = null;
+  let startTimer = null;
+
+  const now = () => new Date().toISOString();
+  const setting = (key, fallback = "") => store.setting(key, fallback) ?? fallback;
+
+  // ---------- Oturumlar ----------
+  const REG = { sessions: "dataset.sessions", fallback: "dataset.defaultSession", defaultName: "dataset.sessionName", user: id => `dataset.session.user.${id}` };
+  const sessionList = () => {
+    const list = parseJson(setting(REG.sessions, ""), []);
+    return Array.isArray(list) ? list.filter(item => item && typeof item.key === "string" && item.key.startsWith(SESSION_PREFIX)) : [];
+  };
+  const knownKey = datasetKey => datasetKey === DATASET_KEY || sessionList().some(item => item.key === datasetKey);
+  const defaultKey = () => {
+    const value = setting(REG.fallback, "");
+    return value && knownKey(value) ? value : DATASET_KEY;
+  };
+  const allKeys = () => [DATASET_KEY, ...sessionList().map(item => item.key)];
+  // Bu isteğin oturumu: isteği yapan kullanıcının seçtiği oturum; seçmemişse ofisin varsayılanı. İstek dışında
+  // (zamanlayıcı, açılış) varsayılan oturum ya da runScoped ile verilen oturum.
+  function activeKey() {
+    const scope = currentScope();
+    if (!scope) return defaultKey();
+    if (scope.datasetKey) return scope.datasetKey;
+    let resolved = defaultKey();
+    const user = typeof scope.user === "function" ? scope.user() : null;
+    if (user) {
+      const chosen = setting(REG.user(user.id), "");
+      if (chosen && knownKey(chosen)) resolved = chosen;
+    }
+    scope.datasetKey = resolved;
+    return resolved;
+  }
+  const withKey = (datasetKey, fn) => runScoped({ datasetKey }, fn);
+  // Oturuma ait ayar adı: ilk oturum eski adları kullanır (geriye uyum), diğerleri "@<kimlik>" ekiyle.
+  const suffixOf = datasetKey => (datasetKey === DATASET_KEY ? "" : `@${datasetKey.slice(SESSION_PREFIX.length)}`);
+  const sk = (name, datasetKey = activeKey()) => `${name}${suffixOf(datasetKey)}`;
+  const sget = (name, fallback = "") => setting(sk(name), fallback);
+  const sset = (name, value, by) => store.setSetting(sk(name), value, by);
+  const linkedUrl = () => sget(S.linkedUrl, "").trim();
+
+  // ---------- Okuma ----------
+  // Kayıt açık veri oturumunda var mı? (Taksit kartı bağlanırken; başka oturumun ya da yanlış yazılmış bir anahtar bağlanamaz.)
+  // Kayıt açık veri oturumunda var mı: Excel/Sheets satırları (dataset_rows) ya da programdan "Yeni kayıt" ile
+  // eklenenler (records). (2.0.7: yeni kayıt hemen ardından cari/taksit bağı kurulabilsin.)
+  function hasRecord(caseKey) {
+    const key = String(caseKey || "").trim();
+    if (!key) return false;
+    const datasetKey = activeKey();
+    return Boolean(store.get("SELECT 1 AS one FROM dataset_rows WHERE dataset_key = ? AND case_key = ? LIMIT 1", datasetKey, key)) || Boolean(store.get("SELECT 1 AS one FROM records r WHERE r.source_name = ? AND r.case_key = ? AND NOT EXISTS (SELECT 1 FROM deleted_records d WHERE d.source_name = r.source_name AND d.case_key = r.case_key) LIMIT 1", datasetKey, key));
+  }
+  function loadRows() {
+    const datasetKey = activeKey();
+    if (caches.has(datasetKey)) return caches.get(datasetKey);
+    const rows = store
+      .all("SELECT row_id AS rowId, case_key AS caseKey, tab, position, values_json AS valuesJson, row_hash AS hash, origin, missing_since AS missingSince FROM dataset_rows WHERE dataset_key = ? ORDER BY position, created_at", activeKey())
+      .map(({ valuesJson, ...row }) => ({ ...row, values: parseJson(valuesJson, {}) }));
+    const loaded = { rows, byId: new Map(rows.map(row => [row.rowId, row])), columnsByTab: null };
+    caches.set(datasetKey, loaded);
+    return loaded;
+  }
+  // Sekme → o sekmenin kolonları (sekme sırasıyla). Yeni kayıtların hangi sekmede görüneceğine karar vermek için.
+  function tabColumns() {
+    const loaded = loadRows();
+    if (loaded.columnsByTab) return loaded.columnsByTab;
+    const map = new Map();
+    for (const row of loaded.rows) {
+      const tab = row.tab || row.values?.__sheet || "";
+      if (!tab) continue;
+      if (!map.has(tab)) map.set(tab, new Set());
+      const set = map.get(tab);
+      for (const key of Object.keys(row.values)) if (!key.startsWith("__")) set.add(key);
+    }
+    loaded.columnsByTab = map;
+    return map;
+  }
+  // Uygulamada eklenen (ya da sekmesiz gelen) bir kaydın sekmesi: eklendiği sekme hâlâ varsa o; yoksa doldurulan
+  // alanları en çok hangi sekmenin kolonlarında geçiyorsa o (eşitlikte kolonlarının daha büyük kısmını dolduran, sonra
+  // ilk sekme); hiçbir sekmeyle ortak alanı yoksa ayrı bir sekme. Böylece "Tümü" olmadan her kayıt bir sekmede görünür.
+  function placeRecord(values, fallback) {
+    const tabs = tabColumns();
+    if (!tabs.size) return "";
+    const stored = String(values.__sheet || "").trim();
+    if (stored && (tabs.has(stored) || stored === fallback)) return stored;
+    let best = "";
+    let bestScore = 0;
+    let bestRatio = 0;
+    const filled = Object.keys(values).filter(key => !key.startsWith("__") && String(values[key] ?? "").trim());
+    for (const [tab, columns] of tabs) {
+      let score = 0;
+      for (const key of filled) if (columns.has(key)) score += 1;
+      const ratio = columns.size ? score / columns.size : 0;
+      if (score > bestScore || (score === bestScore && score > 0 && ratio > bestRatio)) {
+        best = tab;
+        bestScore = score;
+        bestRatio = ratio;
+      }
+    }
+    return bestScore > 0 ? best : fallback;
+  }
+  const invalidate = (datasetKey = activeKey()) => {
+    caches.delete(datasetKey);
+  };
+
+  // ---------- Sekme adları ve gizlenen sekmeler (v2.0.2) ----------
+  // Asıl ad Excel/Sheets'teki addır; eşitleme ve kimlikler onunla çalışır. Görünümde (tablo, kartlar, takvim, dışa
+  // aktarma) kalemle verilen ad görünür. Ad tam yola ("Sekme › Alt tablo") ya da üst sekmeye verilebilir.
+  const tabSettings = () => ({ alias: parseJson(sget(S.tabAlias, ""), {}) || {}, hidden: parseJson(sget(S.tabHidden, ""), {}) || {} });
+  const topOf = tab => String(tab).split(TAB_SEP)[0];
+  const displayTab = (tab, alias) => {
+    if (!tab) return tab;
+    if (alias[tab]) return alias[tab];
+    const [top, ...rest] = String(tab).split(TAB_SEP);
+    return alias[top] ? [alias[top], ...rest].join(TAB_SEP) : tab;
+  };
+  const isHiddenTab = (tab, hidden) => Boolean(tab && (hidden[tab] || hidden[topOf(tab)]));
+
+  // ---------- Sütun ekleme ve silme (v2.0.6) ----------
+  // Ortadaki tabloda bir sütunun tamamı (başlık ve sekmedeki her satırın hücresi) eklenir ya da silinir. Kaynak Excel/Sheets
+  // değişmez: silinen sütun görünümden (tablo, kart, arama, takvim, analiz, dışa aktarma) kalkar, verisi durur ve
+  // Yönetim → Silinenler'den geri gelir; Sheet eşitlemesi sütunu geri getirmez. Eklenen sütun yalnızca programdadır:
+  // seçilen sütunun hemen sağına yerleşir, hücreleri boş başlar, değerleri kartta ✎ / Düzenle ile yazılır (düzeltme olarak).
+  const readLayout = () => {
+    const value = parseJson(sget(S.columnLayout, ""), {});
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  };
+  const writeLayout = (layout, user) => {
+    for (const [tab, entry] of Object.entries(layout)) if (!entry?.added?.length && !Object.keys(entry?.hidden || {}).length) delete layout[tab];
+    sset(S.columnLayout, JSON.stringify(layout), user.id);
+  };
+  const addedNames = entry => new Set((entry?.added || []).map(item => item.name));
+  // Satırın anahtarlarını sekmenin düzenine göre yeniden dizer: silinenler çıkar, eklenenler bağlı oldukları sütunun
+  // hemen sağına girer (bağlı olduğu sütun silinmişse onun yerine; hiç yoksa sona). İç alanlar ("__") olduğu gibi kalır.
+  function arrangeRow(row, entry) {
+    const hidden = entry.hidden || {};
+    const added = (entry.added || []).filter(item => !hidden[item.name]);
+    const own = addedNames(entry);
+    const anchors = new Map();
+    for (const item of added) {
+      if (!anchors.has(item.after)) anchors.set(item.after, []);
+      anchors.get(item.after).push(item.name);
+    }
+    const out = {};
+    const placed = new Set();
+    const place = key => {
+      for (const name of anchors.get(key) || []) {
+        if (placed.has(name)) continue;
+        placed.add(name);
+        out[name] = row[name] ?? "";
+        place(name);
+      }
+    };
+    for (const [key, value] of Object.entries(row)) {
+      if (key.startsWith("__")) {
+        out[key] = value;
+        continue;
+      }
+      if (own.has(key)) continue;
+      if (!hidden[key]) out[key] = value;
+      place(key);
+    }
+    for (const item of added) {
+      if (placed.has(item.name)) continue;
+      placed.add(item.name);
+      out[item.name] = row[item.name] ?? "";
+      place(item.name);
+    }
+    return out;
+  }
+  const cleanColumnName = value => String(value ?? "").replace(/[\u0000-\u001F\u007F]+/g, " ").replace(/\s+/g, " ").trim().slice(0, COLUMN_NAME_MAX);
+  // Görünen sekme adından düzenin anahtarı (asıl sekme adı). Tek sekmeli veride sekme şeridi görünmez; ad boş gelir.
+  function layoutTab(display) {
+    const original = originalTab(display);
+    if (original) return original;
+    const tabs = tabsOf(loadRows().rows);
+    return tabs.length === 1 ? tabs[0] : "";
+  }
+  function addColumn(user, { tab, after, name, existing = [], reserved = [] }) {
+    const key = layoutTab(tab);
+    const layout = readLayout();
+    const entry = layout[key] || { added: [], hidden: {} };
+    entry.added ||= [];
+    entry.hidden ||= {};
+    if (entry.added.length >= MAX_ADDED_COLUMNS) throw new HttpError(400, `Bir sekmeye en çok ${MAX_ADDED_COLUMNS} sütun eklenebilir.`);
+    const anchor = String(after ?? "");
+    if (anchor && !existing.includes(anchor)) throw new HttpError(404, `“${anchor}” sütunu bu sekmede yok. Sayfayı yenileyin.`);
+    const taken = new Set([...existing, ...Object.keys(entry.hidden), ...entry.added.map(item => item.name), ...reserved].map(fold));
+    let clean = cleanColumnName(name) || "Yeni sütun";
+    if (clean.startsWith("__")) throw new HttpError(400, "Sütun adı “__” ile başlayamaz.");
+    if (taken.has(fold(clean))) {
+      if (cleanColumnName(name)) throw new HttpError(409, `“${clean}” adında bir sütun bu sekmede zaten var (silinmiş olabilir). Farklı bir ad yazın.`);
+      let index = 2;
+      while (taken.has(fold(`${clean} ${index}`))) index += 1;
+      clean = `${clean} ${index}`;
+    }
+    entry.added.push({ name: clean, after: anchor, by: user.id, at: new Date().toISOString() });
+    layout[key] = entry;
+    writeLayout(layout, user);
+    audit?.(user, "source.column.added", clean, { tab: key, name: clean, after: anchor });
+    invalidate();
+    return { tab: key, name: clean, after: anchor };
+  }
+  function hideColumn(user, { tab, column, existing = [], filled = 0 }) {
+    const key = layoutTab(tab);
+    const name = String(column ?? "");
+    if (!name || name.startsWith("__") || !existing.includes(name)) throw new HttpError(404, `“${name}” sütunu bu sekmede yok. Sayfayı yenileyin.`);
+    if (existing.length <= 1) throw new HttpError(400, "Tabloda en az bir sütun kalmalı.");
+    const layout = readLayout();
+    const entry = layout[key] || { added: [], hidden: {} };
+    entry.hidden ||= {};
+    entry.hidden[name] = { by: user.id, at: new Date().toISOString(), filled: Math.max(0, Number(filled) || 0), added: addedNames(entry).has(name) };
+    layout[key] = entry;
+    writeLayout(layout, user);
+    audit?.(user, "source.column.hidden", name, { tab: key, column: name, filled: entry.hidden[name].filled });
+    invalidate();
+    return { tab: key, column: name };
+  }
+  function unhideColumn(user, { tab, column }) {
+    const key = String(tab ?? "");
+    const name = String(column ?? "");
+    const layout = readLayout();
+    if (!layout[key]?.hidden?.[name]) throw new HttpError(404, "Bu sütun zaten görünüyor.");
+    delete layout[key].hidden[name];
+    writeLayout(layout, user);
+    audit?.(user, "source.column.restored", name, { tab: key, column: name });
+    invalidate();
+    return { tab: key, column: name };
+  }
+  // Silinenler listesi için tüm oturumlardaki silinmiş sütunlar.
+  function hiddenColumns() {
+    const out = [];
+    for (const item of sessions()) {
+      withKey(item.key, () => {
+        const { alias } = tabSettings();
+        for (const [tab, entry] of Object.entries(readLayout())) {
+          for (const [column, info] of Object.entries(entry?.hidden || {})) out.push({ datasetKey: item.key, session: item.name || item.label || "", tab, tabName: displayTab(tab, alias), column, ...info });
+        }
+      });
+    }
+    return out;
+  }
+  // Görünen addan asıl ada (yeni kayıt formu görünen adı gönderir).
+  function originalTab(display) {
+    const name = String(display || "");
+    if (!name) return name;
+    const { alias } = tabSettings();
+    for (const [original, shown] of Object.entries(alias)) if (shown === name) return original;
+    const [top, ...rest] = name.split(TAB_SEP);
+    for (const [original, shown] of Object.entries(alias)) if (shown === top && !original.includes(TAB_SEP)) return [original, ...rest].join(TAB_SEP);
+    return name;
+  }
+  // Verinin (gizliler dahil) sekme adları: asıl ve görünen hâlleriyle (ad çakışması denetimi için).
+  function tabNamesInUse() {
+    const { alias } = tabSettings();
+    const names = new Set();
+    for (const tab of [...tabsOf(loadRows().rows), APP_TAB, UNTABBED_TAB]) {
+      names.add(tab);
+      names.add(topOf(tab));
+      names.add(displayTab(tab, alias));
+      names.add(topOf(displayTab(tab, alias)));
+    }
+    return [...names];
+  }
+  const fold = value => String(value).toLocaleLowerCase("tr-TR").trim();
+  function renameTab(user, display, name) {
+    const original = originalTab(display);
+    if (!tabsOf(loadRows().rows).some(tab => tab === original || topOf(tab) === original)) throw new HttpError(404, "Sekme bulunamadı. Sayfayı yenileyin.");
+    const clean = String(name ?? "").replace(/[\u0000-\u001F\u007F]+/g, "").replace(/\s+/g, " ").trim().slice(0, 80);
+    if (clean.includes(TAB_SEP.trim())) throw new HttpError(400, "Sekme adında “›” işareti kullanılamaz.");
+    const { alias } = tabSettings();
+    const previous = displayTab(original, alias);
+    if (clean && clean !== original) {
+      const taken = new Set([...tabNamesInUse().filter(item => item !== original && item !== previous && topOf(item) !== original), ...(freeProvider ? freeProvider.list().map(sheet => sheet.name) : [])].map(fold));
+      if (taken.has(fold(clean))) throw new HttpError(409, `“${clean}” adında bir sekme zaten var. Farklı bir ad yazın.`);
+      alias[original] = clean;
+    } else delete alias[original];
+    sset(S.tabAlias, JSON.stringify(alias), user.id);
+    audit?.(user, "source.tab.renamed", original, { original, previous, name: clean || original });
+    invalidate();
+    return { original, name: clean || original, previous };
+  }
+  function hideTab(user, display) {
+    const original = originalTab(display);
+    const rows = loadRows().rows.filter(row => {
+      const tab = row.tab || row.values?.__sheet || "";
+      return tab === original || topOf(tab) === original;
+    });
+    if (!rows.length) throw new HttpError(404, "Sekme bulunamadı. Sayfayı yenileyin.");
+    const { hidden, alias } = tabSettings();
+    hidden[original] = { by: user.id, at: new Date().toISOString(), rows: rows.length, name: displayTab(original, alias) };
+    sset(S.tabHidden, JSON.stringify(hidden), user.id);
+    audit?.(user, "source.tab.hidden", original, { original, name: hidden[original].name, rows: rows.length });
+    invalidate();
+    return { original, name: hidden[original].name, rows: rows.length };
+  }
+  function unhideTab(user, original) {
+    const { hidden } = tabSettings();
+    const entry = hidden[original];
+    if (!entry) throw new HttpError(404, "Bu sekme zaten görünüyor.");
+    delete hidden[original];
+    sset(S.tabHidden, JSON.stringify(hidden), user.id);
+    audit?.(user, "source.tab.restored", original, { original, name: entry.name });
+    invalidate();
+    return { original, name: entry.name };
+  }
+  // Silinenler listesi için tüm oturumlardaki gizli sekmeler.
+  function hiddenTabs() {
+    const out = [];
+    for (const item of sessions()) {
+      withKey(item.key, () => {
+        for (const [original, entry] of Object.entries(tabSettings().hidden)) out.push({ datasetKey: item.key, session: item.name || item.label || "", original, ...entry });
+      });
+    }
+    return out;
+  }
+
+  const recordCount = () => store.get("SELECT COUNT(*) AS count FROM records WHERE source_name = ?", activeKey()).count;
+  const rowCount = () => store.get("SELECT COUNT(*) AS count FROM dataset_rows WHERE dataset_key = ?", activeKey()).count;
+  const hasData = () => rowCount() > 0 || recordCount() > 0 || Boolean(linkedUrl());
+  // Sayfa şeridindeki sayı (2.0.25, müşteri: "sekmeyi sildim, yukarıda hâlâ 109 kayıt diyor"): "Sekmeyi Sil" sekmeyi
+  // ekrandan kaldırır, veri durur; şerit gizli sekmenin satırlarını ve "Kaydı Sil" ile silinen satırları saymaz.
+  // Sekmesiz eski satırın yerleşimi (placeRecord) burada izlenmez. Gizli sekme sayımı bütün satırları tarar; sonuç
+  // satır sayısı, silinen sayısı, veri değişim zamanı ve gizli sekme ayarıyla önbellekte tutulur.
+  const visibleCounts = new Map();
+  function visibleRowCount() {
+    const key = activeKey();
+    const total = rowCount();
+    const removed = store.get("SELECT COUNT(*) AS count FROM deleted_records d JOIN dataset_rows r ON r.dataset_key = d.source_name AND r.case_key = d.case_key WHERE d.source_name = ?", key).count;
+    const { hidden } = tabSettings();
+    if (!Object.keys(hidden).length) return total - removed;
+    const stamp = `${total}|${removed}|${sget(S.changedAt, "")}|${JSON.stringify(hidden)}`;
+    const cached = visibleCounts.get(key);
+    if (cached?.stamp === stamp) return cached.count;
+    let count = 0;
+    const sql = "SELECT COALESCE(NULLIF(r.tab, ''), json_extract(r.values_json, '$.__sheet'), '') AS tab, COUNT(*) AS count FROM dataset_rows r WHERE r.dataset_key = ? AND NOT EXISTS (SELECT 1 FROM deleted_records d WHERE d.source_name = r.dataset_key AND d.case_key = r.case_key) GROUP BY 1";
+    for (const row of store.all(sql, key)) if (!isHiddenTab(row.tab, hidden)) count += row.count;
+    visibleCounts.set(key, { stamp, count });
+    return count;
+  }
+  // Şeritteki "yeni kayıt" sayısı: uygulamada eklenip silinmemiş kayıtlar.
+  const liveRecordCount = () => store.get("SELECT COUNT(*) AS count FROM records r WHERE r.source_name = ? AND NOT EXISTS (SELECT 1 FROM deleted_records d WHERE d.source_name = r.source_name AND d.case_key = r.case_key)", activeKey()).count;
+
+  function tabsOf(rows) {
+    const tabs = [];
+    const seen = new Set();
+    for (const row of rows) {
+      const tab = row.tab || row.values?.__sheet || "";
+      if (tab && !seen.has(tab)) {
+        seen.add(tab);
+        tabs.push(tab);
+      }
+    }
+    return tabs;
+  }
+
+  function summary({ detailed = false } = {}) {
+    const rows = loadRows().rows;
+    const missing = rows.filter(row => row.missingSince);
+    const base = {
+      hasData: hasData(),
+      label: sget(S.label, ""),
+      rowCount: rows.length,
+      recordCount: recordCount(),
+      tabs: tabsOf(rows),
+      linked: Boolean(linkedUrl()),
+      lastSyncOkAt: sget(S.lastSyncOkAt, "") || null,
+      changedAt: sget(S.changedAt, "") || null,
+      missingCount: missing.length,
+      missingKeys: missing.slice(0, 1000).map(row => row.caseKey),
+    };
+    if (!detailed) return base;
+    return {
+      ...base,
+      linkedSheetUrl: linkedUrl(),
+      lastSyncAt: sget(S.lastSyncAt, "") || null,
+      lastSyncError: sget(S.lastSyncError, "") || null,
+      syncHold: parseJson(sget(S.syncHold, ""), null),
+      syncMinutes: Number(setting("client.syncMinutes", "5")) || 5,
+      imports: store.all(
+        `SELECT i.id, i.kind, i.mode, i.label, i.row_count AS rowCount, i.added, i.updated, i.unchanged, i.removed, i.missing, i.backup_name AS backupName,
+                CASE WHEN i.created_by = 'system' THEN 'Otomatik eşitleme' ELSE COALESCE(u.display_name, '') END AS actorName, i.created_at AS createdAt
+         FROM dataset_imports i LEFT JOIN users u ON u.id = i.created_by WHERE i.dataset_key = ? ORDER BY i.created_at DESC LIMIT 12`,
+        activeKey(),
+      ),
+    };
+  }
+
+  // Arayüzün beklediği birleşik görünüm: yeni kayıtlar + içeri alınan satırlar, ofisin düzeltmeleri uygulanmış,
+  // silinenler çıkarılmış. Her satır dosya kimliğini (__hofKey) taşır.
+  async function view() {
+    const unflagged = readUnflagged();
+    if (linkedUrl() && sget(S.needsInitialSync) === "1") await sync().catch(error => log?.warn?.("İlk eşitleme yapılamadı", error));
+    const { rows } = loadRows();
+    const overrides = new Map();
+    for (const item of store.all("SELECT case_key, field, value FROM overrides WHERE source_name = ?", activeKey())) {
+      if (String(item.field).startsWith("__")) continue; // iç alanlar (eski sürümlerde yazılmış olabilir) uygulanmaz
+      if (!overrides.has(item.case_key)) overrides.set(item.case_key, {});
+      overrides.get(item.case_key)[item.field] = item.value;
+    }
+    const deleted = new Set(store.all("SELECT case_key FROM deleted_records WHERE source_name = ?", activeKey()).map(item => item.case_key));
+    const merged = [];
+    const extraTabs = new Set();
+    for (const record of store.all("SELECT id, case_key, values_json FROM records WHERE source_name = ? ORDER BY created_at DESC", activeKey())) {
+      if (deleted.has(record.case_key)) continue;
+      const values = parseJson(record.values_json, {});
+      const tab = placeRecord(values, APP_TAB);
+      if (tab === APP_TAB) extraTabs.add(APP_TAB);
+      const { __sheet: ignored, ...rest } = values;
+      merged.push({ ...rest, ...(overrides.get(record.case_key) || {}), ...(tab ? { __sheet: tab } : {}), __hofKey: record.case_key, __hofRecord: record.id });
+    }
+    const tabbed = tabColumns().size > 0;
+    const changedFields = new WeakMap(); // formüllü satırlarda programda değiştirilen alanlar (v2.0.1)
+    const layout = readLayout();
+    const hasLayout = Object.keys(layout).length > 0;
+    for (const row of rows) {
+      if (deleted.has(row.caseKey)) continue;
+      const patch = overrides.get(row.caseKey);
+      // Eklenen sütunun düzeltmesi benzer adlı başka bir kolona taşınmasın (applyPatch yalnız satırda olmayan alanı eşler).
+      const own = patch && hasLayout ? layout[String(row.tab || row.values.__sheet || "")]?.added : null;
+      const base = own?.length ? { ...row.values, ...Object.fromEntries(own.filter(item => !(item.name in row.values)).map(item => [item.name, ""])) } : row.values;
+      const values = patch ? applyPatch(base, patch) : { ...row.values };
+      if (patch && (row.values.__hofF || row.values.__hofAt)) {
+        const fields = new Set();
+        for (const key of Object.keys(values)) if (!key.startsWith("__") && values[key] !== row.values[key]) fields.add(key);
+        if (fields.size) changedFields.set(values, fields);
+      }
+      // Sekmeli veride sekmesiz satır (eski sürümlerden kalmış olabilir) en uygun sekmeye yerleşir.
+      if (tabbed) {
+        const tab = String(values.__sheet || row.tab || "").trim();
+        values.__sheet = tab || placeRecord(values, UNTABBED_TAB);
+        if (values.__sheet === UNTABBED_TAB) extraTabs.add(UNTABBED_TAB);
+      }
+      values.__hofKey = row.caseKey;
+      if (values.__hofFlag && unflagged[row.caseKey]) delete values.__hofFlag;
+      if (row.missingSince) values.__hofMissing = row.missingSince;
+      merged.push(values);
+    }
+    // Formüller: girdisi programda değişenler yeniden hesaplanır; iç formül alanları istemciye gönderilmez.
+    try {
+      computeFormulas(merged, { changedFields });
+    } catch (failure) {
+      log?.warn?.("Formüller hesaplanamadı; kaynaktaki değerler gösteriliyor", failure);
+      for (const row of merged) {
+        delete row.__hofF;
+        delete row.__hofAt;
+      }
+    }
+    // Eklenen ve silinen sütunlar (v2.0.6): formüller hesaplandıktan sonra (silinen sütuna bağlı formül yine çalışır).
+    if (hasLayout) {
+      for (let index = 0; index < merged.length; index += 1) {
+        const entry = layout[String(merged[index].__sheet || "")];
+        if (entry) merged[index] = arrangeRow(merged[index], entry);
+      }
+    }
+    // Sekme adları ve gizlenen sekmeler (v2.0.2). Asıl ad "__hofSheet" iç alanında kalır (takvim kimlikleri onu kullanır).
+    const { alias, hidden } = tabSettings();
+    let shownRows = merged;
+    if (Object.keys(alias).length || Object.keys(hidden).length) {
+      shownRows = [];
+      for (const row of merged) {
+        const tab = String(row.__sheet || "");
+        if (isHiddenTab(tab, hidden)) continue;
+        const name = displayTab(tab, alias);
+        if (name !== tab) {
+          row.__hofSheet = tab;
+          row.__sheet = name;
+        }
+        shownRows.push(row);
+      }
+    }
+    const label = sget(S.label, "") || "Çalışma verisi";
+    const error = linkedUrl() ? sget(S.lastSyncError, "") : "";
+    if (!shownRows.length && !rows.length) {
+      return { connected: false, sourceUrl: activeKey(), syncedAt: null, rows: [], tabs: [], message: error || "Henüz veri yüklenmedi." };
+    }
+    // Serbest sayfalar (v2.0.1): verinin sekmelerinden sonra; boş olsalar da sekme olarak görünürler.
+    let freeTabs = [];
+    if (freeProvider) {
+      try {
+        freeTabs = freeProvider.list();
+        shownRows.push(...freeProvider.viewRows());
+      } catch (failure) {
+        log?.warn?.("Serbest sayfalar okunamadı", failure);
+        freeTabs = [];
+      }
+    }
+    // Açılır listeler (v2.0.2): görünen sekme adlarıyla; silinen sekmelerinkiler gönderilmez.
+    const choices = {};
+    for (const [tab, columns] of Object.entries(cleanChoices(parseJson(sget(S.choices, ""), {})))) {
+      if (isHiddenTab(tab, hidden)) continue;
+      choices[displayTab(tab, alias)] = columns;
+    }
+    return {
+      connected: true,
+      sourceUrl: activeKey(),
+      syncedAt: sget(S.lastSyncOkAt, "") || sget(S.changedAt, "") || null,
+      rows: shownRows,
+      choices,
+      // Yalnızca görünen satırı olan sekmeler (tüm satırları silinmiş sekme listelenmez, varsayılan da olamaz).
+      // Serbest sayfanın sekmesi "free" (sayfa kimliği) taşır; arayüz o sekmede tablo yerine düzenlenebilir ızgara açar.
+      tabs: [
+        ...[...new Set([...tabsOf(rows), ...extraTabs].filter(title => !isHiddenTab(title, hidden)).map(title => displayTab(title, alias)))].filter(title => shownRows.some(row => row.__sheet === title)).map(title => ({ gid: "", title })),
+        ...freeTabs.map(sheet => ({ gid: "", title: sheet.name, free: sheet.id })),
+      ],
+      message: error ? `${label} · ${shownRows.length} kayıt · Google Sheets'e şu an ulaşılamıyor, son eşitlenen veri gösteriliyor.` : `${label} · ${shownRows.length} kayıt`,
+    };
+  }
+
+  // ---------- İçeri alma: okuma ve önizleme ----------
+  function purgeStages() {
+    const limit = Date.now() - STAGE_TTL_MS;
+    for (const [id, stage] of stages) if (stage.createdAt < limit) stages.delete(id);
+    while (stages.size >= MAX_STAGES) stages.delete(stages.keys().next().value);
+  }
+
+  function toEntries(rows, identity) {
+    const identities = rowIdentities(rows, identity);
+    return rows.map((values, index) => ({ ...identities[index], values, hash: rowHash(values), position: index }));
+  }
+
+  // Kayıt kimliği kuralı (dataset-identity.mjs). Kayıtlı kural yoksa ve veri 1.6.0 öncesinden geliyorsa (satırlar ya da
+  // göç 4'ün bıraktığı ilk Sheet eşitlemesi) eski kural geçerlidir; 1.6.0 öncesinden gelen kurulumlarda kural ayrıca
+  // açılışta sabitlenir (pinLegacyIdentity). "Devamı olarak ekle" ve eşitleme mevcut kuralla eşleştirir; kural hiçbir
+  // zaman kendiliğinden (otomatik eşitlemede) değişmez.
+  function currentIdentity() {
+    const stored = parseJson(sget(S.identity, ""), null);
+    if (stored && (stored.mode === "legacy" || (stored.mode === "column" && stored.column))) return stored;
+    return loadRows().rows.length || sget(S.needsInitialSync) === "1" ? LEGACY_IDENTITY : null;
+  }
+  function identitiesFor(rows) {
+    const detected = detectIdentity(rows);
+    const current = currentIdentity();
+    if (!current) return { merge: detected, replace: detected };
+    if (current.mode === "legacy") {
+      // Notlar ve düzeltmeler dosya numarasına bağlı. "Yerine koy" ile gelen dosya da çoğunlukla dosya numaralıysa eski
+      // kuralla eşleştirilir (aynı dosyayı yeniden yüklemek kayıtları koparmaz); değilse yeni veri kendi kuralını alır.
+      return { merge: current, replace: legacyFits(rows) ? current : detected };
+    }
+    // Kimlik kolonu yeni veride de varsa korunur (notlar bağlı kalsın), yoksa yeni verinin kendi kuralı kullanılır.
+    const usable = columnOrder(rows).includes(current.column);
+    return { merge: usable ? current : detected, replace: usable ? current : detected };
+  }
+  // 1.6.0 öncesinden gelen ve kullanılmış kurulum: kayıtlar dosya numarasına bağlıdır; kural eski kurala sabitlenir.
+  function pinLegacyIdentity() {
+    withKey(DATASET_KEY, () => {
+      if (!parseJson(sget(S.identity, ""), null)) sset(S.identity, JSON.stringify(LEGACY_IDENTITY));
+    });
+  }
+
+  // Excel sayfaları → kayıtlar. v2.0.1: tarayıcı formülleri de gönderir (sayfa koordinatlarıyla); formüller
+  // kayıtlara bağlanır ki programda değişen değerlerle yeniden hesaplanabilsin (formula/bind.mjs).
+  // v2.0.2: açılır listeler (veri doğrulama) da gelir: sayfanın <dataValidations> parçası ve tanımlı adlar (choices.mjs).
+  function parseExcelSheets(sheets, fileName = "", definedNames = []) {
+    if (!Array.isArray(sheets)) throw new HttpError(400, "Tablo sayfaları okunamadı.");
+    if (sheets.length > 200) throw new HttpError(400, "Dosyada en fazla 200 sayfa olabilir.");
+    const rows = [];
+    const tabs = [];
+    const parsedSheets = [];
+    const combos = [];
+    let cells = 0;
+    // 1) Hücreler, formüller, açılır liste ve birleşik giriş kutusu kuralları.
+    for (const sheet of sheets) {
+      const name = String(sheet?.name ?? "").trim().slice(0, 200);
+      const matrix = Array.isArray(sheet?.matrix) ? sheet.matrix.slice(0, MAX_ROWS + 1).map(line => (Array.isArray(line) ? line.slice(0, 500).map(cell => String(cell ?? "").slice(0, 20_000)) : [])) : [];
+      cells += matrix.reduce((total, line) => total + line.length, 0);
+      if (cells > 20_000_000) throw new HttpError(400, "Tablo çok büyük (en fazla 20 milyon hücre).");
+      const formulas = cleanFormulas(sheet?.formulas);
+      const rules = typeof sheet?.validations === "string" ? listRulesFromXml(sheet.validations) : [];
+      if (sheet?.controls && typeof sheet.controls === "object") {
+        try {
+          const parts = {};
+          for (const [key, value] of Object.entries(sheet.controls.parts || {}).slice(0, 500)) if (typeof value === "string") parts[String(key)] = value;
+          for (const rule of comboRulesFromParts({ xml: String(sheet.controls.xml || ""), rels: String(sheet.controls.rels || ""), parts })) combos.push({ ...rule, sheet: rule.sheet || name });
+        } catch (error) {
+          log?.warn?.("Excel birleşik giriş kutuları okunamadı", error);
+        }
+      }
+      const start = { r: Math.max(0, Number(sheet?.start?.r) || 0), c: Math.max(0, Number(sheet?.start?.c) || 0) };
+      parsedSheets.push({ name, matrix, start, formulas, layout: [], rules, blocks: [], hidden: sheet?.hidden === true });
+    }
+    for (const { sheet, ...rule } of combos) parsedSheets.find(item => item.name === sheet)?.rules.push(rule);
+    const names = (Array.isArray(definedNames) ? definedNames : []).slice(0, 2_000).filter(item => item && typeof item.name === "string" && typeof item.ref === "string").map(item => ({ name: item.name.slice(0, 255), ref: item.ref.slice(0, 2_000), sheet: typeof item.sheet === "string" ? item.sheet : null }));
+    // Form denetimi kutusunun bağlı hücresindeki sıra numarası, kutuda görünen metne çevrilir.
+    if (combos.some(rule => rule.index)) {
+      try {
+        applyIndexedCombos(parsedSheets, names);
+      } catch (error) {
+        log?.warn?.("Birleşik giriş kutusu değerleri çevrilemedi", error);
+      }
+    }
+    // 2) Kayıtlar (ve okuma raporu: şekil, atlanan satırlar, kapsam).
+    const reports = [];
+    for (const sheet of parsedSheets) {
+      const parsed = matrixToRecords(sheet.matrix, sheet.name, { layout: sheet.formulas.length > 0 || sheet.rules.length > 0 });
+      for (const row of parsed.rows) rows.push(row); // yayma (...) büyük sayfalarda çağrı yığınını taşırır
+      for (const label of parsed.tabs) if (label && !tabs.includes(label)) tabs.push(label);
+      if (sheet.formulas.length) sheet.layout = parsed.layout;
+      sheet.blocks = parsed.blocks || [];
+      if (parsed.report) reports.push({ sheet: sheet.name, ...parsed.report });
+    }
+    const reading = summarizeReading(reports);
+    if (parsedSheets.some(sheet => sheet.formulas.length)) {
+      try {
+        attachFormulas(parsedSheets, { sourceTag: sourceTagOf(`excel:${fileName}`) });
+      } catch (error) {
+        log?.warn?.("Excel formülleri bağlanamadı; değerler olduğu gibi alındı", error);
+      }
+    }
+    let choices = {};
+    let listSheets = [];
+    if (parsedSheets.some(sheet => sheet.rules.length)) {
+      try {
+        const sources = new Set();
+        choices = resolveChoices(parsedSheets, names, sources);
+        listSheets = listOnlySheets(parsedSheets, sources);
+      } catch (error) {
+        log?.warn?.("Excel açılır listeleri okunamadı; değerler olduğu gibi alındı", error);
+      }
+    }
+    return { rows, tabs, choices, listSheets, reading };
+  }
+  // Okuma raporu özeti (v2.0.2): sayfa başına şekil ve notlar, toplam kapsam, kayıt sayılmayan satırlar (en çok 40).
+  function summarizeReading(reports) {
+    if (!reports.length) return null;
+    const cells = reports.reduce((sum, item) => sum + item.cells, 0);
+    const lost = reports.reduce((sum, item) => sum + item.lost, 0);
+    const notes = [];
+    for (const item of reports) for (const note of item.notes || []) notes.push(reports.length > 1 ? `“${item.sheet}”: ${note}` : note);
+    const skipped = [];
+    for (const item of reports) for (const entry of item.skipped || []) if (skipped.length < 40) skipped.push({ sheet: reports.length > 1 ? item.sheet : "", ...entry });
+    const skippedTotal = reports.reduce((sum, item) => sum + (item.skipped?.length || 0), 0);
+    return { coverage: cells ? Math.round((1 - lost / cells) * 1000) / 1000 : 1, cells, lost, notes: notes.slice(0, 12), skipped, skippedTotal, shapes: reports.map(item => ({ sheet: item.sheet, shape: item.shape })) };
+  }
+  const cleanFormulas = list =>
+    Array.isArray(list)
+      ? list
+          .slice(0, 200_000)
+          .filter(item => Array.isArray(item) && Number.isInteger(item[0]) && Number.isInteger(item[1]) && item[0] >= 0 && item[1] >= 0 && typeof item[2] === "string" && item[2].length <= 8_000)
+          .map(([r, c, f]) => [r, c, f])
+      : [];
+
+  // Satırları temizler: yalnızca metin değerler, boş satırlar atılır, kolon ve değer uzunlukları sınırlanır.
+  function cleanRows(rows) {
+    const clean = [];
+    for (const item of rows) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) continue;
+      const row = {};
+      for (const [key, value] of Object.entries(item).slice(0, 501)) {
+        const name = String(key).trim().slice(0, 200);
+        if (!name) continue;
+        row[name] = String(value ?? "").slice(0, 20_000);
+      }
+      if (Object.entries(row).some(([key, value]) => key !== "__sheet" && value.trim())) clean.push(row);
+    }
+    if (clean.length > MAX_ROWS) throw new HttpError(400, "Tablo en fazla 200.000 satır içerebilir.");
+    return clean;
+  }
+
+  function diff(entries) {
+    const { rows, byId } = loadRows();
+    const incoming = new Set();
+    const counts = { added: 0, updated: 0, unchanged: 0 };
+    const samples = { added: [], updated: [], removed: [] };
+    const sample = (list, entry) => list.length < 5 && !list.includes(entry.caseKey) && list.push(entry.caseKey);
+    for (const entry of entries) {
+      incoming.add(entry.id);
+      const current = byId.get(entry.id);
+      if (!current) {
+        counts.added += 1;
+        if (!entry.caseKey.startsWith("satir:")) sample(samples.added, entry);
+      } else if (current.hash !== entry.hash) {
+        counts.updated += 1;
+        if (!entry.caseKey.startsWith("satir:")) sample(samples.updated, entry);
+      } else counts.unchanged += 1;
+    }
+    const others = rows.filter(row => !incoming.has(row.rowId));
+    for (const row of others) if (!row.caseKey.startsWith("satir:")) sample(samples.removed, row);
+    return { ...counts, others: others.length, samples };
+  }
+
+  async function stage(user, body) {
+    purgeStages();
+    let rows;
+    let tabs;
+    let label;
+    let choices = {};
+    let listSheets = [];
+    let reading = null;
+    let url = null;
+    const kind = String(body?.kind || "");
+    if (kind === "sheets") {
+      url = String(body.url || "").trim();
+      if (!isSheetUrl(url)) throw new HttpError(400, "Geçerli bir Google Sheets bağlantısı yapıştırın (https://docs.google.com/spreadsheets/…).");
+      spreadsheetId(url);
+      const result = await readGoogleSheet(url, { fresh: true });
+      if (!result.connected) throw new HttpError(502, result.message || "Google Sheets okunamadı. Bağlantıyı ve paylaşım iznini kontrol edin.");
+      rows = result.rows;
+      tabs = result.tabs.map(tab => tab.title).filter(Boolean);
+      choices = result.choices || {};
+      listSheets = result.listSheets || [];
+      reading = result.reading || null;
+      label = String(result.title || "").trim().slice(0, 200) || "Google Sheets";
+    } else if (kind === "excel") {
+      const fileName = String(body.fileName || "").trim().replace(/[\\/]+/g, "_");
+      if (!fileName) throw new HttpError(400, "Dosya adı gerekli.");
+      if (fileName.length > 180) throw new HttpError(400, "Dosya adı çok uzun.");
+      ({ rows, tabs, choices, listSheets, reading } = parseExcelSheets(body.sheets, fileName, body.definedNames));
+      label = fileName;
+    } else throw new HttpError(400, "Bilinmeyen içeri alma türü.");
+    rows = cleanRows(rows);
+    // Kendi kendini onarma: bozuk Türkçe karakter, görünmez boşluk, "boş" anlamına gelen işaretler (heal.mjs).
+    const healed = healRows(rows);
+    if (healed.cells) {
+      reading = reading || { coverage: 1, cells: 0, lost: 0, notes: [], skipped: [], skippedTotal: 0, shapes: [] };
+      reading.healed = healed;
+      reading.notes = [...(reading.notes || []), healNote(healed)];
+    }
+    if (!rows.length) throw new HttpError(400, "Tabloda okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
+    // Hata toleransı (v2.0.2): bozuk satırlar (kaymış, çoğu hücresi geçersiz) sistemi durdurmaz; işaretlenir,
+    // "İşaretlenen hatalar" sekmesinde görünür, takvim ve göstergelere girmez; kalan sağlam veriyle iş sürer.
+    const { flagged, analyses: stagedAnalyses } = flagBrokenRows(rows);
+    const preview = buildPreview(rows, stagedAnalyses);
+    if (flagged) {
+      reading = reading || { coverage: 1, cells: 0, lost: 0, notes: [], skipped: [], skippedTotal: 0, shapes: [] };
+      reading.flagged = flagged;
+      reading.notes = [...(reading.notes || []), `${flagged} satır bozuk göründüğü için “İşaretlenen hatalar” sekmesine alındı; düzeltip “Sorun yok” diyebilirsiniz.`];
+    }
+    const identity = identitiesFor(rows);
+    const entries = { merge: toEntries(rows, identity.merge) };
+    entries.replace = sameIdentity(identity.merge, identity.replace) ? entries.merge : toEntries(rows, identity.replace);
+    // Yeni oturum için: dosya kendi kimlik kuralıyla (mevcut veriden bağımsız) alınır.
+    identity.session = detectIdentity(rows);
+    entries.session = sameIdentity(identity.session, identity.replace) ? entries.replace : toEntries(rows, identity.session);
+    // Konu benzerliği: yeni dosyanın kolonlarının mevcut veride de olma oranı. Düşükse (farklı konu) yeni oturum önerilir.
+    const incoming = columnOrder(rows);
+    const existingRows = loadRows().rows.map(row => row.values);
+    const existingColumns = columnOrder(existingRows);
+    const existing = new Set(existingColumns);
+    // Şemaya esnek uyum (v2.0.2): yeniden adlandırılmış kolonlar ad benzerliği ve değer örtüşmesiyle eşlenir; kaydedince
+    // düzeltmeler, kolon adları, listeler ve saklı satırlar yeni ada taşınır. Eşlenen kolon "ortak" sayılır.
+    const sampleValues = (list, columns) => new Map(columns.map(column => [column, list.slice(0, 500).map(row => row[column])]));
+    const schema = existingColumns.length && incoming.length ? matchColumns(existingColumns, incoming, { prevValues: sampleValues(existingRows, existingColumns), nextValues: sampleValues(rows, incoming) }) : null;
+    const shared = incoming.filter(column => existing.has(column)).length + (schema?.renamed.length || 0);
+    const similarity = existing.size && incoming.length ? shared / Math.min(existing.size, incoming.length) : null;
+    const id = `stage-${randomUUID()}`;
+    // Anlık görüntü (v2.0.2): önizleme hazırlanırken başka biri veriyi değiştirirse kaydetme reddedilir (409).
+    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, choices, listSheets, schema, snapshot: datasetStamp(), createdAt: Date.now() });
+    const mergeChanges = diff(entries.merge);
+    const replaceChanges = entries.replace === entries.merge ? mergeChanges : diff(entries.replace);
+    return {
+      stageId: id,
+      kind,
+      label,
+      url,
+      rowCount: rows.length,
+      tabs,
+      hasData: loadRows().rows.length > 0,
+      current: { rowCount: loadRows().rows.length, label: sget(S.label, ""), linked: Boolean(linkedUrl()) },
+      identity: identity.replace,
+      session: { current: sessions().find(item => item.current)?.name || "", count: sessionList().length + 1 },
+      similarity,
+      differentTopic: similarity !== null && similarity < 0.5,
+      reading,
+      schema: schema ? { renamed: schema.renamed, added: schema.added, removed: schema.removed } : null,
+      mapping: preview,
+      preview: {
+        merge: { added: mergeChanges.added, updated: mergeChanges.updated, unchanged: mergeChanges.unchanged, kept: mergeChanges.others },
+        replace: { added: replaceChanges.added, updated: replaceChanges.updated, unchanged: replaceChanges.unchanged, removed: replaceChanges.others },
+        samples: entries.replace === entries.merge ? mergeChanges.samples : replaceChanges.samples,
+      },
+    };
+  }
+
+  // ---------- Uygulama ----------
+  // mode: "merge" (devamı olarak ekle), "replace" (yerine koy), "sync" (bağlı Sheet eşitlemesi).
+  function apply(entries, { mode, origin }) {
+    const timestamp = now();
+    const current = new Map(
+      store.all("SELECT row_id AS rowId, row_hash AS hash, position, origin, missing_since AS missingSince FROM dataset_rows WHERE dataset_key = ?", activeKey()).map(row => [row.rowId, row]),
+    );
+    const counts = { added: 0, updated: 0, unchanged: 0, removed: 0, missing: 0 };
+    const insert = (entry, position) =>
+      store.run(
+        "INSERT INTO dataset_rows (dataset_key, row_id, case_key, tab, position, values_json, row_hash, origin, created_at, updated_at, missing_since) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)",
+        activeKey(), entry.id, entry.caseKey, entry.tab, position, JSON.stringify(entry.values), entry.hash, origin, timestamp, timestamp,
+      );
+    const update = (entry, position) =>
+      store.run(
+        "UPDATE dataset_rows SET case_key = ?, tab = ?, position = ?, values_json = ?, row_hash = ?, origin = ?, updated_at = ?, missing_since = NULL WHERE dataset_key = ? AND row_id = ?",
+        entry.caseKey, entry.tab, position, JSON.stringify(entry.values), entry.hash, origin, timestamp, activeKey(), entry.id,
+      );
+    const touch = (entry, row, position) => {
+      if (row.position !== position || row.missingSince || row.origin !== origin) {
+        store.run("UPDATE dataset_rows SET position = ?, origin = ?, missing_since = NULL WHERE dataset_key = ? AND row_id = ?", position, origin, activeKey(), entry.id);
+      }
+    };
+    const incoming = new Set(entries.map(entry => entry.id));
+
+    if (mode === "merge") {
+      let next = -1;
+      for (const row of current.values()) if (row.position > next) next = row.position;
+      for (const entry of entries) {
+        const row = current.get(entry.id);
+        if (!row) {
+          next += 1;
+          insert(entry, next);
+          counts.added += 1;
+        } else if (row.hash !== entry.hash) {
+          update(entry, row.position);
+          counts.updated += 1;
+        } else {
+          touch(entry, row, row.position);
+          counts.unchanged += 1;
+        }
+      }
+      return counts;
+    }
+
+    // replace ve sync: gelen satırlar kaynaktaki sırayla en başa dizilir.
+    entries.forEach((entry, index) => {
+      const row = current.get(entry.id);
+      if (!row) {
+        insert(entry, index);
+        counts.added += 1;
+      } else if (row.hash !== entry.hash) {
+        update(entry, index);
+        counts.updated += 1;
+      } else {
+        touch(entry, row, index);
+        counts.unchanged += 1;
+      }
+    });
+    const rest = [...current.values()].filter(row => !incoming.has(row.rowId)).sort((a, b) => a.position - b.position);
+    if (mode === "replace") {
+      for (const row of rest) store.run("DELETE FROM dataset_rows WHERE dataset_key = ? AND row_id = ?", activeKey(), row.rowId);
+      counts.removed = rest.length;
+      return counts;
+    }
+    // sync: kaynakta olmayan satırlar silinmez; bağlı Sheet'ten gelmişse "Sheet'te yok" olarak işaretlenir.
+    rest.forEach((row, offset) => {
+      const position = entries.length + offset;
+      const flag = row.origin === "sheets" && !row.missingSince;
+      if (flag) counts.missing += 1;
+      if (flag || row.position !== position) {
+        store.run("UPDATE dataset_rows SET position = ?, missing_since = COALESCE(missing_since, ?) WHERE dataset_key = ? AND row_id = ?", position, flag ? timestamp : null, activeKey(), row.rowId);
+      }
+    });
+    return counts;
+  }
+
+  function logImport(actor, { kind, mode, label, url, rowCount: total, counts, backupName }) {
+    store.run(
+      "INSERT INTO dataset_imports (id, dataset_key, kind, mode, label, source_url, row_count, added, updated, unchanged, removed, missing, backup_name, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      `import-${randomUUID()}`, activeKey(), kind, mode, label || "", url || null, total, counts.added || 0, counts.updated || 0, counts.unchanged || 0, counts.removed || 0, counts.missing || 0, backupName || null, actor.id, now(),
+    );
+  }
+
+  const changedSomething = counts => counts.added + counts.updated + counts.removed + counts.missing > 0;
+
+  const listeners = new Set();
+  function afterChange(actor, detail = {}) {
+    invalidate();
+    sset(S.changedAt, now(), actor.id === "system" ? null : actor.id);
+    bumpClientState(actor.id === "system" ? null : actor.id);
+    for (const listener of listeners) {
+      try {
+        listener({ actor, ...detail });
+      } catch (error) {
+        log?.warn?.("Veri değişikliği dinleyicisi hata verdi", error);
+      }
+    }
+    // Tüm açık ekranlar tabloyu yeniler (işlemi yapan dahil; onun sayfası zaten yeniden yüklenir).
+    events?.publish("workspace.changed", { kind: "records", actorId: actor.id, actorName: actor.display_name, dataset: true, datasetKey: activeKey() });
+  }
+
+  function backup(label) {
+    if (!takeBackup || !rowCount()) return null;
+    try {
+      const result = takeBackup(label);
+      return result.name;
+    } catch (error) {
+      log?.error?.("Veri değişikliği öncesi yedek alınamadı", error);
+      throw new HttpError(500, "Değişiklikten önce yedek alınamadı; işlem yapılmadı. Disk alanını kontrol edin.");
+    }
+  }
+
+  // mode: "merge" | "replace" (önizlemenin yapıldığı oturuma) ya da "session" (yeni oturum açılır, v2.0.1).
+  function commit(user, stageId, { mode, link = true, name = "" } = {}) {
+    const staged = stages.get(String(stageId || ""));
+    if (!staged) throw new HttpError(404, "İçeri alma süresi doldu veya bulunamadı. Dosyayı ya da bağlantıyı yeniden seçin.");
+    if (mode === "session") return openSession(user, staged, { link, name });
+    const target = staged.datasetKey && knownKey(staged.datasetKey) ? staged.datasetKey : activeKey();
+    return withKey(target, () => commitInto(user, staged, { mode, link }));
+  }
+
+  // Yeni oturum: dosya yeni ve boş bir oturuma kendi kimlik kuralıyla alınır; mevcut oturumlara dokunulmaz.
+  // Açan kişi yeni oturuma geçer; oturum seçmemiş kullanıcılar bulundukları oturumda sabitlenir (ekranları değişmez),
+  // yeni kullanıcılar yeni oturumla başlar.
+  function openSession(user, staged, { link, name }) {
+    const datasetKey = `${SESSION_PREFIX}${randomUUID().replace(/-/g, "").slice(0, 12)}`;
+    const title = String(name || staged.label || "Yeni Sayfa").replace(/\s+/g, " ").trim().slice(0, 80) || "Yeni Sayfa";
+    store.tx(() => {
+      const previous = defaultKey();
+      for (const member of store.all("SELECT id FROM users")) if (!setting(REG.user(member.id), "")) store.setSetting(REG.user(member.id), previous);
+      store.setSetting(REG.sessions, JSON.stringify([...sessionList(), { key: datasetKey, name: title, createdAt: now(), createdBy: user.id }]), user.id);
+      store.setSetting(REG.fallback, datasetKey, user.id);
+      store.setSetting(REG.user(user.id), datasetKey, user.id);
+      audit(user, "dataset.session.created", datasetKey, { name: title, label: staged.label, kind: staged.kind });
+    });
+    const scope = currentScope();
+    if (scope) scope.datasetKey = datasetKey;
+    const session = { ...staged, entries: { merge: staged.entries.session, replace: staged.entries.session }, identity: { merge: staged.identity.session, replace: staged.identity.session } };
+    const result = withKey(datasetKey, () => commitInto(user, session, { mode: "replace", link }));
+    // Diğer ekranlardaki oturum seçici yeni oturumu listelesin (kendi oturumları değişmez).
+    events?.publish("workspace.changed", { kind: "sessions", actorId: user.id, actorName: user.display_name, created: title });
+    return { ...result, mode: "session", session: { key: datasetKey, name: title } };
+  }
+
+  // Yeniden adlandırılan kolonlar (v2.0.2): düzeltmeler, kolon takma adları, açılır listeler ve (devamı olarak eklemede)
+  // saklı satırların anahtarları yeni ada taşınır; böylece eski kayıtlar ile yeni dosya aynı kolonda buluşur.
+  function migrateSchema(user, renamed, mode) {
+    const source = activeKey();
+    for (const { from, to } of renamed) {
+      // Düzeltmeler: hedef alanda zaten düzeltme olan kayıtlar atlanır (yeni ad kazanır).
+      store.run(
+        "UPDATE overrides SET field = ? WHERE source_name = ? AND field = ? AND NOT EXISTS (SELECT 1 FROM overrides o2 WHERE o2.source_name = overrides.source_name AND o2.case_key = overrides.case_key AND o2.field = ?)",
+        to, source, from, to,
+      );
+      store.run("DELETE FROM overrides WHERE source_name = ? AND field = ?", source, from);
+    }
+    const aliases = parseJson(sget("ui.columns", ""), {});
+    let aliasChanged = false;
+    for (const { from, to } of renamed) {
+      if (aliases[from] !== undefined && aliases[to] === undefined) {
+        aliases[to] = aliases[from];
+        delete aliases[from];
+        aliasChanged = true;
+      }
+    }
+    if (aliasChanged) sset("ui.columns", JSON.stringify(aliases), user.id);
+    const lists = parseJson(sget(S.choices, ""), {});
+    let listChanged = false;
+    for (const tab of Object.keys(lists)) {
+      for (const { from, to } of renamed) {
+        if (lists[tab]?.[from] && !lists[tab][to]) {
+          lists[tab][to] = lists[tab][from];
+          delete lists[tab][from];
+          listChanged = true;
+        }
+      }
+    }
+    if (listChanged) sset(S.choices, JSON.stringify(lists), user.id);
+    // Silinen sütunlar ve eklenen sütunların bağlı olduğu sütun da yeni ada taşınır (v2.0.6).
+    const layout = readLayout();
+    let layoutChanged = false;
+    for (const entry of Object.values(layout)) {
+      for (const { from, to } of renamed) {
+        if (entry.hidden?.[from] && !entry.hidden[to]) {
+          entry.hidden[to] = entry.hidden[from];
+          delete entry.hidden[from];
+          layoutChanged = true;
+        }
+        for (const item of entry.added || []) {
+          if (item.after === from) {
+            item.after = to;
+            layoutChanged = true;
+          }
+        }
+      }
+    }
+    if (layoutChanged) sset(S.columnLayout, JSON.stringify(layout), user.id);
+    if (mode === "merge") {
+      const { rows } = loadRows();
+      const timestamp = now();
+      let moved = 0;
+      for (const row of rows) {
+        if (!renamed.some(item => item.from in row.values)) continue;
+        const values = renameKeys(row.values, renamed);
+        store.run("UPDATE dataset_rows SET values_json = ?, updated_at = ? WHERE dataset_key = ? AND row_id = ?", JSON.stringify(values), timestamp, source, row.rowId);
+        moved += 1;
+      }
+      if (moved) caches.delete(source);
+    }
+    audit(user, "dataset.schema.migrated", source, { renamed: renamed.map(item => `${item.from} → ${item.to}`), mode });
+  }
+
+  // Verinin o anki damgası: satır sayısı + son değişiklik zamanı (aşama anlık görüntüsü için).
+  const datasetStamp = () => `${loadRows().rows.length}|${sget(S.changedAt, "")}`;
+
+  /** Bozuk satırları yerinde işaretler (__hofFlag); işaretlenen sayısını ve kolon analizlerini döndürür. En çok 5.000
+   *  satırdan tür öğrenilir. */
+  function flagBrokenRows(rows) {
+    let analyses = [];
+    try {
+      analyses = analyzeColumns(rows.slice(0, 5000), columnOrder(rows), { now: new Date() });
+    } catch {
+      return { flagged: 0, analyses: [] };
+    }
+    const typed = typedColumnsOf(analyses);
+    if (rows.length < 3 || typed.length < 2) return { flagged: 0, analyses };
+    let count = 0;
+    for (const row of rows) {
+      const reason = brokenRowReason(row, analyses, typed);
+      if (!reason) continue;
+      row.__hofFlag = FLAG_TEXT[reason] || reason;
+      count += 1;
+    }
+    return { flagged: count, analyses };
+  }
+
+  // Ön izleme ve eşleme (v2.0.2): veritabanına yazmadan önce kolonların ne sayıldığı, kesinliği ve ilk satırlar; biçimi
+  // uymayan hücreler ve belirsiz kolonlar sarı gösterilir. Kullanıcı rol seçerse kaydetmede oturuma yazılır.
+  function buildPreview(rows, analyses) {
+    const columns = analyses
+      .filter(item => item.role !== "empty")
+      .map(item => ({ name: item.column, role: item.role, kind: item.kind ?? null, certainty: item.certainty || "belirsiz", warning: item.warning ?? null, evidence: (item.evidence || []).slice(0, 3), fill: item.stats?.fill ?? 0 }));
+    const sample = rows.slice(0, 8);
+    const suspicious = [];
+    sample.forEach((row, index) => {
+      for (const item of analyses) {
+        const value = String(row[item.column] ?? "").trim();
+        if (!value) continue;
+        const check = cellCheck(item.role, value);
+        // Ön izlemede "şüpheli" veri sağlığındakinden geniştir: tarih/tutar kolonunda düz metin de sarıdır (not olabilir,
+        // ama kullanıcı görsün); veri sağlığı bunu hata saymaz.
+        if (check === "bad" || (check === "skip" && (item.role === "date" || item.role === "money"))) suspicious.push({ row: index, column: item.column, reason: `“${item.column}” kolonu ${ROLE_TEXT[item.role] || item.role} sayıldı; bu hücre öyle okunamıyor` });
+        else if (item.warning === "scientific" || item.warning === "serial") suspicious.push({ row: index, column: item.column, reason: item.warning === "serial" ? "Excel seri tarih sayısı; toplu düzeltmeyle tarihe çevrilir" : "Excel sayıya çevirmiş; rakamlar dosyada yok" });
+      }
+      if (row.__hofFlag) suspicious.push({ row: index, column: "", reason: row.__hofFlag });
+    });
+    return { columns, rows: sample.map(row => Object.fromEntries(columns.map(item => [item.name, String(row[item.name] ?? "")]).concat(row.__hofFlag ? [["__hofFlag", row.__hofFlag]] : []))), suspicious, unsure: columns.filter(item => item.certainty === "belirsiz").length, total: rows.length };
+  }
+  const readUnflagged = () => parseJson(sget(S.unflagged, ""), {});
+  /** "Sorun yok": işaret görünümden kalkar; kayıt takvim ve göstergelere döner. Kaynak yeniden yüklense de karar kalır. */
+  function unflag(user, caseKey) {
+    const key = String(caseKey || "").trim();
+    if (!key) throw new HttpError(400, "Kayıt kimliği gerekli.");
+    const marks = readUnflagged();
+    if (marks[key]) return { key, already: true };
+    marks[key] = { by: user.id, at: now() };
+    const keys = Object.keys(marks);
+    if (keys.length > 20_000) for (const old of keys.slice(0, keys.length - 20_000)) delete marks[old];
+    sset(S.unflagged, JSON.stringify(marks), user.id);
+    audit(user, "source.row.unflagged", key, { caseKey: key });
+    return { key, already: false };
+  }
+
+  /** Kaynaktaki (düzeltmesiz) hücre değeri: iyimser kilit karşılaştırması için. Kayıt yoksa null. */
+  function baseValue(caseKey, field) {
+    const row = loadRows().rows.find(item => item.caseKey === caseKey);
+    if (!row) return null;
+    return String(row.values?.[field] ?? "");
+  }
+
+  function commitInto(user, staged, { mode, link = true } = {}) {
+    if (staged.snapshot && staged.datasetKey === activeKey() && staged.snapshot !== datasetStamp()) {
+      throw new HttpError(409, "Bu önizleme hazırlanırken veri değişti (başka bir kullanıcı yüklemiş ya da düzenlemiş olabilir). Pencereyi kapatıp dosyayı yeniden bırakın.", { code: "STALE_STAGE" });
+    }
+    const empty = loadRows().rows.length === 0;
+    const effective = empty ? "replace" : mode;
+    if (!["merge", "replace"].includes(effective)) throw new HttpError(400, "Devamı olarak ekle ya da yerine koy seçilmelidir.");
+    const backupName = backup(effective === "merge" ? "veri-oncesi-ekleme" : "veri-oncesi-degistirme");
+    const origin = staged.kind === "sheets" ? "sheets" : "excel";
+    const entries = effective === "merge" ? staged.entries.merge : staged.entries.replace;
+    const identity = effective === "merge" ? staged.identity.merge : staged.identity.replace;
+    let counts;
+    store.tx(() => {
+      if (staged.schema?.renamed?.length) migrateSchema(user, staged.schema.renamed, effective);
+      counts = apply(entries, { mode: effective, origin });
+      sset(S.identity, JSON.stringify(identity), user.id);
+      // Açılır listeler: yerine koymada dosyanınkiler, eklemede dosyadaki sekmelerinki yenilenir (v2.0.2).
+      const lists = effective === "replace" ? cleanChoices(staged.choices) : mergeChoices(parseJson(sget(S.choices, ""), {}), staged.choices, staged.tabs);
+      sset(S.choices, Object.keys(lists).length ? JSON.stringify(lists) : "", user.id);
+      // Excel/Sheets'te gizli liste sayfaları programda da gizlenir (yalnızca içeri almada; eşitleme dokunmaz ve
+      // kullanıcının geri getirdiği sekme yeniden gizlenmez). Yönetim → Silinenler'den geri gelir.
+      if (staged.listSheets?.length) {
+        const { hidden, alias } = tabSettings();
+        const sizes = new Map();
+        for (const entry of entries) {
+          const tab = topOf(entry.values?.__sheet || "");
+          sizes.set(tab, (sizes.get(tab) || 0) + 1);
+        }
+        let changed = false;
+        for (const name of staged.listSheets) {
+          if (hidden[name] || !sizes.get(name)) continue;
+          hidden[name] = { by: user.id, at: now(), rows: sizes.get(name), name: displayTab(name, alias), reason: "list" };
+          changed = true;
+          audit(user, "source.tab.hidden", name, { original: name, name, rows: sizes.get(name), reason: "list" });
+        }
+        if (changed) sset(S.tabHidden, JSON.stringify(hidden), user.id);
+      }
+      if (staged.kind === "sheets" && link) {
+        sset(S.linkedUrl, staged.url, user.id);
+        sset(S.lastSyncAt, now(), user.id);
+        sset(S.lastSyncOkAt, now(), user.id);
+        sset(S.lastSyncError, "", user.id);
+      } else if (effective === "replace") {
+        // Veri başka bir kaynakla değiştirildi: eski Sheet bağlantısı veriyi geri getirmesin.
+        sset(S.linkedUrl, "", user.id);
+      }
+      sset(S.needsInitialSync, "0", user.id);
+      sset(S.syncHold, "", user.id);
+      if (effective === "replace" || empty || !sget(S.label, "")) sset(S.label, staged.label, user.id);
+      logImport(user, { kind: staged.kind, mode: empty ? "initial" : effective, label: staged.label, url: staged.url, rowCount: entries.length, counts, backupName });
+      audit(user, "dataset.imported", staged.id, { kind: staged.kind, mode: empty ? "initial" : effective, label: staged.label, rows: entries.length, ...counts, backupName });
+    });
+    stages.delete(staged.id);
+    afterChange(user, { imported: true, mode: empty ? "initial" : effective });
+    return { mode: empty ? "initial" : effective, counts, rowCount: loadRows().rows.length, label: sget(S.label, ""), sourceLabel: staged.label, linked: Boolean(linkedUrl()), backupName };
+  }
+
+  // ---------- Bağlı Google Sheets eşitlemesi ----------
+  async function sync({ actor = SYSTEM_ACTOR, manual = false } = {}) {
+    const url = linkedUrl();
+    if (!url) return { ok: false, reason: "not-linked" };
+    const datasetKey = activeKey();
+    if (syncing.has(datasetKey)) return syncing.get(datasetKey);
+    const running = (async () => {
+      const started = now();
+      const result = await readGoogleSheet(url, { fresh: true });
+      sset(S.lastSyncAt, started);
+      if (!result.connected) {
+        sset(S.lastSyncError, result.message || "Google Sheets okunamadı.");
+        return { ok: false, message: result.message };
+      }
+      const rows = cleanRows(result.rows);
+      const identity = identitiesFor(rows).merge;
+      const entries = toEntries(rows, identity);
+      const { rows: currentRows, byId } = loadRows();
+      // Formüller bu kez okunamadıysa (xlsx indirilemedi) kayıtlı formüller korunur; aksi hâlde her kesintide
+      // formüller silinip geri gelirdi.
+      if (result.formulasUnavailable) {
+        for (const entry of entries) {
+          const current = byId.get(entry.id)?.values;
+          if (!current || (!current.__hofF && !current.__hofAt)) continue;
+          if (current.__hofF && !entry.values.__hofF) entry.values.__hofF = current.__hofF;
+          if (current.__hofAt && !entry.values.__hofAt) entry.values.__hofAt = current.__hofAt;
+          entry.hash = rowHash(entry.values);
+        }
+      }
+      const fromSheet = currentRows.filter(row => row.origin === "sheets" && !row.missingSince);
+      const changes = diff(entries);
+      const incomingIds = new Set(entries.map(entry => entry.id));
+      const wouldMiss = fromSheet.filter(row => !incomingIds.has(row.rowId)).length;
+      // Emniyet: Sheet boş döndüyse ya da satırların büyük kısmı birden "yeni" ve "kayıp" görünüyorsa (başlık satırı
+      // değişmiş, sekme adı değişmiş gibi yapısal bir değişiklik) kendiliğinden uygulanmaz; yönetici karar verir.
+      const structural = fromSheet.length >= 20 && changes.added >= fromSheet.length * 0.3 && wouldMiss >= fromSheet.length * 0.3;
+      if ((!entries.length && fromSheet.length) || structural) {
+        const hold = { at: started, added: changes.added, missing: wouldMiss, updated: changes.updated, rowCount: entries.length };
+        sset(S.syncHold, JSON.stringify(hold));
+        sset(S.lastSyncError, "");
+        log?.warn?.("Sheet eşitlemesi yönetici onayına bırakıldı", hold);
+        return { ok: false, held: true, hold };
+      }
+      let counts;
+      store.tx(() => {
+        counts = apply(entries, { mode: "sync", origin: "sheets" });
+        sset(S.identity, JSON.stringify(identity));
+        // Listeler bu kez okunamadıysa (xlsx indirilemedi) kayıtlı listeler korunur.
+        if (result.choices) {
+          const lists = mergeChoices(parseJson(sget(S.choices, ""), {}), result.choices, result.tabs.map(tab => tab.title));
+          sset(S.choices, Object.keys(lists).length ? JSON.stringify(lists) : "");
+        }
+        sset(S.lastSyncOkAt, started);
+        sset(S.lastSyncError, "");
+        sset(S.needsInitialSync, "0");
+        sset(S.syncHold, "");
+        const title = String(result.title || "").trim();
+        if (title && (!sget(S.label, "") || sget(S.label, "") === "Google Sheets")) sset(S.label, title.slice(0, 200));
+        if (changedSomething(counts)) logImport(actor, { kind: "sheets", mode: "sync", label: sget(S.label, ""), url, rowCount: entries.length, counts });
+      });
+      if (changedSomething(counts)) afterChange(actor);
+      else invalidate();
+      return { ok: true, counts, manual };
+    })().finally(() => {
+      syncing.delete(datasetKey);
+    });
+    syncing.set(datasetKey, running);
+    return running;
+  }
+
+  function unlink(user) {
+    if (!linkedUrl()) return summary({ detailed: true });
+    store.tx(() => {
+      sset(S.linkedUrl, "", user.id);
+      sset(S.syncHold, "", user.id);
+      sset(S.lastSyncError, "", user.id);
+      audit(user, "dataset.unlinked", activeKey(), {});
+    });
+    afterChange(user);
+    return summary({ detailed: true });
+  }
+
+  function remove(user) {
+    const backupName = backup("veri-kaldirma-oncesi");
+    let removed = 0;
+    store.tx(() => {
+      removed = store.run("DELETE FROM dataset_rows WHERE dataset_key = ?", activeKey()).changes;
+      for (const name of [S.linkedUrl, S.label, S.syncHold, S.lastSyncError, S.lastSyncOkAt, S.identity, S.choices]) sset(name, "", user.id);
+      sset(S.needsInitialSync, "0", user.id);
+      logImport(user, { kind: "remove", mode: "remove", label: "", rowCount: 0, counts: { removed }, backupName });
+      audit(user, "dataset.removed", activeKey(), { removed, backupName });
+    });
+    afterChange(user);
+    return { removed, backupName };
+  }
+
+  function missingRows(limit = 500) {
+    return loadRows()
+      .rows.filter(row => row.missingSince)
+      .slice(0, limit)
+      .map(row => ({ rowId: row.rowId, caseKey: row.caseKey, tab: row.tab, missingSince: row.missingSince, preview: Object.entries(row.values).filter(([key, value]) => !key.startsWith("__") && String(value).trim()).slice(0, 4).map(([key, value]) => `${key}: ${String(value).slice(0, 60)}`) }));
+  }
+
+  // action: "remove" (tablodan kaldır) | "keep" (tut; artık Sheet'e bağlı sayılmaz, işaretlenmez)
+  function resolveMissing(user, action, rowIds) {
+    if (!["remove", "keep"].includes(action)) throw new HttpError(400, "Geçersiz işlem.");
+    const ids = Array.isArray(rowIds) ? rowIds.map(String).slice(0, 200_000) : [];
+    if (!ids.length) throw new HttpError(400, "Kayıt seçilmedi.");
+    const backupName = action === "remove" ? backup("sheette-olmayanlar-kaldirma-oncesi") : null;
+    let changed = 0;
+    store.tx(() => {
+      for (const id of ids) {
+        changed += action === "remove"
+          ? store.run("DELETE FROM dataset_rows WHERE dataset_key = ? AND row_id = ? AND missing_since IS NOT NULL", activeKey(), id).changes
+          : store.run("UPDATE dataset_rows SET origin = 'local', missing_since = NULL WHERE dataset_key = ? AND row_id = ? AND missing_since IS NOT NULL", activeKey(), id).changes;
+      }
+      logImport(user, { kind: "missing", mode: action, label: sget(S.label, ""), rowCount: changed, counts: action === "remove" ? { removed: changed } : { unchanged: changed }, backupName });
+      audit(user, `dataset.missing.${action}`, activeKey(), { rows: changed, backupName });
+    });
+    afterChange(user);
+    return { changed, backupName };
+  }
+
+  // v1.0.0 tarayıcısından gelen Sheet bağlantısı veya eski arayüzün "kaynak" yazması (uyumluluk).
+  async function adoptLegacySheetUrl(user, value) {
+    const url = String(value ?? "").trim();
+    if (url === DATASET_KEY || url.startsWith(SESSION_PREFIX)) return { adopted: false };
+    if (isSheetUrl(url) && !hasData()) {
+      const staged = await stage(user, { kind: "sheets", url });
+      commit(user, staged.stageId, { mode: "replace", link: true });
+      return { adopted: true };
+    }
+    throw new HttpError(409, "Veri kaynağı artık Ayarlar → Veri bölümünden yönetilir. Sayfayı yenileyip oradan devam edin.");
+  }
+
+  function start() {
+    if (!autoSync || timer) return;
+    // Her oturumun bağlı Sheet'i kendi aralığıyla eşitlenir.
+    const tick = () => {
+      // Lisans salt okunurken (süre doldu, engellendi…) bağlı Sheet eşitlenmez: veri olduğu gibi kalır.
+      if (!canWrite()) return;
+      const minutes = Math.max(1, Number(setting("client.syncMinutes", "5")) || 5);
+      for (const datasetKey of allKeys()) {
+        withKey(datasetKey, () => {
+          const url = linkedUrl();
+          if (!url || syncing.has(datasetKey)) return;
+          const last = Date.parse(sget(S.lastSyncAt, "")) || 0;
+          if (sget(S.needsInitialSync) !== "1" && Date.now() - last < minutes * 60_000) return;
+          sync().catch(error => log?.warn?.("Sheet eşitlemesi başarısız", error));
+        });
+      }
+    };
+    startTimer = setTimeout(tick, 5_000);
+    startTimer.unref?.();
+    timer = setInterval(tick, tickMs);
+    timer.unref?.();
+  }
+
+  function stop() {
+    clearTimeout(startTimer);
+    clearInterval(timer);
+    timer = null;
+    stages.clear();
+  }
+
+  // İstemci ayarları için hafif özet (satırları okumaz).
+  const info = () => ({ hasData: hasData(), label: sget(S.label, ""), linkedUrl: linkedUrl(), key: activeKey(), sessionCount: sessionList().length + 1 });
+
+  // ---------- Oturum listesi, seçim, ad, silme ----------
+  function sessions() {
+    const current = activeKey();
+    const extra = sessionList();
+    const list = [{ key: DATASET_KEY, name: setting(REG.defaultName, ""), createdAt: null }, ...extra].map(item =>
+      withKey(item.key, () => {
+        const label = sget(S.label, "");
+        return {
+          key: item.key,
+          name: item.name || label || (item.key === DATASET_KEY ? "İlk Sayfa" : "Sayfa"),
+          label,
+          rowCount: visibleRowCount(),
+          // totalRowCount: gizlenen sekmeler dahil bütün satırlar (sayfa silinirken bunların hepsi silinir).
+          totalRowCount: rowCount(),
+          recordCount: liveRecordCount(),
+          linked: Boolean(linkedUrl()),
+          changedAt: sget(S.changedAt, "") || null,
+          createdAt: item.createdAt || null,
+          current: item.key === current,
+        };
+      }),
+    );
+    // Boş kalmış ilk oturum, başka oturum varken ve seçili değilken listelenmez.
+    return list.filter(item => item.key !== DATASET_KEY || item.current || !extra.length || item.totalRowCount || item.recordCount);
+  }
+
+  function selectSession(user, datasetKey) {
+    const target = String(datasetKey || "");
+    if (!knownKey(target)) throw new HttpError(404, "Sayfa bulunamadı. Silinmiş olabilir; listeyi yenileyin.");
+    store.setSetting(REG.user(user.id), target, user.id);
+    const scope = currentScope();
+    if (scope) scope.datasetKey = target;
+    return { current: target };
+  }
+
+  function renameSession(user, datasetKey, name) {
+    const target = String(datasetKey || "");
+    const title = String(name || "").replace(/\s+/g, " ").trim().slice(0, 80);
+    if (!title) throw new HttpError(400, "Sayfa adı gerekli.");
+    if (!knownKey(target)) throw new HttpError(404, "Sayfa bulunamadı.");
+    store.tx(() => {
+      if (target === DATASET_KEY) store.setSetting(REG.defaultName, title, user.id);
+      else store.setSetting(REG.sessions, JSON.stringify(sessionList().map(item => (item.key === target ? { ...item, name: title } : item))), user.id);
+      audit(user, "dataset.session.renamed", target, { name: title });
+    });
+    events?.publish("workspace.changed", { kind: "sessions", actorId: user.id, actorName: user.display_name });
+    return { key: target, name: title };
+  }
+
+  // Oturum silme: oturumun satırları, düzeltmeleri, silinenleri, yeni kayıtları ve ayarları kalkar (önce yedek alınır).
+  // İlk oturum silinmez; verisi Ayarlar → Veri → "Veriyi kaldır" ile boşaltılır.
+  function deleteSession(user, datasetKey) {
+    const target = String(datasetKey || "");
+    if (target === DATASET_KEY) throw new HttpError(400, "İlk sayfa silinemez; verisini Ayarlar → Veri → Veriyi kaldır ile boşaltabilirsiniz.");
+    if (!sessionList().some(item => item.key === target)) throw new HttpError(404, "Sayfa bulunamadı.");
+    const backupName = takeBackup ? (() => {
+      try {
+        const result = takeBackup("sayfa-silme-oncesi");
+        return result.name;
+      } catch (error) {
+        log?.error?.("Oturum silmeden önce yedek alınamadı", error);
+        throw new HttpError(500, "Silmeden önce yedek alınamadı; işlem yapılmadı. Disk alanını kontrol edin.");
+      }
+    })() : null;
+    const suffix = suffixOf(target);
+    let removed = 0;
+    store.tx(() => {
+      removed = store.run("DELETE FROM dataset_rows WHERE dataset_key = ?", target).changes;
+      store.run("DELETE FROM dataset_imports WHERE dataset_key = ?", target);
+      for (const table of ["overrides", "deleted_records", "records"]) store.run(`DELETE FROM ${table} WHERE source_name = ?`, target);
+      freeProvider?.purgeSession?.(target);
+      store.run("DELETE FROM settings WHERE substr(key, -?) = ?", suffix.length, suffix);
+      for (const row of store.all("SELECT key FROM settings WHERE key LIKE 'dataset.session.user.%' AND value = ?", target)) store.run("DELETE FROM settings WHERE key = ?", row.key);
+      store.setSetting(REG.sessions, JSON.stringify(sessionList().filter(item => item.key !== target)), user.id);
+      if (setting(REG.fallback, "") === target) store.setSetting(REG.fallback, sessionList().at(-1)?.key || DATASET_KEY, user.id);
+      audit(user, "dataset.session.deleted", target, { rows: removed, backupName });
+    });
+    caches.delete(target);
+    visibleCounts.delete(target);
+    const scope = currentScope();
+    if (scope?.datasetKey === target) scope.datasetKey = null;
+    bumpClientState(user.id);
+    events?.publish("workspace.changed", { kind: "sessions", actorId: user.id, actorName: user.display_name });
+    return { removed, backupName };
+  }
+  // Serbest sayfa sağlayıcısı (free-sheets.mjs): görünüme satır ve sekme ekler.
+  let freeProvider = null;
+  const setFreeProvider = provider => {
+    freeProvider = provider;
+  };
+  // Verinin (içeri alınan) sekmeleri: serbest sayfa adı bunlarla çakışamaz.
+  const dataTabs = () => tabNamesInUse();
+  const onChange = listener => {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  };
+  const identity = () => currentIdentity();
+
+  return {
+    view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity, pinLegacyIdentity,
+    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs, baseValue, unflag, hasRecord,
+    renameTab, hideTab, unhideTab, hiddenTabs, originalTab,
+    addColumn, hideColumn, unhideColumn, hiddenColumns, layoutTab, columnLayout: readLayout,
+  };
+}

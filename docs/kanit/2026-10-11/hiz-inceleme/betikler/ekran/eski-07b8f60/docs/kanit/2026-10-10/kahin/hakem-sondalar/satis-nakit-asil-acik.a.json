@@ -1,0 +1,67 @@
+{
+  "araDurumlar": {},
+  "atlananlar": [],
+  "bankaHesaplari": {},
+  "belirsizler": [],
+  "cariler": {
+    "M1": 60000
+  },
+  "dil": "destekofis-senaryo/1",
+  "eksiBakiyeDenetimi": {},
+  "faturalar": {
+    "F1": {
+      "acik": 60000,
+      "kdv": 10000,
+      "matrah": 50000,
+      "toplam": 60000
+    },
+    "R1": {
+      "acik": 0,
+      "kdv": 4000,
+      "matrah": 20000,
+      "toplam": 24000
+    }
+  },
+  "hesapKodlari": {},
+  "kasa": 976000,
+  "kaynak": "kahin",
+  "mizan": {
+    "100": {
+      "alacak": 0,
+      "borc": 976000
+    },
+    "120": {
+      "alacak": 0,
+      "borc": 60000
+    },
+    "391": {
+      "alacak": 6000,
+      "borc": 0
+    },
+    "500": {
+      "alacak": 1000000,
+      "borc": 0
+    },
+    "600": {
+      "alacak": 50000,
+      "borc": 0
+    },
+    "610": {
+      "alacak": 0,
+      "borc": 20000
+    }
+  },
+  "ozet": {
+    "gercekBanka": 0,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": 976000
+  },
+  "retler": [],
+  "senaryo": "mini-iade-satis-nakit-asil-acik",
+  "stok": {
+    "U1": 7
+  },
+  "taksitKartlari": {},
+  "yinelenenler": []
+}

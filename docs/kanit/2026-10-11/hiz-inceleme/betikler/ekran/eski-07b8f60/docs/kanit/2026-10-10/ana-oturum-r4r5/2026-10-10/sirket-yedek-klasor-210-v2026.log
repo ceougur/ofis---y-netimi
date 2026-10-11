@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: R4 — yalnız büyük/küçük harf farkıyla ad değişince silinmiş şirketin yedek klasörü verilmez
+    # Subtest: A silinir, B aynı kod + küçük harfli adla açılır, B'nin adı A'nın yazımına çevrilir → B'nin klasörü A'nınki değil; A'nın yedekleri yerinde, B'ninkiler B'de
+    not ok 1 - A silinir, B aynı kod + küçük harfli adla açılır, B'nin adı A'nın yazımına çevrilir → B'nin klasörü A'nınki değil; A'nın yedekleri yerinde, B'ninkiler B'de
+      ---
+      duration_ms: 1031.909323
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r45/v2026/test/sirket-yedek-klasor-210.test.mjs:34:3'
+      failureType: 'testCodeFailure'
+      error: "B'nin yeni yedek klasörü silinmiş A'nınki olmamalı (005 - Işık Turizm)"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '/tmp/destekofis-test-YAuOBD/backups/005 - Işık Turizm'
+      actual: '/tmp/destekofis-test-YAuOBD/backups/005 - Işık Turizm'
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r45/v2026/test/sirket-yedek-klasor-210.test.mjs:52:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - R4 — yalnız büyük/küçük harf farkıyla ad değişince silinmiş şirketin yedek klasörü verilmez
+  ---
+  duration_ms: 1639.256036
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r45/v2026/test/sirket-yedek-klasor-210.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2207.140266

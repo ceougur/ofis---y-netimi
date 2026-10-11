@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: UDP sunucu keşfi
+    # Subtest: istemcinin alt ağındaki yerel adresi seçer
+    ok 1 - istemcinin alt ağındaki yerel adresi seçer
+      ---
+      duration_ms: 1.141704
+      type: 'test'
+      ...
+    # Subtest: doğru sinyale ofis bilgisiyle yanıt verir
+    ok 2 - doğru sinyale ofis bilgisiyle yanıt verir
+      ---
+      duration_ms: 603.242587
+      type: 'test'
+      ...
+    # Subtest: tanımadığı veya çok büyük paketlere yanıt vermez; gönderici başına hız sınırlar
+    ok 3 - tanımadığı veya çok büyük paketlere yanıt vermez; gönderici başına hız sınırlar
+      ---
+      duration_ms: 504.299032
+      type: 'test'
+      ...
+    # Subtest: hız sınırı saniye sınırını aşan istek dizisinde de herhangi bir 1 sn içinde en çok sınır kadar yanıt verir
+    not ok 4 - hız sınırı saniye sınırını aşan istek dizisinde de herhangi bir 1 sn içinde en çok sınır kadar yanıt verir
+      ---
+      duration_ms: 1685.797158
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/discovery.test.mjs:60:3'
+      failureType: 'testCodeFailure'
+      error: '1 sn içindeki 10 isteğe 6 yanıt (sınır 3)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        file:///home/user/ofis---y-netimi/test/discovery.test.mjs:73:14
+        async withSocket (file:///home/user/ofis---y-netimi/test/discovery.test.mjs:39:14)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/discovery.test.mjs:62:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - UDP sunucu keşfi
+  ---
+  duration_ms: 2803.530073
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/discovery.test.mjs:6:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2892.441325

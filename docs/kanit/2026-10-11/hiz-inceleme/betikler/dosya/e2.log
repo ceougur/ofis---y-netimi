@@ -1,0 +1,4 @@
+N=0: terminate 5 ms, çıkış kodu 1
+N=1000: terminate 1811 ms, çıkış kodu 1
+N=100000: terminate 94 ms, çıkış kodu 1
+N=1000000: terminate 3778 ms, çıkış kodu 1

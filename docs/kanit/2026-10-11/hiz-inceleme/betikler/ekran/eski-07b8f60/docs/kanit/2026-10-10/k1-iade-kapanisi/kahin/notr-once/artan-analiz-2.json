@@ -1,0 +1,82 @@
+{
+ "senaryo": "rastgele-2-500-notr",
+ "cariSayisi": 5,
+ "hepsiArtanFifo": false,
+ "acikDisiYaprak": 0,
+ "cariler": [
+  {
+   "cari": "C22",
+   "iadeler": {},
+   "belgeler": {
+    "F12": [
+     9503,
+     "alis"
+    ]
+   },
+   "iadeToplam": 0,
+   "belgeToplam": 9503,
+   "desen": "BASKA"
+  },
+  {
+   "cari": "C4",
+   "iadeler": {},
+   "belgeler": {
+    "F20": [
+     832379,
+     "alis"
+    ],
+    "F22": [
+     18040,
+     "satis"
+    ]
+   },
+   "iadeToplam": 0,
+   "belgeToplam": 850419,
+   "desen": "BASKA"
+  },
+  {
+   "cari": "C27",
+   "iadeler": {},
+   "belgeler": {
+    "F3": [
+     1617735,
+     "alis"
+    ]
+   },
+   "iadeToplam": 0,
+   "belgeToplam": 1617735,
+   "desen": "BASKA"
+  },
+  {
+   "cari": "C29",
+   "iadeler": {
+    "R27": [
+     15600,
+     "alis_iade"
+    ]
+   },
+   "belgeler": {
+    "F40": [
+     15600,
+     "alis"
+    ]
+   },
+   "iadeToplam": 15600,
+   "belgeToplam": 15600,
+   "desen": "ARTAN-FIFO"
+  },
+  {
+   "cari": "C3",
+   "iadeler": {
+    "R1": [
+     19488,
+     "alis_iade"
+    ]
+   },
+   "belgeler": {},
+   "iadeToplam": 19488,
+   "belgeToplam": 0,
+   "desen": "BASKA"
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+ana bağlantı tanıtıcısı (db dosyası): 1
+zaman aşımsız rapor: 2892 ms, toplam satır 70582
+sonuçlar: [[0,152,"503 report-timeout"],[1,156,"503 report-timeout"],[2,304,"503 report-timeout"],[3,309,"503 report-timeout"],[4,454,"503 report-timeout"],[5,459,"503 report-timeout"]]
+runner.stats (hepsi reddedildikten sonra): {"active":0,"queued":0,"started":6}
+bu anda 'rapor' iş parçacığı: [] db tanıtıcısı: 4
+runner.close() 0 ms'de çözüldü; hemen sonra db tanıtıcısı: 4, iş parçacıkları: []
+tanıtıcı 1'e (yalnız ana bağlantı) inene kadar: 20051 ms; şimdi 4; zirve aynı anda iş parçacığı adı sayısı 0, zirve db tanıtıcısı 4

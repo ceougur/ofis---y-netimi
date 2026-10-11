@@ -1,0 +1,91 @@
+{
+ "tarih": "2026-10-11T14:17:29.244Z",
+ "C": [
+  {
+   "n": 1,
+   "summaryTutuldu": true,
+   "formAcikti": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "son": 50,
+   "bankaAcik": true,
+   "geriAlindi": true
+  },
+  {
+   "n": 2,
+   "summaryTutuldu": false,
+   "formAcikti": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "son": 50,
+   "bankaAcik": true,
+   "geriAlindi": true
+  },
+  {
+   "n": 3,
+   "summaryTutuldu": false,
+   "formAcikti": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "son": 50,
+   "bankaAcik": true,
+   "geriAlindi": true
+  },
+  {
+   "n": 4,
+   "summaryTutuldu": false,
+   "formAcikti": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "son": 50,
+   "bankaAcik": true,
+   "geriAlindi": true
+  }
+ ],
+ "C2": [
+  {
+   "n": 1,
+   "movementsTutuldu": false,
+   "formAcikti": true,
+   "once": 50,
+   "buyudu": true,
+   "son": 100
+  },
+  {
+   "n": 2,
+   "movementsTutuldu": false,
+   "formAcikti": true,
+   "once": 50,
+   "buyudu": true,
+   "son": 100
+  },
+  {
+   "n": 3,
+   "movementsTutuldu": false,
+   "formAcikti": true,
+   "once": 50,
+   "buyudu": true,
+   "son": 100
+  },
+  {
+   "n": 4,
+   "movementsTutuldu": false,
+   "formAcikti": true,
+   "once": 50,
+   "buyudu": true,
+   "son": 100
+  }
+ ],
+ "ozet": {
+  "tur": 4,
+  "C_geriAlinan": 4,
+  "C_tutulan": 1,
+  "C2_yokSayilan": 0,
+  "C2_tutulan": 0,
+  "sayfaHatalari": []
+ }
+}

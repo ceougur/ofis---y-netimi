@@ -1,0 +1,40 @@
+// E1: iş parçacığı okuma işlemi içindeyken terminate edilirse bağlantı (dosya tanıtıcısı + okuma kilidi) kalır mı?
+import { Worker } from "node:worker_threads";
+import { DatabaseSync } from "node:sqlite";
+import { mkdtempSync, readdirSync, readlinkSync, statSync } from "node:fs";
+import path from "node:path";
+import os from "node:os";
+const dir = mkdtempSync(path.join(os.tmpdir(), "e1-"));
+const file = path.join(dir, "d.sqlite");
+const db = new DatabaseSync(file);
+db.exec("PRAGMA journal_mode=WAL; CREATE TABLE t(x); INSERT INTO t VALUES (1),(2),(3);");
+const fds = () => readdirSync("/proc/self/fd").map(fd => { try { return readlinkSync(`/proc/self/fd/${fd}`); } catch { return ""; } }).filter(p => p.startsWith(file));
+console.log("başta tanıtıcı:", fds().length, fds());
+const mode = process.argv[2] || "js";
+const code = `
+const { parentPort, workerData } = require("node:worker_threads");
+const { DatabaseSync } = require("node:sqlite");
+const db = new DatabaseSync(workerData.file, { readOnly: true });
+db.exec("PRAGMA busy_timeout=10000");
+db.exec("BEGIN");
+db.prepare("SELECT count(*) c FROM t").get();
+parentPort.postMessage("içeride");
+try { while (true) { ${mode === "sql" ? 'db.prepare("WITH RECURSIVE r(i) AS (SELECT 1 UNION ALL SELECT i+1 FROM r WHERE i<50000000) SELECT count(*) FROM r").get();' : ''} } } finally { db.exec("COMMIT"); db.close(); }
+`;
+const w = new Worker(code, { eval: true, workerData: { file } });
+await new Promise(r => w.once("message", r));
+console.log("iş parçacığı okuma işleminde; tanıtıcı:", fds().length);
+const t0 = Date.now();
+const exitCode = await w.terminate();
+console.log("terminate bitti", Date.now() - t0, "ms, kod", exitCode);
+await new Promise(r => setTimeout(r, 200));
+console.log("terminate sonrası tanıtıcı:", fds().length, fds());
+db.exec("INSERT INTO t VALUES (4)");
+const t1 = Date.now();
+const ck = db.prepare("PRAGMA wal_checkpoint(TRUNCATE)").get();
+console.log("checkpoint(TRUNCATE):", JSON.stringify(ck), Date.now() - t1, "ms");
+globalThis.gc?.();
+await new Promise(r => setTimeout(r, 200));
+console.log("gc sonrası tanıtıcı:", fds().length);
+const ck2 = db.prepare("PRAGMA wal_checkpoint(TRUNCATE)").get();
+console.log("checkpoint2:", JSON.stringify(ck2));

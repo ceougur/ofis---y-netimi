@@ -1,0 +1,41 @@
+{
+  "a_stderr": "SENARYO GEÇERSİZ: adım 4: BELİRSİZ-6 — kalanı aşan / kapanmış karta tahsilat",
+  "adimSayisi": 4,
+  "cikisKodlari": {
+    "a": 2,
+    "b": 0,
+    "program": 0
+  },
+  "durum": "EKSIK: en az bir taraf çıktı üretmedi; karşılaştırma yapılmadı",
+  "farklar": [],
+  "islemSayisi": 4,
+  "islemTurleri": {
+    "cari_ac": 1,
+    "fatura": 1,
+    "taksit_tahsilat": 2
+  },
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/en-kucuk-KAHIN-A-YINELEME-SIRASI.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/en-kucuk-KAHIN-A-YINELEME-SIRASI.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/en-kucuk-KAHIN-A-YINELEME-SIRASI.json --cikti test/bagimsiz/cikti/ham/en-kucuk-KAHIN-A-YINELEME-SIRASI.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "en-kucuk-KAHIN-A-YINELEME-SIRASI",
+  "senaryoDosyasi": "test/bagimsiz/cikti/en-kucuk-KAHIN-A-YINELEME-SIRASI.json",
+  "sureler": {
+    "a": 0.06,
+    "b": 0.07,
+    "program": 0.96
+  }
+}

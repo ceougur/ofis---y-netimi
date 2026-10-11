@@ -1,0 +1,254 @@
+{
+  "senaryo": "s2-A-sekme-acik-kalir",
+  "ozet": {
+    "ertelemeAni": "2026-10-10T18:18:34.328Z",
+    "sekmeKapandiDk": 62.22,
+    "sekmeGizlendiDk": null,
+    "kurulduDk": 120.01,
+    "sekmeKapaninca_GizlenincedenKurulumaDk": 57.79,
+    "sonKullaniciIsteginden_KurulumaDk": 57.98,
+    "servisinGorduguSonIstek": "2026-10-10T19:20:36.072Z",
+    "surum": "9.0.1"
+  },
+  "olaylar": [
+    {
+      "at": "2026-10-10T18:18:34.370Z",
+      "olay": "ertelendi (hazır)",
+      "t0": "2026-10-10T18:18:34.328Z",
+      "mesgul": true,
+      "sonEtkinlik": "2026-10-10T18:18:20.920Z"
+    },
+    {
+      "at": "2026-10-10T18:18:46.067Z",
+      "olay": "kaynak sorgulandı",
+      "dk": 0.2,
+      "sorgu": 2,
+      "mesgul": true,
+      "sonEtkinlik": "2026-10-10T18:18:45.467Z",
+      "surum": "9.0.0"
+    },
+    {
+      "at": "2026-10-10T19:18:47.416Z",
+      "olay": "kaynak sorgulandı",
+      "dk": 60.22,
+      "sorgu": 3,
+      "mesgul": true,
+      "sonEtkinlik": "2026-10-10T19:18:36.073Z",
+      "surum": "9.0.0"
+    },
+    {
+      "at": "2026-10-10T19:20:47.459Z",
+      "olay": "sekme kapatıldı",
+      "dk": 62.22
+    },
+    {
+      "at": "2026-10-10T20:18:48.444Z",
+      "olay": "kuruldu",
+      "dk": 120.01,
+      "surum": "9.0.1"
+    }
+  ],
+  "sekmeIstekleri_acikGorunur": {
+    "istek": 675,
+    "enUzunAraSn": 45,
+    "ortalamaAraSn": 6,
+    "yollar": {
+      "/api/workspace/client-state": 75,
+      "/api/workspace/case-notes": 75,
+      "/": 2,
+      "/assets/app-8cf49bb5a6.css": 2,
+      "/assets/hukuk-ofisi-enhancements.css": 2,
+      "/assets/hof-ui.css": 3,
+      "/assets/hof-core.js": 3,
+      "/assets/hof-auth.js": 3,
+      "/assets/hof-boot.js": 2,
+      "/assets/hof-live.js": 2,
+      "/assets/brand/destekofis-mark.svg": 3,
+      "/assets/hof-workspace.js": 2,
+      "/assets/hof-plans.js": 2,
+      "/assets/hof-plan-transfer.js": 2,
+      "/assets/hof-accounts.js": 2,
+      "/assets/hof-whatsapp.js": 2,
+      "/assets/hof-stock.js": 2,
+      "/assets/hof-cheques.js": 2,
+      "/assets/hof-invoices.js": 2,
+      "/api/auth/me": 4,
+      "/assets/hof-bank.js": 2,
+      "/assets/hof-overview.js": 2,
+      "/assets/hof-report-center.js": 2,
+      "/assets/hof-chat.js": 2,
+      "/assets/hof-choices.js": 2,
+      "/assets/fonts/dm-sans-latin-wght-normal.woff2": 1,
+      "/assets/hof-table.js": 2,
+      "/assets/hof-grid.js": 2,
+      "/assets/hof-colops.js": 2,
+      "/assets/hof-chips.js": 2,
+      "/assets/hof-reports.js": 2,
+      "/assets/hof-sections.js": 2,
+      "/api/public/info": 1,
+      "/assets/hof-sources.js": 2,
+      "/assets/hof-companies.js": 2,
+      "/assets/hof-sessions.js": 2,
+      "/assets/hof-insight.js": 2,
+      "/assets/hof-columns.js": 2,
+      "/assets/fonts/manrope-latin-wght-normal.woff2": 1,
+      "/assets/fonts/dm-sans-latin-ext-wght-normal.woff2": 1,
+      "/assets/fonts/manrope-latin-ext-wght-normal.woff2": 1,
+      "/assets/hof-free.js": 2,
+      "/assets/hof-tabs.js": 2,
+      "/assets/hof-checks.js": 2,
+      "/assets/hof-promises.js": 2,
+      "/assets/hof-alerts.js": 2,
+      "/assets/hof-search.js": 2,
+      "/assets/hof-export.js": 2,
+      "/assets/hof-documents.js": 2,
+      "/assets/hof-license.js": 2,
+      "/api/auth/login": 1,
+      "/api/workspace/users": 1,
+      "/api/workspace/invoices/meta": 1,
+      "/api/chat": 95,
+      "/assets/app-185ffb28c4.js": 1,
+      "/api/workspace/overview": 2,
+      "/api/workspace/dataset": 12,
+      "/api/companies": 12,
+      "/api/workspace/sessions": 12,
+      "/api/events": 12,
+      "/api/workspace/dues": 37,
+      "/api/workspace/alerts/dismissed": 1,
+      "/api/workspace/tasks": 44,
+      "/api/workspace/liens": 43,
+      "/api/workspace/plans": 43,
+      "/api/workspace/cheques": 1,
+      "/api/workspace/invoices": 1,
+      "/api/workspace/bank/badge": 1,
+      "/api/workspace/stock/alerts": 43,
+      "/admin.html": 1,
+      "/assets/admin.css": 1,
+      "/assets/admin.js": 1,
+      "/api/admin/update": 1,
+      "/api/workspace/ledger/lock": 1,
+      "/api/admin/negative-policy": 1,
+      "/api/admin/system": 1,
+      "/api/workspace/ledger/integrity": 1,
+      "/api/trpc/sheets.getRows": 12,
+      "/api/workspace/profile": 11,
+      "/api/license": 12,
+      "/api/workspace/insight": 22
+    }
+  },
+  "sekmeIstekleri_gizliyken": null,
+  "ekran": {
+    "panelMetni": "Güncellemeler Kurulu sürüm 9.0.0 · Kararlı kanal · Son denetim: 10.10.2026 18:18 — 9.0.1 sürümü bulundu Güncellemeleri Denetle Şimdi Güncelle Yeni sürüm hazır: DestekOfis 9.0.14,7 MB · 10.10.2026 18:17 · Kullanıcılar çalışırken bulundu, kurulmadı. Sunucu 15 dakika boş kalınca ya da mesai dışında (hafta içi 20:00–07:00, hafta sonu) kendiliğinden kurulur; saatte bir bakılır. Hemen kurmak için Şimdi Güncelle.9.0.1 — Test sürümü • Otomatik güncelleme denemesi. Yeni sürümü kendiliğinden kur (sunucu açılışında, 15 dakika boşta kalınca ya da mesai dışında; kapalıyken yalnız haber verilir) Güncelleme KanalıKararlı (önerilen)Deneme (beta)",
+    "zil": null
+  },
+  "sayfaHatalari": [],
+  "sonDurum": {
+    "type": "durum",
+    "id": 584,
+    "updates": {
+      "enabled": true,
+      "autoUpdate": true,
+      "channel": "stable",
+      "currentVersion": "9.0.1",
+      "state": "idle",
+      "progress": null,
+      "available": null,
+      "incompatible": null,
+      "lastCheck": {
+        "at": "2026-10-10T19:18:34.328Z",
+        "status": "up-to-date",
+        "version": "9.0.1",
+        "reason": null
+      },
+      "lastResult": {
+        "outcome": "success",
+        "version": "9.0.1",
+        "previous": "9.0.0",
+        "at": "2026-10-10T20:18:35.148Z"
+      },
+      "lastError": null,
+      "failedVersions": [],
+      "deferred": null,
+      "periodicCheckMs": 21600000,
+      "skippedVersions": [],
+      "history": [
+        {
+          "at": "2026-10-10T20:18:35.147Z",
+          "event": "installed",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        },
+        {
+          "at": "2026-10-10T20:18:34.585Z",
+          "event": "activated",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        }
+      ]
+    },
+    "activity": {
+      "lastActivityAt": "2026-10-10T19:20:36.072Z",
+      "busy": false,
+      "idleMs": 900000
+    },
+    "phase": "ready",
+    "version": "9.0.1",
+    "localTime": "Sat Oct 10 2026 20:33:48 GMT+0000 (Coordinated Universal Time)",
+    "timeZone": "UTC",
+    "offsetMinutes": 0,
+    "quietNow": true
+  },
+  "verilerOnce": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "verilerSonra": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "yedekler": [
+    "destekofis-001-2026-10-10T18-18-34-644Z.sqlite",
+    "destekofis-001-2026-10-10T20-18-34-553Z-guncelleme-oncesi-9-0-0.sqlite"
+  ],
+  "kaynakIstekleri": [
+    {
+      "at": "2026-10-10T18:17:34.289Z",
+      "path": "/repos/test/repo/releases",
+      "status": 503
+    },
+    {
+      "at": "2026-10-10T18:17:34.300Z",
+      "path": "/test/repo/releases/latest/download/destekofis-guncelleme.json",
+      "status": 503
+    },
+    {
+      "at": "2026-10-10T18:18:34.305Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:18:34.318Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T19:18:34.330Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T19:18:34.337Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T20:18:34.355Z",
+      "path": "/download/9.0.1/destekofis-guncelleme-9.0.1.zip",
+      "status": 200
+    }
+  ]
+}

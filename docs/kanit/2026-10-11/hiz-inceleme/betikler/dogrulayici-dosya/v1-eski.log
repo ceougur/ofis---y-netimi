@@ -1,0 +1,13 @@
+kök /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/hiz-inceleme/dogrulayici-dosya/eski satır 300 yedek destekofis-002-2026-10-11T14-36-55-875Z-manuel.sqlite runner false children function
+[geri yükleme 1] 200 267ms | raporlar: 200/35ms, 200/281ms, 200/293ms, 200/297ms
+   sonra rapor 200 toplam 302
+[geri yükleme 2] 200 128ms | raporlar: 200/29ms, 200/29ms, 200/29ms, 200/29ms
+   sonra rapor 200 toplam 302
+[geri yükleme 3] 200 143ms | raporlar: 200/49ms, 200/50ms, 200/49ms, 200/50ms
+   sonra rapor 200 toplam 302
+[geri yükleme 4] 200 123ms | raporlar: 200/49ms, 200/49ms, 200/49ms, 200/53ms
+   sonra rapor 200 toplam 302
+[geri yükleme 5] 200 113ms | raporlar: 200/53ms, 200/54ms, 200/54ms, 200/54ms
+   sonra rapor 200 toplam 302
+[silme] 200 {"ok":true,"data":{"deleted":"sirket-291032c7-3016-4366-aea4-8bf57c4bbd2a","backup":"destekofis-002-2026-10-11T14-36-57- | raporlar: 200/20ms, 200/20ms, 200/20ms
+ÖZET {"200":23}

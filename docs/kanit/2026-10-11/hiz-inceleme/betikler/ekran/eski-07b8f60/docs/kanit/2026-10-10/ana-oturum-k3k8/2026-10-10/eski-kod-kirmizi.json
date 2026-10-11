@@ -1,0 +1,158 @@
+{
+  "ad": "eski-kod-kirmizi",
+  "komut": "node --test test/hakem-k3-kasa-istek-kimligi.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs test/hakem-k5-banka-eksi-kodu.test.mjs test/hakem-k7-kmh.test.mjs test/hakem-k8-kredi.test.mjs",
+  "commit": "507f0e16101462e29f0e30eb18c458eedbe32942",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:28:11.971Z",
+  "sure_sn": 6.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 37,
+    "gecen": 8,
+    "basarisiz": 29,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 29 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1) › B1: aynı kimlik + aynı içerik → 200 replayed, aynı id, tek satır; Kasa 788, 770 = 212",
+      "konum": "test/hakem-k3-kasa-istek-kimligi.test.mjs:44:3",
+      "hata": "yineleme replayed:true dönmeli: {\"ok\":true,\"data\":{\"id\":\"cash-07632f10-d502-4e02-a80b-caef638050ed\"}} · + actual - expected · + undefined"
+    },
+    {
+      "ad": "K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1) › B2: aynı kimlik + farklı içerik (250) → 409 request-id-reused; satır yazılmaz",
+      "konum": "test/hakem-k3-kasa-istek-kimligi.test.mjs:59:3",
+      "hata": "farklı içerik: 200 {\"ok\":true,\"data\":{\"id\":\"cash-5af9367f-2ecd-4527-8988-13ca45be1d5e\"}} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1) › B3: aynı kimlikle iki istek AYNI ANDA → tek satır (biri yazar, öbürü onun sonucunu görür)",
+      "konum": "test/hakem-k3-kasa-istek-kimligi.test.mjs:67:3",
+      "hata": "biri replayed · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1) › B4: giriş yönünde aynı kimlik iki kez → tek giriş (Kasa ve 649 bir kez)",
+      "konum": "test/hakem-k3-kasa-istek-kimligi.test.mjs:76:3",
+      "hata": "giriş yinelemesi replayed:true: {\"ok\":true,\"data\":{\"id\":\"cash-188f2d8e-f810-455f-b2b0-0f041ba224e2\"}} · + actual - expected · + undefined"
+    },
+    {
+      "ad": "K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1) › B5: kimliksiz iki aynı istek iki ayrı ödemedir (eski davranış: ikisi de yazılır)",
+      "konum": "test/hakem-k3-kasa-istek-kimligi.test.mjs:86:3",
+      "hata": "Expected values to be strictly equal: · 396 !== 818 (beklenen 818, gelen 396)"
+    },
+    {
+      "ad": "K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar) › B1: cari nakit ödemesi 100 (Kasa 100 → 0) aynı kimlikle yeniden → 200 replayed; Kasa 0, tek satır",
+      "konum": "test/hakem-k4-yineleme-sirasi.test.mjs:79:3",
+      "hata": "cari ödeme yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {\"ok\":false,\"error\":\"Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.\",\"code\":\"cash-negative\",\"method\":\"cash\",\"balance\":0,\"after\":-100} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar) › B10: Kasa 0 iken ödeme sorulur (409 cash-negative; ön denetim kaybolmadı); onayla (cashForce) yazılır; onaylı isteğin yinelemesi de yinelemedir",
+      "konum": "test/hakem-k4-yineleme-sirasi.test.mjs:89:3",
+      "hata": "409 {\"ok\":false,\"error\":\"Nakit kasada -10,00 TL var; 10,00 TL çıkış bakiyeyi -20,00 TL eksiye düşürür.\",\"code\":\"cash-negative\",\"method\":\"cash\",\"balance\":-10,\"after\":-20} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar) › B2: Kasadan Bankaya Yatır 50 (Kasa 50 → 0) aynı kimlikle yeniden → 200 replayed; tek transfer",
+      "konum": "test/hakem-k4-yineleme-sirasi.test.mjs:103:3",
+      "hata": "Kasadan Bankaya yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {\"ok\":false,\"error\":\"Nakit kasada 0,00 TL var; 50,00 TL çıkış bakiyeyi -50,00 TL eksiye düşürür.\",\"code\":\"cash-negative\",\"method\":\"cash\",\"balance\":0,\"after\":-50} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar) › B5: Kasa elle çıkış 40 (Kasa 40 → 0) aynı kimlikle yeniden → 200 replayed",
+      "konum": "test/hakem-k4-yineleme-sirasi.test.mjs:112:3",
+      "hata": "Kasa elle çıkış yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {\"ok\":false,\"error\":\"Nakit kasada 0,00 TL var; 40,00 TL çıkış bakiyeyi -40,00 TL eksiye düşürür.\",\"code\":\"cash-negative\",\"method\":\"cash\",\"balance\":0,\"after\":-40} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar) › B4: stok nakit alımı 3 × 10 (Kasa 30 → 0) aynı kimlikle yeniden → 200 replayed; stok 3",
+      "konum": "test/hakem-k4-yineleme-sirasi.test.mjs:119:3",
+      "hata": "stok alımı yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {\"ok\":false,\"error\":\"Nakit kasada 0,00 TL var; 30,00 TL çıkış bakiyeyi -30,00 TL eksiye düşürür.\",\"code\":\"cash-negative\",\"method\":\"cash\",\"balance\":0,\"after\":-30} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar) › B6 (komşu): stoğu bitiren satış (3 → 0) aynı kimlikle yeniden → 200 replayed (409 stock-negative değil); stok 0",
+      "konum": "test/hakem-k4-yineleme-sirasi.test.mjs:128:3",
+      "hata": "stok satışı yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {\"ok\":false,\"error\":\"Stokta 0 Adet var; 3 Adet çıkış stoğu eksiye düşürür. Kayıttan sonra stok: -3 Adet olacak.\",\"code\":\"stock-negative\",\"available\":0,\"after\":-3} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar) › B3 (komşu): taksit iadesi 80 (kartın net tahsilatı ve Kasa 80 → 0) aynı kimlikle yeniden → 200 replayed",
+      "konum": "test/hakem-k4-yineleme-sirasi.test.mjs:137:3",
+      "hata": "taksit iadesi yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 400 {\"ok\":false,\"error\":\"Bu kartta tahsil edilen net tutar 0,00 TL; iade ya da düzeltme sonrası -80,00 TL olur. İade tahsil edilenden fazla olamaz.\",\"code\":\"refund-exceeds\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "K4 — Engelle politikasında yineleme › B7: Kasa Engelle; cari nakit ödemesi Kasa'yı 0'a indirir; aynı kimlikle yeniden → 200 replayed (409 cash-blocked değil)",
+      "konum": "test/hakem-k4-yineleme-sirasi.test.mjs:167:3",
+      "hata": "Engelle cari ödeme yineleme 200 olmalı (ön denetim — Kasa, stok, iade — istek kimliğinden önce çalışmamalı): 409 {\"ok\":false,\"error\":\"Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).\",\"code\":\"cash-blocked\",\"method\":\"cash\",\"balance\":0,\"after\":-100} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı) › N1: Uyar — 150 havale ödemesi (bakiye 100) → 409 cash-negative + accountId; yalnız cashForce → 200 (planın bayrağı)",
+      "konum": "test/hakem-k5-banka-eksi-kodu.test.mjs:38:3",
+      "hata": "Uyar: kod bank-negative (Garanti BBVA · Ana TL Hesabı hesabında 100,00 TL var; bu işlemle bakiye 150,00 TL azalır ve −50,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?) · + actual - expected · + 'bank-negative' (beklenen cash-negative, gelen bank-negative)"
+    },
+    {
+      "ad": "K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı) › N1b: eski istemcinin negativeOk'u eşanlamlı → 200; Banka Fişi'nde de aynı kod ve onay",
+      "konum": "test/hakem-k5-banka-eksi-kodu.test.mjs:48:3",
+      "hata": "Expected values to be strictly equal: · 90 !== -60 (beklenen -60, gelen 90)"
+    },
+    {
+      "ad": "K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı) › N4a: cashForce + negativeOk:false (ekranın Kasa onayı) banka hesabını geçmez → 409 cash-negative + accountId",
+      "konum": "test/hakem-k5-banka-eksi-kodu.test.mjs:59:3",
+      "hata": "yalnız Kasa onayı: 200 {\"id\":\"account-3c49719d-dc4b-48a4-bf0d-c53e67e59b76\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı) › N3: silmede ?cashForce=1 banka hesabını da geçer (HOF.api silmede adrese ekler); ?cashForce=1&negativeOk=0 geçmez",
+      "konum": "test/hakem-k5-banka-eksi-kodu.test.mjs:66:3",
+      "hata": "silme Uyar: 200 {\"id\":\"account-3c49719d-dc4b-48a4-bf0d-c53e67e59b76\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı) › N2: Engelle — 409 cash-blocked + accountId; cashForce ve negativeOk birlikte de geçmez; hiçbir şey yazılmaz",
+      "konum": "test/hakem-k5-banka-eksi-kodu.test.mjs:75:3",
+      "hata": "Engelle: kod bank-similar (Aynı iş gününde aynı hesapta aynı tutarda benzer bir işlem kayıtlı (BNK-2026-000003, 08.10.2026, Ofis yöneticisi). Gerçekten ikinci bir işlemse \"Yine de Kaydet\" ile kaydedin.) · + actual - expected · + 'bank-similar' (beklenen cash-blocked, gelen bank-similar)"
+    },
+    {
+      "ad": "K5 — aynı istekte Kasa ve banka hesabı eksiye düşerse (satış faturası iptali: nakit + havale peşin) › N4b: önce Kasa sorulur (cash-negative, accountId yok); Kasa onayı (cashForce + negativeOk:false) banka hesabını ayrıca sorar; fatura yerinde",
+      "konum": "test/hakem-k5-banka-eksi-kodu.test.mjs:117:3",
+      "hata": "iptal: banka hesabı ayrıca: kod bank-negative (Garanti BBVA · Ana TL Hesabı hesabında 0,00 TL var; bu işlemle bakiye 100,00 TL azalır ve −100,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?) · + actual - expected · + 'bank-negative' (beklenen cash-negative, gelen bank-negative)"
+    },
+    {
+      "ad": "K5 — aynı istekte Kasa ve banka hesabı eksiye düşerse (satış faturası iptali: nakit + havale peşin) › N4c: yalnız cashForce (planın tek onayı) ikisini birlikte geçer → fatura iptal; Kasa −100, Garanti −100",
+      "konum": "test/hakem-k5-banka-eksi-kodu.test.mjs:127:3",
+      "hata": "iptal: 409 {\"ok\":false,\"error\":\"Garanti BBVA · Ana TL Hesabı hesabında 0,00 TL var; bu işlemle bakiye 100,00 TL azalır ve −100,00 TL olur (eksi bakiye). Yine de kaydedilsin mi?\",\"code\":\"bank-negative\",\"accountId\":\"bacc-d2772273-276a-41da-ab18-85573dcb6a65\",\"balanceMinor\":0,\"afterMinor\":-10000,\"limitMinor\":0,\"field\":\"amount\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde) › N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz",
+      "konum": "test/hakem-k7-kmh.test.mjs:31:3",
+      "hata": "commercial KMH: 200 {\"id\":\"bacc-e1d159d1-b235-43af-8a28-5c6aa54cbdc1\",\"code\":\"DEN-TL\",\"gl\":\"102\",\"glSub\":\"102.01\",\"kind\":\"commercial\",\"kindLabel\":\"Ticari\",\"bankName\":\"Denizbank\",\"name\":\"KMH commercial\",\"label\":\"Denizbank · KMH commercial\",\"currency\":\"TRY\",\"iban\":\"\",\"ibanText\":\"\",\"accountNo\":\"\",\"branchName\":\"\",\"branchCode\":\"\",\"swift\":\"\",\"holder\":\"\",\"description\":\"\",\"openingDate\":\"2026-10-01\",\"balanceConfirmed\":true,\"c · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde) › N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır",
+      "konum": "test/hakem-k7-kmh.test.mjs:41:3",
+      "hata": "Ticari'ye KMH: 200 {\"id\":\"bacc-2c10db6b-c7fd-4cc2-9110-79068652fecf\",\"code\":\"DEN-TL-2\",\"gl\":\"102\",\"glSub\":\"102.02\",\"kind\":\"commercial\",\"kindLabel\":\"Ticari\",\"bankName\":\"Denizbank\",\"name\":\"Ticari Hesap\",\"label\":\"Denizbank · Ticari Hesap\",\"currency\":\"TRY\",\"iban\":\"\",\"ibanText\":\"\",\"accountNo\":\"\",\"branchName\":\"\",\"branchCode\":\"\",\"swift\":\"\",\"holder\":\"\",\"description\":\"\",\"openingDate\":\"2026-10-01\",\"balanceConfirmed\":true,\"cre · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz) › N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır",
+      "konum": "test/hakem-k7-kmh.test.mjs:67:3",
+      "hata": "Ticari + KMH: 200 {\"id\":\"bacc-58b04655-0a01-47c3-b0e3-e372bb4ad7ac\",\"code\":\"DEN-TL\",\"gl\":\"102\",\"glSub\":\"102.01\",\"kind\":\"commercial\",\"kindLabel\":\"Ticari\",\"bankName\":\"Denizbank\",\"name\":\"Ticari Hesap B5\",\"label\":\"Denizbank · Ticari Hesap B5\",\"currency\":\"TRY\",\"iban\":\"\",\"ibanText\":\"\",\"accountNo\":\"\",\"branchName\":\"\",\"branchCode\":\"\",\"swift\":\"\",\"holder\":\"\",\"description\":\"\",\"openingDate\":\"2026-10-01\",\"balanceConfirmed\":true, · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz) › N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır",
+      "konum": "test/hakem-k7-kmh.test.mjs:74:3",
+      "hata": "Ticari'de KMH yok · 2305900 !== 0 (beklenen 0, gelen 2305900)"
+    },
+    {
+      "ad": "K8 (a) — Kredi Kullanımı'nın Ters Kaydet ve Düzelt'inde ret metni işleme uygun › N1a: ödenmiş kredinin kullanımı Ters Kaydet → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın ters kaydını anlatır; hiçbir şey yazılmaz",
+      "konum": "test/hakem-k8-kredi.test.mjs:39:3",
+      "hata": "metin geri ödemeyi anlatıyor: Kredi Geri Ödemesi'nde anapara (1.000,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır. (beklenen , gelen Kredi Geri Ödemesi'nde anapara (1.000,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır.)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/docs/kanit/2026-10-10/ana-oturum-k3k8/2026-10-10/eski-kod-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k38",
+  "ham_cikti_sha256": "eba9287fdfb1a13b9c07cbf974b4ca19460773f691c0b0f8afeab208cf1d5810",
+  "ham_cikti_bayt": 51100
+}

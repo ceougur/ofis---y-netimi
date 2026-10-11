@@ -1,0 +1,21 @@
+### tohum-1-500: python3 -I test/bagimsiz/fark.py --tohum 1 --islem 500
+rastgele-1-500: çıkış a=0 b=0 program=0 · karşılaştırılan 8259 · atlanan 914 · fark 649 {'A=B≠P': 555, 'A≠B=P': 44, 'B≠A=P': 48, 'KOSUCU': 2}
+  BANKA-EKSI-KODU                                                 1 yaprak  {'A=B≠P': 1}
+  KAHIN-K4-YINELENEN-AD                                          44 yaprak  {'A≠B=P': 44}
+  KAHIN-K4-YINELENEN-AD+KOSUCU-ALIS-YINELEME-NUMARA              48 yaprak  {'B≠A=P': 48}
+  KART-HESABI-BAGLANMIYOR                                         4 yaprak  {'A=B≠P': 2, 'KOSUCU': 2}
+  KASA-ACILIS-649                                                38 yaprak  {'A=B≠P': 38}
+  KASA-ISTEK-KIMLIGI                                              1 yaprak  {'A=B≠P': 1}
+  KDV-DAHIL-ISKONTO                                             174 yaprak  {'A=B≠P': 174}
+  KOSUCU-ALIS-YINELEME-NUMARA                                     2 yaprak  {'A=B≠P': 2}
+  TUREV:IADE-KAPAMA+KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO     5 yaprak  {'A=B≠P': 5}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                            36 yaprak  {'A=B≠P': 36}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS            5 yaprak  {'A=B≠P': 5}
+  TUREV:KART-HESABI-BAGLANMIYOR+KASA-ISTEK-KIMLIGI+KDV-DAHIL-I   60 yaprak  {'A=B≠P': 60}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO                30 yaprak  {'A=B≠P': 30}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO+VADELI-HESAP   71 yaprak  {'A=B≠P': 71}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS    44 yaprak  {'A=B≠P': 44}
+  TUREV:KDV-DAHIL-ISKONTO                                        53 yaprak  {'A=B≠P': 53}
+  TUREV:KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS                       25 yaprak  {'A=B≠P': 25}
+  VADELI-HESAP-FIS                                                8 yaprak  {'A=B≠P': 8}
+### çıkış 0

@@ -1,0 +1,23 @@
+// E8: kuyrukta bekleyen/çalışan rapor isteğinin istemcisi bağlantıyı keserse iş yine yapılıyor mu? (üretim yolu, HTTP)
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const ROOT = "/home/user/ofis---y-netimi";
+const DATA = path.resolve(process.argv[2]);
+const { createApp } = await import(pathToFileURL(path.join(ROOT, "server/app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(ROOT, "test/helpers.mjs")).href);
+const app = createApp({ dataDir: DATA, backupDir: path.join(path.dirname(DATA), "backups"), logLevel: "error", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: "Olcek-210-Yonetici!", HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" }, startLicenseTimers: false, moneyStrict: false, gateVerify: false, integrityScan: false, analysisWorker: false, reportWorker: true });
+const { port } = await app.listen(0, "127.0.0.1");
+const base = `http://127.0.0.1:${port}`;
+const c = createClient(base);
+console.log("giriş", (await c.login("admin", "Olcek-210-Yonetici!")).status);
+const runner = app.context.reportRunner;
+const N = 8;
+const t = Date.now();
+const results = await Promise.all(Array.from({ length: N }, () => fetch(`${base}/api/workspace/report-center/banka-hareket?preset=all&hofCompany=sirket-001`, { headers: { cookie: c.cookie }, signal: AbortSignal.timeout(300) }).then(r => r.status, e => e.name)));
+console.log(`${N} istek, istemci 300 ms'de vazgeçti: ${JSON.stringify(results)}; o an runner.stats ${JSON.stringify(runner.stats)}`);
+while (runner.stats.active || runner.stats.queued) await new Promise(r => setTimeout(r, 200));
+console.log(`istemcilerin hepsi gittiği hâlde sunucu ${runner.stats.started} rapor iş parçacığı çalıştırdı; son iş ${Date.now() - t} ms'de bitti`);
+const t2 = Date.now();
+const r = await c.get("/api/workspace/report-center/banka-hareket?preset=all&hofCompany=sirket-001");
+console.log(`sonraki kullanıcının raporu: ${r.status} ${Date.now() - t2} ms`);
+await app.close();

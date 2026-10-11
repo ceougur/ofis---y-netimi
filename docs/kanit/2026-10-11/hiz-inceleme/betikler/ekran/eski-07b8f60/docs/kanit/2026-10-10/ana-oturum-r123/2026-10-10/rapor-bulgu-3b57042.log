@@ -1,0 +1,240 @@
+TAP version 13
+# Subtest: R1 — iade geri ödemesi fatura kapamada (açık fatura + kart kalanı = cari bakiye)
+    # Subtest: R1a: geri ödeme NAKİT → açık satış 120 Açık kalır (Vadesi Geçti); Açık Faturalar ve Yaşlandırma 120 = cari bakiye
+    not ok 1 - R1a: geri ödeme NAKİT → açık satış 120 Açık kalır (Vadesi Geçti); Açık Faturalar ve Yaşlandırma 120 = cari bakiye
+      ---
+      duration_ms: 498.434396
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:62:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ödenmemiş fatura açık kalır
+        + actual - expected
+        
+          [
+        +   'paid',
+        +   0
+        -   'overdue',
+        -   120
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'overdue'
+        1: 120
+      actual:
+        0: 'paid'
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:66:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: R1b: geri ödeme HAVALE (Garanti, hesaba bağlı) → aynı sonuç; Garanti 50.000 + 1.200 − 1.200
+    not ok 2 - R1b: geri ödeme HAVALE (Garanti, hesaba bağlı) → aynı sonuç; Garanti 50.000 + 1.200 − 1.200
+      ---
+      duration_ms: 413.74825
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:71:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'paid',
+        +   0
+        -   'overdue',
+        -   120
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'overdue'
+        1: 120
+      actual:
+        0: 'paid'
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:73:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: R1c: KISMİ geri ödeme (500 / 1.200) → iade alacağından artan 700 açık satışı kapatır (FIFO), 580 müşterinin alacağı; açık 0
+    ok 3 - R1c: KISMİ geri ödeme (500 / 1.200) → iade alacağından artan 700 açık satışı kapatır (FIFO), 580 müşterinin alacağı; açık 0
+      ---
+      duration_ms: 480.156405
+      type: 'test'
+      ...
+    # Subtest: R1d: aynı cariye açık ALIŞ faturası (500) varken müşteriye iade geri ödemesi alış faturasını ÖDEMEZ (hayalet ödeme yok)
+    not ok 4 - R1d: aynı cariye açık ALIŞ faturası (500) varken müşteriye iade geri ödemesi alış faturasını ÖDEMEZ (hayalet ödeme yok)
+      ---
+      duration_ms: 381.765374
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        alış faturası açık 500 (müşteriye iade ödemesi tedarikçiye ödeme değildir)
+        + actual - expected
+        
+          [
+        +   'paid',
+        +   0
+        -   'overdue',
+        -   500
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'overdue'
+        1: 500
+      actual:
+        0: 'paid'
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:94:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: R1e: simetrik — alıştan iadenin tedarikçiden GERİ ALINAN parası aynı cariye kesilmiş açık SATIŞ faturasını kapatmaz
+    not ok 5 - R1e: simetrik — alıştan iadenin tedarikçiden GERİ ALINAN parası aynı cariye kesilmiş açık SATIŞ faturasını kapatmaz
+      ---
+      duration_ms: 492.516828
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:98:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        satış faturası açık 300 (tedarikçiden geri alınan para müşteri tahsilatı değildir)
+        + actual - expected
+        
+          [
+        +   'paid',
+        +   0
+        -   'overdue',
+        -   300
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'overdue'
+        1: 300
+      actual:
+        0: 'paid'
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:105:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - R1 — iade geri ödemesi fatura kapamada (açık fatura + kart kalanı = cari bakiye)
+  ---
+  duration_ms: 2269.286144
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:35:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: R2 — Gider Raporu (Türüne Göre): her gider türü ayrı satır; KDV'li banka masrafı "Banka Masrafları"
+    # Subtest: aynı ayda Kira 2.000, Elektrik 300 ve KDV'li banka masrafı 100 → üç satır, doğru adlar ve tutarlar; toplam 2.400
+    not ok 1 - aynı ayda Kira 2.000, Elektrik 300 ve KDV'li banka masrafı 100 → üç satır, doğru adlar ve tutarlar; toplam 2.400
+      ---
+      duration_ms: 163.612377
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [["Ekim 2026","Kira","770","3","2.400,00 TL","480,00 TL","%100"]]
+        + actual - expected
+        
+          {
+        -   'Banka Masrafları': {
+        -     account: '770',
+        -     count: '1',
+        -     net: 100,
+        -     vat: 20
+        -   },
+        -   'Elektrik, Su ve Doğalgaz': {
+        -     account: '770',
+        -     count: '1',
+        -     net: 300,
+        -     vat: 60
+        -   },
+            Kira: {
+              account: '770',
+        +     count: '3',
+        +     net: 2400,
+        +     vat: 480
+        -     count: '1',
+        -     net: 2000,
+        -     vat: 400
+            }
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Kira:
+          account: '770'
+          count: '1'
+          net: 2000
+          vat: 400
+        Elektrik, Su ve Doğalgaz:
+          account: '770'
+          count: '1'
+          net: 300
+          vat: 60
+        Banka Masrafları:
+          account: '770'
+          count: '1'
+          net: 100
+          vat: 20
+      actual:
+        Kira:
+          account: '770'
+          count: '3'
+          net: 2400
+          vat: 480
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:129:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - R2 — Gider Raporu (Türüne Göre): her gider türü ayrı satır; KDV'li banka masrafı "Banka Masrafları"
+  ---
+  duration_ms: 422.196367
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/3b57042/test/banka-210-rapor-bulgu.test.mjs:110:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3152.927758

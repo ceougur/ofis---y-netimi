@@ -1275,6 +1275,20 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   geri kalanı sürüm sürüm değişen yer kadar; satır kapsamı en son 2.0.21'de (%95,2 / dal %79,9 / arayüz %79,8; 52 yüksek riskli testsiz yer).
   KARAR (kullanıcı, aynı gün): kapsam ölçümü 2.1.0 temel banka sürümü CANLIYA ALINDIKTAN SONRA yapılır; kullanıcı yeni sürümü kendisi ve
   müşterilerde kullanarak dener. Teslimde DENENMEYEN'e yazılır: 2.1.0 kapsam ölçümü yok (yayın sonrası iş).
+  HIZ DÜZELTMESİ BİRLEŞTİ (b3079e3; ana oturum eşdeğerlik+iş parçacığı+İ10 43/43; CI d4fa0ed ve c37fe13 dört platform + e2e YEŞİL). NOT:
+  e2e senaryoları createApp'i doğrudan çağırır → iş parçacığı (üretim yolu) e2e'de AÇIK (yalnız startTestServer kapatır); senaryo-banka-210'da
+  13 iş parçacığı sayıldı. BAĞIMSIZ İNCELEME (wf_e324b8a2-ee9; 5 bakış + 4 doğrulayıcı; teslime ENGEL YOK; kullanıcıya listelendi):
+  H1 ORTA (hızdan): rapor sürerken şirket geri yükleme/silme → rapor 500 "Sunucu işlemi tamamlayamadı" + günlükte ERROR (report-runner exit düz
+  Error); kuyruktaki 503 "Sunucu kapanıyor" yanlış metin. H2 düşük (hızdan): zaman aşımında close() iş parçacığı bitmeden çözülüyor, max 2 aşılıyor
+  (Windows'ta ardından geri yükleme EBUSY riski, koddan). H3 düşük (hızdan): iş parçacığı hatası günlüğe yazılmıyor, kullanıcıya ham İngilizce
+  metin. H4 ORTA (banka istemcisi, hızdan DEĞİL; 07b8f60'ta da): Banka → Hareketler "Daha Fazla Göster" sürerken arka plan yenilemesi gelirse sayfa
+  sınırındaki hareket ekranda görünmüyor (hof-core.js:328/332, hof-bank.js:1266/1271). H5 düşük: + Masraf kaydı sonrası reload Daha Fazla'yı 50'ye
+  geri alıyor = ölçek aracının "banka süzgeç" 30 sn hatasının kaynağı (araç Daha Fazla zaman aşımını süzgeç diye etiketliyordu). H6 düşük:
+  hesap başı kuruş toplamı 2^53 (~90 trilyon TL) aşınca banka raporları 500 — eski kodun summary yolu da aynı ölçekte kırık → BİLİNEN SINIR.
+  H7 test: eşdeğerlik testinin eski yolu Alt Hesap Mizanı'nda yeni moneyLines'ı kullanıyor (ayrı kopya HTTP karşılaştırmasında fark 0). Temiz:
+  şirket ayrımı/yetki/denetim kaydı (26 sorgu × 2 yol fark 0), SQL eşdeğerliği (2 tohum × 1.443 + uç durumlar + 3 eski sürüm fikstürü fark 0),
+  cari arama ve eksi bakiye kararları eski kodla aynı. KARAR (plan: engel değil ama yeni kod + ucuz): H1–H5 + H7 + araç etiketi düzeltilir
+  (ajan, kırmızı test → düzeltme); H6 bilinen sınır.
   (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür

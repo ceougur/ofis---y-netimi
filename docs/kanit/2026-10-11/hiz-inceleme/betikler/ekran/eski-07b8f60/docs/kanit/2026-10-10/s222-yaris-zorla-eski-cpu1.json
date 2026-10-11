@@ -1,0 +1,29 @@
+{
+  "ad": "s222-yaris-zorla-eski-cpu1",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-222-yaris.mjs",
+  "commit": "8f6a8f88772757fcbd31f8f9a59d444bb610e547",
+  "dal": "worktree-agent-a0eba1c321b2d4e74",
+  "kirli": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T09:44:57.868Z",
+  "sure_sn": 195.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 20,
+    "gecen": 0,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "ham_cikti": "docs/kanit/2026-10-10/s222-yaris-zorla-eski-cpu1.log",
+  "ham_cikti_sha256": "32b902d98c9fac0eb9f08592e9a8a63eb4ae7f7fdebe8f21ad847b8dd54050ef",
+  "ham_cikti_bayt": 22182
+}

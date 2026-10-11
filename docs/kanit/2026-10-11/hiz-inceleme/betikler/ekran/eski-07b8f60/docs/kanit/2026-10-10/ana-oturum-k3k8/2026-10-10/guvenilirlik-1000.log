@@ -1,0 +1,32 @@
+
+> destekofis@2.0.26 test:guvenilirlik
+> node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs --islem 1000 --tohum 1 --tohumlar 1
+
+  100 işlem · 3 şirket · 28 yedek · 6 geri yükleme · 11.2 sn
+  200 işlem · 4 şirket · 42 yedek · 16 geri yükleme · 31.2 sn
+  300 işlem · 4 şirket · 46 yedek · 23 geri yükleme · 55.9 sn
+  400 işlem · 4 şirket · 52 yedek · 33 geri yükleme · 76.3 sn
+  500 işlem · 6 şirket · 79 yedek · 38 geri yükleme · 102.3 sn
+  600 işlem · 4 şirket · 107 yedek · 44 geri yükleme · 132.7 sn
+  700 işlem · 3 şirket · 121 yedek · 52 geri yükleme · 157.2 sn
+  800 işlem · 6 şirket · 126 yedek · 62 geri yükleme · 182.1 sn
+  900 işlem · 5 şirket · 133 yedek · 69 geri yükleme · 208.7 sn
+  1000 işlem · 5 şirket · 147 yedek · 78 geri yükleme · 239.6 sn
+
+✓ Tohum 1 · taban bos: 1000 işlem, 1001 değişmez kural turu, 147 yedek, 78 geri yükleme, 24 yanlış şirkete deneme (hepsi 409), 22 yeniden başlatma · 240.1 sn
+  İşlem türleri: account 123, entry 145, backupAll 24, select 75, backupOne 47, restore 68, recode 38, bankModule 47, bankTransfer 25, wrongRestore 26, bankModuleOther 55, cash 61, create 46, reset 32, bankWrongCompany 24, restoreRoot 13, bankAccount 20, bankVoucher 53, rename 32, restart 9, bankReverse 13, remove 24
+  Son durum: 024 · mavi gıda (6 cari) | 045 · ŞAHİN İNŞAAT (5 cari) | 002 · Nokta Ltd. (7 cari) | 005 · Gayri Resmi (1 cari) | 054 · Işık Turizm (0 cari)
+  100 işlem · 5 şirket · 22 yedek · 5 geri yükleme · 18.3 sn
+  200 işlem · 5 şirket · 38 yedek · 13 geri yükleme · 41.4 sn
+  300 işlem · 5 şirket · 45 yedek · 23 geri yükleme · 69.0 sn
+  400 işlem · 5 şirket · 57 yedek · 36 geri yükleme · 91.1 sn
+  500 işlem · 5 şirket · 81 yedek · 42 geri yükleme · 116.6 sn
+  600 işlem · 5 şirket · 103 yedek · 50 geri yükleme · 150.5 sn
+  700 işlem · 6 şirket · 130 yedek · 58 geri yükleme · 186.5 sn
+  800 işlem · 6 şirket · 132 yedek · 71 geri yükleme · 215.1 sn
+  900 işlem · 4 şirket · 137 yedek · 78 geri yükleme · 238.7 sn
+  1000 işlem · 6 şirket · 151 yedek · 84 geri yükleme · 265.9 sn
+
+✓ Tohum 1 · taban surum-2.0.19-zincir: 1000 işlem, 1001 değişmez kural turu, 151 yedek, 84 geri yükleme, 38 yanlış şirkete deneme (hepsi 409), 22 yeniden başlatma · 266.5 sn
+  İşlem türleri: account 129, entry 141, backupAll 20, select 73, backupOne 47, restore 70, bankVoucher 57, recode 40, bankModule 41, bankTransfer 24, wrongRestore 38, bankModuleOther 53, bankReverse 13, rename 28, reset 29, create 50, bankWrongCompany 25, remove 23, restoreRoot 14, restart 8, cash 56, bankAccount 21
+  Son durum: 013 · Resmi Şirket (8 cari) | 045 · ŞAHİN İNŞAAT (0 cari) | 021 · Işık Turizm (1 cari) | 002 · ışık turizm (0 cari) | 003 · MAVİ GIDA (1 cari) | 054 · Işık Turizm (0 cari)

@@ -1,0 +1,36 @@
+[
+  {
+    "dataDir": "data",
+    "steps": [
+      {
+        "label": "göç sonrası",
+        "banks": 0,
+        "compared": 351,
+        "rows": 118,
+        "diffs": 0,
+        "first": [],
+        "checks": 261,
+        "mdiffs": 0,
+        "mfirst": []
+      },
+      {
+        "label": "hesap + sihirbaz + transfer",
+        "banks": 0,
+        "compared": 351,
+        "rows": 118,
+        "diffs": 0,
+        "first": [],
+        "checks": 261,
+        "mdiffs": 0,
+        "mfirst": []
+      }
+    ],
+    "lines": 29,
+    "firstDay": "2026-08-10",
+    "mid": "2026-10-09",
+    "open": [
+      400,
+      400
+    ]
+  }
+]

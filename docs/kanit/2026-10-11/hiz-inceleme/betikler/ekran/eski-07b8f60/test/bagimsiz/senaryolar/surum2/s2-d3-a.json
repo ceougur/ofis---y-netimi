@@ -1,0 +1,38 @@
+{
+  "aciklama": "SENARYO-DILI sürüm 2 testi (test/bagimsiz/test_surum2.py) — programla karşılaştırma için",
+  "ad": "s2-d3-a",
+  "adimlar": [
+    {
+      "acilisBakiyesi": "0",
+      "acilisTarihi": "01.10.2026",
+      "ad": "KK",
+      "bakiyeDogrulandi": true,
+      "banka": "Banka KK",
+      "hesapAdi": "Hesap KK",
+      "id": "1",
+      "islem": "hesap_ac",
+      "kartLimiti": "5000",
+      "paraBirimi": "TRY",
+      "tur": "kurumsal_kart"
+    },
+    {
+      "ad": "T",
+      "id": "2",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "T Ltd."
+    },
+    {
+      "cari": "T",
+      "id": "3",
+      "islem": "cari_odeme",
+      "tutar": "100",
+      "yol": "kart"
+    }
+  ],
+  "baslangic": {
+    "bugun": "08.10.2026",
+    "sirket": "bos"
+  },
+  "dil": "destekofis-senaryo/2"
+}

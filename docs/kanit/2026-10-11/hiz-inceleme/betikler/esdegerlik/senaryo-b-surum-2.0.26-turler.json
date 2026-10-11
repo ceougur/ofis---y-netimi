@@ -1,0 +1,153 @@
+[
+  {
+    "dataDir": "data",
+    "steps": [
+      {
+        "label": "göç sonrası",
+        "banks": 0,
+        "compared": 351,
+        "rows": 2854,
+        "diffs": 0,
+        "first": [],
+        "checks": 261,
+        "mdiffs": 0,
+        "mfirst": []
+      },
+      {
+        "label": "hesap + sihirbaz + transfer",
+        "banks": 0,
+        "compared": 351,
+        "rows": 2854,
+        "diffs": 0,
+        "first": [],
+        "checks": 261,
+        "mdiffs": 0,
+        "mfirst": []
+      }
+    ],
+    "lines": 325,
+    "firstDay": "2025-07-04",
+    "mid": "2026-03-03",
+    "open": [
+      409,
+      409
+    ]
+  },
+  {
+    "dataDir": "data/sirketler/002",
+    "steps": [
+      {
+        "label": "göç sonrası",
+        "banks": 0,
+        "compared": 351,
+        "rows": 2737,
+        "diffs": 0,
+        "first": [],
+        "checks": 261,
+        "mdiffs": 0,
+        "mfirst": []
+      },
+      {
+        "label": "hesap + sihirbaz + transfer",
+        "banks": 2,
+        "compared": 495,
+        "rows": 3535,
+        "diffs": 0,
+        "first": [],
+        "checks": 373,
+        "mdiffs": 0,
+        "mfirst": []
+      }
+    ],
+    "lines": 251,
+    "firstDay": "2025-10-03",
+    "mid": "2026-04-01",
+    "open": [
+      200,
+      200
+    ],
+    "setup": [
+      200,
+      "{\"id\":\"ev-0mv3wdbxz0000-39fbe3f4-0d27-4bc5\",\"no\":\"BNK-2026-000003\",\"assigned\":62,\"carryNo\":\"BNK-2026-000004\",\"carry\":{\"bankMinor\":3480213,\"cardMinor\":0},\"skipped\":{\"future\":5,\"futureMinor\":-110000,\"fu"
+    ],
+    "transfer": 200
+  },
+  {
+    "dataDir": "data/sirketler/003",
+    "steps": [
+      {
+        "label": "göç sonrası",
+        "banks": 0,
+        "compared": 351,
+        "rows": 854,
+        "diffs": 0,
+        "first": [],
+        "checks": 261,
+        "mdiffs": 0,
+        "mfirst": []
+      },
+      {
+        "label": "hesap + sihirbaz + transfer",
+        "banks": 2,
+        "compared": 495,
+        "rows": 1226,
+        "diffs": 0,
+        "first": [],
+        "checks": 373,
+        "mdiffs": 0,
+        "mfirst": []
+      }
+    ],
+    "lines": 167,
+    "firstDay": "2025-10-03",
+    "mid": "2026-04-03",
+    "open": [
+      200,
+      200
+    ],
+    "setup": [
+      200,
+      "{\"id\":\"ev-0mv3we9s80000-b6fe4166-8347-4d11\",\"no\":\"BNK-2026-000003\",\"assigned\":9,\"carryNo\":\"BNK-2026-000004\",\"carry\":{\"bankMinor\":3602777,\"cardMinor\":0},\"skipped\":{\"future\":0,\"futureMinor\":0,\"futureFir"
+    ],
+    "transfer": 200
+  },
+  {
+    "dataDir": "data/sirketler/004",
+    "steps": [
+      {
+        "label": "göç sonrası",
+        "banks": 0,
+        "compared": 351,
+        "rows": 376,
+        "diffs": 0,
+        "first": [],
+        "checks": 261,
+        "mdiffs": 0,
+        "mfirst": []
+      },
+      {
+        "label": "hesap + sihirbaz + transfer",
+        "banks": 2,
+        "compared": 495,
+        "rows": 722,
+        "diffs": 0,
+        "first": [],
+        "checks": 373,
+        "mdiffs": 0,
+        "mfirst": []
+      }
+    ],
+    "lines": 51,
+    "firstDay": "2026-07-03",
+    "mid": "2026-08-21",
+    "open": [
+      200,
+      200
+    ],
+    "setup": [
+      200,
+      "{\"id\":\"ev-0mv3wf7740000-10076b9d-fc91-4517\",\"no\":\"BNK-2026-000003\",\"assigned\":4,\"carryNo\":\"BNK-2026-000004\",\"carry\":{\"bankMinor\":385415,\"cardMinor\":0},\"skipped\":{\"future\":0,\"futureMinor\":0,\"futureFirs"
+    ],
+    "transfer": 200
+  }
+]

@@ -1,0 +1,6 @@
+(a) yazar kapalı; -wal var mı: false -shm var mı: false
+(a) salt okunur açılış + okuma: 1
+(a) sonra -wal/-shm: true true
+(b) okuyucu işlem içindeyken yazarın TRUNCATE checkpoint'i: {"busy":1,"log":9,"checkpointed":9}
+(b) okuyucu bitince: {"busy":0,"log":0,"checkpointed":0}
+(c) yazar işlemdeyken salt okunur okuma: 2001

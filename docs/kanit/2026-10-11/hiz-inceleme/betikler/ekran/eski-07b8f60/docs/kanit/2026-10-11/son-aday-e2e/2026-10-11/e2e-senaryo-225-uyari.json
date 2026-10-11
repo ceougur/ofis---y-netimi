@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-225-uyari",
+  "komut": "npm run test:senaryo-225-uyari",
+  "commit": "d8783b8373d2a1b3889d4eb282e24a0d44b3bdf9",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T08:51:42.136Z",
+  "sure_sn": 137.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 36,
+    "gecen": 36,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/son-aday-e2e/2026-10-11/e2e-senaryo-225-uyari.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "65e0cc72af87e4592b95287b8aa860d52796f516086b4e79adf174a06ca02a81",
+  "ham_cikti_bayt": 3671
+}

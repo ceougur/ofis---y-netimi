@@ -1,0 +1,18 @@
+başta: db tanıtıcıları 3 [destekofis.sqlite, destekofis.sqlite-wal, destekofis.sqlite-shm], işletim sistemi iş parçacığı 7
+normal rapor 2652 ms
+normal rapor bitip runner kapandıktan 0,5 sn sonra: db tanıtıcıları 4 [destekofis.sqlite, destekofis.sqlite-wal, destekofis.sqlite-shm, destekofis.sqlite], işletim sistemi iş parçacığı 7
+app.close() sonrası: db tanıtıcıları 0 [], işletim sistemi iş parçacığı 7
+--- çıkış 0
+başta: db tanıtıcıları 3 [destekofis.sqlite, destekofis.sqlite-wal, destekofis.sqlite-shm], işletim sistemi iş parçacığı 7
+zaman aşımı sonucu: report-timeout (304 ms)
+runner.close() çözüldükten hemen sonra: db tanıtıcıları 5 [destekofis.sqlite, destekofis.sqlite-wal, destekofis.sqlite-shm, destekofis.sqlite, destekofis.sqlite-wal], işletim sistemi iş parçacığı 8
+  +1 sn: CPU tık/sn 109 (ana iş parçacığı boşta; >50 → sonlandırılan iş parçacığı hâlâ çalışıyor), db tanıtıcıları 5, iş parçacığı 8
+  +2 sn: CPU tık/sn 64 (ana iş parçacığı boşta; >50 → sonlandırılan iş parçacığı hâlâ çalışıyor), db tanıtıcıları 4, iş parçacığı 7
+  +3 sn: CPU tık/sn 0 (ana iş parçacığı boşta; >50 → sonlandırılan iş parçacığı hâlâ çalışıyor), db tanıtıcıları 4, iş parçacığı 7
+  +4 sn: CPU tık/sn 0 (ana iş parçacığı boşta; >50 → sonlandırılan iş parçacığı hâlâ çalışıyor), db tanıtıcıları 4, iş parçacığı 7
+  +5 sn: CPU tık/sn 0 (ana iş parçacığı boşta; >50 → sonlandırılan iş parçacığı hâlâ çalışıyor), db tanıtıcıları 4, iş parçacığı 7
+  +6 sn: CPU tık/sn 0 (ana iş parçacığı boşta; >50 → sonlandırılan iş parçacığı hâlâ çalışıyor), db tanıtıcıları 4, iş parçacığı 7
+  +7 sn: CPU tık/sn 0 (ana iş parçacığı boşta; >50 → sonlandırılan iş parçacığı hâlâ çalışıyor), db tanıtıcıları 4, iş parçacığı 7
+  +8 sn: CPU tık/sn 0 (ana iş parçacığı boşta; >50 → sonlandırılan iş parçacığı hâlâ çalışıyor), db tanıtıcıları 4, iş parçacığı 7
+app.close() sonrası: db tanıtıcıları 0 [], işletim sistemi iş parçacığı 7
+--- çıkış 0

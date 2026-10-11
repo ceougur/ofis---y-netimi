@@ -1,0 +1,275 @@
+{
+  "kok": "/home/user/ofis---y-netimi",
+  "vakalar": {
+    "R1": {
+      "gonderilen": {
+        "ilk": {
+          "tutar": "120",
+          "kimlik": "K1"
+        },
+        "ikinci": {
+          "tutar": "120",
+          "kimlik": "K1"
+        }
+      },
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-843e6a41-6c38-4260-b5ee-b44503d5f0c3",
+        "replayed": false
+      },
+      "ikinci": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-843e6a41-6c38-4260-b5ee-b44503d5f0c3",
+        "replayed": true
+      },
+      "ayniHareket": true,
+      "kart": {
+        "hareketSayisi": 1,
+        "hareketler": [
+          {
+            "tur": "in",
+            "tutar": 120
+          }
+        ],
+        "toplam": 120,
+        "odenen": 120,
+        "kalan": 0
+      },
+      "cariBakiye": 0,
+      "kasaOnce": 0,
+      "kasaSonra": 120,
+      "kasaFarki": 120
+    },
+    "R2": {
+      "gonderilen": {
+        "ilk": {
+          "tutar": "100",
+          "kimlik": "K2"
+        },
+        "ikinci": {
+          "tutar": "100",
+          "kimlik": "K2"
+        }
+      },
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-9b038f8f-22f2-4d67-9749-251b42bbd96d",
+        "replayed": false
+      },
+      "ikinci": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-9b038f8f-22f2-4d67-9749-251b42bbd96d",
+        "replayed": true
+      },
+      "ayniHareket": true,
+      "kart": {
+        "hareketSayisi": 1,
+        "hareketler": [
+          {
+            "tur": "in",
+            "tutar": 100
+          }
+        ],
+        "toplam": 120,
+        "odenen": 100,
+        "kalan": 20
+      },
+      "cariBakiye": 20,
+      "kasaOnce": 120,
+      "kasaSonra": 220,
+      "kasaFarki": 100
+    },
+    "R3": {
+      "gonderilen": {
+        "ilk": {
+          "tutar": "50",
+          "kimlik": "K3"
+        },
+        "ikinci": {
+          "tutar": "50",
+          "kimlik": "K3"
+        }
+      },
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-b423eee5-429f-48d4-881b-9b4bc38ef57a",
+        "replayed": false
+      },
+      "ikinci": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-b423eee5-429f-48d4-881b-9b4bc38ef57a",
+        "replayed": true
+      },
+      "ayniHareket": true,
+      "kart": {
+        "hareketSayisi": 1,
+        "hareketler": [
+          {
+            "tur": "in",
+            "tutar": 50
+          }
+        ],
+        "toplam": 120,
+        "odenen": 50,
+        "kalan": 70
+      },
+      "cariBakiye": 70,
+      "kasaOnce": 220,
+      "kasaSonra": 270,
+      "kasaFarki": 50
+    },
+    "D": {
+      "gonderilen": {
+        "ilk": {
+          "tutar": "120",
+          "kimlik": "K4"
+        },
+        "ikinci": {
+          "tutar": "60",
+          "kimlik": "K4"
+        }
+      },
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-9cf44634-4f1c-4802-bd77-2125e736b1a8",
+        "replayed": false
+      },
+      "ikinci": {
+        "durum": 409,
+        "kod": "request-id-reused",
+        "hata": "Bu istek daha önce farklı içerikle kaydedildi.",
+        "entryId": null,
+        "replayed": null
+      },
+      "ayniHareket": null,
+      "kart": {
+        "hareketSayisi": 1,
+        "hareketler": [
+          {
+            "tur": "in",
+            "tutar": 120
+          }
+        ],
+        "toplam": 120,
+        "odenen": 120,
+        "kalan": 0
+      },
+      "cariBakiye": 0,
+      "kasaOnce": 270,
+      "kasaSonra": 390,
+      "kasaFarki": 120
+    },
+    "N": {
+      "gonderilen": {
+        "ilk": {
+          "tutar": "120",
+          "kimlik": "K5"
+        },
+        "ikinci": {
+          "tutar": "120",
+          "kimlik": "K6"
+        }
+      },
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-b0de3d7b-284c-477d-a42e-105c505bcc78",
+        "replayed": false
+      },
+      "ikinci": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-18f40f68-bdb1-49d5-ba4e-d7570c6141ba",
+        "replayed": false
+      },
+      "ayniHareket": false,
+      "kart": {
+        "hareketSayisi": 2,
+        "hareketler": [
+          {
+            "tur": "in",
+            "tutar": 120
+          },
+          {
+            "tur": "in",
+            "tutar": 120
+          }
+        ],
+        "toplam": 120,
+        "odenen": 240,
+        "kalan": 0
+      },
+      "cariBakiye": -120,
+      "kasaOnce": 390,
+      "kasaSonra": 630,
+      "kasaFarki": 240
+    },
+    "N0": {
+      "gonderilen": {
+        "ilk": {
+          "tutar": "120",
+          "kimlik": null
+        },
+        "ikinci": {
+          "tutar": "120",
+          "kimlik": null
+        }
+      },
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-dc4d79a7-183f-45a9-b2ba-51f41eb2b2c5",
+        "replayed": false
+      },
+      "ikinci": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "entryId": "entry-65111deb-ede7-434b-8da0-c86273344e90",
+        "replayed": false
+      },
+      "ayniHareket": false,
+      "kart": {
+        "hareketSayisi": 2,
+        "hareketler": [
+          {
+            "tur": "in",
+            "tutar": 120
+          },
+          {
+            "tur": "in",
+            "tutar": 120
+          }
+        ],
+        "toplam": 120,
+        "odenen": 240,
+        "kalan": 0
+      },
+      "cariBakiye": -120,
+      "kasaOnce": 630,
+      "kasaSonra": 870,
+      "kasaFarki": 240
+    }
+  },
+  "mutabakatTesti": {
+    "ok": true,
+    "basarisiz": []
+  }
+}

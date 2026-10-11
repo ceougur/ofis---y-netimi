@@ -1,0 +1,41 @@
+{
+  "dakika": 20,
+  "gizlendi": "2026-10-10T19:31:40.784Z",
+  "sayfaYenilenmesi": 0,
+  "sonundaHalaGizli": true,
+  "gizliykenSayilanIstek": 8,
+  "istekler": [
+    {
+      "dkSonra": 4.92,
+      "yol": "GET /api/trpc/sheets.getRows"
+    },
+    {
+      "dkSonra": 4.93,
+      "yol": "GET /api/workspace/dues"
+    },
+    {
+      "dkSonra": 9.92,
+      "yol": "GET /api/trpc/sheets.getRows"
+    },
+    {
+      "dkSonra": 9.93,
+      "yol": "GET /api/workspace/dues"
+    },
+    {
+      "dkSonra": 14.92,
+      "yol": "GET /api/trpc/sheets.getRows"
+    },
+    {
+      "dkSonra": 14.93,
+      "yol": "GET /api/workspace/dues"
+    },
+    {
+      "dkSonra": 19.92,
+      "yol": "GET /api/trpc/sheets.getRows"
+    },
+    {
+      "dkSonra": 19.93,
+      "yol": "GET /api/workspace/dues"
+    }
+  ]
+}

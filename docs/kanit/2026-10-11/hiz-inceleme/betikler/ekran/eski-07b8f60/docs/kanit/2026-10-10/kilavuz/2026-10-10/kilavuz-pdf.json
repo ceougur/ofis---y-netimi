@@ -1,0 +1,32 @@
+{
+  "ad": "kilavuz-pdf",
+  "komut": "bash -c set -euo pipefail; node docs/kilavuz/pdf-uret.mjs docs/kilavuz DestekOfis-Kullanim-Kilavuzu; cp docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf client/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf; node --disable-warning=ExperimentalWarning docs/kilavuz/pdf-denetle.mjs",
+  "commit": "740be0518c71eb92f0cc02c998626c363c060c3a",
+  "dal": "worktree-agent-ae4eb3e7afbf0fc41",
+  "kirli": 29,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T19:02:13.212Z",
+  "sure_sn": 13.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/kilavuz/2026-10-10/kilavuz-pdf.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae4eb3e7afbf0fc41",
+  "ham_cikti_sha256": "7d48b416a42a870344765f5e8c442351bb4761717c55a0fe83dc9f7459e611fc",
+  "ham_cikti_bayt": 1561
+}

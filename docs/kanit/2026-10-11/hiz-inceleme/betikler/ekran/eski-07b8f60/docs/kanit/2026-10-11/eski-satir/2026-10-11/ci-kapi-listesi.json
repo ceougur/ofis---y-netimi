@@ -1,0 +1,32 @@
+{
+  "ad": "ci-kapi-listesi",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/ci-kapi-listesi.test.mjs",
+  "commit": "3bd023ec325be6b2d7ccb8f357ca3bb8c8119fea",
+  "dal": "worktree-agent-ab47377feb84c68bc",
+  "kirli": 17,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T02:36:10.114Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/eski-satir/2026-10-11/ci-kapi-listesi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc",
+  "ham_cikti_sha256": "e77e08f8cc137b80fe77389c3ea51e8daa78704335e7cb350a27563e643c69be",
+  "ham_cikti_bayt": 1342
+}

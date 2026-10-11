@@ -1,0 +1,61 @@
+TAP version 13
+# (node:12132) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ---- d servis günlüğü (son) ----
+# 2026-10-10T21:08:13.781Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:38071
+# 2026-10-10T21:08:13.800Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).
+# 2026-10-10T21:08:13.801Z [INFO] Açılıştaki son denetim yapılamadı (mutasyon: son denetim yok); hazırdaki 9.0.1 kuruluyor.
+# 2026-10-10T21:08:13.801Z [INFO] 9.0.1 sürümü indiriliyor (4774 KB)…
+# 2026-10-10T21:08:14.015Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 40903)
+# 2026-10-10T21:08:14.398Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+# 2026-10-10T21:08:14.446Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.1
+# 2026-10-10T21:08:14.447Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+# 2026-10-10T21:08:14.489Z [INFO] Yeni sürüm bulundu: 9.0.2 (kurulu 9.0.1)
+# 2026-10-10T21:08:14.489Z [INFO] 9.0.2 sürümü indiriliyor (4774 KB)…
+# Subtest: Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+    # Subtest: (d) açılışta daha yeni sürüm var → o indirilip kurulur; tek geçiş, ara sürüm kurulmaz
+    not ok 1 - (d) açılışta daha yeni sürüm var → o indirilip kurulur; tek geçiş, ara sürüm kurulmaz
+      ---
+      duration_ms: 2686.930924
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m9/test/guncelleme-hazir.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        '9.0.1' !== '9.0.2'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '9.0.2'
+      actual: '9.0.1'
+      operator: 'strictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m9/test/guncelleme-hazir.test.mjs:152:14
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async withFeed (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m9/test/guncelleme-hazir.test.mjs:62:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m9/test/guncelleme-hazir.test.mjs:148:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 2)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+  ---
+  duration_ms: 2689.757943
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m9/test/guncelleme-hazir.test.mjs:88:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4879.07285

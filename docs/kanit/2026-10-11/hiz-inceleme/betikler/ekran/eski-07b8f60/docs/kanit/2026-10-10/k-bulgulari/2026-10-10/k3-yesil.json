@@ -1,0 +1,31 @@
+{
+  "ad": "k3-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/hakem-k3-kasa-istek-kimligi.test.mjs",
+  "commit": "36868aa31037382df7e3f51df3f123860e18296b",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:01:43.466Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/k3-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "b3925b3ce2f57a54a3261c066f0f9ffc5df3ceafd0696460820d8d3d668f4d65",
+  "ham_cikti_bayt": 1836
+}

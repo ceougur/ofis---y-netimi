@@ -1,0 +1,92 @@
+
+> destekofis@2.0.26 test:guvenilirlik
+> node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs --islem 400 --tohum 2 --tohumlar 1 --taban bos
+
+
+✗ Rastgele sıra testi başarısız (tohum 2, taban bos, işlem 41): #41 bankCard: 001 · Şirket 1 banka hesapları modelden farklı
+  model: bacc-24a4272d-f05a-4b0c-a871-ace30d84f3d0|242694; bacc-b136d952-9e8a-4aba-867b-0eb79de5d55c|223480; bacc-d07c1afa-9381-4991-9820-066a89b3bfba|1183701
+  ekranda: bacc-24a4272d-f05a-4b0c-a871-ace30d84f3d0|242694; bacc-b136d952-9e8a-4aba-867b-0eb79de5d55c|280191; bacc-d07c1afa-9381-4991-9820-066a89b3bfba|1183701
+Son işlemler:
+#2 şirket aç: kod "013" ad "Eğitim Kurumları <Merkez>" → 013[8aee]
+#3 seç: 001[kök] · Şirket 1
+#4 seç: 001[kök] · Şirket 1
+#5 kurumsal kart aç (001[kök]): Garanti BBVA limit 0.00
+#6 yedek (yalnız 013[8aee] · Eğitim Kurumları <Merkez>)
+#7 seç: 001[kök] · Şirket 1
+#8 cari hareketi (001[kök]): Mehmet Çelik in 2987.53
+#9 banka hesabı aç (001[kök]): Ziraat Bankası açılış 5228.85
+#10 geri yükle: 013[8aee] · Eğitim Kurumları <Merkez> ← destekofis-013-2026-10-10T16-08-51-417Z-manuel.sqlite (manuel)
+#11 banka hesabı aç (001[kök]): Ziraat Bankası açılış 11837.01
+#12 yedek (yalnız 001[kök] · Şirket 1)
+#13 cari aç (001[kök]): Nazlı Öztürk
+#14 Kasa (001[kök]): out 867.32
+#15 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T16-08-52-025Z-manuel.sqlite → 013[8aee] (dosya elle hedefin klasörüne kopyalandı)
+#16 Kasa (001[kök]): out 895.30
+#17 Kasa (001[kök]): out 1289.53
+#18 sunucuyu yeniden başlat
+#19 seç: 013[8aee] · Eğitim Kurumları <Merkez>
+#20 sıfırla (movements): 013[8aee] · Eğitim Kurumları <Merkez>
+#21 yedek (Tüm Şirketler)
+#22 banka hesabı aç (013[8aee]): Ziraat Bankası açılış 8493.59
+#23 cari aç (013[8aee]): Büşra Öztürk
+#24 banka hesabı aç (013[8aee]): Garanti BBVA açılış 2149.60
+#25 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T16-08-52-895Z-manuel.sqlite → 013[8aee] (dosya elle hedefin klasörüne kopyalandı)
+#26 kurumsal kart aç (013[8aee]): Garanti BBVA limit 20244.00 · doğrulandı
+#27 cari aç (013[8aee]): Emine Öztürk
+#28 transfer (013[8aee]): Ziraat Bankası · Hesap 22 → Garanti BBVA · Hesap 24 4950.82
+#29 geri yükle: 013[8aee] · Eğitim Kurumları <Merkez> ← destekofis-013-2026-10-10T16-08-51-417Z-manuel.sqlite (manuel)
+#30 seç: 001[kök] · Şirket 1
+#31 Kasa (001[kök]): in 4751.40
+#32 cari aç (001[kök]): Işıl Çetin
+#33 cari aç (001[kök]): Zehra Yıldız
+#34 sunucuyu yeniden başlat
+#35 yedek (yalnız 013[8aee] · Eğitim Kurumları <Merkez>)
+#36 Kart Borcu Ödemesi (001[kök]): Ziraat Bankası · Hesap 9 → Garanti BBVA · Kart 5 2801.91
+#37 şirket aç: kod "(sıradaki)" ad "istanbul ticaret a.ş." → 002[a216]
+#38 yedek (Tüm Şirketler)
+#39 cari hareketi (001[kök]): Işıl Çetin debt 1241.67
+#40 HESAPSIZ havale (001[kök]): Nazlı Öztürk out 1022.87
+#41 kartla alis (001[kök]): Zehra Yıldız 567.11 → Garanti BBVA · Kart 5
+
+Bütün işlem günlüğü:
+#1 cari aç (001[kök]): Mehmet Çelik
+#2 şirket aç: kod "013" ad "Eğitim Kurumları <Merkez>" → 013[8aee]
+#3 seç: 001[kök] · Şirket 1
+#4 seç: 001[kök] · Şirket 1
+#5 kurumsal kart aç (001[kök]): Garanti BBVA limit 0.00
+#6 yedek (yalnız 013[8aee] · Eğitim Kurumları <Merkez>)
+#7 seç: 001[kök] · Şirket 1
+#8 cari hareketi (001[kök]): Mehmet Çelik in 2987.53
+#9 banka hesabı aç (001[kök]): Ziraat Bankası açılış 5228.85
+#10 geri yükle: 013[8aee] · Eğitim Kurumları <Merkez> ← destekofis-013-2026-10-10T16-08-51-417Z-manuel.sqlite (manuel)
+#11 banka hesabı aç (001[kök]): Ziraat Bankası açılış 11837.01
+#12 yedek (yalnız 001[kök] · Şirket 1)
+#13 cari aç (001[kök]): Nazlı Öztürk
+#14 Kasa (001[kök]): out 867.32
+#15 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T16-08-52-025Z-manuel.sqlite → 013[8aee] (dosya elle hedefin klasörüne kopyalandı)
+#16 Kasa (001[kök]): out 895.30
+#17 Kasa (001[kök]): out 1289.53
+#18 sunucuyu yeniden başlat
+#19 seç: 013[8aee] · Eğitim Kurumları <Merkez>
+#20 sıfırla (movements): 013[8aee] · Eğitim Kurumları <Merkez>
+#21 yedek (Tüm Şirketler)
+#22 banka hesabı aç (013[8aee]): Ziraat Bankası açılış 8493.59
+#23 cari aç (013[8aee]): Büşra Öztürk
+#24 banka hesabı aç (013[8aee]): Garanti BBVA açılış 2149.60
+#25 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T16-08-52-895Z-manuel.sqlite → 013[8aee] (dosya elle hedefin klasörüne kopyalandı)
+#26 kurumsal kart aç (013[8aee]): Garanti BBVA limit 20244.00 · doğrulandı
+#27 cari aç (013[8aee]): Emine Öztürk
+#28 transfer (013[8aee]): Ziraat Bankası · Hesap 22 → Garanti BBVA · Hesap 24 4950.82
+#29 geri yükle: 013[8aee] · Eğitim Kurumları <Merkez> ← destekofis-013-2026-10-10T16-08-51-417Z-manuel.sqlite (manuel)
+#30 seç: 001[kök] · Şirket 1
+#31 Kasa (001[kök]): in 4751.40
+#32 cari aç (001[kök]): Işıl Çetin
+#33 cari aç (001[kök]): Zehra Yıldız
+#34 sunucuyu yeniden başlat
+#35 yedek (yalnız 013[8aee] · Eğitim Kurumları <Merkez>)
+#36 Kart Borcu Ödemesi (001[kök]): Ziraat Bankası · Hesap 9 → Garanti BBVA · Kart 5 2801.91
+#37 şirket aç: kod "(sıradaki)" ad "istanbul ticaret a.ş." → 002[a216]
+#38 yedek (Tüm Şirketler)
+#39 cari hareketi (001[kök]): Işıl Çetin debt 1241.67
+#40 HESAPSIZ havale (001[kök]): Nazlı Öztürk out 1022.87
+#41 kartla alis (001[kök]): Zehra Yıldız 567.11 → Garanti BBVA · Kart 5

@@ -1,0 +1,32 @@
+{
+  "ad": "ufku-sunucu-yeni-kod",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/uyari-ufku-225.test.mjs",
+  "commit": "742c8112104cdb1427aaae6982d24a230a4960eb",
+  "dal": "worktree-agent-ae060f41b27875c73",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:33:48.547Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/uyari-ufku/2026-10-11/ufku-sunucu-yeni-kod.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae060f41b27875c73",
+  "ham_cikti_sha256": "314615f594d75fed25edc27790d1de7b5dd54841b8c25ed17928fe5ba32b71a7",
+  "ham_cikti_bayt": 1600
+}

@@ -1,0 +1,632 @@
+[
+ {
+  "company": "001",
+  "section": "İşlem sayıları",
+  "label": "Satış faturası adedi",
+  "expected": "1528",
+  "actual": "1528",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "İşlem sayıları",
+  "label": "Alış + gider faturası adedi",
+  "expected": "1420",
+  "actual": "1420",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "İşlem sayıları",
+  "label": "Cari kartı adedi (350 Excel + 12 personel + 11 gider)",
+  "expected": "373",
+  "actual": "373",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "KDV",
+  "label": "Hesaplanan KDV (391)",
+  "expected": "3.516.789,01",
+  "actual": "3.516.789,01",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "KDV",
+  "label": "İndirilecek KDV (191)",
+  "expected": "4.932.097,33",
+  "actual": "4.932.097,33",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "KDV",
+  "label": "Devreden/Ödenecek KDV",
+  "expected": "1.415.308,32",
+  "actual": "1.415.308,32",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Kasa ve Banka/POS",
+  "label": "Nakit Kasa bakiyesi",
+  "expected": "-12.042.568,88",
+  "actual": "-12.042.568,88",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Kasa ve Banka/POS",
+  "label": "Banka (Havale/EFT) bakiyesi — ANLIK DURUM",
+  "expected": "-16.663.396,13",
+  "actual": "-16.663.396,13",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Kasa ve Banka/POS",
+  "label": "POS / Kredi Kartı bakiyesi — ANLIK DURUM",
+  "expected": "-5.649.345,13",
+  "actual": "-5.649.345,13",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Kasa ve Banka/POS",
+  "label": "Banka — Banka ve POS Hareketleri raporu",
+  "expected": "-16.663.396,13",
+  "actual": "-16.663.396,13",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Kasa ve Banka/POS",
+  "label": "POS / Kredi Kartı — Banka ve POS Hareketleri raporu",
+  "expected": "-5.649.345,13",
+  "actual": "-5.649.345,13",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Kasa ve Banka/POS",
+  "label": "Banka + POS dönem girişi",
+  "expected": "11.172.254,49",
+  "actual": "11.172.254,49",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Kasa ve Banka/POS",
+  "label": "Banka + POS dönem çıkışı",
+  "expected": "33.484.995,75",
+  "actual": "33.484.995,75",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Cari bakiyeler",
+  "label": "Cari bakiyesi tutan cari (350 cari tek tek)",
+  "expected": "350",
+  "actual": "350",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Cari bakiyeler",
+  "label": "Borçlu cariler toplamı (alacağımız)",
+  "expected": "24.956.792,84",
+  "actual": "24.956.792,84",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Cari bakiyeler",
+  "label": "Alacaklı cariler toplamı (borcumuz)",
+  "expected": "8.570.021,38",
+  "actual": "8.570.021,38",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Cari bakiyeler",
+  "label": "Personel carileri (maaş tahakkuk = ödeme) bakiye",
+  "expected": "0,00",
+  "actual": "0,00",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Cari bakiyeler",
+  "label": "Gider carileri (peşin ödenen gider) bakiye",
+  "expected": "0,00",
+  "actual": "0,00",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Stok",
+  "label": "Stok miktarı tutan ürün (50 ürün)",
+  "expected": "50",
+  "actual": "50",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Çek / Senet",
+  "label": "Alınan çek/senet adedi",
+  "expected": "458",
+  "actual": "458",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Çek / Senet",
+  "label": "Alınan çek/senet toplamı",
+  "expected": "9.292.642,24",
+  "actual": "9.292.642,24",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Çek / Senet",
+  "label": "Verilen çek/senet adedi",
+  "expected": "426",
+  "actual": "426",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Çek / Senet",
+  "label": "Verilen çek/senet toplamı",
+  "expected": "18.109.393,91",
+  "actual": "18.109.393,91",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Taksit",
+  "label": "Taksit kartı adedi",
+  "expected": "286",
+  "actual": "286",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Taksit",
+  "label": "Taksit kartları toplamı",
+  "expected": "6.377.072,52",
+  "actual": "6.377.072,52",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Taksit",
+  "label": "Taksit tahsilatı (ödenen)",
+  "expected": "66.384,02",
+  "actual": "66.384,02",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Taksit",
+  "label": "Taksit kalan",
+  "expected": "6.310.688,50",
+  "actual": "6.310.688,50",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Satış ve alış",
+  "label": "Satış faturaları matrahı",
+  "expected": "32.718.967,88",
+  "actual": "32.718.967,88",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Satış ve alış",
+  "label": "Satış faturaları KDV",
+  "expected": "3.516.789,01",
+  "actual": "3.516.789,01",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Satış ve alış",
+  "label": "Satış faturaları ödenecek (genel toplam)",
+  "expected": "36.235.756,89",
+  "actual": "36.235.756,89",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Satış ve alış",
+  "label": "Alış + gider faturaları matrahı",
+  "expected": "49.960.167,94",
+  "actual": "49.960.167,94",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Satış ve alış",
+  "label": "Alış + gider faturaları ödenecek",
+  "expected": "54.892.265,27",
+  "actual": "54.892.265,27",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Satış ve alış",
+  "label": "Gider raporu (KDV hariç gider)",
+  "expected": "10.322.609,52",
+  "actual": "10.322.609,52",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Satış ve alış",
+  "label": "Hesap mizanı borç = alacak (fark)",
+  "expected": "0,00",
+  "actual": "0,00",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "001",
+  "section": "Satış ve alış",
+  "label": "Ana Defter mutabakatı",
+  "expected": "Tutarlı",
+  "actual": "Tutarlı",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "İşlem sayıları",
+  "label": "Satış faturası adedi",
+  "expected": "1528",
+  "actual": "1528",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "İşlem sayıları",
+  "label": "Alış + gider faturası adedi",
+  "expected": "1420",
+  "actual": "1420",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "İşlem sayıları",
+  "label": "Cari kartı adedi (350 Excel + 12 personel + 11 gider)",
+  "expected": "373",
+  "actual": "373",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "KDV",
+  "label": "Hesaplanan KDV (391)",
+  "expected": "3.516.789,01",
+  "actual": "3.516.789,01",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "KDV",
+  "label": "İndirilecek KDV (191)",
+  "expected": "4.932.097,33",
+  "actual": "4.932.097,33",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "KDV",
+  "label": "Devreden/Ödenecek KDV",
+  "expected": "1.415.308,32",
+  "actual": "1.415.308,32",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Kasa ve Banka/POS",
+  "label": "Nakit Kasa bakiyesi",
+  "expected": "-12.042.568,88",
+  "actual": "-12.042.568,88",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Kasa ve Banka/POS",
+  "label": "Banka (Havale/EFT) bakiyesi — ANLIK DURUM",
+  "expected": "-16.663.396,13",
+  "actual": "-16.663.396,13",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Kasa ve Banka/POS",
+  "label": "POS / Kredi Kartı bakiyesi — ANLIK DURUM",
+  "expected": "-5.649.345,13",
+  "actual": "-5.649.345,13",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Kasa ve Banka/POS",
+  "label": "Banka — Banka ve POS Hareketleri raporu",
+  "expected": "-16.663.396,13",
+  "actual": "-16.663.396,13",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Kasa ve Banka/POS",
+  "label": "POS / Kredi Kartı — Banka ve POS Hareketleri raporu",
+  "expected": "-5.649.345,13",
+  "actual": "-5.649.345,13",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Kasa ve Banka/POS",
+  "label": "Banka + POS dönem girişi",
+  "expected": "11.172.254,49",
+  "actual": "11.172.254,49",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Kasa ve Banka/POS",
+  "label": "Banka + POS dönem çıkışı",
+  "expected": "33.484.995,75",
+  "actual": "33.484.995,75",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Cari bakiyeler",
+  "label": "Cari bakiyesi tutan cari (350 cari tek tek)",
+  "expected": "350",
+  "actual": "350",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Cari bakiyeler",
+  "label": "Borçlu cariler toplamı (alacağımız)",
+  "expected": "24.956.792,84",
+  "actual": "24.956.792,84",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Cari bakiyeler",
+  "label": "Alacaklı cariler toplamı (borcumuz)",
+  "expected": "8.570.021,38",
+  "actual": "8.570.021,38",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Cari bakiyeler",
+  "label": "Personel carileri (maaş tahakkuk = ödeme) bakiye",
+  "expected": "0,00",
+  "actual": "0,00",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Cari bakiyeler",
+  "label": "Gider carileri (peşin ödenen gider) bakiye",
+  "expected": "0,00",
+  "actual": "0,00",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Stok",
+  "label": "Stok miktarı tutan ürün (50 ürün)",
+  "expected": "50",
+  "actual": "50",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Çek / Senet",
+  "label": "Alınan çek/senet adedi",
+  "expected": "458",
+  "actual": "458",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Çek / Senet",
+  "label": "Alınan çek/senet toplamı",
+  "expected": "9.292.642,24",
+  "actual": "9.292.642,24",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Çek / Senet",
+  "label": "Verilen çek/senet adedi",
+  "expected": "426",
+  "actual": "426",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Çek / Senet",
+  "label": "Verilen çek/senet toplamı",
+  "expected": "18.109.393,91",
+  "actual": "18.109.393,91",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Taksit",
+  "label": "Taksit kartı adedi",
+  "expected": "286",
+  "actual": "286",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Taksit",
+  "label": "Taksit kartları toplamı",
+  "expected": "6.377.072,52",
+  "actual": "6.377.072,52",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Taksit",
+  "label": "Taksit tahsilatı (ödenen)",
+  "expected": "66.384,02",
+  "actual": "66.384,02",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Taksit",
+  "label": "Taksit kalan",
+  "expected": "6.310.688,50",
+  "actual": "6.310.688,50",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Satış ve alış",
+  "label": "Satış faturaları matrahı",
+  "expected": "32.718.967,88",
+  "actual": "32.718.967,88",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Satış ve alış",
+  "label": "Satış faturaları KDV",
+  "expected": "3.516.789,01",
+  "actual": "3.516.789,01",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Satış ve alış",
+  "label": "Satış faturaları ödenecek (genel toplam)",
+  "expected": "36.235.756,89",
+  "actual": "36.235.756,89",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Satış ve alış",
+  "label": "Alış + gider faturaları matrahı",
+  "expected": "49.960.167,94",
+  "actual": "49.960.167,94",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Satış ve alış",
+  "label": "Alış + gider faturaları ödenecek",
+  "expected": "54.892.265,27",
+  "actual": "54.892.265,27",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Satış ve alış",
+  "label": "Gider raporu (KDV hariç gider)",
+  "expected": "10.322.609,52",
+  "actual": "10.322.609,52",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Satış ve alış",
+  "label": "Hesap mizanı borç = alacak (fark)",
+  "expected": "0,00",
+  "actual": "0,00",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "company": "002",
+  "section": "Satış ve alış",
+  "label": "Ana Defter mutabakatı",
+  "expected": "Tutarlı",
+  "actual": "Tutarlı",
+  "ok": true,
+  "note": ""
+ }
+]

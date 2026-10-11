@@ -1,0 +1,12 @@
+✓ deneme 1 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 2 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 3 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret "initial" duruyordu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 4 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 5 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 6 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 7 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 8 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 9 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 10 (yeni, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+
+TAMAM: 10 denetim geçti, 0 başarısız.

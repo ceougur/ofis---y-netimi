@@ -1,0 +1,72 @@
+(node:15209) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15209) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "workers": 19,
+ "diffs": [],
+ "res": {
+  "worker": {
+   "passiveRes": 200,
+   "role": 200,
+   "personel.access": 200,
+   "personel banka-bakiye": "403/403 FORBIDDEN ",
+   "personel banka-hareket": "403/403 FORBIDDEN ",
+   "personel banka-masraf": "403/403 FORBIDDEN ",
+   "muhasebe.access": 200,
+   "muhasebe banka-bakiye": "200/200  [[\"Akbank\",\"Y TL\"],[\"Pasifbank\",\"Kapanan\"]]",
+   "muhasebe banka-hareket": "200/200  [[\"\",\"Akbank · Y TL\"],[\"BNK-2026-000001\",\"Akbank · Y TL\"]]",
+   "muhasebe banka-masraf": "200/200  []",
+   "muhasebeEksi.grant": 200,
+   "muhasebeEksi.access": 200,
+   "muhasebeEksi banka-bakiye": "403/403 FORBIDDEN ",
+   "muhasebeEksi banka-hareket": "403/403 FORBIDDEN ",
+   "muhasebeEksi banka-masraf": "403/403 FORBIDDEN ",
+   "personelArti.grant": 200,
+   "personelArti.access": 200,
+   "personelArti banka-bakiye": "200/200  [[\"Akbank\",\"Y TL\"],[\"Pasifbank\",\"Kapanan\"]]",
+   "personelArti banka-hareket": "200/200  [[\"\",\"Akbank · Y TL\"],[\"BNK-2026-000001\",\"Akbank · Y TL\"]]",
+   "personelArti banka-masraf": "200/200  []",
+   "ozelRol.access": 200,
+   "ozelRol banka-bakiye": "200/200  [[\"Akbank\",\"Y TL\"],[\"Pasifbank\",\"Kapanan\"]]",
+   "ozelRol banka-hareket": "200/200  [[\"\",\"Akbank · Y TL\"],[\"BNK-2026-000001\",\"Akbank · Y TL\"]]",
+   "ozelRol banka-masraf": "200/200  []",
+   "muhasebe002siz.access": 200,
+   "muhasebe002siz banka-bakiye": "403/403 company-forbidden ",
+   "muhasebe002siz banka-hareket": "403/403 company-forbidden ",
+   "muhasebe002siz banka-masraf": "403/403 company-forbidden ",
+   "adminBakiye": "[[\"Akbank\",\"Y TL\"],[\"Pasifbank\",\"Kapanan\"]]"
+  },
+  "inline": {
+   "passiveRes": 200,
+   "role": 200,
+   "personel.access": 200,
+   "personel banka-bakiye": "403/403 FORBIDDEN ",
+   "personel banka-hareket": "403/403 FORBIDDEN ",
+   "personel banka-masraf": "403/403 FORBIDDEN ",
+   "muhasebe.access": 200,
+   "muhasebe banka-bakiye": "200/200  [[\"Akbank\",\"Y TL\"],[\"Pasifbank\",\"Kapanan\"]]",
+   "muhasebe banka-hareket": "200/200  [[\"\",\"Akbank · Y TL\"],[\"BNK-2026-000001\",\"Akbank · Y TL\"]]",
+   "muhasebe banka-masraf": "200/200  []",
+   "muhasebeEksi.grant": 200,
+   "muhasebeEksi.access": 200,
+   "muhasebeEksi banka-bakiye": "403/403 FORBIDDEN ",
+   "muhasebeEksi banka-hareket": "403/403 FORBIDDEN ",
+   "muhasebeEksi banka-masraf": "403/403 FORBIDDEN ",
+   "personelArti.grant": 200,
+   "personelArti.access": 200,
+   "personelArti banka-bakiye": "200/200  [[\"Akbank\",\"Y TL\"],[\"Pasifbank\",\"Kapanan\"]]",
+   "personelArti banka-hareket": "200/200  [[\"\",\"Akbank · Y TL\"],[\"BNK-2026-000001\",\"Akbank · Y TL\"]]",
+   "personelArti banka-masraf": "200/200  []",
+   "ozelRol.access": 200,
+   "ozelRol banka-bakiye": "200/200  [[\"Akbank\",\"Y TL\"],[\"Pasifbank\",\"Kapanan\"]]",
+   "ozelRol banka-hareket": "200/200  [[\"\",\"Akbank · Y TL\"],[\"BNK-2026-000001\",\"Akbank · Y TL\"]]",
+   "ozelRol banka-masraf": "200/200  []",
+   "muhasebe002siz.access": 200,
+   "muhasebe002siz banka-bakiye": "403/403 company-forbidden ",
+   "muhasebe002siz banka-hareket": "403/403 company-forbidden ",
+   "muhasebe002siz banka-masraf": "403/403 company-forbidden ",
+   "adminBakiye": "[[\"Akbank\",\"Y TL\"],[\"Pasifbank\",\"Kapanan\"]]"
+  }
+ }
+}

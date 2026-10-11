@@ -1,0 +1,137 @@
+TAP version 13
+# Subtest: Aşama 4 — Banka Fişi: çalışıyor mu (masraf, faiz, diğer, kart, kredi; bağımsız modelle)
+    # Subtest: 1–4: masraf BSMV Dahil / Hariç / Yok ve POS komisyonu; hesap masraf türüne göre (770 / 653)
+    ok 1 - 1–4: masraf BSMV Dahil / Hariç / Yok ve POS komisyonu; hesap masraf türüne göre (770 / 653)
+      ---
+      duration_ms: 144.520449
+      type: 'test'
+      ...
+    # Subtest: 5–6: KDV'li masraf tek işlemde gider faturası + havale; cari 0; fatura Ödendi; KDV raporu 191 = 20
+    ok 2 - 5–6: KDV'li masraf tek işlemde gider faturası + havale; cari 0; fatura Ödendi; KDV raporu 191 = 20
+      ---
+      duration_ms: 167.858173
+      type: 'test'
+      ...
+    # Subtest: 7–9: faiz geliri (stopaj 193), faiz gideri (780), diğer gelir (649) ve gider (659)
+    ok 3 - 7–9: faiz geliri (stopaj 193), faiz gideri (780), diğer gelir (649) ve gider (659)
+      ---
+      duration_ms: 134.360381
+      type: 'test'
+      ...
+    # Subtest: 10–11: kart borcu ödemesi (309) ve kredi kullanımı / geri ödemesi (300); iç hareket
+    ok 4 - 10–11: kart borcu ödemesi (309) ve kredi kullanımı / geri ödemesi (300); iç hareket
+      ---
+      duration_ms: 126.890164
+      type: 'test'
+      ...
+    # Subtest: İşlem Kartı: İşlem No ya da kimlikle; satırların adları; bağlar; işlem geçmişi
+    ok 5 - İşlem Kartı: İşlem No ya da kimlikle; satırların adları; bağlar; işlem geçmişi
+      ---
+      duration_ms: 11.25817
+      type: 'test'
+      ...
+    1..5
+ok 1 - Aşama 4 — Banka Fişi: çalışıyor mu (masraf, faiz, diğer, kart, kredi; bağımsız modelle)
+  ---
+  duration_ms: 1160.641089
+  type: 'suite'
+  ...
+# Subtest: Aşama 4 — Banka Fişi: nasıl bozarım
+    # Subtest: tutar: eksi, sıfır, 1e13, 3 ondalık, 0,005, boş, metin → 400; stopaj oranı / tutarı sınır dışı → 400; hiçbir satır yazılmaz
+    ok 1 - tutar: eksi, sıfır, 1e13, 3 ondalık, 0,005, boş, metin → 400; stopaj oranı / tutarı sınır dışı → 400; hiçbir satır yazılmaz
+      ---
+      duration_ms: 27.259031
+      type: 'test'
+      ...
+    # Subtest: tarih: ileri 400, kilitli 409, hesabın açılışından önce 409
+    ok 2 - tarih: ileri 400, kilitli 409, hesabın açılışından önce 409
+      ---
+      duration_ms: 42.875537
+      type: 'test'
+      ...
+    # Subtest: hesap: yok, pasif, döviz, kredi hesabından ödeme, kart/vadeli hesaba masraf, yanlış karşı hesap, aynı hesap → 404/400
+    not ok 3 - hesap: yok, pasif, döviz, kredi hesabından ödeme, kart/vadeli hesaba masraf, yanlış karşı hesap, aynı hesap → 404/400
+      ---
+      duration_ms: 106.32366
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616/test/banka-210-fis.test.mjs:222:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        vadeliye diğer gelir: 200 {"id":"ev-0mv2h2vlp0000-4bd7c776-73e4-4e40","no":"BNK-2026-000008","type":"other_in","typeLabel":"Diğer Gelir","status":"active","statusLabel":"Etkin","date":"2026-10-08","valueDate":"","direction":"in","tryMinor":1857,"amountMinor":1857,"currency":"TRY","method":"bank","description":"Promosyon","reference":"","channel":"","origin":"manual","internal":false,"account":{"id":"bacc-76d1a03e-2214-4548 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616/test/banka-210-fis.test.mjs:242:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tür ve vergi: tanınmayan / bu uçtan girilmeyen tür, tanınmayan vergi kipi ve masraf türü, KDV'de cari ve fatura no zorunlu → 400
+    ok 4 - tür ve vergi: tanınmayan / bu uçtan girilmeyen tür, tanınmayan vergi kipi ve masraf türü, KDV'de cari ve fatura no zorunlu → 400
+      ---
+      duration_ms: 42.880806
+      type: 'test'
+      ...
+    # Subtest: beyaz liste: diğer gelire 770, diğer gidere 642, yasak hesaplar → 400; elle fiş kapalıyken 409, açıkken fx_gain'e 656 / 320 / dengesiz → 400
+    ok 5 - beyaz liste: diğer gelire 770, diğer gidere 642, yasak hesaplar → 400; elle fiş kapalıyken 409, açıkken fx_gain'e 656 / 320 / dengesiz → 400
+      ---
+      duration_ms: 99.23608
+      type: 'test'
+      ...
+    # Subtest: yetki: personel 403; bank.move kaldırılan 403; kredi bank.transfer, KDV'li masraf invoices.manage ister; avukat masraf girer
+    ok 6 - yetki: personel 403; bank.move kaldırılan 403; kredi bank.transfer, KDV'li masraf invoices.manage ister; avukat masraf girer
+      ---
+      duration_ms: 408.881814
+      type: 'test'
+      ...
+    # Subtest: başka şirketin hesabı (?hofCompany=) 404; şirketler ayrı
+    ok 7 - başka şirketin hesabı (?hofCompany=) 404; şirketler ayrı
+      ---
+      duration_ms: 139.527221
+      type: 'test'
+      ...
+    1..7
+not ok 2 - Aşama 4 — Banka Fişi: nasıl bozarım
+  ---
+  duration_ms: 1260.235469
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616/test/banka-210-fis.test.mjs:181:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Aşama 4 — Banka Fişi: salt okunur lisans
+    # Subtest: salt okunur lisans: fiş yazımı 403 LICENSE_READ_ONLY
+    ok 1 - salt okunur lisans: fiş yazımı 403 LICENSE_READ_ONLY
+      ---
+      duration_ms: 241.085928
+      type: 'test'
+      ...
+    # Subtest: boş şirket: hareketler, plan listesi, masraf raporu, fiş meta 200 ve boş
+    ok 2 - boş şirket: hareketler, plan listesi, masraf raporu, fiş meta 200 ve boş
+      ---
+      duration_ms: 249.671347
+      type: 'test'
+      ...
+    1..2
+ok 3 - Aşama 4 — Banka Fişi: salt okunur lisans
+  ---
+  duration_ms: 491.307656
+  type: 'suite'
+  ...
+1..3
+# tests 14
+# suites 3
+# pass 13
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3335.353586

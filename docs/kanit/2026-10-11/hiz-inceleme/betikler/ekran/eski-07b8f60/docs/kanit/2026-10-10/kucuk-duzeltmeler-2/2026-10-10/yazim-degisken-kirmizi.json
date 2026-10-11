@@ -1,0 +1,43 @@
+{
+  "ad": "yazim-degisken-kirmizi",
+  "komut": "node --test test/yazim-duzeni.test.mjs",
+  "commit": "bb3cc09a182fef4d446d1121932f19a65b2c0e52",
+  "dal": "worktree-agent-a52cd8d581e9c0684",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T20:19:09.250Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük › arayüz dosyalarında kurala uymayan ad yok",
+      "konum": "test/yazim-duzeni.test.mjs:142:3",
+      "hata": "Yeni etiketler başlık yazımıyla yazılmalı: · client/assets/admin.js (STATE_LABELS değeri): “Geçiş dönemi” → “Geçiş Dönemi” · client/assets/admin.js (STATE_LABELS değeri): “Saat hatası” → “Saat Hatası” (beklenen , gelen )"
+    },
+    {
+      "ad": "yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük › rapor, PDF ve Excel başlıklarında kurala uymayan ad yok",
+      "konum": "test/yazim-duzeni.test.mjs:147:3",
+      "hata": "Rapor ve dışa aktarım başlıkları başlık yazımıyla yazılmalı: · server/routes/overview.mjs (SOURCE_TEXT değeri): “Ödeme sözü” → “Ödeme Sözü” · server/routes/overview.mjs (SOURCE_TEXT değeri): “Son tarih” → “Son Tarih” (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler-2/2026-10-10/yazim-degisken-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684",
+  "ham_cikti_sha256": "9691b01e6c1eaf14bb868e285da2b516bf844c9339235290c2cafe38bbf986db",
+  "ham_cikti_bayt": 10626
+}

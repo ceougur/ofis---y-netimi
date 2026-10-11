@@ -1,0 +1,21 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-VADELI-HESAP-FIS",
+  "aciklama": "Hakem: en küçük — boş şirket, vadeli TL hesap (B4, rastgele-1-500 adım 66 aynen; kullanıcı MU yerine Y) + adım 182 aynen: B4'e Diğer Gelir 18,57 TL. bugun = özgün senaryoda adım 181'in saati (18.08.2025).",
+  "dayanak": "hakem: fark sınıfı VADELI-HESAP-FIS (alan retler.182 + türevleri bankaHesaplari/mizan.102.NN/649, A=B≠P; tohum 1 adım 182, 33 tohumun 14'ünde). Adım kimlikleri özgün senaryodakiyle aynı.",
+  "baslangic": {
+    "bugun": "18.08.2025",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    { "id": "66", "islem": "hesap_ac", "ad": "B4", "banka": "Garanti BBVA", "hesapAdi": "Vadeli Mevduat B4", "iban": "TR350006204684274727804819", "tur": "vadeli", "paraBirimi": "TRY", "acilisTarihi": "16.02.2025", "acilisBakiyesi": "66937", "bakiyeDogrulandi": true },
+    { "id": "182", "islem": "diger_gelir", "ad": "H32", "hesap": "B4", "tutar": "18,57" }
+  ]
+}

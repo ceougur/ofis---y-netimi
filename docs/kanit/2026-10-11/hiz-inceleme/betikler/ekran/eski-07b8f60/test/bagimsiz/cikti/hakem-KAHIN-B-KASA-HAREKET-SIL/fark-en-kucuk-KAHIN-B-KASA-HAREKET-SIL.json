@@ -1,0 +1,40 @@
+{
+  "adimSayisi": 2,
+  "b_stderr": "{\"hata\": \"senaryo-gecersiz\", \"neden\": \"2: 'H1' daha önce tanımlanmamış\"}",
+  "cikisKodlari": {
+    "a": 0,
+    "b": 2,
+    "program": 0
+  },
+  "durum": "EKSIK: en az bir taraf çıktı üretmedi; karşılaştırma yapılmadı",
+  "farklar": [],
+  "islemSayisi": 2,
+  "islemTurleri": {
+    "kasa_hareket": 1,
+    "sil": 1
+  },
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/en-kucuk-KAHIN-B-KASA-HAREKET-SIL.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/en-kucuk-KAHIN-B-KASA-HAREKET-SIL.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/en-kucuk-KAHIN-B-KASA-HAREKET-SIL.json --cikti test/bagimsiz/cikti/ham/en-kucuk-KAHIN-B-KASA-HAREKET-SIL.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "en-kucuk-KAHIN-B-KASA-HAREKET-SIL",
+  "senaryoDosyasi": "test/bagimsiz/cikti/en-kucuk-KAHIN-B-KASA-HAREKET-SIL.json",
+  "sureler": {
+    "a": 0.05,
+    "b": 0.07,
+    "program": 0.79
+  }
+}

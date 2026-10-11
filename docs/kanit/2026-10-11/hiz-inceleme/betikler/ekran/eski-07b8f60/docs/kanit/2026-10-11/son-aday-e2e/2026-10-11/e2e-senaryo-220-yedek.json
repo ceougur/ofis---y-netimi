@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-220-yedek",
+  "komut": "npm run test:senaryo-220-yedek",
+  "commit": "b489088a7b7abf5b002705847f8b503e0ad667b1",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T07:12:56.088Z",
+  "sure_sn": 7.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/son-aday-e2e/2026-10-11/e2e-senaryo-220-yedek.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ecb0c79af6bb1d41a5f8ede0151feaae5cf964d3898a0cea7e0b14369e99bd8e",
+  "ham_cikti_bayt": 2636
+}

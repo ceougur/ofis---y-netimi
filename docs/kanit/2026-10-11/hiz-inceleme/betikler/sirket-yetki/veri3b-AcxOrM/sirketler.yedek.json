@@ -1,0 +1,12 @@
+{
+  "companies": [
+    {
+      "id": "sirket-001",
+      "code": "001",
+      "name": "Şirket 1",
+      "dir": "",
+      "createdAt": "2026-10-11T13:33:05.993Z",
+      "createdBy": ""
+    }
+  ]
+}

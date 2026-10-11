@@ -1,0 +1,142 @@
+{
+  "big": true,
+  "err": "RangeError: Value is too large to be represented as a JavaScript number: 9500000001448636\n    at Object.get (file:///home/user/ofis---y-netimi/server/lib/db.mjs:241:41)\n    at Object.summary (file:///home/user/ofis---y-netimi/test/fixtures/hiz-210-eski/money-lines.mjs:474:23)\n    at compareMoney (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/hiz-inceleme/esdegerlik/ortak.mjs:168:22)\n    at file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/hiz-inceleme/esdegerlik/senaryo-c.mjs:110:11",
+  "direct": {
+    "classifiedTotals": "HATA ERR_OUT_OF_RANGE Value is too large to be represented as a JavaScript number: 9500000001131000",
+    "keyTotals": "HATA ERR_OUT_OF_RANGE Value is too large to be represented as a JavaScript number: 9500000001131000",
+    "oldClassifiedSum": "null"
+  },
+  "rep": {
+    "compared": 568,
+    "rows": 2201,
+    "diffs": 62,
+    "first": [
+      {
+        "tag": "C · banka-bakiye {} · varsayılan",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {} · varsayılan",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"real\"} · varsayılan",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"real\"} · varsayılan",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"debt\"} · varsayılan",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"debt\"} · varsayılan",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"unassigned\"} · varsayılan",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"unassigned\"} · varsayılan",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"all\"} · varsayılan",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"all\"} · varsayılan",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {} · all",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {} · all",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"real\"} · all",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"real\"} · all",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"debt\"} · all",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"debt\"} · all",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"unassigned\"} · all",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"unassigned\"} · all",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"all\"} · all",
+        "way": "yerinde",
+        "expected": "ok",
+        "actual": "HATA undefined Value is too large to be represented as a JavaScript number: 9500000001131000"
+      },
+      {
+        "tag": "C · banka-bakiye {\"bankGroup\":\"all\"} · all",
+        "way": "iş parçacığı",
+        "expected": "ok",
+        "actual": "HATA 500 Value is too large to be represented as a JavaScript number: 9500000001131000"
+      }
+    ],
+    "kinds": [
+      "banka-bakiye eski=ok yeni=HATA undefined Value is too large to be ",
+      "banka-bakiye eski=ok yeni=HATA 500 Value is too large to be repres",
+      "banka-hareket eski=ok yeni=HATA undefined Value is too large to be ",
+      "banka-hareket eski=ok yeni=HATA 500 Value is too large to be repres"
+    ]
+  }
+}

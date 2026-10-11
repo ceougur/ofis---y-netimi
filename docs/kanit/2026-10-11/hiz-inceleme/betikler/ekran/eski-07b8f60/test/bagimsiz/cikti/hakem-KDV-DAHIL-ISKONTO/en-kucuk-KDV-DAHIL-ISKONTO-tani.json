@@ -1,0 +1,155 @@
+{
+  "aciklama": "Hakem tanı senaryosu: (F1) mini; (F2) 2.000 KDV dahil %20 iskonto — kesin sonuç 1.600,00; (F3) peşin 70,31 (kâhin toplamı); (F4) peşin 70,30 (program toplamı); (F5) 100 KDV dahil %10 iskonto %10 KDV.",
+  "ad": "en-kucuk-KDV-DAHIL-ISKONTO-tani",
+  "adimlar": [
+    {
+      "ad": "M1",
+      "id": "1",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Müşteri 1"
+    },
+    {
+      "ad": "M2",
+      "id": "2",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Müşteri 2"
+    },
+    {
+      "ad": "M3",
+      "id": "3",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Müşteri 3"
+    },
+    {
+      "ad": "M4",
+      "id": "4",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Müşteri 4"
+    },
+    {
+      "ad": "M5",
+      "id": "5",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Müşteri 5"
+    },
+    {
+      "ad": "F1",
+      "cari": "M1",
+      "id": "6",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "82,71",
+          "hizmet": "Bakım",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "F2",
+      "cari": "M2",
+      "id": "7",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "2000",
+          "hizmet": "Bakım",
+          "iskontoOrani": "20",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    },
+    {
+      "ad": "F3",
+      "cari": "M3",
+      "id": "8",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "82,71",
+          "hizmet": "Bakım",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "70,31",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F4",
+      "cari": "M4",
+      "id": "9",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "82,71",
+          "hizmet": "Bakım",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "70,30",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tur": "satis"
+    },
+    {
+      "ad": "F5",
+      "cari": "M5",
+      "id": "10",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "100",
+          "hizmet": "Bakım",
+          "iskontoOrani": "10",
+          "kdvDahil": true,
+          "kdvOrani": 10,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    }
+  ],
+  "baslangic": {
+    "ayarlar": {
+      "benzerIslemUyarisi": "acik",
+      "kasaEksiBakiye": "uyar"
+    },
+    "bugun": "05.10.2026",
+    "kullanicilar": {
+      "Y": "yonetici"
+    },
+    "sirket": "bos"
+  },
+  "dayanak": "hakem tanısı",
+  "dil": "destekofis-senaryo/1"
+}

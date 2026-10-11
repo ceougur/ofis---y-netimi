@@ -1,0 +1,31 @@
+{
+  "aciklama": "SENARYO-DILI sürüm 2 testi (test/bagimsiz/test_surum2.py) — programla karşılaştırma için",
+  "ad": "s2-d6-c",
+  "adimlar": [
+    {
+      "acilisBakiyesi": "1000",
+      "acilisTarihi": "01.10.2026",
+      "ad": "VDL",
+      "bakiyeDogrulandi": true,
+      "banka": "Banka VDL",
+      "hesapAdi": "Hesap VDL",
+      "id": "1",
+      "islem": "hesap_ac",
+      "paraBirimi": "TRY",
+      "tur": "vadeli"
+    },
+    {
+      "hesap": "VDL",
+      "id": "2",
+      "islem": "banka_masraf",
+      "masrafTuru": "EFT",
+      "tutar": "10,50",
+      "vergi": "bsmv_dahil"
+    }
+  ],
+  "baslangic": {
+    "bugun": "08.10.2026",
+    "sirket": "bos"
+  },
+  "dil": "destekofis-senaryo/2"
+}

@@ -1,0 +1,122 @@
+
+=== deneme 1/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2707 · yazma (input) 3050 · fill bitti 3056 · bekleme bitti 3203 · ağ kesildi 3232
+  #4 user başladı    51 bitti   103 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #5 bg   başladı  3157 bitti  3177 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #6 user başladı  3300 bitti  3313 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #7 bg   başladı  4658 bitti  4663 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 123: 12 satır q="" | 3163: 12 satır q="Müşteri 0" | 3193: 9 satır q="Müşteri 0" | 3330: 0 satır HATA q="Müşteri 0"
+
+=== deneme 2/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2726 · yazma (input) 3066 · fill bitti 3071 · bekleme bitti 3220 · ağ kesildi 3233
+  #14 user başladı    51 bitti    79 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #15 bg   başladı  3177 bitti  3204 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #16 user başladı  3319 bitti  3380 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #17 bg   başladı  4677 bitti  4681 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 118: 12 satır q="" | 3202: 12 satır q="Müşteri 0" | 3214: 9 satır q="Müşteri 0" | 3407: 0 satır HATA q="Müşteri 0"
+
+=== deneme 3/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2629 · yazma (input) 2977 · fill bitti 2983 · bekleme bitti 3114 · ağ kesildi 3130
+  #24 user başladı    37 bitti    59 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #25 bg   başladı  3082 bitti  3092 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #26 user başladı  3227 bitti  3246 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #27 bg   başladı  4586 bitti  4594 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 73: 12 satır q="" | 3088: 12 satır q="Müşteri 0" | 3108: 9 satır q="Müşteri 0" | 3266: 0 satır HATA q="Müşteri 0"
+
+=== deneme 4/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2678 · yazma (input) 3019 · fill bitti 3028 · bekleme bitti 3168 · ağ kesildi 3182
+  #34 user başladı    48 bitti    60 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #35 bg   başladı  3129 bitti  3145 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #36 user başladı  3270 bitti  3278 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #37 bg   başladı  4629 bitti  4637 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 76: 12 satır q="" | 3147: 12 satır q="Müşteri 0" | 3162: 9 satır q="Müşteri 0" | 3287: 0 satır HATA q="Müşteri 0"
+
+=== deneme 5/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2610 · yazma (input) 2948 · fill bitti 2950 · bekleme bitti 3089 · ağ kesildi 3094
+  #43 user başladı    30 bitti    40 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #44 bg   başladı  3062 bitti  3070 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #45 user başladı  3199 bitti  3204 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #46 bg   başladı  4562 bitti  4567 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 60: 12 satır q="" | 3069: 12 satır q="Müşteri 0" | 3080: 9 satır q="Müşteri 0" | 3209: 0 satır HATA q="Müşteri 0"
+
+=== deneme 6/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2653 · yazma (input) 2994 · fill bitti 3000 · bekleme bitti 3148 · ağ kesildi 3153
+  #52 user başladı    63 bitti    80 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #53 bg   başladı  3106 bitti  3120 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #54 user başladı  3248 bitti  3256 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #55 bg   başladı  4606 bitti  4610 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 102: 12 satır q="" | 3116: 12 satır q="Müşteri 0" | 3132: 9 satır q="Müşteri 0" | 3265: 0 satır HATA q="Müşteri 0"
+
+=== deneme 7/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2598 · yazma (input) 2940 · fill bitti 2941 · bekleme bitti 3090 · ağ kesildi 3103
+  #62 user başladı    27 bitti    40 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #63 bg   başladı  3048 bitti  3060 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #64 user başladı  3190 bitti  3204 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #65 bg   başladı  4549 bitti  4553 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 49: 12 satır q="" | 3072: 9 satır q="Müşteri 0" | 3220: 0 satır HATA q="Müşteri 0"
+
+=== deneme 8/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2627 · yazma (input) 2973 · fill bitti 2978 · bekleme bitti 3161 · ağ kesildi 3230
+  #71 user başladı    33 bitti    64 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #72 bg   başladı  3078 bitti  3090 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #73 user başladı  3231 bitti  3281 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #74 bg   başladı  4578 bitti  4583 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 79: 12 satır q="" | 3086: 12 satır q="Müşteri 0" | 3099: 9 satır q="Müşteri 0" | 3358: 0 satır HATA q="Müşteri 0"
+
+=== deneme 9/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✗ KIRMIZI · kutu "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2814 · yazma (input) 3155 · fill bitti 3164 · bekleme bitti 3343 · ağ kesildi 3349
+  #81 user başladı   111 bitti   156 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #82 bg   başladı  3264 bitti  3318 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #83 user başladı  3406 bitti  3413 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #84 bg   başladı  4765 bitti  4769 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 172: 12 satır q="" | 3321: 12 satır q="Müşteri 0" | 3328: 9 satır q="Müşteri 0" | 3419: 0 satır HATA q="Müşteri 0"
+
+=== deneme 10/10 (MODE=forced WAIT=old CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay 2766 · yazma (input) 3106 · fill bitti 3111 · bekleme bitti 3391 · ağ kesildi 3415
+  #91 user başladı    50 bitti   108 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #92 bg   başladı  3217 bitti  3224 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #93 user başladı  3357 bitti  3364 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #94 bg   başladı  4718 bitti  4729 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 141: 12 satır q="" | 3236: 9 satır q="Müşteri 0"
+
+Senaryo-222 yarış tanısı (MODE=forced WAIT=old CPU=1 LEAD=330): 1 geçti, 9 kaldı.

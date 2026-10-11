@@ -1,0 +1,32 @@
+{
+  "ad": "post-statik-yazim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-post-statik.test.mjs test/banka-210-post.test.mjs test/yazim-duzeni.test.mjs test/banka-210-gg2-devir.test.mjs test/banka-210-gg-geri-yukle.test.mjs",
+  "commit": "3bd023ec325be6b2d7ccb8f357ca3bb8c8119fea",
+  "dal": "worktree-agent-ab47377feb84c68bc",
+  "kirli": 17,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T02:43:27.527Z",
+  "sure_sn": 9.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 41,
+    "gecen": 41,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/eski-satir/2026-10-11/post-statik-yazim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc",
+  "ham_cikti_sha256": "c562005a3f5e92ab1a7c6f00c54a95e2a79a63c02db3e3ad93f7be863b65764d",
+  "ham_cikti_bayt": 15829
+}

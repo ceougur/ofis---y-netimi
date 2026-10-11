@@ -1,0 +1,180 @@
+{
+  "senaryo": "s4-mesai-disi",
+  "ozet": {
+    "saatDilimi": "Etc/GMT-7",
+    "servisYerelSaat": "Sun Oct 11 2026 01:12:21 GMT+0700 (GMT+07:00)",
+    "mesaiDisi": true,
+    "kurulumdanOnceSonIstekSn": 14,
+    "acilistanKurulumaSn": 61,
+    "surum": "9.0.1"
+  },
+  "sekmeIstekleri": {
+    "istek": 111,
+    "enUzunAraSn": 41,
+    "ortalamaAraSn": 0,
+    "yollar": {
+      "/": 2,
+      "/assets/app-8cf49bb5a6.css": 2,
+      "/assets/hukuk-ofisi-enhancements.css": 2,
+      "/assets/hof-ui.css": 2,
+      "/assets/hof-core.js": 2,
+      "/assets/hof-auth.js": 2,
+      "/assets/hof-boot.js": 2,
+      "/assets/hof-live.js": 2,
+      "/assets/hof-workspace.js": 2,
+      "/assets/brand/destekofis-mark.svg": 2,
+      "/assets/hof-plans.js": 2,
+      "/assets/hof-plan-transfer.js": 2,
+      "/assets/fonts/dm-sans-latin-wght-normal.woff2": 1,
+      "/assets/hof-accounts.js": 2,
+      "/assets/hof-whatsapp.js": 2,
+      "/assets/hof-stock.js": 2,
+      "/assets/hof-cheques.js": 2,
+      "/assets/hof-invoices.js": 2,
+      "/assets/hof-bank.js": 2,
+      "/assets/hof-overview.js": 2,
+      "/assets/hof-report-center.js": 2,
+      "/assets/hof-chat.js": 2,
+      "/assets/hof-choices.js": 2,
+      "/api/auth/me": 2,
+      "/assets/hof-table.js": 2,
+      "/assets/hof-grid.js": 2,
+      "/assets/hof-colops.js": 2,
+      "/assets/hof-chips.js": 2,
+      "/assets/hof-reports.js": 2,
+      "/api/public/info": 1,
+      "/assets/hof-sections.js": 2,
+      "/assets/fonts/manrope-latin-wght-normal.woff2": 1,
+      "/assets/fonts/dm-sans-latin-ext-wght-normal.woff2": 1,
+      "/assets/fonts/manrope-latin-ext-wght-normal.woff2": 1,
+      "/assets/hof-sources.js": 2,
+      "/assets/hof-companies.js": 2,
+      "/assets/hof-sessions.js": 2,
+      "/assets/hof-insight.js": 2,
+      "/assets/hof-columns.js": 2,
+      "/assets/hof-free.js": 2,
+      "/assets/hof-tabs.js": 2,
+      "/assets/hof-checks.js": 2,
+      "/assets/hof-promises.js": 2,
+      "/assets/hof-alerts.js": 2,
+      "/assets/hof-search.js": 2,
+      "/assets/hof-export.js": 2,
+      "/assets/hof-documents.js": 2,
+      "/assets/hof-license.js": 2,
+      "/api/auth/login": 1,
+      "/api/workspace/client-state": 1,
+      "/api/workspace/case-notes": 1,
+      "/api/workspace/users": 1,
+      "/api/chat": 2,
+      "/api/workspace/dataset": 1,
+      "/api/companies": 1,
+      "/api/workspace/sessions": 1,
+      "/assets/app-185ffb28c4.js": 1,
+      "/api/events": 1,
+      "/api/workspace/dues": 2,
+      "/api/workspace/alerts/dismissed": 1,
+      "/api/workspace/tasks": 2,
+      "/api/workspace/liens": 1,
+      "/api/workspace/plans": 1,
+      "/api/workspace/stock/alerts": 2
+    }
+  },
+  "sonDurum": {
+    "type": "durum",
+    "id": 119,
+    "updates": {
+      "enabled": true,
+      "autoUpdate": true,
+      "channel": "stable",
+      "currentVersion": "9.0.1",
+      "state": "idle",
+      "progress": null,
+      "available": null,
+      "incompatible": null,
+      "lastCheck": {
+        "at": "2026-10-10T18:13:21.500Z",
+        "status": "up-to-date",
+        "version": "9.0.1",
+        "reason": null
+      },
+      "lastResult": {
+        "outcome": "success",
+        "version": "9.0.1",
+        "previous": "9.0.0",
+        "at": "2026-10-10T18:13:22.173Z"
+      },
+      "lastError": null,
+      "failedVersions": [],
+      "deferred": null,
+      "periodicCheckMs": 21600000,
+      "skippedVersions": [],
+      "history": [
+        {
+          "at": "2026-10-10T18:13:22.172Z",
+          "event": "installed",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        },
+        {
+          "at": "2026-10-10T18:13:21.740Z",
+          "event": "activated",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        }
+      ]
+    },
+    "activity": {
+      "lastActivityAt": "2026-10-10T18:13:08.179Z",
+      "busy": true,
+      "idleMs": 900000
+    },
+    "phase": "ready",
+    "version": "9.0.1",
+    "localTime": "Sun Oct 11 2026 01:13:22 GMT+0700 (GMT+07:00)",
+    "timeZone": "Etc/GMT-7",
+    "offsetMinutes": 420,
+    "quietNow": true
+  },
+  "verilerOnce": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "verilerSonra": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "yedekler": [
+    "destekofis-001-2026-10-10T18-13-21-714Z-guncelleme-oncesi-9-0-0.sqlite"
+  ],
+  "kaynakIstekleri": [
+    {
+      "at": "2026-10-10T18:12:21.483Z",
+      "path": "/repos/test/repo/releases",
+      "status": 503
+    },
+    {
+      "at": "2026-10-10T18:12:21.498Z",
+      "path": "/test/repo/releases/latest/download/destekofis-guncelleme.json",
+      "status": 503
+    },
+    {
+      "at": "2026-10-10T18:13:21.503Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:13:21.511Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:13:21.517Z",
+      "path": "/download/9.0.1/destekofis-guncelleme-9.0.1.zip",
+      "status": 200
+    }
+  ]
+}

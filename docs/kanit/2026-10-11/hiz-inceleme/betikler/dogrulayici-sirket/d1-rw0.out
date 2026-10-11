@@ -1,0 +1,64 @@
+{
+ "reportWorker": false,
+ "N": 400,
+ "rounds": [
+  {
+   "op": "restore",
+   "delay": 0,
+   "restore": {
+    "status": 200
+   },
+   "report": {
+    "status": 200,
+    "ms": 17
+   }
+  },
+  {
+   "op": "restore",
+   "delay": 10,
+   "restore": {
+    "status": 200
+   },
+   "report": {
+    "status": 200,
+    "ms": 59
+   }
+  },
+  {
+   "op": "restore",
+   "delay": 30,
+   "restore": {
+    "status": 200
+   },
+   "report": {
+    "status": 200,
+    "ms": 54
+   }
+  },
+  {
+   "op": "delete",
+   "delay": 10,
+   "del": {
+    "status": 200
+   },
+   "report": {
+    "status": 200,
+    "ms": 24
+   }
+  }
+ ],
+ "setupMs": 11417,
+ "alone": {
+  "status": 200,
+  "ms": 23,
+  "total": 402
+ },
+ "backup": {
+  "status": 200,
+  "name": "destekofis-002-2026-10-11T14-33-46-217Z-manuel.sqlite"
+ },
+ "afterRestore": {
+  "status": 200,
+  "total": 402
+ }
+}

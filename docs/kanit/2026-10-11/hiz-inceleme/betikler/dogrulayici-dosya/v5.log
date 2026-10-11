@@ -1,0 +1,3 @@
+olmayan dosya: HttpError HttpError=true status=500 mesaj="unable to open database file"
+bozuk saat: HttpError HttpError=true status=500 mesaj="Geçersiz saat: bozuk"
+bilinmeyen rapor id: HttpError HttpError=true status=404 mesaj="Rapor bulunamadı."

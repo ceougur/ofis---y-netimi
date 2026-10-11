@@ -1,0 +1,31 @@
+{
+  "ad": "e2e-senaryo-222",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-222.mjs",
+  "commit": "ed9ad15bbe5045d54a6c94dc43f0c0d42982a352",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:48:45.055Z",
+  "sure_sn": 127.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/e2e-senaryo-222.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "054f332fb725afcabaf5aa88268f029e8c13d87e855696423409eb9bf14615c9",
+  "ham_cikti_bayt": 5736
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "acilis-yanit-yaris-yeni-kod",
+  "komut": "npm run test:acilis-yanit-yaris",
+  "commit": "92d9e06b189d104dcb948b72fbb78c81198c8cf9",
+  "dal": "worktree-agent-ac656f0bbd0c62958",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T21:41:57.121Z",
+  "sure_sn": 57.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/notes-yaris/2026-10-10/acilis-yanit-yaris-yeni-kod.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac656f0bbd0c62958",
+  "ham_cikti_sha256": "27795f76db1975be47006b0acb2560993da3a981a059f9fd2a0fce70dac40131",
+  "ham_cikti_bayt": 4169
+}

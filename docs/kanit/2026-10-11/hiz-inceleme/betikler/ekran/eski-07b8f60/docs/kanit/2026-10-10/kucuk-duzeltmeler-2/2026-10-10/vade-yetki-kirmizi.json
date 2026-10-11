@@ -1,0 +1,53 @@
+{
+  "ad": "vade-yetki-kirmizi",
+  "komut": "node --test test/vade-takip-kaynak-yetki-210.test.mjs",
+  "commit": "063b0aa4354da01f900506e9f7b7718d5eadcc3d",
+  "dal": "worktree-agent-a52cd8d581e9c0684",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T20:23:04.565Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 2,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "m2 Vade Takip kaynak adları: istemci sunucuyla aynı (fatura dahil) › sunucunun her kaynağının istemcide adı var; 'invoice' adı PDF/Excel'deki gibi",
+      "konum": "test/vade-takip-kaynak-yetki-210.test.mjs:54:3",
+      "hata": "istemci SOURCE_LABELS'ta 'invoice' adı yok (ekranda ham 'invoice' yazar)"
+    },
+    {
+      "ad": "m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi) › m7 API: banka yetkisiz kişi Kasa satırını görür, hesapsız eski banka satırını görmez (süzgeçli ve süzgeçsiz)",
+      "konum": "test/vade-takip-kaynak-yetki-210.test.mjs:110:3",
+      "hata": "preset=next30&sources=cash: yalnız Kasa'nın ileri tarihli satırı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi) › m7 PDF ve Excel: banka yetkisiz kişinin dışa aktarımında da eski banka satırı yok",
+      "konum": "test/vade-takip-kaynak-yetki-210.test.mjs:120:3",
+      "hata": "PDF'te banka satırı: Vade Takip 10.10.2026 – 09.11.2026 · gecikmişler dahil Oluşturma: 10.10.2026 12:00 Hazırlayan: Kasa Rapor Kalem 2 Tahsil Edilecek 1.300,00 TL gecikmiş 0,00 TL (0) Ödenecek 0,00 TL gecikmiş 0,00 TL (0) Net (tahsil − ödeme) 1.300,00 TL Vade Durum Kimden / Kime Kaynak Açıklama Tahsil Edilecek Ödenecek 14.10.2026 4 gün kaldı Kasa (ileri tarihli) Çek tahsili · No VY-1 · Vade Müşterisi 300,00 TL 16.10.2026 6 gün kaldı Hesabı Atanmamış (ileri tarihli) Çek tahsili · No VY-2 · Vade Müşterisi 1.000,00 TL DestekOfis · Vade Takip Sayfa 1 / 1 · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi) › m6 Nakit Akış PDF alt başlığı kesilmez (başlangıç tanımı tam)",
+      "konum": "test/vade-takip-kaynak-yetki-210.test.mjs:140:3",
+      "hata": "alt başlık kesik: Nakit Akış Projeksiyonu 10.10.2026 – 09.11.2026 · Aynı gün önce çıkışlar yazılır · Taksit, çek/senet ve ileri tarihli Kasa hareketleri · Başlangı… Oluşturma: 10.10.2026 12:00 Hazırlayan: Ofis yöneticisi Bugünkü Nakit ve Banka 10.000,00 TL Nakit Kasa 0,00 TL Gerçek Banka 10.000,00 TL Başlangıç (Nakit ve Banka) 10.000,00 TL Beklenen Giriş 1.300,00 TL Beklenen Çıkış 0,00 TL Dönem Sonu Tahmini Nakit ve Banka 11.300,00 TL En Düşük Tahmini Nakit ve Banka 10.000,00 TL (1… Gecikmiş Alacak / Borç 0,00 TL (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler-2/2026-10-10/vade-yetki-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684",
+  "ham_cikti_sha256": "21c9e9755271f7a6da73d925fb3ad5f294654472e10d6da07b4afc8f4cb05b68",
+  "ham_cikti_bayt": 7702
+}

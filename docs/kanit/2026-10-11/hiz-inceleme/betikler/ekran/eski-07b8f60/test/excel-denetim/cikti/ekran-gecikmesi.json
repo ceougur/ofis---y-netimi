@@ -1,0 +1,23 @@
+[
+ {
+  "başka kayıt/sn": 0,
+  "arka planda yazılan": 0,
+  "10 sn'de donma (ms)": 0,
+  "tuş → harf (ms)": "16 / 7 / 5 / 4 / 3",
+  "kutuda": "C0123"
+ },
+ {
+  "başka kayıt/sn": 1,
+  "arka planda yazılan": 32,
+  "10 sn'de donma (ms)": 694,
+  "tuş → harf (ms)": "4550 / 3063 / 2839 / 2898 / 2672",
+  "kutuda": "C0123"
+ },
+ {
+  "başka kayıt/sn": 5,
+  "arka planda yazılan": 31,
+  "10 sn'de donma (ms)": 583,
+  "tuş → harf (ms)": "4106 / 2662 / 2953 / 2731 / 2810",
+  "kutuda": "C0123"
+ }
+]

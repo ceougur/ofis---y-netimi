@@ -1,0 +1,506 @@
+[
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Yalnız 001 yetkili personel ?hofCompany=002 ile 002'nin carilerini okumaya çalışır",
+  "expected": "reddedilir (403/404), veri dönmez",
+  "actual": "HTTP 403 (company-forbidden) Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "001 personeli ?hofCompany=002 ile 002'deki bir cariye tahsilat yazmaya çalışır",
+  "expected": "reddedilir",
+  "actual": "HTTP 403 (company-forbidden) Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "001 personeli 002'deki carinin kimliğini kendi şirketinde (001) kullanır",
+  "expected": "bulunamaz (404), 001'e de yazılmaz",
+  "actual": "HTTP 404 Cari bulunamadı. Silinmiş olabilir.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "001 personeli kendini 002'ye geçirmeye çalışır (Şirket Seçimi)",
+  "expected": "reddedilir",
+  "actual": "HTTP 403 Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "001 personelinin şirket listesinde ne görünür",
+  "expected": "yalnız 001",
+  "actual": "001",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "001 personeli 002'nin fatura PDF'ini kimliğiyle indirmeye çalışır",
+  "expected": "bulunamaz",
+  "actual": "HTTP 404",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "001 personeli 002'deki carinin ekstre PDF'ini ?hofCompany=002 ile indirmeye çalışır",
+  "expected": "reddedilir",
+  "actual": "HTTP 403",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Personel rolü (stajyer) fatura kesmeye çalışır",
+  "expected": "403 (Fatura Kesme yetkisi yok)",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Personel rolü Kasa'yı görmeye çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Personel rolü Kasa'dan para çıkışı yazmaya çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Personel rolü cariye ÖDEME yazmaya çalışır (yalnız tahsilat yetkisi var)",
+  "expected": "403",
+  "actual": "HTTP 403 Borç, alacak ve ödeme girişi yönetici, uzman ve muhasebe yetkisidir; tahsilatı herkes girer.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Personel rolü çek girmeye çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Muhasebe personeli (yönetici değil) kullanıcı listesini okumaya çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Muhasebe personeli (yönetici değil) kendine yönetici kullanıcı açmaya çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Muhasebe personeli (yönetici değil) yedek almaya çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Muhasebe personeli (yönetici değil) yedekten geri yüklemeye çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Muhasebe personeli (yönetici değil) dönem kilidini kaldırmaya çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Muhasebe personeli (yönetici değil) kendi şirket yetkisini 002'ye genişletmeye çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Muhasebe personeli (yönetici değil) 002 şirketini silmeye çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Muhasebe personeli (yönetici değil) 002'nin verisini sıfırlamaya çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Oturum açmadan cari listesi istenir",
+  "expected": "401",
+  "actual": "HTTP 401 (UNAUTHORIZED) Oturum gerekli.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Giriş ekranında SQL enjeksiyonu (' OR 1=1 --)",
+  "expected": "giriş reddedilir",
+  "actual": "HTTP 401 Kullanıcı adı veya parola hatalı.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Aynı hesaba arka arkaya 12 yanlış parola (kaba kuvvet)",
+  "expected": "bir noktada geçici kilit / 429",
+  "actual": "HTTP 429 Çok fazla hatalı deneme yapıldı. 15 dakika sonra tekrar deneyin veya yöneticinizden parolanızı sıfırlamasını isteyin.",
+  "ok": true,
+  "detail": "429 yoksa sınırsız deneme açığı"
+ },
+ {
+  "group": "Yetki ve Şirket Ayrımı",
+  "name": "Kontrol: iki şirkete yetkili müdür 002'yi okuyabilir",
+  "expected": "200",
+  "actual": "HTTP 200 ",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Eksi tutarlı tahsilat (−5.000)",
+  "expected": "400",
+  "actual": "HTTP 400 Tutar geçerli bir sayı olmalı.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Sıfır tutarlı tahsilat",
+  "expected": "400",
+  "actual": "HTTP 400 Tutar sıfırdan büyük olmalı.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Devasa tutar (10 trilyon)",
+  "expected": "400 (üst sınır 1 trilyon)",
+  "actual": "HTTP 400 Tutar geçerli bir sayı olmalı.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "1 milyar TL tahsilat (üst sınırın altında)",
+  "expected": "programın kuralı: kabul edilir (üst sınır 1 trilyon); uyarı yok",
+  "actual": "HTTP 200 ",
+  "ok": true,
+  "detail": "Önceki (yanlış) raporda 'sorun' denmişti; gerçekte bilinçli sınır 1e12."
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Kuruş artığı (10,005 TL)",
+  "expected": "kuruşa yuvarlanır (10,01)",
+  "actual": "HTTP 200  kaydedilen tutar=10.01",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Sayı yerine metin ('on bin')",
+  "expected": "400",
+  "actual": "HTTP 400 Tutar geçerli bir sayı olmalı.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "İleri tarihli tahsilat (2099)",
+  "expected": "400 / reddedilir",
+  "actual": "HTTP 400 (date-future) İleri tarihli hareket girilemez (01.01.2099). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Var olmayan tarih (30 Şubat)",
+  "expected": "400",
+  "actual": "HTTP 400 (date-invalid) Tarih geçerli bir tarih değil (2025-02-30). Takvimden seçin.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Tanımsız ödeme yolu ('bitcoin')",
+  "expected": "400 (geçersiz yol reddedilir)",
+  "actual": "HTTP 200  kaydedilen yol=cash",
+  "ok": false,
+  "detail": "Program reddetmedi; 'cash' olarak kaydetti (kullanıcı arayüzde bunu seçemez; yalnız doğrudan API ile)."
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "100.000 karakterlik cari adı",
+  "expected": "400 ya da kısaltılır",
+  "actual": "HTTP 400 Ad / Unvan en fazla 160 karakter olabilir. uzunluk=undefined",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Bozuk JSON gövdesi",
+  "expected": "400",
+  "actual": "HTTP 400",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "30 MB'lık istek gövdesi",
+  "expected": "413 / 400 (sunucu çökmez)",
+  "actual": "HTTP 413",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "İleri tarihli fatura (2099)",
+  "expected": "400 date-future",
+  "actual": "HTTP 400 (date-future) İleri tarihli fatura kaydedilemez (01.01.2099). Taslak olarak kaydedin; günü gelince kaydedin.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Eksi miktarlı satış kalemi (−5)",
+  "expected": "400",
+  "actual": "HTTP 400 (invoice-invalid) 1. kalem: miktar sıfırdan büyük olmalı.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Geçersiz KDV oranı (%7)",
+  "expected": "400",
+  "actual": "HTTP 400 (invoice-invalid) 1. kalem: KDV oranı %0, %1, %10, %20 olabilir.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Faturadan fazla peşin tahsilat (24 TL faturaya 1.000 TL)",
+  "expected": "400 payment-exceeds",
+  "actual": "HTTP 400 (payment-exceeds) Ödemeler (1.000,00 TL) faturanın ödenecek tutarını (24,00 TL) aşıyor.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Girdi Bozma (003 deneme şirketi)",
+  "name": "Son satıştan (20.09) daha eski tarihli satış (10.09) — numara/tarih sırası (VUK 231)",
+  "expected": "400 chronology",
+  "actual": "HTTP 400 (chronology) FIS serisinde son belge FIS2025000000001 20.09.2025 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Dönem Kilidi (003)",
+  "name": "Yönetici 003'te dönemi 31.08.2025'e kadar kilitler",
+  "expected": "200",
+  "actual": "HTTP 200 ",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Dönem Kilidi (003)",
+  "name": "Kilitli döneme (15.08.2025) tahsilat",
+  "expected": "409 reddedilir",
+  "actual": "HTTP 409 (period-locked) Hareket 15.08.2025 tarihli; 31.08.2025 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Dönem Kilidi (003)",
+  "name": "Kilitli döneme alış faturası",
+  "expected": "reddedilir",
+  "actual": "HTTP 409 (period-locked) Fatura 15.08.2025 tarihli; 31.08.2025 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Dönem Kilidi (003)",
+  "name": "Açık dönemdeki faturanın tarihini kilitli döneme çekmek",
+  "expected": "reddedilir",
+  "actual": "HTTP 409 (invoice-not-draft) Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Dönem Kilidi (003)",
+  "name": "Yetkisiz personel 003'ün dönem kilidini kaldırmaya çalışır",
+  "expected": "403",
+  "actual": "HTTP 403 (company-forbidden) Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Dönem Kilidi (003)",
+  "name": "Kontrol: 003 kilidi yerinde",
+  "expected": "2025-08-31",
+  "actual": "2025-08-31",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Dönem Kilidi (003)",
+  "name": "Kontrol: 003'ün kilidi 001'e sızmadı",
+  "expected": "001'de kilit yok",
+  "actual": "(yok)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Eşzamanlılık ve Çift Kayıt (003)",
+  "name": "Aynı satış faturası aynı anda iki kez gönderilir (çift tıklama / ağ tekrarı, API'de)",
+  "expected": "tek fatura kesilir (tekrar koruması)",
+  "actual": "200, 200 → fatura sayısı 2 → 4",
+  "ok": false,
+  "detail": "Doğrudan API'de tekrar (idempotency) koruması yok: iki ayrı numaralı fatura kesildi. Arayüzdeki çift tıklama ayrıca arayüz testinde denenir."
+ },
+ {
+  "group": "Eşzamanlılık ve Çift Kayıt (003)",
+  "name": "Aynı seri numaralı çek aynı anda 3 kez girilir",
+  "expected": "yalnız 1'i kabul edilir (409 cheque-duplicate)",
+  "actual": "200, 409, 409",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Eşzamanlılık ve Çift Kayıt (003)",
+  "name": "Aynı taksite (1. taksit 400 TL) aynı anda 3 tahsilat",
+  "expected": "taksit fazla ödenmez ya da fazlası sonraki taksite/carinin alacağına düşer; toplam tutar bozulmaz",
+  "actual": "200, 200, 200 → kart ödenen 1200, kalan 0, 1. taksit ödenen 400",
+  "ok": true,
+  "detail": "Yaygın programlarda fazla tahsilat sonraki taksite dağıtılır."
+ },
+ {
+  "group": "Eşzamanlılık ve Çift Kayıt (003)",
+  "name": "Eksi Kasa \"Engelle\" kipinde, Kasa 1200 TL iken aynı anda iki büyük nakit ödeme (onay atlanarak)",
+  "expected": "en çok biri geçer; Kasa eksiye düşmez",
+  "actual": "200, 409/cash-blocked → Kasa 1200 → 299",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Eşzamanlılık ve Çift Kayıt (003)",
+  "name": "Fatura isteği yolda kesilir (bağlantı koparılır), sonra Mutabakat Testi",
+  "expected": "yarım kayıt yok; Mutabakat Testi temiz",
+  "actual": "mutabakat: {\"ok\":true,\"checks\":[{\"code\":\"balance\",\"name\":\"Çift yönlü kayıt (borç = alacak)\",\"ok\":true,\"difference\":0},{\"code\":\"gl:100\",\"name\":\"100 Kasa (Nakit)\",\"ok\":true,\"difference\":0,\"ledger\":299,\"subledger\":299},{\"code\":\"gl:101",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Silme ve Bağ Koparma (003)",
+  "name": "Faturada kullanılmış ürünü silmeye çalışmak",
+  "expected": "409 (fatura kalemi olan ürün silinmez)",
+  "actual": "HTTP 409 (invoice-linked) “Deneme Ürün” 5 fatura kalemine bağlı (ör. FIS2025000000001); fatura kalemi olan ürün silinmez. Önce faturayı iptal edin ya da iade kesin.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Silme ve Bağ Koparma (003)",
+  "name": "Silinmiş cariye fatura kesmek",
+  "expected": "reddedilir",
+  "actual": "HTTP 400 (invoice-invalid) Seçilen cari bulunamadı; silinmiş olabilir.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Silme ve Bağ Koparma (003)",
+  "name": "İptal edilmiş faturaya iade kesmek",
+  "expected": "400",
+  "actual": "iptal 200 → iade HTTP 400 (invoice-invalid) İptal edilmiş ya da taslak faturanın iadesi olmaz.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Silme ve Bağ Koparma (003)",
+  "name": "1 adetlik faturadan 5 adet iade",
+  "expected": "400 return-exceeds",
+  "actual": "HTTP 400 (return-exceeds) 1. kalem (Deneme Ürün): en çok 1 Adet iade edilebilir (faturada 1, önce iade edilen 0).",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Ekranda Zararlı Metin ve Excel Formülü (003)",
+  "name": "Cari adına HTML/JS (<img onerror>, <script>) yazılır, cari listesi ve kartı açılır",
+  "expected": "metin olarak görünür, kod çalışmaz",
+  "actual": "çalışan kod: yok; açılan uyarı penceresi: 0",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Ekranda Zararlı Metin ve Excel Formülü (003)",
+  "name": "Cari adı '=1+1' ve notu '=HYPERLINK(…)' olan kartlar Excel'e dışa aktarılır",
+  "expected": "hücreler metin; Excel formül çalıştırmaz",
+  "actual": "formül hücresi yok (metin)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "003 Deneme Şirketinin Kaldırılması",
+  "name": "Deneme şirketi 003'ü yanlış parolayla silmek",
+  "expected": "403",
+  "actual": "HTTP 403",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "003 Deneme Şirketinin Kaldırılması",
+  "name": "Deneme şirketi 003 silinir (önce kendi klasörüne yedeği alınır)",
+  "expected": "200 + silme öncesi yedek",
+  "actual": "HTTP 200 \"destekofis-003-2026-10-04T12-59-00-926Z-silme-oncesi-003.sqlite\"",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Değişmezlik",
+  "name": "Saldırılardan sonra 001'in sayıları (cari, bakiye, Kasa, fatura, çek) aynı",
+  "expected": "{\"acc\":373,\"bal\":\"16386771.46\",\"cash\":{\"in\":4004384.79,\"out\":16046953.67,\"balance\":-12042568.88},\"inv\":{\"sale\":1528,\"purchase\":1420,\"returns\":0,\"drafts\":0,\"pending\":0,\"cancelled\":0,\"all\":2948},\"ch\":884}",
+  "actual": "{\"acc\":373,\"bal\":\"16386771.46\",\"cash\":{\"in\":4004384.79,\"out\":16046953.67,\"balance\":-12042568.88},\"inv\":{\"sale\":1528,\"purchase\":1420,\"returns\":0,\"drafts\":0,\"pending\":0,\"cancelled\":0,\"all\":2948},\"ch\":884}",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Değişmezlik",
+  "name": "Saldırılardan sonra 002'nin sayıları aynı",
+  "expected": "{\"acc\":373,\"bal\":\"16386771.46\",\"cash\":{\"in\":4004384.79,\"out\":16046953.67,\"balance\":-12042568.88},\"inv\":{\"sale\":1528,\"purchase\":1420,\"returns\":0,\"drafts\":0,\"pending\":0,\"cancelled\":0,\"all\":2948},\"ch\":884}",
+  "actual": "{\"acc\":373,\"bal\":\"16386771.46\",\"cash\":{\"in\":4004384.79,\"out\":16046953.67,\"balance\":-12042568.88},\"inv\":{\"sale\":1528,\"purchase\":1420,\"returns\":0,\"drafts\":0,\"pending\":0,\"cancelled\":0,\"all\":2948},\"ch\":884}",
+  "ok": true,
+  "detail": ""
+ }
+]

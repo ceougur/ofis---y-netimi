@@ -1,0 +1,29 @@
+{
+  "ad": "s222-tam-normal-3",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-222.mjs",
+  "commit": "8f6a8f88772757fcbd31f8f9a59d444bb610e547",
+  "dal": "worktree-agent-a0eba1c321b2d4e74",
+  "kirli": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T10:16:24.228Z",
+  "sure_sn": 114.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/s222-tam-normal-3.log",
+  "ham_cikti_sha256": "f6125854f42dc7d6175812abeb83c86b694f7e465aebad9a95afb26a5aa7e266",
+  "ham_cikti_bayt": 5734
+}

@@ -1,0 +1,3 @@
+rapor 300 ms sonra close(): close süresi 1892 ms; rapor sonucu: Error - rapor iş parçacığı kapandı (kod 1) (toplam 2200 ms)
+rapor 1000 ms sonra close(): close süresi 888 ms; rapor sonucu: Error - rapor iş parçacığı kapandı (kod 1) (toplam 1890 ms)
+rapor 2000 ms sonra close(): close süresi 21 ms; rapor sonucu: Error - rapor iş parçacığı kapandı (kod 1) (toplam 2023 ms)

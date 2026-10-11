@@ -1,0 +1,32 @@
+{
+  "ad": "eski-satir-SON-COMMIT",
+  "komut": "npm run test:senaryo-banka-210-eski-satir",
+  "commit": "b08a17aaaa1a5e3d77672b5308718492602c0d1c",
+  "dal": "worktree-agent-ad04626f333508e13",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:24:45.601Z",
+  "sure_sn": 21.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25,
+    "gecen": 25,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/hesapsiz-kilavuz/2026-10-11/eski-satir-SON-COMMIT.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad04626f333508e13",
+  "ham_cikti_sha256": "68f4840629b6245f90ca42df7508fb7be4b964a8f8691898df5ee9200f41d741",
+  "ham_cikti_bayt": 4662
+}

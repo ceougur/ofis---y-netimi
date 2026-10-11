@@ -1,0 +1,38 @@
+{
+  "ad": "k10-nakit-akis-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-name-pattern=Nakit Akış: başlangıç test/raporlar-210-banka.test.mjs",
+  "commit": "f5259dd0ea2acb3ba24582d38a655f2e3b4676d0",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:14:06.790Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütün süzgeçler × ekran/PDF/Excel, bağımsız beklenenle › Nakit Akış: başlangıç = Nakit + Gerçek Banka (K10: Hesabı Atanmamış POS 900 hariç)",
+      "konum": "test/raporlar-210-banka.test.mjs:801:3",
+      "hata": "başlangıç = Kasa 2.050 + Gerçek Banka (POS 900 Hesabı Atanmamış) · 152280 !== 151380 (beklenen 151380, gelen 152280)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/k10-nakit-akis-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "d042423778a13e6832fd92f7569603f217b0c6ed40d62e9c48cdd94f23023b99",
+  "ham_cikti_bayt": 1883
+}

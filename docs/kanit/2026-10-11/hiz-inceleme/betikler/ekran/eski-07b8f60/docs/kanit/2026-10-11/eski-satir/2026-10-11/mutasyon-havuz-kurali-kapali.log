@@ -1,0 +1,190 @@
+TAP version 13
+# Subtest: B1 — tek hesap: açılıştan önceki hesapsız satırlar düzeltilir, eski tarihli hareket hesapsız girilir (§3.5/1)
+    # Subtest: cari havale ve kurumsal kart ödemesi: tutar, tarih, yeni eski tarihli satır, boş hesap; Gerçek Banka değişmez
+    ok 1 - cari havale ve kurumsal kart ödemesi: tutar, tarih, yeni eski tarihli satır, boş hesap; Gerçek Banka değişmez
+      ---
+      duration_ms: 622.921585
+      type: 'test'
+      ...
+    # Subtest: taksit tahsilatı, stok peşini, Kasa → Banka transferi ve fatura peşini: eski tarihli hesapsız satır düzeltilir/girilir
+    ok 2 - taksit tahsilatı, stok peşini, Kasa → Banka transferi ve fatura peşini: eski tarihli hesapsız satır düzeltilir/girilir
+      ---
+      duration_ms: 444.207256
+      type: 'test'
+      ...
+    # Subtest: gerçek 2.0.26 verisi (o sürümün koduyla üretilmiş fikstür): ilk hesap bugünkü açılışla; eski havaleler düzeltilir, eski tarihli havale girilir
+    ok 3 - gerçek 2.0.26 verisi (o sürümün koduyla üretilmiş fikstür): ilk hesap bugünkü açılışla; eski havaleler düzeltilir, eski tarihli havale girilir
+      ---
+      duration_ms: 651.216646
+      type: 'test'
+      ...
+    1..3
+ok 1 - B1 — tek hesap: açılıştan önceki hesapsız satırlar düzeltilir, eski tarihli hareket hesapsız girilir (§3.5/1)
+  ---
+  duration_ms: 1719.785661
+  type: 'suite'
+  ...
+# Subtest: B1 — çok hesap: tarih yalnız bir hesabın açılışından sonraysa o hesap; açıkça Hesapsız yalnız açılıştan önceki harekette
+    # Subtest: A 01.09, B 01.10: 15.09 → A; Hesapsız seçimi; 15.08 → hesapsız; 05.10 seçim zorunlu
+    ok 1 - A 01.09, B 01.10: 15.09 → A; Hesapsız seçimi; 15.08 → hesapsız; 05.10 seçim zorunlu
+      ---
+      duration_ms: 359.903227
+      type: 'test'
+      ...
+    1..1
+ok 2 - B1 — çok hesap: tarih yalnız bir hesabın açılışından sonraysa o hesap; açıkça Hesapsız yalnız açılıştan önceki harekette
+  ---
+  duration_ms: 360.229578
+  type: 'suite'
+  ...
+# Subtest: Y1 / B4 / Y2 — Devir Kapanışı havuzundaki eski satır parası değişmez (409 bank-reclass-active)
+    # Subtest: tutar, silme, nakde çevirme ve yeni eski tarihli satır 409; açıklama ve havuz içinde tarih serbest; Geri Al'dan sonra düzeltilir
+    not ok 1 - tutar, silme, nakde çevirme ve yeni eski tarihli satır 409; açıklama ve havuz içinde tarih serbest; Geri Al'dan sonra düzeltilir
+      ---
+      duration_ms: 307.933618
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-gg3-eski-satir.test.mjs:189:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Devir Kapanışı'ndaki satırın tutarı: 200 {"id":"account-f702e4af-2da4-4396-a755-c7dcdfe5a3ff","refNo":"1","type":"customer","name":"Müşteri","phone":"","email":"","address":"","registeredOn":"2026-08-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"","po 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-gg3-eski-satir.test.mjs:201:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - Y1 / B4 / Y2 — Devir Kapanışı havuzundaki eski satır parası değişmez (409 bank-reclass-active)
+  ---
+  duration_ms: 309.116358
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-gg3-eski-satir.test.mjs:188:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Y1 / B4 — Kart Borcuna Aktar ve Bankaya Geçmiş Say havuzu (409 bank-reclass-active, satır karta kendiliğinden bağlanmaz)
+    # Subtest: Kart Borcuna Aktar edilmiş kartla ödeme: tutar ve silme 409; kart borcu tek kez; K7 gerçek borçla
+    not ok 1 - Kart Borcuna Aktar edilmiş kartla ödeme: tutar ve silme 409; kart borcu tek kez; K7 gerçek borçla
+      ---
+      duration_ms: 317.615052
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-gg3-eski-satir.test.mjs:229:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aktarılmış kartla ödemenin tutarı: 200 {"id":"account-86c9e667-9dfd-4145-ac2c-6f709ec77f3a","refNo":"1","type":"supplier","name":"Tedarikçi","phone":"","email":"","address":"","registeredOn":"2026-08-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":""," 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-gg3-eski-satir.test.mjs:239:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Bankaya Geçmiş Say edilmiş POS tahsilatı: tutar ve silme 409; aynı penceredeki yeni POS tahsilatı serbest
+    not ok 2 - Bankaya Geçmiş Say edilmiş POS tahsilatı: tutar ve silme 409; aynı penceredeki yeni POS tahsilatı serbest
+      ---
+      duration_ms: 294.81362
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-gg3-eski-satir.test.mjs:256:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aktarılmış POS tahsilatının tutarı: 200 {"id":"account-75f91549-86fe-43d6-aba7-367bef015de8","refNo":"1","type":"customer","name":"Müşteri","phone":"","email":"","address":"","registeredOn":"2026-08-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"","po 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-gg3-eski-satir.test.mjs:264:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Mutabakat Testi bank:pool havuz sapmasını gösterir (store dışı yazım)
+    ok 3 - Mutabakat Testi bank:pool havuz sapmasını gösterir (store dışı yazım)
+      ---
+      duration_ms: 299.283077
+      type: 'test'
+      ...
+    1..3
+not ok 4 - Y1 / B4 — Kart Borcuna Aktar ve Bankaya Geçmiş Say havuzu (409 bank-reclass-active, satır karta kendiliğinden bağlanmaz)
+  ---
+  duration_ms: 912.533241
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ab47377feb84c68bc/test/banka-210-gg3-eski-satir.test.mjs:228:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: B2 — Kurulum Sihirbazı Geri Al, sihirbazın bağlaması ve Bu Hesaba Ata: K7 ve pasif hesap
+    # Subtest: Geri Al: Engelle → 409 cash-blocked; Uyar → 409 cash-negative, negativeOk ile geçer
+    ok 1 - Geri Al: Engelle → 409 cash-blocked; Uyar → 409 cash-negative, negativeOk ile geçer
+      ---
+      duration_ms: 658.441571
+      type: 'test'
+      ...
+    # Subtest: Geri Al pasif hesapta 400 bank-account-passive
+    ok 2 - Geri Al pasif hesapta 400 bank-account-passive
+      ---
+      duration_ms: 293.307675
+      type: 'test'
+      ...
+    # Subtest: Bu Hesaba Ata ve sihirbaz eski ödemeyi Engelle'deki hesaba bağlamaz (409 cash-blocked); Uyar'da negativeOk; pasif hesapta 400
+    ok 3 - Bu Hesaba Ata ve sihirbaz eski ödemeyi Engelle'deki hesaba bağlamaz (409 cash-blocked); Uyar'da negativeOk; pasif hesapta 400
+      ---
+      duration_ms: 693.88441
+      type: 'test'
+      ...
+    1..3
+ok 5 - B2 — Kurulum Sihirbazı Geri Al, sihirbazın bağlaması ve Bu Hesaba Ata: K7 ve pasif hesap
+  ---
+  duration_ms: 1646.145187
+  type: 'suite'
+  ...
+# Subtest: B3 — pasif hesapta banka fişi Ters Kaydet / Düzelt ve Açılışı Düzelt 400 bank-account-passive
+    # Subtest: masraf Ters Kaydet, Düzelt, transferin alıcısı pasif, Açılışı Düzelt; etkinleştirince Ters Kaydet geçer
+    ok 1 - masraf Ters Kaydet, Düzelt, transferin alıcısı pasif, Açılışı Düzelt; etkinleştirince Ters Kaydet geçer
+      ---
+      duration_ms: 377.608953
+      type: 'test'
+      ...
+    1..1
+ok 6 - B3 — pasif hesapta banka fişi Ters Kaydet / Düzelt ve Açılışı Düzelt 400 bank-account-passive
+  ---
+  duration_ms: 377.864197
+  type: 'suite'
+  ...
+1..6
+# tests 12
+# suites 6
+# pass 9
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5716.148795

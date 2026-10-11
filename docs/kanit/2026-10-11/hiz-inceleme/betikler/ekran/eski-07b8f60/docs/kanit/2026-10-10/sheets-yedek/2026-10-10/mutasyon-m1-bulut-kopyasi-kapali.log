@@ -1,0 +1,237 @@
+TAP version 13
+# Subtest: Drive klasör kipi (masaüstü senkron klasörü): Şimdi Yedek Al, otomatik, veri yüklemesi öncesi, iki şirket
+    # Subtest: Drive bağlı değilken: yedek yalnız yerelde, bulut kopyası denenmez
+    ok 1 - Drive bağlı değilken: yedek yalnız yerelde, bulut kopyası denenmez
+      ---
+      duration_ms: 76.77818
+      type: 'test'
+      ...
+    # Subtest: klasör bağlanır: içinde 'DestekOfis Yedekleri' açılır; ekrana gelen durum doğru
+    ok 2 - klasör bağlanır: içinde 'DestekOfis Yedekleri' açılır; ekrana gelen durum doğru
+      ---
+      duration_ms: 9.204949
+      type: 'test'
+      ...
+    # Subtest: Şimdi Yedek Al — Tüm Şirketler: her şirketin kopyası Drive'da KENDİ alt klasöründe; ad, boyut, sha256 ve içerik yerel yedekle aynı
+    not ok 3 - Şimdi Yedek Al — Tüm Şirketler: her şirketin kopyası Drive'da KENDİ alt klasöründe; ad, boyut, sha256 ve içerik yerel yedekle aynı
+      ---
+      duration_ms: 58.564398
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:144:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"companyId":"sirket-001","company":"001 · Şirket 1","code":"001","name":"destekofis-001-2026-10-10T17-21-33-437Z-manuel.sqlite","size":1167360,"folder":"/tmp/destekofis-drive-klasor-7BjIVw/backups/001 - Şirket 1","cloud":{"skipped":true}}
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:149:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Şimdi Yedek Al — Yalnız 002: yalnız 002'nin kopyası gider
+    not ok 4 - Şimdi Yedek Al — Yalnız 002: yalnız 002'nin kopyası gider
+      ---
+      duration_ms: 42.895699
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:166:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              '002',
+        +     undefined
+        -     true
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '002'
+          1: true
+      actual:
+        0:
+          0: '002'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:171:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: otomatik zamanlayıcı turu: verisi değişen iki şirketin yedeği alınır ve Drive'a da kopyalanır
+    not ok 5 - otomatik zamanlayıcı turu: verisi değişen iki şirketin yedeği alınır ve Drive'a da kopyalanır
+      ---
+      duration_ms: 8128.494964
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:177:3'
+      failureType: 'testCodeFailure'
+      error: 'beklenen olmadı (8000 ms): otomatik yedeğin Drive kopyası destekofis-001-2026-10-10T17-21-33-603Z.sqlite'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        waitFor (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:86:10)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:187:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: veri yüklemesi öncesi yedek (Excel yerine koy) de Drive'a gider
+    not ok 6 - veri yüklemesi öncesi yedek (Excel yerine koy) de Drive'a gider
+      ---
+      duration_ms: 8114.747077
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:193:3'
+      failureType: 'testCodeFailure'
+      error: 'beklenen olmadı (8000 ms): veri-oncesi yedeğin Drive kopyası'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        waitFor (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:86:10)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:206:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Drive klasörü sonradan erişilemez olursa: yerel yedek yine alınır, hata yanıtta ve durumda görünür; düzelince sürer
+    not ok 7 - Drive klasörü sonradan erişilemez olursa: yerel yedek yine alınır, hata yanıtta ve durumda görünür; düzelince sürer
+      ---
+      duration_ms: 45.84621
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:221:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"skipped":true}
+        + actual - expected
+        
+        + undefined
+        - false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:228:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 1 - Drive klasör kipi (masaüstü senkron klasörü): Şimdi Yedek Al, otomatik, veri yüklemesi öncesi, iki şirket
+  ---
+  duration_ms: 17133.565325
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:104:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Drive bağlantı kipi (lisans servisi /v1/yedek/oturum): üretimdeki bugünkü durum ve 'uç olsaydı'
+    # Subtest: üretim adresi değiştirilmedi: lisans servisi https://destek-ofis.vercel.app/api/lisans
+    ok 1 - üretim adresi değiştirilmedi: lisans servisi https://destek-ofis.vercel.app/api/lisans
+      ---
+      duration_ms: 0.419018
+      type: 'test'
+      ...
+    # Subtest: bağlantı kaydedilirken servis hiç denenmez: yanıt 200 'bağlı', hata yok (kullanıcı 'bağlandı' görür)
+    ok 2 - bağlantı kaydedilirken servis hiç denenmez: yanıt 200 'bağlı', hata yok (kullanıcı 'bağlandı' görür)
+      ---
+      duration_ms: 4.152969
+      type: 'test'
+      ...
+    # Subtest: ÜRETİM (uç yok, 404): Şimdi Yedek Al Tüm → yerel 2 yedek alınır, Drive'a HİÇBİRİ gitmez; neden yanıtta ve durumda
+    not ok 3 - ÜRETİM (uç yok, 404): Şimdi Yedek Al Tüm → yerel 2 yedek alınır, Drive'a HİÇBİRİ gitmez; neden yanıtta ve durumda
+      ---
+      duration_ms: 52.933552
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:271:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"skipped":true}
+        + actual - expected
+        
+        + undefined
+        - false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:278:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ÜRETİM: otomatik zamanlayıcı ve 'Şimdi Dene' de aynı: yerel yedek var, Drive yok
+    not ok 4 - ÜRETİM: otomatik zamanlayıcı ve 'Şimdi Dene' de aynı: yerel yedek var, Drive yok
+      ---
+      duration_ms: 8107.558528
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:291:3'
+      failureType: 'testCodeFailure'
+      error: 'beklenen olmadı (8000 ms): otomatik yedek için yükleme isteği'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        waitFor (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:86:10)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:297:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: UÇ OLSAYDI (sahte servis 200 + yükleme adresi): her şirketin dosyası tek PUT ile gider; ikisi AYNI Drive klasörüne (şirket alt klasörü yok)
+    not ok 5 - UÇ OLSAYDI (sahte servis 200 + yükleme adresi): her şirketin dosyası tek PUT ile gider; ikisi AYNI Drive klasörüne (şirket alt klasörü yok)
+      ---
+      duration_ms: 62.351945
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:307:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        []
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:313:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 2 - Drive bağlantı kipi (lisans servisi /v1/yedek/oturum): üretimdeki bugünkü durum ve 'uç olsaydı'
+  ---
+  duration_ms: 8817.125552
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/drive-yedek.test.mjs:241:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 4
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26391.327274

@@ -1,0 +1,38 @@
+{
+  "ad": "supervisor-mutasyon-hazir-olmaz",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern öksüz test/supervisor-mutasyon-gecici.test.mjs",
+  "commit": "c7a0ccf4aaf8a1677932d2c6fd683337dd56f047",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 3,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:24:33.160Z",
+  "sure_sn": 5.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "öksüz süreç koruması › servis yöneticisi zorla kapatılınca uygulama da kapanır",
+      "konum": "test/supervisor-mutasyon-gecici.test.mjs:143:3",
+      "hata": "uygulama hazır olmadı: Beklenen durum oluşmadı (3208 ms; servis yöneticisi çıktısının sonu: \"] 2026-10-10T14:24:34.029Z [INFO] Veritabanı göçü uygulandı: 13 (v2.0.7 çek/senet portföyü, hizmet kalemi)\\\\n[uygulama] 2026-10-10T14:24:34.031Z [INFO] Veritabanı göçü uygulandı: 14 (v2.0.8 tablodan taksit kartına aktarma, açılış bakiyesi)\\\\n[uygulama] 2026-10-10T14:24:34.034Z [INFO] Veritabanı göçü uygulandı: 15 (v2.0.10 özel roller, kişiye özel yetki, kullanıcı silme)\\\\n[uygulama] 2026-10-10T14:24:34.035Z [INFO] Veritabanı göçü uygulandı: 16 (v2.0.11 stok birimlerinin tek yazımı)\\\\n[uygulama] 2026-10-10T14:24:34.042Z [INFO] Veritabanı göçü uygulandı: 17 (v2.0.13 mevcut borcu taksitlendirme, satış iadesi, satış fiyatı, WhatsApp gönderim kaydı, mutabakat günlüğü)\\\\n[uygulama] 2026-10-10T14:24:34.059Z [INFO] Veritabanı göçü uygulandı: 18 (v2.0.15 fatura modülü (satış, alış, iadeler; e-Fatura / e-Arşiv / UBL-TR), carinin vergi kimliği ve adresi)\\\\n[uygulama] 2026-10-10T14:24:34.064Z [INFO] Veritabanı göçü uygulandı: 19 (v2.0.17 Kasa ↔ Banka transferi; fatura kapama bağı ve mahsup fişi)\\\\n[uygulama] 2026-10-10T14:24:34.103Z [INFO] Veritabanı göçü uygulandı: 20 (v2.1.0 banka ve POS çekirdeği: işlem başlığı (İşlem No), banka fişi, hesap ve POS kartları, ekstre, kur, tatil, kalıcı istek kimliği; para satırlarına hesap ve işlem bağı; banka yetki göçü)\\\\n[uygulama] 2026-10-10T14:24:34.153Z [INFO] İlk yönetici hesabı oluşturuldu: admin\\\\n[uygulama] 2026-10-10T14:24:34.221Z [INFO] DestekOfis 2.0.26 merkezi sunucusu http://127.0.0.1:43225\\\\n2026-10-10T14:24:34.223Z [INFO] Uygulama hazır: DestekOfis 2.0.26\\\\n\")"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-supervisor/2026-10-10/supervisor-mutasyon-hazir-olmaz.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8342b4c13e8587d4000a87175b5b9406672339de8d146520c3929e12118a7053",
+  "ham_cikti_bayt": 3042
+}

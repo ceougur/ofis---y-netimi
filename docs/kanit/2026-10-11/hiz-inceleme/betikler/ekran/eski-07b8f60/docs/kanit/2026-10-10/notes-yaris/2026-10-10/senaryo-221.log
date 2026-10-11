@@ -1,0 +1,44 @@
+
+> destekofis@2.0.26 test:senaryo-221
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-221.mjs
+
+
+■ Kurulum: 2.0.19'dan kalma kayıt (005 ve 002 aynı veri klasöründe); hata yeniden üretilir
+  ✓ hata: 005'e girilen cari 002'de de görünüyor (ayırmadan önce)
+
+■ Sol üstte uyarı (002 açıkken)
+  ✓ uyarı: Dikkat: bu şirket 005 · Resmî Şirket ile aynı veri dosyasını kullanıyor; kayıtlar ortak. Şirketler'de Ayır
+  ✓ uyarı şirket kutusunun hemen altında
+
+■ Yönetim → Şirketler: kırmızı kutu ve Ayır
+  ✓ kutu: iki şirket ve dosyayı koruyan şirket yazıyor
+  ✓ düğme yalnız ayrılacak şirkette: Ayır: 002 · Gayri Resmî
+  ✓ başlık yazım düzeninde: Aynı Veri Dosyasını Kullanan Şirketler
+  ✓ pencere: Şirketi Ayır · 002 · Gayri Resmî
+  ✓ bildirim: ayrıldı
+  ✓ kırmızı kutu kalktı
+
+■ Ayrıldıktan sonra: kayıtlar ayrı; ayırma öncesi yedek 002'nin klasöründe; sol üstte uyarı yok
+  ✓ 002: Gayri Resmî Müşteri, Resmî Müşteri (ayırma anındaki kayıt + yeni kayıt)
+  ✓ 005: Resmî Müşteri (002'ye girilen görünmüyor)
+  ✓ 001 etkilenmedi
+  ✓ ayırma öncesi yedek: 002 - Gayri Resmî/destekofis-002-2026-10-10T22-06-42-845Z-ayirma-oncesi-002.sqlite
+  ✓ sol üstte uyarı yok
+  ✓ 005'in (dosyayı koruyan) veri dosyası yerinde
+
+■ Aynı hesap iki pencerede (madde 8): B 002'ye geçer; A (001'i gösteriyor) yazmaya devam eder
+  ✓ B: 002 · Gayri Resmî açık
+  ✓ A: ekranda hâlâ 001 · Ana Şirket
+  ✓ A'nın tablo paketi yolu (fetch) 001'i okur: A Penceresi Carisi
+  ✓ B 002'ye yazar: B Penceresi Carisi, Gayri Resmî Müşteri, Resmî Müşteri
+  ✓ A'nın canlı olay akışı 001'den (1 bağlantı)
+  ✓ A'nın indirme bağlantısı 001'e gider
+  ✓ orta tıkla açılan bağlantı da A'nın şirketinden
+  ✓ Dışa Aktar isteği sayfanın şirketini taşır
+  ✓ A'dan giden 24 şirkete özgü isteğin hepsi 001'i taşıyor
+  ✓ Yönetim bağlantısı A'nın şirketini taşır: /admin.html?sirket=sirket-001#companies
+  ✓ Yönetim üst çubuğu: Şirket: 001 · Ana Şirket
+  ✓ Yönetim'den kaydedilen unvan 001'e yazıldı (seçim 002 iken): 001 “Ana Unvan”, 002 “Gayri Resmî”
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo 2.0.21: 28 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-221

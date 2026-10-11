@@ -1,0 +1,62 @@
+{
+ "root": "/home/user/ofis---y-netimi",
+ "N": 95,
+ "worker": "0",
+ "posted": 95,
+ "postFail": null,
+ "banka-bakiye": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı.",
+  "totals": "\"\""
+ },
+ "banka-hareket": {
+  "status": 200,
+  "totals": "[[\"Hesap\",\"Gerçek Banka (Tüm Hesaplar)\"],[\"Devir\",\"0,00 TL\"],[\"Giriş\",\"95.000.000.000.000,00 TL\"],[\"Çıkış\",\"0,00 TL\"],[\"Transfer Giriş\",\"0,00 TL\"],[\"Transfer Çıkış\",\"0,00 TL\"],[\"Dönem Sonu\",\"95.000.000.000.000,00 TL\"]]"
+ },
+ "banka-masraf": {
+  "status": 200,
+  "totals": "[[\"Kayıt\",\"0\"],[\"Matrah\",\"0,00 TL\"],[\"BSMV\",\"0,00 TL\"],[\"KDV\",\"0,00 TL\"],[\"Toplam\",\"0,00 TL\"]]"
+ },
+ "alt-hesap-mizani": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı.",
+  "totals": "\"\""
+ },
+ "banka-hareket?from=2026-10-03&to=2026-10-08": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı.",
+  "totals": "\"\""
+ },
+ "banka-hareket?preset=thisMonth": {
+  "status": 200,
+  "totals": "[[\"Hesap\",\"Gerçek Banka (Tüm Hesaplar)\"],[\"Devir\",\"0,00 TL\"],[\"Giriş\",\"95.000.000.000.000,00 TL\"],[\"Çıkış\",\"0,00 TL\"],[\"Transfer Giriş\",\"0,00 TL\"],[\"Transfer Çıkış\",\"0,00 TL\"],[\"Dönem Sonu\",\"95.000.00"
+ },
+ "banka-hareket?preset=all&bankAccount=bacc-b4e067f0-abb": {
+  "status": 200,
+  "totals": "[[\"Hesap\",\"Z · Z (102.01)\"],[\"Devir\",\"0,00 TL\"],[\"Giriş\",\"95.000.000.000.000,00 TL\"],[\"Çıkış\",\"0,00 TL\"],[\"Transfer Giriş\",\"0,00 TL\"],[\"Transfer Çıkış\",\"0,00 TL\"],[\"Dönem Sonu\",\"95.000.000.000.000,00 "
+ },
+ "banka-hareket?from=2026-10-03&to=2026-10-08&bankAccoun": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı.",
+  "totals": "\"\""
+ },
+ "banka-bakiye?from=2026-10-03&to=2026-10-08": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı."
+ },
+ "banka-bakiye?bankGroup=real&preset=all": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı."
+ },
+ "/api/workspace/bank/summary": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı."
+ },
+ "/api/workspace/overview": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı."
+ },
+ "/api/workspace/bank/accounts/bacc-b4e067f0-abb5-4bef-9609-b33b34f20d0d": {
+  "status": 200
+ }
+}

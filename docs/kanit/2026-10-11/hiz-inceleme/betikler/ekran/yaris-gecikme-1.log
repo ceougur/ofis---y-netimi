@@ -1,0 +1,33 @@
+(node:2093) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[yazımlı] tur 1: 9198 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 2: 7622 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 3: 10847 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 4: 7989 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 5: 8244 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 6: 5636 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 7: 7416 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 8: 5210 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 9: 7073 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 10: 6561 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 11: 7117 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 12: 5557 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 13: 7068 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 14: 5621 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 15: 8776 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 16: 7621 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 17: 10786 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 18: 4446 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 19: 8730 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 20: 6021 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 21: 7932 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 22: 7638 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 23: 7725 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 24: 7502 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 25: 8722 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 26: 4871 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 27: 9144 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 28: 3817 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 29: 5425 ms · süzgeç tamam · kayıt listede evet
+[yazımlı] tur 30: 4204 ms · süzgeç tamam · kayıt listede evet
+arka plan yazımı VAR (başka oturum 250 ms'de bir masraf): 30 turun 0'inde liste seçilen hesaba 8 sn içinde geçmedi (arka plan yazımı 817)

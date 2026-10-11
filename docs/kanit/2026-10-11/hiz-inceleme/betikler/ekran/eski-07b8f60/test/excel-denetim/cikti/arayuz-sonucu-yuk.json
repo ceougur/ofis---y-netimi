@@ -1,0 +1,90 @@
+[
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Aynı yazma yükü (4 eşzamanlı istek), açık pencere 0 / 2 / 5",
+  "expected": "pencere sayısı hızı belirgin düşürmez",
+  "actual": "0 açık pencere: saniyede 4.1 kayıt, yanıt p50 980 ms / p95 1133 ms · 2 açık pencere (boşta, ana ekranda): saniyede 0.9 kayıt, yanıt p50 5167 ms / p95 7626 ms · 5 açık pencere (boşta, ana ekranda): saniyede 0.5 kayıt, yanıt p50 8888 ms / p95 14748 ms",
+  "ok": false,
+  "detail": "Her açık pencere, başkasının her kaydında ekranını yeniler (sunucuya ek sorgu)."
+ },
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Saniyede 0 başka kayıt yazılırken Cari aramasına fare + klavyeyle \"C0123\" yazılır",
+  "expected": "kutuda C0123, listede o cari",
+  "actual": "arama kutusu 10 sn'de 0 kez yeniden çizildi; kutuda \"C0123\", 1 satır, bulundu: evet (3518 ms)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Saniyede 0 başka kayıt yazılırken \"+ Yeni Fatura\"ya fareyle basılır; senaryo ekranı açılır ve 4 sn sonra hâlâ açık",
+  "expected": "açık kalır",
+  "actual": "açıldı: evet, 4 sn sonra: açık",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Saniyede 1 başka kayıt yazılırken Cari aramasına fare + klavyeyle \"C0123\" yazılır",
+  "expected": "kutuda C0123, listede o cari",
+  "actual": "arama kutusu 10 sn'de 6 kez yeniden çizildi; kutuda \"?\", 0 satır, bulundu: hayır (19336 ms)",
+  "ok": false,
+  "detail": ""
+ },
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Saniyede 1 başka kayıt yazılırken \"+ Yeni Fatura\"ya fareyle basılır; senaryo ekranı açılır ve 4 sn sonra hâlâ açık",
+  "expected": "açık kalır",
+  "actual": "açıldı: hayır, 4 sn sonra: listeye döndü",
+  "ok": false,
+  "detail": ""
+ },
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Saniyede 5 başka kayıt yazılırken Cari aramasına fare + klavyeyle \"C0123\" yazılır",
+  "expected": "kutuda C0123, listede o cari",
+  "actual": "arama kutusu 10 sn'de 7 kez yeniden çizildi; kutuda \"?\", 0 satır, bulundu: hayır (24486 ms)",
+  "ok": false,
+  "detail": ""
+ },
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Saniyede 5 başka kayıt yazılırken \"+ Yeni Fatura\"ya fareyle basılır; senaryo ekranı açılır ve 4 sn sonra hâlâ açık",
+  "expected": "açık kalır",
+  "actual": "açıldı: evet, 4 sn sonra: açık",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Saniyede 20 başka kayıt yazılırken Cari aramasına fare + klavyeyle \"C0123\" yazılır",
+  "expected": "kutuda C0123, listede o cari",
+  "actual": "arama kutusu 10 sn'de 4 kez yeniden çizildi; kutuda \"?\", 0 satır, bulundu: hayır (29857 ms)",
+  "ok": false,
+  "detail": ""
+ },
+ {
+  "group": "Açık Pencere Sayısının Sunucu Hızına Etkisi",
+  "name": "Saniyede 20 başka kayıt yazılırken \"+ Yeni Fatura\"ya fareyle basılır; senaryo ekranı açılır ve 4 sn sonra hâlâ açık",
+  "expected": "açık kalır",
+  "actual": "açıldı: hayır, 4 sn sonra: listeye döndü",
+  "ok": false,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "001 arayüz akışı",
+  "expected": "tamamlanır",
+  "actual": "DURDU: Cannot read properties of undefined (reading 'cash') · ",
+  "ok": false,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "002 arayüz akışı",
+  "expected": "tamamlanır",
+  "actual": "DURDU: Cannot read properties of undefined (reading 'cash') · ",
+  "ok": false,
+  "detail": ""
+ }
+]

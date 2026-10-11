@@ -1,0 +1,31 @@
+{
+  "ad": "fetch-yaris-yeni-3000",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-fetch-yaris.mjs --kip yeni --gecikme 3000 --deneme 5",
+  "commit": "b498cad246365472b0e808e512e831924f680511",
+  "dal": "worktree-agent-a9996cccca67b1040",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T13:18:06.453Z",
+  "sure_sn": 43.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/eksik-tur-210/2026-10-10/fetch-yaris-yeni-3000.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9996cccca67b1040",
+  "ham_cikti_sha256": "6cccf0b3a71c33eb971d8ebefff50a01e13e858dabae9c0d60101e44fce3bf98",
+  "ham_cikti_bayt": 1552
+}

@@ -1,0 +1,8 @@
+başlangıç iş parçacığı 7 db tanıtıcı 0
+sonuçlar 1:503:report-timeout/406, 2:503:report-timeout/407, 3:503:report-timeout/809, 4:503:report-timeout/810, 5:503:report-timeout/1209, 6:503:report-timeout/1210 | en çok iş parçacığı 13 en çok db tanıtıcı 13 | stats {"active":0,"queued":0,"started":6}
+close() çözüldü 0 ms; hemen sonra iş parçacığı 13 db tanıtıcı 13
+  close'dan 251 ms sonra: iş parçacığı 13, db tanıtıcı 13
+  close'dan 500 ms sonra: iş parçacığı 13, db tanıtıcı 13
+  close'dan 1000 ms sonra: iş parçacığı 13, db tanıtıcı 13
+  close'dan 2006 ms sonra: iş parçacığı 13, db tanıtıcı 13
+  close'dan 4000 ms sonra: iş parçacığı 7, db tanıtıcı 0

@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-2",
+  "komut": "npm run test:e2e",
+  "commit": "b489088a7b7abf5b002705847f8b503e0ad667b1",
+  "dal": "worktree-agent-ae4b2398a007435c3",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T07:04:28.723Z",
+  "sure_sn": 166.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/e2e-not-yaris/2026-10-11/e2e-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae4b2398a007435c3",
+  "ham_cikti_sha256": "81edddc09078e7d1af6aca70e2342a59bba36267c59953dceeb4cf70a69dbec1",
+  "ham_cikti_bayt": 5638
+}

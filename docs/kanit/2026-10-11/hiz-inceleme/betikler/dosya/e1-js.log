@@ -1,0 +1,18 @@
+başta tanıtıcı: 3 [
+  '/tmp/e1-WTQH2N/d.sqlite',
+  '/tmp/e1-WTQH2N/d.sqlite-wal',
+  '/tmp/e1-WTQH2N/d.sqlite-shm'
+]
+(node:14158) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+iş parçacığı okuma işleminde; tanıtıcı: 5
+terminate bitti 3 ms, kod 1
+terminate sonrası tanıtıcı: 4 [
+  '/tmp/e1-WTQH2N/d.sqlite',
+  '/tmp/e1-WTQH2N/d.sqlite-wal',
+  '/tmp/e1-WTQH2N/d.sqlite-shm',
+  '/tmp/e1-WTQH2N/d.sqlite'
+]
+checkpoint(TRUNCATE): {"busy":0,"log":0,"checkpointed":0} 2 ms
+gc sonrası tanıtıcı: 4
+checkpoint2: {"busy":0,"log":0,"checkpointed":0}

@@ -1,0 +1,58 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "mini-banka-eksi-kodu",
+  "aciklama": "Doğrulanmış hesapta eksi bakiye: Uyar ve Engelle ret kodları.",
+  "dayanak": "fark.py sınıf küçültmesi",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "hesap_ac",
+      "ad": "Z1",
+      "banka": "Ziraat Bankası",
+      "hesapAdi": "Ana",
+      "tur": "vadesiz",
+      "paraBirimi": "TRY",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "1000",
+      "bakiyeDogrulandi": true
+    },
+    {
+      "id": "2",
+      "islem": "cari_ac",
+      "ad": "T1",
+      "unvan": "Tedarikçi 1",
+      "tur": "tedarikci"
+    },
+    {
+      "id": "3",
+      "islem": "cari_odeme",
+      "cari": "T1",
+      "tutar": "5000",
+      "yol": "havale"
+    },
+    {
+      "id": "4",
+      "islem": "hesap_eksi_politika",
+      "hesap": "Z1",
+      "politika": "engelle"
+    },
+    {
+      "id": "5",
+      "islem": "cari_odeme",
+      "cari": "T1",
+      "tutar": "5001",
+      "yol": "havale"
+    }
+  ]
+}

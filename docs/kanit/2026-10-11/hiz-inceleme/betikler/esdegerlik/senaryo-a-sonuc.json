@@ -1,0 +1,257 @@
+{
+  "rep3": {
+    "compared": 1566,
+    "diffs": 0,
+    "first": []
+  },
+  "mon3": {
+    "checks": 1434,
+    "diffs": 0,
+    "first": []
+  },
+  "today": "2026-10-08",
+  "D0": "2026-08-19",
+  "T1": "2026-09-18",
+  "banks": [
+    {
+      "id": "bacc-9431180c-e631-4361-a8f5-fadb1434cbba",
+      "kind": "demand",
+      "status": "active",
+      "name": "B Vadesiz"
+    },
+    {
+      "id": "bacc-5299b8e6-36a6-4454-82c8-6e2000278f5e",
+      "kind": "demand",
+      "status": "active",
+      "name": "A Vadesiz"
+    },
+    {
+      "id": "bacc-1e5e21cb-771e-458e-87c2-f5d8c824a552",
+      "kind": "card",
+      "status": "active",
+      "name": "Şirket Kartı"
+    },
+    {
+      "id": "bacc-0e00996b-4bb1-4d6b-9b66-93ee48197444",
+      "kind": "loan",
+      "status": "active",
+      "name": "Kredi"
+    },
+    {
+      "id": "bacc-d770dc6e-a7f4-4e9d-99ab-2e85925ae483",
+      "kind": "demand",
+      "status": "active",
+      "name": "Boş Hesap"
+    },
+    {
+      "id": "bacc-1e50aa94-e8c1-4057-b603-92b6195484d8",
+      "kind": "demand",
+      "status": "passive",
+      "name": "C Vadesiz"
+    }
+  ],
+  "log": [
+    {
+      "label": "hesapsız -100 bank in 0,01",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "hesapsız -60 card in 640",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "hesapsız -60 bank out 300",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "hesapsız -50 bank in 1.250,50",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "hesapsız -50 card out 10,10",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "hesapsız -49 card in 999.999.999,99",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "silinecek carinin havalesi",
+      "status": 200,
+      "data": "{\"id\":\"account-df1e12c9-973b-4c2e-be12-a69dc684185a\",\"refNo\":\"3\",\"type\":\"customer\",\"name\":\"Silinecek Cari\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\""
+    },
+    {
+      "label": "boş hesap",
+      "status": 200,
+      "data": "{\"id\":\"bacc-d770dc6e-a7f4-4e9d-99ab-2e85925ae483\",\"code\":\"BAN-TL-3\",\"gl\":\"102\",\"glSub\":\"102.03\",\"kind\":\"demand\",\"kindLabel\":\"Vadesiz\",\"bankName\":\"Banka E\",\"name\":\"Boş Hesap\",\"label\":\"Banka E · Boş Hesap\",\"currency\":\"TRY\",\"iban\":\"\",\"ibanText\":\"\",\"accountNo\":\"\",\"branchName\":\"\",\"branchCode\":\"\",\"swift\":"
+    },
+    {
+      "label": "A'ya D0 havale",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "B kasadan bankaya D0",
+      "status": 200,
+      "data": "{\"id\":\"cash-ae060952-a841-4832-a23a-890d325da675\",\"bankId\":\"cash-b621afdb-67ec-489e-acf6-5c1285153ac3\",\"transferId\":\"trf-5940714a-25fc-4a9b-8784-ce680ed974f4\",\"direction\":\"to-bank\",\"amount\":50,\"date\":\"2026-08-19\"}"
+    },
+    {
+      "label": "transfer ücretli",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4isb0000-9e1e5b5a-ee95-486e\",\"no\":\"BNK-2026-000016\",\"type\":\"transfer\",\"typeLabel\":\"Bankalar Arası Transfer\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-09-18\",\"valueDate\":\"\",\"direction\":\"out\",\"tryMinor\":101575,\"amountMinor\":101575,\"currency\":\"TRY\",\"method\":\"bank\",\"description"
+    },
+    {
+      "label": "transfer ücret>tutar",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4it70000-5263055b-52bc-41ab\",\"no\":\"BNK-2026-000017\",\"type\":\"transfer\",\"typeLabel\":\"Bankalar Arası Transfer\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-09-18\",\"valueDate\":\"\",\"direction\":\"out\",\"tryMinor\":1250,\"amountMinor\":1250,\"currency\":\"TRY\",\"method\":\"bank\",\"description\":\"\""
+    },
+    {
+      "label": "transfer ücret=tutar",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4itz0000-bcddac36-be2d-4eb2\",\"no\":\"BNK-2026-000018\",\"type\":\"transfer\",\"typeLabel\":\"Bankalar Arası Transfer\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-09-18\",\"valueDate\":\"\",\"direction\":\"out\",\"tryMinor\":2000,\"amountMinor\":2000,\"currency\":\"TRY\",\"method\":\"bank\",\"description\":\"\""
+    },
+    {
+      "label": "transfer B→C",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4iut0000-3411c59c-9c73-4c63\",\"no\":\"BNK-2026-000019\",\"type\":\"transfer\",\"typeLabel\":\"Bankalar Arası Transfer\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-09-19\",\"valueDate\":\"\",\"direction\":\"out\",\"tryMinor\":222555,\"amountMinor\":222555,\"currency\":\"TRY\",\"method\":\"bank\",\"description"
+    },
+    {
+      "label": "ters kayıt",
+      "status": 200,
+      "data": "{\"original\":{\"id\":\"ev-0mv3w4isb0000-9e1e5b5a-ee95-486e\",\"no\":\"BNK-2026-000016\",\"type\":\"transfer\",\"typeLabel\":\"Bankalar Arası Transfer\",\"status\":\"reversed\",\"statusLabel\":\"Ters Kaydedildi\",\"date\":\"2026-09-18\",\"valueDate\":\"\",\"direction\":\"out\",\"tryMinor\":101575,\"amountMinor\":101575,\"currency\":\"TRY\",\"met"
+    },
+    {
+      "label": "ters kaydın ters kaydı (ev-0mv3w4ivg0000-e49d8d39-a36e-4f2f)",
+      "status": 409,
+      "data": "{\"ok\":false,\"error\":\"Ters kayıt ters kaydedilmez; asıl işlemi düzeltin.\",\"code\":\"bank-reversal-of-reversal\",\"eventId\":\"ev-0mv3w4ivg0000-e49d8d39-a36e-4f2f\",\"eventNo\":\"BNK-2026-000020\"}"
+    },
+    {
+      "label": "kartla tedarikçi ödemesi",
+      "status": 200,
+      "data": "{\"id\":\"account-fcee0efa-264d-42a4-b790-cb82a3c600a4\",\"refNo\":\"2\",\"type\":\"supplier\",\"name\":\"Uç Tedarik A.Ş.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\""
+    },
+    {
+      "label": "kredi kullanımı",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4iwn0000-67b76b86-4aec-409f\",\"no\":\"BNK-2026-000022\",\"type\":\"loan_draw\",\"typeLabel\":\"Kredi Kullanımı\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-09-24\",\"valueDate\":\"\",\"direction\":\"in\",\"tryMinor\":5000000,\"amountMinor\":5000000,\"currency\":\"TRY\",\"method\":\"bank\",\"description\":\"\",\""
+    },
+    {
+      "label": "kredi ödemesi",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4ix50000-6e1e8d29-c47b-4ddb\",\"no\":\"BNK-2026-000023\",\"type\":\"loan_repay\",\"typeLabel\":\"Kredi Geri Ödemesi\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-10-03\",\"valueDate\":\"\",\"direction\":\"out\",\"tryMinor\":525000,\"amountMinor\":525000,\"currency\":\"TRY\",\"method\":\"bank\",\"description\":\""
+    },
+    {
+      "label": "kart borcu ödemesi",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4ixt0000-438eda42-18a7-4c83\",\"no\":\"BNK-2026-000024\",\"type\":\"card_payment\",\"typeLabel\":\"Kart Borcu Ödemesi\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-10-04\",\"valueDate\":\"\",\"direction\":\"out\",\"tryMinor\":50000,\"amountMinor\":50000,\"currency\":\"TRY\",\"method\":\"bank\",\"description\":\""
+    },
+    {
+      "label": "masraf",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4iyb0000-a944e67b-c605-4e44\",\"no\":\"BNK-2026-000025\",\"type\":\"fee\",\"typeLabel\":\"Banka Masrafı\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-10-05\",\"valueDate\":\"\",\"direction\":\"out\",\"tryMinor\":1250,\"amountMinor\":1250,\"currency\":\"TRY\",\"method\":\"bank\",\"description\":\"\",\"reference\":\"\""
+    },
+    {
+      "label": "faiz",
+      "status": 200,
+      "data": "{\"id\":\"ev-0mv3w4iyu0000-7ab81762-f6bd-469d\",\"no\":\"BNK-2026-000026\",\"type\":\"interest_in\",\"typeLabel\":\"Faiz Geliri\",\"status\":\"active\",\"statusLabel\":\"Etkin\",\"date\":\"2026-10-08\",\"valueDate\":\"\",\"direction\":\"in\",\"tryMinor\":85000,\"amountMinor\":85000,\"currency\":\"TRY\",\"method\":\"bank\",\"description\":\"\",\"refere"
+    },
+    {
+      "label": "silinecek tahsilat 1",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "silinecek tahsilat 2",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "sil 1",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "sil 2",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "silinecek cariyi sil",
+      "status": 200,
+      "data": "{\"id\":\"account-df1e12c9-973b-4c2e-be12-a69dc684185a\"}"
+    },
+    {
+      "label": "cariyi geri yükle",
+      "status": 200,
+      "data": "{\"restored\":\"account\",\"message\":\"“Silinecek Cari” carisi geri geldi.\"}"
+    },
+    {
+      "label": "geri yüklenen carinin ikinci havalesi",
+      "status": 200,
+      "data": "{\"id\":\"account-df1e12c9-973b-4c2e-be12-a69dc684185a\",\"refNo\":\"3\",\"type\":\"customer\",\"name\":\"Silinecek Cari\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\""
+    },
+    {
+      "label": "cariyi yeniden sil",
+      "status": 200,
+      "data": "{\"id\":\"account-df1e12c9-973b-4c2e-be12-a69dc684185a\"}"
+    },
+    {
+      "label": "cariyi yeniden geri yükle",
+      "status": 200,
+      "data": "{\"restored\":\"account\",\"message\":\"“Silinecek Cari” carisi geri geldi.\"}"
+    },
+    {
+      "label": "C pasif",
+      "status": 200,
+      "data": "{\"id\":\"bacc-1e50aa94-e8c1-4057-b603-92b6195484d8\",\"code\":\"BAN-TL-4\",\"gl\":\"102\",\"glSub\":\"102.04\",\"kind\":\"demand\",\"kindLabel\":\"Vadesiz\",\"bankName\":\"Banka C\",\"name\":\"C Vadesiz\",\"label\":\"Banka C · C Vadesiz\",\"currency\":\"TRY\",\"iban\":\"\",\"ibanText\":\"\",\"accountNo\":\"\",\"branchName\":\"\",\"branchCode\":\"\",\"swift\":"
+    },
+    {
+      "label": "ileri 7",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "ileri 12",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "ileri 22",
+      "status": 200,
+      "data": "{\"id\":\"account-6df8d78f-3823-4469-ad76-ee7c9fb6d320\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Uç Durum Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-03\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\","
+    },
+    {
+      "label": "son: cariyi ham sil",
+      "status": 200,
+      "data": "[{\"id\":\"account-df1e12c9-973b-4c2e-be12-a69dc684185a\",\"deleted_at\":\"2026-10-08T09:00:00.000Z\"}]"
+    }
+  ],
+  "rep1": {
+    "compared": 1566,
+    "rows": 2719,
+    "diffs": 0,
+    "first": []
+  },
+  "mon1": {
+    "checks": 1434,
+    "diffs": 0,
+    "first": []
+  },
+  "rep2": {
+    "compared": 1566,
+    "rows": 2644,
+    "diffs": 0,
+    "first": []
+  },
+  "mon2": {
+    "checks": 1434,
+    "diffs": 0,
+    "first": []
+  }
+}

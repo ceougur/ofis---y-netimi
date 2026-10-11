@@ -1,0 +1,81 @@
+
+■ Kurulum: yönetici girer, Excel yüklenir, cari/stok/Kasa hazırlanır
+✓ cari, stok kartı ve Kasa açılışı hazır
+
+■ 5. Hayalet kısmi ödeme: satış 400 + alış 6.000 → alış Açık; Mahsup Et; Kapatılacak Fatura; Bu Faturayı Kapatanlar
+✓ aynı cariye satış 400 ve alış 6.000 kaydedildi
+✓ alış faturası Açık 6.000, kısmi ödeme yok (ÖdemePeşin ödeme yok.Bu Faturayı KapatanlarHenüz kapatan yok. Aynı cariye kesilen satış faturası ve Borç Yaz satırı kend)
+✓ kartta “Bu Faturayı Kapatanlar” bölümü ve açıklama
+✓ mahsup listesinde yalnız karşı yöndeki satış (Satış Faturası FIS2026000000001 · 04.10.2026 · açık ₺400,00)
+✓ mahsup tutarı karşı belgenin açığıyla dolu (400)
+✓ mahsup sonrası Açık 5.600 · ödenen 400 · kapatan “Mahsup” (ÖdemePeşin ödeme yok.Bu Faturayı Kapatanlar10.10.2026 · Mahsup · Satış FIS2026000000001₺400,00MahsupKaldırMahsup EtAçık: ₺5.600,00 · ödenen ₺400,00)
+✓ satış faturası Ödendi (mahsup)
+✓ ödeme formunda “Kapatılacak Fatura” (Otomatik (En Eski Açık Fatura) | Alış Faturası ALS2026000000089 · 05.10.2026 · açık ₺5.600,00)
+✓ cari defterinde ödeme satırı “Faturaya Bağlı” rozetiyle
+✓ alış kartında kapatanlar: Mahsup 400 + Bağlı 1.000 → Açık 4.600 (ÖdemePeşin ödeme yok.Bu Faturayı Kapatanlar10.10.2026 · Mahsup · Satış FIS2026000000001₺400,00MahsupKaldır10.10.2026 · Ödeme (Nakit)₺1.000,00BağlıMahsup EtAçık: ₺4.600,00 · ödenen ₺1.400,00)
+✓ mahsup bakiyeyi/Kasa'yı değiştirmedi; yalnız 1.000 ödeme düştü (bakiye -5600 → -4600, Kasa 20000 → 19000)
+
+■ 7. Eksi stok: 0 → −10 → −15 → −20 arayüzden; soru sonucu söyler; rozet, süzgeç, kart, ANLIK DURUM, fatura kalemi
+✓ soru sonucu söyler: “Kayıttan sonra stok: -10 Adet olacak” (Stokta 0 Adet var; 10 Adet çıkış stoğu eksiye düşürür. Kayıttan sonra stok: -10 Adet olacak. Sayım farkı olabilir. Yine )
+✓ soru sonucu söyler: “Kayıttan sonra stok: -15 Adet olacak” (Stokta -10 Adet var; 5 Adet çıkış stoğu eksiye düşürür. Kayıttan sonra stok: -15 Adet olacak. Sayım farkı olabilir. Yine)
+✓ soru sonucu söyler: “Kayıttan sonra stok: -20 Adet olacak” (Stokta -15 Adet var; 5 Adet çıkış stoğu eksiye düşürür. Kayıttan sonra stok: -20 Adet olacak. Sayım farkı olabilir. Yine)
+✓ kartta “Eksi Stok −20 Adet” rozeti ve Mevcut (Eksi Stok)
+✓ “Eksi Stoktakiler” süzgeci: yalnız çay, rozet −20, Değer −1.000 (1 satır: CAY-1Çay 1 Kg Eksi Stok -20 AdetKategorisiz-20 Adet—₺50,00-₺1.000,0010.10.2026+ Giriş- Çık)
+✓ liste göstergesi “Eksi Stokta: 1” (1Ürün0Kritik Seviyede1Tükenen1Eksi Stokta-₺1.000,00Stok Değeri)
+✓ ANLIK DURUM: “Eksi stok: 1 ürün” ( Kritik Stok 0ürün Eksi stok: 1 ürün · 1 tükendi · 2 ürün takipte )
+✓ fatura kalem önerisinde “Stokta −20 Adet” kırmızı (CAY-1 Çay 1 KgStokta -20 Adet · Satış ₺80,00)
+✓ kalem satırında “Stokta −20 Adet (eksi)” kırmızı
+✓ Stok Durumu raporunda durum “Eksi (−20 Adet)” (Eksi (-20 Adet))
+
+■ 10. İade faturası düzenlenir; pasif düğme nedeni ekranda; karta iade 'POS İadesi'
+✓ satış 10 adet (POS 1.000) ve 3 adetlik satıştan iade (karta 300) kaydedildi
+✓ iade kartında Düzenle AKTİF
+✓ karta iade satırı “Ödeme (POS İadesi)” (Ödeme09.10.2026 · Ödeme (POS İadesi) ₺300,00İade)
+✓ düzenleme formu açıldı (Düzenleme: Satıştan İade Faturası IAD2026000000001)
+✓ kalan iade edilebilir miktar kendi iadesi hariç (10) ( 1 Stok Kartı · En çok 10 Paket Açıklama %0%1%10%20 ₺300,00 )
+✓ iade formunda yol seçenekleri: Nakit / Havale / EFT / POS İadesi
+✓ iade 3 → 5 adet, numara aynı (IAD2026000000001)
+✓ asıl faturanın iade edilebilir kalanı 5
+✓ pasif düğmelerin nedeni ekranda (Düzenle kapalı: Bu faturanın 1 iade faturası var; düzenlenmez. Önce iadeleri iptal edin.İptal Et kapalı: Bu faturanın 1 iade faturası var; ö)
+
+■ 1. Fatura Sil: kartta Sil; listede Seçilenleri Sil (n); iptal edilmişler komple silinir; Silinenler'de görünür
+✓ 3 iptal edilmiş + 1 kaydedilmiş satış hazır
+✓ kaydedilmiş belgenin kartında “Sil” düğmesi aktif
+✓ silme penceresi etkileri ve Silinenler'i söyler
+✓ belge listeden kalktı (404)
+✓ silinen satışın 2 adedi stoğa geri döndü
+✓ seçim çubuğunda “Seçilenleri Sil (3)”
+✓ onay penceresinde sayı ve tutar (3 iptal edilmiş · toplam ₺150,00. Bütün etkileri birlikte geri alınır (stok, car)
+✓ iptal edilmiş 3 belge komple silindi
+✓ Silinenler'de 4 fatura (geri yüklenebilir)
+✓ Yönetim → Silinenler → Faturalar: 4 satır
+
+■ 8. Çek ciro: yalnız Müşteri türünde carisi olan veride ciro seçicisi cariyi bulur; + Yeni Cari; ciro sonrası durum
+✓ 3.000 TL çek portföye alındı
+✓ etiket “Ciro Edilen Cari” + “+ Yeni Cari” (Ciro Edilen Cari * + Yeni Cari)
+✓ Müşteri türündeki cari listede, tür rozetiyle (Veli Market · No 2 MüşteriMüşteri · bakiye ₺0,00)
+✓ boş sonuçta “Bu adla cari yok — + Yeni Cari” (Bu adla cari yok — + Yeni Cari)
+✓ çek “Ciro Edildi”, ciro edilen cari Veli Market (Ciro Edildi)
+✓ ciro edilen carinin bakiyesi 3.000 borçlu (borç ödemesi olarak düşer)
+
+■ 2+3+13+6. Çoklu şirket arayüzden: sol üst şirket seçici, 002 açılır (sıfırdan), sayfa şeridi, Yönetim → Şirketler (yetki, sıfırla), 001'e dönüş
+✓ sol üstte şirket seçici “001 · Şirket 1” (001 · unvan)
+✓ eski “Çalışma Oturumu” seçicisi yok
+✓ sol menüde “Çalışma Oturumu / Oturumları Yönet” kalmadı
+✓ sayfa şeridi orta alanda (kenar çubuğunun sağında)
+✓ + Sayfa menüsü: Excel'den Aktar / Google Sheets'ten Aktar / Boş Sayfa
+✓ sıradaki kod 002 önerildi
+✓ 002 · Gayri Resmi Ltd. seçildi; ekran yeniden açıldı
+✓ 002 sıfırdan: cari yok, Kasa 0
+✓ 002'de veri yok: başlangıç ekranı; sayfa şeridi boş veriyle gizli
+✓ 2 şirketle seçicide + Yeni Şirket yok
+✓ senkron kartında şirket satırı “002 · Gayri Resmi Ltd.”
+✓ Yönetim → Şirketler listesi: 001, 002
+✓ Yönetim → Şirketler: + Yeni Şirket görünmüyor
+✓ Yönetim'de nedeni görünür: “En fazla 2 şirket kurulabilir. Yeni şirket açmak için önce bir şirketi silin.”
+✓ birleşik rapor toplam satırı (TOPLAM₺19.000,00₺0,00₺0,00₺700,00₺3.000,00₺7.800,00₺0,00₺4.1…)
+✓ 002 Kasa 777
+✓ sıfırlama sonrası 002 Kasa 0
+✓ 001 verisi aynı (Kasa 19000, 2 cari)
+
+65 / 65 kontrol geçti.

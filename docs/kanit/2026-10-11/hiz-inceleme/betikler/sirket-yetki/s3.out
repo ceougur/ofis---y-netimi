@@ -1,0 +1,125 @@
+(node:14605) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "baseline": {
+  "label": "taban",
+  "ms": 14008,
+  "status": 200,
+  "total": 300003,
+  "summary": [
+   "Dönem Sonu",
+   "307.787,00 TL"
+  ]
+ },
+ "renameDuring": {
+  "report": {
+   "label": "rapor",
+   "ms": 13135,
+   "status": 200,
+   "total": 300003,
+   "summary": [
+    "Dönem Sonu",
+    "307.787,00 TL"
+   ]
+  },
+  "rename": 200
+ },
+ "afterRename": {
+  "label": "sonra",
+  "ms": 14469,
+  "status": 200,
+  "total": 300003,
+  "summary": [
+   "Dönem Sonu",
+   "307.787,00 TL"
+  ]
+ },
+ "resetDuring": {
+  "report": {
+   "label": "rapor",
+   "ms": 15405,
+   "status": 200,
+   "total": 300003,
+   "summary": [
+    "Dönem Sonu",
+    "307.787,00 TL"
+   ]
+  },
+  "reset": 200,
+  "resetMs": 15253
+ },
+ "afterReset": {
+  "label": "sonra",
+  "ms": 227,
+  "status": 200,
+  "total": 1,
+  "summary": [
+   "Dönem Sonu",
+   "0,00 TL"
+  ]
+ },
+ "backupName": "destekofis-005-2026-10-11T13-31-23-569Z-sifirlama-oncesi-005.sqlite",
+ "restore1": {
+  "status": 200
+ },
+ "afterRestore": {
+  "label": "geri yükleme sonrası",
+  "ms": 28232,
+  "status": 200,
+  "total": 300003,
+  "summary": [
+   "Dönem Sonu",
+   "307.787,00 TL"
+  ]
+ },
+ "restoreDuring": {
+  "report": {
+   "label": "rapor",
+   "ms": 1612,
+   "status": 500,
+   "error": "Sunucu işlemi tamamlayamadı."
+  },
+  "restore": 200,
+  "restoreMs": 1461
+ },
+ "afterRestore2": {
+  "label": "sonra",
+  "ms": 34251,
+  "status": 200,
+  "total": 300003,
+  "summary": [
+   "Dönem Sonu",
+   "307.787,00 TL"
+  ]
+ },
+ "deleteDuring": {
+  "report": {
+   "label": "rapor",
+   "ms": 830,
+   "status": 500,
+   "error": "Sunucu işlemi tamamlayamadı."
+  },
+  "del": 200,
+  "delBody": {
+   "ok": true,
+   "data": {
+    "deleted": "sirket-50ba694b-5fba-43ab-8f8d-353c40c0a87a",
+    "backup": "destekofis-005-2026-10-11T13-32-44-301Z-silme-oncesi-005.sqlite",
+    "companies": [
+     {
+      "id": "sirket-001",
+      "code": "001",
+      "name": "Şirket 1",
+      "label": "001 · Şirket 1",
+      "root": true,
+      "current": true
+     }
+    ]
+   }
+  },
+  "ms": 681,
+  "fileExists": false,
+  "fds": 0
+ },
+ "workers": 9
+}

@@ -1,0 +1,73 @@
+{
+ "reportWorker": true,
+ "N": 400,
+ "rounds": [
+  {
+   "op": "restore",
+   "delay": 0,
+   "restore": {
+    "status": 200
+   },
+   "report": {
+    "status": 500,
+    "ms": 135,
+    "error": "Sunucu işlemi tamamlayamadı."
+   }
+  },
+  {
+   "op": "restore",
+   "delay": 10,
+   "restore": {
+    "status": 200
+   },
+   "report": {
+    "status": 500,
+    "ms": 144,
+    "error": "Sunucu işlemi tamamlayamadı."
+   }
+  },
+  {
+   "op": "restore",
+   "delay": 30,
+   "restore": {
+    "status": 200
+   },
+   "report": {
+    "status": 500,
+    "ms": 136,
+    "error": "Sunucu işlemi tamamlayamadı."
+   }
+  },
+  {
+   "op": "delete",
+   "delay": 10,
+   "del": {
+    "status": 200
+   },
+   "report": {
+    "status": 500,
+    "ms": 96,
+    "error": "Sunucu işlemi tamamlayamadı."
+   }
+  }
+ ],
+ "setupMs": 10810,
+ "alone": {
+  "status": 200,
+  "ms": 147,
+  "total": 402
+ },
+ "started": {
+  "active": 0,
+  "queued": 0,
+  "started": 0
+ },
+ "backup": {
+  "status": 200,
+  "name": "destekofis-002-2026-10-11T14-30-19-443Z-manuel.sqlite"
+ },
+ "afterRestore": {
+  "status": 200,
+  "total": 402
+ }
+}

@@ -1,0 +1,345 @@
+{
+  "root": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac6660b9cab091377",
+  "durumlar": {
+    "E-en-kucuk-alis-iade-acik-asil-kapali": {
+      "F6": {
+        "no": "ATVEVG7",
+        "tur": "purchase",
+        "toplam": 23.93,
+        "odenen": 23.93,
+        "acik": 0,
+        "durum": "paid",
+        "kapatanlar": [
+          "Ödeme:9.84:linked",
+          "Fatura:14.09:linked"
+        ]
+      },
+      "R1": {
+        "no": "FIS2026000000001",
+        "tur": "purchase_return",
+        "toplam": 23.93,
+        "odenen": 0,
+        "acik": 0,
+        "durum": "return",
+        "kapatanlar": []
+      },
+      "cariBakiye": 9.84,
+      "acikFaturalar": [
+        [
+          "Açık Alacak",
+          "0,00 TL"
+        ],
+        [
+          "Açık Borç",
+          "0,00 TL"
+        ]
+      ]
+    },
+    "I-alis-iade-nakit-asil-acik": {
+      "F1": {
+        "no": "A0C6FP7",
+        "tur": "purchase",
+        "toplam": 1200,
+        "odenen": 240,
+        "acik": 960,
+        "durum": "overdue",
+        "kapatanlar": [
+          "Fatura:240:linked"
+        ]
+      },
+      "R1": {
+        "no": "FIS2026000000001",
+        "tur": "purchase_return",
+        "toplam": 240,
+        "odenen": 0,
+        "acik": 0,
+        "durum": "return",
+        "kapatanlar": []
+      },
+      "cariBakiye": -1200,
+      "acikFaturalar": [
+        [
+          "Açık Alacak",
+          "0,00 TL"
+        ],
+        [
+          "Açık Borç",
+          "960,00 TL"
+        ]
+      ]
+    },
+    "I-satis-iade-nakit-asil-acik": {
+      "once": {
+        "F1": {
+          "no": "FIS2026000000001",
+          "tur": "sale",
+          "toplam": 600,
+          "odenen": 240,
+          "acik": 360,
+          "durum": "overdue",
+          "kapatanlar": [
+            "Fatura:240:linked"
+          ]
+        },
+        "R1": {
+          "no": "IAD2026000000001",
+          "tur": "sale_return",
+          "toplam": 240,
+          "odenen": 0,
+          "acik": 0,
+          "durum": "return",
+          "kapatanlar": []
+        },
+        "cariBakiye": 600,
+        "acikFaturalar": [
+          [
+            "Açık Alacak",
+            "360,00 TL"
+          ],
+          [
+            "Açık Borç",
+            "0,00 TL"
+          ]
+        ],
+        "alacakYaslandirma": [
+          [
+            "Vadesi Gelmemiş",
+            "0,00 TL"
+          ],
+          [
+            "1–30 gün",
+            "360,00 TL"
+          ],
+          [
+            "31–60 gün",
+            "0,00 TL"
+          ],
+          [
+            "61–90 gün",
+            "0,00 TL"
+          ],
+          [
+            "90+ gün",
+            "0,00 TL"
+          ],
+          [
+            "Toplam Gecikmiş",
+            "360,00 TL"
+          ]
+        ]
+      },
+      "360 F1'e bağlı tahsilattan sonra": {
+        "F1": {
+          "no": "FIS2026000000001",
+          "tur": "sale",
+          "toplam": 600,
+          "odenen": 600,
+          "acik": 0,
+          "durum": "paid",
+          "kapatanlar": [
+            "Fatura:240:linked",
+            "Tahsilat:360:linked"
+          ]
+        },
+        "cariBakiye": 240,
+        "acikFaturalar": [
+          [
+            "Açık Alacak",
+            "0,00 TL"
+          ],
+          [
+            "Açık Borç",
+            "0,00 TL"
+          ]
+        ],
+        "alacakYaslandirma": [
+          [
+            "Vadesi Gelmemiş",
+            "0,00 TL"
+          ],
+          [
+            "1–30 gün",
+            "0,00 TL"
+          ],
+          [
+            "31–60 gün",
+            "0,00 TL"
+          ],
+          [
+            "61–90 gün",
+            "0,00 TL"
+          ],
+          [
+            "90+ gün",
+            "0,00 TL"
+          ],
+          [
+            "Toplam Gecikmiş",
+            "0,00 TL"
+          ]
+        ]
+      }
+    },
+    "Iprim-satis-kismi-pesin-iade-nakit": {
+      "F1": {
+        "no": "FIS2026000000001",
+        "tur": "sale",
+        "toplam": 600,
+        "odenen": 540,
+        "acik": 60,
+        "durum": "overdue",
+        "kapatanlar": [
+          "Tahsilat:300:linked",
+          "Fatura:240:linked"
+        ]
+      },
+      "R1": {
+        "no": "IAD2026000000001",
+        "tur": "sale_return",
+        "toplam": 240,
+        "odenen": 0,
+        "acik": 0,
+        "durum": "return",
+        "kapatanlar": []
+      },
+      "cariBakiye": 300,
+      "acikFaturalar": [
+        [
+          "Açık Alacak",
+          "60,00 TL"
+        ],
+        [
+          "Açık Borç",
+          "0,00 TL"
+        ]
+      ],
+      "alacakYaslandirma": [
+        [
+          "Vadesi Gelmemiş",
+          "0,00 TL"
+        ],
+        [
+          "1–30 gün",
+          "60,00 TL"
+        ],
+        [
+          "31–60 gün",
+          "0,00 TL"
+        ],
+        [
+          "61–90 gün",
+          "0,00 TL"
+        ],
+        [
+          "90+ gün",
+          "0,00 TL"
+        ],
+        [
+          "Toplam Gecikmiş",
+          "60,00 TL"
+        ]
+      ]
+    },
+    "II-satis-iade-acik-asil-odenmis": {
+      "once": {
+        "F1": {
+          "no": "FIS2026000000001",
+          "tur": "sale",
+          "toplam": 600,
+          "odenen": 600,
+          "acik": 0,
+          "durum": "paid",
+          "kapatanlar": [
+            "Tahsilat:600:linked"
+          ]
+        },
+        "R1": {
+          "no": "IAD2026000000001",
+          "tur": "sale_return",
+          "toplam": 240,
+          "odenen": 0,
+          "acik": 0,
+          "durum": "return",
+          "kapatanlar": []
+        },
+        "cariBakiye": -240,
+        "acikFaturalar": [
+          [
+            "Açık Alacak",
+            "0,00 TL"
+          ],
+          [
+            "Açık Borç",
+            "0,00 TL"
+          ]
+        ]
+      },
+      "F2 600 açık satıştan sonra": {
+        "F2": {
+          "no": "FIS2026000000002",
+          "tur": "sale",
+          "toplam": 600,
+          "odenen": 240,
+          "acik": 360,
+          "durum": "overdue",
+          "kapatanlar": [
+            "Fatura:240:auto"
+          ]
+        },
+        "R1": {
+          "no": "IAD2026000000001",
+          "tur": "sale_return",
+          "toplam": 240,
+          "odenen": 0,
+          "acik": 0,
+          "durum": "return",
+          "kapatanlar": []
+        },
+        "cariBakiye": 360,
+        "acikFaturalar": [
+          [
+            "Açık Alacak",
+            "360,00 TL"
+          ],
+          [
+            "Açık Borç",
+            "0,00 TL"
+          ]
+        ]
+      }
+    },
+    "II-alis-iade-acik-asil-odenmis": {
+      "F1": {
+        "no": "AD4KXZC",
+        "tur": "purchase",
+        "toplam": 1200,
+        "odenen": 1200,
+        "acik": 0,
+        "durum": "paid",
+        "kapatanlar": [
+          "Ödeme:1200:linked"
+        ]
+      },
+      "R1": {
+        "no": "FIS2026000000001",
+        "tur": "purchase_return",
+        "toplam": 240,
+        "odenen": 0,
+        "acik": 0,
+        "durum": "return",
+        "kapatanlar": []
+      },
+      "cariBakiye": 240,
+      "acikFaturalar": [
+        [
+          "Açık Alacak",
+          "0,00 TL"
+        ],
+        [
+          "Açık Borç",
+          "0,00 TL"
+        ]
+      ]
+    }
+  }
+}

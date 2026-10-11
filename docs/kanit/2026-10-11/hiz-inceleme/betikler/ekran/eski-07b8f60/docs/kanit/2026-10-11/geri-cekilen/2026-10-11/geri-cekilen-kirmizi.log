@@ -1,0 +1,158 @@
+TAP version 13
+# ---- bos servis günlüğü (son) ----
+# 2026-10-11T01:46:32.419Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:45699
+# 2026-10-11T01:46:32.445Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).
+# 2026-10-11T01:46:32.466Z [INFO] 9.0.1 sürümü indiriliyor (6573 KB)…
+# 2026-10-11T01:46:32.647Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 44071)
+# 2026-10-11T01:46:33.035Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+# 2026-10-11T01:46:33.069Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.1
+# 2026-10-11T01:46:33.070Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+# Subtest: Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerçek süreçler)
+    # Subtest: (1) hazır 9.0.1 yayından geri çekildi (yayın listesi boş, kaynak çalışıyor) → açılışta KURULMAZ, hazır paket silinir, durum ve günlükte 'yayından kaldırıldı'
+    not ok 1 - (1) hazır 9.0.1 yayından geri çekildi (yayın listesi boş, kaynak çalışıyor) → açılışta KURULMAZ, hazır paket silinir, durum ve günlükte 'yayından kaldırıldı'
+      ---
+      duration_ms: 2542.453951
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri çekilen 9.0.1 kurulmadı; 9.0.0 çalışıyor
+        
+        '9.0.1' !== '9.0.0'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '9.0.0'
+      actual: '9.0.1'
+      operator: 'strictEqual'
+      stack: |-
+        file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:83:14
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async withFeed (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:79:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+# ---- eski servis günlüğü (son) ----
+# 2026-10-11T01:46:34.893Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:39425
+# 2026-10-11T01:46:34.925Z [INFO] Açılışta hazır güncelleme var (9.0.2); kurmadan önce son denetim (en çok 60 sn).
+# 2026-10-11T01:46:34.954Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-11T01:46:34.955Z [INFO] 9.0.2 sürümü indiriliyor (6573 KB)…
+# 2026-10-11T01:46:35.138Z [INFO] Uygulama başlatılıyor (app/9.0.2, iç port 43773)
+# 2026-10-11T01:46:35.525Z [INFO] Uygulama hazır: DestekOfis 9.0.2
+# 2026-10-11T01:46:35.550Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.2
+# 2026-10-11T01:46:35.550Z [INFO] DestekOfis 9.0.2 sürümüne güncellendi (önceki 9.0.0).
+    # Subtest: (2) hazır 9.0.2 geri çekildi, yayındaki en yeni 9.0.1 (hazırdakinden ESKİ) → 9.0.2 kurulmaz/silinir; 9.0.1 kurulur, tek geçiş
+    not ok 2 - (2) hazır 9.0.2 geri çekildi, yayındaki en yeni 9.0.1 (hazırdakinden ESKİ) → 9.0.2 kurulmaz/silinir; 9.0.1 kurulur, tek geçiş
+      ---
+      duration_ms: 2457.819692
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:108:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kurulabilir en yeni sürüm (9.0.1) çalışıyor
+        
+        '9.0.2' !== '9.0.1'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '9.0.1'
+      actual: '9.0.2'
+      operator: 'strictEqual'
+      stack: |-
+        file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:113:14
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async withFeed (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:109:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# ---- agyok servis günlüğü (son) ----
+# 2026-10-11T01:46:37.251Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:45763
+# 2026-10-11T01:46:37.276Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).
+# 2026-10-11T01:46:37.294Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+# 2026-10-11T01:46:37.298Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+# 2026-10-11T01:46:37.298Z [INFO] Açılıştaki son denetim yapılamadı (Güncelleme sunucusu hata döndürdü (HTTP 503).); hazırdaki 9.0.1 kuruluyor.
+# 2026-10-11T01:46:37.298Z [INFO] 9.0.1 sürümü indiriliyor (6573 KB)…
+# 2026-10-11T01:46:37.479Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 33259)
+# 2026-10-11T01:46:37.867Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+# 2026-10-11T01:46:37.892Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.1
+# 2026-10-11T01:46:37.892Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+# 2026-10-11T01:46:37.911Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+# 2026-10-11T01:46:37.914Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+    # Subtest: (3) son denetim ağ hatasıyla döner → hazırdaki kurulur (bugünkü davranış); günlükte 'indiriliyor' değil 'hazırdaki paket kuruluyor'
+    not ok 3 - (3) son denetim ağ hatasıyla döner → hazırdaki kurulur (bugünkü davranış); günlükte 'indiriliyor' değil 'hazırdaki paket kuruluyor'
+      ---
+      duration_ms: 2361.281266
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:125:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /9\.0\.1 sürümü hazırdaki paketten kuruluyor/. Input:
+        
+        '2026-10-11T01:46:37.251Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:45763\n' +
+          '2026-10-11T01:46:37.276Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).\n' +
+          "2026-10-11T01:46:37.294Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.\n" +
+          '2026-10-11T01:46:37.298Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).\n' +
+          '2026-10-11T01:46:37.298Z [INFO] Açılıştaki son denetim yapılamadı (Güncelleme sunucusu hata döndürdü (HTTP 503).); hazırdaki 9.0.1 kuruluyor.\n' +
+          '2026-10-11T01:46:37.298Z [INFO] 9.0.1 sürümü indiriliyor (6573 KB)…\n' +
+          '2026-10-11T01:46:37.479Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 33259)\n' +
+          '2026-10-11T01:46:37.867Z [INFO] Uygulama hazır: DestekOfis 9.0.1\n' +
+          '2026-10-11T01:46:37.892Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.1\n' +
+          '2026-10-11T01:46:37.892Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).\n' +
+          "2026-10-11T01:46:37.911Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.\n" +
+          '2026-10-11T01:46:37.914Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).\n'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        2026-10-11T01:46:37.251Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:45763
+        2026-10-11T01:46:37.276Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).
+        2026-10-11T01:46:37.294Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+        2026-10-11T01:46:37.298Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+        2026-10-11T01:46:37.298Z [INFO] Açılıştaki son denetim yapılamadı (Güncelleme sunucusu hata döndürdü (HTTP 503).); hazırdaki 9.0.1 kuruluyor.
+        2026-10-11T01:46:37.298Z [INFO] 9.0.1 sürümü indiriliyor (6573 KB)…
+        2026-10-11T01:46:37.479Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 33259)
+        2026-10-11T01:46:37.867Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+        2026-10-11T01:46:37.892Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.1
+        2026-10-11T01:46:37.892Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+        2026-10-11T01:46:37.911Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+        2026-10-11T01:46:37.914Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+        
+      operator: 'match'
+      stack: |-
+        file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:133:14
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async withFeed (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:126:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (4) açılışta daha yeni sürüm var → o indirilip kurulur (bugünkü davranış); hazırdaki eski paket silinir
+    ok 4 - (4) açılışta daha yeni sürüm var → o indirilip kurulur (bugünkü davranış); hazırdaki eski paket silinir
+      ---
+      duration_ms: 2609.679527
+      type: 'test'
+      ...
+    1..4
+not ok 1 - Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerçek süreçler)
+  ---
+  duration_ms: 9973.026061
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818/test/guncelleme-hazir-geri-cekilen.test.mjs:77:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11868.097357

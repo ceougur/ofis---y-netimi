@@ -1,0 +1,91 @@
+// Excel hücrelerinin Türkçe biçimde metne çevrilmesi (tarayıcıdaki Excel işçisinin kullandığı modül).
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { describe, it } from "node:test";
+import { decodeCsv, fitRange, formatNumber, sheetMatrix } from "../client/assets/hof-excel-format.js";
+import { buildXlsx } from "../server/lib/xlsx-write.mjs";
+import { createZip, readZip } from "../server/lib/zip.mjs";
+
+const XLSX = await import("../client/assets/xlsx-DGuHH-KN.js");
+
+describe("Excel hücre biçimleri", () => {
+  it("tarihler gg.aa.yyyy, tutarlar ve yüzdeler Türkçe düzende; genel sayılar gruplanmaz", () => {
+    const workbook = XLSX.read(readFileSync(new URL("./fixtures/bicimler.xlsx", import.meta.url)), { type: "buffer", cellDates: false, cellNF: true });
+    assert.deepEqual(sheetMatrix(XLSX, workbook.Sheets[workbook.SheetNames[0]]), [
+      ["DOSYA NO", "TARİH", "TUTAR", "ORAN", "SAYI", "SAAT", "METİN"],
+      ["2025/1", "13.10.2025", "40.000,00TL", "18,5%", "1234567", "13.10.2025 14:30", "Deneme"],
+      ["2025/2", "05.01.2025", "₺1.500,50", "100%", "42", "05.01.2025", "12"],
+    ]);
+  });
+
+  it("biçim kodundaki ayrıntıları uygular", () => {
+    const cases = [
+      [1234.5, "#,##0.00", "1.234,50"],
+      [-1234.5, "#,##0.00", "-1.234,50"],
+      [-1234.5, "#,##0.00;[Red](#,##0.00)", "(1.234,50)"],
+      [0.5, "0%", "50%"],
+      [12, "00000", "00012"],
+      [1500, '"₺"#,##0', "₺1.500"],
+      [1500, "#,##0 \\T\\L", "1.500 TL"],
+      [99.999, "0.0", "100,0"],
+      [5321234567, "General", "5321234567"],
+      [2.75, "General", "2,75"],
+    ];
+    for (const [value, format, expected] of cases) assert.equal(formatNumber(value, format), expected, `${value} ${format}`);
+  });
+
+  it("birleştirilmiş hücreler (v2.0.2): dikey birleştirme her satıra yazılır, yatay (gruplu başlık) olduğu gibi kalır", () => {
+    const sheet = XLSX.utils.aoa_to_sheet([
+      ["", "Kişi bilgileri", "", "Ödeme"],
+      ["Müvekkil", "Dosya", "Telefon", "Tutar"],
+      ["Ali Veli", "2026/1", "0532", 1500],
+      ["", "2026/2", "", 2000],
+      ["", "2026/3", "", 750],
+      ["Ayşe Kaya", "2026/4", "0533", 900],
+    ]);
+    sheet["!merges"] = [
+      { s: { r: 0, c: 1 }, e: { r: 0, c: 2 } }, // yatay: grup başlığı
+      { s: { r: 2, c: 0 }, e: { r: 4, c: 0 } }, // dikey: aynı müvekkilin üç dosyası
+      { s: { r: 2, c: 2 }, e: { r: 4, c: 2 } }, // dikey: telefon
+    ];
+    assert.deepEqual(sheetMatrix(XLSX, sheet), [
+      ["", "Kişi bilgileri", "", "Ödeme"],
+      ["Müvekkil", "Dosya", "Telefon", "Tutar"],
+      ["Ali Veli", "2026/1", "0532", "1500"],
+      ["Ali Veli", "2026/2", "0532", "2000"],
+      ["Ali Veli", "2026/3", "0532", "750"],
+      ["Ayşe Kaya", "2026/4", "0533", "900"],
+    ]);
+  });
+
+  it("CSV: UTF-8 (BOM'lu) ve Türkçe Windows kodlaması doğru okunur; değerler olduğu gibi kalır", () => {
+    const utf8 = new TextEncoder().encode("﻿DOSYA NO;TELEFON;TARİH\n2025/1;05321234567;13.10.2025\n");
+    const windows = Uint8Array.from([0x49, 0x4c, 0x3b, 0xdd, 0x4c, 0xc7, 0x45, 0x0a, 0x4b, 0x6f, 0x6e, 0x79, 0x61, 0x3b, 0xdd, 0x7a, 0x6d, 0x69, 0x72, 0x0a]);
+    const read = bytes => {
+      const workbook = XLSX.read(decodeCsv(bytes.buffer), { type: "string", raw: true });
+      return sheetMatrix(XLSX, workbook.Sheets[workbook.SheetNames[0]]);
+    };
+    assert.deepEqual(read(utf8), [["DOSYA NO", "TELEFON", "TARİH"], ["2025/1", "05321234567", "13.10.2025"]]);
+    assert.deepEqual(read(windows), [["IL", "İLÇE"], ["Konya", "İzmir"]]);
+  });
+
+  it("kullanılan alan etiketi eski kalmış dosya (v2.0.9): dolu satırlar yine okunur", () => {
+    // Taslak Excel yalnız başlıkla iner (<dimension ref="A1:B1"/>); etiketi güncellemeyen bir programla doldurulunca
+    // SheetJS alttaki satırları görmez. fitRange alanı dolu hücrelere genişletir.
+    const template = buildXlsx([{ name: "Kişiler", columns: ["Ad", "Tutar"], rows: [] }]);
+    const entries = readZip(template);
+    const sheet = entries.find(entry => entry.name === "xl/worksheets/sheet1.xml");
+    const xml = sheet.data.toString("utf8");
+    assert.match(xml, /<dimension ref="A1:B1"\/>/);
+    const filled = xml.replace("</sheetData>", '<row r="2"><c r="A2" t="inlineStr"><is><t>Ayşe</t></is></c><c r="B2" t="inlineStr"><is><t>1.500,00</t></is></c></row><row r="3"><c r="A3" t="inlineStr"><is><t>Ali</t></is></c></row></sheetData>');
+    const buffer = createZip(entries.map(entry => ({ name: entry.name, data: entry === sheet ? Buffer.from(filled, "utf8") : entry.data })));
+    const workbook = XLSX.read(buffer, { type: "buffer" });
+    const ws = workbook.Sheets["Kişiler"];
+    assert.equal(sheetMatrix(XLSX, ws).length, 1, "SheetJS eski etikete güvenir: yalnız başlık");
+    fitRange(XLSX, ws);
+    assert.equal(ws["!ref"], "A1:B3");
+    assert.deepEqual(sheetMatrix(XLSX, ws), [["Ad", "Tutar"], ["Ayşe", "1.500,00"], ["Ali"]]);
+    fitRange(XLSX, ws);
+    assert.equal(ws["!ref"], "A1:B3", "doğru alan değişmez (daraltılmaz)");
+  });
+});

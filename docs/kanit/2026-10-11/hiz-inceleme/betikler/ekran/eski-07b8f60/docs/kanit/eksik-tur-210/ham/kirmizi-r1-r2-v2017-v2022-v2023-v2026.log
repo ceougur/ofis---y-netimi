@@ -1,0 +1,12 @@
+v2.0.23 R1a: cari bakiye 120 (beklenen 120) · açık satış paid/0 (beklenen overdue/120) · Açık Faturalar [["Açık Alacak","0,00 TL"],["Açık Borç","0,00 TL"]]
+v2.0.23 R1d: alış faturası paid/0 (beklenen overdue/500; müşteriye iade ödemesi tedarikçiye ödeme değildir)
+v2.0.23 R2: Gider Raporu satırları [["Ekim 2026","Kira","770","2","2.300,00 TL","460,00 TL","%100"]] (beklenen 2 satır: Kira 2.000 · Elektrik 300)
+v2.0.26 R1a: cari bakiye 120 (beklenen 120) · açık satış paid/0 (beklenen overdue/120) · Açık Faturalar [["Açık Alacak","0,00 TL"],["Açık Borç","0,00 TL"]]
+v2.0.26 R1d: alış faturası paid/0 (beklenen overdue/500; müşteriye iade ödemesi tedarikçiye ödeme değildir)
+v2.0.26 R2: Gider Raporu satırları [["Ekim 2026","Kira","770","2","2.300,00 TL","460,00 TL","%100"]] (beklenen 2 satır: Kira 2.000 · Elektrik 300)
+v2.0.17 R1a: cari bakiye 120 (beklenen 120) · açık satış paid/0 (beklenen overdue/120) · Açık Faturalar [["Açık Alacak","0,00 TL"],["Açık Borç","0,00 TL"]]
+v2.0.17 R1d: alış faturası paid/0 (beklenen overdue/500; müşteriye iade ödemesi tedarikçiye ödeme değildir)
+v2.0.17 R2: Gider Raporu satırları [["Ekim 2026","Kira","770","2","2.300,00 TL","460,00 TL","%100"]] (beklenen 2 satır: Kira 2.000 · Elektrik 300)
+v2.0.22 R1a: cari bakiye 120 (beklenen 120) · açık satış paid/0 (beklenen overdue/120) · Açık Faturalar [["Açık Alacak","0,00 TL"],["Açık Borç","0,00 TL"]]
+v2.0.22 R1d: alış faturası paid/0 (beklenen overdue/500; müşteriye iade ödemesi tedarikçiye ödeme değildir)
+v2.0.22 R2: Gider Raporu satırları [["Ekim 2026","Kira","770","2","2.300,00 TL","460,00 TL","%100"]] (beklenen 2 satır: Kira 2.000 · Elektrik 300)
