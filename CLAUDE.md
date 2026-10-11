@@ -1289,7 +1289,8 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   yüzünden 2 parça + BIRLESTIR.cmd ile verildi; kullanıcı birleştirip yükledi), kılavuz PDF b326df68…; arşiv 3 parça. Yayındaki 5 dosya +
   latest/ bayt bayt aynı; yayın öncesi 2.1.0/v2.0.26/v2.0.22 güncelleyici koduyla 54/54, canlı GitHub'da 2.1.0 ve v2.0.26 koduyla 12 eski
   sürüm × API/yedek yol 48/48 available + sha256 eşleşti (tek geçici ağ ✗, yeniden 3/3; docs/kanit/2026-10-11/yayin-2.1.0). Site kılavuz
-  PR'ı ceougur/destekofis#12 2.1.0 PDF'iyle güncellendi (sitede şu an 2.0.24 kılavuzu; Drive vaadi sitede yok); birleştirme kullanıcıyla.
+  PR'ı ceougur/destekofis#12 2.1.0 PDF'iyle güncellendi (Drive vaadi sitede yok) ve kullanıcının "site pr ını birleştir"iyle
+  BİRLEŞTİRİLDİ (squash, main f811f08; main'deki PDF b326df68… = yayın; site dalı main'e sıfırlandı).
   Yayın iş akışı #30 (etiket) sürümlü kurulum dosyasını ekler. Dal master'a sıfırlandı. DERS: kurulum .exe 30 MiB'ı aştı (kılavuz PDF 5 MB
   oldu) → bundan sonra exe parçalı verilir ya da yayın iş akışının Windows'ta sınanmış exe'si kullanılır.
   KAPSAM SORUSU (kullanıcı, 11.10.2026: "neredeyse bütün program elden geçti diyebilir miyiz?") → HAYIR: para çekirdeği + banka derin;
