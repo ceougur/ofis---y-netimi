@@ -27,7 +27,7 @@ const html = readFileSync(path.join(HERE, "DestekOfis-Kullanim-Kilavuzu.html"), 
 const imgs = [...html.matchAll(/<img src="([^"]+)"/g)].map(m => m[1]);
 const pdfImages = execFileSync("pdfimages", ["-list", DOC], { encoding: "utf8" }).split("\n").filter(line => /^\s*\d+\s+\d+\s+image/.test(line)).length;
 check(pdfImages >= new Set(imgs).size, `PDF'teki resim sayısı ${pdfImages} ≥ kılavuzdaki farklı ekran ${new Set(imgs).size}`);
-for (const phrase of ["8. Banka", "Kurulum Sihirbazı", "Hesabı Atanmamış Eski Hareketler", "Tarihi Gelince Atanabilir", "Seçilenleri Bu Hesaba Ata", "Kurumsal Kredi Kartı", "Kurumsal Kart", "Kart ve Kredi Borcu", "+ Kart Borcu Ödemesi", "Bankalar Arası Transfer", "Ters Kaydet", "Gerçek Banka", "Bugünkü Nakit ve Banka", "Banka Bakiye Raporu", "Alt Hesap Mizanı", "Banka ve POS", "Yine de Kaydet"]) check(text.includes(phrase), `PDF metninde: “${phrase}”`);
+for (const phrase of ["8. Banka", "Kurulum Sihirbazı", "Hesabı Atanmamış Eski Hareketler", "Tarihi Gelince Atanabilir", "Seçilenleri Bu Hesaba Ata", "Kurumsal Kredi Kartı", "Kurumsal Kart", "Kart ve Kredi Borcu", "+ Kart Borcu Ödemesi", "Bankalar Arası Transfer", "Ters Kaydet", "Gerçek Banka", "Bugünkü Nakit ve Banka", "Banka Bakiye Raporu", "Alt Hesap Mizanı", "Banka ve POS", "Yine de Kaydet", "Hesapsız (Açılıştan Önce)", "Kurulum Geçmişi", "Kart Borcuna Aktar", "Bankaya Geçmiş Say"]) check(text.includes(phrase), `PDF metninde: “${phrase}”`);
 for (const phrase of ["Drive", "OneDrive", "Kasa ve Banka", "bugünkü kasadan", "Banka / POS"]) check(!text.includes(phrase), `PDF metninde YOK: “${phrase}”`);
 const docBuf = readFileSync(DOC);
 const appBuf = readFileSync(APP);

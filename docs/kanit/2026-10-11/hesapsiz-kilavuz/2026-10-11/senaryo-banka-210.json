@@ -1,0 +1,32 @@
+{
+  "ad": "senaryo-banka-210",
+  "komut": "npm run test:senaryo-banka-210",
+  "commit": "efa2bd04b1d3d5563f39579a91b6db2639bdf96d",
+  "dal": "worktree-agent-ad04626f333508e13",
+  "kirli": 5,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:17:49.841Z",
+  "sure_sn": 291.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 407,
+    "gecen": 407,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/hesapsiz-kilavuz/2026-10-11/senaryo-banka-210.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad04626f333508e13",
+  "ham_cikti_sha256": "1e7dd8974c9db9470f24e5515b843327a57f93cc06d4232ec8ce81dc17bb1892",
+  "ham_cikti_bayt": 43370
+}
