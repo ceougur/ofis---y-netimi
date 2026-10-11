@@ -1,0 +1,66 @@
+=== güncelleyici kodu: 2.1.0 (bu sürüm)
+bildirge: sürüm 2.1.0, paket destekofis-guncelleme-2.1.0.zip, sha256 d341941abe6f… (dosya d341941abe6f…)
+✓ kurulu 2.0.26 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.26 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurcalanmış bildirge reddedildi: error — 2.1.0: Güncelleme bildirgesinin imzası doğrulanamadı; güncelleme reddedildi.
+çıkış 0
+=== güncelleyici kodu: /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-v2.0.26/server/lib/updater.mjs
+bildirge: sürüm 2.1.0, paket destekofis-guncelleme-2.1.0.zip, sha256 d341941abe6f… (dosya d341941abe6f…)
+✓ kurulu 2.0.26 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.26 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurcalanmış bildirge reddedildi: error — 2.1.0: Güncelleme bildirgesinin imzası doğrulanamadı; güncelleme reddedildi.
+çıkış 0
+=== güncelleyici kodu: /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-v2.0.22/server/lib/updater.mjs
+bildirge: sürüm 2.1.0, paket destekofis-guncelleme-2.1.0.zip, sha256 d341941abe6f… (dosya d341941abe6f…)
+✓ kurulu 2.0.26 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.26 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 · indirildi, sha256 EŞLEŞTİ
+✓ kurcalanmış bildirge reddedildi: error — 2.1.0: Güncelleme bildirgesinin imzası doğrulanamadı; güncelleme reddedildi.
+çıkış 0

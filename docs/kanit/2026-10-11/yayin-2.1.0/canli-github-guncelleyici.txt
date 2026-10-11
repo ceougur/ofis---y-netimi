@@ -1,0 +1,60 @@
+=== güncelleyici kodu: 2.1.0
+(node:4102) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ kurulu 2.0.26 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.19 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.18 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.17 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.1.0  (GitHub API): up-to-date   
+✓ kurulu 2.0.26 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.19 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.18 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.17 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.1.0  (API kapalı → yedek yol): up-to-date   
+çıkış 0
+=== güncelleyici kodu: /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-v2.0.26/server/lib/updater.mjs
+(node:4115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ kurulu 2.0.26 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.19 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.18 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.17 (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (GitHub API): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.1.0  (GitHub API): up-to-date   
+✓ kurulu 2.0.26 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.25 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.24 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.23 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.22 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.21 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.20 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.19 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.18 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.17 (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 2.0.4  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✓ kurulu 1.7.0  (API kapalı → yedek yol): available 2.1.0 anahtar destekofis-2026-1 indirildi, sha256 EŞLEŞTİ
+✗ kurulu 2.1.0  (API kapalı → yedek yol): error Güncelleme sunucusu hata döndürdü (HTTP 403).  
+çıkış 1

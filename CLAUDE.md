@@ -1284,6 +1284,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   ekrandan doğrulayan ajan durduruldu (worktree agent-a4337a23…, birleştirilmedi). `docs/2.1.0-ELLE-KABUL.md` depoda yalnız arşiv. Ajanın
   bulduğu tek şüphe kullanıcıya listelendi: Rapor Merkezi Excel çıktısında şirket adı/kodu yok (PDF'te var; v2.0.26'da da aynı; 2.0.17 m2).
   KARAR (kullanıcı, aynı gün): 2.1.1'e bırakıldı → 2.1.0 teslimde BİLİNEN SINIRLAR'a yazılır (report-center.mjs xlsx ucu; PDF office.name kullanıyor).
+  YAYIMLANDI (11.10.2026 18:45 UTC; kullanıcının "birleştir"iyle PR ceougur/ofis---y-netimi#27 squash → master 7c6405f, ağaç = paketlenen 0f6b364;
+  `v2.1.0` → 7c6405f). Paket sha256 d341941a… (234 dosya, HEAD ile bayt bayt), kurulum .exe 2e5dd254… (35,3 MiB → 30 MiB gönderim sınırı
+  yüzünden 2 parça + BIRLESTIR.cmd ile verildi; kullanıcı birleştirip yükledi), kılavuz PDF b326df68…; arşiv 3 parça. Yayındaki 5 dosya +
+  latest/ bayt bayt aynı; yayın öncesi 2.1.0/v2.0.26/v2.0.22 güncelleyici koduyla 54/54, canlı GitHub'da 2.1.0 ve v2.0.26 koduyla 12 eski
+  sürüm × API/yedek yol 48/48 available + sha256 eşleşti (tek geçici ağ ✗, yeniden 3/3; docs/kanit/2026-10-11/yayin-2.1.0). Site kılavuz
+  PR'ı ceougur/destekofis#12 2.1.0 PDF'iyle güncellendi (sitede şu an 2.0.24 kılavuzu; Drive vaadi sitede yok); birleştirme kullanıcıyla.
+  Yayın iş akışı #30 (etiket) sürümlü kurulum dosyasını ekler. Dal master'a sıfırlandı. DERS: kurulum .exe 30 MiB'ı aştı (kılavuz PDF 5 MB
+  oldu) → bundan sonra exe parçalı verilir ya da yayın iş akışının Windows'ta sınanmış exe'si kullanılır.
   KAPSAM SORUSU (kullanıcı, 11.10.2026: "neredeyse bütün program elden geçti diyebilir miyiz?") → HAYIR: para çekirdeği + banka derin;
   geri kalanı sürüm sürüm değişen yer kadar; satır kapsamı en son 2.0.21'de (%95,2 / dal %79,9 / arayüz %79,8; 52 yüksek riskli testsiz yer).
   KARAR (kullanıcı, aynı gün): kapsam ölçümü 2.1.0 temel banka sürümü CANLIYA ALINDIKTAN SONRA yapılır; kullanıcı yeni sürümü kendisi ve
