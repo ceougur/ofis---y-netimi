@@ -663,7 +663,7 @@ export function createApp(overrides = {}) {
         server.closeAllConnections?.();
       });
       await analysisRunner.close();
-      reportRunner?.close();
+      await reportRunner?.close();
       for (const child of children.values()) await child.close();
       db.close();
     },

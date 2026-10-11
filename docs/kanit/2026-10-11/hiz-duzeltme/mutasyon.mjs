@@ -12,12 +12,16 @@ const BASE = path.resolve(process.argv[2] || path.join(ROOT, "..", "mutasyon"));
 const jsonAt = process.argv.indexOf("--json");
 const OUT = jsonAt >= 0 ? process.argv[jsonAt + 1] : "";
 const TEST = "test/banka-210-hiz-esdegerlik.test.mjs";
+// İş parçacığı mutasyonları iki testle koşulur (eşdeğerlik testi iş parçacığı yolunu da sınar; ayrıntısı rapor-is-parcacigi testinde).
+const TESTS_WORKER = [TEST, "test/banka-210-rapor-is-parcacigi.test.mjs"];
 const ML = "server/lib/bank/money-lines.mjs";
 const RC = "server/routes/report-center.mjs";
 const AC = "server/routes/accounts.mjs";
+const RW = "server/lib/report-worker.mjs";
+const RR = "server/lib/report-runner.mjs";
 
 const MUTATIONS = [
-  { ad: "M0 kontrol (mutasyon yok)", file: "", find: "", replace: "", expect: "yeşil" },
+  { ad: "M0 kontrol (mutasyon yok)", file: "", find: "", replace: "", expect: "yeşil", tests: TESTS_WORKER },
   { ad: "M1 sınıflama: açılış/Devir/aktarma düzeltme sayılmaz (transfer/dış harekete düşer)", file: ML, find: "const adjust = `(${x.src} = 9 AND ${x.base} IN (${ADJUST_SQL}))`;", replace: "const adjust = `(0 = 1)`;" },
   { ad: "M2 sınıflama: gider payının yönü ters (çıkışta eksi ücret)", file: ML, find: "const feeOut = `CASE WHEN ${fee} > 0 THEN", replace: "const feeOut = `CASE WHEN ${fee} < 0 THEN" },
   { ad: "M3 gider payı: gönderen hesap koşulu yok (ücret alıcının bacağına da)", file: ML, find: "w.ref <> '' AND w.ref = ${bank} AND", replace: "w.ref <> '' AND" },
@@ -31,6 +35,9 @@ const MUTATIONS = [
   { ad: "M10b Kasa eksi bakiye denetimi: yolun bakiyesi gün sonu yerine bütün tarihler", file: ML, find: "SUM(CASE WHEN w.date <= :day THEN (${signed}) END)", replace: "SUM(CASE WHEN w.date <= '9999-12-31' THEN (${signed}) END)" },
   { ad: "M11 cari arama: tür önceliği (prefer) uygulanmaz", file: AC, find: "if (prefer) matched.sort(", replace: "if (false) matched.sort(" },
   { ad: "M12 cari arama: ilk 20 Cari No sırası yerine ad sırasıyla", file: AC, find: ".sort((a, b) => refCompare(a, b) || byName(a, b));", replace: ".sort((a, b) => byName(a, b));" },
+  { ad: "M13 iş parçacığı: ön izleme sınırı TOPLAM'dan önce uygulanır (toplam sayı ve TOPLAM ilk n satırdan)", file: RW, find: "data = await center.run(user, id, new URLSearchParams(query), { inline: true });", replace: "data = await center.run(user, id, new URLSearchParams(query), { inline: true });\n    if (limit) data = { ...data, total: Math.min(data.total, limit) };", tests: TESTS_WORKER },
+  { ad: "M14 iş parçacığı: sunucunun (sahte) saati yerine gerçek saat", file: RW, find: "now: createClock({ time, fixed: true })", replace: "now: createClock({})", tests: TESTS_WORKER },
+  { ad: "M15 iş parçacığı: rapor hatası durum kodunu kaybeder (her hata 500)", file: RR, find: "finish(new HttpError(message?.status || 500,", replace: "finish(new HttpError(500,", tests: TESTS_WORKER },
 ];
 
 const results = [];
@@ -47,11 +54,11 @@ for (const mutation of MUTATIONS) {
     writeFileSync(file, source.replace(mutation.find, mutation.replace));
   }
   const started = Date.now();
-  const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", TEST], { cwd: dir, encoding: "utf8", timeout: 600_000, maxBuffer: 64 * 1024 * 1024 });
+  const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...(mutation.tests || [TEST])], { cwd: dir, encoding: "utf8", timeout: 600_000, maxBuffer: 64 * 1024 * 1024 });
   const output = `${run.stdout || ""}${run.stderr || ""}`;
   writeFileSync(path.join(BASE, `${mutation.ad.split(" ")[0]}.log`), output);
   const count = name => Number((output.match(new RegExp(`^# ${name} (\\d+)`, "m")) || [])[1] ?? NaN);
-  const failed = [...output.matchAll(/^\s*not ok \d+ - (.+)$/gm)].map(match => match[1]).filter(name => !/^hız düzeltmesi eşdeğerliği/.test(name));
+  const failed = [...output.matchAll(/^\s*not ok \d+ - (.+)$/gm)].map(match => match[1]).filter(name => !/^(hız düzeltmesi eşdeğerliği|Banka raporlarının iş parçacığı)/.test(name));
   // Kurulum kancası (before) düşerse alt testler "cancelled" sayılır (fail 0): o da kırmızıdır (ör. M1'i mutabakat motorunun kendi banka raporu
   // denetimi veri üretirken yakalar). Nedeni (ilk hata) kayda yazılır.
   const hook = (output.match(/failureType: 'hookFailed'\s+error: \|-\s+([^\n]+)/) || [])[1] || "";

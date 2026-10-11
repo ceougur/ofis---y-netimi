@@ -21,7 +21,6 @@ import { cpSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { monitorEventLoopDelay } from "node:perf_hooks";
 
 const SELF = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(SELF), "..", "..", "..", "..");
@@ -51,9 +50,16 @@ if (process.env.TEK_ISTEK_SUNUCU) {
     now: { time: conf.now },
   });
   const { port } = await app.listen(0, "127.0.0.1");
-  // Ana iş parçacığının tutulma süresi (olay döngüsü gecikmesi): istek başına en çok (ms).
-  const loop = monitorEventLoopDelay({ resolution: 5 });
-  loop.enable();
+  // Ana iş parçacığının tutulma süresi (olay döngüsü gecikmesi): istek başına en uzun aralık (ms). 5 ms'lik JS zamanlayıcısı iki tetik
+  // arasındaki gerçek süreyi ölçer (en az ~5 ms = zamanlayıcının kendi aralığı). monitorEventLoopDelay KULLANILMAZ: reset() önceki tetiği de
+  // sildiği için sıfırlamadan hemen sonra gelen tutulma (ilk tetik önceki zamanı yeniden kurar) hiç kaydedilmiyordu (ilk deneme: 0 ms).
+  let lagLast = performance.now();
+  let lagMax = 0;
+  setInterval(() => {
+    const at = performance.now();
+    lagMax = Math.max(lagMax, at - lagLast);
+    lagLast = at;
+  }, 5).unref();
   const admin = app.store.get("SELECT u.id, u.username, u.display_name, u.role, u.role_key, u.active, u.deleted_at, u.must_change_password, u.grants_json FROM users u WHERE u.username = 'admin'");
   if (app.context.access) {
     app.context.access.attach(admin);
@@ -71,10 +77,12 @@ if (process.env.TEK_ISTEK_SUNUCU) {
         process.send({ cmd: "run", error: String(error?.message || error) });
       }
     } else if (message.cmd === "loop-reset") {
-      loop.reset();
+      lagMax = 0;
       process.send({ cmd: "loop-reset" });
     } else if (message.cmd === "loop") {
-      process.send({ cmd: "loop", max: loop.max / 1e6 });
+      // Yanıttan sonra en az iki tetik beklenir (tutulma bittikten sonraki ilk tetik onu kaydeder).
+      await new Promise(resolve => setTimeout(resolve, 20));
+      process.send({ cmd: "loop", max: Math.round(lagMax * 10) / 10 });
     } else if (message.cmd === "close") {
       await app.close();
       process.send({ cmd: "closed" });

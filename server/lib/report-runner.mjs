@@ -51,10 +51,11 @@ export function createReportRunner({ max = 2, timeoutMs = 5 * 60_000 } = {}) {
         next();
       });
     },
+    /** Bekleyenleri 503 ile düşürür, çalışan iş parçacıklarını sonlandırır; hepsi kapanınca çözülür (veri dosyası serbest). */
     close() {
       closed = true;
       for (const job of queue.splice(0)) job.reject(new HttpError(503, "Sunucu kapanıyor; raporu yeniden açın.", { code: "report-closed" }));
-      for (const worker of workers) worker.terminate().catch(() => {});
+      return Promise.all([...workers].map(worker => worker.terminate().catch(() => {}))).then(() => {});
     },
     get stats() {
       return { active, queued: queue.length, started };

@@ -13,6 +13,7 @@ import { registerReportCenter } from "../routes/report-center.mjs";
 
 const { dbPath, time, id, query, user, limit } = workerData || {};
 let db = null;
+let reply;
 try {
   db = openDatabase(dbPath, { readOnly: true });
   const store = createStore(db);
@@ -25,13 +26,16 @@ try {
     db.exec("COMMIT");
   }
   // limit: yalnız ilk n satır taşınır (ön izleme 200; toplam sayı ve TOPLAM satırı bütün satırlardan, iş parçacığında hesaplandı).
-  parentPort.postMessage({ ok: true, data: limit ? { ...data, rows: data.rows.slice(0, limit) } : data });
+  reply = { ok: true, data: limit ? { ...data, rows: data.rows.slice(0, limit) } : data };
 } catch (error) {
-  parentPort.postMessage({ ok: false, status: Number(error?.status) || 500, message: error?.message || String(error), extra: error?.extra || {} });
+  reply = { ok: false, status: Number(error?.status) || 500, message: error?.message || String(error), extra: error?.extra || {} };
 } finally {
+  // Bağlantı yanıttan ÖNCE kapanır: ana iş parçacığı yanıtı alıp iş parçacığını sonlandırdığında dosya serbesttir (Windows'ta şirket geri
+  // yüklemesi/silmesi açık tanıtıcı yüzünden EBUSY almasın).
   try {
     db?.close();
   } catch {
     // zaten kapalı
   }
 }
+parentPort.postMessage(reply);
