@@ -90,3 +90,5 @@ Hiçbir beyanda Windows sonucu yoktu; hiçbiri CI'ye bakmadı. Ana oturum (ben) 
   — W1, W2 ve W3 (saat 33 sa ileri; 2.0.28 arka planda indirildi, çalışırken kurulmadı, süreç aynı, internetsiz yeniden başlatmada 9 sn'de
   kuruldu, yeniden indirilmedi, hazır paket silindi, önceki sürüm klasörü duruyor), yeniden kurulum, kaldırma, eski klasör. Özet
   docs/kanit/2026-10-11/windows-guncelleme/windows-yml-40-ozet.txt (ana oturum günlükten okudu). CI 568 (ce244dd) de bütün işler yeşil.
+- windows.yml #41 (ce244dd): bütün adımlar YEŞİL; güncelleme sınaması 29/29 (W3 dahil, saat 33 sa ileri) — gerçek Windows'ta İKİNCİ yeşil (ders 18).
+  Servis çalışırken yedek 4. yeşil. CI 569 (3d0a2c8) bütün işler yeşil.
