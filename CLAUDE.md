@@ -1232,6 +1232,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   500→450 düzeltilince kart borcu 950 (gerçek 450), 108.00 +500, yeni 520 kart ödemesi yanlış 409 cash-blocked; Bankaya Geçmiş Say komşusu
   108.00 −50; Mutabakat Testi "tamam". Dönem kilidi × banka, Şirket Verisini Sıfırla, yetki matrisi 22/22 temiz. KARAR (plana uy): B1+Y1+B4+Y2+
   B2+B3 tek düzeltme işi (banka), B5 ayrı iş (güncelleme); ikisi ajanlarda, önce kırmızı test.
+  DÜZELDİ (11.10.2026): B5 67f00da (geri çekilen hazır sürüm kurulmaz, hazır silinir, Yönetim'de "yayından kaldırıldı"; hazırdan eski ama
+  çalışandan yeni sürüm varsa o kurulur — kullanıcıya söylendi) — ana oturum eski kodda 1/4 → 4/4, CI 573 yeşil. B1+Y1+B4+Y2+B2+B3 a735a31
+  (birleşme 699266f): pickRef satır tarihinde uygunluk, "Hesapsız (Açılıştan Önce)" seçeneği, havuz satırına para değiştiren işlem 409
+  bank-reclass-active (Kurulum Geçmişi'nden Geri Al), Mutabakat Testi'ne bank:pool denetimi, Ata/sihirbaz/Geri Al K7 + pasif, fiş Ters Kaydet/
+  Düzelt/Açılış pasifte 400. Ana oturum: gg3 eski sunucuda 0/12 → 39/39, npm test 2065/2065, senaryo-banka-210 407, 210b 89, 210-temel 79,
+  210-eski-satir 12, mutabakat 2×1.000 tutarlı. Açık: "Hesapsız" seçilince cari formun yardım metni eski; kılavuzda Hesapsız/Geri Al yolu yok.
   UYARI BULGULARI (10.10.2026 gece; senaryo-225 incelemesinde, kullanıcıya listelendi; karar bekleyenler): (1) sağ alt bildirimde ilk 5'ten
   sonrası, özet bildirimi ekrana çıkmadan "görüldü" yazılıyor (hof-alerts.js enqueue) → sayfa erken değişirse bunlar 3 sa sağ altta görünmez,
   yalnız zilde (görmeden görüldü — düzeltilecek: özet gösterilince işaretle); (2) uyarı ufku sayfaya göre tutarsız: açık sayfanın son tarihleri
