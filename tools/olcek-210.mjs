@@ -167,8 +167,11 @@ async function bankBalances(api) {
   const accounts = unwrap(await api.get("/api/workspace/bank/accounts?status=all")).accounts || [];
   return Object.fromEntries(accounts.map(account => [account.id, Number(account.balanceMinor)]));
 }
-// Doldurma: gerçek API (8 eşzamanlı istek), tarihler son 360 güne yayılır. Karışım: cari tahsilat nakit / havale (hesaplı), cari ödeme nakit,
-// Banka Fişi masraf, bankalar arası transfer. Yalnız 200 dönen yazım deftere girer; ret (eksi bakiye vb.) sayılır.
+// Doldurma: gerçek API (8 eşzamanlı istek), tarihler son 360 güne yayılır. Karışım: cari tahsilat nakit / havale (hesaplı), Banka Fişi masraf,
+// bankalar arası transfer. Yalnız 200 dönen yazım deftere girer; ret (eksi bakiye vb.) sayılır. Defter her 8 istekte diske yazılır.
+// Nakit ÇIKIŞ doldurmada YOK (motor tohumunda ve yük aşamasında var): ilk koşuda (11.10.2026) Kasa eksi bakiye denetiminin her nakit çıkışta
+// bütün para satırlarını toplaması (cash.mjs guardOut → money-lines summary) doldurma CPU'sunun %46–48'iydi; veri üretimi 2 saati aşıp
+// kesildi (docs/kanit/2026-10-11/olcek/doldurma-profil-50bin.txt). Ölçümün kendisi bu maliyeti yük aşamasında ölçer.
 async function fill(code, api, file, target, accountCount) {
   const started = performance.now();
   const today = unwrap(await api.get("/api/workspace/ledger/lock")).today;
@@ -178,7 +181,8 @@ async function fill(code, api, file, target, accountCount) {
     return `${x.getUTCFullYear()}-${String(x.getUTCMonth() + 1).padStart(2, "0")}-${String(x.getUTCDate()).padStart(2, "0")}`;
   };
   const from = addDays(today, -360);
-  const L = { cash: 0, bank: 0, accounts: {}, writes: {}, rejected: {} };
+  const L = { cash: 0, bank: 0, accounts: {}, writes: {}, rejected: {}, lat: {}, growth: [] };
+  const ledgerFile = path.join(DIR, `doldurma-${code}.json`);
   // Binlerce cari (açılış tarihi 360 gün önce; eski tarihli hareket kronolojiye takılmasın).
   const created = [];
   for (let i = 0; i < accountCount; i += 1) {
@@ -203,23 +207,19 @@ async function fill(code, api, file, target, accountCount) {
     let kind = "";
     let response;
     let effect = () => {};
-    if (roll < 0.30) {
+    const t0 = performance.now();
+    if (roll < 0.34) {
       kind = "cari tahsilat nakit";
       const amount = rand(1000, 80000);
       effect = () => book("cash", amount);
       response = await api.post(`/api/workspace/accounts/${pick(created)}/entries`, { kind: "in", amount: amountText(amount), method: "cash", date, note: "Doldurma" });
-    } else if (roll < 0.62) {
+    } else if (roll < 0.66) {
       kind = "cari tahsilat havale";
       const amount = rand(5000, 300000);
       const bank = pick(banks);
       effect = () => book("bank", amount, bank.id);
       response = await api.post(`/api/workspace/accounts/${pick(created)}/entries`, { kind: "in", amount: amountText(amount), method: "bank", bankAccountId: bank.id, date, note: "Doldurma", similarOk: true });
-    } else if (roll < 0.72) {
-      kind = "cari ödeme nakit";
-      const amount = rand(100, 2000);
-      effect = () => book("cash", -amount);
-      response = await api.post(`/api/workspace/accounts/${pick(created)}/entries`, { kind: "out", amount: amountText(amount), method: "cash", date, note: "Doldurma" });
-    } else if (roll < 0.84) {
+    } else if (roll < 0.83) {
       kind = "banka masrafı";
       const amount = rand(500, 4000);
       const bank = pick(banks);
@@ -235,6 +235,7 @@ async function fill(code, api, file, target, accountCount) {
       };
       response = await api.post("/api/workspace/bank/transfers", { accountId: a.id, toAccountId: b.id, amount: amountText(amount), date, description: "Doldurma", similarOk: true });
     }
+    (L.lat[kind] ||= []).push(performance.now() - t0);
     if (response.status === 200) {
       effect();
       L.writes[kind] = (L.writes[kind] || 0) + 1;
@@ -248,11 +249,19 @@ async function fill(code, api, file, target, accountCount) {
   let total = 0;
   while (rows < target) {
     const batch = Math.min(4000, Math.max(200, Math.ceil((target - rows) / 1.1)));
-    for (let i = 0; i < batch; i += 8) await Promise.all(Array.from({ length: Math.min(8, batch - i) }, one));
+    L.lat = {};
+    for (let i = 0; i < batch; i += 8) {
+      await Promise.all(Array.from({ length: Math.min(8, batch - i) }, one));
+      writeFileSync(ledgerFile, JSON.stringify({ code, ...L, lat: undefined }));
+    }
     total += batch;
     rows = (await countMoney(file)).money;
-    log(`  [${code}] doldurma: ${total} istek, para satırı ${rows.toLocaleString("tr-TR")} / ${target.toLocaleString("tr-TR")} (${Math.round((performance.now() - started) / 1000)} sn)`);
+    // Yazım süresinin veriyle büyümesi (8 eşzamanlı istekte HTTP süresi; tür başına ortanca, ms).
+    const medians = Object.fromEntries(Object.entries(L.lat).map(([kind, list]) => [kind, Math.round(pct(list, 50))]));
+    L.growth.push({ rows, medians });
+    log(`  [${code}] doldurma: ${total} istek, para satırı ${rows.toLocaleString("tr-TR")} / ${target.toLocaleString("tr-TR")} (${Math.round((performance.now() - started) / 1000)} sn) · ortanca ms ${JSON.stringify(medians)}`);
   }
+  delete L.lat;
   log(`[${code}] doldurma bitti: ${JSON.stringify(L.writes)} · ret ${JSON.stringify(L.rejected)} · ${Math.round((performance.now() - started) / 1000)} sn`);
   return { ...L, seconds: Math.round((performance.now() - started) / 1000), cariler: created.length };
 }
