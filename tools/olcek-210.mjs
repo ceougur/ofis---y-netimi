@@ -40,8 +40,11 @@ const opt = (name, fallback) => {
 };
 const STAGE = opt("asama", "hepsi");
 const DIR = path.resolve(opt("klasor", path.join(os.tmpdir(), "destekofis-olcek-210")));
-const OPS1 = Number(opt("islem-001", "8000"));
-const OPS2 = Number(opt("islem-002", "3000"));
+// Motor tohumu çeşit içindir (hacim doldurmadan gelir). 001 tohum 2101 8.000 işlemde Kasa ~4,2 milyon TL'yi aşınca motorun "fatura-acid/kasa"
+// adımı (birim fiyat ≈ Kasa bakiyesi) ürünün kayan noktalı ondalık denetimine takıldı (yanlış 400; docs/kanit/2026-10-11/olcek/birim-fiyat-sonda.mjs).
+// İlk yanlış ret işlem 2.518'de; bu yüzden 2.000 işlem (aynı tohum, aynı sıra).
+const OPS1 = Number(opt("islem-001", "2000"));
+const OPS2 = Number(opt("islem-002", "1000"));
 // Doldurma hedefi (para satırı, şirket başına): motor tohumundan sonra gerçek API'den yazılır (kopyalama yok).
 const FILL1 = Number(opt("hedef-001", "100000"));
 const FILL2 = Number(opt("hedef-002", "12000"));
