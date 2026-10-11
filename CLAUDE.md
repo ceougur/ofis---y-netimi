@@ -1248,6 +1248,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
   eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
   penceresi yeni sayfa açılınca "sayfa silindi" diyor — ek bulgu, kullanıcıya listelendi.
+  KARAR (kullanıcı, 11.10.2026: "A"): uyarı ufku BÜTÜN sayfalarda aynı — her kayıt yalnız son 7 gün kala uyarır (öbür sayfaların ufuksuz
+  uyarısı kalkar; müşterinin "SON GÜNE 42 GÜN" ekranı bu yoldandı). Uygulama: önce kırmızı test → düzeltme (2.1.0'a).
+  HESAPSIZ METNİ + KILAVUZ (9f82aec, b08a17a; birleşme): "Hesapsız (Açılıştan Önce)" seçilince cari/fatura/Kasa↔Banka açıklaması ve seçici notu
+  doğru; kılavuz 8. Banka'ya iki kısa bilgi, PDF b326df68… (34 sayfa). Ana oturum: eski istemcide senaryo-banka-210-eski-satir 20/25 → 25/25,
+  senaryo-banka-210 407/407, yazım 2/2.
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
