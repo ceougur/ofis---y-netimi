@@ -21,6 +21,7 @@ import { cpSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { monitorEventLoopDelay } from "node:perf_hooks";
 
 const SELF = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(SELF), "..", "..", "..", "..");
@@ -50,6 +51,9 @@ if (process.env.TEK_ISTEK_SUNUCU) {
     now: { time: conf.now },
   });
   const { port } = await app.listen(0, "127.0.0.1");
+  // Ana iş parçacığının tutulma süresi (olay döngüsü gecikmesi): istek başına en çok (ms).
+  const loop = monitorEventLoopDelay({ resolution: 5 });
+  loop.enable();
   const admin = app.store.get("SELECT u.id, u.username, u.display_name, u.role, u.role_key, u.active, u.deleted_at, u.must_change_password, u.grants_json FROM users u WHERE u.username = 'admin'");
   if (app.context.access) {
     app.context.access.attach(admin);
@@ -66,6 +70,11 @@ if (process.env.TEK_ISTEK_SUNUCU) {
       } catch (error) {
         process.send({ cmd: "run", error: String(error?.message || error) });
       }
+    } else if (message.cmd === "loop-reset") {
+      loop.reset();
+      process.send({ cmd: "loop-reset" });
+    } else if (message.cmd === "loop") {
+      process.send({ cmd: "loop", max: loop.max / 1e6 });
     } else if (message.cmd === "close") {
       await app.close();
       process.send({ cmd: "closed" });
@@ -187,12 +196,18 @@ async function main() {
       let total = null;
       let status = 0;
       let error = "";
+      const loops = [];
       for (let i = 0; i <= repeat; i += 1) {
+        await server.ask("loop-reset");
         const s = performance.now();
         const response = await api.get(url);
         const ms = performance.now() - s;
+        const loop = (await server.ask("loop")).max;
         status = response.status;
-        if (i) http.push(ms);
+        if (i) {
+          http.push(ms);
+          loops.push(loop);
+        }
         const run = await server.ask("run", { id: report.id, query });
         if (run.error) error = run.error;
         else {
@@ -201,29 +216,35 @@ async function main() {
           total = run.total;
         }
       }
-      const item = { ad: report.ad, tur: "rapor", durum: status, http: stats(http), build: direct.length ? stats(direct) : null, satir: total, ozet: hash, hata: error || undefined };
+      const item = { ad: report.ad, tur: "rapor", durum: status, http: stats(http), dongu: stats(loops), build: direct.length ? stats(direct) : null, satir: total, ozet: hash, hata: error || undefined };
       result.olcumler.push(item);
-      console.log(`[${label}] ${item.ad.padEnd(48)} HTTP p50 ${String(item.http.p50).padStart(6)} ms · build p50 ${String(item.build?.p50 ?? "-").padStart(6)} ms · ${total} satır · ${hash}${error ? ` · HATA ${error}` : ""}`);
+      console.log(`[${label}] ${item.ad.padEnd(48)} HTTP p50 ${String(item.http.p50).padStart(6)} ms · döngü en çok ${String(item.dongu.max).padStart(6)} ms · build p50 ${String(item.build?.p50 ?? "-").padStart(6)} ms · ${total} satır · ${hash}${error ? ` · HATA ${error}` : ""}`);
     }
     for (const item of lists) {
       const times = [];
       let hash = "";
       let status = 0;
       let count = null;
+      const loops = [];
       for (let i = 0; i <= repeat; i += 1) {
+        await server.ask("loop-reset");
         const s = performance.now();
         const response = await api.get(at(item.url));
         const ms = performance.now() - s;
+        const loop = (await server.ask("loop")).max;
         status = response.status;
-        if (i) times.push(ms);
+        if (i) {
+          times.push(ms);
+          loops.push(loop);
+        }
         const data = unwrap(response);
         const body = Array.isArray(data) ? data : data && typeof data === "object" ? { ...data, nextCursor: undefined, today: undefined } : data;
         hash = sha(body);
         count = Array.isArray(data) ? data.length : Array.isArray(data?.rows) ? data.rows.length : Array.isArray(data?.accounts) ? data.accounts.length : null;
       }
-      const row = { ad: item.ad, tur: "liste", durum: status, http: stats(times), satir: count, ozet: hash };
+      const row = { ad: item.ad, tur: "liste", durum: status, http: stats(times), dongu: stats(loops), satir: count, ozet: hash };
       result.olcumler.push(row);
-      console.log(`[${label}] ${row.ad.padEnd(48)} HTTP p50 ${String(row.http.p50).padStart(6)} ms · ${count} satır · ${hash}`);
+      console.log(`[${label}] ${row.ad.padEnd(48)} HTTP p50 ${String(row.http.p50).padStart(6)} ms · döngü en çok ${String(row.dongu.max).padStart(6)} ms · ${count} satır · ${hash}`);
     }
 
     // Yazımlar (sonda): her biri tekrar sayısı kadar, bugünün tarihiyle.
@@ -241,14 +262,20 @@ async function main() {
     for (const [kind, call] of writes) {
       const times = [];
       const statuses = {};
+      const loops = [];
       for (let i = 0; i <= repeat; i += 1) {
+        await server.ask("loop-reset");
         const s = performance.now();
         const response = await call();
         const ms = performance.now() - s;
+        const loop = (await server.ask("loop")).max;
         statuses[response.status] = (statuses[response.status] || 0) + 1;
-        if (i) times.push(ms);
+        if (i) {
+          times.push(ms);
+          loops.push(loop);
+        }
       }
-      const row = { ad: kind, tur: "yazim", http: stats(times), durum: statuses };
+      const row = { ad: kind, tur: "yazim", http: stats(times), dongu: stats(loops), durum: statuses };
       result.yazimlar.push(row);
       console.log(`[${label}] ${kind.padEnd(48)} p50 ${String(row.http.p50).padStart(6)} ms · ${JSON.stringify(statuses)}`);
     }
