@@ -1,0 +1,32 @@
+{
+  "ad": "hiz-esdegerlik-ana-oturum",
+  "komut": "node --test test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-rapor-is-parcacigi.test.mjs test/inceleme-226-2.test.mjs",
+  "commit": "b3079e3e59b443c88f7eb885d6b571f2229876ee",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T13:24:02.536Z",
+  "sure_sn": 62.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 43,
+    "gecen": 43,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-hiz/2026-10-11/hiz-esdegerlik-ana-oturum.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8b501037ef9b4806236c119addac7a4f4b1bd3bca5910cda22b331414ac7a87a",
+  "ham_cikti_bayt": 17798
+}
