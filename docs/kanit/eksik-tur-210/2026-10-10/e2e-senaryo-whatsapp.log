@@ -1,0 +1,61 @@
+
+■ Kurulum: yönetici girer; Cari → Excel / Sheets’ten Yükle ile 1.000 müşteri açılır
+✓ kolonlar tanındı: name, phone, group, balance
+✓ 1.000 cari açıldı (0.6 sn)
+✓ cari listesinde 1000 cari
+✓ örnek cari: Müşteri 0007 Yılmaz bakiye 1059, 0537 007 07 21
+
+■ A. Listeden 40 cari işaretlenir → WhatsApp Ekstre → sırayla hepsine gönderilir
+✓ ilk sayfada 300 cari (sayfa 300)
+✓ seçim çubuğu: 40 cari seçildi Seçilenlere Taksit Planı WhatsApp Ekstre Wha
+✓ özet (440 ms): 40 Cari 39 Geçerli Numara 1 Numarası Yok / Hatalı 39 Gönderilecek
+✓ sıra 1 / 39 ile başlar
+✓ tamamlandı: 39 kişiye gönderildi (kişi başı 334 ms)
+✓ 39 wa.me adresi, hepsi geçerli cep numarası
+✓ her mesaj kendi kişisinin adıyla (kişiye özel ekstre)
+✓ her mesajda güncel bakiye
+✓ Müşteri 0004 Yılmaz: cari kartına ekstre gönderimi yazıldı
+✓ Müşteri 0037 Yılmaz (numarasız): gönderilmedi
+✓ gönderim bitince seçim temizlendi
+
+■ B. Sayfalar arasında 40 seçim: 20 ilk sayfadan, 20 Daha Fazla Göster'den sonra
+✓ daha fazla yüklenince seçim korunur (20)
+✓ iki sayfadan 40: 40 cari seçildi Seçilenlere Taksit Planı
+✓ özet: 40 Cari 38 Geçerli Numara 2 Numarası Yok / Hatalı 38 Gönderilecek
+✓ alıcı listesinde iki sayfadan seçilenlerin hepsi var
+
+■ C. Kadıköy Şube süzülür → Tümüne WhatsApp Mesaj → yalnız borçlular → şablonla hepsine gönderilir
+✓ şube süzgeci: 250 cari
+✓ hepsi: 250 Cari 238 Geçerli Numara 12 Numarası Yok / Hatalı 238 Gönderilecek
+✓ yalnız borçlular: 190 gönderilecek (250 Cari 238 Geçerli Numara 12 Numarası Yok / Hatalı 190 Gönderilecek)
+✓ sıra 1 / 190 ile başlar
+✓ tamamlandı: 190 kişiye gönderildi (kişi başı 357 ms)
+✓ 190 mesaj açıldı
+✓ her mesajda kendi adı ve kendi bakiyesi
+✓ doldurulmamış değişken kalmadı
+✓ Müşteri 0020 Yılmaz (borcu yok): kampanya mesajı gönderilmedi (geçmiş: statement)
+✓ Müşteri 0004 Yılmaz: mesaj gönderimi cari kartına yazıldı
+
+■ D. Hepsini Seç (1.000) → üç kişinin işareti kaldırılır → 997; o üçü alıcı listesinde yok
+✓ hepsi: 1.000 cari seçildi (süzgeçteki hepsi) Seçilenlere Taksit Pla
+✓ işareti kaldırılan üç kişi hariç: 997 cari seçildi (süzgeçteki hepsi, 3 hariç) Seçilenlere Taksit Planı 
+✓ başlık kutusu kısmi (yarım) görünür
+✓ özet (847 ms): 997 Cari 946 Geçerli Numara 51 Numarası Yok / Hatalı 946 Gönderilecek
+✓ hariç tutulan üç kişi alıcı listesinde yok
+
+■ E. Otomatik Sıra (v2.0.14): WhatsApp'tan bu pencereye dönülünce sıradaki kişi kendiliğinden açılır; kapatılınca açılmaz
+✓ üç kişi seçildi: Müşteri 0001 Yılmaz, Müşteri 0002 Yılmaz, Müşteri 0003 Yılmaz
+✓ Otomatik Sıra kutusu varsayılan açık
+✓ 2. kişi hazır, ipucu: WhatsApp'ta Gönder'e basın; bu pencereye dönünce Müşteri 0002 Yılmaz kendiliğinden açılaca
+✓ programa dönünce 2. kişi kendiliğinden açıldı; sıra 3 / 3
+✓ 3. kişi de kendiliğinden açıldı; 3 kişiye gönderildi
+✓ Müşteri 0003 Yılmaz: kendiliğinden açılan gönderim de cari kartına yazıldı
+✓ tamamlandıktan sonra odak dönüşü yeni sohbet açmaz
+✓ Otomatik Sıra kapalı: düğme eski adıyla
+✓ Otomatik Sıra kapalıyken odak dönüşü sıradakini açmaz
+✓ tercih hatırlanır (kapalı)
+
+■ Tarayıcı hataları
+✓ hiçbir ekranda tarayıcı hatası yok
+
+45 / 45 kontrol geçti.

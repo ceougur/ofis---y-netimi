@@ -1,0 +1,38 @@
+{
+  "ad": "backup-test-KIRMIZI-eski-arac",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/backup.test.mjs",
+  "commit": "9c1dc64610e2eaeec00682c2d8330a81e23f2244",
+  "dal": "worktree-agent-a74e5bc4761482223",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:24:37.217Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 8,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "yedekleme › npm run backup aracı düşerse adımı ve SQLite hata kodunu yazar, çıkış kodu 1",
+      "konum": "test/backup.test.mjs:83:3",
+      "hata": "The input did not match the regular expression /001 · .*: yedek alınamadı \\(file is not a database; adım: kopyalama; SQLite 26 SQLITE_NOTADB\\)/. Input: · '001 · Şirket 1: yedek alınamadı (file is not a database)\\n' (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/windows-yedek-io/2026-10-10/backup-test-KIRMIZI-eski-arac.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a74e5bc4761482223",
+  "ham_cikti_sha256": "14dd7618c7c460c2a4cb798260c431bccc57c01fed890e8f930a5f3bbe774931",
+  "ham_cikti_bayt": 3758
+}

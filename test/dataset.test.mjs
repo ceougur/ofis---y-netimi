@@ -299,7 +299,7 @@ describe("göç 4: 1.4.0 veritabanından kalıcı çalışma verisine", () => {
       }, source),
     });
     try {
-      assert.deepEqual(server.app.migration.applied, [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+      assert.deepEqual(server.app.migration.applied, [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
       const admin = await loginAdmin(server);
       const current = await view(admin);
       assert.deepEqual(current.rows.map(row => row.__hofKey), ["2026/9", "2025/1", "2025/3"]);

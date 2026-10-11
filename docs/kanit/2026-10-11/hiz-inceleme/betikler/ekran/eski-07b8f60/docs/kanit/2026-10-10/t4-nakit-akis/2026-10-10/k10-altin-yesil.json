@@ -1,0 +1,32 @@
+{
+  "ad": "k10-altin-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-altin.test.mjs",
+  "commit": "f5259dd0ea2acb3ba24582d38a655f2e3b4676d0",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:19:04.669Z",
+  "sure_sn": 21,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/k10-altin-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "b61e09f5abb7cf561f8974558e78bc4a79eb46b952a8b7bd926c1bfbc746fc8a",
+  "ham_cikti_bayt": 1083
+}

@@ -1,0 +1,241 @@
+{
+ "tarih": "2026-10-11T14:13:30.838Z",
+ "A": [
+  {
+   "n": 1,
+   "arkaPlanTutuldu": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "enCok": 100,
+   "son": 100,
+   "geriAlindi": false,
+   "missing": [
+    "BNK-2026-000163"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000063"
+   ]
+  },
+  {
+   "n": 2,
+   "arkaPlanTutuldu": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "enCok": 100,
+   "son": 100,
+   "geriAlindi": false,
+   "missing": [
+    "BNK-2026-000165"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000065"
+   ]
+  },
+  {
+   "n": 3,
+   "arkaPlanTutuldu": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "enCok": 100,
+   "son": 100,
+   "geriAlindi": false,
+   "missing": [
+    "BNK-2026-000167"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000067"
+   ]
+  },
+  {
+   "n": 4,
+   "arkaPlanTutuldu": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "enCok": 100,
+   "son": 100,
+   "geriAlindi": false,
+   "missing": [
+    "BNK-2026-000169"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000069"
+   ]
+  },
+  {
+   "n": 5,
+   "arkaPlanTutuldu": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "enCok": 100,
+   "son": 100,
+   "geriAlindi": false,
+   "missing": [
+    "BNK-2026-000171"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000071"
+   ]
+  },
+  {
+   "n": 6,
+   "arkaPlanTutuldu": true,
+   "once": 50,
+   "dahaFazlaSonrasi": 100,
+   "buyudu": true,
+   "enCok": 100,
+   "son": 100,
+   "geriAlindi": false,
+   "missing": [
+    "BNK-2026-000173"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000073"
+   ]
+  }
+ ],
+ "B": [
+  {
+   "n": 1,
+   "imlecTutuldu": true,
+   "yenilendi": true,
+   "satir": 100,
+   "missing": [
+    "BNK-2026-000114"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000064"
+   ]
+  },
+  {
+   "n": 2,
+   "imlecTutuldu": true,
+   "yenilendi": true,
+   "satir": 100,
+   "missing": [
+    "BNK-2026-000116"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000066"
+   ]
+  },
+  {
+   "n": 3,
+   "imlecTutuldu": true,
+   "yenilendi": true,
+   "satir": 100,
+   "missing": [
+    "BNK-2026-000118"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000068"
+   ]
+  },
+  {
+   "n": 4,
+   "imlecTutuldu": true,
+   "yenilendi": true,
+   "satir": 100,
+   "missing": [
+    "BNK-2026-000120"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000070"
+   ]
+  },
+  {
+   "n": 5,
+   "imlecTutuldu": true,
+   "yenilendi": true,
+   "satir": 100,
+   "missing": [
+    "BNK-2026-000122"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000072"
+   ]
+  },
+  {
+   "n": 6,
+   "imlecTutuldu": true,
+   "yenilendi": true,
+   "satir": 100,
+   "missing": [
+    "BNK-2026-000124"
+   ],
+   "dup": [],
+   "extra": [
+    "BNK-2026-000074"
+   ]
+  }
+ ],
+ "kontrol": [
+  {
+   "n": 1,
+   "satir": 100,
+   "missing": [],
+   "dup": [],
+   "extra": []
+  },
+  {
+   "n": 2,
+   "satir": 100,
+   "missing": [],
+   "dup": [],
+   "extra": []
+  },
+  {
+   "n": 3,
+   "satir": 100,
+   "missing": [],
+   "dup": [],
+   "extra": []
+  },
+  {
+   "n": 4,
+   "satir": 100,
+   "missing": [],
+   "dup": [],
+   "extra": []
+  },
+  {
+   "n": 5,
+   "satir": 100,
+   "missing": [],
+   "dup": [],
+   "extra": []
+  },
+  {
+   "n": 6,
+   "satir": 100,
+   "missing": [],
+   "dup": [],
+   "extra": []
+  }
+ ],
+ "ozet": {
+  "A_geriAlinan": 0,
+  "A_tutulan": 6,
+  "B_eksikli": 6,
+  "B_ciftli": 0,
+  "B_tutulan": 6,
+  "K_hatali": 0,
+  "tur": 6,
+  "sayfaHatalari": []
+ }
+}

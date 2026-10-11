@@ -136,28 +136,57 @@ describe("servis günlükleri", () => {
 });
 
 describe("öksüz süreç koruması", () => {
+  // CI 514 (Windows Node 22, 10.10.2026): test 15,3 sn sonra yalnız "EBUSY: … unlink destekofis.sqlite" ile düştü — finally'deki rmSync
+  // hâlâ açık uygulama sürecinin kilitlediği veri tabanını silemedi ve try'daki ASIL hatayı (15 sn'lik bir bekleme mi doldu?) gizledi.
+  // Artık her bekleme adımı adıyla düşer ve hata metninde servis yöneticisinin çıktısının sonu bulunur; temizlik önce uygulama sürecini
+  // kapatıp bekler, silmeyi Windows kilidi için yeniden dener ve kendi hatasıyla asıl hatayı ezmez.
   it("servis yöneticisi zorla kapatılınca uygulama da kapanır", async () => {
     const installRoot = mkdtempSync(path.join(tmpdir(), "destekofis-orphan-"));
     const processHandle = spawn(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(root, "server", "supervisor.mjs")], {
       env: { ...process.env, HUKUK_INSTALL_ROOT: installRoot, PORT: "0", HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "info", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!" },
       stdio: ["ignore", "pipe", "pipe"],
     });
+    let output = "";
+    processHandle.stdout.on("data", chunk => (output += chunk));
+    processHandle.stderr.on("data", chunk => (output += chunk));
+    const started = Date.now();
+    const step = async (name, check, timeoutMs) => {
+      try {
+        await waitFor(check, timeoutMs);
+      } catch (error) {
+        throw new Error(`${name}: ${error.message} (${Date.now() - started} ms; servis yöneticisi çıktısının sonu: ${JSON.stringify(output.slice(-1500))})`);
+      }
+    };
+    let childPid = null;
+    let failure = null;
     try {
-      let output = "";
-      processHandle.stdout.on("data", chunk => (output += chunk));
-      await waitFor(() => /servis yöneticisi http:\/\/127\.0\.0\.1:(\d+)/.test(output));
+      await step("servis yöneticisi adresini yazmadı", () => /servis yöneticisi http:\/\/127\.0\.0\.1:(\d+)/.test(output));
       const port = output.match(/servis yöneticisi http:\/\/127\.0\.0\.1:(\d+)/)[1];
-      let childPid = null;
-      await waitFor(async () => {
+      await step("uygulama hazır olmadı", async () => {
         const state = await (await fetch(`http://127.0.0.1:${port}/__supervisor/health`)).json();
         childPid = state.childPid;
         return state.phase === "ready";
       });
       processHandle.kill("SIGKILL");
-      await waitFor(() => !alive(childPid), 10000);
+      await step("servis yöneticisi kapandıktan sonra uygulama kapanmadı (öksüz süreç)", () => !alive(childPid), 10000);
+    } catch (error) {
+      failure = error;
     } finally {
       processHandle.kill("SIGKILL");
-      rmSync(installRoot, { recursive: true, force: true });
+      // Test düştüyse uygulama süreci kalmış olabilir: kapatılır ve kapanması beklenir; veri tabanı kilidi ancak o zaman kalkar.
+      if (childPid && alive(childPid)) {
+        try {
+          process.kill(childPid, "SIGKILL");
+        } catch {}
+        await waitFor(() => !alive(childPid), 10000).catch(() => {});
+      }
+      try {
+        rmSync(installRoot, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+      } catch (cleanup) {
+        if (!failure) failure = cleanup;
+        else console.error(`temizlik de başarısız: ${cleanup.message}`);
+      }
     }
+    if (failure) throw failure;
   });
 });

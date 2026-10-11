@@ -1,0 +1,19 @@
+Hakem — fark sınıfı BANKA-EKSI-KODU (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-BANKA-EKSI-KODU.json
+      # en küçük (7 adım; 389/48/50/398/399/457 özgün tohum 1 adımları, ayniAnda kaldırıldı + e1): fark 2, ikisi A=B≠P, 15 yaprak karşılaştırıldı
+      # retler.399: A/B 409 cash-negative · P 409 bank-negative ; retler.e1: A/B 409 cash-blocked · P 409 bank-blocked
+      # durum alanlarının hepsi üçünde aynı: B6 46.437,31 · 102.01 B 46.437,31 · 320 B 50.921,69 · 500 A 97.359 (reddedilen adım yazılmadı)
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-BANKA-EKSI-KODU/en-kucuk-BANKA-EKSI-KODU-tani.json
+      # tanı: fark 3, hepsi A=B≠P ve hepsi yalnız KOD (399, e1, t2); Yine de Kaydet (t1) üçünde geçer (B6 −4.484,38);
+      # Engelle + Yine de Kaydet (t2) üçünde 409; KARŞI DENEY Kasa Uyar/Engelle (k2/k4): program da cash-negative/cash-blocked → fark yok
+  node test/bagimsiz/cikti/hakem-BANKA-EKSI-KODU/canli.mjs . > test/bagimsiz/cikti/hakem-BANKA-EKSI-KODU/canli-head.json
+      # gerçek API, koşucusuz (HEAD): Uyar 409 bank-negative + accountId; YALNIZ cashForce (plan §3.9 bayrağı) → yine 409 bank-negative;
+      # yalnız negativeOk → 200; Engelle 409 bank-blocked (cashForce+negativeOk ile de); Kasa 409 cash-negative / cash-blocked
+  git worktree add --detach <yer>/v2026 v2.0.26 && node test/bagimsiz/cikti/hakem-BANKA-EKSI-KODU/canli.mjs <yer>/v2026 > canli-v2026.json
+      # canlı sürüm: banka modülü yok (GET /bank/accounts ≠ 200); negative-policy'ye bank:'warn' yazılsa da 'off' döner;
+      # boş Banka yolundan 5.000 havale ödemesi 200 (denetim yok); Kasa kodları HEAD ile aynı → sınıf canlıda YOK
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26 (/tmp/v2026 worktree; izlenen dosyada değişiklik yok).
+33 tohum tablosu (cikti/fark-<n>.json ve fark-<n>-notr.json): 118 yaprak (80 Uyar + 38 Engelle), 21 ana + 25 nötr koşu; hepsinde durum 409
+üç tarafta aynı, yalnız kod farklı.
+Not: fark.py fark dosyalarını cikti/'ye yazar; fark-ozet.json kirlenmesin diye iki fark dosyası bu klasöre taşındı.
+Ham: cikti/ham/en-kucuk-BANKA-EKSI-KODU*.{a,b,program}.json.

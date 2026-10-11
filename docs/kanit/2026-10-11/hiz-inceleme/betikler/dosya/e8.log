@@ -1,0 +1,4 @@
+giriş 200
+8 istek, istemci 300 ms'de vazgeçti: ["TimeoutError","TimeoutError","TimeoutError","TimeoutError","TimeoutError","TimeoutError","TimeoutError","TimeoutError"]; o an runner.stats {"active":2,"queued":6,"started":2}
+istemcilerin hepsi gittiği hâlde sunucu 8 rapor iş parçacığı çalıştırdı; son iş 11951 ms'de bitti
+sonraki kullanıcının raporu: 200 2539 ms

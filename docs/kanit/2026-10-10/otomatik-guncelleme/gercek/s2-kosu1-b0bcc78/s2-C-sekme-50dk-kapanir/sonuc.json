@@ -1,0 +1,186 @@
+{
+  "senaryo": "s2-C-sekme-50dk-kapanir",
+  "ozet": {
+    "ertelemeAni": "2026-10-10T18:18:39.336Z",
+    "sekmeKapandiDk": 50.13,
+    "sekmeGizlendiDk": null,
+    "kurulduDk": 120.01,
+    "sekmeKapaninca_GizlenincedenKurulumaDk": 69.88,
+    "sonKullaniciIsteginden_KurulumaDk": 69.98,
+    "servisinGorduguSonIstek": "2026-10-10T19:08:41.006Z",
+    "surum": "9.0.1"
+  },
+  "olaylar": [
+    {
+      "at": "2026-10-10T18:18:39.396Z",
+      "olay": "ertelendi (hazır)",
+      "t0": "2026-10-10T18:18:39.336Z",
+      "mesgul": true,
+      "sonEtkinlik": "2026-10-10T18:18:25.827Z"
+    },
+    {
+      "at": "2026-10-10T18:18:46.074Z",
+      "olay": "kaynak sorgulandı",
+      "dk": 0.11,
+      "sorgu": 2,
+      "mesgul": true,
+      "sonEtkinlik": "2026-10-10T18:18:41.005Z",
+      "surum": "9.0.0"
+    },
+    {
+      "at": "2026-10-10T19:08:47.192Z",
+      "olay": "sekme kapatıldı",
+      "dk": 50.13
+    },
+    {
+      "at": "2026-10-10T19:18:47.423Z",
+      "olay": "kaynak sorgulandı",
+      "dk": 60.13,
+      "sorgu": 3,
+      "mesgul": true,
+      "sonEtkinlik": "2026-10-10T19:08:41.006Z",
+      "surum": "9.0.0"
+    },
+    {
+      "at": "2026-10-10T20:18:48.459Z",
+      "olay": "kuruldu",
+      "dk": 120.01,
+      "surum": "9.0.1"
+    }
+  ],
+  "sekmeIstekleri_acikGorunur": {
+    "istek": 443,
+    "enUzunAraSn": 45,
+    "ortalamaAraSn": 7,
+    "yollar": {
+      "/api/workspace/client-state": 60,
+      "/api/workspace/case-notes": 60,
+      "/api/chat": 76,
+      "/api/workspace/tasks": 34,
+      "/api/workspace/liens": 34,
+      "/api/workspace/plans": 34,
+      "/api/workspace/stock/alerts": 34,
+      "/api/workspace/dues": 29,
+      "/api/trpc/sheets.getRows": 10,
+      "/api/events": 9,
+      "/api/workspace/dataset": 9,
+      "/api/companies": 9,
+      "/api/workspace/sessions": 9,
+      "/api/workspace/profile": 9,
+      "/api/license": 9,
+      "/api/workspace/insight": 18
+    }
+  },
+  "sekmeIstekleri_gizliyken": null,
+  "ekran": null,
+  "sayfaHatalari": [],
+  "sonDurum": {
+    "type": "durum",
+    "id": 488,
+    "updates": {
+      "enabled": true,
+      "autoUpdate": true,
+      "channel": "stable",
+      "currentVersion": "9.0.1",
+      "state": "idle",
+      "progress": null,
+      "available": null,
+      "incompatible": null,
+      "lastCheck": {
+        "at": "2026-10-10T19:18:39.343Z",
+        "status": "up-to-date",
+        "version": "9.0.1",
+        "reason": null
+      },
+      "lastResult": {
+        "outcome": "success",
+        "version": "9.0.1",
+        "previous": "9.0.0",
+        "at": "2026-10-10T20:18:40.090Z"
+      },
+      "lastError": null,
+      "failedVersions": [],
+      "deferred": null,
+      "periodicCheckMs": 21600000,
+      "skippedVersions": [],
+      "history": [
+        {
+          "at": "2026-10-10T20:18:40.089Z",
+          "event": "installed",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        },
+        {
+          "at": "2026-10-10T20:18:39.621Z",
+          "event": "activated",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        }
+      ]
+    },
+    "activity": {
+      "lastActivityAt": "2026-10-10T19:08:41.006Z",
+      "busy": false,
+      "idleMs": 900000
+    },
+    "phase": "ready",
+    "version": "9.0.1",
+    "localTime": "Sat Oct 10 2026 20:33:48 GMT+0000 (Coordinated Universal Time)",
+    "timeZone": "UTC",
+    "offsetMinutes": 0,
+    "quietNow": true
+  },
+  "verilerOnce": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "verilerSonra": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "yedekler": [
+    "destekofis-001-2026-10-10T18-18-39-723Z.sqlite",
+    "destekofis-001-2026-10-10T20-18-39-590Z-guncelleme-oncesi-9-0-0.sqlite"
+  ],
+  "kaynakIstekleri": [
+    {
+      "at": "2026-10-10T18:17:39.305Z",
+      "path": "/repos/test/repo/releases",
+      "status": 503
+    },
+    {
+      "at": "2026-10-10T18:17:39.318Z",
+      "path": "/test/repo/releases/latest/download/destekofis-guncelleme.json",
+      "status": 503
+    },
+    {
+      "at": "2026-10-10T18:18:39.323Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:18:39.331Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T19:18:39.347Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T19:18:39.354Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T20:18:39.363Z",
+      "path": "/download/9.0.1/destekofis-guncelleme-9.0.1.zip",
+      "status": 200
+    }
+  ]
+}

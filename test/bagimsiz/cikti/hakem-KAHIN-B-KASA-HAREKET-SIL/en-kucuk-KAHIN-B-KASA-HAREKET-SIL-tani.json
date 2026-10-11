@@ -1,0 +1,123 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani",
+  "aciklama": "Hakem tanı senaryosu — Kasa elle hareketi silmenin bütün dil kuralları (§4.28): giriş ve çıkış silme, ikinci silme 404, kilitli tarihli satırı silme 409 period-locked, Kasa'yı eksiye düşüren silme Uyar'da 409 cash-negative ve yineDeKaydet ile geçer. Kasa açılışı (kasa_acilis, 500↔649 ayrı fark sınıfı) bilerek kullanılmadı; para girişi kasa_hareket ile.",
+  "dayanak": "SENARYO-DILI §4.9, §4.28, §4.3, §5.3; PLAN §2.3 'Elle Kasa girişi | cash_entries, yalnız nakit | 100 ↔ 649/770'; PLAN Aşama 0 'Kasa'yı eksiye düşüren silme → Uyar'da 409. Aynı satırı iki kişi aynı anda siler → biri 404'",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "kasa_hareket",
+      "ad": "H0",
+      "yon": "giris",
+      "tutar": "1000",
+      "aciklama": "Kasaya Giriş",
+      "tarih": "01.10.2026"
+    },
+    {
+      "id": "2",
+      "islem": "kasa_hareket",
+      "ad": "H5",
+      "yon": "giris",
+      "tutar": "50",
+      "aciklama": "Eski Hurda",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "3",
+      "islem": "donem_kilidi",
+      "kilitTarihi": "03.10.2026"
+    },
+    {
+      "id": "4",
+      "islem": "sil",
+      "hedef": "H5",
+      "not": "kilitli tarihli satır → 409 period-locked"
+    },
+    {
+      "id": "5",
+      "islem": "kasa_hareket",
+      "ad": "H1",
+      "yon": "giris",
+      "tutar": "100",
+      "aciklama": "Hurda Satışı"
+    },
+    {
+      "id": "6",
+      "islem": "kasa_hareket",
+      "ad": "H2",
+      "yon": "cikis",
+      "tutar": "200",
+      "aciklama": "Temizlik Gideri"
+    },
+    {
+      "id": "k1",
+      "islem": "kontrol"
+    },
+    {
+      "id": "7",
+      "islem": "sil",
+      "hedef": "H2",
+      "not": "çıkış silinir → Kasa artar, 770 kalkar"
+    },
+    {
+      "id": "8",
+      "islem": "sil",
+      "hedef": "H1",
+      "not": "giriş silinir → Kasa azalır, 649 azalır"
+    },
+    {
+      "id": "k2",
+      "islem": "kontrol"
+    },
+    {
+      "id": "9",
+      "islem": "sil",
+      "hedef": "H1",
+      "not": "zaten silinmiş → 404"
+    },
+    {
+      "id": "10",
+      "islem": "kasa_hareket",
+      "ad": "H3",
+      "yon": "giris",
+      "tutar": "500",
+      "aciklama": "Prim İadesi"
+    },
+    {
+      "id": "11",
+      "islem": "kasa_hareket",
+      "ad": "H4",
+      "yon": "cikis",
+      "tutar": "1500",
+      "aciklama": "Kira Ödemesi"
+    },
+    {
+      "id": "12",
+      "islem": "sil",
+      "hedef": "H3",
+      "not": "Kasa 50 − 500 = −450 → Uyar'da 409 cash-negative"
+    },
+    {
+      "id": "k3",
+      "islem": "kontrol"
+    },
+    {
+      "id": "13",
+      "islem": "sil",
+      "hedef": "H3",
+      "yineDeKaydet": true,
+      "not": "Yine de Kaydet → geçer, Kasa −450"
+    }
+  ]
+}

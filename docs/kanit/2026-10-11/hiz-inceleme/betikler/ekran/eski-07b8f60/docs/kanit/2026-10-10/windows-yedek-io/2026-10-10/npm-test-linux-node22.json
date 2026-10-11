@@ -1,0 +1,32 @@
+{
+  "ad": "npm-test-linux-node22",
+  "komut": "npm test",
+  "commit": "4aae8d8e027ad670c66ccbdafa00d51c6aa36448",
+  "dal": "worktree-agent-a74e5bc4761482223",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:29:33.951Z",
+  "sure_sn": 798.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1936,
+    "gecen": 1936,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/windows-yedek-io/2026-10-10/npm-test-linux-node22.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a74e5bc4761482223",
+  "ham_cikti_sha256": "251fccea5a23a18b5934f439df7bef5387246664860495254c316296af420f62",
+  "ham_cikti_bayt": 644239
+}

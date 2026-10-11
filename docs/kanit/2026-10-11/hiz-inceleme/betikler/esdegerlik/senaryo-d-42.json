@@ -1,0 +1,21 @@
+{
+  "seed": 42,
+  "operations": 1000,
+  "steps": [],
+  "motor": {
+    "ops": 1000,
+    "mismatches": 0
+  },
+  "marks": {
+    "today": "2026-10-08",
+    "D0": "2026-08-19",
+    "T1": "2026-09-18"
+  },
+  "red": [
+    "ters kaydın ters kaydı (ev-0mv3x7s0v0000-941431ff-f141-4668) 409"
+  ],
+  "compared": 1443,
+  "viaWorker": 1300,
+  "diffs": 0,
+  "first": []
+}

@@ -1,0 +1,15 @@
+[2026-10-10T18:18:34.370Z] s2-A-sekme-acik-kalir: ertelendi 2026-10-10T18:18:34.328Z
+[2026-10-10T18:18:36.885Z] s2-B-sekme-3dk-kapanir: ertelendi 2026-10-10T18:18:36.759Z
+[2026-10-10T18:18:39.396Z] s2-C-sekme-50dk-kapanir: ertelendi 2026-10-10T18:18:39.336Z
+[2026-10-10T18:18:41.906Z] s2-D-sekme-gizli: ertelendi 2026-10-10T18:18:41.860Z
+[2026-10-10T18:21:46.148Z] s2-B-sekme-3dk-kapanir: sekme kapatıldı (3.16 dk)
+[2026-10-10T18:21:46.160Z] s2-D-sekme-gizli: sekme gizlendi (3.07 dk)
+[2026-10-10T19:08:47.192Z] s2-C-sekme-50dk-kapanir: sekme kapatıldı (50.13 dk)
+[2026-10-10T19:18:47.422Z] s2-B-sekme-3dk-kapanir: KURULDU 60.01 dk
+[2026-10-10T19:20:47.459Z] s2-A-sekme-acik-kalir: sekme kapatıldı (62.22 dk)
+[2026-10-10T20:18:48.456Z] s2-A-sekme-acik-kalir: KURULDU 120.01 dk
+[2026-10-10T20:18:48.464Z] s2-C-sekme-50dk-kapanir: KURULDU 120.01 dk
+[2026-10-10T20:33:48.630Z] s2-A-sekme-acik-kalir bitti: {"ertelemeAni":"2026-10-10T18:18:34.328Z","sekmeKapandiDk":62.22,"sekmeGizlendiDk":null,"kurulduDk":120.01,"sekmeKapaninca_GizlenincedenKurulumaDk":57.79,"sonKullaniciIsteginden_KurulumaDk":57.98,"servisinGorduguSonIstek":"2026-10-10T19:20:36.072Z","surum":"9.0.1"}
+[2026-10-10T20:33:48.677Z] s2-B-sekme-3dk-kapanir bitti: {"ertelemeAni":"2026-10-10T18:18:36.759Z","sekmeKapandiDk":3.16,"sekmeGizlendiDk":null,"kurulduDk":60.01,"sekmeKapaninca_GizlenincedenKurulumaDk":56.86,"sonKullaniciIsteginden_KurulumaDk":56.97,"servisinGorduguSonIstek":"2026-10-10T18:21:39.540Z","surum":"9.0.1"}
+[2026-10-10T20:33:48.720Z] s2-C-sekme-50dk-kapanir bitti: {"ertelemeAni":"2026-10-10T18:18:39.336Z","sekmeKapandiDk":50.13,"sekmeGizlendiDk":null,"kurulduDk":120.01,"sekmeKapaninca_GizlenincedenKurulumaDk":69.88,"sonKullaniciIsteginden_KurulumaDk":69.98,"servisinGorduguSonIstek":"2026-10-10T19:08:41.006Z","surum":"9.0.1"}
+[2026-10-10T20:33:48.781Z] s2-D-sekme-gizli bitti: {"ertelemeAni":"2026-10-10T18:18:41.860Z","sekmeKapandiDk":null,"sekmeGizlendiDk":3.07,"kurulduDk":null,"sekmeKapaninca_GizlenincedenKurulumaDk":null,"sonKullaniciIsteginden_KurulumaDk":null,"servisinGorduguSonIstek":"2026-10-10T20:32:44.564Z","surum":"9.0.0"}

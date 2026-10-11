@@ -1,0 +1,22 @@
+
+> destekofis@2.0.26 test:mutabakat
+> node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 300 --tohumlar 1
+
+✗ işlem 285 alim:
+  Kasa card: program 48090.93 · model 56734,73
+  Kurumsal kart Kurumsal Kart: program 0,00 · model -8643,80
+  Ana defter kasa hesapları ≠ model: 100 6624.97, 102 178171.01, 108 48090.93 (model 108 56734,73)
+  Ana defter 309 (Kurumsal Kredi Kartları) 0 · model -8643,80
+
+Tohum 1: 285 işlem, 285 doğrulama, 66 beklenen ret (eksiye düşürme / aşım), eşzamanlı 0 istek · 27.1 sn
+  Beklenen retler: cash-negative 12, due-before-start 6, date-invalid 6, period-locked 4, date-missing 4, 400 3, invoice-linked 3, cash-method 2, plan-has-payments 2, issueDate 2, cheque-due-before-issue 2, cheque-moved 2, cheque-duplicate 2, refund-exceeds 2, invoice-cancelled 2, return-before-original 2, cash-blocked 2, 409 1, bank-correct-type 1, payment.cheques 1, vatRate 1, date-future 1, chronology 1, stock-negative 1, bank-similar 1
+  İşlem türleri: alim 37, kasa 18, kayit-tahsil 8, satis 32, cari-duzelt 11, fatura-satis 21, kart-sil 2, banka-fis 8, cari 24, fatura-alis 5, fatura-taslak 4, taksit-tahsil 13, banka-duzelt 6, kart 9, fatura-hatasi 14, fatura-iptal 7, hareket-sil 3, vade-hatasi 5, kasa-sil 3, cek-ode 6, iade 9, kasa-duzelt 3, fatura-iade 9, tarih-hatasi 8, fatura-acid 5, cek-geri-al 2, kilit-ihlali 3, kayit-sil 3, banka-benzer 2, geri-yukle 3, taksit-sil 2, banka-transfer 2, fatura-bagli 1, kayit-duzelt 1, cek-tahsil 4, banka-ters 1, kart-kapat 1, banka-transfer-ters 1
+  Model: {"kasa":{"cash":"6624,97","bank":"178171,01","card":"48090,93"},"cariler":12,"urunler":10,"kartlar":17,"kasaHareketi":7,"bankaSatiri":23,"bankaTersKayit":7,"bankalarArasiTransfer":2,"cariHareketi":23,"stokHareketi":107,"taksitHareketi":10,"hesabaBagliModulHavalesi":17,"kurumsalKartaBagli":1,"kurumsalKartBakiyesi":"-8643,80"}
+  Fatura: {"kesilen":32,"iptal":2,"taslak":2,"turler":{"sale":19,"purchase":5,"sale_return":7,"purchase_return":1,"smm":2},"cek":15} · seriler {} · tekil ETTN -
+  Mutabakat kapısı süresi: ortanca 15 ms, en çok 28 ms
+  ✗ UYUŞMAZLIK (1):
+    işlem 285 (alim, 2026-10-04)
+      Kasa card: program 48090.93 · model 56734,73
+      Kurumsal kart Kurumsal Kart: program 0,00 · model -8643,80
+      Ana defter kasa hesapları ≠ model: 100 6624.97, 102 178171.01, 108 48090.93 (model 108 56734,73)
+      Ana defter 309 (Kurumsal Kredi Kartları) 0 · model -8643,80

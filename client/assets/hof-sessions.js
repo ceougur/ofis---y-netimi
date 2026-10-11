@@ -379,6 +379,10 @@
       }
     }, () => {});
   });
+  // Başka sayfadaki veri değişikliği (hof-live.js) o sayfanın şeritteki sayısını değiştirir.
+  HOF.on("live:page.changed", change => {
+    if (change?.kind === "source" || change?.kind === "records") countsSoon();
+  });
   HOF.on("live:resync", () => load().catch(() => {}));
   HOF.on("data", () => render());
 

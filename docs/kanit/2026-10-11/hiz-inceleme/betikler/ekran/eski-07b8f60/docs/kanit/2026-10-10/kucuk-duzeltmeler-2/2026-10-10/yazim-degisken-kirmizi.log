@@ -1,0 +1,156 @@
+TAP version 13
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    not ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 69.149063
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/yazim-duzeni.test.mjs:142:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Yeni etiketler başlık yazımıyla yazılmalı:
+        client/assets/admin.js (STATE_LABELS değeri): “Geçiş dönemi” → “Geçiş Dönemi”
+        client/assets/admin.js (STATE_LABELS değeri): “Saat hatası” → “Saat Hatası”
+        client/assets/hof-insight.js (LEVEL_TEXT değeri): “Orta Güven — kontrol edin” → “Orta Güven — Kontrol Edin”
+        client/assets/hof-overview.js (SOURCE_LABELS değeri): “Ödeme sözü” → “Ödeme Sözü”
+        client/assets/hof-overview.js (SOURCE_LABELS değeri): “Son tarih” → “Son Tarih”
+        + actual - expected
+        
+        + [
+        +   'client/assets/admin.js (STATE_LABELS değeri): “Geçiş dönemi” → “Geçiş Dönemi”',
+        +   'client/assets/admin.js (STATE_LABELS değeri): “Saat hatası” → “Saat Hatası”',
+        +   'client/assets/hof-insight.js (LEVEL_TEXT değeri): “Orta Güven — kontrol edin” → “Orta Güven — Kontrol Edin”',
+        +   'client/assets/hof-overview.js (SOURCE_LABELS değeri): “Ödeme sözü” → “Ödeme Sözü”',
+        +   'client/assets/hof-overview.js (SOURCE_LABELS değeri): “Son tarih” → “Son Tarih”'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'client/assets/admin.js (STATE_LABELS değeri): “Geçiş dönemi” → “Geçiş Dönemi”'
+        1: 'client/assets/admin.js (STATE_LABELS değeri): “Saat hatası” → “Saat Hatası”'
+        2: 'client/assets/hof-insight.js (LEVEL_TEXT değeri): “Orta Güven — kontrol edin” → “Orta Güven — Kontrol Edin”'
+        3: 'client/assets/hof-overview.js (SOURCE_LABELS değeri): “Ödeme sözü” → “Ödeme Sözü”'
+        4: 'client/assets/hof-overview.js (SOURCE_LABELS değeri): “Son tarih” → “Son Tarih”'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/yazim-duzeni.test.mjs:145:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    not ok 2 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 28.521441
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/yazim-duzeni.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Rapor ve dışa aktarım başlıkları başlık yazımıyla yazılmalı:
+        server/routes/overview.mjs (SOURCE_TEXT değeri): “Ödeme sözü” → “Ödeme Sözü”
+        server/routes/overview.mjs (SOURCE_TEXT değeri): “Son tarih” → “Son Tarih”
+        server/routes/overview.mjs (STATE_TEXT değeri): “Bu ay” → “Bu Ay”
+        server/routes/plans.mjs (STATUS_TEXT değeri): “Devam eden” → “Devam Eden”
+        server/routes/reports.mjs (TITLES değeri): “Cari ekstre” → “Cari Ekstre”
+        server/routes/reports.mjs (TITLES değeri): “Vade takip” → “Vade Takip”
+        server/routes/reports.mjs (TITLES değeri): “Nakit akış” → “Nakit Akış”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Tablo kaydı” → “Tablo Kaydı”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Tablo sütunu” → “Tablo Sütunu”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa” → “Serbest Sayfa”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa satırı” → “Serbest Sayfa Satırı”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa kolonu” → “Serbest Sayfa Kolonu”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Kasa hareketi” → “Kasa Hareketi”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Taksit kartı” → “Taksit Kartı”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Taksit hareketi” → “Taksit Hareketi”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Cari hareketi” → “Cari Hareketi”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Stok ürünü” → “Stok Ürünü”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Stok hareketi” → “Stok Hareketi”
+        server/routes/trash.mjs (KIND_LABELS değeri): “Çek / senet” → “Çek / Senet”
+        + actual - expected
+        
+        + [
+        +   'server/routes/overview.mjs (SOURCE_TEXT değeri): “Ödeme sözü” → “Ödeme Sözü”',
+        +   'server/routes/overview.mjs (SOURCE_TEXT değeri): “Son tarih” → “Son Tarih”',
+        +   'server/routes/overview.mjs (STATE_TEXT değeri): “Bu ay” → “Bu Ay”',
+        +   'server/routes/plans.mjs (STATUS_TEXT değeri): “Devam eden” → “Devam Eden”',
+        +   'server/routes/reports.mjs (TITLES değeri): “Cari ekstre” → “Cari Ekstre”',
+        +   'server/routes/reports.mjs (TITLES değeri): “Vade takip” → “Vade Takip”',
+        +   'server/routes/reports.mjs (TITLES değeri): “Nakit akış” → “Nakit Akış”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Tablo kaydı” → “Tablo Kaydı”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Tablo sütunu” → “Tablo Sütunu”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa” → “Serbest Sayfa”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa satırı” → “Serbest Sayfa Satırı”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa kolonu” → “Serbest Sayfa Kolonu”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Kasa hareketi” → “Kasa Hareketi”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Taksit kartı” → “Taksit Kartı”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Taksit hareketi” → “Taksit Hareketi”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Cari hareketi” → “Cari Hareketi”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Stok ürünü” → “Stok Ürünü”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Stok hareketi” → “Stok Hareketi”',
+        +   'server/routes/trash.mjs (KIND_LABELS değeri): “Çek / senet” → “Çek / Senet”'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'server/routes/overview.mjs (SOURCE_TEXT değeri): “Ödeme sözü” → “Ödeme Sözü”'
+        1: 'server/routes/overview.mjs (SOURCE_TEXT değeri): “Son tarih” → “Son Tarih”'
+        2: 'server/routes/overview.mjs (STATE_TEXT değeri): “Bu ay” → “Bu Ay”'
+        3: 'server/routes/plans.mjs (STATUS_TEXT değeri): “Devam eden” → “Devam Eden”'
+        4: 'server/routes/reports.mjs (TITLES değeri): “Cari ekstre” → “Cari Ekstre”'
+        5: 'server/routes/reports.mjs (TITLES değeri): “Vade takip” → “Vade Takip”'
+        6: 'server/routes/reports.mjs (TITLES değeri): “Nakit akış” → “Nakit Akış”'
+        7: 'server/routes/trash.mjs (KIND_LABELS değeri): “Tablo kaydı” → “Tablo Kaydı”'
+        8: 'server/routes/trash.mjs (KIND_LABELS değeri): “Tablo sütunu” → “Tablo Sütunu”'
+        9: 'server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa” → “Serbest Sayfa”'
+        10: 'server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa satırı” → “Serbest Sayfa Satırı”'
+        11: 'server/routes/trash.mjs (KIND_LABELS değeri): “Serbest sayfa kolonu” → “Serbest Sayfa Kolonu”'
+        12: 'server/routes/trash.mjs (KIND_LABELS değeri): “Kasa hareketi” → “Kasa Hareketi”'
+        13: 'server/routes/trash.mjs (KIND_LABELS değeri): “Taksit kartı” → “Taksit Kartı”'
+        14: 'server/routes/trash.mjs (KIND_LABELS değeri): “Taksit hareketi” → “Taksit Hareketi”'
+        15: 'server/routes/trash.mjs (KIND_LABELS değeri): “Cari hareketi” → “Cari Hareketi”'
+        16: 'server/routes/trash.mjs (KIND_LABELS değeri): “Stok ürünü” → “Stok Ürünü”'
+        17: 'server/routes/trash.mjs (KIND_LABELS değeri): “Stok hareketi” → “Stok Hareketi”'
+        18: 'server/routes/trash.mjs (KIND_LABELS değeri): “Çek / senet” → “Çek / Senet”'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/yazim-duzeni.test.mjs:150:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 99.195452
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/yazim-duzeni.test.mjs:141:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 205.311762

@@ -1,0 +1,32 @@
+{
+  "ad": "fatura-buyuk-tutar-YESIL-0a733dd",
+  "komut": "node --test test/fatura-buyuk-tutar-210.test.mjs",
+  "commit": "0a733dd0575e4c26f0bab6b75859aecb0c272477",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T09:14:04.049Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-tohum4/2026-10-11/fatura-buyuk-tutar-YESIL-0a733dd.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "46ed7e65644bee3ed124a8d01582fc2be6c6d40e31e9c4757a50882342232996",
+  "ham_cikti_bayt": 1905
+}

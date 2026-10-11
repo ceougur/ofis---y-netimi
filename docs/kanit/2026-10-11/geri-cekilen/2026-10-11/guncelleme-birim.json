@@ -1,0 +1,32 @@
+{
+  "ad": "guncelleme-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/update-flow.test.mjs test/update-guard.test.mjs test/updater.test.mjs test/guncelleme-217.test.mjs",
+  "commit": "3bd023ec325be6b2d7ccb8f357ca3bb8c8119fea",
+  "dal": "worktree-agent-a87e0c3eff69df818",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T01:58:10.542Z",
+  "sure_sn": 12.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 32,
+    "gecen": 32,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/geri-cekilen/2026-10-11/guncelleme-birim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818",
+  "ham_cikti_sha256": "249ffff9f5c294a8312290648e6c3615eb9c48333608ac2714c1cc02081f4133",
+  "ham_cikti_bayt": 9584
+}

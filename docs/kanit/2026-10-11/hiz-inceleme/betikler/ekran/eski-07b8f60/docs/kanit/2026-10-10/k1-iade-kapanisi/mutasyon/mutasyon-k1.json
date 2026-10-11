@@ -1,0 +1,153 @@
+{
+  "commit": "4bdfa6539fcfbd4dcded17c28cee60d9e9be4696",
+  "testler": [
+    "test/iade-kapama-k1.test.mjs",
+    "test/iade-210.test.mjs",
+    "test/iade-210-onarim.test.mjs",
+    "test/banka-210-rapor-bulgu.test.mjs"
+  ],
+  "kaynakTemiz": true,
+  "sonuclar": [
+    {
+      "id": "M1",
+      "ne": "adım R yok (geri ödeme iade belgesinin alacağıyla kapanmaz)",
+      "dosya": "server/lib/invoice-settle.mjs",
+      "cikis": 1,
+      "tests": 43,
+      "pass": 25,
+      "fail": 18,
+      "yakalandi": true,
+      "kirmiziTestler": [
+        "R1a: geri ödeme NAKİT → açık satış 120 Açık kalır (Vadesi Geçti); Açık Faturalar ve Yaşlandırma 120 = cari bakiye",
+        "R1b: geri ödeme HAVALE (Garanti, hesaba bağlı) → aynı sonuç; Garanti 50.000 + 1.200 − 1.200",
+        "D (G1 korunur): peşinsiz 1.000 taksit → 400 iade + 400 nakit geri → kart 1.000 kalır",
+        "E (korunur): 1.000 (500 peşin) → 300 iade + 300 nakit geri → kart 500 kalır",
+        "H: iki iade arka arkaya (500 + 250 nakit geri, 500 + 250 nakit geri) → önce 250, sonra 0",
+        "K (korunur): peşinli açık fatura + Mevcut Borç kartı (500) → 500 + 250 geri, 500 + 250 geri → kart 250, sonra 0",
+        "N1: açık satış 600 → 240 iade + 240 nakit geri → fatura açığı 600, hayalet kapatan yok, iade açığı 0, cari 600, raporlar 600",
+        "N2: alış 1.200 açık → 240 alıştan iade, tedarikçi 240 nakit geri öder → alış açığı 1.200, cari −1.200",
+        "N3: satış 600 (300 nakit peşin) → 240 iade + 240 nakit geri → açık 300 (= cari)",
+        "N4: KISMİ geri ödeme — satış 600 açık → 240 iade, 100 nakit geri → mahsup 140, açık 460 (= cari)",
+        "N8: taksitli satış 600 (peşinsiz, 3 taksit) → 240 iade + 240 nakit geri → fatura açığı 600 = kart kalanı 600 = cari 600",
+        "N9: iade iptal edilince ve silinince asıl fatura eski hâline (600) döner",
+        "N10: birden çok iade — satış 600 açık → R1 240 + 240 nakit geri, R2 120 açık → açık 480 (= cari)",
+        "N11: R1 komşusu — eski açık satış F0 500 + F1 600; F1'den 240 iade + 240 geri → F0 500, F1 600; aynı caride açık alış 400 ödenmez",
+        "N12: sıra — iade önce açık kaydedilir, Düzenle ile 240 nakit geri ödeme eklenir (açık 600), sonra kaldırılır (açık 360)",
+        "N15: sıra — taksitli 3.000 (2.000 peşin) → R1 1.000 açık → karttan 1.500 (fazla) → R2 1.000 + 300 geri: iadeler bağlı ödemelerden SONRA mahsup",
+        "N16: Mevcut Borç kartı kapsadığı faturanın paralı iadesinde yalnız mahsup kadar küçülür (carinin başka açık borcu varken)",
+        "her caride Σ açık (satış + alıştan iade) − Σ açık (alış + satıştan iade) = cari bakiye (beklenen bakiyeler elle)",
+        "N14: toplu yol (liste, 8'den çok cari) = fatura kartı; Σ işaretli belge açığı = cari bakiye"
+      ]
+    },
+    {
+      "id": "M2",
+      "ne": "iadeler bağlı ödemelerle aynı (tarih) sırada mahsup (önce değil sonra kuralı yok)",
+      "dosya": "server/lib/invoice-settle.mjs",
+      "cikis": 1,
+      "tests": 43,
+      "pass": 42,
+      "fail": 1,
+      "yakalandi": true,
+      "kirmiziTestler": [
+        "N15: sıra — taksitli 3.000 (2.000 peşin) → R1 1.000 açık → karttan 1.500 (fazla) → R2 1.000 + 300 geri: iadeler bağlı ödemelerden SONRA mahsup"
+      ]
+    },
+    {
+      "id": "M3",
+      "ne": "karşı taraftaki bağsız ödeme iade açığını kapatmaz",
+      "dosya": "server/lib/invoice-settle.mjs",
+      "cikis": 1,
+      "tests": 43,
+      "pass": 42,
+      "fail": 1,
+      "yakalandi": true,
+      "kirmiziTestler": [
+        "N13: açık iade (müşteri 240 alacaklı) sonradan cari kartından 240 nakit ödemeyle geri verilir → iade açığı 0, cari 0"
+      ]
+    },
+    {
+      "id": "M4",
+      "ne": "iade belgesinin açığı hep 0",
+      "dosya": "server/lib/invoice-settle.mjs",
+      "cikis": 1,
+      "tests": 43,
+      "pass": 37,
+      "fail": 6,
+      "yakalandi": true,
+      "kirmiziTestler": [
+        "N6: satış 600 tamamı peşin → 240 iade açık → iade açığı 240 (müşteri alacaklı); Açık Faturalar'da borç 240",
+        "N6b: alış 1.200 tamamı peşin → 240 alıştan iade açık → iade açığı 240 (tedarikçi borçlu); Açık Alacak 240",
+        "N7: hakemin en küçük senaryosu — alış 23,93 (20,99 × %5 iskonto, KDV %20 hariç), 9,84 peşin; tam iade açık → iade açığı 9,84",
+        "N13: açık iade (müşteri 240 alacaklı) sonradan cari kartından 240 nakit ödemeyle geri verilir → iade açığı 0, cari 0",
+        "N15: sıra — taksitli 3.000 (2.000 peşin) → R1 1.000 açık → karttan 1.500 (fazla) → R2 1.000 + 300 geri: iadeler bağlı ödemelerden SONRA mahsup",
+        "her caride Σ açık (satış + alıştan iade) − Σ açık (alış + satıştan iade) = cari bakiye (beklenen bakiyeler elle)",
+        "N14: toplu yol (liste, 8'den çok cari) = fatura kartı; Σ işaretli belge açığı = cari bakiye"
+      ]
+    },
+    {
+      "id": "M5",
+      "ne": "kartın hedefine geri ödeme yine eklenir (ownTarget)",
+      "dosya": "server/routes/invoices.mjs",
+      "cikis": 1,
+      "tests": 43,
+      "pass": 33,
+      "fail": 10,
+      "yakalandi": true,
+      "kirmiziTestler": [
+        "C: 1.000 (500 peşin, 500 taksit) → malın tamamı iade, 500 nakit geri → kart 0, cari 0, Kasa 0, gecikme yok",
+        "C2: aynı akış 2 taksitle (vadeler geçmiş) → kart 0",
+        "B: 1.000 (500 peşin) → 600 açık iade (cari −100) → 400 iade + 400 nakit geri → kart 0, cari −100",
+        "F: peşin çekle (500) alınmış; malın tamamı iade + 500 nakit geri → kart 0",
+        "G: peşin banka hesabına havale; tam iade + aynı hesaptan havale geri → kart 0, hesap bakiyesi eski hâline döner",
+        "H: iki iade arka arkaya (500 + 250 nakit geri, 500 + 250 nakit geri) → önce 250, sonra 0",
+        "H2: önce açık iade (500) sonra paralı iade (500 + 500 nakit geri) → kart 0",
+        "I: iade iptal edilince kart 500'e döner; yeniden kesilince 0; iade silinince yine 500",
+        "J: kısmi tahsilatlı kart (400 peşin, 600 taksit, 300 tahsil) → tam iade + 700 nakit geri → kart 0",
+        "Mutabakat Testi her senaryodan sonra tutarlı (C + B + A aynı şirkette)"
+      ]
+    },
+    {
+      "id": "M6",
+      "ne": "Açık Faturalar iade belgesini göstermez",
+      "dosya": "server/routes/report-center.mjs",
+      "cikis": 1,
+      "tests": 43,
+      "pass": 41,
+      "fail": 2,
+      "yakalandi": true,
+      "kirmiziTestler": [
+        "N6: satış 600 tamamı peşin → 240 iade açık → iade açığı 240 (müşteri alacaklı); Açık Faturalar'da borç 240",
+        "N6b: alış 1.200 tamamı peşin → 240 alıştan iade açık → iade açığı 240 (tedarikçi borçlu); Açık Alacak 240"
+      ]
+    },
+    {
+      "id": "M7",
+      "ne": "retarget geri ödemeyi Mevcut Borç kartının azalışından yine düşer",
+      "dosya": "server/routes/invoices.mjs",
+      "cikis": 1,
+      "tests": 43,
+      "pass": 42,
+      "fail": 1,
+      "yakalandi": true,
+      "kirmiziTestler": [
+        "N16: Mevcut Borç kartı kapsadığı faturanın paralı iadesinde yalnız mahsup kadar küçülür (carinin başka açık borcu varken)"
+      ]
+    },
+    {
+      "id": "M8",
+      "ne": "açılış onarımı eski imzalı açıkla (geri ödeme eklenir)",
+      "dosya": "server/routes/invoices.mjs",
+      "cikis": 1,
+      "tests": 43,
+      "pass": 39,
+      "fail": 4,
+      "yakalandi": true,
+      "kirmiziTestler": [
+        "yanlış kartlar (C, B, J) doğru kalana iner; D, E, A dokunulmaz; kilitli dönemdeki kart (KILIT) değişmez",
+        "her değişiklik audit'te: plan.repaired, previous (toplam, kalan, taksitler) ve yeni kalan",
+        "raporlar onarılan kartla: Alacak Yaşlandırma, ANLIK DURUM Geciken Alacak, Geciken Taksitler, cari kartı",
+        "ikinci açılışta hiçbir şey değişmez (idempotent); kilitli kart yine listede"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+
+■ Giriş ve Excel yükleme (sıfır kurulum)
+✓ sektör önerisi: Okul Servisi
+
+■ Yükleme sonrası soru (engellemeyen bildirim) → 'Ön izle ve aktar'
+✓ analiz penceresi açıkken soru sorulmaz (pencerenin altında kalıp sönmez)
+✓ bildirim metni: Sektör: Okul Servisi. Görünüm tüm bilgisayarlarda güncellendi. × | Yüklediğiniz tabloda 6 kişinin ödeme planı var (Öğrenciler: 6). Taksitler'e aktarılsın mı? Gerçek vade ve tutarlarıyla kart açılır; Excel'de ödenmiş kısım açılış olur, Kasa değişmez. Ön İzle ve Aktar ×
+✓ bildirimde 'Ön izle ve aktar' düğmesi var
+
+■ Ön izleme kapatılır; önce şeritten bir tahsilat alınır (kayıt tahsilatı)
+✓ şerit (aktarımdan önce, tablodan): Tahsilat Takvimi 2 gecikmiş · 4 bugün/bu ay
+✓ Mert Çelik için 4.500,00 ₺ kayıt tahsilatı girildi; pil kayboldu
+
+■ Taksitler → Tablodan aktar: ön izleme (kılavuz görseli)
+✓ 6 öğrenci listelendi
+✓ Can Öztürk: 4 taksit, toplam 15.200, ödenen 9.500, kalan 5.700 →  Can Öztürk 0535 410 40 40 · Öğrenciler 4 taksit 01.08.2026 – 01.11.2026 ₺15.200,00 ₺9.500,00 ₺5.700,00 Yeni cari açılır HazırAyrıntı
+✓ özet satırı kayıt tahsilatını sayıyor: Seçilen 6 kişi · taksitler ₺94.400,00 · Excel'e göre ödenen ₺48.800,00 · kayıt tahsilatı ₺4.500,00 · kalan ₺41.100,00
+✓ taksit ayrıntısı bu ayın kısmi ödemesini gösteriyor: NO VADE AÇIKLAMA TUTAR EXCEL'E GÖRE ÖDENEN 1. 01.08.2026 Ağustos 2026 ₺3.800,00 ₺3.800,00 2. 01.09.2026 Eylül 2026 ₺3.800,00 ₺3.800,00 3. 01.10.2026 Ekim 2026 ₺3.800,00 ₺1.900,00 4. 01.11.2026 Kasım 2
+
+■ Aktar → sonuç
+✓ düğme: 6 kişiyi aktar
+✓ sonuç: 6 taksit kartı açıldı (taksitler ₺94.400,00; Excel'e göre ödenen ₺48.800,00 açılış olarak yazıldı). 6 cari açıldı. Kayıt kartından 1 tahsilat (₺4.500,00) kartlara taşındı; Kasa toplamı değişmedi. Kalan alacak: ₺41.100,00. Bu kişilerin tablodaki ödeme ayları takvimde artık kartlarından gelir (çift sayılmaz).
+✓ 'Tamam' aktarım penceresini de kapattı; Taksitler listesine dönüldü
+
+■ Taksitler listesi ve Can Öztürk kartı (açılış/devir Kasa dışı, makbuzsuz)
+✓ 3 açılış (devir) hareketi: Kasa dışı rozetli, makbuz bağlantısı yok
+✓ Can Öztürk'te program tahsilatı yok (şeritten alınan Mert Çelik'indi)
+✓ kartta kalan 5.700,00
+✓ Mert Çelik: taşınan kayıt tahsilatı kartta, makbuzlu: 10.10.2026 Tahsilat · 2. taksit Eylül ödemesi · Eylül 2026 · Ofis yöneticisi · düzeltildi ₺4.500,00 Makbuz✎×
+✓ açılış (devir) satırlarında makbuz yok
+
+■ Cari kartı: bakiye ve 'Açılış (devir)' satırları
+✓ 6 cari, hepsi tablodaki kayda bağlı (çift cari yok)
+✓ cari ekstresinde açılış (devir) satırları ve 5.700,00 bakiye
+
+■ Kasa: aktarım Kasa'yı değiştirmedi; tek tahsilat artık taksit tahsilatı
+✓ Kasa bakiyesi 4.500,00 (aktarımdan önce 4.500,00)
+✓ Kasa'da tek kayıt (taksit tahsilatı); açılış/devir Kasa'ya yazılmadı
+
+■ Takvim ve zil: tablodan ikinci kez gelmez (çift sayım yok)
+✓ takvimde tablodan gelen öğrenci kalemi yok
+✓ takvim kart taksitlerini gösteriyor (5 kalem)
+piller: ["₺ Efe Kaya 3. taksit · 01.10.2026 · ₺3.500,00 9 gün gecikti","₺ Zeynep Demir 2. taksit · 01.09.2026 · ₺3.800,00 39 gün gecikti","₺ Zeynep Demir 3. taksit · 01.10.2026 · ₺3.800,00 9 gün gecikti","₺ Can Öztürk 3. taksit · 01.10.2026 · ₺1.900,00 9 gün gecikti","₺ Mert Çelik 3. taksit · 01.10.2026 · ₺4.500,00 9 gün gecikti"]
+✓ şerit (aktarımdan sonra, kartlardan): Tahsilat Takvimi 5 gecikmiş — 5 pil = takvimdeki 5 kart kalemi, çift yok
+✓ şeritte doğru kişiler: Zeynep (geçen ay + bu ay), Efe, Can; tamamını ödeyen Ada ve Deniz yok
+✓ Mert Çelik için ödenen Ağustos taksiti şeritte değil
+zil (Can Öztürk): ["9 gün gecikti Can Öztürk 34 SRV 202 › Cumhuriyet Ortaokulu · 3. taksit · vade 01.10.2026 · ₺1.900,00 (kalan) ✕ Tahsilat Gir Kayda Git Taksit Kartı"]
+✓ zil listesinde Can Öztürk 1 satır, hepsi farklı vade, tablodan gelen yok
+
+■ Yeniden 'Tablodan aktar': herkes 'kartı var', aktarılacak kimse yok (çift kart açılmaz)
+✓ ikinci açılışta aktarılacak kimse yok: × TAKSİTLER Tablodan Taksit Kartına Aktar okul-servisi-ornek.xlsx tablosunda ödeme planı bulunan sekmeler: Öğrenciler (Ay kolonları, aylık ücret + ödenen · 6 kişi). Her kişi için gerçek vade ve tutarlarıyla kart açılır; Excel'de ödenmiş kısım açılış (devir) ol
+✓ Son aktarımlar listesinde Geri al düğmesi var
+
+■ Geri al: kartlar, cariler kaldırılır; tahsilat kayıt kartına döner; takvim tabloya döner
+✓ geri alma bildirimi: Aktarım geri alındı: 6 kart kaldırıldı, 1 tahsilat kayıt kartına döndü. ×
+✓ taksit kartı kalmadı
+✓ aktarımın açtığı cariler kaldırıldı
+✓ tahsilat kayıt kartına döndü; Kasa bakiyesi aynı
+✓ takvim yeniden tablodan besleniyor
+
+■ Yeniden aktar (Tablodan aktar düğmesiyle): aynı sonuç
+✓ ikinci aktarım sonucu: 6 taksit kartı açıldı (taksitler ₺94.400,00; Excel'e göre ödenen ₺48.800,00 açılış olarak yazıldı). 6 cari açıldı. Kayıt kartından 1 tahsilat (₺4.500,00) kartlara taşındı; Kasa toplamı değişmedi. Kalan alacak: ₺41.100,00. Bu kişilerin tablodaki ödeme ayları takvimde artık kartlarından gelir (çift sayılmaz).
+✓ Kasa yine değişmedi
+
+■ Stok → Yeni ürün: 'Kasa'ya yansıt' işaretsiz → Kasa değişmez
+✓ birim listesi 33 seçenek, baş harfi büyük ve tekrarsız (v2.0.11)
+✓ işaretsiz: 2 Adet × ₺850,00 = ₺1.700,00 · stoğa girer; Kasa’ya yazılmaz (yansıtmak için kutuyu işaretleyin).
+✓ Kasa değişmedi (stok gideri yazılmadı)
+✓ Toner stoğa 2 adet girdi
+
+■ Stok → Yeni ürün: 'Kasa'ya yansıt' işaretli → 10 × 120 = 1.200 'Stok ödemesi (alım)' gideri
+✓ işaretli: 10 Paket × ₺120,00 = ₺1.200,00 · Kasa’dan ₺1.200,00 “Stok ödemesi” gideri yazılır.
+✓ Kasa gideri: Stok ödemesi (alım) · Fotokopi kağıdı 10 Paket · İlk alım 1200
+✓ Kasa bakiyesi 4.500,00 → 3.300,00
+
+■ Tarayıcı konsolu
+✓ konsolda hata yok
+
+45/45 denetim geçti

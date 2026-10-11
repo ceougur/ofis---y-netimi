@@ -1,0 +1,71 @@
+
+■ Kurulum: yönetici girer, Excel yüklenir
+✓ tedarikçi ve müşteri açıldı
+
+■ 1. Stok kartı: Stok Kodu en üstte; aynı kod ikinci ürüne verilmez
+✓ stok aramasında Stok Kodu
+✓ Stok Kodu ürün adından önce (kind, code, name, unit)
+✓ alan adı “Stok Kodu”
+✓ ürün Stok Kodu ile açıldı
+✓ aynı kod ikinci ürüne verilmez (“fk-a4” Stok Kodu “Fotokopi Kağıdı A4” ürününde kullanılıyor; her ürünün kodu ayrı olmalı.)
+
+■ 2. Alış formu: barkod, kırpılmayan öneri listesi, KDV kutusu, Tüm Kalemlere KDV, + Yeni Stok Kartı, Faturayı Kaydet
+✓ kalem tablosunda Stok Kodu kolonu
+✓ Stok Kodu + Enter (barkod) ürünü seçti; kutuda kartın kodu (FK-A4)
+✓ kalem bölümünde ham kod yazısı yok
+✓ öneri listesi tam görünür, son satırı üstte ({"inView":true,"lastOnTop":true,"height":70})
+✓ kalemde “Yeni Stok Kartı Açılacak”
+✓ KDV kutusu 84px (“%20” sığar)
+✓ Tüm Kalemlere KDV %10: 10,10,10,10,10,10
+✓ yeni eklenen kalem de %10
+✓ düğme “Faturayı Kaydet”
+✓ form düğmelerinde “Kes” yok
+✓ onay penceresinde “kes” yok
+✓ kartta Stok Kodu kolonu (FK-A4, ZT-246)
+✓ kartta “Alış Faturası - PDF”
+✓ kartta Düzenle düğmesi
+✓ yeni stok kartı kayıtla açıldı (Zımba Teli 24/6 40 Kutu)
+✓ barkodla seçilen ürün stoğa 100 girdi
+
+■ 3. Satış: KDV dahil iskonto ve Toplamlar düzeni; tahsilat yolunda POS
+✓ iskontolu: Toplamlar Toplam₺1.666,67İskonto-₺166,67Ara Toplam₺1.500,00 KDV %20₺300,00 Genel Toplam₺1.800,00 Yalnız Bin Sekiz Yüz Türk Lirası 
+✓ iskontosuz KDV dahil: Toplamlar Toplam₺16.500,00Ara Toplam₺13.750,00 KDV %20₺2.750,00 Genel Toplam₺16.500,00 Yalnız On Altı Bin Beş Yüz Türk Lirası 
+✓ satışta tahsilat yolları: Nakit, Havale / EFT, POS
+✓ kartta ödeme “POS”
+✓ müşteri bakiyesi 3.500
+
+■ 4. Düzenle: kaydedilmiş satış düzeltilir; numara aynı, stok ve cari yeni hale göre
+✓ form başlığı “Düzenleme: …”
+✓ düğme “Değişiklikleri Kaydet”
+✓ numara aynı (FIS2026000000001)
+✓ yeni tutar 6.000 (6000)
+✓ stok bir adet daha düştü
+✓ müşteri bakiyesi 5.500
+
+■ 5. Cari kartı: Cari Ekstre - PDF; tahsilatta POS, ödemede Kredi Kartı
+✓ cari kartında “Cari Ekstre - PDF”
+✓ tahsilat yolları: Nakit, Havale / EFT, POS, Çek / Senet (portföye alınır)
+✓ ödeme yolları: Nakit, Havale / EFT, Kredi Kartı, Çek / Senet (verilir)
+
+■ 6. Raporlar: her rapor arayüzden açılır; PDF ve Excel gerçek dosya; yalnız Cari Ekstre cari ister
+✓ arayüzde 47 rapor (katalog 47)
+✓ 47 raporun hepsi arayüzden açıldı, PDF ve Excel indi
+✓ fatura raporları katalogda ve açıldı (fatura-satis, fatura-alis, fatura-iade, acik-faturalar)
+
+■ 7. Öbür ekranlar: Taksit ve Kasa formlarında POS / Kredi Kartı, stok satışında POS; fatura PDF, Excel ve raporda Stok Kodu
+✓ taksit tahsilatı yolları: Nakit, Havale / EFT, POS
+✓ taksit ödeme/iade yolları: Nakit, Havale / EFT, Kredi Kartı
+✓ Kasa'da yol sekmesi yok
+✓ Kasa in formunda yol seçici yok
+✓ Kasa tahsilat yolu sabit Nakit (Nakit)
+✓ Kasa out formunda yol seçici yok
+✓ Kasa ödeme yolu sabit Nakit (Nakit)
+✓ stok satış yolları: Yalnız Miktar (para yazılmaz) | Nakit (tahsil edildi) | POS (tahsil edildi) | Havale / EFT (tahsil edildi) | Açık Hesap (veresiye, müşteri borçlanır)
+✓ stok alım yolları: Yalnız Miktar (para yazılmaz) | Nakit (ödendi) | Kredi Kartı (ödendi) | Havale / EFT (ödendi) | Açık Hesap (tedarikçiye borçlanılır)
+✓ satış faturası PDF'i indi (35423 bayt)
+✓ kart kaleminde Stok Kodu FK-A4 (PDF aynı veriden basılır)
+✓ fatura Excel'i indi (5161 bayt)
+✓ Ürün Bazında Satış raporunda Stok Kodu kolonu (Stok Kodu; 1 satır)
+✓ stok raporunda Stok Kodu kolonu (Stok Kodu)
+
+53 / 53 kontrol geçti.

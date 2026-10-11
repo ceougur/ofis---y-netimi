@@ -1,0 +1,31 @@
+{
+  "ad": "k1-e2e-senaryo-216",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-216.mjs",
+  "commit": "4bdfa6539fcfbd4dcded17c28cee60d9e9be4696",
+  "dal": "worktree-agent-ac6660b9cab091377",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:08:02.042Z",
+  "sure_sn": 90.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 53,
+    "gecen": 53,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k1-iade-kapanisi/2026-10-10/k1-e2e-senaryo-216.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac6660b9cab091377",
+  "ham_cikti_sha256": "c139ac351869c72cab4a1ba10cb92f09a03e4646265ec8c0982c83f0fc2b56d7",
+  "ham_cikti_bayt": 3872
+}

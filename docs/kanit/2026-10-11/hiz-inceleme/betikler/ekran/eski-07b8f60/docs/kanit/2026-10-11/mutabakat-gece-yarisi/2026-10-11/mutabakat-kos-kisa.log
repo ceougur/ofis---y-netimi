@@ -1,0 +1,10 @@
+(node:26982) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Tohum 2: 300 işlem, 302 doğrulama, 58 beklenen ret (eksiye düşürme / aşım), eşzamanlı 60 istek · 27.8 sn
+  Beklenen retler: date-invalid 7, period-locked 7, cash-negative 5, due-before-start 5, stock-negative 5, date-missing 4, 409 3, date-future 3, cash-method 3, 400 2, invoice-cancelled 2, cheque-duplicate 2, payment.rest 2, bank-account-invalid 1, vatRate 1, chronology 1, originalId 1, bank-similar 1, refund-exceeds 1, return-exceeds 1, invoice-duplicate 1
+  İşlem türleri: alim 26, kasa 11, fatura-hatasi 10, cari 26, kayit-duzelt 2, fatura-acid 8, fatura-satis 29, vade-hatasi 5, iade 7, taksit-sil 2, banka-transfer 3, kayit-sil 6, fatura-iade 9, fatura-iptal 7, satis 36, kilit-ihlali 5, kayit-tahsil 5, taksit-tahsil 20, banka-fis 8, banka-duzelt 5, tarih-hatasi 11, fatura-alis 10, banka-ters 4, hareket-duzelt 5, hareket-sil 6, kart-sil 2, kasa-duzelt 4, cek-tahsil 3, cek-geri-al 5, cek-ode 4, kasa-sil 2, kart-kapat 4, banka-transfer-ters 1, cari-duzelt 5, kart 7, geri-yukle 3, banka-benzer 1, cari-sil 3, fatura-taslak 1
+  Model: {"kasa":{"cash":"40088,40","bank":"31970,89","card":"26302,97"},"cariler":12,"urunler":10,"kartlar":17,"kasaHareketi":31,"bankaSatiri":28,"bankaTersKayit":10,"bankalarArasiTransfer":2,"cariHareketi":42,"stokHareketi":143,"taksitHareketi":17,"hesabaBagliModulHavalesi":18,"kurumsalKartaBagli":6,"kurumsalKartBakiyesi":"-23798,18"}
+  Fatura: {"kesilen":53,"iptal":3,"taslak":1,"turler":{"smm":3,"sale":35,"purchase":10,"sale_return":6,"purchase_return":2},"cek":15} · seriler {"FIS2026":37,"IAD2026":2,"SMM2026":3} · tekil ETTN 57
+  Mutabakat kapısı süresi: ortanca 14 ms, en çok 31 ms
+  ✓ Her işlemden sonra Kasa, cariler, stok, taksit kartları, faturalar, çek/senet ve ana defter kuruşu kuruşuna tutarlı.

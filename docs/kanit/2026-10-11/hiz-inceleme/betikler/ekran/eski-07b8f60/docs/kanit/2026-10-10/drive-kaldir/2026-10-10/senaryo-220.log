@@ -1,0 +1,43 @@
+
+> destekofis@2.0.26 test:senaryo-220
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-220.mjs
+
+
+■ Kurulum: yönetici girer, başlangıç tablosu; 10 müşterinin taksitleri Excel'den (Ödenen kolonuyla) arayüzden
+  ✓ 10 kart · toplam 100000 · ödenen 15000 (Excel'de 10.000 + programda 5.000)
+
+■ Raporlar penceresi: ilk sekme (Cari Ekstre / Mizan) Bu Yıl ile açılır, altta TOPLAM
+  ✓ Mizan dönemi: thisYear (Bu Yıl)
+  ✓ Mizan TOPLAM: TOPLAM · ₺0,00 · ₺100.000,00 · ₺15.000,00 · ₺85.000,00 · Borçlu
+
+■ Cari Listesi ve Bakiyeler: anlaşılan / ödenen / kalan kartları ve TOPLAM satırı
+  ✓ Toplam Borç (Anlaşılan) 100.000,00 TL
+  ✓ Toplam Alacak (Ödenen) 15.000,00 TL
+  ✓ Kalan (Borçlu) 85.000,00 TL
+  ✓ TOPLAM satırı: Borç 100.000,00 TL · Alacak 15.000,00 TL · Bakiye 85.000,00 TL Borçlu
+  ✓ telefon tek satırda: "0532 100 00 01" (1 satır)
+  ✓ 10 kolonlu Cari Listesi 1440 px ekranda yana taşmıyor (822 / 822)
+
+■ Cari Bazında Tahsilat (kullanıcının 'çalışmıyor' dediği rapor): Excel'de ödenmiş + programda alınan
+  ✓ açılış dönemi thisYear (Bu Yıl)
+  ✓ kartlar: Önceden Ödenen 10.000,00 TL · Taksit 5.000,00 TL · Toplam 15.000,00 TL
+  ✓ 10 satır; TOPLAM satırı 15.000,00 TL
+  ✓ 9 kolonlu tablo 1440 px ekranda yana taşmıyor (822 / 822)
+  ✓ 1440 × 1000: TOPLAM pencere kaydırılmadan görünür (alt 924 ≤ 982)
+  ✓ 1366 × 768: pencere tabloya kaydırılınca TOPLAM görünür (alt 691 ≤ 750); tablo kutusu 384 px (eskisinden kısa değil)
+
+■ Boş dönem ipucu ve dönem hafızası (Satış Faturaları)
+  ✓ Satış Faturaları ilk açılış: thisYear
+  ✓ boş dönem: "Bu dönemde kayıt yok. Tüm Zamanları Göster"
+  ✓ Tüm Zamanları Göster → Tüm Zamanlar seçildi
+  ✓ yeniden açınca son seçilen dönem hatırlandı: all
+  ✓ 15 kolonlu Satış Faturaları: pencere taşmıyor, tablo kendi içinde kayıyor, TOPLAM Kalan 1.200,00 TL görünür
+
+■ TOPLAM satırı kaydırınca tablonun altında sabit (uzun liste)
+  ✓ TOPLAM görünür ve sabit (TOPLAM |  |  |  |  | 100.000,00 TL | 15.000,00 TL | 85.000,00 TL |  |  | )
+
+■ Sol üstte şirket sayısı rozeti yok (2 şirket)
+  ✓ şirket kutusu: "ŞİRKET 001 · Şirket 1" (sayı rozeti yok)
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo 2.0.20: 23 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220

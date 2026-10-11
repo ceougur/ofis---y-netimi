@@ -1,0 +1,48 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "komsu-eksi-kasa-yineleme",
+  "aciklama": "Kasa'yı tam sıfırlayan nakit cari ödemesi aynı istek kimliğiyle iki kez: yineleme eksi bakiye denetiminden önce tanınmalı (yazım yok → son durum 0, ihlal yok).",
+  "dayanak": "SENARYO-DILI §5.3, §5.4, §5.6 (3 istek kimliği → 6 eksi bakiye); PLAN §3.3 adım 1 → 8; hakem KAHIN-A-YINELEME-SIRASI komşu denetimi (program tarafı)",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "kasa_acilis",
+      "tutar": "100"
+    },
+    {
+      "id": "2",
+      "islem": "cari_ac",
+      "ad": "T1",
+      "unvan": "Tedarikçi 1",
+      "tur": "tedarikci"
+    },
+    {
+      "id": "3",
+      "islem": "cari_odeme",
+      "ad": "O1",
+      "cari": "T1",
+      "tutar": "100",
+      "yol": "nakit",
+      "istekKimligi": "o1"
+    },
+    {
+      "id": "4",
+      "islem": "cari_odeme",
+      "cari": "T1",
+      "tutar": "100",
+      "yol": "nakit",
+      "istekKimligi": "o1"
+    }
+  ]
+}

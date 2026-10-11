@@ -1,0 +1,734 @@
+(node:14262) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "workerCount": 78,
+ "inlineWorkers": 0,
+ "keys": 26,
+ "diffs": 0,
+ "audit001": "no such table: audit_log",
+ "diffsDetail": [],
+ "summary": {
+  "001 banka-bakiye ": {
+   "status": 200,
+   "code": null,
+   "total": 2,
+   "summary": [
+    [
+     "Gerçek Banka",
+     "154.000,75 TL"
+    ],
+    [
+     "Hesap",
+     "2"
+    ]
+   ]
+  },
+  "001 banka-bakiye bankGroup=all": {
+   "status": 200,
+   "code": null,
+   "total": 2,
+   "summary": [
+    [
+     "Gerçek Banka",
+     "154.000,75 TL"
+    ],
+    [
+     "Hesap",
+     "2"
+    ]
+   ]
+  },
+  "001 banka-bakiye bankGroup=unassigned&preset=all": {
+   "status": 200,
+   "code": null,
+   "total": 0,
+   "summary": [
+    [
+     "Gerçek Banka",
+     "154.000,75 TL"
+    ],
+    [
+     "Hesap",
+     "2"
+    ]
+   ]
+  },
+  "001 banka-bakiye bankGroup=all&from=2026-10-04&to=2026-10-31": {
+   "status": 200,
+   "code": null,
+   "total": 2,
+   "summary": [
+    [
+     "Gerçek Banka",
+     "154.000,75 TL"
+    ],
+    [
+     "Hesap",
+     "2"
+    ]
+   ]
+  },
+  "001 banka-hareket ": {
+   "status": 200,
+   "code": null,
+   "total": 10,
+   "summary": [
+    [
+     "Hesap",
+     "Gerçek Banka (Tüm Hesaplar)"
+    ],
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Giriş",
+     "4.006,00 TL"
+    ],
+    [
+     "Çıkış",
+     "5,25 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "2.500,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "2.500,00 TL"
+    ],
+    [
+     "Açılış ve Devir Düzeltmeleri",
+     "150.000,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "154.000,75 TL"
+    ]
+   ]
+  },
+  "001 banka-hareket bankAccount=bacc-fd821e7b-c977-428c-a5a0-06e9c4354d67": {
+   "status": 200,
+   "code": null,
+   "total": 5,
+   "summary": [
+    [
+     "Hesap",
+     "Ziraat Bankası · Bir TL (102.01)"
+    ],
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Giriş",
+     "2.004,00 TL"
+    ],
+    [
+     "Çıkış",
+     "5,25 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "2.500,00 TL"
+    ],
+    [
+     "Açılış ve Devir Düzeltmeleri",
+     "100.000,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "99.498,75 TL"
+    ],
+    [
+     "Hesaba Giren (Tümü)",
+     "102.004,00 TL"
+    ],
+    [
+     "Hesaptan Çıkan (Tümü)",
+     "2.505,25 TL"
+    ]
+   ]
+  },
+  "001 banka-hareket bankAccount=bacc-aea46769-2f8e-4eed-ba2f-11694b295b05&from=2026-10-04&to=2026-10-06": {
+   "status": 200,
+   "code": null,
+   "total": 2,
+   "summary": [
+    [
+     "Hesap",
+     "Garanti BBVA · Bir İkinci (102.02)"
+    ],
+    [
+     "Devir",
+     "51.000,00 TL"
+    ],
+    [
+     "Giriş",
+     "1.002,00 TL"
+    ],
+    [
+     "Çıkış",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "0,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "52.002,00 TL"
+    ],
+    [
+     "Hesaba Giren (Tümü)",
+     "1.002,00 TL"
+    ],
+    [
+     "Hesaptan Çıkan (Tümü)",
+     "0,00 TL"
+    ]
+   ]
+  },
+  "001 banka-hareket bankAccount=unassigned&preset=all": {
+   "status": 200,
+   "code": null,
+   "total": 0,
+   "summary": [
+    [
+     "Hesap",
+     "Hesabı Atanmamış Eski Hareketler"
+    ],
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Giriş",
+     "0,00 TL"
+    ],
+    [
+     "Çıkış",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "0,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "0,00 TL"
+    ]
+   ]
+  },
+  "001 banka-hareket bankMove=internal": {
+   "status": 200,
+   "code": null,
+   "total": 4,
+   "summary": [
+    [
+     "Hesap",
+     "Gerçek Banka (Tüm Hesaplar)"
+    ],
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Giriş",
+     "4.006,00 TL"
+    ],
+    [
+     "Çıkış",
+     "5,25 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "2.500,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "2.500,00 TL"
+    ],
+    [
+     "Açılış ve Devir Düzeltmeleri",
+     "150.000,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "154.000,75 TL"
+    ]
+   ]
+  },
+  "001 banka-masraf ": {
+   "status": 200,
+   "code": null,
+   "total": 1,
+   "summary": [
+    [
+     "Kayıt",
+     "1"
+    ],
+    [
+     "Matrah",
+     "5,00 TL"
+    ],
+    [
+     "BSMV",
+     "0,25 TL"
+    ],
+    [
+     "KDV",
+     "0,00 TL"
+    ],
+    [
+     "Toplam",
+     "5,25 TL"
+    ],
+    [
+     "770 Genel Giderler ve Alış Faturaları",
+     "5,25 TL"
+    ],
+    [
+     "Ziraat Bankası · Bir TL",
+     "5,25 TL"
+    ]
+   ]
+  },
+  "001 banka-masraf feeAccount=bacc-fd821e7b-c977-428c-a5a0-06e9c4354d67": {
+   "status": 200,
+   "code": null,
+   "total": 1,
+   "summary": [
+    [
+     "Kayıt",
+     "1"
+    ],
+    [
+     "Matrah",
+     "5,00 TL"
+    ],
+    [
+     "BSMV",
+     "0,25 TL"
+    ],
+    [
+     "KDV",
+     "0,00 TL"
+    ],
+    [
+     "Toplam",
+     "5,25 TL"
+    ],
+    [
+     "770 Genel Giderler ve Alış Faturaları",
+     "5,25 TL"
+    ],
+    [
+     "Ziraat Bankası · Bir TL",
+     "5,25 TL"
+    ]
+   ]
+  },
+  "001 banka-hareket bankAccount=bacc-f706b1c7-880e-47a7-81eb-9db061ac7a40": {
+   "status": 404,
+   "code": "bank-account-missing"
+  },
+  "001 banka-masraf feeAccount=bacc-f706b1c7-880e-47a7-81eb-9db061ac7a40": {
+   "status": 404,
+   "code": "bank-account-missing"
+  },
+  "002 banka-bakiye ": {
+   "status": 200,
+   "code": null,
+   "total": 2,
+   "summary": [
+    [
+     "Gerçek Banka",
+     "9.009,35 TL"
+    ],
+    [
+     "Hesabı Atanmamış Eski Hareketler",
+     "250,00 TL"
+    ],
+    [
+     "Tarihi Gelince Atanabilir",
+     "333,00 TL"
+    ],
+    [
+     "Tarihi Gelmemiş Eski Hareket",
+     "1 · ilk 20.10.2026"
+    ],
+    [
+     "Hesap",
+     "2"
+    ]
+   ]
+  },
+  "002 banka-bakiye bankGroup=all": {
+   "status": 200,
+   "code": null,
+   "total": 3,
+   "summary": [
+    [
+     "Gerçek Banka",
+     "9.009,35 TL"
+    ],
+    [
+     "Hesabı Atanmamış Eski Hareketler",
+     "250,00 TL"
+    ],
+    [
+     "Tarihi Gelince Atanabilir",
+     "333,00 TL"
+    ],
+    [
+     "Tarihi Gelmemiş Eski Hareket",
+     "1 · ilk 20.10.2026"
+    ],
+    [
+     "Hesap",
+     "2"
+    ]
+   ]
+  },
+  "002 banka-bakiye bankGroup=unassigned&preset=all": {
+   "status": 200,
+   "code": null,
+   "total": 1,
+   "summary": [
+    [
+     "Gerçek Banka",
+     "9.009,35 TL"
+    ],
+    [
+     "Hesabı Atanmamış Eski Hareketler",
+     "250,00 TL"
+    ],
+    [
+     "Hesap",
+     "2"
+    ]
+   ]
+  },
+  "002 banka-bakiye bankGroup=all&from=2026-10-04&to=2026-10-31": {
+   "status": 200,
+   "code": null,
+   "total": 3,
+   "summary": [
+    [
+     "Gerçek Banka",
+     "9.009,35 TL"
+    ],
+    [
+     "Hesabı Atanmamış Eski Hareketler",
+     "250,00 TL"
+    ],
+    [
+     "Tarihi Gelince Atanabilir",
+     "333,00 TL"
+    ],
+    [
+     "Tarihi Gelmemiş Eski Hareket",
+     "1 · ilk 20.10.2026"
+    ],
+    [
+     "Hesap",
+     "2"
+    ]
+   ]
+  },
+  "002 banka-hareket ": {
+   "status": 200,
+   "code": null,
+   "total": 9,
+   "summary": [
+    [
+     "Hesap",
+     "Gerçek Banka (Tüm Hesaplar)"
+    ],
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Giriş",
+     "235,50 TL"
+    ],
+    [
+     "Çıkış",
+     "3,15 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "300,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "300,00 TL"
+    ],
+    [
+     "Açılış ve Devir Düzeltmeleri",
+     "8.777,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "9.009,35 TL"
+    ]
+   ]
+  },
+  "002 banka-hareket bankAccount=bacc-f706b1c7-880e-47a7-81eb-9db061ac7a40": {
+   "status": 200,
+   "code": null,
+   "total": 4,
+   "summary": [
+    [
+     "Hesap",
+     "Akbank · İki TL (102.01)"
+    ],
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Giriş",
+     "78,50 TL"
+    ],
+    [
+     "Çıkış",
+     "3,15 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "300,00 TL"
+    ],
+    [
+     "Açılış ve Devir Düzeltmeleri",
+     "7.777,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "7.552,35 TL"
+    ],
+    [
+     "Hesaba Giren (Tümü)",
+     "7.855,50 TL"
+    ],
+    [
+     "Hesaptan Çıkan (Tümü)",
+     "303,15 TL"
+    ]
+   ]
+  },
+  "002 banka-hareket bankAccount=bacc-a2c8dd3d-f31d-4769-810e-e130710df112&from=2026-10-04&to=2026-10-06": {
+   "status": 200,
+   "code": null,
+   "total": 3,
+   "summary": [
+    [
+     "Hesap",
+     "Halkbank · İki Ek (102.02)"
+    ],
+    [
+     "Devir",
+     "1.077,50 TL"
+    ],
+    [
+     "Giriş",
+     "79,50 TL"
+    ],
+    [
+     "Çıkış",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "300,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "0,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "1.457,00 TL"
+    ],
+    [
+     "Hesaba Giren (Tümü)",
+     "379,50 TL"
+    ],
+    [
+     "Hesaptan Çıkan (Tümü)",
+     "0,00 TL"
+    ]
+   ]
+  },
+  "002 banka-hareket bankAccount=unassigned&preset=all": {
+   "status": 200,
+   "code": null,
+   "total": 2,
+   "summary": [
+    [
+     "Hesap",
+     "Hesabı Atanmamış Eski Hareketler"
+    ],
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Giriş",
+     "250,00 TL"
+    ],
+    [
+     "Çıkış",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "0,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "0,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "250,00 TL"
+    ]
+   ]
+  },
+  "002 banka-hareket bankMove=internal": {
+   "status": 200,
+   "code": null,
+   "total": 4,
+   "summary": [
+    [
+     "Hesap",
+     "Gerçek Banka (Tüm Hesaplar)"
+    ],
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Giriş",
+     "235,50 TL"
+    ],
+    [
+     "Çıkış",
+     "3,15 TL"
+    ],
+    [
+     "Transfer Giriş",
+     "300,00 TL"
+    ],
+    [
+     "Transfer Çıkış",
+     "300,00 TL"
+    ],
+    [
+     "Açılış ve Devir Düzeltmeleri",
+     "8.777,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "9.009,35 TL"
+    ]
+   ]
+  },
+  "002 banka-masraf ": {
+   "status": 200,
+   "code": null,
+   "total": 1,
+   "summary": [
+    [
+     "Kayıt",
+     "1"
+    ],
+    [
+     "Matrah",
+     "3,00 TL"
+    ],
+    [
+     "BSMV",
+     "0,15 TL"
+    ],
+    [
+     "KDV",
+     "0,00 TL"
+    ],
+    [
+     "Toplam",
+     "3,15 TL"
+    ],
+    [
+     "770 Genel Giderler ve Alış Faturaları",
+     "3,15 TL"
+    ],
+    [
+     "Akbank · İki TL",
+     "3,15 TL"
+    ]
+   ]
+  },
+  "002 banka-masraf feeAccount=bacc-f706b1c7-880e-47a7-81eb-9db061ac7a40": {
+   "status": 200,
+   "code": null,
+   "total": 1,
+   "summary": [
+    [
+     "Kayıt",
+     "1"
+    ],
+    [
+     "Matrah",
+     "3,00 TL"
+    ],
+    [
+     "BSMV",
+     "0,15 TL"
+    ],
+    [
+     "KDV",
+     "0,00 TL"
+    ],
+    [
+     "Toplam",
+     "3,15 TL"
+    ],
+    [
+     "770 Genel Giderler ve Alış Faturaları",
+     "3,15 TL"
+    ],
+    [
+     "Akbank · İki TL",
+     "3,15 TL"
+    ]
+   ]
+  },
+  "002 banka-hareket bankAccount=bacc-fd821e7b-c977-428c-a5a0-06e9c4354d67": {
+   "status": 404,
+   "code": "bank-account-missing"
+  },
+  "002 banka-masraf feeAccount=bacc-fd821e7b-c977-428c-a5a0-06e9c4354d67": {
+   "status": 404,
+   "code": "bank-account-missing"
+  }
+ }
+}

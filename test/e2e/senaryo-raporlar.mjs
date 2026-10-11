@@ -285,7 +285,7 @@ try {
     ok(![...noTable.rows, ...noTable.overdue].some(isTable), "“Tablodaki ödeme günlerini ekle” kapalı: tablo kalemi yok");
     ok(round(flow.closing - noTable.closing) === round(flow.rows.filter(isTable).reduce((sum, row) => sum + row.amount, 0)), `tahmini kasa farkı = aralıktaki tablo kalemleri (${money(round(flow.closing - noTable.closing))}; çift sayım yok)`);
     await page.selectOption(`${modal} [data-field="group"]`, "month");
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-table thead")].some(node => /Dönem sonu kasa/i.test(node.textContent)), null, { timeout: 10000 });
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-table thead")].some(node => /Dönem Sonu Nakit ve Banka/.test(node.textContent)), null, { timeout: 10000 });
     const monthly = (await api(`/api/workspace/overview/nakit-akisi?from=${TODAY}&to=${local(30)}&group=month`)).data;
     ok(monthly.periods.at(-1).closing === monthly.closing, `aylık toplamlarda son dönem kasası = tahmini kasa ${money(monthly.closing)}`);
     await shot("nakit-akis-aylik");
@@ -395,7 +395,9 @@ try {
     await expert.click(`${modal} [data-tab="all"]`);
     await expert.waitForSelector(`${modal} [data-report]`, { timeout: 15000 });
     const listed = await expert.$$eval(`${modal} [data-report]`, nodes => nodes.map(node => node.dataset.report));
-    ok(listed.join() === "islem-gecmisi", `uzman: Tüm raporlar'da yalnız İşlem geçmişi (${listed.join(", ")})`);
+    // v2.1.0 Aşama 14: uzman (avukat) Banka Raporları yetkisiyle (bank.reports) Banka grubunu da görür; finans raporlarını görmez.
+    const bankIds = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"];
+    ok(listed.filter(id => !bankIds.includes(id)).join() === "islem-gecmisi" && bankIds.every(id => listed.includes(id)), `uzman: Tüm raporlar'da İşlem geçmişi ve Banka grubu, finans raporu yok (${listed.join(", ")})`);
     await shot("uzman-islem-gecmisi", expert);
     await other2.close();
     // Personel + kişiye özel ANLIK DURUM yetkisi: defter raporları açılır; çek yetkisi ve rapor yetkisi olmadığı için

@@ -1,0 +1,38 @@
+{
+  "ad": "npm-test",
+  "komut": "npm test",
+  "commit": "c5079a95e97a2aca64f6822dc9010eb61b2ff027",
+  "dal": "worktree-agent-abebd705e2a893684",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T11:43:40.748Z",
+  "sure_sn": 979.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2089,
+    "gecen": 2088,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "İ10 — eksi bakiye denetimi Kasa özetini bir kez hesaplar › çalışıyor mu: tahsilat düzeltmesi ve silmesinde soru için Kasa özeti tek sorgu; soru ve sayılar aynı",
+      "konum": "test/inceleme-226-2.test.mjs:444:3",
+      "hata": "düzeltmede Kasa özeti 0 kez hesaplandı · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/hiz-duzeltme/2026-10-11/npm-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abebd705e2a893684",
+  "ham_cikti_sha256": "84ce3aebe55c09d29558b5c59cfceca7a5e05fb54d9512bd679c5ea4ed78fe00",
+  "ham_cikti_bayt": 706265
+}

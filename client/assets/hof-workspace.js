@@ -35,6 +35,8 @@
   function paymentForm(selected, target, { plain = false } = {}) {
     const suggested = target && Number(target.amount) > 0 ? new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(target.amount) : "";
     const offerPlan = !plain && !(target && Number(target.amount) > 0) && Boolean(HOF.plans?.openNew) && HOF.can("plans.manage");
+    // v2.1.0 Aşama 8: istek kimliği form açılışında; Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: "Tahsilat İşle",
       eyebrow: selected.title,
@@ -48,6 +50,7 @@
       extraHtml: offerPlan ? '<p class="hof-form-aside">Bu kişi taksitle mi ödüyor? <button type="button" class="hof-link" data-new-plan>Taksit planı oluşturun</button>; sonra tahsilatlar taksitten düşer ve kartında görünür.</p>' : "",
       submitLabel: "Tahsilatı Kaydet",
       onOpen: (dialog, modal) => {
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method" });
         dialog.querySelector("[data-new-plan]")?.addEventListener("click", () => {
           modal.close();
           const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
@@ -55,7 +58,11 @@
         });
       },
       onSubmit: async data => {
-        await HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...data, caseTitle: selected.title } });
+        const body = { ...data, caseTitle: selected.title };
+        if (data.method !== "bank") delete body.bankAccountId;
+        const send = flags => HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...body, ...flags }, requestId });
+        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        if (result?.replayed) return HOF.toast("Bu tahsilat zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
         HOF.toast(`Tahsilat kaydedildi (${HOF.methodLabel(data.method, "in")}).`, { type: "success" });
         afterCaseChange();
         HOF.emit("payment-saved", { key: selected.key });
@@ -331,6 +338,7 @@
   const amountText = value => AMOUNT_FORMAT.format(Number(value) || 0);
 
   function editPayment(item, { title = "", after } = {}) {
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: "Tahsilatı Düzelt",
       eyebrow: title || "TAHSİLAT",
@@ -342,8 +350,14 @@
         { name: "note", label: "Açıklama", maxlength: 500, value: item.note ?? item.description ?? "" },
       ],
       submitLabel: "Düzeltmeyi Kaydet",
+      onOpen: dialog => {
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: item.finRef || "", keepLabel: item.method === "bank" && !item.finRef ? "Atanmamış (Eski Hareket)" : "" });
+      },
       onSubmit: async data => {
-        await HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "PUT", body: data });
+        const body = { ...data };
+        if (data.method !== "bank") delete body.bankAccountId;
+        const send = flags => HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "PUT", body: { ...body, ...flags }, requestId });
+        await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
         HOF.toast("Tahsilat düzeltildi.", { type: "success" });
         HOF.emit("payment-saved", { key: item.caseKey || "" });
         after?.();
@@ -360,7 +374,9 @@
     });
     if (!ok) return;
     try {
-      await HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+      const path = `/api/workspace/payments/${encodeURIComponent(item.id)}`;
+      const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
       HOF.toast("Tahsilat silindi.", { type: "success" });
       HOF.emit("payment-saved", { key: item.caseKey || "" });
       after?.();
@@ -402,23 +418,51 @@
   const cashView = { method: "cash" };
   const methodTag = entry => (entry.method && entry.method !== "cash" ? ` · <span class="hof-method-tag is-${esc(entry.method)}">${esc(HOF.methodLabel(entry.method, entry.kind))}</span>` : "");
   const TRANSFER_TITLE = { "to-cash": "Bankadan Kasaya Aktar", "to-bank": "Kasadan Bankaya Yatır" };
+  /**
+   * Transfer formunun açıklaması: account — banka hesabı tanımlı mı (seçici var mı); none — "Hesapsız (Açılıştan Önce)" seçili (11.10.2026: hareket
+   * hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır; önceden yine "seçilen banka hesabına girer" yazıyordu).
+   */
+  const transferIntro = (toCash, account, none = false) => {
+    const bank = none ? `banka hesabının açılışından önceki hareket olduğu için banka tarafı hiçbir ${toCash ? "hesaptan çıkmaz" : "hesaba girmez"}, Hesabı Atanmamış Eski Hareketler'de kalır` : account ? (toCash ? "seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler)" : "seçilen banka hesabına aynı tutar girer (Banka → Hareketler)") : "banka hesabı tanımlanmadığı için banka tarafı Hesabı Atanmamış Eski Hareketler'e yazılır";
+    return toCash ? `Bankadan çekilen nakit Kasa'ya girer; ${bank}.` : `Kasadaki nakit bankaya yatırılır; ${bank}. Nakit Kasa yetmiyorsa program sorar.`;
+  };
 
   // Kasa ↔ Banka transferi: tek işlemde Kasa'da nakit giriş/çıkış + banka tarafında karşı hareket.
+  // v2.1.0 Aşama 6: banka tarafının hesabı (Banka Hesabı; tek hesapta gizli, hiç hesap yoksa bugünkü görünüm), istek kimliği (aynı gönderim
+  // ikinci kez yazılmaz), Benzer İşlem ve banka hesabının eksi bakiye sorusu (HOF.bank.withConfirms).
   function transferForm(direction, after) {
     const toCash = direction === "to-cash";
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: TRANSFER_TITLE[direction] || "Transfer",
       eyebrow: "KASA",
-      intro: toCash ? "Bankadan çekilen nakit kasaya girer; banka tarafında aynı tutar çıkış olarak yazılır (Raporlar → Banka ve POS Hareketleri)." : "Kasadaki nakit bankaya yatırılır; banka tarafında aynı tutar giriş olarak yazılır. Nakit kasa yetmiyorsa program sorar.",
+      // m4 (10.10.2026): banka tarafı artık seçilen banka hesabına yazılır (Banka → Hareketler); hesap tanımlanmamışsa Hesabı Atanmamış Eski Hareketler'e.
+      // Önceki metin "Raporlar → Banka ve POS Hareketleri" diyordu (banka modülünden önceki yer).
+      intro: transferIntro(toCash, true),
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 5.000,00", autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: dayText(new Date()) },
         { name: "description", label: "Açıklama", maxlength: 300, placeholder: toCash ? "Ör. ATM'den nakit çekildi" : "Ör. Günlük hasılat bankaya" },
       ],
       submitLabel: toCash ? "Kasaya Aktar" : "Bankaya Yatır",
+      onOpen: dialog => {
+        const form = dialog.querySelector("form");
+        Promise.resolve(HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="amount"]')?.closest(".hof-field"), label: toCash ? "Çekilen Banka Hesabı" : "Yatırılan Banka Hesabı" }))
+          .then(mode => {
+            const intro = dialog.querySelector(".hof-modal-text");
+            if (intro && mode === "none") intro.textContent = transferIntro(toCash, false);
+          })
+          .catch(() => null);
+        form.addEventListener("change", event => {
+          if (event.target.name !== "bankAccountId") return;
+          const intro = dialog.querySelector(".hof-modal-text");
+          if (intro) intro.textContent = transferIntro(toCash, true, event.target.value === "none");
+        });
+      },
       onSubmit: async data => {
-        await HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction } });
-        HOF.toast(toCash ? "Bankadan kasaya aktarım yazıldı." : "Kasadan bankaya yatırma yazıldı.", { type: "success" });
+        const send = flags => HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction, ...flags }, requestId });
+        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        HOF.toast(result?.replayed ? "Bu transfer zaten kaydedildi; ikinci kez yazılmadı." : toCash ? "Bankadan kasaya aktarım yazıldı." : "Kasadan bankaya yatırma yazıldı.", { type: result?.replayed ? "info" : "success" });
         HOF.emit("cash-changed");
         after?.();
       },
@@ -430,6 +474,9 @@
     const transfer = Boolean(entry?.transferId);
     // v2.0.17: yol seçilmez — Kasa'ya yalnız nakit. Eski (2.0.16 öncesi) nakit dışı kayıt düzeltilirken yolu salt okunur.
     const methodText = transfer ? `Nakit (${entry.kind === "in" ? "bankadan kasaya aktarım" : "kasadan bankaya yatırma"})` : HOF.methodName(entry?.method || "cash", incoming ? "in" : "out");
+    // Hakem K3 (plan §3.10/1): istek kimliği form açılışında üretilir; yanıt gecikip yeniden Kaydet'e basılırsa (ya da ağ isteği yinelerse) sunucu
+    // ikinci kez yazmaz. Başarılı kayıttan sonra form kapanır; yeni form yeni kimlik alır.
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: transfer ? "Transferi Düzelt" : entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Kasaya Tahsilat Ekle" : "Kasadan Ödeme Ekle",
       eyebrow: "KASA",
@@ -441,12 +488,22 @@
         { name: "methodLabel", label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", value: methodText, readonly: true, help: transfer ? "Düzeltme banka tarafındaki karşı hareketi de günceller." : "Kasa'ya yalnız nakit girilir. Havale/EFT ve POS hareketleri cari, fatura, taksit, stok ve çek/senet ekranlarından girilir." },
       ],
       submitLabel: entry ? "Düzeltmeyi Kaydet" : incoming ? "Tahsilatı Ekle" : "Ödemeyi Ekle",
+      // v2.1.0 Aşama 6: transferin banka hesabı değiştirilebilir ("Değiştirme" = mevcut hesap; hesabı atanmamış eski transferde tutar ya da tarih
+      // değişirse program hesap ister).
+      onOpen: dialog => {
+        if (!transfer) return;
+        const form = dialog.querySelector("form");
+        HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="methodLabel"]')?.closest(".hof-field"), keepLabel: "Değiştirme (Mevcut Hesap)", label: "Banka Hesabı" });
+      },
       onSubmit: async data => {
         const { methodLabel: _ignored, ...rest } = data;
         const body = { ...rest, kind: entry?.kind || kind };
-        if (entry) await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body });
-        else await HOF.api("/api/workspace/cash", { method: "POST", body });
-        HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
+        let result;
+        if (entry && transfer) result = await HOF.bank.withConfirms(flags => HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body: { ...body, ...flags }, requestId }));
+        else if (entry) result = await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body, requestId });
+        else result = await HOF.api("/api/workspace/cash", { method: "POST", body, requestId });
+        if (result?.replayed) HOF.toast(`Bu işlem zaten kaydedildi${result.no ? ` (${result.no})` : ""}; ikinci kez yazılmadı.`, { type: "info" });
+        else HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
         HOF.emit("cash-changed");
         after?.();
       },
@@ -457,7 +514,9 @@
     const ok = await HOF.confirm({ title: entry.transferId ? "Transferi Sil" : "Kasa Hareketini Sil", message: entry.transferId ? `${HOF.formatMoney(entry.amount)} tutarındaki transfer (${entry.description}) iki tarafıyla birlikte silinecek: Kasa'daki nakit hareket ve banka tarafındaki karşı hareket. Silinenler'den geri yüklenebilir.` : `${HOF.formatMoney(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} (${entry.description}) silinecek. Silme işlem kayıtlarında saklanır.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
-      await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "DELETE" });
+      const path = `/api/workspace/cash/${encodeURIComponent(entry.id)}`;
+      const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
       HOF.toast("Kasa hareketi silindi.", { type: "success" });
       HOF.emit("cash-changed");
       after?.();
@@ -517,7 +576,7 @@
       size: "wide",
       body: `<div class="hof-kpis hof-cash-kpis" data-kpis></div>
         <div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Dönem">${PERIODS.map(item => `<button type="button" data-period="${item.id}">${item.label}</button>`).join("")}</div>
-        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin nakit kasa hareketlerini PDF olarak indir">Kasa Dökümü - PDF</button>${manage ? '<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-cash" title="Bankadan çekilen nakit kasaya girer">Bankadan Kasaya Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-bank" title="Kasadaki nakit bankaya yatırılır">Kasadan Bankaya Yatır</button>' : ""}</div>
+        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin nakit kasa hareketlerini PDF olarak indir">Kasa Dökümü - PDF</button>${manage ? `<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button>${HOF.can("bank.transfer") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-cash" title="Bankadan çekilen nakit kasaya girer">Bankadan Kasaya Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-bank" title="Kasadaki nakit bankaya yatırılır">Kasadan Bankaya Yatır</button>' : ""}` : ""}</div>
         <div class="hof-cash-range" data-range hidden><label><span>Başlangıç</span><input type="date" data-from value="${custom.from}"></label><span aria-hidden="true">–</span><label><span>Bitiş</span><input type="date" data-to value="${custom.to}"></label></div></div>
         <div class="hof-cash-list" data-list><p class="hof-empty">Yükleniyor…</p></div>
         <p class="hof-edit-meta">Kasa'da yalnız nakit hareketler görünür. Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler cari, fatura, taksit, stok ve çek/senet ekranlarından girilir ve Raporlar → Banka ve POS Hareketleri'nde izlenir. Bankayla para geçişi için Bankadan Kasaya Aktar / Kasadan Bankaya Yatır kullanılır. Hareketler eskiden yeniye sıralıdır; en yeni en altta.</p>
@@ -755,6 +814,9 @@
     { action: "cheques", icon: "✎", key: "side.cheques", label: () => "Çek / Senet", requires: "cheques.view", badge: "warn" },
     // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
     { action: "plans", icon: "▤", key: "side.plans", label: () => "Taksitler", requires: "plans.view", badge: "warn" },
+    // Banka (v2.1.0, kullanıcı kararı: Taksitler'in hemen altında): hesaplar, açılış, Kurulum Sihirbazı, Ayarlar (hof-bank.js); rozet =
+    // Hesabı Belirsiz Yeni Hareketler (eski sürümün yazdığı, hesabı belli olmayan banka hareketi).
+    { action: "bank", icon: "▣", key: "side.bank", label: () => "Banka", requires: "bank.view", badge: "warn" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz Uyarıları", badge: "warn", module: "haciz" },
     // Raporlar (v2.0.9): ANLIK DURUM'daki "Rapor Al" ile aynı pencere (Cari ekstre, Vade takip, Nakit akış, Çek/Senet,
     // modül raporları, Tablo raporları). Rapor yetkisi ya da kişiye verilen ANLIK DURUM yetkisiyle görünür.
@@ -853,6 +915,7 @@
       else if (action === "accounts") HOF.accounts?.open();
       else if (action === "stock") HOF.stock?.open();
       else if (action === "cheques") HOF.cheques?.open();
+      else if (action === "bank") HOF.bank?.open();
       else if (action === "invoices") HOF.invoices?.open({ account: {} });
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
@@ -876,13 +939,16 @@
     };
     const background = { background: true };
     try {
-      const [tasks, liens, plans, cheques, invoices] = await Promise.all([
+      const [tasks, liens, plans, cheques, invoices, bank] = await Promise.all([
         HOF.api("/api/workspace/tasks?status=open&mine=1", background),
         HOF.api("/api/workspace/liens?days=7", background),
         HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue&count=1", background).catch(() => null) : null,
         HOF.can("cheques.view") ? HOF.api("/api/workspace/cheques?status=open&limit=1", background).catch(() => null) : null,
         HOF.can("invoices.view") ? HOF.api("/api/workspace/invoices?tab=sale&pay=overdue&limit=1", background).catch(() => null) : null,
+        HOF.can("bank.view") ? HOF.api("/api/workspace/bank/badge?count=1", background).catch(() => null) : null,
       ]);
+      // Banka rozeti (v2.1.0): Hesabı Belirsiz Yeni Hareketler ve vadesi gelen Planlı İşlemler sayısı.
+      if (bank) setBadge("bank", bank.count);
       // Fatura rozeti (v2.0.15): vadesi geçmiş, tahsil edilmemiş satış faturası sayısı.
       if (invoices) setBadge("invoices", invoices.total);
       // Çek / Senet rozeti: vadesi geçmiş ya da bugün vadesi gelen açık evrak sayısı (v2.0.7).
@@ -944,7 +1010,10 @@
     if (activityKey === selected.key) return;
     activityKey = selected.key;
     const request = ++activityRequest;
-    box.innerHTML = '<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3></div><p class="hof-empty">Yükleniyor…</p>';
+    // v2.1.0: aynı kaydın geçmişi yeniden yüklenirken (kendi notu, başka bilgisayardaki işlem — canlı olay) eski liste
+    // yeni liste gelene kadar yerinde kalır; kutu bir an boşalıp "Yükleniyor…" yazmaz (titreme). Kayıt değişince boşalır.
+    if (box.dataset.hofKey !== selected.key) box.innerHTML = '<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3></div><p class="hof-empty">Yükleniyor…</p>';
+    box.dataset.hofKey = selected.key;
     try {
       const result = await HOF.api(caseUrl(selected.key, "activity"));
       if (request !== activityRequest) return;
@@ -1031,9 +1100,11 @@
     // v2.0.22: yalnız bilgi düzeltmesi (cari notu, adresi…) taksit bölümünü ve rozetleri değiştirmez.
     if (change.info) return;
     if (change.kind === "plans" || change.kind === "accounts" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) casePlanSoon();
-    if (change.kind === "plans" || change.kind === "cash") badges();
+    if (change.kind === "plans" || change.kind === "cash" || change.kind === "bank") badges();
   });
   HOF.on("plans-changed", refreshBadges);
+  // v2.1.0 Aşama 4: banka yazımı (fiş, ters kayıt, planlı işlem) menüdeki Banka rozetini (vadesi gelen planlı işlemler) hemen yeniler.
+  HOF.on("bank-changed", refreshBadges);
   // Detay kartındaki taksit bölümü: başka bilgisayardaki değişiklikte birleştirilerek (kayıt seçiliyse) yenilenir.
   const casePlanSoon = HOF.refresher(() => (HOF.selectedCase() ? renderCasePlan(true) : null));
   // v2.0.11: Kasa'ya yazan her kaynak (Kasa, detay kartı tahsilatı, cari, taksit, stok, çek/senet, geri yükleme) değişince

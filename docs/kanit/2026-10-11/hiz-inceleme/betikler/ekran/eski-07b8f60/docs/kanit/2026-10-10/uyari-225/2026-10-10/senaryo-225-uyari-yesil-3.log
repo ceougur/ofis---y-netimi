@@ -1,0 +1,33 @@
+
+> destekofis@2.0.26 test:senaryo-225-uyari
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-225-uyari.mjs
+
+ok 1 - kurulum: 1. sayfa (8 firma, lisans bitişi bugün … 7 gün sonra) yüklendi
+ok 2 - kurulum: personel Selin açıldı
+# HATA 1a: 5'ten çok bildirim; özet sırası gelmeden sayfa yenilenir
+ok 3 - ilk sağ alt bildirim geldi
+ok 4 - ön koşul: zilde 8 son tarih bildirimi var (> 5; 8)
+ok 5 - ilk bildirim ekrandayken "görüldü" kaydı yalnız ekrana çıkanlar: 1 kimlik, ekrana çıkan 1 (özetin taşıdıkları özet gösterilmeden yazılmaz)
+ok 6 - ön koşul: özet bildirimi henüz ekrana çıkmadı
+ok 7 - yenilenen sayfada özet bildirimi ekrana çıktı (“2 bildirim daha var”)
+ok 8 - 8 bildirimin hepsi ya tek başına (6) ya da ekrana çıkan özetle (2) gösterildi
+ok 9 - özet ekrana çıkınca taşıdıkları da "görüldü" (8 kimliğin 8'i)
+# HATA 1b: turun özeti gösterildikten sonra yeni son tarih eklenir
+ok 10 - personel yeni kayıt ekledi (son tarihi 2 gün sonra; 200)
+ok 11 - ön koşul: yeni son tarih yöneticinin zil listesine geldi (turda 5 bildirim ve özet zaten verildi)
+ok 12 - yeni bildirim ekrana çıkmadan "görüldü" yazılmadı ("görüldü": EVET; ekrana çıktı: EVET)
+ok 13 - yeni bildirim sağ altta yeni bir özetle gösterildi (“1 bildirim daha var”)
+ok 14 - özet ekrana çıkınca yeni bildirim "görüldü"
+ok 15 - yeni kayıttan önce "görüldü" kaydında 8 kimlik (8)
+# HATA 4: başka sayfaya sekme eklenince açık pencerenin takvimi
+ok 16 - kurulum: 2. sayfa (Rehber, son tarihsiz) açıldı
+ok 17 - ön koşul: izleyen pencere 1. sayfada (dataset://ofis), değişecek sayfa başka (dataset://oturum-adfe27a338a8)
+ok 18 - ön koşul: değişiklikten önce izleyen pencerenin takviminde hedef yok
+ok 19 - yönetici 2. sayfaya “Lisanslar” sekmesini ekledi (devamı olarak)
+ok 20 - sunucu izleyen kullanıcıya hedefi veriyor (öbür sayfa kalemi)
+ok 21 - açık pencerenin takvimi 20 sn içinde yenilendi: başka sayfanın yeni son tarihi geldi
+ok 22 - zil listesinde de var
+ok 23 - izleyen penceredeki sayfa şeridinde 2. sayfanın sayısı güncellendi (“Rehber6 kayıt”)
+# tests 23
+# pass 23
+# fail 0

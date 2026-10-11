@@ -1,0 +1,41 @@
+BAĞIMSIZ KÂHİN — SON KOŞU (dil destekofis-senaryo/2), 10.10.2026
+Program kodu: 740be05 (worktree dalı; program dosyaları bu işte DEĞİŞMEDİ — yalnız test/bagimsiz/ ve bu kanıt klasörü).
+Temiz oda: server/ ve client/ okunmadı. Kaynaklar: docs/BANKA-MODULU-PLAN.md, test/bagimsiz/, docs/kanit/2026-10-10/kahin/,
+baş mimarın 10.10.2026 kararları (dil "Sürüm 2 değişiklikleri" tablosu D1–D4) ve plan dayanaklı dil düzeltmeleri (D5–D7).
+
+Depo kökünden (Node 22.22.0, Python 3.11.15):
+
+# 1. Kâhin birim testleri ve mutasyon
+python3 -I test/bagimsiz/model_a/test_model.py            > birim-model_a.log 2>&1   # 42 test
+python3 -I test/bagimsiz/model_b/test_model.py            > birim-model_b.log 2>&1   # 46 test
+python3 -I test/bagimsiz/model_b/mutasyon.py              > mutasyon-model_b.log 2>&1 # 22/22
+python3 -I test/bagimsiz/test_surum2.py -v                > birim-surum2.log 2>&1    # 18 test, iki kâhin, beklenen elle
+python3 mutasyon_surum2.py <depo kökü>                    > mutasyon-surum2.log 2>&1 # 16/16 (betik bu klasörde)
+
+# 2. Kabul 1–16 (üç taraf + plan sayıları)
+python3 -I test/bagimsiz/fark.py --senaryo test/bagimsiz/senaryolar/kabul-1-16.json
+python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/senaryolar/kabul-1-16.json --plan-denetimi
+
+# 3. Gerileme: hakemin en küçük senaryoları (sürüm 2'ye çevrildi) ve sürüm 2 mini senaryoları (programla)
+for f in test/bagimsiz/senaryolar/gerileme/*.json test/bagimsiz/senaryolar/surum2/*.json; do python3 -I test/bagimsiz/fark.py --senaryo "$f"; done
+
+# 4. Rastgele (tohum = senaryo; üretici belirlenimci)
+for t in 1 2 3 4 5; do python3 -I test/bagimsiz/fark.py --tohum $t; done            # 500 işlem, kontrol 25
+python3 -I test/bagimsiz/fark.py --tohum 31 --islem 2000
+for t in 1 2 3 4 5; do python3 -I test/bagimsiz/fark.py --tohum $t --yogun; done    # iade ×6, ret ×3, eksi bakiye (Kasa/banka/kart)
+for t in 1 2 3 4 5; do python3 -I test/bagimsiz/fark.py --tohum $t --notr iskonto_dahil,kasa_acilis; done
+python3 -I test/bagimsiz/fark.py --tohum 31 --islem 2000 --notr iskonto_dahil,kasa_acilis
+python3 -I test/bagimsiz/kapsam.py rastgele-1-500 … (sürüm 2 ile değişen yolların sayacı)
+
+Çıktılar: fark-*.json (karşılaştırma raporları), ham-ve-senaryolar.tgz (üç tarafın ham çıktıları + senaryolar), *.log (komut çıktıları).
+
+SONUÇLAR (gerçek çıkış kodları; ayrıntı sinif-tablosu.txt, kosu-konsol.log, fark-*.json):
+- Birim: model_a 42/42, model_b 46/46, test_surum2 18/18 (iki kâhin); mutasyon model_b 22/22, sürüm 2 kuralları 16/16 yakalandı.
+- Kabul 1–16: a=0 b=0 program=0, 182 yaprak, fark 0; plan sayıları 28/28 (kâhin = plan = program).
+- Gerileme (13 en küçük senaryo, sürüm 2'ye çevrildi): 10'unda fark 0; KASA-ACILIS-649 (2 yaprak) ve KDV-DAHIL-ISKONTO (6 yaprak) bilinen;
+  KREDI-ANAPARA-ASIMI kâhinlerde çıkış 2 (dil sürüm 2 BELİRSİZ-25, bilerek).
+- Sürüm 2 mini (18): fark 0 (3'ünde yalnız Kasa açılışından KASA-ACILIS-649); d6-b, d7-a kâhinlerde çıkış 2 (BELİRSİZ-24/25, bilerek).
+- Tohum 1–5 × 500, 31 × 2000, 1–5 × 500 yoğun: üç taraf çıkış 0; sınıflar yalnız KDV-DAHIL-ISKONTO (+türevi) ve KASA-ACILIS-649;
+  açıklanamayan 0 (tohum 31 adım 2009 ilk sınıflamada açıklanamadı → el ile incelendi: KDV-DAHIL-ISKONTO ters zinciri, program doğru;
+  tohum-31-adim-2009-aciklama.txt).
+- Aynı tohumlar iki bilinen kök nötrlenerek (iskonto_dahil,kasa_acilis): 1–5 × 500 ve 31 × 2000'de fark 0 (130.150 yaprak).

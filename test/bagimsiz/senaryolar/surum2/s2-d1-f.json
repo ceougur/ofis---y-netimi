@@ -1,0 +1,87 @@
+{
+  "aciklama": "SENARYO-DILI sürüm 2 testi (test/bagimsiz/test_surum2.py) — programla karşılaştırma için",
+  "ad": "s2-d1-f",
+  "adimlar": [
+    {
+      "ad": "T",
+      "id": "1",
+      "islem": "cari_ac",
+      "tur": "tedarikci",
+      "unvan": "T Ltd."
+    },
+    {
+      "id": "0",
+      "islem": "kasa_acilis",
+      "tarih": "01.10.2026",
+      "tutar": "5000"
+    },
+    {
+      "ad": "A1",
+      "cari": "T",
+      "id": "2",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "1000",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Danışmanlık",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "odeme": {
+        "pesin": [
+          {
+            "tutar": "tamami",
+            "yol": "nakit"
+          }
+        ]
+      },
+      "tarih": "01.10.2026",
+      "tur": "alis"
+    },
+    {
+      "ad": "A2",
+      "cari": "T",
+      "id": "3",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "500",
+          "giderTuru": "Banka Masrafları",
+          "hizmet": "Danışmanlık",
+          "kdvDahil": false,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "tarih": "02.10.2026",
+      "tur": "alis"
+    },
+    {
+      "ad": "R1",
+      "asilFatura": "A1",
+      "geri": {
+        "yol": "acik"
+      },
+      "id": "4",
+      "islem": "iade",
+      "kalemler": [
+        {
+          "kalem": 1,
+          "miktar": 1
+        }
+      ],
+      "tarih": "05.10.2026"
+    }
+  ],
+  "baslangic": {
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar"
+    },
+    "bugun": "08.10.2026",
+    "sirket": "bos"
+  },
+  "dil": "destekofis-senaryo/2"
+}

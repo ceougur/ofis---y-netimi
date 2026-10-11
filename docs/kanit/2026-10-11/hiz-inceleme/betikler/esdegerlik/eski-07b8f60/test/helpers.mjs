@@ -1,0 +1,133 @@
+// Test yardımcıları: geçici klasörlerle sunucu başlatma ve çerezli HTTP istemcisi.
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { createApp } from "../server/app.mjs";
+
+export const ADMIN_PASSWORD = "Test-Admin-2026!";
+
+export async function startTestServer(options = {}) {
+  const root = mkdtempSync(path.join(tmpdir(), "destekofis-test-"));
+  const dataDir = options.dataDir || path.join(root, "data");
+  const backupDir = path.join(root, "backups");
+  if (options.prepare) options.prepare({ dataDir, backupDir });
+  const app = createApp({
+    dataDir,
+    backupDir,
+    logLevel: "silent",
+    scheduleBackups: false,
+    // Zamanlanmış Sheet eşitlemesi testlerde kapalıdır (gerekirse ortam değişkeniyle açılır).
+    env: { HUKUK_ADMIN_PASSWORD: options.adminPassword ?? ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0", ...(options.env || {}) },
+    fetchImpl: options.fetchImpl,
+    // Lisans kilidi yalnızca lisans testlerinde uygulanır (test/license.test.mjs); diğer testler lisanslı gibi çalışır.
+    license: options.license ?? { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+    startLicenseTimers: options.startLicenseTimers ?? false,
+    // e-Belge bağlantısı programda kapalıdır; yalnız entegratör testleri açar.
+    ...(options.edocEnabled ? { edocEnabled: true } : {}),
+    ...(options.fxEnabled ? { fxEnabled: true } : {}),
+    // Bu sürümde olmayan banka özelliklerinin gizli ayarlarını değiştiren testler (doğrulama kuralları, Elle Banka Fişi).
+    ...(options.bankLater ? { bankLater: true } : {}),
+    ...(options.bankPickLegacy ? { bankPickLegacy: true } : {}),
+    ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
+    // Şirket sınırı (en fazla 2): 2'den çok şirketi olan eski kurulumu canlandıran testler sınırı yükseltir.
+    ...(options.maxCompanies ? { maxCompanies: options.maxCompanies } : {}),
+    // Sahte saat (v2.1.0): sunucunun "bugün"ü ve iş zaman damgaları (config.now). Zaman (Date/sayı/ISO metni; akar) ya da
+    // { time, fixed: true } (durur). server.clock.set/advance ile ilerletilir; tarayıcıyla eşleme: installPageClock/moveClock.
+    ...(options.now !== undefined ? { now: options.now } : {}),
+    // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
+    // Üretim davranışını sınayan testler { moneyStrict: false } verir.
+    moneyStrict: options.moneyStrict ?? true,
+    // Mutabakat kapısı eşdeğerlik denetimi (v2.1.0, §3.11): tam kapı her işlemde de çalışır; dokunulan varlıklar yolu temiz deyip tam
+    // kapı reddederse 500 "gate-equivalence". Üretim yolunu (yalnız süzgeç) sınayan testler { gateVerify: false } verir.
+    gateVerify: options.gateVerify ?? true,
+    ...(options.scopePartyRows !== undefined ? { scopePartyRows: options.scopePartyRows } : {}),
+  });
+  const address = await app.listen(0, "127.0.0.1");
+  const base = `http://127.0.0.1:${address.port}`;
+  return {
+    app,
+    base,
+    root,
+    dataDir,
+    backupDir,
+    // Sunucunun saati (app.config.now): gerçek saat ya da options.now ile verilen sahte saat.
+    clock: app.config.now,
+    client: () => createClient(base),
+    async close() {
+      await app.close();
+      rmSync(root, { recursive: true, force: true });
+    },
+  };
+}
+
+export function createClient(base) {
+  let cookie = "";
+  const request = async (method, url, body, extraHeaders = {}) => {
+    const headers = { ...extraHeaders };
+    if (cookie) headers.cookie = cookie;
+    let payload;
+    if (body !== undefined) {
+      headers["content-type"] = headers["content-type"] || "application/json";
+      payload = typeof body === "string" ? body : JSON.stringify(body);
+    }
+    const response = await fetch(base + url, { method, headers, body: payload, redirect: "manual" });
+    const setCookie = response.headers.get("set-cookie");
+    if (setCookie) cookie = setCookie.split(";")[0].endsWith("=") ? "" : setCookie.split(";")[0];
+    const type = response.headers.get("content-type") || "";
+    const data = type.includes("json") ? await response.json() : await response.text();
+    return { status: response.status, data, headers: response.headers };
+  };
+  // İkili istek/yanıt (Excel dışa aktarımı, belgeler): gövde Buffer olabilir, yanıt Buffer olarak döner.
+  const raw = async (method, url, { body, headers = {} } = {}) => {
+    const response = await fetch(base + url, { method, headers: { ...(cookie ? { cookie } : {}), ...headers }, body, redirect: "manual" });
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const type = response.headers.get("content-type") || "";
+    let data = null;
+    if (type.includes("json")) data = JSON.parse(buffer.toString("utf8"));
+    return { status: response.status, buffer, data, headers: response.headers };
+  };
+  return {
+    raw,
+    get: (url, headers) => request("GET", url, undefined, headers),
+    post: (url, body = {}, headers) => request("POST", url, body, headers),
+    put: (url, body = {}, headers) => request("PUT", url, body, headers),
+    patch: (url, body = {}, headers) => request("PATCH", url, body, headers),
+    del: (url, headers) => request("DELETE", url, undefined, headers),
+    login: (username, password) => request("POST", "/api/auth/login", { username, password }),
+    get cookie() {
+      return cookie;
+    },
+  };
+}
+
+export async function loginAdmin(server) {
+  const client = server.client();
+  const result = await client.login("admin", ADMIN_PASSWORD);
+  if (result.status !== 200) throw new Error(`Admin girişi başarısız: ${JSON.stringify(result.data)}`);
+  return client;
+}
+
+export async function createUser(server, admin, { username, role = "personel", password = "Personel-2026!", name } = {}) {
+  const created = await admin.post("/api/admin/users", { username, name: name || username, role, password, mustChangePassword: false });
+  if (created.status !== 200) throw new Error(`Kullanıcı oluşturulamadı: ${JSON.stringify(created.data)}`);
+  const client = server.client();
+  const login = await client.login(username, password);
+  if (login.status !== 200) throw new Error("Kullanıcı girişi başarısız");
+  return client;
+}
+
+// Playwright tarayıcı saatini sunucunun saatine bağlar (v2.1.0). Sayfa açılmadan önce çağrılır: tarayıcıdaki `new Date()`
+// (form tarihleri, "Bu Ay" süzgeci) sunucunun bugünüyle aynı günü gösterir. Sabit sunucu saatinde tarayıcı da durur.
+export async function installPageClock(page, clock) {
+  await page.clock.install({ time: clock.ms() });
+  if (clock.isFixed?.()) await page.clock.setFixedTime(clock.ms());
+}
+// Sunucu saatini ve bağlı sayfaların saatini birlikte değiştirir. time: Date/sayı/ISO metni ya da { days, hours, minutes } (ilerlet).
+export async function moveClock(clock, pages, time) {
+  if (time && typeof time === "object" && !(time instanceof Date)) clock.advance(time);
+  else clock.set(time);
+  for (const page of [pages].flat().filter(Boolean)) {
+    if (clock.isFixed?.()) await page.clock.setFixedTime(clock.ms());
+    else await page.clock.setSystemTime(clock.ms());
+  }
+}

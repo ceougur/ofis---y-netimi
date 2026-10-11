@@ -238,7 +238,9 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     // 12) 90: Kasa'dan bankaya 300.
     await must("transfer", api.post("/api/workspace/cash/transfer", { direction: "to-bank", amount: "300", date: ago(90), description: "Bankaya yatırma" }));
     E.cash.push({ d: ago(90), amt: -300 });
-    E.bank.push({ d: ago(90), amt: 300 });
+    // v2.1.0 Aşama 14 (§3.4, bilerek güncellendi): Kasa ↔ Banka transferinin banka bacağı iç harekettir — Banka ve POS Hareketleri'nde Dönem
+    // Giriş'e değil Transfer Giriş'e yazılır (bakiyeye girer).
+    E.bank.push({ d: ago(90), amt: 300, internal: true });
     // 13) 70: Ayşe'nin mevcut borcunun 150'si 3 taksitli karta; 60 gün önce 100 nakit.
     const firstDue = ago(40);
     const cover = await must("mevcut borç kartı", api.post("/api/workspace/plans", { name: accName.A, registeredOn: ago(70), total: "150", accountId: ids.A, mode: "auto", count: "3", firstDue, coversBalance: true }));
@@ -374,6 +376,11 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     planStatus: ["active", "closed", "all"],
     taskStatus: ["all", "open", "done"],
     tab: [""],
+    // v2.1.0 Aşama 14: Banka grubunun süzgeçleri (raporlar bu dosyada koşulmaz; her seçenekleriyle test/banka-210-raporlar.test.mjs'te).
+    bankGroup: ["real", "debt", "unassigned", "all"],
+    bankMove: ["", "external", "internal"],
+    bankAccount: [""],
+    feeAccount: [""],
   };
   const combos = report => {
     let list = [{ q: {}, range: null, label: "" }];
@@ -426,8 +433,16 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
       const list = c.payMethod === "bank" ? E.bank : c.payMethod === "card" ? E.card : [...E.bank, ...E.card];
       const m = movement(list, range);
       assert.equal(summaryOf(data, "Devir"), m.opening, "banka devri");
-      assert.equal(summaryOf(data, "Dönem Giriş"), m.in, "banka girişi");
-      assert.equal(summaryOf(data, "Dönem Çıkış"), m.out, "banka çıkışı");
+      // v2.1.0 Aşama 14: iç hareket (Kasa ↔ Banka) giriş/çıkışa sayılmaz; Transfer Giriş/Çıkış satırında (yalnız dönemde iç hareket varsa).
+      const external = movement(list.filter(r => !r.internal), range);
+      const internal = movement(list.filter(r => r.internal), range);
+      assert.equal(summaryOf(data, "Dönem Giriş"), external.in, "banka girişi (dış)");
+      assert.equal(summaryOf(data, "Dönem Çıkış"), external.out, "banka çıkışı (dış)");
+      if (internal.in || internal.out) {
+        assert.equal(summaryOf(data, "Transfer Giriş"), internal.in, "Transfer Giriş");
+        assert.equal(summaryOf(data, "Transfer Çıkış"), internal.out, "Transfer Çıkış");
+      } else assert.ok(!data.summary.some(([label]) => label.startsWith("Transfer")), "dönemde iç hareket yokken Transfer satırı yok");
+      assert.equal(summaryOf(data, "Dönem Sonu"), r2(m.opening + m.in - m.out), "dönem sonu = devir + bütün hareketler");
       assert.equal(summaryOf(data, "Banka (tüm hareketler)"), sum(E.bank, r => r.amt));
       assert.equal(summaryOf(data, "POS / Kredi Kartı (tüm hareketler)"), sum(E.card, r => r.amt));
       const yol = col(data, "Yol");
@@ -648,7 +663,8 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
   const REPORT_IDS = ["kasa-hareketleri", "kasa-gunluk", "kasa-kaynak", "kasa-aylik", "hesap-mizani", "yevmiye", "defter-mutabakati", "mutabakat-gunlugu", "banka-pos-hareketleri", "mizan", "cari-listesi", "cari-ekstre", "cari-hareketleri", "cari-tahsilat", "alacak-yaslandirma", "fatura-satis", "fatura-alis", "fatura-iade", "kdv-ozeti", "ba-bs", "urun-satis-karlilik", "cari-satis-alis", "gider-raporu", "stopaj-tevkifat", "acik-faturalar", "taksit-kartlari", "taksit-vadeleri", "geciken-taksitler", "taksit-performans", "taksit-tahsilatlari", "cek-portfoy", "cek-hareketleri", "cek-vade-dagilimi", "stok-durumu", "stok-hareketleri", "stok-ozet", "stok-kategori", "kayit-tahsilatlari", "notlar", "gorevler", "belgeler", "tablo-verisi", "islem-gecmisi"];
   const stats = { reports: 0, combos: 0, requests: 0, footerColumns: 0 };
   test("katalog = testteki rapor listesi (yeni rapor eklenirse test de genişler)", () => {
-    assert.deepEqual(catalog.map(r => r.id).sort(), [...REPORT_IDS].sort());
+    // v2.1.0 Aşama 14: Banka grubu (bank.reports) ayrı testte (test/banka-210-raporlar.test.mjs) her süzgeçle denenir.
+    assert.deepEqual(catalog.map(r => r.id).sort(), [...REPORT_IDS, "banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"].sort());
   });
   for (const id of REPORT_IDS) {
     test(`${id}: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle`, async () => {

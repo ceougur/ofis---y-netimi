@@ -67,7 +67,7 @@ export function listBackups(backupDir) {
   }
 }
 
-// Budama (v2.0.20): rutin yedekler (otomatik, "manuel", "drive-deneme") son `keep` adet; işlem öncesi güvenlik yedekleri
+// Budama (v2.0.20): rutin yedekler (otomatik, "manuel"; 2.0.26'ya kadar "drive-deneme" de) son `keep` adet; işlem öncesi güvenlik yedekleri
 // (sıfırlama, silme, geri yükleme, güncelleme, göç, sayfa silme öncesi) AYRI sayılır ve son SAFETY_KEEP adedi kalır —
 // rutin kopyalar güvenlik yedeklerini klasörden itip silemez (gözden geçirme bulgusu: haftada bir siliniyorlardı).
 export const SAFETY_KEEP = 20;
@@ -225,9 +225,9 @@ export function moveBackupFolder(from, to) {
  * (v1.0.0'da yalnızca 6 saatlik setInterval vardı; sunucu her akşam kapanıyorsa yedek hiç alınmayabiliyordu.)
  * v2.0.20: `targets()` birden çok hedef döndürür (her şirket ayrı: { backupDir, label, run }); verilmezse tek veritabanı.
  */
-export function startBackupScheduler({ db, backupDir, intervalHours, keep, startDelayMs, log, onBackup = null, targets = null }) {
+export function startBackupScheduler({ db, backupDir, intervalHours, keep, startDelayMs, log, targets = null }) {
   const list = targets || (() => [{ backupDir, label: "", run: () => createBackup(db, backupDir, { keep }) }]);
-  const tick = () => runDueBackups({ targets: list, intervalHours, log, onBackup });
+  const tick = () => runDueBackups({ targets: list, intervalHours, log });
   const first = setTimeout(tick, startDelayMs);
   const timer = setInterval(tick, Math.min(intervalHours * 3_600_000, 30 * 60_000));
   first.unref();
@@ -239,7 +239,7 @@ export function startBackupScheduler({ db, backupDir, intervalHours, keep, start
 }
 
 /** Zamanı gelen hedefleri yedekler (son yedeği `intervalHours`'tan eski ya da hiç yedeği olmayan). Asla fırlatmaz. */
-export function runDueBackups({ targets, intervalHours, log, onBackup = null }) {
+export function runDueBackups({ targets, intervalHours, log }) {
   const intervalMs = intervalHours * 3_600_000;
   const results = [];
   let items = [];
@@ -267,7 +267,6 @@ export function runDueBackups({ targets, intervalHours, log, onBackup = null }) 
       if (!result) continue;
       results.push(result);
       log?.info?.(`Yedek oluşturuldu: ${result.name}`);
-      onBackup?.(result); // Drive'a kopya (v2.0.2); asla fırlatmaz
     } catch (error) {
       log?.error?.(`Yedekleme hatası${target.label ? ` (${target.label})` : ""}`, error);
     }

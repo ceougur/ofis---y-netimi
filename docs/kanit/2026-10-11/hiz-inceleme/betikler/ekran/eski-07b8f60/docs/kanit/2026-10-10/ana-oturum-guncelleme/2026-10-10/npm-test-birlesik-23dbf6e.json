@@ -1,0 +1,32 @@
+{
+  "ad": "npm-test-birlesik-23dbf6e",
+  "komut": "npm test",
+  "commit": "a1c96f5910fe8f6f706e1f52102b0c1d726c1853",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T21:32:30.884Z",
+  "sure_sn": 893.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2049,
+    "gecen": 2049,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-guncelleme/2026-10-10/npm-test-birlesik-23dbf6e.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "2b481361bab435f53eaeb4529ac205b0b1735ab2e0909b0aad4f69ce3252ce4f",
+  "ham_cikti_bayt": 688249
+}

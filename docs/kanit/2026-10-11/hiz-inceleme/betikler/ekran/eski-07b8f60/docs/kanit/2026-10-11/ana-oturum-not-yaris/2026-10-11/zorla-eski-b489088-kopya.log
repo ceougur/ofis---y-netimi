@@ -1,0 +1,12 @@
+  ✗ deneme 1: okuma 5405 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":5284,"end":5297,"origin":"not formu (afterCaseChange)"},{"t":5326,"end":6839,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+  ✗ deneme 2: okuma 10765 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":9989,"end":10011,"origin":"not formu (afterCaseChange)"},{"t":10700,"end":12207,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+  ✗ deneme 3: okuma 15656 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":14793,"end":14806,"origin":"not formu (afterCaseChange)"},{"t":15605,"end":17113,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+  ✗ deneme 4: okuma 20851 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{"t":19780,"end":19814,"origin":"seçim (renderActivity)"},{"t":20415,"end":20428,"origin":"not formu (afterCaseChange)"},{"t":20811,"end":22319,"origin":"profil olayı (data-refresh → insight → applyProfile → refreshActivity)"}]; okunan: "İŞLEM GEÇMİŞİYükleniyor…"
+
+MODE=forced DELAY=1500: 0 geçti, 4 kaldı; ön koşul 4/4 denemede oluştu (ön koşullu: 0 geçti, 4 kaldı)
+# tests 4
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0

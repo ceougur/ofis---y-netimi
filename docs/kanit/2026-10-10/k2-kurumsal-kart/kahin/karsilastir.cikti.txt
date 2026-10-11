@@ -1,0 +1,33 @@
+tohum 1: önce 722 fark {'A=B≠P': 628, 'A≠B=P': 44, 'B≠A=P': 48, 'KOSUCU': 2} · sonra 656 fark {'A=B≠P': 564, 'A≠B=P': 44, 'B≠A=P': 48}
+  kalkan ana sınıflar: ['KART-HESABI-BAGLANMIYOR']
+  YENİ ana sınıflar: yok
+  KART-HESABI-BAGLANMIYOR etiketli yaprak: 0
+tohum 2: önce 1135 fark {'A=B≠P': 780, 'A≠B=P': 252, 'A≠B≠P': 14, 'B≠A=P': 84, 'KOSUCU': 5} · sonra 978 fark {'A=B≠P': 628, 'A≠B=P': 252, 'A≠B≠P': 14, 'B≠A=P': 84}
+  kalkan ana sınıflar: []
+  YENİ ana sınıflar: yok
+  KART-HESABI-BAGLANMIYOR etiketli yaprak: 20
+   k12 ozet.kartVeKrediBorcu: fark -963768 = −Σ hesap farkları -963768 AÇIKLANDI {'bankaHesaplari.B7': 'TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI'}
+   k13 ozet.kartVeKrediBorcu: fark -963768 = −Σ hesap farkları -963768 AÇIKLANDI {'bankaHesaplari.B7': 'TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI'}
+   k14 bankaHesaplari.B6: fark -1
+   k14 mizan.309.01: fark {'alacak': 1, 'borc': 0}
+   k14 ozet.kartVeKrediBorcu: fark -963767 = −Σ hesap farkları -963767 AÇIKLANDI {'bankaHesaplari.B6': 'KART-HESABI-BAGLANMIYOR', 'bankaHesaplari.B7': 'TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI'}
+   k15 bankaHesaplari.B6: fark -1
+   k15 mizan.309.01: fark {'alacak': 1, 'borc': 0}
+   k15 ozet.kartVeKrediBorcu: fark -963767 = −Σ hesap farkları -963767 AÇIKLANDI {'bankaHesaplari.B6': 'KART-HESABI-BAGLANMIYOR', 'bankaHesaplari.B7': 'TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI'}
+   k16 bankaHesaplari.B6: fark -1
+   k16 mizan.309.01: fark {'alacak': 1, 'borc': 0}
+   k16 ozet.kartVeKrediBorcu: fark -963767 = −Σ hesap farkları -963767 AÇIKLANDI {'bankaHesaplari.B6': 'KART-HESABI-BAGLANMIYOR', 'bankaHesaplari.B7': 'TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI'}
+   k17 bankaHesaplari.B6: fark -1
+   k17 mizan.309.01: fark {'alacak': 1, 'borc': 0}
+   k17 ozet.kartVeKrediBorcu: fark -963767 = −Σ hesap farkları -963767 AÇIKLANDI {'bankaHesaplari.B6': 'KART-HESABI-BAGLANMIYOR', 'bankaHesaplari.B7': 'TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI'}
+   k18 bankaHesaplari.B6: fark -1
+   k18 mizan.309.01: fark {'alacak': 1, 'borc': 0}
+   k18 ozet.kartVeKrediBorcu: fark -963767 = −Σ hesap farkları -963767 AÇIKLANDI {'bankaHesaplari.B6': 'KART-HESABI-BAGLANMIYOR', 'bankaHesaplari.B7': 'TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI'}
+   SON bankaHesaplari.B6: fark -1
+   SON mizan.309.01: fark {'alacak': 1, 'borc': 0}
+   SON ozet.kartVeKrediBorcu: fark -963767 = −Σ hesap farkları -963767 AÇIKLANDI {'bankaHesaplari.B6': 'KART-HESABI-BAGLANMIYOR', 'bankaHesaplari.B7': 'TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI'}
+tohum 3: önce 420 fark {'A=B≠P': 366, 'A≠B=P': 30, 'B≠A=P': 20, 'KOSUCU': 4} · sonra 263 fark {'A=B≠P': 213, 'A≠B=P': 30, 'B≠A=P': 20}
+  kalkan ana sınıflar: ['KART-HESABI-BAGLANMIYOR']
+  YENİ ana sınıflar: yok
+  KART-HESABI-BAGLANMIYOR etiketli yaprak: 0
+toplam yeni ana sınıf: 0

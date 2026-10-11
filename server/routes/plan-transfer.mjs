@@ -20,6 +20,7 @@ import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { FREEZE_CLOSE, SkippedRow } from "./plans.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const SETTLED_KEY = "dues.settled";
 const DISMISSED_KEY = "plans.transfer.dismissed";
@@ -30,9 +31,10 @@ const digits = value => String(value ?? "").replace(/\D/g, "");
 const MONEY = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const money = value => MONEY.format(Number(value) || 0);
 
-export function registerPlanTransfer(router, { store, auth, audit, events, dataset, profile, period = null, plans = () => null, accounts = () => null }) {
-  const now = () => new Date().toISOString();
-  const today = () => isoDay(new Date());
+export function registerPlanTransfer(router, { store, bank, auth, audit, events, dataset, profile, period = null, plans = () => null, accounts = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now).
+  const now = () => clock().toISOString();
+  const today = () => isoDay(clock());
   const source = () => (dataset?.currentKey ? dataset.currentKey() : "");
   const settingKey = name => (dataset?.settingKey ? dataset.settingKey(name) : name);
   const readJsonSetting = (name, fallback) => {
@@ -78,7 +80,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
     const rows = view.rows || [];
     const tabs = (view.tabs || []).map(item => item.title);
     const key = source();
-    const nowDate = new Date();
+    const nowDate = clock();
     const { tabs: planTabs, records } = extractSchedules({ rows, tabs, settled: readJsonSetting(SETTLED_KEY, {}), now: nowDate, forced: profile?.roles ? profile.roles() : null, dueDay: options.dueDay, defaultFirstDue: options.firstDue });
     if (!records.length) return { tabs: [], records: [], raw: new Map(), totals: emptyTotals(), fingerprint: fingerprint(), source: key, sessionName: sessionName() };
 
@@ -280,7 +282,9 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
     const undo = { plans: [], openings: [], links: [], accounts: [], accountLinks: [], payments: [], groups: [], source: key };
     const plansService = plans();
     const accountsService = accounts();
-    const result = store.tx(() => {
+    // v2.1.0 (bank.post op 'move'): kayıt tahsilatı karta taşınırken işlem başlığını (İşlem No, yol) taşır; kart, taksitler ve
+    // açılış (devir) satırları para satırı değildir.
+    const result = bank.post({ user, module: "plan", op: "move", prev: { importId }, write: () => {
       // Sıra No: tablodaki numara başka kartta yoksa o, yoksa sıradaki boş numara (iki kartın numarası aynı olmaz).
       const refs = new Set(store.all("SELECT ref_no AS refNo FROM plans WHERE deleted_at IS NULL").map(row => String(row.refNo || "")));
       let autoRef = Number(plansService.nextRef()) - 1;
@@ -404,7 +408,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
       store.run("INSERT INTO plan_imports (id, kind, source, title, summary_json, undo_json, created_by, created_at) VALUES (?, 'table', ?, ?, ?, ?, ?, ?)", importId, key, title, JSON.stringify(summary), JSON.stringify(undo), user.id, now());
       audit(user, "plan.table-import", importId, { ...summary, source: key, dueDay: options.dueDay, payments: options.payments });
       return report;
-    });
+    } });
     if (result.created || result.linked) {
       publish(user, { kind: "plans" });
       publish(user, { kind: "accounts" });
@@ -495,16 +499,22 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
       if (hits.length) throw new HttpError(409, `Bu aktarımın kartlarında ya da taşınan tahsilatlarında kapatılmış (kilitli) döneme (${dayText(lock)} ve öncesi) düşen kayıt var (${[...new Set(hits)].slice(0, 5).join("; ")}); aktarım geri alınamaz. Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
     }
     const report = { plans: 0, links: 0, payments: 0, accounts: 0, accountsKept: 0 };
-    store.tx(() => {
+    // v2.1.0 (bank.post op 'move'): geri dönen kayıt tahsilatı karttaki satırın işlem başlığıyla döner (İşlem No ve yol aynı).
+    bank.post({ user, module: "plan", op: "move", prev: { importId: batch.id, payments: undo.payments || [] }, write: () => {
       // Karta taşınan kayıt tahsilatları kayıt kartına aynen döner (kimlik, tarih, giren kişi).
       for (const moved of undo.payments || []) {
+        const moving = store.get("SELECT event_id AS e, fin_ref AS f FROM plan_entries WHERE id = ?", moved.entryId) || {};
+        const movedEvent = moving.e || "";
         store.run("DELETE FROM plan_entries WHERE id = ?", moved.entryId);
         const row = moved.row || {};
         if (row.id && !store.get("SELECT 1 AS found FROM payments WHERE id = ?", row.id)) {
           // v2.0.26 (A2): ödeme yolu da döner (önceden yazılmıyor, havale/POS tahsilatı kayda nakit olarak dönüyordu).
+          const method = methodInput(row.method);
+          // GG2 (K13/7): banka hesabı bağı da döner (karttaki satırın bugünkü bağı; kart silindiyse aktarımdaki satırınki).
+          const finRef = bank.keepRef(moving.f ?? row.fin_ref, { method, date: row.date }).ref;
           store.run(
-            "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            row.id, row.case_key, row.case_title || "", row.amount, row.date, row.note || "", methodInput(row.method), row.created_by, row.created_at, row.updated_by || null, row.updated_at || null,
+            "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            row.id, row.case_key, row.case_title || "", row.amount, row.date, row.note || "", method, finRef, bank.eventFor("payments", { date: row.date, method, event_id: movedEvent || row.event_id || "" }), row.created_by, row.created_at, row.updated_by || null, row.updated_at || null,
           );
           report.payments += 1;
         }
@@ -535,7 +545,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
       }
       store.run("UPDATE plan_imports SET undone_by = ?, undone_at = ? WHERE id = ?", user.id, now(), batch.id);
       audit(user, "plan.import-undone", batch.id, { ...report, title: batch.title });
-    });
+    } });
     publish(user, { kind: "plans" });
     publish(user, { kind: "accounts" });
     publish(user, { kind: "cash" });

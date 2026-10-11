@@ -1,0 +1,3 @@
+gecikme 300 ms: runner.close() 1908 ms sürdü; raporlar: ["Error:rapor iş parçacığı kapandı (kod 1)/2214ms","Error:rapor iş parçacığı kapandı (kod 1)/2142ms"]
+gecikme 1000 ms: runner.close() 1682 ms sürdü; raporlar: ["Error:rapor iş parçacığı kapandı (kod 1)/2687ms","Error:rapor iş parçacığı kapandı (kod 1)/2232ms"]
+gecikme 2000 ms: runner.close() 476 ms sürdü; raporlar: ["Error:rapor iş parçacığı kapandı (kod 1)/2471ms","Error:rapor iş parçacığı kapandı (kod 1)/2481ms"]

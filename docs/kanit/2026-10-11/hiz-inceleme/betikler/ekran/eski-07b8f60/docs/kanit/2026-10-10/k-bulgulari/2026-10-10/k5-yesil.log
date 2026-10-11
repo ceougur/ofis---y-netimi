@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı)
+    # Subtest: N1: Uyar — 150 havale ödemesi (bakiye 100) → 409 cash-negative + accountId; yalnız cashForce → 200 (planın bayrağı)
+    ok 1 - N1: Uyar — 150 havale ödemesi (bakiye 100) → 409 cash-negative + accountId; yalnız cashForce → 200 (planın bayrağı)
+      ---
+      duration_ms: 57.064267
+      type: 'test'
+      ...
+    # Subtest: N1b: eski istemcinin negativeOk'u eşanlamlı → 200; Banka Fişi'nde de aynı kod ve onay
+    ok 2 - N1b: eski istemcinin negativeOk'u eşanlamlı → 200; Banka Fişi'nde de aynı kod ve onay
+      ---
+      duration_ms: 78.666602
+      type: 'test'
+      ...
+    # Subtest: N4a: cashForce + negativeOk:false (ekranın Kasa onayı) banka hesabını geçmez → 409 cash-negative + accountId
+    ok 3 - N4a: cashForce + negativeOk:false (ekranın Kasa onayı) banka hesabını geçmez → 409 cash-negative + accountId
+      ---
+      duration_ms: 14.099671
+      type: 'test'
+      ...
+    # Subtest: N3: silmede ?cashForce=1 banka hesabını da geçer (HOF.api silmede adrese ekler); ?cashForce=1&negativeOk=0 geçmez
+    ok 4 - N3: silmede ?cashForce=1 banka hesabını da geçer (HOF.api silmede adrese ekler); ?cashForce=1&negativeOk=0 geçmez
+      ---
+      duration_ms: 58.558481
+      type: 'test'
+      ...
+    # Subtest: N2: Engelle — 409 cash-blocked + accountId; cashForce ve negativeOk birlikte de geçmez; hiçbir şey yazılmaz
+    ok 5 - N2: Engelle — 409 cash-blocked + accountId; cashForce ve negativeOk birlikte de geçmez; hiçbir şey yazılmaz
+      ---
+      duration_ms: 39.476387
+      type: 'test'
+      ...
+    # Subtest: N5: Kasa'nın kendi reddi değişmedi — cash-negative, accountId yok, method cash
+    ok 6 - N5: Kasa'nın kendi reddi değişmedi — cash-negative, accountId yok, method cash
+      ---
+      duration_ms: 6.872959
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi tamam
+    ok 7 - Mutabakat Testi tamam
+      ---
+      duration_ms: 14.524403
+      type: 'test'
+      ...
+    1..7
+ok 1 - K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı)
+  ---
+  duration_ms: 712.98524
+  type: 'suite'
+  ...
+# Subtest: K5 — aynı istekte Kasa ve banka hesabı eksiye düşerse (satış faturası iptali: nakit + havale peşin)
+    # Subtest: N4b: önce Kasa sorulur (cash-negative, accountId yok); Kasa onayı (cashForce + negativeOk:false) banka hesabını ayrıca sorar; fatura yerinde
+    ok 1 - N4b: önce Kasa sorulur (cash-negative, accountId yok); Kasa onayı (cashForce + negativeOk:false) banka hesabını ayrıca sorar; fatura yerinde
+      ---
+      duration_ms: 12.293864
+      type: 'test'
+      ...
+    # Subtest: N4c: yalnız cashForce (planın tek onayı) ikisini birlikte geçer → fatura iptal; Kasa −100, Garanti −100
+    ok 2 - N4c: yalnız cashForce (planın tek onayı) ikisini birlikte geçer → fatura iptal; Kasa −100, Garanti −100
+      ---
+      duration_ms: 41.776741
+      type: 'test'
+      ...
+    1..2
+ok 2 - K5 — aynı istekte Kasa ve banka hesabı eksiye düşerse (satış faturası iptali: nakit + havale peşin)
+  ---
+  duration_ms: 443.662199
+  type: 'suite'
+  ...
+1..2
+# tests 9
+# suites 2
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1565.3593

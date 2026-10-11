@@ -1,0 +1,22 @@
+
+> destekofis@2.0.26 test:guvenilirlik
+> node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs --islem 500 --tohumlar 1
+
+  100 işlem · 1 şirket · 15 yedek · 9 geri yükleme · 10.9 sn
+  200 işlem · 1 şirket · 28 yedek · 15 geri yükleme · 26.2 sn
+  300 işlem · 1 şirket · 38 yedek · 23 geri yükleme · 48.5 sn
+  400 işlem · 5 şirket · 65 yedek · 27 geri yükleme · 70.4 sn
+  500 işlem · 5 şirket · 77 yedek · 34 geri yükleme · 103.6 sn
+
+✓ Tohum 1 · taban bos: 500 işlem, 501 değişmez kural turu, 77 yedek, 34 geri yükleme, 10 yanlış şirkete deneme (hepsi 409), 14 yeniden başlatma · 104.0 sn
+  İşlem türleri: account 57, entry 68, restore 41, reset 14, bankVoucher 21, bankTransfer 14, wrongRestore 14, bankReverse 9, backupOne 26, bankWrongCompany 4, bankModule 29, bankModuleOther 22, select 36, cash 24, create 20, rename 11, bankAccount 12, remove 14, bankCard 24, bankCard:kart-ac 10, bankCard:stok 1, backupAll 11, bankCard:alis 3, recode 15, bankCard:cari-limit 1, bankCard:cari-secimsiz-limit 1, restoreRoot 6, bankCard:cari-secimsiz 3, bankCard:cari 3, bankCard:borc-odeme 1, restart 8, bankCard:pos-hesapli-400 1
+  Son durum: 001 · Iğdır Tarım|Hayvancılık (11 cari) | 060 · Doğu "Batı" Lojistik (8 cari) | 017 · Çağ/Öz: Ltd* (4 cari) | 002 · MAVİ GIDA (3 cari) | 003 · Çağ/Öz: Ltd* (3 cari)
+  100 işlem · 2 şirket · 15 yedek · 13 geri yükleme · 21.6 sn
+  200 işlem · 1 şirket · 22 yedek · 24 geri yükleme · 36.2 sn
+  300 işlem · 1 şirket · 33 yedek · 32 geri yükleme · 53.0 sn
+  400 işlem · 5 şirket · 55 yedek · 36 geri yükleme · 75.9 sn
+  500 işlem · 5 şirket · 72 yedek · 43 geri yükleme · 109.0 sn
+
+✓ Tohum 1 · taban surum-2.0.19-zincir: 500 işlem, 501 değişmez kural turu, 72 yedek, 43 geri yükleme, 15 yanlış şirkete deneme (hepsi 409), 14 yeniden başlatma · 109.4 sn
+  İşlem türleri: account 55, entry 71, restore 43, backupOne 30, select 36, wrongRestore 15, cash 27, recode 18, bankModule 26, bankModuleOther 23, bankCard 23, bankCard:kart-ac 10, bankAccount 14, rename 13, remove 15, bankCard:cari 4, reset 11, bankWrongCompany 3, create 15, backupAll 10, bankCard:alis 3, bankTransfer 12, bankReverse 9, bankVoucher 17, restoreRoot 6, restart 8, bankCard:pos 1, bankCard:alis-secimsiz 1, bankCard:borc-odeme 1, bankCard:pos-hesapli-400 1, bankCard:cari-secimsiz 2
+  Son durum: 001 · Iğdır Tarım|Hayvancılık (1 cari) | 060 · Doğu "Batı" Lojistik (8 cari) | 017 · Çağ/Öz: Ltd* (4 cari) | 050 · MAVİ GIDA (3 cari) | 003 · Çağ/Öz: Ltd* (2 cari)

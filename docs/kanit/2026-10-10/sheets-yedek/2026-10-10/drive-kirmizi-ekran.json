@@ -1,0 +1,43 @@
+{
+  "ad": "drive-kirmizi-ekran",
+  "komut": "node --disable-warning=ExperimentalWarning test/kirmizi/drive-yedek-ekran.mjs /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ekran",
+  "commit": "3a65139cc8fcc69dd05c0e4323e3eda878811de4",
+  "dal": "worktree-agent-a9d1d58c56af62f0d",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:21:16.647Z",
+  "sure_sn": 6.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 3,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "KIRMIZI: kaydederken 'Drive yedeği bağlandı' (başarı) DENMEMELİ — servis denenmedi, uç yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KIRMIZI: Yedek Al bildirimi Drive'a GİTMEDİĞİNİ söylemeli (bugün: \"Yedek alındı: destekofis-001-2026-10-10T17-21-19-803Z-manuel.sqlite×\")",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/sheets-yedek/2026-10-10/drive-kirmizi-ekran.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d",
+  "ham_cikti_sha256": "b957eccff37cb448e06ea003bb95416b175db787214ac0ec801f9feda2092e9b",
+  "ham_cikti_bayt": 1906
+}

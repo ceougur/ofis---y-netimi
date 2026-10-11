@@ -1,0 +1,31 @@
+{
+  "ad": "t-mutasyon-other-in",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-fis.test.mjs",
+  "commit": "07ab898adcca368eb3635449002919c333b3c1c9",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 2,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:11:20.478Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/t-mutasyon-other-in.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "f0af55b73c5818ecf0b973a5a0bc2184c7ee649b7c76616baa413bc13311832e",
+  "ham_cikti_bayt": 6411
+}

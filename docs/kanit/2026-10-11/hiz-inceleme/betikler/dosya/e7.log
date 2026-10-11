@@ -1,0 +1,2 @@
+8 iş 817 ms'de sonuçlandı: ["report-timeout","report-timeout","report-timeout","report-timeout","report-timeout","report-timeout","report-timeout","report-timeout"]; runner.stats {"active":0,"queued":0,"started":8}
+zirve: aynı anda 7 rapor iş parçacığı (sınır 2), veri dosyasında 4 ek -wal tanıtıcısı; close() sonrası iş parçacıklarının sönmesi 1936 ms

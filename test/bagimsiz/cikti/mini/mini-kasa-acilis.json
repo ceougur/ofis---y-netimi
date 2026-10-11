@@ -1,0 +1,24 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "mini-kasa-acilis",
+  "aciklama": "Yalnız Kasa açılışı 10.000.",
+  "dayanak": "fark.py sınıf küçültmesi",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "kasa_acilis",
+      "tutar": "10000"
+    }
+  ]
+}

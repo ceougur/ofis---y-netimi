@@ -1,0 +1,363 @@
+TAP version 13
+# Subtest: Fatura 2.0.15: QA düzeltmeleri ve eklemeleri
+    # Subtest: Toplu kesme: taslaklar tarih sırasıyla kesilir; stoğu eksiye düşüren taslak kesilmez, diğerleri kesilir; kesilmiş belge invoice-not-draft
+    ok 1 - Toplu kesme: taslaklar tarih sırasıyla kesilir; stoğu eksiye düşüren taslak kesilmez, diğerleri kesilir; kesilmiş belge invoice-not-draft
+      ---
+      duration_ms: 208.358846
+      type: 'test'
+      ...
+    # Subtest: Toplu iptal: seçilenler iptal edilir; iadesi olan belge iptal edilmez; en yeni belge önce; personel 403; boş liste 400
+    ok 2 - Toplu iptal: seçilenler iptal edilir; iadesi olan belge iptal edilmez; en yeni belge önce; personel 403; boş liste 400
+      ---
+      duration_ms: 288.677117
+      type: 'test'
+      ...
+    # Subtest: Logo: yalnız JPEG, 150 KB ve 1200 piksel sınırı; belgeye kopyalanmaz; PDF'e DCTDecode görseli olarak gömülür; kaldırılınca çıkmaz
+    ok 3 - Logo: yalnız JPEG, 150 KB ve 1200 piksel sınırı; belgeye kopyalanmaz; PDF'e DCTDecode görseli olarak gömülür; kaldırılınca çıkmaz
+      ---
+      duration_ms: 221.447534
+      type: 'test'
+      ...
+    # Subtest: Kaşe / imza alanı: satış PDF'inde Teslim Alan ve Düzenleyen kutuları; ayar kapatılınca yok; alış belgesinde hiç basılmaz
+    ok 4 - Kaşe / imza alanı: satış PDF'inde Teslim Alan ve Düzenleyen kutuları; ayar kapatılınca yok; alış belgesinde hiç basılmaz
+      ---
+      duration_ms: 73.157241
+      type: 'test'
+      ...
+    # Subtest: Stok kartı: fatura kalemine bağlı ürün silinmez (409 invoice-linked); fatura iptal edilince silinir
+    ok 5 - Stok kartı: fatura kalemine bağlı ürün silinmez (409 invoice-linked); fatura iptal edilince silinir
+      ---
+      duration_ms: 69.687343
+      type: 'test'
+      ...
+    # Subtest: Fiyat Farkı Faturası senaryosu: stoksuz satış kalemi, cariye borç; senaryo listesinde ve varsayılan satış senaryosu olarak seçilebilir
+    ok 6 - Fiyat Farkı Faturası senaryosu: stoksuz satış kalemi, cariye borç; senaryo listesinde ve varsayılan satış senaryosu olarak seçilebilir
+      ---
+      duration_ms: 58.419222
+      type: 'test'
+      ...
+    1..6
+ok 1 - Fatura 2.0.15: QA düzeltmeleri ve eklemeleri
+  ---
+  duration_ms: 1723.944721
+  type: 'suite'
+  ...
+# Subtest: KDV dahil fiyatta iskonto gösterimi (müşteri, 02.10.2026)
+    # Subtest: 2.000 TL KDV dahil, %10 iskonto: Ara Toplam 1.666,67 − İskonto 166,67 = Matrah 1.500,00; KDV 300,00
+    ok 1 - 2.000 TL KDV dahil, %10 iskonto: Ara Toplam 1.666,67 − İskonto 166,67 = Matrah 1.500,00; KDV 300,00
+      ---
+      duration_ms: 3.25942
+      type: 'test'
+      ...
+    # Subtest: %20 iskonto: 1.666,67 − 333,34 = 1.333,33; KDV 266,67; toplam 1.600,00
+    ok 2 - %20 iskonto: 1.666,67 − 333,34 = 1.333,33; KDV 266,67; toplam 1.600,00
+      ---
+      duration_ms: 0.307602
+      type: 'test'
+      ...
+    # Subtest: satırlar her durumda kuruşu kuruşuna toplar (Ara Toplam − İskonto = Matrah); KDV hariçte değişiklik yok
+    ok 3 - satırlar her durumda kuruşu kuruşuna toplar (Ara Toplam − İskonto = Matrah); KDV hariçte değişiklik yok
+      ---
+      duration_ms: 17.173303
+      type: 'test'
+      ...
+    # Subtest: kayıtlı faturadan (TL ondalığı) aynı ayrım; UBL iskontosu da KDV hariç
+    ok 4 - kayıtlı faturadan (TL ondalığı) aynı ayrım; UBL iskontosu da KDV hariç
+      ---
+      duration_ms: 6.055196
+      type: 'test'
+      ...
+    1..4
+ok 2 - KDV dahil fiyatta iskonto gösterimi (müşteri, 02.10.2026)
+  ---
+  duration_ms: 28.562144
+  type: 'suite'
+  ...
+# Subtest: Kaydedilmiş faturayı düzenleme, yeni stok kartı, Stok Kodu (müşteri, 02.10.2026)
+    # Subtest: Stok Kodu tekil: aynı kod ikinci ürüne verilmez (açarken ve düzeltirken)
+    ok 1 - Stok Kodu tekil: aynı kod ikinci ürüne verilmez (açarken ve düzeltirken)
+      ---
+      duration_ms: 43.136131
+      type: 'test'
+      ...
+    # Subtest: Faturada kodla arama: tam eşleşen Stok Kodu en üstte ve exact işaretli
+    ok 2 - Faturada kodla arama: tam eşleşen Stok Kodu en üstte ve exact işaretli
+      ---
+      duration_ms: 9.282345
+      type: 'test'
+      ...
+    # Subtest: Stoğa Mal Alışı: '+ Yeni Stok Kartı' kalemi kartı faturayla aynı işlemde açar, stoğa girer, maliyet alış fiyatı
+    ok 3 - Stoğa Mal Alışı: '+ Yeni Stok Kartı' kalemi kartı faturayla aynı işlemde açar, stoğa girer, maliyet alış fiyatı
+      ---
+      duration_ms: 39.52821
+      type: 'test'
+      ...
+    # Subtest: Düzenleme: aynı numara; stok, cari ve Kasa eskiyi bırakıp yeniye göre; işlem geçmişi
+    ok 4 - Düzenleme: aynı numara; stok, cari ve Kasa eskiyi bırakıp yeniye göre; işlem geçmişi
+      ---
+      duration_ms: 101.353009
+      type: 'test'
+      ...
+    # Subtest: Düzenleme taksitli faturada kartı yeniler; tahsilat varsa ve iadesi varsa engellenir
+    ok 5 - Düzenleme taksitli faturada kartı yeniler; tahsilat varsa ve iadesi varsa engellenir
+      ---
+      duration_ms: 94.998273
+      type: 'test'
+      ...
+    # Subtest: Düzenleme stok eksiye düşürecekse sorar (stock-negative), izin verilince yapar; tarih sırası korunur
+    ok 6 - Düzenleme stok eksiye düşürecekse sorar (stock-negative), izin verilince yapar; tarih sırası korunur
+      ---
+      duration_ms: 82.573763
+      type: 'test'
+      ...
+    # Subtest: Düzenleme çekli faturada: aynı çek (aynı seri no) yeniden yazılır; portföyde tek evrak; ciro edilmiş çek varken düzenleme durur
+    ok 7 - Düzenleme çekli faturada: aynı çek (aynı seri no) yeniden yazılır; portföyde tek evrak; ciro edilmiş çek varken düzenleme durur
+      ---
+      duration_ms: 142.205442
+      type: 'test'
+      ...
+    # Subtest: Fatura PDF'inde ayrı Stok Kodu kolonu, POS ödeme satırı ve Toplamlar düzeni (metin düzeyinde)
+    ok 8 - Fatura PDF'inde ayrı Stok Kodu kolonu, POS ödeme satırı ve Toplamlar düzeni (metin düzeyinde)
+      ---
+      duration_ms: 110.257956
+      type: 'test'
+      ...
+    1..8
+ok 3 - Kaydedilmiş faturayı düzenleme, yeni stok kartı, Stok Kodu (müşteri, 02.10.2026)
+  ---
+  duration_ms: 1492.598839
+  type: 'suite'
+  ...
+# Subtest: Kapama motoru: ödeme yöne göre sayılır (saf fonksiyon)
+    # Subtest: alış faturasını satış faturası, Borç Yaz ve stoktan satış kapatmaz; ödeme, verilen çek, alıştan iade kapatır
+    ok 1 - alış faturasını satış faturası, Borç Yaz ve stoktan satış kapatmaz; ödeme, verilen çek, alıştan iade kapatır
+      ---
+      duration_ms: 2.24735
+      type: 'test'
+      ...
+    # Subtest: satış faturasını alış faturası ve Alacak Yaz kapatmaz; tahsilat, alınan çek, satıştan iade, taksit tahsilatı kapatır
+    ok 2 - satış faturasını alış faturası ve Alacak Yaz kapatmaz; tahsilat, alınan çek, satıştan iade, taksit tahsilatı kapatır
+      ---
+      duration_ms: 0.310187
+      type: 'test'
+      ...
+    # Subtest: müşterinin ekranı: aynı cariye satış 400 + alış 6.000 → alış Açık 6.000 (eski FIFO 'Kısmen Ödendi · 400' derdi)
+    ok 3 - müşterinin ekranı: aynı cariye satış 400 + alış 6.000 → alış Açık 6.000 (eski FIFO 'Kısmen Ödendi · 400' derdi)
+      ---
+      duration_ms: 2.460473
+      type: 'test'
+      ...
+    # Subtest: Mahsup Et: satış 400 ↔ alış 6.000 → satış Ödendi, alış Kısmen (5.600 açık); her ikisinde kapatan 'Mahsup'
+    ok 4 - Mahsup Et: satış 400 ↔ alış 6.000 → satış Ödendi, alış Kısmen (5.600 açık); her ikisinde kapatan 'Mahsup'
+      ---
+      duration_ms: 0.599259
+      type: 'test'
+      ...
+    # Subtest: bağlı ödeme kendi faturasına, artanı en eskiye (otomatik); kapatanlar listesi kuruşu kuruşuna
+    ok 5 - bağlı ödeme kendi faturasına, artanı en eskiye (otomatik); kapatanlar listesi kuruşu kuruşuna
+      ---
+      duration_ms: 1.079047
+      type: 'test'
+      ...
+    1..5
+ok 4 - Kapama motoru: ödeme yöne göre sayılır (saf fonksiyon)
+  ---
+  duration_ms: 7.721231
+  type: 'suite'
+  ...
+# Subtest: Hem müşteri hem tedarikçi cari: hayalet kısmi ödeme yok (API)
+    # Subtest: satış 400 + alış 6.000 aynı cariye → alış 'Açık' 6.000, satış 'Açık' 400; cari bakiyesi net (−5.600)
+    ok 1 - satış 400 + alış 6.000 aynı cariye → alış 'Açık' 6.000, satış 'Açık' 400; cari bakiyesi net (−5.600)
+      ---
+      duration_ms: 108.660803
+      type: 'test'
+      ...
+    # Subtest: Kopyala → kaydet: kopya 'Açık' kalır (ödeme taşımaz, FIFO artığı düşmez)
+    ok 2 - Kopyala → kaydet: kopya 'Açık' kalır (ödeme taşımaz, FIFO artığı düşmez)
+      ---
+      duration_ms: 25.070504
+      type: 'test'
+      ...
+    # Subtest: bağsız ödeme 400 → otomatik en eski alış faturasına (ALS-89 'Kısmen Ödendi · 400'; kapatan 'Otomatik')
+    ok 3 - bağsız ödeme 400 → otomatik en eski alış faturasına (ALS-89 'Kısmen Ödendi · 400'; kapatan 'Otomatik')
+      ---
+      duration_ms: 33.949937
+      type: 'test'
+      ...
+    # Subtest: Kapatılacak Fatura seçilen ödeme → o faturaya bağlı ('Bağlı'), en eski değil; yanlış yön 409; başka carinin faturası 404
+    ok 4 - Kapatılacak Fatura seçilen ödeme → o faturaya bağlı ('Bağlı'), en eski değil; yanlış yön 409; başka carinin faturası 404
+      ---
+      duration_ms: 50.449382
+      type: 'test'
+      ...
+    # Subtest: Mahsup Et: alış ALS-89 ↔ satış 400 → satış Ödendi, alış 800 ödenmiş; sınırlar 409; kaldırınca eski hâl; bakiye/Kasa değişmez
+    ok 5 - Mahsup Et: alış ALS-89 ↔ satış 400 → satış Ödendi, alış 800 ödenmiş; sınırlar 409; kaldırınca eski hâl; bakiye/Kasa değişmez
+      ---
+      duration_ms: 49.46692
+      type: 'test'
+      ...
+    # Subtest: Alacak Yaz satırı mahsupta karşı belge olabilir (kalanı aşamaz); Borç Yaz satırı alış faturasını kendiliğinden kapatmaz
+    ok 6 - Alacak Yaz satırı mahsupta karşı belge olabilir (kalanı aşamaz); Borç Yaz satırı alış faturasını kendiliğinden kapatmaz
+      ---
+      duration_ms: 46.012985
+      type: 'test'
+      ...
+    # Subtest: iptal: satış iptal edilince mahsup düşer, alış yeniden hesaplanır; bağlı ödemenin bağı iptalde kalkar (otomatiğe döner)
+    ok 7 - iptal: satış iptal edilince mahsup düşer, alış yeniden hesaplanır; bağlı ödemenin bağı iptalde kalkar (otomatiğe döner)
+      ---
+      duration_ms: 54.829412
+      type: 'test'
+      ...
+    # Subtest: mutabakat: fatura ödenen toplamı = kapatanların toplamı; bütünlük denetimi temiz
+    ok 8 - mutabakat: fatura ödenen toplamı = kapatanların toplamı; bütünlük denetimi temiz
+      ---
+      duration_ms: 11.719164
+      type: 'test'
+      ...
+    1..8
+ok 5 - Hem müşteri hem tedarikçi cari: hayalet kısmi ödeme yok (API)
+  ---
+  duration_ms: 1035.605964
+  type: 'suite'
+  ...
+# Subtest: Madde 10: iade faturası düzenlenir; sınırlar; POS İadesi; pasif düğme nedeni
+    # Subtest: iade kartı: Düzenle açık (canModify), karta iade 'POS İadesi'; asıl faturanın kalanı iade hariç 7, düzenleme için 10
+    ok 1 - iade kartı: Düzenle açık (canModify), karta iade 'POS İadesi'; asıl faturanın kalanı iade hariç 7, düzenleme için 10
+      ---
+      duration_ms: 14.256118
+      type: 'test'
+      ...
+    # Subtest: iade düzenle: miktar 3 → 5, aynı numara; stok/cari/Kasa yeni hâle göre; asıl faturanın kalanı 5
+    ok 2 - iade düzenle: miktar 3 → 5, aynı numara; stok/cari/Kasa yeni hâle göre; asıl faturanın kalanı 5
+      ---
+      duration_ms: 29.455226
+      type: 'test'
+      ...
+    # Subtest: sınırlar: kalanı aşan miktar 400 (6 iade edilebilir değil: 10 − 0 diğer iade → en çok 10, 11 → 400); asıl faturadan önceki tarih 400; asıl fatura/cari değiştirilemez 400
+    ok 3 - sınırlar: kalanı aşan miktar 400 (6 iade edilebilir değil: 10 − 0 diğer iade → en çok 10, 11 → 400); asıl faturadan önceki tarih 400; asıl fatura/cari değiştirilemez 400
+      ---
+      duration_ms: 22.226147
+      type: 'test'
+      ...
+    # Subtest: pasif düğme nedeni: asıl faturada Düzenle/İptal kapalı nedeni metin olarak gelir; tamamı iade edilince İade nedeni
+    ok 4 - pasif düğme nedeni: asıl faturada Düzenle/İptal kapalı nedeni metin olarak gelir; tamamı iade edilince İade nedeni
+      ---
+      duration_ms: 27.938096
+      type: 'test'
+      ...
+    1..4
+ok 6 - Madde 10: iade faturası düzenlenir; sınırlar; POS İadesi; pasif düğme nedeni
+  ---
+  duration_ms: 503.288738
+  type: 'suite'
+  ...
+# Subtest: Madde 1: fatura Sil — kartta ve toplu; etkiler geri alınır; Silinenler'e gider; numara sayacı
+    # Subtest: kaydedilmiş satış silinir: stok, cari, Kasa eski hâline döner; belge listeden kalkar, Silinenler'de; sayaç geri gelir
+    ok 1 - kaydedilmiş satış silinir: stok, cari, Kasa eski hâline döner; belge listeden kalkar, Silinenler'de; sayaç geri gelir
+      ---
+      duration_ms: 168.085385
+      type: 'test'
+      ...
+    # Subtest: Silinenler'den geri yükle: belge 'İptal Edildi' olarak döner, etkisiz (stok/cari/Kasa aynı)
+    ok 2 - Silinenler'den geri yükle: belge 'İptal Edildi' olarak döner, etkisiz (stok/cari/Kasa aynı)
+      ---
+      duration_ms: 81.413891
+      type: 'test'
+      ...
+    # Subtest: engeller: iadesi olan fatura silinmez (409, nedeni deleteBlock); taslak silinir; aradaki numara boşluk kalır
+    ok 3 - engeller: iadesi olan fatura silinmez (409, nedeni deleteBlock); taslak silinir; aradaki numara boşluk kalır
+      ---
+      duration_ms: 83.905036
+      type: 'test'
+      ...
+    # Subtest: toplu silme: iade önce; sonuç belge belge; başarısızın nedeni; sayılar eski hâline döner
+    ok 4 - toplu silme: iade önce; sonuç belge belge; başarısızın nedeni; sayılar eski hâline döner
+      ---
+      duration_ms: 129.523219
+      type: 'test'
+      ...
+    1..4
+ok 7 - Madde 1: fatura Sil — kartta ve toplu; etkiler geri alınır; Silinenler'e gider; numara sayacı
+  ---
+  duration_ms: 1030.48933
+  type: 'suite'
+  ...
+# Subtest: Faturada büyük birim fiyat ve miktar (kayan nokta toleransı)
+    # Subtest: çalışıyor mu: 1.048.576 TL üstü ondalıklı birim fiyat reddedilmez; matrah, KDV, toplam kuruşu kuruşuna
+    ok 1 - çalışıyor mu: 1.048.576 TL üstü ondalıklı birim fiyat reddedilmez; matrah, KDV, toplam kuruşu kuruşuna
+      ---
+      duration_ms: 2.82848
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: 16.777.216 üstü 3 ondalıklı miktar reddedilmez
+    ok 2 - çalışıyor mu: 16.777.216 üstü 3 ondalıklı miktar reddedilmez
+      ---
+      duration_ms: 0.42054
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: 5 ondalıklı fiyat ve 4 ondalıklı miktar hâlâ reddedilir (küçük ve büyük tutarda)
+    ok 3 - nasıl bozarım: 5 ondalıklı fiyat ve 4 ondalıklı miktar hâlâ reddedilir (küçük ve büyük tutarda)
+      ---
+      duration_ms: 1.268501
+      type: 'test'
+      ...
+    1..3
+ok 8 - Faturada büyük birim fiyat ve miktar (kayan nokta toleransı)
+  ---
+  duration_ms: 5.562782
+  type: 'suite'
+  ...
+# Subtest: API: büyük birim fiyatlı fatura kaydedilir (ekrandaki gibi metin ve sayı)
+    # Subtest: satış (metin "1.234.567,89", ekran biçimi) ve alış (sayı 1225763.39): 200, ödenecek elle hesaplanan
+    ok 1 - satış (metin "1.234.567,89", ekran biçimi) ve alış (sayı 1225763.39): 200, ödenecek elle hesaplanan
+      ---
+      duration_ms: 162.894643
+      type: 'test'
+      ...
+    1..1
+ok 9 - API: büyük birim fiyatlı fatura kaydedilir (ekrandaki gibi metin ve sayı)
+  ---
+  duration_ms: 732.969481
+  type: 'suite'
+  ...
+# Subtest: fatura ödeme durumu: toplu yol (liste, rozet) = fatura kartı yolu
+    # Subtest: tohumlu rastgele 260 işlem: her faturada liste = kart; her ara denetimde de
+    ok 1 - tohumlu rastgele 260 işlem: her faturada liste = kart; her ara denetimde de
+      ---
+      duration_ms: 9657.954446
+      type: 'test'
+      ...
+    # Subtest: saklanan sonuç ilk yazmada yenilenir: tahsilat girilince liste ve rozet hemen değişir
+    ok 2 - saklanan sonuç ilk yazmada yenilenir: tahsilat girilince liste ve rozet hemen değişir
+      ---
+      duration_ms: 177.423237
+      type: 'test'
+      ...
+    1..2
+ok 10 - fatura ödeme durumu: toplu yol (liste, rozet) = fatura kartı yolu
+  ---
+  duration_ms: 10396.95469
+  type: 'suite'
+  ...
+# Subtest: fatura hesabı: program = bağımsız model
+    # Subtest: 30.000 rastgele fatura (KDV dahil/hariç, satır ve genel iskonto, tevkifat, stopaj, döviz)
+    ok 1 - 30.000 rastgele fatura (KDV dahil/hariç, satır ve genel iskonto, tevkifat, stopaj, döviz)
+      ---
+      duration_ms: 1395.373494
+      type: 'test'
+      ...
+    1..1
+ok 11 - fatura hesabı: program = bağımsız model
+  ---
+  duration_ms: 1396.704319
+  type: 'suite'
+  ...
+1..11
+# tests 46
+# suites 11
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20711.00232

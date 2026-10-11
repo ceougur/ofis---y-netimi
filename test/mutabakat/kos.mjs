@@ -3,20 +3,23 @@
 // işlemlerle sürer, her işlemden sonra (--her N: her N işlemde bir) bağımsız modelle ve programın mutabakat kapısıyla
 // karşılaştırır. Uyuşmazlıkta çıkış kodu 1 ve hangi işlemde, hangi hesapta, ne kadar fark olduğu yazılır.
 import { loginAdmin, startTestServer } from "../helpers.mjs";
-import { runReconciliation } from "./motor.mjs";
+import { motorNow, runReconciliation } from "./motor.mjs";
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`);
   return i > 0 ? Number(process.argv[i + 1]) : fallback;
 };
-const operations = arg("islem", 2000);
+// Varsayılan planın alt sınırı (docs/BANKA-MODULU-PLAN.md §10.7: --islem 5000 --tohumlar 2); üst sınır yok.
+const operations = arg("islem", 5000);
 const firstSeed = arg("tohum", 1);
-const seeds = arg("tohumlar", 1);
+const seeds = arg("tohumlar", 2);
 const every = arg("her", 1);
 const burst = arg("eszamanli", 60);
 let failed = 0;
 for (let seed = firstSeed; seed < firstSeed + seeds; seed++) {
-  const server = await startTestServer();
+  // bankPickLegacy (2.1.0 Aşama 5–6): motorun havalelerinin bir kısmı eski sürüm gibi hesap seçmeden yazılır (Hesabı Atanmamış). Aşama 7–8: cari
+  // tahsilat/ödeme, taksit tahsilatı ve çek tahsilinde havalelerin %60'ı bir hesaba bağlanır; hesap bakiyesi ve K7 (bağlı cari ödemesi) modelde.
+  const server = await startTestServer({ bankPickLegacy: true, now: motorNow() });
   const started = performance.now();
   try {
     const admin = await loginAdmin(server);

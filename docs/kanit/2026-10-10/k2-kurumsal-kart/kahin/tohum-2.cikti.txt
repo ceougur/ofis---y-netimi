@@ -1,0 +1,23 @@
+rastgele-2-500: çıkış a=0 b=0 program=0 · karşılaştırılan 7949 · atlanan 688 · fark 978 {'A=B≠P': 628, 'A≠B=P': 252, 'A≠B≠P': 14, 'B≠A=P': 84}
+  IADE-KAPAMA+KAHIN-K4-YINELENEN-AD+KDV-DAHIL-ISKONTO             2 yaprak  {'A≠B≠P': 2}
+  KAHIN-K4-YINELENEN-AD                                         252 yaprak  {'A≠B=P': 252}
+  KAHIN-K4-YINELENEN-AD+KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+V   12 yaprak  {'A≠B≠P': 12}
+  KAHIN-K4-YINELENEN-AD+KOSUCU-ALIS-YINELEME-NUMARA              84 yaprak  {'B≠A=P': 84}
+  KART-HESABI-BAGLANMIYOR                                        20 yaprak  {'A=B≠P': 20}
+  KASA-ACILIS-649                                                38 yaprak  {'A=B≠P': 38}
+  KASA-ISTEK-KIMLIGI                                              2 yaprak  {'A=B≠P': 2}
+  KDV-DAHIL-ISKONTO                                             158 yaprak  {'A=B≠P': 158}
+  KOSUCU-ALIS-YINELEME-NUMARA                                     6 yaprak  {'A=B≠P': 6}
+  KREDI-ANAPARA-ASIMI                                             1 yaprak  {'A=B≠P': 1}
+  TUREV:IADE-KAPAMA                                              18 yaprak  {'A=B≠P': 18}
+  TUREV:IADE-KAPAMA+KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+VADEL   12 yaprak  {'A=B≠P': 12}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                            85 yaprak  {'A=B≠P': 85}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS           39 yaprak  {'A=B≠P': 39}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO                     11 yaprak  {'A=B≠P': 11}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASI   20 yaprak  {'A=B≠P': 20}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASI   28 yaprak  {'A=B≠P': 28}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS    76 yaprak  {'A=B≠P': 76}
+  TUREV:KDV-DAHIL-ISKONTO                                        78 yaprak  {'A=B≠P': 78}
+  TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI                    24 yaprak  {'A=B≠P': 24}
+  TUREV:KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS                        6 yaprak  {'A=B≠P': 6}
+  VADELI-HESAP-FIS                                                6 yaprak  {'A=B≠P': 6}

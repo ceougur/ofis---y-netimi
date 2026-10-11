@@ -10,7 +10,6 @@ import { createChat } from "./lib/chat.mjs";
 import { createChatArchive } from "./lib/chat-archive.mjs";
 import { createEventHub } from "./lib/events.mjs";
 import { runDueBackups, startBackupScheduler } from "./lib/backup.mjs";
-import { createCloudBackup } from "./lib/cloud-backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
 import { createDatasetService } from "./lib/dataset.mjs";
@@ -32,8 +31,14 @@ import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerLedgerRoutes } from "./routes/ledger.mjs";
+import { registerBankRoutes } from "./routes/bank.mjs";
 import { registerWhatsappRoutes } from "./routes/whatsapp.mjs";
 import { createIntegrity } from "./lib/integrity.mjs";
+import { createIdempotency } from "./lib/idempotency.mjs";
+import { createBank } from "./lib/bank/post.mjs";
+import { createMoneyLines } from "./lib/bank/money-lines.mjs";
+import { migrateBankGrants } from "./lib/bank/grants.mjs";
+import { markLegacyRows, repairBank } from "./lib/bank/repair.mjs";
 import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
@@ -62,6 +67,7 @@ import { registerCompanyRoutes } from "./routes/companies.mjs";
 import { createBackup } from "./lib/backup.mjs";
 import { applyStagedRestore, createCompanyBackups } from "./lib/company-backups.mjs";
 import { resolveDbPath } from "./lib/db-path.mjs";
+import { createReportRunner } from "./lib/report-runner.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -73,6 +79,9 @@ function ensureInitialAdmin(store, config, log) {
   );
   log.info(`İlk yönetici hesabı oluşturuldu: ${config.adminUsername}${mustChange ? " (ilk girişte parola değiştirilecek)" : ""}`);
 }
+
+// Mutabakat kapısının tam taraması (v2.1.0, §3.11): arka planda bu aralıkla salt okuma.
+const INTEGRITY_SCAN_MINUTES = 15;
 
 export function createApp(overrides = {}) {
   const config = loadConfig(overrides);
@@ -129,7 +138,7 @@ export function createApp(overrides = {}) {
       log.warn(`Yedekler şirket klasörlerine taşınamadı: ${error.message}`);
     }
   }
-  const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity() });
+  const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity(), now: config.now });
   // 2.0.21 öncesinden gelen şirketler (gözden geçirme bulgusu): veri dosyası olan her şirket "açılmış" sayılır; dosyası
   // sonradan kaybolursa sessizce boş veri tabanı açılmaz (2.0.21'deki ilk açılışını beklemeden).
   if (!hub) {
@@ -144,8 +153,19 @@ export function createApp(overrides = {}) {
   }
   if (!hub) ensureInitialAdmin(store, config, log);
   else mirrorUsers(hub.store, store);
+  // Gözden geçirme D5 (K4): eski sürümün (2.0.25/2.0.26) rol ya da kişi kaydında sildiği banka yetkileri ortak katmanın her açılışında geri
+  // gelir (yalnız işaretsiz rol/kişi; yalnız EKLER, bugünkü yetkilerden). Çalışmasa da program açılır.
+  if (!hub) {
+    try {
+      store.tx(() => migrateBankGrants(store));
+    } catch (error) {
+      log.error?.("Banka yetkileri yeniden değerlendirilemedi", error);
+    }
+  }
 
-  const audit = createAudit(store);
+  const audit = createAudit(store, { now: config.now });
+  // Merkezi para yazımı (v2.1.0; lib/bank/post.mjs, plan §3.3 K6): bank.post + para yazımı denetimi (K6) bu şirketin store'unda.
+  const bank = createBank({ store, now: config.now, log, strict: config.moneyStrict, requests: createIdempotency({ store, now: config.now }), audit });
   // Roller ve etkin yetkiler (v2.0.10): yerleşik 4 rol + ofisin tanımladığı roller + kişiye özel ekle/çıkar.
   const access = hub ? hub.access : createAccess({ store });
   const auth = hub ? hub.auth : createAuth({ store, config, audit, access });
@@ -163,41 +183,8 @@ export function createApp(overrides = {}) {
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
   // o sürede durur. Uygulama nesnesi aşağıda kurulduğundan eşitleme denetimi geç bağlanır.
   let license = null;
-  // Drive'a yedek (v2.0.2): kullanıcı Drive bağlantısı/klasörü bağladıysa her yedek oraya da kopyalanır. Lisans nesnesi
-  // aşağıda kurulduğundan geç bağlanır; kopya hatası yerel yedeği hiçbir zaman engellemez.
-  // v2.0.20: Drive ayarı ortak katmanda (hub) tek; bütün şirketlerin yedekleri oraya, her şirket kendi klasörüne kopyalanır.
-  // Kopyalar sırayla yapılır (aynı anda iki kopya durum kaydını ezmesin).
-  // Drive bağlantısı ortak katmanda tek (v2.0.20). 2.0.17–2.0.19'da bağlantı seçili şirketin dosyasına yazılıyordu: 002
-  // seçiliyken bağlanan Drive ayarı ortak katmanda yoksa ondan alınır (gözden geçirme bulgusu: kopyalar sessizce duruyordu).
-  if (!hub) {
-    try {
-      if (!store.setting("backup.cloud", "")) {
-        for (const company of companies.list().filter(item => item.id !== ROOT_COMPANY_ID)) {
-          const value = withCompanyDb(company, companyDb => companyDb.prepare("SELECT value FROM settings WHERE key = 'backup.cloud'").get()?.value || "");
-          if (value) {
-            store.setSetting("backup.cloud", value);
-            log.info?.(`Drive yedek bağlantısı ${company.code} · ${company.name} şirketinin ayarından ortak katmana alındı.`);
-            break;
-          }
-        }
-      }
-    } catch (error) {
-      log.warn?.(`Drive yedek ayarı şirketlerden okunamadı: ${error.message}`);
-    }
-  }
-  const cloudBackup = hub ? hub.cloudBackup : createCloudBackup({ store, log, services: config.licenseServices.split(",").map(item => item.trim()).filter(Boolean), keep: config.backupKeep, license: { summary: () => license?.summary?.() } });
-  let mirrorQueue = Promise.resolve();
-  const mirrorNow = result => {
-    const run = mirrorQueue.then(() => cloudBackup.mirror(result));
-    mirrorQueue = run.catch(() => {});
-    return run;
-  };
-  const mirrorBackup = hub
-    ? hub.mirrorBackup
-    : result => {
-        if (!result?.path) return;
-        mirrorNow(result).catch(error => log.warn(`Drive kopyası başarısız: ${error.message}`));
-      };
+  // Drive'a yedek (v2.0.2–2.0.26) 2.1.0'da kaldırıldı (kullanıcı kararı, 10.10.2026): yedekler yalnız yerel yedek klasöründe.
+  // Eski kurulumun veri tabanındaki "backup.cloud" ayarı okunmaz, silinmez; hiçbir yere kopya alınmaz.
   // Kalıcı çalışma verisi: içeri alınan Excel/Sheets satırları + bağlı Sheet'in zamanlanmış eşitlemesi.
   const dataset = createDatasetService({
     store,
@@ -211,17 +198,16 @@ export function createApp(overrides = {}) {
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
     canWrite: () => !license || license.writable(),
-    afterBackup: mirrorBackup,
   });
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
-  const trash = createTrash(store);
+  const trash = createTrash(store, { now: config.now });
   const free = createFreeSheets({ store, audit, dataset, trash });
   dataset.setFreeProvider(free);
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
   // Analiz ayrı iş parçacığında koşar; sunucu bu sırada istekleri yanıtlar (yerel-önce: ofis bilgisayarı kilitlenmez).
   const analysisRunner = createAnalysisRunner({ log, enabled: overrides.analysisWorker !== false });
-  const profile = createProfileService({ store, dataset, audit, events, log, free, runner: analysisRunner });
+  const profile = createProfileService({ store, dataset, audit, events, log, free, runner: analysisRunner, clock: config.now });
   profile.init();
   dataset.onChange(() => profile.invalidate());
   const licenseOptions = overrides.license || {};
@@ -252,9 +238,14 @@ export function createApp(overrides = {}) {
     return true;
   };
   const context = {
-    config, log, store, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup, companies, companyId, company: () => companies.get(companyId),
-    // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde; Drive kopyası sıralı.
-    backups, backupDir: backupDirNow, withCompanyDb, mirrorNow: hub ? hub.mirrorNow : mirrorNow, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
+    config, log, store, bank, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, companies, companyId, company: () => companies.get(companyId),
+    // İş saati (v2.1.0; lib/clock.mjs): modüller "bugün"ü ve zaman damgalarını buradan okur (config.now; testlerde sahte saat).
+    now: config.now,
+    // Tek kaynak (v2.1.0, K5; lib/bank/money-lines.mjs): Kasa, Banka ve POS, ANLIK DURUM ve Ana Defter'in beklenenleri buradan okur.
+    // verify (testlerde gateVerify): K7'nin yazımdan sonra sakladığı toplam ve "tarihten sonra satır yok" kısayolu tam sorguyla denetlenir.
+    money: createMoneyLines(store, { verify: config.gateVerify }),
+    // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde.
+    backups, backupDir: backupDirNow, withCompanyDb, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
   };
   if (stagedRestore) {
     const actor = stagedRestore.by ? { id: stagedRestore.by, display_name: stagedRestore.byName } : null;
@@ -275,10 +266,10 @@ export function createApp(overrides = {}) {
   if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args), closeCompany: id => closeCompany(id) });
   // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla. v2.0.26 (A1): kayıt tahsilatı da
   // (çalışma alanı rotaları) aynı kurala bağlı; bu yüzden onlardan önce kurulur.
-  context.period = createPeriod({ store });
+  context.period = createPeriod({ store, now: config.now });
   // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6). Kasa (eksi bakiye
   // denetimi) da sonra kurulur; istek anında okunur.
-  registerWorkspaceRoutes(router, { ...context, plans: () => context.plans, cash: () => context.cash });
+  registerWorkspaceRoutes(router, { ...context, plans: () => context.plans, cash: () => context.cash, bankModule: () => context.bankAccounts?.module });
   context.cash = registerCashRoutes(router, context);
   // Taksitler (v2.0.4): Kasa ve tahsilat takvimi bu servisin hareketlerini ve gecikmelerini okur.
   // Cari ve Stok (v2.0.6): taksit kartları cariye bağlıdır; stok hareketi Kasa'ya ya da cariye yazılabilir. Servisler
@@ -286,29 +277,57 @@ export function createApp(overrides = {}) {
   // Tablodan taksit kartına aktarma (v2.0.8): "/api/workspace/plans/from-table" ve "/imports" kalıpları kartın
   // "/api/workspace/plans/:id" kalıbından önce kaydedilir (yönlendirici ilk eşleşeni seçer).
   context.planTransfer = registerPlanTransfer(router, { ...context, plans: () => context.plans, accounts: () => context.accounts });
-  context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts, cheques: () => context.cheques, invoices: () => context.invoices });
-  context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques });
-  context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
+  context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts, cheques: () => context.cheques, invoices: () => context.invoices, bankModule: () => context.bankAccounts?.module });
+  context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques, bankModule: () => context.bankAccounts?.module });
+  context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans, bankModule: () => context.bankAccounts?.module });
   // Çek / Senet (v2.0.7): cari ve taksit defterine bağlı; Kasa tahsil/ödeme olaylarını okur.
-  context.cheques = registerChequeRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
+  context.cheques = registerChequeRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans, bankModule: () => context.bankAccounts?.module });
   // Fatura (v2.0.15): belge birincil kayıt; stok, cari, Kasa (peşin), çek/senet ve taksit (vadeli) aynı işlemde yazılır.
-  context.invoices = registerInvoiceRoutes(router, { ...context, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, cheques: () => context.cheques });
+  context.invoices = registerInvoiceRoutes(router, { ...context, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, cheques: () => context.cheques, bankModule: () => context.bankAccounts?.module });
   // Ana Defter (v2.0.13): alt defterlerden türetilen çift yönlü yevmiye, hesap planı mizanı ve mutabakat kapısı.
   context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity });
+  // Banka (v2.1.0 Aşama 3; plan §8.1): hesap kartları, açılış, Hesabı Atanmamış Eski Hareketler, Kurulum ve Aktarım Sihirbazı, Banka Ayarları,
+  // Alt Hesap Mizanı. Ana Defter servisine (Alt Hesap Mizanı) istek anında ulaşır.
+  context.bankAccounts = registerBankRoutes(router, context);
   // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;
   // sapma yaratacaksa ROLLBACK edilir ve günlüğe yazılır (lib/integrity.mjs).
-  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, log });
+  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, money: () => context.money, events, strict: config.moneyStrict, verify: config.gateVerify, partyRows: config.scopePartyRows, dbPath: config.dbPath, log, now: config.now });
+  // Açılış onarımı (v2.1.0, §10.6): eski sürüme (2.0.25/2.0.26) dönülüp yeniden güncellenen dosyada eski sürümün izleri kapı kurulmadan
+  // toplanır (tek işlem; yalnız ilgili kayıtlar). Onarım başarısız olsa da program açılır; sapmalar kapının tabanı ve Mutabakat Testi'nde.
+  try {
+    repairBank({ store, now: config.now, period: context.period, log });
+  } catch (error) {
+    log.error?.("Açılış onarımı çalışmadı", error);
+  }
+  // Açılış onarımı (v2.1.0, Canlı Hata 2): 2.0.24–2.0.26'da iade + peşin geri ödemesiyle yanlış büyümüş taksit kartları (yalnız ödenmemiş
+  // kısım; kilitli döneme yazılmaz; idempotent). Başarısız olsa da program açılır.
+  try {
+    context.ownCardRepair = context.invoices.repairOwnCards({ log });
+  } catch (error) {
+    log.error?.("Taksit kartı açılış onarımı çalışmadı", error);
+  }
   context.integrity.start();
+  // Tam tarama (§3.11 "Kapı ölçeği" 1): 15 dakikada bir arka planda salt okuma; yeni sapma integrity_log + zil.
+  context.integrity.scanMinutes = INTEGRITY_SCAN_MINUTES;
+  // Gözden geçirme B7: tarama ayrı iş parçacığında (salt okunur bağlantı); veri, gün ve kilit değişmediyse atlanır.
+  context.integrity.scanTimer = overrides.integrityScan === false ? null : setInterval(() => {
+    context.integrity.scanInBackground().catch(error => log.error?.("Mutabakat taraması çalışmadı", error));
+  }, INTEGRITY_SCAN_MINUTES * 60_000);
+  context.integrity.scanTimer?.unref?.();
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
   registerWhatsappRoutes(router, { ...context, accounts: () => context.accounts });
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
   // Vade takip ve nakit akışı (v2.0.9) tablolardaki ödeme günlerini de okur (tüm veri oturumları; routes/reports.mjs).
   context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, tables: () => context.tableReports });
   // Rapor merkezi (v2.0.7): programdaki her bilginin hazır raporu; ekranda ön izleme, PDF ve Excel.
-  context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity });
+  // 11.10.2026 hız düzeltmesi (§3.11 madde 5): büyük banka raporları ayrı iş parçacığında, bu şirketin veri dosyasının salt okunur anlık
+  // görüntüsünden (lib/report-runner.mjs; aynı kod, aynı çıktı). Bellek içi veri tabanında (dosyası yok) ve kapalıyken yerinde hazırlanır.
+  const reportRunner = config.reportWorker && config.dbPath && config.dbPath !== ":memory:" ? createReportRunner(config.reportWorkerEntry ? { entry: config.reportWorkerEntry } : {}) : null;
+  context.reportRunner = reportRunner;
+  context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity, offload: reportRunner ? job => reportRunner.run({ ...job, dbPath: config.dbPath, fx: config.fxEnabled === true, later: config.bankLater === true }) : null });
   registerDueRoutes(router, { ...context, calendar: () => context.tableReports?.calendar });
   const documents = registerDocumentRoutes(router, context);
-  registerTrashRoutes(router, { ...context, documents, invoices: context.invoices });
+  registerTrashRoutes(router, { ...context, documents, invoices: context.invoices, bankModule: () => context.bankAccounts?.module });
   registerFreeRoutes(router, { ...context, readGoogleSheet });
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
@@ -392,7 +411,9 @@ export function createApp(overrides = {}) {
         startLicenseTimers: false,
         // Otomatik yedek ortak katmanın zamanlayıcısında (bütün şirketler); çocuk kendi zamanlayıcısını kurmaz.
         scheduleBackups: false,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, cloudBackup, mirrorBackup, mirrorNow, requestRestart, closeCompany },
+        // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
+        now: config.now,
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -462,7 +483,9 @@ export function createApp(overrides = {}) {
     const child = children.get(id);
     if (!child) return false;
     children.delete(id);
-    await child.close();
+    // Yalnız bu şirketin örneği kapanıyor (geri yükleme, silme, Ayır): sürmekte olan rapor "Sunucu kapanıyor" değil "şirket verisi
+    // değiştiriliyor" der (lib/report-runner.mjs H1).
+    await child.close({ reason: "company" });
     return true;
   }
   const server = createServer((req, res) => {
@@ -476,13 +499,13 @@ export function createApp(overrides = {}) {
   server.requestTimeout = 5 * 60_000;
 
   // Otomatik yedek (v2.0.20): ortak katmanda tek zamanlayıcı BÜTÜN şirketleri yedekler — bu açılışta hiç açılmamış şirket
-  // de (veri tabanı kısa süreliğine salt okunur açılır); her şirket kendi klasörüne, Drive'a da kendi klasörüne.
+  // de (veri tabanı kısa süreliğine salt okunur açılır); her şirket kendi klasörüne.
   const stopBackups = config.scheduleBackups && !hub
-    ? startBackupScheduler({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log, onBackup: mirrorBackup })
+    ? startBackupScheduler({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log })
     : () => {};
   if (overrides.startLicenseTimers !== false && !hub) license.start();
   // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).
-  const alertScheduler = createAlertScheduler({ events, log });
+  const alertScheduler = createAlertScheduler({ events, log, clock: config.now });
   if (overrides.alertScheduler !== false) alertScheduler.start();
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => auth.purgeExpiredSessions(), 3_600_000);
@@ -518,12 +541,18 @@ export function createApp(overrides = {}) {
   // çek/senet, Ana Defter, işlem geçmişi silinir). mode "all": şirket ilk açıldığı gibi boş (şirket adı/kodu, unvan/VKN/logo,
   // fatura serisi kalır). Önce ZORUNLU yedek (Yedekler'den geri yüklenir). Lisans, kullanıcılar, öbür şirketler ortak
   // katmanda; etkilenmez.
-  const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "trash", "audit_events"];
-  const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages"];
+  // v2.1.0 (§5.6): banka hareketleri (işlem başlığı, banka fişi, POS satışı ve valör takvimi, bankaya tahsile verilen çek, ekstre ve
+  // eşleşmeler, planlı işlemler, iş kuyruğu, istek kimlikleri) hareketle silinir; hesap ve POS kartları ile komisyon oranları kart
+  // gibi ("Tümünü Sıfırla"da) silinir. Kur (fx_rates) ve banka tatilleri başvuru verisidir: silinmez. İşlem No sayacı "meta." önekiyle
+  // korunur (sıfırlamadan sonra numara yeniden kullanılmaz).
+  const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "trash", "audit_events",
+    "fin_events", "bank_lines", "pos_sales", "pos_items", "cheque_collections", "bank_statements", "bank_statement_lines", "bank_matches", "bank_plans", "bank_jobs", "request_keys", "ledger_snapshots"];
+  const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages",
+    "bank_accounts", "pos_terminals", "pos_rates"];
   // v2.0.21 (rastgele sıra testi bulgusu): 001'in veri tabanı aynı zamanda ortak katmandır; kullanıcıların şirket seçimi ve
   // ŞİRKET YETKİLERİ (company.*) ile parola kurtarma anahtarı (auth.*) "Tümünü Sıfırla"da silinmez (geri yüklemedeki ortak
   // katman listesiyle aynı: company-backups.mjs COMMON_SETTINGS).
-  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update", "company.", "auth."];
+  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update", "company.", "auth.", "bank.settings"];
   function resetData(user, { mode = "movements", resetNumbers = true } = {}) {
     if (!["movements", "all"].includes(mode)) throw new HttpError(400, "Sıfırlama türü 'movements' ya da 'all' olmalı.");
     const company = companies.get(companyId);
@@ -535,13 +564,15 @@ export function createApp(overrides = {}) {
     // kapısı işlemi geri alıyordu (409). Sıfırlamada kilit de kaldırılır (onay penceresinde yazar) ve işlem geçmişine
     // "ledger.period.unlocked" yazılır. "Tümünü Sıfırla" kilit ayarını zaten siliyordu; o da aynı kaydı bırakır.
     const unlocked = context.period?.lockedUntil?.() || "";
-    store.tx(() => {
+    store.raw("company.reset", () => store.tx(() => {
       const tables = mode === "all" ? [...MOVEMENT_TABLES, ...CARD_TABLES] : MOVEMENT_TABLES;
       for (const table of tables) {
         if (!has(table)) continue;
         counts[table] = store.get(`SELECT COUNT(*) AS n FROM ${table}`).n;
         store.run(`DELETE FROM ${table}`);
       }
+      // Hesap kartları kalırken açılışları silindi: "Bakiye Doğrulandı" kalkar, kartta "Açılış Bakiyesi Gir" açılır (§5.6).
+      if (mode !== "all" && has("bank_accounts")) store.run("UPDATE bank_accounts SET balance_confirmed = 0 WHERE balance_confirmed <> 0");
       if (resetNumbers) store.run("DELETE FROM settings WHERE key = 'plans.receiptSeq'");
       if (unlocked) {
         store.run("DELETE FROM settings WHERE key = ?", LOCK_KEY);
@@ -552,8 +583,10 @@ export function createApp(overrides = {}) {
           if (!KEEP_SETTINGS.some(prefix => row.key.startsWith(prefix))) store.run("DELETE FROM settings WHERE key = ?", row.key);
         }
       }
+      // Eski satır işareti yenilenir: silinen para tablolarında rowid baştan başlar (v2.1.0; lib/bank/repair.mjs).
+      if (has("fin_events")) markLegacyRows(store, { now: config.now });
       audit(user, "company.reset", companyId, { mode, resetNumbers, backup: backup?.name || "", counts, unlocked });
-    });
+    }));
     // Kapı tabanı yeniden ölçülür (kilit kalktı, eski satırlar silindi; dönem kilidi değişikliğindeki gibi).
     context.integrity?.start?.();
     try {
@@ -590,7 +623,7 @@ export function createApp(overrides = {}) {
     backups,
     backupDir: backupDirNow,
     // Zamanlayıcının bir turu (zamanı gelen bütün şirketler); zamanlayıcı kapalıyken de çalışır.
-    runDueBackups: () => (hub ? [] : runDueBackups({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, log, onBackup: mirrorBackup })),
+    runDueBackups: () => (hub ? [] : runDueBackups({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, log })),
     stagedRestore,
     openCompanyIds: () => (hub ? [] : [...children.keys()]),
     // Servis yöneticisi altında server.mjs bağlar: 001 geri yüklemesi için uygulama kendini düzgün kapatır, servis
@@ -611,11 +644,12 @@ export function createApp(overrides = {}) {
         });
       });
     },
-    async close() {
+    async close({ reason = "shutdown" } = {}) {
       if (closed) return;
       closed = true;
       stopBackups();
       clearInterval(sessionTimer);
+      clearInterval(context.integrity?.scanTimer);
       clearTimeout(archiveStart);
       clearInterval(archiveTimer);
       alertScheduler.stop();
@@ -631,6 +665,7 @@ export function createApp(overrides = {}) {
         server.closeAllConnections?.();
       });
       await analysisRunner.close();
+      await reportRunner?.close({ reason });
       for (const child of children.values()) await child.close();
       db.close();
     },

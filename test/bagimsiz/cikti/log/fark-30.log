@@ -1,0 +1,17 @@
+rastgele-30-500: çıkış a=0 b=0 program=0 · karşılaştırılan 9040 · atlanan 1714 · fark 804 {'A=B≠P': 521, 'A≠B=P': 192, 'B≠A=P': 90, 'KOSUCU': 1}
+  ACIKLANMAMIS:A≠B=P:taksitKartlari.*.kalan                       3 yaprak  {'A≠B=P': 3}
+  ACIKLANMAMIS:A≠B=P:taksitKartlari.*.odenen                      3 yaprak  {'A≠B=P': 3}
+  ACIKLANMAMIS:A≠B=P:taksitKartlari.*.toplam                      3 yaprak  {'A≠B=P': 3}
+  KART-HESABI-BAGLANMIYOR                                        93 yaprak  {'A=B≠P': 92, 'KOSUCU': 1}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KOSUCU-ALIS-YINELEME-NUMARA                                    94 yaprak  {'B≠A=P': 90, 'A=B≠P': 4}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.kdv                             5 yaprak  {'A=B≠P': 5}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.matrah                         83 yaprak  {'A=B≠P': 83}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.toplam                         88 yaprak  {'A=B≠P': 88}
+  SINIFLANMAMIS:A≠B=P:faturalar.*.acik                           33 yaprak  {'A≠B=P': 33}
+  SINIFLANMAMIS:A≠B=P:faturalar.*.kdv                            49 yaprak  {'A≠B=P': 49}
+  SINIFLANMAMIS:A≠B=P:faturalar.*.matrah                         49 yaprak  {'A≠B=P': 49}
+  SINIFLANMAMIS:A≠B=P:faturalar.*.toplam                         49 yaprak  {'A≠B=P': 49}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                            65 yaprak  {'A=B≠P': 62, 'A≠B=P': 3}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO                40 yaprak  {'A=B≠P': 40}
+  TUREV:KDV-DAHIL-ISKONTO                                       107 yaprak  {'A=B≠P': 107}

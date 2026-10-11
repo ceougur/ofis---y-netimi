@@ -1,0 +1,173 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KAHIN-K4-YINELENEN-AD-tani",
+  "aciklama": "Hakem tanısı: (a) yinelenen taksitli satışın ikinci takma adları (F2, T2) sonraki adımda girdi olarak kullanılır (taksit_tahsilat kart T2); (b) taksitsiz satış yinelemesinin adı (FX2) kapatilacakFatura olarak kullanılır; (c) alış yinelemesi (G2) — koşucu belge no'ya takma adı yazdığı için programda 409 beklenir (bileşik sınıf KOSUCU-ALIS-YINELEME-NUMARA).",
+  "dayanak": "SENARYO-DILI §5.4, §8.3, §3.3",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "cari_ac",
+      "ad": "M1",
+      "unvan": "Müşteri 1",
+      "tur": "musteri"
+    },
+    {
+      "id": "2",
+      "islem": "cari_ac",
+      "ad": "M2",
+      "unvan": "Müşteri 2",
+      "tur": "musteri"
+    },
+    {
+      "id": "3",
+      "islem": "cari_ac",
+      "ad": "S1",
+      "unvan": "Tedarikçi 1",
+      "tur": "tedarikci"
+    },
+    {
+      "id": "4",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "500",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "T1",
+          "sayi": 2,
+          "ilkVade": "05.11.2026"
+        }
+      },
+      "istekKimligi": "y1"
+    },
+    {
+      "id": "5",
+      "islem": "fatura",
+      "ad": "F2",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "500",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "T2",
+          "sayi": 2,
+          "ilkVade": "05.11.2026"
+        }
+      },
+      "istekKimligi": "y1"
+    },
+    {
+      "id": "6",
+      "islem": "taksit_tahsilat",
+      "kart": "T2",
+      "tutar": "100",
+      "yol": "nakit"
+    },
+    {
+      "id": "7",
+      "islem": "fatura",
+      "ad": "FX1",
+      "tur": "satis",
+      "cari": "M2",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "1000",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "istekKimligi": "y2"
+    },
+    {
+      "id": "8",
+      "islem": "fatura",
+      "ad": "FX2",
+      "tur": "satis",
+      "cari": "M2",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "1000",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "istekKimligi": "y2"
+    },
+    {
+      "id": "9",
+      "islem": "cari_tahsilat",
+      "cari": "M2",
+      "tutar": "200",
+      "yol": "nakit",
+      "kapatilacakFatura": "FX2"
+    },
+    {
+      "id": "10",
+      "islem": "fatura",
+      "ad": "G1",
+      "tur": "alis",
+      "cari": "S1",
+      "kalemler": [
+        {
+          "hizmet": "Hesap İşletim",
+          "miktar": 1,
+          "birimFiyat": "300",
+          "kdvOrani": 20,
+          "kdvDahil": false,
+          "giderTuru": "Banka Masrafları"
+        }
+      ],
+      "istekKimligi": "y3"
+    },
+    {
+      "id": "11",
+      "islem": "fatura",
+      "ad": "G2",
+      "tur": "alis",
+      "cari": "S1",
+      "kalemler": [
+        {
+          "hizmet": "Hesap İşletim",
+          "miktar": 1,
+          "birimFiyat": "300",
+          "kdvOrani": 20,
+          "kdvDahil": false,
+          "giderTuru": "Banka Masrafları"
+        }
+      ],
+      "istekKimligi": "y3"
+    }
+  ]
+}

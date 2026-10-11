@@ -1,0 +1,128 @@
+
+=== deneme 1/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay 2696 · yazma (input) 3040 · fill bitti 3044 · bekleme bitti 4068 · ağ kesildi 4076
+  #4 user başladı    27 bitti    44 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #5 bg   başladı  3147 bitti  3160 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #6 user başladı  3291 bitti  3296 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #7 bg   başladı  4648 bitti  4657 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 70: 12 satır q="" | 3156: 12 satır q="Müşteri 0" | 3170: 9 satır q="Müşteri 0"
+
+=== deneme 2/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay 2731 · yazma (input) 3070 · fill bitti 3079 · bekleme bitti 4110 · ağ kesildi 4114
+  #13 user başladı    62 bitti    87 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #14 bg   başladı  3182 bitti  3186 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #15 user başladı  3321 bitti  3327 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #16 bg   başladı  4683 bitti  4687 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 135: 12 satır q="" | 3182: 12 satır q="Müşteri 0" | 3195: 9 satır q="Müşteri 0"
+
+=== deneme 3/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay 2797 · yazma (input) 3136 · fill bitti 3154 · bekleme bitti 4168 · ağ kesildi 4175
+  #22 user başladı    50 bitti    71 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #23 bg   başladı  3248 bitti  3289 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #24 user başladı  3387 bitti  3402 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #25 bg   başladı  4747 bitti  4757 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 140: 12 satır q="" | 3299: 12 satır q="Müşteri 0" | 3311: 9 satır q="Müşteri 0"
+
+=== deneme 4/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2769 · yazma (input) 3132 · fill bitti 3183 · bekleme bitti 4209 · ağ kesildi 4272
+  #31 user başladı   104 bitti   173 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #32 bg   başladı  3224 bitti  3233 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #33 user başladı  3383 bitti  3407 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #34 bg   başladı  4720 bitti  4726 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #35 bg   başladı  7727 bitti  7738 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 209: 12 satır q="" | 3255: 9 satır q="Müşteri 0"
+
+=== deneme 5/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2722 · yazma (input) 3096 · fill bitti 3125 · bekleme bitti 4197 · ağ kesildi 4202
+  #41 user başladı    39 bitti    85 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #42 bg   başladı  3176 bitti  3227 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #43 user başladı  3352 bitti  3394 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #44 bg   başladı  4677 bitti  4693 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #45 bg   başladı  7693 bitti  7699 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 125: 12 satır q="" | 3231: 12 satır q="Müşteri 0" | 3258: 9 satır q="Müşteri 0"
+
+=== deneme 6/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay 2662 · yazma (input) 3003 · fill bitti 3010 · bekleme bitti 4031 · ağ kesildi 4035
+  #51 user başladı    42 bitti    62 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #52 bg   başladı  3113 bitti  3153 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #53 user başladı  3254 bitti  3272 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #54 bg   başladı  4618 bitti  4623 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 87: 12 satır q="" | 3156: 12 satır q="Müşteri 0" | 3180: 9 satır q="Müşteri 0"
+
+=== deneme 7/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay 2650 · yazma (input) 2995 · fill bitti 3014 · bekleme bitti 4032 · ağ kesildi 4041
+  #60 user başladı    35 bitti    66 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #61 bg   başladı  3104 bitti  3119 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #62 user başladı  3255 bitti  3284 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #63 bg   başladı  4604 bitti  4611 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 99: 12 satır q="" | 3118: 12 satır q="Müşteri 0" | 3136: 9 satır q="Müşteri 0"
+
+=== deneme 8/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay 2724 · yazma (input) 3066 · fill bitti 3070 · bekleme bitti 4094 · ağ kesildi 4101
+  #69 user başladı    44 bitti   121 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #70 bg   başladı  3175 bitti  3184 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #71 user başladı  3318 bitti  3327 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #72 bg   başladı  4675 bitti  4679 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 160: 12 satır q="" | 3196: 9 satır q="Müşteri 0"
+
+=== deneme 9/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 2 istek düştü
+  zaman (ms, deneme başına göre): olay 2680 · yazma (input) 3027 · fill bitti 3040 · bekleme bitti 4049 · ağ kesildi 4058
+  #78 user başladı    45 bitti    72 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #79 bg   başladı  3133 bitti  3159 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #80 user başladı  3278 bitti  3289 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #81 bg   başladı  4632 bitti  4637 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #82 bg   başladı  7638 bitti  7650 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 128: 12 satır q="" | 3151: 12 satır q="Müşteri 0" | 3202: 9 satır q="Müşteri 0"
+
+=== deneme 10/10 (MODE=forced WAIT=new CPU=1 LEAD=330): ✓ GEÇTİ · kutu "Müşteri 0", 9 satır · ağ kesilince 1 istek düştü
+  zaman (ms, deneme başına göre): olay 2685 · yazma (input) 3026 · fill bitti 3031 · bekleme bitti 4042 · ağ kesildi 4048
+  #88 user başladı    45 bitti    60 q="" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList < Object.open < HTMLDivElement.<anonymous>
+  #89 bg   başladı  3136 bitti  3142 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  #90 user başladı  3276 bitti  3289 q="Müşteri 0" → http 200
+        yığın: sendApi < rawApi < HOF.api < loadList
+  #91 bg   başladı  4636 bitti  4642 q="Müşteri 0" → FAILED Failed to fetch
+        yığın: sendApi < rawApi < async HOF.api < async loadList < async run
+  ekran: 91: 12 satır q="" | 3151: 9 satır q="Müşteri 0"
+
+Senaryo-222 yarış tanısı (MODE=forced WAIT=new CPU=1 LEAD=330): 10 geçti, 0 kaldı.

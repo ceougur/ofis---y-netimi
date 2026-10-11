@@ -1,0 +1,73 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "komsu-stok-satis-yineleme",
+  "aciklama": "Stoğun tamamını satan fatura aynı istek kimliği ve aynı gövdeyle iki kez (BELİRSİZ-14 alanı; ikinci adımın adı F2 — K4 sınıfı).",
+  "dayanak": "SENARYO-DILI §5.4, §5.6; hakem KAHIN-A-YINELEME-SIRASI komşu denetimi (aynı sıralama, başka BELİRSİZ denetimi)",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "urun_ac",
+      "ad": "U1",
+      "urunAdi": "Ürün 1",
+      "birim": "Adet"
+    },
+    {
+      "id": "2",
+      "islem": "stok_giris",
+      "urun": "U1",
+      "miktar": 1
+    },
+    {
+      "id": "3",
+      "islem": "cari_ac",
+      "ad": "M1",
+      "unvan": "Müşteri 1",
+      "tur": "musteri"
+    },
+    {
+      "id": "4",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "urun": "U1",
+          "miktar": 1,
+          "birimFiyat": "100",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "istekKimligi": "f1"
+    },
+    {
+      "id": "5",
+      "islem": "fatura",
+      "ad": "F2",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "urun": "U1",
+          "miktar": 1,
+          "birimFiyat": "100",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "istekKimligi": "f1"
+    }
+  ]
+}

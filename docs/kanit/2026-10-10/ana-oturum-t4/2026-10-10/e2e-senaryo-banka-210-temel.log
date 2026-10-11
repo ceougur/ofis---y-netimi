@@ -1,0 +1,62 @@
+
+> destekofis@2.0.26 test:senaryo-banka-210-temel
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210-temel.mjs
+
+  ✓ kurulum: Gerçek Banka 10000, Hesabı Atanmamış 900
+
+■ 1. Banka penceresi sekmeleri: yalnız Genel Bakış · Hesaplar · Hareketler · Ayarlar
+  ✓ sekmeler: Genel Bakış, Hesaplar, Hareketler, Ayarlar
+
+■ 2. Genel Bakış: Gerçek Banka 10.000; Hesabı Atanmamış ayrı satır (900); POS Bekleyen / Blokeli POS / Güncel Kurla / Eşleşmeyen yok
+  ✓ Gerçek Banka 10.000,00
+  ✓ Hesabı Atanmamış Eski Hareketler 900,00 ayrı satırda
+  ✓ ertelenen özellik görünmüyor
+  ✓ Banka Hesapları sütunları (yalnız TL hesapta döviz sütunu yok): Banka, Hesap, Gerçek Bakiye, Son Hareket, Dönem, Giriş, Çıkış, Transfer Giriş, Transfer Çıkış, Banka Masrafları, Tarih, İşlem No, Tür, Hesap, Açıklama, Tutar
+  ✓ Gerçek Banka kutusunda "TL karşılığı" notu yok (yalnız TL)
+
+■ 3. Hesaplar → + Yeni Hesap: Hesap Türü'nde Döviz yok; Para Birimi ve Açılış Kuru yok (Vadesiz/Ticari/Vadeli/Kredi/Kart/Diğer)
+  ✓ Hesaplar listesinde ertelenen özellik yok
+  ✓ Hesap Türü seçenekleri: Vadesiz, Ticari, Vadeli, Kredi Hesabı, Kurumsal Kredi Kartı, Diğer
+  ✓ Para Birimi alanı yok (yalnız TL)
+  ✓ hiçbir hesap türünde Açılış Kuru (TL) alanı görünmüyor
+  ✓ formda döviz yok
+
+■ 3b. Kurulum Sihirbazı: hesap adımında da Döviz türü ve Para Birimi yok
+  ✓ sihirbaz Hesap Türü: Vadesiz, Ticari, Vadeli, Kredi Hesabı, Kurumsal Kredi Kartı, Diğer
+  ✓ sihirbazda Para Birimi alanı yok
+
+■ 4. Hesap Detayı: + Masraf, + Faiz, + Diğer İşlem, Transfer; Ekstre Yükle / Döviz Al-Sat / POS yok
+  ✓ düğmeler: + Masraf, + Faiz, + Diğer İşlem, Transfer, Düzenle, Açılışı Düzelt, Pasife Al, Sil
+  ✓ Ekstre Yükle, Döviz Al/Sat, POS, Değerleme düğmesi yok
+  ✓ Hesap Detayı'nda ertelenen özellik yok
+
+■ 5. Hareketler: İşlem Türü süzgecinde ve Planlı İşlem formunda döviz, değerleme, POS, tahsile verme yok
+  ✓ İşlem Türü: Tümü, Banka Masrafı, Faiz, Diğer Gelir ve Gider, Kart Borcu Ödemesi, Kredi, Açılış Bakiyesi, Ters Kayıt, Cari Tahsilat ve Ödeme, Fatura Tahsilat ve Ödeme, Taksit Tahsilat ve İadesi, Kayıt Tahsilatı, Stok Satış ve Alımı, Çek ve Senet, Kasa ile Banka Arası, Bankalar Arası Transfer, Kurulum ve Aktarım
+  ✓ Hareketler düğmeleri: Genel Bakış, Hesaplar, Hareketler, Ayarlar, + Masraf, + Faiz, + Diğer İşlem, Transfer, + Planlı İşlem, Planlı İşlemler
+  ✓ Planlı İşlem türleri: Banka Masrafı, Faiz Geliri, Faiz Gideri, Diğer Gelir, Diğer Gider
+  ✓ Diğer İşlem formunda Kambiyo/Elle Banka Fişi yok
+
+■ 6. Ayarlar: Temel ve Gelişmiş — POS, Ekstre, Döviz, Hareket (Kanal Alanı), Elle Banka Fişi, Bağdaştırıcılar, Kambiyo yok
+  ✓ Temel bölümler: Hesap, Eksi Bakiye, Mükerrer, Masraf, Tatil
+  ✓ Temel ayarlarda ertelenen özellik yok
+  ✓ bütün görünen bölümler: Hesap, Eksi Bakiye, Mükerrer, Masraf, Tatil, Faiz, Tatil, Hesap Eşlemeleri, Diğer
+  ✓ Gelişmiş ayarlarda ertelenen özellik yok
+  ✓ Diğer Gelir eşlemesi plan beyaz listesinden (642, 646, 649)
+  ✓ gizli ayar kalemlerinin hiçbiri ekranda yok
+
+■ 7. Raporlar → Tüm Raporlar: Banka grubunda yalnız Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı
+  ✓ Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı
+  ✓ ertelenen §8.10 raporu listede yok
+
+■ 8. Raporlar → Nakit Akış: Bugünkü Nakit ve Banka 12.000 (Nakit 2.000 + Gerçek Banka 10.000); Hesabı Atanmamış 900 ayrı, başlangıca girmez
+  ✓ başlangıç kutusu: Bugünkü Nakit ve Banka ₺12.000,00 Nakit Kasa ₺2.000,00 · Gerçek Banka ₺10.000,00
+  ✓ Hesabı Atanmamış kutusu: Hesabı Atanmamış Eski Hareketler ₺900,00 Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın
+  ✓ eski 'Bugünkü Kasa' etiketi yok
+  ✓ Başlangıç satırı: 08.10.2026 Başlangıç Bugünkü nakit ve banka ₺12.000,00
+  ✓ API: başlangıç 12000 = ANLIK DURUM Nakit 2000 + Gerçek Banka 10000
+
+■ 9. Çek/Senet kartı: Bankaya Tahsile Ver yok (Tahsil Edildi, Ciro Et, Karşılıksız / İade)
+  ✓ çek kartında Bankaya Tahsile Ver yok (× OPERASYON Çek / Senet ← Liste Alınan Çek No TMP-1 Portföyde ABC Ltd. Tutar ₺1.000,00 VADE 05.11.2026 28 gün kaldı ALIŞ TARİHİ 05.10.2026 CARİ ABC Ltd. Tahsil )
+  ✓ sayfa hatası yok
+
+✓ senaryo-banka-210-temel: 36 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/test/e2e/artifacts/senaryo-banka-210-temel

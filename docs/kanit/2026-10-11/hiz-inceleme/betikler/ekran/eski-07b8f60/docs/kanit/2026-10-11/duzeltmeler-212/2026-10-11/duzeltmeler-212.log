@@ -1,0 +1,49 @@
+TAP version 13
+# (node:27727) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: taksit kartının kayıt tarihi carinin tarihidir (2.0.12)
+    # Subtest: cari araması kayıt tarihini ve grubu döndürür (form cari seçilince doldurur)
+    ok 1 - cari araması kayıt tarihini ve grubu döndürür (form cari seçilince doldurur)
+      ---
+      duration_ms: 38.460851
+      type: 'test'
+      ...
+    # Subtest: tek kart: tarih yazılmazsa carinin tarihi; yazılırsa yazılan; carisiz kart bugün
+    ok 2 - tek kart: tarih yazılmazsa carinin tarihi; yazılırsa yazılan; carisiz kart bugün
+      ---
+      duration_ms: 84.309294
+      type: 'test'
+      ...
+    # Subtest: toplu taksitlendirme: her kart kendi carisinin tarihini alır
+    ok 3 - toplu taksitlendirme: her kart kendi carisinin tarihini alır
+      ---
+      duration_ms: 54.584809
+      type: 'test'
+      ...
+    # Subtest: Excel'den yükleme: Excel'de kayıt tarihi yoksa bağlanan mevcut carinin tarihi; varsa Excel'deki
+    ok 4 - Excel'den yükleme: Excel'de kayıt tarihi yoksa bağlanan mevcut carinin tarihi; varsa Excel'deki
+      ---
+      duration_ms: 83.796994
+      type: 'test'
+      ...
+    # Subtest: Tablodan Aktar: tabloda kayıt tarihi yoksa bağlanan mevcut carinin tarihi
+    ok 5 - Tablodan Aktar: tabloda kayıt tarihi yoksa bağlanan mevcut carinin tarihi
+      ---
+      duration_ms: 100.580192
+      type: 'test'
+      ...
+    1..5
+ok 1 - taksit kartının kayıt tarihi carinin tarihidir (2.0.12)
+  ---
+  duration_ms: 707.777508
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1137.08942

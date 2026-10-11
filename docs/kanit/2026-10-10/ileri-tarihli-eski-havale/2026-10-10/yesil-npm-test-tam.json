@@ -1,0 +1,32 @@
+{
+  "ad": "yesil-npm-test-tam",
+  "komut": "npm test",
+  "commit": "8b3c65cbee6893099ee84106d2b7fa13bec9241a",
+  "dal": "worktree-agent-a22d2972509bc7e85",
+  "kirli": 12,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:37:38.519Z",
+  "sure_sn": 935.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1916,
+    "gecen": 1916,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ileri-tarihli-eski-havale/2026-10-10/yesil-npm-test-tam.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85",
+  "ham_cikti_sha256": "a3928a9b2d2e6b93c02faa7693557f870b7692303696bd1b085e39826e6a2d52",
+  "ham_cikti_bayt": 629635
+}

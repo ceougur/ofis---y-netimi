@@ -1,0 +1,99 @@
+TAP version 13
+# Subtest: Google Sheets bağlı şirkette yedek: Sheets'e yazılmaz, Sheets satırları yedeğin içinde
+    # Subtest: bağlantı ve eşitleme: Google'a yalnız GET, kimlik bilgisi/gövde yok; Sheets'e yazma isteği YOK
+    ok 1 - bağlantı ve eşitleme: Google'a yalnız GET, kimlik bilgisi/gövde yok; Sheets'e yazma isteği YOK
+      ---
+      duration_ms: 37.165648
+      type: 'test'
+      ...
+    # Subtest: Şimdi Yedek Al (Tüm Şirketler): Google'a HİÇ istek gitmez; 001 yedeğinde Sheets'in 40 satırı değer değer, 002'ninkinde yalnız kendi 5 satırı
+    ok 2 - Şimdi Yedek Al (Tüm Şirketler): Google'a HİÇ istek gitmez; 001 yedeğinde Sheets'in 40 satırı değer değer, 002'ninkinde yalnız kendi 5 satırı
+      ---
+      duration_ms: 86.475835
+      type: 'test'
+      ...
+    # Subtest: otomatik yedek turu da Google'a istek atmaz; 001'in yedeğinde Sheets satırları var
+    ok 3 - otomatik yedek turu da Google'a istek atmaz; 001'in yedeğinde Sheets satırları var
+      ---
+      duration_ms: 68.667079
+      type: 'test'
+      ...
+    # Subtest: Sheets erişilemezken (500): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+    ok 4 - Sheets erişilemezken (500): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+      ---
+      duration_ms: 37.800571
+      type: 'test'
+      ...
+    # Subtest: Sheets erişilemezken (timeout): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+    ok 5 - Sheets erişilemezken (timeout): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+      ---
+      duration_ms: 35.237049
+      type: 'test'
+      ...
+    # Subtest: Sheets erişilemezken (down): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+    ok 6 - Sheets erişilemezken (down): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+      ---
+      duration_ms: 42.053781
+      type: 'test'
+      ...
+    # Subtest: 002 yedekten geri yüklenir (anında): 002 Sheets'siz döner; 001'in Sheets bağı ve 40 satırı etkilenmez
+    ok 7 - 002 yedekten geri yüklenir (anında): 002 Sheets'siz döner; 001'in Sheets bağı ve 40 satırı etkilenmez
+      ---
+      duration_ms: 260.572063
+      type: 'test'
+      ...
+    # Subtest: 001 yedekten geri yüklenir (yeniden açılışta): Sheets adresi, sekmeler ve 40 satır yedektekiyle aynı; eşitleme yeniden çalışır
+    not ok 8 - 001 yedekten geri yüklenir (yeniden açılışta): Sheets adresi, sekmeler ve 40 satır yedektekiyle aynı; eşitleme yeniden çalışır
+      ---
+      duration_ms: 303.093848
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/sheets-yedek.test.mjs:241:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bağ ve satırlar yedektekiyle aynı
+        + actual - expected
+        
+          [
+        +   false,
+        +   '',
+        -   true,
+        -   'https://docs.google.com/spreadsheets/d/1SheetsTakipBelgesi_AbCdEf/edit#gid=0',
+            40
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1: 'https://docs.google.com/spreadsheets/d/1SheetsTakipBelgesi_AbCdEf/edit#gid=0'
+        2: 40
+      actual:
+        0: false
+        1: ''
+        2: 40
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/sheets-yedek.test.mjs:255:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - Google Sheets bağlı şirkette yedek: Sheets'e yazılmaz, Sheets satırları yedeğin içinde
+  ---
+  duration_ms: 1681.817863
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/sheets-yedek.test.mjs:117:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2193.497348

@@ -66,7 +66,7 @@ const TAB_SEP = " › ";
 
 const isSheetUrl = value => /^https:\/\/docs\.google\.com\/spreadsheets\//i.test(String(value || "").trim());
 
-export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true, afterBackup = null, makeBackup = null }) {
+export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true, makeBackup = null }) {
   // Değişiklik öncesi yedek (v2.0.20): şirket uygulaması kendi yedekleyicisini verir (şirketin klasörü, kodlu ad, kimlik);
   // verilmezse eski davranış (backupDir'e kodsuz ad).
   const takeBackup = makeBackup || (backupDir ? label => createBackup(store.db, backupDir, { label, keep: backupKeep }) : null);
@@ -952,7 +952,6 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     if (!takeBackup || !rowCount()) return null;
     try {
       const result = takeBackup(label);
-      afterBackup?.(result); // Drive'a kopya (v2.0.2); arka planda, asla fırlatmaz
       return result.name;
     } catch (error) {
       log?.error?.("Veri değişikliği öncesi yedek alınamadı", error);
@@ -1411,7 +1410,6 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const backupName = takeBackup ? (() => {
       try {
         const result = takeBackup("sayfa-silme-oncesi");
-        afterBackup?.(result);
         return result.name;
       } catch (error) {
         log?.error?.("Oturum silmeden önce yedek alınamadı", error);

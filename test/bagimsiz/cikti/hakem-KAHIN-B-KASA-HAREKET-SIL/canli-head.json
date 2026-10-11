@@ -1,0 +1,425 @@
+{
+  "kok": "/home/user/ofis---y-netimi",
+  "enKucuk": {
+    "bugun": "2026-10-10",
+    "politika": {
+      "durum": 200,
+      "ok": true,
+      "veri": {
+        "cash": "warn",
+        "bank": "off",
+        "card": "off"
+      },
+      "hata": null
+    },
+    "adimlar": [
+      {
+        "ad": "1 H1 giriş 100",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-33952b93-970a-45d5-b410-65ca6e1fb7f5"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "2 sil H1",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-33952b93-970a-45d5-b410-65ca6e1fb7f5"
+          },
+          "hata": null
+        }
+      }
+    ],
+    "son": {
+      "kasaDurum": 200,
+      "kasaBakiye": 0,
+      "kasaSatirlari": [],
+      "anlikDurumNakitKasa": 0,
+      "mizanDurum": 200,
+      "mizan": {}
+    },
+    "silinenler": [
+      {
+        "tur": "cash",
+        "baslik": "Hurda Satışı"
+      }
+    ],
+    "mutabakat": {
+      "durum": 200,
+      "ok": true,
+      "basarisiz": []
+    }
+  },
+  "tani": {
+    "bugun": "2026-10-10",
+    "politika": {
+      "durum": 200,
+      "ok": true,
+      "veri": {
+        "cash": "warn",
+        "bank": "off",
+        "card": "off"
+      },
+      "hata": null
+    },
+    "adimlar": [
+      {
+        "ad": "H0 giriş 1000 (2026-10-01)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-2497fca4-ff9a-4ac5-9231-705d3b852281"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "H5 giriş 50 (2026-10-02)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-6749490e-762c-4234-8dd3-2201c10f2624"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "kilit 2026-10-03",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "lockedUntil": "2026-10-03"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "4 sil H5 (kilitli tarih)",
+        "sonuc": {
+          "durum": 409,
+          "ok": false,
+          "veri": null,
+          "hata": {
+            "error": "Bu kasa hareketi 02.10.2026 tarihli; 03.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+            "code": "period-locked"
+          }
+        }
+      },
+      {
+        "ad": "H1 giriş 100 (2026-10-10)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-637c6fa5-1762-4b35-898c-fef787ded07a"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "H2 çıkış 200 (2026-10-10)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-3560d2c4-9161-45a7-8aa0-7ff760f90214"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "7 sil H2 (çıkış)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-3560d2c4-9161-45a7-8aa0-7ff760f90214"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "8 sil H1 (giriş)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-637c6fa5-1762-4b35-898c-fef787ded07a"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "9 sil H1 (ikinci kez)",
+        "sonuc": {
+          "durum": 404,
+          "ok": false,
+          "veri": null,
+          "hata": {
+            "error": "Kasa hareketi bulunamadı. Başka biri silmiş olabilir.",
+            "code": null
+          }
+        }
+      },
+      {
+        "ad": "H3 giriş 500 (2026-10-10)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-e2e19b87-5a0e-47e7-a392-3cfa67b92e66"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "H4 çıkış 1500 (2026-10-10)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-bd6d09c5-90f6-4fd3-bac5-aef7e66bd8ec"
+          },
+          "hata": null
+        }
+      },
+      {
+        "ad": "12 sil H3 (Kasa eksiye düşer, Uyar)",
+        "sonuc": {
+          "durum": 409,
+          "ok": false,
+          "veri": null,
+          "hata": {
+            "error": "Bu Kasa hareketi silinince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa 50,00 TL iken -450,00 TL olur.",
+            "code": "cash-negative"
+          }
+        }
+      },
+      {
+        "ad": "13 sil H3 (Yine de Kaydet: cashForce)",
+        "sonuc": {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-e2e19b87-5a0e-47e7-a392-3cfa67b92e66"
+          },
+          "hata": null
+        }
+      }
+    ],
+    "ara": {
+      "k1": {
+        "kasaDurum": 200,
+        "kasaBakiye": 950,
+        "kasaSatirlari": [
+          {
+            "tarih": "2026-10-01",
+            "tur": "in",
+            "tutar": 1000,
+            "aciklama": "Kasaya Giriş"
+          },
+          {
+            "tarih": "2026-10-02",
+            "tur": "in",
+            "tutar": 50,
+            "aciklama": "Eski Hurda"
+          },
+          {
+            "tarih": "2026-10-10",
+            "tur": "in",
+            "tutar": 100,
+            "aciklama": "Hurda Satışı"
+          },
+          {
+            "tarih": "2026-10-10",
+            "tur": "out",
+            "tutar": 200,
+            "aciklama": "Temizlik Gideri"
+          }
+        ],
+        "anlikDurumNakitKasa": 950,
+        "mizanDurum": 200,
+        "mizan": {
+          "100": {
+            "ad": "Kasa (Nakit)",
+            "borc": 1150,
+            "alacak": 200,
+            "bakiye": 950
+          },
+          "649": {
+            "ad": "Diğer Olağan Gelir ve Kârlar",
+            "borc": 0,
+            "alacak": 1150,
+            "bakiye": -1150
+          },
+          "770": {
+            "ad": "Genel Giderler ve Alış Faturaları",
+            "borc": 200,
+            "alacak": 0,
+            "bakiye": 200
+          }
+        }
+      },
+      "k2": {
+        "kasaDurum": 200,
+        "kasaBakiye": 1050,
+        "kasaSatirlari": [
+          {
+            "tarih": "2026-10-01",
+            "tur": "in",
+            "tutar": 1000,
+            "aciklama": "Kasaya Giriş"
+          },
+          {
+            "tarih": "2026-10-02",
+            "tur": "in",
+            "tutar": 50,
+            "aciklama": "Eski Hurda"
+          }
+        ],
+        "anlikDurumNakitKasa": 1050,
+        "mizanDurum": 200,
+        "mizan": {
+          "100": {
+            "ad": "Kasa (Nakit)",
+            "borc": 1050,
+            "alacak": 0,
+            "bakiye": 1050
+          },
+          "649": {
+            "ad": "Diğer Olağan Gelir ve Kârlar",
+            "borc": 0,
+            "alacak": 1050,
+            "bakiye": -1050
+          }
+        }
+      },
+      "k3": {
+        "kasaDurum": 200,
+        "kasaBakiye": 50,
+        "kasaSatirlari": [
+          {
+            "tarih": "2026-10-01",
+            "tur": "in",
+            "tutar": 1000,
+            "aciklama": "Kasaya Giriş"
+          },
+          {
+            "tarih": "2026-10-02",
+            "tur": "in",
+            "tutar": 50,
+            "aciklama": "Eski Hurda"
+          },
+          {
+            "tarih": "2026-10-10",
+            "tur": "in",
+            "tutar": 500,
+            "aciklama": "Prim İadesi"
+          },
+          {
+            "tarih": "2026-10-10",
+            "tur": "out",
+            "tutar": 1500,
+            "aciklama": "Kira Ödemesi"
+          }
+        ],
+        "anlikDurumNakitKasa": 50,
+        "mizanDurum": 200,
+        "mizan": {
+          "100": {
+            "ad": "Kasa (Nakit)",
+            "borc": 1550,
+            "alacak": 1500,
+            "bakiye": 50
+          },
+          "649": {
+            "ad": "Diğer Olağan Gelir ve Kârlar",
+            "borc": 0,
+            "alacak": 1550,
+            "bakiye": -1550
+          },
+          "770": {
+            "ad": "Genel Giderler ve Alış Faturaları",
+            "borc": 1500,
+            "alacak": 0,
+            "bakiye": 1500
+          }
+        }
+      }
+    },
+    "son": {
+      "kasaDurum": 200,
+      "kasaBakiye": -450,
+      "kasaSatirlari": [
+        {
+          "tarih": "2026-10-01",
+          "tur": "in",
+          "tutar": 1000,
+          "aciklama": "Kasaya Giriş"
+        },
+        {
+          "tarih": "2026-10-02",
+          "tur": "in",
+          "tutar": 50,
+          "aciklama": "Eski Hurda"
+        },
+        {
+          "tarih": "2026-10-10",
+          "tur": "out",
+          "tutar": 1500,
+          "aciklama": "Kira Ödemesi"
+        }
+      ],
+      "anlikDurumNakitKasa": -450,
+      "mizanDurum": 200,
+      "mizan": {
+        "100": {
+          "ad": "Kasa (Nakit)",
+          "borc": 1050,
+          "alacak": 1500,
+          "bakiye": -450
+        },
+        "649": {
+          "ad": "Diğer Olağan Gelir ve Kârlar",
+          "borc": 0,
+          "alacak": 1050,
+          "bakiye": -1050
+        },
+        "770": {
+          "ad": "Genel Giderler ve Alış Faturaları",
+          "borc": 1500,
+          "alacak": 0,
+          "bakiye": 1500
+        }
+      }
+    },
+    "silinenler": [
+      {
+        "tur": "cash",
+        "baslik": "Prim İadesi"
+      },
+      {
+        "tur": "cash",
+        "baslik": "Hurda Satışı"
+      },
+      {
+        "tur": "cash",
+        "baslik": "Temizlik Gideri"
+      }
+    ],
+    "mutabakat": {
+      "durum": 200,
+      "ok": true,
+      "basarisiz": []
+    }
+  }
+}

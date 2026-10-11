@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: 2.1.0 — ekstreyle eşleşmiş modül satırı korunur (409 bank-reconciled)
+    # Subtest: E1: taksit tahsilatı eşleşmiş → tutar / hesap taşıma / sil 409; açıklama 200; eşleşme kalkınca silinir
+    ok 1 - E1: taksit tahsilatı eşleşmiş → tutar / hesap taşıma / sil 409; açıklama 200; eşleşme kalkınca silinir
+      ---
+      duration_ms: 170.682187
+      type: 'test'
+      ...
+    # Subtest: E2: kayıt tahsilatı eşleşmiş → tutar / sil 409; açıklama 200
+    ok 2 - E2: kayıt tahsilatı eşleşmiş → tutar / sil 409; açıklama 200
+      ---
+      duration_ms: 126.090047
+      type: 'test'
+      ...
+    # Subtest: E3: stok peşin satışı (havale) eşleşmiş → miktar / sil 409; açıklama 200
+    ok 3 - E3: stok peşin satışı (havale) eşleşmiş → miktar / sil 409; açıklama 200
+      ---
+      duration_ms: 119.04586
+      type: 'test'
+      ...
+    # Subtest: E4: çek bankaya tahsili eşleşmiş → Geri Al 409 (çek Tahsil Edildi kalır, Garanti değişmez); verilen çek ödemesi eşleşmiş → Geri Al 409
+    ok 4 - E4: çek bankaya tahsili eşleşmiş → Geri Al 409 (çek Tahsil Edildi kalır, Garanti değişmez); verilen çek ödemesi eşleşmiş → Geri Al 409
+      ---
+      duration_ms: 175.695492
+      type: 'test'
+      ...
+    # Subtest: E5: fatura peşini (havale) eşleşmiş → peşin tutarı / iptal / sil 409; yalnız kalem açıklaması 200 (plan §3.8 Fatura)
+    ok 5 - E5: fatura peşini (havale) eşleşmiş → peşin tutarı / iptal / sil 409; yalnız kalem açıklaması 200 (plan §3.8 Fatura)
+      ---
+      duration_ms: 148.869541
+      type: 'test'
+      ...
+    # Subtest: E6: Kasadan Bankaya (Garanti) eşleşmiş → sil / tutar 409; eşleşme kalkınca silinir
+    ok 6 - E6: Kasadan Bankaya (Garanti) eşleşmiş → sil / tutar 409; eşleşme kalkınca silinir
+      ---
+      duration_ms: 133.824692
+      type: 'test'
+      ...
+    # Subtest: E8: Taksite Aktar eşleşmiş kayıt tahsilatını karta taşır; olay, hesap ve eşleşme aynı kalır; Geri Al ile yine aynı
+    ok 7 - E8: Taksite Aktar eşleşmiş kayıt tahsilatını karta taşır; olay, hesap ve eşleşme aynı kalır; Geri Al ile yine aynı
+      ---
+      duration_ms: 203.30332
+      type: 'test'
+      ...
+    1..7
+ok 1 - 2.1.0 — ekstreyle eşleşmiş modül satırı korunur (409 bank-reconciled)
+  ---
+  duration_ms: 1540.96938
+  type: 'suite'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1926.355143

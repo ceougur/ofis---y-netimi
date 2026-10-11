@@ -1,0 +1,36 @@
+pdf: DestekOfis-Kullanim-Kilavuzu
+✓ PDF sayfa sayısı: 34
+✓ PDF'teki resim sayısı 39 ≥ kılavuzdaki farklı ekran 39
+✓ PDF metninde: “8. Banka”
+✓ PDF metninde: “Kurulum Sihirbazı”
+✓ PDF metninde: “Hesabı Atanmamış Eski Hareketler”
+✓ PDF metninde: “Tarihi Gelince Atanabilir”
+✓ PDF metninde: “Seçilenleri Bu Hesaba Ata”
+✓ PDF metninde: “Kurumsal Kredi Kartı”
+✓ PDF metninde: “Kurumsal Kart”
+✓ PDF metninde: “Kart ve Kredi Borcu”
+✓ PDF metninde: “+ Kart Borcu Ödemesi”
+✓ PDF metninde: “Bankalar Arası Transfer”
+✓ PDF metninde: “Ters Kaydet”
+✓ PDF metninde: “Gerçek Banka”
+✓ PDF metninde: “Bugünkü Nakit ve Banka”
+✓ PDF metninde: “Banka Bakiye Raporu”
+✓ PDF metninde: “Alt Hesap Mizanı”
+✓ PDF metninde: “Banka ve POS”
+✓ PDF metninde: “Yine de Kaydet”
+✓ PDF metninde: “Hesapsız (Açılıştan Önce)”
+✓ PDF metninde: “Kurulum Geçmişi”
+✓ PDF metninde: “Kart Borcuna Aktar”
+✓ PDF metninde: “Bankaya Geçmiş Say”
+✓ PDF metninde YOK: “Drive”
+✓ PDF metninde YOK: “OneDrive”
+✓ PDF metninde YOK: “Kasa ve Banka”
+✓ PDF metninde YOK: “bugünkü kasadan”
+✓ PDF metninde YOK: “Banka / POS”
+✓ client/kilavuz kopyası aynı dosya (sha256 b326df6854c5dce832b927c6e9812ecad87614d4736b98992a3ce87f88c3ce4c)
+✓ açılış ekranında “Resimli kullanım kılavuzunu açın” bağlantısı /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+✓ sunucunun verdiği kılavuz: 200 application/pdf sha256 b326df6854c5dce832b927c6e9812ecad87614d4736b98992a3ce87f88c3ce4c
+✓ sol menü “Kullanım Kılavuzu” → yeni sekme /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+# tests 32
+# pass 32
+# fail 0

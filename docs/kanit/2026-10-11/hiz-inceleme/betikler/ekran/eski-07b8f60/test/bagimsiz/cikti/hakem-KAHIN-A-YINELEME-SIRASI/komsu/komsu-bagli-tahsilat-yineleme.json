@@ -1,0 +1,61 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "komsu-bagli-tahsilat-yineleme",
+  "aciklama": "Faturayı tam kapatan bağlı nakit tahsilat (Kapatılacak Fatura) aynı istek kimliğiyle iki kez (BELİRSİZ-10 alanı).",
+  "dayanak": "SENARYO-DILI §5.4, §5.6; hakem KAHIN-A-YINELEME-SIRASI komşu denetimi (aynı sıralama, başka BELİRSİZ denetimi)",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "cari_ac",
+      "ad": "M1",
+      "unvan": "Müşteri 1",
+      "tur": "musteri"
+    },
+    {
+      "id": "2",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "100",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "islem": "cari_tahsilat",
+      "ad": "T1",
+      "cari": "M1",
+      "tutar": "120",
+      "yol": "nakit",
+      "kapatilacakFatura": "F1",
+      "istekKimligi": "c1"
+    },
+    {
+      "id": "4",
+      "islem": "cari_tahsilat",
+      "cari": "M1",
+      "tutar": "120",
+      "yol": "nakit",
+      "kapatilacakFatura": "F1",
+      "istekKimligi": "c1"
+    }
+  ]
+}

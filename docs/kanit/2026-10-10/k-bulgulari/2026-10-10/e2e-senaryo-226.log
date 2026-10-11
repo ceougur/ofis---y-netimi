@@ -1,0 +1,42 @@
+
+■ G3. Kilitli dönemdeki kuruşlu çekte Düzenle: tutar alanı yok, neden yazıyor; vade kaydedilir
+  ✓ İ3: kilitli dönemdeki çekte Sil düğmesi yok
+  ✓ İ3: kartta neden yazılı: "Bu evrak kapatılmış (kilitli) dönemde (30.06.2025 ve öncesi) alındı; silinemez, tutarı, carisi ve tarihi değişmez. Vade, no, banka ve açıklama Düzenle ile düzeltilir."
+  ✓ formda Tutar ve Alış Tarihi alanı yok (kilitli dönem)
+  ✓ giriş metni nedeni söylüyor: "Bu evrak kapatılmış (kilitli) dönemde alındı; yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih için yönetici dönem kilidini açmalı."
+  ✓ kaydedildi
+  ✓ API: vade 2027-01-15, tutar 1234.5 (aynı)
+
+■ G7. Cari kartında nakit tahsilat silinirken Kasa eksiye düşecek: soru nedeni söyler; onayla silinir
+  ✓ soru nedeni söylüyor (silinince Nakit Kasa'dan 1.000,00 TL düşer)
+  ✓ önce/sonra bakiye yazıyor (200,00 → −800,00)
+  ✓ silmeye uygun soru (yol önerisi ve 'çıkış' yok)
+  ✓ onaylanınca silindi; Nakit Kasa -800
+
+■ İ5. Kasa'da kayıt tahsilatı düzeltilirken Kasa eksiye düşecek: soru düzeltmeyi anlatır; Vazgeç ile yazılmaz
+  ✓ Nakit Kasa 200 (200)
+  ✓ soru düzeltmeyi anlatıyor: "× ONAY Kasa Eksiye Düşecek Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa 200,00 TL iken -300,00 TL olur. Yine de kaydedilsin mi? Vazgeç Yine de Kaydet"
+  ✓ önce/sonra bakiye ve kaydetme sorusu
+  ✓ yol önerisi ve 'çıkış' yok
+  ✓ Vazgeç: tahsilat değişmedi (1000)
+
+■ İ6. Kasa'da kayıt tahsilatı silinirken soruya Vazgeç: 'Silinmedi' bilgisi (kırmızı hata değil); tahsilat yerinde
+  ✓ bildirim silmeye uygun: "Silinmedi: bakiye eksiye düşecekti."
+  ✓ kırmızı hata bildirimi yok (hof-toast hof-toast-info)
+  ✓ tahsilat yerinde
+
+■ G1. Kilitli günde kapatılmış kartta Yeniden Aç: ekranda nedenli ret, kart Kapalı kalır
+  ✓ ekranda ret nedeni: "Bu kart 10.10.2026 tarihinde kapatıldı (kalan alacaktan vazgeçildi); 10.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Kart yeniden açılamaz. Gerekirse yönetici dönem kilidini açmalı."
+  ✓ API: kart closed
+
+■ Mutabakat
+  ✓ ana defter ↔ Kasa/Cari/Taksit/Çek tutarlı
+
+■ İ8. Eski sürümden kalan ileri tarihli çek/senet: Yönetim'de Mutabakat sarı uyarı, yolu söyler, tablo adı yok
+2026-10-10T15:47:24.551Z [WARN] Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez.
+  ✓ tablo adı yok, kullanıcı adı var: "Mutabakat: 1 denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (İleri tarihli hareket (Çek/Senet Hareketleri): 1 satır). Çek/Senet'te 1 evrakta tarihi ileri hareket var (eski sürümden). Alış/Veriliş Tarihi ileriyse evrakın kartında Düzenle ile"
+  ✓ ne yapılacağı yazılı (Düzenle; tarihi gelince kalkar)
+  ✓ sarı uyarı, kırmızı hata değil (adm-muted adm-warn-text)
+  ✓ sayfa hatası yok
+
+TAMAM: 25 denetim geçti, 0 başarısız.

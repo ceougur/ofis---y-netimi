@@ -1,0 +1,27 @@
+{
+  "dil": "destekofis-senaryo/2",
+  "ad": "en-kucuk-BANKA-EKSI-KODU",
+  "aciklama": "Hakem: en küçük — rastgele-1-500'den B6 (Garanti, doğrulanmış açılış 97.359) ve iki tedarikçi; adım 398 ve 399 AYNEN ama sırayla (ayniAnda kaldırıldı): 398 C30'a 50.921,69 havale (geçer), 399 C28'e 50.921,69 havale (muhasebe) → hesap eksiye düşer, Uyar → 409. Sonra 457 AYNEN (B6 Engelle) ve e1 = 399'un aynısı → Engelle → 409. Kâhinlerin ve programın yalnız ret KODU ayrışır.",
+  "dayanak": "hakem: fark sınıfı BANKA-EKSI-KODU (alan retler.<n>, A=B≠P; tohum 1 adım 399, 33 tohumun 21'inde ana koşu + nötr koşular). 389, 48, 50, 398, 399, 457 adım kimlikleri ve alanları özgün senaryodakiyle aynı; bugün = özgün senaryoda adım 386'nın 'saat' değeri (27.01.2026); Kasa politikası özgün adım 72'deki gibi kontrol_yok.",
+  "baslangic": {
+    "bugun": "27.01.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "kontrol_yok",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici",
+      "MU": "muhasebe"
+    }
+  },
+  "adimlar": [
+    { "id": "389", "islem": "hesap_ac", "ad": "B6", "banka": "Garanti BBVA", "hesapAdi": "Ana TL Hesabı B6", "tur": "vadesiz", "paraBirimi": "TRY", "iban": "TR770006206026658218209388", "acilisTarihi": "21.01.2026", "acilisBakiyesi": "97359", "bakiyeDogrulandi": true },
+    { "id": "48", "islem": "cari_ac", "ad": "C28", "unvan": "Toros Yapı Ltd. C28", "tur": "tedarikci" },
+    { "id": "50", "islem": "cari_ac", "ad": "C30", "unvan": "Ege Danışmanlık C30", "tur": "tedarikci" },
+    { "id": "398", "islem": "cari_odeme", "cari": "C30", "hesap": "B6", "tutar": "50921,69", "yol": "havale" },
+    { "id": "399", "islem": "cari_odeme", "cari": "C28", "hesap": "B6", "tutar": "50921,69", "yol": "havale", "kullanici": "MU" },
+    { "id": "457", "islem": "hesap_eksi_politika", "hesap": "B6", "politika": "engelle", "kullanici": "MU" },
+    { "id": "e1", "islem": "cari_odeme", "cari": "C28", "hesap": "B6", "tutar": "50921,69", "yol": "havale", "kullanici": "MU" }
+  ]
+}

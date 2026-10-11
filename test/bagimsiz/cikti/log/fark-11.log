@@ -1,0 +1,11 @@
+rastgele-11-500: çıkış a=0 b=0 program=0 · karşılaştırılan 7379 · atlanan 1299 · fark 487 {'A=B≠P': 210, 'A≠B=P': 152, 'B≠A=P': 121, 'KOSUCU': 4}
+  ACIKLANMAMIS:A=B≠P:faturalar.*.acik                            15 yaprak  {'A=B≠P': 15}
+  ACIKLANMAMIS:A=B≠P:kasa                                        16 yaprak  {'A=B≠P': 16}
+  ACIKLANMAMIS:A=B≠P:mizan.100                                   16 yaprak  {'A=B≠P': 16}
+  ACIKLANMAMIS:A=B≠P:ozet.kasaVeGercekBanka                      16 yaprak  {'A=B≠P': 16}
+  KAHIN-K4-YINELENEN-AD                                         152 yaprak  {'A≠B=P': 152}
+  KART-HESABI-BAGLANMIYOR                                       100 yaprak  {'A=B≠P': 96, 'KOSUCU': 4}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KOSUCU-ALIS-YINELEME-NUMARA                                   127 yaprak  {'B≠A=P': 121, 'A=B≠P': 6}
+  SINIFLANMAMIS:A=B≠P:yinelenenler:kasa_hareket                   1 yaprak  {'A=B≠P': 1}
+  TUREV:KART-HESABI-BAGLANMIYOR                                   4 yaprak  {'A=B≠P': 4}

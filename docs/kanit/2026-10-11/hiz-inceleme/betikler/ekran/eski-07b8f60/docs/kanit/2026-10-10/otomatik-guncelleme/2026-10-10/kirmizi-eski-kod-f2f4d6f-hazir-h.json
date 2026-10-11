@@ -1,0 +1,38 @@
+{
+  "ad": "kirmizi-eski-kod-f2f4d6f-hazir-h",
+  "komut": "node --test --test-name-pattern=^\\(h\\) /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs",
+  "commit": "8ebc7f7cc42bf3c81a36ad94e05cd6631146f742",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 2,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T20:58:55.362Z",
+  "sure_sn": 7.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler) › (h) kendiliğinden kur KAPALI → bulunan sürüm indirilmez, hazırlanmaz, yalnız 'hazır' bildirilir; (i) saatlik denetim sürer",
+      "konum": "test/guncelleme-hazir.test.mjs:271:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/kirmizi-eski-kod-f2f4d6f-hazir-h.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "16e65fae30ce5f1050af25c993885f55e6963c26c03149fb4ebc7adb98d03e29",
+  "ham_cikti_bayt": 3476
+}

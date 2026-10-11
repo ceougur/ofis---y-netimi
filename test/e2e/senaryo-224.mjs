@@ -6,6 +6,9 @@
 //  4. Raporlar → Ürün Satış Kârlılığı → özet "Brüt Kâr (Stoklu Ürünler)" = TOPLAM satırının Brüt Kâr'ı; hizmet satışı ayrı satır.
 //  2. Çek/Senet: ileri tarihli Tahsil Et reddedilir (ekranda neden, Kasa aynı); dönem kilidinden önce tahsil edilmiş çekte
 //     Geri Al reddedilir (durum aynı); kilit kaldırılınca Geri Al çalışır.
+//  6. (2.1.0, K1 iade kapanışı) Açık satış 600'den ekrandan 4 adet (240) Satıştan İade + 240 nakit Müşteriye İade Ödemesi → asıl fatura
+//     ekranda Açık 600, "Bu Faturayı Kapatanlar"da iadeden gelen hayalet "Fatura 240" yok, iade kartı "İade" (kapandı); tamamı peşin satış
+//     600'den 240 iade (geri ödenmeden) → iade kartında "Mahsup edilmemiş iade (müşterinin alacağı): 240,00 TL", Açık Faturalar'da borç 240.
 // Hareket tarihleri bugünden geriye, kronolojik artan (fatura serisi kuralı); hiçbiri ileri tarihli değil.
 // Çalıştırma: npm run test:senaryo-224
 import fs, { mkdtempSync } from "node:fs";
@@ -240,6 +243,7 @@ try {
   const returnAcc = await accOf("İade Müşteri");
   const advanceAcc = await accOf("Avans Müşteri");
   const chequeAcc = await accOf("Çek Müşteri");
+
   const serviceSale = (acc, date, qty, payment) => must("satış", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: date, lines: [{ itemId: service.id, qty, unitPrice: 1000, vatRate: 0 }], payment }));
   const installments = firstDue => ({ rest: "installments", installments: { count: 3, firstDue, everyMonths: 1 } });
 
@@ -542,6 +546,85 @@ try {
     await shot("2-kilit-kalkinca-geri-al");
     const [c, cash3] = [await chequeApi(ch.id), await cashApi()];
     ok(/geri alındı/.test(toast) && c.status === "portfolio" && cash3 === cash0, `kilit kalkınca geri alındı: "${toast}", durum ${c.status}, Nakit Kasa ${tl(cash3)} (tahsil öncesi ${tl(cash0)})`);
+  });
+
+  // ---------- 6. K1 iade kapanışı ----------
+  // Kurulum (API) burada: öbür adımların cari ve satış sayıları değişmesin. Bugün tarihli (fatura serisinin tarih sırası).
+  // Açık satış 600 ve tamamı peşin satış 600 (hizmet 10 × 60, KDV'siz).
+  const k1Acc = await accOf("K1 Müşteri");
+  const k1AdvanceAcc = await accOf("K1 Peşin Müşteri");
+  const k1Sale = (acc, payment) => must("K1 satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: acc.id, issueDate: TODAY, lines: [{ name: "Danışmanlık", qty: 10, unitPrice: 60, vatRate: 0 }], payment, cashForce: true }));
+  const k1OpenDoc = await invoiceApi((await k1Sale(k1Acc, { rest: "open", dueDate: FUTURE_DUE })).id);
+  const k1PaidDoc = await invoiceApi((await k1Sale(k1AdvanceAcc, { cash: [{ amount: 600, method: "cash" }], rest: "open" })).id);
+  // İade formu ekrandan: fatura kartında İade → miktar → (isteğe bağlı) + Müşteriye İade Ödemesi tutarı → Kaydet. Dönüş: iade belgesi.
+  const returnOnScreen = async (doc, qty, refund) => {
+    await openInvoiceCard(doc.id);
+    await page.click(`${inv} [data-act="return"]`);
+    await page.waitForSelector(`${inv} [data-l="0"][data-f="qty"]`, { timeout: 15000 });
+    await page.click(`${inv} [data-l="0"][data-f="qty"]`);
+    await page.keyboard.press("Control+A");
+    await page.keyboard.type(String(qty), { delay: 40 });
+    await page.keyboard.press("Tab");
+    await page.waitForTimeout(1200);
+    if (refund) {
+      await page.click(`${inv} [data-act="pay-add-cash"]`);
+      await page.waitForSelector(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, { timeout: 10000 });
+      await page.click(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`);
+      await page.keyboard.type(String(refund), { delay: 40 });
+      await page.keyboard.press("Tab");
+      await page.waitForTimeout(800);
+    }
+    await shot(refund ? "6-iade-formu-geri-odemeli" : "6-iade-formu-acik");
+    await page.click(`${inv} [data-act="issue"]`);
+    let ret = null;
+    for (let i = 0; i < 24 && !ret; i += 1) {
+      await page.waitForTimeout(500);
+      if (await answerYes()) continue;
+      const list = unwrap(await api.get("/api/workspace/invoices?tab=returns&limit=100")).invoices || [];
+      ret = list.find(d => d.originalId === doc.id && d.status === "issued") || null;
+      const error = await page.$eval(`${inv} [data-form-error]`, n => n.textContent.trim()).catch(() => "");
+      if (error) throw new Error(`iade kaydedilemedi: ${error}`);
+    }
+    await page.waitForTimeout(800);
+    return ret;
+  };
+  const closersOnScreen = () => page.$$eval(`${inv} .hof-inv-closers li`, items => items.map(li => li.innerText.replace(/\s+/g, " ").trim())).catch(() => []);
+  await step("6a. K1: açık satış 600 → ekrandan 240 iade + 240 nakit geri ödeme → asıl fatura Açık 600, hayalet kapatan yok", async () => {
+    const ret = await returnOnScreen(k1OpenDoc, 4, 240);
+    ok(Boolean(ret) && ret.tryPayable === 240, `iade faturası kaydedildi: ${ret?.number || "yok"} · ${ret?.tryPayable}`);
+    await openInvoiceCard(k1OpenDoc.id);
+    const own = await invoiceOpenOnScreen();
+    const closers = await closersOnScreen();
+    await shot("6-asil-fatura-geri-odemeli-iade");
+    ok(own.open === 600, `asıl fatura ekranda "${own.text}" (beklenen Açık 600,00; K1 öncesi 360,00)`);
+    ok(!closers.some(text => /Fatura/.test(text) && /240,00/.test(text)), `"Bu Faturayı Kapatanlar"da iadeden gelen "Fatura 240" yok (${JSON.stringify(closers)})`);
+    await page.click(`${inv} .hof-inv-pay [data-open-invoice="${ret.id}"]`);
+    await page.waitForSelector(`${inv} .hof-inv-pills [data-open-invoice="${k1OpenDoc.id}"]`, { timeout: 10000 });
+    await page.waitForTimeout(400);
+    const retText = await page.$eval(`${inv} .hof-inv-pay .hof-inv-rest`, n => n.innerText.trim()).catch(() => "");
+    await shot("6-iade-karti-geri-odemeli");
+    ok(/İade/.test(retText) && !/Mahsup edilmemiş/.test(retText), `iade kartı kapandı ("${retText}")`);
+    const [o, r, b] = [await invoiceApi(k1OpenDoc.id), await invoiceApi(ret.id), await balanceApi(k1Acc)];
+    ok(o.open === 600 && o.paid === 0 && r.open === 0 && b === 600, `API ile aynı: fatura açık ${o.open} / ödenen ${o.paid}, iade açık ${r.open}, cari ${b} (beklenen 600 / 0 / 0 / 600)`);
+  });
+  await step("6b. K1: tamamı peşin satış 600 → ekrandan 240 iade (geri ödenmez) → iade kartında müşterinin alacağı 240; Açık Faturalar borç 240", async () => {
+    const ret = await returnOnScreen(k1PaidDoc, 4, 0);
+    ok(Boolean(ret), `iade faturası kaydedildi: ${ret?.number || "yok"}`);
+    await openInvoiceCard(k1PaidDoc.id);
+    const own = await invoiceOpenOnScreen();
+    ok(own.open === 0, `asıl fatura ekranda "${own.text}" (beklenen kapandı)`);
+    await page.click(`${inv} .hof-inv-pay [data-open-invoice="${ret.id}"]`);
+    await page.waitForSelector(`${inv} .hof-inv-pills [data-open-invoice="${k1PaidDoc.id}"]`, { timeout: 10000 });
+    await page.waitForTimeout(400);
+    const retText = await page.$eval(`${inv} .hof-inv-pay .hof-inv-rest`, n => n.innerText.trim()).catch(() => "");
+    await shot("6-iade-karti-mahsup-edilmemis");
+    ok(/Mahsup edilmemiş iade \(müşterinin alacağı\)/.test(retText) && moneyOf(retText) === 240, `iade kartında "${retText}" (beklenen müşterinin alacağı 240,00)`);
+    const report = await must("Açık Faturalar", api.get(`/api/workspace/report-center/acik-faturalar?account=${k1AdvanceAcc.id}`));
+    const borc = moneyOf(report.summary.find(([k]) => k === "Açık Borç")?.[1]);
+    const row = report.rows.find(cells => cells.includes(ret.number));
+    ok(borc === 240 && row && row.includes("Borç (Satıştan İade)"), `Açık Faturalar: Açık Borç ${tl(borc)}, iade satırı ${JSON.stringify(row)}`);
+    const [r, b] = [await invoiceApi(ret.id), await balanceApi(k1AdvanceAcc)];
+    ok(r.open === 240 && b === -240, `API: iade açık ${r.open}, cari ${b} (beklenen 240 / −240)`);
   });
 
   await step("Mutabakat", async () => {

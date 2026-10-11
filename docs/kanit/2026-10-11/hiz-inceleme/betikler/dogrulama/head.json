@@ -1,0 +1,152 @@
+{
+ "B": [
+  {
+   "n": 1,
+   "satir": 100,
+   "eksik": [
+    "BNK-2026-000092"
+   ],
+   "fazla": [
+    "BNK-2026-000042"
+   ],
+   "cift": [],
+   "alti_sn_sonra": {
+    "satir": 100,
+    "eksik": [
+     "BNK-2026-000092"
+    ],
+    "fazla": [
+     "BNK-2026-000042"
+    ],
+    "cift": []
+   }
+  },
+  {
+   "n": 2,
+   "satir": 100,
+   "eksik": [
+    "BNK-2026-000095"
+   ],
+   "fazla": [
+    "BNK-2026-000045"
+   ],
+   "cift": [],
+   "alti_sn_sonra": {
+    "satir": 100,
+    "eksik": [
+     "BNK-2026-000095"
+    ],
+    "fazla": [
+     "BNK-2026-000045"
+    ],
+    "cift": []
+   }
+  },
+  {
+   "n": 3,
+   "satir": 100,
+   "eksik": [
+    "BNK-2026-000098"
+   ],
+   "fazla": [
+    "BNK-2026-000048"
+   ],
+   "cift": [],
+   "alti_sn_sonra": {
+    "satir": 100,
+    "eksik": [
+     "BNK-2026-000098"
+    ],
+    "fazla": [
+     "BNK-2026-000048"
+    ],
+    "cift": []
+   }
+  }
+ ],
+ "Y": [
+  {
+   "n": 1,
+   "gap": 522,
+   "satir": 50,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  },
+  {
+   "n": 2,
+   "gap": 396,
+   "satir": 50,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  },
+  {
+   "n": 3,
+   "gap": 745,
+   "satir": 50,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  }
+ ],
+ "C": [
+  {
+   "n": 1,
+   "postStatus": 200,
+   "formAcikti": true,
+   "once": 50,
+   "dahaFazla": 100,
+   "son": 50,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  },
+  {
+   "n": 2,
+   "postStatus": 200,
+   "formAcikti": true,
+   "once": 50,
+   "dahaFazla": 100,
+   "son": 50,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  },
+  {
+   "n": 3,
+   "postStatus": 200,
+   "formAcikti": true,
+   "once": 50,
+   "dahaFazla": 100,
+   "son": 50,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  }
+ ],
+ "K": [
+  {
+   "n": 1,
+   "satir": 100,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  },
+  {
+   "n": 2,
+   "satir": 100,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  },
+  {
+   "n": 3,
+   "satir": 100,
+   "eksik": [],
+   "fazla": [],
+   "cift": []
+  }
+ ],
+ "sayfaHatalari": []
+}

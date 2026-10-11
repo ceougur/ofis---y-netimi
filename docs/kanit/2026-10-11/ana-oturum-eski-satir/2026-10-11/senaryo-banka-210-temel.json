@@ -1,0 +1,32 @@
+{
+  "ad": "senaryo-banka-210-temel",
+  "komut": "npm run test:senaryo-banka-210-temel",
+  "commit": "fed0db2459958160c612ee985416e50ff104f7a9",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:05:54.427Z",
+  "sure_sn": 63.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 79,
+    "gecen": 79,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-eski-satir/2026-10-11/senaryo-banka-210-temel.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "419950405d237d5f46d75e64516e0704c3e09a98372857656f31b89bef283674",
+  "ham_cikti_bayt": 12158
+}

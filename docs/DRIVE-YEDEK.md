@@ -1,4 +1,12 @@
-# Drive'a yedek (2.0.2)
+# Drive'a yedek (2.0.2) — 2.1.0'DA KALDIRILDI
+
+> **2.1.0'da kaldırıldı** (kullanıcı kararı, 10.10.2026: "Programın Drive yedekleme bölümünü kaldıralım, kılavuzdan ve web
+> sitesinden de kaldıralım. Şimdilik gerek yok. Müşterileri de yanlış yönlendirmiş olmayalım."). Bağlantı kipi 2.0.2'den beri
+> hiç çalışmadı: aşağıda tasarlanan `POST /v1/yedek/oturum` ucu lisans servisinde (ceougur/destekofis `web/api/lisans/v1/`)
+> hiç yazılmadı. Klasör kipi de kaldırıldı. 2.1.0'dan itibaren: Yönetim → Yedekler'de Drive bölümü yok, `/api/admin/backups/cloud*`
+> uçları 404, `server/lib/cloud-backup.mjs` silindi; eski kurulumun veri tabanındaki `backup.cloud` ayarı okunmaz, silinmez,
+> hiçbir yere kopya alınmaz. Yedekler yalnız sunucu bilgisayardaki `backups\<kod> - <ad>\` klasörlerindedir. Aşağısı tarihçe
+> içindir; "Google Drive'a Bağlan" ileride, kullanıcı isterse yeniden tasarlanır (test: `test/drive-kaldirildi.test.mjs`).
 
 Yönetim → Yedekler → **Drive'a da yedekle**. Her yedek önce bilgisayardaki yedek klasörüne alınır (6 saatte bir, elle ve her veri yüklemesinden önce), sonra bağlanan yere kopyalanır. Kopya başarısız olsa bile yerel yedek alınmıştır; hata yönetim panelinde görünür.
 

@@ -1,0 +1,59 @@
+{
+  "araDurumlar": {},
+  "atlananlar": [],
+  "bankaHesaplari": {},
+  "belirsizler": [],
+  "cariler": {
+    "M1": 0
+  },
+  "dil": "destekofis-senaryo/1",
+  "eksiBakiyeDenetimi": {},
+  "faturalar": {
+    "F1": {
+      "acik": 0,
+      "kdv": 2000,
+      "matrah": 10000,
+      "toplam": 12000
+    }
+  },
+  "hesapKodlari": {},
+  "kasa": 12000,
+  "kaynak": "kahin",
+  "mizan": {
+    "100": {
+      "alacak": 0,
+      "borc": 12000
+    },
+    "120": {
+      "alacak": 0,
+      "borc": 0
+    },
+    "391": {
+      "alacak": 2000,
+      "borc": 0
+    },
+    "600": {
+      "alacak": 10000,
+      "borc": 0
+    }
+  },
+  "ozet": {
+    "gercekBanka": 0,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": 12000
+  },
+  "retler": [],
+  "senaryo": "en-kucuk-KAHIN-A-YINELEME-SIRASI",
+  "stok": {},
+  "taksitKartlari": {
+    "K1": {
+      "kalan": 0,
+      "odenen": 12000,
+      "toplam": 12000
+    }
+  },
+  "yinelenenler": [
+    "4"
+  ]
+}

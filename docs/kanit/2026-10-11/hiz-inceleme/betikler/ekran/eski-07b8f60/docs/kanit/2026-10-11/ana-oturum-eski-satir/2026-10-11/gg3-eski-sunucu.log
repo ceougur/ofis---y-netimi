@@ -1,0 +1,374 @@
+TAP version 13
+# (node:19111) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: B1 — tek hesap: açılıştan önceki hesapsız satırlar düzeltilir, eski tarihli hareket hesapsız girilir (§3.5/1)
+    # Subtest: cari havale ve kurumsal kart ödemesi: tutar, tarih, yeni eski tarihli satır, boş hesap; Gerçek Banka değişmez
+    not ok 1 - cari havale ve kurumsal kart ödemesi: tutar, tarih, yeni eski tarihli satır, boş hesap; Gerçek Banka değişmez
+      ---
+      duration_ms: 454.132913
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:42:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski havale tutar 1.000 → 1.100: 409 {"ok":false,"error":"İşlem tarihi (15.09.2026) Ziraat · A hesabının açılışından (01.10.2026) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin ya da başka hesap seçin.","code":"bank-before-opening","field":"bankAccountId","accountId":"bacc-e243e1f6-10b1-4356-8e40-d9f0f0f79c88"} İşlem tarihi (15.09.2026) Ziraat · A hesabının açılışından (01.10.2026) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin ya da başka hesap seçin.
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:55:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: taksit tahsilatı, stok peşini, Kasa → Banka transferi ve fatura peşini: eski tarihli hesapsız satır düzeltilir/girilir
+    not ok 2 - taksit tahsilatı, stok peşini, Kasa → Banka transferi ve fatura peşini: eski tarihli hesapsız satır düzeltilir/girilir
+      ---
+      duration_ms: 381.554549
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit tahsilatı 500 → 600: 409 {"ok":false,"error":"İşlem tarihi (15.09.2026) Ziraat · A hesabının açılışından (01.10.2026) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin ya da başka hesap seçin.","code":"bank-before-opening","field":"bankAccountId","accountId":"bacc-186b3be0-7689-4622-a1be-b09ba872bbe5"} İşlem tarihi (15.09.2026) Ziraat · A hesabının açılışından (01.10.2026) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin ya da başka hesap seçin.
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:103:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: gerçek 2.0.26 verisi (o sürümün koduyla üretilmiş fikstür): ilk hesap bugünkü açılışla; eski havaleler düzeltilir, eski tarihli havale girilir
+    not ok 3 - gerçek 2.0.26 verisi (o sürümün koduyla üretilmiş fikstür): ilk hesap bugünkü açılışla; eski havaleler düzeltilir, eski tarihli havale girilir
+      ---
+      duration_ms: 511.997927
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski havale 2026-10-07 300 → +1: 409 {"ok":false,"error":"İşlem tarihi (07.10.2026) Ziraat Bankası · Ana TL Hesabı hesabının açılışından (08.10.2026) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin ya da başka hesap 
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:141:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - B1 — tek hesap: açılıştan önceki hesapsız satırlar düzeltilir, eski tarihli hareket hesapsız girilir (§3.5/1)
+  ---
+  duration_ms: 1349.517034
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:41:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: B1 — çok hesap: tarih yalnız bir hesabın açılışından sonraysa o hesap; açıkça Hesapsız yalnız açılıştan önceki harekette
+    # Subtest: A 01.09, B 01.10: 15.09 → A; Hesapsız seçimi; 15.08 → hesapsız; 05.10 seçim zorunlu
+    not ok 1 - A 01.09, B 01.10: 15.09 → A; Hesapsız seçimi; 15.08 → hesapsız; 05.10 seçim zorunlu
+      ---
+      duration_ms: 290.868396
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:154:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        15.09: yalnız A açık: 400 {"ok":false,"error":"Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?","code":"bank-account-required","field":"bankAccountId"} Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:163:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - B1 — çok hesap: tarih yalnız bir hesabın açılışından sonraysa o hesap; açıkça Hesapsız yalnız açılıştan önceki harekette
+  ---
+  duration_ms: 291.75982
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:153:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Y1 / B4 / Y2 — Devir Kapanışı havuzundaki eski satır parası değişmez (409 bank-reclass-active)
+    # Subtest: tutar, silme, nakde çevirme ve yeni eski tarihli satır 409; açıklama ve havuz içinde tarih serbest; Geri Al'dan sonra düzeltilir
+    not ok 1 - tutar, silme, nakde çevirme ve yeni eski tarihli satır 409; açıklama ve havuz içinde tarih serbest; Geri Al'dan sonra düzeltilir
+      ---
+      duration_ms: 310.23826
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:189:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Devir Kapanışı'ndaki satırın tutarı: kod bank-before-opening (İşlem tarihi (15.09.2026) Ziraat · A hesabının açılışından (01.10.2026) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin ya da başka hesap seçin.)
+        + actual - expected
+        
+        + 'bank-before-opening'
+        - 'bank-reclass-active'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'bank-reclass-active'
+      actual: 'bank-before-opening'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:54:20)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:201:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - Y1 / B4 / Y2 — Devir Kapanışı havuzundaki eski satır parası değişmez (409 bank-reclass-active)
+  ---
+  duration_ms: 310.824064
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:188:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Y1 / B4 — Kart Borcuna Aktar ve Bankaya Geçmiş Say havuzu (409 bank-reclass-active, satır karta kendiliğinden bağlanmaz)
+    # Subtest: Kart Borcuna Aktar edilmiş kartla ödeme: tutar ve silme 409; kart borcu tek kez; K7 gerçek borçla
+    not ok 1 - Kart Borcuna Aktar edilmiş kartla ödeme: tutar ve silme 409; kart borcu tek kez; K7 gerçek borçla
+      ---
+      duration_ms: 359.45125
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:230:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aktarılmış kartla ödemenin tutarı: 200 {"id":"account-c5d81e60-7335-4717-ba9c-3a315b2923bd","refNo":"1","type":"supplier","name":"Tedarikçi","phone":"","email":"","address":"","registeredOn":"2026-08-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":""," 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:240:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Bankaya Geçmiş Say edilmiş POS tahsilatı: tutar ve silme 409; aynı penceredeki yeni POS tahsilatı serbest
+    not ok 2 - Bankaya Geçmiş Say edilmiş POS tahsilatı: tutar ve silme 409; aynı penceredeki yeni POS tahsilatı serbest
+      ---
+      duration_ms: 318.58134
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:257:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aktarılmış POS tahsilatının tutarı: 200 {"id":"account-945bf227-a088-4e71-8bf7-5b4998f37d6b","refNo":"1","type":"customer","name":"Müşteri","phone":"","email":"","address":"","registeredOn":"2026-08-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"","po 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:265:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Mutabakat Testi bank:pool havuz sapmasını gösterir (store dışı yazım)
+    not ok 3 - Mutabakat Testi bank:pool havuz sapmasını gösterir (store dışı yazım)
+      ---
+      duration_ms: 306.48148
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:276:3'
+      failureType: 'testCodeFailure'
+      error: 'bank:pool denetimi listede'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:285:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - Y1 / B4 — Kart Borcuna Aktar ve Bankaya Geçmiş Say havuzu (409 bank-reclass-active, satır karta kendiliğinden bağlanmaz)
+  ---
+  duration_ms: 985.671297
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:229:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: B2 — Kurulum Sihirbazı Geri Al, sihirbazın bağlaması ve Bu Hesaba Ata: K7 ve pasif hesap
+    # Subtest: Geri Al: Engelle → 409 cash-blocked; Uyar → 409 cash-negative, negativeOk ile geçer
+    not ok 1 - Geri Al: Engelle → 409 cash-blocked; Uyar → 409 cash-negative, negativeOk ile geçer
+      ---
+      duration_ms: 347.878474
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:310:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Geri Al (Engelle): 200 {"undone":true,"unassigned":1,"skipped":0,"reversed":[]} 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:314:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Geri Al pasif hesapta 400 bank-account-passive
+    not ok 2 - Geri Al pasif hesapta 400 bank-account-passive
+      ---
+      duration_ms: 322.314518
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:332:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        pasif hesapta Geri Al: 200 {"undone":true,"unassigned":1,"skipped":0,"reversed":[]} 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:341:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Bu Hesaba Ata ve sihirbaz eski ödemeyi Engelle'deki hesaba bağlamaz (409 cash-blocked); Uyar'da negativeOk; pasif hesapta 400
+    not ok 3 - Bu Hesaba Ata ve sihirbaz eski ödemeyi Engelle'deki hesaba bağlamaz (409 cash-blocked); Uyar'da negativeOk; pasif hesapta 400
+      ---
+      duration_ms: 304.121736
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:348:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ata: Engelle: 200 {"assigned":1,"account":{"id":"bacc-6d37d38a-0837-4853-a734-b2519aa951ec","code":"ZIR-TL","gl":"102","glSub":"102.01","kind":"demand","kindLabel":"Vadesiz","bankName":"Ziraat","name":"A","label":"Ziraat · A","currency":"TRY","iban":"","ibanText":"","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","description":"","openingDate":"2026-10-01","balanceConfirmed":true,"creditLimitM 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:357:9)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - B2 — Kurulum Sihirbazı Geri Al, sihirbazın bağlaması ve Bu Hesaba Ata: K7 ve pasif hesap
+  ---
+  duration_ms: 975.196372
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:296:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: B3 — pasif hesapta banka fişi Ters Kaydet / Düzelt ve Açılışı Düzelt 400 bank-account-passive
+    # Subtest: masraf Ters Kaydet, Düzelt, transferin alıcısı pasif, Açılışı Düzelt; etkinleştirince Ters Kaydet geçer
+    not ok 1 - masraf Ters Kaydet, Düzelt, transferin alıcısı pasif, Açılışı Düzelt; etkinleştirince Ters Kaydet geçer
+      ---
+      duration_ms: 373.309329
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:375:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        masraf Ters Kaydet: 200 {"original":{"id":"ev-0mv37zuw10000-c2f71314-61eb-44b0","no":"BNK-2026-000003","type":"fee","typeLabel":"Banka Masrafı","status":"reversed","statusLabel":"Ters Kaydedildi","date":"2026-10-08","valueDate":"","direction":"out","tryMinor":5000,"amountMinor":5000,"currency":"TRY","method":"bank","description":"","reference":"","channel":"","origin":"manual","internal":false,"account":{"id":"bacc-cede5 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:386:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 6 - B3 — pasif hesapta banka fişi Ters Kaydet / Düzelt ve Açılışı Düzelt 400 bank-account-passive
+  ---
+  duration_ms: 373.851045
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/banka-210-gg3-eski-satir.test.mjs:374:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..6
+# tests 12
+# suites 6
+# pass 0
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4667.721212

@@ -1,0 +1,32 @@
+{
+  "ad": "senaryo-225-uyari",
+  "komut": "npm run test:senaryo-225-uyari",
+  "commit": "481d336a7e6b74a5ea984d9965e3a53857aa8b3d",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:59:26.969Z",
+  "sure_sn": 133.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 36,
+    "gecen": 36,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-uyari-ufku/2026-10-11/senaryo-225-uyari.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a9371fae2a8eb11ff9dea4b2ce9ffdedf4c8396aee0e2becb9cba624c6ecbaec",
+  "ham_cikti_bayt": 3672
+}

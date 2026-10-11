@@ -1,0 +1,191 @@
+TAP version 13
+# Subtest: 2.1.0 — ekstreyle eşleşmiş modül satırı korunur (409 bank-reconciled)
+    # Subtest: E1: taksit tahsilatı eşleşmiş → tutar / hesap taşıma / sil 409; açıklama 200; eşleşme kalkınca silinir
+    not ok 1 - E1: taksit tahsilatı eşleşmiş → tutar / hesap taşıma / sil 409; açıklama 200; eşleşme kalkınca silinir
+      ---
+      duration_ms: 150.417914
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:58:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yalnız açıklama: 409 {"ok":false,"error":"Bu hareket banka ekstresiyle eşleştirilmiş; önce eşleşmeyi kaldırın.","code":"bank-reconciled","eventId":"ev-0mv2gqnfu0000-2db4cb36-1d1a-4bb6"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:70:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: E2: kayıt tahsilatı eşleşmiş → tutar / sil 409; açıklama 200
+    not ok 2 - E2: kayıt tahsilatı eşleşmiş → tutar / sil 409; açıklama 200
+      ---
+      duration_ms: 82.434241
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yalnız açıklama: 409 {"ok":false,"error":"Bu hareket banka ekstresiyle eşleştirilmiş; önce eşleşmeyi kaldırın.","code":"bank-reconciled","eventId":"ev-0mv2gqnjc0000-ca6cd1b4-2a3e-4c0f"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:87:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E3: stok peşin satışı (havale) eşleşmiş → miktar / sil 409; açıklama 200
+    not ok 3 - E3: stok peşin satışı (havale) eşleşmiş → miktar / sil 409; açıklama 200
+      ---
+      duration_ms: 79.252303
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yalnız açıklama: 409 {"ok":false,"error":"Bu hareket banka ekstresiyle eşleştirilmiş; önce eşleşmeyi kaldırın.","code":"bank-reconciled","eventId":"ev-0mv2gqnlz0000-b3528db2-bda7-4e73"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:104:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E4: çek bankaya tahsili eşleşmiş → Geri Al 409 (çek Tahsil Edildi kalır, Garanti değişmez); verilen çek ödemesi eşleşmiş → Geri Al 409
+    not ok 4 - E4: çek bankaya tahsili eşleşmiş → Geri Al 409 (çek Tahsil Edildi kalır, Garanti değişmez); verilen çek ödemesi eşleşmiş → Geri Al 409
+      ---
+      duration_ms: 89.336521
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:111:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsili geri al: 200 {"id":"cheque-6462fc7d-bc9e-4e62-9581-80b7c683baab","direction":"in","instrument":"cheque","serialNo":"E4-1","bank":"","drawer":"Keşideci A","accountId":"","planId":"","amount":4000,"issueDate":"2026-10-08","dueDate":"2026-12-31","status":"portfolio","statusDate":"2026-10-08","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","createdBy":"user-0376d17a-f8f7-4e85-9fd7-2f276336e609"," 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:117:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E5: fatura peşini (havale) eşleşmiş → peşin tutarı / iptal / sil 409; yalnız kalem açıklaması 200 (plan §3.8 Fatura)
+    not ok 5 - E5: fatura peşini (havale) eşleşmiş → peşin tutarı / iptal / sil 409; yalnız kalem açıklaması 200 (plan §3.8 Fatura)
+      ---
+      duration_ms: 95.105218
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:136:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        peşin tutar: 200 {"id":"invoice-d3eff261-a0bf-4526-b954-b59f509f9b7a","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"FIS2026000000001","displayNo":"FIS2026000000001","ettn":"2ecb207f-d700-43b3-bfad-f29dd08e5316","issueDate":"2026-10-08","issueTime":"09:00","accountId":"account-56f11e36-7482-4c26-8420-2911d1 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:143:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E6: Kasadan Bankaya (Garanti) eşleşmiş → sil / tutar 409; eşleşme kalkınca silinir
+    not ok 6 - E6: Kasadan Bankaya (Garanti) eşleşmiş → sil / tutar 409; eşleşme kalkınca silinir
+      ---
+      duration_ms: 75.223879
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        E6 eşleşmiş: Ziraat
+        
+        110000 !== 111000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 111000
+      actual: 110000
+      operator: 'strictEqual'
+      stack: |-
+        check (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:43:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:164:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E8: Taksite Aktar eşleşmiş kayıt tahsilatını karta taşır; olay, hesap ve eşleşme aynı kalır; Geri Al ile yine aynı
+    not ok 7 - E8: Taksite Aktar eşleşmiş kayıt tahsilatını karta taşır; olay, hesap ve eşleşme aynı kalır; Geri Al ile yine aynı
+      ---
+      duration_ms: 155.315209
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:171:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        E8 Taksite Aktar: Ziraat
+        
+        111200 !== 112200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 112200
+      actual: 111200
+      operator: 'strictEqual'
+      stack: |-
+        check (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:43:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:190:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 1 - 2.1.0 — ekstreyle eşleşmiş modül satırı korunur (409 bank-reconciled)
+  ---
+  duration_ms: 1270.816013
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/r123/cbf889d/test/banka-210-eslesmis.test.mjs:35:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1759.312682

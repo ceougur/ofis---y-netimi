@@ -1,0 +1,32 @@
+{
+  "ad": "kilavuz-ekran-banka",
+  "komut": "node --disable-warning=ExperimentalWarning docs/kilavuz/ekran-banka.mjs",
+  "commit": "740be0518c71eb92f0cc02c998626c363c060c3a",
+  "dal": "worktree-agent-ae4eb3e7afbf0fc41",
+  "kirli": 26,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:59:09.518Z",
+  "sure_sn": 105.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 55,
+    "gecen": 55,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/kilavuz/2026-10-10/kilavuz-ekran-banka.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae4eb3e7afbf0fc41",
+  "ham_cikti_sha256": "0f665cbd908e2f42b56ac3cb76e4fc4138ee53ceff5c6ea851dd825f2d20cc65",
+  "ham_cikti_bayt": 4066
+}

@@ -1,0 +1,31 @@
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"rep1":1566,"rep1Diffs":0,"rows1":2801,"mon1":1434,"mon1Diffs":0,"rep2":1566,"rep2Diffs":0,"mon2":1434,"mon2Diffs":0}
+RED ters kaydın ters kaydı (ev-0mv3vg9dg0000-d65d67cc-39a5-4bcd) 409 {"ok":false,"error":"Ters kayıt ters kaydedilmez; asıl işlemi düzeltin.","code":"bank-reversal-of-reversal","eventId":"ev-0mv3vg9dg0000-d65d67cc-39a5-4bcd","eventNo":"BNK-2026-000020"}
+RED sil 1 404 {"ok":false,"error":"Hareket bulunamadı. Başka biri silmiş olabilir."}
+RED sil 2 404 {"ok":false,"error":"Hareket bulunamadı. Başka biri silmiş olabilir."}
+RED silinenler kimlikleri 0 [] aranan account-f90913ed-5ebf-4eef-9af0-32a6b2e17f3c

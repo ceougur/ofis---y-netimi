@@ -1,0 +1,2067 @@
+{
+ "veri": {
+  "tarih": "2026-10-11T07:24:34.373Z",
+  "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a46fa90af7f0dcb26",
+  "commit": "",
+  "companies": {
+   "001": {
+    "seed": 2101,
+    "operations": 2000,
+    "checks": 6,
+    "rejectedAsExpected": 459,
+    "seconds": 21,
+    "model": {
+     "kasa": {
+      "cash": "244880,14",
+      "bank": "-272777,96",
+      "card": "-152398,69"
+     },
+     "cariler": 12,
+     "urunler": 10,
+     "kartlar": 77,
+     "kasaHareketi": 104,
+     "bankaSatiri": 159,
+     "bankaTersKayit": 43,
+     "bankalarArasiTransfer": 21,
+     "cariHareketi": 105,
+     "stokHareketi": 726,
+     "taksitHareketi": 71,
+     "hesabaBagliModulHavalesi": 104,
+     "kurumsalKartaBagli": 18,
+     "kurumsalKartBakiyesi": "-141996,43"
+    },
+    "byKind": {
+     "alim": 136,
+     "kasa": 105,
+     "taksit-sil": 32,
+     "cari-duzelt": 41,
+     "fatura-iade": 63,
+     "tarih-hatasi": 69,
+     "kart": 58,
+     "fatura-hatasi": 100,
+     "fatura-satis": 135,
+     "satis": 201,
+     "kayit-sil": 17,
+     "banka-ters": 19,
+     "hareket-duzelt": 34,
+     "cek-tahsil": 32,
+     "cari": 100,
+     "kart-kapat": 23,
+     "kilit-ihlali": 50,
+     "cek-geri-al": 18,
+     "cek-ode": 25,
+     "fatura-alis": 90,
+     "banka-fis": 64,
+     "cari-sil": 22,
+     "banka-transfer": 30,
+     "fatura-acid": 41,
+     "taksit-tahsil": 114,
+     "hareket-sil": 28,
+     "fatura-taslak": 22,
+     "banka-transfer-ters": 8,
+     "iade": 46,
+     "fatura-iptal": 55,
+     "kasa-duzelt": 27,
+     "geri-yukle": 30,
+     "vade-hatasi": 43,
+     "kayit-duzelt": 19,
+     "banka-benzer": 9,
+     "banka-duzelt": 19,
+     "kayit-tahsil": 41,
+     "kasa-sil": 21,
+     "kart-sil": 17,
+     "fatura-bagli": 7
+    },
+    "invoices": {
+     "kesilen": 259,
+     "iptal": 22,
+     "taslak": 6,
+     "turler": {
+      "sale": 126,
+      "purchase": 89,
+      "sale_return": 30,
+      "purchase_return": 29,
+      "smm": 7
+     },
+     "cek": 92
+    },
+    "motorHesaplari": {
+     "bacc-a393fa08-8770-41f3-b4cc-c418a4e27840": 1737416,
+     "bacc-4aa335ba-6d70-45a3-9a6a-07cc83bd1e17": 20718536,
+     "bacc-c7e5e08d-bf48-4483-b0da-3a3189d70dcf": -14199643
+    },
+    "doldurma": {
+     "cash": 1171838853,
+     "bank": 4111766422,
+     "accounts": {
+      "bacc-a393fa08-8770-41f3-b4cc-c418a4e27840": 2079605971,
+      "bacc-4aa335ba-6d70-45a3-9a6a-07cc83bd1e17": 2032160451
+     },
+     "writes": {
+      "cari tahsilat havale": 27398,
+      "cari tahsilat nakit": 28937,
+      "banka masrafı": 14271,
+      "bankalar arası transfer": 14324
+     },
+     "rejected": {
+      "bankalar arası transfer 409 cash-negative": 4,
+      "banka masrafı 409 cash-negative": 4
+     },
+     "growth": [
+      {
+       "rows": 5493,
+       "medians": {
+        "cari tahsilat havale": 80,
+        "cari tahsilat nakit": 79,
+        "banka masrafı": 79,
+        "bankalar arası transfer": 82
+       }
+      },
+      {
+       "rows": 10138,
+       "medians": {
+        "cari tahsilat havale": 102,
+        "cari tahsilat nakit": 98,
+        "banka masrafı": 105,
+        "bankalar arası transfer": 105
+       }
+      },
+      {
+       "rows": 14796,
+       "medians": {
+        "cari tahsilat nakit": 128,
+        "cari tahsilat havale": 131,
+        "banka masrafı": 136,
+        "bankalar arası transfer": 139
+       }
+      },
+      {
+       "rows": 19457,
+       "medians": {
+        "banka masrafı": 157,
+        "cari tahsilat havale": 151,
+        "cari tahsilat nakit": 147,
+        "bankalar arası transfer": 163
+       }
+      },
+      {
+       "rows": 24133,
+       "medians": {
+        "cari tahsilat havale": 195,
+        "cari tahsilat nakit": 193,
+        "banka masrafı": 204,
+        "bankalar arası transfer": 208
+       }
+      },
+      {
+       "rows": 28809,
+       "medians": {
+        "cari tahsilat nakit": 195,
+        "bankalar arası transfer": 223,
+        "cari tahsilat havale": 204,
+        "banka masrafı": 216
+       }
+      },
+      {
+       "rows": 33509,
+       "medians": {
+        "cari tahsilat nakit": 250,
+        "bankalar arası transfer": 282,
+        "banka masrafı": 271,
+        "cari tahsilat havale": 261
+       }
+      },
+      {
+       "rows": 38192,
+       "medians": {
+        "cari tahsilat havale": 262,
+        "bankalar arası transfer": 289,
+        "banka masrafı": 283,
+        "cari tahsilat nakit": 250
+       }
+      },
+      {
+       "rows": 42843,
+       "medians": {
+        "cari tahsilat havale": 295,
+        "cari tahsilat nakit": 285,
+        "banka masrafı": 317,
+        "bankalar arası transfer": 328
+       }
+      },
+      {
+       "rows": 47538,
+       "medians": {
+        "cari tahsilat havale": 336,
+        "cari tahsilat nakit": 332,
+        "bankalar arası transfer": 379,
+        "banka masrafı": 378
+       }
+      },
+      {
+       "rows": 52194,
+       "medians": {
+        "cari tahsilat nakit": 343,
+        "cari tahsilat havale": 348,
+        "banka masrafı": 380,
+        "bankalar arası transfer": 394
+       }
+      },
+      {
+       "rows": 56900,
+       "medians": {
+        "cari tahsilat nakit": 392,
+        "bankalar arası transfer": 452,
+        "banka masrafı": 433,
+        "cari tahsilat havale": 402
+       }
+      },
+      {
+       "rows": 61581,
+       "medians": {
+        "banka masrafı": 435,
+        "cari tahsilat havale": 407,
+        "cari tahsilat nakit": 390,
+        "bankalar arası transfer": 455
+       }
+      },
+      {
+       "rows": 66216,
+       "medians": {
+        "cari tahsilat nakit": 407,
+        "cari tahsilat havale": 427,
+        "bankalar arası transfer": 480,
+        "banka masrafı": 458
+       }
+      },
+      {
+       "rows": 70925,
+       "medians": {
+        "cari tahsilat havale": 453,
+        "banka masrafı": 491,
+        "cari tahsilat nakit": 441,
+        "bankalar arası transfer": 507
+       }
+      },
+      {
+       "rows": 75589,
+       "medians": {
+        "banka masrafı": 542,
+        "cari tahsilat nakit": 470,
+        "cari tahsilat havale": 497,
+        "bankalar arası transfer": 564
+       }
+      },
+      {
+       "rows": 80288,
+       "medians": {
+        "banka masrafı": 591,
+        "cari tahsilat havale": 547,
+        "cari tahsilat nakit": 516,
+        "bankalar arası transfer": 594
+       }
+      },
+      {
+       "rows": 84951,
+       "medians": {
+        "cari tahsilat nakit": 575,
+        "banka masrafı": 642,
+        "cari tahsilat havale": 597,
+        "bankalar arası transfer": 666
+       }
+      },
+      {
+       "rows": 89640,
+       "medians": {
+        "cari tahsilat nakit": 598,
+        "bankalar arası transfer": 690,
+        "banka masrafı": 688,
+        "cari tahsilat havale": 616
+       }
+      },
+      {
+       "rows": 94299,
+       "medians": {
+        "bankalar arası transfer": 706,
+        "banka masrafı": 675,
+        "cari tahsilat havale": 622,
+        "cari tahsilat nakit": 605
+       }
+      },
+      {
+       "rows": 98969,
+       "medians": {
+        "cari tahsilat nakit": 620,
+        "banka masrafı": 688,
+        "cari tahsilat havale": 632,
+        "bankalar arası transfer": 708
+       }
+      },
+      {
+       "rows": 100067,
+       "medians": {
+        "banka masrafı": 612,
+        "cari tahsilat nakit": 592,
+        "cari tahsilat havale": 603,
+        "bankalar arası transfer": 671
+       }
+      }
+     ],
+     "seconds": 4003,
+     "cariler": 3000
+    },
+    "id": "sirket-001",
+    "moneyRows": 100067,
+    "moneyBy": {
+     "payments": 28,
+     "cash_entries": 104,
+     "account_entries": 56582,
+     "plan_entries": 72,
+     "stock_moves": 167,
+     "cheque_events": 36,
+     "bank_lines": 43078
+    },
+    "bytes": 188915712
+   },
+   "002": {
+    "seed": 2102,
+    "operations": 1000,
+    "checks": 6,
+    "rejectedAsExpected": 230,
+    "seconds": 10,
+    "model": {
+     "kasa": {
+      "cash": "92323,67",
+      "bank": "-33868,11",
+      "card": "-24992,35"
+     },
+     "cariler": 12,
+     "urunler": 10,
+     "kartlar": 47,
+     "kasaHareketi": 68,
+     "bankaSatiri": 88,
+     "bankaTersKayit": 20,
+     "bankalarArasiTransfer": 17,
+     "cariHareketi": 66,
+     "stokHareketi": 386,
+     "taksitHareketi": 41,
+     "hesabaBagliModulHavalesi": 53,
+     "kurumsalKartaBagli": 15,
+     "kurumsalKartBakiyesi": "-215725,24"
+    },
+    "byKind": {
+     "alim": 75,
+     "kasa": 45,
+     "kart-kapat": 6,
+     "satis": 94,
+     "cari": 58,
+     "cek-tahsil": 25,
+     "fatura-satis": 80,
+     "cari-duzelt": 23,
+     "vade-hatasi": 21,
+     "kayit-tahsil": 17,
+     "hareket-sil": 11,
+     "hareket-duzelt": 18,
+     "kayit-sil": 8,
+     "kilit-ihlali": 18,
+     "taksit-sil": 12,
+     "kart": 29,
+     "banka-ters": 8,
+     "fatura-alis": 46,
+     "taksit-tahsil": 57,
+     "tarih-hatasi": 42,
+     "fatura-iade": 30,
+     "kasa-duzelt": 27,
+     "fatura-hatasi": 55,
+     "banka-benzer": 5,
+     "iade": 23,
+     "fatura-acid": 22,
+     "fatura-iptal": 15,
+     "banka-fis": 24,
+     "cek-geri-al": 9,
+     "banka-duzelt": 11,
+     "banka-transfer-ters": 4,
+     "banka-transfer": 18,
+     "kart-sil": 11,
+     "cek-ode": 12,
+     "cari-sil": 8,
+     "kayit-duzelt": 10,
+     "fatura-taslak": 16,
+     "geri-yukle": 7,
+     "fatura-bagli": 6,
+     "kasa-sil": 5
+    },
+    "invoices": {
+     "kesilen": 159,
+     "iptal": 4,
+     "taslak": 2,
+     "turler": {
+      "sale": 83,
+      "purchase": 45,
+      "purchase_return": 8,
+      "sale_return": 22,
+      "smm": 5
+     },
+     "cek": 58
+    },
+    "motorHesaplari": {
+     "bacc-0bddab71-f465-45c8-b442-1424cd49768c": 7511563,
+     "bacc-8483c696-7bf5-4c82-a11f-dd045ff5b6c7": 17863305,
+     "bacc-6fdeb249-c306-4be7-b1fd-94f8d96b8085": -21572524
+    },
+    "doldurma": {
+     "cash": 137673626,
+     "bank": 467759494,
+     "accounts": {
+      "bacc-0bddab71-f465-45c8-b442-1424cd49768c": 234737611,
+      "bacc-8483c696-7bf5-4c82-a11f-dd045ff5b6c7": 233021883
+     },
+     "writes": {
+      "banka masrafı": 1719,
+      "bankalar arası transfer": 1691,
+      "cari tahsilat havale": 3097,
+      "cari tahsilat nakit": 3438
+     },
+     "rejected": {},
+     "growth": [
+      {
+       "rows": 5138,
+       "medians": {
+        "banka masrafı": 69,
+        "bankalar arası transfer": 70,
+        "cari tahsilat havale": 70,
+        "cari tahsilat nakit": 69
+       }
+      },
+      {
+       "rows": 9861,
+       "medians": {
+        "cari tahsilat nakit": 87,
+        "cari tahsilat havale": 89,
+        "banka masrafı": 90,
+        "bankalar arası transfer": 91
+       }
+      },
+      {
+       "rows": 12117,
+       "medians": {
+        "cari tahsilat havale": 101,
+        "cari tahsilat nakit": 98,
+        "banka masrafı": 103,
+        "bankalar arası transfer": 106
+       }
+      }
+     ],
+     "seconds": 110,
+     "cariler": 600
+    },
+    "id": "sirket-959e5b9c-f043-406f-93b8-1f7df518559d",
+    "moneyRows": 12117,
+    "moneyBy": {
+     "payments": 11,
+     "cash_entries": 68,
+     "account_entries": 6695,
+     "plan_entries": 41,
+     "stock_moves": 87,
+     "cheque_events": 26,
+     "bank_lines": 5189
+    },
+    "bytes": 25059328
+   }
+  }
+ },
+ "duzeyler": [
+  {
+   "kullanici": 1,
+   "sure": 180,
+   "pencere": 3,
+   "acilisMs": 8365,
+   "once": {
+    "001": {
+     "kasa": "11.963.268,67",
+     "banka102": "40.844.886,26",
+     "hesaplar": [
+      "Ziraat Bankası 20.813.433,87",
+      "Garanti BBVA 20.528.789,87"
+     ]
+    },
+    "002": {
+     "kasa": "1.469.059,93",
+     "banka102": "4.643.726,83",
+     "hesaplar": [
+      "Ziraat Bankası 2.422.491,74",
+      "Garanti BBVA 2.508.851,88"
+     ]
+    }
+   },
+   "raporDisi": {
+    "banka-pos-hareketleri": "403 Bu rapor için yetkiniz yok.",
+    "kasa-hareketleri": "403 Bu rapor için yetkiniz yok.",
+    "cari-mizan": "404 Rapor bulunamadı."
+   },
+   "raporlar": [
+    "banka-bakiye",
+    "banka-hareket",
+    "banka-masraf"
+   ],
+   "ekranGiris": [
+    1470,
+    887,
+    988
+   ],
+   "sunucuProfil": {
+    "ornek": 196142,
+    "mesgulYuzde": 85.6,
+    "kapsayici": [
+     "68.7% (anon) server/app.mjs:484",
+     "68.7% dispatch server/app.mjs:426",
+     "68.3% scoped server/app.mjs:368",
+     "68.3% runScoped server/lib/session-scope.mjs:9",
+     "68.3% (anon) server/app.mjs:370",
+     "68.3% handle server/app.mjs:336",
+     "47.3% run server/routes/report-center.mjs:1742",
+     "46.9% all server/lib/db.mjs:242",
+     "45.4% classified server/lib/bank/money-lines.mjs:561",
+     "42.7% build server/routes/report-center.mjs:550",
+     "31.8% (anon) server/routes/report-center.mjs:1772",
+     "14.4% (anon) server/lib/bank/money-lines.mjs:575",
+     "12.0% list server/routes/accounts.mjs:138",
+     "10.9% (anon) server/routes/accounts.mjs:279",
+     "7.9% (anon) server/routes/report-center.mjs:1778",
+     "7.6% (anon) server/routes/report-center.mjs:1799",
+     "5.0% run server/lib/integrity.mjs:271",
+     "4.0% build server/routes/report-center.mjs:635",
+     "3.4% check server/routes/ledger.mjs:214",
+     "3.4% bankLinesOf server/routes/report-center.mjs:254",
+     "3.3% createApp server/app.mjs:85",
+     "3.1% start server/lib/integrity.mjs:674",
+     "2.6% get server/lib/db.mjs:241",
+     "2.6% (anon) server/routes/ledger.mjs:246",
+     "2.6% scan server/lib/integrity.mjs:821"
+    ]
+   },
+   "sunucu": {
+    "istek": 47,
+    "istekSn": 0.2,
+    "yazimBasarili": 19,
+    "genel": {
+     "p50": 2660,
+     "p95": 6530,
+     "enCok": 7129
+    },
+    "yedekSirasinda": {
+     "adet": 3,
+     "p50": 5094,
+     "p95": 6885,
+     "enCok": 6885
+    },
+    "yedekDisinda": {
+     "p50": 2429,
+     "p95": 5079,
+     "enCok": 7129
+    },
+    "turler": [
+     {
+      "tur": "Banka Hareketleri listesi",
+      "adet": 9,
+      "p50": 2759,
+      "p95": 4513,
+      "enCok": 4513,
+      "durum": {
+       "200": 9
+      }
+     },
+     {
+      "tur": "Banka Fişi (masraf)",
+      "adet": 2,
+      "p50": 301,
+      "p95": 1882,
+      "enCok": 1882,
+      "durum": {
+       "200": 2
+      }
+     },
+     {
+      "tur": "Cari tahsilat (havale)",
+      "adet": 4,
+      "p50": 1414,
+      "p95": 5079,
+      "enCok": 5079,
+      "durum": {
+       "200": 4
+      }
+     },
+     {
+      "tur": "Cari arama",
+      "adet": 12,
+      "p50": 1943,
+      "p95": 4488,
+      "enCok": 4488,
+      "durum": {
+       "200": 12
+      }
+     },
+     {
+      "tur": "Satış faturası (peşin nakit)",
+      "adet": 3,
+      "p50": 2268,
+      "p95": 4358,
+      "enCok": 4358,
+      "durum": {
+       "200": 3
+      }
+     },
+     {
+      "tur": "Cari tahsilat (nakit)",
+      "adet": 7,
+      "p50": 2102,
+      "p95": 4794,
+      "enCok": 4794,
+      "durum": {
+       "200": 7
+      }
+     },
+     {
+      "tur": "Cari ödeme (nakit)",
+      "adet": 3,
+      "p50": 4902,
+      "p95": 6885,
+      "enCok": 6885,
+      "durum": {
+       "200": 3
+      }
+     },
+     {
+      "tur": "Rapor açma",
+      "adet": 7,
+      "p50": 4781,
+      "p95": 7129,
+      "enCok": 7129,
+      "durum": {
+       "200": 7
+      }
+     }
+    ],
+    "beklenen409": {},
+    "beklenmeyen": {},
+    "olayDongusu": {
+     "p50": 10.1,
+     "p95": 14.7,
+     "p99": 2501.9,
+     "enCok": 6157,
+     "rssMB": 204
+    }
+   },
+   "ekran": {
+    "girisMs": [
+     1470,
+     887,
+     988
+    ],
+    "cariPencereAcilisMs": 902,
+    "bankaPencereAcilisMs": 242,
+    "hareketlerIlkMs": 4217,
+    "cariTusHarf": {
+     "adet": 176,
+     "p50": 18,
+     "p95": 66,
+     "enCok": 256
+    },
+    "cariAramaSonucu": {
+     "adet": 44,
+     "p50": 151,
+     "p95": 4609,
+     "enCok": 5689
+    },
+    "cariAramaZamanAsimi": 0,
+    "hareketSuzgec": {
+     "adet": 1,
+     "p50": 5669,
+     "p95": 5669,
+     "enCok": 5669
+    },
+    "hareketDahaFazla": {
+     "adet": 1,
+     "p50": 3477,
+     "p95": 3477,
+     "enCok": 3477
+    },
+    "hesapSecenegi": {
+     "adet": 1,
+     "p50": 11,
+     "p95": 11,
+     "enCok": 11
+    },
+    "suzgecBasarisiz": 2,
+    "suzgecDurumlari": [
+     {
+      "secici": false,
+      "pasif": false,
+      "secenek": 0,
+      "satir": 0,
+      "hesap": null,
+      "yukleniyor": false,
+      "sekme": ""
+     },
+     {
+      "secici": false,
+      "pasif": false,
+      "secenek": 0,
+      "satir": 0,
+      "hesap": null,
+      "yukleniyor": false,
+      "sekme": ""
+     }
+    ],
+    "kaydetListede": {
+     "adet": 1,
+     "p50": 7723,
+     "p95": 7723,
+     "enCok": 7723
+    },
+    "kaydetGorunmedi": 0,
+    "baskasininKaydiListede": {
+     "adet": 0,
+     "p50": null,
+     "p95": null,
+     "enCok": null
+    },
+    "baskasininKaydiGorunmedi": 0,
+    "raporlarAcilis": {
+     "adet": 11,
+     "p50": 2449,
+     "p95": 3435,
+     "enCok": 3435
+    },
+    "bankaBakiyeOnIzleme": {
+     "adet": 11,
+     "p50": 4620,
+     "p95": 6595,
+     "enCok": 6595
+    },
+    "pdf": {
+     "adet": 11,
+     "p50": 3187,
+     "p95": 5850,
+     "enCok": 5850,
+     "durumlar": [
+      200
+     ],
+     "bayt": 35112
+    },
+    "excel": {
+     "adet": 11,
+     "p50": 2579,
+     "p95": 3901,
+     "enCok": 3901,
+     "durumlar": [
+      200
+     ],
+     "bayt": 4910
+    },
+    "yedekSirasindaCari": {
+     "adet": 3,
+     "p50": 153,
+     "p95": 155,
+     "enCok": 155
+    },
+    "yedekSirasindaRapor": {
+     "adet": 0,
+     "p50": null,
+     "p95": null,
+     "enCok": null
+    },
+    "donma": {
+     "ekran1": {
+      "toplamMs": 5884,
+      "enUzunMs": 346
+     },
+     "ekran2": {
+      "toplamMs": 53,
+      "enUzunMs": 53
+     },
+     "ekran3": {
+      "toplamMs": 0,
+      "enUzunMs": 0
+     }
+    },
+    "bellekMB": {
+     "ekran1": {
+      "bas": {
+       "jsHeapMB": 6.3,
+       "nodes": 2431,
+       "listeners": 661
+      },
+      "son": {
+       "jsHeapMB": 6.2,
+       "nodes": 32591,
+       "listeners": 508
+      }
+     },
+     "ekran2": {
+      "bas": {
+       "jsHeapMB": 6.3,
+       "nodes": 2431,
+       "listeners": 661
+      },
+      "son": {
+       "jsHeapMB": 6.6,
+       "nodes": 4602,
+       "listeners": 525
+      }
+     },
+     "ekran3": {
+      "bas": {
+       "jsHeapMB": 5.7,
+       "nodes": 2393,
+       "listeners": 656
+      },
+      "son": {
+       "jsHeapMB": 5.8,
+       "nodes": 5212,
+       "listeners": 590
+      }
+     }
+    },
+    "kararsizTiklama": {},
+    "hatalar": [
+     "banka süzgeç: page.waitForFunction: Timeout 60000ms exceeded. · {\"secici\":false,\"pasif\":false,\"secenek\":0,\"satir\":0,\"hesap\":null,\"yukleniyor\":false,\"sekme\":\"\"}",
+     "banka: page.selectOption: Timeout 30000ms exceeded.",
+     "banka süzgeç: page.waitForFunction: Timeout 60000ms exceeded. · {\"secici\":false,\"pasif\":false,\"secenek\":0,\"satir\":0,\"hesap\":null,\"yukleniyor\":false,\"sekme\":\"\"}",
+     "banka: page.selectOption: Timeout 30000ms exceeded."
+    ]
+   },
+   "yedekler": [
+    {
+     "tur": "otomatik (zamanlayıcı turu)",
+     "ms": 1513,
+     "hata": "",
+     "dosyalar": [
+      {
+       "name": "destekofis-001-2026-10-11T08-55-23-177Z.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-1/backups/001 - Şirket 1/destekofis-001-2026-10-11T08-55-23-177Z.sqlite",
+       "size": 179793920,
+       "integrity": "ok",
+       "paraSatiri": 100075,
+       "klasor": "001 - Şirket 1"
+      },
+      {
+       "name": "destekofis-002-2026-10-11T08-55-24-518Z.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-1/backups/002 - Ölçek İkinci Şirket/destekofis-002-2026-10-11T08-55-24-518Z.sqlite",
+       "size": 23912448,
+       "integrity": "ok",
+       "paraSatiri": 12120,
+       "klasor": "002 - Ölçek İkinci Şirket"
+      }
+     ],
+     "pencere": {
+      "from": 78200.324085,
+      "to": 84643.332143,
+      "kind": "otomatik"
+     }
+    },
+    {
+     "tur": "elle (Şimdi Yedek Al — Tüm Şirketler)",
+     "ms": 7483,
+     "durum": 200,
+     "hata": "",
+     "dosyalar": [
+      {
+       "name": "destekofis-001-2026-10-11T08-56-33-473Z-manuel.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-1/backups/001 - Şirket 1/destekofis-001-2026-10-11T08-56-33-473Z-manuel.sqlite",
+       "size": 179810304,
+       "integrity": "ok",
+       "paraSatiri": 100079,
+       "klasor": "001 - Şirket 1"
+      },
+      {
+       "name": "destekofis-002-2026-10-11T08-56-33-473Z-manuel.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-1/backups/002 - Ölçek İkinci Şirket/destekofis-002-2026-10-11T08-56-33-473Z-manuel.sqlite",
+       "size": 23912448,
+       "integrity": "ok",
+       "paraSatiri": 12120,
+       "klasor": "002 - Ölçek İkinci Şirket"
+      }
+     ],
+     "pencere": {
+      "from": 147642.949221,
+      "to": 155126.36556,
+      "kind": "elle"
+     }
+    }
+   ],
+   "sonra": {
+    "001": {
+     "mutabakatTesti": "TAMAM",
+     "mutabakatTestiMs": 6470,
+     "kasa": {
+      "program": "11.965.876,09",
+      "bagimsiz": "11.965.876,09",
+      "fark": "0,00"
+     },
+     "banka102": {
+      "program": "40.847.800,35",
+      "bagimsiz": "40.847.800,35",
+      "fark": "0,00"
+     },
+     "hesaplar": [
+      {
+       "hesap": "Ziraat Bankası · Ana TL Hesabı T2101",
+       "program": "20.815.350,76",
+       "bagimsiz": "20.815.350,76",
+       "fark": "0,00"
+      },
+      {
+       "hesap": "Garanti BBVA · Ana TL Hesabı T2101",
+       "program": "20.529.787,07",
+       "bagimsiz": "20.529.787,07",
+       "fark": "0,00"
+      }
+     ],
+     "yukDefteri": {
+      "kasa": "2.607,42",
+      "banka": "2.914,09"
+     }
+    },
+    "002": {
+     "mutabakatTesti": "TAMAM",
+     "mutabakatTestiMs": 692,
+     "kasa": {
+      "program": "1.469.056,03",
+      "bagimsiz": "1.469.056,03",
+      "fark": "0,00"
+     },
+     "banka102": {
+      "program": "4.644.144,17",
+      "bagimsiz": "4.644.144,17",
+      "fark": "0,00"
+     },
+     "hesaplar": [
+      {
+       "hesap": "Ziraat Bankası · Ana TL Hesabı T2102",
+       "program": "2.422.460,33",
+       "bagimsiz": "2.422.460,33",
+       "fark": "0,00"
+      },
+      {
+       "hesap": "Garanti BBVA · Ana TL Hesabı T2102",
+       "program": "2.509.300,63",
+       "bagimsiz": "2.509.300,63",
+       "fark": "0,00"
+      }
+     ],
+     "yukDefteri": {
+      "kasa": "-3,90",
+      "banka": "417,34"
+     }
+    }
+   },
+   "paraSatiri": {
+    "once": {
+     "001": 100067,
+     "002": 12117
+    },
+    "sonra": {
+     "001": 100084,
+     "002": 12120
+    }
+   },
+   "izliKayit": {
+    "001": {
+     "cariHareketi": 12,
+     "fatura": 3,
+     "bankaOlayi": 2,
+     "beklenen": {
+      "cariHareketi": 12,
+      "fatura": 3,
+      "bankaOlayi": 2
+     }
+    },
+    "002": {
+     "cariHareketi": 2,
+     "fatura": 0,
+     "bankaOlayi": 1,
+     "beklenen": {
+      "cariHareketi": 2,
+      "fatura": 0,
+      "bankaOlayi": 1
+     }
+    }
+   },
+   "sureSn": 210.4,
+   "sonuc": {
+    "hatalar": [],
+    "denetim": 29,
+    "gecen": 29
+   }
+  },
+  {
+   "kullanici": 3,
+   "sure": 180,
+   "pencere": 3,
+   "acilisMs": 8009,
+   "once": {
+    "001": {
+     "kasa": "11.963.268,67",
+     "banka102": "40.844.886,26",
+     "hesaplar": [
+      "Ziraat Bankası 20.813.433,87",
+      "Garanti BBVA 20.528.789,87"
+     ]
+    },
+    "002": {
+     "kasa": "1.469.059,93",
+     "banka102": "4.643.726,83",
+     "hesaplar": [
+      "Ziraat Bankası 2.422.491,74",
+      "Garanti BBVA 2.508.851,88"
+     ]
+    }
+   },
+   "raporDisi": {
+    "banka-pos-hareketleri": "403 Bu rapor için yetkiniz yok.",
+    "kasa-hareketleri": "403 Bu rapor için yetkiniz yok.",
+    "cari-mizan": "404 Rapor bulunamadı."
+   },
+   "raporlar": [
+    "banka-bakiye",
+    "banka-hareket",
+    "banka-masraf"
+   ],
+   "ekranGiris": [
+    2042,
+    969,
+    1097
+   ],
+   "sunucuProfil": {
+    "ornek": 195208,
+    "mesgulYuzde": 87.2,
+    "kapsayici": [
+     "68.1% (anon) server/app.mjs:484",
+     "68.1% dispatch server/app.mjs:426",
+     "67.8% runScoped server/lib/session-scope.mjs:9",
+     "67.8% scoped server/app.mjs:368",
+     "67.8% (anon) server/app.mjs:370",
+     "67.8% handle server/app.mjs:336",
+     "48.2% run server/routes/report-center.mjs:1742",
+     "46.1% all server/lib/db.mjs:242",
+     "45.0% classified server/lib/bank/money-lines.mjs:561",
+     "41.4% build server/routes/report-center.mjs:550",
+     "34.0% (anon) server/routes/report-center.mjs:1772",
+     "14.6% (anon) server/lib/bank/money-lines.mjs:575",
+     "11.1% list server/routes/accounts.mjs:138",
+     "9.4% (anon) server/routes/accounts.mjs:279",
+     "7.1% (anon) server/routes/report-center.mjs:1778",
+     "7.0% (anon) server/routes/report-center.mjs:1799",
+     "5.0% build server/routes/report-center.mjs:635",
+     "5.0% run server/lib/integrity.mjs:271",
+     "4.3% bankLinesOf server/routes/report-center.mjs:254",
+     "4.2% get server/lib/db.mjs:241",
+     "3.6% tx server/lib/db.mjs:316",
+     "3.3% check server/routes/ledger.mjs:214",
+     "3.3% post server/lib/bank/post.mjs:567",
+     "3.2% createApp server/app.mjs:85",
+     "3.1% (anon) server/lib/bank/post.mjs:572"
+    ]
+   },
+   "sunucu": {
+    "istek": 109,
+    "istekSn": 0.5,
+    "yazimBasarili": 59,
+    "genel": {
+     "p50": 3916,
+     "p95": 8080,
+     "enCok": 12977
+    },
+    "yedekSirasinda": {
+     "adet": 6,
+     "p50": 7194,
+     "p95": 9505,
+     "enCok": 9505
+    },
+    "yedekDisinda": {
+     "p50": 3902,
+     "p95": 7908,
+     "enCok": 12977
+    },
+    "turler": [
+     {
+      "tur": "Banka Hareketleri listesi",
+      "adet": 13,
+      "p50": 2978,
+      "p95": 4494,
+      "enCok": 4494,
+      "durum": {
+       "200": 13
+      }
+     },
+     {
+      "tur": "Cari tahsilat (nakit)",
+      "adet": 17,
+      "p50": 3359,
+      "p95": 9505,
+      "enCok": 9505,
+      "durum": {
+       "200": 17
+      }
+     },
+     {
+      "tur": "Cari tahsilat (havale)",
+      "adet": 10,
+      "p50": 3556,
+      "p95": 5436,
+      "enCok": 5436,
+      "durum": {
+       "200": 10
+      }
+     },
+     {
+      "tur": "Rapor açma",
+      "adet": 17,
+      "p50": 4806,
+      "p95": 12977,
+      "enCok": 12977,
+      "durum": {
+       "200": 17
+      }
+     },
+     {
+      "tur": "Cari arama",
+      "adet": 20,
+      "p50": 3697,
+      "p95": 6690,
+      "enCok": 8080,
+      "durum": {
+       "200": 20
+      }
+     },
+     {
+      "tur": "Satış faturası (peşin nakit)",
+      "adet": 15,
+      "p50": 4463,
+      "p95": 9105,
+      "enCok": 9105,
+      "durum": {
+       "200": 15
+      }
+     },
+     {
+      "tur": "Cari ödeme (nakit)",
+      "adet": 5,
+      "p50": 5094,
+      "p95": 7194,
+      "enCok": 7194,
+      "durum": {
+       "200": 5
+      }
+     },
+     {
+      "tur": "Banka Fişi (masraf)",
+      "adet": 10,
+      "p50": 2525,
+      "p95": 8027,
+      "enCok": 8027,
+      "durum": {
+       "200": 10
+      }
+     },
+     {
+      "tur": "Bankalar arası transfer",
+      "adet": 2,
+      "p50": 929,
+      "p95": 4325,
+      "enCok": 4325,
+      "durum": {
+       "200": 2
+      }
+     }
+    ],
+    "beklenen409": {},
+    "beklenmeyen": {},
+    "olayDongusu": {
+     "p50": 10.1,
+     "p95": 11.1,
+     "p99": 3040.9,
+     "enCok": 8020,
+     "rssMB": 874
+    }
+   },
+   "ekran": {
+    "girisMs": [
+     2042,
+     969,
+     1097
+    ],
+    "cariPencereAcilisMs": 1568,
+    "bankaPencereAcilisMs": 193,
+    "hareketlerIlkMs": 7877,
+    "cariTusHarf": {
+     "adet": 160,
+     "p50": 16,
+     "p95": 64,
+     "enCok": 286
+    },
+    "cariAramaSonucu": {
+     "adet": 40,
+     "p50": 150,
+     "p95": 5192,
+     "enCok": 10718
+    },
+    "cariAramaZamanAsimi": 0,
+    "hareketSuzgec": {
+     "adet": 1,
+     "p50": 2083,
+     "p95": 2083,
+     "enCok": 2083
+    },
+    "hareketDahaFazla": {
+     "adet": 1,
+     "p50": 3444,
+     "p95": 3444,
+     "enCok": 3444
+    },
+    "hesapSecenegi": {
+     "adet": 1,
+     "p50": 8,
+     "p95": 8,
+     "enCok": 8
+    },
+    "suzgecBasarisiz": 2,
+    "suzgecDurumlari": [
+     {
+      "secici": false,
+      "pasif": false,
+      "secenek": 0,
+      "satir": 0,
+      "hesap": null,
+      "yukleniyor": false,
+      "sekme": ""
+     },
+     {
+      "secici": false,
+      "pasif": false,
+      "secenek": 0,
+      "satir": 0,
+      "hesap": null,
+      "yukleniyor": false,
+      "sekme": ""
+     }
+    ],
+    "kaydetListede": {
+     "adet": 1,
+     "p50": 9477,
+     "p95": 9477,
+     "enCok": 9477
+    },
+    "kaydetGorunmedi": 0,
+    "baskasininKaydiListede": {
+     "adet": 0,
+     "p50": null,
+     "p95": null,
+     "enCok": null
+    },
+    "baskasininKaydiGorunmedi": 0,
+    "raporlarAcilis": {
+     "adet": 10,
+     "p50": 3176,
+     "p95": 5337,
+     "enCok": 5337
+    },
+    "bankaBakiyeOnIzleme": {
+     "adet": 10,
+     "p50": 4787,
+     "p95": 5828,
+     "enCok": 5828
+    },
+    "pdf": {
+     "adet": 10,
+     "p50": 3440,
+     "p95": 4829,
+     "enCok": 4829,
+     "durumlar": [
+      200
+     ],
+     "bayt": 35109
+    },
+    "excel": {
+     "adet": 10,
+     "p50": 3096,
+     "p95": 5857,
+     "enCok": 5857,
+     "durumlar": [
+      200
+     ],
+     "bayt": 4906
+    },
+    "yedekSirasindaCari": {
+     "adet": 4,
+     "p50": 143,
+     "p95": 8214,
+     "enCok": 8214
+    },
+    "yedekSirasindaRapor": {
+     "adet": 0,
+     "p50": null,
+     "p95": null,
+     "enCok": null
+    },
+    "donma": {
+     "ekran1": {
+      "toplamMs": 3428,
+      "enUzunMs": 305
+     },
+     "ekran2": {
+      "toplamMs": 77,
+      "enUzunMs": 77
+     },
+     "ekran3": {
+      "toplamMs": 0,
+      "enUzunMs": 0
+     }
+    },
+    "bellekMB": {
+     "ekran1": {
+      "bas": {
+       "jsHeapMB": 5.4,
+       "nodes": 2430,
+       "listeners": 661
+      },
+      "son": {
+       "jsHeapMB": 5.7,
+       "nodes": 25653,
+       "listeners": 508
+      }
+     },
+     "ekran2": {
+      "bas": {
+       "jsHeapMB": 6.3,
+       "nodes": 2430,
+       "listeners": 656
+      },
+      "son": {
+       "jsHeapMB": 5.8,
+       "nodes": 4567,
+       "listeners": 515
+      }
+     },
+     "ekran3": {
+      "bas": {
+       "jsHeapMB": 5.8,
+       "nodes": 2393,
+       "listeners": 656
+      },
+      "son": {
+       "jsHeapMB": 5.6,
+       "nodes": 5100,
+       "listeners": 587
+      }
+     }
+    },
+    "kararsizTiklama": {},
+    "hatalar": [
+     "banka süzgeç: page.waitForFunction: Timeout 60000ms exceeded. · {\"secici\":false,\"pasif\":false,\"secenek\":0,\"satir\":0,\"hesap\":null,\"yukleniyor\":false,\"sekme\":\"\"}",
+     "banka: page.selectOption: Timeout 30000ms exceeded.",
+     "banka süzgeç: page.waitForFunction: Timeout 60000ms exceeded. · {\"secici\":false,\"pasif\":false,\"secenek\":0,\"satir\":0,\"hesap\":null,\"yukleniyor\":false,\"sekme\":\"\"}",
+     "banka: page.selectOption: Timeout 30000ms exceeded."
+    ]
+   },
+   "yedekler": [
+    {
+     "tur": "otomatik (zamanlayıcı turu)",
+     "ms": 922,
+     "hata": "",
+     "dosyalar": [
+      {
+       "name": "destekofis-001-2026-10-11T08-59-30-819Z.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-3/backups/001 - Şirket 1/destekofis-001-2026-10-11T08-59-30-819Z.sqlite",
+       "size": 179818496,
+       "integrity": "ok",
+       "paraSatiri": 100079,
+       "klasor": "001 - Şirket 1"
+      },
+      {
+       "name": "destekofis-002-2026-10-11T08-59-31-619Z.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-3/backups/002 - Ölçek İkinci Şirket/destekofis-002-2026-10-11T08-59-31-619Z.sqlite",
+       "size": 23928832,
+       "integrity": "ok",
+       "paraSatiri": 12122,
+       "klasor": "002 - Ölçek İkinci Şirket"
+      }
+     ],
+     "pencere": {
+      "from": 327480.998024,
+      "to": 331692.794563,
+      "kind": "otomatik"
+     }
+    },
+    {
+     "tur": "elle (Şimdi Yedek Al — Tüm Şirketler)",
+     "ms": 4713,
+     "durum": 200,
+     "hata": "",
+     "dosyalar": [
+      {
+       "name": "destekofis-001-2026-10-11T09-00-38-359Z-manuel.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-3/backups/001 - Şirket 1/destekofis-001-2026-10-11T09-00-38-359Z-manuel.sqlite",
+       "size": 179867648,
+       "integrity": "ok",
+       "paraSatiri": 100102,
+       "klasor": "001 - Şirket 1"
+      },
+      {
+       "name": "destekofis-002-2026-10-11T09-00-38-359Z-manuel.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-3/backups/002 - Ölçek İkinci Şirket/destekofis-002-2026-10-11T09-00-38-359Z-manuel.sqlite",
+       "size": 23941120,
+       "integrity": "ok",
+       "paraSatiri": 12125,
+       "klasor": "002 - Ölçek İkinci Şirket"
+      }
+     ],
+     "pencere": {
+      "from": 394694.010934,
+      "to": 399407.460813,
+      "kind": "elle"
+     }
+    }
+   ],
+   "sonra": {
+    "001": {
+     "mutabakatTesti": "TAMAM",
+     "mutabakatTestiMs": 6358,
+     "kasa": {
+      "program": "11.968.011,75",
+      "bagimsiz": "11.968.011,75",
+      "fark": "0,00"
+     },
+     "banka102": {
+      "program": "40.854.888,61",
+      "bagimsiz": "40.854.888,61",
+      "fark": "0,00"
+     },
+     "hesaplar": [
+      {
+       "hesap": "Ziraat Bankası · Ana TL Hesabı T2101",
+       "program": "20.820.947,65",
+       "bagimsiz": "20.820.947,65",
+       "fark": "0,00"
+      },
+      {
+       "hesap": "Garanti BBVA · Ana TL Hesabı T2101",
+       "program": "20.531.278,44",
+       "bagimsiz": "20.531.278,44",
+       "fark": "0,00"
+      }
+     ],
+     "yukDefteri": {
+      "kasa": "4.743,08",
+      "banka": "10.002,35"
+     }
+    },
+    "002": {
+     "mutabakatTesti": "TAMAM",
+     "mutabakatTestiMs": 641,
+     "kasa": {
+      "program": "1.470.104,49",
+      "bagimsiz": "1.470.104,49",
+      "fark": "0,00"
+     },
+     "banka102": {
+      "program": "4.643.682,47",
+      "bagimsiz": "4.643.682,47",
+      "fark": "0,00"
+     },
+     "hesaplar": [
+      {
+       "hesap": "Ziraat Bankası · Ana TL Hesabı T2102",
+       "program": "2.422.038,67",
+       "bagimsiz": "2.422.038,67",
+       "fark": "0,00"
+      },
+      {
+       "hesap": "Garanti BBVA · Ana TL Hesabı T2102",
+       "program": "2.509.260,59",
+       "bagimsiz": "2.509.260,59",
+       "fark": "0,00"
+      }
+     ],
+     "yukDefteri": {
+      "kasa": "1.044,56",
+      "banka": "-44,36"
+     }
+    }
+   },
+   "paraSatiri": {
+    "once": {
+     "001": 100067,
+     "002": 12117
+    },
+    "sonra": {
+     "001": 100117,
+     "002": 12129
+    }
+   },
+   "izliKayit": {
+    "001": {
+     "cariHareketi": 30,
+     "fatura": 8,
+     "bankaOlayi": 11,
+     "beklenen": {
+      "cariHareketi": 30,
+      "fatura": 8,
+      "bankaOlayi": 11
+     }
+    },
+    "002": {
+     "cariHareketi": 2,
+     "fatura": 7,
+     "bankaOlayi": 2,
+     "beklenen": {
+      "cariHareketi": 2,
+      "fatura": 7,
+      "bankaOlayi": 2
+     }
+    }
+   },
+   "sureSn": 210.5,
+   "sonuc": {
+    "hatalar": [],
+    "denetim": 29,
+    "gecen": 29
+   }
+  },
+  {
+   "kullanici": 5,
+   "sure": 180,
+   "pencere": 3,
+   "acilisMs": 8296,
+   "once": {
+    "001": {
+     "kasa": "11.963.268,67",
+     "banka102": "40.844.886,26",
+     "hesaplar": [
+      "Ziraat Bankası 20.813.433,87",
+      "Garanti BBVA 20.528.789,87"
+     ]
+    },
+    "002": {
+     "kasa": "1.469.059,93",
+     "banka102": "4.643.726,83",
+     "hesaplar": [
+      "Ziraat Bankası 2.422.491,74",
+      "Garanti BBVA 2.508.851,88"
+     ]
+    }
+   },
+   "raporDisi": {
+    "banka-pos-hareketleri": "403 Bu rapor için yetkiniz yok.",
+    "kasa-hareketleri": "403 Bu rapor için yetkiniz yok.",
+    "cari-mizan": "404 Rapor bulunamadı."
+   },
+   "raporlar": [
+    "banka-bakiye",
+    "banka-hareket",
+    "banka-masraf"
+   ],
+   "ekranGiris": [
+    1852,
+    1012,
+    995
+   ],
+   "sunucuProfil": {
+    "ornek": 197834,
+    "mesgulYuzde": 86.8,
+    "kapsayici": [
+     "64.6% (anon) server/app.mjs:484",
+     "64.6% dispatch server/app.mjs:426",
+     "64.2% scoped server/app.mjs:368",
+     "64.2% runScoped server/lib/session-scope.mjs:9",
+     "64.2% (anon) server/app.mjs:370",
+     "64.2% handle server/app.mjs:336",
+     "43.3% run server/routes/report-center.mjs:1742",
+     "43.0% all server/lib/db.mjs:242",
+     "38.8% classified server/lib/bank/money-lines.mjs:561",
+     "32.8% build server/routes/report-center.mjs:550",
+     "32.1% (anon) server/routes/report-center.mjs:1772",
+     "12.8% (anon) server/lib/bank/money-lines.mjs:575",
+     "12.3% list server/routes/accounts.mjs:138",
+     "9.8% (anon) server/routes/accounts.mjs:279",
+     "7.8% build server/routes/report-center.mjs:635",
+     "7.5% get server/lib/db.mjs:241",
+     "6.7% tx server/lib/db.mjs:316",
+     "6.6% bankLinesOf server/routes/report-center.mjs:254",
+     "6.4% post server/lib/bank/post.mjs:567",
+     "6.2% (anon) server/lib/bank/post.mjs:572",
+     "5.7% (anon) server/routes/report-center.mjs:1799",
+     "5.5% (anon) server/routes/report-center.mjs:1778",
+     "5.1% (anon) server/routes/accounts.mjs:650",
+     "5.1% run server/lib/integrity.mjs:271",
+     "4.4% prepare server/routes/accounts.mjs:669"
+    ]
+   },
+   "sunucu": {
+    "istek": 162,
+    "istekSn": 0.8,
+    "yazimBasarili": 93,
+    "genel": {
+     "p50": 4828,
+     "p95": 8616,
+     "enCok": 13222
+    },
+    "yedekSirasinda": {
+     "adet": 14,
+     "p50": 5230,
+     "p95": 9707,
+     "enCok": 9707
+    },
+    "yedekDisinda": {
+     "p50": 4797,
+     "p95": 8362,
+     "enCok": 13222
+    },
+    "turler": [
+     {
+      "tur": "Banka Hareketleri listesi",
+      "adet": 17,
+      "p50": 5483,
+      "p95": 8855,
+      "enCok": 8855,
+      "durum": {
+       "200": 17
+      }
+     },
+     {
+      "tur": "Cari arama",
+      "adet": 33,
+      "p50": 3920,
+      "p95": 7868,
+      "enCok": 9707,
+      "durum": {
+       "200": 33
+      }
+     },
+     {
+      "tur": "Rapor açma",
+      "adet": 19,
+      "p50": 6657,
+      "p95": 13222,
+      "enCok": 13222,
+      "durum": {
+       "200": 19
+      }
+     },
+     {
+      "tur": "Cari tahsilat (havale)",
+      "adet": 20,
+      "p50": 4116,
+      "p95": 6599,
+      "enCok": 8362,
+      "durum": {
+       "200": 20
+      }
+     },
+     {
+      "tur": "Cari tahsilat (nakit)",
+      "adet": 15,
+      "p50": 4861,
+      "p95": 8860,
+      "enCok": 8860,
+      "durum": {
+       "200": 15
+      }
+     },
+     {
+      "tur": "Bankalar arası transfer",
+      "adet": 13,
+      "p50": 3140,
+      "p95": 8616,
+      "enCok": 8616,
+      "durum": {
+       "200": 13
+      }
+     },
+     {
+      "tur": "Satış faturası (peşin nakit)",
+      "adet": 18,
+      "p50": 2994,
+      "p95": 7078,
+      "enCok": 7078,
+      "durum": {
+       "200": 18
+      }
+     },
+     {
+      "tur": "Cari ödeme (nakit)",
+      "adet": 15,
+      "p50": 5108,
+      "p95": 11434,
+      "enCok": 11434,
+      "durum": {
+       "200": 15
+      }
+     },
+     {
+      "tur": "Banka Fişi (masraf)",
+      "adet": 12,
+      "p50": 3845,
+      "p95": 6662,
+      "enCok": 6662,
+      "durum": {
+       "200": 12
+      }
+     }
+    ],
+    "beklenen409": {},
+    "beklenmeyen": {},
+    "olayDongusu": {
+     "p50": 10.1,
+     "p95": 11.1,
+     "p99": 3112.2,
+     "enCok": 7738,
+     "rssMB": 221
+    }
+   },
+   "ekran": {
+    "girisMs": [
+     1852,
+     1012,
+     995
+    ],
+    "cariPencereAcilisMs": 2155,
+    "bankaPencereAcilisMs": 246,
+    "hareketlerIlkMs": 7187,
+    "cariTusHarf": {
+     "adet": 184,
+     "p50": 16,
+     "p95": 64,
+     "enCok": 283
+    },
+    "cariAramaSonucu": {
+     "adet": 46,
+     "p50": 153,
+     "p95": 3421,
+     "enCok": 7867
+    },
+    "cariAramaZamanAsimi": 0,
+    "hareketSuzgec": {
+     "adet": 1,
+     "p50": 3397,
+     "p95": 3397,
+     "enCok": 3397
+    },
+    "hareketDahaFazla": {
+     "adet": 1,
+     "p50": 4917,
+     "p95": 4917,
+     "enCok": 4917
+    },
+    "hesapSecenegi": {
+     "adet": 1,
+     "p50": 7,
+     "p95": 7,
+     "enCok": 7
+    },
+    "suzgecBasarisiz": 2,
+    "suzgecDurumlari": [
+     {
+      "secici": false,
+      "pasif": false,
+      "secenek": 0,
+      "satir": 0,
+      "hesap": null,
+      "yukleniyor": false,
+      "sekme": ""
+     },
+     {
+      "secici": false,
+      "pasif": false,
+      "secenek": 0,
+      "satir": 0,
+      "hesap": null,
+      "yukleniyor": false,
+      "sekme": ""
+     }
+    ],
+    "kaydetListede": {
+     "adet": 1,
+     "p50": 7164,
+     "p95": 7164,
+     "enCok": 7164
+    },
+    "kaydetGorunmedi": 0,
+    "baskasininKaydiListede": {
+     "adet": 0,
+     "p50": null,
+     "p95": null,
+     "enCok": null
+    },
+    "baskasininKaydiGorunmedi": 0,
+    "raporlarAcilis": {
+     "adet": 8,
+     "p50": 4139,
+     "p95": 9499,
+     "enCok": 9499
+    },
+    "bankaBakiyeOnIzleme": {
+     "adet": 8,
+     "p50": 5258,
+     "p95": 11745,
+     "enCok": 11745
+    },
+    "pdf": {
+     "adet": 8,
+     "p50": 3936,
+     "p95": 6519,
+     "enCok": 6519,
+     "durumlar": [
+      200
+     ],
+     "bayt": 35107
+    },
+    "excel": {
+     "adet": 8,
+     "p50": 4094,
+     "p95": 7596,
+     "enCok": 7596,
+     "durumlar": [
+      200
+     ],
+     "bayt": 4904
+    },
+    "yedekSirasindaCari": {
+     "adet": 5,
+     "p50": 148,
+     "p95": 155,
+     "enCok": 155
+    },
+    "yedekSirasindaRapor": {
+     "adet": 1,
+     "p50": 6233,
+     "p95": 6233,
+     "enCok": 6233
+    },
+    "donma": {
+     "ekran1": {
+      "toplamMs": 2570,
+      "enUzunMs": 277
+     },
+     "ekran2": {
+      "toplamMs": 0,
+      "enUzunMs": 0
+     },
+     "ekran3": {
+      "toplamMs": 0,
+      "enUzunMs": 0
+     }
+    },
+    "bellekMB": {
+     "ekran1": {
+      "bas": {
+       "jsHeapMB": 5.4,
+       "nodes": 2430,
+       "listeners": 656
+      },
+      "son": {
+       "jsHeapMB": 6.1,
+       "nodes": 25078,
+       "listeners": 503
+      }
+     },
+     "ekran2": {
+      "bas": {
+       "jsHeapMB": 6.3,
+       "nodes": 2430,
+       "listeners": 661
+      },
+      "son": {
+       "jsHeapMB": 5.9,
+       "nodes": 4567,
+       "listeners": 520
+      }
+     },
+     "ekran3": {
+      "bas": {
+       "jsHeapMB": 5.9,
+       "nodes": 2428,
+       "listeners": 661
+      },
+      "son": {
+       "jsHeapMB": 5.8,
+       "nodes": 5168,
+       "listeners": 571
+      }
+     }
+    },
+    "kararsizTiklama": {},
+    "hatalar": [
+     "banka süzgeç: page.waitForFunction: Timeout 60000ms exceeded. · {\"secici\":false,\"pasif\":false,\"secenek\":0,\"satir\":0,\"hesap\":null,\"yukleniyor\":false,\"sekme\":\"\"}",
+     "banka: page.selectOption: Timeout 30000ms exceeded.",
+     "banka süzgeç: page.waitForFunction: Timeout 60000ms exceeded. · {\"secici\":false,\"pasif\":false,\"secenek\":0,\"satir\":0,\"hesap\":null,\"yukleniyor\":false,\"sekme\":\"\"}",
+     "banka: page.selectOption: Timeout 30000ms exceeded."
+    ]
+   },
+   "yedekler": [
+    {
+     "tur": "otomatik (zamanlayıcı turu)",
+     "ms": 784,
+     "hata": "",
+     "dosyalar": [
+      {
+       "name": "destekofis-001-2026-10-11T09-03-41-295Z.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-5/backups/001 - Şirket 1/destekofis-001-2026-10-11T09-03-41-295Z.sqlite",
+       "size": 179838976,
+       "integrity": "ok",
+       "paraSatiri": 100092,
+       "klasor": "001 - Şirket 1"
+      },
+      {
+       "name": "destekofis-002-2026-10-11T09-03-41-966Z.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-5/backups/002 - Ölçek İkinci Şirket/destekofis-002-2026-10-11T09-03-41-966Z.sqlite",
+       "size": 23916544,
+       "integrity": "ok",
+       "paraSatiri": 12121,
+       "klasor": "002 - Ölçek İkinci Şirket"
+      }
+     ],
+     "pencere": {
+      "from": 576915.789726,
+      "to": 582030.838669,
+      "kind": "otomatik"
+     }
+    },
+    {
+     "tur": "elle (Şimdi Yedek Al — Tüm Şirketler)",
+     "ms": 9175,
+     "durum": 200,
+     "hata": "",
+     "dosyalar": [
+      {
+       "name": "destekofis-001-2026-10-11T09-04-52-451Z-manuel.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-5/backups/001 - Şirket 1/destekofis-001-2026-10-11T09-04-52-451Z-manuel.sqlite",
+       "size": 179961856,
+       "integrity": "ok",
+       "paraSatiri": 100135,
+       "klasor": "001 - Şirket 1"
+      },
+      {
+       "name": "destekofis-002-2026-10-11T09-04-52-451Z-manuel.sqlite",
+       "path": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam/calisma-5/backups/002 - Ölçek İkinci Şirket/destekofis-002-2026-10-11T09-04-52-451Z-manuel.sqlite",
+       "size": 23937024,
+       "integrity": "ok",
+       "paraSatiri": 12128,
+       "klasor": "002 - Ölçek İkinci Şirket"
+      }
+     ],
+     "pencere": {
+      "from": 645031.09551,
+      "to": 654205.652878,
+      "kind": "elle"
+     }
+    }
+   ],
+   "sonra": {
+    "001": {
+     "mutabakatTesti": "TAMAM",
+     "mutabakatTestiMs": 6736,
+     "kasa": {
+      "program": "11.967.955,95",
+      "bagimsiz": "11.967.955,95",
+      "fark": "0,00"
+     },
+     "banka102": {
+      "program": "40.857.061,02",
+      "bagimsiz": "40.857.061,02",
+      "fark": "0,00"
+     },
+     "hesaplar": [
+      {
+       "hesap": "Ziraat Bankası · Ana TL Hesabı T2101",
+       "program": "20.825.936,15",
+       "bagimsiz": "20.825.936,15",
+       "fark": "0,00"
+      },
+      {
+       "hesap": "Garanti BBVA · Ana TL Hesabı T2101",
+       "program": "20.528.462,35",
+       "bagimsiz": "20.528.462,35",
+       "fark": "0,00"
+      }
+     ],
+     "yukDefteri": {
+      "kasa": "4.687,28",
+      "banka": "12.174,76"
+     }
+    },
+    "002": {
+     "mutabakatTesti": "TAMAM",
+     "mutabakatTestiMs": 545,
+     "kasa": {
+      "program": "1.469.693,51",
+      "bagimsiz": "1.469.693,51",
+      "fark": "0,00"
+     },
+     "banka102": {
+      "program": "4.649.450,13",
+      "bagimsiz": "4.649.450,13",
+      "fark": "0,00"
+     },
+     "hesaplar": [
+      {
+       "hesap": "Ziraat Bankası · Ana TL Hesabı T2102",
+       "program": "2.423.981,01",
+       "bagimsiz": "2.423.981,01",
+       "fark": "0,00"
+      },
+      {
+       "hesap": "Garanti BBVA · Ana TL Hesabı T2102",
+       "program": "2.513.085,91",
+       "bagimsiz": "2.513.085,91",
+       "fark": "0,00"
+      }
+     ],
+     "yukDefteri": {
+      "kasa": "633,58",
+      "banka": "5.723,30"
+     }
+    }
+   },
+   "paraSatiri": {
+    "once": {
+     "001": 100067,
+     "002": 12117
+    },
+    "sonra": {
+     "001": 100154,
+     "002": 12137
+    }
+   },
+   "izliKayit": {
+    "001": {
+     "cariHareketi": 39,
+     "fatura": 14,
+     "bankaOlayi": 22,
+     "beklenen": {
+      "cariHareketi": 39,
+      "fatura": 14,
+      "bankaOlayi": 22
+     }
+    },
+    "002": {
+     "cariHareketi": 11,
+     "fatura": 4,
+     "bankaOlayi": 4,
+     "beklenen": {
+      "cariHareketi": 11,
+      "fatura": 4,
+      "bankaOlayi": 4
+     }
+    }
+   },
+   "sureSn": 213.1,
+   "sonuc": {
+    "hatalar": [],
+    "denetim": 29,
+    "gecen": 29
+   }
+  }
+ ]
+}

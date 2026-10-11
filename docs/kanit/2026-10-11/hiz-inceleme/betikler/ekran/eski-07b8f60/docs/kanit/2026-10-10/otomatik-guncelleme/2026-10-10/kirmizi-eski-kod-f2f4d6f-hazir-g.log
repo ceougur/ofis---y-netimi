@@ -1,0 +1,127 @@
+TAP version 13
+# (node:9879) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ---- g servis günlüğü (son) ----
+# kurulu 9.0.0)
+# 2026-10-10T20:58:05.702Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:06.302Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:06.906Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:07.502Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:08.103Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:08.702Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:09.302Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:09.903Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:10.504Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:11.101Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:11.704Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:12.300Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:12.903Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:13.501Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:14.101Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:14.702Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:15.302Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:15.903Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:16.502Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:17.103Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:17.702Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:18.303Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:18.907Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:19.504Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:20.105Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:20.706Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:21.306Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:21.907Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:22.511Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:23.108Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:23.707Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:24.308Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:24.908Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:25.509Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:26.114Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:26.708Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:27.307Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:27.907Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:28.508Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:29.108Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:29.709Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:30.309Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:30.908Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:31.509Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:32.108Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:32.708Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:33.313Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:33.908Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:34.511Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:35.110Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:35.716Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:36.310Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:36.912Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:37.510Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:38.110Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:38.711Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:39.311Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:39.911Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:40.513Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:41.110Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:41.716Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:42.312Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:42.912Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:43.512Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:44.111Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:44.714Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:45.312Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:45.912Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:46.512Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:47.112Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:47.713Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:48.313Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:48.913Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:49.514Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:50.114Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:50.713Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:51.314Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:51.913Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:52.515Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:53.115Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:53.720Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T20:58:54.315Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# Subtest: Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+    # Subtest: (g) yeni sürümün deneme açılışı başarısız → önceki sürüme dönülür, 'kurulamadı' işaretlenir; sonraki açılışta aynı sürüm yeniden denenmez
+    not ok 1 - (g) yeni sürümün deneme açılışı başarısız → önceki sürüme dönülür, 'kurulamadı' işaretlenir; sonraki açılışta aynı sürüm yeniden denenmez
+      ---
+      duration_ms: 61520.14087
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs:250:3'
+      failureType: 'testCodeFailure'
+      error: 'Beklenen durum oluşmadı: {"error":"hazır değil: undefined"}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        waitFor (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-gercek/ortak.mjs:28:9)
+        async foundDuringDay (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs:81:18)
+        async file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs:252:7
+        async withFeed (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs:62:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs:251:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 6)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+  ---
+  duration_ms: 61527.635151
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs:88:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63700.438695

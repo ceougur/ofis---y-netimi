@@ -9,12 +9,14 @@ import { mapStockHeaders, parseQty, roundQty, stockLevel } from "../lib/accounts
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { bankForm } from "../lib/bank/module-ref.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -28,9 +30,10 @@ const qtyText = value => qtyFormat.format(Number(value) || 0);
 const afterText = (qty, unit) => `Kayıttan sonra stok: ${qtyText(qty)} ${unit} olacak.`;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
-export function registerStockRoutes(router, { store, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null }) {
-  const now = () => new Date().toISOString();
-  const today = () => isoDay(new Date());
+export function registerStockRoutes(router, { store, bank, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null, bankModule = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now).
+  const now = () => clock().toISOString();
+  const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const office = () => store.setting("office.name", "");
   const changed = (user, detail = {}) => events?.publish("workspace.changed", { kind: "stock", actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
@@ -73,7 +76,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   };
   const movesOf = itemId =>
     store.all(
-      `SELECT m.id, m.kind, m.qty, m.unit_price AS unitPrice, m.amount, m.date, m.note, m.pay, m.reason, m.method, m.account_id AS accountId, COALESCE(a.name, '') AS accountName,
+      `SELECT m.id, m.kind, m.qty, m.unit_price AS unitPrice, m.amount, m.date, m.note, m.pay, m.reason, m.method, m.fin_ref AS finRef, m.account_id AS accountId, COALESCE(a.name, '') AS accountName,
               m.invoice_id AS invoiceId, COALESCE(inv.number, '') AS invoiceNumber, COALESCE(inv.kind, '') AS invoiceKind, COALESCE(ia.name, '') AS invoiceAccountName,
               m.created_by AS createdBy, m.created_at AS createdAt, m.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
        FROM stock_moves m LEFT JOIN users u ON u.id = m.created_by LEFT JOIN accounts a ON a.id = m.account_id
@@ -100,10 +103,13 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     state: ["all", "low", "out", "negative", "product", "service"].includes(text(params.get("state"))) ? text(params.get("state")) : "all",
     sort: ["name", "code", "qty", "value", "category"].includes(text(params.get("sort"))) ? text(params.get("sort")) : "name",
   });
-  function list(user, { q = "", category = "", state = "all", sort = "name" } = {}) {
-    const items = store.all(`${ITEM_SQL} WHERE i.deleted_at IS NULL ORDER BY i.name COLLATE NOCASE`);
+  // ids (v2.1.0, §3.11): yalnız bu ürünler (mutabakat kapısı dokunulan ürünleri denetler); miktar hesabı aynıdır.
+  function list(user, { q = "", category = "", state = "all", sort = "name", ids = null } = {}) {
+    const only = ids ? JSON.stringify([...ids]) : null;
+    // ids: tekli + deleted_at indeksini kapatır (birincil anahtar seçilir; değer aynı).
+    const items = only ? store.all(`${ITEM_SQL} WHERE +i.deleted_at IS NULL AND i.id IN (SELECT value FROM json_each(?)) ORDER BY i.name COLLATE NOCASE`, only) : store.all(`${ITEM_SQL} WHERE i.deleted_at IS NULL ORDER BY i.name COLLATE NOCASE`);
     const moves = new Map();
-    for (const move of store.all("SELECT item_id AS itemId, kind, qty, date FROM stock_moves ORDER BY date, created_at")) {
+    for (const move of only ? store.all("SELECT item_id AS itemId, kind, qty, date FROM stock_moves WHERE item_id IN (SELECT value FROM json_each(?)) ORDER BY date, created_at", only) : store.all("SELECT item_id AS itemId, kind, qty, date FROM stock_moves ORDER BY date, created_at")) {
       if (!moves.has(move.itemId)) moves.set(move.itemId, []);
       moves.get(move.itemId).push(move);
     }
@@ -198,7 +204,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const body = await readJson(req);
     let openingMove = null;
     let touched = [];
-    const result = store.tx(() => {
+    // v2.1.0 (bank.post): ilk alım peşinse (Kasa/banka/POS) para satırıdır ve İşlem No'lu işlem başlığı alır.
+    const result = bank.post({ user, module: "stock", op: "create", write: () => {
       const input = itemInput(body);
       if (store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit)) throw new HttpError(409, `“${input.name}” (${input.unit}) zaten var. Aynı ürüne giriş yapın.`);
       assertCodeFree(input.code);
@@ -218,7 +225,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       }
       audit(user, "stock.item.created", id, { name: input.name, unit: input.unit, opening, openingPay: openingMove?.pay || "none", amount: openingMove?.amount || 0 });
       return detail(id, user);
-    });
+    } });
     changed(user, { itemId: result.id });
     if (openingMove?.pay === "cash") changed(user, { kind: "cash" });
     publishAccounts(user, touched);
@@ -232,7 +239,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (clipped) data.items = data.items.slice(0, PDF_ROWS);
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Stok";
     const pdf = tablePdf({
-      title: `${title} durumu`,
+      now: clock(),
+      title: `${title} Durumu`,
       subtitle: [query.state === "low" ? "Kritik seviyede" : query.state === "out" ? "Tükenen" : query.state === "negative" ? "Eksi stoktakiler" : "Tüm ürünler", query.category, query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["Stok Kodu", "Ürün", "Kategori", "Mevcut", "Birim", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Durum"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text", "text"],
@@ -253,7 +261,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const money = value => moneyFormat.format(value || 0);
     const columns = ["Stok Kodu", "Ürün", "Kategori", "Birim", "Mevcut", "Toplam Giriş", "Toplam Çıkış", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Not"];
     const rows = data.items.map(item => ({ Kod: item.code, Ürün: item.name, Kategori: item.category, Birim: item.unit, Mevcut: number(item.qty), "Toplam Giriş": number(item.qtyIn), "Toplam Çıkış": number(item.qtyOut), "Kritik Seviye": number(item.minQty), "Birim Fiyat": money(item.unitPrice), Değer: money(item.value), "Son Hareket": dayText(item.lastMove), Not: item.note }));
-    const buffer = buildXlsx([{ name: title.slice(0, 31), columns, rows }], { title: `${title} durumu` });
+    const buffer = buildXlsx([{ name: title.slice(0, 31), columns, rows }], { now: clock(), title: `${title} Durumu` });
     audit(user, "stock.list.exported", "xlsx", { count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-durumu ${dayText(today())}.xlsx` });
   });
@@ -295,9 +303,14 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   // ---------- Hareketler ----------
   function insertMove(user, itemId, move) {
     const id = newId("smove");
+    const method = move.pay === "cash" ? methodInput(move.method) : "cash";
+    // v2.1.0 (bank.post): peşin (Kasa/banka/POS) hareket para satırıdır ve İşlem No'lu işlem başlığı alır; yalnız miktar ya da açık
+    // hesap hareketi para satırı değildir.
+    const finRef = move.pay === "cash" ? move.finRef || "" : "";
+    const eventId = bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method, fin_ref: finRef });
     store.run(
-      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", move.pay === "cash" ? methodInput(move.method) : "cash", move.accountId || "", move.invoiceId || "", user.id, now(),
+      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", method, move.accountId || "", move.invoiceId || "", finRef, eventId, user.id, now(),
     );
     return id;
   }
@@ -343,16 +356,30 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   }
   const publishAccounts = (user, ids) => ids.forEach(id => events?.publish("workspace.changed", { kind: "accounts", accountId: id, actorId: user.id, actorName: user.display_name }, { except: user.id }));
 
+  // v2.1.0 Aşama 8 (plan §3.7 #8): peşin havale/EFT satış, alım ve iade banka hesabına bağlanır (fin_ref); istek kimliği, Benzer İşlem, K7
+  // (alım ve iade bankadan çıkar), bankadan çıkış bank.move ister. Stok girişi (alım ya da müşteri iadesi) = bankadan çıkış.
+  const banking = bankForm(bankModule);
+  const bankOut = move => move.kind === "in";
+  // K2 (plan §3.7 #8, §4.6): stok alımında kart yolu kurumsal kartla ödemedir (309); satışta POS, müşteri iadesinde POS iadesi (2.2.0).
+  const corporate = move => move.kind === "in" && move.reason !== "return";
   router.post("/api/workspace/stock/:id/moves", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "stock.move");
     const item = itemRow(params.id);
     const body = await readJson(req);
     const input = moveInput(body, user, item);
-    assertAvailable(item, input, null, body.force === true);
-    if (input.kind === "in" && input.pay === "cash") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+    input.finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, corporate: corporate(input) }) : "";
+    banking.requireOut(user, bankOut(input), input.finRef);
+    const k7 = banking.negative([input.finRef], input.date, banking.forced(body));
     let touched = [];
     let trimmed = [];
-    const id = store.tx(() => {
+    // Hakem K4 (plan §3.3 sırası "1 istek kimliği → 2 prepare"): eksi stok ve Kasa ön denetimleri istek kimliği bakışından SONRA, işlemin içinde.
+    // Önceden önce çalışıyordu: stoğu ya da Kasa'yı 0'a indiren hareketin yinelemesi 409 stock-negative / cash-negative alıyordu.
+    const prepare = () => {
+      assertAvailable(item, input, null, body.force === true);
+      if (input.kind === "in" && input.pay === "cash") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+    };
+    const posted = bank.post({ user, module: "stock", op: "create", requestId: banking.requestId(req, body), scope: "stock.move.create", body: { ...body, itemId: item.id }, similarOk: body.similarOk === true, prepare, guard: k7.guard, write: () => {
+      k7.capture();
       const moveId = insertMove(user, item.id, input);
       touched = syncAccount(user, item, moveId, input);
       // Alımda birim fiyat verildiyse ürünün son birim fiyatı güncellenir (stok değeri güncel kalsın).
@@ -372,8 +399,11 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       }
       // Açık hesaba müşteri iadesi: borç azalır; taksitlendirilmiş borç kalandan büyük kalmasın (kart da küçülür).
       if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) trimmed = plans().trimCovers(input.accountId, user, accountNote(item, input));
-      return moveId;
-    });
+      return { id: moveId };
+    } });
+    k7.prime(posted);
+    const id = posted?.replayed ? posted.refId : posted.id;
+    if (posted?.replayed) return ok(res, { ...detail(item.id, user), moveId: id, replayed: true, trimmedPlans: [] });
     changed(user, { itemId: item.id });
     if (input.pay === "cash") changed(user, { kind: "cash" });
     publishAccounts(user, touched);
@@ -381,7 +411,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     ok(res, { ...detail(item.id, user), moveId: id, trimmedPlans: trimmed });
   });
   const moveOf = (itemId, moveId) => {
-    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
+    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
     if (!move) throw new HttpError(404, "Stok hareketi bulunamadı. Başka biri silmiş olabilir.");
     return move;
   };
@@ -402,12 +432,32 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const input = moveInput({ ...previous, ...body, kind: previous.kind }, user, item, previous);
     assertAvailable(item, input, previous, body.force === true);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
+    const before = { method: previous.pay === "cash" ? previous.method || "cash" : "", finRef: previous.finRef };
+    const moved = previous.pay !== input.pay || (previous.method || "cash") !== (input.method || "cash") || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
+    const finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: before, changed: moved, corporate: corporate(input) }) : "";
+    if (finRef !== (previous.finRef || "")) banking.requireOut(user, bankOut(previous), finRef);
+    const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
     let touched = [];
-    store.tx(() => {
-      store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, user.id, now(), previous.id);
-      touched = syncAccount(user, item, previous.id, input, previous.accountId);
-      audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input });
+    const result = bank.post({
+      user,
+      module: "stock",
+      op: "update",
+      prev: previous,
+      requestId: banking.requestId(req, body),
+      scope: "stock.move.update",
+      body: { ...body, moveId: previous.id },
+      guard: k7.guard,
+      write: () => {
+        k7.capture();
+        // Peşin ↔ açık hesap geçişi: para satırı olmaktan çıkan hareketin olayı iptal olur, yeniden peşin olan yeni olay alır.
+        const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", fin_ref: finRef, event_id: previous.eventId });
+        store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, finRef, eventId, user.id, now(), previous.id);
+        touched = syncAccount(user, item, previous.id, input, previous.accountId);
+        audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input, finRef });
+        return { id: previous.id };
+      },
     });
+    k7.prime(result);
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
     publishAccounts(user, touched);
@@ -421,12 +471,23 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     period?.assertOpen(previous.date, "Bu stok hareketi");
     cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1", "Bu stok hareketi silinince");
     let accountId = "";
-    store.tx(() => {
-      store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
-      accountId = accounts()?.stockEntry ? accounts().stockEntry.remove(previous.id) : "";
-      trash?.add({ kind: "stock-move", ref: previous.id, title: item.name, detail: `${previous.kind === "in" ? "Giriş" : "Çıkış"} ${qtyText(previous.qty)} ${item.unit}${previous.note ? ` · ${previous.note}` : ""}`, payload: { ...previous, itemId: item.id, itemName: item.name, unit: item.unit }, user });
-      audit(user, "stock.move.deleted", previous.id, { itemId: item.id, ...previous });
+    const k7 = banking.negative([previous.finRef], previous.date, banking.forced(null, url));
+    const result = bank.post({
+      user,
+      module: "stock",
+      op: "delete",
+      prev: previous,
+      guard: k7.guard,
+      write: () => {
+        k7.capture();
+        store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
+        accountId = accounts()?.stockEntry ? accounts().stockEntry.remove(previous.id) : "";
+        trash?.add({ kind: "stock-move", ref: previous.id, title: item.name, detail: `${previous.kind === "in" ? "Giriş" : "Çıkış"} ${qtyText(previous.qty)} ${item.unit}${previous.note ? ` · ${previous.note}` : ""}`, payload: { ...previous, itemId: item.id, itemName: item.name, unit: item.unit }, user });
+        audit(user, "stock.move.deleted", previous.id, { itemId: item.id, ...previous });
+        return { id: previous.id };
+      },
     });
+    k7.prime(result);
     changed(user, { itemId: item.id });
     if (previous.pay === "cash") changed(user, { kind: "cash" });
     publishAccounts(user, [accountId].filter(Boolean));
@@ -437,6 +498,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const item = detail(params.id, user);
     const payText = move => (move.pay === "cash" ? (move.kind === "in" ? (move.reason === "return" ? "Kasa'dan iade edildi" : "Kasa'dan ödendi") : "Kasa'ya tahsil") : move.pay === "account" ? `Cari: ${move.accountName}` : "");
     const pdf = tablePdf({
+      now: clock(),
       title: `Stok Hareketleri · ${item.name}`,
       subtitle: [item.code ? `Kod ${item.code}` : "", item.category, `Birim: ${item.unit}`].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Giriş", "Çıkış", "Kalan", "Birim Fiyat", "Tutar", "Ödeme"],
@@ -538,26 +600,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   });
 
   // ---------- Diğer modüller için ----------
-  // Kasa: Kasa'dan ödenen alımlar (çıkış) ve Kasa'ya tahsil edilen satışlar (giriş). Ürün silinse de para gerçektir; kalır.
-  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
-  // Stok girişi (alım) Kasa'dan çıkış, stok çıkışı (satış) Kasa'ya giriştir.
-  const cashSource = { table: "stock_moves m JOIN stock_items i ON i.id = m.item_id", where: "m.pay = 'cash' AND m.amount > 0", kind: "CASE m.kind WHEN 'in' THEN 'out' ELSE 'in' END", amount: "m.amount", date: "m.date", method: "m.method" };
-  const cashEntries = (after = "") =>
-    store
-      .all(
-        `SELECT m.id, m.kind AS moveKind, m.reason, m.method, m.qty, m.note, m.amount, m.date, m.item_id AS itemId, i.name AS itemName, i.unit,
-                m.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, m.created_at AS createdAt, m.updated_at AS updatedAt
-         FROM ${cashSource.table} LEFT JOIN users u ON u.id = m.created_by
-         WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
-        ...(after ? [after] : []),
-      )
-      .map(({ moveKind, reason, qty, note, unit, ...row }) => ({
-        ...row,
-        kind: moveKind === "in" ? "out" : "in",
-        source: "stock",
-        // Alım Kasa'dan gider: "Stok ödemesi" (v2.0.8 adı; önceden "Stok alımı").
-        description: `${reason === "return" ? "Satış iadesi" : moveKind === "in" ? "Stok ödemesi (alım)" : "Stok satışı"} · ${row.itemName} ${qtyText(qty)} ${unit}${note ? ` · ${note}` : ""}`,
-      }));
+  // Kasa (v2.1.0, K5): Kasa'dan ödenen alımlar (çıkış) ve Kasa'ya tahsil edilen satışlar (giriş) tek kaynaktan (lib/bank/money-lines.mjs,
+  // kaynak 7) okunur. Ürün silinse de para gerçektir; kalır.
   // v2.0.15: faturanın stoklu kalemleri. Hareket faturaya bağlıdır (invoice_id); para faturadan yazılır (pay = 'none').
   // reason: '' (alış girişi / satış çıkışı), 'return' (satıştan iade: giriş), 'preturn' (alıştan iade: çıkış).
   // Alışta ürünün birim fiyatı (stok değeri ve maliyet) faturanın iskontolu TL birim maliyetiyle güncellenir.
@@ -639,7 +683,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     changed(user, { itemId: item.id });
     return `“${item.name}” ürünü geri geldi.`;
   }
-  function restoreMove(user, entry, payload) {
+  function restoreMove(user, entry, payload, { force = false, banking = null } = {}) {
     if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
     const item = store.get("SELECT id, name, unit, deleted_at AS deletedAt FROM stock_items WHERE id = ?", payload.itemId);
     if (!item) throw new HttpError(409, "Hareketin ürünü artık yok; geri yüklenemez.");
@@ -649,25 +693,39 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     period?.restoreDate(payload.date, "Bu stok hareketi");
     const pay = payload.pay === "account" && !accounts()?.exists(payload.accountId) ? "none" : PAY.has(payload.pay) ? payload.pay : "none";
     const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "" };
-    store.tx(() => {
-      if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
-        store.run(
-          "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          entry.ref, item.id, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason, move.method, move.accountId, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
-        );
-        syncAccount(user, item, entry.ref, move);
-      }
-      trash.markRestored(entry.id, user);
-      audit(user, "stock.move.restored", entry.ref, { itemId: item.id, kind: move.kind, qty: move.qty });
+    // GG2 (K13/7): peşin satış/alışın banka hesabı bağı da döner (hesap silinmişse bağsız; söylenir).
+    const kept = pay === "cash" ? bank.keepRef(payload.finRef, { method: move.method, date: move.date }) : { ref: "", dropped: "" };
+    // Yargıç K2 (plan §3.8, §9.2/7, §3.9): banka bağlı satırda kaynak modül yetkisi + bank.move, pasif hesap 400, K7 son durumla.
+    const k7 = banking?.restore(user, { refs: [kept.ref], date: move.date, force, permission: "stock.move" }) || { capture() {}, guard: null, prime() {} };
+    const result = bank.post({
+      user,
+      module: "stock",
+      op: "restore",
+      prev: payload,
+      guard: k7.guard,
+      write: () => {
+        k7.capture();
+        if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
+          store.run(
+            "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            entry.ref, item.id, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason, move.method, move.accountId, kept.ref,
+            bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method: move.method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+          );
+          syncAccount(user, item, entry.ref, move);
+        }
+        trash.markRestored(entry.id, user);
+        audit(user, "stock.move.restored", entry.ref, { itemId: item.id, kind: move.kind, qty: move.qty });
+      },
     });
+    k7.prime(result);
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
-    return `Stok hareketi geri eklendi${pay !== payload.pay ? " (carisi silindiği için yalnız miktar olarak)" : ""}.`;
+    return `Stok hareketi geri eklendi${pay !== payload.pay ? " (carisi silindiği için yalnız miktar olarak)" : ""}.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') FROM stock_moves) AS m, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') FROM stock_items) AS i");
     return `${row.m}|${row.i}`;
   };
 
-  return { cashEntries, cashSource, alerts, deletedList, restoreDeleted, restoreMove, fingerprint, list, detail, invoiceStock, itemRow };
+  return { alerts, deletedList, restoreDeleted, restoreMove, fingerprint, list, detail, invoiceStock, itemRow };
 }

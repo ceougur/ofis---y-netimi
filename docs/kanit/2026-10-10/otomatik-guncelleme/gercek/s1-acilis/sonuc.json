@@ -1,0 +1,95 @@
+{
+  "senaryo": "s1-acilis",
+  "ozet": {
+    "acilistanKurulumaSn": 1,
+    "surum": "9.0.1"
+  },
+  "sonDurum": {
+    "type": "durum",
+    "id": 2,
+    "updates": {
+      "enabled": true,
+      "autoUpdate": true,
+      "channel": "stable",
+      "currentVersion": "9.0.1",
+      "state": "idle",
+      "progress": null,
+      "available": null,
+      "incompatible": null,
+      "lastCheck": {
+        "at": "2026-10-10T18:12:19.741Z",
+        "status": "up-to-date",
+        "version": "9.0.1",
+        "reason": null
+      },
+      "lastResult": {
+        "outcome": "success",
+        "version": "9.0.1",
+        "previous": "9.0.0",
+        "at": "2026-10-10T18:12:20.631Z"
+      },
+      "lastError": null,
+      "failedVersions": [],
+      "deferred": null,
+      "periodicCheckMs": 21600000,
+      "skippedVersions": [],
+      "history": [
+        {
+          "at": "2026-10-10T18:12:20.630Z",
+          "event": "installed",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        },
+        {
+          "at": "2026-10-10T18:12:20.191Z",
+          "event": "activated",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        }
+      ]
+    },
+    "activity": {
+      "lastActivityAt": null,
+      "busy": false,
+      "idleMs": 900000
+    },
+    "phase": "ready",
+    "version": "9.0.1",
+    "localTime": "Sat Oct 10 2026 18:12:20 GMT+0000 (Coordinated Universal Time)",
+    "timeZone": "UTC",
+    "offsetMinutes": 0,
+    "quietNow": true
+  },
+  "verilerOnce": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "verilerSonra": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "yedekler": [
+    "destekofis-001-2026-10-10T18-12-20-162Z-guncelleme-oncesi-9-0-0.sqlite"
+  ],
+  "kaynakIstekleri": [
+    {
+      "at": "2026-10-10T18:12:19.771Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:12:19.791Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:12:19.797Z",
+      "path": "/download/9.0.1/destekofis-guncelleme-9.0.1.zip",
+      "status": 200
+    }
+  ]
+}

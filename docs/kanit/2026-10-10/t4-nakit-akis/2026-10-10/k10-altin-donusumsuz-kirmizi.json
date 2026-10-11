@@ -1,0 +1,43 @@
+{
+  "ad": "k10-altin-donusumsuz-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-altin.test.mjs",
+  "commit": "f5259dd0ea2acb3ba24582d38a655f2e3b4676d0",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:19:31.727Z",
+  "sure_sn": 19.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)",
+      "konum": "test/banka-210-altin.test.mjs:224:3",
+      "hata": "8 fark: · zincir · 001 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:246:3",
+      "hata": "2 fark: · motor · 001 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal: · + actual - expected"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/k10-altin-donusumsuz-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "c00715046324b9cb5e4b488886e01713734df2b0f663463c65c2a86647adf93e",
+  "ham_cikti_bayt": 80525
+}

@@ -1,0 +1,85 @@
+
+■ Kurulum: yönetici girer; 12 müşteri, ürün, Kasa açılışı; ikinci personel (Muhasebe)
+  ✓ ikinci personel açıldı
+  ✓ veri hazır
+
+■ Madde 5: yanıt kaybolur (sunucu kaydetti), kullanıcı yeniden Faturayı Kaydet'e basar → tek fatura
+  ✓ ekran yanıtı alamadığını söyledi (form açık kaldı)
+  ✓ sunucu ilk isteği zaten kaydetmişti (1 fatura)
+  ✓ ikinci basışta fatura kartı açıldı
+  ✓ bildirim: Satış Faturası FIS2026000000001 zaten kaydedilmişti (önceki gönderim sunucuya ulaşmış); ikinci kez kaydedilmedi.×
+  ✓ iki gönderim aynı istek kimliğiyle (c5c2d119 = c5c2d119)
+  ✓ tek fatura (1)
+  ✓ müşteri borcu bir kez: 240 (2 × 100 + %20 KDV = 240)
+  ✓ stoktan bir kez düştü (100 → 98)
+  ✓ aynı içerikli ikinci satış (yeni form) ayrı fatura olarak kaydedildi
+
+■ Madde 1/2: başka personel 10 parasal kayıt girerken açık Cari penceresi ve ana ekran yenilemeleri birleştirir
+  ✓ ikinci personel girdi (ayrı oturum)
+    istekler: {"/api/workspace/overview":6,"/api/workspace/accounts":8,"/api/workspace/tasks":4,"/api/workspace/liens":4,"/api/workspace/plans":4,"/api/workspace/cheques":4,"/api/workspace/invoices":4,"/api/workspace/bank/badge":4,"/api/workspace/stock/alerts":4,"/api/workspace/dues":3}
+  ✓ Cari listesi 8 kez yenilendi (10 kayıt; 2.0.21'de 20–30 kez)
+  ✓ vade takvimi 3 kez (2.0.21'de 11–20 kez, her biri büyük)
+  ✓ rozetler: fatura 4, taksit 4 kez (2.0.21'de 10'ar)
+  ✓ toplam 45 istek (2.0.21'de aynı koşulda ~100)
+  ✓ listede Müşteri 02 güncel:  2 Müşteri 02 Grupsuz · 0532 100 00 02 ₺0,00 ₺100,00 ₺100,00 Alacaklı —
+
+■ Madde 1/2: başka personel kayıt girerken Cari aramasında yazılan metin ve sonuç doğru
+  ✓ kutudaki metin eksiksiz (harf kaybolmadı)
+  ✓ listede yalnız Müşteri 07 kaldı (arama sonucu arka plan yenilemesinde kaybolmadı)
+
+■ Madde 1/2 (denetim 5.2): başka personel saniyede 2 kayıt girerken Faturalar → Yeni → Satış formu açılır ve kaydedilir
+  ✓ satış formu 797 ms'de açıldı (yük altında)
+  ✓ fatura kaydedildi; bu sırada öbür personel 9 kayıt girdi
+  ✓ Müşteri 12 borcu 120 (100 + %20 KDV)
+
+■ Pencere bozulmaz: arka plan yenilemesi başarısız olunca liste, arama kutusu ve açık kart yerinde kalır; silinen cari bildirilir
+  ✓ arka plan yenilemesi denendi ve başarısız oldu (1 kez)
+  ✓ liste ve arama kutusu yerinde (kutuda "Müşteri 0", 9 satır)
+  ✓ bağlantı düzelince liste kendiliğinden güncellendi (Müşteri 06: 18,00)
+  ✓ açık kartın yenilemesi başarısız oldu, kullanıcı kartta kaldı (listeye atılmadı)
+  ✓ cari başka oturumda silindi (200)
+  ✓ silinen carinin kartı bildirimle kapandı, liste açıldı
+
+■ Gözden geçirme 8: kullanıcının kendi araması yüklenemezse eski satırlar yeni süzgecin altında kalmaz
+  ✓ arama yüklenemedi: eski satırlar gösterilmiyor (0 satır), Tümünü Seç yok
+  ✓ arama kutusu yerinde ("Müşteri 1"), "Yeniden Dene" var
+  ✓ Yeniden Dene → Müşteri 10, 11, 12
+
+■ Gözden geçirme 4: arka plan yenilemesi kullanıcının sürmekte olan aramasını geçersiz saymaz (Stok)
+  ✓ öbür personel ürün açtı (200) — açık Stok penceresi arka planda yenilenir
+  ✓ arama sürerken arka plan yenilemesi gitti ve başarısız oldu (kullanıcı, arka plan)
+  ✓ kullanıcının arama yanıtı geldiği anda liste süzüldü (yalnız Vida M8)
+
+■ Gözden geçirme 9: bu ekrandaki işlemin "yerel" bilgisi ANLIK DURUM olayıyla birleşince kaybolmaz
+  ✓ Kasa girişi bu ekrandan yapıldı; işleyiciye 1 çağrı
+  ✓ işleyici "yerel" bilgisini aldı ([{"local":true,"path":""}])
+  ✓ yerel + başka olay birleşti: yerel korunur, yol taşınmaz ([{"local":true,"path":""}])
+
+■ Kart yenilemesi sürerken kullanıcı başka yere geçerse eski kart geri gelmez, hatası onu yerinden etmez (Taksit, Çek/Senet, Fatura)
+  ✓ taksit kartı, çek ve iki fatura hazır
+  ✓ Taksit: listeye dönen kullanıcıya eski kart geri gelmedi
+  ✓ öbür personel çekin notunu düzeltti (200)
+  ✓ Çek/Senet: listeye dönen kullanıcıya eski kart geri gelmedi
+  ✓ Fatura: kullanıcı B (FIS2026000000005) kartında kaldı, A'nın hatası gösterilmedi
+
+■ İkinci gözden geçirme: seçim, kart sırası, liste sırası, eski hata yazısı, taslak yinelemesi
+  ✓ iki cari işaretlendi (seçim çubuğu etkin)
+  ✓ arama yüklenemedi: seçim temizlendi, toplu düğme yok ({"active":false,"bulk":false})
+  ✓ kullanıcının açtığı cari (Müşteri 10) ekranda: "← Liste No 10 Müşteri 10 Müşteri Grupsuz · 0532 100 00 10"
+  ✓ "Daha Fazla" süzgeç yüklemesi sürerken yok sayılır, bitince çalışır ({"moreWhilePending":true,"quietCurrent":true,"userAfterQuiet":false,"moreAfter":true,"staleQuiet":false,"nextCurrent":true})
+  ✓ sonra başlamış arka plan yanıtı yazıldıysa önce başlamış kullanıcı yanıtı eski veriyle ezmez
+  ✓ yeni kullanıcı yüklemesi öncekileri geçersiz sayar
+  ✓ sekme değişince eski hata yazısı kalkıp "Yükleniyor…" göründü ({"error":false,"text":true})
+  ✓ taslak başka yerden kaydedildi (200, FIS2026000000006)
+  ✓ bildirim: Bu form daha önce kaydedilmiş ve deftere işlenmiş (FIS2026000000006).×
+
+■ S2: başka personelin cari notu düzeltmesi ANLIK DURUM'u yeniden yükletmez; parasal kayıt yükletir
+  ✓ 5 not düzeltmesinde ANLIK DURUM 0 kez yüklendi (beklenen 0)
+  ✓ parasal kayıttan sonra ANLIK DURUM yenilendi (1 kez)
+  ✓ not kaydedildi (not 4)
+
+■ Mutabakat ve sayfa hataları
+  ✓ mutabakat 62/62
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo 2.0.22: 56 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222

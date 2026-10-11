@@ -1,0 +1,97 @@
+TAP version 13
+# (node:11566) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ---- l servis günlüğü (son) ----
+# du: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:48.133Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:48.460Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:48.738Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:49.070Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:49.335Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:49.661Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:49.935Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:50.260Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:50.536Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:50.860Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:51.140Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:51.460Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:51.736Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:52.062Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:52.347Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:52.660Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:52.954Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:53.262Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:53.537Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:53.862Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:54.140Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:54.463Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:54.744Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:55.062Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:55.347Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:55.663Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:55.945Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:56.273Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:56.548Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:56.862Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:57.153Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:57.464Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:57.740Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:58.063Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:58.344Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:58.667Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:58.953Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:59.273Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:07:59.530Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:07:59.864Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:08:00.132Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:08:00.466Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:08:00.755Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:08:01.066Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:08:01.335Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:08:01.667Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:08:01.934Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:08:02.267Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:08:02.537Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:08:02.868Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:08:03.136Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:08:03.474Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-10T21:08:03.738Z [WARN] 9.0.1 sürümü arka planda hazırlanamadı (bir sonraki denetimde yeniden denenecek): Güncelleme paketinin özeti tutmuyor.
+# Subtest: Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+    # Subtest: (l) iki indirme aynı anda başlamaz: yavaş indirme sürerken saatlik denetimler ve yöneticinin elle 'Denetle'si yeni indirme başlatmaz
+    not ok 1 - (l) iki indirme aynı anda başlamaz: yavaş indirme sürerken saatlik denetimler ve yöneticinin elle 'Denetle'si yeni indirme başlatmaz
+      ---
+      duration_ms: 62017.905029
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m7/test/guncelleme-hazir.test.mjs:294:3'
+      failureType: 'testCodeFailure'
+      error: 'Beklenen durum oluşmadı: {"error":"hazır değil"}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        waitFor (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m7/test/guncelleme-gercek/ortak.mjs:28:9)
+        async file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m7/test/guncelleme-hazir.test.mjs:306:7
+        async withFeed (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m7/test/guncelleme-hazir.test.mjs:62:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m7/test/guncelleme-hazir.test.mjs:295:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 8)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+  ---
+  duration_ms: 62020.201924
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m7/test/guncelleme-hazir.test.mjs:88:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 64406.468555

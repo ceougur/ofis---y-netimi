@@ -425,13 +425,14 @@ describe("İ10 — eksi bakiye denetimi Kasa özetini bir kez hesaplar", () => {
   });
   after(async () => ctx.server.close());
 
-  // Soru çıkan (409) istekte kapı çalışmaz; sayılan yalnız eksi bakiye denetiminin Kasa özeti sorgusudur.
+  // Soru çıkan (409) istekte kapı çalışmaz; sayılan yalnız eksi bakiye denetiminin Kasa bakiyesi sorgusudur: bütün yolların özeti (cashAll)
+  // ya da — 11.10.2026 hız düzeltmesinden beri — yalnız denetlenen yolun bakiyesi (moneyLines.wayBalance: allCents / atCents). İkisi de "bir kez".
   const countSummaries = async fn => {
     const { store } = ctx;
     const original = store.get;
     let n = 0;
     store.get = (sql, ...args) => {
-      if (/AS cashAll/.test(sql)) n += 1;
+      if (/AS cashAll|AS atCents/.test(sql)) n += 1;
       return original(sql, ...args);
     };
     try {

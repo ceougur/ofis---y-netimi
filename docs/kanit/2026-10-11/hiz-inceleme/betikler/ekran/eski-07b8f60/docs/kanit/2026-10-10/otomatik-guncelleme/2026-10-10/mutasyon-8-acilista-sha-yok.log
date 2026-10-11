@@ -1,0 +1,84 @@
+TAP version 13
+# (node:12001) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ---- f-sha servis günlüğü (son) ----
+# 2026-10-10T21:08:08.972Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:44205
+# 2026-10-10T21:08:08.976Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).
+# 2026-10-10T21:08:08.992Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+# 2026-10-10T21:08:08.997Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+# 2026-10-10T21:08:08.998Z [INFO] Açılıştaki son denetim yapılamadı (Güncelleme sunucusu hata döndürdü (HTTP 503).); hazırdaki 9.0.1 kuruluyor.
+# 2026-10-10T21:08:08.998Z [INFO] 9.0.1 sürümü indiriliyor (4774 KB)…
+# 2026-10-10T21:08:09.017Z [ERROR] Güncelleme (9.0.1) tamamlanamadı: Güncelleme paketinin özeti tutmuyor.
+# 2026-10-10T21:08:09.019Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 41141)
+# 2026-10-10T21:08:09.046Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+# 2026-10-10T21:08:09.051Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+# 2026-10-10T21:08:09.442Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+# Subtest: Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+    # Subtest: (f) bozuk (SHA-256 tutmayan) ya da yanlış imzalı hazır paket → kurulmaz, eski sürüm açılır, kayıt düşülür, hazır paket silinir
+    not ok 1 - (f) bozuk (SHA-256 tutmayan) ya da yanlış imzalı hazır paket → kurulmaz, eski sürüm açılır, kayıt düşülür, hazır paket silinir
+      ---
+      duration_ms: 3213.314079
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m8/test/guncelleme-hazir.test.mjs:212:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /Hazırdaki güncelleme paketi \(9\.0\.1\) kurulmadı/. Input:
+        
+        '2026-10-10T21:08:08.972Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:44205\n' +
+          '2026-10-10T21:08:08.976Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).\n' +
+          "2026-10-10T21:08:08.992Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.\n" +
+          '2026-10-10T21:08:08.997Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).\n' +
+          '2026-10-10T21:08:08.998Z [INFO] Açılıştaki son denetim yapılamadı (Güncelleme sunucusu hata döndürdü (HTTP 503).); hazırdaki 9.0.1 kuruluyor.\n' +
+          '2026-10-10T21:08:08.998Z [INFO] 9.0.1 sürümü indiriliyor (4774 KB)…\n' +
+          '2026-10-10T21:08:09.017Z [ERROR] Güncelleme (9.0.1) tamamlanamadı: Güncelleme paketinin özeti tutmuyor.\n' +
+          '2026-10-10T21:08:09.019Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 41141)\n' +
+          "2026-10-10T21:08:09.046Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.\n" +
+          '2026-10-10T21:08:09.051Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).\n' +
+          '2026-10-10T21:08:09.442Z [INFO] Uygulama hazır: DestekOfis 9.0.0\n'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        2026-10-10T21:08:08.972Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:44205
+        2026-10-10T21:08:08.976Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).
+        2026-10-10T21:08:08.992Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+        2026-10-10T21:08:08.997Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+        2026-10-10T21:08:08.998Z [INFO] Açılıştaki son denetim yapılamadı (Güncelleme sunucusu hata döndürdü (HTTP 503).); hazırdaki 9.0.1 kuruluyor.
+        2026-10-10T21:08:08.998Z [INFO] 9.0.1 sürümü indiriliyor (4774 KB)…
+        2026-10-10T21:08:09.017Z [ERROR] Güncelleme (9.0.1) tamamlanamadı: Güncelleme paketinin özeti tutmuyor.
+        2026-10-10T21:08:09.019Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 41141)
+        2026-10-10T21:08:09.046Z [WARN] Güncelleme API'si yanıt vermedi (Güncelleme sunucusu hata döndürdü (HTTP 503).); yedek yol deneniyor.
+        2026-10-10T21:08:09.051Z [WARN] Güncelleme denetimi başarısız: Güncelleme sunucusu hata döndürdü (HTTP 503).
+        2026-10-10T21:08:09.442Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+        
+      operator: 'match'
+      stack: |-
+        file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m8/test/guncelleme-hazir.test.mjs:236:16
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async withFeed (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m8/test/guncelleme-hazir.test.mjs:62:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m8/test/guncelleme-hazir.test.mjs:214:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 5)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+  ---
+  duration_ms: 3216.342237
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/mut-m8/test/guncelleme-hazir.test.mjs:88:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5354.684555

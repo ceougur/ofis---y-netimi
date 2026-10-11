@@ -1,0 +1,318 @@
+[
+ {
+  "ad": "M0 kontrol (mutasyon yok)",
+  "beklenen": "yeşil",
+  "cikis": 0,
+  "tests": 16,
+  "pass": 16,
+  "fail": 0,
+  "cancelled": 0,
+  "sn": 63,
+  "kirmiziTestler": [],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M1 sınıflama: açılış/Devir/aktarma düzeltme sayılmaz (transfer/dış harekete düşer)",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 0,
+  "fail": 0,
+  "cancelled": 10,
+  "sn": 17,
+  "kirmiziTestler": [
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)"
+  ],
+  "kancaHatasi": "motor (tohum 21) tutarlı",
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M2 sınıflama: gider payının yönü ters (çıkışta eksi ücret)",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 1,
+  "fail": 4,
+  "cancelled": 5,
+  "sn": 19,
+  "kirmiziTestler": [
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)"
+  ],
+  "kancaHatasi": "motor (tohum 21) tutarlı",
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M3 gider payı: gönderen hesap koşulu yok (ücret alıcının bacağına da)",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 6,
+  "fail": 4,
+  "cancelled": 0,
+  "sn": 54,
+  "kirmiziTestler": [
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M4 devir sırası: aynı gün başlayan hesapların sırası ters",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 4,
+  "fail": 6,
+  "cancelled": 0,
+  "sn": 43,
+  "kirmiziTestler": [
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M5 ileri tarihli hesapsız satır: bugünkü satır da 'tarihi gelmemiş' sayılır",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 6,
+  "fail": 4,
+  "cancelled": 0,
+  "sn": 27,
+  "kirmiziTestler": [
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M6 planlayıcı ipucu: eşitlik koşulunda yalnız ilk değer (cari hareketinde 'out' düşer)",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 0,
+  "fail": 0,
+  "cancelled": 10,
+  "sn": 14,
+  "kirmiziTestler": [
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)"
+  ],
+  "kancaHatasi": "motor (tohum 21) tutarlı",
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M7 yol itme: kurumsal kart (ccard) havale yöntemine eşlenir",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 6,
+  "fail": 4,
+  "cancelled": 0,
+  "sn": 55,
+  "kirmiziTestler": [
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M8 dönem başı devri: dönem başı günü de devre girer (<=)",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 0,
+  "fail": 0,
+  "cancelled": 10,
+  "sn": 18,
+  "kirmiziTestler": [
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)"
+  ],
+  "kancaHatasi": "motor (tohum 21) tutarlı",
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M9 Banka Hareket Raporu: dönem satırları dönem başından değil bir gün sonradan",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 0,
+  "fail": 0,
+  "cancelled": 10,
+  "sn": 18,
+  "kirmiziTestler": [
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)"
+  ],
+  "kancaHatasi": "motor (tohum 21) tutarlı",
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M10 Banka Bakiye Raporu: ileri tarihli grup bakiyeye de eklenir",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 6,
+  "fail": 4,
+  "cancelled": 0,
+  "sn": 22,
+  "kirmiziTestler": [
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M10b Kasa eksi bakiye denetimi: yolun bakiyesi gün sonu yerine bütün tarihler",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 0,
+  "fail": 0,
+  "cancelled": 10,
+  "sn": 15,
+  "kirmiziTestler": [
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)"
+  ],
+  "kancaHatasi": "motor (tohum 21) tutarlı",
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M11 cari arama: tür önceliği (prefer) uygulanmaz",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 8,
+  "fail": 2,
+  "cancelled": 0,
+  "sn": 60,
+  "kirmiziTestler": [
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M12 cari arama: ilk 20 Cari No sırası yerine ad sırasıyla",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 10,
+  "pass": 8,
+  "fail": 2,
+  "cancelled": 0,
+  "sn": 59,
+  "kirmiziTestler": [
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M13 iş parçacığı: ön izleme sınırı TOPLAM'dan önce uygulanır (toplam sayı ve TOPLAM ilk n satırdan)",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 16,
+  "pass": 13,
+  "fail": 3,
+  "cancelled": 0,
+  "sn": 43,
+  "kirmiziTestler": [
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "ön izleme JSON'u: ilk 200 satır, toplam sayı ve TOPLAM bütün satırlardan — yerinde hazırlananla aynı; iş parçacığında hazırlandı"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M14 iş parçacığı: sunucunun (sahte) saati yerine gerçek saat",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 16,
+  "pass": 2,
+  "fail": 4,
+  "cancelled": 10,
+  "sn": 28,
+  "kirmiziTestler": [
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)",
+   "cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı",
+   "saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+   "veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)"
+  ],
+  "kancaHatasi": "motor (tohum 21) tutarlı",
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M15 iş parçacığı: rapor hatası durum kodunu kaybeder (her hata 500)",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 16,
+  "pass": 13,
+  "fail": 3,
+  "cancelled": 0,
+  "sn": 58,
+  "kirmiziTestler": [
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+   "hatalar aynı durum koduyla ve metinle: olmayan hesap 404, tanınmayan süzgeç 400, ters aralık 400"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ },
+ {
+  "ad": "M16 Kasa eksi bakiye denetimi: yolun bakiyesi iki kez okunur (İ10 gerilemesi)",
+  "beklenen": "kırmızı",
+  "cikis": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "sn": 5,
+  "kirmiziTestler": [
+   "çalışıyor mu: tahsilat düzeltmesi ve silmesinde soru için Kasa özeti tek sorgu; soru ve sayılar aynı",
+   "İ10 — eksi bakiye denetimi Kasa özetini bir kez hesaplar"
+  ],
+  "sonuc": "BEKLENDİĞİ GİBİ"
+ }
+]

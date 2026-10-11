@@ -1,0 +1,58 @@
+{
+  "ad": "windows-kuru-linux",
+  "komut": "node test/guncelleme-gercek/windows-kuru.mjs",
+  "commit": "3bd023ec325be6b2d7ccb8f357ca3bb8c8119fea",
+  "dal": "worktree-agent-a87e0c3eff69df818",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T01:48:06.421Z",
+  "sure_sn": 644.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 40,
+    "gecen": 35,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "W4: 2.0.29 arka planda hazırlandı (\"Bildirge: Güncelleme bildirgesinin imzası doğrulanamadı; güncelleme reddedildi.\")",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W4: app\\.hazir\\2.0.29 var",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W4: Yönetim → Sistem: 2.0.29 yayından kaldırıldığı için kurulmadı (null; 184 sn)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W4: servis günlüğü 'yayından kaldırıldığı için kurulmadı'",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W4: 2.0.29 paketi bir kez indirildi (0)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/geri-cekilen/2026-10-11/windows-kuru-linux.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a87e0c3eff69df818",
+  "ham_cikti_sha256": "69d30b92a7ba49c187a21b49da27a1e2f452de031bb9ff6354a226ec2f04b92e",
+  "ham_cikti_bayt": 3805
+}

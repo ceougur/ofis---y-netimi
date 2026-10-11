@@ -1,0 +1,7 @@
+# koşu 465 iş 114160738872 — Uçtan uca (Chromium), başarısız adım: npm run test:senaryo-222
+# günlük 774 satır (tamamı okundu); aşağıda adımın ■ başlıkları, ✗ satırları ve hata yığınının ilk satırları
+
+■ Pencere bozulmaz: arka plan yenilemesi başarısız olunca liste, arama kutusu ve açık kart yerinde kalır; silinen cari bildirilir
+  ✗ liste ve arama kutusu yerinde (kutuda "Müşteri 0", 0 satır, hata yazısı: Liste alınamadı: Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yeniden Dene)
+Senaryo 2.0.22: 55 geçti, 1 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222
+##[error]Process completed with exit code 1.

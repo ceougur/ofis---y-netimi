@@ -1,0 +1,62 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KOSUCU-ALIS-YINELEME-NUMARA",
+  "aciklama": "Hakem — KOSUCU-ALIS-YINELEME-NUMARA en küçük hâli: alış faturası aynı istek kimliği ve aynı gövdeyle (yalnız `id` ve `ad` farklı; §5.4 gövdeye `ad` girmez) ikinci kez gönderilir. Ürün yerine hizmet kalemi (giderTuru Banka Masrafları), adım sayısı 3. Beklenen (§5.4, PLAN §3.3 adım 1 + §3.10/1): 3. adım ret değil, yinelenenler'e yazılır; tek fatura, cari T1 alacak 120000 kuruş.",
+  "dayanak": "SENARYO-DILI §5.4 (yineleme: gövde = id, ad … dışındaki alanlar), §4.13 (alış faturası; belge numarası alanı yok); PLAN §3.3 adım 1, §3.10/1",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "cari_ac",
+      "ad": "T1",
+      "unvan": "Tedarikçi 1",
+      "tur": "tedarikci"
+    },
+    {
+      "id": "2",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "alis",
+      "cari": "T1",
+      "kalemler": [
+        {
+          "hizmet": "Hesap İşletim Ücreti",
+          "miktar": 1,
+          "birimFiyat": "1000",
+          "kdvOrani": 20,
+          "kdvDahil": false,
+          "giderTuru": "Banka Masrafları"
+        }
+      ],
+      "istekKimligi": "a1"
+    },
+    {
+      "id": "3",
+      "islem": "fatura",
+      "ad": "F2",
+      "tur": "alis",
+      "cari": "T1",
+      "kalemler": [
+        {
+          "hizmet": "Hesap İşletim Ücreti",
+          "miktar": 1,
+          "birimFiyat": "1000",
+          "kdvOrani": 20,
+          "kdvDahil": false,
+          "giderTuru": "Banka Masrafları"
+        }
+      ],
+      "istekKimligi": "a1"
+    }
+  ]
+}

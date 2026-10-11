@@ -1,0 +1,77 @@
+TAP version 13
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.759625
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 80.422288
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 80.959217
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 95.52561
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    not ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 179.330233
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/platform-tasinabilirlik.test.mjs:64:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Windows'ta kırılan kalıp:
+        test/banka-210-post-statik.test.mjs:160: return [...source.matchAll(/(INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE)\s+cheque_events\b([^"`]*)/gi)].map(m => ({ file: path.relative(ROOT, file
+        + actual - expected
+        
+        + [
+        +   'test/banka-210-post-statik.test.mjs:160: return [...source.matchAll(/(INSERT(?:\\s+OR\\s+\\w+)?\\s+INTO|UPDATE)\\s+cheque_events\\b([^"`]*)/gi)].map(m => ({ file: path.relative(ROOT, file'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'test/banka-210-post-statik.test.mjs:160: return [...source.matchAll(/(INSERT(?:\\s+OR\\s+\\w+)?\\s+INTO|UPDATE)\\s+cheque_events\\b([^"`]*)/gi)].map(m => ({ file: path.relative(ROOT, file'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/platform-tasinabilirlik.test.mjs:73:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 438.47356
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/platform-tasinabilirlik.test.mjs:60:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 571.282649

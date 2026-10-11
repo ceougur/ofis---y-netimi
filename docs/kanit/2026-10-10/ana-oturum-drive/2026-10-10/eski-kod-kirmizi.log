@@ -1,0 +1,232 @@
+TAP version 13
+# (node:15106) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum
+    # Subtest: kaldırılan uçlar 404: GET/POST /api/admin/backups/cloud ve POST …/cloud/test (yönetici ve oturumsuz)
+    not ok 1 - kaldırılan uçlar 404: GET/POST /api/admin/backups/cloud ve POST …/cloud/test (yönetici ve oturumsuz)
+      ---
+      duration_ms: 10.478249
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        GET cloud
+        
+        200 !== 404
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 404
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Şimdi Yedek Al — Tüm Şirketler ve Yalnız 001: yerel yedek alınır, Drive klasörüne dosya gitmez, yanıtta Drive alanı yok
+    not ok 2 - Şimdi Yedek Al — Tüm Şirketler ve Yalnız 001: yerel yedek alınır, Drive klasörüne dosya gitmez, yanıtta Drive alanı yok
+      ---
+      duration_ms: 74.084307
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:113:3'
+      failureType: 'testCodeFailure'
+      error: 'yanıtta cloud alanı yok: {"scope":"all","name":"destekofis-001-2026-10-10T18-16-56-839Z-manuel.sqlite","size":1167360,"company":{"id":"sirket-001","code":"001","name":"Şirket 1"},"cloud":{"ok":true,"name":"destekofis-001-2026-10-10T18-16-56-839Z-manuel.sqlite"},"backups":[{"companyId":"sirket-001","company":"001 · Şirket 1","code":"001","name":"destekofis-001-2026-10-10T18-16-56-839Z-manuel.sqlite","size":1167360,"folder":"/tmp/destekofis-drive-yok-uCwxei/backups/001 - Şirket 1","cloud":{"ok":true,"name":"destekofis-001-2026-10-10T18-16-56-839Z-manuel.sqlite"}},{"companyId":"sirket-b09ead7c-baa6-4b68-b9ee-22582709382c","company":"002 · İkinci Şirket","code":"002","name":"destekofis-002-2026-10-10T18-16-56-839Z-manuel.sqlite","size":1167360,"folder":"/tmp/destekofis-drive-yok-uCwxei/backups/002 - İkinci Şirket","cloud":{"ok":true,"name":"destekofis-002-2026-10-10T18-16-56-839Z-manuel.sqlite"}}],"failed":[]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:118:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: veri yükleme öncesi yedek (001 ve 002): yerel yedek alınır, kopya yok
+    not ok 3 - veri yükleme öncesi yedek (001 ve 002): yerel yedek alınır, kopya yok
+      ---
+      duration_ms: 568.198123
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Drive klasörü boş
+        + actual - expected
+        
+        + [
+        +   'DestekOfis Yedekleri',
+        +   'DestekOfis Yedekleri/001 - Şirket 1',
+        +   'DestekOfis Yedekleri/002 - İkinci Şirket',
+        +   'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-56-839Z-manuel.sqlite',
+        +   'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-56-957Z-veri-oncesi-degistirme.sqlite',
+        +   'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-56-839Z-manuel.sqlite',
+        +   'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-57-045Z-veri-oncesi-degistirme.sqlite'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'DestekOfis Yedekleri'
+        1: 'DestekOfis Yedekleri/001 - Şirket 1'
+        2: 'DestekOfis Yedekleri/002 - İkinci Şirket'
+        3: 'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-56-839Z-manuel.sqlite'
+        4: 'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-56-957Z-veri-oncesi-degistirme.sqlite'
+        5: 'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-56-839Z-manuel.sqlite'
+        6: 'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-57-045Z-veri-oncesi-degistirme.sqlite'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:142:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: otomatik zamanlayıcı (son yedek 7 saat önce: zamanı gelmiş): iki şirket yedeklenir, kopya yok
+    not ok 4 - otomatik zamanlayıcı (son yedek 7 saat önce: zamanı gelmiş): iki şirket yedeklenir, kopya yok
+      ---
+      duration_ms: 459.056334
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:145:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Drive klasörü boş
+        + actual - expected
+        
+        + [
+        +   'DestekOfis Yedekleri',
+        +   'DestekOfis Yedekleri/001 - Şirket 1',
+        +   'DestekOfis Yedekleri/002 - İkinci Şirket',
+        +   'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-56-839Z-manuel.sqlite',
+        +   'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-56-957Z-veri-oncesi-degistirme.sqlite',
+        +   'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-57-479Z.sqlite',
+        +   'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-56-839Z-manuel.sqlite',
+        +   'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-57-045Z-veri-oncesi-degistirme.sqlite',
+        +   'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-57-509Z.sqlite'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'DestekOfis Yedekleri'
+        1: 'DestekOfis Yedekleri/001 - Şirket 1'
+        2: 'DestekOfis Yedekleri/002 - İkinci Şirket'
+        3: 'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-56-839Z-manuel.sqlite'
+        4: 'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-56-957Z-veri-oncesi-degistirme.sqlite'
+        5: 'DestekOfis Yedekleri/001 - Şirket 1/destekofis-001-2026-10-10T18-16-57-479Z.sqlite'
+        6: 'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-56-839Z-manuel.sqlite'
+        7: 'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-57-045Z-veri-oncesi-degistirme.sqlite'
+        8: 'DestekOfis Yedekleri/002 - İkinci Şirket/destekofis-002-2026-10-10T18-16-57-509Z.sqlite'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:152:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Drive ayarı okunmaz, silinmez, değişmez (001 ve 002); gerçek zamanlayıcı ve bootstrap `yedek` de kopyalamaz
+    not ok 5 - Drive ayarı okunmaz, silinmez, değişmez (001 ve 002); gerçek zamanlayıcı ve bootstrap `yedek` de kopyalamaz
+      ---
+      duration_ms: 16.373006
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        001'deki ayar aynen duruyor
+        + actual - expected
+        
+        + `{"enabled":true,"mode":"folder","value":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler","folderId":null,"path":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler","resolvedPath":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler/DestekOfis Yedekleri","configuredBy":null,"configuredAt":"2026-10-01T09:00:00.000Z","lastAt":"2026-10-10T18:16:57.539Z","lastError":null,"lastName":"destekofis-002-2026-10-10T18-16-57-509Z.sqlite","copies":6}`
+        - `{"enabled":true,"mode":"folder","value":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler","folderId":null,"path":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler","resolvedPath":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler/DestekOfis Yedekleri","configuredBy":null,"configuredAt":"2026-10-01T09:00:00.000Z","lastAt":null,"lastError":null,"lastName":null,"copies":0}`
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: `{"enabled":true,"mode":"folder","value":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler","folderId":null,"path":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler","resolvedPath":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler/DestekOfis Yedekleri","configuredBy":null,"configuredAt":"2026-10-01T09:00:00.000Z","lastAt":null,"lastError":null,"lastName":null,"copies":0}`
+      actual: `{"enabled":true,"mode":"folder","value":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler","folderId":null,"path":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler","resolvedPath":"/tmp/destekofis-drive-yok-uCwxei/Drive'ım/Yedekler/DestekOfis Yedekleri","configuredBy":null,"configuredAt":"2026-10-01T09:00:00.000Z","lastAt":"2026-10-10T18:16:57.539Z","lastError":null,"lastName":"destekofis-002-2026-10-10T18-16-57-509Z.sqlite","copies":6}`
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:158:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Drive'a yedek kaldırıldı — klasör kipi ayarı dolu eski kurulum
+  ---
+  duration_ms: 1864.181455
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:83:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Drive'a yedek kaldırıldı — bağlantı kipi ayarı dolu eski kurulum (sahte lisans servisi)
+    # Subtest: Şimdi Yedek Al (Tüm + Yalnız) ve otomatik tur: yerel yedek var, servise ve Google'a tek istek yok; ayar ortak katmana taşınmaz
+    not ok 1 - Şimdi Yedek Al (Tüm + Yalnız) ve otomatik tur: yerel yedek var, servise ve Google'a tek istek yok; ayar ortak katmana taşınmaz
+      ---
+      duration_ms: 563.33961
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:221:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        sahte servise yedek isteği gitmedi (bütün istekler: POST /v1/yedek/oturum, PUT /yukle, POST /v1/yedek/oturum, PUT /yukle, POST /v1/yedek/oturum, PUT /yukle, POST /v1/yedek/oturum, PUT /yukle, POST /v1/yedek/oturum, PUT /yukle)
+        + actual - expected
+        
+        + [
+        +   'POST /v1/yedek/oturum',
+        +   'PUT /yukle',
+        +   'POST /v1/yedek/oturum',
+        +   'PUT /yukle',
+        +   'POST /v1/yedek/oturum',
+        +   'PUT /yukle',
+        +   'POST /v1/yedek/oturum',
+        +   'PUT /yukle',
+        +   'POST /v1/yedek/oturum',
+        +   'PUT /yukle'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'POST /v1/yedek/oturum'
+        1: 'PUT /yukle'
+        2: 'POST /v1/yedek/oturum'
+        3: 'PUT /yukle'
+        4: 'POST /v1/yedek/oturum'
+        5: 'PUT /yukle'
+        6: 'POST /v1/yedek/oturum'
+        7: 'PUT /yukle'
+        8: 'POST /v1/yedek/oturum'
+        9: 'PUT /yukle'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:232:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - Drive'a yedek kaldırıldı — bağlantı kipi ayarı dolu eski kurulum (sahte lisans servisi)
+  ---
+  duration_ms: 1137.322905
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-drive/test/drive-kaldirildi.test.mjs:183:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3393.545071

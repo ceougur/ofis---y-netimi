@@ -1,0 +1,28 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KASA-ISTEK-KIMLIGI-tani",
+  "aciklama": "Hakem tanı: en küçük + (t1) aynı kimlik ik-13 farklı gövde (250) → 409 beklenir; (t2/t3) giriş yönünde aynı kimlikle yineleme; (c1–c3) KARŞI DENEY: cari nakit tahsilatı aynı kimlikle iki kez — koşucunun başlığı gönderdiğini ve programın başka uçta kimliği uyguladığını gösterir.",
+  "dayanak": "hakem: fark sınıfı KASA-ISTEK-KIMLIGI tanı vakaları.",
+  "baslangic": {
+    "bugun": "27.01.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    { "id": "k0", "islem": "kasa_hareket", "yon": "giris", "tutar": "1000", "aciklama": "Kasaya Giriş" },
+    { "id": "387", "islem": "kasa_hareket", "yon": "cikis", "tutar": "212", "aciklama": "Temizlik Gideri", "istekKimligi": "ik-13" },
+    { "id": "388", "islem": "kasa_hareket", "yon": "cikis", "tutar": "212", "aciklama": "Temizlik Gideri", "istekKimligi": "ik-13" },
+    { "id": "t1", "islem": "kasa_hareket", "yon": "cikis", "tutar": "250", "aciklama": "Temizlik Gideri", "istekKimligi": "ik-13" },
+    { "id": "t2", "islem": "kasa_hareket", "yon": "giris", "tutar": "50", "aciklama": "Kasaya Giriş", "istekKimligi": "ik-21" },
+    { "id": "t3", "islem": "kasa_hareket", "yon": "giris", "tutar": "50", "aciklama": "Kasaya Giriş", "istekKimligi": "ik-21" },
+    { "id": "c1", "ad": "C1", "islem": "cari_ac", "unvan": "Hakem Müşteri", "tur": "musteri" },
+    { "id": "c2", "islem": "cari_tahsilat", "cari": "C1", "tutar": "300", "yol": "nakit", "istekKimligi": "ik-20" },
+    { "id": "c3", "islem": "cari_tahsilat", "cari": "C1", "tutar": "300", "yol": "nakit", "istekKimligi": "ik-20" }
+  ]
+}

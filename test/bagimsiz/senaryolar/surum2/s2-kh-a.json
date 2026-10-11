@@ -1,0 +1,32 @@
+{
+  "aciklama": "SENARYO-DILI sürüm 2 testi (test/bagimsiz/test_surum2.py) — programla karşılaştırma için",
+  "ad": "s2-kh-a",
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "kasa_acilis",
+      "tutar": "1000"
+    },
+    {
+      "aciklama": "Hurda Satışı",
+      "ad": "H1",
+      "id": "2",
+      "islem": "kasa_hareket",
+      "tutar": "100",
+      "yon": "giris"
+    },
+    {
+      "hedef": "H1",
+      "id": "3",
+      "islem": "sil"
+    }
+  ],
+  "baslangic": {
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar"
+    },
+    "bugun": "08.10.2026",
+    "sirket": "bos"
+  },
+  "dil": "destekofis-senaryo/2"
+}

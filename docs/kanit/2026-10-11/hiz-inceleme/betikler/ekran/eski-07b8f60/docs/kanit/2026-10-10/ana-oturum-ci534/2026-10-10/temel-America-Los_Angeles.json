@@ -1,0 +1,32 @@
+{
+  "ad": "temel-America-Los_Angeles",
+  "komut": "npm run test:senaryo-banka-210-temel",
+  "commit": "098eb562209aceca14406930cfd64f20c576169f",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 26,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:39:58.261Z",
+  "sure_sn": 38.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-ci534/2026-10-10/temel-America-Los_Angeles.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "15180cf08037cdd53b92caae280c5ad3e87f97d1ca7ca4b1c0a50d317b2b1331",
+  "ham_cikti_bayt": 8370
+}

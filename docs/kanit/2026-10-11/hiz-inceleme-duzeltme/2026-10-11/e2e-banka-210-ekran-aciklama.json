@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-banka-210-ekran-aciklama",
+  "komut": "npm run test:banka-210-ekran-aciklama",
+  "commit": "9cb72bcb6118172b8b5cb9c03984a875eee54201",
+  "dal": "worktree-agent-a056b3f32911d679b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T15:46:54.262Z",
+  "sure_sn": 11.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/hiz-inceleme-duzeltme/2026-10-11/e2e-banka-210-ekran-aciklama.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a056b3f32911d679b",
+  "ham_cikti_sha256": "64bb08cba4fd374c12761c8e993e4cea953ca0bb327b9e20b8e9ff04096f3859",
+  "ham_cikti_bayt": 2190
+}

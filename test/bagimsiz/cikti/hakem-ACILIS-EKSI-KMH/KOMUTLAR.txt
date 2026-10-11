@@ -1,0 +1,25 @@
+Hakem — fark sınıfı ACILIS-EKSI-KMH (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-ACILIS-EKSI-KMH.json
+      # en küçük (1 adım: rastgele-22-500 adım 306 aynen — Ticari Hesap B5, tür TİCARİ, KMH 23.059, açılış −11.529,50, 23.12.2025,
+      # bugün 06.01.2026 = adım 301'in saati): çıkış a=0 b=0 program=0, 11 yaprak, fark 8, hepsi A=B≠P.
+      # retler.306: A/B geçti · P 400 amount-range "Açılış Bakiyesi eksi olamaz." Türevler: bankaHesaplari/hesapKodlari/
+      # eksiBakiyeDenetimi.B5 A/B −1.152.950 kuruş / 102.01 / kontrol_yok · P <yok>; mizan.102.01 A/B alacak 1.152.950 · P 0;
+      # mizan.500 A/B borç 1.152.950 · P 0; ozet.gercekBanka ve kasaVeGercekBanka A/B −1.152.950 · P 0.
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-ACILIS-EKSI-KMH/en-kucuk-ACILIS-EKSI-KMH-tani.json
+      # tanı (8 adım): fark 18, hepsi A=B≠P. Vadesiz V1 KMH 23.059 açılış −11.529,50 ve Vadesiz V2 Açılışı Düzelt −500 → üç taraf AYNI.
+      # Ticari T1 ve Diğer D1 aynı eksi açılış → P 400 amount-range; Ticari T2 Açılışı Düzelt −500 → P 400 amount-range.
+      # Ticari T2 (+1.000, doğrulanmış, KMH 23.059 API'den) Diğer Gider 12.529,50 → −11.529,50: üç taraf da kabul (uyarı yok).
+  node test/bagimsiz/cikti/hakem-ACILIS-EKSI-KMH/canli.mjs . > test/bagimsiz/cikti/hakem-ACILIS-EKSI-KMH/canli-head.json
+      # gerçek API, koşucusuz (HEAD ab4ebca): P1 Ticari / P2 Diğer eksi açılış 400 amount-range; P3 Vadesiz 200 (−1.152.950);
+      # P4 Vadesiz KMH YOK −5.000 → 200; P5 Vadesiz KMH 10.000, açılış −30.000 → 200 (açılış KMH ile sınırlanmıyor);
+      # P6 Ticari'ye API'den KMH 23.059 kabul ve saklanıyor, P6b Diğer Gider ile −11.529,50 → 200 (KMH Ticari'de denetimde sayılıyor);
+      # P7 Vadesiz KMH 23.059 açılış 0 → P7b Düzenle tür Ticari (istemci gibi creditLimit yok) → kartta KMH 2.305.900 KALIYOR →
+      # P7c Diğer Gider −12.529,50 → 200; karşı deney P8 Ticari KMH yok → P8b 409 bank-negative. P9b Ticari Açılışı Düzelt −500 → 400.
+  node test/bagimsiz/cikti/hakem-ACILIS-EKSI-KMH/canli.mjs /tmp/v2026 > test/bagimsiz/cikti/hakem-ACILIS-EKSI-KMH/canli-v2026.json
+      # canlı sürüm (v2.0.26 = 5346ff8, /tmp/v2026 worktree, izlenen dosyada değişiklik 0): banka modülü yok
+      # (GET ve POST /api/workspace/bank/accounts 404 "Endpoint bulunamadı.") → sınıf canlıda YOK.
+  Tarama (33 tohum + nötr; senaryolar/ ve fark-*.json): eksi açılışlı 15 adım — Ticari 3 (22/306, nötr 7/521, nötr 19/502) hepsi
+      A=B≠P 400; Vadesiz 12 (10 hesap_ac + 2 acilis_duzelt) hepsinde fark yok. Diğer türünde rastgele örnek yok (mini + tanıda var).
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+Not: fark.py fark dosyalarını cikti/'ye yazar; fark-ozet.json kirlenmesin diye iki fark dosyası bu klasöre taşındı.
+Ham: cikti/ham/en-kucuk-ACILIS-EKSI-KMH*.{a,b,program}.json.

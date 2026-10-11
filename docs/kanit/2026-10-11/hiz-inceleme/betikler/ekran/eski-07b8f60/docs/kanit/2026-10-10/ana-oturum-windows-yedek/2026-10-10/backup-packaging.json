@@ -1,0 +1,32 @@
+{
+  "ad": "backup-packaging",
+  "komut": "node --test test/backup.test.mjs test/packaging.test.mjs test/drive-kaldirildi.test.mjs",
+  "commit": "1e2394072f0dd3016c4aea60b5dd0bf8786bc9f0",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 25,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:30:20.420Z",
+  "sure_sn": 10.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 25,
+    "gecen": 25,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-windows-yedek/2026-10-10/backup-packaging.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a3570f9cd625eacbb153a4ad7f867a0fed7d2b9d34c6568bc41bea744148b21b",
+  "ham_cikti_bayt": 8743
+}

@@ -1,0 +1,56 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "mini-kdv-dahil-iskonto",
+  "aciklama": "KDV dahil 82,71, %15 iskonto, %20 KDV (tohum 5 F4).",
+  "dayanak": "fark.py sınıf küçültmesi",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "urun_ac",
+      "ad": "U1",
+      "urunAdi": "Ürün 1",
+      "birim": "Adet"
+    },
+    {
+      "id": "2",
+      "islem": "stok_giris",
+      "urun": "U1",
+      "miktar": 10
+    },
+    {
+      "id": "3",
+      "islem": "cari_ac",
+      "ad": "M1",
+      "unvan": "Müşteri 1",
+      "tur": "musteri"
+    },
+    {
+      "id": "4",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "hizmet": "Bakım",
+          "miktar": 1,
+          "birimFiyat": "82,71",
+          "kdvOrani": 20,
+          "kdvDahil": true,
+          "iskontoOrani": "15"
+        }
+      ]
+    }
+  ]
+}

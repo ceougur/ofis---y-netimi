@@ -1,0 +1,10 @@
+# senaryo-225 C yarışı: MODE=natural FIX=new CPU=1 TRIALS=5
+ok 1 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); silinen: -; 1. sayfada uyarı: GÖRÜNDÜ
+ok 2 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); silinen: -; 1. sayfada uyarı: GÖRÜNDÜ
+ok 3 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); silinen: -; 1. sayfada uyarı: GÖRÜNDÜ
+ok 4 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); silinen: -; 1. sayfada uyarı: GÖRÜNDÜ
+ok 5 - ön koşul (uyarı önceki yüklemede gösterildi): hayır; son yüklemeden önce "görüldü" kaydında 0 kimlik (hedef yok; önceki yüklemelerde ekrana çıkan bildirim 0); silinen: -; 1. sayfada uyarı: GÖRÜNDÜ
+# ön koşulun oluştuğu deneme: 0/5
+# tests 5
+# pass 5
+# fail 0

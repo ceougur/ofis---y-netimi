@@ -1,0 +1,675 @@
+{
+  "adimSayisi": 6,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 12
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 12,
+  "farklar": [
+    {
+      "a": 4998250,
+      "aile": "bankaHesaplari.*",
+      "alan": "bankaHesaplari.V1",
+      "b": 4998250,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:VADELI-HESAP-FIS",
+      "olaylar": [
+        {
+          "degisim": 6000,
+          "neden": [
+            "VADELI-HESAP-FIS"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 5004250,
+      "tetik": {
+        "VADELI-HESAP-FIS": "2"
+      },
+      "yol": [
+        "bankaHesaplari",
+        "V1"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 4998250
+      },
+      "aile": "mizan.102.NN",
+      "alan": "mizan.102.01",
+      "b": {
+        "alacak": 0,
+        "borc": 4998250
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:VADELI-HESAP-FIS",
+      "olaylar": [
+        {
+          "degisim": 6000,
+          "neden": [
+            "VADELI-HESAP-FIS"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 5004250
+      },
+      "tetik": {
+        "VADELI-HESAP-FIS": "2"
+      },
+      "yol": [
+        "mizan",
+        "102.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 2000,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "mizan.649",
+      "b": {
+        "alacak": 2000,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:VADELI-HESAP-FIS",
+      "olaylar": [
+        {
+          "degisim": 2000,
+          "neden": [
+            "VADELI-HESAP-FIS"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "tetik": {
+        "VADELI-HESAP-FIS": "2"
+      },
+      "yol": [
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 3000
+      },
+      "aile": "mizan.659",
+      "alan": "mizan.659",
+      "b": {
+        "alacak": 0,
+        "borc": 3000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:VADELI-HESAP-FIS",
+      "olaylar": [
+        {
+          "degisim": -3000,
+          "neden": [
+            "VADELI-HESAP-FIS"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "tetik": {
+        "VADELI-HESAP-FIS": "2"
+      },
+      "yol": [
+        "mizan",
+        "659"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 1000
+      },
+      "aile": "mizan.770",
+      "alan": "mizan.770",
+      "b": {
+        "alacak": 0,
+        "borc": 1000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:VADELI-HESAP-FIS",
+      "olaylar": [
+        {
+          "degisim": -1000,
+          "neden": [
+            "VADELI-HESAP-FIS"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "tetik": {
+        "VADELI-HESAP-FIS": "2"
+      },
+      "yol": [
+        "mizan",
+        "770"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 4000
+      },
+      "aile": "mizan.780",
+      "alan": "mizan.780",
+      "b": {
+        "alacak": 0,
+        "borc": 4000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:VADELI-HESAP-FIS",
+      "olaylar": [
+        {
+          "degisim": -4000,
+          "neden": [
+            "VADELI-HESAP-FIS"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "tetik": {
+        "VADELI-HESAP-FIS": "2"
+      },
+      "yol": [
+        "mizan",
+        "780"
+      ]
+    },
+    {
+      "a": 4998250,
+      "aile": "ozet.gercekBanka",
+      "alan": "ozet.gercekBanka",
+      "b": 4998250,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:VADELI-HESAP-FIS",
+      "olaylar": [
+        {
+          "degisim": 6000,
+          "neden": [
+            "VADELI-HESAP-FIS"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 5004250,
+      "tetik": {
+        "VADELI-HESAP-FIS": "2"
+      },
+      "yol": [
+        "ozet",
+        "gercekBanka"
+      ]
+    },
+    {
+      "a": 4998250,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "ozet.kasaVeGercekBanka",
+      "b": 4998250,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:VADELI-HESAP-FIS",
+      "olaylar": [
+        {
+          "degisim": 6000,
+          "neden": [
+            "VADELI-HESAP-FIS"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 5004250,
+      "tetik": {
+        "VADELI-HESAP-FIS": "2"
+      },
+      "yol": [
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": "geçti",
+      "adim": {
+        "hesap": "V1",
+        "id": "2",
+        "islem": "banka_masraf",
+        "masrafTuru": "EFT",
+        "tutar": "10",
+        "vergi": "yok"
+      },
+      "aile": "retler:banka_masraf",
+      "alan": "retler.2",
+      "b": "geçti",
+      "desen": "A=B≠P",
+      "kokSinif": "VADELI-HESAP-FIS",
+      "pencere": [
+        "2",
+        "2"
+      ],
+      "program": "400 bank-account-invalid",
+      "programIletisi": "Garanti BBVA · Vadeli (Vadeli): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+      "tetik": "2",
+      "yol": [
+        "retler",
+        "2"
+      ]
+    },
+    {
+      "a": "geçti",
+      "adim": {
+        "hesap": "V1",
+        "id": "3",
+        "islem": "diger_gelir",
+        "tutar": "20"
+      },
+      "aile": "retler:diger_gelir",
+      "alan": "retler.3",
+      "b": "geçti",
+      "desen": "A=B≠P",
+      "kokSinif": "VADELI-HESAP-FIS",
+      "pencere": [
+        "3",
+        "3"
+      ],
+      "program": "400 bank-account-invalid",
+      "programIletisi": "Garanti BBVA · Vadeli (Vadeli): diğer gelir Vadesiz, Ticari ya da Diğer TL hesaba girilir.",
+      "tetik": "3",
+      "yol": [
+        "retler",
+        "3"
+      ]
+    },
+    {
+      "a": "geçti",
+      "adim": {
+        "hesap": "V1",
+        "id": "4",
+        "islem": "diger_gider",
+        "tutar": "30"
+      },
+      "aile": "retler:diger_gider",
+      "alan": "retler.4",
+      "b": "geçti",
+      "desen": "A=B≠P",
+      "kokSinif": "VADELI-HESAP-FIS",
+      "pencere": [
+        "4",
+        "4"
+      ],
+      "program": "400 bank-account-invalid",
+      "programIletisi": "Garanti BBVA · Vadeli (Vadeli): diğer gider Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+      "tetik": "4",
+      "yol": [
+        "retler",
+        "4"
+      ]
+    },
+    {
+      "a": "geçti",
+      "adim": {
+        "hesap": "V1",
+        "id": "5",
+        "islem": "faiz_gideri",
+        "tutar": "40"
+      },
+      "aile": "retler:faiz_gideri",
+      "alan": "retler.5",
+      "b": "geçti",
+      "desen": "A=B≠P",
+      "kokSinif": "VADELI-HESAP-FIS",
+      "pencere": [
+        "5",
+        "5"
+      ],
+      "program": "400 bank-account-invalid",
+      "programIletisi": "Garanti BBVA · Vadeli (Vadeli): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+      "tetik": "5",
+      "yol": [
+        "retler",
+        "5"
+      ]
+    }
+  ],
+  "hamdan": "üç taraf yeniden koşulmadı; cikti/ham'daki son ham çıktılar yeniden karşılaştırıldı",
+  "islemSayisi": 6,
+  "islemTurleri": {
+    "banka_masraf": 1,
+    "diger_gelir": 1,
+    "diger_gider": 1,
+    "faiz_geliri": 1,
+    "faiz_gideri": 1,
+    "hesap_ac": 1
+  },
+  "karsilastirilanYaprak": 20,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/mini/mini-vadeli-fis.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/mini/mini-vadeli-fis.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/mini/mini-vadeli-fis.json --cikti test/bagimsiz/cikti/ham/mini-vadeli-fis.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 83,
+    "commit": "9edd6b0bc4ca8865ab118d6d15a7fca000539592",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "mini-vadeli-fis",
+  "senaryoDosyasi": "test/bagimsiz/cikti/mini/mini-vadeli-fis.json",
+  "siniflar": {
+    "TUREV:VADELI-HESAP-FIS": {
+      "aileler": {
+        "bankaHesaplari.*": 1,
+        "mizan.102.NN": 1,
+        "mizan.649": 1,
+        "mizan.659": 1,
+        "mizan.770": 1,
+        "mizan.780": 1,
+        "ozet.gercekBanka": 1,
+        "ozet.kasaVeGercekBanka": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 8
+      },
+      "enErkenPencere": null,
+      "ornekler": [
+        {
+          "a": 4998250,
+          "alan": "bankaHesaplari.V1",
+          "b": 4998250,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 5004250
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 4998250
+          },
+          "alan": "mizan.102.01",
+          "b": {
+            "alacak": 0,
+            "borc": 4998250
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 5004250
+          }
+        },
+        {
+          "a": {
+            "alacak": 2000,
+            "borc": 0
+          },
+          "alan": "mizan.649",
+          "b": {
+            "alacak": 2000,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 3000
+          },
+          "alan": "mizan.659",
+          "b": {
+            "alacak": 0,
+            "borc": 3000
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        }
+      ],
+      "sonDurumYaprak": 8,
+      "yaprak": 8
+    },
+    "VADELI-HESAP-FIS": {
+      "aileler": {
+        "retler:banka_masraf": 1,
+        "retler:diger_gelir": 1,
+        "retler:diger_gider": 1,
+        "retler:faiz_gideri": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 4
+      },
+      "enErkenPencere": [
+        "2",
+        "2"
+      ],
+      "ornekler": [
+        {
+          "a": "geçti",
+          "alan": "retler.2",
+          "b": "geçti",
+          "desen": "A=B≠P",
+          "pencere": [
+            "2",
+            "2"
+          ],
+          "program": "400 bank-account-invalid"
+        },
+        {
+          "a": "geçti",
+          "alan": "retler.3",
+          "b": "geçti",
+          "desen": "A=B≠P",
+          "pencere": [
+            "3",
+            "3"
+          ],
+          "program": "400 bank-account-invalid"
+        },
+        {
+          "a": "geçti",
+          "alan": "retler.4",
+          "b": "geçti",
+          "desen": "A=B≠P",
+          "pencere": [
+            "4",
+            "4"
+          ],
+          "program": "400 bank-account-invalid"
+        },
+        {
+          "a": "geçti",
+          "alan": "retler.5",
+          "b": "geçti",
+          "desen": "A=B≠P",
+          "pencere": [
+            "5",
+            "5"
+          ],
+          "program": "400 bank-account-invalid"
+        }
+      ],
+      "sonDurumYaprak": 4,
+      "yaprak": 4
+    }
+  },
+  "sureler": {
+    "a": null,
+    "b": null,
+    "program": null
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 4998250,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 5007000,
+      "mizanBorcToplam": 5007000,
+      "ozet": {
+        "gercekBanka": 4998250,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 4998250
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "b": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 4998250,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 5007000,
+      "mizanBorcToplam": 5007000,
+      "ozet": {
+        "gercekBanka": 4998250,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 4998250
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "program": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 5004250,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 5005000,
+      "mizanBorcToplam": 5005000,
+      "ozet": {
+        "gercekBanka": 5004250,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 5004250
+      },
+      "retSayisi": 4,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}

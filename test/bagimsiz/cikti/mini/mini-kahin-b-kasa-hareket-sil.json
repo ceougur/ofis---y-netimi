@@ -1,0 +1,37 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "mini-kahin-b-kasa-hareket-sil",
+  "aciklama": "Kasa elle girişi adla açılır, sonra silinir (dil §4.9 'ad: silinecekse zorunlu', §4.28).",
+  "dayanak": "fark.py kâhin denetimi",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "kasa_acilis",
+      "tutar": "1000"
+    },
+    {
+      "id": "2",
+      "islem": "kasa_hareket",
+      "ad": "H1",
+      "yon": "giris",
+      "tutar": "100",
+      "aciklama": "Hurda Satışı"
+    },
+    {
+      "id": "3",
+      "islem": "sil",
+      "hedef": "H1"
+    }
+  ]
+}

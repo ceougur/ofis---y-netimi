@@ -1,0 +1,487 @@
+{
+  "adimSayisi": 1,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 8
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 8,
+  "farklar": [
+    {
+      "a": -1152950,
+      "aile": "bankaHesaplari.*",
+      "alan": "bankaHesaplari.B5",
+      "b": -1152950,
+      "desen": "A=B≠P",
+      "kokSinif": "ACILIS-EKSI-KMH",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": "<yok>",
+      "tetik": null,
+      "yol": [
+        "bankaHesaplari",
+        "B5"
+      ]
+    },
+    {
+      "a": "kontrol_yok",
+      "aile": "eksiBakiyeDenetimi.*",
+      "alan": "eksiBakiyeDenetimi.B5",
+      "b": "kontrol_yok",
+      "desen": "A=B≠P",
+      "kokSinif": "ACILIS-EKSI-KMH",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": "<yok>",
+      "tetik": null,
+      "yol": [
+        "eksiBakiyeDenetimi",
+        "B5"
+      ]
+    },
+    {
+      "a": "102.01",
+      "aile": "hesapKodlari.*",
+      "alan": "hesapKodlari.B5",
+      "b": "102.01",
+      "desen": "A=B≠P",
+      "kokSinif": "ACILIS-EKSI-KMH",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": "<yok>",
+      "tetik": null,
+      "yol": [
+        "hesapKodlari",
+        "B5"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1152950,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "mizan.102.01",
+      "b": {
+        "alacak": 1152950,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:ACILIS-EKSI-KMH",
+      "olaylar": [
+        {
+          "degisim": 1152950,
+          "neden": [
+            "ACILIS-EKSI-KMH"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "tetik": {
+        "ACILIS-EKSI-KMH": "306"
+      },
+      "yol": [
+        "mizan",
+        "102.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 1152950
+      },
+      "aile": "mizan.500",
+      "alan": "mizan.500",
+      "b": {
+        "alacak": 0,
+        "borc": 1152950
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:ACILIS-EKSI-KMH",
+      "olaylar": [
+        {
+          "degisim": -1152950,
+          "neden": [
+            "ACILIS-EKSI-KMH"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "tetik": {
+        "ACILIS-EKSI-KMH": "306"
+      },
+      "yol": [
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": -1152950,
+      "aile": "ozet.gercekBanka",
+      "alan": "ozet.gercekBanka",
+      "b": -1152950,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:ACILIS-EKSI-KMH",
+      "olaylar": [
+        {
+          "degisim": 1152950,
+          "neden": [
+            "ACILIS-EKSI-KMH"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 0,
+      "tetik": {
+        "ACILIS-EKSI-KMH": "306"
+      },
+      "yol": [
+        "ozet",
+        "gercekBanka"
+      ]
+    },
+    {
+      "a": -1152950,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "ozet.kasaVeGercekBanka",
+      "b": -1152950,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:ACILIS-EKSI-KMH",
+      "olaylar": [
+        {
+          "degisim": 1152950,
+          "neden": [
+            "ACILIS-EKSI-KMH"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 0,
+      "tetik": {
+        "ACILIS-EKSI-KMH": "306"
+      },
+      "yol": [
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": "geçti",
+      "adim": {
+        "acilisBakiyesi": "-11529,50",
+        "acilisTarihi": "23.12.2025",
+        "ad": "B5",
+        "banka": "Denizbank",
+        "hesapAdi": "Ticari Hesap B5",
+        "iban": "TR020013405574286218162643",
+        "id": "306",
+        "islem": "hesap_ac",
+        "kmhLimiti": "23059",
+        "kod": "DNZ-B5",
+        "kullanici": "MU",
+        "paraBirimi": "TRY",
+        "tur": "ticari"
+      },
+      "aile": "retler:hesap_ac",
+      "alan": "retler.306",
+      "b": "geçti",
+      "desen": "A=B≠P",
+      "kokSinif": "ACILIS-EKSI-KMH",
+      "pencere": [
+        "306",
+        "306"
+      ],
+      "program": "400 amount-range",
+      "programIletisi": "Açılış Bakiyesi eksi olamaz.",
+      "tetik": "306",
+      "yol": [
+        "retler",
+        "306"
+      ]
+    }
+  ],
+  "islemSayisi": 1,
+  "islemTurleri": {
+    "hesap_ac": 1
+  },
+  "karsilastirilanYaprak": 11,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/en-kucuk-ACILIS-EKSI-KMH.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/en-kucuk-ACILIS-EKSI-KMH.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/en-kucuk-ACILIS-EKSI-KMH.json --cikti test/bagimsiz/cikti/ham/en-kucuk-ACILIS-EKSI-KMH.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "en-kucuk-ACILIS-EKSI-KMH",
+  "senaryoDosyasi": "test/bagimsiz/cikti/en-kucuk-ACILIS-EKSI-KMH.json",
+  "siniflar": {
+    "ACILIS-EKSI-KMH": {
+      "aileler": {
+        "bankaHesaplari.*": 1,
+        "eksiBakiyeDenetimi.*": 1,
+        "hesapKodlari.*": 1,
+        "retler:hesap_ac": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 4
+      },
+      "enErkenPencere": [
+        "306",
+        "306"
+      ],
+      "ornekler": [
+        {
+          "a": -1152950,
+          "alan": "bankaHesaplari.B5",
+          "b": -1152950,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": "<yok>"
+        },
+        {
+          "a": "kontrol_yok",
+          "alan": "eksiBakiyeDenetimi.B5",
+          "b": "kontrol_yok",
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": "<yok>"
+        },
+        {
+          "a": "102.01",
+          "alan": "hesapKodlari.B5",
+          "b": "102.01",
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": "<yok>"
+        },
+        {
+          "a": "geçti",
+          "alan": "retler.306",
+          "b": "geçti",
+          "desen": "A=B≠P",
+          "pencere": [
+            "306",
+            "306"
+          ],
+          "program": "400 amount-range"
+        }
+      ],
+      "sonDurumYaprak": 4,
+      "yaprak": 4
+    },
+    "TUREV:ACILIS-EKSI-KMH": {
+      "aileler": {
+        "mizan.102.NN": 1,
+        "mizan.500": 1,
+        "ozet.gercekBanka": 1,
+        "ozet.kasaVeGercekBanka": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 4
+      },
+      "enErkenPencere": null,
+      "ornekler": [
+        {
+          "a": {
+            "alacak": 1152950,
+            "borc": 0
+          },
+          "alan": "mizan.102.01",
+          "b": {
+            "alacak": 1152950,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 1152950
+          },
+          "alan": "mizan.500",
+          "b": {
+            "alacak": 0,
+            "borc": 1152950
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        },
+        {
+          "a": -1152950,
+          "alan": "ozet.gercekBanka",
+          "b": -1152950,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 0
+        },
+        {
+          "a": -1152950,
+          "alan": "ozet.kasaVeGercekBanka",
+          "b": -1152950,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 0
+        }
+      ],
+      "sonDurumYaprak": 4,
+      "yaprak": 4
+    }
+  },
+  "sureler": {
+    "a": 0.05,
+    "b": 0.06,
+    "program": 0.99
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": -1152950,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 1152950,
+      "mizanBorcToplam": 1152950,
+      "ozet": {
+        "gercekBanka": -1152950,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": -1152950
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "b": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": -1152950,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 1152950,
+      "mizanBorcToplam": 1152950,
+      "ozet": {
+        "gercekBanka": -1152950,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": -1152950
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "program": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 0,
+      "mizanBorcToplam": 0,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 0
+      },
+      "retSayisi": 1,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}

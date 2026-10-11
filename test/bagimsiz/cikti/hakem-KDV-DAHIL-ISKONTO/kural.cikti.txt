@@ -1,0 +1,2 @@
+{"fatura": 3958, "dahilIskontolu": 409, "hakem=P": 3958, "hakem≠P": 0, "dil=P": 3801, "dil≠P": 157, "A≠P": 157, "A=dil": 3958}
+[]

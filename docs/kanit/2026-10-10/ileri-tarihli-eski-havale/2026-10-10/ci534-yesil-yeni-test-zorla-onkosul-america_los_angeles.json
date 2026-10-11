@@ -1,0 +1,43 @@
+{
+  "ad": "ci534-yesil-yeni-test-zorla-onkosul-america_los_angeles",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/zz-yaris-yeni-test.mjs",
+  "commit": "507f0e16101462e29f0e30eb18c458eedbe32942",
+  "dal": "worktree-agent-a22d2972509bc7e85",
+  "kirli": 1,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:23:39.471Z",
+  "sure_sn": 39.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 55,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Nakit Akış adları (grafik başlığı sunucunun dönem başıyla: 2026-10-08): Bugünkü Nakit ve Banka | Hesabı Atanmamış Eski Hareketler | Beklenen Giriş | Beklenen Çıkış | Tahmini Nakit ve Banka · 06.11.2026 | En Düşük Tahmini Nakit ve Banka | Tahmini Nakit ve Banka · 07.10.2026 – 06.11.2026 | Vade | Kayn",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-banka-210-temel: 55 geçti, 1 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/e2e/artifacts/zz-yaris-yeni-test",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/ileri-tarihli-eski-havale/2026-10-10/ci534-yesil-yeni-test-zorla-onkosul-america_los_angeles.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85",
+  "ham_cikti_sha256": "af9e23b08d38dbc29ca9ab83db7dc1be29097a77c28ae08418d3b6d55f71d50f",
+  "ham_cikti_bayt": 8274
+}

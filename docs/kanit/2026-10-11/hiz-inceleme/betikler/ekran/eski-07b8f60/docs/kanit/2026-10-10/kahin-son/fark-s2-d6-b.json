@@ -1,0 +1,41 @@
+{
+  "a_stderr": "SENARYO GEÇERSİZ: adım 2: BELİRSİZ-24 — vadeli hesapta faiz gideri",
+  "adimSayisi": 2,
+  "b_stderr": "{\"hata\": \"senaryo-gecersiz\", \"neden\": \"2: vadeli hesapta faiz gideri (BELİRSİZ-24)\"}",
+  "cikisKodlari": {
+    "a": 2,
+    "b": 2,
+    "program": 0
+  },
+  "durum": "EKSIK: en az bir taraf çıktı üretmedi; karşılaştırma yapılmadı",
+  "farklar": [],
+  "islemSayisi": 2,
+  "islemTurleri": {
+    "faiz_gideri": 1,
+    "hesap_ac": 1
+  },
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/senaryolar/surum2/s2-d6-b.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/senaryolar/surum2/s2-d6-b.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/senaryolar/surum2/s2-d6-b.json --cikti test/bagimsiz/cikti/ham/s2-d6-b.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 14,
+    "commit": "740be0518c71eb92f0cc02c998626c363c060c3a",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "s2-d6-b",
+  "senaryoDosyasi": "test/bagimsiz/senaryolar/surum2/s2-d6-b.json",
+  "sureler": {
+    "a": 0.07,
+    "b": 0.08,
+    "program": 1.04
+  }
+}

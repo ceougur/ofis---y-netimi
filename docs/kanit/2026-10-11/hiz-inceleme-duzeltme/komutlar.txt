@@ -1,0 +1,22 @@
+Hız incelemesi düzeltmeleri (H1–H5, H7, ölçek aracı etiketi) — kanıt kayıtlarının komutları (tools/kanit.mjs kos; KANIT_DIR=bu klasör).
+Kayıtlar 2026-10-11/ altında (*.json: çıkış kodu + sayılar + commit; *.log: ham çıktı).
+
+ESKİ KOD (kırmızı kanıt; ders 23: ayrı kopyada, çalışma ağacında checkout yok):
+  git archive 3c9f8d3 | tar -x -C <eski>; ln -s <depo>/node_modules <eski>/node_modules
+  python3 -I betikler/yama-giris.py <eski>   # YALNIZ sınama girişi: createReportRunner({ entry }) + config.reportWorkerEntry; davranış aynı
+  cp test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/fixtures/rapor-is-parcacigi-sinama.mjs test/liste-kapisi-daha-fazla.test.mjs → <eski>/test/
+  python3 -I betikler/h7-eski-yol.py test/banka-210-hiz-esdegerlik.test.mjs <eski>/test/banka-210-hiz-esdegerlik-h7-eski.test.mjs
+    (yeni casus testi + 3c9f8d3'teki oldPath tanımı)
+  kapanis-eski-3c9f8d3        (cwd <eski>) node --test test/banka-210-rapor-is-parcacigi-kapanis.test.mjs           → 0/5 (H1×2, H2, H3×2 kırmızı)
+  liste-kapisi-eski-3c9f8d3   (cwd <eski>) node --test test/liste-kapisi-daha-fazla.test.mjs                       → 1/4 (eksik h7, bayat liste, 15/300)
+  h7-kahin-eski-yol-3c9f8d3   (cwd <eski>) node --test --test-name-pattern=kâhin test/banka-210-hiz-esdegerlik-h7-eski.test.mjs → 0/1 (periodGroups:1)
+  e2e-daha-fazla-eski-istemci-3c9f8d3 (cwd depo; kayıttaki commit alanı depoyu gösterir, SUNUCU + İSTEMCİ <eski>'den):
+      TUR=3 DEPO=<eski> node test/e2e/banka-210-daha-fazla-yaris.mjs   → 16/31; B/A/C/D/E 15 varyantın 15'i kırmızı, ön koşul hepsinde oluştu
+
+YENİ KOD (dal, 9cb72bc ve sonrası):
+  kapanis-yeni          node --test test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/banka-210-rapor-is-parcacigi.test.mjs
+  liste-kapisi-yeni     node --test test/liste-kapisi-daha-fazla.test.mjs
+  e2e-daha-fazla-yeni   TUR=3 node test/e2e/banka-210-daha-fazla-yaris.mjs
+  npm-test-tamami       npm test (flock /tmp/destekofis-olcum.lock)
+  e2e-*                 npm run test:senaryo-banka-210 / -210b / -210-temel, npm run test:banka-210-ekran-aciklama (flock)
+  e2e-senaryo-222, e2e-senaryo-216  komşu senaryolar (ders 10): liste kapısı kuralları (222) ve Fatura/Banka raporları ekrandan (216)

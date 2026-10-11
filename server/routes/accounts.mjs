@@ -6,6 +6,7 @@
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
 import { randomUUID } from "node:crypto";
 import { methodInput } from "../lib/pay-method.mjs";
+import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -17,6 +18,7 @@ import { readSheetMatrices } from "../lib/sheets.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -30,9 +32,10 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null }) {
-  const now = () => new Date().toISOString();
-  const today = () => isoDay(new Date());
+export function registerAccountRoutes(router, { store, bank, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null, bankModule = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now); sahte saatli testlerde de tek kaynak.
+  const now = () => clock().toISOString();
+  const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const office = () => store.setting("office.name", "");
   const currentSource = () => (dataset?.currentKey ? dataset.currentKey() : "");
@@ -81,7 +84,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   const exists = id => Boolean(id && store.get("SELECT 1 AS found FROM accounts WHERE id = ? AND deleted_at IS NULL", id));
   const entriesOf = accountId =>
     store.all(
-      `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
+      `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
               COALESCE(u.display_name, '') AS actorName
        FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       accountId,
@@ -130,32 +133,45 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const { fieldsJson, ...rest } = item;
     return { ...rest, extra: parseFields(fieldsJson).slice(0, 3) };
   };
-  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "" } = {}) {
-    const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
+  // Arama ve kart süzgeci (listede ve seçici aramasında AYNI kural): durum, tür, grup, alt grup ve arama metni (ad, not, adres, grup, ek
+  // alanlar; telefon ve VKN/TCKN rakamla; Cari No tam). Bakiyeye bakmaz.
+  const searchOf = q => {
+    const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
+    return { needle, numbers: needle.replace(/\D/g, "") };
+  };
+  function rowMatches(row, { status, type, group, subgroup }, { needle, numbers }) {
+    if (status !== "all" && row.status !== status) return false;
+    if (type && row.type !== type) return false;
+    if (group && row.groupId !== group) return false;
+    if (subgroup && row.subgroupId !== subgroup) return false;
+    if (needle) {
+      // Ek alanlar ham JSON metninde aranır (200 bin caride her satırı ayrıştırmadan); ad, not, adres, grup ayrıca.
+      const hay = `${row.name} ${row.note} ${row.address} ${row.city} ${row.district} ${row.taxOffice} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${row.fieldsJson}`.toLocaleLowerCase("tr-TR");
+      // v2.0.15: VKN/TCKN ile de bulunur (faturada cari çoğu zaman vergi numarasıyla aranır).
+      const phoneHit = numbers.length >= 3 && (digits(row.phone).includes(numbers) || (numbers.length >= 5 && String(row.taxNo || "").includes(numbers)));
+      const refHit = String(row.refNo || "").toLocaleLowerCase("tr-TR") === needle;
+      if (!hay.includes(needle) && !phoneHit && !refHit) return false;
+    }
+    return true;
+  }
+  // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu carilerin satırları ve bakiyeleri (kapı dokunulan carileri denetler); hesap her
+  // cari için aynıdır.
+  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null } = {}) {
+    const only = ids ? JSON.stringify([...ids]) : null;
+    // ids: tekli + deleted_at indeksini kapatır (birincil anahtar seçilir; değer aynı).
+    const rows = only ? store.all(`${ACCOUNT_SQL} WHERE +a.deleted_at IS NULL AND a.id IN (SELECT value FROM json_each(?)) ORDER BY a.name COLLATE NOCASE`, only) : store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
     const sums = new Map();
-    for (const row of store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries GROUP BY account_id, kind")) {
+    for (const row of only ? store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries WHERE account_id IN (SELECT value FROM json_each(?)) GROUP BY account_id, kind", only) : store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries GROUP BY account_id, kind")) {
       if (!sums.has(row.accountId)) sums.set(row.accountId, { debt: 0, credit: 0, in: 0, out: 0 });
       sums.get(row.accountId)[row.kind] = Number(row.amount) || 0;
     }
-    const planMap = plans()?.summariesByAccount ? plans().summariesByAccount() : new Map();
-    const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
-    const numbers = needle.replace(/\D/g, "");
+    const planMap = plans()?.summariesByAccount ? plans().summariesByAccount(ids) : new Map();
+    const search = searchOf(q);
     const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0 };
     const labels = new Set();
     const out = [];
     for (const row of rows) {
-      if (status !== "all" && row.status !== status) continue;
-      if (type && row.type !== type) continue;
-      if (group && row.groupId !== group) continue;
-      if (subgroup && row.subgroupId !== subgroup) continue;
-      if (needle) {
-        // Ek alanlar ham JSON metninde aranır (200 bin caride her satırı ayrıştırmadan); ad, not, adres, grup ayrıca.
-        const hay = `${row.name} ${row.note} ${row.address} ${row.city} ${row.district} ${row.taxOffice} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${row.fieldsJson}`.toLocaleLowerCase("tr-TR");
-        // v2.0.15: VKN/TCKN ile de bulunur (faturada cari çoğu zaman vergi numarasıyla aranır).
-        const phoneHit = numbers.length >= 3 && (digits(row.phone).includes(numbers) || (numbers.length >= 5 && String(row.taxNo || "").includes(numbers)));
-        const refHit = String(row.refNo || "").toLocaleLowerCase("tr-TR") === needle;
-        if (!hay.includes(needle) && !phoneHit && !refHit) continue;
-      }
+      if (!rowMatches(row, { status, type, group, subgroup }, search)) continue;
       // Ek alanlar sayfaya girerken ayrıştırılır (200 bin satırda hepsini ayrıştırmak boşuna); etiketler ham metinden.
       if (row.fieldsJson && row.fieldsJson !== "[]") for (const match of row.fieldsJson.matchAll(/"label":"((?:[^"\\]|\\.)*)"/g)) labels.add(JSON.parse(`"${match[1]}"`));
       const sum = sums.get(row.id) || { debt: 0, credit: 0, in: 0, out: 0 };
@@ -258,7 +274,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (row.groupId) counts.set(row.groupId, (counts.get(row.groupId) || 0) + 1);
       if (row.subgroupId) counts.set(row.subgroupId, (counts.get(row.subgroupId) || 0) + 1);
     }
-    const tree = (plans()?.groupTree ? plans().groupTree() : []).map(item => ({ ...item, count: counts.get(item.id) || 0, subgroups: item.subgroups.map(sub => ({ ...sub, count: counts.get(sub.id) || 0 })) }));
+    // ids (kapı): grup ağacı istenmez (bütün kartları sayar; 100.000 satırda ~5 ms/yazım).
+    const tree = (!only && plans()?.groupTree ? plans().groupTree() : []).map(item => ({ ...item, count: counts.get(item.id) || 0, subgroups: item.subgroups.map(sub => ({ ...sub, count: counts.get(sub.id) || 0 })) }));
     return { accounts: out, totals, sort, groups: tree, fieldLabels: [...labels].slice(0, 200), canManage: canUser(user, "accounts.manage"), canCollect: canUser(user, "accounts.collect"), canPlan: canUser(user, "plans.manage"), today: today() };
   }
 
@@ -272,15 +289,31 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const user = auth.requirePermission(req, "accounts.view");
     ok(res, pageOf(list(user, listQuery(url.searchParams)), "accounts", url.searchParams));
   });
+  // Seçici araması (11.10.2026 hız düzeltmesi; plan §3.11 madde 5 "arama < 1 sn"): eşleşen cariler listedeki kuralla (rowMatches) ve listedeki
+  // sırayla (Cari No, ad) bulunur; bakiye ve taksit özeti YALNIZ gösterilecek ilk `limit` cari için hesaplanır (list'in ids kipi — kapının
+  // da kullandığı, cari başına aynı hesap). Önceden her harfte bütün carilerin hareket toplamları ve taksit özetleri kuruluyordu (100.000 para
+  // satırında istek başına ~0,3 sn; çok kullanıcıda saniyeler). Sonuç aynı.
+  function searchAccounts(user, { q = "", type = "", prefer = "", limit = 20 } = {}) {
+    const search = searchOf(q);
+    const byName = (a, b) => collator.compare(a.name, b.name);
+    const matched = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`)
+      .filter(row => rowMatches(row, { status: "all", type, group: "", subgroup: "" }, search))
+      .map(row => ({ id: row.id, refNo: row.refNo || "", name: row.name, type: row.type }))
+      .sort((a, b) => refCompare(a, b) || byName(a, b));
+    // v2.0.17 (müşteri: çek cirosunda cari bulunmuyor): tür KISITI yerine "prefer" — o türdekiler üstte, bütün cariler listede
+    // (müşteriye de ciro edilir: borç ödemesi, mal alımı). Ciro, tahsil/ödeme ve teminat seçicileri bunu kullanır.
+    if (prefer) matched.sort((a, b) => Number(b.type === prefer) - Number(a.type === prefer));
+    const top = matched.slice(0, limit);
+    if (!top.length) return [];
+    const byId = new Map(list(user, { q, status: "all", type, ids: top.map(item => item.id) }).accounts.map(item => [item.id, item]));
+    return top.map(item => byId.get(item.id)).filter(Boolean);
+  }
   // Seçici (taksit kartı formu, stok hareketi): hafif arama, en çok 20 sonuç.
   router.get("/api/workspace/accounts/search", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
-    const data = list(user, { q: text(url.searchParams.get("q")).slice(0, 120), status: "all", type: isAccountType(text(url.searchParams.get("type"))) ? text(url.searchParams.get("type")) : "" });
-    // v2.0.17 (müşteri: çek cirosunda cari bulunmuyor): tür KISITI yerine "prefer" — o türdekiler üstte, bütün cariler listede
-    // (müşteriye de ciro edilir: borç ödemesi, mal alımı). Ciro, tahsil/ödeme ve teminat seçicileri bunu kullanır.
     const prefer = isAccountType(text(url.searchParams.get("prefer"))) ? text(url.searchParams.get("prefer")) : "";
-    if (prefer) data.accounts.sort((a, b) => Number(b.type === prefer) - Number(a.type === prefer));
-    ok(res, data.accounts.slice(0, 20).map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, registeredOn: item.registeredOn || "", groupId: item.groupId || "", subgroupId: item.subgroupId || "", groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status, caseKey: item.caseKey || "", caseSource: item.caseSource || "", caseTitle: item.caseTitle || "" })));
+    const found = searchAccounts(user, { q: text(url.searchParams.get("q")).slice(0, 120), type: isAccountType(text(url.searchParams.get("type"))) ? text(url.searchParams.get("type")) : "", prefer });
+    ok(res, found.map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, registeredOn: item.registeredOn || "", groupId: item.groupId || "", subgroupId: item.subgroupId || "", groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status, caseKey: item.caseKey || "", caseSource: item.caseSource || "", caseTitle: item.caseTitle || "" })));
   });
 
   // ---------- Yazma ----------
@@ -480,6 +513,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
     const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
     if (invoiceCount) throw new HttpError(409, `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, { code: "account-has-invoices" });
+    // v2.1.0 Aşama 5 (plan §3.8 "Cari kartı"): banka hesabına bağlı hareketi olan cari silinmez (silinirse hareket banka hesabından düşer,
+    // banka bakiyesi bankadakinden ayrılırdı). Pasife Al önerilir.
+    const bankLinked = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ? AND fin_ref <> ''", account.id).n;
+    if (bankLinked) throw new HttpError(409, `Bu carinin banka hesabına bağlı ${bankLinked} hareketi var; cari silinirse banka hesabının bakiyesi değişirdi. Cariyi pasife alın (hareketleri korunur).`, { code: "account-bank-linked", count: bankLinked });
     // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer). Silinen carinin
     // tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
     assertUnlocked(account.id, "silinemez");
@@ -523,14 +560,22 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     store.setSetting("plans.receiptSeq", String(current + 1));
     return current + 1;
   };
-  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "" }) {
+  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "" }) {
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
     const receiptNo = kind === "in" && source !== "stock" && source !== "invoice" ? receiptNumber() : null;
+    const way = methodInput(method);
+    // v2.1.0 (bank.post): tahsilat/ödeme (para satırı) İşlem No'lu işlem başlığı alır; Borç Yaz / Alacak Yaz, açılış, fatura borcu ve
+    // stoktan gelen satır para satırı değildir (olay yok). Para satırı yalnız bank.post'un write geri çağrısında yazılır (K6).
+    // keepEvent (gözden geçirme D2): fatura düzenlenirken özeti (yön, tutar, yol, tarih) aynı kalan peşin satır eski işlem başlığıyla yeniden
+    // yazılır (İşlem No değişmez); bank.post satırı kalmayan olayı iptal eder, satırı geri gelen olayı yeniden etkin yapar.
+    const eventId = bank.eventFor("account_entries", { kind, source, date, method: way, event_id: keepEvent, fin_ref: finRef });
+    // finRef (v2.1.0 Aşama 4): banka hesabına bağlı satır (şimdilik yalnız Banka → KDV'li masrafın faturasının havale ödemesi; modül formlarındaki
+    // hesap seçimi Aşama 5/7).
     store.run(
-      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, methodInput(method), invoiceId || "", user.id, now(),
+      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, way, invoiceId || "", finRef || "", eventId, user.id, now(),
     );
     return { id, receiptNo };
   }
@@ -563,7 +608,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || "") };
   };
   const entryOf = (accountId, entryId) => {
-    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, created_by AS createdBy, created_at AS createdAt FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
@@ -574,6 +619,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   const requireEntryRight = (user, entry) => {
     if (entry.source === "stock") throw new HttpError(409, "Bu hareket bir stok hareketinden geldi; Stok'taki hareketten düzeltin ya da silin.");
     if (entry.source === "invoice") throw new HttpError(409, "Bu hareket bir faturadan geldi; Fatura ekranından iptal edin ya da iade faturası kesin.", { code: "invoice-linked", invoiceId: entry.sourceId });
+    if (entry.source === "bank") throw new HttpError(409, "Bu hareket Banka penceresinden geldi; Banka → Hareketler'deki işlemden düzeltin (Ters Kaydet ya da Düzelt).", { code: "bank-linked", eventId: entry.eventId || "" });
     if (entry.source === "cheque") throw new HttpError(409, "Bu hareket bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (geri al ya da sil).", { code: "cheque-linked", chequeId: entry.sourceId });
     if (entry.createdBy !== user.id && !canUser(user, "accounts.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
     requireKindRight(user, entry.kind);
@@ -606,21 +652,60 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (amountChanged && next.amount < used - 0.005) throw new HttpError(409, `${head} Tutar mahsup edilenden (${tl(used)}) az olamaz; önce mahsubu kaldırın ya da azaltın: ${how}.`, { code: "offset-linked", used });
     if (next.date !== previous.date && next.date > offsets[0].date) throw new HttpError(409, `${head} Tarih mahsup tarihinden (${dayText(offsets[0].date)}) sonra olamaz; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
   }
+  // v2.1.0 Aşama 5 (plan §3.5, §3.9, §3.10): havale/EFT tahsilat ve ödemesinin banka hesabı (fin_ref; tek hesapta kendiliğinden, birden çokta
+  // seçim zorunlu), kalıcı istek kimliği (x-hof-request: aynı istek ikinci kez yazılmaz), Benzer İşlem (hesaba bağlı satırda; similarOk),
+  // hesap bazında eksi bakiye (K7; Bakiye Doğrulandı hesapta Uyar/Engelle; onay cashForce ya da negativeOk). Nakit satır bugünkü kuralla (Kasa eksi bakiye).
+  const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
+  const banking = () => bankModule?.() || null;
+  const isMoney = kind => kind === "in" || kind === "out";
+  // Bankadan çıkış (havale ödemesi) "Banka Hareketi Girme ve Bankadan Çıkış" ister (plan §3.7 #3, §9.1); hesapsız eski kurulumda bugünkü gibi.
+  const requireBankOut = (user, kind, ref) => {
+    if (kind === "out" && ref && !canUser(user, "bank.move")) throw new HttpError(403, "Bankadan ödeme için \"Banka Hareketi Girme ve Bankadan Çıkış\" yetkisi gerekir.", { code: "bank-permission", permission: "bank.move" });
+  };
+  const refOf = (input, body, previous = null) => {
+    const module = banking();
+    if (!module || !isMoney(input.kind)) return "";
+    const changed = !previous || previous.method !== input.method || Math.abs(roundMoney(previous.amount) - roundMoney(input.amount)) > 0.004 || previous.date !== input.date;
+    // K2 (plan §3.7 #3, §4.6): cari ödemesinde kart yolu kurumsal kartla ödemedir (309); tahsilatta POS (2.2.0).
+    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: input.kind === "out" });
+  };
+  const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
+  // Hakem K5: onay cashForce (plan §3.9) ya da eşanlamlı negativeOk (module-ref.mjs negativeConfirmed).
+  const negativeForced = (body, url) => negativeConfirmed(body, url);
   router.post("/api/workspace/accounts/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const account = accountRow(params.id);
     const body = await readJson(req);
     const input = entryInput(body, account.id);
     requireKindRight(user, input.kind);
-    if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
-    const created = store.tx(() => {
-      const entry = addEntry(user, account.id, input);
-      audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, receiptNo: entry.receiptNo });
-      return entry;
+    const finRef = refOf(input, body);
+    requireBankOut(user, input.kind, finRef);
+    const k7 = negativeOf([finRef], input.date, negativeForced(body));
+    const created = bank.post({
+      user,
+      module: "account",
+      op: "create",
+      requestId: requestIdOf(req, body),
+      scope: "account.entry.create",
+      body: { ...body, accountId: account.id },
+      similarOk: body.similarOk === true,
+      // Hakem K4 (plan §3.3 sırası "1 istek kimliği → 2 prepare", C12 "eksi bakiye işlemin içindedir"): Kasa ön denetimi istek kimliği bakışından
+      // SONRA. Önceden önce çalışıyordu: Kasa'yı 0'a indiren ödemenin yinelemesi kaydedilmiş ödemeye 409 "Kasa eksiye düşer" diyordu.
+      prepare: () => {
+        if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+      },
+      write: () => {
+        k7.capture();
+        const entry = addEntry(user, account.id, { ...input, finRef });
+        audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, receiptNo: entry.receiptNo });
+        return entry;
+      },
+      guard: k7.guard,
     });
+    k7.prime(created);
     touched(user, account);
-    if (input.kind === "in" || input.kind === "out") changed(user, { kind: "cash" });
-    ok(res, { ...detail(account.id, user), entryId: created.id });
+    if (isMoney(input.kind) && !created?.replayed) changed(user, { kind: "cash" });
+    ok(res, { ...detail(account.id, user), entryId: created?.replayed ? created.refId : created.id, ...(created?.replayed ? { replayed: true } : {}) });
   });
   router.put("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
@@ -633,15 +718,32 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
     const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
     assertOffsetFree(previous, input);
+    const finRef = refOf(input, body, previous);
+    if (finRef !== previous.finRef) requireBankOut(user, input.kind, finRef);
     const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
-    store.tx(() => {
-      store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, user.id, now(), previous.id);
-      audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input });
+    const k7 = negativeOf([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, negativeForced(body));
+    const result = bank.post({
+      user,
+      module: "account",
+      op: "update",
+      prev: previous,
+      requestId: requestIdOf(req, body),
+      scope: "account.entry.update",
+      body: { ...body, entryId: previous.id },
+      write: () => {
+        k7.capture();
+        const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef });
+        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, user.id, now(), previous.id);
+        audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
+        return { id: previous.id };
+      },
+      guard: k7.guard,
     });
+    k7.prime(result);
     touched(user, account);
     changed(user, { kind: "cash" });
-    ok(res, detail(account.id, user));
+    ok(res, { ...detail(account.id, user), ...(result?.replayed ? { replayed: true } : {}) });
   });
   router.delete("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
@@ -651,11 +753,22 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     period?.assertOpen(previous.date, "Bu cari hareketi");
     assertOffsetFree(previous);
     if (previous.kind === "in" || previous.kind === "out") cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1", previous.kind === "in" ? "Bu tahsilat silinince" : "Bu ödeme silinince");
-    store.tx(() => {
-      store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
-      trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, accountId: account.id, accountName: account.name }, user });
-      audit(user, "account.entry.deleted", previous.id, { accountId: account.id, ...previous });
+    const k7 = negativeOf([previous.finRef], previous.date, negativeForced(null, url));
+    const result = bank.post({
+      user,
+      module: "account",
+      op: "delete",
+      prev: previous,
+      write: () => {
+        k7.capture();
+        store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
+        trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, accountId: account.id, accountName: account.name }, user });
+        audit(user, "account.entry.deleted", previous.id, { accountId: account.id, ...previous });
+        return { id: previous.id };
+      },
+      guard: k7.guard,
     });
+    k7.prime(result);
     touched(user, account);
     changed(user, { kind: "cash" });
     ok(res, detail(account.id, user));
@@ -668,6 +781,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = detail(params.id, user);
     const t = account.totals;
     const pdf = tablePdf({
+      now: clock(),
       title: `Cari Ekstre · ${account.name}`,
       subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", ACCOUNT_TYPES[account.type], [account.groupName, account.subgroupName].filter(Boolean).join(" › "), account.phone, account.address].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
@@ -689,7 +803,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const pdf = receiptPdf(
       { name: account.name, refNo: account.refNo, refLabel: "Cari No", phone: account.phone, groupName: account.groupName, subgroupName: account.subgroupName, items: [], balanceOnly: true, totals: { total: account.totals.debit, paid: account.totals.collected, remaining: account.totals.balance } },
       { ...entry, label: entry.kind === "in" ? "Cari tahsilat" : "Cariye ödeme" },
-      { officeName: office(), userName: user.display_name || user.username || "" },
+      { officeName: office(), userName: user.display_name || user.username || "", now: clock() },
     );
     sendBuffer(res, pdf, { type: "application/pdf", name: `Makbuz ${entry.receiptNo ? `No ${entry.receiptNo} ` : ""}${account.name} ${dayText(entry.date)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
@@ -704,7 +818,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (clipped) data.accounts = data.accounts.slice(0, PDF_ROWS);
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
     const pdf = tablePdf({
-      title: `${title} listesi`,
+      now: clock(),
+      title: `${title} Listesi`,
       subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Bilgi Notu"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
@@ -749,7 +864,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       return row;
     });
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
-    const buffer = buildXlsx([{ name: title.slice(0, 31), columns: [...base, ...extras], rows }], { title: `${title} listesi` });
+    const buffer = buildXlsx([{ name: title.slice(0, 31), columns: [...base, ...extras], rows }], { now: clock(), title: `${title} Listesi` });
     audit(user, "account.list.exported", "xlsx", { ...query, count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-listesi ${dayText(today())}.xlsx` });
   });
@@ -1114,23 +1229,18 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     for (const row of rows) lines.set(row.id, accountLedger(entries.get(row.id) || [], planMap.get(row.id) || []).lines);
     return { accounts: rows, lines };
   }
-  // Kasa: cari tahsilatları (giriş) ve ödemeleri (çıkış). Silinen carinin hareketi Kasa'dan düşer (taksit kartıyla aynı).
-  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
-  const cashSource = { table: "account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL", where: "e.kind IN ('in', 'out') AND e.source = ''", kind: "e.kind", amount: "e.amount", date: "e.date", method: "e.method" };
-  const cashEntries = (after = "") =>
-    store.all(
-      `SELECT e.id, e.kind, 'account' AS source, e.method, e.amount, e.date, e.note AS description, e.account_id AS accountId, a.name AS accountName,
-              e.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, e.created_at AS createdAt, e.updated_at AS updatedAt
-       FROM ${cashSource.table} LEFT JOIN users u ON u.id = e.created_by
-       WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
-      ...(after ? [after] : []),
-    );
+  // Kasa (v2.1.0, K5): cari tahsilat ve ödemeleri Kasa'ya tek kaynaktan (lib/bank/money-lines.mjs, kaynak 3) düşer; silinen carinin
+  // hareketi orada da düşer.
   // Stok hareketi cariye yazılınca (routes/stock.mjs): borç/alacak satırı stok hareketine bağlı açılır, düzeltilir, silinir.
   const stockEntry = {
     upsert(user, move, { accountId, kind, amount, date, note }) {
+      // Açık hesaba yazılan stok hareketinin cari borcu/alacağı para satırı değildir (Kasa'yı değiştirmez).
       const existing = store.get("SELECT id FROM account_entries WHERE source = 'stock' AND source_id = ?", move);
+      let id = existing?.id;
       if (existing) store.run("UPDATE account_entries SET account_id = ?, kind = ?, amount = ?, date = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ?", accountId, kind, amount, date, note, user.id, now(), existing.id);
-      else addEntry(user, accountId, { kind, amount, date, note, source: "stock", sourceId: move });
+      else id = addEntry(user, accountId, { kind, amount, date, note, source: "stock", sourceId: move }).id;
+      // Yazılan satırın kendisi denetlenir (gözden geçirme D10).
+      bank.assertWrittenNonMoney("account_entries", id);
     },
     remove(move) {
       const existing = store.get("SELECT account_id AS accountId FROM account_entries WHERE source = 'stock' AND source_id = ?", move);
@@ -1161,8 +1271,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   // v2.0.15: faturadan doğan cari satırları (borç/alacak + varsa peşin tahsilat/ödeme). source = 'invoice', source_id = fatura.
   // Kasa'ya etkisi fatura modülünün kendi kaynağından gelir (routes/invoices.mjs cashSource); cari kartından düzeltilemez.
   const invoiceEntry = {
-    add(user, accountId, { kind, amount, date, note, invoiceId, method = "cash" }) {
-      return addEntry(user, accountId, { kind, amount, date, note, source: "invoice", sourceId: invoiceId, method });
+    add(user, accountId, { kind, amount, date, note, invoiceId, method = "cash", eventId = "", finRef = "" }) {
+      return addEntry(user, accountId, { kind, amount, date, note, source: "invoice", sourceId: invoiceId, method, eventId, finRef });
     },
     removeFor(invoiceId) {
       return store.run("DELETE FROM account_entries WHERE source = 'invoice' AND source_id = ?", invoiceId).changes;
@@ -1200,7 +1310,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     changed(user, { kind: "cash" });
     return `“${account.name}” carisi geri geldi.`;
   }
-  function restoreEntry(user, item, payload) {
+  function restoreEntry(user, item, payload, { force = false, banking = null } = {}) {
     if (!KIND_TEXT[payload.kind]) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
     const account = store.get("SELECT id, deleted_at AS deletedAt FROM accounts WHERE id = ?", payload.accountId);
     if (!account) throw new HttpError(409, "Hareketin carisi artık yok; geri yüklenemez.");
@@ -1222,16 +1332,31 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         invoiceId = "";
       }
     }
-    store.tx(() => {
-      if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
-        store.run(
-          "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?)",
-          item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
-        );
-      }
-      trash.markRestored(item.id, user);
-      audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount, date: payload.date, method, invoiceId, droppedInvoice: payload.invoiceId && !invoiceId ? payload.invoiceId : "" });
+    // v2.1.0 (bank.post op 'restore'): para satırı silinmeden önceki işlem başlığıyla döner (olay yeniden etkin). GG2 (K13/7): banka hesabı
+    // bağıyla döner (önceden bağ düşüyor, tutar hesaptan Hesabı Atanmamış'a geçiyordu); hesap silinmişse bağsız döner ve söylenir.
+    const kept = ["in", "out"].includes(payload.kind) ? bank.keepRef(payload.finRef, { method, date: payload.date }) : { ref: "", dropped: "" };
+    // Yargıç K2 (plan §3.8, §9.2/7, §3.9): banka bağlı satırda kaynak modül yetkisi + bank.move, pasif hesap 400, K7 son durumla.
+    const k7 = banking?.restore(user, { refs: [kept.ref], date: payload.date, force, permission: payload.kind === "in" ? "accounts.collect" : "accounts.manage" }) || { capture() {}, guard: null, prime() {} };
+    const result = bank.post({
+      user,
+      module: "account",
+      op: "restore",
+      prev: payload,
+      guard: k7.guard,
+      write: () => {
+        k7.capture();
+        if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
+          store.run(
+            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?)",
+            item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, kept.ref,
+            bank.eventFor("account_entries", { kind: payload.kind, source: "", date: payload.date, method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+          );
+        }
+        trash.markRestored(item.id, user);
+        audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount, date: payload.date, method, invoiceId, droppedInvoice: payload.invoiceId && !invoiceId ? payload.invoiceId : "" });
+      },
     });
+    k7.prime(result);
     changed(user, { accountId: account.id });
     changed(user, { kind: "cash" });
     if (payload.invoiceId && !invoiceId) {
@@ -1240,8 +1365,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       const why = !dropped ? "silindiği için" : dropped.status === "cancelled" ? "iptal edildiği için" : dropped.status !== "issued" ? "kaydedilmiş olmadığı için" : dropped.planId ? "taksitli olduğu (kendi taksit kartıyla kapandığı) için" : "artık bu hareketle kapatılamadığı için";
       return `Cari hareketi geri eklendi. Bağlı olduğu ${dropped?.number ? `${dropped.number} faturası` : "fatura"} ${why} faturaya bağlanmadı; otomatik kapamaya girer.`;
     }
-    return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
+    return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
+  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
 }

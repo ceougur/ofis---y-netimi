@@ -25,6 +25,143 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
     sayılar → yeniden çalış); eski sürümlerden zincirleme göç; arıza (kesinti, disk dolu, kilitli dosya).
   - Her sürümde bağımsız gözden geçirme (ayrı ajan, yalnız hata arar).
   - Teslimde üç başlık: DENENEN, DENENMEYEN, BİLİNEN SINIRLAR. "Testler sorunsuz" tek başına yazılmaz.
+- (10.10.2026, kullanıcı: "bir testteki işlem adedi ve tekrar kısıtı kaldıysa bu kısıtları da kaldır, plana tam uy!") Test
+  hacminde ve tekrar sayısında KISIT YOK; plan (`docs/BANKA-MODULU-PLAN.md` §10.7, Aşama 16) ALT sınırdır, altına inilmez:
+  `test:mutabakat` varsayılanı 5.000 işlem × 2 tohum (önceden 2.000 × 1 — plan altındaydı); 2.1.0 son doğrulamasında 5.000 × 10
+  tohum + 20.000 işlemlik uzun koşu (her işlemde doğrulama); `test:guvenilirlik` 10.000 işlem × 5 tohum × iki taban; Aşama 16
+  ölçeği (10/20/30 eşzamanlı kullanıcı, 100.000 ve 1.000.000 para satırı, 2 şirket, yedekleme sırasında yük; sunucu + ekran);
+  BÜTÜN arayüz senaryoları (senaryo-whatsapp ve ui-ux-217 dahil, atlanmaz); kabul adımları ekrandan. Süre kısıt sayılmaz.
+- (10.10.2026, kullanıcı önerisi "20.000 işlemlik testler devasa yük; ölçek ve güvenilirlik testlerini azaltalım, paket tesliminden önceye
+  erteleyelim" — karar baş mimara bırakıldı) KARAR: AĞIR KOŞULAR YALNIZ SON ADAYDA, BİR KEZ, GitHub'da (Uzun Doğrulama iş akışı; geliştirme
+  makinesine yük yok, ücretsiz): mutabakat 5.000 × 10 tohum + Windows; TEK SIRALI UZUN mutabakat 20.000 → 10.000 işlem (her işlemde
+  doğrulama; 6 saatlik iş sınırına sığar; 10 × 5.000 farklı sıra + 10 × 10.000 güvenilirlik zaten 150.000+ işlem kapsıyor); güvenilirlik
+  10.000 × 5 × 2 aynen. ÖLÇEK: temel sürümde son adayda bir kez 10 ve 20 eşzamanlı kullanıcı, 100.000 para satırı, 2 şirket, yedekleme
+  sırasında yük (sunucu + ekran); 30 kullanıcı ve 1.000.000 satır planlı 16.10 ölçek testine (1M kapı/uç ölçümleri Aşama 2–4'te var).
+  ARA AŞAMALAR: CI (4 platform + e2e) + değişen alanın testleri + kırmızı/yeşil kanıt; ara uzun koşu yok. Plan alt sınırı (5.000 × 2)
+  son adayda karşılanır (5.000 × 10 ⊃ 5.000 × 2). Uzun Doğrulama #2 (ara kod) bitmesine bırakıldı: ücretsiz, yerel yük yok, son koşunun
+  süresini ölçer.
+- (10.10.2026, kullanıcı: "ajanların birbirlerinin sonuçlarını doğrulaması tek başına yeterli değil; aynı yanlış varsayıma
+  dayanabilirler; bağımsız ve tekrarlanabilir testlerin yerini tutmaz") KANIT KURALI — bir iş ancak şunlarla "bitti" sayılır:
+  1. BAĞIMSIZ KOŞUCU: GitHub CI (Linux + WINDOWS × Node 22/24 + Chromium e2e) o commit'te YEŞİL; sonucu ana oturum kendisi okur
+     (ajan raporu kanıt değil). DERS: CI'nin Windows işi 08.10 e10f598'den 10.10'a kadar 34 koşu kırmızıydı (testlerde
+     import(path.join) Windows'ta yüklenmiyordu), ajanlar "npm test geçti" (yalnız Linux) dedi, kimse bakmadı (düzeltme d9b1044).
+  2. AJANDAN BAĞIMSIZ BEKLENEN (kâhin): planın/talimatın önceden yazılmış sayıları (§12.5 kabul, aşama satırları), programın
+     kodunu GÖRMEDEN plandan yazılmış ayrı dilde (Python) "temiz oda" modeli, eski sürümün gerçek kodu (fark testi). Programla aynı
+     elden çıkan model tek başına kâhin sayılmaz (DERS: Canlı Hata 2'de mutabakat modeli programla aynı yanlış formülü taşıyordu).
+  3. TESTİN DİŞİ VAR MI: kırmızı kanıt (eski kodda kırmızı) + para çekirdeğinde MUTASYON testi (bilerek hata enjekte → testler
+     yakalamalı; yakalanmayan mutasyon = eksik test).
+  4. TEKRARLANABİLİRLİK: tohumlu koşular, komut + tohum + commit + ham çıktı dosyası depoda (docs/kanit/…); ana oturum en az bir
+     kez kendisi yeniden koşar.
+  5. İNSAN: yayından önce kullanıcıya kısa elle kabul listesi (adım + beklenen sayı) verilir; kullanıcı kendi ekranında doğrular.
+  ZORUNLU GÖREV (kullanıcı, 10.10.2026, "CI başarısızlıklarını gider, Windows uyumluluğunu doğrula ve denetim sistemini düzelt";
+  8 başlık): CI'yi gerçekten yeşile getir (Windows ayrı doğrulanır; gerçek Windows erişimi yalnız GitHub CI — yerelde yok, Wine
+  sayılmaz); 08.10'dan beri kırmızı koşuları commit commit incele; ajan raporlarını CI ile karşılaştır; kalıcı önlem (gerçek çıkış
+  kodu + sayılar, belirsiz/yarıda kalan açıkça, ajan onayı bağımsız değil, CI kırmızıyken "doğrulandı" yok, çelişki = başarısız);
+  muhasebe bütünlüğünü yeniden doğrula (Kasa/cari/taksit/fatura/stok/banka bağı, silme/iptal/düzeltme, kuruş/sıfır/eksi/büyük
+  tutar, çift işlem, eşzamanlılık, mutabakat, yedek/geri yükleme, gerileme); her hata: üret → kök neden → en küçük düzeltme →
+  ilgili + gerileme + tam paket → gerçek sonuç kaydı; son rapor 8 başlık (Linux ve Windows AYRI; başarısız/atlanan/doğrulanmayan).
+
+### Doğrulama kapısı — teknik zorunluluk (kullanıcı, 10.10.2026: "ajanların başarılı rapor vermesini engelleyen, gerçek test
+sonuçlarına dayalı teknik bir zorunluluk var mı, yoksa yalnız talimatlara mı güveniyoruz? kod ve CI yapılandırmasıyla kanıtla, eksik
+mekanizmayı uygula, Windows'taki gerçek CI sonucuyla doğrula")
+- Durum (10.10.2026 öncesi, koddan): YOKTU. ci.yml hiçbir şeyi durdurmuyordu (yalnız `package` needs test+e2e); release.yml testleri
+  yalnız ubuntu'da koşuyordu (Windows npm test yayını durdurmuyordu); tools/release.mjs hiç denetim yapmıyordu; master'da kural seti
+  yok (API `rulesets` → []), klasik dal koruması bu oturumun yetkisiyle okunamıyor (403); depoda Claude Code kancası yoktu.
+- Kurulan: (1) ci.yml → her test adımı `tools/kanit.mjs kos` ile (çıkış kodu + sayılar; çelişki/özetsiz/0 test = kırmızı), kayıtlar
+  yüklenir; "Doğrulama Kapısı" işi needs sonuçlarını + kayıtları okur: 4 platform (Linux/Windows × Node 22/24) + bütün e2e bu commit'te
+  GEÇTİ, Linux ve Windows AYNI sayıda test, atlanan test yok; `package` kapıya bağlı. (2) `tools/kanit.mjs ci <sha>` → yalnız ci.yml,
+  kapı işi yeşil değilse YEŞİL demez. (3) tools/release.mjs → temiz ağaç + CI YEŞİL değilse imzalı paket ÜRETMEZ (atlatma yok).
+  (4) release.yml → yayımdan önce `kanit.mjs ci "$GITHUB_SHA" --bekle 90`. (5) `.claude/settings.json` Stop + SubagentStop kancası → durum
+  yeşil değilse yanıtı bir kez durdurur, makine durumunu (CI işleri, gönderilmemiş commit, değişmiş dosya; ajanda kendi worktree'si)
+  modele dayatır.
+- Sınır (dürüst): kanca ve yerel araç, kodu değiştirebilen biri tarafından değiştirilebilir (değişiklik git geçmişinde görünür).
+  Sunucu tarafında bağlayıcı olan tek şey master için "Doğrulama Kapısı" zorunlu durum denetimi (GitHub → Settings → Rules) —
+  bunu yalnız depo sahibi açabilir (bu oturumun belirteci yönetim yetkisine sahip değil, 403).
+  Kullanıcı (10.10.2026: "link ver yapmaya çalışayım") → kural seti bağlantısı + adımlar verildi (ad "Doğrulama Kapısı", hedef
+  varsayılan dal, atlatma listesi BOŞ, PR zorunlu, durum denetimi "Doğrulama Kapısı" kaynağı GitHub Actions). Kullanıcı "yaptım"
+  deyince `gh api repos/ceougur/ofis---y-netimi/rulesets` ve `…/rules/branches/master` ile okunup doğrulanır.
+  AÇILDI (kullanıcı, 10.10.2026 09:34 UTC; API'den okundu): kural seti 24836150 "Doğrulama Kapısı", enforcement active, hedef
+  ~DEFAULT_BRANCH (yalnız master), bypass_actors [] ve bu oturum için current_user_can_bypass "never"; kurallar: deletion,
+  non_fast_forward, pull_request (0 onay), required_status_checks [Doğrulama Kapısı] strict. Çalışma dalında kural 0 (push sürer).
+  KAYNAK (kullanıcı, 10.10.2026 09:42 UTC; API'den okundu): required_status_checks [{context "Doğrulama Kapısı", integration_id
+  15368 = GitHub Actions}] — başka uygulama aynı adla durum gönderip kapıyı geçemez. İlk kapı koşusu (CI 474, 180a8a5) gerçek
+  Windows hatasında GEÇMEDİ dedi (Linux 1763/1763, Windows 1760/1763).
+  KARAR (kullanıcı, 10.10.2026): ağ erişim ayarı (*.blob.core.windows.net) EKLENMEZ — tam CI günlüğü ve kanıt dosyaları (artifact)
+  indirilemez; alternatif yol: kanıt aracı başarısız testlerin adını/yerini/hatasını çıktının SONUNA ve kapı özetine yazar, GitHub
+  aracından son 5.000 satır + kapı tablosu okunur; ilk 5.000 satırın dışında kalan bilgi "okunamadı" diye yazılır (ders 4).
+
+### Geçmiş test hatalarından dersler (kullanıcı, 10.10.2026: "bundan sonraki testlerde geçmişte yapılan hatalardan ders alalım")
+Her test planı bu listeden geçirilerek yazılır; teslimdeki DENENEN/DENENMEYEN bölümü hangi maddelerin uygulandığını söyler.
+Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir yasaktır, öneri değil.
+1. YALNIZ LİNUX "GEÇTİ" DEĞİLDİR. CI'nin BÜTÜN işleri (Linux, Windows × Node 22/24, e2e, paket) ana oturumca okunur; biri kırmızı
+   ya da sürüyorsa "doğrulandı" denmez. (Windows 34 koşu kırmızı kaldı, 08–10.10; `test/platform-tasinabilirlik.test.mjs`.)
+2. ÇIKIŞ KODU VE SAYI. Sonuç, komutun gerçek çıkış kodu + `# tests/pass/fail/cancelled/skipped/todo` satırlarından okunur; boru
+   (`| tail`) arkasındaki `$?` kuyruğun kodudur, kanıt değil (çıktı dosyaya yazılır, kod ayrıca alınır). tests = 0, cancelled > 0,
+   yarıda kalan koşu = BAŞARISIZ/BELİRSİZ, "geçti" yazılmaz. ARAÇ: `node tools/kanit.mjs kos <ad> -- <komut>` (çıkış kodu + sayılar +
+   ham çıktı + commit/platform → `docs/kanit/<gün>/`; çıkış ile özet çelişirse ÇELİŞKİ), `node tools/kanit.mjs ci <commit>` (CI'nin
+   bütün işleri; biri sürüyor/atlanmış/kırmızıysa yeşil DEĞİL), `node tools/kanit.mjs ozet` (biri geçmediyse çıkış 1).
+3. REDDEDİLEN İSTEK BAŞARI DEĞİLDİR. Her adımda yanıt kodu + gövdesi + veri tabanındaki sayı okunur. (Excel denetimi 04.10: salt
+   okunur lisansla hiçbir kayıt girilmedi, test "✅" saydı, uydurma mali rapor teslim edildi.)
+4. OKUNAMAYAN VERİ "BOŞ" DEĞİLDİR. Günlük/dosya okunamadıysa tablo "bilinmiyor" der; boş sonuç başarı sayılmaz. (10.10: CI günlüğü
+   403 → boş başarısızlık tablosu üretildi.)
+5. KÂHİN BAĞIMSIZ OLUR. Beklenen sayı programın kodundan ya da onu yazan elden türetilmez (Canlı Hata 2: mutabakat modeli programla
+   aynı yanlış formülü taşıyıp hatayı 3 sürüm gizledi). Programın kendi "Mutabakat Testi tamam" demesi de kanıt değildir
+   (Taksite Aktar → sil → geri al → geri yükle: Kasa çift, Mutabakat Testi "tamam").
+6. UYUŞMAZLIK ÖNCE HATADIR. Fark çıkınca "bilinen sınır/kural farkı" demeden önce yeniden üretilir, eski sürümün gerçek koduyla
+   karşılaştırılır, kök neden yazılır. (Mutabakat tohum 1 önce "K8 sınırı" sanıldı; Canlı Hata 2 çıktı, 2.0.24–26'da canlı.)
+7. TESTİN DİŞİ. Her yeni test eski kodda kırmızı görülür; kırmızısı görülmeyen test kanıt sayılmaz. Para çekirdeğinde mutasyon.
+8. BÜTÜN SENARYOLAR KOŞULUR. CI'de olmayan arayüz senaryosu elle koşulur, sonucu yazılır; atlanan senaryo adıyla DENENMEYEN'e
+   yazılır. (senaryo-213 CI'de olmadığı için 2.0.21'den beri kırıktı; 2.0.26'da senaryo-whatsapp/ui-ux-217 koşulmadı.)
+9. DEĞİŞEN KODUN BÜTÜN YOLLARI. Kod kaldırılınca/değişince o koda dokunan her arayüz yolu (toplu yükleme, Excel/Sheets, toplu
+   işlem, geri yükleme) koşulur. (2.0.18 Tablodan Al kalkınca Excel cari yükleme ReferenceError → 2.0.19.)
+10. DÜZELTMENİN KOMŞULARI. Düzeltmeden sonra aynı formülü kullanan komşu senaryolar da denenir (2.0.24 G1: iade düzeltmesi
+    paralı iadede kartı küçültmeye başladı; Canlı Hata 2 de G1 düzeltmesinin gerilemesiydi).
+11. HER SÜZGEÇ, HER SEÇENEK. Rapor yalnız varsayılan süzgeçle açılmaz; her süzgeç seçeneği ve toplam = satırlar. (Banka ve POS
+    "Yol" süzgeci 2.0.17'den 2.0.23'e hiç çalışmadı; senaryo yalnız varsayılanı açıyordu.)
+12. İNSAN HIZI VE KLAVYE. Form testleri gerçek tıklama + Tab + insan hızında yazımla da koşulur; "veri bozulmaz" iddiası kayıttan
+    sonra veri tabanı okunarak verilir. (Fatura ödeme alanı: Tab ile girilen senet sessizce kayboluyordu; ilk raporda "veri
+    bozulmaz" yanlış yazıldı.)
+13. TARİHE BAĞLI TEST YOK. Göreli tarih + sahte saat (`config.now`); ayın 1'i, ay sonu, yıl dönümü, hafta sonu/bayram ayrıca.
+    (2.0.13: ayın 1'inde kırılan senaryolar.)
+14. TEST ORTAMI ≠ GERÇEK KURULUM. Testte kapatılan/değiştirilen ayar (lisans, saat, vekil sunucu) bulgu yazılmadan önce gerçek
+    kurulum koşuluyla denenir. (Excel denetimi Bulgu 6 "salt okunur uyarı" testin kendi lisans ayarıydı.)
+15. ÖLÇÜMLER TEK TEK. Aynı makinede iki ölçüm/yük koşusu aynı anda çalışmaz (`flock`); önce/sonra aynı veri kopyasıyla.
+    (2.0.22: iki ölçüm üst üste koştu, sayılar atıldı.)
+16. AJAN ONAYI KANIT DEĞİL. Ajan "geçti" derse ana oturum ham çıktıyı/CI'yi kendisi okur; ajanlar arası onay bağımsız doğrulama
+    sayılmaz; ajan raporu ↔ CI çelişirse sonuç BAŞARISIZ'dır, çelişki giderilene kadar.
+17. SIRA VE GEÇMİŞ VERİ. Şirket/yedek/sil-geri yükle gibi durumlu işler rastgele sırayla ve eski sürümlerin gerçek verisiyle
+    denenir. (2.0.20 gözden geçirmesi 2.0.17'den kalan "iki şirket aynı veri dosyası" hatasını buldu; tek sıralı testler görmedi.)
+18. BENZETİM GERÇEK PLATFORM DEĞİLDİR. Platforma özgü bir hatanın düzeltmesi, o platformun gerçek koşusunda (Windows → GitHub
+    CI) en az iki koşuda yeşil görülmeden "düzeldi" diye yazılmaz. (10.10: launcher EACCES'i Linux'ta EADDRINUSE benzetimiyle
+    "düzeldi" dendi — 12ade2d; gerçek Windows'ta koşu 488'de tekrarladı: Windows TCP portlarını SIRAYLA verir, yeniden deneme
+    UDP'de dışlanmış aynı blokta dolaştı. Kök neden ancak gerçek günlükle bulundu.)
+19. ZİNCİRDE HATA DURDURUR. Birden çok adımı tek komutta zincirlerken `set -euo pipefail`; bir adım düşerse commit/push/rapor
+    yapılmaz. (10.10: belge betiği düştü, commit yine çalıştı ve iletisi yapılmamış işi "yapıldı" diye yazdı — d2f9ddc.)
+20. ARA SIRA KIRMIZI ZORLA ÜRETİLİR. "Ara sıra" kırmızı adım yeniden deneme ya da bekleme süresi uzatmayla geçiştirilmez: yarışın
+    ön koşulu zorla oluşturulan bir betikle (ör. olayı gecikmenin içine denk getir, CPU yavaşlat) önce kırmızı üretilir; düzeltmenin
+    yeşili yalnız ön koşulun GERÇEKTEN oluştuğu denemelerde sayılır; düşen isteğin kimin olduğu (kullanıcı/arka plan) kayıttan okunur.
+    (10.10: senaryo-222 CI'de 2/~12 kırmızı; ürün sanıldı, testin kendi yarışıydı — `test/e2e/senaryo-222-yaris.mjs`.)
+21. HER PUSH'UN CI'Sİ AYRI OKUNUR. Sonraki commit'in yeşili öncekinin kırmızısını kapatmaz; kod değişmese de (yalnız belge) aynı testler
+    başka sonuç verebilir. Push edilen her commit için `node tools/kanit.mjs ci <commit> --bekle <dk>` (koşu henüz oluşmadıysa da bekler)
+    ve sonuç okunmadan "yeşil" denmez. Başarısız testin adı kısa günlükte okunur: araç başarısız testleri çıktının SONUNA ve kapı
+    özetine yazar (tam günlük bu ortamda ağ politikasıyla indirilemiyor). Temizlik (finally) hatası asıl hatayı ezmez.
+    (10.10: CI 514 85a7b50 yalnız CLAUDE.md değişmişken Windows Node 22 kırmızı — supervisor.test.mjs EBUSY, asıl hata gizli —
+    yarım saat okunmadı; sonraki push'ların CI'si izlendi.)
+22. UZUN KOŞU GÜN SINIRINI GEÇER. "Bugün"ü başta bir kez okuyan model/test, koşu gece yarısını geçince programla ayrışır; sunucu sahte saatle
+    (motorNow(): yerel bugün 06:00'dan akar) başlatılır ve motor koşu sonunda gün değiştiyse sonucu GEÇERSİZ sayar. (11.10: CI 565 c8d596b
+    mutabakat-cekirdek tohum 2 23:59:56 UTC'de başlayıp 00:00:00'da kırmızı; program doğruydu — ters kaydı yeni günle yazdı; zorla
+    `test/mutabakat-gece-yarisi.mjs` ile üretildi.)
+23. ESKİ KOD AYRI KOPYADA. Kırmızı kanıt için eski kod çalışma ağacında `git checkout <eski> -- dosya` ile denenmez: dosya hazırlık
+    alanına girer, sonraki commit'e karışır ve aynı ağaçta koşan öbür testler eski kodu görür. Eski kod `git archive <eski> | tar -x` ya da
+    `git worktree` kopyasında koşulur. (11.10: e372a00 kanıt commit'ine eski hof-workspace.js girdi ve gönderildi — ca966fb ile geri alındı;
+    o arada başlatılan arka plan koşuları durduruldu, kanıtları silinip ayrı kopyada yeniden koşuldu.)
+24. DOLU DİSKTEKİ KOŞU GEÇERSİZDİR. Uzun koşu/e2e başlatmadan önce `df -h /` okunur (en az ~5 GB boş); bitmiş ölçümlerin veri kopyaları
+    (sqlite, profil) kanıtı depoya alındıktan sonra silinir. Dolu diskte kırmızı → önce disk, sonra ürün; yeşil de geçersiz (yarım yazılmış dosya).
+    (11.10: / %100, 261 MB — /tmp/kapi-olcum 5,2 GB, scratchpad 4,7 GB; senaryo-210 "Page crashed", 211 "Failed to fetch dynamically imported
+    module"; kayıtlar docs/kanit/2026-10-11/son-aday-e2e-2/gecersiz-disk-dolu, yer açılıp yeniden koşuldu.)
+
+## Dil (kullanıcı, 10.10.2026: "türkçe yaz", "türkçe yaz bildirimlerini")
+- Kullanıcıya giden HER yanıt, durum bildirimi ve liste Türkçe yazılır (İngilizce ara rapor yok).
 
 ## Kullanıcının tekrar eden şikâyetleri (aynı hataya düşme)
 1. "Onca test yaptım deyip mantık hatalarını görmüyorsun." → Test sayısı değil senaryo çeşidi; kartları aç, kullan.
@@ -641,6 +778,7 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   KARAR (kullanıcı, 05.10.2026): 2.0.24'ün DENENMEYEN ve BİLİNEN SINIRLAR listesi Cuma 09.10.2026 planlı teste eklendi
   (hatırlatma trig_0144BJLRwsZFizXTTYrJVszA, 06:00 UTC; içerik docs/2.0.24-KANIT.md). ERTELENDİ (kullanıcı, 08.10.2026: "cuma
   günü için planladığımız testleri pazar gününe ertele") → Pazar 11.10.2026 09:00 TR (06:00 UTC), aynı hatırlatma.
+  YİNE ERTELENDİ (kullanıcı, 09.10.2026: "pazar günkü testi ertele cumaya"; haftalık limit) → Cuma 16.10.2026 09:00 TR.
   ÖLÇEK SORUSU (kullanıcı, 05.10.2026: "ne ölçekte firma rahat kullanır?") → cevap (ölçülenle): 5–10 eşzamanlı kullanıcı,
   birkaç şirket, şirket başına birkaç bin cari, yılda birkaç bin–on bin fatura; üstü ÖLÇÜLMEDİ. KARAR ("ekle"): ölçek/yük testi
   (10/20/30 eşzamanlı kullanıcı, 10.000–50.000 cari + 100.000+ fatura, 10 şirket + yedekleme sırasında yük) aynı Cuma planına
@@ -835,7 +973,379 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   10.000 cari; kapının kendisi ~1 sn/COMMIT → Aşama 2). HEPSİ düzeltildi (6ed1d40 … 4b5c76d); kırmızı kanıt
   `test/inceleme-226-2.test.mjs` bdd1be6'da 27'nin 17'si, `senaryo-226` 25'in 10'u. Son kodla npm test 1.189/1.189, mutabakat
   2.000 işlem, güvenilirlik 2×1.000, 7 arayüz senaryosu 0 hata. Kanıt `docs/2.0.26-KANIT.md` 4. bölüm.
-  Sırada: kullanıcı onayıyla paket/PR (2.0.26) ya da Aşama 2.
+  TESLİM + BİRLEŞTİRME (08.10.2026 ~16:1x; kullanıcı: "2.0.26 paketini bitirip teslim ettiğinde birlikte yükleyip canlıya
+  alalım"): PR ceougur/ofis---y-netimi#26 CI 12/12 yeşil → squash, `master` = 5346ff8 (ağaç paketlenen b4c9853 ile aynı); dal
+  master'a sıfırlandı. Güncelleme paketi sha256 ee76d7f4… (HEAD ile bayt bayt), kurulum .exe 191feb6a… (30,9 MB, simgeli),
+  kılavuz PDF 63d536ad… (DEĞİŞTİ → yayından sonra site PR'ı); 24 arayüz senaryosu son kodla 0 hata. Arşiv 2 parça (30 MiB
+  sınırı). Sırada: kullanıcı yayın açar (v2.0.26, 5 dosya; adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt
+  bayt + güncelleyici "available" → site kılavuz PR'ı → ANCAK SONRA 2.1.0 (Aşama 2+).
+  YAYIMLANDI (08.10.2026 ~16:3x; `v2.0.26` = 5346ff8; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı):
+  yayındaki 5 dosya + latest/ (exe, json, zip, pdf) teslimle bayt bayt aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da
+  2.0.25/24/23/22/21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.26'yı "available" gördü, indirme sha256 ee76d7f4…
+  eşleşti; 2.0.26 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#12 2.0.26 PDF'iyle (63d536ad…) güncellendi (başlık
+  "Kılavuz PDF 2.0.26"); birleştirme kullanıcının "birleştir"iyle. 2.0.26 KAPANDI → 2.1.0 banka kodlaması başladı.
+- 2.1.0 BANKA İLK TESLİM (dal `claude/kind-newton-fpmx3f`; plan §12.1: Aşama 2–9 + 13 + 14–16 dilimleri; kanıt `docs/2.1.0-KANIT.md`).
+  [x] AŞAMA 2 finansal çekirdek (08–09.10.2026; 2cb93c5..72f72a6, 37 commit; arayüz DEĞİŞMEDİ): minor.mjs (kuruş tamsayı,
+      özellik testi 1e12), iş günü + TR takvimi 2024–2031, config.now sahte saat, v20 göçü (banka/POS/ekstre tabloları, fin_ref/
+      event_id, yetki göçü K4 + `bank.granted` işareti), kalıcı request_keys, İşlem No (BNK-yıl-sıra; sıfırlamada geri gitmez;
+      tarih yılı değişse de kalıcı), bank.post + bütün mevcut para yazıcıları ondan geçer, K6 (statik test + izinli liste,
+      money:event, store.raw), moneyLines tek kaynak (Kasa/Banka-POS raporu/ANLIK DURUM/defter; 2.0.26 ile altın test satır
+      satır aynı), açılış onarımı, `npm run mutabakat -- --sirket`, göç zinciri 2.0.16→2.0.26→v20 (2.0.21–2.0.26 fikstürleri
+      gerçek sürüm koduyla). KAPI §3.11 KARARI: iki aşamalı kapı (önce dokunulan varlıklar, şüphede v2.0.26'nın tam kapısı;
+      testlerde ikisi birlikte + eşdeğerlik denetimi) → yazım başına kapı 100.000 satırda 7,96 sn → 7,1 ms, 1.000.000'da 129 sn →
+      8,7 ms; 15 dk tam tarama ayrı iş parçacığında. Bağımsız gözden geçirme 3 bakış: 9 doğrulanmış + 11 düşük → hepsi kapandı
+      (D7, D9 bilinen sınır). Son kod: npm test 1.421/1.421 (benim koşumum da, 7 dk 53 sn), mutabakat 2.000, güvenilirlik 1.000,
+      14 arayüz koşusu 0 hata. Bilinen sınırlar: tam kapıya düşen işlem (kilit koyma, kilitli satıra dokunan düzeltme) büyük
+      veride v2.0.26 kadar sürer; Mutabakat Testi düğmesi 100.000'de ~10 sn bekletir; 1M bellek ölçülmedi.
+  [x] AŞAMA 3–4 banka hesapları + banka fişleri (09.10.2026; f46f748..b44d133): menüde Taksitler altında Banka, pencere, Kurulum
+      Sihirbazı (geri alınabilir), Hesaplar/hesap kartı (IBAN), açılış + Bakiye Doğrulandı, Hesabı Atanmamış + Bu Hesaba Ata, Alt
+      Hesap Mizanı verisi, Ayarlar (Temel/Gelişmiş, Varsayılanlara Dön); Banka Fişi (masraf BSMV/KDV dahil-hariç, faiz+stopaj, kart
+      borcu, kredi), Ters Kaydet/Düzelt, Hareketler, İşlem Kartı, Benzer İşlem, Planlı İşlemler; 649 Tekdüzen adı. Gözden geçirme
+      33 kayıt (28 ayrı: 5 yüksek) → 27 düzeltildi, 1 kısmen (Banka Masraf Raporu ekranı yok). npm test 1.598/1.598, mutabakat 2.000,
+      güvenilirlik 2×1.000, senaryo-banka-210 238/238. Bilinen sınır: 1M harekette dönemli Alt Hesap Mizanı ~4 sn, yıllık Banka
+      Masraf Raporu ~5 sn (tarih indeksi yok → 2.3.0 ölçek işi). Sırada (daraltılmış): modül ekranlarında hesap seçimi (+ eksi
+      bakiye denetimi ve money.prime modül yazımlarında), transfer, raporlar, kabul 1–16 ekrandan, kılavuz, tek gözden geçirme, paket.
+  [x] AŞAMA 5–6 daraltılmış (09.10.2026; 63f8aae, d000df3): cari tahsilat/ödeme ve Kasa↔Banka'da hesap seçimi (tek hesapta
+      kendiliğinden, çok hesapta zorunlu, döviz/pasif 400, açılış/Devir öncesi 409), K7 eksi bakiye, istek kimliği, Benzer İşlem,
+      banka bağlı cari silinmez (Pasife Al). npm test 1.630/1.630; senaryo-banka-210 257/257 (kabul 5, 9–14 ekrandan).
+  [x] AŞAMA 7–8 hesap seçimi (fatura peşini, taksit/kayıt, stok, çek; 8fa8236, fc939d2) + hızlı Nasıl Bozarım (e69e1b9) + yargıç/
+      eleştirmen düzeltmeleri (cd4e7ac..cdb3646: kart silme 409 plan-bank-linked, geri yükleme K7/pasif, pasif hesap, Vazgeç, toplu
+      iptal, lineKey) + Canlı Hata 2 (aa2520d: iade+geri ödeme kartı büyütmesi, açılış onarımı, model). npm test 1.691.
+  [x] AŞAMA 9 bankalar arası transfer (ac5305b..825b198): ücret/BSMV, kanal, valör, planlı, Ters Kaydet/Düzelt, kredi, bank:transfer
+      kapısı, Genel Bakış "Bugün ve Bu Ay"; kabul 13–16 ekrandan; transfer 23 test (eski kodda 22 kırmızı); npm test 1.714; mutabakat
+      tohum 1/2/3 tutarlı; güvenilirlik 2×1.000; senaryo-banka-210 330/330. Sırada: banka raporları + K10 (ANLIK DURUM, Birleşik Rapor,
+      Banka ve POS Hareketleri'nde transfer bacakları), eşleme tablosundaki eksik testler, kabul 1–16, kılavuz, son yargıç+eleştirmen.
+  İSTEK (kullanıcı, 09.10.2026): "hızlı bir şekilde nasıl bozarım testi de yaptır, düzeltilmesi gereken yerler olursa düzelt"
+      → Aşama 7–8 doğrulaması bitince hesap seçimi işi (cari, Kasa↔Banka, fatura peşini, taksit/kayıt, stok, çek) için ayrı
+      bağımsız saldırgan test ajanı; bulunan her açık önce kırmızı test, sonra düzeltme; sonuç kullanıcıya listelenir.
+      EK (kullanıcı, aynı gün): "yargıç ve eleştirmenden de geçsin" → saldırgan test bitince iki bağımsız, kod değiştirmeyen
+      ajan: ELEŞTİRMEN (düzeltmelerin ve testlerin açığını, kaçan bozma yollarını arar) + YARGIÇ (her bulgu/iddiayı yeniden
+      üreterek doğrular, önem ve "teslime engel mi" kararını verir); engel bulgular kırmızı test → düzeltme; sonuç kullanıcıya.
+      KARAR (kullanıcı, 09.10.2026: "plana uy her koşulda"): karar gerektiren bulgularda `docs/BANKA-MODULU-PLAN.md` neyi
+      söylüyorsa o uygulanır, kullanıcıya sorulmaz. Plan susuyorsa en yaygın ve modern seçenek (önceki karar). Kapsam daraltması
+      (ertelenenler) kullanıcı kararı olarak geçerli kalır. DÜZELTME (yargıç): §5.1'in "2'den çok ondalık 400" kuralı yalnız BANKA
+      uçları içindir; modül uçları (cari, fatura, taksit…) plana göre "bugünkü gibi" 1,005 → 1,01 yuvarlar (kullanıcıya düzeltildi).
+      Yargıç (09.10.2026): H1–H3b doğrulandı, kapalı; K1 geri yükleme K7/pasif hesabı deliyor (Ziraat −50.000) → 2.1.0'da düzeltilir;
+      Y1 pasif hesap silme/taşıma, Y2/K3 toplu iptal-silme negativeOk, K2 lineKey yinelenmesi → aynı düzeltme turunda.
+  İSTEK (kullanıcı, 09.10.2026): "yapılan işlemlerin tutarlılığı, tüm raporlarla uyumluluğu için raporda yazan uzman yazılım ve
+      muhasebe mühendisi testleri atlanmasın, rapora uy"; DÜZELTME (aynı gün): "rapora uy yanlış söyledim, plana uy!" → planın (`docs/BANKA-MODULU-PLAN.md`) test maddeleri HİÇBİRİ atlanmaz:
+      §12.2 (npm test, test:mutabakat, test:guvenilirlik, göç zinciri, arayüz senaryoları; iş akışı testi sıfırdan, ARAYÜZDEN,
+      bağımsız beklenenle, ekran görüntüsüyle), teslim edilen her aşamanın "Çalışıyor Mu / Nasıl Bozarım / Kabul" satırları (2.1.0
+      kapsamına giren her madde), §12.4 Nasıl Bozarım ana listesi (kapsamdaki maddeler), §12.5 kabul 1–16 sayılarla + mizan bağımsız
+      modelle, Aşama 14 (her rapor × süzgeç × ekran/PDF/Excel; bağımsız beklenenle açıklanmamış fark 0; TOPLAM = satırlar),
+      Aşama 15 (yetki matrisi, ?hofCompany=, salt okunur), Aşama 16 dilimleri. Kapsam dışı (ertelenen) maddeler "DENENMEYEN —
+      ertelendi" diye KANIT'ta tek tek listelenir; sessizce düşülmez. Teslimden önce plan-test eşleme tablosu (madde → test → sonuç).
+      EŞLEME (09.10.2026, `docs/2.1.0-PLAN-TEST-ESLEME.md`): 268 madde; kapsamda 229 → 148 VAR, 50 KISMEN, 31 YOK (19'u yapılmamış iş:
+      transfer, kabul 15–16, banka raporları, K10 ANLIK DURUM + Birleşik Rapor, kılavuz). Eksik testler: 27 mevcut rapor bankalı veriyle
+      bağımsız modele karşı hiç sınanmadı (raporlar-224 verisine iki hesap + her modülde bağlı havale eklenecek); kabul 16 sonu mizanı
+      bağımsız modelle; mutabakat motoru/rastgele testte fatura/stok/kayıt peşini ve transfer bağlı değil; eşleşmiş satır koruması
+      yalnız cari + fiş; yetki matrisi, `previous` statik taraması, salt okunur lisans, iki oturumlu eşzamanlılık; ekrandan kayıt
+      tahsilatı/stok peşini/çek ödemesi/Düzenle'de hesap taşıma; Banka "Bugün Çıkış"/"Transfer" satırı (kabul 13–14) yok. Eleştirmen
+      + eşleme ayrı ayrı buldu: taksit KARTI silme bağlı banka tahsilatını sessizce düşürüyor (yüksek) → düzeltme turunda.
+  CANLI HATA 2 (09.10.2026; mutabakat tohum 1 incelemesinde; 2.0.24 G1 düzeltmesinin GERİLEMESİ, v2.0.24/25/26'da VAR, v2.0.23'te yok;
+      gerçek etiket kodlarıyla API'den ölçüldü): peşinli + taksitli satış faturasında iade + peşinin geri ödenmesi taksit kartını
+      yeniden BÜYÜTÜYOR. Ör. 1.000 (500 peşin, 500 taksit) → malın tamamı iade, 500 nakit geri → cari 0, fatura açığı 0, Kasa 0 ama
+      kart Kalan 500, bugün vadeli → Geciken Taksitler, Alacak Yaşlandırma, ANLIK DURUM "Geciken Alacak", cari kartı, Vade Takip,
+      (koddan) takvim/zil/WhatsApp hatırlatma borçsuz müşteriyi gecikmiş gösterir. Para/defter/mutabakat kapısı doğru. Kök neden
+      `invoices.mjs` ~1304 hedef = açık(0'da kırpılı) + Σ geri ödeme → doğrusu max(0, imzalı açık + geri ödeme); model
+      (`test/mutabakat/motor.mjs` 122/124/273) aynı hatayı taşıyıp gizliyordu. Önem YÜKSEK. Öncek kararın örneğiyle (Kasa çift
+      sayım: "2.1.0 ile gelsin") 2.1.0'da düzeltilir + mevcut veride yanlış büyümüş kartlar için açılış onarımı; kullanıcıya bildirildi.
+  [x] AŞAMA 14 daraltılmış (0beded4): Banka Bakiye/Hareket/Masraf + Alt Hesap Mizanı; ANLIK DURUM "Gerçek Banka" (K10); Birleşik Rapor 3
+      banka sütunu; Banka ve POS Hareketleri'nde transfer iç hareket; banka-210-raporlar 14 (eski kodda 14 kırmızı). Açık: Nakit Akış
+      başlangıcı K10'a çevrilmedi, Vade Takip/zil banka kalemleri yok.
+  EKSİK TEST TURU (10.10.2026; worktree dalı `worktree-agent-a9996cccca67b1040`, kapsayıcı yeniden başlayınca yarıda kaldı → yeni
+      ajan tamamlıyor, ana dala birleştirilecek) BULDUĞU HATALAR (önce kırmızı test, düzeltildi; kullanıcıya listelendi):
+      R1 CANLI (v2.0.23–2.0.26'da da var): iadenin müşteriye geri ödenen kısmı fatura kapamada BAŞKA açık satış faturasını "Ödendi"
+      gösteriyor / aynı carinin alış faturasını ödüyordu (1249a0c). R2: Gider Raporu bütün gider türlerini TEK satırda birleştiriyordu
+      (SQL takma ad çakışması; b5f2ba3). R3: ekstreyle eşleşmiş satırda çek geri alma ve fatura Düzenle/İptal/Sil 409 yerine 200
+      (31b7117; eşleşme 2.1.0'da ekrandan yapılamadığı için canlı etkisi yok). R4 CANLI (v2.0.20–2.0.26; büyük/küçük harf duyarlı
+      dosya sisteminde): şirket adı yalnız büyük/küçük harf farkıyla değişince silinmiş şirketten kalan yedek klasörü veriliyor, yedekler
+      oraya taşınıyordu (güvenilirlik tohum 2 işlem 2331; f241559 → af83d46). R5 CANLI (v2.0.24–2.0.26): fazla tahsilatlı taksit kartında
+      iade iptali kartı faturanın açığına kadar büyütmüyordu (açık 1.500 ↔ kart kalanı 1.000; mutabakat 5.000 tohum 2 işlem 3414;
+      9340b9c → 326b87b). R4/R5 kullanıcıya listelendi (10.10.2026); ana oturum kırmızı/yeşil doğrulaması birleştirmeden önce.
+  BAĞIMSIZ KÂHİN + HAKEM (10.10.2026; `test/bagimsiz/`, kanıt `docs/kanit/2026-10-10/kahin/`): plandan, program kodunu görmeden iki
+      Python modeli + program; kabul 1–16 üç tarafta fark 0 (planın 28 sayısı); tohum 1–30 × 500 + 31–33 × 2.000 işlem → 13 fark sınıfı,
+      açıklanamayan 0; bilinen nedenler nötrlenince 474.000 yaprakta yalnız 259 fark (BANKA-EKSI-KODU). HAKEM (her sınıf en küçük
+      senaryoya indirildi, v2.0.26 gerçek koduyla ölçüldü) — PROGRAM YANLIŞ, kullanıcıya listelendi, DÜZELTİLECEK:
+      K1 İADE KAPANIŞI (orta, v2.0.26'da VAR; R1'den AYRI kök): geri ödenen iade asıl faturanın açığından da düşüyor (aynı alacak iki
+         kez) → "ödenen 240" hayalet kapatan, kalan alacak hiçbir açık belgede/yaşlandırmada yok; taksitli komşuda fatura 360 ↔ kart 600.
+      K2 KARTLA ÖDEME KURUMSAL KART HESABINA BAĞLANMIYOR (YÜKSEK, 2.1.0 teslime engel; plan §3.5/§3.7 #3 #5): pickRef yalnız havale;
+         satır 108.00'e düşüyor, kart limiti (K7) çalışmıyor, iki kartta seçim istenmiyor, yanlış türde hesap sessizce kabul.
+      K3 KASA ELLE HAREKETİ İSTEK KİMLİĞİ YOK (orta, v2.0.26'da VAR; plan §7/§3.10): çift gönderimde Kasa + 770 çift; istemci de göndermiyor.
+      K4 Nakit ön denetimi istek kimliğinden ÖNCE (düşük–orta; plan §3.3 sırası): Kasa'yı sıfırlayan ödemenin yeniden gönderimi 409
+         "Kasa eksiye düşer" (accounts.mjs:655, cash.mjs:274; plans/stock/cheques aynı kalıp, koşulmadı).
+      K5 Banka eksi bakiye ret kodu bank-negative/bank-blocked + negativeOk (düşük; plan §7 cash-negative/cash-blocked + accountId, cashForce).
+      K6 Kasa açılışı/devir yolu yok — devreden nakit 649'a (gelir) yazılıyor (düşük, v2.0.26'da VAR; plan susuyor → yaygın: 500).
+      K7 KMH: API Ticari/Diğer/Vadeli'de KMH kabul ediyor; Vadesiz→Ticari çevrilince KMH kalıyor → Engelle atlatılıyor (düşük, ekrandan).
+      K8 Kredi: Ters Kaydet/Düzelt'te yanlış ret metni; geri ödeme tarihe bakmıyor (ara dönemde ters bakiye); Açılışı Düzelt deliği (düşük).
+      TEST AÇIKLARI: vadeli hesapta other_in/other_out/interest_out → 400 kalıcı testte yok; rastgele kâhin koşusunda Kasa elle hareketi
+      silinmedi (model_b hatası). PROGRAM DOĞRU çıkanlar: KDV dahil iskonto (dil yanlıştı), vadeli fiş, kredi anapara aşımı, KMH açılışı.
+      Kâhin araç hataları (düzeltilecek): model_a K-4, koşucu alış numarası, model_b Kasa silme geçerliliği.
+  İSTEK (kullanıcı, 09.10.2026): "tüm işlemler bitince bağımsız yargıç ve yargıç kararını eleştirmenden tekrar geçir, sonra plana
+      uy!" → 2.1.0'ın BÜTÜN işleri (düzeltme turu, eksik testler, transfer, raporlar, K10, yetki, kabul 1–16, kılavuz) bitince, paketten
+      ÖNCE: (1) bağımsız YARGIÇ (kod değiştirmez; bütün 2.1.0'ı ve bulguları yeniden üreterek doğrular, önem + teslime engel kararı);
+      (2) ELEŞTİRMEN yargıcın KARARINI denetler (yanlış "engel değil", kaçan yol, zayıf kanıt); (3) ikisinin sonucuna göre plana uyulur
+      (karar gerektiren yerde plan, plan susarsa en yaygın/modern); engel bulgular kırmızı test → düzeltme → sonra paket.
+  CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
+  bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
+  Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
+  KARAR (kullanıcı, 09.10.2026): "2.1.0 ile gelsin" → ayrı 2.0.27 YOK; 2.1.0 teslim notunda/CHANGELOG'da bu düzeltme ayrıca yazılır.
+  KAPSAM DARALDI (kullanıcı, 09.10.2026; haftalık limit %62, yenileme Perşembe 15.10; önerdiğim 1. yol kabul): 2.1.0 =
+  Aşama 2 ✓ + 3–4 (banka hesapları, fişler, ekranlar) + HER FORMDA havale/EFT için HESAP SEÇİMİ (cari, Kasa↔Banka, fatura
+  peşini, taksit/kayıt tahsilatı, stok peşini, çek tahsil/ödeme) + bankalar arası transfer + temel banka raporları (Banka
+  Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı, ANLIK DURUM K10) + yetki + kabul 1–16 EKRANDAN + kılavuz Banka bölümü
+  + TEK bağımsız gözden geçirme + paket. ERTELENEN (15.10 sonrası, 2.1.x/2.2.0): döviz/kur ve değerleme (Aşama 13), Bankaya
+  Tahsile Ver, fatura iade/iptalinin bankalı ayrıntısı + TCMB önerisi, K8 taksit kuralları (plan-paid/plan-overpay), toplu
+  kesim ayrıntısı, kalan banka raporları; POS 2.2.0, ekstre 2.3.0 (zaten planlı). Ertelenenler 2.1.0'da GÖRÜNMEZ.
+  Kullanıcı sorusu: daraltılmış 2.1.0 bitince canlıya mı, yoksa Perşembe sonrası tamamı mı? → önerim: daraltılmış 2.1.0
+  testler + kabul 1–16 + gözden geçirme temizse canlıya (Kasa çift sayım düzeltmesi de erken gider). KARAR (kullanıcı,
+  09.10.2026: "önerdiğin yoldan devam edelim") → daraltılmış 2.1.0 temiz çıkınca CANLIYA; ertelenenler 15.10 sonrası.
+  Planlı test (trig_0144BJLRwsZFizXTTYrJVszA) kullanıcı isteğiyle Pazar 11.10'dan CUMA 16.10.2026 09:00 TR'ye (06:00 UTC) ertelendi.
+  KARAR (kullanıcı, 10.10.2026: "limit sorunumuz ortadan kalktı, daraltılmış olarak değil plana uygun olarak devam et") → KAPSAM
+      DARALTMASI KALKTI: 2.1.0 planın §12.1'deki tam hâli (Aşama 2–9 + 13 döviz + 14–16 dilimleri; Bankaya Tahsile Ver, fatura
+      iade/iptalinin bankalı ayrıntısı + TCMB önerisi, K8 taksit kuralları, toplu kesim ayrıntısı, kalan banka raporları DAHİL).
+      POS (2.2.0) ve ekstre (2.3.0) planın kendi sırasında kalır. Not: aynı anda iki ajan "haftalık sınır, 14.10 23:00 UTC'de
+      sıfırlanır" hatasıyla durdu (eksik test turu, kılavuz); yarım işleri worktree'de ve ana ağaçta yerinde.
+  KARAR (kullanıcı, 10.10.2026: "limit sorunu ortadan kalktı; arka planda çalışan ajan, yargıç, eleştirici kısıtlamaları kaldıysa
+      kaldır, ihtiyaç duyulan kadar ajanı, yargıcı, eleştirmeni çalıştır. plana tam uy!") → ajan/yargıç/eleştirmen sayısında kısıt
+      YOK; her iz (track) için uygulama → bağımsız yargıç → eleştirmen → düzeltme döngüsü, engel bulgu kalmayana kadar; sonunda
+      bütün 2.1.0 için yargıç + yargıcın kararını denetleyen eleştirmen (önceki istek). Plan (`docs/BANKA-MODULU-PLAN.md`) her koşulda.
+      Kalan izler: Aşama 13 döviz; Aşama 8 kalanı (K8 taksit kuralları, Bankaya Tahsile Ver); Aşama 7 kalanı (iade/iptal bankalı
+      ayrıntı §4.6, Fatura Ayarları → Banka Hesapları, gider türleri 770/653, toplu kesim, bağ türleri, TCMB önerisi); Aşama 14–15
+      kalanı (§8.10 raporları, Nakit Akış K10, Vade Takip/zil, SOURCE_LABELS/EVENT_LABELS, Silinenler kuralı); kılavuz; kabul.
+- SÜRE VE TEMEL BANKA SÜRÜMÜ (kullanıcı, 10.10.2026): "kaç gündür 1-2 gün diyordun, şimdi 6-9 gün; nedeni, nasıl iyileştiririz?" → neden
+  (kapsam 10.10'da tam plana döndü, doğrulama çıtası, bulunan ~15 hata, benim madde saymadan verdiğim tahminler) ve öneriler (sürümü böl,
+  uzun koşuları GitHub CI'de paralel, ağır doğrulama bir kez, günlük plan↔gerçek tablosu) verildi; seçim sorusu kullanıcı tarafından
+  kapatıldı. Ardından: "müşterilerin kullanacağı TEMEL banka modülünü bitirip yüklesek mi, ne kadar sürer? HEMEN YAPMA, ÖNCE KONUŞALIM"
+  → kapsam/süre önerisi verildi.
+  KARAR (kullanıcı, 10.10.2026: "TEMEL SÜRÜME BAŞLA"): 2.1.0 = TEMEL BANKA SÜRÜMÜ (bitmiş banka kısmı: hesaplar/sihirbaz, fişler, her
+  formda havale hesabı, transfer, 4 banka raporu + ANLIK DURUM Gerçek Banka + Birleşik Rapor, yetki, eşleşme koruması) + bugün bulunan
+  bütün hata düzeltmeleri (R1–R5, D2, K1, K3, K4, K5, K7, K8) + KURUMSAL KART BAĞI (K2; önerim uygulandı — kullanıcı "önerin uygulanır"
+  kararı) + Nakit Akış K10 başlangıcı + ertelenenlerin görünmediği denetimi + kılavuz Banka bölümü + yargıç/eleştirmen + plan alt
+  sınırında son doğrulama (UZUN KOŞULAR GitHub CI'de paralel — önerim; depo herkese açık, dakika ücretsiz) + paket. TAHMİN DÜZELTMESİ (kullanıcı
+  "paketi 2 dk'da veriyordun, neden 0,5 gün?"): paket 1–2 saat (iş 30–45 dk + PR CI ~25 dk; Wine/Inno/windres kurulu); 0,5 gün
+  şişirilmiş pay idi. Kritik yol kart → yargıç/eleştirmen → son doğrulama → paket: toplam 2,5–3,5 iş günü.
+  KAZANÇ (kullanıcı "bu iki önerim zaman kazandıracak mı?"): zorunlu görevi CI 517 ile kapatmak birkaç saat + odak; ağır testleri
+  sona ve GitHub'a almak ~1 gün (20.000 yerel 5–8 sa ve ölçek 30/1M 3–5 sa kritik yoldan çıktı; ajanların ara uzun koşuları kısaltıldı,
+  K1 ve K2 ajanlarına iletildi). YENİ TAHMİN 2–3 iş günü. ERTELENEN 2.1.1/2.2.0:
+  döviz/kur/değerleme (Aşama 13), Bankaya Tahsile Ver, K8 taksit avans/fazla ödeme kuralları, faturanın bankalı iade/iptal ayrıntısı ve
+  toplu kesim, kalan §8.10 raporları, Kasa açılış/devir (K6); POS 2.2.0, ekstre 2.3.0 yerinde. Tahmin 3–4 iş günü. Plan sırası bu
+  kararla değişti (döviz 2.1.0'dan çıktı).
+  ZORUNLU GÖREV KAPANDI (kullanıcı önerisi, 10.10.2026: "CI 517 ile zorunlu görevi mühürle ve kapat; tek kararsız test için süreci
+  durdurma, gerekiyorsa karantinaya al" — karar bende): KAPATILDI, KARANTİNA YOK. Mühür CI 517 + art arda 518–521 (dört platform
+  1885/1886, Windows 5 koşu yeşil). Kapıyı kırmızı tutan tek şey bilinçli `todo` (Nakit Akış K10) — kararsız test değil; atlamak kapının
+  "atlanan = doğrulanmadı" kuralını deler. T4 ile kapanır. Rapor `docs/kanit/2026-10-10/ZORUNLU-GOREV-RAPORU.md` (8 başlık, açıklar 7.).
+  MALİYET (kullanıcı, 10.10.2026: "GitHub'da Hobby planım, limitimi etkileyemiyor doğru mu? maliyet çıksın istemiyorum"): depo HERKESE
+  AÇIK → standart Linux/Windows koşucuları ücretsiz; GitHub'dan okundu: CI 509 19,5 dk sürdü, faturalanan 0 ms; Uzun Doğrulama ve CI 521
+  faturalanan 0. Gerçek sınır eşzamanlı iş sayısı (Free: 20, CI ile paylaşılır) → Uzun Doğrulama #1 (22 iş aynı anda) İPTAL edildi;
+  iş akışı her matriste en çok 6 iş (CI'ye 8 yuva kalır) ve depo özel yapılırsa HİÇ başlamaz (if: private değil). Test ci-kapi-listesi
+  bunları denetler. Kural: ücretli koşucu (büyük/GPU), özel depoda uzun iş, ücretli eylem yok.
+  YAYIN KARARI (kullanıcı, 10.10.2026: "eski ve yeni hataları düzeltilmiş temel paket banka modülü bitince yükleyelim"): ayrı ara
+  düzeltme sürümü (2.0.27) YOK; canlıdaki eski hatalar (Canlı Hata Kasa çift sayım, Canlı Hata 2, R1, R4, R5, K1, K3 — v2.0.26'da da var)
+  ve yeni hatalar 2.1.0 TEMEL SÜRÜMLE birlikte gider. Temel sürüm bitince (kapsam yukarıda; yargıç + eleştirmen + son doğrulama temiz,
+  CI ve Uzun Doğrulama Kapısı yeşil) 2.0.26'daki "birlikte yükleyip canlıya alalım" düzeniyle: paket + PR + CI yeşil → birleştir →
+  5 dosya + yayın bağlantısı + elle kabul listesi → kullanıcı yayımlar → bayt bayt + güncelleyici → site kılavuz PR'ı. Teslimde
+  "bitti" demeden önce kullanıcıya DENENEN / DENENMEYEN / BİLİNEN SINIRLAR ve ertelenenler listesi açıkça verilir.
+  T4 BİRLEŞTİ (10.10.2026; 2f89d81, ana oturum: değişen testler 115/115, eski kodda 8/82 kırmızı; senaryo-banka-210-temel CI'de 8b3c65c):
+  Nakit Akış başlangıcı = Nakit Kasa + Gerçek Banka (K10); ertelenen banka ayarları API'den de değiştirilemez (400 bank-setting-later),
+  Elle Banka Fişi kapalı (önceden API'den Kambiyo Kârı fişi yazılabiliyordu). YENİ BULGU (T4 ajanı, gerçek v2.0.23 koduyla üretildi;
+  kullanıcıya listelendi, düzeltme ajanda): ORTA — ileri tarihli eski hesapsız havale Kurulum Sihirbazı'nı ve "Bu Hesaba Ata"yı 409
+  ledger-integrity ile kilitliyor (geçmiş tarihliler de aktarılamıyor; plan madde 42/A13'e aykırı); DÜŞÜK — Hesabı Atanmamış toplamı
+  ileri tarihliyi sayıyor; DÜŞÜK — Nakit Akış "Tahmini Kasa" adları artık nakit+banka. Kılavuz satırı ("bugünkü kasadan başlayan") T5'e.
+  K1 BİRLEŞTİ (10.10.2026; ca8ea75; ana oturum: birleşik kodda 177/177, yeni test eski kodda 16/18 kırmızı): geri ödenen iade asıl faturaya
+  mahsup edilmez (aynı alacak iki kez kullanılmıyor); kart kalanı = fatura açığı; mahsup edilmemiş iade belgesinin açığı fatura kartında ve
+  Açık Faturalar raporunda görünür (yaşlandırma/nakit akış/vade takip/ANLIK DURUM'a girmez — bakiye zaten net). Açılış onarımı gerekmedi
+  (ödeme durumu saklanmıyor, her açılışta yeniden hesaplanıyor). KARAR (baş mimar; plan susuyor → yaygın): kâhinde kalan tek desen —
+  geri ödenmemiş iadenin asıl faturayı AŞAN alacağı carinin en eski açık borcunu kapatır (2.0.15'ten beri R1c; 2.0.17 m5 yön kuralıyla
+  tutarlı; Logo/Mikro otomatik kapaması gibi). Kâhin dili §7 kural 6'ya bu SPEC olarak eklenir (programdan türetilmiş beklenen değil);
+  modelleri program kodunu görmeyen ajan günceller (T6/T7 son kâhin koşusundan önce).
+  İSTEK (kullanıcı, 10.10.2026: "sheets bağlanırsa programın oraya da yedek alıp almadığını da denetle"). KODDAN İLK BAKIŞ: program
+  Sheets'e HİÇ yazmaz (sheets.mjs yalnız dışa aktarım adresinden okur; yedek kodunda Sheets yok); bulut yedeği ayrı ayar (Yönetim → Drive:
+  klasör yolu ya da Drive bağlantısı, cloud-backup.mjs). Sheets'ten gelen tablo satırları şirket veri tabanına kopyalanır → yedeğin içinde
+  olmalı. DENETİM ajanda (test: Sheets bağlı şirkette yedek → Sheets'e yazma isteği yok, yedek dosyasında tablo satırları var, Drive
+  kapalıyken yalnız yerel, Drive klasörü açıkken kopya orada, iki şirket, geri yükleme sonrası Sheets bağı); sonuç kullanıcıya.
+  ŞİKÂYET (kullanıcı, 10.10.2026: "yedek için Drive bağlanınca Drive'a otomatik yedek ya da Şimdi Yedek Al ile yedek almadığı
+  kanaatindeyim") → İLK ÖNCELİK, aynı ajanda: klasör ve bağlantı kipi × Şimdi Yedek Al (Tüm/Yalnız), otomatik, güvenlik yedeği,
+  bootstrap yedek, iki şirket; bağlantı kipinin lisans servisi ucu üretimde var mı; 2.0.20 şirket klasörü taşımasından sonra gerileme
+  var mı. Hata çıkarsa önce kullanıcıya listelenir, kırmızı test → düzeltme (temel 2.1.0'a).
+  İLK BULGU (ana oturum, 10.10.2026; GitHub'dan + koddan): Google Drive BAĞLANTISI kipi (https://drive.google.com/drive/folders/…) hiç
+  çalışmıyor — program lisans servisinden `POST /v1/yedek/oturum` ister, ama site deposu ceougur/destekofis `web/api/lisans/v1/` altında
+  yalnız activate/check/durum var, yedek/oturum YOK (docs/DRIVE-YEDEK.md'de tasarlanmış, hiç yapılmamış). 2.0.2'den (27.09.2026) beri bu
+  kipte hiçbir yedek Drive'a gitmedi; yerel yedek alınıyor, hata yalnız Yönetim'deki durum satırında (lastError). KLASÖR kipi (Drive
+  masaüstü uygulamasının senkron klasörü) ayrı; ölçümü ajanda. Kullanıcıya bildirildi.
+  KARAR (kullanıcı, 10.10.2026: "programın Drive yedekleme bölümünü kaldıralım, kılavuzdan ve web sitesinden de kaldıralım; şimdilik gerek
+  yok; müşterileri de yanlış yönlendirmiş olmayalım"): Drive yedeği (bağlantı ve klasör kipi) 2.1.0'da PROGRAMDAN KALKAR — Yönetim'deki
+  bölüm, ayar ucu, yedek sonrası kopya (afterBackup/mirror), ilgili bildirim/yazılar; yerel yedek (backups\<kod> - <ad>\) aynen kalır.
+  Eski kurulumda kayıtlı Drive ayarı yok sayılır (veri silinmez, kopya alınmaz). KILAVUZ'dan Drive anlatımı ve SİTE'den (ceougur/destekofis)
+  Drive yedeği vaadi kalkar (site PR'ı yayın teslimiyle). Teslim notunda açıkça yazılır: "Drive'a yedek kaldırıldı; yedekler bilgisayardaki
+  backups klasöründe". "Google Drive'a Bağlan" (OAuth) ileride, kullanıcı isterse.
+  KALAN İŞ LİSTESİ (kullanıcı, 10.10.2026: "temel paket için kalan işleri kısa başlıklar olarak söyle" → "işlem yapılıp bittikçe maddenin
+  üzerini çiz, bildir"): her madde bitince listenin tamamı ~~üzeri çizili~~ biçimde yeniden gönderilir. Liste: 1 kurumsal kart bağı ·
+  2 Drive yedeğinin kaldırılması · 3 Windows ara sıra "yedek alınamadı" · 4 küçük düzeltmeler (Nakit Akış kaynak adı, başlık yazımı, sihirbaz
+  sonrası eski liste) · 5 kılavuz (Banka bölümü + Drive'ı çıkar) · 6 kâhin güncellemesi (iade kuralı) · 7 yargıç + eleştirmen · 8 son
+  doğrulama (Uzun Doğrulama, ölçek 10/20, bütün e2e, göç) · 9 paket (sürüm, CHANGELOG/KANIT, imzalı, kurulum, PDF, PR, elle kabul listesi) ·
+  10 yayın (birleştir, 5 dosya, bağlantı, site kılavuz PR'ı).
+  DURUM (10.10.2026 akşam): 1 BİTTİ (f30a75b, CI yeşil) · 2 BİTTİ (1e23940) · 3 gerçek Windows 1/2 yeşil (windows.yml #38, 740be05:
+  hizmet çalışırken yedek bütünlük ok) — ikinci gerçek Windows koşusu bekleniyor · 5 BİTTİ (9201af0; 8. Banka bölümü, PDF 34 sayfa
+  ee64ce5f…, ana oturum yeniden üretti: metin aynı, pdf-denetle 28/28). Kılavuz ajanının ekranda gördüğü 5 küçük bulgu (Eksi Bakiye
+  Denetimi metni eskimiş, cari Ödeme formu yol ne olursa olsun "Kasa'dan çıkar", ANLIK DURUM ipucunda olmayan menü, Banka Bakiye Raporu
+  "Bu Yıl"da ileri tarihli eski havaleyi Hesabı Atanmamış sayıyor ↔ Genel Bakış 0, Planlı İşlemler düğmesinde olası yarış) madde 4'e
+  eklendi; "İleri tarihli hareket" tarama uyarısı hata değil (saat geri alınınca çıkar). CI 536 (098eb56) e2e kırmızısı = 534'le aynı
+  test yarışı, düzeltmesi 15d5631'de.
+  6 BİTTİ (a375e80; kâhin dili sürüm 2): iade artanı kuralı + cash-negative + kart 309 + yineleme; BAŞ MİMAR KARARI: D5 (KMH yalnız Vadesiz)
+  ve D6 (Vadeli'de yalnız transfer ve faiz) plan §3.5 tablo satır 316/318 dayanaklı → ONAYLANDI; BELİRSİZ-23..26 kâhin dışı. Sonuç: kabul 1–16
+  fark 0 (plan 28/28); tohum 1–5×500, 31×2000, yoğun 1–5 → açıklanamayan 0; kalan iki bilinen sınıf: KDV-DAHIL-ISKONTO (hakem: program doğru,
+  kâhin kuralı 1 kuruş sapıyor; programdan türetilmiş kural temiz odaya konmaz) ve KASA-ACILIS-649 (K6, 2.1.1'e ertelendi — BİLİNEN SINIR).
+  Ana oturum yeniden koşusu: tohum 3 + ajanın koşmadığı tohum 7 (nötrlü) + kabul + birim.
+  Kâhin yeniden koşusu SONUÇ: birim 18/18, kabul fark 0, tohum 3 ajanınkiyle birebir (148, açıklanamayan 0), tohum 7 nötrlü 8.069 yaprak fark 0.
+  4 BİRLEŞTİ (ede7049; ana oturum kırmızı c8ec274 5/6, f3edc16 6/11 → yeşil 25/25): Nakit Akış/Vade Takip ileri tarihli satır kaynağı,
+  Toplamlar yazımı, Eski Hareketler önbelleği, A–D (Eksi Bakiye metni, cari Ödeme açıklaması yola göre, ANLIK DURUM ipucu, Banka Bakiye
+  Raporu ileri tarihli eski havale); E (Planlı İşlemler yarışı) zorlamayla ÜRETİLEMEDİ. Aynı ajanın YENİ bulguları (kullanıcıya listelendi,
+  ikinci küçük bulgular ajanında): kurumsal kart seçicisi önbelleği bayat (ikinci kart açılınca ödeme yanlış karta gidebilir — ÖNCELİKLİ;
+  senaryo-banka-210b bir koşuda kırmızı), istemcide "invoice" kaynak adı ham, rapor başlıkları küçük harf (Cari ekstre/Vade takip/Nakit akış),
+  fatura Tahsilat/Ödeme formu ve Bankadan Kasaya Aktar açıklaması eskimiş, Gerçek Banka toplamına tarih sınırı yok (üretilebilirliği
+  denetlenecek), Nakit Akış PDF alt başlığı kesik, Vade Takip'te hesapsız eski banka satırları banka yetkisi olmayana görünüyor.
+  KAPSAYICI YENİDEN BAŞLADI (10.10.2026 gece): otomatik güncelleme ajanı (worktree aeb30608…, 5 commit: b0bcc78 kapalıyken denetim,
+  1f499e6 gerçek tarayıcı/Windows sınaması, f5039d3) ve küçük bulgular 2 ajanı (worktree a52cd8d5…, kırmızı test 7a6011c + işlenmemiş
+  düzeltme) yarıda kaldı → ikisi de AYNI worktree'lerinde yeniden başlatıldı. ÖLÇÜM (f5039d3, gerçek Chromium + gerçek saat 20 dk): açık
+  duran DestekOfis sayfası GİZLİ sekmede bile 5 dk'da bir istek atıyor (çalışma tablosu eşitleme zamanlayıcısı) → herhangi bir bilgisayarda
+  sayfa açıksa sunucu 15 dk boşta sayılmaz, kendiliğinden kurulum MESAİ DIŞINA (hafta içi 20:00–07:00, hafta sonu) kalır. Ürün kodu
+  değişmedi; önerim: BÖYLE KALSIN (form doldururken servis yeniden başlamasın; güvenli taraf) — kullanıcıya bildirildi, karar onda.
+  KULLANICI SORUSU (10.10.2026): "5 dk'da bir istek varsa mesai dışında da sürmüyor mu, güncelleme nasıl alınacak?" → koddan cevap
+  (update-orchestrator.mjs:103/120): kural "mesai dışıysa YA DA 15 dk boştaysa kur" — mesai dışında boşta sorusu SORULMAZ, açık sekme
+  engellemez. KULLANICI: "genelde kullanıcılar mesai bitince ve hafta sonu sunucu bilgisayarı kapatır" → pratikte tek yol AÇILIŞ
+  (startup → runCheck → install; açılışta etkinlik 0). Zayıflıklar: (a) açılışta ağ hazır değilse yeniden denemeler (1/3/10/20 dk)
+  personel çalışmaya başlayınca "hazır" bekler, akşam kapanınca hiç kurulmaz; (b) indirme sabah iş başında; (c) gün içinde bulunan
+  sürüm indirilmez. ÖNERİM (kullanıcının onayı bekleniyor): "arka planda indir, sonraki açılışta kur" — gün içinde indir + imza/sha256
+  doğrula + hazırla (servis durmaz), zilde "2.x hazır, sonraki açılışta kurulacak / Şimdi Güncelle"; açılışta hazır paket uygulama
+  kullanıcılara açılmadan ÖNCE kurulur (ağ gerekmez), deneme açılışı + geri dönüş aynen; mesai dışı kuralı açık kalan sunucularda sürer.
+  KARAR (kullanıcı, 10.10.2026: "önerini yap") + SORU ("bir günde 2 ya da daha fazla güncelleme olursa nasıl davranacak?") → koddan:
+  updater son 10 yayını sürüme göre sıralar, kurulabilen EN YENİSİNİ seçer, başarısız işaretlileri atlar; paket TAM program → ara
+  sürüm atlanabilir, göçler açılışta sırayla. UYGULANACAK (otomatik güncelleme ajanına eklendi): (1) hazırda yalnız EN YENİ paket
+  tutulur, daha yenisi inince eskisi silinir; (2) açılışta hazır paketi kurmadan önce ≤60 sn son denetim — daha yeni sürüm varsa o
+  indirilip kurulur, ağ yoksa hazırdaki kurulur → tek yeniden başlatma, ara sürüm kurulmaz; (3) periyodik denetim 6 sa → 1 sa (gün
+  içi yayın akşamdan önce iner); (4) deneme açılışı/geri dönüş/başarısız sürüm işareti aynen. Yayın kuralı: her yayın tam paket,
+  sürüm numarası öncekinden büyük (release.mjs zaten öyle).
+  YARGIÇ (11.10.2026, HEAD 3d0a2c8; betikler docs/kanit/2026-10-11/yargic/p1..p12; ana oturum B1/B2/B5'i yeniden üretti, sayılar aynı;
+  kullanıcıya listelendi): B1 ORTA ENGEL — banka hesabı açılınca açılıştan önceki hesapsız havale/kart satırının tutarı/tarihi düzeltilemiyor,
+  eski tarihli havale girilemiyor (409 bank-before-opening; v2.0.26'da yok = gerileme; gerçek 2.0.26 verisi göçünde de; module-ref.mjs 72-74,
+  101-112); B2 ORTA/DÜŞÜK — Kurulum Sihirbazı Geri Al K7 Engelle'yi (−1.000) ve pasif hesabı deliyor; B3 DÜŞÜK — banka fişi Ters Kaydet /
+  Açılışı Düzelt pasif hesabı değiştiriyor; B4 DÜŞÜK — Kart Borcuna Aktar / Devir Kapanışı yapılmış eski satır silinince karşı kayıt takılı
+  kalıyor; B5 DÜŞÜK/ORTA — gün içinde hazırlanan güncelleme yayından geri çekilse de açılışta kuruluyor. Temiz: K7 15 yol, rapor 101/101,
+  kurumsal kart, Drive. Sırada: eleştirmen (yargıç kararını denetler), sonra plana göre düzeltme (kırmızı test → düzeltme).
+  ELEŞTİRMEN (11.10.2026; betikler docs/kanit/2026-10-11/elestirmen/e1..e4): B1 KATILIYOR (bütün modüllerde; silme/nakde çevir 200 ↔ düzelt 409
+  tutarsız = Y2; çok hesapta açık "hesapsız" seçeneği gerekli); B2 KATILMIYOR → ORTA, bu turda (K1 emsali; Bu Hesaba Ata/sihirbaz eski ödemeyi
+  Engelle'deki hesaba bağlayıp −1.500); B3 katılıyor; B4 KATILMIYOR → kök Y1; B5 KATILMIYOR → ORTA ENGEL (yayını silmek tek acil fren; hazırdan
+  daha eski en yeni sürümde de kuruluyor). YENİ Y1 ORTA–YÜKSEK ENGEL (ana oturum yeniden üretti): Kart Borcuna Aktar yapılmış eski kartla ödeme
+  500→450 düzeltilince kart borcu 950 (gerçek 450), 108.00 +500, yeni 520 kart ödemesi yanlış 409 cash-blocked; Bankaya Geçmiş Say komşusu
+  108.00 −50; Mutabakat Testi "tamam". Dönem kilidi × banka, Şirket Verisini Sıfırla, yetki matrisi 22/22 temiz. KARAR (plana uy): B1+Y1+B4+Y2+
+  B2+B3 tek düzeltme işi (banka), B5 ayrı iş (güncelleme); ikisi ajanlarda, önce kırmızı test.
+  DÜZELDİ (11.10.2026): B5 67f00da (geri çekilen hazır sürüm kurulmaz, hazır silinir, Yönetim'de "yayından kaldırıldı"; hazırdan eski ama
+  çalışandan yeni sürüm varsa o kurulur — kullanıcıya söylendi) — ana oturum eski kodda 1/4 → 4/4, CI 573 yeşil. B1+Y1+B4+Y2+B2+B3 a735a31
+  (birleşme 699266f): pickRef satır tarihinde uygunluk, "Hesapsız (Açılıştan Önce)" seçeneği, havuz satırına para değiştiren işlem 409
+  bank-reclass-active (Kurulum Geçmişi'nden Geri Al), Mutabakat Testi'ne bank:pool denetimi, Ata/sihirbaz/Geri Al K7 + pasif, fiş Ters Kaydet/
+  Düzelt/Açılış pasifte 400. Ana oturum: gg3 eski sunucuda 0/12 → 39/39, npm test 2065/2065, senaryo-banka-210 407, 210b 89, 210-temel 79,
+  210-eski-satir 12, mutabakat 2×1.000 tutarlı. Açık: "Hesapsız" seçilince cari formun yardım metni eski; kılavuzda Hesapsız/Geri Al yolu yok.
+  UYARI BULGULARI (10.10.2026 gece; senaryo-225 incelemesinde, kullanıcıya listelendi; karar bekleyenler): (1) sağ alt bildirimde ilk 5'ten
+  sonrası, özet bildirimi ekrana çıkmadan "görüldü" yazılıyor (hof-alerts.js enqueue) → sayfa erken değişirse bunlar 3 sa sağ altta görünmez,
+  yalnız zilde (görmeden görüldü — düzeltilecek: özet gösterilince işaretle); (2) uyarı ufku sayfaya göre tutarsız: açık sayfanın son tarihleri
+  7 gün ufukla, ÖBÜR sayfanınkiler ufuksuz (dues.mjs) → 1. sayfadayken 2. sayfanın 200+ gün sonraki kayıtları "SON GÜNE 2xx GÜN" uyarısı verir
+  (müşterinin "42 gün" ekranı bu yoldan); hangisi doğru kullanıcıya soruldu; (3) iki pencerede sayfa seçimi kullanıcı başına (düşük); (4) yeni
+  sayfa açılınca açık pencerenin takvimi yenilenmiyor (düşük). senaryo-225 C kırmızısı = testin kendi yarışı (216f76e, yalnız test; zorla 6/6).
+  e2e NOT ADIMI (11.10, son aday yerel koşusu): ÜRÜN — analiz yanıtının "profil" olayı işlem geçmişini yeniden yüklerken listeyi
+  "Yükleniyor…" ile siliyordu (başka bilgisayardaki tablo değişikliğinde açık geçmiş titriyordu); 4af88bd aynı kayıtta eski liste kalır.
+  Zorla betik test/e2e/e2e-not-yaris.mjs (ajan: eski 0/6, yeni 6/6; doğal 10/10 iki kodda).
+  MUTABAKAT TOHUM 4 (Uzun Doğrulama, 582409c; 22/23 yeşil, tek kırmızı): ÜRÜN HATASI, v2.0.26'da da VAR (2.0.15'ten beri) — faturada
+  1.048.576 TL üstü ondalıklı birim fiyatların ~%10'u ve 16.777.216 üstü ondalıklı miktarlar "en çok dört/üç ondalık" diye REDDEDİLİYORDU
+  (invoice-math.mjs computeLine: x × 10.000 − yuvarlanmış > 1e-6 mutlak tolerans; 1.234.567,89 × 10.000 = 12345678900,000002). Ekrandan da
+  olur. Düzeltme 3069b26 (basamak 15 anlamlı basamakta artığı silinmiş en kısa gösterimden). Ana oturum: eski kopya 779c6a9'da 3/4 kırmızı,
+  0a733dd'de 4/4 + komşu fatura testleri 68/68. Kullanıcıya listelendi. TOHUM 4 YENİDEN (ana oturum, 52ea195): 5.000 işlem, 5.002
+  doğrulama, her işlemden sonra tutarlı, GEÇTİ çıkış 0 (yerelde 61,7 dk; GitHub'da ~43 dk); CI 592 (52ea195) ve 2824f22 dört platform + e2e YEŞİL.
+  ÖLÇEK (11.10.2026; tools/olcek-210.mjs, 001'de 100.000 + 002'de 12.000 para satırı, gerçek API'den; kanıt docs/kanit/2026-10-11/olcek):
+  DOĞRULUK tamam (10/20 kullanıcı: mutabakat TAMAM, bağımsız Kasa/banka farkı 0,00, yedekler bütün). HIZ plan bütçesini AŞIYOR (§3.11 madde 5:
+  "Hareketler sayfası ve arama 1.000.000 satırda < 1 sn"): 100.000'de tek kullanıcıda bile Banka Hareketleri p50 2,7 sn, Cari arama 1,9 sn;
+  10 kişide p95 9,8–12,1 sn, 20 kişide en çok 87 sn; olay döngüsü 6 sn'ye kadar tıkanıyor. KÖK NEDEN (CPU profili 1/3/5 kullanıcı, ana
+  oturum çözümledi): meşgul sürenin %45–55'i banka raporlarında (report-center banka-bakiye/banka-hareket → money-lines classified: bütün
+  para satırları her açılışta sıralanıp JS nesnesine çevriliyor, ilişkili alt sorgu; SQLite eşzamanlı → herkes bekliyor), %12–14 cari
+  listesi (her aramada bütün cariler + toplamlar). 2.1.0'ın yeni banka raporları getirdi. KARAR (plana uy: bütçe kabul ölçütü): teslimden
+  ÖNCE düzeltilir (ajan, worktree): rapor toplamları SQL'de, dönem öncesi devir toplamla, yalnız dönem satırları; eşdeğerlik testi (eski ↔
+  yeni çıktı birebir) + aynı veriyle önce/sonra ölçüm. Kullanıcıya listelendi.
+  KARAR (kullanıcı, 11.10.2026: "benim müşteri portföyüme göre sonraki ölçümler yeterli"): ajanın SONRA ölçümü (1 kişi tüm istekler p50 0,09
+  sn; 10 kişi Cari arama p95 1,1 sn, Banka Hareketleri p95 0,95 sn, olay döngüsü en çok 1,3 sn; 20 kişi en uzun istek 15,7 sn, rapor açan p50
+  7,5 sn; doğruluk her düzeyde tamam) YETERLİ → ek hız işi YOK. Bütçeyi az aşan kalanlar (10 kişide arama p95 1,1 sn / döngü 1,3 sn, 20 kişide
+  rapor bekleyişi, kart/masraf raporunun iş parçacığı payı) teslimde BİLİNEN SINIRLAR'a yazılır. Doğrulama (eşdeğerlik, mutasyon, ana oturum
+  ölçümü, ekran hataları, CI, e2e) aynen yapılır — karar yalnız hız yeterliliği içindir.
+  SÜRÜM NOTU (kullanıcı, 11.10.2026: "sürüm notunda sadece; iyileştirmeler ve banka temel modülü eklendi gibi kısa yapalım"): CHANGELOG
+  2.1.0 = iki satır (Banka modülü eklendi + iyileştirmeler ve hata düzeltmeleri); GitHub yayın metni de aynı kısalıkta. Ayrıntılı liste
+  `docs/2.1.0-DEGISIKLIKLER.md` (müşteriye gösterilmez). Bu karar 10.10'daki "teslim notunda Drive kaldırıldı yazılır" satırını sürüm notu için
+  DEĞİŞTİRDİ (Drive kaldırıldığı ayrıntılı listede ve kılavuzda yok/yazılı; kullanıcıya söylendi).
+  ELLE KABUL LİSTESİ (kullanıcı, 11.10.2026: "bana vereceğin elle kabul listesini istemiyorum; ben kendi testimi yapabilirim canlıya alınca"):
+  2.1.0 teslimde elle kabul listesi VERİLMEZ (kanıt kuralı madde 5'ten kullanıcı kararıyla sapma; kullanıcı canlıda kendisi dener). Listeyi
+  ekrandan doğrulayan ajan durduruldu (worktree agent-a4337a23…, birleştirilmedi). `docs/2.1.0-ELLE-KABUL.md` depoda yalnız arşiv. Ajanın
+  bulduğu tek şüphe kullanıcıya listelendi: Rapor Merkezi Excel çıktısında şirket adı/kodu yok (PDF'te var; v2.0.26'da da aynı; 2.0.17 m2).
+  KARAR (kullanıcı, aynı gün): 2.1.1'e bırakıldı → 2.1.0 teslimde BİLİNEN SINIRLAR'a yazılır (report-center.mjs xlsx ucu; PDF office.name kullanıyor).
+  KAPSAM SORUSU (kullanıcı, 11.10.2026: "neredeyse bütün program elden geçti diyebilir miyiz?") → HAYIR: para çekirdeği + banka derin;
+  geri kalanı sürüm sürüm değişen yer kadar; satır kapsamı en son 2.0.21'de (%95,2 / dal %79,9 / arayüz %79,8; 52 yüksek riskli testsiz yer).
+  KARAR (kullanıcı, aynı gün): kapsam ölçümü 2.1.0 temel banka sürümü CANLIYA ALINDIKTAN SONRA yapılır; kullanıcı yeni sürümü kendisi ve
+  müşterilerde kullanarak dener. Teslimde DENENMEYEN'e yazılır: 2.1.0 kapsam ölçümü yok (yayın sonrası iş).
+  HIZ DÜZELTMESİ BİRLEŞTİ (b3079e3; ana oturum eşdeğerlik+iş parçacığı+İ10 43/43; CI d4fa0ed ve c37fe13 dört platform + e2e YEŞİL). NOT:
+  e2e senaryoları createApp'i doğrudan çağırır → iş parçacığı (üretim yolu) e2e'de AÇIK (yalnız startTestServer kapatır); senaryo-banka-210'da
+  13 iş parçacığı sayıldı. BAĞIMSIZ İNCELEME (wf_e324b8a2-ee9; 5 bakış + 4 doğrulayıcı; teslime ENGEL YOK; kullanıcıya listelendi):
+  H1 ORTA (hızdan): rapor sürerken şirket geri yükleme/silme → rapor 500 "Sunucu işlemi tamamlayamadı" + günlükte ERROR (report-runner exit düz
+  Error); kuyruktaki 503 "Sunucu kapanıyor" yanlış metin. H2 düşük (hızdan): zaman aşımında close() iş parçacığı bitmeden çözülüyor, max 2 aşılıyor
+  (Windows'ta ardından geri yükleme EBUSY riski, koddan). H3 düşük (hızdan): iş parçacığı hatası günlüğe yazılmıyor, kullanıcıya ham İngilizce
+  metin. H4 ORTA (banka istemcisi, hızdan DEĞİL; 07b8f60'ta da): Banka → Hareketler "Daha Fazla Göster" sürerken arka plan yenilemesi gelirse sayfa
+  sınırındaki hareket ekranda görünmüyor (hof-core.js:328/332, hof-bank.js:1266/1271). H5 düşük: + Masraf kaydı sonrası reload Daha Fazla'yı 50'ye
+  geri alıyor = ölçek aracının "banka süzgeç" 30 sn hatasının kaynağı (araç Daha Fazla zaman aşımını süzgeç diye etiketliyordu). H6 düşük:
+  hesap başı kuruş toplamı 2^53 (~90 trilyon TL) aşınca banka raporları 500 — eski kodun summary yolu da aynı ölçekte kırık → BİLİNEN SINIR.
+  H7 test: eşdeğerlik testinin eski yolu Alt Hesap Mizanı'nda yeni moneyLines'ı kullanıyor (ayrı kopya HTTP karşılaştırmasında fark 0). Temiz:
+  şirket ayrımı/yetki/denetim kaydı (26 sorgu × 2 yol fark 0), SQL eşdeğerliği (2 tohum × 1.443 + uç durumlar + 3 eski sürüm fikstürü fark 0),
+  cari arama ve eksi bakiye kararları eski kodla aynı. KARAR (plan: engel değil ama yeni kod + ucuz): H1–H5 + H7 + araç etiketi düzeltilir
+  (ajan, kırmızı test → düzeltme); H6 bilinen sınır.
+  SÜRE (kullanıcı, 11.10.2026: "tüm işlemler 5 saat sürer mi?") → sıralı 7–8 sa; KARAR (baş mimar, kullanıcıya söylendi): Uzun Doğrulama
+  ŞİMDİ 3c9f8d3'te başlatıldı (koşu 38149023983, #82; "yalnız son adayda" kuralından BİLİNÇLİ sapma: kalan düzeltmeler rapor iş parçacığı + banka istemcisi; mutabakat/
+  güvenilirlik koşuları ikisini de kullanmıyor). Birleşmeden sonra diff para/şirket yoluna (server/ altında report-runner/worker dışı) dokunursa
+  ilgili Uzun Doğrulama işleri son adayda YENİDEN koşulur. Hedef toplam ~4,5–5 sa.
+  H1–H5 + H7 DÜZELDİ (ajan 16ec9cf, 9cb72bc, 7ee39f4; birleşme 39698bd). Ana oturum kendi ayrı kopyasında (git archive 3c9f8d3 + yalnız sınama
+  girişi yaması, diff ile denetlendi): kapanış 0/5, liste kapısı 1/4, kâhin 0/1, e2e Daha Fazla yarışı 16/31 (15 değişkenin 15'i) KIRMIZI →
+  39698bd'de 26/26 ve 31/31 YEŞİL. Ajan: npm test 2099/2099, senaryo-banka-210 407, 210b 89, 210-temel 79, ekran-aciklama 11, 222 56, 216 53.
+  H4 komşuları da kapandı (Cari, Fatura, Stok, Çek/Senet listeleri aynı liste kapısında; Fatura/Stok/Çek arka plan yenilemesi Daha Fazla
+  satırlarını korur). server/app.mjs değişikliği yalnız kapanış nedeni (reportWorker kapalı test sunucularında etkisiz) → Uzun Doğrulama
+  (3c9f8d3) para/şirket yolu için geçerli, yeniden koşu GEREKMEZ. İstemci değiştiği için CI dışı e2e (210–218, rapor, taslak, whatsapp,
+  ui-ux-217, senaryo) son adayda yeniden koşulur. Denenmeyen: Fatura/Stok/Çek pencerelerinde e2e yarış testi yok (kapı birim testi + 216/222).
+  (1) ve (4) DÜZELDİ (609f459, birleşme 6d6375f): özet taşıdığı bildirimleri ekrana çıkınca "görüldü" yazar; başka sayfanın değişikliği
+  `live:page.changed` ile takvim + şerit sayısını yeniler (kök neden hof-live.js v2.0.1 kuralı; yeni sayfa açma zaten çalışıyordu). Ana oturum:
+  eski istemcide senaryo-225-uyari 14/23 kırmızı → 23/23, senaryo-225 46/46. (2) kullanıcı kararı bekliyor; (3) aynı kullanıcının öbür
+  penceresi yeni sayfa açılınca "sayfa silindi" diyor — ek bulgu, kullanıcıya listelendi.
+  KARAR (kullanıcı, 11.10.2026: "A"): uyarı ufku BÜTÜN sayfalarda aynı — her kayıt yalnız son 7 gün kala uyarır (öbür sayfaların ufuksuz
+  uyarısı kalkar; müşterinin "SON GÜNE 42 GÜN" ekranı bu yoldandı). Uygulama: önce kırmızı test → düzeltme (2.1.0'a).
+  DÜZELDİ (11.10.2026): kök neden routes/dues.mjs — öbür sayfaların son tarihleri raporların bir yıllık takviminden (reports.mjs AHEAD
+  366 gün) süzülmeden geliyordu; açık sayfanınki computeDeadlines 7 gün (sabit DUE_WINDOW.aheadDays, ayar YOK). Öbür sayfa son tarihi de
+  days ≤ 7 süzülür; geçmiş taraf (30 gün) aynı; Tahsilat Takvimi kalemleri ve Vade Takip değişmedi. Kırmızı: uyari-ufku-225 eski kodda
+  2/4, senaryo-225-uyari eski sunucuda 33/36 ("SON GÜNE 42 GÜN · Öbür 42 Gün Firması" sağ altta ve zilde) → 4/4, 36/36; senaryo-225
+  hedefi 10 → 5 gün (46/46), npm test 2069/2069. Kanıt docs/kanit/2026-10-11/uyari-ufku.
+  HESAPSIZ METNİ + KILAVUZ (9f82aec, b08a17a; birleşme): "Hesapsız (Açılıştan Önce)" seçilince cari/fatura/Kasa↔Banka açıklaması ve seçici notu
+  doğru; kılavuz 8. Banka'ya iki kısa bilgi, PDF b326df68… (34 sayfa). Ana oturum: eski istemcide senaryo-banka-210-eski-satir 20/25 → 25/25,
+  senaryo-banka-210 407/407, yazım 2/2.
+  OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
+  koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
+  mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
+  sorulmuyor). KARAR (kullanıcı: "ekle, ayrıca kodda olan, teoride olan, güncelleme uyarısı ya da 15 dk boş kalınca program otomatik
+  güncelleme alıyor mu doğrula"): (11) kapalıyken de açılışta + 6 saatte bir sorulur, kurulmaz, yöneticiye "hazır" bildirimi; (12) GERÇEK
+  ÇALIŞTIRMAYLA doğrulama (sahte saat değil): gerçek servis + yerel sahte yayın kaynağı (imzalı bildirge + paket), kullanıcı etkinliği varken
+  "hazır" uyarısı ekranda (zil/Yönetim, ekran görüntüsü), etkinlik kesilince gerçek 15 dk sonra kendiliğinden kurulum, açılışta sorgu ve
+  kurulum, mesai dışı kuralı; Windows'ta CI kurulum testinde de. Eskimiş kod açıklaması ("gün içinde kendiliğinden güncelleme yapılmaz") düzelir.
+- KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
+  POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
+  `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
+  çıkış → kartla ödeme bankadan çıkmış gibi Banka/POS toplamını düşürüyor (yanlış: kartla ödeme kart BORCUDUR, para ekstre ödenince
+  bankadan çıkar). 2.1.0 DALINDA ÖLÇÜLDÜ (`docs/kanit/2026-10-10/kart-pos-sonda.mjs`, aynı rakamlar): Gerçek Banka 10.000 (kart
+  ödemesi düşmüyor), 8.656 "Hesabı Atanmamış Eski Hareketler" uyarısında (hiçbir toplamda değil); "Kart Borcuna Aktar" ile kurumsal
+  kart hesabına → "Kart ve Kredi Borcu 8.656", mutabakat tamam. AÇIK (2.1.0'da plan gereği yapılacak, §4.6 / madde 27 / §3.5 tablo
+  satır 3 ve 5): yeni kartla ödemede kurumsal kart hesabı SEÇİLEMİYOR — `pickRef` yalnız havaleyi bağlıyor, gönderilen
+  bankAccountId sessizce yok sayılıyor (ölçüldü: 500 TL yine Hesabı Atanmamış'a düştü); düzeltme: ödeme formlarında (cari ödeme,
+  alış faturası, stok, çek değil) "Kredi Kartı" seçilince kurumsal kart seçimi → 309; POS tahsilatı (108, komisyon, valör,
+  blokeli) 2.2.0. Yanıt kullanıcıya verildi.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

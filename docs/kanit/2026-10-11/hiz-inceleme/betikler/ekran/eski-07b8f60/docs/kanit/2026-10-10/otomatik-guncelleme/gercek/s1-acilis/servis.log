@@ -1,0 +1,9 @@
+2026-10-10T18:12:19.734Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:42397
+2026-10-10T18:12:19.736Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 41807)
+2026-10-10T18:12:19.795Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+2026-10-10T18:12:19.795Z [INFO] 9.0.1 sürümü indiriliyor (4769 KB)…
+2026-10-10T18:12:20.138Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+2026-10-10T18:12:20.192Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 42805)
+2026-10-10T18:12:20.599Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+2026-10-10T18:12:20.631Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+2026-10-10T18:12:20.745Z [INFO] Servis yöneticisi kapatılıyor…

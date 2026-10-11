@@ -1,0 +1,13 @@
+(node:26451) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+=== P5 Açılışı Düzelt: borç 5.000 açılış, 5.000 ödendi, açılış 3.000'e düzeltilir
+ödeme 5.000 200  
+açılış 3.000 200  
+  kredi 2000
+
+=== P6 Düzelt: kullanım 1.000, ödeme 1.000; kullanımı 400'e Düzelt
+kullanım 200  
+ödeme 200  
+kullanımı 400'e düzelt 409 bank-loan-exceeds Kredi Geri Ödemesi'nde anapara (600,00 TL) Akbank · Kredi kredisinin kalan borcunu (0,00 TL) aşamaz. Faiz ayrı alana (Faiz) yazılır.
+  kredi 0

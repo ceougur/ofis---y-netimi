@@ -1,0 +1,28 @@
+{
+  "companies": [
+    {
+      "id": "sirket-001",
+      "code": "001",
+      "name": "Şirket 1",
+      "dir": "",
+      "createdAt": "2026-10-11T13:34:12.990Z",
+      "createdBy": ""
+    },
+    {
+      "id": "sirket-c5f8697d-5e3a-4e6a-ab93-671e9e0a705b",
+      "code": "002",
+      "name": "Büyük İki",
+      "dir": "sirketler/002",
+      "createdAt": "2026-10-11T13:34:13.325Z",
+      "createdBy": "user-10db1e9c-f411-490e-9411-8f9950fa471f"
+    },
+    {
+      "id": "sirket-77034f61-31e3-4e91-82f9-ef84c29ddd46",
+      "code": "003",
+      "name": "Büyük Üç",
+      "dir": "sirketler/003",
+      "createdAt": "2026-10-11T13:34:19.693Z",
+      "createdBy": "user-10db1e9c-f411-490e-9411-8f9950fa471f"
+    }
+  ]
+}

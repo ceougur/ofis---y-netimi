@@ -5,12 +5,15 @@ import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from ".
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { foldName, nameConflict, resolveUserByName } from "../lib/names.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { bankForm } from "../lib/bank/module-ref.mjs";
 import { canUser } from "../lib/permissions.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null, period = null, cash = () => null }) {
-  const now = () => new Date().toISOString();
+export function registerWorkspaceRoutes(router, { store, bank, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null, period = null, cash = () => null, bankModule = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now).
+  const now = () => clock().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
   const assignedTo = (user, task) => {
@@ -54,7 +57,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const raw = text(body.date);
     const date = period
       ? period.movementDate(raw ? { date: raw } : {}, { label: "Tahsilat Tarihi" })
-      : raw || new Date().toISOString().slice(0, 10);
+      : raw || clock.today();
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(new Date(date).getTime())) throw new HttpError(400, "Geçerli bir tahsilat tarihi gerekli.");
     return { amount: roundMoney(amount), date };
   };
@@ -326,7 +329,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const items = [
       ...list(`SELECT n.id, n.note AS text, n.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM notes n LEFT JOIN users u ON u.id = n.created_by WHERE n.case_key = ?`, "note"),
       ...list(`SELECT p.id, p.phone, p.label, p.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM phones p LEFT JOIN users u ON u.id = p.created_by WHERE p.case_key = ?`, "phone"),
-      ...list(`SELECT p.id, p.amount, p.date, p.note, p.created_by AS actorId, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(e.display_name, '') AS updatedByName FROM payments p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN users e ON e.id = p.updated_by WHERE p.case_key = ?`, "payment"),
+      ...list(`SELECT p.id, p.amount, p.date, p.note, p.method, p.fin_ref AS finRef, p.created_by AS actorId, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(e.display_name, '') AS updatedByName FROM payments p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN users e ON e.id = p.updated_by WHERE p.case_key = ?`, "payment"),
       ...list(`SELECT l.id, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM liens l LEFT JOIN users u ON u.id = l.created_by WHERE l.case_key = ?`, "lien"),
       // Dosya geçmişindeki görevler de görev yetkisine uyar (personel yalnızca kendi görevlerini görür).
       ...visibleTasks(user, list(`SELECT t.id, t.title, COALESCE(a.display_name, t.assignee) AS assignee, t.assignee_id AS assigneeId, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, t.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users a ON a.id = t.assignee_id WHERE t.case_key = ?`, "task")),
@@ -365,30 +368,50 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     ok(res, { id: itemId });
   });
 
+  // v2.1.0 Aşama 8 (plan §3.7 #7): havale/EFT tahsilatı banka hesabına bağlanır (fin_ref; tek hesapta kendiliğinden, birden çokta seçim zorunlu),
+  // kalıcı istek kimliği (aynı istek ikinci kez yazılmaz), Benzer İşlem (hesaba bağlı satırda; similarOk), hesap bazında eksi bakiye (K7; düzeltme
+  // ve silmede hesaptan para çıkar). Bağ kuralları (K4, geri yükleme, kapı) bank.post'ta kendiliğinden.
+  const banking = bankForm(bankModule);
   router.post("/api/workspace/cases/:key/payments", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "payments.create");
     const body = await readJson(req);
     const key = caseKeyOf(params.key);
     const { amount, date } = paymentInput(body);
     const method = methodInput(body.method);
+    const finRef = banking.ref({ method, value: body.bankAccountId, date });
+    const k7 = banking.negative([finRef], date, banking.forced(body));
     const itemId = newId("payment");
-    store.tx(() => {
-      store.run(
-        "INSERT INTO payments (id, case_key, amount, date, note, case_title, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), method, user.id, now(),
-      );
-      audit(user, "case.payment.created", itemId, { caseKey: key, amount, date, method });
+    // v2.1.0 (bank.post, plan §3.3): satır, işlem başlığı (İşlem No) ve işlem geçmişi tek işlemde.
+    const created = bank.post({
+      user,
+      module: "payment",
+      op: "create",
+      requestId: banking.requestId(req, body),
+      scope: "payment.create",
+      body: { ...body, caseKey: key },
+      similarOk: body.similarOk === true,
+      write: () => {
+        k7.capture();
+        store.run(
+          "INSERT INTO payments (id, case_key, amount, date, note, case_title, method, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), method, finRef, bank.eventFor("payments", { date, method, fin_ref: finRef }), user.id, now(),
+        );
+        audit(user, "case.payment.created", itemId, { caseKey: key, amount, date, method, finRef });
+        return { id: itemId };
+      },
+      guard: k7.guard,
     });
+    k7.prime(created);
     changed(user, "activity", { caseKey: key });
-    changed(user, "cash");
-    ok(res, { id: itemId });
+    if (!created?.replayed) changed(user, "cash");
+    ok(res, created?.replayed ? { id: created.refId, replayed: true } : { id: itemId });
   });
 
   // Tahsilat düzeltme ve silme (v2.0.1). Herkes kendi girdiği tahsilatı, kasa yetkisi olanlar tüm tahsilatları
   // düzeltebilir/silebilir. Eski ve yeni değerler denetim kaydına yazılır.
   const editablePayment = (req, id) => {
     const user = auth.requirePermission(req, "payments.create");
-    const payment = store.get("SELECT id, case_key AS caseKey, amount, date, note, method, created_by AS createdBy FROM payments WHERE id = ?", limited(id, 120, "Tahsilat"));
+    const payment = store.get("SELECT id, case_key AS caseKey, amount, date, note, method, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy FROM payments WHERE id = ?", limited(id, 120, "Tahsilat"));
     if (!payment) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
     if (payment.createdBy !== user.id && !canUser(user, "cash.manage")) throw new HttpError(403, "Başkasının girdiği tahsilatı yalnızca kasa yetkisi olanlar (yönetici, muhasebe) değiştirebilir.");
     return { user, payment };
@@ -402,11 +425,27 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const { amount, date } = paymentInput(body);
     const note = limited(body.note, 500, "Açıklama");
     const method = methodInput(body.method, payment.method || "cash");
+    const moved = (payment.method || "cash") !== method || Math.abs(Number(payment.amount) - amount) > 0.004 || payment.date !== date;
+    const finRef = banking.ref({ method, value: body.bankAccountId, date, previous: { method: payment.method || "cash", finRef: payment.finRef }, changed: moved });
     cash()?.guardChange?.(cashSide(payment), cashSide({ amount, date, method }), body.cashForce === true);
-    store.tx(() => {
-      store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, method, user.id, now(), payment.id);
-      audit(user, "case.payment.updated", payment.id, { caseKey: payment.caseKey, previous: { amount: payment.amount, date: payment.date, note: payment.note, method: payment.method || "cash" }, amount, date, note, method });
+    const k7 = banking.negative([payment.finRef, finRef], payment.date < date ? payment.date : date, banking.forced(body));
+    const result = bank.post({
+      user,
+      module: "payment",
+      op: "update",
+      prev: payment,
+      requestId: banking.requestId(req, body),
+      scope: "payment.update",
+      body: { ...body, paymentId: payment.id },
+      write: () => {
+        k7.capture();
+        store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, method, finRef, bank.eventFor("payments", { date, method, fin_ref: finRef, event_id: payment.eventId }), user.id, now(), payment.id);
+        audit(user, "case.payment.updated", payment.id, { caseKey: payment.caseKey, previous: { amount: payment.amount, date: payment.date, note: payment.note, method: payment.method || "cash", finRef: payment.finRef }, amount, date, note, method, finRef });
+        return { id: payment.id };
+      },
+      guard: k7.guard,
     });
+    k7.prime(result);
     changed(user, "activity", { caseKey: payment.caseKey });
     changed(user, "cash");
     ok(res, { id: payment.id });
@@ -415,17 +454,28 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const { user, payment } = editablePayment(req, params.id);
     period?.assertOpen(payment.date, "Bu tahsilat");
     cash()?.guardChange?.(cashSide(payment), null, url.searchParams.get("cashForce") === "1", "Bu tahsilat silinince");
-    store.tx(() => {
-      // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse üçü birden yazılmaz; önceden
-      // satır silinip Silinenler'e yazılamadan kesinti olursa tahsilat iz bırakmadan kayboluyordu. Yükte ödeme yolu da
-      // var (A1): geri yüklenen havale/POS tahsilatı nakde dönmez.
-      const full = store.get("SELECT id, case_key AS caseKey, case_title AS caseTitle, amount, date, note, method, created_by AS createdBy, created_at AS createdAt FROM payments WHERE id = ?", payment.id);
-      if (!full) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
-      store.run("DELETE FROM payments WHERE id = ?", payment.id);
-      // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.
-      trash?.add({ kind: "payment", ref: payment.id, title: full.caseTitle || full.caseKey || "Tahsilat", detail: full.note, payload: full, user });
-      audit(user, "case.payment.deleted", payment.id, { caseKey: payment.caseKey, amount: payment.amount, date: payment.date, note: payment.note, method: full.method });
+    const k7 = banking.negative([payment.finRef], payment.date, banking.forced(null, url));
+    const result = bank.post({
+      user,
+      module: "payment",
+      op: "delete",
+      prev: payment,
+      guard: k7.guard,
+      write: () => {
+        k7.capture();
+        // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse üçü birden yazılmaz; önceden
+        // satır silinip Silinenler'e yazılamadan kesinti olursa tahsilat iz bırakmadan kayboluyordu. Yükte ödeme yolu da
+        // var (A1): geri yüklenen havale/POS tahsilatı nakde dönmez. v2.1.0: yükte işlem başlığı da var (geri yüklenince aynı olay).
+        const full = store.get("SELECT id, case_key AS caseKey, case_title AS caseTitle, amount, date, note, method, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM payments WHERE id = ?", payment.id);
+        if (!full) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
+        store.run("DELETE FROM payments WHERE id = ?", payment.id);
+        // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.
+        trash?.add({ kind: "payment", ref: payment.id, title: full.caseTitle || full.caseKey || "Tahsilat", detail: full.note, payload: full, user });
+        audit(user, "case.payment.deleted", payment.id, { caseKey: payment.caseKey, amount: payment.amount, date: payment.date, note: payment.note, method: full.method, finRef: full.finRef });
+        return { id: payment.id };
+      },
     });
+    k7.prime(result);
     changed(user, "activity", { caseKey: payment.caseKey });
     changed(user, "cash");
     ok(res, { id: payment.id });
@@ -449,7 +499,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
   router.get("/api/workspace/liens", async ({ req, res, url }) => {
     auth.requireUser(req);
     const days = Math.max(1, Math.min(365, Number(url.searchParams.get("days") || 7)));
-    const current = Date.now();
+    const current = clock().getTime();
     const threshold = current + days * 86_400_000;
     const items = store.all(`SELECT l.id, l.case_key AS caseKey, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_by AS actorId, COALESCE(u.display_name, '') AS actorName FROM liens l LEFT JOIN users u ON u.id = l.created_by WHERE l.status = 'active' ORDER BY l.expires_at`)
       .filter(item => {
@@ -641,7 +691,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
       sheet.headers = sheet.columns.map(column => aliases[column] || column);
     }
     const total = sheets.reduce((sum, sheet) => sum + sheet.rows.length, 0);
-    const file = buildXlsx(sheets, { title: label });
+    const file = buildXlsx(sheets, { now: clock(), title: label });
     audit(user, "dataset.exported", dataset.currentKey(), { tab: all ? "" : tab, all, rows: total, sheets: sheets.length });
     const suffix = all ? "tüm sekmeler" : tab && sheets[0].name !== label ? sheets[0].name : "";
     sendBuffer(res, file, {

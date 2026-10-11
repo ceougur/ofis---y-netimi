@@ -10,6 +10,8 @@ on:
 
 permissions:
   contents: write
+  # Doğrulama kapısı CI koşularını okur (tools/kanit.mjs ci).
+  actions: read
 
 jobs:
   test:
@@ -17,6 +19,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Etiketler: eski sürümlerin GERÇEK koduyla veri üreten testler (npm test'teki göç testleri, senaryo-banka-210-temel adım 10 v2.0.23).
+          fetch-depth: 0
+          fetch-tags: true
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -41,7 +47,18 @@ jobs:
       - run: npm run test:senaryo-223
       - run: npm run test:senaryo-224
       - run: npm run test:senaryo-225
+      - run: npm run test:senaryo-225-uyari
       - run: npm run test:senaryo-226
+      - run: npm run test:senaryo-banka-210
+      - run: npm run test:senaryo-banka-210b
+      - run: npm run test:senaryo-banka-210-temel
+      - run: npm run test:senaryo-banka-210-eski-satir
+      - run: npm run test:banka-210-saat
+      - run: npm run test:banka-210-kart-onbellek
+      - run: npm run test:banka-210-daha-fazla
+      - run: npm run test:acilis-yanit-yaris
+      - run: npm run test:banka-210-ekran-aciklama
+      - run: npm run test:guncelleme-gercek
 
   windows:
     name: Windows kurulum paketi
@@ -61,6 +78,12 @@ jobs:
         with:
           name: destekofis-kurulum
           path: dist
+      # Doğrulama kapısı (10.10.2026): etiketlenen commit'in CI'si (Linux + Windows × Node 22/24, uçtan uca, "Doğrulama Kapısı")
+      # YEŞİL değilse yayın yok. CI hâlâ sürüyorsa en çok 90 dk beklenir.
+      - name: Doğrulama kapısı (CI yeşil mi?)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/kanit.mjs ci "$GITHUB_SHA" --bekle 90
       # Yayın web arayüzünden elle açıldıysa (etiket orada oluşturulduysa) eksik dosyalar eklenir: Windows'ta sınanmış
       # kurulum dosyası (sürümlü ve sitenin indirdiği sürümsüz adla), kullanım kılavuzu ve — DESTEKOFIS_RELEASE_KEY
       # tanımlıysa ve yayında yoksa — imzalı güncelleme paketi. Yayında zaten olan dosyalara dokunulmaz.

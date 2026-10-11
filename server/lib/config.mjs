@@ -3,6 +3,7 @@
 import path from "node:path";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { createClock } from "./clock.mjs";
 import { resolveDbPath } from "./db-path.mjs";
 import { DEFAULT_LICENSE_SERVICES } from "./license.mjs";
 
@@ -59,6 +60,38 @@ export function loadConfig(overrides = {}) {
     // et diyene kadar"). Kapalıyken fatura modülü tam çalışır; belge resmî hükmü olmayan müşteri fişi olarak basılır,
     // e-Belge seçenekleri ekranda görünmez. Yalnız testler (overrides.edocEnabled) açabilir; ortam değişkeniyle açılmaz.
     edocEnabled: overrides.edocEnabled === true,
+    // Döviz banka hesabı (v2.1.0 GG2): kur, değerleme ve döviz fişleriyle birlikte sonraki sürümde; o zamana kadar yalnız testler açar.
+    fxEnabled: overrides.fxEnabled === true,
+    // Bu sürümde olmayan banka özelliklerinin gizli ayarları (POS, Ekstre, Döviz, Elle Banka Fişi; lib/bank/settings.mjs NOT_YET): üretimde
+    // değiştirilemez ve okunurken varsayılandır; yalnız testler (doğrulama kurallarını sınayan) açar. Ortam değişkeni yok.
+    bankLater: overrides.bankLater === true,
+    // Eski sürüm gibi hesapsız havale (v2.1.0 Aşama 5–6): yalnız testler açar. Aşama 2–4 testleri "eski sürümden gelen hesabı atanmamış
+    // hareketi" banka hesabı tanımlıyken modül uçlarından yazar; açıkken cari/Kasa formunda hesap verilmezse satır hesapsız yazılır.
+    bankPickLegacy: overrides.bankPickLegacy === true,
+    // K1 öncesi fatura kapaması (v2.1.0): yalnız testler verir (test/guvenilirlik/kapama-k1-oncesi.mjs, dondurulmuş kopya). Altın test ve göç
+    // zinciri aynı veride 2.0.26'nın gerçek koduyla birebir karşılaştırır; K1 iade kapanışını bilerek değiştirdiği için o karşılaştırmalar bu
+    // kuralla koşar (göçün ve tek kaynağın etkisi ölçülür), K1'in etkisi ayrıca güncel kuralla denetlenir. Üretimde yok (ortam değişkeni yok).
+    legacyClosing: typeof overrides.legacyClosing === "function" ? overrides.legacyClosing : null,
     scheduleBackups: overrides.scheduleBackups ?? true,
+    // Sunucunun iş saati (v2.1.0; lib/clock.mjs): "bugün" ve iş kayıtlarının zaman damgaları tek kaynaktan. Üretimde gerçek
+    // saat; sahte saat yalnız programdan (testler, kabul senaryoları) verilir — ortam değişkeni yok. Şirketler aynı saati paylaşır.
+    now: createClock(overrides.now),
+    // Para yazımı denetimi (K6; lib/bank/post.mjs) test kipi: ihlal hata verir ve işlemi geri alır. Üretimde (varsayılan) iş durmaz,
+    // sunucu günlüğüne ve meta.bank.integrity'ye yazılır. Yalnız programdan (testler) açılır.
+    moneyStrict: overrides.moneyStrict === true,
+    // Mutabakat kapısının eşdeğerlik denetimi (v2.1.0, §3.11; lib/integrity-scope.mjs): testlerde tam kapı HER işlemde çalışır ve
+    // dokunulan varlıklar yolu "temiz" deyip tam kapı reddederse işlem 500 "gate-equivalence" ile kırılır. Üretimde kapalı (yalnız
+    // programdan açılır; ortam değişkeni yok).
+    gateVerify: overrides.gateVerify === true,
+    // Kapı süzgecinde "çok hareketli cari" eşiği (gözden geçirme B8): yevmiyeye giren satırı bundan çok olan carinin bakiyesi SQL
+    // toplamıyla (ledger.partyTotals) denetlenir; az olanınki yevmiye maddeleri kurularak (2.0.26 yolu). Testler 0 vererek her cariyi
+    // SQL toplamıyla denetletebilir (iki yolun eşdeğerliği).
+    scopePartyRows: Number.isSafeInteger(overrides.scopePartyRows) && overrides.scopePartyRows >= 0 ? overrides.scopePartyRows : 2000,
+    // Büyük banka raporları ayrı iş parçacığında (11.10.2026 hız düzeltmesi; lib/report-runner.mjs): üretimde açık. Testler yardımcısı
+    // (test/helpers.mjs) hızı için kapatır; iş parçacığı yolunu sınayan testler açar. Çıktı iki yolda aynıdır (test/banka-210-hiz-esdegerlik).
+    reportWorker: overrides.reportWorker !== false,
+    // İş parçacığının dosyası: yalnız testler değiştirir (programdan; ortam değişkeni yok) — kapanış/zaman aşımı/hata yollarını gerçek
+    // sunucuda zorla sınamak için (test/fixtures/rapor-is-parcacigi-sinama.mjs). Üretimde lib/report-worker.mjs.
+    reportWorkerEntry: overrides.reportWorkerEntry instanceof URL ? overrides.reportWorkerEntry : null,
   });
 }

@@ -1,0 +1,68 @@
+{
+  "ad": "kirmizi-eski-kod-2849d21-son-testler",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski/test/guncelleme-217.test.mjs /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski/test/update-flow.test.mjs /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski/test/guncelleme-gercek.test.mjs",
+  "commit": "1f499e69458eae7751ddc80c473b2eb7801e8ca5",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 4,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:43:13.812Z",
+  "sure_sn": 133.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 10,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "orkestratör: periyodik denetim ve mesai içinde erteleme › kendiliğinden kur KAPALIYKEN de açılışta ve 6 saatte bir denetlenir; bulunan sürüm kurulmaz, 'hazır' görünür",
+      "konum": "test/guncelleme-217.test.mjs:155:3",
+      "hata": "açılışta denetim yapılmalı (kapalıyken de) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "orkestratör: periyodik denetim ve mesai içinde erteleme › ertelenmiş sürüm, yönetici bu arada 'kendiliğinden kur'u kapatırsa saatlik bakışta kurulmaz",
+      "konum": "test/guncelleme-217.test.mjs:179:3",
+      "hata": "kapatılan ayara rağmen kurulum başladı · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "otomatik güncelleme — gerçek süreçlerle › S1 açılışta: yeni sürüm varken servis açılır, kimse kullanmıyor → kendiliğinden kurulur; yedek alınır, veriler aynı",
+      "konum": "test/guncelleme-gercek.test.mjs:45:3",
+      "hata": "servis durum sorusuna yanıt vermedi"
+    },
+    {
+      "ad": "otomatik güncelleme — gerçek süreçlerle › S2 kullanıcı çalışırken (mesai içi) bulunan sürüm KURULMAZ, 'hazır' görünür; etkinlik kesilince boşta süresi dolunca kurulur",
+      "konum": "test/guncelleme-gercek.test.mjs:64:3",
+      "hata": "Channel closed"
+    },
+    {
+      "ad": "otomatik güncelleme — gerçek süreçlerle › S4 mesai dışı (sunucunun gerçek saati; mesai dışındaki bir saat dilimi): kullanıcı çalışırken de kurulur",
+      "konum": "test/guncelleme-gercek.test.mjs:100:3",
+      "hata": "9.0.1 sürümüne geçilmedi: {\"error\":\"sürüm 9.0.0\"}"
+    },
+    {
+      "ad": "otomatik güncelleme — gerçek süreçlerle › S5 'kendiliğinden kur' kapalı: açılışta ve periyodik denetlenir, 'hazır' görünür, boşta ve mesai dışında da KURULMAZ; Şimdi Güncelle ile kurulur",
+      "konum": "test/guncelleme-gercek.test.mjs:121:3",
+      "hata": "Channel closed"
+    },
+    {
+      "ad": "otomatik güncelleme akışı › otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir",
+      "konum": "test/update-flow.test.mjs:193:3",
+      "hata": "Beklenen durum oluşmadı: {\"error\":{}}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/kirmizi-eski-kod-2849d21-son-testler.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "fabad532f911b6c40dcb0fccd73b1950ae06339816b37e2f73c4f9ba2bb098db",
+  "ham_cikti_bayt": 17839
+}

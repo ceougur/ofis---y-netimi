@@ -1,0 +1,27 @@
+rastgele-24-500: çıkış a=0 b=0 program=0 · karşılaştırılan 6490 · atlanan 764 · fark 813 {'A=B≠P': 718, 'A≠B=P': 77, 'B≠A=P': 12, 'KOSUCU': 6}
+  ACIKLANMAMIS:A=B≠P:bankaHesaplari.*                            15 yaprak  {'A=B≠P': 15}
+  ACIKLANMAMIS:A=B≠P:cariler.*                                   16 yaprak  {'A=B≠P': 16}
+  ACIKLANMAMIS:A=B≠P:mizan.102.NN                                15 yaprak  {'A=B≠P': 15}
+  ACIKLANMAMIS:A=B≠P:mizan.120                                   16 yaprak  {'A=B≠P': 16}
+  ACIKLANMAMIS:A=B≠P:mizan.391                                   17 yaprak  {'A=B≠P': 17}
+  ACIKLANMAMIS:A=B≠P:mizan.610                                   16 yaprak  {'A=B≠P': 16}
+  ACIKLANMAMIS:A=B≠P:mizan.770                                   16 yaprak  {'A=B≠P': 16}
+  ACIKLANMAMIS:A=B≠P:ozet.gercekBanka                            17 yaprak  {'A=B≠P': 17}
+  ACIKLANMAMIS:A=B≠P:ozet.kasaVeGercekBanka                      17 yaprak  {'A=B≠P': 17}
+  BANKA-EKSI-KODU                                                 6 yaprak  {'A=B≠P': 6}
+  KAHIN-K4-YINELENEN-AD                                          77 yaprak  {'A≠B=P': 77}
+  KART-HESABI-BAGLANMIYOR                                        84 yaprak  {'A=B≠P': 78, 'KOSUCU': 6}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                             158 yaprak  {'A=B≠P': 158}
+  KOSUCU-ALIS-YINELEME-NUMARA                                    14 yaprak  {'B≠A=P': 12, 'A=B≠P': 2}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.kdv                            16 yaprak  {'A=B≠P': 16}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.matrah                         16 yaprak  {'A=B≠P': 16}
+  SINIFLANMAMIS:A=B≠P:faturalar.*.toplam                         16 yaprak  {'A=B≠P': 16}
+  SINIFLANMAMIS:A=B≠P:retler:ters_kayit                           1 yaprak  {'A=B≠P': 1}
+  TUREV:IADE-KAPAMA+KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO+    4 yaprak  {'A=B≠P': 4}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                             4 yaprak  {'A=B≠P': 4}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO                16 yaprak  {'A=B≠P': 16}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO+VADELI-HESAP  101 yaprak  {'A=B≠P': 101}
+  TUREV:KDV-DAHIL-ISKONTO                                        84 yaprak  {'A=B≠P': 84}
+  TUREV:KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS                       17 yaprak  {'A=B≠P': 17}
+  VADELI-HESAP-FIS                                               14 yaprak  {'A=B≠P': 14}

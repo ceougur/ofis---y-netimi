@@ -1,0 +1,113 @@
+{
+  "ad": "k1-eski-kod-kirmizi",
+  "komut": "node --test test/iade-kapama-k1.test.mjs",
+  "commit": "415213313605eb302461685ce28c593075d47c27",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:23:21.147Z",
+  "sure_sn": 8.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 2,
+    "basarisiz": 16,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 16 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N1: açık satış 600 → 240 iade + 240 nakit geri → fatura açığı 600, hayalet kapatan yok, iade açığı 0, cari 600, raporlar 600",
+      "konum": "test/iade-kapama-k1.test.mjs:127:3",
+      "hata": "fatura açığı 600 (programda 360: iade alacağı hem geri ödendi hem faturadan düşüldü) · 360 !== 600 (beklenen 600, gelen 360)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N2: alış 1.200 açık → 240 alıştan iade, tedarikçi 240 nakit geri öder → alış açığı 1.200, cari −1.200",
+      "konum": "test/iade-kapama-k1.test.mjs:143:3",
+      "hata": "alış açığı 1.200 (programda 960) · 960 !== 1200 (beklenen 1200, gelen 960)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N3: satış 600 (300 nakit peşin) → 240 iade + 240 nakit geri → açık 300 (= cari)",
+      "konum": "test/iade-kapama-k1.test.mjs:156:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N4: KISMİ geri ödeme — satış 600 açık → 240 iade, 100 nakit geri → mahsup 140, açık 460 (= cari)",
+      "konum": "test/iade-kapama-k1.test.mjs:167:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N6: satış 600 tamamı peşin → 240 iade açık → iade açığı 240 (müşteri alacaklı); Açık Faturalar'da borç 240",
+      "konum": "test/iade-kapama-k1.test.mjs:189:3",
+      "hata": "iade belgesinin açığı 240 (programda 0) · 0 !== 240 (beklenen 240, gelen 0)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N6b: alış 1.200 tamamı peşin → 240 alıştan iade açık → iade açığı 240 (tedarikçi borçlu); Açık Alacak 240",
+      "konum": "test/iade-kapama-k1.test.mjs:203:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 240 (beklenen 240, gelen 0)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N7: hakemin en küçük senaryosu — alış 23,93 (20,99 × %5 iskonto, KDV %20 hariç), 9,84 peşin; tam iade açık → iade açığı 9,84",
+      "konum": "test/iade-kapama-k1.test.mjs:213:3",
+      "hata": "iade açığı 9,84 (programda 0) · 0 !== 9.84 (beklenen 9.84, gelen 0)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N8: taksitli satış 600 (peşinsiz, 3 taksit) → 240 iade + 240 nakit geri → fatura açığı 600 = kart kalanı 600 = cari 600",
+      "konum": "test/iade-kapama-k1.test.mjs:225:3",
+      "hata": "fatura açığı = kart kalanı (programda 360) · 360 !== 600 (beklenen 600, gelen 360)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N9: iade iptal edilince ve silinince asıl fatura eski hâline (600) döner",
+      "konum": "test/iade-kapama-k1.test.mjs:236:3",
+      "hata": "Expected values to be strictly equal: · 360 !== 600 (beklenen 600, gelen 360)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N10: birden çok iade — satış 600 açık → R1 240 + 240 nakit geri, R2 120 açık → açık 480 (= cari)",
+      "konum": "test/iade-kapama-k1.test.mjs:251:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N11: R1 komşusu — eski açık satış F0 500 + F1 600; F1'den 240 iade + 240 geri → F0 500, F1 600; aynı caride açık alış 400 ödenmez",
+      "konum": "test/iade-kapama-k1.test.mjs:263:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N12: sıra — iade önce açık kaydedilir, Düzenle ile 240 nakit geri ödeme eklenir (açık 600), sonra kaldırılır (açık 360)",
+      "konum": "test/iade-kapama-k1.test.mjs:276:3",
+      "hata": "geri ödeme eklenince açık 600 · 360 !== 600 (beklenen 600, gelen 360)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N13: açık iade (müşteri 240 alacaklı) sonradan cari kartından 240 nakit ödemeyle geri verilir → iade açığı 0, cari 0",
+      "konum": "test/iade-kapama-k1.test.mjs:290:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 240 (beklenen 240, gelen 0)"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N15: sıra — taksitli 3.000 (2.000 peşin) → R1 1.000 açık → karttan 1.500 (fazla) → R2 1.000 + 300 geri: iadeler bağlı ödemelerden SONRA mahsup",
+      "konum": "test/iade-kapama-k1.test.mjs:302:3",
+      "hata": "iade açıkları 1.000 ve 700 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N16: Mevcut Borç kartı kapsadığı faturanın paralı iadesinde yalnız mahsup kadar küçülür (carinin başka açık borcu varken)",
+      "konum": "test/iade-kapama-k1.test.mjs:318:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N14: toplu yol (liste, 8'den çok cari) = fatura kartı; Σ işaretli belge açığı = cari bakiye › her caride Σ açık (satış + alıştan iade) − Σ açık (alış + satıştan iade) = cari bakiye (beklenen bakiyeler elle)",
+      "konum": "test/iade-kapama-k1.test.mjs:372:5",
+      "hata": "Σ işaretli açık = cari bakiye · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/docs/kanit/2026-10-10/ana-oturum-k1/2026-10-10/k1-eski-kod-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-k1",
+  "ham_cikti_sha256": "ab2f8139dc4d00a4c804d2b1a861acbdf89b8ac6fcdcfecf4ca42d6abe7ad8e4",
+  "ham_cikti_bayt": 24084
+}

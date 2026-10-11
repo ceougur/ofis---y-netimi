@@ -1,0 +1,78 @@
+{
+  "ad": "senaryo-banka-210-temel-eski-kod-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210-temel.mjs",
+  "commit": "2d3ebd83a69f9511cd20046b521bdad58f55285d",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 7,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:37:28.070Z",
+  "sure_sn": 28.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 36,
+    "gecen": 28,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Banka Hesapları sütunları (yalnız TL hesapta döviz sütunu yok): Banka, Hesap, Para Birimi, Gerçek Bakiye, TL Karşılığı, Son Hareket, Dönem, Giriş, Çıkış, Transfer Giriş, Transfer Çıkış, Banka Masrafları, Tarih, İşlem No, Tür, Hesap, Açıklama, Tutar",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Gerçek Banka kutusunda \"TL karşılığı\" notu yok (yalnız TL)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Gelişmiş ayarlarda ertelenen özellik yok: Açık Bankacılık, Bağdaştırıcılar",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "başlangıç kutusu:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Hesabı Atanmamış kutusu:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "eski 'Bugünkü Kasa' etiketi yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Başlangıç satırı: 08.10.2026 Başlangıç Bugünkü kasa ₺12.900,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "API: başlangıç 12900 = ANLIK DURUM Nakit 2000 + Gerçek Banka 10000",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-banka-210-temel: 28 geçti, 8 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361/test/e2e/artifacts/senaryo-banka-210-temel",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/senaryo-banka-210-temel-eski-kod-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "63e9fb157ea578fca52bea87b708278e1ed8d30f425a6b7d925c8709e4730756",
+  "ham_cikti_bayt": 4423
+}

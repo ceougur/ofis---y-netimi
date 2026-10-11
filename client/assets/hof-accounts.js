@@ -40,6 +40,38 @@
     in: "Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır.",
     out: "Cariye para verildi (ör. tedarikçiye ödeme, iade): Kasa'dan çıkar.",
   };
+  // 2.1.0 temel sürüm (ek iş B, 10.10.2026): tahsilat/ödeme açıklaması seçilen YOLA göre (önceden yol ne olursa olsun "Kasa'dan çıkar" /
+  // "Kasa'ya girer" yazıyordu; kılavuz ekranı k39: Kredi Kartı seçiliyken "Kasa'dan çıkar"). picked: formda o yolun hesap/kart seçicisi var mı
+  // (yoksa hesap tanımlanmamıştır; satır Hesabı Atanmamış Eski Hareketler'e yazılır — plan K10).
+  // none (11.10.2026): seçicide "Hesapsız (Açılıştan Önce)" seçili — hareket banka hesabının açılışından önce; hiçbir hesaba yazılmaz, Hesabı Atanmamış
+  // Eski Hareketler'de kalır (önceden açıklama yine "seçilen banka hesabına girer" diyordu).
+  const ENTRY_HELP_BY_METHOD = {
+    in: {
+      cash: () => ENTRY_HELP.in,
+      bank: (picked, none) => (none ? "Cariden para alındı: bakiyeden düşer; banka hesabının açılışından önceki hareket olduğu için hiçbir hesaba girmez, Hesabı Atanmamış Eski Hareketler'de (Havale / EFT) kalır, makbuzu alınır." : picked ? "Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır." : "Cariden para alındı: bakiyeden düşer; banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır, makbuzu alınır."),
+      card: () => "Cariden POS ile tahsil edildi: bakiyeden düşer; Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır.",
+      cheque: () => "Cariden çek / senet alındı: evrak formu açılır; evrak portföye girer, carinin bakiyesinden düşer, Kasa değişmez.",
+    },
+    out: {
+      cash: () => ENTRY_HELP.out,
+      bank: (picked, none) => (none ? "Cariye para verildi (ör. tedarikçiye ödeme, iade): banka hesabının açılışından önceki hareket olduğu için hiçbir hesaptan çıkmaz, Hesabı Atanmamış Eski Hareketler'de (Havale / EFT) kalır." : picked ? "Cariye para verildi (ör. tedarikçiye ödeme, iade): seçilen banka hesabından çıkar." : "Cariye para verildi (ör. tedarikçiye ödeme, iade): banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır."),
+      card: (picked, none) => (none ? "Cariye kredi kartıyla ödendi: kurumsal kartın açılışından önceki hareket olduğu için hiçbir kartın borcuna yazılmaz, Hesabı Atanmamış Eski Hareketler'de (POS / Kart) kalır." : picked ? "Cariye kurumsal kredi kartıyla ödendi: seçilen kurumsal kartın borcuna yazılır; bankadan, kart ekstresi ödenince çıkar." : "Cariye kredi kartıyla ödendi: kurumsal kart tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (POS / Kart) yazılır."),
+      cheque: () => "Cariye çek / senet verildi: evrak formu açılır; carinin bakiyesi evrakla düşer, Kasa değişmez.",
+    },
+  };
+  /**
+   * Formun açıklamasını seçili yola göre yazar (yol değişince ve hesap seçici yerleşince). m4 (10.10.2026): fatura Tahsilat Ekle / Ödeme Yap formu da
+   * aynı metni kullanır (HOF.accounts.syncEntryHelp; önceden yol ne olursa olsun "Kayıt cariye ve Kasa'ya yazılır" diyordu). wrap: metnin önüne/ardına
+   * eklenecek (faturanın açık tutarı ve kapama kuralı).
+   */
+  function syncEntryHelp(dialog, type, wrap = text => text) {
+    const form = dialog?.querySelector("form");
+    const intro = dialog?.querySelector(".hof-modal-text");
+    const method = form?.querySelector('[name="method"]')?.value || "cash";
+    const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" ? form?.querySelector('[data-bank-pick="card"]') : null;
+    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick), pick?.querySelector("select")?.value === "none");
+    if (intro && text) intro.textContent = wrap(text);
+  }
   const LEDGER_FILTERS = [
     ["all", "Tümü", () => true],
     ["debit", "Borç", line => line.debit > 0],
@@ -85,9 +117,14 @@
   // "Tümünü Seç" korunur (önceden ilk sayfaya dönüyor, seçim sıfırlanıyordu); yalnız silinen cari seçimden düşer.
   // Arka plan yenilemesi kullanıcının araması/süzgeci/sayfası sürerken onu geçersiz saymaz (sıra numarası artmaz): yazarken
   // gelen yenileme aramanın yanıtını bekletmesin. Yanıt listede görüneni değiştirmiyorsa liste yeniden çizilmez.
-  async function loadList({ more = false, keep = false } = {}) {
+  // 2.1.0 (bağımsız inceleme H4): Daha Fazla sürerken arka plan yenilemesi listeyi değiştirdiyse Daha Fazla'nın yanıtı eklenmez, yeni listenin
+  // sonundan yeniden istenir; Daha Fazla'dan sonra yazılacak arka plan yenilemesi yeni uzunlukla yinelenir (HOF.listGate retry).
+  function loadList(options = {}) {
+    return HOF.listRetry(() => loadListOnce(options));
+  }
+  async function loadListOnce({ more = false, keep = false } = {}) {
     const load = lists.start({ quiet: keep, more });
-    if (!load) return;
+    if (!load) return false;
     if (!keep && !more && view.listError) {
       view.listError = "";
       if (!view.list && view.mode === "list") renderList();
@@ -96,7 +133,7 @@
     const limit = keep && view.list ? Math.min(5000, Math.max(PAGE, view.list.accounts.length)) : PAGE;
     try {
       const data = await HOF.api(`/api/workspace/accounts?${query()}&limit=${limit}&offset=${offset}`, keep ? { background: true } : {});
-      if (!load.current()) return;
+      if (!load.current()) return load.retry();
       load.applied();
       view.listError = "";
       const sign = more ? "" : JSON.stringify(data);
@@ -312,7 +349,7 @@
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3>${account.refNo ? `<span class="hof-plan-refno" title="Cari No">No ${esc(account.refNo)}</span>` : ""}${esc(account.name)} ${typeBadge(account.type)}${active ? "" : badgeMuted("Pasif")}</h3><small>${esc(whereText(account) || "Grupsuz")}${account.phone ? ` · ${esc(account.phone)}` : ""}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Cari işlemleri">
-          <span class="hof-plan-toolgroup">${collect ? '<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="debt" title="Cari size borçlanır">Borç Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="credit" title="Siz cariye borçlanırsınız">Alacak Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="out" title="Cariye para verildi (Kasa’dan çıkar)">− Ödeme</button>' : ""}${canPlan() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="newPlan" title="Bu cariye taksit kartı aç">+ Taksit Planı</button>' : ""}</span>
+          <span class="hof-plan-toolgroup">${collect ? '<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="debt" title="Cari size borçlanır">Borç Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="credit" title="Siz cariye borçlanırsınız">Alacak Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="out" title="Cariye para verildi (Kasa, banka hesabı ya da kurumsal kart)">− Ödeme</button>' : ""}${canPlan() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="newPlan" title="Bu cariye taksit kartı aç">+ Taksit Planı</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(account), "card", "Cari Ekstre - PDF") : ""}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
           ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${active ? "passive" : "activate"}" title="${active ? "Pasif cari listede Pasif altında durur; hareketleri korunur" : ""}">${active ? "Pasife Al" : "Aktif Yap"}</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>` : ""}
         </div></div>
@@ -727,6 +764,9 @@
     const type = entry?.kind || kind;
     const invoiceOptions = type === "in" || type === "out" ? await openInvoiceOptions(account, type) : [];
     if (entry?.invoiceId && !invoiceOptions.some(option => option.value === entry.invoiceId)) invoiceOptions.unshift({ value: entry.invoiceId, label: "Bağlı Fatura (kapanmış)" });
+    // v2.1.0 Aşama 5: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
+    const requestId = HOF.requestId();
+    const money_ = type === "in" || type === "out";
     HOF.formModal({
       title: entry ? `${ENTRY_LABEL[type]} düzelt` : ENTRY_LABEL[type],
       eyebrow: account.name,
@@ -744,6 +784,18 @@
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
+      onOpen: dialog => {
+        // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
+        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
+        const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card }) : null;
+        // Ek iş B: açıklama yola göre (seçici yerleşince ve yol değişince).
+        if (money_) {
+          // Yol ya da hesap seçimi değişince (Hesapsız (Açılıştan Önce) dahil); dinleyici formda — seçici yeniden kurulsa da çalışır.
+          dialog.querySelector("form")?.addEventListener("change", () => syncEntryHelp(dialog, type));
+          syncEntryHelp(dialog, type);
+          Promise.resolve(picker).then(() => syncEntryHelp(dialog, type)).catch(() => null);
+        }
+      },
       onSubmit: async data => {
         if (data.method === "cheque") {
           // Çekle/senetle tahsilat ya da ödeme: evrak portföye girer, carinin borcu evrakla düşer (Kasa değişmez).
@@ -751,8 +803,16 @@
           return;
         }
         const url = `/api/workspace/accounts/${encodeURIComponent(account.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
-        const result = await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...data, kind: entry && data.kind ? data.kind : type } });
+        const body = { ...data, kind: entry && data.kind ? data.kind : type };
+        if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
+        else if (data.method !== "bank") delete body.bankAccountId;
+        const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });
+        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         applyAccount(result);
+        if (result.replayed) {
+          HOF.toast("Bu işlem zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
+          return;
+        }
         if (type === "in" || type === "out") HOF.emit("cash-changed");
         const receipt = !entry && (type === "in" || type === "out") && result.entryId ? { label: "Makbuz", onClick: () => window.open(`/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(result.entryId)}/makbuz.pdf`, "_blank", "noopener") } : undefined;
         HOF.toast(`${entry ? "Hareket düzeltildi" : `${ENTRY_LABEL[type]} kaydedildi`}. Bakiye ${money(Math.abs(result.totals.balance))}${sideWord(result.totals.balance) ? ` ${sideWord(result.totals.balance)}` : ""}.`, { type: "success", action: receipt });
@@ -789,7 +849,10 @@
     const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${money(entry.amount)} tutarındaki ${ENTRY_LABEL[entry.kind].toLocaleLowerCase("tr-TR")} silinecek; bakiye${entry.kind === "in" || entry.kind === "out" ? " ve Kasa" : ""} yeniden hesaplanır. Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
-      applyAccount(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(entry.id)}`, { method: "DELETE" }));
+      // Banka hesabına bağlı tahsilat silinince hesabın bakiyesi düşer: eksi bakiye sorusu (K7) "Yine de Sil" ile adrese eklenir.
+      const path = `/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(entry.id)}`;
+      const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      applyAccount(HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({}));
       HOF.toast("Hareket silindi.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);
@@ -815,6 +878,12 @@
       loadList();
       HOF.emit("accounts-changed", {});
     } catch (error) {
+      // v2.1.0 Aşama 5: banka hesabına bağlı hareketi ya da faturası olan cari silinmez; nedeni söylenir, Pasife Al önerilir.
+      if (["account-bank-linked", "account-has-invoices"].includes(error?.data?.code) && account.status !== "passive") {
+        const passive = await HOF.confirm({ title: "Cari Silinemez", message: error.message, confirmLabel: "Pasife Al", cancelLabel: "Vazgeç" });
+        if (passive) await setStatus(account, "passive");
+        return;
+      }
       HOF.toastError(error);
     }
   }
@@ -1189,6 +1258,7 @@
     open,
     picker,
     bulkPlanForm,
+    syncEntryHelp,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: (preset, options = {}) => (canManage() ? editAccount(null, preset, options) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     collect: async accountId => {

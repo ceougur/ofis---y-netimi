@@ -1,0 +1,93 @@
+{
+  "ad": "acilis-yanit-yaris-eski-kod",
+  "komut": "npm run test:acilis-yanit-yaris",
+  "commit": "c37c673d491493112f696f24501d04f7967cbd3b",
+  "dal": "worktree-agent-ac656f0bbd0c62958",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T21:39:05.774Z",
+  "sure_sn": 55.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 0,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "deneme 1 (hedef case-notes, gövde +2500 ms): düşen istek GET /api/workspace/case-notes?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console TypeEr",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 2 (hedef case-notes, gövde +2500 ms): düşen istek GET /api/workspace/case-notes?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console TypeEr",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 3 (hedef case-notes, gövde +2500 ms): düşen istek GET /api/workspace/case-notes?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console TypeEr",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 4 (hedef case-notes, gövde +2500 ms): düşen istek GET /api/workspace/case-notes?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console TypeEr",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 5 (hedef case-notes, gövde +2500 ms): düşen istek GET /api/workspace/case-notes?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console TypeEr",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kontrol 1 (hedef case-notes, gezinme yok, gövde bağlantısı vekilce kesildi): ön koşul OLUŞTU; ekrandaki neden “notes.notes is not iterable”; toplayıcının saydığı hata 1 (beklenen ≥ 1): console TypeError: notes.notes is not iterable",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 1 (hedef client-state, gövde +2500 ms): düşen istek GET /api/workspace/client-state?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console Ty",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 2 (hedef client-state, gövde +2500 ms): düşen istek GET /api/workspace/client-state?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console Ty",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 3 (hedef client-state, gövde +2500 ms): düşen istek GET /api/workspace/client-state?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console Ty",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 4 (hedef client-state, gövde +2500 ms): düşen istek GET /api/workspace/client-state?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console Ty",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 5 (hedef client-state, gövde +2500 ms): düşen istek GET /api/workspace/client-state?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılış yükleyicisinin isteği (kullanıcı eylemi değil); ön koşul (başlık geldi, gövde tutulurken tarayıcı kesti) OLUŞTU; toplayıcının saydığı hata 1: console Ty",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kontrol 1 (hedef client-state, gezinme yok, gövde bağlantısı vekilce kesildi): ön koşul OLUŞTU; ekrandaki neden “Cannot read properties of undefined (reading 'sheetUrl')”; toplayıcının saydığı hata 1 (beklenen ≥ 1): console TypeError: Cannot read properties of undefined (reading 'sheetUrl')",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/notes-yaris/2026-10-10/acilis-yanit-yaris-eski-kod.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac656f0bbd0c62958",
+  "ham_cikti_sha256": "1d1a0027e2f514e7fac4fd38c5d85cfce9ba78a28ffd782a553117f99a6ce591",
+  "ham_cikti_bayt": 4623
+}

@@ -2,9 +2,10 @@
 // burada saklanır; yönetim panelindeki "Silinenler" listesinden geri yüklenir. Tablo satırı, belge ve serbest sayfa
 // zaten yumuşak silinir (verisi durur); onlar kendi tablolarından listelenir (server/routes/trash.mjs).
 import { randomUUID } from "node:crypto";
+import { systemClock } from "./clock.mjs";
 
-export function createTrash(store) {
-  const now = () => new Date().toISOString();
+export function createTrash(store, { now: clock = systemClock } = {}) {
+  const now = () => clock().toISOString();
   function add({ kind, ref, datasetKey = "", title = "", detail = "", payload = {}, user }) {
     const id = `trash-${randomUUID()}`;
     store.run(

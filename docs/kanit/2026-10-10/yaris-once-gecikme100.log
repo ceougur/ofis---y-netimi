@@ -1,0 +1,98 @@
+✗ deneme 1 (gecikme 100 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6393 ms tık Eski Hareketler
+      6572 ms yanıt GET /summary 200
+      6572 ms yanıt GET /accounts 200
+      6572 ms istek GET /legacy
+      6580 ms yanıt GET /setup 200
+      6589 ms tık Bankaya Geçmiş Say
+      6678 ms form yerine yeni bildirim: POS tahsilatı yok
+✓ deneme 2 (gecikme 100 ms): form açıldı, tutar 1.500,00
+      6344 ms tık Eski Hareketler
+      6395 ms yanıt GET /summary 200
+      6395 ms yanıt GET /accounts 200
+      6401 ms istek GET /legacy
+      6403 ms yanıt GET /setup 200
+      6416 ms tık Bankaya Geçmiş Say
+      6513 ms yanıt GET /legacy 200
+      6681 ms yanıt GET /summary 200
+      6681 ms yanıt GET /accounts 200
+      6681 ms istek GET /legacy
+      6701 ms yanıt GET /setup 200
+      6735 ms form açıldı
+✓ deneme 3 (gecikme 100 ms): form açıldı, tutar 1.500,00
+      6000 ms tık Eski Hareketler
+      6061 ms yanıt GET /summary 200
+      6061 ms yanıt GET /accounts 200
+      6076 ms istek GET /legacy
+      6120 ms yanıt GET /setup 200
+      6159 ms tık Bankaya Geçmiş Say
+      6208 ms yanıt GET /legacy 200
+      6363 ms yanıt GET /summary 200
+      6364 ms yanıt GET /accounts 200
+      6369 ms istek GET /legacy
+      6376 ms yanıt GET /setup 200
+      6458 ms form açıldı
+✗ deneme 4 (gecikme 100 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6676 ms tık Eski Hareketler
+      6738 ms yanıt GET /summary 200
+      6738 ms yanıt GET /accounts 200
+      6748 ms istek GET /legacy
+      6767 ms yanıt GET /setup 200
+      6771 ms tık Bankaya Geçmiş Say
+      6868 ms form yerine yeni bildirim: POS tahsilatı yok
+      6868 ms yanıt GET /legacy 200
+✗ deneme 5 (gecikme 100 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6147 ms tık Eski Hareketler
+      6206 ms yanıt GET /summary 200
+      6209 ms yanıt GET /accounts 200
+      6217 ms istek GET /legacy
+      6244 ms yanıt GET /setup 200
+      6245 ms tık Bankaya Geçmiş Say
+      6338 ms yanıt GET /legacy 200
+      6358 ms form yerine yeni bildirim: POS tahsilatı yok
+      6361 ms yanıt GET /summary 200
+      6362 ms yanıt GET /accounts 200
+✗ deneme 6 (gecikme 100 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6394 ms tık Eski Hareketler
+      6454 ms yanıt GET /summary 200
+      6454 ms yanıt GET /accounts 200
+      6455 ms istek GET /legacy
+      6457 ms yanıt GET /setup 200
+      6478 ms tık Bankaya Geçmiş Say
+      6593 ms yanıt GET /legacy 200
+      6597 ms form yerine yeni bildirim: POS tahsilatı yok
+✗ deneme 7 (gecikme 100 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6243 ms tık Eski Hareketler
+      6295 ms yanıt GET /summary 200
+      6304 ms yanıt GET /accounts 200
+      6304 ms istek GET /legacy
+      6318 ms yanıt GET /setup 200
+      6332 ms tık Bankaya Geçmiş Say
+      6397 ms form yerine yeni bildirim: POS tahsilatı yok
+✗ deneme 8 (gecikme 100 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6354 ms tık Eski Hareketler
+      6443 ms yanıt GET /summary 200
+      6443 ms yanıt GET /accounts 200
+      6443 ms istek GET /legacy
+      6447 ms yanıt GET /setup 200
+      6452 ms tık Bankaya Geçmiş Say
+      6572 ms yanıt GET /legacy 200
+      6572 ms form yerine yeni bildirim: POS tahsilatı yok
+✗ deneme 9 (gecikme 100 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6367 ms tık Eski Hareketler
+      6434 ms yanıt GET /summary 200
+      6434 ms yanıt GET /accounts 200
+      6434 ms istek GET /legacy
+      6435 ms yanıt GET /setup 200
+      6451 ms tık Bankaya Geçmiş Say
+      6514 ms form yerine yeni bildirim: POS tahsilatı yok
+✗ deneme 10 (gecikme 100 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6798 ms tık Eski Hareketler
+      6849 ms yanıt GET /summary 200
+      6869 ms yanıt GET /accounts 200
+      6870 ms istek GET /legacy
+      6877 ms yanıt GET /setup 200
+      6893 ms tık Bankaya Geçmiş Say
+      6961 ms form yerine yeni bildirim: POS tahsilatı yok
+
+BAŞARISIZ: 2 denetim geçti, 8 başarısız.

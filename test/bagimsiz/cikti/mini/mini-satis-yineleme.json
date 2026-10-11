@@ -1,0 +1,73 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "mini-satis-yineleme",
+  "aciklama": "Satış faturasının istek kimliğiyle yinelenmesi (K-4 ayrışması).",
+  "dayanak": "fark.py sınıf küçültmesi",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "urun_ac",
+      "ad": "U1",
+      "urunAdi": "Ürün 1",
+      "birim": "Adet"
+    },
+    {
+      "id": "2",
+      "islem": "stok_giris",
+      "urun": "U1",
+      "miktar": 10
+    },
+    {
+      "id": "3",
+      "islem": "cari_ac",
+      "ad": "M1",
+      "unvan": "Müşteri 1",
+      "tur": "musteri"
+    },
+    {
+      "id": "4",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "urun": "U1",
+          "miktar": 5,
+          "birimFiyat": "100",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "istekKimligi": "s1"
+    },
+    {
+      "id": "5",
+      "islem": "fatura",
+      "ad": "F2",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "urun": "U1",
+          "miktar": 5,
+          "birimFiyat": "100",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "istekKimligi": "s1"
+    }
+  ]
+}

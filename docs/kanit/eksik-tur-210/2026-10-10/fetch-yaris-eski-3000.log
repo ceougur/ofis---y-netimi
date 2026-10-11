@@ -1,0 +1,5 @@
+✗ deneme 1 (eski, sheets.getRows +3000 ms): geçişte yarıda kalan istek 1 (ön koşul OLUŞTU); tarayıcının kestiği istekler [net::ERR_ABORTED /api/events, net::ERR_ABORTED /api/events, net::ERR_ABORTED /api/trpc/sheets.getRows, net::ERR_ABORTED /api/events]; toplayıcının saydığı hata 1: console [API Query Error] TRPCClientError: Failed to fetch
+✗ deneme 2 (eski, sheets.getRows +3000 ms): geçişte yarıda kalan istek 1 (ön koşul OLUŞTU); tarayıcının kestiği istekler [net::ERR_ABORTED /api/events, net::ERR_ABORTED /api/workspace/dataset, net::ERR_ABORTED /api/events, net::ERR_ABORTED /api/trpc/sheets.getRows, net::ERR_ABORTED /api/events]; toplayıcının saydığı hata 1: console [API Query Error] TRPCClientError: Failed to fetch
+✗ deneme 3 (eski, sheets.getRows +3000 ms): geçişte yarıda kalan istek 1 (ön koşul OLUŞTU); tarayıcının kestiği istekler [net::ERR_ABORTED /api/events, net::ERR_ABORTED /api/events, net::ERR_ABORTED /api/events, net::ERR_ABORTED /api/trpc/sheets.getRows]; toplayıcının saydığı hata 1: console [API Query Error] TRPCClientError: Failed to fetch
+
+BAŞARISIZ: 0 denetim geçti, 3 başarısız.

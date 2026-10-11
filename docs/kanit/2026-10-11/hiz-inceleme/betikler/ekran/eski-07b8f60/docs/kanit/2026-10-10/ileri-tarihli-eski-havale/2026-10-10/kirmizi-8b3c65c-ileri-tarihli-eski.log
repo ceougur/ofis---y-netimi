@@ -1,0 +1,387 @@
+TAP version 13
+# Subtest: İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu)
+    # Subtest: B6 liste: ileri tarihli iki satır ayrı işaretli, atanamaz, nedeni ve günü yazılı; geçmiş satır atanabilir
+    not ok 1 - B6 liste: ileri tarihli iki satır ayrı işaretli, atanamaz, nedeni ve günü yazılı; geçmiş satır atanabilir
+      ---
+      duration_ms: 11.921496
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"table":"cheque_events","id":"cevent-da7484d6-c0c3-4a35-b477-bbbb2545cf76","date":"2026-10-20","kind":"in","amountMinor":100000,"method":"bank","way":"bank","partyId":"account-0141bfef-64f3-4847-8b75-0d3a9ffd28d1","partyName":"Çekli Müşteri","description":"","eventId":"","eventNo":"","locked":false,"closed":false,"assignable":true,"reason":""},{"table":"cheque_events","id":"cevent-f3d3db28-b0a0-435c-8757-4197f7790042","date":"2026-10-15","kind":"out","amountMinor":40000,"method":"bank","way":"bank","partyId":"account-5dd10c8d-4251-4510-9629-8c5156a99ad5","partyName":"Verilen Çek Tedarikçisi","description":"","eventId":"","eventNo":"","locked":false,"closed":false,"assignable":true,"reason":""},{"table":"account_entries","id":"aentry-b7d93d5f-83a0-48d9-b9ca-e2cae7dd4303","date":"2026-10-08","kind":"in","amountMinor":25000,"method":"bank","way":"bank","partyId":"account-0141bfef-64f3-4847-8b75-0d3a9ffd28d1","partyName":"Çekli Müşteri","description":"","eventId":"","eventNo":"","locked":false,"closed":false,"assignable":true,"reason":""}]
+        + actual - expected
+        
+          [
+            '2026-10-08 in 250 true',
+        +   '2026-10-15 out 400 true',
+        +   '2026-10-20 in 1000 true'
+        -   '2026-10-15 out 400 false',
+        -   '2026-10-20 in 1000 false'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-08 in 250 true'
+        1: '2026-10-15 out 400 false'
+        2: '2026-10-20 in 1000 false'
+      actual:
+        0: '2026-10-08 in 250 true'
+        1: '2026-10-15 out 400 true'
+        2: '2026-10-20 in 1000 true'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B6 toplamlar tek formülden: Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor = 250 (bugüne kadar); ileri tarihli ayrı
+    not ok 2 - B6 toplamlar tek formülden: Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor = 250 (bugüne kadar); ileri tarihli ayrı
+      ---
+      duration_ms: 15.958294
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:136:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Banka Genel Bakış 85000
+        
+        85000 !== 25000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 25000
+      actual: 85000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:138:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B3 Bu Hesaba Ata ileri tarihli → 409 bank-legacy-future (ledger-integrity değil), mesajda gün
+    not ok 3 - B3 Bu Hesaba Ata ileri tarihli → 409 bank-legacy-future (ledger-integrity değil), mesajda gün
+      ---
+      duration_ms: 32.274952
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ileri tarihli ata: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.)
+        + actual - expected
+        
+        + 'ledger-integrity'
+        - 'bank-legacy-future'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'bank-legacy-future'
+      actual: 'ledger-integrity'
+      operator: 'strictEqual'
+      stack: |-
+        expect (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:61:20)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:158:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B4 Bu Hesaba Ata [geçmiş + ileri] tek istekte → 409; geçmiş satır da bağlanmaz
+    not ok 4 - B4 Bu Hesaba Ata [geçmiş + ileri] tek istekte → 409; geçmiş satır da bağlanmaz
+      ---
+      duration_ms: 39.534819
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:163:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        karışık ata: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.)
+        + actual - expected
+        
+        + 'ledger-integrity'
+        - 'bank-legacy-future'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'bank-legacy-future'
+      actual: 'ledger-integrity'
+      operator: 'strictEqual'
+      stack: |-
+        expect (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:61:20)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:166:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B5 sihirbaz seçili satır listesiyle ileri tarihli satır → 409 bank-legacy-future
+    not ok 5 - B5 sihirbaz seçili satır listesiyle ileri tarihli satır → 409 bank-legacy-future
+      ---
+      duration_ms: 30.149984
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        sihirbaz seçili ileri tarihli: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.)
+        + actual - expected
+        
+        + 'ledger-integrity'
+        - 'bank-legacy-future'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'bank-legacy-future'
+      actual: 'ledger-integrity'
+      operator: 'strictEqual'
+      stack: |-
+        expect (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:61:20)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:174:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B1 sihirbaz ön izleme: 1 satır bağlanacak (250), ileri tarihli 2 atlanacak (net 600, ilk D+5)
+    not ok 6 - B1 sihirbaz ön izleme: 1 satır bağlanacak (250), ileri tarihli 2 atlanacak (net 600, ilk D+5)
+      ---
+      duration_ms: 5.834818
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:177:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"rows":[{"table":"account_entries","id":"aentry-b7d93d5f-83a0-48d9-b9ca-e2cae7dd4303","date":"2026-10-08","kind":"in","amountMinor":25000},{"table":"cheque_events","id":"cevent-f3d3db28-b0a0-435c-8757-4197f7790042","date":"2026-10-15","kind":"out","amountMinor":40000},{"table":"cheque_events","id":"cevent-da7484d6-c0c3-4a35-b477-bbbb2545cf76","date":"2026-10-20","kind":"in","amountMinor":100000}],"count":3,"amountMinor":85000}
+        + actual - expected
+        
+          [
+        +   3,
+        +   85000
+        -   1,
+        -   25000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1
+        1: 25000
+      actual:
+        0: 3
+        1: 85000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:179:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B1 + B11 sihirbaz 'tümü' → 200: geçmiş bağlandı, ileri tarihliler atlandı (yanıtta); aynı istek kimliğiyle tek çalışma
+    not ok 7 - B1 + B11 sihirbaz 'tümü' → 200: geçmiş bağlandı, ileri tarihliler atlandı (yanıtta); aynı istek kimliğiyle tek çalışma
+      ---
+      duration_ms: 24.307348
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:185:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        sihirbaz tümü: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"dates:future:fin_events","name":"İleri tarihli hareket (Finansal İşlemler)","ok":false,"count":2,"gateCount":2,"tables":["fin_events","account_entries","cheque_events"]}]}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:56:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:187:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B2 yalnız ileri tarihli kaldı → sihirbaz 409 bank-setup-empty (mesaj ileri tarihliyi söyler); ön izleme 200
+    not ok 8 - B2 yalnız ileri tarihli kaldı → sihirbaz 409 bank-setup-empty (mesaj ileri tarihliyi söyler); ön izleme 200
+      ---
+      duration_ms: 8.604186
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:202:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   3,
+        +   undefined
+        -   0,
+        -   2
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 2
+      actual:
+        0: 3
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:204:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B7 yeni ileri tarihli havale yine 400 date-future (kapı ve dönem kuralı gevşemedi)
+    ok 9 - B7 yeni ileri tarihli havale yine 400 date-future (kapı ve dönem kuralı gevşemedi)
+      ---
+      duration_ms: 10.822742
+      type: 'test'
+      ...
+    # Subtest: B10 iki şirket: 002'nin ileri tarihli satırı 001'de yok; 002'de sihirbaz yalnız geçmiş 50'yi aktarır
+    not ok 10 - B10 iki şirket: 002'nin ileri tarihli satırı 001'de yok; 002'de sihirbaz yalnız geçmiş 50'yi aktarır
+      ---
+      duration_ms: 134.878335
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:216:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            '2026-10-09 50 true',
+        +   '2026-10-13 700 true'
+        -   '2026-10-13 700 false'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-09 50 true'
+        1: '2026-10-13 700 false'
+      actual:
+        0: '2026-10-09 50 true'
+        1: '2026-10-13 700 true'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:222:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B8 gün D+5: verilen çek ödemesi (bugün) atanabilir → Bu Hesaba Ata 200; havale tahsilat 200 (A13); D+10 satırı hâlâ ileri
+    not ok 11 - B8 gün D+5: verilen çek ödemesi (bugün) atanabilir → Bu Hesaba Ata 200; havale tahsilat 200 (A13); D+10 satırı hâlâ ileri
+      ---
+      duration_ms: 7.360587
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:232:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:236:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B9 gün D+11: kilitli döneme denk gelen satır atanamaz (409 period-locked), kilit kalkınca 200; mutabakat temiz
+    not ok 12 - B9 gün D+11: kilitli döneme denk gelen satır atanamaz (409 period-locked), kilit kalkınca 200; mutabakat temiz
+      ---
+      duration_ms: 29.655504
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:262:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"table":"cheque_events","id":"cevent-da7484d6-c0c3-4a35-b477-bbbb2545cf76","date":"2026-10-20","kind":"in","amountMinor":100000,"method":"bank","way":"bank","partyId":"account-0141bfef-64f3-4847-8b75-0d3a9ffd28d1","partyName":"Çekli Müşteri","description":"","eventId":"","eventNo":"","locked":true,"closed":false,"assignable":false,"reason":"Kilitli dönemde; atanamaz."}
+        + actual - expected
+        
+          [
+        +   undefined,
+        -   false,
+            true,
+            false
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: false
+        1: true
+        2: false
+      actual:
+        1: true
+        2: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:266:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B11 Geri Al: sihirbazın bağladığı geçmiş satır geri döner; sonradan atanan satırlara dokunulmaz
+    not ok 13 - B11 Geri Al: sihirbazın bağladığı geçmiş satır geri döner; sonradan atanan satırlara dokunulmaz
+      ---
+      duration_ms: 4.439125
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:277:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:279:70)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B12 aynı v2.0.23 verisi test kipinde (moneyStrict + gateVerify): ileri tarihli 409 bank-legacy-future, sihirbaz 200, tarih gelince 200
+    not ok 14 - B12 aynı v2.0.23 verisi test kipinde (moneyStrict + gateVerify): ileri tarihli 409 bank-legacy-future, sihirbaz 200, tarih gelince 200
+      ---
+      duration_ms: 256.749211
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:287:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        test kipi ileri tarihli: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.)
+        + actual - expected
+        
+        + 'ledger-integrity'
+        - 'bank-legacy-future'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'bank-legacy-future'
+      actual: 'ledger-integrity'
+      operator: 'strictEqual'
+      stack: |-
+        expect (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:61:20)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:294:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..14
+not ok 1 - İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu)
+  ---
+  duration_ms: 1782.987791
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85/test/banka-210-ileri-tarihli-eski.test.mjs:96:1'
+  failureType: 'subtestsFailed'
+  error: '13 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 14
+# suites 1
+# pass 1
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2233.924032

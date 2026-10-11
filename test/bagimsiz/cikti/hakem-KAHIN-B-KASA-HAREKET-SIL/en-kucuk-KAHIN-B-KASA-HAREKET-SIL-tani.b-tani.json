@@ -1,0 +1,144 @@
+{
+  "araDurumlar": {
+    "k1": {
+      "bankaHesaplari": {},
+      "cariler": {},
+      "eksiBakiyeDenetimi": {},
+      "faturalar": {},
+      "hesapKodlari": {},
+      "kasa": 95000,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 95000
+        },
+        "649": {
+          "alacak": 115000,
+          "borc": 0
+        },
+        "770": {
+          "alacak": 0,
+          "borc": 20000
+        }
+      },
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 95000
+      },
+      "stok": {},
+      "taksitKartlari": {}
+    },
+    "k2": {
+      "bankaHesaplari": {},
+      "cariler": {},
+      "eksiBakiyeDenetimi": {},
+      "faturalar": {},
+      "hesapKodlari": {},
+      "kasa": 105000,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 105000
+        },
+        "649": {
+          "alacak": 105000,
+          "borc": 0
+        }
+      },
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 105000
+      },
+      "stok": {},
+      "taksitKartlari": {}
+    },
+    "k3": {
+      "bankaHesaplari": {},
+      "cariler": {},
+      "eksiBakiyeDenetimi": {},
+      "faturalar": {},
+      "hesapKodlari": {},
+      "kasa": 5000,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 5000
+        },
+        "649": {
+          "alacak": 155000,
+          "borc": 0
+        },
+        "770": {
+          "alacak": 0,
+          "borc": 150000
+        }
+      },
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 5000
+      },
+      "stok": {},
+      "taksitKartlari": {}
+    }
+  },
+  "atlananlar": [],
+  "bankaHesaplari": {},
+  "belirsizler": [],
+  "cariler": {},
+  "dil": "destekofis-senaryo/1",
+  "eksiBakiyeDenetimi": {},
+  "faturalar": {},
+  "hesapKodlari": {},
+  "kasa": -45000,
+  "kaynak": "kahin",
+  "mizan": {
+    "100": {
+      "alacak": 45000,
+      "borc": 0
+    },
+    "649": {
+      "alacak": 105000,
+      "borc": 0
+    },
+    "770": {
+      "alacak": 0,
+      "borc": 150000
+    }
+  },
+  "ozet": {
+    "gercekBanka": 0,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": -45000
+  },
+  "retler": [
+    {
+      "adim": "4",
+      "durum": 409,
+      "kod": "period-locked",
+      "kodDayanak": "CIKARIM"
+    },
+    {
+      "adim": "9",
+      "durum": 404,
+      "kod": null,
+      "kodDayanak": null
+    },
+    {
+      "adim": "12",
+      "durum": 409,
+      "kod": "cash-negative",
+      "kodDayanak": "CIKARIM"
+    }
+  ],
+  "senaryo": "en-kucuk-KAHIN-B-KASA-HAREKET-SIL-tani",
+  "stok": {},
+  "taksitKartlari": {},
+  "yinelenenler": []
+}

@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: UDP sunucu keşfi
+    # Subtest: istemcinin alt ağındaki yerel adresi seçer
+    ok 1 - istemcinin alt ağındaki yerel adresi seçer
+      ---
+      duration_ms: 0.946919
+      type: 'test'
+      ...
+    # Subtest: doğru sinyale ofis bilgisiyle yanıt verir
+    ok 2 - doğru sinyale ofis bilgisiyle yanıt verir
+      ---
+      duration_ms: 602.380766
+      type: 'test'
+      ...
+    # Subtest: tanımadığı veya çok büyük paketlere yanıt vermez; gönderici başına hız sınırlar
+    ok 3 - tanımadığı veya çok büyük paketlere yanıt vermez; gönderici başına hız sınırlar
+      ---
+      duration_ms: 503.263211
+      type: 'test'
+      ...
+    # Subtest: hız sınırı saniye sınırını aşan istek dizisinde de herhangi bir 1 sn içinde en çok sınır kadar yanıt verir
+    ok 4 - hız sınırı saniye sınırını aşan istek dizisinde de herhangi bir 1 sn içinde en çok sınır kadar yanıt verir
+      ---
+      duration_ms: 1607.549495
+      type: 'test'
+      ...
+    1..4
+ok 1 - UDP sunucu keşfi
+  ---
+  duration_ms: 2722.165431
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2843.15337

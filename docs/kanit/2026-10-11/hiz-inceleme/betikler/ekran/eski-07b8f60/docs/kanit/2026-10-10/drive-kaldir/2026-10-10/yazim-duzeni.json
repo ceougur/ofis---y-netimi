@@ -1,0 +1,32 @@
+{
+  "ad": "yazim-duzeni",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/yazim-duzeni.test.mjs",
+  "commit": "9c44bf0f1fec35ad55a1902b5151473ac4551400",
+  "dal": "worktree-agent-abb0f20f3c0d93af1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:33:10.243Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/drive-kaldir/2026-10-10/yazim-duzeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abb0f20f3c0d93af1",
+  "ham_cikti_sha256": "3e299c24b7399cc37121ea0f5054403107713da669af6c6d6a9dc0ceaeca2b8b",
+  "ham_cikti_bayt": 724
+}

@@ -1,0 +1,533 @@
+{
+  "adimSayisi": 7,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 8,
+    "KOSUCU": 3
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 11,
+  "farklar": [
+    {
+      "a": -39000,
+      "aile": "bankaHesaplari.*",
+      "alan": "bankaHesaplari.KK",
+      "b": -39000,
+      "desen": "A=B≠P",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 0,
+      "tetik": "272",
+      "yol": [
+        "bankaHesaplari",
+        "KK"
+      ]
+    },
+    {
+      "a": 15000,
+      "aile": "cariler.*",
+      "alan": "cariler.C25",
+      "b": 15000,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KART-HESABI-BAGLANMIYOR",
+      "olaylar": [
+        {
+          "degisim": 57900,
+          "neden": [
+            "KART-HESABI-BAGLANMIYOR"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 72900,
+      "tetik": {
+        "KART-HESABI-BAGLANMIYOR": "272"
+      },
+      "yol": [
+        "cariler",
+        "C25"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "aile": "mizan.108.00",
+      "alan": "mizan.108.00",
+      "b": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 96900,
+        "borc": 0
+      },
+      "tetik": "272",
+      "yol": [
+        "mizan",
+        "108.00"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 39000,
+        "borc": 0
+      },
+      "aile": "mizan.309.NN",
+      "alan": "mizan.309.01",
+      "b": {
+        "alacak": 39000,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "tetik": "272",
+      "yol": [
+        "mizan",
+        "309.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 15000
+      },
+      "aile": "mizan.320",
+      "alan": "mizan.320",
+      "b": {
+        "alacak": 0,
+        "borc": 15000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KART-HESABI-BAGLANMIYOR",
+      "olaylar": [
+        {
+          "degisim": 57900,
+          "neden": [
+            "KART-HESABI-BAGLANMIYOR"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 72900
+      },
+      "tetik": {
+        "KART-HESABI-BAGLANMIYOR": "272"
+      },
+      "yol": [
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": 0,
+      "aile": "ozet.hesabiAtanmamis",
+      "alan": "ozet.hesabiAtanmamis",
+      "b": 0,
+      "desen": "A=B≠P",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": -96900,
+      "tetik": "272",
+      "yol": [
+        "ozet",
+        "hesabiAtanmamis"
+      ]
+    },
+    {
+      "a": 39000,
+      "aile": "ozet.kartVeKrediBorcu",
+      "alan": "ozet.kartVeKrediBorcu",
+      "b": 39000,
+      "desen": "A=B≠P",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 0,
+      "tetik": "272",
+      "yol": [
+        "ozet",
+        "kartVeKrediBorcu"
+      ]
+    },
+    {
+      "a": "400 bank-account-invalid",
+      "adim": {
+        "cari": "C25",
+        "hesap": "B1",
+        "id": "272",
+        "islem": "cari_odeme",
+        "tutar": "579",
+        "yol": "kart"
+      },
+      "aile": "retler:cari_odeme",
+      "alan": "retler.272",
+      "b": "400 bank-account-invalid",
+      "desen": "A=B≠P",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "272",
+        "272"
+      ],
+      "program": "geçti",
+      "tetik": "272",
+      "yol": [
+        "retler",
+        "272"
+      ]
+    },
+    {
+      "a": null,
+      "aile": "eslenemeyen:cari_odeme",
+      "alan": "eslenemeyen.272",
+      "b": null,
+      "desen": "KOSUCU",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "272",
+        "272"
+      ],
+      "program": {
+        "adim": "272",
+        "islem": "cari_odeme",
+        "neden": "Kart yolunda hesap seçimi: koşucu bankAccountId'yi gönderdi; programın modül ucu kurumsal kart hesabını bağlamıyor (yalnız havale/EFT bağlanır), satır hesapsız kart yolu olarak yazılır."
+      },
+      "yol": [
+        "eslenemeyen",
+        "272"
+      ]
+    },
+    {
+      "a": null,
+      "aile": "eslenemeyen:cari_odeme",
+      "alan": "eslenemeyen.k2",
+      "b": null,
+      "desen": "KOSUCU",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "k2",
+        "k2"
+      ],
+      "program": {
+        "adim": "k2",
+        "islem": "cari_odeme",
+        "neden": "Kart yolunda hesap seçimi: koşucu bankAccountId'yi gönderdi; programın modül ucu kurumsal kart hesabını bağlamıyor (yalnız havale/EFT bağlanır), satır hesapsız kart yolu olarak yazılır."
+      },
+      "yol": [
+        "eslenemeyen",
+        "k2"
+      ]
+    },
+    {
+      "a": null,
+      "aile": "eslenemeyen:fatura",
+      "alan": "eslenemeyen.k3",
+      "b": null,
+      "desen": "KOSUCU",
+      "kokSinif": "KART-HESABI-BAGLANMIYOR",
+      "pencere": [
+        "k3",
+        "k3"
+      ],
+      "program": {
+        "adim": "k3",
+        "islem": "fatura",
+        "neden": "Kart yolunda hesap seçimi: koşucu bankAccountId'yi gönderdi; programın modül ucu kurumsal kart hesabını bağlamıyor (yalnız havale/EFT bağlanır), satır hesapsız kart yolu olarak yazılır."
+      },
+      "yol": [
+        "eslenemeyen",
+        "k3"
+      ]
+    }
+  ],
+  "islemSayisi": 7,
+  "islemTurleri": {
+    "cari_ac": 1,
+    "cari_odeme": 3,
+    "fatura": 1,
+    "hesap_ac": 2
+  },
+  "karsilastirilanYaprak": 24,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/en-kucuk-KART-HESABI-BAGLANMIYOR.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/en-kucuk-KART-HESABI-BAGLANMIYOR.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/en-kucuk-KART-HESABI-BAGLANMIYOR.json --cikti test/bagimsiz/cikti/ham/en-kucuk-KART-HESABI-BAGLANMIYOR.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [
+      {
+        "adim": "272",
+        "islem": "cari_odeme",
+        "neden": "Kart yolunda hesap seçimi: koşucu bankAccountId'yi gönderdi; programın modül ucu kurumsal kart hesabını bağlamıyor (yalnız havale/EFT bağlanır), satır hesapsız kart yolu olarak yazılır."
+      },
+      {
+        "adim": "k2",
+        "islem": "cari_odeme",
+        "neden": "Kart yolunda hesap seçimi: koşucu bankAccountId'yi gönderdi; programın modül ucu kurumsal kart hesabını bağlamıyor (yalnız havale/EFT bağlanır), satır hesapsız kart yolu olarak yazılır."
+      },
+      {
+        "adim": "k3",
+        "islem": "fatura",
+        "neden": "Kart yolunda hesap seçimi: koşucu bankAccountId'yi gönderdi; programın modül ucu kurumsal kart hesabını bağlamıyor (yalnız havale/EFT bağlanır), satır hesapsız kart yolu olarak yazılır."
+      }
+    ],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "en-kucuk-KART-HESABI-BAGLANMIYOR",
+  "senaryoDosyasi": "test/bagimsiz/cikti/en-kucuk-KART-HESABI-BAGLANMIYOR.json",
+  "siniflar": {
+    "KART-HESABI-BAGLANMIYOR": {
+      "aileler": {
+        "bankaHesaplari.*": 1,
+        "eslenemeyen:cari_odeme": 2,
+        "eslenemeyen:fatura": 1,
+        "mizan.108.00": 1,
+        "mizan.309.NN": 1,
+        "ozet.hesabiAtanmamis": 1,
+        "ozet.kartVeKrediBorcu": 1,
+        "retler:cari_odeme": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 6,
+        "KOSUCU": 3
+      },
+      "enErkenPencere": [
+        "272",
+        "272"
+      ],
+      "ornekler": [
+        {
+          "a": -39000,
+          "alan": "bankaHesaplari.KK",
+          "b": -39000,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 0
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 0
+          },
+          "alan": "mizan.108.00",
+          "b": {
+            "alacak": 0,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 96900,
+            "borc": 0
+          }
+        },
+        {
+          "a": {
+            "alacak": 39000,
+            "borc": 0
+          },
+          "alan": "mizan.309.01",
+          "b": {
+            "alacak": 39000,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        },
+        {
+          "a": 0,
+          "alan": "ozet.hesabiAtanmamis",
+          "b": 0,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": -96900
+        }
+      ],
+      "sonDurumYaprak": 9,
+      "yaprak": 9
+    },
+    "TUREV:KART-HESABI-BAGLANMIYOR": {
+      "aileler": {
+        "cariler.*": 1,
+        "mizan.320": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 2
+      },
+      "enErkenPencere": null,
+      "ornekler": [
+        {
+          "a": 15000,
+          "alan": "cariler.C25",
+          "b": 15000,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 72900
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 15000
+          },
+          "alan": "mizan.320",
+          "b": {
+            "alacak": 0,
+            "borc": 15000
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 72900
+          }
+        }
+      ],
+      "sonDurumYaprak": 2,
+      "yaprak": 2
+    }
+  },
+  "sureler": {
+    "a": 0.07,
+    "b": 0.09,
+    "program": 1.14
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 8599639,
+      "cariToplam": 15000,
+      "faturaSayisi": 1,
+      "kasa": 0,
+      "mizanAlacakToplam": 8677639,
+      "mizanBorcToplam": 8677639,
+      "ozet": {
+        "gercekBanka": 8638639,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 39000,
+        "kasaVeGercekBanka": 8638639
+      },
+      "retSayisi": 1,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "b": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 8599639,
+      "cariToplam": 15000,
+      "faturaSayisi": 1,
+      "kasa": 0,
+      "mizanAlacakToplam": 8677639,
+      "mizanBorcToplam": 8677639,
+      "ozet": {
+        "gercekBanka": 8638639,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 39000,
+        "kasaVeGercekBanka": 8638639
+      },
+      "retSayisi": 1,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "program": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 8638639,
+      "cariToplam": 72900,
+      "faturaSayisi": 1,
+      "kasa": 0,
+      "mizanAlacakToplam": 8735539,
+      "mizanBorcToplam": 8735539,
+      "ozet": {
+        "gercekBanka": 8638639,
+        "hesabiAtanmamis": -96900,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 8638639
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}

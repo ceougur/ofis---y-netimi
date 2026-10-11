@@ -1,0 +1,14 @@
+2026-10-10T18:13:50.497Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:40545
+2026-10-10T18:13:50.500Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 41465)
+2026-10-10T18:13:50.580Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+2026-10-10T18:13:50.580Z [INFO] 9.0.1 sürümü hazır; kendiliğinden kurulum kapalı, kurulmayacak (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).
+2026-10-10T18:13:51.010Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+[uygulama] 2026-10-10T18:13:54.008Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+[uygulama] 2026-10-10T18:15:54.012Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T18:16:56.080Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+2026-10-10T18:16:56.482Z [INFO] 9.0.1 sürümü indiriliyor (4769 KB)…
+2026-10-10T18:16:56.713Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 34393)
+2026-10-10T18:16:57.187Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+2026-10-10T18:16:57.208Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+[uygulama] 2026-10-10T18:17:00.231Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+2026-10-10T18:17:05.852Z [INFO] Servis yöneticisi kapatılıyor…

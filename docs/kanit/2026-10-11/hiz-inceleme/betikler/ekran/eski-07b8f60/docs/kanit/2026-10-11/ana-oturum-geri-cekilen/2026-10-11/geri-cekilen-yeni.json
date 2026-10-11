@@ -1,0 +1,32 @@
+{
+  "ad": "geri-cekilen-yeni",
+  "komut": "node --test test/guncelleme-hazir-geri-cekilen.test.mjs",
+  "commit": "5601396e8d9c82cdbc35f238324082158ef93f07",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T02:31:39.959Z",
+  "sure_sn": 12.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-geri-cekilen/2026-10-11/geri-cekilen-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "5e4bdfeccfcf8319acf3d4a6d9590b04e39e646bc895a35cb63b5a2e46f33499",
+  "ham_cikti_bayt": 2087
+}

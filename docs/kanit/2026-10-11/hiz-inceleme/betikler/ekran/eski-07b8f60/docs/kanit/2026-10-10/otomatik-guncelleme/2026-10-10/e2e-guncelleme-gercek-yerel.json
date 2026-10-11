@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-guncelleme-gercek-yerel",
+  "komut": "npm run test:guncelleme-gercek",
+  "commit": "44b56a1edc5d1bc72dfbf0fe0673f457fed6910a",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T19:53:43.238Z",
+  "sure_sn": 241.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/e2e-guncelleme-gercek-yerel.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "53a475bb1777d5c4141cf43fbc5274f0784107a5f8db73ebb78ed247341982f2",
+  "ham_cikti_bayt": 1798
+}

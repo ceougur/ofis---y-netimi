@@ -1,0 +1,60 @@
+
+> destekofis@2.1.0 test:senaryo-218
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-218.mjs
+
+
+■ Marka ve patent (müşterinin tablosu): Başvuru Sahibi kişi, Marka / Buluş Adı eşya
+  ✓ personOf(ilk satır) = "NARAN YILDIZ" (beklenen "NARAN YILDIZ"; analiz kişi kolonu: Başvuru Sahibi)
+  ✓ Yeni Kayıt formunda "cari kartı da aç" kutusu yok
+  ✓ kayıt sonrası cari açılmadı (cariler: yok)
+  ✓ "FURRA" adıyla cari açılmadı
+  ✓ yeni kaydın başlığı kişi adıyla (0003 · GÜLDAL KARE · 0001 · NARAN YILDIZ · 0002 · HİMMET ERTAŞ)
+  ✓ yeni kaydın anahtarı bulundu (case-f73ba27c-d31c-4f54-a09f-0701369d686c)
+  ✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+  ✓ Cari penceresinde "Tablodan Al" düğmesi yok
+  ✓ + Yeni Cari: ad yazılınca tablodaki kayıt önerildi (case-f73ba27c-d31c-4f54-a09f-0701369d686c · Tabloda aynı adlı kayıt bulundu ve seçildi. Yanlış)
+  ✓ cari elle açıldı: "GÜLDAL KARE" (cariler: GÜLDAL KARE)
+  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (case-f73ba27c-d31c-4f54-a09f-0701369d686c)
+  ✓ "FURRA" adıyla cari yok
+
+■ Sipariş tablosu: Ürün Adı eşya, Müşteri kişi
+  ✓ personOf(ilk satır) = "Mehmet Kaya" (beklenen "Mehmet Kaya"; analiz kişi kolonu: Müşteri)
+  ✓ Yeni Kayıt formunda "cari kartı da aç" kutusu yok
+  ✓ kayıt sonrası cari açılmadı (cariler: yok)
+  ✓ "Ahşap Masa" adıyla cari açılmadı
+  ✓ yeni kaydın başlığı kişi adıyla (S-2 · Ayşe Demir · S-1 · Mehmet Kaya)
+  ✓ yeni kaydın anahtarı bulundu (case-7326010e-5665-47c9-97c7-d45b6c80f695)
+  ✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+  ✓ Cari penceresinde "Tablodan Al" düğmesi yok
+  ✓ + Yeni Cari: ad yazılınca tablodaki kayıt önerildi (case-7326010e-5665-47c9-97c7-d45b6c80f695 · Tabloda aynı adlı kayıt bulundu ve seçildi. Yanlış)
+  ✓ cari elle açıldı: "Ayşe Demir" (cariler: Ayşe Demir)
+  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (case-7326010e-5665-47c9-97c7-d45b6c80f695)
+  ✓ "Ahşap Masa" adıyla cari yok
+
+■ Ad ve soyad ayrı kolonlarda: cari adı ikisinden kurulur
+  ✓ personOf(ilk satır) = "Ali Yılmaz" (beklenen "Ali Yılmaz"; analiz kişi kolonu: Adı · parçalar Adı+Soyadı)
+  ✓ Yeni Kayıt formunda "cari kartı da aç" kutusu yok
+  ✓ kayıt sonrası cari açılmadı (cariler: yok)
+  ✓ yeni kaydın başlığı kişi adıyla (Zeynep Arslan · Ali Yılmaz)
+  ✓ yeni kaydın anahtarı bulundu (case-f470e8bb-922d-4db7-b4d4-229d321b4913)
+  ✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+  ✓ Cari penceresinde "Tablodan Al" düğmesi yok
+  ✓ + Yeni Cari: ad yazılınca tablodaki kayıt önerildi (case-f470e8bb-922d-4db7-b4d4-229d321b4913 · Tabloda aynı adlı kayıt bulundu ve seçildi. Yanlış)
+  ✓ cari elle açıldı: "Zeynep Arslan" (cariler: Zeynep Arslan)
+  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (case-f470e8bb-922d-4db7-b4d4-229d321b4913)
+
+■ İcra tablosu (eski davranış korunur): Borçlu kişi, Dosya No kimlik
+  ✓ personOf(ilk satır) = "Veli Can" (beklenen "Veli Can"; analiz kişi kolonu: Borçlu)
+  ✓ Yeni Kayıt formunda "cari kartı da aç" kutusu yok
+  ✓ kayıt sonrası cari açılmadı (cariler: yok)
+  ✓ "2026/2" adıyla cari açılmadı
+  ✓ yeni kaydın başlığı kişi adıyla (2026/2 · Hasan Öz · 2026/1 · Veli Can)
+  ✓ yeni kaydın anahtarı bulundu (2026/2)
+  ✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+  ✓ Cari penceresinde "Tablodan Al" düğmesi yok
+  ✓ + Yeni Cari: ad yazılınca tablodaki kayıt önerildi (2026/2 · Tabloda aynı adlı kayıt bulundu ve seçildi. Yanlış)
+  ✓ cari elle açıldı: "Hasan Öz" (cariler: Hasan Öz)
+  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (2026/2)
+  ✓ "2026/2" adıyla cari yok
+
+46 / 46 denetim geçti.

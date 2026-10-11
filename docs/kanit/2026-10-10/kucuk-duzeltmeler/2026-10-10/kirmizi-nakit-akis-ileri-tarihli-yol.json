@@ -1,0 +1,58 @@
+{
+  "ad": "kirmizi-nakit-akis-ileri-tarihli-yol",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/nakit-akis-ileri-tarihli-yol.test.mjs",
+  "commit": "c8ec274e2b084baae6ffb631ba306ccda892cc97",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:50:09.710Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 1,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Nakit Akış / Vade Takip: ileri tarihli satırın kaynağı yoluna göre (gerçek v2.0.23 verisi) › B1+B2 API: nakit 'Kasa (ileri tarihli)', hesapsız eski havale 'Hesabı Atanmamış (ileri tarihli)'; her satır bir kez; toplamlar bağımsız defterle",
+      "konum": "test/nakit-akis-ileri-tarihli-yol.test.mjs:122:3",
+      "hata": "akış satırları (tarih, yön, tutar, kaynak) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Nakit Akış / Vade Takip: ileri tarihli satırın kaynağı yoluna göre (gerçek v2.0.23 verisi) › B1 PDF ve Excel: Kaynak kolonu ekranla aynı ad (Kasa yalnız nakitte)",
+      "konum": "test/nakit-akis-ileri-tarihli-yol.test.mjs:137:3",
+      "hata": "PDF: hesapsız iki eski satır ayrı adla (Nakit Akış Projeksiyonu 10.10.2026 – 09.11.2026 · Taksit, çek/senet ve ileri tarihli Kasa hareketleri · Başlangıç: Nakit Kasa + Gerçek Banka… Oluşturma: 10.10.2026 12:00 Hazırlayan: Ofis yöneticisi Bugünkü Nakit ve Banka 11.000,00 TL Nakit Kasa 1.000,00 TL Gerçek Banka 10.000,00 TL Hesabı Atanmamış Eski Hareketler 250,00 TL Başlangıç (Nakit ve Banka) 11.000,00 TL Beklenen Giriş 1.300,00 TL Beklenen Çıkış 600,00 TL Dönem Sonu Tahmini Nakit ve Banka 11.700,00 TL En Düşük Tahmini Nakit ve Banka 10.700,00 TL (1… Gecikmiş Alacak / Borç 0,00 TL / 0,00 TL Vade Kaynak Açıklama Kimden / Kime Giriş Çıkış Beklenen Nakit ve Banka 14.10.2026 Kasa (ileri tarihli) Çek tahsili · No YOL-1 · İleri Tarihli Müşteri 300,00 TL 11.300,00 TL 15.10.2026 Kasa (ileri tarihli) Çek ödemesi · No YOL-3 · İleri Tarihli T) · 0 !== 2 (beklenen 2, gelen 0)"
+    },
+    {
+      "ad": "Nakit Akış / Vade Takip: ileri tarihli satırın kaynağı yoluna göre (gerçek v2.0.23 verisi) › B1 ekran: istemcinin satır adı sunucuyla aynı ('Hesabı Atanmamış (ileri tarihli)'; Kasa kutusu süzgeci değişmez)",
+      "konum": "test/nakit-akis-ileri-tarihli-yol.test.mjs:152:3",
+      "hata": "hof-overview.js satır adlarında legacy kaynağı yok (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Nakit Akış / Vade Takip: ileri tarihli satırın kaynağı yoluna göre (gerçek v2.0.23 verisi) › B4 Vade Takip (komşu): aynı satırlar aynı adla; Kasa süzgeci Kasa'nın satırlarını ve hesapsız eski satırları ayrı adla verir",
+      "konum": "test/nakit-akis-ileri-tarihli-yol.test.mjs:157:3",
+      "hata": "Vade Takip satırları · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Nakit Akış: hesaba atanmış ileri tarihli banka ve kurumsal kart satırı (ham veri) › B5 dönem sonu = Nakit 2.000 + Ziraat (10.000 − 700) = 11.300; havale bir kez, kart borcu hiç",
+      "konum": "test/nakit-akis-ileri-tarihli-yol.test.mjs:203:3",
+      "hata": "akışta ileri tarihli banka/kart satırı yok (Gerçek Banka zaten içeriyor; kart borçtur) · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler/2026-10-10/kirmizi-nakit-akis-ileri-tarihli-yol.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9dfb657bd3683627",
+  "ham_cikti_sha256": "552395f014341c128fe9a94a3d4fe32caffb9aff7718ab920530119067672078",
+  "ham_cikti_bayt": 9532
+}

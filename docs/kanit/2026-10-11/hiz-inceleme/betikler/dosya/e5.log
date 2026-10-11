@@ -1,0 +1,79 @@
+giriş 200
+002 banka-hareket: 200 toplam 8341
+[1] Şimdi Yedek Al (Tüm): 200 823 ms; yedekler ["001:destekofis-001-2026-10-11T13-39-16-020Z-manuel.sqlite","002:destekofis-002-2026-10-11T13-39-16-020Z-manuel.sqlite"]; hatalar []
+[1] eşzamanlı raporlar 001: 200/2842ms, 200/2844ms | 002: 200/208ms, 200/266ms
+[2] runDueBackups: []
+[2] eşzamanlı raporlar 001: 200/3004ms, 200/3234ms
+[3] geri yüklenecek yedek: destekofis-002-2026-10-11T13-39-16-020Z-manuel.sqlite ( 0 yedek )
+2026-10-11T13:39:21.967Z [ERROR] API hatası GET /api/workspace/report-center/banka-hareket Error: rapor iş parçacığı kapandı (kod 1)
+    at Worker.<anonymous> (file:///home/user/ofis---y-netimi/server/lib/report-runner.mjs:43:40)
+    at Object.onceWrapper (node:events:634:26)
+    at Worker.emit (node:events:531:35)
+    at [kOnExit] (node:internal/worker:318:10)
+    at Worker.<computed>.onexit (node:internal/worker:232:20)
+    at Worker.callbackTrampoline (node:internal/async_hooks:130:17)
+2026-10-11T13:39:22.117Z [ERROR] API hatası GET /api/workspace/report-center/banka-hareket Error: rapor iş parçacığı kapandı (kod 1)
+    at Worker.<anonymous> (file:///home/user/ofis---y-netimi/server/lib/report-runner.mjs:43:40)
+    at Object.onceWrapper (node:events:634:26)
+    at Worker.emit (node:events:531:35)
+    at [kOnExit] (node:internal/worker:318:10)
+    at Worker.<computed>.onexit (node:internal/worker:232:20)
+    at Worker.callbackTrampoline (node:internal/async_hooks:130:17)
+[3.1] geri yükleme: 200 509 ms; {"restored":true,"company":"002 · Ölçek İkinci Şirket","name":"destekofis-002-2026-10-11T13-39-16-020Z-manuel.sqlite","safety":"destekofis-002-2026-10-11T13-39-
+[3.1] eşzamanlı 002 raporları: 503:"Sunucu kapanıyor; raporu yeniden açın."/153ms, 503:"Sunucu kapanıyor; raporu yeniden açın."/154ms, 500:"Sunucu işlemi tamamlayamadı."/162ms, 500:"Sunucu işlemi tamamlayamadı."/552ms
+[3.1] geri yüklemeden hemen sonra 002 dosyasında süreçteki tanıtıcı: 0 []
+[3.1] sonra 002 raporu: 200 toplam 8341
+2026-10-11T13:39:23.726Z [ERROR] API hatası GET /api/workspace/report-center/banka-hareket Error: rapor iş parçacığı kapandı (kod 1)
+    at Worker.<anonymous> (file:///home/user/ofis---y-netimi/server/lib/report-runner.mjs:43:40)
+    at Object.onceWrapper (node:events:634:26)
+    at Worker.emit (node:events:531:35)
+    at [kOnExit] (node:internal/worker:318:10)
+    at Worker.<computed>.onexit (node:internal/worker:232:20)
+    at Worker.callbackTrampoline (node:internal/async_hooks:130:17)
+2026-10-11T13:39:23.735Z [ERROR] API hatası GET /api/workspace/report-center/banka-hareket Error: rapor iş parçacığı kapandı (kod 1)
+    at Worker.<anonymous> (file:///home/user/ofis---y-netimi/server/lib/report-runner.mjs:43:40)
+    at Object.onceWrapper (node:events:634:26)
+    at Worker.emit (node:events:531:35)
+    at [kOnExit] (node:internal/worker:318:10)
+    at Worker.<computed>.onexit (node:internal/worker:232:20)
+    at Worker.callbackTrampoline (node:internal/async_hooks:130:17)
+[3.2] geri yükleme: 200 493 ms; {"restored":true,"company":"002 · Ölçek İkinci Şirket","name":"destekofis-002-2026-10-11T13-39-16-020Z-manuel.sqlite","safety":"destekofis-002-2026-10-11T13-39-
+[3.2] eşzamanlı 002 raporları: 503:"Sunucu kapanıyor; raporu yeniden açın."/195ms, 503:"Sunucu kapanıyor; raporu yeniden açın."/196ms, 500:"Sunucu işlemi tamamlayamadı."/305ms, 500:"Sunucu işlemi tamamlayamadı."/574ms
+[3.2] geri yüklemeden hemen sonra 002 dosyasında süreçteki tanıtıcı: 0 []
+[3.2] sonra 002 raporu: 200 toplam 8341
+2026-10-11T13:39:25.454Z [ERROR] API hatası GET /api/workspace/report-center/banka-hareket Error: rapor iş parçacığı kapandı (kod 1)
+    at Worker.<anonymous> (file:///home/user/ofis---y-netimi/server/lib/report-runner.mjs:43:40)
+    at Object.onceWrapper (node:events:634:26)
+    at Worker.emit (node:events:531:35)
+    at [kOnExit] (node:internal/worker:318:10)
+    at Worker.<computed>.onexit (node:internal/worker:232:20)
+    at Worker.callbackTrampoline (node:internal/async_hooks:130:17)
+2026-10-11T13:39:25.551Z [ERROR] API hatası GET /api/workspace/report-center/banka-hareket Error: rapor iş parçacığı kapandı (kod 1)
+    at Worker.<anonymous> (file:///home/user/ofis---y-netimi/server/lib/report-runner.mjs:43:40)
+    at Object.onceWrapper (node:events:634:26)
+    at Worker.emit (node:events:531:35)
+    at [kOnExit] (node:internal/worker:318:10)
+    at Worker.<computed>.onexit (node:internal/worker:232:20)
+    at Worker.callbackTrampoline (node:internal/async_hooks:130:17)
+[3.3] geri yükleme: 200 499 ms; {"restored":true,"company":"002 · Ölçek İkinci Şirket","name":"destekofis-002-2026-10-11T13-39-16-020Z-manuel.sqlite","safety":"destekofis-002-2026-10-11T13-39-
+[3.3] eşzamanlı 002 raporları: 503:"Sunucu kapanıyor; raporu yeniden açın."/223ms, 503:"Sunucu kapanıyor; raporu yeniden açın."/224ms, 500:"Sunucu işlemi tamamlayamadı."/311ms, 500:"Sunucu işlemi tamamlayamadı."/622ms
+[3.3] geri yüklemeden hemen sonra 002 dosyasında süreçteki tanıtıcı: 0 []
+[3.3] sonra 002 raporu: 200 toplam 8341
+2026-10-11T13:39:26.935Z [ERROR] API hatası GET /api/workspace/report-center/banka-masraf Error: rapor iş parçacığı kapandı (kod 1)
+    at Worker.<anonymous> (file:///home/user/ofis---y-netimi/server/lib/report-runner.mjs:43:40)
+    at Object.onceWrapper (node:events:634:26)
+    at Worker.emit (node:events:531:35)
+    at [kOnExit] (node:internal/worker:318:10)
+    at Worker.<computed>.onexit (node:internal/worker:232:20)
+    at Worker.callbackTrampoline (node:internal/async_hooks:130:17)
+2026-10-11T13:39:26.957Z [ERROR] API hatası GET /api/workspace/report-center/banka-masraf Error: rapor iş parçacığı kapandı (kod 1)
+    at Worker.<anonymous> (file:///home/user/ofis---y-netimi/server/lib/report-runner.mjs:43:40)
+    at Object.onceWrapper (node:events:634:26)
+    at Worker.emit (node:events:531:35)
+    at [kOnExit] (node:internal/worker:318:10)
+    at Worker.<computed>.onexit (node:internal/worker:232:20)
+    at Worker.callbackTrampoline (node:internal/async_hooks:130:17)
+[4] 002 silme: 200 198 ms
+[4] eşzamanlı 002 raporları: 503:"Sunucu kapanıyor; raporu yeniden açın."/115ms, 500:"Sunucu işlemi tamamlayamadı."/124ms, 500:"Sunucu işlemi tamamlayamadı."/260ms
+[4] silindikten sonra eski 002 dosyası var mı: false; süreçte sirketler/002 ya da silinen-sirketler tanıtıcısı: 0
+kapandı

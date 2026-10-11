@@ -413,11 +413,9 @@ code {
   white-space: nowrap;
 }
 
-/* Drive'a yedek (v2.0.2) */
+/* Yedekleri Denetle sonuç listeleri ve durum renkleri */
 .adm-hints { margin: 6px 0 12px; padding-left: 18px; color: var(--hof-muted, #5b6472); font-size: 13px; line-height: 1.5; }
 .adm-hints code { font-size: 12px; }
-.adm-inline-form { display: grid; gap: 10px; max-width: 720px; }
-.adm-inline-form .hof-field input { width: 100%; }
 .adm-ok { color: #1a7f4b; }
 .adm-warn { color: #a05a00; }
 .adm-error { color: #b42318; }

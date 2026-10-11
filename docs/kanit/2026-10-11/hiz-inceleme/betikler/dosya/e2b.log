@@ -1,0 +1,12 @@
+N=0: terminate 7 ms, çıkış kodu 1
+N=1000: terminate 2034 ms, çıkış kodu 1
+N=1000000: terminate 3973 ms, çıkış kodu 1
+N=5000000: terminate 20 sn'de ÇÖZÜLMEDİ (iş parçacığı durmadı)
+N=0: terminate 7 ms, çıkış kodu 1
+N=1000: terminate 1229 ms, çıkış kodu 1
+N=1000000: terminate 4396 ms, çıkış kodu 1
+N=5000000: terminate 20 sn'de ÇÖZÜLMEDİ (iş parçacığı durmadı)
+N=0: terminate 6 ms, çıkış kodu 1
+N=1000: terminate 1064 ms, çıkış kodu 1
+N=1000000: terminate 4000 ms, çıkış kodu 1
+N=5000000: terminate 20 sn'de ÇÖZÜLMEDİ (iş parçacığı durmadı)

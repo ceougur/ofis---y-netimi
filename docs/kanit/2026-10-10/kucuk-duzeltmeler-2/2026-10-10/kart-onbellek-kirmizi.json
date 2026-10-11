@@ -1,0 +1,128 @@
+{
+  "ad": "kart-onbellek-kirmizi",
+  "komut": "npm run test:banka-210-kart-onbellek",
+  "commit": "7a6011c45f6e31bbf7b1d626771f6e6a3bb1a4ef",
+  "dal": "worktree-agent-a52cd8d581e9c0684",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T20:10:05.911Z",
+  "sure_sn": 66.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 22,
+    "gecen": 4,
+    "basarisiz": 18,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 18 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "form açılışında seçicide iki kart (0 seçenek)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "seçimsiz kaydedilmedi ()",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ikinci kart varken birinci karta (Kurumsal Kart) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi -1423)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "form açılışında seçicide iki hesap (0 seçenek)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ikinci hesap varken birinci hesaba (Ana TL Hesabı) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi 100312)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hatadan sonra hücre iki kartlı seçiciye döndü (0 kart)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "form açılışında seçicide iki kart (0 seçenek)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "seçimsiz kaydedilmedi ()",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ikinci kart varken birinci karta (Kurumsal Kart) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi -2866)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "form açılışında seçicide iki hesap (0 seçenek)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ikinci hesap varken birinci hesaba (Ana TL Hesabı) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi 100233)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hatadan sonra hücre iki kartlı seçiciye döndü (0 kart)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "form açılışında seçicide iki kart (0 seçenek)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "seçimsiz kaydedilmedi ()",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ikinci kart varken birinci karta (Kurumsal Kart) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi -4329)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "form açılışında seçicide iki hesap (0 seçenek)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ikinci hesap varken birinci hesaba (Ana TL Hesabı) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi 100163)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hatadan sonra hücre iki kartlı seçiciye döndü (0 kart)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "banka-210-kart-onbellek-yaris: 4 geçti, 18 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler-2/2026-10-10/kart-onbellek-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684",
+  "ham_cikti_sha256": "ebb63e26862d6cce19680f45734841534c321ee8188e959771c83854c6fdba8a",
+  "ham_cikti_bayt": 3115
+}

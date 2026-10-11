@@ -1,0 +1,13 @@
+kök /home/user/ofis---y-netimi satır 300 yedek destekofis-002-2026-10-11T14-36-41-624Z-manuel.sqlite runner true children function
+[geri yükleme 1] 200 182ms | raporlar: 500:Sunucu işlemi tamamlayamadı./210ms, 500:Sunucu işlemi tamamlayamadı./208ms, 503:Sunucu kapanıyor; raporu yeniden açın./117ms, 503:Sunucu kapanıyor; raporu yeniden açın./118ms
+   sonra rapor 200 toplam 302
+[geri yükleme 2] 200 248ms | raporlar: 500:Sunucu işlemi tamamlayamadı./290ms, 500:Sunucu işlemi tamamlayamadı./291ms, 503:Sunucu kapanıyor; raporu yeniden açın./134ms, 503:Sunucu kapanıyor; raporu yeniden açın./134ms
+   sonra rapor 200 toplam 302
+[geri yükleme 3] 200 140ms | raporlar: 500:Sunucu işlemi tamamlayamadı./197ms, 200/122ms, 503:Sunucu kapanıyor; raporu yeniden açın./121ms, 503:Sunucu kapanıyor; raporu yeniden açın./120ms
+   sonra rapor 200 toplam 302
+[geri yükleme 4] 200 141ms | raporlar: 200/139ms, 500:Sunucu işlemi tamamlayamadı./212ms, 503:Sunucu kapanıyor; raporu yeniden açın./137ms, 503:Sunucu kapanıyor; raporu yeniden açın./137ms
+   sonra rapor 200 toplam 302
+[geri yükleme 5] 200 137ms | raporlar: 200/223ms, 200/221ms, 503:Sunucu kapanıyor; raporu yeniden açın./220ms, 503:Sunucu kapanıyor; raporu yeniden açın./221ms
+   sonra rapor 200 toplam 302
+[silme] 200 {"ok":true,"data":{"deleted":"sirket-5ff00bbc-e79d-455f-97b1-0a2e0c4438a8","backup":"destekofis-002-2026-10-11T14-36-43- | raporlar: 500:Sunucu işlemi tamamlayamadı./133ms, 500:Sunucu işlemi tamamlayamadı./131ms, 503:Sunucu kapanıyor; raporu yeniden açın./79ms
+ÖZET {"200":4,"500:Sunucu işlemi tamamlayamadı.":8,"503:Sunucu kapanıyor; raporu yeniden açın.":11}

@@ -1,0 +1,10 @@
+Drive / Sheets yedek denetimi (10.10.2026) — ham kanıtlar.
+2026-10-10/*.json|log : tools/kanit.mjs kos kayıtları (komut, çıkış kodu, sayılar, commit).
+  drive-yedek            : test/drive-yedek.test.mjs (o anki adı; 10.10 kullanıcı kararıyla Drive kaldırılacağından test/kirmizi/drive-yedek-olcum.mjs oldu, npm test dışı)
+  drive-kirmizi-api      : test/kirmizi/drive-yedek-kirmizi.mjs (BEKLENEN davranış; bugün KIRMIZI olmalı)
+  drive-kirmizi-ekran    : test/kirmizi/drive-yedek-ekran.mjs (Playwright; bugün KIRMIZI olmalı; ekran görüntüleri git'e girmez)
+  mutasyon-m1..m3        : bilerek hata enjekte edilmiş kodla drive-yedek (KIRMIZI olmalı; kod sonra geri alındı)
+v2.0.26-drive-*.txt   : aynı testlerin yayımdaki v2.0.26 kaynağıyla (git archive v2.0.26) ham çıktısı.
+  sheets-yedek           : test/sheets-yedek.test.mjs (kalıcı, npm test içinde; Drive'a bağımlı değil)
+  mutasyon-s1..s4        : bilerek hata enjekte edilmiş kodla sheets-yedek (KIRMIZI olmalı; kod sonra geri alındı)
+  yedek-gerileme         : sheets-yedek + cloud-backup + backup + yedek-* + dataset testleri birlikte (kod değişmedi)

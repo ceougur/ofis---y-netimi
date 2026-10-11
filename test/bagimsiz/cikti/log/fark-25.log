@@ -1,0 +1,9 @@
+rastgele-25-500: çıkış a=0 b=0 program=0 · karşılaştırılan 8804 · atlanan 1273 · fark 498 {'A=B≠P': 420, 'A≠B=P': 67, 'A≠B≠P': 11}
+  BANKA-EKSI-KODU                                                 1 yaprak  {'A=B≠P': 1}
+  KAHIN-K4-YINELENEN-AD                                          78 yaprak  {'A≠B≠P': 11, 'A≠B=P': 67}
+  KDV-DAHIL-ISKONTO                                             104 yaprak  {'A=B≠P': 104}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                           162 yaprak  {'A=B≠P': 162}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS           14 yaprak  {'A=B≠P': 14}
+  TUREV:KDV-DAHIL-ISKONTO                                        88 yaprak  {'A=B≠P': 88}
+  TUREV:KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS                       48 yaprak  {'A=B≠P': 48}
+  VADELI-HESAP-FIS                                                3 yaprak  {'A=B≠P': 3}

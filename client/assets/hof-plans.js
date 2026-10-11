@@ -476,8 +476,9 @@
         <div class="hof-plan-actions" role="toolbar" aria-label="Kart işlemleri">
           <span class="hof-plan-toolgroup">${collect && active ? '<button type="button" class="hof-button hof-button-small" data-act="pay">+ Tahsilat</button>' : ""}${manage && active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="refund" title="Müşteriye yapılan ödeme ya da iade">− Ödeme / İade</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="addItem">+ Taksit</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="distribute" title="Toplam tutarı eşit taksitlere böler">Otomatik Dağıt</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${outputButtons(cardPdfUrl(plan), "card", "Taksit Ekstresi - PDF")}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
-          ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>${active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="close" title="Kart kapanır; uyarı vermez, listede Kapalı altında durur">Kapat</button>' : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="reopen">Yeniden Aç</button>'}<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>` : ""}
+          ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>${active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="close" title="Kart kapanır; uyarı vermez, listede Kapalı altında durur">Kapat</button>' : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="reopen">Yeniden Aç</button>'}<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete"${plan.deleteBlock ? ` disabled title="${esc(plan.deleteBlock)}"` : ""}>Sil</button></span>` : ""}
         </div></div>
+      ${manage && plan.deleteBlock ? `<ul class="hof-inv-blocks" data-plan-blocks><li><b>Sil Kapalı:</b> ${esc(plan.deleteBlock)}</li></ul>` : ""}
       <section class="hof-plan-profile" aria-label="Kişi bilgileri">
         <dl class="hof-plan-facts">
           <div><dt>Sıra No</dt><dd>${esc(plan.refNo || "—")}</dd></div>
@@ -758,6 +759,8 @@
     const incoming = (entry?.kind || kind) === "in";
     const openItems = plan.items.filter(row => row.remaining > 0.005 || row.id === entry?.itemId);
     const suggested = entry ? amountText(entry.amount) : amount ? amountText(amount) : item ? amountText(item.remaining) : plan.next ? amountText(plan.next.remaining) : "";
+    // v2.1.0 Aşama 8: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsilat Gir" : "Ödeme / İade Gir",
       eyebrow: plan.name,
@@ -773,9 +776,20 @@
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: incoming ? "Ör. Ekim taksidi" : "Ne için", list: incoming ? [] : ["İade", "Fazla Alınan", "İndirim"] },
       ],
       submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
+      onOpen: dialog => {
+        if (!entry?.opening && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.finRef || "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" });
+      },
       onSubmit: async data => {
         const url = `/api/workspace/plans/${encodeURIComponent(plan.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
-        const result = await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...data, kind: entry?.kind || kind } });
+        const body = { ...data, kind: entry?.kind || kind };
+        if (data.method !== "bank") delete body.bankAccountId;
+        const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });
+        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        if (result.replayed) {
+          applyPlan(result);
+          HOF.toast("Bu işlem zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
+          return;
+        }
         HOF.toast(entry ? "Hareket düzeltildi." : incoming ? `Tahsilat kaydedildi. Kalan ${money(result.totals.remaining)}.` : "Ödeme kaydedildi.", {
           type: "success",
           action: !entry && incoming && result.entryId ? { label: "Makbuz", onClick: () => window.open(`/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(result.entryId)}/makbuz.pdf`, "_blank", "noopener") } : undefined,
@@ -790,7 +804,10 @@
     const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${money(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} silinecek; Kasa ve kart yeniden hesaplanır. Yönetim panelindeki Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
-      applyPlan(await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(entry.id)}`, { method: "DELETE" }));
+      // Banka hesabına bağlı tahsilat silinince hesabın bakiyesi düşer: eksi bakiye sorusu (K7) "Yine de Kaydet" ile adrese eklenir.
+      const path = `/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(entry.id)}`;
+      const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      applyPlan(HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({}));
       HOF.toast("Hareket silindi.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);
@@ -806,6 +823,8 @@
     }
   }
   async function deletePlan(plan) {
+    // Yargıç K1 (plan §3.8): banka bağlı tahsilatı olan kart silinmez; neden kartta yazılı, düğme pasif (sunucu da 409 plan-bank-linked).
+    if (plan.deleteBlock) return HOF.toast(plan.deleteBlock, { type: "error", timeout: 8000 });
     const ok = await HOF.confirm({ title: "Kartı Sil", message: `“${plan.name}” kartı taksitleri ve hareketleriyle silinecek; hareketleri Kasa’dan düşer. Yönetim panelindeki Silinenler’den geri yüklenebilir.`, confirmLabel: "Kartı Sil", danger: true });
     if (!ok) return;
     try {

@@ -1,0 +1,13 @@
+(node:31922) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+   zaman çizgisi (bırakmadan sonra 100 ms): 100,100,100,100,100,100,100,100,100,100
+   istekler: ["plain:10","plain","plain","plain","plain","cursor"]
+[A] tur 1: tutuldu true · önce 50 · Daha Fazla sonrası 100 · en çok 100 · son 100
+[B] tur 1: imleç tutuldu true · arka plan yeniledi true · satır 100 · eksik ["BNK-2026-000114"] · çift [] · fazla ["BNK-2026-000064"]
+[K] tur 1: satır 100 · eksik 0 · çift 0
+   zaman çizgisi (bırakmadan sonra 100 ms): 100,100,100,100,100,100,100,100,100,100
+   istekler: ["plain","plain","cursor","plain","plain","plain","cursor","plain","plain","plain","cursor"]
+[A] tur 2: tutuldu true · önce 50 · Daha Fazla sonrası 100 · en çok 100 · son 100
+[B] tur 2: imleç tutuldu true · arka plan yeniledi true · satır 100 · eksik ["BNK-2026-000116"] · çift [] · fazla ["BNK-2026-000066"]
+[K] tur 2: satır 100 · eksik 0 · çift 0
+ÖZET {"A_geriAlinan":0,"A_tutulan":2,"B_eksikli":2,"B_ciftli":0,"B_tutulan":2,"K_hatali":0,"tur":2,"sayfaHatalari":[]}

@@ -1,0 +1,106 @@
+{
+ "name": "surum-2.0.26-iade",
+ "cut": "v2.0.26",
+ "commit": "5346ff8442612aaa429783e59ae478d9d6a5fc07",
+ "today": "2026-10-09",
+ "lockedUntil": "2026-09-09",
+ "cases": {
+  "C": {
+   "accountId": "account-cfcc187b-1c94-4178-a76c-91c3d599e2dc",
+   "name": "Onarım C",
+   "invoiceId": "invoice-ed889f06-cc1f-4f5b-b21e-06bec6b64968",
+   "planId": "plan-f546446b-90e4-43f7-a2ff-25af2061ac16",
+   "v2026": {
+    "total": 500,
+    "paid": 0,
+    "left": 500
+   }
+  },
+  "B": {
+   "accountId": "account-1b486a24-583e-4226-95b5-f431c2b67e2f",
+   "name": "Onarım B",
+   "invoiceId": "invoice-c94fee67-da1f-472d-be41-d9b837fb4b47",
+   "planId": "plan-ebf619ab-6c29-4efc-8849-98660559611e",
+   "v2026": {
+    "total": 400,
+    "paid": 0,
+    "left": 400
+   }
+  },
+  "J": {
+   "accountId": "account-b69562e4-0f7f-4298-aee3-b3dff1285936",
+   "name": "Onarım J",
+   "invoiceId": "invoice-6e0b2f79-9780-453e-bbb7-e555641e4e35",
+   "planId": "plan-ffb819be-c971-427c-8529-572d47794c6f",
+   "v2026": {
+    "total": 600,
+    "paid": 300,
+    "left": 300
+   }
+  },
+  "A": {
+   "accountId": "account-48c73d3a-3c6b-4613-8ca2-f9ee17715dbb",
+   "name": "Onarım A",
+   "invoiceId": "invoice-dd6f0a5f-9240-4947-b5c2-6af4ce63a01d",
+   "planId": "plan-0e38f849-5df6-4915-aa6f-d7285cb7127a",
+   "v2026": {
+    "total": 300,
+    "paid": 1500,
+    "left": 0
+   }
+  },
+  "D": {
+   "accountId": "account-6b8bcea7-8b91-4281-8981-2bccf8f4bfd5",
+   "name": "Onarım D",
+   "invoiceId": "invoice-6d848db9-54c9-44ac-af6e-a4fa9c1cc0fb",
+   "planId": "plan-9b25c929-0ffa-4e94-bd3c-292963c05f38",
+   "v2026": {
+    "total": 1000,
+    "paid": 0,
+    "left": 1000
+   }
+  },
+  "E": {
+   "accountId": "account-1b869ff3-1f09-4b83-ba59-b63b2febf57e",
+   "name": "Onarım E",
+   "invoiceId": "invoice-eadcf3d4-fac1-4dd9-9c6d-e9da401b7181",
+   "planId": "plan-e744d327-8fe4-41bb-abd3-eb066ac1c077",
+   "v2026": {
+    "total": 500,
+    "paid": 0,
+    "left": 500
+   }
+  },
+  "KILIT": {
+   "accountId": "account-69dd4d69-5fc3-4fcb-8e58-17bdc5c2a67d",
+   "name": "Onarım Kilit",
+   "invoiceId": "invoice-2f223516-1191-4a0c-b327-41fc09b9c449",
+   "planId": "plan-20325973-d1ef-403b-ad31-a9ad978c75a0",
+   "v2026": {
+    "total": 500,
+    "paid": 0,
+    "left": 500
+   }
+  }
+ },
+ "files": [
+  {
+   "path": "veri/destekofis.sqlite",
+   "sha256": "fddd3b0d1c8737d6bb4b6c23b8c989f8789627a3ad04af45cd316aaa0f511fe0",
+   "size": 847872,
+   "mtimeMs": 1791578521191
+  },
+  {
+   "path": "veri/sirketler.json",
+   "sha256": "e3ebf880c9712a1e608c496e521d2eedd1f12004885c56ffcdf294260602dcb7",
+   "size": 196,
+   "mtimeMs": 1791578520547
+  },
+  {
+   "path": "veri/sirketler.yedek.json",
+   "sha256": "e3ebf880c9712a1e608c496e521d2eedd1f12004885c56ffcdf294260602dcb7",
+   "size": 196,
+   "mtimeMs": 1791578520547
+  }
+ ]
+}

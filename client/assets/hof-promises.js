@@ -259,6 +259,10 @@
     // Sunucu para/evrak değişikliğini işlemi yapan dahil herkese "overview.changed" ile de duyurur (başka bilgisayarda
     // ödenen çek bu ekranda da düşer).
     HOF.on("live:overview.changed", () => liveSoon());
+    // Başka sayfadaki değişiklik (hof-live.js): o sayfanın kalemleri bu takvimde "öbür sayfa" olarak durur.
+    HOF.on("live:page.changed", change => {
+      if (change && !change.info) liveSoon();
+    });
     HOF.on("live:resync", () => liveSoon());
     HOF.on("live:hello", () => liveSoon());
     // Yedek yenileme: canlı bağlantı kopsa bile ekran açıkken 5 dakikada bir; sekmeye geri dönülünce de (1 dakikadan

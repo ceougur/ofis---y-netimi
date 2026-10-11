@@ -1,0 +1,80 @@
+{
+  "kok": "/tmp/v2026",
+  "bugun": "2026-10-10",
+  "vakalar": [
+    {
+      "ad": "N-put-cash-warn",
+      "durum": 200
+    },
+    {
+      "ad": "K1 Kasa Uyar: boş Kasa'dan 100 çıkış",
+      "durum": 409,
+      "kod": "cash-negative",
+      "ileti": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.",
+      "alanlar": {
+        "ok": false,
+        "code": "cash-negative",
+        "method": "cash",
+        "balance": 0,
+        "after": -100
+      }
+    },
+    {
+      "ad": "K2 Kasa Engelle: boş Kasa'dan 100 çıkış",
+      "durum": 409,
+      "kod": "cash-blocked",
+      "ileti": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).",
+      "alanlar": {
+        "ok": false,
+        "code": "cash-blocked",
+        "method": "cash",
+        "balance": 0,
+        "after": -100
+      }
+    },
+    {
+      "ad": "N0 GET /api/admin/negative-policy",
+      "durum": 200,
+      "govde": {
+        "ok": true,
+        "data": {
+          "cash": "off",
+          "bank": "off",
+          "card": "off"
+        }
+      }
+    },
+    {
+      "ad": "L0 negative-policy bank:'warn' yazımı",
+      "durum": 200,
+      "govde": {
+        "ok": true,
+        "data": {
+          "cash": "warn",
+          "bank": "off",
+          "card": "off"
+        }
+      }
+    },
+    {
+      "ad": "L1 GET negative-policy (yazımdan sonra)",
+      "durum": 200,
+      "govde": {
+        "ok": true,
+        "data": {
+          "cash": "warn",
+          "bank": "off",
+          "card": "off"
+        }
+      }
+    },
+    {
+      "ad": "L2 boş Banka yolundan cariye 5.000 havale ödemesi (bayraksız)",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "alanlar": null
+    }
+  ],
+  "bankaModulu": false
+}

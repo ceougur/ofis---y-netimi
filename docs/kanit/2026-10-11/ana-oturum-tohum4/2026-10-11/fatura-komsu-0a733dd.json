@@ -1,0 +1,32 @@
+{
+  "ad": "fatura-komsu-0a733dd",
+  "komut": "node --test test/einvoice-edm.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-model.test.mjs",
+  "commit": "0a733dd0575e4c26f0bab6b75859aecb0c272477",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T09:14:12.125Z",
+  "sure_sn": 8.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 68,
+    "gecen": 68,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-tohum4/2026-10-11/fatura-komsu-0a733dd.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "2869deef39f2949841b5202eaf967d2cc630e2d8a991587fe8ca0684a8e19935",
+  "ham_cikti_bayt": 24973
+}

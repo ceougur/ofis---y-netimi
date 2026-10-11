@@ -1,0 +1,32 @@
+{
+  "ad": "olcek-210-veri-3",
+  "komut": "node --disable-warning=ExperimentalWarning tools/olcek-210.mjs --asama veri --klasor /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/olcek/tam",
+  "commit": "50adda553bde3719df3a2e143f11f18272b4de5d",
+  "dal": "worktree-agent-a46fa90af7f0dcb26",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T07:24:33.819Z",
+  "sure_sn": 4148,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/olcek/2026-10-11/olcek-210-veri-3.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a46fa90af7f0dcb26",
+  "ham_cikti_sha256": "f2f1b093c5b80976cc8ce8e9d9c0a9725f0f6b0f9f4978e357f47a7ba1197e29",
+  "ham_cikti_bayt": 6330
+}

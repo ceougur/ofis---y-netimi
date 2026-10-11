@@ -66,18 +66,24 @@
     loadList();
   }
 
-  async function loadList(more = false, { quiet = false } = {}) {
+  // 2.1.0 (bağımsız inceleme H4): Daha Fazla ile arka plan yenilemesi çakışınca yanıt yalnız isteğin gittiği listeye eklenir (HOF.listGate
+  // retry); arka plan yenilemesi Daha Fazla ile açılan satırları korur (önceden ilk 300'e dönüyordu).
+  function loadList(more = false, options = {}) {
+    return HOF.listRetry(() => loadListOnce(more, options));
+  }
+  async function loadListOnce(more = false, { quiet = false } = {}) {
     // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
     const load = lists.start({ quiet, more });
-    if (!load) return;
+    if (!load) return false;
     if (!quiet && !more && view.listError) {
       view.listError = "";
       if (!view.list && view.mode === "list") renderList();
     }
     try {
       const offset = more && view.list ? view.list.cheques.length : 0;
-      const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit: 300 })}`, quiet ? { background: true } : {});
-      if (!load.current()) return;
+      const limit = quiet && view.list ? Math.min(5000, Math.max(300, view.list.cheques.length)) : 300;
+      const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit })}`, quiet ? { background: true } : {});
+      if (!load.current()) return load.retry();
       load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, cheques: [...view.list.cheques, ...data.cheques] } : data;
@@ -143,7 +149,7 @@
       )
       .join("");
     HOF.swap(root, `<div class="hof-plan-head">
-        <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>Alınan evrak portföye girer, tahsil edilince Kasa'ya; verilen evrak ödenince Kasa'dan çıkar.</small></div>
+        <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>Alınan evrak portföye girer, tahsil edilince banka hesabına ya da Kasa'ya; verilen evrak ödenince bankadan ya da Kasa'dan çıkar.</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Çek / senet işlemleri">
           ${canManage() ? `<button type="button" class="hof-button hof-button-small" data-act="new-in">+ Çek / Senet Al</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="new-out">+ Çek / Senet Ver</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import">Excel / Sheets’ten Yükle</button>` : ""}
           <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/cheques/liste.pdf?${esc(listQuery())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/cheques/export.xlsx?${esc(listQuery())}" download>Liste - Excel</a></span>
@@ -193,7 +199,7 @@
       </dl>
       <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : ""}</div>
       ${cheque.lockNote ? `<p class="hof-rep-note hof-chq-lock-note">${esc(cheque.lockNote)}</p>` : ""}
-      <p class="hof-rep-note">${cheque.direction === "in" ? "Alınınca carinin borcu düşer (ya da taksite sayılır); para Kasa'ya tahsil edilince girer. Ciro edilince tedarikçiye olan borç düşer. Karşılıksız çıkarsa müşteri yeniden borçlanır." : "Verilince tedarikçiye olan borç düşer; para Kasa'dan ödenince çıkar."}</p>
+      <p class="hof-rep-note">${cheque.direction === "in" ? "Alınınca carinin borcu düşer (ya da taksite sayılır); para tahsil edilince banka hesabına ya da Kasa'ya girer. Ciro edilince tedarikçiye olan borç düşer. Karşılıksız çıkarsa müşteri yeniden borçlanır." : "Verilince tedarikçiye olan borç düşer; para ödenince bankadan ya da Kasa'dan çıkar."}</p>
       <h4 class="hof-chq-subtitle">İşlem Geçmişi</h4>
       <ol class="hof-chq-history">${history}</ol>`);
   }
@@ -223,8 +229,8 @@
           ? "Tahsil, ciro ya da ödeme yapılmadıkça tutar, cari ve tarihler değiştirilebilir; cari/taksit kaydı birlikte düzeltilir."
           : cheque.coreNote || "Bu evrakta yalnız vade, no, banka ve açıklama değiştirilebilir."
         : direction === "in"
-          ? "Müşteriden aldığınız evrak portföye girer. Cari seçerseniz carinin borcu düşer; taksit kartı seçerseniz o taksit ödenmiş sayılır. Para Kasa'ya tahsil edildiğinde girer."
-          : "Tedarikçiye verdiğiniz kendi çekiniz/senediniz. Cari seçerseniz tedarikçiye olan borcunuz düşer; para Kasa'dan vadesinde ödendiğinde çıkar.",
+          ? "Müşteriden aldığınız evrak portföye girer. Cari seçerseniz carinin borcu düşer; taksit kartı seçerseniz o taksit ödenmiş sayılır. Para tahsil edildiğinde banka hesabına ya da Kasa'ya girer."
+          : "Tedarikçiye verdiğiniz kendi çekiniz/senediniz. Cari seçerseniz tedarikçiye olan borcunuz düşer; para vadesinde ödendiğinde bankadan ya da Kasa'dan çıkar.",
       fields: core ? fields : fields.filter(field => !["instrument", "amount", "issueDate"].includes(field.name)),
       submitLabel: edit ? "Kaydet" : direction === "in" ? "Portföye Al" : "Kaydet",
       onOpen: dialog => {
@@ -286,6 +292,9 @@
   };
   function actionForm(cheque, action) {
     const text = ACTION_TEXT[action];
+    // v2.1.0 Aşama 8: istek kimliği form açılışında; tahsil/ödemede Banka seçilince Banka Hesabı (tek hesapta gizli) ve hesabın soruları.
+    const requestId = HOF.requestId();
+    const moneyAction = action === "collect" || action === "pay";
     HOF.formModal({
       title: `${text.title} · ${cheque.instrumentLabel}${cheque.serialNo ? ` No ${cheque.serialNo}` : ""}`,
       eyebrow: money(cheque.amount),
@@ -298,6 +307,7 @@
       ],
       submitLabel: text.submit,
       onOpen: dialog => {
+        if (moneyAction && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method" });
         if (action !== "endorse") return;
         // v2.0.17 (müşteri: "cari bulunmuyor"): tür kısıtı yok — bütün cariler aranır, tedarikçiler üstte; "+ Yeni Cari".
         const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari", required: true, prefer: "supplier", allowNew: { type: "supplier" }, help: "Tedarikçi ya da müşteri: çekin kime verildiği. Bulunamazsa + Yeni Cari ile açın.", name: "accountId" });
@@ -305,7 +315,9 @@
       },
       onSubmit: async data => {
         if (action === "endorse" && !data.accountId) throw new Error("Çeki kime ciro ettiğinizi seçin.");
-        const saved = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body: { action, date: data.date, note: data.note, accountId: data.accountId || "", method: data.method || "", status: cheque.status } });
+        const body = { action, date: data.date, note: data.note, accountId: data.accountId || "", method: data.method || "", status: cheque.status, ...(moneyAction && data.method === "bank" && data.bankAccountId ? { bankAccountId: data.bankAccountId } : {}) };
+        const send = flags => HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body: { ...body, ...flags }, requestId });
+        const saved = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         HOF.toast(`${cheque.instrumentLabel} ${ACTION_TEXT[action].past} olarak işlendi.`, { type: "success" });
         apply(saved);
       },
@@ -316,7 +328,9 @@
     if (!ok) return;
     try {
       const last = cheque.events.at(-1);
-      apply(await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/undo`, { method: "POST", body: { eventId: last?.id } }));
+      // Bankaya bağlı tahsilin geri alınması hesabın bakiyesini düşürür: eksi bakiye sorusu (K7) "Yine de Kaydet" ile.
+      const send = flags => HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/undo`, { method: "POST", body: { eventId: last?.id, ...flags } });
+      apply(HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({}));
       HOF.toast("Son işlem geri alındı.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);

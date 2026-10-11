@@ -1,0 +1,130 @@
+✓ deneme 1 (gecikme 50 ms): form açıldı, tutar 1.500,00
+      6246 ms tık Eski Hareketler
+      6295 ms yanıt GET /summary 200
+      6309 ms yanıt GET /accounts 200
+      6310 ms istek GET /legacy
+      6314 ms yanıt GET /setup 200
+      6334 ms tık Bankaya Geçmiş Say
+      6377 ms yanıt GET /legacy 200
+      6448 ms yanıt GET /summary 200
+      6449 ms yanıt GET /accounts 200
+      6467 ms istek GET /legacy
+      6468 ms yanıt GET /setup 200
+      6535 ms yanıt GET /legacy 200
+      6575 ms form açıldı
+✓ deneme 2 (gecikme 50 ms): form açıldı, tutar 1.500,00
+      6080 ms tık Eski Hareketler
+      6138 ms yanıt GET /summary 200
+      6138 ms yanıt GET /accounts 200
+      6142 ms istek GET /legacy
+      6154 ms yanıt GET /setup 200
+      6176 ms tık Bankaya Geçmiş Say
+      6220 ms yanıt GET /legacy 200
+      6378 ms yanıt GET /summary 200
+      6378 ms yanıt GET /accounts 200
+      6382 ms istek GET /legacy
+      6387 ms yanıt GET /setup 200
+      6449 ms yanıt GET /legacy 200
+      6600 ms form açıldı
+✓ deneme 3 (gecikme 50 ms): form açıldı, tutar 1.500,00
+      5894 ms tık Eski Hareketler
+      5987 ms yanıt GET /summary 200
+      5987 ms yanıt GET /accounts 200
+      5987 ms istek GET /legacy
+      5997 ms yanıt GET /setup 200
+      6014 ms tık Bankaya Geçmiş Say
+      6054 ms yanıt GET /legacy 200
+      6224 ms yanıt GET /summary 200
+      6229 ms yanıt GET /accounts 200
+      6232 ms istek GET /legacy
+      6242 ms yanıt GET /setup 200
+      6297 ms yanıt GET /legacy 200
+      6334 ms form açıldı
+✓ deneme 4 (gecikme 50 ms): form açıldı, tutar 1.500,00
+      6253 ms tık Eski Hareketler
+      6307 ms yanıt GET /summary 200
+      6307 ms yanıt GET /accounts 200
+      6331 ms istek GET /legacy
+      6357 ms yanıt GET /setup 200
+      6370 ms tık Bankaya Geçmiş Say
+      6399 ms yanıt GET /legacy 200
+      6533 ms yanıt GET /summary 200
+      6534 ms yanıt GET /accounts 200
+      6541 ms istek GET /legacy
+      6575 ms yanıt GET /setup 200
+      6586 ms form açıldı
+      6621 ms yanıt GET /legacy 200
+✓ deneme 5 (gecikme 50 ms): form açıldı, tutar 1.500,00
+      5633 ms tık Eski Hareketler
+      5714 ms yanıt GET /summary 200
+      5725 ms yanıt GET /accounts 200
+      5731 ms istek GET /legacy
+      5741 ms yanıt GET /setup 200
+      5746 ms tık Bankaya Geçmiş Say
+      5794 ms yanıt GET /legacy 200
+      5874 ms yanıt GET /summary 200
+      5874 ms yanıt GET /accounts 200
+      5884 ms istek GET /legacy
+      5901 ms yanıt GET /setup 200
+      5948 ms yanıt GET /legacy 200
+      6129 ms form açıldı
+✓ deneme 6 (gecikme 50 ms): form açıldı, tutar 1.500,00
+      5894 ms tık Eski Hareketler
+      5935 ms yanıt GET /summary 200
+      5947 ms yanıt GET /accounts 200
+      5962 ms istek GET /legacy
+      5964 ms tık Bankaya Geçmiş Say
+      5971 ms yanıt GET /setup 200
+      6029 ms yanıt GET /legacy 200
+      6203 ms yanıt GET /summary 200
+      6205 ms yanıt GET /accounts 200
+      6219 ms istek GET /legacy
+      6240 ms yanıt GET /setup 200
+      6257 ms form açıldı
+      6305 ms yanıt GET /legacy 200
+✓ deneme 7 (gecikme 50 ms): form açıldı, tutar 1.500,00
+      6010 ms tık Eski Hareketler
+      6088 ms yanıt GET /summary 200
+      6088 ms yanıt GET /accounts 200
+      6089 ms istek GET /legacy
+      6098 ms yanıt GET /setup 200
+      6107 ms tık Bankaya Geçmiş Say
+      6161 ms yanıt GET /legacy 200
+      6316 ms yanıt GET /summary 200
+      6347 ms yanıt GET /accounts 200
+      6347 ms istek GET /legacy
+      6348 ms yanıt GET /setup 200
+      6366 ms form açıldı
+✓ deneme 8 (gecikme 50 ms): form açıldı, tutar 1.500,00
+      6059 ms tık Eski Hareketler
+      6139 ms yanıt GET /summary 200
+      6143 ms yanıt GET /accounts 200
+      6149 ms istek GET /legacy
+      6154 ms tık Bankaya Geçmiş Say
+      6162 ms yanıt GET /setup 200
+      6208 ms yanıt GET /legacy 200
+      6418 ms yanıt GET /summary 200
+      6420 ms yanıt GET /accounts 200
+      6427 ms istek GET /legacy
+      6427 ms form açıldı
+      6453 ms yanıt GET /setup 200
+✗ deneme 9 (gecikme 50 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      6242 ms tık Eski Hareketler
+      6291 ms yanıt GET /summary 200
+      6291 ms yanıt GET /accounts 200
+      6339 ms istek GET /legacy
+      6353 ms yanıt GET /setup 200
+      6366 ms tık Bankaya Geçmiş Say
+      6406 ms yanıt GET /legacy 200
+      6425 ms form yerine yeni bildirim: POS tahsilatı yok
+✗ deneme 10 (gecikme 50 ms): form açılmadı; son bildirim: Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketl
+      5771 ms tık Eski Hareketler
+      5876 ms yanıt GET /summary 200
+      5883 ms yanıt GET /accounts 200
+      5897 ms istek GET /legacy
+      5908 ms yanıt GET /setup 200
+      5915 ms tık Bankaya Geçmiş Say
+      5960 ms yanıt GET /legacy 200
+      5970 ms form yerine yeni bildirim: POS tahsilatı yok
+
+BAŞARISIZ: 8 denetim geçti, 2 başarısız.

@@ -77,6 +77,30 @@
     "dues.reopened": "Tahsilat kalemini yeniden açtı",
     "cash.entry.updated": "Kasa hareketini düzeltti",
     "cash.entry.deleted": "Kasa hareketini sildi",
+    // Banka (v2.1.0): hesaplar, açılış, Kurulum Sihirbazı, Hesabı Atanmamış Eski Hareketler, Banka Ayarları.
+    "bank.account.created": "Banka hesabı açtı",
+    "bank.account.updated": "Banka hesabını düzeltti",
+    "bank.account.passive": "Banka hesabını pasife aldı",
+    "bank.account.active": "Banka hesabını etkinleştirdi",
+    "bank.account.deleted": "Banka hesabını sildi",
+    "bank.account.opening.entered": "Banka açılış bakiyesini girdi",
+    "bank.account.opening.corrected": "Banka açılış bakiyesini düzeltti",
+    "bank.legacy.assigned": "Eski banka hareketini hesaba atadı",
+    "bank.legacy.reclassed": "Hesabı atanmamış POS / kart bakiyesini aktardı",
+    "bank.setup": "Banka Kurulum Sihirbazı'nı çalıştırdı",
+    "bank.setup.undone": "Banka kurulumunu geri aldı",
+    "bank.settings.updated": "Banka ayarlarını değiştirdi",
+    "bank.settings.reset": "Banka ayarlarını varsayılana döndürdü",
+    // Aşama 4 (Banka Hareketleri): Banka Fişi, Ters Kaydet, Düzelt, açıklama ve Planlı İşlemler.
+    "bank.voucher.created": "Banka fişi kaydetti",
+    "bank.transfer.created": "Bankalar arası transfer yaptı",
+    "bank.voucher.reversed": "Banka fişini ters kaydetti",
+    "bank.voucher.corrected": "Banka fişini düzeltti",
+    "bank.event.info": "Banka işleminin açıklamasını düzeltti",
+    "bank.plan.created": "Planlı banka işlemi ekledi",
+    "bank.plan.executed": "Planlı banka işlemini gerçekleştirdi",
+    "bank.plan.skipped": "Planlı banka işleminin bu dönemini atladı",
+    "bank.plan.cancelled": "Planlı banka işlemini sildi",
     "case.lien.created": "Haciz kaydetti",
     "case.status_note.updated": "Kayıt notunu güncelledi",
     "case.status_note.imported": "Yerel notları aktardı",
@@ -91,6 +115,9 @@
     "system.backup_restore_staged": "Yedekten geri yüklemeyi başlattı",
     "system.backup_restore_cancelled": "Bekleyen geri yüklemeden vazgeçti",
     "system.backup_restore_failed": "Yedekten geri yükleme yapılamadı",
+    // Drive'a yedek 2.1.0'da kaldırıldı; eski sürümlerde yazılmış kayıtlar işlem geçmişinde okunur kalır.
+    "system.cloud_backup_set": "Drive yedeğini bağladı (eski sürüm)",
+    "system.cloud_backup_cleared": "Drive yedeğini kaldırdı (eski sürüm)",
     "system.update_checked": "Güncellemeleri denetledi",
     "system.update_requested": "Güncellemeyi başlattı",
     "system.update_settings": "Güncelleme ayarını değiştirdi",
@@ -691,7 +718,6 @@
     HOF.toast(count > 1 ? `${count} şirketin yedeği alındı; her biri kendi klasöründe.` : `Yedek alındı: ${result.name}`, { type: "success" });
     if (result.failed?.length) HOF.toast(`Yedeği alınamayan şirket: ${result.failed.map(item => `${item.company} (${item.error})`).join("; ")}`, { type: "error", timeout: 8000 });
     loadBackups();
-    loadCloud();
   }
   // Yedekleri Denetle (v2.0.21): her şirketin yedekleri kendi adını taşıyan klasörde ve içlerindeki kimlik o şirketin mi?
   // Yalnız okur; hiçbir dosyaya dokunmaz.
@@ -809,66 +835,6 @@
     }
   });
 
-  // ---------- Drive'a yedek (v2.0.2) ----------
-  async function loadCloud() {
-    const status = $("#adm-cloud-status");
-    if (!status) return;
-    try {
-      const info = await HOF.api("/api/admin/backups/cloud");
-      if (!info.enabled) {
-        status.textContent = "Bağlı değil. Yedekler yalnızca bu bilgisayarda tutuluyor.";
-        status.className = "adm-muted";
-        return;
-      }
-      const where = info.mode === "folder" ? `Klasör: ${info.path}` : `Drive klasörü: ${info.folderId}`;
-      const last = info.lastAt ? `Son kopya: ${HOF.formatDateTime(info.lastAt)} (${info.lastName})` : "Henüz kopya alınmadı; ilk yedekte alınır.";
-      status.innerHTML = `<b>${esc(where)}</b> · ${esc(last)} · ${esc(String(info.copies))} kopya${info.lastError ? `<br><span class="adm-error">Son Hata: ${esc(info.lastError)}</span>` : ""}`;
-      status.className = info.lastError ? "adm-warn" : "adm-ok";
-      const input = $("#adm-cloud-target");
-      if (input && !input.value) input.value = info.value || "";
-    } catch (error) {
-      status.textContent = error.message;
-    }
-  }
-  $("#adm-cloud-form")?.addEventListener("submit", async event => {
-    event.preventDefault();
-    const button = event.currentTarget.querySelector('button[type="submit"]');
-    button.disabled = true;
-    try {
-      await HOF.api("/api/admin/backups/cloud", { method: "POST", body: { target: $("#adm-cloud-target").value } });
-      HOF.toast("Drive yedeği bağlandı. Bir sonraki yedek oraya da kopyalanacak.", { type: "success" });
-      loadCloud();
-    } catch (error) {
-      HOF.toastError(error);
-    } finally {
-      button.disabled = false;
-    }
-  });
-  $("#adm-cloud-test")?.addEventListener("click", async event => {
-    const button = event.currentTarget;
-    button.disabled = true;
-    try {
-      const result = await HOF.api("/api/admin/backups/cloud/test", { method: "POST" });
-      HOF.toast(result.ok ? `Deneme başarılı: ${result.name}` : `Kopya alınamadı: ${result.error}`, { type: result.ok ? "success" : "error" });
-      loadCloud();
-      loadBackups();
-    } catch (error) {
-      HOF.toastError(error);
-    } finally {
-      button.disabled = false;
-    }
-  });
-  $("#adm-cloud-off")?.addEventListener("click", async () => {
-    try {
-      await HOF.api("/api/admin/backups/cloud", { method: "POST", body: { target: "" } });
-      $("#adm-cloud-target").value = "";
-      HOF.toast("Drive yedeği kaldırıldı.");
-      loadCloud();
-    } catch (error) {
-      HOF.toastError(error);
-    }
-  });
-
   // ---------- Değişiklik geçmişi ----------
   const detail = event => {
     const payload = event.payload || {};
@@ -947,7 +913,19 @@
     const id = button.closest("tr").dataset.id;
     button.disabled = true;
     try {
-      const result = await HOF.api("/api/admin/trash/restore", { method: "POST", body: { id } });
+      const send = (extra = {}) => HOF.api("/api/admin/trash/restore", { method: "POST", body: { id, ...extra } });
+      let result;
+      try {
+        result = await send();
+      } catch (error) {
+        // Yargıç K2 (plan §3.8, §3.9 K7): banka hesabını eksiye düşüren geri yükleme Uyar'daki hesapta sorulur ("Yine de Geri Yükle" →
+        // negativeOk). Engelle (cash-blocked), pasif hesap ve yetki engeli sorulmaz; nedeni bildirilir. Hakem K5: banka hesabının reddi
+        // cash-negative + accountId (plan §7).
+        if (error?.data?.code !== "cash-negative" || !error.data.accountId) throw error;
+        const go = await HOF.confirm({ title: "Eksi Bakiye", message: String(error.message || "").replace(/Yine de kaydedilsin mi\?\s*$/, "Yine de geri yüklensin mi?"), confirmLabel: "Yine de Geri Yükle", cancelLabel: "Vazgeç", danger: true });
+        if (!go) throw new HOF.ApiError("Geri yüklenmedi: işlem banka hesabının bakiyesini eksiye düşürüyor.", 409, { code: "bank-negative-cancelled" });
+        result = await send({ negativeOk: true });
+      }
       HOF.toast(result.message || "Geri yüklendi.", { type: "success" });
       loadTrash();
     } catch (error) {
@@ -1131,13 +1109,14 @@
     if (status.state === "installing" || status.state === "switching") parts.push('<p class="adm-update-note">Kuruluyor… Sistem birazdan kısa bir süreliğine yeniden başlayacak.</p>');
     if (status.available && !busy) {
       const date = status.available.releasedAt ? ` · ${HOF.formatDateTime(status.available.releasedAt)}` : "";
-      parts.push(`<div class="adm-update-available"><strong>Yeni sürüm hazır: DestekOfis ${esc(status.available.version)}</strong><small>${formatSize(status.available.size)}${esc(date)}${status.deferred ? " · Mesai içinde bulundu; kullanıcılar çalışırken kurulmadı, mesai dışında kendiliğinden kurulacak. Hemen kurmak için Şimdi Güncelle." : status.autoUpdate ? " · Sunucu yeniden başladığında ve mesai dışında kendiliğinden de kurulur." : ""}</small>${status.available.notes ? `<pre class="adm-update-notes">${esc(status.available.notes)}</pre>` : ""}</div>`);
+      parts.push(`<div class="adm-update-available"><strong>Yeni sürüm hazır: DestekOfis ${esc(status.available.version)}</strong><small>${formatSize(status.available.size)}${esc(date)}${!status.autoUpdate ? " · Kendiliğinden kurulum kapalı; kurmak için Şimdi Güncelle." : status.prepared?.version === status.available.version ? " · Kullanıcılar çalışırken bulundu; indirildi ve doğrulandı. Sunucu bir sonraki açılışta (uygulama açılmadan önce) kendiliğinden kurar; açık kalırsa hiçbir bilgisayarda DestekOfis açık değilken (sunucuya 15 dakika istek gelmeyince) ya da mesai dışında (hafta içi 20:00–07:00, hafta sonu) kurar. Hemen kurmak için Şimdi Güncelle." : status.preparing === status.available.version ? " · Kullanıcılar çalışırken bulundu; arka planda indiriliyor ve doğrulanıyor (sistem çalışmaya devam eder)." : status.deferred ? " · Kullanıcılar çalışırken bulundu, kurulmadı. Sunucu bir sonraki açılışta, ya da hiçbir bilgisayarda DestekOfis açık değilken (sunucuya 15 dakika istek gelmeyince) veya mesai dışında (hafta içi 20:00–07:00, hafta sonu) kendiliğinden kurar; saatte bir bakılır. Hemen kurmak için Şimdi Güncelle." : " · Sunucu boşta ya da mesai dışındayken kendiliğinden kurulur; hemen kurmak için Şimdi Güncelle."}</small>${status.available.notes ? `<pre class="adm-update-notes">${esc(status.available.notes)}</pre>` : ""}</div>`);
     }
     if (status.incompatible) parts.push(`<p class="adm-update-warn">${esc(status.incompatible.reason)}</p>`);
     if (status.skippedVersions?.length && !busy) parts.push(`<p class="adm-update-warn">${esc(status.skippedVersions.join(", "))} sürümü daha önce açılamadığı için atlandı. <button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-update-retry">Yine de Kur</button></p>`);
     const last = status.lastResult;
     if (last?.outcome === "success") parts.push(`<p class="adm-update-ok">✓ ${esc(last.version)} sürümüne güncellendi · ${esc(HOF.formatDateTime(last.at))}</p>`);
     else if (last?.outcome === "rolled-back") parts.push(`<p class="adm-update-warn">${esc(last.version)} sürümü açılamadı; ${esc(last.previous || "önceki")} sürümüne dönüldü. ${esc(last.reason || "")}</p>`);
+    else if (last?.outcome === "withdrawn") parts.push(`<p class="adm-update-warn">${esc(last.version)} sürümü yayından kaldırıldığı için kurulmadı; hazırdaki paket silindi.</p>`);
     else if (last?.outcome === "failed") parts.push(`<p class="adm-update-warn">Güncelleme tamamlanamadı: ${esc(last.reason || "")}</p>`);
     if (status.lastError && !status.available && !busy) parts.push(`<p class="adm-update-warn">Son denetim başarısız: ${esc(status.lastError)}</p>`);
     body.innerHTML = parts.join("");
@@ -1235,7 +1214,7 @@
   }
 
   // ---------- Lisans ----------
-  const STATE_LABELS = { none: "Etkinleştirilmedi", transition: "Geçiş dönemi", trial: "Deneme", licensed: "Lisanslı", expired: "Süresi doldu", blocked: "Engellendi", verify: "Doğrulanamadı", clock: "Saat hatası" };
+  const STATE_LABELS = { none: "Etkinleştirilmedi", transition: "Geçiş Dönemi", trial: "Deneme", licensed: "Lisanslı", expired: "Süresi doldu", blocked: "Engellendi", verify: "Doğrulanamadı", clock: "Saat Hatası" };
   function renderLicense(status) {
     const tone = !status.writable ? "error" : status.severity === "warn" ? "warn" : "ok";
     const row = (label, value) => (value ? `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>` : "");
@@ -1450,7 +1429,8 @@
     out.innerHTML = '<p class="adm-muted">Hesaplanıyor…</p>';
     try {
       const report = await HOF.api(`/api/companies/report?ids=${encodeURIComponent(chosenReportIds().join(","))}`);
-      const cell = (value, index) => (index ? `<td class="adm-right">${esc(HOF.formatMoney(value))}</td>` : `<td><b>${esc(value)}</b></td>`);
+      // v2.1.0 (K10): banka sütunları yetkisi olmayana boş (null) gelir; "—" yazılır.
+      const cell = (value, index) => (index ? `<td class="adm-right">${value === null || value === undefined ? "—" : esc(HOF.formatMoney(value))}</td>` : `<td><b>${esc(value)}</b></td>`);
       out.innerHTML = `<table class="adm-table"><thead><tr>${report.headers.map(header => `<th>${esc(header)}</th>`).join("")}</tr></thead>
         <tbody>${report.table.map(row => `<tr>${row.map(cell).join("")}</tr>`).join("")}</tbody>
         <tfoot><tr>${report.totals.map(cell).join("")}</tr></tfoot></table>`;

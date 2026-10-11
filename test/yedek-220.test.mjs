@@ -1,7 +1,7 @@
 // Yedek ve çoklu şirket (2.0.20, CLAUDE.md 2.0.20 madde 9 — kullanıcı: "her şirketin yedeği kendi isminde klasör açılıp
 // buna girmeli"). Her şirketin yedeği <yedek kökü>/<kod> - <ad>/ klasöründe, adında şirket kodu, içinde şirket kimliği;
-// Yedek Al "Tüm Şirketler" / "Yalnız <kod · ad>"; liste bütün şirketler + Şirket; otomatik yedek ve Drive bütün
-// şirketler (açılmamış olsa da); eski yerlerden taşıma; ad/kod değişince klasör; yanlış şirkete geri yükleme 409.
+// Yedek Al "Tüm Şirketler" / "Yalnız <kod · ad>"; liste bütün şirketler + Şirket; otomatik yedek bütün
+// şirketler (açılmamış olsa da; Drive kopyası 2.1.0'da kaldırıldı → drive-kaldirildi.test.mjs); eski yerlerden taşıma; ad/kod değişince klasör; yanlış şirkete geri yükleme 409.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
@@ -80,7 +80,7 @@ describe("yedek klasörü ve dosya adı kuralları", () => {
   });
 });
 
-describe("iki şirket: Tüm Şirketler / Yalnız, liste, indirme, Drive, otomatik yedek, ad değişimi, sıfırlama, silme, yetki", () => {
+describe("iki şirket: Tüm Şirketler / Yalnız, liste, indirme, otomatik yedek, ad değişimi, sıfırlama, silme, yetki", () => {
   const dirs = freshDirs();
   let server;
   let admin;
@@ -187,22 +187,6 @@ describe("iki şirket: Tüm Şirketler / Yalnız, liste, indirme, Drive, otomati
     assert.ok(one.lastBackup?.name.startsWith("destekofis-001-"));
     assert.ok(two.lastBackup?.name.startsWith("destekofis-002-"));
     assert.equal(two.backupCount, filesIn(folder2()).length);
-  });
-
-  test("Drive klasörü: bütün şirketlerin kopyası, her biri kendi klasöründe", async () => {
-    const drive = mkdtempSync(path.join(tmpdir(), "drive-220-"));
-    try {
-      assert.equal((await admin.post("/api/admin/backups/cloud", { target: drive })).status, 200);
-      const result = await admin.post("/api/admin/backups", {});
-      assert.equal(result.status, 200);
-      for (const item of result.data.backups) {
-        assert.equal(item.cloud?.ok, true, JSON.stringify(item));
-        assert.ok(existsSync(path.join(drive, "DestekOfis Yedekleri", path.basename(item.folder), item.name)), item.name);
-      }
-      assert.equal((await admin.post("/api/admin/backups/cloud", { target: "" })).status, 200);
-    } finally {
-      rmSync(drive, { recursive: true, force: true });
-    }
   });
 
   test("yetki: personel yedekleri göremez/alamaz/indiremez/geri yükleyemez (403); yetkisi olmayan şirketin yedeği listede yok", async () => {

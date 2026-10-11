@@ -1,0 +1,38 @@
+{
+  "ad": "mutasyon-1-sunucu-hep-bos",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/guncelleme-gercek.test.mjs",
+  "commit": "1f499e69458eae7751ddc80c473b2eb7801e8ca5",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 3,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:38:22.958Z",
+  "sure_sn": 35.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "otomatik güncelleme — gerçek süreçlerle › S2 kullanıcı çalışırken (mesai içi) bulunan sürüm KURULMAZ, 'hazır' görünür; etkinlik kesilince boşta süresi dolunca kurulur",
+      "konum": "test/guncelleme-gercek.test.mjs:64:3",
+      "hata": "Beklenen durum oluşmadı: {\"error\":\"henüz ertelenmedi\"}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/mutasyon-1-sunucu-hep-bos.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "dbe5f0f3c3bc9f1f2661f670ae1e8c74649b594a0740512a9862cc03e1384a10",
+  "ham_cikti_bayt": 3773
+}

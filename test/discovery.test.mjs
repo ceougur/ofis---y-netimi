@@ -27,20 +27,51 @@ describe("UDP sunucu keşfi", () => {
     assert.equal(replies[0].magic, "HukukOfisiServerBurada");
   });
 
-  it("tanımadığı veya çok büyük paketlere yanıt vermez; gönderici başına hız sınırlar", async () => {
+  // Soket her durumda kapatılır: ölçüm düşerse açık kalan UDP soketi test sürecini bitirmiyor ve bütün npm test takılıyordu
+  // (CI 542, Windows Node 22: 2,5 saat çıktısız, iptal edildi).
+  const withSocket = async work => {
     const socket = dgram.createSocket("udp4");
     const received = [];
     socket.on("message", message => received.push(message.toString()));
-    await new Promise(resolve => socket.bind(0, "127.0.0.1", resolve));
-    const send = payload => new Promise(resolve => socket.send(Buffer.from(payload), port, "127.0.0.1", resolve));
-    await send("merhaba");
-    await send(`${DISCOVERY_REQUEST}${"x".repeat(600)}`);
-    await new Promise(resolve => setTimeout(resolve, 200));
-    assert.equal(received.length, 0);
-    for (let index = 0; index < 10; index += 1) await send(DISCOVERY_REQUEST);
-    await new Promise(resolve => setTimeout(resolve, 300));
-    assert.ok(received.length <= 3, `yanıt sayısı ${received.length}`);
-    assert.ok(received.length >= 1);
-    socket.close();
+    try {
+      await new Promise(resolve => socket.bind(0, "127.0.0.1", resolve));
+      const send = payload => new Promise(resolve => socket.send(Buffer.from(payload), port, "127.0.0.1", resolve));
+      return await work({ send, received });
+    } finally {
+      socket.close();
+    }
+  };
+  const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  it("tanımadığı veya çok büyük paketlere yanıt vermez; gönderici başına hız sınırlar", () =>
+    withSocket(async ({ send, received }) => {
+      await send("merhaba");
+      await send(`${DISCOVERY_REQUEST}${"x".repeat(600)}`);
+      await pause(200);
+      assert.equal(received.length, 0);
+      for (let index = 0; index < 10; index += 1) await send(DISCOVERY_REQUEST);
+      await pause(300);
+      assert.ok(received.length <= 3, `yanıt sayısı ${received.length}`);
+      assert.ok(received.length >= 1);
+    }));
+
+  // CI 542'de Windows'ta 4 yanıt geldi: sınırlayıcı saat saniyesine göre sabit pencerede sayıyordu, 10 istek saniye sınırının iki
+  // yanına düşünce 3 + 3 yanıt gidiyordu. Ön koşul zorla kurulur (ders 20): istekler saniye sınırından hemen önce başlar, sınırı aşar.
+  it("hız sınırı saniye sınırını aşan istek dizisinde de herhangi bir 1 sn içinde en çok sınır kadar yanıt verir", async () => {
+    await pause(1100); // önceki testin yanıt hakkı dolsun
+    await withSocket(async ({ send, received }) => {
+      while (Date.now() % 1000 < 900) await pause(5);
+      const start = Date.now();
+      for (let index = 0; index < 10; index += 1) {
+        await send(DISCOVERY_REQUEST);
+        await pause(20);
+      }
+      const spanned = Math.floor(Date.now() / 1000) !== Math.floor(start / 1000);
+      await pause(300);
+      assert.ok(spanned, "ön koşul oluşmadı: istekler saniye sınırını aşmadı");
+      assert.ok(Date.now() - start < 1000, "istek dizisi 1 sn'den uzun sürdü; ölçüm geçersiz");
+      assert.ok(received.length <= 3, `1 sn içindeki 10 isteğe ${received.length} yanıt (sınır 3)`);
+      assert.ok(received.length >= 1);
+    });
   });
 });

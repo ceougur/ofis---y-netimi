@@ -1,0 +1,603 @@
+// Lisans motoru (Faz 3): imzalı belirteç, durum hesabı, salt okunur mod, deneme/lisans/kod akışları, 7 günlük
+// internetsiz tolerans, saat geri alma koruması, geçiş dönemi ve yerel kaydın bütünlüğü.
+import assert from "node:assert/strict";
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { generateKeyPairSync } from "node:crypto";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { after, before, describe, it } from "node:test";
+import { evaluateLicense, normalizeLicenseKey, WRITE_PERMISSIONS } from "../server/lib/license.mjs";
+import { TRUSTED_LICENSE_KEYS } from "../server/lib/license-keys.mjs";
+import { decodeCode, encodeCode, formatInstallCode, normalizeMachineId, signToken, verifyToken } from "../server/lib/license-token.mjs";
+import { resolveMachineId } from "../server/lib/machine.mjs";
+import { createReferenceLicenseService, keyIdForLicense, newLicenseKey } from "../tools/lib/license-service.mjs";
+import { ADMIN_PASSWORD, createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+
+const DAY = 86_400_000;
+const here = path.dirname(fileURLToPath(import.meta.url));
+const keyPair = () => {
+  const { publicKey, privateKey } = generateKeyPairSync("ed25519");
+  return { pem: privateKey.export({ format: "pem", type: "pkcs8" }), spki: publicKey.export({ format: "der", type: "spki" }).toString("base64") };
+};
+const TEST_KEY = keyPair();
+const OTHER_KEY = keyPair();
+const TRUSTED = { "test-lisans-1": TEST_KEY.spki };
+const MACHINE_A = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
+const MACHINE_B = "ffeeddccbbaa99887766554433221100";
+// Başlangıç anı gerçek saatten ileri alınır (v2.0.16): sabit "2026-10-01" bu tarih geçince, gerçek saatle açılan
+// sunucunun bıraktığı yüksek su işaretinin gerisinde kalıp "saat geri alındı" sonucuna düşüyordu. Testler tarihe bağlı olmaz.
+const T0 = Math.max(Date.parse("2026-10-01T09:00:00Z"), Math.ceil((Date.now() + 3_600_000) / 60_000) * 60_000);
+
+const claims = (overrides = {}) => ({
+  schema: 1,
+  product: "DestekOfis",
+  type: "license-token",
+  kind: "license",
+  status: "active",
+  licenseId: "LIS-TEST-0001",
+  customer: "Deneme Ofisi",
+  machine: MACHINE_A,
+  issuedAt: new Date(T0).toISOString(),
+  startsAt: new Date(T0).toISOString(),
+  expiresAt: new Date(T0 + 365 * DAY).toISOString(),
+  offline: false,
+  message: "",
+  ...overrides,
+});
+
+describe("lisans belirteci", () => {
+  it("imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder", () => {
+    const envelope = signToken(claims(), TEST_KEY.pem, "test-lisans-1");
+    assert.equal(verifyToken(envelope, TRUSTED).claims.licenseId, "LIS-TEST-0001");
+    const tampered = { ...envelope, payload: Buffer.from(JSON.stringify({ ...claims(), expiresAt: null })).toString("base64") };
+    assert.throws(() => verifyToken(tampered, TRUSTED), { code: "SIGNATURE_INVALID" });
+    const foreign = signToken(claims(), OTHER_KEY.pem, "test-lisans-1");
+    assert.throws(() => verifyToken(foreign, TRUSTED), { code: "SIGNATURE_INVALID" });
+    assert.throws(() => verifyToken(envelope, TRUSTED_LICENSE_KEYS), { code: "SIGNATURE_INVALID" }, "üretim anahtarı test imzasını kabul etmez");
+  });
+
+  it("biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir", () => {
+    assert.throws(() => signToken(claims({ kind: "trial", expiresAt: null }), TEST_KEY.pem, "k"), /deneme/);
+    assert.throws(() => signToken(claims({ kind: "free" }), TEST_KEY.pem, "k"), /tür/);
+    assert.throws(() => signToken(claims({ status: "paused" }), TEST_KEY.pem, "k"), /durum/);
+    assert.throws(() => signToken(claims({ machine: "kısa" }), TEST_KEY.pem, "k"), /bilgisayar/);
+  });
+
+  it("internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir", () => {
+    const envelope = signToken(claims({ offline: true }), TEST_KEY.pem, "test-lisans-1");
+    const code = encodeCode(envelope);
+    assert.match(code, /^DOLIS1\.[A-Za-z0-9_-]+$/);
+    assert.deepEqual(decodeCode(`  ${code.slice(0, 40)}\n${code.slice(40)} `), envelope, "boşluk ve satır sonu yok sayılır");
+    assert.throws(() => decodeCode("ABC"), /DOLIS1/);
+    assert.throws(() => decodeCode("DOLIS1.@@@"), /bozuk/);
+  });
+
+  it("kurulum kodu ve lisans anahtarı biçimleri", () => {
+    assert.equal(formatInstallCode(MACHINE_A), "A1B2-C3D4-E5F6-0718-293A-4B5C-6D7E-8F90");
+    assert.equal(normalizeMachineId("A1B2-C3D4-E5F6-0718-293A-4B5C-6D7E-8F90"), MACHINE_A);
+    const key = newLicenseKey();
+    assert.match(key, /^DO(-[0-9A-HJKMNP-TV-Z]{5}){4}$/);
+    assert.equal(normalizeLicenseKey(key.toLowerCase()), key);
+    assert.equal(normalizeLicenseKey(key.replace(/-/g, " ").slice(3)), key, "önek ve tireler yazılmasa da olur");
+    assert.equal(normalizeLicenseKey("DO-12345"), null);
+  });
+
+  it("bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "makine-"));
+    try {
+      const first = resolveMachineId({ dataDir: dir, platform: "other" });
+      const second = resolveMachineId({ dataDir: dir, platform: "other" });
+      assert.equal(first.id, second.id);
+      assert.equal(first.source, "file");
+      assert.match(first.id, /^[a-f0-9]{32}$/);
+      if (process.platform === "linux") assert.equal(resolveMachineId({ dataDir: dir }).source, "linux");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("lisans durumu (saf değerlendirme)", () => {
+  const verified = overrides => verifyToken(signToken(claims(overrides), TEST_KEY.pem, "test-lisans-1"), TRUSTED).claims;
+  const evaluate = (token, now, local = {}, extra = {}) => evaluateLicense({ token, machineId: MACHINE_A, local, now, ...extra });
+
+  it("etkinleştirilmemiş kurulum salt okunurdur", () => {
+    const status = evaluate(null, T0);
+    assert.equal(status.state, "none");
+    assert.equal(status.writable, false);
+    assert.match(status.message, /deneme, sunucu bilgisayar internete bağlanınca kendiliğinden başlar/);
+  });
+
+  it("deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur", () => {
+    const trial = verified({ kind: "trial", licenseId: "DEN-1", expiresAt: new Date(T0 + 30 * DAY).toISOString() });
+    const fresh = evaluate(trial, T0 + 1000);
+    assert.equal(fresh.state, "trial");
+    assert.equal(fresh.writable, true);
+    assert.equal(fresh.daysLeft, 30);
+    assert.equal(fresh.severity, "info");
+    assert.equal(evaluate(trial, T0 + 25 * DAY, { lastOnlineAt: T0 + 24 * DAY }).severity, "warn");
+    const expired = evaluate(trial, T0 + 30 * DAY + 1, { lastOnlineAt: T0 + 29 * DAY });
+    assert.equal(expired.state, "expired");
+    assert.equal(expired.writable, false);
+    assert.equal(expired.title, "Deneme süresi doldu");
+    assert.match(expired.message, /durduruldu: kayıtlar görüntülenebilir/);
+  });
+
+  it("lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur", () => {
+    const perpetual = evaluate(verified({ expiresAt: null }), T0 + 400 * DAY, { lastOnlineAt: T0 + 399 * DAY });
+    assert.equal(perpetual.state, "licensed");
+    assert.equal(perpetual.daysLeft, null);
+    const ending = evaluate(verified({ expiresAt: new Date(T0 + 10 * DAY).toISOString() }), T0 + 5 * DAY, { lastOnlineAt: T0 + 5 * DAY });
+    assert.equal(ending.severity, "warn");
+    assert.match(ending.title, /5 gün kaldı/);
+    const blocked = evaluate(verified({ status: "blocked", message: "Ödeme bekleniyor." }), T0);
+    assert.equal(blocked.state, "blocked");
+    assert.equal(blocked.writable, false);
+    assert.match(blocked.message, /Ödeme bekleniyor/);
+  });
+
+  it("7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok", () => {
+    const online = verified({});
+    const warn = evaluate(online, T0 + 5 * DAY, { lastOnlineAt: T0 });
+    assert.equal(warn.state, "licensed");
+    assert.equal(warn.severity, "warn");
+    assert.equal(warn.reason, "grace");
+    const verify = evaluate(online, T0 + 7 * DAY + 60_000, { lastOnlineAt: T0 });
+    assert.equal(verify.state, "verify");
+    assert.equal(verify.writable, false);
+    const offline = evaluate(verified({ offline: true }), T0 + 90 * DAY);
+    assert.equal(offline.state, "licensed");
+    assert.equal(offline.writable, true);
+  });
+
+  it("saat geri alınınca süre geri gelmez ve program salt okunur olur", () => {
+    const trial = verified({ kind: "trial", licenseId: "DEN-2", expiresAt: new Date(T0 + 30 * DAY).toISOString() });
+    // 31. günde görülmüş, saat 20 gün geri alınmış: süre yine dolmuş sayılır.
+    const back = evaluate(trial, T0 + 11 * DAY, { highWater: T0 + 31 * DAY, lastOnlineAt: T0 + 29 * DAY });
+    assert.equal(back.state, "expired");
+    // Süre dolmadan saat 3 gün geri alınmış: saat hatası.
+    const clock = evaluate(trial, T0 + 5 * DAY, { highWater: T0 + 8 * DAY, lastOnlineAt: T0 + 8 * DAY });
+    assert.equal(clock.state, "clock");
+    assert.equal(clock.writable, false);
+    // Birkaç saatlik düzeltme hata sayılmaz.
+    assert.equal(evaluate(trial, T0 + 5 * DAY, { highWater: T0 + 5 * DAY + 3 * 3_600_000, lastOnlineAt: T0 + 5 * DAY }).state, "trial");
+  });
+
+  it("geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz", () => {
+    const during = evaluate(null, T0 + 10 * DAY, { transitionStart: T0 });
+    assert.equal(during.state, "transition");
+    assert.equal(during.writable, true);
+    assert.equal(during.daysLeft, 20);
+    const ended = evaluate(null, T0 + 31 * DAY, { transitionStart: T0 });
+    assert.equal(ended.state, "none");
+    assert.equal(ended.reason, "transition-ended");
+    const foreign = evaluateLicense({ token: null, tokenProblem: "Kayıtlı lisans başka bir bilgisayara ait.", machineId: MACHINE_A, local: {}, now: T0 });
+    assert.equal(foreign.reason, "machine");
+    assert.equal(foreign.writable, false);
+  });
+});
+
+describe("lisans motoru — sunucu", () => {
+  const clock = { now: T0 };
+  let online = true;
+  let reference;
+  let servers = [];
+  const serviceFetch = async (url, init) => {
+    if (!online) throw Object.assign(new TypeError("fetch failed"), { cause: { code: "ENOTFOUND" } });
+    return reference.fetch(url, init);
+  };
+  const licenseOptions = (machineId = MACHINE_A) => ({ enforce: true, trustedKeys: TRUSTED, services: ["https://lisans.test/api/lisans"], fetchImpl: serviceFetch, machineId, now: () => clock.now, firstCheckDelayMs: 3_600_000 });
+  const start = async (options = {}) => {
+    const server = await startTestServer({ license: licenseOptions(options.machineId), ...options });
+    servers.push(server);
+    return server;
+  };
+  const writeNote = (client, key = "2026/1") => client.post("/api/workspace/records", { sourceName: "dataset://ofis", values: { "DOSYA NO": key, "AD SOYAD": "Deneme Kişi" } });
+
+  before(() => {
+    reference = createReferenceLicenseService({ privateKeyPem: TEST_KEY.pem, keyId: keyIdForLicense(TEST_KEY.pem, TRUSTED), now: () => clock.now });
+  });
+  after(async () => {
+    for (const server of servers) await server.close().catch(() => {});
+  });
+
+  it("yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır", async () => {
+    clock.now = T0;
+    const server = await start();
+    const admin = await loginAdmin(server);
+    const me = await admin.get("/api/auth/me");
+    assert.equal(me.data.data.license.state, "none");
+    assert.equal(me.data.data.license.installCode, formatInstallCode(MACHINE_A));
+    assert.ok(!me.data.data.permissions.includes("records.create"), "yazma yetkileri ekrana gönderilmez");
+    assert.ok(me.data.data.permissions.includes("license.manage"));
+    const denied = await writeNote(admin);
+    assert.equal(denied.status, 403);
+    assert.equal(denied.data.code, "LICENSE_READ_ONLY");
+    assert.equal((await admin.get("/api/workspace/records")).status, 200, "okuma serbest");
+    assert.equal((await admin.post("/api/admin/backups")).status, 200, "yedek alınabilir");
+    const staff = await createUser(server, admin, { username: "personel1", role: "personel" });
+    const staffLicense = await staff.get("/api/license");
+    assert.equal(staffLicense.data.data.state, "none");
+    assert.equal(staffLicense.data.data.installCode, undefined, "kurulum kodu yalnızca yöneticiye");
+    assert.equal((await staff.post("/api/license/trial", {})).status, 403, "denemeyi yalnızca yönetici başlatır");
+    server.state = { admin, staff };
+  });
+
+  it("ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer", async () => {
+    const server = servers[0];
+    const { admin } = server.state;
+    const started = await admin.post("/api/license/trial", { officeName: "Test Hukuk", email: "ofis@example.com" });
+    assert.equal(started.status, 200, JSON.stringify(started.data));
+    assert.equal(started.data.data.state, "trial");
+    assert.equal(started.data.data.daysLeft, 30);
+    assert.equal((await writeNote(admin)).status, 200, "denemede yazılabilir");
+    const again = await admin.post("/api/license/trial", {});
+    assert.equal(again.data.data.licenseId, started.data.data.licenseId, "ikinci istek aynı denemeyi döndürür");
+
+    clock.now = T0 + 30 * DAY + 60_000;
+    const me = await admin.get("/api/auth/me");
+    assert.equal(me.data.data.license.state, "expired");
+    assert.equal(me.data.data.license.title, "Deneme süresi doldu");
+    const blocked = await writeNote(admin, "2026/2");
+    assert.equal(blocked.status, 403);
+    assert.equal(blocked.data.code, "LICENSE_READ_ONLY");
+    assert.equal((await admin.get("/api/workspace/records")).status, 200);
+    assert.equal((await admin.post("/api/admin/backups")).status, 200);
+    const audit = await admin.get("/api/admin/audit?type=license.");
+    const types = audit.data.data.map(event => event.type);
+    assert.ok(types.includes("license.trial_started"));
+    assert.ok(types.includes("license.state_changed"));
+  });
+
+  it("aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)", async () => {
+    clock.now = T0 + 40 * DAY;
+    const reinstall = await start();
+    const admin = await loginAdmin(reinstall);
+    const result = await admin.post("/api/license/trial", {});
+    assert.equal(result.status, 200);
+    assert.equal(result.data.data.state, "expired", "ilk denemenin süresi sayılır");
+  });
+
+  it("lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur", async () => {
+    clock.now = T0 + 41 * DAY;
+    const server = servers[0];
+    const { admin } = server.state;
+    const { key, licenseId } = reference.admin.createLicense({ customer: "Test Hukuk Bürosu", expiresAt: new Date(T0 + 500 * DAY).toISOString() });
+    assert.equal((await admin.post("/api/license/activate", { key: "DO-00000-00000-00000-00000" })).status, 409);
+    const activated = await admin.post("/api/license/activate", { key: key.toLowerCase() });
+    assert.equal(activated.status, 200, JSON.stringify(activated.data));
+    assert.equal(activated.data.data.state, "licensed");
+    assert.equal(activated.data.data.customer, "Test Hukuk Bürosu");
+    assert.equal((await writeNote(admin, "2026/3")).status, 200);
+
+    const other = await start({ machineId: MACHINE_B });
+    const otherAdmin = await loginAdmin(other);
+    const inUse = await otherAdmin.post("/api/license/activate", { key });
+    assert.equal(inUse.status, 409);
+    assert.match(inUse.data.error, /başka bir bilgisayarda/);
+
+    reference.admin.setStatus(licenseId, "blocked", "Ödeme bekleniyor, lütfen arayın.");
+    const checked = await admin.post("/api/license/check");
+    assert.equal(checked.status, 200);
+    assert.equal(checked.data.data.state, "blocked");
+    assert.match(checked.data.data.message, /Ödeme bekleniyor/);
+    assert.equal((await writeNote(admin, "2026/4")).status, 403);
+    reference.admin.setStatus(licenseId, "active");
+    assert.equal((await admin.post("/api/license/check")).data.data.state, "licensed");
+    server.state.licenseId = licenseId;
+  });
+
+  it("internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır", async () => {
+    const { admin } = servers[0].state;
+    online = false;
+    clock.now = T0 + 46 * DAY;
+    const failed = await admin.post("/api/license/check");
+    assert.equal(failed.status, 502);
+    assert.match(failed.data.error, /İnternet bağlantısı yok/);
+    assert.equal(failed.data.license.severity, "warn");
+    clock.now = T0 + 49 * DAY;
+    assert.equal((await admin.get("/api/license")).data.data.state, "verify");
+    assert.equal((await writeNote(admin, "2026/5")).status, 403);
+    online = true;
+    assert.equal((await admin.post("/api/license/check")).data.data.state, "licensed");
+    assert.equal((await writeNote(admin, "2026/5")).status, 200);
+  });
+
+  it("saat geri alınırsa durur; servisin saati güvenilir zamandır", async () => {
+    const { admin } = servers[0].state;
+    clock.now = T0 + 44 * DAY;
+    const status = (await admin.get("/api/license")).data.data;
+    assert.equal(status.state, "clock");
+    assert.equal((await writeNote(admin, "2026/6")).status, 403);
+    clock.now = T0 + 49 * DAY + 60_000;
+    assert.equal((await admin.get("/api/license")).data.data.state, "licensed");
+  });
+
+  it("internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez", async () => {
+    clock.now = T0 + 60 * DAY;
+    const server = await start({ machineId: MACHINE_B });
+    const admin = await loginAdmin(server);
+    const make = (machine, overrides = {}) => encodeCode(signToken(claims({ machine, licenseId: "LIS-KOD-0001", offline: true, issuedAt: new Date(clock.now).toISOString(), startsAt: new Date(clock.now).toISOString(), expiresAt: new Date(clock.now + 365 * DAY).toISOString(), ...overrides }), TEST_KEY.pem, "test-lisans-1"));
+    const wrong = await admin.post("/api/license/code", { code: make(MACHINE_A) });
+    assert.equal(wrong.status, 400);
+    assert.match(wrong.data.error, /başka bir bilgisayar/);
+    const forged = encodeCode(signToken(claims({ machine: MACHINE_B, offline: true }), OTHER_KEY.pem, "test-lisans-1"));
+    assert.equal((await admin.post("/api/license/code", { code: forged })).status, 400, "sahte imzalı kod reddedilir");
+    const applied = await admin.post("/api/license/code", { code: make(MACHINE_B) });
+    assert.equal(applied.status, 200, JSON.stringify(applied.data));
+    assert.equal(applied.data.data.state, "licensed");
+    assert.equal(applied.data.data.offline, true);
+    online = false;
+    clock.now += 120 * DAY;
+    assert.equal((await admin.get("/api/license")).data.data.state, "licensed", "internetsiz lisans doğrulama beklemez");
+    online = true;
+    const older = make(MACHINE_B, { issuedAt: new Date(T0).toISOString(), startsAt: new Date(T0).toISOString() });
+    assert.equal((await admin.post("/api/license/code", { code: older })).status, 409, "eski kod yenisinin yerine geçmez");
+  });
+
+  it("ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz", async () => {
+    clock.now = T0 + 200 * DAY;
+    const server = await start({ machineId: MACHINE_B });
+    const admin = await loginAdmin(server);
+    const code = (issuedAt, licenseId) => encodeCode(signToken(claims({ machine: MACHINE_B, licenseId, offline: true, issuedAt: new Date(issuedAt).toISOString(), startsAt: new Date(issuedAt).toISOString(), expiresAt: null }), TEST_KEY.pem, "test-lisans-1"));
+    const oldCode = code(T0 + 150 * DAY, "LIS-ESKI-0001");
+    assert.equal((await admin.post("/api/license/code", { code: code(T0 + 200 * DAY, "LIS-SAAT-0001") })).data.data.state, "licensed");
+    clock.now = T0 + 205 * DAY; // saat yanlışlıkla 5 gün ileri alındı
+    assert.equal((await admin.get("/api/license")).data.data.state, "licensed");
+    clock.now = T0 + 200 * DAY + 3_600_000; // saat düzeltildi
+    assert.equal((await admin.get("/api/license")).data.data.state, "clock");
+    assert.equal((await admin.post("/api/license/code", { code: oldCode })).data.data.state, "clock", "eski kod zamanı geri çekemez");
+    const fresh = await admin.post("/api/license/code", { code: code(T0 + 200 * DAY + 3_000_000, "LIS-SAAT-0001") });
+    assert.equal(fresh.data.data.state, "licensed", "satıcının yeni kodu saati düzeltir");
+  });
+
+  it("2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir", async () => {
+    clock.now = T0;
+    const dataDir = mkdtempSync(path.join(tmpdir(), "gecis-"));
+    mkdirSync(dataDir, { recursive: true });
+    copyFileSync(path.join(here, "fixtures", "v1.0.0.sqlite"), path.join(dataDir, "hukuk-ofisi.sqlite"));
+    const server = await start({ dataDir, adminPassword: ADMIN_PASSWORD });
+    try {
+      const admin = server.client();
+      const login = await admin.login("admin", ADMIN_PASSWORD);
+      if (login.status === 200) {
+        assert.equal(login.data.data.license.state, "transition");
+        assert.equal(login.data.data.license.daysLeft, 30);
+      }
+      const status = server.app.license.status();
+      assert.equal(status.state, "transition");
+      assert.equal(status.writable, true);
+      clock.now = T0 + 31 * DAY;
+      assert.equal(server.app.license.status().state, "none");
+      assert.equal(server.app.license.status().reason, "transition-ended");
+    } finally {
+      await server.close().catch(() => {});
+      servers = servers.filter(item => item !== server);
+      rmSync(dataDir, { recursive: true, force: true });
+    }
+  });
+
+  it("yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır", async () => {
+    clock.now = T0 + 70 * DAY;
+    const dataDir = mkdtempSync(path.join(tmpdir(), "kurcalama-"));
+    let second;
+    try {
+      const first = await start({ dataDir });
+      assert.equal(first.app.license.summary({ role: "admin" }).tampered, false);
+      await first.close();
+      servers = servers.filter(item => item !== first);
+      // Görülen en ileri zaman elle geri çekilir: bütünlük özeti tutmaz.
+      const { openDatabase, createStore } = await import("../server/lib/db.mjs");
+      const db = openDatabase(path.join(dataDir, "destekofis.sqlite"));
+      const store = createStore(db);
+      const local = JSON.parse(store.setting("license.local"));
+      store.setSetting("license.local", JSON.stringify({ ...local, highWater: T0 }));
+      db.close();
+      second = await start({ dataDir });
+      assert.equal(second.app.license.summary({ role: "admin" }).tampered, true);
+      const audit = await (await loginAdmin(second)).get("/api/admin/audit?type=license.tamper");
+      assert.equal(audit.data.data.length, 1);
+    } finally {
+      if (second) {
+        await second.close().catch(() => {});
+        servers = servers.filter(item => item !== second);
+      }
+      rmSync(dataDir, { recursive: true, force: true });
+    }
+  });
+
+  const waitFor = async (test, label, timeoutMs = 5000) => {
+    const until = Date.now() + timeoutMs;
+    while (Date.now() < until) {
+      if (await test()) return;
+      await new Promise(resolve => setTimeout(resolve, 20));
+    }
+    assert.fail(`beklenen durum oluşmadı: ${label}`);
+  };
+
+  it("demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener", async () => {
+    clock.now = T0;
+    online = false;
+    const machineId = "c0c1c2c3c4c5c6c7c8c9cacbcccdcecf";
+    const server = await startTestServer({ startLicenseTimers: true, license: { ...licenseOptions(machineId), autoTrialDelaysMs: [10, 30, 30, 30, 30, 30], retryMs: 30 } });
+    servers.push(server);
+    const admin = await loginAdmin(server);
+    await waitFor(async () => (await admin.get("/api/license")).data.data.autoTrial?.lastError, "ilk deneme hatası");
+    const waiting = (await admin.get("/api/license")).data.data;
+    assert.equal(waiting.state, "none");
+    assert.equal(waiting.title, "Ücretsiz deneme henüz başlamadı");
+    assert.match(waiting.message, /kendiliğinden başlar/);
+    assert.match(waiting.message, /0536 771 50 55/);
+    assert.deepEqual([waiting.contact.label, waiting.contact.phone, waiting.contact.phoneHref], ["Teknik Destek ve Satın Alımlar İçin", "0536 771 50 55", "tel:+905367715055"]);
+    online = true;
+    await waitFor(async () => (await admin.get("/api/license")).data.data.state === "trial", "deneme başladı");
+    const started = (await admin.get("/api/license")).data.data;
+    assert.equal(started.daysLeft, 30);
+    assert.equal(started.autoTrial, null, "deneme başlayınca otomatik başlatma durur");
+    const audit = (await admin.get("/api/admin/audit?type=license.")).data.data;
+    assert.ok(audit.some(item => item.type === "license.trial_started"), "kayıt defterine yazılır");
+  });
+
+  it("geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz", async () => {
+    clock.now = T0;
+    online = true;
+    const dataDir = mkdtempSync(path.join(tmpdir(), "gecis-oto-"));
+    copyFileSync(path.join(here, "fixtures", "v1.0.0.sqlite"), path.join(dataDir, "hukuk-ofisi.sqlite"));
+    const server = await startTestServer({ dataDir, startLicenseTimers: true, license: { ...licenseOptions("d0d1d2d3d4d5d6d7d8d9dadbdcdddedf"), autoTrialDelaysMs: [10] } });
+    try {
+      await new Promise(resolve => setTimeout(resolve, 150));
+      assert.equal(server.app.license.status().state, "transition");
+      assert.equal(server.app.license.summary({ role: "admin" }).autoTrial, null);
+    } finally {
+      await server.close();
+      rmSync(dataDir, { recursive: true, force: true });
+    }
+  });
+
+  it("denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz", async () => {
+    clock.now = T0;
+    online = true;
+    const server = await start({ machineId: "e0e1e2e3e4e5e6e7e8e9eaebecedeeef" });
+    const admin = await loginAdmin(server);
+    assert.equal((await admin.post("/api/license/trial", {})).status, 200);
+    let lic = (await admin.get("/api/license")).data.data;
+    assert.equal(lic.askContact, false, "ilk gün sorulmaz");
+    clock.now = T0 + 2 * DAY + 3_600_000;
+    lic = (await admin.get("/api/license")).data.data;
+    assert.equal(lic.askContact, true, "3. gün sorulur");
+    const staff = await createUser(server, admin, { username: "personel3", role: "personel" });
+    assert.equal((await staff.get("/api/license")).data.data.askContact, undefined, "personele sorulmaz");
+    const missing = await admin.post("/api/license/contact", { companyName: "Deneme Ltd." });
+    assert.equal(missing.status, 400);
+    assert.match(missing.data.error, /telefon veya e-posta/);
+    assert.equal((await admin.post("/api/license/contact", { phone: "0555" })).status, 400, "firma adı zorunlu");
+    const sent = await admin.post("/api/license/contact", { companyName: "Deneme Ltd.", phone: "0555 000 00 00" });
+    assert.equal(sent.status, 200, JSON.stringify(sent.data));
+    assert.equal(sent.data.data.askContact, false);
+    assert.equal(sent.data.data.contactGiven, true);
+    assert.equal(sent.data.data.companyName, "Deneme Ltd.", "boş firma adı ayarı doldurulur");
+    assert.equal((await staff.post("/api/license/contact", { companyName: "X", phone: "1" })).status, 403);
+  });
+
+  // v2.0.8 (sahadan gelen soru): güncelleme ve yeniden kurulum deneme süresini sıfırlamaz.
+  it("deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır", async () => {
+    clock.now = T0;
+    online = true;
+    const machineId = "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff";
+    const root = mkdtempSync(path.join(tmpdir(), "deneme-guncelleme-"));
+    const dataDir = path.join(root, "data");
+    const opened = [];
+    const open = async () => {
+      const server = await startTestServer({ dataDir, license: licenseOptions(machineId) });
+      servers.push(server);
+      opened.push(server);
+      const admin = await loginAdmin(server);
+      // Gerçek program açılıştan 30 sn sonra servisle doğrular; testte zaman atladığımız için açılış doğrulaması elle.
+      if ((await admin.get("/api/license")).data.data.licenseId) await admin.post("/api/license/check");
+      return { server, admin, status: (await admin.get("/api/license")).data.data, close: () => server.app.close() };
+    };
+    try {
+      let s = await open();
+      const started = (await s.admin.post("/api/license/trial", { officeName: "Prova Ofisi" })).data.data;
+      assert.equal(started.daysLeft, 30);
+      const first = { licenseId: started.licenseId, expiresAt: started.expiresAt };
+      await s.close();
+      // 10. günde güncelleme: yeni sürüm aynı data klasöründe açılır.
+      clock.now = T0 + 10 * DAY;
+      s = await open();
+      assert.equal(s.status.state, "trial");
+      assert.equal(s.status.licenseId, first.licenseId, "aynı deneme");
+      assert.equal(s.status.expiresAt, first.expiresAt, "bitiş tarihi değişmedi");
+      assert.equal(s.status.daysLeft, 20, "kaldığı yerden sayar");
+      assert.equal((await s.admin.post("/api/license/trial", {})).data.data.expiresAt, first.expiresAt, "'Denemeyi başlat' süreyi uzatmaz");
+      assert.equal(reference.store.data.events.filter(event => event.type === "trial.started" && event.machine === machineId).length, 1, "servis ikinci deneme açmadı");
+      await s.close();
+      // 27. günde program ve data klasörü silinip yeniden kurulur: servis aynı denemeyi verir.
+      clock.now = T0 + 27 * DAY;
+      rmSync(dataDir, { recursive: true, force: true });
+      s = await open();
+      assert.equal(s.status.state, "none");
+      const again = (await s.admin.post("/api/license/trial", {})).data.data;
+      assert.equal(again.licenseId, first.licenseId);
+      assert.equal(again.daysLeft, 3);
+      await s.close();
+      // Süre dolduktan sonra güncelleme: salt okunur; yeniden başlamaz.
+      clock.now = T0 + 32 * DAY;
+      s = await open();
+      assert.equal(s.status.state, "expired");
+      assert.equal((await writeNote(s.admin, "2026/9")).status, 403);
+      await s.close();
+    } finally {
+      // Windows açık veritabanı dosyasını silmez: önce bu testte açılan her sunucu kapanır.
+      for (const server of opened) await server.app.close().catch(() => {});
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz", async () => {
+    clock.now = T0;
+    online = false;
+    const machineId = "a0a1a2a3a4a5a6a7a8a9aaabacadaeaf";
+    const root = mkdtempSync(path.join(tmpdir(), "gecis-guncelleme-"));
+    const dataDir = path.join(root, "data");
+    const opened = [];
+    try {
+      // 1.7 döneminde kullanılmış veritabanı (lisans modülü yok).
+      let server = await startTestServer({ dataDir, license: { enforce: false, machineId } });
+      opened.push(server);
+      const admin = await loginAdmin(server);
+      assert.equal((await writeNote(admin, "2026/1")).status, 200);
+      server.app.store.run("DELETE FROM settings WHERE key LIKE 'license.%'");
+      await server.app.close();
+      const open = async () => {
+        const next = await startTestServer({ dataDir, license: licenseOptions(machineId) });
+        servers.push(next);
+        opened.push(next);
+        return next;
+      };
+      server = await open();
+      let status = server.app.license.status();
+      assert.equal(status.state, "transition");
+      assert.equal(status.daysLeft, 30);
+      const endsAt = status.transitionEndsAt;
+      await server.app.close();
+      clock.now = T0 + 20 * DAY + 3_600_000;
+      server = await open();
+      status = server.app.license.status();
+      assert.equal(status.transitionEndsAt, endsAt, "güncelleme sonrası bitiş aynı");
+      assert.equal(status.daysLeft, 10);
+      // Yerel kaydın bütünlük özeti tutmasa da (ör. yedekten dönüş) geçiş başlangıcı korunur.
+      server.app.store.setSetting("meta.instanceId", "baska-kurulum");
+      await server.app.close();
+      server = await open();
+      status = server.app.license.status();
+      assert.equal(status.state, "transition");
+      assert.equal(status.transitionEndsAt, endsAt);
+      await server.app.close();
+      clock.now = T0 + 31 * DAY;
+      server = await open();
+      assert.equal(server.app.license.status().reason, "transition-ended");
+    } finally {
+      online = true;
+      // Windows açık veritabanı dosyasını silmez (EPERM): önce bu testte açılan her sunucu kapanır.
+      for (const item of opened) await item.app.close().catch(() => {});
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)", async () => {
+    clock.now = T0;
+    const server = await start({ machineId: "b0b1b2b3b4b5b6b7b8b9babbbcbdbebf" });
+    const admin = await loginAdmin(server);
+    const status = (await admin.get("/api/license")).data.data;
+    assert.equal(status.machineSource, "override");
+    assert.equal(typeof status.machineSourceText, "string");
+  });
+
+  it("salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır", () => {
+    assert.ok(WRITE_PERMISSIONS.includes("records.create"));
+    assert.ok(!WRITE_PERMISSIONS.includes("users.manage"));
+    assert.ok(!WRITE_PERMISSIONS.includes("reports.view"));
+  });
+});

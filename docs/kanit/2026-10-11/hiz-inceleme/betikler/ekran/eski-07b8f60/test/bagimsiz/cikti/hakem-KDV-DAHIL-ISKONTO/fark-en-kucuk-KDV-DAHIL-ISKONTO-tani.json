@@ -1,0 +1,887 @@
+{
+  "adimSayisi": 10,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 23
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 23,
+  "farklar": [
+    {
+      "a": 7031,
+      "aile": "cariler.*",
+      "alan": "cariler.M1",
+      "b": 7031,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 7030,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "cariler",
+        "M1"
+      ]
+    },
+    {
+      "a": 160001,
+      "aile": "cariler.*",
+      "alan": "cariler.M2",
+      "b": 160001,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 160000,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "cariler",
+        "M2"
+      ]
+    },
+    {
+      "a": 1,
+      "aile": "cariler.*",
+      "alan": "cariler.M4",
+      "b": 1,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 0,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "cariler",
+        "M4"
+      ]
+    },
+    {
+      "a": 7031,
+      "aile": "faturalar.*.acik",
+      "alan": "faturalar.F1.acik",
+      "b": 7031,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 7030,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "faturalar",
+        "F1",
+        "acik"
+      ]
+    },
+    {
+      "a": 5859,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.F1.matrah",
+      "b": 5859,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 5858,
+      "tetik": "6",
+      "yol": [
+        "faturalar",
+        "F1",
+        "matrah"
+      ]
+    },
+    {
+      "a": 7031,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F1.toplam",
+      "b": 7031,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 7030,
+      "tetik": "6",
+      "yol": [
+        "faturalar",
+        "F1",
+        "toplam"
+      ]
+    },
+    {
+      "a": 160001,
+      "aile": "faturalar.*.acik",
+      "alan": "faturalar.F2.acik",
+      "b": 160001,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 160000,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "7"
+      },
+      "yol": [
+        "faturalar",
+        "F2",
+        "acik"
+      ]
+    },
+    {
+      "a": 133334,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.F2.matrah",
+      "b": 133334,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 133333,
+      "tetik": "7",
+      "yol": [
+        "faturalar",
+        "F2",
+        "matrah"
+      ]
+    },
+    {
+      "a": 160001,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F2.toplam",
+      "b": 160001,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 160000,
+      "tetik": "7",
+      "yol": [
+        "faturalar",
+        "F2",
+        "toplam"
+      ]
+    },
+    {
+      "a": 0,
+      "aile": "faturalar.*.acik",
+      "alan": "faturalar.F3.acik",
+      "b": 0,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": "<yok>",
+      "tetik": "8",
+      "yol": [
+        "faturalar",
+        "F3",
+        "acik"
+      ]
+    },
+    {
+      "a": 1172,
+      "aile": "faturalar.*.kdv",
+      "alan": "faturalar.F3.kdv",
+      "b": 1172,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": "<yok>",
+      "tetik": "8",
+      "yol": [
+        "faturalar",
+        "F3",
+        "kdv"
+      ]
+    },
+    {
+      "a": 5859,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.F3.matrah",
+      "b": 5859,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": "<yok>",
+      "tetik": "8",
+      "yol": [
+        "faturalar",
+        "F3",
+        "matrah"
+      ]
+    },
+    {
+      "a": 7031,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F3.toplam",
+      "b": 7031,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": "<yok>",
+      "tetik": "8",
+      "yol": [
+        "faturalar",
+        "F3",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1,
+      "aile": "faturalar.*.acik",
+      "alan": "faturalar.F4.acik",
+      "b": 1,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 0,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "9"
+      },
+      "yol": [
+        "faturalar",
+        "F4",
+        "acik"
+      ]
+    },
+    {
+      "a": 5859,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.F4.matrah",
+      "b": 5859,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 5858,
+      "tetik": "9",
+      "yol": [
+        "faturalar",
+        "F4",
+        "matrah"
+      ]
+    },
+    {
+      "a": 7031,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F4.toplam",
+      "b": 7031,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 7030,
+      "tetik": "9",
+      "yol": [
+        "faturalar",
+        "F4",
+        "toplam"
+      ]
+    },
+    {
+      "a": 14061,
+      "aile": "kasa",
+      "alan": "kasa",
+      "b": 14061,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -7031,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 7030,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 14061
+      },
+      "aile": "mizan.100",
+      "alan": "mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 14061
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -7031,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 7030
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 176033
+      },
+      "aile": "mizan.120",
+      "alan": "mizan.120",
+      "b": {
+        "alacak": 0,
+        "borc": 176033
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -3,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 176030
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 31001,
+        "borc": 0
+      },
+      "aile": "mizan.391",
+      "alan": "mizan.391",
+      "b": {
+        "alacak": 31001,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1172,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 29829,
+        "borc": 0
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "mizan",
+        "391"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 159093,
+        "borc": 0
+      },
+      "aile": "mizan.600",
+      "alan": "mizan.600",
+      "b": {
+        "alacak": 159093,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 5862,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": {
+        "alacak": 153231,
+        "borc": 0
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "mizan",
+        "600"
+      ]
+    },
+    {
+      "a": 14061,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "ozet.kasaVeGercekBanka",
+      "b": 14061,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -7031,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "baslangic",
+            "son"
+          ]
+        }
+      ],
+      "pencere": [
+        "baslangic",
+        "son"
+      ],
+      "program": 7030,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "6"
+      },
+      "yol": [
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": "geçti",
+      "adim": {
+        "ad": "F3",
+        "cari": "M3",
+        "id": "8",
+        "islem": "fatura",
+        "odeme": {
+          "pesin": [
+            {
+              "tutar": "70,31",
+              "yol": "nakit"
+            }
+          ]
+        },
+        "tur": "satis"
+      },
+      "aile": "retler:fatura",
+      "alan": "retler.8",
+      "b": "geçti",
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "8",
+        "8"
+      ],
+      "program": "400 payment-exceeds",
+      "programIletisi": "Ödemeler (70,31 TL) faturanın ödenecek tutarını (70,30 TL) aşıyor.",
+      "tetik": "8",
+      "yol": [
+        "retler",
+        "8"
+      ]
+    }
+  ],
+  "islemSayisi": 10,
+  "islemTurleri": {
+    "cari_ac": 5,
+    "fatura": 5
+  },
+  "karsilastirilanYaprak": 35,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/en-kucuk-KDV-DAHIL-ISKONTO-tani.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/en-kucuk-KDV-DAHIL-ISKONTO-tani.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/en-kucuk-KDV-DAHIL-ISKONTO-tani.json --cikti test/bagimsiz/cikti/ham/en-kucuk-KDV-DAHIL-ISKONTO-tani.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "en-kucuk-KDV-DAHIL-ISKONTO-tani",
+  "senaryoDosyasi": "test/bagimsiz/cikti/en-kucuk-KDV-DAHIL-ISKONTO-tani.json",
+  "siniflar": {
+    "KDV-DAHIL-ISKONTO": {
+      "aileler": {
+        "faturalar.*.acik": 1,
+        "faturalar.*.kdv": 1,
+        "faturalar.*.matrah": 4,
+        "faturalar.*.toplam": 4,
+        "retler:fatura": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 11
+      },
+      "enErkenPencere": [
+        "8",
+        "8"
+      ],
+      "ornekler": [
+        {
+          "a": 5859,
+          "alan": "faturalar.F1.matrah",
+          "b": 5859,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 5858
+        },
+        {
+          "a": 7031,
+          "alan": "faturalar.F1.toplam",
+          "b": 7031,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 7030
+        },
+        {
+          "a": 133334,
+          "alan": "faturalar.F2.matrah",
+          "b": 133334,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 133333
+        },
+        {
+          "a": 160001,
+          "alan": "faturalar.F2.toplam",
+          "b": 160001,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 160000
+        }
+      ],
+      "sonDurumYaprak": 11,
+      "yaprak": 11
+    },
+    "TUREV:KDV-DAHIL-ISKONTO": {
+      "aileler": {
+        "cariler.*": 3,
+        "faturalar.*.acik": 3,
+        "kasa": 1,
+        "mizan.100": 1,
+        "mizan.120": 1,
+        "mizan.391": 1,
+        "mizan.600": 1,
+        "ozet.kasaVeGercekBanka": 1
+      },
+      "araDurumYaprak": 0,
+      "desenler": {
+        "A=B≠P": 12
+      },
+      "enErkenPencere": null,
+      "ornekler": [
+        {
+          "a": 7031,
+          "alan": "cariler.M1",
+          "b": 7031,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 7030
+        },
+        {
+          "a": 160001,
+          "alan": "cariler.M2",
+          "b": 160001,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 160000
+        },
+        {
+          "a": 1,
+          "alan": "cariler.M4",
+          "b": 1,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 0
+        },
+        {
+          "a": 7031,
+          "alan": "faturalar.F1.acik",
+          "b": 7031,
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "son"
+          ],
+          "program": 7030
+        }
+      ],
+      "sonDurumYaprak": 12,
+      "yaprak": 12
+    }
+  },
+  "sureler": {
+    "a": 0.06,
+    "b": 0.06,
+    "program": 1.39
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 176033,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 176033,
+      "faturaSayisi": 5,
+      "kasa": 14061,
+      "mizanAlacakToplam": 190094,
+      "mizanBorcToplam": 190094,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 14061
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "b": {
+      "acikFaturaToplam": 176033,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 176033,
+      "faturaSayisi": 5,
+      "kasa": 14061,
+      "mizanAlacakToplam": 190094,
+      "mizanBorcToplam": 190094,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 14061
+      },
+      "retSayisi": 0,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "program": {
+      "acikFaturaToplam": 176030,
+      "atlananSayisi": 0,
+      "bankaToplam": 0,
+      "cariToplam": 176030,
+      "faturaSayisi": 4,
+      "kasa": 7030,
+      "mizanAlacakToplam": 183060,
+      "mizanBorcToplam": 183060,
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 7030
+      },
+      "retSayisi": 1,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}

@@ -1,0 +1,9 @@
+Hakem — fark sınıfı KDV-DAHIL-ISKONTO (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KDV-DAHIL-ISKONTO.json        # en küçük: 6 fark, hepsi A=B≠P
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KDV-DAHIL-ISKONTO-tani.json   # tanı: F2 2000 %20 → A/B 1600,01, P 1600,00; F3 peşin 70,31 → P 400
+  git worktree add --detach <yer>/v2026 v2.0.26 && node test/bagimsiz/cikti/hakem-KDV-DAHIL-ISKONTO/canli.mjs <yer>/v2026   # canlı sürüm, gerçek API
+  node test/bagimsiz/cikti/hakem-KDV-DAHIL-ISKONTO/canli.mjs .                                                           # HEAD, aynı vakalar
+  python3 -I test/bagimsiz/cikti/hakem-KDV-DAHIL-ISKONTO/kural.py test/bagimsiz/cikti   # 33 tohum: brüt-koruyan kural = program 3958/3958
+  python3 -I test/bagimsiz/cikti/hakem-KDV-DAHIL-ISKONTO/kesin.py test/bagimsiz/cikti   # kesin tutarlı 228 kalemde dil kuralı 80 sapma, program 0
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+Not: fark.py çıktısını cikti/fark-<ad>.json'a yazar; fark-ozet.json'u (33 tohum) kirletmesin diye iki fark dosyası ve tanı senaryosu bu klasöre taşındı (tanı senaryosunu koşmak için: --senaryo test/bagimsiz/cikti/hakem-KDV-DAHIL-ISKONTO/en-kucuk-KDV-DAHIL-ISKONTO-tani.json). Ham çıktılar: cikti/ham/en-kucuk-KDV-DAHIL-ISKONTO*.{a,b,program}.json.

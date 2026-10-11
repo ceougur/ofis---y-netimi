@@ -1,0 +1,226 @@
+{
+  "kok": "/home/user/ofis---y-netimi",
+  "bugun": "2026-10-10",
+  "vakalar": [
+    {
+      "ad": "P0 GET /api/workspace/bank/accounts",
+      "durum": 200
+    },
+    {
+      "ad": "P1 Ticari KMH 23.059 açılış −11.529,50",
+      "istek": {
+        "kind": "commercial",
+        "amount": "-11529,50",
+        "creditLimit": "23059"
+      },
+      "durum": 400,
+      "kod": "amount-range",
+      "ileti": "Açılış Bakiyesi eksi olamaz.",
+      "kart": null
+    },
+    {
+      "ad": "P2 Diğer KMH 23.059 açılış −11.529,50",
+      "istek": {
+        "kind": "other",
+        "amount": "-11529,50",
+        "creditLimit": "23059"
+      },
+      "durum": 400,
+      "kod": "amount-range",
+      "ileti": "Açılış Bakiyesi eksi olamaz.",
+      "kart": null
+    },
+    {
+      "ad": "P3 Vadesiz KMH 23.059 açılış −11.529,50",
+      "istek": {
+        "kind": "demand",
+        "amount": "-11529,50",
+        "creditLimit": "23059"
+      },
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kart": {
+        "kind": "demand",
+        "glSub": "102.01",
+        "creditLimitMinor": 2305900,
+        "balanceMinor": -1152950,
+        "openingMinor": -1152950
+      }
+    },
+    {
+      "ad": "P4 Vadesiz KMH yok açılış −5.000",
+      "istek": {
+        "kind": "demand",
+        "amount": "-5000"
+      },
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kart": {
+        "kind": "demand",
+        "glSub": "102.02",
+        "creditLimitMinor": 0,
+        "balanceMinor": -500000,
+        "openingMinor": -500000
+      }
+    },
+    {
+      "ad": "P5 Vadesiz KMH 10.000 açılış −30.000",
+      "istek": {
+        "kind": "demand",
+        "amount": "-30000",
+        "creditLimit": "10000"
+      },
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kart": {
+        "kind": "demand",
+        "glSub": "102.03",
+        "creditLimitMinor": 1000000,
+        "balanceMinor": -3000000,
+        "openingMinor": -3000000
+      }
+    },
+    {
+      "ad": "P6 Ticari KMH 23.059 (API) açılış +1.000 doğrulanmış",
+      "istek": {
+        "kind": "commercial",
+        "amount": "1000",
+        "creditLimit": "23059",
+        "confirmed": true
+      },
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kart": {
+        "kind": "commercial",
+        "glSub": "102.04",
+        "creditLimitMinor": 2305900,
+        "balanceMinor": 100000,
+        "openingMinor": 100000
+      }
+    },
+    {
+      "ad": "P6b Ticari (API KMH) Diğer Gider 12.529,50 → −11.529,50",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kartSonra": {
+        "kind": "commercial",
+        "glSub": "102.04",
+        "creditLimitMinor": 2305900,
+        "balanceMinor": -1152950,
+        "openingMinor": 100000
+      }
+    },
+    {
+      "ad": "P7 Vadesiz KMH 23.059 açılış 0 doğrulanmış",
+      "istek": {
+        "kind": "demand",
+        "amount": "0",
+        "creditLimit": "23059",
+        "confirmed": true
+      },
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kart": {
+        "kind": "demand",
+        "glSub": "102.05",
+        "creditLimitMinor": 2305900,
+        "balanceMinor": 0,
+        "openingMinor": 0
+      }
+    },
+    {
+      "ad": "P7b Düzenle: tür Ticari (creditLimit gönderilmez; istemci hof-bank.js:779 gibi)",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kartSonra": {
+        "kind": "commercial",
+        "glSub": "102.05",
+        "creditLimitMinor": 2305900,
+        "balanceMinor": 0,
+        "openingMinor": 0
+      }
+    },
+    {
+      "ad": "P7c Ticari'ye çevrilmiş hesapta Diğer Gider 12.529,50 → −12.529,50",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kartSonra": {
+        "kind": "commercial",
+        "glSub": "102.05",
+        "creditLimitMinor": 2305900,
+        "balanceMinor": -1252950,
+        "openingMinor": 0
+      }
+    },
+    {
+      "ad": "P8 Ticari KMH yok açılış +1.000 doğrulanmış",
+      "istek": {
+        "kind": "commercial",
+        "amount": "1000",
+        "confirmed": true
+      },
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kart": {
+        "kind": "commercial",
+        "glSub": "102.06",
+        "creditLimitMinor": 0,
+        "balanceMinor": 100000,
+        "openingMinor": 100000
+      }
+    },
+    {
+      "ad": "P8b Ticari (KMH yok) Diğer Gider 12.529,50 → −11.529,50",
+      "durum": 409,
+      "kod": "bank-negative",
+      "ileti": "Denizbank · P8 Ticari KMH yok açılış +1.000 doğrulanmış 8 hesabında 1.000,00 TL var; bu işlemle bakiye 12.529,50 TL azalır ve −11.529,50 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "kartSonra": {
+        "kind": "commercial",
+        "glSub": "102.06",
+        "creditLimitMinor": 0,
+        "balanceMinor": 100000,
+        "openingMinor": 100000
+      }
+    },
+    {
+      "ad": "P9 Ticari açılış +1.000",
+      "istek": {
+        "kind": "commercial",
+        "amount": "1000"
+      },
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "kart": {
+        "kind": "commercial",
+        "glSub": "102.07",
+        "creditLimitMinor": 0,
+        "balanceMinor": 100000,
+        "openingMinor": 100000
+      }
+    },
+    {
+      "ad": "P9b Ticari Açılışı Düzelt −500",
+      "durum": 400,
+      "kod": "amount-range",
+      "ileti": "Açılış Bakiyesi eksi olamaz.",
+      "kartSonra": {
+        "kind": "commercial",
+        "glSub": "102.07",
+        "creditLimitMinor": 0,
+        "balanceMinor": 100000,
+        "openingMinor": 100000
+      }
+    }
+  ],
+  "bankaModulu": true
+}

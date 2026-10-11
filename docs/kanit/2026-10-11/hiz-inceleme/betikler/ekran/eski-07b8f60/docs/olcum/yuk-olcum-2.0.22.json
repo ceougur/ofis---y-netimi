@@ -1,0 +1,201 @@
+{
+ "hiz": {
+  "not · 0 pencere": {
+   "perSecond": 376.7,
+   "p50": 10,
+   "p95": 16,
+   "failed": 0
+  },
+  "para · 0 pencere": {
+   "perSecond": 4.5,
+   "p50": 885,
+   "p95": 995,
+   "failed": 0
+  },
+  "not · 2 pencere": {
+   "perSecond": 372.2,
+   "p50": 10,
+   "p95": 16,
+   "failed": 0
+  },
+  "para · 2 pencere": {
+   "perSecond": 3.8,
+   "p50": 979,
+   "p95": 1479,
+   "failed": 0
+  },
+  "not · 5 pencere": {
+   "perSecond": 364.2,
+   "p50": 10,
+   "p95": 16,
+   "failed": 0
+  },
+  "para · 5 pencere": {
+   "perSecond": 3.2,
+   "p50": 1349,
+   "p95": 2089,
+   "failed": 0
+  }
+ },
+ "istek": {
+  "ana ekran · not": {
+   "istek": 1,
+   "kb": 0,
+   "enUzunMs": 4,
+   "uclar": {
+    "/api/workspace/stock/alerts": "1× 0 KB"
+   }
+  },
+  "ana ekran · para": {
+   "istek": 35,
+   "kb": 5116,
+   "enUzunMs": 533,
+   "uclar": {
+    "/api/workspace/stock/alerts": "6× 0 KB",
+    "/api/workspace/tasks": "5× 0 KB",
+    "/api/workspace/liens": "5× 0 KB",
+    "/api/workspace/plans": "5× 1 KB",
+    "/api/workspace/cheques": "5× 7 KB",
+    "/api/workspace/invoices": "5× 7 KB",
+    "/api/workspace/dues": "4× 5101 KB"
+   }
+  },
+  "cari ekran · not": {
+   "istek": 7,
+   "kb": 1426,
+   "enUzunMs": 48,
+   "uclar": {
+    "/api/workspace/accounts": "7× 1426 KB"
+   }
+  },
+  "cari ekran · para": {
+   "istek": 43,
+   "kb": 6950,
+   "enUzunMs": 660,
+   "uclar": {
+    "/api/workspace/accounts": "9× 1834 KB",
+    "/api/workspace/tasks": "5× 0 KB",
+    "/api/workspace/liens": "5× 0 KB",
+    "/api/workspace/plans": "5× 1 KB",
+    "/api/workspace/cheques": "5× 7 KB",
+    "/api/workspace/invoices": "5× 7 KB",
+    "/api/workspace/stock/alerts": "5× 0 KB",
+    "/api/workspace/dues": "4× 5101 KB"
+   }
+  }
+ },
+ "ekran": {
+  "not · 0/sn": {
+   "kayitSn": 0,
+   "tur": "not",
+   "yazilan": 0,
+   "donmaMs": 0,
+   "tusHarfMs": [
+    6,
+    5,
+    4,
+    4,
+    5
+   ],
+   "aramaSonucuMs": 340,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": false
+  },
+  "not · 1/sn": {
+   "kayitSn": 1,
+   "tur": "not",
+   "yazilan": 14,
+   "donmaMs": 790,
+   "tusHarfMs": [
+    5,
+    3,
+    4,
+    3,
+    4
+   ],
+   "aramaSonucuMs": 331,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": false
+  },
+  "not · 5/sn": {
+   "kayitSn": 5,
+   "tur": "not",
+   "yazilan": 64,
+   "donmaMs": 680,
+   "tusHarfMs": [
+    4,
+    3,
+    3,
+    3,
+    3
+   ],
+   "aramaSonucuMs": 330,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": false
+  },
+  "para · 0/sn": {
+   "kayitSn": 0,
+   "tur": "para",
+   "yazilan": 0,
+   "donmaMs": 0,
+   "tusHarfMs": [
+    4,
+    10,
+    6,
+    5,
+    4
+   ],
+   "aramaSonucuMs": 323,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": false
+  },
+  "para · 1/sn": {
+   "kayitSn": 1,
+   "tur": "para",
+   "yazilan": 11,
+   "donmaMs": 748,
+   "tusHarfMs": [
+    7,
+    4,
+    10,
+    4,
+    3
+   ],
+   "aramaSonucuMs": 310,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": false
+  },
+  "para · 5/sn": {
+   "kayitSn": 5,
+   "tur": "para",
+   "yazilan": 28,
+   "donmaMs": 606,
+   "tusHarfMs": [
+    12,
+    6,
+    5,
+    4,
+    4
+   ],
+   "aramaSonucuMs": 452,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": false
+  }
+ },
+ "etiket": "sonra",
+ "surum": "2.0.21",
+ "kod": "/home/user/ofis---y-netimi",
+ "tarih": "2026-10-04T17:02:58.030Z",
+ "pencereKayiplari": [],
+ "bolumler": [
+  "hiz",
+  "istek",
+  "ekran"
+ ]
+}

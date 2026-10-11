@@ -1,0 +1,20 @@
+{
+  "companies": [
+    {
+      "id": "sirket-001",
+      "code": "001",
+      "name": "Şirket 1",
+      "dir": "",
+      "createdAt": "2026-10-11T13:33:39.588Z",
+      "createdBy": ""
+    },
+    {
+      "id": "sirket-fdaf7200-24cc-4637-ad08-41da0b5b4481",
+      "code": "002",
+      "name": "Yetki İki",
+      "dir": "sirketler/002",
+      "createdAt": "2026-10-11T13:33:39.863Z",
+      "createdBy": "user-1dfba139-e227-4523-841d-442d6fbb72cd"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "dil": "destekofis-senaryo/2",
+  "ad": "en-kucuk-KREDI-ANAPARA-ASIMI",
+  "aciklama": "Hakem: en küçük — boş şirket; rastgele-2-500 adım 50 (B3 vadesiz, eksi açılış + KMH) ve 353 (B7 kredi hesabı, açılış 0, doğrulanmamış) aynen; adım 407 aynen: B7'ye hiç kredi kullanılmadan B3'ten 9.637,68 anapara + 434,61 faiz geri ödemesi. bugun = özgün senaryoda adım 407'nin saati (31.10.2025; adım 403). Kullanıcı Y (özgünde de Y).",
+  "dayanak": "hakem: fark sınıfı KREDI-ANAPARA-ASIMI (alan retler.407 + türevleri bankaHesaplari.B7/B3, mizan.300.01/780/102.03, ozet; A=B≠P; tohum 2 adım 407; 33 tohumun 6'sında). Adım kimlikleri özgün senaryodakiyle aynı.",
+  "baslangic": {
+    "bugun": "31.10.2025",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    { "id": "50", "islem": "hesap_ac", "ad": "B3", "banka": "Garanti BBVA", "hesapAdi": "Ana TL Hesabı B3", "iban": "TR580006206420276742048705", "tur": "vadesiz", "paraBirimi": "TRY", "acilisTarihi": "13.02.2025", "acilisBakiyesi": "-16800,50", "kmhLimiti": "33601" },
+    { "id": "353", "islem": "hesap_ac", "ad": "B7", "banka": "Akbank", "hesapAdi": "Ticari Kredi B7", "kod": "AKB-B7", "tur": "kredi", "paraBirimi": "TRY", "acilisTarihi": "17.09.2025", "acilisBakiyesi": "0", "bakiyeDogrulandi": false },
+    { "id": "407", "islem": "kredi_odeme", "kredi": "B7", "kaynak": "B3", "anapara": "9637,68", "faiz": "434,61" }
+  ]
+}

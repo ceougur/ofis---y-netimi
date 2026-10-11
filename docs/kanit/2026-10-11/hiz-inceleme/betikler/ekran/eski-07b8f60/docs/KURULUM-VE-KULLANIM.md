@@ -1,0 +1,347 @@
+# DestekOfis — Kurulum ve Kullanım Kılavuzu (v2.0.1)
+
+## 1. Sistem düzeni
+
+Ofisteki bir bilgisayar **sunucu** olur: veriler bu bilgisayarda tutulur ve DestekOfis burada bir Windows servisi olarak çalışır. Diğer bilgisayarlar **personel bilgisayarı**dır; yalnızca sunucuyu kendiliğinden bulan küçük bir başlatıcı kurulur, veri tutmazlar.
+
+DestekOfis belirli bir sektöre bağlı değildir: yüklediğiniz tabloyu inceler, sektörünüzü önerir ve siz onaylayınca başlıklarını, rol adlarını ve araçlarını buna göre ayarlar (bkz. bölüm 7).
+
+- Sunucu bilgisayar açık kaldığı sürece sistem çalışır; kimsenin oturum açmasına gerek yoktur.
+- Windows ağ profili **Özel (Private)** olmalıdır (kurulum bunu sizin için ayarlayabilir).
+- Modemde sunucuya sabit IP (DHCP rezervasyonu) vermek önerilir ama zorunlu değildir: personel bilgisayarları sunucuyu ağda kendiliğinden bulur.
+
+## 2. Sunucu kurulumu
+
+1. `DestekOfis-Kurulum-<sürüm>.exe` dosyasını sunucu olacak bilgisayarda çalıştırın (yönetici izni ister).
+2. Kurulum türü olarak **Sunucu bilgisayar**ı seçin.
+3. İsteğe bağlı görevler: *Masaüstüne kısayol* ve *Ağ profili 'Ortak' ise 'Özel' yap* (önerilir).
+4. Kurulum şunları kendiliğinden yapar:
+   - Programı `C:\DestekOfis` klasörüne kurar (Node.js çalışma zamanı dahil; ayrıca bir şey kurmanız gerekmez). 1.6 öncesinde kurulmuş sunucular kendi klasörlerinde (ör. `C:\HukukOfisiMerkezi`) güncellenmeye devam eder; klasör taşınmaz.
+   - **DestekOfis Sunucu** Windows servisini oluşturur: bilgisayar açılınca oturum açılmadan, penceresiz başlar; kapanırsa kendiliğinden yeniden başlar.
+   - Güvenlik duvarına yalnızca Özel/Etki alanı ağları için TCP ve UDP **5123** izni ekler.
+   - Servisi başlatıp çalıştığını doğrular.
+5. Son ekranda *DestekOfis'i şimdi aç* ile giriş ekranına geçin.
+
+Klasörler:
+
+| Klasör | İçerik |
+|---|---|
+| `data\` | Veritabanı (`destekofis.sqlite`; 1.6 öncesi kurulumlarda `hukuk-ofisi.sqlite` adıyla kalır). Güncelleme ve kaldırmada **silinmez**. |
+| `backups\` | Otomatik ve elle alınan yedekler. **Silinmez**. |
+| `logs\` | Servis ve kurulum günlükleri. |
+| `app\`, `runtime\`, `bin\`, `launcher\` | Program dosyaları. |
+
+## 3. Personel bilgisayarı kurulumu
+
+1. Aynı kurulum dosyasını personel bilgisayarında çalıştırın ve **Personel bilgisayarı**nı seçin. Sihirbaz ağda çalışan sunucuyu bulursa bu seçenek kendiliğinden seçili gelir ve bulunan sunucuyu gösterir; yanlışlıkla *Sunucu bilgisayar* seçilirse ikinci bir sunucu kurulmadan önce uyarır.
+2. Masaüstündeki **DestekOfis** simgesine çift tıklayın. Başlatıcı sunucuyu ağda bulur ve DestekOfis'i uygulama penceresinde (Edge veya Chrome) açar. Bulduğu adresi hatırlar; sonraki açılışlar anında olur.
+3. Sunucu bulunamazsa "Yeniden dene" penceresi çıkar: sunucunun açık ve aynı ağda olduğunu kontrol edin.
+
+İsterseniz tarayıcıdan doğrudan da bağlanabilirsiniz: yönetim panelindeki **Sistem** sekmesi sunucunun adreslerini gösterir (ör. `http://192.168.1.50:5123`).
+
+Başlatıcıya adresi elle vermek için (nadiren gerekir): `C:\DestekOfis\launcher\DestekOfis.exe -sunucu 192.168.1.50` (eski kurulumlarda `C:\HukukOfisiMerkezi\launcher\…`). Kayıtlı adresi unutturmak için: `DestekOfis.exe -sifirla`.
+
+## 4. İlk giriş ve güvenlik
+
+- İlk hesap: **admin / Ofis2026!**. Bu varsayılan parolayla giriş, güvenlik için **yalnızca sunucu bilgisayarın kendisinden** yapılabilir; sistem ilk girişte yeni parola belirlemenizi zorunlu tutar.
+- Parolalar en az 10 karakter olmalı ve harf ile rakam içermelidir.
+- Aynı bilgisayardan aynı kullanıcı adıyla 5 hatalı denemeden sonra giriş 15 dakika kilitlenir (diğer bilgisayarlar ve kullanıcılar etkilenmez). Yönetici o kullanıcının parolasını sıfırlarsa kilit hemen kalkar.
+- Parola değişince diğer cihazlardaki oturumlar kapanır.
+- Yeni kurulumda 30 günlük ücretsiz deneme program ilk açıldığında **kendiliğinden** başlar (sunucu internete bağlı olmalı; yoksa bağlantı gelince başlar). Bkz. bölüm 4a.
+
+## 4a. Lisans: ücretsiz deneme, lisans anahtarı, internetsiz etkinleştirme
+
+Lisans ekranı: yönetim paneli → **Lisans**. Lisans sunucu bilgisayara bağlıdır; personel bilgisayarları için ayrıca lisans gerekmez.
+
+- **Ücretsiz deneme:** Program kurulup ilk açıldığında kendiliğinden başlar; bir şeye basmak gerekmez. Kurulumda internet yoksa program birkaç dakikada bir yeniden dener (beklemeden başlatmak için *Yönetim → Lisans → Denemeyi şimdi başlat*). Deneme her bilgisayara bir kez verilir; programı kaldırıp yeniden kurmak denemeyi baştan başlatmaz. Denemenin 3. gününde yöneticiye firma adı ve iletişim bilgisi sorulur (*Daha sonra* denebilir); bilgiler lisans servisine gider.
+- **Lisans anahtarı:** Satın aldığınızda verilen `DO-XXXXX-XXXXX-XXXXX-XXXXX` anahtarını girip *Lisansı etkinleştir*'e basın. Deneme kendiliğinden lisanslıya döner; veriler olduğu gibi kalır. Bir anahtar tek sunucu bilgisayarda çalışır; sunucuyu değiştirecekseniz satıcınızdan taşıma isteyin.
+- **İnternetsiz etkinleştirme:** Sunucu internete çıkamıyorsa ekrandaki **kurulum kodunu** (*Kopyala*) satıcınıza iletin; size verilen `DOLIS1.…` kodunu *Etkinleştirme kodu* kutusuna yapıştırıp *Kodu uygula*'ya basın. Kod yalnızca o bilgisayarda çalışır.
+- **Süre dolunca:** Program **salt okunur** olur: kayıtlar görüntülenir, aranır, dışa aktarılır ve yedeklenir; yeni kayıt, düzeltme, not, tahsilat, görev, mesaj ve veri yükleme yapılamaz. Yönetim paneli ve yedekler çalışır. Lisans girilince her şey kaldığı yerden devam eder; veri kaybolmaz.
+- **İnternet:** Sunucu lisansı düzenli aralıklarla doğrular. İnternet kesilirse 7 gün sorunsuz çalışır, son 3 günde uyarı çıkar; daha uzun sürerse bağlantı gelene kadar salt okunur olur. *Şimdi doğrula* beklemeden dener. İnternetsiz etkinleştirme koduyla açılan lisans doğrulama beklemez.
+- **Tarih ve saat:** Sunucunun saati bir günden fazla geri alınırsa program saat düzelene kadar durur (Windows → Ayarlar → Saat ve dil → *Saati otomatik ayarla*).
+- **2.0'a güncellenen ofisler:** 30 günlük geçiş döneminde kesintisiz çalışır; ekranda kalan gün yazar. Bu sürede lisansı etkinleştirin.
+
+## 5. Kullanıcılar, roller ve ofis adı
+
+Yönetim paneli: kenar çubuğundaki kullanıcı kartında **Yönetim** (veya `http://SUNUCU:5123/admin.html`). Sunucu bilgisayarda Başlat menüsü → *DestekOfis yönetim paneli*.
+
+| Rol | Yapabildikleri |
+|---|---|
+| Yönetici | Her şey: veri yükleme ve kaldırma, sektör ve başlıklar, kullanıcılar, yedekler, sistem, silme, görev atama, performans raporu |
+| Uzman (sektöre göre adı: Avukat, Hekim, Emlak danışmanı, Öğretmen…) | Tüm kayıt işlemleri, kayıt silme, görev atama, herkesin görevleri, performans raporu, değişiklik geçmişi (veri yükleyemez) |
+| Personel | Not, telefon, tahsilat, haciz, mesaj, yeni kayıt, hücre düzeltme; kendisine atanan görevleri görür ve tamamlar |
+| Muhasebe | Personel ile aynı yetkiler |
+
+İkinci rolün yetkileri her sektörde aynıdır; yalnızca ekranda görünen adı ofisin sektörüne göre değişir (sektör seçilmemişse *Uzman*, hukuk ofisinde *Avukat*). Görev atama, "Tüm açık görevler" listesi ve *Personel raporu* (performans/KPI) yalnızca bu rol ile yönetici hesaplarında görünür; kısıtlamayı sunucu da uygular (personel başkasının görevini göremez ve tamamlayamaz).
+
+Yeni kullanıcıya verilen ilk parola, kullanıcının ilk girişinde değiştirilir (önerilen ayar). Kullanıcıyı pasifleştirmek kayıtlarını silmez; açık oturumlarını ve canlı bağlantısını hemen kapatır, ekranı birkaç saniye içinde giriş ekranına döner.
+
+Görünen adlar benzersizdir: iki hesap aynı adı taşıyamaz (büyük/küçük harf ve boşluk farkı sayılmaz, pasif hesaplar dahil). Personel *Profil*'den adını düzeltebilir ama başka birinin adını alamaz. Aynı adlı iki çalışan varsa ayırt edici bir ek kullanın (ör. "Ali Kaya" ve "Ali K. Demir"). Görev atanırken yazılan ad bir kullanıcıya denk geliyorsa görev o kişiye bağlanır; kişi adını değiştirse de görev onda kalır.
+
+**Sistem** sekmesinde **ofis adını** girin: giriş ekranında ve personel bilgisayarlarının yaptığı sunucu aramasında bu ad görünür. Aynı sekme sürümü, veritabanı boyutunu, son yedeği ve bağlantı adreslerini gösterir.
+
+## 6. Çalışma verisi (Excel veya Google Sheets)
+
+Veri sunucuda kalıcı olarak saklanır: yönetici bir kez yükler, herkes aynı tabloyu görür. Farklı konudaki tablolar (ör. hukuk dosyalarının yanında taksit listesi) karışmasın diye ayrı **oturumlarda** tutulabilir (bkz. 6a). Yüklenen veri, yönetici kaldırmadıkça korunur; sonradan yapılan düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevlerle birlikte devam eder. Dosyanın adı değişse, Google Sheets'e ulaşılamasa ya da Sheet'ten satır silinse bile tablo kaybolmaz. Veriyi yükleme, değiştirme ve kaldırma **yalnızca yönetici** hesabındadır.
+
+- **İlk yükleme:** Veri yokken panelin ortasında *"Excelini yükle ya da Google Sheets linkini yapıştır, başlayalım"* kartı çıkar. Excel dosyasını sürükleyip bırakın veya seçin; ya da Sheet bağlantısını yapıştırıp **Bağla**'ya basın. Diğer kullanıcılar bu sırada "Yöneticiniz veri yüklediğinde tablo burada görünecek" yazısını görür; veri gelince ekranları kendiliğinden açılır.
+- **Sonraki yüklemeler:** Sol menü → **Ayarlar** → *Veri ve eşitleme*. Mevcut veri varken yeni bir Excel veya Sheet bağlantısı verilince DestekOfis önce dosyayı mevcut veriyle karşılaştırır ve sorar:
+  - **Yeni oturumda aç:** dosya ayrı bir çalışma alanında açılır, şu anki veri olduğu gibi kalır. Oturuma bir ad verirsiniz (ör. *Taksit takibi 2026*). Dosyanın kolonları mevcut veriyle az örtüşüyorsa DestekOfis bunu fark eder ve bu seçeneği önerir.
+  - **Mevcut verinin devamı olarak ekle** (aynı konudaki dosyalarda önerilen): yeni kayıtlar eklenir, aynı kimlikli (dosya no, hasta no, sipariş no…) kayıtlar yeni bilgilerle güncellenir, yeni dosyada olmayan kayıtlar silinmez. Ofiste elle yapılan düzeltmeler korunur.
+  - **Mevcut verinin yerine koy:** tablo yeni dosyayla değiştirilir; yeni dosyada olmayan kayıtlar tablodan kalkar (ek onay istenir). Notlar, görevler ve işlem geçmişi silinmez; aynı kimlik tekrar gelirse yeniden bağlanır.
+  Karar vermeden önce kaç kaydın ekleneceği, güncelleneceği ve kalkacağı (örnek dosya numaralarıyla) gösterilir. Her değişiklikten önce veritabanının tam yedeği alınır (`...-veri-oncesi-ekleme.sqlite`, `...-veri-oncesi-degistirme.sqlite`).
+- **Google Sheets bağlantısı:** Sheet'te *Paylaş → Bağlantıya sahip olan herkes → Görüntüleyici* açık olmalıdır. Bağlı Sheet'teki yeni ve değişen satırlar seçilen sıklıkta (5 dk, 15 dk veya saatte bir) kendiliğinden eklenir; *Şimdi eşitle* ile hemen alınabilir. Sheet'ten silinen satırlar DestekOfis'ten kendiliğinden silinmez: tabloda üstü çizili görünür ve *Ayarlar → Veri*'de "Sheet'te artık olmayan kayıtlar" listesinde **Tut** veya **Kaldır** diye karar verilir. Sheet'in yapısı toptan değişmiş görünürse (ör. başlık satırı eklenmiş, sekme adı değişmiş; satırların çoğu birden "yeni" ve "kayıp" görünür) otomatik eşitleme veri çoğalmasın diye durur ve yöneticiden karar ister. Google'a ulaşılamazsa son eşitlenen veri kullanılmaya devam eder.
+- **Bağlantıyı kaldır:** eşitleme durur, veri yerinde kalır. **Veriyi kaldır:** içeri alınan satırlar tablodan kalkar (öncesinde yedek alınır); notlar, görevler ve uygulamada eklenen kayıtlar kalır.
+- Kaynak dosyanın kendisi hiçbir zaman değiştirilmez. İçeri almaların geçmişi *Ayarlar → Veri*'de ve yönetim panelindeki değişiklik geçmişinde görünür.
+- **Kayıt kimliği:** Her satırın kalıcı bir kimliği vardır; notlar, görevler ve düzeltmeler bu kimliğe bağlanır. Dosya numarası (ör. 2025/1234) olan tablolarda kimlik dosya numarasıdır. Dosya numarası olmayan tablolarda DestekOfis her satırda dolu ve tekrarsız bir kimlik kolonu arar (ör. *HASTA NO*, *SİPARİŞ NO*, *PLAKA*, *ÜYE NO*); bulursa kimlik o kolondan gelir ve satırın başka bir hücresi (telefon, adres…) değişse de notlar kaybolmaz. Yeni kayıt eklenirken aynı kimlik ikinci kez verilemez.
+
+**Alt tablolar (bir sekmede birden çok tablo).** Bir sekmede alt alta birden çok tablo varsa DestekOfis bunları kendiliğinden ayırır; Google Sheets'te de, yüklenen Excel'de de aynı kurallar geçerlidir ve sayfa adlarına bağlı değildir:
+
+- Sekmenin en üstündeki başlık satırı (ör. *ÖNEMLİ İCRA DOSYALARI*) kolon başlığı sanılmaz.
+- Ortada **başlık satırı + yeni kolon başlıkları** gelirse (ör. *GAYRİMENKUL SATIŞ DOSYALARI* / *SIRA, ALACAKLI, BORÇLU…*) yeni bir alt tablo başlar; kolonları öncekinden farklı olabilir.
+- Aynı kolonların arasına konmuş grup satırları (ör. *MUHASEBE*, *HUKUK*) alt başlık olur.
+- Araya yeniden konmuş kolon başlığı satırları kayıt sayılmaz.
+
+Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklayınca altında **Alt tablolar** şeridi açılır ve her alt tablo kendi kolonları ve kayıt sayısıyla seçilir. Emin olunamayan düzenlerde eski davranış geçerlidir (ilk satır kolon başlığı sayılır); böylece düzgün bir tablo yanlışlıkla bölünmez. Bir alt tablo tanınmıyorsa başlık satırının tek hücrede (birleştirilmiş) olduğundan ve hemen altında kolon başlıklarının bulunduğundan emin olun.
+
+**Formüller.** Excel veya Google Sheets'teki formüller (ör. `Kalan = Tutar − Taksit 1 − Taksit 2 − …`, `Durum = EĞER(Kalan=0;"Ödendi";"Borçlu")`) veriyle birlikte alınır ve programda çalışmaya devam eder. Detay kartında *Düzenle* ile boş bir taksit doldurulunca ya da tutar düzeltilince, o alana bağlı formüller kendiliğinden yeniden hesaplanır. Formüllü alanların köşesinde **ƒ** işareti vardır (üzerine gelince formül görünür); *Düzenle* penceresinde bu alanlar kilitlidir, çünkü değerleri formülden gelir. Programda eklenen yeni kayıtta, o sekmedeki satırların ortak formülü uygulanır. Google Sheets'e özgü bazı işlevler (QUERY, IMPORTRANGE gibi) hesaplanmaz; o alanda Sheet'ten gelen son değer kalır.
+
+## 6a. Veri oturumları
+
+Her oturum ayrı bir çalışma alanıdır: tablosu, düzeltmeleri, uygulamada eklenen kayıtları, tablo başlıkları ve sektörü diğer oturumlardan ayrıdır.
+
+- **Oturum seçici:** Sol menünün üstünde açık oturumun adı yazar (birden çok oturum varsa yanında sayısı). Tıklayınca oturumlar kayıt sayılarıyla listelenir; istediğinize tıklayınca o oturuma geçersiniz. Seçim **kişiye özeldir**: siz oturum değiştirince başka bilgisayarlardaki ekranlar değişmez. Program bir sonraki açılışta sizi en son seçtiğiniz oturumla açar.
+- **Oturumun adı:** Yeni oturumu açan kişi adını verir. Yönetici adı oturum seçicideki kalemle (✎) ya da *Ayarlar → Veri → Oturumlar* → *Adını değiştir* ile değiştirir; yeni ad tüm bilgisayarlarda görünür.
+- **Yeni oturum:** Oturum seçici → *+ Yeni oturum aç* (ya da *Ayarlar → Veri*'de dosya yükleyip *Yeni oturumda aç*).
+- **Oturumu silme:** *Ayarlar → Veri → Oturumlar* → *Sil*. Oturumun tablosu, düzeltmeleri ve uygulamada eklenen kayıtları silinir; öncesinde tam yedek alınır. O oturumda çalışan kişiler ilk oturuma döner. İlk oturum silinmez (verisi *Veriyi kaldır* ile boşaltılabilir).
+- **Tüm oturumlarda ortak olanlar:** kullanıcılar ve personel, yetkiler, görevler, mesajlar, notlar, tahsilatlar ve **Kasa**, ofis adı, Operasyon Merkezi düğme adları, yedekler ve lisans. Oturum değiştirmek ya da silmek bunları etkilemez.
+- Yeni eklenen kullanıcılar en son açılan oturumla başlar. Oturum açma, ad değiştirme ve silme yalnızca veriyi yöneten yöneticidedir; oturumlar arasında geçişi herkes yapabilir.
+
+## 7. Verinizi tanıyan DestekOfis: sektör, özet kartları, veri sağlığı
+
+Excel ya da Google Sheets ilk kez yüklendiğinde (ve *yerine koy* ile değiştirildiğinde) yöneticiye kısa bir **"Verinizi tanıyoruz"** ekranı gösterilir. Analiz tamamen bu sunucuda yapılır; verileriniz internete gönderilmez.
+
+1. **Kayıtlar okunur:** kaç kayıt, kolon ve sekme olduğu.
+2. **Veri türleri doğrulanır:** her kolonun ne taşıdığı bulunur (kimlik, kişi/kurum, telefon, tarih, tutar, durum…). T.C. kimlik no, vergi no ve IBAN kontrol hanesiyle doğrulanır; telefon, tarih ve tutarlar biçimleriyle denetlenir.
+3. **Önem sırası çıkarılır:** kimlik ve kişi en önde, sıra numarası en sonda.
+4. **Sektör belirlenir:** kolon adları, değerler ve dosya/sekme adları 22 grupta 143 sektörlük listeyle karşılaştırılır. Öneri, *Neden bu sektör?* başlığı altında kanıtlarıyla (ör. "“BORÇLU” kolonu", "“İCRA DAİRESİ” kolonunda icra dairesi adları") ve güven düzeyiyle (*Yüksek* / *Orta*) gösterilir.
+5. **Çalışma alanı hazırlanır.**
+
+**Kendi sektörünüz (2.0.2):** Aradığınız sektör listede yoksa seçicideki **+ Kendi sektörünü oluştur** (ya da analiz ekranındaki *Kendi sektörümü oluştur*) kartında şunları yazın:
+- ad,
+- bir kayda ne dendiği (çoğulu kendiliğinden gelir),
+- uzman rolü,
+- kenar çubuğu alt başlığı,
+- modüller.
+
+İsteğe bağlı tanıtıcı kolon başlıkları, sonraki Excel/Sheets yüklemelerinde bu sektörün önerilmesini sağlar. *Kaydet ve uygula* ile görünüm hemen değişir. Oluşturulan sektörler *Ayarlar → Sektör ve görünüm*'de düzenlenir ya da silinir; silinen sektörü kullanan görünüm *Genel*'e döner.
+
+**Öneri hiçbir zaman kendiliğinden uygulanmaz.** Yönetici *Evet, uygula*, *Başka sektör seç* ya da *Genel kullan* der. Veri belirgin bir sektöre işaret etmiyorsa sektör atanmaz; *Genel* görünümle ya da listeden seçerek devam edilir. Sektör seçmek verinize ve yetkilere dokunmaz; yalnızca görünen dili ve araçları değiştirir ve istendiği zaman geri alınır:
+
+- Kayıtlara verilen ad (dosya, hasta, poliçe, sipariş, öğrenci…): *Tüm hastalar*, *Yeni hasta*, *Hasta özeti*.
+- Kenar çubuğundaki alt başlık (ör. *Hukuk ofisi yönetimi*, *Klinik yönetimi*); giriş ekranında ofis adı yoksa bu yazı görünür.
+- İkinci rolün adı (Avukat, Hekim, Emlak danışmanı…).
+- Araçlar: *Haciz* yalnızca hukuk sektörlerinde görünür (ofiste haciz kaydı varsa her sektörde görünmeye devam eder). *Tahsilat* ödeme alınan sektörlerde görünür.
+
+**Sektör listesi:** *Ayarlar → Sektör ve görünüm → Sektörü değiştir*. Arama kutusuna kelime yazın (ör. *klinik*, *emlak*, *galeri*, *sigorta*; birden çok kelime de olur: *hasta diş*) ya da listeyi kaydırın; ↑ ↓ ile gezip Enter ile seçebilirsiniz. *Verimi analiz et* analizi istediğiniz zaman yeniden gösterir.
+
+**Akıllı özet kartları:** Özet başlığının altındaki kartlar yalnızca türü doğrulanmış kolonlardan, kolonun kendi adıyla hesaplanır. Örneğin *Tutar toplamı*, *Ödeme sözü · 7 gün içinde*, *Durum* dağılımı, *Sorumlu* dağılımı ve *Veri sağlığı*. Kartlar seçili sekmeye göre değişir. Tutar kartı yalnızca tutar kolonlarında görünür; birim fiyatlar ve farklı para birimleri toplanmaz. Karta tıklayınca ilgili kayıtlar listelenir ve tıklanan kayıt tabloda açılır. Kenar çubuğundaki **Bu ay** sayısı da aynı tarih kolonundan gelir ve tıklanınca bu ayın kayıtlarını listeler.
+
+**Veri sağlığı:** Kontrol edilen hücrelerin sorunsuz olanlarının oranıdır. Bulgular şunlardır: kimliği veya kişi adı boş kayıtlar, aynı sekmede tekrar eden kimlik, kontrol hanesi tutmayan T.C./IBAN/vergi no, biçimi tutmayan telefon, tarih ve tutarlar. Her bulgu, tıklanıp açılabilen kayıt listesiyle gösterilir. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz.
+
+**Arama kutusu** verinizdeki gerçek kolon adlarını önerir (ör. "Hasta no, ad soyad veya telefon ara…").
+
+1.6'ya güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır. Başlıklar, rol adları ve araçlar aynı kalır; genel ifadeler "dosya" olur (ör. "Tüm dosyalar", "Yeni dosya"). Özet kartları ve veri sağlığı eklenir. Yöneticiye bir kez *"Yeni: DestekOfis verinizi tanıyor"* kartı çıkar. *Analizi gör* ile öneri incelenir; *Mevcut görünümü koru* ya da *Kapat* ile hiçbir şey değişmez.
+
+## 8. Başlıkları değiştirme (kalem simgesi)
+
+Yönetici sayfadaki başlıkların üzerine gelince yanlarında küçük bir **kalem (✎)** simgesi görür. Tıklayınca başlık yazılır, *Kaydet* (veya Enter) ile **tüm bilgisayarlarda kalıcı olarak** değişir; açık ekranlara hemen yansır. *Varsayılana dön* eski başlığı geri getirir.
+
+Değiştirilebilen başlıklar:
+
+- Kenar çubuğu alt başlığı
+- *ÇALIŞMA ALANI* ve *VERİ KAYNAĞI* menü başlıkları
+- *OPERASYON MERKEZİ*
+- Sayfa başlığı ve tablo başlığı: verinin adı; tablo başlığına ayrıca bir ad verilmezse sayfa başlığını izler.
+- Özet başlığı ve açıklaması
+- Sekmeler başlığı
+- Tablo açıklaması
+
+Öncelik: yöneticinin yazdığı başlık, sonra sektörün başlığı, sonra programın varsayılanı. Değiştirilen başlıkların listesi ve toplu *varsayılana döndür* düğmesi *Ayarlar → Sektör ve görünüm*'dedir. Dokunmatik ekranlarda kalemler hafif görünür durur. Diğer kullanıcılar kalemi görmez.
+
+## 9. Günlük kullanım
+
+- **Tablo (2.0.2):** Excel/Sheets'teki dolu kolonların hepsi görünür. Sığmayanlar için tablonun altındaki, ekrana yapışan kaydırma çubuğunu sürükleyin (oklar bir ekran kaydırır; Shift + tekerlek de çalışır). İlk kolon solda sabit kalır.
+- **Açılır listeler (2.0.2):** Excel'de *Veri doğrulama → Liste*, Google Sheets'te *Açılır liste* olan kolonlar ve Excel'in birleşik giriş kutuları programda da açılır listedir. Detay kartında ▾ işaretli değere tıklayıp listeden seçin. Düzenleme ve yeni kayıt formlarında aynı liste gelir. Listede olmayan eski değer "(listede yok)" diye korunur.
+- **Sekmeler (2.0.2):** Seçili sekmenin yanındaki ✎ ile sekmenin adı değiştirilir ya da sekme silinir (yalnızca yönetici). Excel dosyası ve eşitleme asıl adla çalışır; silinen sekme *Yönetim → Silinenler*'den geri gelir.
+- **Arama:** Kimlik, ad veya telefon yazın (kutudaki ipucu verinizin kolonlarını söyler); *Enter* ilk sonuca gider, *Ctrl+K* aramaya odaklanır.
+- **Kayıt işlemleri:** Detay panelindeki *WhatsApp, Not, Telefon, Tahsilat, Görev, Haciz, Düzenle* düğmeleri (*Tahsilat* ve *Haciz* sektöre göre). Tüm işlemler detayın altındaki **İşlem geçmişi**nde işlemi yapanla birlikte görünür.
+- **İşlem geçmişi eskiden yeniye sıralanır:** yeni eklenen not, telefon, tahsilat ve görev en altta görünür.
+- **Tahsilat düzeltme ve silme:** İşlem geçmişindeki tahsilatın yanındaki ✎ (düzelt) ve × (sil). Herkes kendi girdiği tahsilatı; yönetici, ikinci rol ve muhasebe tüm tahsilatları düzeltip silebilir. Tutarlar Türkçe yazılır: *1.250* bin iki yüz elli liradır.
+- **Kasa:** Operasyon Merkezi → *Kasa*. Güncel kasa, seçilen dönemin (*Bu ay, Geçen ay, Bu yıl, Tümü, Tarih aralığı*) tahsilat, ödeme ve farkı; hareketler eskiden yeniye, her satırda o ana kadarki kasa ve dönem başında devreden kasa. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kayda bağlı olmayan tahsilatlar ve kasadan çıkan ödemeler (kira, fatura, maaş, masraf) *+ Tahsilat* / *− Ödeme* ile eklenir, düzeltilir, silinir. Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır; oturum değiştirmek kasayı sıfırlamaz.
+- **Kasa aralığı ve PDF:** Kasada *Tarih aralığı* seçilince başlangıç ve bitiş tarihi girilir (ör. 01.09.2026 – 25.09.2026); göstergeler ve liste o aralığa göre hesaplanır, aralık öncesi *Devreden kasa* olarak yazar. **PDF indir** seçili dönemin kasa dökümünü indirir: ofis adı, aralık, devreden kasa, dönem tahsilatı ve ödemesi, dönem sonu kasa, her hareketin tarihi, açıklaması, tutarı ve yürüyen bakiyesi, dönem toplamı, sayfa numaraları. Dosya adı *Kasa-dokumu 01.09.2026-25.09.2026.pdf* biçimindedir. İndirme değişiklik geçmişine yazılır.
+- **Taksitler (2.0.4):** Operasyon Merkezi → *Taksitler*. Excel'den bağımsız taksit kartları: *Grup › Alt grup* (servis plakası › güzergâh, site › blok…), ad soyad, telefon, bilgi notu, toplam tutar. Kart açılırken taksit sorulmaz; *Otomatik dağıt* toplamı eşit taksitlere böler (taksit sayısı, ilk vade, aralık), *+ Taksit* serbest tutar/tarihle ekler. *+ Tahsilat* (ya da taksitin yanındaki ₺) tahsilatı en eski açık taksite sayar, Kasa'ya düşürür ve makbuz PDF'i verir; *− Ödeme / iade* kasadan düşer. Vadesi geçen taksit tahsilat takviminde, sağ alt bildirimde ve zilde *Tahsilat alınmadı* olarak çıkar; sol menüdeki rozet geciken kart sayısıdır. Liste süzgeçleri: *Devam eden, Geciken, Biten, Kapalı, Tümü*, grup, alt grup, arama; *Ekstre PDF* kartın dökümünü verir. *Excel'den yükle*: listedeki kolonlar (Ad Soyad, Grup, Alt grup, Telefon, Toplam tutar, Taksit sayısı, İlk vade, Not) tanınır, gruplar tanımlanır, kartlar açılır ve taksitler dağıtılır; aynı adla açık kart varsa satır atlanır. Kart/grup açma, ödeme-iade ve yükleme yönetici, ikinci rol ve muhasebe yetkisidir; herkes tahsilat girer. Silinen kart ve hareket *Yönetim → Silinenler*'den geri gelir. Modülün adı Operasyon Merkezi kalemiyle değiştirilir (*Aidatlar*, *Servis ücretleri*…); iç anahtar ve veriler değişmez.
+- **Taksit kartı ve PDF (2.0.5):** Taksit penceresi geniş açılır. Kartta üstte kişi bilgileri ve bilgi notu, altta süzgeçli taksitler (*Tümü, Açık, Geciken, Ödenen*) ve hareketler (*Tümü, Tahsilat, Ödeme/iade*) durur; işlem düğmeleri kaydırırken üstte kalır. **PDF** kartın ekstresini açar, **Yazdır** yazıcıya gönderir. Listede de **PDF** ve **Yazdır** var; ekrandaki süzgeç ve sıralamayla hazırlanır. Listenin ilk kolonu **Sıra No**'dur; Excel'deki "S.N / Sıra No" kolonu buraya gelir. Sıralama: Sıra No, ad, vade, kalan.
+- **Acil görev (2.0.5):** Acil öncelikli görev atanan kişide kırmızı bildirim çıkar; sağ altta ve zilde *ACİL GÖREV* olarak tamamlanana kadar görünür. Görevler rozeti kırmızı olur.
+- **Tablodaki ödeme planı Taksitler'e (2.0.8):** Yüklediğiniz tabloda ödeme planı varsa (ay kolonları, "1. Taksit Tarihi / Tutarı" kolonları ya da toplam + taksit sayısı + ilk vade) yükleme bitince sağ altta *"N kişinin ödeme planı var, Taksitler'e aktarılsın mı?"* bildirimi çıkar; *Ön izle ve aktar* pencereyi açar (istediğiniz zaman *Taksitler → Tablodan aktar*). Pencerede her kişi için taksitler, Excel'e göre ödenen, kayıt kartından girilmiş tahsilat, kalan, bağlanacağı cari ve bulgular görünür; *Aktarılamaz* olanlar (tutarı okunamayan, ödeneni toplamı aşan) seçilemez, *Uyarılı* olanlar aktarılır ama nedeni yazar, *Kapanmış* olanlar varsayılan seçilmez. Aktarınca kart tablodaki kayda ve cariye bağlanır; Excel'de ödenmiş kısım **açılış (devir)** olarak yazılır (taksit kapanır, cari bakiyesi Excel'deki kalanla aynı olur, **Kasa değişmez**); kayıt kartından girilmiş tahsilatlar karta taşınır (Kasa toplamı değişmez). Bu kişilerin tablodaki ayları takvimde artık kartından gelir (çift sayılmaz). Yanlış aktardıysanız *Tablodan aktar → Son aktarımlar → Geri al* (kartlara sonradan tahsilat girildiyse önce onları kaldırın). Kişinin kartı zaten varsa yeniden açılmaz; Taksitler'de bağsız aynı kişi varsa yeni kart açılmaz, o kart bağlanır.
+- **Taksitler → Excel'den yükle (2.0.8):** Sayfada ay kolonları ya da "1. Taksit Tarihi / Tutarı" kolonları varsa taksitler gerçek vade ve tutarlarıyla kurulur; *Ödenen* / *Kalan* kolonu açılış olur; ortadaki tabloda aynı adlı (ve telefonlu) tek kayıt varsa kart ona bağlanır (kutuyla kapatılır).
+- **Stok: birim ve ilk alım (2.0.8):** *Yeni ürün*'de birim seçim listesinden (adet, kg, lt, metre, m², paket, koli, saat…; *Başka bir değer yaz…* ile serbest) seçilir. *Miktar (stoğa girecek)* yazılırsa ürün o miktarla açılır; **Kasa'ya yansıt** işaretliyse miktar × birim fiyat Kasa'dan *Stok ödemesi (alım)* gideri olarak düşer, işaretsizse para yazılmaz.
+- **ANLIK DURUM ve Rapor Al (2.0.7):** Ana ekranda başlığın sağındaki canlı kart (yönetici ve *Yönetim → Kullanıcılar → Ek yetki* verilen kişiler): bugüne kadarki Kasa, kritik stok sayısı, toplam alacak (cari + portföydeki çek/senet), toplam borç (tedarikçi + ödenecek çek/senet). Her işlemde sayfa yenilenmeden değişir; köşedeki simge şeride küçültür. **Rapor Al** → *Mizan ve cari ekstre*, *Nakit akışı* (grafikli projeksiyon), *Çek / Senet*; PDF ve Excel. **Detaylı raporlar** pili rapor merkezini açar: 23 rapor (Kasa, Cari, Taksit, Çek/Senet, Stok, Kayıtlar/Ofis), her biri PDF ve Excel; dönem ve süzgeç seçilir, ekranda ön izleme.
+- **Çek / Senet (2.0.7):** Operasyon Merkezi → *Çek / Senet* (yönetici, uzman, muhasebe). *+ Çek / senet al* (cariden ya da kişiden; istenirse taksite sayılır), *+ Çek / senet ver* (tedarikçiye). Kartta *Tahsil et*, *Ciro et*, *Karşılıksız / iade*, *Ödeme yap*; her işlem geri alınabilir. Alınan evrak carinin borcunu düşer, tahsil edilince Kasa'ya girer; verilen evrak tedarikçiye borç yazar, ödenince Kasa'dan çıkar. Vadesi gelen evrak rozet, takvim ve bildirimde. Excel'den açılış portföyü yüklenir; liste PDF/Excel.
+- **Kayıt ve cari ayrı (2.0.18; kullanıcı kararı):** *Yeni Kayıt* formu cari AÇMAZ; "cari kartı da aç" kutusu, Cari penceresindeki *Tablodan Al*, Raporlar'daki "Tablodaki Kişileri Cari Yap" ve detay kartındaki CARİ kutusu / *Cari Kartı* pili kaldırıldı. Cari yalnız *Cari → + Yeni Cari* ya da *Excel / Sheets’ten Yükle* ile açılır. *Yeni cari* formunda ad yazılınca tablodaki aynı adlı tek kayıt *Tablodaki Kayıt* alanında kendiliğinden seçilir (bağ isteğe bağlı; cari adı artık analizin bulduğu kişi kolonundan gelir, "Ürün / Marka Adı" gibi kolonlar ad sayılmaz); taksit formunda aynı adlı tek cari seçilir ve kart carinin kayıt bağını devralır. Aynı ad iki kişideyse program tahmin etmez, siz seçersiniz. Taksit formunda *Taksitler*: eşit böl / elle gireceğim / şimdilik yok.
+- **Güncelleme uyarısı "Güncelleme paketi açılamadı: EPERM" (2.0.6):** Sunucu yeniden başlamadan güncellenmişse eski servis kurulu sürümü yeniden önerir; *Şimdi güncelle*'ye basmayın, 2.0.6 (ya da daha yeni) kurulum dosyasını bir kez daha üstüne çalıştırın; veriler korunur. 2.0.7 bu hatayı kalıcı olarak giderir.
+- **Cari (2.0.6):** Operasyon Merkezi → *Cari*. Müşteri/tedarikçi kartları (her sektör; fatura, KDV yok). *Excel / Sheets’ten yükle* (Excel dosyası ya da Google Sheets bağlantısı; Sheet “bağlantıya sahip olan herkes görüntüleyebilir” paylaşılmalı) ya da *Tablodan al* ile toplu açılır; taksit sorulmaz; tanınmayan kolonlar kartta aynı adla ek alan olur, *Tablodan al* her cariyi kendi kaydına bağlar. Aynı cari yalnız kesin eşleşmeyle bulunur (aynı kayıt, aynı Cari No + ad, aynı ad + telefon); emin olunamayan satır yeni cari açar. Listede kutularla seçip *Seçilenlere taksit planı* (tutar sabit ya da kartın alanından). Kartta *+ Tahsilat* (Kasa’ya; açık taksit kartı varsa taksite mi diye sorar), *Borç yaz*, *Alacak yaz*, *− Ödeme* (Kasa’dan); defter yürüyen bakiyeyle, ekstre PDF. Liste PDF/Yazdır/Excel: süzgeç yoksa tüm cariler, varsa yalnız süzülenler. Taksit kartları cariye aittir; güncellemede mevcut kartlar cariye dönüştürülür. Cari açma, borç/alacak/ödeme ve toplu taksit yönetici, uzman ve muhasebe; tahsilatı herkes girer.
+- **Toplu alım doğrulama kapısı (2.0.6):** Cari ve Stok yüklemelerinde eşleme ekranının altında satır bazlı rapor: hazır satır sayısı, hatalı satırlar (adı/ürün adı boş → alınmaz), uyarılar (okunamayan tarih → bugün, okunamayan tutar → yazılmaz, dosya içi tekrar → ikinci satır atlanır). Görünmez karakterler, Excel hata değerleri ve seri tarihler kendiliğinden temizlenir. Yükleme tek işlemde yapılır; yarıda kesilirse hiçbir satır kalmaz.
+- **Stok (2.0.6):** Operasyon Merkezi → *Stok*. Ürün (birim, kategori, kritik seviye, birim fiyat) ve giriş/çıkış; mevcut = giriş − çıkış. Tutar = miktar × birim fiyat; *Kasa’dan ödendi* / *Kasa’ya tahsil edildi* ya da *cariye yaz* seçilebilir (para yazan hareket yönetim yetkisi; yalnız miktar herkes). Kritik seviyede rozet ve günlük bildirim; eksiye düşecek çıkış sorulur. Excel ya da Google Sheets’ten toplu ürün; tüm stok ya da süzülenler PDF/Excel; Silinenler.
+- **Taksit kartı tablodaki kişiye bağlı (2.0.6):** Ortadaki listedeki kişiyi tıklayıp kartındaki **Tahsilat**'a basın. Taksit planı yoksa tahsilat penceresi gelir; altındaki **Taksit planı oluşturun** kısa yolu kart formunu o kayda bağlı, ad ve telefon kayıttan dolu açar (kart formundaki **Tablodaki kayıt** kutusundan da ad/dosya no/telefon yazarak bağlanır; × bağı kaldırır). Plan varsa kişinin kartında **TAKSİT PLANI** bölümü durur: taksitlendirilen tutar, ödenen, güncel bakiye, sıradaki taksit ve taksit listesi. **Tahsilat** bu durumda taksit seçiciyi açar: taksitin yanındaki **Tahsil et** tutarı hazır getirir; kaydedince tahsilat o taksitten düşer, Kasa'ya tek tahsilat olarak iner, makbuzu alınır ve kişinin işlem geçmişinde *N. taksit tahsilatı* olarak görünür. Bağ, notların ve tahsilatların kullandığı kayıt kimliği ve açık veri oturumuyla kurulur; başka oturumdaki kayıtla karışmaz, tabloda olmayan kayda bağ kurulamaz. Taksit kartındaki *Tablodaki kayıt · Kayda git* kaydı tabloda açar. Bağı yönetici, uzman ve muhasebe kurar; herkes planı görür ve tahsilat girer.
+- **Makbuz, kayıt tarihi, bilgi notu (2.0.6):** Makbuz A5 dikey tek sayfadır (yazıcıya A5 kâğıt koyun); üstte firma adı yazar (*Yönetim → Ofis adı*), ad girilmemişse boş kalır; makbuzda, ekstrede ve taksit listesinde program adı yazmaz. Taksit kartında **Kayıt tarihi** vardır: programda yeni kartta bugün hazır gelir; Excel'den yüklemede "Kayıt tarihi" kolonu okunur, yoksa bugün yazılır. Liste kayıt tarihine göre de sıralanır. Liste ekranında, PDF'inde ve çıktısında kişinin **bilgi notu** görünür.
+- **Büyük listelerde arama (2.0.6):** Tablo yalnız açık sayfanın 20 satırını çizer; 9 bin kayıtlık listede yazarken, aramayı temizlerken ve sekme değiştirirken bekleme kalmaz. Sayfalar alttaki sayfa düğmeleriyle gezilir; *Enter* ilk sonuca, uyarı ve kartlardaki *Kayda git* kaydın sayfasına gider.
+- **Sütun ekle / sil (2.0.6):** Ortadaki tabloda bir sütun başlığının üzerine gelin (yalnız yönetici): üstte küçük **+ Ekle** ve kırmızı **× Sil** çıkar. *Ekle* o sütunun sağına, her satıra boş hücreyle yeni sütun açar; değerleri kartta ✎ ile yazılır. *Sil* sütunu başlığı ve tüm hücreleriyle kaldırır, sağdakiler sola kayar; dolu sütunda önce sorar. Kaynak Excel/Sheets değişmez; bildirimdeki *Geri al* ya da *Yönetim → Silinenler* geri getirir.
+- **Kolon adı mı, değer mi? (2.0.6):** Detay kartında bir alanın sağındaki **✎** o kaydın *değerini* düzenler (tarih, tutar, not buradan yazılır). Başlığın hemen yanındaki küçük metin kutusu simgesi (yalnız yönetici, başlığın üzerine gelince) kolonun *adını* değiştirir ve tüm kayıtları etkiler. Ad penceresine tarih yazılırsa program ad olarak kaydetmez, tarihi açık kaydın alanına yazmayı önerir. Tarih uyarıları hücredeki değerden gelir: araç listesinde *Muayene, Kasko, Trafik/Koltuk sigortası, Egzoz emisyon, Takograf, SRC* gibi kolonlara yazılan ileri tarih 7 gün kala ve geçince uyarır.
+- **Telefon düğmesi (2.0.4):** Detay kartındaki *Telefon* penceresi kayıttaki numaraları *Ara* ve *WhatsApp* düğmeleriyle listeler; altında yeni numara ekleme formu durur.
+- **Kolon genişlikleri (2.0.4):** Tabloda başlığın sağ kenarındaki tutamaç sürüklenerek kolon daraltılır/genişletilir (bu bilgisayarda hatırlanır); tutamaca çift tıklamak otomatik genişliğe döndürür.
+- **Belgeler:** Detay kartındaki *Belge* düğmesi ya da *Belgeler* bölümü. PDF, resim (JPG, PNG, WEBP, GIF, TIFF), Word, Excel, PowerPoint, UYAP (.udf) ve metin dosyası eklenir; ekran görüntüsü *Ctrl+V* ile yapıştırılır, dosyalar karta sürüklenip bırakılabilir (dosya başına en çok 25 MB). PDF ve resimler programda önizlenir, hepsi indirilebilir. Kişi kendi eklediği belgeyi, yönetici ve ikinci rol tüm belgeleri siler.
+- **Belge kartı (2.0.2):** Belge eklemede adet sınırı yoktur (dosya başına 25 MB). Birden çok belgede *Yan yana gör* ile belge kartı açılır: belgeler 1–4 sütun yan yana görünür; her biri kendi biçimiyle indirilir, seçilenler tek .zip olarak iner; PDF, resim ve metin belgeleri doğrudan yazdırılır. Word, Excel ve UYAP belgeleri indirilip kendi programında yazdırılır.
+- **Excel'e aktarma:** *Dışa aktar* → *Açık sekme (Excel)*, *Tüm sekmeler (Excel)* ya da *CSV*. Excel dosyasında tutarlar, tarihler ve yüzdeler hesap yapılabilir sayılardır; düzeltmeler ve formül sonuçları dahildir.
+- **Kolon başlıklarını adlandırma:** Detay kartındaki başlığın yanındaki kalemle (yalnızca yönetici) Excel/Sheets'ten gelen kolon adı ofise göre adlandırılır (ör. *TKST_1* → *1. Taksit*). Yalnızca görünen ad değişir; eşitleme ve formüller asıl adla çalışır.
+- **Akıllı denetim:** Program verinin kurallarını öğrenir (ör. *Kalan = Tutar − taksitler*) ve uymayan kaydı bulur. Seçilen kayıtta bir şey varsa detay kartının üstünde kısa bir kutu çıkar: bulgu, *Neden?*, önerilen değer (*Uygula*) ve *Yoksay*. Şüpheli satırın başında küçük bir işaret görünür; tümü *Veri sağlığı* raporunda listelenir.
+- **Operasyon Merkezi adları:** Kartın sağ üst köşesindeki kalemle (yalnızca yönetici) kartın başlığı ve düğme adları değiştirilir (ör. *Kasa* yerine *Vezne*); boş bırakılan ad varsayılana döner.
+- **Hücre düzeltme:** Tablo hücresinin üzerine gelince çıkan ✎ düğmesi. Aynı alanı iki kişi aynı anda değiştirirse sistem uyarır.
+- **Satır silme:** Satırın solundaki × (yönetici/avukat). Silme geri alınabilir.
+- **Görevler:** Kenar çubuğu → *Görevler*; size atananlar rozetle gösterilir. Görev atama yalnızca avukat ve yönetici hesaplarındadır; size görev atandığında ekranınızda anında bildirim çıkar.
+- **Mesajlar (sohbet):** Kenar çubuğu → *Mesajlar* sağdan sohbet panelini açar. *Ofis geneli* kanalını herkes görür; bir kişiye tıklayınca **özel yazışma** açılır — onu yalnızca iki taraf görür (yönetici dahil başka kimse okuyamaz). Yeni mesaj sayfayı yenilemeden gelir: *Mesajlar* rozetinde ve sekme başlığında okunmamış sayısı, ekranın köşesinde kısa bir bildirim ve ses (paneldeki 🔔 ile kapatılır). Kendi son mesajınızın altında *✓ İletildi* / *✓✓ Okundu* görünür. Mesajdaki dosya numarasına (ör. 2024/11710) tıklayınca o dosya tabloda açılır; "Seçili kaydı ekle" ile açık kaydı mesaja bağlayabilirsiniz. *Enter* gönderir, *Shift+Enter* yeni satır. **2.0.2:** Açılışta son 24 saatin mesajları gelir; *Önceki günün mesajlarını yükle* her basışta bir gün daha getirir. 30 günden eski mesajlar programdan kaldırılır ve sunucudaki `data\mesaj-arsivi` klasörüne yazışma başına, ay ay metin dosyası olarak (Not Defteri ile açılır) taşınır; kişi kendi yazışmasının arşivini sohbet penceresindeki *Arşivi indir* ile alır.
+- **Anlık güncellemeler:** Başka bir bilgisayarda eklenen not, telefon, tahsilat, görev ve hücre düzeltmeleri açık ekranlara kendiliğinden yansır (açık dosyanın işlem geçmişi yenilenir, tablo yeniden çekilir).
+- **Haciz uyarıları:** Bir yılını dolduracak hacizler 30 gün önceden listelenir, son 7 gün vurgulanır.
+- **Tahsilat takvimi (kayan piller):** Program verinizin tüm sekmelerinde ödenmesi beklenen kalemleri bulur ve üstteki şeritte kaydırır. Tanıdığı yazımlar:
+  - ödeme sözü, taahhüt, vade, son ödeme tarihi (tarih ve tutar aynı hücrede de olabilir: *15.09.2026 - 5.000 TL*);
+  - *1. Taksit Tarihi / 1. Taksit Tutarı* gibi taksit kolonları;
+  - ay olarak yazılan vade (*Eylül 2026*): ayın 1'inden itibaren beklenir;
+  - aylık ücret kolonları (*Eylül*, *Ekim 2026*): hücre boşsa, *ödenmedi* ya da *0* yazıyorsa ödenmemiş; ücretten az bir tutar yazıyorsa kalanı beklenir;
+  - ayın belli günü ödenen kira/aidat (*Ödeme günü: 5*).
+
+  Satırın durumu *Ödendi, Kapandı, İptal* ise kalem beklenmez. Şeritte gecikenler (kırmızı), bugün ve bu ay ödenecekler, 7 gün içinde gelecekler ve 30 gün içindeki açık ödeme sözleri görünür. Pile tıklayınca beklenen tutar, kalan borç ve sekme görünür. Kartın düğmeleri:
+  - *Tahsilat gir*: tutar ve açıklama hazır gelir; kaydedince pil kaybolur ve tutar Kasa'ya düşer;
+  - *Ödendi say*: tahsilat girmeden kapatır (ör. başka yoldan ödendi);
+  - *Söz iptal*: yalnız ödeme sözlerinde;
+  - *Kayda git*.
+
+  Girilen tahsilat kişinin kalemlerine vade sırasıyla sayılır: tutar yetmezse pilde kalan görünür (*kısmen ödendi*), fazlası sonraki kaleme geçer. Programda eklediğiniz yeni satırlar ve serbest sayfalar da izlenir.
+- **Sağ alt bildirimler ve zil:** Ödemesi gelmiş ama tahsil edilmemiş kalemler *Tahsilat alınmadı* başlığıyla, kim, hangi vade ya da ay için, ne kadar olduğu yazılarak ekranın sağ altında bildirilir. Son günü yaklaşan işler de 1 hafta önceden bildirilir: bitiş, yenileme, muayene, sigorta, kasko, vize, SRC, psikoteknik, ehliyet gibi tarihler ve size atanmış görevler. Süresi geçen belgeler 30 gün boyunca bildirilir.
+  - Bildirimler tek tek gelir. Her biri 20 saniye durur, iki bildirim arasında 10 saniye boşluk olur, bir pencere açıkken gelmez; üst üste binmez, üzerine gelince bekler.
+  - **✓ Gerçekleştirildi (2.0.2):** İş yapıldıysa basın; uyarıya sebep olan hücreye *Gerçekleştirildi* yazılır (tarih silinmez: *Gerçekleştirildi · 15.10.2026*) ve uyarı bir daha gelmez. Her ay tekrarlayan ödeme gününde hücreye dokunulmaz, yalnız o ayın kalemi kapanır; görevde görev tamamlanır. *Geri al* ile döner. Düğme zil listesinde de vardır.
+  - Tahsilat girilene ya da iş bitene kadar her 3 saatte bir yinelenir.
+  - Üst çubuktaki **zil** tüm uyarıları gruplu listeler: *Tahsilat alınmadı*, *Son günü yaklaşan ya da geçen işler*, *Görevler*, *Yaklaşan tahsilatlar*. Açılır bildirimler bu listenin altındaki kutuyla kapatılıp açılır.
+
+## 9a. Serbest sayfalar (Excel gibi kendi tablonuz)
+
+Yüklenen Excel/Sheets'in sekmelerinin yanına istediğiniz adla boş bir sayfa ekleyip Excel gibi doldurabilirsiniz (masraf listesi, takip çizelgesi, aylık tablo…).
+
+1. Sekme şeridinin sonundaki **+ Sayfa** düğmesine basın. Sayfa adını, kolon ve satır sayısını yazın; isterseniz kolon başlıklarını da (virgülle ayırarak) yazın. *Sayfayı oluştur* ile yeni sekme açılır.
+2. **Yazın ve geçin:** Tablonun yerinde Excel benzeri bir ızgara açılır. Üstte kolon harfleri (A, B, C…), altında başlık satırı, solda satır numaraları vardır. Bir hücreyi seçip yazmaya başlayın; **Enter** (aşağı), **Tab** (sağa), yön tuşları ya da fareyle başka hücreye geçince değer kendiliğinden kaydedilir. Başlıkları da aynı biçimde yazın. Üstte *Tüm değişiklikler kaydedildi* yazar.
+3. **Düzeltme:** Seçili hücredeki kalem (✎), **F2** ya da çift tık hücreyi düzeltmeye açar; **Esc** vazgeçer. Başlığın kalemi başlığı, sayfa adının yanındaki kalem sayfanın adını değiştirir. Üstteki formül çubuğundan da yazılabilir.
+4. **Silme:** Hücredeki × hücreyi, başlığın üzerindeki × kolonu, satır numarasının üzerine gelince çıkan × satırı siler; **Delete** seçili hücreleri temizler. Her silme *Geri al* ile geri alınır.
+5. **Ekleme:** *+ Satır* / *+ Kolon* seçili hücrenin altına/sağına ekler; tablonun altındaki *+ Satır ekle* ve *+ 10 satır*, kolon harflerinin sonundaki **+** sona ekler. Sağ tık menüsünde üste/alta satır, sola/sağa kolon ekleme, silme ve doldurma vardır. Son satırda Enter alta yeni satır açar.
+6. **Formüller:** `=` ile başlayın. Adres kolon harfi ve satır numarasıdır: `B1` ilk satırın B kolonudur (başlık satırı numaralanmaz). Aralık `B1:B9`, kolonun tamamı `B:B`, kaymayan adres `$B$1`. Türkçe yazım (`=TOPLA(B1:B9)`, `=EĞER(D2>1000;"Yüksek";"Normal")`, ayraç `;`, ondalık `,`) ya da İngilizce (`=SUM(B1:B9)`) kullanılabilir. Formül yazarken bir hücreye tıklamak adresini ekler, sürüklemek aralık ekler; işlev adı yazarken öneri listesi açılır (*Tab* seçer). Tüm işlevler ve kısayollar **ƒx Formüller** düğmesindedir.
+7. **Toplamlar ve doldurma:** **Σ Alt toplam** sayısal kolonların altına toplam satırı ekler. **Σ Yan toplam** her satırın toplamını gösteren *Toplam* kolonu ekler: önce kolonları seçerseniz yalnızca onları, seçmezseniz para kolonlarını toplar. **↓ Doldur / → Doldur** seçili hücredeki formülü alttaki satırlara / sağdaki kolonlara uygular. Bir kolonun satırları aynı formülü taşıyorsa (ör. *Tutar = Adet × Birim fiyat*) yeni satıra da kendiliğinden uygulanır.
+8. **Kopyala / yapıştır:** Excel'den kopyaladığınız tabloyu seçili hücreye **Ctrl+V** ile yapıştırın; yetmezse satır ve kolon eklenir. **Ctrl+C / Ctrl+X** programın içinde de çalışır; kopyalanan formülün adresleri yeni yerine göre kayar.
+9. **Geri al:** **Ctrl+Z** ya da *↶ Geri al* bu ekranda yaptığınız son işlemi geri alır. Aradan başka bir kullanıcı sayfada değişiklik yaptıysa, onun değişikliğini silmemek için geri alma yapılmaz ve nedeni yazılır.
+10. **Detay kartı:** Değer yazılmış her satır bir kayıttır. Satırı seçince sağda detay kartı açılır; not, telefon, tahsilat, görev ve belge diğer sekmelerdeki gibi eklenir, arama ve özet kartları bu sayfayı da kapsar. Detay kartından yapılan düzeltme hücreye yazılır. Kartta gösterilen satırın numarası ızgarada yeşil çizgiyle işaretlidir. **⤢** düğmesi ızgarayı genişletip detay kartını alta alır.
+11. **Sayfayı silme:** ⋯ → *Sayfayı sil* (yönetici ve ikinci rol). Bildirimdeki *Geri al* ile hemen geri getirilir. Aynı menüden sayfa Excel olarak indirilir.
+
+Yetkiler: hücre ve başlık yazmayı herkes, satır/kolon/sayfa eklemeyi ekleme yetkisi olanlar yapar. Değer içeren satır/kolonu ve sayfayı yönetici ile ikinci rol siler; yanlışlıkla eklenen boş satırı/kolonu ekleme yetkisi olan da silebilir. Değişiklikler tüm bilgisayarlara anında yansır; iki kişi aynı sayfada farklı hücrelere aynı anda yazabilir. Serbest sayfalar açıldıkları veri oturumuna aittir. Sınırlar: sayfada 2000 satır ve 500 kolon (toplam en fazla 250.000 hücre), oturumda 30 serbest sayfa.
+
+## 10. Yedekleme ve geri dönüş
+
+- Sunucu açıkken 6 saatte bir bütün şirketlerin otomatik yedeği alınır (o gün hiç açılmamış şirketinki de); açılışta son yedek eskiyse hemen alınır. Her şirketin yedeği kurulum klasöründeki `backups` altında **kendi adını taşıyan klasörde** durur ve son 30'u saklanır: `C:\DestekOfis\backups\001 - Şirket 1\`, `C:\DestekOfis\backups\002 - Şirket 2\` (eski kurulumlarda `C:\HukukOfisiMerkezi\backups\…`). Yedek adında şirket kodu bulunur: `destekofis-002-<tarih>-….sqlite`. Şirketin adı ya da kodu değişince klasörü de yeni adını alır; şirket silinse de yedek klasörü yerinde kalır.
+- 2.0.19 ve öncesinin yedekleri (`backups` kökündeki ve `backups\sirket-002\` gibi klasörlerdeki) ilk açılışta kendi şirketinin klasörüne taşınır; silinmez. 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenebilir ve zaman sırasıyla temizlenir.
+- Elle yedek: yönetim paneli → *Yedekler* → *Şimdi Yedek Al* (*Tüm Şirketler* ya da *Yalnız* seçili şirket; indirilebilir) veya Başlat menüsü → DestekOfis → *Yedek al* (bütün şirketler).
+- Programdan geri yükleme: *Yönetim → Yedekler* → yedeğin satırında *Geri Yükle* (şirket kodu ya da adı + parolanızla onay). Yedek yalnız kendi şirketine yüklenir; önce şirketin o anki verisi `geri-yukleme-oncesi` adıyla yedeklenir. İlk şirket (001) sunucu yeniden açılırken geri yüklenir (servis birkaç saniye içinde kendiliğinden yeniden başlar); kullanıcılar, parolalar ve lisans geri gitmez.
+- Sürüm yükseltmelerinde veritabanı değişmeden önce otomatik tam yedek alınır (`...-pre-migration-...sqlite`).
+- `backups` klasörünü düzenli olarak harici diske veya NAS'a kopyalayın. Sohbet arşivi (`data\mesaj-arsivi`) ve belgeler (`data\belgeler`) veritabanı yedeğinde değil, `data` klasöründe durur; onları da kopyalayın.
+- **Silinenler (2.0.2):** Yanlışlıkla silinen kayıt, sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketi yedeğe dönmeden geri getirilir: *Yönetim → Silinenler → Geri yükle*. Eski yerine döner, o arada eklenenlerin üzerine yazmaz.
+
+**Yedekten elle dönüş (program açılmıyorsa):**
+
+1. Servisi durdurun: Başlat → *Hizmetler* (services.msc) → **DestekOfis Sunucu** → *Durdur* (veya yönetici komut isteminde `net stop DestekOfis`).
+2. Şirketin veri dosyasını bulun: 001 için `data\destekofis.sqlite` (1.6 öncesi kurulumlarda `hukuk-ofisi.sqlite`), diğer şirketler için `data\sirketler\<klasör>\destekofis.sqlite` (yol *Yönetim → Şirketler → Veri ve Yedek Klasörleri*'nde yazar). Dosyayı güvenli bir adla saklayın; varsa yanındaki `-wal` ve `-shm` dosyalarını da taşıyın.
+3. O şirketin yedek klasöründen (`backups\<kod> - <ad>\`) seçtiğiniz yedeği aynı adla bu klasöre kopyalayın. Başka şirketin yedeğini kopyalamayın.
+4. Servisi başlatın (`net start DestekOfis`).
+
+## 11. Servis yönetimi
+
+- Servis adı **DestekOfis Sunucu** (kısa adı `DestekOfis`). Hizmetler penceresinden durdurulup başlatılabilir.
+- Servis güvenlik için kısıtlı bir sanal hesapla (`NT SERVICE\DestekOfis`) çalışır; yalnızca kendi veri, yedek ve günlük klasörlerine yazabilir.
+- Günlükler: kurulum klasöründe `logs\servis.log` (1 MB'ı aşınca servis açılışında kenara ayrılır, son 10 günlük saklanır) ve `logs\kurulum.log`.
+- Servis ayarları bozulduysa: yönetici komut isteminde `<kurulum klasörü>\bin\servis-kur.cmd` (ör. `C:\DestekOfis\bin\servis-kur.cmd`) servisi onarır.
+- Uygulama beklenmedik biçimde kapanırsa servis yöneticisi onu birkaç saniye içinde yeniden başlatır; bu sırada kullanıcılar kendiliğinden yenilenen bir bakım sayfası görür.
+
+## 12. Sorun giderme
+
+| Belirti | Kontrol |
+|---|---|
+| Başlatıcı "sunucu bulunamadı" diyor | Sunucu bilgisayar açık mı? Aynı ağda mısınız? Sunucuda ağ profili Özel mi? Sunucuda Hizmetler'de *DestekOfis Sunucu* çalışıyor mu? |
+| Tarayıcı bağlanamıyor | Yönetim paneli → Sistem'deki adresi deneyin; güvenlik duvarında *DestekOfis HTTP (TCP 5123)* kuralı açık mı? |
+| "Sistem başlatılıyor / yeniden başlatılıyor" sayfası | Birkaç saniye bekleyin; sayfa kendiliğinden yenilenir. Uzun sürerse `logs\servis.log` dosyasına bakın. |
+| "Sunucu başlatılamadı" sayfası | Sunucu bilgisayarı yeniden başlatın; sürerse `logs\servis.log` ile destek isteyin. |
+| Varsayılan parolayla giriş reddedildi | İlk giriş yalnızca sunucu bilgisayarın kendisinden yapılabilir. |
+| Giriş kilitlendi | 15 dakika bekleyin veya yöneticiden parolanızı sıfırlamasını isteyin (sıfırlama kilidi hemen kaldırır). |
+| Personel bilgisayarında "servis kuruldu ancak başlatılamadı" uyarısı | Kurulumda yanlışlıkla *Sunucu bilgisayar* seçilmiş. DestekOfis'i o bilgisayardan kaldırıp *Personel bilgisayarı* ile yeniden kurun. |
+| Tablo görünmüyor, ortada "başlayalım" kartı var | Henüz veri yüklenmemiş. Yönetici Excel yükler veya Google Sheets bağlantısını yapıştırır. |
+| "Veri kaynağı değiştirildi" uyarısı | Yönetici veriyi değiştirdi; *Yenile*'ye basın. |
+| Bazı satırların üstü çizili | Bağlı Google Sheets'te artık yoklar. Yönetici *Ayarlar → Veri → Listeyi gör* ile tutar veya kaldırır. |
+| "Sheet'in yapısı değişmiş görünüyor" uyarısı | Sheet'e başlık satırı eklenmiş veya sekme adı değişmiş olabilir. *İncele ve karar ver* ile "devamı olarak ekle" ya da "yerine koy" seçin. |
+| "Google Sheets'e şu an ulaşılamıyor" | İnternet veya Sheet paylaşım izni sorunu. Tablo son eşitlenen veriyle çalışmaya devam eder. |
+| "DestekOfis … sürümüne güncellendi" şeridi | Sunucu yeni sürüme geçti. Yazmakta olduğunuz notu kaydedip *Yenile*'ye basın. |
+| Önerilen sektör yanlış | *Başka sektör seç* ile listeden doğrusunu seçin ya da *Genel kullan* deyin. Sonradan *Ayarlar → Sektör ve görünüm*'den değiştirilebilir. |
+| "Kesin olarak belirlenemedi" | Kolon adları belirgin bir sektöre işaret etmiyor; bu bir hata değildir. Listeden sektörünüzü seçin veya Genel ile devam edin. |
+| Özet kartlarında tutar kartı yok | Tutar kolonu bulunamadı ya da kolonda birden çok para birimi var (farklı para birimleri toplanmaz; *Veri sağlığı* raporunda yazar). Kolon başlığının "Tutar", "Bedel", "Ücret" gibi olduğundan emin olun. |
+| Kalem simgesi görünmüyor | Başlıkları yalnızca yönetici değiştirebilir; fareyi başlığın üzerine getirin. |
+| Mesajlar panelinde "Bağlantı bekleniyor…" | Canlı bağlantı kısa süreliğine koptu (ağ, sunucu güncellemesi); kendiliğinden yeniden bağlanır, kaçırılan mesajlar gelir. Sürerse sayfayı yenileyin. Bazı antivirüslerin "web koruması" canlı akışı geciktirebilir; o durumda sunucu adresini istisnalara ekleyin. |
+| Bir alt tablo ayrı görünmüyor | Başlık satırı tek hücrede (birleştirilmiş) olmalı ve hemen altında kolon başlıkları bulunmalı. Tanınmayan düzende tablo bozulmaz, tek tablo olarak görünür. |
+| Güncelleme denetlenemiyor | Sunucunun internete çıkabildiğini kontrol edin. Antivirüsün "SSL/HTTPS taraması" özelliği bağlantıyı engelliyor olabilir. Ayrıntı: `logs\servis.log`. |
+| "Sürüm açılamadı; önceki sürüme dönüldü" | Sistem güvendedir ve önceki sürümle çalışır. Panelden *Yine de kur* ile yeniden deneyebilir veya destek isteyebilirsiniz. |
+| "Ücretsiz deneme henüz başlamadı" (sunucunun internetini kontrol edin) / "Deneme süresi doldu" / "Lisans süresi doldu" | Program salt okunurdur. Yönetici yönetim paneli → Lisans'tan denemeyi başlatır veya lisans anahtarını girer. |
+| "Lisans doğrulanamadı" | Sunucu 7 günden uzun süredir internete çıkamadı. İnterneti düzeltip Lisans → *Şimdi doğrula*'ya basın; antivirüsün SSL taraması engelliyor olabilir. |
+| "Bilgisayar saati geri alınmış" | Sunucunun tarih/saatini düzeltin (*Saati otomatik ayarla*); birkaç dakika içinde ya da *Şimdi doğrula* ile kendiliğinden açılır. |
+| "Lisans engellendi" | Satıcınızla görüşün; engel kaldırılınca *Şimdi doğrula* ile açılır. |
+| "Bu kod başka bir bilgisayar için üretilmiş" | Etkinleştirme kodu başka sunucunun kurulum koduyla üretilmiş. Bu ekrandaki kurulum kodunu satıcıya yeniden iletin. |
+| Sağlık kontrolü | `http://SUNUCU:5123/api/health` → `"status":"ok"` |
+
+## 13. Güvenlik kuralları
+
+- 5123 portunu internete açmayın (modemde port yönlendirme yapmayın); sistem yalnızca ofis ağında (LAN) kullanılmalıdır.
+- Kullanılmayan hesapları pasifleştirin.
+- Sunucu bilgisayar uyku moduna geçmemeli (Güç seçenekleri → Uyku: Hiçbir zaman).
+- `backups` ve `data` klasörlerini ağda paylaşıma açmayın.
+
+## 14. Güncelleme
+
+**Otomatik (önerilen, varsayılan):** Sunucu her açıldığında ve açık kaldığı sürece saatte bir yeni sürüm olup olmadığına bakar. Kurulum yaklaşık bir dakikalık bir geçiştir; bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir. Geçiş çok kısa sürdüyse yönetim paneli kendiliğinden yenilenir; dosya takip ekranında ise yazılan not kaybolmasın diye *"DestekOfis … sürümüne güncellendi"* şeridi çıkar, *Yenile*'ye basmanız yeterlidir.
+
+- Ne zaman kurulur:
+  - **Sunucu açılışında** bulunan sürüm, kullanıcılar bağlanmadan hemen kurulur.
+  - **Gün içinde** bulunan sürüm kullanıcılar çalışırken kurulmaz: DestekOfis çalışmaya devam ederken arka planda **indirilir ve doğrulanır**, panelde ve yöneticinin zilinde "hazır — sunucu bir sonraki açılışında kuracak" görünür. Sunucu bilgisayarı kapatılıp açılınca (ör. ertesi sabah) hazır sürüm DestekOfis açılmadan önce kurulur; o anda internet olmasa da kurulur. Açılışta daha yeni bir sürüm çıkmışsa (en çok 1 dakika beklenir) doğrudan o kurulur; aradaki sürüm ayrıca kurulmaz.
+  - Sunucu hiç kapatılmıyorsa hazır sürüm, kimse kullanmıyorken (son 15 dakikadır sunucuya istek gelmediyse) ya da mesai dışında (hafta içi 20:00–07:00, hafta sonu; sunucunun saati) saatlik bakışta kurulur. Herhangi bir bilgisayarda açık duran bir DestekOfis sayfası (simge durumuna küçültülmüş ya da arka planda olsa bile) düzenli yenileme istekleri gönderdiği için sunucu "kullanılıyor" sayılır; bu durumda kurulum mesai dışına ya da sunucunun bir sonraki açılışına kalır.
+  - Bekleyen yalnız en yeni sürümdür: daha yenisi çıkarsa o indirilip doğrulandıktan sonra eskisi silinir; yeni indirme yarıda kalırsa eldeki hazır sürüm yerinde kalır.
+- `data` ve `backups` klasörlerine dokunulmaz. Geçişten hemen önce veritabanının tam yedeği alınır (`backups\...-guncelleme-oncesi-<sürüm>.sqlite`).
+- Yeni sürüm açılamazsa sistem **kendiliğinden önceki sürüme döner** ve o sürümü bir daha denemez; yönetim paneli durumu bildirir.
+- Güncellemeler dijital olarak imzalıdır; imzası veya içeriği tutmayan paketler kurulmaz. Hazır bekleyen paket açılışta yeniden doğrulanır; bozulmuşsa kurulmaz, silinir ve sistem kurulu sürümle açılır.
+
+**Yönetim paneli → Sistem → Güncellemeler:** kurulu sürümü, son denetimi ve bulunan yeni sürümün notlarını gösterir.
+
+- *Güncellemeleri denetle* ile hemen bakabilir, *Şimdi güncelle* ile beklemeden kurabilirsiniz (kullanıcıların az olduğu bir saatte yapın).
+- *Yeni sürümü kendiliğinden kur* seçeneğini kapatırsanız sunucu yine saatte bir denetler ve yeni sürümü panelde ve zilde "hazır" olarak gösterir, ama paketi indirmez; yalnızca siz *Şimdi güncelle* dediğinizde indirilip kurulur.
+- *Güncelleme kanalı*: **Kararlı** (önerilen) veya **Deneme (beta)**. Beta kanalı yeni özellikleri herkesten önce alır; üretimde kararlı kanal önerilir.
+- Bir sürüm çalışma zamanı değişikliği gerektiriyorsa panel bunu bildirir; o sürümü kurulum dosyasıyla kurun.
+
+**Kurulum dosyasıyla (elle):** Yeni sürümün kurulum dosyasını sunucuda çalıştırın: aynı klasöre kurulur, servis kısa süre durup yeni sürümle başlar, veriler korunur. Eski bir kurulum dosyası, otomatik güncellemeyle gelmiş daha yeni bir sürümü geri almaz. Personel bilgisayarlarında başlatıcıyı güncellemek genellikle gerekmez.
+
+Güncelleme için sunucunun internete (github.com) erişebilmesi gerekir. İnternet yoksa sistem mevcut sürümle normal çalışmaya devam eder.
+
+## 15. Kaldırma
+
+Ayarlar → Uygulamalar → **DestekOfis** → Kaldır. Servis ve güvenlik duvarı kuralları kaldırılır; **veriler ve yedekler korunur** (kurulum klasöründeki `data` ve `backups`). Yeniden kurduğunuzda kaldığınız yerden devam edersiniz. Verileri de silmek istiyorsanız klasörü kaldırmadan sonra elle silin.
+
+## 16. Eski kurulumdan (v1.0 / v1.1 elle kurulum) geçiş
+
+Kurulum dosyasını aynı bilgisayarda çalıştırıp **Sunucu bilgisayar** seçin. Eski zamanlanmış görev ("Hukuk Ofisi Merkezi Server") ve eski güvenlik duvarı kuralı kendiliğinden kaldırılır. Eski veritabanını kullanmak için önce eski sürümü durdurun, sonra eski `data` klasörünü kurulum klasörünün `data` klasörüne kopyalayın (ör. `C:\DestekOfis\data`). Veritabanının adı `hukuk-ofisi.sqlite` kalabilir; DestekOfis onu tanır, gerekiyorsa yedek alarak yükseltir. İsterseniz kurulum sırasında klasör olarak eski klasörü de seçebilirsiniz.

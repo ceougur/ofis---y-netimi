@@ -7,7 +7,8 @@ import { auditBackups } from "../lib/backup-audit.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem, verifyPassword } from "../lib/passwords.mjs";
-import { ADMIN_ONLY, GRANTABLE, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
+import { ADMIN_ONLY, GRANTABLE, NOT_YET_PERMISSIONS, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
+import { migrateBankGrants, withGrantsDone } from "../lib/bank/grants.mjs";
 import { compareVersions } from "../lib/semver.mjs";
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
@@ -30,6 +31,12 @@ export function registerAdminRoutes(router, context) {
   // Oturumları silinen kullanıcının açık canlı bağlantıları da hemen kapanır.
   const dropLive = userId => events?.closeWhere(client => client.userId === userId);
   const now = () => new Date().toISOString();
+  // Gözden geçirme D5 (K4): rol ve kişi kaydı katalogdaki yetkileri yazar; Aşama 3'e kadar katalogda olmayan banka yetkileri (ve "verildi"
+  // işareti) bu yazımda düşer. Aynı istekte bugünkü yetkilerden yeniden türetilir (yalnız işaretsiz satırlar; ekranda görünmez).
+  const bankGrants = () => store.tx(() => migrateBankGrants(store));
+  // v2.1.0 Aşama 3: banka yetkileri katalogda; yöneticinin kişi ekranında verdiği/kaldırdığı yetkiler bilinçli karardır. Kayıt "verildi"
+  // işaretini taşır (ekranda görünmez, yetki vermez): ortak katmanın açılışındaki göç kuralı bu kişiye banka yetkisi eklemez.
+  const grantsJson = grants => JSON.stringify({ add: withGrantsDone(grants.add), remove: grants.remove });
   const activeAdmins = () => store.get("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND active = 1 AND deleted_at IS NULL").count;
 
   // ---------- Kullanıcılar (v2.0.10: özel rol, kişiye özel yetki, ad/kullanıcı adı düzeltme, silme) ----------
@@ -113,8 +120,9 @@ export function registerAdminRoutes(router, context) {
     const userId = auth.newId("user");
     store.run(
       "INSERT INTO users (id, username, display_name, role, role_key, grants_json, password_hash, must_change_password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      userId, username, name, role, roleKey, JSON.stringify(grants), hashPassword(password), mustChange, timestamp, timestamp,
+      userId, username, name, role, roleKey, grantsJson(grants), hashPassword(password), mustChange, timestamp, timestamp,
     );
+    bankGrants();
     audit(admin, "user.created", userId, { username, role: roleKey || role, grants });
     ok(res, { id: userId, username, name, role, roleKey: roleKey || role, mustChangePassword: Boolean(mustChange) });
   });
@@ -147,9 +155,10 @@ export function registerAdminRoutes(router, context) {
     store.tx(() => {
       store.run(
         "UPDATE users SET role = ?, role_key = ?, active = ?, display_name = COALESCE(?, display_name), username = COALESCE(?, username), grants_json = COALESCE(?, grants_json), updated_at = ? WHERE id = ?",
-        role, roleKey, active, name || null, username || null, grants ? JSON.stringify(grants) : null, now(), target.id,
+        role, roleKey, active, name || null, username || null, grants ? grantsJson(grants) : null, now(), target.id,
       );
       if (!active) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
+      bankGrants();
     });
     if (!active) dropLive(target.id);
     if (username && username !== target.username) auth.clearLoginLocks(target.username);
@@ -240,7 +249,7 @@ export function registerAdminRoutes(router, context) {
 
   // ---------- Roller ve yetki havuzu (v2.0.10) ----------
   const catalog = () =>
-    PERMISSION_GROUPS.map(group => ({ id: group.id, label: group.label, items: group.items.map(([key, label, help]) => ({ key, label, help, locked: ADMIN_ONLY.includes(key) })) }));
+    PERMISSION_GROUPS.map(group => ({ id: group.id, label: group.label, items: group.items.filter(([key]) => !NOT_YET_PERMISSIONS.has(key)).map(([key, label, help]) => ({ key, label, help, locked: ADMIN_ONLY.includes(key) })) }));
   router.get("/api/admin/roles", async ({ req, res }) => {
     auth.requirePermission(req, "users.manage");
     const labels = context.profile?.profile?.()?.roleLabels;
@@ -249,12 +258,14 @@ export function registerAdminRoutes(router, context) {
   router.post("/api/admin/roles", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "users.manage");
     const role = access.createRole(await readJson(req), admin);
+    bankGrants();
     audit(admin, "role.created", role.id, { name: role.name, permissions: role.permissions });
     ok(res, role);
   });
   router.patch("/api/admin/roles/:id", async ({ req, res, params }) => {
     const admin = auth.requirePermission(req, "users.manage");
     const role = access.updateRole(params.id, await readJson(req));
+    bankGrants();
     audit(admin, "role.updated", role.id, { name: role.name, permissions: role.permissions });
     permissionsChanged(access.usersOfRole(role.id));
     ok(res, role);
@@ -297,7 +308,6 @@ export function registerAdminRoutes(router, context) {
   // Yönetici bütün şirketleri görür; liste ve indirme yine de kullanıcının görebildiği şirketlerle sınırlıdır.
   const backups = context.backups;
   const companies = context.companies;
-  const mirror = result => (context.mirrorNow ? context.mirrorNow(result) : context.cloudBackup ? context.cloudBackup.mirror(result) : Promise.resolve(null));
   const companyView = (admin, company) => ({ id: company.id, code: company.code, name: company.name, label: company.label || `${company.code} · ${company.name}`, root: Boolean(company.root), current: company.id === companies.selectedFor(admin), folder: backups.folderOf(company) });
   const backupView = ({ mtimeMs, dir, ...item }) => ({ ...item, folder: dir });
   const companyFor = (admin, id) => {
@@ -345,18 +355,14 @@ export function registerAdminRoutes(router, context) {
     // Veri dosyası paylaşan şirket (v2.0.21) bir hata değil, yöneticinin yapacağı iş: 409 ve nedeni.
     if (!done.length) throw new HttpError(failed.length && failed.every(item => item.code === "company-shared") ? 409 : 500, `Yedek alınamadı: ${failed.map(item => `${item.company}: ${item.error}`).join("; ") || "bilinmeyen hata"}`, { code: failed[0]?.code || "" });
     for (const item of done) audit(admin, "system.backup_created", item.name, { size: item.size, company: item.company?.code || "", scope });
-    const clouds = [];
-    for (const item of done) clouds.push(await mirror(item).catch(error => ({ ok: false, error: error.message })));
     const selected = companies.selectedFor(admin);
-    const primaryIndex = Math.max(0, done.findIndex(item => item.companyId === selected));
-    const primary = done[primaryIndex];
+    const primary = done.find(item => item.companyId === selected) || done[0];
     ok(res, {
       scope,
       name: primary.name,
       size: primary.size,
       company: primary.company,
-      cloud: clouds[primaryIndex] || null,
-      backups: done.map((item, index) => ({ companyId: item.companyId, company: `${item.company.code} · ${item.company.name}`, code: item.company.code, name: item.name, size: item.size, folder: path.dirname(item.path), cloud: clouds[index] || null })),
+      backups: done.map(item => ({ companyId: item.companyId, company: `${item.company.code} · ${item.company.name}`, code: item.company.code, name: item.name, size: item.size, folder: path.dirname(item.path) })),
       failed,
     });
   });
@@ -393,39 +399,14 @@ export function registerAdminRoutes(router, context) {
     ok(res, { cancelled });
   });
 
-  // Drive'a yedek (v2.0.2): bağlantı/klasör bağlama, durum ve deneme. ":name" yolundan önce kayıtlı olmalı.
-  router.get("/api/admin/backups/cloud", async ({ req, res }) => {
-    auth.requirePermission(req, "system.manage");
-    ok(res, context.cloudBackup ? context.cloudBackup.status() : { enabled: false });
-  });
-
-  router.post("/api/admin/backups/cloud", async ({ req, res }) => {
-    const admin = auth.requirePermission(req, "system.manage");
-    if (!context.cloudBackup) throw new HttpError(503, "Drive yedeği bu kurulumda kapalı.");
-    const body = await readJson(req);
-    const target = String(body.target ?? "").trim();
-    if (target.length > 500) throw new HttpError(400, "Bağlantı ya da yol çok uzun.");
-    let status;
-    try {
-      status = context.cloudBackup.configure(admin, target);
-    } catch (error) {
-      throw new HttpError(error.status || 400, error.message);
-    }
-    audit(admin, status.enabled ? "system.cloud_backup_set" : "system.cloud_backup_cleared", status.mode || "", { value: status.value || "" });
-    ok(res, status);
-  });
-
-  router.post("/api/admin/backups/cloud/test", async ({ req, res }) => {
-    const admin = auth.requirePermission(req, "system.manage");
-    if (!context.cloudBackup?.status().enabled) throw new HttpError(400, "Önce bir Drive bağlantısı ya da klasör yolu bağlayın.");
-    // Deneme: seçili şirketin yedeği alınır ve Drive'a kopyalanır.
-    const company = companyFor(admin, companies.selectedFor(admin));
-    const result = backups.backup(company, { label: "drive-deneme" });
-    if (!result) throw new HttpError(500, "Şirketin veri dosyası bulunamadı; yedek alınamadı.");
-    audit(admin, "system.backup_created", result.name, { size: result.size, test: true, company: company.code });
-    const cloud = await mirror(result);
-    ok(res, { ok: Boolean(cloud?.ok), name: result.name, error: cloud?.error || null, status: context.cloudBackup.status() });
-  });
+  // Drive'a yedek 2.1.0'da kaldırıldı (kullanıcı kararı, 10.10.2026; bağlantı kipi hiç çalışmadı). Eski uçlar 404 döner —
+  // eski sürümün açık kalmış Yönetim sayfası da "bulunamadı" alır; ":name" (indirme) yolu "cloud"u yedek adı sanıp 400 vermesin.
+  const removed = async () => {
+    throw new HttpError(404, "Bu özellik kaldırıldı. Yedekler sunucu bilgisayardaki yedek klasöründedir.");
+  };
+  router.get("/api/admin/backups/cloud", removed);
+  router.post("/api/admin/backups/cloud", removed);
+  router.post("/api/admin/backups/cloud/test", removed);
 
   // İndir: ?company=<şirket kimliği> (Yedekler listesi gönderir); verilmezse görebildiği şirketlerde aranır.
   router.get("/api/admin/backups/:name", async ({ req, res, params, url }) => {

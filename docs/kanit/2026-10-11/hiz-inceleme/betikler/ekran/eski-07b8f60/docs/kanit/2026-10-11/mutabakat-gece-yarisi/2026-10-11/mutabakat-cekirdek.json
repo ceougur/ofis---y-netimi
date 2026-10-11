@@ -1,0 +1,32 @@
+{
+  "ad": "mutabakat-cekirdek",
+  "komut": "node --test test/mutabakat-cekirdek.test.mjs",
+  "commit": "c8d596b6dc3e335274b2864aeb5319bae22d72f8",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T00:04:22.891Z",
+  "sure_sn": 52.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/mutabakat-gece-yarisi/2026-10-11/mutabakat-cekirdek.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "7b64c6f5b8d62e551fb3939fc1407319b71eceaf5a5af06d650664ab5769cc4d",
+  "ham_cikti_bayt": 2038
+}

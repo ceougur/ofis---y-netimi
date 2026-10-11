@@ -1,0 +1,32 @@
+{
+  "ad": "k10-bankasiz-ileri-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-nakit-akis-k10.test.mjs",
+  "commit": "33e9ee1aafa968e7747d3903e457ef01c10fbe1b",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 0,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:00:57.157Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/k10-bankasiz-ileri-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "22be80e3d8720c95aeda918e0a752016ac08e52658d92c54fad21e618ee9da29",
+  "ham_cikti_bayt": 1259
+}

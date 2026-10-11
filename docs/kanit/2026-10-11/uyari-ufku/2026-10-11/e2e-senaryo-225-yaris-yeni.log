@@ -1,0 +1,7 @@
+# senaryo-225 C yarışı: MODE=natural FIX=new CPU=1 TRIALS=2
+ok 1 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 5 "1. sayfa yüklendikten sonra" t=463 ms]; son yüklemeden önce "görüldü" kaydında 1 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); silinen: hof-notices:user-f1ce31dc-e21a-4a47-ac4c-3874f6297cc4; 1. sayfada uyarı: GÖRÜNDÜ
+ok 2 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 5 "1. sayfa yüklendikten sonra" t=498 ms]; son yüklemeden önce "görüldü" kaydında 1 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); silinen: hof-notices:user-b4889966-4f10-48a6-bebd-7b315bb61a68; 1. sayfada uyarı: GÖRÜNDÜ
+# ön koşulun oluştuğu deneme: 2/2
+# tests 2
+# pass 2
+# fail 0

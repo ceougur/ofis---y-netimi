@@ -1,0 +1,5504 @@
+[
+  {
+    "at": "2026-10-10T18:17:34.829Z",
+    "method": "GET",
+    "path": "/",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.876Z",
+    "method": "GET",
+    "path": "/assets/app-8cf49bb5a6.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.878Z",
+    "method": "GET",
+    "path": "/assets/hukuk-ofisi-enhancements.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.880Z",
+    "method": "GET",
+    "path": "/assets/hof-ui.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.900Z",
+    "method": "GET",
+    "path": "/assets/hof-core.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.901Z",
+    "method": "GET",
+    "path": "/assets/hof-auth.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.902Z",
+    "method": "GET",
+    "path": "/assets/hof-boot.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.921Z",
+    "method": "GET",
+    "path": "/assets/brand/destekofis-mark.svg",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.941Z",
+    "method": "GET",
+    "path": "/assets/hof-live.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.944Z",
+    "method": "GET",
+    "path": "/assets/hof-workspace.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.986Z",
+    "method": "GET",
+    "path": "/assets/hof-plans.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:34.990Z",
+    "method": "GET",
+    "path": "/assets/hof-plan-transfer.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.007Z",
+    "method": "GET",
+    "path": "/assets/fonts/dm-sans-latin-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.037Z",
+    "method": "GET",
+    "path": "/assets/hof-accounts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.078Z",
+    "method": "GET",
+    "path": "/assets/hof-whatsapp.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.079Z",
+    "method": "GET",
+    "path": "/assets/hof-stock.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.096Z",
+    "method": "GET",
+    "path": "/assets/hof-cheques.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.102Z",
+    "method": "GET",
+    "path": "/assets/hof-invoices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.127Z",
+    "method": "GET",
+    "path": "/assets/hof-bank.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.137Z",
+    "method": "GET",
+    "path": "/assets/hof-overview.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.162Z",
+    "method": "GET",
+    "path": "/assets/hof-report-center.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.186Z",
+    "method": "GET",
+    "path": "/assets/hof-chat.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.198Z",
+    "method": "GET",
+    "path": "/assets/hof-choices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.241Z",
+    "method": "GET",
+    "path": "/api/auth/me",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.274Z",
+    "method": "GET",
+    "path": "/assets/hof-table.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.285Z",
+    "method": "GET",
+    "path": "/assets/hof-grid.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.297Z",
+    "method": "GET",
+    "path": "/assets/hof-colops.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.329Z",
+    "method": "GET",
+    "path": "/assets/hof-chips.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.330Z",
+    "method": "GET",
+    "path": "/assets/hof-reports.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.349Z",
+    "method": "GET",
+    "path": "/api/public/info",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.360Z",
+    "method": "GET",
+    "path": "/assets/hof-sections.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.360Z",
+    "method": "GET",
+    "path": "/assets/hof-sources.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.372Z",
+    "method": "GET",
+    "path": "/assets/fonts/manrope-latin-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.385Z",
+    "method": "GET",
+    "path": "/assets/fonts/dm-sans-latin-ext-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.406Z",
+    "method": "GET",
+    "path": "/assets/fonts/manrope-latin-ext-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.417Z",
+    "method": "GET",
+    "path": "/assets/hof-companies.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.423Z",
+    "method": "GET",
+    "path": "/assets/hof-sessions.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.442Z",
+    "method": "GET",
+    "path": "/assets/hof-insight.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.448Z",
+    "method": "GET",
+    "path": "/assets/hof-columns.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.451Z",
+    "method": "GET",
+    "path": "/assets/hof-free.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.462Z",
+    "method": "GET",
+    "path": "/assets/hof-tabs.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.478Z",
+    "method": "GET",
+    "path": "/assets/hof-checks.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.479Z",
+    "method": "GET",
+    "path": "/assets/hof-promises.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.484Z",
+    "method": "GET",
+    "path": "/assets/hof-alerts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.508Z",
+    "method": "GET",
+    "path": "/assets/hof-search.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.514Z",
+    "method": "GET",
+    "path": "/assets/hof-export.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.540Z",
+    "method": "GET",
+    "path": "/assets/hof-documents.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.549Z",
+    "method": "GET",
+    "path": "/assets/hof-license.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.734Z",
+    "method": "POST",
+    "path": "/api/auth/login",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.800Z",
+    "method": "GET",
+    "path": "/",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.812Z",
+    "method": "GET",
+    "path": "/assets/app-8cf49bb5a6.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.812Z",
+    "method": "GET",
+    "path": "/assets/hukuk-ofisi-enhancements.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.813Z",
+    "method": "GET",
+    "path": "/assets/hof-ui.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.825Z",
+    "method": "GET",
+    "path": "/assets/hof-core.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.825Z",
+    "method": "GET",
+    "path": "/assets/hof-auth.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.826Z",
+    "method": "GET",
+    "path": "/assets/hof-boot.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.826Z",
+    "method": "GET",
+    "path": "/assets/hof-live.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.827Z",
+    "method": "GET",
+    "path": "/assets/hof-workspace.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.827Z",
+    "method": "GET",
+    "path": "/assets/hof-plans.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.831Z",
+    "method": "GET",
+    "path": "/assets/hof-plan-transfer.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.833Z",
+    "method": "GET",
+    "path": "/assets/hof-accounts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.837Z",
+    "method": "GET",
+    "path": "/assets/hof-whatsapp.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.837Z",
+    "method": "GET",
+    "path": "/assets/hof-stock.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.838Z",
+    "method": "GET",
+    "path": "/assets/hof-cheques.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.841Z",
+    "method": "GET",
+    "path": "/api/auth/me",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.846Z",
+    "method": "GET",
+    "path": "/assets/hof-invoices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.846Z",
+    "method": "GET",
+    "path": "/assets/hof-bank.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.848Z",
+    "method": "GET",
+    "path": "/assets/hof-overview.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.848Z",
+    "method": "GET",
+    "path": "/assets/hof-report-center.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.848Z",
+    "method": "GET",
+    "path": "/assets/hof-chat.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.863Z",
+    "method": "GET",
+    "path": "/assets/brand/destekofis-mark.svg",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.864Z",
+    "method": "GET",
+    "path": "/assets/hof-choices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.864Z",
+    "method": "GET",
+    "path": "/assets/hof-table.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.864Z",
+    "method": "GET",
+    "path": "/assets/hof-grid.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.865Z",
+    "method": "GET",
+    "path": "/assets/hof-colops.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.865Z",
+    "method": "GET",
+    "path": "/assets/hof-chips.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.876Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.877Z",
+    "method": "GET",
+    "path": "/assets/hof-reports.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.879Z",
+    "method": "GET",
+    "path": "/assets/hof-sections.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.879Z",
+    "method": "GET",
+    "path": "/assets/hof-sources.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.879Z",
+    "method": "GET",
+    "path": "/assets/hof-companies.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.880Z",
+    "method": "GET",
+    "path": "/assets/hof-sessions.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.892Z",
+    "method": "GET",
+    "path": "/assets/hof-insight.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.893Z",
+    "method": "GET",
+    "path": "/assets/hof-columns.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.893Z",
+    "method": "GET",
+    "path": "/assets/hof-free.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.896Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.897Z",
+    "method": "GET",
+    "path": "/assets/hof-tabs.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.897Z",
+    "method": "GET",
+    "path": "/assets/hof-checks.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.899Z",
+    "method": "GET",
+    "path": "/assets/hof-promises.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.905Z",
+    "method": "GET",
+    "path": "/assets/hof-alerts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.906Z",
+    "method": "GET",
+    "path": "/assets/hof-search.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.906Z",
+    "method": "GET",
+    "path": "/assets/hof-export.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.906Z",
+    "method": "GET",
+    "path": "/assets/hof-documents.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.907Z",
+    "method": "GET",
+    "path": "/assets/hof-license.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.913Z",
+    "method": "GET",
+    "path": "/api/workspace/users",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.929Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.931Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.931Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.934Z",
+    "method": "GET",
+    "path": "/assets/app-185ffb28c4.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.935Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:35.943Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:17:35.973Z",
+    "method": "GET",
+    "path": "/api/workspace/alerts/dismissed",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:36.080Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:36.080Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:36.098Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:36.729Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:36.830Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:38.532Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:17:39.731Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:20.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:36.063Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:36.073Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:41.960Z",
+    "method": "GET",
+    "path": "/",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:41.997Z",
+    "method": "GET",
+    "path": "/assets/app-8cf49bb5a6.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:41.997Z",
+    "method": "GET",
+    "path": "/assets/hukuk-ofisi-enhancements.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:41.997Z",
+    "method": "GET",
+    "path": "/assets/hof-ui.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.019Z",
+    "method": "GET",
+    "path": "/assets/hof-core.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.019Z",
+    "method": "GET",
+    "path": "/assets/hof-auth.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.020Z",
+    "method": "GET",
+    "path": "/assets/hof-boot.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.020Z",
+    "method": "GET",
+    "path": "/assets/hof-live.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.021Z",
+    "method": "GET",
+    "path": "/assets/brand/destekofis-mark.svg",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.021Z",
+    "method": "GET",
+    "path": "/assets/hof-workspace.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.037Z",
+    "method": "GET",
+    "path": "/assets/hof-plans.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.037Z",
+    "method": "GET",
+    "path": "/assets/hof-plan-transfer.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.037Z",
+    "method": "GET",
+    "path": "/assets/hof-accounts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.037Z",
+    "method": "GET",
+    "path": "/assets/hof-whatsapp.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.046Z",
+    "method": "GET",
+    "path": "/assets/hof-stock.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.047Z",
+    "method": "GET",
+    "path": "/assets/hof-cheques.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.067Z",
+    "method": "GET",
+    "path": "/assets/hof-invoices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.078Z",
+    "method": "GET",
+    "path": "/api/auth/me",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.080Z",
+    "method": "GET",
+    "path": "/assets/hof-bank.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.081Z",
+    "method": "GET",
+    "path": "/assets/hof-overview.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.081Z",
+    "method": "GET",
+    "path": "/assets/hof-report-center.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.081Z",
+    "method": "GET",
+    "path": "/assets/hof-chat.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.082Z",
+    "method": "GET",
+    "path": "/assets/hof-choices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.090Z",
+    "method": "GET",
+    "path": "/assets/fonts/dm-sans-latin-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.112Z",
+    "method": "GET",
+    "path": "/assets/hof-table.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.113Z",
+    "method": "GET",
+    "path": "/assets/hof-grid.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.116Z",
+    "method": "GET",
+    "path": "/assets/hof-colops.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.117Z",
+    "method": "GET",
+    "path": "/assets/hof-chips.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.117Z",
+    "method": "GET",
+    "path": "/assets/hof-reports.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.117Z",
+    "method": "GET",
+    "path": "/assets/hof-sections.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.127Z",
+    "method": "GET",
+    "path": "/api/public/info",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.128Z",
+    "method": "GET",
+    "path": "/assets/hof-sources.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.128Z",
+    "method": "GET",
+    "path": "/assets/hof-companies.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.134Z",
+    "method": "GET",
+    "path": "/assets/hof-sessions.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.135Z",
+    "method": "GET",
+    "path": "/assets/hof-insight.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.135Z",
+    "method": "GET",
+    "path": "/assets/hof-columns.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.170Z",
+    "method": "GET",
+    "path": "/assets/fonts/manrope-latin-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.183Z",
+    "method": "GET",
+    "path": "/assets/fonts/dm-sans-latin-ext-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.184Z",
+    "method": "GET",
+    "path": "/assets/fonts/manrope-latin-ext-wght-normal.woff2",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.184Z",
+    "method": "GET",
+    "path": "/assets/hof-free.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.185Z",
+    "method": "GET",
+    "path": "/assets/hof-tabs.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.185Z",
+    "method": "GET",
+    "path": "/assets/hof-checks.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.205Z",
+    "method": "GET",
+    "path": "/assets/hof-promises.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.216Z",
+    "method": "GET",
+    "path": "/assets/hof-alerts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.218Z",
+    "method": "GET",
+    "path": "/assets/hof-search.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.218Z",
+    "method": "GET",
+    "path": "/assets/hof-export.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.218Z",
+    "method": "GET",
+    "path": "/assets/hof-documents.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.220Z",
+    "method": "GET",
+    "path": "/assets/hof-license.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.366Z",
+    "method": "POST",
+    "path": "/api/auth/login",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.433Z",
+    "method": "GET",
+    "path": "/",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.454Z",
+    "method": "GET",
+    "path": "/assets/app-8cf49bb5a6.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.456Z",
+    "method": "GET",
+    "path": "/assets/hukuk-ofisi-enhancements.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.456Z",
+    "method": "GET",
+    "path": "/assets/hof-ui.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.472Z",
+    "method": "GET",
+    "path": "/assets/hof-core.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.479Z",
+    "method": "GET",
+    "path": "/assets/hof-auth.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.480Z",
+    "method": "GET",
+    "path": "/assets/hof-boot.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.482Z",
+    "method": "GET",
+    "path": "/assets/hof-live.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.482Z",
+    "method": "GET",
+    "path": "/assets/hof-workspace.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.483Z",
+    "method": "GET",
+    "path": "/assets/hof-plans.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.483Z",
+    "method": "GET",
+    "path": "/assets/hof-plan-transfer.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.487Z",
+    "method": "GET",
+    "path": "/assets/hof-accounts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.488Z",
+    "method": "GET",
+    "path": "/assets/hof-whatsapp.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.494Z",
+    "method": "GET",
+    "path": "/api/auth/me",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.496Z",
+    "method": "GET",
+    "path": "/assets/hof-stock.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.496Z",
+    "method": "GET",
+    "path": "/assets/hof-cheques.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.497Z",
+    "method": "GET",
+    "path": "/assets/hof-invoices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.509Z",
+    "method": "GET",
+    "path": "/assets/brand/destekofis-mark.svg",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.510Z",
+    "method": "GET",
+    "path": "/assets/hof-bank.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.510Z",
+    "method": "GET",
+    "path": "/assets/hof-overview.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.524Z",
+    "method": "GET",
+    "path": "/assets/hof-report-center.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.528Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.529Z",
+    "method": "GET",
+    "path": "/assets/hof-chat.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.535Z",
+    "method": "GET",
+    "path": "/assets/hof-choices.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.536Z",
+    "method": "GET",
+    "path": "/assets/hof-table.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.537Z",
+    "method": "GET",
+    "path": "/assets/hof-grid.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.543Z",
+    "method": "GET",
+    "path": "/assets/hof-colops.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.560Z",
+    "method": "GET",
+    "path": "/assets/hof-chips.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.566Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.567Z",
+    "method": "GET",
+    "path": "/assets/hof-reports.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.568Z",
+    "method": "GET",
+    "path": "/assets/hof-sections.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.568Z",
+    "method": "GET",
+    "path": "/assets/hof-sources.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.568Z",
+    "method": "GET",
+    "path": "/assets/hof-companies.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.575Z",
+    "method": "GET",
+    "path": "/assets/hof-sessions.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.581Z",
+    "method": "GET",
+    "path": "/assets/hof-insight.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.582Z",
+    "method": "GET",
+    "path": "/assets/hof-columns.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.584Z",
+    "method": "GET",
+    "path": "/assets/hof-free.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.584Z",
+    "method": "GET",
+    "path": "/assets/hof-tabs.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.590Z",
+    "method": "GET",
+    "path": "/assets/hof-checks.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.591Z",
+    "method": "GET",
+    "path": "/assets/hof-promises.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.597Z",
+    "method": "GET",
+    "path": "/api/workspace/users",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.598Z",
+    "method": "GET",
+    "path": "/api/workspace/invoices/meta",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.605Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.606Z",
+    "method": "GET",
+    "path": "/assets/app-185ffb28c4.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.606Z",
+    "method": "GET",
+    "path": "/api/workspace/overview",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.607Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.607Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.614Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.624Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:18:42.630Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.642Z",
+    "method": "GET",
+    "path": "/assets/hof-alerts.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.643Z",
+    "method": "GET",
+    "path": "/assets/hof-search.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.643Z",
+    "method": "GET",
+    "path": "/assets/hof-export.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.660Z",
+    "method": "GET",
+    "path": "/assets/hof-documents.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.661Z",
+    "method": "GET",
+    "path": "/assets/hof-license.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.686Z",
+    "method": "GET",
+    "path": "/api/workspace/alerts/dismissed",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.741Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.761Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.802Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.811Z",
+    "method": "GET",
+    "path": "/api/workspace/cheques",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.816Z",
+    "method": "GET",
+    "path": "/api/workspace/invoices",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.827Z",
+    "method": "GET",
+    "path": "/api/workspace/bank/badge",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:42.987Z",
+    "method": "GET",
+    "path": "/api/workspace/overview",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:43.439Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:43.485Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.271Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.305Z",
+    "method": "GET",
+    "path": "/admin.html",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.327Z",
+    "method": "GET",
+    "path": "/api/auth/me",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.328Z",
+    "method": "GET",
+    "path": "/assets/admin.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.328Z",
+    "method": "GET",
+    "path": "/assets/hof-ui.css",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.344Z",
+    "method": "GET",
+    "path": "/assets/admin.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.344Z",
+    "method": "GET",
+    "path": "/assets/hof-core.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.346Z",
+    "method": "GET",
+    "path": "/assets/hof-auth.js",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.353Z",
+    "method": "GET",
+    "path": "/assets/brand/destekofis-mark.svg",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.413Z",
+    "method": "GET",
+    "path": "/api/auth/me",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.427Z",
+    "method": "GET",
+    "path": "/api/admin/update",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.439Z",
+    "method": "GET",
+    "path": "/api/workspace/ledger/lock",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.442Z",
+    "method": "GET",
+    "path": "/api/admin/negative-policy",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.442Z",
+    "method": "GET",
+    "path": "/api/admin/system",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:18:45.466Z",
+    "method": "GET",
+    "path": "/api/workspace/ledger/integrity",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:19:05.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:19:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:19:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:19:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:19:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:19:36.521Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:19:37.129Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:19:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:20:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:20:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:20:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:21:20.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:21:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:21:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:21:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:21:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:21:36.522Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:21:37.134Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:22:05.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:22:35.919Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:22:36.063Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:22:36.071Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:22:36.111Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:22:37.022Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:22:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.430Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:23:09.436Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.437Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.439Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.439Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.440Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.443Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.739Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.837Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:09.844Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:10.036Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:10.037Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:10.043Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:10.236Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:10.389Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:11.740Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:36.517Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:36.527Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:36.551Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:23:37.166Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:24:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:24:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:24:36.068Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:25:05.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:25:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:25:36.072Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:25:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:25:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:25:36.522Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:25:37.133Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:25:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:26:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:26:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:26:36.076Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:20.922Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:35.920Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:36.093Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:36.522Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:37.004Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:27:37.130Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:05.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.251Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:28:46.261Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.262Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.262Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.262Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.262Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.269Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.560Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.659Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.666Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.859Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.860Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:46.867Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:47.059Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:47.211Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:48.560Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:28:50.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:29:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:29:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:29:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:29:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:29:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:29:36.521Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:29:37.132Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:30:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:30:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:30:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:31:05.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:31:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:31:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:31:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:31:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:31:36.524Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:31:37.131Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:31:50.924Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:32:35.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:32:35.921Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:32:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:32:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:32:36.093Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:32:37.002Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:36.521Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:37.128Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:46.782Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:33:46.788Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:46.789Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:46.789Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:46.790Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:46.790Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:46.794Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:47.089Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:47.188Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:47.195Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:47.388Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:47.389Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:47.396Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:47.588Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:47.740Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:33:49.089Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:34:05.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:34:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:34:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:34:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:35:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:35:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:35:36.068Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:35:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:35:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:35:36.520Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:35:37.125Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:36:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:36:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:36:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:05.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:35.920Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:36.067Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:36.092Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:36.521Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:37.003Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:37.128Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:37:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:38:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:38:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:38:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.320Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:39:10.329Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.329Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.330Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.330Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.331Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.333Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.629Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.728Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.734Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.928Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.929Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:10.936Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:11.127Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:11.279Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:12.628Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:20.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:36.068Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:36.528Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:39:37.136Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:40:05.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:40:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:40:36.068Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:40:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:41:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:41:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:41:36.068Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:41:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:41:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:41:36.522Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:41:37.128Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:42:20.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:42:35.920Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:42:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:42:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:42:36.092Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:42:37.001Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:43:05.920Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:43:36.067Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:43:36.076Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:43:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:43:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:43:36.520Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:43:37.125Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:43:50.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:44:35.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:44:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:44:36.071Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:07.693Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:45:07.702Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:07.702Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:07.705Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:07.705Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:07.705Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:07.716Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:08.004Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:08.101Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:08.108Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:08.301Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:08.302Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:08.309Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:08.501Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:08.654Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:10.002Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:36.068Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:36.521Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:45:37.128Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:46:05.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:46:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:46:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:46:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:35.920Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:35.921Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:36.063Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:36.071Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:36.100Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:36.516Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:36.528Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:37.011Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:47:37.144Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:48:20.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:48:36.063Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:48:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:49:05.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:49:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:49:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:49:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:49:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:49:36.522Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:49:37.130Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:49:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.278Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:50:26.290Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.291Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.291Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.292Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.293Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.308Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.587Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.685Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.697Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.886Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.893Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:26.899Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:27.090Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:27.240Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:28.591Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:50:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:51:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:51:36.064Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:51:36.073Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:51:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:51:36.518Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:51:36.529Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:51:37.139Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:52:05.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:52:35.920Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:52:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:52:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:52:36.098Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:52:37.006Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:52:50.922Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:53:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:53:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:53:36.077Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:53:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:53:36.518Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:53:36.533Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:53:37.144Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:54:20.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:54:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:54:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:05.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:36.073Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:36.517Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:36.518Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:36.537Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:37.156Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.081Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T18:55:43.104Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.105Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.106Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.106Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.123Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.124Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.400Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.521Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.539Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.700Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.709Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.713Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:43.900Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:44.051Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:45.401Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:55:50.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:56:35.920Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:56:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:56:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:20.920Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:35.921Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:36.065Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:36.074Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:36.098Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:36.516Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:36.518Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:36.535Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:37.015Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:57:37.148Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:58:05.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:58:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:58:36.072Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:58:50.921Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:59:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:59:36.065Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:59:36.078Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:59:36.518Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:59:36.519Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:59:36.536Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T18:59:37.149Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:00:20.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:00:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:00:36.071Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:05.922Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.399Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T19:01:24.410Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.411Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.428Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.429Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.432Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.433Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.709Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.808Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:24.819Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:25.008Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:25.009Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:25.025Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:25.207Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:25.360Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:26.712Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:36.075Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:36.517Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:36.527Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:37.147Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:01:50.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:02:35.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:02:35.923Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:02:36.063Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:02:36.075Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:02:36.098Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:02:37.016Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:03:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:03:36.066Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:03:36.079Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:03:36.516Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:03:36.519Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:03:36.536Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:03:37.156Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:04:05.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:04:36.067Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:04:36.086Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:04:50.920Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:05:35.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:05:36.071Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:05:36.081Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:05:36.516Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:05:36.517Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:05:36.534Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:05:37.154Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:20.922Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:36.064Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:36.073Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.020Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T19:06:38.034Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.035Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.037Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.037Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.037Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.055Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.335Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.435Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.449Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.630Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.631Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.640Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.831Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:38.984Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:06:40.332Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:05.920Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:35.921Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:36.076Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:36.098Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:36.524Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:37.008Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:37.132Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:07:50.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:08:35.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:08:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:08:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:09:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:09:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:09:36.068Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:09:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:09:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:09:36.521Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:09:37.131Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:10:05.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:10:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:10:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:10:50.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:11:35.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:11:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:11:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:11:36.517Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:11:36.519Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:11:36.525Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:11:37.134Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.189Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T19:12:06.200Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.201Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.201Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.201Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.202Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.212Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.497Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.596Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.604Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.796Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.797Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.806Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:06.995Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:07.148Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:08.497Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:20.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:35.921Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:36.097Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:12:37.006Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:13:05.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:13:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:13:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:13:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:13:36.515Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:13:36.523Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:13:37.133Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:13:50.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:14:35.919Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:14:36.064Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:14:36.075Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:15:20.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:15:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:15:36.068Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:15:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:15:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:15:36.522Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:15:37.128Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:16:05.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:16:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:16:36.070Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:16:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.475Z",
+    "method": "GET",
+    "path": "/api/events",
+    "counts": true,
+    "sse": true
+  },
+  {
+    "at": "2026-10-10T19:17:15.481Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.484Z",
+    "method": "GET",
+    "path": "/api/workspace/dataset",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.484Z",
+    "method": "GET",
+    "path": "/api/companies",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.484Z",
+    "method": "GET",
+    "path": "/api/workspace/sessions",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.485Z",
+    "method": "GET",
+    "path": "/api/workspace/profile",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.485Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.782Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.881Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:15.894Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:16.082Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:16.082Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:16.090Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:16.281Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:16.433Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:17.782Z",
+    "method": "GET",
+    "path": "/api/workspace/insight",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:35.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:35.919Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:35.927Z",
+    "method": "GET",
+    "path": "/api/license",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:36.066Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:36.076Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:36.097Z",
+    "method": "GET",
+    "path": "/api/trpc/sheets.getRows",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:36.513Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:36.521Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:37.005Z",
+    "method": "GET",
+    "path": "/api/workspace/dues",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:17:37.127Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:18:20.920Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:18:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:18:36.072Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:19:05.917Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:19:36.062Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:19:36.069Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:19:36.514Z",
+    "method": "GET",
+    "path": "/api/workspace/tasks",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:19:36.518Z",
+    "method": "GET",
+    "path": "/api/workspace/liens",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:19:36.525Z",
+    "method": "GET",
+    "path": "/api/workspace/plans",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:19:37.132Z",
+    "method": "GET",
+    "path": "/api/workspace/stock/alerts",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:19:50.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:20:35.918Z",
+    "method": "GET",
+    "path": "/api/chat",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:20:36.061Z",
+    "method": "GET",
+    "path": "/api/workspace/client-state",
+    "counts": true,
+    "sse": false
+  },
+  {
+    "at": "2026-10-10T19:20:36.071Z",
+    "method": "GET",
+    "path": "/api/workspace/case-notes",
+    "counts": true,
+    "sse": false
+  }
+]

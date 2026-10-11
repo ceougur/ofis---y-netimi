@@ -10,6 +10,7 @@
 //   GET  /api/workspace/whatsapp/history?accountId=
 import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const MAX_TARGETS = 5000;
 const pad = value => String(value).padStart(2, "0");
@@ -72,7 +73,7 @@ export function statementText({ office, account, lines, range, next, overdue }) 
   return out.join("\n");
 }
 
-export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, now: clock = () => new Date() }) {
+export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, now: clock = systemClock }) {
   const today = () => {
     const d = clock();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -148,7 +149,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     const id = newId("wa");
     store.run(
       "INSERT INTO message_sends (id, batch_id, account_id, kind, phone, body, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, limited(body.batchId, 120, "Gönderim") || id, accountId, kind, limited(body.phone, 30, "Telefon"), limited(body.body, 8000, "Mesaj"), status, user.id, new Date().toISOString(),
+      id, limited(body.batchId, 120, "Gönderim") || id, accountId, kind, limited(body.phone, 30, "Telefon"), limited(body.body, 8000, "Mesaj"), status, user.id, clock().toISOString(),
     );
     ok(res, { id });
   });

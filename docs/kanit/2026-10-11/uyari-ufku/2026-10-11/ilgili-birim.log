@@ -1,0 +1,471 @@
+TAP version 13
+# Subtest: uyarı zamanlayıcısı
+    # Subtest: bir sonraki yerel gece yarısını hesaplar ve olayı gün bilgisiyle yayımlar
+    ok 1 - bir sonraki yerel gece yarısını hesaplar ve olayı gün bilgisiyle yayımlar
+      ---
+      duration_ms: 2.400517
+      type: 'test'
+      ...
+    # Subtest: yayımcı hata verirse zamanlayıcı düşmez; saat geri alınırsa en az bir dakika bekler
+    ok 2 - yayımcı hata verirse zamanlayıcı düşmez; saat geri alınırsa en az bir dakika bekler
+      ---
+      duration_ms: 0.314542
+      type: 'test'
+      ...
+    1..2
+ok 1 - uyarı zamanlayıcısı
+  ---
+  duration_ms: 3.8157
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi motoru (v2.0.1)
+    # Subtest: tarih, ay ve ödendi yazımlarını okur
+    ok 1 - tarih, ay ve ödendi yazımlarını okur
+      ---
+      duration_ms: 2.071163
+      type: 'test'
+      ...
+    # Subtest: icra + ödeme sözü + taksit + kira tablosunda ödenmemiş kalemleri bulur
+    ok 2 - icra + ödeme sözü + taksit + kira tablosunda ödenmemiş kalemleri bulur
+      ---
+      duration_ms: 37.186428
+      type: 'test'
+      ...
+    # Subtest: programda girilen tahsilat kalemleri vade sırasıyla kapatır; artan tutar sonrakine sayılır
+    ok 3 - programda girilen tahsilat kalemleri vade sırasıyla kapatır; artan tutar sonrakine sayılır
+      ---
+      duration_ms: 27.328561
+      type: 'test'
+      ...
+    # Subtest: sözleşme bitişi ve sigorta yenilemesi 1 hafta önceden son gün olarak gelir
+    ok 4 - sözleşme bitişi ve sigorta yenilemesi 1 hafta önceden son gün olarak gelir
+      ---
+      duration_ms: 16.006631
+      type: 'test'
+      ...
+    # Subtest: okul servisi: aylık ücret sütunlarında ödenmeyen ve kısmi ödenen aylar, araç ve şoför belgeleri
+    ok 5 - okul servisi: aylık ücret sütunlarında ödenmeyen ve kısmi ödenen aylar, araç ve şoför belgeleri
+      ---
+      duration_ms: 14.962299
+      type: 'test'
+      ...
+    1..5
+ok 2 - tahsilat takvimi motoru (v2.0.1)
+  ---
+  duration_ms: 98.810489
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi: şablon satırları ve hizmet dönemi (v2.0.2)
+    # Subtest: ay kolonlarının yılı kolon sırasından: Eylül–Ağustos okul yılında Temmuz ve Ağustos gelecek yılın
+    ok 1 - ay kolonlarının yılı kolon sırasından: Eylül–Ağustos okul yılında Temmuz ve Ağustos gelecek yılın
+      ---
+      duration_ms: 0.685911
+      type: 'test'
+      ...
+    # Subtest: boş şablon satırı, başlamadan önceki aylar, ayrılan öğrenci ve '–' işaretli ay borç sayılmaz
+    ok 2 - boş şablon satırı, başlamadan önceki aylar, ayrılan öğrenci ve '–' işaretli ay borç sayılmaz
+      ---
+      duration_ms: 4.790792
+      type: 'test'
+      ...
+    1..2
+ok 3 - tahsilat takvimi: şablon satırları ve hizmet dönemi (v2.0.2)
+  ---
+  duration_ms: 6.025455
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi: gerçek plan ile yapılmış işlem ayrımı (v2.0.2)
+    # Subtest: yapılmış ödemelerin listesi ('Ödeme Tarihi', son günlerde de olsa) ödeme planı sayılmaz
+    ok 1 - yapılmış ödemelerin listesi ('Ödeme Tarihi', son günlerde de olsa) ödeme planı sayılmaz
+      ---
+      duration_ms: 0.980858
+      type: 'test'
+      ...
+    # Subtest: aynı başlık ileri tarihliyse (plan) takvime girer
+    ok 2 - aynı başlık ileri tarihliyse (plan) takvime girer
+      ---
+      duration_ms: 0.971599
+      type: 'test'
+      ...
+    # Subtest: ay kolonlu satış ya da devam tablosu (ödeme kanıtı yok) aidat planı sayılmaz
+    ok 3 - ay kolonlu satış ya da devam tablosu (ödeme kanıtı yok) aidat planı sayılmaz
+      ---
+      duration_ms: 1.304666
+      type: 'test'
+      ...
+    # Subtest: satır bağlamı: kalan borcu 0 olan kayıttan tahsilat beklenmez
+    ok 4 - satır bağlamı: kalan borcu 0 olan kayıttan tahsilat beklenmez
+      ---
+      duration_ms: 1.342238
+      type: 'test'
+      ...
+    # Subtest: ay kolonlarında ödeme işareti varsa ya da ücret kolonu varsa aidat planıdır
+    ok 5 - ay kolonlarında ödeme işareti varsa ya da ücret kolonu varsa aidat planıdır
+      ---
+      duration_ms: 1.394632
+      type: 'test'
+      ...
+    1..5
+ok 4 - tahsilat takvimi: gerçek plan ile yapılmış işlem ayrımı (v2.0.2)
+  ---
+  duration_ms: 6.284351
+  type: 'suite'
+  ...
+# Subtest: PDF yazıcı ve kasa dökümü (v2.0.1)
+    # Subtest: yazı tipi alt kümesi geçerli bir TrueType dosyasıdır ve kullanılan glifleri korur
+    ok 1 - yazı tipi alt kümesi geçerli bir TrueType dosyasıdır ve kullanılan glifleri korur
+      ---
+      duration_ms: 5.541471
+      type: 'test'
+      ...
+    # Subtest: metni ölçer, satırlara böler ve Türkçe metni ToUnicode ile gömer
+    ok 2 - metni ölçer, satırlara böler ve Türkçe metni ToUnicode ile gömer
+      ---
+      duration_ms: 6.814591
+      type: 'test'
+      ...
+    # Subtest: kasa dökümü: devreden kasa, hareketler, toplam ve sayfa numarası
+    ok 3 - kasa dökümü: devreden kasa, hareketler, toplam ve sayfa numarası
+      ---
+      duration_ms: 14.248382
+      type: 'test'
+      ...
+    1..3
+ok 5 - PDF yazıcı ve kasa dökümü (v2.0.1)
+  ---
+  duration_ms: 26.788226
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)
+    # Subtest: takvim ödenmemiş kalemleri ve son günleri döndürür
+    ok 1 - takvim ödenmemiş kalemleri ve son günleri döndürür
+      ---
+      duration_ms: 23.899417
+      type: 'test'
+      ...
+    # Subtest: tahsilat girilince kalem kapanır
+    ok 2 - tahsilat girilince kalem kapanır
+      ---
+      duration_ms: 56.877979
+      type: 'test'
+      ...
+    # Subtest: ödendi say / iptal / geri al; denetim kaydı yazılır
+    ok 3 - ödendi say / iptal / geri al; denetim kaydı yazılır
+      ---
+      duration_ms: 55.558673
+      type: 'test'
+      ...
+    # Subtest: kasa PDF: yetki, tarih denetimi ve dosya
+    ok 4 - kasa PDF: yetki, tarih denetimi ve dosya
+      ---
+      duration_ms: 21.09612
+      type: 'test'
+      ...
+    1..4
+ok 6 - tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)
+  ---
+  duration_ms: 710.037102
+  type: 'suite'
+  ...
+# Subtest: seyrek belge kolonları (v2.0.6)
+    # Subtest: araç listesinde tek kayda yazılan sigorta, emisyon, takograf tarihi de uyarı verir
+    ok 1 - araç listesinde tek kayda yazılan sigorta, emisyon, takograf tarihi de uyarı verir
+      ---
+      duration_ms: 2.970881
+      type: 'test'
+      ...
+    # Subtest: belge başlığında tarih olmayan değer (şirket adı) tarih sayılmaz; geçmiş tek tarih uyarı vermez
+    ok 2 - belge başlığında tarih olmayan değer (şirket adı) tarih sayılmaz; geçmiş tek tarih uyarı vermez
+      ---
+      duration_ms: 0.995874
+      type: 'test'
+      ...
+    1..2
+ok 7 - seyrek belge kolonları (v2.0.6)
+  ---
+  duration_ms: 4.102745
+  type: 'suite'
+  ...
+# Subtest: bildirimde “Gerçekleştirildi” (v2.0.2)
+    # Subtest: hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır
+    ok 1 - hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır
+      ---
+      duration_ms: 3.094475
+      type: 'test'
+      ...
+    # Subtest: her ay tekrarlayan ödeme günü kalemi ‘recurring’ olarak işaretlenir (ayar hücresine yazılmaz)
+    ok 2 - her ay tekrarlayan ödeme günü kalemi ‘recurring’ olarak işaretlenir (ayar hücresine yazılmaz)
+      ---
+      duration_ms: 1.041663
+      type: 'test'
+      ...
+    1..2
+ok 8 - bildirimde “Gerçekleştirildi” (v2.0.2)
+  ---
+  duration_ms: 4.306228
+  type: 'suite'
+  ...
+# Subtest: ay kolonu yazımları ve tek vadeli tutar (v2.0.2)
+    # Subtest: Eyl.26, Ekim'26, 2026-11, 12/2026 ay kolonu sayılır; 'Marka' ve 'Ara toplam' sayılmaz
+    ok 1 - Eyl.26, Ekim'26, 2026-11, 12/2026 ay kolonu sayılır; 'Marka' ve 'Ara toplam' sayılmaz
+      ---
+      duration_ms: 0.380624
+      type: 'test'
+      ...
+    # Subtest: tek vade kolonlu tabloda beklenen tutar borç/tutar kolonundan gelir
+    ok 2 - tek vade kolonlu tabloda beklenen tutar borç/tutar kolonundan gelir
+      ---
+      duration_ms: 1.075097
+      type: 'test'
+      ...
+    1..2
+ok 9 - ay kolonu yazımları ve tek vadeli tutar (v2.0.2)
+  ---
+  duration_ms: 1.557405
+  type: 'suite'
+  ...
+# Subtest: eşleme ekranı ve takvim (v2.0.2)
+    # Subtest: 'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yok Say' seçilen kolon girmez
+    ok 1 - 'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yok Say' seçilen kolon girmez
+      ---
+      duration_ms: 2.056035
+      type: 'test'
+      ...
+    1..1
+ok 10 - eşleme ekranı ve takvim (v2.0.2)
+  ---
+  duration_ms: 2.135142
+  type: 'suite'
+  ...
+# Subtest: ay matrisi → taksit defteri (v2.0.2)
+    # Subtest: girişten önceki ve çıkıştan sonraki boş aylar taksit değildir; aradaki boş ay ödenmemiştir; durgun kayıt uyarı üretmez
+    ok 1 - girişten önceki ve çıkıştan sonraki boş aylar taksit değildir; aradaki boş ay ödenmemiştir; durgun kayıt uyarı üretmez
+      ---
+      duration_ms: 2.897261
+      type: 'test'
+      ...
+    # Subtest: defter: aralık dışı için satır açılmaz; 2 tam boş ay hâlâ aktiftir, 3 tam boş ay durgundur
+    ok 2 - defter: aralık dışı için satır açılmaz; 2 tam boş ay hâlâ aktiftir, 3 tam boş ay durgundur
+      ---
+      duration_ms: 0.52392
+      type: 'test'
+      ...
+    1..2
+ok 11 - ay matrisi → taksit defteri (v2.0.2)
+  ---
+  duration_ms: 3.613532
+  type: 'suite'
+  ...
+# Subtest: ay hücresinde ödenecek taksit (plan kipi, v2.0.2)
+    # Subtest: Eylül 10.000 + Ekim 10.000 = Toplam 20.000: Eylül bu ay beklenir (ekrandaki örnek)
+    ok 1 - Eylül 10.000 + Ekim 10.000 = Toplam 20.000: Eylül bu ay beklenir (ekrandaki örnek)
+      ---
+      duration_ms: 4.914702
+      type: 'test'
+      ...
+    # Subtest: programda tahsilat girilince, 'Ödenen' ya da Toplam − Kalan ile Eylül kapanır
+    ok 2 - programda tahsilat girilince, 'Ödenen' ya da Toplam − Kalan ile Eylül kapanır
+      ---
+      duration_ms: 9.640345
+      type: 'test'
+      ...
+    # Subtest: aylar geçince ödenmeyen taksitler gecikir; planda boş ay ve plan bitişi borç sayılmaz
+    ok 3 - aylar geçince ödenmeyen taksitler gecikir; planda boş ay ve plan bitişi borç sayılmaz
+      ---
+      duration_ms: 4.444846
+      type: 'test'
+      ...
+    # Subtest: başlıkta yazım hatası ('NİSAN TAKSTİ', 'Mayıs taksit') ay kolonu sayılır; tahsilat Eylül'ü kapatır
+    ok 4 - başlıkta yazım hatası ('NİSAN TAKSTİ', 'Mayıs taksit') ay kolonu sayılır; tahsilat Eylül'ü kapatır
+      ---
+      duration_ms: 4.618846
+      type: 'test'
+      ...
+    # Subtest: uyarıdaki 'Gerçekleştirildi' Eylül'ü kapatır, tutar hücrede kalır; Ekim'de Ekim beklenir
+    ok 5 - uyarıdaki 'Gerçekleştirildi' Eylül'ü kapatır, tutar hücrede kalır; Ekim'de Ekim beklenir
+      ---
+      duration_ms: 7.961692
+      type: 'test'
+      ...
+    # Subtest: kart detayındaki tahsilat notunda ay yazıyorsa tahsilat o aya sayılır (kullanıcı önerisi, v2.0.3)
+    ok 6 - kart detayındaki tahsilat notunda ay yazıyorsa tahsilat o aya sayılır (kullanıcı önerisi, v2.0.3)
+      ---
+      duration_ms: 19.685557
+      type: 'test'
+      ...
+    # Subtest: bütün planlı aylar geçince de hücredeki tutar ödendi sayılmaz (tabloda aylık ücret kolonu yok)
+    ok 7 - bütün planlı aylar geçince de hücredeki tutar ödendi sayılmaz (tabloda aylık ücret kolonu yok)
+      ---
+      duration_ms: 5.73959
+      type: 'test'
+      ...
+    # Subtest: tahsilat notundaki aylar okunur
+    ok 8 - tahsilat notundaki aylar okunur
+      ---
+      duration_ms: 0.275392
+      type: 'test'
+      ...
+    # Subtest: aylık ücret kolonu varken gelecek aya yazılan tutar peşin ödemedir (plan sayılmaz)
+    ok 9 - aylık ücret kolonu varken gelecek aya yazılan tutar peşin ödemedir (plan sayılmaz)
+      ---
+      duration_ms: 1.165722
+      type: 'test'
+      ...
+    # Subtest: ödeme kipi korunur: aylık ücret kolonu varken ay hücresindeki tutar ödemedir
+    ok 10 - ödeme kipi korunur: aylık ücret kolonu varken ay hücresindeki tutar ödemedir
+      ---
+      duration_ms: 1.619264
+      type: 'test'
+      ...
+    1..10
+ok 12 - ay hücresinde ödenecek taksit (plan kipi, v2.0.2)
+  ---
+  duration_ms: 60.866816
+  type: 'suite'
+  ...
+# Subtest: ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.3)
+    # Subtest: yüklenen tabloda bu ayın taksiti uyarı verir; notu o ayı söyleyen tahsilat girilince kalkar, başka ayı söyleyen kapatmaz
+    ok 1 - yüklenen tabloda bu ayın taksiti uyarı verir; notu o ayı söyleyen tahsilat girilince kalkar, başka ayı söyleyen kapatmaz
+      ---
+      duration_ms: 55.254052
+      type: 'test'
+      ...
+    1..1
+ok 13 - ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.3)
+  ---
+  duration_ms: 291.698597
+  type: 'suite'
+  ...
+# Subtest: sayfa şeridindeki kayıt sayısı gizlenen sekmeyi saymaz
+    # Subtest: çalışıyor mu: iki sekmeli sayfa 4 kayıt; bir sekme silinince 1, ikisi de silinince 0; geri alınınca 4
+    ok 1 - çalışıyor mu: iki sekmeli sayfa 4 kayıt; bir sekme silinince 1, ikisi de silinince 0; geri alınınca 4
+      ---
+      duration_ms: 44.145776
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: öbür sayfanın sayısı etkilenmez; ilk sayfa listede kalır
+    ok 2 - nasıl bozarım: öbür sayfanın sayısı etkilenmez; ilk sayfa listede kalır
+      ---
+      duration_ms: 11.098699
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: Kaydı Sil ile silinen satır sayılmaz; gizli sekmedeki silinen satır iki kez düşülmez
+    ok 3 - nasıl bozarım: Kaydı Sil ile silinen satır sayılmaz; gizli sekmedeki silinen satır iki kez düşülmez
+      ---
+      duration_ms: 30.386454
+      type: 'test'
+      ...
+    1..3
+ok 14 - sayfa şeridindeki kayıt sayısı gizlenen sekmeyi saymaz
+  ---
+  duration_ms: 485.257834
+  type: 'suite'
+  ...
+# Subtest: Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme
+    # Subtest: göç: mevcut veri 001 kodlu ilk şirkettir, sayılar aynı; /api/auth/me şirketi söyler
+    ok 1 - göç: mevcut veri 001 kodlu ilk şirkettir, sayılar aynı; /api/auth/me şirketi söyler
+      ---
+      duration_ms: 16.792368
+      type: 'test'
+      ...
+    # Subtest: yeni şirket 002: sıfırdan; aynı adlı cari iki şirkette; birinde tahsilat öbürünü değiştirmez
+    ok 2 - yeni şirket 002: sıfırdan; aynı adlı cari iki şirkette; birinde tahsilat öbürünü değiştirmez
+      ---
+      duration_ms: 191.885641
+      type: 'test'
+      ...
+    # Subtest: sayfalar şirkete aittir: 001'de sayfa adı değişir, 002'de görünmez
+    ok 3 - sayfalar şirkete aittir: 001'de sayfa adı değişir, 002'de görünmez
+      ---
+      duration_ms: 33.227898
+      type: 'test'
+      ...
+    # Subtest: yetki: personel yetkisiz şirketi göremez/seçemez (403); yönetici yetki verince seçer; yönetici daraltılamaz
+    ok 4 - yetki: personel yetkisiz şirketi göremez/seçemez (403); yönetici yetki verince seçer; yönetici daraltılamaz
+      ---
+      duration_ms: 160.803407
+      type: 'test'
+      ...
+    # Subtest: şirket kodu/adı değişir; kod tekil ve üç hane; 001 silinemez
+    ok 5 - şirket kodu/adı değişir; kod tekil ve üç hane; 001 silinemez
+      ---
+      duration_ms: 32.027441
+      type: 'test'
+      ...
+    # Subtest: birleşik rapor: seçilen şirketler yan yana + toplam; PDF ve Excel iner; yetkisiz şirket rapora girmez
+    ok 6 - birleşik rapor: seçilen şirketler yan yana + toplam; PDF ve Excel iner; yetkisiz şirket rapora girmez
+      ---
+      duration_ms: 61.354074
+      type: 'test'
+      ...
+    # Subtest: şirket verisini sıfırla: zorunlu yedek, onay (kod + parola); hareketler silinir, kartlar kalır; lisans ve öbür şirket aynı; kullanıcı girer
+    ok 7 - şirket verisini sıfırla: zorunlu yedek, onay (kod + parola); hareketler silinir, kartlar kalır; lisans ve öbür şirket aynı; kullanıcı girer
+      ---
+      duration_ms: 418.586199
+      type: 'test'
+      ...
+    # Subtest: şirket silme: onay + parola, önce yedek, klasör silinen-sirketler altına; seçmiş kullanıcılar 001'e döner
+    ok 8 - şirket silme: onay + parola, önce yedek, klasör silinen-sirketler altına; seçmiş kullanıcılar 001'e döner
+      ---
+      duration_ms: 163.421462
+      type: 'test'
+      ...
+    1..8
+ok 15 - Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme
+  ---
+  duration_ms: 1504.637872
+  type: 'suite'
+  ...
+# Subtest: Sayfalar (madde 13): öbür sayfanın tarih uyarıları zile/takvime girer; Ödendi Say o sayfaya yazılır
+    # Subtest: ikinci sayfadaki yarın vadeli kalem, ilk sayfa açıkken /api/workspace/dues içinde sayfa adıyla (foreign) gelir
+    ok 1 - ikinci sayfadaki yarın vadeli kalem, ilk sayfa açıkken /api/workspace/dues içinde sayfa adıyla (foreign) gelir
+      ---
+      duration_ms: 111.594657
+      type: 'test'
+      ...
+    1..1
+ok 16 - Sayfalar (madde 13): öbür sayfanın tarih uyarıları zile/takvime girer; Ödendi Say o sayfaya yazılır
+  ---
+  duration_ms: 356.741174
+  type: 'suite'
+  ...
+# Subtest: uyarı ufku: her sayfanın son tarihi yalnız 7 gün kala uyarır
+    # Subtest: çalışıyor mu: 1. sayfadayken açık ve öbür sayfanın son tarihleri aynı kuralla (5, 7 gün ve gecikmiş var; 8 ve 42 gün yok)
+    ok 1 - çalışıyor mu: 1. sayfadayken açık ve öbür sayfanın son tarihleri aynı kuralla (5, 7 gün ve gecikmiş var; 8 ve 42 gün yok)
+      ---
+      duration_ms: 28.957532
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: 2. sayfaya geçince bu kez 1. sayfanın 42 günlük kaydı uyarmaz (kural iki yönde)
+    ok 2 - nasıl bozarım: 2. sayfaya geçince bu kez 1. sayfanın 42 günlük kaydı uyarmaz (kural iki yönde)
+      ---
+      duration_ms: 15.885838
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: saat ilerleyince (35 gün sonra) 42 günlük kayıt 7 gün kala her iki sayfada uyarır
+    ok 3 - nasıl bozarım: saat ilerleyince (35 gün sonra) 42 günlük kayıt 7 gün kala her iki sayfada uyarır
+      ---
+      duration_ms: 16.123887
+      type: 'test'
+      ...
+    # Subtest: değişmez: Vade Takip raporu öbür sayfanın 42 günlük kaydını yine gösterir (ileriye bir yıl)
+    ok 4 - değişmez: Vade Takip raporu öbür sayfanın 42 günlük kaydını yine gösterir (ileriye bir yıl)
+      ---
+      duration_ms: 15.603409
+      type: 'test'
+      ...
+    1..4
+ok 17 - uyarı ufku: her sayfanın son tarihi yalnız 7 gün kala uyarır
+  ---
+  duration_ms: 488.098211
+  type: 'suite'
+  ...
+1..17
+# tests 57
+# suites 17
+# pass 57
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5584.325253

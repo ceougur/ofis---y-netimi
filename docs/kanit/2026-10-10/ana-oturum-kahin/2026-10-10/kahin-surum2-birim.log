@@ -1,0 +1,40 @@
+test_alistan_iade_simetrik (__main__.D1IadeArtani.test_alistan_iade_simetrik)
+Tedarikçi T: A1 120.000 peşin nakit ödendi; A2 60.000 açık; A1 iade (geri yok) 120.000 → artan A2'yi kapatır ... ok
+test_artan_baska_acik_satis_faturasini_kapatir (__main__.D1IadeArtani.test_artan_baska_acik_satis_faturasini_kapatir)
+F1 120.000 peşin ödendi (açık 0); F2 60.000 açık; F1'in tamamı iade, geri ödenmedi (R1 120.000). ... ok
+test_ayni_gunde_adim_sirasi (__main__.D1IadeArtani.test_ayni_gunde_adim_sirasi)
+Aynı gün (02.10) önce F2 (60.000), sonra F3 (120.000) kesildi; artan 120.000 → önce F2 (adım sırası) kapanır, ... ok
+test_en_eskiden_baslar (__main__.D1IadeArtani.test_en_eskiden_baslar)
+F2 (02.10) 60.000 ve F3 (03.10) 120.000 açık; artan 120.000 → F2 tamamen (60.000), F3'ten 60.000 → F3 60.000. ... ok
+test_geri_odenen_iade_asil_faturaya_dusulmez (__main__.D1IadeArtani.test_geri_odenen_iade_asil_faturaya_dusulmez)
+K1 (kural 2): F1 120.000 açık; 1 adet (miktar 2'nin biri, 60.000) iade nakit geri ödendi → F1 açığı 120.000 kalır, ... ok
+test_kapatacak_belge_yoksa_iade_acigi (__main__.D1IadeArtani.test_kapatacak_belge_yoksa_iade_acigi)
+F1 peşin ödendi, başka belge yok → artan 120.000 iade belgesinin açığı (avans değil). ... ok
+test_once_asil_fatura_sonra_artan (__main__.D1IadeArtani.test_once_asil_fatura_sonra_artan)
+F1 = 2 × 500 = 1.000 + %20 = 120.000; peşin 1.000 TL → F1 açık 20.000. 1 adet iade (R1 60.000): kural 5 → F1'den ... ok
+test_taksitli_faturali_caride_belirsiz (__main__.D1IadeArtani.test_taksitli_faturali_caride_belirsiz)
+BELİRSİZ-7 (sürüm 2): taksitli satış faturası + artanı olan satıştan iade → o carinin açık ve kart alanları ... ok
+test_kartla_odeme_kart_hesabina (__main__.D3Kart.test_kartla_odeme_kart_hesabina)
+D3: kurumsal kartla 100 TL cari ödemesi → B 320 / A 309.01; kart −10.000, kart ve kredi borcu 10.000; ... ok
+test_yineleme_sinir_denetiminden_once (__main__.D4Yineleme.test_yineleme_sinir_denetiminden_once)
+Taksit kartını kapatan 120 TL tahsilat aynı kimlik ve gövdeyle yeniden gönderilir → etkisiz yineleme ... ok
+test_yinelenen_adlar_ciktida (__main__.D4Yineleme.test_yinelenen_adlar_ciktida)
+Taksitli fatura aynı kimlikle F2/T2 adıyla yinelenir → faturalar ve taksitKartlari'nda iki ad, aynı değer. ... ok
+test_kmh_yalniz_vadesiz (__main__.D5D6D7Hesap.test_kmh_yalniz_vadesiz)
+D5: ticari hesapta KMH limiti → 4xx; diğer hesapta eksi açılış → 4xx; vadesizde KMH ile −500 açılış geçer. ... ok
+test_kredi_anapara_asimi_senaryo_kurmaz (__main__.D5D6D7Hesap.test_kredi_anapara_asimi_senaryo_kurmaz)
+D7: kredi borcu 1.000 iken 2.000 anapara → BELİRSİZ-25. ... ok
+test_vadeli_faiz_gideri_senaryo_kurmaz (__main__.D5D6D7Hesap.test_vadeli_faiz_gideri_senaryo_kurmaz) ... ok
+test_vadeli_hesapta_banka_masrafi (__main__.D5D6D7Hesap.test_vadeli_hesapta_banka_masrafi)
+D6: vadeli hesapta BSMV dahil banka masrafı → 400 bank-account-invalid; hesap değişmez. ... ok
+test_vadeli_hesapta_diger_gelir (__main__.D5D6D7Hesap.test_vadeli_hesapta_diger_gelir)
+D6: vadeli hesapta diğer gelir → 400 bank-account-invalid; faiz geliri geçer (brüt 100, stopaj %15 → net 85). ... ok
+test_yinelenen_hesap_iki_adla (__main__.D5D6D7Hesap.test_yinelenen_hesap_iki_adla)
+D4: hesap açılışı aynı kimlikle Z adıyla yinelenir → bankaHesaplari, hesapKodlari, eksiBakiyeDenetimi'nde iki ad. ... ok
+test_kasa_hareketi_silinir (__main__.KasaHareketSil.test_kasa_hareketi_silinir)
+Hakem KAHIN-B: Kasa elle girişi silinebilir (§4.9 'ad: silinecekse zorunlu'). Kasa 1.000 → +100 → sil → 1.000; ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 2.161s
+
+OK

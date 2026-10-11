@@ -1,0 +1,362 @@
+TAP version 13
+# (node:13279) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 4.628856
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 16293.28753
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5020
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 576.496134
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 914.467676
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 2307.302454
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5348, moneyLines denetimi 493
+    1..5
+ok 1 - hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 30883.294449
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 4.590266
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 16232.233237
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5121
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 596.872626
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 1032.815337
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1886.038529
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5418, moneyLines denetimi 493
+    1..5
+ok 2 - hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 31048.824011
+  type: 'suite'
+  ...
+# (node:13280) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar yerinde hazırlanan raporla aynı
+    # Subtest: ön izleme JSON'u: ilk 200 satır, toplam sayı ve TOPLAM bütün satırlardan — yerinde hazırlananla aynı; iş parçacığında hazırlandı
+    ok 1 - ön izleme JSON'u: ilk 200 satır, toplam sayı ve TOPLAM bütün satırlardan — yerinde hazırlananla aynı; iş parçacığında hazırlandı
+      ---
+      duration_ms: 1185.578652
+      type: 'test'
+      ...
+    # Subtest: Excel: bütün satırlar ve TOPLAM yerinde hazırlananla aynı; PDF açılır
+    ok 2 - Excel: bütün satırlar ve TOPLAM yerinde hazırlananla aynı; PDF açılır
+      ---
+      duration_ms: 421.341493
+      type: 'test'
+      ...
+    # Subtest: hatalar aynı durum koduyla ve metinle: olmayan hesap 404, tanınmayan süzgeç 400, ters aralık 400
+    ok 3 - hatalar aynı durum koduyla ve metinle: olmayan hesap 404, tanınmayan süzgeç 400, ters aralık 400
+      ---
+      duration_ms: 537.379751
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı iş parçacığına ulaşmaz (403; sayaç artmaz)
+    ok 4 - yetkisiz kullanıcı iş parçacığına ulaşmaz (403; sayaç artmaz)
+      ---
+      duration_ms: 208.577076
+      type: 'test'
+      ...
+# (node:13280) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: yazımdan hemen sonra açılan rapor yeni satırı gösterir; sahte saatin günü iş parçacığında da aynı
+    ok 5 - yazımdan hemen sonra açılan rapor yeni satırı gösterir; sahte saatin günü iş parçacığında da aynı
+      ---
+      duration_ms: 410.615292
+      type: 'test'
+      ...
+    # Subtest: sunucu kapanırken bekleyen rapor asılı kalmaz (503 ya da tamamlanır)
+    ok 6 - sunucu kapanırken bekleyen rapor asılı kalmaz (503 ya da tamamlanır)
+      ---
+      duration_ms: 15.052172
+      type: 'test'
+      ...
+    1..6
+ok 3 - Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar yerinde hazırlanan raporla aynı
+  ---
+  duration_ms: 10743.960016
+  type: 'suite'
+  ...
+# (node:13282) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:13282) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: İ1 — Taksite Aktar: kilitli günde kapatılmış bağsız karta tahsilat taşınamaz; kişi nedeniyle atlanır
+    # Subtest: nasıl bozarım: ön izleme kişiyi aktarılamaz gösterir ve nedenini söyler (kart kilitli günde kapatıldı)
+    ok 1 - nasıl bozarım: ön izleme kişiyi aktarılamaz gösterir ve nedenini söyler (kart kilitli günde kapatıldı)
+      ---
+      duration_ms: 38.329358
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: aktarım bütünüyle 409 değil; 200, kişi nedeniyle atlanır, tahsilat kayıtta, kilitli 689 aynı
+    ok 2 - nasıl bozarım: aktarım bütünüyle 409 değil; 200, kişi nedeniyle atlanır, tahsilat kayıtta, kilitli 689 aynı
+      ---
+      duration_ms: 65.292547
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: tahsilatları taşımadan (payments: false) kart kayda bağlanır; kilitli 689 aynı
+    ok 3 - çalışıyor mu: tahsilatları taşımadan (payments: false) kart kayda bağlanır; kilitli 689 aynı
+      ---
+      duration_ms: 80.272126
+      type: 'test'
+      ...
+    1..3
+ok 4 - İ1 — Taksite Aktar: kilitli günde kapatılmış bağsız karta tahsilat taşınamaz; kişi nedeniyle atlanır
+  ---
+  duration_ms: 1045.031944
+  type: 'suite'
+  ...
+# Subtest: İ1 — aktarımı geri alma: kapatılmış karta taşınan tahsilat, kart kilitli günde kapatıldıysa nedenli 409
+    # Subtest: nasıl bozarım: kilitten sonra geri al → 409 period-locked (nedenli; kapıdaki nedensiz ledger-integrity değil)
+    ok 1 - nasıl bozarım: kilitten sonra geri al → 409 period-locked (nedenli; kapıdaki nedensiz ledger-integrity değil)
+      ---
+      duration_ms: 11.108089
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: kilit kalkınca geri alınır (tahsilat kayda döner)
+    ok 2 - çalışıyor mu: kilit kalkınca geri alınır (tahsilat kayda döner)
+      ---
+      duration_ms: 44.733083
+      type: 'test'
+      ...
+    1..2
+ok 5 - İ1 — aktarımı geri alma: kapatılmış karta taşınan tahsilat, kart kilitli günde kapatıldıysa nedenli 409
+  ---
+  duration_ms: 579.4937
+  type: 'suite'
+  ...
+# Subtest: İ2 — Excel'den taksit yükleme: kilit yüzünden atlanan satır boş grup bırakmaz
+    # Subtest: nasıl bozarım: grubu yeni olan ve ilk vadesi kilitli dönemde satır → kart, cari ve grup açılmaz; rapor groups 0
+    ok 1 - nasıl bozarım: grubu yeni olan ve ilk vadesi kilitli dönemde satır → kart, cari ve grup açılmaz; rapor groups 0
+      ---
+      duration_ms: 28.556568
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: aynı grupta açık dönem satırı + atlanan satır → grup bir kez açılır, kart onda; Sıra No boşluksuz
+    ok 2 - çalışıyor mu: aynı grupta açık dönem satırı + atlanan satır → grup bir kez açılır, kart onda; Sıra No boşluksuz
+      ---
+      duration_ms: 36.19691
+      type: 'test'
+      ...
+    1..2
+ok 6 - İ2 — Excel'den taksit yükleme: kilit yüzünden atlanan satır boş grup bırakmaz
+  ---
+  duration_ms: 336.818099
+  type: 'suite'
+  ...
+# Subtest: İ3 — çek formu: giriş metni doğru yolu söyler; kilitli evrakta Sil yok, nedeni yazılı
+    # Subtest: nasıl bozarım: kilitli dönemde tahsil edilmiş çek → metin önce son işlemin geri alınmasını ve onun için kilidin açılmasını söyler
+    ok 1 - nasıl bozarım: kilitli dönemde tahsil edilmiş çek → metin önce son işlemin geri alınmasını ve onun için kilidin açılmasını söyler
+      ---
+      duration_ms: 100.413059
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kilitli dönemde alınıp sonra tahsil edilmiş çek → geri alınabilir ama tutar için yine kilit gerekir (metin ikisini söyler)
+    ok 2 - nasıl bozarım: kilitli dönemde alınıp sonra tahsil edilmiş çek → geri alınabilir ama tutar için yine kilit gerekir (metin ikisini söyler)
+      ---
+      duration_ms: 5.157271
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: faturayla alınmış çek → metin faturayı söyler (geri al / kilit değil)
+    ok 3 - nasıl bozarım: faturayla alınmış çek → metin faturayı söyler (geri al / kilit değil)
+      ---
+      duration_ms: 4.987598
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kilitli dönemde alınmış, işlem görmemiş çek → Sil sunulmaz (canDelete false), nedeni kartta yazılı; DELETE yine 409
+    ok 4 - nasıl bozarım: kilitli dönemde alınmış, işlem görmemiş çek → Sil sunulmaz (canDelete false), nedeni kartta yazılı; DELETE yine 409
+      ---
+      duration_ms: 7.357186
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: açık dönemde işlem görmemiş çek → çekirdek açık, Sil var, not yok
+    ok 5 - çalışıyor mu: açık dönemde işlem görmemiş çek → çekirdek açık, Sil var, not yok
+      ---
+      duration_ms: 39.233286
+      type: 'test'
+      ...
+    1..5
+ok 7 - İ3 — çek formu: giriş metni doğru yolu söyler; kilitli evrakta Sil yok, nedeni yazılı
+  ---
+  duration_ms: 591.678015
+  type: 'suite'
+  ...
+# Subtest: İ5 — düzeltmede eksi bakiye sorusu düzeltmeyi anlatır (çıkış / yol önerisi değil)
+    # Subtest: nasıl bozarım: kayıt tahsilatı 1.000 → 500 → soru 'düzeltilince Nakit Kasa'dan 500,00 TL düşer', 'çıkış' yok, explained
+    ok 1 - nasıl bozarım: kayıt tahsilatı 1.000 → 500 → soru 'düzeltilince Nakit Kasa'dan 500,00 TL düşer', 'çıkış' yok, explained
+      ---
+      duration_ms: 7.635436
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: kayıt tahsilatı nakit → havale → soru yol değişikliğini söyler
+    ok 2 - nasıl bozarım: kayıt tahsilatı nakit → havale → soru yol değişikliğini söyler
+      ---
+      duration_ms: 5.810018
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: cari tahsilatı 800 → 100 (2.0.25'ten beri aynı konusuz metin) → düzeltme metni
+    ok 3 - nasıl bozarım: cari tahsilatı 800 → 100 (2.0.25'ten beri aynı konusuz metin) → düzeltme metni
+      ---
+      duration_ms: 8.178544
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: yeni Kasa ödemesinde (gerçek çıkış) metin ve yol önerisi aynı kalır (explained yok)
+    ok 4 - çalışıyor mu: yeni Kasa ödemesinde (gerçek çıkış) metin ve yol önerisi aynı kalır (explained yok)
+      ---
+      duration_ms: 5.834815
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: onayla (cashForce) düzeltme yazılır; Kasa -300
+    ok 5 - çalışıyor mu: onayla (cashForce) düzeltme yazılır; Kasa -300
+      ---
+      duration_ms: 48.46682
+      type: 'test'
+      ...
+    1..5
+ok 8 - İ5 — düzeltmede eksi bakiye sorusu düzeltmeyi anlatır (çıkış / yol önerisi değil)
+  ---
+  duration_ms: 510.159682
+  type: 'suite'
+  ...
+# Subtest: İ7 — mahsuplu satırda yalnız değişen alan sınanır (2.0.25'ten kalan tutarsız satırda açıklama düzeltilir)
+    # Subtest: çalışıyor mu: tarihi mahsuptan sonra kalmış satırda yalnız açıklama düzeltilir (200)
+    ok 1 - çalışıyor mu: tarihi mahsuptan sonra kalmış satırda yalnız açıklama düzeltilir (200)
+      ---
+      duration_ms: 25.26128
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: tutarı mahsubun altında kalmış satırda yalnız açıklama düzeltilir (200)
+    ok 2 - çalışıyor mu: tutarı mahsubun altında kalmış satırda yalnız açıklama düzeltilir (200)
+      ---
+      duration_ms: 13.522426
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: tarihi başka bir mahsup sonrası güne taşımak ya da tutarı yine mahsubun altında değiştirmek 409
+    ok 3 - nasıl bozarım: tarihi başka bir mahsup sonrası güne taşımak ya da tutarı yine mahsubun altında değiştirmek 409
+      ---
+      duration_ms: 18.874314
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: tarihi mahsup gününe, tutarı mahsup tutarına geri almak 200
+    ok 4 - çalışıyor mu: tarihi mahsup gününe, tutarı mahsup tutarına geri almak 200
+      ---
+      duration_ms: 48.195397
+      type: 'test'
+      ...
+    1..4
+ok 9 - İ7 — mahsuplu satırda yalnız değişen alan sınanır (2.0.25'ten kalan tutarsız satırda açıklama düzeltilir)
+  ---
+  duration_ms: 543.768863
+  type: 'suite'
+  ...
+# Subtest: İ8 — eski sürümden kalan ileri tarihli çek/senet: Mutabakat ne yapılacağını söyler, uyarı düzeyinde, tablo adı yok
+    # Subtest: çalışıyor mu: denetim adı kullanıcı diliyle (Çek/Senet Hareketleri), düzey uyarı, ne yapılacağı yazılı
+    ok 1 - çalışıyor mu: denetim adı kullanıcı diliyle (Çek/Senet Hareketleri), düzey uyarı, ne yapılacağı yazılı
+      ---
+      duration_ms: 17.501538
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: Defter Mutabakatı alt başlığı yolu söyler
+    ok 2 - çalışıyor mu: Defter Mutabakatı alt başlığı yolu söyler
+      ---
+      duration_ms: 14.506072
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: söylenen yol işe yarar — alış tarihi bugüne çekilince satır kalkar; günlük iş engellenmez
+    ok 3 - çalışıyor mu: söylenen yol işe yarar — alış tarihi bugüne çekilince satır kalkar; günlük iş engellenmez
+      ---
+      duration_ms: 45.284858
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: yeni ileri tarihli çek olayı uyarı değil hata (kapı 409)
+    ok 4 - nasıl bozarım: yeni ileri tarihli çek olayı uyarı değil hata (kapı 409)
+      ---
+      duration_ms: 8.695342
+      type: 'test'
+      ...
+    1..4
+ok 10 - İ8 — eski sürümden kalan ileri tarihli çek/senet: Mutabakat ne yapılacağını söyler, uyarı düzeyinde, tablo adı yok
+  ---
+  duration_ms: 441.170637
+  type: 'suite'
+  ...
+# Subtest: İ10 — eksi bakiye denetimi Kasa özetini bir kez hesaplar
+    # Subtest: çalışıyor mu: tahsilat düzeltmesi ve silmesinde soru için Kasa özeti tek sorgu; soru ve sayılar aynı
+    ok 1 - çalışıyor mu: tahsilat düzeltmesi ve silmesinde soru için Kasa özeti tek sorgu; soru ve sayılar aynı
+      ---
+      duration_ms: 8.646387
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: ileri tarihli ödeme ayrılmışken soru iki bakiyeden azını söyler (bugün 200, son 100)
+    ok 2 - nasıl bozarım: ileri tarihli ödeme ayrılmışken soru iki bakiyeden azını söyler (bugün 200, son 100)
+      ---
+      duration_ms: 47.947954
+      type: 'test'
+      ...
+    1..2
+ok 11 - İ10 — eksi bakiye denetimi Kasa özetini bir kez hesaplar
+  ---
+  duration_ms: 375.725066
+  type: 'suite'
+  ...
+1..11
+# tests 43
+# suites 11
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 62500.13447

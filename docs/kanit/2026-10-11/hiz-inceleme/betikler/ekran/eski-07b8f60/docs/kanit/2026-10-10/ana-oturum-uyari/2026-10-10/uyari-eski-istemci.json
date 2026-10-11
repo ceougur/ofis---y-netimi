@@ -1,0 +1,78 @@
+{
+  "ad": "uyari-eski-istemci",
+  "komut": "npm run test:senaryo-225-uyari",
+  "commit": "6d6375f6fa3bd00a2c63144b2ced6c9b3e827b52",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 4,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T23:46:36.396Z",
+  "sure_sn": 150.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 14,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ilk bildirim ekrandayken \"görüldü\" kaydı yalnız ekrana çıkanlar: 4 kimlik, ekrana çıkan 1 (özetin taşıdıkları özet gösterilmeden yazılmaz)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yenilenen sayfada özet bildirimi ekrana çıktı (“gelmedi”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8 bildirimin hepsi ya tek başına (5) ya da ekrana çıkan özetle (0) gösterildi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeni bildirim ekrana çıkmadan \"görüldü\" yazılmadı (\"görüldü\": EVET; ekrana çıktı: hayır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeni bildirim sağ altta yeni bir özetle gösterildi (“gelmedi”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "özet ekrana çıkınca yeni bildirim \"görüldü\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "açık pencerenin takvimi 20 sn içinde yenilendi: başka sayfanın yeni son tarihi geldi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "zil listesinde de var",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "izleyen penceredeki sayfa şeridinde 2. sayfanın sayısı güncellendi (“Rehber5 kayıt”)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-uyari/2026-10-10/uyari-eski-istemci.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "4da2b2e72b8391f93e0fe280684c68210934955c1864344fb8c47e8c07db51a2",
+  "ham_cikti_bayt": 2221
+}

@@ -12,7 +12,7 @@
 //   - Kullanıcı seçimi ve yetkisi ortak ayarlarda: company.user.<kullanıcı> (seçili şirket), company.access.<kullanıcı>
 //     (görebildiği şirket kimlikleri; yönetici hepsini görür; kayıt yoksa yalnız 001).
 import { randomUUID } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { BACKUP_NAME, companyFolderName, moveBackupFolder, parseBackupName, readBackupIdentity } from "./backup.mjs";
 import { DatabaseSync } from "node:sqlite";
@@ -253,6 +253,16 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
 
   // Windows dosya sistemi büyük/küçük harfe duyarsızdır (yerel ayarsız büyük harfle karşılaştırılır; "İ" ile "i" ayrıdır).
   const sameName = (a, b) => String(a).toUpperCase() === String(b).toUpperCase();
+  // İki ad diskte aynı klasör mü (büyük/küçük harfe duyarsız dosya sisteminde evet)? Biri yoksa ayrı sayılır.
+  const sameFolderOnDisk = (a, b) => {
+    try {
+      const x = statSync(path.join(backupDir, a));
+      const y = statSync(path.join(backupDir, b));
+      return x.ino === y.ino && x.dev === y.dev;
+    } catch {
+      return false;
+    }
+  };
   const hasBackups = folder => {
     try {
       return readdirSync(path.join(backupDir, folder)).some(name => BACKUP_NAME.test(name));
@@ -342,7 +352,11 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     // Yeni yedek klasörü adı başka şirketin klasörüyle ya da içinde yedek olan eski bir klasörle çakışırsa ek alır.
     const base = companyFolderName(entry);
     const current = backupFolderOf(company);
-    const target = sameName(base, current) && !company.backupFolder ? base : sameName(base, current) ? current : freeBackupFolder(base, id);
+    // v2.1.0 (R4, rastgele sıra testinde bulundu): ad yalnız büyük/küçük harf farkıyla değişince yeni yazım eski klasörle "aynı" sayılır
+    // (Windows'ta aynı klasördür). Büyük/küçük harf duyarlı dosya sisteminde bu yazımla AYRI bir klasör varsa ve içinde (silinmiş şirketten
+    // kalma) yedek varsa o klasör verilmez — önceden şirketin yedekleri silinmiş şirketin klasörüne taşınıyordu.
+    const caseTaken = sameName(base, current) && base !== current && hasBackups(base) && !sameFolderOnDisk(base, current);
+    const target = caseTaken ? freeBackupFolder(base, id) : sameName(base, current) && !company.backupFolder ? base : sameName(base, current) ? current : freeBackupFolder(base, id);
     if (target !== base) entry.backupFolder = target;
     save({ companies: registry.companies.map(item => (item.id === id ? entry : item)) });
     // Ad ya da kod değişti (v2.0.20): yedek klasörü yeni adına taşınır, içindekiler korunur. Taşınamayan dosya kalırsa

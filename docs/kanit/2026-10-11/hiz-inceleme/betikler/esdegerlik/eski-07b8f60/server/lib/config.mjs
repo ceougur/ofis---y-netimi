@@ -1,0 +1,91 @@
+// DestekOfis — merkezi sunucu yapılandırması.
+// Tüm ayarlar ortam değişkenlerinden okunur; testler için overrides verilebilir.
+import path from "node:path";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { createClock } from "./clock.mjs";
+import { resolveDbPath } from "./db-path.mjs";
+import { DEFAULT_LICENSE_SERVICES } from "./license.mjs";
+
+export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+export const DEFAULT_ADMIN_PASSWORD = "Ofis2026!";
+export const PRODUCT_NAME = "DestekOfis";
+
+const pkg = JSON.parse(readFileSync(path.join(ROOT, "package.json"), "utf8"));
+export const VERSION = pkg.version;
+
+const number = (value, fallback) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+export function loadConfig(overrides = {}) {
+  const env = { ...process.env, ...(overrides.env || {}) };
+  const dataDir = path.resolve(overrides.dataDir ?? env.HUKUK_DATA_DIR ?? path.join(ROOT, "data"));
+  const backupDir = path.resolve(overrides.backupDir ?? env.HUKUK_BACKUP_DIR ?? path.join(ROOT, "backups"));
+  return Object.freeze({
+    root: ROOT,
+    productName: PRODUCT_NAME,
+    version: VERSION,
+    dataDir,
+    backupDir,
+    publicDir: path.resolve(overrides.publicDir ?? path.join(ROOT, "client")),
+    dbPath: resolveDbPath(dataDir),
+    port: number(overrides.port ?? env.PORT, 5123),
+    // Servis yöneticisi altında uygulama iç bir portta çalışır; kullanıcıların bağlandığı port budur.
+    publicPort: number(overrides.publicPort ?? env.HUKUK_PUBLIC_PORT, number(overrides.port ?? env.PORT, 5123)),
+    host: overrides.host ?? env.HOST ?? "0.0.0.0",
+    adminUsername: env.HUKUK_ADMIN_USERNAME || "admin",
+    adminPassword: env.HUKUK_ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD,
+    sessionDays: number(env.HUKUK_SESSION_DAYS, 7),
+    backupIntervalHours: number(env.HUKUK_BACKUP_INTERVAL_HOURS, 6),
+    backupKeep: Math.max(3, number(env.HUKUK_BACKUP_KEEP, 30)),
+    backupOnStartDelayMs: number(overrides.backupOnStartDelayMs ?? env.HUKUK_BACKUP_START_DELAY_MS, 60_000),
+    trustProxy: (overrides.trustProxy ?? env.HUKUK_TRUST_PROXY) === "1" || overrides.trustProxy === true,
+    // Servis yöneticisi (supervisor.mjs) altında mı çalışıyor? Güncelleme işlemleri IPC ile ona iletilir.
+    supervised: (overrides.supervised ?? env.HUKUK_SUPERVISED) === "1" || overrides.supervised === true,
+    logLevel: overrides.logLevel ?? env.HUKUK_LOG_LEVEL ?? "info",
+    sheetsCacheMs: number(env.HUKUK_SHEETS_CACHE_MS, 45_000),
+    // Canlı olay kanalında boşta bağlantıyı canlı tutan ve kapanmış oturumları düşüren tur aralığı.
+    eventsPingMs: number(overrides.eventsPingMs ?? env.HUKUK_EVENTS_PING_MS, 25_000),
+    // Canlı bağlantı ömrü: süre dolunca akış kapanır, tarayıcı kaldığı yerden devam eder (bkz. events.mjs).
+    eventsMaxAgeMs: number(overrides.eventsMaxAgeMs ?? env.HUKUK_EVENTS_MAX_AGE_MS, 5 * 60_000),
+    // Bağlı Google Sheets'in zamanlanmış eşitlemesi (sıklık yönetim ayarlarından; denetim dakikada bir).
+    datasetAutoSync: (overrides.datasetAutoSync ?? env.HUKUK_DATASET_AUTOSYNC ?? "1") !== "0" && overrides.datasetAutoSync !== false,
+    datasetTickMs: number(overrides.datasetTickMs ?? env.HUKUK_DATASET_TICK_MS, 60_000),
+    // Lisans servisi adresleri (virgülle birden çok). Yanıtlar imzalı olduğundan adres değişikliği güveni zayıflatmaz.
+    licenseServices: (overrides.licenseServices ?? env.HUKUK_LICENSE_URL ?? DEFAULT_LICENSE_SERVICES.join(",")).toString(),
+    fetchImpl: overrides.fetchImpl || ((...args) => globalThis.fetch(...args)),
+    // e-Belge (e-Fatura / e-Arşiv / entegratör) bağlantısı — program sahibinin kararıyla KAPALI (01.10.2026: "sana entegre
+    // et diyene kadar"). Kapalıyken fatura modülü tam çalışır; belge resmî hükmü olmayan müşteri fişi olarak basılır,
+    // e-Belge seçenekleri ekranda görünmez. Yalnız testler (overrides.edocEnabled) açabilir; ortam değişkeniyle açılmaz.
+    edocEnabled: overrides.edocEnabled === true,
+    // Döviz banka hesabı (v2.1.0 GG2): kur, değerleme ve döviz fişleriyle birlikte sonraki sürümde; o zamana kadar yalnız testler açar.
+    fxEnabled: overrides.fxEnabled === true,
+    // Bu sürümde olmayan banka özelliklerinin gizli ayarları (POS, Ekstre, Döviz, Elle Banka Fişi; lib/bank/settings.mjs NOT_YET): üretimde
+    // değiştirilemez ve okunurken varsayılandır; yalnız testler (doğrulama kurallarını sınayan) açar. Ortam değişkeni yok.
+    bankLater: overrides.bankLater === true,
+    // Eski sürüm gibi hesapsız havale (v2.1.0 Aşama 5–6): yalnız testler açar. Aşama 2–4 testleri "eski sürümden gelen hesabı atanmamış
+    // hareketi" banka hesabı tanımlıyken modül uçlarından yazar; açıkken cari/Kasa formunda hesap verilmezse satır hesapsız yazılır.
+    bankPickLegacy: overrides.bankPickLegacy === true,
+    // K1 öncesi fatura kapaması (v2.1.0): yalnız testler verir (test/guvenilirlik/kapama-k1-oncesi.mjs, dondurulmuş kopya). Altın test ve göç
+    // zinciri aynı veride 2.0.26'nın gerçek koduyla birebir karşılaştırır; K1 iade kapanışını bilerek değiştirdiği için o karşılaştırmalar bu
+    // kuralla koşar (göçün ve tek kaynağın etkisi ölçülür), K1'in etkisi ayrıca güncel kuralla denetlenir. Üretimde yok (ortam değişkeni yok).
+    legacyClosing: typeof overrides.legacyClosing === "function" ? overrides.legacyClosing : null,
+    scheduleBackups: overrides.scheduleBackups ?? true,
+    // Sunucunun iş saati (v2.1.0; lib/clock.mjs): "bugün" ve iş kayıtlarının zaman damgaları tek kaynaktan. Üretimde gerçek
+    // saat; sahte saat yalnız programdan (testler, kabul senaryoları) verilir — ortam değişkeni yok. Şirketler aynı saati paylaşır.
+    now: createClock(overrides.now),
+    // Para yazımı denetimi (K6; lib/bank/post.mjs) test kipi: ihlal hata verir ve işlemi geri alır. Üretimde (varsayılan) iş durmaz,
+    // sunucu günlüğüne ve meta.bank.integrity'ye yazılır. Yalnız programdan (testler) açılır.
+    moneyStrict: overrides.moneyStrict === true,
+    // Mutabakat kapısının eşdeğerlik denetimi (v2.1.0, §3.11; lib/integrity-scope.mjs): testlerde tam kapı HER işlemde çalışır ve
+    // dokunulan varlıklar yolu "temiz" deyip tam kapı reddederse işlem 500 "gate-equivalence" ile kırılır. Üretimde kapalı (yalnız
+    // programdan açılır; ortam değişkeni yok).
+    gateVerify: overrides.gateVerify === true,
+    // Kapı süzgecinde "çok hareketli cari" eşiği (gözden geçirme B8): yevmiyeye giren satırı bundan çok olan carinin bakiyesi SQL
+    // toplamıyla (ledger.partyTotals) denetlenir; az olanınki yevmiye maddeleri kurularak (2.0.26 yolu). Testler 0 vererek her cariyi
+    // SQL toplamıyla denetletebilir (iki yolun eşdeğerliği).
+    scopePartyRows: Number.isSafeInteger(overrides.scopePartyRows) && overrides.scopePartyRows >= 0 ? overrides.scopePartyRows : 2000,
+  });
+}

@@ -1,0 +1,18 @@
+Hakem — fark sınıfı KAHIN-K4-YINELENEN-AD (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KAHIN-K4-YINELENEN-AD.json
+      # en küçük (3 adım: cari, taksitli satış F1/T1 kimlik y1, aynı gövde F2/T2 kimlik y1): 7 fark, hepsi A≠B=P
+      # faturalar.F2.{toplam 60000, matrah 50000, kdv 10000, acik 60000}, taksitKartlari.T2.{toplam 60000, odenen 0, kalan 60000}
+      # mizan (120 B 60000 / 600 A 50000 / 391 A 10000), cariler, retler, yinelenenler ["3"] üçünde aynı
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-KAHIN-K4-YINELENEN-AD/en-kucuk-KAHIN-K4-YINELENEN-AD-tani.json
+      # tanı: yinelemenin adı GİRDİ olarak kullanılınca (taksit_tahsilat kart T2; cari_tahsilat kapatilacakFatura FX2) üç taraf da
+      # aynı belgeye/karta işler (A dahil) → defter, cari, Kasa, F1/FX1/T1 üçünde aynı; fark yalnız çıktıda ikinci adın yazılması (A≠B=P 11)
+      # + alış yinelemesi G2: koşucu `number: step.ad` gönderdiği için programda 409 request-id-reused (A=B≠P 2, B≠A=P 4 = KOSUCU sınıfı)
+  python3 -I test/bagimsiz/model_{a,b}/model.py test/bagimsiz/cikti/mini/mini-{satis,alis}-yineleme.json   # mini-yeniden/ altına
+  node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/mini/mini-<ad>.json --cikti test/bagimsiz/cikti/hakem-KAHIN-K4-YINELENEN-AD/mini-yeniden/mini-<ad>.program.json
+  git worktree add --detach <yer>/v2026 v2.0.26 && node test/bagimsiz/cikti/hakem-KAHIN-K4-YINELENEN-AD/canli.mjs <yer>/v2026 > canli-v2026.json
+  node test/bagimsiz/cikti/hakem-KAHIN-K4-YINELENEN-AD/canli.mjs . > canli-head.json
+      # gerçek API, koşucusuz: aynı kimlik + aynı gövde → 200 replayed:true, AYNI id ve planId, ikinci belge/kart yok;
+      # alış aynı no → yineleme; alış no farklı (Z3→Z4) → 409 request-id-reused; satış tutar farklı → 409. İki sürümde birebir aynı.
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+Not: fark.py fark dosyalarını cikti/'ye yazar; fark-ozet.json kirlenmesin diye ikisi bu klasöre taşındı. Ham: cikti/ham/en-kucuk-KAHIN-K4-YINELENEN-AD*.{a,b,program}.json.
+Mini senaryolar (cikti/mini/) başka ajanın dosyalarıdır; üzerine yazılmadı — yeniden koşu çıktıları mini-yeniden/ altında.

@@ -5,14 +5,17 @@
 // harf farklı adlar), kod değiştir (ilk şirket dahil), ad değiştir, sil (yanlış onay → 400, 001 → 409), şirket seç, cari aç,
 // cari hareketi (borç / alacak / tahsilat / ödeme; nakit eksiye düşecekse 409), Kasa (giriş/çıkış), yedek (tek / Tüm
 // Şirketler), geri yükle (002+ hemen; 001 yeniden açılışta), yanlış şirkete geri yükleme (hedef farklı ya da dosya elle öbür
-// şirketin klasörüne kopyalanmış → 409), şirket verisini sıfırla (hareketler / tümü), sunucuyu yeniden başlat.
+// şirketin klasörüne kopyalanmış → 409), şirket verisini sıfırla (hareketler / tümü), sunucuyu yeniden başlat; v2.1.0: banka hesabı
+// aç (açılış bakiyesiyle), Banka Fişi (Diğer Gelir / Gider, Banka Masrafı BSMV Dahil / Yok), Ters Kaydet ve başka şirketin banka
+// hesabına fiş denemesi (404; şirketler ayrı); Aşama 9: Bankalar Arası Transfer (iki hesap arasında, %30 ücretli; başka şirketin hesabına
+// transfer 404) ve Ters Kaydet'i (gönderen ve alıcı birlikte eski hâline).
 //
 // Yanında programdan BAĞIMSIZ bir model tutar: her şirketin (iç kimliğiyle) carileri, bakiyeleri, nakit Kasa'sı ve alınan
 // her yedeğin o anki kopyası. HER işlemden sonra değişmez kurallar denetlenir (ikinci bir yönetici hesabıyla — işlemi yapanın
 // seçili şirketi bozulmasın):
 //   1. Kayıt defterinde iki şirket aynı veri klasörünü göstermez (Windows gibi büyük/küçük harf ayrımsız); 001 dışı hiçbir
 //      şirket kök klasörü göstermez; program çakışma bildirmez.
-//   2. Her şirketin carileri (kimlik, ad, bakiye) ve nakit Kasa'sı modelle BİRE BİR — bir şirkete girilen kayıt öbüründe
+//   2. Her şirketin carileri (kimlik, ad, bakiye), nakit Kasa'sı ve banka hesapları (kimlik, bakiye) modelle BİRE BİR — bir şirkete girilen kayıt öbüründe
 //      görünmez; silinen şirketin verisi aynı kodla açılan yeni şirkette görünmez.
 //   3. Her yedek kendi şirketinin klasöründe, içindeki kimlik o şirket; Yedekler listesinde her şirketin altında yalnız onun
 //      yedekleri; modelin bildiği ve diskte duran her yedek listede; iki şirket aynı yedek klasörünü kullanmaz; silinen
@@ -86,9 +89,11 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   };
 
   // ---------- Model ----------
-  // companies: kimlik → { id, code, name, accounts: Map(kimlik → { name, cents }), cash }
+  // companies: kimlik → { id, code, name, accounts: Map(kimlik → { name, cents }), cash, banks: Map(kimlik → { name, cents }),
+  //   vouchers: [{ id, bankId, cents, status, toId?, toCents? }] } (v2.1.0: banka hesapları ve Banka Fişleri; transferde alıcı ve onun etkisi)
   const M = { companies: new Map(), deleted: [], freedCodes: new Set(), backups: new Map(), actorSelected: ROOT_ID };
-  const snapshotOf = company => ({ accounts: new Map([...company.accounts].map(([id, item]) => [id, { ...item }])), cash: company.cash });
+  const copyMap = map => new Map([...map].map(([id, item]) => [id, { ...item }]));
+  const snapshotOf = company => ({ accounts: copyMap(company.accounts), cash: company.cash, banks: copyMap(company.banks), vouchers: company.vouchers.map(item => ({ ...item })) });
   const live = () => [...M.companies.values()];
   const nonRoot = () => live().filter(item => item.id !== ROOT_ID);
   const registryFile = () => JSON.parse(readFileSync(path.join(dirs.dataDir, "sirketler.json"), "utf8")).companies;
@@ -104,7 +109,13 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     const accounts = await apiAccounts(client);
     const cash = await client.get("/api/workspace/cash");
     expectStatus(cash, 200, "Kasa");
-    return { accounts: new Map(accounts.map(item => [item.id, { name: item.name, cents: cents(item.balance) }])), cash: cents(cash.data.totals.balance) };
+    const bank = await client.get("/api/workspace/bank/accounts?status=all");
+    expectStatus(bank, 200, "Banka hesapları");
+    return {
+      accounts: new Map(accounts.map(item => [item.id, { name: item.name, cents: cents(item.balance) }])),
+      cash: cents(cash.data.totals.balance),
+      banks: new Map(bank.data.accounts.map(item => [item.id, { name: item.label, cents: Number(item.balanceMinor), confirmed: Boolean(item.balanceConfirmed), kind: item.kind, limit: Number(item.creditLimitMinor) || 0 }])),
+    };
   };
 
   await boot();
@@ -120,7 +131,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     if ((listed.conflicts || []).length) fail(`başlangıçta veri dosyası çakışması: ${JSON.stringify(listed.conflicts)}`);
     for (const company of listed.all) {
       const seen = await observe(checker, company.id);
-      M.companies.set(company.id, { id: company.id, code: company.code, name: company.name, ...seen });
+      M.companies.set(company.id, { id: company.id, code: company.code, name: company.name, ...seen, vouchers: [] });
     }
     for (const item of (await checker.get("/api/admin/backups")).data) preexisting.set(item.name, item.companyId);
     // Eski sürümün aldığı yedekler: geri yükleme sonrası beklenen hâl manifestte (ekrandaki cari özeti).
@@ -159,6 +170,9 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
         fail(`${label}: ${company.code} · ${company.name} carileri modelden farklı (model ${want.length}, ekranda ${got.length})\n  fazla: ${extra.join("; ")}\n  eksik: ${missing.join("; ")}`);
       }
       if (seen.cash !== company.cash) fail(`${label}: ${company.code} · ${company.name} nakit Kasa ${tl(seen.cash)} ≠ model ${tl(company.cash)}`);
+      const wantBanks = [...company.banks].map(([id, item]) => `${id}|${item.cents}`).sort();
+      const gotBanks = [...seen.banks].map(([id, item]) => `${id}|${item.cents}`).sort();
+      if (JSON.stringify(wantBanks) !== JSON.stringify(gotBanks)) fail(`${label}: ${company.code} · ${company.name} banka hesapları modelden farklı\n  model: ${wantBanks.join("; ")}\n  ekranda: ${gotBanks.join("; ")}`);
     }
     // 3. Yedekler
     const folders = new Map();
@@ -208,6 +222,13 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   const randomCode = () => String(R.int(2, 60)).padStart(3, "0");
   const selected = () => M.companies.get(M.actorSelected) || M.companies.get(ROOT_ID);
   const amountCents = () => R.int(1, 500_000);
+  // K2 (2.1.0): kurumsal kredi kartı hesabı havale, transfer ve Banka Fişi (Diğer Gelir/Gider, Masraf) için seçilmez; bu işlemler yalnız
+  // gerçek banka hesaplarından (Vadesiz) seçer, kart işlemleri bankCard'da.
+  const realBanks = company => [...company.banks].filter(([, bank]) => bank.kind !== "card");
+  const cardsOf = company => [...company.banks].filter(([, bank]) => bank.kind === "card");
+  // Eksi bakiye ret kodu ve geçiş bayrağı: K5 (başka iz) bankanınkini plan §7 adlarına çevirebilir; iki ad da kabul, iki bayrak birden.
+  const NEGATIVE_CODES = ["cash-negative"];
+  const FORCE = { negativeOk: true, cashForce: true };
 
   const ops = {
     async create() {
@@ -233,7 +254,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       if (code && codeTaken(code)) return expectStatus(response, 409, `dolu kodla (${code}) şirket`);
       const data = expectStatus(response, 200, "şirket aç");
       if (code && data.company.code !== code) fail(`istenen kod ${code}, açılan ${data.company.code}`);
-      M.companies.set(data.company.id, { id: data.company.id, code: data.company.code, name: data.company.name, accounts: new Map(), cash: 0 });
+      M.companies.set(data.company.id, { id: data.company.id, code: data.company.code, name: data.company.name, accounts: new Map(), cash: 0, banks: new Map(), vouchers: [] });
       M.freedCodes.delete(data.company.code);
       opLog[opLog.length - 1] += ` → ${tag(data.company)}`;
     },
@@ -412,6 +433,322 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       if (mode === "all") company.accounts.clear();
       else for (const account of company.accounts.values()) account.cents = 0;
       company.cash = 0;
+      // v2.1.0 (§5.6): "Tüm Hareketleri Sil" hesap kartlarını bırakır (açılış dahil hareketler silinir, bakiye 0); "Tümünü Sıfırla" siler.
+      if (mode === "all") company.banks.clear();
+      // "Tüm Hareketleri Sil" Bakiye Doğrulandı işaretini de kaldırır (açılış silindi; K7 Kontrol Yok'a döner).
+      else for (const bank of company.banks.values()) Object.assign(bank, { cents: 0, confirmed: false });
+      company.vouchers = [];
+    },
+    // ---------- v2.1.0 banka ----------
+    async bankAccount() {
+      const company = selected();
+      const opening = R.int(0, 2_000_000);
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      const bankName = R.pick(["Ziraat Bankası", "Garanti BBVA", "İş Bankası", "Yapı Kredi"]);
+      opLog.push(`#${report.operations} banka hesabı aç (${tag(company)}): ${bankName} açılış ${tl(opening)}`);
+      const data = expectStatus(await actor.post("/api/workspace/bank/accounts", { bankName, name: `Hesap ${report.operations}`, kind: "demand", currency: "TRY", opening: { date: today, amount: tl(opening).replace(".", ","), confirmed: true } }), 200, "banka hesabı aç");
+      company.banks.set(data.id, { name: data.label, cents: opening, confirmed: true, kind: "demand", limit: 0 });
+    },
+    async bankVoucher() {
+      const company = selected();
+      if (!realBanks(company).length) return ops.bankAccount();
+      const [bankId, bank] = R.pick(realBanks(company));
+      const type = R.pick(["other_in", "other_out", "fee"]);
+      const value = amountCents();
+      const tax = type === "fee" ? R.pick(["none", "bsmv_incl"]) : "";
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      opLog.push(`#${report.operations} Banka Fişi (${tag(company)}): ${bank.name} ${type}${tax ? ` ${tax}` : ""} ${tl(value)}`);
+      const signed = type === "other_in" ? value : -value;
+      const body = { type, accountId: bankId, date: today, amount: tl(value).replace(".", ","), ...(tax ? { tax } : {}), similarOk: true };
+      // K7 (2.1.0 GG2): Bakiye Doğrulandı hesapta (açılış "confirmed") bakiyeyi eksiye düşüren çıkış önce 409 cash-negative ("Uyar"),
+      // sonra "Yine de Kaydet" (negativeOk) ile tek fiş.
+      if (bank.confirmed && signed < 0 && bank.cents + signed < 0) {
+        const warned = await actor.post("/api/workspace/bank/vouchers", body);
+        expectStatus(warned, 409, "Banka Fişi eksi bakiye");
+        if (warned.data?.code !== "cash-negative") fail(`Banka Fişi eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      const data = expectStatus(await actor.post("/api/workspace/bank/vouchers", body), 200, "Banka Fişi");
+      const got = (data.lines || []).filter(line => line.role === "bank").reduce((sum, line) => sum + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
+      if (got !== signed) fail(`Banka Fişi ${data.no}: banka etkisi ${tl(got)} ≠ model ${tl(signed)}`);
+      bank.cents += signed;
+      company.vouchers.push({ id: data.id, bankId, cents: signed, status: "active" });
+    },
+    async bankReverse() {
+      const company = selected();
+      const voucher = R.pick(company.vouchers.filter(item => item.status === "active" && company.banks.has(item.bankId) && (!item.toId || company.banks.has(item.toId))));
+      if (!voucher) return ops.bankVoucher();
+      opLog.push(`#${report.operations} Ters Kaydet (${tag(company)}): ${voucher.id}${voucher.toId ? " (transfer)" : ""}`);
+      const bank = company.banks.get(voucher.bankId);
+      const target = voucher.toId ? company.banks.get(voucher.toId) : null;
+      const body = {};
+      // Transferin ters kaydı alıcıyı azaltır (gönderen ücret dahil geri alır): K7 alıcıda.
+      // K7 yalnız bakiyesi AZALAN hesapta sorulur (sunucu kuralı): gider fişinin ters kaydı hesabı artırır, eksi kalsa da sorulmaz.
+      // K2: kurumsal kartta kart limitine kadar serbest (Kart Borcu Ödemesi'nin ters kaydı kartı azaltır).
+      const drops = (account, delta) => Boolean(account?.confirmed) && delta < 0 && account.cents + delta + (account.limit || 0) < 0;
+      if (drops(bank, -voucher.cents) || drops(target, -(voucher.toCents || 0))) {
+        // K7: gelir fişinin ters kaydı da hesabı eksiye düşürebilir.
+        const warned = await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, {});
+        expectStatus(warned, 409, "Ters Kaydet eksi bakiye");
+        if (warned.data?.code !== "cash-negative") fail(`Ters Kaydet eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      expectStatus(await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, body), 200, "Ters Kaydet");
+      voucher.status = "reversed";
+      company.banks.get(voucher.bankId).cents -= voucher.cents;
+      if (target) target.cents -= voucher.toCents;
+    },
+    // v2.1.0 Aşama 9: Bankalar Arası Transfer — gönderen −(tutar + ücret), alıcı +tutar; başka şirketin hesabına 404; Bakiye Doğrulandı gönderen
+    // eksiye düşerse 409 cash-negative → "Yine de Kaydet".
+    async bankTransfer() {
+      const company = selected();
+      if (realBanks(company).length < 2) return ops.bankAccount();
+      const [fromId, from] = R.pick(realBanks(company));
+      const [toId, to] = R.pick(realBanks(company).filter(([id]) => id !== fromId));
+      const value = amountCents();
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      const body = { accountId: fromId, toAccountId: toId, date: today, amount: tl(value).replace(".", ","), similarOk: true };
+      let fee = 0;
+      if (R.chance(0.3)) {
+        const feeIn = R.int(1, 2000);
+        const feeTax = R.pick(["bsmv_excl", "none"]);
+        Object.assign(body, { feeAmount: tl(feeIn).replace(".", ","), feeTax });
+        // BSMV Hariç %5, yarım-yukarı (bağımsız hesap).
+        fee = feeTax === "bsmv_excl" ? feeIn + Math.floor((feeIn * 5 + 50) / 100) : feeIn;
+      }
+      const other = R.chance(0.1) ? R.pick(live().filter(item => item.id !== company.id && realBanks(item).length)) : null;
+      if (other) {
+        opLog.push(`#${report.operations} YANLIŞ şirket hesabına transfer: seçili ${tag(company)}, alıcı ${tag(other)}`);
+        expectStatus(await actor.post("/api/workspace/bank/transfers", { ...body, toAccountId: R.pick(realBanks(other))[0] }), 404, "başka şirketin hesabına transfer");
+        return;
+      }
+      opLog.push(`#${report.operations} transfer (${tag(company)}): ${from.name} → ${to.name} ${tl(value)}${fee ? ` + ücret ${tl(fee)}` : ""}`);
+      if (from.confirmed && from.cents - value - fee < 0) {
+        const warned = await actor.post("/api/workspace/bank/transfers", body);
+        expectStatus(warned, 409, "transfer eksi bakiye");
+        if (warned.data?.code !== "cash-negative") fail(`transfer eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      const data = expectStatus(await actor.post("/api/workspace/bank/transfers", body), 200, "transfer");
+      const leg = ref => (data.lines || []).filter(line => line.role === "bank" && line.ref === ref).reduce((sum, line) => sum + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
+      if (leg(fromId) !== -(value + fee) || leg(toId) !== value) fail(`transfer ${data.no}: gönderen ${tl(leg(fromId))} ≠ model ${tl(-(value + fee))}; alıcı ${tl(leg(toId))} ≠ ${tl(value)}`);
+      from.cents -= value + fee;
+      to.cents += value;
+      company.vouchers.push({ id: data.id, bankId: fromId, cents: -(value + fee), toId, toCents: value, status: "active" });
+    },
+    // 2.1.0 Aşama 5–8: modül formundan havale (cari tahsilat/ödeme) seçilen banka hesabına bağlanır; tek hesapta seçimsiz de o hesaba, birden
+    // çokta seçimsiz 400 bank-account-required; başka şirketin hesabı 404; Bakiye Doğrulandı hesabı eksiye düşüren ödeme 409 cash-negative →
+    // "Yine de Kaydet". Değişmez: hesap bakiyesi = model (açılış + fiş + bağlı modül havaleleri); şirketler ayrı.
+    async bankModule() {
+      const company = selected();
+      if (!realBanks(company).length) return ops.bankAccount();
+      if (!company.accounts.size) return ops.account();
+      const [id, account] = R.pick([...company.accounts]);
+      const [bankId, bank] = R.pick(realBanks(company));
+      const kind = R.pick(["in", "in", "out"]);
+      const value = amountCents();
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      const url = `/api/workspace/accounts/${id}/entries`;
+      const body = { kind, amount: value / 100, method: "bank", date: today, note: "Rastgele havale", similarOk: true };
+      if (realBanks(company).length > 1 && R.chance(0.15)) {
+        opLog.push(`#${report.operations} HESAPSIZ havale (${tag(company)}): ${account.name} ${kind} ${tl(value)}`);
+        const response = await actor.post(url, body);
+        expectStatus(response, 400, "çok hesapta hesapsız havale");
+        if (response.data?.code !== "bank-account-required") fail(`hesapsız havalede kod ${response.data?.code}`);
+        return;
+      }
+      const other = R.chance(0.1) ? R.pick(live().filter(item => item.id !== company.id && realBanks(item).length)) : null;
+      if (other) {
+        opLog.push(`#${report.operations} YANLIŞ şirket hesabına havale: seçili ${tag(company)}, hesap ${tag(other)}`);
+        expectStatus(await actor.post(url, { ...body, bankAccountId: R.pick(realBanks(other))[0] }), 404, "başka şirketin banka hesabına havale");
+        return;
+      }
+      const auto = realBanks(company).length === 1 && R.chance(0.4);
+      if (!auto) body.bankAccountId = bankId;
+      opLog.push(`#${report.operations} havale (${tag(company)}): ${account.name} ${kind} ${tl(value)} → ${bank.name}${auto ? " (tek hesap, seçimsiz)" : ""}`);
+      const signed = kind === "in" ? value : -value;
+      if (bank.confirmed && signed < 0 && bank.cents + signed < 0) {
+        const warned = await actor.post(url, body);
+        expectStatus(warned, 409, "havale eksi bakiye");
+        if (warned.data?.code !== "cash-negative") fail(`havale eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      expectStatus(await actor.post(url, body), 200, "havale");
+      bank.cents += signed;
+      account.cents += kind === "out" ? value : -value;
+    },
+    // 2.1.0 (plan testleri — eksiklerin tamamlanması): cari dışındaki modüllerden hesaba bağlı havale, rastgele sırada: kayıt tahsilatı, satış
+    // ve alış faturası peşini (KDV'siz, tamamı peşin: cari net 0), stok peşin satışı, çek bankaya tahsil, verilen çek ödemesi, taksit
+    // tahsilatı. Bankadan çıkışta Bakiye Doğrulandı hesap eksiye düşerse 409 cash-negative → "Yine de Kaydet". Değişmez: hesap bakiyesi =
+    // model; cari bakiyeleri = model; Kasa (nakit) değişmez; şirketler ayrı (başka şirketin hesabı 404).
+    async bankModuleOther() {
+      const company = selected();
+      if (!realBanks(company).length) return ops.bankAccount();
+      if (!company.accounts.size) return ops.account();
+      const [id, account] = R.pick([...company.accounts]);
+      const [bankId, bank] = R.pick(realBanks(company));
+      const value = amountCents();
+      const amount = (value / 100).toFixed(2).replace(".", ",");
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      const kind = R.pick(["kayit", "satis", "alis", "stok", "cekTahsil", "cekOde", "taksit"]);
+      const out = kind === "alis" || kind === "cekOde";
+      const other = R.chance(0.08) ? R.pick(live().filter(item => item.id !== company.id && realBanks(item).length)) : null;
+      const bound = other ? R.pick(realBanks(other))[0] : bankId;
+      // Hazırlık (para dışı ya da cariye yazan, hesaptan bağımsız) ve asıl istek.
+      let request;
+      let cariDelta = 0;
+      if (kind === "kayit") request = body => actor.post(`/api/workspace/cases/RASTGELE-${report.operations}/payments`, { amount, date: today, method: "bank", caseTitle: "Rastgele kayıt", similarOk: true, ...body });
+      else if (kind === "satis" || kind === "alis") {
+        request = body => actor.post("/api/workspace/invoices", { kind: kind === "satis" ? "sale" : "purchase", accountId: id, ...(kind === "alis" ? { number: `R-${seed}-${report.operations}` } : {}), issueDate: today, pricesIncludeVat: true, lines: [{ name: "Rastgele hizmet", qty: 1, unitPrice: value / 100, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount, method: "bank", ...body }], cheques: [], endorse: [], rest: "open" }, force: true, ...(body.negativeOk ? { negativeOk: true } : {}) });
+      } else if (kind === "stok") {
+        const item = expectStatus(await actor.post("/api/workspace/stock", { name: `Rastgele Ürün ${report.operations}`, unit: "Adet", openingQty: "5" }), 200, "ürün");
+        request = body => actor.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "1", unitPrice: amount, pay: "cash", method: "bank", date: today, similarOk: true, ...body });
+      } else if (kind === "cekTahsil" || kind === "cekOde") {
+        const direction = kind === "cekTahsil" ? "in" : "out";
+        const cheque = expectStatus(await actor.post("/api/workspace/cheques", { direction, instrument: "cheque", amount, issueDate: today, dueDate: today, accountId: id, serialNo: `RS-${seed}-${report.operations}` }), 200, "çek");
+        // Alınan çek cariye alacak (borç azalır), verilen çek borç yazar.
+        account.cents += direction === "in" ? -value : value;
+        request = body => actor.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: direction === "in" ? "collect" : "pay", date: today, method: "bank", similarOk: true, ...body });
+      } else {
+        const plan = expectStatus(await actor.post("/api/workspace/plans", { accountId: id, name: `${account.name} kart ${report.operations}`, total: amount, mode: "auto", count: 1, firstDue: today }), 200, "taksit kartı");
+        account.cents += value; // "Yeni Borç" kartı borç yazar
+        request = body => actor.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount, method: "bank", date: today, similarOk: true, ...body });
+        cariDelta = -value;
+      }
+      if (other) {
+        opLog.push(`#${report.operations} YANLIŞ şirket hesabına ${kind} havalesi: seçili ${tag(company)}, hesap ${tag(other)}`);
+        const response = await request({ bankAccountId: bound });
+        expectStatus(response, 404, `başka şirketin hesabına ${kind}`);
+        return;
+      }
+      opLog.push(`#${report.operations} ${kind} havalesi (${tag(company)}): ${account.name} ${tl(value)} → ${bank.name}`);
+      const signed = out ? -value : value;
+      const body = { bankAccountId: bankId };
+      if (bank.confirmed && signed < 0 && bank.cents + signed < 0) {
+        const warned = await request(body);
+        expectStatus(warned, 409, `${kind} eksi bakiye`);
+        if (warned.data?.code !== "cash-negative") fail(`${kind} eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      expectStatus(await request(body), 200, `${kind} havalesi`);
+      bank.cents += signed;
+      account.cents += cariDelta;
+    },
+    async bankWrongCompany() {
+      // Başka şirketin banka hesabına (seçili şirket bu değilken) fiş: 404, hiçbir şirkette iz yok.
+      const company = selected();
+      const other = R.pick(live().filter(item => item.id !== company.id && realBanks(item).length));
+      if (!other) return ops.bankAccount();
+      const [bankId] = R.pick(realBanks(other));
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      opLog.push(`#${report.operations} YANLIŞ şirket Banka Fişi: seçili ${tag(company)}, hesap ${tag(other)}`);
+      const response = await actor.post("/api/workspace/bank/vouchers", { type: "other_in", accountId: bankId, date: today, amount: "100,00", similarOk: true });
+      expectStatus(response, 404, "başka şirketin banka hesabına fiş");
+    },
+    // K2 (2.1.0; plan §3.5 tablo satır 3 ve 5, §4.6): kurumsal kredi kartıyla ödeme seçilen kart hesabına bağlanır (309; kart borcu artar,
+    // Kasa ve banka değişmez): cari ödemesi, alış faturası peşini (KDV'siz, tamamı peşin: cari net 0), stok alımı; tek kartta seçimsiz de o
+    // karta, iki ve daha çok kartta seçimsiz 400 bank-account-required; Kart Borcu Ödemesi (Vadesiz → kart) kart borcunu azaltır; Bakiye
+    // Doğrulandı kartta kart limiti aşılınca 409 → "Yine de Kaydet"; POS tahsilatı (kartla tahsilat, 2.2.0'a kadar) hesaba bağlanmaz,
+    // hesap verilirse 400; başka şirketin kartı 404. Değişmez: kart ve banka bakiyesi = model; cari = model; Kasa değişmez.
+    async bankCard() {
+      const company = selected();
+      const cards = cardsOf(company);
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      if (!cards.length || (cards.length < 3 && R.chance(0.08))) {
+        const limit = R.chance(0.3) ? 0 : R.int(1, 50_000) * 100;
+        const confirmed = R.chance(0.6);
+        const bankName = R.pick(["Garanti BBVA", "Yapı Kredi", "Akbank", "İş Bankası"]);
+        opLog.push(`#${report.operations} kurumsal kart aç (${tag(company)}): ${bankName} limit ${tl(limit)}${confirmed ? " · doğrulandı" : ""}`);
+        const data = expectStatus(await actor.post("/api/workspace/bank/accounts", { bankName, name: `Kart ${report.operations}`, kind: "card", creditLimit: tl(limit).replace(".", ","), opening: { date: today, amount: "0", confirmed } }), 200, "kurumsal kart aç");
+        company.banks.set(data.id, { name: data.label, cents: 0, confirmed, kind: "card", limit });
+        count("bankCard:kart-ac");
+        return;
+      }
+      if (!company.accounts.size) return ops.account();
+      const [cardId, card] = R.pick(cards);
+      const [id, account] = R.pick([...company.accounts]);
+      const value = amountCents();
+      const amount = tl(value).replace(".", ",");
+      const kind = R.pick(["cari", "cari", "alis", "stok", "borcOde", "pos", "secimsiz", "yanlis"]);
+      const payUrl = `/api/workspace/accounts/${id}/entries`;
+      const payBody = { kind: "out", amount: value / 100, method: "card", date: today, note: "Rastgele kartla ödeme", similarOk: true };
+      if (kind === "secimsiz" && cards.length > 1) {
+        opLog.push(`#${report.operations} KARTSIZ kartla ödeme (${tag(company)}, ${cards.length} kart): ${account.name} ${tl(value)}`);
+        const response = await actor.post(payUrl, payBody);
+        expectStatus(response, 400, "çok kartta kart seçilmemiş ödeme");
+        if (response.data?.code !== "bank-account-required") fail(`kart seçilmemiş ödemede kod ${response.data?.code}`);
+        count("bankCard:secimsiz-400");
+        return;
+      }
+      const other = kind === "yanlis" ? R.pick(live().filter(item => item.id !== company.id && cardsOf(item).length)) : null;
+      if (other) {
+        opLog.push(`#${report.operations} YANLIŞ şirket kartıyla ödeme: seçili ${tag(company)}, kart ${tag(other)}`);
+        expectStatus(await actor.post(payUrl, { ...payBody, bankAccountId: R.pick(cardsOf(other))[0] }), 404, "başka şirketin kurumsal kartıyla ödeme");
+        count("bankCard:yanlis-sirket-404");
+        return;
+      }
+      if (kind === "pos") {
+        const bound = R.chance(0.4);
+        opLog.push(`#${report.operations} POS tahsilatı (${tag(company)}): ${account.name} ${tl(value)}${bound ? " · karta bağlanmak istendi → 400" : ""}`);
+        const body = { kind: "in", amount: value / 100, method: "card", date: today, note: "Rastgele POS", similarOk: true, ...(bound ? { bankAccountId: cardId } : {}) };
+        const response = await actor.post(payUrl, body);
+        if (bound) {
+          expectStatus(response, 400, "POS tahsilatı kurumsal karta");
+          if (response.data?.code !== "bank-account-invalid") fail(`POS tahsilatı hesaba bağlanırken kod ${response.data?.code}`);
+          count("bankCard:pos-hesapli-400");
+          return;
+        }
+        expectStatus(response, 200, "POS tahsilatı");
+        count("bankCard:pos");
+        account.cents -= value;
+        return;
+      }
+      if (kind === "borcOde") {
+        const banks = realBanks(company);
+        if (!banks.length) return ops.bankAccount();
+        const [bankId, bank] = R.pick(banks);
+        opLog.push(`#${report.operations} Kart Borcu Ödemesi (${tag(company)}): ${bank.name} → ${card.name} ${tl(value)}`);
+        const body = { type: "card_payment", accountId: bankId, cardAccountId: cardId, date: today, amount, similarOk: true };
+        if (bank.confirmed && bank.cents - value < 0) {
+          const warned = await actor.post("/api/workspace/bank/vouchers", body);
+          expectStatus(warned, 409, "Kart Borcu Ödemesi eksi bakiye");
+          if (!NEGATIVE_CODES.includes(warned.data?.code)) fail(`Kart Borcu Ödemesi eksi bakiye: kod ${warned.data?.code}`);
+          Object.assign(body, FORCE);
+        }
+        const data = expectStatus(await actor.post("/api/workspace/bank/vouchers", body), 200, "Kart Borcu Ödemesi");
+        bank.cents -= value;
+        card.cents += value;
+        company.vouchers.push({ id: data.id, bankId, cents: -value, toId: cardId, toCents: value, status: "active" });
+        count(`bankCard:borc-odeme${body.negativeOk ? "-eksi" : ""}`);
+        return;
+      }
+      // Kartla ödeme: cari, alış faturası peşini ya da stok alımı. Tek kartta %40 seçimsiz (o karta bağlanır).
+      const auto = cards.length === 1 && R.chance(0.4);
+      const pick = auto ? {} : { bankAccountId: cardId };
+      let request;
+      let cariDelta = 0;
+      if (kind === "alis") {
+        request = extra => actor.post("/api/workspace/invoices", { kind: "purchase", accountId: id, number: `K-${seed}-${report.operations}`, issueDate: today, pricesIncludeVat: true, lines: [{ name: "Rastgele kartla alım", qty: 1, unitPrice: value / 100, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount, method: "card", ...pick }], cheques: [], endorse: [], rest: "open" }, force: true, ...extra });
+      } else if (kind === "stok") {
+        const item = expectStatus(await actor.post("/api/workspace/stock", { name: `Kartla Alınan Ürün ${report.operations}`, unit: "Adet" }), 200, "ürün");
+        request = extra => actor.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: "1", unitPrice: amount, pay: "cash", method: "card", date: today, similarOk: true, ...pick, ...extra });
+      } else {
+        request = extra => actor.post(payUrl, { ...payBody, ...pick, ...extra });
+        cariDelta = value; // kartla ödeme carinin borcunu kapatır (ödeme: borç yönü)
+      }
+      opLog.push(`#${report.operations} kartla ${kind} (${tag(company)}): ${account.name} ${tl(value)} → ${card.name}${auto ? " (tek kart, seçimsiz)" : ""}`);
+      let extra = {};
+      if (card.confirmed && card.cents - value + card.limit < 0) {
+        const warned = await request({});
+        expectStatus(warned, 409, `kartla ${kind} limit aşımı`);
+        if (!NEGATIVE_CODES.includes(warned.data?.code)) fail(`kartla ${kind} limit aşımı: kod ${warned.data?.code}`);
+        if (warned.data?.accountId && warned.data.accountId !== cardId) fail(`kartla ${kind} limit aşımı başka hesapta: ${warned.data.accountId}`);
+        extra = FORCE;
+      }
+      expectStatus(await request(extra), 200, `kartla ${kind}`);
+      count(`bankCard:${kind === "alis" || kind === "stok" ? kind : "cari"}${auto ? "-secimsiz" : ""}${extra.negativeOk ? "-limit" : ""}`);
+      card.cents -= value;
+      account.cents += cariDelta;
     },
     async restart() {
       opLog.push(`#${report.operations} sunucuyu yeniden başlat`);
@@ -427,8 +764,10 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   }
   async function applyRestored(company, record) {
     if (record.snapshot) {
-      company.accounts = new Map([...record.snapshot.accounts].map(([id, item]) => [id, { ...item }]));
+      company.accounts = copyMap(record.snapshot.accounts);
       company.cash = record.snapshot.cash;
+      company.banks = copyMap(record.snapshot.banks || new Map());
+      company.vouchers = (record.snapshot.vouchers || []).map(item => ({ ...item }));
       return;
     }
     // Eski sürümün yedeği: manifestteki ekran özeti ve veri tabanı olguları tutmalı; sonra model gözlemden kurulur.
@@ -440,6 +779,8 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     if (!sameFacts(facts, record.facts)) fail(`eski sürüm yedeği ${record.name}: veri tabanı olguları yedek anındaki gibi değil`);
     company.accounts = seen.accounts;
     company.cash = seen.cash;
+    company.banks = seen.banks;
+    company.vouchers = [];
   }
   async function restart() {
     await server.close();
@@ -450,6 +791,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   const WEIGHTS = [
     ["account", 14], ["entry", 18], ["cash", 7], ["select", 8], ["create", 7], ["rename", 5], ["recode", 5], ["remove", 4],
     ["backupOne", 7], ["backupAll", 3], ["restore", 7], ["restoreRoot", 2], ["wrongRestore", 4], ["reset", 3], ["restart", 2],
+    ["bankAccount", 3], ["bankVoucher", 6], ["bankReverse", 2], ["bankWrongCompany", 2], ["bankModule", 6], ["bankTransfer", 4], ["bankModuleOther", 6], ["bankCard", 6],
   ];
   const total = WEIGHTS.reduce((sum, [, weight]) => sum + weight, 0);
   const choose = () => {

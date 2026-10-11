@@ -1,0 +1,14 @@
+(node:7361) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+B 1 100 {"eksik":["BNK-2026-000092"],"fazla":["BNK-2026-000042"],"cift":[]} 6sn sonra 100 ["BNK-2026-000092"]
+Y 1 gap 522 50 {"eksik":[],"fazla":[],"cift":[]}
+C 1 post 200 form true 50 -> 100 -> 50 {"eksik":[],"fazla":[],"cift":[]}
+K 1 100 {"eksik":[],"fazla":[],"cift":[]}
+B 2 100 {"eksik":["BNK-2026-000095"],"fazla":["BNK-2026-000045"],"cift":[]} 6sn sonra 100 ["BNK-2026-000095"]
+Y 2 gap 396 50 {"eksik":[],"fazla":[],"cift":[]}
+C 2 post 200 form true 50 -> 100 -> 50 {"eksik":[],"fazla":[],"cift":[]}
+K 2 100 {"eksik":[],"fazla":[],"cift":[]}
+B 3 100 {"eksik":["BNK-2026-000098"],"fazla":["BNK-2026-000048"],"cift":[]} 6sn sonra 100 ["BNK-2026-000098"]
+Y 3 gap 745 50 {"eksik":[],"fazla":[],"cift":[]}
+C 3 post 200 form true 50 -> 100 -> 50 {"eksik":[],"fazla":[],"cift":[]}
+K 3 100 {"eksik":[],"fazla":[],"cift":[]}

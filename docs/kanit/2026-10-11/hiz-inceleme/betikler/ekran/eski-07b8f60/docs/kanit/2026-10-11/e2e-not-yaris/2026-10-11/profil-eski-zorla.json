@@ -1,0 +1,63 @@
+{
+  "ad": "profil-eski-zorla",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski/test/e2e/e2e-not-yaris.mjs",
+  "commit": "b489088a7b7abf5b002705847f8b503e0ad667b1",
+  "dal": "worktree-agent-ae4b2398a007435c3",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T07:09:31.247Z",
+  "sure_sn": 43.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 0,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "deneme 1: okuma 5911 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{\"t\":5675,\"end\":5689,\"origin\":\"not formu (afterCaseChange)\"},{\"t\":5817,\"end\":7326,\"origin\":\"profil olayı (data-refresh → insight → applyProfile → refreshActivity)\"}]; okunan: \"İŞLEM GEÇMİŞİYüklen",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 2: okuma 10778 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{\"t\":9599,\"end\":9660,\"origin\":\"seçim (renderActivity)\"},{\"t\":10342,\"end\":10364,\"origin\":\"not formu (afterCaseChange)\"},{\"t\":10761,\"end\":12271,\"origin\":\"profil olayı (data-refresh → insight → app",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 3: okuma 16187 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{\"t\":15055,\"end\":15103,\"origin\":\"seçim (renderActivity)\"},{\"t\":15828,\"end\":15840,\"origin\":\"not formu (afterCaseChange)\"},{\"t\":16140,\"end\":17649,\"origin\":\"profil olayı (data-refresh → insight → a",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 4: okuma 21443 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{\"t\":20643,\"end\":20657,\"origin\":\"not formu (afterCaseChange)\"},{\"t\":21380,\"end\":22887,\"origin\":\"profil olayı (data-refresh → insight → applyProfile → refreshActivity)\"}]; okunan: \"İŞLEM GEÇMİŞİY",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 5: okuma 26629 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{\"t\":25581,\"end\":25624,\"origin\":\"seçim (renderActivity)\"},{\"t\":25780,\"end\":25793,\"origin\":\"not formu (afterCaseChange)\"},{\"t\":26617,\"end\":28124,\"origin\":\"profil olayı (data-refresh → insight → a",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "deneme 6: okuma 31727 ms; ön koşul (okuma anında profil olayından gelen yükleme uçuşta) OLUŞTU; istekler [{\"t\":30923,\"end\":30937,\"origin\":\"not formu (afterCaseChange)\"},{\"t\":31708,\"end\":33215,\"origin\":\"profil olayı (data-refresh → insight → applyProfile → refreshActivity)\"}]; okunan: \"İŞLEM GEÇMİŞİY",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/e2e-not-yaris/2026-10-11/profil-eski-zorla.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae4b2398a007435c3",
+  "ham_cikti_sha256": "3aeca71840d4e61b3af0c586c27cea835d29572d815d760cf56f92b66d57bbc7",
+  "ham_cikti_bayt": 2397
+}

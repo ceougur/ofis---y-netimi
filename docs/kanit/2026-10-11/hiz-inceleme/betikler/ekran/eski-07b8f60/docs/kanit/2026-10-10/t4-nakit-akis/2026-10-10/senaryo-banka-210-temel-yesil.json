@@ -1,0 +1,32 @@
+{
+  "ad": "senaryo-banka-210-temel-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210-temel.mjs",
+  "commit": "2d3ebd83a69f9511cd20046b521bdad58f55285d",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 10,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:36:39.119Z",
+  "sure_sn": 27.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 36,
+    "gecen": 36,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/senaryo-banka-210-temel-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "329e075edfb0ac07df17fe0bb6f8109d2a579f92d65d27b58af4210f6840163d",
+  "ham_cikti_bayt": 4566
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "windows-kuru",
+  "komut": "node test/guncelleme-gercek/windows-kuru.mjs",
+  "commit": "196944c4842dca3ac16696f0135a4840bfb8c04e",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T00:45:30.174Z",
+  "sure_sn": 95.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 29,
+    "gecen": 29,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/windows-guncelleme/2026-10-11/windows-kuru.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "180706d20af83bee36c6db697e426ced2a1ff4c3ec6327023808e816d53a19eb",
+  "ham_cikti_bayt": 2972
+}

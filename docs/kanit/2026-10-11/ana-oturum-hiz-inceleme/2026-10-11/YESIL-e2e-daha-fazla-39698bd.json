@@ -1,0 +1,32 @@
+{
+  "ad": "YESIL-e2e-daha-fazla-39698bd",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-daha-fazla-yaris.mjs",
+  "commit": "39698bdefb14d4fe47ca620133355511e4bf565d",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T15:51:34.672Z",
+  "sure_sn": 78.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 31,
+    "gecen": 31,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-hiz-inceleme/2026-10-11/YESIL-e2e-daha-fazla-39698bd.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8227ecbf79f83f335d340d9b279672f4bb4b0d94b5388658134bb5bf04f52781",
+  "ham_cikti_bayt": 5312
+}

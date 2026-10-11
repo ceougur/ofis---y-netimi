@@ -1,0 +1,20 @@
+{
+  "big": false,
+  "err": null,
+  "direct": {
+    "classifiedTotals": "[{\"key\":\"bacc-0374b836-447f-4727-86ab-da03c75d9cc2\",\"ahead\":0,\"lines\":1,\"closing\":20000,\"opening\":0,\"ext_in\":0,\"ext_out\":0,\"tr_in\":20000,\"tr_out\":0,\"adjust\":0,\"first\":\"2026-10-03\"},{\"key\":\"bacc-3c3f5590-86c3-448a-85dc-5e0ab5ee029b\",\"ahead\":0,\"lines\":13,\"closing\":310070,\"opening\":0,\"ext_in\":37422,\"ext_out\":626575,\"tr_in\":70000,\"tr_out\":170000,\"adjust\":999223,\"first\":\"2026-08-29\"},{\"key\":\"bacc-612f9",
+    "keyTotals": "[{\"key\":\"bacc-3c3f5590-86c3-448a-85dc-5e0ab5ee029b\",\"cents\":307848,\"count\":12},{\"key\":\"bacc-69c31533-225c-4c14-9a9e-02bb50d3bf0d\",\"cents\":1131000,\"count\":5}]",
+    "oldClassifiedSum": "null"
+  },
+  "rep": {
+    "compared": 568,
+    "rows": 1050,
+    "diffs": 0,
+    "first": []
+  },
+  "mon": {
+    "checks": 713,
+    "diffs": 0,
+    "first": []
+  }
+}

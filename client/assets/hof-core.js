@@ -39,8 +39,12 @@
   const dateFormat = new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
   const dateTimeFormat = new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
   const moneyFormat = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 2 });
+  // Yalnız gün ("YYYY-AA-GG") YEREL gün olarak okunur. new Date("2026-10-08") UTC gece yarısıdır; UTC'nin batısındaki saat diliminde
+  // (ör. America/Los_Angeles) bir önceki gün görünüyordu (CI 534 incelemesi, TZ denemesi: Nakit Akış "07.10.2026 – 06.11.2026").
+  const DAY_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/;
   const safeDate = value => {
-    const date = value instanceof Date ? value : new Date(value);
+    const day = typeof value === "string" ? DAY_ONLY.exec(value) : null;
+    const date = value instanceof Date ? value : day ? new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3])) : new Date(value);
     return Number.isNaN(date.getTime()) ? null : date;
   };
   HOF.formatDate = value => (safeDate(value) ? dateFormat.format(safeDate(value)) : "—");
@@ -147,6 +151,9 @@
       const body = options.body;
       const removing = String(options.method || "").toUpperCase() === "DELETE";
       if (error?.status !== 409 || error.data?.code !== "cash-negative" || (!removing && (!body || typeof body !== "object"))) throw error;
+      // Hakem K5 (plan §7): banka hesabının eksi bakiye reddi de cash-negative'dir ama accountId taşır; onu formun kendi sorusu sorar
+      // (HOF.bank.withConfirms: hesabın adı ve bakiyesiyle, işlemin adıyla "Yine de İptal Et / Sil / Geri Yükle"). Burada yalnız Kasa sorulur.
+      if (error.data?.accountId) throw error;
       // Yola göre başlık ve öneri (Nakit Kasa, Banka, Kredi Kartı). "Engelle" ayarında sunucu cash-blocked döner, sorulmaz.
       const where = { cash: ["Kasa Eksiye Düşecek", "Ödeme bankadan ya da başka bir kasadan yapıldıysa yolu değiştirin."], bank: ["Banka Bakiyesi Eksiye Düşecek", "Hesapta kredili mevduat varsa ya da tahsilat henüz girilmediyse kaydedebilirsiniz."], card: ["Kredi Kartı Bakiyesi Eksiye Düşecek", "İade tutarını ve ödeme yolunu kontrol edin."] }[error.data?.method] || ["Bakiye Eksiye Düşecek", ""];
       // v2.0.26 (G7): silmede sunucu nedeni söyler ("… silinince Nakit Kasa'dan … düşer"); yol değiştirme önerisi silmeye uymaz.
@@ -156,9 +163,10 @@
       const go = await HOF.confirm({ title: where[0], message: question.replace(/\s+/g, " "), confirmLabel: removing ? "Yine de Sil" : "Yine de Kaydet", danger: true });
       // İ6: silmede "Silinmedi"; kullanıcı bilerek vazgeçtiği için bildirim hata değil bilgi (HOF.toastError, aşağıda).
       if (!go) throw new ApiError(removing ? "Silinmedi: bakiye eksiye düşecekti." : "Kaydedilmedi: bakiye eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
-      // Silmede gövde yok: onay adrese eklenir.
-      if (removing) return rawApi(`${path}${path.includes("?") ? "&" : "?"}cashForce=1`, options);
-      return rawApi(path, { ...options, body: { ...body, cashForce: true } });
+      // Silmede gövde yok: onay adrese eklenir. Hakem K5: cashForce banka hesabının uyarısını da geçer (plan §3.9); bu onay yalnız Kasa'nın
+      // sorusuna verildiği için banka hesabı henüz sorulmadıysa negativeOk:false (?negativeOk=0) eklenir — banka hesabı ayrıca sorulur.
+      if (removing) return rawApi(`${path}${path.includes("?") ? "&" : "?"}cashForce=1${/[?&]negativeOk=1\b/.test(path) ? "" : "&negativeOk=0"}`, options);
+      return rawApi(path, { ...options, body: { ...body, cashForce: true, negativeOk: body.negativeOk === true } });
     }
   };
   // v2.0.22 (Excel denetimi, yük ölçümü): arka plan istekleri (rozetler, vade takvimi, ANLIK DURUM, başka bilgisayardaki
@@ -209,13 +217,26 @@
     } finally {
       clearTimeout(timer);
     }
-    const payload = await response.json().catch(() => ({}));
+    // 10.10.2026 (senaryo-banka-210 adım 41, test/e2e/acilis-yanit-yaris.mjs): başlık gelip gövde okunurken bağlantı kesilirse (sayfa
+    // yeniden yüklendi/gezindi, ağ koptu) okuma TypeError/AbortError ile düşer. Önceden bu da `{}` sayılıyor ve 200 yanıt "başarılı ama boş"
+    // dönüyordu; çağıran beklediği alanı bulamayıp ilgisiz bir TypeError atıyordu ("notes.notes is not iterable"). Artık ağ hatası gibi
+    // ApiError (durum 0). JSON olmayan gövde (SyntaxError) eskisi gibi `{}`.
+    let payload;
+    try {
+      payload = await response.json();
+    } catch (error) {
+      if (error?.name !== "SyntaxError") throw new ApiError("Sunucunun yanıtı yarıda kesildi. Ağ bağlantısını kontrol edip yeniden deneyin.", 0, { code: "response-cut" });
+      payload = {};
+    }
     if (!response.ok || payload.ok === false) {
       const error = new ApiError(payload.error || "İşlem tamamlanamadı.", response.status, payload);
       if (response.status === 401) HOF.emit("unauthorized", error);
       else if (payload.code === "PASSWORD_CHANGE_REQUIRED") HOF.emit("password-required", error);
       else if (response.status === 503 && payload.code === "MAINTENANCE") HOF.emit("maintenance", payload);
       else if (response.status === 403 && payload.code === "LICENSE_READ_ONLY") HOF.emit("license-read-only", payload);
+      // Banka m1 (10.10.2026): sunucu "hesap/kart seçin" dediyse ekranın hesap listesi eskidir (başka oturum hesap açtı, olay henüz gelmedi);
+      // açık formların seçicileri taze listeyle yeniden kurulur (hof-bank.js refreshPickers, hof-invoices.js peşin satır hücreleri).
+      else if (payload.code === "bank-account-required") HOF.emit("bank-choices-stale", payload);
       throw error;
     }
     if (method !== "GET") noteLedgerChange(path);
@@ -270,6 +291,9 @@
     [/^\/api\/workspace\/invoices\b/, ["invoices", "stock", "cash", "accounts", "cheques", "plans"]],
     [/^\/api\/workspace\/(payments\b|cases\/[^/]+\/(payments|plans|account)\b)/, ["cash", "plans", "accounts", "invoices"]],
     [/^\/api\/(admin\/)?trash\b/, ["cash", "plans", "accounts", "stock", "cheques", "invoices"]],
+    // v2.1.0: banka yazımları (hesap, açılış, sihirbaz; sonraki aşamalarda hareket, transfer) Banka penceresini ve para gösteren her
+    // pencereyi yeniler.
+    [/^\/api\/workspace\/bank\b/, ["bank", "cash", "accounts", "invoices", "plans", "cheques"]],
   ];
   function noteLedgerChange(path) {
     const clean = String(path || "").split("?")[0];
@@ -293,28 +317,54 @@
   //  - aynı sıradaki iki yanıttan, sonra başlamış olan ekrana yazıldıysa önce başlamış olanınki yazılmaz (eski okuma
   //    yeni veriyi ezmesin);
   //  - süzgeç yüklemesi sürerken "Daha Fazla" yok sayılır (eski listenin uzunluğu yeni süzgece uygulanmasın).
+  // 2.1.0 (bağımsız inceleme H4, 11.10.2026): "Daha Fazla"nın yanıtı yalnız isteğin gittiği listeye eklenir. Önceden Daha Fazla sürerken
+  // arka plan yenilemesi listeyi taze ilk sayfayla değiştirirse Daha Fazla'nın yanıtı (eski listenin devamı) yeni listeye ekleniyordu: sayfa
+  // sınırındaki kayıt ekranda hiç görünmüyordu (Banka → Hareketler'de üretildi; Cari, Fatura, Stok, Çek/Senet aynı kapıyı kullanır). Kural:
+  //  - her yazılan yanıt listenin sürümünü artırır; Daha Fazla başladığı sürüm değiştiyse yazılmaz, retry() → çağıran Daha Fazla'yı YENİ
+  //    listenin sonundan yeniden ister;
+  //  - arka plan yenilemesi (quiet) başladıktan sonra Daha Fazla yazıldıysa (liste uzadı) yazılmaz, retry() → yeni uzunlukla yeniden ister
+  //    (Daha Fazla ile açılan satırlar geri alınmasın); daha yeni bir yenileme yazıldıysa yalnız düşer;
+  //  - Daha Fazla artık arka plan yenilemesini geçersiz saymaz (ikisi de yazılır, sırası ne olursa olsun sonuç: taze + uzamış liste).
   HOF.listGate = () => {
     let ticket = 0;
     let seq = 0;
     let applied = 0;
     let pending = 0;
+    let more = 0;
+    let version = 0;
+    let grown = 0;
     return {
-      start({ quiet = false, more = false } = {}) {
-        if (more && pending) return null;
-        const own = quiet ? ticket : ++ticket;
+      start({ quiet = false, more: isMore = false } = {}) {
+        if (isMore && pending) return null;
+        // Kullanıcının yüklemesi (yeni arama, süzgeç, sekme) bütün eski yanıtları geçersiz sayar; Daha Fazla yalnız önceki Daha Fazla'yı.
+        const own = quiet || isMore ? ticket : ++ticket;
+        const ownMore = isMore ? ++more : more;
         const order = ++seq;
-        if (!quiet && !more) pending = own;
+        const base = version;
+        if (!quiet && !isMore) pending = own;
+        const alive = () => own === ticket && (!isMore || ownMore === more);
+        // Daha Fazla: başladığından beri herhangi bir yanıt yazıldıysa eski. Arka plan yenilemesi: başladığından beri Daha Fazla yazıldıysa eski.
+        const stale = () => (isMore ? version !== base : quiet && grown > base);
+        const ordered = () => isMore || order >= applied;
         return {
-          current: () => own === ticket && (more || order >= applied),
+          current: () => alive() && ordered() && !stale(),
+          // Yanıt yazılmadı ama istek hâlâ geçerli (yalnız liste arada değişti): aynı türden istek yeni listeyle yinelenir.
+          retry: () => alive() && ordered() && stale(),
           applied: () => {
-            if (!more) applied = order;
+            version += 1;
+            if (isMore) grown = version;
+            else applied = order;
           },
           done: () => {
-            if (!quiet && !more && pending === own) pending = 0;
+            if (!quiet && !isMore && pending === own) pending = 0;
           },
         };
       },
     };
+  };
+  // Liste yüklemesini kapının retry() kararıyla en çok 3 kez yineler (load: tek deneme; true dönerse liste arada değişmiştir).
+  HOF.listRetry = async load => {
+    for (let attempt = 0; attempt < 3; attempt += 1) if (!(await load())) return;
   };
   HOF.listPending = message =>
     message
@@ -473,13 +523,17 @@
     return node;
   };
   // v2.0.26 (2. gözden geçirme İ6): eksi bakiye sorusunda "Vazgeç" bir hata değil, kullanıcının kararı: bilgi bildirimi.
-  HOF.toastError = error => (error?.data?.code === "cash-negative-cancelled" ? HOF.toast(error.message, { type: "info" }) : HOF.toast((error && error.message) || String(error), { type: "error", timeout: 5200 }));
+  // Yargıç (2.1.0): banka sorularındaki "Vazgeç" de (bank-negative-cancelled, bank-similar-cancelled) kullanıcının kararıdır: bilgi bildirimi.
+  HOF.userCancelled = error => /-cancelled$/.test(String(error?.data?.code || ""));
+  HOF.toastError = error => (HOF.userCancelled(error) ? HOF.toast(error.message, { type: "info" }) : HOF.toast((error && error.message) || String(error), { type: "error", timeout: 5200 }));
 
   // ---------- Pencereler ----------
   const openModals = [];
   let lastPressed = null;
   document.addEventListener("pointerdown", event => { lastPressed = event.target?.closest?.("button, a, [tabindex]") || null; }, true);
-  HOF.modal = ({ title, eyebrow = "DESTEKOFİS", body = "", size = "", dismissible = true, onOpen, onClose } = {}) => {
+  // beforeClose (v2.1.0 GG2): kullanıcı kapatırken (Kapat, Esc, dışına tıklama) çağrılır; false ya da false'a çözülen söz kapanmayı durdurur
+  // (ör. kaydedilmemiş değişiklik sorusu). Programın kendi close() çağrısı sorusuz kapatır.
+  HOF.modal = ({ title, eyebrow = "DESTEKOFİS", body = "", size = "", dismissible = true, onOpen, onClose, beforeClose = null } = {}) => {
     // v2.0.14: açan öğe. Tıklama odak vermemişse (ör. panel mousedown'ı yutuyor) son basılan düğme alınır; pencere
     // açıkken o düğme yeniden kurulmuş olabilir (canlı yenileme) — kapanınca odak aynı anahtarlı yeni düğmeye döner, boşa
     // (body) düşmez.
@@ -498,7 +552,8 @@
     );
     const dialog = node.querySelector(".hof-modal");
     let closed = false;
-    const close = result => {
+    let asking = false;
+    const finish = result => {
       if (closed) return;
       closed = true;
       node.classList.remove("is-visible");
@@ -509,12 +564,31 @@
       if (back && back.focus && back !== document.body) back.focus({ preventScroll: true });
       if (onClose) onClose(result);
     };
+    // Kullanıcının kapatması (Kapat düğmesi, Esc, dışına tıklama): beforeClose sorabilir.
+    const userClose = () => {
+      if (closed || asking) return;
+      if (!beforeClose) return finish();
+      const answer = beforeClose();
+      if (answer === false) return;
+      if (answer && typeof answer.then === "function") {
+        asking = true;
+        answer.then(ok => {
+          asking = false;
+          if (ok !== false) finish();
+        }, () => {
+          asking = false;
+        });
+        return;
+      }
+      finish();
+    };
+    const close = result => finish(result);
     const focusables = () => [...dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(item => !item.disabled && item.offsetParent !== null);
     const onKey = event => {
       if (openModals[openModals.length - 1] !== api) return;
       if (event.key === "Escape" && dismissible) {
         event.preventDefault();
-        close();
+        userClose();
       } else if (event.key === "Tab") {
         const items = focusables();
         if (!items.length) return;
@@ -533,9 +607,9 @@
     openModals.push(api);
     document.addEventListener("keydown", onKey, true);
     if (dismissible) {
-      node.querySelector(".hof-modal-close").onclick = () => close();
+      node.querySelector(".hof-modal-close").onclick = () => userClose();
       node.addEventListener("mousedown", event => {
-        if (event.target === node) close();
+        if (event.target === node) userClose();
       });
     }
     document.body.appendChild(node);

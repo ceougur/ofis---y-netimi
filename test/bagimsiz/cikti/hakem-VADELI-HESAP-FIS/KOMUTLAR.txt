@@ -1,0 +1,18 @@
+Hakem — fark sınıfı VADELI-HESAP-FIS (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-VADELI-HESAP-FIS.json
+      # en küçük (2 adım; 66 hesap_ac vadeli B4 66.937 + 182 diger_gelir 18,57, ikisi özgün tohum 1 adımları): fark 6, hepsi A=B≠P,
+      # 12 yaprak karşılaştırıldı. retler.182: A/B geçti · P 400 bank-account-invalid ("diğer gelir Vadesiz, Ticari ya da Diğer TL
+      # hesaba girilir"). Türevler: B4 A/B 66.955,57 · P 66.937,00; mizan.649 A/B alacak 18,57 · P 0.
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-VADELI-HESAP-FIS/en-kucuk-VADELI-HESAP-FIS-tani.json
+      # tanı: vadeli V1'de masraf (Yok + BSMV Dahil), diğer gelir, diğer gider, faiz gideri → P 400 (5 ret, A=B≠P);
+      # V1'de faiz geliri, V1→D1 ve D1→V1 transfer, V1'e havale tahsilatı (üçü de 400) → üç taraf AYNI;
+      # KARŞI DENEY vadesiz D1'de aynı altı fiş türü → üç taraf aynı (D1 39.458,92). Sınıf = vadeli × {fee, other_in, other_out, interest_out}.
+  node test/bagimsiz/cikti/hakem-VADELI-HESAP-FIS/canli.mjs . > test/bagimsiz/cikti/hakem-VADELI-HESAP-FIS/canli-head.json
+      # gerçek API, koşucusuz (HEAD): vadelide fee×2/other_in/other_out/interest_out 400 bank-account-invalid, bakiye değişmez;
+      # interest_in 200 (50.000 → 50.042,50); vadesizde altısı 200.
+  node test/bagimsiz/cikti/hakem-VADELI-HESAP-FIS/canli.mjs /tmp/v2026 > test/bagimsiz/cikti/hakem-VADELI-HESAP-FIS/canli-v2026.json
+      # canlı sürüm (v2.0.26 = 5346ff8, /tmp/v2026 worktree, izlenen dosyada değişiklik yok): banka modülü yok
+      # (GET /bank/accounts 404, POST /bank/vouchers 404), Kasa'ya 'bank' yolundan elle giriş/çıkış 400 cash-method → sınıf canlıda YOK.
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+Not: fark.py fark dosyalarını cikti/'ye yazar; fark-ozet.json kirlenmesin diye iki fark dosyası bu klasöre taşındı.
+Ham: cikti/ham/en-kucuk-VADELI-HESAP-FIS*.{a,b,program}.json.

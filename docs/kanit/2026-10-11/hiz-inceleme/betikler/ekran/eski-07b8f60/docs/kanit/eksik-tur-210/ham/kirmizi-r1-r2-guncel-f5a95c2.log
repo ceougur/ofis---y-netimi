@@ -1,0 +1,3 @@
+guncel R1a: cari bakiye 120 (beklenen 120) · açık satış overdue/120 (beklenen overdue/120) · Açık Faturalar [["Açık Alacak","120,00 TL"],["Açık Borç","0,00 TL"]]
+guncel R1d: alış faturası overdue/500 (beklenen overdue/500; müşteriye iade ödemesi tedarikçiye ödeme değildir)
+guncel R2: Gider Raporu satırları [["Ekim 2026","Kira","770","1","2.000,00 TL","400,00 TL","%87"],["Ekim 2026","Elektrik, Su ve Doğalgaz","770","1","300,00 TL","60,00 TL","%13"]] (beklenen 2 satır: Kira 2.000 · Elektrik 300)

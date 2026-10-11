@@ -1,0 +1,10 @@
+rastgele-27-500: çıkış a=0 b=0 program=0 · karşılaştırılan 7239 · atlanan 595 · fark 785 {'A=B≠P': 595, 'A≠B=P': 6, 'B≠A=P': 184}
+  KAHIN-K4-YINELENEN-AD                                           6 yaprak  {'A≠B=P': 6}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KASA-ISTEK-KIMLIGI                                              2 yaprak  {'A=B≠P': 2}
+  KDV-DAHIL-ISKONTO                                             170 yaprak  {'A=B≠P': 170}
+  KOSUCU-ALIS-YINELEME-NUMARA                                   192 yaprak  {'B≠A=P': 184, 'A=B≠P': 8}
+  TUREV:IADE-KAPAMA+KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO         19 yaprak  {'A=B≠P': 19}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                           127 yaprak  {'A=B≠P': 127}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO                     60 yaprak  {'A=B≠P': 60}
+  TUREV:KDV-DAHIL-ISKONTO                                       169 yaprak  {'A=B≠P': 169}

@@ -1,0 +1,196 @@
+TAP version 13
+# (node:27297) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Nakit Akış / Vade Takip: ileri tarihli satırın kaynağı yoluna göre (gerçek v2.0.23 verisi)
+    # Subtest: B1+B2 API: nakit 'Kasa (ileri tarihli)', hesapsız eski havale 'Hesabı Atanmamış (ileri tarihli)'; her satır bir kez; toplamlar bağımsız defterle
+    not ok 1 - B1+B2 API: nakit 'Kasa (ileri tarihli)', hesapsız eski havale 'Hesabı Atanmamış (ileri tarihli)'; her satır bir kez; toplamlar bağımsız defterle
+      ---
+      duration_ms: 4.069288
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        akış satırları (tarih, yön, tutar, kaynak)
+        + actual - expected
+        
+          [
+            '2026-10-14 +300 cash',
+        +   '2026-10-15 -400 cash',
+        -   '2026-10-15 -400 legacy',
+            '2026-10-17 -200 cash',
+        +   '2026-10-20 +1000 cash'
+        -   '2026-10-20 +1000 legacy'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-14 +300 cash'
+        1: '2026-10-15 -400 legacy'
+        2: '2026-10-17 -200 cash'
+        3: '2026-10-20 +1000 legacy'
+      actual:
+        0: '2026-10-14 +300 cash'
+        1: '2026-10-15 -400 cash'
+        2: '2026-10-17 -200 cash'
+        3: '2026-10-20 +1000 cash'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:129:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B1 PDF ve Excel: Kaynak kolonu ekranla aynı ad (Kasa yalnız nakitte)
+    not ok 2 - B1 PDF ve Excel: Kaynak kolonu ekranla aynı ad (Kasa yalnız nakitte)
+      ---
+      duration_ms: 38.61743
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:137:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        PDF: hesapsız iki eski satır ayrı adla (Nakit Akış Projeksiyonu 10.10.2026 – 09.11.2026 · Taksit, çek/senet ve ileri tarihli Kasa hareketleri · Başlangıç: Nakit Kasa + Gerçek Banka… Oluşturma: 10.10.2026 12:00 Hazırlayan: Ofis yöneticisi Bugünkü Nakit ve Banka 11.000,00 TL Nakit Kasa 1.000,00 TL Gerçek Banka 10.000,00 TL Hesabı Atanmamış Eski Hareketler 250,00 TL Başlangıç (Nakit ve Banka) 11.000,00 TL Beklenen Giriş 1.300,00 TL Beklenen Çıkış 600,00 TL Dönem Sonu Tahmini Nakit ve Banka 11.700,00 TL En Düşük Tahmini Nakit ve Banka 10.700,00 TL (1… Gecikmiş Alacak / Borç 0,00 TL / 0,00 TL Vade Kaynak Açıklama Kimden / Kime Giriş Çıkış Beklenen Nakit ve Banka 14.10.2026 Kasa (ileri tarihli) Çek tahsili · No YOL-1 · İleri Tarihli Müşteri 300,00 TL 11.300,00 TL 15.10.2026 Kasa (ileri tarihli) Çek ödemesi · No YOL-3 · İleri Tarihli T)
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:141:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B1 ekran: istemcinin satır adı sunucuyla aynı ('Hesabı Atanmamış (ileri tarihli)'; Kasa kutusu süzgeci değişmez)
+    not ok 3 - B1 ekran: istemcinin satır adı sunucuyla aynı ('Hesabı Atanmamış (ileri tarihli)'; Kasa kutusu süzgeci değişmez)
+      ---
+      duration_ms: 1.159683
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: 'hof-overview.js satır adlarında legacy kaynağı yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:154:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B4 Vade Takip (komşu): aynı satırlar aynı adla; Kasa süzgeci Kasa'nın satırlarını ve hesapsız eski satırları ayrı adla verir
+    not ok 4 - B4 Vade Takip (komşu): aynı satırlar aynı adla; Kasa süzgeci Kasa'nın satırlarını ve hesapsız eski satırları ayrı adla verir
+      ---
+      duration_ms: 7.321231
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:157:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Vade Takip satırları
+        + actual - expected
+        
+          [
+            '2026-10-14 in 300 cash',
+        +   '2026-10-15 out 400 cash',
+        -   '2026-10-15 out 400 legacy',
+            '2026-10-17 out 200 cash',
+        +   '2026-10-20 in 1000 cash'
+        -   '2026-10-20 in 1000 legacy'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-14 in 300 cash'
+        1: '2026-10-15 out 400 legacy'
+        2: '2026-10-17 out 200 cash'
+        3: '2026-10-20 in 1000 legacy'
+      actual:
+        0: '2026-10-14 in 300 cash'
+        1: '2026-10-15 out 400 cash'
+        2: '2026-10-17 out 200 cash'
+        3: '2026-10-20 in 1000 cash'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:161:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B3 tutarlılık: D+11'de eski satırlar hesaba atanınca başlangıç = D0 projeksiyonunun dönem sonu (11.700)
+    ok 5 - B3 tutarlılık: D+11'de eski satırlar hesaba atanınca başlangıç = D0 projeksiyonunun dönem sonu (11.700)
+      ---
+      duration_ms: 45.113246
+      type: 'test'
+      ...
+    1..5
+not ok 1 - Nakit Akış / Vade Takip: ileri tarihli satırın kaynağı yoluna göre (gerçek v2.0.23 verisi)
+  ---
+  duration_ms: 1257.836191
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:96:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Nakit Akış: hesaba atanmış ileri tarihli banka ve kurumsal kart satırı (ham veri)
+    # Subtest: B5 dönem sonu = Nakit 2.000 + Ziraat (10.000 − 700) = 11.300; havale bir kez, kart borcu hiç
+    not ok 1 - B5 dönem sonu = Nakit 2.000 + Ziraat (10.000 − 700) = 11.300; havale bir kez, kart borcu hiç
+      ---
+      duration_ms: 8.970656
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:203:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        akışta ileri tarihli banka/kart satırı yok (Gerçek Banka zaten içeriyor; kart borçtur)
+        + actual - expected
+        
+        + [
+        +   '2026-10-18 out 700 cash',
+        +   '2026-10-18 out 500 cash'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '2026-10-18 out 700 cash'
+        1: '2026-10-18 out 500 cash'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:205:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - Nakit Akış: hesaba atanmış ileri tarihli banka ve kurumsal kart satırı (ham veri)
+  ---
+  duration_ms: 366.725278
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-c8ec274/test/nakit-akis-ileri-tarihli-yol.test.mjs:188:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2064.442745

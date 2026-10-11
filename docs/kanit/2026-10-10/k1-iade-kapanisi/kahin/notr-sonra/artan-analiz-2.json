@@ -1,0 +1,26 @@
+{
+ "senaryo": "rastgele-2-500-notr",
+ "cariSayisi": 1,
+ "hepsiArtanFifo": true,
+ "acikDisiYaprak": 0,
+ "cariler": [
+  {
+   "cari": "C29",
+   "iadeler": {
+    "R27": [
+     15600,
+     "alis_iade"
+    ]
+   },
+   "belgeler": {
+    "F40": [
+     15600,
+     "alis"
+    ]
+   },
+   "iadeToplam": 15600,
+   "belgeToplam": 15600,
+   "desen": "ARTAN-FIFO"
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+  "a_stderr": "SENARYO GEÇERSİZ: adım 6: BELİRSİZ-6 — kalanı aşan / kapanmış karta tahsilat",
+  "adimSayisi": 6,
+  "cikisKodlari": {
+    "a": 2,
+    "b": 0,
+    "program": 0
+  },
+  "durum": "EKSIK: en az bir taraf çıktı üretmedi; karşılaştırma yapılmadı",
+  "farklar": [],
+  "islemSayisi": 6,
+  "islemTurleri": {
+    "cari_ac": 1,
+    "fatura": 1,
+    "stok_giris": 1,
+    "taksit_tahsilat": 2,
+    "urun_ac": 1
+  },
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/mini/mini-kahin-a-yineleme-sirasi.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/mini/mini-kahin-a-yineleme-sirasi.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/mini/mini-kahin-a-yineleme-sirasi.json --cikti test/bagimsiz/cikti/ham/mini-kahin-a-yineleme-sirasi.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 122,
+    "commit": "9edd6b0bc4ca8865ab118d6d15a7fca000539592",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "mini-kahin-a-yineleme-sirasi",
+  "senaryoDosyasi": "test/bagimsiz/cikti/mini/mini-kahin-a-yineleme-sirasi.json",
+  "sureler": {
+    "a": 0.14,
+    "b": 0.13,
+    "program": 2.62
+  }
+}

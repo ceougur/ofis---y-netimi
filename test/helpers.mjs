@@ -24,9 +24,26 @@ export async function startTestServer(options = {}) {
     startLicenseTimers: options.startLicenseTimers ?? false,
     // e-Belge bağlantısı programda kapalıdır; yalnız entegratör testleri açar.
     ...(options.edocEnabled ? { edocEnabled: true } : {}),
+    ...(options.fxEnabled ? { fxEnabled: true } : {}),
+    // Bu sürümde olmayan banka özelliklerinin gizli ayarlarını değiştiren testler (doğrulama kuralları, Elle Banka Fişi).
+    ...(options.bankLater ? { bankLater: true } : {}),
+    ...(options.bankPickLegacy ? { bankPickLegacy: true } : {}),
     ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
     // Şirket sınırı (en fazla 2): 2'den çok şirketi olan eski kurulumu canlandıran testler sınırı yükseltir.
     ...(options.maxCompanies ? { maxCompanies: options.maxCompanies } : {}),
+    // Sahte saat (v2.1.0): sunucunun "bugün"ü ve iş zaman damgaları (config.now). Zaman (Date/sayı/ISO metni; akar) ya da
+    // { time, fixed: true } (durur). server.clock.set/advance ile ilerletilir; tarayıcıyla eşleme: installPageClock/moveClock.
+    ...(options.now !== undefined ? { now: options.now } : {}),
+    // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
+    // Üretim davranışını sınayan testler { moneyStrict: false } verir.
+    moneyStrict: options.moneyStrict ?? true,
+    // Mutabakat kapısı eşdeğerlik denetimi (v2.1.0, §3.11): tam kapı her işlemde de çalışır; dokunulan varlıklar yolu temiz deyip tam
+    // kapı reddederse 500 "gate-equivalence". Üretim yolunu (yalnız süzgeç) sınayan testler { gateVerify: false } verir.
+    gateVerify: options.gateVerify ?? true,
+    ...(options.scopePartyRows !== undefined ? { scopePartyRows: options.scopePartyRows } : {}),
+    // Büyük banka raporlarının iş parçacığı (11.10.2026 hız düzeltmesi): testlerde hız için kapalı (rapor yerinde, aynı kodla hazırlanır);
+    // iş parçacığı yolunu sınayan testler (test/banka-210-hiz-esdegerlik, banka-210-rapor-is-parcacigi) { reportWorker: true } verir.
+    reportWorker: options.reportWorker ?? false,
   });
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;
@@ -36,6 +53,8 @@ export async function startTestServer(options = {}) {
     root,
     dataDir,
     backupDir,
+    // Sunucunun saati (app.config.now): gerçek saat ya da options.now ile verilen sahte saat.
+    clock: app.config.now,
     client: () => createClient(base),
     async close() {
       await app.close();
@@ -98,4 +117,20 @@ export async function createUser(server, admin, { username, role = "personel", p
   const login = await client.login(username, password);
   if (login.status !== 200) throw new Error("Kullanıcı girişi başarısız");
   return client;
+}
+
+// Playwright tarayıcı saatini sunucunun saatine bağlar (v2.1.0). Sayfa açılmadan önce çağrılır: tarayıcıdaki `new Date()`
+// (form tarihleri, "Bu Ay" süzgeci) sunucunun bugünüyle aynı günü gösterir. Sabit sunucu saatinde tarayıcı da durur.
+export async function installPageClock(page, clock) {
+  await page.clock.install({ time: clock.ms() });
+  if (clock.isFixed?.()) await page.clock.setFixedTime(clock.ms());
+}
+// Sunucu saatini ve bağlı sayfaların saatini birlikte değiştirir. time: Date/sayı/ISO metni ya da { days, hours, minutes } (ilerlet).
+export async function moveClock(clock, pages, time) {
+  if (time && typeof time === "object" && !(time instanceof Date)) clock.advance(time);
+  else clock.set(time);
+  for (const page of [pages].flat().filter(Boolean)) {
+    if (clock.isFixed?.()) await page.clock.setFixedTime(clock.ms());
+    else await page.clock.setSystemTime(clock.ms());
+  }
 }

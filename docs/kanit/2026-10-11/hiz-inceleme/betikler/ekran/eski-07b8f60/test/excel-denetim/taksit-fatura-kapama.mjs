@@ -1,0 +1,104 @@
+// Bulgu denemesi (kod değiştirmez): aynı müşteride açık satış faturası + Taksit penceresinden AYRI borçla açılan taksit
+// kartı. Kartın kendi tahsilatı faturayı da kapatıyor mu (çift sayım), cari kartından alınan genel tahsilat kaybolur mu?
+// Değişmez kural: açık faturaların kalanı + taksit kartlarının kalanı = carinin bakiyesi (aynı para iki kez sayılmaz,
+// hiçbir tahsilat kaybolmaz). Kullanım: node taksit-fatura-kapama.mjs
+// 2.0.23'ten sonra: F'de "Kapatılacak Fatura" ile taksitli faturaya bağ reddedilir (409; taksitli fatura kendi kartıyla
+// kapanır); betik reddi kaydeder. Her senaryonun carisi için Alacak Yaşlandırma toplamı, çift sayımsız beklenen kalem
+// toplamıyla karşılaştırılır (kalem bazlı rapor: taksit kalanı + vadeli fatura açığı; aynı borç bir kez).
+import fs from "node:fs";
+import path from "node:path";
+import { HERE, PASS, staff, startServer } from "./ortak.mjs";
+
+const SP = process.env.SP || path.join(HERE, "calisma");
+const app = startServer(path.join(SP, "taksit-fatura-kapama"), { fresh: true });
+const { port } = await app.listen(0, "127.0.0.1");
+const c = staff(`http://127.0.0.1:${port}`);
+if ((await c.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const must = async (label, promise) => {
+  const res = await promise;
+  if (res.status !== 200) throw new Error(`${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 200)}`);
+  return res.data;
+};
+const item = await must("ürün", c.post("/api/workspace/stock", { kind: "service", code: "HZM", name: "Hizmet", unit: "Adet", salePrice: "1000" }));
+const out = [];
+const nextMonth = day => {
+  const [y, m, d] = day.split("-").map(Number);
+  const next = new Date(Date.UTC(y, m, Math.min(d, 28)));
+  return next.toISOString().slice(0, 10);
+};
+async function scenario(label, steps) {
+  const acc = await must("cari", c.post("/api/workspace/accounts", { name: `Deneme ${label}`, type: "customer", registeredOn: "2025-01-01", phone: `0500 000 00 ${String(out.length + 10)}` }));
+  let planId = "";
+  let invoiceId = "";
+  let linked = "";
+  for (const step of steps) {
+    if (step.invoice) invoiceId = (await must("fatura", c.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: step.date, lines: [{ itemId: item.id, qty: 1, unitPrice: step.invoice, vatRate: 0 }], payment: step.installments ? { rest: "installments", installments: { count: step.installments, firstDue: step.firstDue, everyMonths: 1 } } : { rest: "open", dueDate: step.date } }))).id;
+    if (step.installments) {
+      const doc = await must("fatura oku", c.get(`/api/workspace/invoices/${invoiceId}`));
+      planId = doc.planId || doc.plan?.id;
+    }
+    if (step.plan) planId = (await must("kart", c.post("/api/workspace/plans", { name: acc.name, registeredOn: step.date, total: String(step.plan), accountId: acc.id, mode: "auto", count: "3", firstDue: step.firstDue || nextMonth(step.date), ...(step.covers ? { coversBalance: true } : {}) }))).id;
+    if (step.collect) await must("tahsilat", c.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: step.collect, date: step.date, method: "cash", note: "cari kartından tahsilat" }));
+    if (step.planCollect) await must("kart tahsilatı", c.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: step.planCollect, date: step.date, method: "bank", note: "taksit kartından tahsilat" }));
+    // F: cari kartından "Kapatılacak Fatura" seçilerek (bağlı) tahsilat. G: kartı kapat (kalan düşülür).
+    if (step.linkedCollect) {
+      const res = await c.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: step.linkedCollect, date: step.date, method: "cash", invoiceId, note: "Kapatılacak Fatura seçilerek" });
+      linked = res.status === 200 ? "kabul edildi" : `reddedildi (${res.status}: ${res.data?.error || ""})`;
+    }
+    if (step.closePlan) await must("kartı kapat", c.put(`/api/workspace/plans/${planId}`, { status: "closed" }));
+  }
+  const inv = await must("fatura oku", c.get(`/api/workspace/invoices/${invoiceId}`));
+  const plan = await must("kart oku", c.get(`/api/workspace/plans/${planId}`));
+  const account = (await must("cari oku", c.get(`/api/workspace/accounts?status=all&limit=50&q=${encodeURIComponent(acc.name)}`))).accounts.find(a => a.id === acc.id);
+  if (inv.open === undefined || plan.totals?.remaining === undefined) throw new Error("fatura açığı ya da kart kalanı okunamadı");
+  const invOpen = Number(inv.open);
+  // Kapatılan kartın kalanı silinmiştir (defterde "Kart kapatıldı" alacağıyla düşülür); istenmeyen kalan sayılmaz.
+  const planLeft = plan.status === "closed" ? 0 : Number(plan.totals.remaining);
+  const row = { senaryo: label, cari: acc.name, adimlar: steps, fatura: { odenecek: inv.tryPayable, odenen: inv.paid, acik: invOpen, durum: inv.payStateLabel }, taksitKarti: { toplam: plan.totals.total, odenen: plan.totals.paid, kalan: planLeft }, cariBakiye: account.balance, acikToplam: Math.round((invOpen + planLeft) * 100) / 100, ...(linked ? { bagliTahsilat: linked } : {}) };
+  row.tutarli = Math.abs(row.acikToplam - account.balance) < 0.005;
+  out.push(row);
+  console.log(`\n■ ${label}`);
+  console.log(`  fatura ${inv.tryPayable}: ödenen ${inv.paid} · açık ${invOpen} · ${inv.payStateLabel}`);
+  console.log(`  taksit kartı ${plan.totals.total}: ödenen ${plan.totals.paid} · kalan ${planLeft}${plan.status === "closed" ? " (kart kapatıldı; kalan düşüldü)" : ""}`);
+  console.log(`  cari bakiye ${account.balance} · fatura açığı + kart kalanı ${row.acikToplam} → ${row.tutarli ? "TUTARLI" : `TUTARSIZ (fark ${Math.round((account.balance - row.acikToplam) * 100) / 100})`}`);
+  if (linked) console.log(`  "Kapatılacak Fatura" ile bağlı tahsilat: ${linked}`);
+}
+try {
+  await scenario("A · önce fatura, sonra ayrı kart", [{ date: "2025-01-23", invoice: 12720 }, { date: "2025-01-24", plan: 9000 }, { date: "2025-01-25", collect: 5000 }, { date: "2025-01-26", planCollect: 3000 }]);
+  await scenario("B · önce kart, sonra fatura", [{ date: "2025-01-10", plan: 9000 }, { date: "2025-01-23", invoice: 12720 }, { date: "2025-01-25", collect: 5000 }, { date: "2025-01-26", planCollect: 3000 }]);
+  await scenario("C · fatura hiç ödenmedi, kart tamamen ödendi", [{ date: "2025-02-01", invoice: 6000 }, { date: "2025-02-02", plan: 9000 }, { date: "2025-02-03", planCollect: 3000 }, { date: "2025-02-04", planCollect: 3000 }, { date: "2025-02-05", planCollect: 3000 }]);
+  // D: kart AYRI borç değil, faturanın borcunu taksitlendiriyor ("Carinin Mevcut Borcu"); burada tek borç vardır:
+  // fatura açığı ile kart kalanı AYNI borcun iki görünüşüdür (toplanmaz), ikisi de cari bakiyesine eşit olmalı.
+  await scenario("D · faturanın borcu karta bölündü (Carinin Mevcut Borcu)", [{ date: "2025-02-10", invoice: 12000 }, { date: "2025-02-11", plan: 12000, covers: true }, { date: "2025-02-12", planCollect: 3000 }]);
+  const d = out.at(-1);
+  d.tutarli = Math.abs(d.fatura.acik - d.cariBakiye) < 0.005 && Math.abs(d.taksitKarti.kalan - d.cariBakiye) < 0.005;
+  console.log(`  D için doğru ölçü: fatura açığı ${d.fatura.acik} = kart kalanı ${d.taksitKarti.kalan} = cari bakiye ${d.cariBakiye} → ${d.tutarli ? "TUTARLI" : "TUTARSIZ"}`);
+  // E: taksitli fatura (taksit kartı faturanın kendisi); müşteri cari kartından başka bir iş için ödeme yapar (bağsız).
+  // Excel haftasında gerçekten oldu: C0122, ISL-01905 (290,60) + ISL-03375 senet. Fatura ile kartı aynı şeyi söylemeli.
+  await scenario("E · taksitli fatura + cari kartından bağsız tahsilat", [{ date: "2025-02-20", invoice: 3000, installments: 3, firstDue: "2025-03-20" }, { date: "2025-02-21", collect: 5000 }]);
+  const e = out.at(-1);
+  e.tutarli = Math.abs(e.fatura.acik - e.taksitKarti.kalan) < 0.005;
+  console.log(`  E için doğru ölçü: fatura açığı ${e.fatura.acik} = kendi taksit kartının kalanı ${e.taksitKarti.kalan} → ${e.tutarli ? "TUTARLI" : "TUTARSIZ"} (cari bakiye ${e.cariBakiye})`);
+  await scenario("F · taksitli fatura + Kapatılacak Fatura seçilerek tahsilat", [{ date: "2025-02-25", invoice: 3000, installments: 3, firstDue: "2025-03-25" }, { date: "2025-02-26", linkedCollect: 1000 }]);
+  const fRow = out.at(-1);
+  fRow.tutarli = Math.abs(fRow.fatura.acik - fRow.taksitKarti.kalan) < 0.005 && Math.abs(fRow.taksitKarti.kalan - fRow.cariBakiye) < 0.005;
+  console.log(`  F için doğru ölçü: fatura açığı ${fRow.fatura.acik} = kendi taksit kartının kalanı ${fRow.taksitKarti.kalan} → ${fRow.tutarli ? "TUTARLI" : "TUTARSIZ"}`);
+  await scenario("G · önce fatura, sonra ayrı kart; karttan 3.000 tahsilat; kart kapatılır (kalan düşülür)", [{ date: "2025-03-01", invoice: 12720 }, { date: "2025-03-02", plan: 9000 }, { date: "2025-03-03", planCollect: 3000 }, { date: "2025-03-04", closePlan: true }]);
+  const aging = await must("yaşlandırma", c.get("/api/workspace/report-center/alacak-yaslandirma"));
+  console.log(`\nAlacak Yaşlandırma özeti: ${JSON.stringify(aging.summary)}`);
+  // Cari başına: rapordaki "Toplam" kolonu ↔ beklenen kalem toplamı (D, E, F: tek borç — kartın kalanı; diğerleri: fatura
+  // açığı + ayrı kartın kalanı). Kalem bazlı rapor carinin "Taksit Dışı" fazla tahsilatını (avans) kalemlerden düşmez (E).
+  const tl = text => Number(String(text || "0").replace(/[^\d,-]/g, "").replace(",", ".")) || 0;
+  for (const row of out) {
+    const line = aging.rows.find(r => r[0] === row.cari);
+    const single = /^[DEF] /.test(row.senaryo);
+    row.yaslandirma = line ? tl(line.at(-1)) : 0;
+    row.yaslandirmaBeklenen = Math.round((single ? row.taksitKarti.kalan : row.fatura.acik + row.taksitKarti.kalan) * 100) / 100;
+    console.log(`  ${row.senaryo.slice(0, 1)}: yaşlandırma ${row.yaslandirma} · beklenen ${row.yaslandirmaBeklenen} · cari bakiye ${row.cariBakiye} → ${Math.abs(row.yaslandirma - row.yaslandirmaBeklenen) < 0.005 ? "TUTARLI" : "TUTARSIZ"}`);
+  }
+  const accounts = (await must("cariler", c.get("/api/workspace/accounts?status=all&limit=50"))).accounts;
+  console.log(`Cari bakiyeleri toplamı: ${accounts.reduce((sum, a) => sum + a.balance, 0)}`);
+  fs.writeFileSync(path.join(HERE, "cikti", "taksit-fatura-kapama.json"), JSON.stringify({ senaryolar: out, yaslandirma: aging.summary }, null, 1));
+} finally {
+  await app.close();
+}

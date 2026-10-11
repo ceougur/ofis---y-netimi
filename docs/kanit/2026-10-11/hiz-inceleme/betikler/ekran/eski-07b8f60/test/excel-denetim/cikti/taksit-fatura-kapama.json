@@ -1,0 +1,286 @@
+{
+ "senaryolar": [
+  {
+   "senaryo": "A · önce fatura, sonra ayrı kart",
+   "cari": "Deneme A · önce fatura, sonra ayrı kart",
+   "adimlar": [
+    {
+     "date": "2025-01-23",
+     "invoice": 12720
+    },
+    {
+     "date": "2025-01-24",
+     "plan": 9000
+    },
+    {
+     "date": "2025-01-25",
+     "collect": 5000
+    },
+    {
+     "date": "2025-01-26",
+     "planCollect": 3000
+    }
+   ],
+   "fatura": {
+    "odenecek": 12720,
+    "odenen": 5000,
+    "acik": 7720,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 9000,
+    "odenen": 3000,
+    "kalan": 6000
+   },
+   "cariBakiye": 13720,
+   "acikToplam": 13720,
+   "tutarli": true,
+   "yaslandirma": 13720,
+   "yaslandirmaBeklenen": 13720
+  },
+  {
+   "senaryo": "B · önce kart, sonra fatura",
+   "cari": "Deneme B · önce kart, sonra fatura",
+   "adimlar": [
+    {
+     "date": "2025-01-10",
+     "plan": 9000
+    },
+    {
+     "date": "2025-01-23",
+     "invoice": 12720
+    },
+    {
+     "date": "2025-01-25",
+     "collect": 5000
+    },
+    {
+     "date": "2025-01-26",
+     "planCollect": 3000
+    }
+   ],
+   "fatura": {
+    "odenecek": 12720,
+    "odenen": 5000,
+    "acik": 7720,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 9000,
+    "odenen": 3000,
+    "kalan": 6000
+   },
+   "cariBakiye": 13720,
+   "acikToplam": 13720,
+   "tutarli": true,
+   "yaslandirma": 13720,
+   "yaslandirmaBeklenen": 13720
+  },
+  {
+   "senaryo": "C · fatura hiç ödenmedi, kart tamamen ödendi",
+   "cari": "Deneme C · fatura hiç ödenmedi, kart tamamen ödendi",
+   "adimlar": [
+    {
+     "date": "2025-02-01",
+     "invoice": 6000
+    },
+    {
+     "date": "2025-02-02",
+     "plan": 9000
+    },
+    {
+     "date": "2025-02-03",
+     "planCollect": 3000
+    },
+    {
+     "date": "2025-02-04",
+     "planCollect": 3000
+    },
+    {
+     "date": "2025-02-05",
+     "planCollect": 3000
+    }
+   ],
+   "fatura": {
+    "odenecek": 6000,
+    "odenen": 0,
+    "acik": 6000,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 9000,
+    "odenen": 9000,
+    "kalan": 0
+   },
+   "cariBakiye": 6000,
+   "acikToplam": 6000,
+   "tutarli": true,
+   "yaslandirma": 6000,
+   "yaslandirmaBeklenen": 6000
+  },
+  {
+   "senaryo": "D · faturanın borcu karta bölündü (Carinin Mevcut Borcu)",
+   "cari": "Deneme D · faturanın borcu karta bölündü (Carinin Mevcut Borcu)",
+   "adimlar": [
+    {
+     "date": "2025-02-10",
+     "invoice": 12000
+    },
+    {
+     "date": "2025-02-11",
+     "plan": 12000,
+     "covers": true
+    },
+    {
+     "date": "2025-02-12",
+     "planCollect": 3000
+    }
+   ],
+   "fatura": {
+    "odenecek": 12000,
+    "odenen": 3000,
+    "acik": 9000,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 12000,
+    "odenen": 3000,
+    "kalan": 9000
+   },
+   "cariBakiye": 9000,
+   "acikToplam": 18000,
+   "tutarli": true,
+   "yaslandirma": 9000,
+   "yaslandirmaBeklenen": 9000
+  },
+  {
+   "senaryo": "E · taksitli fatura + cari kartından bağsız tahsilat",
+   "cari": "Deneme E · taksitli fatura + cari kartından bağsız tahsilat",
+   "adimlar": [
+    {
+     "date": "2025-02-20",
+     "invoice": 3000,
+     "installments": 3,
+     "firstDue": "2025-03-20"
+    },
+    {
+     "date": "2025-02-21",
+     "collect": 5000
+    }
+   ],
+   "fatura": {
+    "odenecek": 3000,
+    "odenen": 0,
+    "acik": 3000,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 3000,
+    "odenen": 0,
+    "kalan": 3000
+   },
+   "cariBakiye": -2000,
+   "acikToplam": 6000,
+   "tutarli": true,
+   "yaslandirma": 3000,
+   "yaslandirmaBeklenen": 3000
+  },
+  {
+   "senaryo": "F · taksitli fatura + Kapatılacak Fatura seçilerek tahsilat",
+   "cari": "Deneme F · taksitli fatura + Kapatılacak Fatura seçilerek tahsilat",
+   "adimlar": [
+    {
+     "date": "2025-02-25",
+     "invoice": 3000,
+     "installments": 3,
+     "firstDue": "2025-03-25"
+    },
+    {
+     "date": "2025-02-26",
+     "linkedCollect": 1000
+    }
+   ],
+   "fatura": {
+    "odenecek": 3000,
+    "odenen": 0,
+    "acik": 3000,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 3000,
+    "odenen": 0,
+    "kalan": 3000
+   },
+   "cariBakiye": 3000,
+   "acikToplam": 6000,
+   "bagliTahsilat": "reddedildi (409: Bu fatura taksitli; kendi taksit kartıyla kapanır. Tahsilatı taksite yazın: cari kartında + Tahsilat → Taksite Yaz.)",
+   "tutarli": true,
+   "yaslandirma": 3000,
+   "yaslandirmaBeklenen": 3000
+  },
+  {
+   "senaryo": "G · önce fatura, sonra ayrı kart; karttan 3.000 tahsilat; kart kapatılır (kalan düşülür)",
+   "cari": "Deneme G · önce fatura, sonra ayrı kart; karttan 3.000 tahsilat; kart kapatılır (kalan düşülür)",
+   "adimlar": [
+    {
+     "date": "2025-03-01",
+     "invoice": 12720
+    },
+    {
+     "date": "2025-03-02",
+     "plan": 9000
+    },
+    {
+     "date": "2025-03-03",
+     "planCollect": 3000
+    },
+    {
+     "date": "2025-03-04",
+     "closePlan": true
+    }
+   ],
+   "fatura": {
+    "odenecek": 12720,
+    "odenen": 0,
+    "acik": 12720,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 9000,
+    "odenen": 3000,
+    "kalan": 0
+   },
+   "cariBakiye": 12720,
+   "acikToplam": 12720,
+   "tutarli": true,
+   "yaslandirma": 12720,
+   "yaslandirmaBeklenen": 12720
+  }
+ ],
+ "yaslandirma": [
+  [
+   "Vadesi Gelmemiş",
+   "0,00 TL"
+  ],
+  [
+   "1–30 gün",
+   "0,00 TL"
+  ],
+  [
+   "31–60 gün",
+   "0,00 TL"
+  ],
+  [
+   "61–90 gün",
+   "0,00 TL"
+  ],
+  [
+   "90+ gün",
+   "61.160,00 TL"
+  ],
+  [
+   "Toplam Gecikmiş",
+   "61.160,00 TL"
+  ]
+ ]
+}

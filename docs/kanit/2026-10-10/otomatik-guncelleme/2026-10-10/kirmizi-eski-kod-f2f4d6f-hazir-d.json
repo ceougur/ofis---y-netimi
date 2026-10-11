@@ -1,0 +1,38 @@
+{
+  "ad": "kirmizi-eski-kod-f2f4d6f-hazir-d",
+  "komut": "node --test --test-name-pattern=^\\(d\\) /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-f2f4d6f/test/guncelleme-hazir.test.mjs",
+  "commit": "8ebc7f7cc42bf3c81a36ad94e05cd6631146f742",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 1,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T20:53:34.838Z",
+  "sure_sn": 63.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler) › (d) açılışta daha yeni sürüm var → o indirilip kurulur; tek geçiş, ara sürüm kurulmaz",
+      "konum": "test/guncelleme-hazir.test.mjs:147:3",
+      "hata": "Beklenen durum oluşmadı: {\"error\":\"hazır değil: undefined\"}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/kirmizi-eski-kod-f2f4d6f-hazir-d.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "f67c3704e70cad71d257b5086582079718e48227b4f03a1c66f3707015120e99",
+  "ham_cikti_bayt": 8771
+}

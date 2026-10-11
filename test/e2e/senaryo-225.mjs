@@ -87,8 +87,10 @@ try {
   await page.waitForTimeout(1500);
   const rehber = [["Öğrenci No", "Adı", "Soyadı", "Telefonu"]];
   for (let i = 0; i < 30; i += 1) rehber.push([String(22821911000 + i), ["Mehmet", "İrem", "Cihat", "Rahman"][i % 4], ["Türkoğlu", "Eroğlu", "Şenyurt", "Koyuncu"][i % 4], `0532${String(1000000 + i)}`]);
+  // Hedefin son tarihi 5 gün sonra: uyarı ufku bütün sayfalarda 7 gün (kullanıcı kararı "A", 11.10.2026); öbür firmalar 200+ gün
+  // sonra, uyarı vermez (önceden öbür sayfa ufuksuzdu, hedef 10 gündeydi).
   const musteri = [["Vergi No", "Firma Adı", "Telefon", "Lisans Bitiş Tarihi"]];
-  for (let i = 0; i < 60; i += 1) musteri.push(i === 44 ? [TARGET_NO, TARGET, "05321234567", dmy(10)] : [String(300000000 + i), `Firma ${i + 1} Ltd.`, `0533${String(2000000 + i)}`, dmy(200 + i)]);
+  for (let i = 0; i < 60; i += 1) musteri.push(i === 44 ? [TARGET_NO, TARGET, "05321234567", dmy(5)] : [String(300000000 + i), `Firma ${i + 1} Ltd.`, `0533${String(2000000 + i)}`, dmy(200 + i)]);
   const arsiv = [["Vergi No", "Firma Adı", "Telefon", "Lisans Bitiş Tarihi"]];
   for (let i = 0; i < 5; i += 1) arsiv.push([String(400000000 + i), `Arşiv Firma ${i + 1}`, `0534${String(3000000 + i)}`, dmy(300 + i)]);
   const first = await api("/api/workspace/dataset/stage", { kind: "excel", fileName: "TÜM REHBER.xlsx", sheets: [{ name: "REHBER", matrix: rehber }] });
@@ -106,8 +108,17 @@ try {
   const p1 = pages.find(item => item.name !== "Müşteriler Yeni");
   const p2 = pages.find(item => item.name === "Müşteriler Yeni");
   ok(p2?.rowCount === 65, `2. sayfa 65 kayıt (${p2?.rowCount})`);
-  await api("/api/workspace/sessions/select", { key: p1.key });
-  await page.waitForTimeout(800);
+  // C adımının ön koşulu: hedef uyarı bu tarayıcıda henüz sağ altta GÖSTERİLMEDİ. Önceden 1. sayfa, 2. sayfayı gösteren
+  // pencere AÇIKKEN seçiliyordu; o pencere takvimi seçimden sonra yeniden alırsa (seçim kullanıcı başına; 2. sayfanın
+  // kalemleri artık "öbür sayfa" olarak gelir) uyarıyı orada gösterip "görüldü" yazıyordu ve hof-alerts.js kuralı gereği
+  // (3 saat sağ altta tekrarlanmaz) 1. sayfada gelmiyordu → 10.10.2026'daki 39/40 kırmızı (testin kendi yarışı; yeniden
+  // üretim test/e2e/senaryo-225-yaris.mjs). Şimdi seçim uygulama sayfası açık değilken (aynı kökenli stil dosyası) yapılır ve
+  // bu kullanıcının "görüldü" kaydı silinir: ön koşul her koşuda aynı. Bekleme süreleri ve yeniden deneme yok/değişmedi.
+  await page.goto(`${BASE}/assets/hof-ui.css`, { waitUntil: "load" });
+  ok((await api("/api/workspace/sessions/select", { key: p1.key })).status === 200, "1. sayfa seçildi (uygulama penceresi kapalıyken)");
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) if (key.startsWith("hof-notices:")) localStorage.removeItem(key);
+  });
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await ready();
   ok(/TÜM REHBER/.test(await currentPill()), `1. sayfadayız (${await currentPill()})`);

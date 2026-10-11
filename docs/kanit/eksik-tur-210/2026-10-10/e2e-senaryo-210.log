@@ -1,0 +1,77 @@
+
+■ Kurulum: yönetici girer, okul servisi Excel'i yükler, sektör önerisi uygulanır
+✓ 6 öğrenci kaydı tabloda
+
+■ A. Ana ekran (m13, m14, m15, m1)
+✓ m14: “Öğrenci özeti” başlık/açıklama bloğu kaldırıldı
+✓ m14: ANLIK DURUM ortada (sol 48px, sağ 48px)
+✓ m15: tablonun üstündeki “N kayıt · N kolon” satırı yok
+✓ m14: “Dışa aktar” tablo başlık satırının eylem grubunda (Yenile'nin yanında)
+✓ m15: arama kutusu tam genişlikte, yazısı kesilmiyor (pay 0.92)
+✓ m15: ana arama kutusu dolgulu açık yeşil (rgb(233, 245, 238))
+✓ m14: tablo başlığındaki “Dışa aktar” gerçek bir .xlsx indirir
+✓ m15: Cari, Taksitler, Stok, Çek/Senet arama kutuları aynı: Cari rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Taksitler rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Stok rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Çek/Senet rgb(233, 245, 238)|rgb(183, 214, 195)|10px
+✓ m1: Şirket seçici kartı ekranın içinde (18,156 → 358,341)
+✓ m13: yönetim panelinde “Ana Ekran” düğmesi
+
+■ B. Cari: Borçlu/Alacaklı sözcükleri, renkler ve bakiye süzgeçleri (m3, m4, m5, m6)
+✓ m3: “bize borçlu / biz borçluyuz” yazısı yok
+✓ m4: Borçlu yeşil (Borçlu, rgb(23, 114, 69))
+✓ m4: Alacaklı kırmızı (Alacaklı, rgb(179, 71, 58))
+✓ m5: göstergelerde borçlu ve alacaklı cari sayısı doğru (₺3.000,00 Borçlular · 1 cari ₺1.200,00 Alacaklılar · 1 cari ₺0,00 Taksitlerden Kalan ₺0,00 Geciken · 0 taksit)
+✓ m5: “Borçlular” süzgeci
+✓ m5: “Alacaklılar” süzgeci
+✓ m5: “Sadece bakiyesi olanlar” süzgeci (kapalı hesap yok)
+✓ m5: “Tümü”
+✓ m6: cari ekstre verisinde eski ifade yok
+✓ m6: cari ekstre PDF'i üretiliyor
+
+■ C. Kullanıcılar: yeni kullanıcı kişiye özel yetkiyle; özel rol; görev atama listesi (m2, m7, m12, m17)
+✓ m12: yönetime özgü yetkiler ve ANLIK DURUM kartı kilitli
+✓ m12: yeni kullanıcı formunda kaldırılan yetki kayıtlı
+✓ m12: özel rol “Veznedar” Kasa'yı açar
+✓ m12: kişi kartında rolün adı görünür
+✓ m2: “Atanacak kişi” listesinde herkes: Ayşe Yılmz · Personel | Mehmet Demir · Veznedar | Ofis yöneticisi (siz) · Yönetici | Zeynep Kaya · Şoför
+✓ m7: personelde ANLIK DURUM yok ve boş alan kalmıyor
+✓ m17: personelde “Yönetim” bağlantısı yok
+✓ m12: dışa aktarma yetkisi kaldırılan personelde “Dışa aktar” yok
+✓ m12: sunucu da dışa aktarmayı reddeder
+✓ m17: personel /admin paneline giremez
+
+■ C2. ✎ ad ve kullanıcı adı düzeltme; Sil (açık görev devri) ve geri al (m10, m11)
+✓ m11: görünen ad ve kullanıcı adı ✎ ile düzeltildi
+✓ m11: eski kullanıcı adıyla girilemez
+✓ m11: yeni kullanıcı adıyla girer, adı düzeltilmiş görünür
+✓ m10: Zeynep silindi, listeden çıktı
+✓ m10: açık görev seçilen kişiye devredildi
+✓ m10: silinen kişi giriş yapamaz
+✓ m10: silinen kullanıcı “Geri al” ile döner
+✓ m10/m11: işlem geçmişinde düzeltme, silme ve geri alma
+
+■ C3. Yetki paneli canlı: Kasa eklenir, Cari kaldırılır; personelin ekranı yeniden açılmadan değişir (m12)
+✓ başlangıç: Kasa yok, Cari var
+✓ panel özeti: Rolden farklı: 1 eklendi · 2 kaldırıldı
+✓ m12: personelin ekranında Kasa açıldı, Cari kapandı (yeniden açmadan)
+✓ m12: sunucu da aynı kuralla (Cari 403, Kasa 200)
+
+■ D. Çek ödenince tahsilat pili ve bildirim program yeniden açılmadan kalkar (m9)
+✓ vadesi bugün olan çek şeritte (yeniden açmadan geldi)
+✓ m9: tahsil edilince pil hemen kalktı
+✓ m9: zil sayısı 14 → 13
+✓ m9: bildirim listesinden de kalktı
+
+■ E. “+ Sayfa”: Excel dosyasından aktarma; formüller programda çalışır (m8)
+✓ ön izleme: 3 satır × 3 kolon · 4 formül. Kolon başlıkları: Kalem, Tutar, KDV. Başlığın üstündeki 1 satır (sayfa başlığı gibi) alınmaz.
+✓ m8: kolon başlıkları Excel'den (sayfa başlığı alınmadı)
+✓ m8: formüller çalışıyor: [["Yakıt","8000","1600"],["Bakım","2000","400"],["Toplam","10000","2000"]]
+
+■ F. Yönetici parolasını unuttu: kurtarma anahtarı (m16)
+✓ anahtar yokken Kullanıcılar ekranında uyarı kartı
+✓ anahtar üretildi: 2N5ET-T9UJP-QZ3QC-3QY85
+✓ kurtarma ekranı eski parolayı sormaz
+✓ kullanılan anahtar yerine yenisi gösterildi
+✓ m16: yeni parolayla doğrudan içeride
+✓ m16: eski oturumlar kapandı
+✓ tarayıcı hatası yok
+
+57/57 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a9996cccca67b1040/test/e2e/artifacts/senaryo-210

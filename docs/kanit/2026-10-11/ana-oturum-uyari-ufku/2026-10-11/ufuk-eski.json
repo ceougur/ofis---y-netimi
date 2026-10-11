@@ -1,0 +1,43 @@
+{
+  "ad": "ufuk-eski",
+  "komut": "node --test test/uyari-ufku-225.test.mjs",
+  "commit": "481d336a7e6b74a5ea984d9965e3a53857aa8b3d",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:59:24.839Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 2,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "uyarı ufku: her sayfanın son tarihi yalnız 7 gün kala uyarır › çalışıyor mu: 1. sayfadayken açık ve öbür sayfanın son tarihleri aynı kuralla (5, 7 gün ve gecikmiş var; 8 ve 42 gün yok)",
+      "konum": "test/uyari-ufku-225.test.mjs:51:3",
+      "hata": "öbür sayfa: aynı 7 gün ufku (42 ve 8 gün uyarmaz) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "uyarı ufku: her sayfanın son tarihi yalnız 7 gün kala uyarır › nasıl bozarım: 2. sayfaya geçince bu kez 1. sayfanın 42 günlük kaydı uyarmaz (kural iki yönde)",
+      "konum": "test/uyari-ufku-225.test.mjs:63:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-uyari-ufku/2026-10-11/ufuk-eski.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "0ec28d19a3744acf37054de54566aab16cbb4f9517e858477b3cc52d7dd2be7e",
+  "ham_cikti_bayt": 4239
+}

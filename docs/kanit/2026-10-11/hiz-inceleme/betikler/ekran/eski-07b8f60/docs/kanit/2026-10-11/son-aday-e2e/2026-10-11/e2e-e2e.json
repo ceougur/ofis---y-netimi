@@ -1,0 +1,31 @@
+{
+  "ad": "e2e-e2e",
+  "komut": "npm run test:e2e",
+  "commit": "f395d4f4eb470c647a0ef15a9a248bdea2b72ef6",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T04:41:56.007Z",
+  "sure_sn": 24.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BAŞARISIZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "dosyaya not eklenir; işlem geçmişinde işlemi yapanla görünür",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/son-aday-e2e/2026-10-11/e2e-e2e.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "01d9c072e4da8077cdae49f217ccede9eb5f8680a7e5194e2f5d6b2fa82b5f14",
+  "ham_cikti_bayt": 2956
+}

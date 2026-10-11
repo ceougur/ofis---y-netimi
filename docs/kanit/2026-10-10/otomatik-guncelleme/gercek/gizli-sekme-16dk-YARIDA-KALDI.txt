@@ -1,0 +1,4 @@
+gizli-sekme-16dk.json: 10.10.2026 19:58 UTC'de başlatılan 16 dakikalık gizli sekme ölçümü kapsayıcı yeniden başlayınca YARIDA KALDI
+(dosyada "sonundaHalaGizli": null — ölçüm sonu okunamadı; 14,93. dk'ya kadar 6 istek kaydı var). Kanıt SAYILMAZ, depoya alınmadı.
+Yerine: gizli-sekme-20dk.json (tam koşu, 8 istek / 20 dk) ve s2-kosu1-b0bcc78/s2-D-sekme-gizli (üretim süreleri, sekme 132 dk gizli:
+54 sayılan istek, en uzun ara 299 sn; 60. ve 120. dk'daki saatlik bakışta sunucu "meşgul" → kurulmadı).

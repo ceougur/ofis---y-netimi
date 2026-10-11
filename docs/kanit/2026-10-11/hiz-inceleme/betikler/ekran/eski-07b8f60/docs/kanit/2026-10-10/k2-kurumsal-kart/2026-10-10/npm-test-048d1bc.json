@@ -1,0 +1,38 @@
+{
+  "ad": "npm-test-048d1bc",
+  "komut": "npm test",
+  "commit": "048d1bc1ec539a004f8e9eeab0dfcf5e8d69332a",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:18:40.519Z",
+  "sure_sn": 879.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1913,
+    "gecen": 1911,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 1
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "şirket ve yedek işlemleri rastgele sırayla: değişmez kurallar her işlemden sonra › boş kurulum, tohum 5, 120 işlem",
+      "konum": "test/guvenilirlik-221-rastgele.test.mjs:13:3",
+      "hata": "{\"account\":15,\"bankModule\":8,\"bankTransfer\":6,\"cash\":7,\"rename\":4,\"select\":6,\"create\":4,\"bankVoucher\":7,\"backupAll\":2,\"wrongRestore\":4,\"backupOne\":9,\"entry\":15,\"reset\":5,\"remove\":4,\"recode\":8,\"bankModuleOther\":6,\"bankAccount\":3,\"restart\":4,\"bankCard\":1,\"bankCard:kart-ac\":1,\"bankReverse\":1,\"restore\":1} (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/npm-test-048d1bc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "9e8789fca46ec8516054d91c2d5df03a3d887e7e7ceec0e896605e89ab30c91c",
+  "ham_cikti_bayt": 631377
+}

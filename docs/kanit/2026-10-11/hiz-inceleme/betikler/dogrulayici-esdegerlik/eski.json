@@ -1,0 +1,57 @@
+{
+ "root": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/hiz-inceleme/dogrulayici-esdegerlik/eski",
+ "N": 95,
+ "worker": "0",
+ "posted": 95,
+ "postFail": null,
+ "banka-bakiye": {
+  "status": 200,
+  "totals": "[[\"Gerçek Banka\",\"95.000.000.000.000,00 TL\"],[\"Hesap\",\"1\"]]"
+ },
+ "banka-hareket": {
+  "status": 200,
+  "totals": "[[\"Hesap\",\"Gerçek Banka (Tüm Hesaplar)\"],[\"Devir\",\"0,00 TL\"],[\"Giriş\",\"95.000.000.000.000,00 TL\"],[\"Çıkış\",\"0,00 TL\"],[\"Transfer Giriş\",\"0,00 TL\"],[\"Transfer Çıkış\",\"0,00 TL\"],[\"Dönem Sonu\",\"95.000.000.000.000,00 TL\"]]"
+ },
+ "banka-masraf": {
+  "status": 200,
+  "totals": "[[\"Kayıt\",\"0\"],[\"Matrah\",\"0,00 TL\"],[\"BSMV\",\"0,00 TL\"],[\"KDV\",\"0,00 TL\"],[\"Toplam\",\"0,00 TL\"]]"
+ },
+ "alt-hesap-mizani": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı.",
+  "totals": "\"\""
+ },
+ "banka-hareket?from=2026-10-03&to=2026-10-08": {
+  "status": 200,
+  "totals": "[[\"Hesap\",\"Gerçek Banka (Tüm Hesaplar)\"],[\"Devir\",\"95.000.000.000.000,00 TL\"],[\"Giriş\",\"0,00 TL\"],[\"Çıkış\",\"0,00 TL\"],[\"Transfer Giriş\",\"0,00 TL\"],[\"Transfer Çıkış\",\"0,00 TL\"],[\"Dönem Sonu\",\"95.000.00"
+ },
+ "banka-hareket?preset=thisMonth": {
+  "status": 200,
+  "totals": "[[\"Hesap\",\"Gerçek Banka (Tüm Hesaplar)\"],[\"Devir\",\"0,00 TL\"],[\"Giriş\",\"95.000.000.000.000,00 TL\"],[\"Çıkış\",\"0,00 TL\"],[\"Transfer Giriş\",\"0,00 TL\"],[\"Transfer Çıkış\",\"0,00 TL\"],[\"Dönem Sonu\",\"95.000.00"
+ },
+ "banka-hareket?preset=all&bankAccount=bacc-00adb2d2-54e": {
+  "status": 200,
+  "totals": "[[\"Hesap\",\"Z · Z (102.01)\"],[\"Devir\",\"0,00 TL\"],[\"Giriş\",\"95.000.000.000.000,00 TL\"],[\"Çıkış\",\"0,00 TL\"],[\"Transfer Giriş\",\"0,00 TL\"],[\"Transfer Çıkış\",\"0,00 TL\"],[\"Dönem Sonu\",\"95.000.000.000.000,00 "
+ },
+ "banka-hareket?from=2026-10-03&to=2026-10-08&bankAccoun": {
+  "status": 200,
+  "totals": "[[\"Hesap\",\"Z · Z (102.01)\"],[\"Devir\",\"95.000.000.000.000,00 TL\"],[\"Giriş\",\"0,00 TL\"],[\"Çıkış\",\"0,00 TL\"],[\"Transfer Giriş\",\"0,00 TL\"],[\"Transfer Çıkış\",\"0,00 TL\"],[\"Dönem Sonu\",\"95.000.000.000.000,00 "
+ },
+ "banka-bakiye?from=2026-10-03&to=2026-10-08": {
+  "status": 200
+ },
+ "banka-bakiye?bankGroup=real&preset=all": {
+  "status": 200
+ },
+ "/api/workspace/bank/summary": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı."
+ },
+ "/api/workspace/overview": {
+  "status": 500,
+  "error": "Sunucu işlemi tamamlayamadı."
+ },
+ "/api/workspace/bank/accounts/bacc-00adb2d2-54ec-4fd0-b57f-9a78ceedfff4": {
+  "status": 200
+ }
+}

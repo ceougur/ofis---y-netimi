@@ -1,0 +1,24 @@
+`test/bagimsiz/SENARYO-DILI.md` yazıldı. Kabul 1–16 senaryosu ve beklenen çıktısı da hazır. Planın kontrol adımlarındaki 28 sayının hepsi beklenen çıktıyla birebir tutuyor. Commit ve push yapılmadı.
+
+**Temiz oda:** Kaynak olarak yalnız `docs/BANKA-MODULU-PLAN.md` ve `docs/BANKA-MODULU-TALIMAT.md` okundu. Bir uyarı: proje talimat dosyası CLAUDE.md oturuma kendiliğinden yüklendi ve programın bazı davranışlarını anlatıyor (fatura kapama, iskonto örneği gibi). Onu kaynak olarak kullanmadım. Ondan bilinen ama planda yazmayan her nokta belgede "yaygın uygulama" ya da "belirsiz" diye işaretli.
+
+**Belgenin içeriği (14 bölüm):**
+- **Etiketler:** Her kural bir dayanak taşıyor:
+  - PLAN (planın açık kuralı, alıntılı): program farklıysa bulgu.
+  - ÇIKARIM (plan örneğinden çıkarılmış) ve YAYGIN (plan susuyor, yaygın uygulama): program farklıysa incelenir.
+  - BELİRSİZ: kâhin karar vermez; senaryo o durumu kurmaz ya da alan karşılaştırılmaz.
+- **Senaryo biçimi:** Senaryo `baslangic` (bugün, boş şirket, ayarlar, kullanıcılar) ve sıralı `adimlar`dan oluşur. Takma adlar "ZIR", "ABC" gibi, tarih gg.aa.yyyy, tutar metin ("20000", "10,5"). Bozma testleri için ham tutar alanları (`tutarHam` gibi) var.
+- **İşlem kataloğu (29 işlem):** Her biri için parametreler, Tekdüzen yevmiye satırları plan alıntısıyla, ret kuralları ve yetki yazılı.
+  - Kapsam: hesap açma (vadesiz/KMH, kurumsal kart, kredi; alt hesaplar 102.NN, 309.NN, 300.NN), açılış ve açılış düzeltme, Kasa açılışı ve elle giriş/çıkış, cari, ürün, parasız stok girişi.
+  - Fatura (KDV %1/10/20, dahil/hariç, iskonto, açık/peşin/kısmen peşin + taksit), iade (açık, nakit geri, havale geri), cari tahsilat/ödeme, taksit tahsilatı, Kasa↔Banka.
+  - Transfer (ücret ve BSMV dahil/hariç/yok), banka masrafı (BSMV ya da KDV'li), faiz, kart borcu, kredi, ters kayıt, silme ve kontrol noktası.
+- **Ortak kurallar:**
+  - Tarih: ileri tarih 400; kilitli dönem 409; hesabın açılış tarihinden önceki hareket reddedilir.
+  - Hesap seçimi: hiç hesap yoksa 102.00/108.00'e yazılır; tek hesap otomatik seçilir; birden çok hesapta seçim zorunlu.
+  - Eksi bakiye: bakiye doğrulanana kadar denetim yok, sonra varsayılan "Uyar"; işlem sonrası son durum KMH ya da kart limitiyle denetlenir.
+  - İstek kimliği ve Benzer İşlem, yetki tablosu ve 24 satırlık ret kataloğu (durum, kod, kodun dayanağı).
+- **Tutar kuralları:** Yalnız tam sayı kuruş; yarım kuruş sıfırdan uzağa yuvarlanır. KDV kalem toplamı üzerinden yuvarlanır; bunu planın mizanı kanıtlıyor (600 = 35.000,00 ancak toplamdan yuvarlamayla çıkıyor).
+- **Fatura açığı:** Kapanma sırası peşin → iade geri ödemesi → taksit kartı → seçilen fatura → geri ödenmemiş iade → kalan tahsilatlar en eski faturadan. Kâhinin kendini denetleyeceği bir eşitlik ve sonucun belirsiz sayıldığı üç durum tanımlı.
+- **Çıktı:** İstenen alanlar kuruş tam sayı:
+  - `mizan` (bakiye mizanı: her hesapta borç ya da alacak bakiyesi; anahtar 102.01 gibi alt hesap kodu)
+  - `bankaHesaplari` (işaretli defter bakiyesi), `kasa`, `car

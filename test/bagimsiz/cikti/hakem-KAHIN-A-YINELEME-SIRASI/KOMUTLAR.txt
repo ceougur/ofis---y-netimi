@@ -1,0 +1,39 @@
+Hakem — fark sınıfı KAHIN-A-YINELEME-SIRASI (10.10.2026). Depo kökünden. commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+
+1) En küçük senaryo (4 adım: cari, taksitli satış F1/K1 120, K1'e 120 nakit tahsilat kimlik t1, aynısı kimlik t1):
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KAHIN-A-YINELEME-SIRASI.json
+     # çıkış a=2 ("adım 4: BELİRSİZ-6 — kalanı aşan / kapanmış karta tahsilat"), b=0, program=0 → karşılaştırma yok (EKSIK)
+     # B = program: Kasa 12000, M1 0, F1 {12000/10000/2000, açık 0}, K1 {12000, 12000, 0}, yinelenenler ["4"], retler [], mizan 100 B 12000 /
+     #   120 0 / 600 A 10000 / 391 A 2000 (B↔P 13 alan, fark 0). fark dosyası bu klasöre taşındı (fark-ozet kirlenmesin).
+     # ham: test/bagimsiz/cikti/ham/en-kucuk-KAHIN-A-YINELEME-SIRASI.{b,program}.json (a çıktısı yok)
+2) Asıl mini senaryo (başka ajanın dosyası, üzerine yazılmadı) yeniden koşu → mini-yeniden/:
+  python3 -I test/bagimsiz/model_{a,b}/model.py test/bagimsiz/cikti/mini/mini-kahin-a-yineleme-sirasi.json
+  node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/mini/mini-kahin-a-yineleme-sirasi.json --cikti <bu klasör>/mini-yeniden/mini-kahin-a-yineleme-sirasi.program.json
+     # a=2 (adım 6 BELİRSİZ-6), B = program (Kasa 12000, K1 ödenen 12000 kalan 0, U1 4, yinelenenler ["6"])
+3) Kök neden tanısı (model A'nın KOPYASI scratchpad'de; depodaki model_a DEĞİŞTİRİLMEDİ): tani-model-a.diff — _i_<işlem>'in attığı
+   SenaryoHatasi yakalanır, adım aynı anahtar + aynı gövdeli yinelemeyse yineleme sayılır (dil §5.6: 3 → 4). Çıktılar tani/:
+     # en-kucuk, mini, komsu-kasa-banka, komsu-bagli-tahsilat: A-tanı ↔ program fark 0
+     # komsu-stok-satis: tek fark faturalar.F2 (ikinci adın yazılması) = ayrı sınıf KAHIN-K4-YINELENEN-AD (hükmü verilmiş)
+4) Komşular (aynı sıralama, başka BELİRSİZ denetimi) komsu/: 
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/<ad>.json
+     # komsu-kasa-banka-yineleme   A exit 2 BELİRSİZ-4  · B = P (Kasa 10000, ZIR 90000, yinelenenler ["3"])
+     # komsu-bagli-tahsilat-yineleme A exit 2 BELİRSİZ-10 · B = P (Kasa 12000, F1 açık 0, yinelenenler ["4"])
+     # komsu-stok-satis-yineleme   A exit 2 BELİRSİZ-14 · B = P (U1 0, yinelenenler ["5"])
+     # komsu-eksi-banka-yineleme   A = B = P (fark 0): doğrulanmış hesapta yineleme K7'den önce tanınıyor
+     # komsu-eksi-kasa-yineleme    A = B ≠ P (YAN BULGU, program): adım 4 programda 409 cash-negative, kâhinlerde yineleme
+     #                              (+ bilinen KASA-ACILIS-649 sınıfı mizan.500/649)
+5) Gerçek API, koşucusuz (HEAD ve v2.0.26):
+  git worktree add --detach <scratchpad>/v2026 v2.0.26
+  node test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/canli.mjs .              > canli-head.json
+  node test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/canli.mjs <scratchpad>/v2026 > canli-v2026.json
+     # HEAD: R1/R2/R3 aynı kimlik+gövde → 200 replayed:true, AYNI entryId, tek hareket (R2: kalanı aşan yineleme de); D aynı kimlik
+     #   farklı gövde → 409 request-id-reused; N/N0 kapanmış karta YENİ tahsilat → 200, ödenen 240, cari −120 (K8 plan-paid henüz yok)
+     # v2.0.26: taksit tahsilatı istek kimliğini HİÇ tanımıyor → R1/R2/R3/D'de ikinci istek yeni hareket (R1: Kasa +240, ödenen 240,
+     #   cari −120); N/N0 HEAD ile aynı. (v2.0.26 istemcisi x-hof-request'i yalnız fatura formunda gönderir: hof-invoices.js:455)
+  node test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/canli-eksi.mjs .              > canli-eksi-head.json
+  node test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/canli-eksi.mjs <scratchpad>/v2026 > canli-eksi-v2026.json
+     # HEAD: Kasa 100 → nakit cari ödemesi / Kasadan Bankaya 100 (kimlik K) → aynı kimlik+gövde: Uyar 409 cash-negative, Engelle 409
+     #   cash-blocked (yineleme tanınmıyor; Kasa ön denetimi bank.post'tan ÖNCE: accounts.mjs:655, cash.mjs:274); + cashForce → Uyar'da
+     #   replayed:true (çift yazım YOK), Engelle'de yine 409. Mutabakat Testi tamam.
+     # v2.0.26: aynı r2; + cashForce → Uyar'da İKİNCİ ödeme yazılıyor (Kasa −100, cari 200).
+Not: test/bagimsiz/cikti/ .gitignore'da (satır 36); bu klasör depoya ancak zorla eklenir ya da docs/kanit/'e kopyalanır.

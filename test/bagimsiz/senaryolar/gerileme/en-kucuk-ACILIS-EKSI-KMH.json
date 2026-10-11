@@ -1,0 +1,21 @@
+{
+  "dil": "destekofis-senaryo/2",
+  "ad": "en-kucuk-ACILIS-EKSI-KMH",
+  "aciklama": "Hakem: en küçük — boş şirket, tek adım: rastgele-22-500 adım 306 aynen (Denizbank 'Ticari Hesap B5', tür TİCARİ, KMH Limiti 23.059, açılış −11.529,50 TL, 23.12.2025, kullanıcı MU). bugun = özgün senaryoda adım 306'dan önceki son saat adımı (301: 06.01.2026).",
+  "dayanak": "hakem: fark sınıfı ACILIS-EKSI-KMH (alan retler.306 + türevleri bankaHesaplari.B5/mizan.102.NN/500/hesapKodlari/eksiBakiyeDenetimi, A=B≠P; tohum 22 adım 306; tohum 1/33 ve nötr 7/19'da da). Adım kimliği özgün senaryodakiyle aynı.",
+  "baslangic": {
+    "bugun": "06.01.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici",
+      "MU": "muhasebe"
+    }
+  },
+  "adimlar": [
+    { "id": "306", "islem": "hesap_ac", "ad": "B5", "banka": "Denizbank", "hesapAdi": "Ticari Hesap B5", "iban": "TR020013405574286218162643", "tur": "ticari", "paraBirimi": "TRY", "kod": "DNZ-B5", "kullanici": "MU", "acilisTarihi": "23.12.2025", "acilisBakiyesi": "-11529,50", "kmhLimiti": "23059" }
+  ]
+}

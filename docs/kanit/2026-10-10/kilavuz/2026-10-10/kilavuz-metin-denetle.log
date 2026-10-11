@@ -1,0 +1,164 @@
+ekranda bulunan: 151
+  ✓ 7: Kasa
+  ✓ 7: nakit
+  ✓ 7: Nakit Kasa
+  ✓ 7: + Tahsilat
+  ✓ 7: − Ödeme
+  ✓ 7: Bu Ay
+  ✓ 7: Geçen Ay
+  ✓ 7: Bu Yıl
+  ✓ 7: Tümü
+  ✓ 7: Tarih Aralığı
+  ✓ 7: Kasa Dökümü - PDF
+  ✓ 7: Nakit
+  ✓ 7: Havale / EFT
+  ✓ 7: POS
+  ✓ 7: Kredi Kartı
+  ✓ 7: Çek / Senet
+  ✓ 7: Açık Hesap
+  ✓ 7: Bankadan Kasaya Aktar
+  ✓ 7: Kasadan Bankaya Yatır
+  ✓ 7: Yine de Kaydet
+  ✓ 8: Taksitler
+  ✓ 8: Banka
+  ✓ 8: Genel Bakış
+  ✓ 8: Hesaplar
+  ✓ 8: Hareketler
+  ✓ 8: Ayarlar
+  ✓ 8: Gerçek Banka
+  ✓ 8: Kart ve Kredi Borcu
+  ✓ 8: Bugün ve Bu Ay
+  ✓ 8: Kurulum Sihirbazı
+  ✓ 8: Hesap ve Açılış
+  ✓ 8: Açılış Bakiyesi
+  ✓ 8: Bakiye Doğrulandı
+  ✓ 8: Kaydet ve Yeni Hesap Ekle
+  ✓ 8: Kaydet ve İlerle
+  ✓ 8: Eski Hareketleri Aktar
+  ✓ 8: Aktar
+  ✓ 8: Devir Kapanışı
+  ✓ 8: Bitti
+  ✓ 8: Kurulum Tamamlandı
+  ✓ 8: Bu Adımı Atla
+  ✓ 8: Kurulumu Tamamla
+  ✓ 8: Kurulum Geçmişi
+  ✓ 8: Geri Al
+  ✓ 8: Hesabı Atanmamış Eski Hareketler
+  ✓ 8: Şimdi Düzenle
+  ✓ 8: Hedef Hesap
+  ✓ 8: Seçilenleri Bu Hesaba Ata
+  ✓ 8: Tarihi Gelince Atanabilir
+  ✓ 8: + Yeni Hesap
+  ✓ 8: Hesap Türü
+  ✓ 8: Vadesiz
+  ✓ 8: KMH Limiti
+  ✓ 8: Ticari
+  ✓ 8: Vadeli
+  ✓ 8: Kredi Hesabı
+  ✓ 8: Kurumsal Kredi Kartı
+  ✓ 8: Kart Limiti
+  ✓ 8: Ekstre Kesim Günü
+  ✓ 8: Son Ödeme Günü
+  ✓ 8: Açılıştaki Borç
+  ✓ 8: Diğer
+  ✓ 8: Hesap Kodu
+  ✓ 8: Hesabı Aç
+  ✓ 8: IBAN faturada gösterilsin
+  ✓ 8: + Masraf
+  ✓ 8: + Faiz
+  ✓ 8: + Diğer İşlem
+  ✓ 8: Transfer
+  ✓ 8: + Kart Borcu Ödemesi
+  ✓ 8: + Kredi İşlemi
+  ✓ 8: Düzenle
+  ✓ 8: Açılışı Düzelt
+  ✓ 8: Pasife Al
+  ✓ 8: Sil
+  ✓ 8: Masraf Türü
+  ✓ 8: Vergi
+  ✓ 8: BSMV Dahil
+  ✓ 8: BSMV Hariç
+  ✓ 8: KDV Dahil (Faturalı)
+  ✓ 8: KDV Hariç (Faturalı)
+  ✓ 8: Yok
+  ✓ 8: Faiz Geliri
+  ✓ 8: Faiz Gideri
+  ✓ 8: Diğer Gelir
+  ✓ 8: Diğer Gider
+  ✓ 8: Kart Borcu Ödemesi
+  ✓ 8: Kredi Kullanımı
+  ✓ 8: Kredi Geri Ödemesi
+  ✓ 8: + Planlı İşlem
+  ✓ 8: Planlı İşlemler
+  ✓ 8: Gerçekleştir
+  ✓ 8: İşlem Kartı
+  ✓ 8: Ters Kaydet
+  ✓ 8: Düzelt
+  ✓ 8: Açıklamayı Düzelt
+  ✓ 8: İşlem No
+  ✓ 8: Gönderen Hesap
+  ✓ 8: Alıcı Hesap
+  ✓ 8: Kanal
+  ✓ 8: Valör
+  ✓ 8: Ücret
+  ✓ 8: Ücret Vergisi
+  ✓ 8: Alıcıya Giren
+  ✓ 8: Gönderenden Çıkan
+  ✓ 8: Bankadan Kasaya Aktar
+  ✓ 8: Kasadan Bankaya Yatır
+  ✓ 8: + Tahsilat
+  ✓ 8: − Ödeme
+  ✓ 8: Havale / EFT
+  ✓ 8: Banka Hesabı
+  ✓ 8: + Giriş
+  ✓ 8: Kredi Kartı
+  ✓ 8: Kurumsal Kart
+  ✓ 8: Eksi Bakiye
+  ✓ 8: POS
+  ✓ 8: Vazgeç
+  ✓ 8: Yine de Kaydet
+  ✓ 8: Banka Hesapları
+  ✓ 8: Uyar
+  ✓ 8: Engelle
+  ✓ 8: Kontrol Yok
+  ✓ 8: Eksi Bakiye Denetimi
+  ✓ 8: Raporlar
+  ✓ 8: Tüm Raporlar
+  ✓ 8: Banka Bakiye Raporu
+  ✓ 8: Banka Hareket Raporu
+  ✓ 8: Banka Masraf Raporu
+  ✓ 8: Alt Hesap Mizanı
+  ✓ 8: PDF İndir
+  ✓ 8: Excel İndir
+  ✓ 8: ANLIK DURUM
+  ✓ 8: Nakit Kasa
+  ✓ 8: Nakit Akış
+  ✓ 8: Varsayılan Tahsilat Hesabı
+  ✓ 8: Benzer İşlem Uyarısı
+  ✓ 8: Banka Masrafı Vergisi
+  ✓ 8: Masraf Türleri
+  ✓ 8: Ayarları Kaydet
+  ✓ 8: Varsayılanlara Dön
+  ✓ 8: Yönetim
+  ✓ 8: Kullanıcılar
+  ✓ 8: Yetkiler
+  ✓ 8: Banka ve POS
+  ✓ 8: Banka Görüntüleme
+  ✓ 8: Banka Raporları
+  ✓ 8: Banka Hesabı Tanımlama ve Açılış
+  ✓ 8: Banka Hareketi Girme ve Bankadan Çıkış
+  ✓ 8: Banka Hareketi Silme, İptal ve Ters Kayıt
+  ✓ 8: Transfer Yapma
+  ✓ 8: Banka Ayarları
+ekran adı değil (vurgu/yol): 7
+  · 7: Ödeme ve tahsilat yolu
+  · 7: Kasa ile banka arasında para
+  · 7: Kasa eksiye düşecekse
+  · 7: İleri tarih yok
+  · 8: Hesap ayrıntısı
+  · 8: Yanlış girdiyseniz
+  · 8: Kimler kullanır
+EKRANDA BULUNMAYAN: 0
+# tests 151
+# pass 151
+# fail 0

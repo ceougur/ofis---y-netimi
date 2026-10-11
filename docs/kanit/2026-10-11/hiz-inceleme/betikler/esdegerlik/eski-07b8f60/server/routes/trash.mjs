@@ -1,0 +1,464 @@
+// Silinenler (v2.0.2): yönetim panelinde silinen verinin listesi ve geri yükleme.
+//  - Tablo satırı (Excel/Sheets kaydı ya da programda eklenen kayıt): satır verisi yerinde durur; silinenler listesinden
+//    çıkarılınca eski yerinde yeniden görünür. Excel o arada yeniden yüklenip satır kalktıysa geri yüklenemez.
+//  - Belge: 30 gün içinde, dosyası duruyorsa.
+//  - Serbest sayfa: adı o arada başka bir sekmeye verildiyse "(geri yüklendi)" ekiyle.
+//  - Serbest sayfa satırı/kolonu: eski sırasına ARAYA eklenir; o arada eklenenler kayar, üzerine yazılmaz.
+//  - Tahsilat ve kasa hareketi: aynı kimlikle geri eklenir (Kasa ve tahsilat takvimi yeniden hesaplanır).
+import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+import { roundMoney } from "../lib/money.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
+import { FREEZE_CLOSE } from "./plans.mjs";
+import { bankForm } from "../lib/bank/module-ref.mjs";
+import { systemClock } from "../lib/clock.mjs";
+
+const KIND_LABELS = {
+  row: "Tablo Kaydı",
+  tab: "Sekme",
+  column: "Tablo Sütunu",
+  document: "Belge",
+  "free-sheet": "Serbest Sayfa",
+  "free-row": "Serbest Sayfa Satırı",
+  "free-column": "Serbest Sayfa Kolonu",
+  payment: "Tahsilat",
+  cash: "Kasa Hareketi",
+  plan: "Taksit Kartı",
+  "plan-entry": "Taksit Hareketi",
+  account: "Cari",
+  "account-entry": "Cari Hareketi",
+  stock: "Stok Ürünü",
+  "stock-move": "Stok Hareketi",
+  cheque: "Çek / Senet",
+  invoice: "Fatura",
+};
+const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
+
+export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, now: clock = systemClock }) {
+  const now = () => clock().toISOString();
+  // Yargıç K2 (plan §3.8 "Silinenler'den geri yükleme", §9.2/7, §3.9 K7): banka bağlı satır geri yüklenirken kaynak modül yetkisi + bank.move,
+  // pasif hesap 400, eksi bakiye son durumla (Engelle 409 cash-blocked, Uyar 409 cash-negative + accountId → "Yine de Geri Yükle" cashForce ya da negativeOk; hakem K5).
+  const banking = bankForm(bankModule);
+  const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
+  const sessionNames = () => {
+    const names = new Map();
+    try {
+      for (const item of dataset.sessions()) names.set(item.key, item.name || item.label || "");
+    } catch {
+      // oturum listesi okunamazsa ad yazılmaz
+    }
+    return names;
+  };
+  // Satırın okunur adı: sıra numarası dışındaki ilk iki dolu değer (ör. "Ali Veli · 2026/101").
+  const rowTitle = values => {
+    const parts = [];
+    for (const [column, value] of Object.entries(values || {})) {
+      if (column.startsWith("__") || SEQUENCE.test(column.trim())) continue;
+      const textValue = String(value ?? "").trim();
+      if (!textValue || /^[-–—]+$/.test(textValue)) continue;
+      parts.push(textValue.length > 40 ? `${textValue.slice(0, 38)}…` : textValue);
+      if (parts.length === 2) break;
+    }
+    return parts.join(" · ");
+  };
+  const rowOf = (datasetKey, caseKey) => {
+    const row = store.get("SELECT tab, values_json FROM dataset_rows WHERE dataset_key = ? AND case_key = ? LIMIT 1", datasetKey, caseKey);
+    if (row) return { tab: row.tab, values: JSON.parse(row.values_json || "{}") };
+    const created = store.get("SELECT values_json FROM records WHERE source_name = ? AND case_key = ?", datasetKey, caseKey);
+    if (created) {
+      const values = JSON.parse(created.values_json || "{}");
+      return { tab: values.__sheet || "", values };
+    }
+    return null;
+  };
+
+  function list() {
+    const names = sessionNames();
+    const multi = names.size > 1;
+    const where = key => (multi && names.get(key) ? `Sayfa: ${names.get(key)}` : "");
+    const items = [];
+    for (const item of store.all("SELECT d.id, d.source_name AS datasetKey, d.case_key AS caseKey, d.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName FROM deleted_records d LEFT JOIN users u ON u.id = d.deleted_by")) {
+      const row = rowOf(item.datasetKey, item.caseKey);
+      items.push({
+        id: `row:${item.id}`,
+        kind: "row",
+        title: (row && rowTitle(row.values)) || item.caseKey,
+        detail: [row?.tab ? `Sekme: ${row.tab}` : "", where(item.datasetKey)].filter(Boolean).join(" · "),
+        deletedAt: item.deletedAt,
+        actorName: item.actorName,
+        restorable: Boolean(row),
+        note: row ? "Eski yerinde yeniden görünür." : "Bu kayıt artık yüklenen tabloda yok (Excel yeniden yüklenmiş olabilir).",
+      });
+    }
+    for (const item of store.all("SELECT d.id, d.case_key AS caseKey, d.case_title AS caseTitle, d.name, d.sha256, d.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName FROM case_documents d LEFT JOIN users u ON u.id = d.deleted_by WHERE d.deleted_at IS NOT NULL")) {
+      const present = documents?.hasFile ? documents.hasFile(item) : true;
+      items.push({
+        id: `document:${item.id}`,
+        kind: "document",
+        title: item.name,
+        detail: `Kayıt: ${item.caseTitle || item.caseKey}`,
+        deletedAt: item.deletedAt,
+        actorName: item.actorName,
+        restorable: present,
+        note: present ? "Kaydın belgelerine geri döner. Silinen belgeler 30 gün saklanır." : "Dosya artık yok.",
+      });
+    }
+    for (const item of dataset.hiddenTabs ? dataset.hiddenTabs() : []) {
+      const actor = store.get("SELECT display_name AS name FROM users WHERE id = ?", item.by);
+      items.push({
+        id: `tab:${item.datasetKey}\u0000${item.original}`,
+        kind: "tab",
+        title: item.name || item.original,
+        detail: [item.reason === "list" ? "Excel/Sheets'te gizli liste sayfası (açılır listeler buradan okunur)" : "", `${item.rows || 0} kayıt`, item.name && item.name !== item.original ? `Excel'deki adı: ${item.original}` : "", where(item.datasetKey)].filter(Boolean).join(" · "),
+        deletedAt: item.at,
+        actorName: actor?.name || "",
+        restorable: true,
+        note: "Sekme ve kayıtları eski yerinde yeniden görünür. Veriler silinmemişti.",
+      });
+    }
+    // Silinen tablo sütunları (v2.0.6): verisi durur; geri yüklenince eski yerinde görünür.
+    for (const item of dataset.hiddenColumns ? dataset.hiddenColumns() : []) {
+      const actor = store.get("SELECT display_name AS name FROM users WHERE id = ?", item.by);
+      items.push({
+        id: `column:${item.datasetKey}\u0000${item.tab}\u0000${item.column}`,
+        kind: "column",
+        title: item.column,
+        detail: [item.tabName ? `Sekme: ${item.tabName}` : "", item.added ? "Programda eklenmiş sütun" : "", `${item.filled || 0} kayıtta bilgi vardı`, where(item.datasetKey)].filter(Boolean).join(" · "),
+        deletedAt: item.at,
+        actorName: actor?.name || "",
+        restorable: true,
+        note: "Sütun ve hücreleri eski yerinde yeniden görünür. Veriler silinmemişti.",
+      });
+    }
+    for (const item of free?.deletedSheets ? free.deletedSheets() : []) {
+      items.push({
+        id: `free-sheet:${item.id}`,
+        kind: "free-sheet",
+        title: item.name,
+        detail: where(item.datasetKey),
+        deletedAt: item.deletedAt,
+        actorName: item.actorName,
+        restorable: true,
+        note: "Sekmelerin sonuna geri gelir; adı başka bir sekmede kullanılıyorsa “(geri yüklendi)” eklenir.",
+      });
+    }
+    // Silinen taksit kartları (v2.0.4): taksitleri ve hareketleri yerinde durur; geri yüklenince Kasa'ya döner.
+    for (const item of store.all("SELECT p.id, p.name, p.total, p.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(g.name, '') AS groupName FROM plans p LEFT JOIN users u ON u.id = p.deleted_by LEFT JOIN plan_groups g ON g.id = p.group_id WHERE p.deleted_at IS NOT NULL AND p.invoice_id = ''")) {
+      items.push({
+        id: `plan:${item.id}`,
+        kind: "plan",
+        title: item.name,
+        detail: [item.groupName ? `Grup: ${item.groupName}` : "", `Toplam ${new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(item.total || 0)}`].filter(Boolean).join(" · "),
+        deletedAt: item.deletedAt,
+        actorName: item.actorName,
+        restorable: true,
+        note: "Taksitleri ve hareketleriyle Taksitler listesine geri döner; Kasa yeniden hesaplanır.",
+      });
+    }
+    // Silinen cariler ve stok ürünleri (v2.0.6): hareketleri yerinde durur.
+    items.push(...(accounts?.deletedList ? accounts.deletedList() : []), ...(stock?.deletedList ? stock.deletedList() : []));
+    // Silinen çek/senet (v2.0.7): geri gelince cari/taksit hareketi yeniden yazılır.
+    items.push(...(cheques?.deletedList ? cheques.deletedList() : []));
+    for (const item of trash.open()) {
+      const payload = JSON.parse(item.payload_json || "{}");
+      const money = item.kind === "payment" || item.kind === "cash" || item.kind === "plan-entry" || item.kind === "account-entry";
+      items.push({
+        id: `trash:${item.id}`,
+        kind: item.kind,
+        // Silinen satırın kendi kimliği (ekranda gösterilmez; testler ve geri yükleme denetimleri satırı bununla bulur).
+        ref: item.ref,
+        title: item.title,
+        detail: [
+          money ? `${new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(payload.amount || 0)} · ${String(payload.date || "").split("-").reverse().join(".")}` : "",
+          item.kind === "cash" || item.kind === "plan-entry" ? (payload.kind === "in" ? "Tahsilat" : "Ödeme") : item.kind === "account-entry" ? { debt: "Borç", credit: "Alacak", in: "Tahsilat", out: "Ödeme" }[payload.kind] || "" : "",
+          item.detail,
+          where(item.dataset_key),
+        ]
+          .filter(Boolean)
+          .join(" · "),
+        deletedAt: item.deleted_at,
+        actorName: item.actor_name,
+        restorable: true,
+        note: item.kind === "invoice" ? (payload.wasStatus === "draft" ? "Taslak olarak Fatura listesine geri döner." : "Etkisiz, “İptal Edildi” olarak Fatura listesine geri döner (stok, cari, Kasa değişmez).") : item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
+      });
+    }
+    items.sort((a, b) => (a.deletedAt < b.deletedAt ? 1 : -1));
+    return items.map(item => ({ ...item, kindLabel: KIND_LABELS[item.kind] || item.kind }));
+  }
+
+  router.get("/api/admin/trash", async ({ req, res }) => {
+    auth.requirePermission(req, "records.delete");
+    ok(res, list());
+  });
+
+  router.post("/api/admin/trash/restore", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "records.delete");
+    const body = await readJson(req);
+    const [source, ...rest] = text(body.id).split(":");
+    const ref = rest.join(":");
+    if (!source || !ref) throw new HttpError(400, "Geri yüklenecek öğe seçilmedi.");
+
+    if (source === "row") {
+      const item = store.get("SELECT * FROM deleted_records WHERE id = ?", ref);
+      if (!item) throw new HttpError(404, "Bu kayıt zaten geri yüklenmiş.");
+      if (!rowOf(item.source_name, item.case_key)) throw new HttpError(409, "Bu kayıt artık yüklenen tabloda yok; geri yüklenemez.");
+      store.tx(() => {
+        store.run("DELETE FROM deleted_records WHERE id = ?", item.id);
+        audit(user, "source.row.restored", item.case_key, { sourceName: item.source_name, caseKey: item.case_key, from: "trash" });
+      });
+      profile?.invalidate();
+      publish(user, { kind: "records", datasetKey: item.source_name, caseKey: item.case_key });
+      return ok(res, { restored: "row", message: "Kayıt eski yerinde yeniden görünüyor." });
+    }
+
+    if (source === "column") {
+      const [datasetKey, tab, column] = ref.split("\u0000");
+      if (!datasetKey || tab === undefined || !column) throw new HttpError(400, "Sütun tanınmadı.");
+      const result = dataset.withKey(datasetKey, () => dataset.unhideColumn(user, { tab, column }));
+      profile?.invalidate();
+      publish(user, { kind: "source", datasetKey });
+      return ok(res, { restored: "column", message: `“${result.column}” sütunu geri geldi.` });
+    }
+
+    if (source === "tab") {
+      const [datasetKey, original] = ref.split("\u0000");
+      if (!datasetKey || !original) throw new HttpError(400, "Sekme tanınmadı.");
+      const result = dataset.withKey(datasetKey, () => dataset.unhideTab(user, original));
+      profile?.invalidate();
+      publish(user, { kind: "source", datasetKey });
+      return ok(res, { restored: "tab", message: `“${result.name}” sekmesi geri geldi.` });
+    }
+
+    if (source === "document") {
+      const item = store.get("SELECT * FROM case_documents WHERE id = ? AND deleted_at IS NOT NULL", ref);
+      if (!item) throw new HttpError(404, "Bu belge zaten geri yüklenmiş ya da kalıcı olarak silinmiş.");
+      if (documents?.hasFile && !documents.hasFile(item)) throw new HttpError(409, "Belgenin dosyası artık yok; geri yüklenemez.");
+      store.tx(() => {
+        store.run("UPDATE case_documents SET deleted_at = NULL, deleted_by = NULL WHERE id = ?", item.id);
+        audit(user, "case.document.restored", item.id, { caseKey: item.case_key, name: item.name });
+      });
+      publish(user, { kind: "documents", caseKey: item.case_key });
+      return ok(res, { restored: "document", message: `“${item.name}” kaydın belgelerine geri döndü.` });
+    }
+
+    if (source === "free-sheet") {
+      const sheet = store.get("SELECT id, dataset_key FROM free_sheets WHERE id = ? AND deleted_at IS NOT NULL", ref);
+      if (!sheet) throw new HttpError(404, "Bu sayfa zaten geri yüklenmiş.");
+      const result = dataset.withKey(sheet.dataset_key, () => free.restoreSheet(user, sheet.id));
+      profile?.invalidate();
+      publish(user, { kind: "records", datasetKey: sheet.dataset_key, free: sheet.id });
+      return ok(res, { restored: "free-sheet", message: result.renamed ? `Sayfa “${result.name}” adıyla geri geldi (eski adı başka bir sekmede kullanılıyor).` : `“${result.name}” sayfası geri geldi.` });
+    }
+
+    if (source === "plan") {
+      const plan = store.get("SELECT id, name FROM plans WHERE id = ? AND deleted_at IS NOT NULL", ref);
+      if (!plan) throw new HttpError(404, "Bu taksit kartı zaten geri yüklenmiş.");
+      plans?.assertRestorable?.(plan.id, user);
+      // Eski veride (2.1.0 öncesi) kart banka bağlı tahsilatıyla silinmiş olabilir: geri gelince o satırlar hesaba döner (K2 kapıları).
+      const bound = store.get("SELECT GROUP_CONCAT(DISTINCT fin_ref) AS refs, MIN(date) AS day FROM plan_entries WHERE plan_id = ? AND fin_ref <> '' AND opening = 0 AND cheque_id = ''", plan.id);
+      const k7 = banking.restore(user, { refs: String(bound?.refs || "").split(","), date: bound?.day || "", force: banking.forced(body), permission: "plans.manage" });
+      const result = bank.post({
+        user,
+        module: "plans",
+        op: "restore",
+        prev: { planId: plan.id, name: plan.name },
+        write: () => {
+          k7.capture();
+          store.run(`UPDATE plans SET ${FREEZE_CLOSE}, deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?`, user.id, now(), plan.id);
+          // Kartın carisi (v2.0.6) sonradan silindiyse o da geri gelir; kart sahipsiz kalmaz.
+          store.run("UPDATE accounts SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE deleted_at IS NOT NULL AND id = (SELECT account_id FROM plans WHERE id = ?)", user.id, now(), plan.id);
+          audit(user, "plan.restored", plan.id, { name: plan.name });
+        },
+        guard: k7.guard,
+      });
+      k7.prime(result);
+      publish(user, { kind: "plans", planId: plan.id });
+      publish(user, { kind: "cash" });
+      return ok(res, { restored: "plan", message: `“${plan.name}” taksit kartı geri geldi.` });
+    }
+
+    if (source === "account") {
+      if (!accounts?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
+      return ok(res, { restored: "account", message: accounts.restoreDeleted(user, ref) });
+    }
+    if (source === "stock") {
+      if (!stock?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
+      return ok(res, { restored: "stock", message: stock.restoreDeleted(user, ref) });
+    }
+    if (source === "cheque") {
+      if (!cheques?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
+      return ok(res, { restored: "cheque", message: cheques.restoreDeleted(user, ref) });
+    }
+
+    if (source !== "trash") throw new HttpError(400, "Bilinmeyen öğe.");
+    const item = trash.get(ref);
+    if (!item) throw new HttpError(404, "Bu öğe zaten geri yüklenmiş.");
+    const payload = JSON.parse(item.payload_json || "{}");
+    let message = "";
+    // v2.0.26 (A7): para hareketi kapanmış dönemdeyse geri yüklenmez (silmedeki kuralın aynısı; önceden kapıda nedensiz 409).
+    // Tutar kuruşa yuvarlanır, ödeme yolu katı okunur (B7: tanınmayan yol 400; sessizce nakit sayılmaz).
+    const money = value => roundMoney(Number(value) || 0);
+    // G5: kilitli dönem 409, ileri tarih 400 (eski sürümden kalan ileri tarihli satır; kapıdaki nedensiz 409 yerine).
+    const restoreDate = (date, what) => period?.restoreDate(date, what);
+
+    // GG2 (plan §3.5 K13/7): satır banka hesabı bağıyla (fin_ref) döner; hesap silinmişse ya da yol/tarih uymuyorsa bağsız döner ve söylenir.
+    let dropped = "";
+    const keep = (ref, method, date) => {
+      const kept = bank.keepRef(ref, { method, date });
+      dropped ||= kept.dropped;
+      return kept.ref;
+    };
+    if (item.kind === "payment") {
+      restoreDate(payload.date, "Bu tahsilat");
+      const method = methodInput(payload.method);
+      const finRef = keep(payload.finRef, method, payload.date);
+      const k7 = banking.restore(user, { refs: [finRef], date: payload.date, force: banking.forced(body), permission: "payments.create" });
+      // v2.1.0 (bank.post op 'restore'): satır silinmeden önceki işlem başlığıyla (payload.eventId) döner, olay yeniden etkin; eski
+      // (olaysız silinmiş) satır yeni olay alır.
+      const result = bank.post({
+        user,
+        module: "payment",
+        op: "restore",
+        prev: payload,
+        guard: k7.guard,
+        write: () => {
+          k7.capture();
+          if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
+            store.run(
+              "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              item.ref,
+              payload.caseKey || "",
+              payload.caseTitle || "",
+              money(payload.amount),
+              payload.date,
+              payload.note || "",
+              method,
+              finRef,
+              bank.eventFor("payments", { date: payload.date, method, event_id: payload.eventId || "" }),
+              payload.createdBy || user.id,
+              payload.createdAt || now(),
+              user.id,
+              now(),
+            );
+          }
+          trash.markRestored(item.id, user);
+          audit(user, "case.payment.restored", item.ref, { caseKey: payload.caseKey, amount: payload.amount, date: payload.date });
+        },
+      });
+      k7.prime(result);
+      publish(user, { kind: "activity", caseKey: payload.caseKey });
+      publish(user, { kind: "cash" });
+      message = "Tahsilat geri eklendi; Kasa ve tahsilat takvimi güncellendi.";
+    } else if (item.kind === "cash") {
+      if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Kasa hareketinin bilgisi eksik; geri yüklenemez.");
+      restoreDate(payload.date, "Bu kasa hareketi");
+      if (payload.twin) restoreDate(payload.twin.date, "Bu transferin öbür tarafı");
+      // Yol işlemden önce doğrulanır (bozuk yükte hiçbir satır yazılmaz).
+      const cashRefs = [payload, payload.twin].filter(Boolean).map(row => bank.keepRef(row.finRef, { method: methodInput(row.method), date: row.date }).ref);
+      const cashDate = payload.twin && payload.twin.date < payload.date ? payload.twin.date : payload.date;
+      const k7 = banking.restore(user, { refs: cashRefs, date: cashDate, force: banking.forced(body), permission: "cash.manage" });
+      const result = bank.post({
+        user,
+        module: "cash",
+        op: "restore",
+        prev: payload,
+        guard: k7.guard,
+        write: () => {
+          k7.capture();
+          // v2.0.17: Kasa ↔ Banka transferi iki bağlı hareket; ikisi birlikte geri gelir (payload.twin). v2.1.0: ikisi aynı işlem
+          // başlığında (silinmeden önceki olay; eski yükte yoksa yeni olay ikisine birden).
+          let shared = "";
+          const insert = row => {
+            if (store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", row.id)) return;
+            const method = methodInput(row.method);
+            shared = bank.eventFor("cash_entries", { kind: row.kind, date: row.date, method, transfer_id: row.transferId || "", event_id: row.eventId || shared });
+            store.run(
+              "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              row.id,
+              row.kind,
+              money(row.amount),
+              row.date,
+              row.description || "",
+              method,
+              row.transferId || "",
+              keep(row.finRef, method, row.date),
+              shared,
+              row.createdBy || user.id,
+              row.createdAt || now(),
+              user.id,
+              now(),
+            );
+          };
+          insert({ ...payload, id: item.ref });
+          if (payload.twin && ["in", "out"].includes(payload.twin.kind)) insert(payload.twin);
+          trash.markRestored(item.id, user);
+          audit(user, "cash.entry.restored", item.ref, { kind: payload.kind, amount: payload.amount, date: payload.date, description: payload.description });
+        },
+      });
+      k7.prime(result);
+      publish(user, { kind: "cash" });
+      message = "Kasa hareketi geri eklendi.";
+    } else if (item.kind === "plan-entry") {
+      if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
+      const plan = store.get("SELECT id, deleted_at AS deletedAt FROM plans WHERE id = ?", payload.planId);
+      if (!plan) throw new HttpError(409, "Hareketin taksit kartı artık yok; geri yüklenemez.");
+      if (plan.deletedAt) throw new HttpError(409, `“${payload.planName}” kartı silinmiş. Önce kartı geri yükleyin.`);
+      restoreDate(payload.date, "Bu taksit hareketi");
+      plans?.assertCloseOpen?.(plan.id, "Kartın tahsilatı ve iadesi geri yüklenemez.");
+      const method = methodInput(payload.method);
+      const planRef = payload.opening ? "" : bank.keepRef(payload.finRef, { method, date: payload.date }).ref;
+      const k7 = banking.restore(user, { refs: [planRef], date: payload.date, force: banking.forced(body), permission: "plans.collect" });
+      const result = bank.post({
+        user,
+        module: "plan",
+        op: "restore",
+        prev: payload,
+        guard: k7.guard,
+        write: () => {
+          k7.capture();
+          if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
+            const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
+            const opening = payload.opening ? 1 : 0;
+            store.run(
+              // Açılış (devir) kaydı geri gelince yine açılıştır (v2.0.8): Kasa'ya girmez (para satırı değil, olay almaz).
+              "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              item.ref, plan.id, itemId, payload.kind, money(payload.amount), payload.date, payload.note || "", payload.receiptNo || null, opening, method, opening ? "" : keep(payload.finRef, method, payload.date),
+              bank.eventFor("plan_entries", { kind: payload.kind, date: payload.date, method, opening, cheque_id: "", event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+            );
+          }
+          trash.markRestored(item.id, user);
+          // v2.0.24: faturanın kendi kartıysa kartın kalanı faturanın açığına eşitlenir.
+          plans?.syncInvoiceCard?.(user, plan.id);
+          audit(user, "plan.entry.restored", item.ref, { planId: plan.id, kind: payload.kind, amount: payload.amount, date: payload.date });
+        },
+      });
+      k7.prime(result);
+      publish(user, { kind: "plans", planId: plan.id });
+      publish(user, { kind: "cash" });
+      message = "Taksit hareketi geri eklendi; kart ve Kasa yeniden hesaplandı.";
+    } else if (item.kind === "account-entry" && accounts?.restoreEntry) {
+      message = accounts.restoreEntry(user, item, payload, { force: banking.forced(body), banking });
+    } else if (item.kind === "stock-move" && stock?.restoreMove) {
+      message = stock.restoreMove(user, item, payload, { force: banking.forced(body), banking });
+    } else if (item.kind === "invoice" && invoices?.restoreDeleted) {
+      // v2.0.17: silinen fatura satırlarıyla geri gelir; kaydedilmiş belge "İptal Edildi" olarak (etkisiz) döner.
+      message = invoices.restoreDeleted(user, item, payload);
+    } else if (item.kind === "free-row" || item.kind === "free-column") {
+      const sheet = store.get("SELECT deleted_at FROM free_sheets WHERE id = ?", payload.sheetId);
+      if (!sheet) throw new HttpError(409, "Satırın sayfası artık yok; geri yüklenemez.");
+      if (sheet.deleted_at) throw new HttpError(409, `“${payload.sheetName}” sayfası silinmiş. Önce sayfayı geri yükleyin.`);
+      const result = dataset.withKey(item.dataset_key || dataset.currentKey(), () => {
+        const restored = item.kind === "free-row" ? free.restoreRow(user, payload) : free.restoreColumn(user, payload);
+        trash.markRestored(item.id, user);
+        return restored;
+      });
+      profile?.invalidate();
+      publish(user, { kind: "records", datasetKey: item.dataset_key, free: payload.sheetId });
+      message =
+        item.kind === "free-row"
+          ? `Satır “${result.sheet}” sayfasına ${result.position}. satır olarak eklendi${result.lost.length ? ` (${result.lost.join(", ")} kolonu artık yok)` : ""}.`
+          : `“${result.column}” kolonu “${result.sheet}” sayfasına ${result.position}. kolon olarak eklendi${result.lost ? ` (${result.lost} hücrenin satırı artık yok)` : ""}.`;
+    } else throw new HttpError(400, "Bu öğe geri yüklenemez.");
+    if (dropped) message = `${message} ${bank.droppedText(dropped)}`;
+    return ok(res, { restored: item.kind, message });
+  });
+}

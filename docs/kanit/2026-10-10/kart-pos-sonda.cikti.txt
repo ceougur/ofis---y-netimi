@@ -1,0 +1,5 @@
+1) kart hesabı yokken: Gerçek Banka 10000 · bugün +10000 −0 · Kart ve Kredi Borcu (gösterilmiyor) · Hesabı Atanmamış Eski Hareketler -8656
+2) Kart Borcuna Aktar sonrası: Gerçek Banka 10000 · bugün +10000 −0 · Kart ve Kredi Borcu 8656 · Hesabı Atanmamış Eski Hareketler 0
+3) yeni kartla ödemede kart hesabı verilince: 200 {"id":"account-5bd85b9b-1401-46c6-bd71-ebc640481b06","refNo":"2","type":"supplier","name":"Tedarikçi B","phone":"","email":"","address":"","registeredOn":"2026-
+3) sonrası: Gerçek Banka 10000 · bugün +10000 −0 · Kart ve Kredi Borcu 8656 · Hesabı Atanmamış Eski Hareketler -500
+Mutabakat Testi: tamam

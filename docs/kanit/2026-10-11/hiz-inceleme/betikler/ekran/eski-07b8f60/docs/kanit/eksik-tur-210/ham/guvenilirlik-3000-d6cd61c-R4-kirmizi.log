@@ -1,0 +1,2506 @@
+  100 işlem · 3 şirket · 28 yedek · 6 geri yükleme · 10.1 sn
+  200 işlem · 4 şirket · 42 yedek · 16 geri yükleme · 27.4 sn
+  300 işlem · 4 şirket · 46 yedek · 23 geri yükleme · 50.1 sn
+  400 işlem · 4 şirket · 52 yedek · 33 geri yükleme · 68.8 sn
+  500 işlem · 6 şirket · 79 yedek · 38 geri yükleme · 91.6 sn
+  600 işlem · 4 şirket · 107 yedek · 44 geri yükleme · 119.9 sn
+  700 işlem · 3 şirket · 121 yedek · 52 geri yükleme · 142.1 sn
+  800 işlem · 6 şirket · 126 yedek · 62 geri yükleme · 165.0 sn
+  900 işlem · 5 şirket · 133 yedek · 69 geri yükleme · 188.8 sn
+  1000 işlem · 5 şirket · 147 yedek · 78 geri yükleme · 218.3 sn
+  1100 işlem · 4 şirket · 151 yedek · 85 geri yükleme · 242.5 sn
+  1200 işlem · 5 şirket · 181 yedek · 95 geri yükleme · 270.9 sn
+  1300 işlem · 5 şirket · 199 yedek · 103 geri yükleme · 301.1 sn
+  1400 işlem · 5 şirket · 222 yedek · 120 geri yükleme · 332.5 sn
+  1500 işlem · 5 şirket · 262 yedek · 129 geri yükleme · 366.7 sn
+  1600 işlem · 6 şirket · 283 yedek · 136 geri yükleme · 401.5 sn
+  1700 işlem · 6 şirket · 295 yedek · 142 geri yükleme · 430.2 sn
+  1800 işlem · 4 şirket · 309 yedek · 147 geri yükleme · 458.5 sn
+  1900 işlem · 4 şirket · 329 yedek · 157 geri yükleme · 488.6 sn
+  2000 işlem · 5 şirket · 343 yedek · 163 geri yükleme · 512.7 sn
+  2100 işlem · 6 şirket · 386 yedek · 177 geri yükleme · 547.1 sn
+  2200 işlem · 3 şirket · 407 yedek · 184 geri yükleme · 582.1 sn
+  2300 işlem · 6 şirket · 428 yedek · 195 geri yükleme · 613.8 sn
+  2400 işlem · 5 şirket · 442 yedek · 198 geri yükleme · 644.5 sn
+  2500 işlem · 4 şirket · 457 yedek · 210 geri yükleme · 672.7 sn
+  2600 işlem · 5 şirket · 475 yedek · 214 geri yükleme · 697.8 sn
+  2700 işlem · 6 şirket · 508 yedek · 223 geri yükleme · 728.0 sn
+  2800 işlem · 6 şirket · 529 yedek · 230 geri yükleme · 759.6 sn
+  2900 işlem · 4 şirket · 537 yedek · 239 geri yükleme · 793.9 sn
+  3000 işlem · 5 şirket · 548 yedek · 245 geri yükleme · 825.3 sn
+
+✓ Tohum 1 · taban bos: 3000 işlem, 3001 değişmez kural turu, 548 yedek, 245 geri yükleme, 86 yanlış şirkete deneme (hepsi 409), 88 yeniden başlatma · 826.6 sn
+  İşlem türleri: account 333, entry 425, backupAll 79, select 199, backupOne 162, restore 197, recode 122, bankModule 129, bankTransfer 101, wrongRestore 88, bankModuleOther 144, cash 172, create 164, reset 73, bankWrongCompany 55, restoreRoot 51, bankAccount 66, bankVoucher 156, rename 104, restart 37, bankReverse 54, remove 89
+  Son durum: 016 · ışık turizm (7 cari) | 006 · ŞAHİN İNŞAAT (4 cari) | 005 · Şahin İnşaat (5 cari) | 001 · Ağaoğlu Yapı? (0 cari) | 043 · Doğu "Batı" Lojistik (0 cari)
+  100 işlem · 4 şirket · 10 yedek · 2 geri yükleme · 7.6 sn
+  200 işlem · 6 şirket · 37 yedek · 5 geri yükleme · 21.8 sn
+  300 işlem · 6 şirket · 56 yedek · 15 geri yükleme · 43.3 sn
+  400 işlem · 5 şirket · 64 yedek · 26 geri yükleme · 70.0 sn
+  500 işlem · 5 şirket · 80 yedek · 29 geri yükleme · 93.7 sn
+  600 işlem · 5 şirket · 103 yedek · 36 geri yükleme · 116.6 sn
+  700 işlem · 5 şirket · 119 yedek · 43 geri yükleme · 138.6 sn
+  800 işlem · 6 şirket · 138 yedek · 50 geri yükleme · 164.5 sn
+  900 işlem · 5 şirket · 151 yedek · 59 geri yükleme · 192.6 sn
+  1000 işlem · 3 şirket · 160 yedek · 67 geri yükleme · 216.2 sn
+  1100 işlem · 3 şirket · 175 yedek · 77 geri yükleme · 237.1 sn
+  1200 işlem · 2 şirket · 185 yedek · 81 geri yükleme · 257.0 sn
+  1300 işlem · 6 şirket · 210 yedek · 90 geri yükleme · 284.7 sn
+  1400 işlem · 5 şirket · 228 yedek · 99 geri yükleme · 316.5 sn
+  1500 işlem · 3 şirket · 238 yedek · 107 geri yükleme · 347.0 sn
+  1600 işlem · 4 şirket · 251 yedek · 114 geri yükleme · 371.2 sn
+  1700 işlem · 5 şirket · 272 yedek · 119 geri yükleme · 398.8 sn
+  1800 işlem · 5 şirket · 282 yedek · 130 geri yükleme · 428.0 sn
+  1900 işlem · 5 şirket · 298 yedek · 138 geri yükleme · 459.9 sn
+  2000 işlem · 6 şirket · 312 yedek · 142 geri yükleme · 486.0 sn
+  2100 işlem · 3 şirket · 340 yedek · 149 geri yükleme · 514.5 sn
+  2200 işlem · 4 şirket · 348 yedek · 156 geri yükleme · 543.0 sn
+  2300 işlem · 6 şirket · 354 yedek · 162 geri yükleme · 572.9 sn
+
+✗ Rastgele sıra testi başarısız (tohum 2, taban bos, işlem 2331): #2331 rename: silinen 013 · Işık Turizm şirketinin yedek klasörü 013 şirketine verildi
+Son işlemler:
+#2292 cari hareketi (001[4194]): Şahin Çelik in 1355.86
+#2293 cari hareketi (001[4194]): Şahin Çelik credit 3320.67
+#2294 Kasa (001[4194]): in 4273.26
+#2295 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-026-2026-10-10T08-32-20-208Z-manuel.sqlite → 058[2dc7]
+#2296 cari aç (001[4194]): Ömer Yılmaz
+#2297 001'i sil (reddedilmeli)
+#2298 banka hesabı aç (001[4194]): Ziraat Bankası açılış 4203.35
+#2299 şirket aç: kod "053" ad "Ağaoğlu Yapı?" → 053[9f7f]
+#2300 şirket aç: kod "(sıradaki)" ad "Doğu "Batı" Lojistik" → 002[15e3]
+#2301 banka hesabı aç (001[4194]): Yapı Kredi açılış 9885.66
+#2302 geri yükle: 007[27e9] · Işık Turizm ← destekofis-007-2026-10-10T08-35-27-173Z-geri-yukleme-oncesi-007.sqlite (geri-yukleme-oncesi)
+#2303 kod değiştir: 053[9f7f] · Ağaoğlu Yapı? → 039
+#2304 sınırda şirket aç: kod "012" → 409 beklenir
+#2305 Banka Fişi (001[4194]): Ziraat Bankası · Hesap 2298 fee none 450.99
+#2306 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-055-2026-10-10T08-34-05-362Z-geri-yukleme-oncesi-055.sqlite → 001[4194] (dosya elle hedefin klasörüne kopyalandı)
+#2307 Banka Fişi (001[4194]): Yapı Kredi · Hesap 2301 fee bsmv_incl 2441.35
+#2308 cari aç (001[4194]): Gülşen Yıldırım
+#2309 001 geri yükle (yeniden açılışta) ← destekofis-055-2026-10-10T08-34-05-362Z-geri-yukleme-oncesi-055.sqlite (geri-yukleme-oncesi)
+#2310 Ters Kaydet (001[4194]): ev-0mv253jwl0000-a85dd975-91b6-42d8
+#2311 sunucuyu yeniden başlat
+#2312 banka hesabı aç (001[4194]): Yapı Kredi açılış 13471.15
+#2313 yedek (yalnız 001[4194] · mavi gıda)
+#2314 havale (001[4194]): Ömer Yılmaz out 2062.53 → Yapı Kredi · Hesap 2301
+#2315 sıfırla (all): 002[15e3] · Doğu "Batı" Lojistik
+#2316 cari aç (001[4194]): Tülay Özdemir
+#2317 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-28-056Z-geri-yukleme-oncesi-026.sqlite (geri-yukleme-oncesi)
+#2318 001 geri yükle (yeniden açılışta) ← destekofis-013-2026-10-10T08-35-02-400Z-geri-yukleme-oncesi-013.sqlite (geri-yukleme-oncesi)
+#2319 001 geri yükle (yeniden açılışta) ← destekofis-013-2026-10-10T08-35-33-214Z-manuel.sqlite (manuel)
+#2320 seç: 058[2dc7] · istanbul ticaret a.ş.
+#2321 sil: 007[27e9] · Işık Turizm
+#2322 geri yükle: 001[4194] · mavi gıda ← destekofis-001-2026-10-10T08-36-01-354Z-manuel.sqlite (manuel)
+#2323 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-055-2026-10-10T08-33-38-965Z-geri-yukleme-oncesi-055.sqlite → 002[15e3]
+#2324 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-57-118Z-manuel.sqlite (manuel)
+#2325 banka hesabı aç (058[2dc7]): Garanti BBVA açılış 17367.17
+#2326 YANLIŞ şirket Banka Fişi: seçili 058[2dc7], hesap 013[kök]
+#2327 şirket aç: kod "1000" ad "Nokta Ltd."
+#2328 YANLIŞ şirket Banka Fişi: seçili 058[2dc7], hesap 013[kök]
+#2329 şirket aç: kod "058" ad "mavi gıda"
+#2330 Kasa (058[2dc7]): in 4226.17
+#2331 ad değiştir: 013[kök] · ışık turizm → "Işık Turizm"
+
+Bütün işlem günlüğü:
+#1 cari aç (001[kök]): Mehmet Çelik
+#2 şirket aç: kod "013" ad "Eğitim Kurumları <Merkez>" → 013[ece4]
+#3 seç: 001[kök] · Şirket 1
+#4 seç: 001[kök] · Şirket 1
+#5 banka hesabı aç (001[kök]): İş Bankası açılış 2283.42
+#6 cari aç (001[kök]): Ümit Çakır
+#7 seç: 001[kök] · Şirket 1
+#8 cari hareketi (001[kök]): Ümit Çakır in 2987.53
+#9 Banka Fişi (001[kök]): İş Bankası · Hesap 5 other_in 154.10
+#10 yedek (Tüm Şirketler)
+#11 seç: 013[ece4] · Eğitim Kurumları <Merkez>
+#12 banka hesabı aç (013[ece4]): Ziraat Bankası açılış 11837.01
+#13 001'i sil (reddedilmeli)
+#14 cari aç (013[ece4]): Nazlı Öztürk
+#15 Kasa (013[ece4]): out 867.32
+#16 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-25-523Z-manuel.sqlite (manuel)
+#17 satis havalesi (013[ece4]): Nazlı Öztürk 3366.39 → Ziraat Bankası · Hesap 12
+#18 Banka Fişi (013[ece4]): Ziraat Bankası · Hesap 12 fee bsmv_incl 1531.15
+#19 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-25-865Z-geri-yukleme-oncesi-001.sqlite → 013[ece4]
+#20 Ters Kaydet (013[ece4]): ev-0mv24ra3y0000-579d5eee-e965-491c
+#21 cari hareketi (013[ece4]): Nazlı Öztürk in 1295.28
+#22 havale (013[ece4]): Nazlı Öztürk out 3731.33 → Ziraat Bankası · Hesap 12 (tek hesap, seçimsiz)
+#23 YANLIŞ şirket hesabına kayit havalesi: seçili 013[ece4], hesap 001[kök]
+#24 havale (013[ece4]): Nazlı Öztürk out 3656.81 → Ziraat Bankası · Hesap 12
+#25 cari hareketi (013[ece4]): Nazlı Öztürk credit 1039.76
+#26 Kasa (013[ece4]): in 4751.40
+#27 cari aç (013[ece4]): Işıl Çetin
+#28 cari aç (013[ece4]): Zehra Yıldız
+#29 YANLIŞ geri yükleme: 013[ece4] yedeği destekofis-013-2026-10-10T08-26-25-523Z-manuel.sqlite → 001[kök]
+#30 stok havalesi (013[ece4]): Zehra Yıldız 2801.91 → Ziraat Bankası · Hesap 12
+#31 şirket aç: kod "(sıradaki)" ad "istanbul ticaret a.ş." → 002[67ea]
+#32 yedek (yalnız 001[kök] · Şirket 1)
+#33 sıfırla (movements): 001[kök] · Şirket 1
+#34 Banka Fişi (013[ece4]): Ziraat Bankası · Hesap 12 fee none 4954.39
+#35 cari aç (013[ece4]): Cemile Kurt
+#36 sıfırla (movements): 002[67ea] · istanbul ticaret a.ş.
+#37 cari hareketi (013[ece4]): Işıl Çetin in 451.95
+#38 seç: 001[kök] · Şirket 1
+#39 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-25-523Z-manuel.sqlite → 002[67ea] (dosya elle hedefin klasörüne kopyalandı)
+#40 havale (001[kök]): Mehmet Çelik in 1574.45 → İş Bankası · Hesap 5
+#41 banka hesabı aç (001[kök]): Ziraat Bankası açılış 6039.16
+#42 ad değiştir: 001[kök] · Şirket 1 → "Çağ/Öz: Ltd*"
+#43 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-25-865Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#44 stok havalesi (001[kök]): Ümit Çakır 1768.64 → İş Bankası · Hesap 5
+#45 Banka Fişi (001[kök]): İş Bankası · Hesap 5 fee bsmv_incl 1182.51
+#46 cekTahsil havalesi (001[kök]): Mehmet Çelik 3286.12 → İş Bankası · Hesap 5
+#47 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-25-523Z-manuel.sqlite → 013[ece4]
+#48 cari aç (001[kök]): Oğuz Akgül
+#49 Kasa (001[kök]): out 2167.06
+#50 cari hareketi (001[kök]): Mehmet Çelik out 3900.33
+#51 Kasa (001[kök]): in 3692.92
+#52 şirket aç: kod "001" ad "Gayri Resmi"
+#53 YANLIŞ geri yükleme: 002[67ea] yedeği destekofis-002-2026-10-10T08-26-27-135Z-sifirlama-oncesi-002.sqlite → 013[ece4] (dosya elle hedefin klasörüne kopyalandı)
+#54 şirket aç: kod "(sıradaki)" ad "Ünal & Öztürk Hukuk" → 003[deb8]
+#55 cari aç (001[kök]): Yağmur Doğan
+#56 havale (001[kök]): Ümit Çakır in 2034.29 → İş Bankası · Hesap 5 (tek hesap, seçimsiz)
+#57 cari aç (001[kök]): Ece Işık
+#58 Banka Fişi (001[kök]): İş Bankası · Hesap 5 fee none 4369.18
+#59 şirket aç: kod "(sıradaki)" ad "Iğdır Tarım|Hayvancılık" → 004[150c]
+#60 cari hareketi (001[kök]): Ümit Çakır debt 2724.20
+#61 banka hesabı aç (001[kök]): Garanti BBVA açılış 3251.03
+#62 Kasa (001[kök]): out 1763.39
+#63 cari hareketi (001[kök]): Ümit Çakır credit 4321.37
+#64 ad değiştir: 004[150c] · Iğdır Tarım|Hayvancılık → "   "
+#65 Banka Fişi (001[kök]): İş Bankası · Hesap 5 other_in 4512.14
+#66 seç: 002[67ea] · istanbul ticaret a.ş.
+#67 cari aç (002[67ea]): Mustafa Kurt
+#68 banka hesabı aç (002[67ea]): Yapı Kredi açılış 3935.82
+#69 yedek (yalnız 001[kök] · Çağ/Öz: Ltd*)
+#70 taksit havalesi (002[67ea]): Mustafa Kurt 2648.15 → Yapı Kredi · Hesap 68
+#71 yedek (yalnız 001[kök] · Çağ/Öz: Ltd*)
+#72 cari aç (002[67ea]): İsmail Çetin
+#73 kod değiştir: 013[ece4] · Eğitim Kurumları <Merkez> → 003
+#74 cari hareketi (002[67ea]): Mustafa Kurt credit 1784.84
+#75 sunucuyu yeniden başlat
+#76 ad değiştir: 013[ece4] · Eğitim Kurumları <Merkez> → "Doğu "Batı" Lojistik"
+#77 banka hesabı aç (002[67ea]): İş Bankası açılış 14134.51
+#78 banka hesabı aç (002[67ea]): Yapı Kredi açılış 19444.38
+#79 yedek (Tüm Şirketler)
+#80 havale (002[67ea]): İsmail Çetin out 4762.73 → Yapı Kredi · Hesap 78
+#81 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 68 fee none 4659.43
+#82 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 78 fee bsmv_incl 4588.18
+#83 alis havalesi (002[67ea]): Mustafa Kurt 1619.44 → Yapı Kredi · Hesap 78
+#84 şirket aç: kod "001" ad "MAVİ GIDA"
+#85 seç: 002[67ea] · istanbul ticaret a.ş.
+#86 cari hareketi (002[67ea]): İsmail Çetin debt 3451.82
+#87 Kasa (002[67ea]): in 2915.31
+#88 sıfırla (movements): 003[deb8] · Ünal & Öztürk Hukuk
+#89 cari aç (002[67ea]): Zeynep Özdemir
+#90 YANLIŞ şirket Banka Fişi: seçili 002[67ea], hesap 013[ece4]
+#91 cari hareketi (002[67ea]): Zeynep Özdemir credit 4387.50
+#92 sil: 003[deb8] · Ünal & Öztürk Hukuk
+#93 kod değiştir: 004[150c] · Iğdır Tarım|Hayvancılık → 018
+#94 sıfırla (movements): 018[150c] · Iğdır Tarım|Hayvancılık
+#95 YANLIŞ şirket hesabına transfer: seçili 002[67ea], alıcı 013[ece4]
+#96 cari hareketi (002[67ea]): Mustafa Kurt in 2536.20
+#97 Kasa (002[67ea]): out 2916.54
+#98 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 78 other_in 4701.32
+#99 cari hareketi (002[67ea]): Mustafa Kurt credit 4740.75
+#100 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 68 fee bsmv_incl 4394.92
+#101 transfer (002[67ea]): İş Bankası · Hesap 77 → Yapı Kredi · Hesap 68 4060.89 + ücret 10.77
+#102 seç: 001[kök] · Çağ/Öz: Ltd*
+#103 cari hareketi (001[kök]): Mehmet Çelik debt 4643.39
+#104 transfer (001[kök]): İş Bankası · Hesap 5 → Garanti BBVA · Hesap 61 556.96
+#105 taksit havalesi (001[kök]): Yağmur Doğan 3531.76 → Garanti BBVA · Hesap 61
+#106 cekTahsil havalesi (001[kök]): Mehmet Çelik 3486.36 → Garanti BBVA · Hesap 61
+#107 yedek (Tüm Şirketler)
+#108 taksit havalesi (001[kök]): Yağmur Doğan 4755.93 → İş Bankası · Hesap 5
+#109 HESAPSIZ havale (001[kök]): Oğuz Akgül in 4898.95
+#110 ad değiştir: 013[ece4] · Doğu "Batı" Lojistik → "   "
+#111 Ters Kaydet (001[kök]): ev-0mv24rbgs0000-dddc120f-5c93-49b5
+#112 cari hareketi (001[kök]): Ece Işık in 3224.80
+#113 sunucuyu yeniden başlat
+#114 şirket aç: kod "004" ad "mavi gıda" → 004[13fa]
+#115 Banka Fişi (001[kök]): Garanti BBVA · Hesap 61 fee bsmv_incl 3485.02
+#116 ad değiştir: 018[150c] · Iğdır Tarım|Hayvancılık → "Şahin İnşaat"
+#117 cari hareketi (001[kök]): Yağmur Doğan out 399.68
+#118 cari hareketi (001[kök]): Yağmur Doğan in 3953.01
+#119 şirket aç: kod "003" ad "Eğitim Kurumları <Merkez>" → 003[61d4]
+#120 banka hesabı aç (001[kök]): İş Bankası açılış 16480.13
+#121 cari hareketi (001[kök]): Ece Işık credit 2927.84
+#122 ad değiştir: 002[67ea] · istanbul ticaret a.ş. → "Ünal & Öztürk Hukuk"
+#123 sil: 004[13fa] · mavi gıda
+#124 transfer (001[kök]): İş Bankası · Hesap 120 → İş Bankası · Hesap 5 1098.92 + ücret 10.65
+#125 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-29-406Z-manuel.sqlite → 002[67ea] (dosya elle hedefin klasörüne kopyalandı)
+#126 yedek (yalnız 002[67ea] · Ünal & Öztürk Hukuk)
+#127 banka hesabı aç (001[kök]): Yapı Kredi açılış 16524.51
+#128 YANLIŞ geri yükleme: 002[67ea] yedeği destekofis-002-2026-10-10T08-26-35-460Z-manuel.sqlite → 003[61d4] (dosya elle hedefin klasörüne kopyalandı)
+#129 cari aç (001[kök]): Hatice Kara
+#130 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-29-406Z-manuel.sqlite → 018[150c] (dosya elle hedefin klasörüne kopyalandı)
+#131 Kasa (001[kök]): out 4097.21
+#132 yedek (yalnız 018[150c] · Şahin İnşaat)
+#133 seç: 003[61d4] · Eğitim Kurumları <Merkez>
+#134 yedek (yalnız 018[150c] · Şahin İnşaat)
+#135 cari aç (003[61d4]): Murat Işık
+#136 cari aç (003[61d4]): Tuğba Aydın
+#137 cari hareketi (003[61d4]): Tuğba Aydın debt 3084.01
+#138 şirket aç: kod "(sıradaki)" ad "Ağaoğlu Yapı?" → 004[9ef7]
+#139 cari hareketi (003[61d4]): Murat Işık credit 3186.91
+#140 cari hareketi (003[61d4]): Tuğba Aydın out 3336.89
+#141 ad değiştir: 002[67ea] · Ünal & Öztürk Hukuk → "ŞAHİN İNŞAAT"
+#142 ad değiştir: 013[ece4] · Doğu "Batı" Lojistik → "istanbul ticaret a.ş."
+#143 banka hesabı aç (003[61d4]): Yapı Kredi açılış 5990.26
+#144 seç: 018[150c] · Şahin İnşaat
+#145 ad değiştir: 004[9ef7] · Ağaoğlu Yapı? → "mavi gıda"
+#146 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-29-551Z-manuel.sqlite → 003[61d4]
+#147 cari aç (018[150c]): Özge Demir
+#148 YANLIŞ şirket Banka Fişi: seçili 018[150c], hesap 003[61d4]
+#149 banka hesabı aç (018[150c]): Yapı Kredi açılış 4596.74
+#150 cekTahsil havalesi (018[150c]): Özge Demir 3559.74 → Yapı Kredi · Hesap 149
+#151 cekTahsil havalesi (018[150c]): Özge Demir 1206.67 → Yapı Kredi · Hesap 149
+#152 yedek (Tüm Şirketler)
+#153 cari aç (018[150c]): Fatma Uğurlu
+#154 havale (018[150c]): Fatma Uğurlu in 2051.91 → Yapı Kredi · Hesap 149 (tek hesap, seçimsiz)
+#155 yedek (Tüm Şirketler)
+#156 sil: 013[ece4] · istanbul ticaret a.ş. (yanlış onay)
+#157 geri yükle: 004[9ef7] · mavi gıda ← destekofis-004-2026-10-10T08-26-38-631Z-manuel.sqlite (manuel)
+#158 seç: 002[67ea] · ŞAHİN İNŞAAT
+#159 Banka Fişi (002[67ea]): İş Bankası · Hesap 77 other_out 4132.35
+#160 cari aç (002[67ea]): Ali Çelik
+#161 yedek (Tüm Şirketler)
+#162 sunucuyu yeniden başlat
+#163 cari aç (002[67ea]): Mehmet Uğurlu
+#164 cari hareketi (002[67ea]): İsmail Çetin debt 3301.42
+#165 Ters Kaydet (002[67ea]): ev-0mv24resg0000-6b26f8aa-a38f-445f
+#166 cari hareketi (002[67ea]): Ali Çelik credit 358.47
+#167 havale (002[67ea]): Mehmet Uğurlu out 4690.06 → İş Bankası · Hesap 77
+#168 YANLIŞ şirket Banka Fişi: seçili 002[67ea], hesap 001[kök]
+#169 banka hesabı aç (002[67ea]): Ziraat Bankası açılış 12341.30
+#170 Kasa (002[67ea]): in 4206.04
+#171 Kasa (002[67ea]): out 4725.93
+#172 Kasa (002[67ea]): in 2032.75
+#173 ad değiştir: 001[kök] · Çağ/Öz: Ltd* → "Çağ/Öz: Ltd*"
+#174 sil: 018[150c] · Şahin İnşaat
+#175 satis havalesi (002[67ea]): Ali Çelik 1342.28 → Yapı Kredi · Hesap 78
+#176 seç: 002[67ea] · ŞAHİN İNŞAAT
+#177 seç: 002[67ea] · ŞAHİN İNŞAAT
+#178 Banka Fişi (002[67ea]): İş Bankası · Hesap 77 other_in 4708.92
+#179 cari hareketi (002[67ea]): Mustafa Kurt credit 3313.27
+#180 Kasa (002[67ea]): in 2779.13
+#181 kod değiştir: 013[ece4] · istanbul ticaret a.ş. → 013
+#182 transfer (002[67ea]): Yapı Kredi · Hesap 78 → Ziraat Bankası · Hesap 169 4178.35
+#183 kayit havalesi (002[67ea]): Zeynep Özdemir 790.12 → Ziraat Bankası · Hesap 169
+#184 Banka Fişi (002[67ea]): İş Bankası · Hesap 77 other_out 4570.79
+#185 geri yükle: 013[ece4] · istanbul ticaret a.ş. ← destekofis-013-2026-10-10T08-26-38-631Z-manuel.sqlite (manuel)
+#186 havale (002[67ea]): Zeynep Özdemir out 3891.98 → Yapı Kredi · Hesap 78
+#187 yedek (yalnız 013[ece4] · istanbul ticaret a.ş.)
+#188 Banka Fişi (002[67ea]): Ziraat Bankası · Hesap 169 fee bsmv_incl 3978.23
+#189 yedek (yalnız 013[ece4] · istanbul ticaret a.ş.)
+#190 cari hareketi (002[67ea]): Zeynep Özdemir debt 2899.56
+#191 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 78 other_in 2675.10
+#192 cari hareketi (002[67ea]): Mustafa Kurt out 3051.11
+#193 cari hareketi (002[67ea]): İsmail Çetin debt 1616.01
+#194 geri yükle: 004[9ef7] · mavi gıda ← destekofis-004-2026-10-10T08-26-39-123Z-geri-yukleme-oncesi-004.sqlite (geri-yukleme-oncesi)
+#195 cari hareketi (002[67ea]): Mustafa Kurt debt 4678.53
+#196 sıfırla (movements): 001[kök] · Çağ/Öz: Ltd*
+#197 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 68 other_in 4083.14
+#198 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 78 fee bsmv_incl 972.87
+#199 cari hareketi (002[67ea]): İsmail Çetin out 1997.43
+#200 şirket aç: kod "018" ad "Eğitim Kurumları <Merkez>" → 018[2829]
+#201 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-38-095Z-manuel.sqlite (manuel)
+#202 geri yükle: 004[9ef7] · mavi gıda ← destekofis-004-2026-10-10T08-26-39-671Z-manuel.sqlite (manuel)
+#203 cari hareketi (002[67ea]): Ali Çelik credit 2872.46
+#204 yedek (yalnız 003[61d4] · Eğitim Kurumları <Merkez>)
+#205 cari hareketi (002[67ea]): İsmail Çetin out 1534.88
+#206 havale (002[67ea]): İsmail Çetin out 3935.90 → Yapı Kredi · Hesap 78
+#207 cari aç (002[67ea]): Yağmur Özkan
+#208 yedek (yalnız 003[61d4] · Eğitim Kurumları <Merkez>)
+#209 transfer (002[67ea]): Ziraat Bankası · Hesap 169 → Yapı Kredi · Hesap 68 4415.72
+#210 yedek (yalnız 004[9ef7] · mavi gıda)
+#211 ad değiştir: 004[9ef7] · mavi gıda → "Nokta Ltd."
+#212 sınırda şirket aç: kod "003" → 409 beklenir
+#213 cari aç (002[67ea]): İsmail Güneş
+#214 havale (002[67ea]): Zeynep Özdemir in 4241.08 → Yapı Kredi · Hesap 68
+#215 Kasa (002[67ea]): out 2207.44
+#216 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 68 other_out 316.33
+#217 stok havalesi (002[67ea]): Mustafa Kurt 2727.31 → Yapı Kredi · Hesap 68
+#218 yedek (yalnız 002[67ea] · ŞAHİN İNŞAAT)
+#219 yedek (yalnız 001[kök] · Çağ/Öz: Ltd*)
+#220 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-29-406Z-manuel.sqlite → 004[9ef7]
+#221 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 78 fee bsmv_incl 3479.63
+#222 yedek (yalnız 018[2829] · Eğitim Kurumları <Merkez>)
+#223 ad değiştir: 002[67ea] · ŞAHİN İNŞAAT → "MAVİ GIDA"
+#224 geri yükle: 004[9ef7] · Nokta Ltd. ← destekofis-004-2026-10-10T08-26-38-095Z-manuel.sqlite (manuel)
+#225 cari hareketi (002[67ea]): Mustafa Kurt out 3021.02
+#226 cari aç (002[67ea]): Hüseyin Uğurlu
+#227 yedek (Tüm Şirketler)
+#228 cari aç (002[67ea]): Cemile Kaya
+#229 cari hareketi (002[67ea]): İsmail Güneş credit 2684.79
+#230 Banka Fişi (002[67ea]): Yapı Kredi · Hesap 78 other_out 4952.98
+#231 cari aç (002[67ea]): Şükrü Polat
+#232 cari hareketi (002[67ea]): Cemile Kaya out 4088.85
+#233 yedek (yalnız 004[9ef7] · Nokta Ltd.)
+#234 seç: 001[kök] · Çağ/Öz: Ltd*
+#235 Banka Fişi (001[kök]): İş Bankası · Hesap 120 fee bsmv_incl 751.31
+#236 Kasa (001[kök]): out 138.21
+#237 Kasa (001[kök]): in 3452.60
+#238 ad değiştir: 013[ece4] · istanbul ticaret a.ş. → "Ağaoğlu Yapı?"
+#239 transfer (001[kök]): Garanti BBVA · Hesap 61 → Yapı Kredi · Hesap 127 2000.15
+#240 havale (001[kök]): Ece Işık in 2833.14 → Garanti BBVA · Hesap 61
+#241 geri yükle: 003[61d4] · Eğitim Kurumları <Merkez> ← destekofis-003-2026-10-10T08-26-38-631Z-manuel.sqlite (manuel)
+#242 001'i sil (reddedilmeli)
+#243 Banka Fişi (001[kök]): İş Bankası · Hesap 5 other_in 3099.92
+#244 cari aç (001[kök]): Murat Yıldırım
+#245 cari hareketi (001[kök]): Oğuz Akgül in 3038.15
+#246 Kasa (001[kök]): out 3096.85
+#247 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-26-910Z-sifirlama-oncesi-001.sqlite → 003[61d4] (dosya elle hedefin klasörüne kopyalandı)
+#248 seç: 001[kök] · Çağ/Öz: Ltd*
+#249 cari hareketi (001[kök]): Mehmet Çelik debt 2980.70
+#250 seç: 001[kök] · Çağ/Öz: Ltd*
+#251 kod değiştir: 013[ece4] · Ağaoğlu Yapı? → 026
+#252 sil: 003[61d4] · Eğitim Kurumları <Merkez>
+#253 Kasa (001[kök]): out 486.32
+#254 banka hesabı aç (001[kök]): Garanti BBVA açılış 13812.74
+#255 kod değiştir: 004[9ef7] · Nokta Ltd. → 025
+#256 transfer (001[kök]): Yapı Kredi · Hesap 127 → İş Bankası · Hesap 120 4494.21
+#257 yedek (Tüm Şirketler)
+#258 transfer (001[kök]): Yapı Kredi · Hesap 127 → İş Bankası · Hesap 120 4134.16
+#259 yedek (yalnız 026[ece4] · Ağaoğlu Yapı?)
+#260 transfer (001[kök]): Garanti BBVA · Hesap 61 → Garanti BBVA · Hesap 254 4955.30
+#261 şirket aç: kod "003" ad "Ünal & Öztürk Hukuk" → 003[4318]
+#262 Ters Kaydet (001[kök]): ev-0mv24rvu40000-12d7623d-ff87-4859 (transfer)
+#263 kod değiştir: 025[9ef7] · Nokta Ltd. → 001
+#264 YANLIŞ geri yükleme: 026[ece4] yedeği destekofis-013-2026-10-10T08-26-32-913Z-manuel.sqlite → 002[67ea] (dosya elle hedefin klasörüne kopyalandı)
+#265 havale (001[kök]): Murat Yıldırım out 3302.58 → Yapı Kredi · Hesap 127
+#266 YANLIŞ geri yükleme: 025[9ef7] yedeği destekofis-004-2026-10-10T08-26-53-193Z-manuel.sqlite → 001[kök]
+#267 cari hareketi (001[kök]): Ümit Çakır credit 1535.50
+#268 ad değiştir: 003[4318] · Ünal & Öztürk Hukuk → "Gayri Resmi"
+#269 cari hareketi (001[kök]): Yağmur Doğan debt 4165.36
+#270 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-27-562Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#271 alis havalesi (001[kök]): Mehmet Çelik 936.14 → İş Bankası · Hesap 5
+#272 cari hareketi (001[kök]): Mehmet Çelik out 3320.92
+#273 sınırda şirket aç: kod "004" → 409 beklenir
+#274 geri yükle: 025[9ef7] · Nokta Ltd. ← destekofis-004-2026-10-10T08-26-48-730Z-manuel.sqlite (manuel)
+#275 cari aç (001[kök]): Nazlı Kılıç
+#276 cari aç (001[kök]): Tuğba Koç
+#277 geri yükle: 026[ece4] · Ağaoğlu Yapı? ← destekofis-013-2026-10-10T08-26-44-143Z-manuel.sqlite (manuel)
+#278 cari hareketi (001[kök]): Mehmet Çelik debt 1121.88
+#279 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-25-865Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#280 cari hareketi (001[kök]): Ümit Çakır in 4408.93
+#281 geri yükle: 002[67ea] · MAVİ GIDA ← destekofis-002-2026-10-10T08-26-38-095Z-manuel.sqlite (manuel)
+#282 YANLIŞ geri yükleme: 025[9ef7] yedeği destekofis-004-2026-10-10T08-26-38-631Z-manuel.sqlite → 001[kök]
+#283 sınırda şirket aç: kod "022" → 409 beklenir
+#284 Kasa (001[kök]): in 2950.32
+#285 cari hareketi (001[kök]): Ümit Çakır credit 299.56
+#286 geri yükle: 025[9ef7] · Nokta Ltd. ← destekofis-004-2026-10-10T08-26-51-494Z-geri-yukleme-oncesi-004.sqlite (geri-yukleme-oncesi)
+#287 seç: 002[67ea] · MAVİ GIDA
+#288 cari hareketi (002[67ea]): Zeynep Özdemir debt 4626.76
+#289 cari aç (002[67ea]): Ömer Akgül
+#290 cari aç (002[67ea]): Gülşen Akgül
+#291 seç: 018[2829] · Eğitim Kurumları <Merkez>
+#292 cari aç (018[2829]): Serdar Şimşek
+#293 cari hareketi (018[2829]): Serdar Şimşek debt 2152.92
+#294 sil: 026[ece4] · Ağaoğlu Yapı?
+#295 banka hesabı aç (018[2829]): İş Bankası açılış 19064.73
+#296 şirket aç: kod "004" ad "Çağ/Öz: Ltd*" → 004[08f4]
+#297 YANLIŞ geri yükleme: 025[9ef7] yedeği destekofis-004-2026-10-10T08-26-45-413Z-geri-yukleme-oncesi-004.sqlite → 018[2829] (dosya elle hedefin klasörüne kopyalandı)
+#298 Kasa (018[2829]): in 355.94
+#299 cari aç (018[2829]): Gökhan Ağaoğlu
+#300 cari aç (018[2829]): Ayşe Yıldız
+#301 cari aç (018[2829]): Tülay Güneş
+#302 cari hareketi (018[2829]): Ayşe Yıldız in 1719.90
+#303 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-29-406Z-manuel.sqlite (manuel)
+#304 ad değiştir: 001[kök] · Çağ/Öz: Ltd* → "Şahin İnşaat"
+#305 cari hareketi (018[2829]): Ayşe Yıldız debt 3121.32
+#306 sil: 004[08f4] · Çağ/Öz: Ltd*
+#307 stok havalesi (018[2829]): Gökhan Ağaoğlu 4616.39 → İş Bankası · Hesap 295
+#308 YANLIŞ şirket Banka Fişi: seçili 018[2829], hesap 002[67ea]
+#309 cari aç (018[2829]): Oğuz Bozkurt
+#310 geri yükle: 002[67ea] · MAVİ GIDA ← destekofis-002-2026-10-10T08-26-30-335Z-manuel.sqlite (manuel)
+#311 havale (018[2829]): Oğuz Bozkurt in 892.91 → İş Bankası · Hesap 295
+#312 havale (018[2829]): Gökhan Ağaoğlu out 4096.47 → İş Bankası · Hesap 295 (tek hesap, seçimsiz)
+#313 cari aç (018[2829]): Oğuz Kara
+#314 taksit havalesi (018[2829]): Tülay Güneş 1817.55 → İş Bankası · Hesap 295
+#315 stok havalesi (018[2829]): Gökhan Ağaoğlu 2679.84 → İş Bankası · Hesap 295
+#316 seç: 025[9ef7] · Nokta Ltd.
+#317 Kasa (025[9ef7]): out 2987.16
+#318 geri yükle: 025[9ef7] · Nokta Ltd. ← destekofis-004-2026-10-10T08-26-48-730Z-manuel.sqlite (manuel)
+#319 banka hesabı aç (025[9ef7]): Yapı Kredi açılış 4650.60
+#320 cari aç (025[9ef7]): Ece Güneş
+#321 ad değiştir: 018[2829] · Eğitim Kurumları <Merkez> → "Doğu "Batı" Lojistik"
+#322 cari aç (025[9ef7]): Mehmet Uğurlu
+#323 yedek (Tüm Şirketler)
+#324 YANLIŞ şirket hesabına alis havalesi: seçili 025[9ef7], hesap 018[2829]
+#325 cari hareketi (025[9ef7]): Mehmet Uğurlu debt 3523.42
+#326 kod değiştir: 025[9ef7] · Nokta Ltd. → 026
+#327 cari aç (026[9ef7]): Yağmur Akgül
+#328 cari hareketi (026[9ef7]): Ece Güneş debt 2471.89
+#329 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-46-798Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#330 cari hareketi (026[9ef7]): Ece Güneş in 3677.55
+#331 cari hareketi (026[9ef7]): Mehmet Uğurlu out 881.80
+#332 yedek (yalnız 026[9ef7] · Nokta Ltd.)
+#333 Banka Fişi (026[9ef7]): Yapı Kredi · Hesap 319 other_out 4236.48
+#334 YANLIŞ şirket hesabına havale: seçili 026[9ef7], hesap 002[67ea]
+#335 Banka Fişi (026[9ef7]): Yapı Kredi · Hesap 319 other_out 2652.89
+#336 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-27-02-950Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#337 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-25-865Z-geri-yukleme-oncesi-001.sqlite → 003[4318] (dosya elle hedefin klasörüne kopyalandı)
+#338 kod değiştir: 002[67ea] · MAVİ GIDA → 025
+#339 havale (026[9ef7]): Mehmet Uğurlu out 4724.21 → Yapı Kredi · Hesap 319
+#340 cari hareketi (026[9ef7]): Ece Güneş debt 1980.34
+#341 yedek (yalnız 003[4318] · Gayri Resmi)
+#342 sıfırla (movements): 003[4318] · Gayri Resmi
+#343 Kasa (026[9ef7]): out 4513.48
+#344 sıfırla (movements): 026[9ef7] · Nokta Ltd.
+#345 cari hareketi (026[9ef7]): Mehmet Uğurlu debt 3722.29
+#346 cari hareketi (026[9ef7]): Ece Güneş in 2883.45
+#347 şirket aç: kod "(sıradaki)" ad "Gayri Resmi" → 002[4c07]
+#348 geri yükle: 026[9ef7] · Nokta Ltd. ← destekofis-025-2026-10-10T08-27-13-000Z-manuel.sqlite (manuel)
+#349 geri yükle: 026[9ef7] · Nokta Ltd. ← destekofis-004-2026-10-10T08-26-38-095Z-manuel.sqlite (manuel)
+#350 sunucuyu yeniden başlat
+#351 sunucuyu yeniden başlat
+#352 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-38-631Z-manuel.sqlite → 002[4c07]
+#353 Kasa (026[9ef7]): in 1485.69
+#354 geri yükle: 018[2829] · Doğu "Batı" Lojistik ← destekofis-018-2026-10-10T08-26-57-725Z-manuel.sqlite (manuel)
+#355 seç: 018[2829] · Doğu "Batı" Lojistik
+#356 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-25-523Z-manuel.sqlite → 026[9ef7]
+#357 cari aç (018[2829]): Mehmet Bozkurt
+#358 banka hesabı aç (018[2829]): İş Bankası açılış 6102.87
+#359 cari aç (018[2829]): Büşra Uğurlu
+#360 banka hesabı aç (018[2829]): İş Bankası açılış 12966.03
+#361 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-27-16-530Z-geri-yukleme-oncesi-001.sqlite → 018[2829]
+#362 Banka Fişi (018[2829]): İş Bankası · Hesap 360 other_out 299.38
+#363 cari hareketi (018[2829]): Mehmet Bozkurt credit 2838.41
+#364 Ters Kaydet (018[2829]): ev-0mv24siiw0000-b5757319-f6df-470f
+#365 seç: 001[kök] · Şahin İnşaat
+#366 kod değiştir: 018[2829] · Doğu "Batı" Lojistik → 013
+#367 sunucuyu yeniden başlat
+#368 001'i sil (reddedilmeli)
+#369 YANLIŞ geri yükleme: 026[9ef7] yedeği destekofis-004-2026-10-10T08-26-39-671Z-manuel.sqlite → 001[kök]
+#370 yedek (yalnız 001[kök] · Şahin İnşaat)
+#371 cari hareketi (001[kök]): Nazlı Kılıç in 1767.39
+#372 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-27-25-828Z-manuel.sqlite (manuel)
+#373 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 41 other_out 368.96
+#374 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 41 other_out 3339.54
+#375 ad değiştir: 013[2829] · Doğu "Batı" Lojistik → "Işık Turizm"
+#376 ad değiştir: 026[9ef7] · Nokta Ltd. → "istanbul ticaret a.ş."
+#377 cari hareketi (001[kök]): Ümit Çakır debt 2368.27
+#378 seç: 026[9ef7] · istanbul ticaret a.ş.
+#379 sunucuyu yeniden başlat
+#380 cari aç (026[9ef7]): İbrahim Özdemir
+#381 cari aç (026[9ef7]): Uğur Çakır
+#382 sınırda şirket aç: kod "038" → 409 beklenir
+#383 seç: 026[9ef7] · istanbul ticaret a.ş.
+#384 cari hareketi (026[9ef7]): İbrahim Özdemir debt 279.32
+#385 sil: 013[2829] · Işık Turizm
+#386 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-27-14-621Z-geri-yukleme-oncesi-001.sqlite → 026[9ef7] (dosya elle hedefin klasörüne kopyalandı)
+#387 YANLIŞ şirket Banka Fişi: seçili 026[9ef7], hesap 001[kök]
+#388 cari aç (026[9ef7]): Çağrı Bozkurt
+#389 sunucuyu yeniden başlat
+#390 geri yükle: 026[9ef7] · istanbul ticaret a.ş. ← destekofis-004-2026-10-10T08-26-38-631Z-manuel.sqlite (manuel)
+#391 banka hesabı aç (026[9ef7]): Yapı Kredi açılış 14402.27
+#392 cari aç (026[9ef7]): Şahin Ağaoğlu
+#393 şirket aç: kod "(sıradaki)" ad "Nokta Ltd." → 004[0bd6]
+#394 havale (026[9ef7]): Şahin Ağaoğlu out 4758.05 → Yapı Kredi · Hesap 391
+#395 sil: 004[0bd6] · Nokta Ltd.
+#396 cekTahsil havalesi (026[9ef7]): Şahin Ağaoğlu 4172.74 → Yapı Kredi · Hesap 391
+#397 geri yükle: 025[67ea] · MAVİ GIDA ← destekofis-002-2026-10-10T08-27-13-000Z-manuel.sqlite (manuel)
+#398 cari aç (026[9ef7]): Uğur Polat
+#399 cari aç (026[9ef7]): Şahin Bozkurt
+#400 cari hareketi (026[9ef7]): Uğur Polat debt 3278.07
+#401 yedek (yalnız 002[4c07] · Gayri Resmi)
+#402 seç: 026[9ef7] · istanbul ticaret a.ş.
+#403 ad değiştir: 025[67ea] · MAVİ GIDA → "Gayri Resmi"
+#404 banka hesabı aç (026[9ef7]): Ziraat Bankası açılış 10127.30
+#405 şirket aç: kod "021" ad "istanbul ticaret a.ş." → 021[dc3d]
+#406 sil: 025[67ea] · Gayri Resmi
+#407 cari aç (026[9ef7]): Büşra Yıldırım
+#408 seç: 026[9ef7] · istanbul ticaret a.ş.
+#409 banka hesabı aç (026[9ef7]): İş Bankası açılış 6338.10
+#410 yedek (Tüm Şirketler)
+#411 sil: 021[dc3d] · istanbul ticaret a.ş. (yanlış onay)
+#412 Banka Fişi (026[9ef7]): İş Bankası · Hesap 409 other_in 4485.36
+#413 Kasa (026[9ef7]): in 4447.73
+#414 cari aç (026[9ef7]): Fatma Çakır
+#415 banka hesabı aç (026[9ef7]): Ziraat Bankası açılış 13200.49
+#416 şirket aç: kod "(sıradaki)" ad "Gayri Resmi" → 004[1212]
+#417 yedek (Tüm Şirketler)
+#418 transfer (026[9ef7]): Ziraat Bankası · Hesap 404 → Yapı Kredi · Hesap 391 369.89 + ücret 11.13
+#419 cari hareketi (026[9ef7]): Uğur Polat debt 4942.79
+#420 kod değiştir: 004[1212] · Gayri Resmi → 057
+#421 Kasa (026[9ef7]): out 3744.67
+#422 cari aç (026[9ef7]): Gökhan Arslan
+#423 sunucuyu yeniden başlat
+#424 Kasa (026[9ef7]): out 4274.25
+#425 kayit havalesi (026[9ef7]): Büşra Yıldırım 2192.68 → Ziraat Bankası · Hesap 415
+#426 Kasa (026[9ef7]): in 3289.29
+#427 kod değiştir: 026[9ef7] · istanbul ticaret a.ş. → 039
+#428 sıfırla (all): 001[kök] · Şahin İnşaat
+#429 sil: 003[4318] · Gayri Resmi (yanlış onay)
+#430 cari hareketi (039[9ef7]): Uğur Polat debt 1235.25
+#431 ad değiştir: 021[dc3d] · istanbul ticaret a.ş. → "Doğu "Batı" Lojistik"
+#432 cari aç (039[9ef7]): Elif Özdemir
+#433 seç: 039[9ef7] · istanbul ticaret a.ş.
+#434 cari hareketi (039[9ef7]): Fatma Çakır debt 241.37
+#435 sil: 002[4c07] · Gayri Resmi (yanlış onay)
+#436 cari aç (039[9ef7]): Sevgi Bozkurt
+#437 Banka Fişi (039[9ef7]): İş Bankası · Hesap 409 other_out 2152.58
+#438 Kasa (039[9ef7]): out 964.86
+#439 banka hesabı aç (039[9ef7]): Garanti BBVA açılış 14664.39
+#440 YANLIŞ geri yükleme: 039[9ef7] yedeği destekofis-025-2026-10-10T08-26-57-725Z-manuel.sqlite → 002[4c07]
+#441 YANLIŞ geri yükleme: 003[4318] yedeği destekofis-003-2026-10-10T08-27-38-458Z-manuel.sqlite → 057[1212] (dosya elle hedefin klasörüne kopyalandı)
+#442 seç: 039[9ef7] · istanbul ticaret a.ş.
+#443 cari hareketi (039[9ef7]): Şahin Ağaoğlu debt 2417.18
+#444 Banka Fişi (039[9ef7]): Ziraat Bankası · Hesap 404 fee bsmv_incl 92.78
+#445 sıfırla (movements): 057[1212] · Gayri Resmi
+#446 sıfırla (all): 002[4c07] · Gayri Resmi
+#447 yedek (yalnız 021[dc3d] · Doğu "Batı" Lojistik)
+#448 sınırda şirket aç: kod "003" → 409 beklenir
+#449 ad değiştir: 021[dc3d] · Doğu "Batı" Lojistik → "istanbul ticaret a.ş."
+#450 yedek (yalnız 002[4c07] · Gayri Resmi)
+#451 cari aç (039[9ef7]): Şahin Demir
+#452 ad değiştir: 039[9ef7] · istanbul ticaret a.ş. → "İstanbul Ticaret A.Ş."
+#453 cari hareketi (039[9ef7]): Şahin Bozkurt out 2340.71
+#454 YANLIŞ geri yükleme: 021[dc3d] yedeği destekofis-021-2026-10-10T08-27-38-458Z-manuel.sqlite → 057[1212] (dosya elle hedefin klasörüne kopyalandı)
+#455 cari hareketi (039[9ef7]): Şahin Demir out 2254.33
+#456 banka hesabı aç (039[9ef7]): İş Bankası açılış 15915.36
+#457 cari hareketi (039[9ef7]): Büşra Yıldırım debt 2293.38
+#458 cari aç (039[9ef7]): Zehra Aydın
+#459 cari hareketi (039[9ef7]): Şahin Bozkurt in 2800.95
+#460 cari hareketi (039[9ef7]): Büşra Yıldırım in 3723.24
+#461 cari hareketi (039[9ef7]): Şahin Ağaoğlu debt 709.08
+#462 sınırda şirket aç: kod "025" → 409 beklenir
+#463 cari hareketi (039[9ef7]): Büşra Yıldırım debt 2687.44
+#464 Kasa (039[9ef7]): in 2139.34
+#465 cari aç (039[9ef7]): Doğan Şimşek
+#466 yedek (yalnız 039[9ef7] · İstanbul Ticaret A.Ş.)
+#467 YANLIŞ geri yükleme: 039[9ef7] yedeği destekofis-004-2026-10-10T08-26-47-314Z-geri-yukleme-oncesi-004.sqlite → 021[dc3d] (dosya elle hedefin klasörüne kopyalandı)
+#468 cari hareketi (039[9ef7]): Zehra Aydın debt 4407.58
+#469 seç: 039[9ef7] · İstanbul Ticaret A.Ş.
+#470 banka hesabı aç (039[9ef7]): Yapı Kredi açılış 2759.21
+#471 satis havalesi (039[9ef7]): Şahin Ağaoğlu 2630.76 → Garanti BBVA · Hesap 439
+#472 cari aç (039[9ef7]): Ilgın Özkan
+#473 cari hareketi (039[9ef7]): Sevgi Bozkurt debt 1268.03
+#474 cari hareketi (039[9ef7]): Doğan Şimşek in 435.11
+#475 cari hareketi (039[9ef7]): Ilgın Özkan debt 4447.19
+#476 seç: 039[9ef7] · İstanbul Ticaret A.Ş.
+#477 kod değiştir: 021[dc3d] · istanbul ticaret a.ş. → 045
+#478 cari hareketi (039[9ef7]): Doğan Şimşek out 590.02
+#479 sunucuyu yeniden başlat
+#480 transfer (039[9ef7]): Ziraat Bankası · Hesap 415 → İş Bankası · Hesap 456 3252.52
+#481 Kasa (039[9ef7]): in 1582.32
+#482 geri yükle: 039[9ef7] · İstanbul Ticaret A.Ş. ← destekofis-025-2026-10-10T08-27-01-750Z-geri-yukleme-oncesi-025.sqlite (geri-yukleme-oncesi)
+#483 sıfırla (movements): 002[4c07] · Gayri Resmi
+#484 banka hesabı aç (039[9ef7]): Garanti BBVA açılış 18675.99
+#485 cari aç (039[9ef7]): Tülay Kılıç
+#486 yedek (yalnız 003[4318] · Gayri Resmi)
+#487 Kasa (039[9ef7]): in 2485.07
+#488 cari hareketi (039[9ef7]): Tülay Kılıç in 1610.54
+#489 cari hareketi (039[9ef7]): Tülay Kılıç in 4353.29
+#490 Banka Fişi (039[9ef7]): Garanti BBVA · Hesap 484 other_out 4395.81
+#491 cari hareketi (039[9ef7]): Tülay Kılıç credit 570.17
+#492 geri yükle: 039[9ef7] · İstanbul Ticaret A.Ş. ← destekofis-004-2026-10-10T08-26-39-123Z-geri-yukleme-oncesi-004.sqlite (geri-yukleme-oncesi)
+#493 sınırda şirket aç: kod "002" → 409 beklenir
+#494 banka hesabı aç (039[9ef7]): Yapı Kredi açılış 7696.55
+#495 Kasa (039[9ef7]): out 3777.85
+#496 sil: 045[dc3d] · istanbul ticaret a.ş.
+#497 Banka Fişi (039[9ef7]): Yapı Kredi · Hesap 494 other_in 1199.96
+#498 sıfırla (all): 001[kök] · Şahin İnşaat
+#499 sil: 003[4318] · Gayri Resmi (yanlış onay)
+#500 geri yükle: 039[9ef7] · İstanbul Ticaret A.Ş. ← destekofis-025-2026-10-10T08-27-12-018Z-geri-yukleme-oncesi-025.sqlite (geri-yukleme-oncesi)
+#501 banka hesabı aç (039[9ef7]): İş Bankası açılış 15474.06
+#502 cari aç (039[9ef7]): Ümit Şimşek
+#503 banka hesabı aç (039[9ef7]): İş Bankası açılış 12882.62
+#504 cari hareketi (039[9ef7]): Ümit Şimşek in 4763.15
+#505 yedek (Tüm Şirketler)
+#506 yedek (yalnız 003[4318] · Gayri Resmi)
+#507 transfer (039[9ef7]): İş Bankası · Hesap 503 → İş Bankası · Hesap 501 2189.97 + ücret 19.19
+#508 cari aç (039[9ef7]): Işıl Kurt
+#509 cari hareketi (039[9ef7]): Işıl Kurt debt 2992.47
+#510 cari hareketi (039[9ef7]): Ümit Şimşek out 3971.53
+#511 kod değiştir: 003[4318] · Gayri Resmi → 039
+#512 transfer (039[9ef7]): İş Bankası · Hesap 501 → İş Bankası · Hesap 503 1963.86
+#513 ad değiştir: 057[1212] · Gayri Resmi → "Nokta Ltd."
+#514 sil: 002[4c07] · Gayri Resmi (yanlış onay)
+#515 cari hareketi (039[9ef7]): Işıl Kurt credit 3154.10
+#516 cari aç (039[9ef7]): Mehmet Çakır
+#517 cari hareketi (039[9ef7]): Ümit Şimşek out 3457.68
+#518 cari hareketi (039[9ef7]): Ümit Şimşek in 4720.48
+#519 şirket aç: kod "003" ad "Iğdır Tarım|Hayvancılık"
+#520 cari aç (039[9ef7]): Ece Öztürk
+#521 cari hareketi (039[9ef7]): Ümit Şimşek debt 1075.69
+#522 şirket aç: kod "048" ad "ŞAHİN İNŞAAT" → 048[8b6a]
+#523 cari aç (039[9ef7]): Ilgın Erdoğan
+#524 YANLIŞ geri yükleme: 039[9ef7] yedeği destekofis-004-2026-10-10T08-26-39-123Z-geri-yukleme-oncesi-004.sqlite → 003[4318]
+#525 Kasa (039[9ef7]): out 1138.93
+#526 Banka Fişi (039[9ef7]): İş Bankası · Hesap 501 fee bsmv_incl 1003.91
+#527 cari hareketi (039[9ef7]): Işıl Kurt in 1097.79
+#528 cari aç (039[9ef7]): Emine Çakır
+#529 geri yükle: 002[4c07] · Gayri Resmi ← destekofis-002-2026-10-10T08-27-34-813Z-manuel.sqlite (manuel)
+#530 alis havalesi (039[9ef7]): Ümit Şimşek 1217.80 → İş Bankası · Hesap 501
+#531 HESAPSIZ havale (039[9ef7]): Işıl Kurt in 4455.99
+#532 yedek (yalnız 003[4318] · Gayri Resmi)
+#533 Kasa (039[9ef7]): in 3551.99
+#534 001'i sil (reddedilmeli)
+#535 sil: 057[1212] · Nokta Ltd.
+#536 seç: 003[4318] · Gayri Resmi
+#537 geri yükle: 003[4318] · Gayri Resmi ← destekofis-003-2026-10-10T08-27-36-930Z-manuel.sqlite (manuel)
+#538 yedek (yalnız 039[9ef7] · İstanbul Ticaret A.Ş.)
+#539 banka hesabı aç (003[4318]): Ziraat Bankası açılış 16530.34
+#540 banka hesabı aç (003[4318]): Ziraat Bankası açılış 7300.62
+#541 yedek (yalnız 003[4318] · Gayri Resmi)
+#542 şirket aç: kod "(sıradaki)" ad "Ağaoğlu Yapı?" → 004[5296]
+#543 sil: 039[9ef7] · İstanbul Ticaret A.Ş.
+#544 cari aç (003[4318]): Ali Ağaoğlu
+#545 geri yükle: 003[4318] · Gayri Resmi ← destekofis-003-2026-10-10T08-27-59-321Z-manuel.sqlite (manuel)
+#546 yedek (yalnız 004[5296] · Ağaoğlu Yapı?)
+#547 kod değiştir: 002[4c07] · Gayri Resmi → 013
+#548 şirket aç: kod "006" ad "istanbul ticaret a.ş." → 006[ac3d]
+#549 banka hesabı aç (003[4318]): Garanti BBVA açılış 2985.48
+#550 Kasa (003[4318]): in 587.23
+#551 yedek (Tüm Şirketler)
+#552 cari aç (003[4318]): Yağmur Yıldız
+#553 havale (003[4318]): Yağmur Yıldız out 708.65 → Garanti BBVA · Hesap 549
+#554 cari aç (003[4318]): Murat Akgül
+#555 kod değiştir: 048[8b6a] · ŞAHİN İNŞAAT → 036
+#556 ad değiştir: 001[kök] · Şahin İnşaat → "Doğu "Batı" Lojistik"
+#557 cari hareketi (003[4318]): Yağmur Yıldız in 2362.27
+#558 havale (003[4318]): Yağmur Yıldız in 4547.26 → Garanti BBVA · Hesap 549
+#559 cari aç (003[4318]): Tuğba Özdemir
+#560 havale (003[4318]): Tuğba Özdemir in 3796.48 → Garanti BBVA · Hesap 549
+#561 cari hareketi (003[4318]): Yağmur Yıldız debt 78.71
+#562 banka hesabı aç (003[4318]): Yapı Kredi açılış 9957.93
+#563 sınırda şirket aç: kod "021" → 409 beklenir
+#564 cari hareketi (003[4318]): Murat Akgül debt 1752.13
+#565 Banka Fişi (003[4318]): Garanti BBVA · Hesap 549 other_in 3278.67
+#566 cekOde havalesi (003[4318]): Tuğba Özdemir 4493.96 → Garanti BBVA · Hesap 549
+#567 Ters Kaydet (003[4318]): ev-0mv24tknu0000-d88ff200-0d34-4b63
+#568 sıfırla (movements): 004[5296] · Ağaoğlu Yapı?
+#569 cari hareketi (003[4318]): Murat Akgül in 1577.70
+#570 sınırda şirket aç: kod "045" → 409 beklenir
+#571 cari aç (003[4318]): Tülay Erdoğan
+#572 sunucuyu yeniden başlat
+#573 cari hareketi (003[4318]): Murat Akgül in 244.85
+#574 yedek (yalnız 006[ac3d] · istanbul ticaret a.ş.)
+#575 cari aç (003[4318]): Ömer Yıldız
+#576 sil: 013[4c07] · Gayri Resmi
+#577 geri yükle: 003[4318] · Gayri Resmi ← destekofis-003-2026-10-10T08-27-17-796Z-manuel.sqlite (manuel)
+#578 cari aç (003[4318]): Hatice Polat
+#579 YANLIŞ geri yükleme: 003[4318] yedeği destekofis-003-2026-10-10T08-27-36-930Z-manuel.sqlite → 001[kök]
+#580 banka hesabı aç (003[4318]): Yapı Kredi açılış 11258.69
+#581 yedek (yalnız 036[8b6a] · ŞAHİN İNŞAAT)
+#582 yedek (Tüm Şirketler)
+#583 kod değiştir: 003[4318] · Gayri Resmi → 008
+#584 geri yükle: 006[ac3d] · istanbul ticaret a.ş. ← destekofis-006-2026-10-10T08-28-17-056Z-manuel.sqlite (manuel)
+#585 cari aç (008[4318]): Murat Kara
+#586 seç: 004[5296] · Ağaoğlu Yapı?
+#587 geri yükle: 004[5296] · Ağaoğlu Yapı? ← destekofis-004-2026-10-10T08-28-09-505Z-manuel.sqlite (manuel)
+#588 cari aç (004[5296]): Hatice Kurt
+#589 cari hareketi (004[5296]): Hatice Kurt in 887.72
+#590 cari hareketi (004[5296]): Hatice Kurt credit 1883.16
+#591 sil: 006[ac3d] · istanbul ticaret a.ş.
+#592 cari hareketi (004[5296]): Hatice Kurt in 2638.20
+#593 geri yükle: 036[8b6a] · ŞAHİN İNŞAAT ← destekofis-048-2026-10-10T08-28-10-478Z-manuel.sqlite (manuel)
+#594 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-27-41-172Z-sifirlama-oncesi-001.sqlite → 008[4318]
+#595 banka hesabı aç (004[5296]): Ziraat Bankası açılış 16150.30
+#596 cari hareketi (004[5296]): Hatice Kurt out 4778.08
+#597 stok havalesi (004[5296]): Hatice Kurt 387.06 → Ziraat Bankası · Hesap 595
+#598 cari aç (004[5296]): Elif Polat
+#599 şirket aç: kod "039" ad "Nokta Ltd." → 039[7fb8]
+#600 Kasa (004[5296]): out 3320.99
+#601 geri yükle: 036[8b6a] · ŞAHİN İNŞAAT ← destekofis-036-2026-10-10T08-28-19-903Z-geri-yukleme-oncesi-036.sqlite (geri-yukleme-oncesi)
+#602 sil: 036[8b6a] · ŞAHİN İNŞAAT
+#603 cari hareketi (004[5296]): Elif Polat out 3161.75
+#604 cari aç (004[5296]): Tuğba Koç
+#605 yedek (yalnız 001[kök] · Doğu "Batı" Lojistik)
+#606 cari aç (004[5296]): Ümit Kurt
+#607 cari aç (004[5296]): Gülşen Özdemir
+#608 Kasa (004[5296]): out 4723.59
+#609 cari aç (004[5296]): Serdar Aslan
+#610 geri yükle: 004[5296] · Ağaoğlu Yapı? ← destekofis-004-2026-10-10T08-28-17-056Z-manuel.sqlite (manuel)
+#611 ad değiştir: 039[7fb8] · Nokta Ltd. → "Resmi Şirket"
+#612 banka hesabı aç (004[5296]): Garanti BBVA açılış 3398.27
+#613 şirket aç: kod "036" ad "Doğu "Batı" Lojistik" → 036[8a5b]
+#614 cari aç (004[5296]): Kübra Yıldırım
+#615 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-50-523Z-manuel.sqlite (manuel)
+#616 ad değiştir: 039[7fb8] · Resmi Şirket → "Doğu "Batı" Lojistik"
+#617 cari hareketi (004[5296]): Kübra Yıldırım out 1760.66
+#618 Kasa (004[5296]): out 2345.72
+#619 geri yükle: 008[4318] · Gayri Resmi ← destekofis-003-2026-10-10T08-27-18-049Z-sifirlama-oncesi-003.sqlite (sifirlama-oncesi)
+#620 havale (004[5296]): Kübra Yıldırım in 977.21 → Garanti BBVA · Hesap 612
+#621 cari hareketi (004[5296]): Kübra Yıldırım out 2131.37
+#622 cari aç (004[5296]): Nazlı Koç
+#623 sunucuyu yeniden başlat
+#624 yedek (yalnız 001[kök] · Doğu "Batı" Lojistik)
+#625 cari aç (004[5296]): Gülşen Uğurlu
+#626 sil: 004[5296] · Ağaoğlu Yapı?
+#627 şirket aç: kod "003" ad "Gayri Resmi" → 003[7a99]
+#628 Kasa (001[kök]): out 2252.42
+#629 havale (001[kök]): Ümit Çakır out 3441.70 → Yapı Kredi · Hesap 127
+#630 yedek (yalnız 039[7fb8] · Doğu "Batı" Lojistik)
+#631 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-25-523Z-manuel.sqlite → 003[7a99]
+#632 yedek (yalnız 001[kök] · Doğu "Batı" Lojistik)
+#633 cari hareketi (001[kök]): Ece Işık out 1295.48
+#634 YANLIŞ geri yükleme: 008[4318] yedeği destekofis-003-2026-10-10T08-28-05-894Z-manuel.sqlite → 003[7a99] (dosya elle hedefin klasörüne kopyalandı)
+#635 geri yükle: 008[4318] · Gayri Resmi ← destekofis-003-2026-10-10T08-27-36-930Z-manuel.sqlite (manuel)
+#636 Kasa (001[kök]): in 3966.94
+#637 Kasa (001[kök]): in 4711.78
+#638 yedek (yalnız 003[7a99] · Gayri Resmi)
+#639 yedek (yalnız 039[7fb8] · Doğu "Batı" Lojistik)
+#640 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-27-13-000Z-manuel.sqlite (manuel)
+#641 yedek (yalnız 003[7a99] · Gayri Resmi)
+#642 cari aç (001[kök]): Nazlı Kaya
+#643 Kasa (001[kök]): out 2937.60
+#644 cari hareketi (001[kök]): Mehmet Çelik out 3932.46
+#645 banka hesabı aç (001[kök]): Ziraat Bankası açılış 11259.18
+#646 Kasa (001[kök]): in 507.98
+#647 sil: 008[4318] · Gayri Resmi (yanlış onay)
+#648 cari hareketi (001[kök]): Nazlı Kaya out 871.45
+#649 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-27-26-623Z-geri-yukleme-oncesi-001.sqlite → 039[7fb8]
+#650 şirket aç: kod "056" ad "Gayri Resmi" → 056[8ffd]
+#651 Kasa (001[kök]): in 1164.79
+#652 cari aç (001[kök]): Çağrı Işık
+#653 cari aç (001[kök]): Büşra Özdemir
+#654 cari hareketi (001[kök]): Ece Işık in 1215.98
+#655 yedek (yalnız 039[7fb8] · Doğu "Batı" Lojistik)
+#656 Kasa (001[kök]): out 2636.48
+#657 yedek (yalnız 008[4318] · Gayri Resmi)
+#658 yedek (Tüm Şirketler)
+#659 sil: 039[7fb8] · Doğu "Batı" Lojistik
+#660 kod değiştir: 036[8a5b] · Doğu "Batı" Lojistik → 060
+#661 sunucuyu yeniden başlat
+#662 Kasa (001[kök]): out 597.63
+#663 Kasa (001[kök]): out 3018.64
+#664 seç: 003[7a99] · Gayri Resmi
+#665 cari aç (003[7a99]): Işıl Doğan
+#666 banka hesabı aç (003[7a99]): Ziraat Bankası açılış 9664.42
+#667 Banka Fişi (003[7a99]): Ziraat Bankası · Hesap 666 other_out 1684.87
+#668 cari hareketi (003[7a99]): Işıl Doğan debt 3089.19
+#669 Kasa (003[7a99]): out 4973.65
+#670 yedek (yalnız 001[kök] · Doğu "Batı" Lojistik)
+#671 kod değiştir: 003[7a99] · Gayri Resmi → 003
+#672 havale (003[7a99]): Işıl Doğan in 590.98 → Ziraat Bankası · Hesap 666 (tek hesap, seçimsiz)
+#673 havale (003[7a99]): Işıl Doğan in 512.48 → Ziraat Bankası · Hesap 666 (tek hesap, seçimsiz)
+#674 havale (003[7a99]): Işıl Doğan out 3085.75 → Ziraat Bankası · Hesap 666
+#675 cari aç (003[7a99]): Nazlı Aslan
+#676 ad değiştir: 060[8a5b] · Doğu "Batı" Lojistik → "   "
+#677 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-45-852Z-sifirlama-oncesi-001.sqlite → 060[8a5b]
+#678 geri yükle: 008[4318] · Gayri Resmi ← destekofis-003-2026-10-10T08-27-54-821Z-manuel.sqlite (manuel)
+#679 YANLIŞ şirket Banka Fişi: seçili 003[7a99], hesap 001[kök]
+#680 cari hareketi (003[7a99]): Nazlı Aslan debt 1572.07
+#681 şirket aç: kod "002" ad "İstanbul Ticaret A.Ş." → 002[0c97]
+#682 cari hareketi (003[7a99]): Nazlı Aslan in 712.45
+#683 seç: 008[4318] · Gayri Resmi
+#684 banka hesabı aç (008[4318]): Yapı Kredi açılış 13162.24
+#685 sınırda şirket aç: kod "041" → 409 beklenir
+#686 seç: 003[7a99] · Gayri Resmi
+#687 taksit havalesi (003[7a99]): Nazlı Aslan 1727.06 → Ziraat Bankası · Hesap 666
+#688 cari aç (003[7a99]): Doğan Çetin
+#689 satis havalesi (003[7a99]): Işıl Doğan 487.48 → Ziraat Bankası · Hesap 666
+#690 cari hareketi (003[7a99]): Nazlı Aslan out 259.27
+#691 Ters Kaydet (003[7a99]): ev-0mv24u2gw0000-adc2adfc-f8f6-4a8c
+#692 sınırda şirket aç: kod "(sıradaki)" → 409 beklenir
+#693 cari hareketi (003[7a99]): Nazlı Aslan debt 610.35
+#694 kod değiştir: 003[7a99] · Gayri Resmi → 005
+#695 sil: 060[8a5b] · Doğu "Batı" Lojistik
+#696 stok havalesi (005[7a99]): Nazlı Aslan 3669.56 → Ziraat Bankası · Hesap 666
+#697 sil: 005[7a99] · Gayri Resmi (yanlış onay)
+#698 cari aç (005[7a99]): Zehra Demir
+#699 kod değiştir: 056[8ffd] · Gayri Resmi → 005
+#700 kod değiştir: 002[0c97] · İstanbul Ticaret A.Ş. → 045
+#701 seç: 045[0c97] · İstanbul Ticaret A.Ş.
+#702 sıfırla (all): 008[4318] · Gayri Resmi
+#703 geri yükle: 005[7a99] · Gayri Resmi ← destekofis-003-2026-10-10T08-28-29-754Z-manuel.sqlite (manuel)
+#704 yedek (yalnız 005[7a99] · Gayri Resmi)
+#705 cari aç (045[0c97]): Sevgi Çetin
+#706 YANLIŞ şirket Banka Fişi: seçili 045[0c97], hesap 001[kök]
+#707 geri yükle: 008[4318] · Gayri Resmi ← destekofis-003-2026-10-10T08-28-10-478Z-manuel.sqlite (manuel)
+#708 Kasa (045[0c97]): in 1439.21
+#709 şirket aç: kod "018" ad "Mavi Gıda" → 018[de39]
+#710 cari aç (045[0c97]): Mehmet Çakır
+#711 sil: 045[0c97] · İstanbul Ticaret A.Ş.
+#712 cari aç (001[kök]): Hatice Yılmaz
+#713 yedek (yalnız 001[kök] · Doğu "Batı" Lojistik)
+#714 seç: 008[4318] · Gayri Resmi
+#715 ad değiştir: 008[4318] · Gayri Resmi → "mavi gıda"
+#716 banka hesabı aç (008[4318]): Yapı Kredi açılış 2408.50
+#717 cari aç (008[4318]): Hüseyin Kurt
+#718 cari hareketi (008[4318]): Hüseyin Kurt out 974.99
+#719 ad değiştir: 008[4318] · mavi gıda → "Çağ/Öz: Ltd*"
+#720 geri yükle: 005[7a99] · Gayri Resmi ← destekofis-003-2026-10-10T08-28-29-754Z-manuel.sqlite (manuel)
+#721 havale (008[4318]): Hüseyin Kurt in 3332.59 → Garanti BBVA · Hesap 549
+#722 YANLIŞ şirket Banka Fişi: seçili 008[4318], hesap 001[kök]
+#723 seç: 018[de39] · Mavi Gıda
+#724 geri yükle: 008[4318] · Çağ/Öz: Ltd* ← destekofis-003-2026-10-10T08-28-10-478Z-manuel.sqlite (manuel)
+#725 yedek (yalnız 008[4318] · Çağ/Öz: Ltd*)
+#726 banka hesabı aç (018[de39]): Ziraat Bankası açılış 3846.63
+#727 yedek (yalnız 056[8ffd] · Gayri Resmi)
+#728 cari aç (018[de39]): Tülay Ağaoğlu
+#729 cari hareketi (018[de39]): Tülay Ağaoğlu out 4498.04
+#730 cari hareketi (018[de39]): Tülay Ağaoğlu in 1134.73
+#731 cari hareketi (018[de39]): Tülay Ağaoğlu debt 773.03
+#732 havale (018[de39]): Tülay Ağaoğlu in 1308.97 → Ziraat Bankası · Hesap 726
+#733 alis havalesi (018[de39]): Tülay Ağaoğlu 3760.94 → Ziraat Bankası · Hesap 726
+#734 cari hareketi (018[de39]): Tülay Ağaoğlu credit 3602.79
+#735 Banka Fişi (018[de39]): Ziraat Bankası · Hesap 726 other_out 2562.01
+#736 şirket aç: kod "(sıradaki)" ad "Çağ/Öz: Ltd*" → 002[30f7]
+#737 yedek (yalnız 005[7a99] · Gayri Resmi)
+#738 Kasa (018[de39]): in 1943.39
+#739 yedek (yalnız 056[8ffd] · Gayri Resmi)
+#740 geri yükle: 008[4318] · Çağ/Öz: Ltd* ← destekofis-008-2026-10-10T08-28-25-614Z-geri-yukleme-oncesi-008.sqlite (geri-yukleme-oncesi)
+#741 cari aç (018[de39]): Ilgın Demir
+#742 havale (018[de39]): Tülay Ağaoğlu in 3360.98 → Ziraat Bankası · Hesap 726
+#743 cari aç (018[de39]): Kübra Yıldırım
+#744 yedek (Tüm Şirketler)
+#745 ad değiştir: 005[7a99] · Gayri Resmi → "Iğdır Tarım|Hayvancılık"
+#746 cari hareketi (018[de39]): Ilgın Demir out 1135.03
+#747 havale (018[de39]): Ilgın Demir in 100.74 → Ziraat Bankası · Hesap 726 (tek hesap, seçimsiz)
+#748 Banka Fişi (018[de39]): Ziraat Bankası · Hesap 726 other_in 3991.39
+#749 geri yükle: 005[7a99] · Iğdır Tarım|Hayvancılık ← destekofis-005-2026-10-10T08-28-52-579Z-manuel.sqlite (manuel)
+#750 YANLIŞ şirket hesabına alis havalesi: seçili 018[de39], hesap 001[kök]
+#751 cari aç (018[de39]): Emine Kara
+#752 cari hareketi (018[de39]): Tülay Ağaoğlu debt 4866.61
+#753 banka hesabı aç (018[de39]): İş Bankası açılış 14605.64
+#754 cari hareketi (018[de39]): Emine Kara credit 3324.40
+#755 geri yükle: 008[4318] · Çağ/Öz: Ltd* ← destekofis-003-2026-10-10T08-28-09-290Z-geri-yukleme-oncesi-003.sqlite (geri-yukleme-oncesi)
+#756 Banka Fişi (018[de39]): İş Bankası · Hesap 753 fee bsmv_incl 3471.83
+#757 cari hareketi (018[de39]): Ilgın Demir credit 2367.46
+#758 cari hareketi (018[de39]): Kübra Yıldırım out 2678.27
+#759 YANLIŞ geri yükleme: 008[4318] yedeği destekofis-003-2026-10-10T08-27-17-796Z-manuel.sqlite → 005[7a99]
+#760 sıfırla (movements): 018[de39] · Mavi Gıda
+#761 Kasa (018[de39]): in 3016.53
+#762 cari aç (018[de39]): Mehmet Polat
+#763 cari aç (018[de39]): Hasan Çakır
+#764 sil: 005[7a99] · Iğdır Tarım|Hayvancılık
+#765 transfer (018[de39]): İş Bankası · Hesap 753 → Ziraat Bankası · Hesap 726 763.81
+#766 transfer (018[de39]): İş Bankası · Hesap 753 → Ziraat Bankası · Hesap 726 3276.82
+#767 şirket aç: kod "004" ad "ışık turizm" → 004[e8b7]
+#768 yedek (Tüm Şirketler)
+#769 cari hareketi (018[de39]): Mehmet Polat in 4382.25
+#770 havale (018[de39]): Hasan Çakır in 2050.67 → İş Bankası · Hesap 753
+#771 cari hareketi (018[de39]): Ilgın Demir credit 2941.96
+#772 sıfırla (movements): 004[e8b7] · ışık turizm
+#773 seç: 001[kök] · Doğu "Batı" Lojistik
+#774 cari hareketi (001[kök]): Mehmet Çelik in 4287.12
+#775 banka hesabı aç (001[kök]): Garanti BBVA açılış 7565.93
+#776 Kasa (001[kök]): out 4521.47
+#777 Banka Fişi (001[kök]): Garanti BBVA · Hesap 775 other_in 4950.44
+#778 alis havalesi (001[kök]): Nazlı Kaya 4962.10 → Garanti BBVA · Hesap 775
+#779 cari hareketi (001[kök]): Oğuz Akgül out 4332.69
+#780 Kasa (001[kök]): in 2059.41
+#781 ad değiştir: 002[30f7] · Çağ/Öz: Ltd* → "Iğdır Tarım|Hayvancılık"
+#782 Banka Fişi (001[kök]): İş Bankası · Hesap 5 other_in 3826.85
+#783 yedek (yalnız 002[30f7] · Iğdır Tarım|Hayvancılık)
+#784 Kasa (001[kök]): in 1199.98
+#785 cekOde havalesi (001[kök]): Ece Işık 736.21 → Garanti BBVA · Hesap 61
+#786 transfer (001[kök]): Garanti BBVA · Hesap 61 → Garanti BBVA · Hesap 775 2131.01
+#787 cari hareketi (001[kök]): Oğuz Akgül in 128.07
+#788 cari aç (001[kök]): Serdar Çetin
+#789 kod değiştir: 018[de39] · Mavi Gıda → 048
+#790 cekTahsil havalesi (001[kök]): Yağmur Doğan 3653.11 → Garanti BBVA · Hesap 61
+#791 cari aç (001[kök]): Zehra Erdoğan
+#792 YANLIŞ geri yükleme: 004[e8b7] yedeği destekofis-004-2026-10-10T08-29-00-941Z-manuel.sqlite → 048[de39]
+#793 ad değiştir: 008[4318] · Çağ/Öz: Ltd* → "ŞAHİN İNŞAAT"
+#794 ad değiştir: 002[30f7] · Iğdır Tarım|Hayvancılık → "Mavi Gıda"
+#795 cari hareketi (001[kök]): Ece Işık debt 3399.19
+#796 ad değiştir: 001[kök] · Doğu "Batı" Lojistik → "Gayri Resmi"
+#797 banka hesabı aç (001[kök]): Garanti BBVA açılış 16708.05
+#798 cari hareketi (001[kök]): Mehmet Çelik in 2690.22
+#799 havale (001[kök]): Oğuz Akgül out 3850.48 → Ziraat Bankası · Hesap 645
+#800 ad değiştir: 001[kök] · Gayri Resmi → "   "
+#801 cari aç (001[kök]): Ayşe Öztürk
+#802 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-28-54-281Z-manuel.sqlite → 008[4318]
+#803 yedek (yalnız 008[4318] · ŞAHİN İNŞAAT)
+#804 cari aç (001[kök]): Tuğba Ağaoğlu
+#805 cari aç (001[kök]): Nazlı Kurt
+#806 cari aç (001[kök]): Sevgi Öztürk
+#807 seç: 001[kök] · Gayri Resmi
+#808 YANLIŞ şirket hesabına taksit havalesi: seçili 001[kök], hesap 048[de39]
+#809 YANLIŞ geri yükleme: 008[4318] yedeği destekofis-008-2026-10-10T08-29-09-828Z-manuel.sqlite → 056[8ffd] (dosya elle hedefin klasörüne kopyalandı)
+#810 banka hesabı aç (001[kök]): Yapı Kredi açılış 10189.32
+#811 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 645 fee none 85.07
+#812 Banka Fişi (001[kök]): İş Bankası · Hesap 5 other_out 1134.03
+#813 havale (001[kök]): Nazlı Kurt in 177.54 → Yapı Kredi · Hesap 810
+#814 geri yükle: 002[30f7] · Mavi Gıda ← destekofis-002-2026-10-10T08-29-00-941Z-manuel.sqlite (manuel)
+#815 cari hareketi (001[kök]): Mehmet Çelik credit 2959.08
+#816 Ters Kaydet (001[kök]): ev-0mv24uocj0000-b8d2d697-6cd5-40a3
+#817 sil: 002[30f7] · Mavi Gıda
+#818 sıfırla (all): 001[kök] · Gayri Resmi
+#819 seç: 001[kök] · Gayri Resmi
+#820 kod değiştir: 008[4318] · ŞAHİN İNŞAAT → 039
+#821 banka hesabı aç (001[kök]): Garanti BBVA açılış 1540.06
+#822 banka hesabı aç (001[kök]): Ziraat Bankası açılış 17140.54
+#823 geri yükle: 048[de39] · Mavi Gıda ← destekofis-018-2026-10-10T08-29-00-941Z-manuel.sqlite (manuel)
+#824 şirket aç: kod "026" ad "MAVİ GIDA" → 026[b1e4]
+#825 Kasa (001[kök]): in 2832.50
+#826 cari aç (001[kök]): Nazlı Özkan
+#827 geri yükle: 039[4318] · ŞAHİN İNŞAAT ← destekofis-003-2026-10-10T08-28-16-056Z-geri-yukleme-oncesi-003.sqlite (geri-yukleme-oncesi)
+#828 cari aç (001[kök]): Cemile Yılmaz
+#829 geri yükle: 039[4318] · ŞAHİN İNŞAAT ← destekofis-003-2026-10-10T08-27-13-000Z-manuel.sqlite (manuel)
+#830 cari hareketi (001[kök]): Nazlı Özkan debt 1315.79
+#831 cari aç (001[kök]): Çağrı Şahin
+#832 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 822 other_in 4387.76
+#833 alis havalesi (001[kök]): Cemile Yılmaz 2628.18 → Ziraat Bankası · Hesap 822
+#834 sil: 056[8ffd] · Gayri Resmi
+#835 geri yükle: 048[de39] · Mavi Gıda ← destekofis-018-2026-10-10T08-28-54-281Z-manuel.sqlite (manuel)
+#836 Kasa (001[kök]): out 2350.44
+#837 cari aç (001[kök]): Büşra Polat
+#838 cari aç (001[kök]): Gülşen Bozkurt
+#839 Kasa (001[kök]): out 2465.04
+#840 alis havalesi (001[kök]): Cemile Yılmaz 928.22 → Garanti BBVA · Hesap 821
+#841 ad değiştir: 004[e8b7] · ışık turizm → "Iğdır Tarım|Hayvancılık"
+#842 sil: 048[de39] · Mavi Gıda
+#843 yedek (yalnız 039[4318] · ŞAHİN İNŞAAT)
+#844 yedek (Tüm Şirketler)
+#845 Kasa (001[kök]): in 517.27
+#846 cari hareketi (001[kök]): Büşra Polat out 37.53
+#847 Banka Fişi (001[kök]): Garanti BBVA · Hesap 821 other_out 3048.06
+#848 seç: 026[b1e4] · MAVİ GIDA
+#849 Kasa (026[b1e4]): out 2355.20
+#850 geri yükle: 039[4318] · ŞAHİN İNŞAAT ← destekofis-003-2026-10-10T08-28-10-478Z-manuel.sqlite (manuel)
+#851 banka hesabı aç (026[b1e4]): Ziraat Bankası açılış 12951.75
+#852 ad değiştir: 004[e8b7] · Iğdır Tarım|Hayvancılık → "Şahin İnşaat"
+#853 cari aç (026[b1e4]): Yusuf Güneş
+#854 cari hareketi (026[b1e4]): Yusuf Güneş debt 2368.58
+#855 yedek (yalnız 039[4318] · ŞAHİN İNŞAAT)
+#856 sıfırla (movements): 004[e8b7] · Şahin İnşaat
+#857 cari hareketi (026[b1e4]): Yusuf Güneş in 4078.48
+#858 seç: 026[b1e4] · MAVİ GIDA
+#859 yedek (Tüm Şirketler)
+#860 Kasa (026[b1e4]): in 3372.46
+#861 banka hesabı aç (026[b1e4]): Ziraat Bankası açılış 13091.98
+#862 yedek (yalnız 001[kök] · Gayri Resmi)
+#863 Banka Fişi (026[b1e4]): Ziraat Bankası · Hesap 861 fee bsmv_incl 2242.45
+#864 kod değiştir: 026[b1e4] · MAVİ GIDA → 048
+#865 kod değiştir: 039[4318] · ŞAHİN İNŞAAT → 018
+#866 cari hareketi (048[b1e4]): Yusuf Güneş in 3211.06
+#867 seç: 004[e8b7] · Şahin İnşaat
+#868 banka hesabı aç (004[e8b7]): Garanti BBVA açılış 6908.71
+#869 yedek (yalnız 001[kök] · Gayri Resmi)
+#870 cari aç (004[e8b7]): Ali Aslan
+#871 geri yükle: 018[4318] · ŞAHİN İNŞAAT ← destekofis-003-2026-10-10T08-27-59-698Z-manuel.sqlite (manuel)
+#872 YANLIŞ geri yükleme: 018[4318] yedeği destekofis-003-2026-10-10T08-27-54-821Z-manuel.sqlite → 001[kök] (dosya elle hedefin klasörüne kopyalandı)
+#873 Kasa (004[e8b7]): out 542.11
+#874 havale (004[e8b7]): Ali Aslan in 3421.46 → Garanti BBVA · Hesap 868
+#875 Banka Fişi (004[e8b7]): Garanti BBVA · Hesap 868 fee none 3902.18
+#876 seç: 004[e8b7] · Şahin İnşaat
+#877 geri yükle: 018[4318] · ŞAHİN İNŞAAT ← destekofis-039-2026-10-10T08-29-23-215Z-geri-yukleme-oncesi-039.sqlite (geri-yukleme-oncesi)
+#878 kod değiştir: 048[b1e4] · MAVİ GIDA → 7a7
+#879 cari aç (004[e8b7]): Ali Yılmaz
+#880 Kasa (004[e8b7]): out 2014.09
+#881 şirket aç: kod "(sıradaki)" ad "ŞAHİN İNŞAAT" → 002[a1fe]
+#882 cari aç (004[e8b7]): Ece Erdoğan
+#883 cari hareketi (004[e8b7]): Ece Erdoğan debt 3017.20
+#884 seç: 001[kök] · Gayri Resmi
+#885 cari aç (001[kök]): Gökhan Işık
+#886 Kasa (001[kök]): in 3361.12
+#887 stok havalesi (001[kök]): Gülşen Bozkurt 1401.83 → Garanti BBVA · Hesap 821
+#888 havale (001[kök]): Çağrı Şahin in 1984.60 → Ziraat Bankası · Hesap 822
+#889 cari hareketi (001[kök]): Gökhan Işık in 2850.43
+#890 geri yükle: 018[4318] · ŞAHİN İNŞAAT ← destekofis-003-2026-10-10T08-27-59-698Z-manuel.sqlite (manuel)
+#891 stok havalesi (001[kök]): Çağrı Şahin 3360.89 → Ziraat Bankası · Hesap 822
+#892 cari hareketi (001[kök]): Nazlı Özkan out 3166.82
+#893 seç: 002[a1fe] · ŞAHİN İNŞAAT
+#894 cari aç (002[a1fe]): Büşra Akgül
+#895 sil: 048[b1e4] · MAVİ GIDA
+#896 şirket aç: kod "(sıradaki)" ad "ŞAHİN İNŞAAT" → 003[7d2e]
+#897 banka hesabı aç (002[a1fe]): Garanti BBVA açılış 15218.62
+#898 Banka Fişi (002[a1fe]): Garanti BBVA · Hesap 897 other_out 4344.00
+#899 seç: 001[kök] · Gayri Resmi
+#900 satis havalesi (001[kök]): Büşra Polat 3824.71 → Ziraat Bankası · Hesap 822
+#901 şirket aç: kod "(sıradaki)" ad "Eğitim Kurumları <Merkez>" → 005[e4c6]
+#902 cari hareketi (001[kök]): Nazlı Özkan in 752.66
+#903 cari aç (001[kök]): İsmail Aydın
+#904 kod değiştir: 018[4318] · ŞAHİN İNŞAAT → 018
+#905 001'i sil (reddedilmeli)
+#906 kod değiştir: 018[4318] · ŞAHİN İNŞAAT → 013
+#907 cari aç (001[kök]): Fatma Şimşek
+#908 cari aç (001[kök]): Yağmur Şimşek
+#909 sınırda şirket aç: kod "1000" → 409 beklenir
+#910 cari aç (001[kök]): İbrahim Polat
+#911 kod değiştir: 004[e8b7] · Şahin İnşaat → 034
+#912 sıfırla (movements): 003[7d2e] · ŞAHİN İNŞAAT
+#913 havale (001[kök]): Büşra Polat in 2187.29 → Garanti BBVA · Hesap 821
+#914 sunucuyu yeniden başlat
+#915 seç: 003[7d2e] · ŞAHİN İNŞAAT
+#916 cari aç (003[7d2e]): Çağrı Özdemir
+#917 sil: 034[e8b7] · Şahin İnşaat
+#918 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-26-26-805Z-manuel.sqlite (manuel)
+#919 Kasa (003[7d2e]): out 3689.09
+#920 şirket aç: kod "034" ad "İstanbul Ticaret A.Ş." → 034[55df]
+#921 cari hareketi (003[7d2e]): Çağrı Özdemir debt 3296.91
+#922 geri yükle: 013[4318] · ŞAHİN İNŞAAT ← destekofis-008-2026-10-10T08-28-29-169Z-geri-yukleme-oncesi-008.sqlite (geri-yukleme-oncesi)
+#923 Kasa (003[7d2e]): in 3124.80
+#924 banka hesabı aç (003[7d2e]): İş Bankası açılış 3695.00
+#925 cari aç (003[7d2e]): Zeynep Kurt
+#926 geri yükle: 013[4318] · ŞAHİN İNŞAAT ← destekofis-008-2026-10-10T08-29-09-828Z-manuel.sqlite (manuel)
+#927 seç: 003[7d2e] · ŞAHİN İNŞAAT
+#928 havale (003[7d2e]): Çağrı Özdemir in 1653.41 → İş Bankası · Hesap 924 (tek hesap, seçimsiz)
+#929 sil: 005[e4c6] · Eğitim Kurumları <Merkez>
+#930 cari hareketi (003[7d2e]): Zeynep Kurt in 4837.62
+#931 Banka Fişi (003[7d2e]): İş Bankası · Hesap 924 other_in 2214.65
+#932 cari aç (003[7d2e]): Zeynep Yıldız
+#933 cari hareketi (003[7d2e]): Zeynep Kurt debt 4863.73
+#934 cari hareketi (003[7d2e]): Çağrı Özdemir credit 1452.47
+#935 Kasa (003[7d2e]): out 1817.81
+#936 sil: 002[a1fe] · ŞAHİN İNŞAAT
+#937 Kasa (003[7d2e]): in 375.59
+#938 geri yükle: 013[4318] · ŞAHİN İNŞAAT ← destekofis-018-2026-10-10T08-29-29-203Z-geri-yukleme-oncesi-018.sqlite (geri-yukleme-oncesi)
+#939 banka hesabı aç (003[7d2e]): Garanti BBVA açılış 10258.29
+#940 şirket aç: kod "abc" ad "Doğu "Batı" Lojistik"
+#941 cari hareketi (003[7d2e]): Zeynep Yıldız in 300.65
+#942 cari aç (003[7d2e]): Cemile Çakır
+#943 sil: 013[4318] · ŞAHİN İNŞAAT
+#944 ad değiştir: 003[7d2e] · ŞAHİN İNŞAAT → "ışık turizm"
+#945 yedek (yalnız 034[55df] · İstanbul Ticaret A.Ş.)
+#946 Kasa (003[7d2e]): in 4434.37
+#947 geri yükle: 003[7d2e] · ışık turizm ← destekofis-003-2026-10-10T08-29-40-310Z-sifirlama-oncesi-003.sqlite (sifirlama-oncesi)
+#948 banka hesabı aç (003[7d2e]): Garanti BBVA açılış 11793.89
+#949 banka hesabı aç (003[7d2e]): Ziraat Bankası açılış 15347.30
+#950 cari aç (003[7d2e]): Elif Bozkurt
+#951 yedek (Tüm Şirketler)
+#952 seç: 003[7d2e] · ışık turizm
+#953 seç: 003[7d2e] · ışık turizm
+#954 cari hareketi (003[7d2e]): Elif Bozkurt debt 3055.46
+#955 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-27-25-828Z-manuel.sqlite → 003[7d2e] (dosya elle hedefin klasörüne kopyalandı)
+#956 seç: 001[kök] · Gayri Resmi
+#957 cari aç (001[kök]): Serdar Aslan
+#958 cari hareketi (001[kök]): Mehmet Çelik credit 2665.45
+#959 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-28-10-478Z-manuel.sqlite (manuel)
+#960 banka hesabı aç (001[kök]): Ziraat Bankası açılış 1199.17
+#961 seç: 003[7d2e] · ışık turizm
+#962 cari hareketi (003[7d2e]): Elif Bozkurt in 1160.25
+#963 havale (003[7d2e]): Elif Bozkurt in 4824.11 → Ziraat Bankası · Hesap 949
+#964 cari hareketi (003[7d2e]): Elif Bozkurt debt 2209.55
+#965 sıfırla (movements): 003[7d2e] · ışık turizm
+#966 cari aç (003[7d2e]): Ali Çelik
+#967 cari hareketi (003[7d2e]): Elif Bozkurt credit 1801.14
+#968 seç: 003[7d2e] · ışık turizm
+#969 havale (003[7d2e]): Ali Çelik in 317.01 → Ziraat Bankası · Hesap 949
+#970 001'i sil (reddedilmeli)
+#971 cari aç (003[7d2e]): Hasan Özdemir
+#972 transfer (003[7d2e]): Ziraat Bankası · Hesap 949 → Garanti BBVA · Hesap 948 3729.38
+#973 sıfırla (all): 034[55df] · İstanbul Ticaret A.Ş.
+#974 şirket aç: kod "057" ad "İstanbul Ticaret A.Ş." → 057[73d5]
+#975 cari hareketi (003[7d2e]): Hasan Özdemir debt 2197.43
+#976 cari aç (003[7d2e]): Ayşe Yıldırım
+#977 cekTahsil havalesi (003[7d2e]): Ayşe Yıldırım 358.46 → Ziraat Bankası · Hesap 949
+#978 cari hareketi (003[7d2e]): Elif Bozkurt out 2524.70
+#979 Kasa (003[7d2e]): in 4478.52
+#980 Banka Fişi (003[7d2e]): Ziraat Bankası · Hesap 949 fee bsmv_incl 1219.49
+#981 seç: 034[55df] · İstanbul Ticaret A.Ş.
+#982 banka hesabı aç (034[55df]): Yapı Kredi açılış 19933.95
+#983 ad değiştir: 001[kök] · Gayri Resmi → "Çağ/Öz: Ltd*"
+#984 geri yükle: 003[7d2e] · ışık turizm ← destekofis-003-2026-10-10T08-29-54-030Z-sifirlama-oncesi-003.sqlite (sifirlama-oncesi)
+#985 ad değiştir: 003[7d2e] · ışık turizm → "Şahin İnşaat"
+#986 yedek (yalnız 003[7d2e] · Şahin İnşaat)
+#987 kod değiştir: 003[7d2e] · Şahin İnşaat → 004
+#988 seç: 001[kök] · Çağ/Öz: Ltd*
+#989 ad değiştir: 057[73d5] · İstanbul Ticaret A.Ş. → "ŞAHİN İNŞAAT"
+#990 sil: 057[73d5] · ŞAHİN İNŞAAT
+#991 cari aç (001[kök]): Ayşe Güneş
+#992 cari hareketi (001[kök]): Ayşe Güneş out 2132.81
+#993 havale (001[kök]): Ayşe Güneş in 3944.36 → Ziraat Bankası · Hesap 960
+#994 cari aç (001[kök]): Ece Kara
+#995 001'i sil (reddedilmeli)
+#996 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 960 other_out 408.38
+#997 cari hareketi (001[kök]): Ece Kara credit 1616.18
+#998 geri yükle: 004[7d2e] · Şahin İnşaat ← destekofis-003-2026-10-10T08-29-57-986Z-manuel.sqlite (manuel)
+#999 yedek (Tüm Şirketler)
+#1000 yedek (yalnız 001[kök] · Çağ/Öz: Ltd*)
+#1001 havale (001[kök]): Ayşe Güneş in 4611.09 → Ziraat Bankası · Hesap 960
+#1002 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 960 other_out 4757.67
+#1003 YANLIŞ geri yükleme: 034[55df] yedeği destekofis-034-2026-10-10T08-29-50-399Z-manuel.sqlite → 004[7d2e] (dosya elle hedefin klasörüne kopyalandı)
+#1004 havale (001[kök]): Ece Kara in 2489.94 → Ziraat Bankası · Hesap 960 (tek hesap, seçimsiz)
+#1005 havale (001[kök]): Ece Kara in 2082.92 → Ziraat Bankası · Hesap 960
+#1006 havale (001[kök]): Ayşe Güneş in 223.84 → Ziraat Bankası · Hesap 960 (tek hesap, seçimsiz)
+#1007 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-27-02-950Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#1008 yedek (Tüm Şirketler)
+#1009 sil: 034[55df] · İstanbul Ticaret A.Ş.
+#1010 cari aç (001[kök]): Zehra Güneş
+#1011 seç: 001[kök] · Çağ/Öz: Ltd*
+#1012 havale (001[kök]): Nazlı Kılıç out 2424.35 → Ziraat Bankası · Hesap 41
+#1013 cari aç (001[kök]): Ayşe Doğan
+#1014 yedek (yalnız 001[kök] · Çağ/Öz: Ltd*)
+#1015 transfer (001[kök]): Ziraat Bankası · Hesap 41 → İş Bankası · Hesap 5 4417.73
+#1016 yedek (yalnız 004[7d2e] · Şahin İnşaat)
+#1017 yedek (Tüm Şirketler)
+#1018 yedek (yalnız 001[kök] · Çağ/Öz: Ltd*)
+#1019 banka hesabı aç (001[kök]): Ziraat Bankası açılış 9142.70
+#1020 geri yükle: 004[7d2e] · Şahin İnşaat ← destekofis-003-2026-10-10T08-29-57-568Z-geri-yukleme-oncesi-003.sqlite (geri-yukleme-oncesi)
+#1021 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 41 other_in 2701.54
+#1022 geri yükle: 004[7d2e] · Şahin İnşaat ← destekofis-004-2026-10-10T08-30-04-351Z-manuel.sqlite (manuel)
+#1023 cari hareketi (001[kök]): Nazlı Kılıç in 4737.13
+#1024 seç: 004[7d2e] · Şahin İnşaat
+#1025 şirket aç: kod "026" ad "Iğdır Tarım|Hayvancılık" → 026[9af3]
+#1026 sil: 026[9af3] · Iğdır Tarım|Hayvancılık
+#1027 cari hareketi (004[7d2e]): Elif Bozkurt credit 16.67
+#1028 cari hareketi (004[7d2e]): Elif Bozkurt in 3275.48
+#1029 YANLIŞ şirket hesabına taksit havalesi: seçili 004[7d2e], hesap 001[kök]
+#1030 ad değiştir: 001[kök] · Çağ/Öz: Ltd* → "Işık Turizm"
+#1031 geri yükle: 004[7d2e] · Şahin İnşaat ← destekofis-003-2026-10-10T08-29-50-812Z-geri-yukleme-oncesi-003.sqlite (geri-yukleme-oncesi)
+#1032 transfer (004[7d2e]): Garanti BBVA · Hesap 939 → İş Bankası · Hesap 924 1974.29
+#1033 şirket aç: kod "(sıradaki)" ad "Ağaoğlu Yapı?" → 002[c7bc]
+#1034 banka hesabı aç (004[7d2e]): Garanti BBVA açılış 15726.31
+#1035 Banka Fişi (004[7d2e]): Garanti BBVA · Hesap 939 fee none 2140.68
+#1036 sil: 004[7d2e] · Şahin İnşaat
+#1037 Kasa (001[kök]): out 3881.06
+#1038 havale (001[kök]): Ümit Çakır in 2963.20 → İş Bankası · Hesap 5
+#1039 seç: 001[kök] · Işık Turizm
+#1040 yedek (yalnız 002[c7bc] · Ağaoğlu Yapı?)
+#1041 kod değiştir: 002[c7bc] · Ağaoğlu Yapı? → 002
+#1042 Ters Kaydet (001[kök]): ev-0mv24vyc90000-06d82b3e-5016-4262 (transfer)
+#1043 geri yükle: 002[c7bc] · Ağaoğlu Yapı? ← destekofis-002-2026-10-10T08-30-09-597Z-manuel.sqlite (manuel)
+#1044 kod değiştir: 002[c7bc] · Ağaoğlu Yapı? → 026
+#1045 yedek (yalnız 026[c7bc] · Ağaoğlu Yapı?)
+#1046 cekOde havalesi (001[kök]): Nazlı Kılıç 4580.65 → Ziraat Bankası · Hesap 41
+#1047 cekTahsil havalesi (001[kök]): Nazlı Kılıç 2822.84 → Ziraat Bankası · Hesap 1019
+#1048 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-29-28-633Z-manuel.sqlite → 026[c7bc]
+#1049 cari hareketi (001[kök]): Mehmet Çelik in 2952.47
+#1050 ad değiştir: 001[kök] · Işık Turizm → "   "
+#1051 transfer (001[kök]): Ziraat Bankası · Hesap 41 → İş Bankası · Hesap 5 3546.98
+#1052 banka hesabı aç (001[kök]): Garanti BBVA açılış 11136.52
+#1053 cari hareketi (001[kök]): Nazlı Kılıç credit 129.15
+#1054 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-27-02-950Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#1055 banka hesabı aç (001[kök]): Ziraat Bankası açılış 12454.53
+#1056 Kasa (001[kök]): in 3759.33
+#1057 cari hareketi (001[kök]): Tuğba Koç out 3970.97
+#1058 ad değiştir: 001[kök] · Işık Turizm → "Nokta Ltd."
+#1059 Kasa (001[kök]): in 4670.97
+#1060 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 1055 fee none 786.61
+#1061 geri yükle: 026[c7bc] · Ağaoğlu Yapı? ← destekofis-002-2026-10-10T08-30-09-597Z-manuel.sqlite (manuel)
+#1062 seç: 026[c7bc] · Ağaoğlu Yapı?
+#1063 cari aç (026[c7bc]): Tuğba Doğan
+#1064 ad değiştir: 001[kök] · Nokta Ltd. → "ŞAHİN İNŞAAT"
+#1065 banka hesabı aç (026[c7bc]): Yapı Kredi açılış 3115.78
+#1066 cari hareketi (026[c7bc]): Tuğba Doğan debt 2945.28
+#1067 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-27-57-704Z-sifirlama-oncesi-001.sqlite (sifirlama-oncesi)
+#1068 YANLIŞ geri yükleme: 026[c7bc] yedeği destekofis-002-2026-10-10T08-30-10-164Z-geri-yukleme-oncesi-002.sqlite → 001[kök] (dosya elle hedefin klasörüne kopyalandı)
+#1069 şirket aç: kod "(sıradaki)" ad "Ünal & Öztürk Hukuk" → 002[f847]
+#1070 cari hareketi (026[c7bc]): Tuğba Doğan in 2344.92
+#1071 ad değiştir: 002[f847] · Ünal & Öztürk Hukuk → "Mavi Gıda"
+#1072 Banka Fişi (026[c7bc]): Yapı Kredi · Hesap 1065 other_in 1607.37
+#1073 yedek (Tüm Şirketler)
+#1074 alis havalesi (026[c7bc]): Tuğba Doğan 802.87 → Yapı Kredi · Hesap 1065
+#1075 sil: 002[f847] · Mavi Gıda
+#1076 cari hareketi (026[c7bc]): Tuğba Doğan credit 157.52
+#1077 cari aç (026[c7bc]): Ali Doğan
+#1078 banka hesabı aç (026[c7bc]): Yapı Kredi açılış 11909.80
+#1079 Kasa (026[c7bc]): in 132.98
+#1080 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-57-725Z-manuel.sqlite → 026[c7bc]
+#1081 seç: 001[kök] · ŞAHİN İNŞAAT
+#1082 yedek (yalnız 001[kök] · ŞAHİN İNŞAAT)
+#1083 cari aç (001[kök]): Ayşe Koç
+#1084 yedek (yalnız 001[kök] · ŞAHİN İNŞAAT)
+#1085 cari hareketi (001[kök]): Ayşe Koç debt 3503.25
+#1086 kod değiştir: 026[c7bc] · Ağaoğlu Yapı? → 001
+#1087 banka hesabı aç (001[kök]): Yapı Kredi açılış 4103.96
+#1088 şirket aç: kod "019" ad "Çağ/Öz: Ltd*" → 019[70aa]
+#1089 cari hareketi (001[kök]): Ayşe Koç credit 3234.82
+#1090 geri yükle: 026[c7bc] · Ağaoğlu Yapı? ← destekofis-026-2026-10-10T08-30-13-387Z-geri-yukleme-oncesi-026.sqlite (geri-yukleme-oncesi)
+#1091 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-27-562Z-geri-yukleme-oncesi-001.sqlite → 019[70aa] (dosya elle hedefin klasörüne kopyalandı)
+#1092 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-27-02-950Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#1093 Banka Fişi (001[kök]): İş Bankası · Hesap 5 fee none 1393.13
+#1094 cari aç (001[kök]): Elif Akgül
+#1095 ad değiştir: 001[kök] · ŞAHİN İNŞAAT → "   "
+#1096 Banka Fişi (001[kök]): İş Bankası · Hesap 5 fee none 2055.86
+#1097 cari hareketi (001[kök]): Mehmet Çelik in 2558.45
+#1098 cari hareketi (001[kök]): Mehmet Çelik debt 3922.26
+#1099 YANLIŞ geri yükleme: 001[kök] yedeği destekofis-001-2026-10-10T08-26-25-865Z-geri-yukleme-oncesi-001.sqlite → 026[c7bc]
+#1100 cari aç (001[kök]): Yusuf Özkan
+#1101 havale (001[kök]): Yusuf Özkan in 4260.55 → Ziraat Bankası · Hesap 41
+#1102 sıfırla (movements): 001[kök] · ŞAHİN İNŞAAT
+#1103 yedek (yalnız 026[c7bc] · Ağaoğlu Yapı?)
+#1104 cari hareketi (001[kök]): Mehmet Çelik in 2813.62
+#1105 cari hareketi (001[kök]): Yusuf Özkan debt 1572.17
+#1106 seç: 019[70aa] · Çağ/Öz: Ltd*
+#1107 geri yükle: 026[c7bc] · Ağaoğlu Yapı? ← destekofis-002-2026-10-10T08-30-09-597Z-manuel.sqlite (manuel)
+#1108 YANLIŞ şirket Banka Fişi: seçili 019[70aa], hesap 001[kök]
+#1109 cari aç (019[70aa]): Emine Arslan
+#1110 kod değiştir: 026[c7bc] · Ağaoğlu Yapı? → 019
+#1111 cari aç (019[70aa]): Elif Erdoğan
+#1112 şirket aç: kod "026" ad "istanbul ticaret a.ş."
+#1113 cari hareketi (019[70aa]): Elif Erdoğan debt 4100.71
+#1114 sil: 026[c7bc] · Ağaoğlu Yapı?
+#1115 cari hareketi (019[70aa]): Emine Arslan in 3300.06
+#1116 yedek (yalnız 001[kök] · ŞAHİN İNŞAAT)
+#1117 yedek (yalnız 001[kök] · ŞAHİN İNŞAAT)
+#1118 cari aç (019[70aa]): Emine Ağaoğlu
+#1119 yedek (yalnız 019[70aa] · Çağ/Öz: Ltd*)
+#1120 şirket aç: kod "039" ad "Doğu "Batı" Lojistik" → 039[4676]
+#1121 şirket aç: kod "021" ad "ŞAHİN İNŞAAT" → 021[61c2]
+#1122 cari aç (019[70aa]): Özge Koç
+#1123 Kasa (019[70aa]): out 3726.07
+#1124 banka hesabı aç (019[70aa]): Ziraat Bankası açılış 13257.96
+#1125 geri yükle: 019[70aa] · Çağ/Öz: Ltd* ← destekofis-019-2026-10-10T08-30-25-613Z-manuel.sqlite (manuel)
+#1126 banka hesabı aç (019[70aa]): Garanti BBVA açılış 17445.53
+#1127 yedek (yalnız 021[61c2] · ŞAHİN İNŞAAT)
+#1128 ad değiştir: 001[kök] · ŞAHİN İNŞAAT → "ışık turizm"
+#1129 havale (019[70aa]): Emine Ağaoğlu in 1748.03 → Garanti BBVA · Hesap 1126
+#1130 YANLIŞ şirket hesabına havale: seçili 019[70aa], hesap 001[kök]
+#1131 seç: 001[kök] · ışık turizm
+#1132 cari hareketi (001[kök]): Nazlı Kılıç debt 3504.96
+#1133 yedek (yalnız 001[kök] · ışık turizm)
+#1134 cari hareketi (001[kök]): Mehmet Çelik debt 3876.81
+#1135 havale (001[kök]): Mehmet Çelik in 2829.65 → İş Bankası · Hesap 5
+#1136 Banka Fişi (001[kök]): İş Bankası · Hesap 5 other_out 692.43
+#1137 havale (001[kök]): Tuğba Koç in 1209.35 → Ziraat Bankası · Hesap 41
+#1138 cari hareketi (001[kök]): Yusuf Özkan debt 1270.79
+#1139 cari aç (001[kök]): Tülay Aydın
+#1140 kod değiştir: 021[61c2] · ŞAHİN İNŞAAT → 060
+#1141 Banka Fişi (001[kök]): Ziraat Bankası · Hesap 41 other_out 1925.10
+#1142 sıfırla (movements): 001[kök] · ışık turizm
+#1143 cari aç (001[kök]): Hüseyin Yılmaz
+#1144 transfer (001[kök]): İş Bankası · Hesap 5 → Ziraat Bankası · Hesap 41 1885.02
+#1145 Ters Kaydet (001[kök]): ev-0mv24wipj0000-6c2ac695-b005-408d (transfer)
+#1146 yedek (yalnız 001[kök] · ışık turizm)
+#1147 banka hesabı aç (001[kök]): Yapı Kredi açılış 13576.73
+#1148 kod değiştir: 001[kök] · ışık turizm → 016
+#1149 havale (016[kök]): Nazlı Kılıç in 929.22 → Ziraat Bankası · Hesap 41
+#1150 yedek (yalnız 060[61c2] · ŞAHİN İNŞAAT)
+#1151 sil: 060[61c2] · ŞAHİN İNŞAAT
+#1152 geri yükle: 019[70aa] · Çağ/Öz: Ltd* ← destekofis-019-2026-10-10T08-30-25-613Z-manuel.sqlite (manuel)
+#1153 cari hareketi (016[kök]): Tuğba Koç debt 4192.18
+#1154 transfer (016[kök]): Yapı Kredi · Hesap 1147 → Ziraat Bankası · Hesap 41 4570.15 + ücret 13.50
+#1155 cari hareketi (016[kök]): Hüseyin Yılmaz debt 4015.08
+#1156 YANLIŞ geri yükleme: 016[kök] yedeği destekofis-001-2026-10-10T08-29-26-839Z-manuel.sqlite → 039[4676]
+#1157 transfer (016[kök]): İş Bankası · Hesap 5 → Ziraat Bankası · Hesap 41 1182.96 + ücret 11.51
+#1158 cekOde havalesi (016[kök]): Tülay Aydın 381.98 → İş Bankası · Hesap 5
+#1159 cari hareketi (016[kök]): Elif Akgül credit 3930.97
+#1160 cari aç (016[kök]): Şükrü Özdemir
+#1161 alis havalesi (016[kök]): Şükrü Özdemir 2396.09 → Yapı Kredi · Hesap 1147
+#1162 Ters Kaydet (016[kök]): ev-0mv24wkrm0000-e466bf65-e0a6-4768 (transfer)
+#1163 havale (016[kök]): Hüseyin Yılmaz out 3938.46 → İş Bankası · Hesap 5
+#1164 sıfırla (movements): 019[70aa] · Çağ/Öz: Ltd*
+#1165 seç: 019[70aa] · Çağ/Öz: Ltd*
+#1166 banka hesabı aç (019[70aa]): İş Bankası açılış 15232.73
+#1167 kod değiştir: 039[4676] · Doğu "Batı" Lojistik → 025
+#1168 cari aç (019[70aa]): Hüseyin Öz
+#1169 kayit havalesi (019[70aa]): Hüseyin Öz 1190.85 → İş Bankası · Hesap 1166
+#1170 Banka Fişi (019[70aa]): İş Bankası · Hesap 1166 other_out 4132.35
+#1171 Banka Fişi (019[70aa]): İş Bankası · Hesap 1166 other_out 3879.08
+#1172 Kasa (019[70aa]): out 1070.99
+#1173 havale (019[70aa]): Emine Arslan out 2455.80 → İş Bankası · Hesap 1166 (tek hesap, seçimsiz)
+#1174 Banka Fişi (019[70aa]): İş Bankası · Hesap 1166 fee none 3483.34
+#1175 seç: 025[4676] · Doğu "Batı" Lojistik
+#1176 banka hesabı aç (025[4676]): Yapı Kredi açılış 10730.24
+#1177 geri yükle: 019[70aa] · Çağ/Öz: Ltd* ← destekofis-019-2026-10-10T08-30-32-296Z-geri-yukleme-oncesi-019.sqlite (geri-yukleme-oncesi)
+#1178 sil: 019[70aa] · Çağ/Öz: Ltd*
+#1179 Kasa (025[4676]): in 199.90
+#1180 yedek (yalnız 016[kök] · ışık turizm)
+#1181 seç: 025[4676] · Doğu "Batı" Lojistik
+#1182 cari aç (025[4676]): Hatice Bozkurt
+#1183 yedek (yalnız 016[kök] · ışık turizm)
+#1184 seç: 016[kök] · ışık turizm
+#1185 cari hareketi (016[kök]): Tülay Aydın in 3778.66
+#1186 cari hareketi (016[kök]): Elif Akgül out 4675.53
+#1187 cari aç (016[kök]): Büşra Demir
+#1188 cari hareketi (016[kök]): Ümit Çakır debt 3373.58
+#1189 cari hareketi (016[kök]): Nazlı Kılıç credit 4228.85
+#1190 cari aç (016[kök]): Elif Özdemir
+#1191 ad değiştir: 025[4676] · Doğu "Batı" Lojistik → "Resmi Şirket"
+#1192 satis havalesi (016[kök]): Mehmet Çelik 752.90 → İş Bankası · Hesap 5
+#1193 cari aç (016[kök]): Zehra Şahin
+#1194 sil: 025[4676] · Resmi Şirket
+#1195 şirket aç: kod "(sıradaki)" ad "Iğdır Tarım|Hayvancılık" → 001[13aa]
+#1196 sıfırla (movements): 001[13aa] · Iğdır Tarım|Hayvancılık
+#1197 cari hareketi (016[kök]): Büşra Demir in 1425.30
+#1198 sunucuyu yeniden başlat
+#1199 kayit havalesi (016[kök]): Tülay Aydın 1639.79 → Ziraat Bankası · Hesap 41
+#1200 şirket aç: kod "016" ad "ışık turizm"
+#1201 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-30-17-858Z-manuel.sqlite (manuel)
+#1202 şirket aç: kod "049" ad "Resmi Şirket" → 049[c156]
+#1203 seç: 001[13aa] · Iğdır Tarım|Hayvancılık
+#1204 yedek (Tüm Şirketler)
+#1205 sunucuyu yeniden başlat
+#1206 banka hesabı aç (001[13aa]): Yapı Kredi açılış 16264.97
+#1207 cari aç (001[13aa]): Tuğba Çakır
+#1208 ad değiştir: 016[kök] · ışık turizm → "   "
+#1209 şirket aç: kod "005" ad "Ünal & Öztürk Hukuk" → 005[ebdb]
+#1210 cekTahsil havalesi (001[13aa]): Tuğba Çakır 3464.40 → Yapı Kredi · Hesap 1206
+#1211 cari aç (001[13aa]): Nazlı Kurt
+#1212 cari aç (001[13aa]): Cemile Çetin
+#1213 şirket aç: kod "(sıradaki)" ad "Eğitim Kurumları <Merkez>" → 002[d1c5]
+#1214 Kasa (001[13aa]): in 935.74
+#1215 yedek (yalnız 049[c156] · Resmi Şirket)
+#1216 cari hareketi (001[13aa]): Tuğba Çakır debt 1131.36
+#1217 cari hareketi (001[13aa]): Cemile Çetin debt 2277.97
+#1218 cari hareketi (001[13aa]): Nazlı Kurt debt 3209.63
+#1219 Kasa (001[13aa]): out 139.86
+#1220 seç: 002[d1c5] · Eğitim Kurumları <Merkez>
+#1221 yedek (Tüm Şirketler)
+#1222 yedek (yalnız 049[c156] · Resmi Şirket)
+#1223 Kasa (002[d1c5]): in 2637.76
+#1224 banka hesabı aç (002[d1c5]): İş Bankası açılış 4465.20
+#1225 cari aç (002[d1c5]): Oğuz Erdoğan
+#1226 seç: 005[ebdb] · Ünal & Öztürk Hukuk
+#1227 ad değiştir: 002[d1c5] · Eğitim Kurumları <Merkez> → "Gayri Resmi"
+#1228 banka hesabı aç (005[ebdb]): İş Bankası açılış 15359.93
+#1229 Banka Fişi (005[ebdb]): İş Bankası · Hesap 1228 other_in 2154.60
+#1230 sıfırla (all): 049[c156] · Resmi Şirket
+#1231 seç: 016[kök] · ışık turizm
+#1232 cari hareketi (016[kök]): Ayşe Koç debt 2319.12
+#1233 yedek (Tüm Şirketler)
+#1234 cari aç (016[kök]): İbrahim Öz
+#1235 cari hareketi (016[kök]): İbrahim Öz debt 4103.58
+#1236 cari aç (016[kök]): Ece Şahin
+#1237 banka hesabı aç (016[kök]): İş Bankası açılış 12920.60
+#1238 geri yükle: 049[c156] · Resmi Şirket ← destekofis-049-2026-10-10T08-30-45-193Z-manuel.sqlite (manuel)
+#1239 banka hesabı aç (016[kök]): Ziraat Bankası açılış 10539.74
+#1240 001 geri yükle (yeniden açılışta) ← destekofis-016-2026-10-10T08-30-37-726Z-manuel.sqlite (manuel)
+#1241 cari aç (016[kök]): Gökhan Akgül
+#1242 şirket aç: kod "013" ad "Eğitim Kurumları <Merkez>" → 013[df79]
+#1243 001 geri yükle (yeniden açılışta) ← destekofis-016-2026-10-10T08-30-38-285Z-manuel.sqlite (manuel)
+#1244 sınırda şirket aç: kod "048" → 409 beklenir
+#1245 YANLIŞ şirket hesabına satis havalesi: seçili 016[kök], hesap 005[ebdb]
+#1246 stok havalesi (016[kök]): Tülay Aydın 530.79 → İş Bankası · Hesap 5
+#1247 Kasa (016[kök]): in 2474.89
+#1248 sil: 013[df79] · Eğitim Kurumları <Merkez>
+#1249 banka hesabı aç (016[kök]): Yapı Kredi açılış 2458.58
+#1250 YANLIŞ geri yükleme: 001[13aa] yedeği destekofis-001-2026-10-10T08-30-40-794Z-sifirlama-oncesi-001.sqlite → 016[kök] (dosya elle hedefin klasörüne kopyalandı)
+#1251 cari hareketi (016[kök]): Hüseyin Yılmaz out 161.16
+#1252 cari aç (016[kök]): Şükrü Yılmaz
+#1253 geri yükle: 001[13aa] · Iğdır Tarım|Hayvancılık ← destekofis-001-2026-10-10T08-30-46-394Z-manuel.sqlite (manuel)
+#1254 şirket aç: kod "004" ad "Iğdır Tarım|Hayvancılık" → 004[bf76]
+#1255 sınırda şirket aç: kod "025" → 409 beklenir
+#1256 yedek (yalnız 016[kök] · ışık turizm)
+#1257 cekOde havalesi (016[kök]): Yusuf Özkan 4234.21 → Yapı Kredi · Hesap 1249
+#1258 Banka Fişi (016[kök]): Yapı Kredi · Hesap 1249 fee bsmv_incl 2737.13
+#1259 havale (016[kök]): Şükrü Özdemir in 4695.31 → Yapı Kredi · Hesap 1249
+#1260 sıfırla (movements): 004[bf76] · Iğdır Tarım|Hayvancılık
+#1261 YANLIŞ şirket hesabına transfer: seçili 016[kök], alıcı 001[13aa]
+#1262 cari aç (016[kök]): Oğuz Özdemir
+#1263 Banka Fişi (016[kök]): Yapı Kredi · Hesap 1249 fee bsmv_incl 1492.66
+#1264 Banka Fişi (016[kök]): Yapı Kredi · Hesap 1147 fee none 1453.73
+#1265 cari hareketi (016[kök]): Şükrü Özdemir credit 3929.23
+#1266 transfer (016[kök]): Ziraat Bankası · Hesap 41 → Yapı Kredi · Hesap 1249 2479.83
+#1267 kayit havalesi (016[kök]): Ümit Çakır 999.36 → Yapı Kredi · Hesap 1147
+#1268 cari hareketi (016[kök]): Tülay Aydın in 414.69
+#1269 001'i sil (reddedilmeli)
+#1270 Kasa (016[kök]): in 269.55
+#1271 transfer (016[kök]): İş Bankası · Hesap 5 → Ziraat Bankası · Hesap 41 1697.17
+#1272 sil: 005[ebdb] · Ünal & Öztürk Hukuk (yanlış onay)
+#1273 yedek (Tüm Şirketler)
+#1274 Banka Fişi (016[kök]): Ziraat Bankası · Hesap 41 other_in 1687.05
+#1275 cari aç (016[kök]): Kübra Yıldırım
+#1276 cari hareketi (016[kök]): Ümit Çakır debt 3512.64
+#1277 YANLIŞ geri yükleme: 016[kök] yedeği destekofis-001-2026-10-10T08-26-45-852Z-sifirlama-oncesi-001.sqlite → 004[bf76]
+#1278 YANLIŞ geri yükleme: 016[kök] yedeği destekofis-001-2026-10-10T08-26-25-865Z-geri-yukleme-oncesi-001.sqlite → 002[d1c5] (dosya elle hedefin klasörüne kopyalandı)
+#1279 yedek (yalnız 002[d1c5] · Gayri Resmi)
+#1280 YANLIŞ şirket Banka Fişi: seçili 016[kök], hesap 002[d1c5]
+#1281 YANLIŞ şirket Banka Fişi: seçili 016[kök], hesap 005[ebdb]
+#1282 Kasa (016[kök]): in 749.31
+#1283 Kasa (016[kök]): out 4268.55
+#1284 sınırda şirket aç: kod "(sıradaki)" → 409 beklenir
+#1285 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-29-21-548Z-manuel.sqlite (manuel)
+#1286 kod değiştir: 002[d1c5] · Gayri Resmi → 004
+#1287 Kasa (016[kök]): in 3196.09
+#1288 cari aç (016[kök]): Zeynep Erdoğan
+#1289 havale (016[kök]): Büşra Polat in 1239.98 → Garanti BBVA · Hesap 821
+#1290 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-27-02-950Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#1291 geri yükle: 049[c156] · Resmi Şirket ← destekofis-049-2026-10-10T08-30-45-193Z-manuel.sqlite (manuel)
+#1292 kod değiştir: 001[13aa] · Iğdır Tarım|Hayvancılık → 006
+#1293 geri yükle: 002[d1c5] · Gayri Resmi ← destekofis-002-2026-10-10T08-31-01-711Z-manuel.sqlite (manuel)
+#1294 sunucuyu yeniden başlat
+#1295 cari aç (016[kök]): Mustafa Özdemir
+#1296 sunucuyu yeniden başlat
+#1297 yedek (yalnız 002[d1c5] · Gayri Resmi)
+#1298 yedek (yalnız 049[c156] · Resmi Şirket)
+#1299 cari hareketi (016[kök]): Mustafa Özdemir debt 4967.25
+#1300 Banka Fişi (016[kök]): Ziraat Bankası · Hesap 41 other_in 3231.59
+#1301 havale (016[kök]): Mehmet Çelik in 4475.93 → Ziraat Bankası · Hesap 41
+#1302 satis havalesi (016[kök]): Nazlı Kılıç 3590.68 → İş Bankası · Hesap 5
+#1303 seç: 006[13aa] · Iğdır Tarım|Hayvancılık
+#1304 cari aç (006[13aa]): Işıl Erdoğan
+#1305 banka hesabı aç (006[13aa]): Ziraat Bankası açılış 4399.95
+#1306 sıfırla (all): 005[ebdb] · Ünal & Öztürk Hukuk
+#1307 havale (006[13aa]): Nazlı Kurt in 4423.09 → Yapı Kredi · Hesap 1206
+#1308 alis havalesi (006[13aa]): Işıl Erdoğan 4387.70 → Yapı Kredi · Hesap 1206
+#1309 yedek (Tüm Şirketler)
+#1310 ad değiştir: 016[kök] · ışık turizm → "MAVİ GIDA"
+#1311 sıfırla (movements): 016[kök] · MAVİ GIDA
+#1312 seç: 016[kök] · MAVİ GIDA
+#1313 havale (016[kök]): Nazlı Kılıç out 1897.38 → Ziraat Bankası · Hesap 41
+#1314 ad değiştir: 004[bf76] · Iğdır Tarım|Hayvancılık → "Gayri Resmi"
+#1315 cari aç (016[kök]): Emine Öz
+#1316 yedek (yalnız 006[13aa] · Iğdır Tarım|Hayvancılık)
+#1317 cari aç (016[kök]): Yağmur Erdoğan
+#1318 sil: 006[13aa] · Iğdır Tarım|Hayvancılık
+#1319 yedek (Tüm Şirketler)
+#1320 cari hareketi (016[kök]): Mustafa Özdemir debt 517.33
+#1321 cari aç (016[kök]): İbrahim Yıldırım
+#1322 Kasa (016[kök]): out 1638.34
+#1323 Banka Fişi (016[kök]): Ziraat Bankası · Hesap 41 fee bsmv_incl 4067.73
+#1324 Kasa (016[kök]): out 4687.95
+#1325 cari hareketi (016[kök]): Ümit Çakır out 1207.37
+#1326 cari hareketi (016[kök]): Tuğba Koç debt 3818.25
+#1327 yedek (yalnız 002[d1c5] · Gayri Resmi)
+#1328 cari hareketi (016[kök]): Nazlı Kılıç debt 4870.41
+#1329 havale (016[kök]): Nazlı Kılıç in 2717.56 → İş Bankası · Hesap 5
+#1330 kod değiştir: 004[bf76] · Gayri Resmi → 058
+#1331 yedek (yalnız 005[ebdb] · Ünal & Öztürk Hukuk)
+#1332 Kasa (016[kök]): in 4257.93
+#1333 sıfırla (movements): 002[d1c5] · Gayri Resmi
+#1334 cari aç (016[kök]): Şahin Özkan
+#1335 cari hareketi (016[kök]): Emine Öz debt 1691.77
+#1336 Kasa (016[kök]): out 2269.03
+#1337 cari aç (016[kök]): Ilgın Yıldırım
+#1338 cekOde havalesi (016[kök]): Mustafa Özdemir 821.02 → İş Bankası · Hesap 5
+#1339 ad değiştir: 049[c156] · Resmi Şirket → "Mavi Gıda"
+#1340 cari hareketi (016[kök]): Mustafa Özdemir in 3122.59
+#1341 cari hareketi (016[kök]): Şahin Özkan credit 2912.86
+#1342 Banka Fişi (016[kök]): İş Bankası · Hesap 5 other_out 156.05
+#1343 ad değiştir: 049[c156] · Mavi Gıda → "Çağ/Öz: Ltd*"
+#1344 ad değiştir: 005[ebdb] · Ünal & Öztürk Hukuk → "Mavi Gıda"
+#1345 001 geri yükle (yeniden açılışta) ← destekofis-016-2026-10-10T08-30-38-285Z-manuel.sqlite (manuel)
+#1346 geri yükle: 005[ebdb] · Mavi Gıda ← destekofis-005-2026-10-10T08-31-12-036Z-manuel.sqlite (manuel)
+#1347 YANLIŞ şirket hesabına transfer: seçili 016[kök], alıcı 002[d1c5]
+#1348 geri yükle: 002[d1c5] · Gayri Resmi ← destekofis-002-2026-10-10T08-31-06-547Z-geri-yukleme-oncesi-002.sqlite (geri-yukleme-oncesi)
+#1349 geri yükle: 049[c156] · Çağ/Öz: Ltd* ← destekofis-049-2026-10-10T08-30-46-755Z-manuel.sqlite (manuel)
+#1350 Kasa (016[kök]): out 1166.03
+#1351 cari hareketi (016[kök]): Tuğba Koç in 261.92
+#1352 cari aç (016[kök]): Ümit Yılmaz
+#1353 Kasa (016[kök]): in 4747.36
+#1354 geri yükle: 002[d1c5] · Gayri Resmi ← destekofis-002-2026-10-10T08-31-12-036Z-manuel.sqlite (manuel)
+#1355 havale (016[kök]): Tülay Aydın out 4457.61 → Yapı Kredi · Hesap 1147
+#1356 cari aç (016[kök]): Ömer Özkan
+#1357 cari hareketi (016[kök]): Tülay Aydın credit 4977.45
+#1358 sil: 002[d1c5] · Gayri Resmi
+#1359 cari hareketi (016[kök]): Tülay Aydın in 4928.53
+#1360 seç: 058[bf76] · Gayri Resmi
+#1361 seç: 058[bf76] · Gayri Resmi
+#1362 Kasa (058[bf76]): in 1207.32
+#1363 seç: 049[c156] · Çağ/Öz: Ltd*
+#1364 cari aç (049[c156]): Ece Kurt
+#1365 Kasa (049[c156]): in 2131.29
+#1366 banka hesabı aç (049[c156]): Ziraat Bankası açılış 5848.90
+#1367 şirket aç: kod "034" ad "Işık Turizm" → 034[e92b]
+#1368 kod değiştir: 034[e92b] · Işık Turizm → 048
+#1369 Banka Fişi (049[c156]): Ziraat Bankası · Hesap 1366 other_in 2341.19
+#1370 kod değiştir: 049[c156] · Çağ/Öz: Ltd* → 040
+#1371 yedek (yalnız 058[bf76] · Gayri Resmi)
+#1372 Banka Fişi (040[c156]): Ziraat Bankası · Hesap 1366 fee bsmv_incl 733.05
+#1373 şirket aç: kod "009" ad "Ağaoğlu Yapı?" → 009[8245]
+#1374 havale (040[c156]): Ece Kurt out 3873.70 → Ziraat Bankası · Hesap 1366 (tek hesap, seçimsiz)
+#1375 kod değiştir: 016[kök] · MAVİ GIDA → 026
+#1376 cari hareketi (040[c156]): Ece Kurt debt 3535.12
+#1377 seç: 026[kök] · MAVİ GIDA
+#1378 cari hareketi (026[kök]): Ümit Yılmaz debt 379.15
+#1379 geri yükle: 005[ebdb] · Mavi Gıda ← destekofis-005-2026-10-10T08-30-59-971Z-manuel.sqlite (manuel)
+#1380 YANLIŞ şirket Banka Fişi: seçili 026[kök], hesap 005[ebdb]
+#1381 yedek (yalnız 009[8245] · Ağaoğlu Yapı?)
+#1382 cari hareketi (026[kök]): Nazlı Kılıç in 3170.15
+#1383 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-30-28-616Z-manuel.sqlite (manuel)
+#1384 cari aç (026[kök]): İbrahim Akgül
+#1385 sunucuyu yeniden başlat
+#1386 yedek (yalnız 009[8245] · Ağaoğlu Yapı?)
+#1387 cari hareketi (026[kök]): Yusuf Özkan credit 1931.16
+#1388 cari aç (026[kök]): Gökhan Şimşek
+#1389 yedek (yalnız 005[ebdb] · Mavi Gıda)
+#1390 cari aç (026[kök]): Ahmet Bozkurt
+#1391 seç: 026[kök] · MAVİ GIDA
+#1392 sil: 009[8245] · Ağaoğlu Yapı? (yanlış onay)
+#1393 geri yükle: 005[ebdb] · Mavi Gıda ← destekofis-005-2026-10-10T08-30-49-133Z-manuel.sqlite (manuel)
+#1394 sil: 058[bf76] · Gayri Resmi
+#1395 geri yükle: 040[c156] · Çağ/Öz: Ltd* ← destekofis-049-2026-10-10T08-31-08-589Z-manuel.sqlite (manuel)
+#1396 kod değiştir: 040[c156] · Çağ/Öz: Ltd* → 004
+#1397 sunucuyu yeniden başlat
+#1398 YANLIŞ şirket hesabına kayit havalesi: seçili 026[kök], hesap 005[ebdb]
+#1399 seç: 005[ebdb] · Mavi Gıda
+#1400 cari aç (005[ebdb]): Hatice Aydın
+#1401 Kasa (005[ebdb]): in 4187.51
+#1402 YANLIŞ şirket Banka Fişi: seçili 005[ebdb], hesap 026[kök]
+#1403 banka hesabı aç (005[ebdb]): İş Bankası açılış 18842.00
+#1404 ad değiştir: 026[kök] · MAVİ GIDA → "Doğu "Batı" Lojistik"
+#1405 cari aç (005[ebdb]): Zehra Kaya
+#1406 havale (005[ebdb]): Hatice Aydın out 982.30 → İş Bankası · Hesap 1403
+#1407 Banka Fişi (005[ebdb]): İş Bankası · Hesap 1228 fee bsmv_incl 4083.32
+#1408 yedek (yalnız 009[8245] · Ağaoğlu Yapı?)
+#1409 sil: 005[ebdb] · Mavi Gıda
+#1410 seç: 026[kök] · Doğu "Batı" Lojistik
+#1411 cari hareketi (026[kök]): Gökhan Şimşek debt 1969.20
+#1412 cari hareketi (026[kök]): Gökhan Şimşek out 114.31
+#1413 cari hareketi (026[kök]): Mehmet Çelik credit 2209.18
+#1414 seç: 009[8245] · Ağaoğlu Yapı?
+#1415 banka hesabı aç (009[8245]): Ziraat Bankası açılış 6588.70
+#1416 seç: 004[c156] · Çağ/Öz: Ltd*
+#1417 geri yükle: 004[c156] · Çağ/Öz: Ltd* ← destekofis-049-2026-10-10T08-31-08-589Z-manuel.sqlite (manuel)
+#1418 ad değiştir: 009[8245] · Ağaoğlu Yapı? → "Işık Turizm"
+#1419 YANLIŞ geri yükleme: 004[c156] yedeği destekofis-049-2026-10-10T08-31-08-589Z-manuel.sqlite → 009[8245]
+#1420 cari aç (004[c156]): Kübra Yıldız
+#1421 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-016-2026-10-10T08-31-12-855Z-sifirlama-oncesi-016.sqlite → 004[c156]
+#1422 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-30-03-989Z-manuel.sqlite (manuel)
+#1423 banka hesabı aç (004[c156]): Ziraat Bankası açılış 2773.85
+#1424 banka hesabı aç (004[c156]): Ziraat Bankası açılış 13064.16
+#1425 Banka Fişi (004[c156]): Ziraat Bankası · Hesap 1423 other_out 3225.64
+#1426 cari hareketi (004[c156]): Kübra Yıldız in 3637.10
+#1427 şirket aç: kod "(sıradaki)" ad "Doğu "Batı" Lojistik" → 001[6cac]
+#1428 cari aç (004[c156]): Emine Aydın
+#1429 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-001-2026-10-10T08-30-12-097Z-geri-yukleme-oncesi-001.sqlite → 001[6cac]
+#1430 001 geri yükle (yeniden açılışta) ← destekofis-016-2026-10-10T08-30-46-394Z-manuel.sqlite (manuel)
+#1431 geri yükle: 004[c156] · Çağ/Öz: Ltd* ← destekofis-049-2026-10-10T08-30-42-819Z-manuel.sqlite (manuel)
+#1432 ad değiştir: 001[6cac] · Doğu "Batı" Lojistik → "Ünal & Öztürk Hukuk"
+#1433 geri yükle: 004[c156] · Çağ/Öz: Ltd* ← destekofis-049-2026-10-10T08-30-45-193Z-manuel.sqlite (manuel)
+#1434 ad değiştir: 009[8245] · Işık Turizm → "   "
+#1435 banka hesabı aç (004[c156]): İş Bankası açılış 11703.91
+#1436 cari aç (004[c156]): Sevgi Öz
+#1437 şirket aç: kod "(sıradaki)" ad "Ağaoğlu Yapı?" → 002[f4a6]
+#1438 ad değiştir: 009[8245] · Işık Turizm → "Çağ/Öz: Ltd*"
+#1439 ad değiştir: 001[6cac] · Ünal & Öztürk Hukuk → "Gayri Resmi"
+#1440 seç: 026[kök] · Doğu "Batı" Lojistik
+#1441 cari hareketi (026[kök]): Ayşe Koç in 761.99
+#1442 yedek (Tüm Şirketler)
+#1443 cari hareketi (026[kök]): Ayşe Koç in 4517.91
+#1444 seç: 004[c156] · Çağ/Öz: Ltd*
+#1445 cekOde havalesi (004[c156]): Sevgi Öz 1166.76 → İş Bankası · Hesap 1435
+#1446 yedek (yalnız 026[kök] · Doğu "Batı" Lojistik)
+#1447 banka hesabı aç (004[c156]): Yapı Kredi açılış 18256.85
+#1448 cari aç (004[c156]): Emine Demir
+#1449 cari hareketi (004[c156]): Emine Demir debt 136.49
+#1450 sıfırla (movements): 004[c156] · Çağ/Öz: Ltd*
+#1451 cari hareketi (004[c156]): Sevgi Öz debt 1768.83
+#1452 Kasa (004[c156]): in 1148.78
+#1453 yedek (yalnız 004[c156] · Çağ/Öz: Ltd*)
+#1454 geri yükle: 004[c156] · Çağ/Öz: Ltd* ← destekofis-004-2026-10-10T08-31-50-807Z-geri-yukleme-oncesi-004.sqlite (geri-yukleme-oncesi)
+#1455 cari aç (004[c156]): Hatice Yıldırım
+#1456 yedek (yalnız 001[6cac] · Gayri Resmi)
+#1457 sınırda şirket aç: kod "026" → 409 beklenir
+#1458 cari hareketi (004[c156]): Hatice Yıldırım debt 3571.15
+#1459 sil: 048[e92b] · Işık Turizm
+#1460 şirket aç: kod "(sıradaki)" ad "Gayri Resmi" → 003[c0c5]
+#1461 banka hesabı aç (004[c156]): İş Bankası açılış 14814.96
+#1462 stok havalesi (004[c156]): Hatice Yıldırım 1402.77 → İş Bankası · Hesap 1461
+#1463 sil: 002[f4a6] · Ağaoğlu Yapı?
+#1464 banka hesabı aç (004[c156]): Ziraat Bankası açılış 8558.75
+#1465 cari hareketi (004[c156]): Hatice Yıldırım out 1631.06
+#1466 kod değiştir: 004[c156] · Çağ/Öz: Ltd* → 024
+#1467 YANLIŞ şirket Banka Fişi: seçili 024[c156], hesap 009[8245]
+#1468 Banka Fişi (024[c156]): Ziraat Bankası · Hesap 1464 other_in 3001.65
+#1469 YANLIŞ şirket Banka Fişi: seçili 024[c156], hesap 009[8245]
+#1470 Banka Fişi (024[c156]): İş Bankası · Hesap 1461 other_out 2779.89
+#1471 cari hareketi (024[c156]): Hatice Yıldırım credit 2955.02
+#1472 kayit havalesi (024[c156]): Hatice Yıldırım 141.57 → Ziraat Bankası · Hesap 1464
+#1473 transfer (024[c156]): İş Bankası · Hesap 1461 → Ziraat Bankası · Hesap 1464 3145.04
+#1474 alis havalesi (024[c156]): Hatice Yıldırım 1659.44 → Ziraat Bankası · Hesap 1464
+#1475 cari hareketi (024[c156]): Hatice Yıldırım in 2925.24
+#1476 HESAPSIZ havale (024[c156]): Hatice Yıldırım in 3916.54
+#1477 Banka Fişi (024[c156]): İş Bankası · Hesap 1461 other_in 4500.47
+#1478 ad değiştir: 026[kök] · Doğu "Batı" Lojistik → "Doğu "Batı" Lojistik"
+#1479 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-29-25-864Z-manuel.sqlite (manuel)
+#1480 sil: 001[6cac] · Gayri Resmi
+#1481 cari hareketi (024[c156]): Hatice Yıldırım credit 2806.54
+#1482 Kasa (024[c156]): in 2517.83
+#1483 cari hareketi (024[c156]): Hatice Yıldırım debt 2358.42
+#1484 sunucuyu yeniden başlat
+#1485 banka hesabı aç (024[c156]): Ziraat Bankası açılış 11955.61
+#1486 YANLIŞ şirket hesabına stok havalesi: seçili 024[c156], hesap 026[kök]
+#1487 cari aç (024[c156]): Ahmet Şimşek
+#1488 ad değiştir: 024[c156] · Çağ/Öz: Ltd* → "Iğdır Tarım|Hayvancılık"
+#1489 Kasa (024[c156]): in 4129.63
+#1490 kod değiştir: 003[c0c5] · Gayri Resmi → 008
+#1491 ad değiştir: 009[8245] · Çağ/Öz: Ltd* → "   "
+#1492 banka hesabı aç (024[c156]): İş Bankası açılış 10177.23
+#1493 transfer (024[c156]): İş Bankası · Hesap 1492 → İş Bankası · Hesap 1461 2365.14 + ücret 9.87
+#1494 cari aç (024[c156]): Mustafa Özdemir
+#1495 kod değiştir: 026[kök] · Doğu "Batı" Lojistik → 024
+#1496 cari aç (024[c156]): Ahmet Şimşek
+#1497 Kasa (024[c156]): in 4678.34
+#1498 geri yükle: 009[8245] · Çağ/Öz: Ltd* ← destekofis-009-2026-10-10T08-31-37-035Z-manuel.sqlite (manuel)
+#1499 sil: 009[8245] · Çağ/Öz: Ltd*
+#1500 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-026-2026-10-10T08-32-05-148Z-geri-yukleme-oncesi-026.sqlite → 024[c156]
+#1501 sil: 024[c156] · Iğdır Tarım|Hayvancılık
+#1502 cari aç (026[kök]): Tülay Yıldız
+#1503 cari hareketi (026[kök]): Çağrı Şahin debt 3334.42
+#1504 şirket aç: kod "12" ad "Mavi Gıda"
+#1505 transfer (026[kök]): Ziraat Bankası · Hesap 822 → Garanti BBVA · Hesap 821 1333.01
+#1506 sil: 008[c0c5] · Gayri Resmi
+#1507 cari hareketi (026[kök]): Büşra Polat credit 3324.65
+#1508 yedek (yalnız 026[kök] · Doğu "Batı" Lojistik)
+#1509 yedek (yalnız 026[kök] · Doğu "Batı" Lojistik)
+#1510 cari aç (026[kök]): Cemile Şahin
+#1511 stok havalesi (026[kök]): Cemile Şahin 4454.98 → Garanti BBVA · Hesap 821
+#1512 cari aç (026[kök]): Uğur Yıldız
+#1513 Kasa (026[kök]): out 459.61
+#1514 yedek (yalnız 026[kök] · Doğu "Batı" Lojistik)
+#1515 şirket aç: kod "005" ad "istanbul ticaret a.ş." → 005[c2dd]
+#1516 seç: 005[c2dd] · istanbul ticaret a.ş.
+#1517 cari aç (005[c2dd]): Gülşen Demir
+#1518 sil: 005[c2dd] · istanbul ticaret a.ş.
+#1519 cari hareketi (026[kök]): Tülay Yıldız credit 608.46
+#1520 şirket aç: kod "(sıradaki)" ad "Gayri Resmi" → 001[cc7a]
+#1521 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-001-2026-10-10T08-27-16-530Z-geri-yukleme-oncesi-001.sqlite → 001[cc7a]
+#1522 sunucuyu yeniden başlat
+#1523 seç: 026[kök] · Doğu "Batı" Lojistik
+#1524 cari aç (026[kök]): Serdar Kaya
+#1525 Banka Fişi (026[kök]): Garanti BBVA · Hesap 821 other_out 2419.97
+#1526 şirket aç: kod "001" ad "istanbul ticaret a.ş."
+#1527 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-016-2026-10-10T08-30-59-971Z-manuel.sqlite → 001[cc7a] (dosya elle hedefin klasörüne kopyalandı)
+#1528 cari hareketi (026[kök]): Serdar Kaya out 2521.96
+#1529 Kasa (026[kök]): in 4705.20
+#1530 satis havalesi (026[kök]): Serdar Kaya 3741.73 → Garanti BBVA · Hesap 821
+#1531 yedek (Tüm Şirketler)
+#1532 taksit havalesi (026[kök]): Cemile Şahin 111.95 → Ziraat Bankası · Hesap 822
+#1533 seç: 026[kök] · Doğu "Batı" Lojistik
+#1534 Kasa (026[kök]): in 1074.18
+#1535 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-001-2026-10-10T08-30-12-097Z-geri-yukleme-oncesi-001.sqlite → 001[cc7a]
+#1536 cekTahsil havalesi (026[kök]): Gülşen Bozkurt 4474.68 → Garanti BBVA · Hesap 821
+#1537 seç: 001[cc7a] · Gayri Resmi
+#1538 sil: 001[cc7a] · Gayri Resmi
+#1539 yedek (yalnız 026[kök] · Doğu "Batı" Lojistik)
+#1540 Banka Fişi (026[kök]): Ziraat Bankası · Hesap 822 other_out 2704.84
+#1541 şirket aç: kod "008" ad "Nokta Ltd." → 008[1edc]
+#1542 Kasa (026[kök]): out 1593.58
+#1543 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-001-2026-10-10T08-30-15-698Z-manuel.sqlite → 008[1edc] (dosya elle hedefin klasörüne kopyalandı)
+#1544 ad değiştir: 008[1edc] · Nokta Ltd. → "   "
+#1545 cari hareketi (026[kök]): Uğur Yıldız in 2411.57
+#1546 sil: 008[1edc] · Nokta Ltd. (yanlış onay)
+#1547 yedek (yalnız 026[kök] · Doğu "Batı" Lojistik)
+#1548 Banka Fişi (026[kök]): Garanti BBVA · Hesap 821 other_out 4083.30
+#1549 yedek (yalnız 008[1edc] · Nokta Ltd.)
+#1550 sunucuyu yeniden başlat
+#1551 geri yükle: 008[1edc] · Nokta Ltd. ← destekofis-008-2026-10-10T08-32-22-440Z-manuel.sqlite (manuel)
+#1552 geri yükle: 008[1edc] · Nokta Ltd. ← destekofis-008-2026-10-10T08-32-23-096Z-geri-yukleme-oncesi-008.sqlite (geri-yukleme-oncesi)
+#1553 ad değiştir: 026[kök] · Doğu "Batı" Lojistik → "Nokta Ltd."
+#1554 cekTahsil havalesi (026[kök]): Çağrı Şahin 2902.87 → Ziraat Bankası · Hesap 822
+#1555 seç: 008[1edc] · Nokta Ltd.
+#1556 geri yükle: 008[1edc] · Nokta Ltd. ← destekofis-008-2026-10-10T08-32-23-387Z-geri-yukleme-oncesi-008.sqlite (geri-yukleme-oncesi)
+#1557 kod değiştir: 008[1edc] · Nokta Ltd. → 019
+#1558 banka hesabı aç (019[1edc]): Ziraat Bankası açılış 2254.00
+#1559 cari aç (019[1edc]): Zehra Erdoğan
+#1560 cari hareketi (019[1edc]): Zehra Erdoğan in 968.77
+#1561 şirket aç: kod "(sıradaki)" ad "Doğu "Batı" Lojistik" → 001[8b87]
+#1562 cari aç (019[1edc]): Ümit Çakır
+#1563 seç: 019[1edc] · Nokta Ltd.
+#1564 geri yükle: 019[1edc] · Nokta Ltd. ← destekofis-008-2026-10-10T08-32-24-375Z-geri-yukleme-oncesi-008.sqlite (geri-yukleme-oncesi)
+#1565 Kasa (019[1edc]): out 671.14
+#1566 şirket aç: kod "(sıradaki)" ad "ışık turizm" → 002[7f63]
+#1567 cari aç (019[1edc]): Sevgi Öz
+#1568 yedek (yalnız 001[8b87] · Doğu "Batı" Lojistik)
+#1569 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-30-02-260Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#1570 sil: 019[1edc] · Nokta Ltd.
+#1571 banka hesabı aç (026[kök]): Ziraat Bankası açılış 18639.05
+#1572 şirket aç: kod "016" ad "Iğdır Tarım|Hayvancılık" → 016[58f4]
+#1573 transfer (026[kök]): Ziraat Bankası · Hesap 1571 → Ziraat Bankası · Hesap 960 2114.26
+#1574 seç: 002[7f63] · ışık turizm
+#1575 banka hesabı aç (002[7f63]): Garanti BBVA açılış 4221.06
+#1576 cari aç (002[7f63]): Özge Yılmaz
+#1577 seç: 002[7f63] · ışık turizm
+#1578 cari aç (002[7f63]): Özge Çelik
+#1579 cari hareketi (002[7f63]): Özge Yılmaz credit 4251.23
+#1580 seç: 001[8b87] · Doğu "Batı" Lojistik
+#1581 banka hesabı aç (001[8b87]): Garanti BBVA açılış 19271.31
+#1582 cari aç (001[8b87]): Emine Bozkurt
+#1583 stok havalesi (001[8b87]): Emine Bozkurt 4486.14 → Garanti BBVA · Hesap 1581
+#1584 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-001-2026-10-10T08-29-52-796Z-geri-yukleme-oncesi-001.sqlite → 001[8b87]
+#1585 YANLIŞ şirket Banka Fişi: seçili 001[8b87], hesap 002[7f63]
+#1586 sıfırla (movements): 002[7f63] · ışık turizm
+#1587 cari hareketi (001[8b87]): Emine Bozkurt debt 28.48
+#1588 yedek (yalnız 001[8b87] · Doğu "Batı" Lojistik)
+#1589 cari hareketi (001[8b87]): Emine Bozkurt debt 4535.57
+#1590 yedek (yalnız 002[7f63] · ışık turizm)
+#1591 banka hesabı aç (001[8b87]): Ziraat Bankası açılış 7447.74
+#1592 geri yükle: 002[7f63] · ışık turizm ← destekofis-002-2026-10-10T08-32-33-008Z-manuel.sqlite (manuel)
+#1593 yedek (yalnız 026[kök] · Nokta Ltd.)
+#1594 yedek (yalnız 016[58f4] · Iğdır Tarım|Hayvancılık)
+#1595 kod değiştir: 001[8b87] · Doğu "Batı" Lojistik → 002
+#1596 geri yükle: 002[7f63] · ışık turizm ← destekofis-002-2026-10-10T08-32-33-680Z-geri-yukleme-oncesi-002.sqlite (geri-yukleme-oncesi)
+#1597 seç: 026[kök] · Nokta Ltd.
+#1598 kod değiştir: 001[8b87] · Doğu "Batı" Lojistik → 026
+#1599 havale (026[kök]): Ayşe Güneş in 101.73 → Ziraat Bankası · Hesap 1571
+#1600 YANLIŞ şirket Banka Fişi: seçili 026[kök], hesap 002[7f63]
+#1601 YANLIŞ şirket Banka Fişi: seçili 026[kök], hesap 002[7f63]
+#1602 cari aç (026[kök]): Hatice Işık
+#1603 Banka Fişi (026[kök]): Ziraat Bankası · Hesap 1571 other_in 2535.87
+#1604 şirket aç: kod "025" ad "Işık Turizm" → 025[efc5]
+#1605 cekTahsil havalesi (026[kök]): Ayşe Güneş 1922.88 → Ziraat Bankası · Hesap 960
+#1606 sil: 001[8b87] · Doğu "Batı" Lojistik
+#1607 cari aç (026[kök]): Zeynep Kara
+#1608 seç: 026[kök] · Nokta Ltd.
+#1609 Banka Fişi (026[kök]): Ziraat Bankası · Hesap 1571 other_out 3531.61
+#1610 geri yükle: 002[7f63] · ışık turizm ← destekofis-002-2026-10-10T08-32-32-030Z-sifirlama-oncesi-002.sqlite (sifirlama-oncesi)
+#1611 YANLIŞ şirket Banka Fişi: seçili 026[kök], hesap 002[7f63]
+#1612 yedek (yalnız 025[efc5] · Işık Turizm)
+#1613 yedek (yalnız 025[efc5] · Işık Turizm)
+#1614 Kasa (026[kök]): in 3810.54
+#1615 cari hareketi (026[kök]): Ayşe Güneş debt 3897.76
+#1616 yedek (yalnız 026[kök] · Nokta Ltd.)
+#1617 cari hareketi (026[kök]): Ayşe Güneş in 126.43
+#1618 yedek (Tüm Şirketler)
+#1619 cari aç (026[kök]): Çağrı Işık
+#1620 havale (026[kök]): Çağrı Işık in 4207.75 → Ziraat Bankası · Hesap 960
+#1621 şirket aç: kod "013" ad "Eğitim Kurumları <Merkez>" → 013[0b10]
+#1622 cari hareketi (026[kök]): Ayşe Güneş debt 4713.23
+#1623 Kasa (026[kök]): out 4450.64
+#1624 alis havalesi (026[kök]): Zeynep Kara 1329.56 → Ziraat Bankası · Hesap 1571
+#1625 yedek (Tüm Şirketler)
+#1626 havale (026[kök]): Zeynep Kara in 4764.31 → Ziraat Bankası · Hesap 1571
+#1627 yedek (yalnız 026[kök] · Nokta Ltd.)
+#1628 seç: 026[kök] · Nokta Ltd.
+#1629 cari aç (026[kök]): Gökhan Kılıç
+#1630 yedek (yalnız 002[7f63] · ışık turizm)
+#1631 cari aç (026[kök]): İsmail Erdoğan
+#1632 cari aç (026[kök]): Hüseyin Şahin
+#1633 seç: 026[kök] · Nokta Ltd.
+#1634 cari hareketi (026[kök]): Hatice Işık debt 2749.83
+#1635 yedek (yalnız 025[efc5] · Işık Turizm)
+#1636 şirket aç: kod "(sıradaki)" ad "Doğu "Batı" Lojistik" → 001[5be0]
+#1637 kod değiştir: 016[58f4] · Iğdır Tarım|Hayvancılık → 057
+#1638 cari hareketi (026[kök]): Hüseyin Şahin debt 2487.48
+#1639 yedek (yalnız 013[0b10] · Eğitim Kurumları <Merkez>)
+#1640 001'i sil (reddedilmeli)
+#1641 Kasa (026[kök]): out 1631.62
+#1642 havale (026[kök]): Hüseyin Şahin in 2789.03 → Ziraat Bankası · Hesap 960
+#1643 seç: 013[0b10] · Eğitim Kurumları <Merkez>
+#1644 banka hesabı aç (013[0b10]): Yapı Kredi açılış 12367.96
+#1645 cari aç (013[0b10]): Murat Şahin
+#1646 cari hareketi (013[0b10]): Murat Şahin in 4141.89
+#1647 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-30-30-216Z-sifirlama-oncesi-001.sqlite (sifirlama-oncesi)
+#1648 cari hareketi (013[0b10]): Murat Şahin credit 1128.27
+#1649 Kasa (013[0b10]): in 42.53
+#1650 seç: 002[7f63] · ışık turizm
+#1651 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-39-821Z-manuel.sqlite (manuel)
+#1652 cari aç (002[7f63]): Özge Öz
+#1653 ad değiştir: 001[5be0] · Doğu "Batı" Lojistik → "ışık turizm"
+#1654 yedek (yalnız 025[efc5] · Işık Turizm)
+#1655 havale (002[7f63]): Özge Çelik in 1234.79 → Garanti BBVA · Hesap 1575 (tek hesap, seçimsiz)
+#1656 cari hareketi (002[7f63]): Özge Öz in 4139.02
+#1657 yedek (yalnız 002[7f63] · ışık turizm)
+#1658 Kasa (002[7f63]): out 3115.17
+#1659 banka hesabı aç (002[7f63]): Garanti BBVA açılış 15211.52
+#1660 YANLIŞ şirket hesabına havale: seçili 002[7f63], hesap 026[kök]
+#1661 Banka Fişi (002[7f63]): Garanti BBVA · Hesap 1659 fee bsmv_incl 1870.89
+#1662 havale (002[7f63]): Özge Öz in 3679.91 → Garanti BBVA · Hesap 1659
+#1663 ad değiştir: 013[0b10] · Eğitim Kurumları <Merkez> → "Nokta Ltd."
+#1664 Banka Fişi (002[7f63]): Garanti BBVA · Hesap 1659 other_out 4645.20
+#1665 cari hareketi (002[7f63]): Özge Yılmaz in 956.10
+#1666 YANLIŞ geri yükleme: 013[0b10] yedeği destekofis-013-2026-10-10T08-32-42-199Z-manuel.sqlite → 002[7f63] (dosya elle hedefin klasörüne kopyalandı)
+#1667 sil: 002[7f63] · ışık turizm
+#1668 stok havalesi (026[kök]): Hatice Işık 2790.29 → Ziraat Bankası · Hesap 960
+#1669 ad değiştir: 001[5be0] · ışık turizm → "Doğu "Batı" Lojistik"
+#1670 seç: 013[0b10] · Nokta Ltd.
+#1671 seç: 013[0b10] · Nokta Ltd.
+#1672 cari aç (013[0b10]): Ali Güneş
+#1673 kod değiştir: 057[58f4] · Iğdır Tarım|Hayvancılık → 015
+#1674 001 geri yükle (yeniden açılışta) ← destekofis-016-2026-10-10T08-31-03-318Z-geri-yukleme-oncesi-016.sqlite (geri-yukleme-oncesi)
+#1675 cari aç (013[0b10]): Işıl Kurt
+#1676 yedek (yalnız 025[efc5] · Işık Turizm)
+#1677 yedek (yalnız 026[kök] · Nokta Ltd.)
+#1678 seç: 013[0b10] · Nokta Ltd.
+#1679 cari aç (013[0b10]): Fatma Kurt
+#1680 şirket aç: kod "(sıradaki)" ad "Ünal & Öztürk Hukuk" → 002[4a77]
+#1681 sınırda şirket aç: kod "(sıradaki)" → 409 beklenir
+#1682 cari aç (013[0b10]): Serdar Ağaoğlu
+#1683 cari aç (013[0b10]): Özge Yıldız
+#1684 kod değiştir: 002[4a77] · Ünal & Öztürk Hukuk → 009
+#1685 cari hareketi (013[0b10]): Fatma Kurt in 586.08
+#1686 geri yükle: 015[58f4] · Iğdır Tarım|Hayvancılık ← destekofis-016-2026-10-10T08-32-34-239Z-manuel.sqlite (manuel)
+#1687 cari aç (013[0b10]): Zehra Öz
+#1688 taksit havalesi (013[0b10]): Özge Yıldız 4552.73 → Yapı Kredi · Hesap 1644
+#1689 banka hesabı aç (013[0b10]): Ziraat Bankası açılış 4825.60
+#1690 banka hesabı aç (013[0b10]): Ziraat Bankası açılış 13406.80
+#1691 cari aç (013[0b10]): Serdar Kaya
+#1692 havale (013[0b10]): Murat Şahin out 4090.62 → Yapı Kredi · Hesap 1644
+#1693 kod değiştir: 009[4a77] · Ünal & Öztürk Hukuk → 025
+#1694 sil: 001[5be0] · Doğu "Batı" Lojistik
+#1695 Banka Fişi (013[0b10]): Ziraat Bankası · Hesap 1689 fee none 1277.49
+#1696 seç: 009[4a77] · Ünal & Öztürk Hukuk
+#1697 banka hesabı aç (009[4a77]): Garanti BBVA açılış 18964.63
+#1698 cari aç (009[4a77]): Hasan Koç
+#1699 ad değiştir: 015[58f4] · Iğdır Tarım|Hayvancılık → "Çağ/Öz: Ltd*"
+#1700 yedek (yalnız 013[0b10] · Nokta Ltd.)
+#1701 şirket aç: kod "036" ad "Eğitim Kurumları <Merkez>" → 036[2b12]
+#1702 sil: 015[58f4] · Çağ/Öz: Ltd*
+#1703 kod değiştir: 025[efc5] · Işık Turizm → 031
+#1704 Banka Fişi (009[4a77]): Garanti BBVA · Hesap 1697 other_out 1352.67
+#1705 YANLIŞ geri yükleme: 026[kök] yedeği destekofis-016-2026-10-10T08-30-37-726Z-manuel.sqlite → 013[0b10]
+#1706 geri yükle: 031[efc5] · Işık Turizm ← destekofis-025-2026-10-10T08-32-40-256Z-manuel.sqlite (manuel)
+#1707 şirket aç: kod "008" ad "Ünal & Öztürk Hukuk" → 008[185f]
+#1708 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-30-15-698Z-manuel.sqlite (manuel)
+#1709 cari hareketi (009[4a77]): Hasan Koç credit 2464.23
+#1710 yedek (yalnız 026[kök] · Nokta Ltd.)
+#1711 havale (009[4a77]): Hasan Koç out 4839.35 → Garanti BBVA · Hesap 1697
+#1712 sil: 009[4a77] · Ünal & Öztürk Hukuk
+#1713 cari aç (026[kök]): İsmail Kurt
+#1714 seç: 031[efc5] · Işık Turizm
+#1715 kod değiştir: 031[efc5] · Işık Turizm → 025
+#1716 cari aç (025[efc5]): Oğuz Yılmaz
+#1717 sil: 008[185f] · Ünal & Öztürk Hukuk
+#1718 cari aç (025[efc5]): Emine Kara
+#1719 yedek (yalnız 013[0b10] · Nokta Ltd.)
+#1720 kod değiştir: 026[kök] · Nokta Ltd. → 055
+#1721 banka hesabı aç (025[efc5]): İş Bankası açılış 3078.86
+#1722 Kasa (025[efc5]): out 860.86
+#1723 yedek (Tüm Şirketler)
+#1724 001 geri yükle (yeniden açılışta) ← destekofis-001-2026-10-10T08-29-42-543Z-geri-yukleme-oncesi-001.sqlite (geri-yukleme-oncesi)
+#1725 cari hareketi (025[efc5]): Emine Kara in 1854.41
+#1726 cekTahsil havalesi (025[efc5]): Emine Kara 396.20 → İş Bankası · Hesap 1721
+#1727 kod değiştir: 055[kök] · Nokta Ltd. → 7a7
+#1728 cari aç (025[efc5]): Şahin Demir
+#1729 cari aç (025[efc5]): Zehra Şimşek
+#1730 cari aç (025[efc5]): Tülay Aydın
+#1731 Banka Fişi (025[efc5]): İş Bankası · Hesap 1721 other_out 889.24
+#1732 stok havalesi (025[efc5]): Şahin Demir 1045.73 → İş Bankası · Hesap 1721
+#1733 Kasa (025[efc5]): in 4140.89
+#1734 seç: 013[0b10] · Nokta Ltd.
+#1735 cari hareketi (013[0b10]): Ali Güneş credit 467.90
+#1736 cari aç (013[0b10]): Zeynep Kaya
+#1737 seç: 055[kök] · Nokta Ltd.
+#1738 kod değiştir: 036[2b12] · Eğitim Kurumları <Merkez> → 054
+#1739 sil: 054[2b12] · Eğitim Kurumları <Merkez> (yanlış onay)
+#1740 ad değiştir: 013[0b10] · Nokta Ltd. → "Çağ/Öz: Ltd*"
+#1741 cari aç (055[kök]): Uğur Yıldırım
+#1742 banka hesabı aç (055[kök]): Ziraat Bankası açılış 1384.51
+#1743 cari hareketi (055[kök]): Cemile Yılmaz in 2623.64
+#1744 havale (055[kök]): Çağrı Şahin in 4240.90 → Garanti BBVA · Hesap 821
+#1745 havale (055[kök]): İsmail Aydın in 3880.52 → Ziraat Bankası · Hesap 1742
+#1746 ad değiştir: 025[efc5] · Işık Turizm → "Doğu "Batı" Lojistik"
+#1747 cari aç (055[kök]): Yusuf Arslan
+#1748 sıfırla (movements): 054[2b12] · Eğitim Kurumları <Merkez>
+#1749 banka hesabı aç (055[kök]): Yapı Kredi açılış 7733.77
+#1750 banka hesabı aç (055[kök]): Garanti BBVA açılış 4739.57
+#1751 geri yükle: 025[efc5] · Doğu "Batı" Lojistik ← destekofis-025-2026-10-10T08-33-09-843Z-manuel.sqlite (manuel)
+#1752 geri yükle: 025[efc5] · Doğu "Batı" Lojistik ← destekofis-025-2026-10-10T08-33-17-904Z-geri-yukleme-oncesi-025.sqlite (geri-yukleme-oncesi)
+#1753 taksit havalesi (055[kök]): Fatma Şimşek 4367.74 → Ziraat Bankası · Hesap 1742
+#1754 ad değiştir: 013[0b10] · Çağ/Öz: Ltd* → "Iğdır Tarım|Hayvancılık"
+#1755 cari hareketi (055[kök]): Yağmur Şimşek debt 4907.88
+#1756 geri yükle: 025[efc5] · Doğu "Batı" Lojistik ← destekofis-025-2026-10-10T08-32-50-943Z-manuel.sqlite (manuel)
+#1757 cari hareketi (055[kök]): Nazlı Özkan credit 3894.26
+#1758 kod değiştir: 013[0b10] · Iğdır Tarım|Hayvancılık → 013
+#1759 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-39-821Z-manuel.sqlite (manuel)
+#1760 Ters Kaydet (055[kök]): ev-0mv24z7ww0000-223d10a3-3dc9-4723
+#1761 YANLIŞ şirket Banka Fişi: seçili 055[kök], hesap 013[0b10]
+#1762 Banka Fişi (055[kök]): Ziraat Bankası · Hesap 960 other_out 651.81
+#1763 yedek (Tüm Şirketler)
+#1764 cari aç (055[kök]): İbrahim Kurt
+#1765 cari hareketi (055[kök]): Ece Kara out 4171.78
+#1766 Kasa (055[kök]): out 3623.51
+#1767 cari aç (055[kök]): Çağrı Erdoğan
+#1768 cekTahsil havalesi (055[kök]): İbrahim Kurt 4063.07 → Ziraat Bankası · Hesap 1571
+#1769 havale (055[kök]): Ayşe Güneş in 2286.36 → Ziraat Bankası · Hesap 1571
+#1770 seç: 054[2b12] · Eğitim Kurumları <Merkez>
+#1771 sıfırla (movements): 055[kök] · Nokta Ltd.
+#1772 şirket aç: kod "054" ad "Eğitim Kurumları <Merkez>"
+#1773 ad değiştir: 054[2b12] · Eğitim Kurumları <Merkez> → "Mavi Gıda"
+#1774 banka hesabı aç (054[2b12]): İş Bankası açılış 18765.14
+#1775 sıfırla (movements): 054[2b12] · Mavi Gıda
+#1776 cari aç (054[2b12]): Işıl Yıldız
+#1777 Banka Fişi (054[2b12]): İş Bankası · Hesap 1774 other_out 576.62
+#1778 cari hareketi (054[2b12]): Işıl Yıldız credit 4544.97
+#1779 şirket aç: kod "(sıradaki)" ad "Ağaoğlu Yapı?" → 001[7397]
+#1780 cari hareketi (054[2b12]): Işıl Yıldız in 2614.57
+#1781 banka hesabı aç (054[2b12]): Garanti BBVA açılış 1658.96
+#1782 geri yükle: 054[2b12] · Mavi Gıda ← destekofis-054-2026-10-10T08-33-24-778Z-sifirlama-oncesi-054.sqlite (sifirlama-oncesi)
+#1783 banka hesabı aç (054[2b12]): Ziraat Bankası açılış 1876.27
+#1784 YANLIŞ geri yükleme: 055[kök] yedeği destekofis-026-2026-10-10T08-32-49-884Z-geri-yukleme-oncesi-026.sqlite → 054[2b12]
+#1785 ad değiştir: 013[0b10] · Iğdır Tarım|Hayvancılık → "Eğitim Kurumları <Merkez>"
+#1786 sunucuyu yeniden başlat
+#1787 cari aç (054[2b12]): Şahin Şahin
+#1788 ad değiştir: 025[efc5] · Doğu "Batı" Lojistik → "Gayri Resmi"
+#1789 şirket aç: kod "054" ad "Eğitim Kurumları <Merkez>"
+#1790 geri yükle: 025[efc5] · Gayri Resmi ← destekofis-025-2026-10-10T08-32-45-012Z-manuel.sqlite (manuel)
+#1791 geri yükle: 025[efc5] · Gayri Resmi ← destekofis-025-2026-10-10T08-33-18-256Z-geri-yukleme-oncesi-025.sqlite (geri-yukleme-oncesi)
+#1792 banka hesabı aç (054[2b12]): İş Bankası açılış 16038.65
+#1793 Kasa (054[2b12]): out 2367.46
+#1794 Kasa (054[2b12]): out 4050.02
+#1795 cari hareketi (054[2b12]): Şahin Şahin in 226.38
+#1796 cari hareketi (054[2b12]): Şahin Şahin out 2831.11
+#1797 Banka Fişi (054[2b12]): İş Bankası · Hesap 1792 fee none 973.95
+#1798 cari aç (054[2b12]): Ali Çetin
+#1799 cari aç (054[2b12]): Şükrü Polat
+#1800 001 geri yükle (yeniden açılışta) ← destekofis-016-2026-10-10T08-30-37-726Z-manuel.sqlite (manuel)
+#1801 cari hareketi (054[2b12]): Şükrü Polat out 4709.94
+#1802 Kasa (054[2b12]): in 2296.99
+#1803 geri yükle: 025[efc5] · Gayri Resmi ← destekofis-025-2026-10-10T08-33-29-740Z-geri-yukleme-oncesi-025.sqlite (geri-yukleme-oncesi)
+#1804 geri yükle: 054[2b12] · Mavi Gıda ← destekofis-054-2026-10-10T08-33-21-567Z-manuel.sqlite (manuel)
+#1805 cari aç (054[2b12]): Fatma Aslan
+#1806 cari hareketi (054[2b12]): Fatma Aslan debt 2320.60
+#1807 YANLIŞ geri yükleme: 055[kök] yedeği destekofis-055-2026-10-10T08-33-20-431Z-geri-yukleme-oncesi-055.sqlite → 025[efc5]
+#1808 kod değiştir: 013[0b10] · Eğitim Kurumları <Merkez> → 047
+#1809 cari aç (054[2b12]): Serdar Uğurlu
+#1810 cari hareketi (054[2b12]): Serdar Uğurlu out 2137.84
+#1811 Kasa (054[2b12]): in 3954.55
+#1812 yedek (yalnız 025[efc5] · Gayri Resmi)
+#1813 sıfırla (all): 025[efc5] · Gayri Resmi
+#1814 YANLIŞ şirket Banka Fişi: seçili 054[2b12], hesap 055[kök]
+#1815 seç: 054[2b12] · Mavi Gıda
+#1816 banka hesabı aç (054[2b12]): Ziraat Bankası açılış 417.12
+#1817 YANLIŞ geri yükleme: 055[kök] yedeği destekofis-001-2026-10-10T08-30-25-185Z-manuel.sqlite → 054[2b12]
+#1818 havale (054[2b12]): Fatma Aslan in 4903.67 → Ziraat Bankası · Hesap 1816
+#1819 kod değiştir: 001[7397] · Ağaoğlu Yapı? → 053
+#1820 geri yükle: 025[efc5] · Gayri Resmi ← destekofis-025-2026-10-10T08-32-42-199Z-manuel.sqlite (manuel)
+#1821 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-57-118Z-manuel.sqlite (manuel)
+#1822 şirket aç: kod "(sıradaki)" ad "Ünal & Öztürk Hukuk" → 001[45a8]
+#1823 sınırda şirket aç: kod "(sıradaki)" → 409 beklenir
+#1824 Banka Fişi (054[2b12]): Ziraat Bankası · Hesap 1816 other_out 1436.29
+#1825 sıfırla (all): 055[kök] · Nokta Ltd.
+#1826 seç: 054[2b12] · Mavi Gıda
+#1827 sınırda şirket aç: kod "002" → 409 beklenir
+#1828 sil: 047[0b10] · Eğitim Kurumları <Merkez>
+#1829 yedek (yalnız 001[45a8] · Ünal & Öztürk Hukuk)
+#1830 YANLIŞ geri yükleme: 025[efc5] yedeği destekofis-025-2026-10-10T08-33-29-385Z-geri-yukleme-oncesi-025.sqlite → 001[45a8] (dosya elle hedefin klasörüne kopyalandı)
+#1831 Banka Fişi (054[2b12]): Ziraat Bankası · Hesap 1816 fee bsmv_incl 562.06
+#1832 şirket aç: kod "010" ad "ışık turizm" → 010[aa59]
+#1833 sunucuyu yeniden başlat
+#1834 cari hareketi (054[2b12]): Serdar Uğurlu debt 2177.98
+#1835 sınırda şirket aç: kod "(sıradaki)" → 409 beklenir
+#1836 cari hareketi (054[2b12]): Fatma Aslan in 3625.65
+#1837 geri yükle: 025[efc5] · Gayri Resmi ← destekofis-025-2026-10-10T08-33-36-486Z-sifirlama-oncesi-025.sqlite (sifirlama-oncesi)
+#1838 cari hareketi (054[2b12]): Serdar Uğurlu debt 4531.93
+#1839 Banka Fişi (054[2b12]): Ziraat Bankası · Hesap 1816 other_out 2187.85
+#1840 cari aç (054[2b12]): Özge Şahin
+#1841 cari hareketi (054[2b12]): Özge Şahin out 3125.67
+#1842 YANLIŞ geri yükleme: 025[efc5] yedeği destekofis-025-2026-10-10T08-33-17-904Z-geri-yukleme-oncesi-025.sqlite → 010[aa59]
+#1843 Ters Kaydet (054[2b12]): ev-0mv250oyt0000-2e1aa92f-c878-472a
+#1844 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-13-317Z-manuel.sqlite (manuel)
+#1845 cari hareketi (054[2b12]): Fatma Aslan out 2085.84
+#1846 havale (054[2b12]): Fatma Aslan in 1965.57 → Ziraat Bankası · Hesap 1816
+#1847 seç: 053[7397] · Ağaoğlu Yapı?
+#1848 seç: 053[7397] · Ağaoğlu Yapı?
+#1849 seç: 054[2b12] · Mavi Gıda
+#1850 cari aç (054[2b12]): Mehmet Bozkurt
+#1851 havale (054[2b12]): Serdar Uğurlu in 1367.44 → Ziraat Bankası · Hesap 1816
+#1852 Ters Kaydet (054[2b12]): ev-0mv250kzy0000-916d6d06-7153-4590
+#1853 Kasa (054[2b12]): in 2028.45
+#1854 havale (054[2b12]): Mehmet Bozkurt in 4826.61 → Ziraat Bankası · Hesap 1816
+#1855 sil: 054[2b12] · Mavi Gıda
+#1856 şirket aç: kod "054" ad "Şahin İnşaat" → 054[03b2]
+#1857 stok havalesi (055[kök]): Büşra Polat 3206.97 → Ziraat Bankası · Hesap 822
+#1858 yedek (yalnız 055[kök] · Nokta Ltd.)
+#1859 geri yükle: 025[efc5] · Gayri Resmi ← destekofis-025-2026-10-10T08-32-45-012Z-manuel.sqlite (manuel)
+#1860 ad değiştir: 010[aa59] · ışık turizm → "ışık turizm"
+#1861 transfer (055[kök]): Garanti BBVA · Hesap 821 → Ziraat Bankası · Hesap 822 2384.98 + ücret 8.00
+#1862 yedek (Tüm Şirketler)
+#1863 Kasa (055[kök]): out 4380.67
+#1864 Kasa (055[kök]): out 3510.22
+#1865 sınırda şirket aç: kod "040" → 409 beklenir
+#1866 cari hareketi (055[kök]): Cemile Yılmaz debt 2074.56
+#1867 YANLIŞ geri yükleme: 025[efc5] yedeği destekofis-025-2026-10-10T08-32-38-817Z-manuel.sqlite → 010[aa59]
+#1868 cari hareketi (055[kök]): Nazlı Özkan credit 2570.74
+#1869 YANLIŞ geri yükleme: 025[efc5] yedeği destekofis-025-2026-10-10T08-33-21-567Z-manuel.sqlite → 053[7397] (dosya elle hedefin klasörüne kopyalandı)
+#1870 seç: 025[efc5] · Gayri Resmi
+#1871 banka hesabı aç (025[efc5]): Garanti BBVA açılış 11245.28
+#1872 sil: 010[aa59] · ışık turizm
+#1873 Banka Fişi (025[efc5]): Garanti BBVA · Hesap 1871 other_out 2912.90
+#1874 yedek (yalnız 001[45a8] · Ünal & Öztürk Hukuk)
+#1875 seç: 055[kök] · Nokta Ltd.
+#1876 yedek (Tüm Şirketler)
+#1877 Banka Fişi (055[kök]): Garanti BBVA · Hesap 821 other_out 254.18
+#1878 havale (055[kök]): Büşra Polat out 2885.65 → Ziraat Bankası · Hesap 822
+#1879 seç: 053[7397] · Ağaoğlu Yapı?
+#1880 cari aç (053[7397]): Nazlı Arslan
+#1881 banka hesabı aç (053[7397]): Garanti BBVA açılış 1800.70
+#1882 Banka Fişi (053[7397]): Garanti BBVA · Hesap 1881 other_in 1782.57
+#1883 banka hesabı aç (053[7397]): İş Bankası açılış 18640.49
+#1884 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-42-884Z-manuel.sqlite (manuel)
+#1885 ad değiştir: 054[03b2] · Şahin İnşaat → "Nokta Ltd."
+#1886 Kasa (053[7397]): in 4264.16
+#1887 seç: 054[03b2] · Nokta Ltd.
+#1888 Kasa (054[03b2]): out 1680.52
+#1889 banka hesabı aç (054[03b2]): İş Bankası açılış 181.39
+#1890 cari aç (054[03b2]): Ali Çelik
+#1891 cari aç (054[03b2]): Yusuf Güneş
+#1892 cari hareketi (054[03b2]): Ali Çelik credit 996.87
+#1893 yedek (yalnız 053[7397] · Ağaoğlu Yapı?)
+#1894 cari hareketi (054[03b2]): Ali Çelik debt 3238.58
+#1895 şirket aç: kod "(sıradaki)" ad "mavi gıda" → 002[b74c]
+#1896 cari hareketi (054[03b2]): Yusuf Güneş credit 981.45
+#1897 seç: 055[kök] · Nokta Ltd.
+#1898 cari aç (055[kök]): Ümit Çakır
+#1899 cari hareketi (055[kök]): Zeynep Kara in 2627.29
+#1900 sil: 025[efc5] · Gayri Resmi
+#1901 kod değiştir: 001[45a8] · Ünal & Öztürk Hukuk → 002
+#1902 sıfırla (movements): 001[45a8] · Ünal & Öztürk Hukuk
+#1903 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-21-906Z-manuel.sqlite (manuel)
+#1904 şirket aç: kod "x" ad "Gayri Resmi"
+#1905 satis havalesi (055[kök]): Uğur Yıldız 4219.72 → Garanti BBVA · Hesap 821
+#1906 YANLIŞ geri yükleme: 055[kök] yedeği destekofis-026-2026-10-10T08-32-05-148Z-geri-yukleme-oncesi-026.sqlite → 002[b74c]
+#1907 Kasa (055[kök]): in 4068.51
+#1908 yedek (yalnız 002[b74c] · mavi gıda)
+#1909 stok havalesi (055[kök]): Tülay Yıldız 2153.15 → Garanti BBVA · Hesap 821
+#1910 cari aç (055[kök]): Nazlı Çetin
+#1911 YANLIŞ geri yükleme: 055[kök] yedeği destekofis-026-2026-10-10T08-32-13-317Z-manuel.sqlite → 002[b74c]
+#1912 transfer (055[kök]): Ziraat Bankası · Hesap 822 → Garanti BBVA · Hesap 821 1651.01
+#1913 YANLIŞ geri yükleme: 055[kök] yedeği destekofis-016-2026-10-10T08-30-49-133Z-manuel.sqlite → 001[45a8]
+#1914 Kasa (055[kök]): in 2188.48
+#1915 cari aç (055[kök]): Cemile Bozkurt
+#1916 Kasa (055[kök]): in 1017.03
+#1917 sıfırla (movements): 055[kök] · Nokta Ltd.
+#1918 001'i sil (reddedilmeli)
+#1919 havale (055[kök]): Cemile Şahin in 3903.70 → Ziraat Bankası · Hesap 822
+#1920 cari aç (055[kök]): Hatice Şahin
+#1921 cari hareketi (055[kök]): Cemile Şahin in 68.52
+#1922 cari hareketi (055[kök]): Çağrı Şahin in 4614.89
+#1923 şirket aç: kod "(sıradaki)" ad "Nokta Ltd." → 003[dcf6]
+#1924 kod değiştir: 002[b74c] · mavi gıda → 026
+#1925 cari hareketi (055[kök]): Cemile Şahin out 4662.83
+#1926 yedek (yalnız 055[kök] · Nokta Ltd.)
+#1927 Banka Fişi (055[kök]): Ziraat Bankası · Hesap 822 other_in 3362.54
+#1928 transfer (055[kök]): Ziraat Bankası · Hesap 822 → Garanti BBVA · Hesap 821 221.43
+#1929 seç: 055[kök] · Nokta Ltd.
+#1930 Kasa (055[kök]): out 4789.77
+#1931 seç: 054[03b2] · Nokta Ltd.
+#1932 sil: 054[03b2] · Nokta Ltd.
+#1933 cari hareketi (055[kök]): Cemile Yılmaz debt 4470.20
+#1934 yedek (yalnız 026[b74c] · mavi gıda)
+#1935 geri yükle: 001[45a8] · Ünal & Öztürk Hukuk ← destekofis-001-2026-10-10T08-33-56-382Z-manuel.sqlite (manuel)
+#1936 ad değiştir: 001[45a8] · Ünal & Öztürk Hukuk → "ışık turizm"
+#1937 ad değiştir: 026[b74c] · mavi gıda → "Resmi Şirket"
+#1938 taksit havalesi (055[kök]): Tülay Yıldız 2293.57 → Garanti BBVA · Hesap 821
+#1939 sıfırla (movements): 003[dcf6] · Nokta Ltd.
+#1940 yedek (yalnız 053[7397] · Ağaoğlu Yapı?)
+#1941 seç: 055[kök] · Nokta Ltd.
+#1942 taksit havalesi (055[kök]): Uğur Yıldız 3085.78 → Ziraat Bankası · Hesap 822
+#1943 cari hareketi (055[kök]): Hatice Şahin in 2298.84
+#1944 cekTahsil havalesi (055[kök]): Cemile Şahin 3291.35 → Garanti BBVA · Hesap 821
+#1945 kod değiştir: 053[7397] · Ağaoğlu Yapı? → 003
+#1946 Banka Fişi (055[kök]): Garanti BBVA · Hesap 821 other_out 3048.02
+#1947 kod değiştir: 001[45a8] · ışık turizm → 036
+#1948 yedek (yalnız 003[dcf6] · Nokta Ltd.)
+#1949 kod değiştir: 003[dcf6] · Nokta Ltd. → 055
+#1950 YANLIŞ geri yükleme: 026[b74c] yedeği destekofis-002-2026-10-10T08-34-06-737Z-manuel.sqlite → 055[kök]
+#1951 Ters Kaydet (055[kök]): ev-0mv251c4g0000-00663898-7a3f-4668
+#1952 şirket aç: kod "048" ad "Şahin İnşaat" → 048[7531]
+#1953 cari aç (055[kök]): Murat Çetin
+#1954 transfer (055[kök]): Garanti BBVA · Hesap 821 → Ziraat Bankası · Hesap 822 771.17
+#1955 havale (055[kök]): Cemile Yılmaz in 4320.02 → Garanti BBVA · Hesap 821
+#1956 Banka Fişi (055[kök]): Garanti BBVA · Hesap 821 other_in 3788.81
+#1957 cari aç (055[kök]): Kübra Erdoğan
+#1958 ad değiştir: 026[b74c] · Resmi Şirket → "ŞAHİN İNŞAAT"
+#1959 alis havalesi (055[kök]): Gülşen Bozkurt 2044.57 → Ziraat Bankası · Hesap 822
+#1960 001 geri yükle (yeniden açılışta) ← destekofis-055-2026-10-10T08-34-08-762Z-sifirlama-oncesi-055.sqlite (sifirlama-oncesi)
+#1961 yedek (Tüm Şirketler)
+#1962 seç: 036[45a8] · ışık turizm
+#1963 seç: 036[45a8] · ışık turizm
+#1964 Kasa (036[45a8]): in 2338.73
+#1965 cari aç (036[45a8]): Ahmet Çetin
+#1966 sıfırla (movements): 036[45a8] · ışık turizm
+#1967 seç: 055[kök] · Nokta Ltd.
+#1968 kod değiştir: 003[dcf6] · Nokta Ltd. → 003
+#1969 kod değiştir: 036[45a8] · ışık turizm → 027
+#1970 Ters Kaydet (055[kök]): ev-0mv24yphp0000-682532e0-e9fe-40bf (transfer)
+#1971 cari hareketi (055[kök]): Cemile Bozkurt debt 3196.32
+#1972 YANLIŞ geri yükleme: 055[kök] yedeği destekofis-016-2026-10-10T08-30-51-081Z-geri-yukleme-oncesi-016.sqlite → 003[dcf6]
+#1973 Kasa (055[kök]): in 4846.47
+#1974 yedek (yalnız 027[45a8] · ışık turizm)
+#1975 kod değiştir: 055[kök] · Nokta Ltd. → 051
+#1976 sunucuyu yeniden başlat
+#1977 cari aç (051[kök]): Nazlı Yıldırım
+#1978 yedek (yalnız 027[45a8] · ışık turizm)
+#1979 cari hareketi (051[kök]): Nazlı Yıldırım in 767.69
+#1980 geri yükle: 053[7397] · Ağaoğlu Yapı? ← destekofis-053-2026-10-10T08-33-52-560Z-manuel.sqlite (manuel)
+#1981 Banka Fişi (051[kök]): Ziraat Bankası · Hesap 822 fee bsmv_incl 3379.06
+#1982 001'i sil (reddedilmeli)
+#1983 alis havalesi (051[kök]): Cemile Yılmaz 2249.84 → Garanti BBVA · Hesap 821
+#1984 sil: 048[7531] · Şahin İnşaat
+#1985 seç: 053[7397] · Ağaoğlu Yapı?
+#1986 cari aç (053[7397]): Hasan Özkan
+#1987 seç: 051[kök] · Nokta Ltd.
+#1988 havale (051[kök]): Nazlı Yıldırım in 3186.29 → Garanti BBVA · Hesap 821
+#1989 şirket aç: kod "051" ad "Şahin İnşaat"
+#1990 alis havalesi (051[kök]): Gülşen Bozkurt 2453.16 → Ziraat Bankası · Hesap 822
+#1991 şirket aç: kod "018" ad "istanbul ticaret a.ş." → 018[cd6b]
+#1992 sunucuyu yeniden başlat
+#1993 sınırda şirket aç: kod "024" → 409 beklenir
+#1994 cari hareketi (051[kök]): Çağrı Şahin out 872.22
+#1995 sil: 027[45a8] · ışık turizm
+#1996 havale (051[kök]): Çağrı Şahin in 1619.20 → Garanti BBVA · Hesap 821
+#1997 şirket aç: kod "(sıradaki)" ad "MAVİ GIDA" → 001[d588]
+#1998 yedek (yalnız 001[d588] · MAVİ GIDA)
+#1999 kod değiştir: 026[b74c] · ŞAHİN İNŞAAT → 006
+#2000 cari aç (051[kök]): Uğur Çelik
+#2001 geri yükle: 006[b74c] · ŞAHİN İNŞAAT ← destekofis-002-2026-10-10T08-34-06-737Z-manuel.sqlite (manuel)
+#2002 cari aç (051[kök]): Elif Kaya
+#2003 cari aç (051[kök]): Fatma Kaya
+#2004 banka hesabı aç (051[kök]): Garanti BBVA açılış 7185.61
+#2005 cari hareketi (051[kök]): Tülay Yıldız in 4169.89
+#2006 kod değiştir: 003[dcf6] · Nokta Ltd. → 060
+#2007 seç: 006[b74c] · ŞAHİN İNŞAAT
+#2008 YANLIŞ geri yükleme: 051[kök] yedeği destekofis-016-2026-10-10T08-30-59-971Z-manuel.sqlite → 018[cd6b] (dosya elle hedefin klasörüne kopyalandı)
+#2009 banka hesabı aç (006[b74c]): Yapı Kredi açılış 7720.38
+#2010 yedek (Tüm Şirketler)
+#2011 cari aç (006[b74c]): Serdar Özkan
+#2012 sil: 006[b74c] · ŞAHİN İNŞAAT
+#2013 Kasa (051[kök]): in 1760.81
+#2014 cari aç (051[kök]): İsmail Akgül
+#2015 Banka Fişi (051[kök]): Garanti BBVA · Hesap 2004 other_out 3344.11
+#2016 cari aç (051[kök]): Hasan Kurt
+#2017 cari aç (051[kök]): Emine Güneş
+#2018 cari hareketi (051[kök]): Cemile Şahin in 1584.81
+#2019 geri yükle: 053[7397] · Ağaoğlu Yapı? ← destekofis-053-2026-10-10T08-34-19-500Z-manuel.sqlite (manuel)
+#2020 geri yükle: 053[7397] · Ağaoğlu Yapı? ← destekofis-053-2026-10-10T08-34-24-862Z-geri-yukleme-oncesi-053.sqlite (geri-yukleme-oncesi)
+#2021 yedek (Tüm Şirketler)
+#2022 cari aç (051[kök]): Serdar Polat
+#2023 ad değiştir: 018[cd6b] · istanbul ticaret a.ş. → "mavi gıda"
+#2024 sil: 018[cd6b] · mavi gıda
+#2025 yedek (Tüm Şirketler)
+#2026 ad değiştir: 060[dcf6] · Nokta Ltd. → "istanbul ticaret a.ş."
+#2027 cari hareketi (051[kök]): Çağrı Şahin credit 3515.43
+#2028 cari aç (051[kök]): Emine Çetin
+#2029 cari aç (051[kök]): Murat Polat
+#2030 YANLIŞ şirket hesabına alis havalesi: seçili 051[kök], hesap 053[7397]
+#2031 havale (051[kök]): Hasan Kurt out 4855.86 → Ziraat Bankası · Hesap 822
+#2032 YANLIŞ şirket hesabına satis havalesi: seçili 051[kök], hesap 053[7397]
+#2033 seç: 051[kök] · Nokta Ltd.
+#2034 cari hareketi (051[kök]): Çağrı Şahin in 1202.44
+#2035 havale (051[kök]): Uğur Yıldız in 4628.27 → Garanti BBVA · Hesap 2004
+#2036 ad değiştir: 060[dcf6] · istanbul ticaret a.ş. → "ŞAHİN İNŞAAT"
+#2037 cari hareketi (051[kök]): Cemile Şahin credit 914.77
+#2038 cari aç (051[kök]): Hüseyin Kaya
+#2039 cari aç (051[kök]): Emine Polat
+#2040 cari aç (051[kök]): Zehra Arslan
+#2041 Ters Kaydet (051[kök]): ev-0mv251r220000-8e0b0203-cfe6-4aa1
+#2042 şirket aç: kod "039" ad "Eğitim Kurumları <Merkez>" → 039[27e9]
+#2043 seç: 001[d588] · MAVİ GIDA
+#2044 banka hesabı aç (001[d588]): Ziraat Bankası açılış 5070.46
+#2045 cari aç (001[d588]): Murat Bozkurt
+#2046 havale (001[d588]): Murat Bozkurt out 3154.85 → Ziraat Bankası · Hesap 2044 (tek hesap, seçimsiz)
+#2047 Kasa (001[d588]): out 1331.29
+#2048 yedek (Tüm Şirketler)
+#2049 havale (001[d588]): Murat Bozkurt in 2104.70 → Ziraat Bankası · Hesap 2044 (tek hesap, seçimsiz)
+#2050 sil: 060[dcf6] · ŞAHİN İNŞAAT
+#2051 cari hareketi (001[d588]): Murat Bozkurt credit 3008.87
+#2052 cari hareketi (001[d588]): Murat Bozkurt debt 1679.08
+#2053 satis havalesi (001[d588]): Murat Bozkurt 2189.68 → Ziraat Bankası · Hesap 2044
+#2054 seç: 039[27e9] · Eğitim Kurumları <Merkez>
+#2055 sıfırla (movements): 001[d588] · MAVİ GIDA
+#2056 yedek (Tüm Şirketler)
+#2057 cari aç (039[27e9]): Doğan Işık
+#2058 banka hesabı aç (039[27e9]): Garanti BBVA açılış 5746.43
+#2059 cari hareketi (039[27e9]): Doğan Işık credit 231.15
+#2060 Kasa (039[27e9]): out 1996.76
+#2061 ad değiştir: 039[27e9] · Eğitim Kurumları <Merkez> → "mavi gıda"
+#2062 kod değiştir: 051[kök] · Nokta Ltd. → 013
+#2063 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-016-2026-10-10T08-31-05-113Z-geri-yukleme-oncesi-016.sqlite → 053[7397]
+#2064 sıfırla (movements): 013[kök] · Nokta Ltd.
+#2065 ad değiştir: 053[7397] · Ağaoğlu Yapı? → "Mavi Gıda"
+#2066 Banka Fişi (039[27e9]): Garanti BBVA · Hesap 2058 fee bsmv_incl 4408.58
+#2067 cekOde havalesi (039[27e9]): Doğan Işık 4952.86 → Garanti BBVA · Hesap 2058
+#2068 cari hareketi (039[27e9]): Doğan Işık debt 2898.68
+#2069 sunucuyu yeniden başlat
+#2070 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-49-884Z-geri-yukleme-oncesi-026.sqlite (geri-yukleme-oncesi)
+#2071 alis havalesi (039[27e9]): Doğan Işık 3608.07 → Garanti BBVA · Hesap 2058
+#2072 cari aç (039[27e9]): Tuğba Özdemir
+#2073 cari hareketi (039[27e9]): Doğan Işık out 4898.28
+#2074 şirket aç: kod "060" ad "Çağ/Öz: Ltd*" → 060[aee2]
+#2075 yedek (yalnız 060[aee2] · Çağ/Öz: Ltd*)
+#2076 ad değiştir: 001[d588] · MAVİ GIDA → "Doğu "Batı" Lojistik"
+#2077 YANLIŞ geri yükleme: 053[7397] yedeği destekofis-053-2026-10-10T08-34-37-697Z-manuel.sqlite → 013[kök]
+#2078 sıfırla (all): 053[7397] · Mavi Gıda
+#2079 şirket aç: kod "027" ad "istanbul ticaret a.ş." → 027[19c3]
+#2080 sil: 001[d588] · Doğu "Batı" Lojistik
+#2081 banka hesabı aç (039[27e9]): Garanti BBVA açılış 19263.27
+#2082 sıfırla (movements): 027[19c3] · istanbul ticaret a.ş.
+#2083 kod değiştir: 060[aee2] · Çağ/Öz: Ltd* → 021
+#2084 seç: 013[kök] · Nokta Ltd.
+#2085 sil: 027[19c3] · istanbul ticaret a.ş.
+#2086 cari hareketi (013[kök]): Tülay Aydın debt 4700.78
+#2087 001'i sil (reddedilmeli)
+#2088 kod değiştir: 039[27e9] · mavi gıda → 005
+#2089 cari hareketi (013[kök]): Ümit Çakır debt 3770.58
+#2090 001 geri yükle (yeniden açılışta) ← destekofis-055-2026-10-10T08-33-20-431Z-geri-yukleme-oncesi-055.sqlite (geri-yukleme-oncesi)
+#2091 transfer (013[kök]): Garanti BBVA · Hesap 821 → Ziraat Bankası · Hesap 822 2376.81
+#2092 sil: 021[aee2] · Çağ/Öz: Ltd*
+#2093 transfer (013[kök]): Yapı Kredi · Hesap 1749 → Garanti BBVA · Hesap 821 1816.97
+#2094 yedek (Tüm Şirketler)
+#2095 Banka Fişi (013[kök]): Garanti BBVA · Hesap 821 other_in 4533.85
+#2096 geri yükle: 053[7397] · Mavi Gıda ← destekofis-053-2026-10-10T08-34-36-167Z-geri-yukleme-oncesi-053.sqlite (geri-yukleme-oncesi)
+#2097 cari aç (013[kök]): Fatma Kara
+#2098 geri yükle: 053[7397] · Mavi Gıda ← destekofis-053-2026-10-10T08-34-13-959Z-manuel.sqlite (manuel)
+#2099 cari hareketi (013[kök]): İbrahim Polat in 1846.34
+#2100 sıfırla (movements): 013[kök] · Nokta Ltd.
+#2101 şirket aç: kod "(sıradaki)" ad "Şahin İnşaat" → 001[19d4]
+#2102 seç: 013[kök] · Nokta Ltd.
+#2103 kod değiştir: 005[27e9] · mavi gıda → 004
+#2104 cari aç (013[kök]): Gökhan Kaya
+#2105 cari hareketi (013[kök]): İbrahim Polat debt 4160.67
+#2106 Banka Fişi (013[kök]): Ziraat Bankası · Hesap 1742 other_out 2793.46
+#2107 sunucuyu yeniden başlat
+#2108 şirket aç: kod "026" ad "Ünal & Öztürk Hukuk" → 026[dc78]
+#2109 havale (013[kök]): Yağmur Şimşek in 4910.03 → Garanti BBVA · Hesap 1750
+#2110 sunucuyu yeniden başlat
+#2111 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-48-479Z-geri-yukleme-oncesi-026.sqlite (geri-yukleme-oncesi)
+#2112 cari hareketi (013[kök]): Hüseyin Şahin in 2739.86
+#2113 yedek (yalnız 026[dc78] · Ünal & Öztürk Hukuk)
+#2114 Kasa (013[kök]): in 3361.93
+#2115 geri yükle: 004[27e9] · mavi gıda ← destekofis-005-2026-10-10T08-34-57-322Z-manuel.sqlite (manuel)
+#2116 001 geri yükle (yeniden açılışta) ← destekofis-013-2026-10-10T08-34-50-441Z-geri-yukleme-oncesi-013.sqlite (geri-yukleme-oncesi)
+#2117 geri yükle: 053[7397] · Mavi Gıda ← destekofis-053-2026-10-10T08-34-19-500Z-manuel.sqlite (manuel)
+#2118 kayit havalesi (013[kök]): Cemile Şahin 3852.00 → Garanti BBVA · Hesap 2004
+#2119 banka hesabı aç (013[kök]): İş Bankası açılış 13650.35
+#2120 havale (013[kök]): Zehra Arslan in 3380.05 → Garanti BBVA · Hesap 2004
+#2121 Banka Fişi (013[kök]): İş Bankası · Hesap 2119 other_out 3947.77
+#2122 cari aç (013[kök]): Uğur Ağaoğlu
+#2123 kod değiştir: 004[27e9] · mavi gıda → 021
+#2124 kod değiştir: 026[dc78] · Ünal & Öztürk Hukuk → 006
+#2125 kod değiştir: 001[19d4] · Şahin İnşaat → 059
+#2126 banka hesabı aç (013[kök]): Garanti BBVA açılış 13530.68
+#2127 şirket aç: kod "(sıradaki)" ad "Gayri Resmi" → 001[c328]
+#2128 YANLIŞ şirket Banka Fişi: seçili 013[kök], hesap 021[27e9]
+#2129 cari aç (013[kök]): Ümit Işık
+#2130 sil: 001[c328] · Gayri Resmi (yanlış onay)
+#2131 cari hareketi (013[kök]): Çağrı Şahin in 2878.05
+#2132 Banka Fişi (013[kök]): Ziraat Bankası · Hesap 822 fee bsmv_incl 3504.88
+#2133 cari hareketi (013[kök]): Uğur Ağaoğlu out 3714.88
+#2134 sil: 001[c328] · Gayri Resmi
+#2135 YANLIŞ şirket hesabına kayit havalesi: seçili 013[kök], hesap 053[7397]
+#2136 ad değiştir: 013[kök] · Nokta Ltd. → "Ağaoğlu Yapı?"
+#2137 cari hareketi (013[kök]): Emine Çetin debt 1481.78
+#2138 cari aç (013[kök]): Ali Polat
+#2139 cari hareketi (013[kök]): Zehra Arslan in 4388.49
+#2140 cari hareketi (013[kök]): Tülay Yıldız credit 4308.50
+#2141 seç: 021[27e9] · mavi gıda
+#2142 transfer (021[27e9]): Garanti BBVA · Hesap 2058 → Garanti BBVA · Hesap 2081 622.33
+#2143 transfer (021[27e9]): Garanti BBVA · Hesap 2081 → Garanti BBVA · Hesap 2058 3148.91 + ücret 4.39
+#2144 havale (021[27e9]): Doğan Işık in 4901.83 → Garanti BBVA · Hesap 2081
+#2145 ad değiştir: 021[27e9] · mavi gıda → "istanbul ticaret a.ş."
+#2146 cari aç (021[27e9]): Çağrı Aydın
+#2147 yedek (yalnız 059[19d4] · Şahin İnşaat)
+#2148 seç: 006[dc78] · Ünal & Öztürk Hukuk
+#2149 banka hesabı aç (006[dc78]): Ziraat Bankası açılış 6352.94
+#2150 banka hesabı aç (006[dc78]): Ziraat Bankası açılış 17150.46
+#2151 Banka Fişi (006[dc78]): Ziraat Bankası · Hesap 2149 fee none 1512.61
+#2152 cari aç (006[dc78]): Hasan Özdemir
+#2153 seç: 013[kök] · Ağaoğlu Yapı?
+#2154 yedek (Tüm Şirketler)
+#2155 YANLIŞ geri yükleme: 053[7397] yedeği destekofis-053-2026-10-10T08-34-43-820Z-manuel.sqlite → 021[27e9] (dosya elle hedefin klasörüne kopyalandı)
+#2156 cari aç (013[kök]): Ece Kaya
+#2157 Ters Kaydet (013[kök]): ev-0mv252f8q0000-d271bff0-a1eb-40c6
+#2158 sil: 059[19d4] · Şahin İnşaat
+#2159 kod değiştir: 021[27e9] · istanbul ticaret a.ş. → 007
+#2160 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-026-2026-10-10T08-32-57-118Z-manuel.sqlite → 006[dc78]
+#2161 geri yükle: 053[7397] · Mavi Gıda ← destekofis-053-2026-10-10T08-34-46-371Z-manuel.sqlite (manuel)
+#2162 cari hareketi (013[kök]): Cemile Yılmaz credit 109.27
+#2163 şirket aç: kod "013" ad "mavi gıda"
+#2164 satis havalesi (013[kök]): Tülay Yıldız 1060.83 → Garanti BBVA · Hesap 2004
+#2165 cari aç (013[kök]): Doğan Kılıç
+#2166 cari hareketi (013[kök]): Emine Polat debt 3305.11
+#2167 cari aç (013[kök]): Uğur Yıldırım
+#2168 cari hareketi (013[kök]): Murat Polat in 3693.86
+#2169 seç: 007[27e9] · istanbul ticaret a.ş.
+#2170 cari aç (007[27e9]): Tuğba Uğurlu
+#2171 cari aç (007[27e9]): Özge Şimşek
+#2172 seç: 007[27e9] · istanbul ticaret a.ş.
+#2173 alis havalesi (007[27e9]): Özge Şimşek 4421.01 → Garanti BBVA · Hesap 2058
+#2174 Kasa (007[27e9]): in 895.86
+#2175 sil: 006[dc78] · Ünal & Öztürk Hukuk
+#2176 sıfırla (all): 007[27e9] · istanbul ticaret a.ş.
+#2177 banka hesabı aç (007[27e9]): İş Bankası açılış 13262.89
+#2178 cari aç (007[27e9]): Serdar Uğurlu
+#2179 cari hareketi (007[27e9]): Serdar Uğurlu out 93.58
+#2180 alis havalesi (007[27e9]): Serdar Uğurlu 4248.65 → İş Bankası · Hesap 2177
+#2181 seç: 013[kök] · Ağaoğlu Yapı?
+#2182 yedek (yalnız 013[kök] · Ağaoğlu Yapı?)
+#2183 ad değiştir: 007[27e9] · istanbul ticaret a.ş. → "Işık Turizm"
+#2184 kod değiştir: 053[7397] · Mavi Gıda → 7a7
+#2185 Banka Fişi (013[kök]): Garanti BBVA · Hesap 2126 other_out 4917.68
+#2186 ad değiştir: 013[kök] · Ağaoğlu Yapı? → "   "
+#2187 banka hesabı aç (013[kök]): Ziraat Bankası açılış 15600.05
+#2188 sıfırla (movements): 053[7397] · Mavi Gıda
+#2189 şirket aç: kod "003" ad "Şahin İnşaat" → 003[b590]
+#2190 Ters Kaydet (013[kök]): ev-0mv252six0000-a8eda131-6269-4076
+#2191 geri yükle: 053[7397] · Mavi Gıda ← destekofis-053-2026-10-10T08-34-36-167Z-geri-yukleme-oncesi-053.sqlite (geri-yukleme-oncesi)
+#2192 cari hareketi (013[kök]): Cemile Yılmaz debt 3748.81
+#2193 ad değiştir: 053[7397] · Mavi Gıda → "Iğdır Tarım|Hayvancılık"
+#2194 cari aç (013[kök]): Ali Aydın
+#2195 şirket aç: kod "013" ad "Iğdır Tarım|Hayvancılık"
+#2196 seç: 053[7397] · Iğdır Tarım|Hayvancılık
+#2197 kayit havalesi (053[7397]): Nazlı Arslan 31.65 → Garanti BBVA · Hesap 1881
+#2198 cari hareketi (053[7397]): Nazlı Arslan debt 3328.95
+#2199 geri yükle: 007[27e9] · Işık Turizm ← destekofis-039-2026-10-10T08-34-46-371Z-manuel.sqlite (manuel)
+#2200 ad değiştir: 013[kök] · Ağaoğlu Yapı? → "Iğdır Tarım|Hayvancılık"
+#2201 cari aç (053[7397]): Çağrı Akgül
+#2202 cari hareketi (053[7397]): Nazlı Arslan debt 531.32
+#2203 geri yükle: 053[7397] · Iğdır Tarım|Hayvancılık ← destekofis-053-2026-10-10T08-35-24-985Z-geri-yukleme-oncesi-053.sqlite (geri-yukleme-oncesi)
+#2204 seç: 003[b590] · Şahin İnşaat
+#2205 seç: 013[kök] · Iğdır Tarım|Hayvancılık
+#2206 Banka Fişi (013[kök]): Ziraat Bankası · Hesap 822 other_out 3092.05
+#2207 cari hareketi (013[kök]): Uğur Yıldız in 2580.26
+#2208 banka hesabı aç (013[kök]): Ziraat Bankası açılış 489.82
+#2209 cekOde havalesi (013[kök]): İsmail Akgül 1025.07 → İş Bankası · Hesap 2119
+#2210 yedek (yalnız 053[7397] · Iğdır Tarım|Hayvancılık)
+#2211 cari hareketi (013[kök]): Emine Polat debt 3373.20
+#2212 banka hesabı aç (013[kök]): İş Bankası açılış 204.56
+#2213 yedek (yalnız 003[b590] · Şahin İnşaat)
+#2214 havale (013[kök]): Uğur Ağaoğlu out 4115.12 → Ziraat Bankası · Hesap 2187
+#2215 havale (013[kök]): Cemile Şahin in 514.95 → Garanti BBVA · Hesap 2004
+#2216 yedek (yalnız 053[7397] · Iğdır Tarım|Hayvancılık)
+#2217 sunucuyu yeniden başlat
+#2218 Banka Fişi (013[kök]): Ziraat Bankası · Hesap 2208 fee none 89.95
+#2219 yedek (yalnız 013[kök] · Iğdır Tarım|Hayvancılık)
+#2220 cari hareketi (013[kök]): Doğan Kılıç debt 1491.90
+#2221 yedek (yalnız 013[kök] · Iğdır Tarım|Hayvancılık)
+#2222 geri yükle: 053[7397] · Iğdır Tarım|Hayvancılık ← destekofis-053-2026-10-10T08-33-52-560Z-manuel.sqlite (manuel)
+#2223 sunucuyu yeniden başlat
+#2224 kod değiştir: 003[b590] · Şahin İnşaat → 034
+#2225 cari hareketi (013[kök]): Emine Güneş out 12.17
+#2226 cari hareketi (013[kök]): Serdar Kaya in 2909.96
+#2227 HESAPSIZ havale (013[kök]): Serdar Polat in 2666.19
+#2228 cari aç (013[kök]): Fatma Doğan
+#2229 Ters Kaydet (013[kök]): ev-0mv2530060000-0931e416-c1f5-4218
+#2230 Kasa (013[kök]): in 4236.65
+#2231 Banka Fişi (013[kök]): Ziraat Bankası · Hesap 822 other_out 3241.07
+#2232 şirket aç: kod "026" ad "Işık Turizm" → 026[00f0]
+#2233 banka hesabı aç (013[kök]): Garanti BBVA açılış 19357.22
+#2234 cari aç (013[kök]): Mehmet Polat
+#2235 cari hareketi (013[kök]): Serdar Polat in 4742.17
+#2236 cari hareketi (013[kök]): Mehmet Polat out 4537.62
+#2237 cari aç (013[kök]): Şahin Işık
+#2238 cari hareketi (013[kök]): Nazlı Özkan in 3748.91
+#2239 havale (013[kök]): Ece Kaya in 238.52 → Ziraat Bankası · Hesap 2187
+#2240 cekOde havalesi (013[kök]): Hasan Kurt 3062.25 → Garanti BBVA · Hesap 2126
+#2241 Kasa (013[kök]): in 1100.55
+#2242 ad değiştir: 034[b590] · Şahin İnşaat → "ışık turizm"
+#2243 cari hareketi (013[kök]): Serdar Polat debt 1331.63
+#2244 cari aç (013[kök]): Doğan Öz
+#2245 cari aç (013[kök]): Ahmet Çelik
+#2246 cari aç (013[kök]): Gülşen Yıldırım
+#2247 cekTahsil havalesi (013[kök]): Cemile Bozkurt 745.70 → Garanti BBVA · Hesap 2233
+#2248 ad değiştir: 013[kök] · Iğdır Tarım|Hayvancılık → "ışık turizm"
+#2249 cari hareketi (013[kök]): Ali Polat debt 4087.37
+#2250 banka hesabı aç (013[kök]): İş Bankası açılış 7523.68
+#2251 cari hareketi (013[kök]): Ece Kaya credit 604.12
+#2252 cari aç (013[kök]): Çağrı Yıldız
+#2253 cari hareketi (013[kök]): Fatma Doğan in 2946.03
+#2254 cari aç (013[kök]): Hatice Kılıç
+#2255 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-026-2026-10-10T08-32-13-317Z-manuel.sqlite → 007[27e9]
+#2256 cari hareketi (013[kök]): Nazlı Yıldırım in 4536.77
+#2257 kayit havalesi (013[kök]): Uğur Çelik 1938.32 → İş Bankası · Hesap 2119
+#2258 cari aç (013[kök]): Tülay Güneş
+#2259 sil: 026[00f0] · Işık Turizm
+#2260 Banka Fişi (013[kök]): İş Bankası · Hesap 2250 fee none 1801.59
+#2261 havale (013[kök]): Şahin Işık in 19.71 → İş Bankası · Hesap 2119
+#2262 cari aç (013[kök]): Şahin Ağaoğlu
+#2263 yedek (yalnız 034[b590] · ışık turizm)
+#2264 geri yükle: 053[7397] · Iğdır Tarım|Hayvancılık ← destekofis-053-2026-10-10T08-34-24-862Z-geri-yukleme-oncesi-053.sqlite (geri-yukleme-oncesi)
+#2265 sil: 034[b590] · ışık turizm
+#2266 sıfırla (movements): 007[27e9] · Işık Turizm
+#2267 YANLIŞ geri yükleme: 007[27e9] yedeği destekofis-004-2026-10-10T08-35-03-739Z-geri-yukleme-oncesi-004.sqlite → 013[kök] (dosya elle hedefin klasörüne kopyalandı)
+#2268 şirket aç: kod "009" ad "istanbul ticaret a.ş." → 009[2dc7]
+#2269 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-026-2026-10-10T08-31-35-594Z-geri-yukleme-oncesi-026.sqlite → 053[7397]
+#2270 Banka Fişi (013[kök]): Garanti BBVA · Hesap 2004 other_out 4942.84
+#2271 sunucuyu yeniden başlat
+#2272 geri yükle: 053[7397] · Iğdır Tarım|Hayvancılık ← destekofis-053-2026-10-10T08-34-43-820Z-manuel.sqlite (manuel)
+#2273 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-31-49-515Z-geri-yukleme-oncesi-026.sqlite (geri-yukleme-oncesi)
+#2274 şirket aç: kod "(sıradaki)" ad "mavi gıda" → 001[4194]
+#2275 cari hareketi (013[kök]): Mehmet Çelik out 4139.08
+#2276 cari hareketi (013[kök]): Ümit Çakır credit 3058.72
+#2277 sıfırla (all): 053[7397] · Iğdır Tarım|Hayvancılık
+#2278 Banka Fişi (013[kök]): İş Bankası · Hesap 5 other_in 4400.88
+#2279 cari aç (013[kök]): Tülay Aslan
+#2280 Banka Fişi (013[kök]): İş Bankası · Hesap 5 other_out 4055.59
+#2281 HESAPSIZ havale (013[kök]): Ümit Çakır in 2509.66
+#2282 sunucuyu yeniden başlat
+#2283 geri yükle: 007[27e9] · Işık Turizm ← destekofis-007-2026-10-10T08-35-20-891Z-sifirlama-oncesi-007.sqlite (sifirlama-oncesi)
+#2284 Kasa (013[kök]): out 3417.49
+#2285 banka hesabı aç (013[kök]): Yapı Kredi açılış 6088.00
+#2286 sil: 053[7397] · Iğdır Tarım|Hayvancılık
+#2287 seç: 001[4194] · mavi gıda
+#2288 sunucuyu yeniden başlat
+#2289 cari aç (001[4194]): Şahin Çelik
+#2290 cari hareketi (001[4194]): Şahin Çelik in 2957.91
+#2291 kod değiştir: 009[2dc7] · istanbul ticaret a.ş. → 058
+#2292 cari hareketi (001[4194]): Şahin Çelik in 1355.86
+#2293 cari hareketi (001[4194]): Şahin Çelik credit 3320.67
+#2294 Kasa (001[4194]): in 4273.26
+#2295 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-026-2026-10-10T08-32-20-208Z-manuel.sqlite → 058[2dc7]
+#2296 cari aç (001[4194]): Ömer Yılmaz
+#2297 001'i sil (reddedilmeli)
+#2298 banka hesabı aç (001[4194]): Ziraat Bankası açılış 4203.35
+#2299 şirket aç: kod "053" ad "Ağaoğlu Yapı?" → 053[9f7f]
+#2300 şirket aç: kod "(sıradaki)" ad "Doğu "Batı" Lojistik" → 002[15e3]
+#2301 banka hesabı aç (001[4194]): Yapı Kredi açılış 9885.66
+#2302 geri yükle: 007[27e9] · Işık Turizm ← destekofis-007-2026-10-10T08-35-27-173Z-geri-yukleme-oncesi-007.sqlite (geri-yukleme-oncesi)
+#2303 kod değiştir: 053[9f7f] · Ağaoğlu Yapı? → 039
+#2304 sınırda şirket aç: kod "012" → 409 beklenir
+#2305 Banka Fişi (001[4194]): Ziraat Bankası · Hesap 2298 fee none 450.99
+#2306 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-055-2026-10-10T08-34-05-362Z-geri-yukleme-oncesi-055.sqlite → 001[4194] (dosya elle hedefin klasörüne kopyalandı)
+#2307 Banka Fişi (001[4194]): Yapı Kredi · Hesap 2301 fee bsmv_incl 2441.35
+#2308 cari aç (001[4194]): Gülşen Yıldırım
+#2309 001 geri yükle (yeniden açılışta) ← destekofis-055-2026-10-10T08-34-05-362Z-geri-yukleme-oncesi-055.sqlite (geri-yukleme-oncesi)
+#2310 Ters Kaydet (001[4194]): ev-0mv253jwl0000-a85dd975-91b6-42d8
+#2311 sunucuyu yeniden başlat
+#2312 banka hesabı aç (001[4194]): Yapı Kredi açılış 13471.15
+#2313 yedek (yalnız 001[4194] · mavi gıda)
+#2314 havale (001[4194]): Ömer Yılmaz out 2062.53 → Yapı Kredi · Hesap 2301
+#2315 sıfırla (all): 002[15e3] · Doğu "Batı" Lojistik
+#2316 cari aç (001[4194]): Tülay Özdemir
+#2317 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-28-056Z-geri-yukleme-oncesi-026.sqlite (geri-yukleme-oncesi)
+#2318 001 geri yükle (yeniden açılışta) ← destekofis-013-2026-10-10T08-35-02-400Z-geri-yukleme-oncesi-013.sqlite (geri-yukleme-oncesi)
+#2319 001 geri yükle (yeniden açılışta) ← destekofis-013-2026-10-10T08-35-33-214Z-manuel.sqlite (manuel)
+#2320 seç: 058[2dc7] · istanbul ticaret a.ş.
+#2321 sil: 007[27e9] · Işık Turizm
+#2322 geri yükle: 001[4194] · mavi gıda ← destekofis-001-2026-10-10T08-36-01-354Z-manuel.sqlite (manuel)
+#2323 YANLIŞ geri yükleme: 013[kök] yedeği destekofis-055-2026-10-10T08-33-38-965Z-geri-yukleme-oncesi-055.sqlite → 002[15e3]
+#2324 001 geri yükle (yeniden açılışta) ← destekofis-026-2026-10-10T08-32-57-118Z-manuel.sqlite (manuel)
+#2325 banka hesabı aç (058[2dc7]): Garanti BBVA açılış 17367.17
+#2326 YANLIŞ şirket Banka Fişi: seçili 058[2dc7], hesap 013[kök]
+#2327 şirket aç: kod "1000" ad "Nokta Ltd."
+#2328 YANLIŞ şirket Banka Fişi: seçili 058[2dc7], hesap 013[kök]
+#2329 şirket aç: kod "058" ad "mavi gıda"
+#2330 Kasa (058[2dc7]): in 4226.17
+#2331 ad değiştir: 013[kök] · ışık turizm → "Işık Turizm"
+  100 işlem · 5 şirket · 22 yedek · 5 geri yükleme · 17.7 sn
+  200 işlem · 5 şirket · 38 yedek · 13 geri yükleme · 39.7 sn
+  300 işlem · 5 şirket · 45 yedek · 23 geri yükleme · 66.9 sn
+  400 işlem · 5 şirket · 57 yedek · 36 geri yükleme · 88.4 sn
+  500 işlem · 5 şirket · 81 yedek · 42 geri yükleme · 113.5 sn
+  600 işlem · 5 şirket · 103 yedek · 50 geri yükleme · 145.7 sn
+  700 işlem · 6 şirket · 130 yedek · 58 geri yükleme · 178.7 sn
+  800 işlem · 6 şirket · 132 yedek · 71 geri yükleme · 204.4 sn
+  900 işlem · 4 şirket · 137 yedek · 78 geri yükleme · 227.8 sn
+  1000 işlem · 6 şirket · 151 yedek · 84 geri yükleme · 254.0 sn
+  1100 işlem · 6 şirket · 169 yedek · 88 geri yükleme · 279.1 sn
+  1200 işlem · 5 şirket · 194 yedek · 101 geri yükleme · 308.4 sn
+  1300 işlem · 5 şirket · 204 yedek · 112 geri yükleme · 337.2 sn
+  1400 işlem · 5 şirket · 227 yedek · 125 geri yükleme · 364.5 sn
+  1500 işlem · 5 şirket · 257 yedek · 135 geri yükleme · 397.5 sn
+  1600 işlem · 6 şirket · 275 yedek · 142 geri yükleme · 429.1 sn
+  1700 işlem · 4 şirket · 282 yedek · 148 geri yükleme · 456.8 sn
+  1800 işlem · 5 şirket · 299 yedek · 154 geri yükleme · 482.9 sn
+  1900 işlem · 5 şirket · 316 yedek · 160 geri yükleme · 510.2 sn
+  2000 işlem · 6 şirket · 337 yedek · 167 geri yükleme · 539.8 sn
+  2100 işlem · 6 şirket · 379 yedek · 179 geri yükleme · 572.0 sn
+  2200 işlem · 3 şirket · 400 yedek · 189 geri yükleme · 605.5 sn
+  2300 işlem · 6 şirket · 415 yedek · 195 geri yükleme · 638.0 sn
+  2400 işlem · 5 şirket · 428 yedek · 199 geri yükleme · 666.6 sn
+  2500 işlem · 3 şirket · 445 yedek · 211 geri yükleme · 693.1 sn
+  2600 işlem · 5 şirket · 459 yedek · 218 geri yükleme · 720.4 sn
+  2700 işlem · 6 şirket · 492 yedek · 227 geri yükleme · 753.1 sn
+  2800 işlem · 6 şirket · 513 yedek · 235 geri yükleme · 790.7 sn
+  2900 işlem · 5 şirket · 521 yedek · 244 geri yükleme · 825.1 sn
+  3000 işlem · 4 şirket · 534 yedek · 248 geri yükleme · 857.2 sn
+
+✓ Tohum 1 · taban surum-2.0.19-zincir: 3000 işlem, 3001 değişmez kural turu, 534 yedek, 248 geri yükleme, 103 yanlış şirkete deneme (hepsi 409), 91 yeniden başlatma · 858.7 sn
+  İşlem türleri: account 337, entry 429, backupAll 70, select 193, backupOne 166, restore 195, bankVoucher 154, recode 126, bankModule 119, bankTransfer 95, wrongRestore 103, bankModuleOther 146, bankReverse 55, rename 99, reset 72, create 168, bankWrongCompany 55, remove 84, restoreRoot 53, restart 38, cash 174, bankAccount 69
+  Son durum: 016 · ışık turizm (10 cari) | 001 · Şahin İnşaat (5 cari) | 030 · Ağaoğlu Yapı? (0 cari) | 012 · Doğu "Batı" Lojistik (1 cari)
+  100 işlem · 5 şirket · 6 yedek · 3 geri yükleme · 16.9 sn
+  200 işlem · 5 şirket · 27 yedek · 8 geri yükleme · 35.5 sn
+  300 işlem · 6 şirket · 45 yedek · 18 geri yükleme · 59.0 sn
+  400 işlem · 4 şirket · 53 yedek · 30 geri yükleme · 86.8 sn
+  500 işlem · 5 şirket · 63 yedek · 34 geri yükleme · 111.0 sn
+  600 işlem · 5 şirket · 81 yedek · 43 geri yükleme · 136.6 sn
+  700 işlem · 5 şirket · 97 yedek · 49 geri yükleme · 163.8 sn
+  800 işlem · 6 şirket · 115 yedek · 56 geri yükleme · 194.8 sn
+  900 işlem · 5 şirket · 124 yedek · 64 geri yükleme · 221.2 sn
+  1000 işlem · 3 şirket · 136 yedek · 74 geri yükleme · 243.4 sn
+  1100 işlem · 4 şirket · 150 yedek · 83 geri yükleme · 265.3 sn
+  1200 işlem · 6 şirket · 162 yedek · 87 geri yükleme · 290.5 sn
+  1300 işlem · 6 şirket · 191 yedek · 93 geri yükleme · 324.6 sn
+  1400 işlem · 4 şirket · 202 yedek · 99 geri yükleme · 356.9 sn
+  1500 işlem · 2 şirket · 210 yedek · 109 geri yükleme · 388.3 sn
+  1600 işlem · 4 şirket · 220 yedek · 119 geri yükleme · 413.4 sn
+  1700 işlem · 6 şirket · 242 yedek · 125 geri yükleme · 442.5 sn
+  1800 işlem · 5 şirket · 251 yedek · 136 geri yükleme · 472.3 sn
+  1900 işlem · 5 şirket · 268 yedek · 143 geri yükleme · 505.2 sn
+  2000 işlem · 6 şirket · 287 yedek · 147 geri yükleme · 533.8 sn
+  2100 işlem · 5 şirket · 309 yedek · 154 geri yükleme · 565.2 sn
+  2200 işlem · 4 şirket · 318 yedek · 161 geri yükleme · 596.2 sn
+  2300 işlem · 6 şirket · 323 yedek · 168 geri yükleme · 630.6 sn
+  2400 işlem · 6 şirket · 349 yedek · 178 geri yükleme · 663.9 sn
+  2500 işlem · 5 şirket · 374 yedek · 186 geri yükleme · 700.9 sn
+  2600 işlem · 4 şirket · 388 yedek · 198 geri yükleme · 739.6 sn
+  2700 işlem · 5 şirket · 397 yedek · 200 geri yükleme · 774.1 sn
+  2800 işlem · 5 şirket · 417 yedek · 204 geri yükleme · 806.9 sn
+  2900 işlem · 3 şirket · 439 yedek · 210 geri yükleme · 835.1 sn
+  3000 işlem · 5 şirket · 458 yedek · 220 geri yükleme · 863.9 sn
+
+✓ Tohum 2 · taban surum-2.0.19-zincir: 3000 işlem, 3001 değişmez kural turu, 458 yedek, 220 geri yükleme, 102 yanlış şirkete deneme (hepsi 409), 106 yeniden başlatma · 865.7 sn
+  İşlem türleri: account 323, create 182, select 183, bankModuleOther 145, entry 458, bankVoucher 145, cash 167, restoreRoot 61, restore 165, wrongRestore 102, bankReverse 52, bankModule 139, backupOne 162, reset 65, bankAccount 75, rename 124, bankTransfer 99, remove 97, recode 115, restart 45, backupAll 62, bankWrongCompany 34
+  Son durum: 059 · mavi gıda (166 cari) | 053 · Doğu "Batı" Lojistik (0 cari) | 002 · Işık Turizm (2 cari) | 003 · MAVİ GIDA (6 cari) | 001 · Iğdır Tarım|Hayvancılık (0 cari)
+
+real	52m15.361s
+user	47m31.587s
+sys	3m10.860s
+EXIT 1

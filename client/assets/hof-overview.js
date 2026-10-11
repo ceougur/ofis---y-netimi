@@ -94,17 +94,32 @@
         title: `Bugüne kadarki nakit kasa: ${money(data.cash.balance)}.${data.cash.futureEntries ? ` İleri tarihli ${data.cash.futureEntries} hareketle birlikte ${money(data.cash.allEntries)} (Kasa ekranındaki "tüm hareketler").` : ""} Bu ay giriş ${money(data.cash.month.in)}, çıkış ${money(data.cash.month.out)}.`,
       });
       if (data.cash.bank) {
+        // v2.1.0 Aşama 14 (K10; plan §8.4, §8.9): ana değer Gerçek Banka (Banka penceresinin Genel Bakış'ıyla aynı ad ve tanım). Kart ve Kredi
+        // Borcu ile Hesabı Atanmamış Eski Hareketler ayrı satır, hiçbir toplama girmez. Bugün Giriş / Çıkış dış harekettir; kendi hesaplarınız
+        // arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) ayrı "Transfer" satırında.
         const b = data.cash.bank;
-        const at = data.cash.byMethodAt || {};
+        const labels = b.labels || { realBank: "Gerçek Banka", debt: "Kart ve Kredi Borcu", unassigned: "Hesabı Atanmamış Eski Hareketler" };
+        // Hesabı Atanmamış bugüne kadarki satırlardır; eski sürümden kalan ileri tarihli satırlar ayrı bilgi (2.1.0 temel sürüm).
+        const futureNote = item => (item.unassigned?.future ? ` Tarihi gelmemiş ${item.unassigned.future.count} eski hareket (${money(item.unassigned.future.total)}, ilk ${HOF.formatDate(item.unassigned.future.firstDate)}) bu tutara girmez; tarihi gelince hesaba atanır.` : "");
         const bankMoved = b.today?.in || b.today?.out;
+        const moved = b.transfer && (b.transfer.in || b.transfer.out);
+        const defined = b.defined !== false;
+        const lines = [
+          defined ? (bankMoved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(b.today.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(b.today.out))}</b>` : "Bugün hareket yok") : "Banka Hesabı Tanımlanmadı",
+          moved ? `<span data-pulse-bank="transfer">Transfer +${esc(shortMoney(b.transfer.in))} · −${esc(shortMoney(b.transfer.out))}</span>` : "",
+          b.debt?.shown ? `<span data-pulse-bank="debt">${esc(labels.debt)} ${esc(shortMoney(b.debt.total))}</span>` : "",
+          b.unassigned && Math.abs(b.unassigned.total) > 0.005 ? `<span class="hof-pulse-flag" data-pulse-bank="unassigned">${ICONS.warn}${esc(labels.unassigned)} ${esc(shortMoney(b.unassigned.total))}</span>` : "",
+        ].filter(Boolean);
         out.push({
           id: "bank",
           icon: ICONS.cash,
-          label: "Banka / POS",
-          value: moneyHtml(b.balance, { compact: true }),
-          tone: "",
-          sub: `${bankMoved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(b.today.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(b.today.out))}</b>` : "Bugün hareket yok"}<br>Banka ${esc(shortMoney(at.bank || 0))} · POS ${esc(shortMoney(at.card || 0))}`,
-          title: `Havale/EFT ve POS/kredi kartı hareketlerinin programa girilenlerden hesaplanan toplamı: ${money(b.balance)} (banka ekstresi değildir; Banka modülü gelene kadar bilgi amaçlıdır). Ayrıntı: Raporlar → Banka ve POS Hareketleri.`,
+          label: labels.realBank,
+          value: defined ? moneyHtml(b.balance, { compact: true }) : '<span class="hof-num">—</span>',
+          tone: defined && b.balance < 0 ? "is-bad" : "",
+          sub: lines.join("<br>"),
+          title: defined
+            ? `${labels.realBank}: banka hesaplarınızın (102) bakiyesi ${money(b.balance)}. Bugün giriş ${money(b.today?.in || 0)}, çıkış ${money(b.today?.out || 0)}; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz.${b.debt?.shown ? ` ${labels.debt} ${money(b.debt.total)} ayrıdır.` : ""}${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez; Banka → Genel Bakış → ${labels.unassigned} → Şimdi Düzenle ile hesaba atayın.` : ""}${futureNote(b)}`
+            : `Banka hesabı tanımlanmadı. Banka penceresinden hesaplarınızı ve açılış bakiyelerini girin.${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez.` : ""}${futureNote(b)}`,
         });
       }
     }
@@ -216,6 +231,8 @@
     const go = button.dataset.pulseGo;
     // Yetkisi olmayan ekrana gitmez: Kasa yetkisi olmayan kişi Kasa yerine kasa raporunu görür.
     if (go === "cash") HOF.can("cash.view") ? document.querySelector('#hof-sidecard [data-action="cash"]')?.click() : HOF.reportCenter?.open("kasa-hareketleri");
+    // v2.1.0 Aşama 14 (§8.9): Banka kutusu Banka penceresini açar; Banka yetkisi yoksa Banka Bakiye Raporu (ya da Banka ve POS Hareketleri).
+    else if (go === "bank") HOF.can("bank.view") && HOF.bank?.open ? HOF.bank.open() : HOF.reportCenter?.open(HOF.can("bank.reports") ? "banka-bakiye" : "banka-pos-hareketleri");
     else if (go === "stock") HOF.stock?.open();
     else if (go === "receivable") HOF.accounts?.open();
     else if (go === "payable") (HOF.cheques && HOF.can("cheques.view") ? HOF.cheques.open({ direction: "out" }) : HOF.accounts?.open());
@@ -267,11 +284,17 @@
     ["next90", "90 Gün"],
     ["open", "Tüm Açık"],
   ];
-  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", cash: "Kasa", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
+  // m2 (10.10.2026; plan §8.9): "invoice" eksikti — vadeli fatura satırı ekranda ham "invoice", süzgeç seçeneği adsız çiziliyordu. Ad PDF/Excel ile
+  // aynı (server/routes/overview.mjs SOURCE_TEXT); "Ödeme Sözü" ve "Son Tarih" yazım düzeninde (m3).
+  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
+  // Satırın kaynak adı (süzgeç seçeneği değil): eski sürümden kalan, hesaba atanmamış ileri tarihli havale / POS (sunucu SOURCE_TEXT.legacy ile aynı
+  // ad; PDF ve Excel de böyle yazar). Kasa süzgeciyle gelir; önceden "Kasa" yazıyordu (2.1.0 temel sürüm, küçük düzeltmeler).
+  const ROW_LABELS = { ...SOURCE_LABELS, legacy: "Hesabı Atanmamış (ileri tarihli)" };
   const SOURCE_HINTS = {
     plan: "Taksit kartlarının kalan taksitleri",
     cheque: "Portföydeki alınan ve ödenecek verilen çekler",
     note: "Portföydeki alınan ve ödenecek verilen senetler",
+    invoice: "Vadeli (açık hesap) satış ve alış faturalarının ödenmemiş kısmı",
     cash: "Kasa'ya ileri tarihle girilen giriş ve çıkışlar (kira, maaş…)",
     table: "Excel/Sheets tablolarındaki ödeme günleri (tahsilat takvimiyle aynı kalemler)",
     promise: "Tablolarda yazılı ödeme sözleri",
@@ -310,11 +333,12 @@
   // ANLIK DURUM ya da rapor yetkisiyle; Çek / Senet portföyü ayrıca çek yetkisiyle; Tablo raporları rapor yetkisiyle.
   const TABS = [
     ["mizan", "Cari Ekstre", "Cari mizanı; satıra tıklayınca o carinin ekstresi (Cari kartındaki defterle aynı)", () => canSee()],
-    ["vade", "Vade Takip", "Vadesi olan her açık kalem: taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
-    ["flow", "Nakit Akış", "Bugünkü kasadan başlayan tahmini kasa: beklenen giriş ve çıkışlar", () => canSee()],
+    ["vade", "Vade Takip", "Vadesi olan her açık kalem: taksit, çek/senet, vadeli fatura, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
+    ["flow", "Nakit Akış", "Bugünkü nakit ve bankadan başlayan tahmini bakiye: beklenen giriş ve çıkışlar", () => canSee()],
     ["cheques", "Çek / Senet", "Alınan ve verilen evrak portföyü", () => canSee() && HOF.can("cheques.view")],
     // İşlem geçmişi yetkisi olan (uzman) finans yetkisi olmasa da burada yalnız "İşlem geçmişi" raporunu görür (v2.0.10).
-    ["all", "Tüm Raporlar", "Kasa, Cari, Taksit, Çek/Senet, Stok ve kayıt raporları: ön izleme, PDF ve Excel", () => canSee() || HOF.can("audit.view")],
+    // v2.1.0 Aşama 14: Banka Raporları yetkisi (bank.reports) olan da burada Banka grubunu görür.
+    ["all", "Tüm Raporlar", "Kasa, Cari, Taksit, Çek/Senet, Stok, Banka ve kayıt raporları: ön izleme, PDF ve Excel", () => canSee() || HOF.can("audit.view") || HOF.can("bank.reports")],
     ["table", "Tablo Raporları", "Yalnız Excel/Sheets tablolarındaki tutar ve tarihlerden", () => HOF.can("reports.view")],
   ];
   const tabsFor = () => TABS.filter(([, , , visible]) => visible());
@@ -481,7 +505,7 @@
   // --- Vade takip (v2.0.9) ---
   const dueDays = row => (row.state === "overdue" ? `${Math.abs(row.days)} gün geçti` : row.state === "today" ? "bugün" : row.state === "month" ? "bu ay" : `${row.days} gün`);
   function vadeView(s) {
-    const allowed = s.data?.allowed || Object.keys(SOURCE_LABELS).filter(id => canSee() || !["cheque", "note", "cash"].includes(id) || (id === "cash" ? HOF.can("cash.view") : HOF.can("cheques.view")));
+    const allowed = s.data?.allowed || Object.keys(SOURCE_LABELS).filter(id => canSee() || !["cheque", "note", "cash", "invoice"].includes(id) || (id === "cash" ? HOF.can("cash.view") : id === "invoice" ? HOF.can("invoices.view") : HOF.can("cheques.view")));
     const chosen = new Set(s.sources.length ? s.sources : allowed);
     const params = { ...(s.preset ? { preset: s.preset } : { from: s.from, to: s.to }), direction: s.direction, sources: s.sources.join(","), q: s.q, late: s.late ? "" : "0" };
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_DUE)}${exportButtons(`/api/workspace/overview/vade-takip.pdf?${query(params)}`, `/api/workspace/overview/vade-takip.xlsx?${query(params)}`)}</div>
@@ -493,7 +517,7 @@
     const d = s.data;
     const t = d.totals;
     const rows = d.rows
-      .map((row, index) => `<tr class="is-${row.state}" data-due-row="${index}" tabindex="0" title="${esc(row.ref?.type === "record" ? "Kaydı tabloda göster" : "Kaynağını aç")}"><td>${esc(HOF.formatDate(row.date))}<small class="hof-rep-days is-${row.state}">${esc(dueDays(row))}</small></td><td><b>${esc(row.party || "—")}</b></td><td><span class="hof-rep-src is-${esc(row.source)}">${esc(SOURCE_LABELS[row.source] || row.source)}</span></td><td>${esc(row.label || "")}${row.detail ? `<small>${esc(row.detail)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" && row.amount !== null ? esc(money(row.amount)) : row.direction === "in" ? '<span class="hof-muted">tutar yok</span>' : ""}</td><td class="num hof-cash-out">${row.direction === "out" && row.amount !== null ? esc(money(row.amount)) : ""}</td></tr>`)
+      .map((row, index) => `<tr class="is-${row.state}" data-due-row="${index}" tabindex="0" title="${esc(row.ref?.type === "record" ? "Kaydı tabloda göster" : "Kaynağını aç")}"><td>${esc(HOF.formatDate(row.date))}<small class="hof-rep-days is-${row.state}">${esc(dueDays(row))}</small></td><td><b>${esc(row.party || "—")}</b></td><td><span class="hof-rep-src is-${esc(row.source)}">${esc(ROW_LABELS[row.source] || row.source)}</span></td><td>${esc(row.label || "")}${row.detail ? `<small>${esc(row.detail)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" && row.amount !== null ? esc(money(row.amount)) : row.direction === "in" ? '<span class="hof-muted">tutar yok</span>' : ""}</td><td class="num hof-cash-out">${row.direction === "out" && row.amount !== null ? esc(money(row.amount)) : ""}</td></tr>`)
       .join("");
     const dormant = d.dormant?.length
       ? `<details class="hof-rep-overdue"><summary>${ICONS.warn} Tabloda ödemesi kesilmiş olabilecek ${d.dormant.length} kayıt (son yazılı aydan sonra üst üste boş aylar)</summary><div class="hof-rep-table"><table class="hof-table"><tbody>${d.dormant.map((item, index) => `<tr data-dormant-row="${index}" tabindex="0" title="Kaydı tabloda göster"><td><b>${esc(item.party || "—")}</b><small>${esc(item.detail || "")}</small></td><td>Son ödeme: ${esc(item.lastPaidText || "—")}</td><td class="num">${esc(String(item.emptyMonths))} boş ay</td></tr>`).join("")}</tbody></table></div></details>`
@@ -523,37 +547,42 @@
     if (!s.data) return `${filters}<p class="hof-empty">Projeksiyon hazırlanıyor…</p>`;
     const d = s.data;
     const low = d.lowest;
-    const rows = d.rows.map(row => `<tr class="is-${row.direction}"><td>${esc(HOF.formatDate(row.date))}</td><td><span class="hof-rep-src is-${esc(row.source)}">${esc(SOURCE_LABELS[row.source] || row.source)}</span></td><td><b>${esc(row.label)}</b>${row.party ? `<small>${esc(row.party)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" ? esc(money(row.amount)) : ""}</td><td class="num hof-cash-out">${row.direction === "out" ? esc(money(row.amount)) : ""}</td><td class="num ${row.balance < 0 ? "hof-cash-out" : ""}"><b>${esc(money(row.balance))}</b></td></tr>`).join("");
+    const rows = d.rows.map(row => `<tr class="is-${row.direction}"><td>${esc(HOF.formatDate(row.date))}</td><td><span class="hof-rep-src is-${esc(row.source)}">${esc(ROW_LABELS[row.source] || row.source)}</span></td><td><b>${esc(row.label)}</b>${row.party ? `<small>${esc(row.party)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" ? esc(money(row.amount)) : ""}</td><td class="num hof-cash-out">${row.direction === "out" ? esc(money(row.amount)) : ""}</td><td class="num ${row.balance < 0 ? "hof-cash-out" : ""}"><b>${esc(money(row.balance))}</b></td></tr>`).join("");
     const overdue = d.overdue.length
-      ? `<details class="hof-rep-overdue"><summary>${ICONS.warn} Vadesi geçmiş, kapanmamış: <b>${esc(money(d.overdueTotals.in))}</b> alacak · <b>${esc(money(d.overdueTotals.out))}</b> ödeme (${d.overdue.length} kalem) — ${d.includeOverdue ? "başlangıca eklendi" : "tahmine dahil değil"}</summary><div class="hof-rep-table"><table class="hof-table"><tbody>${d.overdue.map(row => `<tr><td>${esc(HOF.formatDate(row.date))}</td><td>${esc(SOURCE_LABELS[row.source] || row.source)}</td><td><b>${esc(row.label)}</b>${row.party ? `<small>${esc(row.party)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" ? esc(money(row.amount)) : ""}</td><td class="num hof-cash-out">${row.direction === "out" ? esc(money(row.amount)) : ""}</td></tr>`).join("")}</tbody></table></div></details>`
+      ? `<details class="hof-rep-overdue"><summary>${ICONS.warn} Vadesi geçmiş, kapanmamış: <b>${esc(money(d.overdueTotals.in))}</b> alacak · <b>${esc(money(d.overdueTotals.out))}</b> ödeme (${d.overdue.length} kalem) — ${d.includeOverdue ? "başlangıca eklendi" : "tahmine dahil değil"}</summary><div class="hof-rep-table"><table class="hof-table"><tbody>${d.overdue.map(row => `<tr><td>${esc(HOF.formatDate(row.date))}</td><td>${esc(ROW_LABELS[row.source] || row.source)}</td><td><b>${esc(row.label)}</b>${row.party ? `<small>${esc(row.party)}</small>` : ""}</td><td class="num hof-cash-in">${row.direction === "in" ? esc(money(row.amount)) : ""}</td><td class="num hof-cash-out">${row.direction === "out" ? esc(money(row.amount)) : ""}</td></tr>`).join("")}</tbody></table></div></details>`
       : "";
     return `${filters}
       ${statTiles([
-        { label: "Bugünkü Kasa", html: moneyHtml(d.cashToday) },
+        // K10 (plan §8.9): başlangıç = Nakit Kasa + Gerçek Banka; Hesabı Atanmamış Eski Hareketler ayrı, başlangıca girmez.
+        { label: "Bugünkü Nakit ve Banka", html: moneyHtml(d.cashToday), help: d.start && d.start.realBank !== null && d.start.realBank !== undefined ? `Nakit Kasa ${esc(money(d.start.cash))} · ${esc(d.start.labels?.realBank || "Gerçek Banka")} ${d.start.defined ? esc(money(d.start.realBank)) : "—"}` : "" },
+        // Hesabı Atanmamış: bugüne kadarki satırlar (Banka Genel Bakış ile aynı formül). Eski sürümden kalan ileri tarihli satır ayrı bilgi; akışta
+        // kendi gününde beklenen hareket olarak, ayrı kaynak adıyla ("Hesabı Atanmamış (ileri tarihli)"; Kasa değil) yer alır.
+        d.start && (Math.abs(d.start.unassigned || 0) > 0.005 || d.start.unassignedFuture) ? { label: d.start.labels?.unassigned || "Hesabı Atanmamış Eski Hareketler", html: moneyHtml(d.start.unassigned || 0), help: `Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın${d.start.unassignedFuture ? ` · tarihi gelmemiş ${d.start.unassignedFuture.count} eski hareket (${esc(money(d.start.unassignedFuture.total))}, ilk ${esc(HOF.formatDate(d.start.unassignedFuture.firstDate))}) bu tutara girmez; akışta kendi gününde “${esc(ROW_LABELS.legacy)}” satırıdır` : ""}` } : null,
         { label: "Beklenen Giriş", html: moneyHtml(d.totals.in), tone: "is-in" },
         { label: "Beklenen Çıkış", html: moneyHtml(d.totals.out), tone: "is-out" },
-        { label: `Tahmini Kasa · ${HOF.formatDate(d.to)}`, html: moneyHtml(d.closing), tone: d.closing < 0 ? "is-bad" : "" },
-        { label: "En Düşük Tahmini Kasa", html: moneyHtml(low.balance), help: `${esc(HOF.formatDate(low.date))}${d.negative ? ` · <span class="hof-pulse-flag is-late">${ICONS.warn}kasa eksiye düşüyor</span>` : ""}`, tone: d.negative ? "is-bad" : "" },
+        // 2.1.0 temel sürüm (K10): projeksiyonun bakiyesi Nakit Kasa + Gerçek Banka'dır; adlar "kasa" demez (PDF ve Excel ile aynı).
+        { label: `Tahmini Nakit ve Banka · ${HOF.formatDate(d.to)}`, html: moneyHtml(d.closing), tone: d.closing < 0 ? "is-bad" : "" },
+        { label: "En Düşük Tahmini Nakit ve Banka", html: moneyHtml(low.balance), help: `${esc(HOF.formatDate(low.date))}${d.negative ? ` · <span class="hof-pulse-flag is-late">${ICONS.warn}nakit ve banka eksiye düşüyor</span>` : ""}`, tone: d.negative ? "is-bad" : "" },
       ])}
-      <figure class="hof-rep-chart" data-chart aria-label="Tahmini kasa grafiği"></figure>
+      <figure class="hof-rep-chart" data-chart aria-label="Tahmini nakit ve banka grafiği"></figure>
       ${overdue}
-      ${d.periods ? periodTable(d) : `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Kaynak</th><th>Açıklama</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Beklenen Kasa</th></tr></thead><tbody>
-        <tr class="is-opening"><td>${esc(HOF.formatDate(d.from))}</td><td></td><td><b>Başlangıç</b><small>Bugünkü kasa${d.carried.in || d.carried.out ? " + başlangıca kadar beklenenler" : ""}${d.includeOverdue ? " + gecikmişler" : ""}</small></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
+      ${d.periods ? periodTable(d) : `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Kaynak</th><th>Açıklama</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Beklenen Nakit ve Banka</th></tr></thead><tbody>
+        <tr class="is-opening"><td>${esc(HOF.formatDate(d.from))}</td><td></td><td><b>Başlangıç</b><small>Bugünkü nakit ve banka${d.carried.in || d.carried.out ? " + başlangıca kadar beklenenler" : ""}${d.includeOverdue ? " + gecikmişler" : ""}</small></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
         ${rows || '<tr><td colspan="6" class="hof-empty">Bu aralıkta beklenen tahsilat ya da ödeme yok.</td></tr>'}
       </tbody></table></div>`}
       ${d.rowTotal > d.rows.length ? `<p class="hof-rep-note">Ekranda ilk ${d.rows.length.toLocaleString("tr-TR")} satır; tamamı PDF ve Excel'de.</p>` : ""}
-      <p class="hof-rep-note">Aynı gün önce ödemeler yazılır (en düşük kasa ihtiyatlı hesaplanır). Tarihler takvim günüdür.</p>`;
+      <p class="hof-rep-note">Aynı gün önce ödemeler yazılır (en düşük bakiye ihtiyatlı hesaplanır). Tarihler takvim günüdür.</p>`;
   }
-  // Dönem toplamları (gün / hafta / ay): giriş, çıkış, net ve dönem sonu tahmini kasa.
+  // Dönem toplamları (gün / hafta / ay): giriş, çıkış, net ve dönem sonu tahmini nakit ve banka.
   function periodTable(d) {
     const head = { day: "Gün", week: "Hafta", month: "Ay" }[d.group] || "Dönem";
     const rows = d.periods.map(period => `<tr><td><b>${esc(period.label)}</b><small>${period.count} hareket</small></td><td class="num hof-cash-in">${period.in ? esc(money(period.in)) : ""}</td><td class="num hof-cash-out">${period.out ? esc(money(period.out)) : ""}</td><td class="num ${period.net < 0 ? "hof-cash-out" : ""}">${esc(money(period.net))}</td><td class="num ${period.closing < 0 ? "hof-cash-out" : ""}"><b>${esc(money(period.closing))}</b></td></tr>`).join("");
-    return `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>${head}</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Net</th><th class="num">Dönem Sonu Kasa</th></tr></thead><tbody>
+    return `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>${head}</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Net</th><th class="num">Dönem Sonu Nakit ve Banka</th></tr></thead><tbody>
       <tr class="is-opening"><td><b>Başlangıç</b><small>${esc(HOF.formatDate(d.from))}</small></td><td></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
       ${rows || '<tr><td colspan="5" class="hof-empty">Bu aralıkta beklenen tahsilat ya da ödeme yok.</td></tr>'}</tbody></table></div>`;
   }
-  // Tahmini kasa: basamaklı çizgi (bakiye yalnız hareket günlerinde değişir), sıfır çizgisi, en düşük nokta; üzerine
-  // gelince o günün girişi/çıkışı ve kasası.
+  // Tahmini nakit ve banka: basamaklı çizgi (bakiye yalnız hareket günlerinde değişir), sıfır çizgisi, en düşük nokta; üzerine
+  // gelince o günün girişi/çıkışı ve bakiyesi.
   function wireChart(figure, d) {
     if (!figure) return;
     const points = [{ date: d.from, balance: d.opening, in: 0, out: 0 }, ...d.days.map(day => ({ date: day.date, balance: day.balance, in: day.in, out: day.out }))];
@@ -584,7 +613,7 @@
     const compact = value => COMPACT_NUMBER.format(value);
     const mid = new Date((t0 + t1) / 2).toISOString().slice(0, 10);
     const low = d.lowest;
-    figure.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tahmini kasa ${HOF.formatDate(d.from)} – ${HOF.formatDate(end)}; en düşük ${money(low.balance)} (${HOF.formatDate(low.date)})">
+    figure.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tahmini nakit ve banka ${HOF.formatDate(d.from)} – ${HOF.formatDate(end)}; en düşük ${money(low.balance)} (${HOF.formatDate(low.date)})">
         ${ticks.map(value => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(value).toFixed(1)}" y2="${y(value).toFixed(1)}" class="${value === 0 ? "hof-chart-zero" : "hof-chart-grid"}"/><text x="${pad.l - 8}" y="${(y(value) + 3.5).toFixed(1)}" class="hof-chart-tick" text-anchor="end">${value === 0 ? "0" : esc(compact(value))} ₺</text>`).join("")}
         <path d="${area}" class="hof-chart-area"/>
         <path d="${path}" class="hof-chart-line"/>
@@ -592,7 +621,7 @@
         ${[points[0].date, mid, end].map((date, index) => `<text x="${x(date).toFixed(1)}" y="${H - 7}" class="hof-chart-tick" text-anchor="${index === 0 ? "start" : index === 2 ? "end" : "middle"}">${esc(HOF.formatDate(date))}</text>`).join("")}
         <line class="hof-chart-cross" x1="0" x2="0" y1="${pad.t}" y2="${H - pad.b}" visibility="hidden"/>
         <rect x="${pad.l}" y="${pad.t}" width="${W - pad.l - pad.r}" height="${H - pad.t - pad.b}" fill="transparent" data-hit/>
-      </svg><div class="hof-chart-tip" hidden></div><figcaption>Tahmini kasa · ${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(end))}</figcaption>`;
+      </svg><div class="hof-chart-tip" hidden></div><figcaption>Tahmini Nakit ve Banka · ${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(end))}</figcaption>`;
     const svg = figure.querySelector("svg");
     const tip = figure.querySelector(".hof-chart-tip");
     const cross = figure.querySelector(".hof-chart-cross");
@@ -786,7 +815,7 @@
     // Raporlar penceresi açıksa (Cari ekstre/mizan, Vade takip, Nakit akışı, Çek/Senet sekmeleri) gösterilen rapor da
     // yenilenir (v2.0.11); "Tüm raporlar" ve "Tablo raporları" sekmeleri kendi yenilemesini yapar.
     const reportSoon = HOF.refresher(() => (report?.modal && !PANE_TABS.has(report.tab) && state()?.data ? run({ quiet: true }) : null), { delay: 400, gap: 2000 });
-    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], detail => (detail?.local ? reportSoon.now() : reportSoon()), 400);
+    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques", "bank", "invoices"], detail => (detail?.local ? reportSoon.now() : reportSoon()), 400);
     HOF.on("live:resync", () => reloadSoon(200));
     HOF.on("live:hello", () => {
       live = true;

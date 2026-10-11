@@ -1,0 +1,31 @@
+{
+  "ad": "e2e-senaryo-banka-210-trpc-zorla-6sn",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.mjs",
+  "commit": "1bf422fbe62ac60d4c592521333165a262034dff",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 1,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:21:35.047Z",
+  "sure_sn": 332.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 396,
+    "gecen": 396,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/e2e-senaryo-banka-210-trpc-zorla-6sn.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "a9108ce9fae96542103021255d5e19b2bc88ae566beb58c04c78d51e8233611d",
+  "ham_cikti_bayt": 45190
+}

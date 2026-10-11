@@ -1,0 +1,113 @@
+{
+  "senaryo": "s5-kapali",
+  "ozet": {
+    "bulunmaSonrasi3DkSurum": "9.0.0",
+    "ucDkIcindePaketIndirme": 0,
+    "simdiGuncelleTiklamadanKurulumaSn": 1,
+    "surum": "9.0.1",
+    "bulunmaAni": "2026-10-10T18:13:51.174Z"
+  },
+  "ekran": {
+    "panelMetni": "Güncellemeler Kurulu sürüm 9.0.0 · Kararlı kanal · Son denetim: 10.10.2026 18:13 — 9.0.1 sürümü bulundu Güncellemeleri Denetle Şimdi Güncelle Yeni sürüm hazır: DestekOfis 9.0.14,7 MB · 10.10.2026 18:13 · Kendiliğinden kurulum kapalı; kurmak için Şimdi Güncelle.9.0.1 — Test sürümü • Otomatik güncelleme denemesi. Yeni sürümü kendiliğinden kur (sunucu açılışında, 15 dakika boşta kalınca ya da mesai dışında; kapalıyken yalnız haber verilir) Güncelleme KanalıKararlı (önerilen)Deneme (beta)",
+    "zil": null
+  },
+  "sonDurum": {
+    "type": "durum",
+    "id": 6,
+    "updates": {
+      "enabled": true,
+      "autoUpdate": false,
+      "channel": "stable",
+      "currentVersion": "9.0.1",
+      "state": "idle",
+      "progress": null,
+      "available": null,
+      "incompatible": null,
+      "lastCheck": {
+        "at": "2026-10-10T18:16:56.067Z",
+        "status": "up-to-date",
+        "version": "9.0.1",
+        "reason": null
+      },
+      "lastResult": {
+        "outcome": "success",
+        "version": "9.0.1",
+        "previous": "9.0.0",
+        "at": "2026-10-10T18:16:57.208Z"
+      },
+      "lastError": null,
+      "failedVersions": [],
+      "deferred": null,
+      "periodicCheckMs": 21600000,
+      "skippedVersions": [],
+      "history": [
+        {
+          "at": "2026-10-10T18:16:57.207Z",
+          "event": "installed",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        },
+        {
+          "at": "2026-10-10T18:16:56.711Z",
+          "event": "activated",
+          "version": "9.0.1",
+          "previous": "9.0.0"
+        }
+      ]
+    },
+    "activity": {
+      "lastActivityAt": "2026-10-10T18:17:00.374Z",
+      "busy": true,
+      "idleMs": 900000
+    },
+    "phase": "ready",
+    "version": "9.0.1",
+    "localTime": "Sat Oct 10 2026 18:17:05 GMT+0000 (Coordinated Universal Time)",
+    "timeZone": "UTC",
+    "offsetMinutes": 0,
+    "quietNow": true
+  },
+  "verilerOnce": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "verilerSonra": {
+    "kullanici": 2,
+    "cari": 1,
+    "kasa": 1,
+    "kasaToplam": 1250
+  },
+  "yedekler": [
+    "destekofis-001-2026-10-10T18-14-51-012Z.sqlite",
+    "destekofis-001-2026-10-10T18-16-56-680Z-guncelleme-oncesi-9-0-0.sqlite"
+  ],
+  "kaynakIstekleri": [
+    {
+      "at": "2026-10-10T18:13:50.549Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:13:50.575Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:16:56.071Z",
+      "path": "/repos/test/repo/releases",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:16:56.078Z",
+      "path": "/download/9.0.1/destekofis-guncelleme.json",
+      "status": 200
+    },
+    {
+      "at": "2026-10-10T18:16:56.487Z",
+      "path": "/download/9.0.1/destekofis-guncelleme-9.0.1.zip",
+      "status": 200
+    }
+  ]
+}

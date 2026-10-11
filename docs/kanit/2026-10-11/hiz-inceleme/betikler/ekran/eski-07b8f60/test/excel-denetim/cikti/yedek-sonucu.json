@@ -1,0 +1,242 @@
+[
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "Yönetim → Yedekler → Şimdi Yedek Al: Tüm Şirketler",
+  "expected": "her şirket için bir yedek",
+  "actual": "HTTP 200; 001 · Merkez Ticaret A.Ş. → 001 - Merkez Ticaret A.Ş/destekofis-001-2026-10-04T13-00-34-820Z-manuel.sqlite | 002 · Şube Ticaret Ltd. Şti. → 002 - Şube Ticaret Ltd. Şti/destekofis-002-2026-10-04T13-00-34-820Z-manuel.sqlite",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "001 yedeği kendi klasöründe (Windows kuralı: ad noktayla bitmez)",
+  "expected": "backups/001 - Merkez Ticaret A.Ş/",
+  "actual": "backups/001 - Merkez Ticaret A.Ş/",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "001 yedeğinin adında şirket kodu",
+  "expected": "destekofis-001-…",
+  "actual": "destekofis-001-2026-10-04T13-00-34-820Z-manuel.sqlite",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "001 yedeğinin İÇİNDE kendi kimliği",
+  "expected": "sirket-001 (001)",
+  "actual": "sirket-001 (001)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "001 yedeğinde yalnız kendi işareti",
+  "expected": "[YEDEK-İŞARET-001]",
+  "actual": "[\"YEDEK-İŞARET-001\"]",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "001 yedeğindeki cari ve fatura sayısı yedek anındakiyle aynı",
+  "expected": "cari 374, satış+alış 2948",
+  "actual": "cari 374, kaydedilmiş fatura 2948",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "002 yedeği kendi klasöründe (Windows kuralı: ad noktayla bitmez)",
+  "expected": "backups/002 - Şube Ticaret Ltd. Şti/",
+  "actual": "backups/002 - Şube Ticaret Ltd. Şti/",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "002 yedeğinin adında şirket kodu",
+  "expected": "destekofis-002-…",
+  "actual": "destekofis-002-2026-10-04T13-00-34-820Z-manuel.sqlite",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "002 yedeğinin İÇİNDE kendi kimliği",
+  "expected": "sirket-3a17daa7-54e9-484c-a4f2-82c2e1586057 (002)",
+  "actual": "sirket-3a17daa7-54e9-484c-a4f2-82c2e1586057 (002)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "002 yedeğinde yalnız kendi işareti",
+  "expected": "[YEDEK-İŞARET-002]",
+  "actual": "[\"YEDEK-İŞARET-002\"]",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Şimdi Yedek Al (Tüm Şirketler)",
+  "name": "002 yedeğindeki cari ve fatura sayısı yedek anındakiyle aynı",
+  "expected": "cari 374, satış+alış 2948",
+  "actual": "cari 374, kaydedilmiş fatura 2948",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Otomatik Yedek (Zamanlayıcı)",
+  "name": "Zamanlayıcının bu saatteki çalışması (her şirket kendi klasörüne)",
+  "expected": "iki şirket de yedeklenir (ya da son yedek yeni olduğu için atlanır)",
+  "actual": "[]",
+  "ok": true,
+  "detail": "Zamanlayıcı son yedekten 6 saat geçmemişse yeniden almaz; aşağıda klasörler sayılıyor."
+ },
+ {
+  "group": "Otomatik Yedek (Zamanlayıcı)",
+  "name": "001 klasöründeki bütün yedekler (5 dosya) bu şirketin",
+  "expected": "başka şirketin dosyası/kimliği yok",
+  "actual": "yabancı ad 0, yabancı kimlik 0: destekofis-001-2026-10-04T12-59-29-488Z-manuel.sqlite, destekofis-001-2026-10-04T12-59-40-262Z-geri-yukleme-oncesi-001.sqlite, destekofis-001-2026-10-04T13-00-05-942Z-manuel.sqlite, destekofis-001-2026-10-04T13-00-16-581Z-geri-yukleme-oncesi-001.sqlite, destekofis-001-2026-10-04T13-00-34-820Z-manuel.sqlite",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Otomatik Yedek (Zamanlayıcı)",
+  "name": "002 klasöründeki bütün yedekler (5 dosya) bu şirketin",
+  "expected": "başka şirketin dosyası/kimliği yok",
+  "actual": "yabancı ad 0, yabancı kimlik 0: destekofis-002-2026-10-04T12-59-29-488Z-manuel.sqlite, destekofis-002-2026-10-04T12-59-33-552Z-geri-yukleme-oncesi-002.sqlite, destekofis-002-2026-10-04T13-00-05-942Z-manuel.sqlite, destekofis-002-2026-10-04T13-00-10-046Z-geri-yukleme-oncesi-002.sqlite, destekofis-002-2026-10-04T13-00-34-820Z-manuel.sqlite",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Otomatik Yedek (Zamanlayıcı)",
+  "name": "Yönetim → Yedekleri Denetle",
+  "expected": "sorun yok",
+  "actual": "{\"ok\":true,\"backupRoot\":\"/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/canli/backups\",\"companies\":[{\"id\":\"sirket-001\",\"code\":\"001\",\"name\":\"Merkez Ticaret A.Ş.\",\"folder\":\"001 - Merkez Ticaret A.Ş\",\"exists\":true,\"count\":5,\"files\":[{\"name\":\"destekofis-001-2026-10-04T12-59-29-488Z-manuel.sqlite\",\"code\":\"001\",\"label\":\"manuel\",\"identity\":{\"id\":\"sirket-001\",\"code\":\"001\",\"name\":",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış",
+  "name": "Yedekten sonra 002'ye 12.345,67 TL nakit tahsilat girilir",
+  "expected": "Kasa -12042568.88 → -12030223.21",
+  "actual": "HTTP 200; Kasa -12030223.21",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış",
+  "name": "001'in yedeğini 002'ye geri yüklemeye çalışmak (yanlış şirket)",
+  "expected": "409 reddedilir; 002 değişmez",
+  "actual": "HTTP 409 Bu yedek “001 · Merkez Ticaret A.Ş.” şirketine ait; “002 · Şube Ticaret Ltd. Şti.” şirketine geri yüklenemez. Yedeği kendi şirketine geri yükleyin.",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış",
+  "name": "Yanlış şirket denemesinden sonra 002 aynı",
+  "expected": "{\"cari\":374,\"bakiye\":16374425.79,\"kasa\":-12030223.21,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-002\"]}",
+  "actual": "{\"cari\":374,\"bakiye\":16374425.79,\"kasa\":-12030223.21,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-002\"]}",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış",
+  "name": "Doğru yedek, yanlış parola",
+  "expected": "403",
+  "actual": "HTTP 403",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış",
+  "name": "002 kendi yedeğinden geri yüklenir (hemen)",
+  "expected": "{\"cari\":374,\"bakiye\":16386771.46,\"kasa\":-12042568.88,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-002\"]}",
+  "actual": "HTTP 200; {\"cari\":374,\"bakiye\":16386771.46,\"kasa\":-12042568.88,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-002\"]}",
+  "ok": true,
+  "detail": "güvenlik kopyası: destekofis-002-2026-10-04T13-00-38-648Z-geri-yukleme-oncesi-002.sqlite"
+ },
+ {
+  "group": "002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış",
+  "name": "Geri yükleme 001'e dokunmadı",
+  "expected": "{\"cari\":374,\"bakiye\":16386771.46,\"kasa\":-12042568.88,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-001\"]}",
+  "actual": "{\"cari\":374,\"bakiye\":16386771.46,\"kasa\":-12042568.88,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-001\"]}",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış",
+  "name": "Geri yüklenen 002'de yeniden çalışılır (1 TL tahsilat)",
+  "expected": "kaydedilir",
+  "actual": "HTTP 200; Kasa -12042567.88",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "001 Tatbikatı (Yeniden Açılışta Geri Yükleme)",
+  "name": "Yedekten sonra 001'e 7.777,77 TL tahsilat",
+  "expected": "Kasa +7.777,77",
+  "actual": "HTTP 200; Kasa -12042568.88 → -12034791.11",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "001 Tatbikatı (Yeniden Açılışta Geri Yükleme)",
+  "name": "001 geri yüklemesi istenir",
+  "expected": "yeniden açılışta uygulanmak üzere bekletilir (staged)",
+  "actual": "HTTP 200 {\"staged\":true,\"restarting\":false,\"restartRequired\":true,\"company\":\"001 · Merkez Ticaret A.Ş.\",\"name\":\"destekofis-001-2026-10-04T13-00-34-820Z-manuel.sqlite\"}",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "001 Tatbikatı (Yeniden Açılışta Geri Yükleme)",
+  "name": "Sunucu yeniden açıldı: 001 yedek anındaki sayılarda",
+  "expected": "{\"cari\":374,\"bakiye\":16386771.46,\"kasa\":-12042568.88,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-001\"]}",
+  "actual": "{\"cari\":374,\"bakiye\":16386771.46,\"kasa\":-12042568.88,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-001\"]}",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "001 Tatbikatı (Yeniden Açılışta Geri Yükleme)",
+  "name": "Yeniden açılış 002'yi bozmadı",
+  "expected": "{\"cari\":374,\"bakiye\":16386771.46,\"kasa\":-12042568.88,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-002\"]}",
+  "actual": "{\"cari\":374,\"bakiye\":16386771.46,\"kasa\":-12042568.88,\"satis\":1528,\"alis\":1420,\"isaret\":[\"YEDEK-İŞARET-002\"]}",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "001 Tatbikatı (Yeniden Açılışta Geri Yükleme)",
+  "name": "Ortak katman korundu (kullanıcılar)",
+  "expected": "11 kullanıcı (yönetici + 10)",
+  "actual": "11",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "001 Tatbikatı (Yeniden Açılışta Geri Yükleme)",
+  "name": "Geri yüklenen 001'de yeniden çalışılır",
+  "expected": "kaydedilir",
+  "actual": "HTTP 200",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Temizlik",
+  "name": "001 işaret carisi silinir",
+  "expected": "200",
+  "actual": "HTTP 200",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Temizlik",
+  "name": "002 işaret carisi silinir",
+  "expected": "200",
+  "actual": "HTTP 200",
+  "ok": true,
+  "detail": ""
+ }
+]

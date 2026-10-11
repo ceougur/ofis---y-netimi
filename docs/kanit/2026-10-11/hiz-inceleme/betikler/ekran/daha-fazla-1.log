@@ -1,0 +1,21 @@
+(node:31028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[A] tur 1: tutuldu true · önce 50 · Daha Fazla sonrası 100 · en çok 100 · son 100
+[B] tur 1: imleç tutuldu true · arka plan yeniledi true · satır 100 · eksik ["BNK-2026-000114"] · çift [] · fazla ["BNK-2026-000064"]
+[K] tur 1: satır 100 · eksik 0 · çift 0
+[A] tur 2: tutuldu true · önce 50 · Daha Fazla sonrası 100 · en çok 100 · son 100
+[B] tur 2: imleç tutuldu true · arka plan yeniledi true · satır 100 · eksik ["BNK-2026-000116"] · çift [] · fazla ["BNK-2026-000066"]
+[K] tur 2: satır 100 · eksik 0 · çift 0
+[A] tur 3: tutuldu true · önce 50 · Daha Fazla sonrası 100 · en çok 100 · son 100
+[B] tur 3: imleç tutuldu true · arka plan yeniledi true · satır 100 · eksik ["BNK-2026-000118"] · çift [] · fazla ["BNK-2026-000068"]
+[K] tur 3: satır 100 · eksik 0 · çift 0
+[A] tur 4: tutuldu true · önce 50 · Daha Fazla sonrası 100 · en çok 100 · son 100
+[B] tur 4: imleç tutuldu true · arka plan yeniledi true · satır 100 · eksik ["BNK-2026-000120"] · çift [] · fazla ["BNK-2026-000070"]
+[K] tur 4: satır 100 · eksik 0 · çift 0
+[A] tur 5: tutuldu true · önce 50 · Daha Fazla sonrası 100 · en çok 100 · son 100
+[B] tur 5: imleç tutuldu true · arka plan yeniledi true · satır 100 · eksik ["BNK-2026-000122"] · çift [] · fazla ["BNK-2026-000072"]
+[K] tur 5: satır 100 · eksik 0 · çift 0
+[A] tur 6: tutuldu true · önce 50 · Daha Fazla sonrası 100 · en çok 100 · son 100
+[B] tur 6: imleç tutuldu true · arka plan yeniledi true · satır 100 · eksik ["BNK-2026-000124"] · çift [] · fazla ["BNK-2026-000074"]
+[K] tur 6: satır 100 · eksik 0 · çift 0
+ÖZET {"A_geriAlinan":0,"A_tutulan":6,"B_eksikli":6,"B_ciftli":0,"B_tutulan":6,"K_hatali":0,"tur":6,"sayfaHatalari":[]}

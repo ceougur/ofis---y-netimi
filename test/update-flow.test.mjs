@@ -197,7 +197,14 @@ process.exit(3);
     const { supervisor, base, appHealth, log } = await supervise(installRoot, github);
     try {
       await waitFor(async () => (await appHealth()) || Promise.reject(new Error("hazır değil")));
-      assert.equal(github.hits.list, 0, "otomatik denetim yapılmamalı");
+      // 2.1.0: kapalıyken de açılışta denetlenir; bulunan sürüm KURULMAZ, yöneticiye "hazır" görünür (eski kodda hiç sorulmuyordu).
+      await waitFor(async () => (supervisor.updates.status().available ? true : Promise.reject(new Error("açılış denetimi yok"))), { timeoutMs: 15_000 });
+      assert.ok(github.hits.list >= 1, "açılışta denetim yapılmalı (kendiliğinden kur kapalıyken de)");
+      assert.equal(supervisor.updates.status().available.version, "9.0.1");
+      await sleep(1500);
+      assert.deepEqual(github.hits.downloads.filter(name => name.endsWith(".zip")), [], "kapalıyken paket (zip) indirilmemeli; yalnız bildirge okunur");
+      assert.equal((await appHealth())?.version, "9.0.0", "kapalıyken kurulmamalı");
+      assert.equal(supervisor.updates.status().lastResult, null);
       const admin = await login(base, "admin", ADMIN_PASSWORD);
       assert.equal(admin.status, 200);
       const call = async (method, url, body) => {
@@ -208,6 +215,8 @@ process.exit(3);
       assert.equal(status.body.data.enabled, true);
       assert.equal(status.body.data.autoUpdate, false);
       assert.equal(status.body.data.currentVersion, "9.0.0");
+      assert.equal(status.body.data.available?.version, "9.0.1", "yönetici paneli denetle demeden 'hazır' gösterir");
+      assert.equal(status.body.data.deferred?.version, "9.0.1");
 
       const checked = await call("POST", "/api/admin/update/check");
       assert.equal(checked.status, 200);

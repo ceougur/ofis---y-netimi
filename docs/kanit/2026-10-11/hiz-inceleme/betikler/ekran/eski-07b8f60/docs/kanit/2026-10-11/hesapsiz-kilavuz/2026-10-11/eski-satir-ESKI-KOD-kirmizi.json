@@ -1,0 +1,83 @@
+{
+  "ad": "eski-satir-ESKI-KOD-kirmizi",
+  "komut": "npm run test:senaryo-banka-210-eski-satir",
+  "commit": "efa2bd04b1d3d5563f39579a91b6db2639bdf96d",
+  "dal": "worktree-agent-ad04626f333508e13",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:15:39.058Z",
+  "sure_sn": 22.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25,
+    "gecen": 16,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "açıklama Hesapsız'a göre: “Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "seçicinin altında not: “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ödeme açıklaması: “Cariye para verildi (ör. tedarikçiye ödeme, iade): seçilen banka hesabından çıkar.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ödeme formunda seçicinin altında not",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "to-bank Hesapsız: “Kasadaki nakit bankaya yatırılır; seçilen banka hesabına aynı tutar girer (Banka → Hareketler). Nakit Kasa yetmiyorsa program sorar.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "to-bank seçicinin altında not",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "to-cash Hesapsız: “Bankadan çekilen nakit Kasa'ya girer; seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler).”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "to-cash seçicinin altında not",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "peşin satırında not: “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-banka-210-eski-satir: 16 geçti, 9 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-ad04626f333508e13/test/e2e/artifacts/senaryo-banka-210-eski-satir",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-11/hesapsiz-kilavuz/2026-10-11/eski-satir-ESKI-KOD-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad04626f333508e13",
+  "ham_cikti_sha256": "ab9087ef8b6cb6e901433cf16f1e4359e6ad4dbe989bd6620cfd404bf584e689",
+  "ham_cikti_bayt": 4014
+}

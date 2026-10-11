@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-222",
+  "komut": "npm run test:senaryo-222",
+  "commit": "742c8112104cdb1427aaae6982d24a230a4960eb",
+  "dal": "worktree-agent-ae060f41b27875c73",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T03:40:58.951Z",
+  "sure_sn": 103,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/uyari-ufku/2026-10-11/e2e-senaryo-222.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae060f41b27875c73",
+  "ham_cikti_sha256": "c0b89b967706e59a62d6c60b666e43f3988a2a7b4ef838c04b651d3befe7a457",
+  "ham_cikti_bayt": 5843
+}

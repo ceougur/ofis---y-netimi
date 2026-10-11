@@ -1,0 +1,31 @@
+{
+  "ad": "k7-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/hakem-k7-kmh.test.mjs",
+  "commit": "20d07818821f4bf3ee86341336ea97bafdb17ed2",
+  "dal": "worktree-agent-a8a4839b68e9b8616",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T14:21:19.409Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k-bulgulari/2026-10-10/k7-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616",
+  "ham_cikti_sha256": "0bb773e231a05cec855737fbfe33a63a9bd60c620d1696e044ba289988424fd9",
+  "ham_cikti_bayt": 2051
+}

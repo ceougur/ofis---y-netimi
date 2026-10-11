@@ -1,0 +1,166 @@
+[
+ {
+  "label": "giriş 1000 (-10)",
+  "status": 200,
+  "code": "",
+  "error": ""
+ },
+ {
+  "label": "ileri giriş 3000 (+15)",
+  "status": 200,
+  "code": "",
+  "error": ""
+ },
+ {
+  "label": "ileri çıkış 800 (+5)",
+  "status": 200,
+  "code": "",
+  "error": ""
+ },
+ {
+  "label": "ileri cari nakit tahsilat 500 (+18)",
+  "status": 200,
+  "code": "",
+  "error": ""
+ },
+ {
+  "label": "ileri cari POS tahsilat 9000 (+18)",
+  "status": 200,
+  "code": "",
+  "error": ""
+ },
+ {
+  "label": "çıkış 150 bugün",
+  "status": 500,
+  "code": "gate-equivalence",
+  "error": "Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:cash_entries, dates:future:account_entries).",
+  "extra": {}
+ },
+ {
+  "label": "çıkış 200 bugün",
+  "status": 500,
+  "code": "gate-equivalence",
+  "error": "Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:cash_entries, dates:future:account_entries).",
+  "extra": {}
+ },
+ {
+  "label": "çıkış 201 bugün",
+  "status": 500,
+  "code": "gate-equivalence",
+  "error": "Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:cash_entries, dates:future:account_entries).",
+  "extra": {}
+ },
+ {
+  "label": "çıkış 1000 bugün",
+  "status": 500,
+  "code": "gate-equivalence",
+  "error": "Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:cash_entries, dates:future:account_entries).",
+  "extra": {}
+ },
+ {
+  "label": "geçmiş çıkış 300 (-5)",
+  "status": 500,
+  "code": "gate-equivalence",
+  "error": "Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:cash_entries, dates:future:account_entries).",
+  "extra": {}
+ },
+ {
+  "label": "geçmiş çıkış 1001 (-5)",
+  "status": 409,
+  "code": "cash-negative",
+  "error": "Nakit kasada 1.000,00 TL var; 1.001,00 TL çıkış bakiyeyi -1,00 TL eksiye düşürür.",
+  "extra": {
+   "balance": 1000,
+   "after": -1
+  }
+ },
+ {
+  "label": "geçmiş çıkış 1 (-20)",
+  "status": 409,
+  "code": "cash-negative",
+  "error": "Nakit kasada 0,00 TL var; 1,00 TL çıkış bakiyeyi -1,00 TL eksiye düşürür.",
+  "extra": {
+   "balance": 0,
+   "after": -1
+  }
+ },
+ {
+  "label": "ileri girişi 3000→100 düzelt",
+  "status": 200,
+  "code": "",
+  "error": ""
+ },
+ {
+  "label": "ileri girişi sil",
+  "status": 200,
+  "code": "",
+  "error": ""
+ },
+ {
+  "label": "ileri çıkışı 800→5000 düzelt",
+  "status": 409,
+  "code": "cash-negative",
+  "error": "Bu ödeme 800,00 TL'den 5.000,00 TL'ye düzeltilince Nakit Kasa'dan 4.200,00 TL düşer; Nakit Kasa 200,00 TL iken -4.000,00 TL olur.",
+  "extra": {
+   "balance": 200,
+   "after": -4000
+  }
+ },
+ {
+  "label": "payments kolonları",
+  "cols": [
+   "id",
+   "case_key",
+   "amount",
+   "date",
+   "note",
+   "created_by",
+   "created_at",
+   "case_title",
+   "updated_by",
+   "updated_at",
+   "method",
+   "fin_ref",
+   "event_id"
+  ]
+ },
+ {
+  "label": "payments ham satır",
+  "ok": true
+ },
+ {
+  "label": "ham sonrası çıkış 700",
+  "status": 409,
+  "code": "ledger-integrity",
+  "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (100 Kasa (Nakit): 55,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.",
+  "extra": {}
+ },
+ {
+  "label": "ham sonrası çıkış 1300",
+  "status": 409,
+  "code": "cash-negative",
+  "error": "Nakit kasada 1.144,00 TL var; 1.300,00 TL çıkış bakiyeyi -156,00 TL eksiye düşürür.",
+  "extra": {
+   "balance": 1144,
+   "after": -156
+  }
+ },
+ {
+  "label": "ham sonrası çıkış 1500",
+  "status": 409,
+  "code": "cash-negative",
+  "error": "Nakit kasada 1.144,00 TL var; 1.500,00 TL çıkış bakiyeyi -356,00 TL eksiye düşürür.",
+  "extra": {
+   "balance": 1144,
+   "after": -356
+  }
+ },
+ {
+  "label": "kasa",
+  "byMethod": {
+   "cash": 1144,
+   "bank": 0,
+   "card": 8923
+  }
+ }
+]

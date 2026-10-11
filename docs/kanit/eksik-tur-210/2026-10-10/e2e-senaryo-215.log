@@ -1,0 +1,105 @@
+
+■ Kurulum: yönetici girer, Excel yüklenir
+✓ sol menü sırası: Görevler, Mesajlar, Görev Ata, Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler, Banka, Raporlar, Personel Raporu, Kullanım Kılavuzu
+
+■ 1. Boş veri: Fatura ekranı ve boş dönem raporu
+✓ fatura yokken liste boş
+✓ boş listede yol gösteren yazı var
+✓ boş dönemde Satış Faturaları raporu boş (hata yok)
+
+■ 2. Cari önce: ürün, tedarikçi, müşteri ve aynı adlı iki müşteri
+✓ ürün ve cariler açıldı
+✓ aynı adla ikinci cari: açıldı (telefon farklı)
+
+■ 3. Alış: Stoğa Mal Alışı 100 × 20 + %20 KDV
+✓ formdaki toplam 2.400,00 (Toplamlar Toplam₺2.000,00Ara Toplam₺2.000,00 KDV %20₺400,00 Genel Toplam₺2.400,00 Yalnız İki Bin Dört Yüz Türk Lirası )
+✓ stok 100 Paket
+✓ tedarikçi bakiyesi −2.400 (alacaklı)
+
+■ 4. Satış: cari kartındaki Satış Faturası pilinden; 100 peşin + kalanı 3 taksit
+✓ cari kartından açılan faturada cari dolu
+✓ müşteri bakiyesi 320 (420 − 100 peşin): 320
+✓ kalan 320 taksit kartında
+✓ Nakit Kasa +100
+✓ stok 90
+
+■ 5. Satıştan İade: 2 Paket = 84
+✓ İade pili iade formunu açtı (asıl fatura seçili)
+✓ stok 92
+✓ müşteri bakiyesi 236: 236
+✓ taksit kartı iadeyle 236'ya indi: 236
+✓ mutabakat kapısı: ana defter ↔ alt defterler tutarlı
+
+■ 6. Bağlantılar: stok, Kasa, taksit kartı → fatura
+✓ satış numarası okundu (FIS2026000000001)
+✓ stok hareketindeki numara satış faturasını açtı
+✓ Kasa satırının kaynağı 'Faturadan' (elle değil)
+✓ Kasa satırındaki Fatura düğmesi faturayı açtı
+✓ taksit kartındaki Fatura bağlantısı faturayı açtı
+
+■ 7. Aynı adlı ikinci müşteriye çekle satış (API) ve çek kartından faturaya
+✓ çekli satış kesildi (FIS2026000000002)
+✓ çek alınınca o müşterinin borcu kapandı (60 − 60)
+✓ aynı adlı diğer müşteri etkilenmedi
+✓ çek kartındaki Fatura bağlantısı faturayı açtı
+
+■ 8. İptal: iadesi olan satış iptal edilemez; iade → satış iptali, her şey geri
+✓ iadesi olan satışta İptal Et kapalı (önce iade)
+✓ iade iptal: stok 89 (92 − 2 iade geri − 1 çekli satış)
+✓ iade iptal: müşteri 320, taksit kartı yeniden 320
+✓ satış iptal: müşteri 0, taksit kartı kalktı
+✓ satış iptal: stok 99 (yalnız çekli satış düştü)
+✓ satış iptal: peşin 100 Kasa'dan geri çıktı
+✓ mutabakat kapısı tutarlı
+✓ İptal Edilenler sekmesinde 2 belge
+
+■ 9. İleri tarih reddedilir; yetkisiz kullanıcı Fatura'yı görmez
+✓ ileri tarihli fatura reddedildi (İleri tarihli fatura kaydedilemez (15.10.2026). Taslak olarak kaydedin; günü gelince kaydedin.)
+✓ personel kullanıcı açıldı
+✓ personelin menüsünde Fatura görünmüyor
+✓ personelin menüsü yüklendi (Görevler görünüyor)
+✓ personel fatura API'sinde 403
+
+■ 10. Raporlar: bu ay ve geçen yıl
+✓ Satış Faturaları raporu: 1 satır = geçerli satış 1 (iptaller hariç)
+✓ Alış Faturaları raporu: 1
+✓ geçen yıl: boş
+
+■ 11. e-Belge açıkken: Kes, Sonra Gönder → Gönderilecekler → Listeden Sil (etkiler kalır); Kes ve Gönder
+✓ firma (satıcı) bilgisi girildi
+✓ e-Belge açıkken Gönderilecekler sekmesi var
+✓ formda Kes ve Gönder ile Kes, Sonra Gönder düğmeleri
+✓ Sonra Gönder: cari borcu hemen işlendi (1200)
+✓ Gönderilecekler sekmesinde 1 belge
+✓ Tümünü Gönder düğmesi var
+✓ listeden silinen belge Müşteri Fişi numarası aldı (Satış Faturası FIS2026000000001 AçıkGönderilmeyecek)
+✓ listeden silinen belge sonra yine gönderilebilir (e-Belge Gönder düğmesi)
+✓ Listeden Sil: etkiler geri alınmadı (cari 1200)
+✓ Gönderilecekler boşaldı
+✓ mutabakat kapısı tutarlı
+
+■ 12. Formdan “+ Yeni Cari”: cari kartı formdan ayrılmadan açılır, kaydedilince seçili gelir
+✓ senaryo seçiminde Fiyat Farkı Faturası var
+✓ yeni cari kaydedilince fatura formunda seçili geldi
+✓ kesilen belge yeni cariye
+✓ kartta E-Posta düğmesi var
+✓ E-Posta düğmesi cari kartındaki adrese gider
+
+■ 13. Toplu işlemler: Taslaklar sekmesinde Seçilenleri Kes; Satış sekmesinde Seçilenleri İptal Et
+✓ iki taslak hazırlandı
+✓ Seçilenleri Kaydet (2) düğmesi
+✓ iki taslak toplu kesildi
+✓ toplu kesilen belge cariye işlendi (360)
+✓ Seçilenleri İptal Et (2) düğmesi
+✓ iki belge toplu iptal edildi
+✓ iptalle cari borcu geri alındı
+✓ mutabakat kapısı tutarlı
+
+■ 14. Fatura Ayarları: logo yüklenir (JPEG'e çevrilir), kaşe / imza seçeneği; PDF'te logo
+✓ kaşe / imza kutuları varsayılan açık
+✓ PNG logo tarayıcıda JPEG'e çevrildi
+✓ logo ayarlara kaydedildi
+✓ kaşe / imza ayarı kaydedildi
+✓ satış PDF'inde logo görseli gömülü
+
+73 / 73 kontrol geçti.

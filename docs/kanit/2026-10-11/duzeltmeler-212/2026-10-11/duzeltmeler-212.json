@@ -1,0 +1,32 @@
+{
+  "ad": "duzeltmeler-212",
+  "komut": "node --test test/duzeltmeler-212.test.mjs",
+  "commit": "106394fe7fe4b68ce5d2166637d970d1629455e2",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T00:18:55.873Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/duzeltmeler-212/2026-10-11/duzeltmeler-212.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "b8ccde80359e694b2cac38894edd0a517c920fd26fc6b7806c46d35dea1a0db4",
+  "ham_cikti_bayt": 1774
+}

@@ -1,0 +1,20 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KASA-ACILIS-649",
+  "aciklama": "Hakem: en küçük — boş şirket, tek adım: Kasa açılışı 49.505,00 TL (rastgele-1-500 adım 51 aynen; tohum 1'in başlangıcı). Görev metnindeki '495,05 TL' ölçek yanlışı: senaryodaki tutar \"49505\" = 49.505,00 TL = 4.950.500 kuruş = 58.679.415 − 53.728.915.",
+  "dayanak": "hakem: fark sınıfı KASA-ACILIS-649 (alan mizan.500 / mizan.649, A=B≠P; tohum 1 adım 51, 33 tohumun 28'inde). Adım kimliği özgün senaryodakiyle aynı.",
+  "baslangic": {
+    "bugun": "11.03.2025",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    { "id": "51", "islem": "kasa_acilis", "tutar": "49505" }
+  ]
+}

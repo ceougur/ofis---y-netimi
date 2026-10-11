@@ -1,0 +1,31 @@
+{
+  "ad": "npm-test-son",
+  "komut": "npm test",
+  "commit": "b498cad246365472b0e808e512e831924f680511",
+  "dal": "worktree-agent-a9996cccca67b1040",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T13:45:25.206Z",
+  "sure_sn": 763.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1878,
+    "gecen": 1877,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 1
+  },
+  "hukum": "GEÇTİ",
+  "neden": "1 atlanan/todo",
+  "ham_cikti": "docs/kanit/eksik-tur-210/2026-10-10/npm-test-son.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9996cccca67b1040",
+  "ham_cikti_sha256": "89029d143e3ae18ef4ac4acf5d545dfd4a6a9c4e644d81ac48299260e8537f51",
+  "ham_cikti_bayt": 616293
+}

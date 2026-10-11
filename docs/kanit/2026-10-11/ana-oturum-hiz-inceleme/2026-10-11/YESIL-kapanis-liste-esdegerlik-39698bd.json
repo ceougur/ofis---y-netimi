@@ -1,0 +1,32 @@
+{
+  "ad": "YESIL-kapanis-liste-esdegerlik-39698bd",
+  "komut": "node --test test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/banka-210-rapor-is-parcacigi.test.mjs test/liste-kapisi-daha-fazla.test.mjs test/banka-210-hiz-esdegerlik.test.mjs",
+  "commit": "39698bdefb14d4fe47ca620133355511e4bf565d",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-11T15:48:45.674Z",
+  "sure_sn": 53.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 26,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-11/ana-oturum-hiz-inceleme/2026-10-11/YESIL-kapanis-liste-esdegerlik-39698bd.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "7802b42236c4ef7047db0ea8582e36b16dc5bf5adc6ce5ab547af7b65849af63",
+  "ham_cikti_bayt": 13751
+}

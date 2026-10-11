@@ -1,0 +1,81 @@
+
+■ Kurulum: yönetici girer, okul servisi Excel'i yüklenir, sektör önerisi uygulanır
+✓ 6 öğrenci kaydı tabloda
+
+■ A. Ayarlar yeri (m8) ve arama kutusu (m1)
+✓ m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok
+✓ m8: Ayarlar Veri ve Eşitleme penceresini açar
+✓ m1: arama kutusunun her noktası yazmayı başlatır (sol alt köşe, alttaki ipucu, sağ üst köşe, büyüteç)
+✓ m1: yazılan ad Enter ile kayda gider
+
+■ B. Taksitler: boş görünen grup → Cari Seç → toplu taksitlendirme (m3, m4)
+✓ cari açıldı: Ali Çelik (42 C 0079)
+✓ cari açıldı: Mehmet Demir (42 C 0079)
+✓ cari açıldı: Zeynep Kara (42 C 0079)
+✓ cari açıldı: Elif Şahin (42 C 0348)
+✓ m4: grup süzgecinde kart ve cari sayısı (42 C 0079 · 0 kart · 3 cari | 42 C 0348 · 0 kart · 1 cari | 34 AB 111 · 0 kart · boş)
+✓ m4: kartsız grupta boş liste yerine ne yapılacağı yazar
+✓ m3: Cari Seç o gruptaki carileri listeler (Ali Çelik, Mehmet Demir, Zeynep Kara)
+✓ m3: başlıktaki kutu üçünü seçer
+✓ m3: ön izleme — 3 cariye taksit kartı açılacak (Ali Çelik, Mehmet Demir, Zeynep Kara); toplam ₺27.000,00, 3 taksit, ilk vade 10.10.2026, her ay
+✓ m3: ön izleme hiçbir kart açmadı
+✓ m4: kartlar açılınca grup sayısı 3 kart · 3 cari
+✓ Taksitler: Kalan Alacak ₺27.000,00
+✓ m3: ikinci kez seçimde kartı olan cari gelmez (çift kart yok)
+✓ Cari kartı Ali Çelik: bakiye ₺9.000,00 borçlu, 1 taksit kartı
+✓ Cari kartı Mehmet Demir: bakiye ₺9.000,00 borçlu, 1 taksit kartı
+✓ Cari kartı Zeynep Kara: bakiye ₺9.000,00 borçlu, 1 taksit kartı
+✓ Raporlar › Cari Listesi ve Bakiyeler: üç cari listede
+✓ ANLIK DURUM toplam alacak (cari) ₺27.000,00 = Taksitler kalan alacak
+
+■ C. Taksit tahsilatı → Kasa, cari bakiyesi, Cari Bazında Tahsilat raporu
+✓ tahsilat penceresi başlığı: Tahsilat Gir
+✓ Cari kartı Ali Çelik: 9.000 − 3.000 = ₺6.000,00
+✓ Taksitler: kalan ₺24.000,00, tahsil edilen ₺3.000,00
+✓ Kasa: güncel kasa ₺3.000,00 (taksit tahsilatı Kasa'ya düştü)
+✓ Kasa satırı: Taksit tahsilatı · Ali Çelik
+✓ Raporlar › Cari Bazında Tahsilat: Ali Çelik 3.000,00
+✓ ANLIK DURUM: kasa ₺3.000,00, alacak ₺24.000,00
+
+■ D. Kasa açıkken bağlı hareketler değişir; Kasa kendini yeniler (m6)
+✓ verilen çek ödendi (Kasa'dan 2.000 çıktı)
+✓ Kasa: 3.000 − 2.000 = ₺1.000,00
+✓ m6: Kasa kapatılıp açılmadan ₺3.000,00; çek satırı kalktı
+✓ başka bilgisayarda stok alımı (2 Lt × 250, Kasa'dan)
+✓ m6: başka bilgisayardaki gider açık Kasa'ya düştü: ₺2.500,00
+✓ ANLIK DURUM kasa ₺2.500,00 = Kasa ekranı
+✓ Raporlar › Kasa hareketleri güncel kasa 2.500,00
+✓ çek ödemesi geri alınınca evrak yine "ödenecek", tedarikçi bakiyesi değişmedi (₺2.000,00)
+
+■ E. Stok birimleri baş harfi büyük, tekrarsız; seçilen birim her yerde aynı (m5)
+✓ Stok listesinde başka bilgisayarın ürünü
+✓ m5: 31 birim, hepsi büyük harfle ve tekrarsız (Adet, Paket, Kutu, Koli, Çuval, Şişe, Bidon, Teneke…)
+✓ m5: ürünler Kg ve Lt olarak kaydedildi
+✓ m5: stok raporunda aynı yazım (Kg)
+
+■ G. Başlık yazımı: raporlar ve menü (m7)
+✓ m7: menü (Görevler, Mesajlar, Görev Ata, Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler, Banka, Haciz Uyarıları, Raporlar, Personel Raporu, Kullanım Kılavuzu)
+✓ m7: müşterinin örnekleri — Cari Listesi ve Bakiyeler, Tüm Cari Hareketleri, Cari Bazında Tahsilat, Taksit Kartları
+✓ Cari Listesi ve Bakiyeler PDF üretildi
+
+■ F. Veri Sağlığı: Yok Say ile %100; yeni yüklemede korunur; Geri Al (m2)
+✓ rehber yeni oturuma yüklendi
+✓ Veri Sağlığı başta: Orta · %80
+✓ kayıt adı Adı + Soyadı'ndan: Ahmet Yılmaz
+✓ m2: Yok Say sonrası Veri Sağlığı: İyi (%100)
+✓ m2: özet kartı İyi · %100
+✓ m2: kararlar ofis geneli (başka bilgisayarda da %100)
+✓ aynı rehber bir satır eklenerek yeniden yüklendi
+✓ m2: yalnız yeni hatalı kayıt uyarır ("Öğrenci No" boş olan 1 kayıt | "Telefonu" kolonunda geçersiz telefon numarası: 1 kayıt)
+✓ m2: Geri Al ile uyarı döner (puan 95 → 83)
+
+■ G. Tüm ekranlar gezintisi: her modül, her form, raporların her sekmesi, Yönetim paneli (m7)
+✓ tüm modüller, formlar, rapor sekmeleri ve Yönetim paneli gezildi
+
+■ G. Gezilen ekranlarda başlık yazımı denetimi (m7)
+✓ m7: gezilen tüm ekranlarda başlık, düğme, sekme, kolon ve gösterge adları başlık yazımıyla
+
+■ Tarayıcı hataları
+✓ hiçbir ekranda tarayıcı hatası yok
+
+57/57 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a8a4839b68e9b8616/test/e2e/artifacts/senaryo-211
