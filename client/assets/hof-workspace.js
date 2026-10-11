@@ -418,9 +418,12 @@
   const cashView = { method: "cash" };
   const methodTag = entry => (entry.method && entry.method !== "cash" ? ` · <span class="hof-method-tag is-${esc(entry.method)}">${esc(HOF.methodLabel(entry.method, entry.kind))}</span>` : "");
   const TRANSFER_TITLE = { "to-cash": "Bankadan Kasaya Aktar", "to-bank": "Kasadan Bankaya Yatır" };
-  /** Transfer formunun açıklaması: account — banka hesabı tanımlı mı (seçici var mı). */
-  const transferIntro = (toCash, account) => {
-    const bank = account ? (toCash ? "seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler)" : "seçilen banka hesabına aynı tutar girer (Banka → Hareketler)") : "banka hesabı tanımlanmadığı için banka tarafı Hesabı Atanmamış Eski Hareketler'e yazılır";
+  /**
+   * Transfer formunun açıklaması: account — banka hesabı tanımlı mı (seçici var mı); none — "Hesapsız (Açılıştan Önce)" seçili (11.10.2026: hareket
+   * hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır; önceden yine "seçilen banka hesabına girer" yazıyordu).
+   */
+  const transferIntro = (toCash, account, none = false) => {
+    const bank = none ? `banka hesabının açılışından önceki hareket olduğu için banka tarafı hiçbir ${toCash ? "hesaptan çıkmaz" : "hesaba girmez"}, Hesabı Atanmamış Eski Hareketler'de kalır` : account ? (toCash ? "seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler)" : "seçilen banka hesabına aynı tutar girer (Banka → Hareketler)") : "banka hesabı tanımlanmadığı için banka tarafı Hesabı Atanmamış Eski Hareketler'e yazılır";
     return toCash ? `Bankadan çekilen nakit Kasa'ya girer; ${bank}.` : `Kasadaki nakit bankaya yatırılır; ${bank}. Nakit Kasa yetmiyorsa program sorar.`;
   };
 
@@ -450,6 +453,11 @@
             if (intro && mode === "none") intro.textContent = transferIntro(toCash, false);
           })
           .catch(() => null);
+        form.addEventListener("change", event => {
+          if (event.target.name !== "bankAccountId") return;
+          const intro = dialog.querySelector(".hof-modal-text");
+          if (intro) intro.textContent = transferIntro(toCash, true, event.target.value === "none");
+        });
       },
       onSubmit: async data => {
         const send = flags => HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction, ...flags }, requestId });

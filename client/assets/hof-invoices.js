@@ -942,7 +942,16 @@
     const options = current && !list.some(account => account.id === current.id) ? [current, ...list] : list;
     const first = legacy ? "Atanmamış (Eski Hareket)" : card ? "Kart Seçin" : "Hesap Seçin";
     const label = card ? "Kurumsal Kart" : "Banka Hesabı";
-    return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}<option value="none" ${item.bankAccountId === "none" ? "selected" : ""}>Hesapsız (Açılıştan Önce)</option></select></label>`;
+    return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}<option value="none" ${item.bankAccountId === "none" ? "selected" : ""}>Hesapsız (Açılıştan Önce)</option></select>${item.bankAccountId === "none" ? noneNoteHtml(card) : ""}</label>`;
+  }
+  // 11.10.2026: "Hesapsız (Açılıştan Önce)" seçiliyken satırda not (modül formlarındaki seçicinin notuyla aynı metin, HOF.bank.noneNote).
+  const noneNoteHtml = card => `<small class="hof-bank-pick-note" data-bank-none>${esc(HOF.bank?.noneNote?.(card) || "")}</small>`;
+  function syncNoneNote(select) {
+    const cell = select.closest("[data-bank-cell]");
+    if (!cell) return;
+    const note = cell.querySelector("[data-bank-none]");
+    if (select.value === "none" && !note) cell.insertAdjacentHTML("beforeend", noneNoteHtml(cell.dataset.bankKind === "card"));
+    else if (select.value !== "none" && note) note.remove();
   }
   // Hesap listesi gelince yalnız boş hücreler doldurulur (içinde odaklanılacak alan yoktu; satır yeniden çizilmez).
   // Banka m1 (10.10.2026): liste form açılışında sunucudan TAZE alınır (önbellek yalnız canlı olayla boşalıyordu; başka oturumun açtığı ikinci
@@ -1302,7 +1311,10 @@
       const item = form.pay[target.dataset.pay]?.[Number(target.dataset.i)];
       if (item) item[target.dataset.f] = target.value;
       if (item && target.dataset.pay === "cash" && target.dataset.f === "method") syncBankCell(target, item);
-      if (item && target.dataset.f === "bankAccountId") item.legacy = item.legacy && !target.value;
+      if (item && target.dataset.f === "bankAccountId") {
+        item.legacy = item.legacy && !target.value;
+        syncNoneNote(target);
+      }
       return refreshRest();
     }
     if (target.dataset.f && HEAD_FIELDS.has(target.dataset.f)) {
@@ -1818,7 +1830,7 @@
         const picker = HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", card: sale ? null : {} }) : null;
         // m4 (10.10.2026): açıklama seçilen YOLA göre (cari formundaki metin; önceden yol ne olursa olsun "Kasa'ya yazılır").
         const help = () => HOF.accounts?.syncEntryHelp?.(dialog, sale ? "in" : "out", text => `Açık tutar ${money(doc.open)}. ${text} Bu faturaya bağlı kapatılır (fazlası carinin en eski açık faturasına gider).`);
-        dialog.querySelector('[name="method"]')?.addEventListener("change", help);
+        dialog.querySelector("form")?.addEventListener("change", help);
         help();
         Promise.resolve(picker).then(help).catch(() => null);
       },

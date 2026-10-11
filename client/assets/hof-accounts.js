@@ -43,17 +43,19 @@
   // 2.1.0 temel sürüm (ek iş B, 10.10.2026): tahsilat/ödeme açıklaması seçilen YOLA göre (önceden yol ne olursa olsun "Kasa'dan çıkar" /
   // "Kasa'ya girer" yazıyordu; kılavuz ekranı k39: Kredi Kartı seçiliyken "Kasa'dan çıkar"). picked: formda o yolun hesap/kart seçicisi var mı
   // (yoksa hesap tanımlanmamıştır; satır Hesabı Atanmamış Eski Hareketler'e yazılır — plan K10).
+  // none (11.10.2026): seçicide "Hesapsız (Açılıştan Önce)" seçili — hareket banka hesabının açılışından önce; hiçbir hesaba yazılmaz, Hesabı Atanmamış
+  // Eski Hareketler'de kalır (önceden açıklama yine "seçilen banka hesabına girer" diyordu).
   const ENTRY_HELP_BY_METHOD = {
     in: {
       cash: () => ENTRY_HELP.in,
-      bank: picked => (picked ? "Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır." : "Cariden para alındı: bakiyeden düşer; banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır, makbuzu alınır."),
+      bank: (picked, none) => (none ? "Cariden para alındı: bakiyeden düşer; banka hesabının açılışından önceki hareket olduğu için hiçbir hesaba girmez, Hesabı Atanmamış Eski Hareketler'de (Havale / EFT) kalır, makbuzu alınır." : picked ? "Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır." : "Cariden para alındı: bakiyeden düşer; banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır, makbuzu alınır."),
       card: () => "Cariden POS ile tahsil edildi: bakiyeden düşer; Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır.",
       cheque: () => "Cariden çek / senet alındı: evrak formu açılır; evrak portföye girer, carinin bakiyesinden düşer, Kasa değişmez.",
     },
     out: {
       cash: () => ENTRY_HELP.out,
-      bank: picked => (picked ? "Cariye para verildi (ör. tedarikçiye ödeme, iade): seçilen banka hesabından çıkar." : "Cariye para verildi (ör. tedarikçiye ödeme, iade): banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır."),
-      card: picked => (picked ? "Cariye kurumsal kredi kartıyla ödendi: seçilen kurumsal kartın borcuna yazılır; bankadan, kart ekstresi ödenince çıkar." : "Cariye kredi kartıyla ödendi: kurumsal kart tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (POS / Kart) yazılır."),
+      bank: (picked, none) => (none ? "Cariye para verildi (ör. tedarikçiye ödeme, iade): banka hesabının açılışından önceki hareket olduğu için hiçbir hesaptan çıkmaz, Hesabı Atanmamış Eski Hareketler'de (Havale / EFT) kalır." : picked ? "Cariye para verildi (ör. tedarikçiye ödeme, iade): seçilen banka hesabından çıkar." : "Cariye para verildi (ör. tedarikçiye ödeme, iade): banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır."),
+      card: (picked, none) => (none ? "Cariye kredi kartıyla ödendi: kurumsal kartın açılışından önceki hareket olduğu için hiçbir kartın borcuna yazılmaz, Hesabı Atanmamış Eski Hareketler'de (POS / Kart) kalır." : picked ? "Cariye kurumsal kredi kartıyla ödendi: seçilen kurumsal kartın borcuna yazılır; bankadan, kart ekstresi ödenince çıkar." : "Cariye kredi kartıyla ödendi: kurumsal kart tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (POS / Kart) yazılır."),
       cheque: () => "Cariye çek / senet verildi: evrak formu açılır; carinin bakiyesi evrakla düşer, Kasa değişmez.",
     },
   };
@@ -67,7 +69,7 @@
     const intro = dialog?.querySelector(".hof-modal-text");
     const method = form?.querySelector('[name="method"]')?.value || "cash";
     const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" ? form?.querySelector('[data-bank-pick="card"]') : null;
-    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick));
+    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick), pick?.querySelector("select")?.value === "none");
     if (intro && text) intro.textContent = wrap(text);
   }
   const LEDGER_FILTERS = [
@@ -783,7 +785,8 @@
         const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card }) : null;
         // Ek iş B: açıklama yola göre (seçici yerleşince ve yol değişince).
         if (money_) {
-          dialog.querySelector('[name="method"]')?.addEventListener("change", () => syncEntryHelp(dialog, type));
+          // Yol ya da hesap seçimi değişince (Hesapsız (Açılıştan Önce) dahil); dinleyici formda — seçici yeniden kurulsa da çalışır.
+          dialog.querySelector("form")?.addEventListener("change", () => syncEntryHelp(dialog, type));
           syncEntryHelp(dialog, type);
           Promise.resolve(picker).then(() => syncEntryHelp(dialog, type)).catch(() => null);
         }

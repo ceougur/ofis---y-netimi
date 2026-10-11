@@ -6,6 +6,9 @@
 //  3. Cari kartı → Tahsilat → Havale/EFT → Banka Hesabı seçicisinde son seçenek "Hesapsız (Açılıştan Önce)"; tarih 15.09 → kaydedilir, hesapsız.
 //  4. Nasıl bozarım: tarih bugün + "Hesapsız (Açılıştan Önce)" → kaydedilmez, formda neden görünür ("açılışından önceki"), satır yazılmaz.
 //  5. Kurulum Sihirbazı (Devir Kapanışı) yapılmış eski havalenin tutarı → kaydedilmez, formda Kurulum Geçmişi yolu görünür (Y1).
+//  3 ve 6–8 (11.10.2026, açıklama metni): "Hesapsız (Açılıştan Önce)" seçilince formun açıklaması "seçilen banka hesabına girer" DEMEZ; açılıştan
+//     önceki hareketin hiçbir hesaba girmediğini ve Hesabı Atanmamış Eski Hareketler'de kaldığını söyler (cari Tahsilat/Ödeme, Kasa ↔ Banka,
+//     seçicinin altındaki not, fatura peşin satırı).
 // Çalıştırma: npm run test:senaryo-banka-210-eski-satir (ekran görüntüleri artifacts/senaryo-banka-210-eski-satir/).
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -68,6 +71,8 @@ const must = async (label, promise) => {
   if (res.status !== 200) throw new Error(`${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
   return unwrap(res);
 };
+const introText = () => textOf(`${top} .hof-modal-text`);
+const NONE_NOTE = /açılışından önceki hareket.*hiçbir hesaba yazılmaz.*Hesabı Atanmamış Eski Hareketler'de kalır/;
 const textOf = selector => page.$eval(selector, node => node.innerText.replace(/\s+/g, " ").trim()).catch(() => "");
 const entriesOf = async id => (await must("cari", api.get(`/api/workspace/accounts/${id}`))).entries.filter(entry => entry.kind === "in");
 const summary = () => must("özet", api.get("/api/workspace/bank/summary"));
@@ -139,6 +144,16 @@ try {
     await page.selectOption(`${form} select[name="bankAccountId"]`, "none");
     await pause(300);
     await shot("tahsilat-hesapsiz-acilistan-once");
+    const noneIntro = await introText();
+    ok(/açılışından önceki/.test(noneIntro) && /hiçbir hesaba girmez/.test(noneIntro) && /Hesabı Atanmamış Eski Hareketler/.test(noneIntro) && !/seçilen banka hesabına/.test(noneIntro), `açıklama Hesapsız'a göre: “${noneIntro}”`);
+    const noneNote = await textOf(`${form} [data-bank-pick] [data-bank-none]`);
+    ok(NONE_NOTE.test(noneNote), `seçicinin altında not: “${noneNote}”`);
+    await page.selectOption(`${form} select[name="bankAccountId"]`, ctx.ziraat.id);
+    await pause(300);
+    const bankIntro = await introText();
+    ok(/seçilen banka hesabına girer/.test(bankIntro) && !(await page.$(`${form} [data-bank-pick] [data-bank-none]`)), `hesap seçilince eski metin döner, not kalkar: “${bankIntro}”`);
+    await page.selectOption(`${form} select[name="bankAccountId"]`, "none");
+    await pause(300);
     const before = (await entriesOf(ctx.abc.id)).length;
     await page.click(`${form} button[type="submit"]`);
     await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible .hof-form input[name="amount"]'), null, { timeout: 10000 }).catch(() => null);
@@ -186,6 +201,59 @@ try {
     ok(/Kurulum Geçmişi/.test(error) && row?.amount === 1200, `kaydedilmedi (tutar ${row?.amount}): “${error}”`);
     const view = await summary();
     ok(view.unassigned.bankMinor === 0, `Hesabı Atanmamış ${view.unassigned.bankMinor / 100} (takılı artık yok)`);
+    await closeAll();
+  });
+
+  await step("6. Ödeme → Havale/EFT → \"Hesapsız (Açılıştan Önce)\": açıklama hesaptan çıkmadığını söyler", async () => {
+    await openAbc();
+    await page.click('.hof-accounts-modal [data-entry="out"]');
+    const form = `${top} .hof-form`;
+    await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await page.selectOption(`${form} select[name="method"]`, "bank");
+    await page.waitForSelector(`${form} [data-bank-pick]:not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
+    await page.selectOption(`${form} select[name="bankAccountId"]`, "none");
+    await pause(300);
+    await shot("odeme-hesapsiz-aciklama");
+    const intro = await introText();
+    ok(/açılışından önceki/.test(intro) && /hiçbir hesaptan çıkmaz/.test(intro) && !/seçilen banka hesabından/.test(intro), `Ödeme açıklaması: “${intro}”`);
+    ok(NONE_NOTE.test(await textOf(`${form} [data-bank-pick] [data-bank-none]`)), "Ödeme formunda seçicinin altında not");
+    await closeAll();
+  });
+
+  await step("7. Kasa → Kasadan Bankaya Yatır / Bankadan Kasaya Aktar → \"Hesapsız (Açılıştan Önce)\": açıklama", async () => {
+    for (const [direction, wrong] of [["to-bank", /seçilen banka hesabına/], ["to-cash", /seçilen banka hesabından/]]) {
+      await page.click('.hof-side-item[data-action="cash"]');
+      await page.waitForSelector(`${modal} [data-transfer="${direction}"]`, { timeout: 10000 });
+      await page.click(`${modal} [data-transfer="${direction}"]`);
+      const form = `${top} .hof-form`;
+      await page.waitForSelector(`${form} select[name="bankAccountId"]`, { timeout: 8000 });
+      await pause(300);
+      const before = await introText();
+      ok(wrong.test(before), `${direction} hesap seçiliyken: “${before}”`);
+      await page.selectOption(`${form} select[name="bankAccountId"]`, "none");
+      await pause(300);
+      await shot(`transfer-${direction}-hesapsiz`);
+      const intro = await introText();
+      ok(/açılışından önceki/.test(intro) && /Hesabı Atanmamış Eski Hareketler/.test(intro) && !wrong.test(intro), `${direction} Hesapsız: “${intro}”`);
+      ok(NONE_NOTE.test(await textOf(`${form} [data-bank-pick] [data-bank-none]`)), `${direction} seçicinin altında not`);
+      await closeAll();
+    }
+  });
+
+  await step("8. Fatura Düzenle → peşin satırında \"Hesapsız (Açılıştan Önce)\": satırda not", async () => {
+    const doc = await must("peşinli satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: ctx.abc.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 500, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount: "500", method: "bank", bankAccountId: ctx.ziraat.id }], cheques: [], endorse: [], rest: "open" }, force: true }));
+    const inv = `${modal} .hof-invoices-modal`;
+    await page.evaluate(id => window.HOF.invoices.openDoc(id), doc.id);
+    await page.waitForSelector(`${inv} [data-act="modify"]:not([disabled])`, { timeout: 10000 });
+    await page.click(`${inv} [data-act="modify"]`);
+    const cell = `${inv} [data-bank-cell="0"]`;
+    await page.waitForSelector(`${cell} select`, { timeout: 10000 });
+    ok(!(await page.$(`${cell} [data-bank-none]`)), "hesap seçiliyken satırda not yok");
+    await page.selectOption(`${cell} select`, "none");
+    await pause(500);
+    await shot("fatura-pesin-hesapsiz");
+    const note = await textOf(`${cell} [data-bank-none]`);
+    ok(NONE_NOTE.test(note), `peşin satırında not: “${note}”`);
     await closeAll();
   });
 } catch (error) {

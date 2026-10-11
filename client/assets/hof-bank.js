@@ -422,7 +422,7 @@
     let deleteBlock = "";
     if (readOnly) deleteBlock = READ_ONLY_TEXT;
     else if (a.movementCount) deleteBlock = `Bu hesaba bağlı ${a.movementCount} hareket var; kullanılmayacaksa Pasife Alın.`;
-    else if (a.setupNo) deleteBlock = `Hesap Kurulum Sihirbazı'yla kuruldu (${a.setupNo}); önce Ayarlar → Kurulum Geçmişi'nden Geri Al.`;
+    else if (a.setupNo) deleteBlock = `Hesap Kurulum Sihirbazı'yla kuruldu (${a.setupNo}); önce Hesaplar → Eski Hareketler → Kurulum Geçmişi'nden Geri Al.`;
     else if (a.plannedCount) deleteBlock = `Bu hesapta ${a.plannedCount} planlı işlem var; önce Planlı İşlemler'den silin.`;
     else if (openingSet && a.openingLocked) deleteBlock = "Hesabın açılışı kilitli dönemde; hesap silinemez.";
     else if (openingSet && !canCancel) deleteBlock = "Açılışı olan hesabı silmek için Banka Hareketi Silme, İptal ve Ters Kayıt yetkisi gerekir.";
@@ -2303,7 +2303,21 @@
     if (card) insertPicker(box || place, { ...CARD_PICKER, value: kept[CARD_PICKER.name] || card.value || "", keepLabel: card.keepLabel || "" }, data);
     return mode;
   }
+  /**
+   * "Hesapsız (Açılıştan Önce)" seçiliyken seçicinin altında not (11.10.2026): formun açıklaması "seçilen banka hesabına girer" gibi okunmasın;
+   * hareket hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır (yargıç B1, plan §3.5 kural 1). Fatura peşin satırı da aynı metni kullanır.
+   */
+  const noneNote = card => `${card ? "Kurumsal kartın" : "Banka hesabının"} açılışından önceki hareket: hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır.`;
+  function syncNone(form) {
+    form.querySelectorAll("[data-bank-pick]").forEach(node => {
+      const on = node.querySelector("select")?.value === "none";
+      const note = node.querySelector("[data-bank-none]");
+      if (on && !note) node.insertAdjacentHTML("beforeend", `<p class="hof-bank-pick-note" data-bank-none>${esc(noneNote(node.dataset.bankPick === "card"))}</p>`);
+      else if (!on && note) note.remove();
+    });
+  }
   function syncPickers(form, setup) {
+    syncNone(form);
     const { methodNode } = setup;
     if (!methodNode) return;
     form.querySelectorAll("[data-bank-pick]").forEach(node => {
@@ -2332,6 +2346,10 @@
     const mode = placePickers(form, setup, data);
     pickerForms.set(form, setup);
     if (methodNode) methodNode.addEventListener("change", () => syncPickers(form, setup));
+    // Seçici yeniden kurulsa da (refreshPickers) dinleyici formda: seçim değişince not yerleşir/kalkar.
+    form.addEventListener("change", event => {
+      if (event.target.closest?.("[data-bank-pick]")) syncNone(form);
+    });
     syncPickers(form, setup);
     return mode;
   }
@@ -2367,7 +2385,7 @@
     return body;
   }
 
-  HOF.bank = { open, openWizard, openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))), choices, pickerHtml, mountPicker, attachPicker, accountBody, withConfirms };
+  HOF.bank = { open, openWizard, openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))), choices, pickerHtml, mountPicker, attachPicker, accountBody, withConfirms, noneNote };
   HOF.on("bank-choices-stale", () => {
     choicesCache = null;
     refreshPickers();
