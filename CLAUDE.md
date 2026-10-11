@@ -1225,6 +1225,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   Açılışı Düzelt pasif hesabı değiştiriyor; B4 DÜŞÜK — Kart Borcuna Aktar / Devir Kapanışı yapılmış eski satır silinince karşı kayıt takılı
   kalıyor; B5 DÜŞÜK/ORTA — gün içinde hazırlanan güncelleme yayından geri çekilse de açılışta kuruluyor. Temiz: K7 15 yol, rapor 101/101,
   kurumsal kart, Drive. Sırada: eleştirmen (yargıç kararını denetler), sonra plana göre düzeltme (kırmızı test → düzeltme).
+  ELEŞTİRMEN (11.10.2026; betikler docs/kanit/2026-10-11/elestirmen/e1..e4): B1 KATILIYOR (bütün modüllerde; silme/nakde çevir 200 ↔ düzelt 409
+  tutarsız = Y2; çok hesapta açık "hesapsız" seçeneği gerekli); B2 KATILMIYOR → ORTA, bu turda (K1 emsali; Bu Hesaba Ata/sihirbaz eski ödemeyi
+  Engelle'deki hesaba bağlayıp −1.500); B3 katılıyor; B4 KATILMIYOR → kök Y1; B5 KATILMIYOR → ORTA ENGEL (yayını silmek tek acil fren; hazırdan
+  daha eski en yeni sürümde de kuruluyor). YENİ Y1 ORTA–YÜKSEK ENGEL (ana oturum yeniden üretti): Kart Borcuna Aktar yapılmış eski kartla ödeme
+  500→450 düzeltilince kart borcu 950 (gerçek 450), 108.00 +500, yeni 520 kart ödemesi yanlış 409 cash-blocked; Bankaya Geçmiş Say komşusu
+  108.00 −50; Mutabakat Testi "tamam". Dönem kilidi × banka, Şirket Verisini Sıfırla, yetki matrisi 22/22 temiz. KARAR (plana uy): B1+Y1+B4+Y2+
+  B2+B3 tek düzeltme işi (banka), B5 ayrı iş (güncelleme); ikisi ajanlarda, önce kırmızı test.
   UYARI BULGULARI (10.10.2026 gece; senaryo-225 incelemesinde, kullanıcıya listelendi; karar bekleyenler): (1) sağ alt bildirimde ilk 5'ten
   sonrası, özet bildirimi ekrana çıkmadan "görüldü" yazılıyor (hof-alerts.js enqueue) → sayfa erken değişirse bunlar 3 sa sağ altta görünmez,
   yalnız zilde (görmeden görüldü — düzeltilecek: özet gösterilince işaretle); (2) uyarı ufku sayfaya göre tutarsız: açık sayfanın son tarihleri
