@@ -19,8 +19,9 @@ const PATTERN = /kurumsal\s+(kredi\s+)?kart/i;
 /** Yorumları ayıklar: /* … *\/ blokları ve "://" olmayan "//" satır yorumları. */
 function code(source) {
   return source
-    .replace(/\/\*[\s\S]*?\*\//g, block => block.replace(/[^\n]/g, " "))
-    .split("\n")
+    .replace(/\/\*[\s\S]*?\*\//g, block => block.replace(/[^\r\n]/g, " "))
+    // Windows'ta git CRLF ile çıkarır: "\r" satırda kalırsa ".*$" eşleşmez ve yorum ayıklanmaz (12.10.2026 CI e908e38, Windows kırmızı).
+    .split(/\r?\n/)
     .map(line => line.replace(/(^|[^:])\/\/.*$/, "$1"));
 }
 function files(dir, test) {
