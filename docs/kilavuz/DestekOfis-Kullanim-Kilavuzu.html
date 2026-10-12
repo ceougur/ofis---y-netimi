@@ -201,16 +201,23 @@
 <p>Kart limitini aşacak ödemede <b>Eksi Bakiye</b> sorusu gelir (kullanılabilir tutar yazar). Müşteriden kartla aldığınız tahsilatta yol <b>POS</b>'tur; kredi kartı sorulmaz.</p>
 <figure class="half"><img src="ekran/k39-banka-kurumsal-kart.jpg" alt="Cari ödemesinde Kredi Kartı"><figcaption>Kredi Kartı → ödeme şirket kartının borcuna yazılır.</figcaption></figure>
 
+<h3>POS ile Tahsilat</h3>
+<ol class="steps">
+  <li><b>POS tanımlama:</b> POS'un parasının geçtiği banka hesabına tıklayın → <b>Düzenle</b> → <b>POS Kullan</b> → hesabın altındaki <b>+ POS Ekle</b>: POS Adı, Üye İşyeri ve Terminal No, <b>Valör Günü</b> ve <b>Komisyon Oranları</b> (Tek Çekim, 3 Taksit…). Formda POS yoksa <b>POS Tanımla</b> ile form kapanmadan eklenir.</li>
+  <li><b>POS ile tahsilat:</b> satış faturasında <b>+ POS</b>, cari, taksit ve stok satışında yol <b>POS</b>: POS'u (birden çoksa) ve <b>POS Taksit Sayısı</b>'nı seçin; komisyon, bankaya geçecek tutar ve valör günü altta yazar. Para satış anında bankaya geçmez; valör günü komisyonu düşülmüş tutar hesaba yazılır (<b>Banka → POS → POS Ödeme Takvimi</b>; beklemeden <b>Şimdi Aktar</b>).</li>
+  <li><b>İptal ve iade:</b> aynı gün, bankaya geçmeden <b>Banka → POS → POS İşlemleri → İptal Et</b> (komisyonsuz). Sonrasında satıştan iade faturasında <b>+ POS İadesi</b> (asıl satış önerilir) ya da POS İşlemleri'nde <b>İade</b>.</li>
+</ol>
+
 <h3>Eksi Bakiye Sorusu</h3>
 <p>Bir çıkış banka hesabını eksiye düşürecekse (vadesizde KMH Limiti, kartta Kart Limiti dahil) program <b>Eksi Bakiye</b> penceresiyle sorar: hesapta ne kadar olduğu ve işlemden sonra ne olacağı yazar. Yanlışsa <b>Vazgeç</b>, doğruysa <b>Yine de Kaydet</b>. Ne olacağını <b>Ayarlar</b> → <b>Eksi Bakiye</b> → <b>Banka Hesapları</b>'nda seçin: <b>Uyar</b> (sorar), <b>Engelle</b> (kaydetmez), <b>Kontrol Yok</b>; tek bir hesap için hesap formundaki <b>Eksi Bakiye Denetimi</b>'nden. Açılış bakiyesi doğrulanmamış (<b>Bakiye Doğrulandı</b> işaretsiz) hesapta soru gelmez.</p>
 <figure class="half"><img src="ekran/k35-banka-eksi-bakiye.jpg" alt="Eksi Bakiye sorusu"></figure>
 
 <h3>Banka Raporları, Ayarlar ve Yetkiler</h3>
 <ul>
-  <li><b>Raporlar → Tüm Raporlar → Banka:</b> <i>Banka Bakiye Raporu</i>, <i>Banka Hareket Raporu</i>, <i>Banka Masraf Raporu</i>, <i>Alt Hesap Mizanı</i>. Hepsi <b>PDF İndir</b> ve <b>Excel İndir</b> ile iner.</li>
+  <li><b>Raporlar → Tüm Raporlar → Banka:</b> <i>Banka Bakiye Raporu</i>, <i>Banka Hareket Raporu</i>, <i>Banka Masraf Raporu</i> (POS komisyonları dahil), <i>Alt Hesap Mizanı</i>, <i>POS Ödeme Takvimi</i>, <i>Faturası Beklenen Komisyonlar</i>. Hepsi <b>PDF İndir</b> ve <b>Excel İndir</b> ile iner.</li>
   <li><b>ANLIK DURUM</b>'da <b>Nakit Kasa</b> ile <b>Gerçek Banka</b> ayrı kutulardadır (14. bölüm); Raporlar → <b>Nakit Akış</b> bugünkü nakit ve banka bakiyesinden başlar.</li>
   <li><b>Ayarlar:</b> standartlar seçili gelir; çoğu ofisin bir şeyi değiştirmesi gerekmez. <b>Varsayılan Tahsilat Hesabı</b>, <b>Eksi Bakiye</b>, <b>Benzer İşlem Uyarısı</b> (aynı gün aynı hesaba, aynı cariye aynı tutar ikinci kez girilince uyarır), <b>Banka Masrafı Vergisi</b> ve <b>Masraf Türleri</b>. Değiştirdiğinizi <b>Ayarları Kaydet</b>; standartlara dönmek için <b>Varsayılanlara Dön</b>.</li>
-  <li><b>Kimler kullanır:</b> yönetici ve muhasebe. Başka birine <b>Yönetim → Kullanıcılar → Yetkiler → Banka ve POS</b> grubundan açılır: <i>Banka Görüntüleme</i>, <i>Banka Raporları</i>, <i>Banka Hesabı Tanımlama ve Açılış</i>, <i>Banka Hareketi Girme ve Bankadan Çıkış</i>, <i>Banka Hareketi Silme, İptal ve Ters Kayıt</i>, <i>Transfer Yapma</i>, <i>Banka Ayarları</i>.</li>
+  <li><b>Kimler kullanır:</b> yönetici ve muhasebe. Başka birine <b>Yönetim → Kullanıcılar → Yetkiler → Banka ve POS</b> grubundan açılır: <i>Banka Görüntüleme</i>, <i>Banka Raporları</i>, <i>Banka Hesabı Tanımlama ve Açılış</i>, <i>Banka Hareketi Girme ve Bankadan Çıkış</i>, <i>Banka Hareketi Silme, İptal ve Ters Kayıt</i>, <i>Transfer Yapma</i>, <i>Banka Ayarları</i>, <i>POS Tanımlama</i>, <i>Komisyon Oranlarını Değiştirme</i>.</li>
 </ul>
 <figure><img src="ekran/k36-banka-raporu.jpg" alt="Banka Bakiye Raporu"><figcaption>Raporlar → Tüm Raporlar → Banka → Banka Bakiye Raporu.</figcaption></figure>
 <figure class="narrow"><img src="ekran/k40-banka-yetkiler.jpg" alt="Yetkiler: Banka ve POS"><figcaption>Yetkiler → Banka ve POS: bu kişiye Banka Görüntüleme ve Banka Raporları eklendi (yeşil).</figcaption></figure>

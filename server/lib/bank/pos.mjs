@@ -175,6 +175,13 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
       rates: current.map(rate => ({ installments: rate.installments, label: installmentText(rate.installments), ratePpm: rate.ratePpm, rate: ppmText(rate.ratePpm), valorDays: rate.valorDays, validFrom: rate.validFrom })),
       startDate: store.get("SELECT MIN(valid_from) AS d FROM pos_rates WHERE pos_id = ?", row.id)?.d || "",
       pending: { count: Number(pending?.n) || 0, grossMinor: Number(pending?.gross) || 0, netMinor: Number(pending?.net) || 0 },
+      // İz 3.1 (ekran): Sil'in nedeni önceden görünsün (kullanılmış POS silinmez) ve "Bekleyenleri Yeni Hesaba Taşı" yalnız bekleyen satışı eski
+      // hesaba bağlı POS'ta çıksın.
+      used: usedOf(row.id),
+      pendingElsewhere: (() => {
+        const other = store.get("SELECT COUNT(DISTINCT s.id) AS n, COALESCE(SUM(i.planned_net_minor), 0) AS net FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id WHERE i.pos_id = ? AND i.status = 'pending' AND s.bank_account_id <> ?", row.id, row.bank_account_id);
+        return { count: Number(other?.n) || 0, netMinor: Number(other?.net) || 0 };
+      })(),
       ...(history ? { rateHistory: store.all("SELECT installments, rate_ppm AS ratePpm, valor_days AS valorDays, valid_from AS validFrom, created_by AS createdBy, created_at AS createdAt FROM pos_rates WHERE pos_id = ? ORDER BY valid_from DESC, installments", row.id).map(rate => ({ ...rate, rate: ppmText(rate.ratePpm), label: installmentText(rate.installments) })) } : {}),
       createdAt: row.created_at,
       updatedAt: row.updated_at || "",
@@ -360,11 +367,17 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     });
     return terminalView(terminal(row.id));
   }
+  /** POS kullanılmış mı (satış, modül satırı ya da fiş satırı var mı)? Kullanılmış POS silinmez (Pasife Alınır). */
+  function usedOf(posId) {
+    return Boolean(
+      store.get("SELECT 1 AS found FROM pos_sales WHERE pos_id = ? LIMIT 1", posId) || store.get("SELECT 1 AS found FROM bank_lines WHERE ref = ? LIMIT 1", posId) ||
+        ["payments", "account_entries", "plan_entries", "stock_moves", "cheque_events"].some(table => store.get(`SELECT 1 AS found FROM ${table} WHERE fin_ref = ? LIMIT 1`, posId)),
+    );
+  }
   /** Sil: yalnız hiç kullanılmamış POS (satış, modül satırı, fiş satırı yok); kullanılmışsa 409 pos-in-use → Pasife Al. */
   function remove(user, id) {
     const row = mustTerminal(id);
-    const used = store.get("SELECT 1 AS found FROM pos_sales WHERE pos_id = ? LIMIT 1", row.id) || store.get("SELECT 1 AS found FROM bank_lines WHERE ref = ? LIMIT 1", row.id) ||
-      ["payments", "account_entries", "plan_entries", "stock_moves", "cheque_events"].some(table => store.get(`SELECT 1 AS found FROM ${table} WHERE fin_ref = ? LIMIT 1`, row.id));
+    const used = usedOf(row.id);
     if (used) throw bad(409, `${row.name} kullanılmış (satışı ya da hareketi var); silinmez. Kullanmayacaksanız Pasife Al.`, "pos-in-use");
     bank.post({
       user, module: "bank", op: "delete", prev: row,
@@ -1111,6 +1124,8 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
       taxMinor: Number(sale.tax_minor), netMinor: Number(sale.net_minor), commissionRefundMinor: Number(sale.commission_refund_minor), refundedMinor: sale.kind === "sale" ? refundedOf(sale.id) : 0,
       blocked: Boolean(sale.blocked), authCode: sale.auth_code, cardLast4: sale.card_last4, bankAccountId: sale.bank_account_id, providerAccountId: sale.provider_account_id,
       party: party ? { id: party.id, name: party.name } : null, invoice: invoice ? { id: invoice.id, number: invoice.number, kind: invoice.kind } : null,
+      // Satırın bölümü (İz 3.3: POS İşlemleri'nde İptal Et'in nedeni — cari tahsilatı burada, fatura peşini faturadan, kayıt/taksit/stok kendi bölümünden).
+      source: event.srcTable || "",
       origin: origin ? { id: origin.id, eventNo: origin.no || "", date: origin.date, grossMinor: Number(origin.grossMinor) } : null,
       voidable, voidReason: sale.kind !== "sale" || sale.status !== "active" ? "" : settled.length ? "Bankaya geçti; POS İadesi yapın." : today() > window ? "Provizyon süresi geçti; POS İadesi yapın." : "",
       explain,

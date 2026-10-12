@@ -23,13 +23,15 @@
   const HOF = window.HOF;
   const { esc } = HOF;
   const BASE = "/api/workspace/bank";
-  // Sekme sırası (§8.2): Hareketler Hesaplar'dan hemen sonra (Aşama 4). POS ve Ekstre ve Mutabakat o sürümlerde eklenir.
-  const TABS = [
+  // Sekme sırası (§8.2): Hareketler Hesaplar'dan hemen sonra (Aşama 4). POS (2.2.0) ve Ekstre ve Mutabakat (2.3.0) kendi betiklerinden
+  // HOF.bank.addTab ile Ayarlar'dan önce eklenir (hof-bank-pos.js).
+  const BASE_TABS = [
     ["overview", "Genel Bakış"],
     ["accounts", "Hesaplar"],
     ["movements", "Hareketler"],
-    ["settings", "Ayarlar"],
   ];
+  const extraTabs = new Map();
+  const tabList = () => [...BASE_TABS, ...[...extraTabs.entries()].filter(([, spec]) => !spec.visible || spec.visible()).map(([id, spec]) => [id, spec.label]), ["settings", "Ayarlar"]];
   const KINDS = [
     ["demand", "Vadesiz"],
     ["commercial", "Ticari"],
@@ -80,6 +82,8 @@
   const FIELD_OF_CODE = { "date-future": "openingDate", "date-invalid": "openingDate", "date-missing": "openingDate", "period-locked": "openingDate", "bank-opening-after-first": "openingDate", "rate-invalid": "openingRate" };
 
   let modal = null;
+  // Eklenen bölümlerin yükleyicileri (HOF.bank.addReloadHook): pencere her yenilendiğinde aynı kapıdan, çizimden önce.
+  const reloadHooks = new Set();
   let wizard = null;
   let ticket = 0;
   let wizardOffered = false;
@@ -89,7 +93,7 @@
   // Hareket listeleri (Aşama 4): Hareketler sekmesi ve Hesap Detayı ayrı durum ve ayrı liste kapısıyla (HOF.listGate: eski yanıt yeni
   // süzgeci ezmez; süzgeç yüklenirken "Daha Fazla" yok sayılır).
   const PAGE = 50;
-  const newMoves = (key, filter = {}) => ({ key, filter: { account: "", type: "", dir: "", status: "", from: "", to: "", min: "", max: "", q: "", ...filter }, planned: false, rows: [], plans: [], balance: false, hasMore: false, cursor: null, loaded: false, error: "", account: "", gate: HOF.listGate() });
+  const newMoves = (key, filter = {}) => ({ key, filter: { account: "", type: "", dir: "", status: "", from: "", to: "", min: "", max: "", q: "", pos: "", ...filter }, planned: false, rows: [], plans: [], balance: false, hasMore: false, cursor: null, loaded: false, error: "", account: "", gate: HOF.listGate() });
   const moves = newMoves("main");
   let accountMoves = newMoves("account");
 
@@ -108,6 +112,13 @@
   const kindLabel = kind => KINDS.find(([id]) => id === kind)?.[1] || kind;
   const currencyLabel = code => CURRENCIES.find(([id]) => id === code)?.[1] || code;
   const dateText = value => (value ? HOF.formatDate(`${value}T12:00:00`) : "—");
+  // POS komisyon oranı en az iki ondalıkla ("2,5" → "2,50"; plan §8.9 örneği "%3,50"); dört ondalığa kadar olduğu gibi.
+  const pctText = rate => {
+    const text = String(rate ?? "").trim();
+    if (!text) return "";
+    const [whole, frac = ""] = text.split(",");
+    return `${whole},${frac.padEnd(2, "0")}`;
+  };
   const td = (label, html, cls = "") => `<td data-label="${esc(label)}"${cls ? ` class="${cls}"` : ""}>${html}</td>`;
   const accountLabel = account => `${account.bankName} · ${account.name}`;
   const openingLabel = kind => (kind === "card" || kind === "loan" ? "Açılıştaki Borç" : "Açılış Bakiyesi");
@@ -199,9 +210,13 @@
         [next.due, next.latest] = await Promise.all([api("/plans?due=1", options).then(data => data.plans).catch(() => []), api(`/movements?limit=10`, options).then(data => data.rows).catch(() => [])]);
       }
       if (view.mode === "tab" && view.tab === "movements") {
-        next.meta = await voucherMeta().catch(() => view.meta);
+        // 2.2.0 (İz 3.3): POS süzgecinin seçenekleri (POS tanımlıysa görünür).
+        [next.meta, next.posList] = await Promise.all([voucherMeta().catch(() => view.meta), api("/pos?status=", options).then(data => data.pos || []).catch(() => view.posList || [])]);
         await loadMoves(moves, { quiet, paint: false });
       }
+      // Eklenen sekmenin ve bölümlerin verisi (HOF.bank.addTab / addReloadHook; POS: liste, işlemler, takvim): aynı yenileme kapısından.
+      const extra = view.mode === "tab" ? extraTabs.get(view.tab) : null;
+      await Promise.all([...(extra?.load ? [extra.load({ quiet, options })] : []), ...[...reloadHooks].map(hook => hook({ mode: view.mode, tab: view.tab, accountId: view.accountId, quiet, options }))]);
       if (view.mode === "event" && view.eventRef) next.event = await api(`/events/${encodeURIComponent(view.eventRef)}`, options);
       if (!modal || own !== ticket || key !== viewKey()) return;
       // Ayarlar düzenlenirken arka plan yenilemesi formu ezmez (kaydedilmemiş değişiklik kaybolmasın): veri alınır, ekran çizilmez.
@@ -234,7 +249,7 @@
   }
 
   function setTab(tab, { load = true } = {}) {
-    if (!TABS.some(([id]) => id === tab)) return;
+    if (!tabList().some(([id]) => id === tab)) return;
     view.tab = tab;
     view.mode = "tab";
     view.accountId = "";
@@ -274,15 +289,25 @@
       render();
       return reload();
     }
-    return setTab(TABS.some(([id]) => id === view.eventBack) ? view.eventBack : "movements");
+    return setTab(tabList().some(([id]) => id === view.eventBack) ? view.eventBack : "movements");
   }
 
   function render() {
     const node = root();
     if (!node) return;
-    const content = view.mode === "account" ? accountHtml() : view.mode === "legacy" ? legacyHtml() : view.mode === "event" ? eventHtml() : view.tab === "accounts" ? accountsHtml() : view.tab === "movements" ? movementsHtml() : view.tab === "settings" ? settingsHtml() : overviewHtml();
-    const tabs = `<div class="hof-bank-tabs" role="tablist" aria-label="Banka bölümleri">${TABS.map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.mode === "tab" && view.tab === id ? "is-on" : ""}" aria-selected="${view.mode === "tab" && view.tab === id}" data-tab="${id}">${esc(label)}</button>`).join("")}</div>`;
+    const extra = view.mode === "tab" ? extraTabs.get(view.tab) : null;
+    const content = view.mode === "account" ? accountHtml() : view.mode === "legacy" ? legacyHtml() : view.mode === "event" ? eventHtml() : extra ? extraHtml(extra) : view.tab === "accounts" ? accountsHtml() : view.tab === "movements" ? movementsHtml() : view.tab === "settings" ? settingsHtml() : overviewHtml();
+    const tabs = `<div class="hof-bank-tabs" role="tablist" aria-label="Banka bölümleri">${tabList().map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.mode === "tab" && view.tab === id ? "is-on" : ""}" aria-selected="${view.mode === "tab" && view.tab === id}" data-tab="${id}">${esc(label)}</button>`).join("")}</div>`;
     HOF.swap(node, `${tabs}<div class="hof-bank-body">${content}</div>`);
+  }
+
+  /** Eklenen sekmenin içeriği (HOF.bank.addTab): sekmenin kendi html()'i; hata olursa sekme boş kalmaz, neden yazılır. */
+  function extraHtml(spec) {
+    try {
+      return spec.html() || HOF.listPending(view.error);
+    } catch (error) {
+      return `<p class="hof-empty">${esc(error?.message || "Bölüm gösterilemedi.")}</p>`;
+    }
   }
 
   // ---------- Genel Bakış (K10) ----------
@@ -618,6 +643,9 @@
         const accounts = (view.choices?.accounts || []).filter(account => view.choices.forms.bank.ids.includes(account.id));
         return `<select ${attrs}>${option("", "İlk Açılan TL Vadesiz Hesap", value)}${accounts.map(account => option(account.id, `${account.label} (${account.code})`, value)).join("")}</select>`;
       }
+      // 2.2.0 (İz 3.4): Varsayılan POS — etkin POS'lar (seçici listesinden; boşsa ilk tanımlanan POS).
+      case "pos":
+        return `<select ${attrs}>${option("", "İlk Tanımlanan POS", value)}${(view.choices?.pos || []).map(item => option(item.id, `${item.name} (${item.code})`, value)).join("")}</select>`;
       case "gl":
         return `<select ${attrs}>${item.allowed.map(code => option(code, `${code} · ${chart[code] || ""}`, value)).join("")}</select>`;
       case "fixed":
@@ -1611,6 +1639,8 @@
           filter("İşlem Türü", `<select data-mv="type">${option("", "Tümü", s.filter.type)}${groups.map(item => option(item.key, item.label, s.filter.type)).join("")}</select>`),
           filter("Giriş ve Çıkış", `<select data-mv="dir">${DIR_FILTERS.map(([value, label]) => option(value, label, s.filter.dir)).join("")}</select>`),
           filter("Durum", `<select data-mv="status">${STATUS_FILTERS.map(([value, label]) => option(value, label, s.filter.status)).join("")}</select>`),
+          // 2.2.0 (İz 3.3, plan §8.6 "Süzgeçler: … POS"): yalnız seçilen POS'un banka hareketleri (gün sonu fişleri, İptal İadesi).
+          ...((view.posList || []).length || s.filter.pos ? [filter("POS", `<select data-mv="pos">${option("", "Tüm POS'lar", s.filter.pos)}${(view.posList || []).map(item => option(item.id, `${item.name} (${item.code})${item.status === "passive" ? " · Pasif" : ""}`, s.filter.pos)).join("")}</select>`)] : []),
           filter("Başlangıç", `<input type="date" data-mv="from" value="${esc(s.filter.from)}" max="${esc(HOF.localToday())}">`),
           filter("Bitiş", `<input type="date" data-mv="to" value="${esc(s.filter.to)}">`),
           filter("En Az Tutar", `<input type="text" inputmode="decimal" data-mv="min" value="${esc(s.filter.min)}" placeholder="ör. 100">`),
@@ -1644,8 +1674,8 @@
     loadMoves(moves);
   }
   /** Hareketler sekmesini (ya da Planlı İşlemler'i) bir hesapla açar. */
-  function openMovements({ account = moves.filter.account, planned = false } = {}) {
-    moves.filter = { ...newMoves("main").filter, account: account || "" };
+  function openMovements({ account = moves.filter.account, planned = false, pos = "" } = {}) {
+    moves.filter = { ...newMoves("main").filter, account: account || "", pos: pos || "" };
     moves.planned = planned;
     moves.cursor = null;
     moves.rows = [];
@@ -1698,6 +1728,37 @@
     return c.direction === "in" ? `${other || "—"} → ${account}` : `${account} → ${other || "—"}`;
   }
   const backLabel = () => (view.eventBack === "account" ? "Hesap" : view.eventBack === "overview" ? "Genel Bakış" : "Hareketler");
+  /**
+   * 2.2.0 (İz 3.3; plan §8.6, kabul 23–28): İşlem Kartı'nın POS bölümü (sunucu movements card → pos.eventInfo). POS satışı/iadesinde POS, taksit,
+   * provizyon, son 4 hane, valör açıklaması ("12.10.2026 (08.10 Perşembe + 2 iş günü)"), komisyon ve net, valör kalemleri; iadede asıl satış ve asıl
+   * fatura. Gün sonu fişinde bağlı kalemler (valör, rol, brüt, net, satışın İşlem No'su) ve KDV'li kipte sağlayıcıya yazılan kesinti satırları.
+   */
+  const ITEM_ROLES = { sale: "Satış", refund: "İade", fee: "Komisyon Tahsili" };
+  function posEventHtml(p) {
+    if (!p) return "";
+    const link = (no, label = no) => (no ? `<button type="button" class="hof-link-button" data-event-link="${esc(no)}">${esc(label)}</button>` : "");
+    if (p.kind === "settlement") {
+      const rows = (p.items || []).map(item => `<tr>${td("Valör", esc(dateText(item.valueDate)))}${td("Kalem", esc(ITEM_ROLES[item.role] || item.role))}${td("Satış", `${link(item.saleEventNo) || "—"}<small>${esc(dateText(item.saleDate))}</small>`)}${td("Brüt", esc(fmt(item.grossMinor)), "num")}${td("Net", esc(fmt(item.plannedNetMinor)), "num")}</tr>`).join("");
+      const fees = (p.fees || []).map(row => `<li>${esc(row.note || "")} · ${esc(fmt(Math.round(Number(row.amount) * 100)))}</li>`).join("");
+      return `<section class="hof-bank-linked" data-event-pos="settlement"><h4 class="hof-bank-subtitle">POS Gün Sonu Kalemleri</h4>${p.explain?.length ? `<p class="hof-rep-note" data-pos-explain>Valör: ${esc(p.explain.join(" · "))}</p>` : ""}
+        <div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table"><thead><tr><th>Valör</th><th>Kalem</th><th>Satış</th><th class="num">Brüt</th><th class="num">Net</th></tr></thead><tbody>${rows}</tbody></table></div>${fees ? `<ul class="hof-bank-links">${fees}</ul>` : ""}</section>`;
+    }
+    const fact = (label, value) => (value ? `<div><dt>${esc(label)}</dt><dd>${value}</dd></div>` : "");
+    const items = (p.items || []).map(item => `<li>${esc(dateText(item.valueDate))} · ${esc(ITEM_ROLES[item.role] || item.role)} · brüt ${esc(fmt(item.grossMinor))} · net ${esc(fmt(item.plannedNetMinor))}${item.blocked ? " · Blokeli" : ""} · ${esc(item.status === "settled" ? `bankaya geçti${item.voucherNo ? ` (${item.voucherNo})` : ""}` : item.status === "void" ? "iptal" : "bekliyor")}</li>`).join("");
+    return `<section class="hof-bank-linked" data-event-pos="${esc(p.kind)}"><h4 class="hof-bank-subtitle">${esc(p.kindLabel || "POS")}</h4><dl class="hof-chq-facts">
+        ${fact("POS", esc(p.posName))}
+        ${fact("Durum", esc(p.statusLabel))}
+        ${p.kind === "sale" ? fact("POS Taksit Sayısı", esc(p.installmentLabel)) : ""}
+        ${fact("Provizyon No", esc(p.authCode || ""))}
+        ${fact("Kartın Son 4 Hanesi", p.cardLast4 ? `•••• ${esc(p.cardLast4)}` : "")}
+        ${fact("Valör", p.explain ? `<span data-pos-explain>${esc(p.explain)}</span>` : "")}
+        ${fact("Komisyon", p.kind === "sale" ? `%${esc(pctText(p.rate))} ·${esc(fmt(p.commissionMinor))} <small>${esc(p.taxLabel || "")}</small>` : p.commissionRefundMinor ? `${esc(fmt(p.commissionRefundMinor))} iade` : "")}
+        ${fact("Bankaya Geçecek (Net)", esc(fmt(p.netMinor)))}
+        ${p.kind === "sale" && p.refundedMinor ? fact("İade Edilen", esc(fmt(p.refundedMinor))) : ""}
+        ${fact("Asıl POS Satışı", p.origin ? `${link(p.origin.eventNo) || esc(dateText(p.origin.date))} <small>${esc(dateText(p.origin.date))} · ${esc(fmt(p.origin.grossMinor))}</small>` : "")}
+        ${fact("Asıl Fatura", p.originInvoice ? `<button type="button" class="hof-link-button" data-open-invoice="${esc(p.originInvoice.id)}">${esc(p.originInvoice.number)}</button>` : "")}
+      </dl>${items ? `<ul class="hof-bank-links" data-pos-items>${items}</ul>` : ""}</section>`;
+  }
   function eventHtml() {
     const back = `<button type="button" class="hof-plan-back" data-act="ev-back">← ${esc(backLabel())}</button>`;
     const c = view.event;
@@ -1763,6 +1824,7 @@
         ${fact("Giren", esc([c.createdByName, HOF.formatDateTime(c.createdAt)].filter(Boolean).join(" · ")))}
         ${c.updatedAt ? fact("Son Değişiklik", esc(HOF.formatDateTime(c.updatedAt))) : ""}
       </dl>
+      ${posEventHtml(c.pos)}
       ${relations.length ? `<ul class="hof-bank-links">${relations.join("")}</ul>` : ""}
       ${toolbar}
       ${blocks.length ? `<ul class="hof-inv-blocks" data-bank-event-blocks>${blocks.map(([name, why]) => `<li><b>${esc(name)} kapalı:</b> ${esc(why)}</li>`).join("")}</ul>` : ""}
@@ -2787,7 +2849,10 @@
    * amount — tutarı veren işlev (verilmezse formun "amount" alanı); original — düzeltilen hareket { ref, amount, date } (hesabı, TL tutarı, günü;
    * bakiyede zaten var); cash — Kasa ↔ Banka'da Nakit Kasa satırı ("in" Kasa'ya giriş, "out" çıkış); dateName — işlemin tarih alanı.
    */
-  async function attachPicker(form, { methodName = "", anchor = null, card = null, direction = "in", amount = null, original = null, cash = "", dateName = "date", ...options } = {}) {
+  // 2.2.0 (İz 3.2): pos — tahsilat formunda kart yolu POS'tur (cari tahsilatı, kayıt/taksit tahsilatı, stok satışı) ya da POS İadesidir (taksit
+  // iadesi, stok müşteri iadesi): { value (düzeltmede satırın POS'u), row ("tablo:kimlik"; düzeltmede taksit/provizyon/son 4 hane), refund,
+  // origin: { partyId, planId } }. Yol "POS" iken POS alanı (hof-bank-pos.js posField): tekse bilgi satırı, çoksa seçim, yoksa "POS Tanımla".
+  async function attachPicker(form, { methodName = "", anchor = null, card = null, pos = null, direction = "in", amount = null, original = null, cash = "", dateName = "date", ...options } = {}) {
     if (!form) return "none";
     const methodNode = methodName ? form.querySelector(`[name="${methodName}"]`) : null;
     const place = anchor || methodNode?.closest(".hof-field") || form.querySelector(".hof-field:last-of-type");
@@ -2817,6 +2882,8 @@
     };
     const mode = placePickers(form, setup, data);
     pickerForms.set(form, setup);
+    // POS alanı (yalnız yol alanı olan formda; seçiciden ayrı kutu, data-pos-pick): POS betiği yüklüyse.
+    if (pos && methodNode && posField?.attach) setup.posField = posField.attach(form, { methodNode, direction, data, dateNode, amountOf: setup.amountOf, ...pos });
     if (methodNode) methodNode.addEventListener("change", () => syncPickers(form, setup));
     // Seçici yeniden kurulsa da (refreshPickers) dinleyici formda: seçim değişince not yerleşir/kalkar.
     form.addEventListener("change", event => {
@@ -2831,7 +2898,7 @@
     // 2.4: "… Tanımla" ile kaydedilen hesap/kart seçicide seçili gelir (alan yeniden kurulur; formun öbür alanları yerinde kalır).
     form.addEventListener("hof-bank-defined", async event => {
       const { kind, account } = event.detail || {};
-      if (!account?.id || !["bank", "card"].includes(kind)) return;
+      if (!account?.id || !["bank", "card", "pos"].includes(kind)) return;
       let fresh;
       try {
         fresh = await choices(true, setup.dateNode?.value || "");
@@ -2840,6 +2907,8 @@
       }
       if (!form.isConnected) return;
       setup.data = fresh;
+      // 2.2.0 (İz 3.2): "POS Tanımla" ile kaydedilen POS, POS alanında seçili gelir (banka/kart seçicisi yerinde kalır).
+      if (kind === "pos") return setup.posField?.refresh(fresh, account.id);
       placePickers(form, setup, fresh, { [kind === "card" ? CARD_PICKER.name : setup.options.name || "bankAccountId"]: account.id });
       syncPickers(form, setup);
       const box = form.querySelector(kind === "card" ? '[data-bank-pick="card"]' : '[data-bank-pick]:not([data-bank-pick="card"])');
@@ -2971,20 +3040,31 @@
       setup.data = data;
       placePickers(form, setup, data);
       syncPickers(form, setup);
+      setup.posField?.refresh(data);
     }
   }
   /**
    * Gönderilecek gövdenin hesap alanı (K2): havalede Banka Hesabı (bankAccountId), kurumsal kart yolunda Kurumsal Kart (cardAccountId →
    * bankAccountId), başka yolda hiçbiri. Form verisi gizli (pasif) alanları da taşıdığı için gönderimden önce çağrılır. method: gövdenin yolu.
    */
+  // 2.2.0 (İz 3.2): POS alanları (posId, posInstallments, authCode, cardLast4, posRefundOf, posSourceless) yalnız kart yolunda ve kredi kartı
+  // seçilmemişse (tahsilat / POS İadesi) gönderilir; başka yolda gizli alanlar düşer.
+  const POS_FIELDS = ["posId", "posInstallments", "authCode", "cardLast4", "posRefundOf", "posSourceless"];
   function accountBody(body, method = body?.method) {
     if (!body) return body;
     const cardId = body.cardAccountId;
     delete body.cardAccountId;
     if (method === "card" && cardId) body.bankAccountId = cardId;
     else if (method !== "bank") delete body.bankAccountId;
+    if (method !== "card" || cardId) for (const key of POS_FIELDS) delete body[key];
+    else {
+      if (body.posSourceless === false || body.posSourceless === "") delete body.posSourceless;
+      for (const key of POS_FIELDS) if (body[key] === "") delete body[key];
+    }
     return body;
   }
+  // POS alanı (hof-bank-pos.js registerPosField): attachPicker'ın kart yolu POS alanını kurar.
+  let posField = null;
 
   HOF.bank = {
     open,
@@ -3015,6 +3095,26 @@
     balanceLine,
     cashLine,
     balances,
+    // v2.2.0 (İz 3): POS betiğinin (hof-bank-pos.js) pencereye bağlandığı yerler — sekme (Ayarlar'dan önce), yenileme kancası (çizimden önce
+    // veri), yeniden çizim, pencerenin o anki görünümü, Hareketler'i bir POS'la açma, hesap işareti tanımı ("POS Kullan"), POS alanı.
+    addTab: (id, spec) => {
+      extraTabs.set(String(id), spec);
+      if (modal) render();
+    },
+    addReloadHook: fn => reloadHooks.add(fn),
+    rerender: () => (modal ? render() : null),
+    reloadView: (options = {}) => (modal ? reload(options) : Promise.resolve()),
+    current: () => ({ open: Boolean(modal), mode: view.mode, tab: view.tab, accountId: view.accountId, account: view.account, list: view.list }),
+    setTab: tab => (modal ? setTab(tab) : open({ tab })),
+    openAccount: id => (modal ? openAccount(id) : open({ accountId: id })),
+    openMovements: (filter = {}) => (modal ? openMovements(filter) : open().then(() => openMovements(filter))),
+    flagDefine,
+    registerPosField: spec => {
+      posField = spec;
+    },
+    fmt,
+    dateText,
+    pctText,
   };
   HOF.on("bank-choices-stale", () => {
     choicesCache = null;

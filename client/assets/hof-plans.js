@@ -778,12 +778,15 @@
       submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
       onOpen: dialog => {
         // 2.7: seçicide bakiye (tahsilat giriş, geri ödeme çıkış; düzeltmede eski tutar bakiyede).
-        if (!entry?.opening && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.finRef || "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", direction: incoming ? "in" : "out", original: entry?.method === "bank" && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null });
+        // 2.2.0 (İz 3.2): kart yolu tahsilatta POS (taksit sayısı, provizyon, önizleme), geri ödemede POS İadesi (asıl işlem bu kartın POS satışı).
+        const pos = { value: entry?.method === "card" ? entry.finRef || "" : "", row: entry ? `plan_entries:${entry.id}` : "", refund: !incoming, origin: { planId: plan.id } };
+        if (!entry?.opening && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.finRef || "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", pos, direction: incoming ? "in" : "out", original: entry?.method === "bank" && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null });
       },
       onSubmit: async data => {
         const url = `/api/workspace/plans/${encodeURIComponent(plan.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
         const body = { ...data, kind: entry?.kind || kind };
-        if (data.method !== "bank") delete body.bankAccountId;
+        if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
+        else if (data.method !== "bank") delete body.bankAccountId;
         const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });
         const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         if (result.replayed) {

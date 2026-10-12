@@ -56,6 +56,7 @@ jobs:
       - run: npm run test:senaryo-banka-210-temel
       - run: npm run test:senaryo-banka-210-eski-satir
       - run: npm run test:senaryo-banka-220
+      - run: npm run test:senaryo-pos-220
       - run: npm run test:banka-210-saat
       - run: npm run test:banka-210-kart-onbellek
       - run: npm run test:banka-210-daha-fazla
