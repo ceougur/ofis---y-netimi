@@ -1,0 +1,20 @@
+(node:21125) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+v2.1.0 düzelt 10.000 → 8.000: 200 {"ok":true,"data":{"id":"account-a6d6b938-cfd3-413d-9394-47448f091ef4","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-10-01","groupId":null,"su
+v2.1.0 sil 5.000: 200 {"ok":true,"data":{"id":"account-a6d6b938-cfd3-413d-9394-47448f091ef4","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-10-01","groupId":null,"su
+v2.1.0 yeni kart tahsilatı 700: 200 {"ok":true,"data":{"id":"account-a6d6b938-cfd3-413d-9394-47448f091ef4","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+onarım raporu: null
+POS satışları: [["void",5000,125,[["void",5000,4875]]],["repair",10000,250,[["pending",10000,9750]]]]
+Mutabakat (dönüşten hemen sonra): true []
+2.2.0'da yeni POS satışı 1.000: 200  
+aktar: 200 {"ok":true,"data":{"settled":1,"failed":0,"remaining":0,"stats":{"netMinor":0,"blockedMinor":0,"grossMinor":0,"feeMinor":0,"due":{"count":0,"netMinor":0},"awaiting":{"count":0,"netMinor":0},"errors":0}}}
+POS satışları (aktar sonrası): [["active",1000,[["settled",975,""]]],["void",5000,[["void",4875,""]]],["repair",10000,[["pending",9750,""]]]]
+özet posPending: {"netMinor":0,"blockedMinor":0,"grossMinor":0,"feeMinor":0,"due":{"count":0,"netMinor":0},"awaiting":{"count":0,"netMinor":0},"errors":0}
+FARK  [R1] Ziraat valörden sonra (100.000 + 7.800 + yeni 975) :: beklenen=108775 gerçek=100975
+FARK  [R2] 108.01 / 108.00 :: beklenen=[0,700] gerçek=[0,8700]
+FARK  [R3] 653 (8.000 × %2,5) :: beklenen=200 gerçek=25
+FARK  [R4] cari ABC (−8.000 − 700) :: beklenen=-8700 gerçek=-9700
+UYDU  [R5] Mutabakat :: beklenen=true gerçek=true
+Mutabakat hataları: []
+
+ÖZET 4 fark / 5

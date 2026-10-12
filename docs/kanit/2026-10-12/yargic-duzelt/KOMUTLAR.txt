@@ -1,0 +1,23 @@
+Yargıç (Y1, Y2/Y3, Y6) ve eleştirmen (E-1/E-2, E-3, E-4, E-5) düzeltmelerinin kanıtı — 12.10.2026
+Ham çıktılar: 2026-10-12/<ad>.json + .log (tools/kanit.mjs kos). "eski-70d1273" = 70d1273'ün git archive kopyası (scratchpad,
+yargic-duzelt-eski-70d1273); v2.1.0 kopyası = 7c6405f git archive (yargic-duzelt-eski-7c6405f). "yeni" = b62b293.
+
+KIRMIZI (eski 70d1273 ayrı kopyada)
+  y2-p4-eski-70d1273   p4: 'Açılış kampanyası hasılatı' 409 cash-opening-exists, muhasebe 403; v2.1.0 verisinin iki 'Açılış' girişi 409
+  y3-p2-eski-70d1273   p2: KİLİTLİ Eylül 500 -100000 → -105100, 649 -5400 → -300
+  y1-p1-eski-70d1273   p1 C: move-pending 409 ledger-integrity + integrity_log 'rolled-back'; Ziraat 103.860 (taşınmadı)
+  y6-p5-eski-70d1273   p5: kilitli Eylül taslağı 30.09, Kaydet 409 period-locked
+  y-birim-eski-70d1273 yeni birim testleri eski kodda: 5 kırmızı (Y2/Y3 3, Y1 1, Y6 1), öbür 27 yeşil
+  e-birim-eski-70d1273 test/elestirmen-220: E-1/E-2 2, E-4 1, E-5 1 kırmızı (E-3 bu kopyada git etiketi yok → atlandı; e6 betiği kırmızıyı gösterir)
+  e2-eski / e4-eski / e5b-eski / e6-eski-70d1273   eleştirmen betikleri (e2 FARK 6; e4 Ziraat pasif 111.580; e5b byMethod.bank = 123456.78;
+                                                   e6 Ziraat 100.000, Mutabakat false)
+YEŞİL (yeni)
+  y1-p1-yeni (0 fark / 23), y2-p4-yeni (2.2.0 = v2.1.0: 200'ler, mizan 6400/0/-6600/200), y3-p2-yeni (Kasa 500/649 farkı yok; kalan
+  101 → 121 farkı İz 4.2 senet sınıflaması), y6-p5-yeni (taslak 01.10, Kaydet 200; 0 fark / 8)
+  e2-yeni (FARK 0 / 10), e4-yeni (Taşı 200; Garanti 61.580, Ziraat 100.000), e5-yeni / e5b-yeni (sızıntı yok), e6-yeni (Ziraat 100.975,
+  Mutabakat true; R1–R4 Y4 bilinen sınır)
+KÂHİN (test/bagimsiz değişmedi)
+  kahin-kabul-1-16: 182 yaprak, fark 0
+  kahin-kasa-acilis-649: fark 2 (A=B≠P) — koşucu (surucu.mjs §4.8) Kasa açılışını SIRADAN Kasa girişi + "Açılış Bakiyesi" metniyle girer
+  kahin-kasa-acilis-649-surucu-isaretli-uc: koşucunun yalnız o satırı /api/workspace/cash/opening'e çevrilmiş KOPYASI (depoya girmedi): fark 0
+E2E: e2e-senaryo-iz1-kasa-acilis 21/21, e2e-senaryo-pos-220 106/106. TAM: npm-test-tam.

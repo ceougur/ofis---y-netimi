@@ -1,0 +1,182 @@
+TAP version 13
+# Subtest: Eleştirmen E-1/E-2: POS Ödeme Takvimi ve ANLIK DURUM'da tür kalemin rolünden
+    # Subtest: C1: 09.11'de POS 9.750 · Blokeli POS 9.750 · Komisyon Tahsili −250 ayrı satır; Komisyon Tahsili 250; aktarım sonrası Ziraat +19.250
+    not ok 1 - C1: 09.11'de POS 9.750 · Blokeli POS 9.750 · Komisyon Tahsili −250 ayrı satır; Komisyon Tahsili 250; aktarım sonrası Ziraat +19.250
+      ---
+      duration_ms: 613.875069
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:23:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              '2026-11-09',
+              'Blokeli POS',
+              975000
+        ...
+              '2026-11-09',
+        -     'Komisyon Tahsili',
+        -     -25000
+        -   ],
+        -   [
+        -     '2026-11-09',
+              'POS',
+        +     950000
+        -     975000
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '2026-11-09'
+          1: 'Blokeli POS'
+          2: 975000
+        1:
+          0: '2026-11-09'
+          1: 'Komisyon Tahsili'
+          2: -25000
+        2:
+          0: '2026-11-09'
+          1: 'POS'
+          2: 975000
+      actual:
+        0:
+          0: '2026-11-09'
+          1: 'Blokeli POS'
+          2: 975000
+        1:
+          0: '2026-11-09'
+          1: 'POS'
+          2: 950000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:37:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: C2: valörden SONRA 3.000 iade → bekleyen iade kalemi Komisyon Tahsili değil (takvim ve ANLIK DURUM 0); nakit akışında posFee yok
+    not ok 2 - C2: valörden SONRA 3.000 iade → bekleyen iade kalemi Komisyon Tahsili değil (takvim ve ANLIK DURUM 0); nakit akışında posFee yok
+      ---
+      duration_ms: 348.952839
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:51:3'
+      failureType: 'testCodeFailure'
+      error: '[{"valueDate":"2026-10-14","posId":"pos-49ddfbd3-b41c-4b82-b05a-68edf7c21fb4","posName":"Ziraat Fiziki POS","kind":"fee","kindLabel":"Komisyon Tahsili","netMinor":-300000,"grossMinor":-300000,"count":1,"due":false,"awaiting":false,"error":""}]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:63:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - Eleştirmen E-1/E-2: POS Ödeme Takvimi ve ANLIK DURUM'da tür kalemin rolünden
+  ---
+  duration_ms: 964.509836
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Eleştirmen E-4: bekleyen POS kalemi olan hesap pasife alınamaz
+    # Subtest: 05.10 taksitli satış (Ziraat'e geçecek) → POS Garanti'ye bağlansa da Ziraat Pasife Al 409; Bekleyenleri Taşı'dan sonra pasife alınır; Ziraat değişmez
+    not ok 1 - 05.10 taksitli satış (Ziraat'e geçecek) → POS Garanti'ye bağlansa da Ziraat Pasife Al 409; Bekleyenleri Taşı'dan sonra pasife alınır; Ziraat değişmez
+      ---
+      duration_ms: 398.342016
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:77:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bekleyen POS'u olan Ziraat pasife: 200 {"id":"bacc-ea4d7fd6-e3ef-40d8-b9a1-8c122487864e","code":"ZIR-TL","gl":"102","glSub":"102.01","kind":"demand","kindLabel":"Vadesiz","bankName":"Ziraat Bankası","name":"Ana TL Hesabı","label":"Ziraat Bankası · Ana TL Hesabı","currency":"TRY","iban":"TR340001000000000001234567","ibanText":"TR34 0001 0000 0000 0001 2345 67","accountNo":"","branchName":"","branchCode":"","swift":"","holder":"","descri 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:90:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - Eleştirmen E-4: bekleyen POS kalemi olan hesap pasife alınamaz
+  ---
+  duration_ms: 398.930696
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:76:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Eleştirmen E-5: Kasa yanıtı banka bakiyesini bank.view yetkisi olmayana vermez
+    # Subtest: bank.view kaldırılmış muhasebe: /api/workspace/cash yanıtında byMethod.bank yok, 123.456,78 hiçbir alanda yok; yönetici görür
+    not ok 1 - bank.view kaldırılmış muhasebe: /api/workspace/cash yanıtında byMethod.bank yok, 123.456,78 hiçbir alanda yok; yönetici görür
+      ---
+      duration_ms: 406.734047
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:106:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        byMethod.bank yok
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:118:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - Eleştirmen E-5: Kasa yanıtı banka bakiyesini bank.view yetkisi olmayana vermez
+  ---
+  duration_ms: 407.310151
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/elestirmen-220.test.mjs:105:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Eleştirmen E-3: v2.1.0'a dönüp POS tahsilatının tutarı değiştirilince satış Onarım Bekliyor; öbür satışlar aktarılır
+ok 4 - Eleştirmen E-3: v2.1.0'a dönüp POS tahsilatının tutarı değiştirilince satış Onarım Bekliyor; öbür satışlar aktarılır # SKIP v2.1.0 etiketi yok
+  ---
+  duration_ms: 0.090659
+  type: 'suite'
+  ...
+1..4
+# tests 4
+# suites 4
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2227.955609

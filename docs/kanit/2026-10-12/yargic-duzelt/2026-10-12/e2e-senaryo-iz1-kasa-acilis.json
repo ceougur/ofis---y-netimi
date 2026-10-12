@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-iz1-kasa-acilis",
+  "komut": "npm run -s test:senaryo-iz1-kasa-acilis",
+  "commit": "b62b293713794b147a2d2a10abe09741c3a187b9",
+  "dal": "worktree-agent-a8fb47e249478c397",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T16:10:33.873Z",
+  "sure_sn": 15,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/yargic-duzelt/2026-10-12/e2e-senaryo-iz1-kasa-acilis.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8fb47e249478c397",
+  "ham_cikti_sha256": "d377bb4b87939d62dfc4fad0edb4f9f390569b1e7d2b1c867e2259874bb61aa0",
+  "ham_cikti_bayt": 1704
+}
