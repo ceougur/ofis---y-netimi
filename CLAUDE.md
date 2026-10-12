@@ -1345,6 +1345,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   (hof-bank.js:392): hesabın açılış bakiyesi bankadan teyit edilip "Bakiye Doğrulandı" işaretlenmemiş; işaretlenmeden o hesapta eksi
   bakiye denetimi çalışmaz (hof-bank.js:788). Yol: hesaba tıkla → Açılışı Düzelt → "Bu tutar bankadaki gerçek bakiyedir" işaretle.
   ÖNERİ (2.1.1, karar kullanıcıda): etiket tek başına anlaşılmıyor → "Açılış Bakiyesi Doğrulanmadı" + üzerine gelince/yanında kısa neden.
+- MÜŞTERİ İSTEĞİ (12.10.2026, ekran: Yeni Banka Hesabı, Hesap Türü listesi "Kurumsal Kredi Kartı" seçili): "kredi kartlarını bankaya
+  bağlamak gerekiyor; Yapı Kredi tanımında 'kredi kartı kullan' seçeneği olsun, World kartı oraya girelim; ödemede tanımlı kartlar gelsin;
+  Yapı Krediyi iki kere mi kaydedeceğiz?" KODDAN (2.1.0): her kurumsal kart AYRI hesap kaydı (accounts.mjs ACCOUNT_KINDS.card, 309.NN); banka
+  adı serbest metin, Vadesiz hesapla BAĞ YOK; ödeme yollarında "Kredi Kartı" seçilince kart hesapları gelir (module-ref.mjs:58); kart borcu
+  Banka Fişi "Kart Borcu Ödemesi"nde ödeyen hesap her seferinde seçilir. Yani bugün de "Yapı Kredi · World" kart kaydı açılır, Vadesiz'i
+  ikinci kez açmak gerekmez; ama ekranda bu anlaşılmıyor. ÖNERİ (karar kullanıcıda): hesap kartında "+ Kredi Kartı Ekle" (banka adı dolu
+  gelir, kart adı ör. World, son 4 hane, limit, hesap kesim/son ödeme günü, "Kart Borcunu Ödeyen Hesap" = bu Vadesiz); Hesaplar listesinde
+  kartlar bankasının altında girintili; Kart Borcu Ödemesi'nde bağlı hesap öndolu; Yeni Banka Hesabı listesinden "Kurumsal Kredi Kartı"
+  kalkar (yalnız bankanın içinden). Şema: bank_accounts.parent_id (göçle boş; eski kartlar ad eşleşmesiyle önerilir, kendiliğinden bağlanmaz).
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
