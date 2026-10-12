@@ -1,0 +1,416 @@
+TAP version 13
+# Subtest: POS komisyonu (plan §4.3) — bağımsız BigInt modeli
+    # Subtest: plan tablosu: 10.000 @ %2,5 → BSMV Dahil 250 (BSMV 11,90) / 9.750; BSMV Hariç 262,50; KDV Hariç 300 / 9.700; KDV Dahil 250 (matrah 208,33, KDV 41,67); Yok 250
+    ok 1 - plan tablosu: 10.000 @ %2,5 → BSMV Dahil 250 (BSMV 11,90) / 9.750; BSMV Hariç 262,50; KDV Hariç 300 / 9.700; KDV Dahil 250 (matrah 208,33, KDV 41,67); Yok 250
+      ---
+      duration_ms: 3.303584
+      type: 'test'
+      ...
+    # Subtest: 20.000 rastgele (tutar, oran, sabit ücret, kip): kesinti ve dahil vergi modelle aynı
+    ok 2 - 20.000 rastgele (tutar, oran, sabit ücret, kip): kesinti ve dahil vergi modelle aynı
+      ---
+      duration_ms: 60.36001
+      type: 'test'
+      ...
+    1..2
+ok 1 - POS komisyonu (plan §4.3) — bağımsız BigInt modeli
+  ---
+  duration_ms: 65.028083
+  type: 'suite'
+  ...
+# Subtest: Valör takvimi ve bölüşüm (plan §4.2, §4.5)
+    # Subtest: 12.000 / 3 taksit / her ay (08.10.2026) → 09.11, 08.12, 08.01.2027; 4.000 brüt, 140 kom, 3.860 net; tek seferde → tek kalem (oran satırındaki gün)
+    ok 1 - 12.000 / 3 taksit / her ay (08.10.2026) → 09.11, 08.12, 08.01.2027; 4.000 brüt, 140 kom, 3.860 net; tek seferde → tek kalem (oran satırındaki gün)
+      ---
+      duration_ms: 2.749508
+      type: 'test'
+      ...
+    # Subtest: blokeli 30 takvim günü: 08.10 → 07.11 Cumartesi → 09.11 (blocked)
+    ok 2 - blokeli 30 takvim günü: 08.10 → 07.11 Cumartesi → 09.11 (blocked)
+      ---
+      duration_ms: 0.268275
+      type: 'test'
+      ...
+    # Subtest: rastgele brüt ve taksit: brüt eşit (artık son), komisyon brüt ağırlıklı (aşağı, artık son); toplamlar korunur
+    ok 3 - rastgele brüt ve taksit: brüt eşit (artık son), komisyon brüt ağırlıklı (aşağı, artık son); toplamlar korunur
+      ---
+      duration_ms: 156.05004
+      type: 'test'
+      ...
+    1..3
+ok 2 - Valör takvimi ve bölüşüm (plan §4.2, §4.5)
+  ---
+  duration_ms: 159.39691
+  type: 'suite'
+  ...
+# Subtest: Kısmi iade dağıtımı ve gün fişi tutarları (plan §4.6, §4.4)
+    # Subtest: sondan başa: kapasite [4.000, 4.000] (2. ve 3. kalem), iade 5.000 → 3. kaleme 4.000, 2. kaleme 1.000; Oransal kom. iadesi round(420 × 5.000 / 12.000) = 175 → 140 + 35
+    not ok 1 - sondan başa: kapasite [4.000, 4.000] (2. ve 3. kalem), iade 5.000 → 3. kaleme 4.000, 2. kaleme 1.000; Oransal kom. iadesi round(420 × 5.000 / 12.000) = 175 → 140 + 35
+      ---
+      duration_ms: 3.483836
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-mut/test/banka-220-pos-hesap.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        +     2,
+        +     '2026-12-14',
+        -     3,
+        -     '2027-01-12',
+              400000,
+              14000
+            ],
+            [
+        +     3,
+        +     '2027-01-12',
+        -     2,
+        -     '2026-12-14',
+              100000,
+              3500
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 3
+          1: '2027-01-12'
+          2: 400000
+          3: 14000
+        1:
+          0: 2
+          1: '2026-12-14'
+          2: 100000
+          3: 3500
+      actual:
+        0:
+          0: 2
+          1: '2026-12-14'
+          2: 400000
+          3: 14000
+        1:
+          0: 3
+          1: '2027-01-12'
+          2: 100000
+          3: 3500
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-mut/test/banka-220-pos-hesap.test.mjs:90:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: bekleyen kalem yetmezse artanı iade valörüne; İade Edilmez → komisyon iadesi 0; Tam → sabit ücret dahil
+    ok 2 - bekleyen kalem yetmezse artanı iade valörüne; İade Edilmez → komisyon iadesi 0; Tam → sabit ücret dahil
+      ---
+      duration_ms: 0.677205
+      type: 'test'
+      ...
+    # Subtest: gün fişi: 10.000 satış + 10.000 iade (İade Edilmez) → banka −250; 10 TL + 15 TL ücret → −5; KDV kipinde 108'de kalmayan kesinti bankadan
+    ok 3 - gün fişi: 10.000 satış + 10.000 iade (İade Edilmez) → banka −250; 10 TL + 15 TL ücret → −5; KDV kipinde 108'de kalmayan kesinti bankadan
+      ---
+      duration_ms: 0.707564
+      type: 'test'
+      ...
+    1..3
+not ok 3 - Kısmi iade dağıtımı ve gün fişi tutarları (plan §4.6, §4.4)
+  ---
+  duration_ms: 5.518339
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-mut/test/banka-220-pos-hesap.test.mjs:83:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)
+    # Subtest: kabul 17–19: Ziraat Fiziki POS (Banka, BSMV Dahil, Tek Çekim %2,5, 3 Taksit %3,5, valör 2 iş günü, her ay, provizyon aynı gün) → 108.01
+    ok 1 - kabul 17–19: Ziraat Fiziki POS (Banka, BSMV Dahil, Tek Çekim %2,5, 3 Taksit %3,5, valör 2 iş günü, her ay, provizyon aynı gün) → 108.01
+      ---
+      duration_ms: 20.902502
+      type: 'test'
+      ...
+    # Subtest: kabul 20–22: Satış Faturası Ürün B 10 × 1.000 peşin POS Tek Çekim → Ürün B 15; ABC 0; Ziraat 90.000 (değişmedi); POS Bekleyen 10.000 brüt / 9.750 net; valör 12.10.2026
+    ok 2 - kabul 20–22: Satış Faturası Ürün B 10 × 1.000 peşin POS Tek Çekim → Ürün B 15; ABC 0; Ziraat 90.000 (değişmedi); POS Bekleyen 10.000 brüt / 9.750 net; valör 12.10.2026
+      ---
+      duration_ms: 59.343018
+      type: 'test'
+      ...
+    # Subtest: kabul 23–24: saat 12.10.2026 → kuyruk → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı "Valör 12.10.2026 (08.10 Perşembe + 2 iş günü)"
+    ok 3 - kabul 23–24: saat 12.10.2026 → kuyruk → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı "Valör 12.10.2026 (08.10 Perşembe + 2 iş günü)"
+      ---
+      duration_ms: 51.948897
+      type: 'test'
+      ...
+    # Subtest: kabul 25–26: 12.10 Satış Faturası Ürün B 12 × 1.000 peşin POS 3 Taksit → Ürün B 3; takvim 12.11 / 14.12 (12.12 Cumartesi) / 12.01.2027 × 3.860; bekleyen net 11.580 (brüt 12.000, komisyon 420)
+    ok 4 - kabul 25–26: 12.10 Satış Faturası Ürün B 12 × 1.000 peşin POS 3 Taksit → Ürün B 3; takvim 12.11 / 14.12 (12.12 Cumartesi) / 12.01.2027 × 3.860; bekleyen net 11.580 (brüt 12.000, komisyon 420)
+      ---
+      duration_ms: 61.241473
+      type: 'test'
+      ...
+    # Subtest: kabul 27–28: 13.10 Satıştan İade (asıl adım 20) Ürün B 3 = 3.000 POS İadesi, İade Edilmez → Ürün B 6; ABC 0; iade valörü 15.10; Σ iade 3.000 ≤ 10.000; saat 15.10 → Ziraat 96.750
+    ok 5 - kabul 27–28: 13.10 Satıştan İade (asıl adım 20) Ürün B 3 = 3.000 POS İadesi, İade Edilmez → Ürün B 6; ABC 0; iade valörü 15.10; Σ iade 3.000 ≤ 10.000; saat 15.10 → Ziraat 96.750
+      ---
+      duration_ms: 112.200551
+      type: 'test'
+      ...
+    # Subtest: adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 12.000, 610 = 2.500, 653 = 250; Borç = Alacak
+    ok 6 - adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 12.000, 610 = 2.500, 653 = 250; Borç = Alacak
+      ---
+      duration_ms: 10.96299
+      type: 'test'
+      ...
+    1..6
+ok 4 - Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)
+  ---
+  duration_ms: 1058.127416
+  type: 'suite'
+  ...
+# Subtest: Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+    # Subtest: POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+    ok 1 - POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+      ---
+      duration_ms: 8.377473
+      type: 'test'
+      ...
+    # Subtest: satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+    ok 2 - satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+      ---
+      duration_ms: 138.887826
+      type: 'test'
+      ...
+    # Subtest: Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+    ok 3 - Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+      ---
+      duration_ms: 64.609153
+      type: 'test'
+      ...
+    1..3
+ok 5 - Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+  ---
+  duration_ms: 740.237923
+  type: 'suite'
+  ...
+# Subtest: §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+    # Subtest: komisyon faturası 600
+    ok 1 - komisyon faturası 600
+      ---
+      duration_ms: 585.985403
+      type: 'test'
+      ...
+    # Subtest: komisyon faturası 610
+    ok 2 - komisyon faturası 610
+      ---
+      duration_ms: 506.694208
+      type: 'test'
+      ...
+    1..2
+ok 6 - §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+  ---
+  duration_ms: 1093.242986
+  type: 'suite'
+  ...
+# Subtest: Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+    # Subtest: Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+    ok 1 - Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+      ---
+      duration_ms: 413.192684
+      type: 'test'
+      ...
+    1..1
+ok 7 - Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+  ---
+  duration_ms: 413.853295
+  type: 'suite'
+  ...
+# Subtest: İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri)
+    # Subtest: 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)
+    ok 1 - 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)
+      ---
+      duration_ms: 620.0825
+      type: 'test'
+      ...
+    # Subtest: ay sonu taksiti: 31.01.2028 3 taksit → 29.02.2028 (artık yıl), 31.03.2028, 02.05.2028 (30.04 Pazar, 01.05 tatil)
+    ok 2 - ay sonu taksiti: 31.01.2028 3 taksit → 29.02.2028 (artık yıl), 31.03.2028, 02.05.2028 (30.04 Pazar, 01.05 tatil)
+      ---
+      duration_ms: 350.385262
+      type: 'test'
+      ...
+    1..2
+ok 8 - İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri)
+  ---
+  duration_ms: 971.726853
+  type: 'suite'
+  ...
+# Subtest: Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi
+    # Subtest: sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)
+    ok 1 - sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)
+      ---
+      duration_ms: 621.311026
+      type: 'test'
+      ...
+    # Subtest: iki tetik aynı anda (iki "Şimdi Aktar") → tek gün fişi
+    ok 2 - iki tetik aynı anda (iki "Şimdi Aktar") → tek gün fişi
+      ---
+      duration_ms: 435.010444
+      type: 'test'
+      ...
+    # Subtest: kilit konarken valörü gelmiş bekleyen → 409 bank-pending-before-lock + liste; Yine de Kilitle → fiş kilit + 1'e Gecikmeli Aktarım (late); kilit + 1 bugünden sonraysa bekler
+    ok 3 - kilit konarken valörü gelmiş bekleyen → 409 bank-pending-before-lock + liste; Yine de Kilitle → fiş kilit + 1'e Gecikmeli Aktarım (late); kilit + 1 bugünden sonraysa bekler
+      ---
+      duration_ms: 553.777129
+      type: 'test'
+      ...
+    # Subtest: onay kipi (Elle Onay): valör gelince kuyruk yazmaz (Onay Bekleyen); onayda gerçek tarih 13.10 ve net 9.740 → fark 10 BSMV kipinde 653'e (653 = 260)
+    ok 4 - onay kipi (Elle Onay): valör gelince kuyruk yazmaz (Onay Bekleyen); onayda gerçek tarih 13.10 ve net 9.740 → fark 10 BSMV kipinde 653'e (653 = 260)
+      ---
+      duration_ms: 370.980483
+      type: 'test'
+      ...
+    1..4
+ok 9 - Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi
+  ---
+  duration_ms: 1981.885296
+  type: 'suite'
+  ...
+# Subtest: İade, komisyon tahsili ve net eksi (plan §4.6)
+    # Subtest: iade > satış → 409 pos-refund-exceeds; iade satıştan önce → 400; asıl işlem seçilmeden (birden çok aday) → 400 pos-refund-origin
+    ok 1 - iade > satış → 409 pos-refund-exceeds; iade satıştan önce → 400; asıl işlem seçilmeden (birden çok aday) → 400 pos-refund-origin
+      ---
+      duration_ms: 367.37514
+      type: 'test'
+      ...
+    # Subtest: tam iade valörden önce (İade Edilmez) → 12.10 banka −250, 653 = 250; Komisyon Tahsili Bekleyen 250
+    ok 2 - tam iade valörden önce (İade Edilmez) → 12.10 banka −250, 653 = 250; Komisyon Tahsili Bekleyen 250
+      ---
+      duration_ms: 411.55814
+      type: 'test'
+      ...
+    # Subtest: valörden sonra kısmi iade 3.000: İade Edilmez → iade valöründe banka −3.000; Oransal → −2.925 ve 653 −75 (plan §4.6 tablosu)
+    ok 3 - valörden sonra kısmi iade 3.000: İade Edilmez → iade valöründe banka −3.000; Oransal → −2.925 ve 653 −75 (plan §4.6 tablosu)
+      ---
+      duration_ms: 907.742337
+      type: 'test'
+      ...
+    # Subtest: valörden önce kısmi iade 3.000 (Oransal): bekleyen kalem net 6.825 (kom. 175); valörde banka +6.825
+    ok 4 - valörden önce kısmi iade 3.000 (Oransal): bekleyen kalem net 6.825 (kom. 175); valörde banka +6.825
+      ---
+      duration_ms: 471.831895
+      type: 'test'
+      ...
+    # Subtest: 10 TL satış + 15 TL sabit ücret (oran %0) → banka −5
+    ok 5 - 10 TL satış + 15 TL sabit ücret (oran %0) → banka −5
+      ---
+      duration_ms: 373.969582
+      type: 'test'
+      ...
+    1..5
+ok 10 - İade, komisyon tahsili ve net eksi (plan §4.6)
+  ---
+  duration_ms: 2533.559671
+  type: 'suite'
+  ...
+# Subtest: Taksitli kısmi iade (3 taksit, 1'i bankaya geçmiş, Oransal) — bağımsız BigInt modeli
+    # Subtest: 12.000 / %3,5 / 3 taksit; 13.11'de 5.000 iade → gün netleri ve banka toplamı modelle aynı
+    not ok 1 - 12.000 / %3,5 / 3 taksit; 13.11'de 5.000 iade → gün netleri ve banka toplamı modelle aynı
+      ---
+      duration_ms: 389.770465
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-mut/test/banka-220-pos-valor.test.mjs:276:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        14.12 net
+        
+        0 !== 289500
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 289500
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-mut/test/banka-220-pos-valor.test.mjs:290:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 11 - Taksitli kısmi iade (3 taksit, 1'i bankaya geçmiş, Oransal) — bağımsız BigInt modeli
+  ---
+  duration_ms: 390.892413
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-mut/test/banka-220-pos-valor.test.mjs:275:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)
+    # Subtest: valörden sonra tutar düzelt → bank.replan (gün fişi ters + r2); eşleşmişse 409 pos-settled
+    ok 1 - valörden sonra tutar düzelt → bank.replan (gün fişi ters + r2); eşleşmişse 409 pos-settled
+      ---
+      duration_ms: 470.280037
+      type: 'test'
+      ...
+    # Subtest: POS'lu satırı sil (valörden önce void) → valör geçsin → geri yükle: asıl valörüyle etkin, gün fişi asıl valör tarihiyle
+    ok 2 - POS'lu satırı sil (valörden önce void) → valör geçsin → geri yükle: asıl valörüyle etkin, gün fişi asıl valör tarihiyle
+      ---
+      duration_ms: 425.804441
+      type: 'test'
+      ...
+    # Subtest: aynı provizyonla yeni satış → eskisini geri yükle → 409 pos-auth-duplicate
+    ok 3 - aynı provizyonla yeni satış → eskisini geri yükle → 409 pos-auth-duplicate
+      ---
+      duration_ms: 516.057833
+      type: 'test'
+      ...
+    # Subtest: POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void
+    ok 4 - POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void
+      ---
+      duration_ms: 491.973411
+      type: 'test'
+      ...
+    # Subtest: iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)
+    ok 5 - iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)
+      ---
+      duration_ms: 431.407261
+      type: 'test'
+      ...
+    # Subtest: POS'lu faturayı aynı gün iptal → void, komisyon 0; ertesi gün taksitli faturayı iptal → İptal İadesi: 3 Komisyon Tahsili 140, 108.01 = 0, POS Bekleyen (Net) −420
+    ok 6 - POS'lu faturayı aynı gün iptal → void, komisyon 0; ertesi gün taksitli faturayı iptal → İptal İadesi: 3 Komisyon Tahsili 140, 108.01 = 0, POS Bekleyen (Net) −420
+      ---
+      duration_ms: 483.577165
+      type: 'test'
+      ...
+    # Subtest: bankaya geçmiş ve eşleşmiş POS'lu faturayı iptal (Müşteriye İade Edildi) → 200, iade kalemi, eski fiş ve eşleşme değişmez; Kayıt Hatası → 409 pos-settled
+    ok 7 - bankaya geçmiş ve eşleşmiş POS'lu faturayı iptal (Müşteriye İade Edildi) → 200, iade kalemi, eski fiş ve eşleşme değişmez; Kayıt Hatası → 409 pos-settled
+      ---
+      duration_ms: 493.05327
+      type: 'test'
+      ...
+    1..7
+ok 12 - Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)
+  ---
+  duration_ms: 3313.06721
+  type: 'suite'
+  ...
+1..12
+# tests 39
+# suites 12
+# pass 37
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14139.61383

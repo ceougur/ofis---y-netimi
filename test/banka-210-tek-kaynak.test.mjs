@@ -129,6 +129,8 @@ describe("moneyLines — yol ve hesap (way, ref) SQL'de türetilir", () => {
     insertBankAccount(ctx.db, { id: "acc-309", code: "KK-1", kind: "card", glSub: "309.01" });
     insertBankAccount(ctx.db, { id: "acc-300", code: "KRD-1", kind: "loan", glSub: "300.01" });
     insertPos(ctx.db, { id: "pos-1", code: "POS-1", glSub: "108.01", bankAccountId: "acc-102" });
+    // 2.2.0: POS tahsilatı oran ister (tanımsız taksit 400 pos-rate-missing; plan §4.2). Tek Çekim %0, valörü uzak: satış 108.01'de bekler.
+    rawRun(ctx.db, "INSERT INTO pos_rates (id, pos_id, installments, rate_ppm, valor_days, valid_from, created_by, created_at) VALUES ('rate-pos-1', 'pos-1', 1, 0, 30, '2026-01-01', 'test', ?)", new Date().toISOString());
   });
   after(() => ctx.server.close());
 

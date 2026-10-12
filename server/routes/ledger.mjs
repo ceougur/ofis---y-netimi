@@ -8,7 +8,7 @@ import { roundMoney } from "../lib/money.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-export function registerLedgerRoutes(router, { store, auth, audit = () => {}, period = null, cash = () => null, accounts = () => null, integrity = () => null, money = null }) {
+export function registerLedgerRoutes(router, { store, auth, audit = () => {}, period = null, cash = () => null, accounts = () => null, integrity = () => null, money = null, pos = () => null }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): para satırının hesap bağı (fin_ref; '' = Hesabı Atanmamış). v19 dosyasında (araçlar) kolon yoktur: ''.
   const refOf = (table, alias) => (store.all(`PRAGMA table_info(${table})`).some(column => column.name === "fin_ref") ? `${alias}.fin_ref` : "''");
@@ -237,6 +237,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     if (!period) throw new HttpError(503, "Dönem kilidi hazır değil.");
     const body = await readJson(req);
     const previous = period.lockedUntil();
+    // 2.2.0 (plan §4.4/6): kilitlenecek döneme düşen vadesi gelmiş POS kalemleri önce bankaya aktarılır; hâlâ bekleyen varsa 409
+    // bank-pending-before-lock + liste (uyarı; "Yine de Kilitle" = force).
+    if (body?.lockedUntil) pos()?.beforeLock?.(String(body.lockedUntil), body.force === true);
     const lockedUntil = period.setLock(body.lockedUntil);
     audit(user, lockedUntil ? "ledger.period.locked" : "ledger.period.unlocked", "period", { previous, lockedUntil });
     integrity()?.start?.();

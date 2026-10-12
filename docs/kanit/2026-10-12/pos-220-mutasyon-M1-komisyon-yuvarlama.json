@@ -1,0 +1,38 @@
+{
+  "ad": "pos-220-mutasyon-M1-komisyon-yuvarlama",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-220-pos-hesap.test.mjs test/banka-220-pos-kabul.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-pos-kdv.test.mjs",
+  "commit": "a41e35fee6069d100973422f5957fa463c21492c",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:26:19.511Z",
+  "sure_sn": 14.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 38,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "POS komisyonu (plan §4.3) — bağımsız BigInt modeli › 20.000 rastgele (tutar, oran, sabit ücret, kip): kesinti ve dahil vergi modelle aynı",
+      "konum": "test/banka-220-pos-hesap.test.mjs:36:3",
+      "hata": "kom 29453588 15469 4545 bsmv_incl · + actual - expected · + 460162n (beklenen 460163n, gelen 460162n)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a1b16de6805c2b496/docs/kanit/2026-10-12/pos-220-mutasyon-M1-komisyon-yuvarlama.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-mut",
+  "ham_cikti_sha256": "d1b82d3e19080007b00d6c67e279dda6f067bed563a8436f7ceca46f7426a7ea",
+  "ham_cikti_bayt": 18247
+}

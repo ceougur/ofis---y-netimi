@@ -33,6 +33,8 @@ import { createBankMovements } from "../lib/bank/movements.mjs";
 import { TRANSFER_TYPES, createBankVouchers } from "../lib/bank/vouchers.mjs";
 import { CHART } from "../lib/general-ledger.mjs";
 import { createModuleBank } from "../lib/bank/module-ref.mjs";
+import { createPos } from "../lib/bank/pos.mjs";
+import { registerPosRoutes } from "./bank-pos.mjs";
 
 const BASE = "/api/workspace/bank";
 /** Seçiciyi görebilenler (§8.1): banka formu olan her modülün yazma yetkisi ya da banka görüntüleme. */
@@ -41,7 +43,7 @@ const CHOICE_PERMISSIONS = ["bank.view", "accounts.collect", "plans.collect", "p
 export function registerBankRoutes(router, context) {
   const { store, auth, audit, events, bank, period, money } = context;
   const service = createBankAccounts({ store, bank, period, money, ledger: () => context.ledger, now: context.now, fxEnabled: () => context.config?.fxEnabled === true, laterOk: () => context.config?.bankLater === true });
-  const movements = createBankMovements({ store, money, accounts: service, ledger: () => context.ledger, period, now: context.now });
+  const movements = createBankMovements({ store, money, accounts: service, ledger: () => context.ledger, period, now: context.now, pos: () => service.pos });
   const vouchers = createBankVouchers({ store, bank, period, money, accounts: service, movements, invoices: () => context.invoices, parties: () => context.accounts, audit, now: context.now });
   // Yargıç B2: Bu Hesaba Ata, Kurulum Sihirbazı ve Geri Al K7'yi Banka Fişi'nin eksi bakiye denetimiyle yapar.
   service.useNegative(vouchers.negative);
@@ -325,8 +327,16 @@ export function registerBankRoutes(router, context) {
     ok(res, report);
   });
 
+  // POS (2.2.0, Aşama 10–11; lib/bank/pos.mjs): POS kartı ve oranlar, bank.post'un POS kancası (satış, iade, valör takvimi), valör kuyruğu,
+  // KDV kipi komisyon taslağı; özetin POS Bekleyen'i ve seçicinin POS listesi; İşlem Kartı'nın POS bölümü.
+  const pos = createPos({ store, bank, money, period, settings: service.settings, audit, now: context.now, log: context.log, invoices: () => context.invoices, notify: extra => events?.publish("workspace.changed", { kind: "bank", ...extra }) });
+  bank.usePos(pos);
+  service.usePos(pos);
+  service.pos = pos;
+  registerPosRoutes(router, { auth, events, pos, accounts: () => context.accounts, period });
   // Modül formlarının hesap seçimi ve K7'si (Aşama 5–6; cari, Kasa ↔ Banka): modül rotaları istek anında context.bankAccounts.module'e ulaşır.
-  service.module = createModuleBank({ store, accounts: service, negative: vouchers.negative, legacy: () => context.config?.bankPickLegacy === true });
+  service.module = createModuleBank({ store, accounts: service, negative: vouchers.negative, legacy: () => context.config?.bankPickLegacy === true, pos: () => pos });
+  service.module.pos = pos;
   // Rapor Merkezi'nin Banka grubu (Aşama 14): Banka Masraf Raporu bu uçla aynı kaynaktan (movements.feeReport) okur.
   service.movements = movements;
   return service;

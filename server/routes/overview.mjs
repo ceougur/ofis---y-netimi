@@ -34,7 +34,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
 // legacy (2.1.0 temel sürüm, küçük düzeltmeler): eski sürümden kalan, hesaba atanmamış İLERİ TARİHLİ havale / POS satırı (102.00 / 108.00).
 // Önceden "Kasa (ileri tarihli)" yazılıyordu (Nakit Kasa'da olmayan bir hareket). Ekran (hof-overview.js ROW_LABELS), PDF ve Excel aynı adı yazar.
-const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
+const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili" };
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
 const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "table", "promise", "deadline"];
 const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu Ay", upcoming: "Yaklaşan" };
@@ -84,6 +84,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       hasEvents() ? tableState("fin_events") : "",
       // Aşama 14 (K10): banka hesap kartları (hesap açma/silme, Pasife Al, tür) Banka kutusunu değiştirir.
       hasEvents() ? tableState("bank_accounts") : "",
+      // 2.2.0: POS valör kalemleri (POS Bekleyen, Blokeli POS; kalemin durumu tarih geçince değişmez, satış/iade/aktarım değiştirir).
+      hasEvents() ? tableState("pos_items") : "",
     ].join("|");
   let cache = { key: "", value: null };
   // Banka kutusu (v2.1.0 Aşama 14, K10; plan §8.4, §8.9): ana değer Gerçek Banka (Σ 102, hesaba atanmış) — Banka penceresinin Genel Bakış'ıyla
@@ -105,6 +107,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (!summary) return { balance: legacy.balanceToday, allEntries: legacy.balance, today: legacy.today };
     const flows = moneyLines()?.flows ? moneyLines().flows(day, `${day.slice(0, 7)}-01`) : null;
     const kinds = store.all("SELECT DISTINCT kind FROM bank_accounts WHERE deleted_at IS NULL").map(row => row.kind);
+    const posDefined = Boolean(store.get("SELECT 1 AS found FROM pos_terminals WHERE deleted_at IS NULL LIMIT 1"));
     const flow = item => ({ in: minorTl(item?.inMinor), out: minorTl(item?.outMinor), transferIn: minorTl(item?.transferInMinor), transferOut: minorTl(item?.transferOutMinor) });
     const today = flow(flows?.today);
     const month = flow(flows?.month);
@@ -120,7 +123,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       unassigned: { bank: minorTl(summary.unassigned.bankMinor), card: minorTl(summary.unassigned.cardMinor), total: minorTl(summary.unassigned.totalMinor), future: futureOf(summary) },
       posNet: minorTl(summary.posPending?.netMinor),
       posBlocked: minorTl(summary.posPending?.blockedMinor),
-      pos: false,
+      // 2.2.0 (K10, §8.4): POS tanımlıysa POS Bekleyen (Net) ve Blokeli POS görünür; Komisyon Tahsili Bekleyen ayrı bilgi.
+      pos: posDefined,
+      ...(posDefined ? { posFee: minorTl(summary.posPending?.feeMinor) } : {}),
     };
   }
   function compute() {
@@ -360,6 +365,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     // beklenen hareket — yalnız tarihi gelince "Nakit ve Banka"ya girecek olanlar, kendi kaynak adıyla (aheadFlows).
     const start = flowStart(day);
     flows.push(...aheadFlows(day));
+    // 2.2.0 (plan §4.7, §8.9): bekleyen POS kalemleri valör gününde net tutarla (POS, Blokeli POS; eksi gün Komisyon Tahsili).
+    flows.push(...(bankService()?.pos?.flows?.() || []));
     const result = projection({ today: day, from: range.from, to: range.to, cashToday: start.total, flows, includeOverdue });
     return { ...result, start, requested: range, withTable, group, periods: group ? groupFlows(result, group) : null };
   }

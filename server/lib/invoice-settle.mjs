@@ -99,6 +99,11 @@ export function classifyLine(line, { invoiceKind = "", chequeEvent = "" } = {}) 
       if (debit) role.recvDue = true;
       else role.payDue = true;
       break;
+    case "pos-fee":
+      // 2.2.0 (plan §4.3/2): POS komisyon kesintisi (çıkış) ve komisyon iadesi (giriş) yalnız borç tarafında ödeme rolündedir; iade eksi tutarlı
+      // ödeme olarak aynı faturanın kesintileriyle netlenir (runSide). Alacak tarafında rolü yoktur.
+      role.payPay = true;
+      break;
     default:
       // Cari kartı: Tahsilat/Ödeme ödemedir; "Borç Yaz" / "Alacak Yaz" (açılış dahil) yükümlülüktür, ödeme değildir.
       if (line.kind === "in") role.recvPay = true;
@@ -185,7 +190,26 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     const obligations = [];
     const pool = [];
     const planBooks = new Map();
+    // 2.2.0 (pos-fee, "yalnız bağlı"): aynı faturaya bağlı kesinti ve iadeler tek havuz öğesinde netlenir (Σ çıkış − Σ giriş); bağlanmamış
+    // kesinti hiçbir faturayı kapatmaz (sağlayıcıya ön ödeme olarak durur). Öğe yalnız 1. adımda kendi faturasına kapar.
+    const posFees = new Map();
     for (const line of sideLines) {
+      if (line.origin === "pos-fee") {
+        if (side !== "payable") continue;
+        const owner = links.get(line.id) || "";
+        if (!owner) continue;
+        const signed = (line.kind === "in" ? -1 : 1) * (cents(line.debit) || cents(line.credit));
+        const item = posFees.get(owner);
+        if (item) {
+          item.amount += signed;
+          item.left += signed;
+        } else {
+          const entry = { line, owner, returnId: "", uses: [], cover: "", amount: signed, left: signed, mode: "linked", linkedOnly: true };
+          posFees.set(owner, entry);
+          pool.push(entry);
+        }
+        continue;
+      }
       const { role, amount, born } = facts(line);
       // Ayrı kartın satırları kartın kendi defterinde toplanır (fatura sırasına girmez).
       if (line.planId && separatePlans.has(line.planId)) {
@@ -328,7 +352,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       if (item.planned) continue;
       while (item.free > 0 && cursor < pool.length) {
         const payment = pool[cursor];
-        if (payment.left <= 0) {
+        if (payment.left <= 0 || payment.linkedOnly) {
           cursor += 1;
           continue;
         }

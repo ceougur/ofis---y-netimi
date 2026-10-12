@@ -85,7 +85,7 @@ const ASCII = /^[\x20-\x7e]*$/;
  * @param {{ store, money, accounts, ledger: () => object, period, now? }} options  now: iş saati (context.now; Excel'in oluşturma damgası)
  *   accounts: banka hesap servisi (lib/bank/accounts.mjs; rowOf, settings); ledger: Ana Defter servisi (İşlem Kartı'nda modül olayının yevmiyesi)
  */
-export function createBankMovements({ store, money, accounts, ledger, period, now = systemClock }) {
+export function createBankMovements({ store, money, accounts, ledger, period, now = systemClock, pos = () => null }) {
   // İmlecin imzası (süreç başına gizli anahtar): yeniden başlatmadan sonra eski imleç 400 alır, liste baştan açılır. Veri tabanına yazılmaz.
   const secret = randomBytes(32);
   const mac = body => createHmac("sha256", secret).update(body).digest("base64url").slice(0, 22);
@@ -367,6 +367,8 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       invoice: invoice ? { id: invoice.id, number: invoice.number, status: invoice.status, kind: invoice.kind, date: invoice.date } : null,
       fee,
       transfer: transferOf(event, lines),
+      // 2.2.0: POS satışı/iadesi (valör takvimi, "Valör 12.10.2026 (08.10 Perşembe + 2 iş günü)", asıl satış ve fatura) ya da gün fişinin kalemleri.
+      pos: pos()?.eventInfo?.(event) || null,
       payment: payment ? { id: payment.id, no: payment.no, status: payment.status } : null,
       linkedFee: linked ? { id: linked.id, no: linked.no, status: linked.status } : null,
       reversal: { of: relation(event.reversal_of), by: relation(event.reversed_by) },

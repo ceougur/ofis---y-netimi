@@ -1,0 +1,1318 @@
+TAP version 13
+# Subtest: POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinden; iki POS'ta seçim zorunlu; banka hesabı verilemez
+    # Subtest: önce fatura/tahsilat (POS yokken) → 108.00 Hesabı Atanmamış; sonra POS tanımlanınca yeni tahsilat 108.01'e, eskisi yerinde
+    not ok 1 - önce fatura/tahsilat (POS yokken) → 108.00 Hesabı Atanmamış; sonra POS tanımlanınca yeni tahsilat 108.01'e, eskisi yerinde
+      ---
+      duration_ms: 48.266769
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:23:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:27:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: POS tahsilatında banka hesabı verilirse 400 bank-account-invalid; ödemede POS verilirse 400 pos-not-for-payment
+    not ok 2 - POS tahsilatında banka hesabı verilirse 400 bank-account-invalid; ödemede POS verilirse 400 pos-not-for-payment
+      ---
+      duration_ms: 21.692642
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:35:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS listesi: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:37:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ikinci POS açılınca seçim zorunlu (400 pos-required); seçilen POS'a yazılır
+    not ok 3 - ikinci POS açılınca seçim zorunlu (400 pos-required); seçilen POS'a yazılır
+      ---
+      duration_ms: 8.027007
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:42:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Garanti Sanal POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:43:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinden; iki POS'ta seçim zorunlu; banka hesabı verilemez
+  ---
+  duration_ms: 511.418155
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Aşama 10 Nasıl Bozarım
+    # Subtest: tanımsız taksit → 400 pos-rate-missing ("Bu POS'ta 9 taksit oranı tanımlı değil."); taksit sayısı 0 / 40 → 400
+    not ok 1 - tanımsız taksit → 400 pos-rate-missing ("Bu POS'ta 9 taksit oranı tanımlı değil."); taksit sayısı 0 / 40 → 400
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:62:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: aynı provizyon numarası aynı gün aynı POS'ta → 409 pos-auth-duplicate; kart numarasının tamamı → 400 pos-card-last4
+    not ok 2 - aynı provizyon numarası aynı gün aynı POS'ta → 409 pos-auth-duplicate; kart numarasının tamamı → 400 pos-card-last4
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:71:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: pasif POS → 400 pos-passive; etkinleştirince kabul
+    not ok 3 - pasif POS → 400 pos-passive; etkinleştirince kabul
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:81:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: oran değişince geçmiş değişmez: 09.10'dan geçerli %3 → eski satış komisyonu 12,50 (%2,5) kalır, yeni satış %3; aynı tarihli oran ikinci kez → 409 pos-rate-exists
+    not ok 4 - oran değişince geçmiş değişmez: 09.10'dan geçerli %3 → eski satış komisyonu 12,50 (%2,5) kalır, yeni satış %3; aynı tarihli oran ikinci kez → 409 pos-rate-exists
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:89:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: POS sil → yalnız hiç kullanılmamış POS silinir; kullanılmış → 409 pos-in-use; silinen POS'un adıyla yeniden açılan POS yeni alt hesap alır
+    not ok 5 - POS sil → yalnız hiç kullanılmamış POS silinir; kullanılmış → 409 pos-in-use; silinen POS'un adıyla yeniden açılan POS yeni alt hesap alır
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:104:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: POS kartında bağlı hesap değişince bekleyenler ESKİ hesaba (kopya); "Bekleyenleri Yeni Hesaba Taşı" ile yenisine
+    not ok 6 - POS kartında bağlı hesap değişince bekleyenler ESKİ hesaba (kopya); "Bekleyenleri Yeni Hesaba Taşı" ile yenisine
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:114:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: provizyon süresi geçmiş satışta POS İşlemleri → İptal Et → 409 pos-provision-expired, neden yazısı; provizyon içinde → void, komisyon doğmaz
+    not ok 7 - provizyon süresi geçmiş satışta POS İşlemleri → İptal Et → 409 pos-provision-expired, neden yazısı; provizyon içinde → void, komisyon doğmaz
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:142:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: faturanın POS peşini POS İşlemleri'nden void edilmez (409 pos-void-invoice; faturayı iptal edin)
+    not ok 8 - faturanın POS peşini POS İşlemleri'nden void edilmez (409 pos-void-invoice; faturayı iptal edin)
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:167:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..8
+not ok 2 - Aşama 10 Nasıl Bozarım
+  ---
+  duration_ms: 369.650799
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:53:1'
+  failureType: 'hookFailed'
+  error: |-
+    POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+    
+    404 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async SuiteContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-bozma.test.mjs:58:11)
+    async TestHook.run (node:internal/test_runner/test:1054:7)
+    async Suite.runHook (node:internal/test_runner/test:965:9)
+    async Suite.run (node:internal/test_runner/test:1436:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# node:internal/modules/esm/resolve:274
+#     throw new ERR_MODULE_NOT_FOUND(
+#           ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/server/lib/bank/pos-math.mjs' imported from /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-hesap.test.mjs
+#     at finalizeResolution (node:internal/modules/esm/resolve:274:11)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:10)
+#     at defaultResolve (node:internal/modules/esm/resolve:983:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND',
+#   url: 'file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/server/lib/bank/pos-math.mjs'
+# }
+# Node.js v22.22.0
+# Subtest: test/banka-220-pos-hesap.test.mjs
+not ok 2 - test/banka-220-pos-hesap.test.mjs
+  ---
+  duration_ms: 75.639142
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-hesap.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)
+    # Subtest: kabul 17–19: Ziraat Fiziki POS (Banka, BSMV Dahil, Tek Çekim %2,5, 3 Taksit %3,5, valör 2 iş günü, her ay, provizyon aynı gün) → 108.01
+    not ok 1 - kabul 17–19: Ziraat Fiziki POS (Banka, BSMV Dahil, Tek Çekim %2,5, 3 Taksit %3,5, valör 2 iş günü, her ay, provizyon aynı gün) → 108.01
+      ---
+      duration_ms: 9.618532
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:26:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:27:11)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: kabul 20–22: Satış Faturası Ürün B 10 × 1.000 peşin POS Tek Çekim → Ürün B 15; ABC 0; Ziraat 90.000 (değişmedi); POS Bekleyen 10.000 brüt / 9.750 net; valör 12.10.2026
+    not ok 2 - kabul 20–22: Satış Faturası Ürün B 10 × 1.000 peşin POS Tek Çekim → Ürün B 15; ABC 0; Ziraat 90.000 (değişmedi); POS Bekleyen 10.000 brüt / 9.750 net; valör 12.10.2026
+      ---
+      duration_ms: 61.706953
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:33:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS Bekleyen 10.000 brüt / 9.750 net
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   0
+        -   1000000,
+        -   975000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1000000
+        1: 975000
+      actual:
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:39:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kabul 23–24: saat 12.10.2026 → kuyruk → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı "Valör 12.10.2026 (08.10 Perşembe + 2 iş günü)"
+    not ok 3 - kabul 23–24: saat 12.10.2026 → kuyruk → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı "Valör 12.10.2026 (08.10 Perşembe + 2 iş günü)"
+      ---
+      duration_ms: 7.230085
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Şimdi Aktar: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:49:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kabul 25–26: 12.10 Satış Faturası Ürün B 12 × 1.000 peşin POS 3 Taksit → Ürün B 3; takvim 12.11 / 14.12 (12.12 Cumartesi) / 12.01.2027 × 3.860; bekleyen net 11.580 (brüt 12.000, komisyon 420)
+    not ok 4 - kabul 25–26: 12.10 Satış Faturası Ürün B 12 × 1.000 peşin POS 3 Taksit → Ürün B 3; takvim 12.11 / 14.12 (12.12 Cumartesi) / 12.01.2027 × 3.860; bekleyen net 11.580 (brüt 12.000, komisyon 420)
+      ---
+      duration_ms: 35.651101
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:68:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS Ödeme Takvimi: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:71:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kabul 27–28: 13.10 Satıştan İade (asıl adım 20) Ürün B 3 = 3.000 POS İadesi, İade Edilmez → Ürün B 6; ABC 0; iade valörü 15.10; Σ iade 3.000 ≤ 10.000; saat 15.10 → Ziraat 96.750
+    not ok 5 - kabul 27–28: 13.10 Satıştan İade (asıl adım 20) Ürün B 3 = 3.000 POS İadesi, İade Edilmez → Ürün B 6; ABC 0; iade valörü 15.10; Σ iade 3.000 ≤ 10.000; saat 15.10 → Ziraat 96.750
+      ---
+      duration_ms: 40.075631
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS İşlemleri: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:91:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 12.000, 610 = 2.500, 653 = 250; Borç = Alacak
+    not ok 6 - adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 12.000, 610 = 2.500, 653 = 250; Borç = Alacak
+      ---
+      duration_ms: 7.881003
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:114:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 1900000
+        - 1200000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1200000
+      actual: 1900000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:116:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 4 - Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)
+  ---
+  duration_ms: 962.151861
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kabul.test.mjs:8:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+    # Subtest: POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+    not ok 1 - POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:28:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+    not ok 2 - satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:35:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+    not ok 3 - Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:52:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..3
+not ok 5 - Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+  ---
+  duration_ms: 503.164916
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:19:1'
+  failureType: 'hookFailed'
+  error: |-
+    POS aç Ödeme Kuruluşu Sanal POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+    
+    404 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async setup (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:15:15)
+    async SuiteContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:24:9)
+    async TestHook.run (node:internal/test_runner/test:1054:7)
+    async Suite.runHook (node:internal/test_runner/test:965:9)
+    async Suite.run (node:internal/test_runner/test:1436:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+    # Subtest: komisyon faturası 600
+    not ok 1 - komisyon faturası 600
+      ---
+      duration_ms: 418.400761
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:79:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ödeme Kuruluşu Sanal POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async setup (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:82:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: komisyon faturası 610
+    not ok 2 - komisyon faturası 610
+      ---
+      duration_ms: 348.808176
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:79:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ödeme Kuruluşu Sanal POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async setup (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:82:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 6 - §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+  ---
+  duration_ms: 768.03848
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:77:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+    # Subtest: Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+    not ok 1 - Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+      ---
+      duration_ms: 318.493181
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:113:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ödeme Kuruluşu Sanal POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:119:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 7 - Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+  ---
+  duration_ms: 319.300098
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kdv.test.mjs:112:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Valör kuyruğu ölçeği: 50 POS × 30 gün (1.500 satış; iş günü valörüyle ~1.000 gün grubu) — kesinti sonrası ilk tur
+    # Subtest: ilk tur ≤ 200 grup; bütün turlar biter; her grup tek gün fişi; mutabakat temiz
+    not ok 1 - ilk tur ≤ 200 grup; bütün turlar biter; her grup tek gün fişi; mutabakat temiz
+      ---
+      duration_ms: 463.290942
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kuyruk.test.mjs:12:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS 0: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kuyruk.test.mjs:18:55)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 8 - Valör kuyruğu ölçeği: 50 POS × 30 gün (1.500 satış; iş günü valörüyle ~1.000 gün grubu) — kesinti sonrası ilk tur
+  ---
+  duration_ms: 465.560201
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kuyruk.test.mjs:11:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Açılmamış şirket (002): valörü gelmiş kalem → ortak katmanın günlük denetimi şirketi açar, kuyruk yazar
+    # Subtest: 002'de POS satışı; sunucu kapanır; 15.10'da açılışta 002'ye istek gelmeden gün fişi yazılır
+    not ok 1 - 002'de POS satışı; sunucu kapanır; 15.10'da açılışta 002'ye istek gelmeden gün fişi yazılır
+      ---
+      duration_ms: 463.436272
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kuyruk.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002 POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kuyruk.test.mjs:77:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 9 - Açılmamış şirket (002): valörü gelmiş kalem → ortak katmanın günlük denetimi şirketi açar, kuyruk yazar
+  ---
+  duration_ms: 464.204667
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-kuyruk.test.mjs:65:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: POS modül yolları: kayıt, taksit, stok; iade yolları
+    # Subtest: kayıt tahsilatı POS 3 Taksit → satış (3 kalem, %3,5); sil → void (valörden önce, komisyonsuz)
+    not ok 1 - kayıt tahsilatı POS 3 Taksit → satış (3 kalem, %3,5); sil → void (valörden önce, komisyonsuz)
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:23:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: taksit kartı tahsilatı POS → satış; taksit iadesi kart yoluyla → POS İadesi (asıl satış karttan bulunur)
+    not ok 2 - taksit kartı tahsilatı POS → satış; taksit iadesi kart yoluyla → POS İadesi (asıl satış karttan bulunur)
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:34:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: stok peşin satış POS → satış; stok müşteri iadesi kart yoluyla (asıl işlemle) → POS İadesi
+    not ok 3 - stok peşin satış POS → satış; stok müşteri iadesi kart yoluyla (asıl işlemle) → POS İadesi
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:45:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: cari POS İadesi (Banka → POS İşlemleri → İade) asıl satışa bağlı; Kaynaksız (Eski Satış) iadesi asıl satış olmadan
+    not ok 4 - cari POS İadesi (Banka → POS İşlemleri → İade) asıl satışa bağlı; Kaynaksız (Eski Satış) iadesi asıl satış olmadan
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:57:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: ANLIK DURUM: POS Bekleyen (Net) = özet; Nakit Akış'ta POS kaynakları valör gününde net
+    not ok 5 - ANLIK DURUM: POS Bekleyen (Net) = özet; Nakit Akış'ta POS kaynakları valör gününde net
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:69:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..5
+not ok 10 - POS modül yolları: kayıt, taksit, stok; iade yolları
+  ---
+  duration_ms: 711.13586
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:10:1'
+  failureType: 'hookFailed'
+  error: |-
+    POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+    
+    404 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async SuiteContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:18:11)
+    async TestHook.run (node:internal/test_runner/test:1054:7)
+    async Suite.runHook (node:internal/test_runner/test:965:9)
+    async Suite.run (node:internal/test_runner/test:1436:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Blokeli POS (Ek 4): 30 takvim günü bloke → valör 07.11 Cumartesi → 09.11; ayrı kategori
+    # Subtest: bloke kalem Blokeli POS'ta; ANLIK DURUM POS Bekleyen'e değil Blokeli POS'a
+    not ok 1 - bloke kalem Blokeli POS'ta; ANLIK DURUM POS Bekleyen'e değil Blokeli POS'a
+      ---
+      duration_ms: 343.211361
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:88:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 11 - Blokeli POS (Ek 4): 30 takvim günü bloke → valör 07.11 Cumartesi → 09.11; ayrı kategori
+  ---
+  duration_ms: 344.263955
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:83:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Yetkiler (plan §9.1) ve şirket ayrımı
+    # Subtest: personel: POS listesi 403, POS açma 403; muhasebe: açar; POS tahsilatı personel için tahsilat yetkisiyle
+    not ok 1 - personel: POS listesi 403, POS açma 403; muhasebe: açar; POS tahsilatı personel için tahsilat yetkisiyle
+      ---
+      duration_ms: 573.859195
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:108:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        personel liste: 404 {"ok":false,"error":"Endpoint bulunamadı."} Endpoint bulunamadı.
+        
+        404 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:114:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 12 - Yetkiler (plan §9.1) ve şirket ayrımı
+  ---
+  duration_ms: 574.456722
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-moduller.test.mjs:107:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri)
+    # Subtest: 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)
+    not ok 1 - 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)
+      ---
+      duration_ms: 412.862004
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:24:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:25:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: ay sonu taksiti: 31.01.2028 3 taksit → 29.02.2028 (artık yıl), 31.03.2028, 02.05.2028 (30.04 Pazar, 01.05 tatil)
+    not ok 2 - ay sonu taksiti: 31.01.2028 3 taksit → 29.02.2028 (artık yıl), 31.03.2028, 02.05.2028 (30.04 Pazar, 01.05 tatil)
+      ---
+      duration_ms: 314.920602
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:45:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:46:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 13 - İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri)
+  ---
+  duration_ms: 729.282041
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:23:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi
+    # Subtest: sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)
+    not ok 1 - sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)
+      ---
+      duration_ms: 281.272573
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:60:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:63:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki tetik aynı anda (iki "Şimdi Aktar") → tek gün fişi
+    not ok 2 - iki tetik aynı anda (iki "Şimdi Aktar") → tek gün fişi
+      ---
+      duration_ms: 299.967708
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:83:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kilit konarken valörü gelmiş bekleyen → 409 bank-pending-before-lock + liste; Yine de Kilitle → fiş kilit + 1'e Gecikmeli Aktarım (late); kilit + 1 bugünden sonraysa bekler
+    not ok 3 - kilit konarken valörü gelmiş bekleyen → 409 bank-pending-before-lock + liste; Yine de Kilitle → fiş kilit + 1'e Gecikmeli Aktarım (late); kilit + 1 bugünden sonraysa bekler
+      ---
+      duration_ms: 280.856326
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:97:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:98:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: onay kipi (Elle Onay): valör gelince kuyruk yazmaz (Onay Bekleyen); onayda gerçek tarih 13.10 ve net 9.740 → fark 10 BSMV kipinde 653'e (653 = 260)
+    not ok 4 - onay kipi (Elle Onay): valör gelince kuyruk yazmaz (Onay Bekleyen); onayda gerçek tarih 13.10 ve net 9.740 → fark 10 BSMV kipinde 653'e (653 = 260)
+      ---
+      duration_ms: 291.966441
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:129:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 14 - Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi
+  ---
+  duration_ms: 1154.841872
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:59:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İade, komisyon tahsili ve net eksi (plan §4.6)
+    # Subtest: iade > satış → 409 pos-refund-exceeds; iade satıştan önce → 400; asıl işlem seçilmeden (birden çok aday) → 400 pos-refund-origin
+    not ok 1 - iade > satış → 409 pos-refund-exceeds; iade satıştan önce → 400; asıl işlem seçilmeden (birden çok aday) → 400 pos-refund-origin
+      ---
+      duration_ms: 279.175881
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:150:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tam iade valörden önce (İade Edilmez) → 12.10 banka −250, 653 = 250; Komisyon Tahsili Bekleyen 250
+    not ok 2 - tam iade valörden önce (İade Edilmez) → 12.10 banka −250, 653 = 250; Komisyon Tahsili Bekleyen 250
+      ---
+      duration_ms: 272.541136
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:167:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:168:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: valörden sonra kısmi iade 3.000: İade Edilmez → iade valöründe banka −3.000; Oransal → −2.925 ve 653 −75 (plan §4.6 tablosu)
+    not ok 3 - valörden sonra kısmi iade 3.000: İade Edilmez → iade valöründe banka −3.000; Oransal → −2.925 ve 653 −75 (plan §4.6 tablosu)
+      ---
+      duration_ms: 313.283405
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:188:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:190:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: valörden önce kısmi iade 3.000 (Oransal): bekleyen kalem net 6.825 (kom. 175); valörde banka +6.825
+    not ok 4 - valörden önce kısmi iade 3.000 (Oransal): bekleyen kalem net 6.825 (kom. 175); valörde banka +6.825
+      ---
+      duration_ms: 385.461803
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:209:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:210:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 10 TL satış + 15 TL sabit ücret (oran %0) → banka −5
+    not ok 5 - 10 TL satış + 15 TL sabit ücret (oran %0) → banka −5
+      ---
+      duration_ms: 350.135461
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:226:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:227:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 15 - İade, komisyon tahsili ve net eksi (plan §4.6)
+  ---
+  duration_ms: 1601.675964
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:148:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Taksitli kısmi iade (3 taksit, 1'i bankaya geçmiş, Oransal) — bağımsız BigInt modeli
+    # Subtest: 12.000 / %3,5 / 3 taksit; 13.11'de 5.000 iade → gün netleri ve banka toplamı modelle aynı
+    not ok 1 - 12.000 / %3,5 / 3 taksit; 13.11'de 5.000 iade → gün netleri ve banka toplamı modelle aynı
+      ---
+      duration_ms: 330.74762
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:276:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:277:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 16 - Taksitli kısmi iade (3 taksit, 1'i bankaya geçmiş, Oransal) — bağımsız BigInt modeli
+  ---
+  duration_ms: 331.193331
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:275:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)
+    # Subtest: valörden sonra tutar düzelt → bank.replan (gün fişi ters + r2); eşleşmişse 409 pos-settled
+    not ok 1 - valörden sonra tutar düzelt → bank.replan (gün fişi ters + r2); eşleşmişse 409 pos-settled
+      ---
+      duration_ms: 331.040847
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:304:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:305:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: POS'lu satırı sil (valörden önce void) → valör geçsin → geri yükle: asıl valörüyle etkin, gün fişi asıl valör tarihiyle
+    not ok 2 - POS'lu satırı sil (valörden önce void) → valör geçsin → geri yükle: asıl valörüyle etkin, gün fişi asıl valör tarihiyle
+      ---
+      duration_ms: 296.005715
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:326:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:327:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aynı provizyonla yeni satış → eskisini geri yükle → 409 pos-auth-duplicate
+    not ok 3 - aynı provizyonla yeni satış → eskisini geri yükle → 409 pos-auth-duplicate
+      ---
+      duration_ms: 270.081083
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:347:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:348:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void
+    not ok 4 - POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void
+      ---
+      duration_ms: 323.909134
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:363:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:367:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)
+    not ok 5 - iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)
+      ---
+      duration_ms: 282.54633
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:383:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:386:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: POS'lu faturayı aynı gün iptal → void, komisyon 0; ertesi gün taksitli faturayı iptal → İptal İadesi: 3 Komisyon Tahsili 140, 108.01 = 0, POS Bekleyen (Net) −420
+    not ok 6 - POS'lu faturayı aynı gün iptal → void, komisyon 0; ertesi gün taksitli faturayı iptal → İptal İadesi: 3 Komisyon Tahsili 140, 108.01 = 0, POS Bekleyen (Net) −420
+      ---
+      duration_ms: 260.38474
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:408:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:409:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bankaya geçmiş ve eşleşmiş POS'lu faturayı iptal (Müşteriye İade Edildi) → 200, iade kalemi, eski fiş ve eşleşme değişmez; Kayıt Hatası → 409 pos-settled
+    not ok 7 - bankaya geçmiş ve eşleşmiş POS'lu faturayı iptal (Müşteriye İade Edildi) → 200, iade kalemi, eski fiş ve eşleşme değişmez; Kayıt Hatası → 409 pos-settled
+      ---
+      duration_ms: 304.947596
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:439:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aç Ziraat Fiziki POS: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async world (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:15:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:440:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 17 - Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)
+  ---
+  duration_ms: 2069.885708
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski/test/banka-220-pos-valor.test.mjs:303:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..17
+# tests 52
+# suites 16
+# pass 0
+# fail 36
+# cancelled 16
+# skipped 0
+# todo 0
+# duration_ms 14756.088107

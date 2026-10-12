@@ -6,6 +6,7 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { foldName, nameConflict, resolveUserByName } from "../lib/names.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
+import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
@@ -378,7 +379,8 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     const key = caseKeyOf(params.key);
     const { amount, date } = paymentInput(body);
     const method = methodInput(body.method);
-    const finRef = banking.ref({ method, value: body.bankAccountId, date });
+    // 2.2.0: kart yolu POS'tur (posId; tek POS kendiliğinden) — taksit sayısı, provizyon, kart son 4 hanesi işlem başlığına (POS kancası).
+    const finRef = banking.ref({ method, value: body.bankAccountId, date, posId: body.posId });
     const k7 = banking.negative([finRef], date, banking.forced(body));
     const itemId = newId("payment");
     // v2.1.0 (bank.post, plan §3.3): satır, işlem başlığı (İşlem No) ve işlem geçmişi tek işlemde.
@@ -394,7 +396,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
         k7.capture();
         store.run(
           "INSERT INTO payments (id, case_key, amount, date, note, case_title, method, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), method, finRef, bank.eventFor("payments", { date, method, fin_ref: finRef }), user.id, now(),
+          itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), method, finRef, bank.eventFor("payments", { date, method, fin_ref: finRef, pos: finRef ? posMetaOf(body) : null }), user.id, now(),
         );
         audit(user, "case.payment.created", itemId, { caseKey: key, amount, date, method, finRef });
         return { id: itemId };
@@ -426,7 +428,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     const note = limited(body.note, 500, "Açıklama");
     const method = methodInput(body.method, payment.method || "cash");
     const moved = (payment.method || "cash") !== method || Math.abs(Number(payment.amount) - amount) > 0.004 || payment.date !== date;
-    const finRef = banking.ref({ method, value: body.bankAccountId, date, previous: { method: payment.method || "cash", finRef: payment.finRef }, changed: moved });
+    const finRef = banking.ref({ method, value: body.bankAccountId, date, previous: { method: payment.method || "cash", finRef: payment.finRef }, changed: moved, posId: body.posId });
     cash()?.guardChange?.(cashSide(payment), cashSide({ amount, date, method }), body.cashForce === true);
     const k7 = banking.negative([payment.finRef, finRef], payment.date < date ? payment.date : date, banking.forced(body));
     const result = bank.post({
@@ -439,7 +441,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
       body: { ...body, paymentId: payment.id },
       write: () => {
         k7.capture();
-        store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, method, finRef, bank.eventFor("payments", { date, method, fin_ref: finRef, event_id: payment.eventId }), user.id, now(), payment.id);
+        store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, method, finRef, bank.eventFor("payments", { date, method, fin_ref: finRef, event_id: payment.eventId, pos: finRef ? posMetaOf(body) : null }), user.id, now(), payment.id);
         audit(user, "case.payment.updated", payment.id, { caseKey: payment.caseKey, previous: { amount: payment.amount, date: payment.date, note: payment.note, method: payment.method || "cash", finRef: payment.finRef }, amount, date, note, method, finRef });
         return { id: payment.id };
       },

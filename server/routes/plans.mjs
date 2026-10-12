@@ -6,6 +6,7 @@ import { randomUUID } from "node:crypto";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
+import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
 import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
@@ -807,7 +808,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const body = await readJson(req);
     const input = store.tx(() => entryInput(body, plan.id));
     if (input.kind === "out" && !canUser(user, "plans.manage")) throw new HttpError(403, "Ödeme/iade girişi yönetici, uzman ve muhasebe yetkisidir.");
-    const finRef = banking.ref({ method: input.method, value: body.bankAccountId, date: input.date });
+    // 2.2.0: kart yolu POS'tur (tahsilat POS satışı, iade POS İadesi; posId, taksit sayısı, provizyon işlem başlığına).
+    const finRef = banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, posId: body.posId, posRefundOf: body.posRefundOf });
     banking.requireOut(user, input.kind === "out", finRef);
     const k7 = banking.negative([finRef], input.date, banking.forced(body));
     const id = newId("entry");
@@ -831,7 +833,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       write: () => {
         k7.capture();
         const receiptNo = input.kind === "in" ? nextReceipt() : null;
-        store.run("INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, method, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, plan.id, input.itemId, input.kind, input.amount, input.date, input.note, receiptNo, input.method, finRef, bank.eventFor("plan_entries", { ...input, cheque_id: "", opening: 0, fin_ref: finRef }), user.id, now());
+        store.run("INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, method, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, plan.id, input.itemId, input.kind, input.amount, input.date, input.note, receiptNo, input.method, finRef, bank.eventFor("plan_entries", { ...input, cheque_id: "", opening: 0, fin_ref: finRef, pos: finRef ? posMetaOf(body) : null }), user.id, now());
         audit(user, input.kind === "in" ? "plan.collected" : "plan.refunded", id, { planId: plan.id, planName: plan.name, ...input, finRef, receiptNo });
         syncInvoiceCard(user, plan.id);
         return { id };
@@ -859,7 +861,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     cash?.guardChange?.(previous, input, body.cashForce === true);
     // Açılış (devir) satırı para satırı değildir: hesaba bağlanmaz.
     const moved = (previous.method || "cash") !== input.method || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
-    const finRef = previous.opening ? "" : banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: { method: previous.method || "cash", finRef: previous.finRef }, changed: moved });
+    const finRef = previous.opening ? "" : banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: { method: previous.method || "cash", finRef: previous.finRef }, changed: moved, posId: body.posId, posRefundOf: body.posRefundOf });
     if (finRef !== (previous.finRef || "")) banking.requireOut(user, previous.kind === "out", finRef);
     const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
     const result = bank.post({
@@ -873,7 +875,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       write: () => {
         k7.capture();
         // Açılış (opening) satırı para satırı değildir: olay almaz; eski (olaysız) tahsilat düzeltilince olay alır.
-        const eventId = bank.eventFor("plan_entries", { kind: previous.kind, date: input.date, method: input.method, opening: previous.opening ? 1 : 0, cheque_id: previous.chequeId || "", fin_ref: finRef, event_id: previous.eventId });
+        const eventId = bank.eventFor("plan_entries", { kind: previous.kind, date: input.date, method: input.method, opening: previous.opening ? 1 : 0, cheque_id: previous.chequeId || "", fin_ref: finRef, event_id: previous.eventId, pos: finRef ? posMetaOf(body) : null });
         store.run("UPDATE plan_entries SET item_id = ?, amount = ?, date = ?, note = ?, method = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.itemId, input.amount, input.date, input.note, input.method, finRef, eventId, user.id, now(), previous.id);
         audit(user, "plan.entry.updated", previous.id, { planId: plan.id, previous, ...input, finRef });
         syncInvoiceCard(user, plan.id);

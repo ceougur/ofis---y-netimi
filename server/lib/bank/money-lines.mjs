@@ -82,7 +82,8 @@ export const MONEY_SOURCES = Object.freeze([
       // Sınıflamanın başlık girdileri (classifiedTotals; satırın kendi işlem başlığından, ikinci kez okunmadan): asıl işlem türü (satır yolundaki
       // COALESCE(fo.type, fe.type, '') ile aynı) ve gönderen hesap (bank_ref).
       headBase: "COALESCE(CASE WHEN fe.type = 'reversal' THEN COALESCE((SELECT o.type FROM fin_events o WHERE o.id = fe.reversal_of), fe.type) ELSE fe.type END, '')",
-      headBank: "fe.bank_ref",
+      // 2.2.0: POS gün sonu fişinin (ve ters kaydının) gider payı POS satırına (karşı hesap = POS; komisyon 108'den çıkan brütün dış payıdır).
+      headBank: "CASE WHEN COALESCE(CASE WHEN fe.type = 'reversal' THEN (SELECT o.type FROM fin_events o WHERE o.id = fe.reversal_of) ELSE fe.type END, '') = 'pos_settlement' THEN fe.counter_ref ELSE fe.bank_ref END",
     },
   },
 ]);
@@ -633,7 +634,8 @@ export function createMoneyLines(store, { verify = false } = {}) {
       adjust: `CASE WHEN ${adjust} THEN (CASE WHEN ${into} THEN ${cents} ELSE -${cents} END) ELSE 0 END`,
     };
   }
-  // Gider payı — TEK TANIM: iç hareketin fiş satırı, işlem başlığındaki gönderen hesabın (bank_ref) satırı, hesap kart/kredi değil →
+  // Gider payı — TEK TANIM: iç hareketin fiş satırı, işlem başlığındaki gönderen hesabın (bank_ref; POS gün sonunda POS = counter_ref) satırı,
+  // hesap kart/kredi değil →
   // işlemin gider satırlarının (expense, tax) işaretli toplamı (olay başına önceden toplanmış: fx). bank / kind: başlığın bank_ref'i ve hesabın türü.
   const feeSql = ({ bank, kind }) => `CASE WHEN w.src = 9 AND w.internal = 1 AND w.ref <> '' AND w.ref = ${bank} AND COALESCE(${kind}, '') NOT IN ('card', 'loan') THEN COALESCE(fx.fee, 0) ELSE 0 END`;
   const feeJoin = on => `LEFT JOIN (SELECT x.event_id AS event_id, SUM(CASE WHEN x.side = 'D' THEN x.try_minor ELSE -x.try_minor END) AS fee FROM bank_lines x WHERE x.role IN ('expense', 'tax') GROUP BY x.event_id) fx ON ${on}`;
@@ -645,7 +647,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     const filters = [wayFilter(ways), unbound ? "w.ref = ''" : ""].filter(Boolean);
     const columns = classColumns({ src: "c.src", kind: "c.kind", cents: "c.cents", internal: "c.internal", base: "c.base_type", fee: "c.fee_cents" });
     const sql = `SELECT c.*, ${CLASS_KEYS.map(key => `${columns[key]} AS ${key}`).join(", ")} FROM (SELECT w.*, ${events ? "COALESCE(fe.type, '')" : "''"} AS event_type, ${events ? "COALESCE(fe.no, '')" : "''"} AS event_no,
-        ${events ? "COALESCE(fo.type, fe.type, '')" : "''"} AS base_type, ${fee ? feeSql({ bank: "fe.bank_ref", kind: "bk.kind" }) : "0"} AS fee_cents
+        ${events ? "COALESCE(fo.type, fe.type, '')" : "''"} AS base_type, ${fee ? feeSql({ bank: "CASE WHEN COALESCE(fo.type, fe.type, '') = 'pos_settlement' THEN fe.counter_ref ELSE fe.bank_ref END", kind: "bk.kind" }) : "0"} AS fee_cents
       FROM (${waySql({ light, ref, refs, unbound, since, until, ways })}) w
       ${events ? "LEFT JOIN fin_events fe ON w.event_id <> '' AND fe.id = w.event_id LEFT JOIN fin_events fo ON fe.type = 'reversal' AND fo.id = fe.reversal_of" : ""}
       ${fee ? "LEFT JOIN bank_accounts bk ON w.ref <> '' AND bk.id = w.ref" : ""}
