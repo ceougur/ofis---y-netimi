@@ -1,0 +1,201 @@
+TAP version 13
+# Subtest: 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+    # Subtest: istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+    not ok 1 - istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+      ---
+      duration_ms: 33.821225
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:42:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'client/assets/hof-accounts.js:58: card: (picked, none) => (none ? "Cariye kredi kartıyla ödendi: kurumsal kartın açılışından önceki hareket olduğu için hiçbir kartın borcuna yazılmaz, Hesabı Ata',
+        +   'client/assets/hof-accounts.js:352: <span class="hof-plan-toolgroup">${collect ? \'<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>\' : ""}${manage ? \'<b',
+        +   'client/assets/hof-bank.js:39: ["card", "Kurumsal Kredi Kartı"],',
+        +   'client/assets/hof-bank.js:916: if (!accounts.length) return HOF.toast(mode === "bank" ? "Önce etkin bir TL vadesiz, ticari ya da diğer banka hesabı açın." : "Önce Kurumsal Kredi Kartı türünde',
+        +   'client/assets/hof-bank.js:923: const introOf = id => (mode === "bank" ? `Hesap tanımlanmadan girilmiş POS tahsilatlarının bankaya geçmiş tutarını hesaba aktarır. Seçilen hesabın açılışından s',
+        +   'client/assets/hof-bank.js:930: { name: "accountId", label: mode === "bank" ? "Banka Hesabı" : "Kurumsal Kredi Kartı", type: "select", value: first.id, options: accounts.map(account => ({ valu',
+        +   'client/assets/hof-bank.js:1625: { name: "cardAccountId", label: "Kurumsal Kredi Kartı", type: "select", value: form0.cardAccountId || counterId || cards[0]?.id || "", options: cards.map(accoun',
+        +   'client/assets/hof-bank.js:2284: const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kurumsal Kart", choose: "Kart Seçin", preselect: false, note: label => `${label',
+        +   'client/assets/hof-bank.js:2332: const noneNote = card => `${card ? "Kurumsal kartın" : "Banka hesabının"} açılışından önceki hareket: hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler\'d',
+        +   'client/assets/hof-invoices.js:947: if (list.length === 1 && !legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-',
+        +   'client/assets/hof-invoices.js:950: const label = card ? "Kurumsal Kart" : "Banka Hesabı";'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'client/assets/hof-accounts.js:58: card: (picked, none) => (none ? "Cariye kredi kartıyla ödendi: kurumsal kartın açılışından önceki hareket olduğu için hiçbir kartın borcuna yazılmaz, Hesabı Ata'
+        1: 'client/assets/hof-accounts.js:352: <span class="hof-plan-toolgroup">${collect ? \'<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>\' : ""}${manage ? \'<b'
+        2: 'client/assets/hof-bank.js:39: ["card", "Kurumsal Kredi Kartı"],'
+        3: 'client/assets/hof-bank.js:916: if (!accounts.length) return HOF.toast(mode === "bank" ? "Önce etkin bir TL vadesiz, ticari ya da diğer banka hesabı açın." : "Önce Kurumsal Kredi Kartı türünde'
+        4: 'client/assets/hof-bank.js:923: const introOf = id => (mode === "bank" ? `Hesap tanımlanmadan girilmiş POS tahsilatlarının bankaya geçmiş tutarını hesaba aktarır. Seçilen hesabın açılışından s'
+        5: 'client/assets/hof-bank.js:930: { name: "accountId", label: mode === "bank" ? "Banka Hesabı" : "Kurumsal Kredi Kartı", type: "select", value: first.id, options: accounts.map(account => ({ valu'
+        6: 'client/assets/hof-bank.js:1625: { name: "cardAccountId", label: "Kurumsal Kredi Kartı", type: "select", value: form0.cardAccountId || counterId || cards[0]?.id || "", options: cards.map(accoun'
+        7: 'client/assets/hof-bank.js:2284: const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kurumsal Kart", choose: "Kart Seçin", preselect: false, note: label => `${label'
+        8: 'client/assets/hof-bank.js:2332: const noneNote = card => `${card ? "Kurumsal kartın" : "Banka hesabının"} açılışından önceki hareket: hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler\'d'
+        9: 'client/assets/hof-invoices.js:947: if (list.length === 1 && !legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-'
+        10: 'client/assets/hof-invoices.js:950: const label = card ? "Kurumsal Kart" : "Banka Hesabı";'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:45:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+    not ok 2 - sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+      ---
+      duration_ms: 54.579787
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'server/lib/bank/accounts.mjs:39: card: { label: "Kurumsal Kredi Kartı", forms: ["card"], limit: "Kart Limiti" },',
+        +   'server/lib/bank/accounts.mjs:268: if (!Object.hasOwn(ACCOUNT_KINDS, kind)) throw new HttpError(400, "Hesap türü Vadesiz, Ticari, Vadeli, Döviz, Kredi Hesabı, Kurumsal Kredi Kartı ya da Diğer olm',
+        +   'server/lib/bank/accounts.mjs:321: if (minor > 0 && !ACCOUNT_KINDS[kind]?.limit) throw new HttpError(400, `${ACCOUNT_KINDS[kind]?.label || kind} hesapta limit (KMH) olmaz; KMH Limiti yalnız Vades',
+        +   'server/lib/bank/accounts.mjs:1061: if (mode === "bank" ? !bankFormOk(account) : !(account.kind === "card" && account.status === "active")) throw new HttpError(400, mode === "bank" ? `${labelOf(ac',
+        +   'server/lib/bank/module-ref.mjs:70: if (row.kind !== "card" || row.currency !== "TRY") throw bad(400, `${labelOf(row)} kurumsal kredi kartı değil: Kredi Kartı yolunda yalnız Kurumsal Kredi Kartı h',
+        +   'server/lib/bank/module-ref.mjs:76: throw bad(409, `İşlem tarihi (${dayText(date)}) ${labelOf(row)} hesabının açılışından (${dayText(row.opening_date)}) önce; o tarihteki para açılış bakiyesinin i',
+        +   'server/lib/bank/module-ref.mjs:99: if (id && way === "card") throw bad(400, "POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; Banka Hesabı alanını boş bırakın (kurumsal kart yalnız ödemede v',
+        +   'server/lib/bank/module-ref.mjs:130: if (raw === NONE) throw bad(400, `"${NONE_LABEL}" yalnız hesapların açılışından önceki hareket için seçilir; ${dayText(date)} tarihli ${family === "card" ? "kar',
+        +   'server/lib/bank/module-ref.mjs:134: throw bad(400, `${family === "card" ? "Kurumsal Kart seçin: kartla ödeme hangi kurumsal karttan yapıldı (ya da iade hangi karta geldi)?" : "Banka Hesabı seçin: ',
+        +   'server/lib/bank/settings.mjs:64: items: [["enabled", "Benzer İşlem Uyarısı", bool(true), "Aynı iş günü, aynı hesap, aynı cari, aynı tutar ve aynı hedefte ikinci hareket uyarı verir (hesaba bağl',
+        +   'server/lib/bank/settings.mjs:156: ["card", "Kurumsal Kredi Kartları", fixed("309", "309"), ""],',
+        +   'server/lib/bank/vouchers.mjs:49: card_payment: { main: BANK_KINDS, purpose: "kart borcu Vadesiz, Ticari ya da Diğer TL hesaptan ödenir", counter: { field: "cardAccountId", kinds: new Set(["card',
+        +   'server/lib/general-ledger.mjs:27: 309: "Diğer Mali Borçlar (Kurumsal Kredi Kartları)",',
+        +   'server/routes/invoices.mjs:1202: throw new HttpError(400, card ? `Kurumsal kart seçilmedi: ${item.index + 1}. peşin satır kredi kartı; hangi kurumsal karttan ödendiğini (ya da iadenin hangi kar',
+        +   'server/routes/report-center.mjs:750: description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, kurumsal kart 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00): devir, dönem borç, d',
+        +   'server/routes/report-center.mjs:1775: const accountsOf = filter => rows.filter(filter).map(row => [row.id, `${bankLabel(row)} · ${row.glSub}${isRealKind(row.kind) ? "" : row.kind === "card" ? " (Kur'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'server/lib/bank/accounts.mjs:39: card: { label: "Kurumsal Kredi Kartı", forms: ["card"], limit: "Kart Limiti" },'
+        1: 'server/lib/bank/accounts.mjs:268: if (!Object.hasOwn(ACCOUNT_KINDS, kind)) throw new HttpError(400, "Hesap türü Vadesiz, Ticari, Vadeli, Döviz, Kredi Hesabı, Kurumsal Kredi Kartı ya da Diğer olm'
+        2: 'server/lib/bank/accounts.mjs:321: if (minor > 0 && !ACCOUNT_KINDS[kind]?.limit) throw new HttpError(400, `${ACCOUNT_KINDS[kind]?.label || kind} hesapta limit (KMH) olmaz; KMH Limiti yalnız Vades'
+        3: 'server/lib/bank/accounts.mjs:1061: if (mode === "bank" ? !bankFormOk(account) : !(account.kind === "card" && account.status === "active")) throw new HttpError(400, mode === "bank" ? `${labelOf(ac'
+        4: 'server/lib/bank/module-ref.mjs:70: if (row.kind !== "card" || row.currency !== "TRY") throw bad(400, `${labelOf(row)} kurumsal kredi kartı değil: Kredi Kartı yolunda yalnız Kurumsal Kredi Kartı h'
+        5: 'server/lib/bank/module-ref.mjs:76: throw bad(409, `İşlem tarihi (${dayText(date)}) ${labelOf(row)} hesabının açılışından (${dayText(row.opening_date)}) önce; o tarihteki para açılış bakiyesinin i'
+        6: 'server/lib/bank/module-ref.mjs:99: if (id && way === "card") throw bad(400, "POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; Banka Hesabı alanını boş bırakın (kurumsal kart yalnız ödemede v'
+        7: 'server/lib/bank/module-ref.mjs:130: if (raw === NONE) throw bad(400, `"${NONE_LABEL}" yalnız hesapların açılışından önceki hareket için seçilir; ${dayText(date)} tarihli ${family === "card" ? "kar'
+        8: 'server/lib/bank/module-ref.mjs:134: throw bad(400, `${family === "card" ? "Kurumsal Kart seçin: kartla ödeme hangi kurumsal karttan yapıldı (ya da iade hangi karta geldi)?" : "Banka Hesabı seçin: '
+        9: 'server/lib/bank/settings.mjs:64: items: [["enabled", "Benzer İşlem Uyarısı", bool(true), "Aynı iş günü, aynı hesap, aynı cari, aynı tutar ve aynı hedefte ikinci hareket uyarı verir (hesaba bağl'
+        10: 'server/lib/bank/settings.mjs:156: ["card", "Kurumsal Kredi Kartları", fixed("309", "309"), ""],'
+        11: 'server/lib/bank/vouchers.mjs:49: card_payment: { main: BANK_KINDS, purpose: "kart borcu Vadesiz, Ticari ya da Diğer TL hesaptan ödenir", counter: { field: "cardAccountId", kinds: new Set(["card'
+        12: 'server/lib/general-ledger.mjs:27: 309: "Diğer Mali Borçlar (Kurumsal Kredi Kartları)",'
+        13: 'server/routes/invoices.mjs:1202: throw new HttpError(400, card ? `Kurumsal kart seçilmedi: ${item.index + 1}. peşin satır kredi kartı; hangi kurumsal karttan ödendiğini (ya da iadenin hangi kar'
+        14: 'server/routes/report-center.mjs:750: description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, kurumsal kart 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00): devir, dönem borç, d'
+        15: 'server/routes/report-center.mjs:1775: const accountsOf = filter => rows.filter(filter).map(row => [row.id, `${bankLabel(row)} · ${row.glSub}${isRealKind(row.kind) ? "" : row.kind === "card" ? " (Kur'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:50:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+    not ok 3 - kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+      ---
+      duration_ms: 4.200571
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:52:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        z varsa  KMH Limiti ),  Ticari ,  Vadeli ,  Kredi Hesabı ,  Kurumsal Kredi Kartı  (şirket kartınız:  Kart Limiti ,  Ekstre Kesim Günü ,  So
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:54:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+        # Subtest: kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+        not ok 1 - kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+          ---
+          duration_ms: 46.666518
+          type: 'test'
+          location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:65:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            hesap aç  World: 400 {"ok":false,"error":"Banka Adı gerekli.","code":"bank-name-required","field":"Banka Adı"}
+            
+            400 !== 200
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 200
+          actual: 400
+          operator: 'strictEqual'
+          stack: |-
+            must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-ortak.mjs:30:10)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:68:21)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..1
+    not ok 4 - çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+      ---
+      duration_ms: 437.178137
+      type: 'suite'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:57:3'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..4
+not ok 1 - 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+  ---
+  duration_ms: 535.377468
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-kredi-karti-metin.test.mjs:41:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 2
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1008.333298

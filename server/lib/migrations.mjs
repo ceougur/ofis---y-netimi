@@ -1155,7 +1155,7 @@ export const MIGRATIONS = [
   },
   {
     version: 21,
-    name: "v2.2.0 banka hesabı işaretleri (Kredi Kartı / Çek / Senet / POS Kullan), kurumsal kartın bağlı bankası ve son 4 hanesi, verilen çek/senedin banka hesabı",
+    name: "v2.2.0 banka hesabı işaretleri (Kredi Kartı / Çek / Senet / POS Kullan), kredi kartının bağlı bankası ve son 4 hanesi, verilen çek/senedin banka hesabı",
     up(store) {
       // docs/2.2.0-IS-LISTESI.md İz 2 (2.2, 2.3, 2.5, 2.6). YALNIZ EKLEYİCİ: yeni kolonların varsayılanı kapalı/boş; hiçbir mevcut satır değişmez
       // (eski hesaplarda işaretler kapalı, eski kartlar bağsız — "aynı adlı bankaya bağla" yalnız ÖNERİ, kendiliğinden bağlanmaz; eski çeklerin

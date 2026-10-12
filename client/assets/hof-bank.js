@@ -36,7 +36,7 @@
     ["time", "Vadeli"],
     ["fx", "Döviz"],
     ["loan", "Kredi Hesabı"],
-    ["card", "Kurumsal Kredi Kartı"],
+    ["card", "Kredi Kartı"],
     ["other", "Diğer"],
   ];
   const CURRENCIES = [
@@ -1130,21 +1130,21 @@
     }
     if (!modal) return;
     const accounts = mode === "bank" ? bindableOf(list) : (list?.accounts || []).filter(account => account.kind === "card" && account.status === "active");
-    if (!accounts.length) return HOF.toast(mode === "bank" ? "Önce etkin bir TL vadesiz, ticari ya da diğer banka hesabı açın." : "Önce Kurumsal Kredi Kartı türünde hesap açın.", { type: "error" });
+    if (!accounts.length) return HOF.toast(mode === "bank" ? "Önce etkin bir TL vadesiz, ticari ya da diğer banka hesabı açın." : "Önce kredi kartı tanımlayın: banka hesabının ayrıntısında + Kredi Kartı Ekle.", { type: "error" });
     // GG2: aktarılabilir tutar hesap bazında (açılıştan ve Devir Kapanışı'ndan sonraki satırlar; tahsilat ve kartla ödeme ayrı) — sunucunun hesabı.
     const availableOf = id => Math.abs(legacy?.reclassable?.[id]?.minor || 0);
     const first = accounts.find(account => availableOf(account.id) > 0) || accounts[0];
     if (!accounts.some(account => availableOf(account.id) > 0)) {
       return HOF.toast(mode === "bank" ? "Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır)." : "Kart hesaplarının açılışından sonra kart borcuna aktarılmamış kartla ödeme yok. Açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır).", { type: "error" });
     }
-    const introOf = id => (mode === "bank" ? `Hesap tanımlanmadan girilmiş POS tahsilatlarının bankaya geçmiş tutarını hesaba aktarır. Seçilen hesabın açılışından sonraki satırlar aktarılır (en çok ${fmt(availableOf(id))}).` : `Hesap tanımlanmadan kredi kartıyla yapılmış ödemeleri kurumsal kart borcuna aktarır. Seçilen kartın açılışından sonraki satırlar aktarılır (en çok ${fmt(availableOf(id))}).`);
+    const introOf = id => (mode === "bank" ? `Hesap tanımlanmadan girilmiş POS tahsilatlarının bankaya geçmiş tutarını hesaba aktarır. Seçilen hesabın açılışından sonraki satırlar aktarılır (en çok ${fmt(availableOf(id))}).` : `Hesap tanımlanmadan kredi kartıyla yapılmış ödemeleri kredi kartının borcuna aktarır. Seçilen kartın açılışından sonraki satırlar aktarılır (en çok ${fmt(availableOf(id))}).`);
     const requestId = HOF.requestId();
     HOF.formModal({
       title: mode === "bank" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar",
       eyebrow: "HESABI ATANMAMIŞ POS / KART",
       intro: esc(introOf(first.id)),
       fields: [
-        { name: "accountId", label: mode === "bank" ? "Banka Hesabı" : "Kurumsal Kredi Kartı", type: "select", value: first.id, options: accounts.map(account => ({ value: account.id, label: `${accountLabel(account)} (${account.code}) · en çok ${fmt(availableOf(account.id))}` })) },
+        { name: "accountId", label: mode === "bank" ? "Banka Hesabı" : "Kredi Kartı", type: "select", value: first.id, options: accounts.map(account => ({ value: account.id, label: `${accountLabel(account)} (${account.code}) · en çok ${fmt(availableOf(account.id))}` })) },
         { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: HOF.localToday() },
         { name: "amount", label: "Tutar", required: true, value: amountInput(availableOf(first.id)), inputmode: "decimal" },
       ],
@@ -1840,7 +1840,7 @@
       types.length > 1 || mode === "correct" ? { name: "type", label: "İşlem Türü", type: "select", value: initialType, options: types.map(item => ({ value: item, label: TYPE_NAMES[item] || item })), readonly: mode === "correct", help: mode === "correct" ? "Düzelt'te işlemin türü değişmez; başka türde işlem için Ters Kaydet ile iptal edip yeni işlem girin." : "" } : null,
       { name: "accountId", label: "Banka Hesabı", type: "select", required: true, value: "", options: [] },
       { name: "toAccountId", label: "Alıcı Hesap", type: "select", value: form0.toAccountId || counterId || "", options: [] },
-      { name: "cardAccountId", label: "Kurumsal Kredi Kartı", type: "select", value: form0.cardAccountId || counterId || cards[0]?.id || "", options: cards.map(accountOption) },
+      { name: "cardAccountId", label: "Kredi Kartı", type: "select", value: form0.cardAccountId || counterId || cards[0]?.id || "", options: cards.map(accountOption) },
       { name: "loanAccountId", label: "Kredi Hesabı", type: "select", value: form0.loanAccountId || counterId || loans[0]?.id || "", options: loans.map(accountOption) },
       mode === "plan" ? { name: "plannedDate", label: "Planlı Tarih", type: "date", required: true, value: HOF.localToday(), help: "Planlı işlem deftere kendiliğinden yazılmaz; günü gelince Vadesi Gelen Planlı İşlemler'de görünür." } : { name: "date", label: "İşlem Tarihi", type: "date", required: true, max: "today", value: mode === "correct" ? (card.locked ? HOF.localToday() : card.date) : HOF.localToday() },
       mode === "plan" ? { name: "repeat", label: "Tekrar", type: "select", value: "none", options: (meta.repeats || []).map(item => ({ value: item.key, label: item.label })) } : null,
@@ -2706,7 +2706,7 @@
     return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: required && !keepLabel, value: selected, options: [first, ...list.map(account => ({ value: account.id, label: optionText(account, data) })), ...none] }) };
   }
   /** Kurumsal kart seçicisinin ayarları (form "card"; alan cardAccountId — gönderimde accountBody bankAccountId'ye taşır). */
-  const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kurumsal Kart", choose: "Kart Seçin", preselect: false, define: "card", note: label => `${label} kurumsal kartına yazılır.` });
+  const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kredi Kartı", choose: "Kart Seçin", preselect: false, define: "card", note: label => `${label} kredi kartına yazılır.` });
   /** Seçiciyi anchor öğesinin ardına yerleştirir (data: choices yanıtı); dönüş mode. Zorunluluk data-required'da saklanır (yol gizleyince geri gelsin). */
   function insertPicker(anchor, options, data) {
     if (!anchor) return "none";
@@ -2758,7 +2758,7 @@
    * "Hesapsız (Açılıştan Önce)" seçiliyken seçicinin altında not (11.10.2026): formun açıklaması "seçilen banka hesabına girer" gibi okunmasın;
    * hareket hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır (yargıç B1, plan §3.5 kural 1). Fatura peşin satırı da aynı metni kullanır.
    */
-  const noneNote = card => `${card ? "Kurumsal kartın" : "Banka hesabının"} açılışından önceki hareket: hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır.`;
+  const noneNote = card => `${card ? "Kredi kartının" : "Banka hesabının"} açılışından önceki hareket: hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır.`;
   function syncNone(form) {
     form.querySelectorAll("[data-bank-pick]").forEach(node => {
       const on = node.querySelector("select")?.value === "none";

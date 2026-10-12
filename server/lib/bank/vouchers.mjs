@@ -46,7 +46,7 @@ const TYPE_RULES = Object.freeze({
   interest_out: { main: BANK_KINDS, purpose: "faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir" },
   other_in: { main: BANK_KINDS, purpose: "diğer gelir Vadesiz, Ticari ya da Diğer TL hesaba girilir" },
   other_out: { main: BANK_KINDS, purpose: "diğer gider Vadesiz, Ticari ya da Diğer TL hesaptan girilir" },
-  card_payment: { main: BANK_KINDS, purpose: "kart borcu Vadesiz, Ticari ya da Diğer TL hesaptan ödenir", counter: { field: "cardAccountId", kinds: new Set(["card"]), label: "Kurumsal Kredi Kartı", purpose: "kurumsal kredi kartı hesabı değil" } },
+  card_payment: { main: BANK_KINDS, purpose: "kart borcu Vadesiz, Ticari ya da Diğer TL hesaptan ödenir", counter: { field: "cardAccountId", kinds: new Set(["card"]), label: "Kredi Kartı", purpose: "kredi kartı hesabı değil" } },
   loan_draw: { main: BANK_KINDS, purpose: "kredi Vadesiz, Ticari ya da Diğer TL hesaba kullanılır", counter: { field: "loanAccountId", kinds: new Set(["loan"]), label: "Kredi Hesabı", purpose: "kredi hesabı değil" } },
   loan_repay: { main: BANK_KINDS, purpose: "kredi Vadesiz, Ticari ya da Diğer TL hesaptan ödenir", counter: { field: "loanAccountId", kinds: new Set(["loan"]), label: "Kredi Hesabı", purpose: "kredi hesabı değil" } },
   transfer: { main: TRANSFER_KINDS, purpose: "bankalar arası transfer Vadesiz, Ticari, Vadeli ya da Diğer TL hesaptan yapılır (kredi kullanımı ve kart borcu kendi işlem türüyle)", counter: { field: "toAccountId", kinds: TRANSFER_KINDS, label: "Alıcı Hesap", purpose: "bankalar arası transfer Vadesiz, Ticari, Vadeli ya da Diğer TL hesaba yapılır (kredi geri ödemesi ve kart borcu kendi işlem türüyle)" } },

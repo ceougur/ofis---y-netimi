@@ -174,7 +174,7 @@ async function cariVariant({ id, family, early, round }) {
       return;
     }
     const error = await textOf(`${form} .hof-form-error`);
-    ok(new RegExp(card ? "Kurumsal Kart" : "Banka Hesabı").test(error), `hata seçimi istiyor: “${error}”`);
+    ok(new RegExp(card ? "Kredi Kartı" : "Banka Hesabı").test(error), `hata seçimi istiyor: “${error}”`);
     await page.waitForSelector(`${form} ${pick} select[name="${field}"]`, { timeout: 5000 }).catch(() => null);
     const options = await page.$$eval(`${form} ${pick} select[name="${field}"] option`, nodes => nodes.map(node => node.value)).catch(() => []);
     ok(options.includes(first.id) && options.includes(second.id), `hatadan sonra seçici yenilendi: iki ${card ? "kart" : "hesap"} (${options.filter(Boolean).length})`);

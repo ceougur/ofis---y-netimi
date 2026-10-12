@@ -36,7 +36,7 @@ export const ACCOUNT_KINDS = Object.freeze({
   time: { label: "Vadeli", forms: [] },
   fx: { label: "Döviz", forms: ["fx"] },
   loan: { label: "Kredi Hesabı", forms: [], limit: "Kredi Limiti" },
-  card: { label: "Kurumsal Kredi Kartı", forms: ["card"], limit: "Kart Limiti" },
+  card: { label: "Kredi Kartı", forms: ["card"], limit: "Kart Limiti" },
   other: { label: "Diğer", forms: ["bank"] },
 });
 /** ANLIK DURUM, Genel Bakış ve Birleşik Rapor'da aynı adlar (K10). */
@@ -298,7 +298,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   /** Tür ve para birimi kuralı (§3.5): TL dışında 102 ailesi Döviz olur; Döviz türü TL olamaz; kredi, kart ve vadeli yalnız TL. */
   function kindCurrency(kindValue, currencyValue) {
     let kind = text(kindValue);
-    if (!Object.hasOwn(ACCOUNT_KINDS, kind)) throw new HttpError(400, "Hesap türü Vadesiz, Ticari, Vadeli, Döviz, Kredi Hesabı, Kurumsal Kredi Kartı ya da Diğer olmalı.", { code: "bank-kind", field: "kind" });
+    if (!Object.hasOwn(ACCOUNT_KINDS, kind)) throw new HttpError(400, "Hesap türü Vadesiz, Ticari, Vadeli, Döviz, Kredi Hesabı, Kredi Kartı ya da Diğer olmalı.", { code: "bank-kind", field: "kind" });
     const currency = currencyOf(currencyValue);
     // GG2 (orta; kullanıcı kararı "Ertelenenler 2.1.0'da GÖRÜNMEZ"): döviz hesabı, kuru ve değerlemesiyle birlikte sonraki sürümde (Aşama 13).
     // Bu sürümde yalnız TL hesap açılır; döviz hesabı testlerde (config.fxEnabled) açılır.
@@ -371,7 +371,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   function last4Of(value, kind) {
     const raw = value === undefined || value === null ? "" : String(value).replace(/\s+/g, "");
     if (!raw) return "";
-    if (kind !== "card") throw new HttpError(400, "Son 4 hane yalnız kurumsal kredi kartında girilir.", { code: "bank-card-last4", field: "cardLast4" });
+    if (kind !== "card") throw new HttpError(400, "Son 4 hane yalnız kredi kartında girilir.", { code: "bank-card-last4", field: "cardLast4" });
     if (!/^\d{4}$/.test(raw)) throw new HttpError(400, "Kartın son 4 hanesi 4 rakam olmalı (ör. 1234); kart numarasının tamamı yazılmaz.", { code: "bank-card-last4", field: "cardLast4" });
     return raw;
   }
@@ -384,7 +384,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (!row) throw new HttpError(404, "Kartın bağlanacağı banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", { code: "bank-account-missing", field: "parentId" });
     if (except && row.id === except) throw new HttpError(400, "Kart kendisine bağlanamaz; bir banka hesabı seçin.", { code: "bank-parent-invalid", field: "parentId" });
     if (row.status !== "active") throw new HttpError(400, `${labelOf(row)} pasif; kart etkin bir banka hesabının altına eklenir (önce Etkinleştir).`, { code: "bank-parent-invalid", field: "parentId", accountId: row.id });
-    if (!bankFormOk(row)) throw new HttpError(400, `${labelOf(row)} ${ACCOUNT_KINDS[row.kind]?.label || row.kind} hesap; kurumsal kart yalnız Vadesiz, Ticari ya da Diğer TL banka hesabının altına eklenir.`, { code: "bank-parent-invalid", field: "parentId", accountId: row.id });
+    if (!bankFormOk(row)) throw new HttpError(400, `${labelOf(row)} ${ACCOUNT_KINDS[row.kind]?.label || row.kind} hesap; kredi kartı yalnız Vadesiz, Ticari ya da Diğer TL banka hesabının altına eklenir.`, { code: "bank-parent-invalid", field: "parentId", accountId: row.id });
     return row;
   }
   /** Banka hesabının altındaki (silinmemiş) kurumsal kartlar. */
@@ -419,7 +419,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
    * Döviz hesapta da KMH saklıyor, eksi bakiye denetimi (vouchers.mjs) onu sayıyordu.
    */
   function kindLimit(kind, minor) {
-    if (minor > 0 && !ACCOUNT_KINDS[kind]?.limit) throw new HttpError(400, `${ACCOUNT_KINDS[kind]?.label || kind} hesapta limit (KMH) olmaz; KMH Limiti yalnız Vadesiz hesapta, kart limiti Kurumsal Kredi Kartı'nda girilir.`, { code: "bank-limit", field: "creditLimit" });
+    if (minor > 0 && !ACCOUNT_KINDS[kind]?.limit) throw new HttpError(400, `${ACCOUNT_KINDS[kind]?.label || kind} hesapta limit (KMH) olmaz; KMH Limiti yalnız Vadesiz hesapta, kart limiti Kredi Kartı'nda girilir.`, { code: "bank-limit", field: "creditLimit" });
     return minor;
   }
   /** Bilgi alanları (kartın parası ve türü değil). */
@@ -476,7 +476,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     // uyumlu kalır: para kuralı aynıdır (309.NN), ekran yalnız bankanın içinden açar (karar: raporda).
     const parentId = text(body.parentId);
     const parent = parentId ? parentOf(parentId) : null;
-    if (parent && text(body.kind || "card") !== "card") throw new HttpError(400, "Banka hesabının altına yalnız kurumsal kredi kartı eklenir.", { code: "bank-parent-kind", field: "kind" });
+    if (parent && text(body.kind || "card") !== "card") throw new HttpError(400, "Banka hesabının altına yalnız kredi kartı eklenir.", { code: "bank-parent-kind", field: "kind" });
     const bankName = parent ? parent.bank_name : requiredName(body.bankName, "Banka Adı");
     const name = requiredName(body.name, parent ? "Kart Adı" : "Hesap Adı");
     const { kind, currency } = kindCurrency(body.kind || (parent ? "card" : "demand"), body.currency);
@@ -529,7 +529,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     // v2.2.0 (İz 2.3): kartın bağlı bankası değişebilir (eski kartı bankasına bağlama önerisi; başka bankaya taşıma); '' bağı kaldırır.
     if (body.parentId !== undefined) {
       const wanted = text(body.parentId);
-      if (wanted && row.kind !== "card") throw new HttpError(400, "Bağlı banka hesabı yalnız kurumsal kredi kartında seçilir.", { code: "bank-parent-kind", field: "parentId" });
+      if (wanted && row.kind !== "card") throw new HttpError(400, "Bağlı banka hesabı yalnız kredi kartında seçilir.", { code: "bank-parent-kind", field: "parentId" });
       if (wanted !== (row.parent_id || "")) {
         const parent = wanted ? parentOf(wanted, { except: row.id }) : null;
         next.parent_id = parent?.id || "";
@@ -577,13 +577,13 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const kindChanged = next.kind !== row.kind;
     if (kindChanged && !BANK_FORM_KINDS.has(next.kind)) {
       const cards = cardsOf(row.id).length;
-      if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kurumsal kart var; ${ACCOUNT_KINDS[next.kind].label} türüne çevrilemez. Önce kartları başka banka hesabına bağlayın.`, { code: "bank-account-has-cards", count: cards, field: "kind" });
+      if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kredi kartı var; ${ACCOUNT_KINDS[next.kind].label} türüne çevrilemez. Önce kartları başka banka hesabına bağlayın.`, { code: "bank-account-has-cards", count: cards, field: "kind" });
       for (const [, column] of FLAG_COLUMNS) next[column] = 0;
     }
     if (FLAG_COLUMNS.some(([key]) => body[key] !== undefined)) Object.assign(next, flagsOf(body, next.kind, next));
     if (row.use_card && !next.use_card) {
       const cards = cardsOf(row.id).length;
-      if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kurumsal kart var; "Kredi Kartı Kullan" kapatılamaz. Önce kartları başka banka hesabına bağlayın ya da silin.`, { code: "bank-flag-in-use", count: cards, field: "useCard" });
+      if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kredi kartı var; "Kredi Kartı Kullan" kapatılamaz. Önce kartları başka banka hesabına bağlayın ya da silin.`, { code: "bank-flag-in-use", count: cards, field: "useCard" });
     }
     if (row.use_pos && !next.use_pos) {
       const pos = posCount(row.id);
@@ -646,7 +646,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (plans) throw new HttpError(409, `Bu hesabın ${plans} planlı işlemi var; hesap silinmez. Önce Hareketler → Planlı İşlemler'den silin.`, { code: "bank-account-has-plans", count: plans });
     // v2.2.0 (İz 2.3, 2.5): altında kurumsal kart ya da ödenmemiş verilen çek/senet olan hesap silinmez (kart bağsız, çek hesapsız kalırdı).
     const cards = cardsOf(row.id).length;
-    if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kurumsal kart var; hesap silinmez. Önce kartları başka banka hesabına bağlayın ya da silin.`, { code: "bank-account-has-cards", count: cards });
+    if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kredi kartı var; hesap silinmez. Önce kartları başka banka hesabına bağlayın ya da silin.`, { code: "bank-account-has-cards", count: cards });
     const cheques = openChequeCount(row.id);
     if (cheques) throw new HttpError(409, `Bu hesaptan verilmiş ${cheques} ödenmemiş çek/senet var; hesap silinmez. Kullanılmayacaksa Pasife Alın.`, { code: "bank-account-has-cheques", count: cheques });
     const opening = openingOf(row.id);
@@ -1264,7 +1264,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const account = rowOf(body.accountId);
     if (!account) throw new HttpError(404, "Banka hesabı bulunamadı.", { code: "bank-account-missing" });
     assertActive(account);
-    if (mode === "bank" ? !bankFormOk(account) : !(account.kind === "card" && account.status === "active")) throw new HttpError(400, mode === "bank" ? `${labelOf(account)}: POS bakiyesi yalnız etkin TL Vadesiz, Ticari ya da Diğer hesaba aktarılır.` : `${labelOf(account)} kurumsal kredi kartı hesabı değil.`, { code: "bank-account-invalid" });
+    if (mode === "bank" ? !bankFormOk(account) : !(account.kind === "card" && account.status === "active")) throw new HttpError(400, mode === "bank" ? `${labelOf(account)}: POS bakiyesi yalnız etkin TL Vadesiz, Ticari ya da Diğer hesaba aktarılır.` : `${labelOf(account)} kredi kartı hesabı değil.`, { code: "bank-account-invalid" });
     const date = period ? period.movementDate(body, { label: "Tarih" }) : today();
     if (date < account.opening_date) throw new HttpError(409, `Tarih hesabın açılışından (${account.opening_date.split("-").reverse().join(".")}) önce olamaz.`, { code: "bank-before-opening" });
     const amount = parseMinor(body.amount, { label: "Tutar" });

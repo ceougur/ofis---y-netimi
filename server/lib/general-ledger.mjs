@@ -24,7 +24,7 @@ export const CHART = Object.freeze({
   255: "Demirbaşlar",
   // v2.1.0 (§3.11): banka kredisi ve kurumsal kredi kartı borcu.
   300: "Banka Kredileri",
-  309: "Diğer Mali Borçlar (Kurumsal Kredi Kartları)",
+  309: "Diğer Mali Borçlar (Kredi Kartları)",
   320: "Satıcılar (Tedarikçi Carileri)",
   336: "Diğer Cariler (Personel vb.)",
   360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",

@@ -1199,7 +1199,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       } catch (error) {
         if (error?.extra?.code !== "bank-account-required") throw error;
         const card = item.method === "card";
-        throw new HttpError(400, card ? `Kurumsal kart seçilmedi: ${item.index + 1}. peşin satır kredi kartı; hangi kurumsal karttan ödendiğini (ya da iadenin hangi karta geldiğini) seçin.` : `Banka hesabı seçilmedi: ${item.index + 1}. peşin satır havale/EFT; hangi hesaba girdiğini ya da hangi hesaptan çıktığını seçin.`, { ...error.extra, field: `payment.cash.${item.index}.bankAccountId`, line: item.index });
+        throw new HttpError(400, card ? `Kredi kartı seçilmedi: ${item.index + 1}. peşin satır kredi kartı; hangi kredi kartından ödendiğini (ya da iadenin hangi karta geldiğini) seçin.` : `Banka hesabı seçilmedi: ${item.index + 1}. peşin satır havale/EFT; hangi hesaba girdiğini ya da hangi hesaptan çıktığını seçin.`, { ...error.extra, field: `payment.cash.${item.index}.bankAccountId`, line: item.index });
       }
       if (!inflow(kind) && item.finRef && item.finRef !== (prev?.finRef || "")) banking.requireOut(user, true, item.finRef);
       delete item.index;

@@ -747,7 +747,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "alt-hesap-mizani",
       group: "Banka",
       title: "Alt Hesap Mizanı",
-      description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, kurumsal kart 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00): devir, dönem borç, dönem alacak ve bakiye; her ana hesap alt hesaplarının toplamına eşittir.",
+      description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, kredi kartı 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00): devir, dönem borç, dönem alacak ve bakiye; her ana hesap alt hesaplarının toplamına eşittir.",
       params: ["range"],
       preset: "thisYear",
       permission: "bank.reports",
@@ -1772,7 +1772,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     let choices = null;
     if (list.some(report => report.group === "Banka")) {
       const rows = bankRows();
-      const accountsOf = filter => rows.filter(filter).map(row => [row.id, `${bankLabel(row)} · ${row.glSub}${isRealKind(row.kind) ? "" : row.kind === "card" ? " (Kurumsal Kredi Kartı)" : " (Kredi Hesabı)"}`]);
+      const accountsOf = filter => rows.filter(filter).map(row => [row.id, `${bankLabel(row)} · ${row.glSub}${isRealKind(row.kind) ? "" : row.kind === "card" ? " (Kredi Kartı)" : " (Kredi Hesabı)"}`]);
       choices = {
         bankAccount: [["", `${K10_LABELS.realBank} (Tüm Hesaplar)`], ...accountsOf(row => isRealKind(row.kind)), ...accountsOf(row => !isRealKind(row.kind)), [UNASSIGNED_CHOICE, K10_LABELS.unassigned]],
         feeAccount: [["", "Tüm Banka Hesapları"], ...accountsOf(row => isRealKind(row.kind))],

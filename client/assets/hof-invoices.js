@@ -970,10 +970,10 @@
     // tanım penceresi; kaydedince satırda seçili gelir); tanımlama yetkisi yoksa "… tanımlı değil, yöneticinize başvurun". Önceden hücre GİZLİYDİ.
     if (!list.length && !current) return `<span class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-empty${hidden}>${HOF.bank?.defineHtml?.(kind) || ""}</span>`;
     const shown = account => `${account.label}${account.cardLast4 ? ` •••• ${account.cardLast4}` : ""}`;
-    if (list.length === 1 && !legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-single${hidden}>${esc(shown(list[0]))} ${card ? "kurumsal kartına" : "hesabına"} yazılır.</span>`;
+    if (list.length === 1 && !legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-single${hidden}>${esc(shown(list[0]))} ${card ? "kredi kartına" : "hesabına"} yazılır.</span>`;
     const options = current && !list.some(account => account.id === current.id) ? [current, ...list] : list;
     const first = legacy ? "Atanmamış (Eski Hareket)" : card ? "Kart Seçin" : "Hesap Seçin";
-    const label = card ? "Kurumsal Kart" : "Banka Hesabı";
+    const label = card ? "Kredi Kartı" : "Banka Hesabı";
     // 2.7: seçenek adında hesabın fatura tarihindeki bakiyesi (Banka Görüntüleme yetkisine), seçilenin altında "Bakiye · İşlemden Sonra".
     const optionText = account => (HOF.bank?.optionText ? HOF.bank.optionText(account, data) : `${account.label} (${account.code})`);
     return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(optionText(account))}</option>`).join("")}<option value="none" ${item.bankAccountId === "none" ? "selected" : ""}>Hesapsız (Açılıştan Önce)</option></select>${item.bankAccountId === "none" ? noneNoteHtml(card) : ""}</label>`;
