@@ -27,7 +27,7 @@ import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
 import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
-import { CHEQUE_SUB_NAMES, assertNoPendingCollections } from "./collections.mjs";
+import { CHEQUE_SUB_NAMES, assertNoPendingCollections, chequeSubTrial } from "./collections.mjs";
 
 // limit: hesabın limit alanı (plan §3.5 "KMH Limiti alanı" yalnız Vadesiz; §3.9 "KMH ya da kart limiti"; Kredi Hesabı'nda ekranın "Kredi Limiti" bilgi
 // alanı — eksi bakiye denetimine girmez). Limit alanı olmayan türde 0'dan büyük limit 400 bank-limit (hakem K7).
@@ -495,7 +495,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const row = mustRow(id);
     const moves = movementInfo(row.id);
     if (moves.count) throw new HttpError(409, `Bu hesaba bağlı ${moves.count} hareket var; hesap silinmez. Kullanılmayacaksa Pasife Alın.`, { code: "bank-account-has-movements", count: moves.count });
-    assertNoPendingCollections(store, row.id, "silinemez");
+    assertNoPendingCollections(store, row.id, "silinemez", { returned: true });
     // GG2: kurulumlu hesap silinince Devir Kapanışı etkin kalıyordu (eski bakiye açılışı olmayan bir hesap adına kapalı); aynı adla yeniden açılıp
     // sihirbaz çalışınca aynı bakiye ikinci kez kapanıyordu. Önce kurulum geri alınır.
     const setupRun = activeSetupOf(row.id);
@@ -1141,24 +1141,14 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     // Bankaya Tahsile Ver (plan §3.11 hesap planı "101.01 Portföydeki Çekler, 101.02 Tahsile Verilen Çekler", madde 6): alınan evrak varsa 101 ve
     // alt hesapları (Ana Defter'in kendi kuralıyla, yalnız alınan evrakın maddeleri). Doğrulama T4: önceden yalnız şirkette bir tahsil kaydı
     // varken görünüyordu; Ana Defter 101'de portföy dururken Alt Hesap Mizanı'nda 101.01 yoktu.
-    const chequeService = ledger?.();
-    const ids = chequeService?.build && store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'") ? store.all("SELECT id FROM cheques WHERE direction = 'in'").map(row => row.id) : [];
-    if (ids.length) {
-      for (const entry of chequeService.build({ cheques: ids })) {
-        for (const line of entry.lines) {
-          if (line.account !== "101" || !line.sub) continue;
-          const row = subs.get(line.sub) || { sub: line.sub, account: "101", opening: 0, debit: 0, credit: 0 };
-          if (from && entry.date < from) row.opening += line.debit - line.credit;
-          else if (!to || entry.date <= to) {
-            row.debit += line.debit;
-            row.credit += line.credit;
-          } else continue;
-          subs.set(line.sub, row);
-          mainsOf.set("101", (mainsOf.get("101") || 0) + line.debit - line.credit);
-        }
-      }
-      Object.assign(names, CHEQUE_SUB_NAMES);
+    // Doğrulama tur 2 G1 (plan §3.11 madde 5): Ana Defter KURULMADAN, SQL toplamıyla (lib/bank/collections.mjs chequeSubTrial; kurallar Ana Defter'in
+    // 101 satırlarının aynısı, eşdeğerlik testi). Önceden her açılışta bütün alınan evrak için yevmiye kuruluyordu (15.000 evrakta ~0,7 sn).
+    const cheque101 = chequeSubTrial(store, { from, to });
+    for (const [sub, sums] of cheque101) {
+      subs.set(sub, { sub, account: "101", ...sums });
+      mainsOf.set("101", (mainsOf.get("101") || 0) + sums.opening + sums.debit - sums.credit);
     }
+    if (cheque101.size) Object.assign(names, CHEQUE_SUB_NAMES);
     const tl = value => Math.round(value) / 100;
     const rows = [...subs.values()]
       .sort((a, b) => a.sub.localeCompare(b.sub))

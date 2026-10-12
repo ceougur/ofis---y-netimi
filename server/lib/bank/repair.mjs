@@ -24,6 +24,7 @@ import { LEGACY_MARKS_AT_KEY, LEGACY_MARKS_KEY } from "./checks.mjs";
 import { copyMismatchSql, eventCopy, eventDigest, eventRows, isModuleEvent, primaryRow, refreshEvent } from "./event-copy.mjs";
 import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { newEventId, nextEventNo } from "./event-no.mjs";
+import { closedBeforeOpening, depositAccountProblem, reopenLegacyClosures } from "./collections.mjs";
 import { MODULE_TABLES, moneyWhere } from "./money-lines.mjs";
 
 export const REPAIR_KEY = "meta.bank.repair";
@@ -69,7 +70,7 @@ export function repairBank({ store, now = systemClock, period = null, log = null
       return {};
     }
   })();
-  const report = { at, unassigned: 0, unassignedSample: [], unassignedIds: [], undoneMatches: [], voidedSales: [], cancelledEvents: [], clearedRefs: [], refreshedEvents: [], closedCollections: [], pending: [] };
+  const report = { at, unassigned: 0, unassignedSample: [], unassignedIds: [], undoneMatches: [], voidedSales: [], cancelledEvents: [], clearedRefs: [], refreshedEvents: [], closedCollections: [], reopenedCollections: [], pending: [] };
   const pending = (kind, id, reason) => report.pending.push({ kind, id, reason });
 
   store.raw("repair", () =>
@@ -174,19 +175,29 @@ export function repairBank({ store, now = systemClock, period = null, log = null
 
       // h) tahsildeki çek eski sürümde ciro edilmiş, silinmiş ya da tahsil edilmiş
       if (tables.has("cheque_collections")) {
+        // Doğrulama tur 2 E5/E6: eski sürümde tahsili ya da karşılıksızı Geri Al'ınmış kayıt yeniden bekleyen olur (aşağıdaki döngü onu da görür).
+        report.reopenedCollections = reopenLegacyClosures(store, { open, at, pending });
         for (const item of store.all(
           `SELECT k.id, k.cheque_id AS chequeId, k.bank_account_id AS bankAccountId, k.given_date AS givenDate, k.event_id AS eventId, c.status, c.status_date AS statusDate,
-                  c.deleted_at AS deletedAt, c.amount, c.issue_date AS issueDate, e.try_minor AS givenMinor, e.date AS eventDate, e.year AS eventYear
+                  c.deleted_at AS deletedAt, c.amount, c.issue_date AS issueDate, c.instrument, e.try_minor AS givenMinor, e.date AS eventDate, e.year AS eventYear
            FROM cheque_collections k LEFT JOIN cheques c ON c.id = k.cheque_id LEFT JOIN fin_events e ON e.id = k.event_id WHERE k.status = 'pending'`,
         )) {
           if (item.status === "portfolio" && !item.deletedAt) {
+            // Doğrulama tur 2 E2–E4: eski sürüm tahsildeki evrakın hesabını silmiş, pasife almış ya da türünü değiştirmiş — kayıt değişmez (evrak
+            // bankada olabilir), "Onarım Bekliyor" uyarısı yolu söyler (Etkinleştir ya da Bankadan Geri Al).
+            const account = store.get("SELECT * FROM bank_accounts WHERE id = ?", item.bankAccountId);
+            const problem = depositAccountProblem(account, item.instrument || "cheque");
+            if (problem) pending("h", item.id, `tahsildeki evrakın ${problem.reason} (eski sürüm)`);
             // Doğrulama D2: eski sürüm (tahsil kaydını bilmeyen) tahsildeki evrakın tutarını ya da alış tarihini değiştirmiş; evrak hâlâ bankada.
-            // Verilme başlığı evrakın bugünkü hâline alınır (açık dönemde; İşlem No'su aynı kalır, yılı değişecekse Onarım Bekliyor).
+            // Verilme başlığı evrakın bugünkü hâline alınır (açık dönemde; İşlem No'su aynı kalır, yılı değişecekse Onarım Bekliyor). Tur 2 E1: eski
+            // sürüm hesabın açılışını veriliş gününden sonraya almışsa veriliş günü açılış günü olur (Bankaya Tahsile Ver'in kuralı: açılıştan önce
+            // bankaya verilen ve hâlâ tahsildeki evrak açılış gününe yazılır).
             const cents = Math.round((Number(item.amount) || 0) * 100);
-            const given = item.issueDate && item.givenDate < item.issueDate ? item.issueDate : item.givenDate;
+            const opened = account && !account.deleted_at ? String(account.opening_date || "") : "";
+            const given = [item.issueDate, opened].reduce((day, floor) => (floor && day < floor ? floor : day), item.givenDate);
             if (Number(item.givenMinor) === cents && given === item.givenDate) continue;
             if (!item.eventId || !open(item.givenDate) || !open(given) || Number(String(given).slice(0, 4)) !== Number(item.eventYear)) {
-              pending("h", item.id, "tahsildeki evrakın tutarı ya da alış tarihi eski sürümde değişti; Bankadan Geri Al'ıp yeniden tahsile verin");
+              pending("h", item.id, "tahsildeki evrakın tutarı, alış tarihi ya da hesabın açılış tarihi eski sürümde değişti; Bankadan Geri Al'ıp yeniden tahsile verin");
               continue;
             }
             store.run("UPDATE fin_events SET amount_minor = ?, try_minor = ?, date = ?, updated_by = 'system', updated_at = ? WHERE id = ?", cents, cents, given, at, item.eventId);
@@ -212,10 +223,11 @@ export function repairBank({ store, now = systemClock, period = null, log = null
           store.run("UPDATE cheque_collections SET status = ?, closed_date = ?, close_event_id = ?, updated_by = 'system', updated_at = ? WHERE id = ?", status, date, eventId, at, item.id);
           report.closedCollections.push({ id: item.id, status, why });
         }
+        for (const item of closedBeforeOpening(store)) pending("h", item.id, item.reason);
       }
 
       store.setSetting(REPAIR_STAMP_KEY, at);
-      const changed = report.undoneMatches.length + report.voidedSales.length + report.cancelledEvents.length + report.clearedRefs.length + report.refreshedEvents.length + report.closedCollections.length;
+      const changed = report.undoneMatches.length + report.voidedSales.length + report.cancelledEvents.length + report.clearedRefs.length + report.refreshedEvents.length + report.closedCollections.length + report.reopenedCollections.length;
       const fresh = report.unassigned > (Number(previous.unassigned) || 0) || report.pending.some(item => !(previous.pending || []).some(old => old.kind === item.kind && old.id === item.id));
       store.setSetting(REPAIR_KEY, JSON.stringify(report));
       if ((changed || fresh) && tables.has("integrity_log")) {
@@ -227,14 +239,15 @@ export function repairBank({ store, now = systemClock, period = null, log = null
           report.clearedRefs.length ? `temizlenen hesap bağı ${report.clearedRefs.length}` : "",
           report.voidedSales.length ? `iptal edilen POS satışı ${report.voidedSales.length}` : "",
           report.closedCollections.length ? `kapanan tahsil kaydı ${report.closedCollections.length}` : "",
+          report.reopenedCollections.length ? `yeniden açılan tahsil kaydı ${report.reopenedCollections.length}` : "",
           report.pending.length ? `Onarım Bekliyor ${report.pending.length}` : "",
         ].filter(Boolean).join("; ");
         store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', '', ?, ?)", newId(), at, `Açılış onarımı (eski sürümden): ${summary}`.slice(0, 500), JSON.stringify({ ...report, unassignedIds: undefined }).slice(0, 20000));
       }
     }),
   );
-  if (report.unassigned || report.pending.length || report.cancelledEvents.length || report.refreshedEvents.length || report.undoneMatches.length || report.closedCollections.length) {
-    log?.warn?.(`Açılış onarımı (eski sürümden): ${JSON.stringify({ unassigned: report.unassigned, pending: report.pending.length, cancelled: report.cancelledEvents.length, refreshed: report.refreshedEvents.length, matches: report.undoneMatches.length, collections: report.closedCollections.length })}`);
+  if (report.unassigned || report.pending.length || report.cancelledEvents.length || report.refreshedEvents.length || report.undoneMatches.length || report.closedCollections.length || report.reopenedCollections.length) {
+    log?.warn?.(`Açılış onarımı (eski sürümden): ${JSON.stringify({ unassigned: report.unassigned, pending: report.pending.length, cancelled: report.cancelledEvents.length, refreshed: report.refreshedEvents.length, matches: report.undoneMatches.length, collections: report.closedCollections.length, reopened: report.reopenedCollections.length })}`);
   }
   return report;
 }

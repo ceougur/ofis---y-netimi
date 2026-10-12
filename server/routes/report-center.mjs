@@ -1387,7 +1387,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         // Doğrulama T7 (ders 11): "Bankada Tahsilde" (deposited) süzgeci kabul listesinde yoktu, sessizce düşüyordu; "Portföyde" süzgecinin satırları
         // tahsildekini içermezken özetteki "Portföyde (alınan)" içeriyordu. Özet artık ikisini ayrı yazar (plan §3.14 "Portföyde ile Bankada
         // Tahsilde ayrı").
-        const status = STATUSES[query.status] || ["open", "closed", "overdue", "soon", "deposited"].includes(query.status) ? query.status : "";
+        const status = Object.hasOwn(STATUSES, String(query.status ?? "")) || ["open", "closed", "overdue", "soon", "deposited"].includes(query.status) ? query.status : "";
         const data = cheques().list(admin, { direction: ["in", "out"].includes(query.direction) ? query.direction : "", status, from: range.from, to: range.to, sort: "due" });
         const deposited = data.summary.deposited || { count: 0, amount: 0 };
         return {
@@ -1395,7 +1395,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           headers: ["Vade", "Yön", "Tür", "No", "Banka", "Kimden / Kime", "Durum", "Tutar"],
           types: ["", "", "", "", "", "", "", "money"],
           rows: data.cheques.map(row => [dayText(row.dueDate), row.directionLabel, row.instrumentLabel, row.serialNo, row.bank, row.status === "endorsed" ? `${row.party} → ${row.endorseAccountName}` : row.party, row.statusLabel, money(row.amount)]),
-          summary: [["Listelenen", `${data.listed.count} · ${tl(data.listed.amount)}`], ["Portföyde (alınan)", tl(roundMoney(data.summary.in.open.amount - deposited.amount))], ["Bankada Tahsilde", tl(deposited.amount)], ["Ödenecek (verilen)", tl(data.summary.out.open.amount)], ["Vadesi Geçmiş Alınan", tl(data.summary.in.overdue.amount)]],
+          summary: [["Listelenen", `${data.listed.count} · ${tl(data.listed.amount)}`], ["Portföyde (alınan)", tl(data.summary.in.open.amount)], ["Bankada Tahsilde", tl(deposited.amount)], ["Ödenecek (verilen)", tl(data.summary.out.open.amount)], ["Vadesi Geçmiş Alınan", tl(data.summary.in.overdue.amount)]],
           footerUniform: "Yön", // alınan ve verilen evrak toplanmaz; Yön süzülünce toplam çıkar
         };
       },
@@ -1417,10 +1417,12 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         );
         // Doğrulama T9: Bankaya Tahsile Ver ve Bankadan Geri Al (plan §3.14; cheque_events'e yazılmaz, iz fin_events başlıklarında) da evrakın
         // hareketidir. "İlgili Cari" kolonunda evrakın verildiği banka hesabı. Karşılıksız ve tahsil zaten cheque_events'ten gelir; açılış onarımının
-        // eski sürüm kapanışları ("eski-surum") "Bankadan Geri Alındı" yazılır.
+        // eski sürüm kapanışları ("eski-surum") "Bankadan Geri Alındı" yazılır. Tutar (doğrulama tur 2 T12): yevmiyedeki gibi verilme başlığının kuruşu —
+        // geri alınmış evrakın tutarı sonradan düzeltilse de o günkü işlem o günkü tutarla görünür (Yevmiye ve İşlem Kartı ile aynı).
         if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'")) {
           for (const row of store.all(
-            `SELECT e.date, e.type, e.created_at AS createdAt, c.direction, c.instrument, c.serial_no AS serialNo, c.drawer, c.amount, COALESCE(a.name, '') AS accountName,
+            `SELECT e.date, e.type, e.created_at AS createdAt, c.direction, c.instrument, c.serial_no AS serialNo, c.drawer,
+                    COALESCE(NULLIF((SELECT d.try_minor FROM fin_events d WHERE d.id = k.event_id), 0), CAST(ROUND(c.amount * 100) AS INTEGER)) / 100.0 AS amount, COALESCE(a.name, '') AS accountName,
                     COALESCE(b.bank_name || ' · ' || b.name, '') AS bankLabel, COALESCE(u.display_name, '') AS actorName, e.description AS note
              FROM fin_events e JOIN cheque_collections k ON k.id = e.src_id JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
                LEFT JOIN accounts a ON a.id = c.account_id LEFT JOIN bank_accounts b ON b.id = k.bank_account_id LEFT JOIN users u ON u.id = e.created_by

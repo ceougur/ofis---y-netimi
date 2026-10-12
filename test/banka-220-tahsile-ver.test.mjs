@@ -109,7 +109,9 @@ describe("Bankaya Tahsile Ver — çalışıyor mu (sayılarla)", () => {
     assert.equal(row.statusLabel, "Bankada Tahsilde · Ziraat Bankası · 08.10.2026");
     assert.equal(row.deposited, true);
     assert.deepEqual(all.summary.deposited, { count: 1, amount: 1000 });
-    assert.deepEqual(all.summary.in.open, { count: 2, amount: 1400 }, "açık portföy toplamı tahsildekini de sayar (101)");
+    // Doğrulama tur 2 "ozet" (plan §3.14 "Portföyde ile Bankada Tahsilde ayrı"; bilerek güncellendi): "Portföyde (alınan)" tahsildekini içermez —
+    // pencere, PDF ve Çek / Senet Portföyü raporu aynı; 101 toplamı = in.open + deposited.
+    assert.deepEqual(all.summary.in.open, { count: 1, amount: 400 }, "Portföyde (alınan) tahsildekini saymaz");
     const subs = Object.fromEntries((await must("alt hesap", ctx.api.get(`${BANK}/sub-trial`))).rows.map(item => [item.sub, item]));
     assert.equal(subs["101.02"]?.balance, 1000);
     assert.equal(subs["101.01"]?.balance, 400);
@@ -207,7 +209,8 @@ describe("Bankaya Tahsile Ver — çalışıyor mu (sayılarla)", () => {
     const subs = chequeSubs(ctx);
     assert.equal(subs.bank, 90000);
     await must("karşılıksız", act(ctx.api, planned.id, { action: "bounce", date: TODAY }));
-    assert.equal(count(ctx.store, "plan_entries", `cheque_id = '${planned.id}'`), 0, "taksite sayılan tahsilat kalktı");
+    // Doğrulama T11 (bilerek güncellendi): taksite sayılan tahsilat SİLİNMEZ; karşılıksız günü çekli ters kayıt yazılır (alış günü maddesi değişmez).
+    assert.deepEqual(ctx.store.all(`SELECT kind FROM plan_entries WHERE cheque_id = ? ORDER BY kind`, planned.id).map(row => row.kind), ["in", "out"], "tahsilat + karşılıksız ters kaydı");
     assert.deepEqual(chequeSubs(ctx), { portfolio: subs.portfolio, bank: 0 });
     await integrityOk(ctx.api, "taksitli çek karşılıksız");
   });

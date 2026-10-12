@@ -13,7 +13,7 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { findHeaderRow, inferRolesByValues, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
-import { BANK_ACTIONS, createChequeCollections } from "../lib/bank/collections.mjs";
+import { BANK_ACTIONS, collectionsFingerprint, createChequeCollections } from "../lib/bank/collections.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
@@ -172,7 +172,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   const listQuery = params => ({
     q: text(params.get("q")).slice(0, 120),
     direction: ["in", "out"].includes(text(params.get("direction"))) ? text(params.get("direction")) : "",
-    status: STATUSES[text(params.get("status"))] || ["open", "closed", "overdue", "soon", "deposited"].includes(text(params.get("status"))) ? text(params.get("status")) : "",
+    status: Object.hasOwn(STATUSES, text(params.get("status"))) || ["open", "closed", "overdue", "soon", "deposited"].includes(text(params.get("status"))) ? text(params.get("status")) : "",
     from: validDate(text(params.get("from"))) ? text(params.get("from")) : "",
     to: validDate(text(params.get("to"))) ? text(params.get("to")) : "",
     account: text(params.get("account")).slice(0, 120),
@@ -215,7 +215,11 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     }[sort];
     out.sort(compare);
     const listed = out.reduce((acc, row) => ({ count: acc.count + 1, amount: roundMoney(acc.amount + row.amount) }), { count: 0, amount: 0 });
-    return { cheques: out, listed, summary: { ...portfolioSummary(rows, day), deposited }, today: day, canManage: canUser(user, "cheques.manage") };
+    // Doğrulama tur 2 (plan §3.14 "Portföyde ile Bankada Tahsilde ayrı"): özetin "Portföyde (alınan)"ı (in.open) tahsildeki evrakı içermez — pencere,
+    // PDF ve Çek / Senet Portföyü raporu aynı sayıyı gösterir; tahsildeki "deposited"ta. Vade kümeleri (gecikmiş, bugün, 7 gün) tahsildekini de sayar.
+    const summary = portfolioSummary(rows, day);
+    summary.in.open = { count: summary.in.open.count - deposited.count, amount: roundMoney(summary.in.open.amount - deposited.amount) };
+    return { cheques: out, listed, summary: { ...summary, deposited }, today: day, canManage: canUser(user, "cheques.manage") };
   }
   // Salt okunur liste ve dışa aktarım: çek yetkisi ya da ANLIK DURUM yetkisi (Rapor Al › Çek / Senet sekmesi) yeter.
   const requireReader = req => {
@@ -271,12 +275,20 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         // Yazılan satırın kendisi denetlenir (gözden geçirme D10).
         bank.assertWrittenNonMoney("plan_entries", id);
         done.push({ op: "insert", table: "plan_entries", id, planId: plan.id, accountId: plan.accountId });
-      } else if (effect.type === "remove-plan-entry") {
-        const row = store.get("SELECT * FROM plan_entries WHERE id = ?", effect.id);
+      } else if (effect.type === "reverse-plan-entry") {
+        // Doğrulama T11 (plan §3.14, §5.5): karşılıksız evrakın taksit tahsilatı silinmez; karşılıksız günü çekli ters kayıt (taksit iadesi,
+        // para satırı değil) yazılır. Alış günündeki tahsilat ve kilitli dönem değişmez; Geri Al ters kaydı siler.
+        // Taksit iadesi gibi taksite bağlanmaz (routes/plans.mjs: 'out' satırının item_id'si boş; dağıtım en son taksitten düşer).
+        const row = store.get("SELECT plan_id, amount FROM plan_entries WHERE id = ?", effect.id);
         if (!row) continue;
         plans()?.assertCloseOpen?.(row.plan_id, CLOSED_CARD);
-        store.run("DELETE FROM plan_entries WHERE id = ?", effect.id);
-        done.push({ op: "delete", table: "plan_entries", row, planId: row.plan_id });
+        const id = newId("entry");
+        store.run(
+          "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, cheque_id, created_by, created_at) VALUES (?, ?, NULL, 'out', ?, ?, ?, NULL, ?, ?, ?)",
+          id, row.plan_id, row.amount, effect.date, effect.note || "", cheque.id, user.id, now(),
+        );
+        bank.assertWrittenNonMoney("plan_entries", id);
+        done.push({ op: "insert", table: "plan_entries", id, planId: row.plan_id, accountId: store.get("SELECT account_id AS a FROM plans WHERE id = ?", row.plan_id)?.a || "" });
       }
     }
     syncCards(user, done);
@@ -467,7 +479,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const posted = bank.post({ user, module: "cheque", op: "create", requestId: banking.requestId(req, body), scope: "cheque.action", body: { ...body, chequeId: params.id }, similarOk: body.similarOk === true, guard: (written, ctx) => k7?.guard?.(written, ctx), write: ctx => {
       const cheque = chequeRow(params.id);
       if (body.status && body.status !== cheque.status) throw new HttpError(409, `Bu ${kindName(cheque).toLocaleLowerCase("tr-TR")} bu arada “${STATUSES[cheque.status]?.label}” oldu. Kartı yenileyin.`, { code: "cheque-stale" });
-      if (BANK_ACTIONS[action]) {
+      if (Object.hasOwn(BANK_ACTIONS, action)) { // tur 2: yalnız kendi anahtarı (Object.prototype adları tahsildeki evrakı geri alıyordu)
         const done = action === "bank-deposit" ? collections.deposit(ctx, { cheque, body }) : collections.withdraw(ctx, { cheque, body });
         const account = done.account ? { bankAccountId: done.account.id } : { bankAccountId: done.previous.bankAccountId, previous: { status: "pending", bankAccountId: done.previous.bankAccountId, givenDate: done.previous.givenDate } };
         audit(user, `cheque.${action}`, cheque.id, { serialNo: cheque.serialNo, amount: cheque.amount, date: done.date, collectionId: done.record, eventNo: done.event.no, note: done.note, ...account });
@@ -603,6 +615,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       summary: [
         ["Listelenen", `${data.listed.count} · ${tl(data.listed.amount)}`],
         ["Portföyde (alınan)", `${data.summary.in.open.count} · ${tl(data.summary.in.open.amount)}`],
+        ["Bankada Tahsilde", `${data.summary.deposited.count} · ${tl(data.summary.deposited.amount)}`],
         ["Ödenecek (verilen)", `${data.summary.out.open.count} · ${tl(data.summary.out.open.amount)}`],
       ],
       officeName: office(),
@@ -794,12 +807,11 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         state: due.state === "today" ? "today" : due.state === "overdue" ? "overdue" : "upcoming",
       }));
   }
-  // Tahsil kayıtları da (Bankaya Tahsile Ver / Geri Al çekin satırını değiştirmez): zil ve takvimin önbelleği tahsile verince yenilenir.
-  const hasCollections = () => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'"));
+  // Tahsil kayıtları da (Bankaya Tahsile Ver / Geri Al çekin satırını değiştirmez): zil ve takvimin önbelleği tahsile verince yenilenir; tahsildeki
+  // evrak varken Banka Ayarları'nın iş günü takvimi ve hesabın adı da izdedir (lib/bank/collections.mjs collectionsFingerprint).
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(created_at), '') FROM cheque_events) AS e, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) FROM cheques) AS c");
-    const k = hasCollections() ? store.get("SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS k FROM cheque_collections").k : "";
-    return `${row.e}|${row.c}|${k}`;
+    return `${row.e}|${row.c}|${collectionsFingerprint(store)}`;
   };
   // Cari silinmeden önce: bu cariye bağlı (alındığı/verildiği ya da ciro edildiği) silinmemiş evrak sayısı.
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM cheques WHERE deleted_at IS NULL AND (account_id = ? OR endorse_account_id = ?)", accountId, accountId).n;

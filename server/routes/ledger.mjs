@@ -87,8 +87,12 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]], "AND")}`,
         wanted(set?.parties, set?.plans),
       );
+      // Doğrulama T11: taksite sayılmış evrakın karşılıksız ters kaydı (çekli 'out'); bankada tahsildeyken döndüyse alacağı 101.02 (satır bazında).
+      const planReturned = collections
+        ? "CASE WHEN e.kind = 'out' AND e.cheque_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = e.cheque_id AND k.status = 'returned') THEN 1 ELSE 0 END"
+        : "0";
       out.planEntries = all(
-        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party
+        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planReturned} AS bankReturned
          FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );

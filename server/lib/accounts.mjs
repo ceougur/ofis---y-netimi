@@ -94,7 +94,8 @@ export function accountLedger(entries = [], plans = []) {
         date: entry.date,
         at: entry.createdAt || "",
         // Açılış (devir, v2.0.8): Excel'de programa girmeden önce ödenmiş kısım; alacak tarafına yazılır, Kasa'da yoktur.
-        label: incoming ? `${entry.opening ? "Açılış (devir)" : "Taksit tahsilatı"}${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : "Taksit iadesi",
+        // Çekli ters kayıt (doğrulama T11): taksite sayılmış evrak karşılıksız döndü — iade değil, tahsilatın geri alınması.
+        label: incoming ? `${entry.opening ? "Açılış (devir)" : "Taksit tahsilatı"}${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : entry.chequeId ? "Karşılıksız çek / senet (taksit)" : "Taksit iadesi",
         note: entry.note || "",
         receiptNo: entry.receiptNo || null,
         debit: incoming ? 0 : amount,

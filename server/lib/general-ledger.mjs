@@ -81,7 +81,7 @@ export function moneyAccount(method, ref = "", refs = {}) {
  * @param {object} rows  { payments, cashEntries, accountEntries, plans, planEntries, stockMoves, chequeEvents }
  *   accountEntries: { id, kind, amount, date, note, source, method, accountType, chequeDirection?, moveReason? }
  *   plans: { id, total, status, coversBalance, date, accountType (''/null: carisiz), paid }
- *   planEntries: { id, planId, kind, amount, date, method, chequeId, opening, accountType }
+ *   planEntries: { id, planId, kind, amount, date, method, chequeId, opening, accountType, bankReturned? }  (çekli 'out' = karşılıksız ters kaydı)
  *   stockMoves: { id, kind, amount, date, pay, method, reason }   (yalnız Kasa'ya/Banka'ya yazanlar; cariye yazanlar
  *               cari hareketinden gelir — iki kez sayılmaz)
  *   chequeEvents: { id, kind: 'collect'|'pay', amount, date, method }
@@ -173,6 +173,9 @@ export function journal(rows) {
     if (row.kind === "in") {
       const debit = row.opening ? "500" : row.chequeId ? "101" : moneyOf(row);
       post(id, row.date, row.opening ? "Taksit açılışı (devir)" : row.chequeId ? "Taksit (çek/senetle)" : "Taksit tahsilatı", row.note, debit, control, row.amount);
+    } else if (row.chequeId) {
+      // Doğrulama T11 (plan §3.14): taksite sayılmış evrak karşılıksız döndü — karşılıksız günü B kart carisi / A 101 (bankada tahsildeyse 101.02).
+      post(id, row.date, "Taksit (karşılıksız çek/senet)", row.note, control, row.bankReturned ? { account: "101", sub: CHEQUE_SUB.bank } : "101", row.amount);
     } else post(id, row.date, "Taksit iadesi", row.note, control, moneyOf(row), row.amount);
   }
   party = "";
@@ -240,8 +243,8 @@ export function journal(rows) {
   // kuruşu (tahsildeki evrakın tutarı değişemez: 409 cheque-deposited).
   // Eski sürümde (tahsil kaydını bilmeyen kodla) tahsil edilen evrakın kaydını açılış onarımı (repair h) kapanış başlığıyla kapatır; o tahsilin
   // satırı 101.01'dendir, bu yüzden kayıt 101.02'den kapanış tarihinde geri döner (Bankadan Geri Al gibi).
-  // Karşılıksız dönen (returned) kaydın kapanışı ayrı madde DEĞİLDİR: karşılıksız maddesi (cari borcu ya da carisiz evrakın gider maddesi)
-  // alacağını 101.02'ye yazar (yukarıda, bankReturned). Kayıt tahsil olayıyla kapandıysa (closedByCollect) tahsil maddesi A 101.02 (aşağıda,
+  // Karşılıksız dönen (returned) kaydın kapanışı ayrı madde DEĞİLDİR: karşılıksız maddesi (cari borcu, taksit tahsilatının ters kaydı ya da
+  // carisiz evrakın gider maddesi) alacağını 101.02'ye yazar (yukarıda, bankReturned). Kayıt tahsil olayıyla kapandıysa (closedByCollect) tahsil maddesi A 101.02 (aşağıda,
   // closesDeposit). İki bayrak da satır bazında SQL'de hesaplanır (routes/ledger.mjs): süzgeçli kurulumda (İşlem Kartı, kapı) aynı sonuç.
   const portfolio = { account: "101", sub: CHEQUE_SUB.portfolio };
   const atBank = { account: "101", sub: CHEQUE_SUB.bank };

@@ -1,0 +1,717 @@
+TAP version 13
+# Subtest: T11 — taksite sayılmış çek karşılıksız: alış günü maddesi değişmez, karşılıksız günü B 120 / A 101.0x (sahte saat 27.10.2026)
+    # Subtest: alış günü maddeleri karşılıksızdan önce plan §3.14 gibi (B 101.01 / A 120)
+    ok 1 - alış günü maddeleri karşılıksızdan önce plan §3.14 gibi (B 101.01 / A 120)
+      ---
+      duration_ms: 2.337684
+      type: 'test'
+      ...
+    # Subtest: karşılıksız (A tahsilde 23.10, B portföyde 24.10, E cirolu 26.10): 200; karşılıksız günü maddeleri; alış günü ve 20.10 kesiti değişmez
+    not ok 2 - karşılıksız (A tahsilde 23.10, B portföyde 24.10, E cirolu 26.10): 200; karşılıksız günü maddeleri; alış günü ve 20.10 kesiti değişmez
+      ---
+      duration_ms: 56.309096
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        A: B 120 / A 101.02
+        + actual - expected
+        
+          [
+            [
+              '101.02',
+              0,
+              240000
+            ],
+            [
+        +     '770',
+        -     '120',
+              240000,
+              0
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '101.02'
+          1: 0
+          2: 240000
+        1:
+          0: '120'
+          1: 240000
+          2: 0
+      actual:
+        0:
+          0: '101.02'
+          1: 0
+          2: 240000
+        1:
+          0: '770'
+          1: 240000
+          2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:86:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: son mizan: 602 yalnız taksitli satışlar (−4.700), 770 hareketsiz, 120 +4.700, 101 ve 101.01/101.02 sıfır; Mutabakat tamam
+    not ok 3 - son mizan: 602 yalnız taksitli satışlar (−4.700), 770 hareketsiz, 120 +4.700, 101 ve 101.01/101.02 sıfır; Mutabakat tamam
+      ---
+      duration_ms: 9.080162
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:95:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            '101': 0,
+            '120': 470000,
+            '320': 0,
+        +   '602': -940000,
+        +   '770': 470000
+        -   '602': -470000,
+        -   '770': 0
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        101: 0
+        120: 470000
+        320: 0
+        602: -470000
+        770: 0
+      actual:
+        101: 0
+        120: 470000
+        320: 0
+        602: -940000
+        770: 470000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:97:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksit kartı yeniden açık: alış günündeki tahsilat kartta kalır, karşılıksız günü evraktan ters kayıt (düzenlenemez); kalan tutar
+    not ok 4 - taksit kartı yeniden açık: alış günündeki tahsilat kartta kalır, karşılıksız günü evraktan ters kayıt (düzenlenemez); kalan tutar
+      ---
+      duration_ms: 3.324306
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'in',
+        -     '2026-10-10',
+        -     2400,
+        -     false
+        -   ],
+        -   [
+        -     'out',
+        -     '2026-10-23',
+        -     2400,
+        -     false
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'in'
+          1: '2026-10-10'
+          2: 2400
+          3: false
+        1:
+          0: 'out'
+          1: '2026-10-23'
+          2: 2400
+          3: false
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:107:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: karşılıksızı Geri Al: ters kayıt kalkar, kart ödenmiş, evrak yeniden Bankada Tahsilde; Mutabakat tamam
+    ok 5 - karşılıksızı Geri Al: ters kayıt kalkar, kart ödenmiş, evrak yeniden Bankada Tahsilde; Mutabakat tamam
+      ---
+      duration_ms: 54.655965
+      type: 'test'
+      ...
+    1..5
+not ok 1 - T11 — taksite sayılmış çek karşılıksız: alış günü maddesi değişmez, karşılıksız günü B 120 / A 101.0x (sahte saat 27.10.2026)
+  ---
+  duration_ms: 791.803236
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:51:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T11 — dönem kilidinden (20.10) sonra taksite sayılmış, tahsildeki çek karşılıksız: 200; kilitli kesit değişmez
+    # Subtest: karşılıksız 27.10 → 200; 20.10 kesiti ve 10.10 maddesi aynı; Geri Al da
+    not ok 1 - karşılıksız 27.10 → 200; 20.10 kesiti ve 10.10 maddesi aynı; Geri Al da
+      ---
+      duration_ms: 385.475511
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:125:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        karşılıksız (kilitten sonra): 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-10-20 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"period-lock","name":"Kapanmış dönem (2026-10-20 ve öncesi) değişemez","ok":false,"count":1,"tables":["plan_entries","cheque_events","fin_events","cheque_collections","cheques"]}]}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:136:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - T11 — dönem kilidinden (20.10) sonra taksite sayılmış, tahsildeki çek karşılıksız: 200; kilitli kesit değişmez
+  ---
+  duration_ms: 400.380135
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:122:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T12 / T13 / B1 — rapor tutarı, zil önbelleği (Banka Ayarları, hesap adı) (sahte saat 27.10.2026)
+    # Subtest: T12: geri alınmış evrakın tutarı 1.000 → 1.250 düzelince Çek / Senet Hareketleri tahsile verme ve geri alma satırları 1.000 (yevmiye ile aynı)
+    not ok 1 - T12: geri alınmış evrakın tutarı 1.000 → 1.250 düzelince Çek / Senet Hareketleri tahsile verme ve geri alma satırları 1.000 (yevmiye ile aynı)
+      ---
+      duration_ms: 90.159294
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:157:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              '15.10.2026',
+              'Bankaya Tahsile Verildi',
+        +     125000
+        -     100000
+            ],
+            [
+              '16.10.2026',
+              'Bankadan Geri Alındı',
+        +     125000
+        -     100000
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '15.10.2026'
+          1: 'Bankaya Tahsile Verildi'
+          2: 100000
+        1:
+          0: '16.10.2026'
+          1: 'Bankadan Geri Alındı'
+          2: 100000
+      actual:
+        0:
+          0: '15.10.2026'
+          1: 'Bankaya Tahsile Verildi'
+          2: 125000
+        1:
+          0: '16.10.2026'
+          1: 'Bankadan Geri Alındı'
+          2: 125000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:164:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T13: Yarım Gün 'İş Günü Sayılmaz' seçilince zil beklenen günü 28.10 → 30.10 (Vade Takip ile aynı); geri alınınca 28.10
+    not ok 2 - T13: Yarım Gün 'İş Günü Sayılmaz' seçilince zil beklenen günü 28.10 → 30.10 (Vade Takip ile aynı); geri alınınca 28.10
+      ---
+      duration_ms: 51.671163
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        arife iş günü sayılmaz: 28.10 → 30.10 (29.10 tatil)
+        + actual - expected
+        
+          [
+        +   '2026-10-28',
+            '2026-10-30',
+        -   '2026-10-30'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-30'
+        1: '2026-10-30'
+      actual:
+        0: '2026-10-28'
+        1: '2026-10-30'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:174:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B1: banka hesabının adı değişince zil tahsildeki evrakı yeni adla (çek kartı ile aynı)
+    not ok 3 - B1: banka hesabının adı değişince zil tahsildeki evrakı yeni adla (çek kartı ile aynı)
+      ---
+      duration_ms: 50.323537
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /Yapı Kredi/. Input:
+        
+        'Bankada Tahsilde çek No Z1 · Garanti BBVA'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Bankada Tahsilde çek No Z1 · Garanti BBVA'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:185:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - T12 / T13 / B1 — rapor tutarı, zil önbelleği (Banka Ayarları, hesap adı) (sahte saat 27.10.2026)
+  ---
+  duration_ms: 509.757212
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:147:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: ozet / proto / A22 — pencere özeti, tanınmayan eylem, karşılıksızlı hesabın silinmesi (sahte saat 08.10.2026)
+    # Subtest: ozet: iki 1.000'lik alınan çek, biri tahsilde → pencere ve PDF 'Portföyde (alınan)' 1.000, 'Bankada Tahsilde' 1.000 (rapor ile aynı)
+    not ok 1 - ozet: iki 1.000'lik alınan çek, biri tahsilde → pencere ve PDF 'Portföyde (alınan)' 1.000, 'Bankada Tahsilde' 1.000 (rapor ile aynı)
+      ---
+      duration_ms: 64.660368
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:199:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            {
+        +     amount: 2000,
+        +     count: 2
+        -     amount: 1000,
+        -     count: 1
+            },
+            {
+              amount: 1000,
+              count: 1
+            }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          count: 1
+          amount: 1000
+        1:
+          count: 1
+          amount: 1000
+      actual:
+        0:
+          count: 2
+          amount: 2000
+        1:
+          count: 1
+          amount: 1000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:204:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: proto: eylem adı hasOwnProperty / __proto__ / toString / constructor / valueOf → 409 tanınmayan işlem; evrak bankada ve portföyde kalır
+    not ok 2 - proto: eylem adı hasOwnProperty / __proto__ / toString / constructor / valueOf → 409 tanınmayan işlem; evrak bankada ve portföyde kalır
+      ---
+      duration_ms: 68.083199
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:212:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hasOwnProperty: 200 undefined
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:221:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A22: karşılıksız dönmüş evrakın hesabı silinmez (409); Geri Al çalışır; Bankadan Geri Al'ınca hesap silinir
+    not ok 3 - A22: karşılıksız dönmüş evrakın hesabı silinmez (409); Geri Al çalışır; Bankadan Geri Al'ınca hesap silinir
+      ---
+      duration_ms: 100.57358
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:232:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        sil: 200 undefined
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:238:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - ozet / proto / A22 — pencere özeti, tanınmayan eylem, karşılıksızlı hesabın silinmesi (sahte saat 08.10.2026)
+  ---
+  duration_ms: 516.089073
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:189:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: G1 — Alt Hesap Mizanı 101.01 / 101.02: Ana Defter kurulmadan, Ana Defter'le aynı (bütün evrak akışları, beş dönem)
+    # Subtest: dönem … – …: 101.01 / 101.02 Ana Defter ile aynı
+    ok 1 - dönem … – …: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 7.781187
+      type: 'test'
+      ...
+    # Subtest: dönem 2026-10-01 – 2026-10-15: 101.01 / 101.02 Ana Defter ile aynı
+    ok 2 - dönem 2026-10-01 – 2026-10-15: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 5.72715
+      type: 'test'
+      ...
+    # Subtest: dönem 2026-10-16 – 2026-10-31: 101.01 / 101.02 Ana Defter ile aynı
+    ok 3 - dönem 2026-10-16 – 2026-10-31: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 4.489618
+      type: 'test'
+      ...
+    # Subtest: dönem 2026-10-20 – …: 101.01 / 101.02 Ana Defter ile aynı
+    ok 4 - dönem 2026-10-20 – …: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 4.978733
+      type: 'test'
+      ...
+    # Subtest: dönem … – 2026-10-12: 101.01 / 101.02 Ana Defter ile aynı
+    ok 5 - dönem … – 2026-10-12: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 4.629121
+      type: 'test'
+      ...
+    # Subtest: saklanan toplam yazımdan sonra yenilenir: tahsile verme ve tahsil sonrası 101.01 / 101.02 Ana Defter ile aynı (eski değer dönmez)
+    ok 6 - saklanan toplam yazımdan sonra yenilenir: tahsile verme ve tahsil sonrası 101.01 / 101.02 Ana Defter ile aynı (eski değer dönmez)
+      ---
+      duration_ms: 80.903111
+      type: 'test'
+      ...
+    # Subtest: Alt Hesap Mizanı (ekran ve rapor) Ana Defter'i kurmaz (her açılışta bütün evrak için yevmiye kurulmaz)
+    not ok 7 - Alt Hesap Mizanı (ekran ve rapor) Ana Defter'i kurmaz (her açılışta bütün evrak için yevmiye kurulmaz)
+      ---
+      duration_ms: 17.031154
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:317:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ana Defter kuruldu
+        
+        3 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:332:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 5 - G1 — Alt Hesap Mizanı 101.01 / 101.02: Ana Defter kurulmadan, Ana Defter'le aynı (bütün evrak akışları, beş dönem)
+  ---
+  duration_ms: 1180.76938
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:250:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: E1–E6 — v2.1.0'a dönüp tahsil kaydına dokunma; bu dalda açılış onarımı (h)
+    # Subtest: E5 bu dalda tahsil (07.10) → v2.1.0'da tahsili Geri Al: kayıt yeniden Bankada Tahsilde; Mutabakat tamam; Tahsil Edildi çalışır
+    not ok 1 - E5 bu dalda tahsil (07.10) → v2.1.0'da tahsili Geri Al: kayıt yeniden Bankada Tahsilde; Mutabakat tamam; Tahsil Edildi çalışır
+      ---
+      duration_ms: 806.544883
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:396:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'collected',
+        +   '2026-10-07',
+        +   'ev-0mv56itdd0000-f85dd140-290b-4129'
+        -   'pending',
+        -   '',
+        -   ''
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'pending'
+        1: ''
+        2: ''
+      actual:
+        0: 'collected'
+        1: '2026-10-07'
+        2: 'ev-0mv56itdd0000-f85dd140-290b-4129'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:399:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E6 bu dalda karşılıksız (07.10) → v2.1.0'da karşılıksızı Geri Al: kayıt yeniden Bankada Tahsilde, kapanış başlığı iptal; Mutabakat tamam
+    not ok 2 - E6 bu dalda karşılıksız (07.10) → v2.1.0'da karşılıksızı Geri Al: kayıt yeniden Bankada Tahsilde, kapanış başlığı iptal; Mutabakat tamam
+      ---
+      duration_ms: 502.98354
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:408:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'returned',
+        +   '2026-10-07'
+        -   'pending',
+        -   ''
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'pending'
+        1: ''
+      actual:
+        0: 'returned'
+        1: '2026-10-07'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:411:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E1 v2.1.0'da Açılışı Düzelt 07.10 (veriliş 06.10'dan sonra): veriliş günü açılış gününe; Mutabakat tamam; Tahsil Edildi çalışır
+    not ok 3 - E1 v2.1.0'da Açılışı Düzelt 07.10 (veriliş 06.10'dan sonra): veriliş günü açılış gününe; Mutabakat tamam; Tahsil Edildi çalışır
+      ---
+      duration_ms: 560.937584
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:420:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'pending',
+        +   '2026-10-06'
+        -   '2026-10-07'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'pending'
+        1: '2026-10-07'
+      actual:
+        0: 'pending'
+        1: '2026-10-06'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:423:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E7 (T11 komşusu) v2.1.0'da taksite sayılmış çek karşılıksız (tahsilat SİLİNDİ, eski biçim) → bu dalda Geri Al tahsilatı geri getirir, yeniden karşılıksız ters kayıt yazar; Mutabakat tamam
+    not ok 4 - E7 (T11 komşusu) v2.1.0'da taksite sayılmış çek karşılıksız (tahsilat SİLİNDİ, eski biçim) → bu dalda Geri Al tahsilatı geri getirir, yeniden karşılıksız ters kayıt yazar; Mutabakat tamam
+      ---
+      duration_ms: 554.356729
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:431:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'in',
+        -     '2026-10-03'
+        -   ],
+        -   [
+        -     'out',
+        -     '2026-10-10'
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'in'
+          1: '2026-10-03'
+        1:
+          0: 'out'
+          1: '2026-10-10'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:467:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E2 hesabı sil (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+    not ok 5 - E2 hesabı sil (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+      ---
+      duration_ms: 560.654247
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:482:5'
+      failureType: 'testCodeFailure'
+      error: 'onarım bekliyor: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:487:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E3 hesabı pasife al (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+    not ok 6 - E3 hesabı pasife al (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+      ---
+      duration_ms: 488.005032
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:482:5'
+      failureType: 'testCodeFailure'
+      error: 'onarım bekliyor: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:487:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E4 hesap türü Vadeli (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+    not ok 7 - E4 hesap türü Vadeli (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+      ---
+      duration_ms: 589.697196
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:482:5'
+      failureType: 'testCodeFailure'
+      error: 'onarım bekliyor: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:487:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 6 - E1–E6 — v2.1.0'a dönüp tahsil kaydına dokunma; bu dalda açılış onarımı (h)
+  ---
+  duration_ms: 4064.818556
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4-tur2-eski-4d8003a/test/banka-220-tahsile-ver-tur2.test.mjs:395:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..6
+# tests 26
+# suites 6
+# pass 8
+# fail 18
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7932.761706

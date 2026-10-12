@@ -11,8 +11,9 @@
 // Yevmiye (lib/general-ledger.mjs; 101 alt hesapları bu kayıtlardan türetilir): verilme B 101.02 / A 101.01 (verilme günü); Bankadan Geri Al ve
 //   karşılıksız kapanışı B 101.01 / A 101.02 (kapanış günü); kaydı kapatan tahsil olayı B 102.x / A 101.02; öbür 101 satırları 101.01.
 //   KARAR (plan "mevcut bounce maddesinde A 101.02"): karşılıksız kapanış ayrı madde (B 101.01 / A 101.02) + mevcut karşılıksız maddesi (A 101.01)
-//   — net etki aynı; taksite sayılmış çekte karşılıksız maddesi yoktur (taksit tahsilatı silinir), tek kural iki durumu da kapsar.
+//   — net etki aynı; taksite sayılmış çekte karşılıksız maddesi taksit tahsilatının ters kaydıdır (doğrulama T11), tek kural hepsini kapsar.
 // Bütün yazımlar çek rotasının bank.post işleminde (write geri çağrısı) yapılır: olay, kayıt, işlem geçmişi ve istek kimliği birlikte ya da hiç.
+import { createHash } from "node:crypto";
 import { STATUSES } from "../cheques.mjs";
 import { HttpError, limited, text } from "../http.mjs";
 import { toMinor } from "../minor.mjs";
@@ -40,6 +41,23 @@ export function depositEligibility(row, { instrument = "cheque" } = {}) {
   if (row.currency !== "TRY") return { ok: false, status: 400, code: "bank-currency", reason: `${labelOf(row)} ${row.currency} hesabı; çek ve senet yalnız TL hesaba tahsile verilir.` };
   if (!DEPOSIT_KINDS.has(row.kind)) return { ok: false, status: 400, code: "bank-account-invalid", reason: `${labelOf(row)}: çek ve senet yalnız Vadesiz, Ticari ya da Diğer TL hesaba tahsile verilir.` };
   return { ok: true };
+}
+
+/**
+ * Tahsildeki evrakın banka hesabı bugün tahsile uygun değilse nedeni ve yolu; uygunsa null. Yeni sürümde tahsildeki evrakın hesabı silinmez,
+ * pasife alınmaz, türü değişmez (assertNoPendingCollections) — bunu yalnız eski sürüm (v2.1.0, tahsil kaydını bilmez) yapabilir. Doğrulama tur 2
+ * E2–E4: Tahsil Edildi "Banka hesabı bulunamadı" (404) ya da genel havale metniyle reddediliyor, yol söylenmiyordu; açılış onarımı uyarmıyordu.
+ */
+export function depositAccountProblem(row, instrument = "cheque") {
+  const check = depositEligibility(row, { instrument });
+  if (check.ok) return null;
+  const way = "Çek / Senet'ten Bankadan Geri Al'ıp evrakı uygun bir hesaba yeniden tahsile verin";
+  const reason = !row || row.deleted_at
+    ? `banka hesabı silinmiş; tahsil o hesaba yazılamaz — ${way}`
+    : row.status !== "active"
+      ? `banka hesabı (${labelOf(row)}) pasif; Banka → Hesaplar'dan Etkinleştirin ya da ${way}`
+      : `banka hesabı (${labelOf(row)}) tahsile uygun değil (çek ve senet yalnız Vadesiz, Ticari ya da Diğer TL hesapta tahsil edilir) — ${way}`;
+  return { status: check.status === 404 ? 409 : check.status, code: check.code, reason };
 }
 
 /**
@@ -186,6 +204,8 @@ export function createChequeCollections({ store, bank, period, now }) {
     if (action === "endorse") assertNotDeposited(cheque, "ciro edilemez");
     if (date < pending.givenDate) throw new HttpError(400, `İşlem tarihi, evrakın bankaya tahsile verildiği tarihten (${dayText(pending.givenDate)}) önce olamaz.`, { code: "date-before-deposit", field: "date" });
     if (action === "collect") {
+      const problem = depositAccountProblem(store.get("SELECT * FROM bank_accounts WHERE id = ?", pending.bankAccountId), cheque.instrument);
+      if (problem) throw new HttpError(problem.status, `${INSTRUMENT[cheque.instrument] || "Çek"}${cheque.serialNo ? ` No ${cheque.serialNo}` : ""} ${pending.bankName || "bankada"} tahsilde; ${problem.reason}.`, { code: problem.code, field: "bankAccountId", accountId: pending.bankAccountId });
       if (body.method !== undefined && body.method !== null && text(body.method) !== "" && text(body.method) !== "bank") {
         throw new HttpError(400, `Bu evrak ${pending.bankLabel} hesabında tahsilde; tahsil bankadan (Havale / EFT) olur. Elden (nakit) tahsil edildiyse önce Bankadan Geri Al'ın.`, { code: "cheque-deposited-method", field: "method" });
       }
@@ -248,15 +268,91 @@ export function createChequeCollections({ store, bank, period, now }) {
   return { pendingOf, pendingMap, historyOf, choices, pickAccount, assertNotDeposited, assertIssueBeforeDeposits, deposit, withdraw, forAction, closeCollected, closeReturned, reopenFor };
 }
 
+/**
+ * Zil / takvim ve ANLIK DURUM önbelleğinin tahsil kaydı parmak izi (routes/cheques.mjs fingerprint). Tahsildeki evrakın beklenen günü Banka
+ * Ayarları'nın iş günü takviminden (yarım gün, hafta sonu, şirketin tatil ekleri) ve etiketi banka hesabının adından okunur; doğrulama tur 2
+ * T13/B1: ayar ya da hesap adı değişince önbellek eski günü/adı gösteriyordu. Bekleyen kayıt yoksa yalnız kayıt tablosunun izi (ucuz).
+ */
+export function collectionsFingerprint(store) {
+  if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'")) return "";
+  const own = store.get("SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS k FROM cheque_collections").k;
+  const banks = store.get(
+    `SELECT COUNT(*) AS n, COALESCE(GROUP_CONCAT(id || ':' || bank_name || ':' || name || ':' || COALESCE(updated_at, created_at), '|'), '') AS k
+     FROM bank_accounts WHERE id IN (SELECT bank_account_id FROM cheque_collections WHERE status = 'pending')`,
+  );
+  if (!banks.n) return own;
+  const holidays = store.get("SELECT COALESCE(GROUP_CONCAT(date || ':' || kind || ':' || name, '|'), '') AS k FROM bank_holidays")?.k || "";
+  const digest = createHash("sha1").update(`${store.setting("bank.settings", "") || ""}\n${holidays}\n${banks.k}`).digest("hex").slice(0, 16);
+  return `${own}|${digest}`;
+}
+
+/**
+ * Açılış onarımı (lib/bank/repair.mjs h; doğrulama tur 2 E5/E6, plan §10.6): ESKİ SÜRÜMDE (tahsil kaydını bilmeyen v2.1.0) tahsildeki evrakın tahsili
+ * ya da karşılıksızı Geri Al'ınmış — kayıt "Tahsil Edildi" / "Karşılıksız Döndü" kalıyor, Mutabakat Testi kalıcı kırmızı ("kapatan tahsil olayı
+ * yok" ya da 101.01/101.02 farkı), evrak kartı "Portföyde" diyordu. Yeni sürümün kendi Geri Al'ı gibi (reopenFor) kayıt yeniden bekleyen olur,
+ * karşılıksız kapanış başlığı iptal edilir. Kapanış günü kilitli dönemdeyse dokunulmaz: "Onarım Bekliyor" (kilit açılınca yeniden açılışta onarılır).
+ * Sonra onarımın bekleyen kayıt döngüsü evrakın bugünkü hâline bakar (eski sürümde ardından ciro / silme / tahsil edildiyse kayıt kapanır).
+ * Dönüş: yeniden açılan kayıtlar [{ id, was }].
+ */
+export function reopenLegacyClosures(store, { open = () => true, at, pending = () => {} } = {}) {
+  const out = [];
+  if (!at) throw new TypeError("reopenLegacyClosures: onarım anı (at) verilmeli");
+  if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'")) return out;
+  for (const row of store.all(
+    `SELECT k.id, k.status, k.closed_date AS closed, f.id AS headerId
+     FROM cheque_collections k
+       LEFT JOIN fin_events f ON f.id = k.close_event_id AND k.close_event_id <> '' AND f.type = 'cheque_withdraw' AND f.src_id = k.id AND f.status = 'active'
+     WHERE (k.status = 'collected' AND f.id IS NULL
+            AND NOT EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = k.cheque_id AND ev.kind = 'collect' AND ev.event_id <> '' AND ev.event_id = k.close_event_id))
+        OR (k.status = 'returned' AND f.origin_key LIKE 'cheque-return:%'
+            AND NOT EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.id = substr(f.origin_key, 15) AND ev.kind = 'bounce'))`,
+  )) {
+    const what = row.status === "collected" ? "tahsili" : "karşılıksızı";
+    if (!open(row.closed)) {
+      pending("h", row.id, `tahsildeki evrakın ${what} eski sürümde geri alındı ama kapanış günü (${dayText(row.closed)}) kapatılmış (kilitli) dönemde; kayıt yeniden açılamadı — dönem kilidi açılınca yeniden açılışta onarılır`);
+      continue;
+    }
+    if (row.status === "returned" && row.headerId) store.run("UPDATE fin_events SET status = 'cancelled', updated_by = 'system', updated_at = ? WHERE id = ?", at, row.headerId);
+    store.run("UPDATE cheque_collections SET status = 'pending', closed_date = '', close_event_id = '', updated_by = 'system', updated_at = ? WHERE id = ?", at, row.id);
+    out.push({ id: row.id, was: row.status });
+  }
+  return out;
+}
+
+const OPENING_FIX = "hesabın açılışını Banka → Hesap Detayı → Açılışı Düzelt ile veriliş gününe ya da öncesine alın";
+/**
+ * Açılış onarımı (repair h; doğrulama tur 2 E1 komşusu): kapanmış (tahsil edilmiş, geri alınmış, karşılıksız) kaydın veriliş günü hesabın açılışından
+ * önce — eski sürüm (tahsil kaydını bilmeyen) açılışı sonraya almış. Kayıt değişmez (kapanış ve tahsil satırı o günlerde); "Onarım Bekliyor" yolu
+ * söyler. Bekleyen kayıtta onarım veriliş gününü açılış gününe alır (repair.mjs). Dönüş: [{ id, reason }].
+ */
+export function closedBeforeOpening(store) {
+  if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'")) return [];
+  return store
+    .all(
+      `SELECT k.id, k.given_date AS given, a.opening_date AS opened FROM cheque_collections k
+       JOIN bank_accounts a ON a.id = k.bank_account_id AND a.deleted_at IS NULL AND a.opening_date <> ''
+       WHERE k.status <> 'pending' AND k.given_date < a.opening_date`,
+    )
+    .map(row => ({ id: row.id, reason: `tahsil kaydının veriliş günü (${dayText(row.given)}) hesabın açılışından (${dayText(row.opened)}) önce (açılış eski sürümde değişti); ${OPENING_FIX}` }));
+}
+
 /** Banka hesabında bekleyen (tahsildeki) evrak sayısı. */
 export function pendingCollectionCount(store, accountId) {
   if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'")) return 0;
   return Number(store.get("SELECT COUNT(*) AS n FROM cheque_collections WHERE bank_account_id = ? AND status = 'pending'", accountId).n) || 0;
 }
-/** Tahsildeki evrakı olan banka hesabı silinmez, pasife alınmaz, türü/para birimi değişmez (409 bank-cheques-pending; lib/bank/accounts.mjs). */
-export function assertNoPendingCollections(store, accountId, what) {
+/**
+ * Tahsildeki evrakı olan banka hesabı silinmez, pasife alınmaz, türü/para birimi değişmez (409 bank-cheques-pending; lib/bank/accounts.mjs).
+ * returned (yalnız silmede; doğrulama tur 2 A22): bu hesaptan karşılıksız dönmüş evrak da silmeyi engeller — karşılıksızın Geri Al'ı evrakı bu
+ * hesapta yeniden "Bankada Tahsilde" yapar (reopenFor); hesap silinince yanlışlıkla işaretlenen karşılıksız kalıcı geri alınamıyordu. Pasife
+ * alma serbest (Geri Al öncesi Etkinleştir yolu var).
+ */
+export function assertNoPendingCollections(store, accountId, what, { returned = false } = {}) {
   const n = pendingCollectionCount(store, accountId);
   if (n) throw new HttpError(409, `Bu hesapta bankaya tahsile verilmiş ${n} çek/senet var; hesap ${what}. Önce evrakı tahsil edin ya da Çek / Senet'ten Bankadan Geri Al'ın.`, { code: "bank-cheques-pending", count: n });
+  if (!returned || !store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'")) return;
+  const back = Number(store.get("SELECT COUNT(*) AS n FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL AND c.status = 'bounced' WHERE k.bank_account_id = ? AND k.status = 'returned'", accountId).n) || 0;
+  if (back) throw new HttpError(409, `Bu hesaptan karşılıksız dönmüş ${back} çek/senet var; karşılıksız Geri Al'ınırsa evrak bu hesapta yeniden tahsilde olur, hesap ${what}. Kullanılmayacaksa Pasife Alın.`, { code: "bank-cheques-returned", count: back });
 }
 
 /**
@@ -290,7 +386,7 @@ export function collectionProblems(store, { cheques = null } = {}) {
     if (!["pending", "collected", "withdrawn", "returned"].includes(row.status)) fail(`${row.id}:status`, `${tag}: tanınmayan durum`);
     if (!row.eType || row.eType !== "cheque_deposit" || row.eSrc !== row.id || row.eCheque !== row.chequeId || row.eBank !== row.accountId || row.eDate !== row.given) fail(`${row.id}:given`, `${tag}: verilme başlığı yok ya da kayıtla uyuşmuyor`);
     if (row.cid && !row.deletedAt && row.issued && row.given < row.issued) fail(`${row.id}:issued`, `${tag}: verilme tarihi (${dayText(row.given)}) evrakın alış tarihinden (${dayText(row.issued)}) önce; evrakı Bankadan Geri Al'ıp Düzenle ile alış tarihini düzeltin`);
-    if (row.opened && row.given < row.opened) fail(`${row.id}:opening`, `${tag}: verilme tarihi (${dayText(row.given)}) hesabın açılışından (${dayText(row.opened)}) önce`);
+    if (row.opened && row.given < row.opened) fail(`${row.id}:opening`, `${tag}: verilme tarihi (${dayText(row.given)}) hesabın açılışından (${dayText(row.opened)}) önce; ${OPENING_FIX}`);
     if (row.status === "pending") {
       if (!row.cid || row.deletedAt || row.direction !== "in" || row.chequeStatus !== "portfolio") fail(`${row.id}:cheque`, `${tag}: tahsildeki evrak portföyde değil (${row.cid ? row.chequeStatus : "evrak yok"}${row.deletedAt ? ", silinmiş" : ""})`);
       if (row.eStatus !== "active") fail(`${row.id}:event`, `${tag}: verilme başlığı etkin değil`);
@@ -316,6 +412,92 @@ export function collectionProblems(store, { cheques = null } = {}) {
        AND NOT EXISTS (SELECT 1 FROM cheque_collections k WHERE k.id = e.src_id AND ((e.type = 'cheque_deposit' AND k.event_id = e.id) OR (e.type = 'cheque_withdraw' AND k.close_event_id = e.id)))`,
     ...(list ? [list] : []),
   )) fail(`${event.id}:orphan`, `${event.no}: ${event.type === "cheque_deposit" ? "Bankaya Tahsile Ver" : "Bankadan Geri Al"} başlığının tahsil kaydı yok`);
+  return out;
+}
+
+/**
+ * Alt Hesap Mizanı'nın 101.01 / 101.02 satırları (kuruş): alt hesap → { opening, debit, credit } — Ana Defter KURULMADAN, SQL toplamıyla.
+ * Doğrulama tur 2 G1 (plan §3.11 madde 5 hız bütçesi; 2.1.0 hız düzeltmesi "rapor toplamları SQL'de"): önceki yol her açılışta bütün alınan
+ * evrak için yevmiye kuruyordu (15.000 evrakta ~0,7 sn, ana iş parçacığında). Kurallar Ana Defter'in 101 satırlarının AYNISIDIR
+ * (routes/ledger.mjs rows + lib/general-ledger.mjs journal; eşdeğerlik testi test/banka-220-tahsile-ver-tur2.test.mjs G1, beş dönem):
+ *   1. çekli cari satırı (silinmemiş cari; verilen evrak 103 hariç): alacak satırı B 101.01, borç satırı A 101.01 — bankada tahsildeyken karşılıksız
+ *      dönen evrakın kendi carisine borcu A 101.02
+ *   2. taksite sayılan evrak (silinmemiş kart): tahsilat B 101.01 (açılış hariç); karşılıksız ters kaydı A 101.01 / 101.02 (tahsilde döndüyse)
+ *   3. tahsil olayı (silinmemiş evrak): A 101.01; tahsildeki evrakın kaydını kapatan tahsil A 101.02
+ *   4. cariye işlenmemiş alınan evrak (kartı da yok): alış günü B 101.01; karşılıksız (carisine borç yazılmamışsa) son karşılıksız günü A 101.01 / 101.02
+ *   5. tahsil kaydı (silinmemiş evrak): verilişte B 101.02 / A 101.01; Bankadan Geri Al ve eski sürüm kapanışında B 101.01 / A 101.02 (tutar verilme
+ *      başlığının kuruşu; karşılıksız ve tahsille kapanan kayıtta ayrı kapanış yok)
+ * Dönem: from'dan önceki satırlar devir; to'dan sonrakiler yok; alt hesap satırı devir ya da dönem satırı varsa döner.
+ * Sonuç, 2.1.0'ın saklanan toplamları gibi (lib/bank/money-lines.mjs refTotal) aynı veri için saklanır: bağlantının total_changes'ı ve data_version
+ * değişince yeniden okunur; işlemin içinde okunan saklanmaz.
+ */
+const SUB_TRIAL_CACHE = new WeakMap();
+export function chequeSubTrial(store, { from = "", to = "" } = {}) {
+  const counters = typeof store.changeCounters === "function" && !store.inTransaction ? store.changeCounters() : null;
+  const stamp = counters ? `${counters.total}|${counters.version}` : "";
+  const key = `${from}|${to}`;
+  let cache = stamp ? SUB_TRIAL_CACHE.get(store) : null;
+  if (stamp && cache?.stamp !== stamp) SUB_TRIAL_CACHE.set(store, (cache = { stamp, values: new Map() }));
+  if (cache?.values.has(key)) return new Map(cache.values.get(key));
+  const out = computeChequeSubTrial(store, { from, to });
+  if (cache && cache.values.size < 16) cache.values.set(key, out);
+  return new Map(out);
+}
+function computeChequeSubTrial(store, { from = "", to = "" } = {}) {
+  const out = new Map();
+  if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'")) return out;
+  const collections = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'"));
+  const cents = column => `CAST(ROUND(${column} * 100) AS INTEGER)`;
+  const returned = chequeColumn => (collections ? `EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = ${chequeColumn} AND k.status = 'returned')` : "0");
+  const bank = flag => `CASE WHEN ${flag} THEN '${CHEQUE_SUB.bank}' ELSE '${CHEQUE_SUB.portfolio}' END`;
+  const lines = [
+    `SELECT ${bank(`e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND ${returned("c.id")}`)} AS sub, e.date AS date,
+            CASE WHEN e.kind = 'debt' THEN 0 ELSE ${cents("e.amount")} END AS dr, CASE WHEN e.kind = 'debt' THEN ${cents("e.amount")} ELSE 0 END AS cr
+     FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL LEFT JOIN cheques c ON c.id = e.source_id
+     WHERE e.source = 'cheque' AND COALESCE(c.direction, '') <> 'out'`,
+    `SELECT ${bank(`e.kind = 'out' AND ${returned("e.cheque_id")}`)}, e.date, CASE WHEN e.kind = 'in' THEN ${cents("e.amount")} ELSE 0 END, CASE WHEN e.kind = 'in' THEN 0 ELSE ${cents("e.amount")} END
+     FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL WHERE e.cheque_id <> '' AND (e.kind = 'out' OR e.opening = 0)`,
+    `SELECT ${bank(collections ? "ev.event_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = ev.cheque_id AND k.status = 'collected' AND k.close_event_id = ev.event_id)" : "0")}, ev.date, 0, ${cents("ev.amount")}
+     FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind = 'collect'`,
+    `SELECT '${CHEQUE_SUB.portfolio}', f.issue_date, ${cents("f.amount")}, 0 FROM free f
+     UNION ALL
+     SELECT ${bank(returned("f.id"))}, f.bounced, 0, ${cents("f.amount")} FROM free f
+     WHERE f.status = 'bounced' AND f.bounced IS NOT NULL AND f.bounced <> ''
+       AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                       WHERE e.source = 'cheque' AND e.source_id = f.id AND e.account_id = f.account_id AND e.kind = 'debt')`,
+  ];
+  if (collections) {
+    const amount = `COALESCE(NULLIF((SELECT d.try_minor FROM fin_events d WHERE d.id = k.event_id), 0), ${cents("c.amount")})`;
+    const closes = `k.status NOT IN ('pending', 'returned') AND k.closed_date <> ''
+      AND NOT (k.status = 'collected' AND k.close_event_id <> '' AND EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = k.cheque_id AND ev.kind = 'collect' AND ev.event_id = k.close_event_id))`;
+    lines.push(
+      `SELECT '${CHEQUE_SUB.bank}', k.given_date, ${amount}, 0 FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
+       UNION ALL SELECT '${CHEQUE_SUB.portfolio}', k.given_date, 0, ${amount} FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
+       UNION ALL SELECT '${CHEQUE_SUB.portfolio}', k.closed_date, ${amount}, 0 FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL WHERE ${closes}
+       UNION ALL SELECT '${CHEQUE_SUB.bank}', k.closed_date, 0, ${amount} FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL WHERE ${closes}`,
+    );
+  }
+  // Cariye işlenmemiş alınan evrak (routes/ledger.mjs "free" sorgusunun alınan yönü): kartı ve kendi carisine alacak satırı yok.
+  const free = `free AS (
+    SELECT c.id, c.amount, c.issue_date, c.status, c.account_id,
+           (SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1) AS bounced
+    FROM cheques c
+    WHERE c.deleted_at IS NULL AND c.direction = 'in'
+      AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)
+      AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                      WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = 'credit'))`;
+  const rows = store.all(
+    `WITH ${free}, lines(sub, date, dr, cr) AS (${lines.join("\nUNION ALL\n")})
+     SELECT sub,
+            SUM(CASE WHEN ?1 <> '' AND date < ?1 THEN dr - cr ELSE 0 END) AS opening,
+            SUM(CASE WHEN NOT (?1 <> '' AND date < ?1) AND (?2 = '' OR date <= ?2) THEN dr ELSE 0 END) AS debit,
+            SUM(CASE WHEN NOT (?1 <> '' AND date < ?1) AND (?2 = '' OR date <= ?2) THEN cr ELSE 0 END) AS credit,
+            SUM(CASE WHEN (?1 <> '' AND date < ?1) OR ?2 = '' OR date <= ?2 THEN 1 ELSE 0 END) AS seen
+     FROM lines WHERE dr <> 0 OR cr <> 0 GROUP BY sub ORDER BY sub`,
+    String(from || ""),
+    String(to || ""),
+  );
+  for (const row of rows) if (Number(row.seen) > 0) out.set(row.sub, { opening: Number(row.opening) || 0, debit: Number(row.debit) || 0, credit: Number(row.credit) || 0 });
   return out;
 }
 
