@@ -65,7 +65,7 @@
 
 <h2>4. Ödeme kuralları</h2>
 <ul>
-  <li><b>Peşin Tahsilat</b> satırları: Nakit, Havale / EFT, Kredi Kartı → Kasa'nın ilgili yoluna yazılır. "Tamamı Peşin" tutarı doldurur. Kasa'yı eksiye düşüren ödeme (alışta) Yönetim → Sistem'deki Eksi Bakiye Denetimi'ne göre uyarır ya da engeller.</li>
+  <li>Ödeme satırları yola göre eklenir (<b>+ Nakit</b>, <b>+ Havale / EFT</b>, satışta <b>+ POS</b>, alışta <b>+ Kredi Kartı</b>); satırın başlığı yolun adıdır. <b>Kalanın Tamamını Tahsil Et</b> / <b>Kalanın Tamamını Öde</b> yolu sorup kalanı yazar. Kasa'yı eksiye düşüren ödeme (alışta) Yönetim → Sistem'deki Eksi Bakiye Denetimi'ne göre uyarır ya da engeller.</li>
   <li><b>Çek / Senet:</b> satışta alınan evrak portföye girer (carinin borcu düşer, para tahsil edilince Kasa'ya girer); alışta verilen evrak "ödenecek" olur ya da portföydeki bir çek ciro edilir. Evrak tarihleri belge tarihinden önce olamaz.</li>
   <li><b>Kalan:</b> <i>Açık Hesap (Vadeli)</i> → cari borcu olarak kalır, vade tarihi Vade Takip'te; <i>Taksitlendir</i> → taksit kartı açılır (sayı, ilk vade, aralık), kartın adı faturanın numarasıdır ve fatura iptal edilmeden silinemez.</li>
   <li><b>Sonradan tahsilat:</b> kartta <i>+ Tahsilat Ekle</i> / <i>+ Ödeme Yap</i>. Taksitli belgede taksit kartı açılır; değilse cariye Kasa hareketi yazılır. Cari ödemeleri faturalara <b>en eski açık belgeden başlayarak</b> sayılır (FIFO); ödeme durumu: Ödendi / Kısmen / Açık / Vadesi Geçti / Taksitte.</li>
