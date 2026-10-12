@@ -1582,22 +1582,43 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         return;
       }
       case "cek-tahsile-ver": {
-        // Bankaya Tahsile Ver (plan §3.14): portföydeki alınan çek/senet bir vadesiz hesaba; para hareketi yok (101.01 → 101.02). İki hesap
-        // tanımlı olduğundan hesapsız istek 400 bank-account-required; kapalı dönemde 409 period-locked.
+        // Bankaya Tahsile Ver (plan §3.14): portföydeki alınan çek/senet bir vadesiz hesaba; para hareketi yok (101.01 → 101.02). Kapalı dönemde
+        // 409 period-locked. İz 2.6 (2.2.0): yalnız evrak türünün işareti ("Çek Kullan" / "Senet Kullan") olan hesaba. İşaret istekten hemen önce
+        // açılır, sonra kapanır: verilen çek (alış faturası) tek "Çek Kullan" hesabına kendiliğinden bağlanmasın (modelin hesapsız ödemesi) ve
+        // tahsildeki evrakın tahsil, geri alma ve karşılıksızı işareti kalkmış hesapta koşsun (yalnız YENİ tahsile verme işarete bağlıdır).
+        // Hesapsız istek: iki hesap işaretliyken 400 bank-account-required; işaretsiz hesaba istek 400 bank-account-flag.
         const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio" && !x.deposit && x.date <= day));
         if (!c || !banks.length) return;
         const b = R.pick(banks);
         const omit = banks.length > 1 && R.chance(0.1);
-        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, ...(omit ? {} : { bankAccountId: b.id }) });
-        if (!open(day)) return expectReject(r, "period-locked", kind);
-        if (omit) return expectReject(r, "bank-account-required", `${kind}/hesapsız`);
-        mustOk(r, kind);
-        if (!r.data?.id) throw Object.assign(new Error(`${kind}: yanıtta evrak yok ${r.text}`), { unexpected: true });
-        c.deposit = { bankId: b.id, date: day };
-        c.deposited = true;
-        // İkinci kez: 409 cheque-deposited (hiçbir şey yazılmaz).
-        if (R.chance(0.2)) expectReject(await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, bankAccountId: b.id }), "cheque-deposited", `${kind}/iki-kez`);
-        return;
+        const flag = c.instrument === "note" ? "useNote" : "useCheque";
+        const flagged = omit ? banks : [b];
+        const setFlag = async value => {
+          for (const x of flagged) {
+            const f = await api("PUT", `/api/workspace/bank/accounts/${x.id}`, { [flag]: value });
+            if (f.status !== 200) throw Object.assign(new Error(`${kind}: ${flag} ${value ? "işaretlenemedi" : "kaldırılamadı"} ${f.status} ${f.text}`), { unexpected: true });
+          }
+        };
+        await setFlag(true);
+        try {
+          const other = banks.find(x => !flagged.includes(x));
+          if (other) {
+            const wrong = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, bankAccountId: other.id });
+            expectReject(wrong, open(day) ? "bank-account-flag" : "period-locked", `${kind}/işaretsiz`);
+          }
+          const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, ...(omit ? {} : { bankAccountId: b.id }) });
+          if (!open(day)) return expectReject(r, "period-locked", kind);
+          if (omit) return expectReject(r, "bank-account-required", `${kind}/hesapsız`);
+          mustOk(r, kind);
+          if (!r.data?.id) throw Object.assign(new Error(`${kind}: yanıtta evrak yok ${r.text}`), { unexpected: true });
+          c.deposit = { bankId: b.id, date: day };
+          c.deposited = true;
+          // İkinci kez: 409 cheque-deposited (hiçbir şey yazılmaz).
+          if (R.chance(0.2)) expectReject(await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, bankAccountId: b.id }), "cheque-deposited", `${kind}/iki-kez`);
+          return;
+        } finally {
+          await setFlag(false);
+        }
       }
       case "cek-bankadan-geri-al": {
         const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio" && x.deposit));

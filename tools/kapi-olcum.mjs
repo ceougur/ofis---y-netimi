@@ -292,6 +292,8 @@ async function measure(fixtureDir, info) {
     const item = store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND kind = 'product' AND id NOT LIKE '%~%' ORDER BY rowid LIMIT 1").id;
     // Havale yazımları hesaba bağlı (üretimde iki hesap tanımlıyken hesap seçimi zorunlu; doğrulama T10).
     const bankId = store.get("SELECT id FROM bank_accounts WHERE deleted_at IS NULL AND status = 'active' AND currency = 'TRY' AND kind IN ('demand', 'commercial', 'other') ORDER BY position, created_at LIMIT 1")?.id || "";
+    // İz 2.6 (2.2.0): Bankaya Tahsile Ver yalnız "Çek Kullan" işaretli hesaba — işaret ölçümün dışında, bir kez.
+    if (bankId) await must("Çek Kullan", client.put(`/api/workspace/bank/accounts/${bankId}`, { useCheque: true }));
     const plan = () => store.get("SELECT p.id FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.id NOT LIKE '%~%' AND p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) > 5 ORDER BY p.rowid LIMIT 1")?.id;
     const record = async (kind, run) => {
       guardMs = null;

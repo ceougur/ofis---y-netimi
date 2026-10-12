@@ -1,0 +1,32 @@
+{
+  "ad": "isaret-api-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-220-tahsile-ver-isaret.test.mjs",
+  "commit": "12b82c2c4dab503811ff28d03151f1517ba2f1f4",
+  "dal": "worktree-agent-a162c045a84370d45",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T12:25:04.610Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver-ekran/2026-10-12/isaret-api-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a162c045a84370d45",
+  "ham_cikti_sha256": "f91bd16e9a52c1f28e1b54cf0b7673918c8cb5753bc0b9944b33a96b83711bab",
+  "ham_cikti_bayt": 2368
+}
