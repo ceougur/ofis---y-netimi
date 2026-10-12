@@ -479,14 +479,14 @@ try {
     ok(has(await textOf(admin, `${bankWin} [data-bank]`), "ZIR-TL"), "silindikten sonra Hesaplar listesine dönüldü");
   });
 
-  await step("5. Ayarlar: Temel ve Gelişmiş, POS/Ekstre görünmez, kaydet, geçersiz değer, Tümünü Varsayılanlara Dön", async () => {
+  await step("5. Ayarlar: Temel ve Gelişmiş, Ekstre görünmez (2.2.0: POS görünür), kaydet, geçersiz değer, Tümünü Varsayılanlara Dön", async () => {
     await tab(admin, "settings");
     await admin.waitForSelector(`${bankWin} [data-settings]`);
     const legends = await admin.$$eval(`${bankWin} .hof-bank-set:not([hidden]) legend`, list => list.filter(node => node.offsetParent).map(node => node.textContent.trim()));
-    // GG2 (F10/F12): bu sürümde olmayan özelliklerin ayarları (POS, Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi) görünmez.
-    ok(["Hesap", "Eksi Bakiye", "Mükerrer", "Masraf", "Tatil"].every(name => legends.includes(name)) && !["POS", "Ekstre", "Döviz"].some(name => legends.includes(name)), `Temel bölümler: ${legends.join(", ")}`);
+    // GG2 (F10/F12): bu sürümde olmayan özelliklerin ayarları (Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi) görünmez. 2.2.0 (İz 3): POS geldi.
+    ok(["Hesap", "Eksi Bakiye", "Mükerrer", "POS", "Masraf", "Tatil"].every(name => legends.includes(name)) && !["Ekstre", "Döviz"].some(name => legends.includes(name)), `Temel bölümler: ${legends.join(", ")}`);
     ok(await admin.$eval(`${bankWin} [data-advanced]`, node => node.hidden), "Gelişmiş ayarlar kapalı gelir");
-    ok(!(await admin.$(`${bankWin} [data-set="account.defaultPosId"]`)) && !(await admin.$(`${bankWin} [data-set="holidayAdvanced.shift"]`)), "Varsayılan POS ve Tatile Düşen Valör görünmez");
+    ok(Boolean(await admin.$(`${bankWin} [data-set="account.defaultPosId"]`)) && !(await admin.$(`${bankWin} [data-set="holidayAdvanced.shift"]`)), "Varsayılan POS görünür (2.2.0); Tatile Düşen Valör görünmez");
     ok((await admin.$eval(`${bankWin} [data-set="negative.policy"]`, node => node.value)) === "warn" && (await admin.$eval(`${bankWin} [data-set="similar.enabled"]`, node => node.value)) === "true", "standartlar seçili: Uyar, Benzer İşlem Açık");
     await auditLabels(admin, "Ayarlar (Temel)");
     await shot(admin, "ayarlar-temel");
@@ -2422,7 +2422,7 @@ try {
     const groups = await admin.$$eval(`${modal} .hof-rc-group > p`, nodes => nodes.map(node => node.textContent.trim()));
     ok(groups.some(group => group.endsWith("Banka")), `Banka grubu: ${groups.join(", ")}`);
     const items = await admin.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı", `Banka raporları: ${items.join(", ")}`);
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar", `Banka raporları (2.2.0: POS raporları): ${items.join(", ")}`);
     await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
     let data = await waitPreview(admin, view => view.rows.length >= 2 && view.footer);
     const byBank = bank => data.rows.find(cells => cells[1] === bank);

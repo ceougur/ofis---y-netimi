@@ -15,6 +15,8 @@
 //  Formlar: cari tahsilatı POS (önizleme, provizyon, son 4) → POS İşlemleri'nden İptal Et (aynı gün, komisyonsuz void); POS pasifken stok satışında
 //  "POS Tanımla" (form kapanmadan, kaydedilen POS seçili gelir) ve yetkisiz kullanıcıda "POS tanımlı değil, yöneticinize başvurun."; iki POS'ta
 //  taksit tahsilatında seçim zorunlu; fatura Düzenle'de yalnız provizyon değişimi kayda geçer (bilinen hata, İz 3.6). Banka Ayarları'nda POS.
+//  Rapor Merkezi (ders 11): POS Ödeme Takvimi her Tür, her POS ve her dönem düğmesiyle (TOPLAM = satırlar; Tüm Zamanlar ileri valörü keser
+//  miydi — kesmez), PDF ve Excel TOPLAM; Banka Masraf Raporu'nda POS komisyonu (653, matrah + BSMV); Faturası Beklenen Komisyonlar boş.
 // Çalıştırma: npm run test:senaryo-pos-220
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -22,6 +24,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
+import { pdfText, xlsxSheets } from "../banka-210-ortak.mjs";
 import { createClient, installPageClock, moveClock } from "../helpers.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-pos-220");
@@ -557,6 +560,105 @@ try {
     ok(after.length === 1 && after[0].authCode === "PRV009" && after[0].installments === 3 && after[0].id === sale.id, `POS kaydı: ${JSON.stringify(after.map(item => [item.authCode, item.installments, item.id === sale.id]))}`);
     await closeAll();
     await integrity("provizyon düzeltmesi");
+  });
+
+  // ---------- Rapor Merkezi (ders 11: her süzgeç, her seçenek; TOPLAM = satırlar; PDF ve Excel) ----------
+  // Bağımsız beklenen (plan oranlarıyla elle): Fiziki 12.000 / 3 Taksit %3,5 → 3 × 4.000 brüt, 3 × 3.860 net (12.11 · 14.12 · 12.01.2027);
+  // Fiziki taksit tahsilatı 3.000 / 3 Taksit %3,5 → 3 × 1.000 brüt, 3 × 965 net (ilki 1 ay sonra: 15.11 Pazar → 16.11, 15.12, 15.01.2027);
+  // Mobil 1.000 Tek Çekim %2 → 980 net, valör 16.10. Bekleyen: brüt 16.000, net 15.455 (Fiziki 14.475, Mobil 980). Blokeli ve Komisyon Tahsili yok.
+  // Banka Masraf Raporu: adım 23–24'te 653'e giden 250 (BSMV Dahil %5: matrah 238,10 + BSMV 11,90); iade "İade Edilmez" → değişmez.
+  const num = text => Number(String(text || "").replace(/[^\d,-]/g, "").replace(",", "."));
+  const rcPreview = () =>
+    page.evaluate(selector => {
+      const main = document.querySelector(`${selector} [data-rc-main]`);
+      const text = node => node.textContent.replace(/\s+/g, " ").trim();
+      return {
+        heads: [...(main?.querySelectorAll("thead th") || [])].map(text),
+        rows: [...(main?.querySelectorAll("tbody tr") || [])].map(row => [...row.querySelectorAll("td")].map(text)).filter(cells => cells.length > 1),
+        footer: main?.querySelector("tfoot tr") ? [...main.querySelectorAll("tfoot td")].map(text) : null,
+        links: [...(main?.querySelectorAll(".hof-rep-out") || [])].map(link => link.getAttribute("href")),
+        text: main ? text(main) : "",
+      };
+    }, modal);
+  const waitRc = async (check, ms = 8000) => {
+    const deadline = Date.now() + ms;
+    let last = await rcPreview();
+    while (!check(last) && Date.now() < deadline) {
+      await pause(250);
+      last = await rcPreview();
+    }
+    return last;
+  };
+  const download = async href => {
+    const got = await page.evaluate(async url => {
+      const response = await fetch(window.HOF.apiUrl ? window.HOF.apiUrl(url) : url);
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      let binary = "";
+      for (let index = 0; index < bytes.length; index += 1) binary += String.fromCharCode(bytes[index]);
+      return { status: response.status, base64: btoa(binary) };
+    }, href);
+    return { status: got.status, buffer: Buffer.from(got.base64, "base64") };
+  };
+  await step("Raporlar → POS Ödeme Takvimi: 7 satır, TOPLAM brüt 16.000 / net 15.455 = satırlar; her Tür ve POS seçeneği; PDF ve Excel TOPLAM", async () => {
+    await closeAll();
+    await page.click('#hof-sidecard [data-action="analytics"]');
+    await page.waitForSelector(`${modal} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+    await page.click(`${modal} .hof-rep-tab[data-tab="all"]`);
+    await page.waitForSelector(`${modal} [data-rc-list] [data-report="pos-odeme-takvimi"]`, { timeout: 15000 });
+    await page.click(`${modal} [data-rc-list] [data-report="pos-odeme-takvimi"]`);
+    let data = await waitRc(view => view.rows.length === 7 && view.footer);
+    const col = header => data.heads.indexOf(header);
+    const sum = (rows, header) => Math.round(rows.reduce((total, cells) => total + num(cells[col(header)]), 0) * 100);
+    ok(data.rows.length === 7 && data.rows.map(cells => cells[col("Valör Günü")]).join(",") === "16.10.2026,12.11.2026,16.11.2026,14.12.2026,15.12.2026,12.01.2027,15.01.2027", `valör günleri: ${data.rows.map(cells => cells[col("Valör Günü")]).join(", ")}`);
+    ok(Math.round(num(data.footer?.[col("Brüt")]) * 100) === kurus(16000) && Math.round(num(data.footer?.[col("Net (Bankaya Geçecek)")]) * 100) === kurus(15455), `TOPLAM: ${data.footer?.join(" | ")}`);
+    ok(sum(data.rows, "Brüt") === kurus(16000) && sum(data.rows, "Net (Bankaya Geçecek)") === kurus(15455), "TOPLAM = satırların toplamı (brüt ve net)");
+    await shot("rapor-pos-odeme-takvimi");
+    const [pdfHref, xlsxHref] = data.links;
+    const pdf = await download(pdfHref);
+    const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
+    ok(pdf.status === 200 && text.includes("POS Ödeme Takvimi") && text.includes("15.455,00") && text.includes("16.000,00"), "PDF: başlık ve TOPLAM tutarları");
+    const xlsx = await download(xlsxHref);
+    const book = Object.values(xlsxSheets(xlsx.buffer))[0];
+    const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1)));
+    const last = sheet.at(-1) || [];
+    ok(xlsx.status === 200 && last[0] === "TOPLAM" && Math.round(Number(last[sheet[0].indexOf("Net (Bankaya Geçecek)")]) * 100) === kurus(15455), `Excel TOPLAM: ${last.join(" | ")}`);
+    // Her Tür seçeneği: POS (7 satır), Blokeli POS ve Komisyon Tahsili (boş, TOPLAM yok ya da 0), Tümü (7 satır).
+    for (const [value, rows, net] of [["pos", 7, 15455], ["blocked", 0, 0], ["fee", 0, 0], ["", 7, 15455]]) {
+      await page.selectOption(`${modal} [data-param="posKind"]`, value);
+      data = await waitRc(view => view.rows.length === rows);
+      const footNet = data.footer ? Math.round(num(data.footer[col("Net (Bankaya Geçecek)")]) * 100) : 0;
+      ok(data.rows.length === rows && footNet === kurus(net) && sum(data.rows, "Net (Bankaya Geçecek)") === kurus(net), `Tür “${value || "Tümü"}”: ${data.rows.length} satır, TOPLAM net ${footNet / 100}`);
+    }
+    // Her POS seçeneği: Tüm POS'lar 15.455; Fiziki 6 satır 14.475; Mobil 1 satır 980.
+    const posOptions = await page.$$eval(`${modal} [data-param="posTerminal"] option`, nodes => nodes.map(node => [node.value, node.textContent.trim()]));
+    ok(posOptions.length === 3 && posOptions[0][1] === "Tüm POS'lar", `POS seçenekleri: ${posOptions.map(item => item[1]).join(" | ")}`);
+    for (const [value, rows, net] of [[ctx.pos.id, 6, 14475], [ctx.mobile?.id || "-", 1, 980], ["", 7, 15455]]) {
+      await page.selectOption(`${modal} [data-param="posTerminal"]`, value);
+      data = await waitRc(view => view.rows.length === rows);
+      ok(data.rows.length === rows && Math.round(num(data.footer?.[col("Net (Bankaya Geçecek)")]) * 100) === kurus(net) && sum(data.rows, "Net (Bankaya Geçecek)") === kurus(net), `POS “${posOptions.find(item => item[0] === value)?.[1]}”: ${data.rows.length} satır, TOPLAM net ${num(data.footer?.[col("Net (Bankaya Geçecek)")])}`);
+    }
+    // Her dönem düğmesi (bugün 15.10.2026; aralık valör gününe göre): Bu Ay 16.10 → 980; Geçen Ay ve Son 30 Gün (bugünle biter) boş;
+    // Bu Yıl 5 satır (16.10 … 15.12) 10.630; Tüm Zamanlar bütün bekleyenler 15.455 (ileri valör bugünle kesilmez).
+    for (const [preset, rows, net] of [["thisMonth", 1, 980], ["lastMonth", 0, 0], ["last30", 0, 0], ["thisYear", 5, 10630], ["all", 7, 15455]]) {
+      await page.click(`${modal} [data-rc-main] [data-preset="${preset}"]`);
+      data = await waitRc(view => view.rows.length === rows);
+      const footNet = data.footer ? Math.round(num(data.footer[col("Net (Bankaya Geçecek)")]) * 100) : 0;
+      ok(data.rows.length === rows && footNet === kurus(net) && sum(data.rows, "Net (Bankaya Geçecek)") === kurus(net), `dönem ${preset}: ${data.rows.length} satır, TOPLAM net ${footNet / 100}`);
+    }
+  });
+
+  await step("Raporlar → Banka Masraf Raporu: POS komisyonu 653 · matrah 238,10 + BSMV 11,90 = 250; Faturası Beklenen Komisyonlar boş (KDV'li POS yok)", async () => {
+    await page.click(`${modal} [data-rc-list] [data-report="banka-masraf"]`);
+    let data = await waitRc(view => view.rows.length >= 1 && view.footer);
+    const col = header => data.heads.indexOf(header);
+    const posRow = data.rows.find(cells => /Ziraat Fiziki POS/.test(cells[col("Masraf Türü")] || ""));
+    ok(posRow && posRow[col("Hesap Kodu")].startsWith("653") && num(posRow[col("Matrah")]) === 238.1 && num(posRow[col("BSMV")]) === 11.9 && num(posRow[col("Toplam")]) === 250, `POS komisyon satırı: ${posRow?.join(" | ")}`);
+    ok(num(data.footer?.[col("Toplam")]) === 250 && data.rows.length === 1, `TOPLAM: ${data.footer?.join(" | ")}`);
+    await shot("rapor-banka-masraf-pos");
+    await page.click(`${modal} [data-rc-list] [data-report="faturasi-beklenen-komisyonlar"]`);
+    data = await waitRc(view => /Faturası Beklenen Komisyonlar/.test(view.text) && view.rows.length === 0);
+    ok(data.rows.length === 0, `Faturası Beklenen Komisyonlar: ${data.rows.length} satır (KDV'li POS yok)`);
+    await closeAll();
   });
 
   await step("POS sekmesi: Onay Bekleyen ve Komisyon Faturaları boş durum metni; POS'lar listesi iki POS", async () => {
