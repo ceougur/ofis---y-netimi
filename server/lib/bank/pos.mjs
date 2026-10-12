@@ -1039,6 +1039,30 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
   }
 
   // ---------- Okuma uçları (GET yazmaz) ----------
+  /**
+   * Bekleyen kalemlerin TÜRE göre gün satırları (§4.6–§4.7; Eleştirmen E-1/E-2): tür kalemin ROLÜNDEN — tutarın işaretinden değil. Birim: satış
+   * kalemi + ona yazılan iade kalemleri (iade kalemi seq > 0, asıl satışın aynı seq'li kalemi); valörden SONRAKİ iadenin artanı (seq 0) kendi
+   * biriminde kalır (POS, eksi; Komisyon Tahsili DEĞİL). Neti eksiye düşen satış birimi "Komisyon Tahsili" (fee; §4.6 E1.06), öbürleri blokeli
+   * ya da POS. Satırlar (gün, POS, tür) başına; blokeli, Komisyon Tahsili ve POS aynı günde ayrı satır (§4.7).
+   */
+  function kindRows(where = ["i.status = 'pending'"], args = []) {
+    return store.all(
+      `WITH u AS (
+         SELECT i.value_date AS valueDate, i.pos_id AS posId, i.role AS role, i.blocked AS blocked, i.planned_net_minor AS net, i.settle_error AS error,
+                CASE WHEN i.role = 'refund' THEN -i.gross_minor ELSE i.gross_minor END AS gross,
+                CASE WHEN i.role = 'sale' THEN 's:' || i.sale_id || ':' || i.seq WHEN i.role = 'refund' AND i.seq > 0 AND s.origin_id <> '' THEN 's:' || s.origin_id || ':' || i.seq ELSE 'i:' || i.id END AS unit
+         FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id WHERE ${where.join(" AND ")} AND s.status <> 'repair'
+       ), g AS (
+         SELECT valueDate, posId, SUM(net) AS net, SUM(gross) AS gross, COUNT(*) AS n, MAX(blocked) AS blocked, MAX(error) AS error,
+                CASE WHEN MAX(role = 'fee') = 1 OR (substr(unit, 1, 2) = 's:' AND SUM(net) < 0) THEN 'fee' WHEN MAX(blocked) = 1 THEN 'blocked' ELSE 'pos' END AS kind
+         FROM u GROUP BY valueDate, posId, unit
+       )
+       SELECT g.valueDate, g.posId, p.name AS posName, g.kind, SUM(g.net) AS net, SUM(g.gross) AS gross, SUM(g.n) AS n, MAX(g.error) AS error
+       FROM g JOIN pos_terminals p ON p.id = g.posId
+       GROUP BY g.valueDate, g.posId, g.kind ORDER BY g.valueDate, p.gl_sub, CASE g.kind WHEN 'pos' THEN 0 WHEN 'blocked' THEN 1 ELSE 2 END`,
+      ...args,
+    );
+  }
   /** ANLIK DURUM / Genel Bakış: POS Bekleyen (Net), Blokeli POS, brüt, Komisyon Tahsili Bekleyen, Valörü Gelmiş Aktarılmadı, Onay Bekleyen. */
   function pendingStats() {
     const empty = { netMinor: 0, blockedMinor: 0, grossMinor: 0, feeMinor: 0, due: { count: 0, netMinor: 0 }, awaiting: { count: 0, netMinor: 0 }, errors: 0 };
@@ -1046,15 +1070,15 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     const row = store.get(
       `SELECT COALESCE(SUM(CASE WHEN blocked = 0 THEN planned_net_minor ELSE 0 END), 0) AS net, COALESCE(SUM(CASE WHEN blocked = 1 THEN planned_net_minor ELSE 0 END), 0) AS blocked,
               COALESCE(SUM(CASE WHEN role = 'refund' THEN -gross_minor ELSE gross_minor END), 0) AS gross, SUM(CASE WHEN settle_error <> '' THEN 1 ELSE 0 END) AS errors
-       FROM pos_items WHERE status = 'pending'`,
+       FROM pos_items WHERE status = 'pending' AND sale_id NOT IN (SELECT id FROM pos_sales WHERE status = 'repair')`,
     );
-    const days = store.all("SELECT i.pos_id AS posId, i.value_date AS valueDate, SUM(i.planned_net_minor) AS net, COUNT(*) AS n FROM pos_items i WHERE i.status = 'pending' GROUP BY i.pos_id, i.value_date");
-    let fee = 0;
+    const days = store.all("SELECT i.pos_id AS posId, i.value_date AS valueDate, SUM(i.planned_net_minor) AS net, COUNT(*) AS n FROM pos_items i WHERE i.status = 'pending' AND i.sale_id NOT IN (SELECT id FROM pos_sales WHERE status = 'repair') GROUP BY i.pos_id, i.value_date");
+    // Komisyon Tahsili Bekleyen: yalnız fee türündeki birimler (kindRows; valörden sonraki iade sayılmaz — Eleştirmen E-1).
+    const fee = kindRows().reduce((sum, item) => sum + (item.kind === "fee" ? -Number(item.net) : 0), 0);
     const due = { count: 0, netMinor: 0 };
     const awaiting = { count: 0, netMinor: 0 };
     const day = today();
     for (const item of days) {
-      if (Number(item.net) < 0) fee += -Number(item.net);
       if (item.valueDate <= day) {
         const pos = terminal(item.posId);
         const target = pos && settleModeOf(pos) !== "auto" ? awaiting : due;
@@ -1072,17 +1096,13 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     if (from) where.push("i.value_date >= ?") && args.push(from);
     if (to) where.push("i.value_date <= ?") && args.push(to);
     if (posId) where.push("i.pos_id = ?") && args.push(posId);
-    const rows = store.all(
-      `SELECT i.value_date AS valueDate, i.pos_id AS posId, p.name AS posName, i.blocked AS blocked, SUM(i.planned_net_minor) AS net,
-              SUM(CASE WHEN i.role = 'refund' THEN -i.gross_minor ELSE i.gross_minor END) AS gross, COUNT(*) AS n, MAX(i.settle_error) AS error
-       FROM pos_items i JOIN pos_terminals p ON p.id = i.pos_id WHERE ${where.join(" AND ")}
-       GROUP BY i.value_date, i.pos_id, i.blocked ORDER BY i.value_date, p.gl_sub, i.blocked`,
-      ...args,
-    );
+    // Eleştirmen E-2: tür kalemin rolünden (kindRows); önceden (gün, POS, blokeli) grubu neti eksiyse "Komisyon Tahsili" sayılıyordu — aynı günün
+    // Komisyon Tahsili POS satırına karışıyor, valörden sonraki iade Komisyon Tahsili görünüyordu.
+    const rows = kindRows(where, args);
     const day = today();
     const out = rows.map(row => {
       const net = Number(row.net) || 0;
-      const kind = net < 0 ? "fee" : row.blocked ? "blocked" : "pos";
+      const kind = row.kind;
       const pos = terminal(row.posId);
       return {
         valueDate: row.valueDate, posId: row.posId, posName: row.posName, kind, kindLabel: kind === "fee" ? "Komisyon Tahsili" : kind === "blocked" ? "Blokeli POS" : "POS",
@@ -1376,9 +1396,22 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     const inList = set => JSON.stringify([...set]);
     // pos:terminal — 108.T = Σ bekleyen kalem brütü (satış − iade); tek kaynaktan (moneyLines) bağımsız toplam.
     const terminals = scope ? store.all("SELECT id, code, name, gl_sub AS sub FROM pos_terminals WHERE id IN (SELECT value FROM json_each(?))", inList(scope.posIds)) : store.all("SELECT id, code, name, gl_sub AS sub FROM pos_terminals");
+    // Eleştirmen E-3: "Onarım Bekliyor" kayıtları (açılış onarımı d/g) kapıdan ayrılır — kaydın satırı (108'e yazdığı) ve bankaya geçmiş kalemleri
+    // (108'den çıkan) defter tarafından, bekleyen kalemleri bekleyen tarafından düşülür; o POS'un öbür satışları denetlenmeye ve aktarılmaya devam eder.
+    const repairSales = store.all("SELECT id, event_id AS eventId, pos_id AS posId FROM pos_sales WHERE status = 'repair'");
+    const repairEvents = new Set(repairSales.map(sale => sale.eventId));
+    const repairOffset = posId => {
+      if (!repairSales.some(sale => sale.posId === posId)) return 0;
+      let offset = 0;
+      for (const row of store.all(POS_ROW_SQL(true), JSON.stringify(repairSales.filter(sale => sale.posId === posId).map(sale => sale.eventId)))) {
+        if (row.posId === posId) offset += (row.dir === "in" ? 1 : -1) * toMinor(Math.abs(Number(row.amount) || 0));
+      }
+      offset -= Number(store.get("SELECT COALESCE(SUM(CASE WHEN i.role = 'refund' THEN -i.gross_minor ELSE i.gross_minor END), 0) AS n FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id WHERE s.status = 'repair' AND i.pos_id = ? AND i.status = 'settled'", posId).n) || 0;
+      return offset;
+    };
     for (const pos of terminals) {
-      const balance = money?.refTotal ? Number(money.refTotal({ ref: pos.id }).cents) || 0 : 0;
-      const pending = Number(store.get("SELECT COALESCE(SUM(CASE WHEN role = 'refund' THEN -gross_minor ELSE gross_minor END), 0) AS n FROM pos_items WHERE pos_id = ? AND status = 'pending'", pos.id).n) || 0;
+      const balance = (money?.refTotal ? Number(money.refTotal({ ref: pos.id }).cents) || 0 : 0) - repairOffset(pos.id);
+      const pending = Number(store.get("SELECT COALESCE(SUM(CASE WHEN role = 'refund' THEN -gross_minor ELSE gross_minor END), 0) AS n FROM pos_items WHERE pos_id = ? AND status = 'pending' AND sale_id NOT IN (SELECT id FROM pos_sales WHERE status = 'repair')", pos.id).n) || 0;
       out.terminal.push({ pos, ok: balance === pending, ledgerMinor: balance, pendingMinor: pending });
     }
     // pos:source — etkin satış/iade = olayının POS'a bağlı etkin satırı (POS, tutar, tarih, yön); POS'a bağlı her etkin satırın etkin kaydı var;
@@ -1403,7 +1436,7 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
         else if (row.posId !== sale.pos_id || toMinor(Math.abs(Number(row.amount) || 0)) !== Number(sale.gross_minor) || row.date !== sale.date || (row.dir === "in") !== (sale.kind === "sale")) fail(`satır (${row.amount} ${row.date} ${row.dir}) ≠ kayıt (${Number(sale.gross_minor) / 100} ${sale.date})`);
       } else if (sale.status === "void" && row && !activeByEvent.has(sale.event_id) && !activeSaleOf(sale.event_id)) fail("void kaydın etkin satırı var");
     }
-    for (const row of rows.values()) if (!activeByEvent.has(row.eventId) && !activeSaleOf(row.eventId)) out.source.push(`${row.t}:${row.id}: POS satırının satışı/iadesi yok`);
+    for (const row of rows.values()) if (!activeByEvent.has(row.eventId) && !activeSaleOf(row.eventId) && !repairEvents.has(row.eventId)) out.source.push(`${row.t}:${row.id}: POS satırının satışı/iadesi yok`);
     // pos:refund — kaynaklı iadelerde Σ iade ≤ satış.
     for (const row of store.all(`SELECT s.id, s.gross_minor AS gross, COALESCE(SUM(r.gross_minor), 0) AS refunded FROM pos_sales s JOIN pos_sales r ON r.origin_id = s.id AND r.kind = 'refund' AND r.status = 'active' ${scope ? "WHERE s.id IN (SELECT value FROM json_each(?))" : ""} GROUP BY s.id HAVING refunded > gross`, ...(scope ? [inList(scope.sales)] : []))) {
       out.refund.push(`${row.id}: iade ${Number(row.refunded) / 100} > satış ${Number(row.gross) / 100}`);

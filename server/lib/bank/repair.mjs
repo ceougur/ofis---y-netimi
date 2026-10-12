@@ -171,6 +171,22 @@ export function repairBank({ store, now = systemClock, period = null, log = null
             pending("d", sale.id, `bankaya geçmiş POS satışının kaynak satırı eski sürümde silinmiş (POS ${sale.posId}); İptal İadesi kaydıyla çözülür`);
           }
         }
+        // g) Eleştirmen E-3 (plan §10.6/g): eski sürüm (POS'u bilmez) POS'lu tahsilatın/iadenin tutarını ya da tarihini değiştirmiş → kayıt satırla
+        // uyuşmuyor. Kayıt "Onarım Bekliyor" olur: valör aktarımından ve POS kapı denetiminden ayrılır (pos.mjs dueGroups, problems), o POS'un öbür
+        // satışları bankaya geçmeye devam eder. Çözüm kullanıcıda (neden listede): tahsilatı silip doğru tutarla yeniden girmek.
+        for (const sale of store.all("SELECT id, event_id AS eventId, pos_id AS posId, kind, status, gross_minor AS gross, date FROM pos_sales WHERE status IN ('active', 'repair') AND src <> 'cancel'")) {
+          const rows = eventRows(store, sale.eventId);
+          if (!rows.length) continue;
+          const own = rows.filter(({ row }) => row.method === "card" && row.fin_ref === sale.posId);
+          if (own.length > 1) continue;
+          const row = own.length === 1 ? own[0].row : null;
+          const minor = row ? Math.round(Math.abs(Number(row.amount) || 0) * 100) : 0;
+          if (row && minor === Number(sale.gross) && row.date === sale.date) continue;
+          if (sale.status === "active") store.run("UPDATE pos_sales SET status = 'repair', updated_by = 'system', updated_at = ? WHERE id = ?", at, sale.id);
+          const was = `${(Number(sale.gross) / 100).toFixed(2)} TL · ${sale.date}`;
+          const now_ = row ? `${(minor / 100).toFixed(2)} TL · ${row.date}` : "POS'suz";
+          pending("g", sale.id, `POS ${sale.kind === "refund" ? "iadesi" : "tahsilatı"} eski sürümde değiştirilmiş (POS kaydı ${was}, satır ${now_}); bankaya aktarılmaz. Çözüm: tahsilatı silip doğru tutarla yeniden girin.`);
+        }
       }
 
       // h) tahsildeki çek eski sürümde ciro edilmiş, silinmiş ya da tahsil edilmiş
