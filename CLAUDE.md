@@ -1335,6 +1335,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   ÇALIŞTIRMAYLA doğrulama (sahte saat değil): gerçek servis + yerel sahte yayın kaynağı (imzalı bildirge + paket), kullanıcı etkinliği varken
   "hazır" uyarısı ekranda (zil/Yönetim, ekran görüntüsü), etkinlik kesilince gerçek 15 dk sonra kendiliğinden kurulum, açılışta sorgu ve
   kurulum, mesai dışı kuralı; Windows'ta CI kurulum testinde de. Eskimiş kod açıklaması ("gün içinde kendiliğinden güncelleme yapılmaz") düzelir.
+- 2.1.0 YAYIMLANDI (11.10.2026 18:45 UTC; PR ceougur/ofis---y-netimi#27 → `master` = 7c6405f, `v2.1.0`; önceki oturumda bayt bayt
+  denetlendi; 12.10.2026 GitHub'dan yeniden okundu: 5 dosya yerinde, kılavuz PDF b326df68…, paket sha256 d341941a…; release.yml ayrıca
+  DestekOfis-Kurulum-2.1.0.exe + .sha256 ekledi). Site kılavuz PR'ı ceougur/destekofis#12 BİRLEŞTİ (11.10.2026). 2.1.0 KAPANDI.
+  Yeni oturum dalı `claude/hopeful-goodall-6nmtcj` (master'dan). Sırada (kullanıcı seçer): 2.1.0 kapsam ölçümü; 2.1.1 (Rapor Merkezi Excel
+  şirket başlığı, K6 Kasa açılışı, iki pencerede "sayfa silindi"); ertelenenler (döviz, Bankaya Tahsile Ver, K8, bankalı iade/iptal,
+  kalan banka raporları) → 2.2.0 POS → 2.3.0 ekstre; Cuma 16.10.2026 planlı test.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
