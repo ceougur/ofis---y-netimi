@@ -244,6 +244,13 @@ describe("v20 şeması (yeni kurulum)", () => {
           throw new Error("geri al");
         }), /geri al/);
         // Geri alındığı için kapı çalışmadı; kapıya giren tablo listesi bir sonraki gerçek yazımda görülür.
+        // Bankaya Tahsile Ver (2.2.0, plan §3.14; bilerek güncellendi): başlıksız/evraksız tahsil kaydı artık kapının cheque:collections
+        // denetiminde reddedilir — bu da tablonun kapıdan geçtiğinin kanıtıdır (kapı test bekçisinden önce çalışır).
+        if (table === "cheque_collections") {
+          assert.throws(() => store.tx(() => store.run(`INSERT INTO ${table} (${cols.join(", ")}) VALUES (${cols.map(() => "?").join(", ")})`, ...cols.map(col => row[col]))), error => error.extra?.code === "ledger-integrity" && error.failures.some(item => item.code === "cheque:collections"));
+          assert.equal(store.get("SELECT COUNT(*) AS n FROM cheque_collections").n, 0, "reddedilen tahsil kaydı yazılmamalı");
+          continue;
+        }
         store.tx(() => store.run(`INSERT INTO ${table} (${cols.join(", ")}) VALUES (${cols.map(() => "?").join(", ")})`, ...cols.map(col => row[col])));
         assert.ok(seen.some(list => list.split(",").includes(table)), `${table} yazımı mutabakat kapısından geçmedi`);
         // K6 (c, dilim 3): para tablosuna bank.post dışından ham DELETE yalnız store.raw kapsamında (test temizliği).

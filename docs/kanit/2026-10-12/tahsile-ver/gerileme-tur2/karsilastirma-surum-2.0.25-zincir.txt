@@ -1,0 +1,720 @@
+eski v2.1.0 (7c6405fca6697cc32e6c661c241dbcd99c438814) ↔ yeni guncel (çalışma ağacı)
+
+== YALNIZ YENİDE OLAN ANAHTARLAR (175) ==
+  reads.sirket-001.cekListe.data.cheques[].deposited ×6
+  reads.sirket-001.cekListe.data.cheques[].collection ×6
+  reads.sirket-001.cekListe.data.summary.deposited ×1
+  reads.sirket-001.cekListe:portfolio.data.cheques[].deposited ×1
+  reads.sirket-001.cekListe:portfolio.data.cheques[].collection ×1
+  reads.sirket-001.cekListe:portfolio.data.summary.deposited ×1
+  reads.sirket-001.cekListe:collected.data.cheques[].deposited ×5
+  reads.sirket-001.cekListe:collected.data.cheques[].collection ×5
+  reads.sirket-001.cekListe:collected.data.summary.deposited ×1
+  reads.sirket-001.cekListe:endorsed.data.summary.deposited ×1
+  reads.sirket-001.cekListe:bounced.data.summary.deposited ×1
+  reads.sirket-001.cekListe:paid.data.summary.deposited ×1
+  reads.sirket-001.cekListe:pending.data.summary.deposited ×1
+  reads.sirket-001.cekListe:open.data.cheques[].deposited ×1
+  reads.sirket-001.cekListe:open.data.cheques[].collection ×1
+  reads.sirket-001.cekListe:open.data.summary.deposited ×1
+  reads.sirket-001.cekListe:closed.data.cheques[].deposited ×5
+  reads.sirket-001.cekListe:closed.data.cheques[].collection ×5
+  reads.sirket-001.cekListe:closed.data.summary.deposited ×1
+  reads.sirket-001.cekListe:overdue.data.summary.deposited ×1
+  reads.sirket-001.cekListe:soon.data.summary.deposited ×1
+  reads.sirket-001.cekKart:cheque-a5719308-ba18-4d02-97df-9afd4a54e44e.data.deposited ×1
+  reads.sirket-001.cekKart:cheque-a5719308-ba18-4d02-97df-9afd4a54e44e.data.collection ×1
+  reads.sirket-001.cekKart:cheque-a5719308-ba18-4d02-97df-9afd4a54e44e.data.bankActions ×1
+  reads.sirket-001.cekKart:cheque-a5719308-ba18-4d02-97df-9afd4a54e44e.data.depositAccounts ×1
+  reads.sirket-001.cekKart:cheque-a5719308-ba18-4d02-97df-9afd4a54e44e.data.collections ×1
+  reads.sirket-001.cekKart:cheque-6ccc0856-d17a-4b8b-abb6-3a7df91eb78c.data.deposited ×1
+  reads.sirket-001.cekKart:cheque-6ccc0856-d17a-4b8b-abb6-3a7df91eb78c.data.collection ×1
+  reads.sirket-001.cekKart:cheque-6ccc0856-d17a-4b8b-abb6-3a7df91eb78c.data.bankActions ×1
+  reads.sirket-001.cekKart:cheque-6ccc0856-d17a-4b8b-abb6-3a7df91eb78c.data.depositAccounts ×1
+  reads.sirket-001.cekKart:cheque-6ccc0856-d17a-4b8b-abb6-3a7df91eb78c.data.collections ×1
+  reads.sirket-001.cekKart:cheque-4f540b10-5ba2-4cee-a774-90a9613e1857.data.deposited ×1
+  reads.sirket-001.cekKart:cheque-4f540b10-5ba2-4cee-a774-90a9613e1857.data.collection ×1
+  reads.sirket-001.cekKart:cheque-4f540b10-5ba2-4cee-a774-90a9613e1857.data.bankActions ×1
+  reads.sirket-001.cekKart:cheque-4f540b10-5ba2-4cee-a774-90a9613e1857.data.depositAccounts ×1
+  reads.sirket-001.cekKart:cheque-4f540b10-5ba2-4cee-a774-90a9613e1857.data.collections ×1
+  reads.sirket-001.cekKart:cheque-4e902541-3fbc-424b-81e9-7c900bd04796.data.deposited ×1
+  reads.sirket-001.cekKart:cheque-4e902541-3fbc-424b-81e9-7c900bd04796.data.collection ×1
+  reads.sirket-001.cekKart:cheque-4e902541-3fbc-424b-81e9-7c900bd04796.data.bankActions ×1
+  reads.sirket-001.cekKart:cheque-4e902541-3fbc-424b-81e9-7c900bd04796.data.depositAccounts ×1
+  reads.sirket-001.cekKart:cheque-4e902541-3fbc-424b-81e9-7c900bd04796.data.collections ×1
+  reads.sirket-001.cekKart:cheque-d29a2f0a-338a-4018-8ae8-467b9ce2c30b.data.deposited ×1
+  reads.sirket-001.cekKart:cheque-d29a2f0a-338a-4018-8ae8-467b9ce2c30b.data.collection ×1
+  reads.sirket-001.cekKart:cheque-d29a2f0a-338a-4018-8ae8-467b9ce2c30b.data.bankActions ×1
+  reads.sirket-001.cekKart:cheque-d29a2f0a-338a-4018-8ae8-467b9ce2c30b.data.depositAccounts ×1
+  reads.sirket-001.cekKart:cheque-d29a2f0a-338a-4018-8ae8-467b9ce2c30b.data.collections ×1
+  reads.sirket-001.cekKart:cheque-77ea5dfb-ef41-4358-aa0c-865c0584dbe6.data.deposited ×1
+  reads.sirket-001.cekKart:cheque-77ea5dfb-ef41-4358-aa0c-865c0584dbe6.data.collection ×1
+  reads.sirket-001.cekKart:cheque-77ea5dfb-ef41-4358-aa0c-865c0584dbe6.data.bankActions ×1
+  reads.sirket-001.cekKart:cheque-77ea5dfb-ef41-4358-aa0c-865c0584dbe6.data.depositAccounts ×1
+  reads.sirket-001.cekKart:cheque-77ea5dfb-ef41-4358-aa0c-865c0584dbe6.data.collections ×1
+  reads.sirket-001.portfoy.data.cheques[].deposited ×1
+  reads.sirket-001.portfoy.data.cheques[].collection ×1
+  reads.sirket-001.rapor:tahsildeki-cekler ×1
+  reads.sirket-001.rapor:tahsildeki-cekler:varsayilan ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe.data.cheques[].deposited ×5
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe.data.cheques[].collection ×5
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:portfolio.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:collected.data.cheques[].deposited ×5
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:collected.data.cheques[].collection ×5
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:collected.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:endorsed.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:bounced.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:paid.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:pending.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:open.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:closed.data.cheques[].deposited ×5
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:closed.data.cheques[].collection ×5
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:closed.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:overdue.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekListe:soon.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0da14102-78d2-4211-a443-2fe674f831b7.data.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0da14102-78d2-4211-a443-2fe674f831b7.data.collection ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0da14102-78d2-4211-a443-2fe674f831b7.data.bankActions ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0da14102-78d2-4211-a443-2fe674f831b7.data.depositAccounts ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0da14102-78d2-4211-a443-2fe674f831b7.data.collections ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-9282dad3-532f-421f-b57d-1123001d86b0.data.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-9282dad3-532f-421f-b57d-1123001d86b0.data.collection ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-9282dad3-532f-421f-b57d-1123001d86b0.data.bankActions ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-9282dad3-532f-421f-b57d-1123001d86b0.data.depositAccounts ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-9282dad3-532f-421f-b57d-1123001d86b0.data.collections ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0404d9e0-993a-4564-b727-0e6ac1c649bf.data.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0404d9e0-993a-4564-b727-0e6ac1c649bf.data.collection ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0404d9e0-993a-4564-b727-0e6ac1c649bf.data.bankActions ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0404d9e0-993a-4564-b727-0e6ac1c649bf.data.depositAccounts ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-0404d9e0-993a-4564-b727-0e6ac1c649bf.data.collections ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-41f95144-9aeb-4748-a0f1-d9b27411a20d.data.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-41f95144-9aeb-4748-a0f1-d9b27411a20d.data.collection ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-41f95144-9aeb-4748-a0f1-d9b27411a20d.data.bankActions ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-41f95144-9aeb-4748-a0f1-d9b27411a20d.data.depositAccounts ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-41f95144-9aeb-4748-a0f1-d9b27411a20d.data.collections ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-2c067fbd-088b-414a-b94f-67a5ec86e0da.data.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-2c067fbd-088b-414a-b94f-67a5ec86e0da.data.collection ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-2c067fbd-088b-414a-b94f-67a5ec86e0da.data.bankActions ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-2c067fbd-088b-414a-b94f-67a5ec86e0da.data.depositAccounts ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.cekKart:cheque-2c067fbd-088b-414a-b94f-67a5ec86e0da.data.collections ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:tahsildeki-cekler ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:tahsildeki-cekler:varsayilan ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:portfolio.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:collected.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:endorsed.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:bounced.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:paid.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:pending.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:open.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:closed.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:overdue.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.cekListe:soon.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:tahsildeki-cekler ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:tahsildeki-cekler:varsayilan ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:portfolio.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:collected.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:endorsed.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:bounced.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:paid.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:pending.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:open.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:closed.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:overdue.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.cekListe:soon.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:tahsildeki-cekler ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:tahsildeki-cekler:varsayilan ×1
+
+== YALNIZ ESKİDE OLAN ANAHTARLAR (0) ==
+
+== DEĞERİ DEĞİŞENLER (196) ==
+  reads.sirket-001.mutabakat.data.log[0].id
+     eski: "int-2cc12832-b434-491b-b97a-5ed3363c5a95"
+     yeni: "int-5bbb8900-1936-425a-aecd-2ff06c5c0089"
+  reads.sirket-001.altHesap.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.sirket-001.altHesap.data.rows[0].sub
+     eski: "102.00"
+     yeni: "101.01"
+  reads.sirket-001.altHesap.data.rows[0].account
+     eski: "102"
+     yeni: "101"
+  reads.sirket-001.altHesap.data.rows[0].name
+     eski: "Hesabı Atanmamış Eski Hareketler"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.sirket-001.altHesap.data.rows[0].debit
+     eski: 68981.65
+     yeni: 2750
+  reads.sirket-001.altHesap.data.rows[0].credit
+     eski: 1250
+     yeni: 2000
+  reads.sirket-001.altHesap.data.rows[0].balance
+     eski: 67731.65
+     yeni: 750
+  reads.sirket-001.altHesap.data.rows[1].sub
+     eski: "108.00"
+     yeni: "102.00"
+  reads.sirket-001.altHesap.data.rows[1].account
+     eski: "108"
+     yeni: "102"
+  reads.sirket-001.altHesap.data.rows[1].debit
+     eski: 9000
+     yeni: 68981.65
+  reads.sirket-001.altHesap.data.rows[1].credit
+     eski: 3000
+     yeni: 1250
+  reads.sirket-001.altHesap.data.rows[1].balance
+     eski: 6000
+     yeni: 67731.65
+  reads.sirket-001.altHesap.data.mains.length
+     eski: 2
+     yeni: 3
+  reads.sirket-001.altHesap.data.mains[0].account
+     eski: "102"
+     yeni: "101"
+  reads.sirket-001.altHesap.data.mains[0].name
+     eski: "Bankalar (Havale / EFT)"
+     yeni: "Alınan Çekler ve Senetler (Portföy)"
+  reads.sirket-001.altHesap.data.mains[0].balance
+     eski: 67731.65
+     yeni: 750
+  reads.sirket-001.altHesap.data.mains[0].subTotal
+     eski: 67731.65
+     yeni: 750
+  reads.sirket-001.altHesap.data.mains[1].account
+     eski: "108"
+     yeni: "102"
+  reads.sirket-001.altHesap.data.mains[1].name
+     eski: "Kredi Kartı Tahsilatları (POS)"
+     yeni: "Bankalar (Havale / EFT)"
+  reads.sirket-001.altHesap.data.mains[1].balance
+     eski: 6000
+     yeni: 67731.65
+  reads.sirket-001.altHesap.data.mains[1].subTotal
+     eski: 6000
+     yeni: 67731.65
+  reads.sirket-001.rapor:yevmiye.data.rows[84][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye.data.rows[86][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye.data.rows[114][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye.data.rows[118][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[32][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[44][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[84][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[94][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[110][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[124][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[139][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[145][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[147][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[153][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:yevmiye:varsayilan.data.rows[178][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[0][0]
+     eski: "102.00"
+     yeni: "101.01"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[0][1]
+     eski: "Hesabı Atanmamış Eski Hareketler"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[0][2]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[0][4]
+     eski: "68.981,65 TL"
+     yeni: "2.000,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[0][5]
+     eski: "1.250,00 TL"
+     yeni: "2.000,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[0][6]
+     eski: "67.731,65 TL"
+     yeni: "0,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[0][7]
+     eski: "Borç"
+     yeni: ""
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[1][0]
+     eski: "108.00"
+     yeni: "102.00"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[1][2]
+     eski: "108 Kredi Kartı Tahsilatları (POS)"
+     yeni: "102 Bankalar (Havale / EFT)"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[1][4]
+     eski: "9.000,00 TL"
+     yeni: "68.981,65 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[1][5]
+     eski: "3.000,00 TL"
+     yeni: "1.250,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.rows[1][6]
+     eski: "6.000,00 TL"
+     yeni: "67.731,65 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.total
+     eski: 2
+     yeni: 3
+  reads.sirket-001.rapor:alt-hesap-mizani.data.footer[4]
+     eski: "77.981,65 TL"
+     yeni: "79.981,65 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani.data.footer[5]
+     eski: "4.250,00 TL"
+     yeni: "6.250,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[0][0]
+     eski: "102.00"
+     yeni: "101.01"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[0][1]
+     eski: "Hesabı Atanmamış Eski Hareketler"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[0][2]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[0][3]
+     eski: "16.670,16 TL"
+     yeni: "0,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[0][4]
+     eski: "52.311,49 TL"
+     yeni: "2.750,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[0][5]
+     eski: "1.250,00 TL"
+     yeni: "2.000,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[0][6]
+     eski: "67.731,65 TL"
+     yeni: "750,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[1][0]
+     eski: "108.00"
+     yeni: "102.00"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[1][2]
+     eski: "108 Kredi Kartı Tahsilatları (POS)"
+     yeni: "102 Bankalar (Havale / EFT)"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[1][3]
+     eski: "0,00 TL"
+     yeni: "16.670,16 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[1][4]
+     eski: "9.000,00 TL"
+     yeni: "52.311,49 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[1][5]
+     eski: "3.000,00 TL"
+     yeni: "1.250,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.rows[1][6]
+     eski: "6.000,00 TL"
+     yeni: "67.731,65 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.total
+     eski: 2
+     yeni: 3
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.footer[4]
+     eski: "61.311,49 TL"
+     yeni: "64.061,49 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.footer[5]
+     eski: "4.250,00 TL"
+     yeni: "6.250,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.summary.length
+     eski: 3
+     yeni: 4
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.summary[0][0]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.summary[0][1]
+     eski: "67.731,65 TL"
+     yeni: "750,00 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.summary[1][0]
+     eski: "108 Kredi Kartı Tahsilatları (POS)"
+     yeni: "102 Bankalar (Havale / EFT)"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.summary[1][1]
+     eski: "6.000,00 TL"
+     yeni: "67.731,65 TL"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.summary[2][0]
+     eski: "Alt Hesap Mutabakatı"
+     yeni: "108 Kredi Kartı Tahsilatları (POS)"
+  reads.sirket-001.rapor:alt-hesap-mizani:varsayilan.data.summary[2][1]
+     eski: "Tutarlı"
+     yeni: "6.000,00 TL"
+  reads.sirket-001.rapor:cek-portfoy.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-001.rapor:cek-portfoy.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-001.rapor:cek-portfoy.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.sirket-001.rapor:cek-portfoy:varsayilan.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-001.rapor:cek-portfoy:varsayilan.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-001.rapor:cek-portfoy:varsayilan.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[0].sub
+     eski: "102.00"
+     yeni: "101.01"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[0].account
+     eski: "102"
+     yeni: "101"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[0].name
+     eski: "Hesabı Atanmamış Eski Hareketler"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[0].debit
+     eski: 66084.22
+     yeni: 2000
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[0].credit
+     eski: 1250
+     yeni: 2000
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[0].balance
+     eski: 64834.22
+     yeni: 0
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[1].sub
+     eski: "108.00"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[1].account
+     eski: "108"
+     yeni: "102"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[1].debit
+     eski: 9000
+     yeni: 66084.22
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[1].credit
+     eski: 3000
+     yeni: 1250
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.altHesap.data.rows[1].balance
+     eski: 6000
+     yeni: 64834.22
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[24][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[35][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[37][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[39][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[48][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[58][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[99][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[109][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[120][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[136][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[145][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye.data.rows[188][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye:varsayilan.data.rows[14][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye:varsayilan.data.rows[23][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye:varsayilan.data.rows[66][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye:varsayilan.data.rows[106][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye:varsayilan.data.rows[114][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye:varsayilan.data.rows[134][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:yevmiye:varsayilan.data.rows[168][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[0][0]
+     eski: "102.00"
+     yeni: "101.01"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[0][1]
+     eski: "Hesabı Atanmamış Eski Hareketler"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[0][2]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[0][4]
+     eski: "66.084,22 TL"
+     yeni: "2.000,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[0][5]
+     eski: "1.250,00 TL"
+     yeni: "2.000,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[0][6]
+     eski: "64.834,22 TL"
+     yeni: "0,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[0][7]
+     eski: "Borç"
+     yeni: ""
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[1][0]
+     eski: "108.00"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[1][2]
+     eski: "108 Kredi Kartı Tahsilatları (POS)"
+     yeni: "102 Bankalar (Havale / EFT)"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[1][4]
+     eski: "9.000,00 TL"
+     yeni: "66.084,22 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[1][5]
+     eski: "3.000,00 TL"
+     yeni: "1.250,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.rows[1][6]
+     eski: "6.000,00 TL"
+     yeni: "64.834,22 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.total
+     eski: 2
+     yeni: 3
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.footer[4]
+     eski: "75.084,22 TL"
+     yeni: "77.084,22 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani.data.footer[5]
+     eski: "4.250,00 TL"
+     yeni: "6.250,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[0][0]
+     eski: "102.00"
+     yeni: "101.01"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[0][1]
+     eski: "Hesabı Atanmamış Eski Hareketler"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[0][2]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[0][3]
+     eski: "25.755,05 TL"
+     yeni: "0,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[0][4]
+     eski: "40.329,17 TL"
+     yeni: "2.000,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[0][5]
+     eski: "1.250,00 TL"
+     yeni: "2.000,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[0][6]
+     eski: "64.834,22 TL"
+     yeni: "0,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[0][7]
+     eski: "Borç"
+     yeni: ""
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[1][0]
+     eski: "108.00"
+     yeni: "102.00"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[1][2]
+     eski: "108 Kredi Kartı Tahsilatları (POS)"
+     yeni: "102 Bankalar (Havale / EFT)"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[1][3]
+     eski: "0,00 TL"
+     yeni: "25.755,05 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[1][4]
+     eski: "9.000,00 TL"
+     yeni: "40.329,17 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[1][5]
+     eski: "3.000,00 TL"
+     yeni: "1.250,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.rows[1][6]
+     eski: "6.000,00 TL"
+     yeni: "64.834,22 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.total
+     eski: 2
+     yeni: 3
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.footer[4]
+     eski: "49.329,17 TL"
+     yeni: "51.329,17 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:alt-hesap-mizani:varsayilan.data.footer[5]
+     eski: "4.250,00 TL"
+     yeni: "6.250,00 TL"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:cek-portfoy.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:cek-portfoy.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:cek-portfoy.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:cek-portfoy:varsayilan.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:cek-portfoy:varsayilan.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.rapor:cek-portfoy:varsayilan.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[71][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[82][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[97][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[105][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[113][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[121][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[150][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[172][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye.data.rows[196][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[18][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[40][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[64][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[69][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[71][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[98][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[100][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[132][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[141][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[164][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:yevmiye:varsayilan.data.rows[188][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:cek-portfoy.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:cek-portfoy.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:cek-portfoy.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:cek-portfoy:varsayilan.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:cek-portfoy:varsayilan.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.rapor:cek-portfoy:varsayilan.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye.data.rows[60][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye.data.rows[93][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye.data.rows[101][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye.data.rows[105][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye.data.rows[117][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye:varsayilan.data.rows[60][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye:varsayilan.data.rows[93][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye:varsayilan.data.rows[101][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye:varsayilan.data.rows[105][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:yevmiye:varsayilan.data.rows[117][3]
+     eski: "102"
+     yeni: "102.00"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:cek-portfoy.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:cek-portfoy.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:cek-portfoy.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:cek-portfoy:varsayilan.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:cek-portfoy:varsayilan.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.rapor:cek-portfoy:varsayilan.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"

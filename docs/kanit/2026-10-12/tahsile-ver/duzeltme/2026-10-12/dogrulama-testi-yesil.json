@@ -1,0 +1,32 @@
+{
+  "ad": "dogrulama-testi-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-210-kapi-plan.test.mjs",
+  "commit": "cf74e9c50d3ab1914e74938ec51815d376484c8c",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T09:59:06.719Z",
+  "sure_sn": 8.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 40,
+    "gecen": 40,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/duzeltme/2026-10-12/dogrulama-testi-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "484212adb952fd185d72f0cbd580ee2e58c8184e4aacc90552c674185f1924da",
+  "ham_cikti_bayt": 16277
+}

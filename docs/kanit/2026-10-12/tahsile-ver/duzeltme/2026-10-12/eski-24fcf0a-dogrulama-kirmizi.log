@@ -1,0 +1,724 @@
+TAP version 13
+# Subtest: T1/D6 — tahsil kaydı yazımları kapının dokunulan varlıklar yolundan geçer (üretim ayarı)
+    # Subtest: Tahsile Ver, Bankadan Geri Al, tahsildeki evrakın tahsili, karşılıksızı ve karşılıksızın Geri Al'ı: süzgeç yolu; Mutabakat tamam
+    not ok 1 - Tahsile Ver, Bankadan Geri Al, tahsildeki evrakın tahsili, karşılıksızı ve karşılıksızın Geri Al'ı: süzgeç yolu; Mutabakat tamam
+      ---
+      duration_ms: 51.786818
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsile ver: kapı yolu full (cheque_collections yazımı)
+        
+        'full' !== 'scoped'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'scoped'
+      actual: 'full'
+      operator: 'strictEqual'
+      stack: |-
+        scoped (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:66:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:72:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - T1/D6 — tahsil kaydı yazımları kapının dokunulan varlıklar yolundan geçer (üretim ayarı)
+  ---
+  duration_ms: 462.888118
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:56:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Kapı — tahsil kaydını kapı dışından bozma: dokunulan varlıklar yolu yakalar (eşdeğerlik ihlali değil)
+    # Subtest: geri alınmış kayıt yeniden bekleyen; verilme tarihi alıştan önce; verilme başlığı iptal; tahsildeki evrakın tutarı
+    not ok 1 - geri alınmış kayıt yeniden bekleyen; verilme tarihi alıştan önce; verilme başlığı iptal; tahsildeki evrakın tutarı
+      ---
+      duration_ms: 28.851059
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:114:3'
+      failureType: 'testCodeFailure'
+      error: 'verilme başlığı iptal: süzgeç temiz dedi, tam kapı reddetti (eşdeğerlik ihlali)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        tampered (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:110:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:117:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - Kapı — tahsil kaydını kapı dışından bozma: dokunulan varlıklar yolu yakalar (eşdeğerlik ihlali değil)
+  ---
+  duration_ms: 446.788768
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:85:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02
+    # Subtest: carili senet: 08.10'da B 120 / A 101.02 tek madde; Alt Hesap Mizanı 101.01 hareketsiz, 101.02 alacak 3.000
+    not ok 1 - carili senet: 08.10'da B 120 / A 101.02 tek madde; Alt Hesap Mizanı 101.01 hareketsiz, 101.02 alacak 3.000
+      ---
+      duration_ms: 58.93063
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:130:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        08.10 yevmiyesi tek madde
+        + actual - expected
+        
+          [
+            [
+              '120',
+              3000,
+              0
+            ],
+            [
+        +     '101',
+        -     '101.02',
+              0,
+              3000
+            ],
+        +   [
+        +     '101',
+        +     3000,
+        +     0
+        +   ],
+        +   [
+        +     '101',
+        +     0,
+        +     3000
+        +   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '120'
+          1: 3000
+          2: 0
+        1:
+          0: '101.02'
+          1: 0
+          2: 3000
+      actual:
+        0:
+          0: '120'
+          1: 3000
+          2: 0
+        1:
+          0: '101'
+          1: 0
+          2: 3000
+        2:
+          0: '101'
+          1: 3000
+          2: 0
+        3:
+          0: '101'
+          1: 0
+          2: 3000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:135:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: carisiz çek ve taksite sayılmış çek: karşılıksız maddesi A 101.02; 101.01 / 101.02 sıfır; Mutabakat tamam
+    not ok 2 - carisiz çek ve taksite sayılmış çek: karşılıksız maddesi A 101.02; 101.01 / 101.02 sıfır; Mutabakat tamam
+      ---
+      duration_ms: 41.837512
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        carisiz: B 770 / A 101.02 tek madde
+        + actual - expected
+        
+          [
+            [
+              '770',
+              1500,
+              0
+            ],
+            [
+        +     '101',
+        -     '101.02',
+              0,
+              1500
+            ],
+        +   [
+        +     '101',
+        +     1500,
+        +     0
+        +   ],
+        +   [
+        +     '101',
+        +     0,
+        +     1500
+        +   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '770'
+          1: 1500
+          2: 0
+        1:
+          0: '101.02'
+          1: 0
+          2: 1500
+      actual:
+        0:
+          0: '770'
+          1: 1500
+          2: 0
+        1:
+          0: '101'
+          1: 0
+          2: 1500
+        2:
+          0: '101'
+          1: 1500
+          2: 0
+        3:
+          0: '101'
+          1: 0
+          2: 1500
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:152:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02
+  ---
+  duration_ms: 415.575511
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:123:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T3, T4, G1 — Yevmiye ve İşlem Kartı alt hesapları; Alt Hesap Mizanı'nda 101
+    # Subtest: T4: hiç tahsile verilmemiş şirkette 101.01 = 2.000 ve 101 ana hesabı
+    not ok 1 - T4: hiç tahsile verilmemiş şirkette 101.01 = 2.000 ve 101 ana hesabı
+      ---
+      duration_ms: 5.005071
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        101.01: ["102.01","102.02"]
+        + actual - expected
+        
+        + undefined
+        - 2000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:175:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3: Tahsile Ver maddesi Yevmiye'de 101.02 borç / 101.01 alacak; tahsil maddesi 102.01 borç / 101.02 alacak
+    not ok 2 - T3: Tahsile Ver maddesi Yevmiye'de 101.02 borç / 101.01 alacak; tahsil maddesi 102.01 borç / 101.02 alacak
+      ---
+      duration_ms: 16.282119
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        +     '101',
+        -     '101.02',
+              2000,
+              0
+            ],
+            [
+        +     '101',
+        -     '101.01',
+              0,
+              2000
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '101.02'
+          1: 2000
+          2: 0
+        1:
+          0: '101.01'
+          1: 0
+          2: 2000
+      actual:
+        0:
+          0: '101'
+          1: 2000
+          2: 0
+        1:
+          0: '101'
+          1: 0
+          2: 2000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:182:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: G1: İşlem Kartı — Tahsile Ver başlığında 101.02 / 101.01 satırları; tahsil olayında A 101.02 (adlarıyla)
+    not ok 3 - G1: İşlem Kartı — Tahsile Ver başlığında 101.02 / 101.01 satırları; tahsil olayında A 101.02 (adlarıyla)
+      ---
+      duration_ms: 4.801541
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Tahsile Ver kartı: []
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     '101.02',
+        -     'D',
+        -     200000
+        -   ],
+        -   [
+        -     '101.01',
+        -     'C',
+        -     200000
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '101.02'
+          1: 'D'
+          2: 200000
+        1:
+          0: '101.01'
+          1: 'C'
+          2: 200000
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:192:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - T3, T4, G1 — Yevmiye ve İşlem Kartı alt hesapları; Alt Hesap Mizanı'nda 101
+  ---
+  duration_ms: 359.703272
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:163:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T5, T6 — tahsildeki çekin beklenen günü: zil/takvim, Vade Takip, Nakit Akış (kaynak)
+    # Subtest: zil/takvim (dues): D-1 12.10 'Bankada Tahsilde', D-2 10.10 'Tahsil Edilecek' — Vade Takip ile aynı günler
+    not ok 1 - zil/takvim (dues): D-1 12.10 'Bankada Tahsilde', D-2 10.10 'Tahsil Edilecek' — Vade Takip ile aynı günler
+      ---
+      duration_ms: 8.885824
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:214:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              'D-1',
+        +     '2026-10-10',
+        +     2,
+        +     false
+        -     '2026-10-12',
+        -     4,
+        -     true
+            ],
+            [
+              'D-2',
+              '2026-10-10',
+              2,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'D-1'
+          1: '2026-10-12'
+          2: 4
+          3: true
+        1:
+          0: 'D-2'
+          1: '2026-10-10'
+          2: 2
+          3: false
+      actual:
+        0:
+          0: 'D-1'
+          1: '2026-10-10'
+          2: 2
+          3: false
+        1:
+          0: 'D-2'
+          1: '2026-10-10'
+          2: 2
+          3: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:217:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Nakit Akış: kaynak özetinde tahsildeki 1.000 ve portföydeki 300 ayrı; Excel'de Kaynak 'Tahsildeki Çek ve Senet'
+    not ok 2 - Nakit Akış: kaynak özetinde tahsildeki 1.000 ve portföydeki 300 ayrı; Excel'de Kaynak 'Tahsildeki Çek ve Senet'
+      ---
+      duration_ms: 12.520638
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:222:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"cheque:in":1300}
+        + actual - expected
+        
+        + undefined
+        - 1000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:225:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 5 - T5, T6 — tahsildeki çekin beklenen günü: zil/takvim, Vade Takip, Nakit Akış (kaynak)
+  ---
+  duration_ms: 370.011456
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:202:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T7, T9 — Çek / Senet raporları ve Tahsildeki Çek ve Senetler
+    # Subtest: T7: status=deposited yalnız tahsildeki; status=portfolio satır toplamı = özet 'Portföyde (alınan)'; 'Bankada Tahsilde' ayrı
+    not ok 1 - T7: status=deposited yalnız tahsildeki; status=portfolio satır toplamı = özet 'Portföyde (alınan)'; 'Bankada Tahsilde' ayrı
+      ---
+      duration_ms: 5.236649
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:249:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'R-1',
+            'R-2',
+        +   'R-3'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'R-2'
+      actual:
+        0: 'R-1'
+        1: 'R-2'
+        2: 'R-3'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:252:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T9: Çek / Senet Hareketleri'nde Bankaya Tahsile Verildi ve Bankadan Geri Alındı; Tahsildeki Çek ve Senetler raporu = 101.02
+    not ok 2 - T9: Çek / Senet Hareketleri'nde Bankaya Tahsile Verildi ve Bankadan Geri Alındı; Tahsildeki Çek ve Senetler raporu = 101.02
+      ---
+      duration_ms: 5.248934
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:262:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'R-2',
+        -     'Bankaya Tahsile Verildi'
+        -   ],
+        -   [
+        -     'R-3',
+        -     'Bankaya Tahsile Verildi'
+        -   ],
+        -   [
+        -     'R-3',
+        -     'Bankadan Geri Alındı'
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'R-2'
+          1: 'Bankaya Tahsile Verildi'
+        1:
+          0: 'R-3'
+          1: 'Bankaya Tahsile Verildi'
+        2:
+          0: 'R-3'
+          1: 'Bankadan Geri Alındı'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:266:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 6 - T7, T9 — Çek / Senet raporları ve Tahsildeki Çek ve Senetler
+  ---
+  duration_ms: 397.420436
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:234:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: T8/D5, D3, D4 — geçiş kuralları
+    # Subtest: T8/D5: hesabın açılışından önce tahsile verme 409; açılış günü 200; açılışı ilk tahsile vermeden sonraya alma 409
+    not ok 1 - T8/D5: hesabın açılışından önce tahsile verme 409; açılış günü 200; açılışı ilk tahsile vermeden sonraya alma 409
+      ---
+      duration_ms: 26.77398
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:283:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılıştan önce tahsile ver: 200 {"id":"cheque-1afb9810-fca6-4a43-a15b-3c431fcabdf0","direction":"in","instrument":"cheque","serialNo":"O-1","bank":"","drawer":"","accountId":"account-f2226937-15d3-40f3-91e6-3801eb7174ac","planId":"","amount":2000,"issueDate":"2026-09-20","dueDate":"2026-10-31","status":"portfolio","statusDate":"2026-09-20","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","createdBy":"user-dba7e5 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:286:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D3: karşılıksızdan sonra hesap pasif ya da Vadeli → karşılıksızı Geri Al reddedilir; hesap etkinleşince yeniden tahsilde
+    not ok 2 - D3: karşılıksızdan sonra hesap pasif ya da Vadeli → karşılıksızı Geri Al reddedilir; hesap etkinleşince yeniden tahsilde
+      ---
+      duration_ms: 77.044462
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:296:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        pasif hesapta karşılıksızı geri al: 200 {"id":"cheque-c8e260e6-edf0-4cf5-b023-e6c6eac44052","direction":"in","instrument":"cheque","serialNo":"D3-A","bank":"","drawer":"","accountId":"account-f2226937-15d3-40f3-91e6-3801eb7174ac","planId":"","amount":400,"issueDate":"2026-10-05","dueDate":"2026-10-31","status":"portfolio","statusDate":"2026-10-05","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","createdBy":"user-dba7e5 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:304:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D4: tahsil kaydı geri alınmış evrakın alış tarihi veriliş gününden sonraya alınamaz (409); veriliş günü olur
+    not ok 3 - D4: tahsil kaydı geri alınmış evrakın alış tarihi veriliş gününden sonraya alınamaz (409); veriliş günü olur
+      ---
+      duration_ms: 44.550992
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:319:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        alış tarihi tahsile vermeden sonra: 200 {"id":"cheque-ba53de57-cc88-4231-ac2d-73e281ea74df","direction":"in","instrument":"cheque","serialNo":"D4-1","bank":"","drawer":"","accountId":"account-f2226937-15d3-40f3-91e6-3801eb7174ac","planId":"","amount":1000,"issueDate":"2026-10-08","dueDate":"2026-10-31","status":"portfolio","statusDate":"2026-10-08","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","createdBy":"user-dba7e 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:324:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 7 - T8/D5, D3, D4 — geçiş kuralları
+  ---
+  duration_ms: 456.110112
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:276:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: D1/D2 — v2.1.0'a dönüp tahsildeki evraka dokunma; bu dalda açılış onarımı (h)
+    # Subtest: D1 silme (statusDate alış günü 03.10 < veriliş 06.10): kapanış veriliş gününe; Mutabakat tamam
+    not ok 1 - D1 silme (statusDate alış günü 03.10 < veriliş 06.10): kapanış veriliş gününe; Mutabakat tamam
+      ---
+      duration_ms: 765.552174
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:387:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        sil: onarım sonrası Mutabakat [["cheque:collections",["chqcol-0mv51uagg0000-ea792172-e838-4e42 (withdrawn): kapanış tarihi ya da başlığı eksik"]]]
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        oldVersion (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:371:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:388:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D1 veriliş gününden önceki tarihle ciro ve tahsil: kapanış veriliş gününe; Mutabakat tamam
+    not ok 2 - D1 veriliş gününden önceki tarihle ciro ve tahsil: kapanış veriliş gününe; Mutabakat tamam
+      ---
+      duration_ms: 603.910104
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:391:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ciro: onarım sonrası Mutabakat [["cheque:collections",["chqcol-0mv51ub310000-f88e92bc-f723-4d26 (withdrawn): kapanış tarihi ya da başlığı eksik"]]]
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        oldVersion (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:371:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:392:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D2 tahsildeki evrakın tutarı 800 → 950 ve alış tarihi 08.10'a: verilme başlığı onarılır; Mutabakat tamam
+    not ok 3 - D2 tahsildeki evrakın tutarı 800 → 950 ve alış tarihi 08.10'a: verilme başlığı onarılır; Mutabakat tamam
+      ---
+      duration_ms: 568.097391
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:397:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tutar: onarım sonrası Mutabakat [["cheque:collections",["101.01: defter 150 / portföydeki evrak 0","101.02: defter 800 / tahsildeki evrak 950","chqcol-0mv51ubjj0000-bc308e5d-9d5b-415f (pending): evrak tutarı 950 / verilme 800"]]]
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        oldVersion (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:371:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:398:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 8 - D1/D2 — v2.1.0'a dönüp tahsildeki evraka dokunma; bu dalda açılış onarımı (h)
+  ---
+  duration_ms: 1938.345286
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-220-tahsile-ver-dogrulama.test.mjs:386:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..8
+# tests 17
+# suites 8
+# pass 0
+# fail 17
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5251.530138

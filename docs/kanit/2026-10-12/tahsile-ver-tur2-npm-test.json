@@ -1,0 +1,32 @@
+{
+  "ad": "tahsile-ver-tur2-npm-test",
+  "komut": "npm test",
+  "commit": "4d8003aa944e8e3d0ac62c119e89e0ea3c10acd7",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 12,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T11:39:27.752Z",
+  "sure_sn": 973.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2162,
+    "gecen": 2162,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver-tur2-npm-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "6e9ed64df7a1cfc3219e0fc55f32ca33c31a1a224fda8ae63502922f7ce29c28",
+  "ham_cikti_bayt": 735774
+}

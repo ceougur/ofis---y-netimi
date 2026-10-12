@@ -1,0 +1,53 @@
+TAP version 13
+# (node:24890) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [t2-eski] acilis eski sürüm adımı: {"status":200}
+# [t2-eski] acilis hesap: {"status":"active","kind":"demand","opening":"2026-10-07","deleted":0}
+# [t2-eski] acilis kayıt (onarım sonrası): {"status":"pending","given":"2026-10-06","closed":""}
+# [t2-eski] acilis onarım özeti: ""
+# [t2-eski] acilis Mutabakat: {"ok":false,"bad":[["cheque:collections",["chqcol-0mv53dure0000-bd3e4aa5-cec5-45d7 (pending): verilme tarihi (06.10.2026) hesabın açılışından (07.10.2026) önce"]]]}
+# [t2-eski] acilis çek kartı: {"statusLabel":"Bankada Tahsilde · Ziraat Bankası · 06.10.2026","bankActions":[{"key":"bank-withdraw","label":"Bankadan Geri Al"}],"actions":["collect","bounce"]}
+# [t2-eski] acilis Tahsil Edildi: {"status":200}
+# [t2-eski] acilis sonra yeni çek: {"status":200}
+# [t2-eski] acilis yeni sürümde Açılışı Düzelt 01.10'a (elle çıkış yolu): {"status":200}
+# [t2-eski] acilis Mutabakat son: {"ok":true,"bad":[]}
+# Subtest: v2.1.0'a dönüp tahsildeki evrakın banka hesabına dokunma
+    # Subtest: E1 Açılışı Düzelt: açılış 01.10 → 07.10 (veriliş 06.10'dan sonra)
+    ok 1 - E1 Açılışı Düzelt: açılış 01.10 → 07.10 (veriliş 06.10'dan sonra)
+      ---
+      duration_ms: 1082.224142
+      type: 'test'
+      ...
+    # Subtest: E2 hesabı sil
+    ok 2 - E2 hesabı sil # SKIP
+      ---
+      duration_ms: 0.437368
+      type: 'test'
+      ...
+    # Subtest: E3 hesabı pasife al
+    ok 3 - E3 hesabı pasife al # SKIP
+      ---
+      duration_ms: 0.480791
+      type: 'test'
+      ...
+    # Subtest: E4 hesap türü Vadeli
+    ok 4 - E4 hesap türü Vadeli # SKIP
+      ---
+      duration_ms: 0.097576
+      type: 'test'
+      ...
+    1..4
+ok 1 - v2.1.0'a dönüp tahsildeki evrakın banka hesabına dokunma
+  ---
+  duration_ms: 1084.655641
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 3
+# todo 0
+# duration_ms 1491.106928

@@ -1,0 +1,64 @@
+(node:12157) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[d4] A bekleyenken pasif: {"status":409,"code":"bank-cheques-pending","error":"Bu hesapta bankaya tahsile verilmiş 1 çek/senet var; hesap pasife alınamaz. Önce evrakı tahsil edin ya da Çek / Senet'ten Bankadan Geri Al'ın."}
+[d4] A karşılıksızdan sonra pasif: {"status":200}
+[d4] A karşılıksızı geri al: {"status":200}
+[d4] A kayıt / hesap: {"status":"pending","accountStatus":"passive","kind":"demand","currency":"TRY"}
+[d4] A tahsil: {"status":400,"code":"bank-account-invalid","error":"Akbank · Tahsil A pasif; bu hesaba hareket girmek için önce Banka → Hesaplar'dan Etkinleştir."}
+[d4] A mutabakat: {"ok":true,"bad":[]}
+▶ D4 — kapanmış tahsil kaydı Geri Al ile yeniden açılırken hesap uygunluğu
+  ✖ A: tahsile ver → karşılıksız → hesabı PASİFE al → karşılıksızı Geri Al → kayıt pasif hesapta yeniden 'Bankada Tahsilde' mi? (214.408295ms)
+[d4] B tür → Vadeli: {"status":200}
+[d4] B karşılıksızı geri al: {"status":200}
+[d4] B kayıt / hesap: {"status":"pending","accountStatus":"active","kind":"time","currency":"TRY"}
+[d4] B tahsil: {"status":400,"code":"bank-account-invalid","error":"Akbank · Tahsil B: havale/EFT yalnız Vadesiz, Ticari ya da Diğer TL hesapla yapılır."}
+[d4] B mutabakat: {"ok":true,"bad":[]}
+  ✖ B: tahsile ver → karşılıksız → hesap türü Vadesiz → Vadeli → karşılıksızı Geri Al → kayıt Vadeli hesapta mı? (181.501844ms)
+[d4] C tahsilden sonra pasif: {"status":200}
+[d4] C tahsili geri al: {"status":400,"code":"bank-account-passive","error":"Akbank · Tahsil C hesabı pasif; bu hesabın bakiyesini değiştiren işlem (silme, tutar, tarih, yol ya da hesap değişikliği, geri yükleme) yapılmaz. Önce Banka → Hesaplar'dan Etkinleştir."}
+[d4] C kayıt / hesap: {"status":"collected","accountStatus":"passive","kind":"demand","currency":"TRY"}
+[d4] C mutabakat: {"ok":true,"bad":[]}
+  ✔ C: tahsile ver → tahsil → hesabı pasife al → tahsili Geri Al → kayıt pasif hesapta mı? (174.409068ms)
+✖ D4 — kapanmış tahsil kaydı Geri Al ile yeniden açılırken hesap uygunluğu (1177.383628ms)
+ℹ tests 3
+ℹ suites 1
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1699.10358
+
+✖ failing tests:
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d4-yeniden-ac.test.mjs:25:3
+✖ A: tahsile ver → karşılıksız → hesabı PASİFE al → karşılıksızı Geri Al → kayıt pasif hesapta yeniden 'Bankada Tahsilde' mi? (214.408295ms)
+  AssertionError [ERR_ASSERTION]: Geri Al tahsildeki evrakı PASİF hesapta yeniden açtı (kural: tahsildeki evrakın hesabı pasif olamaz)
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d4-yeniden-ac.test.mjs:42:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d4-yeniden-ac.test.mjs:45:3
+✖ B: tahsile ver → karşılıksız → hesap türü Vadesiz → Vadeli → karşılıksızı Geri Al → kayıt Vadeli hesapta mı? (181.501844ms)
+  AssertionError [ERR_ASSERTION]: Geri Al tahsildeki evrakı tahsile UYGUN OLMAYAN (Vadeli) hesapta yeniden açtı
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d4-yeniden-ac.test.mjs:60:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

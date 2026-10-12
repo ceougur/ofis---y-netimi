@@ -1,0 +1,38 @@
+GERİLEME VE BÜTÜNLÜK — bağımsız doğrulayıcı, TUR 2 (12.10.2026). Kod: 4d8003a (worktree-wf_d306f93b-be4-1). Kod değiştirilmedi, commit yok.
+Klasör: docs/kanit/2026-10-12/tahsile-ver/gerileme-tur2 (KANIT_DIR). Eski kod: test/guvenilirlik/surumler.mjs checkoutTag (git archive, ayrı kopya).
+
+1. KANIT_DIR=… node tools/kanit.mjs kos tur2-npm-test -- npm test
+   → GEÇTİ · çıkış 0 · tests 2136 / pass 2136 / fail 0 / cancelled 0 / skipped 0 / todo 0 (1092 sn). Kayıt 2026-10-12/tur2-npm-test.{json,log}
+2. KANIT_DIR=… node tools/kanit.mjs kos tur2-mutabakat-1000x2 -- npm run test:mutabakat -- --islem 1000
+   → GEÇTİ · çıkış 0 · 2/2 tohum "her işlemden sonra tutarlı" (cek-tahsile-ver 24+15, cek-bankadan-geri-al 5+5). Kayıt 2026-10-12/tur2-mutabakat-1000x2.*
+3. Kâhin (ayrı kopya: git archive 4d8003a → scratchpad/gerileme-tur2-4d8003a-kopya; worktree'deki test/bagimsiz/cikti kirlenmesin):
+   python3 -I test/bagimsiz/fark.py --senaryo test/bagimsiz/senaryolar/kabul-1-16.json → a=0 b=0 program=0, 182 yaprak, fark 0 (kahin-kabul-1-16.out)
+   --tohum 1 → 450 fark, yalnız bilinen sınıflar KASA-ACILIS-649 38, KDV-DAHIL-ISKONTO 187, TUREV 225 (tur 1 ve 10.10 tabanıyla aynı) (kahin-tohum1.out)
+   --tohum 1 --notr iskonto_dahil,kasa_acilis → 7812 yaprak fark 0 (kahin-tohum1-notr.out)
+4. Fark testi (v2.1.0 gerçek kodu ↔ 4d8003a), kos-fark.sh:
+   a) fark-cek-akislari.mjs (tur 1 betiği; 50 API adımı, 139 okuma) → karsilastirma-cek.txt: adım yanıtlarında değişen değer 0. Değişenler yalnız
+      bilinçli olanlar: Yevmiye "Hesap" kolonu alt hesap (101→101.01, 102→102.01/102.02; alt hesap atılınca satırların çoklu kümesi birebir aynı —
+      yevmiye-coklu.mjs çıkış 0), Alt Hesap Mizanı'nda 101.01 satırı + mains'te 101 (T4), Çek Portföy raporu özetinde "Bankada Tahsilde" satırı (T7),
+      Mutabakat Testi'ne cheque:collections satırı (77. denetim), Defter Mutabakatı raporunda aynı satır.
+   b) fark-fikstur.mjs 5 eski sürüm fikstürü (2.0.26-turler/zincir/iade, 2.0.25-zincir, 2.0.21-zincir; 4 şirket) → karsilastirma-<fikstür>.txt:
+      yine yalnız Alt Hesap Mizanı 101.01, Çek Portföy özeti, Yevmiye alt hesap kodu (102.00). Mutabakat Testi sonuçları iki kodda birebir aynı
+      (aynı 62 denetim; sirket-001'de iki kodda da yalnız eski dates:future:cheque_events).
+   c) fark-fikstur-yazim.mjs (YENİ, tur 2): 2.0.26-turler fikstüründe 4 şirketin eski çek/senetlerinde mevcut akışlar (Geri Al, nakit Tahsil, Ciro,
+      Karşılıksız, her birinin Geri Al'ı, Ödendi, açıklama düzeltme, yeni çek + havale tahsil + sil 409 + geri al + sil) 153 adım; gateVerify açık.
+      karsilastirma-yazim-turler.txt: DEĞERİ DEĞİŞEN 0, eskide olup yenide olmayan 0 (yalnız yeni alanlar). 136 adım 200, ret kodları iki kodda aynı.
+   Ham çıktılar: fark-ham-ciktilar.tgz
+5. Sonda: sonda-islem-karti-mevcut.mjs → mevcut çek havale tahsilinin İşlem Kartı: eski "101 / Alt Hesap —", yeni "101.01 Portföydeki Çek ve
+   Senetler" (G1 ile bilinçli görünüm değişikliği; istemci data-gl ana hesabı okur).
+6. HIZ (olcum/): veri.mjs 3.000 ve 15.000 alınan çek (yarısı havale/nakit tahsil, %10 ciro, %10 karşılıksız; Bankaya Tahsile Ver KULLANILMADI,
+   şema aynı); olc.mjs her ölçümde taze veri kopyası, eski↔yeni iki tur (kos-olc.sh, kos-olc-15000.sh). Ortamda başka ajanlar da koşuyordu (yük 2–3,5);
+   karşılaştırma aynı anda sıralı ve iki turlu. Sonuç ozet-15000.txt:
+     bank/sub-trial (Banka → Alt Hesap Mizanı)   3.000 çek: 3–4 ms → 92–136 ms ; 15.000 çek: 3 ms → 690–713 ms
+     rapor alt-hesap-mizani (Rapor Merkezi)       3.000 çek: 11–12 → 105–119 ms ; 15.000 çek: 32–33 → 630–734 ms
+     öbür uçlar (Yevmiye, Ana Defter, Mutabakat Testi, çek listesi/kartı, Nakit Akış, Vade Takip, zil, çek yazımları) gürültü içinde aynı.
+   Kök neden deneyi (ayrı kopya scratchpad/gerileme-tur2-4d8003a-deney; yalnız subTrialData'daki 101 bloğu kapatıldı): 15.000'de 3 ms / 30 ms
+   (olc15000-deney-101kapali.json) → süre tamamen server/lib/bank/accounts.mjs subTrialData'nın her istekte bütün alınan çekler için
+   ledger.build({ cheques: ids }) kurmasından (T4 düzeltmesi, cf74e9c). Rapor iş parçacığına gitmez (worker yalnız banka-bakiye/hareket/masraf):
+   ana iş parçacığını tutar.
+7. Birleşme çakışması (salt okuma): git merge-tree --write-tree --name-only <dal> HEAD
+   claude/hopeful-goodall-6nmtcj (7a9e132): CONFLICT server/lib/integrity.mjs, server/routes/cheques.mjs (2), server/routes/overview.mjs, test/mutabakat/motor.mjs (3)
+   worktree-agent-a33a31d3999c1d50c (c9d091f, POS İz 3): ek olarak server/routes/report-center.mjs, test/banka-210-ertelenen, banka-210-raporlar, kullanici-yetki-210

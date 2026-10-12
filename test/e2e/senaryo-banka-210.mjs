@@ -2479,11 +2479,13 @@ try {
     await shot(admin, "rapor-banka-masraf");
   });
 
-  await step("45. Alt Hesap Mizanı: 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak)", async () => {
+  // 2.2.0 (doğrulama T4, bilerek güncellendi): alınan evrakın 101.01 satırı da görünür — adım 34'teki çek (3.000) alınıp aynı gün tahsil edildi:
+  // borç = alacak = 3.000, bakiye 0.
+  await step("45. Alt Hesap Mizanı: 101.01 0 (çek alınıp tahsil edildi) · 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak)", async () => {
     await admin.click(`${modal} [data-rc-list] [data-report="alt-hesap-mizani"]`);
-    const data = await waitPreview(admin, view => view.rows.length === 4);
+    const data = await waitPreview(admin, view => view.rows.length === 5);
     const bal = sub => { const cells = data.rows.find(row => row[0] === sub); return cells ? `${cells[data.heads.indexOf("Bakiye")]} ${cells[data.heads.indexOf("Yön")]}` : "yok"; };
-    ok(bal("102.00") === "5.000,00 TL Borç" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
+    ok(bal("101.01") === "0,00 TL " && bal("102.00") === "5.000,00 TL Borç" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
     ok(data.summary["Alt Hesap Mutabakatı"] === "Tutarlı", "ana hesaplar alt hesaplarının toplamına eşit");
     await shot(admin, "rapor-alt-hesap-mizani");
   });

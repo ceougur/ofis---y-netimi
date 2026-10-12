@@ -1,0 +1,62 @@
+en-kucuk-ACILIS-EKSI-KMH: çıkış a=0 b=0 program=0 · karşılaştırılan 6 · atlanan 0 · fark 0 {}
+  cikis=0
+en-kucuk-BANKA-EKSI-KODU: çıkış a=0 b=0 program=0 · karşılaştırılan 15 · atlanan 0 · fark 0 {}
+  cikis=0
+en-kucuk-IADE-KAPAMA: çıkış a=0 b=0 program=0 · karşılaştırılan 19 · atlanan 0 · fark 0 {}
+  cikis=0
+en-kucuk-KAHIN-A-YINELEME-SIRASI: çıkış a=0 b=0 program=0 · karşılaştırılan 18 · atlanan 0 · fark 0 {}
+  cikis=0
+en-kucuk-KAHIN-B-KASA-HAREKET-SIL: çıkış a=0 b=0 program=0 · karşılaştırılan 5 · atlanan 0 · fark 0 {}
+  cikis=0
+en-kucuk-KAHIN-K4-YINELENEN-AD: çıkış a=0 b=0 program=0 · karşılaştırılan 24 · atlanan 0 · fark 0 {}
+  cikis=0
+en-kucuk-KART-HESABI-BAGLANMIYOR: çıkış a=0 b=0 program=0 · karşılaştırılan 23 · atlanan 0 · fark 0 {}
+  cikis=0
+  KASA-ACILIS-649                                                 2 yaprak  {'A=B≠P': 2}
+  cikis=0
+en-kucuk-KASA-ISTEK-KIMLIGI: çıkış a=0 b=0 program=0 · karşılaştırılan 9 · atlanan 0 · fark 0 {}
+  cikis=0
+  TUREV:KDV-DAHIL-ISKONTO                                         4 yaprak  {'A=B≠P': 4}
+  cikis=0
+en-kucuk-KOSUCU-ALIS-YINELEME-NUMARA: çıkış a=0 b=0 program=0 · karşılaştırılan 18 · atlanan 0 · fark 0 {}
+  cikis=0
+en-kucuk-KREDI-ANAPARA-ASIMI: çıkış a=2 b=2 program=0 · karşılaştırılan None · atlanan None · fark None None
+  cikis=1
+en-kucuk-VADELI-HESAP-FIS: çıkış a=0 b=0 program=0 · karşılaştırılan 11 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d1-a: çıkış a=0 b=0 program=0 · karşılaştırılan 23 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d1-b: çıkış a=0 b=0 program=0 · karşılaştırılan 19 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d1-c: çıkış a=0 b=0 program=0 · karşılaştırılan 27 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d1-d: çıkış a=0 b=0 program=0 · karşılaştırılan 23 · atlanan 0 · fark 0 {}
+  cikis=0
+  KASA-ACILIS-649                                                 2 yaprak  {'A=B≠P': 2}
+  cikis=0
+  KASA-ACILIS-649                                                 2 yaprak  {'A=B≠P': 2}
+  cikis=0
+s2-d1-g: çıkış a=0 b=0 program=0 · karşılaştırılan 20 · atlanan 6 · fark 0 {}
+  cikis=0
+s2-d1-h: çıkış a=0 b=0 program=0 · karşılaştırılan 27 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d3-a: çıkış a=0 b=0 program=0 · karşılaştırılan 11 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d4-a: çıkış a=0 b=0 program=0 · karşılaştırılan 18 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d4-b: çıkış a=0 b=0 program=0 · karşılaştırılan 24 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d4-c: çıkış a=0 b=0 program=0 · karşılaştırılan 14 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d5-a: çıkış a=0 b=0 program=0 · karşılaştırılan 12 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d6-a: çıkış a=0 b=0 program=0 · karşılaştırılan 13 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d6-b: çıkış a=2 b=2 program=0 · karşılaştırılan None · atlanan None · fark None None
+  cikis=1
+s2-d6-c: çıkış a=0 b=0 program=0 · karşılaştırılan 11 · atlanan 0 · fark 0 {}
+  cikis=0
+s2-d7-a: çıkış a=2 b=2 program=0 · karşılaştırılan None · atlanan None · fark None None
+  cikis=1
+  KASA-ACILIS-649                                                 2 yaprak  {'A=B≠P': 2}
+  cikis=0

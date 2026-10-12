@@ -1,0 +1,32 @@
+{
+  "ad": "tur2-degisen-testler",
+  "komut": "node --test test/banka-220-tahsile-ver.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-onarim.test.mjs test/banka-210-raporlar.test.mjs",
+  "commit": "4d8003aa944e8e3d0ac62c119e89e0ea3c10acd7",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T10:13:39.957Z",
+  "sure_sn": 10.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici-2/2026-10-12/tur2-degisen-testler.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "453c57e0fd79d0b2bf4949b0b97d5bd0b4ad36dd208174e95d60a961261d1443",
+  "ham_cikti_bayt": 23143
+}

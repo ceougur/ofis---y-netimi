@@ -1,0 +1,68 @@
+(node:14724) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+D akış [{"no":"D-2","date":"2026-10-17","source":"cheque"},{"no":"D-1","date":"2026-10-19","source":"cheque"}] {"cheque:in":1300}
+▶ D — tahsildeki çekin beklenen tarihi: Nakit Akış / Vade Takip / Zil-Takvim
+  ✖ Nakit Akış: tahsildeki 19.10 (valör), portföydeki 17.10; kaynak ayrımı 'Tahsildeki Çek' (20.084056ms)
+D vade [["D-1","2026-10-19"],["D-2","2026-10-17"]]
+  ✔ Vade Takip: tahsildeki 19.10 (10.496728ms)
+D zil [{"no":"D-1","due":"2026-10-17","label":"Tahsil Edilecek çek No D-1","days":2},{"no":"D-2","due":"2026-10-17","label":"Tahsil Edilecek çek No D-2","days":2}]
+  ✖ Zil / Takvim (dues): tahsildeki çek Vade Takip ile aynı tarihte ve 'Bankada Tahsilde' olarak (11.913809ms)
+✖ D — tahsildeki çekin beklenen tarihi: Nakit Akış / Vade Takip / Zil-Takvim (504.838759ms)
+ℹ tests 3
+ℹ suites 1
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 959.325095
+
+✖ failing tests:
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-d.mjs:22:3
+✖ Nakit Akış: tahsildeki 19.10 (valör), portföydeki 17.10; kaynak ayrımı 'Tahsildeki Çek' (20.084056ms)
+  AssertionError [ERR_ASSERTION]: tahsildeki ve portföydeki çek aynı kaynakta: cheque
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-d.mjs:28:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-d.mjs:36:3
+✖ Zil / Takvim (dues): tahsildeki çek Vade Takip ile aynı tarihte ve 'Bankada Tahsilde' olarak (11.913809ms)
+  AssertionError [ERR_ASSERTION]: zil/takvim tahsildeki çeki vade (17.10) ile gösteriyor; Vade Takip 19.10
+  + actual - expected
+  
+    [
+      [
+        'D-1',
+  +     '2026-10-17'
+  -     '2026-10-19'
+      ],
+      [
+        'D-2',
+        '2026-10-17'
+      ]
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-d.mjs:40:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'D-1', '2026-10-17' ], [ 'D-2', '2026-10-17' ] ],
+    expected: [ [ 'D-1', '2026-10-19' ], [ 'D-2', '2026-10-17' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

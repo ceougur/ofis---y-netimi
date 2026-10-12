@@ -104,7 +104,9 @@ async function buildSeed(seedDir) {
   mkdirSync(seedDir, { recursive: true });
   const { createApp, createClient } = await loadCode(ROOT);
   const { runReconciliation } = await import(pathToFileURL(path.join(ROOT, "test", "mutabakat", "motor.mjs")).href);
-  const app = createApp(appOptions(path.join(seedDir, "data")));
+  // bankPickLegacy (2.1.0 Aşama 5–6'dan beri motorun havalelerinin bir kısmı eski sürüm gibi hesap seçmeden yazılır; test/mutabakat/kos.mjs ve
+  // tools/olcek-210.mjs gibi). Doğrulama T10: bu seçenek yoktu, tohum ilk hesapsız havalede 400 bank-account-required ile duruyordu (v2.1.0'da da).
+  const app = createApp(appOptions(path.join(seedDir, "data"), { bankPickLegacy: true }));
   const { port } = await app.listen(0, "127.0.0.1");
   const client = createClient(`http://127.0.0.1:${port}`);
   try {
@@ -123,7 +125,14 @@ async function buildSeed(seedDir) {
 
 // ---------- Kopyalama: tohumu hacme büyütme ----------
 const CLONE_TABLES = ["accounts", "account_entries", "cash_entries", "payments", "plans", "plan_items", "plan_entries", "stock_items", "stock_moves", "cheques", "cheque_events", "invoices", "invoice_lines", "invoice_offsets", "fin_events", "bank_lines"];
-const ID = /\b[a-z]+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/g;
+// Doğrulama T10 (2.2.0): banka verisi (v2.1.0 Aşama 3+) tohumda var — hesaplar açılış tarihli, satırlar hesaba bağlı, işlem başlıklarının kimliği
+// "ev-…" biçiminde (ID kalıbına uymuyordu: kopyada aynı kimlik → UNIQUE fin_events.id). Kopyalar (tarihleri 0–3 yıl geri) hesabın açılışından
+// önceye düşer; bu yüzden kopyada hesap bağı ve işlem başlığı TAŞINMAZ: banka fişleri ve başlıklar (fin_events, bank_lines) kopyalanmaz, modül
+// satırlarının event_id / fin_ref'i boşalır (eski sürüm satırı gibi: havale 102.00, POS 108.00 — Hesabı Atanmamış). Eski satır işareti kopyadan
+// sonra yenilenir (lib/bank/repair.mjs markLegacyRows ile aynı anlam). Tohumun kendisi (ilk kopya) bağlı ve başlıklı kalır.
+const CLONE_SKIP = new Set(["fin_events", "bank_lines"]);
+const MODULE_ROWS = new Set(["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"]);
+const ID = /\b(?:[a-z]+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|ev-[0-9a-z]{13}-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4})\b/g;
 const DAY = /^\d{4}-\d{2}-\d{2}/;
 async function countMoney(db) {
   const tables = new Set(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all().map(row => row.name));
@@ -142,9 +151,11 @@ async function grow(file, target) {
     for (const table of CLONE_TABLES) seed[table] = db.prepare(`SELECT * FROM ${table}`).all();
     const ids = new Set();
     for (const rows of Object.values(seed)) for (const row of rows) for (const value of Object.values(row)) if (typeof value === "string") for (const match of value.matchAll(ID)) if (!match[0].startsWith("user-")) ids.add(match[0]);
+    // Banka hesabı ve POS kimlikleri kopyalanmaz (kopya satırlar bağsızdır; aşağıda).
+    for (const table of ["bank_accounts", "pos_terminals"]) if (db.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?").get(table)) for (const row of db.prepare(`SELECT id FROM ${table}`).all()) ids.delete(row.id);
     const { money: seedMoney } = await countMoney(db);
     const copies = Math.max(0, Math.ceil(target / Math.max(1, seedMoney)) - 1);
-    const insert = Object.fromEntries(CLONE_TABLES.filter(table => seed[table].length).map(table => {
+    const insert = Object.fromEntries(CLONE_TABLES.filter(table => seed[table].length && !CLONE_SKIP.has(table)).map(table => {
       const columns = Object.keys(seed[table][0]);
       return [table, { columns, statement: db.prepare(`INSERT INTO ${table} (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`) }];
     }));
@@ -165,6 +176,10 @@ async function grow(file, target) {
         for (const row of seed[table]) {
           const next = {};
           for (const column of columns) next[column] = value(row[column]);
+          if (MODULE_ROWS.has(table)) {
+            if ("event_id" in next) next.event_id = "";
+            if ("fin_ref" in next) next.fin_ref = "";
+          }
           if (table === "accounts" || table === "plans") next.ref_no = next.ref_no ? `${next.ref_no}-${k}` : next.ref_no;
           if (table === "stock_items" && next.code) next.code = `${next.code}-${k}`;
           if (table === "cheques" && next.serial_no) next.serial_no = `${next.serial_no}-${k}`;
@@ -195,6 +210,13 @@ async function grow(file, target) {
       if (k % 50 === 0) process.stdout.write(`  kopya ${k}/${copies} (${Math.round((performance.now() - started) / 1000)} sn)\r`);
     }
     for (const [year, seq] of maxSeq) db.prepare("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(`meta.bank.seq.${year}`, String(seq), new Date(NOW).toISOString());
+    // Eski satır işareti (kopya satırlar başlıksız eski satırdır; işaret ve zamanı kopyadan sonra yenilenir).
+    const { LEGACY_MARKS_KEY, LEGACY_MARKS_AT_KEY } = await import(pathToFileURL(path.join(ROOT, "server", "lib", "bank", "checks.mjs")).href);
+    const marks = Object.fromEntries([...MODULE_ROWS].map(table => [table, Number(db.prepare(`SELECT COALESCE(MAX(rowid), 0) AS m FROM ${table}`).get().m) || 0]));
+    const latest = [...MODULE_ROWS].map(table => String(db.prepare(`SELECT MAX(created_at) AS m FROM ${table}`).get().m || "")).concat(new Date(NOW).toISOString()).sort().at(-1);
+    const setting = db.prepare("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value");
+    setting.run(LEGACY_MARKS_KEY, JSON.stringify(marks), latest);
+    setting.run(LEGACY_MARKS_AT_KEY, latest, latest);
     renumberInvoices(db);
     db.exec("PRAGMA wal_checkpoint(TRUNCATE)");
     const counts = await countMoney(db);
@@ -268,6 +290,8 @@ async function measure(fixtureDir, info) {
     const today = NOW.slice(0, 10);
     const account = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'customer' AND a.id NOT LIKE '%~%' ORDER BY a.rowid LIMIT 1").id;
     const item = store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND kind = 'product' AND id NOT LIKE '%~%' ORDER BY rowid LIMIT 1").id;
+    // Havale yazımları hesaba bağlı (üretimde iki hesap tanımlıyken hesap seçimi zorunlu; doğrulama T10).
+    const bankId = store.get("SELECT id FROM bank_accounts WHERE deleted_at IS NULL AND status = 'active' AND currency = 'TRY' AND kind IN ('demand', 'commercial', 'other') ORDER BY position, created_at LIMIT 1")?.id || "";
     const plan = () => store.get("SELECT p.id FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.id NOT LIKE '%~%' AND p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) > 5 ORDER BY p.rowid LIMIT 1")?.id;
     const record = async (kind, run) => {
       guardMs = null;
@@ -280,7 +304,7 @@ async function measure(fixtureDir, info) {
     };
     const round = async () => {
       await record("Kasa nakit girişi", () => must("kasa", client.post("/api/workspace/cash", { kind: "in", amount: "125,50", method: "cash", description: "Ölçüm", date: today })));
-      await record("Cari havale tahsilatı", () => must("cari", client.post(`/api/workspace/accounts/${account}/entries`, { kind: "in", amount: "300", method: "bank", note: "Ölçüm", date: today })));
+      await record("Cari havale tahsilatı", () => must("cari", client.post(`/api/workspace/accounts/${account}/entries`, { kind: "in", amount: "300", method: "bank", note: "Ölçüm", date: today, ...(bankId ? { bankAccountId: bankId, similarOk: true } : {}) })));
       await record("Peşin satış faturası", () => must("fatura", client.post("/api/workspace/invoices", { kind: "sale", accountId: account, issueDate: today, lines: [{ itemId: item, name: "", qty: 1, unitPrice: 100, discountRate: 0, vatRate: 20 }], payment: { cash: [{ amount: 120, method: "cash" }], cheques: [], endorse: [], rest: "open" }, force: true })));
       const planId = plan();
       if (planId) await record("Taksit tahsilatı", () => must("taksit", client.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: "5", method: "cash", date: today })));
@@ -289,7 +313,18 @@ async function measure(fixtureDir, info) {
       await record("Çek alış", async () => {
         cheque = await must("çek", client.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "750", issueDate: today, dueDate: addDays(today, 30), accountId: account, serialNo: `OLC-${randomUUID().slice(0, 8)}`, bank: "Ölçüm" }));
       });
-      await record("Çek tahsili", () => must("çek tahsil", client.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "collect", date: today, method: "bank" })));
+      await record("Çek tahsili", () => must("çek tahsil", client.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "collect", date: today, method: "bank", ...(bankId ? { bankAccountId: bankId, similarOk: true } : {}) })));
+      // Bankaya Tahsile Ver (plan §3.14; doğrulama T1/D6): tahsile ver, geri al, yeniden ver, tahsildeki evrakın tahsili.
+      if (bankId) {
+        let held = null;
+        await record("Çek alış (tahsile)", async () => {
+          held = await must("çek 2", client.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "640", issueDate: today, dueDate: addDays(today, 30), accountId: account, serialNo: `OLC-${randomUUID().slice(0, 8)}`, bank: "Ölçüm" }));
+        });
+        await record("Bankaya Tahsile Ver", () => must("tahsile ver", client.post(`/api/workspace/cheques/${held.id}/actions`, { action: "bank-deposit", date: today, bankAccountId: bankId })));
+        await record("Bankadan Geri Al", () => must("geri al", client.post(`/api/workspace/cheques/${held.id}/actions`, { action: "bank-withdraw", date: today })));
+        await record("Bankaya Tahsile Ver (2)", () => must("tahsile ver 2", client.post(`/api/workspace/cheques/${held.id}/actions`, { action: "bank-deposit", date: today, bankAccountId: bankId })));
+        await record("Tahsil Edildi (tahsildeki)", () => must("tahsildeki tahsil", client.post(`/api/workspace/cheques/${held.id}/actions`, { action: "collect", date: today, similarOk: true })));
+      }
     };
     const rounds = REPEAT || (info.companies["001"].money >= 500_000 ? 1 : info.companies["001"].money >= 50_000 ? 3 : 8);
     out.phase = "kilitsiz";

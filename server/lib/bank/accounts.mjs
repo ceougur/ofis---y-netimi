@@ -27,6 +27,7 @@ import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
 import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
+import { CHEQUE_SUB_NAMES, assertNoPendingCollections, chequeSubTrial } from "./collections.mjs";
 
 // limit: hesabın limit alanı (plan §3.5 "KMH Limiti alanı" yalnız Vadesiz; §3.9 "KMH ya da kart limiti"; Kredi Hesabı'nda ekranın "Kredi Limiti" bilgi
 // alanı — eksi bakiye denetimine girmez). Limit alanı olmayan türde 0'dan büyük limit 400 bank-limit (hakem K7).
@@ -464,10 +465,13 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (lines.length) assertLines(lines);
     return bank.voucher({ type: "opening", date: opening.date, bankRef: row.id, currency: row.currency, description: `Açılış Bakiyesi · ${labelOf(row)}` }, lines);
   }
-  /** Yeni açılışın tarihi hesabın ilk hareketinden sonra olamaz (§3.8). */
+  /** Yeni açılışın tarihi hesabın ilk hareketinden sonra olamaz (§3.8). Bankaya tahsile verilen evrak da hesabın hareketidir (para satırı
+   * olmasa da; doğrulama T8/D5: tahsile verme hesabın açılışından önce olamaz). */
   function assertBeforeFirst(id, date) {
     const { first } = movementInfo(id);
     if (first && date > first) throw new HttpError(409, `Açılış tarihi hesabın ilk hareketinden (${first.split("-").reverse().join(".")}) sonra olamaz. Açılış, o günün başındaki bakiyedir.`, { code: "bank-opening-after-first", firstMovement: first });
+    const given = store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'") ? store.get("SELECT MIN(given_date) AS d FROM cheque_collections WHERE bank_account_id = ?", id)?.d || "" : "";
+    if (given && date > given) throw new HttpError(409, `Açılış tarihi, bu hesaba tahsile verilen ilk evrakın veriliş tarihinden (${given.split("-").reverse().join(".")}) sonra olamaz.`, { code: "bank-opening-after-first", firstMovement: given });
   }
 
   // ---------- Hesap aç, düzelt, durum, sil ----------
@@ -563,6 +567,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         if (KIND_GL[kind] !== row.gl) throw new HttpError(409, `${ACCOUNT_KINDS[row.kind].label} hesap ${ACCOUNT_KINDS[kind].label} türüne çevrilemez (ana ve alt hesap kodu değişmez). Yeni hesap açın.`, { code: "bank-kind-family", field: "kind" });
         const opening = openingOf(row.id);
         if (movementInfo(row.id).count || opening?.lines) throw new HttpError(409, "Bu hesabın hareketi ya da açılış bakiyesi var; türü ve para birimi değiştirilemez. Yeni hesap açın.", { code: "bank-account-has-movements" });
+        // v2.2.0 (§3.14): tahsildeki evrakın hesabı tahsile uygun kalmalı (tahsil o hesaba yazılır).
+        assertNoPendingCollections(store, row.id, "türü ve para birimi değiştirilemez");
         next.kind = kind;
         next.currency = currency;
         // Hakem K7: limit alanı olmayan türe çevrilen hesabın limiti sıfırlanır (KMH'li Vadesiz → Ticari'de gizli KMH Engelle'yi atlatıyordu;
@@ -619,6 +625,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const row = mustRow(id);
     if (!STATUSES.includes(status)) throw new HttpError(400, "Hesap durumu Etkin ya da Pasif olmalı.", { code: "bank-status", field: "status" });
     if (row.status === status) return view(row);
+    // v2.2.0 (§3.14): tahsildeki evrakın hesabı pasife alınmaz (tahsil o hesaba yazılır; pasif hesaba hareket girilmez).
+    if (status !== "active") assertNoPendingCollections(store, row.id, "pasife alınamaz");
     bank.post({
       user, module: "bank", op: "update", prev: { status: row.status },
       write: () => {
@@ -638,6 +646,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const row = mustRow(id);
     const moves = movementInfo(row.id);
     if (moves.count) throw new HttpError(409, `Bu hesaba bağlı ${moves.count} hareket var; hesap silinmez. Kullanılmayacaksa Pasife Alın.`, { code: "bank-account-has-movements", count: moves.count });
+    assertNoPendingCollections(store, row.id, "silinemez", { returned: true });
     // GG2: kurulumlu hesap silinince Devir Kapanışı etkin kalıyordu (eski bakiye açılışı olmayan bir hesap adına kapalı); aynı adla yeniden açılıp
     // sihirbaz çalışınca aynı bakiye ikinci kez kapanıyordu. Önce kurulum geri alınır.
     const setupRun = activeSetupOf(row.id);
@@ -1345,11 +1354,22 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       subs.set(target.sub, row);
       mainsOf.set(main, (mainsOf.get(main) || 0) + Number(group.opening) + Number(group.debit) - Number(group.credit));
     }
+    // Bankaya Tahsile Ver (plan §3.11 hesap planı "101.01 Portföydeki Çekler, 101.02 Tahsile Verilen Çekler", madde 6): alınan evrak varsa 101 ve
+    // alt hesapları (Ana Defter'in kendi kuralıyla, yalnız alınan evrakın maddeleri). Doğrulama T4: önceden yalnız şirkette bir tahsil kaydı
+    // varken görünüyordu; Ana Defter 101'de portföy dururken Alt Hesap Mizanı'nda 101.01 yoktu.
+    // Doğrulama tur 2 G1 (plan §3.11 madde 5): Ana Defter KURULMADAN, SQL toplamıyla (lib/bank/collections.mjs chequeSubTrial; kurallar Ana Defter'in
+    // 101 satırlarının aynısı, eşdeğerlik testi). Önceden her açılışta bütün alınan evrak için yevmiye kuruluyordu (15.000 evrakta ~0,7 sn).
+    const cheque101 = chequeSubTrial(store, { from, to });
+    for (const [sub, sums] of cheque101) {
+      subs.set(sub, { sub, account: "101", ...sums });
+      mainsOf.set("101", (mainsOf.get("101") || 0) + sums.opening + sums.debit - sums.credit);
+    }
+    if (cheque101.size) Object.assign(names, CHEQUE_SUB_NAMES);
     const tl = value => Math.round(value) / 100;
     const rows = [...subs.values()]
       .sort((a, b) => a.sub.localeCompare(b.sub))
       .map(row => ({ sub: row.sub, account: row.account, name: names[row.sub] || "", opening: tl(row.opening), debit: tl(row.debit), credit: tl(row.credit), balance: tl(row.opening + row.debit - row.credit) }));
-    const mains = ["102", "108", "300", "309"].map(account => {
+    const mains = ["101", "102", "108", "300", "309"].map(account => {
       const balanceMinor = mainsOf.get(account) || 0;
       const subMinor = [...subs.values()].filter(row => row.account === account).reduce((sum, row) => sum + row.opening + row.debit - row.credit, 0);
       return { account, name: CHART[account] || "", balance: tl(balanceMinor), subTotal: tl(subMinor), ok: balanceMinor === subMinor };

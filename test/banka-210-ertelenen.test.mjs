@@ -166,13 +166,15 @@ describe("2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'de
     assert.deepEqual(snapshot(ctx.store), before, "Kasa devir istekleri hiçbir şey yazmadı");
   });
 
-  it("Rapor Merkezi: Banka grubunda yalnız temel 4 rapor; ertelenen §8.10 raporları listede yok ve 404 (ekran, PDF, Excel)", async () => {
+  // 2.2.0 (bilerek güncellendi; kullanıcı 12.10.2026 "Bankaya Tahsile Ver bu sürüme alındı" — İz 4): plan §8.10 "Tahsildeki Çekler" raporu Bankaya
+  // Tahsile Ver ile birlikte geldi ("Tahsildeki Çek ve Senetler"); öbür ertelenen raporlar listede yok.
+  it("Rapor Merkezi: Banka grubunda temel 4 rapor ve Tahsildeki Çek ve Senetler; ertelenen §8.10 raporları listede yok ve 404 (ekran, PDF, Excel)", async () => {
     const catalog = await must("rapor listesi", ctx.api.get("/api/workspace/report-center"));
     const bank = catalog.reports.filter(report => report.group === "Banka").map(report => report.id).sort();
-    assert.deepEqual(bank, ["alt-hesap-mizani", "banka-bakiye", "banka-hareket", "banka-masraf"], `Banka grubu: ${bank.join(", ")}`);
+    assert.deepEqual(bank, ["alt-hesap-mizani", "banka-bakiye", "banka-hareket", "banka-masraf", "tahsildeki-cekler"], `Banka grubu: ${bank.join(", ")}`);
     const titles = catalog.reports.map(report => report.title);
-    for (const title of ["POS Satış Raporu", "POS Komisyon Raporu", "POS Bekleyen Raporu", "POS Valör Raporu", "Banka Mutabakat Raporu", "Kur Değerleme Raporu", "Tahsildeki Çekler", "Banka Nakit Akış Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Bankalar Arası Transfer Raporu", "Faturası Beklenen Komisyonlar"]) assert.ok(!titles.includes(title), `listede ${title} olmamalı`);
-    const ids = ["pos-satis", "pos-komisyon", "pos-bekleyen", "pos-valor", "banka-mutabakat", "kur-degerleme", "tahsildeki-cekler", "banka-nakit-akis", "banka-gunluk", "banka-aylik", "banka-transfer", "kasa-banka-transfer", "banka-bazinda-bakiye", "para-birimi-bakiye", "cari-banka", "fatura-banka", "taksit-banka", "faturasi-beklenen-komisyonlar"];
+    for (const title of ["POS Satış Raporu", "POS Komisyon Raporu", "POS Bekleyen Raporu", "POS Valör Raporu", "Banka Mutabakat Raporu", "Kur Değerleme Raporu", "Banka Nakit Akış Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Bankalar Arası Transfer Raporu", "Faturası Beklenen Komisyonlar"]) assert.ok(!titles.includes(title), `listede ${title} olmamalı`);
+    const ids = ["pos-satis", "pos-komisyon", "pos-bekleyen", "pos-valor", "banka-mutabakat", "kur-degerleme", "banka-nakit-akis", "banka-gunluk", "banka-aylik", "banka-transfer", "kasa-banka-transfer", "banka-bazinda-bakiye", "para-birimi-bakiye", "cari-banka", "fatura-banka", "taksit-banka", "faturasi-beklenen-komisyonlar"];
     for (const id of ids) for (const suffix of ["", "/pdf", "/xlsx"]) assert.equal((await ctx.api.raw("GET", `/api/workspace/report-center/${id}${suffix}?preset=all`)).status, 404, `${id}${suffix}`);
   });
 

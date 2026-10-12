@@ -1,0 +1,32 @@
+{
+  "ad": "ana-tahsile-birlesme-hedefli",
+  "komut": "node --test --test-concurrency=4 test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/banka-220-bakiye.test.mjs test/banka-220-cek-hesabi.test.mjs test/banka-220-hesap-kart.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/banka-220-pos-bozma.test.mjs test/banka-220-pos-hesap.test.mjs test/banka-220-pos-kabul.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-pos-kuyruk.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/cek-ciro-217.test.mjs test/cheques-overview.test.mjs test/mutabakat-cekirdek.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/bank-post*.test.mjs test/banka-210-onarim.test.mjs test/banka-210-raporlar.test.mjs test/raporlar-224.test.mjs test/kullanici-yetki-210.test.mjs test/banka-210-ertelenen.test.mjs",
+  "commit": "f32104e407884385eb9855761530ad687f0c5aa9",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 260,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T12:12:32.608Z",
+  "sure_sn": 126.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 333,
+    "gecen": 333,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/ana-tahsile-birlesme-hedefli.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "4fcf0e257026797f77f495909dc3722fb1dbf7367dce10fe6e0c62181f8a1c15",
+  "ham_cikti_bayt": 137242
+}

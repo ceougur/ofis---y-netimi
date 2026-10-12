@@ -1,0 +1,21 @@
+eski v2.1.0 (7c6405fca6697cc32e6c661c241dbcd99c438814) ↔ yeni guncel (çalışma ağacı)
+
+== YALNIZ YENİDE OLAN ANAHTARLAR (11) ==
+  reads.sirket-001.cekListe.data.summary.deposited ×1
+  reads.sirket-001.cekListe:portfolio.data.summary.deposited ×1
+  reads.sirket-001.cekListe:collected.data.summary.deposited ×1
+  reads.sirket-001.cekListe:endorsed.data.summary.deposited ×1
+  reads.sirket-001.cekListe:bounced.data.summary.deposited ×1
+  reads.sirket-001.cekListe:paid.data.summary.deposited ×1
+  reads.sirket-001.cekListe:pending.data.summary.deposited ×1
+  reads.sirket-001.cekListe:open.data.summary.deposited ×1
+  reads.sirket-001.cekListe:closed.data.summary.deposited ×1
+  reads.sirket-001.cekListe:overdue.data.summary.deposited ×1
+  reads.sirket-001.cekListe:soon.data.summary.deposited ×1
+
+== YALNIZ ESKİDE OLAN ANAHTARLAR (0) ==
+
+== DEĞERİ DEĞİŞENLER (1) ==
+  reads.sirket-001.mutabakat.data.log[0].id
+     eski: "int-9263ba1e-856f-4122-b6c5-cf7484fc475a"
+     yeni: "int-04d43dd9-b71c-411f-9e71-c131f02a70f1"

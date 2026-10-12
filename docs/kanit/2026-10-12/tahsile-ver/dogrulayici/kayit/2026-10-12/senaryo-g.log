@@ -1,0 +1,14 @@
+(node:16917) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+G {"ekran":["500,00 TL","2.000,00 TL"],"excel":[500,2000],"pdf":[true,true]}
+▶ G — Alt Hesap Mizanı ekran / PDF / Excel
+  ✔ üç çıktıda 101.01 = 500, 101.02 = 2.000 (59.287328ms)
+✔ G — Alt Hesap Mizanı ekran / PDF / Excel (547.241516ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 966.414348

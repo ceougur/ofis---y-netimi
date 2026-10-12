@@ -1,0 +1,123 @@
+{
+  "ad": "eski-7c6405f-kirmizi",
+  "komut": "node --test test/banka-220-tahsile-ver.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T07:27:02.224Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 0,
+    "basarisiz": 18,
+    "iptal": 0,
+    "atlanan": 1
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 18 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Bankaya Tahsile Ver — çalışıyor mu (sayılarla) › Tahsile Ver: 101 değişmez, 101.02 = 1.000, 101.01 = 0; banka bakiyesi aynı; cheque_events'e satır yazılmaz; durum portföyde kalır",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:68:3",
+      "hata": "önce 101.01 = 1.000 · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — çalışıyor mu (sayılarla) › liste: Bankada Tahsilde süzgeci ayrı; Portföyde süzgecinde yok; özet; Alt Hesap Mizanı 101.01 / 101.02",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:101:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — çalışıyor mu (sayılarla) › Nakit Akış ve Vade Takip: tahsildeki evrak vade + iş günü (31.10 Cumartesi → 02.11), portföydeki vadesinde (31.10)",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:123:3",
+      "hata": "tahsildeki çek: Cumartesi vadesi → Pazartesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — çalışıyor mu (sayılarla) › Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:135:3",
+      "hata": "başka hesaba tahsil: 200 {\"id\":\"cheque-3285bbca-21b1-43d5-8846-46a90dce19ba\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"TV-100\",\"bank\":\"Akbank Kadıköy\",\"drawer\":\"\",\"accountId\":\"account-05ba1238-faea-49f6-8897-e616d57c0c18\",\"planId\":\"\",\"amount\":1000,\"issueDate\":\"2026-10-05\",\"dueDate\":\"2026-10-31\",\"status\":\"collected\",\"statusDate\":\"2026-10-08\",\"endorseAccountId\":\"\",\"note\":\"\",\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"create · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — çalışıyor mu (sayılarla) › Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:163:3",
+      "hata": "verilmeden önce geri al: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} İşlem tanınmadı. · 409 !== 400 (beklenen 400, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — çalışıyor mu (sayılarla) › Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:197:3",
+      "hata": "senet tahsile: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — çalışıyor mu (sayılarla) › istek kimliği: aynı kimlik ve gövde → yeniden yazılmaz (replayed); farklı gövde → 409 request-id-reused",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:215:3",
+      "hata": "Expected values to be strictly equal: · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — nasıl bozarım › portföyde olmayan (tahsil edilmiş, ciro edilmiş, karşılıksız) ve verilen çek 409; hiçbir şey yazılmaz",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:245:3",
+      "hata": "tahsil edilmiş: kod undefined (İşlem tanınmadı.) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — nasıl bozarım › tahsildeyken ciro / sil / tutar / tarih / vade / cari 409 cheque-deposited; açıklama ve seri no düzelir; iki kez tahsile ver 409",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:261:3",
+      "hata": "tahsile: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — nasıl bozarım › faturayla alınan çek tahsildeyken fatura iptal edilemez (409 cheque-deposited); Bankadan Geri Al sonrası iptal olur",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:283:3",
+      "hata": "tahsile: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — nasıl bozarım › tarih: alıştan önce 400, ileri 400, geçersiz 400, kilitli dönem 409; kilitli ayda verilen çek açık ayda tahsil edilir, geri alınır",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:294:3",
+      "hata": "alıştan önce: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} İşlem tanınmadı. · 409 !== 400 (beklenen 400, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — nasıl bozarım › hesap: başka hesaba tahsil 400; pasif, vadeli, kart, kredi hesabı 400; hesap yok 404; çok hesapta seçimsiz 400; tek hesapta kendiliğinden",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:321:3",
+      "hata": "vadeli: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} İşlem tanınmadı. · 409 !== 400 (beklenen 400, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — nasıl bozarım › aynı anda iki istek: biri 200, öbürü 409; tek bekleyen kayıt",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:356:3",
+      "hata": "[[409,null],[409,null]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — nasıl bozarım › sil → geri yükle: geri alınmış (kapanmış) kaydı olan çek silinir, geri yüklenir, yeniden tahsile verilir",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:369:3",
+      "hata": "tahsile: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — nasıl bozarım › ham SQL ile bozulan kayıt: Mutabakat Testi cheque:collections ile yakalar (kayıt kapatılır / başlık silinir / tutar değişir)",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:381:3",
+      "hata": "tahsile: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — yetki, şirket ayrımı, Şirket Verisini Sıfırla › yetkisiz personel 403 (yazılmaz); muhasebe yapar; ?hofCompany= başka şirket: yetkisiz 403, başka şirketin hesabı 404",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:415:3",
+      "hata": "muhasebe tahsile: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — yetki, şirket ayrımı, Şirket Verisini Sıfırla › Şirket Verisini Sıfırla: tahsil kayıtları ve başlıkları silinir, mutabakat temiz, İşlem No geri gitmez",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:439:3",
+      "hata": "tahsile: 409 {\"ok\":false,\"error\":\"İşlem tanınmadı.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bankaya Tahsile Ver — eski sürüm verisi (gerçek 2.0.26 kodunun fikstürü) ve eski sürüme dönüş › surum-2.0.26-turler: göç sonrası portföydeki eski çek tahsile verilir ve tahsil edilir; eski tahsil edilmiş çek 409; mutabakat temiz",
+      "konum": "test/banka-220-tahsile-ver.test.mjs:457:3",
+      "hata": "eski tahsil edilmiş: kod undefined (İşlem tanınmadı.) · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/2026-10-12/eski-7c6405f-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski",
+  "ham_cikti_sha256": "8e219e1e6b074ac5b83cab42ae5631b98c701948d0a095e4fb4f3fa983bd2764",
+  "ham_cikti_bayt": 27010
+}

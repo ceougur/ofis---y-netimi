@@ -1,0 +1,208 @@
+TAP version 13
+# Subtest: T11 — taksite sayılmış çek karşılıksız: alış günü maddesi değişmez, karşılıksız günü B 120 / A 101.0x (sahte saat 27.10.2026)
+    # Subtest: alış günü maddeleri karşılıksızdan önce plan §3.14 gibi (B 101.01 / A 120)
+    ok 1 - alış günü maddeleri karşılıksızdan önce plan §3.14 gibi (B 101.01 / A 120)
+      ---
+      duration_ms: 2.293452
+      type: 'test'
+      ...
+    # Subtest: karşılıksız (A tahsilde 23.10, B portföyde 24.10, E cirolu 26.10): 200; karşılıksız günü maddeleri; alış günü ve 20.10 kesiti değişmez
+    ok 2 - karşılıksız (A tahsilde 23.10, B portföyde 24.10, E cirolu 26.10): 200; karşılıksız günü maddeleri; alış günü ve 20.10 kesiti değişmez
+      ---
+      duration_ms: 78.542329
+      type: 'test'
+      ...
+    # Subtest: son mizan: 602 yalnız taksitli satışlar (−4.700), 770 hareketsiz, 120 +4.700, 101 ve 101.01/101.02 sıfır; Mutabakat tamam
+    ok 3 - son mizan: 602 yalnız taksitli satışlar (−4.700), 770 hareketsiz, 120 +4.700, 101 ve 101.01/101.02 sıfır; Mutabakat tamam
+      ---
+      duration_ms: 21.784418
+      type: 'test'
+      ...
+    # Subtest: taksit kartı yeniden açık: alış günündeki tahsilat kartta kalır, karşılıksız günü evraktan ters kayıt (düzenlenemez); kalan tutar
+    ok 4 - taksit kartı yeniden açık: alış günündeki tahsilat kartta kalır, karşılıksız günü evraktan ters kayıt (düzenlenemez); kalan tutar
+      ---
+      duration_ms: 4.651495
+      type: 'test'
+      ...
+    # Subtest: karşılıksızı Geri Al: ters kayıt kalkar, kart ödenmiş, evrak yeniden Bankada Tahsilde; Mutabakat tamam
+    ok 5 - karşılıksızı Geri Al: ters kayıt kalkar, kart ödenmiş, evrak yeniden Bankada Tahsilde; Mutabakat tamam
+      ---
+      duration_ms: 60.303035
+      type: 'test'
+      ...
+    1..5
+ok 1 - T11 — taksite sayılmış çek karşılıksız: alış günü maddesi değişmez, karşılıksız günü B 120 / A 101.0x (sahte saat 27.10.2026)
+  ---
+  duration_ms: 794.952507
+  type: 'suite'
+  ...
+# Subtest: T11 — dönem kilidinden (20.10) sonra taksite sayılmış, tahsildeki çek karşılıksız: 200; kilitli kesit değişmez
+    # Subtest: karşılıksız 27.10 → 200; 20.10 kesiti ve 10.10 maddesi aynı; Geri Al da
+    ok 1 - karşılıksız 27.10 → 200; 20.10 kesiti ve 10.10 maddesi aynı; Geri Al da
+      ---
+      duration_ms: 448.848604
+      type: 'test'
+      ...
+    1..1
+ok 2 - T11 — dönem kilidinden (20.10) sonra taksite sayılmış, tahsildeki çek karşılıksız: 200; kilitli kesit değişmez
+  ---
+  duration_ms: 465.84053
+  type: 'suite'
+  ...
+# Subtest: T12 / T13 / B1 — rapor tutarı, zil önbelleği (Banka Ayarları, hesap adı) (sahte saat 27.10.2026)
+    # Subtest: T12: geri alınmış evrakın tutarı 1.000 → 1.250 düzelince Çek / Senet Hareketleri tahsile verme ve geri alma satırları 1.000 (yevmiye ile aynı)
+    ok 1 - T12: geri alınmış evrakın tutarı 1.000 → 1.250 düzelince Çek / Senet Hareketleri tahsile verme ve geri alma satırları 1.000 (yevmiye ile aynı)
+      ---
+      duration_ms: 103.54907
+      type: 'test'
+      ...
+    # Subtest: T13: Yarım Gün 'İş Günü Sayılmaz' seçilince zil beklenen günü 28.10 → 30.10 (Vade Takip ile aynı); geri alınınca 28.10
+    ok 2 - T13: Yarım Gün 'İş Günü Sayılmaz' seçilince zil beklenen günü 28.10 → 30.10 (Vade Takip ile aynı); geri alınınca 28.10
+      ---
+      duration_ms: 87.030128
+      type: 'test'
+      ...
+    # Subtest: B1: banka hesabının adı değişince zil tahsildeki evrakı yeni adla (çek kartı ile aynı)
+    ok 3 - B1: banka hesabının adı değişince zil tahsildeki evrakı yeni adla (çek kartı ile aynı)
+      ---
+      duration_ms: 61.888884
+      type: 'test'
+      ...
+    1..3
+ok 3 - T12 / T13 / B1 — rapor tutarı, zil önbelleği (Banka Ayarları, hesap adı) (sahte saat 27.10.2026)
+  ---
+  duration_ms: 596.939336
+  type: 'suite'
+  ...
+# Subtest: ozet / proto / A22 — pencere özeti, tanınmayan eylem, karşılıksızlı hesabın silinmesi (sahte saat 08.10.2026)
+    # Subtest: ozet: iki 1.000'lik alınan çek, biri tahsilde → pencere ve PDF 'Portföyde (alınan)' 1.000, 'Bankada Tahsilde' 1.000 (rapor ile aynı)
+    ok 1 - ozet: iki 1.000'lik alınan çek, biri tahsilde → pencere ve PDF 'Portföyde (alınan)' 1.000, 'Bankada Tahsilde' 1.000 (rapor ile aynı)
+      ---
+      duration_ms: 80.696311
+      type: 'test'
+      ...
+    # Subtest: proto: eylem adı hasOwnProperty / __proto__ / toString / constructor / valueOf → 409 tanınmayan işlem; evrak bankada ve portföyde kalır
+    ok 2 - proto: eylem adı hasOwnProperty / __proto__ / toString / constructor / valueOf → 409 tanınmayan işlem; evrak bankada ve portföyde kalır
+      ---
+      duration_ms: 72.432064
+      type: 'test'
+      ...
+    # Subtest: A22: karşılıksız dönmüş evrakın hesabı silinmez (409); Geri Al çalışır; Bankadan Geri Al'ınca hesap silinir
+    ok 3 - A22: karşılıksız dönmüş evrakın hesabı silinmez (409); Geri Al çalışır; Bankadan Geri Al'ınca hesap silinir
+      ---
+      duration_ms: 140.410222
+      type: 'test'
+      ...
+    1..3
+ok 4 - ozet / proto / A22 — pencere özeti, tanınmayan eylem, karşılıksızlı hesabın silinmesi (sahte saat 08.10.2026)
+  ---
+  duration_ms: 602.899163
+  type: 'suite'
+  ...
+# Subtest: G1 — Alt Hesap Mizanı 101.01 / 101.02: Ana Defter kurulmadan, Ana Defter'le aynı (bütün evrak akışları, beş dönem)
+    # Subtest: dönem … – …: 101.01 / 101.02 Ana Defter ile aynı
+    ok 1 - dönem … – …: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 9.038394
+      type: 'test'
+      ...
+    # Subtest: dönem 2026-10-01 – 2026-10-15: 101.01 / 101.02 Ana Defter ile aynı
+    ok 2 - dönem 2026-10-01 – 2026-10-15: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 5.254013
+      type: 'test'
+      ...
+    # Subtest: dönem 2026-10-16 – 2026-10-31: 101.01 / 101.02 Ana Defter ile aynı
+    ok 3 - dönem 2026-10-16 – 2026-10-31: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 5.666646
+      type: 'test'
+      ...
+    # Subtest: dönem 2026-10-20 – …: 101.01 / 101.02 Ana Defter ile aynı
+    ok 4 - dönem 2026-10-20 – …: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 4.810149
+      type: 'test'
+      ...
+    # Subtest: dönem … – 2026-10-12: 101.01 / 101.02 Ana Defter ile aynı
+    ok 5 - dönem … – 2026-10-12: 101.01 / 101.02 Ana Defter ile aynı
+      ---
+      duration_ms: 3.635899
+      type: 'test'
+      ...
+    # Subtest: saklanan toplam yazımdan sonra yenilenir: tahsile verme ve tahsil sonrası 101.01 / 101.02 Ana Defter ile aynı (eski değer dönmez)
+    ok 6 - saklanan toplam yazımdan sonra yenilenir: tahsile verme ve tahsil sonrası 101.01 / 101.02 Ana Defter ile aynı (eski değer dönmez)
+      ---
+      duration_ms: 87.083703
+      type: 'test'
+      ...
+    # Subtest: Alt Hesap Mizanı (ekran ve rapor) Ana Defter'i kurmaz (her açılışta bütün evrak için yevmiye kurulmaz)
+    ok 7 - Alt Hesap Mizanı (ekran ve rapor) Ana Defter'i kurmaz (her açılışta bütün evrak için yevmiye kurulmaz)
+      ---
+      duration_ms: 7.350471
+      type: 'test'
+      ...
+    1..7
+ok 5 - G1 — Alt Hesap Mizanı 101.01 / 101.02: Ana Defter kurulmadan, Ana Defter'le aynı (bütün evrak akışları, beş dönem)
+  ---
+  duration_ms: 1278.299952
+  type: 'suite'
+  ...
+# Subtest: E1–E6 — v2.1.0'a dönüp tahsil kaydına dokunma; bu dalda açılış onarımı (h)
+    # Subtest: E5 bu dalda tahsil (07.10) → v2.1.0'da tahsili Geri Al: kayıt yeniden Bankada Tahsilde; Mutabakat tamam; Tahsil Edildi çalışır
+    ok 1 - E5 bu dalda tahsil (07.10) → v2.1.0'da tahsili Geri Al: kayıt yeniden Bankada Tahsilde; Mutabakat tamam; Tahsil Edildi çalışır
+      ---
+      duration_ms: 863.010076
+      type: 'test'
+      ...
+    # Subtest: E6 bu dalda karşılıksız (07.10) → v2.1.0'da karşılıksızı Geri Al: kayıt yeniden Bankada Tahsilde, kapanış başlığı iptal; Mutabakat tamam
+    ok 2 - E6 bu dalda karşılıksız (07.10) → v2.1.0'da karşılıksızı Geri Al: kayıt yeniden Bankada Tahsilde, kapanış başlığı iptal; Mutabakat tamam
+      ---
+      duration_ms: 614.245206
+      type: 'test'
+      ...
+    # Subtest: E1 v2.1.0'da Açılışı Düzelt 07.10 (veriliş 06.10'dan sonra): veriliş günü açılış gününe; Mutabakat tamam; Tahsil Edildi çalışır
+    ok 3 - E1 v2.1.0'da Açılışı Düzelt 07.10 (veriliş 06.10'dan sonra): veriliş günü açılış gününe; Mutabakat tamam; Tahsil Edildi çalışır
+      ---
+      duration_ms: 605.068458
+      type: 'test'
+      ...
+    # Subtest: E7 (T11 komşusu) v2.1.0'da taksite sayılmış çek karşılıksız (tahsilat SİLİNDİ, eski biçim) → bu dalda Geri Al tahsilatı geri getirir, yeniden karşılıksız ters kayıt yazar; Mutabakat tamam
+    ok 4 - E7 (T11 komşusu) v2.1.0'da taksite sayılmış çek karşılıksız (tahsilat SİLİNDİ, eski biçim) → bu dalda Geri Al tahsilatı geri getirir, yeniden karşılıksız ters kayıt yazar; Mutabakat tamam
+      ---
+      duration_ms: 606.94623
+      type: 'test'
+      ...
+    # Subtest: E2 hesabı sil (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+    ok 5 - E2 hesabı sil (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+      ---
+      duration_ms: 609.014772
+      type: 'test'
+      ...
+    # Subtest: E3 hesabı pasife al (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+    ok 6 - E3 hesabı pasife al (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+      ---
+      duration_ms: 542.668097
+      type: 'test'
+      ...
+    # Subtest: E4 hesap türü Vadeli (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+    ok 7 - E4 hesap türü Vadeli (v2.1.0): Onarım Bekliyor uyarısı; Tahsil Edildi nedenli ret ve Bankadan Geri Al yolu; Geri Al sonra tamam
+      ---
+      duration_ms: 682.085727
+      type: 'test'
+      ...
+    1..7
+ok 6 - E1–E6 — v2.1.0'a dönüp tahsil kaydına dokunma; bu dalda açılış onarımı (h)
+  ---
+  duration_ms: 4524.412333
+  type: 'suite'
+  ...
+1..6
+# tests 26
+# suites 6
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8764.536071

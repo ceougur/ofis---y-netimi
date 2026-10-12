@@ -1,0 +1,51 @@
+TAP version 13
+# [d4] A bekleyenken pasif: {"status":409,"code":"bank-cheques-pending","error":"Bu hesapta bankaya tahsile verilmiş 1 çek/senet var; hesap pasife alınamaz. Önce evrakı tahsil edin ya da Çek / Senet'ten Bankadan Geri Al'ın."}
+# [d4] A karşılıksızdan sonra pasif: {"status":200}
+# [d4] A karşılıksızı geri al: {"status":400,"code":"bank-account-invalid","error":"Karşılıksızı geri almak evrakı yeniden bankada tahsilde yapar; Akbank · Tahsil A pasif; bu hesaba evrak tahsile verilmez. Önce Banka → Hesaplar'dan Etkinleştir."}
+# [d4] A kayıt / hesap: {"status":"returned","accountStatus":"passive","kind":"demand","currency":"TRY"}
+# [d4] A tahsil: {"status":409,"error":"Çek “Karşılıksız / İade” durumunda; “Tahsil Edildi” yapılamaz."}
+# [d4] A mutabakat: {"ok":true,"bad":[]}
+# Subtest: D4 — kapanmış tahsil kaydı Geri Al ile yeniden açılırken hesap uygunluğu
+    # Subtest: A: tahsile ver → karşılıksız → hesabı PASİFE al → karşılıksızı Geri Al → kayıt pasif hesapta yeniden 'Bankada Tahsilde' mi?
+    ok 1 - A: tahsile ver → karşılıksız → hesabı PASİFE al → karşılıksızı Geri Al → kayıt pasif hesapta yeniden 'Bankada Tahsilde' mi?
+      ---
+      duration_ms: 618.581607
+      type: 'test'
+      ...
+# [d4] B tür → Vadeli: {"status":200}
+# [d4] B karşılıksızı geri al: {"status":400,"code":"bank-account-invalid","error":"Karşılıksızı geri almak evrakı yeniden bankada tahsilde yapar; Akbank · Tahsil B: çek ve senet yalnız Vadesiz, Ticari ya da Diğer TL hesaba tahsile verilir."}
+# [d4] B kayıt / hesap: {"status":"returned","accountStatus":"active","kind":"time","currency":"TRY"}
+# [d4] B tahsil: {"status":409,"error":"Çek “Karşılıksız / İade” durumunda; “Tahsil Edildi” yapılamaz."}
+# [d4] B mutabakat: {"ok":true,"bad":[]}
+    # Subtest: B: tahsile ver → karşılıksız → hesap türü Vadesiz → Vadeli → karşılıksızı Geri Al → kayıt Vadeli hesapta mı?
+    ok 2 - B: tahsile ver → karşılıksız → hesap türü Vadesiz → Vadeli → karşılıksızı Geri Al → kayıt Vadeli hesapta mı?
+      ---
+      duration_ms: 670.289689
+      type: 'test'
+      ...
+# [d4] C tahsilden sonra pasif: {"status":200}
+# [d4] C tahsili geri al: {"status":400,"code":"bank-account-passive","error":"Akbank · Tahsil C hesabı pasif; bu hesabın bakiyesini değiştiren işlem (silme, tutar, tarih, yol ya da hesap değişikliği, geri yükleme) yapılmaz. Önce Banka → Hesaplar'dan Etkinleştir."}
+# [d4] C kayıt / hesap: {"status":"collected","accountStatus":"passive","kind":"demand","currency":"TRY"}
+# [d4] C mutabakat: {"ok":true,"bad":[]}
+    # Subtest: C: tahsile ver → tahsil → hesabı pasife al → tahsili Geri Al → kayıt pasif hesapta mı?
+    ok 3 - C: tahsile ver → tahsil → hesabı pasife al → tahsili Geri Al → kayıt pasif hesapta mı?
+      ---
+      duration_ms: 315.408312
+      type: 'test'
+      ...
+    1..3
+ok 1 - D4 — kapanmış tahsil kaydı Geri Al ile yeniden açılırken hesap uygunluğu
+  ---
+  duration_ms: 2632.821571
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4369.963383
+exit 0

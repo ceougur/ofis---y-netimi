@@ -13,6 +13,7 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { findHeaderRow, inferRolesByValues, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
+import { BANK_ACTIONS, collectionsFingerprint, createChequeCollections } from "../lib/bank/collections.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
@@ -55,6 +56,9 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     return date;
   };
   const kindName = cheque => INSTRUMENTS[cheque.instrument] || "Çek";
+  // v2.2.0 (plan §3.14): Bankaya Tahsile Ver / Bankadan Geri Al — kayıt ve iz lib/bank/collections.mjs'te; evrakın durumu "portföyde" kalır,
+  // kartta ve listede sanal durum "Bankada Tahsilde · <banka> · <gün>".
+  const collections = createChequeCollections({ store, bank, period, now: clock });
   const title = cheque => `${kindName(cheque)}${cheque.serialNo ? ` No ${cheque.serialNo}` : ""}`;
 
   // ---------- Okuma ----------
@@ -67,18 +71,22 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     FROM cheques c LEFT JOIN users u ON u.id = c.created_by LEFT JOIN accounts a ON a.id = c.account_id AND a.deleted_at IS NULL
       LEFT JOIN accounts e ON e.id = c.endorse_account_id AND e.deleted_at IS NULL LEFT JOIN plans p ON p.id = c.plan_id AND p.deleted_at IS NULL`;
   const party = cheque => cheque.accountName || cheque.drawer || "—";
-  const shapeRow = (row, day = today()) => {
+  // pending: tahsil kaydı (bekleyen; liste tek sorguda verir) — verilmezse evrak portföydeyse kendi kaydı okunur.
+  const shapeRow = (row, day = today(), pending = undefined) => {
     const due = dueState(row.dueDate, day);
     const open = STATUSES[row.status]?.open;
+    const collection = pending !== undefined ? pending || null : row.direction === "in" && row.status === "portfolio" ? collections.pendingOf(row.id) : null;
     return {
       ...row,
       party: party(row),
       directionLabel: DIRECTIONS[row.direction],
       instrumentLabel: INSTRUMENTS[row.instrument],
-      statusLabel: STATUSES[row.status]?.label || row.status,
+      statusLabel: collection ? collection.label : STATUSES[row.status]?.label || row.status,
       open: Boolean(open),
       days: due.days,
       dueStateKey: open ? due.state : "closed",
+      deposited: Boolean(collection),
+      collection: collection ? { id: collection.id, bankAccountId: collection.bankAccountId, bankName: collection.bankName, accountName: collection.accountName, bankLabel: collection.bankLabel, givenDate: collection.givenDate, eventNo: collection.eventNo, label: collection.label } : null,
     };
   };
   const chequeRow = id => {
@@ -105,11 +113,15 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const cheque = shapeRow(chequeRow(id));
     const history = eventsOf(cheque.id);
     const manage = canUser(user, "cheques.manage");
-    const actions = manage ? Object.entries(ACTIONS).filter(([, rule]) => rule.from.includes(cheque.status)).map(([key, rule]) => ({ key, label: rule.label })) : [];
+    // Tahsildeki evrak ciro edilmez (plan §3.14); Tahsil Edildi ve Karşılıksız kalır. Bankaya Tahsile Ver / Bankadan Geri Al ayrı listede
+    // (bankActions): mevcut işlem düğmeleri değişmez, arayüz bu eylemleri kendi formuyla (hesap seçici) sunar.
+    const actions = manage ? Object.entries(ACTIONS).filter(([key, rule]) => rule.from.includes(cheque.status) && !(cheque.deposited && key === "endorse")).map(([key, rule]) => ({ key, label: rule.label })) : [];
+    const depositable = manage && !cheque.deposited && cheque.direction === "in" && cheque.status === "portfolio";
+    const bankActions = !manage ? [] : cheque.deposited ? [{ key: "bank-withdraw", label: BANK_ACTIONS["bank-withdraw"] }] : depositable ? [{ key: "bank-deposit", label: BANK_ACTIONS["bank-deposit"] }] : [];
     const last = history.at(-1);
     const lock = period?.lockedUntil?.() || "";
     const coreLocked = Boolean(lock && cheque.issueDate && cheque.issueDate <= lock);
-    const canEditCore = manage && history.length === 1 && !cheque.invoiceId && !coreLocked;
+    const canEditCore = manage && history.length === 1 && !cheque.invoiceId && !coreLocked && !cheque.deposited;
     // v2.0.26 (2. gözden geçirme İ3): formun giriş metni ve kartın kilit notu sunucuda, sunucunun gerçek kuralıyla (PUT/DELETE/undo)
     // aynı sırada seçilir: faturadan gelen → faturayı iptal; işlem görmüş → önce son işlemi geri al (son işlem ya da evrak kilitli
     // dönemdeyse bunun için önce kilit açılmalı); yalnız ilk olaylı ve kilitli → kilit. Önceden istemci kilit metnini öne alıyordu:
@@ -117,8 +129,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const received = cheque.direction === "in" ? "alındı" : "verildi";
     const undoLocked = Boolean(lock && history.length > 1 && last.date <= lock);
     let coreNote = "";
+    const depositNote = cheque.deposited ? `Bu evrak ${cheque.collection.bankLabel} hesabında tahsilde (${dayText(cheque.collection.givenDate)}); tutar, cari, tarih ve vade değiştirilemez, ciro edilemez, silinemez. Yalnız no, banka ve açıklama düzeltilir; önce Bankadan Geri Al'ın.` : "";
     if (manage && !canEditCore) {
-      if (cheque.invoiceId) coreNote = `Bu evrak ${cheque.invoiceNumber || "bir fatura"} ile kaydedildi; yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih faturadan gelir; değiştirmek için faturayı iptal edin.`;
+      if (cheque.deposited) coreNote = depositNote;
+      else if (cheque.invoiceId) coreNote = `Bu evrak ${cheque.invoiceNumber || "bir fatura"} ile kaydedildi; yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih faturadan gelir; değiştirmek için faturayı iptal edin.`;
       else if (history.length > 1)
         coreNote = `İşlem görmüş evrakta yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih için önce son işlemi geri alın.${
           undoLocked ? ` Son işlem (${EVENT_LABELS[last.kind] || last.kind}, ${dayText(last.date)}) kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi); geri almak için önce yönetici dönem kilidini açmalı.`
@@ -128,6 +142,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     }
     // Kartta, işlem düğmelerinin altında görünür neden (pasif/eksik düğmenin nedeni yalnız düğme ipucunda kalmasın).
     const lockNote = !manage ? ""
+      : cheque.deposited ? depositNote
       : history.length === 1 && !cheque.invoiceId && coreLocked ? `Bu evrak kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi) ${received}; silinemez, tutarı, carisi ve tarihi değişmez. Vade, no, banka ve açıklama Düzenle ile düzeltilir.`
       : undoLocked ? `Son işlem (${EVENT_LABELS[last.kind] || last.kind}, ${dayText(last.date)}) kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi); geri alınamaz.`
       : "";
@@ -145,8 +160,12 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       coreNote,
       lockNote,
       // İ3: kapanmış dönemdeki evrak silinmez (DELETE 409 period-locked); düğme sunulmaz, nedeni lockNote'ta.
-      canDelete: manage && history.length === 1 && !cheque.invoiceId && !coreLocked,
+      canDelete: manage && history.length === 1 && !cheque.invoiceId && !coreLocked && !cheque.deposited,
       canManage: manage,
+      bankActions,
+      // Bankaya Tahsile Ver seçicisi: yalnız uygun hesaplar (lib/bank/collections.mjs depositEligibility). Bakiye dönmez.
+      depositAccounts: depositable ? collections.choices({ instrument: cheque.instrument }) : [],
+      collections: collections.historyOf(cheque.id).map(item => ({ id: item.id, status: item.status, statusLabel: item.statusLabel, bankAccountId: item.bankAccountId, bankLabel: item.bankLabel, givenDate: item.givenDate, closedDate: item.closedDate, eventNo: item.eventNo, closeEventNo: item.closeEventNo })),
     };
   }
 
@@ -154,7 +173,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   const listQuery = params => ({
     q: text(params.get("q")).slice(0, 120),
     direction: ["in", "out"].includes(text(params.get("direction"))) ? text(params.get("direction")) : "",
-    status: STATUSES[text(params.get("status"))] || ["open", "closed", "overdue", "soon"].includes(text(params.get("status"))) ? text(params.get("status")) : "",
+    status: Object.hasOwn(STATUSES, text(params.get("status"))) || ["open", "closed", "overdue", "soon", "deposited"].includes(text(params.get("status"))) ? text(params.get("status")) : "",
     from: validDate(text(params.get("from"))) ? text(params.get("from")) : "",
     to: validDate(text(params.get("to"))) ? text(params.get("to")) : "",
     account: text(params.get("account")).slice(0, 120),
@@ -163,14 +182,24 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   function list(user, { q = "", direction = "", status = "", from = "", to = "", account = "", sort = "due" } = {}) {
     const day = today();
     const rows = store.all(`${CHEQUE_SQL} WHERE c.deleted_at IS NULL`);
+    const pending = collections.pendingMap();
     const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
     const out = [];
+    const deposited = { count: 0, amount: 0 };
     for (const raw of rows) {
+      const own = raw.direction === "in" && raw.status === "portfolio" ? pending.get(raw.id) || null : null;
+      if (own) {
+        deposited.count += 1;
+        deposited.amount = roundMoney(deposited.amount + raw.amount);
+      }
       if (direction && raw.direction !== direction) continue;
       if (account && raw.accountId !== account && raw.endorseAccountId !== account) continue;
       if (from && raw.dueDate < from) continue;
       if (to && raw.dueDate > to) continue;
-      const row = shapeRow(raw, day);
+      // Süzgeç (plan §3.14): "Portföyde" ile "Bankada Tahsilde" ayrı.
+      if (status === "deposited" && !own) continue;
+      if (status === "portfolio" && own) continue;
+      const row = shapeRow(raw, day, own);
       if (status === "open" && !row.open) continue;
       if (status === "closed" && row.open) continue;
       if (status === "overdue" && !(row.open && row.days < 0)) continue;
@@ -187,7 +216,11 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     }[sort];
     out.sort(compare);
     const listed = out.reduce((acc, row) => ({ count: acc.count + 1, amount: roundMoney(acc.amount + row.amount) }), { count: 0, amount: 0 });
-    return { cheques: out, listed, summary: portfolioSummary(rows, day), today: day, canManage: canUser(user, "cheques.manage") };
+    // Doğrulama tur 2 (plan §3.14 "Portföyde ile Bankada Tahsilde ayrı"): özetin "Portföyde (alınan)"ı (in.open) tahsildeki evrakı içermez — pencere,
+    // PDF ve Çek / Senet Portföyü raporu aynı sayıyı gösterir; tahsildeki "deposited"ta. Vade kümeleri (gecikmiş, bugün, 7 gün) tahsildekini de sayar.
+    const summary = portfolioSummary(rows, day);
+    summary.in.open = { count: summary.in.open.count - deposited.count, amount: roundMoney(summary.in.open.amount - deposited.amount) };
+    return { cheques: out, listed, summary: { ...summary, deposited }, today: day, canManage: canUser(user, "cheques.manage") };
   }
   // Salt okunur liste ve dışa aktarım: çek yetkisi ya da ANLIK DURUM yetkisi (Rapor Al › Çek / Senet sekmesi) yeter.
   const requireReader = req => {
@@ -243,12 +276,20 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         // Yazılan satırın kendisi denetlenir (gözden geçirme D10).
         bank.assertWrittenNonMoney("plan_entries", id);
         done.push({ op: "insert", table: "plan_entries", id, planId: plan.id, accountId: plan.accountId });
-      } else if (effect.type === "remove-plan-entry") {
-        const row = store.get("SELECT * FROM plan_entries WHERE id = ?", effect.id);
+      } else if (effect.type === "reverse-plan-entry") {
+        // Doğrulama T11 (plan §3.14, §5.5): karşılıksız evrakın taksit tahsilatı silinmez; karşılıksız günü çekli ters kayıt (taksit iadesi,
+        // para satırı değil) yazılır. Alış günündeki tahsilat ve kilitli dönem değişmez; Geri Al ters kaydı siler.
+        // Taksit iadesi gibi taksite bağlanmaz (routes/plans.mjs: 'out' satırının item_id'si boş; dağıtım en son taksitten düşer).
+        const row = store.get("SELECT plan_id, amount FROM plan_entries WHERE id = ?", effect.id);
         if (!row) continue;
         plans()?.assertCloseOpen?.(row.plan_id, CLOSED_CARD);
-        store.run("DELETE FROM plan_entries WHERE id = ?", effect.id);
-        done.push({ op: "delete", table: "plan_entries", row, planId: row.plan_id });
+        const id = newId("entry");
+        store.run(
+          "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, cheque_id, created_by, created_at) VALUES (?, ?, NULL, 'out', ?, ?, ?, NULL, ?, ?, ?)",
+          id, row.plan_id, row.amount, effect.date, effect.note || "", cheque.id, user.id, now(),
+        );
+        bank.assertWrittenNonMoney("plan_entries", id);
+        done.push({ op: "insert", table: "plan_entries", id, planId: row.plan_id, accountId: store.get("SELECT account_id AS a FROM plans WHERE id = ?", row.plan_id)?.a || "" });
       }
     }
     syncCards(user, done);
@@ -435,11 +476,14 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       if (body.updatedAt && body.updatedAt !== previous.updatedAt) throw new HttpError(409, "Bu çek siz bakarken değişti. Kartı yenileyip yeniden deneyin.", { code: "cheque-stale" });
       const history = eventsOf(previous.id);
       const coreChange = coreChanged(body, previous);
+      // v2.2.0 (plan §3.14): tahsildeki evrakın tutarı, carisi, tarihi ve vadesi değişmez (409 cheque-deposited); no, banka, açıklama serbest.
+      if (coreChange || (body.dueDate !== undefined && text(body.dueDate) !== previous.dueDate)) collections.assertNotDeposited(previous, "tutarı, carisi, tarihi ve vadesi değiştirilemez");
       if (coreChange && previous.invoiceId) throw new HttpError(409, `Bu evrak ${previous.invoiceNumber || "bir fatura"} ile kaydedildi; tutarı, carisi ve tarihi faturadan gelir. Değiştirmek için faturayı iptal edin.`, { code: "invoice-linked", invoiceId: previous.invoiceId });
       if (coreChange && history.length > 1) throw new HttpError(409, "Tahsil, ciro ya da ödeme yapılmış evrakın tutarı, carisi ve tarihi değiştirilemez. Önce son işlemi geri alın.");
       // v2.0.26 (A6): kapanmış dönemdeki evrakın tutarı, carisi, kartı ve tarihi değişmez; yeni tarih de kilitli/ileri olamaz.
       if (coreChange) period?.assertOpen(previous.issueDate, "Bu çek/senet");
       const input = chequeAccountOf(coreInput({ ...previous, ...body }, previous, { checkLinks: coreChange, dated: coreChange }), body, previous);
+      if (coreChange) collections.assertIssueBeforeDeposits(previous, input.issueDate);
       if (body.allowDuplicate !== true) assertUnique(input, previous.id);
       if (coreChange) {
         // Tek olaylı (alındı/verildi) kayıt: eski defter etkileri geri alınır, yenileri yazılır (aynı işlem bloğunda).
@@ -467,7 +511,8 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   // Durum değişikliği: tahsil, ciro, karşılıksız, ödeme. Gövde: { action, date, note, accountId (ciro), status (beklenen) }.
   // v2.1.0 Aşama 8 (plan §3.7 #9): tahsil ve ödeme havale/EFT ile bankadan geçiyorsa olay banka hesabına bağlanır (fin_ref; tek hesapta
   // kendiliğinden, birden çokta seçim zorunlu), istek kimliği, K7 (ödemede ve geri almada hesaptan para çıkar), ödeme bank.move ister.
-  // Bankaya Tahsile Ver sonraki dilimde (görünmez).
+  // v2.2.0 (plan §3.14, §7): Bankaya Tahsile Ver ("bank-deposit") ve Bankadan Geri Al ("bank-withdraw") aynı uçta; cheque_events'e satır yazmaz
+  // (lib/bank/collections.mjs). Tahsildeki evrakta Tahsil Edildi'nin yolu bank ve hesabı tahsil kaydının hesabı; Karşılıksız kaydı kapatır.
   const banking = bankForm(bankModule);
   router.post("/api/workspace/cheques/:id/actions", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "cheques.manage");
@@ -475,20 +520,29 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const action = text(body.action);
     let result = null;
     let k7 = null;
-    const posted = bank.post({ user, module: "cheque", op: "create", requestId: banking.requestId(req, body), scope: "cheque.action", body: { ...body, chequeId: params.id }, similarOk: body.similarOk === true, guard: (written, ctx) => k7?.guard?.(written, ctx), write: () => {
+    const posted = bank.post({ user, module: "cheque", op: "create", requestId: banking.requestId(req, body), scope: "cheque.action", body: { ...body, chequeId: params.id }, similarOk: body.similarOk === true, guard: (written, ctx) => k7?.guard?.(written, ctx), write: ctx => {
       const cheque = chequeRow(params.id);
       if (body.status && body.status !== cheque.status) throw new HttpError(409, `Bu ${kindName(cheque).toLocaleLowerCase("tr-TR")} bu arada “${STATUSES[cheque.status]?.label}” oldu. Kartı yenileyin.`, { code: "cheque-stale" });
+      if (Object.hasOwn(BANK_ACTIONS, action)) { // tur 2: yalnız kendi anahtarı (Object.prototype adları tahsildeki evrakı geri alıyordu)
+        const done = action === "bank-deposit" ? collections.deposit(ctx, { cheque, body }) : collections.withdraw(ctx, { cheque, body });
+        const account = done.account ? { bankAccountId: done.account.id } : { bankAccountId: done.previous.bankAccountId, previous: { status: "pending", bankAccountId: done.previous.bankAccountId, givenDate: done.previous.givenDate } };
+        audit(user, `cheque.${action}`, cheque.id, { serialNo: cheque.serialNo, amount: cheque.amount, date: done.date, collectionId: done.record, eventNo: done.event.no, note: done.note, ...account });
+        result = { id: cheque.id, effects: [], cash: false };
+        return { id: cheque.id };
+      }
       const rule = transition(cheque, action);
       if (!rule.ok) throw new HttpError(409, rule.reason);
       // v2.0.24: işlem tarihi Kasa/cari hareketleriyle aynı kurala bağlı: ileri tarihli olamaz, kilitli döneme yazılmaz.
       const date = period ? period.movementDate({ date: text(body.date) || today() }, { label: "İşlem Tarihi" }) : dateOf(body.date, "İşlem Tarihi", today());
+      // Tahsildeki evrak (§3.14): ciro 409; tarih verilme gününden önce olamaz; tahsilde yol bank ve hesap tahsil kaydının hesabı.
+      const deposit = collections.forAction(cheque, action, { date, body });
       // v2.0.13: çek/senet tahsili ya da ödemesi çoğunlukla bankadan geçer (varsayılan Banka); elden ise Nakit.
-      const method = methodInput(body.method, "bank");
+      const method = deposit.pending && action === "collect" ? "bank" : methodInput(body.method, "bank");
       if (rule.cash === "out") cash?.guardOut?.(cheque.amount, date, body.cashForce === true, method);
       // v2.2.0 (İz 2.5–2.6): verilen çekin/senedin ödemesinde hesap gönderilmezse evrakın Çek Hesabı (senette ödeme hesabı önerisi) — hâlâ
       // etkin ve havale alan TL hesapsa. Böylece "çek ödendiğinde para o hesaptan" çıkar; başka hesap seçilirse o.
       const ownAccount = rule.cash === "out" && method === "bank" && body.bankAccountId === undefined && cheque.bankAccountId && store.get(`SELECT 1 AS found FROM bank_accounts WHERE id = ? AND ${FORM_KINDS_SQL}`, cheque.bankAccountId) ? cheque.bankAccountId : undefined;
-      const finRef = rule.cash ? banking.ref({ method, value: ownAccount ?? body.bankAccountId, date }) : "";
+      const finRef = rule.cash ? banking.ref({ method, value: deposit.pending ? deposit.value : (ownAccount ?? deposit.value), date }) : "";
       banking.requireOut(user, rule.cash === "out", finRef);
       k7 = banking.negative([finRef], date, banking.forced(body));
       k7.capture();
@@ -506,7 +560,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       const endorseEffects = effectsOf(history.filter(event => event.kind === "endorse").at(-1));
       const planned = plannedEffects({ ...cheque }, action, { date, note: noteFor(cheque, action, note), endorseAccountId, receiveEffects, endorseEffects });
       const effects = applyEffects(user, cheque, planned);
-      writeEvent(user, cheque, { kind: action, date, amount: cheque.amount, accountId: endorseAccountId || (action === "bounce" ? cheque.accountId : ""), fromStatus: cheque.status, toStatus: rule.to, note, effects, method: rule.cash ? method : "cash", finRef });
+      const eventRow = writeEvent(user, cheque, { kind: action, date, amount: cheque.amount, accountId: endorseAccountId || (action === "bounce" ? cheque.accountId : ""), fromStatus: cheque.status, toStatus: rule.to, note, effects, method: rule.cash ? method : "cash", finRef });
+      // Tahsildeki evrakın kaydı kapanır (§3.14): tahsilde collected (kapanış = tahsil olayının İşlem No'lu başlığı), karşılıksızda returned.
+      if (deposit.pending && action === "collect") collections.closeCollected(ctx, deposit.pending, { date, eventId: store.get("SELECT event_id AS e FROM cheque_events WHERE id = ?", eventRow)?.e || "" });
+      else if (deposit.pending && action === "bounce") collections.closeReturned(ctx, deposit.pending, { cheque, date, chequeEventId: eventRow, note });
       store.run(
         "UPDATE cheques SET status = ?, status_date = ?, endorse_account_id = CASE WHEN ? <> '' THEN ? ELSE endorse_account_id END, updated_by = ?, updated_at = ? WHERE id = ?",
         rule.to, date, endorseAccountId, endorseAccountId, user.id, now(), cheque.id,
@@ -529,7 +586,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     let k7 = null;
     // v2.1.0 (bank.post op 'delete'): geri alınan tahsil/ödeme olayının işlem başlığı iptal olur. Aşama 8: bankaya bağlı tahsilin geri alınması
     // hesaptan para çıkarır (K7).
-    const posted = bank.post({ user, module: "cheque", op: "delete", prev: { chequeId: params.id }, guard: (written, ctx) => k7?.guard?.(written, ctx), write: () => {
+    const posted = bank.post({ user, module: "cheque", op: "delete", prev: { chequeId: params.id }, guard: (written, ctx) => k7?.guard?.(written, ctx), write: ctx => {
       const cheque = chequeRow(params.id);
       const history = eventsOf(cheque.id);
       const last = history.at(-1);
@@ -542,6 +599,8 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       k7.capture();
       const effects = effectsOf(last);
       revertEffects(effects, user);
+      // v2.2.0 (§3.14): geri alınan tahsil ya da karşılıksız tahsildeki evrakın kaydını kapattıysa kayıt yeniden "Bankada Tahsilde" olur.
+      collections.reopenFor(ctx, cheque.id, last);
       store.run("DELETE FROM cheque_events WHERE id = ?", last.id);
       const previousEndorse = last.kind === "endorse" ? "" : cheque.endorseAccountId;
       const statusDate = history.at(-2).date;
@@ -561,6 +620,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     let result = null;
     bank.post({ user, module: "cheque", op: "delete", prev: { chequeId: params.id }, write: () => {
       const cheque = chequeRow(params.id);
+      collections.assertNotDeposited(cheque, "silinemez");
       const history = eventsOf(cheque.id);
       if (history.length > 1) throw new HttpError(409, `Tahsil, ciro ya da ödeme yapılmış ${kindName(cheque).toLocaleLowerCase("tr-TR")} silinemez. Önce işlemleri geri alın.`);
       if (cheque.invoiceId) throw new HttpError(409, `Bu evrak ${cheque.invoiceNumber || "bir fatura"} ile kaydedildi; silmek için faturayı iptal edin.`, { code: "invoice-linked", invoiceId: cheque.invoiceId });
@@ -581,7 +641,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   const filterText = query =>
     [
       query.direction ? DIRECTIONS[query.direction] : "",
-      STATUSES[query.status]?.label || { open: "Açık", closed: "Kapanmış", overdue: "Vadesi geçmiş", soon: "7 gün içinde" }[query.status] || "",
+      STATUSES[query.status]?.label || { open: "Açık", closed: "Kapanmış", overdue: "Vadesi geçmiş", soon: "7 gün içinde", deposited: "Bankada Tahsilde" }[query.status] || "",
       query.from || query.to ? `vade ${query.from ? dayText(query.from) : "…"} – ${query.to ? dayText(query.to) : "…"}` : "",
       query.q ? `“${query.q}”` : "",
     ]
@@ -602,6 +662,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       summary: [
         ["Listelenen", `${data.listed.count} · ${tl(data.listed.amount)}`],
         ["Portföyde (alınan)", `${data.summary.in.open.count} · ${tl(data.summary.in.open.amount)}`],
+        ["Bankada Tahsilde", `${data.summary.deposited.count} · ${tl(data.summary.deposited.amount)}`],
         ["Ödenecek (verilen)", `${data.summary.out.open.count} · ${tl(data.summary.out.open.amount)}`],
       ],
       officeName: office(),
@@ -726,23 +787,53 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   // ANLIK DURUM ve nakit akışı: açık evrak (portföydeki alınan, ödenecek verilen).
   const openRows = () => store.all(`${CHEQUE_SQL} WHERE c.deleted_at IS NULL AND c.status IN ('portfolio', 'pending')`);
   const summary = (day = today()) => portfolioSummary(store.all("SELECT direction, status, amount, due_date AS dueDate FROM cheques WHERE deleted_at IS NULL"), day);
-  const flows = () =>
-    openRows().map(row => ({
-      date: row.dueDate,
-      direction: row.direction === "out" ? "out" : "in",
-      amount: row.amount,
-      source: row.instrument === "note" ? "note" : "cheque",
-      label: `${row.direction === "out" ? "Verilen" : "Alınan"} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` · No ${row.serialNo}` : ""}${row.bank ? ` · ${row.bank}` : ""}`,
-      party: party(row),
-      phone: row.accountPhone,
-      ref: { type: "cheque", id: row.id },
-    }));
+  // expected (v2.2.0, plan §3.14; Nakit Akış ve Vade Takip): bankada tahsildeki evrak vade + hesabın iş günü takvimiyle beklenir (vade hafta
+  // sonu ya da tatile düşerse sonraki iş günü; vadeden sonra verildiyse veriliş gününden). KARAR: hesap kartında valör alanı yok (plan §5.2);
+  // "hesabın valörü" Banka Ayarları'ndaki iş günü takvimidir (bank.businessDayOf). Öbür okuyucular (yaşlandırma, vade dağılımı) vadeyi kullanır.
+  // Tahsildeki evrakın beklenen günü: vade (vadeden sonra verildiyse veriliş günü) + iş günü takvimi. Nakit Akış, Vade Takip, zil ve takvim tek
+  // kuraldan okur (doğrulama T5: zil/takvim önceden vadeyi ve "Tahsil Edilecek" adını gösteriyordu).
+  const depositsOf = () => {
+    const pending = collections.pendingMap();
+    const shift = pending.size && bank?.businessDayOf ? bank.businessDayOf() : null;
+    const of = row => (row.direction === "in" && row.status === "portfolio" ? pending.get(row.id) || null : null);
+    const expectedOf = (row, deposit) => {
+      const base = deposit.givenDate > row.dueDate ? deposit.givenDate : row.dueDate;
+      return shift ? shift(base) : base;
+    };
+    return { of, expectedOf };
+  };
+  const flows = ({ expected = false } = {}) => {
+    const deposits = expected ? depositsOf() : null;
+    return openRows().map(row => {
+      const deposit = deposits ? deposits.of(row) : null;
+      return {
+        date: deposit ? deposits.expectedOf(row, deposit) : row.dueDate,
+        direction: row.direction === "out" ? "out" : "in",
+        amount: row.amount,
+        source: row.instrument === "note" ? "note" : "cheque",
+        // Plan §8.9 "Akış kaynakları: … Tahsildeki Çek" (doğrulama T6): kaynak özeti (bySource) ve PDF/Excel kaynak kolonu tahsildeki evrakı ayrı
+        // sayar (flow "deposit"). source çek/senet kalır: Vade Takip süzgeci ve ekrandaki kaynak etiketi bugünkü gibi çalışır.
+        ...(deposit ? { flow: "deposit" } : {}),
+        label: `${row.direction === "out" ? "Verilen" : "Alınan"} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` · No ${row.serialNo}` : ""}${row.bank ? ` · ${row.bank}` : ""}${deposit ? ` · Bankada Tahsilde · ${deposit.bankName || deposit.accountName}` : ""}`,
+        party: party(row),
+        phone: row.accountPhone,
+        ref: { type: "cheque", id: row.id },
+        ...(deposit ? { dueDate: row.dueDate, bankAccountId: deposit.bankAccountId } : {}),
+      };
+    });
+  };
   // Tahsilat takvimi ve bildirimler: vadesi geçen, bugün ve 7 gün içinde gelecek açık evrak.
   function dueItems(day = today()) {
+    const deposits = depositsOf();
     return openRows()
-      .map(row => ({ row, due: dueState(row.dueDate, day) }))
+      .map(row => {
+        // Bankada tahsildeki evrak (plan §3.14, §8.9): beklenen gün vade + iş günü takvimi (Vade Takip ve Nakit Akış ile aynı), adı "Bankada Tahsilde".
+        const deposit = deposits.of(row);
+        const date = deposit ? deposits.expectedOf(row, deposit) : row.dueDate;
+        return { row, deposit, date, due: dueState(date, day) };
+      })
       .filter(({ due }) => due.state !== "later")
-      .map(({ row, due }) => ({
+      .map(({ row, deposit, date, due }) => ({
         id: `cheque|${row.id}`,
         source: "cheque",
         chequeId: row.id,
@@ -751,19 +842,23 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         caseNo: "",
         caseKey: "",
         tab: "",
-        label: `${row.direction === "out" ? "Ödenecek" : "Tahsil Edilecek"} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` No ${row.serialNo}` : ""}`,
+        label: deposit
+          ? `Bankada Tahsilde ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` No ${row.serialNo}` : ""} · ${deposit.bankName || deposit.accountName}`
+          : `${row.direction === "out" ? "Ödenecek" : "Tahsil Edilecek"} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` No ${row.serialNo}` : ""}`,
         kind: "date",
-        dueDate: row.dueDate,
-        dueText: dayText(row.dueDate),
+        dueDate: date,
+        dueText: dayText(date),
         amount: row.amount,
         partial: false,
         days: due.days,
         state: due.state === "today" ? "today" : due.state === "overdue" ? "overdue" : "upcoming",
       }));
   }
+  // Tahsil kayıtları da (Bankaya Tahsile Ver / Geri Al çekin satırını değiştirmez): zil ve takvimin önbelleği tahsile verince yenilenir; tahsildeki
+  // evrak varken Banka Ayarları'nın iş günü takvimi ve hesabın adı da izdedir (lib/bank/collections.mjs collectionsFingerprint).
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(created_at), '') FROM cheque_events) AS e, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) FROM cheques) AS c");
-    return `${row.e}|${row.c}`;
+    return `${row.e}|${row.c}|${collectionsFingerprint(store)}`;
   };
   // Cari silinmeden önce: bu cariye bağlı (alındığı/verildiği ya da ciro edildiği) silinmemiş evrak sayısı.
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM cheques WHERE deleted_at IS NULL AND (account_id = ? OR endorse_account_id = ?)", accountId, accountId).n;
@@ -828,6 +923,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       const cheque = chequeRow(chequeId);
       const rule = transition(cheque, "endorse");
       if (!rule.ok) throw new HttpError(409, rule.reason, { code: "cheque-not-in-portfolio" });
+      collections.assertNotDeposited(cheque, "ciro edilemez");
       if (cheque.direction !== "in") throw new HttpError(409, "Yalnız alınan (portföydeki) evrak ciro edilir.");
       if (date < cheque.issueDate) throw new HttpError(400, `Ciro tarihi, evrakın alış tarihinden (${dayText(cheque.issueDate)}) önce olamaz.`, { code: "cheque-endorse-before-receive" });
       if (accountId === cheque.accountId) throw new HttpError(400, "Çek, alındığı cariye ciro edilemez.");
@@ -856,6 +952,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       // Faturayla açılan evrak: yalnız ilk olayı (alındı/verildi) varsa geri alınır ve kaldırılır.
       for (const row of store.all("SELECT id FROM cheques WHERE invoice_id = ? AND deleted_at IS NULL", invoiceId)) {
         const cheque = chequeRow(row.id);
+        collections.assertNotDeposited(cheque, "fatura iptal edilemez ya da düzenlenemez");
         const history = eventsOf(cheque.id);
         if (history.length > 1) throw new HttpError(409, `Faturayla ${cheque.direction === "in" ? "alınan" : "verilen"} ${title(cheque)} ${STATUSES[cheque.status]?.label?.toLocaleLowerCase("tr-TR") || "işlem gördü"}; önce o işlemi Çek/Senet'ten geri alın.`, { code: "cheque-moved", chequeId: cheque.id });
         const effects = effectsOf(history[0]);
@@ -869,7 +966,11 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     },
     forInvoice: invoiceId => store.all(`${CHEQUE_SQL} WHERE c.deleted_at IS NULL AND (c.invoice_id = ? OR c.id IN (SELECT cheque_id FROM cheque_events WHERE invoice_id = ? AND kind = 'endorse'))`, invoiceId, invoiceId).map(row => shapeRow(row)),
     // Ciro için seçilebilecek portföy evrakı (alış faturasının ödeme bölümü).
-    portfolio: () => store.all(`${CHEQUE_SQL} WHERE c.deleted_at IS NULL AND c.direction = 'in' AND c.status = 'portfolio' ORDER BY c.due_date`).map(row => shapeRow(row)),
+    // v2.2.0: bankada tahsildeki evrak ciro edilmez (seçicide görünmez).
+    portfolio: () => {
+      const pending = collections.pendingMap();
+      return store.all(`${CHEQUE_SQL} WHERE c.deleted_at IS NULL AND c.direction = 'in' AND c.status = 'portfolio' ORDER BY c.due_date`).filter(row => !pending.has(row.id)).map(row => shapeRow(row, today(), null));
+    },
     publish: (user, { accountIds = [], chequeIds = [] } = {}) => {
       for (const chequeId of new Set(chequeIds)) publish(user, { kind: "cheques", chequeId });
       changed(user, { accountIds });

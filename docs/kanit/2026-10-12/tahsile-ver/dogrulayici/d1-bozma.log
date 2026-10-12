@@ -1,0 +1,143 @@
+(node:9848) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[d1] fatura düzenle: {"status":409,"code":"cheque-deposited","error":"Çek No F-1 Ziraat Bankası tahsilde (08.10.2026); fatura iptal edilemez ya da düzenlenemez. Önce Bankadan Geri Al'ın."}
+[d1] fatura sil: {"status":409,"code":"cheque-deposited","error":"Çek No F-1 Ziraat Bankası tahsilde (08.10.2026); fatura iptal edilemez ya da düzenlenemez. Önce Bankadan Geri Al'ın."}
+[d1] toplu iptal: {"status":200,"data":{"results":[{"id":"invoice-715abad5-dae9-4bba-b772-d5762809741b","number":"FIS2026000000001","accountName":"ABC Ltd.","ok":false,"message":"Çek No F-1 Ziraat Bankası tahsilde (08.10.2026); fatura iptal edilemez ya da düzenlenemez. Önce Bankadan Geri Al'ın.","code":"cheque-deposited","status":409}],"cancelled":0,"failed":1}}
+[d1] toplu sil: {"status":200,"data":{"results":[{"id":"invoice-715abad5-dae9-4bba-b772-d5762809741b","number":"FIS2026000000001","displayNo":"FIS2026000000001","accountName":"ABC Ltd.","ok":false,"message":"Çek No F-1 Ziraat Bankası tahsilde (08.10.2026); fatura iptal edilemez ya da düzenlenemez. Önce Bankadan Geri Al'ın.","code":"cheque-deposited","status":409}],"deleted":0,"failed":1}}
+[d1] sayılar önce/sonra: {"before_":{"cheques":1,"cheque_events":1,"cheque_collections":1,"fin_events":3,"account_entries":2,"plan_entries":0,"cash_entries":0,"invoices":1},"after_":{"cheques":1,"cheque_events":1,"cheque_collections":1,"fin_events":3,"account_entries":2,"plan_entries":0,"cash_entries":0,"invoices":1}}
+[d1] mutabakat fatura yolları: {"ok":true,"bad":[]}
+▶ D1 — fatura yolları (düzenle / sil / toplu iptal / toplu sil) tahsildeki evrakta
+  ✔ satış faturasının çeki tahsildeyken: Düzenle, Sil, Toplu İptal, Toplu Sil reddedilir; hiçbir şey yazılmaz (108.381866ms)
+✔ D1 — fatura yolları (düzenle / sil / toplu iptal / toplu sil) tahsildeki evrakta (800.109018ms)
+[d1] işlem kartı: {"status":200,"actions":{"reverse":{"allowed":false,"reason":"Bu işlem Çek / Senet penceresinden yapıldı; evrakın kartından Bankadan Geri Al ile geri alınır.","code":"bank-event-module"},"correct":{"allowed":false,"reason":"Bu işlem Çek / Senet penceresinden yapıldı; evrakın kartından Bankadan Geri Al ile geri alınır.","code":"bank-event-module"},"info":{"allowed":false,"reason":"Bu işlem Çek / Senet penceresinden yapıldı; evrakın kartından Bankadan Geri Al ile geri alınır. Açıklaması da orada değiştirilir.","code":"bank-event-module"}}}
+[d1] ters kaydet / düzelt / açıklama: [{"status":409,"code":"bank-event-module","error":"Bu işlem Çek / Senet penceresinden yapıldı; evrakın kartından Bankadan Geri Al ile geri alınır."},{"status":409,"code":"bank-event-module","error":"Bu işlem Çek / Senet penceresinden yapıldı; evrakın kartından Bankadan Geri Al ile geri alınır."},{"status":409,"code":"bank-event-module","error":"Bu işlem Çek / Senet penceresinden yapıldı; evrakın kartından Bankadan Geri Al ile geri alınır. Açıklaması da orada değiştirilir."}]
+[d1] Banka Hareketleri'nde tahsil başlığı: {"listed":0}
+[d1] mutabakat işlem kartı: {"ok":true,"bad":[]}
+▶ D2 — Banka İşlem Kartı uçları (Ters Kaydet / Düzelt / Açıklama) tahsil başlığında
+  ✔ cheque_deposit başlığı Banka'dan ters kaydedilemez/düzeltilemez; hiçbir şey yazılmaz (81.774923ms)
+✔ D2 — Banka İşlem Kartı uçları (Ters Kaydet / Düzelt / Açıklama) tahsil başlığında (455.038751ms)
+[d1] alış tarihi 08.10: {"status":200}
+[d1] tutar 1.500 (geri alınmış kayıttan sonra): {"status":200}
+[d1] 06.10 alt hesaplar / 101: {"at06":{"101.01":-1000,"101.02":1000},"trial06":0}
+[d1] 07.10 alt hesaplar: {"101.01":0,"101.02":0}
+[d1] bugün alt hesaplar (yevmiye): {"101.01":1500,"101.02":0}
+[d1] mutabakat alış tarihi sonraya: {"ok":true,"bad":[]}
+▶ D3 — alış tarihi değişikliği geri alınmış tahsil kaydından SONRAYA alınır
+  ✖ 05.10 alındı, 06.10 tahsile verildi, 07.10 geri alındı → alış tarihi 08.10'a çekilebiliyor mu? defter 06.10'da 101.01 eksi mi? (131.491253ms)
+✖ D3 — alış tarihi değişikliği geri alınmış tahsil kaydından SONRAYA alınır (533.307817ms)
+[d1] açılıştan önce tahsile ver: {"status":200}
+[d1] açılıştan önce tahsil: {"status":409,"code":"bank-before-opening","error":"İşlem tarihi (28.09.2026) Ziraat Bankası · Ana TL Hesabı hesabının açılışından (01.10.2026) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin, başka hesap seçin ya da hareket bu hesabın açılışından önceyse Banka Hesabı alanında \"Hesapsız (Açılıştan Önce)\" seçin (satır Hesabı Atanmamış Eski Hareketler'de kalır)."}
+[d1] açılıştan sonra tahsil: {"status":200}
+[d1] mutabakat açılıştan önce: {"ok":true,"bad":[]}
+▶ D4 — hesabın açılış tarihinden önce tahsile verme
+  ✖ Ziraat açılışı 01.10; 20.09'da alınan çek 25.09'da Ziraat'e tahsile veriliyor mu? 28.09'da tahsil? (76.240294ms)
+✖ D4 — hesabın açılış tarihinden önce tahsile verme (456.319285ms)
+[d1] aralık …–…: {"rows":[["101.01",0,3650,3650,0],["101.02",0,2650,1300,1350]],"main":{"account":"101","name":"Alınan Çekler ve Senetler (Portföy)","balance":1350,"subTotal":1350,"ok":true},"trial101":1350,"sum":1350}
+[d1] aralık …–2026-10-04: {"rows":[["101.01",0,3350,2000,1350],["101.02",0,1300,0,1300]],"main":{"account":"101","name":"Alınan Çekler ve Senetler (Portföy)","balance":2650,"subTotal":2650,"ok":true},"trial101":2650,"sum":2650}
+[d1] aralık 2026-10-04–2026-10-06: {"rows":[["101.01",1450,900,2350,0],["101.02",1000,1650,1000,1650]],"main":{"account":"101","name":"Alınan Çekler ve Senetler (Portföy)","balance":1650,"subTotal":1650,"ok":true},"trial101":1650,"sum":1650}
+[d1] aralık 2026-10-05–…: {"rows":[["101.01",1350,300,1650,0],["101.02",1300,1350,1300,1350]],"main":{"account":"101","name":"Alınan Çekler ve Senetler (Portföy)","balance":1350,"subTotal":1350,"ok":true},"trial101":1350,"sum":1350}
+[d1] aralık 2026-10-07–2026-10-08: {"rows":[["101.01",0,300,300,0],["101.02",1650,0,300,1350]],"main":{"account":"101","name":"Alınan Çekler ve Senetler (Portföy)","balance":1350,"subTotal":1350,"ok":true},"trial101":1350,"sum":1350}
+[d1] yevmiye 101.*: {"101.01":0,"101.02":1350}
+[d1] mutabakat çeşitli: {"ok":true,"bad":[]}
+▶ D5 — Alt Hesap Mizanı 101 ↔ Ana Defter 101 (çeşitli evrak: ciro, carisiz, faturalı, karşılıksız, silinmiş, senet; tarih süzgeci)
+  ✔ Σ 101.* (Alt Hesap Mizanı) = 101 (mizan) hem bugün hem tarih aralıklarında; mains 101 ok (265.871619ms)
+✔ D5 — Alt Hesap Mizanı 101 ↔ Ana Defter 101 (çeşitli evrak: ciro, carisiz, faturalı, karşılıksız, silinmiş, senet; tarih süzgeci) (652.537944ms)
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08\",\"bankAccountId\":[\"bacc-a368ef3a-61b5-4330-97a","status":400,"code":"bank-account-required","error":"Banka Hesabı seçin: evrak hangi bankaya tahsile verildi?"}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08\",\"bankAccountId\":{\"id\":\"bacc-a368ef3a-61b5-433","status":400,"code":"bank-account-required","error":"Banka Hesabı seçin: evrak hangi bankaya tahsile verildi?"}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08\",\"bankAccountId\":12345}","status":404,"code":"bank-account-missing","error":"Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir."}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08\",\"bankAccountId\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxx","status":404,"code":"bank-account-missing","error":"Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir."}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":20261008,\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a6-939","status":400,"code":"date-invalid","error":"Tahsile Veriliş Tarihi geçerli bir tarih değil (20261008). Takvimden seçin."}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":[\"2026-10-08\"],\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97","status":200}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a6","status":400,"error":"Açıklama en fazla 300 karakter olabilir."}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a6","status":400,"error":"Açıklama en fazla 300 karakter olabilir."}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a6","status":200}
+[d1] girdi: {"body":"{\"action\":\"BANK-DEPOSIT\",\"date\":\"2026-10-08\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a6","status":409,"error":"İşlem tanınmadı."}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit \",\"date\":\"2026-10-08\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a","status":200}
+[d1] girdi: {"body":"{\"action\":\"bank-withdraw\",\"date\":\"2026-10-08\"}","status":409,"code":"cheque-not-deposited","error":"Çek No D6-1 bankada tahsilde değil; geri alınacak tahsil kaydı yok."}
+[d1] girdi: {"body":"{\"action\":[\"bank-deposit\"],\"date\":\"2026-10-08\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97","status":409,"error":"İşlem tanınmadı."}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08T00:00:00Z\",\"bankAccountId\":\"bacc-a368ef3a-61b5","status":400,"code":"date-invalid","error":"Tahsile Veriliş Tarihi geçerli bir tarih değil (2026-10-08T00:00:00Z). Takvimden seçin."}
+[d1] girdi: {"body":"{\"action\":\"bank-deposit\",\"date\":\"08.10.2026\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a6","status":400,"code":"date-invalid","error":"Tahsile Veriliş Tarihi geçerli bir tarih değil (08.10.2026). Takvimden seçin."}
+[d1] girdi: {"body":"dizi gövde","status":409}
+[d1] kabul edilen: [{"body":"{\"action\":\"bank-deposit\",\"date\":[\"2026-10-08\"],\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97","status":200},{"body":"{\"action\":\"bank-deposit\",\"date\":\"2026-10-08\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a6","status":200},{"body":"{\"action\":\"bank-deposit \",\"date\":\"2026-10-08\",\"bankAccountId\":\"bacc-a368ef3a-61b5-4330-97a","status":200}]
+[d1] mutabakat bozuk girdi: {"ok":true,"bad":[]}
+▶ D6 — bozuk girdi (500 olmamalı, hiçbir şey yazılmamalı)
+  ✔ bankAccountId dizi/nesne/sayı/çok uzun; tarih sayı/dizi; not 301 ve 100.000 karakter; eylem yanlış; gövde dizi (179.799483ms)
+✔ D6 — bozuk girdi (500 olmamalı, hiçbir şey yazılmamalı) (546.884438ms)
+[d1] salt okunur: {"status":403,"code":"LICENSE_READ_ONLY","error":"Ücretsiz deneme henüz başlamadı. Program salt okunur çalışıyor; bu işlem yapılamaz."}
+▶ D7 — salt okunur lisans ve yalnız çek yetkili kullanıcı
+  ✔ salt okunur lisansta Bankaya Tahsile Ver 403 LICENSE_READ_ONLY (282.417057ms)
+[d1] yetki ver: {"status":200,"data":{"ok":true,"data":true}}
+[d1] kart: {"status":403}
+[d1] banka listesi (bank.view yok): {"status":403,"code":"FORBIDDEN","error":"Bu işlem için yetkiniz yok."}
+[d1] tahsile ver (bank.view yok): {"status":200}
+  ✔ çek yetkili ama banka görme yetkisi olmayan kullanıcı: kartta hesap listesi görür mü, tahsile verebilir mi (504.881744ms)
+✔ D7 — salt okunur lisans ve yalnız çek yetkili kullanıcı (787.790766ms)
+[d1] eşzamanlı: {"depositVsEndorse":[{"status":200},{"status":409,"code":"cheque-deposited","error":"Çek No D8-1 Ziraat Bankası tahsilde (08.10.2026); ciro edilemez. Önce Bankadan Geri Al'ın."}],"collectVsWithdraw":[{"status":200},{"status":409,"code":"cheque-not-deposited","error":"Çek No D8-2 bankada tahsilde değil; geri alınacak tahsil kaydı yok."}],"depositVsDelete":[{"status":404,"error":"Çek/senet bulunamadı. Silinmiş olabilir."},{"status":200}],"sameRequest":[200,200,true]}
+[d1] portföyde olmayan bekleyen kayıt: []
+[d1] mutabakat eşzamanlı: {"ok":true,"bad":[]}
+▶ D8 — aynı anda farklı eylemler
+  ✔ tahsile ver ∥ ciro; tahsil ∥ geri al; tahsile ver ∥ sil; iki tahsile ver aynı kimlikle (140.322336ms)
+✔ D8 — aynı anda farklı eylemler (495.96512ms)
+[d1] kilitli güne geri al: {"status":409,"code":"period-locked","error":"Hareket 04.10.2026 tarihli; 05.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."}
+[d1] mutabakat kilit: {"ok":true,"bad":[]}
+▶ D9 — dönem kilidi ve hesap silme (geri alınmış kaydı olan hesap)
+  ✔ kilit 05.10: 04.10'a geri alma 409; 06.10'a geri alma 200; kilit izi (05.10'a kadar mizan) değişmez (89.430701ms)
+[d1] bekleyenli hesabı sil: {"status":409,"code":"bank-cheques-pending","error":"Bu hesapta bankaya tahsile verilmiş 1 çek/senet var; hesap silinemez. Önce evrakı tahsil edin ya da Çek / Senet'ten Bankadan Geri Al'ın."}
+[d1] geri alınmış kaydı olan hesabı sil: {"status":200}
+[d1] kart geçmişi: [{"id":"chqcol-0mv4zywa20000-374a9fc1-8353-4da3","status":"withdrawn","statusLabel":"Bankadan Geri Alındı","bankAccountId":"bacc-34ebfabc-6456-4f67-b7cc-057c41643338","bankLabel":"Akbank · Tahsil Hesabı","givenDate":"2026-10-07","closedDate":"2026-10-08","eventNo":"BNK-2026-000006","closeEventNo":"BNK-2026-000007"}]
+[d1] mutabakat hesap silme: {"ok":true,"bad":[]}
+[d1] silinmiş hesaba tahsile ver: {"status":404,"code":"bank-account-missing","error":"Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir."}
+  ✔ hareketsiz hesap: tahsile ver → geri al → hesabı sil → mutabakat, İşlem Kartı, kart geçmişi (120.636822ms)
+✔ D9 — dönem kilidi ve hesap silme (geri alınmış kaydı olan hesap) (598.597417ms)
+[d1] karşılıksız sonrası: {"101.01":0,"101.02":0}
+[d1] mutabakat carisiz karşılıksız: {"ok":true,"bad":[]}
+[d1] geri al sonrası kart: {"deposited":true,"statusLabel":"Bankada Tahsilde · Ziraat Bankası · 08.10.2026","collections":[{"id":"chqcol-0mv4zywlv0000-d365cb91-2c5b-4b03","status":"pending","statusLabel":"Bankada Tahsilde","bankAccountId":"bacc-9c553c4b-38d2-4ca4-9b5d-2caa5b585982","bankLabel":"Ziraat Bankası · Ana TL Hesabı","givenDate":"2026-10-08","closedDate":"","eventNo":"BNK-2026-000003","closeEventNo":""}]}
+[d1] banka farkı: 640
+[d1] mutabakat carisiz: {"ok":true,"bad":[]}
+▶ D10 — carisiz çek: tahsile ver → karşılıksız → geri al → tahsil
+  ✔ carisiz evrakta 101.* ve banka (111.069333ms)
+✔ D10 — carisiz çek: tahsile ver → karşılıksız → geri al → tahsil (428.938436ms)
+ℹ tests 12
+ℹ suites 10
+ℹ pass 10
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6175.239122
+
+✖ failing tests:
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d1-bozma.test.mjs:99:3
+✖ 05.10 alındı, 06.10 tahsile verildi, 07.10 geri alındı → alış tarihi 08.10'a çekilebiliyor mu? defter 06.10'da 101.01 eksi mi? (131.491253ms)
+  AssertionError [ERR_ASSERTION]: 06.10'da 101.01 eksi: -1000 (evrak alınmadan bankaya verilmiş görünür)
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d1-bozma.test.mjs:119:36)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d1-bozma.test.mjs:128:3
+✖ Ziraat açılışı 01.10; 20.09'da alınan çek 25.09'da Ziraat'e tahsile veriliyor mu? 28.09'da tahsil? (76.240294ms)
+  AssertionError [ERR_ASSERTION]: hesabın açılışından önceki tarihe tahsile verme kabul edildi (havale/tahsil 409 bank-before-opening alırken)
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d1-bozma.test.mjs:140:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 200,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

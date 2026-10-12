@@ -1,0 +1,16 @@
+  kopya 50/552 (1 sn)  kopya 100/552 (3 sn)  kopya 150/552 (5 sn)  kopya 200/552 (7 sn)  kopya 250/552 (8 sn)  kopya 300/552 (10 sn)  kopya 350/552 (13 sn)  kopya 400/552 (15 sn)  kopya 450/552 (17 sn)  kopya 500/552 (19 sn)  kopya 550/552 (21 sn)
+  100000: 001 → 84637 para satırı, 390122 satır (552 kopya, 22 sn)
+  kopya 50/208 (0 sn)  kopya 100/208 (1 sn)  kopya 150/208 (1 sn)  kopya 200/208 (2 sn)
+  100000: 002 → 9616 para satırı, 48961 satır (208 kopya, 2 sn)
+
+=== 100.000 hedef · kod wf_d306f93b-be4-1 · 001: 84.637 para satırı / 390.122 defter satırı · 002: 9.616 para satırı
+açılış 8453 ms · kapı kurulumu (taban taraması) 8171 ms · kilit koyma 10447 ms · tam tarama 10193 ms
+kilitsiz: 36 yazım · kapı ortanca 7.8 ms, p95 13.3, en çok 16.1 · HTTP ortanca 17.6 ms · K6 0.2 ms
+  tür: Kasa nakit girişi 7.1 · Cari havale tahsilatı 9.2 · Peşin satış faturası 11.1 · Taksit tahsilatı 8.2 · Borç Yaz (para olmayan) 3.7 · Çek alış 5.4 · Çek tahsili 8.6 · Çek alış (tahsile) 5.3 · Bankaya Tahsile Ver 7.8 · Bankadan Geri Al 10.0 · Bankaya Tahsile Ver (2) 10.9 · Tahsil Edildi (tahsildeki) 7.7
+  kapı yolu: scoped 36
+  bölüm (ortanca ms): scoped 7.4 · s.bank 2.7 · s.party 2.2 · s.money 1.0 · s.cheque 0.8 · s.rows 0.3 · s.scope 0.1 · s.lock 0.0 · s.links 0.0 · s.invoice 0.0 · s.stock 0.0 · s.plan 0.0
+kilitli: 36 yazım · kapı ortanca 6.3 ms, p95 10.8, en çok 11.2 · HTTP ortanca 13.9 ms · K6 0.2 ms
+  tür: Kasa nakit girişi 3.8 · Cari havale tahsilatı 7.4 · Peşin satış faturası 8.5 · Taksit tahsilatı 7.0 · Borç Yaz (para olmayan) 3.3 · Çek alış 5.2 · Çek tahsili 8.9 · Çek alış (tahsile) 3.9 · Bankaya Tahsile Ver 6.3 · Bankadan Geri Al 8.2 · Bankaya Tahsile Ver (2) 6.1 · Tahsil Edildi (tahsildeki) 9.9
+  kapı yolu: scoped 36
+  bölüm (ortanca ms): scoped 5.9 · s.bank 2.3 · s.party 2.0 · s.money 0.8 · s.cheque 0.7 · s.rows 0.3 · s.scope 0.1 · s.lock 0.0 · s.links 0.0 · s.invoice 0.0 · s.stock 0.0 · s.plan 0.0
+002 Kasa yazımı HTTP ortanca 12.1 ms

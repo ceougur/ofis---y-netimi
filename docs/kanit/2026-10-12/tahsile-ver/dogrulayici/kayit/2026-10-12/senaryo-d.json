@@ -1,0 +1,43 @@
+{
+  "ad": "senaryo-d",
+  "komut": "node --test --test-reporter=spec docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-d.mjs",
+  "commit": "24fcf0af4b1cc272443bcecdcf6014859f53239b",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:41:54.690Z",
+  "sure_sn": 1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 1,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Nakit Akış: tahsildeki 19.10 (valör), portföydeki 17.10; kaynak ayrımı 'Tahsildeki Çek'",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-d.mjs:22:3",
+      "hata": "AssertionError [ERR_ASSERTION]: tahsildeki ve portföydeki çek aynı kaynakta: cheque · 1 !== 2"
+    },
+    {
+      "ad": "Zil / Takvim (dues): tahsildeki çek Vade Takip ile aynı tarihte ve 'Bankada Tahsilde' olarak",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-d.mjs:36:3",
+      "hata": "AssertionError [ERR_ASSERTION]: zil/takvim tahsildeki çeki vade (17.10) ile gösteriyor; Vade Takip 19.10 · + actual - expected"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kayit/2026-10-12/senaryo-d.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "e63627f271c1753fff875a093b128bf7f62aa7521e37ecaa9b6945166d1b44cc",
+  "ham_cikti_bayt": 3146
+}

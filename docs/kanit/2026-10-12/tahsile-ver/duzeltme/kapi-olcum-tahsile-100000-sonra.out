@@ -1,0 +1,195 @@
+{
+ "N": 100000,
+ "openMs": 2461,
+ "writes": [
+  {
+   "label": "Kasa nakit girişi",
+   "status": 200,
+   "code": "",
+   "httpMs": 25,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 11
+  },
+  {
+   "label": "Cari havale tahsilatı",
+   "status": 200,
+   "code": "",
+   "httpMs": 28,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 11
+  },
+  {
+   "label": "Çek alış",
+   "status": 200,
+   "code": "",
+   "httpMs": 14,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 4
+  },
+  {
+   "label": "Bankaya Tahsile Ver",
+   "status": 200,
+   "code": "",
+   "httpMs": 16,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 6
+  },
+  {
+   "label": "Bankadan Geri Al",
+   "status": 200,
+   "code": "",
+   "httpMs": 12,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 5
+  },
+  {
+   "label": "Bankaya Tahsile Ver (2)",
+   "status": 200,
+   "code": "",
+   "httpMs": 13,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 6
+  },
+  {
+   "label": "Tahsil Edildi (tahsildeki)",
+   "status": 200,
+   "code": "",
+   "httpMs": 14,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 6
+  },
+  {
+   "label": "Kasa nakit girişi",
+   "status": 200,
+   "code": "",
+   "httpMs": 8,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 3
+  },
+  {
+   "label": "Cari havale tahsilatı",
+   "status": 409,
+   "code": "bank-similar",
+   "httpMs": 4,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 3
+  },
+  {
+   "label": "Çek alış",
+   "status": 200,
+   "code": "",
+   "httpMs": 7,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 3
+  },
+  {
+   "label": "Bankaya Tahsile Ver",
+   "status": 200,
+   "code": "",
+   "httpMs": 11,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 5
+  },
+  {
+   "label": "Bankadan Geri Al",
+   "status": 200,
+   "code": "",
+   "httpMs": 13,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 7
+  },
+  {
+   "label": "Bankaya Tahsile Ver (2)",
+   "status": 200,
+   "code": "",
+   "httpMs": 14,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 5
+  },
+  {
+   "label": "Tahsil Edildi (tahsildeki)",
+   "status": 200,
+   "code": "",
+   "httpMs": 16,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 7
+  },
+  {
+   "label": "Kasa nakit girişi",
+   "status": 200,
+   "code": "",
+   "httpMs": 9,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 4
+  },
+  {
+   "label": "Cari havale tahsilatı",
+   "status": 409,
+   "code": "bank-similar",
+   "httpMs": 4,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 4
+  },
+  {
+   "label": "Çek alış",
+   "status": 200,
+   "code": "",
+   "httpMs": 8,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 3
+  },
+  {
+   "label": "Bankaya Tahsile Ver",
+   "status": 200,
+   "code": "",
+   "httpMs": 11,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 6
+  },
+  {
+   "label": "Bankadan Geri Al",
+   "status": 200,
+   "code": "",
+   "httpMs": 12,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 6
+  },
+  {
+   "label": "Bankaya Tahsile Ver (2)",
+   "status": 200,
+   "code": "",
+   "httpMs": 11,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 5
+  },
+  {
+   "label": "Tahsil Edildi (tahsildeki)",
+   "status": 200,
+   "code": "",
+   "httpMs": 13,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 6
+  }
+ ]
+}

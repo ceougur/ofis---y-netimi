@@ -1,0 +1,34 @@
+// Tur 2 sonda: aynı istek kimliğiyle AYNI ANDA iki Tahsile Ver (çift tıklama), farklı kimlikle aynı anda iki Bankadan Geri Al,
+// aynı anda Tahsil Edildi + Bankadan Geri Al, aynı anda Karşılıksız + Bankadan Geri Al. Koşum: node .../t2-cift-istek.mjs .
+import path from "node:path";
+import { randomUUID } from "node:crypto";
+const RID = randomUUID();
+import { pathToFileURL } from "node:url";
+const root = path.resolve(process.argv[2] || ".");
+const imp = rel => import(pathToFileURL(path.join(root, rel)).href);
+const { bootBank, openAcceptanceAccounts, must } = await imp("test/banka-210-hesap-ortak.mjs");
+const { integrityOf } = await imp("test/banka-210-ortak.mjs");
+const ctx = await bootBank();
+const acc = await openAcceptanceAccounts(ctx.api);
+const api = ctx.api;
+const buyer = await must("müşteri", api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-09-01" }));
+const act = (id, body) => api.post(`/api/workspace/cheques/${id}/actions`, body);
+const n = (t, w) => Number(ctx.store.get(`SELECT COUNT(*) AS n FROM ${t} WHERE ${w}`).n);
+const mk = async no => must("çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "1.000", issueDate: "2026-10-05", dueDate: "2026-11-30", accountId: buyer.id, serialNo: no }));
+const a = await mk("C1");
+const same = await Promise.all([1, 2].map(() => act(a.id, { action: "bank-deposit", date: "2026-10-08", bankAccountId: acc.ziraat.id, requestId: RID })));
+console.log(JSON.stringify({ senaryo: "aynı kimlik iki tahsile ver", yanitlar: same.map(r => [r.status, r.code, r.data?.replayed ?? null]), kayit: n("cheque_collections", `cheque_id = '${a.id}'`), baslik: n("fin_events", `cheque_id = '${a.id}' AND type = 'cheque_deposit'`) }));
+const two = await Promise.all([1, 2].map(i => act(a.id, { action: "bank-withdraw", date: "2026-10-08", requestId: randomUUID() })));
+console.log(JSON.stringify({ senaryo: "farklı kimlik iki geri al", yanitlar: two.map(r => [r.status, r.code]), geriBaslik: n("fin_events", `cheque_id = '${a.id}' AND type = 'cheque_withdraw'`) }));
+const b = await mk("C2");
+await must("ver", act(b.id, { action: "bank-deposit", date: "2026-10-08", bankAccountId: acc.ziraat.id }));
+const mix = await Promise.all([act(b.id, { action: "collect", date: "2026-10-08" }), act(b.id, { action: "bank-withdraw", date: "2026-10-08" })]);
+console.log(JSON.stringify({ senaryo: "tahsil + geri al", yanitlar: mix.map(r => [r.status, r.code]), kayit: ctx.store.get("SELECT status FROM cheque_collections WHERE cheque_id = ?", b.id), cek: ctx.store.get("SELECT status FROM cheques WHERE id = ?", b.id) }));
+const c = await mk("C3");
+await must("ver", act(c.id, { action: "bank-deposit", date: "2026-10-08", bankAccountId: acc.ziraat.id }));
+const mix2 = await Promise.all([act(c.id, { action: "bounce", date: "2026-10-08" }), act(c.id, { action: "bank-withdraw", date: "2026-10-08" })]);
+console.log(JSON.stringify({ senaryo: "karşılıksız + geri al", yanitlar: mix2.map(r => [r.status, r.code]), kayit: ctx.store.get("SELECT status FROM cheque_collections WHERE cheque_id = ?", c.id), cek: ctx.store.get("SELECT status FROM cheques WHERE id = ?", c.id) }));
+const r = await integrityOf(api);
+console.log(JSON.stringify({ mutabakat: r.ok, bad: r.checks.filter(x => !x.ok).map(x => x.code) }));
+ctx.server.close();
+process.exit(0);

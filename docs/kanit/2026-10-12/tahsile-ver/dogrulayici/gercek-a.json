@@ -1,0 +1,1872 @@
+{
+ "adimlar": [
+  {
+   "olay": {
+    "t": "al",
+    "id": "C1",
+    "tur": "cheque",
+    "tutar": 1000,
+    "tarih": "2026-10-02",
+    "vade": "2026-10-24",
+    "cari": "ABC"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 100000,
+     "101.02": 0,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 100000,
+     "102": 15000000,
+     "120": -100000
+    },
+    "cari": {
+     "ABC": -100000,
+     "DEF": 0
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 1000,
+     "subTotal": 1000,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 100000,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 0,
+      "subledger": 0,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "al",
+    "id": "C2",
+    "tur": "cheque",
+    "tutar": 2500,
+    "tarih": "2026-10-02",
+    "vade": "2026-10-29",
+    "cari": "ABC"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 350000,
+     "101.02": 0,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 350000,
+     "102": 15000000,
+     "120": -350000
+    },
+    "cari": {
+     "ABC": -350000,
+     "DEF": 0
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 3500,
+     "subTotal": 3500,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 350000,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 0,
+      "subledger": 0,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "al",
+    "id": "N1",
+    "tur": "note",
+    "tutar": 3000,
+    "tarih": "2026-10-03",
+    "vade": "2026-11-16",
+    "cari": "DEF"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 650000,
+     "101.02": 0,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 650000,
+     "102": 15000000,
+     "120": -650000
+    },
+    "cari": {
+     "ABC": -350000,
+     "DEF": -300000
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 6500,
+     "subTotal": 6500,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 650000,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 0,
+      "subledger": 0,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "al",
+    "id": "C3",
+    "tur": "cheque",
+    "tutar": 4000.5,
+    "tarih": "2026-10-03",
+    "vade": "2026-10-20",
+    "cari": "DEF"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 1050050,
+     "101.02": 0,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1050050,
+     "102": 15000000,
+     "120": -1050050
+    },
+    "cari": {
+     "ABC": -350000,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 10500.5,
+     "subTotal": 10500.5,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 1050050,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 0,
+      "subledger": 0,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "al",
+    "id": "C4",
+    "tur": "cheque",
+    "tutar": 750.25,
+    "tarih": "2026-10-03",
+    "vade": "2026-11-02",
+    "cari": "ABC"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 1125075,
+     "101.02": 0,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1125075,
+     "102": 15000000,
+     "120": -1125075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 11250.75,
+     "subTotal": 11250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 1125075,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 0,
+      "subledger": 0,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "ver",
+    "id": "C1",
+    "tarih": "2026-10-05",
+    "hesap": "ziraat"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 1025075,
+     "101.02": 100000,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1125075,
+     "102": 15000000,
+     "120": -1125075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 11250.75,
+     "subTotal": 11250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 1125075,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 1000,
+      "subledger": 1000,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "ver",
+    "id": "C2",
+    "tarih": "2026-10-05",
+    "hesap": "garanti"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 775075,
+     "101.02": 350000,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1125075,
+     "102": 15000000,
+     "120": -1125075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 11250.75,
+     "subTotal": 11250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 1125075,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 3500,
+      "subledger": 3500,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "ver",
+    "id": "N1",
+    "tarih": "2026-10-06",
+    "hesap": "ziraat"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 475075,
+     "101.02": 650000,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1125075,
+     "102": 15000000,
+     "120": -1125075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 11250.75,
+     "subTotal": 11250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 1125075,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 6500,
+      "subledger": 6500,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "tahsil",
+    "id": "C1",
+    "tarih": "2026-10-07"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 475075,
+     "101.02": 550000,
+     "102.01": 10100000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1025075,
+     "102": 15100000,
+     "120": -1125075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 10250.75,
+     "subTotal": 10250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15100000,
+    "portfoyAnlik": 1025075,
+    "banka": {
+     "ziraat": 10100000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 5500,
+      "subledger": 5500,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "geri",
+    "id": "C2",
+    "tarih": "2026-10-08"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 725075,
+     "101.02": 300000,
+     "102.01": 10100000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1025075,
+     "102": 15100000,
+     "120": -1125075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 10250.75,
+     "subTotal": 10250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15100000,
+    "portfoyAnlik": 1025075,
+    "banka": {
+     "ziraat": 10100000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 3000,
+      "subledger": 3000,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "ver",
+    "id": "C2",
+    "tarih": "2026-10-09",
+    "hesap": "ziraat"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 475075,
+     "101.02": 550000,
+     "102.01": 10100000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1025075,
+     "102": 15100000,
+     "120": -1125075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 10250.75,
+     "subTotal": 10250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15100000,
+    "portfoyAnlik": 1025075,
+    "banka": {
+     "ziraat": 10100000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 5500,
+      "subledger": 5500,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "karsiliksiz",
+    "id": "N1",
+    "tarih": "2026-10-12"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 475075,
+     "101.02": 250000,
+     "102.01": 10100000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 725075,
+     "102": 15100000,
+     "120": -825075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -400050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 7250.75,
+     "subTotal": 7250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15100000,
+    "portfoyAnlik": 725075,
+    "banka": {
+     "ziraat": 10100000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 2500,
+      "subledger": 2500,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "ver",
+    "id": "C3",
+    "tarih": "2026-10-13",
+    "hesap": "garanti"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 75025,
+     "101.02": 650050,
+     "102.01": 10100000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 725075,
+     "102": 15100000,
+     "120": -825075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -400050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 7250.75,
+     "subTotal": 7250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15100000,
+    "portfoyAnlik": 725075,
+    "banka": {
+     "ziraat": 10100000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 6500.5,
+      "subledger": 6500.5,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "son-islemi-geri-al",
+    "id": "C1"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 75025,
+     "101.02": 750050,
+     "102.01": 10000000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 825075,
+     "102": 15000000,
+     "120": -825075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -400050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 8250.75,
+     "subTotal": 8250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15000000,
+    "portfoyAnlik": 825075,
+    "banka": {
+     "ziraat": 10000000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 7500.5,
+      "subledger": 7500.5,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "tahsil",
+    "id": "C1",
+    "tarih": "2026-10-09"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 75025,
+     "101.02": 650050,
+     "102.01": 10100000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 725075,
+     "102": 15100000,
+     "120": -825075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -400050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 7250.75,
+     "subTotal": 7250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15100000,
+    "portfoyAnlik": 725075,
+    "banka": {
+     "ziraat": 10100000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 6500.5,
+      "subledger": 6500.5,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "son-islemi-geri-al",
+    "id": "N1"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 75025,
+     "101.02": 950050,
+     "102.01": 10100000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 1025075,
+     "102": 15100000,
+     "120": -1125075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -700050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 10250.75,
+     "subTotal": 10250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15100000,
+    "portfoyAnlik": 1025075,
+    "banka": {
+     "ziraat": 10100000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 9500.5,
+      "subledger": 9500.5,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  },
+  {
+   "olay": {
+    "t": "karsiliksiz",
+    "id": "N1",
+    "tarih": "2026-10-14"
+   },
+   "res": {
+    "status": 200
+   },
+   "snap": {
+    "alt": {
+     "101.01": 75025,
+     "101.02": 650050,
+     "102.01": 10100000,
+     "102.02": 5000000
+    },
+    "ana": {
+     "100": 0,
+     "101": 725075,
+     "102": 15100000,
+     "120": -825075
+    },
+    "cari": {
+     "ABC": -425025,
+     "DEF": -400050
+    },
+    "mainsOk": true,
+    "mains101": {
+     "account": "101",
+     "name": "Alınan Çekler ve Senetler (Portföy)",
+     "balance": 7250.75,
+     "subTotal": 7250.75,
+     "ok": true
+    },
+    "kasa": 0,
+    "ovCash": null,
+    "gercekBanka": 15100000,
+    "portfoyAnlik": 725075,
+    "banka": {
+     "ziraat": 10100000,
+     "garanti": 5000000
+    },
+    "mutabakat": {
+     "ok": true,
+     "collections": {
+      "code": "cheque:collections",
+      "name": "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)",
+      "ok": true,
+      "count": 0,
+      "difference": 0,
+      "ledger": 6500.5,
+      "subledger": 6500.5,
+      "sample": []
+     },
+     "failures": []
+    }
+   }
+  }
+ ],
+ "kesitler": {
+  "2026-10-04": {
+   "alt": {
+    "101.01": 1125075,
+    "101.02": 0,
+    "102.01": 10000000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 1125075,
+    "102": 15000000,
+    "120": -1125075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 11250.75,
+    "subTotal": 11250.75,
+    "ok": true
+   }
+  },
+  "2026-10-05": {
+   "alt": {
+    "101.01": 775075,
+    "101.02": 350000,
+    "102.01": 10000000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 1125075,
+    "102": 15000000,
+    "120": -1125075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 11250.75,
+    "subTotal": 11250.75,
+    "ok": true
+   }
+  },
+  "2026-10-06": {
+   "alt": {
+    "101.01": 475075,
+    "101.02": 650000,
+    "102.01": 10000000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 1125075,
+    "102": 15000000,
+    "120": -1125075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 11250.75,
+    "subTotal": 11250.75,
+    "ok": true
+   }
+  },
+  "2026-10-07": {
+   "alt": {
+    "101.01": 475075,
+    "101.02": 650000,
+    "102.01": 10000000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 1125075,
+    "102": 15000000,
+    "120": -1125075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 11250.75,
+    "subTotal": 11250.75,
+    "ok": true
+   }
+  },
+  "2026-10-08": {
+   "alt": {
+    "101.01": 725075,
+    "101.02": 400000,
+    "102.01": 10000000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 1125075,
+    "102": 15000000,
+    "120": -1125075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 11250.75,
+    "subTotal": 11250.75,
+    "ok": true
+   }
+  },
+  "2026-10-09": {
+   "alt": {
+    "101.01": 475075,
+    "101.02": 550000,
+    "102.01": 10100000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 1025075,
+    "102": 15100000,
+    "120": -1125075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 10250.75,
+    "subTotal": 10250.75,
+    "ok": true
+   }
+  },
+  "2026-10-12": {
+   "alt": {
+    "101.01": 475075,
+    "101.02": 550000,
+    "102.01": 10100000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 1025075,
+    "102": 15100000,
+    "120": -1125075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 10250.75,
+    "subTotal": 10250.75,
+    "ok": true
+   }
+  },
+  "2026-10-13": {
+   "alt": {
+    "101.01": 75025,
+    "101.02": 950050,
+    "102.01": 10100000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 1025075,
+    "102": 15100000,
+    "120": -1125075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 10250.75,
+    "subTotal": 10250.75,
+    "ok": true
+   }
+  },
+  "2026-10-14": {
+   "alt": {
+    "101.01": 75025,
+    "101.02": 650050,
+    "102.01": 10100000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 725075,
+    "102": 15100000,
+    "120": -825075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 7250.75,
+    "subTotal": 7250.75,
+    "ok": true
+   }
+  },
+  "2026-10-15": {
+   "alt": {
+    "101.01": 75025,
+    "101.02": 650050,
+    "102.01": 10100000,
+    "102.02": 5000000
+   },
+   "ana": {
+    "100": 0,
+    "101": 725075,
+    "102": 15100000,
+    "120": -825075
+   },
+   "cari": {},
+   "mainsOk": true,
+   "mains101": {
+    "account": "101",
+    "name": "Alınan Çekler ve Senetler (Portföy)",
+    "balance": 7250.75,
+    "subTotal": 7250.75,
+    "ok": true
+   }
+  }
+ },
+ "araliklar": [
+  {
+   "range": {
+    "from": "2026-10-06",
+    "to": "2026-10-09",
+    "alt": {
+     "101.01": {
+      "devir": 775075,
+      "borc": 250000,
+      "alacak": 550000,
+      "bakiye": 475075
+     },
+     "101.02": {
+      "devir": 350000,
+      "borc": 550000,
+      "alacak": 350000,
+      "bakiye": 550000
+     },
+     "102.01": {
+      "devir": 10000000,
+      "borc": 100000,
+      "alacak": 0,
+      "bakiye": 10100000
+     },
+     "102.02": {
+      "devir": 5000000,
+      "borc": 0,
+      "alacak": 0,
+      "bakiye": 5000000
+     }
+    }
+   },
+   "sub": {
+    "101.01": {
+     "sub": "101.01",
+     "account": "101",
+     "name": "Portföydeki Çek ve Senetler",
+     "opening": 7750.75,
+     "debit": 2500,
+     "credit": 5500,
+     "balance": 4750.75
+    },
+    "101.02": {
+     "sub": "101.02",
+     "account": "101",
+     "name": "Bankaya Tahsile Verilen Çek ve Senetler",
+     "opening": 3500,
+     "debit": 5500,
+     "credit": 3500,
+     "balance": 5500
+    },
+    "102.01": {
+     "sub": "102.01",
+     "account": "102",
+     "name": "Ziraat Bankası · Ana TL Hesabı",
+     "opening": 100000,
+     "debit": 1000,
+     "credit": 0,
+     "balance": 101000
+    },
+    "102.02": {
+     "sub": "102.02",
+     "account": "102",
+     "name": "Garanti BBVA · Ana TL Hesabı",
+     "opening": 50000,
+     "debit": 0,
+     "credit": 0,
+     "balance": 50000
+    }
+   },
+   "rapor": [
+    [
+     "101.01",
+     "Portföydeki Çek ve Senetler",
+     "101 Alınan Çekler ve Senetler (Portföy)",
+     "7.750,75 TL",
+     "2.500,00 TL",
+     "5.500,00 TL",
+     "4.750,75 TL",
+     "Borç"
+    ],
+    [
+     "101.02",
+     "Bankaya Tahsile Verilen Çek ve Senetler",
+     "101 Alınan Çekler ve Senetler (Portföy)",
+     "3.500,00 TL",
+     "5.500,00 TL",
+     "3.500,00 TL",
+     "5.500,00 TL",
+     "Borç"
+    ],
+    [
+     "102.01",
+     "Ziraat Bankası · Ana TL Hesabı",
+     "102 Bankalar (Havale / EFT)",
+     "100.000,00 TL",
+     "1.000,00 TL",
+     "0,00 TL",
+     "101.000,00 TL",
+     "Borç"
+    ],
+    [
+     "102.02",
+     "Garanti BBVA · Ana TL Hesabı",
+     "102 Bankalar (Havale / EFT)",
+     "50.000,00 TL",
+     "0,00 TL",
+     "0,00 TL",
+     "50.000,00 TL",
+     "Borç"
+    ]
+   ]
+  },
+  {
+   "range": {
+    "from": "2026-10-10",
+    "to": "2026-10-15",
+    "alt": {
+     "101.01": {
+      "devir": 475075,
+      "borc": 0,
+      "alacak": 400050,
+      "bakiye": 75025
+     },
+     "101.02": {
+      "devir": 550000,
+      "borc": 400050,
+      "alacak": 300000,
+      "bakiye": 650050
+     },
+     "102.01": {
+      "devir": 10100000,
+      "borc": 0,
+      "alacak": 0,
+      "bakiye": 10100000
+     },
+     "102.02": {
+      "devir": 5000000,
+      "borc": 0,
+      "alacak": 0,
+      "bakiye": 5000000
+     }
+    }
+   },
+   "sub": {
+    "101.01": {
+     "sub": "101.01",
+     "account": "101",
+     "name": "Portföydeki Çek ve Senetler",
+     "opening": 4750.75,
+     "debit": 0,
+     "credit": 4000.5,
+     "balance": 750.25
+    },
+    "101.02": {
+     "sub": "101.02",
+     "account": "101",
+     "name": "Bankaya Tahsile Verilen Çek ve Senetler",
+     "opening": 5500,
+     "debit": 4000.5,
+     "credit": 3000,
+     "balance": 6500.5
+    },
+    "102.01": {
+     "sub": "102.01",
+     "account": "102",
+     "name": "Ziraat Bankası · Ana TL Hesabı",
+     "opening": 101000,
+     "debit": 0,
+     "credit": 0,
+     "balance": 101000
+    },
+    "102.02": {
+     "sub": "102.02",
+     "account": "102",
+     "name": "Garanti BBVA · Ana TL Hesabı",
+     "opening": 50000,
+     "debit": 0,
+     "credit": 0,
+     "balance": 50000
+    }
+   },
+   "rapor": [
+    [
+     "101.01",
+     "Portföydeki Çek ve Senetler",
+     "101 Alınan Çekler ve Senetler (Portföy)",
+     "4.750,75 TL",
+     "0,00 TL",
+     "4.000,50 TL",
+     "750,25 TL",
+     "Borç"
+    ],
+    [
+     "101.02",
+     "Bankaya Tahsile Verilen Çek ve Senetler",
+     "101 Alınan Çekler ve Senetler (Portföy)",
+     "5.500,00 TL",
+     "4.000,50 TL",
+     "3.000,00 TL",
+     "6.500,50 TL",
+     "Borç"
+    ],
+    [
+     "102.01",
+     "Ziraat Bankası · Ana TL Hesabı",
+     "102 Bankalar (Havale / EFT)",
+     "101.000,00 TL",
+     "0,00 TL",
+     "0,00 TL",
+     "101.000,00 TL",
+     "Borç"
+    ],
+    [
+     "102.02",
+     "Garanti BBVA · Ana TL Hesabı",
+     "102 Bankalar (Havale / EFT)",
+     "50.000,00 TL",
+     "0,00 TL",
+     "0,00 TL",
+     "50.000,00 TL",
+     "Borç"
+    ]
+   ]
+  },
+  {
+   "range": {
+    "from": "2026-10-01",
+    "to": "2026-10-31",
+    "alt": {
+     "101.01": {
+      "devir": 0,
+      "borc": 1375075,
+      "alacak": 1300050,
+      "bakiye": 75025
+     },
+     "101.02": {
+      "devir": 0,
+      "borc": 1300050,
+      "alacak": 650000,
+      "bakiye": 650050
+     },
+     "102.01": {
+      "devir": 0,
+      "borc": 10100000,
+      "alacak": 0,
+      "bakiye": 10100000
+     },
+     "102.02": {
+      "devir": 0,
+      "borc": 5000000,
+      "alacak": 0,
+      "bakiye": 5000000
+     }
+    }
+   },
+   "sub": {
+    "101.01": {
+     "sub": "101.01",
+     "account": "101",
+     "name": "Portföydeki Çek ve Senetler",
+     "opening": 0,
+     "debit": 13750.75,
+     "credit": 13000.5,
+     "balance": 750.25
+    },
+    "101.02": {
+     "sub": "101.02",
+     "account": "101",
+     "name": "Bankaya Tahsile Verilen Çek ve Senetler",
+     "opening": 0,
+     "debit": 13000.5,
+     "credit": 6500,
+     "balance": 6500.5
+    },
+    "102.01": {
+     "sub": "102.01",
+     "account": "102",
+     "name": "Ziraat Bankası · Ana TL Hesabı",
+     "opening": 0,
+     "debit": 101000,
+     "credit": 0,
+     "balance": 101000
+    },
+    "102.02": {
+     "sub": "102.02",
+     "account": "102",
+     "name": "Garanti BBVA · Ana TL Hesabı",
+     "opening": 0,
+     "debit": 50000,
+     "credit": 0,
+     "balance": 50000
+    }
+   },
+   "rapor": [
+    [
+     "101.01",
+     "Portföydeki Çek ve Senetler",
+     "101 Alınan Çekler ve Senetler (Portföy)",
+     "0,00 TL",
+     "13.750,75 TL",
+     "13.000,50 TL",
+     "750,25 TL",
+     "Borç"
+    ],
+    [
+     "101.02",
+     "Bankaya Tahsile Verilen Çek ve Senetler",
+     "101 Alınan Çekler ve Senetler (Portföy)",
+     "0,00 TL",
+     "13.000,50 TL",
+     "6.500,00 TL",
+     "6.500,50 TL",
+     "Borç"
+    ],
+    [
+     "102.01",
+     "Ziraat Bankası · Ana TL Hesabı",
+     "102 Bankalar (Havale / EFT)",
+     "0,00 TL",
+     "101.000,00 TL",
+     "0,00 TL",
+     "101.000,00 TL",
+     "Borç"
+    ],
+    [
+     "102.02",
+     "Garanti BBVA · Ana TL Hesabı",
+     "102 Bankalar (Havale / EFT)",
+     "0,00 TL",
+     "50.000,00 TL",
+     "0,00 TL",
+     "50.000,00 TL",
+     "Borç"
+    ]
+   ]
+  }
+ ],
+ "son": {
+  "bankaHareket": {
+   "ziraat": [
+    {
+     "tarih": "2026-10-09",
+     "giris": 100000,
+     "cikis": 0,
+     "tur": "Çek ve Senet Tahsili",
+     "aciklama": "Çek tahsili · No C1 · ABC"
+    }
+   ],
+   "garanti": []
+  },
+  "bankaBakiye": [
+   [
+    "Gerçek Banka",
+    "Ziraat Bankası",
+    "Ana TL Hesabı",
+    "102.01",
+    "0,00 TL",
+    "1.000,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "100.000,00 TL",
+    "101.000,00 TL"
+   ],
+   [
+    "Gerçek Banka",
+    "Garanti BBVA",
+    "Ana TL Hesabı",
+    "102.02",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "50.000,00 TL",
+    "50.000,00 TL"
+   ]
+  ],
+  "nakitAkis": {
+   "rows": [
+    {
+     "date": "2026-10-20",
+     "direction": "in",
+     "amount": 4000.5,
+     "source": "cheque",
+     "flow": "deposit",
+     "label": "Alınan çek · No C3 · Bankada Tahsilde · Garanti BBVA",
+     "party": "DEF",
+     "phone": "",
+     "ref": {
+      "type": "cheque",
+      "id": "cheque-b9816acc-7322-44b6-ac6e-042d730330d2"
+     },
+     "dueDate": "2026-10-20",
+     "bankAccountId": "bacc-5a4264b2-2c5b-4c1c-aa19-56eff839f606",
+     "balance": 155000.5
+    },
+    {
+     "date": "2026-10-30",
+     "direction": "in",
+     "amount": 2500,
+     "source": "cheque",
+     "flow": "deposit",
+     "label": "Alınan çek · No C2 · Bankada Tahsilde · Ziraat Bankası",
+     "party": "ABC",
+     "phone": "",
+     "ref": {
+      "type": "cheque",
+      "id": "cheque-9df4b397-f61f-457d-9315-5a36c3de3f5d"
+     },
+     "dueDate": "2026-10-29",
+     "bankAccountId": "bacc-aba3bb09-187b-4a8c-acfc-5a57e4468b9c",
+     "balance": 157500.5
+    },
+    {
+     "date": "2026-11-02",
+     "direction": "in",
+     "amount": 750.25,
+     "source": "cheque",
+     "label": "Alınan çek · No C4",
+     "party": "ABC",
+     "phone": "",
+     "ref": {
+      "type": "cheque",
+      "id": "cheque-57e1b994-daaa-4646-9603-05b815a81cb5"
+     },
+     "balance": 158250.75
+    }
+   ],
+   "overdue": [],
+   "cashToday": 151000,
+   "start": {
+    "total": 151000,
+    "cash": 0,
+    "realBank": 151000,
+    "unassigned": 0,
+    "unassignedFuture": null,
+    "defined": true,
+    "labels": {
+     "realBank": "Gerçek Banka",
+     "posPending": "POS Bekleyen (Net)",
+     "posBlocked": "Blokeli POS",
+     "debt": "Kart ve Kredi Borcu",
+     "unassigned": "Hesabı Atanmamış Eski Hareketler"
+    }
+   }
+  },
+  "vadeTakip": [
+   {
+    "date": "2026-10-20",
+    "direction": "in",
+    "amount": 4000.5,
+    "source": "cheque",
+    "flow": "deposit",
+    "label": "Alınan çek · No C3 · Bankada Tahsilde · Garanti BBVA",
+    "party": "DEF",
+    "phone": "",
+    "ref": {
+     "type": "cheque",
+     "id": "cheque-b9816acc-7322-44b6-ac6e-042d730330d2"
+    },
+    "dueDate": "2026-10-20",
+    "bankAccountId": "bacc-5a4264b2-2c5b-4c1c-aa19-56eff839f606",
+    "days": 5,
+    "state": "upcoming"
+   },
+   {
+    "date": "2026-10-30",
+    "direction": "in",
+    "amount": 2500,
+    "source": "cheque",
+    "flow": "deposit",
+    "label": "Alınan çek · No C2 · Bankada Tahsilde · Ziraat Bankası",
+    "party": "ABC",
+    "phone": "",
+    "ref": {
+     "type": "cheque",
+     "id": "cheque-9df4b397-f61f-457d-9315-5a36c3de3f5d"
+    },
+    "dueDate": "2026-10-29",
+    "bankAccountId": "bacc-aba3bb09-187b-4a8c-acfc-5a57e4468b9c",
+    "days": 15,
+    "state": "upcoming"
+   },
+   {
+    "date": "2026-11-02",
+    "direction": "in",
+    "amount": 750.25,
+    "source": "cheque",
+    "label": "Alınan çek · No C4",
+    "party": "ABC",
+    "phone": "",
+    "ref": {
+     "type": "cheque",
+     "id": "cheque-57e1b994-daaa-4646-9603-05b815a81cb5"
+    },
+    "days": 18,
+    "state": "upcoming"
+   }
+  ],
+  "liste": {
+   "deposited": [
+    "C2",
+    "C3"
+   ],
+   "portfolio": [
+    "C4"
+   ],
+   "summary": {
+    "in": {
+     "open": {
+      "count": 3,
+      "amount": 7250.75
+     },
+     "overdue": {
+      "count": 0,
+      "amount": 0
+     },
+     "today": {
+      "count": 0,
+      "amount": 0
+     },
+     "soon": {
+      "count": 1,
+      "amount": 4000.5
+     }
+    },
+    "out": {
+     "open": {
+      "count": 0,
+      "amount": 0
+     },
+     "overdue": {
+      "count": 0,
+      "amount": 0
+     },
+     "today": {
+      "count": 0,
+      "amount": 0
+     },
+     "soon": {
+      "count": 0,
+      "amount": 0
+     }
+    },
+    "endorsed": {
+     "count": 0,
+     "amount": 0
+    },
+    "collected": {
+     "count": 1,
+     "amount": 1000
+    },
+    "paid": {
+     "count": 0,
+     "amount": 0
+    },
+    "bounced": {
+     "count": 1,
+     "amount": 3000
+    },
+    "deposited": {
+     "count": 2,
+     "amount": 6500.5
+    }
+   },
+   "labels": {
+    "C3": "Bankada Tahsilde · Garanti BBVA · 13.10.2026",
+    "C2": "Bankada Tahsilde · Ziraat Bankası · 09.10.2026",
+    "C4": "Portföyde",
+    "C1": "Tahsil Edildi",
+    "N1": "Karşılıksız / İade"
+   }
+  },
+  "cekPortfoy": {
+   "rows": [
+    [
+     "02.11.2026",
+     "Alınan",
+     "Çek",
+     "C4",
+     "",
+     "ABC",
+     "Portföyde",
+     "750,25 TL"
+    ]
+   ],
+   "summary": [
+    [
+     "Listelenen",
+     "1 · 750,25 TL"
+    ],
+    [
+     "Portföyde (alınan)",
+     "750,25 TL"
+    ],
+    [
+     "Bankada Tahsilde",
+     "6.500,50 TL"
+    ],
+    [
+     "Ödenecek (verilen)",
+     "0,00 TL"
+    ],
+    [
+     "Vadesi Geçmiş Alınan",
+     "0,00 TL"
+    ]
+   ],
+   "footer": [
+    "TOPLAM",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "750,25 TL"
+   ],
+   "depositedFilter": {
+    "status": 200,
+    "subtitle": "Alınan · Bankada Tahsilde",
+    "rows": 2
+   }
+  }
+ }
+}

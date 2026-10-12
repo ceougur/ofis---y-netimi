@@ -524,15 +524,16 @@ try {
     await closeAll();
   });
 
-  await step("7. Raporlar → Tüm Raporlar: Banka grubunda yalnız Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı", async () => {
+  // 2.2.0 (bilerek güncellendi): Bankaya Tahsile Ver ile plan §8.10 "Tahsildeki Çekler" raporu (Tahsildeki Çek ve Senetler) geldi.
+  await step("7. Raporlar → Tüm Raporlar: Banka grubunda Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı ve Tahsildeki Çek ve Senetler", async () => {
     await page.click('#hof-sidecard [data-action="analytics"]');
     await page.waitForSelector(`${modal} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
     await page.click(`${modal} .hof-rep-tab[data-tab="all"]`);
     await page.waitForSelector(`${modal} [data-rc-list] [data-report]`, { timeout: 15000 });
     const items = await page.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı", `Banka raporları: ${items.join(", ")}`);
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler", `Banka raporları: ${items.join(", ")}`);
     const all = await page.$$eval(`${modal} [data-rc-list] [data-report]`, nodes => nodes.map(node => node.textContent.trim()));
-    const later = all.filter(title => /POS Satış|POS Komisyon|POS Bekleyen|POS Valör|Mutabakat Raporu|Kur Değerleme|Tahsildeki|Banka Nakit Akış|Günlük Banka|Aylık Banka|Bankalar Arası Transfer Raporu|Faturası Beklenen/.test(title));
+    const later = all.filter(title => /POS Satış|POS Komisyon|POS Bekleyen|POS Valör|Mutabakat Raporu|Kur Değerleme|Banka Nakit Akış|Günlük Banka|Aylık Banka|Bankalar Arası Transfer Raporu|Faturası Beklenen/.test(title));
     ok(!later.length, `ertelenen §8.10 raporu listede yok${later.length ? `: ${later.join(", ")}` : ""}`);
     await shot("tum-raporlar-banka");
   });

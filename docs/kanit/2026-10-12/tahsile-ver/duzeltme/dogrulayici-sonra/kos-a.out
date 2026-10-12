@@ -1,0 +1,240 @@
+TAP version 13
+# Subtest: Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu
+    # Subtest: hesap alt kodları beklenenle aynı (102.01 Ziraat, 102.02 Garanti)
+    ok 1 - hesap alt kodları beklenenle aynı (102.01 Ziraat, 102.02 Garanti)
+      ---
+      duration_ms: 17.996797
+      type: 'test'
+      ...
+    # Subtest: adım 1: al C1 2026-10-02 — anlık sayılar = model
+    ok 2 - adım 1: al C1 2026-10-02 — anlık sayılar = model
+      ---
+      duration_ms: 488.449079
+      type: 'test'
+      ...
+    # Subtest: adım 2: al C2 2026-10-02 — anlık sayılar = model
+    ok 3 - adım 2: al C2 2026-10-02 — anlık sayılar = model
+      ---
+      duration_ms: 305.84245
+      type: 'test'
+      ...
+    # Subtest: adım 3: al N1 2026-10-03 — anlık sayılar = model
+    ok 4 - adım 3: al N1 2026-10-03 — anlık sayılar = model
+      ---
+      duration_ms: 336.98855
+      type: 'test'
+      ...
+    # Subtest: adım 4: al C3 2026-10-03 — anlık sayılar = model
+    ok 5 - adım 4: al C3 2026-10-03 — anlık sayılar = model
+      ---
+      duration_ms: 121.532693
+      type: 'test'
+      ...
+    # Subtest: adım 5: al C4 2026-10-03 — anlık sayılar = model
+    ok 6 - adım 5: al C4 2026-10-03 — anlık sayılar = model
+      ---
+      duration_ms: 95.434321
+      type: 'test'
+      ...
+    # Subtest: adım 6: ver C1 2026-10-05 → ziraat — anlık sayılar = model
+    ok 7 - adım 6: ver C1 2026-10-05 → ziraat — anlık sayılar = model
+      ---
+      duration_ms: 71.730157
+      type: 'test'
+      ...
+    # Subtest: adım 7: ver C2 2026-10-05 → garanti — anlık sayılar = model
+    ok 8 - adım 7: ver C2 2026-10-05 → garanti — anlık sayılar = model
+      ---
+      duration_ms: 84.881511
+      type: 'test'
+      ...
+    # Subtest: adım 8: ver N1 2026-10-06 → ziraat — anlık sayılar = model
+    ok 9 - adım 8: ver N1 2026-10-06 → ziraat — anlık sayılar = model
+      ---
+      duration_ms: 110.874953
+      type: 'test'
+      ...
+    # Subtest: adım 9: tahsil C1 2026-10-07 — anlık sayılar = model
+    ok 10 - adım 9: tahsil C1 2026-10-07 — anlık sayılar = model
+      ---
+      duration_ms: 99.666132
+      type: 'test'
+      ...
+    # Subtest: adım 10: geri C2 2026-10-08 — anlık sayılar = model
+    ok 11 - adım 10: geri C2 2026-10-08 — anlık sayılar = model
+      ---
+      duration_ms: 104.232283
+      type: 'test'
+      ...
+    # Subtest: adım 11: ver C2 2026-10-09 → ziraat — anlık sayılar = model
+    ok 12 - adım 11: ver C2 2026-10-09 → ziraat — anlık sayılar = model
+      ---
+      duration_ms: 82.811306
+      type: 'test'
+      ...
+    # Subtest: adım 12: karsiliksiz N1 2026-10-12 — anlık sayılar = model
+    ok 13 - adım 12: karsiliksiz N1 2026-10-12 — anlık sayılar = model
+      ---
+      duration_ms: 63.935869
+      type: 'test'
+      ...
+    # Subtest: adım 13: ver C3 2026-10-13 → garanti — anlık sayılar = model
+    ok 14 - adım 13: ver C3 2026-10-13 → garanti — anlık sayılar = model
+      ---
+      duration_ms: 79.297259
+      type: 'test'
+      ...
+    # Subtest: adım 14: son-islemi-geri-al C1 — anlık sayılar = model
+    ok 15 - adım 14: son-islemi-geri-al C1 — anlık sayılar = model
+      ---
+      duration_ms: 67.602148
+      type: 'test'
+      ...
+    # Subtest: adım 15: tahsil C1 2026-10-09 — anlık sayılar = model
+    ok 16 - adım 15: tahsil C1 2026-10-09 — anlık sayılar = model
+      ---
+      duration_ms: 113.540831
+      type: 'test'
+      ...
+    # Subtest: adım 16: son-islemi-geri-al N1 — anlık sayılar = model
+    ok 17 - adım 16: son-islemi-geri-al N1 — anlık sayılar = model
+      ---
+      duration_ms: 81.87549
+      type: 'test'
+      ...
+    # Subtest: adım 17: karsiliksiz N1 2026-10-14 — anlık sayılar = model
+    ok 18 - adım 17: karsiliksiz N1 2026-10-14 — anlık sayılar = model
+      ---
+      duration_ms: 72.677614
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-04: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 19 - kesit 2026-10-04: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 12.256947
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-05: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 20 - kesit 2026-10-05: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 12.71265
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-06: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 21 - kesit 2026-10-06: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 14.769811
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-07: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 22 - kesit 2026-10-07: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 22.156752
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-08: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 23 - kesit 2026-10-08: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 22.567274
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-09: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 24 - kesit 2026-10-09: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 18.815887
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-12: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 25 - kesit 2026-10-12: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 22.412187
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-13: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 26 - kesit 2026-10-13: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 18.914413
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-14: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 27 - kesit 2026-10-14: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 24.193118
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-15: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 28 - kesit 2026-10-15: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 18.267209
+      type: 'test'
+      ...
+    # Subtest: aralık 2026-10-06–2026-10-09: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+    ok 29 - aralık 2026-10-06–2026-10-09: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+      ---
+      duration_ms: 25.947158
+      type: 'test'
+      ...
+    # Subtest: aralık 2026-10-10–2026-10-15: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+    ok 30 - aralık 2026-10-10–2026-10-15: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+      ---
+      duration_ms: 22.944315
+      type: 'test'
+      ...
+    # Subtest: aralık 2026-10-01–2026-10-31: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+    ok 31 - aralık 2026-10-01–2026-10-31: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+      ---
+      duration_ms: 23.302427
+      type: 'test'
+      ...
+    # Subtest: Banka Hareket Raporu (hesap bazında): yalnız tahsil girişi, tahsil günü; tahsile ver / geri al / karşılıksız para hareketi değil
+    ok 32 - Banka Hareket Raporu (hesap bazında): yalnız tahsil girişi, tahsil günü; tahsile ver / geri al / karşılıksız para hareketi değil
+      ---
+      duration_ms: 25.839829
+      type: 'test'
+      ...
+    # Subtest: Banka Bakiye Raporu: dönem sonu ve giriş = model
+    ok 33 - Banka Bakiye Raporu: dönem sonu ve giriş = model
+      ---
+      duration_ms: 11.788201
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış: açık evrak beklenen tarih ve tutarla (tahsildeki: vade + iş günü; portföydeki: vade); başlangıç = Kasa + Gerçek Banka
+    ok 34 - Nakit Akış: açık evrak beklenen tarih ve tutarla (tahsildeki: vade + iş günü; portföydeki: vade); başlangıç = Kasa + Gerçek Banka
+      ---
+      duration_ms: 21.768628
+      type: 'test'
+      ...
+    # Subtest: Vade Takip (açık): evrak kalemleri = Nakit Akış'la aynı beklenen tarih
+    ok 35 - Vade Takip (açık): evrak kalemleri = Nakit Akış'la aynı beklenen tarih
+      ---
+      duration_ms: 10.460923
+      type: 'test'
+      ...
+    # Subtest: Çek listesi: Bankada Tahsilde süzgeci + özet; Portföyde süzgeci tahsildekini içermez; sanal durum etiketleri
+    ok 36 - Çek listesi: Bankada Tahsilde süzgeci + özet; Portföyde süzgeci tahsildekini içermez; sanal durum etiketleri
+      ---
+      duration_ms: 26.790145
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi Çek / Senet Portföyü: 'Portföyde' süzgeci satırları ↔ özet 'Portföyde (alınan)' tutarlı mı
+    ok 37 - Rapor Merkezi Çek / Senet Portföyü: 'Portföyde' süzgeci satırları ↔ özet 'Portföyde (alınan)' tutarlı mı
+      ---
+      duration_ms: 19.961761
+      type: 'test'
+      ...
+    1..37
+ok 1 - Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu
+  ---
+  duration_ms: 4428.689856
+  type: 'suite'
+  ...
+1..1
+# tests 37
+# suites 1
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6025.98006
+exit 0

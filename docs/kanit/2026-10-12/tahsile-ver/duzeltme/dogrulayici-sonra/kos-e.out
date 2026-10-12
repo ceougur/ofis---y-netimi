@@ -1,0 +1,25 @@
+TAP version 13
+# E {"hareket":[{"type":"opening","no":"BNK-2026-000001"}],"recent":[{}],"bakiye":10000000,"gercek":15000000,"bugunGiris":0}
+# Subtest: E — Banka ekranları
+    # Subtest: tahsile verdikten sonra: Hareketler, hesap kartı, Banka özeti, ANLIK DURUM bugün giriş
+    ok 1 - tahsile verdikten sonra: Hareketler, hesap kartı, Banka özeti, ANLIK DURUM bugün giriş
+      ---
+      duration_ms: 224.002568
+      type: 'test'
+      ...
+    1..1
+ok 1 - E — Banka ekranları
+  ---
+  duration_ms: 2069.30918
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3721.603185
+exit 0
