@@ -358,6 +358,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const gl = code => centsOf(ledger.trial.accounts.find(a => a.code === code)?.balance || 0);
     if (gl("100") !== M.kasa.cash || gl("102") !== M.kasa.bank || gl("108") !== M.kasa.card - ccardNet()) problems.push(`Ana defter kasa hesapları ≠ model: 100 ${gl("100") / 100}, 102 ${gl("102") / 100}, 108 ${gl("108") / 100} (model 108 ${tl(M.kasa.card - ccardNet())})`);
     if (gl("309") !== ccardNet()) problems.push(`Ana defter 309 (Kurumsal Kredi Kartları) ${gl("309") / 100} · model ${tl(ccardNet())}`);
+    // Bankaya Tahsile Ver (plan §3.14): 101.02 (Alt Hesap Mizanı) = modelde tahsildeki evrak; 101.01 = portföy − tahsildeki; 101 toplamı aynı.
+    if (bank && [...M.cheques.values()].some(c => c.deposited)) {
+      const subs = Object.fromEntries(((await api("GET", "/api/workspace/bank/sub-trial")).data?.rows || []).map(row => [row.sub, centsOf(row.balance)]));
+      const portfolio = [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio");
+      const atBank = portfolio.filter(c => c.deposit).reduce((s, c) => s + c.amount, 0);
+      const inPortfolio = portfolio.filter(c => !c.deposit).reduce((s, c) => s + c.amount, 0);
+      if ((subs["101.02"] || 0) !== atBank || (subs["101.01"] || 0) !== inPortfolio || gl("101") !== atBank + inPortfolio) problems.push(`Alt Hesap Mizanı 101.01 ${(subs["101.01"] || 0) / 100} / 101.02 ${(subs["101.02"] || 0) / 100} / 101 ${gl("101") / 100} · model portföy ${tl(inPortfolio)}, tahsilde ${tl(atBank)}`);
+    }
     const byType = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
     if (gl("120") !== byType("customer") || gl("320") !== byType("supplier") || gl("336") !== byType("other")) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${byType("customer") / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${byType("other") / 100}`);
     if (problems.length) report.mismatches.push({ at: where, problems });
@@ -598,7 +606,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       }
     }
     if ((mode === "endorse" || (mode === "mix" && kind === "purchase")) && kind === "purchase") {
-      for (const c of [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio" && c.accountId !== accountId && c.date <= day)) {
+      // Bankada tahsildeki evrak ciro edilmez (seçicide yok; plan §3.14).
+      for (const c of [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio" && !c.deposit && c.accountId !== accountId && c.date <= day)) {
         if (c.amount <= left && R.chance(0.6)) { pay.endorse.push(c.id); left -= c.amount; }
         if (pay.endorse.length >= 2) break;
       }
@@ -729,7 +738,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (issuedInvoices(x => x.originalId === inv.id).length) return ["invoice-has-returns"];
     if (inv.planId && M.planEntries.some(e => e.planId === inv.planId)) return ["plan-has-payments"];
     for (const id of inv.endorsed) if (M.cheques.get(id).status !== "endorsed") return ["cheque-moved"];
-    for (const id of inv.chequesCreated) if (M.cheques.get(id).events > 1) return ["cheque-moved"];
+    // Bankaya Tahsile Ver (plan §3.14): faturanın evrakı bankada tahsildeyse iptal 409 cheque-deposited (evrak sırası programınki; ikisi
+    // birlikteyse ikisinden biri).
+    const deposited = inv.chequesCreated.some(id => M.cheques.get(id).deposit && M.cheques.get(id).status === "portfolio");
+    const moved = inv.chequesCreated.some(id => M.cheques.get(id).events > 1);
+    if (deposited || moved) return [...(deposited ? ["cheque-deposited"] : []), ...(moved ? ["cheque-moved"] : [])];
     const codes = new Set();
     for (const row of inv.cashRows.filter(x => x.kind === "in")) if (blocks(row.amount, row.date, row.method)) { if (policy[row.method] === "block") codes.add("cash-blocked"); else if (!cashForce) codes.add("cash-negative"); }
     if (codes.size) return bankBlocked ? [...codes, "cash-negative"] : [...codes];
@@ -1383,9 +1396,16 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       case "cek-tahsil": {
         const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio"));
         if (!c) return;
-        const method = R.pick(["bank", "bank", "cash"]);
-        const b = bindBank(method);
-        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method, ...(b ? { bankAccountId: b.id, similarOk: true } : {}) });
+        // Bankaya Tahsile Ver (plan §3.14): tahsildeki evrak yalnız kaydın hesabına havaleyle tahsil edilir (hesap ön seçili: gönderilmese de
+        // o hesap); nakit 400 cheque-deposited-method.
+        if (c.deposit && R.chance(0.15)) {
+          const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method: "cash" });
+          return expectReject(r, "cheque-deposited-method", `${kind}/tahsilde-nakit`);
+        }
+        const method = c.deposit ? "bank" : R.pick(["bank", "bank", "cash"]);
+        const b = c.deposit ? banks.find(x => x.id === c.deposit.bankId) : bindBank(method);
+        const body = c.deposit ? (R.chance(0.5) ? { bankAccountId: b.id } : {}) : b ? { bankAccountId: b.id, similarOk: true } : {};
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method, ...body, ...(c.deposit ? { similarOk: true } : {}) });
         mustOk(r, kind);
         c.status = "collected";
         c.events += 1;
@@ -1427,6 +1447,33 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         c.events -= 1;
         M.kasa[row.method] -= row.kind === "in" ? row.amount : -row.amount;
         M.chqCash.splice(M.chqCash.indexOf(row), 1);
+        return;
+      }
+      case "cek-tahsile-ver": {
+        // Bankaya Tahsile Ver (plan §3.14): portföydeki alınan çek/senet bir vadesiz hesaba; para hareketi yok (101.01 → 101.02). İki hesap
+        // tanımlı olduğundan hesapsız istek 400 bank-account-required; kapalı dönemde 409 period-locked.
+        const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio" && !x.deposit && x.date <= day));
+        if (!c || !banks.length) return;
+        const b = R.pick(banks);
+        const omit = banks.length > 1 && R.chance(0.1);
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, ...(omit ? {} : { bankAccountId: b.id }) });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        if (omit) return expectReject(r, "bank-account-required", `${kind}/hesapsız`);
+        mustOk(r, kind);
+        if (!r.data?.id) throw Object.assign(new Error(`${kind}: yanıtta evrak yok ${r.text}`), { unexpected: true });
+        c.deposit = { bankId: b.id, date: day };
+        c.deposited = true;
+        // İkinci kez: 409 cheque-deposited (hiçbir şey yazılmaz).
+        if (R.chance(0.2)) expectReject(await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, bankAccountId: b.id }), "cheque-deposited", `${kind}/iki-kez`);
+        return;
+      }
+      case "cek-bankadan-geri-al": {
+        const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio" && x.deposit));
+        if (!c) return;
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-withdraw", date: day });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        mustOk(r, kind);
+        c.deposit = null;
         return;
       }
       case "kayit-tahsil": {
@@ -1742,7 +1789,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
 
   // bank: false (altın test, v2.0.26'ya karşı): yalnız eski motorun işlemleri — rastgele sıra eski motorla birebir aynı kalır. 2.1.0'da eklenen
   // işlemler (yargıç: kart silme, geri yükleme; plan testleri: kayıt tahsilatı ve düzeltme/silmesi, çek işlemini geri alma) yalnız banka ekseniyle.
-  const BANK_ERA = new Set(["kart-sil", "geri-yukle", "kayit-tahsil", "kayit-duzelt", "kayit-sil", "cek-geri-al"]);
+  const BANK_ERA = new Set(["kart-sil", "geri-yukle", "kayit-tahsil", "kayit-duzelt", "kayit-sil", "cek-geri-al", "cek-tahsile-ver", "cek-bankadan-geri-al"]);
   const WEIGHTS = [
     ["satis", 20], ["alim", 11], ["kasa", 9], ["cari", 11], ["taksit-tahsil", 11], ["kart", 6], ["iade", 5],
     ["kasa-duzelt", 3], ["kasa-sil", 2], ["cari-duzelt", 4], ["cari-sil", 2], ["hareket-duzelt", 3], ["hareket-sil", 2], ["taksit-sil", 3], ["kart-kapat", 2],
@@ -1755,6 +1802,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["fatura-acid", 4], ["fatura-hatasi", 9], ["fatura-bagli", 1],
     // 2.1.0 plan testleri: kayıt (detay kartı) tahsilatı ve düzeltme/silmesi; çek tahsil/ödemesini geri alma (bağlıda K7).
     ["kayit-tahsil", 4], ["kayit-duzelt", 2], ["kayit-sil", 2], ["cek-geri-al", 2],
+    // Bankaya Tahsile Ver (plan §3.14): çek/senedi bankaya tahsile verme ve bankadan geri alma (tahsil cek-tahsil'de).
+    ["cek-tahsile-ver", 3], ["cek-bankadan-geri-al", 1],
     // Banka Fişi (v2.1.0 Aşama 4): fiş (+ saha hataları), Ters Kaydet, Düzelt, Benzer İşlem.
     ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
     // Bankalar Arası Transfer (v2.1.0 Aşama 9): transfer (+ saha hataları), Ters Kaydet.
