@@ -1,0 +1,247 @@
+[
+  {
+    "id": "M1",
+    "what": "yevmiye: verilişte taraflar ters (B 101.01 / A 101.02)",
+    "file": "server/lib/general-ledger.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 1,
+    "fail": 17,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsile Ver: 101 değişmez, 101.02 = 1.000, 101.01 = 0; banka bakiyesi aynı; cheque_events'e satır yazılmaz; durum portföyde kalır",
+      "liste: Bankada Tahsilde süzgeci ayrı; Portföyde süzgecinde yok; özet; Alt Hesap Mizanı 101.01 / 101.02",
+      "Nakit Akış ve Vade Takip: tahsildeki evrak vade + iş günü (31.10 Cumartesi → 02.11), portföydeki vadesinde (31.10)",
+      "Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde"
+    ]
+  },
+  {
+    "id": "M2",
+    "what": "yevmiye: tahsildeki evrakın tahsil satırı 101.01'den (101.02 değil)",
+    "file": "server/lib/general-ledger.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 14,
+    "fail": 4,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde",
+      "Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır",
+      "tarih: alıştan önce 400, ileri 400, geçersiz 400, kilitli dönem 409; kilitli ayda verilen çek açık ayda tahsil edilir, geri alınır",
+      "surum-2.0.26-turler: göç sonrası portföydeki eski çek tahsile verilir ve tahsil edilir; eski tahsil edilmiş çek 409; mutabakat temiz"
+    ]
+  },
+  {
+    "id": "M3",
+    "what": "yevmiye: Bankadan Geri Al / karşılıksız kapanış maddesi yazılmıyor",
+    "file": "server/lib/general-ledger.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 11,
+    "fail": 7,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde",
+      "Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır",
+      "faturayla alınan çek tahsildeyken fatura iptal edilemez (409 cheque-deposited); Bankadan Geri Al sonrası iptal olur",
+      "tarih: alıştan önce 400, ileri 400, geçersiz 400, kilitli dönem 409; kilitli ayda verilen çek açık ayda tahsil edilir, geri alınır"
+    ]
+  },
+  {
+    "id": "M4",
+    "what": "rota: tahsilde kayıt kapanmıyor (closeCollected çağrılmıyor)",
+    "file": "server/routes/cheques.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 14,
+    "fail": 4,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde",
+      "Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır",
+      "tarih: alıştan önce 400, ileri 400, geçersiz 400, kilitli dönem 409; kilitli ayda verilen çek açık ayda tahsil edilir, geri alınır",
+      "surum-2.0.26-turler: göç sonrası portföydeki eski çek tahsile verilir ve tahsil edilir; eski tahsil edilmiş çek 409; mutabakat temiz"
+    ]
+  },
+  {
+    "id": "M5",
+    "what": "tahsile veriş tarihi alış tarihinden önce olabiliyor",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 17,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "tarih: alıştan önce 400, ileri 400, geçersiz 400, kilitli dönem 409; kilitli ayda verilen çek açık ayda tahsil edilir, geri alınır"
+    ]
+  },
+  {
+    "id": "M6",
+    "what": "faturayla ciro tahsildeki evrakı kabul ediyor",
+    "file": "server/routes/cheques.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 17,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "tahsildeyken ciro / sil / tutar / tarih / vade / cari 409 cheque-deposited; açıklama ve seri no düzelir; iki kez tahsile ver 409"
+    ]
+  },
+  {
+    "id": "M7",
+    "what": "tahsil başka hesaba yazılabiliyor",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 16,
+    "fail": 2,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde",
+      "Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde"
+    ]
+  },
+  {
+    "id": "M8",
+    "what": "tahsildeki evrak nakit tahsil edilebiliyor",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 16,
+    "fail": 2,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde",
+      "Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde"
+    ]
+  },
+  {
+    "id": "M9",
+    "what": "kapı: beklenen 101.02 bekleyen olmayan kayıtları da sayıyor",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 9,
+    "fail": 9,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde",
+      "Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde",
+      "Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır",
+      "faturayla alınan çek tahsildeyken fatura iptal edilemez (409 cheque-deposited); Bankadan Geri Al sonrası iptal olur"
+    ]
+  },
+  {
+    "id": "M10",
+    "what": "uygunluk: vadeli hesaba da tahsile verilebiliyor",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 17,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "hesap: başka hesaba tahsil 400; pasif, vadeli, kart, kredi hesabı 400; hesap yok 404; çok hesapta seçimsiz 400; tek hesapta kendiliğinden"
+    ]
+  },
+  {
+    "id": "M11",
+    "what": "düzenle: tahsildeki evrakın tutarı değişebiliyor",
+    "file": "server/routes/cheques.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 17,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "tahsildeyken ciro / sil / tutar / tarih / vade / cari 409 cheque-deposited; açıklama ve seri no düzelir; iki kez tahsile ver 409"
+    ]
+  },
+  {
+    "id": "M12",
+    "what": "kapı: 101.02 denetimi yok (her zaman tamam)",
+    "file": "server/lib/integrity.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 17,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "ham SQL ile bozulan kayıt: Mutabakat Testi cheque:collections ile yakalar (kayıt kapatılır / başlık silinir / tutar değişir)"
+    ]
+  },
+  {
+    "id": "M13",
+    "what": "geri al (tahsil): kayıt yeniden bekleyen olmuyor",
+    "file": "server/routes/cheques.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 15,
+    "fail": 3,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde",
+      "Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde",
+      "tarih: alıştan önce 400, ileri 400, geçersiz 400, kilitli dönem 409; kilitli ayda verilen çek açık ayda tahsil edilir, geri alınır"
+    ]
+  },
+  {
+    "id": "M14",
+    "what": "Bankadan Geri Al tarih denetimi yok (verilmeden önceki güne)",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 16,
+    "fail": 2,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde",
+      "Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır"
+    ]
+  },
+  {
+    "id": "M15",
+    "what": "tahsilde işlem (tahsil/karşılıksız) verilmeden önceki güne yazılabiliyor",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 19,
+    "pass": 17,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde"
+    ]
+  }
+]
