@@ -1,0 +1,28 @@
+✗ raporlar işlem 50:
+  Banka Masraf 2026-06-14–2026-10-12: 3473,09 · model 2719,82
+  Banka Masraf 2026-07-14–2026-10-12: 753,27 · model 0,00
+
+Tohum 1: 50 işlem, 50 doğrulama, 11 beklenen ret (eksiye düşürme / aşım), eşzamanlı 0 istek · 3.2 sn
+  Beklenen retler: date-invalid 2, 409 1, cash-method 1, bank-event-opening 1, cash-negative 1, return-exceeds 1, cheque-due-before-issue 1, date-future 1, date-missing 1, chronology 1
+  İşlem türleri: alim 12, kasa 5, cek-bankadan-geri-al 1, banka-ters 1, fatura-iptal 1, taksit-tahsil 7, cek-tahsil 1, kayit-sil 1, pos-tahsil 2, kart-sil 1, fatura-satis 3, hareket-duzelt 1, fatura-acid 1, fatura-hatasi 4, kilit-ihlali 2, vade-hatasi 1, banka-transfer-ters 1, cari 2, iade 1, tarih-hatasi 3, banka-fis 1, hareket-sil 1, satis 1, cari-duzelt 1, fatura-iade 2, kayit-duzelt 1, fatura-alis 1, cek-tahsile-ver 1, kasa-duzelt 1
+  Model: {"kasa":{"cash":"97089,27","bank":"99385,57","card":"2994,94"},"cariler":12,"urunler":10,"kartlar":1,"kasaHareketi":5,"bankaSatiri":9,"bankaTersKayit":0,"bankalarArasiTransfer":0,"cariHareketi":4,"stokHareketi":20,"taksitHareketi":6,"hesabaBagliModulHavalesi":4,"kurumsalKartaBagli":0,"kurumsalKartBakiyesi":"0,00"}
+  Fatura: {"kesilen":6,"iptal":0,"taslak":0,"turler":{"sale":3,"sale_return":2,"purchase":1},"cek":1} · seriler {} · tekil ETTN -
+  Mutabakat kapısı süresi: ortanca 10 ms, en çok 16 ms
+  ✗ UYUŞMAZLIK (1):
+    raporlar, işlem 50 (2026-06-20)
+      Banka Masraf 2026-06-14–2026-10-12: 3473,09 · model 2719,82
+      Banka Masraf 2026-07-14–2026-10-12: 753,27 · model 0,00
+✗ raporlar işlem 50:
+  Banka Masraf 2026-06-14–2026-10-12: 722,54 · model 0,00
+  Banka Masraf 2026-06-14–2026-06-20: 722,54 · model 0,00
+
+Tohum 2: 50 işlem, 50 doğrulama, 13 beklenen ret (eksiye düşürme / aşım), eşzamanlı 0 istek · 2.8 sn
+  Beklenen retler: 400 2, cash-negative 2, stock-negative 2, date-invalid 2, 409 1, date-future 1, payment-exceeds 1, bank-similar 1, bank-event-opening 1
+  İşlem türleri: alim 13, kasa 5, kayit-tahsil 2, cek-tahsil 1, fatura-satis 5, kilit-ihlali 1, fatura-hatasi 2, taksit-tahsil 5, kart 3, satis 5, cari-duzelt 1, tarih-hatasi 2, fatura-bagli 1, banka-fis 1, iade 2, pos-tahsil 2, fatura-alis 5, banka-benzer 1, kart-sil 1, fatura-iade 1, banka-ters 1, fatura-taslak 1
+  Model: {"kasa":{"cash":"63807,61","bank":"57175,06","card":"-50738,42"},"cariler":12,"urunler":10,"kartlar":1,"kasaHareketi":6,"bankaSatiri":6,"bankaTersKayit":0,"bankalarArasiTransfer":0,"cariHareketi":2,"stokHareketi":31,"taksitHareketi":0,"hesabaBagliModulHavalesi":3,"kurumsalKartaBagli":4,"kurumsalKartBakiyesi":"-48447,91"}
+  Fatura: {"kesilen":7,"iptal":0,"taslak":1,"turler":{"sale":1,"purchase":5,"purchase_return":1},"cek":1} · seriler {} · tekil ETTN -
+  Mutabakat kapısı süresi: ortanca 9 ms, en çok 17 ms
+  ✗ UYUŞMAZLIK (1):
+    raporlar, işlem 50 (2026-06-20)
+      Banka Masraf 2026-06-14–2026-10-12: 722,54 · model 0,00
+      Banka Masraf 2026-06-14–2026-06-20: 722,54 · model 0,00

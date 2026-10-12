@@ -73,10 +73,11 @@ describe("T11 — taksite sayılmış çek karşılıksız: alış günü maddes
   });
   after(() => ctx?.server.close());
 
-  it("alış günü maddeleri karşılıksızdan önce plan §3.14 gibi (B 101.01 / A 120)", () => {
+  // 2.2.0 İz 4.2 (plan §3.11a; bilerek güncellendi): E bir SENET — alış B 121.01 / A 120, karşılıksız günü A 121.01 (çekler 101.0x'te kalır).
+  it("alış günü maddeleri karşılıksızdan önce plan §3.14 gibi (B 101.01 / A 120; senet E: B 121.01 / A 120)", () => {
     assert.deepEqual(c.journal.a, [["101.01", 240000, 0], ["120", 0, 240000]]);
     assert.deepEqual(c.journal.b, [["101.01", 150000, 0], ["120", 0, 150000]]);
-    assert.deepEqual(c.journal.e, [["101.01", 80000, 0], ["120", 0, 80000]]);
+    assert.deepEqual(c.journal.e, [["120", 0, 80000], ["121.01", 80000, 0]]);
   });
 
   it("karşılıksız (A tahsilde 23.10, B portföyde 24.10, E cirolu 26.10): 200; karşılıksız günü maddeleri; alış günü ve 20.10 kesiti değişmez", async () => {
@@ -85,7 +86,7 @@ describe("T11 — taksite sayılmış çek karşılıksız: alış günü maddes
     await must("E karşılıksız", act(api, c.E.id, { action: "bounce", date: "2026-10-26" }));
     assert.deepEqual(await journalOf(api, "2026-10-23"), [["101.02", 0, 240000], ["120", 240000, 0]], "A: B 120 / A 101.02");
     assert.deepEqual(await journalOf(api, "2026-10-24"), [["101.01", 0, 150000], ["120", 150000, 0]], "B: B 120 / A 101.01");
-    assert.deepEqual(await journalOf(api, "2026-10-26"), [["101.01", 0, 80000], ["101.01", 80000, 0], ["120", 80000, 0], ["320", 0, 80000]], "E: müşteri borçlanır, ciro edilen tedarikçinin alacağı geri gelir");
+    assert.deepEqual(await journalOf(api, "2026-10-26"), [["120", 80000, 0], ["121.01", 0, 80000], ["121.01", 80000, 0], ["320", 0, 80000]], "E (senet): müşteri borçlanır, ciro edilen tedarikçinin alacağı geri gelir");
     assert.deepEqual(await journalOf(api, "2026-10-10"), c.journal.a, "A alış günü değişmez");
     assert.deepEqual(await journalOf(api, "2026-10-11"), c.journal.b, "B alış günü değişmez");
     assert.deepEqual(await journalOf(api, "2026-10-14"), c.journal.e, "E alış günü değişmez");
@@ -94,7 +95,7 @@ describe("T11 — taksite sayılmış çek karşılıksız: alış günü maddes
 
   it("son mizan: 602 yalnız taksitli satışlar (−4.700), 770 hareketsiz, 120 +4.700, 101 ve 101.01/101.02 sıfır; Mutabakat tamam", async () => {
     const trial = await trialOf(api);
-    assert.deepEqual(pick(trial, ["101", "120", "320", "602", "770"]), { 101: 0, 120: 470000, 320: 0, 602: -470000, 770: 0 });
+    assert.deepEqual(pick(trial, ["101", "120", "121", "320", "602", "770"]), { 101: 0, 120: 470000, 121: 0, 320: 0, 602: -470000, 770: 0 });
     const subs = Object.fromEntries((await must("alt", api.get(`${BANK}/sub-trial`))).rows.map(row => [row.sub, cents(row.balance)]));
     assert.deepEqual([subs["101.01"] || 0, subs["101.02"] || 0], [0, 0]);
     await integrityOk(api, "T11 karşılıksız sonrası");

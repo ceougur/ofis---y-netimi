@@ -1,7 +1,23 @@
 # Bağımsız Senaryo Dili ve Çıktı Biçimi
 
-Dil sürümü: **`destekofis-senaryo/2`** · Yazıldığı gün: 10.10.2026 (sürüm 2: aynı gün) · Kapsam: 2.1.0 (Banka İlk Teslim)
-içinden, **döviz, POS, ekstre/mutabakat, K8 taksit kuralları ve Bankaya Tahsile Ver HARİÇ** işlemler.
+Dil sürümü: **`destekofis-senaryo/3`** · Yazıldığı gün: 10.10.2026 (sürüm 2: aynı gün; sürüm 3: 12.10.2026) · Kapsam: 2.1.0
+(Banka İlk Teslim) içinden, **döviz, POS, ekstre/mutabakat ve K8 taksit kuralları HARİÇ** işlemler; sürüm 3 ile çek/senet portföyü
+ve Bankaya Tahsile Ver (plan §3.11a, §3.14) kapsama girdi.
+
+### Sürüm 3 değişiklikleri (12.10.2026)
+
+Sürüm 2'deki kurallar aşağıdakiler dışında aynen geçerlidir. Sürüm 2 senaryoları (`"dil": "destekofis-senaryo/2"`) değiştirilmeden
+sürüm 3 kurallarıyla koşulur (sürüm 3 yalnız ekler; sürüm 2 senaryosunun sonucu değişmez). Evrak işlemleri (§4.30–4.38) yalnız
+`"dil": "destekofis-senaryo/3"` senaryosunda yazılır. Kaynak yine yalnız plan (temiz oda; §0): `docs/BANKA-MODULU-PLAN.md` §2.3, §3.5/6,
+§3.7 #9 ve #21, §3.11 madde 5, **§3.11a (senetler 121/321)**, §3.11b/1 ve **§3.14 (Bankaya Tahsile Ver)**.
+
+| # | Yer | Değişiklik | Dayanak |
+|---|---|---|---|
+| E1 | §4.30–4.38 (yeni) | Evrak işlemleri: alınan/verilen çek ve senet, ciro, tahsil, ödeme, karşılıksız, Bankaya Tahsile Ver, Bankadan Geri Al, evrak silme. Yeni takma ad türü: **evrak** | [PLAN §2.3 "kind … receive, issue, collect, endorse, pay, bounce"; §3.14] |
+| E2 | §8.2, §11 | Hesap planına 101.01 · 101.02 · 103 · 121.01 · 121.02 · 321. 101 ve 121 alt hesaplıdır (yalnız alt hesaplarıyla yazılır); 103 ve 321 üç haneyle | [PLAN §3.11 "101.01 Portföydeki Çekler, 101.02 Tahsile Verilen Çekler"; §3.11a tablo] |
+| E3 | §7, §12 | Evrak satırı olan carinin fatura açıkları karşılaştırılmaz (BELİRSİZ-27); cari değişmezine evrak terimi eklendi | Plan susuyor (evrakın fatura kapamaya etkisi yazılı değil) |
+| E4 | §5.5, §5.6, §5.7 | Evrak işlemlerinin yetkisi, ret önceliği ve ret kodları (`cheque-deposited` dahil) | [PLAN §3.14 "409 `cheque-deposited`"; §9.1'de çek yetkisi yok → BELİRSİZ-18] |
+| E5 | §12 | Yeni BELİRSİZ-27 … 32 | Plan susuyor |
 
 ### Sürüm 2 değişiklikleri (10.10.2026)
 
@@ -91,7 +107,7 @@ dosyası okunabilsin.
 
 ```json
 {
-  "dil": "destekofis-senaryo/2",
+  "dil": "destekofis-senaryo/3",
   "ad": "kabul-1-16",
   "aciklama": "…",
   "dayanak": "PLAN §12.5 adım 1–16",
@@ -107,7 +123,7 @@ dosyası okunabilsin.
 
 | Alan | Zorunlu | Anlamı |
 |---|---|---|
-| `dil` | evet | Tam olarak `"destekofis-senaryo/2"`. Başka değerde kâhin ve koşucu çalışmaz (sürüm 1 senaryoları yalnız `dil` değiştirilerek sürüm 2 kurallarıyla koşulur). |
+| `dil` | evet | `"destekofis-senaryo/3"` ya da `"destekofis-senaryo/2"`. Başka değerde kâhin ve koşucu çalışmaz (sürüm 1 senaryoları yalnız `dil` değiştirilerek sürüm 2 kurallarıyla koşulur; sürüm 2 senaryoları sürüm 3 kurallarıyla aynen koşulur, evrak işlemleri yalnız sürüm 3'te). |
 | `ad` | evet | Dosya adıyla aynı (`kabul-1-16`). |
 | `baslangic.bugun` | evet | Sahte saatin başlangıç günü (`gg.aa.yyyy`). [PLAN §12.5 "sahte saat 08.10.2026 Perşembe (sunucu `config.now` + Playwright `page.clock`)"] |
 | `baslangic.sirket` | evet | Yalnız `"bos"`: yeni, boş şirket (hesap, cari, ürün, hareket yok; dönem kilidi yok). |
@@ -133,8 +149,8 @@ dosyası okunabilsin.
 
 ### 3.3 Değer biçimleri
 
-- **Takma ad:** `^[A-Z][A-Z0-9_]{0,15}$` (ör. `ZIR`, `ABC`, `F1`, `TH1`). Hesap, cari, ürün, fatura (iade dahil), taksit kartı ve
-  hareket için **tek ad alanı** vardır; aynı ad iki kez tanımlanamaz. Koşucu takma ad ↔ program kimliği tablosunu kendisi tutar;
+- **Takma ad:** `^[A-Z][A-Z0-9_]{0,15}$` (ör. `ZIR`, `ABC`, `F1`, `TH1`). Hesap, cari, ürün, fatura (iade dahil), taksit kartı,
+  hareket ve evrak (çek/senet, sürüm 3) için **tek ad alanı** vardır; aynı ad iki kez tanımlanamaz. Koşucu takma ad ↔ program kimliği tablosunu kendisi tutar;
   çıktıya hep takma adla yazar.
 - **Tutar:** metin, `^[0-9]{1,13}(,[0-9]{1,2})?$`. Ondalık ayırıcı virgül, binlik ayırıcı yok, işaret yok. `"20000"`,
   `"20000,00"`, `"10,5"` (= 10,50 TL) geçerli; `"1.234,56"`, `"1234.56"`, `"-5"` senaryo hatasıdır. Kuruşa çevirme: tam kısım × 100
@@ -654,6 +670,183 @@ hesaplanır). Hareket Silinenler'e gider; geri yükleme bu dil sürümünde yok.
 Etki yok. Kâhin ve koşucu bu noktadaki durumu `araDurumlar[id]` olarak yazar (§8.6). Karşılaştırıcı önce `planBeklenen` ↔ kâhin,
 sonra kâhin ↔ program.
 
+### 4.30–4.38 Evrak (çek ve senet) işlemleri — sürüm 3
+
+**Gösterim** [PLAN §3.11a tablo; §3.11 madde 5]:
+
+| | Çek (`cek`) | Senet (`senet`) |
+|---|---|---|
+| `a(E)` alınan evrak, portföyde | **101.01** Portföydeki Çekler | **121.01** Portföydeki Senetler |
+| `t(E)` alınan evrak, bankada tahsilde | **101.02** Tahsile Verilen Çekler | **121.02** Tahsile Verilen Senetler |
+| `v(E)` verilen (kendi) evrak | **103** Verilen Çekler ve Ödeme Emirleri | **321** Borç Senetleri |
+
+[PLAN §3.11a "§3.6/§3.7/§3.14'te 101.01/101.02 yazan her satır alınan SENET için 121.01/121.02 olarak okunur; 103 yazan her satır verilen
+senet için 321"]
+
+**Evrak durumu** (kâhinin iç durumu; çıktıda ayrı alan yok, etkisi mizandadır): alınan evrak `portfoy` → (`tahsilde` ⇄ `portfoy`) →
+`tahsil` · `ciro` · `karsiliksiz`; verilen evrak `verildi` → `odendi`; her ikisi `silindi`. "Evrak portföyde" = durum `portfoy`.
+
+**Ortak kurallar:**
+- Her evrak işleminin tarihi `tarih` (yoksa `bugun`); §5.1 tarih kuralları (ileri tarih 400; kilit 409 `period-locked`) her evrak
+  işleminde geçerlidir [PLAN §11.1 A6 "Alış/veriliş tarihi `movementDate` ile (ileri tarih 400, kilitli 409); `assertOpen`"; §3.14 "tarih
+  için `movementDate` kuralı"]. Evrakın önceki dönemi kilitli olsa da sonraki işlemi açık dönemde yapılabilir [PLAN §3.14 "Kilitli ayda
+  tahsile verilen çek açık ayda tahsil edilebilir"; §5.5 E2.19 "kilitli ayda alınan çek bugün tahsil edilebilmeli"].
+- Bir evrak işleminin tarihi evrakın önceki işleminden (alış/veriliş, tahsile verme, geri alma) önce olamaz: Bankaya Tahsile Ver'de
+  alış tarihinden önce → 4xx [PLAN §3.14]; öbür işlemlerde ve vadeden önce tahsil/karşılıksızda senaryo kurmaz [BELİRSİZ-28].
+- Yetki: yalnız `yonetici` [§5.5; plan §9.1 çek yetkisini saymıyor → BELİRSİZ-18].
+- Benzer İşlem: evrak tahsil/ödeme satırının hedefi evrakın kendisidir ve her evrak en çok bir kez tahsil/ödenir → Benzer İşlem reddi
+  doğmaz [PLAN §3.10/2 "**Hedef:** … çek"]. Evrak işlemlerinde istek kimliği kullanılmaz (üreteç yazmaz; yazılırsa §5.4 geçerlidir).
+- Evrakın fatura açığına etkisi planda yok → o carinin `faturalar.*.acik` alanları karşılaştırılmaz [BELİRSİZ-27].
+- "Çek Kullan / Senet Kullan" hesap işaretleri ve verilen çekin "Çek Hesabı" (kullanıcı kararı 12.10.2026) planda yok; deftere etkileri
+  yoktur, kâhin bilmez [BELİRSİZ-32].
+
+#### 4.30 `evrak_al` — alınan çek / senet (portföye giriş)
+
+| Parametre | Zorunlu | Anlamı |
+|---|---|---|
+| `ad` | evet | Evrakın takma adı (tür **evrak**) |
+| `tur` | evet | `cek` · `senet` |
+| `cari` | evet | Evrakı veren cari |
+| `tutar` | evet | T |
+| `vade` | hayır | Vade günü; yoksa = işlem tarihi. Deftere etkisi yok; vade < tarih senaryo kurmaz |
+
+Yevmiye: `B a(E) T / A c(cari) T` [PLAN §3.11 madde 5 "receive → 101.01"; §3.11a; karşı hesabın cari olması ÇIKARIM §3.11b/1
+"Karşılıksız çek / protestolu senet … carinin borcuna döner (B 120 / A 101 ya da 121)" — karşılıksız, alışın tersidir]. Durum `portfoy`.
+
+#### 4.31 `evrak_ver` — verilen (kendi) çek / senet
+
+Parametreler §4.30 gibi (`ad`, `tur`, `cari` = evrakın verildiği cari, `tutar`, `vade`).
+
+Yevmiye: `B c(cari) T / A v(E) T` [ÇIKARIM §3.7 #9 "B 103 / A 102" (ödeme verilen evrakı 103'ten kapatır → veriliş 103'e alacak);
+§3.11a "Senet · Verilen · 321 Borç Senetleri"]. Durum `verildi`.
+
+#### 4.32 `evrak_ciro` — portföydeki alınan evrakı ciro et
+
+| Parametre | Anlamı |
+|---|---|
+| `evrak` | Alınan evrakın takma adı |
+| `cari` | Ciro edilen cari (evrakı verenden başka; BELİRSİZ-30) |
+
+Yevmiye: `B c(cari) T / A a(E) T` [YAYGIN: ciroda evrak portföyden çıkar, ciro edilen carinin hesabı kapanır; PLAN §2.3 "endorse"].
+Durum `ciro`.
+
+| Durum | Sonuç | Dayanak |
+|---|---|---|
+| evrak tahsilde | **409 `cheque-deposited`** | [PLAN §3.14 "Tahsildeki çek ciro edilemez, silinemez … (409 `cheque-deposited`, 'önce Bankadan Geri Al')"] |
+| evrak `tahsil` · `ciro` · `karsiliksiz` | 4xx | [YAYGIN] |
+| evrak verilen evrak | senaryo kurmaz | — |
+
+#### 4.33 `evrak_tahsil` — alınan evrak tahsil edildi
+
+| Parametre | Anlamı |
+|---|---|
+| `evrak` | Alınan evrakın takma adı |
+| `yol` | `nakit` · `havale` |
+| `hesap` | Havalede (aşağıda) |
+
+Yevmiye: `B p(yol,H) T / A a(E) T`; evrak **tahsildeyse** `A t(E) T` [PLAN §3.7 #9 "B 102 / A 101.01 (tahsildeyse A 101.02)"; §3.14
+"Tahsil Edildi … Yevmiye: B 102.x / A 101.02"; §3.11a]. Durum `tahsil`.
+
+Hesap:
+- Portföydeki evrak: §5.2 havale kuralı (hiç uygun hesap yoksa 102.00; tekse kendiliğinden; çoksa `hesap` zorunlu, yoksa 400
+  `bank-account-required`) [PLAN §3.5/6 "Çek tahsilinde varsayılan yol bank (…); hesap 'Tahsil Edilen Hesap' alanından"; §3.5/1–3].
+- Tahsildeki evrak: yol `havale`; `hesap` verilmezse tahsil kaydının hesabı kullanılır; başka hesap → **400** (kod planda yok) [PLAN §3.14
+  "yol bank, hesap tahsil kaydının hesabıyla ön seçili; başka hesap 400"; §3.5/6 "ön seçilidir ve değiştirilemez"]. Nakit tahsil ve
+  tahsil kaydının hesabı pasifken tahsil senaryo kurmaz [BELİRSİZ-29].
+
+| Durum | Sonuç | Dayanak |
+|---|---|---|
+| evrak `tahsil` · `ciro` · `karsiliksiz` | 4xx | [YAYGIN] |
+| havale satırı hesabın açılışından önce | 4xx `bank-before-opening` | §5.1 |
+| evrak verilen evrak | senaryo kurmaz | — |
+
+#### 4.34 `evrak_odeme` — verilen evrak ödendi
+
+| Parametre | Anlamı |
+|---|---|
+| `evrak` | Verilen evrakın takma adı |
+| `yol` | `nakit` · `havale` |
+| `hesap` | Havalede §5.2'ye göre |
+
+Yevmiye: `B v(E) T / A p(yol,H) T` [PLAN §3.7 #9 "B 103 / A 102"; §3.11a "103 yazan her satır verilen senet için 321"]. Durum `odendi`.
+Eksi bakiye denetimi kaynakta (§5.3).
+
+| Durum | Sonuç | Dayanak |
+|---|---|---|
+| evrak `odendi` | 4xx | [YAYGIN] |
+| havale satırı hesabın açılışından önce | 4xx `bank-before-opening` | §5.1 |
+| evrak alınan evrak | senaryo kurmaz | — |
+
+#### 4.35 `evrak_karsiliksiz` — alınan evrak karşılıksız / protestolu
+
+| Parametre | Anlamı |
+|---|---|
+| `evrak` | Alınan evrakın takma adı |
+
+Yevmiye: `B c(evrakı veren cari) T / A a(E) T`; evrak **tahsildeyse** `A t(E) T` [PLAN §3.11b/1 "Karşılıksız çek / protestolu senet (mevcut
+bounce): bugünkü gibi carinin borcuna döner (B 120 / A 101 ya da 121)"; §3.14 "Karşılıksız (bankadan dönen) … Yevmiye mevcut bounce
+maddesinde A 101.02"; §3.11 madde 5 "kaydın `close_event_id`'si olan collect/bounce → A 101.02; diğerleri A 101.01"]. Durum `karsiliksiz`.
+
+| Durum | Sonuç | Dayanak |
+|---|---|---|
+| evrak `tahsil` · `karsiliksiz` | 4xx | [YAYGIN] |
+| evrak `ciro` ya da verilen evrak | senaryo kurmaz | [BELİRSİZ-29] |
+
+#### 4.36 `tahsile_ver` — Bankaya Tahsile Ver
+
+| Parametre | Zorunlu | Anlamı |
+|---|---|---|
+| `evrak` | evet | Alınan evrakın takma adı (çek ya da senet [PLAN §3.11a]) |
+| `hesap` | evet | Banka hesabı (her zaman açıkça verilir) |
+
+Yevmiye (verilme tarihinde): `B t(E) T / A a(E) T` [PLAN §3.14 "Yevmiye: B 101.02 / A 101.01. 101 toplamı … değişmez"; §3.11 madde 5
+"etkin tahsil kaydı → B 101.02 / A 101.01 (verilme tarihinde)"; §3.11a]. Durum `tahsilde`, tahsil kaydının hesabı H.
+
+Hesap uygunluğu: aktif ve tür ∈ {vadesiz, ticari, diğer} [ÇIKARIM §3.5 tablo: "Döviz … çekte seçilemez", "Vadeli … Hayır", kredi ve kart
+modül formlarında yok]. Pasif, kurumsal kart ya da kredi hesabı → **400 `bank-account-invalid`** [ÇIKARIM §5.2/4]; vadeli hesap senaryo
+kurmaz [BELİRSİZ-30].
+
+| Durum | Sonuç | Dayanak |
+|---|---|---|
+| evrak tahsilde | 4xx | [PLAN §3.11 "Çek başına en çok bir etkin kayıt"] |
+| evrak `tahsil` · `ciro` · `karsiliksiz` | 4xx | [PLAN §3.14 "yalnız portföydeki (`status='portfolio'`) alınan çekte"] |
+| tarih < evrakın alış tarihi | 4xx | [PLAN §3.14 "tarih alış tarihinden önce olamaz"] |
+| tarih < hesabın açılış tarihi | 4xx `bank-before-opening` | [ÇIKARIM §3.11 bank:opening "açılıştan önce bağlı satır yok"; §5.1] |
+| evrak verilen evrak | senaryo kurmaz | — |
+
+Geri alınan evrak yeniden tahsile verilebilir [YAYGIN; PLAN §3.11 "Çek başına en çok bir **etkin** kayıt"].
+
+#### 4.37 `bankadan_geri_al` — Bankadan Geri Al
+
+| Parametre | Anlamı |
+|---|---|
+| `evrak` | Tahsildeki alınan evrakın takma adı |
+
+Yevmiye (geri alma tarihinde): `B a(E) T / A t(E) T` [PLAN §3.14 "Bankadan Geri Al: … Yevmiye: B 101.01 / A 101.02"; §3.11 madde 5
+"Bankadan Geri Al → B 101.01 / A 101.02 (kapanış tarihinde)"]. Durum `portfoy`; tahsil kaydı kapanır.
+
+| Durum | Sonuç | Dayanak |
+|---|---|---|
+| evrak tahsilde değil (`portfoy` · `tahsil` · `ciro` · `karsiliksiz`) | 4xx | [YAYGIN] |
+| tarih < verilme tarihi | senaryo kurmaz | [BELİRSİZ-28] |
+
+#### 4.38 `evrak_sil` — evrakı sil
+
+| Parametre | Anlamı |
+|---|---|
+| `evrak` | Evrakın takma adı |
+
+Etki: evrakın alış (ya da veriliş) satırları kalkar; evrak hiç girilmemiş gibi [YAYGIN]. Durum `silindi`.
+
+| Durum | Sonuç | Dayanak |
+|---|---|---|
+| evrak tahsilde | **409 `cheque-deposited`** | [PLAN §3.14 "Tahsildeki çek … silinemez … (409 `cheque-deposited`)"] |
+| evrak zaten silinmiş | 404 | [ÇIKARIM §4.28] |
+| evrakın tarihi ≤ kilit | 409 `period-locked` | [PLAN §11.1 A6 "`assertOpen`"] |
+| evrakın alış/veriliş dışında geçmişi var (tahsile verilip geri alınmış, tahsil, ödeme, ciro, karşılıksız) | senaryo kurmaz | [BELİRSİZ-31] |
+
+Silinmiş evrakla (ikinci silme dışında) işlem senaryo kurmaz [BELİRSİZ-31].
+
 ---
 
 ## 5. Ortak kurallar
@@ -789,14 +982,16 @@ kullanıcı\|kapsam\|kimlik"]:
 | `sil` (nakit hedef, adımı yapan kişinin kendi girdiği) | 200 | B | 200 | [PLAN §2.5 "Personel kendi girdiği tahsilatı düzeltip silebilir"; §9.2/4 "Nakit ve hesabı atanmamış satırlarda bugünkü kural sürer"] |
 | `sil` (nakit hedef, başkasının girdiği) | 200 | B | B | — |
 | `yineDeKaydet` bir banka hesabının Uyar'ını geçiyorsa | 200 | 200 | B | [PLAN §3.9 "`bank.move` ister"] |
+| `evrak_al`, `evrak_ver`, `evrak_ciro`, `evrak_tahsil`, `evrak_odeme`, `evrak_karsiliksiz`, `tahsile_ver`, `bankadan_geri_al`, `evrak_sil` (sürüm 3) | 200 | B | B | [PLAN §3.7 #9, #21 "cheques.manage"; §9.1 bu yetkinin rollerini saymıyor] |
 
 ### 5.6 Ret önceliği [ÇIKARIM §3.3 sırası]
 
 Bir adımda birden çok ihlal varsa kâhin ilkini yazar:
 1. 403 yetki
-2. 400 girdi (tutar biçimi/aralığı, ileri tarih, hesap seçimi, kaynak = hedef, IBAN, `ucretVergi` eksik)
+2. 400 girdi (tutar biçimi/aralığı, ileri tarih, hesap seçimi, kaynak = hedef, IBAN, `ucretVergi` eksik; tahsildeki evrakta başka hesap)
 3. İstek kimliği (yineleme ya da 409)
-4. 404 hedef yok; 409 kilit, açılış öncesi, açılış kuralları, ters kaydı iki kez; iade sınırı
+4. 404 hedef yok; 409 kilit, açılış öncesi, açılış kuralları, ters kaydı iki kez; iade sınırı; evrak durumu (`cheque-deposited`
+   ve evrak durumu 4xx'leri, tahsile vermede alıştan önceki tarih; sürüm 3)
 5. 409 `bank-similar`
 6. 409 eksi bakiye
 
@@ -833,6 +1028,13 @@ Kâhin `retler`e (§8.5) şu değerleri yazar. `kodDayanak: "PLAN"` = plan bu du
 | Ters kaydedilemeyen hedef (§4.27) | `"4xx"` | null | null |
 | İade miktarı ya da tarihi (§4.14) | `"4xx"` | null | null |
 | Σ peşin > toplam (§4.13) | `"4xx"` | null | null |
+| Tahsildeki evrakı ciro etme ya da silme (§4.32, §4.38; sürüm 3) | 409 | `cheque-deposited` | PLAN |
+| Evrak durumu işleme uygun değil (§4.32–4.37; sürüm 3) | `"4xx"` | null | null |
+| Tahsile vermede tarih alıştan önce (§4.36) | `"4xx"` | null | null |
+| Tahsildeki evrakı başka hesaba tahsil (§4.33) | 400 | null | null |
+| Tahsile vermede hesap uygun değil / pasif (§4.36) | 400 | `bank-account-invalid` | CIKARIM |
+| Tahsile vermede hesabın açılışından önce (§4.36) | `"4xx"` | `bank-before-opening` | CIKARIM |
+| Silinmiş evrakı silme (§4.38) | 404 | null | null |
 | Benzer İşlem (§5.4) | 409 | `bank-similar` | PLAN |
 | Eksi bakiye, Uyar (§5.3) | 409 | `cash-negative` | CIKARIM |
 | Eksi bakiye, Engelle (§5.3) | 409 | `cash-blocked` | PLAN |
@@ -954,6 +1156,12 @@ cariBakiye(C) = Σ açık(alacak belgeleri) − Σ açık(borç belgeleri) − d
 - bağsız giriş + borç belgesi, ya da bağsız çıkış + alacak belgesi [BELİRSİZ-11]
 - (BELİRSİZ-9 sürüm 2'de kalktı: iade artanı ile bağsız satırın sırası kural 6 → 7 ile tanımlı; iadesi olan caride her bağsız satır
   zaten BELİRSİZ-11'e girer, çünkü iade belgesi ve asıl fatura karşı yönlerdedir.)
+- (sürüm 3) carinin etkin evrak satırı var (alış, veriliş, ciro, karşılıksız; silinen evrakın satırları sayılmaz) [BELİRSİZ-27]: yalnız
+  o carinin `faturalar.*.acik` alanları; taksit kartları evraktan etkilenmez, karşılaştırılır.
+
+**Evrak ve değişmez (sürüm 3).** Evrak satırları §7 kurallarına girmez (hiçbir belgeyi kapatmaz, bağsız havuza girmez). Değişmez:
+`cariBakiye(C) = Σ açık(alacak) − Σ açık(borç) − dağıtılmamış giriş + dağıtılmamış çıkış + evrakNet(C)`; evrakNet(C) = C'nin etkin
+evrak satırlarının cari hesaptaki işaretli toplamı (alışta −T, verilişte +T, ciroda +T, karşılıksızda +T).
 
 ---
 
@@ -996,8 +1204,8 @@ cariBakiye(C) = Σ açık(alacak belgeleri) − Σ açık(borç belgeleri) − d
 
 ### 8.2 `mizan` — bakiye mizanı
 
-- Anahtar: **yaprak** hesap kodu. Alt hesabı olan ana hesaplar (102, 108, 300, 309) yalnız alt hesaplarıyla yazılır (`102.00`,
-  `102.01`, …); `"102"` anahtarı hiç yazılmaz. Alt hesabı olmayanlar üç haneyle (`100`, `120`, `391`, …). Cari hesapları (120, 320)
+- Anahtar: **yaprak** hesap kodu. Alt hesabı olan ana hesaplar (102, 108, 300, 309; sürüm 3: 101, 121) yalnız alt hesaplarıyla
+  yazılır (`102.00`, `102.01`, `101.01`, `121.02`, …); `"102"`, `"101"`, `"121"` anahtarı hiç yazılmaz. 103 ve 321 üç haneyle. Alt hesabı olmayanlar üç haneyle (`100`, `120`, `391`, …). Cari hesapları (120, 320)
   ana kod düzeyinde toplanır; cari ayrıntısı `cariler`dedir.
 - Değer: `{borc, alacak}` = **bakiye sütunları**: borc = max(0, ΣB − ΣA), alacak = max(0, ΣA − ΣB). İkisi birden 0'dan büyük olamaz.
   [PLAN §12.5 "Adım 33 sonunda mizan … Borç bakiyesi | Alacak bakiyesi"]
@@ -1121,13 +1329,19 @@ Karşılaştırıcı bu yolları (araDurumlar içindekiler dahil: `araDurumlar.k
 | 102.00 | Bankalar · Hesabı Atanmamış Eski Hareketler | hesap yokken havale [PLAN §3.11] |
 | 102.NN | Bankalar · <banka> · <hesap> | vadesiz, ticari, vadeli, diğer hesaplar |
 | 108.00 | Diğer Hazır Değerler · Hesabı Atanmamış | kart hesabı yokken kartla ödeme |
+| 101.01 | Alınan Çekler · Portföydeki Çekler | alınan çek (sürüm 3) [PLAN §3.11, §3.11a] |
+| 101.02 | Alınan Çekler · Tahsile Verilen Çekler | Bankaya Tahsile Ver (sürüm 3) [PLAN §3.14] |
+| 103 | Verilen Çekler ve Ödeme Emirleri (−) | verilen çek (sürüm 3) [PLAN §3.11a] |
 | 120 | Alıcılar | müşteri carileri |
+| 121.01 | Alacak Senetleri · Portföydeki Senetler | alınan senet (sürüm 3) [PLAN §3.11a] |
+| 121.02 | Alacak Senetleri · Tahsile Verilen Senetler | senedi Bankaya Tahsile Ver (sürüm 3) [PLAN §3.11a] |
 | 153 | Ticari Mallar | stoklu alış ve alıştan iade (ÇIKARIM) |
 | 191 | İndirilecek KDV | alış ve KDV'li masraf |
 | 193 | Peşin Ödenen Vergiler ve Fonlar | faiz stopajı [PLAN §3.7 #14] |
 | 300.NN | Banka Kredileri | kredi hesapları |
 | 309.NN | Diğer Mali Borçlar (Kurumsal Kredi Kartları) | kurumsal kart hesapları |
 | 320 | Satıcılar | tedarikçi carileri |
+| 321 | Borç Senetleri | verilen senet (sürüm 3) [PLAN §3.11a] |
 | 391 | Hesaplanan KDV | satış (alacak), satıştan iade (borç) |
 | 500 | Sermaye (Açılış) | banka ve Kasa açılışları [PLAN §12.5 "500 Açılış"] |
 | 600 | Yurt İçi Satışlar | satış matrahı |
@@ -1138,7 +1352,7 @@ Karşılaştırıcı bu yolları (araDurumlar içindekiler dahil: `araDurumlar.k
 | 770 | Genel Yönetim Giderleri (Banka Masrafları) | banka masrafı, BSMV, transfer ücreti, Kasa elle çıkış, gider alışı |
 | 780 | Finansman Giderleri | faiz gideri, kredi faizi |
 
-Kapsam dışı (bu dil sürümünde hiç yazılmaz): 101, 103, 108.NN (POS), 127, 336, 621, 646, 653, 656.
+Kapsam dışı (bu dil sürümünde hiç yazılmaz): 108.NN (POS), 127, 128, 129, 336, 621, 646, 653, 656. (Sürüm 2'de 101 ve 103 de kapsam dışıydı.)
 
 ---
 
@@ -1172,6 +1386,12 @@ Kapsam dışı (bu dil sürümünde hiç yazılmaz): 101, 103, 108.NN (POS), 127
 | 24 | Vadeli hesapta faiz gideri, kart borcu kaynağı, kredi hedefi/kaynağı ve KDV kipli masraf | §3.5 "Vadeli … Hayır; yalnız transfer ve faiz" — "faiz"in gideri de kapsayıp kapsamadığı ve öbür banka fişleri açık değil | Senaryo kurmaz (sürüm 2) |
 | 25 | Kredi anaparasının kalan kredi borcunu aşması; kredi hesabını borç bakiyesine çeviren ters kayıt | Plan susuyor | Senaryo kurmaz (sürüm 2) |
 | 26 | Aynı türde (satış / alış / iade) belgenin, o türde daha önce girilmiş belgeden eski tarihli girilmesi | Plan susuyor (belge numarası ile tarih sırası) | Senaryo belgeleri tür içinde tarih sırasıyla yazar (sürüm 2; kâhin denetlemez) |
+| 27 | Evrakın fatura açığına etkisi (alınan evrak faturayı kapatır mı, karşılıksız evrak açığı geri açar mı, ciro tedarikçi faturasını kapatır mı) | §2.5 yalnız "ödeme rolü (`recvPay`/`payPay`)" diyor; evrak satırının rolü yazılı değil | Evrak satırı olan carinin `faturalar.*.acik` alanları `belirsizler`e (sürüm 3) |
+| 28 | Evrak işleminin, evrakın önceki işleminden (alış/veriliş, tahsile verme, geri alma) ya da vadesinden önce tarihli olması | Plan yalnız Bankaya Tahsile Ver için "tarih alış tarihinden önce olamaz" diyor | Senaryo kurmaz (tahsile_ver'in alıştan önceki tarihi hariç: 4xx) (sürüm 3) |
+| 29 | Tahsildeki evrakın nakit tahsili; tahsil kaydının hesabı pasifken tahsil; ciro edilmiş ya da verilen evrakın karşılıksızı | §3.14 yalnız "yol bank, hesap ön seçili" | Senaryo kurmaz (sürüm 3) |
+| 30 | Evrakın, evrakı veren cariye ciro edilmesi; vadeli hesaba tahsile verme | Plan susuyor; §3.5 "Vadeli … Hayır" modül formları için | Senaryo kurmaz (sürüm 3) |
+| 31 | Geçmişi olan evrakın (tahsile verilip geri alınmış, tahsil, ödeme, ciro, karşılıksız) silinmesi; silinmiş evrakla işlem | Plan susuyor | Senaryo kurmaz; yalnız ikinci silme → 404 (sürüm 3) |
+| 32 | Banka hesabının "Çek Kullan / Senet Kullan" işaretleri, verilen çekin "Çek Hesabı" | Kullanıcı kararı 12.10.2026; planda yok | Kâhin bilmez (deftere etkisi yok). Koşucu, program isterse hesapları işaretli açar ve bunu `okumaKaynaklari`na yazar (sürüm 3) |
 
 ---
 
@@ -1184,7 +1404,11 @@ Kâhin ve koşucu senaryoyu çalıştırmadan önce şunları denetler; biri tut
 3. Takma adlar biçime uygun ve bir kez tanımlı; anılan her takma ad daha önceki bir adımda tanımlı ve türü doğru.
 4. Tutar, oran, tarih ve miktar biçimleri §3.3'e uygun.
 5. `saat` geri gitmiyor; `ayniAnda` grupları ardışık, ≤ 4 adım, içinde `kontrol` yok.
-6. §12'deki "senaryo kurmaz" kurallarına uyuluyor (BELİRSİZ-1, 2, 3, 4, 5, 6, 8, 10, 12, 13, 14, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26).
+6. §12'deki "senaryo kurmaz" kurallarına uyuluyor (BELİRSİZ-1, 2, 3, 4, 5, 6, 8, 10, 12, 13, 14, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+   28, 29, 30, 31).
+9. (sürüm 3) Evrak işlemleri yalnız `"dil": "destekofis-senaryo/3"` senaryosunda; `evrak_ciro`, `evrak_tahsil`, `evrak_karsiliksiz`,
+   `tahsile_ver`, `bankadan_geri_al` alınan evrakı (`evrak_al`), `evrak_odeme` verilen evrakı (`evrak_ver`) anar; evrak `tur`u `cek`
+   ya da `senet`; `vade` ≥ evrakın tarihi.
 7. `kart` yolu yalnız ödeme yönünde; `taksit` yalnız satış faturasında; `pesin` ≤ 3 satır, `"tamami"` taksitle birlikte değil.
 8. `transfer`'de `ucret` varsa `ucretVergi` var; `banka_masraf` KDV kipinde `saglayici` ve `fatura` var.
 

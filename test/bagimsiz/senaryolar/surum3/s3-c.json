@@ -1,0 +1,65 @@
+{
+  "dil": "destekofis-senaryo/3",
+  "ad": "s3-c",
+  "baslangic": {
+    "bugun": "12.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "cari_ac",
+      "ad": "M",
+      "unvan": "M Ltd.",
+      "tur": "musteri"
+    },
+    {
+      "id": "2",
+      "islem": "cari_ac",
+      "ad": "T",
+      "unvan": "T Ltd.",
+      "tur": "tedarikci"
+    },
+    {
+      "id": "3",
+      "islem": "kasa_acilis",
+      "tutar": "5000",
+      "tarih": "01.10.2026"
+    },
+    {
+      "id": "4",
+      "islem": "evrak_al",
+      "ad": "C",
+      "tur": "cek",
+      "cari": "M",
+      "tutar": "1500",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "5",
+      "islem": "evrak_tahsil",
+      "evrak": "C",
+      "tarih": "03.10.2026",
+      "yol": "havale"
+    },
+    {
+      "id": "6",
+      "islem": "evrak_ver",
+      "ad": "V",
+      "tur": "senet",
+      "cari": "T",
+      "tutar": "2000",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "7",
+      "islem": "evrak_odeme",
+      "evrak": "V",
+      "tarih": "04.10.2026",
+      "yol": "nakit"
+    }
+  ]
+}

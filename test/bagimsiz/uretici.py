@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Rastgele senaryo üreteci — dil `destekofis-senaryo/2` (test/bagimsiz/SENARYO-DILI.md).
+"""Rastgele senaryo üreteci — dil `destekofis-senaryo/3` (test/bagimsiz/SENARYO-DILI.md); `--surum 2` sürüm 2 üretimini AYNEN verir.
 
 Kullanım:
-  python3 -I test/bagimsiz/uretici.py --tohum 7 [--islem 500] [--kontrol 25] [--cikti <dosya>]
+  python3 -I test/bagimsiz/uretici.py --tohum 7 [--islem 500] [--kontrol 25] [--surum 3|2] [--cikti <dosya>]
+
+Sürüm 3 (12.10.2026): evrak (çek / senet) işlemleri eklendi — alış, veriliş, Bankaya Tahsile Ver, Bankadan Geri Al, tahsil (nakit /
+havale; tahsildeyse kaydın hesabına), ödeme, karşılıksız, ciro, silme ve kasıtlı evrak retleri (tahsildeki evrakı ciro/silme 409
+cheque-deposited, başka hesaba tahsil 400, ikinci tahsile verme, alıştan önce tahsile verme, kart/pasif hesaba tahsile verme,
+açılıştan önce tahsile verme, kapanmış evrakta işlem, ikinci silme 404, ileri tarihli alış, eksi bakiyeli ödeme). Evrak yalnız
+"bağsız" carilerde (bağlı carilerde Kapatılacak Fatura kapasitesi evrakla belirsizleşmesin; BELİRSİZ-27). Sürüm 3 ile aynı tohum
+sürüm 2'den farklı senaryo verir (ad "rastgele-s3-…").
 
 Ne üretir:
   Tohumdan (random.Random(tohum)) belirlenimli, gerçekçi sıralı bir senaryo: kuruluş (ürün, stok, cari, Kasa açılışı, banka
@@ -36,7 +43,8 @@ import os
 import random
 import sys
 
-DIL = "destekofis-senaryo/2"
+DIL = "destekofis-senaryo/3"
+DIL2 = "destekofis-senaryo/2"
 PAY = 50000  # 500 TL güvenlik payı (kuruş): başarılı çıkış sonrası en az bu kadar; kasıtlı ihlalde en az bu kadar eksi
 # Kâhinlerle ilgili eski iki uyum kuralı (sürüm 1) KALKTI (10.10.2026, hakem bulguları düzeltildi):
 #  1. model_b artık `kasa_hareket`in `ad`ını tanımlıyor → Kasa elle hareketi de sil hedefi olur.
@@ -167,8 +175,9 @@ def oran_bp(metin):
 # ───────────────────────────────────────────────────────────── üreteç
 
 class Uretec:
-    def __init__(self, tohum, islem, kontrol_araligi, eszamanli=None, notr=(), yogun=False):
+    def __init__(self, tohum, islem, kontrol_araligi, eszamanli=None, notr=(), yogun=False, surum=3):
         self.R = random.Random(tohum)
+        self.surum = surum
         # Yoğun kip (--yogun; sürüm 2 doğrulaması): iade ×6, kasıtlı ret ×3 ve ret çeşitlerinde eksi bakiye (Kasa, banka,
         # kurumsal kart; "Yine de Kaydet" = yalnız cashForce, D2/D3) ağırlıklı. Varsayılan koşuların akışı değişmez.
         self.yogun = bool(yogun)
@@ -217,6 +226,9 @@ class Uretec:
         self.istekler = {}      # (kullanıcı, işlem, kimlik) → gövde
         self.kimlik_sayac = 0
         self.grup_sayisi = 0
+        self.evraklar = {}      # sürüm 3: ad → {yon, tur, cari, T, tarih, vade, durum, tahsil_hesap, son_tarih, gecmis}
+        self.evrakli = []       # evrak kullanılan (bağsız) cariler
+        self.depo = {}          # hesap → tahsile verme tarihleri (Açılışı Düzelt bu tarihlerden sonraya alınmaz)
         # tohumun işlem ağırlıkları (her tohumda biraz farklı karışım)
         taban = {
             "satis": 16, "alis": 9, "iade": 3, "tahsilat": 13, "odeme": 9, "taksit_tahsilat": 7, "kasa_hareket": 4,
@@ -225,6 +237,8 @@ class Uretec:
             "politika": 0.6, "hesap_durum": 0.6, "acilis_duzelt": 0.7, "ayar": 0.5, "yeni_hesap": 0.5, "yeni_cari": 1,
             "stok_giris": 1, "ret": 5,
         }
+        if surum >= 3:
+            taban["evrak"] = 16        # sürüm 3: çek / senet işlemleri (§4.30–4.38)
         self.agirlik = {k: v * R.uniform(0.4, 1.8) for k, v in taban.items()}
         if self.yogun:
             self.agirlik["iade"] *= 6
@@ -1383,6 +1397,8 @@ class Uretec:
         if len(aktif) < 2:
             return False
         H = R.choice(aktif)
+        if any(e["durum"] == "tahsilde" and e["tahsil_hesap"] == H for e in self.evraklar.values()):
+            return False   # sürüm 3: tahsildeki evrakı olan hesabın pasife alınması planda yok
         self.ekle(self.kullanici_ekle({"islem": "hesap_durum", "hesap": H, "durum": "pasif"},
                                       self.kullanici(["Y", "MU"])))
         self.hesaplar[H]["aktif"] = False
@@ -1407,6 +1423,8 @@ class Uretec:
             self.ekle(adim)
             return True
         ust = ilk if ilk is not None and ilk < self.bugun else self.bugun
+        if self.depo.get(H):
+            ust = min(ust, min(self.depo[H]))   # sürüm 3: tahsile verme tarihinden sonraya açılış alınmaz (plan susuyor)
         D2 = ust - datetime.timedelta(days=R.randint(0, 10))
         S2 = v["acilis"] + R.choice([1, 1, 1, -1]) * self.tutar(100, 20000, 0.3)
         if S2 < 0 and (v["tur"] not in HAVALE_TURLERI or -S2 > v["limit"] // 2):
@@ -1459,13 +1477,300 @@ class Uretec:
         self.urunler[U]["stok"] += q
         return True
 
+    # ─────────────────────────────────────────── evrak: çek ve senet (sürüm 3, SENARYO-DILI §4.30–4.38)
+    def evrak_cari(self, tur):
+        """Evrak yalnız bağsız carilerde; çoğunlukla evrak kullanmış carilerden (BELİRSİZ-27 az cariye yayılsın)."""
+        R = self.R
+        eski = [c for c in self.evrakli if self.cariler[c]["tur"] == tur]
+        if eski and R.random() < 0.75:
+            return R.choice(eski)
+        c = self.cari_sec(tur, "bagsiz")
+        if c is not None and c not in self.evrakli:
+            self.evrakli.append(c)
+        return c
+
+    def evrak_sec(self, kosul):
+        aday = [a for a, e in self.evraklar.items() if kosul(e)]
+        return self.R.choice(aday) if aday else None
+
+    def vade_gecti(self, e):
+        return self.bugun >= e["vade"]
+
+    def tahsile_uygun_hesaplar(self):
+        return [a for a, h in self.hesaplar.items() if h["aktif"] and h["tur"] in HAVALE_TURLERI
+                and h["acilis_tarihi"] <= self.bugun]
+
+    def op_evrak(self):
+        R = self.R
+        alt = R.choices(["al", "ver", "tahsile_ver", "geri_al", "tahsil", "odeme", "karsiliksiz", "ciro", "sil", "ret"],
+                        [5, 3, 4, 1.5, 4, 3, 1.2, 1.5, 0.8, 1.8])[0]
+        if alt == "ret":
+            return self.ret_evrak()
+        return getattr(self, "evrak_" + alt)()
+
+    def evrak_al(self, yon="alinan"):
+        R = self.R
+        c = self.evrak_cari("musteri" if yon == "alinan" else "tedarikci")
+        if c is None:
+            return False
+        T = self.tutar(100, 60000, 0.4)
+        tur = R.choice(["cek", "cek", "senet"])
+        ad = self.yeni_ad("E")
+        adim = {"islem": "evrak_al" if yon == "alinan" else "evrak_ver", "ad": ad, "tur": tur, "cari": c,
+                "tutar": tl(T, R)}
+        vade = self.bugun
+        if R.random() < 0.5:
+            vade = self.bugun + datetime.timedelta(days=R.randint(0, 45))
+            adim["vade"] = tarih_metni(vade)
+        self.ekle(adim)
+        self.evraklar[ad] = {"yon": yon, "tur": tur, "cari": c, "T": T, "tarih": self.bugun, "vade": vade,
+                             "durum": "portfoy" if yon == "alinan" else "verildi", "tahsil_hesap": None,
+                             "son_tarih": self.bugun, "gecmis": False}
+        return True
+
+    def evrak_ver(self):
+        return self.evrak_al("verilen")
+
+    def _evrak_gecis(self, e, durum, hesap=None):
+        e["durum"] = durum
+        e["son_tarih"] = self.bugun
+        e["gecmis"] = True
+        e["tahsil_hesap"] = hesap
+
+    def evrak_tahsile_ver(self):
+        R = self.R
+        a = self.evrak_sec(lambda e: e["yon"] == "alinan" and e["durum"] == "portfoy")
+        hs = self.tahsile_uygun_hesaplar()
+        if a is None or not hs:
+            return False
+        H = R.choice(hs)
+        self.ekle({"islem": "tahsile_ver", "evrak": a, "hesap": H})
+        self._evrak_gecis(self.evraklar[a], "tahsilde", H)
+        self.depo.setdefault(H, []).append(self.bugun)
+        return True
+
+    def evrak_geri_al(self):
+        a = self.evrak_sec(lambda e: e["durum"] == "tahsilde" and self.hesaplar[e["tahsil_hesap"]]["aktif"])
+        if a is None:
+            return False
+        self.ekle({"islem": "bankadan_geri_al", "evrak": a})
+        self._evrak_gecis(self.evraklar[a], "portfoy")
+        return True
+
+    def evrak_tahsil(self):
+        R = self.R
+        a = self.evrak_sec(lambda e: e["yon"] == "alinan" and self.vade_gecti(e) and (
+            e["durum"] == "portfoy" or (e["durum"] == "tahsilde" and self.hesaplar[e["tahsil_hesap"]]["aktif"])))
+        if a is None:
+            return False
+        e = self.evraklar[a]
+        adim = {"islem": "evrak_tahsil", "evrak": a}
+        if e["durum"] == "tahsilde":
+            anahtar = e["tahsil_hesap"]
+            adim["yol"] = "havale"
+            if R.random() < 0.4:
+                adim["hesap"] = anahtar
+        else:
+            yol = R.choices(["nakit", "havale"], [4, 6])[0]
+            adim["yol"] = yol
+            anahtar = "KASA"
+            if yol == "havale":
+                sec = self.hesap_sec("havale")
+                if sec is None:
+                    return False
+                ver, anahtar = sec
+                if ver is not None:
+                    adim["hesap"] = ver
+        if not self.acilis_tamam(anahtar, self.bugun):
+            return False
+        self.ekle(adim)
+        self.uygula_etkiler([(anahtar, self.bugun, e["T"])])
+        self._evrak_gecis(e, "tahsil")
+        return True
+
+    def evrak_odeme(self):
+        R = self.R
+        a = self.evrak_sec(lambda e: e["yon"] == "verilen" and e["durum"] == "verildi")
+        if a is None:
+            return False
+        e = self.evraklar[a]
+        yol = R.choices(["nakit", "havale"], [3, 7])[0]
+        adim = {"islem": "evrak_odeme", "evrak": a, "yol": yol}
+        anahtar = "KASA"
+        if yol == "havale":
+            sec = self.hesap_sec("havale")
+            if sec is None:
+                return False
+            ver, anahtar = sec
+            if ver is not None:
+                adim["hesap"] = ver
+        if not self.acilis_tamam(anahtar, self.bugun):
+            return False
+        etkiler = [(anahtar, self.bugun, -e["T"])]
+        if self.eksi_sonuc(etkiler) != "ok":
+            return False
+        self.ekle(adim)
+        self.uygula_etkiler(etkiler)
+        self._evrak_gecis(e, "odendi")
+        return True
+
+    def evrak_karsiliksiz(self):
+        a = self.evrak_sec(lambda e: e["yon"] == "alinan" and self.vade_gecti(e) and (
+            e["durum"] == "portfoy" or (e["durum"] == "tahsilde" and self.hesaplar[e["tahsil_hesap"]]["aktif"])))
+        if a is None:
+            return False
+        self.ekle({"islem": "evrak_karsiliksiz", "evrak": a})
+        self._evrak_gecis(self.evraklar[a], "karsiliksiz")
+        return True
+
+    def evrak_ciro(self):
+        a = self.evrak_sec(lambda e: e["yon"] == "alinan" and e["durum"] == "portfoy")
+        c = self.evrak_cari("tedarikci")
+        if a is None or c is None or c == self.evraklar[a]["cari"]:
+            return False
+        self.ekle({"islem": "evrak_ciro", "evrak": a, "cari": c})
+        self._evrak_gecis(self.evraklar[a], "ciro")
+        return True
+
+    def evrak_sil(self):
+        a = self.evrak_sec(lambda e: e["durum"] in ("portfoy", "verildi") and not e["gecmis"])
+        if a is None:
+            return False
+        self.ekle({"islem": "evrak_sil", "evrak": a})
+        self.evraklar[a]["durum"] = "silindi"
+        return True
+
+    def ret_evrak(self):
+        """Kasıtlı evrak reti (tek ihlal); durum değişmez."""
+        R = self.R
+        cesit = R.choice(["ciro_tahsilde", "sil_tahsilde", "tahsil_baska_hesap", "tahsile_ver_tekrar",
+                          "tahsile_ver_alistan_once", "tahsile_ver_gecersiz_hesap", "geri_al_portfoy", "tahsil_kapali",
+                          "karsiliksiz_kapali", "odeme_odenmis", "sil_iki", "al_ileri", "odeme_eksi",
+                          "tahsile_ver_acilis_oncesi"])
+        E = self.evraklar
+        if cesit == "ciro_tahsilde":
+            a = self.evrak_sec(lambda e: e["durum"] == "tahsilde")
+            c = self.cari_sec("tedarikci", "bagsiz")
+            if a is None or c is None:
+                return False
+            self.ekle({"islem": "evrak_ciro", "evrak": a, "cari": c})
+            return True
+        if cesit == "sil_tahsilde":
+            a = self.evrak_sec(lambda e: e["durum"] == "tahsilde")
+            if a is None:
+                return False
+            self.ekle({"islem": "evrak_sil", "evrak": a})
+            return True
+        if cesit == "tahsil_baska_hesap":
+            a = self.evrak_sec(lambda e: e["durum"] == "tahsilde" and self.vade_gecti(e)
+                               and self.hesaplar[e["tahsil_hesap"]]["aktif"])
+            if a is None:
+                return False
+            baska = [h for h in self.uygunlar("havale") if h != E[a]["tahsil_hesap"]]
+            if not baska:
+                return False
+            self.ekle({"islem": "evrak_tahsil", "evrak": a, "yol": "havale", "hesap": R.choice(baska)})
+            return True
+        if cesit == "tahsile_ver_tekrar":
+            a = self.evrak_sec(lambda e: e["durum"] == "tahsilde")
+            hs = self.tahsile_uygun_hesaplar()
+            if a is None or not hs:
+                return False
+            self.ekle({"islem": "tahsile_ver", "evrak": a, "hesap": R.choice(hs)})
+            return True
+        if cesit == "tahsile_ver_alistan_once":
+            a = self.evrak_sec(lambda e: e["yon"] == "alinan" and e["durum"] == "portfoy")
+            if a is None:
+                return False
+            t = E[a]["tarih"] - datetime.timedelta(days=R.randint(1, 3))
+            hs = [h for h in self.tahsile_uygun_hesaplar() if self.hesaplar[h]["acilis_tarihi"] <= t]
+            if not hs:
+                return False
+            self.ekle({"islem": "tahsile_ver", "evrak": a, "hesap": R.choice(hs), "tarih": tarih_metni(t)})
+            return True
+        if cesit == "tahsile_ver_gecersiz_hesap":
+            a = self.evrak_sec(lambda e: e["yon"] == "alinan" and e["durum"] == "portfoy")
+            hs = [h for h, v in self.hesaplar.items() if (v["aktif"] and v["tur"] in ("kurumsal_kart", "kredi"))
+                  or (not v["aktif"] and v["tur"] in HAVALE_TURLERI)]
+            if a is None or not hs:
+                return False
+            self.ekle({"islem": "tahsile_ver", "evrak": a, "hesap": R.choice(hs)})
+            return True
+        if cesit == "geri_al_portfoy":
+            a = self.evrak_sec(lambda e: e["yon"] == "alinan" and e["durum"] in ("portfoy", "tahsil", "ciro", "karsiliksiz"))
+            if a is None:
+                return False
+            self.ekle({"islem": "bankadan_geri_al", "evrak": a})
+            return True
+        if cesit == "tahsil_kapali":
+            a = self.evrak_sec(lambda e: e["yon"] == "alinan" and e["durum"] in ("tahsil", "ciro", "karsiliksiz")
+                               and self.vade_gecti(e))
+            if a is None:
+                return False
+            self.ekle({"islem": "evrak_tahsil", "evrak": a, "yol": "nakit"})
+            return True
+        if cesit == "karsiliksiz_kapali":
+            a = self.evrak_sec(lambda e: e["yon"] == "alinan" and e["durum"] in ("tahsil", "karsiliksiz")
+                               and self.vade_gecti(e))
+            if a is None:
+                return False
+            self.ekle({"islem": "evrak_karsiliksiz", "evrak": a})
+            return True
+        if cesit == "odeme_odenmis":
+            a = self.evrak_sec(lambda e: e["durum"] == "odendi")
+            if a is None:
+                return False
+            self.ekle({"islem": "evrak_odeme", "evrak": a, "yol": "nakit"})
+            return True
+        if cesit == "sil_iki":
+            a = self.evrak_sec(lambda e: e["durum"] == "silindi")
+            if a is None:
+                return False
+            self.ekle({"islem": "evrak_sil", "evrak": a})
+            return True
+        if cesit == "al_ileri":
+            c = self.evrak_cari("musteri")
+            if c is None:
+                return False
+            self.ekle({"islem": "evrak_al", "ad": self.yeni_ad("E"), "tur": R.choice(["cek", "senet"]), "cari": c,
+                       "tutar": tl(self.tutar(100, 5000, 0.3), R),
+                       "tarih": tarih_metni(self.bugun + datetime.timedelta(days=R.randint(1, 5)))})
+            return True
+        if cesit == "odeme_eksi":
+            a = self.evrak_sec(lambda e: e["yon"] == "verilen" and e["durum"] == "verildi")
+            if a is None:
+                return False
+            hs = [h for h in self.uygunlar("havale") if self.hesaplar[h]["dogrulandi"]
+                  and self.hesaplar[h]["acilis_tarihi"] <= self.bugun]
+            if not hs:
+                return False
+            H = R.choice(hs)
+            if self.eksi_sonuc([(H, self.bugun, -E[a]["T"])]) not in ("uyar", "engelle"):
+                return False
+            self.ekle({"islem": "evrak_odeme", "evrak": a, "yol": "havale", "hesap": H})
+            return True
+        if cesit == "tahsile_ver_acilis_oncesi":
+            for a in R.sample(sorted(E), len(E)):
+                e = E[a]
+                if e["yon"] != "alinan" or e["durum"] != "portfoy":
+                    continue
+                hs = [h for h in self.tahsile_uygun_hesaplar()
+                      if self.hesaplar[h]["acilis_tarihi"] - datetime.timedelta(days=1) >= max(e["tarih"], e["son_tarih"])]
+                if hs:
+                    H = R.choice(hs)
+                    t = self.hesaplar[H]["acilis_tarihi"] - datetime.timedelta(days=1)
+                    self.ekle({"islem": "tahsile_ver", "evrak": a, "hesap": H, "tarih": tarih_metni(t)})
+                    return True
+            return False
+        raise ValueError(cesit)
+
     # ─────────────────────────────────────────── kasıtlı retler
     def op_ret(self):
         R = self.R
         cesit = R.choice(["yetki", "ileri_tarih", "hesap_gerekli", "hesap_gecersiz", "kaynak_hedef", "ham3",
                           "pesin_fazla", "iade_fazla", "sil_iki", "ters_iki", "eksi_kasa", "eksi_banka",
                           "iban_bozuk", "iban_ayni", "kod_ayni", "acilis_oncesi", "acilis_sonra", "kredi_odeme_hesap",
-                          "kart_yanlis_hesap", "benzer"] + (
+                          "kart_yanlis_hesap", "benzer"] + (["evrak"] if self.surum >= 3 else []) + (
                              ["eksi_kasa", "eksi_banka", "eksi_banka", "eksi_kart", "eksi_kart", "eksi_kart"]
                              if self.yogun else []))
         return getattr(self, "ret_" + cesit)()
@@ -1871,9 +2176,9 @@ class Uretec:
             if self.islem_sayisi < self.hedef_islem:
                 self.gun_ilerlet()
         return {
-            "dil": DIL,
-            "ad": "rastgele-%d-%d" % (self.tohum, self.hedef_islem) + ("-notr" if self.notr else "") + (
-                "-yogun" if self.yogun else ""),
+            "dil": DIL if self.surum >= 3 else DIL2,
+            "ad": ("rastgele-s3-" if self.surum >= 3 else "rastgele-") + "%d-%d" % (self.tohum, self.hedef_islem) + (
+                "-notr" if self.notr else "") + ("-yogun" if self.yogun else ""),
             "aciklama": ("uretici.py ile tohum %d'den üretildi (%d işlem, kontrol aralığı %d). Gerçekçi sıra, kasıtlı "
                          "retler, istek kimliği yinelemeleri%s.%s" % (
                              self.tohum, self.hedef_islem, self.kontrol_araligi,
@@ -1940,28 +2245,31 @@ class Uretec:
             return self.op_stok_giris()
         if op == "ret":
             return self.op_ret()
+        if op == "evrak":
+            return self.op_evrak()
         raise ValueError(op)
 
 
-def uret(tohum, islem=500, kontrol_araligi=25, eszamanli=None, notr=(), yogun=False):
-    u = Uretec(tohum, islem, kontrol_araligi, eszamanli, notr, yogun)
+def uret(tohum, islem=500, kontrol_araligi=25, eszamanli=None, notr=(), yogun=False, surum=3):
+    u = Uretec(tohum, islem, kontrol_araligi, eszamanli, notr, yogun, surum)
     u.ilk_kasa_politika = u.kasa_politika
     u.ilk_benzer = u.benzer_acik
     return u.uret()
 
 
 def main(argv):
-    ap = argparse.ArgumentParser(description="Rastgele senaryo üreteci (destekofis-senaryo/2)")
+    ap = argparse.ArgumentParser(description="Rastgele senaryo üreteci (destekofis-senaryo/3; --surum 2 eski üretim)")
     ap.add_argument("--tohum", type=int, required=True)
     ap.add_argument("--islem", type=int, default=500)
     ap.add_argument("--kontrol", type=int, default=25, help="kaç işlemde bir kontrol adımı")
     ap.add_argument("--cikti", default=None)
     ap.add_argument("--notr", default="", help="virgülle: iskonto_dahil,kasa_acilis,kart,fatura_yineleme")
     ap.add_argument("--yogun", action="store_true", help="iade, kasıtlı ret ve eksi bakiye (kart/banka/Kasa) ağırlıklı")
+    ap.add_argument("--surum", type=int, choices=(2, 3), default=3, help="dil sürümü (2: evraksız eski üretim, aynı tohum aynı senaryo)")
     a = ap.parse_args(argv[1:])
     if not 1 <= a.islem <= 100000:
         ap.error("islem 1..100000")
-    sen = uret(a.tohum, a.islem, a.kontrol, notr=[x for x in a.notr.split(",") if x], yogun=a.yogun)
+    sen = uret(a.tohum, a.islem, a.kontrol, notr=[x for x in a.notr.split(",") if x], yogun=a.yogun, surum=a.surum)
     yol = a.cikti or os.path.join(os.path.dirname(os.path.abspath(__file__)), "cikti", "senaryolar", sen["ad"] + ".json")
     os.makedirs(os.path.dirname(yol), exist_ok=True)
     with open(yol, "w", encoding="utf-8") as fh:

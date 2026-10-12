@@ -1,0 +1,103 @@
+{
+  "ad": "iz42-senet-121-eski-12b82c2-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-220-senet-121.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T12:53:03.063Z",
+  "sure_sn": 3.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 0,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle) › alınan senet 121.01 (B 121 / A 120), alınan çek 101.01; verilen senet 321 (B 320 / A 321), verilen çek 103; Defter Mutabakatı gl:121 / gl:321",
+      "konum": "test/banka-220-senet-121.test.mjs:119:3",
+      "hata": "senet 1.000 → 121 · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle) › Hesap Planı Mizanı ve Alt Hesap Mizanı: Tekdüzen adları (101 Alınan Çekler, 103 Verilen Çekler ve Ödeme Emirleri (−), 121, 321; 121.01/121.02)",
+      "konum": "test/banka-220-senet-121.test.mjs:136:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle) › Tahsile Ver B 121.02 / A 121.01; Bankadan Geri Al B 121.01 / A 121.02; 101.0x değişmez; İşlem Kartı adlarıyla; Tahsildeki Çek ve Senetler = 101.02 + 121.02",
+      "konum": "test/banka-220-senet-121.test.mjs:149:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle) › tahsildeki senet Tahsil Edildi: B 102.01 / A 121.02, Ziraat +1.000; Geri Al → yeniden 121.02; karşılıksız: B 120 / A 121.02, cari yeniden borçlu",
+      "konum": "test/banka-220-senet-121.test.mjs:170:3",
+      "hata": "tahsile ver: 409 {\"ok\":false,\"error\":\"Senet No SN-1 Ziraat Bankası tahsilde (08.10.2026); ikinci kez tahsile verilemez. Önce Bankadan Geri Al'ın.\",\"code\":\"cheque-deposited\",\"chequeId\":\"cheque-bcdc4402-b35a-4e42-bf88-14e92f809219\",\"collectionId\":\"chqcol-0mv595vgb0000-0dab9f97-06ae-4f59\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle) › verilen senet ödemesi B 321 / A 102.01 (Ziraat −900); verilen çek ödemesi B 103 / A 102.01; 321 = 0, 103 = 0",
+      "konum": "test/banka-220-senet-121.test.mjs:189:3",
+      "hata": "senet öde: 404 {\"ok\":false,\"error\":\"Çek/senet bulunamadı. Silinmiş olabilir.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle › ciro: B 320 / A 121.01; carisiz senet B 121.01 / A 602 ve karşılıksızı B 770 / A 121.01; taksite sayılan senet B 121.01 / A 120",
+      "konum": "test/banka-220-senet-121.test.mjs:213:3",
+      "hata": "ciro B 320 / A 121 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle › faturadan gelen alınan senet 121 (+2.000) ve verilen senet 321 (−450); fatura iptal edilince evrakla birlikte geri",
+      "konum": "test/banka-220-senet-121.test.mjs:229:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle › sil → geri yükle: 121 −300 / +300",
+      "konum": "test/banka-220-senet-121.test.mjs:247:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 30000 (beklenen 30000, gelen 0)"
+    },
+    {
+      "ad": "Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi › açık dönemde senet → çek: 121 −500, 101 +500 (aynı tutar); geri senet; tahsildeyken 409 cheque-deposited; işlem görmüşken 409",
+      "konum": "test/banka-220-senet-121.test.mjs:268:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi › kilitli dönemde (alış 02.10, kilit 05.10) tür değişikliği 409 period-locked, 121 aynı; ham SQL ile değiştirilirse kilit izi değişir ve Mutabakat Testi 'Kapanmış dönem' der",
+      "konum": "test/banka-220-senet-121.test.mjs:295:3",
+      "hata": "kilit izi evrak türünü kapsar (beklenen e58373d7b3e5b4c241f475a8942bdf440d32f5144d2eec544ace732d6ef79b8c, gelen e58373d7b3e5b4c241f475a8942bdf440d32f5144d2eec544ace732d6ef79b8c)"
+    },
+    {
+      "ad": "Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri › yetkisiz personel senet giremez (403, hiçbir şey yazılmaz); ?hofCompany=: 002'nin senedi 001'in 121'ine girmez",
+      "konum": "test/banka-220-senet-121.test.mjs:324:3",
+      "hata": "001'de yalnız kendi senedi · 0 !== 10000 (beklenen 10000, gelen 0)"
+    },
+    {
+      "ad": "Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri › Şirket Verisini Sıfırla: 101 / 121 / 103 / 321 sıfır, Mutabakat Testi temiz; sonra yeni senet yine 121'e",
+      "konum": "test/banka-220-senet-121.test.mjs:342:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 12000 (beklenen 12000, gelen 0)"
+    },
+    {
+      "ad": "Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri › Banka Fişi: hiçbir rolde 121 / 321 seçilemez (§3.11 rol listesi; 400 bank-gl-forbidden); Hesap Eşlemeleri'nde 400",
+      "konum": "test/banka-220-senet-121.test.mjs:353:3",
+      "hata": "yasak listede 121 ve 321 (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet) › 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300",
+      "konum": "test/banka-220-senet-121.test.mjs:468:3",
+      "hata": "fikstürde verilen senet var (001 ve 002) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/wf_3f8e794e-9e6-1/docs/kanit/2026-10-12/iz42-senet-121-eski-12b82c2-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-eski-12b82c2",
+  "ham_cikti_sha256": "dbe73218c507598b5f2b6beac382f213837fdd79e2f4c4d398ae57778c0cde2b",
+  "ham_cikti_bayt": 23790
+}

@@ -117,6 +117,98 @@ export async function legacyCashFlow(api, flow) {
   };
 }
 
+// ---------- 2.2.0 İz 4.2 (bilerek değişen görünüm; docs/BANKA-MODULU-PLAN.md §3.11a, §11.4) ----------
+// Senetler Tekdüzen hesaplarında: alınan senet 121 Alacak Senetleri (121.01 / 121.02), verilen senet 321 Borç Senetleri — önceden çekle birlikte
+// 101 / 103; 101 ve 103 Tekdüzen adlarını aldı. Eski sürümün (2.0.26, 2.1.0) olgularıyla karşılaştırmada yeni görünüm ESKİ DÜZENE çevrilir:
+// 121 → 101, 321 → 103 katlanır (mizanda borç, alacak, bakiye; mutabakatta ana defter, alt defter, fark toplanır; tutarlı = ikisi de tutarlı) ve
+// 101 / 103 adları eski adlara döner. Katlama yalnız TOPLAMI karşılaştırır (eşdeğerlik: 101 + 121 = eski 101, 103 + 321 = eski 103); senedin
+// 121/321'de, çekin 101/103'te olduğu ham tablodan ayrıca denetlenir (test/banka-220-senet-121.test.mjs).
+export const DOCUMENT_FOLD = Object.freeze({ 121: "101", 321: "103" });
+export const DOCUMENT_NAMES = Object.freeze({
+  101: Object.freeze({ legacy: "Alınan Çekler ve Senetler (Portföy)", current: "Alınan Çekler" }),
+  103: Object.freeze({ legacy: "Verilen Çekler ve Senetler", current: "Verilen Çekler ve Ödeme Emirleri (−)" }),
+});
+const foldCode = code => DOCUMENT_FOLD[String(code)] || String(code);
+const foldGateCode = code => (/^gl:\d+$/.test(code) ? `gl:${foldCode(code.slice(3))}` : code);
+/** Metin/JSON'da 101 ve 103'ün eski ve yeni adı aynı belirtece döner (önce uzun eski ad: yeni ad onun ön eki olabilir). */
+export function normDocumentNames(text) {
+  let out = String(text);
+  for (const [code, { legacy, current }] of Object.entries(DOCUMENT_NAMES)) out = out.split(legacy).join(`${code}-AD`).split(current).join(`${code}-AD`);
+  return out;
+}
+/** Mizan hesapları (TL): 121 → 101, 321 → 103 katlanır; ad eski ad. Dönüş aynı biçim (TL), kod sırasıyla. */
+export function foldTrialAccounts(accounts) {
+  const out = new Map();
+  for (const row of accounts) {
+    const code = foldCode(row.code);
+    const was = out.get(code) || { ...row, code, opening: 0, debit: 0, credit: 0, balance: 0 };
+    for (const key of ["opening", "debit", "credit", "balance"]) was[key] = (Math.round(Number(was[key] || 0) * 100) + Math.round(Number(row[key] || 0) * 100)) / 100;
+    if (DOCUMENT_NAMES[code]) was.name = DOCUMENT_NAMES[code].legacy;
+    out.set(code, was);
+  }
+  return [...out.values()].sort((a, b) => String(a.code).localeCompare(String(b.code)));
+}
+/** Defter mutabakatı denetimleri ({ code, name, ledger, subledger, difference, ok }): 121 → 101, 321 → 103. */
+export function foldReconciliation(checks) {
+  const out = new Map();
+  for (const check of checks) {
+    const code = foldCode(check.code);
+    const was = out.get(code);
+    const sum = (a, b) => (Math.round(Number(a || 0) * 100) + Math.round(Number(b || 0) * 100)) / 100;
+    out.set(code, was ? { ...was, ledger: sum(was.ledger, check.ledger), subledger: sum(was.subledger, check.subledger), difference: sum(was.difference, check.difference), ok: was.ok && check.ok } : { ...check, code, ...(DOCUMENT_NAMES[code] ? { name: DOCUMENT_NAMES[code].legacy } : {}) });
+  }
+  return [...out.values()];
+}
+/** Mutabakat Testi denetimleri ({ code, name, ok, difference?, count?, ledger?, subledger? }): gl:121 → gl:101, gl:321 → gl:103. */
+export function foldIntegrityChecks(checks) {
+  // Yalnız gl:121 / gl:321 katlanır; öbür denetimler (aynı kodla birden çok olanlar dahil: cents:invoices) olduğu gibi kalır.
+  const out = [];
+  const at = new Map();
+  const sum = (a, b) => (a === undefined && b === undefined ? undefined : (Math.round(Number(a || 0) * 100) + Math.round(Number(b || 0) * 100)) / 100);
+  for (const check of checks) {
+    const code = foldGateCode(check.code);
+    const legacy = code.startsWith("gl:") ? DOCUMENT_NAMES[code.slice(3)] : null;
+    if (!legacy) {
+      out.push(check);
+      continue;
+    }
+    if (!at.has(code)) {
+      at.set(code, out.length);
+      out.push({ ...check, code, name: `${code.slice(3)} ${legacy.legacy}` });
+      continue;
+    }
+    const was = out[at.get(code)];
+    out[at.get(code)] = { ...was, ok: was.ok && check.ok, difference: sum(was.difference, check.difference), ledger: sum(was.ledger, check.ledger), subledger: sum(was.subledger, check.subledger), ...(was.count !== undefined || check.count !== undefined ? { count: (was.count || 0) + (check.count || 0) } : {}) };
+  }
+  return out;
+}
+/** Rapor satırları (Hesap Planı Mizanı: [kod, ad, devir, borç, alacak, |bakiye|, yön]; Defter Mutabakatı: [kod, ad, ana, alt, fark, durum]). */
+export function foldDocumentRows(id, rows) {
+  if (id !== "hesap-mizani" && id !== "defter-mutabakati") return rows;
+  const out = [];
+  const at = new Map();
+  for (const row of rows) {
+    const code = foldCode(row[0]);
+    const legacy = DOCUMENT_NAMES[code]?.legacy;
+    if (!at.has(code) || !/^\d+$/.test(code)) {
+      if (/^\d+$/.test(code)) at.set(code, out.length);
+      out.push([code, legacy || row[1], ...row.slice(2)]);
+      continue;
+    }
+    const was = out[at.get(code)];
+    if (id === "hesap-mizani") {
+      const signed = cells => (cells[6] === "Alacak" ? -1 : 1) * minorOf(cells[5]);
+      const balance = signed(was) + signed(row);
+      out[at.get(code)] = [code, legacy || was[1], tlOf(minorOf(was[2]) + minorOf(row[2])), tlOf(minorOf(was[3]) + minorOf(row[3])), tlOf(minorOf(was[4]) + minorOf(row[4])), tlOf(Math.abs(balance)), balance > 0 ? "Borç" : balance < 0 ? "Alacak" : ""];
+    } else {
+      out[at.get(code)] = [code, legacy || was[1], tlOf(minorOf(was[2]) + minorOf(row[2])), tlOf(minorOf(was[3]) + minorOf(row[3])), tlOf(minorOf(was[4]) + minorOf(row[4])), was[5] === "Tutarlı" && row[5] === "Tutarlı" ? "Tutarlı" : "Fark Var"];
+    }
+  }
+  return out;
+}
+/** Yeni görünümde senet hesabı (121 / 321) satırı var mı (rapor satırı ya da mizan hesabı)? */
+export const hasDocumentSplit = codes => codes.some(code => Object.hasOwn(DOCUMENT_FOLD, String(code)));
+
 /** Seçili şirketin para olguları (API). */
 export async function ledgerFacts(api) {
   const integrity = must(await api.get("/api/workspace/ledger/integrity"), "Mutabakat Testi");
@@ -134,8 +226,11 @@ export async function ledgerFacts(api) {
     // de 649'a yazar). Ad sürümden bağımsız olgu değildir: yeni ad eski ada çevrilir (fikstürlerdeki "öncesi" olguları 2.0.26 adıyla saklı);
     // hesap kodu, tutarlar ve satır sırası birebir karşılaştırılır.
     const legacy = id === "banka-pos-hareketleri" ? legacyBankPos(report) : report;
-    const rows = id === "hesap-mizani" ? report.rows.map(row => (String(row[0]) === "649" && row[1] === "Diğer Olağan Gelir ve Kârlar" ? [row[0], "Diğer Olağan Gelirler (Kasaya Elle)", ...row.slice(2)] : row)) : legacy.rows;
-    reports[id] = { total: legacy.total, rows: digest(rows), footer: legacy.footer, summary: legacy.summary };
+    // 2.2.0 İz 4.2: senet hesapları (121 / 321) eski düzene katlanır, 101 / 103 adları eski adlar (yukarıda, DOCUMENT_FOLD). TOPLAM satırı (Devir, Borç,
+    // Alacak) katlamayla değişmez; satır sayısı (total) katlanmış satırlarındır.
+    const folded = id === "hesap-mizani" ? foldDocumentRows(id, report.rows) : null;
+    const rows = folded ? folded.map(row => (String(row[0]) === "649" && row[1] === "Diğer Olağan Gelir ve Kârlar" ? [row[0], "Diğer Olağan Gelirler (Kasaya Elle)", ...row.slice(2)] : row)) : legacy.rows;
+    reports[id] = { total: folded ? folded.length : legacy.total, rows: digest(rows), footer: legacy.footer, summary: legacy.summary };
   }
   const { at, ...overviewLive } = overview;
   const { box, k10 } = await legacyBankBox(api, overview);
@@ -143,11 +238,13 @@ export async function ledgerFacts(api) {
   return {
     today: lock.today,
     lockedUntil: lock.lockedUntil || "",
-    integrity: integrity.failures.map(item => [item.code, cents(item.difference), item.count ?? 0, item.gateCount ?? "", item.legacy ?? 0].join("|")).sort(),
-    checksOk: integrity.checks.filter(item => item.ok).map(item => item.code).sort(),
-    trial: ledger.trial.accounts.map(item => [item.code, cents(item.debit), cents(item.credit), cents(item.balance)].join("|")).sort(),
+    // 2.2.0 İz 4.2: 121 → 101, 321 → 103 (eski düzen; yukarıda). Ayrı senet hesapları documentSplit'te (yeni kodun kendi görünümü).
+    integrity: foldIntegrityChecks(integrity.failures).map(item => [item.code, cents(item.difference), item.count ?? 0, item.gateCount ?? "", item.legacy ?? 0].join("|")).sort(),
+    checksOk: foldIntegrityChecks(integrity.checks).filter(item => item.ok).map(item => item.code).sort(),
+    trial: foldTrialAccounts(ledger.trial.accounts).map(item => [item.code, cents(item.debit), cents(item.credit), cents(item.balance)].join("|")).sort(),
     trialTotals: [cents(ledger.trial.totals.debit), cents(ledger.trial.totals.credit), cents(ledger.trial.totals.difference)],
-    reconciliation: ledger.reconciliation.checks.map(item => [item.code, cents(item.ledger), cents(item.subledger), item.ok].join("|")).sort(),
+    reconciliation: foldReconciliation(ledger.reconciliation.checks).map(item => [item.code, cents(item.ledger), cents(item.subledger), item.ok].join("|")).sort(),
+    documentSplit: Object.fromEntries(ledger.trial.accounts.filter(item => ["101", "103", "121", "321"].includes(String(item.code))).map(item => [item.code, cents(item.balance)])),
     cash: { totals: cashAll.totals, byMethod: cashAll.byMethod, all: digest(rows(cashAll.entries)), window: digest(rows(cash.entries)), windowCount: cash.entries.length, windowTotals: cash.totals },
     overview: digest(overviewStable),
     overviewCash: overviewStable.cash,
@@ -170,11 +267,14 @@ export function fileFacts(file, lockDigestOf) {
     const store = createStore(db);
     const lock = store.setting("ledger.lockedUntil", "") || "";
     const has = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'integrity_log'"));
+    // 2.2.0 İz 4.2: kilit izinin evrak türü girdisi (cheques_instrument_lock, "since 2.2.0"; senedi olan veride satır üretir) sürüme bağlıdır —
+    // saklanan 2.0.26 iziyle karşılaştırma 2.1.0'ın iz tanımıyla yapılır (eski sürümün lockDigestOf'u üçüncü bağımsız değişkeni tanımaz, yok sayar).
+    const trail = { version: "2.1.0" };
     return {
       version: store.get("PRAGMA user_version").user_version,
       lock,
-      lockAll: lockDigestOf(store, "9999-12-31"),
-      lockAt: lock ? lockDigestOf(store, lock) : "",
+      lockAll: lockDigestOf(store, "9999-12-31", trail),
+      lockAt: lock ? lockDigestOf(store, lock, trail) : "",
       baselines: has ? store.get("SELECT COUNT(*) AS n FROM integrity_log WHERE action = 'baseline'").n : 0,
       rolledBack: has ? store.get("SELECT COUNT(*) AS n FROM integrity_log WHERE action = 'rolled-back'").n : 0,
     };

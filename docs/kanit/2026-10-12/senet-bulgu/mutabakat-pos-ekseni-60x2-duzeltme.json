@@ -1,0 +1,32 @@
+{
+  "ad": "senet-bulgu/mutabakat-pos-ekseni-60x2-duzeltme",
+  "komut": "node test/mutabakat/kos.mjs --islem 60 --tohumlar 2",
+  "commit": "a9b69c9f58d5190b966d386b924ed3afbec27f87",
+  "dal": "worktree-wf_3f8e794e-9e6-1",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T14:34:42.673Z",
+  "sure_sn": 13.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/senet-bulgu/mutabakat-pos-ekseni-60x2-duzeltme.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_3f8e794e-9e6-1",
+  "ham_cikti_sha256": "eda04f221453e5d1cbe9bd2069d4168c791c35ca343a7a234f1a92c953705959",
+  "ham_cikti_bayt": 2915
+}

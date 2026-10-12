@@ -1,0 +1,18 @@
+(node:26076) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Tohum 1: 60 işlem, 62 doğrulama, 17 beklenen ret (eksiye düşürme / aşım), eşzamanlı 60 istek · 5.8 sn
+  Beklenen retler: date-future 3, 400 2, date-invalid 2, due-before-start 2, cash-blocked 2, cash-method 1, bank-event-opening 1, cash-negative 1, return-exceeds 1, cheque-due-before-issue 1, refund-exceeds 1
+  İşlem türleri: alim 12, kasa 4, cek-bankadan-geri-al 1, banka-ters 1, fatura-iptal 1, taksit-tahsil 7, cek-tahsil 2, kayit-sil 1, pos-tahsil 2, kart-sil 1, fatura-satis 4, hareket-duzelt 1, fatura-acid 2, fatura-hatasi 5, kilit-ihlali 2, vade-hatasi 2, banka-transfer-ters 1, cari 3, iade 1, tarih-hatasi 3, banka-fis 2, hareket-sil 2, cari-duzelt 1, kasa-duzelt 1, satis 2, fatura-taslak 1, banka-duzelt 2, fatura-iade 1, fatura-alis 1, kart 2
+  Model: {"kasa":{"cash":"8526,59","bank":"153510,03","card":"24595,47"},"cariler":12,"urunler":10,"kartlar":1,"kasaHareketi":22,"bankaSatiri":12,"bankaTersKayit":2,"bankalarArasiTransfer":0,"cariHareketi":25,"stokHareketi":52,"taksitHareketi":5,"hesabaBagliModulHavalesi":6,"kurumsalKartaBagli":0,"kurumsalKartBakiyesi":"0,00"}
+  Fatura: {"kesilen":18,"iptal":0,"taslak":1,"turler":{"sale":15,"smm":1,"sale_return":1,"purchase":1},"cek":1} · seriler {"FIS2026":15,"IAD2026":1,"SMM2026":1} · tekil ETTN 19
+  Mutabakat kapısı süresi: ortanca 10 ms, en çok 16 ms
+  ✓ Her işlemden sonra Kasa, cariler, stok, taksit kartları, faturalar, çek/senet ve ana defter kuruşu kuruşuna tutarlı.
+
+Tohum 2: 60 işlem, 62 doğrulama, 20 beklenen ret (eksiye düşürme / aşım), eşzamanlı 60 istek · 6.4 sn
+  Beklenen retler: period-locked 5, payment-exceeds 3, 400 2, cash-negative 2, stock-negative 2, date-invalid 2, 409 1, date-future 1, bank-similar 1, bank-event-opening 1
+  İşlem türleri: alim 13, kasa 5, kayit-tahsil 3, cek-tahsil 1, fatura-satis 5, kilit-ihlali 3, fatura-hatasi 4, taksit-tahsil 6, kart 4, satis 5, cari-duzelt 1, tarih-hatasi 2, fatura-bagli 2, banka-fis 1, iade 2, pos-tahsil 2, fatura-alis 7, banka-benzer 1, kart-sil 1, fatura-iade 1, banka-ters 1, fatura-taslak 1
+  Model: {"kasa":{"cash":"63984,28","bank":"57380,96","card":"-45539,60"},"cariler":12,"urunler":10,"kartlar":2,"kasaHareketi":26,"bankaSatiri":6,"bankaTersKayit":0,"bankalarArasiTransfer":0,"cariHareketi":22,"stokHareketi":66,"taksitHareketi":1,"hesabaBagliModulHavalesi":3,"kurumsalKartaBagli":4,"kurumsalKartBakiyesi":"-48447,91"}
+  Fatura: {"kesilen":21,"iptal":0,"taslak":1,"turler":{"sale":13,"purchase":7,"purchase_return":1},"cek":2} · seriler {"FIS2026":14} · tekil ETTN 22
+  Mutabakat kapısı süresi: ortanca 12 ms, en çok 28 ms
+  ✓ Her işlemden sonra Kasa, cariler, stok, taksit kartları, faturalar, çek/senet ve ana defter kuruşu kuruşuna tutarlı.

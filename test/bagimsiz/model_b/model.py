@@ -2,7 +2,7 @@
 """Bağımsız muhasebe kâhini — model_b (temiz oda).
 
 Kaynak YALNIZ: docs/BANKA-MODULU-PLAN.md, docs/BANKA-MODULU-TALIMAT.md ve test/bagimsiz/SENARYO-DILI.md
-(dil sürümü destekofis-senaryo/2). Programın kodu okunmadı, içe aktarılmadı.
+(dil sürümü destekofis-senaryo/3; sürüm 2 senaryoları da aynen koşulur). Programın kodu okunmadı, içe aktarılmadı.
 
 Kullanım:  python3 -I model.py <senaryo.json>   → stdout'a SENARYO-DILI §8 biçiminde JSON
 
@@ -22,7 +22,8 @@ import os
 import re
 import sys
 
-DIL = "destekofis-senaryo/2"
+DIL = "destekofis-senaryo/3"
+KABUL_EDILEN_DILLER = ("destekofis-senaryo/2", "destekofis-senaryo/3")   # sürüm 3 yalnız ekler
 EN_BUYUK_KURUS = 10 ** 14          # 1e12 TL (SENARYO-DILI §3.3; PLAN §2.1)
 GECIKME = object()                 # hesap seçimi başarısız (bağımlı denetimler atlanır)
 
@@ -187,7 +188,19 @@ SEMA = {
     "ters_kayit": ({"hedef"}, set(), False, "secimli"),
     "sil": ({"hedef"}, set(), False, None),
     "kontrol": (set(), {"planMetni", "planBeklenen"}, False, None),
+    # sürüm 3: evrak (çek / senet) — SENARYO-DILI §4.30–4.38
+    "evrak_al": ({"tur", "cari", "tutar"}, {"vade"}, True, "zorunlu"),
+    "evrak_ver": ({"tur", "cari", "tutar"}, {"vade"}, True, "zorunlu"),
+    "evrak_ciro": ({"evrak", "cari"}, set(), True, None),
+    "evrak_tahsil": ({"evrak", "yol"}, {"hesap"}, True, None),
+    "evrak_odeme": ({"evrak", "yol"}, {"hesap"}, True, None),
+    "evrak_karsiliksiz": ({"evrak"}, set(), True, None),
+    "tahsile_ver": ({"evrak", "hesap"}, set(), True, None),
+    "bankadan_geri_al": ({"evrak"}, set(), True, None),
+    "evrak_sil": ({"evrak"}, set(), False, None),
 }
+EVRAK_OPLARI = {"evrak_al", "evrak_ver", "evrak_ciro", "evrak_tahsil", "evrak_odeme", "evrak_karsiliksiz", "tahsile_ver",
+                "bankadan_geri_al", "evrak_sil"}
 
 # tutar alanı (ve Ham çifti) zorunlu olan işlemler: alan → uç türü ('banka' | 'modul' | None = Ham yok, BELİRSİZ-22)
 TUTAR_ALANLARI = {
@@ -208,6 +221,8 @@ TUTAR_ALANLARI = {
     "kart_borcu_odeme": {"tutar": "banka"},
     "kredi_kullanim": {"tutar": "banka"},
     "kredi_odeme": {"anapara": "banka"},
+    "evrak_al": {"tutar": None},
+    "evrak_ver": {"tutar": None},
 }
 # isteğe bağlı tutar alanları
 SECIMLI_TUTAR = {"transfer": {"ucret": "banka"}, "kredi_odeme": {"faiz": "banka"}}
@@ -224,6 +239,12 @@ ROLLER = {"yonetici", "muhasebe", "personel"}
 
 # Takma ad türleri
 T_HESAP, T_CARI, T_URUN, T_FATURA, T_TAKSIT, T_HAREKET = "hesap", "cari", "urun", "fatura", "taksit", "hareket"
+T_EVRAK = "evrak"                                              # sürüm 3
+
+# Sürüm 3 hesapları (PLAN §3.11a tablo): (yön, evrak türü) → hesap
+PORTFOY_HESABI = {"cek": "101.01", "senet": "121.01"}          # alınan, portföyde
+TAHSILDE_HESABI = {"cek": "101.02", "senet": "121.02"}         # alınan, bankada tahsilde (PLAN §3.14)
+VERILEN_HESABI = {"cek": "103", "senet": "321"}                # verilen (kendi) evrak
 
 FIS_ISLEMLERI = {"banka_masraf", "faiz_geliri", "faiz_gideri", "diger_gelir", "diger_gider", "kart_borcu_odeme",
                  "kredi_kullanim", "kredi_odeme"}
@@ -253,8 +274,9 @@ def senaryo_dogrula(sen, dosya_adi):
     fazla = set(sen) - bilinen_ust
     if fazla:
         raise SenaryoHatasi(f"bilinmeyen üst alan: {sorted(fazla)}")
-    if sen.get("dil") != DIL:
+    if sen.get("dil") not in KABUL_EDILEN_DILLER:
         raise SenaryoHatasi(f"dil {DIL!r} değil")
+    surum3 = sen.get("dil") == DIL
     beklenen_ad = os.path.basename(dosya_adi)
     if beklenen_ad.endswith(".json"):
         beklenen_ad = beklenen_ad[:-5]
@@ -323,6 +345,8 @@ def senaryo_dogrula(sen, dosya_adi):
         op = a.get("islem")
         if op not in SEMA:
             raise SenaryoHatasi(f"{aid}: bilinmeyen islem {op!r}")
+        if op in EVRAK_OPLARI and not surum3:
+            raise SenaryoHatasi(f"{aid}: evrak işlemi yalnız dil sürüm 3'te (SENARYO-DILI §13/9)")
         zorunlu, secimli, tarihli, ad_durum = SEMA[op]
         izinli = set(zorunlu) | set(secimli) | {"id", "islem", "not"}
         if op not in ("kontrol", "saat"):
@@ -580,6 +604,31 @@ def senaryo_dogrula(sen, dosya_adi):
         elif op == "kontrol":
             if "planBeklenen" in a and not isinstance(a["planBeklenen"], dict):
                 raise SenaryoHatasi(f"{aid}: planBeklenen nesne olmalı")
+        elif op in ("evrak_al", "evrak_ver"):
+            ref(aid, a["cari"], T_CARI)
+            if a["tur"] not in ("cek", "senet"):
+                raise SenaryoHatasi(f"{aid}: evrak türü cek/senet")
+            if "vade" in a:
+                vade = tarih_coz(a["vade"])
+                if "tarih" in a and vade < tarih_coz(a["tarih"]):
+                    raise SenaryoHatasi(f"{aid}: vade evrak tarihinden önce (§13/9)")
+            tanimla(aid, a["ad"], T_EVRAK, "alinan" if op == "evrak_al" else "verilen")
+        elif op in EVRAK_OPLARI:
+            yon = ref(aid, a["evrak"], T_EVRAK)[1]
+            if op == "evrak_odeme" and yon != "verilen":
+                raise SenaryoHatasi(f"{aid}: evrak_odeme verilen evrakı anar (§13/9)")
+            if op in ("evrak_ciro", "evrak_tahsil", "evrak_karsiliksiz", "tahsile_ver", "bankadan_geri_al") \
+                    and yon != "alinan":
+                raise SenaryoHatasi(f"{aid}: {op} alınan evrakı anar (§13/9)")
+            if "cari" in a:
+                ref(aid, a["cari"], T_CARI)
+            if "hesap" in a:
+                ref(aid, a["hesap"], T_HESAP)
+            if op in ("evrak_tahsil", "evrak_odeme"):
+                if a["yol"] not in ("nakit", "havale"):
+                    raise SenaryoHatasi(f"{aid}: yol nakit/havale")
+                if a["yol"] == "nakit" and "hesap" in a:
+                    raise SenaryoHatasi(f"{aid}: nakitte hesap verilmez (SENARYO-DILI §5.2/5)")
         elif op == "kasa_acilis":
             pass
 
@@ -713,6 +762,7 @@ class Durum:
         self.fisler = []           # {id, tur, tarih, satirlar[(kod, taraf, tutar, cari)], etkin}
         self.belgeler = {}         # faturalar, iadeler, KDV'li masraf faturaları
         self.kartlar = {}          # taksit kartları
+        self.evraklar = {}         # sürüm 3: çek ve senetler
         self.hareketler = {}
         self.para = []             # para satırları (Benzer İşlem ve §7 için)
         self.istekler = {}
@@ -833,6 +883,8 @@ YETKI = {
     "sil_bagli": {"yonetici": 200, "muhasebe": "B", "personel": 403},
     "sil_nakit_kendi": {"yonetici": 200, "muhasebe": "B", "personel": 200},
     "sil_nakit_baska": {"yonetici": 200, "muhasebe": "B", "personel": "B"},
+    # sürüm 3: evrak işlemleri (PLAN §3.7 #9, #21 cheques.manage; §9.1 rolleri saymıyor → BELİRSİZ-18)
+    "evrak": {"yonetici": 200, "muhasebe": "B", "personel": "B"},
 }
 
 
@@ -945,7 +997,8 @@ def _uygun(h, kategori):
     raise KahinHatasi(kategori)
 
 
-GOVDE_REF = {"hesap", "cari", "urun", "asilFatura", "kapatilacakFatura", "kart", "kaynak", "hedef", "kredi", "saglayici"}
+GOVDE_REF = {"hesap", "cari", "urun", "asilFatura", "kapatilacakFatura", "kart", "kaynak", "hedef", "kredi", "saglayici",
+             "evrak"}
 
 
 def govde(a, d=None):
@@ -1908,6 +1961,222 @@ def h_sil(c):
     eksi_denetle(c, etki_hesapla(satirlar, isaret=-1), h["tarih"])
 
 
+# ─────────────────────────────────────────────────────────────────── evrak: çek ve senet (sürüm 3, §4.30–4.38)
+
+EVRAK_FIS_TURLERI = {"evrak_al", "evrak_ver", "evrak_ciro", "evrak_karsiliksiz"}   # cari satırı taşıyanlar
+
+
+def _evrak_bul(c):
+    ek = c.d.coz(c.a["evrak"], T_EVRAK)
+    e = c.d.evraklar[ek]
+    if e["durum"] == "silindi" and c.a["islem"] != "evrak_sil":
+        raise SenaryoHatasi(f"{c.a['id']}: silinmiş evrakla işlem (BELİRSİZ-31)")
+    return ek, e
+
+
+def _evrak_sirasi(c, e, tarih, vade=False):
+    """BELİRSİZ-28: önceki işlemden (alış/veriliş, tahsile verme, geri alma) ya da vadeden önce tarihli evrak işlemi."""
+    if tarih < e["son_tarih"] or (vade and tarih < e["vade"]):
+        raise SenaryoHatasi(f"{c.a['id']}: evrak işlemi önceki işleminden ya da vadesinden önce (BELİRSİZ-28)")
+
+
+def _evrak_yaz(c, e, tur_adi, tarih, satirlar, yeni_durum, tahsil_hesap=None):
+    d = c.d
+    kasa_sirasi_denetle(d, c.a["id"], tarih, satirlar)
+    d.fis_yaz(tur_adi, tarih, satirlar, c.sira)
+    e["durum"] = yeni_durum
+    e["son_tarih"] = tarih
+    e["gecmis"] = True
+    e["tahsil_hesap"] = tahsil_hesap
+
+
+def h_evrak_al_ver(c):
+    """§4.30 alınan: B 101.01|121.01 / A cari (PLAN §3.11 madde 5, §3.11a); §4.31 verilen: B cari / A 103|321."""
+    a, d = c.a, c.d
+    c.yetki("evrak")
+    ck = d.coz(a["cari"], T_CARI)
+    t = c.tutar("tutar", None)
+    tarih = c.tarih()
+    vade = tarih_coz(a["vade"]) if "vade" in a else tarih
+    if vade < tarih:
+        raise SenaryoHatasi(f"{a['id']}: vade evrak tarihinden önce (§13/9)")
+    c.istek()
+    c.kilit(tarih)
+    c.on_kapi()
+    alinan = a["islem"] == "evrak_al"
+    tur = a["tur"]
+    cari_kod = d.cari_kodu(ck)
+    if alinan:
+        satirlar = [(PORTFOY_HESABI[tur], "B", t, None), (cari_kod, "A", t, ck)]
+    else:
+        satirlar = [(cari_kod, "B", t, ck), (VERILEN_HESABI[tur], "A", t, None)]
+    fid = d.fis_yaz(a["islem"], tarih, satirlar, c.sira)
+    ek = d.yeni_anahtar("E")
+    d.evraklar[ek] = {"yon": "alinan" if alinan else "verilen", "tur": tur, "cari": ck, "T": t, "tarih": tarih,
+                      "vade": vade, "durum": "portfoy" if alinan else "verildi", "fisler": [fid], "son_tarih": tarih,
+                      "gecmis": False, "tahsil_hesap": None}
+    c.tanimlar.append(("ad", T_EVRAK, ek))
+
+
+def h_evrak_ciro(c):
+    """§4.32: B c(ciro edilen) / A 101.01|121.01; tahsildeyse 409 cheque-deposited (PLAN §3.14)."""
+    a, d = c.a, c.d
+    c.yetki("evrak")
+    _, e = _evrak_bul(c)
+    ck = d.coz(a["cari"], T_CARI)
+    tarih = c.tarih()
+    _evrak_sirasi(c, e, tarih)
+    if ck == e["cari"]:
+        raise SenaryoHatasi(f"{a['id']}: evrak, veren cariye ciro ediliyor (BELİRSİZ-30)")
+    c.istek()
+    c.kilit(tarih)
+    if e["durum"] == "tahsilde":
+        c.ekle(4, 409, "cheque-deposited", "PLAN")
+    elif e["durum"] != "portfoy":
+        c.ekle(4, "4xx")
+    c.on_kapi()
+    satirlar = [(d.cari_kodu(ck), "B", e["T"], ck), (PORTFOY_HESABI[e["tur"]], "A", e["T"], None)]
+    _evrak_yaz(c, e, "evrak_ciro", tarih, satirlar, "ciro")
+
+
+def h_evrak_tahsil(c):
+    """§4.33: B p(yol,H) / A 101.01|121.01 (tahsildeyse 101.02|121.02) — PLAN §3.7 #9, §3.14."""
+    a, d = c.a, c.d
+    c.yetki("evrak")
+    _, e = _evrak_bul(c)
+    tarih = c.tarih()
+    _evrak_sirasi(c, e, tarih, vade=True)
+    yol = a["yol"]
+    hk = None
+    alacak = None
+    if e["durum"] == "tahsilde":
+        if yol == "nakit":
+            raise SenaryoHatasi(f"{a['id']}: tahsildeki evrakın nakit tahsili (BELİRSİZ-29)")
+        hk = e["tahsil_hesap"]
+        if "hesap" in a and d.coz(a["hesap"], T_HESAP) != hk:
+            c.ekle(2, 400)                                       # PLAN §3.14 "başka hesap 400"
+        if d.hesaplar[hk]["durum"] != "aktif":
+            raise SenaryoHatasi(f"{a['id']}: tahsil kaydının hesabı pasif (BELİRSİZ-29)")
+        alacak = TAHSILDE_HESABI[e["tur"]]
+    elif e["durum"] == "portfoy":
+        if yol == "havale":
+            hk = c.hesap_sec("havale", a.get("hesap"))           # PLAN §3.5/6
+        alacak = PORTFOY_HESABI[e["tur"]]
+    c.istek()
+    c.kilit(tarih)
+    if e["durum"] not in ("portfoy", "tahsilde"):
+        c.ekle(4, "4xx")
+    c.acilis_oncesi(hk, tarih)
+    c.on_kapi()
+    satirlar = [(d.para_kodu(yol, hk), "B", e["T"], None), (alacak, "A", e["T"], None)]
+    _evrak_yaz(c, e, "evrak_tahsil", tarih, satirlar, "tahsil")
+
+
+def h_evrak_odeme(c):
+    """§4.34: B 103|321 / A p(yol,H) — PLAN §3.7 #9 "B 103 / A 102"; §3.11a. Eksi bakiye kaynakta."""
+    a, d = c.a, c.d
+    c.yetki("evrak")
+    _, e = _evrak_bul(c)
+    tarih = c.tarih()
+    _evrak_sirasi(c, e, tarih)
+    hk = None
+    if a["yol"] == "havale" and e["durum"] == "verildi":
+        hk = c.hesap_sec("havale", a.get("hesap"))
+    c.istek()
+    c.kilit(tarih)
+    if e["durum"] != "verildi":
+        c.ekle(4, "4xx")
+    c.acilis_oncesi(hk, tarih)
+    c.on_kapi()
+    satirlar = [(VERILEN_HESABI[e["tur"]], "B", e["T"], None), (d.para_kodu(a["yol"], hk), "A", e["T"], None)]
+    _evrak_yaz(c, e, "evrak_odeme", tarih, satirlar, "odendi")
+    eksi_denetle(c, etki_hesapla(satirlar), tarih)
+
+
+def h_evrak_karsiliksiz(c):
+    """§4.35: B c(veren) / A 101.01|121.01 (tahsildeyse 101.02|121.02) — PLAN §3.11b/1, §3.14."""
+    a, d = c.a, c.d
+    c.yetki("evrak")
+    _, e = _evrak_bul(c)
+    if e["durum"] == "ciro":
+        raise SenaryoHatasi(f"{a['id']}: ciro edilmiş evrakın karşılıksızı (BELİRSİZ-29)")
+    tarih = c.tarih()
+    _evrak_sirasi(c, e, tarih, vade=True)
+    c.istek()
+    c.kilit(tarih)
+    if e["durum"] not in ("portfoy", "tahsilde"):
+        c.ekle(4, "4xx")
+    c.on_kapi()
+    alacak = TAHSILDE_HESABI[e["tur"]] if e["durum"] == "tahsilde" else PORTFOY_HESABI[e["tur"]]
+    satirlar = [(d.cari_kodu(e["cari"]), "B", e["T"], e["cari"]), (alacak, "A", e["T"], None)]
+    _evrak_yaz(c, e, "evrak_karsiliksiz", tarih, satirlar, "karsiliksiz")
+
+
+def h_tahsile_ver(c):
+    """§4.36 Bankaya Tahsile Ver: B 101.02|121.02 / A 101.01|121.01 (verilme tarihinde) — PLAN §3.14, §3.11a."""
+    a, d = c.a, c.d
+    c.yetki("evrak")
+    _, e = _evrak_bul(c)
+    hk = d.coz(a["hesap"], T_HESAP)
+    h = d.hesaplar[hk]
+    tarih = c.tarih()
+    if h["durum"] == "aktif" and h["tur"] == "vadeli":
+        raise SenaryoHatasi(f"{a['id']}: vadeli hesaba tahsile verme (BELİRSİZ-30)")
+    hesap_uygun = h["durum"] == "aktif" and h["tur"] in HAVALE_TURLERI
+    if not hesap_uygun:
+        c.ekle(2, 400, "bank-account-invalid", "CIKARIM")
+    c.istek()
+    c.kilit(tarih)
+    if tarih < e["tarih"]:
+        c.ekle(4, "4xx")                                         # PLAN §3.14 "alış tarihinden önce olamaz"
+    elif e["durum"] == "portfoy":
+        _evrak_sirasi(c, e, tarih)
+    if e["durum"] != "portfoy":
+        c.ekle(4, "4xx")                                         # PLAN §3.14 "yalnız portföydeki"
+    if hesap_uygun:
+        c.acilis_oncesi(hk, tarih)
+    c.on_kapi()
+    satirlar = [(TAHSILDE_HESABI[e["tur"]], "B", e["T"], None), (PORTFOY_HESABI[e["tur"]], "A", e["T"], None)]
+    _evrak_yaz(c, e, "tahsile_ver", tarih, satirlar, "tahsilde", tahsil_hesap=hk)
+
+
+def h_bankadan_geri_al(c):
+    """§4.37: B 101.01|121.01 / A 101.02|121.02 (kapanış tarihinde) — PLAN §3.14."""
+    a, d = c.a, c.d
+    c.yetki("evrak")
+    _, e = _evrak_bul(c)
+    tarih = c.tarih()
+    c.istek()
+    c.kilit(tarih)
+    if e["durum"] != "tahsilde":
+        c.ekle(4, "4xx")
+    else:
+        _evrak_sirasi(c, e, tarih)
+    c.on_kapi()
+    satirlar = [(PORTFOY_HESABI[e["tur"]], "B", e["T"], None), (TAHSILDE_HESABI[e["tur"]], "A", e["T"], None)]
+    _evrak_yaz(c, e, "geri_al", tarih, satirlar, "portfoy")
+
+
+def h_evrak_sil(c):
+    """§4.38: alış/veriliş satırları kalkar; tahsildeyse 409 cheque-deposited (PLAN §3.14); ikinci silme 404."""
+    a, d = c.a, c.d
+    c.yetki("evrak")
+    _, e = _evrak_bul(c)
+    c.istek()
+    if e["durum"] == "silindi":
+        c.ekle(4, 404)
+    else:
+        if e["durum"] == "tahsilde":
+            c.ekle(4, 409, "cheque-deposited", "PLAN")
+        elif e["gecmis"]:
+            raise SenaryoHatasi(f"{a['id']}: geçmişi olan evrakın silinmesi (BELİRSİZ-31)")
+        c.kilit(e["tarih"])
+    c.on_kapi()
+    for fid in e["fisler"]:
+        d.fis(fid)["etkin"] = False
+    e["durum"] = "silindi"
+
+
 ISLEYICI = {
     "ayar": h_ayar, "donem_kilidi": h_donem_kilidi, "hesap_ac": h_hesap_ac, "hesap_durum": h_hesap_durum,
     "hesap_eksi_politika": h_hesap_eksi_politika, "acilis_duzelt": h_acilis_duzelt, "kasa_acilis": h_kasa_acilis,
@@ -1917,6 +2186,9 @@ ISLEYICI = {
     "banka_masraf": h_banka_masraf, "faiz_geliri": h_faiz_geliri, "faiz_gideri": h_faiz_gideri,
     "diger_gelir": h_diger_gelir, "diger_gider": h_diger_gider, "kart_borcu_odeme": h_kart_borcu_odeme,
     "kredi_kullanim": h_kredi_kullanim, "kredi_odeme": h_kredi_odeme, "ters_kayit": h_ters_kayit, "sil": h_sil,
+    "evrak_al": h_evrak_al_ver, "evrak_ver": h_evrak_al_ver, "evrak_ciro": h_evrak_ciro, "evrak_tahsil": h_evrak_tahsil,
+    "evrak_odeme": h_evrak_odeme, "evrak_karsiliksiz": h_evrak_karsiliksiz, "tahsile_ver": h_tahsile_ver,
+    "bankadan_geri_al": h_bankadan_geri_al, "evrak_sil": h_evrak_sil,
 }
 
 # Adımın tanımladığı takma adlar (yineleme ve atlama için): alan yolu → değer
@@ -1961,6 +2233,8 @@ def anilan_adlar(a):
                 r.append((p["hesap"], T_HESAP))
     if op == "iade" and "hesap" in a["geri"]:
         r.append((a["geri"]["hesap"], T_HESAP))
+    if "evrak" in a:
+        r.append((a["evrak"], T_EVRAK))
     return r
 
 
@@ -2044,22 +2318,31 @@ def faturalari_hesapla(d):
         bagsiz_cikis = any(p["etkin"] and p["cari"] == ck and p["tur"] == "cari_odeme" and not p.get("bagli")
                            for p in d.para)
         nedenler = []
+        if _evrak_fisleri(d, ck):
+            nedenler.append("BELİRSİZ-27")         # sürüm 3: evrakın fatura açığına etkisi planda yok
         if (bagsiz_giris or ck in artanli_satis_iade) and any(b["kart"] is not None for b in belgeler):
             nedenler.append("BELİRSİZ-7")          # sürüm 2: iade artanı da (BELİRSİZ-9 kalktı)
         if (bagsiz_giris and any(b["tur"] in ("alis", "satis_iade") for b in belgeler)) or \
                 (bagsiz_cikis and any(b["tur"] in ("satis", "alis_iade") for b in belgeler)):
             nedenler.append("BELİRSİZ-11")
         if nedenler:
-            belirsiz[ck] = nedenler[0]
+            belirsiz[ck] = nedenler
     # değişmez: cariBakiye = Σ açık(alacak) − Σ açık(borç) − dağıtılmamış giriş + dağıtılmamış çıkış
     for ck in d.cariler:
-        bakiye = d.bakiye(d.cari_kodu(ck), cari=ck)
+        evrak_net = sum((u if t == "B" else -u) for f in _evrak_fisleri(d, ck) for k, t, u, cc in f["satirlar"]
+                        if cc == ck)
+        bakiye = d.bakiye(d.cari_kodu(ck), cari=ck) - evrak_net
         al = sum(acik[bk] for bk, b in d.belgeler.items() if b["cari"] == ck and b["tur"] in ("satis", "alis_iade"))
         bo = sum(acik[bk] for bk, b in d.belgeler.items() if b["cari"] == ck and b["tur"] in ("alis", "satis_iade"))
         g, c_ = dagitilmamis[ck]
         if bakiye != al - bo - g + c_:
             raise KahinHatasi(f"cari değişmezi bozuk ({ck}): bakiye {bakiye} ≠ {al} − {bo} − {g} + {c_}")
     return acik, belirsiz
+
+
+def _evrak_fisleri(d, ck):
+    return [f for f in d.fisler if f["etkin"] and f["tur"] in EVRAK_FIS_TURLERI
+            and any(cc == ck for _, _, _, cc in f["satirlar"])]
 
 
 def anlik(d):
@@ -2113,12 +2396,13 @@ def anlik(d):
     for ad, bk in takmalar(T_FATURA):
         ck = d.belgeler[bk]["cari"]
         if ck in belirsiz_cari:
-            belirsiz.append((f"faturalar.{ad}.acik", belirsiz_cari[ck]))
+            belirsiz.append((f"faturalar.{ad}.acik", belirsiz_cari[ck][0]))
     for ad, tk in takmalar(T_TAKSIT):
         ck = d.kartlar[tk]["cari"]
-        if ck in belirsiz_cari:
+        kart_nedeni = [n for n in belirsiz_cari.get(ck, []) if n != "BELİRSİZ-27"]   # evrak taksit kartını etkilemez
+        if kart_nedeni:
             for alan in ("toplam", "odenen", "kalan"):
-                belirsiz.append((f"taksitKartlari.{ad}.{alan}", belirsiz_cari[ck]))
+                belirsiz.append((f"taksitKartlari.{ad}.{alan}", kart_nedeni[0]))
     if any(u["alis"] and u["satis"] for u in d.urunler.values()):          # BELİRSİZ-15 (K26)
         belirsiz.append(("mizan.153", "BELİRSİZ-15"))
         belirsiz.append(("mizan.621", "BELİRSİZ-15"))
@@ -2218,7 +2502,7 @@ def kos(sen, dosya_adi):
                 yeni.setdefault(parmak_izi(dd), dd)
         durumlar = [yeni[k] for k in sorted(yeni)]
         i = j
-    ust = {"dil": DIL, "senaryo": sen["ad"], "kaynak": "kahin"}
+    ust = {"dil": sen["dil"], "senaryo": sen["ad"], "kaynak": "kahin"}
     if not grup_var:
         ust.update(cikti_alanlari(durumlar[0]))
         return ust

@@ -34,7 +34,8 @@ function fromLedger(app, { from = "", to = "" } = {}) {
   const entries = app.context.ledger.build();
   const rows = subTrial(entries, { from, to }).map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance }));
   const trial = trialBalance(entries, { from, to });
-  const mains = ["101", "102", "108", "300", "309"].map(code => ({ account: code, balance: trial.accounts.find(row => row.code === code)?.balance || 0 })).filter(item => item.balance);
+  // 2.2.0 İz 4.2 (plan §3.11a; bilerek güncellendi): alınan senet 121 (121.01 / 121.02) da Alt Hesap Mizanı'nda ana hesap.
+  const mains = ["101", "102", "108", "121", "300", "309"].map(code => ({ account: code, balance: trial.accounts.find(row => row.code === code)?.balance || 0 })).filter(item => item.balance);
   return { rows, mains };
 }
 const strip = data => ({ rows: data.rows.map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance })), mains: data.mains.map(item => ({ account: item.account, balance: item.balance })).filter(item => item.balance) });

@@ -1,0 +1,74 @@
+{
+  "dil": "destekofis-senaryo/3",
+  "ad": "s3-h",
+  "baslangic": {
+    "bugun": "12.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "cari_ac",
+      "ad": "M",
+      "unvan": "M Ltd.",
+      "tur": "musteri"
+    },
+    {
+      "id": "2",
+      "islem": "kasa_acilis",
+      "tutar": "10",
+      "tarih": "01.10.2026"
+    },
+    {
+      "id": "3",
+      "islem": "hesap_ac",
+      "ad": "ZIR",
+      "banka": "Banka ZIR",
+      "hesapAdi": "Hesap ZIR",
+      "tur": "vadesiz",
+      "paraBirimi": "TRY",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "10",
+      "bakiyeDogrulandi": true
+    },
+    {
+      "id": "4",
+      "islem": "evrak_al",
+      "ad": "C",
+      "tur": "cek",
+      "cari": "M",
+      "tutar": "100",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "5",
+      "islem": "evrak_tahsil",
+      "evrak": "C",
+      "tarih": "03.10.2026",
+      "yol": "nakit"
+    },
+    {
+      "id": "6",
+      "islem": "evrak_karsiliksiz",
+      "evrak": "C",
+      "tarih": "04.10.2026"
+    },
+    {
+      "id": "7",
+      "islem": "tahsile_ver",
+      "evrak": "C",
+      "tarih": "04.10.2026",
+      "hesap": "ZIR"
+    },
+    {
+      "id": "8",
+      "islem": "evrak_tahsil",
+      "evrak": "C",
+      "tarih": "04.10.2026",
+      "yol": "nakit"
+    }
+  ]
+}
