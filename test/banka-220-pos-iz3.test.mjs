@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { createUser } from "./helpers.mjs";
 import { apiOf, xlsxSheets } from "./banka-210-ortak.mjs";
-import { BANK, TODAY, bootBank, expectStatus, flagPos, kurus, must, openAcceptanceAccounts, openPos, posCheck, posInvoice, salesOf, settle, summaryOf, ziraatPos } from "./banka-220-pos-ortak.mjs";
+import { BANK, TODAY, balanceOf, bootBank, expectStatus, flagPos, kurus, must, openAcceptanceAccounts, openPos, posCheck, posInvoice, salesOf, settle, subBalances, summaryOf, trialBalances, ziraatPos } from "./banka-220-pos-ortak.mjs";
 
 const RC = "/api/workspace/report-center";
 const count = (store, table) => Number(store.get(`SELECT COUNT(*) AS n FROM ${table}`).n);
@@ -278,6 +278,39 @@ describe("İz 3.5: Faturası Beklenen Komisyonlar (KDV'li kip; plan §4.3 kabul 
       const fee = await must("masraf", w.api.get(`${RC}/banka-masraf?preset=all`));
       assert.ok(!fee.rows.some(row => /POS Komisyonu/.test(row[3])), "faturasız KDV kesintisi masraf raporunda yok");
       await posCheck(w.api, "KDV kipi raporu");
+    } finally {
+      await w.ctx.server.close();
+    }
+  });
+});
+
+// Yargıç 2.2.0 Y1 (plan §4.4/6 "pos_sales'in yalnız değişmeyen alanları kilit izine girer"; §4.6 Bekleyenleri Yeni Hesaba Taşı): kilit izinde
+// pos_sales.bank_account_id vardı; kilitli dönemdeki satışın bekleyen kalemleri taşınınca kapı 409 ledger-integrity verip işlemi geri alıyor ve
+// integrity_log'a sahte "Geri Alındı" yazıyordu. Beklenen (plan §4.2 tablosu; yargıcın p1 C): 12.000 TL 3 taksit %3,5 → komisyon 420; kalemler
+// 4.000 / 140 / 3.860 (net). Taşımadan sonra Kasım valöründe 3.860 Garanti'ye geçer, Ziraat değişmez; kilitli dönemin mizanı aynı kalır.
+describe("Yargıç Y1: kilitli dönemdeki satışın bekleyenleri yeni hesaba taşınır (409 değil); kilitli mizan değişmez", () => {
+  it("05.10 satış, kilit 10.10 → Bekleyenleri Taşı 200 (1 satış); mizan/alt hesap aynı; Geri Alındı kaydı yok; Kasım valörü Garanti'ye", async () => {
+    const w = await world();
+    try {
+      await flagPos(w.api, w.acc.garanti.id);
+      const pos = await openPos(w.api, ziraatPos(w.acc.ziraat.id));
+      await must("POS 3 taksit", w.api.post(`/api/workspace/accounts/${w.abc.id}/entries`, { kind: "in", amount: "12.000", method: "card", installments: 3, date: "2026-10-05" }));
+      const [ziraat0, garanti0] = [await balanceOf(w.api, w.acc.ziraat.id), await balanceOf(w.api, w.acc.garanti.id)];
+      setClock(w.ctx, "2026-10-20");
+      await must("kilit 10.10", w.api.put("/api/admin/period-lock", { lockedUntil: "2026-10-10" }));
+      const lockedRange = "?from=2026-01-01&to=2026-10-10";
+      const before = [await trialBalances(w.api, lockedRange), await trialBalances(w.api), await subBalances(w.api)];
+      const moved = await must("Bekleyenleri Taşı", w.api.post(`${BANK}/pos/${pos.id}/move-pending`, { bankAccountId: w.acc.garanti.id }));
+      assert.equal(moved.moved, 1, "kilitli satış taşındı");
+      assert.equal(w.ctx.store.get("SELECT COUNT(*) AS n FROM integrity_log WHERE action = 'rolled-back'").n, 0, "sahte Geri Alındı kaydı yok");
+      assert.deepEqual([await trialBalances(w.api, lockedRange), await trialBalances(w.api), await subBalances(w.api)], before, "kilitli dönem ve bütün mizan/alt hesap aynı");
+      await posCheck(w.api, "taşımadan sonra");
+      setClock(w.ctx, "2026-11-12");
+      await settle(w.api);
+      assert.equal((await balanceOf(w.api, w.acc.garanti.id)) - garanti0, kurus(3860), "Kasım taksiti (net 3.860) Garanti'ye");
+      assert.equal(await balanceOf(w.api, w.acc.ziraat.id), ziraat0, "Ziraat değişmez");
+      assert.deepEqual(await trialBalances(w.api, lockedRange), before[0], "valörden sonra da kilitli dönem aynı");
+      await posCheck(w.api, "Kasım valörü");
     } finally {
       await w.ctx.server.close();
     }
