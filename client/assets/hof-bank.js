@@ -2871,7 +2871,8 @@
     if (!setup.data?.balances && !setup.data?.cash) return;
     const seq = (setup.balanceSeq += 1);
     const fresh = await balances(setup.dateNode?.value || "");
-    if (seq !== setup.balanceSeq || !form.isConnected) return;
+    // Yanıt gelmediyse (ağ hatası) eski bakiyeler kalır; satır boşalmaz.
+    if (seq !== setup.balanceSeq || !form.isConnected || (!fresh.balances && !fresh.cash)) return;
     setup.data = { ...setup.data, balances: fresh.balances, cash: fresh.cash };
     form.querySelectorAll("[data-bank-pick]").forEach(box => refreshOptionTexts(box, setup.data));
     syncBalances(form, setup);
@@ -2909,7 +2910,7 @@
       if (event.target !== dateNode || !data?.balances) return;
       const mine = (seq += 1);
       const fresh = await balances(dateNode.value);
-      if (mine !== seq || !form.isConnected) return;
+      if (mine !== seq || !form.isConnected || !fresh.balances) return;
       data = { ...data, balances: fresh.balances };
       const box = form.querySelector("[data-cheque-pick]");
       refreshOptionTexts(box, data);
