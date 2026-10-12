@@ -234,24 +234,27 @@ try {
     });
   }
   // Gözden geçirme (u2): fiyat değişir değişmez "Tamamı Peşin" eski toplamı yazıyordu (288'lik fatura 24 peşinle kaydedildi).
-  await step("Bulgu 1: fiyat değişir değişmez Tamamı Peşin güncel toplamı yazar", async () => {
+  await step("Bulgu 1: fiyat değişir değişmez Kalanın Tamamını Öde (Nakit) güncel toplamı yazar", async () => {
     await newPurchase("K-6");
     await page.click(`${inv} [data-act="pay-add-cash"]`);
     await page.waitForTimeout(800);
     await page.click(`${inv} [data-l="0"][data-f="unitPrice"]`);
     await page.keyboard.press("Control+A");
     await page.keyboard.type("120", { delay: 40 });
-    await page.click(`${inv} [data-act="pay-all-cash"]`);
+    // v2.2.0 İz 2.8: "Tamamı Peşin" → "Kalanın Tamamını Öde" + yol sorusu (Nakit); boş Nakit satırı doldurulur.
+    await page.click(`${inv} [data-act="pay-rest"]`);
+    await page.click(`${inv} [data-act="pay-rest-method"][data-method="cash"]`);
     await page.waitForTimeout(1500);
     const value = await page.$eval(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, n => n.value).catch(() => "(yok)");
+    const rows = await page.$$eval(`${inv} [data-pay="cash"][data-f="amount"]`, nodes => nodes.length).catch(() => -1);
     const { error, saved } = await saveAndRead("K-6");
     await closeAll();
-    ok(value === "288", `Tamamı Peşin: ${value} (beklenen 288)`);
+    ok(value === "288" && rows === 1, `Kalanın Tamamını Öde (Nakit): ${value} (beklenen 288), satır ${rows} (beklenen 1: boş Nakit satırı dolduruldu)`);
     ok(saved?.tryPayable === 288 && saved?.paid === 288 && saved?.open === 0, `fatura 288, ödenen ${saved?.paid}, açık ${saved?.open}${error ? ` · ${error}` : ""}`);
   });
   // 2. gözden geçirme (u1-pesin-kaydet-yarisi): sunucu yavaşken fiyat değişir, Tamamı Peşin'e ve hemen Kaydet'e basılır.
   // Kaydet'in yükü Tamamı Peşin bitmeden kuruluyordu: ekranda peşin tutar görünürken fatura 0 peşinle kaydediliyordu.
-  await step("Bulgu 1: fiyat değişir, Tamamı Peşin ve hemen Kaydet (hesap 1.200 ms gecikmeli) — ekrandaki ödemeyle kaydedilir", async () => {
+  await step("Bulgu 1: fiyat değişir, Kalanın Tamamını Öde (Nakit) ve hemen Kaydet (hesap 1.200 ms gecikmeli) — ekrandaki ödemeyle kaydedilir", async () => {
     await newPurchase("K-8");
     const slow = async route => {
       await new Promise(resolve => setTimeout(resolve, 1200));
@@ -264,7 +267,8 @@ try {
       await page.click(`${inv} [data-l="0"][data-f="unitPrice"]`);
       await page.keyboard.press("Control+A");
       await page.keyboard.type("120", { delay: 40 });
-      await page.click(`${inv} [data-act="pay-all-cash"]`);
+      await page.click(`${inv} [data-act="pay-rest"]`);
+      await page.click(`${inv} [data-act="pay-rest-method"][data-method="cash"]`);
       await page.waitForTimeout(150);
       await page.click(`${inv} [data-act="issue"]`);
       await page.waitForSelector(`${modal} [data-answer="yes"]`, { timeout: 15000 });

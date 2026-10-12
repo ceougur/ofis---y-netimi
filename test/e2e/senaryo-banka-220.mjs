@@ -8,6 +8,11 @@
 //  2.4  "… Tanımla" (hiç hesap/kart yokken). NASIL BOZARIM: (a) tanım penceresinde Vazgeç → alttaki formun yazılanları kaybolur mu? (b) çift tık
 //       → iki pencere? (c) kaydedince seçici yeni hesabı göstermez / form kapanır / tutar-yol kaybolur? (d) kaydedilen ödeme yanlış hesaba ya da
 //       hesapsız mı yazılır (veri tabanından)? (e) tanımlama yetkisi yokken düğme görünür mü (avukat: yazı)? (f) kart tanımında banka seçilmeden?
+//  2.5–2.6 Verilen çekte "Banka / Şube" yerine Çek Hesabı (tek hesap bilgi satırı, çokta seçim zorunlu, yoksa Çek Hesabı Tanımla); ödemede çekin
+//       hesabı dolu gelir; senette Ödeme Hesabı (Öneri); alınan çekte metin.
+//  2.7  Seçicilerde bakiye: seçenekte bakiye, seçilenin altında "Bakiye · İşlemden Sonra", Engelle'de kırmızı ve sunucu da reddeder; Kasadan
+//       Bankaya Yatır'da Nakit Kasa, tarih değişince o günün bakiyesi (tek bakiye isteği); yetkisiz personelde bakiye yok.
+//  2.8  Fatura ödeme düğmeleri yola göre (+ Nakit · + Havale / EFT · + Kredi Kartı …), satır başlığı yolun adı, Kalanın Tamamını Öde → yol sorusu.
 // Çalıştırma: npm run test:senaryo-banka-220
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -592,6 +597,79 @@ try {
     ok(options.length > 2 && !options.some(label => /₺|—/.test(label)) && !line, `personel: seçenekler “${options.join(" | ")}”, bakiye satırı ${line ? "VAR" : "yok"}`);
     await other.screenshot({ path: path.join(OUT, "00-personel-bakiye-yok.png") });
     await context3.close();
+  });
+
+  // ---------- 2.8 Fatura ödeme düğmeleri yola göre ----------
+  // Durum: Garanti 7.500 (Engelle), Ziraat 11.800, Yapı Kredi 20.000 (Çek Kullan tek hesap); kartlar Bonus (Ziraat), World (Yapı Kredi, limit 50.000), World Eski.
+  const inv = `${modal} .hof-invoices-modal`;
+  await step("2.8 alış faturası 1.000: düğmeler yola göre, satır başlığı yolun adı (yol kutusu yok); Havale 600 Garanti (bakiye satırı) + Kalanın Tamamını Öde → Kredi Kartı 400 World; çek satırında Çek Hesabı", async () => {
+    await closeAll();
+    await page.click("#hof-sidecard [data-action=invoices]");
+    await page.waitForSelector(`${inv} [data-act="new"]`, { timeout: 15000 });
+    await page.click(`${inv} [data-act="new"]`);
+    await page.click(`${inv} [data-scenario="expense_purchase"]`);
+    await page.waitForSelector(`${inv} [data-lines]`, { timeout: 10000 });
+    await page.fill(`${inv} [data-f="number"]`, "AL-220-1");
+    await page.fill(`${inv} [data-acc-query]`, "Tedarikçi A");
+    await page.waitForSelector(`${inv} .hof-acc-picker li[data-id="${ctx.supplier.id}"]`, { timeout: 8000 });
+    await (await page.$(`${inv} .hof-acc-picker li[data-id="${ctx.supplier.id}"]`)).dispatchEvent("mousedown");
+    await page.click(`${inv} [data-l="0"][data-f="name"]`);
+    await page.keyboard.type("Ofis Kirası", { delay: 35 });
+    await page.click(`${inv} [data-l="0"][data-f="unitPrice"]`);
+    await page.keyboard.press("Control+A");
+    await page.keyboard.type("1000", { delay: 35 });
+    await page.selectOption(`${inv} [data-l="0"][data-f="vatRate"]`, "0").catch(() => null);
+    await pause(1300);
+    const buttons = await page.$$eval(`${inv} [data-pay] .hof-inv-pay-add button`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(buttons.join(" | ") === "+ Nakit | + Havale / EFT | + Kredi Kartı | + Çek / Senet | Portföyden Ciro Et | Kalanın Tamamını Öde", `düğmeler: ${buttons.join(" | ")}`);
+    await page.click(`${inv} [data-act="pay-add-cash"][data-method="bank"]`);
+    const row0 = `${inv} .hof-inv-pay-row:has([data-pay="cash"][data-i="0"])`;
+    await page.waitForSelector(`${inv} [data-bank-cell="0"]:not([hidden]) select`, { timeout: 8000 });
+    ok((await textOf(`${row0} .hof-inv-pay-way`)) === "Havale / EFT" && !(await page.$(`${inv} [data-pay="cash"][data-f="method"]`)), "satır başlığı Havale / EFT; yol kutusu yok");
+    await page.selectOption(`${inv} [data-bank-cell="0"] select`, ctx.garanti.id);
+    await typeInto(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, "8.000");
+    const red = await lineOf(`${inv} [data-inv-balance="0"]`);
+    ok(red.negative && /Bakiye \(08\.10\.2026\): ₺7\.500,00/.test(red.text) && /İşlemden Sonra: −₺500,00/.test(red.text) && /kaydedilmez/.test(red.text), `8.000 → kırmızı: “${red.text}”`);
+    await typeInto(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, "600");
+    const fine = await lineOf(`${inv} [data-inv-balance="0"]`);
+    ok(!fine.negative && /İşlemden Sonra: ₺6\.900,00/.test(fine.text), `600 → “${fine.text}”`);
+    // Kalanın Tamamını Öde: yol sorulur (satırlar yeniden çizilmez); Kredi Kartı → kalan 400 yeni Kredi Kartı satırına, kart seçimi gerekir.
+    await page.click(`${inv} [data-act="pay-rest"]`);
+    await page.waitForSelector(`${inv} [data-pay-choose]:not([hidden])`, { timeout: 5000 });
+    const ask = await textOf(`${inv} [data-pay-choose]`);
+    ok(/Kalan ₺400,00 hangi yolla ödensin\?/.test(ask) && /Nakit/.test(ask) && /Kredi Kartı/.test(ask), `yol sorusu: “${ask}”`);
+    await page.click(`${inv} [data-act="pay-rest-method"][data-method="card"]`);
+    await page.waitForSelector(`${inv} [data-bank-cell="1"][data-bank-kind="card"] select`, { timeout: 8000 });
+    const row1 = `${inv} .hof-inv-pay-row:has([data-pay="cash"][data-i="1"])`;
+    ok((await textOf(`${row1} .hof-inv-pay-way`)) === "Kredi Kartı" && (await page.$eval(`${inv} [data-pay="cash"][data-i="1"][data-f="amount"]`, node => node.value)) === "400", "Kredi Kartı satırı 400 eklendi");
+    ok(await page.$eval(`${inv} [data-act="pay-rest"]`, node => node.disabled), "kalan kalmadı: Kalanın Tamamını Öde pasif");
+    await page.selectOption(`${inv} [data-bank-cell="1"] select`, ctx.world.id);
+    await pause(300);
+    const cardLine = await lineOf(`${inv} [data-inv-balance="1"]`);
+    ok(/Kart \(08\.10\.2026\): Borç ₺0,00/.test(cardLine.text) && /İşlemden Sonra: Borç ₺400,00/.test(cardLine.text) && /Kart Limiti: ₺50\.000,00/.test(cardLine.text) && !cardLine.negative, `kart satırı: “${cardLine.text}”`);
+    // Çek satırı: Çek Hesabı (Çek Kullan işaretli tek hesap: Yapı Kredi) — yalnız görünüm, kaydetmeden silinir.
+    await page.click(`${inv} [data-act="pay-add-cheque"]`);
+    await page.waitForSelector(`${inv} [data-cheque-bank="0"]`, { timeout: 8000 });
+    ok(/Çek Hesabı: Yapı Kredi · TL/.test(await textOf(`${inv} [data-cheque-bank="0"]`)), `çek satırında Çek Hesabı: “${await textOf(`${inv} [data-cheque-bank="0"]`)}”`);
+    await shot("fatura-odeme-yola-gore");
+    await page.click(`${inv} [data-act="pay-remove"][data-pay="cheques"][data-i="0"]`);
+    await pause(400);
+    await page.click(`${inv} [data-act="issue"]`);
+    let saved = null;
+    for (let i = 0; i < 16 && !saved; i += 1) {
+      await pause(500);
+      const yes = await page.$(`${modal} [data-answer="yes"]`);
+      if (yes) {
+        await yes.click();
+        continue;
+      }
+      saved = (unwrap(await api.get("/api/workspace/invoices?tab=all&limit=50")).invoices || []).find(doc => doc.number === "AL-220-1") || null;
+    }
+    const doc = saved ? await must("fatura", api.get(`/api/workspace/invoices/${saved.id}`)) : null;
+    const cash = doc?.payment?.cash || [];
+    ok(cash.length === 2 && cash[0].method === "bank" && cash[0].amount === 600 && cash[0].bankAccountId === ctx.garanti.id && cash[1].method === "card" && cash[1].amount === 400 && cash[1].bankAccountId === ctx.world.id && doc.payState === "paid", `kayıt: ${JSON.stringify(cash.map(item => [item.method, item.amount, item.bankAccountId === ctx.garanti.id ? "Garanti" : item.bankAccountId === ctx.world.id ? "World" : item.bankAccountId]))}, ${doc?.payState}`);
+    ok((await accountApi(ctx.garanti.id)).balanceMinor === 690_000 && (await accountApi(ctx.world.id)).balanceMinor === -40_000, `Garanti ${(await accountApi(ctx.garanti.id)).balanceMinor / 100} (beklenen 6.900), World ${(await accountApi(ctx.world.id)).balanceMinor / 100} (beklenen −400)`);
+    await closeAll();
   });
 
   // ---- SON (yeni bölümler bunun üstüne) ----

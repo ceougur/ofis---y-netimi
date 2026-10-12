@@ -269,8 +269,10 @@ try {
     ok(/En çok 10 /.test(hint), `kalan iade edilebilir miktar kendi iadesi hariç (10) (${hint.slice(0, 100)})`);
     await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "5");
     await admin.waitForTimeout(900);
-    const methods = await admin.$$eval(`${inv} [data-pay="cash"][data-f="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(methods.includes("POS İadesi") && !methods.includes("Kredi Kartı"), `iade formunda yol seçenekleri: ${methods.join(" / ")}`);
+    // v2.2.0 İz 2.8: yol düğmelerle ("+ POS İadesi"), satırın başlığı yolun adı (karta iade satırı "POS İadesi").
+    const methods = await admin.$$eval(`${inv} [data-act="pay-add-cash"]`, nodes => nodes.map(node => node.textContent.trim()));
+    const way = (await admin.textContent(`${inv} .hof-inv-pay-row:has([data-pay="cash"][data-i="0"]) .hof-inv-pay-way`).catch(() => "")).trim();
+    ok(methods.includes("+ POS İadesi") && !methods.some(label => /Kredi Kartı/.test(label)) && way === "POS İadesi", `iade formunda yol düğmeleri: ${methods.join(" / ")}; satır başlığı “${way}”`);
     await shot(admin, "iade-duzenleme-formu");
     await admin.click(`${inv} [data-act="issue"]`);
     await confirmYes();

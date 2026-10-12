@@ -209,11 +209,14 @@ async function invoiceVariant(round) {
   await page.click(`${inv} [data-act="modify"]`);
   const cell = `${inv} [data-bank-cell="0"]`;
   await page.waitForSelector(`${cell}[data-bank-kind="bank"]`, { timeout: 10000 });
-  await page.selectOption(`${inv} select[data-pay="cash"][data-i="0"][data-f="method"]`, "card");
+  // v2.2.0 İz 2.8: satırda yol kutusu yok — havale satırı silinir, "+ Kredi Kartı" ile kart satırı eklenir (aynı tutar).
+  await page.click(`${inv} [data-act="pay-remove"][data-pay="cash"][data-i="0"]`);
+  await page.click(`${inv} [data-act="pay-add-cash"][data-method="card"]`);
   await page.waitForSelector(`${cell}[data-bank-kind="card"]`, { timeout: 8000 });
+  await page.fill(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, String(400 + round));
   const singleNote = await textOf(cell);
   await status(K2, "active");
-  const precondition = startCache.card === 1 && (await must("seçenekler", api.get("/api/workspace/bank/choices"))).forms.card.ids.length === 2 && /kurumsal kartına yazılır/.test(singleNote);
+  const precondition = startCache.card === 1 && (await must("seçenekler", api.get("/api/workspace/bank/choices"))).forms.card.ids.length === 2 && /kartına yazılır/.test(singleNote);
   if (!precondition) {
     noPrecondition += 1;
     console.log(`  ! ön koşul oluşmadı (önbellek ${JSON.stringify(startCache)}, hücre “${singleNote}”); deneme sayılmaz`);
