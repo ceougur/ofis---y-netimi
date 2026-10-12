@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Üç taraflı fark: model_a ↔ model_b ↔ program (koşucu) — dil `destekofis-senaryo/2` (SENARYO-DILI.md §9).
+"""Üç taraflı fark: model_a ↔ model_b ↔ program (koşucu) — dil `destekofis-senaryo/3` ve /2 (SENARYO-DILI.md §9).
 
 Kullanım (depo kökünden):
   python3 test/bagimsiz/fark.py --tohum 7 [--islem 500] [--kontrol 25]     # uretici.py ile üretir, üçünü koşar
@@ -1041,7 +1041,7 @@ def ozet_yaz():
     for d in dosyalar:
         with open(d, encoding="utf-8") as fh:
             r = json.load(fh)
-        m = re.match(r"rastgele-(\d+)-(\d+)$", r.get("senaryo", ""))
+        m = re.match(r"rastgele-(?:s3-)?(\d+)-(\d+)$", r.get("senaryo", ""))   # sürüm 3 üretimi "rastgele-s3-…"
         tohum = int(m.group(1)) if m else None
         kosular.append({"dosya": os.path.basename(d), "senaryo": r.get("senaryo"), "tohum": tohum,
                         "islem": r.get("islemSayisi"), "durum": r.get("durum"), "cikis": r.get("cikisKodlari"),

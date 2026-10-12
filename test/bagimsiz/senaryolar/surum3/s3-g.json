@@ -1,0 +1,35 @@
+{
+  "dil": "destekofis-senaryo/3",
+  "ad": "s3-g",
+  "baslangic": {
+    "bugun": "12.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "cari_ac",
+      "ad": "M",
+      "unvan": "M Ltd.",
+      "tur": "musteri"
+    },
+    {
+      "id": "2",
+      "islem": "evrak_al",
+      "ad": "C",
+      "tur": "cek",
+      "cari": "M",
+      "tutar": "100",
+      "tarih": "13.10.2026"
+    },
+    {
+      "id": "3",
+      "islem": "evrak_karsiliksiz",
+      "evrak": "C",
+      "tarih": "12.10.2026"
+    }
+  ]
+}

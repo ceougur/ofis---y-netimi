@@ -1,0 +1,69 @@
+{
+  "dil": "destekofis-senaryo/3",
+  "ad": "s3-i",
+  "baslangic": {
+    "bugun": "12.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "cari_ac",
+      "ad": "M",
+      "unvan": "M Ltd.",
+      "tur": "musteri"
+    },
+    {
+      "id": "2",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "M",
+      "tarih": "02.10.2026",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "1000",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "islem": "fatura",
+      "ad": "F2",
+      "tur": "satis",
+      "cari": "M",
+      "tarih": "02.10.2026",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "500",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "T2",
+          "sayi": 2
+        }
+      }
+    },
+    {
+      "id": "4",
+      "islem": "evrak_al",
+      "ad": "C",
+      "tur": "cek",
+      "cari": "M",
+      "tutar": "1200",
+      "tarih": "03.10.2026"
+    }
+  ]
+}

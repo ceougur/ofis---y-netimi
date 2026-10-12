@@ -1,0 +1,814 @@
+{
+  "adimSayisi": 42,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 10
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 10,
+  "farklar": [
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 2850000
+      },
+      "aile": "mizan.101.01",
+      "alan": "araDurumlar.k1.mizan.101.01",
+      "b": {
+        "alacak": 0,
+        "borc": 2850000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.101.01",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 4550000
+      },
+      "yol": [
+        "araDurumlar",
+        "k1",
+        "mizan",
+        "101.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1200000,
+        "borc": 0
+      },
+      "aile": "mizan.103",
+      "alan": "araDurumlar.k1.mizan.103",
+      "b": {
+        "alacak": 1200000,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.103",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 1800000,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k1",
+        "mizan",
+        "103"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 1700000
+      },
+      "aile": "mizan.121.01",
+      "alan": "araDurumlar.k1.mizan.121.01",
+      "b": {
+        "alacak": 0,
+        "borc": 1700000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.121.01",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k1",
+        "mizan",
+        "121.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 600000,
+        "borc": 0
+      },
+      "aile": "mizan.321",
+      "alan": "araDurumlar.k1.mizan.321",
+      "b": {
+        "alacak": 600000,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.321",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k1",
+        "mizan",
+        "321"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 850000
+      },
+      "aile": "mizan.101.01",
+      "alan": "araDurumlar.k2.mizan.101.01",
+      "b": {
+        "alacak": 0,
+        "borc": 850000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.101.01",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 1050000
+      },
+      "yol": [
+        "araDurumlar",
+        "k2",
+        "mizan",
+        "101.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 2000000
+      },
+      "aile": "mizan.101.02",
+      "alan": "araDurumlar.k2.mizan.101.02",
+      "b": {
+        "alacak": 0,
+        "borc": 2000000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.101.02",
+      "pencere": [
+        "k1",
+        "k2"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 3500000
+      },
+      "yol": [
+        "araDurumlar",
+        "k2",
+        "mizan",
+        "101.02"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1200000,
+        "borc": 0
+      },
+      "aile": "mizan.103",
+      "alan": "araDurumlar.k2.mizan.103",
+      "b": {
+        "alacak": 1200000,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.103",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 1800000,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k2",
+        "mizan",
+        "103"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 200000
+      },
+      "aile": "mizan.121.01",
+      "alan": "araDurumlar.k2.mizan.121.01",
+      "b": {
+        "alacak": 0,
+        "borc": 200000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.121.01",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k2",
+        "mizan",
+        "121.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 1500000
+      },
+      "aile": "mizan.121.02",
+      "alan": "araDurumlar.k2.mizan.121.02",
+      "b": {
+        "alacak": 0,
+        "borc": 1500000
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.121.02",
+      "pencere": [
+        "k1",
+        "k2"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k2",
+        "mizan",
+        "121.02"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 600000,
+        "borc": 0
+      },
+      "aile": "mizan.321",
+      "alan": "araDurumlar.k2.mizan.321",
+      "b": {
+        "alacak": 600000,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "ACIKLANMAMIS:A=B≠P:mizan.321",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k2",
+        "mizan",
+        "321"
+      ]
+    }
+  ],
+  "islemSayisi": 39,
+  "islemTurleri": {
+    "bankadan_geri_al": 2,
+    "cari_ac": 2,
+    "donem_kilidi": 1,
+    "evrak_al": 8,
+    "evrak_ciro": 2,
+    "evrak_karsiliksiz": 1,
+    "evrak_odeme": 3,
+    "evrak_sil": 4,
+    "evrak_tahsil": 5,
+    "evrak_ver": 2,
+    "hesap_ac": 3,
+    "kasa_acilis": 1,
+    "kontrol": 3,
+    "tahsile_ver": 5
+  },
+  "karsilastirilanYaprak": 121,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/senaryolar/kabul-senet.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/senaryolar/kabul-senet.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/senaryolar/kabul-senet.json --cikti test/bagimsiz/cikti/ham/kabul-senet.program.json"
+  },
+  "planDenetimi": {
+    "tutmayan": [
+      {
+        "a": 2850000,
+        "alan": "mizan.101.01.borc",
+        "b": 2850000,
+        "kontrol": "k1",
+        "plan": 2850000,
+        "program": 4550000,
+        "tuttu": {
+          "a": true,
+          "b": true,
+          "program": false
+        }
+      },
+      {
+        "a": 1700000,
+        "alan": "mizan.121.01.borc",
+        "b": 1700000,
+        "kontrol": "k1",
+        "plan": 1700000,
+        "program": 0,
+        "tuttu": {
+          "a": true,
+          "b": true,
+          "program": false
+        }
+      },
+      {
+        "a": 1200000,
+        "alan": "mizan.103.alacak",
+        "b": 1200000,
+        "kontrol": "k1",
+        "plan": 1200000,
+        "program": 1800000,
+        "tuttu": {
+          "a": true,
+          "b": true,
+          "program": false
+        }
+      },
+      {
+        "a": 600000,
+        "alan": "mizan.321.alacak",
+        "b": 600000,
+        "kontrol": "k1",
+        "plan": 600000,
+        "program": 0,
+        "tuttu": {
+          "a": true,
+          "b": true,
+          "program": false
+        }
+      },
+      {
+        "a": 850000,
+        "alan": "mizan.101.01.borc",
+        "b": 850000,
+        "kontrol": "k2",
+        "plan": 850000,
+        "program": 1050000,
+        "tuttu": {
+          "a": true,
+          "b": true,
+          "program": false
+        }
+      },
+      {
+        "a": 2000000,
+        "alan": "mizan.101.02.borc",
+        "b": 2000000,
+        "kontrol": "k2",
+        "plan": 2000000,
+        "program": 3500000,
+        "tuttu": {
+          "a": true,
+          "b": true,
+          "program": false
+        }
+      },
+      {
+        "a": 200000,
+        "alan": "mizan.121.01.borc",
+        "b": 200000,
+        "kontrol": "k2",
+        "plan": 200000,
+        "program": 0,
+        "tuttu": {
+          "a": true,
+          "b": true,
+          "program": false
+        }
+      },
+      {
+        "a": 1500000,
+        "alan": "mizan.121.02.borc",
+        "b": 1500000,
+        "kontrol": "k2",
+        "plan": 1500000,
+        "program": 0,
+        "tuttu": {
+          "a": true,
+          "b": true,
+          "program": false
+        }
+      }
+    ],
+    "yaprak": 59
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": null,
+    "commit": "bilinmiyor",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.1.0"
+  },
+  "senaryo": "kabul-senet",
+  "senaryoDosyasi": "test/bagimsiz/senaryolar/kabul-senet.json",
+  "siniflar": {
+    "ACIKLANMAMIS:A=B≠P:mizan.101.01": {
+      "aileler": {
+        "mizan.101.01": 2
+      },
+      "araDurumYaprak": 2,
+      "desenler": {
+        "A=B≠P": 2
+      },
+      "enErkenPencere": [
+        "baslangic",
+        "k1"
+      ],
+      "ornekler": [
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 2850000
+          },
+          "alan": "araDurumlar.k1.mizan.101.01",
+          "b": {
+            "alacak": 0,
+            "borc": 2850000
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 4550000
+          }
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 850000
+          },
+          "alan": "araDurumlar.k2.mizan.101.01",
+          "b": {
+            "alacak": 0,
+            "borc": 850000
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 1050000
+          }
+        }
+      ],
+      "sonDurumYaprak": 0,
+      "yaprak": 2
+    },
+    "ACIKLANMAMIS:A=B≠P:mizan.101.02": {
+      "aileler": {
+        "mizan.101.02": 1
+      },
+      "araDurumYaprak": 1,
+      "desenler": {
+        "A=B≠P": 1
+      },
+      "enErkenPencere": [
+        "k1",
+        "k2"
+      ],
+      "ornekler": [
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 2000000
+          },
+          "alan": "araDurumlar.k2.mizan.101.02",
+          "b": {
+            "alacak": 0,
+            "borc": 2000000
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "k1",
+            "k2"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 3500000
+          }
+        }
+      ],
+      "sonDurumYaprak": 0,
+      "yaprak": 1
+    },
+    "ACIKLANMAMIS:A=B≠P:mizan.103": {
+      "aileler": {
+        "mizan.103": 2
+      },
+      "araDurumYaprak": 2,
+      "desenler": {
+        "A=B≠P": 2
+      },
+      "enErkenPencere": [
+        "baslangic",
+        "k1"
+      ],
+      "ornekler": [
+        {
+          "a": {
+            "alacak": 1200000,
+            "borc": 0
+          },
+          "alan": "araDurumlar.k1.mizan.103",
+          "b": {
+            "alacak": 1200000,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 1800000,
+            "borc": 0
+          }
+        },
+        {
+          "a": {
+            "alacak": 1200000,
+            "borc": 0
+          },
+          "alan": "araDurumlar.k2.mizan.103",
+          "b": {
+            "alacak": 1200000,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 1800000,
+            "borc": 0
+          }
+        }
+      ],
+      "sonDurumYaprak": 0,
+      "yaprak": 2
+    },
+    "ACIKLANMAMIS:A=B≠P:mizan.121.01": {
+      "aileler": {
+        "mizan.121.01": 2
+      },
+      "araDurumYaprak": 2,
+      "desenler": {
+        "A=B≠P": 2
+      },
+      "enErkenPencere": [
+        "baslangic",
+        "k1"
+      ],
+      "ornekler": [
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 1700000
+          },
+          "alan": "araDurumlar.k1.mizan.121.01",
+          "b": {
+            "alacak": 0,
+            "borc": 1700000
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        },
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 200000
+          },
+          "alan": "araDurumlar.k2.mizan.121.01",
+          "b": {
+            "alacak": 0,
+            "borc": 200000
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        }
+      ],
+      "sonDurumYaprak": 0,
+      "yaprak": 2
+    },
+    "ACIKLANMAMIS:A=B≠P:mizan.121.02": {
+      "aileler": {
+        "mizan.121.02": 1
+      },
+      "araDurumYaprak": 1,
+      "desenler": {
+        "A=B≠P": 1
+      },
+      "enErkenPencere": [
+        "k1",
+        "k2"
+      ],
+      "ornekler": [
+        {
+          "a": {
+            "alacak": 0,
+            "borc": 1500000
+          },
+          "alan": "araDurumlar.k2.mizan.121.02",
+          "b": {
+            "alacak": 0,
+            "borc": 1500000
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "k1",
+            "k2"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        }
+      ],
+      "sonDurumYaprak": 0,
+      "yaprak": 1
+    },
+    "ACIKLANMAMIS:A=B≠P:mizan.321": {
+      "aileler": {
+        "mizan.321": 2
+      },
+      "araDurumYaprak": 2,
+      "desenler": {
+        "A=B≠P": 2
+      },
+      "enErkenPencere": [
+        "baslangic",
+        "k1"
+      ],
+      "ornekler": [
+        {
+          "a": {
+            "alacak": 600000,
+            "borc": 0
+          },
+          "alan": "araDurumlar.k1.mizan.321",
+          "b": {
+            "alacak": 600000,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        },
+        {
+          "a": {
+            "alacak": 600000,
+            "borc": 0
+          },
+          "alan": "araDurumlar.k2.mizan.321",
+          "b": {
+            "alacak": 600000,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 0,
+            "borc": 0
+          }
+        }
+      ],
+      "sonDurumYaprak": 0,
+      "yaprak": 2
+    }
+  },
+  "sureler": {
+    "a": 0.06,
+    "b": 0.08,
+    "program": 1.34
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 16000000,
+      "cariToplam": -750000,
+      "faturaSayisi": 0,
+      "kasa": 1700000,
+      "mizanAlacakToplam": 20350000,
+      "mizanBorcToplam": 20350000,
+      "ozet": {
+        "gercekBanka": 16000000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 17700000
+      },
+      "retSayisi": 11,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "b": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 16000000,
+      "cariToplam": -750000,
+      "faturaSayisi": 0,
+      "kasa": 1700000,
+      "mizanAlacakToplam": 20350000,
+      "mizanBorcToplam": 20350000,
+      "ozet": {
+        "gercekBanka": 16000000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 17700000
+      },
+      "retSayisi": 11,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "program": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": 16000000,
+      "cariToplam": -750000,
+      "faturaSayisi": 0,
+      "kasa": 1700000,
+      "mizanAlacakToplam": 20350000,
+      "mizanBorcToplam": 20350000,
+      "ozet": {
+        "gercekBanka": 16000000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 17700000
+      },
+      "retSayisi": 11,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}

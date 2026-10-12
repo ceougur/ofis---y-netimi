@@ -1,0 +1,101 @@
+BAĞIMSIZ KÂHİN — SÜRÜM 3: ÇEK VE SENET (plan §3.11a senetler 121/321, §3.14 121.02 / Bankaya Tahsile Ver), 12.10.2026
+Dal: worktree-wf_3f8e794e-9e6-1 (taban 12b82c2 + İz 4.2: 40f1674, 086d888, 0b634e7). Program dosyaları bu işte DEĞİŞMEDİ
+(yalnız test/bagimsiz/ ve bu klasör). Program kodu = 0b634e7 (İz 4.2 dahil).
+
+TEMİZ ODA
+- Okunan: docs/BANKA-MODULU-PLAN.md (§2.3, §3.5, §3.7 #9 #21, §3.9, §3.11 madde 5, §3.11a, §3.11b/1, §3.14, §9.1, §11.1 A6) ve
+  test/bagimsiz/ (dil, iki model, fark.py, surucu.mjs, uretici.py, senaryolar). server/, client/, test/mutabakat/ ve programın
+  testleri AÇILMADI.
+- Sıra: dil sürüm 3 + iki model + test_surum3 + kabul-senet (planBeklenen elle) commit afe62e5'te, programın HİÇBİR çıktısı
+  görülmeden yazıldı. Sonra koşucunun çek uçları KARA KUTU yoklamayla öğrenildi (yoklama/: yokla.mjs + p1–p4 istek listeleri
+  ve yanıtları; yalnız HTTP durum/ileti, program kodu değil). Modeller bundan sonra DEĞİŞMEDİ.
+- Sınır: sürüm 3 eki iki kâhinde aynı ajan tarafından yazıldı (iki ayrı el değil); bağımsızlık programdan bağımsızlıktır.
+
+KOMUTLAR (depo kökünden; Node 22.22.0, Python 3.11)
+# 1. Kâhin birim/mutasyon (programsız)
+python3 -I test/bagimsiz/model_a/test_model.py              > birim-model_a.log     # 42/42, çıkış 0
+python3 -I test/bagimsiz/model_b/test_model.py              > birim-model_b.log     # 46/46, çıkış 0
+python3 -I test/bagimsiz/model_b/mutasyon.py                > mutasyon-model_b.log  # 22/22 yakalandı
+python3 -I test/bagimsiz/test_surum2.py                     > birim-surum2.log      # 18/18
+python3 -I test/bagimsiz/test_surum3.py                     > birim-surum3.log      # 15/15 (beklenenler plan kurallarından elle)
+python3 docs/kanit/2026-10-12/kahin-senet/mutasyon_surum3.py > mutasyon-surum3.log  # 18/18 yakalandı (10 model_a, 8 model_b)
+python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/senaryolar/kabul-senet.json --plan-denetimi   # 59/59 yaprak tuttu
+
+# 2. Kabul (üç taraf)
+python3 -I test/bagimsiz/fark.py --senaryo test/bagimsiz/senaryolar/kabul-senet.json      → fark-kabul-senet.json
+# 3. Rastgele (uretici.py sürüm 3, tohum = senaryo, belirlenimli; 500 işlem, kontrol aralığı 25)
+for t in 1 2 3; do python3 -I test/bagimsiz/fark.py --tohum $t; done                          → fark-rastgele-s3-<t>-500.json/.log
+for t in 1 2 3; do python3 -I test/bagimsiz/fark.py --tohum $t --notr iskonto_dahil; done     → …-notr.json/.log
+python3 -I test/bagimsiz/fark.py --tohum 3 --kucult '.'                                       → kucult-tohum3-ilk-fark.json
+# 4. Sürüm 3 küçük senaryolar (test_surum3'ün geçerli senaryoları, programla)
+for f in test/bagimsiz/senaryolar/surum3/*.json; do python3 -I test/bagimsiz/fark.py --senaryo "$f"; done → surum3-mini/
+# 5. Sürüm 2 gerileme (güncellenen kâhin + koşucu ile)
+kabul-1-16, senaryolar/gerileme/*.json, senaryolar/surum2/*.json                               → gerileme-surum2/ (konsol.log)
+# 6. Testin dişi: AYNI araçlar İz 4.2 öncesi programla (12b82c2; AYRI KOPYA: git archive 12b82c2 | tar -x →
+#    scratchpad/kahin-senet-eski-12b82c2, üzerine güncel test/bagimsiz kopyalandı; çalışma ağacında eski dosya yok)
+fark.py --senaryo kabul-senet ; --tohum 3 --notr iskonto_dahil ; --senaryo surum3/s3-a, s3-c, s3-d   → eski-12b82c2/
+# 7. Kapsam sayacı
+python3 docs/kanit/2026-10-12/kahin-senet/kapsam_surum3.py <senaryo adları>                  → kapsam-surum3.log
+Ham çıktılar ve senaryolar: ham-ve-senaryolar.tgz (üç tarafın ham JSON'ları + rastgele senaryolar).
+
+SONUÇLAR (gerçek çıkış kodları; a = model_a, b = model_b, p = program/koşucu)
+| Koşu                              | a/b/p çıkış | karşılaştırılan | atlanan (belirsiz) | fark | sınıf |
+| kabul-senet (32 evrak adımı, 11 ret) | 0/0/0     | 121             | 0                  | 0    | —     |
+| rastgele-s3-1-500                 | 0/0/0       | 8275            | 840                | 493  | KDV-DAHIL-ISKONTO 205 + türevi 288 |
+| rastgele-s3-2-500                 | 0/0/0       | 6547            | 934                | 493  | KDV-DAHIL-ISKONTO 184 + türevi 309 |
+| rastgele-s3-3-500                 | 0/0/0       | 5652            | 1456               | 187  | KDV-DAHIL-ISKONTO 100 + türevi 87  |
+| rastgele-s3-1-500-notr            | 0/0/0       | 8532            | 598                | 0    | —     |
+| rastgele-s3-2-500-notr            | 0/0/0       | 6789            | 1151               | 0    | —     |
+| rastgele-s3-3-500-notr            | 0/0/0       | 5648            | 1455               | 0    | —     |
+| surum3/s3-a … s3-i (9 senaryo)    | 0/0/0 hepsi | 147             | 2                  | 0    | —     |
+| kabul-1-16 + gerileme 13 + surum2 18 | önceki kanıtla aynı: yalnız en-kucuk-KDV-DAHIL-ISKONTO 6 yaprak (bilinen); KREDI-ANAPARA-ASIMI,
+|                                   | s2-d6-b, s2-d7-a kâhinlerde bilerek çıkış 2 (BELİRSİZ-24/25); en-kucuk-KASA-ACILIS-649 artık fark 0 (İz 1.3) |
+- Programın kendi Mutabakat Testi her koşuda ok (basarisizDenetim 0); okuma hatası 0, eşlenemeyen 0, kaynak farkı 0.
+- Evrak kapsamı (kapsam-surum3.log): tohum başına 49–59 evrak adımı (alış, veriliş, Tahsile Ver 5–11, Geri Al 1–2, tahsil 8–11,
+  ödeme 2–8, karşılıksız 1–3, ciro 0–1, silme 2–5); evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321, son durum + her
+  kontrol) 158–218/koşu, bunların 36–74'ü sıfırdan farklı bakiye. Evrak reti: kabul-senet 11, mini 7, tohum başına 1–3; kâhin ve
+  program AYNI adımları reddetti.
+
+HER FARKIN KÖKÜ (en küçük senaryo + plan metnine göre hüküm)
+- Bütün farklar tek kök: KDV-DAHIL-ISKONTO (bilinen sınıf; program doğru, dilin §6.3 "KDV dahil, iskontolu" [YAYGIN] satırı ±1 kuruş
+  ayrışıyor). Kanıt: (1) aynı tohumlar bu kök nötrlenerek (--notr iskonto_dahil; akış aynı) koşulunca fark 0 (20.969 yaprak);
+  (2) tohum 3'ün en erken farkı ikiye bölmeyle adım 187'ye indi: satış faturası F31, kalem "Kurulum" kdvDahil:true + iskontoOrani "10"
+  → faturalar.F31.matrah/toplam ±1 kuruş, ardından 600 ve 102.02 (kucult-tohum3-ilk-fark.json); en küçük senaryo
+  test/bagimsiz/senaryolar/gerileme/en-kucuk-KDV-DAHIL-ISKONTO.json (6 yaprak, bu koşuda da aynı).
+- Evrak (çek/senet) kaynaklı fark YOK: plan §3.11a (121.01/121.02, 321) ve §3.14 (101.02/121.02, Tahsil Edildi A 101.02, Bankadan Geri
+  Al, Karşılıksız A 101.02, cheque-deposited) programda kâhinle aynı.
+- Dilin "4xx"/kod null yazdığı (YAYGIN/ÇIKARIM) retlerde programın verdiği kodlar (karşılaştırılmaz, bilgi): kapanmış evrakta işlem 409
+  (kodsuz); tahsilde olmayanı geri alma 409 cheque-not-deposited; tahsildeki evrakı başka hesaba tahsil 400 cheque-deposited-account;
+  alıştan önce tahsile verme 400 date-before-receive. Hepsi dilin beklediği sınıfta.
+
+TESTİN DİŞİ (eski programda kırmızı → güncel programda yeşil; ders 7)
+- 12b82c2 (İz 4.2 öncesi, senet 101/103'te): kabul-senet 10 fark, tohum 3 notr 26 fark, s3-a 2 fark — HEPSİ 101.01/101.02/103/121.01/
+  121.02/321 yapraklarında (eski program senedi çekle birlikte 101/103'e yazıyor). Güncel (0b634e7) programda aynı koşular 0.
+  (s3-c ve s3-d eski programda da 0: senaryolarında kontrol yok ve evrak hesapları sonda sıfırlanıyor — dişsiz; dişi kabul-senet,
+  s3-a ve tohumlar taşıyor.)
+- Kâhin kuralları: mutasyon 18/18 (sürüm 3), 22/22 (model_b genel).
+
+DENENEN (dersler): 2 çıkış kodu + sayılar her koşuda okundu; 3 retler adım adım (durum + kod + ileti retAyrinti'de) ve sonraki okumayla;
+4 okuma hatası 0 (okunamayan alan yok); 5 kâhin programdan bağımsız (önce commit, sonra kara kutu); 6 fark nötrleme + küçültme ile köke
+indi; 7 eski kodda kırmızı; 13 sahte saat (senaryo bugun'ü), tarihe bağlı test yok; 17 rastgele sıra (3 tohum) + eski sürüm (12b82c2)
+programı; 23 eski kod ayrı kopyada (scratchpad/kahin-senet-eski-12b82c2); 24 disk 28 GB boş; 25 benzersiz klasörler (kahin-senet-*).
+
+DENENMEYEN
+- Tohum 4+ ve uzun koşu (2000+ işlem), --yogun kip (görev kapsamı tohum 1–3 × 500 + kabul; uzun koşu son adayda).
+- Evrak işlemlerinde istek kimliği yinelemesi ve eşzamanlı (ayniAnda) evrak işlemi (üreteç yazmıyor).
+- Evrak işlemlerinde muhasebe/personel yetkisi (plan §9.1 çek yetkisinin rollerini saymıyor → BELİRSİZ-18).
+- Evrakın fatura açığına etkisi: evrak satırı olan carinin faturalar.*.acik alanları karşılaştırılmadı (BELİRSİZ-27; koşu başına 200–700
+  yol atlandı).
+- "Çek Kullan / Senet Kullan" hesap işaretleri ve verilen çekin "Çek Hesabı" (BELİRSİZ-32): bu program sürümü tahsile vermede işaret
+  istemedi. Başka ajanın "hesap uygunluğu Çek/Senet Kullan işaretine bağlanır" işi birleşince kabul-senet ve tohumlar YENİDEN koşulmalı;
+  koşucu o zaman hesap açılışında işaretleri göndermeli (bugün göndermiyor).
+- Fatura/taksit formundan çek-senet (ödemede evrak, plan_entries cheque_id), evrak düzeltme (PUT), Silinenler'den geri yükleme: dilde yok.
+- Tahsildeki evrakın nakit tahsili, ciro edilmiş evrakın karşılıksızı, geçmişi olan evrakın silinmesi (BELİRSİZ-29/31: senaryo kurmaz).
+- Kilitli tarihli Tahsile Ver / Geri Al (yalnız kilitli alış ve kilitli silme kabul-senet'te).
+- Ekran (arayüz) üzerinden; yalnız API. GitHub CI (push yok).
+
+BİLİNEN SINIRLAR
+- Plan çek/senet için örnek SAYI vermiyor; kabul-senet'in planBeklenen sayıları plan KURALLARINDAN elle hesaplandı (plan metni değil).
+- Rastgele koşularda evrak reti az (tohum başına 1–3); ret çeşidi kabul-senet (11) ve surum3 mini (7) ile kapsandı.
+- `node tools/kanit.mjs ozet` bu klasörde fark-*.json'ları kanıt kaydı sanıp çöküyor (basladi alanı yok) — 2026-10-10/kahin-son'da da
+  aynı; gün klasörü özeti alt klasörü okumadığı için etkilenmez. Bu klasörün hükmü bu dosyadaki tablodur.
