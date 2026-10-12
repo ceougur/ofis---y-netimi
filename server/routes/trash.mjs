@@ -352,9 +352,10 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       message = "Tahsilat geri eklendi; Kasa ve tahsilat takvimi güncellendi.";
     } else if (item.kind === "cash") {
       if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Kasa hareketinin bilgisi eksik; geri yüklenemez.");
-      // 2.2.0 İz 1.3: Kasa açılışı (açıklaması "Açılış …" nakit giriş) yalnız yönetici geri yükler; yerine yenisi girildiyse geri gelmez (iki açılış
-      // olurdu); tarihi Kasa'nın ilk hareketinden sonra olamaz (routes/cash.mjs ile aynı kurallar).
-      if (!payload.twin && isCashOpening({ ...payload, method: methodInput(payload.method) })) {
+      // 2.2.0 İz 1.3: Kasa açılışı (işaretli satır; Yargıç Y2/Y3: açıklamadan tanınmaz) yalnız yönetici geri yükler; yerine yenisi girildiyse geri
+      // gelmez (iki açılış olurdu); tarihi Kasa'nın ilk hareketinden sonra olamaz (routes/cash.mjs ile aynı kurallar). İşaret satırla geri gelir.
+      const restoreOpening = !payload.twin && isCashOpening({ ...payload, method: methodInput(payload.method) });
+      if (restoreOpening) {
         if (!canUser(user, "system.manage")) throw new HttpError(403, "Kasa açılış bakiyesini yalnız yönetici geri yükler.", { code: "cash-opening-admin" });
         const other = cashOpenings(store)[0];
         if (other) throw new HttpError(409, `Yerine yeni Kasa açılışı girilmiş (${String(other.date).split("-").reverse().join(".")}); eski açılış geri yüklenmez. Gerekirse Kasa → Açılış Bakiyesi'nden düzeltin.`, { code: "cash-opening-exists", id: other.id });
@@ -383,7 +384,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
             const method = methodInput(row.method);
             shared = bank.eventFor("cash_entries", { kind: row.kind, date: row.date, method, transfer_id: row.transferId || "", event_id: row.eventId || shared });
             store.run(
-              "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, fin_ref, event_id, is_opening, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               row.id,
               row.kind,
               money(row.amount),
@@ -393,6 +394,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
               row.transferId || "",
               keep(row.finRef, method, row.date),
               shared,
+              restoreOpening && row.id === item.ref ? 1 : 0,
               row.createdBy || user.id,
               row.createdAt || now(),
               user.id,

@@ -303,7 +303,8 @@ değişmiş gibi. Hesabın açılış tarihi D' olur. [PLAN §3.8 "'Açılışı
 |---|---|
 | `tutar` | Kasa'daki nakit |
 
-Yevmiye: `B 100 T / A 500 T` **[YAYGIN]**. Koşucu bunu Kasa'ya elle giriş olarak, açıklaması **"Açılış Bakiyesi"** olarak girer.
+Yevmiye: `B 100 T / A 500 T` **[YAYGIN]**. Koşucu bunu programın Kasa → Açılış Bakiyesi işlemiyle girer (2.2.0, 12.10.2026: program açılışı
+açıklama metninden değil bu işlemden tanır — yargıç Y2; beklenen yevmiye değişmedi; önceki sürüm koşucusu açıklaması "Açılış Bakiyesi" elle giriş yapıyordu).
 Gerekçe: [PLAN §11.1 A8 "Açılış hesabını açıklama metni belirliyor (general-ledger.mjs:43) … Cari için davranış değişmez"]; plan
 Kasa açılışını ayrıca tanımlamıyor. Program 500 yerine 649 yazarsa fark İNCELE'dir.
 

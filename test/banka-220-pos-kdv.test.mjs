@@ -139,3 +139,33 @@ describe("Komisyon iadesi > kesinti olan ay → taslak açılmaz, \"İade Alaca�
     }
   });
 });
+
+// Yargıç 2.2.0 Y6: Eylül kilitliyken Eylül taslağı kilitli tarihle (30.09) açılıyor, Kaydet 409 period-locked veriyordu. Beklenen (plan K3 "kilitli
+// güne düşen geçiş ilk açık güne"; §4.3 tablosu): taslak 01.10 (ilk açık gün) tarihli, KDV Dahil 300 (matrah 250, KDV 50); tarih değiştirilmeden
+// kaydedilir; 191 = 50, sağlayıcı 0.
+describe("Yargıç Y6: kilitli ayın komisyon taslağı ilk açık günle açılır ve olduğu gibi kaydedilir", () => {
+  it("Eylül satışı 10.000 (%2,5 KDV Hariç) → kesinti 300; Eylül kilitli → taslak 01.10, 300 = 250 + 50; Kaydet 200; 191 = 50; sağlayıcı 0", async () => {
+    const ctx = await bootBank({ now: "2026-10-08T12:00:00+03:00" });
+    try {
+      const ziraat = await must("Ziraat", ctx.api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", opening: { date: "2026-09-01", amount: "100.000", confirmed: true } }));
+      const provider = await must("sağlayıcı", ctx.api.post("/api/workspace/accounts", { name: "Örnek Ödeme Kuruluşu A.Ş.", type: "supplier", registeredOn: "2026-09-01" }));
+      const customer = await must("müşteri", ctx.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-09-01" }));
+      await openPos(ctx.api, { ...kdvPos(ziraat.id, provider.id), validFrom: "2026-09-01" });
+      await must("Eylül satışı", ctx.api.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "10.000", method: "card", date: "2026-09-25" }));
+      await settle(ctx.api);
+      assert.equal((await must("sağlayıcı", ctx.api.get(`/api/workspace/accounts/${provider.id}`))).totals.balance, 300, "kesinti 300");
+      await must("Eylül kilidi", ctx.api.put("/api/admin/period-lock", { lockedUntil: "2026-09-30" }));
+      const created = await must("Eylül taslağı", ctx.api.post(`${BANK}/pos/commission-invoices`, { month: "2026-09" }));
+      assert.equal(created.created.length, 1);
+      const draft = await must("taslak", ctx.api.get(`/api/workspace/invoices/${created.created[0].invoiceId}`));
+      assert.deepEqual([draft.issueDate, draft.payableTotal, draft.netTotal, draft.vatTotal], ["2026-10-01", 300, 250, 50], "taslak ilk açık gün, 300 = 250 + 50");
+      await must("kaydet (tarih değiştirilmeden)", ctx.api.post(`/api/workspace/invoices/${draft.id || created.created[0].invoiceId}/issue`, { number: "OK-EYL", force: true }));
+      const trial = await trialBalances(ctx.api);
+      assert.equal(kurus(trial["191"] || 0), kurus(50), "191 İndirilecek KDV 50");
+      assert.equal((await must("sağlayıcı", ctx.api.get(`/api/workspace/accounts/${provider.id}`))).totals.balance, 0, "sağlayıcı kapandı");
+      await posCheck(ctx.api, "kilitli ay taslağı");
+    } finally {
+      await ctx.server.close();
+    }
+  });
+});

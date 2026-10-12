@@ -1,0 +1,14 @@
+(node:20889) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ESKİ mutabakat ok: true YENİ mutabakat ok: true []
+Mizan farkı (bütün dönem) eski → yeni: ["101: 1600 → 700","121: 0 → 900"]
+Mizan farkı (KİLİTLİ Eylül) eski → yeni: ["101: 1600 → 700","121: 0 → 900"]
+Toplam borç/alacak eski: { debit: 109000, credit: 109000, difference: 0 } yeni: { debit: 109000, credit: 109000, difference: 0 }
+Kasa bakiyesi eski: undefined
+Kasa bakiyesi yeni: undefined açılış bilgisi: 0
+Hesaplar: [{"name":"Ziraat Bankası · Ana TL Hesabı","kind":"demand","parentId":"","suggest":null,"flags":[false,false,false,false]},{"name":"Ziraat Bankası · Bankkart","kind":"card","parentId":"","suggest":null,"flags":[false,false,false,false]}]
+Kasa → Açılış Bakiyesi (eski veride iki 'Açılış' varken): 409 {"ok":false,"error":"Açılış tarihi (01.10.2026) Kasa'nın ilk hareketinden (01.09.2026) sonra olamaz. Açılış, o günün başındaki nakittir; ilk hareketin günü ya da öncesi seçilir.","code":"cash-opening-after-first","firstMovement":"2026-09-01","field":"date"}
+eski 'açılışta…' girişinin açıklamasını düzelt: 200 {"ok":true,"data":{"id":"cash-57e7524b-e7c2-4b73-ac7e-09b199fe7277"}}
+POS aç: 200
+Alt Hesap Mizanı 108.*/309.*/101.*/121.*/103/321: [["101.01",700,"Portföydeki Çekler"],["108.00",1000,"Hesabı Atanmamış Eski Hareketler"],["121.01",900,"Portföydeki Senetler"],["309.01",-400,"Ziraat Bankası · Bankkart"]]
+son mutabakat ok: true []

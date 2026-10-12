@@ -182,10 +182,13 @@ const LOCK_SQL = {
     requires: ["bank_lines", "fin_events"],
     sql: "SELECT l.id, l.event_id, l.seq, l.role, l.gl, l.sub, l.ref, l.side, l.try_minor, l.currency, l.fx_minor, l.rate_e6 FROM bank_lines l JOIN fin_events e ON e.id = l.event_id WHERE e.date <= ?1 ORDER BY l.id",
   },
-  // POS satışının değişmeyen alanları (durum, güncelleme ve sonradan değişebilen iade/bloke alanları girmez).
+  // POS satışının değişmeyen alanları (plan §4.4/6; durum, güncelleme ve sonradan değişebilen iade/bloke alanları girmez). Yargıç 2.2.0 Y1:
+  // bank_account_id da girmez — "Bekleyenleri Yeni Hesaba Taşı" (§4.6, lib/bank/pos.mjs movePending) kilitli satışın BEKLEYEN kalemlerinin
+  // geçeceği hesabı değiştirir; satışın kendi fişi (bank_lines, kilit izinde) ve kilitli dönemin mizanı değişmez, para yeni hesaba valör günü
+  // (açık dönemde) yazılır. 2.1.0'da pos_sales'e yazan yol yoktu (POS Aşama 10–11 2.2.0'da): eski sürümün kaydettiği iz bu değişiklikten etkilenmez.
   pos_sales_lock: {
     requires: ["pos_sales"],
-    sql: "SELECT id, event_id, pos_id, kind, src, origin_id, date, installments, rate_ppm, tax_kind, tax_mode, tax_ppm, fixed_minor, refund_commission, payout, block_days, bank_account_id, provider_account_id, gross_minor, commission_minor, tax_minor, net_minor, auth_code FROM pos_sales WHERE date <= ?1 ORDER BY id",
+    sql: "SELECT id, event_id, pos_id, kind, src, origin_id, date, installments, rate_ppm, tax_kind, tax_mode, tax_ppm, fixed_minor, refund_commission, payout, block_days, provider_account_id, gross_minor, commission_minor, tax_minor, net_minor, auth_code FROM pos_sales WHERE date <= ?1 ORDER BY id",
   },
   // Bankaya Tahsile Ver (§3.14): verilme ve kapanış ayrı (kilitli ayda verilen çek açık ayda tahsil edilebilir).
   cheque_collections_given: { requires: ["cheque_collections"], sql: "SELECT id, cheque_id, bank_account_id, given_date FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },

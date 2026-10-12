@@ -1,0 +1,85 @@
+(node:16113) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+UYDU  [A0] Ziraat valör sonrası (100.000 + 9.750) :: beklenen=109750 gerçek=109750
+UYDU  [A1] personel POS İadesi uç (§9.1 bank.move ister) durum :: beklenen=403 gerçek=403
+UYDU  [A2] personel cari 'POS İadesi' (out, card) durum :: beklenen=403 gerçek=403
+UYDU  [A3] Ziraat bakiyesi personel denemelerinden sonra (değişmemeli) :: beklenen=109750 gerçek=109750
+UYDU  [A4] personelin yazdığı iade sayısı :: beklenen=0 gerçek=0
+UYDU  [A5] Mutabakat Testi :: beklenen=true gerçek=true
+UYDU  [B1] aynı anda iki 6.000 iade: durumlar (biri 200, biri 409) :: beklenen=[200,409] gerçek=[200,409]
+UYDU  [B2] aynı istek kimliği 2. kez: 200 + replayed :: beklenen=[200,true] gerçek=[200,true]
+UYDU  [B3] aynı kimlik farklı gövde: 409 :: beklenen=409 gerçek=409
+UYDU  [B4] toplam iade (6.000 + 1.000) :: beklenen=7000 gerçek=7000
+UYDU  [B5] Ziraat 12.10 (100.000 + 3.000 − 250) :: beklenen=102750 gerçek=102750
+UYDU  [B6] mizan 108 / 653 / 120 (carisiz-faturasız tahsilat: 120 = −10.000 + 7.000) :: beklenen=[0,250,-3000] gerçek=[0,250,-3000]
+UYDU  [B7] Mutabakat Testi :: beklenen=true gerçek=true
+UYDU  [C1] kilit 10.10 (taksit valörleri Kasım+, bekleyen vadesi gelmemiş) :: beklenen=200 gerçek=200
+UYDU  [C2] kilitten sonra Mutabakat :: beklenen=true gerçek=true
+UYDU  [C3] Bekleyenleri Taşı sonrası Mutabakat (kilitli satış): ya 409 ile reddedilir ya da sahte fark doğmaz :: beklenen=true gerçek=true
+UYDU  [C4] Kasım valöründen sonra Mutabakat :: beklenen=true gerçek=true
+UYDU  [D1] kilitli tarihe iade 409 :: beklenen=409 gerçek=409
+UYDU  [D2] açık tarihe 5.000 Oransal iade (kilitli satışın bekleyen kalemleri) :: beklenen=200 gerçek=200
+UYDU  [D3] Mutabakat (kilit izi bozulmamalı) :: beklenen=true gerçek=true
+UYDU  [D4] Ziraat son (100.000 + 6.755) :: beklenen=106755 gerçek=106755
+UYDU  [D5] mizan 108 / 653 :: beklenen=[0,245] gerçek=[0,245]
+UYDU  [D6] son Mutabakat :: beklenen=true gerçek=true
+
+ÖZET 0 fark / 23 denetim
+[
+ {
+  "id": "A-detay",
+  "r1": [
+   403,
+   "FORBIDDEN",
+   "Bu işlem için yetkiniz yok."
+  ],
+  "r2": [
+   403,
+   null,
+   "Borç, alacak ve ödeme girişi yönetici, uzman ve muhasebe yetkisidir; tahsilatı herkes girer."
+  ],
+  "refunds": []
+ },
+ {
+  "id": "B-cari"
+ },
+ {
+  "id": "C-mv",
+  "status": 409,
+  "code": "ledger-integrity",
+  "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-10-10 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+ },
+ {
+  "id": "C-integ",
+  "i1": {
+   "ok": true,
+   "failures": []
+  },
+  "integrityLog": [
+   "{\"id\":\"int-b5c31edc-6204-426e-8483-078f89d5a779\",\"at\":\"2026-10-20T09:00:00.034Z\",\"action\":\"rolled-back\",\"tables\":\"pos_sales\",\"summary\":\"Kapanmış dönem (2026-10-10 ve öncesi) değişemez\",\"detail_json\":\"[{\\\"code\\\":\\\"period-lock\\\",\\\"name\\\":\\\"Kapanmış dönem (2026-10-10 ve öncesi) değişemez\\\",\\\"ok\\\":false"
+  ]
+ },
+ {
+  "id": "C-bal",
+  "ziraat": 103860,
+  "garanti": 50000
+ },
+ {
+  "id": "C-integ2",
+  "i2": {
+   "ok": true,
+   "failures": []
+  }
+ },
+ {
+  "id": "D-ro",
+  "status": 200
+ },
+ {
+  "id": "D-integ",
+  "i1": {
+   "ok": true,
+   "failures": []
+  }
+ }
+]

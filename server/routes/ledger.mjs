@@ -56,8 +56,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     out.payments = all(`SELECT id, amount, date, note, method, ${refOf("payments", "p")} AS ref FROM payments p${where("p", [[set?.payments, own("m_payments")]])}`, wanted(set?.payments));
     // Kasa ↔ Banka transferinin nakit bacağı banka bacağının hesabını (ikiz satırın fin_ref'i) taşır: madde tek, banka tarafı onun hesabıdır.
     const cashRef = refOf("cash_entries", "c");
+    // Yargıç Y2/Y3: Kasa açılışı işaretten (göç 22; v21 ve öncesi dosyada kolon yok: 0 — sıradan giriş).
+    const cashOpening = store.all("PRAGMA table_info(cash_entries)").some(column => column.name === "is_opening") ? "c.is_opening" : "0";
     out.cashEntries = all(
-      `SELECT c.id, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, ${cashRef} AS ref,
+      `SELECT c.id, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, ${cashOpening} AS isOpening, ${cashRef} AS ref,
               CASE WHEN c.transfer_id <> '' THEN COALESCE((SELECT ${cashRef === "''" ? "''" : "t.fin_ref"} FROM cash_entries t WHERE t.transfer_id = c.transfer_id AND t.id <> c.id LIMIT 1), '') ELSE '' END AS bankRef
        FROM cash_entries c${where("c", [[set?.cash, own("m_cash")]])}`,
       wanted(set?.cash),

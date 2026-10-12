@@ -628,6 +628,12 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (row.status === status) return view(row);
     // v2.2.0 (§3.14): tahsildeki evrakın hesabı pasife alınmaz (tahsil o hesaba yazılır; pasif hesaba hareket girilmez).
     if (status !== "active") assertNoPendingCollections(store, row.id, "pasife alınamaz");
+    // Eleştirmen E-4 (plan §4.6): POS satışının bekleyen kalemleri valör günü satışın hesap kopyasına (pos_sales.bank_account_id) yazılır — o hesap
+    // pasife alınırsa para pasif hesaba sessizce geçerdi. Önce POS → Bekleyenleri Yeni Hesaba Taşı.
+    if (status !== "active") {
+      const waiting = store.get("SELECT COUNT(DISTINCT s.id) AS n FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id WHERE i.status = 'pending' AND s.bank_account_id = ?", row.id);
+      if (Number(waiting?.n) > 0) throw new HttpError(409, `${row.bank_name} · ${row.name} hesabına geçecek bekleyen POS tutarı var (${waiting.n} işlem); pasife alınamaz. Önce POS → Bekleyenleri Yeni Hesaba Taşı ile başka bir hesaba taşıyın.`, { code: "bank-pos-pending" });
+    }
     bank.post({
       user, module: "bank", op: "update", prev: { status: row.status },
       write: () => {

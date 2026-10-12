@@ -1,0 +1,12 @@
+(node:20770) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kilit 10.10: 200  
+Bekleyenleri Yeni Hesaba Taşı (Y1): 409 ledger-integrity — İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-10-10 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.
+POS kartında bağlı hesap → Garanti: 200  
+Ziraat POS Kullan kapat: 200  
+Ziraat Pasife Al: 200  
+Ziraat durum: passive bakiye: 100000
+aktar (Kasım–Ocak valörleri): 200  
+kalemler: [["2026-11-05","settled",""],["2026-12-07","settled",""],["2027-01-05","settled",""]]
+Ziraat: 111580 Garanti: 50000
+Mutabakat: true []

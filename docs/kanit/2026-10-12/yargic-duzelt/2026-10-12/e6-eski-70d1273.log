@@ -1,0 +1,20 @@
+(node:20809) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+v2.1.0 düzelt 10.000 → 8.000: 200 {"ok":true,"data":{"id":"account-1534ecf8-9038-4523-bffe-be5e0f16c06a","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-10-01","groupId":null,"su
+v2.1.0 sil 5.000: 200 {"ok":true,"data":{"id":"account-1534ecf8-9038-4523-bffe-be5e0f16c06a","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-10-01","groupId":null,"su
+v2.1.0 yeni kart tahsilatı 700: 200 {"ok":true,"data":{"id":"account-1534ecf8-9038-4523-bffe-be5e0f16c06a","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+onarım raporu: null
+POS satışları: [["void",5000,125,[["void",5000,4875]]],["active",10000,250,[["pending",10000,9750]]]]
+Mutabakat (dönüşten hemen sonra): false [["pos:terminal:108.01","POS Bekleyen Mutabakatı (108.01 POS-01 · Ziraat POS)",""],["pos:source","POS ile Tahsilat Satırı",""]]
+2.2.0'da yeni POS satışı 1.000: 200  
+aktar: 200 {"ok":true,"data":{"settled":0,"failed":2,"remaining":2,"stats":{"netMinor":1072500,"blockedMinor":0,"grossMinor":1100000,"feeMinor":0,"due":{"count":2,"netMinor":1072500},"awaiting":{"count":0,"netMinor":0},"errors":2}}}
+POS satışları (aktar sonrası): [["active",1000,[["pending",975,"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (POS Bekleyen Mutabakatı (108.01 POS-01 · Ziraat POS): -10.000,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."]]],["void",5000,[["void",4875,""]]],["active",10000,[["pending",9750,"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (POS ile Tahsilat Satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."]]]]
+özet posPending: {"netMinor":1072500,"blockedMinor":0,"grossMinor":1100000,"feeMinor":0,"due":{"count":2,"netMinor":1072500},"awaiting":{"count":0,"netMinor":0},"errors":2}
+FARK  [R1] Ziraat valörden sonra (100.000 + 7.800 + yeni 975) :: beklenen=108775 gerçek=100000
+FARK  [R2] 108.01 / 108.00 :: beklenen=[0,700] gerçek=[1000,8700]
+FARK  [R3] 653 (8.000 × %2,5) :: beklenen=200 gerçek=0
+FARK  [R4] cari ABC (−8.000 − 700) :: beklenen=-8700 gerçek=-9700
+FARK  [R5] Mutabakat :: beklenen=true gerçek=false
+Mutabakat hataları: [["pos:terminal:108.01","POS Bekleyen Mutabakatı (108.01 POS-01 · Ziraat POS)"],["pos:source","POS ile Tahsilat Satırı"]]
+
+ÖZET 5 fark / 5

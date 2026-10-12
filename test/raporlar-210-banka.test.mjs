@@ -167,8 +167,9 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     };
 
     // 2) 320: Kasa'ya elle açılış nakdi.
-    await must("açılış nakdi", api.post("/api/workspace/cash", { kind: "in", amount: "1000", date: ago(320), description: "Açılış nakdi", method: "cash" }));
-    // 2.2.0 İz 1.3: açıklaması "Açılış …" Kasa girişi Kasa açılışıdır (B 100 / A 500; önceden 649).
+    // 2.2.0 İz 1.3: Kasa → Açılış Bakiyesi Kasa açılışıdır (B 100 / A 500; önceden 649). Yargıç Y2/Y3: açılış işaretli uçtan girilir; açıklaması
+    // "Açılış …" olan sıradan Kasa girişi açılış sayılmaz (2.1.0 gibi 649).
+    await must("açılış nakdi", api.post("/api/workspace/cash/opening", { amount: "1000", date: ago(320) }));
     E.cash.push({ d: ago(320), amt: 1000, opening: true });
     // 3) 310: Cem'e açık hizmet satışı (%20) — 120 açık.
     await invoice("S0", { d: ago(310), scenario: "service_sale", acc: "C", lines: [{ itemId: ids.HZM, qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open", dueDate: ago(280) } });

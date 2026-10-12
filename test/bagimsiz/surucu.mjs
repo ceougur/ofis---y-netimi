@@ -750,7 +750,8 @@ async function run(scenarioPath, outPath) {
           return result.ok ? { done: true } : refused(result);
         }
         case "kasa_acilis": {
-          const result = await http(client, "POST", "/api/workspace/cash", [], { kind: "in", amount: amountOf(step, "tutar"), date, description: "Açılış Bakiyesi", method: "cash", ...flags }, opt);
+          // 2.2.0 (yargıç Y2): program Kasa açılışını açıklamadan değil Kasa → Açılış Bakiyesi işleminden tanır; koşucu o uca gönderir (beklenen §4.8 aynı).
+          const result = await http(client, "POST", "/api/workspace/cash/opening", [], { amount: amountOf(step, "tutar"), date, ...flags }, opt);
           return result.ok ? { done: true } : refused(result);
         }
         case "kasa_hareket": {

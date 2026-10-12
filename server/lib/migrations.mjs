@@ -1178,6 +1178,19 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 22,
+    name: "v2.2.0 Kasa açılışı işareti (Kasa → Açılış Bakiyesi ile yazılan satır)",
+    up(store) {
+      // Yargıç 2.2.0 Y2/Y3: Kasa açılışı (B 100 / A 500) açıklama metninden ("Açılış …") değil, bu işaretten tanınır. YALNIZ EKLEYİCİ: eski
+      // satırların hepsi 0 (sıradan Kasa girişi, 649) kalır — "Açılış …" açıklamalı eski girişler kendiliğinden açılışa çevrilmez, kapanmış
+      // dönemin mizanı değişmez. İşareti yalnız Kasa → Açılış Bakiyesi ucu yazar (routes/cash.mjs). Eski sürüm (2.1.0) kolonu okumaz.
+      store.raw("migration.v22", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cash_entries'")) return;
+        addColumn(store, "cash_entries", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+      });
+    },
+  },
 ];
 
 function widenIntegrityLog(store) {

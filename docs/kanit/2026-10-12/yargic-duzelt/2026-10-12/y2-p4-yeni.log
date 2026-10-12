@@ -1,0 +1,29 @@
+(node:20920) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+===== v2.1.0 =====
+yönetici: 'Açılış bakiyesi' 5.000 (01.10): 200 "" 
+yönetici: 'Kırtasiye' çıkış 200 (02.10): 200 "" 
+yönetici: 'Açılış kampanyası hasılatı' 1.000 (05.10, ilk hareketten sonra): 200 "" 
+muhasebe: 'açılışta satılan ürün' 300 (06.10): 200 "" 
+muhasebe: 'Satış hasılatı' 300 (06.10): 200 "" 
+Kasa satırları: [["2026-10-01","in",5000,"Açılış bakiyesi"],["2026-10-02","out",200,"Kırtasiye"],["2026-10-05","in",1000,"Açılış kampanyası hasılatı"],["2026-10-06","in",300,"açılışta satılan ürün"],["2026-10-06","in",300,"Satış hasılatı"]]
+mizan 100 / 500 / 649 / 770: [ 6400, 0, -6600, 200 ]
+Mutabakat ok: true []
+
+===== 2.2.0 =====
+yönetici: 'Açılış bakiyesi' 5.000 (01.10): 200 "" 
+yönetici: 'Kırtasiye' çıkış 200 (02.10): 200 "" 
+yönetici: 'Açılış kampanyası hasılatı' 1.000 (05.10, ilk hareketten sonra): 200 "" 
+muhasebe: 'açılışta satılan ürün' 300 (06.10): 200 "" 
+muhasebe: 'Satış hasılatı' 300 (06.10): 200 "" 
+Kasa satırları: [["2026-10-01","in",5000,"Açılış bakiyesi"],["2026-10-02","out",200,"Kırtasiye"],["2026-10-05","in",1000,"Açılış kampanyası hasılatı"],["2026-10-06","in",300,"açılışta satılan ürün"],["2026-10-06","in",300,"Satış hasılatı"]]
+mizan 100 / 500 / 649 / 770: [ 6400, 0, -6600, 200 ]
+Mutabakat ok: true []
+
+===== v2.1.0 verisi → 2.2.0 =====
+2.2.0 açılışta Mutabakat ok: true []
+eski 1. 'Açılış' girişinin tutarını düzelt (5.000 → 5.100): 200 "" 
+eski 2. 'Açılış' girişinin tutarını düzelt (250 → 260): 200 "" 
+Kasa → Açılış Bakiyesi GET: 200 "" 
+açılış: {"opening":null,"firstMovement":"2026-10-01","lockedUntil":"","canManage":true}
