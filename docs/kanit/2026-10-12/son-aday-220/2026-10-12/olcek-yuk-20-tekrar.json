@@ -1,0 +1,32 @@
+{
+  "ad": "olcek-yuk-20-tekrar",
+  "komut": "node tools/olcek-210.mjs --asama yuk --klasor /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/olcek-220 --kullanici 20 --json docs/kanit/2026-10-12/son-aday-220/olcek-20-tekrar.json",
+  "commit": "4efb516304c1f70dc4ddd1e223b310418e5b6d49",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T18:22:36.227Z",
+  "sure_sn": 285.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 29,
+    "gecen": 28,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/son-aday-220/2026-10-12/olcek-yuk-20-tekrar.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "4ef9f7870c274f554b34be439e45c5dad1ca3a6ad88386f5436431b232ef6b66",
+  "ham_cikti_bayt": 7654
+}

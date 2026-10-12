@@ -1,0 +1,299 @@
+
+===== 20 eşzamanlı kullanıcı · 240 sn · 3 pencere =====
+(node:2597) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+raporlar (Muhasebe rolüyle 200): banka-bakiye, banka-hareket, banka-masraf · dışında: {"banka-pos-hareketleri":"403 Bu rapor için yetkiniz yok.","kasa-hareketleri":"403 Bu rapor için yetkiniz yok.","cari-mizan":"404 Rapor bulunamadı."}
+{
+ "kullanici": 20,
+ "sunucu": {
+  "istek": 1790,
+  "istekSn": 7,
+  "yazimBasarili": 976,
+  "genel": {
+   "p50": 742,
+   "p95": 9337,
+   "enCok": 14769
+  },
+  "yedekSirasinda": {
+   "adet": 25,
+   "p50": 1337,
+   "p95": 10542,
+   "enCok": 12088
+  },
+  "yedekDisinda": {
+   "p50": 736,
+   "p95": 9223,
+   "enCok": 14769
+  },
+  "beklenen409": {},
+  "beklenmeyen": {},
+  "olayDongusu": {
+   "p50": 10.2,
+   "p95": 733.5,
+   "p99": 1035.5,
+   "enCok": 1895,
+   "rssMB": 1053
+  }
+ },
+ "ekran": {
+  "girisMs": [
+   1178,
+   640,
+   719
+  ],
+  "cariPencereAcilisMs": 452,
+  "bankaPencereAcilisMs": 211,
+  "hareketlerIlkMs": 2338,
+  "cariTusHarf": {
+   "adet": 232,
+   "p50": 13,
+   "p95": 51,
+   "enCok": 179
+  },
+  "cariAramaSonucu": {
+   "adet": 58,
+   "p50": 162,
+   "p95": 1563,
+   "enCok": 1925
+  },
+  "cariAramaZamanAsimi": 0,
+  "hareketSuzgec": {
+   "adet": 27,
+   "p50": 519,
+   "p95": 1298,
+   "enCok": 1341
+  },
+  "hareketDahaFazla": {
+   "adet": 27,
+   "p50": 836,
+   "p95": 1451,
+   "enCok": 1662
+  },
+  "hesapSecenegi": {
+   "adet": 27,
+   "p50": 4,
+   "p95": 8,
+   "enCok": 9
+  },
+  "suzgecBasarisiz": 0,
+  "suzgecDurumlari": [],
+  "dahaFazlaBasarisiz": 0,
+  "dahaFazlaDurumlari": [],
+  "kaydetListede": {
+   "adet": 13,
+   "p50": 3386,
+   "p95": 5415,
+   "enCok": 5415
+  },
+  "kaydetGorunmedi": 1,
+  "bankaTur": 27,
+  "bankaYenidenAcilis": 0,
+  "kaydedilenler": [
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E1",
+    "kurus": 2463,
+    "veritabaninda": 1,
+    "listedeMs": 5415
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E3",
+    "kurus": 1894,
+    "veritabaninda": 1,
+    "listedeMs": 3203
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E5",
+    "kurus": 2016,
+    "veritabaninda": 1,
+    "listedeMs": 2927
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E7",
+    "kurus": 2803,
+    "veritabaninda": 1,
+    "listedeMs": 4756
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E9",
+    "kurus": 564,
+    "veritabaninda": 1,
+    "listedeMs": 4360
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E11",
+    "kurus": 830,
+    "veritabaninda": 1,
+    "listedeMs": 2479
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E13",
+    "kurus": 2168,
+    "veritabaninda": 1,
+    "listedeMs": 3509
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E15",
+    "kurus": 1003,
+    "veritabaninda": 1,
+    "listedeMs": 3386
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E17",
+    "kurus": 2922,
+    "veritabaninda": 1,
+    "listedeMs": 2645
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E19",
+    "kurus": 2018,
+    "veritabaninda": 1,
+    "listedeMs": 3343
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E21",
+    "kurus": 869,
+    "veritabaninda": 1,
+    "listedeMs": 4081
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E23",
+    "kurus": 1891,
+    "veritabaninda": 1,
+    "listedeMs": 4081
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E25",
+    "kurus": 2347,
+    "veritabaninda": 1,
+    "listedeMs": 1693
+   },
+   {
+    "iz": "OLCEK-20-mv5kxvoo-E27",
+    "kurus": 1614,
+    "veritabaninda": 0,
+    "listedeMs": -1
+   }
+  ],
+  "baskasininKaydiListede": {
+   "adet": 13,
+   "p50": 1889,
+   "p95": 8008,
+   "enCok": 8008
+  },
+  "baskasininKaydiGorunmedi": 0,
+  "raporlarAcilis": {
+   "adet": 10,
+   "p50": 1649,
+   "p95": 2214,
+   "enCok": 2214
+  },
+  "bankaBakiyeOnIzleme": {
+   "adet": 10,
+   "p50": 7186,
+   "p95": 12075,
+   "enCok": 12075
+  },
+  "pdf": {
+   "adet": 10,
+   "p50": 5802,
+   "p95": 10182,
+   "enCok": 10182,
+   "durumlar": [
+    200
+   ],
+   "bayt": 35239
+  },
+  "excel": {
+   "adet": 10,
+   "p50": 6460,
+   "p95": 9047,
+   "enCok": 9047,
+   "durumlar": [
+    200
+   ],
+   "bayt": 5146
+  },
+  "yedekSirasindaCari": {
+   "adet": 0,
+   "p50": null,
+   "p95": null,
+   "enCok": null
+  },
+  "yedekSirasindaRapor": {
+   "adet": 0,
+   "p50": null,
+   "p95": null,
+   "enCok": null
+  },
+  "donma": {
+   "ekran1": {
+    "toplamMs": 14416,
+    "enUzunMs": 160
+   },
+   "ekran2": {
+    "toplamMs": 1110,
+    "enUzunMs": 93
+   },
+   "ekran3": {
+    "toplamMs": 0,
+    "enUzunMs": 0
+   }
+  },
+  "bellekMB": {
+   "ekran1": {
+    "bas": {
+     "jsHeapMB": 5.7,
+     "nodes": 2433,
+     "listeners": 666
+    },
+    "son": {
+     "jsHeapMB": 5.2,
+     "nodes": 17143,
+     "listeners": 510
+    }
+   },
+   "ekran2": {
+    "bas": {
+     "jsHeapMB": 5.5,
+     "nodes": 2434,
+     "listeners": 664
+    },
+    "son": {
+     "jsHeapMB": 5.7,
+     "nodes": 46404,
+     "listeners": 705
+    }
+   },
+   "ekran3": {
+    "bas": {
+     "jsHeapMB": 6.2,
+     "nodes": 2434,
+     "listeners": 658
+    },
+    "son": {
+     "jsHeapMB": 5.7,
+     "nodes": 4894,
+     "listeners": 576
+    }
+   }
+  },
+  "kararsizTiklama": {},
+  "hatalar": 0
+ }
+}
+turler: Satış faturası (peşin nakit) n=191 p50=655 p95=1261 max=1980 {"200":191}
+        Cari tahsilat (havale) n=201 p50=728 p95=1440 max=1777 {"200":201}
+        Cari tahsilat (nakit) n=246 p50=618 p95=1273 max=1893 {"200":246}
+        Cari arama n=286 p50=624 p95=1320 max=11509 {"200":286}
+        Bankalar arası transfer n=106 p50=751 p95=1341 max=1922 {"200":106}
+        Banka Hareketleri listesi n=228 p50=665 p95=1345 max=1925 {"200":228}
+        Rapor açma n=300 p50=6810 p95=12305 max=14769 {"200":300}
+        Banka Fişi (masraf) n=100 p50=658 p95=1364 max=2059 {"200":100}
+        Cari ödeme (nakit) n=132 p50=677 p95=1382 max=1503 {"200":132}
+yedek: otomatik (zamanlayıcı turu) 859 ms 001 - Şirket 1/destekofis-001-2026-10-12T18-24-05-349Z.sqlite ok 100380, 002 - Ölçek İkinci Şirket/destekofis-002-2026-10-12T18-24-06-101Z.sqlite ok 12237 | elle (Şimdi Yedek Al — Tüm Şirketler) 1123 ms 001 - Şirket 1/destekofis-001-2026-10-12T18-25-30-524Z-manuel.sqlite ok 100685, 002 - Ölçek İkinci Şirket/destekofis-002-2026-10-12T18-25-30-524Z-manuel.sqlite ok 12325
+sonra: {"001":{"mutabakatTesti":"TAMAM","mutabakatTestiMs":4708,"kasa":{"program":"12.613.166,23","bagimsiz":"12.613.166,23","fark":"0,00"},"banka102":{"program":"40.815.726,84","bagimsiz":"40.815.726,84","fark":"0,00"},"hesaplar":[{"hesap":"Ziraat Bankası · Ana TL Hesabı T2101","program":"20.870.981,12","bagimsiz":"20.870.981,12","fark":"0,00"},{"hesap":"Garanti BBVA · Ana TL Hesabı T2101","program":"20.654.327,01","bagimsiz":"20.654.327,01","fark":"0,00"}],"yukDefteri":{"kasa":"67.976,77","banka":"162.634,27"}},"002":{"mutabakatTesti":"TAMAM","mutabakatTestiMs":494,"kasa":{"program":"1.676.243,04","bagimsiz":"1.676.243,04","fark":"0,00"},"banka102":{"program":"5.102.516,35","bagimsiz":"5.102.516,35","fark":"0,00"},"hesaplar":[{"hesap":"Ziraat Bankası · Ana TL Hesabı T2102","program":"2.624.567,61","bagimsiz":"2.624.567,61","fark":"0,00"},{"hesap":"Garanti BBVA · Ana TL Hesabı T2102","program":"2.799.098,42","bagimsiz":"2.799.098,42","fark":"0,00"}],"yukDefteri":{"kasa":"16.169,38","banka":"37.206,11"}}}
+izli kayıt: {"001":{"cariHareketi":469,"fatura":162,"bankaOlayi":185,"beklenen":{"cariHareketi":469,"fatura":162,"bankaOlayi":185}},"002":{"cariHareketi":110,"fatura":29,"bankaOlayi":47,"beklenen":{"cariHareketi":110,"fatura":29,"bankaOlayi":47}}} · para satırı önce {"001":100075,"002":12181} sonra {"001":100971,"002":12393}
+hatalar: ekran: kayıt listede görünmedi (kendi 1, başkası 0)
+
+28 denetim geçti, 1 başarısız
+SONUÇ: BAŞARISIZ — 20 kullanıcı: ekran: kayıt listede görünmedi (kendi 1, başkası 0)

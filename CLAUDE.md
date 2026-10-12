@@ -351,3 +351,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   iz 4.2 bitince bitiş turuna başlayalım; yayından sonra limit kalırsa şüpheli alacakları yaparız" → İz 4.3 ERTELENDİ (yayından sonra, limit
   varsa); 4.2'nin kontrol turu koşulmadı (birinci tur bulguları düşüktü, düzeltildi; bitişteki yargıç + eleştirmen kapsar). Bitiş turu kullanım
   sınırına göre sade: yargıç + eleştirmen birer ajan; uzun koşular GitHub'da (yerel kullanım harcamaz).
+- KARAR (kullanıcı, 12.10.2026 ~18:45 UTC): ölçek 20 kullanıcıda Banka → Hareketler ekrandan kaydedilen masrafı 30 sn'de göstermiyor (iki koşu,
+  2.1.0'da yoktu; 10 kullanıcıda yok; para doğru) → "Bilinen sınır, yayından sonra". 2.2.0 KANIT'ta BİLİNEN SINIR; yayından sonra İz 4.3 ile
+  birlikte kök neden + düzeltme (ölçek aracı tools/olcek-210.mjs, kayıt docs/kanit/2026-10-12/son-aday-220/olcek-*).
