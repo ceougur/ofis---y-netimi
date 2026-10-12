@@ -101,7 +101,10 @@ export const addDays = (iso, days) => {
 // bu saatle başlatın: yerel bugün 06:00'dan akar (en uzun koşu 6 sa iş sınırına sığar, gece yarısına ulaşmaz).
 export const motorNow = (base = new Date()) => new Date(base.getFullYear(), base.getMonth(), base.getDate(), 6, 0, 0, 0).getTime();
 
-export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, log = () => {} }) {
+// pos (2.2.0): POS ekseni isteğe bağlı (varsayılan kapalı) — açılınca motor bir POS tanımlar; o andan sonra kartla tahsilatlar POS'a gider ve
+// rastgele sıra değişir. Kapalıyken işlem sırası ve sonuçları 2.1.0 motoruyla aynı (mevcut tohumlu testler: mutabakat-cekirdek, hiz-esdegerlik…).
+// Uzun koşu (npm run test:mutabakat, kos.mjs) POS'u açar.
+export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
@@ -238,7 +241,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   // 2.2.0 POS: Ziraat'e bağlı tek POS (Aynı Gün valör; oranlar çizelgenin ilk gününden geçerli).
   let posTerminal = null;
   const POS_RATE = { 1: 25_000, 3: 35_000 };
-  if (bank && banks.length) {
+  if (bank && pos && banks.length) {
     const r = await api("POST", "/api/workspace/bank/pos", { name: `Motor POS T${seed}`, bankAccountId: banks[0].id, providerKind: "bank", tax: "bsmv_incl", valorRule: "same_day", valorDays: 0, installmentPayout: "monthly", refundCommission: "none", provisionDays: 0, validFrom: D0, rates: [{ installments: 1, rate: "2,5" }, { installments: 3, rate: "3,5" }] });
     if (r.status !== 200) throw new Error(`POS açılamadı: ${r.status} ${r.text}`);
     posTerminal = { id: r.data.pos.id, bankId: banks[0].id, glSub: r.data.pos.glSub };
@@ -1884,7 +1887,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["banka-transfer", 3], ["banka-transfer-ters", 1],
     // POS (2.2.0, Aşama 10–11): tahsilat (Tek Çekim / 3 taksit), POS İadesi (kısmi, asıl satışa bağlı), silme (void / gün fişi ters kaydı).
     ["pos-tahsil", 5], ["pos-iade", 2], ["pos-sil", 1],
-  ].filter(([k]) => bank || !(k.startsWith("banka-") || k.startsWith("pos-") || BANK_ERA.has(k)));
+  ].filter(([k]) => (bank || !(k.startsWith("banka-") || BANK_ERA.has(k))) && (posTerminal || !k.startsWith("pos-")));
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
   if (bank) {
     const meta = (await api("GET", "/api/workspace/bank/voucher-meta")).data || {};

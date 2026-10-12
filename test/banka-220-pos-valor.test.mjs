@@ -361,7 +361,9 @@ describe("Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)", (
   });
 
   it("POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void", async () => {
-    // Aynı işlemde eski satış kaldırılmadan yenisi yazılırsa aynı provizyon "pos-auth-duplicate" olurdu (olay kimliği sırasına bağlı, ~%50).
+    // Düzelt'te tutar değişince peşin satırı yeni olayla yazılır, eskisi kalkar (aynı işlemde). Eski satış kaldırılmadan yenisi yazılsaydı
+    // aynı provizyon "pos-auth-duplicate" olurdu. Tek satırda olay kimliği sırası (oluşma sırasıyla artar) da kaldırmayı önce işler; sıra
+    // kuralının dişi bir sonraki testte (eski olay değişir, yeni olay kalkar).
     const w = await world();
     try {
       const item = await must("ürün", w.api.post("/api/workspace/stock", { kind: "goods", code: "B", name: "Ürün B", unit: "Adet", openingQty: "25" }));
@@ -373,6 +375,31 @@ describe("Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)", (
       assert.deepEqual(active.map(sale => [sale.grossMinor, sale.authCode]), [[kurus(1600), "PRV77"]], "tek etkin satış, son tutar");
       assert.equal((await summaryOf(w.api)).posPending.grossMinor, kurus(1600));
       await posCheck(w.api, "aynı provizyonla düzelt");
+    } finally {
+      await w.ctx.server.close();
+    }
+  });
+
+  it("iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)", async () => {
+    // 1. satır aynı tutarda kaldığı için ESKİ olayını korur (değişen satış = void + yeniden yazım), 2. satır kalkar; ikisi aynı işlemde. Eski olay
+    // kimliği küçük olduğundan kimlik sırasıyla işlenseydi 1. satırın yeni planı, henüz kaldırılmamış 2. satırın provizyonuna çarpardı (409).
+    const w = await world();
+    try {
+      const item = await must("ürün", w.api.post("/api/workspace/stock", { kind: "goods", code: "B", name: "Ürün B", unit: "Adet", openingQty: "25" }));
+      const body = cash => ({ kind: "sale", accountId: w.abc.id, issueDate: TODAY, pricesIncludeVat: true, lines: [{ itemId: item.id, name: "Ürün B", qty: 1, unitPrice: 800, discountRate: 0, vatRate: 20 }], payment: { cash, cheques: [], endorse: [], rest: "open" }, force: true });
+      const doc = await must("fatura", w.api.post("/api/workspace/invoices", body([
+        { amount: 500, method: "card", posId: w.pos.id, authCode: "AAA1", lineKey: "p1" },
+        { amount: 300, method: "card", posId: w.pos.id, authCode: "BBB2", lineKey: "p2" },
+      ])));
+      const number = w.ctx.store.get("SELECT number FROM invoices WHERE id = ?", doc.id).number;
+      const kept = w.ctx.store.get("SELECT event_id AS e FROM account_entries WHERE source = 'invoice' AND source_id = ? AND amount = 500", doc.id).e;
+      await must("düzelt", w.api.post(`/api/workspace/invoices/${doc.id}/edit`, { ...body([{ amount: 500, method: "card", posId: w.pos.id, authCode: "BBB2", installments: 3, lineKey: "p1" }]), number }));
+      assert.deepEqual(w.ctx.store.all("SELECT event_id AS e FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'in'", doc.id).map(row => row.e), [kept], "1. satır eski olayını korudu");
+      const sales = await salesOf(w.api, "?kind=sale");
+      assert.deepEqual(sales.filter(sale => sale.status === "active").map(sale => [sale.grossMinor, sale.authCode, sale.installments]), [[kurus(500), "BBB2", 3]]);
+      assert.equal(sales.filter(sale => sale.status === "void").length, 2, "eski iki satış void");
+      assert.equal((await summaryOf(w.api)).posPending.grossMinor, kurus(500));
+      await posCheck(w.api, "iki satırlı düzeltme");
     } finally {
       await w.ctx.server.close();
     }

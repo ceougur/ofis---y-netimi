@@ -1,4 +1,5 @@
 // Uzun mutabakat koşusu: npm run test:mutabakat -- --islem 5000 --tohum 7 --her 1 --tohumlar 3
+// 2.2.0: POS ekseni açık (motor bir POS tanımlar, POS tahsilatı/iadesi/silme); --pos-yok ile 2.1.0 sırası.
 // Geçici bir veritabanında programı başlatır, dört çekirdeği (Kasa, Stok, Cari, Taksit) rastgele ama tekrarlanabilir
 // işlemlerle sürer, her işlemden sonra (--her N: her N işlemde bir) bağımsız modelle ve programın mutabakat kapısıyla
 // karşılaştırır. Uyuşmazlıkta çıkış kodu 1 ve hangi işlemde, hangi hesapta, ne kadar fark olduğu yazılır.
@@ -23,7 +24,7 @@ for (let seed = firstSeed; seed < firstSeed + seeds; seed++) {
   const started = performance.now();
   try {
     const admin = await loginAdmin(server);
-    const report = await runReconciliation({ client: admin, seed, operations, verifyEvery: every, burst, log: line => console.log(line) });
+    const report = await runReconciliation({ client: admin, seed, operations, verifyEvery: every, burst, pos: !process.argv.includes("--pos-yok"), log: line => console.log(line) });
     const seconds = (performance.now() - started) / 1000;
     const ms = report.integrityMs.slice().sort((a, b) => a - b);
     console.log(`\nTohum ${seed}: ${report.operations} işlem, ${report.checks} doğrulama, ${report.rejectedAsExpected} beklenen ret (eksiye düşürme / aşım), eşzamanlı ${report.burst?.requests || 0} istek · ${seconds.toFixed(1)} sn`);

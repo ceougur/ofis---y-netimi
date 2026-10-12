@@ -112,13 +112,17 @@ describe("2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'de
     assert.deepEqual(snapshot(ctx.store), before, "döviz istekleri hiçbir şey yazmadı");
   });
 
-  it("POS: hesap türü değil, uç yok (404), POS tablolarına yazılmaz; ANLIK DURUM ve Birleşik Rapor'da POS Bekleyen / Blokeli POS yok", async () => {
+  // 2.2.0: POS uçları geldi (plan Aşama 10–11; routes/bank-pos.mjs, testleri banka-220-pos-*). Burada kalan iddia: POS bir banka hesap türü
+  // değildir; eksik gövdeyle istek 4xx döner ve hiçbir şey yazmaz; POS tanımlı değilken ANLIK DURUM'da POS kutusu kapalı, Birleşik Rapor'da
+  // POS sütunu yok (Birleşik Rapor POS sütunları ayrı iş).
+  it("POS: hesap türü değil; eksik gövdeli POS istekleri 4xx ve POS tablolarına yazılmaz; POS yokken ANLIK DURUM ve Birleşik Rapor'da POS Bekleyen / Blokeli POS yok", async () => {
     const before = snapshot(ctx.store);
     expectStatus(await ctx.api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Fiziki POS", kind: "pos" }), 400, "bank-kind", "POS hesap türü");
     for (const url of [`${BANK}/pos`, `${BANK}/pos-terminals`, `${BANK}/pos/sales`, `${BANK}/pos/settle`, `${BANK}/pos/commission`]) {
-      assert.ok(NO_ROUTE.includes((await ctx.api.post(url, { name: "POS", amount: "10" })).status), `POST ${url}`);
-      assert.ok(NO_ROUTE.includes((await ctx.api.get(url)).status), `GET ${url}`);
+      const res = await ctx.api.post(url, { name: "POS", amount: "10" });
+      assert.ok(res.status >= 400 && res.status < 500, `POST ${url}: ${res.status}`);
     }
+    assert.deepEqual((await must("POS listesi", ctx.api.get(`${BANK}/pos`))).pos, [], "POS listesi boş");
     assert.deepEqual(snapshot(ctx.store), before, "POS istekleri hiçbir şey yazmadı");
     const overview = await must("ANLIK DURUM", ctx.api.get("/api/workspace/overview"));
     assert.equal(overview.cash.bank.pos, false, "ANLIK DURUM POS kutusu kapalı");

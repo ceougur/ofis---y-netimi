@@ -780,7 +780,7 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
   function dueGroups({ upTo = today(), keys = null, posId = "", limit = 0 } = {}) {
     const rows = store.all(
       `SELECT i.pos_id AS posId, i.value_date AS valueDate, s.bank_account_id AS bankAccountId, COUNT(*) AS n FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id
-       WHERE i.status = 'pending' AND i.value_date <= ? ${posId ? "AND i.pos_id = ?" : ""}
+       WHERE i.status = 'pending' AND s.status <> 'repair' AND i.value_date <= ? ${posId ? "AND i.pos_id = ?" : ""}
        GROUP BY i.pos_id, i.value_date, s.bank_account_id ORDER BY i.value_date, i.pos_id, s.bank_account_id ${limit ? `LIMIT ${Number(limit)}` : ""}`,
       ...(posId ? [upTo, posId] : [upTo]),
     );
@@ -807,7 +807,7 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     if (!when) return null;
     const items = store.all(
       `SELECT i.*, s.kind AS saleKind, s.tax_kind AS taxKind, s.tax_mode AS taxMode, s.provider_account_id AS provider FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id
-       WHERE i.status = 'pending' AND i.pos_id = ? AND i.value_date = ? AND s.bank_account_id = ? ORDER BY i.created_at, i.id`,
+       WHERE i.status = 'pending' AND s.status <> 'repair' AND i.pos_id = ? AND i.value_date = ? AND s.bank_account_id = ? ORDER BY i.created_at, i.id`,
       group.posId, group.valueDate, group.bankAccountId,
     );
     if (!items.length) return null;
@@ -849,14 +849,14 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
   /** Grupları aynı işlemde yazar (bütçe: 200 grup ya da 1 sn). inline: kullanıcı işleminin içinde (yeniden planlama). Dönüş: yazılan fiş sayısı. */
   function settleGroups(user, groups, { inline = false } = {}) {
     let count = 0;
-    const started = Date.now();
+    const started = Date.now(); // saat: gerçek (süre ölçümü; tur bütçesi)
     for (const group of groups) {
       const pos = terminal(group.posId);
       if (!pos) continue;
       // Onay kipindeki POS'un kalemi "Onay Bekleyen"de kalır (kullanıcı onaylar; yeniden planlamada da).
       if (settleModeOf(pos) !== "auto") continue;
       if (settleGroup(user, group)) count += 1;
-      if (!inline && (count >= ROUND_GROUPS || Date.now() - started > ROUND_MS)) break;
+      if (!inline && (count >= ROUND_GROUPS || Date.now() - started > ROUND_MS)) break; // saat: gerçek (süre ölçümü)
     }
     return count;
   }
@@ -1175,13 +1175,13 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
       };
     });
     const linked = store.all(
-      `SELECT e.invoice_id AS invoiceId, f.pos_id AS posId, SUM(CASE WHEN e.kind = 'out' THEN e.amount ELSE -e.amount END) AS net FROM account_entries e JOIN fin_events f ON f.id = e.source_id
+      `SELECT e.invoice_id AS invoiceId, f.pos_id AS posId, SUM(CAST(ROUND((CASE WHEN e.kind = 'out' THEN e.amount ELSE -e.amount END) * 100) AS INTEGER)) AS net FROM account_entries e JOIN fin_events f ON f.id = e.source_id
        WHERE e.source = 'bank' AND e.invoice_id <> '' AND e.date BETWEEN ? AND ? GROUP BY e.invoice_id, f.pos_id`,
       monthRange(target).from, monthRange(target).to,
     ).map(row => {
       const invoice = store.get("SELECT id, number, status, try_payable AS payable FROM invoices WHERE id = ?", row.invoiceId);
       const payable = toMinor(Number(invoice?.payable) || 0);
-      const net = toMinor(Number(row.net) || 0);
+      const net = Number(row.net) || 0; // satır başına kuruş (SQL'de yuvarlanmış tam sayı)
       return { posId: row.posId, posName: terminal(row.posId)?.name || "", invoice: invoice ? { id: invoice.id, number: invoice.number, status: invoice.status } : null, linkedMinor: net, payableMinor: payable, differenceMinor: payable - net };
     });
     return { month: target, rows, linked };
@@ -1306,12 +1306,13 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
       out.refund.push(`${row.id}: iade ${Number(row.refunded) / 100} > satış ${Number(row.gross) / 100}`);
     }
     // pos:schedule — Σ kalem brütü = kayıt brütü (void hariç); net = planlanandan; bankaya geçmiş kalemin gün fişi etkin; bekleyenin fişi yok.
+    // Onarım Bekliyor (açılış onarımı d: kaynak satırı eski sürümde silinmiş, bankaya geçmiş satış) onarım listesinde izlenir; fiş denetimi dışında.
     const saleFilter = scope ? "AND s.id IN (SELECT value FROM json_each(?))" : "";
     for (const row of store.all(`SELECT s.id, s.gross_minor AS gross, COALESCE(SUM(i.gross_minor), 0) AS items FROM pos_sales s LEFT JOIN pos_items i ON i.sale_id = s.id AND i.status <> 'void' WHERE s.status <> 'void' ${saleFilter} GROUP BY s.id`, ...(scope ? [inList(scope.sales)] : []))) {
       if (Number(row.items) !== Number(row.gross)) out.schedule.push(`${row.id}: kalemler ${Number(row.items) / 100} ≠ ${Number(row.gross) / 100}`);
     }
     const itemFilter = scope ? "AND i.sale_id IN (SELECT value FROM json_each(?))" : "";
-    for (const item of store.all(`SELECT i.id, i.role, i.status, i.net_minor AS net, i.planned_net_minor AS planned, i.event_id AS eventId, e.status AS eventStatus, e.type AS eventType FROM pos_items i LEFT JOIN fin_events e ON e.id = i.event_id WHERE i.status IN ('pending', 'settled') ${itemFilter}`, ...(scope ? [inList(scope.sales)] : []))) {
+    for (const item of store.all(`SELECT i.id, i.role, i.status, i.net_minor AS net, i.planned_net_minor AS planned, i.event_id AS eventId, e.status AS eventStatus, e.type AS eventType FROM pos_items i LEFT JOIN fin_events e ON e.id = i.event_id WHERE i.status IN ('pending', 'settled') AND i.sale_id NOT IN (SELECT id FROM pos_sales WHERE status = 'repair') ${itemFilter}`, ...(scope ? [inList(scope.sales)] : []))) {
       // Satış kaleminde net = max(0, planlanan); iade kaleminde planlanan çıkıştır (eksi), net = max(0, −planlanan).
       const want = Math.max(0, item.role === "refund" ? -Number(item.planned) : Number(item.planned));
       if (Number(item.net) !== want) out.schedule.push(`${item.id}: net ${item.net} ≠ ${want}`);
