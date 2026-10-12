@@ -1367,6 +1367,16 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   devam. KODDAN (hof-invoices.js:946): bugün kart yoksa hücre GİZLİ, hiçbir şey görünmüyor (açık bu). Aynı düğme aynı kalıptaki öbür
   ödeme formlarına da (cari ödemesi, stok alımı; havale için "Banka Hesabı Tanımla") — öneri. Yetki: hesap tanımlama yetkisi yoksa düğme
   yerine "Kart tanımlı değil; yöneticinize başvurun" yazısı. Kart bankanın içinden ekleme maddesiyle aynı pencere (banka seçilir).
+- KARAR (kullanıcı, 12.10.2026: "önerilerin uygun") → alış faturası "Kredi Kartı Tanımla" + aynı düğme cari ödemesi/stok alımında, havalede
+  "Banka Hesabı Tanımla", yetkisizde düğme yerine yazı: YAPILACAK (sıradaki sürüm).
+  İSTEK (kullanıcı, aynı gün): banka hesabı tanımında "Kredi Kartı Kullan" gibi "ÇEK KULLAN" ve "SENET KULLAN" seçenekleri; çek
+  işlemlerinde yalnız "Çek Kullan" işaretli bankalar gelir. KODDAN (hof-cheques.js:219): bugün çek/senet formunda "Banka / Şube" SERBEST
+  METİN, hesap bağı yok; verilen çek ödenirken yol + hesap ayrıca seçiliyor (hof-cheques.js:318). ÖNERİM: banka hesabı kartında üç işaret
+  (Kredi Kartı Kullan → altına kart eklenir; Çek Kullan; Senet Kullan; varsayılan kapalı, eski hesaplarda kapalı). Verilen ÇEK formunda
+  "Banka / Şube" metni yerine "Çek Hesabı" seçici (yalnız Çek Kullan işaretli etkin TL hesaplar; tekse kendiliğinden, yoksa "Banka Hesabı
+  Tanımla"); çek ödendiğinde para o hesaptan çıkar (hesap öndolu). SENET: kendi senedimiz bankaya bağlı değildir → "Senet Kullan" işaretli
+  hesaplar (a) verilen senedin ÖDENECEĞİ hesap önerisi, (b) alınan senedi/çeki BANKAYA TAHSİLE VER (ertelenen iş) için seçilir. Alınan
+  (müşteri) çekinde "Banka / Şube" müşterinin bankasıdır, serbest metin KALIR. Eski çeklerin metni korunur. Yapı Kredi vb. yalnız örnek.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
