@@ -1,0 +1,478 @@
+TAP version 13
+# Subtest: İz 3.1: POS yalnız "POS Kullan" işaretli banka hesabına bağlanır
+    # Subtest: işaretsiz hesaba POS açma → 400 pos-account-flag, hiçbir şey yazılmaz; işaretlenince açılır (108.01)
+    not ok 1 - işaretsiz hesaba POS açma → 400 pos-account-flag, hiçbir şey yazılmaz; işaretlenince açılır (108.01)
+      ---
+      duration_ms: 29.605906
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:36:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        işaretsiz Ziraat: 200 {"pos":{"id":"pos-33cf41a9-9a7e-41f8-9e34-360eb8972ed2","code":"POS-01","glSub":"108.01","name":"Ziraat Fiziki POS","label":"POS-01 · Ziraat Fiziki POS","bankName":"Ziraat Bankası","bankAccountId":"bacc-4bc801f6-ede0-4cd2-95bd-7687dac5c1cd","bankAccount":{"id":"bacc-4bc801f6-ede0-4cd2-95bd-7687dac5c1cd","code":"ZIR-TL","label":"Ziraat Bankası · Ana TL Hesabı","glSub":"102.01","status":"active"},"k 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:38:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: bağlı hesabı işaretsiz hesaba değiştirme ve bekleyenleri işaretsiz hesaba taşıma → 400; yalnız ad düzeltmesi serbest; işaretlenince geçer
+    not ok 2 - bağlı hesabı işaretsiz hesaba değiştirme ve bekleyenleri işaretsiz hesaba taşıma → 400; yalnız ad düzeltmesi serbest; işaretlenince geçer
+      ---
+      duration_ms: 32.443781
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:46:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        işaretsiz Garanti'ye bağla: 200 {"id":"pos-33cf41a9-9a7e-41f8-9e34-360eb8972ed2","code":"POS-01","glSub":"108.01","name":"Ziraat Fiziki POS","label":"POS-01 · Ziraat Fiziki POS","bankName":"Garanti BBVA","bankAccountId":"bacc-336f0e2f-d7dc-48d1-945b-80c14297bf75","bankAccount":{"id":"bacc-336f0e2f-d7dc-48d1-945b-80c14297bf75","code":"GAR-TL","label":"Garanti BBVA · Ana TL Hesabı","glSub":"102.02","status":"active"},"kind":"physi 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:48:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: "Ekstre ile" bankaya geçiş bu sürümde seçilemez (400 pos-settle-later); Otomatik ve Elle Onay seçilir
+    not ok 3 - "Ekstre ile" bankaya geçiş bu sürümde seçilemez (400 pos-settle-later); Otomatik ve Elle Onay seçilir
+      ---
+      duration_ms: 25.631954
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ekstre ile: 200 {"id":"pos-33cf41a9-9a7e-41f8-9e34-360eb8972ed2","code":"POS-01","glSub":"108.01","name":"Ziraat Fiziki POS","label":"POS-01 · Ziraat Fiziki POS","bankName":"Garanti BBVA","bankAccountId":"bacc-336f0e2f-d7dc-48d1-945b-80c14297bf75","bankAccount":{"id":"bacc-336f0e2f-d7dc-48d1-945b-80c14297bf75","code":"GAR-TL","label":"Garanti BBVA · Ana TL Hesabı","glSub":"102.02","status":"active"},"kind":"physi 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:61:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - İz 3.1: POS yalnız "POS Kullan" işaretli banka hesabına bağlanır
+  ---
+  duration_ms: 556.246864
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:29:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Bilinen hata (İz 3.6): yalnız provizyon no / kartın son 4 hanesi değişen POS satırı
+    # Subtest: fatura Düzenle: aynı tutarda provizyon AAA1 → BBB2, son 4 hane 1111 → 2222 → satış kaydı güncellenir (tek etkin satış, takvim aynı)
+    not ok 1 - fatura Düzenle: aynı tutarda provizyon AAA1 → BBB2, son 4 hane 1111 → 2222 → satış kaydı güncellenir (tek etkin satış, takvim aynı)
+      ---
+      duration_ms: 107.853176
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        provizyon ve son 4 hane güncellendi
+        + actual - expected
+        
+          [
+        +   'AAA1',
+        +   '1111'
+        -   'BBB2',
+        -   '2222'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'BBB2'
+        1: '2222'
+      actual:
+        0: 'AAA1'
+        1: '1111'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:87:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: başka satışın provizyonuna düzeltme → 409 pos-auth-duplicate; kayıt değişmez
+    not ok 2 - başka satışın provizyonuna düzeltme → 409 pos-auth-duplicate; kayıt değişmez
+      ---
+      duration_ms: 80.904596
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı gün aynı POS'ta CCC3 var: 200 {"id":"invoice-36d2d323-900a-44ed-a9ce-167595c00359","kind":"sale","kindLabel":"Satış Faturası","scenario":"goods_sale","scenarioLabel":"Stoktan Satış","status":"issued","statusLabel":"Kaydedildi","number":"FIS2026000000003","displayNo":"FIS2026000000003","ettn":"c2886094-1f16-41c8-93df-ba9867cbaea3","issueDate":"2026-10-08","issueTime":"09:00","accountId":"account-9960cb41-ea7f-4a2e-8ee8-2c903c08 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:101:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari tahsilatı düzeltme: yalnız provizyon değişince satış kaydı güncellenir; düzeltme formunun POS bilgisi (GET /bank/pos/row)
+    not ok 3 - cari tahsilatı düzeltme: yalnız provizyon değişince satış kaydı güncellenir; düzeltme formunun POS bilgisi (GET /bank/pos/row)
+      ---
+      duration_ms: 57.335086
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:105:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS bilgisi: 404 {"ok":false,"error":"POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.","code":"pos-missing","field":"posId"}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:110:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - Bilinen hata (İz 3.6): yalnız provizyon no / kartın son 4 hanesi değişen POS satırı
+  ---
+  duration_ms: 717.791148
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:67:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İz 3.2: tahsilat formunun POS önizlemesi ve POS İadesinin asıl işlem önerisi
+    # Subtest: 10.000 Tek Çekim (08.10.2026 Perşembe) → komisyon 250 (%2,50), net 9.750, valör 12.10.2026 (kabul 20–22)
+    not ok 1 - 10.000 Tek Çekim (08.10.2026 Perşembe) → komisyon 250 (%2,50), net 9.750, valör 12.10.2026 (kabul 20–22)
+      ---
+      duration_ms: 5.399073
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:126:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        önizleme: 404 {"ok":false,"error":"POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.","code":"pos-missing","field":"posId"}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:127:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 12.000 3 Taksit (12.10.2026) → 3 × 3.860; 12.11.2026 · 14.12.2026 (12.12 Cumartesi) · 12.01.2027; komisyon 420 (kabul 25–26)
+    not ok 2 - 12.000 3 Taksit (12.10.2026) → 3 × 3.860; 12.11.2026 · 14.12.2026 (12.12 Cumartesi) · 12.01.2027; komisyon 420 (kabul 25–26)
+      ---
+      duration_ms: 5.427688
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:133:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        önizleme: 404 {"ok":false,"error":"POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.","code":"pos-missing","field":"posId"}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:134:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tanımsız taksit → 400 pos-rate-missing; personel (tahsilat yetkisi) önizler; yetkisi olmayan rol 403
+    not ok 3 - tanımsız taksit → 400 pos-rate-missing; personel (tahsilat yetkisi) önizler; yetkisi olmayan rol 403
+      ---
+      duration_ms: 5.390037
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:139:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        9 taksit: 404 {"ok":false,"error":"POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.","code":"pos-missing","field":"posId"} POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.
+        
+        404 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:140:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: asıl işlem önerisi: satıştan iade faturasında asıl faturanın POS satışı (kalan 10.000); POS'suz caride boş
+    not ok 4 - asıl işlem önerisi: satıştan iade faturasında asıl faturanın POS satışı (kalan 10.000); POS'suz caride boş
+      ---
+      duration_ms: 37.923988
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:145:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        öneri: 404 {"ok":false,"error":"POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.","code":"pos-missing","field":"posId"}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:147:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 3 - İz 3.2: tahsilat formunun POS önizlemesi ve POS İadesinin asıl işlem önerisi
+  ---
+  duration_ms: 485.833035
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:116:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İz 3.4: POS ayarları ve yetkileri açıldı; henüz olmayan seçenekler gizli
+    # Subtest: Banka Ayarları: POS ve Gelişmiş → POS görünür, Varsayılan POS görünür; değer kaydedilir; "Ekstre ile" ve "Her Valörde Taslak" listede yok ve 400
+    not ok 1 - Banka Ayarları: POS ve Gelişmiş → POS görünür, Varsayılan POS görünür; değer kaydedilir; "Ekstre ile" ve "Her Valörde Taslak" listede yok ve 400
+      ---
+      duration_ms: 7.229058
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:163:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:166:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Roller kataloğu: POS Tanımlama (bank.pos) ve Komisyon Oranlarını Değiştirme (bank.commission) görünür; Ekstre / Mutabakat hâlâ gizli
+    not ok 2 - Roller kataloğu: POS Tanımlama (bank.pos) ve Komisyon Oranlarını Değiştirme (bank.commission) görünür; Ekstre / Mutabakat hâlâ gizli
+      ---
+      duration_ms: 6.758132
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:186:3'
+      failureType: 'testCodeFailure'
+      error: 'POS yetkileri görünür'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:189:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 4 - İz 3.4: POS ayarları ve yetkileri açıldı; henüz olmayan seçenekler gizli
+  ---
+  duration_ms: 481.741061
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:156:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İz 3.3 ve 3.5: Hareketler POS süzgeci, Birleşik Rapor POS sütunları, Rapor Merkezi POS raporları, Banka Masraf Raporu
+    # Subtest: Birleşik Rapor: POS Bekleyen (Net) 9.750 ve Blokeli POS 0 sütunları (ekran, PDF, Excel); banka yetkisi olmayana POS sütunu yok
+    not ok 1 - Birleşik Rapor: POS Bekleyen (Net) 9.750 ve Blokeli POS 0 sütunları (ekran, PDF, Excel); banka yetkisi olmayana POS sütunu yok
+      ---
+      duration_ms: 14.983183
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:205:3'
+      failureType: 'testCodeFailure'
+      error: 'Şirket | Nakit Kasa | Gerçek Banka | Kart ve Kredi Borcu | Hesabı Atanmamış Eski Hareketler | Cari Alacak | Cari Borç | Geciken Taksit | Stok Değeri | Açık Satış Faturası | Açık Alış Faturası | Bu Ay Satış | Bu Ay Alış'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:208:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: POS Ödeme Takvimi raporu: 12.10 9.750 · 12.11 / 14.12 / 12.01 3.860; TOPLAM = satırlar (21.330); Tür ve POS süzgeçleri; PDF ve Excel aynı TOPLAM
+    not ok 2 - POS Ödeme Takvimi raporu: 12.10 9.750 · 12.11 / 14.12 / 12.01 3.860; TOPLAM = satırlar (21.330); Tür ve POS süzgeçleri; PDF ve Excel aynı TOPLAM
+      ---
+      duration_ms: 25.825038
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:221:3'
+      failureType: 'testCodeFailure'
+      error: 'banka-bakiye, banka-hareket, banka-masraf, alt-hesap-mizani'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:226:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Hareketler ?pos= süzgeci: yalnız bu POS'un gün sonu fişi; bilinmeyen POS 404
+    not ok 3 - Hareketler ?pos= süzgeci: yalnız bu POS'un gün sonu fişi; bilinmeyen POS 404
+      ---
+      duration_ms: 31.828557
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: '["pos_settlement","opening","opening"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:246:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Banka Masraf Raporu POS komisyonunu kapsar: 12.10 gün sonu → matrah 238,10 · BSMV 11,90 · toplam 250,00 (653)
+    not ok 4 - Banka Masraf Raporu POS komisyonunu kapsar: 12.10 gün sonu → matrah 238,10 · BSMV 11,90 · toplam 250,00 (653)
+      ---
+      duration_ms: 8.676558
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:251:3'
+      failureType: 'testCodeFailure'
+      error: 'POS komisyonu satırı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:254:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 5 - İz 3.3 ve 3.5: Hareketler POS süzgeci, Birleşik Rapor POS sütunları, Rapor Merkezi POS raporları, Banka Masraf Raporu
+  ---
+  duration_ms: 505.23783
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:194:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İz 3.5: Faturası Beklenen Komisyonlar (KDV'li kip; plan §4.3 kabul 24)
+    # Subtest: 10.000 KDV Hariç → 12.10 kesinti 300 → Ekim: Faturası Beklenen 300; Şimdi Oluştur → Taslak Hazır; TOPLAM = satırlar
+    not ok 1 - 10.000 KDV Hariç → 12.10 kesinti 300 → Ekim: Faturası Beklenen 300; Şimdi Oluştur → Taslak Hazır; TOPLAM = satırlar
+      ---
+      duration_ms: 424.280823
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:261:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        rapor: 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:269:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 6 - İz 3.5: Faturası Beklenen Komisyonlar (KDV'li kip; plan §4.3 kabul 24)
+  ---
+  duration_ms: 424.81689
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-d63edd3/test/banka-220-pos-iz3.test.mjs:260:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..6
+# tests 17
+# suites 6
+# pass 0
+# fail 17
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3700.264537
