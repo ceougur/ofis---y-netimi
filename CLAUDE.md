@@ -1341,6 +1341,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   Yeni oturum dalı `claude/hopeful-goodall-6nmtcj` (master'dan). Sırada (kullanıcı seçer): 2.1.0 kapsam ölçümü; 2.1.1 (Rapor Merkezi Excel
   şirket başlığı, K6 Kasa açılışı, iki pencerede "sayfa silindi"); ertelenenler (döviz, Bankaya Tahsile Ver, K8, bankalı iade/iptal,
   kalan banka raporları) → 2.2.0 POS → 2.3.0 ekstre; Cuma 16.10.2026 planlı test.
+- MÜŞTERİ SORUSU (12.10.2026, ekran: Banka → Hesaplar, Durum kolonunda "Etkin · Doğrulanmadı"): "doğrulanmadı ne demek?" KODDAN
+  (hof-bank.js:392): hesabın açılış bakiyesi bankadan teyit edilip "Bakiye Doğrulandı" işaretlenmemiş; işaretlenmeden o hesapta eksi
+  bakiye denetimi çalışmaz (hof-bank.js:788). Yol: hesaba tıkla → Açılışı Düzelt → "Bu tutar bankadaki gerçek bakiyedir" işaretle.
+  ÖNERİ (2.1.1, karar kullanıcıda): etiket tek başına anlaşılmıyor → "Açılış Bakiyesi Doğrulanmadı" + üzerine gelince/yanında kısa neden.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
