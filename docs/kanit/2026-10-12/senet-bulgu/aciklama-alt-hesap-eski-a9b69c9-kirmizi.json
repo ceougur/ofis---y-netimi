@@ -1,0 +1,43 @@
+{
+  "ad": "senet-bulgu/aciklama-alt-hesap-eski-a9b69c9-kirmizi",
+  "komut": "node --test test/banka-alt-hesap-aciklama.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T14:33:29.569Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Alt Hesap Mizanı açıklaması evrak alt hesaplarını anar (plan §3.11a) › çek ve senet tahsile verilince rapor 101.0x / 121.0x satırlarını gösterir; açıklama hepsini kodu ve adıyla anar",
+      "konum": "test/banka-alt-hesap-aciklama.test.mjs:24:3",
+      "hata": "açıklama 101.01 alt hesabını anmalı: Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, kredi kartı 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00): devir, dönem borç, dönem alacak ve bakiye; her ana hesap alt hesaplarının toplamına eşittir. (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Alt Hesap Mizanı açıklaması evrak alt hesaplarını anar (plan §3.11a) › Banka penceresindeki Alt Hesap Mizanı notu evrak alt hesaplarını anar",
+      "konum": "test/banka-alt-hesap-aciklama.test.mjs:50:3",
+      "hata": "not 101.01 alt hesabını anmalı: Her ana hesabın bakiyesi alt hesaplarının toplamına eşit olmalıdır. 102.00 ve 108.00: hesabı atanmamış eski hareketler. (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/wf_3f8e794e-9e6-1/docs/kanit/2026-10-12/senet-bulgu/aciklama-alt-hesap-eski-a9b69c9-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-bulgu-eski-a9b69c9",
+  "ham_cikti_sha256": "a89a5f6276b185417959658782378bb911f5ba444f1cf8231ceb2f7e26f9fcc9",
+  "ham_cikti_bayt": 3467
+}

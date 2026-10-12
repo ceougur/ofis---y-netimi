@@ -1,0 +1,32 @@
+{
+  "ad": "senet-bulgu/npm-test",
+  "komut": "npm test",
+  "commit": "a9b69c9f58d5190b966d386b924ed3afbec27f87",
+  "dal": "worktree-wf_3f8e794e-9e6-1",
+  "kirli": 5,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T14:43:15.411Z",
+  "sure_sn": 1105.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2302,
+    "gecen": 2302,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/senet-bulgu/npm-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_3f8e794e-9e6-1",
+  "ham_cikti_sha256": "91df2fab3589da9d41c07d8a885ada9749954f101f9d68d278371c70385c0b35",
+  "ham_cikti_bayt": 793683
+}
