@@ -10669,3 +10669,8 @@ input[type="search"]::-webkit-search-cancel-button {
     padding-left: 12px;
   }
 }
+/* v2.2.0 İz 2.5: faturadaki verilen evrakın Çek Hesabı hücresi (metin kutusunun yerinde; satırın öbür alanlarıyla aynı akış). */
+.hof-inv-pay-row .hof-inv-chq-bank { display: flex; flex: 1.4 1 180px; flex-wrap: wrap; align-items: flex-end; gap: 6px; }
+.hof-inv-pay-row .hof-inv-chq-bank label { flex: 1 1 140px; }
+.hof-inv-pay-row span.hof-inv-chq-bank.hof-bank-pick-note { align-self: center; margin: 0; }
+.hof-inv-pay-row .hof-bank-define { margin: 0; }

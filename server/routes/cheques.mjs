@@ -61,6 +61,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   const CHEQUE_SQL = `SELECT c.id, c.direction, c.instrument, c.serial_no AS serialNo, c.bank, c.drawer, c.account_id AS accountId, c.plan_id AS planId, c.amount,
       c.issue_date AS issueDate, c.due_date AS dueDate, c.status, c.status_date AS statusDate, c.endorse_account_id AS endorseAccountId, c.note,
       c.invoice_id AS invoiceId, COALESCE((SELECT i.number FROM invoices i WHERE i.id = c.invoice_id), '') AS invoiceNumber,
+      c.bank_account_id AS bankAccountId, COALESCE((SELECT ba.bank_name || ' · ' || ba.name FROM bank_accounts ba WHERE ba.id = c.bank_account_id AND c.bank_account_id <> ''), '') AS bankAccountLabel,
       c.created_by AS createdBy, c.created_at AS createdAt, c.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
       COALESCE(a.name, '') AS accountName, COALESCE(a.ref_no, '') AS accountRef, COALESCE(a.phone, '') AS accountPhone, COALESCE(e.name, '') AS endorseAccountName, COALESCE(p.name, '') AS planName
     FROM cheques c LEFT JOIN users u ON u.id = c.created_by LEFT JOIN accounts a ON a.id = c.account_id AND a.deleted_at IS NULL
@@ -332,6 +333,49 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       note: limited(body.note ?? previous?.note ?? "", 500, "Açıklama"),
     };
   }
+  // ---------- v2.2.0 (İz 2.5, 2.6): verilen çekin Çek Hesabı, verilen senedin ödeme hesabı önerisi ----------
+  // Çek: yalnız "Çek Kullan" işaretli etkin TL Vadesiz/Ticari/Diğer hesap; tekse kendiliğinden, birden çoksa seçim zorunlu (400 bank-account-required,
+  // alan bankAccountId), hiç yoksa bugünkü gibi "Banka / Şube" metni (hesap boş). Hesap seçilince "Banka / Şube" hesabın adı olur. Senet: "Senet
+  // Kullan" işaretli hesap isteğe bağlı öneri (kendiliğinden seçilmez). Alınan (müşteri) evrakta hesap SEÇİLMEZ (400; müşterinin bankası metin
+  // kalır). Düzeltmede alan gönderilmezse eski bağ (ya da eski çekin metni) olduğu gibi kalır. Excel/Sheets'ten yükleme bu kuralı uygulamaz (metin).
+  const FORM_KINDS_SQL = "kind IN ('demand', 'commercial', 'other') AND currency = 'TRY' AND status = 'active' AND deleted_at IS NULL";
+  const flagOf = instrument => (instrument === "note" ? "use_note" : "use_cheque");
+  const chequeAccounts = flag => store.all(`SELECT id FROM bank_accounts WHERE ${FORM_KINDS_SQL} AND ${flag} = 1 ORDER BY position, created_at`).map(row => row.id);
+  const accountLabel = row => `${row.bank_name} · ${row.name}`;
+  const badAccount = (status, message, code) => new HttpError(status, message, { code, field: "bankAccountId" });
+  function checkChequeAccount(id, instrument) {
+    const row = store.get("SELECT * FROM bank_accounts WHERE id = ?", id);
+    if (!row || row.deleted_at) throw badAccount(404, "Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", "bank-account-missing");
+    const what = instrument === "note" ? "Senet Kullan" : "Çek Kullan";
+    if (row.status !== "active") throw badAccount(400, `${accountLabel(row)} pasif; ${instrument === "note" ? "senedin ödeme hesabı" : "Çek Hesabı"} etkin hesaptan seçilir.`, "bank-account-invalid");
+    if (!["demand", "commercial", "other"].includes(row.kind) || row.currency !== "TRY") throw badAccount(400, `${accountLabel(row)}: ${instrument === "note" ? "senedin ödeme hesabı" : "Çek Hesabı"} yalnız Vadesiz, Ticari ya da Diğer TL hesap olabilir.`, "bank-account-invalid");
+    if (!row[flagOf(instrument)]) throw badAccount(400, `${accountLabel(row)} hesabında “${what}” işaretli değil. Banka → hesap → Düzenle'den işaretleyin ya da başka hesap seçin.`, "bank-account-invalid");
+    return row;
+  }
+  /** input'a bankAccountId (ve çekte "Banka / Şube" = hesabın adı) yazar. previous: düzeltmede eski kayıt. */
+  function chequeAccountOf(input, body, previous = null) {
+    const raw = body?.bankAccountId;
+    const given = raw === undefined || raw === null ? null : text(raw);
+    if (input.direction !== "out") {
+      if (given) throw badAccount(400, "Alınan (müşteri) çek/senette banka hesabı seçilmez; müşterinin bankası “Banka / Şube”ye yazılır.", "bank-account-invalid");
+      return { ...input, bankAccountId: "" };
+    }
+    const apply = row => ({ ...input, bankAccountId: row.id, bank: input.instrument === "cheque" ? accountLabel(row).slice(0, 120) : input.bank });
+    if (given) return apply(checkChequeAccount(given, input.instrument));
+    if (previous) {
+      const kept = previous.bankAccountId || "";
+      // Eski çek (hesapsız) ya da aynı türde kalan: bağ ve metin olduğu gibi. Tür değiştiyse eski bağ yeni türün işaretini taşımıyorsa düşer.
+      if (!kept || previous.instrument === input.instrument) return { ...input, bankAccountId: kept };
+      const row = store.get(`SELECT * FROM bank_accounts WHERE id = ? AND ${FORM_KINDS_SQL} AND ${flagOf(input.instrument)} = 1`, kept);
+      if (row) return { ...input, bankAccountId: kept };
+      if (input.instrument === "note") return { ...input, bankAccountId: "" };
+    }
+    if (input.instrument === "note") return { ...input, bankAccountId: "" };
+    const ids = chequeAccounts("use_cheque");
+    if (ids.length === 1) return apply(store.get("SELECT * FROM bank_accounts WHERE id = ?", ids[0]));
+    if (ids.length > 1) throw badAccount(400, "Çek Hesabı seçin: çek hangi banka hesabının karnesinden verildi?", "bank-account-required");
+    return { ...input, bankAccountId: "" };
+  }
   // Aynı seri numaralı (aynı yön, tür ve banka) kayıt varsa yanlışlıkla ikinci kez girilmesin.
   function assertUnique(input, exceptId = "") {
     if (!input.serialNo) return;
@@ -346,8 +390,8 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const status = initialStatus(input.direction);
     const stamp = now();
     store.run(
-      "INSERT INTO cheques (id, direction, instrument, serial_no, bank, drawer, account_id, plan_id, amount, issue_date, due_date, status, status_date, note, invoice_id, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, input.direction, input.instrument, input.serialNo, input.bank, input.drawer, input.accountId, input.planId, input.amount, input.issueDate, input.dueDate, status, input.issueDate, input.note, invoiceId, user.id, stamp, stamp,
+      "INSERT INTO cheques (id, direction, instrument, serial_no, bank, drawer, account_id, plan_id, amount, issue_date, due_date, status, status_date, note, invoice_id, bank_account_id, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, input.direction, input.instrument, input.serialNo, input.bank, input.drawer, input.accountId, input.planId, input.amount, input.issueDate, input.dueDate, status, input.issueDate, input.note, invoiceId, input.bankAccountId || "", user.id, stamp, stamp,
     );
     const cheque = { id, ...input, status };
     const kind = initialEvent(input.direction);
@@ -372,10 +416,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req);
     const created = bank.post({ user, module: "cheque", op: "create", write: () => {
-      const input = coreInput(body, null, { dated: true });
+      const input = chequeAccountOf(coreInput(body, null, { dated: true }), body);
       if (body.allowDuplicate !== true) assertUnique(input);
       const result = insertCheque(user, input);
-      audit(user, "cheque.created", result.id, { direction: input.direction, instrument: input.instrument, serialNo: input.serialNo, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, planId: input.planId });
+      audit(user, "cheque.created", result.id, { direction: input.direction, instrument: input.instrument, serialNo: input.serialNo, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, planId: input.planId, ...(input.bankAccountId ? { bankAccountId: input.bankAccountId } : {}) });
       return result;
     } });
     changed(user, { chequeId: created.id, ...touchedBy(created.effects) });
@@ -395,7 +439,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       if (coreChange && history.length > 1) throw new HttpError(409, "Tahsil, ciro ya da ödeme yapılmış evrakın tutarı, carisi ve tarihi değiştirilemez. Önce son işlemi geri alın.");
       // v2.0.26 (A6): kapanmış dönemdeki evrakın tutarı, carisi, kartı ve tarihi değişmez; yeni tarih de kilitli/ileri olamaz.
       if (coreChange) period?.assertOpen(previous.issueDate, "Bu çek/senet");
-      const input = coreInput({ ...previous, ...body }, previous, { checkLinks: coreChange, dated: coreChange });
+      const input = chequeAccountOf(coreInput({ ...previous, ...body }, previous, { checkLinks: coreChange, dated: coreChange }), body, previous);
       if (body.allowDuplicate !== true) assertUnique(input, previous.id);
       if (coreChange) {
         // Tek olaylı (alındı/verildi) kayıt: eski defter etkileri geri alınır, yenileri yazılır (aynı işlem bloğunda).
@@ -410,10 +454,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         touched = { accountIds: [...touchedBy(oldEffects).accountIds, ...touchedBy(effects).accountIds], planIds: [...touchedBy(oldEffects).planIds, ...touchedBy(effects).planIds] };
       }
       store.run(
-        "UPDATE cheques SET instrument = ?, serial_no = ?, bank = ?, drawer = ?, account_id = ?, plan_id = ?, amount = ?, issue_date = ?, due_date = ?, note = ?, status_date = CASE WHEN ? THEN ? ELSE status_date END, updated_by = ?, updated_at = ? WHERE id = ?",
-        input.instrument, input.serialNo, input.bank, input.drawer, input.accountId, input.planId, input.amount, input.issueDate, input.dueDate, input.note, history.length === 1 ? 1 : 0, input.issueDate, user.id, now(), previous.id,
+        "UPDATE cheques SET instrument = ?, serial_no = ?, bank = ?, drawer = ?, account_id = ?, plan_id = ?, amount = ?, issue_date = ?, due_date = ?, note = ?, bank_account_id = ?, status_date = CASE WHEN ? THEN ? ELSE status_date END, updated_by = ?, updated_at = ? WHERE id = ?",
+        input.instrument, input.serialNo, input.bank, input.drawer, input.accountId, input.planId, input.amount, input.issueDate, input.dueDate, input.note, input.bankAccountId || "", history.length === 1 ? 1 : 0, input.issueDate, user.id, now(), previous.id,
       );
-      audit(user, "cheque.updated", previous.id, { previous: { amount: previous.amount, dueDate: previous.dueDate, accountId: previous.accountId, serialNo: previous.serialNo }, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, serialNo: input.serialNo });
+      audit(user, "cheque.updated", previous.id, { previous: { amount: previous.amount, dueDate: previous.dueDate, accountId: previous.accountId, serialNo: previous.serialNo, bankAccountId: previous.bankAccountId || "", bank: previous.bank }, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, serialNo: input.serialNo, bankAccountId: input.bankAccountId || "", bank: input.bank });
       return previous.id;
     } });
     changed(user, { chequeId: id, ...touched });
@@ -441,7 +485,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       // v2.0.13: çek/senet tahsili ya da ödemesi çoğunlukla bankadan geçer (varsayılan Banka); elden ise Nakit.
       const method = methodInput(body.method, "bank");
       if (rule.cash === "out") cash?.guardOut?.(cheque.amount, date, body.cashForce === true, method);
-      const finRef = rule.cash ? banking.ref({ method, value: body.bankAccountId, date }) : "";
+      // v2.2.0 (İz 2.5–2.6): verilen çekin/senedin ödemesinde hesap gönderilmezse evrakın Çek Hesabı (senette ödeme hesabı önerisi) — hâlâ
+      // etkin ve havale alan TL hesapsa. Böylece "çek ödendiğinde para o hesaptan" çıkar; başka hesap seçilirse o.
+      const ownAccount = rule.cash === "out" && method === "bank" && body.bankAccountId === undefined && cheque.bankAccountId && store.get(`SELECT 1 AS found FROM bank_accounts WHERE id = ? AND ${FORM_KINDS_SQL}`, cheque.bankAccountId) ? cheque.bankAccountId : undefined;
+      const finRef = rule.cash ? banking.ref({ method, value: ownAccount ?? body.bankAccountId, date }) : "";
       banking.requireOut(user, rule.cash === "out", finRef);
       k7 = banking.negative([finRef], date, banking.forced(body));
       k7.capture();
@@ -771,7 +818,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   //            gördüyse iptal durdurulur (önce o işlem geri alınmalı; para gerçekten el değiştirmiştir).
   const invoiceCheques = {
     create(user, body, { invoiceId, note = "" }) {
-      const input = coreInput(body, null, { dated: true });
+      const input = chequeAccountOf(coreInput(body, null, { dated: true }), body);
       if (input.dueDate < input.issueDate) throw new HttpError(400, `${INSTRUMENTS[input.instrument]} vadesi (${dayText(input.dueDate)}) fatura tarihinden (${dayText(input.issueDate)}) önce olamaz.`, { code: "cheque-due-before-issue" });
       assertUnique(input);
       const result = insertCheque(user, input, { invoiceId, effectNote: note });

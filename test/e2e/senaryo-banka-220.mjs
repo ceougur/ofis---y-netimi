@@ -360,6 +360,128 @@ try {
     await closeAll();
   });
 
+  // ---------- 2.5–2.6 Verilen çekte Çek Hesabı, senette ödeme hesabı önerisi ----------
+  // Durum: Garanti BBVA · Ticari "Çek Kullan" + "Senet Kullan" işaretli (bölüm 1), Ziraat ve Yapı Kredi işaretsiz.
+  const openCheques = async () => {
+    if (!(await page.$(".hof-cheques-modal"))) {
+      await closeAll();
+      await page.click('#hof-sidecard [data-action="cheques"]');
+      await page.waitForSelector(".hof-cheques-modal [data-act=\"new-out\"]", { timeout: 15000 });
+    }
+    // Kaydedince evrak kartı açılır: listeye dön.
+    if (await page.$('.hof-cheques-modal [data-act="back"]')) await page.click('.hof-cheques-modal [data-act="back"]');
+    await page.waitForSelector('.hof-cheques-modal [data-act="new-out"]', { timeout: 10000 });
+    await pause(400);
+  };
+  const chequeRow = async serial => (await must("çekler", api.get("/api/workspace/cheques?direction=out"))).cheques.find(item => item.serialNo === serial);
+  // Çek formu seçicisi tekil: (toast'lar body'nin sonuna eklendiğinden :last-of-type her zaman pencereyi göstermez).
+  const chequeForm = `${modal} .hof-form:has([name="serialNo"])`;
+  const fillCheque = async ({ amount, serial, due = "2026-11-20", drawer = "Lehtar Ltd." }) => {
+    const form = chequeForm;
+    await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await page.type(`${form} input[name="amount"]`, amount, { delay: 35 });
+    await page.fill(`${form} input[name="dueDate"]`, due);
+    await typeInto(`${form} input[name="serialNo"]`, serial);
+    await typeInto(`${form} input[name="drawer"]`, drawer);
+  };
+  await step("2.5 Çek / Senet Ver (tek Çek Kullan hesabı): \"Banka / Şube\" yerine Çek Hesabı Garanti; kaydedilen çek o hesapta", async () => {
+    await openCheques();
+    await page.click('.hof-cheques-modal [data-act="new-out"]');
+    await fillCheque({ amount: "2.500", serial: "GAR-001" });
+    const form = chequeForm;
+    await page.waitForSelector(`${form} [data-cheque-pick] [data-bank-single]`, { timeout: 8000 });
+    const note = await textOf(`${form} [data-cheque-pick] [data-bank-single]`);
+    ok(/Garanti BBVA · Ticari hesabının karnesinden verilir/.test(note), `Çek Hesabı: “${note}”`);
+    ok(!(await visible(`${form} input[name="bank"]`)), "Banka / Şube metni gizli");
+    await shot("cek-ver-tek-hesap");
+    await page.click(`${form} button[type="submit"]`);
+    await pause(900);
+    const cheque = await chequeRow("GAR-001");
+    ctx.garCheque = cheque;
+    ok(cheque && cheque.bankAccountId === ctx.garanti.id && cheque.bank === "Garanti BBVA · Ticari", `sunucu: hesap ${cheque?.bankAccountId === ctx.garanti.id ? "Garanti" : cheque?.bankAccountId}, metin “${cheque?.bank}”`);
+  });
+
+  await step("2.5 iki Çek Kullan hesabı: seçim zorunlu (boş kaydedilmez), Ziraat seçilir; Senet'e geçince \"Ödeme Hesabı (Öneri)\" ve metin geri gelir", async () => {
+    await must("Ziraat Çek Kullan", api.put(`/api/workspace/bank/accounts/${ctx.ziraat.id}`, { useCheque: true }));
+    await openCheques();
+    await page.click('.hof-cheques-modal [data-act="new-out"]');
+    await fillCheque({ amount: "1.750", serial: "ZIR-001" });
+    const form = chequeForm;
+    await page.waitForSelector(`${form} [data-cheque-pick] select[name="bankAccountId"]`, { timeout: 8000 });
+    const options = await optionsOf(`${form} [data-cheque-pick] select[name="bankAccountId"]`);
+    ok(options.length === 3 && options.some(label => /Ziraat Bankası · Ana TL/.test(label)) && options.some(label => /Garanti BBVA · Ticari/.test(label)) && !options.some(label => /Yapı Kredi/.test(label)), `Çek Hesabı seçenekleri: ${options.join(" | ")}`);
+    await page.click(`${form} button[type="submit"]`);
+    await pause(500);
+    const error = await textOf(`${form} .hof-form-error`);
+    ok(/Çek Hesabı/.test(error) && !(await chequeRow("ZIR-001")), `seçimsiz kaydedilmedi: “${error}”`);
+    // Senet'e geç: öneri seçicisi + metin; geri Çek'e dön.
+    await page.selectOption(`${form} select[name="instrument"]`, "note");
+    await pause(300);
+    ok(/Ödeme Hesabı \(Öneri\)/.test(await textOf(`${form} [data-cheque-pick="note"]`)) && (await visible(`${form} input[name="bank"]`)), "senette Ödeme Hesabı (Öneri) ve Banka / Şube metni");
+    await page.selectOption(`${form} select[name="instrument"]`, "cheque");
+    await page.waitForSelector(`${form} [data-cheque-pick="cheque"] select`, { timeout: 5000 });
+    await page.selectOption(`${form} [data-cheque-pick] select[name="bankAccountId"]`, ctx.ziraat.id);
+    await shot("cek-ver-iki-hesap");
+    await page.click(`${form} button[type="submit"]`);
+    await pause(900);
+    const cheque = await chequeRow("ZIR-001");
+    ok(cheque?.bankAccountId === ctx.ziraat.id && cheque?.bank === "Ziraat Bankası · Ana TL", `sunucu: Ziraat çeki (${cheque?.bank})`);
+  });
+
+  await step("2.5 alınan çek: \"Banka / Şube\" müşterinin bankası, serbest metin (Çek Hesabı yok)", async () => {
+    await openCheques();
+    await page.click('.hof-cheques-modal [data-act="new-in"]');
+    const form = chequeForm;
+    await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await pause(600);
+    ok((await visible(`${form} input[name="bank"]`)) && !(await page.$(`${form} [data-cheque-pick]`)), "alınan çekte metin var, Çek Hesabı yok");
+    await page.click(`${chequeForm} [data-cancel]`);
+    await pause(300);
+  });
+
+  await step("2.5 Garanti çekini öde: hesap seçicisinde çekin hesabı (Garanti) seçili gelir; para Garanti'den çıkar", async () => {
+    await openCheques();
+    await page.click(`.hof-cheques-modal tr[data-cheque="${ctx.garCheque.id}"]`);
+    await page.waitForSelector('.hof-cheques-modal [data-action="pay"]', { timeout: 8000 });
+    const facts = await rawText(".hof-cheques-modal .hof-chq-facts");
+    ok(/Çek Hesabı\s*Garanti BBVA · Ticari/.test(facts), "çek kartında Çek Hesabı");
+    const before = (await accountApi(ctx.garanti.id)).balanceMinor;
+    await page.click('.hof-cheques-modal [data-action="pay"]');
+    const form = `${top} .hof-form`;
+    await page.waitForSelector(`${form} [data-bank-pick] select[name="bankAccountId"]`, { timeout: 8000 });
+    const value = await page.$eval(`${form} [data-bank-pick] select[name="bankAccountId"]`, node => node.value);
+    ok(value === ctx.garanti.id, `ödenen hesap ön seçili: ${value === ctx.garanti.id ? "Garanti" : value}`);
+    await shot("cek-ode-hesap-dolu");
+    await submitTop();
+    const after = (await accountApi(ctx.garanti.id)).balanceMinor;
+    ok(before - after === 250_000, `Garanti ${before / 100} → ${after / 100} (2.500 çıktı)`);
+  });
+
+  await step("2.5 Çek Kullan işareti yokken \"Çek Hesabı Tanımla\": yazılanlar kaybolmadan Yapı Kredi işaretlenir, çek o hesapta", async () => {
+    await must("Garanti Çek Kullan kapat", api.put(`/api/workspace/bank/accounts/${ctx.garanti.id}`, { useCheque: false }));
+    await must("Ziraat Çek Kullan kapat", api.put(`/api/workspace/bank/accounts/${ctx.ziraat.id}`, { useCheque: false }));
+    await openCheques();
+    await page.click('.hof-cheques-modal [data-act="new-out"]');
+    await fillCheque({ amount: "900", serial: "YAP-001" });
+    const form = `${modal} .hof-form:has([name="serialNo"])`;
+    await page.waitForSelector(`${form} [data-bank-define="cheque"]`, { timeout: 8000 });
+    ok(await visible(`${form} input[name="bank"]`), "Çek hesabı yokken Banka / Şube metni görünür (bugünkü gibi)");
+    await page.click(`${form} [data-bank-define="cheque"]`);
+    await page.waitForSelector(`${top} .hof-form select[name="accountId"]`, { timeout: 8000 });
+    await page.selectOption(`${top} .hof-form select[name="accountId"]`, ctx.yk.id);
+    await pause(450); // pencerenin açılış geçişi bitsin (ekran görüntüsü)
+    await shot("cek-hesabi-tanimla");
+    await submitTop();
+    await page.waitForSelector(`${form} [data-cheque-pick] [data-bank-single]`, { timeout: 8000 });
+    ok(/Yapı Kredi · TL/.test(await textOf(`${form} [data-cheque-pick] [data-bank-single]`)), "Çek Hesabı: Yapı Kredi · TL (seçili)");
+    ok((await page.$eval(`${form} input[name="amount"]`, node => node.value)) === "900" && (await page.$eval(`${form} input[name="serialNo"]`, node => node.value)) === "YAP-001", "tutar ve seri no kaybolmadı");
+    await page.click(`${form} button[type="submit"]`);
+    await pause(900);
+    const cheque = await chequeRow("YAP-001");
+    ok(cheque?.bankAccountId === ctx.yk.id && (await accountApi(ctx.yk.id)).useCheque === true, "çek Yapı Kredi'de; hesapta Çek Kullan işaretli");
+    await closeAll();
+  });
+
   // ---- SON (yeni bölümler bunun üstüne) ----
 } catch (error) {
   failed += 1;

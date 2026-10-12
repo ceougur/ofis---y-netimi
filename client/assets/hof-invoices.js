@@ -450,7 +450,7 @@
       const legacy = issued && (method === "bank" || (method === "card" && corporate)) && !item.bankAccountId;
       return { amount: amountText(item.amount), method, lineKey: /^[A-Za-z0-9_-]{1,40}$/.test(String(item.lineKey || "")) ? item.lineKey : `i${index}`, bankAccountId: item.bankAccountId || "", legacy, legacyMethod: legacy ? method : "" };
     }),
-    cheques: (payment?.cheques || []).map(item => ({ instrument: item.instrument || "cheque", amount: amountText(item.amount), dueDate: item.dueDate || "", serialNo: item.serialNo || "", bank: item.bank || "", drawer: item.drawer || "" })),
+    cheques: (payment?.cheques || []).map(item => ({ instrument: item.instrument || "cheque", amount: amountText(item.amount), dueDate: item.dueDate || "", serialNo: item.serialNo || "", bank: item.bank || "", drawer: item.drawer || "", bankAccountId: item.bankAccountId || "" })),
     endorse: [...(payment?.endorse || [])],
     rest: payment?.rest === "installments" ? "installments" : "open",
     dueDate: payment?.dueDate || "",
@@ -903,7 +903,7 @@
       .join("");
     const chequeRows = form.pay.cheques
       .map(
-        (item, index) => `<div class="hof-inv-pay-row is-cheque"><label><span>Evrak</span><select data-pay="cheques" data-i="${index}" data-f="instrument"><option value="cheque" ${item.instrument === "cheque" ? "selected" : ""}>Çek</option><option value="note" ${item.instrument === "note" ? "selected" : ""}>Senet</option></select></label><label><span>Tutar (₺)</span><input data-pay="cheques" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}"></label><label><span>Vade</span><input type="date" data-pay="cheques" data-i="${index}" data-f="dueDate" value="${esc(item.dueDate)}" min="${esc(form.issueDate)}"></label><label><span>No</span><input data-pay="cheques" data-i="${index}" data-f="serialNo" maxlength="60" value="${esc(item.serialNo)}"></label><label><span>Banka / Şube</span><input data-pay="cheques" data-i="${index}" data-f="bank" maxlength="120" value="${esc(item.bank)}"></label>${sale ? `<label><span>Keşideci</span><input data-pay="cheques" data-i="${index}" data-f="drawer" maxlength="160" value="${esc(item.drawer)}" placeholder="Boşsa cari"></label>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cheques" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`,
+        (item, index) => `<div class="hof-inv-pay-row is-cheque"><label><span>Evrak</span><select data-pay="cheques" data-i="${index}" data-f="instrument"><option value="cheque" ${item.instrument === "cheque" ? "selected" : ""}>Çek</option><option value="note" ${item.instrument === "note" ? "selected" : ""}>Senet</option></select></label><label><span>Tutar (₺)</span><input data-pay="cheques" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}"></label><label><span>Vade</span><input type="date" data-pay="cheques" data-i="${index}" data-f="dueDate" value="${esc(item.dueDate)}" min="${esc(form.issueDate)}"></label><label><span>No</span><input data-pay="cheques" data-i="${index}" data-f="serialNo" maxlength="60" value="${esc(item.serialNo)}"></label>${chequeBankCell(item, index)}${sale ? `<label><span>Keşideci</span><input data-pay="cheques" data-i="${index}" data-f="drawer" maxlength="160" value="${esc(item.drawer)}" placeholder="Boşsa cari"></label>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cheques" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`,
       )
       .join("");
     const endorse =
@@ -955,6 +955,37 @@
     const label = card ? "Kurumsal Kart" : "Banka Hesabı";
     return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}<option value="none" ${item.bankAccountId === "none" ? "selected" : ""}>Hesapsız (Açılıştan Önce)</option></select>${item.bankAccountId === "none" ? noneNoteHtml(card) : ""}</label>`;
   }
+  /**
+   * v2.2.0 (İz 2.5–2.6): alış faturasında verilen evrakın hesap hücresi. Çek → "Çek Hesabı" (Çek Kullan işaretli; tekse bilgi satırı — kimlik
+   * gönderilmez, sunucu o hesabı seçer —, çoksa seçim, yoksa "Banka / Şube" metni + "Çek Hesabı Tanımla"); senet → "Ödeme Hesabı (Öneri)"
+   * (Senet Kullan işaretli; isteğe bağlı) yoksa metin. Satış (alınan evrak): müşterinin bankası, metin (bugünkü gibi).
+   */
+  function chequeBankCell(item, index) {
+    const textCell = extra => `<span class="hof-inv-chq-bank" data-cheque-bank="${index}"><label><span>Banka / Şube</span><input data-pay="cheques" data-i="${index}" data-f="bank" maxlength="120" value="${esc(item.bank)}"></label>${extra || ""}</span>`;
+    if (view.form?.side !== "purchase") return textCell();
+    const data = view.bankChoices && view.bankChoices !== "loading" ? view.bankChoices : null;
+    if (!data) return textCell();
+    const note = item.instrument === "note";
+    const list = (data.forms?.[note ? "note" : "cheque"]?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean);
+    if (!list.length) return textCell(note ? "" : HOF.bank?.defineHtml?.("cheque") || "");
+    if (!note && list.length === 1 && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-chq-bank hof-bank-pick-note" data-cheque-bank="${index}" data-cheque-single>Çek Hesabı: ${esc(list[0].label)}</span>`;
+    const label = note ? "Ödeme Hesabı (Öneri)" : "Çek Hesabı";
+    const first = note ? "Önerilmez" : "Hesap Seçin";
+    return `<span class="hof-inv-chq-bank" data-cheque-bank="${index}"><label><span>${label}</span><select data-pay="cheques" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${first}</option>${list.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}</select></label></span>`;
+  }
+  // Liste gelince ya da tanım kaydedilince hücre yeniden kurulur; kullanıcı o an hücrenin "Banka / Şube" kutusuna yazıyorsa kutu yeniden
+  // çizilmez (2.0.23 Bulgu 1: yazılan harfler kaybolmasın) — yalnız "Çek Hesabı Tanımla" kutusu eklenir.
+  function refreshChequeCell(cell) {
+    const index = Number(cell.dataset.chequeBank);
+    const item = view.form?.pay.cheques[index];
+    if (!item) return;
+    const html = chequeBankCell(item, index);
+    if (cell.contains(document.activeElement) && document.activeElement.matches?.('[data-f="bank"]') && html.includes('data-f="bank"')) {
+      if (!cell.querySelector("[data-bank-define-box]") && html.includes("data-bank-define-box")) cell.insertAdjacentHTML("beforeend", HOF.bank?.defineHtml?.("cheque") || "");
+      return;
+    }
+    cell.outerHTML = html;
+  }
   // 11.10.2026: "Hesapsız (Açılıştan Önce)" seçiliyken satırda not (modül formlarındaki seçicinin notuyla aynı metin, HOF.bank.noneNote).
   const noneNoteHtml = card => `<small class="hof-bank-pick-note" data-bank-none>${esc(HOF.bank?.noneNote?.(card) || "")}</small>`;
   function syncNoneNote(select) {
@@ -983,6 +1014,9 @@
             if (item.method === "bank" && !item.bankAccountId && !item.legacy) item.bankAccountId = defaultBank();
             cell.outerHTML = bankCell(item, Number(cell.dataset.bankCell));
           });
+        body()
+          ?.querySelectorAll("[data-pay] [data-cheque-bank]")
+          .forEach(cell => refreshChequeCell(cell));
       })
       .catch(() => {
         view.bankChoices = null;
@@ -996,13 +1030,28 @@
     const { kind, account } = event.detail || {};
     const form = view.form;
     const cell = event.target.closest?.("[data-bank-cell]");
-    if (!form || !account?.id || !["bank", "card"].includes(kind)) return;
+    if (!form || !account?.id || !["bank", "card", "cheque"].includes(kind)) return;
     try {
       view.bankChoices = await HOF.bank.choices(true);
     } catch {
       return;
     }
     if (view.form !== form) return;
+    // 2.5: "Çek Hesabı Tanımla" — tanımın yapıldığı evrak satırı yeni hesabı alır; öbür çek hücreleri yeni listeyle.
+    if (kind === "cheque") {
+      const chequeCell = event.target.closest?.("[data-cheque-bank]");
+      const at = chequeCell ? Number(chequeCell.dataset.chequeBank) : -1;
+      if (form.pay.cheques[at]) form.pay.cheques[at].bankAccountId = account.id;
+      body()
+        ?.querySelectorAll("[data-pay] [data-cheque-bank]")
+        .forEach(node => {
+          const position = Number(node.dataset.chequeBank);
+          const item = form.pay.cheques[position];
+          if (item) node.outerHTML = chequeBankCell(item, position);
+        });
+      (body()?.querySelector(`[data-cheque-bank="${at}"] select`) || body()?.querySelector(`[data-pay="cheques"][data-i="${at}"][data-f="serialNo"]`))?.focus();
+      return;
+    }
     const index = cell ? Number(cell.dataset.bankCell) : -1;
     const own = form.pay.cash[index];
     if (own && cellKind(own) === kind) {
@@ -1354,6 +1403,12 @@
       const item = form.pay[target.dataset.pay]?.[Number(target.dataset.i)];
       if (item) item[target.dataset.f] = target.value;
       if (item && target.dataset.pay === "cash" && target.dataset.f === "method") syncBankCell(target, item);
+      // v2.2.0 (İz 2.5): evrak türü değişince (çek ↔ senet) yalnız hesap hücresi yeniden çizilir; çekin hesabı senede taşınmaz.
+      if (item && target.dataset.pay === "cheques" && target.dataset.f === "instrument") {
+        item.bankAccountId = "";
+        const cell = body()?.querySelector(`[data-cheque-bank="${target.dataset.i}"]`);
+        if (cell) cell.outerHTML = chequeBankCell(item, Number(target.dataset.i));
+      }
       if (item && target.dataset.f === "bankAccountId") {
         item.legacy = item.legacy && !target.value;
         syncNoneNote(target);

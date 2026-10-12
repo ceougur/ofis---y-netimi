@@ -191,6 +191,7 @@
         ${fact(cheque.direction === "in" ? "Alış Tarihi" : "Veriliş Tarihi", esc(HOF.formatDate(cheque.issueDate)))}
         ${fact(cheque.direction === "in" ? "Keşideci / Borçlu" : "Lehtar", esc(cheque.drawer))}
         ${fact("Cari", accountLink(cheque.accountId, cheque.accountName))}
+        ${fact(cheque.instrument === "note" ? "Ödeme Hesabı (Öneri)" : "Çek Hesabı", cheque.direction === "out" && cheque.bankAccountLabel ? esc(cheque.bankAccountLabel) : "")}
         ${fact("Taksit kartı", cheque.planName ? `<a href="#" data-open-plan="${esc(cheque.planId)}">${esc(cheque.planName)}</a>` : "")}
         ${fact("Ciro edilen", accountLink(cheque.endorseAccountId, cheque.endorseAccountName))}
         ${fact("Son durum tarihi", cheque.status === "portfolio" || cheque.status === "pending" ? "" : esc(HOF.formatDate(cheque.statusDate)))}
@@ -234,6 +235,8 @@
       fields: core ? fields : fields.filter(field => !["instrument", "amount", "issueDate"].includes(field.name)),
       submitLabel: edit ? "Kaydet" : direction === "in" ? "Portföye Al" : "Kaydet",
       onOpen: dialog => {
+        // v2.2.0 (İz 2.5–2.6): verilen evrakta "Banka / Şube" yerine Çek Hesabı (çek) / Ödeme Hesabı önerisi (senet); alınan evrakta metin kalır.
+        if (direction === "out" && HOF.bank?.attachChequePicker) HOF.bank.attachChequePicker(dialog.querySelector("form"), { cheque });
         if (!core) return;
         const form = dialog.querySelector("form");
         const anchor = form.querySelector('[name="drawer"]').closest(".hof-field");
@@ -307,7 +310,9 @@
       ],
       submitLabel: text.submit,
       onOpen: dialog => {
-        if (moneyAction && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method" });
+        // v2.2.0 (İz 2.5–2.6): verilen çekin ödemesinde hesap çekin Çek Hesabı; senette önerilen hesap (yoksa Senet Kullan işaretli ilk hesap).
+        const own = action === "pay" ? cheque.bankAccountId || "" : "";
+        if (moneyAction && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: own, ...(action === "pay" && cheque.instrument === "note" && !own ? { suggest: "note" } : {}) });
         if (action !== "endorse") return;
         // v2.0.17 (müşteri: "cari bulunmuyor"): tür kısıtı yok — bütün cariler aranır, tedarikçiler üstte; "+ Yeni Cari".
         const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari", required: true, prefer: "supplier", allowNew: { type: "supplier" }, help: "Tedarikçi ya da müşteri: çekin kime verildiği. Bulunamazsa + Yeni Cari ile açın.", name: "accountId" });

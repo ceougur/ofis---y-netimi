@@ -1213,7 +1213,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const dueDate = text(item?.dueDate);
       if (!validDate(dueDate)) fail400(`${index + 1}. evrakın vade tarihini seçin.`, "payment.cheques");
       if (dueDate < doc.date) fail400(`${index + 1}. evrakın vadesi (${dayText(dueDate)}) fatura tarihinden (${dayText(doc.date)}) önce olamaz.`, "payment.cheques", { code: "cheque-due-before-issue" });
-      return { instrument: text(item?.instrument) === "note" ? "note" : "cheque", amount: value, dueDate, serialNo: limited(item?.serialNo, 60, "Seri No"), bank: limited(item?.bank, 120, "Banka / Şube"), drawer: limited(item?.drawer, 160, "Keşideci") };
+      // v2.2.0 (İz 2.5): alış faturasında verilen çekin Çek Hesabı / senedin ödeme hesabı önerisi (kural çek modülünde: lib routes/cheques.mjs
+      // chequeAccountOf). Satış (alınan) evrakında hesap seçilmez.
+      const accountId = text(item?.bankAccountId);
+      if (accountId && kind !== "purchase") fail400(`${index + 1}. evrak: alınan (müşteri) çek/senette banka hesabı seçilmez; müşterinin bankası “Banka / Şube”ye yazılır.`, "payment.cheques", { code: "bank-account-invalid" });
+      return { instrument: text(item?.instrument) === "note" ? "note" : "cheque", amount: value, dueDate, serialNo: limited(item?.serialNo, 60, "Seri No"), bank: limited(item?.bank, 120, "Banka / Şube"), drawer: limited(item?.drawer, 160, "Keşideci"), ...(accountId ? { bankAccountId: accountId } : {}) };
     });
     const endorseIds = kind === "purchase" ? [...new Set((Array.isArray(p.endorse) ? p.endorse : []).map(value => text(value)).filter(Boolean))].slice(0, 20) : [];
     if (!["purchase"].includes(kind) && Array.isArray(p.endorse) && p.endorse.length) fail400("Çek cirosu yalnız alış faturasının ödemesinde kullanılır.", "payment.endorse");
@@ -1518,7 +1522,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         try_stoppage: c2(money.stoppage),
         try_payable: c2(money.payable),
         gl_json: JSON.stringify(money.byAccount),
-        payment_json: JSON.stringify({ cash: payment.cash.map(item => ({ amount: item.amount, method: item.method, ...(item.lineKey ? { lineKey: item.lineKey } : {}), ...((item.finRef ?? item.bankAccountId) ? { bankAccountId: item.finRef ?? item.bankAccountId } : {}) })), cheques: payment.cheques.map(item => ({ instrument: item.instrument, amount: item.amount, dueDate: item.dueDate, serialNo: item.serialNo, bank: item.bank })), endorse: payment.endorse.map(item => item.id), mode: payment.mode, installments: payment.installments, rest: payment.rest }),
+        payment_json: JSON.stringify({ cash: payment.cash.map(item => ({ amount: item.amount, method: item.method, ...(item.lineKey ? { lineKey: item.lineKey } : {}), ...((item.finRef ?? item.bankAccountId) ? { bankAccountId: item.finRef ?? item.bankAccountId } : {}) })), cheques: payment.cheques.map(item => ({ instrument: item.instrument, amount: item.amount, dueDate: item.dueDate, serialNo: item.serialNo, bank: item.bank, ...(item.bankAccountId ? { bankAccountId: item.bankAccountId } : {}) })), endorse: payment.endorse.map(item => item.id), mode: payment.mode, installments: payment.installments, rest: payment.rest }),
         due_date: payment.dueDate,
         plan_id: "",
         original_id: doc.original?.id || "",
@@ -1599,7 +1603,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
       // Çek / senet: satışta alınan (portföy), alışta verilen; carinin bakiyesiyle mahsup çek olayından gelir.
       for (const item of payment.cheques) {
-        const created = cheques().invoiceCheques.create(user, { direction: INVOICE_KINDS[doc.kind].side === "sale" ? "in" : "out", instrument: item.instrument, amount: item.amount, issueDate: doc.date, dueDate: item.dueDate, accountId: doc.account.id, serialNo: item.serialNo, bank: item.bank, drawer: item.drawer || doc.party.name, note: what }, { invoiceId, note: number });
+        const created = cheques().invoiceCheques.create(user, { direction: INVOICE_KINDS[doc.kind].side === "sale" ? "in" : "out", instrument: item.instrument, amount: item.amount, issueDate: doc.date, dueDate: item.dueDate, accountId: doc.account.id, serialNo: item.serialNo, bank: item.bank, drawer: item.drawer || doc.party.name, note: what, ...(item.bankAccountId ? { bankAccountId: item.bankAccountId } : {}) }, { invoiceId, note: number });
         touched.cheques.chequeIds.push(created.id);
       }
       for (const item of payment.endorse) {

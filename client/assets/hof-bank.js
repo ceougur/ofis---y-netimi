@@ -2658,7 +2658,9 @@
     form.querySelectorAll("[data-bank-pick]").forEach(node => node.remove());
     const { place, card, options } = setup;
     const bankName = options.name || "bankAccountId";
-    const mode = insertPicker(place, { define: "bank", ...options, value: kept[bankName] || options.value || "" }, data);
+    // suggest (2.6): değer yoksa o seçici türünün ilk hesabı önerilir (verilen senedin ödemesinde Senet Kullan işaretli hesap).
+    const suggested = options.suggest ? data?.forms?.[options.suggest]?.ids?.find(id => data?.forms?.bank?.ids?.includes(id)) || "" : "";
+    const mode = insertPicker(place, { define: "bank", ...options, value: kept[bankName] || options.value || suggested || "" }, data);
     const box = form.querySelector('[data-bank-pick]:not([data-bank-pick="card"])');
     if (card) insertPicker(box || place, { ...CARD_PICKER, value: kept[CARD_PICKER.name] || card.value || "", keepLabel: card.keepLabel || "" }, data);
     return mode;
@@ -2729,6 +2731,58 @@
     syncPickers(form, setup);
     return mode;
   }
+  /**
+   * v2.2.0 (İz 2.5–2.6): verilen çek/senet formunda hesap. Çek → "Çek Hesabı" (yalnız Çek Kullan işaretli etkin TL hesaplar; tekse bilgi satırı,
+   * çoksa seçim zorunlu, hiç yoksa "Çek Hesabı Tanımla" ve "Banka / Şube" metni bugünkü gibi). Hesap varken "Banka / Şube" metni gizlenir
+   * (sunucu hesabın adını yazar). Senet → "Ödeme Hesabı (Öneri)" (Senet Kullan işaretli; zorunlu değil; ödemede bu hesap gelir). Eski çekte
+   * (hesapsız) ilk seçenek "Değiştirme (Mevcut: <metin>)": dokunulmazsa metin ve hesapsızlık korunur. Evrak türü değişince alan yeniden kurulur.
+   * cheque: düzeltilen evrak (bankAccountId, bank) ya da null. Dönüş: söz.
+   */
+  async function attachChequePicker(form, { cheque = null, instrumentName = "instrument", bankName = "bank" } = {}) {
+    if (!form) return;
+    const textField = form.querySelector(`[name="${bankName}"]`)?.closest(".hof-field");
+    if (!textField) return;
+    let data;
+    try {
+      data = await choices(true);
+    } catch {
+      return;
+    }
+    let forced = "";
+    const render = () => {
+      if (!form.isConnected) return;
+      form.querySelectorAll("[data-cheque-pick]").forEach(node => node.remove());
+      const instrument = form.querySelector(`[name="${instrumentName}"]`)?.value || cheque?.instrument || "cheque";
+      const note = instrument === "note";
+      const value = forced || (cheque && cheque.instrument === instrument ? cheque.bankAccountId || "" : "");
+      // Çok hesapta ön seçim yok (kart gibi): kullanıcı çekin hangi karneden verildiğini kendisi seçer.
+      const keepLabel = cheque && !cheque.bankAccountId && !forced && !note ? `Değiştirme (Mevcut: ${cheque.bank || "—"})` : "";
+      const picked = pickerHtml(data, note ? { form: "note", name: "bankAccountId", label: "Ödeme Hesabı (Öneri)", choose: "Önerilmez", required: false, none: false, value } : { form: "cheque", name: "bankAccountId", label: "Çek Hesabı", define: "cheque", none: false, preselect: false, value, keepLabel, note: label => `${label} hesabının karnesinden verilir.` });
+      const input = textField.querySelector("input");
+      // Çek hesabı seçilebiliyorsa "Banka / Şube" metni gizlenir ve gönderilmez (sunucu hesabın adını yazar); senette metin kalır.
+      const hideText = !note && (picked.mode === "single" || picked.mode === "many");
+      textField.hidden = hideText;
+      if (input) input.disabled = hideText;
+      if (!picked.html) return;
+      textField.insertAdjacentHTML("afterend", `<div class="hof-bank-pick" data-cheque-pick="${note ? "note" : "cheque"}">${picked.html}</div>`);
+    };
+    render();
+    form.querySelector(`[name="${instrumentName}"]`)?.addEventListener("change", () => {
+      forced = "";
+      render();
+    });
+    form.addEventListener("hof-bank-defined", async event => {
+      if (event.detail?.kind !== "cheque" || !event.detail.account?.id) return;
+      try {
+        data = await choices(true);
+      } catch {
+        return;
+      }
+      forced = event.detail.account.id;
+      render();
+      (form.querySelector('[data-cheque-pick] select') || form.querySelector('button[type="submit"]'))?.focus();
+    });
+  }
   /** m1: sunucu "hesap/kart seçin" dedi (ekranın listesi eskiydi) → açık formların seçicileri taze listeyle yeniden kurulur. */
   async function refreshPickers() {
     for (const form of pickerForms.keys()) if (!form.isConnected) pickerForms.delete(form);
@@ -2784,6 +2838,7 @@
     registerDefine,
     defineHtml,
     define,
+    attachChequePicker,
   };
   HOF.on("bank-choices-stale", () => {
     choicesCache = null;
