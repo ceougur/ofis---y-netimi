@@ -1,0 +1,158 @@
+{
+  "ad": "pos-220-kirmizi-eski-c6cbb5c",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-220-pos-kabul.test.mjs test/banka-220-pos-bozma.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-pos-kuyruk.test.mjs test/banka-220-pos-hesap.test.mjs",
+  "commit": "c6cbb5c15312ca4ee5dd9964f4167d46ab3cdea8",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:26:03.991Z",
+  "sure_sn": 14.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 0,
+    "basarisiz": 36,
+    "iptal": 16,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 36 başarısız, 16 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinden; iki POS'ta seçim zorunlu; banka hesabı verilemez › önce fatura/tahsilat (POS yokken) → 108.00 Hesabı Atanmamış; sonra POS tanımlanınca yeni tahsilat 108.01'e, eskisi yerinde",
+      "konum": "test/banka-220-pos-bozma.test.mjs:23:3",
+      "hata": "POS aç Ziraat Fiziki POS: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinden; iki POS'ta seçim zorunlu; banka hesabı verilemez › POS tahsilatında banka hesabı verilirse 400 bank-account-invalid; ödemede POS verilirse 400 pos-not-for-payment",
+      "konum": "test/banka-220-pos-bozma.test.mjs:35:3",
+      "hata": "POS listesi: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinden; iki POS'ta seçim zorunlu; banka hesabı verilemez › ikinci POS açılınca seçim zorunlu (400 pos-required); seçilen POS'a yazılır",
+      "konum": "test/banka-220-pos-bozma.test.mjs:42:3",
+      "hata": "POS aç Garanti Sanal POS: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım › tanımsız taksit → 400 pos-rate-missing (\"Bu POS'ta 9 taksit oranı tanımlı değil.\"); taksit sayısı 0 / 40 → 400",
+      "konum": "test/banka-220-pos-bozma.test.mjs:62:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım › aynı provizyon numarası aynı gün aynı POS'ta → 409 pos-auth-duplicate; kart numarasının tamamı → 400 pos-card-last4",
+      "konum": "test/banka-220-pos-bozma.test.mjs:71:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım › pasif POS → 400 pos-passive; etkinleştirince kabul",
+      "konum": "test/banka-220-pos-bozma.test.mjs:81:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım › oran değişince geçmiş değişmez: 09.10'dan geçerli %3 → eski satış komisyonu 12,50 (%2,5) kalır, yeni satış %3; aynı tarihli oran ikinci kez → 409 pos-rate-exists",
+      "konum": "test/banka-220-pos-bozma.test.mjs:89:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım › POS sil → yalnız hiç kullanılmamış POS silinir; kullanılmış → 409 pos-in-use; silinen POS'un adıyla yeniden açılan POS yeni alt hesap alır",
+      "konum": "test/banka-220-pos-bozma.test.mjs:104:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım › POS kartında bağlı hesap değişince bekleyenler ESKİ hesaba (kopya); \"Bekleyenleri Yeni Hesaba Taşı\" ile yenisine",
+      "konum": "test/banka-220-pos-bozma.test.mjs:114:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım › provizyon süresi geçmiş satışta POS İşlemleri → İptal Et → 409 pos-provision-expired, neden yazısı; provizyon içinde → void, komisyon doğmaz",
+      "konum": "test/banka-220-pos-bozma.test.mjs:142:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım › faturanın POS peşini POS İşlemleri'nden void edilmez (409 pos-void-invoice; faturayı iptal edin)",
+      "konum": "test/banka-220-pos-bozma.test.mjs:167:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Aşama 10 Nasıl Bozarım",
+      "konum": "test/banka-220-pos-bozma.test.mjs:53:1",
+      "hata": "POS aç Ziraat Fiziki POS: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "test/banka-220-pos-hesap.test.mjs",
+      "konum": "test/banka-220-pos-hesap.test.mjs:1:1",
+      "hata": "test failed"
+    },
+    {
+      "ad": "Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade) › kabul 17–19: Ziraat Fiziki POS (Banka, BSMV Dahil, Tek Çekim %2,5, 3 Taksit %3,5, valör 2 iş günü, her ay, provizyon aynı gün) → 108.01",
+      "konum": "test/banka-220-pos-kabul.test.mjs:26:3",
+      "hata": "POS aç Ziraat Fiziki POS: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade) › kabul 20–22: Satış Faturası Ürün B 10 × 1.000 peşin POS Tek Çekim → Ürün B 15; ABC 0; Ziraat 90.000 (değişmedi); POS Bekleyen 10.000 brüt / 9.750 net; valör 12.10.2026",
+      "konum": "test/banka-220-pos-kabul.test.mjs:33:3",
+      "hata": "POS Bekleyen 10.000 brüt / 9.750 net · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade) › kabul 23–24: saat 12.10.2026 → kuyruk → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı \"Valör 12.10.2026 (08.10 Perşembe + 2 iş günü)\"",
+      "konum": "test/banka-220-pos-kabul.test.mjs:47:3",
+      "hata": "Şimdi Aktar: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade) › kabul 25–26: 12.10 Satış Faturası Ürün B 12 × 1.000 peşin POS 3 Taksit → Ürün B 3; takvim 12.11 / 14.12 (12.12 Cumartesi) / 12.01.2027 × 3.860; bekleyen net 11.580 (brüt 12.000, komisyon 420)",
+      "konum": "test/banka-220-pos-kabul.test.mjs:68:3",
+      "hata": "POS Ödeme Takvimi: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade) › kabul 27–28: 13.10 Satıştan İade (asıl adım 20) Ürün B 3 = 3.000 POS İadesi, İade Edilmez → Ürün B 6; ABC 0; iade valörü 15.10; Σ iade 3.000 ≤ 10.000; saat 15.10 → Ziraat 96.750",
+      "konum": "test/banka-220-pos-kabul.test.mjs:80:3",
+      "hata": "POS İşlemleri: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade) › adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 12.000, 610 = 2.500, 653 = 250; Borç = Alacak",
+      "konum": "test/banka-220-pos-kabul.test.mjs:114:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 1900000 (beklenen 1200000, gelen 1900000)"
+    },
+    {
+      "ad": "Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi › POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)",
+      "konum": "test/banka-220-pos-kdv.test.mjs:28:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi › satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok",
+      "konum": "test/banka-220-pos-kdv.test.mjs:35:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi › Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250",
+      "konum": "test/banka-220-pos-kdv.test.mjs:52:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi",
+      "konum": "test/banka-220-pos-kdv.test.mjs:19:1",
+      "hata": "POS aç Ödeme Kuruluşu Sanal POS: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "§4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10 › komisyon faturası 600",
+      "konum": "test/banka-220-pos-kdv.test.mjs:79:5",
+      "hata": "POS aç Ödeme Kuruluşu Sanal POS: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "§4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10 › komisyon faturası 610",
+      "konum": "test/banka-220-pos-kdv.test.mjs:79:5",
+      "hata": "POS aç Ödeme Kuruluşu Sanal POS: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a1b16de6805c2b496/docs/kanit/2026-10-12/pos-220-kirmizi-eski-c6cbb5c.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-eski",
+  "ham_cikti_sha256": "99c708c27e991f90163685a58b2a30b0ee4e0503b521c16813c3377a274cf15e",
+  "ham_cikti_bayt": 73656
+}

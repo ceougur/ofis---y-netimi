@@ -1,0 +1,58 @@
+{
+  "ad": "pos-220-mutasyon-M2-valor-is-gunu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-220-pos-hesap.test.mjs test/banka-220-pos-kabul.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-pos-kdv.test.mjs",
+  "commit": "a41e35fee6069d100973422f5957fa463c21492c",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:26:34.169Z",
+  "sure_sn": 14.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 34,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Valör takvimi ve bölüşüm (plan §4.2, §4.5) › 12.000 / 3 taksit / her ay (08.10.2026) → 09.11, 08.12, 08.01.2027; 4.000 brüt, 140 kom, 3.860 net; tek seferde → tek kalem (oran satırındaki gün)",
+      "konum": "test/banka-220-pos-hesap.test.mjs:57:3",
+      "hata": "08.10 + 30 iş günü · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "§4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10 › komisyon faturası 600",
+      "konum": "test/banka-220-pos-kdv.test.mjs:79:5",
+      "hata": "iki valör günü · 1 !== 2 (beklenen 2, gelen 1)"
+    },
+    {
+      "ad": "§4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10 › komisyon faturası 610",
+      "konum": "test/banka-220-pos-kdv.test.mjs:79:5",
+      "hata": "iki valör günü · 1 !== 2 (beklenen 2, gelen 1)"
+    },
+    {
+      "ad": "İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri) › 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)",
+      "konum": "test/banka-220-pos-valor.test.mjs:24:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + '2026-10-05' (beklenen 2026-10-06, gelen 2026-10-05)"
+    },
+    {
+      "ad": "Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi › sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)",
+      "konum": "test/banka-220-pos-valor.test.mjs:60:3",
+      "hata": "açılışta kuyruk: her gün kendi tarihiyle · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a1b16de6805c2b496/docs/kanit/2026-10-12/pos-220-mutasyon-M2-valor-is-gunu.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos10-wt-mut",
+  "ham_cikti_sha256": "f804f74d1f94e4befbc64cf86899c715fd9010207600daf32568c21df7c7fb6e",
+  "ham_cikti_bayt": 23082
+}
