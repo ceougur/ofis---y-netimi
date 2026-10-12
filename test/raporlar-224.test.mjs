@@ -350,7 +350,9 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     }
     const xlsx = await get(id, q, "xlsx");
     assert.equal(xlsx.status, 200, `${tag} Excel: ${xlsx.status}`);
-    const sheet = xlsxRows(xlsx.buffer);
+    // 2.2.0 İz 1.1: tablonun üstündeki başlık bloğu (tek hücreli satırlar: şirket, rapor adı, kapsam, oluşturma) atlanır.
+    const all = xlsxRows(xlsx.buffer);
+    const sheet = all.slice(Math.max(0, all.findIndex(row => row.length > 1)));
     if (data.total > data.rows.length || !data.headers.length) return;
     assert.equal(sheet.length, 1 + data.rows.length + (data.footer ? 1 : 0), `${tag} Excel: satır sayısı (başlık + ${data.rows.length} + TOPLAM)`);
     const cellValue = cell => moneyOf(cell) ?? numberOf(cell);

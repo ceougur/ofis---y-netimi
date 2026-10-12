@@ -113,7 +113,8 @@ async function fetchOne(api, request, side = "eski") {
   // Hesap Planı Mizanı PDF'inde "Hesap Adı" kolonunun genişliği en uzun hesap adına göre (649'un yeni adı kısaldı): aynı metin
   // başka yerden satır kırar. Bu raporda satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
   if (request.kind === "pdf") {
-    const text = pdfText(response.buffer);
+    // 2.2.0 İz 1.1 (bilerek): Rapor Merkezi PDF'inin başlığındaki şirket "001 · Unvan" (önceden yalnız unvan); kod öneki atılır.
+    const text = pdfText(response.buffer).replace(/^\d{3} · /gm, "");
     // 2.1.0 Aşama 14: altıdan çok özet kutusu iki sıraya dizilir (Banka ve POS Hareketleri'nde 7–8 kutu; tek sırada tutar kesiliyordu) →
     // tablo sayfalara başka yerden bölünür ve uzun özet başlığı satır kırmaz. Bu raporda sayfa başlıkları (şirket · rapor, "Sayfa n / m", alt
     // başlık, kolon başlıkları) atılır ve satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
@@ -122,6 +123,14 @@ async function fetchOne(api, request, side = "eski") {
   }
   const sheets = xlsxSheets(response.buffer);
   for (const rows of Object.values(sheets)) for (let k = rows.length - 1; k >= 0; k -= 1) if (rows[k][0] === "Hazırlanma") rows.splice(k, 1);
+  // 2.2.0 İz 1.1 (bilerek): Rapor Merkezi Excel'inin ilk sayfasında tablonun üstünde başlık bloğu (tek hücreli satırlar: şirket, rapor adı, kapsam,
+  // oluşturma) ve Özet'te "Şirket" satırı. Blok ve satır atılır; tablo ve Özet'in kalanı 2.0.26 ile birebir karşılaştırılır.
+  const [firstName] = Object.keys(sheets);
+  if (firstName && request.url.includes("/report-center/")) {
+    const at = sheets[firstName].findIndex(row => row.length > 1);
+    if (at > 0) sheets[firstName].splice(0, at);
+  }
+  if (sheets["Özet"]) sheets["Özet"] = sheets["Özet"].filter(row => row[0] !== "Şirket");
   return { status: 200, body: norm649(sheets) };
 }
 

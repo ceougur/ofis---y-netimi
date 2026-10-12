@@ -2438,7 +2438,10 @@ try {
     const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
     ok(pdf.status === 200 && text.includes("Banka Bakiye Raporu") && text.includes("Rapor Şirketi") && text.includes("87.984,25 TL") && text.includes("160.484,25 TL") && text.includes("Transfer Çıkış"), "PDF: başlık, şirket, hesap ve TOPLAM tutarı");
     const xlsx = await fileText(admin, xlsxHref);
-    const sheet = Object.values(xlsxSheets(xlsx.buffer))[0];
+    // 2.2.0 İz 1.1: tablonun üstünde başlık bloğu (şirket "kod · unvan", rapor adı, kapsam, oluşturma); blok atlanıp tablo karşılaştırılır.
+    const book = Object.values(xlsxSheets(xlsx.buffer))[0];
+    ok(/^\d{3} · Rapor Şirketi$/.test(String(book[0]?.[0])) && book[1]?.[0] === "Banka Bakiye Raporu", `Excel başlığında şirket kodu ve unvanı (${book[0]?.[0]})`);
+    const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1)));
     ok(xlsx.status === 200 && sheet[0].join("|") === data.heads.join("|") && sheet.at(-1)[0] === "TOPLAM" && Math.round(sheet.at(-1)[sheet[0].indexOf("Dönem Sonu")] * 100) === 16_048_425, `Excel: kolonlar ekranla aynı, TOPLAM 160.484,25 (${sheet.at(-1).join(" | ")})`);
     await admin.selectOption(`${modal} [data-param="bankGroup"]`, "all");
     data = await waitPreview(admin, view => view.rows.length === 4);

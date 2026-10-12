@@ -76,20 +76,23 @@ const safeSheetName = (name, used) => {
 };
 
 /**
- * @param {Array<{ name: string, columns: string[], headers?: string[], rows: Array<Record<string, unknown>> }>} sheets
- *   columns: satırdaki alan adları; headers: başlık satırında görünecek adlar (verilmezse columns)
- * @param {{ title?: string, creator?: string, now?: Date }} options
+ * @param {Array<{ name: string, columns: string[], headers?: string[], rows: Array<Record<string, unknown>>, preamble?: Array<string | { text: string, bold?: boolean }> }>} sheets
+ *   columns: satırdaki alan adları; headers: başlık satırında görünecek adlar (verilmezse columns); preamble: tablonun ÜSTÜNDEKİ başlık
+ *   bloğu (2.2.0 İz 1.1: Rapor Merkezi'nde "001 · Unvan", rapor adı, kapsam, oluşturma) — her biri A kolonunda bir satır, bloktan sonra bir
+ *   boş satır; kolon başlıkları, süzgeç (autoFilter), dondurulmuş satırlar ve veri doğrulama blok kadar aşağı kayar.
+ * @param {{ title?: string, creator?: string, company?: string, now?: Date }} options  company: dosya özelliklerindeki "Şirket"
  * @returns {Buffer} .xlsx içeriği
  */
 // Veri doğrulama (Excel "Veri Doğrulama"): açılır liste en çok 255 karakter; yardım notu başlığı 32, metni 255 karakter.
-function validationsXml(list = []) {
+// first: ilk veri satırının numarası (başlık bloğu yoksa 2).
+function validationsXml(list = [], first = 2) {
   const items = (list || []).filter(item => item && Number.isInteger(item.column));
   if (!items.length) return "";
   const cut = (text, max) => clean(text).slice(0, max);
   const body = items
     .map(item => {
       const rows = item.rows || 2000;
-      const ref = `${columnName(item.column)}2:${columnName(item.column)}${rows + 1}`;
+      const ref = `${columnName(item.column)}${first}:${columnName(item.column)}${rows + first - 1}`;
       const prompt = item.prompt ? ` showInputMessage="1" promptTitle="${xml(cut(item.title || "", 32))}" prompt="${xml(cut(item.prompt, 255))}"` : "";
       if (item.type === "list" && item.options?.length) {
         const joined = item.options.map(option => String(option).replace(/[",]/g, " ").trim()).filter(Boolean).join(",").slice(0, 255);
@@ -108,7 +111,7 @@ function validationsXml(list = []) {
 //   validations: [{ column, type: "list"|"whole"|"none", options?, min?, max?, title?, prompt?, rows? }]  → açılır
 //                liste, sayı aralığı ya da yalnız yardım notu (başlığa/hücreye tıklanınca görünür)
 //   widths: { [kolon sırası]: genişlik }
-export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis", now = new Date() } = {}) {
+export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis", company = "", now = new Date() } = {}) {
   const list = sheets.length ? sheets : [{ name: "Sayfa1", columns: [], rows: [] }];
   const used = new Set();
   const formats = new Map(); // biçim kodu → numFmtId (164'ten başlar)
@@ -123,6 +126,14 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
       styles.push({ numFmtId: id, bold });
     }
     return styleOf.get(key);
+  };
+  // Başlık bloğunun kalın satırı (2.2.0 İz 1.1: şirket ve rapor adı): dolgusuz, çerçevesiz, biraz büyük.
+  const headingText = () => {
+    if (!styleOf.has("h")) {
+      styleOf.set("h", styles.length);
+      styles.push({ numFmtId: 0, heading: true });
+    }
+    return styleOf.get("h");
   };
   // Kalın metin (TOPLAM satırı, v2.0.20).
   const boldText = () => {
@@ -152,6 +163,10 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
       return styleFor(code);
     };
     const rowsXml = [];
+    // Başlık bloğu (2.2.0 İz 1.1): satır 1..n, ardından bir boş satır; tablo (kolon başlıkları) top + 1'inci satırda.
+    const preamble = (sheet.preamble || []).map(line => (line && typeof line === "object" ? line : { text: line })).map(line => ({ ...line, text: clean(line.text).trim() })).filter(line => line.text);
+    const top = preamble.length ? preamble.length + 1 : 0;
+    const headRow = top + 1;
     const cell = (ref, content, style, bold = false) => {
       if (content === null) return "";
       if ("value" in content) return `<c r="${ref}" s="${styleFor(content.format, bold)}"><v>${content.value}</v></c>`;
@@ -159,9 +174,10 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
       const space = /^\s|\s$|\n/.test(text) ? ' xml:space="preserve"' : "";
       return `<c r="${ref}" t="inlineStr"${style ? ` s="${style}"` : ""}><is><t${space}>${xml(text)}</t></is></c>`;
     };
-    if (columns.length) rowsXml.push(`<row r="1">${headers.map((header, index) => cell(`${columnName(index)}1`, { text: String(header) }, 1)).join("")}</row>`);
+    preamble.forEach((line, index) => rowsXml.push(`<row r="${index + 1}">${cell(`A${index + 1}`, { text: line.text }, line.bold ? headingText() : 0)}</row>`));
+    if (columns.length) rowsXml.push(`<row r="${headRow}">${headers.map((header, index) => cell(`${columnName(index)}${headRow}`, { text: String(header) }, 1)).join("")}</row>`);
     sheet.rows.forEach((row, rowIndex) => {
-      const r = rowIndex + 2;
+      const r = rowIndex + headRow + 1;
       const cells = columns
         .map((column, index) => {
           const content = typedCell(row[column]);
@@ -172,42 +188,42 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
       rowsXml.push(`<row r="${r}">${cells}</row>`);
     });
     // TOPLAM satırı (v2.0.20): kalın, verinin altında; süzgeç (autoFilter) alanının DIŞINDA kalır, sıralamada yerinden oynamaz.
-    const footerRowNo = sheet.rows.length + 2;
+    const footerRowNo = sheet.rows.length + headRow + 1;
     if (sheet.footer && columns.length) {
       const cells = columns.map((column, index) => cell(`${columnName(index)}${footerRowNo}`, typedCell(sheet.footer[column]) || { text: "" }, boldText(), true)).join("");
       rowsXml.push(`<row r="${footerRowNo}">${cells}</row>`);
     }
-    const last = `${columnName(Math.max(0, columns.length - 1))}${sheet.rows.length + 1}`;
-    const extent = sheet.footer && columns.length ? `${columnName(Math.max(0, columns.length - 1))}${footerRowNo}` : last;
+    const last = `${columnName(Math.max(0, columns.length - 1))}${sheet.rows.length + headRow}`;
+    const extent = sheet.footer && columns.length ? `${columnName(Math.max(0, columns.length - 1))}${footerRowNo}` : columns.length || !top ? last : `A${preamble.length}`;
     const body = `${XML_HEADER}<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
 <dimension ref="A1:${extent}"/>
-<sheetViews><sheetView workbookViewId="0"${sheetIndex === 0 ? ' tabSelected="1"' : ""}>${columns.length ? '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A2" sqref="A2"/>' : ""}</sheetView></sheetViews>
+<sheetViews><sheetView workbookViewId="0"${sheetIndex === 0 ? ' tabSelected="1"' : ""}>${columns.length ? `<pane ySplit="${headRow}" topLeftCell="A${headRow + 1}" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A${headRow + 1}" sqref="A${headRow + 1}"/>` : ""}</sheetView></sheetViews>
 <sheetFormatPr defaultRowHeight="15"/>
 ${columns.length ? `<cols>${widths.map((width, index) => { const style = colStyle(index); return `<col min="${index + 1}" max="${index + 1}" width="${width}"${style ? ` style="${style}"` : ""} customWidth="1"/>`; }).join("")}</cols>` : ""}
 <sheetData>${rowsXml.join("")}</sheetData>
-${columns.length && sheet.rows.length ? `<autoFilter ref="A1:${last}"/>` : ""}
-${validationsXml(sheet.validations)}
+${columns.length && sheet.rows.length ? `<autoFilter ref="A${headRow}:${last}"/>` : ""}
+${validationsXml(sheet.validations, headRow + 1)}
 <pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/>
 </worksheet>`;
-    return { name, body };
+    return { name, body, headRow };
   });
 
   const numFmts = [...formats].map(([code, id]) => `<numFmt numFmtId="${id}" formatCode="${xml(code)}"/>`).join("");
   const stylesXml = `${XML_HEADER}<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
 ${formats.size ? `<numFmts count="${formats.size}">${numFmts}</numFmts>` : ""}
-<fonts count="3"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><color rgb="FF142B25"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><name val="Calibri"/><family val="2"/></font></fonts>
+<fonts count="4"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><color rgb="FF142B25"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="13"/><color rgb="FF142B25"/><name val="Calibri"/><family val="2"/></font></fonts>
 <fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE6F3EB"/><bgColor indexed="64"/></patternFill></fill></fills>
 <borders count="3"><border><left/><right/><top/><bottom/><diagonal/></border><border><left/><right/><top/><bottom style="thin"><color rgb="FF9CC7AE"/></bottom><diagonal/></border><border><left/><right/><top style="medium"><color rgb="FF374151"/></top><bottom style="medium"><color rgb="FF374151"/></bottom><diagonal/></border></borders>
 <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
 <cellXfs count="${styles.length}">${styles
-    .map(style => (style.header ? '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>' : style.bold ? `<xf numFmtId="${style.numFmtId}" fontId="2" fillId="2" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1"${style.numFmtId ? ' applyNumberFormat="1"' : ""}/>` : `<xf numFmtId="${style.numFmtId}" fontId="0" fillId="0" borderId="0" xfId="0"${style.numFmtId ? ' applyNumberFormat="1"' : ""}/>`))
+    .map(style => (style.header ? '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>' : style.heading ? '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/>' : style.bold ? `<xf numFmtId="${style.numFmtId}" fontId="2" fillId="2" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1"${style.numFmtId ? ' applyNumberFormat="1"' : ""}/>` : `<xf numFmtId="${style.numFmtId}" fontId="0" fillId="0" borderId="0" xfId="0"${style.numFmtId ? ' applyNumberFormat="1"' : ""}/>`))
     .join("")}</cellXfs>
 <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
 </styleSheet>`;
   const workbook = `${XML_HEADER}<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
 <bookViews><workbookView activeTab="0"/></bookViews>
 <sheets>${sheetFiles.map((sheet, index) => `<sheet name="${xml(sheet.name)}" sheetId="${index + 1}" r:id="rId${index + 1}"/>`).join("")}</sheets>
-${sheetFiles.some((_, index) => list[index].columns.length && list[index].rows.length) ? `<definedNames>${sheetFiles.map((sheet, index) => (list[index].columns.length && list[index].rows.length ? `<definedName name="_xlnm._FilterDatabase" localSheetId="${index}" hidden="1">'${xml(sheet.name.replace(/'/g, "''"))}'!$A$1:$${columnName(list[index].columns.length - 1)}$${list[index].rows.length + 1}</definedName>` : "")).join("")}</definedNames>` : ""}
+${sheetFiles.some((_, index) => list[index].columns.length && list[index].rows.length) ? `<definedNames>${sheetFiles.map((sheet, index) => (list[index].columns.length && list[index].rows.length ? `<definedName name="_xlnm._FilterDatabase" localSheetId="${index}" hidden="1">'${xml(sheet.name.replace(/'/g, "''"))}'!$A$${sheet.headRow}:$${columnName(list[index].columns.length - 1)}$${list[index].rows.length + sheet.headRow}</definedName>` : "")).join("")}</definedNames>` : ""}
 </workbook>`;
   const workbookRels = `${XML_HEADER}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheetFiles
     .map((_, index) => `<Relationship Id="rId${index + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${index + 1}.xml"/>`)
@@ -218,7 +234,7 @@ ${sheetFiles.some((_, index) => list[index].columns.length && list[index].rows.l
   const rootRels = `${XML_HEADER}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>`;
   const stamp = now.toISOString().replace(/\.\d{3}Z$/, "Z");
   const core = `${XML_HEADER}<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${xml(title)}</dc:title><dc:creator>${xml(creator)}</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${stamp}</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">${stamp}</dcterms:modified></cp:coreProperties>`;
-  const app = `${XML_HEADER}<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>DestekOfis</Application></Properties>`;
+  const app = `${XML_HEADER}<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>DestekOfis</Application>${clean(company).trim() ? `<Company>${xml(clean(company).trim())}</Company>` : ""}</Properties>`;
   return createZip(
     [
       { name: "[Content_Types].xml", data: contentTypes, date: now },
