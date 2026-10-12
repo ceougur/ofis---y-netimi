@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-ui-ux-217",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/ui-ux-217.mjs",
+  "commit": "4efb516304c1f70dc4ddd1e223b310418e5b6d49",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T16:51:43.514Z",
+  "sure_sn": 199.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 407,
+    "gecen": 407,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/son-aday-220/2026-10-12/e2e-ui-ux-217.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "7c456088f87799a5ec2587a1685dcfbbb3ea7cfc51819d778a7bd8f9c7ee8789",
+  "ham_cikti_bayt": 3963
+}
