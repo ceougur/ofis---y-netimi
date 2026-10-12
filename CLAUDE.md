@@ -1382,6 +1382,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   hesabın altında "Bakiye: … · Aktarımdan sonra: …" (tutar yazıldıkça güncellenir; eksiye düşecekse kırmızı + K7 kuralı); bakiye seçilen
   TARİHTEKİ bakiye (ileri/geri tarih). Aynı gösterim "Kasadan Bankaya Yatır"da Nakit Kasa bakiyesiyle ve öbür banka hesap seçicilerinde
   (cari tahsilat/ödeme, fatura peşini, transfer, çek ödemesi) — öneri. Yetki: banka bakiyesini görme yetkisi olmayana bakiye gösterilmez.
+- MÜŞTERİ İSTEĞİ (12.10.2026, ekran: Yeni Alış Faturası · Stoğa Mal Alışı, ÖDEME bölümü "Peşin Ödeme (₺) · Ödeme Yolu Havale/EFT ·
+  Banka Hesabı", düğmeler "+ Peşin Ödeme / Tamamı Peşin / + Çek / Senet / Portföyden Ciro Et"): "peşin ödemede herkesin aklına nakit
+  gelir; nakit, havale/EFT, kredi kartı gibi değiştirelim". Daha önce listede YOKTU (yeni madde). KODDAN: hof-invoices.js:898 cashWord
+  "Peşin Ödeme"/"Peşin Tahsilat", :920 "Tamamı Peşin". ÖNERİ: "+ Peşin Ödeme" yerine yola göre düğmeler "+ Nakit", "+ Havale / EFT",
+  "+ Kredi Kartı" (satışta "+ POS"), "+ Çek / Senet", "Portföyden Ciro Et"; her satırın başlığı yolun adı ("Nakit · Tutar", "Havale / EFT ·
+  Tutar · Banka Hesabı", "Kredi Kartı · Tutar · Kurumsal Kart"); "Tamamı Peşin" → "Kalanın Tamamını Öde" (satışta "… Tahsil Et"), tıklanınca
+  yol sorulur; bölüm başlığı "Ödeme" kalır. İadelerde ("Müşteriye İade Ödemesi" / "Tedarikçiden İade Tahsilatı") aynı düzen. Veri/kayıt
+  biçimi DEĞİŞMEZ (yalnız etiket ve düğme); senaryo testleri metne bağlıysa güncellenir; kılavuz Fatura bölümü ve ekran görüntüsü yenilenir.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
