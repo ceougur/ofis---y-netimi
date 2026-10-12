@@ -1361,6 +1361,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   "Kredi Kartı" = POS → POS hesabı seçimi, komisyon + KDV/BSMV, valör, blokeli/teminatlı, POS iadesinde komisyon, raporlar). Sürüm no
   paketlemede (POS yeni modül → 2.2.0 önerilir). BAŞLAMADAN ÖNCE: kullanıcı müşteri taleplerini topluyor → hepsi gelince listeye eklenir,
   sonra iş planı kullanıcıya sunulur. Her yeni talep AYNI ANDA buraya yazılır.
+- İSTEK (kullanıcı, 12.10.2026; sıradaki sürüme): ALIŞ FATURASI ödeme yolu "Kredi Kartı" → tanımlı tek kurumsal kart varsa KENDİLİĞİNDEN
+  gelir (bugün de öyle: "… kurumsal kartına yazılır"); birden çoksa kullanıcı SEÇER (bugün de öyle); HİÇ YOKSA formda "Kredi Kartı Tanımla"
+  düğmesi → kart tanımlama penceresi (form kapanmadan, girilenler kaybolmadan) → kaydedince yeni kart ödeme satırında seçili gelir, işleme
+  devam. KODDAN (hof-invoices.js:946): bugün kart yoksa hücre GİZLİ, hiçbir şey görünmüyor (açık bu). Aynı düğme aynı kalıptaki öbür
+  ödeme formlarına da (cari ödemesi, stok alımı; havale için "Banka Hesabı Tanımla") — öneri. Yetki: hesap tanımlama yetkisi yoksa düğme
+  yerine "Kart tanımlı değil; yöneticinize başvurun" yazısı. Kart bankanın içinden ekleme maddesiyle aynı pencere (banka seçilir).
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
