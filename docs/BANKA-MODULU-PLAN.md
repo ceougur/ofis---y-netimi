@@ -559,6 +559,12 @@ ikisini birlikte tutuyordu (101 "Alınan Çekler ve Senetler", 103 "Verilen Çek
 - Kapı: `cheque:collections` denetimi 101.02 + 121.02 toplamını etkin tahsil kayıtlarıyla karşılaştırır.
 - Karşılıksız çek/senet bugünkü gibi cariye döner (128 Şüpheli Ticari Alacaklar ayrı karar, bu ekte yok).
 - Hiçbir rolde 121 ve 321 seçilemez (§3.11 madde 504 listesine eklenir).
+- Uygulama (İz 4.2): tek kural `server/lib/cheque-gl.mjs` (yevmiye, beklenenler, kapı, Alt Hesap Mizanı, İşlem Kartı, raporlar oradan okur).
+  Kilit izi ham satırlardan kurulur ve açılışta ölçülür, saklanmaz; `ledger_snapshots` yoktur → kural değişikliği çalışma anında sahte fark
+  doğurmaz. Evrak türü artık kilitli mizanın hesabını belirlediği için kilit izine sona `cheques_instrument_lock` eklendi (yalnız senetler satır
+  üretir; çek verisinin izi aynı); bu girdi sürüme bağlıdır (`since: "2.2.0"`) ve eski sürümün kaydettiği izle karşılaştırma
+  `lockDigestOf(store, kilit, { version: "2.1.0" })` ile yapılır ("eşlemeyi sürüme bağlama" yolu). 121/321 Defter Mutabakatı satırları yalnız
+  senet girilmişse açılır (300/309 kuralı gibi).
 
 ### 3.11b Ek (12.10.2026, kullanıcı kararı): Şüpheli Ticari Alacaklar
 

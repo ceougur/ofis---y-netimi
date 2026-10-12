@@ -22,7 +22,8 @@ import { parseMinor, toMinor } from "../minor.mjs";
 import { buildXlsx } from "../xlsx-write.mjs";
 import { EVENT_TYPES, INTERNAL_TYPES, NON_MONEY_TYPES, STATUS_LABELS, TYPE_GROUPS, isBankVoucherType, typeLabel } from "./event-types.mjs";
 import { MONEY_ROLES } from "./voucher.mjs";
-import { CHEQUE_SUB, CHEQUE_SUB_NAMES } from "./collections.mjs";
+import { CHEQUE_SUB_NAMES } from "./collections.mjs";
+import { BANK_SUBS } from "../cheque-gl.mjs";
 
 const q = value => `'${String(value).replace(/'/g, "''")}'`;
 const NON_MONEY_SQL = [...NON_MONEY_TYPES].map(q).join(", ");
@@ -345,8 +346,9 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       const record = store.get("SELECT status FROM cheque_collections WHERE id = ?", event.src_id);
       const returned = event.type === "cheque_withdraw" && record?.status === "returned";
       const wanted = event.type === "cheque_deposit" ? `cheque-deposit:${event.src_id}` : `cheque-withdraw:${event.src_id}`;
+      // 2.2.0 İz 4.2: senedin karşılıksız maddesi A 121.02 (çekinki A 101.02).
       const keep = returned
-        ? entry => entry.id.startsWith("account:") && entry.date === event.date && entry.lines.some(line => line.account === "101" && line.sub === CHEQUE_SUB.bank && line.credit > 0)
+        ? entry => entry.id.startsWith("account:") && entry.date === event.date && entry.lines.some(line => BANK_SUBS.has(line.sub) && line.credit > 0)
         : entry => entry.id === wanted;
       lines = event.cheque_id ? journalLines({ cheques: [event.cheque_id] }, map, keep) : [];
       linesSource = "journal";

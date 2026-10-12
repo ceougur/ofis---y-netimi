@@ -789,11 +789,12 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
     },
     {
       // Plan §8.10 "Ek: … Tahsildeki Çekler" (doğrulama T9): bankaya tahsile verilmiş, sonucu bekleyen alınan çek ve senetler (101.02); beklenen gün
-      // vade + iş günü takvimi (Nakit Akış ve Vade Takip ile aynı kural, routes/cheques.mjs flows). TOPLAM = Alt Hesap Mizanı'ndaki 101.02 bakiyesi.
+      // vade + iş günü takvimi (Nakit Akış ve Vade Takip ile aynı kural, routes/cheques.mjs flows). TOPLAM = Alt Hesap Mizanı'ndaki 101.02 (çek) +
+      // 121.02 (senet; 2.2.0 İz 4.2, plan §3.11a) bakiyeleri; özet ikisini ayrı da verir.
       id: "tahsildeki-cekler",
       group: "Banka",
       title: "Tahsildeki Çek ve Senetler",
-      description: "Bankaya tahsile verilmiş, tahsil edilmeyi bekleyen alınan çek ve senetler: veriliş tarihi, banka hesabı, vade ve bankadan beklenen gün (vade hafta sonu ya da tatile düşerse sonraki iş günü). Toplam, Alt Hesap Mizanı'ndaki 101.02 bakiyesine eşittir.",
+      description: "Bankaya tahsile verilmiş, tahsil edilmeyi bekleyen alınan çek ve senetler: veriliş tarihi, banka hesabı, vade ve bankadan beklenen gün (vade hafta sonu ya da tatile düşerse sonraki iş günü). Çeklerin toplamı Alt Hesap Mizanı'ndaki 101.02, senetlerinki 121.02 bakiyesine eşittir.",
       params: [],
       permission: "bank.reports",
       standalone: true,
@@ -811,8 +812,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
         const expected = new Map((cheques()?.flows ? cheques().flows({ expected: true }) : []).filter(flow => flow.flow === "deposit").map(flow => [flow.ref.id, flow.date]));
         const byBank = new Map();
         let total = 0;
+        const byKind = { cheque: 0, note: 0 };
         for (const row of list) {
           total = roundMoney(total + row.amount);
+          const kind = row.instrument === "note" ? "note" : "cheque";
+          byKind[kind] = roundMoney(byKind[kind] + row.amount);
           byBank.set(row.bankLabel, roundMoney((byBank.get(row.bankLabel) || 0) + row.amount));
         }
         return {
@@ -820,7 +824,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
           headers: ["Veriliş Tarihi", "Banka Hesabı", "Evrak", "No", "Kimden", "Vade", "Beklenen Gün", "Tutar"],
           types: ["", "", "", "", "", "", "", "money"],
           rows: list.map(row => [dayText(row.givenDate), row.bankLabel, INSTRUMENTS[row.instrument] || "Çek", row.serialNo, row.party, dayText(row.dueDate), dayText(expected.get(row.id) || row.dueDate), money(row.amount)]),
-          summary: [["Evrak Sayısı", String(list.length)], ["Toplam (101.02)", tl(total)], ...[...byBank].map(([label, amount]) => [label || "Banka Hesabı", tl(amount)])],
+          summary: [["Evrak Sayısı", String(list.length)], ["Toplam (101.02 + 121.02)", tl(total)], ["Çekler (101.02)", tl(byKind.cheque)], ["Senetler (121.02)", tl(byKind.note)], ...[...byBank].map(([label, amount]) => [label || "Banka Hesabı", tl(amount)])],
         };
       },
     },

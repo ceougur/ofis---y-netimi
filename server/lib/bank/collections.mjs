@@ -14,13 +14,15 @@
 //   — net etki aynı; taksite sayılmış çekte karşılıksız maddesi taksit tahsilatının ters kaydıdır (doğrulama T11), tek kural hepsini kapsar.
 // Bütün yazımlar çek rotasının bank.post işleminde (write geri çağrısı) yapılır: olay, kayıt, işlem geçmişi ve istek kimliği birlikte ya da hiç.
 import { createHash } from "node:crypto";
+import { DOCUMENT_SUB_NAMES, documentGlSql } from "../cheque-gl.mjs";
 import { STATUSES } from "../cheques.mjs";
 import { HttpError, limited, text } from "../http.mjs";
 import { toMinor } from "../minor.mjs";
 import { newEventId, nextEventNo } from "./event-no.mjs";
 
 export const CHEQUE_SUB = Object.freeze({ portfolio: "101.01", bank: "101.02" });
-export const CHEQUE_SUB_NAMES = Object.freeze({ "101.01": "Portföydeki Çek ve Senetler", "101.02": "Bankaya Tahsile Verilen Çek ve Senetler" });
+// 2.2.0 İz 4.2 (plan §3.11a): senet 121.01 / 121.02 — adlar ve hesap kuralı tek yerde (lib/cheque-gl.mjs).
+export const CHEQUE_SUB_NAMES = DOCUMENT_SUB_NAMES;
 export const BANK_ACTIONS = Object.freeze({ "bank-deposit": "Bankaya Tahsile Ver", "bank-withdraw": "Bankadan Geri Al" });
 export const COLLECTION_LABELS = Object.freeze({ pending: "Bankada Tahsilde", collected: "Tahsil Edildi", withdrawn: "Bankadan Geri Alındı", returned: "Karşılıksız Döndü" });
 const DEPOSIT_KINDS = new Set(["demand", "commercial", "other"]);
@@ -416,7 +418,8 @@ export function collectionProblems(store, { cheques = null } = {}) {
 }
 
 /**
- * Alt Hesap Mizanı'nın 101.01 / 101.02 satırları (kuruş): alt hesap → { opening, debit, credit } — Ana Defter KURULMADAN, SQL toplamıyla.
+ * Alt Hesap Mizanı'nın 101.01 / 101.02 (çek) ve 121.01 / 121.02 (senet; 2.2.0 İz 4.2, plan §3.11a) satırları (kuruş): alt hesap → { opening, debit,
+ * credit } — Ana Defter KURULMADAN, SQL toplamıyla. Aşağıdaki 101 kuralları senette 121 için aynıdır.
  * Doğrulama tur 2 G1 (plan §3.11 madde 5 hız bütçesi; 2.1.0 hız düzeltmesi "rapor toplamları SQL'de"): önceki yol her açılışta bütün alınan
  * evrak için yevmiye kuruyordu (15.000 evrakta ~0,7 sn, ana iş parçacığında). Kurallar Ana Defter'in 101 satırlarının AYNISIDIR
  * (routes/ledger.mjs rows + lib/general-ledger.mjs journal; eşdeğerlik testi test/banka-220-tahsile-ver-tur2.test.mjs G1, beş dönem):
@@ -449,19 +452,21 @@ function computeChequeSubTrial(store, { from = "", to = "" } = {}) {
   const collections = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'"));
   const cents = column => `CAST(ROUND(${column} * 100) AS INTEGER)`;
   const returned = chequeColumn => (collections ? `EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = ${chequeColumn} AND k.status = 'returned')` : "0");
-  const bank = flag => `CASE WHEN ${flag} THEN '${CHEQUE_SUB.bank}' ELSE '${CHEQUE_SUB.portfolio}' END`;
+  // 2.2.0 İz 4.2 (plan §3.11a; lib/cheque-gl.mjs): alt hesap evrak türüne göre — çek 101.01 / 101.02, senet 121.01 / 121.02 (Ana Defter'in kuralı).
+  const bank = (flag, instrument) => `CASE WHEN ${flag} THEN ${documentGlSql(instrument, "bank")} ELSE ${documentGlSql(instrument, "portfolio")} END`;
+  const planInstrument = "(SELECT x.instrument FROM cheques x WHERE x.id = e.cheque_id)";
   const lines = [
-    `SELECT ${bank(`e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND ${returned("c.id")}`)} AS sub, e.date AS date,
+    `SELECT ${bank(`e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND ${returned("c.id")}`, "c.instrument")} AS sub, e.date AS date,
             CASE WHEN e.kind = 'debt' THEN 0 ELSE ${cents("e.amount")} END AS dr, CASE WHEN e.kind = 'debt' THEN ${cents("e.amount")} ELSE 0 END AS cr
      FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL LEFT JOIN cheques c ON c.id = e.source_id
      WHERE e.source = 'cheque' AND COALESCE(c.direction, '') <> 'out'`,
-    `SELECT ${bank(`e.kind = 'out' AND ${returned("e.cheque_id")}`)}, e.date, CASE WHEN e.kind = 'in' THEN ${cents("e.amount")} ELSE 0 END, CASE WHEN e.kind = 'in' THEN 0 ELSE ${cents("e.amount")} END
+    `SELECT ${bank(`e.kind = 'out' AND ${returned("e.cheque_id")}`, planInstrument)}, e.date, CASE WHEN e.kind = 'in' THEN ${cents("e.amount")} ELSE 0 END, CASE WHEN e.kind = 'in' THEN 0 ELSE ${cents("e.amount")} END
      FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL WHERE e.cheque_id <> '' AND (e.kind = 'out' OR e.opening = 0)`,
-    `SELECT ${bank(collections ? "ev.event_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = ev.cheque_id AND k.status = 'collected' AND k.close_event_id = ev.event_id)" : "0")}, ev.date, 0, ${cents("ev.amount")}
+    `SELECT ${bank(collections ? "ev.event_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = ev.cheque_id AND k.status = 'collected' AND k.close_event_id = ev.event_id)" : "0", "c.instrument")}, ev.date, 0, ${cents("ev.amount")}
      FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind = 'collect'`,
-    `SELECT '${CHEQUE_SUB.portfolio}', f.issue_date, ${cents("f.amount")}, 0 FROM free f
+    `SELECT ${documentGlSql("f.instrument", "portfolio")}, f.issue_date, ${cents("f.amount")}, 0 FROM free f
      UNION ALL
-     SELECT ${bank(returned("f.id"))}, f.bounced, 0, ${cents("f.amount")} FROM free f
+     SELECT ${bank(returned("f.id"), "f.instrument")}, f.bounced, 0, ${cents("f.amount")} FROM free f
      WHERE f.status = 'bounced' AND f.bounced IS NOT NULL AND f.bounced <> ''
        AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
                        WHERE e.source = 'cheque' AND e.source_id = f.id AND e.account_id = f.account_id AND e.kind = 'debt')`,
@@ -470,16 +475,18 @@ function computeChequeSubTrial(store, { from = "", to = "" } = {}) {
     const amount = `COALESCE(NULLIF((SELECT d.try_minor FROM fin_events d WHERE d.id = k.event_id), 0), ${cents("c.amount")})`;
     const closes = `k.status NOT IN ('pending', 'returned') AND k.closed_date <> ''
       AND NOT (k.status = 'collected' AND k.close_event_id <> '' AND EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = k.cheque_id AND ev.kind = 'collect' AND ev.event_id = k.close_event_id))`;
+    const atBank = documentGlSql("c.instrument", "bank");
+    const portfolio = documentGlSql("c.instrument", "portfolio");
     lines.push(
-      `SELECT '${CHEQUE_SUB.bank}', k.given_date, ${amount}, 0 FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
-       UNION ALL SELECT '${CHEQUE_SUB.portfolio}', k.given_date, 0, ${amount} FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
-       UNION ALL SELECT '${CHEQUE_SUB.portfolio}', k.closed_date, ${amount}, 0 FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL WHERE ${closes}
-       UNION ALL SELECT '${CHEQUE_SUB.bank}', k.closed_date, 0, ${amount} FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL WHERE ${closes}`,
+      `SELECT ${atBank}, k.given_date, ${amount}, 0 FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
+       UNION ALL SELECT ${portfolio}, k.given_date, 0, ${amount} FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
+       UNION ALL SELECT ${portfolio}, k.closed_date, ${amount}, 0 FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL WHERE ${closes}
+       UNION ALL SELECT ${atBank}, k.closed_date, 0, ${amount} FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL WHERE ${closes}`,
     );
   }
   // Cariye işlenmemiş alınan evrak (routes/ledger.mjs "free" sorgusunun alınan yönü): kartı ve kendi carisine alacak satırı yok.
   const free = `free AS (
-    SELECT c.id, c.amount, c.issue_date, c.status, c.account_id,
+    SELECT c.id, c.instrument, c.amount, c.issue_date, c.status, c.account_id,
            (SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1) AS bounced
     FROM cheques c
     WHERE c.deleted_at IS NULL AND c.direction = 'in'
@@ -499,15 +506,4 @@ function computeChequeSubTrial(store, { from = "", to = "" } = {}) {
   );
   for (const row of rows) if (Number(row.seen) > 0) out.set(row.sub, { opening: Number(row.opening) || 0, debit: Number(row.debit) || 0, credit: Number(row.credit) || 0 });
   return out;
-}
-
-/** Tahsildeki evrakın beklenen 101.02 bakiyesi (kuruş): bekleyen kayıtların (silinmemiş, alınan, portföydeki) çek tutarları. */
-export function expectedDeposited(store) {
-  if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'")) return 0;
-  return Number(
-    store.get(
-      `SELECT COALESCE(SUM(CAST(ROUND(c.amount * 100) AS INTEGER)), 0) AS n FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id
-       WHERE k.status = 'pending' AND c.deleted_at IS NULL AND c.direction = 'in' AND c.status = 'portfolio'`,
-    ).n,
-  ) || 0;
 }

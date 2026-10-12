@@ -28,6 +28,7 @@ import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
 import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
 import { CHEQUE_SUB_NAMES, assertNoPendingCollections, chequeSubTrial } from "./collections.mjs";
+import { mainOfSub } from "../cheque-gl.mjs";
 
 // limit: hesabın limit alanı (plan §3.5 "KMH Limiti alanı" yalnız Vadesiz; §3.9 "KMH ya da kart limiti"; Kredi Hesabı'nda ekranın "Kredi Limiti" bilgi
 // alanı — eksi bakiye denetimine girmez). Limit alanı olmayan türde 0'dan büyük limit 400 bank-limit (hakem K7).
@@ -1359,17 +1360,19 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     // varken görünüyordu; Ana Defter 101'de portföy dururken Alt Hesap Mizanı'nda 101.01 yoktu.
     // Doğrulama tur 2 G1 (plan §3.11 madde 5): Ana Defter KURULMADAN, SQL toplamıyla (lib/bank/collections.mjs chequeSubTrial; kurallar Ana Defter'in
     // 101 satırlarının aynısı, eşdeğerlik testi). Önceden her açılışta bütün alınan evrak için yevmiye kuruluyordu (15.000 evrakta ~0,7 sn).
-    const cheque101 = chequeSubTrial(store, { from, to });
-    for (const [sub, sums] of cheque101) {
-      subs.set(sub, { sub, account: "101", ...sums });
-      mainsOf.set("101", (mainsOf.get("101") || 0) + sums.opening + sums.debit - sums.credit);
+    // 2.2.0 İz 4.2 (plan §3.11a): senet 121.01 / 121.02 (ana hesabı 121); çek 101.01 / 101.02.
+    const documents = chequeSubTrial(store, { from, to });
+    for (const [sub, sums] of documents) {
+      const account = mainOfSub(sub);
+      subs.set(sub, { sub, account, ...sums });
+      mainsOf.set(account, (mainsOf.get(account) || 0) + sums.opening + sums.debit - sums.credit);
     }
-    if (cheque101.size) Object.assign(names, CHEQUE_SUB_NAMES);
+    if (documents.size) Object.assign(names, CHEQUE_SUB_NAMES);
     const tl = value => Math.round(value) / 100;
     const rows = [...subs.values()]
       .sort((a, b) => a.sub.localeCompare(b.sub))
       .map(row => ({ sub: row.sub, account: row.account, name: names[row.sub] || "", opening: tl(row.opening), debit: tl(row.debit), credit: tl(row.credit), balance: tl(row.opening + row.debit - row.credit) }));
-    const mains = ["101", "102", "108", "300", "309"].map(account => {
+    const mains = ["101", "102", "108", "121", "300", "309"].map(account => {
       const balanceMinor = mainsOf.get(account) || 0;
       const subMinor = [...subs.values()].filter(row => row.account === account).reduce((sum, row) => sum + row.opening + row.debit - row.credit, 0);
       return { account, name: CHART[account] || "", balance: tl(balanceMinor), subTotal: tl(subMinor), ok: balanceMinor === subMinor };

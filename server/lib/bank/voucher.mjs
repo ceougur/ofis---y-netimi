@@ -7,7 +7,8 @@
 // Satır rolleri ve izinli THP kodları (beyaz liste, E2.10):
 //   bank → 102 · pos → 108 · card → 309 · loan → 300 · opening/closing → 500
 //   expense/tax → 653, 656, 659, 770, 780 · income → 642, 646, 649 · fx_gain → 646 · fx_loss → 656 · stoppage → 193
-// Hiçbir rolde 100, 101, 103, 120, 127, 191, 320, 336, 360, 391 yazılamaz: cari etkisi her zaman cari satırından, KDV faturadan gelir.
+// Hiçbir rolde 100, 101, 103, 120, 121, 127, 191, 320, 321, 336, 360, 391 yazılamaz: cari etkisi her zaman cari satırından, KDV faturadan,
+// çek/senet etkisi evraktan gelir (121 Alacak Senetleri, 321 Borç Senetleri: 2.2.0 İz 4.2, plan §3.11a).
 // Para rolleri (bank, pos, card, loan) hesap/POS bağı (ref) ve alt hesap (sub) taşır; bağsız 102/108 satırı Hesabı Atanmamış kovasıdır
 // (102.00 / 108.00). Para dışı roller bağ ve alt hesap taşımaz (kur farkı alt hesapları .01/.02 Aşama 13'te).
 import { HttpError } from "../http.mjs";
@@ -33,7 +34,7 @@ export const ROLE_METHOD = Object.freeze({ bank: "bank", pos: "card", card: "car
 /** Hesabı atanmamış para rollerinin alt hesabı. */
 export const UNASSIGNED_SUB = Object.freeze({ bank: "102.00", pos: "108.00" });
 /** Hiçbir Banka Fişi satırının yazamadığı hesaplar (§3.11). */
-export const FORBIDDEN_GL = Object.freeze(new Set(["100", "101", "103", "120", "127", "191", "320", "336", "360", "391"]));
+export const FORBIDDEN_GL = Object.freeze(new Set(["100", "101", "103", "120", "121", "127", "191", "320", "321", "336", "360", "391"]));
 
 const forbidden = (message, extra = {}) => new HttpError(400, message, { code: "bank-gl-forbidden", ...extra });
 
