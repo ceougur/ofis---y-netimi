@@ -1,6 +1,8 @@
 // Senaryo Bankaya Tahsile Ver 2.2.0 — EKRANDAN (docs/2.2.0-IS-LISTESI.md İz 4.1 ekranı ve İz 2.6; plan §3.14, §8.10 "Tahsildeki Çekler").
 // Kullanıcı (12.10.2026): "Bankaya Tahsile Ver bu sürümde"; "Senet Kullan işaretli hesaplar … Bankaya Tahsile Ver seçiminde". Gerçek kullanıcı gibi
 // tıklanır, Tab ile ilerlenir, insan hızında yazılır (ders 12); her adımdan sonra sayılar sunucudan (API) ve ekrandaki raporlardan okunur.
+// 2.2.0 İz 4.2 (plan §3.11a, bilerek güncellendi — birleşmede senet hesabı değişti): alınan SENET 121.01 / 121.02, ÇEK 101.01 / 101.02;
+// aşağıdaki 101 satırları senet için 121 okunur (S5–S7 senet B 2.000 → 121).
 // Beklenen sayılar planın yevmiye kuralından ELLE (program kodundan türetilmez): Tahsile Ver B 101.02 / A 101.01; Bankadan Geri Al B 101.01 /
 // A 101.02; tahsildeki evrakın tahsili B 102.x / A 101.02; tahsildeki carili senet karşılıksız B 120 / A 101.02 (plan §3.14, doğrulama T2).
 //  Ön koşul (API): Ziraat Bankası · Çek Tahsil (Vadesiz, "Çek Kullan" işaretli, açılış 01.10.2026 10.000, Bakiye Doğrulandı); ABC Ltd. borcu 10.000;
@@ -108,11 +110,11 @@ const integrity = async label => {
   const bad = (result.checks || []).filter(item => !item.ok);
   ok(result.ok !== false && bad.length === 0, `${label}: Mutabakat Testi tamam${bad.length ? ` — ${bad.map(item => item.code).join(", ")}` : ""}`);
 };
-/** Alt Hesap Mizanı (API, Bu Yıl): 101.01 / 101.02 bakiyesi (TL; satır yoksa 0). */
+/** Alt Hesap Mizanı (API, Bu Yıl): çek 101.01 / 101.02 ve senet 121.01 / 121.02 bakiyesi (TL; satır yoksa 0). */
 const subOf = async () => {
   const rows = (await must("alt hesap", api.get(`${BANK}/sub-trial?from=2026-01-01&to=2026-12-31`))).rows;
   const row = sub => rows.find(item => item.sub === sub) || { balance: 0, debit: 0, credit: 0 };
-  return { portfolio: row("101.01"), bank: row("101.02") };
+  return { portfolio: row("101.01"), bank: row("101.02"), notePortfolio: row("121.01"), noteBank: row("121.02") };
 };
 
 // ---------- Ekran yardımcıları ----------
@@ -219,10 +221,14 @@ const subRowOnScreen = (data, sub) => {
 };
 /**
  * Her adımın rapor denetimi: API (Alt Hesap Mizanı) ve EKRAN — Rapor Merkezi → Alt Hesap Mizanı (Bu Yıl) 101.01 / 101.02 ve Tahsildeki Çek ve
- * Senetler (satır sayısı, TOPLAM = satırlar). expected: { portfolio, bank, held: [satır sayısı, TL] } (TL).
+ * Senetler (satır sayısı, TOPLAM = satırlar). expected: { portfolio, bank, notePortfolio, noteBank (senet 121; yoksa 0), held: [satır sayısı, TL] } (TL).
+ * Tahsildeki TOPLAM = 101.02 + 121.02.
  */
 async function checkReports(label, expected) {
+  const noteP = expected.notePortfolio || 0;
+  const noteB = expected.noteBank || 0;
   const subs = await subOf();
+  ok(kurus(subs.notePortfolio.balance) === kurus(noteP) && kurus(subs.noteBank.balance) === kurus(noteB), `${label} · API Alt Hesap Mizanı: 121.01 ${subs.notePortfolio.balance} (beklenen ${noteP}), 121.02 ${subs.noteBank.balance} (beklenen ${noteB})`);
   ok(kurus(subs.portfolio.balance) === kurus(expected.portfolio) && kurus(subs.bank.balance) === kurus(expected.bank), `${label} · API Alt Hesap Mizanı: 101.01 ${subs.portfolio.balance} (beklenen ${expected.portfolio}), 101.02 ${subs.bank.balance} (beklenen ${expected.bank})`);
   await openReports();
   await page.click(`${modal} [data-rc-list] [data-report="alt-hesap-mizani"]`);
@@ -237,13 +243,16 @@ async function checkReports(label, expected) {
   const p = subRowOnScreen(data, "101.01");
   const b = subRowOnScreen(data, "101.02");
   ok(kurus(p.balance) === kurus(expected.portfolio) && kurus(b.balance) === kurus(expected.bank), `${label} · EKRAN Alt Hesap Mizanı: 101.01 ${p.balance} ${p.side}, 101.02 ${b.balance} ${b.side}`);
+  const np = subRowOnScreen(data, "121.01");
+  const nb = subRowOnScreen(data, "121.02");
+  ok(kurus(np.balance || 0) === kurus(noteP) && kurus(nb.balance || 0) === kurus(noteB), `${label} · EKRAN Alt Hesap Mizanı: 121.01 ${np.found ? np.balance : "yok"}, 121.02 ${nb.found ? nb.balance : "yok"} (beklenen ${noteP} / ${noteB})`);
   await page.click(`${modal} [data-rc-list] [data-report="tahsildeki-cekler"]`);
   const [count, total] = expected.held;
   data = await waitRc(view => /Tahsildeki Çek ve Senetler/.test(view.text) && view.rows.length === count);
   const col = header => data.heads.indexOf(header);
   const rowsSum = data.rows.reduce((sum, cells) => sum + kurus(num(cells[col("Tutar")])), 0);
   const footer = data.footer ? kurus(num(data.footer[col("Tutar")])) : 0;
-  ok(data.rows.length === count && rowsSum === kurus(total) && footer === kurus(total) && kurus(total) === kurus(expected.bank), `${label} · EKRAN Tahsildeki Çek ve Senetler: ${data.rows.length} satır, TOPLAM ${footer / 100} = satırlar ${rowsSum / 100} = 101.02 ${expected.bank}`);
+  ok(data.rows.length === count && rowsSum === kurus(total) && footer === kurus(total) && kurus(total) === kurus(expected.bank + noteB), `${label} · EKRAN Tahsildeki Çek ve Senetler: ${data.rows.length} satır, TOPLAM ${footer / 100} = satırlar ${rowsSum / 100} = 101.02 ${expected.bank} + 121.02 ${noteB}`);
   await closeAll();
 }
 
@@ -433,7 +442,7 @@ try {
     await other.screenshot({ path: path.join(OUT, "00-avukat-banka-hesabi-tanimli-degil.png") });
     await context2.close();
     await integrity("S5");
-    await checkReports("S5", { portfolio: 3500, bank: 0, held: [0, 0] });
+    await checkReports("S5", { portfolio: 1500, bank: 0, notePortfolio: 2000, held: [0, 0] });
   });
 
   await step("S6 yönetici: \"Banka Hesabı Tanımla\" (Vazgeç: form aynen) → \"+ Yeni Banka Hesabı\" Senet Kullan işaretli gelir → Garanti açılır, seçili gelir → tahsile ver", async () => {
@@ -477,7 +486,7 @@ try {
     ok(b.deposited === true && b.collection?.bankAccountId === ctx.garanti.id, `sunucu: senet Garanti'de tahsilde (${b.statusLabel})`);
     ok((await balanceOf(ctx.garanti.id)) === 0, "Garanti bakiyesi 0 (tahsile verme para hareketi değil)");
     await integrity("S6");
-    await checkReports("S6", { portfolio: 1500, bank: 2000, held: [1, 2000] });
+    await checkReports("S6", { portfolio: 1500, bank: 0, noteBank: 2000, held: [1, 2000] });
   });
 
   await step("S6 liste süzgeçleri (ders 11): her Durum seçeneğinin satırları ve toplamı; özet kutuları (Portföyde 1.500, Bankada Tahsilde 2.000)", async () => {
@@ -566,7 +575,7 @@ try {
     await closeAll();
   });
 
-  await step("Son: Alt Hesap Mizanı dönem düğmeleri (ekran) — Bu Yıl / Bu Ay / Son 30 Gün / Tüm Zamanlar: 101.01 B 13.500 A 12.000, 101.02 B 12.000 A 12.000; Geçen Ay 101 satırı yok", async () => {
+  await step("Son: Alt Hesap Mizanı dönem düğmeleri (ekran) — Bu Yıl / Bu Ay / Son 30 Gün / Tüm Zamanlar: çek 101.01 B 11.500 A 10.000, 101.02 B 10.000 A 10.000; senet 121.01 B 2.000 A 2.000, 121.02 B 2.000 A 2.000; Geçen Ay 101/121 satırı yok", async () => {
     await openReports();
     await page.click(`${modal} [data-rc-list] [data-report="alt-hesap-mizani"]`);
     await waitRc(view => /Alt Hesap Mizanı/.test(view.text));
@@ -583,14 +592,16 @@ try {
       const data = await waitRc(view => (present ? view.rows.some(cells => cells[0] === "101.01") : !view.rows.some(cells => cells[0] === "101.01")));
       const p = subRowOnScreen(data, "101.01");
       const b = subRowOnScreen(data, "101.02");
-      if (present) ok(kurus(p.debit) === kurus(13500) && kurus(p.credit) === kurus(12000) && kurus(p.balance) === kurus(1500) && kurus(b.debit) === kurus(12000) && kurus(b.credit) === kurus(12000) && kurus(b.balance) === 0, `${preset}: 101.01 B ${p.debit} A ${p.credit} = ${p.balance} ${p.side}; 101.02 B ${b.debit} A ${b.credit} = ${b.balance}`);
-      else ok(!p.found && !b.found, `${preset}: 101.01 / 101.02 satırı yok`);
+      const np = subRowOnScreen(data, "121.01");
+      const nb = subRowOnScreen(data, "121.02");
+      if (present) ok(kurus(p.debit) === kurus(11500) && kurus(p.credit) === kurus(10000) && kurus(p.balance) === kurus(1500) && kurus(b.debit) === kurus(10000) && kurus(b.credit) === kurus(10000) && kurus(b.balance) === 0 && kurus(np.debit) === kurus(2000) && kurus(np.credit) === kurus(2000) && kurus(nb.debit) === kurus(2000) && kurus(nb.credit) === kurus(2000), `${preset}: 101.01 B ${p.debit} A ${p.credit} = ${p.balance} ${p.side}; 101.02 B ${b.debit} A ${b.credit} = ${b.balance}; 121.01 B ${np.debit} A ${np.credit}; 121.02 B ${nb.debit} A ${nb.credit}`);
+      else ok(!p.found && !b.found && !np.found && !nb.found, `${preset}: 101 / 121 satırı yok`);
     }
     await page.click(`${modal} [data-rc-main] .hof-rep-chip[data-preset="thisYear"]`);
     await pause(600);
     await shot("alt-hesap-mizani-son");
     const sub = await subOf();
-    ok(kurus(sub.portfolio.debit) === kurus(13500) && kurus(sub.portfolio.credit) === kurus(12000) && kurus(sub.bank.debit) === kurus(12000) && kurus(sub.bank.credit) === kurus(12000), `API Alt Hesap Mizanı: 101.01 B ${sub.portfolio.debit} A ${sub.portfolio.credit}; 101.02 B ${sub.bank.debit} A ${sub.bank.credit}`);
+    ok(kurus(sub.portfolio.debit) === kurus(11500) && kurus(sub.portfolio.credit) === kurus(10000) && kurus(sub.bank.debit) === kurus(10000) && kurus(sub.bank.credit) === kurus(10000) && kurus(sub.notePortfolio.debit) === kurus(2000) && kurus(sub.notePortfolio.credit) === kurus(2000) && kurus(sub.noteBank.debit) === kurus(2000) && kurus(sub.noteBank.credit) === kurus(2000), `API Alt Hesap Mizanı: 101.01 B ${sub.portfolio.debit} A ${sub.portfolio.credit}; 101.02 B ${sub.bank.debit} A ${sub.bank.credit}; 121.01 B ${sub.notePortfolio.debit} A ${sub.notePortfolio.credit}; 121.02 B ${sub.noteBank.debit} A ${sub.noteBank.credit}`);
     await closeAll();
     await integrity("son");
   });
