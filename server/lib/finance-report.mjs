@@ -132,7 +132,8 @@ export function projection({ today, from = "", to, cashToday = 0, flows = [], in
   });
   const bySource = {};
   for (const item of inRange) {
-    const key = `${item.source}:${item.direction}`;
+    // Akışın kendi kaynağı (flow; ör. bankada tahsildeki çek ve senet "deposit", plan §8.9) ayrı sayılır.
+    const key = `${item.flow || item.source}:${item.direction}`;
     bySource[key] = roundMoney((bySource[key] || 0) + item.amount);
   }
   return {

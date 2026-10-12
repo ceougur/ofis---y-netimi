@@ -664,7 +664,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
   const stats = { reports: 0, combos: 0, requests: 0, footerColumns: 0 };
   test("katalog = testteki rapor listesi (yeni rapor eklenirse test de genişler)", () => {
     // v2.1.0 Aşama 14: Banka grubu (bank.reports) ayrı testte (test/banka-210-raporlar.test.mjs) her süzgeçle denenir.
-    assert.deepEqual(catalog.map(r => r.id).sort(), [...REPORT_IDS, "banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"].sort());
+    assert.deepEqual(catalog.map(r => r.id).sort(), [...REPORT_IDS, "banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler"].sort());
   });
   for (const id of REPORT_IDS) {
     test(`${id}: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle`, async () => {

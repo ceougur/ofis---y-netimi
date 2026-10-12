@@ -28,14 +28,13 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const NOW = "2026-10-08T12:00:00+03:00";
 
 /** Ana Defter'den (eski yol) alt hesap mizanı: { rows, mains } — yeni uçla karşılaştırılır. */
-// 2.2.0 (Bankaya Tahsile Ver, plan §3.14; bilerek güncellendi): alınan evrakın 101 satırları Ana Defter'de 101.01/101.02 alt hesabını taşır;
-// Alt Hesap Mizanı bu satırları yalnız tahsil kaydı (cheque_collections) varken gösterir (kayıt yoksa ekran 2.1.0'daki gibi).
+// 2.2.0 (Bankaya Tahsile Ver, plan §3.11 hesap planı 101.01/101.02; bilerek güncellendi): alınan evrakın 101 satırları Ana Defter'de 101.01/101.02
+// alt hesabını taşır ve Alt Hesap Mizanı'nda her zaman görünür (doğrulama T4: önceden yalnız şirkette tahsil kaydı varken görünüyordu).
 function fromLedger(app, { from = "", to = "" } = {}) {
   const entries = app.context.ledger.build();
-  const cheques = Boolean(app.store.get("SELECT 1 AS found FROM cheque_collections LIMIT 1"));
-  const rows = subTrial(entries, { from, to }).filter(row => cheques || row.account !== "101").map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance }));
+  const rows = subTrial(entries, { from, to }).map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance }));
   const trial = trialBalance(entries, { from, to });
-  const mains = [...(cheques ? ["101"] : []), "102", "108", "300", "309"].map(code => ({ account: code, balance: trial.accounts.find(row => row.code === code)?.balance || 0 })).filter(item => item.balance);
+  const mains = ["101", "102", "108", "300", "309"].map(code => ({ account: code, balance: trial.accounts.find(row => row.code === code)?.balance || 0 })).filter(item => item.balance);
   return { rows, mains };
 }
 const strip = data => ({ rows: data.rows.map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance })), mains: data.mains.map(item => ({ account: item.account, balance: item.balance })).filter(item => item.balance) });

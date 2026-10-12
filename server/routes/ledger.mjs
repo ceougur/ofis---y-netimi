@@ -62,10 +62,16 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
        FROM cash_entries c${where("c", [[set?.cash, own("m_cash")]])}`,
       wanted(set?.cash),
     );
+    // Bankaya Tahsile Ver (plan §3.14): tahsil kaydı tablosu varsa satır bayrakları (yevmiyede 101.01 ↔ 101.02; general-ledger journal()).
+    const collections = has("cheque_collections");
     if (has("accounts")) {
+      // bankReturned: bankada tahsildeyken karşılıksız dönen evrakın karşılıksız maddesi (carinin kendi borç satırı) — alacağı 101.02.
+      const returned = collections
+        ? "CASE WHEN e.source = 'cheque' AND e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') THEN 1 ELSE 0 END"
+        : "0";
       out.accountEntries = all(
         `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
-                COALESCE(c.direction, '') AS chequeDirection, COALESCE(m.reason, '') AS moveReason
+                COALESCE(c.direction, '') AS chequeDirection, COALESCE(m.reason, '') AS moveReason, ${returned} AS bankReturned
          FROM account_entries e ${J} accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
            LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where("e", [[set?.parties, "SELECT id FROM account_entries WHERE account_id IN $"], [set?.entries, own("m_entries")], [set?.cheques, "SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN $"]])}`,
@@ -103,13 +109,19 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     }
     if (has("cheques")) {
       const eventOf = refOf("cheque_events", "ev") === "''" ? "''" : "ev.event_id";
-      out.chequeEvents = all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref, ${eventOf} AS eventId FROM cheque_events ev ${J} cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ${X}ev.kind IN ('collect', 'pay')${where("ev", [[set?.chequeEvents, own("m_cheque_events")], [set?.cheques, "SELECT id FROM cheque_events WHERE cheque_id IN $"]], "AND")}`, wanted(set?.chequeEvents, set?.cheques));
+      // closesDeposit: bu tahsil olayı bankada tahsildeki evrakın kaydını kapattı (collected, close_event_id = olayın başlığı) — tahsil maddesinin
+      // alacağı 101.02. Satır bazında: İşlem Kartı ve kapı yalnız bu satırla kurduğunda da aynı sonuç (doğrulama G1).
+      const closes = collections && eventOf !== "''"
+        ? "CASE WHEN ev.kind = 'collect' AND ev.event_id <> '' AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = ev.cheque_id AND k.status = 'collected' AND k.close_event_id = ev.event_id) THEN 1 ELSE 0 END"
+        : "0";
+      out.chequeEvents = all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref, ${eventOf} AS eventId, ${closes} AS closesDeposit FROM cheque_events ev ${J} cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ${X}ev.kind IN ('collect', 'pay')${where("ev", [[set?.chequeEvents, own("m_cheque_events")], [set?.cheques, "SELECT id FROM cheque_events WHERE cheque_id IN $"]], "AND")}`, wanted(set?.chequeEvents, set?.cheques));
       // Cariye işlenmemiş evrak: carisi/kartı olmayan (ör. cari açılmamış bir kişiden alınan çek) ya da Excel'den
       // "carilere dokunmadan" alınan açılış portföyü. Cari etkisi yoktur; portföye girişi ve karşılıksız/iade çıkışı ana
       // defterde doğrudan gelir/gider karşılığıyla izlenir (portföy mutabakatı tutsun).
       for (const row of all(
         `SELECT c.id, c.direction, c.amount, c.issue_date AS date, c.status, c.serial_no AS serialNo,
                 (SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1) AS bouncedOn,
+                ${collections ? "EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned')" : "0"} AS bankReturned,
                 EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
                         WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = 'debt') AS hasDebt
          FROM cheques c
@@ -123,15 +135,18 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
         const note = `Cariye işlenmemiş evrak${row.serialNo ? ` No ${row.serialNo}` : ""}`;
         if (row.direction === "in") {
           out.accountEntries.push({ id: `free-in:${row.id}`, kind: "credit", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "in", accountType: "", free: true });
-          if (row.status === "bounced" && row.bouncedOn && !row.hasDebt) out.accountEntries.push({ id: `free-bounce:${row.id}`, kind: "debt", amount: row.amount, date: row.bouncedOn, note: `${note} · karşılıksız`, source: "cheque", chequeDirection: "in", accountType: "", free: true });
+          if (row.status === "bounced" && row.bouncedOn && !row.hasDebt) out.accountEntries.push({ id: `free-bounce:${row.id}`, kind: "debt", amount: row.amount, date: row.bouncedOn, note: `${note} · karşılıksız`, source: "cheque", chequeDirection: "in", accountType: "", free: true, bankReturned: Number(row.bankReturned) ? 1 : 0 });
         } else out.accountEntries.push({ id: `free-out:${row.id}`, kind: "debt", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "out", accountType: "", free: true });
       }
     }
     // Bankaya Tahsile Ver (plan §3.14): tahsil kayıtları (101.01 ↔ 101.02). Silinmiş evrakın kaydı (tahsildeyken silinemez) deftere girmez.
-    if (has("cheque_collections") && has("fin_events")) {
+    // closedByCollect: kayıt bu çekin tahsil olayıyla kapandı (o tahsilin maddesi A 101.02; ayrı kapanış maddesi yok). Değilse (açılış onarımının
+    // "eski sürüm" kapanışı) kapanış tarihinde B 101.01 / A 101.02.
+    if (collections && has("fin_events")) {
       out.chequeCollections = all(
         `SELECT k.id, k.status, k.given_date AS givenDate, k.closed_date AS closedDate, k.close_event_id AS closeEventId, c.serial_no AS serialNo,
-                COALESCE(NULLIF((SELECT f.try_minor FROM fin_events f WHERE f.id = k.event_id), 0), CAST(ROUND(c.amount * 100) AS INTEGER)) AS amountMinor
+                COALESCE(NULLIF((SELECT f.try_minor FROM fin_events f WHERE f.id = k.event_id), 0), CAST(ROUND(c.amount * 100) AS INTEGER)) AS amountMinor,
+                CASE WHEN k.status = 'collected' AND k.close_event_id <> '' AND EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = k.cheque_id AND +ev.kind = 'collect' AND ev.event_id = k.close_event_id) THEN 1 ELSE 0 END AS closedByCollect
          FROM cheque_collections k ${J} cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL${filter ? ` WHERE ${set?.cheques ? `k.cheque_id IN ${set.cheques}` : "0"}` : ""}`,
         wanted(set?.cheques),
       );

@@ -396,7 +396,7 @@ try {
     await expert.waitForSelector(`${modal} [data-report]`, { timeout: 15000 });
     const listed = await expert.$$eval(`${modal} [data-report]`, nodes => nodes.map(node => node.dataset.report));
     // v2.1.0 Aşama 14: uzman (avukat) Banka Raporları yetkisiyle (bank.reports) Banka grubunu da görür; finans raporlarını görmez.
-    const bankIds = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"];
+    const bankIds = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler"];
     ok(listed.filter(id => !bankIds.includes(id)).join() === "islem-gecmisi" && bankIds.every(id => listed.includes(id)), `uzman: Tüm raporlar'da İşlem geçmişi ve Banka grubu, finans raporu yok (${listed.join(", ")})`);
     await shot("uzman-islem-gecmisi", expert);
     await other2.close();

@@ -22,6 +22,7 @@ import { parseMinor, toMinor } from "../minor.mjs";
 import { buildXlsx } from "../xlsx-write.mjs";
 import { EVENT_TYPES, INTERNAL_TYPES, NON_MONEY_TYPES, STATUS_LABELS, TYPE_GROUPS, isBankVoucherType, typeLabel } from "./event-types.mjs";
 import { MONEY_ROLES } from "./voucher.mjs";
+import { CHEQUE_SUB, CHEQUE_SUB_NAMES } from "./collections.mjs";
 
 const q = value => `'${String(value).replace(/'/g, "''")}'`;
 const NON_MONEY_SQL = [...NON_MONEY_TYPES].map(q).join(", ");
@@ -107,6 +108,8 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
   const subName = (map, sub) => {
     if (!sub) return "";
     if (UNASSIGNED_SUBS[sub]) return UNASSIGNED_SUBS[sub];
+    // Alınan evrakın alt hesapları (Bankaya Tahsile Ver, plan §3.11): 101.01 Portföy, 101.02 Bankaya Tahsile Verilen (doğrulama G1: ad boştu).
+    if (CHEQUE_SUB_NAMES[sub]) return CHEQUE_SUB_NAMES[sub];
     for (const row of map.values()) if (row.glSub === sub) return `${row.bankName} · ${row.name}`;
     const pos = store.get("SELECT name FROM pos_terminals WHERE gl_sub = ?", sub);
     return pos?.name || "";
@@ -182,11 +185,12 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     }));
   }
   /** Modül olayının ve KDV'li masrafın yevmiyesi (Ana Defter'in kendi kuralıyla, yalnız bu satırlar). */
-  function journalLines(filter, map) {
+  function journalLines(filter, map, keep = null) {
     const service = ledger?.();
     if (!service?.build) return [];
     const out = [];
     for (const entry of service.build(filter)) {
+      if (keep && !keep(entry)) continue;
       for (const line of entry.lines) {
         const minor = Number(line.debit) || Number(line.credit) || 0;
         if (!minor) continue;
@@ -329,6 +333,18 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
         lines = journalLines({ invoices: [event.invoice_id], money: paymentRows.length ? { account_entries: paymentRows } : {} }, map);
         linesSource = "journal";
       }
+    } else if (event.src_table === "cheque_collections") {
+      // Bankaya Tahsile Ver / Bankadan Geri Al (plan §3.14; para satırı yok): kaydın yevmiyesi Ana Defter'in kendi kuralıyla (doğrulama G1: kartta hiç
+      // satır yoktu). Verilme B 101.02 / A 101.01; geri alma (ve eski sürüm kapanışı) B 101.01 / A 101.02; karşılıksız kapanışı karşılıksız
+      // maddesidir (A 101.02, aynı gün).
+      const record = store.get("SELECT status FROM cheque_collections WHERE id = ?", event.src_id);
+      const returned = event.type === "cheque_withdraw" && record?.status === "returned";
+      const wanted = event.type === "cheque_deposit" ? `cheque-deposit:${event.src_id}` : `cheque-withdraw:${event.src_id}`;
+      const keep = returned
+        ? entry => entry.id.startsWith("account:") && entry.date === event.date && entry.lines.some(line => line.account === "101" && line.sub === CHEQUE_SUB.bank && line.credit > 0)
+        : entry => entry.id === wanted;
+      lines = event.cheque_id ? journalLines({ cheques: [event.cheque_id] }, map, keep) : [];
+      linesSource = "journal";
     } else {
       const rows = moduleRows(event);
       const filter = { money: {} };

@@ -32,7 +32,8 @@ import { apiOf, integrityOk, pdfText, unwrap, xlsxSheets } from "./banka-210-ort
 import { BANK, TODAY, bootBank, expectStatus, must, openAccount, trIban } from "./banka-210-hesap-ortak.mjs";
 
 const RC = "/api/workspace/report-center";
-const BANK_REPORTS = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"];
+// 2.2.0 (bilerek güncellendi): Bankaya Tahsile Ver ile plan §8.10 "Tahsildeki Çekler" raporu (Tahsildeki Çek ve Senetler).
+const BANK_REPORTS = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler"];
 const K10 = { realBank: "Gerçek Banka", debt: "Kart ve Kredi Borcu", unassigned: "Hesabı Atanmamış Eski Hareketler" };
 const NO_SUM = new Set(["Bakiye"]);
 
@@ -263,8 +264,8 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     const catalog = await must("katalog", api.get(RC));
     const bank = catalog.reports.filter(report => report.group === "Banka");
     assert.deepEqual(bank.map(report => report.id), BANK_REPORTS);
-    assert.deepEqual(Object.fromEntries(bank.map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"] });
-    assert.deepEqual(bank.map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı"]);
+    assert.deepEqual(Object.fromEntries(bank.map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"], "tahsildeki-cekler": [] });
+    assert.deepEqual(bank.map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı", "Tahsildeki Çek ve Senetler"]);
     assert.deepEqual(catalog.choices.bankAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id, acc.K.id, acc.L.id, "unassigned"]);
     assert.deepEqual(catalog.choices.feeAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id]);
     assert.ok(!/\d,\d{2}/.test(JSON.stringify(catalog.choices)), "seçeneklerde bakiye (tutar) yok");
@@ -396,7 +397,14 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
       const tag = `alt-hesap-mizani ${r.label}`;
       const data = await screen("alt-hesap-mizani", r.q, tag);
       const keys = ALL.filter(key => of([key]).some(row => upTo(row.d, r)));
-      assert.deepEqual(data.rows.map(row => row[0]).sort(), keys.map(key => sub[key]).sort(), `${tag}: alt hesaplar`);
+      // 2.2.0 (doğrulama T4, bilerek güncellendi): alınan evrakın 101.01 satırı da (Bankaya Tahsile Ver, plan §3.11) — RC-1 04.10'da alındı ve
+      // aynı gün tahsil edildi: dönem 04.10'u içeriyorsa borç = alacak = 4.000, bakiye 0; sonraki dönemde devir 0; önceki dönemde satır yok.
+      const cheque = data.rows.find(row => row[0] === "101.01");
+      if (upTo("2026-10-04", r)) {
+        const moved = inRange("2026-10-04", r) ? 400_000 : 0; // kuruş
+        assert.deepEqual([moneyOf(cheque?.[col(data, "Devir")]), moneyOf(cheque?.[col(data, "Borç")]), moneyOf(cheque?.[col(data, "Alacak")]), moneyOf(cheque?.[col(data, "Bakiye")])], [0, moved, moved, 0], `${tag}: 101.01`);
+      } else assert.equal(cheque, undefined, `${tag}: 101.01 dönemden önce yok`);
+      assert.deepEqual(data.rows.map(row => row[0]).filter(code => !code.startsWith("101.")).sort(), keys.map(key => sub[key]).sort(), `${tag}: alt hesaplar`);
       for (const key of keys) {
         const row = data.rows.find(cells => cells[0] === sub[key]);
         const list = of([key]).filter(item => inRange(item.d, r));

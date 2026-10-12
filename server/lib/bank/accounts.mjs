@@ -364,10 +364,13 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (lines.length) assertLines(lines);
     return bank.voucher({ type: "opening", date: opening.date, bankRef: row.id, currency: row.currency, description: `Açılış Bakiyesi · ${labelOf(row)}` }, lines);
   }
-  /** Yeni açılışın tarihi hesabın ilk hareketinden sonra olamaz (§3.8). */
+  /** Yeni açılışın tarihi hesabın ilk hareketinden sonra olamaz (§3.8). Bankaya tahsile verilen evrak da hesabın hareketidir (para satırı
+   * olmasa da; doğrulama T8/D5: tahsile verme hesabın açılışından önce olamaz). */
   function assertBeforeFirst(id, date) {
     const { first } = movementInfo(id);
     if (first && date > first) throw new HttpError(409, `Açılış tarihi hesabın ilk hareketinden (${first.split("-").reverse().join(".")}) sonra olamaz. Açılış, o günün başındaki bakiyedir.`, { code: "bank-opening-after-first", firstMovement: first });
+    const given = store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'") ? store.get("SELECT MIN(given_date) AS d FROM cheque_collections WHERE bank_account_id = ?", id)?.d || "" : "";
+    if (given && date > given) throw new HttpError(409, `Açılış tarihi, bu hesaba tahsile verilen ilk evrakın veriliş tarihinden (${given.split("-").reverse().join(".")}) sonra olamaz.`, { code: "bank-opening-after-first", firstMovement: given });
   }
 
   // ---------- Hesap aç, düzelt, durum, sil ----------
@@ -1135,11 +1138,12 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       subs.set(target.sub, row);
       mainsOf.set(main, (mainsOf.get(main) || 0) + Number(group.opening) + Number(group.debit) - Number(group.credit));
     }
-    // Bankaya Tahsile Ver (plan §3.11 madde 5, §3.14): tahsil kaydı varsa 101.01 / 101.02 de (Ana Defter'in kendi kuralıyla, yalnız alınan
-    // evrakın maddeleri). Kayıt yoksa ekran ve rapor 2.1.0'daki gibi kalır.
+    // Bankaya Tahsile Ver (plan §3.11 hesap planı "101.01 Portföydeki Çekler, 101.02 Tahsile Verilen Çekler", madde 6): alınan evrak varsa 101 ve
+    // alt hesapları (Ana Defter'in kendi kuralıyla, yalnız alınan evrakın maddeleri). Doğrulama T4: önceden yalnız şirkette bir tahsil kaydı
+    // varken görünüyordu; Ana Defter 101'de portföy dururken Alt Hesap Mizanı'nda 101.01 yoktu.
     const chequeService = ledger?.();
-    if (chequeService?.build && store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'") && store.get("SELECT 1 AS found FROM cheque_collections LIMIT 1")) {
-      const ids = store.all("SELECT id FROM cheques WHERE direction = 'in'").map(row => row.id);
+    const ids = chequeService?.build && store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'") ? store.all("SELECT id FROM cheques WHERE direction = 'in'").map(row => row.id) : [];
+    if (ids.length) {
       for (const entry of chequeService.build({ cheques: ids })) {
         for (const line of entry.lines) {
           if (line.account !== "101" || !line.sub) continue;

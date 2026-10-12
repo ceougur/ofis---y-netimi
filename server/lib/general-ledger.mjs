@@ -140,7 +140,9 @@ export function journal(rows) {
     const id = `account:${row.id}`;
     if (row.source === "cheque") {
       // Alınan evrak portföyde (101), verilen evrak ödenecekte (103) izlenir; cariye yazılan etki karşı taraftır.
-      const counter = row.chequeDirection === "out" ? "103" : "101";
+      // Bankada tahsildeki evrak karşılıksız dönünce (plan §3.14 "Yevmiye mevcut bounce maddesinde A 101.02"): karşılıksız maddesinin alacağı
+      // 101.02'dir (bankReturned: routes/ledger.mjs rows; ayrı kapanış maddesi yazılmaz).
+      const counter = row.chequeDirection === "out" ? "103" : row.bankReturned ? { account: "101", sub: CHEQUE_SUB.bank } : "101";
       if (row.kind === "debt") post(id, row.date, "Çek / Senet", row.note, control, counter, row.amount);
       else post(id, row.date, "Çek / Senet", row.note, counter, control, row.amount);
       continue;
@@ -238,20 +240,22 @@ export function journal(rows) {
   // kuruşu (tahsildeki evrakın tutarı değişemez: 409 cheque-deposited).
   // Eski sürümde (tahsil kaydını bilmeyen kodla) tahsil edilen evrakın kaydını açılış onarımı (repair h) kapanış başlığıyla kapatır; o tahsilin
   // satırı 101.01'dendir, bu yüzden kayıt 101.02'den kapanış tarihinde geri döner (Bankadan Geri Al gibi).
-  const collectEvents = new Set((rows.chequeEvents || []).filter(row => row.kind === "collect" && row.eventId).map(row => row.eventId));
-  const collectedBy = new Set();
+  // Karşılıksız dönen (returned) kaydın kapanışı ayrı madde DEĞİLDİR: karşılıksız maddesi (cari borcu ya da carisiz evrakın gider maddesi)
+  // alacağını 101.02'ye yazar (yukarıda, bankReturned). Kayıt tahsil olayıyla kapandıysa (closedByCollect) tahsil maddesi A 101.02 (aşağıda,
+  // closesDeposit). İki bayrak da satır bazında SQL'de hesaplanır (routes/ledger.mjs): süzgeçli kurulumda (İşlem Kartı, kapı) aynı sonuç.
   const portfolio = { account: "101", sub: CHEQUE_SUB.portfolio };
   const atBank = { account: "101", sub: CHEQUE_SUB.bank };
   for (const row of rows.chequeCollections || []) {
     const amount = (Number(row.amountMinor) || 0) / 100;
     const label = `Evrak${row.serialNo ? ` No ${row.serialNo}` : ""}`;
     post(`cheque-deposit:${row.id}`, row.givenDate, "Bankaya Tahsile Ver", label, atBank, portfolio, amount);
-    if (row.status === "collected" && collectEvents.has(row.closeEventId)) collectedBy.add(row.closeEventId);
-    else if (row.status !== "pending" && row.closedDate) post(`cheque-withdraw:${row.id}`, row.closedDate, row.status === "returned" ? "Bankadan Karşılıksız Döndü" : row.status === "collected" ? "Tahsil Edildi (eski sürüm)" : "Bankadan Geri Al", label, portfolio, atBank, amount);
+    if (row.status === "pending" || row.status === "returned" || !row.closedDate) continue;
+    if (row.status === "collected" && row.closedByCollect) continue;
+    post(`cheque-withdraw:${row.id}`, row.closedDate, row.status === "collected" ? "Tahsil Edildi (eski sürüm)" : "Bankadan Geri Al", label, portfolio, atBank, amount);
   }
   for (const row of rows.chequeEvents || []) {
     const id = `cheque:${row.id}`;
-    if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, moneyOf(row), row.eventId && collectedBy.has(row.eventId) ? atBank : "101", row.amount);
+    if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, moneyOf(row), row.closesDeposit ? atBank : "101", row.amount);
     else post(id, row.date, "Çek / senet ödemesi", row.note, "103", moneyOf(row), row.amount);
   }
   // Banka Fişi (v2.1.0, §3.11/3): her işlem başlığının satırları tek madde; THP kodu ve alt hesap yazım anında saklanmıştır, kuruş doğrudan.

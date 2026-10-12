@@ -12,7 +12,9 @@
 //   f. yolu nakde çevrilmiş ama fin_ref'i dolu satır → açık dönemde fin_ref temizlenir; kilitli dönemde yalnız uyarı
 //   g. olay kopyası satırla uyuşmuyor → açık dönemde ve eşleşmemişse kopya satırdan yenilenir; değilse "Onarım Bekliyor"
 //   h. tahsildeki çek eski sürümde ciro edilmiş / silinmiş / tahsil edilmiş → kayıt "withdrawn" ya da "collected" olarak kapanır; kapanış
-//      işlem başlığı (cheque_withdraw, origin "repair") yazılır
+//      işlem başlığı (cheque_withdraw, origin "repair") yazılır. Kapanış tarihi veriliş gününden önce olamaz (eski sürümün işlemi daha önceki
+//      tarihli olsa da veriliş gününe yazılır). Eski sürümde tahsildeki evrakın tutarı ya da alış tarihi değiştiyse (evrak hâlâ portföyde) açık
+//      dönemde verilme başlığının tutarı evrakın tutarına, veriliş günü alış tarihinden önceyse alış tarihine alınır; kilitli dönemde "Onarım Bekliyor".
 // Yalnız ilgili kayıtlar değişir; değişen ya da bulunan her şey integrity_log'a ("repair") ve meta.bank.repair'e (zil ve Banka modülünün
 // uyarısı için; arayüz Aşama 3/14) yazılır. Onarım tek seferliktir: ikinci açılışta değiştirecek bir şey kalmaz (kilitli dönemdeki kayıtlar
 // "Onarım Bekliyor" listesinde kalır ve kapının tabanıdır).
@@ -173,13 +175,32 @@ export function repairBank({ store, now = systemClock, period = null, log = null
       // h) tahsildeki çek eski sürümde ciro edilmiş, silinmiş ya da tahsil edilmiş
       if (tables.has("cheque_collections")) {
         for (const item of store.all(
-          `SELECT k.id, k.cheque_id AS chequeId, k.bank_account_id AS bankAccountId, c.status, c.status_date AS statusDate, c.deleted_at AS deletedAt, c.amount
-           FROM cheque_collections k LEFT JOIN cheques c ON c.id = k.cheque_id WHERE k.status = 'pending'`,
+          `SELECT k.id, k.cheque_id AS chequeId, k.bank_account_id AS bankAccountId, k.given_date AS givenDate, k.event_id AS eventId, c.status, c.status_date AS statusDate,
+                  c.deleted_at AS deletedAt, c.amount, c.issue_date AS issueDate, e.try_minor AS givenMinor, e.date AS eventDate, e.year AS eventYear
+           FROM cheque_collections k LEFT JOIN cheques c ON c.id = k.cheque_id LEFT JOIN fin_events e ON e.id = k.event_id WHERE k.status = 'pending'`,
         )) {
-          if (item.status === "portfolio" && !item.deletedAt) continue;
+          if (item.status === "portfolio" && !item.deletedAt) {
+            // Doğrulama D2: eski sürüm (tahsil kaydını bilmeyen) tahsildeki evrakın tutarını ya da alış tarihini değiştirmiş; evrak hâlâ bankada.
+            // Verilme başlığı evrakın bugünkü hâline alınır (açık dönemde; İşlem No'su aynı kalır, yılı değişecekse Onarım Bekliyor).
+            const cents = Math.round((Number(item.amount) || 0) * 100);
+            const given = item.issueDate && item.givenDate < item.issueDate ? item.issueDate : item.givenDate;
+            if (Number(item.givenMinor) === cents && given === item.givenDate) continue;
+            if (!item.eventId || !open(item.givenDate) || !open(given) || Number(String(given).slice(0, 4)) !== Number(item.eventYear)) {
+              pending("h", item.id, "tahsildeki evrakın tutarı ya da alış tarihi eski sürümde değişti; Bankadan Geri Al'ıp yeniden tahsile verin");
+              continue;
+            }
+            store.run("UPDATE fin_events SET amount_minor = ?, try_minor = ?, date = ?, updated_by = 'system', updated_at = ? WHERE id = ?", cents, cents, given, at, item.eventId);
+            if (given !== item.givenDate) store.run("UPDATE cheque_collections SET given_date = ?, updated_by = 'system', updated_at = ? WHERE id = ?", given, at, item.id);
+            report.refreshedEvents.push(item.eventId);
+            continue;
+          }
           const collected = item.status === "collected" && !item.deletedAt;
           const collectedOn = collected ? store.get("SELECT date FROM cheque_events WHERE cheque_id = ? AND kind = 'collect' ORDER BY created_at DESC LIMIT 1", item.chequeId)?.date : "";
-          const date = collectedOn || item.statusDate || (item.deletedAt ? String(item.deletedAt).slice(0, 10) : "") || at.slice(0, 10);
+          // Doğrulama D1: eski sürümün işlemi (ciro, tahsil, silme) veriliş gününden önceki tarihli olabilir (silinen portföy çekinde durum tarihi
+          // alış günüdür). Kapanış veriliş gününe kısılır: kayıt o gün açılıp kapanır (yevmiyede 101.01 ↔ 101.02 aynı gün, net sıfır); önceden kapanış
+          // tarihi verilişten önce yazılıyor, onarımın kendi kaydı Mutabakat Testi'nde kalıcı kırmızı kalıyordu.
+          const raw = collectedOn || item.statusDate || (item.deletedAt ? String(item.deletedAt).slice(0, 10) : "") || at.slice(0, 10);
+          const date = item.givenDate && raw < item.givenDate ? item.givenDate : raw;
           const status = collected ? "collected" : "withdrawn";
           const why = !item.status ? "çek kaydı yok" : item.deletedAt ? "eski sürümde silindi" : collected ? "eski sürümde tahsil edildi" : `eski sürümde durumu değişti (${item.status})`;
           const { year, seq, no } = nextEventNo(store, date, { now });

@@ -361,7 +361,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (gl("100") !== M.kasa.cash || gl("102") !== M.kasa.bank || gl("108") !== M.kasa.card - ccardNet()) problems.push(`Ana defter kasa hesapları ≠ model: 100 ${gl("100") / 100}, 102 ${gl("102") / 100}, 108 ${gl("108") / 100} (model 108 ${tl(M.kasa.card - ccardNet())})`);
     if (gl("309") !== ccardNet()) problems.push(`Ana defter 309 (Kurumsal Kredi Kartları) ${gl("309") / 100} · model ${tl(ccardNet())}`);
     // Bankaya Tahsile Ver (plan §3.14): 101.02 (Alt Hesap Mizanı) = modelde tahsildeki evrak; 101.01 = portföy − tahsildeki; 101 toplamı aynı.
-    if (bank && [...M.cheques.values()].some(c => c.deposited)) {
+    // Doğrulama T4: Alt Hesap Mizanı'nda 101.01 hiç tahsile verilmemiş şirkette de görünür (önceden yalnız tahsil kaydı varken denetleniyordu).
+    if (bank) {
       const subs = Object.fromEntries(((await api("GET", "/api/workspace/bank/sub-trial")).data?.rows || []).map(row => [row.sub, centsOf(row.balance)]));
       const portfolio = [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio");
       const atBank = portfolio.filter(c => c.deposit).reduce((s, c) => s + c.amount, 0);

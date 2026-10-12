@@ -427,6 +427,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       // v2.0.26 (A6): kapanmış dönemdeki evrakın tutarı, carisi, kartı ve tarihi değişmez; yeni tarih de kilitli/ileri olamaz.
       if (coreChange) period?.assertOpen(previous.issueDate, "Bu çek/senet");
       const input = coreInput({ ...previous, ...body }, previous, { checkLinks: coreChange, dated: coreChange });
+      if (coreChange) collections.assertIssueBeforeDeposits(previous, input.issueDate);
       if (body.allowDuplicate !== true) assertUnique(input, previous.id);
       if (coreChange) {
         // Tek olaylı (alındı/verildi) kayıt: eski defter etkileri geri alınır, yenileri yazılır (aynı işlem bloğunda).
@@ -729,17 +730,30 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   // expected (v2.2.0, plan §3.14; Nakit Akış ve Vade Takip): bankada tahsildeki evrak vade + hesabın iş günü takvimiyle beklenir (vade hafta
   // sonu ya da tatile düşerse sonraki iş günü; vadeden sonra verildiyse veriliş gününden). KARAR: hesap kartında valör alanı yok (plan §5.2);
   // "hesabın valörü" Banka Ayarları'ndaki iş günü takvimidir (bank.businessDayOf). Öbür okuyucular (yaşlandırma, vade dağılımı) vadeyi kullanır.
-  const flows = ({ expected = false } = {}) => {
-    const pending = expected ? collections.pendingMap() : new Map();
+  // Tahsildeki evrakın beklenen günü: vade (vadeden sonra verildiyse veriliş günü) + iş günü takvimi. Nakit Akış, Vade Takip, zil ve takvim tek
+  // kuraldan okur (doğrulama T5: zil/takvim önceden vadeyi ve "Tahsil Edilecek" adını gösteriyordu).
+  const depositsOf = () => {
+    const pending = collections.pendingMap();
     const shift = pending.size && bank?.businessDayOf ? bank.businessDayOf() : null;
+    const of = row => (row.direction === "in" && row.status === "portfolio" ? pending.get(row.id) || null : null);
+    const expectedOf = (row, deposit) => {
+      const base = deposit.givenDate > row.dueDate ? deposit.givenDate : row.dueDate;
+      return shift ? shift(base) : base;
+    };
+    return { of, expectedOf };
+  };
+  const flows = ({ expected = false } = {}) => {
+    const deposits = expected ? depositsOf() : null;
     return openRows().map(row => {
-      const deposit = row.direction === "in" && row.status === "portfolio" ? pending.get(row.id) || null : null;
-      const base = deposit && deposit.givenDate > row.dueDate ? deposit.givenDate : row.dueDate;
+      const deposit = deposits ? deposits.of(row) : null;
       return {
-        date: deposit && shift ? shift(base) : row.dueDate,
+        date: deposit ? deposits.expectedOf(row, deposit) : row.dueDate,
         direction: row.direction === "out" ? "out" : "in",
         amount: row.amount,
         source: row.instrument === "note" ? "note" : "cheque",
+        // Plan §8.9 "Akış kaynakları: … Tahsildeki Çek" (doğrulama T6): kaynak özeti (bySource) ve PDF/Excel kaynak kolonu tahsildeki evrakı ayrı
+        // sayar (flow "deposit"). source çek/senet kalır: Vade Takip süzgeci ve ekrandaki kaynak etiketi bugünkü gibi çalışır.
+        ...(deposit ? { flow: "deposit" } : {}),
         label: `${row.direction === "out" ? "Verilen" : "Alınan"} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` · No ${row.serialNo}` : ""}${row.bank ? ` · ${row.bank}` : ""}${deposit ? ` · Bankada Tahsilde · ${deposit.bankName || deposit.accountName}` : ""}`,
         party: party(row),
         phone: row.accountPhone,
@@ -750,10 +764,16 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   };
   // Tahsilat takvimi ve bildirimler: vadesi geçen, bugün ve 7 gün içinde gelecek açık evrak.
   function dueItems(day = today()) {
+    const deposits = depositsOf();
     return openRows()
-      .map(row => ({ row, due: dueState(row.dueDate, day) }))
+      .map(row => {
+        // Bankada tahsildeki evrak (plan §3.14, §8.9): beklenen gün vade + iş günü takvimi (Vade Takip ve Nakit Akış ile aynı), adı "Bankada Tahsilde".
+        const deposit = deposits.of(row);
+        const date = deposit ? deposits.expectedOf(row, deposit) : row.dueDate;
+        return { row, deposit, date, due: dueState(date, day) };
+      })
       .filter(({ due }) => due.state !== "later")
-      .map(({ row, due }) => ({
+      .map(({ row, deposit, date, due }) => ({
         id: `cheque|${row.id}`,
         source: "cheque",
         chequeId: row.id,
@@ -762,19 +782,24 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         caseNo: "",
         caseKey: "",
         tab: "",
-        label: `${row.direction === "out" ? "Ödenecek" : "Tahsil Edilecek"} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` No ${row.serialNo}` : ""}`,
+        label: deposit
+          ? `Bankada Tahsilde ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` No ${row.serialNo}` : ""} · ${deposit.bankName || deposit.accountName}`
+          : `${row.direction === "out" ? "Ödenecek" : "Tahsil Edilecek"} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` No ${row.serialNo}` : ""}`,
         kind: "date",
-        dueDate: row.dueDate,
-        dueText: dayText(row.dueDate),
+        dueDate: date,
+        dueText: dayText(date),
         amount: row.amount,
         partial: false,
         days: due.days,
         state: due.state === "today" ? "today" : due.state === "overdue" ? "overdue" : "upcoming",
       }));
   }
+  // Tahsil kayıtları da (Bankaya Tahsile Ver / Geri Al çekin satırını değiştirmez): zil ve takvimin önbelleği tahsile verince yenilenir.
+  const hasCollections = () => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'"));
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(created_at), '') FROM cheque_events) AS e, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) FROM cheques) AS c");
-    return `${row.e}|${row.c}`;
+    const k = hasCollections() ? store.get("SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS k FROM cheque_collections").k : "";
+    return `${row.e}|${row.c}|${k}`;
   };
   // Cari silinmeden önce: bu cariye bağlı (alındığı/verildiği ya da ciro edildiği) silinmemiş evrak sayısı.
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM cheques WHERE deleted_at IS NULL AND (account_id = ? OR endorse_account_id = ?)", accountId, accountId).n;
