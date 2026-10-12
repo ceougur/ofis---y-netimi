@@ -2422,7 +2422,7 @@ try {
     const groups = await admin.$$eval(`${modal} .hof-rc-group > p`, nodes => nodes.map(node => node.textContent.trim()));
     ok(groups.some(group => group.endsWith("Banka")), `Banka grubu: ${groups.join(", ")}`);
     const items = await admin.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar", `Banka raporları (2.2.0: POS raporları): ${items.join(", ")}`);
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar", `Banka raporları (2.2.0: Tahsildeki Çek ve Senetler, POS raporları): ${items.join(", ")}`);
     await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
     let data = await waitPreview(admin, view => view.rows.length >= 2 && view.footer);
     const byBank = bank => data.rows.find(cells => cells[1] === bank);
@@ -2479,13 +2479,14 @@ try {
     await shot(admin, "rapor-banka-masraf");
   });
 
-  // 2.2.0 (doğrulama T4, bilerek güncellendi): alınan evrakın 101.01 satırı da görünür — adım 34'teki çek (3.000) alınıp aynı gün tahsil edildi:
-  // borç = alacak = 3.000, bakiye 0.
-  await step("45. Alt Hesap Mizanı: 101.01 0 (çek alınıp tahsil edildi) · 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak)", async () => {
+  // 2.2.0 (Bankaya Tahsile Ver, doğrulama T4): 101 ve alt hesapları yalnız şirkette alınan evrak varsa görünür. Rapor Şirketi'nde çek/senet
+  // yok (adım 34'teki çek başka şirkette) → 101 satırı YOK; beklenen 2.1.0'daki gibi 4 satır (12.10.2026 ana oturum: önceki "5 satır" beklentisi
+  // ekrandan koşulmadan yazılmıştı, CI 12b82c2 kırmızı).
+  await step("45. Alt Hesap Mizanı: 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak); alınan evrak yok → 101 satırı yok", async () => {
     await admin.click(`${modal} [data-rc-list] [data-report="alt-hesap-mizani"]`);
-    const data = await waitPreview(admin, view => view.rows.length === 5);
+    const data = await waitPreview(admin, view => view.rows.length === 4);
     const bal = sub => { const cells = data.rows.find(row => row[0] === sub); return cells ? `${cells[data.heads.indexOf("Bakiye")]} ${cells[data.heads.indexOf("Yön")]}` : "yok"; };
-    ok(bal("101.01") === "0,00 TL " && bal("102.00") === "5.000,00 TL Borç" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
+    ok(bal("101.01") === "yok" && bal("102.00") === "5.000,00 TL Borç" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
     ok(data.summary["Alt Hesap Mutabakatı"] === "Tutarlı", "ana hesaplar alt hesaplarının toplamına eşit");
     await shot(admin, "rapor-alt-hesap-mizani");
   });
