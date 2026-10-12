@@ -34,6 +34,7 @@ import { runReconciliation } from "./mutabakat/motor.mjs";
 import { legacyBankBox, legacyBankPos, legacyCashFlow } from "./guvenilirlik/defter-olgulari.mjs";
 import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
 import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 
 const OLD = "v2.0.26";
 const skip = tagsAvailable([OLD]) ? false : `${OLD} etiketi bu depoda yok (git fetch --tags)`;
@@ -279,7 +280,7 @@ async function sideBySide(sourceData, sourceBackups, label, companies) {
   const newServer = await bootVersion(CURRENT, { ...dirs("yeni"), maxCompanies: 10, legacyClosing: settleK1Oncesi });
   const currentServer = await bootVersion(CURRENT, { ...dirs("guncel"), maxCompanies: 10 });
   try {
-    assert.equal(newServer.app.store.get("PRAGMA user_version").user_version, 20, "bu dal v20'de");
+    assert.equal(newServer.app.store.get("PRAGMA user_version").user_version, LATEST_VERSION, "bu dal v20 ve sonrasında (2.2.0: v21)");
     assert.equal(oldServer.app.store.get("PRAGMA user_version").user_version, 19, "v2.0.26 v19'da");
     // Canlı Hata 2'nin açılış onarımı (iade + geri ödemeyle yanlış büyümüş kartı küçültür) bu dalın BİLEREK farklı gösterdiği tek veri durumudur:
     // onarılan kart Nakit Akış, Vade Takip ve taksit görünümlerinde 2.0.26'dan farklı olur. Karşılaştırma onarımsız veriyle anlamlıdır; motorun

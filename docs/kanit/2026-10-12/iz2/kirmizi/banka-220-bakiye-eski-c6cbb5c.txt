@@ -1,0 +1,207 @@
+TAP version 13
+# Subtest: 2.2.0 İz 2.7: seçicilerde bakiye (sunucu)
+    # Subtest: [B1] yetki: personelde bakiye yok (choices'ta alan yok, /balances 403); avukatta banka + Nakit Kasa bakiyesi
+    not ok 1 - [B1] yetki: personelde bakiye yok (choices'ta alan yok, /balances 403); avukatta banka + Nakit Kasa bakiyesi
+      ---
+      duration_ms: 114.125932
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:58:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        personel bakiye ucu: 404 {"ok":false,"error":"Endpoint bulunamadı."} Endpoint bulunamadı.
+        
+        404 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:64:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: [B2] seçilen tarihteki bakiye: 05.10 → 10.000 (06.10'daki tahsilat yok), bütün 12.000; 08.10 → 12.000; bozuk tarih bugüne düşer
+    not ok 2 - [B2] seçilen tarihteki bakiye: 05.10 → 10.000 (06.10'daki tahsilat yok), bütün 12.000; 08.10 → 12.000; bozuk tarih bugüne düşer
+      ---
+      duration_ms: 4.284783
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:71:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'date')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:73:35)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [B3] Engelle, geçmiş tarih: 05.10'da 10.000,01 ödeme reddedilir (o günkü bakiye 10.000), 10.000 geçer; seçicinin kararı sunucuyla aynı
+    not ok 3 - [B3] Engelle, geçmiş tarih: 05.10'da 10.000,01 ödeme reddedilir (o günkü bakiye 10.000), 10.000 geçer; seçicinin kararı sunucuyla aynı
+      ---
+      duration_ms: 3.760902
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:83:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakiye 2026-10-05: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:84:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [B3] KMH limiti: 1.000 bakiye + 5.000 KMH → 6.000 geçer (−5.000), 6.000,01 reddedilir; bakiye −5.000, limit 5.000
+    not ok 4 - [B3] KMH limiti: 1.000 bakiye + 5.000 KMH → 6.000 geçer (−5.000), 6.000,01 reddedilir; bakiye −5.000, limit 5.000
+      ---
+      duration_ms: 2.948092
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:98:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakiye 2026-10-08: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:99:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [B3] kredi kartı limiti: 3.000 limitli kartla 3.000,01 ödeme reddedilir, 3.000 geçer; kartın bakiyesi −3.000 (borç)
+    not ok 5 - [B3] kredi kartı limiti: 3.000 limitli kartla 3.000,01 ödeme reddedilir, 3.000 geçer; kartın bakiyesi −3.000 (borç)
+      ---
+      duration_ms: 3.164793
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:108:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakiye 2026-10-08: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:109:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [B4] kural: doğrulanmamış hesapta policy off (ödeme geçer, eksi görünür); Uyar'da 409 cash-negative; boş → Banka Ayarları
+    not ok 6 - [B4] kural: doğrulanmamış hesapta policy off (ödeme geçer, eksi görünür); Uyar'da 409 cash-negative; boş → Banka Ayarları
+      ---
+      duration_ms: 3.009194
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakiye 2026-10-08: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:118:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [B5] pasif hesap bakiye listesinde yok; etkinler var
+    not ok 7 - [B5] pasif hesap bakiye listesinde yok; etkinler var
+      ---
+      duration_ms: 7.613667
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakiye 2026-10-08: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:135:30)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [B6] Nakit Kasa: 06.10'da 1.000 tahsilat → 05.10'da 0 / bütün 1.000; Engelle'de Kasadan Bankaya Yatır 1.000,01 reddedilir, 1.000 geçer
+    not ok 8 - [B6] Nakit Kasa: 06.10'da 1.000 tahsilat → 05.10'da 0 / bütün 1.000; Engelle'de Kasadan Bankaya Yatır 1.000,01 reddedilir, 1.000 geçer
+      ---
+      duration_ms: 25.388256
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakiye 2026-10-05: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:143:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - 2.2.0 İz 2.7: seçicilerde bakiye (sunucu)
+  ---
+  duration_ms: 646.65489
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-bakiye.test.mjs:34:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1048.219217

@@ -777,7 +777,8 @@
       ],
       submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
       onOpen: dialog => {
-        if (!entry?.opening && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.finRef || "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" });
+        // 2.7: seçicide bakiye (tahsilat giriş, geri ödeme çıkış; düzeltmede eski tutar bakiyede).
+        if (!entry?.opening && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.finRef || "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", direction: incoming ? "in" : "out", original: entry?.method === "bank" && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null });
       },
       onSubmit: async data => {
         const url = `/api/workspace/plans/${encodeURIComponent(plan.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;

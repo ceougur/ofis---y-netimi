@@ -83,6 +83,8 @@
       modal.dialog.addEventListener("change", onChange);
       modal.dialog.addEventListener("input", onInput);
       modal.dialog.addEventListener("keydown", onKey);
+      // v2.2.0 (İz 2.4): peşin satırdaki "Banka Hesabı / Kredi Kartı Tanımla" ile kaydedilen hesap o satırda seçili gelir.
+      modal.dialog.addEventListener("hof-bank-defined", onBankDefined);
       // Öneri listesi: tıklanırken yazılan kutu odağı kaybetmesin; kutudan çıkınca kapanır; pencere kayınca yer değiştirir.
       modal.dialog.addEventListener("mousedown", event => {
         if (event.target.closest(".hof-inv-item-hits")) event.preventDefault();
@@ -448,13 +450,20 @@
       const legacy = issued && (method === "bank" || (method === "card" && corporate)) && !item.bankAccountId;
       return { amount: amountText(item.amount), method, lineKey: /^[A-Za-z0-9_-]{1,40}$/.test(String(item.lineKey || "")) ? item.lineKey : `i${index}`, bankAccountId: item.bankAccountId || "", legacy, legacyMethod: legacy ? method : "" };
     }),
-    cheques: (payment?.cheques || []).map(item => ({ instrument: item.instrument || "cheque", amount: amountText(item.amount), dueDate: item.dueDate || "", serialNo: item.serialNo || "", bank: item.bank || "", drawer: item.drawer || "" })),
+    cheques: (payment?.cheques || []).map(item => ({ instrument: item.instrument || "cheque", amount: amountText(item.amount), dueDate: item.dueDate || "", serialNo: item.serialNo || "", bank: item.bank || "", drawer: item.drawer || "", bankAccountId: item.bankAccountId || "" })),
     endorse: [...(payment?.endorse || [])],
     rest: payment?.rest === "installments" ? "installments" : "open",
     dueDate: payment?.dueDate || "",
     installments: { count: String(payment?.installments?.count || 3), firstDue: payment?.installments?.firstDue || "", everyMonths: String(payment?.installments?.everyMonths || 1) },
   });
 
+  // 2.7: Düzenle'de kaydedilmiş belgenin peşin satırları seçilen hesabın bakiyesinde zaten var — "İşlemden Sonra" yeni − eski (hesap başına, kuruş).
+  function payOriginalOf(doc) {
+    const sign = ["sale", "smm", "purchase_return"].includes(doc.kind) ? 1 : -1;
+    const refs = {};
+    for (const item of doc.payment?.cash || []) if (item.bankAccountId && (item.method === "bank" || item.method === "card")) refs[item.bankAccountId] = (refs[item.bankAccountId] || 0) + sign * Math.round((Number(item.amount) || 0) * 100);
+    return { date: doc.issueDate || "", refs };
+  }
   // modify (v2.0.16): kaydedilmiş belgenin düzenlenmesi — aynı numara; kaydedilince eski etkiler geri alınıp yenileri yazılır.
   function startForm({ scenario, account = null, draft = null, copyOf = null, modify = null }) {
     if (!canManage()) return HOF.toast("Fatura kaydetme yetkiniz yok.", { type: "error" });
@@ -499,6 +508,8 @@
       busy: false,
       modifyId: modify?.id || "",
       modifyNumber: modify?.number || "",
+      // 2.7: Düzenle'de kaydedilmiş peşin satırların hesaplardaki etkisi (bakiyede zaten var).
+      payOriginal: modify ? payOriginalOf(modify) : null,
     };
     view.form = form;
     setMode("form");
@@ -885,23 +896,33 @@
     if (kind === "purchase_return") return { ...base, card: "Kredi Kartı İadesi" };
     return base;
   };
-  const methodOptions = value => Object.entries(refundMethods(view.form?.kind)).map(([id, label]) => `<option value="${esc(id)}" ${id === value ? "selected" : ""}>${esc(typeof label === "string" ? label : label.label || id)}</option>`).join("");
+  // v2.2.0 (İz 2.8; müşteri 12.10.2026: "peşin ödemede herkesin aklına nakit gelir"): ödeme satırı yola göre eklenir ("+ Nakit", "+ Havale / EFT",
+  // "+ Kredi Kartı" / satışta "+ POS"); satırın başlığı yolun adıdır, yol kutusu yok. Kayıt biçimi DEĞİŞMEDİ (payment.cash[]: amount, method,
+  // bankAccountId, lineKey).
+  const methodLabel = (method, kind = view.form?.kind) => {
+    const label = refundMethods(kind)[method];
+    return typeof label === "string" ? label : label?.label || method;
+  };
+  const payWays = kind => Object.keys(refundMethods(kind));
   const paidSum = form => [...form.pay.cash, ...form.pay.cheques].reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  // 2.8: "Kalanın Tamamını Öde" / "… Tahsil Et" (önceki "Tamamı Peşin"): kalan = ödenecek − girilen bütün ödemeler; tıklanınca yol sorulur.
+  const payableOf = form => (form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0);
+  const restOf = form => Math.round((payableOf(form) - paidSum(form)) * 100) / 100;
+  const restVerb = form => (["sale", "smm", "purchase_return"].includes(form.kind) ? "Kalanın Tamamını Tahsil Et" : "Kalanın Tamamını Öde");
   function renderPay() {
     const form = view.form;
     const slot = body()?.querySelector("[data-pay]");
     if (!slot || !form) return;
     const ret = isReturn(form.kind);
     const sale = form.side === "sale";
-    const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
     const chequeOk = meta.canCheques && ["sale", "smm", "purchase"].includes(form.kind);
-    const cashWord = ret ? (form.kind === "sale_return" ? "Müşteriye İade Ödemesi" : "Tedarikçiden İade Tahsilatı") : sale ? "Peşin Tahsilat" : "Peşin Ödeme";
+    // 2.8: satır başlığı yolun adı ("Nakit · Tutar", "Havale / EFT · Tutar · Banka Hesabı", "Kredi Kartı · Tutar · Kredi Kartı").
     const cashRows = form.pay.cash
-      .map((item, index) => `<div class="hof-inv-pay-row"><label><span>${esc(cashWord)} (₺)</span><input data-pay="cash" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}" placeholder="0,00"></label><label><span>${sale ? "Tahsilat Yolu" : "Ödeme Yolu"}</span><select data-pay="cash" data-i="${index}" data-f="method">${methodOptions(item.method)}</select></label>${bankCell(item, index)}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cash" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`)
+      .map((item, index) => `<div class="hof-inv-pay-row" data-pay-method="${esc(item.method)}"><b class="hof-inv-pay-way">${esc(methodLabel(item.method))}</b><label><span>Tutar (₺)</span><input data-pay="cash" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}" placeholder="0,00" aria-label="${esc(methodLabel(item.method))} Tutarı"></label>${bankCell(item, index)}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cash" data-i="${index}" aria-label="Sil" title="Sil">×</button>${rowBalanceHtml(item, index)}</div>`)
       .join("");
     const chequeRows = form.pay.cheques
       .map(
-        (item, index) => `<div class="hof-inv-pay-row is-cheque"><label><span>Evrak</span><select data-pay="cheques" data-i="${index}" data-f="instrument"><option value="cheque" ${item.instrument === "cheque" ? "selected" : ""}>Çek</option><option value="note" ${item.instrument === "note" ? "selected" : ""}>Senet</option></select></label><label><span>Tutar (₺)</span><input data-pay="cheques" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}"></label><label><span>Vade</span><input type="date" data-pay="cheques" data-i="${index}" data-f="dueDate" value="${esc(item.dueDate)}" min="${esc(form.issueDate)}"></label><label><span>No</span><input data-pay="cheques" data-i="${index}" data-f="serialNo" maxlength="60" value="${esc(item.serialNo)}"></label><label><span>Banka / Şube</span><input data-pay="cheques" data-i="${index}" data-f="bank" maxlength="120" value="${esc(item.bank)}"></label>${sale ? `<label><span>Keşideci</span><input data-pay="cheques" data-i="${index}" data-f="drawer" maxlength="160" value="${esc(item.drawer)}" placeholder="Boşsa cari"></label>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cheques" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`,
+        (item, index) => `<div class="hof-inv-pay-row is-cheque"><label><span>Evrak</span><select data-pay="cheques" data-i="${index}" data-f="instrument"><option value="cheque" ${item.instrument === "cheque" ? "selected" : ""}>Çek</option><option value="note" ${item.instrument === "note" ? "selected" : ""}>Senet</option></select></label><label><span>Tutar (₺)</span><input data-pay="cheques" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}"></label><label><span>Vade</span><input type="date" data-pay="cheques" data-i="${index}" data-f="dueDate" value="${esc(item.dueDate)}" min="${esc(form.issueDate)}"></label><label><span>No</span><input data-pay="cheques" data-i="${index}" data-f="serialNo" maxlength="60" value="${esc(item.serialNo)}"></label>${chequeBankCell(item, index)}${sale ? `<label><span>Keşideci</span><input data-pay="cheques" data-i="${index}" data-f="drawer" maxlength="160" value="${esc(item.drawer)}" placeholder="Boşsa cari"></label>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cheques" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`,
       )
       .join("");
     const endorse =
@@ -916,11 +937,12 @@
     slot.innerHTML = `<h4>${ret ? "İade Ödemesi" : "Ödeme"}</h4>
       ${cashRows}${chequeRows}${endorse}
       <div class="hof-inv-pay-add">
-        <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cash">+ ${esc(cashWord)}</button>
-        ${!ret ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-all-cash" ${payable > 0 ? "" : "disabled"}>Tamamı Peşin</button>` : ""}
+        ${payWays(form.kind).map(method => `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cash" data-method="${esc(method)}">+ ${esc(methodLabel(method))}</button>`).join("")}
         ${chequeOk ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cheque">+ Çek / Senet</button>` : ""}
         ${form.kind === "purchase" && chequeOk && !form.portfolio ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-endorse">Portföyden Ciro Et</button>' : ""}
+        <button type="button" class="hof-button hof-button-small" data-act="pay-rest" ${restOf(form) > 0.004 ? "" : "disabled"}>${esc(restVerb(form))}</button>
       </div>
+      <div class="hof-inv-pay-choose" data-pay-choose hidden><span>Kalan <b data-pay-choose-amount>${esc(money(Math.max(0, restOf(form))))}</b> hangi yolla ${paySign() > 0 ? "tahsil edilsin" : "ödensin"}?</span>${payWays(form.kind).map(method => `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-rest-method" data-method="${esc(method)}">${esc(methodLabel(method))}</button>`).join("")}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-rest-cancel">Vazgeç</button></div>
       <div data-pay-rest>${restBlock}</div>`;
     const box = slot.querySelector("[data-pay-rest]");
     if (box) box.hofHtml = restBlock;
@@ -943,12 +965,103 @@
     const legacy = item.legacy && item.legacyMethod === item.method;
     const { data, list } = bankAccounts(kind);
     const current = item.bankAccountId ? data?.accounts?.find(account => account.id === item.bankAccountId) : null;
-    if (!data || (!list.length && !current)) return `<span class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}" hidden></span>`;
-    if (list.length === 1 && !legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-single${hidden}>${esc(list[0].label)} ${card ? "kurumsal kartına" : "hesabına"} yazılır.</span>`;
+    if (!data) return `<span class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}" hidden></span>`;
+    // v2.2.0 (İz 2.4; kullanıcı isteği 12.10.2026): hiç hesap/kart yoksa hücrede "Banka Hesabı Tanımla" / "Kredi Kartı Tanımla" (form kapanmadan
+    // tanım penceresi; kaydedince satırda seçili gelir); tanımlama yetkisi yoksa "… tanımlı değil, yöneticinize başvurun". Önceden hücre GİZLİYDİ.
+    if (!list.length && !current) return `<span class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-empty${hidden}>${HOF.bank?.defineHtml?.(kind) || ""}</span>`;
+    const shown = account => `${account.label}${account.cardLast4 ? ` •••• ${account.cardLast4}` : ""}`;
+    if (list.length === 1 && !legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-single${hidden}>${esc(shown(list[0]))} ${card ? "kredi kartına" : "hesabına"} yazılır.</span>`;
     const options = current && !list.some(account => account.id === current.id) ? [current, ...list] : list;
     const first = legacy ? "Atanmamış (Eski Hareket)" : card ? "Kart Seçin" : "Hesap Seçin";
-    const label = card ? "Kurumsal Kart" : "Banka Hesabı";
-    return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}<option value="none" ${item.bankAccountId === "none" ? "selected" : ""}>Hesapsız (Açılıştan Önce)</option></select>${item.bankAccountId === "none" ? noneNoteHtml(card) : ""}</label>`;
+    const label = card ? "Kredi Kartı" : "Banka Hesabı";
+    // 2.7: seçenek adında hesabın fatura tarihindeki bakiyesi (Banka Görüntüleme yetkisine), seçilenin altında "Bakiye · İşlemden Sonra".
+    const optionText = account => (HOF.bank?.optionText ? HOF.bank.optionText(account, data) : `${account.label} (${account.code})`);
+    return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(optionText(account))}</option>`).join("")}<option value="none" ${item.bankAccountId === "none" ? "selected" : ""}>Hesapsız (Açılıştan Önce)</option></select>${item.bankAccountId === "none" ? noneNoteHtml(card) : ""}</label>`;
+  }
+  /**
+   * v2.2.0 (İz 2.7): peşin satırın hesabının bakiye satırı. Aynı hesaba yazan bütün satırların toplamı "İşlemden Sonra"ya girer (satış/SMM ve
+   * alıştan iade tahsilat: giriş; alış ve satıştan iade ödeme: çıkış; kredi kartıyla ödeme kart borcunu artırır). Düzenle'de kaydedilmiş belgenin
+   * peşin satırları bakiyede zaten var (payOriginal). Bakiye yalnız Banka Görüntüleme yetkisine gelir; yoksa satır yok.
+   */
+  const paySign = () => (["sale", "smm", "purchase_return"].includes(view.form?.kind) ? 1 : -1);
+  function cellAccount(item, kind) {
+    if (!item || item.bankAccountId === "none") return "";
+    if (item.bankAccountId) return item.bankAccountId;
+    const { list } = bankAccounts(kind);
+    return list.length === 1 && !(item.legacy && item.legacyMethod === item.method) ? list[0].id : "";
+  }
+  function cellBalanceHtml(item, kind) {
+    const form = view.form;
+    const data = view.bankChoices && view.bankChoices !== "loading" ? view.bankChoices : null;
+    const id = cellAccount(item, kind);
+    if (!form || !data?.balances || !id || !HOF.bank?.balanceLine) return "";
+    const change = paySign() * form.pay.cash.filter(row => cellKind(row) === kind && cellAccount(row, kind) === id).reduce((sum, row) => sum + Math.round(amountNum(row.amount) * 100), 0);
+    const own = form.payOriginal?.refs?.[id] || 0;
+    return HOF.bank.balanceLine(data, id, { change, original: own ? { minor: own, date: form.payOriginal.date } : null });
+  }
+  /** Satırın bakiye satırı (satırın altında tam genişlik; satırın alanları hizalı kalır). */
+  const rowBalanceHtml = (item, index) => `<div class="hof-inv-balance" data-inv-balance="${index}">${cellKind(item) ? cellBalanceHtml(item, cellKind(item)) : ""}</div>`;
+  /** Tutar, yol ya da hesap değişince bakiye satırları yerinde güncellenir (satırlar yeniden çizilmez; 2.0.23 Bulgu 1). */
+  function syncInvoiceBalances() {
+    const form = view.form;
+    if (!form) return;
+    body()
+      ?.querySelectorAll("[data-pay] [data-inv-balance]")
+      .forEach(box => {
+        const item = form.pay.cash[Number(box.dataset.invBalance)];
+        const cell = box.closest(".hof-inv-pay-row")?.querySelector("[data-bank-cell]");
+        const html = item && cell && !cell.hidden ? cellBalanceHtml(item, cell.dataset.bankKind) : "";
+        if (box.innerHTML !== html) box.innerHTML = html;
+      });
+  }
+  // Fatura tarihi değişince yalnız bakiyeler sunucudan (seçenek adları yerinde güncellenir).
+  let balanceSeq = 0;
+  async function reloadInvoiceBalances() {
+    const form = view.form;
+    const data = view.bankChoices && view.bankChoices !== "loading" ? view.bankChoices : null;
+    if (!form || !data?.balances || !HOF.bank?.balances) return;
+    const seq = (balanceSeq += 1);
+    const fresh = await HOF.bank.balances(form.issueDate);
+    if (seq !== balanceSeq || view.form !== form || view.bankChoices !== data || !fresh.balances) return;
+    view.bankChoices = { ...data, balances: fresh.balances, cash: fresh.cash };
+    body()
+      ?.querySelectorAll("[data-pay] [data-bank-cell] select option[value]")
+      .forEach(option => {
+        const account = option.value && option.value !== "none" ? view.bankChoices.accounts.find(row => row.id === option.value) : null;
+        if (account) option.textContent = HOF.bank.optionText(account, view.bankChoices);
+      });
+    syncInvoiceBalances();
+  }
+  /**
+   * v2.2.0 (İz 2.5–2.6): alış faturasında verilen evrakın hesap hücresi. Çek → "Çek Hesabı" (Çek Kullan işaretli; tekse bilgi satırı — kimlik
+   * gönderilmez, sunucu o hesabı seçer —, çoksa seçim, yoksa "Banka / Şube" metni + "Çek Hesabı Tanımla"); senet → "Ödeme Hesabı (Öneri)"
+   * (Senet Kullan işaretli; isteğe bağlı) yoksa metin. Satış (alınan evrak): müşterinin bankası, metin (bugünkü gibi).
+   */
+  function chequeBankCell(item, index) {
+    const textCell = extra => `<span class="hof-inv-chq-bank" data-cheque-bank="${index}"><label><span>Banka / Şube</span><input data-pay="cheques" data-i="${index}" data-f="bank" maxlength="120" value="${esc(item.bank)}"></label>${extra || ""}</span>`;
+    if (view.form?.side !== "purchase") return textCell();
+    const data = view.bankChoices && view.bankChoices !== "loading" ? view.bankChoices : null;
+    if (!data) return textCell();
+    const note = item.instrument === "note";
+    const list = (data.forms?.[note ? "note" : "cheque"]?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean);
+    if (!list.length) return textCell(note ? "" : HOF.bank?.defineHtml?.("cheque") || "");
+    if (!note && list.length === 1 && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-chq-bank hof-bank-pick-note" data-cheque-bank="${index}" data-cheque-single>Çek Hesabı: ${esc(list[0].label)}</span>`;
+    const label = note ? "Ödeme Hesabı (Öneri)" : "Çek Hesabı";
+    const first = note ? "Önerilmez" : "Hesap Seçin";
+    return `<span class="hof-inv-chq-bank" data-cheque-bank="${index}"><label><span>${label}</span><select data-pay="cheques" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${first}</option>${list.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(HOF.bank?.optionText ? HOF.bank.optionText(account, data) : `${account.label} (${account.code})`)}</option>`).join("")}</select></label></span>`;
+  }
+  // Liste gelince ya da tanım kaydedilince hücre yeniden kurulur; kullanıcı o an hücrenin "Banka / Şube" kutusuna yazıyorsa kutu yeniden
+  // çizilmez (2.0.23 Bulgu 1: yazılan harfler kaybolmasın) — yalnız "Çek Hesabı Tanımla" kutusu eklenir.
+  function refreshChequeCell(cell) {
+    const index = Number(cell.dataset.chequeBank);
+    const item = view.form?.pay.cheques[index];
+    if (!item) return;
+    const html = chequeBankCell(item, index);
+    if (cell.contains(document.activeElement) && document.activeElement.matches?.('[data-f="bank"]') && html.includes('data-f="bank"')) {
+      if (!cell.querySelector("[data-bank-define-box]") && html.includes("data-bank-define-box")) cell.insertAdjacentHTML("beforeend", HOF.bank?.defineHtml?.("cheque") || "");
+      return;
+    }
+    cell.outerHTML = html;
   }
   // 11.10.2026: "Hesapsız (Açılıştan Önce)" seçiliyken satırda not (modül formlarındaki seçicinin notuyla aynı metin, HOF.bank.noneNote).
   const noneNoteHtml = card => `<small class="hof-bank-pick-note" data-bank-none>${esc(HOF.bank?.noneNote?.(card) || "")}</small>`;
@@ -966,7 +1079,7 @@
     if (!HOF.bank?.choices || view.bankChoices) return;
     view.bankChoices = "loading";
     HOF.bank
-      .choices(true)
+      .choices(true, view.form?.issueDate || "")
       .then(data => {
         view.bankChoices = data;
         const form = view.form;
@@ -978,10 +1091,62 @@
             if (item.method === "bank" && !item.bankAccountId && !item.legacy) item.bankAccountId = defaultBank();
             cell.outerHTML = bankCell(item, Number(cell.dataset.bankCell));
           });
+        body()
+          ?.querySelectorAll("[data-pay] [data-cheque-bank]")
+          .forEach(cell => refreshChequeCell(cell));
+        syncInvoiceBalances();
       })
       .catch(() => {
         view.bankChoices = null;
       });
+  }
+  /**
+   * v2.2.0 (İz 2.4): "… Tanımla" ile kaydedilen hesap/kart. Liste sunucudan tazelenir; tanımın yapıldığı satır yeni hesabı alır (tek hesapsa bilgi
+   * satırı, çoksa seçili), aynı türün öbür boş hücreleri de yeni listeyle çizilir. Satırın tutar/yol alanları yeniden çizilmez (2.0.23 Bulgu 1).
+   */
+  async function onBankDefined(event) {
+    const { kind, account } = event.detail || {};
+    const form = view.form;
+    const cell = event.target.closest?.("[data-bank-cell]");
+    if (!form || !account?.id || !["bank", "card", "cheque"].includes(kind)) return;
+    try {
+      view.bankChoices = await HOF.bank.choices(true, form.issueDate);
+    } catch {
+      return;
+    }
+    if (view.form !== form) return;
+    // 2.5: "Çek Hesabı Tanımla" — tanımın yapıldığı evrak satırı yeni hesabı alır; öbür çek hücreleri yeni listeyle.
+    if (kind === "cheque") {
+      const chequeCell = event.target.closest?.("[data-cheque-bank]");
+      const at = chequeCell ? Number(chequeCell.dataset.chequeBank) : -1;
+      if (form.pay.cheques[at]) form.pay.cheques[at].bankAccountId = account.id;
+      body()
+        ?.querySelectorAll("[data-pay] [data-cheque-bank]")
+        .forEach(node => {
+          const position = Number(node.dataset.chequeBank);
+          const item = form.pay.cheques[position];
+          if (item) node.outerHTML = chequeBankCell(item, position);
+        });
+      (body()?.querySelector(`[data-cheque-bank="${at}"] select`) || body()?.querySelector(`[data-pay="cheques"][data-i="${at}"][data-f="serialNo"]`))?.focus();
+      return;
+    }
+    const index = cell ? Number(cell.dataset.bankCell) : -1;
+    const own = form.pay.cash[index];
+    if (own && cellKind(own) === kind) {
+      own.bankAccountId = account.id;
+      own.legacy = false;
+    }
+    body()
+      ?.querySelectorAll("[data-pay] [data-bank-cell]")
+      .forEach(node => {
+        const position = Number(node.dataset.bankCell);
+        const item = form.pay.cash[position];
+        if (!item || (position !== index && !node.hasAttribute("data-bank-empty"))) return;
+        node.outerHTML = bankCell(item, position);
+      });
+    syncInvoiceBalances();
+    const next = body()?.querySelector(`[data-bank-cell="${index}"] select`) || body()?.querySelector(`[data-pay="cash"][data-i="${index}"][data-f="amount"]`);
+    next?.focus();
   }
   // Varsayılan yalnız havalede (Banka Ayarları → Varsayılan Tahsilat Hesabı); kurumsal kartta birden çok kart varsa kullanıcı seçer (§3.5/3).
   const defaultBank = () => {
@@ -1005,7 +1170,7 @@
       const select = cell.querySelector("select");
       if (select) select.value = item.bankAccountId;
     }
-    cell.hidden = !kind || (!cell.querySelector("select") && !cell.hasAttribute("data-bank-single"));
+    cell.hidden = !kind || (!cell.querySelector("select") && !cell.hasAttribute("data-bank-single") && !cell.hasAttribute("data-bank-empty"));
   }
   // v2.0.23 (Bulgu 1): "Kalan" kutusu ayrı çizilir. Ödeme satırındaki bir alan değişince (tutar, vade, no, banka, yol) yalnız
   // bu kutu yenilenir; satırlar yeniden çizilmez. Önceden bütün bölüm yeniden çiziliyordu: Tab ile ya da fareyle gidilen
@@ -1040,6 +1205,16 @@
     const form = view.form;
     const box = body()?.querySelector("[data-pay] [data-pay-rest]");
     if (!form || !box) return renderPay();
+    // 2.8: "Kalanın Tamamını …" düğmesi ve yol sorusundaki tutar (satırlar yeniden çizilmez).
+    const rest = restOf(form);
+    const button = body()?.querySelector('[data-pay] [data-act="pay-rest"]');
+    if (button) button.disabled = !(rest > 0.004);
+    const amount = body()?.querySelector("[data-pay] [data-pay-choose-amount]");
+    if (amount) amount.textContent = money(Math.max(0, rest));
+    if (!(rest > 0.004)) {
+      const choose = body()?.querySelector("[data-pay] [data-pay-choose]");
+      if (choose) choose.hidden = true;
+    }
     const html = restHtml(form);
     if (box.hofHtml === html) return;
     box.hofHtml = html;
@@ -1134,9 +1309,6 @@
   // v2.0.23 (gözden geçirme, Bulgu 1'in kalan yolu): hesap dönünce ödeme satırları yeniden çizilmez (kalemden doğrudan ödeme
   // alanına geçen kullanıcının yazdığı rakamlar kayboluyordu); hesaba bağlı olan yalnız "Kalan" kutusu ve "Tamamı Peşin".
   function refreshPayAfterCalc() {
-    const form = view.form;
-    const button = body()?.querySelector('[data-pay] [data-act="pay-all-cash"]');
-    if (button && form) button.disabled = !((form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0) > 0);
     renderRest();
   }
   async function calcOnce() {
@@ -1236,6 +1408,8 @@
       const list = form.pay[target.dataset.pay];
       const item = list?.[Number(target.dataset.i)];
       if (item) item[target.dataset.f] = target.value;
+      // 2.7: peşin tutar yazıldıkça hesabın "İşlemden Sonra"sı.
+      if (target.dataset.pay === "cash" && target.dataset.f === "amount") syncInvoiceBalances();
       return refreshRest();
     }
     if (target.dataset.payf) {
@@ -1317,15 +1491,26 @@
       const item = form.pay[target.dataset.pay]?.[Number(target.dataset.i)];
       if (item) item[target.dataset.f] = target.value;
       if (item && target.dataset.pay === "cash" && target.dataset.f === "method") syncBankCell(target, item);
+      // v2.2.0 (İz 2.5): evrak türü değişince (çek ↔ senet) yalnız hesap hücresi yeniden çizilir; çekin hesabı senede taşınmaz.
+      if (item && target.dataset.pay === "cheques" && target.dataset.f === "instrument") {
+        item.bankAccountId = "";
+        const cell = body()?.querySelector(`[data-cheque-bank="${target.dataset.i}"]`);
+        if (cell) cell.outerHTML = chequeBankCell(item, Number(target.dataset.i));
+      }
       if (item && target.dataset.f === "bankAccountId") {
         item.legacy = item.legacy && !target.value;
         syncNoneNote(target);
       }
+      if (target.dataset.pay === "cash") syncInvoiceBalances();
       return refreshRest();
     }
     if (target.dataset.f && HEAD_FIELDS.has(target.dataset.f)) {
       form[target.dataset.f] = target.value;
-      if (target.dataset.f === "issueDate") renderPay();
+      if (target.dataset.f === "issueDate") {
+        renderPay();
+        // 2.7: seçicideki bakiyeler fatura tarihindeki bakiyedir.
+        reloadInvoiceBalances();
+      }
       if (target.dataset.f !== "note") scheduleCalc(0);
     }
   }
@@ -1424,20 +1609,46 @@
       return renderLines();
     }
     if (act === "pay-add-cash") {
-      form.pay.cash.push({ amount: "", method: "cash", lineKey: lineKey(), bankAccountId: "" });
+      // 2.8: yol düğmeden ("+ Nakit", "+ Havale / EFT", "+ Kredi Kartı" / "+ POS"); havalede varsayılan hesap önerilir.
+      const method = payWays(form.kind).includes(target.dataset.method) ? target.dataset.method : "cash";
+      form.pay.cash.push({ amount: "", method, lineKey: lineKey(), bankAccountId: method === "bank" ? defaultBank() : "" });
       renderPay();
       return body()?.querySelector(`[data-pay="cash"][data-i="${form.pay.cash.length - 1}"][data-f="amount"]`)?.focus();
     }
-    if (act === "pay-all-cash") {
+    if (act === "pay-rest") {
+      // 2.8: yol sorulur (satırlar yeniden çizilmez); seçilince kalan o yolla yazılır.
+      const choose = body()?.querySelector("[data-pay] [data-pay-choose]");
+      if (!choose) return;
+      choose.hidden = !choose.hidden;
+      if (!choose.hidden) choose.querySelector('[data-act="pay-rest-method"]')?.focus();
+      return;
+    }
+    if (act === "pay-rest-cancel") {
+      const choose = body()?.querySelector("[data-pay] [data-pay-choose]");
+      if (choose) choose.hidden = true;
+      return body()?.querySelector('[data-pay] [data-act="pay-rest"]')?.focus();
+    }
+    if (act === "pay-rest-method") {
       // Fiyat yeni değiştiyse hesap bitmeden eski toplam kullanılıyordu (288'lik fatura 24 peşinle kaydedildi). Kaydet bu işin
       // bitmesini bekler (2. gözden geçirme: yük, peşin tutar yazılmadan kuruluyor; ekranda peşin görünen fatura 0 peşinle
-      // kaydediliyordu).
+      // kaydediliyordu). 2.8: kalan = ödenecek − girilen bütün ödemeler; seçilen yolun boş satırı varsa o doldurulur, yoksa satır eklenir.
+      const method = payWays(form.kind).includes(target.dataset.method) ? target.dataset.method : "cash";
+      let index = -1;
       const job = (async () => {
         await flushCalc();
         if (view.form !== form) return;
-        const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
-        const others = form.pay.cheques.reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        form.pay.cash = [{ ...(form.pay.cash[0] || { method: "cash", lineKey: lineKey(), bankAccountId: "" }), amount: amountText(Math.max(0, Math.round((payable - others) * 100) / 100)) }];
+        const rest = restOf(form);
+        if (!(rest > 0.004)) {
+          renderPay();
+          HOF.toast("Kalan tutar yok; ödeme tamam.", { type: "info" });
+          return;
+        }
+        index = form.pay.cash.findIndex(item => item.method === method && !(amountNum(item.amount) > 0));
+        if (index >= 0) form.pay.cash[index].amount = amountText(rest);
+        else {
+          form.pay.cash.push({ amount: amountText(rest), method, lineKey: lineKey(), bankAccountId: method === "bank" ? defaultBank() : "" });
+          index = form.pay.cash.length - 1;
+        }
         renderPay();
       })();
       form.payPending = job;
@@ -1446,6 +1657,8 @@
       } finally {
         if (form.payPending === job) form.payPending = null;
       }
+      // Hesap seçimi gerekiyorsa (çok hesap/kart) odak seçicide; yoksa satırın tutarında.
+      if (index >= 0) (body()?.querySelector(`[data-bank-cell="${index}"]:not([hidden]) select`) || body()?.querySelector(`[data-pay="cash"][data-i="${index}"][data-f="amount"]`))?.focus();
       return;
     }
     if (act === "pay-add-cheque") {
@@ -1539,7 +1752,7 @@
     // fatura "Açık" kaydediliyordu). Peşin satırında boş tutar olabilir (satır yok sayılır); evrak satırında tutar zorunlu.
     const amountOk = value => parseTl(value) > 0;
     const badCash = form.pay.cash.findIndex(item => String(item.amount ?? "").trim() && !amountOk(item.amount));
-    if (badCash >= 0) return fail(`${badCash + 1}. peşin ödeme satırındaki tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`);
+    if (badCash >= 0) return fail(`${badCash + 1}. ödeme satırındaki (${methodLabel(form.pay.cash[badCash].method, form.kind)}) tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`);
     const badCheque = form.pay.cheques.findIndex(item => !amountOk(item.amount));
     if (badCheque >= 0) return fail(`${badCheque + 1}. evrakın (${form.pay.cheques[badCheque].instrument === "note" ? "senet" : "çek"}) tutarı ${String(form.pay.cheques[badCheque].amount ?? "").trim() ? `geçerli değil ("${String(form.pay.cheques[badCheque].amount).trim()}")` : "yazılmadı"}. Tutarı yazın ya da satırı × ile silin.`);
     const payload = { ...docBody(form), payment: payBody(form) };
@@ -1833,7 +2046,8 @@
       // v2.1.0 Aşama 7: Havale / EFT'de Banka Hesabı (tek hesapta gizli); istek kimliği; banka hesabının Benzer İşlem ve Eksi Bakiye soruları.
       // K2 (plan §3.7 #3, #5, §8.9): alış faturasına ödemede "Kredi Kartı" kurumsal kartla ödemedir → Kurumsal Kart seçicisi.
       onOpen: dialog => {
-        const picker = HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", card: sale ? null : {} }) : null;
+        // 2.7: seçicide bakiye (tahsilat hesaba girer; ödeme hesaptan / kredi kartından çıkar).
+        const picker = HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", card: sale ? null : {}, direction: sale ? "in" : "out" }) : null;
         // m4 (10.10.2026): açıklama seçilen YOLA göre (cari formundaki metin; önceden yol ne olursa olsun "Kasa'ya yazılır").
         const help = () => HOF.accounts?.syncEntryHelp?.(dialog, sale ? "in" : "out", text => `Açık tutar ${money(doc.open)}. ${text} Bu faturaya bağlı kapatılır (fazlası carinin en eski açık faturasına gider).`);
         dialog.querySelector("form")?.addEventListener("change", help);

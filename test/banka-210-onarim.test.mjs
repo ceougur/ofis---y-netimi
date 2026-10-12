@@ -21,6 +21,7 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import { insertBankAccount, insertPos, localDay, rawAll, rawGet, rawRun } from "./banka-210-ortak.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 
 const TODAY = localDay(0);
 const must = async (label, promise) => {
@@ -99,7 +100,7 @@ async function seedBankSide(dataDir, backupDir, data) {
 async function oldVersionWrites(version, dataDir, backupDir, data) {
   const server = await bootVersion(version, { dataDir, backupDir });
   try {
-    assert.equal(server.app.store.get("PRAGMA user_version").user_version, 20, `${version} v20 dosyasını açar (göç dönüşü yapar)`);
+    assert.equal(server.app.store.get("PRAGMA user_version").user_version, LATEST_VERSION, `${version} güncel sürümün (v20+) dosyasını açar (göç dönüşü yapar)`);
     const api = await server.login();
     await must(`${version}: Kasa hareketini sil`, api.del(`/api/workspace/cash/${data.deleted.id}?cashForce=1`));
     await must(`${version}: tahsilatı düzelt`, api.put(`/api/workspace/accounts/${data.account.id}/entries/${data.edited.entryId}`, { kind: "in", amount: "550", date: TODAY, method: "bank" }));

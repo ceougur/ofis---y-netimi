@@ -35,6 +35,7 @@ import { verifyUpgrade } from "./guvenilirlik/dogrula.mjs";
 import { fixtureExists, readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 import { companyDbFile, readRegistry } from "./guvenilirlik/uretici.mjs";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const FIXTURES = ["2.0.16", "2.0.17", "2.0.18", "2.0.19", "2.0.20", "2.0.21", "2.0.22", "2.0.23", "2.0.24", "2.0.25", "2.0.26"].map(version => `surum-${version}-zincir`).concat(["surum-2.0.19-cakisma", "surum-2.0.19-eski", "surum-2.0.26-turler"]);
@@ -52,7 +53,7 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
         const after = {};
         const legacyStates = {};
         try {
-          assert.equal(server.app.store.get("PRAGMA user_version").user_version, 20, "güncel kod v20 göçünü uygulamalı");
+          assert.equal(server.app.store.get("PRAGMA user_version").user_version, LATEST_VERSION, "güncel kod v20 (ve 2.2.0: v21) göçünü uygulamalı");
           const api = await server.login();
           for (const [id, expected] of Object.entries(before.companies)) {
             assert.equal((await api.post("/api/companies/select", { id })).status, 200, `${expected.code} seçilemedi`);
@@ -108,7 +109,7 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
           console.log(`K1 ${label}: durumu değişen belge ${now.changed.length}${now.changed.length ? ` — ${now.changed.slice(0, 6).map(item => `${item.number} ${JSON.stringify(item.before)}→${JSON.stringify(item.after)}`).join("; ")}` : ""}`);
           const dbFile = companyDbFile(fixture.dataDir, registry.find(entry => entry.id === id) || { id, dir: "" });
           const file = fileFacts(dbFile, lockDigestOf);
-          assert.equal(file.version, 20, `${label}: veri dosyası v20'de değil`);
+          assert.equal(file.version, LATEST_VERSION, `${label}: veri dosyası güncel şemada (v20 + 2.2.0 v21) değil`);
           assert.equal(file.lockAll, expected.file.lockAll, `${label}: kilit izi (bütün tarihler) değişti`);
           assert.equal(file.lockAt, expected.file.lockAt, `${label}: kilit izi (kilit tarihi) değişti`);
           assert.equal(file.baselines, expected.file.baselines, `${label}: mutabakat günlüğüne yeni taban kaydı yazıldı`);

@@ -6,7 +6,8 @@
 //                                                            (bu kişi Kurulum Sihirbazı'nı bu şirkette kapattı mı)
 //   GET  /bank/badge?count=1                 bank.view       menü rozeti: Hesabı Belirsiz Yeni Hareketler sayısı (yalnız okuma, ucuz)
 //   POST /bank/setup/dismiss                 bank.view       Kurulum Sihirbazı'nı kapat (kişi ve şirket bazında; para yazmaz)
-//   GET  /bank/choices                       (seçici izinleri) form seçicileri; BAKİYE DÖNMEZ
+//   GET  /bank/choices?date=                 (seçici izinleri) form seçicileri; v2.2.0: bakiye yalnız bank.view'e (Nakit Kasa cash.view'e), canDefine
+//   GET  /bank/balances?date=                bank.view | cash.view  seçicilerin o tarihteki bakiyeleri (tarih değişince)
 //   GET  /bank/settings · PUT · POST /reset  view · settings Banka Ayarları (Temel/Gelişmiş, Varsayılanlara Dön)
 //   GET  /bank/accounts · POST               view · accounts hesap listesi; hesap aç (açılış dahil)
 //   GET  /bank/accounts/:id · PUT · DELETE   view · accounts hesap kartı (+ son hareketler: recent); düzelt; sil (yalnız hareketsiz)
@@ -35,6 +36,7 @@ import { CHART } from "../lib/general-ledger.mjs";
 import { createModuleBank } from "../lib/bank/module-ref.mjs";
 import { createPos } from "../lib/bank/pos.mjs";
 import { registerPosRoutes } from "./bank-pos.mjs";
+import { NEGATIVE_KEY, readNegativePolicy } from "../lib/pay-method.mjs";
 
 const BASE = "/api/workspace/bank";
 /** Seçiciyi görebilenler (§8.1): banka formu olan her modülün yazma yetkisi ya da banka görüntüleme. */
@@ -79,10 +81,32 @@ export function registerBankRoutes(router, context) {
     // İşlemler'i (Aşama 4) sayar; eşleşmeyen ekstre satırı (2.3.0) ve onay bekleyen valör (2.2.0) o sürümlerde eklenir. Yazmaz.
     ok(res, { count: service.badgeCount() + vouchers.dueCount() });
   });
-  router.get(`${BASE}/choices`, async ({ req, res }) => {
+  // v2.2.0 (İz 2.7): seçicideki bakiye yalnız Banka Görüntüleme yetkisine (bank.view) gider; Nakit Kasa bakiyesi Kasa Görüntüleme'ye (cash.view).
+  // Yetkisi olmayana alan hiç dönmez (ekran da göstermez). canDefine: "… Tanımla" düğmesi (Banka Hesabı Tanımlama yetkisi; yoksa ekran
+  // "… tanımlı değil, yöneticinize başvurun" yazar — sunucu yine 403 verir).
+  const balancesFor = (user, date) => {
+    const out = {};
+    if (canUser(user, "bank.view")) out.balances = service.selectorBalances({ date });
+    if (canUser(user, "cash.view") && money?.wayBalance) {
+      const at = /^\d{4}-\d{2}-\d{2}$/.test(String(date || "")) ? new Date(`${date}T00:00:00Z`) : null;
+      const real = Boolean(at) && !Number.isNaN(at.getTime()) && at.toISOString().slice(0, 10) === date;
+      const day = out.balances?.date || (real ? date : period.today());
+      const way = money.wayBalance("cash", day);
+      const policy = readNegativePolicy(store.setting(NEGATIVE_KEY, "")).cash;
+      out.cash = { date: day, atMinor: Math.round(way.at * 100), totalMinor: Math.round(way.all * 100), policy };
+    }
+    return out;
+  };
+  router.get(`${BASE}/choices`, async ({ req, res, url }) => {
     const user = auth.requireUser(req);
     if (!CHOICE_PERMISSIONS.some(permission => canUser(user, permission))) throw new HttpError(403, "Bu işlem için yetkiniz yok.", { code: "FORBIDDEN" });
-    ok(res, service.choices());
+    ok(res, { ...service.choices(), canDefine: canUser(user, "bank.accounts"), ...balancesFor(user, text(url.searchParams.get("date"))) });
+  });
+  // Tarih değişince yalnız bakiyeler (seçici yeniden kurulmaz): bank.view ya da cash.view.
+  router.get(`${BASE}/balances`, async ({ req, res, url }) => {
+    const user = auth.requireUser(req);
+    if (!canUser(user, "bank.view") && !canUser(user, "cash.view")) throw new HttpError(403, "Bakiyeleri görmek için Banka Görüntüleme yetkisi gerekir.", { code: "FORBIDDEN" });
+    ok(res, balancesFor(user, text(url.searchParams.get("date"))));
   });
   router.get(`${BASE}/settings`, async ({ req, res }) => {
     auth.requirePermission(req, "bank.view");

@@ -137,6 +137,8 @@ describe("Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül 
     { route: "GET /summary", need: r => has(r, "bank.view"), run: api => api.get(`${BANK}/summary`) },
     { route: "GET /badge", need: r => has(r, "bank.view"), run: api => api.get(`${BANK}/badge`) },
     { route: "GET /choices", need: r => any(r, CHOICE), run: api => api.get(`${BANK}/choices`) },
+    // 2.2.0 İz 2.7: seçicilerin o tarihteki bakiyeleri (banka bakiyesi bank.view, Nakit Kasa cash.view).
+    { route: "GET /balances", need: r => any(r, ["bank.view", "cash.view"]), run: api => api.get(`${BANK}/balances?date=2026-10-08`) },
     { route: "GET /settings", need: r => has(r, "bank.view"), run: api => api.get(`${BANK}/settings`) },
     { route: "PUT /settings", need: r => has(r, "bank.settings"), prep: async () => (await must("ayar", ctx.api.get(`${BANK}/settings`))).values, run: (api, values) => api.put(`${BANK}/settings`, { values }) },
     { route: "POST /settings/reset", need: r => has(r, "bank.settings"), run: api => api.post(`${BANK}/settings/reset`, {}) },

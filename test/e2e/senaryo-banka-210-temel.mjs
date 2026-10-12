@@ -419,9 +419,10 @@ try {
     await page.waitForSelector(`${form} select[name="kind"]`, { timeout: 10000 });
     await pause(300);
     const kinds = await optionsOf(`${form} select[name="kind"]`);
-    ok(kinds.join("|") === "Vadesiz|Ticari|Vadeli|Kredi Hesabı|Kurumsal Kredi Kartı|Diğer", `Hesap Türü seçenekleri: ${kinds.join(", ")}`);
+    // v2.2.0 İz 2.3: kredi kartı Yeni Hesap türlerinde yok (bankanın içinden "+ Kredi Kartı Ekle").
+    ok(kinds.join("|") === "Vadesiz|Ticari|Vadeli|Kredi Hesabı|Diğer", `Hesap Türü seçenekleri: ${kinds.join(", ")}`);
     ok(!(await page.$(`${form} [name="currency"]`)), "Para Birimi alanı yok (yalnız TL)");
-    for (const kind of ["demand", "commercial", "time", "loan", "card", "other"]) {
+    for (const kind of ["demand", "commercial", "time", "loan", "other"]) {
       await page.selectOption(`${form} select[name="kind"]`, kind);
       await pause(150);
       const rate = await page.$eval(`${form} [name="openingRate"]`, node => node.closest(".hof-field")?.offsetParent !== null).catch(() => false);
@@ -635,7 +636,7 @@ try {
     await shot("cari-odeme-kredi-karti-aciklama");
     ok(/Kasa'dan çıkar/.test(outCash), `Ödeme · Nakit: “${outCash}”`);
     ok(/seçilen banka hesabından çıkar/.test(outBank) && !/Kasa/.test(outBank), `Ödeme · Havale / EFT: “${outBank}”`);
-    ok(/seçilen kurumsal kartın borcuna yazılır/.test(outCard) && !/Kasa/.test(outCard), `Ödeme · Kredi Kartı: “${outCard}”`);
+    ok(/seçilen kredi kartının borcuna yazılır/.test(outCard) && !/Kasa/.test(outCard), `Ödeme · Kredi Kartı: “${outCard}”`);
     await closeAll();
     await entryForm("in");
     const inCash = await introFor("cash");

@@ -1,0 +1,48 @@
+tohum: 97 Ziraat olayı (1 sn)
+
+  1000000: Ziraat 989761 olay; toplam 1000073 olay, 1721774 fiş satırı (10309 kopya, 260 sn)
+Hareketler ilk sayfa (Ziraat, 50, yürüyen bakiye)        ortanca   21.4 ms · en çok   31.1 ms · 50 satır
+Hareketler 2. sayfa (imleç)                              ortanca    9.2 ms · en çok   14.2 ms · 50 satır
+Hareketler 20. sayfa (imleç)                             ortanca    4.8 ms · en çok    5.2 ms · 50 satır
+Hareketler en büyük sayfa (200)                          ortanca   13.7 ms · en çok   26.9 ms · 200 satır
+Süzgeç: Masraf (KDV'li ödeme dahil)                      ortanca   21.9 ms · en çok   22.8 ms · 50 satır
+Süzgeç: Çıkış                                            ortanca   18.4 ms · en çok   19.9 ms · 50 satır
+Süzgeç: tarih aralığı (bir ay, 3 yıl önce)               ortanca    2.9 ms · en çok   3041 ms · 0 satır
+Tüm hesaplar ilk sayfa                                   ortanca   15.6 ms · en çok   16.4 ms · 50 satır
+Arama: sık geçen (Promosyon)                             ortanca   21.7 ms · en çok   34.0 ms · 50 satır
+Arama: cari adı (ölçüm müşterisi)                        ortanca    6.6 ms · en çok    7.9 ms · 50 satır
+Arama: nadir (TEK-KAYIT-OLCUM, en eski gün; dizinin tamamı) ortanca   1452 ms · en çok   1596 ms · 1 satır
+Arama: nadir, hesap seçilmeden                           ortanca   1571 ms · en çok   1594 ms · 1 satır
+Arama: İşlem No (tam)                                    ortanca    1.9 ms · en çok    2.5 ms · 1 satır
+Planlı görünüm                                           ortanca    1.3 ms · en çok    1.7 ms · 0 satır
+İşlem Kartı (fiş, İşlem No ile)                          ortanca    1.8 ms · en çok    3.4 ms
+İşlem Kartı (hesaba bağlı cari satırı, yevmiyesiyle)     ortanca    3.5 ms · en çok    4.3 ms
+Banka Masraf Raporu (bir ay)                             ortanca   4327 ms · en çok   5983 ms · 59294 satır
+Banka Masraf Raporu Excel (bir ay)                       ortanca   5436 ms · en çok   5718 ms
+Hesap kartı (bakiye)                                     ortanca    343 ms · en çok   3393 ms
+Seçici: hesaplar + bakiyeler (choices, bugün)            ortanca   75.0 ms · en çok    115 ms
+Seçici bakiyeleri, bir yıl önceki gün (balances)         ortanca   73.7 ms · en çok   1157 ms
+Seçici bakiyeleri, en eski gün (balances)                ortanca    133 ms · en çok   3288 ms
+Genel Bakış (özet)                                       ortanca   2715 ms · en çok   3300 ms
+Menü rozeti                                              ortanca    2.1 ms · en çok    2.2 ms
+Hesaplar listesi                                         ortanca    139 ms · en çok    158 ms
+Hesabı Atanmamış Eski Hareketler                         ortanca    299 ms · en çok    337 ms · 0 satır
+Alt Hesap Mizanı (tüm zamanlar)                          ortanca    2.4 ms · en çok    279 ms · 3 satır
+Alt Hesap Mizanı (bir ay)                                ortanca   2476 ms · en çok   2655 ms · 3 satır
+Kurulum Sihirbazı önizlemesi (Garanti)                   ortanca    424 ms · en çok    483 ms
+Banka Masraf Raporu (bir yıl)                            ortanca   6133 ms · en çok   6356 ms · 85074 satır
+Başka kullanıcı bekler: Genel Bakış sürerken             ortanca   2588 ms · en çok   5845 ms
+Başka kullanıcı bekler: Alt Hesap Mizanı sürerken        ortanca    3.2 ms · en çok    227 ms
+Başka kullanıcı bekler: Masraf Raporu (yıl) sürerken     ortanca   5393 ms · en çok   6158 ms
+Banka Fişi kaydet (Ziraat, kapı dahil)                   ortanca   19.6 ms · en çok   21.1 ms
+Banka Fişi kaydet, Benzer İşlem denetimiyle              ortanca    309 ms · en çok    323 ms
+Kayıttan hemen sonra ilk sayfa (bakiye yeniden)          ortanca    6.5 ms · en çok    9.0 ms · 50 satır
+Kayıttan hemen sonra hesap kartı                         ortanca    285 ms · en çok    320 ms
+Kayıttan hemen sonra arama (nadir, hesap seçili)         ortanca   1502 ms · en çok   1544 ms · 1 satır
+Kayıttan hemen sonra Genel Bakış                         ortanca   3148 ms · en çok   3310 ms
+Kayıttan hemen sonra Hesaplar listesi                    ortanca    618 ms · en çok    639 ms
+Kayıttan hemen sonra menü rozeti                         ortanca    2.0 ms · en çok    2.1 ms
+Kayıttan hemen sonra seçici (choices, bugün)             ortanca    109 ms · en çok    115 ms
+Kayıttan hemen sonra seçici bakiyeleri (bir yıl önce)    ortanca   1358 ms · en çok   1516 ms
+
+açılış 156669 ms · Ziraat 989.761 olay · toplam 1.000.073 olay / 1.721.774 fiş satırı

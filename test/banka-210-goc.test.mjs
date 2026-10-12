@@ -53,6 +53,8 @@ const optional = async (file, name) => {
 
 // §5.2: tablo → kolonlar (sıra önemsiz). "+ zaman" = created_by, created_at, updated_by, updated_at.
 const STAMP = ["created_by", "created_at", "updated_by", "updated_at"];
+/** 2.2.0 göç 21'in v20 tablolarına eklediği kolonlar (İz 2.2–2.3). */
+const V21_COLUMNS = { bank_accounts: ["parent_id", "card_last4", "use_card", "use_cheque", "use_note", "use_pos"] };
 export const V20_TABLES = {
   fin_events: ["id", "year", "seq", "no", "type", "date", "value_date", "status", "reversal_of", "reversed_by", "origin", "origin_key", "channel", "src_table", "src_id", "bank_ref", "counter_ref", "pos_id", "direction", "amount_minor", "try_minor", "currency", "method", "party_id", "invoice_id", "plan_id", "cheque_id", "description", "reference", "external_id", "counter_name", "counter_iban", "request_key", ...STAMP],
   bank_lines: ["id", "event_id", "seq", "role", "gl", "sub", "ref", "side", "try_minor", "currency", "fx_minor", "rate_e6", "rate_source", "memo"],
@@ -113,15 +115,17 @@ describe("v20 şeması (yeni kurulum)", () => {
   after(async () => server?.close());
 
   it("göç numarası 20; §5.2'deki 16 tablo STRICT ve plandaki kolonlarla", () => {
-    assert.equal(LATEST_VERSION, 20, "son göç v20");
+    // 2.2.0: v21 (hesap işaretleri, kartın bağlı bankası; yalnız ekleyici) eklendi — v20 düzeni aynen durur.
+    assert.ok(LATEST_VERSION >= 20, "son göç v20 ya da sonrası");
     assert.ok(MIGRATIONS.some(item => item.version === 20), "v20 göçü tanımlı");
-    assert.equal(db.prepare("PRAGMA user_version").get().user_version, 20);
+    assert.equal(db.prepare("PRAGMA user_version").get().user_version, LATEST_VERSION);
     for (const [table, columns] of Object.entries(V20_TABLES)) {
       const info = db.prepare("SELECT strict FROM pragma_table_list WHERE name = ?").get(table);
       assert.ok(info, `${table} tablosu yok`);
       assert.equal(info.strict, 1, `${table} STRICT değil`);
       const actual = db.prepare(`PRAGMA table_info(${table})`).all().map(col => col.name).sort();
-      assert.deepEqual(actual, [...columns].sort(), `${table} kolonları plandakiyle aynı değil`);
+      // 2.2.0 (göç 21, yalnız ekleyici): hesabın işaretleri, kartın bağlı bankası ve son 4 hanesi.
+      assert.deepEqual(actual, [...columns, ...(V21_COLUMNS[table] || [])].sort(), `${table} kolonları plandakiyle aynı değil`);
     }
   });
 
@@ -306,8 +310,8 @@ describe("K11: v20 göçü hiçbir mevcut satırı değiştirmez (gerçek eski s
             const beforeRows = snapshot(copy.db);
             const beforeLock = [digest(copy.store, "9999-12-31"), lock ? digest(copy.store, lock) : ""];
             const result = runMigrations(copy.store, { backupDir, company: owner, now: () => new Date("2026-10-08T09:00:00Z") });
-            assert.deepEqual(result.applied, [20], `${owner.code}: yalnız v20 uygulanmalı`);
-            assert.equal(copy.store.get("PRAGMA user_version").user_version, 20);
+            assert.deepEqual(result.applied, MIGRATIONS.filter(item => item.version >= 20).map(item => item.version), `${owner.code}: yalnız v20 ve sonrası (2.2.0: v21) uygulanmalı`);
+            assert.equal(copy.store.get("PRAGMA user_version").user_version, LATEST_VERSION);
             const afterRows = snapshot(copy.db, beforeRows);
             assert.deepEqual(compareSnapshots(beforeRows, afterRows, { hub }), [], `${name} ${owner.code}: göç mevcut satırları değiştirdi`);
             for (const table of Object.keys(V20_TABLES)) assert.equal(copy.store.get(`SELECT COUNT(*) AS n FROM ${table}`).n, 0, `${owner.code}: ${table} eski veride boş olmalı`);
@@ -316,7 +320,7 @@ describe("K11: v20 göçü hiçbir mevcut satırı değiştirmez (gerçek eski s
             assert.ok(copy.store.setting("meta.schema.v20At", ""), `${owner.code}: v20 damgası yok`);
             // Göç öncesi tam yedek: şirketin kimliğiyle, içeriği göç öncesiyle birebir.
             assert.ok(result.backup?.path && existsSync(result.backup.path), `${owner.code}: göç öncesi yedek alınmadı`);
-            assert.match(result.backup.name, /pre-migration-v20/);
+            assert.match(result.backup.name, new RegExp(`pre-migration-v${LATEST_VERSION}`), "göç öncesi yedek (adında son göçün numarası; 2.2.0: v21)");
             const saved = new DatabaseSync(result.backup.path, { readOnly: true });
             try {
               assert.equal(saved.prepare("PRAGMA user_version").get().user_version, 19, "yedek v19");
@@ -485,13 +489,13 @@ describe("göç ortasında kesinti (SIGKILL)", () => {
         db.close();
       }
       assert.deepEqual(dbFacts(root.file), factsBefore, "veri kesintiden etkilenmedi");
-      const saved = readdirSync(migrationBackups, { recursive: true }).map(String).find(item => /pre-migration-v20/.test(item));
+      const saved = readdirSync(migrationBackups, { recursive: true }).map(String).find(item => new RegExp(`pre-migration-v${LATEST_VERSION}`).test(item));
       assert.ok(saved, "göç öncesi yedek kesintiden önce alınmıştı");
       assert.deepEqual(dbFacts(path.join(migrationBackups, saved)), factsBefore, "göç öncesi yedek tam");
       // Yeniden açılış: göç baştan ve tam uygulanır; sayılar aynı.
       const server = await startTestServer({ dataDir: fixture.dataDir, maxCompanies: 10, now: "2026-10-08T12:00:00+03:00" });
       try {
-        assert.equal(server.app.store.get("PRAGMA user_version").user_version, 20);
+        assert.equal(server.app.store.get("PRAGMA user_version").user_version, LATEST_VERSION);
         assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE name = 'fin_events'").n, 1);
       } finally {
         await server.close();

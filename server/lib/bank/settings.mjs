@@ -61,7 +61,7 @@ export const SPEC = Object.freeze([
   },
   {
     id: "similar", level: "basic", label: "Mükerrer",
-    items: [["enabled", "Benzer İşlem Uyarısı", bool(true), "Aynı iş günü, aynı hesap, aynı cari, aynı tutar ve aynı hedefte ikinci hareket uyarı verir (hesaba bağlı banka, POS ve kurumsal kart hareketleri)."]],
+    items: [["enabled", "Benzer İşlem Uyarısı", bool(true), "Aynı iş günü, aynı hesap, aynı cari, aynı tutar ve aynı hedefte ikinci hareket uyarı verir (hesaba bağlı banka, POS ve kredi kartı hareketleri)."]],
   },
   {
     id: "pos", level: "basic", label: "POS",
@@ -153,7 +153,7 @@ export const SPEC = Object.freeze([
       ["bank", "Bankalar", fixed("102", "102"), ""],
       ["pos", "Kredi Kartı Tahsilatları (POS)", fixed("108", "108"), ""],
       ["loan", "Banka Kredileri", fixed("300", "300"), ""],
-      ["card", "Kurumsal Kredi Kartları", fixed("309", "309"), ""],
+      ["card", "Kredi Kartları", fixed("309", "309"), ""],
       ["opening", "Açılış ve Devir Bakiyeleri", fixed("500", "500"), ""],
     ],
   },

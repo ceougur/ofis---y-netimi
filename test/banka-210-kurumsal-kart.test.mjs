@@ -419,7 +419,7 @@ describe("K2 · alış faturası, alıştan iade, stok alımı; POS yolları de�
     const res = await ctx.api.post(INV, purchaseBody([{ amount: "600", method: "card", lineKey: "a1" }]));
     expectStatus(res, 400, "bank-account-required", "iki kartta seçimsiz peşin");
     assert.equal(res.data?.field, "payment.cash.0.bankAccountId");
-    assert.match(res.error, /Kurumsal kart seçilmedi: 1\. peşin satır/);
+    assert.match(res.error, /Kredi kartı seçilmedi: 1\. peşin satır/);
     assert.equal(ctx.store.get("SELECT COUNT(*) AS n FROM invoices").n, count);
   });
 

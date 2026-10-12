@@ -1,0 +1,238 @@
+TAP version 13
+# Subtest: 2.2.0 İz 2.7: seçicilerde bakiye (sunucu)
+    # Subtest: [B1] yetki: personelde bakiye yok (choices'ta alan yok, /balances 403); avukatta banka + Nakit Kasa bakiyesi
+    ok 1 - [B1] yetki: personelde bakiye yok (choices'ta alan yok, /balances 403); avukatta banka + Nakit Kasa bakiyesi
+      ---
+      duration_ms: 968.582693
+      type: 'test'
+      ...
+    # Subtest: [B2] seçilen tarihteki bakiye: 05.10 → 10.000 (06.10'daki tahsilat yok), bütün 12.000; 08.10 → 12.000; bozuk tarih bugüne düşer
+    ok 2 - [B2] seçilen tarihteki bakiye: 05.10 → 10.000 (06.10'daki tahsilat yok), bütün 12.000; 08.10 → 12.000; bozuk tarih bugüne düşer
+      ---
+      duration_ms: 64.410421
+      type: 'test'
+      ...
+    # Subtest: [B3] Engelle, geçmiş tarih: 05.10'da 10.000,01 ödeme reddedilir (o günkü bakiye 10.000), 10.000 geçer; seçicinin kararı sunucuyla aynı
+    ok 3 - [B3] Engelle, geçmiş tarih: 05.10'da 10.000,01 ödeme reddedilir (o günkü bakiye 10.000), 10.000 geçer; seçicinin kararı sunucuyla aynı
+      ---
+      duration_ms: 40.923681
+      type: 'test'
+      ...
+    # Subtest: [B3] KMH limiti: 1.000 bakiye + 5.000 KMH → 6.000 geçer (−5.000), 6.000,01 reddedilir; bakiye −5.000, limit 5.000
+    ok 4 - [B3] KMH limiti: 1.000 bakiye + 5.000 KMH → 6.000 geçer (−5.000), 6.000,01 reddedilir; bakiye −5.000, limit 5.000
+      ---
+      duration_ms: 109.913399
+      type: 'test'
+      ...
+    # Subtest: [B3] kredi kartı limiti: 3.000 limitli kartla 3.000,01 ödeme reddedilir, 3.000 geçer; kartın bakiyesi −3.000 (borç)
+    ok 5 - [B3] kredi kartı limiti: 3.000 limitli kartla 3.000,01 ödeme reddedilir, 3.000 geçer; kartın bakiyesi −3.000 (borç)
+      ---
+      duration_ms: 167.758049
+      type: 'test'
+      ...
+    # Subtest: [B4] kural: doğrulanmamış hesapta policy off (ödeme geçer, eksi görünür); Uyar'da 409 cash-negative; boş → Banka Ayarları
+    ok 6 - [B4] kural: doğrulanmamış hesapta policy off (ödeme geçer, eksi görünür); Uyar'da 409 cash-negative; boş → Banka Ayarları
+      ---
+      duration_ms: 244.088915
+      type: 'test'
+      ...
+    # Subtest: [B5] pasif hesap bakiye listesinde yok; etkinler var
+    ok 7 - [B5] pasif hesap bakiye listesinde yok; etkinler var
+      ---
+      duration_ms: 24.242668
+      type: 'test'
+      ...
+    # Subtest: [B6] Nakit Kasa: 06.10'da 1.000 tahsilat → 05.10'da 0 / bütün 1.000; Engelle'de Kasadan Bankaya Yatır 1.000,01 reddedilir, 1.000 geçer
+    ok 8 - [B6] Nakit Kasa: 06.10'da 1.000 tahsilat → 05.10'da 0 / bütün 1.000; Engelle'de Kasadan Bankaya Yatır 1.000,01 reddedilir, 1.000 geçer
+      ---
+      duration_ms: 229.601257
+      type: 'test'
+      ...
+    1..8
+ok 1 - 2.2.0 İz 2.7: seçicilerde bakiye (sunucu)
+  ---
+  duration_ms: 3867.261673
+  type: 'suite'
+  ...
+# Subtest: 2.2.0 İz 2.5–2.6: verilen çekin Çek Hesabı, senedin ödeme hesabı önerisi
+    # Subtest: [C1][C7] Çek Kullan hesabı yokken metinle, hesapsız; eski çekin metni vade düzeltmesinde korunur
+    ok 1 - [C1][C7] Çek Kullan hesabı yokken metinle, hesapsız; eski çekin metni vade düzeltmesinde korunur
+      ---
+      duration_ms: 693.00852
+      type: 'test'
+      ...
+    # Subtest: [C2] tek Çek Kullan hesabı: kendiliğinden o hesap, Banka / Şube hesabın adı
+    ok 2 - [C2] tek Çek Kullan hesabı: kendiliğinden o hesap, Banka / Şube hesabın adı
+      ---
+      duration_ms: 58.479003
+      type: 'test'
+      ...
+    # Subtest: [C3][C4] iki Çek Kullan hesabı: hesapsız 400 (yazılmaz), seçilen hesap; yanlış hesaplar 400/404
+    ok 3 - [C3][C4] iki Çek Kullan hesabı: hesapsız 400 (yazılmaz), seçilen hesap; yanlış hesaplar 400/404
+      ---
+      duration_ms: 315.697459
+      type: 'test'
+      ...
+    # Subtest: [C5] alınan çekte hesap 400; metin aynen
+    ok 4 - [C5] alınan çekte hesap 400; metin aynen
+      ---
+      duration_ms: 23.552628
+      type: 'test'
+      ...
+    # Subtest: [C6][C12] senet: öneri isteğe bağlı; Senet Kullan'sız hesap 400; çek → senet düzeltmesinde bağ düşer
+    ok 5 - [C6][C12] senet: öneri isteğe bağlı; Senet Kullan'sız hesap 400; çek → senet düzeltmesinde bağ düşer
+      ---
+      duration_ms: 154.646407
+      type: 'test'
+      ...
+    # Subtest: [C8][C9][C10] ödeme çekin hesabından (çok hesapta da); başka hesap seçilirse o; senet önerilen hesaptan; ödenmemiş çekli hesap silinmez
+    ok 6 - [C8][C9][C10] ödeme çekin hesabından (çok hesapta da); başka hesap seçilirse o; senet önerilen hesaptan; ödenmemiş çekli hesap silinmez
+      ---
+      duration_ms: 386.337584
+      type: 'test'
+      ...
+    # Subtest: [C11] alış faturasında verilen çek: çok hesapta hesapsız 400 (fatura yazılmaz), seçilenle o hesap; satış faturasında hesap 400
+    ok 7 - [C11] alış faturasında verilen çek: çok hesapta hesapsız 400 (fatura yazılmaz), seçilenle o hesap; satış faturasında hesap 400
+      ---
+      duration_ms: 71.442115
+      type: 'test'
+      ...
+    # Subtest: [C13] Excel'den yüklemede kural uygulanmaz: çok hesapta da verilen çek metinli, hesapsız alınır
+    ok 8 - [C13] Excel'den yüklemede kural uygulanmaz: çok hesapta da verilen çek metinli, hesapsız alınır
+      ---
+      duration_ms: 72.71539
+      type: 'test'
+      ...
+    1..8
+ok 2 - 2.2.0 İz 2.5–2.6: verilen çekin Çek Hesabı, senedin ödeme hesabı önerisi
+  ---
+  duration_ms: 2885.785295
+  type: 'suite'
+  ...
+# Subtest: 2.2.0 İz 2.2–2.3: hesap işaretleri ve kartın bağlı bankası
+    # Subtest: [N1] göç 21 yalnız ekleyici: eski hesap/kart/çek değişmez, işaretler kapalı, kart bağsız; iki kez koşsa da aynı
+    ok 1 - [N1] göç 21 yalnız ekleyici: eski hesap/kart/çek değişmez, işaretler kapalı, kart bağsız; iki kez koşsa da aynı
+      ---
+      duration_ms: 269.114046
+      type: 'test'
+      ...
+    # Subtest: [N2] işaret yalnız Vadesiz/Ticari/Diğer TL hesapta; Vadeli, Kredi ve kartta 400 bank-flag-kind
+    ok 2 - [N2] işaret yalnız Vadesiz/Ticari/Diğer TL hesapta; Vadeli, Kredi ve kartta 400 bank-flag-kind
+      ---
+      duration_ms: 584.62728
+      type: 'test'
+      ...
+    # Subtest: [N3] kart bankanın içinden: banka adı bankadan, Kredi Kartı Kullan kendiliğinden, iki kart + başka banka; listede bankanın altında
+    ok 3 - [N3] kart bankanın içinden: banka adı bankadan, Kredi Kartı Kullan kendiliğinden, iki kart + başka banka; listede bankanın altında
+      ---
+      duration_ms: 427.957569
+      type: 'test'
+      ...
+    # Subtest: [N4] bağlı banka bozuk: yok 404, pasif / vadeli / kredi / kart 400, kart dışı türe parentId 400, kart kendisine 400
+    ok 4 - [N4] bağlı banka bozuk: yok 404, pasif / vadeli / kredi / kart 400, kart dışı türe parentId 400, kart kendisine 400
+      ---
+      duration_ms: 85.609893
+      type: 'test'
+      ...
+    # Subtest: [N5] son 4 hane: 5 hane, harf, vadesizde 400; boş serbest
+    ok 5 - [N5] son 4 hane: 5 hane, harf, vadesizde 400; boş serbest
+      ---
+      duration_ms: 13.82441
+      type: 'test'
+      ...
+    # Subtest: [N6][N12] kartlı bankada işaret kapatma / silme / Vadeli'ye çevirme 409; kart taşınınca serbest
+    ok 6 - [N6][N12] kartlı bankada işaret kapatma / silme / Vadeli'ye çevirme 409; kart taşınınca serbest
+      ---
+      duration_ms: 183.553603
+      type: 'test'
+      ...
+    # Subtest: [N7] banka adı değişince kartlarının adı da değişir; bağlı kartın banka adını tek başına değiştirmek 400
+    ok 7 - [N7] banka adı değişince kartlarının adı da değişir; bağlı kartın banka adını tek başına değiştirmek 400
+      ---
+      duration_ms: 42.240988
+      type: 'test'
+      ...
+    # Subtest: [N8][N11] eski kart: aynı bankanın hesabı önerilir, kendiliğinden bağlanmaz; Bağla → bağlanır; para tarafı değişmez
+    ok 8 - [N8][N11] eski kart: aynı bankanın hesabı önerilir, kendiliğinden bağlanmaz; Bağla → bağlanır; para tarafı değişmez
+      ---
+      duration_ms: 208.357786
+      type: 'test'
+      ...
+    # Subtest: [N10] Banka Hesabı Tanımlama yetkisi olmayan kart ekleyemez, işaret değiştiremez
+    ok 9 - [N10] Banka Hesabı Tanımlama yetkisi olmayan kart ekleyemez, işaret değiştiremez
+      ---
+      duration_ms: 372.644516
+      type: 'test'
+      ...
+    1..9
+ok 3 - 2.2.0 İz 2.2–2.3: hesap işaretleri ve kartın bağlı bankası
+  ---
+  duration_ms: 3173.481959
+  type: 'suite'
+  ...
+# Subtest: 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+    # Subtest: istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+    ok 1 - istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+      ---
+      duration_ms: 68.440213
+      type: 'test'
+      ...
+    # Subtest: sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+    ok 2 - sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+      ---
+      duration_ms: 68.668034
+      type: 'test'
+      ...
+    # Subtest: kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+    ok 3 - kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+      ---
+      duration_ms: 10.767239
+      type: 'test'
+      ...
+    # Subtest: çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+        # Subtest: kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+        ok 1 - kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+          ---
+          duration_ms: 132.278484
+          type: 'test'
+          ...
+        1..1
+    ok 4 - çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+      ---
+      duration_ms: 684.872574
+      type: 'suite'
+      ...
+    1..4
+ok 4 - 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+  ---
+  duration_ms: 834.482592
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 188.131852
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 2 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 128.048451
+      type: 'test'
+      ...
+    1..2
+ok 5 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 317.639705
+  type: 'suite'
+  ...
+1..5
+# tests 31
+# suites 6
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5990.090691

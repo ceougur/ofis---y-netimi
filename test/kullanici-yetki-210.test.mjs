@@ -228,7 +228,8 @@ describe("v2.0.7 ek yetki kayıtları göçü", () => {
         store.db.close();
       },
     });
-    assert.deepEqual(server.app.migration.applied, [15, 16, 17, 18, 19, 20]);
+    // v2.2.0: son göç numarası sabit yazılmaz (yeni göç eklenince test kırılmasın; göçler sırayla uygulanır).
+    assert.deepEqual(server.app.migration.applied, MIGRATIONS.map(item => item.version).filter(version => version >= 15));
     const admin = await loginAdmin(server);
     const user = byName((await admin.get("/api/admin/users")).data.data, "eskipersonel");
     assert.deepEqual(user.grants, { add: ["overview.view"], remove: [] });

@@ -252,8 +252,8 @@ function screenAgent(page, companyId, ctx) {
     await page.waitForTimeout(900);
     const amount = op.type === "expense" ? op.gross : op.payable;
     if ((op.type === "expense" && !op.open) || op.mode === "paid") {
-      await page.click(`${inv} [data-act="pay-add-cash"]`);
-      await page.selectOption(`${inv} [data-pay="cash"][data-f="method"]`, op.method);
+      // v2.2.0 İz 2.8: yol düğmeyle ("+ Nakit · + Havale / EFT · + Kredi Kartı / + POS"); satırda yol kutusu yok.
+      await page.click(`${inv} [data-act="pay-add-cash"][data-method="${op.method}"]`);
       await page.fill(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, trNum(amount));
       await page.waitForTimeout(900);
     } else if (op.mode === "cheque") {

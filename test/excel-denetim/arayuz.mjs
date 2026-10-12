@@ -199,8 +199,8 @@ async function dayWork(code) {
     await page.waitForTimeout(700);
     const gross = Math.round(qty * price * 1.2 * 100) / 100;
     if (pay.method) {
-      await page.click(`${inv} [data-act="pay-add-cash"]`);
-      await page.selectOption(`${inv} [data-pay="cash"][data-f="method"]`, pay.method);
+      // v2.2.0 İz 2.8: yol düğmeyle ("+ Nakit · + Havale / EFT · + Kredi Kartı / + POS"); satırda yol kutusu yok.
+      await page.click(`${inv} [data-act="pay-add-cash"][data-method="${pay.method}"]`);
       await page.fill(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, tr(gross));
     } else if (pay.cheque) {
       await page.click(`${inv} [data-act="pay-add-cheque"]`);

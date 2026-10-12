@@ -1,0 +1,271 @@
+{
+  "info": {
+    "copies": 10309,
+    "seedCount": 97,
+    "ziraatEvents": 989761,
+    "events": 1000073,
+    "lines": 1721774,
+    "seconds": 260
+  },
+  "openMs": 156668.886774,
+  "rows": [
+    {
+      "label": "Hareketler ilk sayfa (Ziraat, 50, yürüyen bakiye)",
+      "median": 21.43747900001472,
+      "max": 31.131759999960195,
+      "rows": 50
+    },
+    {
+      "label": "Hareketler 2. sayfa (imleç)",
+      "median": 9.191025000007357,
+      "max": 14.216070000024047,
+      "rows": 50
+    },
+    {
+      "label": "Hareketler 20. sayfa (imleç)",
+      "median": 4.773915999976452,
+      "max": 5.164844000013545,
+      "rows": 50
+    },
+    {
+      "label": "Hareketler en büyük sayfa (200)",
+      "median": 13.741032999998424,
+      "max": 26.93074300000444,
+      "rows": 200
+    },
+    {
+      "label": "Süzgeç: Masraf (KDV'li ödeme dahil)",
+      "median": 21.905001000035554,
+      "max": 22.795722999959253,
+      "rows": 50
+    },
+    {
+      "label": "Süzgeç: Çıkış",
+      "median": 18.412905999983195,
+      "max": 19.89691600005608,
+      "rows": 50
+    },
+    {
+      "label": "Süzgeç: tarih aralığı (bir ay, 3 yıl önce)",
+      "median": 2.863547999993898,
+      "max": 3041.2889500000165,
+      "rows": 0
+    },
+    {
+      "label": "Tüm hesaplar ilk sayfa",
+      "median": 15.633411000017077,
+      "max": 16.357132000033744,
+      "rows": 50
+    },
+    {
+      "label": "Arama: sık geçen (Promosyon)",
+      "median": 21.6737209999701,
+      "max": 34.01787899999181,
+      "rows": 50
+    },
+    {
+      "label": "Arama: cari adı (ölçüm müşterisi)",
+      "median": 6.638167999975849,
+      "max": 7.923104999994393,
+      "rows": 50
+    },
+    {
+      "label": "Arama: nadir (TEK-KAYIT-OLCUM, en eski gün; dizinin tamamı)",
+      "median": 1452.4982799999998,
+      "max": 1596.4300600000424,
+      "rows": 1
+    },
+    {
+      "label": "Arama: nadir, hesap seçilmeden",
+      "median": 1570.626386000018,
+      "max": 1593.9725680000265,
+      "rows": 1
+    },
+    {
+      "label": "Arama: İşlem No (tam)",
+      "median": 1.8774080000002868,
+      "max": 2.494222000008449,
+      "rows": 1
+    },
+    {
+      "label": "Planlı görünüm",
+      "median": 1.289859999960754,
+      "max": 1.6733310000272468,
+      "rows": 0
+    },
+    {
+      "label": "İşlem Kartı (fiş, İşlem No ile)",
+      "median": 1.831069000007119,
+      "max": 3.3523979999590665,
+      "rows": null
+    },
+    {
+      "label": "İşlem Kartı (hesaba bağlı cari satırı, yevmiyesiyle)",
+      "median": 3.4675549999810755,
+      "max": 4.268794000032358,
+      "rows": null
+    },
+    {
+      "label": "Banka Masraf Raporu (bir ay)",
+      "median": 4327.406660000037,
+      "max": 5982.821516999975,
+      "rows": 59294
+    },
+    {
+      "label": "Banka Masraf Raporu Excel (bir ay)",
+      "median": 5436.429479999992,
+      "max": 5718.306511000032,
+      "rows": null
+    },
+    {
+      "label": "Hesap kartı (bakiye)",
+      "median": 343.47132599999895,
+      "max": 3393.2990809999756,
+      "rows": null
+    },
+    {
+      "label": "Seçici: hesaplar + bakiyeler (choices, bugün)",
+      "median": 74.9898229999817,
+      "max": 115.0785999999498,
+      "rows": null
+    },
+    {
+      "label": "Seçici bakiyeleri, bir yıl önceki gün (balances)",
+      "median": 73.72048900002846,
+      "max": 1157.2976459999918,
+      "rows": null
+    },
+    {
+      "label": "Seçici bakiyeleri, en eski gün (balances)",
+      "median": 133.14299900003243,
+      "max": 3288.266646999982,
+      "rows": null
+    },
+    {
+      "label": "Genel Bakış (özet)",
+      "median": 2715.06091499998,
+      "max": 3299.971124999982,
+      "rows": null
+    },
+    {
+      "label": "Menü rozeti",
+      "median": 2.129789000027813,
+      "max": 2.185020999982953,
+      "rows": null
+    },
+    {
+      "label": "Hesaplar listesi",
+      "median": 139.0819359999732,
+      "max": 157.73349900002358,
+      "rows": null
+    },
+    {
+      "label": "Hesabı Atanmamış Eski Hareketler",
+      "median": 298.99443600000814,
+      "max": 336.5220869999612,
+      "rows": 0
+    },
+    {
+      "label": "Alt Hesap Mizanı (tüm zamanlar)",
+      "median": 2.4300749999820255,
+      "max": 278.82569699996384,
+      "rows": 3
+    },
+    {
+      "label": "Alt Hesap Mizanı (bir ay)",
+      "median": 2476.062230999989,
+      "max": 2654.8952590000117,
+      "rows": 3
+    },
+    {
+      "label": "Kurulum Sihirbazı önizlemesi (Garanti)",
+      "median": 423.734759999963,
+      "max": 482.95042900001863,
+      "rows": null
+    },
+    {
+      "label": "Banka Masraf Raporu (bir yıl)",
+      "median": 6132.684027999989,
+      "max": 6356.249110999983,
+      "rows": 85074
+    },
+    {
+      "label": "Başka kullanıcı bekler: Genel Bakış sürerken",
+      "median": 2588.2517289999996,
+      "max": 5845.105621,
+      "rows": null
+    },
+    {
+      "label": "Başka kullanıcı bekler: Alt Hesap Mizanı sürerken",
+      "median": 3.2033830000000307,
+      "max": 226.81470400000035,
+      "rows": null
+    },
+    {
+      "label": "Başka kullanıcı bekler: Masraf Raporu (yıl) sürerken",
+      "median": 5392.958572,
+      "max": 6157.688636999999,
+      "rows": null
+    },
+    {
+      "label": "Banka Fişi kaydet (Ziraat, kapı dahil)",
+      "median": 19.608620000071824,
+      "max": 21.117261000094004,
+      "rows": null
+    },
+    {
+      "label": "Banka Fişi kaydet, Benzer İşlem denetimiyle",
+      "median": 308.5529849999584,
+      "max": 323.0382250000257,
+      "rows": null
+    },
+    {
+      "label": "Kayıttan hemen sonra ilk sayfa (bakiye yeniden)",
+      "median": 6.485630000010133,
+      "max": 9.028768999967724,
+      "rows": 50
+    },
+    {
+      "label": "Kayıttan hemen sonra hesap kartı",
+      "median": 284.8806409999961,
+      "max": 319.76049900008366,
+      "rows": null
+    },
+    {
+      "label": "Kayıttan hemen sonra arama (nadir, hesap seçili)",
+      "median": 1502.0436789999949,
+      "max": 1544.4283440000145,
+      "rows": 1
+    },
+    {
+      "label": "Kayıttan hemen sonra Genel Bakış",
+      "median": 3148.1537859999808,
+      "max": 3310.2025180000346,
+      "rows": null
+    },
+    {
+      "label": "Kayıttan hemen sonra Hesaplar listesi",
+      "median": 617.7296300000744,
+      "max": 639.2035319999559,
+      "rows": null
+    },
+    {
+      "label": "Kayıttan hemen sonra menü rozeti",
+      "median": 2.01172999991104,
+      "max": 2.070242000045255,
+      "rows": null
+    },
+    {
+      "label": "Kayıttan hemen sonra seçici (choices, bugün)",
+      "median": 108.8949310000753,
+      "max": 114.9954199999338,
+      "rows": null
+    },
+    {
+      "label": "Kayıttan hemen sonra seçici bakiyeleri (bir yıl önce)",
+      "median": 1357.5499950000085,
+      "max": 1515.9176940000616,
+      "rows": null
+    }
+  ]
+}
