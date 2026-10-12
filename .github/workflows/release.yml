@@ -49,6 +49,7 @@ jobs:
       - run: npm run test:senaryo-225
       - run: npm run test:senaryo-225-uyari
       - run: npm run test:senaryo-226
+      - run: npm run test:senaryo-iz1-sayfa
       - run: npm run test:senaryo-banka-210
       - run: npm run test:senaryo-banka-210b
       - run: npm run test:senaryo-banka-210-temel

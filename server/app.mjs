@@ -370,9 +370,18 @@ export function createApp(overrides = {}) {
   }
 
   // Her istek, isteği yapan kullanıcının seçtiği veri oturumunda çalışır (v2.0.1; kullanıcı gerektiğinde bir kez okunur).
+  // 2.2.0 İz 1.2: istemci her isteğe penceresinin sayfasını ekler (?hofPage=; ?hofCompany= gibi); şirketin sayfasıysa istek o sayfada
+  // çalışır (lib/dataset.mjs activeKey). Aynı kullanıcının öbür penceresinde yeni sayfa açılması ya da seçilmesi bu pencereyi değiştirmez.
+  const pageOf = req => {
+    try {
+      return String(new URL(req.url || "/", "http://x").searchParams.get("hofPage") || "").slice(0, 200);
+    } catch {
+      return "";
+    }
+  };
   const scoped = (req, res) => {
     let resolved;
-    return runScoped({ user: () => (resolved === undefined ? (resolved = auth.currentUser(req) || null) : resolved) }, () => handle(req, res));
+    return runScoped({ user: () => (resolved === undefined ? (resolved = auth.currentUser(req) || null) : resolved), page: pageOf(req) }, () => handle(req, res));
   };
   // ---------- Çoklu şirket dağıtımı (v2.0.17) ----------
   // Ortak katman yolları hub'da kalır; öbür her istek kullanıcının SEÇİLİ şirketinin örneğine gider (her şirket ayrı

@@ -91,17 +91,26 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     return value && knownKey(value) ? value : DATASET_KEY;
   };
   const allKeys = () => [DATASET_KEY, ...sessionList().map(item => item.key)];
-  // Bu isteğin oturumu: isteği yapan kullanıcının seçtiği oturum; seçmemişse ofisin varsayılanı. İstek dışında
-  // (zamanlayıcı, açılış) varsayılan oturum ya da runScoped ile verilen oturum.
+  // Bu isteğin oturumu: isteği yapan PENCERENİN sayfası (scope.page, ?hofPage=; 2.2.0 İz 1.2), yoksa kullanıcının seçtiği oturum; seçmemişse
+  // ofisin varsayılanı. İstek dışında (zamanlayıcı, açılış) varsayılan oturum ya da runScoped ile verilen oturum.
+  // İz 1.2 (11.10.2026 bulgusu): seçim kullanıcı başınadır; aynı kullanıcının bir penceresinde yeni sayfa açılınca (ya da sayfa seçilince)
+  // öbür pencerenin istekleri de yeni sayfaya gidiyordu — sayfa listesi "current = yeni sayfa" döndü, istemci kendi sayfasını silinmiş sandı;
+  // yeniden yüklenmeseydi okuma ve yazmaları da yeni sayfaya gidecekti (şirketteki 2.0.21 #8'in sayfa karşılığı). Pencerenin sayfası şirketin
+  // sayfalarından biriyse o kullanılır; bilinmiyorsa (silinmiş, uydurma) eskisi gibi kullanıcının seçimi — sayfa yetkisi yok, şirketin bütün
+  // sayfaları herkese açık; sızıntı yok.
   function activeKey() {
     const scope = currentScope();
     if (!scope) return defaultKey();
     if (scope.datasetKey) return scope.datasetKey;
     let resolved = defaultKey();
-    const user = typeof scope.user === "function" ? scope.user() : null;
-    if (user) {
-      const chosen = setting(REG.user(user.id), "");
-      if (chosen && knownKey(chosen)) resolved = chosen;
+    const asked = typeof scope.page === "string" ? scope.page : "";
+    if (asked && knownKey(asked)) resolved = asked;
+    else {
+      const user = typeof scope.user === "function" ? scope.user() : null;
+      if (user) {
+        const chosen = setting(REG.user(user.id), "");
+        if (chosen && knownKey(chosen)) resolved = chosen;
+      }
     }
     scope.datasetKey = resolved;
     return resolved;

@@ -12,18 +12,30 @@
   // Sunucu isteği bu şirkete yönlendirir: aynı hesap başka pencerede/bilgisayarda şirket değiştirse de bu pencerede
   // görünen şirkete yazılır. Ortak katman yolları (giriş, şirket listesi/seçimi, lisans) ve başka adresler değişmez.
   HOF.companyId = "";
+  // Pencerenin sayfası (2.2.0 İz 1.2): açılışta istemci durumundan gelir (HOF.datasetKey, hof-boot.js applyClientState) ve aynı yollarla her
+  // isteğe eklenir (?hofPage=). Sayfa seçimi kullanıcı başınadır; aynı hesabın öbür penceresinde yeni sayfa açılınca bu pencerenin istekleri
+  // de yeni sayfaya gidiyor, sayfa listesi "current" başka geldiği için bu pencere "sayfanız silindi" deyip yeniden yükleniyordu.
+  HOF.datasetKey = HOF.datasetKey || "";
   const COMPANY_FREE = /^\/api\/(auth|public|health|license|companies)(\/|$)/;
   HOF.apiUrl = value => {
-    if (!HOF.companyId || typeof value !== "string") return value;
+    if ((!HOF.companyId && !HOF.datasetKey) || typeof value !== "string") return value;
     let url;
     try {
       url = new URL(value, window.location.href);
     } catch {
       return value;
     }
-    if (url.origin !== window.location.origin || !url.pathname.startsWith("/api/") || COMPANY_FREE.test(url.pathname) || url.searchParams.has("hofCompany")) return value;
-    url.searchParams.set("hofCompany", HOF.companyId);
-    return `${url.pathname}${url.search}${url.hash}`;
+    if (url.origin !== window.location.origin || !url.pathname.startsWith("/api/") || COMPANY_FREE.test(url.pathname)) return value;
+    let changed = false;
+    if (HOF.companyId && !url.searchParams.has("hofCompany")) {
+      url.searchParams.set("hofCompany", HOF.companyId);
+      changed = true;
+    }
+    if (HOF.datasetKey && !url.searchParams.has("hofPage")) {
+      url.searchParams.set("hofPage", HOF.datasetKey);
+      changed = true;
+    }
+    return changed ? `${url.pathname}${url.search}${url.hash}` : value;
   };
 
   // ---------- Metin yardımcıları ----------
