@@ -1377,6 +1377,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   Tanımla"); çek ödendiğinde para o hesaptan çıkar (hesap öndolu). SENET: kendi senedimiz bankaya bağlı değildir → "Senet Kullan" işaretli
   hesaplar (a) verilen senedin ÖDENECEĞİ hesap önerisi, (b) alınan senedi/çeki BANKAYA TAHSİLE VER (ertelenen iş) için seçilir. Alınan
   (müşteri) çekinde "Banka / Şube" müşterinin bankasıdır, serbest metin KALIR. Eski çeklerin metni korunur. Yapı Kredi vb. yalnız örnek.
+- MÜŞTERİ İSTEĞİ (12.10.2026, ekran: Kasa → "Bankadan Kasaya Aktar", Çekilen Banka Hesabı "Yapı Kredi · TL (YAP-TL)"): "banka bakiyesini
+  gösterse iyi olur". ÖNERİ: hesap seçicisinde her hesabın yanında güncel bakiye ("Yapı Kredi · TL (YAP-TL) — Bakiye: 18.160,00 ₺"), seçilen
+  hesabın altında "Bakiye: … · Aktarımdan sonra: …" (tutar yazıldıkça güncellenir; eksiye düşecekse kırmızı + K7 kuralı); bakiye seçilen
+  TARİHTEKİ bakiye (ileri/geri tarih). Aynı gösterim "Kasadan Bankaya Yatır"da Nakit Kasa bakiyesiyle ve öbür banka hesap seçicilerinde
+  (cari tahsilat/ödeme, fatura peşini, transfer, çek ödemesi) — öneri. Yetki: banka bakiyesini görme yetkisi olmayana bakiye gösterilmez.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
