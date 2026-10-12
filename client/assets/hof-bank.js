@@ -2483,13 +2483,100 @@
    * yalnız gerçekten tek hesap varsa kendisi seçer, birden çoksa 400 bank-account-required), (3) o yanıt gelince açık formların seçicileri
    * taze listeyle yeniden kurulur (HOF olayı "bank-choices-stale", hof-core sendApi).
    */
-  function choices(force = false) {
+  // v2.2.0 (İz 2.7): date — formun tarihi; yanıt o günün bakiyeleriyle gelir (seçici açılırken TEK istek: hesaplar + bakiyeler).
+  const dayQuery = date => (/^\d{4}-\d{2}-\d{2}$/.test(date || "") ? `?date=${date}` : "");
+  function choices(force = false, date = "") {
     if (!choicesCache || force)
-      choicesCache = HOF.api(`${BASE}/choices`).catch(error => {
+      choicesCache = HOF.api(`${BASE}/choices${dayQuery(date)}`).catch(error => {
         choicesCache = null;
         throw error;
       });
     return choicesCache;
+  }
+
+  // ---------- v2.2.0 (İz 2.7): seçicilerde bakiye ----------
+  /**
+   * choices yanıtında (yalnız Banka Görüntüleme yetkisine) balances: { date, accounts: { id: { atMinor, totalMinor, limitMinor, policy, confirmed,
+   * guarded, currency } } }; Kasa Görüntüleme yetkisine cash: { date, atMinor, totalMinor, policy }. Yetkisi olmayana alan gelmez → ekran hiçbir
+   * bakiye göstermez. Seçenek adında her hesabın SEÇİLEN TARİHTEKİ bakiyesi; seçilenin altında "Bakiye (gün) · İşlemden Sonra" (tutar yazıldıkça).
+   * Eksi kuralı sunucunun K7'siyle aynı (plan §3.9): min(o günkü, bütün hareketlerle) + değişim + limit < 0 → kırmızı + hesabın kuralı (Uyar:
+   * kaydederken sorulur; Engelle: kaydedilmez; Kontrol Yok / Bakiye Doğrulanmadı: denetlenmez). Ekran yalnız gösterir; karar yine sunucuda.
+   */
+  const parseTl = value => {
+    let raw = String(value ?? "").trim().replace(/[₺$€\s]|tl|try/gi, "");
+    if (!raw) return 0;
+    if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
+    else if (/^-?\d{1,3}(\.\d{3})+$/.test(raw)) raw = raw.replace(/\./g, "");
+    return /^-?\d+(\.\d+)?$/.test(raw) ? Number(raw) : 0;
+  };
+  const toMinor = value => Math.round((Number(value) || 0) * 100);
+  const plainMoney = (minor, currency = "TRY") => `${minor < 0 ? "−" : ""}${fmt(Math.abs(minor), currency)}`;
+  const debtText = (minor, currency = "TRY") => (minor > 0 ? `Alacak ${fmt(minor, currency)}` : `Borç ${fmt(-minor, currency)}`);
+  const balanceOf = (data, id) => (id && id !== "none" ? data?.balances?.accounts?.[id] || null : null);
+  const accountOf = (data, id) => data?.accounts?.find(account => account.id === id) || null;
+  /** Seçenek adı: "Ziraat Bankası · Ana TL (ZIR-TL) — 18.160,00 ₺"; kartta "Yapı Kredi · World •••• 1234 (YK-K1) — Borç 3.000,00 ₺". */
+  function optionText(account, data) {
+    const base = `${account.label}${account.cardLast4 ? ` •••• ${account.cardLast4}` : ""} (${account.code})`;
+    const b = balanceOf(data, account.id);
+    if (!b) return base;
+    return `${base} — ${account.kind === "card" ? debtText(b.atMinor, b.currency) : plainMoney(b.atMinor, b.currency)}`;
+  }
+  /** Seçeneklerin adı tarih değişince yerinde güncellenir (seçim ve odak kaybolmaz). */
+  function refreshOptionTexts(scope, data) {
+    scope?.querySelectorAll?.("select option[value]").forEach(option => {
+      const account = option.value && option.value !== "none" ? accountOf(data, option.value) : null;
+      if (account) option.textContent = optionText(account, data);
+    });
+  }
+  const dayLabel = iso => (iso ? HOF.formatDate(`${iso}T12:00:00`) : "");
+  /**
+   * Seçilen hesabın bakiye satırı (HTML; bakiye yoksa ""). change: işlemin bu hesaba etkisi (kuruş; giriş +, çıkış −); original: düzeltilen
+   * hareketin bu hesaptaki etkisi { minor, date } (bakiyede zaten var; sunucunun "değişim"i yeni − eski). only: yalnız bakiye (verilen çekin
+   * hesabı gibi para o an hareket etmiyorsa).
+   */
+  function balanceLine(data, id, { change = 0, original = null, only = false } = {}) {
+    const b = balanceOf(data, id);
+    if (!b) return "";
+    const card = accountOf(data, id)?.kind === "card";
+    const show = minor => (card ? debtText(minor, b.currency) : plainMoney(minor, b.currency));
+    const head = `${card ? "Kart" : "Bakiye"} (${esc(dayLabel(data.balances.date))}): <b>${esc(show(b.atMinor))}</b>`;
+    if (only) return `<small class="hof-bank-balance" data-bank-balance="${esc(id)}">${head}</small>`;
+    const own = original?.minor || 0;
+    const at = b.atMinor - (own && (!original.date || original.date <= data.balances.date) ? own : 0);
+    const total = b.totalMinor - own;
+    const lowest = Math.min(at, total) + change;
+    // Sunucu yalnız bakiyeyi AZALTAN işlemi denetler (değişim = yeni etki − düzeltilen hareketin etkisi).
+    const negative = change - own < 0 && lowest + b.limitMinor < 0;
+    const parts = [head, `İşlemden Sonra: <b>${esc(show(at + change))}</b>`];
+    if (total < at && change) parts.push(`İleri tarihli hareketlerle: ${esc(show(total + change))}`);
+    if (b.limitMinor && (card || lowest < 0)) parts.push(`${card ? "Kart Limiti" : "KMH Limiti"}: ${esc(fmt(b.limitMinor, b.currency))}`);
+    let rule = "";
+    if (negative) {
+      const what = card ? "Kart limiti aşılıyor" : "Hesap eksiye düşüyor";
+      if (!b.guarded) rule = `${what}.`;
+      else if (b.policy === "block") rule = `${what}; bu hesapta eksi bakiyeye izin verilmiyor (Engelle), kaydedilmez.`;
+      else if (b.policy === "warn") rule = `${what}; kaydederken onay istenir (Uyar).`;
+      else rule = b.confirmed ? `${what}; eksi bakiye denetimi kapalı (Kontrol Yok).` : `${what}; açılış bakiyesi doğrulanmadığı için denetlenmez.`;
+    }
+    return `<small class="hof-bank-balance${negative ? " is-negative" : ""}" data-bank-balance="${esc(id)}"${negative ? ` data-negative="${esc(b.policy)}"` : ""}>${parts.join(" · ")}${rule ? ` <span class="hof-bank-balance-rule">${esc(rule)}</span>` : ""}</small>`;
+  }
+  /** Nakit Kasa satırı (Kasa ↔ Banka): change kuruş (Kasa'ya giriş +, çıkış −). Kasa Görüntüleme yetkisi yoksa "". */
+  function cashLine(data, change = 0) {
+    const c = data?.cash;
+    if (!c) return "";
+    const negative = change < 0 && Math.min(c.atMinor, c.totalMinor) + change < 0;
+    const rule = !negative ? "" : c.policy === "block" ? "Nakit Kasa eksiye düşüyor; eksi bakiyeye izin verilmiyor (Engelle), kaydedilmez." : c.policy === "warn" ? "Nakit Kasa eksiye düşüyor; kaydederken onay istenir (Uyar)." : "Nakit Kasa eksiye düşüyor (Kontrol Yok).";
+    const parts = [`Nakit Kasa (${esc(dayLabel(c.date))}): <b>${esc(plainMoney(c.atMinor))}</b>`, `İşlemden Sonra: <b>${esc(plainMoney(c.atMinor + change))}</b>`];
+    if (c.totalMinor < c.atMinor && change) parts.push(`İleri tarihli hareketlerle: ${esc(plainMoney(c.totalMinor + change))}`);
+    return `<small class="hof-bank-balance${negative ? " is-negative" : ""}" data-cash-balance${negative ? ` data-negative="${esc(c.policy)}"` : ""}>${parts.join(" · ")}${rule ? ` <span class="hof-bank-balance-rule">${esc(rule)}</span>` : ""}</small>`;
+  }
+  /** Tarih değişince yalnız bakiyeler (seçici yeniden kurulmaz). Yetkisi yoksa (403) ya da hata: {}. */
+  async function balances(date = "") {
+    try {
+      return await HOF.api(`${BASE}/balances${dayQuery(date)}`);
+    } catch {
+      return {};
+    }
   }
 
   // ---------- v2.2.0 (İz 2.4): "… Tanımla" — tek kural, bütün seçiciler ----------
@@ -2606,7 +2693,8 @@
     if (!accounts.length && !current) return defineKind && DEFINES.has(defineKind) ? { mode: "define", accountId: "", html: defineHtml(defineKind) } : { mode: "none", accountId: "", html: "" };
     // Tek hesap: yalnız bilgi satırı; kimlik GÖNDERİLMEZ (m1: ekranın eski görünümü sunucunun seçimini ezmesin). Düzeltmede satırın bağı
     // sunucuda korunur (pickRef: önceki bağ), yeni satırda sunucu tek uygun hesabı kendisi seçer.
-    if (accounts.length === 1 && !keepLabel && (!value || value === accounts[0].id) && required) return { mode: "single", accountId: accounts[0].id, html: `<p class="hof-bank-pick-note" data-bank-single="${esc(accounts[0].id)}">${esc(note ? note(accounts[0].label) : `${accounts[0].label} hesabına yazılır.`)}</p>` };
+    const shown = account => `${account.label}${account.cardLast4 ? ` •••• ${account.cardLast4}` : ""}`;
+    if (accounts.length === 1 && !keepLabel && (!value || value === accounts[0].id) && required) return { mode: "single", accountId: accounts[0].id, html: `<p class="hof-bank-pick-note" data-bank-single="${esc(accounts[0].id)}">${esc(note ? note(shown(accounts[0])) : `${shown(accounts[0])} hesabına yazılır.`)}</p>` };
     // Satırın hesabı artık seçilemiyorsa (pasif) seçenek olarak kalır: değiştirilmeden kaydedilebilsin.
     const list = current && !accounts.some(account => account.id === current.id) ? [current, ...accounts] : accounts;
     const selected = value && list.some(account => account.id === value) ? value : keepLabel || !preselect ? "" : meta?.defaultId || "";
@@ -2614,7 +2702,8 @@
     // Yargıç B1 (plan §3.5 kural 1): hareket seçilecek hesabın açılışından önceyse (o gün tutulan hesap yok) satır hesapsız kalır; sunucu bu seçimi
     // yalnız tarih bir hesabın açılışından önceyse kabul eder. Tek hesapta seçici yoktur, sunucu açılıştan önceki tarihi kendisi hesapsız yazar.
     const none = noneOption ? [{ value: "none", label: "Hesapsız (Açılıştan Önce)" }] : [];
-    return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: required && !keepLabel, value: selected, options: [first, ...list.map(account => ({ value: account.id, label: `${account.label} (${account.code})` })), ...none] }) };
+    // 2.7: seçenek adında hesabın seçilen tarihteki bakiyesi (yalnız Banka Görüntüleme yetkisine gelir; yoksa yalnız ad).
+    return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: required && !keepLabel, value: selected, options: [first, ...list.map(account => ({ value: account.id, label: optionText(account, data) })), ...none] }) };
   }
   /** Kurumsal kart seçicisinin ayarları (form "card"; alan cardAccountId — gönderimde accountBody bankAccountId'ye taşır). */
   const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kurumsal Kart", choose: "Kart Seçin", preselect: false, define: "card", note: label => `${label} kurumsal kartına yazılır.` });
@@ -2681,36 +2770,63 @@
   function syncPickers(form, setup) {
     syncNone(form);
     const { methodNode } = setup;
-    if (!methodNode) return;
-    form.querySelectorAll("[data-bank-pick]").forEach(node => {
-      const on = methodNode.value === (node.dataset.bankPick === "card" ? "card" : "bank");
-      node.hidden = !on;
-      node.querySelectorAll("[name]").forEach(input => {
-        input.disabled = !on;
+    if (methodNode)
+      form.querySelectorAll("[data-bank-pick]").forEach(node => {
+        const on = methodNode.value === (node.dataset.bankPick === "card" ? "card" : "bank");
+        node.hidden = !on;
+        node.querySelectorAll("[name]").forEach(input => {
+          input.disabled = !on;
+        });
+        const select = node.querySelector("select");
+        if (select) select.required = on && select.dataset.required === "1";
       });
-      const select = node.querySelector("select");
-      if (select) select.required = on && select.dataset.required === "1";
-    });
+    syncBalances(form, setup);
   }
-  async function attachPicker(form, { methodName = "", anchor = null, card = null, ...options } = {}) {
+  /**
+   * 2.7 bakiye seçenekleri: direction — işlemin seçilen hesaba etkisi ("in" giriş, "out" çıkış; kartta "out" = kartla ödeme, borç artar);
+   * amount — tutarı veren işlev (verilmezse formun "amount" alanı); original — düzeltilen hareket { ref, amount, date } (hesabı, TL tutarı, günü;
+   * bakiyede zaten var); cash — Kasa ↔ Banka'da Nakit Kasa satırı ("in" Kasa'ya giriş, "out" çıkış); dateName — işlemin tarih alanı.
+   */
+  async function attachPicker(form, { methodName = "", anchor = null, card = null, direction = "in", amount = null, original = null, cash = "", dateName = "date", ...options } = {}) {
     if (!form) return "none";
     const methodNode = methodName ? form.querySelector(`[name="${methodName}"]`) : null;
     const place = anchor || methodNode?.closest(".hof-field") || form.querySelector(".hof-field:last-of-type");
     if (!place) return "none";
+    const dateNode = dateName ? form.querySelector(`[name="${dateName}"]`) : null;
     let data;
     try {
-      data = await choices(true);
+      data = await choices(true, dateNode?.value || "");
     } catch {
       return "none";
     }
     if (!form.isConnected) return "none";
-    const setup = { place, methodNode, card: card && methodNode ? card : null, options };
+    const amountNode = form.querySelector('[name="amount"]');
+    const setup = {
+      place,
+      methodNode,
+      card: card && methodNode ? card : null,
+      options,
+      data,
+      dateNode,
+      sign: direction === "out" ? -1 : 1,
+      amountOf: typeof amount === "function" ? amount : () => parseTl(amountNode?.value),
+      original: original?.ref ? original : null,
+      cash: cash === "out" ? -1 : cash === "in" ? 1 : 0,
+      cashPlace: amountNode?.closest(".hof-field") || place,
+      balanceSeq: 0,
+    };
     const mode = placePickers(form, setup, data);
     pickerForms.set(form, setup);
     if (methodNode) methodNode.addEventListener("change", () => syncPickers(form, setup));
     // Seçici yeniden kurulsa da (refreshPickers) dinleyici formda: seçim değişince not yerleşir/kalkar.
     form.addEventListener("change", event => {
       if (event.target.closest?.("[data-bank-pick]")) syncNone(form);
+      // 2.7: tarih değişince o günün bakiyeleri (tek istek; seçici yeniden kurulmaz); başka alan değişince satır yeniden hesaplanır.
+      if (dateNode && event.target === dateNode) reloadBalances(form, setup);
+      else syncBalances(form, setup);
+    });
+    form.addEventListener("input", event => {
+      if (event.target !== dateNode) syncBalances(form, setup);
     });
     // 2.4: "… Tanımla" ile kaydedilen hesap/kart seçicide seçili gelir (alan yeniden kurulur; formun öbür alanları yerinde kalır).
     form.addEventListener("hof-bank-defined", async event => {
@@ -2718,11 +2834,12 @@
       if (!account?.id || !["bank", "card"].includes(kind)) return;
       let fresh;
       try {
-        fresh = await choices(true);
+        fresh = await choices(true, setup.dateNode?.value || "");
       } catch {
         return;
       }
       if (!form.isConnected) return;
+      setup.data = fresh;
       placePickers(form, setup, fresh, { [kind === "card" ? CARD_PICKER.name : setup.options.name || "bankAccountId"]: account.id });
       syncPickers(form, setup);
       const box = form.querySelector(kind === "card" ? '[data-bank-pick="card"]' : '[data-bank-pick]:not([data-bank-pick="card"])');
@@ -2731,6 +2848,34 @@
     syncPickers(form, setup);
     return mode;
   }
+  /** 2.7: seçilen hesabın "Bakiye · İşlemden Sonra" satırı (seçici kutusunun altında) ve Kasa ↔ Banka'da Nakit Kasa satırı (tutarın altında). */
+  function syncBalances(form, setup) {
+    const data = setup?.data;
+    if (!form?.isConnected || (!data?.balances && !data?.cash)) return;
+    const amountMinor = Math.max(0, toMinor(setup.amountOf()));
+    form.querySelectorAll("[data-bank-pick]").forEach(box => {
+      const select = box.querySelector("select");
+      const id = select ? select.value : box.querySelector("[data-bank-single]")?.dataset.bankSingle || "";
+      const original = setup.original && setup.original.ref === id ? { minor: setup.sign * toMinor(setup.original.amount), date: setup.original.date || "" } : null;
+      swapLine(box, "[data-bank-balance]", box.hidden ? "" : balanceLine(data, id, { change: setup.sign * amountMinor, original }));
+    });
+    if (setup.cash && setup.cashPlace?.isConnected) swapLine(setup.cashPlace, "[data-cash-balance]", cashLine(data, setup.cash * amountMinor));
+  }
+  function swapLine(container, selector, html) {
+    const line = [...container.children].find(node => node.matches(selector));
+    if (!html) return line?.remove();
+    if (!line) return container.insertAdjacentHTML("beforeend", html);
+    if (line.outerHTML !== html) line.outerHTML = html;
+  }
+  async function reloadBalances(form, setup) {
+    if (!setup.data?.balances && !setup.data?.cash) return;
+    const seq = (setup.balanceSeq += 1);
+    const fresh = await balances(setup.dateNode?.value || "");
+    if (seq !== setup.balanceSeq || !form.isConnected) return;
+    setup.data = { ...setup.data, balances: fresh.balances, cash: fresh.cash };
+    form.querySelectorAll("[data-bank-pick]").forEach(box => refreshOptionTexts(box, setup.data));
+    syncBalances(form, setup);
+  }
   /**
    * v2.2.0 (İz 2.5–2.6): verilen çek/senet formunda hesap. Çek → "Çek Hesabı" (yalnız Çek Kullan işaretli etkin TL hesaplar; tekse bilgi satırı,
    * çoksa seçim zorunlu, hiç yoksa "Çek Hesabı Tanımla" ve "Banka / Şube" metni bugünkü gibi). Hesap varken "Banka / Şube" metni gizlenir
@@ -2738,17 +2883,38 @@
    * (hesapsız) ilk seçenek "Değiştirme (Mevcut: <metin>)": dokunulmazsa metin ve hesapsızlık korunur. Evrak türü değişince alan yeniden kurulur.
    * cheque: düzeltilen evrak (bankAccountId, bank) ya da null. Dönüş: söz.
    */
-  async function attachChequePicker(form, { cheque = null, instrumentName = "instrument", bankName = "bank" } = {}) {
+  async function attachChequePicker(form, { cheque = null, instrumentName = "instrument", bankName = "bank", dateName = "issueDate" } = {}) {
     if (!form) return;
     const textField = form.querySelector(`[name="${bankName}"]`)?.closest(".hof-field");
     if (!textField) return;
+    const dateNode = form.querySelector(`[name="${dateName}"]`);
     let data;
     try {
-      data = await choices(true);
+      data = await choices(true, dateNode?.value || "");
     } catch {
       return;
     }
     let forced = "";
+    // 2.7: seçilen hesabın bakiyesi (verilen çekte para o gün hareket etmez — "İşlemden Sonra" yok; ödemede gösterilir).
+    const syncLine = () => {
+      const box = form.querySelector("[data-cheque-pick]");
+      if (!box) return;
+      const select = box.querySelector("select");
+      const id = select ? select.value : box.querySelector("[data-bank-single]")?.dataset.bankSingle || "";
+      swapLine(box, "[data-bank-balance]", balanceLine(data, id, { only: true }));
+    };
+    let seq = 0;
+    form.addEventListener("change", async event => {
+      if (event.target.closest?.("[data-cheque-pick]")) return syncLine();
+      if (event.target !== dateNode || !data?.balances) return;
+      const mine = (seq += 1);
+      const fresh = await balances(dateNode.value);
+      if (mine !== seq || !form.isConnected) return;
+      data = { ...data, balances: fresh.balances };
+      const box = form.querySelector("[data-cheque-pick]");
+      refreshOptionTexts(box, data);
+      syncLine();
+    });
     const render = () => {
       if (!form.isConnected) return;
       form.querySelectorAll("[data-cheque-pick]").forEach(node => node.remove());
@@ -2765,6 +2931,7 @@
       if (input) input.disabled = hideText;
       if (!picked.html) return;
       textField.insertAdjacentHTML("afterend", `<div class="hof-bank-pick" data-cheque-pick="${note ? "note" : "cheque"}">${picked.html}</div>`);
+      syncLine();
     };
     render();
     form.querySelector(`[name="${instrumentName}"]`)?.addEventListener("change", () => {
@@ -2774,7 +2941,7 @@
     form.addEventListener("hof-bank-defined", async event => {
       if (event.detail?.kind !== "cheque" || !event.detail.account?.id) return;
       try {
-        data = await choices(true);
+        data = await choices(true, dateNode?.value || "");
       } catch {
         return;
       }
@@ -2787,17 +2954,20 @@
   async function refreshPickers() {
     for (const form of pickerForms.keys()) if (!form.isConnected) pickerForms.delete(form);
     if (!pickerForms.size) return;
-    let data;
-    try {
-      data = await choices(true);
-    } catch {
-      return;
-    }
     for (const [form, setup] of pickerForms) {
       if (!form.isConnected) {
         pickerForms.delete(form);
         continue;
       }
+      // 2.7: her form kendi tarihinin bakiyeleriyle (seçici listesi aynı).
+      let data;
+      try {
+        data = await choices(true, setup.dateNode?.value || "");
+      } catch {
+        return;
+      }
+      if (!form.isConnected) continue;
+      setup.data = data;
       placePickers(form, setup, data);
       syncPickers(form, setup);
     }
@@ -2839,6 +3009,11 @@
     defineHtml,
     define,
     attachChequePicker,
+    // v2.2.0 (İz 2.7): seçicide bakiye (fatura peşin satırı da kullanır): seçenek adı, seçilenin bakiye satırı, Nakit Kasa satırı, tarihe göre bakiye.
+    optionText,
+    balanceLine,
+    cashLine,
+    balances,
   };
   HOF.on("bank-choices-stale", () => {
     choicesCache = null;

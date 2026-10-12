@@ -787,7 +787,9 @@
       onOpen: dialog => {
         // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
         const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
-        const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card }) : null;
+        // 2.7: seçicide bakiye — tahsilat hesaba girer, ödeme çıkar (kartla ödeme kart borcunu artırır); düzeltmede eski tutar bakiyede (original).
+        const original = entry && (entry.method === "bank" || entry.method === "card") && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null;
+        const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card, direction: type === "out" ? "out" : "in", original }) : null;
         // Ek iş B: açıklama yola göre (seçici yerleşince ve yol değişince).
         if (money_) {
           // Yol ya da hesap seçimi değişince (Hesapsız (Açılıştan Önce) dahil); dinleyici formda — seçici yeniden kurulsa da çalışır.

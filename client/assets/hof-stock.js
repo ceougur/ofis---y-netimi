@@ -362,7 +362,9 @@
         // K2 (plan §3.7 #8, §4.6): stok alımında "Kredi Kartı" kurumsal kartla ödemedir → Kurumsal Kart; satışta ve müşteri iadesinde kart yolu
         // POS'tur (seçici yok).
         const card = incoming && !back ? { value: move?.pay === "cash" && move.method === "card" ? move.finRef || "" : "", keepLabel: move && move.pay === "cash" && move.method === "card" && !move.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
-        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "pay", value: move?.pay === "cash" && move.method === "bank" ? move.finRef || "" : "", keepLabel: move && move.pay === "cash" && move.method === "bank" && !move.finRef ? "Atanmamış (Eski Hareket)" : "", card });
+        // 2.7: seçicide bakiye — tutar miktar × birim fiyat; alım ve müşteri iadesi ödeme (çıkış), satış tahsilat (giriş).
+        const moneyOriginal = move?.pay === "cash" && (move.method === "bank" || move.method === "card") && move.finRef ? { ref: move.finRef, amount: move.amount, date: move.date } : null;
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "pay", value: move?.pay === "cash" && move.method === "bank" ? move.finRef || "" : "", keepLabel: move && move.pay === "cash" && move.method === "bank" && !move.finRef ? "Atanmamış (Eski Hareket)" : "", card, direction: incoming ? "out" : "in", amount: () => Math.round((parseNumber(qty.value) || 0) * (parseNumber(price.value) || 0) * 100) / 100, original: moneyOriginal });
         const sync = () => {
           const amount = (parseNumber(qty.value) || 0) * (parseNumber(price.value) || 0);
           const after = (item.qty || 0) + (incoming ? 1 : -1) * (parseNumber(qty.value) || 0) - (move ? (move.kind === "in" ? move.qty : -move.qty) : 0);

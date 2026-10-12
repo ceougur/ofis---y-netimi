@@ -482,6 +482,118 @@ try {
     await closeAll();
   });
 
+  // ---------- 2.7 Seçicilerde bakiye ----------
+  // Durum (önceki bölümlerden, bağımsız hesap): Ziraat 10.000 − 1.200 = 8.800; Garanti 50.000 − 2.500 (çek ödemesi) = 47.500; Yapı Kredi 20.000.
+  const bankRequests = [];
+  page.on("request", request => {
+    const url = request.url();
+    if (/\/api\/workspace\/bank\/(choices|balances)/.test(url)) bankRequests.push(url.replace(BASE, ""));
+  });
+  const countOf = pattern => bankRequests.filter(url => pattern.test(url)).length;
+  const lineOf = async (scope, selector = "[data-bank-balance]") => ({ text: await textOf(`${scope} ${selector}`), negative: await page.$eval(`${scope} ${selector}`, node => node.classList.contains("is-negative")).catch(() => false) });
+
+  await step("2.7 cari Ödeme → Havale: seçeneklerde bakiye; Garanti (Engelle) 47.500,01 → kırmızı \"kaydedilmez\", sunucu da reddeder; 40.000 → İşlemden Sonra 7.500; tek istek", async () => {
+    await must("Garanti Engelle", api.put(`/api/workspace/bank/accounts/${ctx.garanti.id}`, { negativePolicy: "block" }));
+    ok((await accountApi(ctx.garanti.id)).balanceMinor === 4_750_000 && (await accountApi(ctx.ziraat.id)).balanceMinor === 880_000, "başlangıç: Garanti 47.500, Ziraat 8.800");
+    await closeAll();
+    await openParty(page, ctx.supplier.id);
+    bankRequests.length = 0;
+    await page.click('.hof-accounts-modal [data-entry="out"]');
+    const form = `${modal} .hof-form:has(select[name="method"])`;
+    await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await typeInto(`${form} input[name="amount"]`, "47.500,01");
+    await page.selectOption(`${form} select[name="method"]`, "bank");
+    await page.waitForSelector(`${form} [data-bank-pick] select[name="bankAccountId"]`, { timeout: 8000 });
+    const options = await optionsOf(`${form} [data-bank-pick] select[name="bankAccountId"]`);
+    ok(options.some(label => /^Garanti BBVA · Ticari \(.+\) — ₺47\.500,00$/.test(label)) && options.some(label => /^Ziraat Bankası · Ana TL \(.+\) — ₺8\.800,00$/.test(label)) && options.some(label => /^Yapı Kredi · TL \(YAP-TL\) — ₺20\.000,00$/.test(label)), `seçenekler: ${options.join(" | ")}`);
+    await page.selectOption(`${form} [data-bank-pick] select[name="bankAccountId"]`, ctx.garanti.id);
+    await page.waitForSelector(`${form} [data-bank-pick] [data-bank-balance]`, { timeout: 5000 });
+    const red = await lineOf(`${form} [data-bank-pick]`);
+    ok(red.negative && /Bakiye \(08\.10\.2026\): ₺47\.500,00/.test(red.text) && /İşlemden Sonra: −₺0,01/.test(red.text) && /eksi bakiyeye izin verilmiyor \(Engelle\), kaydedilmez/.test(red.text), `kırmızı satır: “${red.text}”`);
+    await shot("bakiye-engelle-kirmizi");
+    await page.click(`${form} button[type="submit"]`);
+    await pause(1200);
+    const error = await textOf(`${form} .hof-form-error`);
+    const tried = (await must("cari", api.get(`/api/workspace/accounts/${ctx.supplier.id}`))).entries.some(item => item.kind === "out" && Math.abs(item.amount - 47500.01) < 0.001);
+    ok(/eksi bakiyeye izin verilmiyor/.test(error) && !tried, `sunucu da reddetti (kayıt yok): “${error.slice(0, 120)}”`);
+    // Tutar düzeltilir (insan hızında): satır yazdıkça güncellenir.
+    await typeInto(`${form} input[name="amount"]`, "40.000");
+    const fine = await lineOf(`${form} [data-bank-pick]`);
+    ok(!fine.negative && /İşlemden Sonra: ₺7\.500,00/.test(fine.text) && !/kaydedilmez/.test(fine.text), `40.000: “${fine.text}”`);
+    ok(countOf(/\/bank\/choices/) === 1 && countOf(/\/bank\/balances/) === 0, `seçici açılırken tek istek: choices ${countOf(/\/bank\/choices/)}, balances ${countOf(/\/bank\/balances/)}`);
+    await shot("bakiye-islemden-sonra");
+    await page.click(`${form} button[type="submit"]`);
+    await pause(1200);
+    ok((await accountApi(ctx.garanti.id)).balanceMinor === 750_000, `kaydedildi: Garanti ${(await accountApi(ctx.garanti.id)).balanceMinor / 100} (beklenen 7.500)`);
+    await closeAll();
+  });
+
+  await step("2.7 Kasadan Bankaya Yatır: tutarın altında Nakit Kasa (3.000) ve seçilen hesabın bakiyesi; tarih 05.10 → o günün bakiyesi (tek bakiye isteği); 3.000 → Kasa 0", async () => {
+    await must("Kasa tahsilatı", api.post("/api/workspace/cash", { kind: "in", amount: "3.000", date: "2026-10-06", description: "İz 2.7 nakit" }));
+    const policy = (await must("eksi bakiye", api.get("/api/admin/negative-policy"))).cash;
+    await closeAll();
+    await page.click('#hof-sidecard [data-action="cash"]');
+    await page.waitForSelector(`${modal} [data-transfer="to-bank"]`, { timeout: 10000 });
+    bankRequests.length = 0;
+    await page.click(`${modal} [data-transfer="to-bank"]`);
+    const form = `${modal} .hof-form:has(input[name="amount"]):has(input[name="description"])`;
+    await page.waitForSelector(`${form} [data-cash-balance]`, { timeout: 8000 });
+    await page.selectOption(`${form} [data-bank-pick] select[name="bankAccountId"]`, ctx.ziraat.id);
+    await typeInto(`${form} input[name="amount"]`, "3.500");
+    const cash = await lineOf(form, "[data-cash-balance]");
+    const ruleText = { warn: /kaydederken onay istenir \(Uyar\)/, block: /kaydedilmez/, off: /Kontrol Yok/ }[policy];
+    ok(cash.negative && /Nakit Kasa \(08\.10\.2026\): ₺3\.000,00/.test(cash.text) && /İşlemden Sonra: −₺500,00/.test(cash.text) && ruleText?.test(cash.text), `Nakit Kasa satırı (${policy}): “${cash.text}”`);
+    const bank = await lineOf(`${form} [data-bank-pick]`);
+    ok(/Bakiye \(08\.10\.2026\): ₺8\.800,00/.test(bank.text) && /İşlemden Sonra: ₺12\.300,00/.test(bank.text) && !bank.negative, `banka satırı: “${bank.text}”`);
+    await shot("kasadan-bankaya-nakit-kasa");
+    await page.fill(`${form} input[name="date"]`, "2026-10-05");
+    await page.waitForFunction(() => /05\.10\.2026/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-form [data-cash-balance]")?.textContent || ""), null, { timeout: 8000 });
+    const early = await lineOf(form, "[data-cash-balance]");
+    ok(/Nakit Kasa \(05\.10\.2026\): ₺0,00/.test(early.text) && /İşlemden Sonra: −₺3\.500,00/.test(early.text), `05.10 Nakit Kasa (06.10'daki tahsilat yok): “${early.text}”`);
+    ok(countOf(/\/bank\/choices/) === 1 && countOf(/\/bank\/balances\?date=2026-10-05/) === 1, `istekler: choices ${countOf(/\/bank\/choices/)}, balances ${bankRequests.filter(url => /balances/.test(url)).join(", ")}`);
+    await page.fill(`${form} input[name="date"]`, TODAY);
+    await page.waitForFunction(() => /08\.10\.2026/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-form [data-cash-balance]")?.textContent || ""), null, { timeout: 8000 });
+    await typeInto(`${form} input[name="amount"]`, "3.000");
+    const zero = await lineOf(form, "[data-cash-balance]");
+    ok(!zero.negative && /İşlemden Sonra: ₺0,00/.test(zero.text), `3.000: “${zero.text}”`);
+    await page.click(`${form} button[type="submit"]`);
+    await pause(1200);
+    const after = await must("bakiyeler", api.get(`/api/workspace/bank/balances?date=${TODAY}`));
+    ok(after.cash.atMinor === 0 && after.balances.accounts[ctx.ziraat.id].atMinor === 1_180_000, `Nakit Kasa ${after.cash.atMinor / 100}, Ziraat ${after.balances.accounts[ctx.ziraat.id].atMinor / 100} (beklenen 0 ve 11.800)`);
+    await closeAll();
+  });
+
+  await step("2.7 yetkisiz (personel; Banka Görüntüleme yok): Tahsilat → Havale seçicisinde bakiye YOK (seçenekte tutar yok, satır yok)", async () => {
+    await must("personel", api.post("/api/admin/users", { username: "personel220", name: "Personel 220", role: "personel", password: "Personel-2026!", mustChangePassword: false }));
+    const context3 = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
+    const other = await context3.newPage();
+    other.on("pageerror", error => errors.push(`pageerror (personel) ${error.message}`));
+    await installPageClock(other, app.config.now);
+    await other.goto(`${BASE}/`);
+    await other.fill("#hof-auth input[name=username]", "personel220");
+    await other.fill("#hof-auth input[name=password]", "Personel-2026!");
+    await Promise.all([other.waitForEvent("load"), other.click('#hof-auth button[type="submit"]')]);
+    await other.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    await other.waitForTimeout(800);
+    await other.click('#hof-sidecard [data-action="accounts"]');
+    await other.waitForSelector(`.hof-accounts-modal tr[data-account="${ctx.supplier.id}"]`, { timeout: 10000 });
+    await other.click(`.hof-accounts-modal tr[data-account="${ctx.supplier.id}"]`);
+    await other.waitForSelector('.hof-accounts-modal [data-entry="in"]', { timeout: 10000 });
+    await other.click('.hof-accounts-modal [data-entry="in"]');
+    const form = `${modal} .hof-form:has(select[name="method"])`;
+    await other.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await other.fill(`${form} input[name="amount"]`, "100");
+    await other.selectOption(`${form} select[name="method"]`, "bank");
+    await other.waitForSelector(`${form} [data-bank-pick] select[name="bankAccountId"]`, { timeout: 8000 });
+    await other.selectOption(`${form} [data-bank-pick] select[name="bankAccountId"]`, ctx.garanti.id);
+    await other.waitForTimeout(400);
+    const options = await other.$$eval(`${form} [data-bank-pick] select[name="bankAccountId"] option`, nodes => nodes.map(node => node.textContent.trim()));
+    const line = await other.$(`${form} [data-bank-balance]`);
+    ok(options.length > 2 && !options.some(label => /₺|—/.test(label)) && !line, `personel: seçenekler “${options.join(" | ")}”, bakiye satırı ${line ? "VAR" : "yok"}`);
+    await other.screenshot({ path: path.join(OUT, "00-personel-bakiye-yok.png") });
+    await context3.close();
+  });
+
   // ---- SON (yeni bölümler bunun üstüne) ----
 } catch (error) {
   failed += 1;

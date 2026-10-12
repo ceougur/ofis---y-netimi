@@ -10674,3 +10674,7 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-pay-row .hof-inv-chq-bank label { flex: 1 1 140px; }
 .hof-inv-pay-row span.hof-inv-chq-bank.hof-bank-pick-note { align-self: center; margin: 0; }
 .hof-inv-pay-row .hof-bank-define { margin: 0; }
+/* v2.2.0 İz 2.7: seçicide bakiye — kuralın açıklaması ayrı satırda; fatura peşin satırında bakiye satırı satırın altında tam genişlik. */
+.hof-bank-balance-rule { display: block; font-weight: 700; }
+.hof-inv-pay-row .hof-inv-balance { flex: 1 1 100%; margin-top: -4px; }
+.hof-inv-pay-row .hof-inv-balance:empty { display: none; }

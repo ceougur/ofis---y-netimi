@@ -267,6 +267,12 @@ async function measure({ dir, accounts, info }) {
       return null;
     });
     await timeIt("Hesap kartı (bakiye)", () => must("hesap", client.get(`${BANK}/accounts/${z}`)));
+    // v2.2.0 (İz 2.7): form seçicisi açılırken TEK istek (hesaplar + seçilen tarihteki bakiyeler); tarih değişince yalnız bakiyeler.
+    await timeIt("Seçici: hesaplar + bakiyeler (choices, bugün)", () => must("seçici", client.get(`${BANK}/choices?date=${TODAY}`)), data => {
+      if (!data.balances?.accounts?.[z]) throw new Error("seçicide bakiye yok");
+    });
+    await timeIt("Seçici bakiyeleri, bir yıl önceki gün (balances)", () => must("bakiye", client.get(`${BANK}/balances?date=${addDays(TODAY, -365)}`)));
+    await timeIt("Seçici bakiyeleri, en eski gün (balances)", () => must("bakiye", client.get(`${BANK}/balances?date=${addDays(OPENING, 1)}`)));
     await timeIt("Genel Bakış (özet)", () => must("özet", client.get(`${BANK}/summary`)));
     await timeIt("Menü rozeti", () => must("rozet", client.get(`${BANK}/badge`)));
     await timeIt("Hesaplar listesi", () => must("hesaplar", client.get(`${BANK}/accounts`)));
@@ -323,6 +329,8 @@ async function measure({ dir, accounts, info }) {
     await afterWrite("Kayıttan hemen sonra Genel Bakış", () => must("özet", client.get(`${BANK}/summary`)));
     await afterWrite("Kayıttan hemen sonra Hesaplar listesi", () => must("hesaplar", client.get(`${BANK}/accounts`)));
     await afterWrite("Kayıttan hemen sonra menü rozeti", () => must("rozet", client.get(`${BANK}/badge`)));
+    await afterWrite("Kayıttan hemen sonra seçici (choices, bugün)", () => must("seçici", client.get(`${BANK}/choices?date=${TODAY}`)));
+    await afterWrite("Kayıttan hemen sonra seçici bakiyeleri (bir yıl önce)", () => must("bakiye", client.get(`${BANK}/balances?date=${addDays(TODAY, -365)}`)));
   } finally {
     await app.close();
     rmSync(work, { recursive: true, force: true });

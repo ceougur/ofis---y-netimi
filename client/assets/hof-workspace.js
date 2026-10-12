@@ -50,7 +50,7 @@
       extraHtml: offerPlan ? '<p class="hof-form-aside">Bu kişi taksitle mi ödüyor? <button type="button" class="hof-link" data-new-plan>Taksit planı oluşturun</button>; sonra tahsilatlar taksitten düşer ve kartında görünür.</p>' : "",
       submitLabel: "Tahsilatı Kaydet",
       onOpen: (dialog, modal) => {
-        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method" });
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", direction: "in" });
         dialog.querySelector("[data-new-plan]")?.addEventListener("click", () => {
           modal.close();
           const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
@@ -351,7 +351,8 @@
       ],
       submitLabel: "Düzeltmeyi Kaydet",
       onOpen: dialog => {
-        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: item.finRef || "", keepLabel: item.method === "bank" && !item.finRef ? "Atanmamış (Eski Hareket)" : "" });
+        // 2.7: düzeltilen tahsilat seçilen hesabın bakiyesinde zaten var (original): "İşlemden Sonra" yeni − eski.
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: item.finRef || "", keepLabel: item.method === "bank" && !item.finRef ? "Atanmamış (Eski Hareket)" : "", direction: "in", original: item.method === "bank" && item.finRef ? { ref: item.finRef, amount: item.amount, date: isoDate(item.date) } : null });
       },
       onSubmit: async data => {
         const body = { ...data };
@@ -447,7 +448,8 @@
       submitLabel: toCash ? "Kasaya Aktar" : "Bankaya Yatır",
       onOpen: dialog => {
         const form = dialog.querySelector("form");
-        Promise.resolve(HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="amount"]')?.closest(".hof-field"), label: toCash ? "Çekilen Banka Hesabı" : "Yatırılan Banka Hesabı" }))
+        // 2.7: seçicide banka hesabının bakiyesi ve tutarın altında Nakit Kasa bakiyesi (Yatır'da Kasa'dan çıkar, Aktar'da girer).
+        Promise.resolve(HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="amount"]')?.closest(".hof-field"), label: toCash ? "Çekilen Banka Hesabı" : "Yatırılan Banka Hesabı", direction: toCash ? "out" : "in", cash: toCash ? "in" : "out" }))
           .then(mode => {
             const intro = dialog.querySelector(".hof-modal-text");
             if (intro && mode === "none") intro.textContent = transferIntro(toCash, false);

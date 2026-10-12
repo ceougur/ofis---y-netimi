@@ -86,7 +86,9 @@ export function registerBankRoutes(router, context) {
     const out = {};
     if (canUser(user, "bank.view")) out.balances = service.selectorBalances({ date });
     if (canUser(user, "cash.view") && money?.wayBalance) {
-      const day = out.balances?.date || (/^\d{4}-\d{2}-\d{2}$/.test(String(date || "")) ? date : period.today());
+      const at = /^\d{4}-\d{2}-\d{2}$/.test(String(date || "")) ? new Date(`${date}T00:00:00Z`) : null;
+      const real = Boolean(at) && !Number.isNaN(at.getTime()) && at.toISOString().slice(0, 10) === date;
+      const day = out.balances?.date || (real ? date : period.today());
       const way = money.wayBalance("cash", day);
       const policy = readNegativePolicy(store.setting(NEGATIVE_KEY, "")).cash;
       out.cash = { date: day, atMinor: Math.round(way.at * 100), totalMinor: Math.round(way.all * 100), policy };

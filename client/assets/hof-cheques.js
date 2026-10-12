@@ -312,7 +312,8 @@
       onOpen: dialog => {
         // v2.2.0 (İz 2.5–2.6): verilen çekin ödemesinde hesap çekin Çek Hesabı; senette önerilen hesap (yoksa Senet Kullan işaretli ilk hesap).
         const own = action === "pay" ? cheque.bankAccountId || "" : "";
-        if (moneyAction && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: own, ...(action === "pay" && cheque.instrument === "note" && !own ? { suggest: "note" } : {}) });
+        // 2.7: seçicide bakiye — tutar evrakın tutarı (ödemede hesaptan çıkar, tahsilde girer).
+        if (moneyAction && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: own, ...(action === "pay" && cheque.instrument === "note" && !own ? { suggest: "note" } : {}), direction: action === "pay" ? "out" : "in", amount: () => Number(cheque.amount) || 0 });
         if (action !== "endorse") return;
         // v2.0.17 (müşteri: "cari bulunmuyor"): tür kısıtı yok — bütün cariler aranır, tedarikçiler üstte; "+ Yeni Cari".
         const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari", required: true, prefer: "supplier", allowNew: { type: "supplier" }, help: "Tedarikçi ya da müşteri: çekin kime verildiği. Bulunamazsa + Yeni Cari ile açın.", name: "accountId" });

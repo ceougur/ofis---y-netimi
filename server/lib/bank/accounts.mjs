@@ -867,19 +867,24 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   /**
    * v2.2.0 (İz 2.7): seçicilerdeki bakiye — her etkin hesabın SEÇİLEN TARİHTEKİ bakiyesi (kuruş; moneyLines tek kaynağı, K7'nin formülüyle):
    * atMinor (o gün sonuna kadar), totalMinor (ileri tarihliler dahil bütün hareketler), limitMinor (KMH / kart limiti), policy (Bakiye Doğrulandı
-   * değilse 'off'; K7: Uyar/Engelle/Kontrol Yok), guarded (eksi bakiye denetimine giren tür). Ekran "İşlemden Sonra"yı min(at, total) − tutar ile
+   * değilse 'off'; K7: Uyar/Engelle/Kontrol Yok), confirmed (Bakiye Doğrulandı; ekranın açıklaması için), guarded (eksi bakiye denetimine giren tür). Ekran "İşlemden Sonra"yı min(at, total) − tutar ile
    * bulur (sunucunun 409'uyla aynı formül). Yalnız Banka Görüntüleme yetkisine döner (rota denetler). Hesap başına saklanan toplam + (gerekirse)
    * o günden sonraki satırların toplamı: büyük veride de hesap başına iki indeksli sorgu.
    */
   const GUARDED_KINDS = new Set(["demand", "commercial", "other", "time", "card"]);
+  // Takvimde olan gün (2026-13-45 gibi biçimi doğru ama olmayan gün de bugüne düşer; dize karşılaştırmasında "bütün hareketler" sayılıyordu).
+  const realDay = value => {
+    const at = isDate(value) ? new Date(`${value}T00:00:00Z`) : null;
+    return Boolean(at) && !Number.isNaN(at.getTime()) && at.toISOString().slice(0, 10) === value;
+  };
   function selectorBalances({ date = "" } = {}) {
-    const day = isDate(date) ? date : today();
+    const day = realDay(date) ? date : today();
     const fallback = settings.read().negative?.policy || "warn";
     const out = {};
     for (const row of store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL AND status = 'active' ORDER BY position, created_at")) {
       const total = money.refTotal({ ref: row.id }).cents;
       const at = money.afterIsEmpty(row.id, day) ? total : total - money.refTotal({ ref: row.id, after: day }).cents;
-      out[row.id] = { atMinor: at, totalMinor: total, limitMinor: Number(row.credit_limit_minor) || 0, policy: row.balance_confirmed ? row.negative_policy || fallback : "off", guarded: GUARDED_KINDS.has(row.kind) && row.currency === "TRY", currency: row.currency };
+      out[row.id] = { atMinor: at, totalMinor: total, limitMinor: Number(row.credit_limit_minor) || 0, policy: row.balance_confirmed ? row.negative_policy || fallback : "off", confirmed: Boolean(row.balance_confirmed), guarded: GUARDED_KINDS.has(row.kind) && row.currency === "TRY", currency: row.currency };
     }
     return { date: day, accounts: out };
   }
