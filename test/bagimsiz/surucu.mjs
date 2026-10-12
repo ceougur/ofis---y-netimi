@@ -980,7 +980,13 @@ async function run(scenarioPath, outPath) {
             ...(step.hesap !== undefined ? { bankAccountId: idOf(step.hesap) } : {}),
             ...flags,
           };
+          // 2.2.0 İz 4.1 (kullanıcı kararı İz 2.6): program tahsile vermeyi yalnız "Çek Kullan" / "Senet Kullan" işaretli hesaba kabul eder; dil
+          // hesap uygunluğunu §3.14'teki gibi tanımlar (işaret yok). Koşucu işareti yalnız bu istek süresince açar (kalıcı açık "Çek Kullan"
+          // verilen çeki kendiliğinden o hesaba bağlar — mutabakat motoru da aynı yolu izler); beklenen değerler değişmez.
+          const flagged = step.islem === "tahsile_ver" && step.hesap !== undefined;
+          if (flagged) await http(client, "PUT", "/api/workspace/bank/accounts/:id", [idOf(step.hesap)], { useCheque: true, useNote: true }, {});
           const result = await http(client, "POST", "/api/workspace/cheques/:id/actions", [idOf(step.evrak)], body, opt);
+          if (flagged) await http(client, "PUT", "/api/workspace/bank/accounts/:id", [idOf(step.hesap)], { useCheque: false, useNote: false }, {});
           return result.ok ? { done: true } : refused(result);
         }
         case "evrak_sil": {
