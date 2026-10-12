@@ -1302,7 +1302,11 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
         if (invoiceId && store.get("SELECT 1 AS found FROM invoices WHERE id = ? AND status = 'draft'", invoiceId)) continue;
       }
       const { to } = monthRange(target);
-      const date = to < today() ? to : today();
+      let date = to < today() ? to : today();
+      // Yargıç 2.2.0 Y6: ayın son günü kapanmış (kilitli) dönemdeyse taslak ilk açık günle açılır (K3 "kilitli güne düşen geçiş ilk açık güne";
+      // önceden kilitli tarihle açılıyor, Kaydet 409 period-locked veriyordu, kullanıcı tarihi elle değiştirmek zorundaydı).
+      const lock = lockDate();
+      if (lock && date <= lock) date = addCalendarDays(lock, 1);
       const invoiceId = service.createCommissionDraft(user, { partyId: group.providerId, date, amountMinor: group.netMinor, note: `${pos.name} · ${target} POS komisyonları (${group.ids.length} kesinti satırı)` });
       store.tx(() => {
         if (job) store.run("UPDATE bank_jobs SET status = 'cancelled', updated_by = ?, updated_at = ? WHERE id = ?", user.id, stamp(), job.id);
