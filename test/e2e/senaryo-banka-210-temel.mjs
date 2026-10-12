@@ -1,6 +1,6 @@
 // Senaryo Banka 2.1.0 — TEMEL SÜRÜM: ertelenen özellikler EKRANDA GÖRÜNMEZ (kullanıcı kararı 10.10.2026 "TEMEL SÜRÜME BAŞLA"; plan §12.1 "yarım
 // özellik görünmez") ve Nakit Akış başlangıcı K10 (plan §8.9: "Bugünkü Nakit ve Banka" = Nakit Kasa + Gerçek Banka; Hesabı Atanmamış ayrı satır).
-// Ertelenenler: döviz/kur/değerleme, Bankaya Tahsile Ver, K8 avans, faturanın bankalı iade/iptal ayrıntısı ve toplu kesim, kalan §8.10 raporları,
+// Ertelenenler: döviz/kur/değerleme, K8 avans, faturanın bankalı iade/iptal ayrıntısı ve toplu kesim, kalan §8.10 raporları,
 // Kasa devir (yıl sonu; Kasa AÇILIŞI 2.2.0 İz 1.3'te geldi: Kasa → Açılış Bakiyesi); POS (2.2.0), ekstre ve mutabakat (2.3.0). API tarafı
 // test/banka-210-ertelenen.test.mjs'te.
 // Gerçek kullanıcı gibi tıklanır; her ekranda görünen metin ve seçenekler okunur, ekran görüntüsü alınır:
@@ -15,7 +15,8 @@
 //  7. Raporlar → Tüm Raporlar: Banka grubunda yalnız Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı.
 //  8. Raporlar → Nakit Akış: "Bugünkü Nakit ve Banka" = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; Hesabı Atanmamış (POS 900) ayrı kutu,
 //     başlangıca girmez; tablonun Başlangıç satırı 12.000.
-//  9. Çek/Senet kartı: Bankaya Tahsile Ver düğmesi yok.
+//  9. Çek/Senet kartı (2.2.0, bilerek güncellendi): Bankaya Tahsile Ver GELDİ — portföydeki alınan çekte düğme var (ayrıntı ekrandan
+//     senaryo-tahsile-ver-220).
 // 10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi, ayrı sunucu): Hesabı Atanmamış 250 (ileri tarihli 1.000 ayrı bilgi); listede
 //     "Tarihi Gelince Atanabilir", seçim kutusu pasif, nedeni görünür; sihirbaz geçmişi aktarır, ileri tarihliyi atlar ve söyler (409 yok);
 //     saat 21.10.2026'ya alınınca Bu Hesaba Ata 200, Gerçek Banka 11.250, mutabakat temiz. (v2.0.23 etiketi gerekir: CI e2e işi etiketleri çeker.)
@@ -92,7 +93,8 @@ const textOf = selector => page.$eval(selector, node => node.innerText.replace(/
 const visibleText = selector => page.$$eval(selector, nodes => nodes.filter(node => node.offsetParent !== null).map(node => node.innerText.replace(/\s+/g, " ").trim()).join(" | ")).catch(() => "");
 // Ertelenen özelliklerin ekranda görünebilecek adları (kalıplar büyük/küçük harf duyarlı: "Kurulum" ≠ "Kur").
 // 2.2.0 (İz 3): POS Bekleyen, Blokeli POS, POS Tanımla ve "+ POS" artık ertelenen değil (POS geldi); Sanal POS Bağlantısı (bağdaştırıcı) ertelenen.
-const LATER = [/Ekstre Yükle/, /Ekstre ve Mutabakat/, /Mutabakat Yap/, /Eşleşmeyen/, /Güncel Kurla/, /Döviz Al/, /Döviz Sat/, /Kur Değerleme/, /Değerleme Kuru/, /Kambiyo/, /Bankaya Tahsile Ver/, /Tahsildeki Çek/, /Sanal POS Bağlantısı/, /Açık Bankacılık/i, /Bağdaştırıcılar/, /Elle Banka Fişi/, /Kanal Alanı/, /Avans/];
+// 2.2.0 (İz 4.1 ekranı): Bankaya Tahsile Ver ve Tahsildeki Çek ve Senetler artık ertelenen değil (geldi; senaryo-tahsile-ver-220).
+const LATER = [/Ekstre Yükle/, /Ekstre ve Mutabakat/, /Mutabakat Yap/, /Eşleşmeyen/, /Güncel Kurla/, /Döviz Al/, /Döviz Sat/, /Kur Değerleme/, /Değerleme Kuru/, /Kambiyo/, /Sanal POS Bağlantısı/, /Açık Bankacılık/i, /Bağdaştırıcılar/, /Elle Banka Fişi/, /Kanal Alanı/, /Avans/];
 const laterIn = text => LATER.filter(pattern => pattern.test(text)).map(pattern => pattern.source);
 const openBank = async () => {
   await page.click('#hof-sidecard [data-action="bank"]');
@@ -573,7 +575,8 @@ try {
     await closeAll();
   });
 
-  await step("9. Çek/Senet kartı: Bankaya Tahsile Ver yok (Tahsil Edildi, Ciro Et, Karşılıksız / İade)", async () => {
+  // 2.2.0 (bilerek güncellendi; İz 4.1 ekranı): Bankaya Tahsile Ver geldi — portföydeki alınan çekin kartında düğme var.
+  await step("9. Çek/Senet kartı: Tahsil Et, Ciro Et, Karşılıksız / İade ve (2.2.0) Bankaya Tahsile Ver", async () => {
     const opened = await page.evaluate(id => {
       if (typeof window.HOF?.cheques?.open === "function") {
         window.HOF.cheques.open({ id });
@@ -588,7 +591,7 @@ try {
     }
     await pause(1200);
     const text = await textOf(top);
-    ok(/Tahsil/.test(text) && !/Tahsile Ver|Bankaya Tahsil/.test(text), `çek kartında Bankaya Tahsile Ver yok (${text.slice(0, 160)})`);
+    ok(/Tahsil Et/.test(text) && /Ciro Et/.test(text) && Boolean(await page.$(`${top} [data-bank-action="bank-deposit"]`)), `çek kartında Bankaya Tahsile Ver düğmesi var (${text.slice(0, 160)})`);
     await shot("cek-karti");
     await closeAll();
   });

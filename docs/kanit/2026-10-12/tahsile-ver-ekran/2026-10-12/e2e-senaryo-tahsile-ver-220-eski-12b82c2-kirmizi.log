@@ -1,0 +1,132 @@
+
+■ Ön koşul (API): Ziraat · Çek Tahsil (Çek Kullan, 10.000), ABC borcu 10.000, çek C 1.500 portföyde
+  ✓ Ziraat 10.000
+  ✓ ABC borcu 8.500 (10.000 − C 1.500): 8500
+
+■ S0 çek A 5.000 ekrandan alınır (cari ABC; tutar, no, banka insan hızında; Tab) → kartta Bankaya Tahsile Ver; 101.01 6.500
+  ✓ Tab ile Banka / Şube'ye geçildi, yazıldı
+  ✓ sunucu: A 5.000, ABC, Portföyde (Portföyde)
+  ✗ kartta Bankaya Tahsile Ver düğmesi
+  ✓ portföydeki çekte Ciro Et açık
+  ✓ ABC 3.500: 3500
+  ✓ S0: Mutabakat Testi tamam
+  ✓ S0 · API Alt Hesap Mizanı: 101.01 6500 (beklenen 6500), 101.02 0 (beklenen 0)
+  ✓ S0 · EKRAN Alt Hesap Mizanı: 101.01 6500 Borç, 101.02 0 
+  ✓ S0 · EKRAN Tahsildeki Çek ve Senetler: 0 satır, TOPLAM 0 = satırlar 0 = 101.02 0
+
+■ S1 A → Bankaya Tahsile Ver: tek uygun hesap (Ziraat) bilgi satırı + bakiye; açıklama yazılır → Bankada Tahsilde; Ciro Et / Sil pasif ve nedeni yazılı
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-cheques-modal .hof-chq-actions [data-bank-action="bank-deposit"]')[22m
+
+    at openDeposit (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:152:14)
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:306:11
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:304:3
+
+■ S2 Bankadan Geri Al → Portföyde; 101.01 6.500, 101.02 0
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-cheques-modal .hof-chq-actions [data-bank-action="bank-withdraw"]')[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:351:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:349:3
+
+■ S3 yeniden Bankaya Tahsile Ver → 101.01 1.500, 101.02 5.000
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-cheques-modal .hof-chq-actions [data-bank-action="bank-deposit"]')[22m
+
+    at openDeposit (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:152:14)
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:369:11
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:367:3
+
+■ S4 Tahsil Et: yol Havale / EFT ve hesap Ziraat sabit (salt okunur, nedeni yazılı; nakit yok); İşlemden Sonra 15.000 → Ziraat 15.000
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form input[name="heldAccount"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:381:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:378:3
+
+■ S5 senet B 2.000 (API); Senet Kullan hesabı yok → yetkisiz (avukat) "Banka hesabı tanımlı değil, yöneticinize başvurun." (düğme yok)
+  ✓ ABC 1.500: 1500
+  ✗ senet için uygun hesap yok (Ziraat yalnız Çek Kullan)
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-cheques-modal [data-bank-action="bank-deposit"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:422:17
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:404:3
+
+■ S6 yönetici: "Banka Hesabı Tanımla" (Vazgeç: form aynen) → "+ Yeni Banka Hesabı" Senet Kullan işaretli gelir → Garanti açılır, seçili gelir → tahsile ver
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-cheques-modal .hof-chq-actions [data-bank-action="bank-deposit"]')[22m
+
+    at openDeposit (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:152:14)
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:441:11
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:439:3
+
+■ S6 liste süzgeçleri (ders 11): her Durum seçeneğinin satırları ve toplamı; özet kutuları (Portföyde 1.500, Bankada Tahsilde 2.000)
+  ✗ Durum seçenekleri: open, overdue, soon, , collected, endorsed, bounced, paid
+  ✗ "Portföyde" ve "Bankada Tahsilde" ayrı: Açık (portföyde / ödenecek) | Vadesi Geçmiş | 7 Gün İçinde | Tüm Durumlar | Tahsil Edildi | Ciro Edildi | Karşılıksız / İade | Ödendi
+  ✗ Durum “Açık (portföyde / ödenecek)”: 3 satır, satırlar 8500, alt toplam 8500 (beklenen 2 satır, 3500)
+  ✓ Durum “Vadesi Geçmiş”: 0 satır, satırlar 0, alt toplam 0 (beklenen 0 satır, 0)
+  ✓ Durum “7 Gün İçinde”: 1 satır, satırlar 1500, alt toplam 1500 (beklenen 1 satır, 1500)
+  ✗ beklenmeyen hata: page.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-cheques-modal select[data-filter="status"]')[22m
+[2m    - locator resolved to <select aria-label="Durum" data-filter="status">…</select>[22m
+[2m  - attempting select option action[22m
+[2m    2 × waiting for element to be visible and enabled[22m
+[2m      - did not find some options[22m
+[2m    - retrying select option action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible and enabled[22m
+[2m      - did not find some options[22m
+[2m    - retrying select option action[22m
+[2m      - waiting 100ms[22m
+[2m    60 × waiting for element to be visible and enabled[22m
+[2m       - did not find some options[22m
+[2m     - retrying select option action[22m
+[2m       - waiting 500ms[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:502:18
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:483:3
+
+■ S7 senet B Karşılıksız / İade (bankadan döndü) → tahsil kaydı kapanır; ABC borcu 3.500 (cari borcu geri); 101.02 0
+  ✗ açıklama: bankadan karşılıksız döndü
+  ✓ kaydedildi
+  ✗ sunucu: Karşılıksız / İade, tahsil kaydı undefined
+  ✓ ABC borcu 3.500: 3500
+  ✗ Banka Tahsil Kayıtları: Karşılıksız Döndü
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:533:37
+    at async step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:519:3
+
+■ S8 çek C: Garanti'ye de Çek Kullan → seçimde iki hesap bakiyeleriyle (ön seçim yok, zorunlu); senet hesabı yalnız Senet Kullan'da
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:542:78
+    at step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:77:11)
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/senaryo-tahsile-ver-220.mjs:541:9
+
+■ Son: Alt Hesap Mizanı dönem düğmeleri (ekran) — Bu Yıl / Bu Ay / Son 30 Gün / Tüm Zamanlar: 101.01 B 13.500 A 12.000, 101.02 B 12.000 A 12.000; Geçen Ay 101 satırı yok
+  ✗ thisYear: 101.01 B 8500 A 2000 = 6500 Borç; 101.02 B 0 A 0 = 0
+  ✗ thisMonth: 101.01 B 8500 A 2000 = 6500 Borç; 101.02 B 0 A 0 = 0
+  ✗ last30: 101.01 B 8500 A 2000 = 6500 Borç; 101.02 B 0 A 0 = 0
+  ✗ all: 101.01 B 8500 A 2000 = 6500 Borç; 101.02 B 0 A 0 = 0
+  ✓ lastMonth: 101.01 / 101.02 satırı yok
+  ✗ API Alt Hesap Mizanı: 101.01 B 8500 A 2000; 101.02 B 0 A 0
+  ✓ son: Mutabakat Testi tamam
+  ✓ Bankaya Tahsile Ver ekranlarında yazım düzeni (her sözcüğün ilk harfi büyük)
+  ✓ sayfa hatası yok
+
+✗ senaryo-tahsile-ver-220: 19 geçti, 22 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/e2e/artifacts/senaryo-tahsile-ver-220
