@@ -54,7 +54,7 @@ export function negativeConfirmed(body, url = null) {
 /**
  * @param {{ store, accounts, negative: { balancesOf, guardNegative, primeTotals } }} options  accounts: banka hesap servisi (rowOf, carryBoundary)
  */
-export function createModuleBank({ store, accounts, negative, legacy = () => false }) {
+export function createModuleBank({ store, accounts, negative, legacy = () => false, pos = () => null }) {
   /** Ailenin seçilebilir hesapları (etkin, TL): bank → Vadesiz/Ticari/Diğer; card → Kurumsal Kredi Kartı. */
   const eligible = (family = "bank") =>
     store
@@ -86,8 +86,13 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
    * Satırın banka hesabı (fin_ref). previous: { method, finRef } (düzeltmede); changed: yol, tutar ya da tarih değişti mi. corporate: kart yolu bu
    * belgede kurumsal kartla ödeme ya da kurumsal karta iade mi (cari ödeme, alış faturası ve alıştan iade, stok alımı); değilse kart yolu POS'tur.
    */
-  function pickRef({ method, value, date = "", previous = null, changed = true, corporate = false } = {}) {
+  function pickRef({ method, value, date = "", previous = null, changed = true, corporate = false, posId = undefined, posRefundOf = "" } = {}) {
     const way = String(method || "");
+    // 2.2.0 (Aşama 10; plan §4.2, §4.6): kart yolunun POS anlamı (tahsilat ve POS iadesi) POS'a bağlanır (lib/bank/pos.mjs pick). Ödemede POS
+    // kullanılmaz (firmanın kartı Kredi Kartı hesabıdır); POS verilirse 400.
+    const posValue = posId === undefined || posId === null ? "" : text(posId);
+    if (posValue && (way !== "card" || corporate)) throw new HttpError(400, way === "card" ? "POS yalnız tahsilatta ve POS iadesinde kullanılır; ödemede kartla ödeme Kredi Kartı hesabından yapılır." : "POS yalnız kart yolunda (POS) seçilir.", { code: "pos-not-for-payment", field: "posId" });
+    if (way === "card" && !corporate && pos()) return pos().pick({ value: posValue, bankValue: value, date, previous, changed, refundOf: text(posRefundOf), legacy: legacy() });
     const family = way === "bank" ? "bank" : way === "card" && corporate ? "card" : "";
     // Yargıç B1: "none" (ekrandaki "Hesapsız (Açılıştan Önce)") ya da API'de açıkça boş verilen alan ("") hesapsız isteğidir; alan hiç yoksa
     // (undefined) istek yoktur. İstek yalnız tarih bir uygun hesabın açılışından (ya da Devir Kapanışı gününden) önceyse kabul edilir (aşağıda).

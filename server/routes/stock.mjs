@@ -10,6 +10,7 @@ import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from ".
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
+import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
@@ -307,7 +308,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     // v2.1.0 (bank.post): peşin (Kasa/banka/POS) hareket para satırıdır ve İşlem No'lu işlem başlığı alır; yalnız miktar ya da açık
     // hesap hareketi para satırı değildir.
     const finRef = move.pay === "cash" ? move.finRef || "" : "";
-    const eventId = bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method, fin_ref: finRef });
+    const eventId = bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method, fin_ref: finRef, pos: finRef ? move.pos || null : null });
     store.run(
       "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", method, move.accountId || "", move.invoiceId || "", finRef, eventId, user.id, now(),
@@ -367,7 +368,9 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const item = itemRow(params.id);
     const body = await readJson(req);
     const input = moveInput(body, user, item);
-    input.finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, corporate: corporate(input) }) : "";
+    // 2.2.0: satışta POS (posId, taksit sayısı, provizyon), müşteri iadesinde POS İadesi.
+    input.finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, corporate: corporate(input), posId: body.posId, posRefundOf: body.posRefundOf }) : "";
+    input.pos = input.finRef ? posMetaOf(body) : null;
     banking.requireOut(user, bankOut(input), input.finRef);
     const k7 = banking.negative([input.finRef], input.date, banking.forced(body));
     let touched = [];
@@ -434,7 +437,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
     const before = { method: previous.pay === "cash" ? previous.method || "cash" : "", finRef: previous.finRef };
     const moved = previous.pay !== input.pay || (previous.method || "cash") !== (input.method || "cash") || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
-    const finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: before, changed: moved, corporate: corporate(input) }) : "";
+    const finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: before, changed: moved, corporate: corporate(input), posId: body.posId, posRefundOf: body.posRefundOf }) : "";
     if (finRef !== (previous.finRef || "")) banking.requireOut(user, bankOut(previous), finRef);
     const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
     let touched = [];
@@ -450,7 +453,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       write: () => {
         k7.capture();
         // Peşin ↔ açık hesap geçişi: para satırı olmaktan çıkan hareketin olayı iptal olur, yeniden peşin olan yeni olay alır.
-        const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", fin_ref: finRef, event_id: previous.eventId });
+        const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", fin_ref: finRef, event_id: previous.eventId, pos: finRef ? posMetaOf(body) : null });
         store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, finRef, eventId, user.id, now(), previous.id);
         touched = syncAccount(user, item, previous.id, input, previous.accountId);
         audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input, finRef });

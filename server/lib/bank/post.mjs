@@ -132,11 +132,12 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       return "";
     }
     const existing = String(row.event_id || "");
-    if (existing) {
-      ctx.events.add(existing);
-      return existing;
-    }
-    return openEvent(ctx, table, row);
+    const id = existing || openEvent(ctx, table, row);
+    if (existing) ctx.events.add(existing);
+    // 2.2.0 (Aşama 10): POS satırının ek bilgisi (taksit sayısı, provizyon, kart son 4 hanesi, asıl POS işlemi) en dıştaki işleme; POS kancası
+    // (adım 7) olayın satırıyla birlikte okur. Satırın kendisinde saklanmaz (modül tabloları değişmez).
+    if (row.pos && typeof row.pos === "object") (stack[0] || ctx).posMeta.set(id, row.pos);
+    return id;
   }
 
   /** Para dışı yazıcının satırı para satırı mı? Değilse true; öyleyse test kipinde hata, üretimde günlük + false. */
@@ -430,7 +431,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     return ctx;
   }
   /**
-   * fields: { type, date, bankRef, counterRef, reversalOf, description, reference, partyId, invoiceId, channel, valueDate, origin, originKey }
+   * fields: { type, date, bankRef, counterRef, posId, reversalOf, description, reference, partyId, invoiceId, channel, valueDate, origin, originKey }
    * lines: [{ role, gl, sub, ref, side ('D'|'C'), tryMinor, currency, fxMinor, rateE6, rateSource, memo }] — boş olabilir (sıfır açılış).
    * Dönüş: { id, no, year, seq }.
    */
@@ -442,10 +443,10 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     const id = newEventId();
     const copy = voucherCopy(lines, fields.bankRef || "");
     store.run(
-      `INSERT INTO fin_events (id, year, seq, no, type, date, value_date, status, reversal_of, origin, origin_key, channel, src_table, src_id, bank_ref, counter_ref, direction, amount_minor, try_minor, currency, method, party_id, invoice_id, description, reference, created_by, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO fin_events (id, year, seq, no, type, date, value_date, status, reversal_of, origin, origin_key, channel, src_table, src_id, bank_ref, counter_ref, pos_id, direction, amount_minor, try_minor, currency, method, party_id, invoice_id, description, reference, created_by, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       id, year, seq, no, fields.type, date, String(fields.valueDate || ""), String(fields.reversalOf || ""), fields.origin || ctx.origin, String(fields.originKey || ""), String(fields.channel || ""),
-      String(fields.bankRef || ""), String(fields.counterRef || ""), copy.direction, copy.amountMinor, copy.tryMinor, fields.currency || copy.currency, copy.method, String(fields.partyId || ""),
+      String(fields.bankRef || ""), String(fields.counterRef || ""), String(fields.posId || ""), copy.direction, copy.amountMinor, copy.tryMinor, fields.currency || copy.currency, copy.method, String(fields.partyId || ""),
       String(fields.invoiceId || ""), String(fields.description || ""), String(fields.reference || ""), ctx.user?.id || "system", stamp_(),
     );
     lines.forEach((line, index) => {
@@ -475,7 +476,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     if (!lines.length && !returnInvoiceId) return cancelBareEvent(eventId);
     if (returnInvoiceId && (lines.length || event.type !== "fee" || !event.invoice_id)) throw new TypeError("bank.reverse: iade faturalı ters kayıt yalnız KDV'li masraf başlığında");
     const mirror = lines.map(line => ({ role: line.role, gl: line.gl, sub: line.sub, ref: line.ref, side: line.side === "D" ? "C" : "D", tryMinor: line.try_minor, currency: line.currency, fxMinor: line.fx_minor, rateE6: line.rate_e6, rateSource: line.rate_source, memo: line.memo }));
-    const reversal = openVoucher({ type: "reversal", date: date || event.date, bankRef: event.bank_ref, counterRef: event.counter_ref, reversalOf: eventId, partyId: event.party_id, invoiceId: returnInvoiceId || event.invoice_id, currency: event.currency, description: description || `Ters Kayıt · ${event.no}` }, mirror);
+    const reversal = openVoucher({ type: "reversal", date: date || event.date, bankRef: event.bank_ref, counterRef: event.counter_ref, posId: event.pos_id, reversalOf: eventId, partyId: event.party_id, invoiceId: returnInvoiceId || event.invoice_id, currency: event.currency, description: description || `Ters Kayıt · ${event.no}` }, mirror);
     store.run("UPDATE fin_events SET status = 'reversed', reversed_by = ?, updated_by = ?, updated_at = ? WHERE id = ?", reversal.id, ctx.user?.id || "system", stamp_(), eventId);
     ctx.events.add(eventId);
     return reversal;
@@ -498,7 +499,8 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
   // (similarOk) geçer. Nakit ve hesabı atanmamış satır denetlenmez (güvenilir hedef yok; aynı gün aynı tutarda iki nakit hareket olağan).
   // Olay kopyası yazımdan sonra yenilendiği için denetim finalize'dan sonra, aynı işlemde (BEGIN IMMEDIATE) yapılır: aynı anda gelen iki
   // istekten ikincisi birincinin olayını görür. Ayar: Banka Ayarları → Mükerrer → Benzer İşlem Uyarısı (varsayılan Açık).
-  const SKIP_SIMILAR = new Set(["opening", "reversal", "carry_close", "legacy_assign", "legacy_reclass", ...NON_MONEY_TYPES]);
+  // 2.2.0: POS gün sonu fişi ve komisyon kesintisi/iadesi sistemin yazdığı (valör) satırlardır; benzerlik sorulmaz.
+  const SKIP_SIMILAR = new Set(["opening", "reversal", "carry_close", "legacy_assign", "legacy_reclass", "pos_settlement", "pos_fee", "pos_fee_refund", ...NON_MONEY_TYPES]);
   const similarEnabled = () => {
     try {
       return JSON.parse(store.setting("bank.settings", "") || "{}")?.similar?.enabled !== false;
@@ -561,11 +563,22 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       code: "bank-similar", eventId: match.id, eventNo: match.no, date: match.date, createdBy: match.createdBy || "", createdByName: match.createdByName || "", createdAt: match.createdAt || "", ...(event ? { newDate: event.date } : {}),
     });
   }
-  // Adım 7: POS kancaları — POS satışı bu aşamada yazılmaz (Aşama 9–10).
-  const posHooks = () => {};
+  // Adım 7: POS kancaları (2.2.0, Aşama 10–11; lib/bank/pos.mjs). En dıştaki bank.post'ta, işlemin bütün olayları (iç içe çağrıların devrettikleri
+  // dahil) üzerinden bir kez: POS'a bağlı (kart yolu, fin_ref = POS) etkin satırı olan olayın satışı/iadesi ve valör takvimi kurulur, satırı
+  // değişen ya da kalkan olayınki düzeltilir (void, İptal İadesi, yeniden planlama). Kanca olay kopyasından (finalize) ÖNCE çalışır: yazdığı gün
+  // fişleri, kesinti satırları ve ters kayıtlar aynı finalize'dan geçer.
+  let posEngine = null;
+  const posHooks = ctx => {
+    if (!posEngine || stack.length !== 1) return;
+    posEngine.reconcile(ctx, new Set([...ctx.events, ...ctx.handedEvents]));
+  };
+  /** POS servisi (lib/bank/pos.mjs createPos) kancayı kurar. */
+  const usePos = engine => {
+    posEngine = engine;
+  };
 
   function post(options = {}) {
-    const { user = null, scope = "", requestId = "", module = "", op, body, prev, write, prepare = null, guard = null, audit: auditEntry = null, origin = "manual", similarOk = false } = options;
+    const { user = null, scope = "", requestId = "", module = "", op, body, prev, write, prepare = null, guard = null, audit: auditEntry = null, origin = "manual", similarOk = false, posOutcome = "" } = options;
     if (!OP_SET.has(op)) throw new TypeError(`bank.post: bilinmeyen işlem türü "${op}" (${OPS.join(", ")})`);
     if (typeof write !== "function") throw new TypeError("bank.post: write geri çağrısı gerekli");
     if (op !== "create" && prev === undefined) throw new TypeError(`bank.post: "${op}" işleminde önceki hâl (prev) zorunlu (işlem geçmişinin "previous" alanı)`);
@@ -580,7 +593,13 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         const hit = requests.lookup(key, hash);
         if (hit) return { replayed: true, refId: hit.refId };
       }
-      const ctx = { user, module, op, origin, events: new Set(), created: new Set(), boundRows: new Map(), insertedRows: new Map(), handedBound: new Map(), handedInserted: new Map(), looseRows: new Map(), pools: undefined };
+      const ctx = { user, module, op, origin, events: new Set(), created: new Set(), boundRows: new Map(), insertedRows: new Map(), handedBound: new Map(), handedInserted: new Map(), looseRows: new Map(), pools: undefined, handedEvents: new Set(), posMeta: new Map(), posOutcome: "" };
+      // 2.2.0: POS'lu satır silinirken/fatura iptalinde sonucun türü ("refunded" müşteriye iade edildi | "entry-error" kayıt hatası | "void")
+      // en dıştaki işleme yazılır (iç içe çağrıda dıştakinin seçimi korunur).
+      if (posOutcome) {
+        const root = stack[0] || ctx;
+        root.posOutcome ||= posOutcome;
+      }
       ctx.affected = ids => ids.forEach(id => ctx.events.add(id));
       // GG2: bağlı satırın önceki hâli (ilk dokunuşta) ve eklenen satırlar (lib/db.mjs kancaları).
       ctx.bound = (table, rowids) => {
@@ -618,14 +637,17 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         assertMutable(user, op, prev); // 3
         const result = write(ctx); // 5–6
         boundRules(ctx); // 3 (GG2): bağlı satırlar — K4 yetkisi ve bağın yolla uyumu (yazımdan sonra, gerçek satırla)
-        if (stack.length > 1) handOver(stack[stack.length - 2], ctx);
-        else {
+        if (stack.length > 1) {
+          handOver(stack[stack.length - 2], ctx);
+          const parent = stack[stack.length - 2];
+          for (const id of [...ctx.events, ...ctx.handedEvents]) parent.handedEvents.add(id);
+        } else {
           passiveRules(ctx); // 3 (Yargıç Y1): pasif hesabın bakiyesi değişmez
           poolRules(ctx); // 3 (Yargıç Y1, eleştirmen B4/Y2): Devir Kapanışı ve eski bakiye aktarımı havuzundaki satırın parası değişmez
         }
+        posHooks(ctx); // 7 (2.2.0: olay kopyasından önce; yukarıdaki not)
         finalize(ctx); // 5: olay kopyası, iptal, yeniden etkin
         similar(ctx, similarOk); // 4: yeni olayların kopyası üzerinden (aynı işlemde; yukarıdaki not)
-        posHooks(ctx); // 7
         guard?.(result, ctx); // 8
         if (auditEntry) {
           // 9
@@ -644,7 +666,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     });
   }
 
-  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, voucher: openVoucher, reverse: reverseVoucher, cancelBare: cancelBareEvent, similarError, businessDayOf, isMoney: isMoneyRow, keepRef, droppedText, refFits, policy, get inPost() {
+  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, voucher: openVoucher, reverse: reverseVoucher, cancelBare: cancelBareEvent, similarError, businessDayOf, isMoney: isMoneyRow, keepRef, droppedText, refFits, policy, usePos, get inPost() {
     return stack.length > 0;
   } };
 }

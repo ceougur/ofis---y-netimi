@@ -210,7 +210,7 @@ export function lockDigestOf(store, lock) {
   return hash.digest("hex");
 }
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, pos = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
   let bankChecks = null;
@@ -554,6 +554,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // GG2: hesaba bağlı modül satırının yolu hesabın türüne uyar (havale → 102, kart → 309); bağlı satır nakit/POS olamaz.
       const refItems = byEntity("bank:ref", "Hesap Bağı ve Yol", bank().refProblems(), { label });
       bankItems.push(...(refItems.length ? refItems : [{ code: "bank:ref", name: "Hesap Bağı ve Yol", ok: true, count: 0 }]));
+      // 2.2.0 (§3.11 pos:terminal, pos:source, pos:refund, pos:schedule, bank:party): POS denetimleri — tam taramada ve POS'a dokunan işlemde
+      // (dokunulan olaylardan birinin POS bağı var: satış/iade, gün fişi, İptal İadesi).
+      const posService = pos?.();
+      if (posService?.checkItems && (!scoped || (touched.size && store.get("SELECT 1 AS found FROM json_each(?) j JOIN fin_events e ON e.id = j.value WHERE e.pos_id <> '' LIMIT 1", JSON.stringify([...touched]))))) bankItems.push(...posService.checkItems({ events: scoped ? touched : null }));
       const report = scoped && !touched.size ? [] : bank().reportMismatches(scope);
       bankItems.push({ code: "money:report", name: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)", ok: report.length === 0, count: report.length, ...(scoped ? { scoped: true, gateCount: report.length } : {}), sample: report.slice(0, 5).map(item => `${item.key}: satırlar ${item.rows / 100} / özet ${item.summary / 100}`) });
       if (!scoped) {

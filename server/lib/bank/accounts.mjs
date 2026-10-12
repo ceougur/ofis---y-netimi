@@ -643,7 +643,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return {
       labels: K10_LABELS,
       realBank: { minor: totals.realBankMinor, defined: bankRows.length > 0 },
-      posPending: { netMinor: 0, blockedMinor: 0 },
+      // 2.2.0 (K10, §4.7): POS Bekleyen (Net) ve Blokeli POS bekleyen valör kalemlerinden (lib/bank/pos.mjs).
+      posPending: posService ? posService.pendingStats() : { netMinor: 0, blockedMinor: 0 },
       debt: { cardMinor: totals.cardDebtMinor, loanMinor: totals.loanDebtMinor, totalMinor: totals.cardDebtMinor + totals.loanDebtMinor },
       unassigned: { bankMinor: totals.unassignedBankMinor, cardMinor: totals.unassignedCardMinor, totalMinor: unassigned, newCount: newCount(), future: totals.futureUnassigned },
       byCurrency: totals.byCurrency,
@@ -673,14 +674,23 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       const fallback = rows.find(row => filter(row) && row.kind === "demand")?.id || ids[0] || "";
       return { ids, single: ids.length === 1, required: ids.length > 0, defaultId: preferId && ids.includes(preferId) ? preferId : fallback };
     };
+    const posChoices = posService ? posService.choices() : { pos: [], form: { ids: [], single: false, required: false, defaultId: "" } };
     return {
       accounts,
       forms: {
         bank: formOf(bankFormOk, preferred),
         card: formOf(row => row.kind === "card"),
         fx: formOf(row => row.kind === "fx"),
+        pos: posChoices.form,
       },
+      // 2.2.0: POS seçicisi (taksit oranları; bakiye dönmez).
+      pos: posChoices.pos,
     };
+  }
+  // 2.2.0: POS servisi (routes/bank.mjs kurar): özetin POS Bekleyen'i ve seçicinin POS listesi.
+  let posService = null;
+  function usePos(service) {
+    posService = service;
   }
 
   // ---------- Hesabı Atanmamış Eski Hareketler ----------
@@ -1141,5 +1151,5 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return { rows, mains, from, to };
   }
 
-  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, useNegative, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain, newCount, badgeCount, carryBoundary };
+  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, useNegative, usePos, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain, newCount, badgeCount, carryBoundary };
 }

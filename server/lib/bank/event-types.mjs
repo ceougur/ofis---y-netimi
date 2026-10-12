@@ -8,6 +8,8 @@ export const EVENT_TYPES = new Set([
   "opening", "fee", "interest_in", "interest_out", "other_in", "other_out", "card_payment", "loan_draw", "loan_repay", "transfer", "fx_exchange", "revaluation", "carry_close",
   // POS (Aşama 9–10)
   "pos_settlement", "pos_sale", "pos_refund", "pos_cancel_refund",
+  // POS komisyon kesintisi / komisyon tahsili ve komisyon iadesi (2.2.0, KDV kipi; §4.3): sağlayıcı carisine account_entries(source 'bank')
+  "pos_fee", "pos_fee_refund",
   // Modül satırları (Aşama 2: bugünkü para yazıcıları)
   "cash_transfer", "cash_in", "cash_out", "party_in", "party_out", "invoice_cash", "plan_in", "plan_out", "record_in", "stock_cash", "cheque_collect", "cheque_pay",
   // Çek tahsile verme (Aşama 8), eski hareket atama (Aşama 3), ters kayıt (Aşama 4)
@@ -32,6 +34,7 @@ export function typeOf(table, row = {}) {
     case "cash_entries":
       return row.transfer_id ? "cash_transfer" : row.kind === "out" ? "cash_out" : "cash_in";
     case "account_entries":
+      if (row.source === "bank") return row.kind === "out" ? "pos_fee" : "pos_fee_refund";
       return row.source === "invoice" ? "invoice_cash" : row.kind === "out" ? "party_out" : "party_in";
     case "plan_entries":
       return row.kind === "out" ? "plan_out" : "plan_in";
@@ -79,6 +82,8 @@ const TYPE_LABELS = Object.freeze({
   pos_sale: "POS Satışı",
   pos_refund: "POS İadesi",
   pos_cancel_refund: "POS İptal İadesi",
+  pos_fee: "POS Komisyon Kesintisi",
+  pos_fee_refund: "POS Komisyon İadesi",
   cash_transfer: "Kasa ile Banka Arası",
   cash_in: "Kasa Girişi",
   cash_out: "Kasa Çıkışı",
