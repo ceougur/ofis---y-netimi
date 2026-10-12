@@ -1400,6 +1400,9 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
 - BAŞLADI (kullanıcı, 12.10.2026: "bunları yapmaya başla, müşteri başka talepler iletirse eklerim"): iş listesi `docs/2.2.0-IS-LISTESI.md`
   (İz 1 küçük düzeltmeler · İz 2 banka hesabı/kart/çek/seçiciler · İz 3 POS Aşama 10–11 · İz 4 Bankaya Tahsile Ver). Dal
   `claude/hopeful-goodall-6nmtcj`. Ajanlar worktree'de; ana oturum kırmızı/yeşili ayrı kopyada yeniden koşar, CI'yi kendisi okur.
+  KARAR (kullanıcı, aynı gün: "konuştuğumuz müşteri taleplerindeki önerilerini de uygula"): bu konuşmadaki BÜTÜN önerilerim uygulanır
+  (Doğrulanmadı metni + neden, kart bankanın içinden, Tanımla düğmesi + yetkisiz yazısı bütün seçicilerde, Çek/Senet/POS Kullan, Çek Hesabı,
+  seçicilerde bakiye, ödeme düğmeleri yola göre, POS bankaya bağlı + POS Tanımla, BANKAYA TAHSİLE VER bu sürüme alındı — İz 4).
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
