@@ -464,7 +464,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const all = flowOf(banks.flatMap(b => bound(b.id)));
         if (sum(hareket, "Giriş") !== all.in || sum(hareket, "Çıkış") !== all.out || sum(hareket, "Transfer Giriş") !== all.trIn || sum(hareket, "Transfer Çıkış") !== all.trOut || sum(hareket, "Dönem Sonu") !== all.closing) problems.push(`Banka Hareket ${from}–${to}: ${["Giriş", "Çıkış", "Transfer Giriş", "Transfer Çıkış", "Dönem Sonu"].map(k => tl(sum(hareket, k))).join("/")} · model ${[all.in, all.out, all.trIn, all.trOut, all.closing].map(tl).join("/")}`);
         const masraf = await rc("banka-masraf", from, to);
-        const fees = M.bankLines.filter(x => x.date >= from && x.date <= to && x.feeTotal).reduce((t, x) => t + x.feeTotal, 0);
+        // 2.2.0 (doğrulama senet-bozma-1 T1-F3): rapor POS komisyonlarını da gösterir (c9d091f); model önceden yalnız Banka Fişi masraflarını
+        // topluyordu → POS ekseni açık her koşu ilk rapor denetiminde (işlem 50) duruyordu.
+        const fees = M.bankLines.filter(x => x.date >= from && x.date <= to && x.feeTotal).reduce((t, x) => t + x.feeTotal, 0)
+          + M.posLines.filter(x => x.date >= from && x.date <= to).reduce((t, x) => t + (x.fee || 0), 0);
         if (sum(masraf, "Toplam") !== fees) problems.push(`Banka Masraf ${from}–${to}: ${tl(sum(masraf, "Toplam"))} · model ${tl(fees)}`);
         const mizan = await rc("alt-hesap-mizani", from, to);
         const subOf = code => { const row = mizan.rows.find(r => r[0] === code); return row ? centsOfText(row[6]) * (row[7] === "Alacak" ? -1 : 1) : 0; };
@@ -936,7 +939,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   function posVoucher(date, { gross, commission, sign }) {
     // sign −1: satış kalemi (108 −brüt, Ziraat +net); +1: iade kalemi (108 +brüt, Ziraat −brüt; İade Edilmez) ya da ters kayıt (commission ile).
     const net = gross - commission;
-    M.posLines.push({ date, cents: sign * gross, feePart: commission, posId: posTerminal.id });
+    // fee: Banka Masraf Raporu'nun POS komisyonu satırı (plan §8 "hesap 770/653"; gider türü POS Komisyonu → 653): satışta +komisyon, ters
+    // kayıtta −komisyon, İade Edilmez iadede 0.
+    M.posLines.push({ date, cents: sign * gross, feePart: commission, fee: -sign * commission, posId: posTerminal.id });
     bankAdd({ id: `pos-${M.posLines.length}`, bankId: posTerminal.bankId, type: "pos", date, cents: -sign * net, transfer: true, feePart: 0, status: "active" });
     M.kasa.card += sign * gross;
   }

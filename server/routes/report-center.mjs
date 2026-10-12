@@ -767,7 +767,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       id: "alt-hesap-mizani",
       group: "Banka",
       title: "Alt Hesap Mizanı",
-      description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, kredi kartı 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00): devir, dönem borç, dönem alacak ve bakiye; her ana hesap alt hesaplarının toplamına eşittir.",
+      description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, POS 108, kredi kartı 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00) ve alınan evrakın alt hesapları (101.01 Portföydeki Çekler, 101.02 Tahsile Verilen Çekler, 121.01 Portföydeki Senetler, 121.02 Tahsile Verilen Senetler): devir, dönem borç, dönem alacak ve bakiye; her ana hesap alt hesaplarının toplamına eşittir.",
       params: ["range"],
       preset: "thisYear",
       permission: "bank.reports",

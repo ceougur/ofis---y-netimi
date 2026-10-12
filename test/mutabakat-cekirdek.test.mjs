@@ -49,4 +49,20 @@ describe("dört çekirdek mutabakatı (model tabanlı)", () => {
       }
     });
   }
+  // 2.2.0 (doğrulama senet-bozma-1 T1-F3): POS ekseni açık motor npm test'te hiç koşmuyordu; Banka Masraf Raporu POS komisyonunu gösterince
+  // (c9d091f) model eksik kaldı ve POS ekseni açık her koşu işlem 50'de durdu — 121/321 evrak işlemleri POS'la birlikte denenmedi. Kısa bir POS
+  // koşusu (rapor denetimi işlem 50'de, POS tahsilatı / iadesi / silme ve evrak işlemleri dahil) bu açığı kapatır.
+  it("tohum 3: POS ekseni açık, 200 rastgele işlem (POS tahsilatı, iadesi, silme; çek/senet tahsile ver); her işlemden ve raporlardan sonra tutarlı", async () => {
+    const server = await startTestServer({ bankPickLegacy: true, now: motorNow() });
+    try {
+      const admin = await loginAdmin(server);
+      const report = await runReconciliation({ client: admin, seed: 3, operations: 200, burst: 20, pos: true });
+      assert.deepEqual(report.mismatches, [], JSON.stringify(report.mismatches, null, 1));
+      assert.ok(report.checks >= 200);
+      assert.ok(report.reportChecks >= 3, "raporlar denetlendi");
+      assert.ok((report.byKind["pos-tahsil"] || 0) > 0, `POS tahsilatı denendi: ${JSON.stringify(report.byKind)}`);
+    } finally {
+      await server.close();
+    }
+  });
 });

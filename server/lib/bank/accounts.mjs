@@ -1312,7 +1312,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
 
   // ---------- Alt Hesap Mizanı (rapor verisi) ----------
   /**
-   * Alt Hesap Mizanı (102/108/300/309 alt hesapları; dönem). GG2 (1.000.000 hareket): para satırları tek kaynaktan tek geçişte toplanır
+   * Alt Hesap Mizanı (102/108/300/309 alt hesapları ve alınan evrakın 101.01/101.02, 121.01/121.02 alt hesapları; dönem). GG2 (1.000.000 hareket): para satırları tek kaynaktan tek geçişte toplanır
    * (moneyLines periodGroups) — önceden bütün Ana Defter kuruluyordu (100.000 satırda ~1,7 sn, 1.000.000'da ~40 sn; o sürede sunucu başka isteğe
    * yanıt vermiyordu). Alt hesap, Ana Defter'in kuralıyla (moneyAccount: yol + bağ) bulunur; ana hesap yoldan (havale 102, POS 108, kurumsal kart
    * 309, kredi 300). Ana Defter ↔ tek kaynak eşitliğini kapı her yazımda ve Mutabakat Testi denetler.
