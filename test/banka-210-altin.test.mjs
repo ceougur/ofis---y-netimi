@@ -90,7 +90,8 @@ function requests() {
 // (Gerçek Banka + Hesabı Atanmamış = eski Banka / POS) ayrıca denetlenir. İç hareketi olan Banka ve POS Hareketleri dönemlerinin PDF/Excel'i
 // eski dosyayla değil, aynı dönemin ekranıyla karşılaştırılır (özet ve açıklama biçimi bilerek değişti).
 const k10Problems = [];
-async function fetchOne(api, request, side = "eski") {
+// company: yeni taraf PDF'inin şirket satırındaki unvan (2.2.0 İz 1.1); eski taraf aynı satırı (varsa) atar.
+async function fetchOne(api, request, side = "eski", company = null) {
   if (request.kind === "json") {
     const response = unwrap(await api.client.get(request.url));
     let data = response.data;
@@ -113,13 +114,22 @@ async function fetchOne(api, request, side = "eski") {
   // Hesap Planı Mizanı PDF'inde "Hesap Adı" kolonunun genişliği en uzun hesap adına göre (649'un yeni adı kısaldı): aynı metin
   // başka yerden satır kırar. Bu raporda satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
   if (request.kind === "pdf") {
-    // 2.2.0 İz 1.1 (bilerek): Rapor Merkezi PDF'inin başlığındaki şirket "001 · Unvan" (önceden yalnız unvan); kod öneki atılır.
-    const text = pdfText(response.buffer).replace(/^\d{3} · /gm, "");
+    // 2.2.0 İz 1.1 (bilerek): Rapor Merkezi PDF'inin ilk satırı şirket "001 · Unvan" (önceden yalnız unvan; unvan boşsa satır hiç yoktu — ör.
+    // motor verisi). İki taraf da kendi şirket satırını atar: yeni taraf "kod · unvan" satırını, eski taraf aynı unvanın satırını (varsa).
+    let text = pdfText(response.buffer);
+    let label = null;
+    if (request.url.includes("/report-center/")) {
+      const head = /^(\d{3}) · ([^\n]*)\n/.exec(text);
+      if (side === "yeni" && head) {
+        label = head[2];
+        text = text.slice(head[0].length);
+      } else if (side !== "yeni" && company && text.startsWith(`${company}\n`)) text = text.slice(company.length + 1);
+    }
     // 2.1.0 Aşama 14: altıdan çok özet kutusu iki sıraya dizilir (Banka ve POS Hareketleri'nde 7–8 kutu; tek sırada tutar kesiliyordu) →
     // tablo sayfalara başka yerden bölünür ve uzun özet başlığı satır kırmaz. Bu raporda sayfa başlıkları (şirket · rapor, "Sayfa n / m", alt
     // başlık, kolon başlıkları) atılır ve satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
-    if (request.url.includes("/banka-pos-hareketleri/")) return { status: 200, body: textNorm(withoutPageHeads(text).replace(/\s+/g, " ")) };
-    return { status: 200, body: textNorm(request.url.includes("/hesap-mizani/") ? text.replace(/\s+/g, " ") : text) };
+    if (request.url.includes("/banka-pos-hareketleri/")) return { status: 200, body: textNorm(withoutPageHeads(text).replace(/\s+/g, " ")), company: label };
+    return { status: 200, body: textNorm(request.url.includes("/hesap-mizani/") ? text.replace(/\s+/g, " ") : text), company: label };
   }
   const sheets = xlsxSheets(response.buffer);
   for (const rows of Object.values(sheets)) for (let k = rows.length - 1; k >= 0; k -= 1) if (rows[k][0] === "Hazırlanma") rows.splice(k, 1);
@@ -232,7 +242,10 @@ async function compare(oldServer, newServer, { companies, label, skip = () => fa
             continue;
           }
         }
-        const [left, right] = [await fetchOne(a, request), await fetchOne(b, request, "yeni")];
+        // Yeni taraf önce: PDF'inin şirket satırındaki unvan eski tarafa verilir (2.2.0 İz 1.1 normalizasyonu); gövde dışındaki alan atılır.
+        const fresh = await fetchOne(b, request, "yeni");
+        const old = await fetchOne(a, request, "eski", fresh.company);
+        const [left, right] = [{ status: old.status, body: old.body }, { status: fresh.status, body: fresh.body }];
         compared += 1;
         if (left.status !== right.status) problems.push(`${where}: durum ${left.status} ≠ ${right.status}`);
         else {

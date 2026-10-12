@@ -233,7 +233,10 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     const xlsx = await get(id, query, "xlsx");
     assert.equal(xlsx.status, 200, `${tag} Excel ${xlsx.status}`);
     const sheets = xlsxSheets(xlsx.buffer);
-    const sheet = Object.values(sheets)[0];
+    // 2.2.0 İz 1.1: tablonun üstünde başlık bloğu (tek hücreli satırlar: "kod · unvan", rapor adı, kapsam, oluşturma); blok atlanır.
+    const book = Object.values(sheets)[0];
+    assert.match(String(book[0]?.[0]), /^\d{3} · /, `${tag} Excel: ilk satır şirket kodu ve unvanı`);
+    const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1)));
     assert.deepEqual(sheet[0], data.headers, `${tag} Excel: başlık satırı`);
     assert.equal(sheet.length, 1 + data.rows.length + (data.footer ? 1 : 0), `${tag} Excel: satır sayısı`);
     const value = cell => moneyOf(cell);
@@ -245,7 +248,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     };
     data.rows.forEach((row, r) => row.forEach((cell, c) => same(sheet[r + 1]?.[c], cell, `satır ${r + 1} "${data.headers[c]}"`)));
     if (data.footer) data.footer.forEach((cell, c) => same(sheet.at(-1)?.[c], cell, `TOPLAM "${data.headers[c]}"`));
-    const ozet = Object.fromEntries((sheets["Özet"] || []).slice(1).map(([key, val]) => [key, val]));
+    const ozet = Object.fromEntries((sheets["Özet"] || []).slice(1).filter(([key]) => key !== "Şirket").map(([key, val]) => [key, val]));
     for (const [key, val] of data.summary) {
       if (moneyOf(val) !== null) assert.equal(typeof ozet[key] === "number" ? Math.round(ozet[key] * 100) : moneyOf(ozet[key]), moneyOf(val), `${tag} Excel Özet "${key}"`);
     }
@@ -434,8 +437,9 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     // PDF ve Excel aynı süzgeçle (alt başlık ve satırlar).
     const pdf = pdfText((await get("banka-hareket", { preset: "all", bankAccount: acc.Z.id, bankMove: "internal" }, "pdf")).buffer).replace(/\s+/g, " ");
     assert.ok(pdf.includes("Transfer (İç Hareketler)") && pdf.includes(`${label.Z} (${sub.Z})`) && !pdf.includes(label.G), "PDF süzgeçli");
-    const sheet = Object.values(xlsxSheets((await get("banka-hareket", { preset: "all", bankAccount: acc.Z.id, bankMove: "internal" }, "xlsx")).buffer))[0];
-    assert.ok(sheet.slice(1).every(row => row[2] === label.Z || row[0] === "TOPLAM"), "Excel süzgeçli");
+    const book = Object.values(xlsxSheets((await get("banka-hareket", { preset: "all", bankAccount: acc.Z.id, bankMove: "internal" }, "xlsx")).buffer))[0];
+    const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1))); // 2.2.0 İz 1.1: başlık bloğu atlanır
+    assert.ok(sheet.length > 1 && sheet.slice(1).every(row => row[2] === label.Z || row[0] === "TOPLAM"), "Excel süzgeçli");
     for (const [id, query, status] of [
       ["banka-bakiye", { bankGroup: "xyz" }, 400],
       ["banka-hareket", { bankMove: "xyz" }, 400],
