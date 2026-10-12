@@ -242,6 +242,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   let posTerminal = null;
   const POS_RATE = { 1: 25_000, 3: 35_000 };
   if (bank && pos && banks.length) {
+    // İz 3.1: POS yalnız "POS Kullan" işaretli hesaba bağlanır.
+    const flag = await api("PUT", `/api/workspace/bank/accounts/${banks[0].id}`, { usePos: true });
+    if (flag.status !== 200) throw new Error(`POS Kullan işaretlenemedi: ${flag.status} ${flag.text}`);
     const r = await api("POST", "/api/workspace/bank/pos", { name: `Motor POS T${seed}`, bankAccountId: banks[0].id, providerKind: "bank", tax: "bsmv_incl", valorRule: "same_day", valorDays: 0, installmentPayout: "monthly", refundCommission: "none", provisionDays: 0, validFrom: D0, rates: [{ installments: 1, rate: "2,5" }, { installments: 3, rate: "3,5" }] });
     if (r.status !== 200) throw new Error(`POS açılamadı: ${r.status} ${r.text}`);
     posTerminal = { id: r.data.pos.id, bankId: banks[0].id, glSub: r.data.pos.glSub };

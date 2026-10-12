@@ -42,7 +42,18 @@ export const ziraatPos = (bankAccountId, extra = {}) => ({
   rates: [{ installments: 1, rate: "2,5" }, { installments: 3, rate: "3,5" }],
   ...extra,
 });
-export const openPos = (api, body) => must(`POS aç ${body.name}`, api.post(`${BANK}/pos`, body)).then(data => data.pos);
+/**
+ * İz 3.1 (12.10.2026): POS yalnız "POS Kullan" işaretli banka hesabına bağlanır (400 pos-account-flag). Yardımcı önce hesabı işaretler (ekrandaki
+ * akış: hesabın Düzenle'sinde POS Kullan → hesap kartında "+ POS Ekle"); işaret kuralının kendisi banka-220-pos-iz3 testinde.
+ */
+export async function flagPos(api, accountId) {
+  const account = await must("hesap", api.get(`${BANK}/accounts/${accountId}`));
+  if (!account.usePos) await must("POS Kullan", api.put(`${BANK}/accounts/${accountId}`, { usePos: true }));
+}
+export const openPos = async (api, body) => {
+  if (body.bankAccountId) await flagPos(api, body.bankAccountId);
+  return must(`POS aç ${body.name}`, api.post(`${BANK}/pos`, body)).then(data => data.pos);
+};
 
 /** Kabul ön koşulu + 1–4: stok, iki banka hesabı, ABC Ltd. */
 export async function acceptanceBase(ctx) {

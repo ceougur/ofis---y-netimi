@@ -2,6 +2,9 @@
 // ve şirkete gider; yazan her uç bank.post'tan geçer, GET uçları yazmaz. Özel yollar ":id"li yollardan önce kaydedilir.
 //   GET  /bank/pos                              bank.view        POS listesi (bugün geçerli oranlar, bekleyen kalem özeti)
 //   POST /bank/pos                              bank.pos (+ oran: bank.commission)  POS aç (oran ızgarası dahil)
+//   GET  /bank/pos/preview?pos=&amount=&installments=&date=  (seçici izinleri)  tahsilat formunun önizlemesi (komisyon, net, valör günleri)
+//   GET  /bank/pos/origins?invoice=|party=|plan=&pos=          (seçici izinleri)  POS İadesinin asıl işlem önerisi
+//   GET  /bank/pos/row?row=tablo:kimlik                        (seçici izinleri)  düzeltme formunun POS bilgisi (taksit, provizyon, son 4)
 //   GET  /bank/pos/sales?pos=&from=&to=&status=&kind=&row=  bank.view  POS İşlemleri (satış ve iadeler, kalemleriyle; row: tablo:kimlik)
 //   GET  /bank/pos/sales/:id                    bank.view        POS işlemi (iadeleriyle)
 //   POST /bank/pos/sales/:id/void               bank.cancel + accounts.manage  İptal Et (yalnız provizyon süresi içinde ve valörden önce; cari tahsilatı)
@@ -22,7 +25,7 @@ import { parseMinor } from "../lib/minor.mjs";
 
 const BASE = "/api/workspace/bank";
 
-export function registerPosRoutes(router, { auth, events, pos, accounts = () => null, period }) {
+export function registerPosRoutes(router, { auth, events, pos, accounts = () => null, period, chooser = () => false }) {
   const changed = (user, extra = {}) => events?.publish("workspace.changed", { kind: "bank", pos: true, actorId: user.id, actorName: user.display_name, ...extra }, { except: user.id });
   const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
   const need = (user, ...keys) => {
@@ -39,6 +42,30 @@ export function registerPosRoutes(router, { auth, events, pos, accounts = () => 
     const result = pos.create(user, body, { requestId: requestIdOf(req, body) });
     changed(user);
     ok(res, result);
+  });
+
+  // ---------- Tahsilat formlarının POS alanı (İz 3.2; seçici izinleri: GET /bank/choices ile aynı) ----------
+  // Önizleme: satış yazımıyla aynı hesap (oran, komisyon, net, valör günleri); hiçbir şey yazmaz. Asıl işlem: POS İadesinin önerisi.
+  const choose = req => {
+    const user = auth.requireUser(req);
+    if (!chooser(user)) throw new HttpError(403, "Bu işlem için yetkiniz yok.", { code: "FORBIDDEN" });
+    return user;
+  };
+  router.get(`${BASE}/pos/preview`, async ({ req, res, url }) => {
+    choose(req);
+    const q = url.searchParams;
+    ok(res, pos.preview({ posId: text(q.get("pos")), amount: text(q.get("amount")), installments: text(q.get("installments")) || 1, date: text(q.get("date")) }));
+  });
+  // Düzeltme formunun POS bilgisi (satırın etkin POS kaydı: POS, taksit, provizyon, son 4 hane, asıl işlem): yalnız bu alanlar (tutar/oran dönmez).
+  router.get(`${BASE}/pos/row`, async ({ req, res, url }) => {
+    choose(req);
+    const sale = pos.sales({ row: text(url.searchParams.get("row")), limit: 5 }).find(item => item.status === "active" && item.src !== "cancel") || null;
+    ok(res, { sale: sale ? { posId: sale.posId, kind: sale.kind, installments: sale.installments, authCode: sale.authCode, cardLast4: sale.cardLast4, originId: sale.origin?.id || "", sourceless: sale.src === "sourceless" } : null });
+  });
+  router.get(`${BASE}/pos/origins`, async ({ req, res, url }) => {
+    choose(req);
+    const q = url.searchParams;
+    ok(res, { sales: pos.origins({ invoiceId: text(q.get("invoice")), partyId: text(q.get("party")), planId: text(q.get("plan")), posId: text(q.get("pos")) }) });
   });
 
   // ---------- POS İşlemleri ----------

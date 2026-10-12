@@ -32,7 +32,9 @@ import { apiOf, integrityOk, pdfText, unwrap, xlsxSheets } from "./banka-210-ort
 import { BANK, TODAY, bootBank, expectStatus, must, openAccount, trIban } from "./banka-210-hesap-ortak.mjs";
 
 const RC = "/api/workspace/report-center";
-const BANK_REPORTS = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"];
+// 2.2.0 (İz 3.5, bilerek güncellendi): Banka grubuna POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar eklendi (yetki ve şirket ayrımı
+// denetimleri onlar için de koşar; içerik denetimi banka-220-pos-iz3'te).
+const BANK_REPORTS = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar"];
 const K10 = { realBank: "Gerçek Banka", debt: "Kart ve Kredi Borcu", unassigned: "Hesabı Atanmamış Eski Hareketler" };
 const NO_SUM = new Set(["Bakiye"]);
 
@@ -266,8 +268,8 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     const catalog = await must("katalog", api.get(RC));
     const bank = catalog.reports.filter(report => report.group === "Banka");
     assert.deepEqual(bank.map(report => report.id), BANK_REPORTS);
-    assert.deepEqual(Object.fromEntries(bank.map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"] });
-    assert.deepEqual(bank.map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı"]);
+    assert.deepEqual(Object.fromEntries(bank.map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"], "pos-odeme-takvimi": ["range", "posTerminal", "posKind"], "faturasi-beklenen-komisyonlar": ["range", "posTerminal"] });
+    assert.deepEqual(bank.map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı", "POS Ödeme Takvimi", "Faturası Beklenen Komisyonlar"]);
     assert.deepEqual(catalog.choices.bankAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id, acc.K.id, acc.L.id, "unassigned"]);
     assert.deepEqual(catalog.choices.feeAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id]);
     assert.ok(!/\d,\d{2}/.test(JSON.stringify(catalog.choices)), "seçeneklerde bakiye (tutar) yok");

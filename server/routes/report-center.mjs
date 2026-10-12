@@ -225,6 +225,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
   const BANK_MOVES = Object.freeze({ external: "Dış Hareketler", internal: "Transfer (İç Hareketler)" });
   const BANK_GROUPS = Object.freeze({ real: K10_LABELS.realBank, debt: K10_LABELS.debt, unassigned: K10_LABELS.unassigned, all: "Tümü" });
   const UNASSIGNED_CHOICE = "unassigned";
+  // POS Ödeme Takvimi'nin Tür süzgeci (lib/bank/pos.mjs calendarView kind).
+  const POS_KINDS = Object.freeze({ pos: "POS", blocked: K10_LABELS.posBlocked, fee: "Komisyon Tahsili" });
   const isRealKind = kind => kind !== "card" && kind !== "loan";
   const bankRows = () => {
     try {
@@ -723,7 +725,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       id: "banka-masraf",
       group: "Banka",
       title: "Banka Masraf Raporu",
-      description: "Banka masrafları (BSMV'li, vergisiz ve faturalı KDV'li) ve bankalar arası transfer ücretleri: matrah, BSMV ve KDV ayrı kolonlarda; gider hesabı (770 / 653) ve banka hesabı bazında toplamlar. Ters kaydedilen masraf ters kaydının tarihinde eksi yazılır.",
+      description: "Banka masrafları (BSMV'li, vergisiz ve faturalı KDV'li), bankalar arası transfer ücretleri ve POS komisyonları (gün sonunda kesilen; faturalı kipte kaydedilen komisyon faturası): matrah, BSMV ve KDV ayrı kolonlarda; gider hesabı (770 / 653) ve banka hesabı bazında toplamlar. Ters kaydedilen masraf ve iade edilen komisyon eksi yazılır.",
       params: ["range", "feeAccount"],
       preset: "thisYear",
       permission: "bank.reports",
@@ -778,6 +780,71 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
           types: ["", "", "", "money", "money", "money", "money", ""],
           rows: data.rows.map(row => [row.sub, row.name || "", `${row.account} ${CHART[row.account] || ""}`.trim(), money(row.opening), money(row.debit), money(row.credit), money(Math.abs(row.balance)), yon(row.balance)]),
           summary: [...data.mains.map(main => [`${main.account} ${main.name}`, `${money(Math.abs(main.balance))}${main.balance < -0.005 ? " (Alacak)" : ""}`]), ["Alt Hesap Mutabakatı", allOk ? "Tutarlı" : "Fark Var"]],
+        };
+      },
+    },
+    // 2.2.0 (İz 3.5; plan §4.7, §8.10): POS raporları — POS Ödeme Takvimi (bekleyen valör kalemleri) ve Faturası Beklenen Komisyonlar (KDV'li kip).
+    {
+      id: "pos-odeme-takvimi",
+      group: "Banka",
+      title: "POS Ödeme Takvimi",
+      description: "Bankaya geçmemiş POS tahsilatları valör gününe göre: bankaya geçecek net tutar ve brüt. Blokeli POS ve Komisyon Tahsili (iade sonrası bankadan çekilecek komisyon) ayrı satırdır. Aralık valör gününe göredir; Tüm Zamanlar bütün bekleyenleri gösterir.",
+      params: ["range", "posTerminal", "posKind"],
+      permission: "bank.reports",
+      standalone: true,
+      build(query) {
+        const range = dueRangeOf(query, "");
+        const pos = bankService()?.pos;
+        const posId = query.posTerminal || "";
+        const kind = POS_KINDS[query.posKind] ? query.posKind : "";
+        const data = pos?.calendarView ? pos.calendarView({ from: range.from, to: range.to, posId }) : { rows: [] };
+        const rows = data.rows.filter(row => !kind || row.kind === kind);
+        const state = row => (row.error ? "Aktarılamadı" : row.awaiting ? "Onay Bekliyor" : row.due ? "Valörü Geldi" : "Bekliyor");
+        const sum = (list, key) => list.reduce((total, row) => total + (Number(row[key]) || 0), 0);
+        const of = name => rows.filter(row => row.kind === name);
+        const posName = posId ? pos?.list?.().find(item => item.id === posId)?.name || "" : "";
+        return {
+          subtitle: [posName || "Tüm POS'lar", POS_KINDS[kind] || "", range.from || range.to ? `valör ${rangeText(range)}` : "Bütün bekleyenler"].filter(Boolean).join(" · "),
+          headers: ["Valör Günü", "POS", "Tür", "Kalem", "Brüt", "Net (Bankaya Geçecek)", "Durum"],
+          types: ["", "", "", "", "money", "money", ""],
+          rows: rows.map(row => [dayText(row.valueDate), row.posName, row.kindLabel, String(row.count), cents(row.grossMinor), cents(row.netMinor), state(row)]),
+          summary: [
+            [K10_LABELS.posPending, cents(sum(of("pos"), "netMinor"))],
+            [K10_LABELS.posBlocked, cents(sum(of("blocked"), "netMinor"))],
+            ["Komisyon Tahsili", cents(-sum(of("fee"), "netMinor"))],
+            ["Toplam (Net)", cents(sum(rows, "netMinor"))],
+          ],
+        };
+      },
+    },
+    {
+      id: "faturasi-beklenen-komisyonlar",
+      group: "Banka",
+      title: "Faturası Beklenen Komisyonlar",
+      description: "Faturalı (KDV'li) POS komisyonu: ödeme kuruluşunun her ay kestiği komisyon, komisyon iadeleri ve net tutar; durum Faturası Beklenen, Taslak Hazır, İade Alacağı ya da Faturalandı. Kaydedilen komisyon faturasında Fark = fatura − bağlı kesinti.",
+      params: ["range", "posTerminal"],
+      preset: "thisYear",
+      permission: "bank.reports",
+      standalone: true,
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const pos = bankService()?.pos;
+        const posId = query.posTerminal || "";
+        const data = pos?.commissionReport ? pos.commissionReport({ from: range.from, to: range.to, posId }) : { rows: [] };
+        const monthText = month => (month ? `${month.slice(5, 7)}.${month.slice(0, 4)}` : "");
+        const total = (key, filter = () => true) => data.rows.filter(filter).reduce((sum, row) => sum + (Number(row[key]) || 0), 0);
+        const posName = posId ? pos?.list?.().find(item => item.id === posId)?.name || "" : "";
+        return {
+          subtitle: `${posName || "Tüm POS'lar"} · ${rangeText(range)}`,
+          headers: ["Ay", "POS", "Sağlayıcı", "Kesinti", "Komisyon İadesi", "Net", "Durum", "Fatura No", "Fatura Tutarı", "Fark"],
+          types: ["", "", "", "money", "money", "money", "", "", "money", "money"],
+          rows: data.rows.map(row => [monthText(row.month), row.posName, row.providerName, cents(row.outMinor), cents(row.inMinor), cents(row.netMinor), row.stateLabel, row.invoiceNo, row.invoiceNo ? cents(row.invoiceMinor) : "", row.invoiceNo ? cents(row.differenceMinor) : ""]),
+          summary: [
+            ["Faturası Beklenen", cents(total("netMinor", row => row.stateLabel === "Faturası Beklenen" || row.stateLabel === "Taslak Hazır"))],
+            ["İade Alacağı", cents(-total("netMinor", row => row.stateLabel === "İade Alacağı"))],
+            ["Faturalandı", cents(total("netMinor", row => /^Faturalandı/.test(row.stateLabel)))],
+            ["Fark", cents(total("differenceMinor"))],
+          ],
         };
       },
     },
@@ -1756,7 +1823,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
     const query = {};
     // v2.0.23 (Bulgu 4): payMethod (Banka ve POS Hareketleri → Yol) listede yoktu; süzgeç 2.0.17'den beri yok sayılıyordu.
     // v2.1.0 Aşama 14: Banka raporlarının süzgeçleri (bankAccount, bankMove, bankGroup, feeAccount) — Bulgu 4 dersi: listede olmayan parametre düşer.
-    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount"]) {
+    // 2.2.0 (İz 3.5): POS raporlarının süzgeçleri (posTerminal, posKind).
+    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount", "posTerminal", "posKind"]) {
       const value = text(params.get(key));
       if (value) query[key] = value.slice(0, 200);
     }
@@ -1790,6 +1858,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       choices = {
         bankAccount: [["", `${K10_LABELS.realBank} (Tüm Hesaplar)`], ...accountsOf(row => isRealKind(row.kind)), ...accountsOf(row => !isRealKind(row.kind)), [UNASSIGNED_CHOICE, K10_LABELS.unassigned]],
         feeAccount: [["", "Tüm Banka Hesapları"], ...accountsOf(row => isRealKind(row.kind))],
+        posTerminal: [["", "Tüm POS'lar"], ...(bankService()?.pos?.list?.() || []).map(item => [item.id, `${item.name} (${item.code})${item.status === "passive" ? " (Pasif)" : ""}`])],
       };
     }
     ok(res, {
