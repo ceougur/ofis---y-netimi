@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-senet/program-hakem-testleri",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/hakem-k7-kmh.test.mjs test/hakem-k8-kredi.test.mjs test/iade-kapama-k1.test.mjs",
+  "commit": "d707a9582831ed819894b41ad5c672b997c7f44f",
+  "dal": "worktree-wf_3f8e794e-9e6-1",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T14:00:46.754Z",
+  "sure_sn": 10.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 30,
+    "gecen": 30,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/kahin-senet/program-hakem-testleri.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_3f8e794e-9e6-1",
+  "ham_cikti_sha256": "87ee78825d11a695b616c4f6ab2f935d1dbf9a65f58e61f82154d3a22391287a",
+  "ham_cikti_bayt": 11571
+}
