@@ -1,0 +1,26 @@
+// Bağımsız doğrulayıcı — keşif: yanıt biçimleri (kod değiştirmez).
+import { bootBank, must, openAcceptanceAccounts } from "../../../../../test/banka-210-hesap-ortak.mjs";
+const ctx = await bootBank({ now: "2026-10-15T12:00:00+03:00" });
+const api = ctx.api;
+const acc = await openAcceptanceAccounts(api);
+const abc = await must("cari", api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-09-01" }));
+const c = await must("çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "1.000", issueDate: "2026-10-02", dueDate: "2026-10-24", accountId: abc.id, serialNo: "K1" }));
+const d = await api.post(`/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: "2026-10-05", bankAccountId: acc.ziraat.id });
+console.log("deposit", d.status, d.code, d.error);
+const det = await api.get(`/api/workspace/accounts/${abc.id}`);
+console.log("cari keys", Object.keys(det.data), JSON.stringify(det.data.totals || det.data.ledger?.totals));
+const cash = await api.get("/api/workspace/cash");
+console.log("cash keys", Object.keys(cash.data), JSON.stringify(cash.data.summary || {}).slice(0, 400));
+const ov = await api.get("/api/workspace/overview");
+console.log("overview", JSON.stringify(ov.data.receivable), JSON.stringify(ov.data.cash?.bank || ov.data.cash).slice(0, 600));
+const sub = await api.get("/api/workspace/bank/sub-trial?to=2026-10-04");
+console.log("sub", JSON.stringify(sub.data).slice(0, 1500));
+const nf = await api.get("/api/workspace/overview/nakit-akisi?from=2026-10-15&to=2026-11-30");
+console.log("nf keys", Object.keys(nf.data), JSON.stringify(nf.data.rows).slice(0, 800));
+const vt = await api.get("/api/workspace/overview/vade-takip?preset=open");
+console.log("vt", JSON.stringify(vt.data.rows).slice(0, 800));
+const acct = await api.get(`/api/workspace/bank/accounts/${acc.ziraat.id}`);
+console.log("acct keys", Object.keys(acct.data), acct.data.balanceMinor);
+const rb = await api.get("/api/workspace/report-center/banka-bakiye?preset=thisYear");
+console.log("rb", JSON.stringify(rb.data).slice(0, 1200));
+ctx.server.close();

@@ -1,0 +1,38 @@
+{
+  "ad": "senaryo-c",
+  "komut": "node --test --test-reporter=spec docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-c.mjs",
+  "commit": "24fcf0af4b1cc272443bcecdcf6014859f53239b",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:39:41.042Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 5,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "portföyde 2.000 alınan çek: Ana Defter 101 = 2.000 iken Alt Hesap Mizanı'nda 101.01 satırı ve 101 ana hesabı var mı (plan §3.11: 101.01 Portföydeki Çekler)",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-c.mjs:22:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kayit/2026-10-12/senaryo-c.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "0b1122d44e5c5655f35bc0724b7a5d8442ddea720b4237df32d6711bc1b85088",
+  "ham_cikti_bayt": 3258
+}

@@ -1,0 +1,36 @@
+(node:10988) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[d2] o4: {"name":"o4","old":{"status":200},"record":[{"status":"withdrawn","given":"2026-10-06","closed":"2026-10-03"}],"subs":{"101.01":0,"101.02":0},"integrity":{"ok":false,"bad":[{"code":"cheque:collections","sample":["chqcol-0mv501eo80000-d718657d-a326-49bd (withdrawn): kapanış tarihi ya da başlığı eksik"]}]},"writeAfter":{"status":200},"extra":{"cheque":{"status":200},"deposit":{"status":200},"collect":{"status":200},"integrityStill":false,"bad":["cheque:collections"]},"integrityAfterWrite":false}
+▶ D2 — v2.1.0'a dönüp tahsildeki evraka dokunma, sonra bu dal
+  ✖ O4 v2.1.0'da tahsildeki evrak silinir (1380.190482ms)
+✖ D2 — v2.1.0'a dönüp tahsildeki evraka dokunma, sonra bu dal (1382.251564ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1846.061358
+
+✖ failing tests:
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:105:3
+✖ O4 v2.1.0'da tahsildeki evrak silinir (1380.190482ms)
+  AssertionError [ERR_ASSERTION]: onarım sonrası Mutabakat Testi bozuk: [{"code":"cheque:collections","sample":["chqcol-0mv501eo80000-d718657d-a326-49bd (withdrawn): kapanış tarihi ya da başlığı eksik"]}]
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:118:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 3)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

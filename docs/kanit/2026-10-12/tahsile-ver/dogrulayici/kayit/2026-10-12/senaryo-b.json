@@ -1,0 +1,43 @@
+{
+  "ad": "senaryo-b",
+  "komut": "node --test --test-reporter=spec docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-b.mjs",
+  "commit": "24fcf0af4b1cc272443bcecdcf6014859f53239b",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:37:11.651Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 7,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "10-02 B 101.01 / A 602; 10-05 B 101.02 / A 101.01; 10-08 karşılıksız B 770 / A 101.02 → ?to=10-06 101.02 = 1.500; son 0/0; 10-07..10-15 aralığında 101.01 hareketsiz",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-b.mjs:85:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "Yevmiye 101 satırlarında alt hesap ayrımı görünür mü; Çek/Senet Hareketleri tahsile vermeyi gösterir mi",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-b.mjs:237:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Yevmiye satırlarında 101.02 görünmüyor: [[\"05.10.2026\",\"Bankaya Tahsile Ver\",\"Evrak No Y-1\",\"101\",\"1.000,00 TL\",\"\"],[\"05.10.2026\",\"Bankaya Tahsile Ver\",\"Evrak No Y-1\",\"101\",\"\",\"1.000,00 TL\"]] · at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-b.mjs:245:12)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kayit/2026-10-12/senaryo-b.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "2581b170e95187c1512911544eaf233f251a3f853dfacd743e8a1c2693ad296b",
+  "ham_cikti_bayt": 7269
+}

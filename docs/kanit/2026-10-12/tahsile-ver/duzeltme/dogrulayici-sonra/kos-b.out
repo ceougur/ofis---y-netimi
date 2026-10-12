@@ -1,0 +1,136 @@
+TAP version 13
+# B1 {"onceP":0,"onceB":90000,"p":0,"b":90000,"ana101":90000,"sonP":0,"sonB":0,"mutabakat":true}
+# Subtest: B1 — taksite sayılmış çek: tahsile ver → karşılıksız (geçmiş tarihli mizan)
+    # Subtest: plan: 10-02 B 101.01 900 / A 120; 10-05 B 101.02 / A 101.01; 10-08 karşılıksız A 101.02 → ?to=10-06: 101.01 = 0, 101.02 = 900 (portföy hiçbir gün eksi olmaz)
+    ok 1 - plan: 10-02 B 101.01 900 / A 120; 10-05 B 101.02 / A 101.01; 10-08 karşılıksız A 101.02 → ?to=10-06: 101.01 = 0, 101.02 = 900 (portföy hiçbir gün eksi olmaz)
+      ---
+      duration_ms: 647.135472
+      type: 'test'
+      ...
+    1..1
+ok 1 - B1 — taksite sayılmış çek: tahsile ver → karşılıksız (geçmiş tarihli mizan)
+  ---
+  duration_ms: 2836.964194
+  type: 'suite'
+  ...
+# Subtest: B2 — faturayla alınan çek: Alt Hesap Mizanı 101 = Ana Defter 101
+    # Subtest: satış faturası 2.000 (çekle, 10-02) → tahsile ver 10-05 → tahsil 10-07: her kesitte 101.01/101.02/102.01 ve ana 101 = alt toplam
+    ok 1 - satış faturası 2.000 (çekle, 10-02) → tahsile ver 10-05 → tahsil 10-07: her kesitte 101.01/101.02/102.01 ve ana 101 = alt toplam
+      ---
+      duration_ms: 269.2599
+      type: 'test'
+      ...
+    1..1
+ok 2 - B2 — faturayla alınan çek: Alt Hesap Mizanı 101 = Ana Defter 101
+  ---
+  duration_ms: 847.334223
+  type: 'suite'
+  ...
+# B3 {"p6":0,"b6":150000,"p":0,"b":0,"rngP":[0,0],"rngB":[0,150000],"g602":-150000,"g770":150000,"mutabakat":true}
+# Subtest: B3 — carisiz çek (cariye işlenmemiş evrak): tahsile ver → karşılıksız
+    # Subtest: 10-02 B 101.01 / A 602; 10-05 B 101.02 / A 101.01; 10-08 karşılıksız B 770 / A 101.02 → ?to=10-06 101.02 = 1.500; son 0/0; 10-07..10-15 aralığında 101.01 hareketsiz
+    ok 1 - 10-02 B 101.01 / A 602; 10-05 B 101.02 / A 101.01; 10-08 karşılıksız B 770 / A 101.02 → ?to=10-06 101.02 = 1.500; son 0/0; 10-07..10-15 aralığında 101.01 hareketsiz
+      ---
+      duration_ms: 156.734425
+      type: 'test'
+      ...
+    1..1
+ok 3 - B3 — carisiz çek (cariye işlenmemiş evrak): tahsile ver → karşılıksız
+  ---
+  duration_ms: 886.997012
+  type: 'suite'
+  ...
+# B4 {"kilitliGeriAl":409,"tahsil":200,"geriAl":200,"kilitliOnce":[0,400000],"kilitliSonra":[0,400000],"son":[100000,0,1300000],"mutabakat":true}  
+# Subtest: B4 — kilitli dönem: kilitli ayda tahsile verilen çek açık ayda tahsil edilir / geri alınır
+    # Subtest: 09-20 al 3.000 + 1.000 → 09-25 ver (İş) → kilit 30.09 → 10-05 tahsil (200) → 10-06 Geri Al (200); kilitli kesit değişmez
+    ok 1 - 09-20 al 3.000 + 1.000 → 09-25 ver (İş) → kilit 30.09 → 10-05 tahsil (200) → 10-06 Geri Al (200); kilitli kesit değişmez
+      ---
+      duration_ms: 262.642703
+      type: 'test'
+      ...
+    1..1
+ok 4 - B4 — kilitli dönem: kilitli ayda tahsile verilen çek açık ayda tahsil edilir / geri alınır
+  ---
+  duration_ms: 745.468397
+  type: 'suite'
+  ...
+# B5 {"nakit":400,"baska":400,"ciro":409,"sil":409,"tutar":409,"vade":409,"no":200,"faturaCiro":409,"ara":[0,190000,10000000,5000000],"son":[0,0,10000000,5000000],"kasa":70000,"xyz":120000,"mutabakat":true}
+# Subtest: B5 — Kasa ve ciro: tahsildeyken nakit tahsil 400; Geri Al sonrası nakit tahsil B 100 / A 101.01, ciro B 320 / A 101.01
+    # Subtest: sayılar
+    ok 1 - sayılar
+      ---
+      duration_ms: 240.354127
+      type: 'test'
+      ...
+    1..1
+ok 5 - B5 — Kasa ve ciro: tahsildeyken nakit tahsil 400; Geri Al sonrası nakit tahsil B 100 / A 101.01, ciro B 320 / A 101.01
+  ---
+  duration_ms: 620.694321
+  type: 'suite'
+  ...
+# B6 {"ikiVer":[200,409],"verCiro":[200,409],"b101_02":150000,"bekleyen":2,"mutabakat":true,"bDurum":"portfolio"} cheque-deposited cheque-deposited
+# Subtest: B6 — aynı anda iki Tahsile Ver / Tahsile Ver + Ciro (çift kayıt yok)
+    # Subtest: iki eşzamanlı istekten biri 200, öbürü 409; 101.02 = tutar (bir kez); bekleyen kayıt 1
+    ok 1 - iki eşzamanlı istekten biri 200, öbürü 409; 101.02 = tutar (bir kez); bekleyen kayıt 1
+      ---
+      duration_ms: 111.74849
+      type: 'test'
+      ...
+    1..1
+ok 6 - B6 — aynı anda iki Tahsile Ver / Tahsile Ver + Ciro (çift kayıt yok)
+  ---
+  duration_ms: 473.988279
+  type: 'suite'
+  ...
+# B7 {"silindi":[0,0,0,true],"geri":[100000,0,true],"kesit05":[0,100000,100000]} [] []
+# Subtest: B7 — Silinenler: Geri Al'ınmış (kaydı olan) evrak silinip geri yüklenir
+    # Subtest: sil → 101 tamamen düşer; geri yükle → 101.01 = 1.000, 101.02 = 0; mutabakat
+    ok 1 - sil → 101 tamamen düşer; geri yükle → 101.01 = 1.000, 101.02 = 0; mutabakat
+      ---
+      duration_ms: 171.94008
+      type: 'test'
+      ...
+    1..1
+ok 7 - B7 — Silinenler: Geri Al'ınmış (kaydı olan) evrak silinip geri yüklenir
+  ---
+  duration_ms: 556.498049
+  type: 'suite'
+  ...
+# B8 {"ver":409,"verKod":"bank-before-opening","m1":true,"tahsilAcilistanOnce":0,"tahsilKod":"","tahsil":0,"z":10000000,"m2":true} Tahsile veriliş tarihi (28.09.2026) Ziraat Bankası · Ana TL Hesabı hesabının açılışından (01.10.2026) önce; program bu hesabı o tarihte tutmuyor. Evrak açılıştan önce bankaya verildiyse ve hâlâ tahsildeyse veriliş tarihini açılış günü (01.10.2026) ya da sonrası yazın; açılıştan önce tahsil edildiyse tahsili Banka Hesabı alanında "Hesapsız (Açılıştan Önce)" seçerek kaydedin. 
+# Subtest: B8 — hesap açılışından önce tahsile verme ve tahsil
+    # Subtest: Ziraat açılışı 01.10: 09-28 tahsile ver → ? ; 09-29 tahsil → 409 beklenir; 10-02 tahsil → 200; mutabakat tamam
+    ok 1 - Ziraat açılışı 01.10: 09-28 tahsile ver → ? ; 09-29 tahsil → 409 beklenir; 10-02 tahsil → 200; mutabakat tamam
+      ---
+      duration_ms: 46.946796
+      type: 'test'
+      ...
+    1..1
+ok 8 - B8 — hesap açılışından önce tahsile verme ve tahsil
+  ---
+  duration_ms: 492.537944
+  type: 'suite'
+  ...
+# B9 {"yevmiye":[["05.10.2026","Bankaya Tahsile Ver","Evrak No Y-1","101.02","1.000,00 TL",""],["05.10.2026","Bankaya Tahsile Ver","Evrak No Y-1","101.01","","1.000,00 TL"]],"hareket":[["02.10.2026","Alındı","1.000,00 TL"],["05.10.2026","Bankaya Tahsile Verildi","1.000,00 TL"]]}
+# Subtest: B9 — Çek / Senet Hareketleri raporu ve Yevmiye: Tahsile Ver / Geri Al izi
+    # Subtest: Yevmiye 101 satırlarında alt hesap ayrımı görünür mü; Çek/Senet Hareketleri tahsile vermeyi gösterir mi
+    ok 1 - Yevmiye 101 satırlarında alt hesap ayrımı görünür mü; Çek/Senet Hareketleri tahsile vermeyi gösterir mi
+      ---
+      duration_ms: 76.968302
+      type: 'test'
+      ...
+    1..1
+ok 9 - B9 — Çek / Senet Hareketleri raporu ve Yevmiye: Tahsile Ver / Geri Al izi
+  ---
+  duration_ms: 549.550048
+  type: 'suite'
+  ...
+1..9
+# tests 9
+# suites 9
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9908.720221
+exit 0

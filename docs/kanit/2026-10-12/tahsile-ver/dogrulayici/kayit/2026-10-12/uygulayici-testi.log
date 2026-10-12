@@ -1,0 +1,154 @@
+TAP version 13
+# (node:15940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Bankaya Tahsile Ver — çalışıyor mu (sayılarla)
+    # Subtest: Tahsile Ver: 101 değişmez, 101.02 = 1.000, 101.01 = 0; banka bakiyesi aynı; cheque_events'e satır yazılmaz; durum portföyde kalır
+    ok 1 - Tahsile Ver: 101 değişmez, 101.02 = 1.000, 101.01 = 0; banka bakiyesi aynı; cheque_events'e satır yazılmaz; durum portföyde kalır
+      ---
+      duration_ms: 67.700588
+      type: 'test'
+      ...
+    # Subtest: liste: Bankada Tahsilde süzgeci ayrı; Portföyde süzgecinde yok; özet; Alt Hesap Mizanı 101.01 / 101.02
+    ok 2 - liste: Bankada Tahsilde süzgeci ayrı; Portföyde süzgecinde yok; özet; Alt Hesap Mizanı 101.01 / 101.02
+      ---
+      duration_ms: 58.823064
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış ve Vade Takip: tahsildeki evrak vade + iş günü (31.10 Cumartesi → 02.11), portföydeki vadesinde (31.10)
+    ok 3 - Nakit Akış ve Vade Takip: tahsildeki evrak vade + iş günü (31.10 Cumartesi → 02.11), portföydeki vadesinde (31.10)
+      ---
+      duration_ms: 72.025662
+      type: 'test'
+      ...
+    # Subtest: Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde
+    ok 4 - Tahsil Edildi: başka hesap ve nakit 400 (hiçbir şey yazılmaz); kayıtlı hesaba 102.01 +1.000, 101.02 = 0; Geri Al → yeniden tahsilde
+      ---
+      duration_ms: 119.367598
+      type: 'test'
+      ...
+    # Subtest: Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde
+    ok 5 - Bankadan Geri Al → 101.01; yeniden Garanti'ye; Karşılıksız (bankadan dönen) → kayıt returned, cari borçlu; Geri Al → yeniden tahsilde
+      ---
+      duration_ms: 111.506115
+      type: 'test'
+      ...
+    # Subtest: Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır
+    ok 6 - Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır
+      ---
+      duration_ms: 132.520488
+      type: 'test'
+      ...
+    # Subtest: istek kimliği: aynı kimlik ve gövde → yeniden yazılmaz (replayed); farklı gövde → 409 request-id-reused
+    ok 7 - istek kimliği: aynı kimlik ve gövde → yeniden yazılmaz (replayed); farklı gövde → 409 request-id-reused
+      ---
+      duration_ms: 67.93476
+      type: 'test'
+      ...
+    1..7
+ok 1 - Bankaya Tahsile Ver — çalışıyor mu (sayılarla)
+  ---
+  duration_ms: 1326.519487
+  type: 'suite'
+  ...
+# Subtest: Bankaya Tahsile Ver — nasıl bozarım
+    # Subtest: portföyde olmayan (tahsil edilmiş, ciro edilmiş, karşılıksız) ve verilen çek 409; hiçbir şey yazılmaz
+    ok 1 - portföyde olmayan (tahsil edilmiş, ciro edilmiş, karşılıksız) ve verilen çek 409; hiçbir şey yazılmaz
+      ---
+      duration_ms: 140.811835
+      type: 'test'
+      ...
+    # Subtest: tahsildeyken ciro / sil / tutar / tarih / vade / cari 409 cheque-deposited; açıklama ve seri no düzelir; iki kez tahsile ver 409
+    ok 2 - tahsildeyken ciro / sil / tutar / tarih / vade / cari 409 cheque-deposited; açıklama ve seri no düzelir; iki kez tahsile ver 409
+      ---
+      duration_ms: 70.476778
+      type: 'test'
+      ...
+    # Subtest: faturayla alınan çek tahsildeyken fatura iptal edilemez (409 cheque-deposited); Bankadan Geri Al sonrası iptal olur
+    ok 3 - faturayla alınan çek tahsildeyken fatura iptal edilemez (409 cheque-deposited); Bankadan Geri Al sonrası iptal olur
+      ---
+      duration_ms: 104.744472
+      type: 'test'
+      ...
+    # Subtest: tarih: alıştan önce 400, ileri 400, geçersiz 400, kilitli dönem 409; kilitli ayda verilen çek açık ayda tahsil edilir, geri alınır
+    ok 4 - tarih: alıştan önce 400, ileri 400, geçersiz 400, kilitli dönem 409; kilitli ayda verilen çek açık ayda tahsil edilir, geri alınır
+      ---
+      duration_ms: 260.200887
+      type: 'test'
+      ...
+    # Subtest: hesap: başka hesaba tahsil 400; pasif, vadeli, kart, kredi hesabı 400; hesap yok 404; çok hesapta seçimsiz 400; tek hesapta kendiliğinden
+    ok 5 - hesap: başka hesaba tahsil 400; pasif, vadeli, kart, kredi hesabı 400; hesap yok 404; çok hesapta seçimsiz 400; tek hesapta kendiliğinden
+      ---
+      duration_ms: 306.467267
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki istek: biri 200, öbürü 409; tek bekleyen kayıt
+    ok 6 - aynı anda iki istek: biri 200, öbürü 409; tek bekleyen kayıt
+      ---
+      duration_ms: 87.778397
+      type: 'test'
+      ...
+    # Subtest: sil → geri yükle: geri alınmış (kapanmış) kaydı olan çek silinir, geri yüklenir, yeniden tahsile verilir
+    ok 7 - sil → geri yükle: geri alınmış (kapanmış) kaydı olan çek silinir, geri yüklenir, yeniden tahsile verilir
+      ---
+      duration_ms: 154.585051
+      type: 'test'
+      ...
+    # Subtest: ham SQL ile bozulan kayıt: Mutabakat Testi cheque:collections ile yakalar (kayıt kapatılır / başlık silinir / tutar değişir)
+    ok 8 - ham SQL ile bozulan kayıt: Mutabakat Testi cheque:collections ile yakalar (kayıt kapatılır / başlık silinir / tutar değişir)
+      ---
+      duration_ms: 152.010822
+      type: 'test'
+      ...
+    1..8
+ok 2 - Bankaya Tahsile Ver — nasıl bozarım
+  ---
+  duration_ms: 1616.143998
+  type: 'suite'
+  ...
+# Subtest: Bankaya Tahsile Ver — yetki, şirket ayrımı, Şirket Verisini Sıfırla
+    # Subtest: yetkisiz personel 403 (yazılmaz); muhasebe yapar; ?hofCompany= başka şirket: yetkisiz 403, başka şirketin hesabı 404
+    ok 1 - yetkisiz personel 403 (yazılmaz); muhasebe yapar; ?hofCompany= başka şirket: yetkisiz 403, başka şirketin hesabı 404
+      ---
+      duration_ms: 500.039055
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: tahsil kayıtları ve başlıkları silinir, mutabakat temiz, İşlem No geri gitmez
+    ok 2 - Şirket Verisini Sıfırla: tahsil kayıtları ve başlıkları silinir, mutabakat temiz, İşlem No geri gitmez
+      ---
+      duration_ms: 262.191213
+      type: 'test'
+      ...
+    1..2
+ok 3 - Bankaya Tahsile Ver — yetki, şirket ayrımı, Şirket Verisini Sıfırla
+  ---
+  duration_ms: 1224.482019
+  type: 'suite'
+  ...
+# Subtest: Bankaya Tahsile Ver — eski sürüm verisi (gerçek 2.0.26 kodunun fikstürü) ve eski sürüme dönüş
+    # Subtest: surum-2.0.26-turler: göç sonrası portföydeki eski çek tahsile verilir ve tahsil edilir; eski tahsil edilmiş çek 409; mutabakat temiz
+    ok 1 - surum-2.0.26-turler: göç sonrası portföydeki eski çek tahsile verilir ve tahsil edilir; eski tahsil edilmiş çek 409; mutabakat temiz
+      ---
+      duration_ms: 870.791388
+      type: 'test'
+      ...
+    # Subtest: v2.1.0'a dönülüp tahsildeki çek ciro edilir → bu dal açılınca kayıt kapanır (onarım h), 101.02 = 0, mutabakat temiz
+    ok 2 - v2.1.0'a dönülüp tahsildeki çek ciro edilir → bu dal açılınca kayıt kapanır (onarım h), 101.02 = 0, mutabakat temiz
+      ---
+      duration_ms: 933.219313
+      type: 'test'
+      ...
+    1..2
+ok 4 - Bankaya Tahsile Ver — eski sürüm verisi (gerçek 2.0.26 kodunun fikstürü) ve eski sürüme dönüş
+  ---
+  duration_ms: 1804.459886
+  type: 'suite'
+  ...
+1..4
+# tests 19
+# suites 4
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6648.399326

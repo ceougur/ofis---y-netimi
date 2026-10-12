@@ -1,0 +1,57 @@
+(node:13014) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+C1 {"ana101":2000,"alt10101":null,"mains":["102"]}
+▶ C1 — hiç tahsile verilmemiş şirkette Alt Hesap Mizanı
+  ✖ portföyde 2.000 alınan çek: Ana Defter 101 = 2.000 iken Alt Hesap Mizanı'nda 101.01 satırı ve 101 ana hesabı var mı (plan §3.11: 101.01 Portföydeki Çekler) (71.439209ms)
+✖ C1 — hiç tahsile verilmemiş şirkette Alt Hesap Mizanı (663.532405ms)
+C2 bekleyen kaydın verilme başlığı silinir true false ["cheque:collections"]
+▶ C2 — Mutabakat Testi'nin dişi: ham SQL ile bozulan tahsil izi yakalanır mı
+  ✔ bekleyen kaydın verilme başlığı silinir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim) (489.612985ms)
+C2 bekleyen kayıt başlıksız 'withdrawn' yapılır true false ["cheque:collections"]
+  ✔ bekleyen kayıt başlıksız 'withdrawn' yapılır → Mutabakat Testi bozuk (cheque:collections ya da başka denetim) (384.362834ms)
+C2 tahsildeki evrakın tutarı değiştirilir true false ["gl:101","cheque:account","cheque:collections"]
+  ✔ tahsildeki evrakın tutarı değiştirilir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim) (455.28097ms)
+C2 tahsildeki evrak 'collected' yapılır (kayıt bekliyor) true false ["gl:101","cheque:collections"]
+  ✔ tahsildeki evrak 'collected' yapılır (kayıt bekliyor) → Mutabakat Testi bozuk (cheque:collections ya da başka denetim) (432.892569ms)
+C2 ikinci bekleyen kayıt (başka hesap) eklenir true false ["cheque:collections"]
+  ✔ ikinci bekleyen kayıt (başka hesap) eklenir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim) (366.540154ms)
+✔ C2 — Mutabakat Testi'nin dişi: ham SQL ile bozulan tahsil izi yakalanır mı (2129.761976ms)
+ℹ tests 6
+ℹ suites 2
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3324.674749
+
+✖ failing tests:
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-c.mjs:22:3
+✖ portföyde 2.000 alınan çek: Ana Defter 101 = 2.000 iken Alt Hesap Mizanı'nda 101.01 satırı ve 101 ana hesabı var mı (plan §3.11: 101.01 Portföydeki Çekler) (71.439209ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   alt10101: null,
+  -   alt10101: 2000,
+      ana101: 2000,
+      mains: [
+  -     '101',
+        '102'
+      ]
+    }
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-c.mjs:29:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { ana101: 2000, alt10101: null, mains: [ '102' ] },
+    expected: { ana101: 2000, alt10101: 2000, mains: [ '101', '102' ] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

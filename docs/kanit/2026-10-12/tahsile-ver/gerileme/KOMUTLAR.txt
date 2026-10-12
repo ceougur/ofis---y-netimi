@@ -1,0 +1,23 @@
+GERİLEME VE BÜTÜNLÜK — bağımsız doğrulayıcı, tur 1 (12.10.2026). Kod: 24fcf0a (worktree-wf_d306f93b-be4-1). Kod değiştirilmedi.
+Worktree kökünden; KANIT_DIR=docs/kanit/2026-10-12/tahsile-ver/gerileme
+
+1. node tools/kanit.mjs kos gerileme-npm-test -- npm test
+   → çıkış 0, GEÇTİ, tests 2118 / pass 2118 / fail 0 / cancelled 0 / skipped 0 / todo 0 (1144 sn). Kayıt: 2026-10-12/gerileme-npm-test.{json,log}
+2. node tools/kanit.mjs kos gerileme-mutabakat-1000x2 -- npm run test:mutabakat -- --islem 1000
+   → çıkış 0, 2/2 tohum "her işlemden sonra tutarlı" (cek-tahsile-ver 24+15, cek-bankadan-geri-al 5+5 işlem). Kayıt: 2026-10-12/gerileme-mutabakat-1000x2.*
+   (kayıttaki "kirli 1": kâhin koşusunun yazdığı test/bagimsiz/cikti/fark-kabul-1-16.json; kod değil, sonra HEAD'e döndürüldü, kopyası kahin-fark-kabul-1-16-24fcf0a.json)
+3. Kâhin: python3 -I test/bagimsiz/fark.py --senaryo test/bagimsiz/senaryolar/kabul-1-16.json → a=0 b=0 program=0, 182 yaprak, fark 0
+   gerileme/*.json + surum2/*.json → 10.10 tabanıyla aynı (yalnız bilinen KASA-ACILIS-649, KDV-DAHIL-ISKONTO; KREDI-ANAPARA-ASIMI, s2-d6-b, s2-d7-a kâhinde çıkış 2 bilerek) — kahin-gerileme-surum2.txt
+   --tohum 1 → 450 fark yalnız bilinen 3 sınıf; --tohum 1 --notr iskonto_dahil,kasa_acilis → 7812 yaprak fark 0
+4. Fark testi (eski sürümün gerçek kodu): node fark-cek-akislari.mjs v2.1.0|guncel <json>; node fark-karsilastir.mjs eski yeni → karsilastirma.txt
+   50 API adımı (al/ver/tahsil havale-nakit/geri al/ciro/karşılıksız/ödeme/senet/carisiz/taksitli çek/düzelt/sil/faturadan çek/fatura iptali/faturayla ciro)
+   + 139 okuma (çek listesi 13 süzgeç, 12 çek kartı, Ana Defter, Mutabakat Testi, Alt Hesap Mizanı, banka hesapları, cariler, Nakit Akış, Vade Takip,
+   takvim, ANLIK DURUM, Rapor Merkezi'nin bütün raporları ×2, ekstre, mizan). Fark: yalnız yeni alanlar (deposited, collection, bankActions,
+   depositAccounts, collections, summary.deposited) + Mutabakat Testi'ne eklenen cheque:collections satırı (ve Defter Mutabakatı raporunda o satır);
+   Yevmiye raporu satırları çoklu küme olarak birebir aynı (sıra aynı gündeki rastgele kimliğe göre değişiyor). Değeri değişen eski alan 0.
+5. Eski sürüm verisi: node fark-fikstur.mjs <surum-2.0.26-turler|zincir|iade> v2.1.0|guncel → *-karsilastirma.txt: değişen değer 0
+   (iade'de yalnız Mutabakat günlüğünün rastgele kimliği), yalnız yeni alanlar.
+6. Sonda: node sonda-islem-karti.mjs → sonda-islem-karti.json (İşlem Kartı ↔ Ana Defter 101 alt hesabı).
+7. Birleşme çakışması (salt okuma): git merge-tree --write-tree --name-only claude/hopeful-goodall-6nmtcj worktree-wf_d306f93b-be4-1
+   → CONFLICT server/lib/integrity.mjs, test/mutabakat/motor.mjs; İz 2 (worktree-agent-a4d676e1f90e67d65) ile → CONFLICT server/routes/cheques.mjs.
+Ham çıktılar: fark-ham-ciktilar.tgz

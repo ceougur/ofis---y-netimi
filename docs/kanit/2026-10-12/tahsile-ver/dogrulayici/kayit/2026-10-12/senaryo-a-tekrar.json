@@ -1,0 +1,73 @@
+{
+  "ad": "senaryo-a-tekrar",
+  "komut": "node --test docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs",
+  "commit": "24fcf0af4b1cc272443bcecdcf6014859f53239b",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:43:13.565Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 37,
+    "gecen": 29,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu › adım 1: al C1 2026-10-02 — anlık sayılar = model",
+      "konum": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu › adım 2: al C2 2026-10-02 — anlık sayılar = model",
+      "konum": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu › adım 3: al N1 2026-10-03 — anlık sayılar = model",
+      "konum": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu › adım 4: al C3 2026-10-03 — anlık sayılar = model",
+      "konum": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu › adım 5: al C4 2026-10-03 — anlık sayılar = model",
+      "konum": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu › aralık 2026-10-10–2026-10-15: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model",
+      "konum": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:121:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu › aralık 2026-10-01–2026-10-31: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model",
+      "konum": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:121:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu › Rapor Merkezi Çek / Senet Portföyü: 'Portföyde' süzgeci satırları ↔ özet 'Portföyde (alınan)' tutarlı mı",
+      "konum": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:213:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kayit/2026-10-12/senaryo-a-tekrar.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "786528c9e271be54b262350d2e974cec704762cd82f3eca8bbde7b911161a172",
+  "ham_cikti_bayt": 18868
+}

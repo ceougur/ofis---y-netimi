@@ -1,0 +1,197 @@
+(node:13706) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "N": 10000,
+ "openMs": 259,
+ "writes": [
+  {
+   "label": "Kasa nakit girişi",
+   "status": 200,
+   "code": "",
+   "httpMs": 16,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 7
+  },
+  {
+   "label": "Cari havale tahsilatı",
+   "status": 200,
+   "code": "",
+   "httpMs": 18,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 7
+  },
+  {
+   "label": "Çek alış",
+   "status": 200,
+   "code": "",
+   "httpMs": 12,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 4
+  },
+  {
+   "label": "Bankaya Tahsile Ver",
+   "status": 200,
+   "code": "",
+   "httpMs": 99,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 88
+  },
+  {
+   "label": "Bankadan Geri Al",
+   "status": 200,
+   "code": "",
+   "httpMs": 99,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 87
+  },
+  {
+   "label": "Bankaya Tahsile Ver (2)",
+   "status": 200,
+   "code": "",
+   "httpMs": 77,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 68
+  },
+  {
+   "label": "Tahsil Edildi (tahsildeki)",
+   "status": 200,
+   "code": "",
+   "httpMs": 77,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 64
+  },
+  {
+   "label": "Kasa nakit girişi",
+   "status": 200,
+   "code": "",
+   "httpMs": 8,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 3
+  },
+  {
+   "label": "Cari havale tahsilatı",
+   "status": 409,
+   "code": "bank-similar",
+   "httpMs": 4,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 3
+  },
+  {
+   "label": "Çek alış",
+   "status": 200,
+   "code": "",
+   "httpMs": 7,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 3
+  },
+  {
+   "label": "Bankaya Tahsile Ver",
+   "status": 200,
+   "code": "",
+   "httpMs": 73,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 69
+  },
+  {
+   "label": "Bankadan Geri Al",
+   "status": 200,
+   "code": "",
+   "httpMs": 94,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 83
+  },
+  {
+   "label": "Bankaya Tahsile Ver (2)",
+   "status": 200,
+   "code": "",
+   "httpMs": 138,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 132
+  },
+  {
+   "label": "Tahsil Edildi (tahsildeki)",
+   "status": 200,
+   "code": "",
+   "httpMs": 101,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 84
+  },
+  {
+   "label": "Kasa nakit girişi",
+   "status": 200,
+   "code": "",
+   "httpMs": 24,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 6
+  },
+  {
+   "label": "Cari havale tahsilatı",
+   "status": 409,
+   "code": "bank-similar",
+   "httpMs": 5,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 6
+  },
+  {
+   "label": "Çek alış",
+   "status": 200,
+   "code": "",
+   "httpMs": 10,
+   "gatePath": "scoped",
+   "gateReason": "",
+   "gateMs": 3
+  },
+  {
+   "label": "Bankaya Tahsile Ver",
+   "status": 200,
+   "code": "",
+   "httpMs": 103,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 91
+  },
+  {
+   "label": "Bankadan Geri Al",
+   "status": 200,
+   "code": "",
+   "httpMs": 77,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 72
+  },
+  {
+   "label": "Bankaya Tahsile Ver (2)",
+   "status": 200,
+   "code": "",
+   "httpMs": 104,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 97
+  },
+  {
+   "label": "Tahsil Edildi (tahsildeki)",
+   "status": 200,
+   "code": "",
+   "httpMs": 95,
+   "gatePath": "full",
+   "gateReason": "cheque_collections yazımı",
+   "gateMs": 83
+  }
+ ]
+}

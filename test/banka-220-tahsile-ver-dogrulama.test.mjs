@@ -111,11 +111,13 @@ describe("Kapı — tahsil kaydını kapı dışından bozma: dokunulan varlıkl
     assert.ok(caught instanceof IntegrityError, `${label}: ${caught.message}`);
   };
 
-  it("geri alınmış kayıt yeniden bekleyen; verilme tarihi alıştan önce; verilme başlığı iptal; tahsildeki evrakın tutarı", async () => {
+  it("geri alınmış kayıt yeniden bekleyen; verilme tarihi alıştan önce; verilme başlığı iptal; tahsildeki evrakın tutarı ve alış tarihi", async () => {
     tampered("geri alınan kayıt yeniden bekleyen", "UPDATE cheque_collections SET status = 'pending', closed_date = '', close_event_id = '' WHERE id = ?", withdrawn);
     tampered("verilme tarihi alıştan önce", "UPDATE cheque_collections SET given_date = '2026-10-01' WHERE id = ?", pending.id);
     tampered("verilme başlığı iptal", "UPDATE fin_events SET status = 'cancelled' WHERE id = ?", pending.eventId);
     tampered("tahsildeki evrakın tutarı", "UPDATE cheques SET amount = 750 WHERE id = ?", pendingCheque.id);
+    // Yalnız "verilme tarihi alış tarihinden önce olamaz" kuralı (D4): başlık ve kayıt aynı, evrakın alış tarihi veriliş gününden (06.10) sonraya.
+    tampered("evrakın alış tarihi veriliş gününden sonra", "UPDATE cheques SET issue_date = '2026-10-07' WHERE id = ?", pendingCheque.id);
     await integrityOk(t.ctx.api, "bozma denemeleri geri alındı");
   });
 });

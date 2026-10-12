@@ -1,0 +1,102 @@
+(node:9847) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[d2] o1: {"name":"o1","old":{"status":200},"record":[{"status":"withdrawn","given":"2026-10-06","closed":"2026-10-05"}],"subs":{"101.01":0,"101.02":0},"integrity":{"ok":false,"bad":[{"code":"cheque:collections","sample":["chqcol-0mv4zysoo0000-8432ac2c-70d6-409a (withdrawn): kapanış tarihi ya da başlığı eksik"]}]},"writeAfter":{"status":200},"integrityAfterWrite":false}
+▶ D2 — v2.1.0'a dönüp tahsildeki evraka dokunma, sonra bu dal
+  ✖ O1 v2.1.0'da tahsile verme gününden (06.10) ÖNCEKİ tarihle (05.10) ciro (1351.487019ms)
+[d2] o2: {"name":"o2","old":{"status":200},"record":[{"status":"pending","given":"2026-10-06","closed":""}],"subs":{"101.01":150,"101.02":800},"integrity":{"ok":false,"bad":[{"code":"cheque:collections","sample":["101.01: defter 150 / portföydeki evrak 0","101.02: defter 800 / tahsildeki evrak 950","chqcol-0mv4zytkq0000-936ffbde-f8fd-4e7a (pending): evrak tutarı 950 / verilme 800"]}]},"writeAfter":{"status":200},"extra":{"withdraw":{"status":200},"integrityAfterWithdraw":true},"integrityAfterWrite":true}
+  ✖ O2 v2.1.0'da tahsildeki evrakın tutarı 800 → 950 (690.831543ms)
+[d2] o3: {"name":"o3","old":{"status":200},"record":[{"status":"collected","given":"2026-10-06","closed":"2026-10-05"}],"subs":{"101.01":0,"101.02":0},"integrity":{"ok":false,"bad":[{"code":"cheque:collections","sample":["chqcol-0mv4zyu3z0000-6a03ff2b-4a58-4912 (collected): kapanış tarihi ya da başlığı eksik"]}]},"writeAfter":{"status":200},"integrityAfterWrite":false}
+  ✖ O3 v2.1.0'da tahsile verme gününden ÖNCEKİ tarihle (05.10) bankaya tahsil (670.507046ms)
+[d2] o4: {"name":"o4","old":{"status":200},"record":[{"status":"withdrawn","given":"2026-10-06","closed":"2026-10-03"}],"subs":{"101.01":0,"101.02":0},"integrity":{"ok":false,"bad":[{"code":"cheque:collections","sample":["chqcol-0mv4zyuni0000-88a9afa9-0c66-4a1b (withdrawn): kapanış tarihi ya da başlığı eksik"]}]},"writeAfter":{"status":200},"integrityAfterWrite":false}
+  ✖ O4 v2.1.0'da tahsildeki evrak silinir (659.291491ms)
+[d2] o5: {"name":"o5","old":{"status":200},"record":[{"status":"pending","given":"2026-10-06","closed":""}],"subs":{"101.01":0,"101.02":800},"integrity":{"ok":true,"bad":[]},"writeAfter":{"status":200},"integrityAfterWrite":true}
+  ✔ O5 v2.1.0'da alış tarihi 03.10 → 08.10 (tahsile verme gününden sonraya) (611.801299ms)
+[d2] o6: {"name":"o6","old":{"status":200,"code":"ZIR-TL"},"record":[{"status":"pending","given":"2026-10-06","closed":""}],"subs":{"101.01":0,"101.02":800},"integrity":{"ok":true,"bad":[]},"writeAfter":{"status":200},"extra":{"collect":{"status":400,"code":"bank-account-invalid","error":"Ziraat Bankası · Ana TL Hesabı pasif; bu hesaba hareket girmek için önce Banka → Hesaplar'dan Etkinleştir."},"withdraw":{"status":200}},"integrityAfterWrite":true}
+[d2] o6 sonuç: {"collect":{"status":400,"code":"bank-account-invalid","error":"Ziraat Bankası · Ana TL Hesabı pasif; bu hesaba hareket girmek için önce Banka → Hesaplar'dan Etkinleştir."},"withdraw":{"status":200}}
+  ✔ O6 v2.1.0'da tahsil hesabı pasife alınır; bu dalda tahsil ve geri alma (624.741172ms)
+✖ D2 — v2.1.0'a dönüp tahsildeki evraka dokunma, sonra bu dal (4610.695525ms)
+ℹ tests 6
+ℹ suites 1
+ℹ pass 2
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5078.305877
+
+✖ failing tests:
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:82:3
+✖ O1 v2.1.0'da tahsile verme gününden (06.10) ÖNCEKİ tarihle (05.10) ciro (1351.487019ms)
+  AssertionError [ERR_ASSERTION]: onarım sonrası Mutabakat Testi bozuk: [{"code":"cheque:collections","sample":["chqcol-0mv4zysoo0000-8432ac2c-70d6-409a (withdrawn): kapanış tarihi ya da başlığı eksik"]}]
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:85:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:88:3
+✖ O2 v2.1.0'da tahsildeki evrakın tutarı 800 → 950 (690.831543ms)
+  AssertionError [ERR_ASSERTION]: açılışta Mutabakat Testi bozuk: [{"code":"cheque:collections","sample":["101.01: defter 150 / portföydeki evrak 0","101.02: defter 800 / tahsildeki evrak 950","chqcol-0mv4zytkq0000-936ffbde-f8fd-4e7a (pending): evrak tutarı 950 / verilme 800"]}]
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:96:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:99:3
+✖ O3 v2.1.0'da tahsile verme gününden ÖNCEKİ tarihle (05.10) bankaya tahsil (670.507046ms)
+  AssertionError [ERR_ASSERTION]: onarım sonrası Mutabakat Testi bozuk: [{"code":"cheque:collections","sample":["chqcol-0mv4zyu3z0000-6a03ff2b-4a58-4912 (collected): kapanış tarihi ya da başlığı eksik"]}]
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:102:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:105:3
+✖ O4 v2.1.0'da tahsildeki evrak silinir (659.291491ms)
+  AssertionError [ERR_ASSERTION]: onarım sonrası Mutabakat Testi bozuk: [{"code":"cheque:collections","sample":["chqcol-0mv4zyuni0000-88a9afa9-0c66-4a1b (withdrawn): kapanış tarihi ya da başlığı eksik"]}]
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/d2-eski-surum.test.mjs:108:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+exit=1

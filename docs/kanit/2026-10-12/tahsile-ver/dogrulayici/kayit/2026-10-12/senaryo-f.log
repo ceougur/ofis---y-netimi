@@ -1,0 +1,50 @@
+(node:15737) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+F yevmiye [["14.10.2026","Çek / Senet","Senet karşılıksız / iade · No N1 · vade 16.11.2026","120","3.000,00 TL",""],["14.10.2026","Çek / Senet","Senet karşılıksız / iade · No N1 · vade 16.11.2026","101","","3.000,00 TL"],["14.10.2026","Bankadan Karşılıksız Döndü","Evrak No N1","101","3.000,00 TL",""],["14.10.2026","Bankadan Karşılıksız Döndü","Evrak No N1","101","","3.000,00 TL"]] madde [ [ 'Madde', '2' ] ]
+F alt {"101.01":[3000,3000],"101.02":[0,3000],"102.01":[0,0],"102.02":[0,0]}
+▶ F — karşılıksız (tahsildeki) yevmiyesi
+  ✖ 14.10 Yevmiye ve Alt Hesap Mizanı (14.10–14.10) (19.655248ms)
+✖ F — karşılıksız (tahsildeki) yevmiyesi (678.374621ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1207.25662
+
+✖ failing tests:
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-f.mjs:21:3
+✖ 14.10 Yevmiye ve Alt Hesap Mizanı (14.10–14.10) (19.655248ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   madde: 2,
+  -   madde: 1,
+      s10101: [
+  +     3000,
+  +     3000
+  -     0,
+  -     0
+      ],
+      s10102: [
+        0,
+        3000
+      ]
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-f.mjs:27:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { madde: 2, s10101: [ 3000, 3000 ], s10102: [ 0, 3000 ] },
+    expected: { madde: 1, s10101: [ 0, 0 ], s10102: [ 0, 3000 ] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

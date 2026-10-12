@@ -1,0 +1,73 @@
+{
+  "ad": "senaryo-a",
+  "komut": "node --test --test-reporter=spec docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs",
+  "commit": "24fcf0af4b1cc272443bcecdcf6014859f53239b",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:34:24.985Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 37,
+    "gecen": 29,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "adım 1: al C1 2026-10-02 — anlık sayılar = model",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "adım 2: al C2 2026-10-02 — anlık sayılar = model",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "adım 3: al N1 2026-10-03 — anlık sayılar = model",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "adım 4: al C3 2026-10-03 — anlık sayılar = model",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "adım 5: al C4 2026-10-03 — anlık sayılar = model",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "aralık 2026-10-10–2026-10-15: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:121:5",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "aralık 2026-10-01–2026-10-31: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:121:5",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "Rapor Merkezi Çek / Senet Portföyü: 'Portföyde' süzgeci satırları ↔ özet 'Portföyde (alınan)' tutarlı mı",
+      "konum": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:213:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kayit/2026-10-12/senaryo-a.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "949f779371f03e5356c6d7aa244edbf6107f49167ba45cd32c94e6f04ac88188",
+  "ham_cikti_bayt": 12548
+}
