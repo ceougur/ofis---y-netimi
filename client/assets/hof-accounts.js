@@ -789,7 +789,10 @@
         const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
         // 2.7: seçicide bakiye — tahsilat hesaba girer, ödeme çıkar (kartla ödeme kart borcunu artırır); düzeltmede eski tutar bakiyede (original).
         const original = entry && (entry.method === "bank" || entry.method === "card") && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null;
-        const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card, direction: type === "out" ? "out" : "in", original }) : null;
+        // 2.2.0 (İz 3.2): tahsilatta kart yolu POS'tur — POS, POS Taksit Sayısı, Provizyon No, Kartın Son 4 Hanesi ve önizleme (düzeltmede satırın
+        // POS kaydından). Cari "POS İadesi" Banka → POS → POS İşlemleri → İade'den (asıl satışa bağlı).
+        const pos = type === "in" ? { value: entry?.method === "card" ? entry.finRef || "" : "", row: entry ? `account_entries:${entry.id}` : "" } : null;
+        const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card, pos, direction: type === "out" ? "out" : "in", original }) : null;
         // Ek iş B: açıklama yola göre (seçici yerleşince ve yol değişince).
         if (money_) {
           // Yol ya da hesap seçimi değişince (Hesapsız (Açılıştan Önce) dahil); dinleyici formda — seçici yeniden kurulsa da çalışır.

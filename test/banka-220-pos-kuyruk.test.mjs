@@ -6,7 +6,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
-import { BANK, bootBank, kurus, must, openAcceptanceAccounts, posCheck, ziraatPos } from "./banka-220-pos-ortak.mjs";
+import { BANK, bootBank, flagPos, kurus, must, openAcceptanceAccounts, posCheck, ziraatPos } from "./banka-220-pos-ortak.mjs";
 
 describe("Valör kuyruğu ölçeği: 50 POS × 30 gün (1.500 satış; iş günü valörüyle ~1.000 gün grubu) — kesinti sonrası ilk tur", () => {
   it("ilk tur ≤ 200 grup; bütün turlar biter; her grup tek gün fişi; mutabakat temiz", async () => {
@@ -15,6 +15,7 @@ describe("Valör kuyruğu ölçeği: 50 POS × 30 gün (1.500 satış; iş gün�
       const acc = await openAcceptanceAccounts(ctx.api);
       const party = await must("cari", ctx.api.post("/api/workspace/accounts", { name: "Ölçek Müşterisi", type: "customer", registeredOn: "2026-10-01" }));
       const terminals = [];
+      await flagPos(ctx.api, acc.ziraat.id); // İz 3.1: POS yalnız POS Kullan işaretli hesaba
       for (let n = 0; n < 50; n += 1) terminals.push((await must(`POS ${n}`, ctx.api.post(`${BANK}/pos`, ziraatPos(acc.ziraat.id, { name: `Ölçek POS ${n + 1}`, valorDays: 1, valorRule: "calendar" })))).pos);
       // Hacim kurulumu: her gün (kendi saatinde) 50 POS'a birer cari POS tahsilatı, gün başına tek bank.post işleminde (kart yolu + fin_ref = POS;
       // POS kancası satışı ve takvimi kurar; valör ertesi gün, satış anında bekler). Sonra sunucu 30.11'e kadar "kapalı": 1.500 grup birikir.
@@ -74,6 +75,7 @@ describe("Açılmamış şirket (002): valörü gelmiş kalem → ortak katmanı
         second = created.company || created;
         const q = `?hofCompany=${encodeURIComponent(second.id)}`;
         const ziraat = await must("002 Ziraat", first.api.post(`${BANK}/accounts${q}`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "100.000", confirmed: true } }));
+        await must("002 POS Kullan", first.api.put(`${BANK}/accounts/${ziraat.id}${q}`, { usePos: true })); // İz 3.1
         const pos = (await must("002 POS", first.api.post(`${BANK}/pos${q}`, ziraatPos(ziraat.id)))).pos;
         const party = await must("002 cari", first.api.post(`/api/workspace/accounts${q}`, { name: "002 Müşterisi", type: "customer", registeredOn: "2026-10-01" }));
         await must("002 POS satışı", first.api.post(`/api/workspace/accounts/${party.id}/entries${q}`, { kind: "in", amount: "10.000", method: "card", date: "2026-10-08", posId: pos.id }));

@@ -169,13 +169,14 @@ describe("Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları", () => {
     }
   });
 
-  it("Ayarlar ekranı verisi: POS ve Ekstre 2.1.0'da görünmez (available false); hesap eşlemelerinde adlar", async () => {
+  // 2.2.0 (İz 3.4, bilerek güncellendi): POS ve Gelişmiş → POS ile Varsayılan POS görünür; Ekstre, Döviz, Kanal Alanı ertelenmiş kalır.
+  it("Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar", async () => {
     const settings = await must("ayarlar", ctx.api.get(`${BANK}/settings`));
     const section = id => settings.sections.find(item => item.id === id);
     // GG2: Döviz (fx, fxAdvanced) ve Kanal Alanı (movement) da ertelendi — görünmez (ayrıntı banka-210-gg2-ayar).
-    for (const id of ["pos", "posAdvanced", "statement", "fx", "fxAdvanced", "movement"]) assert.equal(section(id).available, false, `${id} bölümü 2.1.0'da görünmemeli`);
-    for (const id of ["account", "negative", "similar", "fee", "gl", "other"]) assert.equal(section(id).available, true, `${id} bölümü görünmeli`);
-    assert.equal(section("account").items.find(item => item.key === "defaultPosId").available, false, "Varsayılan POS görünmemeli");
+    for (const id of ["statement", "fx", "fxAdvanced", "movement"]) assert.equal(section(id).available, false, `${id} bölümü görünmemeli`);
+    for (const id of ["account", "negative", "similar", "pos", "posAdvanced", "fee", "gl", "other"]) assert.equal(section(id).available, true, `${id} bölümü görünmeli`);
+    assert.equal(section("account").items.find(item => item.key === "defaultPosId").available, true, "Varsayılan POS görünür (2.2.0)");
     assert.equal(section("account").items.find(item => item.key === "defaultAccountId").available, true);
     assert.equal(section("holidayAdvanced").items.find(item => item.key === "shift").available, false, "Tatile Düşen Valör (POS) görünmemeli");
     assert.equal(settings.chart["770"], "Genel Giderler ve Alış Faturaları");

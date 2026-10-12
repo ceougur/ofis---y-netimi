@@ -174,13 +174,19 @@ export const SPEC = Object.freeze([
 // bank-setting-later) ve okunurken kod varsayılanıdır — önceden PUT ile Elle Banka Fişi açılıp gizli fiş (Kambiyo Kârı/Zararı satırları dahil)
 // API'den yazılabiliyordu. Yalnız testler (config.bankLater) değiştirir. Bağdaştırıcılar ("Açık bankacılık ve sanal POS bağlantısı kapalıdır")
 // olmayan özelliği anlattığı için o da gizli.
+// 2.2.0 (İz 3.4): POS geldi — POS ve Gelişmiş → POS bölümleri ile Varsayılan POS açıldı. Açılan bölümde henüz olmayan SEÇENEKLER gizli kalır
+// (options): "Ekstre ile" bankaya geçiş (Ekstre ve Mutabakat 2.3.0) ve "Her Valörde Taslak" komisyon faturası (bu sürümde taslak ay sonunda
+// ya da POS sekmesindeki "Şimdi Oluştur" ile açılır; karar, lib/bank/pos.mjs autoDrafts). Tatile Düşen Valör (holidayAdvanced.shift) gizli kalır:
+// POS valörü bu sürümde hep Sonraki İş Günü'ne kayar (pos-math valueDateOf), seçenek etkisiz olurdu.
 const NOT_YET = Object.freeze({
-  sections: new Set(["pos", "posAdvanced", "statement", "fx", "fxAdvanced", "movement"]),
-  items: new Set(["account.defaultPosId", "holidayAdvanced.shift", "gl.fxGain", "gl.fxLoss", "other.manualVoucher", "other.adapters"]),
+  sections: new Set(["statement", "fx", "fxAdvanced", "movement"]),
+  items: new Set(["holidayAdvanced.shift", "gl.fxGain", "gl.fxLoss", "other.manualVoucher", "other.adapters"]),
+  options: new Set(["posAdvanced.settlement:statement", "posAdvanced.commissionInvoice:each_valor"]),
 });
 const hiddenSetting = (sectionId, key) => NOT_YET.sections.has(sectionId) || NOT_YET.items.has(`${sectionId}.${key}`);
+const hiddenOption = (sectionId, key, value) => NOT_YET.options.has(`${sectionId}.${key}:${value}`);
 // Gizli ayarın geldiği özellik (ret iletisinde).
-const LATER_FEATURE = { pos: "POS", posAdvanced: "POS", statement: "Ekstre ve Mutabakat", fx: "Döviz", fxAdvanced: "Döviz", movement: "Ekstre ve POS kanalı", "account.defaultPosId": "POS", "holidayAdvanced.shift": "POS valörü", "gl.fxGain": "Döviz", "gl.fxLoss": "Döviz", "other.manualVoucher": "Elle Banka Fişi formu", "other.adapters": "Bağdaştırıcılar" };
+const LATER_FEATURE = { statement: "Ekstre ve Mutabakat", fx: "Döviz", fxAdvanced: "Döviz", movement: "Ekstre ve POS kanalı", "holidayAdvanced.shift": "POS valörünün tatil kuralı", "gl.fxGain": "Döviz", "gl.fxLoss": "Döviz", "other.manualVoucher": "Elle Banka Fişi formu", "other.adapters": "Bağdaştırıcılar", "posAdvanced.settlement:statement": "Ekstre ve Mutabakat", "posAdvanced.commissionInvoice:each_valor": "her valörde komisyon taslağı" };
 
 const bad = (message, extra = {}) => new HttpError(400, message, { code: "bank-setting", ...extra });
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -294,6 +300,7 @@ export function createBankSettings({ store, accountOk = () => false, posOk = () 
         if (value === undefined) continue;
         // Gizli (bu sürümde olmayan özelliğin) ayarı etkisizdir: kayıtlı değer okunmaz, varsayılan kalır (testlerde config.bankLater).
         if (hiddenSetting(section.id, key) && !laterOk()) continue;
+        if (hiddenOption(section.id, key, value) && !laterOk()) continue;
         try {
           out[section.id][key] = validate(section.id, key, value, { accountOk, posOk });
         } catch {
@@ -318,6 +325,11 @@ export function createBankSettings({ store, accountOk = () => false, posOk = () 
           const label = itemOf(sectionId, key)?.[1] || key;
           const feature = LATER_FEATURE[`${sectionId}.${key}`] || LATER_FEATURE[sectionId] || "ilgili özellik";
           throw new HttpError(400, `${label} bu sürümde kullanılmıyor (${feature} sonraki sürümde gelir); değiştirilemez.`, { code: "bank-setting-later", field: `${sectionId}.${key}` });
+        }
+        if (hiddenOption(sectionId, key, checked) && !laterOk()) {
+          const found = itemOf(sectionId, key);
+          const optionLabel = found?.[2]?.options?.find(([id]) => id === checked)?.[1] || checked;
+          throw new HttpError(400, `${found?.[1] || key}: “${optionLabel}” bu sürümde seçilemez (${LATER_FEATURE[`${sectionId}.${key}:${checked}`] || "ilgili özellik"} sonraki sürümde gelir).`, { code: "bank-setting-later", field: `${sectionId}.${key}` });
         }
         next[sectionId][key] = checked;
       }
@@ -357,7 +369,7 @@ export function createBankSettings({ store, accountOk = () => false, posOk = () 
         label,
         type: item.type,
         available: !NOT_YET.sections.has(section.id) && !NOT_YET.items.has(`${section.id}.${key}`),
-        ...(item.options ? { options: item.options } : {}),
+        ...(item.options ? { options: laterOk() ? item.options : item.options.filter(([id]) => !hiddenOption(section.id, key, id)) } : {}),
         ...(item.type === "fixed" ? { value: item.value, text: item.text } : {}),
         ...(item.min !== undefined ? { min: item.min, max: item.max } : {}),
         ...(item.nullable ? { nullable: true } : {}),

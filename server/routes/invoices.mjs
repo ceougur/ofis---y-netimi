@@ -675,8 +675,21 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (row.status !== "issued" || !Array.isArray(payment.cash)) return payment;
     const cash = payment.cash.filter(item => Number(item?.amount) > 0);
     if (cash.length !== payments.length) return payment;
-    return { ...payment, cash: cash.map((item, index) => ({ ...item, bankAccountId: payments[index].finRef || "" })) };
+    return { ...payment, cash: cash.map((item, index) => ({ ...item, bankAccountId: payments[index].finRef || "", ...posLineOf(payments[index]) })) };
   };
+  // 2.2.0 (İz 3.2): POS'lu peşin satırın POS bilgisi (Düzenle formu dolu açılsın): POS, POS Taksit Sayısı, Provizyon No, kartın son 4 hanesi ve
+  // POS İadesinde asıl POS işlemi — satırın etkin POS kaydından (pos_sales; payment_json bunları taşımaz).
+  function posLineOf(entry) {
+    if (!entry?.eventId || entry.method !== "card" || !entry.finRef) return {};
+    let sale = null;
+    try {
+      sale = store.get("SELECT pos_id AS posId, installments, auth_code AS authCode, card_last4 AS cardLast4, origin_id AS originId, src FROM pos_sales WHERE event_id = ? AND status = 'active' AND src <> 'cancel' ORDER BY created_at DESC LIMIT 1", entry.eventId);
+    } catch {
+      return {}; // POS tabloları yoksa (göç öncesi veri)
+    }
+    if (!sale || sale.posId !== entry.finRef) return {};
+    return { posId: sale.posId, posInstallments: Number(sale.installments) || 1, authCode: sale.authCode || "", cardLast4: sale.cardLast4 || "", ...(sale.originId ? { posRefundOf: sale.originId } : {}), ...(sale.src === "sourceless" ? { posSourceless: true } : {}) };
+  }
   function detail(id, user, { excludeReturnId = "" } = {}) {
     const row = invoiceRow(id);
     const lines = linesOf(row.id);
@@ -685,7 +698,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const returns = store.all("SELECT id, number, issue_date AS issueDate, status, try_payable AS tryPayable, kind FROM invoices WHERE original_id = ? ORDER BY issue_date, created_at", row.id);
     const linkedCheques = cheques()?.invoiceCheques ? cheques().invoiceCheques.forInvoice(row.id) : [];
     const plan = row.planId ? store.get("SELECT id, name, total, status, ref_no AS refNo FROM plans WHERE id = ? AND deleted_at IS NULL", row.planId) : null;
-    const payments = store.all("SELECT id, kind, amount, date, method, fin_ref AS finRef FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') ORDER BY created_at, rowid", row.id).map(entry => ({ ...entry, methodLabel: refundMethodLabel(row.kind, entry) }));
+    const payments = store.all("SELECT id, kind, amount, date, method, fin_ref AS finRef, event_id AS eventId FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') ORDER BY created_at, rowid", row.id).map(entry => ({ ...entry, methodLabel: refundMethodLabel(row.kind, entry) }));
     const manage = canUser(user, "invoices.manage");
     const kind = INVOICE_KINDS[row.kind];
     const activeReturns = returns.filter(item => item.status === "issued").length;

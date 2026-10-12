@@ -444,11 +444,18 @@
   const lineKey = () => `k${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36).slice(-4)}`;
   // K2: alış tarafında (alış faturası, alıştan iade) kart yolu kurumsal kartla ödeme / kurumsal karta iadedir; satırın hesabı Kurumsal Kart.
   // legacyMethod: hesapsız eski satırın yolu ("Atanmamış (Eski Hareket)" seçeneği yalnız o yolda kalır).
+  // 2.2.0 (İz 3.2): satış tarafında kart yolu POS'tur — satırın POS'u (sunucu fatura kartında bağlı POS'u bankAccountId'de de döndürür), POS Taksit
+  // Sayısı, Provizyon No, kartın son 4 hanesi ve satıştan iadede asıl POS işlemi ("Kaynaksız (Eski Satış)" seçeneğiyle).
+  const SOURCELESS = "__sourceless";
   const payFrom = (payment, { issued = false, corporate = false } = {}) => ({
     cash: (payment?.cash || []).map((item, index) => {
       const method = item.method || "cash";
       const legacy = issued && (method === "bank" || (method === "card" && corporate)) && !item.bankAccountId;
-      return { amount: amountText(item.amount), method, lineKey: /^[A-Za-z0-9_-]{1,40}$/.test(String(item.lineKey || "")) ? item.lineKey : `i${index}`, bankAccountId: item.bankAccountId || "", legacy, legacyMethod: legacy ? method : "" };
+      const pos = method === "card" && !corporate;
+      return {
+        amount: amountText(item.amount), method, lineKey: /^[A-Za-z0-9_-]{1,40}$/.test(String(item.lineKey || "")) ? item.lineKey : `i${index}`, bankAccountId: pos ? "" : item.bankAccountId || "", legacy, legacyMethod: legacy ? method : "",
+        ...(pos ? { posId: item.posId || item.bankAccountId || "", posInstallments: String(item.posInstallments || item.installments || 1), authCode: item.authCode || "", cardLast4: item.cardLast4 || "", posRefundOf: item.posSourceless ? SOURCELESS : item.posRefundOf || "" } : {}),
+      };
     }),
     cheques: (payment?.cheques || []).map(item => ({ instrument: item.instrument || "cheque", amount: amountText(item.amount), dueDate: item.dueDate || "", serialNo: item.serialNo || "", bank: item.bank || "", drawer: item.drawer || "", bankAccountId: item.bankAccountId || "" })),
     endorse: [...(payment?.endorse || [])],
@@ -918,7 +925,7 @@
     const chequeOk = meta.canCheques && ["sale", "smm", "purchase"].includes(form.kind);
     // 2.8: satır başlığı yolun adı ("Nakit · Tutar", "Havale / EFT · Tutar · Banka Hesabı", "Kredi Kartı · Tutar · Kredi Kartı").
     const cashRows = form.pay.cash
-      .map((item, index) => `<div class="hof-inv-pay-row" data-pay-method="${esc(item.method)}"><b class="hof-inv-pay-way">${esc(methodLabel(item.method))}</b><label><span>Tutar (₺)</span><input data-pay="cash" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}" placeholder="0,00" aria-label="${esc(methodLabel(item.method))} Tutarı"></label>${bankCell(item, index)}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cash" data-i="${index}" aria-label="Sil" title="Sil">×</button>${rowBalanceHtml(item, index)}</div>`)
+      .map((item, index) => `<div class="hof-inv-pay-row" data-pay-method="${esc(item.method)}"><b class="hof-inv-pay-way">${esc(methodLabel(item.method))}</b><label><span>Tutar (₺)</span><input data-pay="cash" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}" placeholder="0,00" aria-label="${esc(methodLabel(item.method))} Tutarı"></label>${bankCell(item, index)}${posCell(item, index)}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cash" data-i="${index}" aria-label="Sil" title="Sil">×</button>${rowBalanceHtml(item, index)}</div>`)
       .join("");
     const chequeRows = form.pay.cheques
       .map(
@@ -947,6 +954,9 @@
     const box = slot.querySelector("[data-pay-rest]");
     if (box) box.hofHtml = restBlock;
     if (!view.bankChoices) loadBankChoices();
+    // 2.2.0 (İz 3.2): POS satırlarının önizlemesi ve satıştan iadede asıl işlem önerisi.
+    form.pay.cash.forEach((item, index) => posRow(item) && syncPosCell(index));
+    loadPosOrigins();
   }
   // v2.1.0 Aşama 7: peşin satırda Banka Hesabı (yalnız Havale / EFT yolunda görünür). Seçici satırın İÇİNDE çizilir; yol ya da hesap değişince satır
   // yeniden çizilmez (2.0.23 Bulgu 1: odak ve yazılan değer kaybolmasın) — yalnız hücre gösterilir/gizlenir. Hiç uygun hesap yoksa hücre boş
@@ -977,6 +987,64 @@
     // 2.7: seçenek adında hesabın fatura tarihindeki bakiyesi (Banka Görüntüleme yetkisine), seçilenin altında "Bakiye · İşlemden Sonra".
     const optionText = account => (HOF.bank?.optionText ? HOF.bank.optionText(account, data) : `${account.label} (${account.code})`);
     return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(optionText(account))}</option>`).join("")}<option value="none" ${item.bankAccountId === "none" ? "selected" : ""}>Hesapsız (Açılıştan Önce)</option></select>${item.bankAccountId === "none" ? noneNoteHtml(card) : ""}</label>`;
+  }
+  /**
+   * v2.2.0 (İz 3.2; plan §8.9): satış tarafında kart yolu ("+ POS"; iadede "+ POS İadesi") POS hücresi — POS (tekse bilgi satırı, çoksa seçim,
+   * yoksa "POS Tanımla"), POS Taksit Sayısı (yalnız tanımlı oranlar), Provizyon No, Kartın Son 4 Hanesi ve önizleme; satıştan iadede Asıl POS
+   * İşlemi (asıl faturanın POS satışları önerilir) ve "Kaynaksız (Eski Satış)". Kurucular hof-bank-pos.js'te (HOF.bank.posCellHtml). Satır
+   * yeniden çizilmez; yalnız POS seçimi değişince bu hücre çizilir (2.0.23 Bulgu 1).
+   */
+  const posRow = item => item?.method === "card" && view.form?.side === "sale";
+  function posCell(item, index) {
+    if (!posRow(item)) return "";
+    const data = view.bankChoices && view.bankChoices !== "loading" ? view.bankChoices : null;
+    if (!data || !HOF.bank?.posCellHtml) return `<span class="hof-inv-pos" data-pos-cell="${index}"></span>`;
+    // Çok POS'ta seçici varsayılanı (Banka Ayarları → Varsayılan POS) satırın modeline yazılır (ekranda seçili görünen gönderilsin).
+    if (!item.posId && (data.pos || []).length > 1) item.posId = HOF.bank.posSelected(data, "");
+    const refund = view.form.kind === "sale_return";
+    const result = HOF.bank.posCellHtml(data, item, index, { refund, origins: refund ? (view.form.posOrigins ?? null) : null });
+    return `<span class="hof-inv-pos" data-pos-cell="${index}" data-pos-mode="${esc(result.mode)}">${result.html}</span>`;
+  }
+  /** Hücre çizildikten sonra: ekranda seçili taksit modele yazılır (oranı olmayan taksit kalmasın) ve önizleme. */
+  function syncPosCell(index) {
+    const form = view.form;
+    const item = form?.pay.cash[index];
+    const cell = body()?.querySelector(`[data-pay] [data-pos-cell="${index}"]`);
+    if (!item || !cell) return;
+    const installments = cell.querySelector('[data-f="posInstallments"]');
+    if (installments) item.posInstallments = installments.value;
+    const data = view.bankChoices && view.bankChoices !== "loading" ? view.bankChoices : null;
+    if (!data || !HOF.bank?.posPreviewInto || form.kind === "sale_return") return;
+    HOF.bank.posPreviewInto(cell.querySelector("[data-pos-preview]"), { posId: HOF.bank.posSelected(data, item.posId), amount: amountNum(item.amount), installments: item.posInstallments || 1, date: form.issueDate });
+  }
+  function redrawPosCells({ only = -1 } = {}) {
+    const form = view.form;
+    body()
+      ?.querySelectorAll("[data-pay] [data-pos-cell]")
+      .forEach(cell => {
+        const index = Number(cell.dataset.posCell);
+        const item = form?.pay.cash[index];
+        if (!item || (only >= 0 && index !== only)) return;
+        cell.outerHTML = posCell(item, index);
+        syncPosCell(index);
+      });
+  }
+  /** Satıştan iadede asıl faturanın POS satışları (Asıl POS İşlemi önerisi); bir kez yüklenir. */
+  function loadPosOrigins() {
+    const form = view.form;
+    if (!form || form.kind !== "sale_return" || !form.original?.id || form.posOrigins !== undefined || !HOF.bank?.posOrigins) return;
+    if (!form.pay.cash.some(posRow)) return;
+    form.posOrigins = null;
+    HOF.bank
+      .posOrigins(`invoice=${encodeURIComponent(form.original.id)}`)
+      .then(list => {
+        if (view.form !== form) return;
+        form.posOrigins = list;
+        redrawPosCells();
+      })
+      .catch(() => {
+        form.posOrigins = [];
+      });
   }
   /**
    * v2.2.0 (İz 2.7): peşin satırın hesabının bakiye satırı. Aynı hesaba yazan bütün satırların toplamı "İşlemden Sonra"ya girer (satış/SMM ve
@@ -1094,6 +1162,8 @@
         body()
           ?.querySelectorAll("[data-pay] [data-cheque-bank]")
           .forEach(cell => refreshChequeCell(cell));
+        // 2.2.0 (İz 3.2): POS hücreleri liste gelince kurulur (içlerinde henüz yazılmış alan yoktu).
+        redrawPosCells();
         syncInvoiceBalances();
       })
       .catch(() => {
@@ -1108,13 +1178,22 @@
     const { kind, account } = event.detail || {};
     const form = view.form;
     const cell = event.target.closest?.("[data-bank-cell]");
-    if (!form || !account?.id || !["bank", "card", "cheque"].includes(kind)) return;
+    if (!form || !account?.id || !["bank", "card", "cheque", "pos"].includes(kind)) return;
     try {
       view.bankChoices = await HOF.bank.choices(true, form.issueDate);
     } catch {
       return;
     }
     if (view.form !== form) return;
+    // 2.2.0 (İz 3.2): "POS Tanımla" — tanımın yapıldığı satır yeni POS'u alır; POS hücreleri yeni listeyle (tutar alanları yerinde kalır).
+    if (kind === "pos") {
+      const posCellNode = event.target.closest?.("[data-pos-cell]");
+      const at = posCellNode ? Number(posCellNode.dataset.posCell) : -1;
+      if (form.pay.cash[at]) form.pay.cash[at].posId = account.id;
+      redrawPosCells();
+      (body()?.querySelector(`[data-pos-cell="${at}"] select`) || body()?.querySelector(`[data-pay="cash"][data-i="${at}"][data-f="amount"]`))?.focus();
+      return;
+    }
     // 2.5: "Çek Hesabı Tanımla" — tanımın yapıldığı evrak satırı yeni hesabı alır; öbür çek hücreleri yeni listeyle.
     if (kind === "cheque") {
       const chequeCell = event.target.closest?.("[data-cheque-bank]");
@@ -1272,8 +1351,16 @@
     note: form.note,
     lines: usedLines(form).map(lineBody),
   });
+  // 2.2.0 (İz 3.2): POS satırının gövdesi — POS (tek POS'ta boş: sunucu seçer), satışta POS Taksit Sayısı + Provizyon No + son 4 hane (boş
+  // değer de gider: Düzenle'de silinen provizyon kayıttan da kalkar), satıştan iadede asıl işlem ya da Kaynaksız.
+  const posBody = (form, item) => {
+    if (!(item.method === "card" && form.side === "sale")) return {};
+    const own = item.posId ? { posId: item.posId } : {};
+    if (form.kind === "sale_return") return { ...own, ...(item.posRefundOf === SOURCELESS ? { posSourceless: true } : item.posRefundOf ? { posRefundOf: item.posRefundOf } : {}) };
+    return { ...own, posInstallments: Number(item.posInstallments) || 1, authCode: String(item.authCode || "").trim(), cardLast4: String(item.cardLast4 || "").trim() };
+  };
   const payBody = form => ({
-    cash: form.pay.cash.filter(item => amountNum(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method, lineKey: item.lineKey, ...((item.method === "bank" || (item.method === "card" && form.side === "purchase")) && item.bankAccountId ? { bankAccountId: item.bankAccountId } : {}) })),
+    cash: form.pay.cash.filter(item => amountNum(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method, lineKey: item.lineKey, ...((item.method === "bank" || (item.method === "card" && form.side === "purchase")) && item.bankAccountId ? { bankAccountId: item.bankAccountId } : {}), ...posBody(form, item) })),
     cheques: form.pay.cheques.filter(item => amountNum(item.amount) > 0).map(item => ({ ...item })),
     endorse: [...form.pay.endorse],
     rest: form.pay.rest,
@@ -1410,6 +1497,8 @@
       if (item) item[target.dataset.f] = target.value;
       // 2.7: peşin tutar yazıldıkça hesabın "İşlemden Sonra"sı.
       if (target.dataset.pay === "cash" && target.dataset.f === "amount") syncInvoiceBalances();
+      // 2.2.0 (İz 3.2): POS satırının önizlemesi tutar yazıldıkça (yalnız önizleme yeri yenilenir).
+      if (target.dataset.pay === "cash" && target.dataset.f === "amount" && posRow(item)) syncPosCell(Number(target.dataset.i));
       return refreshRest();
     }
     if (target.dataset.payf) {
@@ -1501,6 +1590,9 @@
         item.legacy = item.legacy && !target.value;
         syncNoneNote(target);
       }
+      // 2.2.0 (İz 3.2): POS değişince yalnız POS hücresi çizilir (taksit seçenekleri POS'un oranları); taksit değişince önizleme.
+      if (item && target.dataset.pay === "cash" && target.dataset.f === "posId") redrawPosCells({ only: Number(target.dataset.i) });
+      else if (item && target.dataset.pay === "cash" && posRow(item) && ["posInstallments", "amount"].includes(target.dataset.f)) syncPosCell(Number(target.dataset.i));
       if (target.dataset.pay === "cash") syncInvoiceBalances();
       return refreshRest();
     }

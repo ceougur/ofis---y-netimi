@@ -204,6 +204,11 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     for (const table of Object.keys(SOURCE_LABELS)) for (const row of store.all(`SELECT id FROM ${table} WHERE event_id = ? AND event_id <> ''`, event.id)) rows.push({ table, id: row.id });
     return rows;
   };
+  const tables = new Map();
+  const hasTable = name => {
+    if (!tables.has(name)) tables.set(name, Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", name)));
+    return tables.get(name);
+  };
   const invoiceOf = id => (id ? store.get("SELECT id, number, status, kind, issue_date AS date, try_net AS tryNet, try_vat AS tryVat, try_payable AS tryPayable FROM invoices WHERE id = ?", id) || null : null);
   const ppmOfMemo = memo => {
     const match = /%\s*([\d.,]+)/.exec(String(memo || ""));
@@ -446,12 +451,15 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     if (!Number.isFinite(limit)) limit = LIMIT_DEFAULT;
     limit = Math.max(1, Math.min(LIMIT_MAX, limit));
     const planned = ["1", "true"].includes(get("planned"));
-    const f = { account, type, dir, status, from, to, q: search, planned, min, max };
-    f.hash = createHash("sha256").update(JSON.stringify([account, type, dir, status, from, to, search, min, max])).digest("base64url").slice(0, 16);
+    // 2.2.0 (İz 3.3, plan §8.6 "Süzgeçler: … POS"): yalnız bu POS'un banka hareketleri (gün sonu fişleri, İptal İadesi; işlem başlığının pos_id'si).
+    const posFilter = get("pos");
+    if (posFilter && !store.get("SELECT 1 AS found FROM pos_terminals WHERE id = ?", posFilter)) throw new HttpError(404, "POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", { code: "pos-missing", field: "pos" });
+    const f = { account, type, dir, status, from, to, q: search, planned, min, max, pos: posFilter };
+    f.hash = createHash("sha256").update(JSON.stringify([account, type, dir, status, from, to, search, min, max, posFilter])).digest("base64url").slice(0, 16);
     f.limit = limit;
     f.cursor = get("cursor");
     // Yürüyen bakiye: tek hesap, yalnız tarih süzgeci (durum: varsayılan = Etkin + Ters Kaydedildi).
-    f.balance = Boolean(account) && !type && !dir && !status && !search && min === null && max === null;
+    f.balance = Boolean(account) && !type && !dir && !status && !search && min === null && max === null && !posFilter;
     return f;
   }
   const badCursor = () => new HttpError(400, "Sayfa imleci geçersiz ya da süresi doldu; listeyi baştan açın.", { code: "bank-cursor" });
@@ -506,6 +514,10 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       });
       parts.push(`(e.party_id <> '' AND e.party_id IN (SELECT id FROM accounts WHERE ${partyParts.join(" OR ")}))`);
       where.push(`(${parts.join(" OR ")})`);
+    }
+    if (f.pos) {
+      where.push("+e.pos_id = :pos");
+      params.pos = f.pos;
     }
     if (f.min !== null && f.min !== undefined) {
       where.push("+e.try_minor >= :min");
@@ -806,21 +818,32 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     }
     // Aşama 9: bankalar arası transferin ücreti (gider + BSMV satırları, 770) da banka masrafıdır; transferin kendisi (para satırları) rapora
     // girmez. Ücretsiz transfer satır üretmez (aşağıda gider satırı yoksa atlanır).
+    // 2.2.0 (İz 3.5, plan §8.10 "Banka Masraf Raporu … 653"): POS komisyonu da kapsanır — BSMV'li ve vergisiz kipte POS Gün Sonu fişinin komisyon
+    // satırı (653; iade edilen komisyon eksi, yeniden planlamanın ters kaydı eksi), KDV'li (faturalı) kipte kaydedilmiş aylık komisyon faturası.
     const events = store.all(
-      `SELECT e.* FROM fin_events e WHERE e.type IN ('fee', 'transfer') AND +e.status IN ('active', 'reversed') AND ${where.join(" AND ")}
+      `SELECT e.* FROM fin_events e WHERE e.type IN ('fee', 'transfer', 'pos_settlement') AND +e.status IN ('active', 'reversed') AND ${where.join(" AND ")}
        UNION ALL
-       SELECT e.* FROM fin_events e WHERE e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type IN ('fee', 'transfer')) AND ${where.join(" AND ")}
+       SELECT e.* FROM fin_events e WHERE e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type IN ('fee', 'transfer', 'pos_settlement')) AND ${where.join(" AND ")}
        ORDER BY date, year, seq`,
       ...args, ...args,
     );
     const map = accountMap();
     const ids = events.map(event => event.id);
     const linesOf = new Map();
+    // POS Gün Sonu fişinin komisyonundaki BSMV (BSMV kipindeki kalemlerin vergisi; dahil kipte oranın içindeki bilgi): satış artı, iade eksi.
+    const posTax = new Map();
+    const posNames = new Map();
     if (ids.length) {
       for (const line of store.all("SELECT event_id AS eventId, role, gl, side, try_minor AS tryMinor, memo FROM bank_lines WHERE event_id IN (SELECT value FROM json_each(?)) ORDER BY event_id, seq", JSON.stringify(ids))) {
         if (!linesOf.has(line.eventId)) linesOf.set(line.eventId, []);
         linesOf.get(line.eventId).push({ ...line, tryMinor: Number(line.tryMinor) });
       }
+      const settlements = events.filter(event => event.type === "pos_settlement").map(event => event.id);
+      if (settlements.length && hasTable("pos_items")) {
+        for (const row of store.all("SELECT i.event_id AS eventId, SUM(CASE WHEN i.role = 'refund' THEN -i.tax_minor ELSE i.tax_minor END) AS tax FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id WHERE i.event_id IN (SELECT value FROM json_each(?)) AND s.tax_kind = 'bsmv' GROUP BY i.event_id", JSON.stringify(settlements))) posTax.set(row.eventId, Number(row.tax) || 0);
+      }
+      const posIds = [...new Set(events.map(event => event.pos_id).filter(Boolean))];
+      if (posIds.length && hasTable("pos_terminals")) for (const row of store.all("SELECT id, name FROM pos_terminals WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(posIds))) posNames.set(row.id, row.name);
     }
     const rows = [];
     for (const event of events) {
@@ -835,6 +858,14 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
         const base = toMinor(Number(invoice.tryNet) || 0);
         const vat = toMinor(Number(invoice.tryVat) || 0);
         row = { gl: line?.gl || "", feeTypeName: line?.name || "", baseMinor: base, bsmvMinor: 0, vatMinor: vat, totalMinor: base + vat, invoiceId: invoice.id, invoiceNo: invoice.number };
+      } else if (event.type === "pos_settlement" || (event.type === "reversal" && event.pos_id)) {
+        // POS komisyonu tek 653 satırıdır (BSMV dahil kipte oranın içinde): Toplam = satır; BSMV = kalemlerin vergisi; Matrah = Toplam − BSMV.
+        const expense = lines.find(line => line.role === "expense");
+        if (!expense) continue;
+        const total = signed("expense");
+        const bsmv = event.type === "pos_settlement" ? posTax.get(event.id) || 0 : 0;
+        const posName = posNames.get(event.pos_id) || "";
+        row = { gl: expense.gl || "", feeTypeName: `${expense.memo || "POS Komisyonu"}${posName ? ` · ${posName}` : ""}`, baseMinor: total - bsmv, bsmvMinor: bsmv, vatMinor: 0, totalMinor: total, invoiceId: "", invoiceNo: "" };
       } else {
         const expense = lines.find(line => line.role === "expense");
         if (!expense && !lines.some(line => line.role === "tax")) continue;
@@ -858,6 +889,31 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
         reversalOf: event.reversal_of,
         ...row,
       });
+    }
+    // KDV'li (faturalı) POS komisyonu (§4.3/4): kaydedilmiş aylık komisyon faturası — fatura tarihinde, POS'un bağlı banka hesabıyla; matrah ve
+    // KDV faturadan (191 yalnız faturadan). İptal edilen fatura girmez. Gün fişindeki kesinti cariye yazıldığı için ayrıca sayılmaz.
+    if (hasTable("bank_jobs") && hasTable("pos_terminals")) {
+      const before = rows.length;
+      for (const job of store.all("SELECT payload_json AS payload FROM bank_jobs WHERE kind = 'comm-invoice' AND status = 'done' ORDER BY created_at")) {
+        let payload = {};
+        try {
+          payload = JSON.parse(job.payload || "{}") || {};
+        } catch {
+          continue;
+        }
+        const invoice = invoiceOf(payload.invoiceId);
+        if (!invoice || invoice.status !== "issued" || (from && invoice.date < from) || (to && invoice.date > to)) continue;
+        const pos = store.get("SELECT name, bank_account_id AS accountId FROM pos_terminals WHERE id = ?", String(payload.posId || ""));
+        const accountId = pos?.accountId || "";
+        if (account && accountId !== account) continue;
+        const line = store.get("SELECT gl_account AS gl FROM invoice_lines WHERE invoice_id = ? ORDER BY seq LIMIT 1", invoice.id);
+        const base = toMinor(Number(invoice.tryNet) || 0);
+        const vat = toMinor(Number(invoice.tryVat) || 0);
+        const gl = line?.gl || "653";
+        rows.push({ eventId: "", no: "", date: invoice.date, type: "pos_commission_invoice", typeLabel: "POS Komisyon Faturası", status: "active", statusLabel: STATUS_LABELS.active || "Etkin", accountId, accountLabel: accountRef(map, accountId)?.label || "", glName: CHART[gl] || gl, description: `${pos?.name || "POS"} · ${payload.month || ""} komisyon faturası`, reference: "", reversalOf: "", gl, feeTypeName: `POS Komisyonu (Faturalı)${pos?.name ? ` · ${pos.name}` : ""}`, baseMinor: base, bsmvMinor: 0, vatMinor: vat, totalMinor: base + vat, invoiceId: invoice.id, invoiceNo: invoice.number });
+      }
+      // Fiş satırları tarih, yıl ve sıra no'yla geldi; faturalar tarihine yerleşir (kararlı sıralama: aynı gündeki fişlerin sırası korunur).
+      if (rows.length > before) rows.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
     }
     const blank = () => ({ baseMinor: 0, bsmvMinor: 0, vatMinor: 0, totalMinor: 0, count: 0 });
     const totals = { ...blank(), byGl: {}, byAccount: {} };

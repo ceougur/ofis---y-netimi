@@ -4,7 +4,9 @@
 // Kasa devir (yıl sonu; Kasa AÇILIŞI 2.2.0 İz 1.3'te geldi: Kasa → Açılış Bakiyesi); POS (2.2.0), ekstre ve mutabakat (2.3.0). API tarafı
 // test/banka-210-ertelenen.test.mjs'te.
 // Gerçek kullanıcı gibi tıklanır; her ekranda görünen metin ve seçenekler okunur, ekran görüntüsü alınır:
-//  1. Banka penceresi sekmeleri: yalnız Genel Bakış · Hesaplar · Hareketler · Ayarlar (POS, Ekstre ve Mutabakat, Döviz yok).
+// 2.2.0 (İz 3): POS GELDİ — POS sekmesi, POS ayarları, POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar raporları artık görünür; bu senaryo
+// POS'u ertelenen saymaz (POS ekrandan senaryo-pos-220'de). Aşağıdaki "POS yok" maddeleri yalnız POS dışı ertelenenler için geçerli.
+//  1. Banka penceresi sekmeleri: Genel Bakış · Hesaplar · Hareketler · POS · Ayarlar (Ekstre ve Mutabakat, Döviz yok).
 //  2. Genel Bakış: Gerçek Banka; POS Bekleyen, Blokeli POS, Güncel Kurla, Eşleşmeyen, Değerleme yok; Hesabı Atanmamış ayrı satır.
 //  3. Hesaplar → + Yeni Hesap: Hesap Türü'nde Döviz yok; Para Birimi ve Açılış Kuru alanı yok. Kurulum Sihirbazı'nın hesap formu da aynı.
 //  4. Hesap Detayı: + Masraf, + Faiz, + Diğer İşlem, Transfer; Ekstre Yükle, Döviz Al/Sat, POS yok.
@@ -89,7 +91,8 @@ const must = async (label, promise) => {
 const textOf = selector => page.$eval(selector, node => node.innerText.replace(/\s+/g, " ").trim()).catch(() => "");
 const visibleText = selector => page.$$eval(selector, nodes => nodes.filter(node => node.offsetParent !== null).map(node => node.innerText.replace(/\s+/g, " ").trim()).join(" | ")).catch(() => "");
 // Ertelenen özelliklerin ekranda görünebilecek adları (kalıplar büyük/küçük harf duyarlı: "Kurulum" ≠ "Kur").
-const LATER = [/POS Bekleyen/, /Blokeli POS/, /POS Tanımla/, /\+ POS\b/, /Ekstre Yükle/, /Ekstre ve Mutabakat/, /Mutabakat Yap/, /Eşleşmeyen/, /Güncel Kurla/, /Döviz Al/, /Döviz Sat/, /Kur Değerleme/, /Değerleme Kuru/, /Kambiyo/, /Bankaya Tahsile Ver/, /Tahsildeki Çek/, /Sanal POS Bağlantısı/, /Açık Bankacılık/i, /Bağdaştırıcılar/, /Elle Banka Fişi/, /Kanal Alanı/, /Avans/];
+// 2.2.0 (İz 3): POS Bekleyen, Blokeli POS, POS Tanımla ve "+ POS" artık ertelenen değil (POS geldi); Sanal POS Bağlantısı (bağdaştırıcı) ertelenen.
+const LATER = [/Ekstre Yükle/, /Ekstre ve Mutabakat/, /Mutabakat Yap/, /Eşleşmeyen/, /Güncel Kurla/, /Döviz Al/, /Döviz Sat/, /Kur Değerleme/, /Değerleme Kuru/, /Kambiyo/, /Bankaya Tahsile Ver/, /Tahsildeki Çek/, /Sanal POS Bağlantısı/, /Açık Bankacılık/i, /Bağdaştırıcılar/, /Elle Banka Fişi/, /Kanal Alanı/, /Avans/];
 const laterIn = text => LATER.filter(pattern => pattern.test(text)).map(pattern => pattern.source);
 const openBank = async () => {
   await page.click('#hof-sidecard [data-action="bank"]');
@@ -392,13 +395,13 @@ try {
   await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
   await pause(800);
 
-  await step("1. Banka penceresi sekmeleri: yalnız Genel Bakış · Hesaplar · Hareketler · Ayarlar", async () => {
+  await step("1. Banka penceresi sekmeleri: Genel Bakış · Hesaplar · Hareketler · POS · Ayarlar (2.2.0: POS geldi)", async () => {
     await openBank();
     const tabs = await page.$$eval(`${bankWin} .hof-bank-tabs [data-tab]`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(tabs.join("|") === "Genel Bakış|Hesaplar|Hareketler|Ayarlar", `sekmeler: ${tabs.join(", ")}`);
+    ok(tabs.join("|") === "Genel Bakış|Hesaplar|Hareketler|POS|Ayarlar", `sekmeler: ${tabs.join(", ")}`);
   });
 
-  await step("2. Genel Bakış: Gerçek Banka 10.000; Hesabı Atanmamış ayrı satır (900); POS Bekleyen / Blokeli POS / Güncel Kurla / Eşleşmeyen yok", async () => {
+  await step("2. Genel Bakış: Gerçek Banka 10.000; Hesabı Atanmamış ayrı satır (900); Güncel Kurla / Eşleşmeyen yok", async () => {
     const text = await textOf(`${bankWin} [data-bank]`);
     ok(/Gerçek Banka/.test(text) && text.includes(money(10000)), "Gerçek Banka 10.000,00");
     ok(/Hesabı Atanmamış Eski Hareketler/.test(text) && text.includes(money(900)), "Hesabı Atanmamış Eski Hareketler 900,00 ayrı satırda");
@@ -470,7 +473,7 @@ try {
     const types = await optionsOf(`${bankWin} select[data-mv="type"]`);
     ok(types.length > 5 && !types.some(label => /Döviz|Kur Değerleme|POS|Tahsile|Ekstre/.test(label)), `İşlem Türü: ${types.join(", ")}`);
     const buttons = await page.$$eval(`${bankWin} [data-bank] button`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(!buttons.some(label => /Ekstre|Döviz|POS|Değerleme|Mutabakat/.test(label)), `Hareketler düğmeleri: ${buttons.join(", ")}`);
+    ok(!buttons.some(label => /Ekstre|Döviz|Değerleme|Mutabakat/.test(label)), `Hareketler düğmeleri: ${buttons.join(", ")}`);
     await shot("hareketler");
     const plan = await page.$(`${bankWin} [data-act="plan-new"]`);
     if (plan) {
@@ -493,18 +496,22 @@ try {
     await closeAll();
   });
 
-  await step("6. Ayarlar: Temel ve Gelişmiş — POS, Ekstre, Döviz, Hareket (Kanal Alanı), Elle Banka Fişi, Bağdaştırıcılar, Kambiyo yok", async () => {
+  await step("6. Ayarlar: Temel ve Gelişmiş — Ekstre, Döviz, Hareket (Kanal Alanı), Elle Banka Fişi, Bağdaştırıcılar, Kambiyo yok (2.2.0: POS bölümleri var; Ekstre ile geçiş ve Her Valörde Taslak seçeneği yok)", async () => {
     await openBank();
     await tab("settings");
     await page.waitForSelector(`${bankWin} [data-settings]`, { timeout: 10000 });
     const basic = await page.$$eval(`${bankWin} .hof-bank-set:not([hidden]) legend`, list => list.filter(node => node.offsetParent).map(node => node.textContent.trim()));
-    ok(basic.join("|") === "Hesap|Eksi Bakiye|Mükerrer|Masraf|Tatil", `Temel bölümler: ${basic.join(", ")}`);
+    ok(basic.join("|") === "Hesap|Eksi Bakiye|Mükerrer|POS|Masraf|Tatil", `Temel bölümler: ${basic.join(", ")}`);
     ok(!laterIn(await textOf(`${bankWin} [data-settings]`)).length, "Temel ayarlarda ertelenen özellik yok");
     await shot("ayarlar-temel");
     await page.click(`${bankWin} [data-act="advanced"]`);
     await pause(400);
     const all = await page.$$eval(`${bankWin} .hof-bank-set legend`, list => list.filter(node => node.offsetParent).map(node => node.textContent.trim()));
-    ok(!all.some(name => ["POS", "Ekstre", "Döviz", "Hareket"].includes(name)), `bütün görünen bölümler: ${all.join(", ")}`);
+    ok(!all.some(name => ["Ekstre", "Döviz", "Hareket"].includes(name)) && all.filter(name => name === "POS").length === 2, `bütün görünen bölümler (POS ve Gelişmiş POS var): ${all.join(", ")}`);
+    // Açılan POS bölümünde henüz olmayan seçenekler gizli: Bankaya Geçiş "Ekstre ile" (2.3.0) ve Komisyon Faturası "Her Valörde".
+    const settlement = await page.$$eval(`${bankWin} [data-set="posAdvanced.settlement"] option`, nodes => nodes.map(node => node.value)).catch(() => []);
+    const commissionInvoice = await page.$$eval(`${bankWin} [data-set="posAdvanced.commissionInvoice"] option`, nodes => nodes.map(node => node.value)).catch(() => []);
+    ok(settlement.length > 0 && !settlement.includes("statement") && !commissionInvoice.includes("each_valor"), `POS seçenekleri: Bankaya Geçiş ${settlement.join(", ")} · Komisyon Faturası ${commissionInvoice.join(", ")}`);
     // Bölüm, kalem adı ve yardım metinleri (açılır listelerin seçenekleri hariç: Diğer Gelir / Diğer Gider eşlemesinin seçeneklerinde plan §3.11
     // beyaz listesindeki 646 Kambiyo Kârları ve 656 Kambiyo Zararları bulunur — Banka Fişi'nin karşı hesabıdır, döviz modülü değildir).
     const advancedText = await page.$eval(`${bankWin} [data-advanced]`, node => {
@@ -516,7 +523,7 @@ try {
     ok(!later.length, `Gelişmiş ayarlarda ertelenen özellik yok${later.length ? `: ${later.join(", ")}` : ""}`);
     const incomeGl = await page.$$eval(`${bankWin} [data-set="gl.otherIncome"] option`, nodes => nodes.map(node => node.value)).catch(() => []);
     ok(incomeGl.length > 0 && incomeGl.every(code => ["642", "646", "649"].includes(code)), `Diğer Gelir eşlemesi plan beyaz listesinden (${incomeGl.join(", ")})`);
-    for (const key of ["pos.valorDays", "posAdvanced.blockDays", "statement.toleranceDays", "fx.source", "fxAdvanced.exchangeTaxPermille", "movement.channel", "other.manualVoucher", "other.adapters", "gl.fxGain", "gl.fxLoss", "account.defaultPosId", "holidayAdvanced.shift"]) {
+    for (const key of ["statement.toleranceDays", "fx.source", "fxAdvanced.exchangeTaxPermille", "movement.channel", "other.manualVoucher", "other.adapters", "gl.fxGain", "gl.fxLoss", "holidayAdvanced.shift"]) {
       if (await page.$(`${bankWin} [data-set="${key}"]`)) ok(false, `${key} görünüyor`);
     }
     ok(true, "gizli ayar kalemlerinin hiçbiri ekranda yok");
@@ -525,15 +532,15 @@ try {
   });
 
   // 2.2.0 (bilerek güncellendi): Bankaya Tahsile Ver ile plan §8.10 "Tahsildeki Çekler" raporu (Tahsildeki Çek ve Senetler) geldi.
-  await step("7. Raporlar → Tüm Raporlar: Banka grubunda Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı ve Tahsildeki Çek ve Senetler", async () => {
+  await step("7. Raporlar → Tüm Raporlar: Banka grubunda Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı ve (2.2.0) Tahsildeki Çek ve Senetler, POS Ödeme Takvimi, Faturası Beklenen Komisyonlar", async () => {
     await page.click('#hof-sidecard [data-action="analytics"]');
     await page.waitForSelector(`${modal} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
     await page.click(`${modal} .hof-rep-tab[data-tab="all"]`);
     await page.waitForSelector(`${modal} [data-rc-list] [data-report]`, { timeout: 15000 });
     const items = await page.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler", `Banka raporları: ${items.join(", ")}`);
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar", `Banka raporları: ${items.join(", ")}`);
     const all = await page.$$eval(`${modal} [data-rc-list] [data-report]`, nodes => nodes.map(node => node.textContent.trim()));
-    const later = all.filter(title => /POS Satış|POS Komisyon|POS Bekleyen|POS Valör|Mutabakat Raporu|Kur Değerleme|Banka Nakit Akış|Günlük Banka|Aylık Banka|Bankalar Arası Transfer Raporu|Faturası Beklenen/.test(title));
+    const later = all.filter(title => /POS Satış|POS Komisyon|POS Bekleyen|POS Valör|Mutabakat Raporu|Kur Değerleme|Banka Nakit Akış|Günlük Banka|Aylık Banka|Bankalar Arası Transfer Raporu/.test(title));
     ok(!later.length, `ertelenen §8.10 raporu listede yok${later.length ? `: ${later.join(", ")}` : ""}`);
     await shot("tum-raporlar-banka");
   });

@@ -188,6 +188,10 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
         name: item.name,
         cash: view.cash?.balance ?? 0,
         realBank: showBank ? (bank.balance ?? 0) : null,
+        // 2.2.0 (İz 3.5, K10; plan §8.9): POS Bekleyen (Net) ve Blokeli POS — ANLIK DURUM'la aynı değer (overview cash.bank.posNet / posBlocked).
+        posNet: showBank ? (bank.posNet ?? 0) : null,
+        posBlocked: showBank ? (bank.posBlocked ?? 0) : null,
+        posDefined: Boolean(bank.pos),
         bankDebt: showBank ? (bank.debt?.total ?? 0) : null,
         bankUnassigned: showBank ? (bank.unassigned?.total ?? 0) : null,
         receivable: view.receivable?.total ?? 0,
@@ -201,8 +205,10 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
       };
     });
     const sum = key => (rows.some(row => row[key] !== null) ? roundMoney(rows.reduce((total, row) => total + (Number(row[key]) || 0), 0)) : null);
-    const headers = ["Şirket", "Nakit Kasa", K10_LABELS.realBank, K10_LABELS.debt, K10_LABELS.unassigned, "Cari Alacak", "Cari Borç", "Geciken Taksit", "Stok Değeri", "Açık Satış Faturası", "Açık Alış Faturası", "Bu Ay Satış", "Bu Ay Alış"];
-    const keys = ["cash", "realBank", "bankDebt", "bankUnassigned", "receivable", "payable", "overdue", "stock", "invoiceOpenSale", "invoiceOpenPurchase", "monthSale", "monthPurchase"];
+    // POS sütunları yalnız seçilen şirketlerden birinde POS tanımlıysa (ANLIK DURUM'daki POS kutusu gibi) ve banka sütunlarını gören kullanıcıya.
+    const posShown = showBank && rows.some(row => row.posDefined);
+    const headers = ["Şirket", "Nakit Kasa", K10_LABELS.realBank, ...(posShown ? [K10_LABELS.posPending, K10_LABELS.posBlocked] : []), K10_LABELS.debt, K10_LABELS.unassigned, "Cari Alacak", "Cari Borç", "Geciken Taksit", "Stok Değeri", "Açık Satış Faturası", "Açık Alış Faturası", "Bu Ay Satış", "Bu Ay Alış"];
+    const keys = ["cash", "realBank", ...(posShown ? ["posNet", "posBlocked"] : []), "bankDebt", "bankUnassigned", "receivable", "payable", "overdue", "stock", "invoiceOpenSale", "invoiceOpenPurchase", "monthSale", "monthPurchase"];
     const table = rows.map(row => [`${row.code} · ${row.name}`, ...keys.map(key => row[key])]);
     const totals = ["TOPLAM", ...keys.map(sum)];
     return { headers, keys, rows, table, totals, types: ["", ...keys.map(() => "money")], labels: K10_LABELS, bankVisible: showBank, generatedAt: clock().toISOString() };

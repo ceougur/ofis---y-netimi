@@ -50,7 +50,8 @@
       extraHtml: offerPlan ? '<p class="hof-form-aside">Bu kişi taksitle mi ödüyor? <button type="button" class="hof-link" data-new-plan>Taksit planı oluşturun</button>; sonra tahsilatlar taksitten düşer ve kartında görünür.</p>' : "",
       submitLabel: "Tahsilatı Kaydet",
       onOpen: (dialog, modal) => {
-        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", direction: "in" });
+        // 2.2.0 (İz 3.2): kart yolu POS'tur (POS, taksit sayısı, provizyon, önizleme).
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", direction: "in", pos: {} });
         dialog.querySelector("[data-new-plan]")?.addEventListener("click", () => {
           modal.close();
           const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
@@ -59,7 +60,8 @@
       },
       onSubmit: async data => {
         const body = { ...data, caseTitle: selected.title };
-        if (data.method !== "bank") delete body.bankAccountId;
+        if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
+        else if (data.method !== "bank") delete body.bankAccountId;
         const send = flags => HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...body, ...flags }, requestId });
         const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         if (result?.replayed) return HOF.toast("Bu tahsilat zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
@@ -352,11 +354,13 @@
       submitLabel: "Düzeltmeyi Kaydet",
       onOpen: dialog => {
         // 2.7: düzeltilen tahsilat seçilen hesabın bakiyesinde zaten var (original): "İşlemden Sonra" yeni − eski.
-        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: item.finRef || "", keepLabel: item.method === "bank" && !item.finRef ? "Atanmamış (Eski Hareket)" : "", direction: "in", original: item.method === "bank" && item.finRef ? { ref: item.finRef, amount: item.amount, date: isoDate(item.date) } : null });
+        // 2.2.0 (İz 3.2): POS'lu tahsilatın POS'u, taksit sayısı, provizyonu ve son 4 hanesi satırın POS kaydından gelir.
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: item.finRef || "", keepLabel: item.method === "bank" && !item.finRef ? "Atanmamış (Eski Hareket)" : "", pos: { value: item.method === "card" ? item.finRef || "" : "", row: `payments:${item.id}` }, direction: "in", original: item.method === "bank" && item.finRef ? { ref: item.finRef, amount: item.amount, date: isoDate(item.date) } : null });
       },
       onSubmit: async data => {
         const body = { ...data };
-        if (data.method !== "bank") delete body.bankAccountId;
+        if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
+        else if (data.method !== "bank") delete body.bankAccountId;
         const send = flags => HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "PUT", body: { ...body, ...flags }, requestId });
         await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
         HOF.toast("Tahsilat düzeltildi.", { type: "success" });

@@ -101,7 +101,8 @@ export const ADMIN_ONLY = Object.freeze(["overview.card", "users.manage", "syste
  * Mutabakat 2.3.0) Roller ve Kişiye Özel Yetki ekranlarında görünmez. Değerleri korunur: yerleşik rollerin matrisi aynıdır; özel rol
  * düzenlenirken (ekran bu yetkileri göndermez) kayıtlı değerleri kalır (access.updateRole).
  */
-export const NOT_YET_PERMISSIONS = Object.freeze(new Set(["bank.pos", "bank.commission", "bank.statement", "bank.reconcile"]));
+// 2.2.0 (İz 3.4): POS geldi — POS Tanımlama (bank.pos) ve Komisyon Oranlarını Değiştirme (bank.commission) kataloğa açıldı.
+export const NOT_YET_PERMISSIONS = Object.freeze(new Set(["bank.statement", "bank.reconcile"]));
 
 export const PERMISSION_GROUPS = Object.freeze([
   {

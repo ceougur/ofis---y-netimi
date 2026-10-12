@@ -29,11 +29,17 @@ const ROOT = new URL("../", import.meta.url);
 const read = file => readFileSync(new URL(file, ROOT), "utf8");
 
 describe("Aşama 4 (dilim 4) — Banka arayüzünün kaynak kuralları", () => {
-  it("Hareketler sekmesi Hesaplar'dan hemen sonra; POS ve Ekstre sekmesi yok", () => {
+  // 2.2.0 (İz 3.3, bilerek güncellendi): sabit sekmeler Genel Bakış · Hesaplar · Hareketler; POS sekmesi hof-bank-pos.js'ten addTab ile Ayarlar'dan
+  // önce eklenir; Ekstre ve Mutabakat sekmesi yok (2.3.0).
+  it("Hareketler sekmesi Hesaplar'dan hemen sonra; POS sekmesi eklenir (Ayarlar'dan önce); Ekstre sekmesi yok", () => {
     const src = read("client/assets/hof-bank.js");
-    const block = src.slice(src.indexOf("const TABS = ["), src.indexOf("];", src.indexOf("const TABS = [")));
+    const block = src.slice(src.indexOf("const BASE_TABS = ["), src.indexOf("];", src.indexOf("const BASE_TABS = [")));
     const tabs = [...block.matchAll(/\["([a-z]+)",\s*"([^"]+)"\]/g)].map(match => [match[1], match[2]]);
-    assert.deepEqual(tabs, [["overview", "Genel Bakış"], ["accounts", "Hesaplar"], ["movements", "Hareketler"], ["settings", "Ayarlar"]], `sekmeler: ${JSON.stringify(tabs)}`);
+    assert.deepEqual(tabs, [["overview", "Genel Bakış"], ["accounts", "Hesaplar"], ["movements", "Hareketler"]], `sekmeler: ${JSON.stringify(tabs)}`);
+    assert.ok(/\["settings", "Ayarlar"\]\]/.test(src), "Ayarlar en sonda");
+    const pos = read("client/assets/hof-bank-pos.js");
+    assert.ok(/bank\.addTab\("pos", \{ label: "POS"/.test(pos), "POS sekmesi eklenir");
+    assert.ok(!/addTab\("(statement|reconcile|ekstre)/i.test(`${src}\n${pos}`), "Ekstre sekmesi yok");
   });
 
   it("Hareketler imleçli ve liste kapılı; satır İşlem Kartı'nı açar", () => {

@@ -357,7 +357,7 @@ export function registerBankRoutes(router, context) {
   bank.usePos(pos);
   service.usePos(pos);
   service.pos = pos;
-  registerPosRoutes(router, { auth, events, pos, accounts: () => context.accounts, period });
+  registerPosRoutes(router, { auth, events, pos, accounts: () => context.accounts, period, chooser: user => CHOICE_PERMISSIONS.some(permission => canUser(user, permission)) });
   // Modül formlarının hesap seçimi ve K7'si (Aşama 5–6; cari, Kasa ↔ Banka): modül rotaları istek anında context.bankAccounts.module'e ulaşır.
   service.module = createModuleBank({ store, accounts: service, negative: vouchers.negative, legacy: () => context.config?.bankPickLegacy === true, pos: () => pos });
   service.module.pos = pos;

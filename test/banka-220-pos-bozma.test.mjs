@@ -2,7 +2,7 @@
 // kodu + gövde + veri tabanındaki sayı (ders 3) ve mutabakat (pos:*). Beklenen sayılar plan tablolarından (kâhin).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
-import { BANK, TODAY, balanceOf, bootBank, expectStatus, kurus, must, openAcceptanceAccounts, openPos, posCheck, posInvoice, salesOf, settle, subBalances, summaryOf, ziraatPos } from "./banka-220-pos-ortak.mjs";
+import { BANK, TODAY, balanceOf, bootBank, expectStatus, flagPos, kurus, must, openAcceptanceAccounts, openPos, posCheck, posInvoice, salesOf, settle, subBalances, summaryOf, ziraatPos } from "./banka-220-pos-ortak.mjs";
 
 async function world(options = {}) {
   const ctx = await bootBank(options);
@@ -112,7 +112,8 @@ describe("Aşama 10 Nasıl Bozarım", () => {
   });
 
   it("POS kartında bağlı hesap değişince bekleyenler ESKİ hesaba (kopya); \"Bekleyenleri Yeni Hesaba Taşı\" ile yenisine", async () => {
-    // 09.10 satışı (1.000, %3) bekliyor; POS'un hesabını Garanti yap.
+    // 09.10 satışı (1.000, %3) bekliyor; POS'un hesabını Garanti yap (İz 3.1: yeni hesap "POS Kullan" işaretli olmalı).
+    await flagPos(w.api, w.acc.garanti.id);
     await must("hesap değiştir", w.api.put(`${BANK}/pos/${pos.id}`, { bankAccountId: w.acc.garanti.id }));
     w.ctx.server.clock.set("2026-10-10T10:00:00+03:00");
     await must("10.10 satışı", collect(w.api, w.abc.id, { amount: "2.000", date: "2026-10-10" }));

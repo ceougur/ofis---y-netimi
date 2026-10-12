@@ -108,7 +108,8 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     if (!row || row.deleted_at) throw bad(404, "POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", "pos-missing", { field: "posId" });
     return row;
   };
-  const bankRow = id => (id ? store.get("SELECT id, code, kind, bank_name AS bankName, name, currency, gl_sub AS glSub, status, deleted_at AS deletedAt FROM bank_accounts WHERE id = ?", id) || null : null);
+  // usePos (İz 2.2, göç 21): "POS Kullan" işareti — POS yalnız işaretli hesaba bağlanır (İz 3.1).
+  const bankRow = id => (id ? store.get("SELECT id, code, kind, bank_name AS bankName, name, currency, gl_sub AS glSub, status, deleted_at AS deletedAt, use_pos AS usePos FROM bank_accounts WHERE id = ?", id) || null : null);
   const partyRow = id => (id ? store.get("SELECT id, name, type, deleted_at AS deletedAt FROM accounts WHERE id = ?", id) || null : null);
   const rateRows = (posId, date = "") =>
     store.all(
@@ -174,6 +175,13 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
       rates: current.map(rate => ({ installments: rate.installments, label: installmentText(rate.installments), ratePpm: rate.ratePpm, rate: ppmText(rate.ratePpm), valorDays: rate.valorDays, validFrom: rate.validFrom })),
       startDate: store.get("SELECT MIN(valid_from) AS d FROM pos_rates WHERE pos_id = ?", row.id)?.d || "",
       pending: { count: Number(pending?.n) || 0, grossMinor: Number(pending?.gross) || 0, netMinor: Number(pending?.net) || 0 },
+      // İz 3.1 (ekran): Sil'in nedeni önceden görünsün (kullanılmış POS silinmez) ve "Bekleyenleri Yeni Hesaba Taşı" yalnız bekleyen satışı eski
+      // hesaba bağlı POS'ta çıksın.
+      used: usedOf(row.id),
+      pendingElsewhere: (() => {
+        const other = store.get("SELECT COUNT(DISTINCT s.id) AS n, COALESCE(SUM(i.planned_net_minor), 0) AS net FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id WHERE i.pos_id = ? AND i.status = 'pending' AND s.bank_account_id <> ?", row.id, row.bank_account_id);
+        return { count: Number(other?.n) || 0, netMinor: Number(other?.net) || 0 };
+      })(),
       ...(history ? { rateHistory: store.all("SELECT installments, rate_ppm AS ratePpm, valor_days AS valorDays, valid_from AS validFrom, created_by AS createdBy, created_at AS createdAt FROM pos_rates WHERE pos_id = ? ORDER BY valid_from DESC, installments", row.id).map(rate => ({ ...rate, rate: ppmText(rate.ratePpm), label: installmentText(rate.installments) })) } : {}),
       createdAt: row.created_at,
       updatedAt: row.updated_at || "",
@@ -196,6 +204,10 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     if (!accountId || !account || account.deletedAt) throw bad(400, "Bağlı Hesap seçin: POS'un parası hangi banka hesabına geçiyor? (Vadesiz, Ticari ya da Diğer TL hesap.)", "pos-bank-account", { field: "bankAccountId" });
     if (account.status !== "active") throw bad(400, `${account.bankName} · ${account.name} pasif; POS'u etkin bir hesaba bağlayın.`, "pos-bank-account", { field: "bankAccountId" });
     if (account.currency !== "TRY" || !BANK_FORM_KINDS.has(account.kind)) throw bad(400, `${account.bankName} · ${account.name}: POS yalnız Vadesiz, Ticari ya da Diğer TL hesaba bağlanır.`, "pos-bank-account", { field: "bankAccountId" });
+    // İz 3.1 (müşteri madde 6, 12.10.2026: POS bankanın içinden tanımlanır): POS yalnız "POS Kullan" işaretli hesaba bağlanır. Yalnız YENİ bağda
+    // denetlenir (POS açma, bağlı hesabı değiştirme); bağı değişmeyen POS'un düzeltmesi işaretten bağımsız sürer (bağlı POS varken işaret zaten
+    // kapatılamaz: 409 bank-flag-in-use). Karar: geriye uyum istisnası yok — POS uçları 2.2.0 ile geldi, yayımlanmış eski bir API yolu yok.
+    if ((!existing || existing.bank_account_id !== account.id) && !Number(account.usePos)) throw bad(400, `${account.bankName} · ${account.name} hesabında “POS Kullan” işaretli değil; önce hesabın Düzenle'sinden “POS Kullan”ı işaretleyin (POS'lar o hesabın altında tanımlanır).`, "pos-account-flag", { field: "bankAccountId" });
     const kind = text(pick("kind", "kind", "physical")) || "physical";
     if (!POS_KINDS[kind]) throw bad(400, "POS Türü Fiziki, Sanal ya da Mobil olmalı.", "pos-kind", { field: "kind" });
     const providerKind = text(pick("providerKind", "provider_kind", "bank")) || "bank";
@@ -224,6 +236,9 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     if (!REFUND_RULES[refundCommission]) throw bad(400, "İadede Komisyon İade Edilmez, Oransal ya da Tam olmalı.", "pos-field", { field: "refundCommission" });
     const settleMode = text(pick("settleMode", "settle_mode", "inherit")) || "inherit";
     if (!SETTLE_MODES[settleMode]) throw bad(400, "Bankaya Geçiş Otomatik, Ekstre ile ya da Elle Onay olmalı.", "pos-field", { field: "settleMode" });
+    // Ekstre ve Mutabakat 2.3.0'da (plan §12.1, ertelenen görünmez): "Ekstre ile" bu sürümde seçilemez — kalemler eşleşecek ekstre olmadan
+    // yalnız elle onayla geçerdi. Kayıtlı değer (yalnız geliştirme verisi) dokunulmadıkça kalır.
+    if (settleMode === "statement" && (!existing || existing.settle_mode !== "statement")) throw bad(400, "“Ekstre ile” bankaya geçiş Ekstre ve Mutabakat ile gelir; şimdilik Otomatik ya da Elle Onay seçin.", "pos-settle-later", { field: "settleMode" });
     const fixedRaw = body.fixedFee !== undefined ? body.fixedFee : null;
     const fixedFee = fixedRaw === null ? (existing ? Number(existing.fixed_fee_minor) || 0 : 0) : parseMinor(fixedRaw === "" ? "0" : fixedRaw, { label: "Sabit İşlem Ücreti", allowZero: true });
     return {
@@ -352,11 +367,17 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     });
     return terminalView(terminal(row.id));
   }
+  /** POS kullanılmış mı (satış, modül satırı ya da fiş satırı var mı)? Kullanılmış POS silinmez (Pasife Alınır). */
+  function usedOf(posId) {
+    return Boolean(
+      store.get("SELECT 1 AS found FROM pos_sales WHERE pos_id = ? LIMIT 1", posId) || store.get("SELECT 1 AS found FROM bank_lines WHERE ref = ? LIMIT 1", posId) ||
+        ["payments", "account_entries", "plan_entries", "stock_moves", "cheque_events"].some(table => store.get(`SELECT 1 AS found FROM ${table} WHERE fin_ref = ? LIMIT 1`, posId)),
+    );
+  }
   /** Sil: yalnız hiç kullanılmamış POS (satış, modül satırı, fiş satırı yok); kullanılmışsa 409 pos-in-use → Pasife Al. */
   function remove(user, id) {
     const row = mustTerminal(id);
-    const used = store.get("SELECT 1 AS found FROM pos_sales WHERE pos_id = ? LIMIT 1", row.id) || store.get("SELECT 1 AS found FROM bank_lines WHERE ref = ? LIMIT 1", row.id) ||
-      ["payments", "account_entries", "plan_entries", "stock_moves", "cheque_events"].some(table => store.get(`SELECT 1 AS found FROM ${table} WHERE fin_ref = ? LIMIT 1`, row.id));
+    const used = usedOf(row.id);
     if (used) throw bad(409, `${row.name} kullanılmış (satışı ya da hareketi var); silinmez. Kullanmayacaksanız Pasife Al.`, "pos-in-use");
     bank.post({
       user, module: "bank", op: "delete", prev: row,
@@ -387,6 +408,7 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     const row = mustTerminal(id);
     const target = bankRow(text(body.bankAccountId) || row.bank_account_id);
     if (!target || target.deletedAt || target.status !== "active" || target.currency !== "TRY" || !BANK_FORM_KINDS.has(target.kind)) throw bad(400, "Taşınacak hesap etkin bir Vadesiz, Ticari ya da Diğer TL hesap olmalı.", "pos-bank-account", { field: "bankAccountId" });
+    if (target.id !== row.bank_account_id && !Number(target.usePos)) throw bad(400, `${target.bankName} · ${target.name} hesabında “POS Kullan” işaretli değil; bekleyenler yalnız POS Kullan işaretli hesaba taşınır.`, "pos-account-flag", { field: "bankAccountId" });
     let moved = 0;
     bank.post({
       user, module: "bank", op: "update", prev: { posId: row.id },
@@ -548,6 +570,10 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
       if (row && sale) {
         const same = sale.pos_id === row.pos.id && Number(sale.gross_minor) === row.amount && sale.date === row.date && (sale.kind === "sale") === (row.direction === "in") && (!meta || sale.kind !== "sale" || Number(meta.installments || 1) === Number(sale.installments));
         if (!same) plan.push({ order: sale.kind === "refund" ? 1 : 2, run: () => changeSale(ctx, sale, eventId, row, meta, touchedGroups) });
+        // İz 3 (bilinen hata, 12.10.2026): tutar, tarih, POS ve taksit aynı kalıp YALNIZ provizyon no ya da kartın son 4 hanesi değişince (fatura
+        // Düzenle, cari tahsilatı düzelt) satış kaydı güncellenmiyordu — eski provizyon kalıyor, mükerrer denetimi eski numarayla yapılıyordu.
+        // Yerinde düzeltilir (valör takvimi ve para değişmez); yeni provizyon aynı gün aynı POS'ta başka etkin satıştaysa 409.
+        else if (meta && sale.kind === "sale" && (meta.authCode !== (sale.auth_code || "") || meta.cardLast4 !== (sale.card_last4 || ""))) plan.push({ order: 2, run: () => relabelSale(ctx, sale, meta) });
       } else if (sale) plan.push({ order: sale.kind === "refund" ? 0 : 1, run: () => removeSale(ctx, sale, ctx.posOutcome || "entry-error", touchedGroups) });
       else {
         plan.push({ order: row.direction === "in" ? 3 : 4, run: () => {
@@ -563,26 +589,71 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     if (touchedGroups.size) settleGroups(ctx.user || SYSTEM_ACTOR, dueGroups({ keys: touchedGroups }), { inline: true });
   }
 
+  /** Satışın valör takvimi (POS kartının o günkü kuralları ve oranı); satış yazımı ve formun önizlemesi aynı hesabı kullanır. */
+  function scheduleOf(pos, rate, { date, gross, installments }) {
+    const tax = taxChoiceOf(pos);
+    return saleSchedule({
+      date, gross, installments, payout: pos.installment_payout, ratePpm: rate.ratePpm, fixedMinor: Number(pos.fixed_fee_minor) || 0,
+      taxKind: TAX_CHOICES[tax].taxKind, taxMode: TAX_CHOICES[tax].taxMode, taxPpm: Number(pos.tax_ppm), valorRule: pos.valor_rule, valorDays: Number(pos.valor_days),
+      rateValorDays: Number.isInteger(rate.valorDays) ? rate.valorDays : null, blockDays: Number(pos.block_days) || 0, calendar: calendar(),
+    });
+  }
+  const rateMissing = (pos, installments, date) => {
+    const any = store.get("SELECT MIN(valid_from) AS d FROM pos_rates WHERE pos_id = ? AND installments = ?", pos.id, installments)?.d;
+    return bad(400, any && any > date ? `${pos.name} için ${installmentText(installments)} oranı ${dayText(any)} tarihinden geçerli; ${dayText(date)} tarihli tahsilat bu oranla girilemez.` : `Bu POS'ta ${installments > 1 ? `${installments} taksit` : "Tek Çekim"} oranı tanımlı değil.`, "pos-rate-missing", { field: "installments", installments });
+  };
+  /**
+   * Tahsilat formunun önizlemesi (§8.9: "Komisyon %3,50 · Bankaya Geçecek 3.860,00 TL × 3 · İlk Valör 09.11.2026"): satış yazımıyla AYNI hesap
+   * (scheduleOf); hiçbir şey yazmaz. Dönüş: oran, komisyon, vergi, kesinti, net ve kalemler (valör günü, brüt, net, bloke).
+   */
+  function preview({ posId, amount, installments = 1, date = "" } = {}) {
+    const pos = mustTerminal(posId);
+    if (pos.status !== "active") throw bad(400, `${pos.name} pasif; bu POS'a tahsilat girmek için önce POS kartından Etkinleştir.`, "pos-passive", { field: "posId" });
+    const count = Number(installments) || 1;
+    if (!Number.isInteger(count) || count < 1 || count > 36) throw bad(400, "POS taksit sayısı 1 (Tek Çekim) ile 36 arasında bir tamsayı olmalı.", "pos-installments", { field: "installments" });
+    const day = /^\d{4}-\d{2}-\d{2}$/.test(text(date)) ? text(date) : today();
+    const gross = parseMinor(amount, { label: "Tutar" });
+    const rate = rateFor(pos.id, count, day);
+    if (!rate) throw rateMissing(pos, count, day);
+    const schedule = scheduleOf(pos, rate, { date: day, gross, installments: count });
+    const tax = taxChoiceOf(pos);
+    return {
+      posId: pos.id, posName: pos.name, date: day, installments: count, installmentLabel: installmentText(count), ratePpm: rate.ratePpm, rate: ppmText(rate.ratePpm), tax, taxLabel: TAX_LABELS[tax],
+      grossMinor: gross, commissionMinor: schedule.totals.commission, taxMinor: schedule.totals.tax, deductionMinor: schedule.totals.deduction, netMinor: schedule.totals.net,
+      blocked: schedule.items.some(item => item.blocked), items: schedule.items.map(item => ({ seq: item.seq, valueDate: item.valueDate, grossMinor: item.gross, netMinor: item.plannedNet, blocked: Boolean(item.blocked) })),
+    };
+  }
+  /**
+   * POS İadesinin asıl işlem önerisi (§4.6 "aynı cari ve faturadan öneri"): etkin, iade edilebilir kalanı olan satışlar — satıştan iade
+   * faturasında asıl faturanın, cari/taksit iadesinde o cari/kartın POS satışları (en yenisi önce). Bakiye/oran dönmez.
+   */
+  function origins({ invoiceId = "", partyId = "", planId = "", posId = "" } = {}) {
+    if (!isReady()) return [];
+    const where = ["s.kind = 'sale'", "s.status = 'active'"];
+    const args = [];
+    const original = invoiceId ? store.get("SELECT original_id AS id FROM invoices WHERE id = ?", invoiceId)?.id || invoiceId : "";
+    if (original) where.push("e.invoice_id = ?") && args.push(original);
+    else if (planId) where.push("e.plan_id = ?") && args.push(planId);
+    else if (partyId) where.push("e.party_id = ?") && args.push(partyId);
+    else return [];
+    if (posId) where.push("s.pos_id = ?") && args.push(posId);
+    return store.all(`SELECT s.*, e.no AS eventNo FROM pos_sales s JOIN fin_events e ON e.id = s.event_id WHERE ${where.join(" AND ")} ORDER BY s.date DESC, s.created_at DESC LIMIT 50`, ...args)
+      .map(sale => ({ id: sale.id, eventNo: sale.eventNo || "", posId: sale.pos_id, posName: terminal(sale.pos_id)?.name || "", date: sale.date, installments: sale.installments, grossMinor: Number(sale.gross_minor), remainingMinor: Number(sale.gross_minor) - refundedOf(sale.id), authCode: sale.auth_code, cardLast4: sale.card_last4 }))
+      .filter(sale => sale.remainingMinor > 0);
+  }
+
   function createSale(ctx, eventId, row, meta, touched) {
     const pos = row.pos;
     if (pos.deleted_at) throw bad(404, "POS bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", "pos-missing", { field: "posId" });
     if (pos.status !== "active") throw bad(400, `${pos.name} pasif; bu POS'a tahsilat girmek için önce POS kartından Etkinleştir.`, "pos-passive", { field: "posId" });
     const installments = Number(meta?.installments) || 1;
     const rate = rateFor(pos.id, installments, row.date);
-    if (!rate) {
-      const any = store.get("SELECT MIN(valid_from) AS d FROM pos_rates WHERE pos_id = ? AND installments = ?", pos.id, installments)?.d;
-      throw bad(400, any && any > row.date ? `${pos.name} için ${installmentText(installments)} oranı ${dayText(any)} tarihinden geçerli; ${dayText(row.date)} tarihli tahsilat bu oranla girilemez.` : `Bu POS'ta ${installments > 1 ? `${installments} taksit` : "Tek Çekim"} oranı tanımlı değil.`, "pos-rate-missing", { field: "installments", installments });
-    }
+    if (!rate) throw rateMissing(pos, installments, row.date);
     if (meta?.authCode) {
       const twin = store.get("SELECT s.id, e.no FROM pos_sales s LEFT JOIN fin_events e ON e.id = s.event_id WHERE s.pos_id = ? AND s.auth_code = ? AND s.date = ? AND s.status = 'active' LIMIT 1", pos.id, meta.authCode, row.date);
       if (twin) throw bad(409, `${meta.authCode} provizyon numarası ${dayText(row.date)} tarihinde bu POS'ta zaten kayıtlı${twin.no ? ` (${twin.no})` : ""}; aynı kart işlemi ikinci kez girilemez.`, "pos-auth-duplicate", { field: "authCode", eventNo: twin.no || "" });
     }
-    const tax = taxChoiceOf(pos);
-    const schedule = saleSchedule({
-      date: row.date, gross: row.amount, installments, payout: pos.installment_payout, ratePpm: rate.ratePpm, fixedMinor: Number(pos.fixed_fee_minor) || 0,
-      taxKind: TAX_CHOICES[tax].taxKind, taxMode: TAX_CHOICES[tax].taxMode, taxPpm: Number(pos.tax_ppm), valorRule: pos.valor_rule, valorDays: Number(pos.valor_days),
-      rateValorDays: Number.isInteger(rate.valorDays) ? rate.valorDays : null, blockDays: Number(pos.block_days) || 0, calendar: calendar(),
-    });
+    const schedule = scheduleOf(pos, rate, { date: row.date, gross: row.amount, installments });
     const saleId = writeSale({
       eventId, posId: pos.id, kind: "sale", src: "module", date: row.date, installments, ratePpm: rate.ratePpm, taxKind: pos.tax_kind, taxMode: pos.tax_mode, taxPpm: Number(pos.tax_ppm),
       fixedMinor: Number(pos.fixed_fee_minor) || 0, refundCommission: pos.refund_commission, payout: pos.installment_payout, blockDays: Number(pos.block_days) || 0,
@@ -755,6 +826,16 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
     if (row.direction === "in") createSale(ctx, eventId, row, keep, touched);
     else createRefund(ctx, eventId, row, keep, touched);
     audit?.(ctx.user || SYSTEM_ACTOR, "bank.pos.replanned", sale.id, { eventId, previous: { posId: sale.pos_id, grossMinor: Number(sale.gross_minor), date: sale.date, installments: sale.installments } });
+  }
+
+  /** Yalnız provizyon no / kartın son 4 hanesi değişen satış: kayıt yerinde (kalemler ve para aynı). Yeni provizyon tekil olmalı (aynı gün, aynı POS). */
+  function relabelSale(ctx, sale, meta) {
+    if (meta.authCode && meta.authCode !== (sale.auth_code || "")) {
+      const twin = store.get("SELECT s.id, e.no FROM pos_sales s LEFT JOIN fin_events e ON e.id = s.event_id WHERE s.pos_id = ? AND s.auth_code = ? AND s.date = ? AND s.status = 'active' AND s.id <> ? LIMIT 1", sale.pos_id, meta.authCode, sale.date, sale.id);
+      if (twin) throw bad(409, `${meta.authCode} provizyon numarası ${dayText(sale.date)} tarihinde bu POS'ta zaten kayıtlı${twin.no ? ` (${twin.no})` : ""}; aynı kart işlemi ikinci kez girilemez.`, "pos-auth-duplicate", { field: "authCode", eventNo: twin.no || "" });
+    }
+    setSale("auth_code = ?, card_last4 = ?", "id = ?", [meta.authCode || "", meta.cardLast4 || ""], [sale.id]);
+    audit?.(ctx.user || SYSTEM_ACTOR, "bank.pos.relabeled", sale.id, { eventId: sale.event_id, previous: { authCode: sale.auth_code || "", cardLast4: sale.card_last4 || "" }, next: { authCode: meta.authCode || "", cardLast4: meta.cardLast4 || "" } });
   }
 
   /** Silinenler'den geri yükleme (§3.8): void satış asıl valörleriyle yeniden etkin; aynı provizyonla etkin satış varsa 409. */
@@ -1043,6 +1124,8 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
       taxMinor: Number(sale.tax_minor), netMinor: Number(sale.net_minor), commissionRefundMinor: Number(sale.commission_refund_minor), refundedMinor: sale.kind === "sale" ? refundedOf(sale.id) : 0,
       blocked: Boolean(sale.blocked), authCode: sale.auth_code, cardLast4: sale.card_last4, bankAccountId: sale.bank_account_id, providerAccountId: sale.provider_account_id,
       party: party ? { id: party.id, name: party.name } : null, invoice: invoice ? { id: invoice.id, number: invoice.number, kind: invoice.kind } : null,
+      // Satırın bölümü (İz 3.3: POS İşlemleri'nde İptal Et'in nedeni — cari tahsilatı burada, fatura peşini faturadan, kayıt/taksit/stok kendi bölümünden).
+      source: event.srcTable || "",
       origin: origin ? { id: origin.id, eventNo: origin.no || "", date: origin.date, grossMinor: Number(origin.grossMinor) } : null,
       voidable, voidReason: sale.kind !== "sale" || sale.status !== "active" ? "" : settled.length ? "Bankaya geçti; POS İadesi yapın." : today() > window ? "Provizyon süresi geçti; POS İadesi yapın." : "",
       explain,
@@ -1182,9 +1265,25 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
       const invoice = store.get("SELECT id, number, status, try_payable AS payable FROM invoices WHERE id = ?", row.invoiceId);
       const payable = toMinor(Number(invoice?.payable) || 0);
       const net = Number(row.net) || 0; // satır başına kuruş (SQL'de yuvarlanmış tam sayı)
-      return { posId: row.posId, posName: terminal(row.posId)?.name || "", invoice: invoice ? { id: invoice.id, number: invoice.number, status: invoice.status } : null, linkedMinor: net, payableMinor: payable, differenceMinor: payable - net };
+      const provider = invoice ? partyRow(store.get("SELECT account_id AS id FROM invoices WHERE id = ?", invoice.id)?.id || "") : null;
+      return { posId: row.posId, posName: terminal(row.posId)?.name || "", providerName: provider?.name || "", invoice: invoice ? { id: invoice.id, number: invoice.number, status: invoice.status } : null, linkedMinor: net, payableMinor: payable, differenceMinor: payable - net };
     });
     return { month: target, rows, linked };
+  }
+  /**
+   * Rapor Merkezi → "Faturası Beklenen Komisyonlar" (plan §8.10 ek; §4.3/3–4): tarih aralığındaki ayların KDV'li komisyon kesintileri — Faturası
+   * Beklenen, Taslak Hazır, İade Alacağı (net ≤ 0) ve faturası kaydedilmiş olanlar (Fark = fatura − bağlı kesinti). Yalnız kesintisi olan aylar.
+   */
+  function commissionReport({ from = "", to = "", posId = "" } = {}) {
+    if (!isReady()) return { rows: [] };
+    const months = store.all(`SELECT DISTINCT substr(e.date, 1, 7) AS month FROM account_entries e WHERE e.source = 'bank' ${from ? "AND e.date >= ?" : ""} ${to ? "AND e.date <= ?" : ""} ORDER BY month`, ...[from, to].filter(Boolean)).map(row => row.month);
+    const out = [];
+    for (const month of months) {
+      const data = commissionInvoices({ month });
+      for (const row of data.rows) if (!posId || row.posId === posId) out.push({ month, posName: row.posName, providerName: row.providerName, outMinor: row.outMinor, inMinor: row.inMinor, netMinor: row.netMinor, stateLabel: row.stateLabel, invoiceNo: row.invoice?.number || "", invoiceMinor: row.invoice ? toMinor(Number(row.invoice.payable) || 0) : 0, differenceMinor: 0 });
+      for (const row of data.linked) if (!posId || row.posId === posId) out.push({ month, posName: row.posName, providerName: row.providerName, outMinor: row.linkedMinor > 0 ? row.linkedMinor : 0, inMinor: row.linkedMinor < 0 ? -row.linkedMinor : 0, netMinor: row.linkedMinor, stateLabel: row.invoice?.status === "issued" ? (row.differenceMinor ? "Faturalandı (Fark Var)" : "Faturalandı") : "Faturası İptal Edildi", invoiceNo: row.invoice?.number || "", invoiceMinor: row.payableMinor, differenceMinor: row.differenceMinor });
+    }
+    return { rows: out };
   }
   /** "Şimdi Oluştur" / ayın ilk kuyruk turu: net > 0 olan (POS, sağlayıcı) için KDV Dahil taslak "Hizmet ve Gider Alışı" (653). */
   function createCommissionDrafts(user, { month = "", posId = "" } = {}) {
@@ -1351,8 +1450,8 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
   return {
     list, detail, create, update, setStatus, remove, addRates, movePending, rateRows,
     pick, reconcile, runQueue, drain, confirm, beforeLock, settleDue: drain,
-    pendingStats, calendarView, flows, sales, saleDetail, saleByRef, eventInfo, choices, voidTarget,
-    commissionInvoices, createCommissionDrafts, autoDrafts, invoiceIssued, checkItems, problems, dueGroups, isReady,
+    pendingStats, calendarView, flows, sales, saleDetail, saleByRef, eventInfo, choices, voidTarget, preview, origins,
+    commissionInvoices, commissionReport, createCommissionDrafts, autoDrafts, invoiceIssued, checkItems, problems, dueGroups, isReady,
     voidable: sale => saleView(sale).voidable,
   };
 }

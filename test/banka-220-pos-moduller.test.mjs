@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { apiOf } from "./banka-210-ortak.mjs";
 import { createUser } from "./helpers.mjs";
-import { BANK, TODAY, balanceOf, bootBank, calendarOf, expectStatus, kurus, must, openAcceptanceAccounts, openPos, posCheck, salesOf, settle, summaryOf, ziraatPos } from "./banka-220-pos-ortak.mjs";
+import { BANK, TODAY, balanceOf, bootBank, calendarOf, expectStatus, flagPos, kurus, must, openAcceptanceAccounts, openPos, posCheck, salesOf, settle, summaryOf, ziraatPos } from "./banka-220-pos-ortak.mjs";
 
 describe("POS modül yolları: kayıt, taksit, stok; iade yolları", () => {
   let ctx;
@@ -113,7 +113,8 @@ describe("Yetkiler (plan §9.1) ve şirket ayrımı", () => {
       const accountant = apiOf(await createUser(ctx.server, ctx.api.client, { username: "pos-muhasebe", role: "muhasebe" }));
       expectStatus(await staff.get(`${BANK}/pos`), 403, "", "personel liste");
       expectStatus(await staff.post(`${BANK}/pos`, ziraatPos(acc.ziraat.id)), 403, "", "personel açma");
-      const pos = (await must("muhasebe POS açar", accountant.post(`${BANK}/pos`, ziraatPos(acc.ziraat.id)))).pos;
+      await flagPos(ctx.api, acc.ziraat.id); // İz 3.1: POS yalnız POS Kullan işaretli hesaba
+      const pos =(await must("muhasebe POS açar", accountant.post(`${BANK}/pos`, ziraatPos(acc.ziraat.id)))).pos;
       expectStatus(await staff.post(`${BANK}/pos/${pos.id}/rates`, { validFrom: "2026-10-09", rates: [{ installments: 1, rate: "1" }] }), 403, "", "personel oran");
       const party = await must("cari", ctx.api.post("/api/workspace/accounts", { name: "Personel Müşterisi", type: "customer", registeredOn: "2026-10-01" }));
       await must("personel POS tahsilatı", staff.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "100", method: "card", date: TODAY }));

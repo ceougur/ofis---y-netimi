@@ -3,7 +3,7 @@
 // bağlanır ("yalnız bağlı" kapama: ilgisiz açık alış faturası FIFO'ya girmez). Sayılar planın tablosundan (kâhin).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
-import { BANK, TODAY, balanceOf, bootBank, kurus, must, openAcceptanceAccounts, openPos, posCheck, posInvoice, settle, subBalances, trialBalances, ziraatPos } from "./banka-220-pos-ortak.mjs";
+import { BANK, TODAY, balanceOf, bootBank, flagPos, kurus, must, openAcceptanceAccounts, openPos, posCheck, posInvoice, settle, subBalances, trialBalances, ziraatPos } from "./banka-220-pos-ortak.mjs";
 
 const kdvPos = (bankAccountId, providerAccountId) => ziraatPos(bankAccountId, { name: "Ödeme Kuruluşu Sanal POS", kind: "virtual", providerKind: "payment_institution", tax: "vat_excl", providerAccountId });
 
@@ -27,6 +27,7 @@ describe("Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50);
 
   it("POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)", async () => {
     assert.deepEqual([s.pos.providerKind, s.pos.tax], ["payment_institution", "vat_excl"]);
+    await flagPos(ctx.api, s.acc.ziraat.id); // (setup'taki openPos zaten işaretledi; burada açıkça)
     const res = await ctx.api.post(`${BANK}/pos`, kdvPos(s.acc.ziraat.id, ""));
     assert.equal(res.status, 400);
     assert.equal(res.code, "pos-provider-account");
