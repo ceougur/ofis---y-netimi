@@ -1,0 +1,212 @@
+TAP version 13
+# Subtest: 2.2.0 İz 2.2–2.3: hesap işaretleri ve kartın bağlı bankası
+    # Subtest: [N1] göç 21 yalnız ekleyici: eski hesap/kart/çek değişmez, işaretler kapalı, kart bağsız; iki kez koşsa da aynı
+    not ok 1 - [N1] göç 21 yalnız ekleyici: eski hesap/kart/çek değişmez, işaretler kapalı, kart bağsız; iki kez koşsa da aynı
+      ---
+      duration_ms: 1.867063
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:48:3'
+      failureType: 'testCodeFailure'
+      error: 'son göç 20'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:49:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: [N2] işaret yalnız Vadesiz/Ticari/Diğer TL hesapta; Vadeli, Kredi ve kartta 400 bank-flag-kind
+    not ok 2 - [N2] işaret yalnız Vadesiz/Ticari/Diğer TL hesapta; Vadeli, Kredi ve kartta 400 bank-flag-kind
+      ---
+      duration_ms: 46.196263
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:77:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined,
+        +   undefined,
+        +   undefined
+        -   true,
+        -   true,
+        -   true,
+        -   false
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1: true
+        2: true
+        3: false
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:79:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [N3] kart bankanın içinden: banka adı bankadan, Kredi Kartı Kullan kendiliğinden, iki kart + başka banka; listede bankanın altında
+    not ok 3 - [N3] kart bankanın içinden: banka adı bankadan, Kredi Kartı Kullan kendiliğinden, iki kart + başka banka; listede bankanın altında
+      ---
+      duration_ms: 25.450983
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:94:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [N4] bağlı banka bozuk: yok 404, pasif / vadeli / kredi / kart 400, kart dışı türe parentId 400, kart kendisine 400
+    not ok 4 - [N4] bağlı banka bozuk: yok 404, pasif / vadeli / kredi / kart 400, kart dışı türe parentId 400, kart kendisine 400
+      ---
+      duration_ms: 5.555135
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        olmayan banka: 400 {"ok":false,"error":"Banka Adı gerekli.","code":"bank-name-required","field":"Banka Adı"} Banka Adı gerekli.
+        
+        400 !== 404
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 404
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:128:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [N5] son 4 hane: 5 hane, harf, vadesizde 400; boş serbest
+    not ok 5 - [N5] son 4 hane: 5 hane, harf, vadesizde 400; boş serbest
+      ---
+      duration_ms: 0.902446
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:141:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:142:134)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [N6][N12] kartlı bankada işaret kapatma / silme / Vadeli'ye çevirme 409; kart taşınınca serbest
+    not ok 6 - [N6][N12] kartlı bankada işaret kapatma / silme / Vadeli'ye çevirme 409; kart taşınınca serbest
+      ---
+      duration_ms: 0.456076
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:150:67)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [N7] banka adı değişince kartlarının adı da değişir; bağlı kartın banka adını tek başına değiştirmek 400
+    not ok 7 - [N7] banka adı değişince kartlarının adı da değişir; bağlı kartın banka adını tek başına değiştirmek 400
+      ---
+      duration_ms: 0.419236
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:169:84)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [N8][N11] eski kart: aynı bankanın hesabı önerilir, kendiliğinden bağlanmaz; Bağla → bağlanır; para tarafı değişmez
+    not ok 8 - [N8][N11] eski kart: aynı bankanın hesabı önerilir, kendiliğinden bağlanmaz; Bağla → bağlanır; para tarafı değişmez
+      ---
+      duration_ms: 0.603931
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:176:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:177:53)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [N10] Banka Hesabı Tanımlama yetkisi olmayan kart ekleyemez, işaret değiştiremez
+    not ok 9 - [N10] Banka Hesabı Tanımlama yetkisi olmayan kart ekleyemez, işaret değiştiremez
+      ---
+      duration_ms: 112.778307
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:199:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:201:89)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 1 - 2.2.0 İz 2.2–2.3: hesap işaretleri ve kartın bağlı bankası
+  ---
+  duration_ms: 616.920448
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/banka-220-hesap-kart.test.mjs:39:1'
+  failureType: 'subtestsFailed'
+  error: '9 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 0
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1024.881512
