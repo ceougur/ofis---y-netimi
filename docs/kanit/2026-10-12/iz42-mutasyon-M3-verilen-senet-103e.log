@@ -1,0 +1,354 @@
+TAP version 13
+# Subtest: Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle)
+    # Subtest: alınan senet 121.01 (B 121 / A 120), alınan çek 101.01; verilen senet 321 (B 320 / A 321), verilen çek 103; Defter Mutabakatı gl:121 / gl:321
+    not ok 1 - alınan senet 121.01 (B 121 / A 120), alınan çek 101.01; verilen senet 321 (B 320 / A 321), verilen çek 103; Defter Mutabakatı gl:121 / gl:321
+      ---
+      duration_ms: 85.497665
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        evrak ver VS-1: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (103 Verilen Çekler ve Ödeme Emirleri (−): -900,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"gl:103","name":"103 Verilen Çekler ve Ödeme Emirleri (−)","ok":false,"difference":-900,"ledger":-900,"subledger":0,"tables":["cheques","account_entries","cheque_events"]},{"code":"gl:321","name":"321 Borç Senetleri","ok":false,"difference":900,"ledger":0,"subledger":-900,"tables":["cheques","account_entries","cheque_events"]}]}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:124:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Hesap Planı Mizanı ve Alt Hesap Mizanı: Tekdüzen adları (101 Alınan Çekler, 103 Verilen Çekler ve Ödeme Emirleri (−), 121, 321; 121.01/121.02)
+    not ok 2 - Hesap Planı Mizanı ve Alt Hesap Mizanı: Tekdüzen adları (101 Alınan Çekler, 103 Verilen Çekler ve Ödeme Emirleri (−), 121, 321; 121.01/121.02)
+      ---
+      duration_ms: 10.933329
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:136:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'Alınan Çekler',
+        +   undefined,
+        -   'Verilen Çekler ve Ödeme Emirleri (−)',
+            'Alacak Senetleri',
+        +   undefined
+        -   'Borç Senetleri'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Alınan Çekler'
+        1: 'Verilen Çekler ve Ödeme Emirleri (−)'
+        2: 'Alacak Senetleri'
+        3: 'Borç Senetleri'
+      actual:
+        0: 'Alınan Çekler'
+        2: 'Alacak Senetleri'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:139:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tahsile Ver B 121.02 / A 121.01; Bankadan Geri Al B 121.01 / A 121.02; 101.0x değişmez; İşlem Kartı adlarıyla; Tahsildeki Çek ve Senetler = 101.02 + 121.02
+    not ok 3 - Tahsile Ver B 121.02 / A 121.01; Bankadan Geri Al B 121.01 / A 121.02; 101.0x değişmez; İşlem Kartı adlarıyla; Tahsildeki Çek ve Senetler = 101.02 + 121.02
+      ---
+      duration_ms: 28.794907
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            '101': 40000,
+            '101.01': 40000,
+            '101.02': 0,
+        +   '103': 0,
+        -   '103': -35000,
+            '121': 100000,
+            '121.01': 0,
+            '121.02': 100000,
+        +   '321': 0
+        -   '321': -90000
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        101: 40000
+        103: -35000
+        121: 100000
+        321: -90000
+        101.01: 40000
+        101.02: 0
+        121.01: 0
+        121.02: 100000
+      actual:
+        101: 40000
+        103: 0
+        121: 100000
+        321: 0
+        101.01: 40000
+        101.02: 0
+        121.01: 0
+        121.02: 100000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:152:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tahsildeki senet Tahsil Edildi: B 102.01 / A 121.02, Ziraat +1.000; Geri Al → yeniden 121.02; karşılıksız: B 120 / A 121.02, cari yeniden borçlu
+    not ok 4 - tahsildeki senet Tahsil Edildi: B 102.01 / A 121.02, Ziraat +1.000; Geri Al → yeniden 121.02; karşılıksız: B 120 / A 121.02, cari yeniden borçlu
+      ---
+      duration_ms: 4.441195
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:170:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsile ver: 409 {"ok":false,"error":"Senet No SN-1 Ziraat Bankası tahsilde (08.10.2026); ikinci kez tahsile verilemez. Önce Bankadan Geri Al'ın.","code":"cheque-deposited","chequeId":"cheque-d688ee1a-8a43-44b4-988e-085524acdf3d","collectionId":"chqcol-0mv59769l0000-366e5cac-1a02-49b3"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:171:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: verilen senet ödemesi B 321 / A 102.01 (Ziraat −900); verilen çek ödemesi B 103 / A 102.01; 321 = 0, 103 = 0
+    not ok 5 - verilen senet ödemesi B 321 / A 102.01 (Ziraat −900); verilen çek ödemesi B 103 / A 102.01; 321 = 0, 103 = 0
+      ---
+      duration_ms: 8.560041
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:189:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        senet öde: 404 {"ok":false,"error":"Çek/senet bulunamadı. Silinmiş olabilir."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:191:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Senet 121 / 321 — çalışıyor mu (sayılarla, planın yevmiyesiyle)
+  ---
+  duration_ms: 550.349778
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:108:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle
+    # Subtest: ciro: B 320 / A 121.01; carisiz senet B 121.01 / A 602 ve karşılıksızı B 770 / A 121.01; taksite sayılan senet B 121.01 / A 120
+    ok 1 - ciro: B 320 / A 121.01; carisiz senet B 121.01 / A 602 ve karşılıksızı B 770 / A 121.01; taksite sayılan senet B 121.01 / A 120
+      ---
+      duration_ms: 133.321845
+      type: 'test'
+      ...
+    # Subtest: faturadan gelen alınan senet 121 (+2.000) ve verilen senet 321 (−450); fatura iptal edilince evrakla birlikte geri
+    not ok 2 - faturadan gelen alınan senet 121 (+2.000) ve verilen senet 321 (−450); fatura iptal edilince evrakla birlikte geri
+      ---
+      duration_ms: 50.612775
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:229:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        alış: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (103 Verilen Çekler ve Ödeme Emirleri (−): -450,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"gl:103","name":"103 Verilen Çekler ve Ödeme Emirleri (−)","ok":false,"difference":-450,"ledger":-450,"subledger":0,"tables":["account_entries","cheques","cheque_events"]},{"code":"gl:321","name":"321 Borç Senetleri","ok":false,"difference":450,"ledger":0,"subledger":-450,"tables":["account_entries","cheques","cheque_events"]}]}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:232:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sil → geri yükle: 121 −300 / +300
+    ok 3 - sil → geri yükle: 121 −300 / +300
+      ---
+      duration_ms: 86.867587
+      type: 'test'
+      ...
+    1..3
+not ok 2 - Senet 121 / 321 — ciro, carisiz, taksit, fatura, iptal, sil → geri yükle
+  ---
+  duration_ms: 575.299451
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:204:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi
+    # Subtest: açık dönemde senet → çek: 121 −500, 101 +500 (aynı tutar); geri senet; tahsildeyken 409 cheque-deposited; işlem görmüşken 409
+    ok 1 - açık dönemde senet → çek: 121 −500, 101 +500 (aynı tutar); geri senet; tahsildeyken 409 cheque-deposited; işlem görmüşken 409
+      ---
+      duration_ms: 183.630134
+      type: 'test'
+      ...
+    # Subtest: kilitli dönemde (alış 02.10, kilit 05.10) tür değişikliği 409 period-locked, 121 aynı; ham SQL ile değiştirilirse kilit izi değişir ve Mutabakat Testi 'Kapanmış dönem' der
+    ok 2 - kilitli dönemde (alış 02.10, kilit 05.10) tür değişikliği 409 period-locked, 121 aynı; ham SQL ile değiştirilirse kilit izi değişir ve Mutabakat Testi 'Kapanmış dönem' der
+      ---
+      duration_ms: 53.60526
+      type: 'test'
+      ...
+    1..2
+ok 3 - Senet 121 / 321 — nasıl bozarım: tür düzenleme, kilitli dönem, kilit izi
+  ---
+  duration_ms: 543.123021
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri
+    # Subtest: yetkisiz personel senet giremez (403, hiçbir şey yazılmaz); ?hofCompany=: 002'nin senedi 001'in 121'ine girmez
+    not ok 1 - yetkisiz personel senet giremez (403, hiçbir şey yazılmaz); ?hofCompany=: 002'nin senedi 001'in 121'ine girmez
+      ---
+      duration_ms: 277.146115
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:324:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002 verilen senet: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (103 Verilen Çekler ve Ödeme Emirleri (−): -333,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"gl:103","name":"103 Verilen Çekler ve Ödeme Emirleri (−)","ok":false,"difference":-333,"ledger":-333,"subledger":0,"tables":["cheques","cheque_events"]},{"code":"gl:321","name":"321 Borç Senetleri","ok":false,"difference":333,"ledger":0,"subledger":-333,"tables":["cheques","cheque_events"]}]}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:335:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Şirket Verisini Sıfırla: 101 / 121 / 103 / 321 sıfır, Mutabakat Testi temiz; sonra yeni senet yine 121'e
+    not ok 2 - Şirket Verisini Sıfırla: 101 / 121 / 103 / 321 sıfır, Mutabakat Testi temiz; sonra yeni senet yine 121'e
+      ---
+      duration_ms: 13.497563
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:342:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        evrak ver S-V: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (103 Verilen Çekler ve Ödeme Emirleri (−): -250,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"gl:103","name":"103 Verilen Çekler ve Ödeme Emirleri (−)","ok":false,"difference":-250,"ledger":-250,"subledger":0,"tables":["cheques","account_entries","cheque_events"]},{"code":"gl:321","name":"321 Borç Senetleri","ok":false,"difference":250,"ledger":0,"subledger":-250,"tables":["cheques","account_entries","cheque_events"]}]}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:343:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Banka Fişi: hiçbir rolde 121 / 321 seçilemez (§3.11 rol listesi; 400 bank-gl-forbidden); Hesap Eşlemeleri'nde 400
+    ok 3 - Banka Fişi: hiçbir rolde 121 / 321 seçilemez (§3.11 rol listesi; 400 bank-gl-forbidden); Hesap Eşlemeleri'nde 400
+      ---
+      duration_ms: 8.89237
+      type: 'test'
+      ...
+    1..3
+not ok 4 - Senet 121 / 321 — şirket ayrımı, yetki, Şirket Verisini Sıfırla, Banka Fişi rolleri
+  ---
+  duration_ms: 590.024632
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:315:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri
+ok 5 - Senet 121 / 321 — eşdeğerlik: gerçek eski kod (v2.1.0) ile aynı veri # SKIP v2.1.0 etiketi yok (git fetch --tags)
+  ---
+  duration_ms: 0.143043
+  type: 'suite'
+  ...
+# Subtest: Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+    # Subtest: 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+    not ok 1 - 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+      ---
+      duration_ms: 890.591114
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:468:3'
+      failureType: 'testCodeFailure'
+      error: 'fikstürde verilen senet var (001 ve 002)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:495:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 6 - Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+  ---
+  duration_ms: 891.049015
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/senet-mutant-iz42/test/banka-220-senet-121.test.mjs:467:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..6
+# tests 14
+# suites 6
+# pass 5
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3575.242454
