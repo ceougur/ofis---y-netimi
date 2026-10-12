@@ -1,0 +1,802 @@
+eski v2.1.0 (7c6405fca6697cc32e6c661c241dbcd99c438814) ↔ yeni guncel (çalışma ağacı)
+
+== YALNIZ YENİDE OLAN ANAHTARLAR (357) ==
+  steps[].data.deposited ×31
+  steps[].data.collection ×31
+  steps[].data.bankActions ×31
+  steps[].data.depositAccounts ×31
+  steps[].data.collections ×31
+  steps[].data.cheques[].deposited ×5
+  steps[].data.cheques[].collection ×5
+  reads.cekListe.data.cheques[].deposited ×12
+  reads.cekListe.data.cheques[].collection ×12
+  reads.cekListe.data.summary.deposited ×1
+  reads.cekListe:portfolio.data.cheques[].deposited ×4
+  reads.cekListe:portfolio.data.cheques[].collection ×4
+  reads.cekListe:portfolio.data.summary.deposited ×1
+  reads.cekListe:collected.data.cheques[].deposited ×3
+  reads.cekListe:collected.data.cheques[].collection ×3
+  reads.cekListe:collected.data.summary.deposited ×1
+  reads.cekListe:endorsed.data.cheques[].deposited ×2
+  reads.cekListe:endorsed.data.cheques[].collection ×2
+  reads.cekListe:endorsed.data.summary.deposited ×1
+  reads.cekListe:bounced.data.cheques[].deposited ×1
+  reads.cekListe:bounced.data.cheques[].collection ×1
+  reads.cekListe:bounced.data.summary.deposited ×1
+  reads.cekListe:paid.data.cheques[].deposited ×1
+  reads.cekListe:paid.data.cheques[].collection ×1
+  reads.cekListe:paid.data.summary.deposited ×1
+  reads.cekListe:pending.data.cheques[].deposited ×1
+  reads.cekListe:pending.data.cheques[].collection ×1
+  reads.cekListe:pending.data.summary.deposited ×1
+  reads.cekListe:open.data.cheques[].deposited ×5
+  reads.cekListe:open.data.cheques[].collection ×5
+  reads.cekListe:open.data.summary.deposited ×1
+  reads.cekListe:closed.data.cheques[].deposited ×7
+  reads.cekListe:closed.data.cheques[].collection ×7
+  reads.cekListe:closed.data.summary.deposited ×1
+  reads.cekListe:overdue.data.summary.deposited ×1
+  reads.cekListe:soon.data.cheques[].deposited ×2
+  reads.cekListe:soon.data.cheques[].collection ×2
+  reads.cekListe:soon.data.summary.deposited ×1
+  reads.cekListe:in.data.cheques[].deposited ×10
+  reads.cekListe:in.data.cheques[].collection ×10
+  reads.cekListe:in.data.summary.deposited ×1
+  reads.cekListe:abc.data.cheques[].deposited ×5
+  reads.cekListe:abc.data.cheques[].collection ×5
+  reads.cekListe:abc.data.summary.deposited ×1
+  reads.cekKart:*.data.deposited ×12
+  reads.cekKart:*.data.collection ×12
+  reads.cekKart:*.data.bankActions ×12
+  reads.cekKart:*.data.depositAccounts ×12
+  reads.cekKart:*.data.collections ×12
+  reads.portfoy.data.cheques[].deposited ×4
+  reads.portfoy.data.cheques[].collection ×4
+  reads.mutabakat.data.checks[].difference ×1
+  reads.mutabakat.data.checks[].ledger ×1
+  reads.mutabakat.data.checks[].subledger ×1
+  reads.rapor:tahsildeki-cekler ×1
+  reads.rapor:tahsildeki-cekler:varsayilan ×1
+
+== YALNIZ ESKİDE OLAN ANAHTARLAR (1) ==
+  reads.mutabakat.data.checks[75].gateCount: 0
+
+== DEĞERİ DEĞİŞENLER (246) ==
+  reads.mutabakat.data.checks.length
+     eski: 76
+     yeni: 77
+  reads.mutabakat.data.checks[73].code
+     eski: "money:report"
+     yeni: "cheque:collections"
+  reads.mutabakat.data.checks[73].name
+     eski: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)"
+     yeni: "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)"
+  reads.mutabakat.data.checks[74].code
+     eski: "bank:pool"
+     yeni: "money:report"
+  reads.mutabakat.data.checks[74].name
+     eski: "Devir Kapanışı ve Eski Bakiye Aktarımı (fiş = eski hareketler)"
+     yeni: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)"
+  reads.mutabakat.data.checks[75].code
+     eski: "money:event"
+     yeni: "bank:pool"
+  reads.mutabakat.data.checks[75].name
+     eski: "İşlem Başlığı Olmayan Para Satırı (v20'den sonra)"
+     yeni: "Devir Kapanışı ve Eski Bakiye Aktarımı (fiş = eski hareketler)"
+  reads.altHesap.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.altHesap.data.rows[0].sub
+     eski: "102.01"
+     yeni: "101.01"
+  reads.altHesap.data.rows[0].account
+     eski: "102"
+     yeni: "101"
+  reads.altHesap.data.rows[0].name
+     eski: "Ziraat Bankası · Ana TL Hesabı"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.altHesap.data.rows[0].debit
+     eski: 100000
+     yeni: 12600
+  reads.altHesap.data.rows[0].credit
+     eski: 0
+     yeni: 9200
+  reads.altHesap.data.rows[0].balance
+     eski: 100000
+     yeni: 3400
+  reads.altHesap.data.rows[1].sub
+     eski: "102.02"
+     yeni: "102.01"
+  reads.altHesap.data.rows[1].name
+     eski: "Garanti BBVA · Ana TL Hesabı"
+     yeni: "Ziraat Bankası · Ana TL Hesabı"
+  reads.altHesap.data.rows[1].debit
+     eski: 51000
+     yeni: 100000
+  reads.altHesap.data.rows[1].balance
+     eski: 51000
+     yeni: 100000
+  reads.altHesap.data.mains.length
+     eski: 1
+     yeni: 2
+  reads.altHesap.data.mains[0].account
+     eski: "102"
+     yeni: "101"
+  reads.altHesap.data.mains[0].name
+     eski: "Bankalar (Havale / EFT)"
+     yeni: "Alınan Çekler ve Senetler (Portföy)"
+  reads.altHesap.data.mains[0].balance
+     eski: 151000
+     yeni: 3400
+  reads.altHesap.data.mains[0].subTotal
+     eski: 151000
+     yeni: 3400
+  reads.altHesapDonem.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.altHesapDonem.data.rows[0].sub
+     eski: "102.01"
+     yeni: "101.01"
+  reads.altHesapDonem.data.rows[0].account
+     eski: "102"
+     yeni: "101"
+  reads.altHesapDonem.data.rows[0].name
+     eski: "Ziraat Bankası · Ana TL Hesabı"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.altHesapDonem.data.rows[0].opening
+     eski: 100000
+     yeni: 10600
+  reads.altHesapDonem.data.rows[0].credit
+     eski: 0
+     yeni: 3000
+  reads.altHesapDonem.data.rows[0].balance
+     eski: 100000
+     yeni: 7600
+  reads.altHesapDonem.data.rows[1].sub
+     eski: "102.02"
+     yeni: "102.01"
+  reads.altHesapDonem.data.rows[1].name
+     eski: "Garanti BBVA · Ana TL Hesabı"
+     yeni: "Ziraat Bankası · Ana TL Hesabı"
+  reads.altHesapDonem.data.rows[1].opening
+     eski: 50000
+     yeni: 100000
+  reads.altHesapDonem.data.rows[1].debit
+     eski: 1000
+     yeni: 0
+  reads.altHesapDonem.data.rows[1].balance
+     eski: 51000
+     yeni: 100000
+  reads.altHesapDonem.data.mains.length
+     eski: 1
+     yeni: 2
+  reads.altHesapDonem.data.mains[0].account
+     eski: "102"
+     yeni: "101"
+  reads.altHesapDonem.data.mains[0].name
+     eski: "Bankalar (Havale / EFT)"
+     yeni: "Alınan Çekler ve Senetler (Portföy)"
+  reads.altHesapDonem.data.mains[0].balance
+     eski: 151000
+     yeni: 7600
+  reads.altHesapDonem.data.mains[0].subTotal
+     eski: 151000
+     yeni: 7600
+  reads.rapor:yevmiye.data.rows[0][3]
+     eski: "102"
+     yeni: "102.01"
+  reads.rapor:yevmiye.data.rows[2][3]
+     eski: "102"
+     yeni: "102.02"
+  reads.rapor:yevmiye.data.rows[6][2]
+     eski: "Çek alındı · No C2 · Yapı Kredi · vade 31.10.2026"
+     yeni: "Senet alındı · No N1 · vade 15.11.2026"
+  reads.rapor:yevmiye.data.rows[6][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[6][4]
+     eski: "2.000,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye.data.rows[7][2]
+     eski: "Çek alındı · No C2 · Yapı Kredi · vade 31.10.2026"
+     yeni: "Senet alındı · No N1 · vade 15.11.2026"
+  reads.rapor:yevmiye.data.rows[7][5]
+     eski: "2.000,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye.data.rows[8][2]
+     eski: "Çek alındı · No C7 · vade 10.10.2026"
+     yeni: "Çek alındı · No C2 · Yapı Kredi · vade 31.10.2026"
+  reads.rapor:yevmiye.data.rows[8][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[8][4]
+     eski: "600,00 TL"
+     yeni: "2.000,00 TL"
+  reads.rapor:yevmiye.data.rows[9][2]
+     eski: "Çek alındı · No C7 · vade 10.10.2026"
+     yeni: "Çek alındı · No C2 · Yapı Kredi · vade 31.10.2026"
+  reads.rapor:yevmiye.data.rows[9][5]
+     eski: "600,00 TL"
+     yeni: "2.000,00 TL"
+  reads.rapor:yevmiye.data.rows[10][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[12][2]
+     eski: "Senet alındı · No N1 · vade 15.11.2026"
+     yeni: "Çek verildi · No C4 · Garanti · vade 20.10.2026"
+  reads.rapor:yevmiye.data.rows[12][3]
+     eski: "101"
+     yeni: "320"
+  reads.rapor:yevmiye.data.rows[12][4]
+     eski: "500,00 TL"
+     yeni: "1.500,00 TL"
+  reads.rapor:yevmiye.data.rows[13][2]
+     eski: "Senet alındı · No N1 · vade 15.11.2026"
+     yeni: "Çek verildi · No C4 · Garanti · vade 20.10.2026"
+  reads.rapor:yevmiye.data.rows[13][3]
+     eski: "120"
+     yeni: "103"
+  reads.rapor:yevmiye.data.rows[13][5]
+     eski: "500,00 TL"
+     yeni: "1.500,00 TL"
+  reads.rapor:yevmiye.data.rows[14][2]
+     eski: "Çek verildi · No C4 · Garanti · vade 20.10.2026"
+     yeni: "Çek alındı · No C8 · vade 17.10.2026"
+  reads.rapor:yevmiye.data.rows[14][3]
+     eski: "320"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[14][4]
+     eski: "1.500,00 TL"
+     yeni: "1.250,00 TL"
+  reads.rapor:yevmiye.data.rows[15][2]
+     eski: "Çek verildi · No C4 · Garanti · vade 20.10.2026"
+     yeni: "Çek alındı · No C8 · vade 17.10.2026"
+  reads.rapor:yevmiye.data.rows[15][3]
+     eski: "103"
+     yeni: "120"
+  reads.rapor:yevmiye.data.rows[15][5]
+     eski: "1.500,00 TL"
+     yeni: "1.250,00 TL"
+  reads.rapor:yevmiye.data.rows[16][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[18][2]
+     eski: "Çek alındı · No C8 · vade 17.10.2026"
+     yeni: "Çek alındı · No C7 · vade 10.10.2026"
+  reads.rapor:yevmiye.data.rows[18][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[18][4]
+     eski: "1.250,00 TL"
+     yeni: "600,00 TL"
+  reads.rapor:yevmiye.data.rows[19][2]
+     eski: "Çek alındı · No C8 · vade 17.10.2026"
+     yeni: "Çek alındı · No C7 · vade 10.10.2026"
+  reads.rapor:yevmiye.data.rows[19][5]
+     eski: "1.250,00 TL"
+     yeni: "600,00 TL"
+  reads.rapor:yevmiye.data.rows[20][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[22][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[24][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[27][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[28][3]
+     eski: "102"
+     yeni: "102.02"
+  reads.rapor:yevmiye.data.rows[29][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[30][2]
+     eski: "Çek karşılıksız / iade · No C3 · İş Bankası · vade 31.10.2026"
+     yeni: "Çek ciro edildi · No FC-1 · İş Bankası · vade 20.11.2026 · A-2"
+  reads.rapor:yevmiye.data.rows[30][3]
+     eski: "120"
+     yeni: "320"
+  reads.rapor:yevmiye.data.rows[30][4]
+     eski: "3.000,00 TL"
+     yeni: "2.000,00 TL"
+  reads.rapor:yevmiye.data.rows[31][2]
+     eski: "Çek karşılıksız / iade · No C3 · İş Bankası · vade 31.10.2026"
+     yeni: "Çek ciro edildi · No FC-1 · İş Bankası · vade 20.11.2026 · A-2"
+  reads.rapor:yevmiye.data.rows[31][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[31][5]
+     eski: "3.000,00 TL"
+     yeni: "2.000,00 TL"
+  reads.rapor:yevmiye.data.rows[32][2]
+     eski: "Çek alındı · No FC-1 · İş Bankası · vade 20.11.2026 · FIS2026000000001"
+     yeni: "Çek verildi · No VC-1 · Halkbank · vade 30.11.2026 · A-2"
+  reads.rapor:yevmiye.data.rows[32][3]
+     eski: "101"
+     yeni: "320"
+  reads.rapor:yevmiye.data.rows[32][4]
+     eski: "2.000,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye.data.rows[33][2]
+     eski: "Çek alındı · No FC-1 · İş Bankası · vade 20.11.2026 · FIS2026000000001"
+     yeni: "Çek verildi · No VC-1 · Halkbank · vade 30.11.2026 · A-2"
+  reads.rapor:yevmiye.data.rows[33][3]
+     eski: "120"
+     yeni: "103"
+  reads.rapor:yevmiye.data.rows[33][5]
+     eski: "2.000,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye.data.rows[34][2]
+     eski: "Çek ciro edildi · No FC-1 · İş Bankası · vade 20.11.2026 · A-2"
+     yeni: "Çek alındı · No FC-1 · İş Bankası · vade 20.11.2026 · FIS2026000000001"
+  reads.rapor:yevmiye.data.rows[34][3]
+     eski: "320"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[35][2]
+     eski: "Çek ciro edildi · No FC-1 · İş Bankası · vade 20.11.2026 · A-2"
+     yeni: "Çek alındı · No FC-1 · İş Bankası · vade 20.11.2026 · FIS2026000000001"
+  reads.rapor:yevmiye.data.rows[35][3]
+     eski: "101"
+     yeni: "120"
+  reads.rapor:yevmiye.data.rows[36][2]
+     eski: "Çek verildi · No VC-1 · Halkbank · vade 30.11.2026 · A-2"
+     yeni: "Çek karşılıksız / iade · No C3 · İş Bankası · vade 31.10.2026"
+  reads.rapor:yevmiye.data.rows[36][3]
+     eski: "320"
+     yeni: "120"
+  reads.rapor:yevmiye.data.rows[36][4]
+     eski: "500,00 TL"
+     yeni: "3.000,00 TL"
+  reads.rapor:yevmiye.data.rows[37][2]
+     eski: "Çek verildi · No VC-1 · Halkbank · vade 30.11.2026 · A-2"
+     yeni: "Çek karşılıksız / iade · No C3 · İş Bankası · vade 31.10.2026"
+  reads.rapor:yevmiye.data.rows[37][3]
+     eski: "103"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[37][5]
+     eski: "500,00 TL"
+     yeni: "3.000,00 TL"
+  reads.rapor:yevmiye.data.rows[38][4]
+     eski: "500,00 TL"
+     yeni: "700,00 TL"
+  reads.rapor:yevmiye.data.rows[39][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[39][5]
+     eski: "500,00 TL"
+     yeni: "700,00 TL"
+  reads.rapor:yevmiye.data.rows[40][1]
+     eski: "Çek / senet tahsili"
+     yeni: "Çek / senet ödemesi"
+  reads.rapor:yevmiye.data.rows[40][3]
+     eski: "100"
+     yeni: "103"
+  reads.rapor:yevmiye.data.rows[40][4]
+     eski: "700,00 TL"
+     yeni: "1.500,00 TL"
+  reads.rapor:yevmiye.data.rows[41][1]
+     eski: "Çek / senet tahsili"
+     yeni: "Çek / senet ödemesi"
+  reads.rapor:yevmiye.data.rows[41][3]
+     eski: "101"
+     yeni: "100"
+  reads.rapor:yevmiye.data.rows[41][5]
+     eski: "700,00 TL"
+     yeni: "1.500,00 TL"
+  reads.rapor:yevmiye.data.rows[42][1]
+     eski: "Çek / senet ödemesi"
+     yeni: "Çek / senet tahsili"
+  reads.rapor:yevmiye.data.rows[42][3]
+     eski: "103"
+     yeni: "100"
+  reads.rapor:yevmiye.data.rows[42][4]
+     eski: "1.500,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye.data.rows[43][1]
+     eski: "Çek / senet ödemesi"
+     yeni: "Çek / senet tahsili"
+  reads.rapor:yevmiye.data.rows[43][3]
+     eski: "100"
+     yeni: "101.01"
+  reads.rapor:yevmiye.data.rows[43][5]
+     eski: "1.500,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[0][3]
+     eski: "102"
+     yeni: "102.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[2][3]
+     eski: "102"
+     yeni: "102.02"
+  reads.rapor:yevmiye:varsayilan.data.rows[6][2]
+     eski: "Çek alındı · No C2 · Yapı Kredi · vade 31.10.2026"
+     yeni: "Senet alındı · No N1 · vade 15.11.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[6][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[6][4]
+     eski: "2.000,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[7][2]
+     eski: "Çek alındı · No C2 · Yapı Kredi · vade 31.10.2026"
+     yeni: "Senet alındı · No N1 · vade 15.11.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[7][5]
+     eski: "2.000,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[8][2]
+     eski: "Çek alındı · No C7 · vade 10.10.2026"
+     yeni: "Çek alındı · No C2 · Yapı Kredi · vade 31.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[8][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[8][4]
+     eski: "600,00 TL"
+     yeni: "2.000,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[9][2]
+     eski: "Çek alındı · No C7 · vade 10.10.2026"
+     yeni: "Çek alındı · No C2 · Yapı Kredi · vade 31.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[9][5]
+     eski: "600,00 TL"
+     yeni: "2.000,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[10][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[12][2]
+     eski: "Senet alındı · No N1 · vade 15.11.2026"
+     yeni: "Çek verildi · No C4 · Garanti · vade 20.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[12][3]
+     eski: "101"
+     yeni: "320"
+  reads.rapor:yevmiye:varsayilan.data.rows[12][4]
+     eski: "500,00 TL"
+     yeni: "1.500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[13][2]
+     eski: "Senet alındı · No N1 · vade 15.11.2026"
+     yeni: "Çek verildi · No C4 · Garanti · vade 20.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[13][3]
+     eski: "120"
+     yeni: "103"
+  reads.rapor:yevmiye:varsayilan.data.rows[13][5]
+     eski: "500,00 TL"
+     yeni: "1.500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[14][2]
+     eski: "Çek verildi · No C4 · Garanti · vade 20.10.2026"
+     yeni: "Çek alındı · No C8 · vade 17.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[14][3]
+     eski: "320"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[14][4]
+     eski: "1.500,00 TL"
+     yeni: "1.250,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[15][2]
+     eski: "Çek verildi · No C4 · Garanti · vade 20.10.2026"
+     yeni: "Çek alındı · No C8 · vade 17.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[15][3]
+     eski: "103"
+     yeni: "120"
+  reads.rapor:yevmiye:varsayilan.data.rows[15][5]
+     eski: "1.500,00 TL"
+     yeni: "1.250,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[16][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[18][2]
+     eski: "Çek alındı · No C8 · vade 17.10.2026"
+     yeni: "Çek alındı · No C7 · vade 10.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[18][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[18][4]
+     eski: "1.250,00 TL"
+     yeni: "600,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[19][2]
+     eski: "Çek alındı · No C8 · vade 17.10.2026"
+     yeni: "Çek alındı · No C7 · vade 10.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[19][5]
+     eski: "1.250,00 TL"
+     yeni: "600,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[20][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[22][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[24][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[27][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[28][3]
+     eski: "102"
+     yeni: "102.02"
+  reads.rapor:yevmiye:varsayilan.data.rows[29][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[30][2]
+     eski: "Çek karşılıksız / iade · No C3 · İş Bankası · vade 31.10.2026"
+     yeni: "Çek ciro edildi · No FC-1 · İş Bankası · vade 20.11.2026 · A-2"
+  reads.rapor:yevmiye:varsayilan.data.rows[30][3]
+     eski: "120"
+     yeni: "320"
+  reads.rapor:yevmiye:varsayilan.data.rows[30][4]
+     eski: "3.000,00 TL"
+     yeni: "2.000,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[31][2]
+     eski: "Çek karşılıksız / iade · No C3 · İş Bankası · vade 31.10.2026"
+     yeni: "Çek ciro edildi · No FC-1 · İş Bankası · vade 20.11.2026 · A-2"
+  reads.rapor:yevmiye:varsayilan.data.rows[31][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[31][5]
+     eski: "3.000,00 TL"
+     yeni: "2.000,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[32][2]
+     eski: "Çek alındı · No FC-1 · İş Bankası · vade 20.11.2026 · FIS2026000000001"
+     yeni: "Çek verildi · No VC-1 · Halkbank · vade 30.11.2026 · A-2"
+  reads.rapor:yevmiye:varsayilan.data.rows[32][3]
+     eski: "101"
+     yeni: "320"
+  reads.rapor:yevmiye:varsayilan.data.rows[32][4]
+     eski: "2.000,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[33][2]
+     eski: "Çek alındı · No FC-1 · İş Bankası · vade 20.11.2026 · FIS2026000000001"
+     yeni: "Çek verildi · No VC-1 · Halkbank · vade 30.11.2026 · A-2"
+  reads.rapor:yevmiye:varsayilan.data.rows[33][3]
+     eski: "120"
+     yeni: "103"
+  reads.rapor:yevmiye:varsayilan.data.rows[33][5]
+     eski: "2.000,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[34][2]
+     eski: "Çek ciro edildi · No FC-1 · İş Bankası · vade 20.11.2026 · A-2"
+     yeni: "Çek alındı · No FC-1 · İş Bankası · vade 20.11.2026 · FIS2026000000001"
+  reads.rapor:yevmiye:varsayilan.data.rows[34][3]
+     eski: "320"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[35][2]
+     eski: "Çek ciro edildi · No FC-1 · İş Bankası · vade 20.11.2026 · A-2"
+     yeni: "Çek alındı · No FC-1 · İş Bankası · vade 20.11.2026 · FIS2026000000001"
+  reads.rapor:yevmiye:varsayilan.data.rows[35][3]
+     eski: "101"
+     yeni: "120"
+  reads.rapor:yevmiye:varsayilan.data.rows[36][2]
+     eski: "Çek verildi · No VC-1 · Halkbank · vade 30.11.2026 · A-2"
+     yeni: "Çek karşılıksız / iade · No C3 · İş Bankası · vade 31.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[36][3]
+     eski: "320"
+     yeni: "120"
+  reads.rapor:yevmiye:varsayilan.data.rows[36][4]
+     eski: "500,00 TL"
+     yeni: "3.000,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[37][2]
+     eski: "Çek verildi · No VC-1 · Halkbank · vade 30.11.2026 · A-2"
+     yeni: "Çek karşılıksız / iade · No C3 · İş Bankası · vade 31.10.2026"
+  reads.rapor:yevmiye:varsayilan.data.rows[37][3]
+     eski: "103"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[37][5]
+     eski: "500,00 TL"
+     yeni: "3.000,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[38][4]
+     eski: "500,00 TL"
+     yeni: "700,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[39][3]
+     eski: "101"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[39][5]
+     eski: "500,00 TL"
+     yeni: "700,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[40][1]
+     eski: "Çek / senet tahsili"
+     yeni: "Çek / senet ödemesi"
+  reads.rapor:yevmiye:varsayilan.data.rows[40][3]
+     eski: "100"
+     yeni: "103"
+  reads.rapor:yevmiye:varsayilan.data.rows[40][4]
+     eski: "700,00 TL"
+     yeni: "1.500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[41][1]
+     eski: "Çek / senet tahsili"
+     yeni: "Çek / senet ödemesi"
+  reads.rapor:yevmiye:varsayilan.data.rows[41][3]
+     eski: "101"
+     yeni: "100"
+  reads.rapor:yevmiye:varsayilan.data.rows[41][5]
+     eski: "700,00 TL"
+     yeni: "1.500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[42][1]
+     eski: "Çek / senet ödemesi"
+     yeni: "Çek / senet tahsili"
+  reads.rapor:yevmiye:varsayilan.data.rows[42][3]
+     eski: "103"
+     yeni: "100"
+  reads.rapor:yevmiye:varsayilan.data.rows[42][4]
+     eski: "1.500,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:yevmiye:varsayilan.data.rows[43][1]
+     eski: "Çek / senet ödemesi"
+     yeni: "Çek / senet tahsili"
+  reads.rapor:yevmiye:varsayilan.data.rows[43][3]
+     eski: "100"
+     yeni: "101.01"
+  reads.rapor:yevmiye:varsayilan.data.rows[43][5]
+     eski: "1.500,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:defter-mutabakati.data.rows.length
+     eski: 75
+     yeni: 76
+  reads.rapor:defter-mutabakati.data.rows[72][1]
+     eski: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)"
+     yeni: "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)"
+  reads.rapor:defter-mutabakati.data.rows[73][1]
+     eski: "Devir Kapanışı ve Eski Bakiye Aktarımı (fiş = eski hareketler)"
+     yeni: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)"
+  reads.rapor:defter-mutabakati.data.rows[74][1]
+     eski: "İşlem Başlığı Olmayan Para Satırı (v20'den sonra)"
+     yeni: "Devir Kapanışı ve Eski Bakiye Aktarımı (fiş = eski hareketler)"
+  reads.rapor:defter-mutabakati.data.total
+     eski: 75
+     yeni: 76
+  reads.rapor:defter-mutabakati:varsayilan.data.rows.length
+     eski: 75
+     yeni: 76
+  reads.rapor:defter-mutabakati:varsayilan.data.rows[72][1]
+     eski: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)"
+     yeni: "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)"
+  reads.rapor:defter-mutabakati:varsayilan.data.rows[73][1]
+     eski: "Devir Kapanışı ve Eski Bakiye Aktarımı (fiş = eski hareketler)"
+     yeni: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)"
+  reads.rapor:defter-mutabakati:varsayilan.data.rows[74][1]
+     eski: "İşlem Başlığı Olmayan Para Satırı (v20'den sonra)"
+     yeni: "Devir Kapanışı ve Eski Bakiye Aktarımı (fiş = eski hareketler)"
+  reads.rapor:defter-mutabakati:varsayilan.data.total
+     eski: 75
+     yeni: 76
+  reads.rapor:alt-hesap-mizani.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.rapor:alt-hesap-mizani.data.rows[0][0]
+     eski: "102.01"
+     yeni: "101.01"
+  reads.rapor:alt-hesap-mizani.data.rows[0][1]
+     eski: "Ziraat Bankası · Ana TL Hesabı"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.rapor:alt-hesap-mizani.data.rows[0][2]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.rapor:alt-hesap-mizani.data.rows[0][4]
+     eski: "100.000,00 TL"
+     yeni: "12.600,00 TL"
+  reads.rapor:alt-hesap-mizani.data.rows[0][5]
+     eski: "0,00 TL"
+     yeni: "9.200,00 TL"
+  reads.rapor:alt-hesap-mizani.data.rows[0][6]
+     eski: "100.000,00 TL"
+     yeni: "3.400,00 TL"
+  reads.rapor:alt-hesap-mizani.data.rows[1][0]
+     eski: "102.02"
+     yeni: "102.01"
+  reads.rapor:alt-hesap-mizani.data.rows[1][1]
+     eski: "Garanti BBVA · Ana TL Hesabı"
+     yeni: "Ziraat Bankası · Ana TL Hesabı"
+  reads.rapor:alt-hesap-mizani.data.rows[1][4]
+     eski: "51.000,00 TL"
+     yeni: "100.000,00 TL"
+  reads.rapor:alt-hesap-mizani.data.rows[1][6]
+     eski: "51.000,00 TL"
+     yeni: "100.000,00 TL"
+  reads.rapor:alt-hesap-mizani.data.total
+     eski: 2
+     yeni: 3
+  reads.rapor:alt-hesap-mizani.data.footer[4]
+     eski: "151.000,00 TL"
+     yeni: "163.600,00 TL"
+  reads.rapor:alt-hesap-mizani.data.footer[5]
+     eski: "0,00 TL"
+     yeni: "9.200,00 TL"
+  reads.rapor:alt-hesap-mizani.data.summary.length
+     eski: 2
+     yeni: 3
+  reads.rapor:alt-hesap-mizani.data.summary[0][0]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.rapor:alt-hesap-mizani.data.summary[0][1]
+     eski: "151.000,00 TL"
+     yeni: "3.400,00 TL"
+  reads.rapor:alt-hesap-mizani.data.summary[1][0]
+     eski: "Alt Hesap Mutabakatı"
+     yeni: "102 Bankalar (Havale / EFT)"
+  reads.rapor:alt-hesap-mizani.data.summary[1][1]
+     eski: "Tutarlı"
+     yeni: "151.000,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows.length
+     eski: 2
+     yeni: 3
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[0][0]
+     eski: "102.01"
+     yeni: "101.01"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[0][1]
+     eski: "Ziraat Bankası · Ana TL Hesabı"
+     yeni: "Portföydeki Çek ve Senetler"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[0][2]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[0][4]
+     eski: "100.000,00 TL"
+     yeni: "12.600,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[0][5]
+     eski: "0,00 TL"
+     yeni: "9.200,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[0][6]
+     eski: "100.000,00 TL"
+     yeni: "3.400,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[1][0]
+     eski: "102.02"
+     yeni: "102.01"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[1][1]
+     eski: "Garanti BBVA · Ana TL Hesabı"
+     yeni: "Ziraat Bankası · Ana TL Hesabı"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[1][4]
+     eski: "51.000,00 TL"
+     yeni: "100.000,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.rows[1][6]
+     eski: "51.000,00 TL"
+     yeni: "100.000,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.total
+     eski: 2
+     yeni: 3
+  reads.rapor:alt-hesap-mizani:varsayilan.data.footer[4]
+     eski: "151.000,00 TL"
+     yeni: "163.600,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.footer[5]
+     eski: "0,00 TL"
+     yeni: "9.200,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.summary.length
+     eski: 2
+     yeni: 3
+  reads.rapor:alt-hesap-mizani:varsayilan.data.summary[0][0]
+     eski: "102 Bankalar (Havale / EFT)"
+     yeni: "101 Alınan Çekler ve Senetler (Portföy)"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.summary[0][1]
+     eski: "151.000,00 TL"
+     yeni: "3.400,00 TL"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.summary[1][0]
+     eski: "Alt Hesap Mutabakatı"
+     yeni: "102 Bankalar (Havale / EFT)"
+  reads.rapor:alt-hesap-mizani:varsayilan.data.summary[1][1]
+     eski: "Tutarlı"
+     yeni: "151.000,00 TL"
+  reads.rapor:cek-portfoy.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.rapor:cek-portfoy.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.rapor:cek-portfoy.data.summary[2][1]
+     eski: "500,00 TL"
+     yeni: "0,00 TL"
+  reads.rapor:cek-portfoy.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.rapor:cek-portfoy.data.summary[3][1]
+     eski: "0,00 TL"
+     yeni: "500,00 TL"
+  reads.rapor:cek-portfoy:varsayilan.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.rapor:cek-portfoy:varsayilan.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.rapor:cek-portfoy:varsayilan.data.summary[2][1]
+     eski: "500,00 TL"
+     yeni: "0,00 TL"
+  reads.rapor:cek-portfoy:varsayilan.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.rapor:cek-portfoy:varsayilan.data.summary[3][1]
+     eski: "0,00 TL"
+     yeni: "500,00 TL"

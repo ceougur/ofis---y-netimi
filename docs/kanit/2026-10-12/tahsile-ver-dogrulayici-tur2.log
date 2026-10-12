@@ -1,0 +1,450 @@
+TAP version 13
+# Subtest: Senaryo: H — fatura ile alınan çek, taksite sayılan çek, carisiz çek, senet; iki hesap; geri al + nakit tahsil; karşılıksız (bankada); tahsil + Geri Al + yeniden tahsil; kuruşlu
+    # Subtest: olaylar API'den (her biri 200)
+    ok 1 - olaylar API'den (her biri 200)
+      ---
+      duration_ms: 540.179378
+      type: 'test'
+      ...
+    # Subtest: son durum: Ana Defter (Hesap Planı Mizanı) 100/101/102/770 = model
+    ok 2 - son durum: Ana Defter (Hesap Planı Mizanı) 100/101/102/770 = model
+      ---
+      duration_ms: 6.694929
+      type: 'test'
+      ...
+    # Subtest: son durum: Alt Hesap Mizanı 101.01/101.02/102.01/102.02 = model; ana hesap 101 = Ana Defter 101
+    ok 3 - son durum: Alt Hesap Mizanı 101.01/101.02/102.01/102.02 = model; ana hesap 101 = Ana Defter 101
+      ---
+      duration_ms: 7.237325
+      type: 'test'
+      ...
+    # Subtest: son durum: cari bakiyeleri, Kasa, banka hesapları, Gerçek Banka, ANLIK DURUM alınan çek = model
+    ok 4 - son durum: cari bakiyeleri, Kasa, banka hesapları, Gerçek Banka, ANLIK DURUM alınan çek = model
+      ---
+      duration_ms: 26.774567
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi: tamam; cheque:collections defter = beklenen
+    ok 5 - Mutabakat Testi: tamam; cheque:collections defter = beklenen
+      ---
+      duration_ms: 14.126844
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-04: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 6 - kesit 2026-10-04: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 9.882033
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-05: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 7 - kesit 2026-10-05: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 7.398644
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-07: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 8 - kesit 2026-10-07: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 6.390746
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-11: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 9 - kesit 2026-10-11: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 7.181147
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-12: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 10 - kesit 2026-10-12: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 8.512449
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-19: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 11 - kesit 2026-10-19: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 6.941177
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-20: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 12 - kesit 2026-10-20: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 7.694758
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-23: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 13 - kesit 2026-10-23: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 11.303505
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-26: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 14 - kesit 2026-10-26: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 7.474238
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-27: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+    ok 15 - kesit 2026-10-27: Ana Defter ?to= ve Alt Hesap Mizanı ?to= = model
+      ---
+      duration_ms: 6.768681
+      type: 'test'
+      ...
+    # Subtest: aralık 2026-10-06–2026-10-12: Alt Hesap Mizanı (uç + Rapor Merkezi) devir/borç/alacak = model
+    ok 16 - aralık 2026-10-06–2026-10-12: Alt Hesap Mizanı (uç + Rapor Merkezi) devir/borç/alacak = model
+      ---
+      duration_ms: 9.309764
+      type: 'test'
+      ...
+    # Subtest: aralık 2026-10-13–2026-10-27: Alt Hesap Mizanı (uç + Rapor Merkezi) devir/borç/alacak = model
+    ok 17 - aralık 2026-10-13–2026-10-27: Alt Hesap Mizanı (uç + Rapor Merkezi) devir/borç/alacak = model
+      ---
+      duration_ms: 7.071708
+      type: 'test'
+      ...
+    # Subtest: aralık 2026-10-01–2026-10-31: Alt Hesap Mizanı (uç + Rapor Merkezi) devir/borç/alacak = model
+    ok 18 - aralık 2026-10-01–2026-10-31: Alt Hesap Mizanı (uç + Rapor Merkezi) devir/borç/alacak = model
+      ---
+      duration_ms: 6.753706
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-01: maddeler (hesap, borç, alacak) = model
+    ok 19 - Yevmiye 2026-10-01: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 4.894279
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-02: maddeler (hesap, borç, alacak) = model
+    ok 20 - Yevmiye 2026-10-02: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.345456
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-03: maddeler (hesap, borç, alacak) = model
+    ok 21 - Yevmiye 2026-10-03: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.044723
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-05: maddeler (hesap, borç, alacak) = model
+    ok 22 - Yevmiye 2026-10-05: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.381195
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-06: maddeler (hesap, borç, alacak) = model
+    ok 23 - Yevmiye 2026-10-06: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.091814
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-07: maddeler (hesap, borç, alacak) = model
+    ok 24 - Yevmiye 2026-10-07: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 4.696768
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-10: maddeler (hesap, borç, alacak) = model
+    ok 25 - Yevmiye 2026-10-10: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 4.584394
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-11: maddeler (hesap, borç, alacak) = model
+    ok 26 - Yevmiye 2026-10-11: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 4.197904
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-12: maddeler (hesap, borç, alacak) = model
+    ok 27 - Yevmiye 2026-10-12: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 4.81789
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-13: maddeler (hesap, borç, alacak) = model
+    ok 28 - Yevmiye 2026-10-13: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.138191
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-19: maddeler (hesap, borç, alacak) = model
+    ok 29 - Yevmiye 2026-10-19: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.654844
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-20: maddeler (hesap, borç, alacak) = model
+    ok 30 - Yevmiye 2026-10-20: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.128688
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-22: maddeler (hesap, borç, alacak) = model
+    ok 31 - Yevmiye 2026-10-22: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.210465
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-23: maddeler (hesap, borç, alacak) = model
+    ok 32 - Yevmiye 2026-10-23: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.129409
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-26: maddeler (hesap, borç, alacak) = model
+    ok 33 - Yevmiye 2026-10-26: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.042231
+      type: 'test'
+      ...
+    # Subtest: Yevmiye 2026-10-27: maddeler (hesap, borç, alacak) = model
+    ok 34 - Yevmiye 2026-10-27: maddeler (hesap, borç, alacak) = model
+      ---
+      duration_ms: 3.210287
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış (27.10–30.11): başlangıç = Kasa + Gerçek Banka; çek kalemleri beklenen günde, ayrı kaynak
+    ok 35 - Nakit Akış (27.10–30.11): başlangıç = Kasa + Gerçek Banka; çek kalemleri beklenen günde, ayrı kaynak
+      ---
+      duration_ms: 8.119449
+      type: 'test'
+      ...
+    # Subtest: Vade Takip (çek) ve Zil: tahsildeki evrak beklenen günde
+    ok 36 - Vade Takip (çek) ve Zil: tahsildeki evrak beklenen günde
+      ---
+      duration_ms: 12.517597
+      type: 'test'
+      ...
+    # Subtest: Tahsildeki Çek ve Senetler raporu: satırlar + TOPLAM = 101.02; Çek / Senet Portföyü 'deposited' süzgeci
+    ok 37 - Tahsildeki Çek ve Senetler raporu: satırlar + TOPLAM = 101.02; Çek / Senet Portföyü 'deposited' süzgeci
+      ---
+      duration_ms: 6.662339
+      type: 'test'
+      ...
+    # Subtest: Banka Hareket Raporu (Ziraat / Garanti): yalnız açılış ve tahsil girişleri; tahsile ver / geri al / karşılıksız para hareketi değil
+    ok 38 - Banka Hareket Raporu (Ziraat / Garanti): yalnız açılış ve tahsil girişleri; tahsile ver / geri al / karşılıksız para hareketi değil
+      ---
+      duration_ms: 9.55534
+      type: 'test'
+      ...
+    1..38
+ok 1 - Senaryo: H — fatura ile alınan çek, taksite sayılan çek, carisiz çek, senet; iki hesap; geri al + nakit tahsil; karşılıksız (bankada); tahsil + Geri Al + yeniden tahsil; kuruşlu
+  ---
+  duration_ms: 1273.284109
+  type: 'suite'
+  ...
+# Subtest: I — komşu yollar
+    # Subtest: I1: Geri alınmış evrakın tutarı düzeltilince (1.000 → 1.250) Yevmiye ve Çek / Senet Hareketleri tahsile verme tutarında anlaşır
+    not ok 1 - I1: Geri alınmış evrakın tutarı düzeltilince (1.000 → 1.250) Yevmiye ve Çek / Senet Hareketleri tahsile verme tutarında anlaşır
+      ---
+      duration_ms: 139.598334
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:38:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Çek / Senet Hareketleri tahsile verme/geri alma tutarı [["15.10.2026","Bankaya Tahsile Verildi",125000],["16.10.2026","Bankadan Geri Alındı",125000]] ↔ Yevmiye 1000
+        + actual - expected
+        
+          [
+        +   125000,
+        +   125000
+        -   100000,
+        -   100000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 100000
+        1: 100000
+      actual:
+        0: 125000
+        1: 125000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:54:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: I2: Geri alınmış evrakı sil → geri yükle: 101.01 / 101.02 ve Mutabakat; yeniden tahsile verilebilir
+    ok 2 - I2: Geri alınmış evrakı sil → geri yükle: 101.01 / 101.02 ve Mutabakat; yeniden tahsile verilebilir
+      ---
+      duration_ms: 114.752075
+      type: 'test'
+      ...
+    # Subtest: I4: Fatura ile alınan evrak tahsildeyken fatura iptali 409; geri alınınca iptal 200 ve evrak defterden çıkar
+    ok 3 - I4: Fatura ile alınan evrak tahsildeyken fatura iptali 409; geri alınınca iptal 200 ve evrak defterden çıkar
+      ---
+      duration_ms: 150.110983
+      type: 'test'
+      ...
+    # Subtest: I5: Yarım gün (arife) 'İş Günü Sayılmaz' seçilince vadesi 28.10 olan tahsildeki evrak 30.10'da beklenir — Nakit Akış, Vade Takip, Zil, Tahsildeki raporu aynı
+    not ok 4 - I5: Yarım gün (arife) 'İş Günü Sayılmaz' seçilince vadesi 28.10 olan tahsildeki evrak 30.10'da beklenir — Nakit Akış, Vade Takip, Zil, Tahsildeki raporu aynı
+      ---
+      duration_ms: 104.75719
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:99:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        arife iş günü sayılmaz: 28.10 → 30.10 (29.10 tatil)
+        + actual - expected
+        
+          {
+            na: '2026-10-30',
+            rep: '30.10.2026',
+            vt: '2026-10-30',
+        +   zil: '2026-10-28'
+        -   zil: '2026-10-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        na: '2026-10-30'
+        vt: '2026-10-30'
+        zil: '2026-10-30'
+        rep: '30.10.2026'
+      actual:
+        na: '2026-10-30'
+        vt: '2026-10-30'
+        zil: '2026-10-28'
+        rep: '30.10.2026'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:115:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: I6: Vadesinden sonra (Cumartesi) tahsile verilen evrak: beklenen = veriliş gününden sonraki iş günü (26.10), gecikmiş
+    ok 5 - I6: Vadesinden sonra (Cumartesi) tahsile verilen evrak: beklenen = veriliş gününden sonraki iş günü (26.10), gecikmiş
+      ---
+      duration_ms: 45.295647
+      type: 'test'
+      ...
+    # Subtest: I7: Aynı gün zincir (al → Ziraat'e ver → geri al → Garanti'ye ver → tahsil): Yevmiye 22.10 = plan maddeleri; Garanti +900
+    ok 6 - I7: Aynı gün zincir (al → Ziraat'e ver → geri al → Garanti'ye ver → tahsil): Yevmiye 22.10 = plan maddeleri; Garanti +900
+      ---
+      duration_ms: 115.110184
+      type: 'test'
+      ...
+    # Subtest: I3: Dönem kilidi 20.10: kilitli güne geri alma 409; açık günde karşılıksız (bankada) ve tahsil; 20.10 kesiti değişmez
+    ok 7 - I3: Dönem kilidi 20.10: kilitli güne geri alma 409; açık günde karşılıksız (bankada) ve tahsil; 20.10 kesiti değişmez
+      ---
+      duration_ms: 123.87788
+      type: 'test'
+      ...
+    # Subtest: Son durum (elle beklenen): 101.01 0 · 101.02 1.000 (W1 700 + V1 300) · 102.01 100.000 · 102.02 52.150 (U1 900 + X1 1.250) · 100 0 · cari M3 −3.150 · Mutabakat tamam
+    ok 8 - Son durum (elle beklenen): 101.01 0 · 101.02 1.000 (W1 700 + V1 300) · 102.01 100.000 · 102.02 52.150 (U1 900 + X1 1.250) · 100 0 · cari M3 −3.150 · Mutabakat tamam
+      ---
+      duration_ms: 22.87953
+      type: 'test'
+      ...
+    1..8
+not ok 2 - I — komşu yollar
+  ---
+  duration_ms: 1292.135981
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: J — Benzer İşlem, kuruş/büyük tutar, Banka Bakiye sınıfı, İşlem Kartı
+    # Subtest: J1: aynı cariden aynı tutarlı iki ayrı çek aynı gün aynı hesapta tahsil: ikisi de 200 (Benzer İşlem hedefi farklı evrak)
+    ok 1 - J1: aynı cariden aynı tutarlı iki ayrı çek aynı gün aynı hesapta tahsil: ikisi de 200 (Benzer İşlem hedefi farklı evrak)
+      ---
+      duration_ms: 154.431983
+      type: 'test'
+      ...
+    # Subtest: J2: kuruşlu ve büyük tutarlar: 0,01 ve 987.654.321,99 tahsile ver → tahsil; 101.02 ve 102.02 kuruşu kuruşuna
+    ok 2 - J2: kuruşlu ve büyük tutarlar: 0,01 ve 987.654.321,99 tahsile ver → tahsil; 101.02 ve 102.02 kuruşu kuruşuna
+      ---
+      duration_ms: 127.571275
+      type: 'test'
+      ...
+    # Subtest: J3: Banka Bakiye Raporu (Ekim): tahsildeki evrakın tahsili dış Giriş; tahsile ver/geri al hiçbir kolona girmez
+    ok 3 - J3: Banka Bakiye Raporu (Ekim): tahsildeki evrakın tahsili dış Giriş; tahsile ver/geri al hiçbir kolona girmez
+      ---
+      duration_ms: 8.520449
+      type: 'test'
+      ...
+    # Subtest: J4: İşlem Kartı — geri alınmış evrakın tutarı düzeltildikten sonra Tahsile Ver kartı ile Çek / Senet Hareketleri aynı tutarı mı gösteriyor
+    not ok 4 - J4: İşlem Kartı — geri alınmış evrakın tutarı düzeltildikten sonra Tahsile Ver kartı ile Çek / Senet Hareketleri aynı tutarı mı gösteriyor
+      ---
+      duration_ms: 84.643897
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-j.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Çek / Senet Hareketleri 1250 ↔ İşlem Kartı 1000
+        
+        125000 !== 100000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 100000
+      actual: 125000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-j.test.mjs:84:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 3 - J — Benzer İşlem, kuruş/büyük tutar, Banka Bakiye sınıfı, İşlem Kartı
+  ---
+  duration_ms: 823.15095
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-j.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K — yıl dönümü
+    # Subtest: K1: tahsildeyken beklenen gün 04.01.2027 (yılbaşı tatili + hafta sonu yok; 01.01 Cuma tatil → 04.01 Pazartesi): Nakit Akış gecikmiş, Vade Takip, Zil, rapor
+    ok 1 - K1: tahsildeyken beklenen gün 04.01.2027 (yılbaşı tatili + hafta sonu yok; 01.01 Cuma tatil → 04.01 Pazartesi): Nakit Akış gecikmiş, Vade Takip, Zil, rapor
+      ---
+      duration_ms: 110.005199
+      type: 'test'
+      ...
+    # Subtest: K2: 05.01.2027 tahsil (kilitli yılda verilmiş): 2027 Alt Hesap Mizanı devir/alacak; 2026 kesiti değişmez; Mutabakat tamam
+    ok 2 - K2: 05.01.2027 tahsil (kilitli yılda verilmiş): 2027 Alt Hesap Mizanı devir/alacak; 2026 kesiti değişmez; Mutabakat tamam
+      ---
+      duration_ms: 73.597814
+      type: 'test'
+      ...
+    1..2
+ok 4 - K — yıl dönümü
+  ---
+  duration_ms: 616.740025
+  type: 'suite'
+  ...
+# {"rows":[["06.10.2026","Ziraat Bankası · Ana TL Hesabı","Çek","L1","Zeta Ltd","16.11.2026","16.11.2026","1.234,56 TL"],["06.10.2026","Garanti BBVA · Ana TL Hesabı","Çek","L2","Zeta Ltd","16.11.2026","16.11.2026","765,44 TL"]],"summary":[["Evrak Sayısı","2"],["Toplam (101.02)","2.000,00 TL"],["Ziraat Bankası · Ana TL Hesabı","1.234,56 TL"],["Garanti BBVA · Ana TL Hesabı","765,44 TL"]],"footer":["TOPLAM","","","","","","","2.000,00 TL"],"xs":200,"ps":200,"xlsxHas":["2000","2000"],"pdfHas":true}
+# Subtest: L — Tahsildeki raporu ekran / Excel / PDF
+    # Subtest: ekran satırları + özet; Excel TOPLAM; PDF'te 2.000,00
+    ok 1 - ekran satırları + özet; Excel TOPLAM; PDF'te 2.000,00
+      ---
+      duration_ms: 55.989962
+      type: 'test'
+      ...
+    1..1
+ok 5 - L — Tahsildeki raporu ekran / Excel / PDF
+  ---
+  duration_ms: 597.530787
+  type: 'suite'
+  ...
+1..5
+# tests 53
+# suites 5
+# pass 50
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6702.777698

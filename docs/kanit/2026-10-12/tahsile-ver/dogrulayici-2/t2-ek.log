@@ -1,0 +1,64 @@
+TAP version 13
+# (node:25254) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [t2-ek] B1 önce zil: [["2026-10-12","Bankada Tahsilde çek No Z1 · Ziraat Bankası"]]
+# [t2-ek] B1 önce vade takip: []
+# [t2-ek] B1 ad değişti → zil: [["2026-10-12","Bankada Tahsilde çek No Z1 · Ziraat Bankası"]]
+# [t2-ek] B1 ad değişti → vade takip: []
+# [t2-ek] B1b hafta sonu Yalnız Pazar: {"status":400,"code":"bank-setting","error":"Ayar değerleri tanınmadı."}
+# [t2-ek] B1b → zil: [["2026-10-12","Bankada Tahsilde çek No Z1 · Ziraat Bankası"]]
+# [t2-ek] B1b → vade takip: []
+# Subtest: zil/takvim, Vade Takip ve Nakit Akış aynı gün ve aynı banka adı mı (ayar ve ad değişince)
+    # Subtest: B1 banka adı değişince; B1b hafta sonu 'Yalnız Pazar' olunca
+    ok 1 - B1 banka adı değişince; B1b hafta sonu 'Yalnız Pazar' olunca
+      ---
+      duration_ms: 135.084033
+      type: 'test'
+      ...
+    1..1
+ok 1 - zil/takvim, Vade Takip ve Nakit Akış aynı gün ve aynı banka adı mı (ayar ve ad değişince)
+  ---
+  duration_ms: 617.479794
+  type: 'suite'
+  ...
+# [t2-ek] B8 dönem 101.x [açılış, borç, alacak, bakiye]: {"101.01":[0,1000,1000,0],"101.02":[1000,1000,1000,1000]}
+# [t2-ek] B8 beklenen: {"101.01":[0,1000,1000,0],"101.02":[1000,1000,1000,1000]}
+# [t2-ek] B8 ana hesaplar: [{"account":"101","name":"Alınan Çekler ve Senetler (Portföy)","balance":1000,"subTotal":1000,"ok":true}]
+# [t2-ek] B8 tüm zamanlar 101.x: {"101.01":[0,2000,2000,0],"101.02":[0,2000,1000,1000]}
+# [t2-ek] B8 Hesap Planı Mizanı 101: [{"code":"101","name":"Alınan Çekler ve Senetler (Portföy)","opening":0,"debit":4000,"credit":3000,"balance":1000}]
+# [t2-ek] B8 yevmiye 07.10: [["Bankaya Tahsile Ver","101.02","1.000,00 TL",""],["Bankaya Tahsile Ver","101.01","","1.000,00 TL"],["Bankadan Geri Al","101.01","1.000,00 TL",""],["Bankadan Geri Al","101.02","","1.000,00 TL"]]
+# [t2-ek] B8 Defter Mutabakatı raporu: {"status":200,"rows":[["101","Alınan Çekler ve Senetler (Portföy)","1.000,00 TL","1.000,00 TL","0,00 TL","Tutarlı"],["108","Kredi Kartı Tahsilatları (POS)","0,00 TL","0,00 TL","0,00 TL","Tutarlı"],["Denetim","Kuruş ve işaret (Kayıt Tahsilatları)","","","","Tutarlı"],["Denetim","Kuruş ve işaret (Taksit Tahsilatları)","","","","Tutarlı"],["Denetim","Tarihsiz ya da geçersiz tarihli hareket (Kayıt Tahsilatları)","","","","Tutarlı"],["Denetim","İleri tarihli hareket (Kayıt Tahsilatları)","","","","Tutarlı"],["Denetim","Tarihsiz ya da geçersiz tarihli hareket (Taksit Tahsilatları)","","","","Tutarlı"],["Denetim","İleri tarihli hareket (Taksit Tahsilatları)","","","","Tutarlı"],["Denetim","Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)","","","","Tutarlı"]]}
+# [t2-ek] B8 mutabakat: {"ok":true,"bad":[]}
+# Subtest: dönemli Alt Hesap Mizanı ve Yevmiye — bağımsız beklenen (planın maddeleri, elle)
+    # Subtest: B8 al 05.10 · ver Z 06.10 · geri al 07.10 · ver G 07.10 → dönem 07.10–08.10
+    ok 1 - B8 al 05.10 · ver Z 06.10 · geri al 07.10 · ver G 07.10 → dönem 07.10–08.10
+      ---
+      duration_ms: 121.615592
+      type: 'test'
+      ...
+# [t2-ek] B9 tür Vadeli: {"status":200}
+# [t2-ek] B9 hesap: {"kind":"time"}
+# [t2-ek] B9 mutabakat: {"ok":true,"bad":[]}
+# [t2-ek] B9 Vadeli'ye yeniden ver: {"status":400,"code":"bank-account-invalid"}
+# [t2-ek] B9 çek kartı geçmişi: [["withdrawn","Halkbank · Boş","2026-10-06","2026-10-06"]]
+    # Subtest: B9 kapanmış kaydı olan hesabın türü Vadeli; ardından aynı çek o hesaba tahsile verilemez; tarih karşılaştırması
+    ok 2 - B9 kapanmış kaydı olan hesabın türü Vadeli; ardından aynı çek o hesaba tahsile verilemez; tarih karşılaştırması
+      ---
+      duration_ms: 103.927439
+      type: 'test'
+      ...
+    1..2
+ok 2 - dönemli Alt Hesap Mizanı ve Yevmiye — bağımsız beklenen (planın maddeleri, elle)
+  ---
+  duration_ms: 538.538669
+  type: 'suite'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1638.669841

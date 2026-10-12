@@ -1,0 +1,105 @@
+{
+ "version": "guncel",
+ "commit": null,
+ "cheques": 300,
+ "portfolio": 300,
+ "get": {
+  "bank/sub-trial": {
+   "status": 200,
+   "median": 136,
+   "min": 116
+  },
+  "rapor alt-hesap-mizani": {
+   "status": 200,
+   "median": 119,
+   "min": 111
+  },
+  "rapor yevmiye": {
+   "status": 200,
+   "median": 118,
+   "min": 91
+  },
+  "rapor cek-hareketleri": {
+   "status": 200,
+   "median": 65,
+   "min": 61
+  },
+  "rapor cek-portfoy": {
+   "status": 200,
+   "median": 78,
+   "min": 71
+  },
+  "ledger": {
+   "status": 200,
+   "median": 73,
+   "min": 69
+  },
+  "ledger/integrity": {
+   "status": 200,
+   "median": 210,
+   "min": 160
+  },
+  "cheques": {
+   "status": 200,
+   "median": 87,
+   "min": 70
+  },
+  "cheque kart": {
+   "status": 200,
+   "median": 2,
+   "min": 1
+  },
+  "nakit-akisi": {
+   "status": 200,
+   "median": 34,
+   "min": 33
+  },
+  "vade-takip": {
+   "status": 200,
+   "median": 25,
+   "min": 21
+  },
+  "dues": {
+   "status": 200,
+   "median": 9,
+   "min": 9
+  },
+  "invoices/portfolio": {
+   "status": 200,
+   "median": 38,
+   "min": 29
+  }
+ },
+ "post": {
+  "collect": {
+   "median": 14,
+   "all": [
+    30,
+    18,
+    14,
+    16,
+    16,
+    13,
+    12,
+    14,
+    14,
+    12
+   ]
+  },
+  "create": {
+   "median": 6,
+   "all": [
+    8,
+    6,
+    5,
+    6,
+    6,
+    6,
+    8,
+    5,
+    6,
+    5
+   ]
+  }
+ }
+}

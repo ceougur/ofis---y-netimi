@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: K — yıl dönümü
+    # Subtest: K1: tahsildeyken beklenen gün 04.01.2027 (yılbaşı tatili + hafta sonu yok; 01.01 Cuma tatil → 04.01 Pazartesi): Nakit Akış gecikmiş, Vade Takip, Zil, rapor
+    ok 1 - K1: tahsildeyken beklenen gün 04.01.2027 (yılbaşı tatili + hafta sonu yok; 01.01 Cuma tatil → 04.01 Pazartesi): Nakit Akış gecikmiş, Vade Takip, Zil, rapor
+      ---
+      duration_ms: 102.576945
+      type: 'test'
+      ...
+    # Subtest: K2: 05.01.2027 tahsil (kilitli yılda verilmiş): 2027 Alt Hesap Mizanı devir/alacak; 2026 kesiti değişmez; Mutabakat tamam
+    ok 2 - K2: 05.01.2027 tahsil (kilitli yılda verilmiş): 2027 Alt Hesap Mizanı devir/alacak; 2026 kesiti değişmez; Mutabakat tamam
+      ---
+      duration_ms: 65.627338
+      type: 'test'
+      ...
+    1..2
+ok 1 - K — yıl dönümü
+  ---
+  duration_ms: 570.865793
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1024.337663

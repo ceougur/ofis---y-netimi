@@ -1,0 +1,55 @@
+TAP version 13
+# (node:25741) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [t2-eski] tahsil-geri yeni sürüm ön adım: {"status":200}
+# [t2-eski] tahsil-geri ön adım sonrası kayıt: {"status":"collected"}
+# [t2-eski] tahsil-geri eski sürüm adımı: {"status":200}
+# [t2-eski] tahsil-geri hesap: {"status":"active","kind":"demand","opening":"2026-10-01","deleted":0}
+# [t2-eski] tahsil-geri kayıt (onarım sonrası): {"status":"collected","given":"2026-10-06","closed":"2026-10-07"}
+# [t2-eski] tahsil-geri onarım özeti: ""
+# [t2-eski] tahsil-geri Mutabakat: {"ok":false,"bad":[["cheque:collections",["chqcol-0mv53hn1u0000-e4bdd302-aa13-4353 (collected): kapatan tahsil olayı yok"]]]}
+# [t2-eski] tahsil-geri çek kartı: {"statusLabel":"Portföyde","bankActions":[{"key":"bank-deposit","label":"Bankaya Tahsile Ver"}],"actions":["collect","endorse","bounce"]}
+# [t2-eski] tahsil-geri çek durumu: {"status":"portfolio"}
+# [t2-eski] tahsil-geri Tahsil Edildi: {"status":200}
+# [t2-eski] tahsil-geri sonra yeni çek: {"status":200}
+# [t2-eski] tahsil-geri Mutabakat son: {"ok":false,"bad":[["cheque:collections",["chqcol-0mv53hn1u0000-e4bdd302-aa13-4353 (collected): kapatan tahsil olayı yok"]]]}
+# Subtest: v2.1.0'a dönüp tahsildeki evrakın KAPANIŞINI geri alma
+    # Subtest: E5 yeni sürümde tahsil (07.10) → v2.1.0'da tahsili Geri Al
+    ok 1 - E5 yeni sürümde tahsil (07.10) → v2.1.0'da tahsili Geri Al
+      ---
+      duration_ms: 1183.225055
+      type: 'test'
+      ...
+# [t2-eski] karsiliksiz-geri yeni sürüm ön adım: {"status":200}
+# [t2-eski] karsiliksiz-geri ön adım sonrası kayıt: {"status":"returned"}
+# [t2-eski] karsiliksiz-geri eski sürüm adımı: {"status":200}
+# [t2-eski] karsiliksiz-geri hesap: {"status":"active","kind":"demand","opening":"2026-10-01","deleted":0}
+# [t2-eski] karsiliksiz-geri kayıt (onarım sonrası): {"status":"returned","given":"2026-10-06","closed":"2026-10-07"}
+# [t2-eski] karsiliksiz-geri onarım özeti: ""
+# [t2-eski] karsiliksiz-geri Mutabakat: {"ok":false,"bad":[["cheque:collections",["101.01: defter 0 / portföydeki evrak 800","101.02: defter 800 / tahsildeki evrak 0"]]]}
+# [t2-eski] karsiliksiz-geri çek kartı: {"statusLabel":"Portföyde","bankActions":[{"key":"bank-deposit","label":"Bankaya Tahsile Ver"}],"actions":["collect","endorse","bounce"]}
+# [t2-eski] karsiliksiz-geri çek durumu: {"status":"portfolio"}
+# [t2-eski] karsiliksiz-geri Tahsil Edildi: {"status":200}
+# [t2-eski] karsiliksiz-geri sonra yeni çek: {"status":200}
+# [t2-eski] karsiliksiz-geri Mutabakat son: {"ok":false,"bad":[["cheque:collections",["101.01: defter -500 / portföydeki evrak 300","101.02: defter 800 / tahsildeki evrak 0"]]]}
+    # Subtest: E6 yeni sürümde karşılıksız (07.10) → v2.1.0'da karşılıksızı Geri Al
+    ok 2 - E6 yeni sürümde karşılıksız (07.10) → v2.1.0'da karşılıksızı Geri Al
+      ---
+      duration_ms: 606.329325
+      type: 'test'
+      ...
+    1..2
+ok 1 - v2.1.0'a dönüp tahsildeki evrakın KAPANIŞINI geri alma
+  ---
+  duration_ms: 1791.330042
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2228.548263

@@ -1,0 +1,34 @@
+(node:4026) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+v2.1.0 [
+ {
+  "no": "BNK-2026-000002",
+  "type": "cheque_collect",
+  "status": 200,
+  "lines": [
+   {
+    "sub": "102.01",
+    "subName": "Ziraat Bankası · Ana TL"
+   },
+   {
+    "sub": "",
+    "subName": ""
+   }
+  ]
+ },
+ {
+  "no": "BNK-2026-000001",
+  "type": "opening",
+  "status": 200,
+  "lines": [
+   {
+    "sub": "102.01",
+    "subName": "Ziraat Bankası · Ana TL"
+   },
+   {
+    "sub": "",
+    "subName": ""
+   }
+  ]
+ }
+]

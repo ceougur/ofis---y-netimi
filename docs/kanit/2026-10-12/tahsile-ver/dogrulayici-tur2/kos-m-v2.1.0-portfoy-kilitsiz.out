@@ -1,0 +1,66 @@
+TAP version 13
+# SONUC {"bounce":{"status":200},"s0":{"101":240000,"120":0,"602":-240000},"s1":{"101":240000,"120":240000,"602":-480000},"y1010":[["101","2.400,00 TL",""],["602","","2.400,00 TL"]],"ok":true,"failures":[]}
+# Subtest: M — taksite sayılmış çek, kilit sonrası karşılıksız (tahsile ver: false)
+    # Subtest: 20.10 kesiti karşılıksızdan önce ve sonra aynı
+    not ok 1 - 20.10 kesiti karşılıksızdan önce ve sonra aynı
+      ---
+      duration_ms: 107.891741
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tahsile-ver-tur2-eski-7c6405f/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-m.test.mjs:21:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            '101': 240000,
+            '102': 15000000,
+        +   '120': 240000,
+        -   '120': 0,
+            '500': -15000000,
+        +   '602': -480000
+        -   '602': -240000
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        101: 240000
+        102: 15000000
+        120: 0
+        500: -15000000
+        602: -240000
+      actual:
+        101: 240000
+        102: 15000000
+        120: 240000
+        500: -15000000
+        602: -480000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tahsile-ver-tur2-eski-7c6405f/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-m.test.mjs:32:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - M — taksite sayılmış çek, kilit sonrası karşılıksız (tahsile ver: false)
+  ---
+  duration_ms: 572.47802
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tahsile-ver-tur2-eski-7c6405f/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-m.test.mjs:13:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1006.407677

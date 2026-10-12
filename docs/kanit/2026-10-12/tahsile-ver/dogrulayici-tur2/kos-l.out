@@ -1,0 +1,24 @@
+TAP version 13
+# {"rows":[["06.10.2026","Ziraat Bankası · Ana TL Hesabı","Çek","L1","Zeta Ltd","16.11.2026","16.11.2026","1.234,56 TL"],["06.10.2026","Garanti BBVA · Ana TL Hesabı","Çek","L2","Zeta Ltd","16.11.2026","16.11.2026","765,44 TL"]],"summary":[["Evrak Sayısı","2"],["Toplam (101.02)","2.000,00 TL"],["Ziraat Bankası · Ana TL Hesabı","1.234,56 TL"],["Garanti BBVA · Ana TL Hesabı","765,44 TL"]],"footer":["TOPLAM","","","","","","","2.000,00 TL"],"xs":200,"ps":200,"xlsxHas":["2000","2000"],"pdfHas":true}
+# Subtest: L — Tahsildeki raporu ekran / Excel / PDF
+    # Subtest: ekran satırları + özet; Excel TOPLAM; PDF'te 2.000,00
+    ok 1 - ekran satırları + özet; Excel TOPLAM; PDF'te 2.000,00
+      ---
+      duration_ms: 63.655563
+      type: 'test'
+      ...
+    1..1
+ok 1 - L — Tahsildeki raporu ekran / Excel / PDF
+  ---
+  duration_ms: 745.508009
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1163.597404

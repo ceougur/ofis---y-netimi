@@ -1,0 +1,62 @@
+TAP version 13
+# Subtest: J — Benzer İşlem, kuruş/büyük tutar, Banka Bakiye sınıfı, İşlem Kartı
+    # Subtest: J1: aynı cariden aynı tutarlı iki ayrı çek aynı gün aynı hesapta tahsil: ikisi de 200 (Benzer İşlem hedefi farklı evrak)
+    ok 1 - J1: aynı cariden aynı tutarlı iki ayrı çek aynı gün aynı hesapta tahsil: ikisi de 200 (Benzer İşlem hedefi farklı evrak)
+      ---
+      duration_ms: 155.269394
+      type: 'test'
+      ...
+    # Subtest: J2: kuruşlu ve büyük tutarlar: 0,01 ve 987.654.321,99 tahsile ver → tahsil; 101.02 ve 102.02 kuruşu kuruşuna
+    ok 2 - J2: kuruşlu ve büyük tutarlar: 0,01 ve 987.654.321,99 tahsile ver → tahsil; 101.02 ve 102.02 kuruşu kuruşuna
+      ---
+      duration_ms: 114.69038
+      type: 'test'
+      ...
+    # Subtest: J3: Banka Bakiye Raporu (Ekim): tahsildeki evrakın tahsili dış Giriş; tahsile ver/geri al hiçbir kolona girmez
+    ok 3 - J3: Banka Bakiye Raporu (Ekim): tahsildeki evrakın tahsili dış Giriş; tahsile ver/geri al hiçbir kolona girmez
+      ---
+      duration_ms: 7.488494
+      type: 'test'
+      ...
+    # Subtest: J4: İşlem Kartı — geri alınmış evrakın tutarı düzeltildikten sonra Tahsile Ver kartı ile Çek / Senet Hareketleri aynı tutarı mı gösteriyor
+    not ok 4 - J4: İşlem Kartı — geri alınmış evrakın tutarı düzeltildikten sonra Tahsile Ver kartı ile Çek / Senet Hareketleri aynı tutarı mı gösteriyor
+      ---
+      duration_ms: 86.159586
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-j.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Çek / Senet Hareketleri 1250 ↔ İşlem Kartı 1000
+        
+        125000 !== 100000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 100000
+      actual: 125000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-j.test.mjs:84:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - J — Benzer İşlem, kuruş/büyük tutar, Banka Bakiye sınıfı, İşlem Kartı
+  ---
+  duration_ms: 780.784547
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-j.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1240.306154

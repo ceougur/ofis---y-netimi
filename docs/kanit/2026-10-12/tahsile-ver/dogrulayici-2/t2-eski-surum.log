@@ -1,0 +1,82 @@
+TAP version 13
+# (node:24805) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [t2-eski] acilis eski sürüm adımı: {"status":200}
+# [t2-eski] acilis hesap: {"status":"active","kind":"demand","opening":"2026-10-07","deleted":0}
+# [t2-eski] acilis kayıt (onarım sonrası): {"status":"pending","given":"2026-10-06","closed":""}
+# [t2-eski] acilis onarım özeti: ""
+# [t2-eski] acilis Mutabakat: {"ok":false,"bad":[["cheque:collections",["chqcol-0mv53dc4h0000-bf355a99-7200-4931 (pending): verilme tarihi (06.10.2026) hesabın açılışından (07.10.2026) önce"]]]}
+# [t2-eski] acilis çek kartı: {"statusLabel":"Bankada Tahsilde · Ziraat Bankası · 06.10.2026","bankActions":[{"key":"bank-withdraw","label":"Bankadan Geri Al"}],"actions":["collect","bounce"]}
+# [t2-eski] acilis Tahsil Edildi: {"status":200}
+# [t2-eski] acilis sonra yeni çek: {"status":200}
+# [t2-eski] acilis Mutabakat son: {"ok":false,"bad":[["cheque:collections",["chqcol-0mv53dc4h0000-bf355a99-7200-4931 (collected): verilme tarihi (06.10.2026) hesabın açılışından (07.10.2026) önce"]]]}
+# Subtest: v2.1.0'a dönüp tahsildeki evrakın banka hesabına dokunma
+    # Subtest: E1 Açılışı Düzelt: açılış 01.10 → 07.10 (veriliş 06.10'dan sonra)
+    ok 1 - E1 Açılışı Düzelt: açılış 01.10 → 07.10 (veriliş 06.10'dan sonra)
+      ---
+      duration_ms: 1042.348662
+      type: 'test'
+      ...
+# [t2-eski] sil eski sürüm adımı: {"status":200}
+# [t2-eski] sil hesap: {"status":"active","kind":"demand","opening":"2026-10-01","deleted":1}
+# [t2-eski] sil kayıt (onarım sonrası): {"status":"pending","given":"2026-10-06","closed":""}
+# [t2-eski] sil onarım özeti: ""
+# [t2-eski] sil Mutabakat: {"ok":true,"bad":[]}
+# [t2-eski] sil çek kartı: {"statusLabel":"Bankada Tahsilde · Ziraat Bankası · 06.10.2026","bankActions":[{"key":"bank-withdraw","label":"Bankadan Geri Al"}],"actions":["collect","bounce"]}
+# [t2-eski] sil Tahsil Edildi: {"status":404,"code":"bank-account-missing","error":"Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir."}
+# [t2-eski] sil Bankadan Geri Al: {"status":200}
+# [t2-eski] sil sonra yeni çek: {"status":200}
+# [t2-eski] sil Mutabakat son: {"ok":true,"bad":[]}
+    # Subtest: E2 hesabı sil
+    ok 2 - E2 hesabı sil
+      ---
+      duration_ms: 660.845152
+      type: 'test'
+      ...
+# [t2-eski] pasif eski sürüm adımı: {"status":200}
+# [t2-eski] pasif hesap: {"status":"passive","kind":"demand","opening":"2026-10-01","deleted":0}
+# [t2-eski] pasif kayıt (onarım sonrası): {"status":"pending","given":"2026-10-06","closed":""}
+# [t2-eski] pasif onarım özeti: ""
+# [t2-eski] pasif Mutabakat: {"ok":true,"bad":[]}
+# [t2-eski] pasif çek kartı: {"statusLabel":"Bankada Tahsilde · Ziraat Bankası · 06.10.2026","bankActions":[{"key":"bank-withdraw","label":"Bankadan Geri Al"}],"actions":["collect","bounce"]}
+# [t2-eski] pasif Tahsil Edildi: {"status":400,"code":"bank-account-invalid","error":"Ziraat Bankası · Çek Tahsil pasif; bu hesaba hareket girmek için önce Banka → Hesaplar'dan Etkinleştir."}
+# [t2-eski] pasif Bankadan Geri Al: {"status":200}
+# [t2-eski] pasif sonra yeni çek: {"status":200}
+# [t2-eski] pasif Mutabakat son: {"ok":true,"bad":[]}
+    # Subtest: E3 hesabı pasife al
+    ok 3 - E3 hesabı pasife al
+      ---
+      duration_ms: 780.453351
+      type: 'test'
+      ...
+# [t2-eski] vadeli eski sürüm adımı: {"status":200}
+# [t2-eski] vadeli hesap: {"status":"active","kind":"time","opening":"2026-10-01","deleted":0}
+# [t2-eski] vadeli kayıt (onarım sonrası): {"status":"pending","given":"2026-10-06","closed":""}
+# [t2-eski] vadeli onarım özeti: ""
+# [t2-eski] vadeli Mutabakat: {"ok":true,"bad":[]}
+# [t2-eski] vadeli çek kartı: {"statusLabel":"Bankada Tahsilde · Ziraat Bankası · 06.10.2026","bankActions":[{"key":"bank-withdraw","label":"Bankadan Geri Al"}],"actions":["collect","bounce"]}
+# [t2-eski] vadeli Tahsil Edildi: {"status":400,"code":"bank-account-invalid","error":"Ziraat Bankası · Çek Tahsil: havale/EFT yalnız Vadesiz, Ticari ya da Diğer TL hesapla yapılır."}
+# [t2-eski] vadeli Bankadan Geri Al: {"status":200}
+# [t2-eski] vadeli sonra yeni çek: {"status":200}
+# [t2-eski] vadeli Mutabakat son: {"ok":true,"bad":[]}
+    # Subtest: E4 hesap türü Vadeli
+    ok 4 - E4 hesap türü Vadeli
+      ---
+      duration_ms: 660.833784
+      type: 'test'
+      ...
+    1..4
+ok 1 - v2.1.0'a dönüp tahsildeki evrakın banka hesabına dokunma
+  ---
+  duration_ms: 3146.274551
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3602.065273

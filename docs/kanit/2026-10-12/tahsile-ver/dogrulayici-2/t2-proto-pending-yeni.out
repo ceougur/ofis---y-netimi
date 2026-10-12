@@ -1,0 +1,4 @@
+{"root":"wf_d306f93b-be4-1","action":"hasOwnProperty","deposit":200,"status":200,"record":{"status":"withdrawn"},"sonAudit":"cheque.hasOwnProperty","chequeWithdrawBasligi":1}
+{"root":"wf_d306f93b-be4-1","action":"__proto__","deposit":200,"status":200,"record":{"status":"withdrawn"},"sonAudit":"cheque.__proto__","chequeWithdrawBasligi":1}
+{"root":"wf_d306f93b-be4-1","action":"toString","deposit":200,"status":200,"record":{"status":"withdrawn"},"sonAudit":"cheque.toString","chequeWithdrawBasligi":1}
+{"mutabakat":true}
