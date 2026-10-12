@@ -1355,6 +1355,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kartlar bankasının altında girintili; Kart Borcu Ödemesi'nde bağlı hesap öndolu; Yeni Banka Hesabı listesinden "Kurumsal Kredi Kartı"
   kalkar (yalnız bankanın içinden). Şema: bank_accounts.parent_id (göçle boş; eski kartlar ad eşleşmesiyle önerilir, kendiliğinden bağlanmaz).
   NOT (kullanıcı, 12.10.2026): Yapı Kredi/World yalnız ÖRNEK — her banka, her kart, bir bankada birden çok kart; kod bankaya özel olmaz.
+- KARAR (kullanıcı, 12.10.2026: "düzeltmelerle birlikte POS'u da yapalım; müşterinin taleplerini halen dinliyorum"): sıradaki sürüm =
+  2.1.1 düzeltmeleri ("Doğrulanmadı" etiketi, kredi kartını bankanın içinden ekleme, Rapor Merkezi Excel şirket başlığı, K6 Kasa açılışı,
+  iki pencerede "sayfa silindi") + POS MODÜLÜ (plan `docs/BANKA-MODULU-PLAN.md` 2.2.0 aşaması: satış faturası/cari/taksit tahsilatında
+  "Kredi Kartı" = POS → POS hesabı seçimi, komisyon + KDV/BSMV, valör, blokeli/teminatlı, POS iadesinde komisyon, raporlar). Sürüm no
+  paketlemede (POS yeni modül → 2.2.0 önerilir). BAŞLAMADAN ÖNCE: kullanıcı müşteri taleplerini topluyor → hepsi gelince listeye eklenir,
+  sonra iş planı kullanıcıya sunulur. Her yeni talep AYNI ANDA buraya yazılır.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
