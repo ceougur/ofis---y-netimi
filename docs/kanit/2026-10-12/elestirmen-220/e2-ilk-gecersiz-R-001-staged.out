@@ -1,0 +1,36 @@
+(node:16329) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+UYDU  [C1-0] satış B tam iade (İade Edilmez) durum :: beklenen=200 gerçek=200
+   satış B kalemleri: [["sale","2026-11-09",1000000,975000]]
+FARK  [C1-1] takvim 09.11: POS 9.750 · Blokeli POS 9.750 · Komisyon Tahsili −250 (üç ayrı satır) :: beklenen=[["2026-11-09","Blokeli POS",9750],["2026-11-09","Komisyon Tahsili",-250],["2026-11-09","POS",9750]] gerçek=[["2026-11-09","Blokeli POS",9750],["2026-11-09","POS",9500]]
+FARK  [C1-2] takvim toplam 19.250, Komisyon Tahsili toplamı 250 :: beklenen=[19250,250] gerçek=[19250,0]
+FARK  [C1-3] ANLIK DURUM: POS Bekleyen (Net, blokesiz) 9.500, Blokeli 9.750, Komisyon Tahsili Bekleyen 250 :: beklenen=[9500,9750,250] gerçek=[9500,9750,0]
+UYDU  [C1-4] 09.11 aktarım sonrası Ziraat 100.000 + 9.750 + 9.750 − 250 :: beklenen=119250 gerçek=119250
+UYDU  [C1-5] Mutabakat :: beklenen=true gerçek=true
+UYDU  [C2-0] valörden sonra 3.000 iade durum :: beklenen=200 gerçek=200
+   takvim: [["2026-10-14","fee","Komisyon Tahsili",-3000]]
+FARK  [C2-1] bekleyen iade kalemi 'Komisyon Tahsili' etiketi TAŞIMAZ (§4.6: refund kalemi ≠ fee) :: beklenen=false gerçek=true
+FARK  [C2-2] takvim Komisyon Tahsili toplamı 0 (komisyon tahsili yok) :: beklenen=0 gerçek=3000
+FARK  [C2-3] ANLIK DURUM Komisyon Tahsili Bekleyen 0 :: beklenen=0 gerçek=3000
+   overview 'Komisyon Tahsili' geçiyor mu: false posFee: true
+UYDU  [R1-0] geri yüklemeden önce Ziraat 109.750 :: beklenen=109750 gerçek=109750
+UYDU  [R1-1] geri yükle durum :: beklenen=200 gerçek=200
+   geri yüklemeden hemen sonra Ziraat: 109750 valörü gelmiş aktarılmadı: {"count":0,"netMinor":0}
+UYDU  [R1-2] geri yükle + aktar → Ziraat 109.750 (çift fiş yok) :: beklenen=109750 gerçek=109750
+UYDU  [R1-3] 108.01 = 0, 102.01 = 109.750 :: beklenen=[0,109750] gerçek=[0,109750]
+UYDU  [R1-4] POS Gün Sonu fişi sayısı 1, tarih 12.10 :: beklenen=["2026-10-12"] gerçek=["2026-10-12"]
+UYDU  [R1-5] Mutabakat :: beklenen=true gerçek=true
+UYDU  [R2-0] iade aktarıldı: Ziraat 106.750 :: beklenen=106750 gerçek=106750
+UYDU  [R2-1] geri yükle durum :: beklenen=200 gerçek=200
+FARK  [R2-2] geri yükleme sonrası Ziraat 109.750, iade sayısı 0 :: beklenen=[109750,0] gerçek=[106750,1]
+FARK  [R2-3] yeniden iade (200) → Ziraat 106.750, Mutabakat :: beklenen=[200,106750,true] gerçek=[200,103750,true]
+UYDU  [R3-0] geri yüklemeden önce Ziraat 100.000 + 9.750 + 4.875 :: beklenen=114625 gerçek=114625
+UYDU  [R3-1] kilit 15.10 :: beklenen=200 gerçek=200
+   geri yükle: 200  
+   geri yükleme sonrası kilit: {"ok":false,"error":"Bu yöntem desteklenmiyor."}
+FARK  [R3-2] geri yükle + aktar → Ziraat 109.750 :: beklenen=109750 gerçek=114625
+UYDU  [R3-3] Mutabakat :: beklenen=true gerçek=true
+   POS Gün Sonu: [["2026-10-12",null]]
+
+TOPLAM 24 denetim, FARK 9: C1-1, C1-2, C1-3, C2-1, C2-2, C2-3, R2-2, R2-3, R3-2
+cikis=1

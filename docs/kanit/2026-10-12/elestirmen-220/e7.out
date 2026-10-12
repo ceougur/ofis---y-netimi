@@ -1,0 +1,16 @@
+(node:18085) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+UYDU  [bsmv_incl-1] bsmv_incl: onay kipinde aktarım yazmaz; Onay Bekleyen 1 kalem :: beklenen=[100000,1] gerçek=[100000,1]
+UYDU  [bsmv_incl-2] bsmv_incl: onay durumu :: beklenen=200 gerçek=200
+UYDU  [bsmv_incl-3] bsmv_incl: banka bildirdiği net 9.740 ile :: beklenen={"bank":109740,"k653":260,"prov":0} gerçek={"bank":109740,"k653":260,"prov":0}
+UYDU  [bsmv_incl-4] bsmv_incl: 108.01 = 0 :: beklenen=0 gerçek=0
+UYDU  [bsmv_incl-5] bsmv_incl: Mutabakat :: beklenen=true gerçek=true
+UYDU  [vat_excl-1] vat_excl: onay kipinde aktarım yazmaz; Onay Bekleyen 1 kalem :: beklenen=[100000,1] gerçek=[100000,1]
+UYDU  [vat_excl-2] vat_excl: onay durumu :: beklenen=200 gerçek=200
+UYDU  [vat_excl-3] vat_excl: banka bildirdiği net 9.690 ile :: beklenen={"bank":109690,"k653":0,"prov":310} gerçek={"bank":109690,"k653":0,"prov":310}
+UYDU  [vat_excl-4] vat_excl: 108.01 = 0 :: beklenen=0 gerçek=0
+   sağlayıcı ekstresi: [{"id":"aentry-73b15ba2-c3ca-4232-af2f-a88d25493d5a","origin":"pos-fee","kind":"out","date":"2026-10-13","at":"2026-10-13T09:00:00.027Z","label":"POS Komisyon Kesintisi","sourceId":"ev-0mv5fozgy0000-2d392844-3d57-45de","invoiceId":"","method":"card","note":"POS Komisyon Kesintisi · Onaylı POS · Valör 12.10.2026 · Komisyon Farkı Dahil","receiptNo":null,"debit":310,"credit":0,"balance":310}]
+UYDU  [vat_excl-5] vat_excl: Mutabakat :: beklenen=true gerçek=true
+
+TOPLAM 10 denetim, FARK 0: 
+cikis=0

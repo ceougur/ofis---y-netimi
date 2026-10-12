@@ -1,0 +1,16 @@
+(node:17696) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+v2.1.0 düzelt 10.000 → 8.000: 200 {"ok":true,"data":{"id":"account-af308322-a210-4271-93eb-fddaabb9097f","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-10-01","groupId":null,"su
+v2.1.0 sil 5.000: 200 {"ok":true,"data":{"id":"account-af308322-a210-4271-93eb-fddaabb9097f","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-10-01","groupId":null,"su
+v2.1.0 yeni kart tahsilatı 700: 200 {"ok":true,"data":{"id":"account-af308322-a210-4271-93eb-fddaabb9097f","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","regis
+onarım raporu: null
+POS satışları: [["void",5000,125,[["void",5000,4875]]],["active",10000,250,[["pending",10000,9750]]]]
+Mutabakat (dönüşten hemen sonra): false [["pos:terminal:108.01","POS Bekleyen Mutabakatı (108.01 POS-01 · Ziraat POS)",""],["pos:source","POS ile Tahsilat Satırı",""]]
+FARK  [R1] Ziraat valörden sonra (100.000 + 7.800) :: beklenen=107800 gerçek=100000
+FARK  [R2] 108.01 / 108.00 :: beklenen=[0,700] gerçek=[0,8700]
+FARK  [R3] 653 (8.000 × %2,5) :: beklenen=200 gerçek=0
+UYDU  [R4] cari ABC (−8.000 − 700) :: beklenen=-8700 gerçek=-8700
+FARK  [R5] Mutabakat :: beklenen=true gerçek=false
+Mutabakat hataları: [["pos:terminal:108.01","POS Bekleyen Mutabakatı (108.01 POS-01 · Ziraat POS)"],["pos:source","POS ile Tahsilat Satırı"]]
+
+ÖZET 4 fark / 5
