@@ -538,6 +538,28 @@ Bütün düzeltme ve silme audit kayıtlarında `previous {amount, date, method,
   4. **Kilitli dönem anlık görüntüsü:** Kilit konunca `ledger_snapshots` yazılır (kilit tarihi; hesap, alt hesap, cari bakiyeleri). Yevmiye yalnız açık dönem satırlarından kurulur ve anlık görüntüye eklenir. Kilit izi her COMMIT'te sha256 olarak kalır. Ölçüm 100.000 satırda bütçeyi aşarsa her COMMIT'te tablo başına SQL sağlamasına (satır sayısı, Σ kuruş, Σ rowid×kuruş) geçilir; sha256 tam taramaya kalır. **Güvenlik ölçülmeden zayıflatılmaz.**
   5. **Bütçe:** Tek yazmada kapı süresi 100.000 para satırında ≤ 150 ms, 1.000.000'da ≤ 1 sn. Banka ekinin payı ≤ %15. Hareketler sayfası ve arama 1.000.000 satırda < 1 sn.
 
+### 3.11a Ek (12.10.2026, kullanıcı kararı): senetler Tekdüzen hesaplarına
+
+Kullanıcı: "muhasebe mantığı gereği ise onu da uygula". Tekdüzen Hesap Planı'nda çek ve senet ayrı hesaplardadır; program 2.0.13'ten beri
+ikisini birlikte tutuyordu (101 "Alınan Çekler ve Senetler", 103 "Verilen Çekler ve Senetler"). Yeni kural (evrak türüne göre):
+
+| Evrak | Yön | Ana hesap | Alt hesaplar |
+|---|---|---|---|
+| Çek | Alınan | 101 Alınan Çekler | 101.01 Portföydeki Çekler · 101.02 Tahsile Verilen Çekler |
+| Senet | Alınan | 121 Alacak Senetleri | 121.01 Portföydeki Senetler · 121.02 Tahsile Verilen Senetler |
+| Çek | Verilen | 103 Verilen Çekler ve Ödeme Emirleri (−) | — |
+| Senet | Verilen | 321 Borç Senetleri | — |
+
+- §3.6/§3.7/§3.14'te 101.01/101.02 yazan her satır alınan SENET için 121.01/121.02 olarak okunur; 103 yazan her satır verilen senet için 321.
+- Ana Defter türetilir, saklanmaz → veri göçü yok; eski sürüm verisinde senetler yeni kuralla 121/321'de görünür (hiçbir tutar değişmez,
+  yalnız hesap). Mizan toplamı ve 101+121 / 103+321 toplamları eski 101 / 103 ile birebir aynı olmalıdır (eşdeğerlik testi).
+- Kilit izi / `ledger_snapshots` ve Mutabakat Testi hesap bazında karşılaştırıyorsa kilitli dönemde sahte fark doğmamalı: kural değişikliği
+  eski dönem anlık görüntülerini yeni hesap düzenine çevirerek ya da hesap eşlemesini sürüme bağlayarak karşılaştırır (uygulamada seçilir,
+  gerekçesi KANIT'a yazılır).
+- Kapı: `cheque:collections` denetimi 101.02 + 121.02 toplamını etkin tahsil kayıtlarıyla karşılaştırır.
+- Karşılıksız çek/senet bugünkü gibi cariye döner (128 Şüpheli Ticari Alacaklar ayrı karar, bu ekte yok).
+- Hiçbir rolde 121 ve 321 seçilemez (§3.11 madde 504 listesine eklenir).
+
 ### 3.12 Döviz, kur ve değerleme (K9; talimat 21; ek 2, 3)
 
 - **Saklama:** Döviz hesabı kendi para biriminde tutulur. Her satırda döviz tutarı, TL karşılığı, kur (`rate_e6`) ve kur kaynağı bulunur. Kur değişince geçmiş tutar yeniden hesaplanmaz.
