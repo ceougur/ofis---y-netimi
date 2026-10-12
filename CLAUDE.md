@@ -1419,6 +1419,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   Değersiz Alacak Yaz; rapor + rozet + mizan). 4.2'den sonra.
   KARAR (kullanıcı, aynı gün: "kart ifadesi 'Kredi Kartı' olsun, programda"): görünen metinde "Kurumsal Kart"/"Kurumsal Kredi Kartı" →
   "Kredi Kartı" (İz 2.9; banka ekranları ajanına iletildi); satışta kartla tahsilat "POS" kalır; kod/API adları değişmez.
+  İSTEK (kullanıcı, aynı gün): "yapılacak işlemleri madde madde sırala, bittikçe üzerini çizerek yeniden ver; testlerin doğru yapıldığını,
+  düşen test olup olmadığını bildirimden ayrı olarak 30 dk'da bir denetle" → liste `docs/2.2.0-IS-LISTESI.md`; her madde bitince liste
+  ~~üstü çizili~~ yeniden verilir; 30 dk denetimi send_later (trig_01AhNXBCD6wK8CVPyWgEDpbA, her seferinde yeniden kurulur), betik
+  scratchpad/denetim.sh (worktree commit'leri + kanit ozet çıkış kodu + ana dal CI). Teslim bitince ya da kullanıcı "durdur" deyince durur.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
