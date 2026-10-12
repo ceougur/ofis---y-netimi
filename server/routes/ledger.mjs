@@ -102,7 +102,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       out.bankLines = all(`SELECT l.event_id AS eventId, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
     }
     if (has("cheques")) {
-      out.chequeEvents = all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref FROM cheque_events ev ${J} cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ${X}ev.kind IN ('collect', 'pay')${where("ev", [[set?.chequeEvents, own("m_cheque_events")], [set?.cheques, "SELECT id FROM cheque_events WHERE cheque_id IN $"]], "AND")}`, wanted(set?.chequeEvents, set?.cheques));
+      const eventOf = refOf("cheque_events", "ev") === "''" ? "''" : "ev.event_id";
+      out.chequeEvents = all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref, ${eventOf} AS eventId FROM cheque_events ev ${J} cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ${X}ev.kind IN ('collect', 'pay')${where("ev", [[set?.chequeEvents, own("m_cheque_events")], [set?.cheques, "SELECT id FROM cheque_events WHERE cheque_id IN $"]], "AND")}`, wanted(set?.chequeEvents, set?.cheques));
       // Cariye işlenmemiş evrak: carisi/kartı olmayan (ör. cari açılmamış bir kişiden alınan çek) ya da Excel'den
       // "carilere dokunmadan" alınan açılış portföyü. Cari etkisi yoktur; portföye girişi ve karşılıksız/iade çıkışı ana
       // defterde doğrudan gelir/gider karşılığıyla izlenir (portföy mutabakatı tutsun).
@@ -125,6 +126,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
           if (row.status === "bounced" && row.bouncedOn && !row.hasDebt) out.accountEntries.push({ id: `free-bounce:${row.id}`, kind: "debt", amount: row.amount, date: row.bouncedOn, note: `${note} · karşılıksız`, source: "cheque", chequeDirection: "in", accountType: "", free: true });
         } else out.accountEntries.push({ id: `free-out:${row.id}`, kind: "debt", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "out", accountType: "", free: true });
       }
+    }
+    // Bankaya Tahsile Ver (plan §3.14): tahsil kayıtları (101.01 ↔ 101.02). Silinmiş evrakın kaydı (tahsildeyken silinemez) deftere girmez.
+    if (has("cheque_collections") && has("fin_events")) {
+      out.chequeCollections = all(
+        `SELECT k.id, k.status, k.given_date AS givenDate, k.closed_date AS closedDate, k.close_event_id AS closeEventId, c.serial_no AS serialNo,
+                COALESCE(NULLIF((SELECT f.try_minor FROM fin_events f WHERE f.id = k.event_id), 0), CAST(ROUND(c.amount * 100) AS INTEGER)) AS amountMinor
+         FROM cheque_collections k ${J} cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL${filter ? ` WHERE ${set?.cheques ? `k.cheque_id IN ${set.cheques}` : "0"}` : ""}`,
+        wanted(set?.cheques),
+      );
     }
     return out;
   }

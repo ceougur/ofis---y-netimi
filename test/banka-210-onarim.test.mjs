@@ -85,7 +85,10 @@ async function seedBankSide(dataDir, backupDir, data) {
     // Tahsildeki çekler (Bankaya Tahsile Ver): her biri kendi işlem başlığıyla.
     data.cheques.forEach((cheque, index) => {
       const id = `col-${index + 1}`;
-      rawRun(db, "INSERT INTO fin_events (id, year, seq, no, type, date, status, origin, src_table, src_id, cheque_id, created_by, created_at) VALUES (?, ?, ?, ?, 'cheque_deposit', ?, 'active', 'manual', 'cheque_collections', ?, ?, 'test', ?)", `ev-${id}`, Number(TODAY.slice(0, 4)), 700000 + index, `BNK-${TODAY.slice(0, 4)}-${700000 + index}`, TODAY, id, cheque.id, now());
+      // 2.2.0 (bilerek güncellendi): başlık, Bankaya Tahsile Ver'in kendi yazdığı gibi hesabı (bank_ref) ve evrak tutarını taşır; kapının
+      // cheque:collections denetimi bunları kayıtla karşılaştırır (plan §3.14).
+      const cents = rawGet(db, "SELECT CAST(ROUND(amount * 100) AS INTEGER) AS n FROM cheques WHERE id = ?", cheque.id).n;
+      rawRun(db, "INSERT INTO fin_events (id, year, seq, no, type, date, status, origin, src_table, src_id, cheque_id, bank_ref, amount_minor, try_minor, created_by, created_at) VALUES (?, ?, ?, ?, 'cheque_deposit', ?, 'active', 'manual', 'cheque_collections', ?, ?, 'acc-on', ?, ?, 'test', ?)", `ev-${id}`, Number(TODAY.slice(0, 4)), 700000 + index, `BNK-${TODAY.slice(0, 4)}-${700000 + index}`, TODAY, id, cheque.id, cents, cents, now());
       rawRun(db, "INSERT INTO cheque_collections (id, cheque_id, bank_account_id, given_date, status, event_id, created_by, created_at) VALUES (?, ?, 'acc-on', ?, 'pending', ?, 'test', ?)", id, cheque.id, TODAY, `ev-${id}`, now());
     });
     // Kilit: kilitli tahsilattan sonra, bugünden önce.

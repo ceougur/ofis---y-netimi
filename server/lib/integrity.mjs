@@ -28,6 +28,7 @@ import { createHash } from "node:crypto";
 import { HttpError } from "./http.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
+import { CHEQUE_SUB, collectionProblems, expectedDeposited } from "./bank/collections.mjs";
 import { createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { systemClock } from "./clock.mjs";
@@ -55,6 +56,8 @@ const AMOUNT_COLUMNS = [
 const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
 // Alt hesabı olan para hesapları (v2.1.0 §3.11): banka, POS, kurumsal kart, kredi.
 const SUB_ACCOUNTS = new Set(["102", "108", "309", "300"]);
+// Alınan evrakın alt hesapları (Bankaya Tahsile Ver, plan §3.14): 101.01 portföy, 101.02 bankaya tahsile verilen.
+const CHEQUE_MAIN = new Set(["101"]);
 
 /** Testlerde (gateVerify) dokunulan varlıklar yolu "temiz" dedi ama tam kapı reddetti: süzgeç eksik (eşdeğerlik ihlali). */
 export class GateEquivalenceError extends HttpError {
@@ -282,6 +285,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const bankItems = [];
     const service = ledger();
     let groups = null;
+    let chequeSubs = null;
     if (service?.check) {
       // Cari listesi bir kez hesaplanır: Ana Defter'in beklenen bakiyeleri (120/320/336) ve cari bazında denetim aynı
       // listeyi kullanır (v2.0.22; önceden her yazmada iki kez hesaplanıyordu — aynı veri, aynı sonuç).
@@ -291,12 +295,13 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       groups = moneyGroups || null;
       lap("ledger");
       drift = chequeDriftOf(entries);
+      chequeSubs = subBalances(entries, CHEQUE_MAIN);
       lap("cheques");
       checks.push({ code: "balance", name: "Çift yönlü kayıt (borç = alacak)", ok: reconciliation.balanced, difference: 0 });
       // v2.1.0 (§3.11 bank:sub, E1.16): alt hesap mutabakatı — yevmiyedeki alt hesap (102.01, 108.00 …) = tek kaynağın (yol, hesap) grubu.
       // Varlık bazında kod: bir hesaptaki sapma yalnız kendi kodunu (bank:sub:<alt hesap>) kilitler.
       if (service.expectedSubs && groups) {
-        const fromLedger = subBalances(entries);
+        const fromLedger = subBalances(entries, SUB_ACCOUNTS);
         const fromSource = service.expectedSubs(groups);
         const names = {};
         if (has("bank_accounts")) for (const row of store.all("SELECT gl_sub AS sub, code, name FROM bank_accounts")) names[row.sub] = `${row.code} · ${row.name}`;
@@ -554,6 +559,19 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // GG2: hesaba bağlı modül satırının yolu hesabın türüne uyar (havale → 102, kart → 309); bağlı satır nakit/POS olamaz.
       const refItems = byEntity("bank:ref", "Hesap Bağı ve Yol", bank().refProblems(), { label });
       bankItems.push(...(refItems.length ? refItems : [{ code: "bank:ref", name: "Hesap Bağı ve Yol", ok: true, count: 0 }]));
+      // Bankaya Tahsile Ver (plan §3.14): 101.02 = tahsildeki evrak, 101.01 = portföy − tahsildeki; tahsil kayıtları başlıklarıyla tutarlı.
+      if (chequeSubs && has("cheque_collections")) {
+        const problems = collectionProblems(store);
+        const deposited = expectedDeposited(store);
+        const portfolio = Number(store.get("SELECT COALESCE(SUM(CAST(ROUND(amount * 100) AS INTEGER)), 0) AS n FROM cheques WHERE deleted_at IS NULL AND direction = 'in' AND status = 'portfolio'").n) || 0;
+        const atBank = chequeSubs.get(CHEQUE_SUB.bank) || 0;
+        const inPortfolio = chequeSubs.get(CHEQUE_SUB.portfolio) || 0;
+        const sample = problems.slice(0, 5).map(item => item.sample);
+        if (atBank !== deposited) sample.unshift(`${CHEQUE_SUB.bank}: defter ${atBank / 100} / tahsildeki evrak ${deposited / 100}`);
+        if (inPortfolio !== portfolio - deposited) sample.unshift(`${CHEQUE_SUB.portfolio}: defter ${inPortfolio / 100} / portföydeki evrak ${(portfolio - deposited) / 100}`);
+        const okay = !problems.length && atBank === deposited && inPortfolio === portfolio - deposited;
+        bankItems.push({ code: "cheque:collections", name: "Tahsildeki Çek ve Senetler (101.02 = bankaya tahsile verilen evrak)", ok: okay, count: problems.length, difference: roundMoney((atBank - deposited) / 100), ledger: roundMoney(atBank / 100), subledger: roundMoney(deposited / 100), sample: sample.slice(0, 5) });
+      }
       const report = scoped && !touched.size ? [] : bank().reportMismatches(scope);
       bankItems.push({ code: "money:report", name: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)", ok: report.length === 0, count: report.length, ...(scoped ? { scoped: true, gateCount: report.length } : {}), sample: report.slice(0, 5).map(item => `${item.key}: satırlar ${item.rows / 100} / özet ${item.summary / 100}`) });
       if (!scoped) {

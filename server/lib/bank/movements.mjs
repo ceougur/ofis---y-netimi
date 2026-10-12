@@ -49,7 +49,10 @@ const MODULE_REASONS = Object.freeze({
   plan_entries: "Bu hareket Taksit kartından girildi; Taksit penceresinden düzeltilir ya da silinir.",
   stock_moves: "Bu hareket Stok penceresinden girildi; Stok penceresinden düzeltilir ya da silinir.",
   cheque_events: "Bu hareket Çek / Senet penceresinden girildi; oradan geri alınır.",
+  cheque_collections: "Bu işlem Çek / Senet penceresinden yapıldı; evrakın kartından Bankadan Geri Al ile geri alınır.",
 });
+// İşlem Kartı'nda kaynağın adı: para satırı olmayan Bankaya Tahsile Ver kaydı (plan §3.14) da (satırları SOURCE_LABELS'tan aranmaz).
+const SOURCE_NAMES = Object.freeze({ ...SOURCE_LABELS, cheque_collections: "Bankaya Tahsile Ver" });
 const WIZARD_TYPES = new Set(["carry_close", "legacy_assign", "legacy_reclass"]);
 // Transferin kanalı (fin_events.channel adla saklanır) → Düzelt formunun anahtarı.
 const CHANNEL_KEY = Object.freeze({ EFT: "eft", FAST: "fast", Havale: "havale", Virman: "virman" });
@@ -341,7 +344,7 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     const relation = id => (id ? store.get("SELECT id, no, date FROM fin_events WHERE id = ?", id) || null : null);
     const block = blockOf(event);
     const lock = lockDate();
-    const source = event.src_table ? { table: event.src_table, id: event.src_id, label: SOURCE_LABELS[event.src_table] || event.src_table } : null;
+    const source = event.src_table ? { table: event.src_table, id: event.src_id, label: SOURCE_NAMES[event.src_table] || event.src_table } : null;
     return {
       id: event.id,
       no: event.no,

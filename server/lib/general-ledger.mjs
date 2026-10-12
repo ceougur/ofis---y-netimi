@@ -8,6 +8,7 @@
 // karşılaştırır; fark varsa hangi hesapta ve ne kadar olduğunu söyler.
 //
 // Hesap planı: Tekdüzen Hesap Planı'nın ilgili hesapları.
+import { CHEQUE_SUB } from "./bank/collections.mjs";
 import { roundMoney } from "./money.mjs";
 
 export const CHART = Object.freeze({
@@ -107,7 +108,10 @@ export function journal(rows) {
     const line = (target, dr, cr) => {
       const { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
       const out = { account, debit: dr, credit: cr };
+      // Bankaya Tahsile Ver (plan §3.14): alınan evrak 101.01 (portföy) ya da 101.02 (bankaya tahsile verilen) alt hesabında izlenir;
+      // alt hesabı verilmemiş 101 satırı portföydür. Σ 101.* = 101 (alt hesap mutabakatı: cheque:collections).
       if (sub) out.sub = sub;
+      else if (account === "101") out.sub = CHEQUE_SUB.portfolio;
       if (PARTY_ACCOUNTS.has(account) && party) out.party = party;
       return out;
     };
@@ -229,9 +233,25 @@ export function journal(rows) {
     }
   }
   party = "";
+  // Bankaya Tahsile Ver (plan §3.14): tahsil kaydı (cheque_collections) verilişte B 101.02 / A 101.01; Bankadan Geri Al ve bankadan
+  // karşılıksız dönüşte B 101.01 / A 101.02 (kapanış tarihinde); tahsilde paranın karşılığı 101.02'dir (aşağıda). Tutar verilme başlığının
+  // kuruşu (tahsildeki evrakın tutarı değişemez: 409 cheque-deposited).
+  // Eski sürümde (tahsil kaydını bilmeyen kodla) tahsil edilen evrakın kaydını açılış onarımı (repair h) kapanış başlığıyla kapatır; o tahsilin
+  // satırı 101.01'dendir, bu yüzden kayıt 101.02'den kapanış tarihinde geri döner (Bankadan Geri Al gibi).
+  const collectEvents = new Set((rows.chequeEvents || []).filter(row => row.kind === "collect" && row.eventId).map(row => row.eventId));
+  const collectedBy = new Set();
+  const portfolio = { account: "101", sub: CHEQUE_SUB.portfolio };
+  const atBank = { account: "101", sub: CHEQUE_SUB.bank };
+  for (const row of rows.chequeCollections || []) {
+    const amount = (Number(row.amountMinor) || 0) / 100;
+    const label = `Evrak${row.serialNo ? ` No ${row.serialNo}` : ""}`;
+    post(`cheque-deposit:${row.id}`, row.givenDate, "Bankaya Tahsile Ver", label, atBank, portfolio, amount);
+    if (row.status === "collected" && collectEvents.has(row.closeEventId)) collectedBy.add(row.closeEventId);
+    else if (row.status !== "pending" && row.closedDate) post(`cheque-withdraw:${row.id}`, row.closedDate, row.status === "returned" ? "Bankadan Karşılıksız Döndü" : row.status === "collected" ? "Tahsil Edildi (eski sürüm)" : "Bankadan Geri Al", label, portfolio, atBank, amount);
+  }
   for (const row of rows.chequeEvents || []) {
     const id = `cheque:${row.id}`;
-    if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, moneyOf(row), "101", row.amount);
+    if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, moneyOf(row), row.eventId && collectedBy.has(row.eventId) ? atBank : "101", row.amount);
     else post(id, row.date, "Çek / senet ödemesi", row.note, "103", moneyOf(row), row.amount);
   }
   // Banka Fişi (v2.1.0, §3.11/3): her işlem başlığının satırları tek madde; THP kodu ve alt hesap yazım anında saklanmıştır, kuruş doğrudan.
@@ -253,9 +273,9 @@ export function journal(rows) {
 }
 
 /** Alt hesap bakiyeleri (v2.1.0, §3.11): alt hesap kodu (102.01, 108.00 …) → kuruş (borç artı). Σ alt hesap = ana hesap. */
-export function subBalances(entries) {
+export function subBalances(entries, mains = null) {
   const out = new Map();
-  for (const entry of entries) for (const line of entry.lines) if (line.sub) out.set(line.sub, (out.get(line.sub) || 0) + line.debit - line.credit);
+  for (const entry of entries) for (const line of entry.lines) if (line.sub && (!mains || mains.has(line.account))) out.set(line.sub, (out.get(line.sub) || 0) + line.debit - line.credit);
   return out;
 }
 

@@ -33,6 +33,8 @@ import { toCents } from "./money.mjs";
 
 const AUDITOR = { id: "integrity", role: "admin", permissions: [] };
 const MONEY_ACCOUNTS = new Set(["100", "102", "108", "309", "300"]);
+// bank:sub yalnız para hesaplarının alt hesapları (101.01/101.02 evrak alt hesaplarını cheque:collections denetler; tam kapı).
+const SUB_MAINS = new Set(["102", "108", "309", "300"]);
 const WAY_ACCOUNT = { cash: "100", bank: "102", card: "108", ccard: "309", loan: "300" };
 // Bu tablolara yazım bu yolda henüz modellenmedi (Aşama 10+ POS, §3.14 tahsile verme): tam kapı. Banka hesap kartı (bank_accounts) Aşama 3'ten
 // beri bu yolda: dokunulan hesabın açılış kuralı (bank:opening) denetlenir; hareketli hesabın türü/para birimi/alt hesabı değişirse tam kapı.
@@ -91,7 +93,7 @@ export function familyOf(code) {
   if (code === "party:plans" || code === "plans:totals" || code === "dates:due-before-start") return "plan";
   if (code === "stock:qty" || code === "stock:account" || code === "stock:orphan") return "stock";
   if (code.startsWith("cents:")) return `rows:${code.slice(6)}`;
-  if (code === "cheque:account") return "cheque";
+  if (code === "cheque:account" || code === "cheque:collections") return "cheque";
   if (code.startsWith("invoice:")) return "invoice";
   if (code.startsWith("dates:format:")) return `rows:${code.slice(13)}`;
   if (code.startsWith("dates:future:") || code === "money:method" || code === "money:report" || code === "money:event" || code.startsWith("bank:event")) return null;
@@ -449,7 +451,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         const got = sumAccount(fromLedger, account);
         if (got !== (expected[account] || 0)) find(`gl:${account}`, `defter ${got / 100} / kaynak ${(expected[account] || 0) / 100}`);
       }
-      const subsLedger = subBalances(fromLedger);
+      const subsLedger = subBalances(fromLedger, SUB_MAINS);
       const subsSource = service.expectedSubs(groups);
       for (const sub of new Set([...subsLedger.keys(), ...subsSource.keys()])) if ((subsLedger.get(sub) || 0) !== (subsSource.get(sub) || 0)) find(`bank:sub:${sub}`, `defter ${(subsLedger.get(sub) || 0) / 100} / kaynak ${(subsSource.get(sub) || 0) / 100}`);
       // Alt hesap toplamı (Aşama 3): para hesabına alt hesapsız yevmiye satırı yok.
