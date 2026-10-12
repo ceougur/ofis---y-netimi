@@ -1,0 +1,17 @@
+İz 2 son doğrulama (commit 9135b7a; Linux, Node 22.22.0; kanıt aracı: node tools/kanit.mjs kos, KANIT_DIR=docs/kanit/2026-10-12/iz2/son)
+
+npm test (1025116): 2125/2128 — 3 test uygulanan göç listesini [.., 20] diye sabit yazıyordu (göç 21); düzeltildi (9135b7a),
+  üçü yeniden 25/25 (iz2-goc-listesi). İz 2 birim testleri + yazım düzeni yeniden 31/31 (iz2-banka-220-birim).
+Mutabakat: npm run test:mutabakat -- --islem 1000 → 2/2, her işlemden sonra tutarlı (iz2-mutabakat-1000).
+Arayüz (her biri iz2-e2e-<ad>): senaryo-banka-220 76/76, senaryo-banka-210 407/407, 210b 90/90, 210-temel 79/79,
+  210-eski-satir 25/25, banka-210-kart-onbellek 49/49, banka-210-ekran-aciklama 11/11, banka-210-daha-fazla 31/31,
+  senaryo-222 56/56, 223 29/29, 224 63/63, 226 25/25, 215 73/73, 216 54/54, 217 65/65, 211 57/57, e2e 50/50.
+
+DİKKAT — test:e2e İLK koşusu KIRMIZIYDI (kayıt aynı adla yeniden koşuda üzerine yazıldı; ham çıktıdan aktarım):
+  ✗ "akıllı denetim öneriyle düzeltir; belge eklenir ve önizlenir; kolon adlandırılır; Excel'e aktarılır"
+    page.waitForEvent: Timeout 30000ms exceeded while waiting for event "download" (test/e2e/run.mjs:1571; sekmeyi Excel'e aktar)
+  Öbür 49 adım geçti. Yeniden koşu (aynı commit) 50/50. İz 2 bu yola dokunmuyor (hof-export.js, tablo sekmesi değişmedi);
+  ara sıra kırmızının ön koşulu ZORLA üretilmedi (ders 20) — ayrı iş olarak bildirildi.
+
+Kılavuz ekran betiği: node docs/kilavuz/ekran-banka.mjs <geçici klasör> → 58/58 (kilavuz-ekran-banka.txt);
+  metin-denetle 163/163, ekranda bulunmayan ad 0 (kilavuz-metin-denetle.txt). Ekran görüntüleri depoya alınmadı (PDF ana oturumda).

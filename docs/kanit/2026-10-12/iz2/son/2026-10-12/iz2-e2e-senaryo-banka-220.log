@@ -1,0 +1,122 @@
+
+> destekofis@2.1.0 test:senaryo-banka-220
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-220.mjs
+
+
+■ 2.4 hazırlık (API): Tedarikçi A; avukat (Banka Hesabı Tanımlama yetkisi yok)
+  ✓ hiç banka hesabı yok
+
+■ 2.4 yetkisiz (avukat): Ödeme → Havale / EFT → düğme yok, "Banka hesabı tanımlı değil, yöneticinize başvurun."
+  ✓ yazı: “Banka hesabı tanımlı değil, yöneticinize başvurun.”
+  ✓ Tanımla düğmesi yok
+
+■ 2.4 cari Ödeme 1.200 → Havale / EFT → "Banka Hesabı Tanımla": Vazgeç (form aynen), çift tık tek pencere, kaydet → seçili, kaydedilen ödeme o hesapta
+  ✓ üstte Banka Hesabı Tanımla penceresi
+  ✓ Vazgeç: tutar 1.200 yerinde
+  ✓ çift tıklamada tanım penceresi sayısı 1
+  ✓ form kapanmadı, hesap seçili: “Ziraat Bankası · Ana TL hesabına yazılır.”
+  ✓ tutar ve yol kaybolmadı
+  ✓ kaydedilen ödeme: yol bank, hesap Ziraat
+
+■ 2.4 cari Ödeme 300 → Kredi Kartı → "Kredi Kartı Tanımla": bağlı banka Ziraat ön seçili, Bonus •••• 4321 → seçili, ödeme kartta
+  ✓ Bağlı Banka Hesabı: Ziraat Bankası · Ana TL (ZIR-TL)
+  ✓ kart seçili: “Ziraat Bankası · Bonus •••• 4321 kredi kartına yazılır.”
+  ✓ tutar kaybolmadı
+  ✓ kart Ziraat'in altında, son 4 hane 4321
+  ✓ kartla ödeme kartta: true
+
+■ Hazırlık (API): Yapı Kredi · TL (açılış 20.000, DOĞRULANMADI) + 2.1.0'dan kalma bağsız kart (Yapı Kredi · World Eski)
+  ✓ hesap doğrulanmamış, eski kart bağsız
+
+■ 2.1 Hesaplar: Durum "Açılış Bakiyesi Doğrulanmadı" + ne yapılacağı görünür yazıyla
+  ✓ Durum: “Açılış Bakiyesi Doğrulanmadı”
+  ✓ açıklama: Açılış Bakiyesi Doğrulanmadı: Açılış bakiyesi bankadaki gerçek bakiyeyle teyit edilmedi; bu hesapta eksi bakiye denetimi kapalı. Doğrulamak için hesaba tıklayın
+
+■ 2.1 Hesap ayrıntısı → Açılışı Düzelt bağlantısı → "Bu tutar bankadaki gerçek bakiyedir" → Bakiye Doğrulandı
+  ✓ ayrıntı satırı: Açılış Bakiyesi Doğrulanmadı. Açılış bakiyesi doğrulanmadı; eksi bakiye denetimi kapalı. Doğrulamak için Açılışı Düzelt ile açılışı açıp “Bu tutar bankadaki gerçek bakiyedir”i işaretleyin.
+  ✓ sunucu: doğrulandı true, açılış 20000
+
+■ 2.2/2.3 + Yeni Hesap: türlerde kredi kartı YOK; Vadesiz'de işaretler görünür, Vadeli'de gizli; Garanti Ticari Çek + Senet Kullan
+  ✓ Hesap Türü seçenekleri: Vadesiz | Ticari | Vadeli | Kredi Hesabı | Diğer
+  ✓ Vadesiz: işaretler görünür
+  ✓ Vadeli: işaretler gizli
+  ✓ sunucu: Garanti BBVA · Ticari Çek true Senet true Kart false POS false
+  ✓ ayrıntıda Kullanım: Çek · Senet
+
+■ 2.3 Yapı Kredi → Düzenle → Kredi Kartı Kullan → "+ Kredi Kartı Ekle": World •••• 1234, limit 50.000, kesim 5, son ödeme 15
+  ✓ işaret yokken Kredi Kartları bölümü yok
+  ✓ Bağlı Banka Hesabı ön seçili: Yapı Kredi · TL (YAP-TL)
+  ✓ sunucu: Yapı Kredi · World bağlı true son4 1234 limit 50000 günler 5/15
+  ✓ Kredi Kartları bölümü: Kredi Kartları + Kredi Kartı Ekle KART KOD KART LİMİTİ BORÇ SON ÖDEME GÜNÜ World •••• 1234 YAP-KART-2 ₺50.000,00 ₺0,00 15 Kartın borcu bu hesaptan ödenir: Kart 
+
+■ 2.3 Hesaplar: World Yapı Kredi'nin HEMEN altında (↳); eski kartta öneri → Bağla → bağlandı
+  ✓ sıra: Yapı Kredi 2, World 3
+  ✓ World girintili
+  ✓ eski kart önerisi: Öneri: Yapı Kredi · TL hesabının altına bağlanabilir. Bağla
+  ✓ öneri kendiliğinden bağlamadı
+  ✓ Bağla: eski kart Yapı Kredi'ye bağlandı (true)
+
+■ 2.3 World → + Kart Borcu Ödemesi: ödeyen hesap bağlı banka (Yapı Kredi), Garanti değil
+  ✓ kart ayrıntısında bağlı banka ve son 4 hane
+  ✓ ödeyen hesap: Yapı Kredi · TL
+
+■ 2.5 Çek / Senet Ver (tek Çek Kullan hesabı): "Banka / Şube" yerine Çek Hesabı Garanti; kaydedilen çek o hesapta
+  ✓ Çek Hesabı: “Garanti BBVA · Ticari hesabının karnesinden verilir.”
+  ✓ Banka / Şube metni gizli
+  ✓ sunucu: hesap Garanti, metin “Garanti BBVA · Ticari”
+
+■ 2.5 iki Çek Kullan hesabı: seçim zorunlu (boş kaydedilmez), Ziraat seçilir; Senet'e geçince "Ödeme Hesabı (Öneri)" ve metin geri gelir
+  ✓ Çek Hesabı seçenekleri: Hesap Seçin | Ziraat Bankası · Ana TL (ZIR-TL) — ₺8.800,00 | Garanti BBVA · Ticari (GAR-TL) — ₺50.000,00
+  ✓ seçimsiz kaydedilmedi: “"Çek Hesabı" alanı boş bırakılamaz.”
+  ✓ senette Ödeme Hesabı (Öneri) ve Banka / Şube metni
+  ✓ sunucu: Ziraat çeki (Ziraat Bankası · Ana TL)
+
+■ 2.5 alınan çek: "Banka / Şube" müşterinin bankası, serbest metin (Çek Hesabı yok)
+  ✓ alınan çekte metin var, Çek Hesabı yok
+
+■ 2.5 Garanti çekini öde: hesap seçicisinde çekin hesabı (Garanti) seçili gelir; para Garanti'den çıkar
+  ✓ çek kartında Çek Hesabı
+  ✓ ödenen hesap ön seçili: Garanti
+  ✓ Garanti 50000 → 47500 (2.500 çıktı)
+
+■ 2.5 Çek Kullan işareti yokken "Çek Hesabı Tanımla": yazılanlar kaybolmadan Yapı Kredi işaretlenir, çek o hesapta
+  ✓ Çek hesabı yokken Banka / Şube metni görünür (bugünkü gibi)
+  ✓ Çek Hesabı: Yapı Kredi · TL (seçili)
+  ✓ tutar ve seri no kaybolmadı
+  ✓ çek Yapı Kredi'de; hesapta Çek Kullan işaretli
+
+■ 2.7 cari Ödeme → Havale: seçeneklerde bakiye; Garanti (Engelle) 47.500,01 → kırmızı "kaydedilmez", sunucu da reddeder; 40.000 → İşlemden Sonra 7.500; tek istek
+  ✓ başlangıç: Garanti 47.500, Ziraat 8.800
+  ✓ seçenekler: Hesap Seçin | Ziraat Bankası · Ana TL (ZIR-TL) — ₺8.800,00 | Yapı Kredi · TL (YAP-TL) — ₺20.000,00 | Garanti BBVA · Ticari (GAR-TL) — ₺47.500,00 | Hesapsız (Açılıştan Önce)
+  ✓ kırmızı satır: “Bakiye (08.10.2026): ₺47.500,00 · İşlemden Sonra: −₺0,01 Hesap eksiye düşüyor; bu hesapta eksi bakiyeye izin verilmiyor (Engelle), kaydedilmez.”
+  ✓ sunucu da reddetti (kayıt yok): “Garanti BBVA · Ticari hesabında 47.500,00 TL var; bu işlemle bakiye 47.500,01 TL azalır ve −0,01 TL olur (eksi bakiye). ”
+  ✓ 40.000: “Bakiye (08.10.2026): ₺47.500,00 · İşlemden Sonra: ₺7.500,00”
+  ✓ seçici açılırken tek istek: choices 1, balances 0
+  ✓ kaydedildi: Garanti 7500 (beklenen 7.500)
+
+■ 2.7 Kasadan Bankaya Yatır: tutarın altında Nakit Kasa (3.000) ve seçilen hesabın bakiyesi; tarih 05.10 → o günün bakiyesi (tek bakiye isteği); 3.000 → Kasa 0
+  ✓ Nakit Kasa satırı (warn): “Nakit Kasa (08.10.2026): ₺3.000,00 · İşlemden Sonra: −₺500,00 Nakit Kasa eksiye düşüyor; kaydederken onay istenir (Uyar).”
+  ✓ banka satırı: “Bakiye (08.10.2026): ₺8.800,00 · İşlemden Sonra: ₺12.300,00”
+  ✓ 05.10 Nakit Kasa (06.10'daki tahsilat yok): “Nakit Kasa (05.10.2026): ₺0,00 · İşlemden Sonra: −₺3.500,00 Nakit Kasa eksiye düşüyor; kaydederken onay istenir (Uyar).”
+  ✓ istekler: choices 1, balances /api/workspace/bank/balances?date=2026-10-05&hofCompany=sirket-001
+  ✓ 3.000: “Nakit Kasa (08.10.2026): ₺3.000,00 · İşlemden Sonra: ₺0,00”
+  ✓ Nakit Kasa 0, Ziraat 11800 (beklenen 0 ve 11.800)
+
+■ 2.7 yetkisiz (personel; Banka Görüntüleme yok): Tahsilat → Havale seçicisinde bakiye YOK (seçenekte tutar yok, satır yok)
+  ✓ personel: seçenekler “Hesap Seçin | Ziraat Bankası · Ana TL (ZIR-TL) | Yapı Kredi · TL (YAP-TL) | Garanti BBVA · Ticari (GAR-TL) | Hesapsız (Açılıştan Önce)”, bakiye satırı yok
+
+■ 2.8 alış faturası 1.000: düğmeler yola göre, satır başlığı yolun adı (yol kutusu yok); Havale 600 Garanti (bakiye satırı) + Kalanın Tamamını Öde → Kredi Kartı 400 World; çek satırında Çek Hesabı
+  ✓ düğmeler: + Nakit | + Havale / EFT | + Kredi Kartı | + Çek / Senet | Portföyden Ciro Et | Kalanın Tamamını Öde
+  ✓ satır başlığı Havale / EFT; yol kutusu yok
+  ✓ 8.000 → kırmızı: “Bakiye (08.10.2026): ₺7.500,00 · İşlemden Sonra: −₺500,00 Hesap eksiye düşüyor; bu hesapta eksi bakiyeye izin verilmiyor (Engelle), kaydedilmez.”
+  ✓ 600 → “Bakiye (08.10.2026): ₺7.500,00 · İşlemden Sonra: ₺6.900,00”
+  ✓ yol sorusu: “Kalan ₺400,00 hangi yolla ödensin? Nakit Havale / EFT Kredi Kartı Vazgeç”
+  ✓ Kredi Kartı satırı 400 eklendi
+  ✓ kalan kalmadı: Kalanın Tamamını Öde pasif
+  ✓ kart satırı: “Kart (08.10.2026): Borç ₺0,00 · İşlemden Sonra: Borç ₺400,00 · Kart Limiti: ₺50.000,00”
+  ✓ çek satırında Çek Hesabı: “Çek Hesabı: Yapı Kredi · TL”
+  ✓ kayıt: [["bank",600,"Garanti"],["card",400,"World"]], paid
+  ✓ Garanti 6900 (beklenen 6.900), World -400 (beklenen −400)
+  ✓ sayfa hatası yok
+
+✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a4d676e1f90e67d65/test/e2e/artifacts/senaryo-banka-220

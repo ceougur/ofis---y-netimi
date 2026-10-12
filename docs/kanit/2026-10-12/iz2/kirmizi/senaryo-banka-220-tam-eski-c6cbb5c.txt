@@ -1,0 +1,150 @@
+(node:895) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ 2.4 hazırlık (API): Tedarikçi A; avukat (Banka Hesabı Tanımlama yetkisi yok)
+  ✓ hiç banka hesabı yok
+
+■ 2.4 yetkisiz (avukat): Ödeme → Havale / EFT → düğme yok, "Banka hesabı tanımlı değil, yöneticinize başvurun."
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form [data-bank-define-missing="bank"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:166:17
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:150:3
+
+■ 2.4 cari Ödeme 1.200 → Havale / EFT → "Banka Hesabı Tanımla": Vazgeç (form aynen), çift tık tek pencere, kaydet → seçili, kaydedilen ödeme o hesapta
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form [data-bank-define="bank"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:181:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:174:3
+
+■ 2.4 cari Ödeme 300 → Kredi Kartı → "Kredi Kartı Tanımla": bağlı banka Ziraat ön seçili, Bonus •••• 4321 → seçili, ödeme kartta
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-form:has(select[name="method"]) [data-bank-define="card"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:225:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:218:3
+
+■ Hazırlık (API): Yapı Kredi · TL (açılış 20.000, DOĞRULANMADI) + 2.1.0'dan kalma bağsız kart (Yapı Kredi · World Eski)
+  ✗ hesap doğrulanmamış, eski kart bağsız
+
+■ 2.1 Hesaplar: Durum "Açılış Bakiyesi Doğrulanmadı" + ne yapılacağı görünür yazıyla
+  ✗ Durum: “”
+  ✗ açıklama: 
+
+■ 2.1 Hesap ayrıntısı → Açılışı Düzelt bağlantısı → "Bu tutar bankadaki gerçek bakiyedir" → Bakiye Doğrulandı
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-confirm-line]') to be visible[22m
+
+    at openBankAccount (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:109:14)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:264:5
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:263:3
+
+■ 2.2/2.3 + Yeni Hesap: türlerde kredi kartı YOK; Vadesiz'de işaretler görünür, Vadeli'de gizli; Garanti Ticari Çek + Senet Kullan
+  ✗ Hesap Türü seçenekleri: Vadesiz | Ticari | Vadeli | Kredi Hesabı | Kurumsal Kredi Kartı | Diğer
+  ✗ Vadesiz: işaretler görünür
+  ✓ Vadeli: işaretler gizli
+  ✗ beklenmeyen hata: page.check: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form input[name="useCheque"]')[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:292:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:277:3
+
+■ 2.3 Yapı Kredi → Düzenle → Kredi Kartı Kullan → "+ Kredi Kartı Ekle": World •••• 1234, limit 50.000, kesim 5, son ödeme 15
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-confirm-line]') to be visible[22m
+
+    at openBankAccount (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:109:14)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:307:5
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:306:3
+
+■ 2.3 Hesaplar: World Yapı Kredi'nin HEMEN altında (↳); eski kartta öneri → Bağla → bağlandı
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:343:21
+    at async step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:339:3
+
+■ 2.3 World → + Kart Borcu Ödemesi: ödeyen hesap bağlı banka (Yapı Kredi), Garanti değil
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:357:37
+    at step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:11)
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:356:9
+
+■ 2.5 Çek / Senet Ver (tek Çek Kullan hesabı): "Banka / Şube" yerine Çek Hesabı Garanti; kaydedilen çek o hesapta
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-form:has([name="serialNo"]) [data-cheque-pick] [data-bank-single]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:397:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:392:3
+
+■ 2.5 iki Çek Kullan hesabı: seçim zorunlu (boş kaydedilmez), Ziraat seçilir; Senet'e geçince "Ödeme Hesabı (Öneri)" ve metin geri gelir
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:410:88
+    at step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:11)
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:409:9
+
+■ 2.5 alınan çek: "Banka / Şube" müşterinin bankası, serbest metin (Çek Hesabı yok)
+  ✓ alınan çekte metin var, Çek Hesabı yok
+
+■ 2.5 Garanti çekini öde: hesap seçicisinde çekin hesabı (Garanti) seçili gelir; para Garanti'den çıkar
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:449:74
+    at async step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:447:3
+
+■ 2.5 Çek Kullan işareti yokken "Çek Hesabı Tanımla": yazılanlar kaybolmadan Yapı Kredi işaretlenir, çek o hesapta
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:466:96
+    at step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:11)
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:465:9
+
+■ 2.7 cari Ödeme → Havale: seçeneklerde bakiye; Garanti (Engelle) 47.500,01 → kırmızı "kaydedilmez", sunucu da reddeder; 40.000 → İşlemden Sonra 7.500; tek istek
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:501:87
+    at step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:11)
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:500:9
+
+■ 2.7 Kasadan Bankaya Yatır: tutarın altında Nakit Kasa (3.000) ve seçilen hesabın bakiyesi; tarih 05.10 → o günün bakiyesi (tek bakiye isteği); 3.000 → Kasa 0
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-form:has(input[name="amount"]):has(input[name="description"]) [data-cash-balance]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:545:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:536:3
+
+■ 2.7 yetkisiz (personel; Banka Görüntüleme yok): Tahsilat → Havale seçicisinde bakiye YOK (seçenekte tutar yok, satır yok)
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-form:has(select[name="method"]) [data-bank-pick] select[name="bankAccountId"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:592:17
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:571:3
+
+■ 2.8 alış faturası 1.000: düğmeler yola göre, satır başlığı yolun adı (yol kutusu yok); Havale 600 Garanti (bakiye satırı) + Kalanın Tamamını Öde → Kredi Kartı 400 World; çek satırında Çek Hesabı
+  ✗ düğmeler: + Peşin Ödeme | Tamamı Peşin | + Çek / Senet | Portföyden Ciro Et
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-act="pay-add-cash"][data-method="bank"]')[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:625:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:68:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/senaryo-banka-220.mjs:605:3
+  ✓ sayfa hatası yok
+
+✗ senaryo-banka-220: 4 geçti, 22 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/e2e/artifacts/senaryo-banka-220
