@@ -95,7 +95,9 @@ export const addDays = (iso, days) => {
 // bu saatle başlatın: yerel bugün 06:00'dan akar (en uzun koşu 6 sa iş sınırına sığar, gece yarısına ulaşmaz).
 export const motorNow = (base = new Date()) => new Date(base.getFullYear(), base.getMonth(), base.getDate(), 6, 0, 0, 0).getTime();
 
-export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, log = () => {} }) {
+// tahsileVer (2.2.0, plan §3.14): Bankaya Tahsile Ver / Bankadan Geri Al işlemleri (yalnız banka ekseniyle). false: torbada yoklar; motorun
+// rastgele sırası 2.1.0'dakiyle aynı kalır (o sıranın verisine bağlı elle adımları olan testler için).
+export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, tahsileVer = true, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
@@ -1808,7 +1810,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
     // Bankalar Arası Transfer (v2.1.0 Aşama 9): transfer (+ saha hataları), Ters Kaydet.
     ["banka-transfer", 3], ["banka-transfer-ters", 1],
-  ].filter(([k]) => bank || !(k.startsWith("banka-") || BANK_ERA.has(k)));
+  ].filter(([k]) => bank || !(k.startsWith("banka-") || BANK_ERA.has(k))).filter(([k]) => tahsileVer || !["cek-tahsile-ver", "cek-bankadan-geri-al"].includes(k));
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
   if (bank) {
     const meta = (await api("GET", "/api/workspace/bank/voucher-meta")).data || {};
