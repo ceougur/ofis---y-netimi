@@ -206,7 +206,14 @@ export function registerCashRoutes(router, context) {
   };
   router.get("/api/workspace/cash", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "cash.view");
-    ok(res, report(user, text(url.searchParams.get("from")), text(url.searchParams.get("to")), methodParam(url)));
+    const data = report(user, text(url.searchParams.get("from")), text(url.searchParams.get("to")), methodParam(url));
+    // Eleştirmen E-5: banka bakiyesi (byMethod.bank) yalnız bank.view yetkilisine (istemci bu alanı kullanmıyor; Banka ekranı 403 verirken
+    // Kasa yanıtından okunuyordu).
+    if (!canUser(user, "bank.view")) {
+      const { bank: _hidden, ...rest } = data.byMethod;
+      data.byMethod = rest;
+    }
+    ok(res, data);
   });
 
   // Kasa dökümü PDF olarak (ör. 01.09.2026 – 25.09.2026 arası hareketler).
