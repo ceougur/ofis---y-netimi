@@ -31,7 +31,7 @@ import { localDay, pdfText, unwrap, xlsxSheets } from "./banka-210-ortak.mjs";
 import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { runReconciliation } from "./mutabakat/motor.mjs";
-import { legacyBankBox, legacyBankPos, legacyCashFlow } from "./guvenilirlik/defter-olgulari.mjs";
+import { foldDocumentRows, foldIntegrityChecks, foldReconciliation, foldTrialAccounts, hasDocumentSplit, legacyBankBox, legacyBankPos, legacyCashFlow, normDocumentNames } from "./guvenilirlik/defter-olgulari.mjs";
 import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
 import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
@@ -45,8 +45,24 @@ const OLD_649 = "Diğer Olağan Gelirler (Kasaya Elle)";
 const NEW_649 = "Diğer Olağan Gelir ve Kârlar";
 const STAMP = /\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}(:\d{2})?/g;
 
-const norm649 = value => JSON.parse(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD"));
-const textNorm = value => value.replace(STAMP, "TARİH SAAT").split(OLD_649).join("649-AD").split(NEW_649).join("649-AD");
+// 2.2.0 İz 4.2 (plan §3.11a, bilerek): 101 / 103'ün adı Tekdüzen adı ("Alınan Çekler", "Verilen Çekler ve Ödeme Emirleri (−)"); iki taraf da aynı belirtece
+// (defter-olgulari normDocumentNames). Senet hesapları (121 / 321) yeni tarafta eski düzene katlanır (legacyDocuments; aşağıda).
+const norm649 = value => JSON.parse(normDocumentNames(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD")));
+const textNorm = value => normDocumentNames(value.replace(STAMP, "TARİH SAAT").split(OLD_649).join("649-AD").split(NEW_649).join("649-AD"));
+/** Yeni tarafın Ana Defter / Mutabakat Testi / Hesap Planı Mizanı / Defter Mutabakatı JSON'u eski düzende (121 → 101, 321 → 103; eski adlar). */
+// Kaç yanıtta senet hesabı katlandı / kaç dosya ekranla karşılaştırıldı (günlüğe yazılır: katlamanın gerçekten çalıştığının kanıtı).
+const documentTally = { folded: 0, selfChecked: 0 };
+function legacyDocuments(url, data) {
+  const base = url.split("?")[0];
+  const codes = base === "/api/workspace/ledger" ? data.trial.accounts.map(row => row.code) : base === "/api/workspace/ledger/integrity" ? data.checks.map(item => item.code.replace(/^gl:/, "")) : /\/report-center\/(hesap-mizani|defter-mutabakati)$/.test(base) ? data.rows.map(row => row[0]) : [];
+  if (hasDocumentSplit(codes)) documentTally.folded += 1;
+  if (base === "/api/workspace/ledger") return { ...data, trial: { ...data.trial, accounts: foldTrialAccounts(data.trial.accounts) }, reconciliation: { ...data.reconciliation, checks: foldReconciliation(data.reconciliation.checks) } };
+  if (base === "/api/workspace/ledger/integrity") return { ...data, checks: foldIntegrityChecks(data.checks), failures: foldIntegrityChecks(data.failures) };
+  const id = /\/report-center\/(hesap-mizani|defter-mutabakati)$/.exec(base)?.[1];
+  if (!id) return data;
+  const rows = foldDocumentRows(id, data.rows);
+  return { ...data, rows, total: data.total - (data.rows.length - rows.length) };
+}
 const strip = (value, keys) => {
   if (Array.isArray(value)) return value.map(item => strip(item, keys));
   if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).filter(([key]) => !keys.includes(key)).map(([key, item]) => [key, strip(item, keys)]));
@@ -102,6 +118,7 @@ async function fetchOne(api, request, side = "eski", company = null) {
       data = { ...data, cash: { ...data.cash, bank: box } };
     }
     if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);
+    if (side === "yeni" && response.status === 200) data = legacyDocuments(request.url, data);
     // 2.1.0 temel sürüm (K10, plan §8.9, bilerek): Nakit Akış başlangıcı Nakit + Gerçek Banka; 2.0.26 karşılığına aynı satırlardan çevrilir.
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/nakit-akisi") {
       const { flow, problem } = await legacyCashFlow(apiLike(api), data);
@@ -215,6 +232,30 @@ async function bankPosSelfCheck(api, request) {
   return cells.filter(cell => !values.has(minor(cell))).map(cell => `Excel'de yok: ${cell}`);
 }
 
+/**
+ * 2.2.0 İz 4.2 (bilerek): veride senet varsa Hesap Planı Mizanı ve Defter Mutabakatı'nda 121 / 321 satırları vardır (2.0.26'da 101 / 103'ün içinde);
+ * PDF/Excel satır satır katlanamaz → bu dosyalar aynı raporun YENİ EKRANIYLA karşılaştırılır (bütün para hücreleri ve hesap kodları dosyada). JSON
+ * eski düzene katlanarak 2.0.26 ile birebir karşılaştırılır (legacyDocuments). Senet yoksa dosyalar 2.0.26 ile birebir (ad belirteciyle).
+ */
+async function documentSelfCheck(api, request) {
+  if (!/\/report-center\/(hesap-mizani|defter-mutabakati)\//.test(request.url)) return null;
+  const json = unwrap(await api.client.get(request.url.replace(/\/(pdf|xlsx)(\?|$)/, "$2")));
+  if (json.status !== 200 || !hasDocumentSplit(json.data.rows.map(row => row[0]))) return null;
+  documentTally.selfChecked += 1;
+  const cells = [...json.data.rows.flat(), ...(json.data.footer || [])].filter(cell => MONEY_CELL.test(String(cell)));
+  const codes = json.data.rows.map(row => String(row[0])).filter(code => /^\d{3}$/.test(code));
+  const response = await api.client.raw("GET", request.url);
+  if (request.kind === "pdf") {
+    const text = pdfText(response.buffer).replace(/\s+/g, " ");
+    return [...cells.filter(cell => !text.includes(cell)).map(cell => `PDF'te yok: ${cell}`), ...codes.filter(code => !text.includes(code)).map(code => `PDF'te hesap yok: ${code}`)];
+  }
+  const flat = Object.values(xlsxSheets(response.buffer)).flat(2);
+  const values = new Set(flat.map(value => (typeof value === "number" ? Math.round(value * 100) : value)));
+  const minor = cell => Math.round(Number(String(cell).replace(/[^\d,−-]/g, "").replace(/\./g, "").replace(",", ".").replace("−", "-")) * 100);
+  const texts = new Set(flat.map(value => String(value)));
+  return [...cells.filter(cell => !values.has(minor(cell))).map(cell => `Excel'de yok: ${cell}`), ...codes.filter(code => !texts.has(code)).map(code => `Excel'de hesap yok: ${code}`)];
+}
+
 async function login(server, who) {
   return who === "staff" ? server.login("altin-muhasebe", "Altin-Muhasebe-2026!") : server.login();
 }
@@ -240,6 +281,14 @@ async function compare(oldServer, newServer, { companies, label, skip = () => fa
           if (self) {
             compared += 1;
             if (self.length) problems.push(`${where}: yeni dosya ekranla aynı değil: ${self.slice(0, 5).join("; ")}`);
+            continue;
+          }
+        }
+        if (request.kind !== "json") {
+          const self = await documentSelfCheck(b, request);
+          if (self) {
+            compared += 1;
+            if (self.length) problems.push(`${where}: yeni dosya (senet hesapları) ekranla aynı değil: ${self.slice(0, 5).join("; ")}`);
             continue;
           }
         }
@@ -328,7 +377,7 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
       }
       assert.ok(companies.length >= 4, `şirketler: ${JSON.stringify(companies)}`);
       const { problems, compared, k1Changed } = await sideBySide(fixture.dataDir, fixture.backupDir, "zincir", companies);
-      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}`);
+      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}`);
       assert.ok(compared >= 280, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {
@@ -377,7 +426,7 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
         await old.close();
       }
       const { problems, compared, k1Changed } = await sideBySide(dataDir, backupDir, "motor", [{ id: "sirket-001", code: "001" }]);
-      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}`);
+      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2, toplam) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}`);
       assert.ok(compared >= 75, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {

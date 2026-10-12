@@ -129,20 +129,21 @@ describe("T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02", ()
   });
   after(() => t.ctx.server.close());
 
-  it("carili senet: 08.10'da B 120 / A 101.02 tek madde; Alt Hesap Mizanı 101.01 hareketsiz, 101.02 alacak 3.000", async () => {
+  // 2.2.0 İz 4.2 (plan §3.11a; bilerek güncellendi): senet 121'de — karşılıksız maddesi A 121.02 (çekte A 101.02, aşağıdaki test).
+  it("carili senet: 08.10'da B 120 / A 121.02 tek madde; Alt Hesap Mizanı 121.01 hareketsiz, 121.02 alacak 3.000", async () => {
     const { api } = t.ctx;
     const note = await must("senet", api.post(CHEQUES, { direction: "in", instrument: "note", amount: "3.000", issueDate: "2026-10-03", dueDate: "2026-11-16", accountId: t.buyer.id, serialNo: "N1" }));
     await must("ver", act(api, note.id, { action: "bank-deposit", date: "2026-10-06", bankAccountId: t.acc.ziraat.id }));
     await must("karşılıksız", act(api, note.id, { action: "bounce", date: "2026-10-08" }));
-    assert.deepEqual(await journalOf(api, "2026-10-08"), [["120", 3000, 0], ["101.02", 0, 3000]], "08.10 yevmiyesi tek madde");
+    assert.deepEqual(await journalOf(api, "2026-10-08"), [["120", 3000, 0], ["121.02", 0, 3000]], "08.10 yevmiyesi tek madde");
     const subs = await subPeriod(api, "2026-10-08", "2026-10-08");
-    assert.deepEqual(subs["101.01"], [0, 0], "101.01 o gün hareketsiz");
-    assert.deepEqual(subs["101.02"], [0, 3000], "101.02 alacak 3.000");
+    assert.deepEqual(subs["121.01"], [0, 0], "121.01 o gün hareketsiz");
+    assert.deepEqual(subs["121.02"], [0, 3000], "121.02 alacak 3.000");
     await integrityOk(api, "karşılıksız");
     // Geri Al: kayıt yeniden tahsilde; karşılıksız maddesi kalkar.
     await must("geri al", api.post(`${CHEQUES}/${note.id}/undo`, {}));
     assert.deepEqual(await journalOf(api, "2026-10-08"), [], "karşılıksız geri alındı: 08.10 maddesi yok");
-    assert.equal(journalSubs(t.ctx.app.ledger.build()).get("101.02"), 300000);
+    assert.equal(journalSubs(t.ctx.app.ledger.build()).get("121.02"), 300000);
     await integrityOk(api, "karşılıksız geri alındı");
   });
 
@@ -157,7 +158,8 @@ describe("T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02", ()
     await must("ver", act(api, planned.id, { action: "bank-deposit", date: "2026-10-05", bankAccountId: t.acc.ziraat.id }));
     await must("karşılıksız", act(api, planned.id, { action: "bounce", date: "2026-10-07" }));
     const subs = journalSubs(t.ctx.app.ledger.build());
-    assert.equal(subs.get("101.02") || 0, 300000, "101.02 = yalnız tahsildeki N1 (3.000); karşılıksız dönen ikisi 0");
+    assert.equal(subs.get("101.02") || 0, 0, "101.02 = 0: karşılıksız dönen iki çek");
+    assert.equal(subs.get("121.02") || 0, 300000, "121.02 = yalnız tahsildeki senet N1 (3.000; 2.2.0 İz 4.2)");
     await integrityOk(api, "carisiz ve taksitli karşılıksız");
   });
 });

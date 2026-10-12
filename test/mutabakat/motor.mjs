@@ -384,12 +384,20 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (gl("309") !== ccardNet()) problems.push(`Ana defter 309 (Kurumsal Kredi Kartları) ${gl("309") / 100} · model ${tl(ccardNet())}`);
     // Bankaya Tahsile Ver (plan §3.14): 101.02 (Alt Hesap Mizanı) = modelde tahsildeki evrak; 101.01 = portföy − tahsildeki; 101 toplamı aynı.
     // Doğrulama T4: Alt Hesap Mizanı'nda 101.01 hiç tahsile verilmemiş şirkette de görünür (önceden yalnız tahsil kaydı varken denetleniyordu).
+    // 2.2.0 İz 4.2 (plan §3.11a; kâhin = modeldeki evrakın türü, programın hesap eşlemesi okunmaz): alınan çek 101 (101.01 / 101.02), alınan senet
+    // 121 (121.01 / 121.02); verilen çek 103, verilen senet 321. Eski sürüm koşusunda (bank kapalı: v2.0.26 kodu) çek ve senet birlikte 101/103'tür,
+    // bu yüzden denetim yalnız banka ekseni açıkken (güncel kod).
     if (bank) {
       const subs = Object.fromEntries(((await api("GET", "/api/workspace/bank/sub-trial")).data?.rows || []).map(row => [row.sub, centsOf(row.balance)]));
-      const portfolio = [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio");
-      const atBank = portfolio.filter(c => c.deposit).reduce((s, c) => s + c.amount, 0);
-      const inPortfolio = portfolio.filter(c => !c.deposit).reduce((s, c) => s + c.amount, 0);
-      if ((subs["101.02"] || 0) !== atBank || (subs["101.01"] || 0) !== inPortfolio || gl("101") !== atBank + inPortfolio) problems.push(`Alt Hesap Mizanı 101.01 ${(subs["101.01"] || 0) / 100} / 101.02 ${(subs["101.02"] || 0) / 100} / 101 ${gl("101") / 100} · model portföy ${tl(inPortfolio)}, tahsilde ${tl(atBank)}`);
+      const kindOf = c => (c.instrument === "note" ? "note" : "cheque");
+      for (const [kind, main, given] of [["cheque", "101", "103"], ["note", "121", "321"]]) {
+        const portfolio = [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio" && kindOf(c) === kind);
+        const atBank = portfolio.filter(c => c.deposit).reduce((s, c) => s + c.amount, 0);
+        const inPortfolio = portfolio.filter(c => !c.deposit).reduce((s, c) => s + c.amount, 0);
+        if ((subs[`${main}.02`] || 0) !== atBank || (subs[`${main}.01`] || 0) !== inPortfolio || gl(main) !== atBank + inPortfolio) problems.push(`Alt Hesap Mizanı ${main}.01 ${(subs[`${main}.01`] || 0) / 100} / ${main}.02 ${(subs[`${main}.02`] || 0) / 100} / ${main} ${gl(main) / 100} · model portföy ${tl(inPortfolio)}, tahsilde ${tl(atBank)} (${kind === "note" ? "senet" : "çek"})`);
+        const owed = [...M.cheques.values()].filter(c => c.direction === "out" && c.status === "pending" && kindOf(c) === kind).reduce((s, c) => s + c.amount, 0);
+        if (gl(given) !== -owed) problems.push(`Ana defter ${given} ${gl(given) / 100} · model ödenecek ${kind === "note" ? "senet" : "çek"} ${tl(-owed)}`);
+      }
     }
     const byType = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
     if (gl("120") !== byType("customer") || gl("320") !== byType("supplier") || gl("336") !== byType("other")) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${byType("customer") / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${byType("other") / 100}`);
