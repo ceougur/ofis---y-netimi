@@ -67,8 +67,8 @@
   // v2.2.0 (İz 2.2): hesabın kullanım işaretleri — yalnız Vadesiz, Ticari ve Diğer TL hesapta (sunucu başka türde 400 bank-flag-kind verir).
   const FLAG_FIELDS = [
     ["useCard", "Kredi Kartı Kullan (altına kart eklenir)"],
-    ["useCheque", "Çek Kullan (verilen çekte Çek Hesabı olarak seçilir)"],
-    ["useNote", "Senet Kullan (verilen senedin ödeme hesabı olarak önerilir)"],
+    ["useCheque", "Çek Kullan (verilen çekte Çek Hesabı olarak seçilir; alınan çek bu hesaba tahsile verilir)"],
+    ["useNote", "Senet Kullan (verilen senedin ödeme hesabı olarak önerilir; alınan senet bu hesaba tahsile verilir)"],
     ["usePos", "POS Kullan (altına POS tanımlanır)"],
   ];
   const FLAG_SHORT = { useCard: "Kredi Kartı", useCheque: "Çek", useNote: "Senet", usePos: "POS" };
@@ -2717,6 +2717,16 @@
     missing: "Çek hesabı tanımlı değil, yöneticinize başvurun.",
     open: () => flagDefine("useCheque", { title: "Çek Hesabı Tanımla", intro: "Çek karnesi olan banka hesabını seçin; hesapta “Çek Kullan” işaretlenir ve verilen çekte Çek Hesabı olarak seçilir. Hesap tanımlı değilse “+ Yeni Banka Hesabı”.", submit: "Çek Kullan'ı İşaretle" }),
   });
+  // v2.2.0 (İz 2.6, İz 4.1 ekranı): Bankaya Tahsile Ver — alınan çek yalnız "Çek Kullan", alınan senet yalnız "Senet Kullan" işaretli hesaba
+  // (sunucu: lib/bank/collections.mjs depositEligibility). Uygun hesap yoksa "Banka Hesabı Tanımla": işaretsiz havale hesabı varsa onu işaretlemek
+  // önerilir, yoksa (ya da "+ Yeni Banka Hesabı") evrak türünün işareti dolu yeni hesap formu; kaydedilen hesap tahsile verme formunda seçili gelir.
+  for (const [kind, flag, name, what] of [["cheque", "useCheque", "Çek Kullan", "Çeki"], ["note", "useNote", "Senet Kullan", "Senedi"]]) {
+    registerDefine(`deposit-${kind}`, {
+      button: "Banka Hesabı Tanımla",
+      missing: "Banka hesabı tanımlı değil, yöneticinize başvurun.",
+      open: () => flagDefine(flag, { title: "Banka Hesabı Tanımla", intro: `${what} tahsile vereceğiniz banka hesabını seçin; hesapta “${name}” işaretlenir ve tahsile verme formunda seçili gelir. Hesap tanımlı değilse “+ Yeni Banka Hesabı” (“${name}” işaretli gelir).`, submit: `${name}'ı İşaretle` }),
+    });
+  }
   // Formdaki "… Tanımla" düğmesi (her formda aynı; olay belgede tek dinleyiciyle).
   document.addEventListener("click", async event => {
     const button = event.target.closest?.("[data-bank-define]");

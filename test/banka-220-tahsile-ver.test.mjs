@@ -25,7 +25,7 @@ import { after, before, describe, it } from "node:test";
 import { subBalances as journalSubs } from "../server/lib/general-ledger.mjs";
 import { createUser } from "./helpers.mjs";
 import { apiOf, integrityOf, integrityOk, rawRun } from "./banka-210-ortak.mjs";
-import { BANK, TODAY, bootBank, expectStatus, lockPeriod, must, openAcceptanceAccounts, openAccount, trialBalances } from "./banka-210-hesap-ortak.mjs";
+import { BANK, TODAY, bootBank, expectStatus, lockPeriod, must, TAHSILE_FLAGS, openAcceptanceAccounts, openAccount, trialBalances } from "./banka-210-hesap-ortak.mjs";
 import { ADMIN_PASSWORD } from "./helpers.mjs";
 import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
@@ -47,7 +47,7 @@ const receive = (api, body) => must(`çek al ${body.serialNo || ""}`, api.post(C
 
 async function setup(options = {}) {
   const ctx = await bootBank(options);
-  const acc = await openAcceptanceAccounts(ctx.api);
+  const acc = await openAcceptanceAccounts(ctx.api, TAHSILE_FLAGS);
   const buyer = await must("müşteri", ctx.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-09-01" }));
   const seller = await must("tedarikçi", ctx.api.post("/api/workspace/accounts", { name: "XYZ Tedarik", type: "supplier", registeredOn: "2026-09-01" }));
   return { ctx, acc, buyer, seller };
@@ -252,7 +252,8 @@ describe("Bankaya Tahsile Ver — nasıl bozarım", () => {
     await must("ciro", act(ctx.api, endorsed.id, { action: "endorse", date: TODAY, accountId: seller.id }));
     const bounced = await receive(ctx.api, { serialNo: "B-3", accountId: buyer.id });
     await must("karşılıksız", act(ctx.api, bounced.id, { action: "bounce", date: TODAY }));
-    const given = await must("verilen", ctx.api.post(CHEQUES, { direction: "out", instrument: "cheque", amount: "500", issueDate: "2026-10-05", dueDate: "2026-11-05", accountId: seller.id, serialNo: "V-1" }));
+    // İki hesap da "Çek Kullan" işaretli (TAHSILE_FLAGS): verilen çekte Çek Hesabı seçilir (İz 2.5).
+    const given = await must("verilen", ctx.api.post(CHEQUES, { direction: "out", instrument: "cheque", amount: "500", issueDate: "2026-10-05", dueDate: "2026-11-05", accountId: seller.id, serialNo: "V-1", bankAccountId: acc.ziraat.id }));
     const before_ = snapshot(ctx.store);
     for (const [cheque, label] of [[collected, "tahsil edilmiş"], [endorsed, "ciro edilmiş"], [bounced, "karşılıksız"], [given, "verilen çek"]]) {
       expectStatus(await act(ctx.api, cheque.id, { action: "bank-deposit", date: TODAY, bankAccountId: acc.ziraat.id }), 409, "cheque-not-in-portfolio", label);
@@ -326,7 +327,7 @@ describe("Bankaya Tahsile Ver — nasıl bozarım", () => {
     const time = await openAccount(ctx.api, { bankName: "Ziraat Bankası", name: "Vadeli", kind: "time", currency: "TRY", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     const card = await openAccount(ctx.api, { bankName: "Garanti BBVA", name: "Kart", kind: "card", currency: "TRY", creditLimit: "10.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     const loan = await openAccount(ctx.api, { bankName: "Garanti BBVA", name: "Kredi", kind: "loan", currency: "TRY", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
-    const passive = await openAccount(ctx.api, { bankName: "Akbank", name: "Pasif", kind: "commercial", currency: "TRY", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
+    const passive = await openAccount(ctx.api, { bankName: "Akbank", name: "Pasif", kind: "commercial", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     await must("pasife al", ctx.api.post(`${BANK}/accounts/${passive.id}/status`, { status: "passive" }));
     const before_ = snapshot(ctx.store);
     for (const [account, label] of [[time, "vadeli"], [card, "kart"], [loan, "kredi"], [passive, "pasif"]]) expectStatus(await act(ctx.api, cheque.id, { action: "bank-deposit", date: TODAY, bankAccountId: account.id }), 400, "bank-account-invalid", label);
@@ -346,7 +347,7 @@ describe("Bankaya Tahsile Ver — nasıl bozarım", () => {
     // Tahsildeki çekin hesabı pasife alınamaz, silinemez, türü değişmez (409 bank-cheques-pending).
     expectStatus(await ctx.api.post(`${BANK}/accounts/${acc.ziraat.id}/status`, { status: "passive" }), 409, "bank-cheques-pending", "pasife al");
     expectStatus(await ctx.api.put(`${BANK}/accounts/${acc.ziraat.id}`, { kind: "commercial" }), 409, null, "tür");
-    const empty = await openAccount(ctx.api, { bankName: "Yapı Kredi", name: "Boş", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
+    const empty = await openAccount(ctx.api, { bankName: "Yapı Kredi", name: "Boş", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     await must("boş hesaba tahsile", act(ctx.api, cheque.id, { action: "bank-withdraw", date: TODAY }));
     await must("boş hesaba tahsile", act(ctx.api, cheque.id, { action: "bank-deposit", date: TODAY, bankAccountId: empty.id }));
     expectStatus(await ctx.api.del(`${BANK}/accounts/${empty.id}`), 409, "bank-cheques-pending", "sil");
@@ -470,7 +471,7 @@ describe("Bankaya Tahsile Ver — eski sürüm verisi (gerçek 2.0.26 kodunun fi
       const portfolio = list.find(item => item.direction === "in" && item.status === "portfolio");
       const collected = list.find(item => item.direction === "in" && item.status === "collected");
       assert.ok(portfolio && collected, "eski veride portföyde ve tahsil edilmiş çek");
-      const account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", opening: { date: "2026-10-14", amount: "10.000", confirmed: true } }));
+      const account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-14", amount: "10.000", confirmed: true } }));
       expectStatus(await api.post(`${CHEQUES}/${collected.id}/actions`, { action: "bank-deposit", date: "2026-10-15", bankAccountId: account.id }), 409, "cheque-not-in-portfolio", "eski tahsil edilmiş");
       const trial = Object.fromEntries((await must("mizan", api.get("/api/workspace/ledger"))).trial.accounts.map(row => [row.code, row.balance]));
       await must("tahsile", api.post(`${CHEQUES}/${portfolio.id}/actions`, { action: "bank-deposit", date: "2026-10-14", bankAccountId: account.id }));
@@ -504,7 +505,7 @@ describe("Bankaya Tahsile Ver — eski sürüm verisi (gerçek 2.0.26 kodunun fi
         const server = await bootVersion(CURRENT, { dataDir, backupDir, now: "2026-10-08T12:00:00+03:00" });
         try {
           const api = await server.login();
-          const account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "1.000", confirmed: true } }));
+          const account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-01", amount: "1.000", confirmed: true } }));
           const buyer = await must("müşteri", api.post("/api/workspace/accounts", { name: "Eski Müşteri", type: "customer", registeredOn: "2026-09-01" }));
           const seller = await must("tedarikçi", api.post("/api/workspace/accounts", { name: "Eski Tedarikçi", type: "supplier", registeredOn: "2026-09-01" }));
           const cheque = await must("çek", api.post(CHEQUES, { direction: "in", instrument: "cheque", amount: "800", issueDate: "2026-10-05", dueDate: "2026-11-05", accountId: buyer.id, serialNo: "ES-1" }));

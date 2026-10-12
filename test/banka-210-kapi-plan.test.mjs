@@ -263,7 +263,7 @@ describe("kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN)
     const { api } = ctx;
     const BANK = "/api/workspace/bank";
     const CHEQUES = "/api/workspace/cheques";
-    const bank = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Akbank", name: "Tahsil Hesabı", kind: "demand", opening: { date: day(-10), amount: "1.000", confirmed: true } }));
+    const bank = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Akbank", name: "Tahsil Hesabı", kind: "demand", useCheque: true, useNote: true, opening: { date: day(-10), amount: "1.000", confirmed: true } }));
     const cheque = await must("çek", api.post(CHEQUES, { direction: "in", instrument: "cheque", amount: "900", issueDate: day(-5), dueDate: day(20), accountId: customer.id, serialNo: "PLN-TV-1", bank: "Test" }));
     const note = await must("senet", api.post(CHEQUES, { direction: "in", instrument: "note", amount: "300", issueDate: day(-5), dueDate: day(25), accountId: customer.id, serialNo: "PLN-TV-2" }));
     let total = 0;

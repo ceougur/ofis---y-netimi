@@ -44,6 +44,8 @@ describe("dört çekirdek mutabakatı (model tabanlı)", () => {
         for (const code of ["date-missing", "date-invalid", "date-future"]) assert.ok(report.rejections[code] > 0, `${code} denendi ve reddedildi`);
         assert.ok(report.rejections["period-locked"] > 0, "kapalı döneme dokunma denendi ve reddedildi");
         assert.ok(report.rejections["due-before-start"] > 0, "işlem tarihinden önceki vade denendi ve reddedildi");
+        // 2.2.0 (İz 2.6): Bankaya Tahsile Ver yalnız "Çek Kullan" / "Senet Kullan" işaretli hesaba — işaretsiz hesaba istek denendi ve reddedildi.
+        assert.ok(report.rejections["bank-account-flag"] > 0, "işaretsiz hesaba tahsile verme denendi ve reddedildi");
       } finally {
         await server.close();
       }

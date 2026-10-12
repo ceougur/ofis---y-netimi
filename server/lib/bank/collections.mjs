@@ -28,18 +28,25 @@ const INSTRUMENT = { cheque: "Çek", note: "Senet" };
 const dayText = iso => (iso ? String(iso).split("-").reverse().join(".") : "");
 const labelOf = row => `${row.bank_name} · ${row.name}`;
 
+// v2.2.0 (İz 2.6, kullanıcı 12.10.2026): alınan çek yalnız "Çek Kullan", alınan senet yalnız "Senet Kullan" işaretli hesaba tahsile verilir.
+const DEPOSIT_FLAGS = Object.freeze({ cheque: { column: "use_cheque", name: "Çek Kullan", what: "çek" }, note: { column: "use_note", name: "Senet Kullan", what: "senet" } });
+
 /**
  * Bankaya tahsile verilecek evrak için hesap uygunluğu — TEK kural (seçici, rota ve testler bunu kullanır). Uygun: silinmemiş, etkin, TL, türü
- * Vadesiz / Ticari / Diğer. instrument: "cheque" | "note" (İz 2: banka hesabı kartındaki "Çek Kullan" / "Senet Kullan" işaretleri gelince bu
- * işlevde evrak türüne göre denetlenir; başka yerde ikinci kural yazılmaz).
+ * Vadesiz / Ticari / Diğer ve evrak türünün işareti (çekte "Çek Kullan", senette "Senet Kullan"; İz 2.6). instrument: "cheque" | "note".
+ * existing (true): ZATEN tahsile verilmiş evrakın hesabı (Tahsil Edildi, karşılıksızın Geri Al'ı, açılış onarımı) — işaret aranmaz: hesabın işareti
+ * sonradan kaldırılsa da bankadaki evrak tahsil edilir, geri alınır, karşılıksız yapılır; yalnız YENİ tahsile verme işarete bağlıdır.
  * Dönüş: { ok: true } ya da { ok: false, status, code, reason }.
  */
-export function depositEligibility(row, { instrument = "cheque" } = {}) {
-  void instrument;
+export function depositEligibility(row, { instrument = "cheque", existing = false } = {}) {
   if (!row || row.deleted_at) return { ok: false, status: 404, code: "bank-account-missing", reason: "Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir." };
   if (row.status !== "active") return { ok: false, status: 400, code: "bank-account-invalid", reason: `${labelOf(row)} pasif; bu hesaba evrak tahsile verilmez. Önce Banka → Hesaplar'dan Etkinleştir.` };
   if (row.currency !== "TRY") return { ok: false, status: 400, code: "bank-currency", reason: `${labelOf(row)} ${row.currency} hesabı; çek ve senet yalnız TL hesaba tahsile verilir.` };
   if (!DEPOSIT_KINDS.has(row.kind)) return { ok: false, status: 400, code: "bank-account-invalid", reason: `${labelOf(row)}: çek ve senet yalnız Vadesiz, Ticari ya da Diğer TL hesaba tahsile verilir.` };
+  if (!existing) {
+    const flag = DEPOSIT_FLAGS[instrument] || DEPOSIT_FLAGS.cheque;
+    if (!Number(row[flag.column])) return { ok: false, status: 400, code: "bank-account-flag", reason: `${labelOf(row)} hesabında “${flag.name}” işaretli değil; ${flag.what} yalnız “${flag.name}” işaretli hesaba tahsile verilir. Önce hesabın Düzenle'sinden “${flag.name}”ı işaretleyin ya da başka hesap seçin.` };
+  }
   return { ok: true };
 }
 
@@ -49,7 +56,7 @@ export function depositEligibility(row, { instrument = "cheque" } = {}) {
  * E2–E4: Tahsil Edildi "Banka hesabı bulunamadı" (404) ya da genel havale metniyle reddediliyor, yol söylenmiyordu; açılış onarımı uyarmıyordu.
  */
 export function depositAccountProblem(row, instrument = "cheque") {
-  const check = depositEligibility(row, { instrument });
+  const check = depositEligibility(row, { instrument, existing: true });
   if (check.ok) return null;
   const way = "Çek / Senet'ten Bankadan Geri Al'ıp evrakı uygun bir hesaba yeniden tahsile verin";
   const reason = !row || row.deleted_at
@@ -92,7 +99,7 @@ export function createChequeCollections({ store, bank, period, now }) {
   /** Çekin bütün tahsil kayıtları (kartın geçmişi; eskiden yeniye). */
   const historyOf = chequeId => (has() ? store.all(`${VIEW_SQL} WHERE k.cheque_id = ? ORDER BY k.rowid`, chequeId).map(view) : []);
 
-  /** Seçicinin hesapları (yalnız uygunlar; sıra Banka → Hesaplar'daki gibi). Bakiye dönmez. */
+  /** Seçicinin hesapları (yalnız YENİ tahsile vermeye uygunlar — işaret dahil; sıra Banka → Hesaplar'daki gibi). Bakiye dönmez. */
   function choices({ instrument = "cheque" } = {}) {
     if (!has()) return [];
     return store
@@ -111,7 +118,10 @@ export function createChequeCollections({ store, bank, period, now }) {
     }
     const list = choices({ instrument });
     if (list.length === 1) return store.get("SELECT * FROM bank_accounts WHERE id = ?", list[0].id);
-    if (!list.length) throw new HttpError(400, "Evrakı bankaya tahsile vermek için önce Banka → Hesaplar'dan etkin bir TL Vadesiz, Ticari ya da Diğer hesap tanımlayın.", { code: "bank-account-required", field: "bankAccountId" });
+    if (!list.length) {
+      const flag = DEPOSIT_FLAGS[instrument] || DEPOSIT_FLAGS.cheque;
+      throw new HttpError(400, `Evrakı bankaya tahsile vermek için önce “${flag.name}” işaretli, etkin bir TL Vadesiz, Ticari ya da Diğer hesap tanımlayın (Banka → hesap → Düzenle'den “${flag.name}”ı işaretleyin).`, { code: "bank-account-required", field: "bankAccountId" });
+    }
     throw new HttpError(400, "Banka Hesabı seçin: evrak hangi bankaya tahsile verildi?", { code: "bank-account-required", field: "bankAccountId" });
   }
   /** Tahsildeki evrak değişmez (ciro, silme, tutar, tarih, vade, cari, fatura iptali): 409 cheque-deposited. */
@@ -258,7 +268,7 @@ export function createChequeCollections({ store, bank, period, now }) {
     // hesabın para satırı vardır: pasif hesap 400 bank-account-passive (bank.post), tür değişikliği ve silme zaten engelli.
     if (last.kind === "bounce") {
       const own = store.get("SELECT k.bank_account_id AS accountId, c.instrument FROM cheque_collections k LEFT JOIN cheques c ON c.id = k.cheque_id WHERE k.id = ?", record.id);
-      const check = depositEligibility(store.get("SELECT * FROM bank_accounts WHERE id = ?", own?.accountId || ""), { instrument: own?.instrument || "cheque" });
+      const check = depositEligibility(store.get("SELECT * FROM bank_accounts WHERE id = ?", own?.accountId || ""), { instrument: own?.instrument || "cheque", existing: true });
       if (!check.ok) throw new HttpError(check.status === 404 ? 409 : check.status, `Karşılıksızı geri almak evrakı yeniden bankada tahsilde yapar; ${check.reason}`, { code: check.code, accountId: own?.accountId || "" });
     }
     store.run("UPDATE cheque_collections SET status = 'pending', closed_date = '', close_event_id = '', updated_by = ?, updated_at = ? WHERE id = ?", ctx?.user?.id || "system", stamp(), record.id);

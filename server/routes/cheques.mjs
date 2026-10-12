@@ -641,7 +641,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   const filterText = query =>
     [
       query.direction ? DIRECTIONS[query.direction] : "",
-      STATUSES[query.status]?.label || { open: "Açık", closed: "Kapanmış", overdue: "Vadesi geçmiş", soon: "7 gün içinde", deposited: "Bankada Tahsilde" }[query.status] || "",
+      STATUSES[query.status]?.label || { open: "Açık", closed: "Kapanmış", overdue: "Vadesi Geçmiş", soon: "7 Gün İçinde", deposited: "Bankada Tahsilde" }[query.status] || "",
       query.from || query.to ? `vade ${query.from ? dayText(query.from) : "…"} – ${query.to ? dayText(query.to) : "…"}` : "",
       query.q ? `“${query.q}”` : "",
     ]

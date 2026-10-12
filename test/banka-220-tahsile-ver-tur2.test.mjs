@@ -30,7 +30,7 @@ import path from "node:path";
 import { after, before, describe, it } from "node:test";
 import { subTrial } from "../server/lib/general-ledger.mjs";
 import { apiOf, integrityOf, integrityOk, pdfText } from "./banka-210-ortak.mjs";
-import { BANK, bootBank, lockPeriod, must, openAcceptanceAccounts, openAccount } from "./banka-210-hesap-ortak.mjs";
+import { BANK, bootBank, lockPeriod, must, TAHSILE_FLAGS, openAcceptanceAccounts, openAccount } from "./banka-210-hesap-ortak.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 
 const CHEQUES = "/api/workspace/cheques";
@@ -54,7 +54,7 @@ describe("T11 — taksite sayılmış çek karşılıksız: alış günü maddes
   before(async () => {
     ctx = await bootBank({ now: "2026-10-27T12:00:00+03:00" });
     api = ctx.api;
-    acc = await openAcceptanceAccounts(api);
+    acc = await openAcceptanceAccounts(api, TAHSILE_FLAGS);
     const a = await customer(api, "Alfa Taksit");
     const b = await customer(api, "Beta Taksit");
     const e = await customer(api, "Epsilon Taksit");
@@ -125,7 +125,7 @@ describe("T11 — dönem kilidinden (20.10) sonra taksite sayılmış, tahsildek
   it("karşılıksız 27.10 → 200; 20.10 kesiti ve 10.10 maddesi aynı; Geri Al da", async () => {
     ctx = await bootBank({ now: "2026-10-27T12:00:00+03:00" });
     api = ctx.api;
-    const acc = await openAcceptanceAccounts(api);
+    const acc = await openAcceptanceAccounts(api, TAHSILE_FLAGS);
     const m = await customer(api, "Teta Ltd");
     const plan = await card(api, m.id, "Teta Kart", "2.400");
     const cheque = await must("al", api.post(CHEQUES, { direction: "in", instrument: "cheque", serialNo: "TM-1", accountId: m.id, planId: plan.id, amount: "2.400", issueDate: "2026-10-10", dueDate: "2026-10-26" }));
@@ -149,7 +149,7 @@ describe("T12 / T13 / B1 — rapor tutarı, zil önbelleği (Banka Ayarları, he
   before(async () => {
     ctx = await bootBank({ now: "2026-10-27T12:00:00+03:00" });
     api = ctx.api;
-    acc = await openAcceptanceAccounts(api);
+    acc = await openAcceptanceAccounts(api, TAHSILE_FLAGS);
     m = await customer(api, "M3 Ticaret");
   });
   after(() => ctx?.server.close());
@@ -191,7 +191,7 @@ describe("ozet / proto / A22 — pencere özeti, tanınmayan eylem, karşılıks
   before(async () => {
     ctx = await bootBank();
     api = ctx.api;
-    acc = await openAcceptanceAccounts(api);
+    acc = await openAcceptanceAccounts(api, TAHSILE_FLAGS);
     buyer = await customer(api, "ABC Ltd.");
   });
   after(() => ctx?.server.close());
@@ -230,7 +230,7 @@ describe("ozet / proto / A22 — pencere özeti, tanınmayan eylem, karşılıks
   });
 
   it("A22: karşılıksız dönmüş evrakın hesabı silinmez (409); Geri Al çalışır; Bankadan Geri Al'ınca hesap silinir", async () => {
-    const isb = await openAccount(api, { bankName: "İş Bankası", name: "Çek Hesabı", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
+    const isb = await openAccount(api, { bankName: "İş Bankası", name: "Çek Hesabı", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     const cheque = await must("al", api.post(CHEQUES, { direction: "in", instrument: "cheque", serialNo: "A22", accountId: buyer.id, amount: "600", issueDate: "2026-10-05", dueDate: "2026-10-31" }));
     await must("ver", act(api, cheque.id, { action: "bank-deposit", date: "2026-10-06", bankAccountId: isb.id }));
     await must("karşılıksız", act(api, cheque.id, { action: "bounce", date: "2026-10-07" }));
@@ -252,7 +252,7 @@ describe("G1 — Alt Hesap Mizanı 101.01 / 101.02: Ana Defter kurulmadan, Ana D
   before(async () => {
     ctx = await bootBank({ now: "2026-10-27T12:00:00+03:00" });
     api = ctx.api;
-    acc = await openAcceptanceAccounts(api);
+    acc = await openAcceptanceAccounts(api, TAHSILE_FLAGS);
     const buyer = await customer(api, "Gama Müşteri");
     const seller = await must("tedarikçi", api.post("/api/workspace/accounts", { name: "Gama Tedarik", type: "supplier", registeredOn: "2026-09-01" }));
     const plan = await card(api, buyer.id, "Gama Kart", "5.000");
@@ -346,7 +346,7 @@ async function oldVersion(name, oldStep, newStep = null) {
       const server = await bootVersion(CURRENT, { dataDir, backupDir, now: "2026-10-08T12:00:00+03:00" });
       try {
         const api = apiOf((await server.login()).client);
-        const account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Çek Tahsil", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "0", confirmed: true } }));
+        const account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Çek Tahsil", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-01", amount: "0", confirmed: true } }));
         const buyer = await must("müşteri", api.post("/api/workspace/accounts", { name: "Eski Müşteri", type: "customer", registeredOn: "2026-09-01" }));
         const cheque = await must("çek", api.post(CHEQUES, { direction: "in", instrument: "cheque", amount: "800", issueDate: "2026-10-03", dueDate: "2026-11-05", accountId: buyer.id, serialNo: `ES-${name}` }));
         await must("tahsile", act(api, cheque.id, { action: "bank-deposit", date: "2026-10-06", bankAccountId: account.id }));

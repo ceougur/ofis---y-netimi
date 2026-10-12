@@ -155,7 +155,7 @@
 <h3>Hesap Açmak</h3>
 <ol class="steps">
   <li><b>Hesaplar</b> → <b>+ Yeni Hesap</b>. <b>Hesap Türü</b>: <i>Vadesiz</i> (kredili mevduatınız varsa <b>KMH Limiti</b>), <i>Ticari</i>, <i>Vadeli</i>, <i>Kredi Hesabı</i> ya da <i>Diğer</i>. <b>Hesap Kodu</b>'nu boş bırakırsanız program önerir. Kredi kartı bankanın içinden eklenir (aşağıda).</li>
-  <li><b>Kullanım işaretleri:</b> <b>Kredi Kartı Kullan</b> (altına kart eklenir), <b>Çek Kullan</b> (verilen çekte <b>Çek Hesabı</b> olarak seçilir; çek ödenince para bu hesaptan çıkar), <b>Senet Kullan</b> (verilen senedin ödemesinde önerilir), <b>POS Kullan</b>.</li>
+  <li><b>Kullanım işaretleri:</b> <b>Kredi Kartı Kullan</b> (altına kart eklenir), <b>Çek Kullan</b> (verilen çekte <b>Çek Hesabı</b> olarak seçilir; çek ödenince para bu hesaptan çıkar; alınan çek bu hesaba tahsile verilir), <b>Senet Kullan</b> (verilen senedin ödemesinde önerilir; alınan senet bu hesaba tahsile verilir), <b>POS Kullan</b>.</li>
   <li>Açılış Tarihi ve bakiyeyi yazın; bakiyeyi bankadan teyit ettiyseniz <b>Bakiye Doğrulandı</b>'yı işaretleyin → <b>Hesabı Aç</b>. <b>IBAN faturada gösterilsin</b> işaretliyse IBAN fatura belgesine basılır. Listede <b>Açılış Bakiyesi Doğrulanmadı</b> yazıyorsa: hesaba tıklayın → <b>Açılışı Düzelt</b> → <b>Bu tutar bankadaki gerçek bakiyedir</b>'i işaretleyin (işaretlenmeden o hesapta eksi bakiye denetimi çalışmaz).</li>
   <li><b>Hesap ayrıntısı:</b> listede hesaba tıklayın. Bakiye, hesap bilgileri ve hareketler; düğmeler hesabın türüne göre: <b>+ Masraf</b>, <b>+ Faiz</b>, <b>+ Diğer İşlem</b>, <b>Transfer</b> (kartta <b>+ Kart Borcu Ödemesi</b>, kredide <b>+ Kredi İşlemi</b>), <b>Düzenle</b>, <b>Açılışı Düzelt</b>, <b>Pasife Al</b>, <b>Sil</b>. Hareketi olan hesap silinmez; kullanmayacaksanız <b>Pasife Al</b>. Kapalı düğmenin nedeni altında yazar.</li>
 </ol>
@@ -291,6 +291,9 @@
   <li><b>Yanlış işlem:</b> evrak kartındaki <b>“…” İşlemini Geri Al</b> son işlemi ve bağlı kayıtlarını birebir kaldırır; açık Kasa ve Cari pencereleri hemen güncellenir.</li>
   <li><b>Vade takibi:</b> vadesi geçen ve bugün gelen evrak rozette, takvimde ve bildirimlerde; 7 gün içinde gelenler ANLIK DURUM'da.</li>
   <li><b>Excel / Sheets’ten Yükle</b> ile mevcut portföyünüzü alın. Liste PDF ve Excel olarak iner.</li>
+  <li><b>Bankaya Tahsile Ver:</b> portföydeki alınan evrakın kartında → banka hesabını seçin (çekte <b>Çek Kullan</b>, senette <b>Senet Kullan</b> işaretli hesaplar gelir; hiç yoksa <b>Banka Hesabı Tanımla</b>) → evrak <i>Bankada Tahsilde</i> olur. Banka bakiyesi değişmez; listede <b>Bankada Tahsilde</b> süzgeciyle bulunur.</li>
+  <li><b>Bankadan Geri Al:</b> banka evrakı geri verdiyse; evrak yeniden <i>Portföyde</i> olur, ciro edilebilir ya da elden tahsil edilir. Bankadaki evrak ciro edilemez, silinemez.</li>
+  <li><b>Banka tahsil edince:</b> <b>Tahsil Et</b> → para evrakın verildiği hesaba girer (yol ve hesap sabittir). Karşılıksız dönerse <b>Karşılıksız / İade</b>: müşteri yeniden borçlanır.</li>
 </ul>
 
 

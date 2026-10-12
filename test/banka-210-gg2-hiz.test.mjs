@@ -56,6 +56,8 @@ describe("GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter k
     await must("eski havale", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "3.210,55", method: "bank", date: "2026-07-03" }));
     await must("eski POS", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "1.111,11", method: "card", date: "2026-07-04" }));
     // 2.2.0 (plan §3.14): bankada tahsilde bir çek ve tahsile verilip geri alınmış bir senet — 101.01/101.02 de Ana Defter'le karşılaştırılır.
+    // İz 2.6: tahsile verme yalnız "Çek Kullan" / "Senet Kullan" işaretli hesaba (motor işareti yalnız kendi işleminde açar).
+    await must("Çek Kullan / Senet Kullan", api.put(`${BANK}/accounts/${bank.id}`, { useCheque: true, useNote: true }));
     const cheque = await must("çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "2.345,67", issueDate: "2026-08-20", dueDate: "2026-11-20", accountId: party.id, serialNo: "GG2-1" }));
     await must("tahsile ver", api.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "bank-deposit", date: "2026-09-05", bankAccountId: bank.id }));
     const note = await must("senet", api.post("/api/workspace/cheques", { direction: "in", instrument: "note", amount: "800", issueDate: "2026-08-25", dueDate: "2026-12-01", accountId: party.id, serialNo: "GG2-2" }));

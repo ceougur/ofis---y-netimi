@@ -32,7 +32,7 @@ import { after, before, describe, it } from "node:test";
 import { GateEquivalenceError, IntegrityError } from "../server/lib/integrity.mjs";
 import { subBalances as journalSubs } from "../server/lib/general-ledger.mjs";
 import { apiOf, integrityOf, integrityOk, xlsxSheets } from "./banka-210-ortak.mjs";
-import { BANK, bootBank, expectStatus, must, openAcceptanceAccounts, openAccount } from "./banka-210-hesap-ortak.mjs";
+import { BANK, bootBank, expectStatus, must, TAHSILE_FLAGS, openAcceptanceAccounts, openAccount } from "./banka-210-hesap-ortak.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 
 const CHEQUES = "/api/workspace/cheques";
@@ -47,7 +47,7 @@ const journalOf = async (api, day) => (await report(api, "yevmiye", `?from=${day
 
 async function setup(options = {}) {
   const ctx = await bootBank(options);
-  const acc = await openAcceptanceAccounts(ctx.api);
+  const acc = await openAcceptanceAccounts(ctx.api, TAHSILE_FLAGS);
   const buyer = await must("müşteri", ctx.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-09-01" }));
   const seller = await must("tedarikçi", ctx.api.post("/api/workspace/accounts", { name: "XYZ Tedarik", type: "supplier", registeredOn: "2026-09-01" }));
   return { ctx, acc, buyer, seller };
@@ -288,7 +288,7 @@ describe("T8/D5, D3, D4 — geçiş kuralları", () => {
     expectStatus(await act(api, a.id, { action: "bank-deposit", date: "2026-09-25", bankAccountId: t.acc.ziraat.id }), 409, "bank-before-opening", "açılıştan önce tahsile ver");
     assert.equal(t.ctx.store.get("SELECT COUNT(*) AS n FROM cheque_collections WHERE cheque_id = ?", a.id).n, 0, "kayıt yazılmadı");
     await must("açılış günü", act(api, a.id, { action: "bank-deposit", date: "2026-10-01", bankAccountId: t.acc.ziraat.id }));
-    const fresh = await openAccount(api, { bankName: "Akbank", name: "Tahsil Hesabı", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
+    const fresh = await openAccount(api, { bankName: "Akbank", name: "Tahsil Hesabı", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     const b = await receive(api, { serialNo: "O-2", accountId: t.buyer.id, amount: "100", issueDate: "2026-10-02" });
     await must("ver", act(api, b.id, { action: "bank-deposit", date: "2026-10-03", bankAccountId: fresh.id }));
     expectStatus(await api.post(`${BANK}/accounts/${fresh.id}/opening`, { date: "2026-10-05", amount: "0", confirmed: true }), 409, "bank-opening-after-first", "açılışı tahsile vermeden sonraya");
@@ -297,7 +297,7 @@ describe("T8/D5, D3, D4 — geçiş kuralları", () => {
 
   it("D3: karşılıksızdan sonra hesap pasif ya da Vadeli → karşılıksızı Geri Al reddedilir; hesap etkinleşince yeniden tahsilde", async () => {
     const { api, store } = t.ctx;
-    const z = await openAccount(api, { bankName: "Halkbank", name: "D3 Hesabı", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
+    const z = await openAccount(api, { bankName: "Halkbank", name: "D3 Hesabı", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     const a = await receive(api, { serialNo: "D3-A", accountId: t.buyer.id, amount: "400" });
     await must("ver", act(api, a.id, { action: "bank-deposit", date: "2026-10-06", bankAccountId: z.id }));
     await must("karşılıksız", act(api, a.id, { action: "bounce", date: "2026-10-07" }));
@@ -309,7 +309,7 @@ describe("T8/D5, D3, D4 — geçiş kuralları", () => {
     await must("geri al", api.post(`${CHEQUES}/${a.id}/undo`, {}));
     assert.equal(store.get("SELECT status FROM cheque_collections WHERE cheque_id = ?", a.id).status, "pending");
     // Vadeli: karşılıksız → tür Vadeli → Geri Al 400.
-    const v = await openAccount(api, { bankName: "Vakıf", name: "D3 Vadeli Olacak", kind: "demand", currency: "TRY" });
+    const v = await openAccount(api, { bankName: "Vakıf", name: "D3 Vadeli Olacak", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS });
     const b = await receive(api, { serialNo: "D3-B", accountId: t.buyer.id, amount: "250" });
     await must("ver", act(api, b.id, { action: "bank-deposit", date: "2026-10-08", bankAccountId: v.id }));
     await must("karşılıksız", act(api, b.id, { action: "bounce", date: "2026-10-08" }));
@@ -346,7 +346,7 @@ async function oldVersion(name, oldStep) {
       const server = await bootVersion(CURRENT, { dataDir, backupDir, now: "2026-10-08T12:00:00+03:00" });
       try {
         const api = apiOf((await server.login()).client);
-        const account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", opening: { date: "2026-10-01", amount: "1.000", confirmed: true } }));
+        const account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", ...TAHSILE_FLAGS, opening: { date: "2026-10-01", amount: "1.000", confirmed: true } }));
         const buyer = await must("müşteri", api.post("/api/workspace/accounts", { name: "Eski Müşteri", type: "customer", registeredOn: "2026-09-01" }));
         const seller = await must("tedarikçi", api.post("/api/workspace/accounts", { name: "Eski Tedarikçi", type: "supplier", registeredOn: "2026-09-01" }));
         const cheque = await must("çek", api.post(CHEQUES, { direction: "in", instrument: "cheque", amount: "800", issueDate: "2026-10-03", dueDate: "2026-11-05", accountId: buyer.id, serialNo: `ES-${name}` }));

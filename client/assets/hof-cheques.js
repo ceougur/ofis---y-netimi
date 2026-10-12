@@ -2,7 +2,10 @@
  * Alınan (müşteriden, portföye girer) ve verilen (kendi çekimiz/senedimiz) evrak. Liste: yön, durum ve vade süzgeci,
  * arama, portföy özeti, PDF/Excel. Kart: evrakın bilgileri, işlemleri (Tahsil edildi, Ciro et, Karşılıksız / iade,
  * Ödendi, Son işlemi geri al) ve işlem geçmişi. Her işlem sunucuda tek işlem bloğunda cari/taksit defterine ve (tahsil,
- * ödeme) Kasa'ya yazılır; kural server/lib/cheques.mjs içinde. Excel / Google Sheets'ten portföy (doğrulama kapısıyla). */
+ * ödeme) Kasa'ya yazılır; kural server/lib/cheques.mjs içinde. Excel / Google Sheets'ten portföy (doğrulama kapısıyla).
+ * v2.2.0 (plan §3.14, İz 2.6, İz 4.1 ekranı): portföydeki alınan evrak "Bankaya Tahsile Ver" (yalnız Çek Kullan / Senet Kullan işaretli hesap;
+ * kural sunucuda lib/bank/collections.mjs) ve "Bankadan Geri Al"; tahsildeki evrakta Tahsil Et yolu Havale / EFT ve hesabı kaydın hesabı (sabit),
+ * Ciro Et ve Sil pasif (nedeni düğmelerin yanında yazılı); listede "Portföyde" ile "Bankada Tahsilde" ayrı süzgeç ve özet kutusu. */
 (() => {
   "use strict";
   const HOF = window.HOF;
@@ -21,13 +24,16 @@
     ["open", "Açık (portföyde / ödenecek)"],
     ["overdue", "Vadesi Geçmiş"],
     ["soon", "7 Gün İçinde"],
+    // v2.2.0 (plan §3.14): "Portföyde" bankadaki evrakı içermez; "Bankada Tahsilde" yalnız tahsile verilmiş, sonucu bekleyen evrak.
+    ["portfolio", "Portföyde"],
+    ["deposited", "Bankada Tahsilde"],
     ["", "Tüm Durumlar"],
     ["collected", "Tahsil Edildi"],
     ["endorsed", "Ciro Edildi"],
     ["bounced", "Karşılıksız / İade"],
     ["paid", "Ödendi"],
   ];
-  const statusPill = cheque => `<span class="hof-chq-status is-${esc(cheque.status)}">${esc(cheque.statusLabel)}</span>`;
+  const statusPill = cheque => `<span class="hof-chq-status is-${esc(cheque.deposited ? "deposited" : cheque.status)}">${esc(cheque.statusLabel)}</span>`;
   const dueBadge = cheque => (cheque.open ? `<small class="hof-rep-days is-${esc(cheque.dueStateKey)}">${cheque.days < 0 ? `${Math.abs(cheque.days)} gün geçti` : cheque.days === 0 ? "bugün" : `${cheque.days} gün kaldı`}</small>` : "");
   const listQuery = (extra = {}) => new URLSearchParams(Object.fromEntries(Object.entries({ direction: view.direction, status: view.status, q: view.q, from: view.from, to: view.to, sort: view.sort, ...extra }).filter(([, value]) => value !== "" && value !== undefined))).toString();
 
@@ -154,7 +160,7 @@
           ${canManage() ? `<button type="button" class="hof-button hof-button-small" data-act="new-in">+ Çek / Senet Al</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="new-out">+ Çek / Senet Ver</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import">Excel / Sheets’ten Yükle</button>` : ""}
           <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/cheques/liste.pdf?${esc(listQuery())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/cheques/export.xlsx?${esc(listQuery())}" download>Liste - Excel</a></span>
         </div></div>
-      ${sum ? `<div class="hof-rep-stats">${tile("Portföyde (alınan)", sum.in.open, "is-in")}${tile("Ödenecek (verilen)", sum.out.open, "is-out")}${tile("Vadesi geçmiş", { count: sum.in.overdue.count + sum.out.overdue.count, amount: sum.in.overdue.amount + sum.out.overdue.amount }, sum.in.overdue.count + sum.out.overdue.count ? "is-bad" : "")}${tile("7 gün içinde", { count: sum.in.today.count + sum.in.soon.count + sum.out.today.count + sum.out.soon.count, amount: sum.in.today.amount + sum.in.soon.amount + sum.out.today.amount + sum.out.soon.amount }, "", "bugün dahil")}</div>` : ""}
+      ${sum ? `<div class="hof-rep-stats">${tile("Portföyde (alınan)", sum.in.open, "is-in")}${tile("Bankada Tahsilde", sum.deposited, "is-deposited")}${tile("Ödenecek (verilen)", sum.out.open, "is-out")}${tile("Vadesi Geçmiş", { count: sum.in.overdue.count + sum.out.overdue.count, amount: sum.in.overdue.amount + sum.out.overdue.amount }, sum.in.overdue.count + sum.out.overdue.count ? "is-bad" : "")}${tile("7 Gün İçinde", { count: sum.in.today.count + sum.in.soon.count + sum.out.today.count + sum.out.soon.count, amount: sum.in.today.amount + sum.in.soon.amount + sum.out.today.amount + sum.out.soon.amount }, "", "bugün dahil")}</div>` : ""}
       <div class="hof-plans-filters hof-chq-filters">
         <div class="hof-rep-presets" role="group" aria-label="Yön">${[["", "Tümü"], ["in", "Alınan"], ["out", "Verilen"]].map(([id, label]) => `<button type="button" class="hof-rep-chip ${view.direction === id ? "is-on" : ""}" data-direction="${id}">${label}</button>`).join("")}</div>
         <select data-filter="status" aria-label="Durum">${STATUS_OPTIONS.map(([id, label]) => `<option value="${id}" ${view.status === id ? "selected" : ""}>${label}</option>`).join("")}</select>
@@ -176,6 +182,19 @@
     const actionButtons = cheque.actions
       .map(action => `<button type="button" class="hof-button hof-button-small ${action.key === "bounce" ? "hof-button-danger-ghost" : action.key === "collect" || action.key === "pay" ? "" : "hof-button-ghost"}" data-action="${esc(action.key)}">${esc(ACTION_TEXT[action.key]?.title || action.label)}</button>`)
       .join("");
+    // v2.2.0 (plan §3.14): Bankaya Tahsile Ver (portföydeki alınan evrak) / Bankadan Geri Al (tahsildeki evrak) — sunucunun bankActions'ı.
+    const bankButtons = (cheque.bankActions || []).map(action => `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-bank-action="${esc(action.key)}">${esc(action.label)}</button>`).join("");
+    // Tahsildeki evrak: Ciro Et ve Sil pasif; nedeni düğmelerin yanında görünür yazı (yalnız ipucu değil). Düzenle'de yalnız no, banka, açıklama.
+    const held = cheque.deposited && cheque.collection ? cheque.collection : null;
+    const why = held && cheque.canManage ? `Ciro Et ve Sil kapalı: evrak ${held.bankLabel} hesabında tahsilde (${HOF.formatDate(held.givenDate)}). Tutar, cari, tarih ve vade değişmez; Düzenle'de yalnız no, banka ve açıklama düzeltilir. Önce Bankadan Geri Al'ın.` : "";
+    const off = label => `<button type="button" class="hof-button hof-button-small hof-button-ghost" disabled aria-disabled="true" aria-describedby="hof-chq-why" data-off="${esc(label)}" title="${esc(why)}">${esc(label)}</button>`;
+    const offCiro = why ? off("Ciro Et") : "";
+    const offDelete = why && !cheque.invoiceId && cheque.events.length === 1 ? off("Sil") : "";
+    const bankHistory = (cheque.collections || [])
+      .map(
+        item => `<li class="is-deposit"><span class="hof-chq-when">${esc(HOF.formatDate(item.givenDate))}</span><b>Bankaya Tahsile Verildi</b> · ${esc(item.bankLabel)}${item.eventNo ? ` · ${esc(item.eventNo)}` : ""}<small>${item.status === "pending" ? "Bankada tahsilde" : `${esc(item.statusLabel)}${item.closedDate ? ` · ${esc(HOF.formatDate(item.closedDate))}` : ""}${item.closeEventNo ? ` · ${esc(item.closeEventNo)}` : ""}`}</small></li>`,
+      )
+      .join("");
     const history = cheque.events
       .map(
         event => `<li class="is-${esc(event.kind)}"><span class="hof-chq-when">${esc(HOF.formatDate(event.date))}</span><b>${esc(event.label)}</b>${event.accountName ? ` · ${esc(event.accountName)}` : ""}${event.note ? `<small>${esc(event.note)}</small>` : ""}<small class="hof-muted">${esc(event.actorName || "")} · ${esc(HOF.formatDateTime(event.createdAt))}${event.ledger ? " · defter kaydı yazıldı" : ""}</small></li>`,
@@ -194,15 +213,17 @@
         ${fact(cheque.instrument === "note" ? "Ödeme Hesabı (Öneri)" : "Çek Hesabı", cheque.direction === "out" && cheque.bankAccountLabel ? esc(cheque.bankAccountLabel) : "")}
         ${fact("Taksit kartı", cheque.planName ? `<a href="#" data-open-plan="${esc(cheque.planId)}">${esc(cheque.planName)}</a>` : "")}
         ${fact("Ciro edilen", accountLink(cheque.endorseAccountId, cheque.endorseAccountName))}
+        ${fact("Bankada Tahsilde", held ? `${esc(held.bankLabel)} · ${esc(HOF.formatDate(held.givenDate))}${held.eventNo ? ` · ${esc(held.eventNo)}` : ""}` : "")}
         ${fact("Son durum tarihi", cheque.status === "portfolio" || cheque.status === "pending" ? "" : esc(HOF.formatDate(cheque.statusDate)))}
         ${fact("Fatura", cheque.invoiceId && HOF.can("invoices.view") ? `<a href="#" data-open-invoice="${esc(cheque.invoiceId)}" title="Bu evrak faturanın ödemesidir; faturayı iptal etmeden silinmez">${esc(cheque.invoiceNumber || "Faturayı Aç")}</a>` : "")}
         ${fact("Açıklama", esc(cheque.note))}
       </dl>
-      <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : ""}</div>
-      ${cheque.lockNote ? `<p class="hof-rep-note hof-chq-lock-note">${esc(cheque.lockNote)}</p>` : ""}
+      <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${offCiro}${bankButtons}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : offDelete}${why ? `<p class="hof-chq-why" id="hof-chq-why" data-chq-why>${esc(why)}</p>` : ""}</div>
+      ${cheque.lockNote && !why ? `<p class="hof-rep-note hof-chq-lock-note">${esc(cheque.lockNote)}</p>` : ""}
       <p class="hof-rep-note">${cheque.direction === "in" ? "Alınınca carinin borcu düşer (ya da taksite sayılır); para tahsil edilince banka hesabına ya da Kasa'ya girer. Ciro edilince tedarikçiye olan borç düşer. Karşılıksız çıkarsa müşteri yeniden borçlanır." : "Verilince tedarikçiye olan borç düşer; para ödenince bankadan ya da Kasa'dan çıkar."}</p>
       <h4 class="hof-chq-subtitle">İşlem Geçmişi</h4>
-      <ol class="hof-chq-history">${history}</ol>`);
+      <ol class="hof-chq-history">${history}</ol>
+      ${bankHistory ? `<h4 class="hof-chq-subtitle">Banka Tahsil Kayıtları</h4><ol class="hof-chq-history" data-chq-collections>${bankHistory}</ol>` : ""}`);
   }
 
   // ---------- Formlar ----------
@@ -232,7 +253,8 @@
         : direction === "in"
           ? "Müşteriden aldığınız evrak portföye girer. Cari seçerseniz carinin borcu düşer; taksit kartı seçerseniz o taksit ödenmiş sayılır. Para tahsil edildiğinde banka hesabına ya da Kasa'ya girer."
           : "Tedarikçiye verdiğiniz kendi çekiniz/senediniz. Cari seçerseniz tedarikçiye olan borcunuz düşer; para vadesinde ödendiğinde bankadan ya da Kasa'dan çıkar.",
-      fields: core ? fields : fields.filter(field => !["instrument", "amount", "issueDate"].includes(field.name)),
+      // v2.2.0 (§3.14): tahsildeki evrakın vadesi de değişmez (sunucu 409 cheque-deposited); yalnız no, banka ve açıklama.
+      fields: core ? fields : fields.filter(field => !["instrument", "amount", "issueDate", ...(cheque?.deposited ? ["dueDate"] : [])].includes(field.name)),
       submitLabel: edit ? "Kaydet" : direction === "in" ? "Portföye Al" : "Kaydet",
       onOpen: dialog => {
         // v2.2.0 (İz 2.5–2.6): verilen evrakta "Banka / Şube" yerine Çek Hesabı (çek) / Ödeme Hesabı önerisi (senet); alınan evrakta metin kalır.
@@ -293,23 +315,36 @@
     endorse: { title: "Ciro Et", past: "ciro edildi", intro: "Evrak seçtiğiniz tedarikçiye verilir; o cariye olan borcunuz evrak tutarı kadar düşer. Kasa değişmez.", submit: "Ciro Et" },
     bounce: { title: "Karşılıksız / İade", past: "karşılıksız / iade", intro: "Evrak karşılıksız çıktı ya da iade edildi: müşteri yeniden borçlanır (taksite sayıldıysa taksit yeniden açılır); ciro edildiyse tedarikçiye olan borç geri gelir.", submit: "Karşılıksız / İade İşaretle" },
   };
+  // v2.2.0 (plan §3.14): tahsildeki evrakın Tahsil Et ve Karşılıksız açıklaması (para kaydın hesabına girer; karşılıksız tahsil kaydını kapatır).
+  const DEPOSITED_TEXT = {
+    collect: "Banka evrakı tahsil etti: tutar seçtiğiniz tarihte evrakın tahsilde olduğu banka hesabına giriş olarak yazılır. Yol Havale / EFT, hesap tahsil kaydının hesabıdır.",
+    bounce: "Evrak bankadan karşılıksız döndü: Bankada Tahsilde kaydı kapanır, müşteri yeniden borçlanır (taksite sayıldıysa taksit yeniden açılır). Banka bakiyesi değişmez.",
+  };
   function actionForm(cheque, action) {
     const text = ACTION_TEXT[action];
     // v2.1.0 Aşama 8: istek kimliği form açılışında; tahsil/ödemede Banka seçilince Banka Hesabı (tek hesapta gizli) ve hesabın soruları.
     const requestId = HOF.requestId();
     const moneyAction = action === "collect" || action === "pay";
+    // Tahsildeki evrakın tahsili (§3.14): yol Havale / EFT ve hesap tahsil kaydının hesabı — salt okunur, nedeni yazılı; nakit seçeneği yok.
+    const held = action === "collect" && cheque.deposited && cheque.collection ? cheque.collection : null;
     HOF.formModal({
       title: `${text.title} · ${cheque.instrumentLabel}${cheque.serialNo ? ` No ${cheque.serialNo}` : ""}`,
       eyebrow: money(cheque.amount),
-      intro: text.intro,
+      intro: (cheque.deposited && DEPOSITED_TEXT[action]) || text.intro,
       fields: [
         { name: "date", label: "İşlem Tarihi", type: "date", required: true, value: todayIso() },
         // v2.0.13: çek/senet çoğunlukla bankadan tahsil edilir/ödenir; elden ise Nakit.
-        ...(action === "collect" || action === "pay" ? [{ name: "method", label: action === "collect" ? "Tahsil Edilen Hesap" : "Ödenen Hesap", type: "select", value: "bank", options: [{ value: "bank", label: "Banka (Havale / EFT)" }, { value: "cash", label: "Nakit Kasa (elden)" }] }] : []),
+        ...(held
+          ? [
+              { name: "heldMethod", label: "Tahsil Yolu", value: "Havale / EFT", readonly: true },
+              { name: "heldAccount", label: "Tahsil Edilen Hesap", value: held.bankLabel, readonly: true, help: "Evrak bu hesapta tahsilde; tahsil bu hesaba yazılır. Başka hesaba ya da elden (nakit) tahsil edildiyse önce Bankadan Geri Al'ın." },
+            ]
+          : action === "collect" || action === "pay" ? [{ name: "method", label: action === "collect" ? "Tahsil Edilen Hesap" : "Ödenen Hesap", type: "select", value: "bank", options: [{ value: "bank", label: "Banka (Havale / EFT)" }, { value: "cash", label: "Nakit Kasa (elden)" }] }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, placeholder: action === "bounce" ? "ör. banka iade etti" : "" },
       ],
       submitLabel: text.submit,
       onOpen: dialog => {
+        if (held) return heldBalance(dialog.querySelector("form"), held, Number(cheque.amount) || 0);
         // v2.2.0 (İz 2.5–2.6): verilen çekin ödemesinde hesap çekin Çek Hesabı; senette önerilen hesap (yoksa Senet Kullan işaretli ilk hesap).
         const own = action === "pay" ? cheque.bankAccountId || "" : "";
         // 2.7: seçicide bakiye — tutar evrakın tutarı (ödemede hesaptan çıkar, tahsilde girer).
@@ -321,10 +356,149 @@
       },
       onSubmit: async data => {
         if (action === "endorse" && !data.accountId) throw new Error("Çeki kime ciro ettiğinizi seçin.");
-        const body = { action, date: data.date, note: data.note, accountId: data.accountId || "", method: data.method || "", status: cheque.status, ...(moneyAction && data.method === "bank" && data.bankAccountId ? { bankAccountId: data.bankAccountId } : {}) };
+        const body = held
+          ? { action, date: data.date, note: data.note, accountId: "", method: "bank", bankAccountId: held.bankAccountId, status: cheque.status }
+          : { action, date: data.date, note: data.note, accountId: data.accountId || "", method: data.method || "", status: cheque.status, ...(moneyAction && data.method === "bank" && data.bankAccountId ? { bankAccountId: data.bankAccountId } : {}) };
         const send = flags => HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body: { ...body, ...flags }, requestId });
         const saved = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         HOF.toast(`${cheque.instrumentLabel} ${ACTION_TEXT[action].past} olarak işlendi.`, { type: "success" });
+        apply(saved);
+      },
+    });
+  }
+  // ---------- Bankaya Tahsile Ver / Bankadan Geri Al (v2.2.0; plan §3.14, İz 2.6) ----------
+  const titleOf = (head, cheque) => `${head} · ${cheque.instrumentLabel}${cheque.serialNo ? ` No ${cheque.serialNo}` : ""}`;
+  /** Tahsildeki evrakın tahsil formunda hesabın bakiye satırı (İz 2.7 kalıbı; yalnız Banka Görüntüleme yetkisine): Bakiye · İşlemden Sonra. */
+  async function heldBalance(form, held, amount) {
+    const field = form?.querySelector('[name="heldAccount"]')?.closest(".hof-field");
+    const dateNode = form?.querySelector('[name="date"]');
+    if (!field || !HOF.bank?.choices || !HOF.bank?.balanceLine) return;
+    let data = null;
+    try {
+      data = await HOF.bank.choices(true, dateNode?.value || "");
+    } catch {
+      return;
+    }
+    const draw = () => {
+      if (!form.isConnected) return;
+      field.querySelector("[data-bank-balance]")?.remove();
+      const line = HOF.bank.balanceLine(data, held.bankAccountId, { change: Math.round(amount * 100) });
+      if (line) field.insertAdjacentHTML("beforeend", line);
+    };
+    draw();
+    let seq = 0;
+    dateNode?.addEventListener("change", async () => {
+      if (!data?.balances) return;
+      const mine = (seq += 1);
+      const fresh = await HOF.bank.balances(dateNode.value);
+      if (mine !== seq || !fresh?.balances) return;
+      data = { ...data, balances: fresh.balances };
+      draw();
+    });
+  }
+  /**
+   * Bankaya Tahsile Ver'in Banka Hesabı seçicisi: hesaplar sunucunun TEK kuralından (kartın depositAccounts'ı — etkin TL Vadesiz/Ticari/Diğer; çekte
+   * "Çek Kullan", senette "Senet Kullan" işaretli); seçenek adında bakiye (İz 2.7; yalnız Banka Görüntüleme yetkisine). Tek hesapta bilgi satırı (alan
+   * yok; sunucu o hesabı kendisi seçer), çokta seçim zorunlu (ön seçim yok), hiç yoksa "Banka Hesabı Tanımla" (HOF.bank.registerDefine
+   * "deposit-cheque" / "deposit-note": evrak türünün işareti dolu gelir; form kapanmaz, kaydedilen hesap seçili gelir). Tanımlama yetkisi yoksa
+   * düğme yerine "Banka hesabı tanımlı değil, yöneticinize başvurun." yazısı.
+   */
+  async function depositPicker(form, cheque) {
+    const dateNode = form?.querySelector('[name="date"]');
+    const anchor = dateNode?.closest(".hof-field");
+    if (!anchor || !HOF.bank?.pickerHtml) return;
+    const kind = cheque.instrument === "note" ? "note" : "cheque";
+    let list = cheque.depositAccounts || [];
+    let data = null;
+    let forced = "";
+    const load = async () => {
+      let bank = null;
+      try {
+        bank = await HOF.bank.choices(true, dateNode.value || "");
+      } catch {
+        bank = null;
+      }
+      const known = new Set((bank?.accounts || []).map(account => account.id));
+      const extra = list.filter(account => !known.has(account.id)).map(account => ({ id: account.id, code: account.code, label: `${account.bankName} · ${account.name}`, kind: "demand" }));
+      data = { ...(bank || {}), accounts: [...(bank?.accounts || []), ...extra], forms: { ...(bank?.forms || {}), deposit: { ids: list.map(account => account.id), defaultId: "" } } };
+    };
+    const syncLine = () => {
+      const box = form.querySelector("[data-deposit-pick]");
+      if (!box) return;
+      box.querySelector("[data-bank-balance]")?.remove();
+      const id = box.querySelector("select")?.value || box.querySelector("[data-bank-single]")?.dataset.bankSingle || "";
+      const line = id ? HOF.bank.balanceLine(data, id, { only: true }) : "";
+      if (line) box.insertAdjacentHTML("beforeend", line);
+    };
+    const render = () => {
+      if (!form.isConnected) return;
+      const current = forced || form.querySelector("[data-deposit-pick] select")?.value || "";
+      form.querySelectorAll("[data-deposit-pick]").forEach(node => node.remove());
+      const picked = HOF.bank.pickerHtml(data, { form: "deposit", name: "bankAccountId", label: "Banka Hesabı", choose: "Hesap Seçin", preselect: false, none: false, define: `deposit-${kind}`, value: current, note: label => `${label} hesabına tahsile verilir.` });
+      anchor.insertAdjacentHTML("afterend", `<div class="hof-bank-pick" data-deposit-pick="${esc(picked.mode)}">${picked.html}</div>`);
+      syncLine();
+    };
+    await load();
+    render();
+    let seq = 0;
+    form.addEventListener("change", async event => {
+      if (event.target.closest?.("[data-deposit-pick]")) return syncLine();
+      if (event.target !== dateNode || !data?.balances) return;
+      const mine = (seq += 1);
+      const fresh = await HOF.bank.balances(dateNode.value);
+      if (mine !== seq || !form.isConnected || !fresh?.balances) return;
+      data = { ...data, balances: fresh.balances };
+      render();
+    });
+    form.addEventListener("hof-bank-defined", async event => {
+      if (event.detail?.kind !== `deposit-${kind}` || !event.detail.account?.id) return;
+      try {
+        list = (await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}`)).depositAccounts || [];
+      } catch {
+        // liste okunamazsa sunucu tek uygun hesabı yine kendisi seçer
+      }
+      await load();
+      forced = event.detail.account.id;
+      render();
+      forced = "";
+      (form.querySelector("[data-deposit-pick] select") || form.querySelector('button[type="submit"]'))?.focus();
+    });
+  }
+  function depositForm(cheque) {
+    const requestId = HOF.requestId();
+    const flag = cheque.instrument === "note" ? "Senet Kullan" : "Çek Kullan";
+    HOF.formModal({
+      title: titleOf("Bankaya Tahsile Ver", cheque),
+      eyebrow: money(cheque.amount),
+      intro: `Evrak seçtiğiniz banka hesabına tahsile verilir: “Portföyde”den “Bankada Tahsilde”ye geçer, banka bakiyesi o gün değişmez. Banka tahsil edince “Tahsil Et” ile para bu hesaba girer; karşılıksız dönerse “Karşılıksız / İade”. Yalnız “${flag}” işaretli hesaplar listelenir.`,
+      fields: [
+        { name: "date", label: "İşlem Tarihi", type: "date", required: true, max: "today", value: todayIso() },
+        { name: "note", label: "Açıklama", maxlength: 300, placeholder: "ör. tahsil bordrosu no" },
+      ],
+      submitLabel: "Bankaya Tahsile Ver",
+      onOpen: dialog => depositPicker(dialog.querySelector("form"), cheque),
+      onSubmit: async data => {
+        const body = { action: "bank-deposit", date: data.date, note: data.note, status: cheque.status, ...(data.bankAccountId ? { bankAccountId: data.bankAccountId } : {}) };
+        const saved = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body, requestId });
+        HOF.toast(`${cheque.instrumentLabel} ${saved.collection?.bankLabel || "bankaya"} hesabına tahsile verildi.`, { type: "success" });
+        apply(saved);
+      },
+    });
+  }
+  function withdrawForm(cheque) {
+    const requestId = HOF.requestId();
+    HOF.formModal({
+      title: titleOf("Bankadan Geri Al", cheque),
+      eyebrow: money(cheque.amount),
+      intro: `Evrak ${esc(cheque.collection?.bankLabel || "banka")} hesabından geri alınır ve yeniden portföye döner (Bankada Tahsilde biter); banka bakiyesi değişmez. Sonra ciro edilebilir, elden tahsil edilebilir ya da başka hesaba tahsile verilebilir.`,
+      fields: [
+        { name: "date", label: "İşlem Tarihi", type: "date", required: true, max: "today", value: todayIso() },
+        { name: "note", label: "Açıklama", maxlength: 300, placeholder: "ör. banka iade etti" },
+      ],
+      submitLabel: "Bankadan Geri Al",
+      onSubmit: async data => {
+        const saved = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body: { action: "bank-withdraw", date: data.date, note: data.note, status: cheque.status }, requestId });
+        HOF.toast(`${cheque.instrumentLabel} bankadan geri alındı; yeniden portföyde.`, { type: "success" });
         apply(saved);
       },
     });
@@ -443,6 +617,7 @@
       return loadList();
     }
     if (target.dataset.action && view.cheque) return actionForm(view.cheque, target.dataset.action);
+    if (target.dataset.bankAction && view.cheque) return target.dataset.bankAction === "bank-withdraw" ? withdrawForm(view.cheque) : depositForm(view.cheque);
     const act = target.dataset.act;
     if (act === "new-in") return chequeForm({ direction: "in" });
     if (act === "new-out") return chequeForm({ direction: "out" });
