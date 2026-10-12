@@ -1361,6 +1361,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   "Kredi Kartı" = POS → POS hesabı seçimi, komisyon + KDV/BSMV, valör, blokeli/teminatlı, POS iadesinde komisyon, raporlar). Sürüm no
   paketlemede (POS yeni modül → 2.2.0 önerilir). BAŞLAMADAN ÖNCE: kullanıcı müşteri taleplerini topluyor → hepsi gelince listeye eklenir,
   sonra iş planı kullanıcıya sunulur. Her yeni talep AYNI ANDA buraya yazılır.
+  MÜŞTERİ (aynı gün, madde 6 — POS kararının içinde): müşteriden kartla tahsilatta firmanın HANGİ BANKANIN POS'u ise o seçilir. Uygulama:
+  banka hesabı kartında "POS Kullan" işareti (Kredi Kartı/Çek/Senet Kullan gibi) → altına POS cihazı/üye işyeri eklenir (ad, üye işyeri no,
+  komisyon oranı, valör günü, parayı yatırdığı hesap = bu hesap, blokeli mi); satış faturası/cari/taksit tahsilatında yol "POS" seçilince
+  yalnız tanımlı POS'lar gelir (tekse kendiliğinden, çoksa seçim, yoksa "POS Tanımla"); bakiye/valör o bankanın hesabına yazılır.
 - İSTEK (kullanıcı, 12.10.2026; sıradaki sürüme): ALIŞ FATURASI ödeme yolu "Kredi Kartı" → tanımlı tek kurumsal kart varsa KENDİLİĞİNDEN
   gelir (bugün de öyle: "… kurumsal kartına yazılır"); birden çoksa kullanıcı SEÇER (bugün de öyle); HİÇ YOKSA formda "Kredi Kartı Tanımla"
   düğmesi → kart tanımlama penceresi (form kapanmadan, girilenler kaybolmadan) → kaydedince yeni kart ödeme satırında seçili gelir, işleme
