@@ -62,6 +62,17 @@
   // 102 ailesi (Gerçek Banka'ya giren hesaplar); kart 309, kredi 300 (Kart ve Kredi Borcu).
   const MAIN_KINDS = new Set(["demand", "commercial", "time", "fx", "other"]);
   const BINDABLE_KINDS = new Set(["demand", "commercial", "other"]);
+  // v2.2.0 (İz 2.2): hesabın kullanım işaretleri — yalnız Vadesiz, Ticari ve Diğer TL hesapta (sunucu başka türde 400 bank-flag-kind verir).
+  const FLAG_FIELDS = [
+    ["useCard", "Kredi Kartı Kullan (altına kart eklenir)"],
+    ["useCheque", "Çek Kullan (verilen çekte Çek Hesabı olarak seçilir)"],
+    ["useNote", "Senet Kullan (verilen senedin ödeme hesabı olarak önerilir)"],
+    ["usePos", "POS Kullan (altına POS tanımlanır)"],
+  ];
+  const FLAG_SHORT = { useCard: "Kredi Kartı", useCheque: "Çek", useNote: "Senet", usePos: "POS" };
+  // 2.1 (müşteri sorusu "doğrulanmadı ne demek?"): durumun adı ve ne yapılacağı açık.
+  const UNCONFIRMED = "Açılış Bakiyesi Doğrulanmadı";
+  const UNCONFIRMED_WHY = "Açılış bakiyesi bankadaki gerçek bakiyeyle teyit edilmedi; bu hesapta eksi bakiye denetimi kapalı. Doğrulamak için hesaba tıklayın → Açılışı Düzelt → “Bu tutar bankadaki gerçek bakiyedir”i işaretleyin.";
   // Sunucunun alan adı (HttpError field) → formdaki alan.
   const FIELD_OF = { iban: "iban", code: "code", currency: "currency", kind: "kind", "Banka Adı": "bankName", "Hesap Adı": "name", date: "openingDate", "Açılış Tarihi": "openingDate", "Açılış Bakiyesi": "openingAmount", "Açılış Kuru": "openingRate", Limit: "creditLimit", "Ekstre Kesim Günü": "statementDay", "Son Ödeme Günü": "dueDay", negativePolicy: "negativePolicy" };
 
@@ -381,22 +392,33 @@
     ].join("");
     const rows = shown
       .map(
-        account => `<tr data-account="${esc(account.id)}" tabindex="0" class="${account.status === "passive" ? "is-passive" : ""}">
+        account => `<tr data-account="${esc(account.id)}" tabindex="0" class="${[account.status === "passive" ? "is-passive" : "", account.depth ? "hof-bank-child" : ""].filter(Boolean).join(" ")}">
           ${td("Kod", `<b>${esc(account.code)}</b>`)}
-          ${td("Banka ve Hesap", `${esc(accountLabel(account))}${account.branchName ? `<small>${esc(account.branchName)}</small>` : ""}`)}
+          ${td("Banka ve Hesap", `${account.depth ? '<span class="hof-bank-child-mark" aria-hidden="true">↳</span> ' : ""}${esc(accountLabel(account))}${account.cardLast4 ? ` <span class="hof-plan-refno">•••• ${esc(account.cardLast4)}</span>` : ""}${account.branchName ? `<small>${esc(account.branchName)}</small>` : ""}${suggestHtml(account)}`)}
           ${td("Tür", esc(account.kindLabel))}
           ${td("Para Birimi", esc(currencyLabel(account.currency)))}
           ${td("IBAN", account.ibanText ? `<span class="hof-bank-iban">${esc(account.ibanText)}</span>` : "—")}
           ${td("Alt Hesap", esc(account.glSub))}
           ${td("Bakiye", `${esc(fmt(MAIN_KINDS.has(account.kind) ? (account.currency === "TRY" ? account.balanceMinor : account.fxBalanceMinor) : -account.balanceMinor, account.currency))}${MAIN_KINDS.has(account.kind) ? "" : "<small>borç</small>"}`, "num")}
-          ${td("Durum", `${account.status === "active" ? '<span class="hof-plan-badge is-done">Etkin</span>' : '<span class="hof-plan-badge is-muted">Pasif</span>'}${account.balanceConfirmed ? '<small class="hof-bank-ok">Bakiye Doğrulandı</small>' : '<small class="is-warn">Doğrulanmadı</small>'}`)}
+          ${td("Durum", `${account.status === "active" ? '<span class="hof-plan-badge is-done">Etkin</span>' : '<span class="hof-plan-badge is-muted">Pasif</span>'}${account.balanceConfirmed ? '<small class="hof-bank-ok">Bakiye Doğrulandı</small>' : `<small class="is-warn" data-unconfirmed title="${esc(UNCONFIRMED_WHY)}">${UNCONFIRMED}</small>`}`)}
         </tr>`,
       )
       .join("");
     const empty = view.status === "active" && !view.list.accounts.length ? (canAccounts() ? "Banka hesabı yok. “+ Yeni Hesap” ya da Kurulum Sihirbazı ile ekleyin." : "Banka hesabı yok.") : "Bu süzgeçte hesap yok.";
     return `<div class="hof-bank-toolbar">${tools}<div class="hof-rep-presets" role="group" aria-label="Durum">${STATUS_CHIPS.map(([id, label]) => `<button type="button" class="hof-rep-chip ${view.status === id ? "is-on" : ""}" data-status="${id}">${esc(label)}</button>`).join("")}</div></div>
       <div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table hof-bank-accounts"><thead><tr><th>Kod</th><th>Banka ve Hesap</th><th>Tür</th><th>Para Birimi</th><th>IBAN</th><th>Alt Hesap</th><th class="num">Bakiye</th><th>Durum</th></tr></thead><tbody>${rows || `<tr><td colspan="8" class="hof-empty">${esc(empty)}</td></tr>`}</tbody></table></div>
-      <p class="hof-rep-note">Hesap Kodu sizindir (ör. ZIR-TL); alt hesap kodunu (102.01) program verir ve değişmez. Satıra tıklayınca hesabın ayrıntısı açılır.</p>`;
+      ${shown.some(account => !account.balanceConfirmed) ? `<p class="hof-rep-note hof-bank-unconfirmed-note" data-unconfirmed-note><b>${UNCONFIRMED}:</b> ${esc(UNCONFIRMED_WHY)}</p>` : ""}
+      <p class="hof-rep-note">Hesap Kodu sizindir (ör. ZIR-TL); alt hesap kodunu (102.01) program verir ve değişmez. Kredi kartları bağlı oldukları banka hesabının altında görünür; kart, banka hesabının ayrıntısındaki “+ Kredi Kartı Ekle” ile tanımlanır. Satıra tıklayınca hesabın ayrıntısı açılır.</p>`;
+  }
+  /**
+   * v2.2.0 (İz 2.3): bankasına bağlanmamış eski kart için öneri — aynı bankanın hesabı (sunucunun parentSuggestions'ı). Kendiliğinden bağlanmaz;
+   * "Bağla" kartı o hesaba bağlar (PUT parentId).
+   */
+  function suggestHtml(account) {
+    if (account.kind !== "card" || account.parentId || !account.parentSuggestions?.length) return "";
+    const target = account.parentSuggestions[0];
+    const button = canAccounts() && HOF.license?.writable !== false ? ` <button type="button" class="hof-link-button" data-act="link-card" data-card="${esc(account.id)}" data-parent="${esc(target.id)}">Bağla</button>` : "";
+    return `<small class="hof-bank-suggest" data-card-suggest="${esc(account.id)}">Öneri: ${esc(target.label)} hesabının altına bağlanabilir.${button}</small>`;
   }
 
   // ---------- Hesap Detayı (§8.5) ----------
@@ -459,15 +481,18 @@
         <div class="hof-plan-title"><h3>${esc(accountLabel(a))} <span class="hof-plan-refno">${esc(a.code)}</span> ${a.status === "active" ? '<span class="hof-plan-badge is-done">Etkin</span>' : '<span class="hof-plan-badge is-muted">Pasif</span>'}</h3><small>${esc(a.kindLabel)} · ${esc(currencyLabel(a.currency))} · Alt Hesap ${esc(a.glSub)}</small></div>
         <div class="hof-chq-amount"><span>${main ? "Gerçek Bakiye" : "Borç"}</span><strong data-bank-balance>${esc(fmt(balance, a.currency))}</strong>${a.currency !== "TRY" && main ? `<small>TL karşılığı ${esc(fmt(a.balanceMinor))}</small>` : ""}</div>
       </div>
-      <p class="hof-bank-confirm ${a.balanceConfirmed ? "is-ok" : "is-warn"}">${a.balanceConfirmed ? "✓ Bakiye Doğrulandı" : esc(a.policyNote)}</p>
+      <p class="hof-bank-confirm ${a.balanceConfirmed ? "is-ok" : "is-warn"}" data-confirm-line>${a.balanceConfirmed ? "✓ Bakiye Doğrulandı" : `<b>${UNCONFIRMED}.</b> ${esc(a.policyNote)} Doğrulamak için ${canAccounts() && !openingBlock ? `<button type="button" class="hof-link-button" data-act="opening">${esc(openingAction)}</button>` : `“${esc(openingAction)}”`} ile açılışı açıp “Bu tutar bankadaki gerçek bakiyedir”i işaretleyin.`}</p>
       <dl class="hof-chq-facts">
+        ${fact("Bağlı Banka Hesabı", a.kind === "card" ? (a.parentId ? `<button type="button" class="hof-link-button" data-open-account="${esc(a.parentId)}">${esc(a.parentLabel)}${a.parentCode ? ` (${esc(a.parentCode)})` : ""}</button>` : `Bağlı değil${a.parentSuggestions?.length ? ` · ${suggestHtml(a)}` : ""}`) : "")}
+        ${fact("Son 4 Hane", a.cardLast4 ? `•••• ${esc(a.cardLast4)}` : "")}
+        ${fact("Kullanım", BINDABLE_KINDS.has(a.kind) ? FLAG_FIELDS.filter(([key]) => a[key]).map(([key]) => FLAG_SHORT[key]).join(" · ") || "İşaret yok (Düzenle'den Kredi Kartı, Çek, Senet ya da POS Kullan seçilir)" : "")}
         ${fact("IBAN", a.ibanText ? `<span class="hof-bank-iban">${esc(a.ibanText)}</span>` : "")}
         ${fact("Şube", esc([a.branchName, a.branchCode].filter(Boolean).join(" · ")))}
         ${fact("Hesap No", esc(a.accountNo))}
         ${fact("Hesap Sahibi", esc(a.holder))}
         ${fact("SWIFT", esc(a.swift))}
         ${fact(limitLabel(a.kind), a.creditLimitMinor ? esc(fmt(a.creditLimitMinor)) : "")}
-        ${fact("Ekstre Kesim Günü", a.statementDay ? esc(String(a.statementDay)) : "")}
+        ${fact("Hesap Kesim Günü", a.statementDay ? esc(String(a.statementDay)) : "")}
         ${fact("Son Ödeme Günü", a.dueDay ? esc(String(a.dueDay)) : "")}
         ${fact(openingLabel(a.kind), opening ? `${esc(fmt(opening.amountMinor, a.currency))} · ${esc(dateText(opening.date))}${opening.no && openingSet ? ` · <span class="hof-plan-refno">${esc(opening.no)}</span>` : ""}` : "Girilmedi")}
         ${fact("Eksi Bakiye Denetimi", policy)}
@@ -476,9 +501,51 @@
       </dl>
       ${actions ? `<div class="hof-chq-actions" role="toolbar" aria-label="Hesap işlemleri">${actions}</div>` : ""}
       ${blocks.length ? `<ul class="hof-inv-blocks" data-bank-blocks>${blocks.map(([name, why]) => `<li><b>${esc(name)} kapalı:</b> ${esc(why)}</li>`).join("")}</ul>` : ""}
+      ${linkedSectionsHtml(a)}
       <div class="hof-bank-subhead"><h4 class="hof-bank-subtitle">Hesap Hareketleri</h4><button type="button" class="hof-link-button" data-act="mv-account">Hareketler'de Süz</button></div>
       <div class="hof-bank-moves-wrap" data-moves="account" data-account="${esc(accountMoves.account)}">${movesListHtml(accountMoves)}</div>
       <p class="hof-rep-note">Yürüyen bakiye en yeni hareketten geriye doğru; satıra tıklayınca İşlem Kartı açılır.</p>`;
+  }
+  /**
+   * v2.2.0 (İz 2.2–2.3): banka hesabının altındaki bölümler — "Kredi Kartları" (Kredi Kartı Kullan işaretli ya da kartı olan hesapta; kart
+   * listesi + "+ Kredi Kartı Ekle") ve "POS'lar" (POS Kullan işaretli hesapta). POS'ların içeriği POS izinden gelir: HOF.bank.addAccountSection
+   * ile kayıtlı bölüm (account → HTML) önce sorulur; kayıtlı bölüm yoksa yer tutucu yazı.
+   */
+  const accountSections = new Map();
+  function linkedSectionsHtml(a) {
+    if (!BINDABLE_KINDS.has(a.kind)) return "";
+    const out = [];
+    const writable = HOF.license?.writable !== false;
+    if (a.useCard || a.cards?.length) {
+      const add = canAccounts() && writable && a.status === "active" ? '<button type="button" class="hof-button hof-button-small" data-act="card-add">+ Kredi Kartı Ekle</button>' : "";
+      const rows = (a.cards || [])
+        .map(
+          card => `<tr data-account="${esc(card.id)}" tabindex="0" class="${card.status === "passive" ? "is-passive" : ""}">
+            ${td("Kart", `<b>${esc(card.name)}</b>${card.cardLast4 ? ` <span class="hof-plan-refno">•••• ${esc(card.cardLast4)}</span>` : ""}`)}
+            ${td("Kod", esc(card.code))}
+            ${td("Kart Limiti", card.creditLimitMinor ? esc(fmt(card.creditLimitMinor)) : "—", "num")}
+            ${td("Borç", esc(fmt(card.debtMinor)), "num")}
+            ${td("Son Ödeme Günü", card.dueDay ? esc(String(card.dueDay)) : "—")}
+          </tr>`,
+        )
+        .join("");
+      out.push(`<section class="hof-bank-linked" data-bank-cards>
+        <div class="hof-bank-subhead"><h4 class="hof-bank-subtitle">Kredi Kartları</h4>${add}</div>
+        ${rows ? `<div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table"><thead><tr><th>Kart</th><th>Kod</th><th class="num">Kart Limiti</th><th class="num">Borç</th><th>Son Ödeme Günü</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hof-muted">Bu hesaba bağlı kredi kartı yok.</p>'}
+        <p class="hof-rep-note">Kartın borcu bu hesaptan ödenir: Kart Borcu Ödemesi'nde ödeyen hesap olarak bu hesap gelir.</p>
+      </section>`);
+    }
+    if (a.usePos) {
+      const extra = [...accountSections.values()].map(fn => {
+        try {
+          return fn(a) || "";
+        } catch {
+          return "";
+        }
+      }).join("");
+      out.push(extra || `<section class="hof-bank-linked" data-bank-pos-slot="${esc(a.id)}"><div class="hof-bank-subhead"><h4 class="hof-bank-subtitle">POS'lar</h4></div><p class="hof-muted">Bu hesaba bağlı POS yok.</p></section>`);
+    }
+    return out.join("");
   }
 
   // ---------- Hesabı Atanmamış Eski Hareketler (§10.3) ----------
@@ -669,14 +736,16 @@
   }
 
   // ---------- Hesap formu (aç / düzelt) ----------
-  function accountFields(account = null) {
+  function accountFields(account = null, { preset = {} } = {}) {
     const edit = Boolean(account);
     const kind = account?.kind || "demand";
     const locked = edit && (account.movementCount > 0 || Boolean(account.opening?.amountMinor));
+    // v2.2.0 (İz 2.3): kurumsal kart bu formda açılmaz — yalnız banka hesabının içinden ("+ Kredi Kartı Ekle", cardForm). Tür listesinde yok.
+    const kindOptions = KINDS.filter(([id]) => id !== "fx" && id !== "card").map(([value, label]) => ({ value, label }));
     const fields = [
       { name: "bankName", label: "Banka Adı", required: true, autofocus: true, value: account?.bankName || "", maxlength: 120, list: BANK_NAMES, placeholder: "ör. Ziraat Bankası" },
       { name: "name", label: "Hesap Adı", required: true, value: account?.name || "", maxlength: 120, placeholder: "ör. Ana TL Hesabı" },
-      { name: "kind", label: "Hesap Türü", type: "select", value: kind === "fx" ? "demand" : kind, options: KINDS.filter(([id]) => id !== "fx").map(([value, label]) => ({ value, label })), readonly: locked, help: locked ? "Hareketi ya da açılış bakiyesi olan hesabın türü ve para birimi değişmez; gerekirse yeni hesap açın." : fxOn() ? "Döviz hesabı için Vadesiz seçip para birimini değiştirin." : "" },
+      { name: "kind", label: "Hesap Türü", type: "select", value: kind === "fx" ? "demand" : kind, options: kindOptions, readonly: locked, help: locked ? "Hareketi ya da açılış bakiyesi olan hesabın türü ve para birimi değişmez; gerekirse yeni hesap açın." : fxOn() ? "Döviz hesabı için Vadesiz seçip para birimini değiştirin." : "Kredi kartı burada açılmaz: hesap açıldıktan sonra hesabın ayrıntısında “+ Kredi Kartı Ekle”." },
       // GG2 (kullanıcı kararı "Ertelenenler 2.1.0'da GÖRÜNMEZ"): döviz hesabı sonraki sürümde; alan yalnız döviz açıkken (testler) ya da var olan
       // döviz hesabında (salt okunur) görünür.
       ...(fxOn() || (account && account.currency !== "TRY") ? [{ name: "currency", label: "Para Birimi", type: "select", value: account?.currency || "TRY", options: CURRENCIES.map(([value, label]) => ({ value, label })), readonly: locked || !fxOn() }] : []),
@@ -686,10 +755,10 @@
       { name: "branchCode", label: "Şube Kodu", value: account?.branchCode || "", maxlength: 20 },
       { name: "accountNo", label: "Hesap No", value: account?.accountNo || "", maxlength: 40 },
       { name: "creditLimit", label: limitLabel(kind), value: amountInput(account?.creditLimitMinor), inputmode: "decimal", placeholder: "ör. 50.000,00" },
-      { name: "statementDay", label: "Ekstre Kesim Günü", type: "number", min: 1, max: 31, value: account?.statementDay || "" },
-      { name: "dueDay", label: "Son Ödeme Günü", type: "number", min: 1, max: 31, value: account?.dueDay || "" },
       { name: "negativePolicy", label: "Eksi Bakiye Denetimi", type: "select", value: account?.negativePolicy || "", options: [{ value: "", label: "Banka Ayarlarındaki" }, ...Object.entries(POLICY_LABELS).map(([value, label]) => ({ value, label }))], help: "Açılış bakiyesi doğrulanana kadar denetim kapalıdır." },
       { name: "showOnInvoice", label: "IBAN faturada gösterilsin", type: "checkbox", value: Boolean(account?.showOnInvoice) },
+      // v2.2.0 (İz 2.2): kullanım işaretleri (yalnız Vadesiz, Ticari, Diğer TL hesapta görünür; eski hesaplarda kapalı).
+      ...FLAG_FIELDS.map(([name, label]) => ({ name, label, type: "checkbox", value: account ? Boolean(account[name]) : Boolean(preset[name]) })),
       { name: "description", label: "Açıklama", value: account?.description || "", maxlength: 500 },
     ];
     if (edit) fields.push({ name: "balanceConfirmed", label: "Açılış bakiyesi bankadaki gerçek bakiyedir (Bakiye Doğrulandı)", type: "checkbox", value: Boolean(account.balanceConfirmed) });
@@ -702,7 +771,7 @@
     { name: "openingRate", label: "Açılış Kuru (TL)", value: "", inputmode: "decimal", placeholder: "ör. 34,25", help: "Döviz hesabında açılış bakiyesinin TL karşılığı için." },
     { name: "confirmed", label: "Bu tutar bankadaki gerçek bakiyedir (Bakiye Doğrulandı)", type: "checkbox", value: Boolean(account?.balanceConfirmed) },
   ];
-  /** Türe ve para birimine göre ilgili alanları gösterir (KMH vadesizde, kart günleri kartta, kur dövizde). */
+  /** Türe ve para birimine göre ilgili alanları gösterir (KMH vadesizde, işaretler havale alan hesapta, kur dövizde). */
   function wireKindFields(form) {
     const field = name => form.querySelector(`[name="${name}"]`);
     const show = (name, visible) => {
@@ -714,11 +783,16 @@
       const currency = field("currency");
       if (currency && ["loan", "card", "time"].includes(kind) && currency.value !== "TRY" && !currency.hasAttribute("readonly")) currency.value = "TRY";
       if (currency) for (const option of currency.options) option.disabled = ["loan", "card", "time"].includes(kind) && option.value !== "TRY";
-      show("creditLimit", ["demand", "card", "loan"].includes(kind) && (currency?.value || "TRY") === "TRY");
+      const tl = (currency?.value || "TRY") === "TRY";
+      show("creditLimit", ["demand", "card", "loan"].includes(kind) && tl);
       const limit = field("creditLimit")?.closest(".hof-field")?.querySelector("span");
       if (limit) limit.textContent = limitLabel(kind);
-      show("statementDay", kind === "card");
-      show("dueDay", kind === "card");
+      // İşaretler yalnız havale alan TL hesapta (sunucu başka türde 400 bank-flag-kind); gizlenen işaret gönderilmez (işaretsiz sayılır).
+      for (const [name] of FLAG_FIELDS) {
+        const on = BINDABLE_KINDS.has(kind) && tl;
+        show(name, on);
+        if (!on && field(name)) field(name).checked = false;
+      }
       show("openingRate", Boolean(currency) && currency.value !== "TRY");
       const amount = field("openingAmount")?.closest(".hof-field")?.querySelector("span");
       if (amount) amount.textContent = openingLabel(kind);
@@ -752,6 +826,7 @@
     node.closest(".hof-field")?.removeAttribute("hidden");
     node.focus();
   }
+  const flagsBody = data => Object.fromEntries(FLAG_FIELDS.map(([name]) => [name, Boolean(data[name])]));
   /** Hesap açma gövdesi (formdan; açılış dahil). */
   function createBody(data) {
     const body = {
@@ -767,56 +842,198 @@
       description: data.description,
       negativePolicy: data.negativePolicy,
       showOnInvoice: Boolean(data.showOnInvoice),
+      ...(BINDABLE_KINDS.has(data.kind) ? flagsBody(data) : {}),
       opening: { date: data.openingDate, amount: String(data.openingAmount ?? "").trim() || "0", confirmed: Boolean(data.confirmed) },
     };
     const currency = data.currency || "TRY";
     body.currency = currency;
     if (currency !== "TRY" && String(data.openingAmount || "").trim()) body.opening.rate = data.openingRate;
-    if (data.kind === "card") Object.assign(body, { statementDay: data.statementDay, dueDay: data.dueDay });
-    if (["demand", "card", "loan"].includes(data.kind) && currency === "TRY") body.creditLimit = data.creditLimit;
+    if (["demand", "loan"].includes(data.kind) && currency === "TRY") body.creditLimit = data.creditLimit;
     return body;
   }
-  function accountForm(account = null) {
-    if (!canAccounts()) return HOF.toast("Banka hesabı açma ve düzeltme Banka Hesabı Tanımlama yetkisi ister.", { type: "error" });
+  /**
+   * Banka hesabı formu (aç / düzelt). Kart hesabı Kredi Kartı formunda (cardForm). v2.2.0 (İz 2.4): "Banka Hesabı Tanımla" / "Çek Hesabı Tanımla"
+   * bu formu ÜSTE açar (alttaki form kapanmaz): inline (Banka penceresi dışında) kaydedince sayfa değişmez, söz kaydedilen hesapla çözülür;
+   * Vazgeç'te null. preset: işaretlerin ön değeri (Çek Hesabı Tanımla → Çek Kullan işaretli).
+   */
+  function accountForm(account = null, { inline = false, preset = {} } = {}) {
+    if (account?.kind === "card") return cardForm({ card: account });
+    if (!canAccounts()) {
+      HOF.toast("Banka hesabı açma ve düzeltme Banka Hesabı Tanımlama yetkisi ister.", { type: "error" });
+      return Promise.resolve(null);
+    }
     const edit = Boolean(account);
     const requestId = HOF.requestId();
     let formNode = null;
-    HOF.formModal({
-      title: edit ? "Banka Hesabını Düzenle" : "Yeni Banka Hesabı",
-      eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
-      size: "wide",
-      intro: edit ? "Banka, ad, kod, IBAN ve şube bilgileri her zaman düzeltilir. Açılış bakiyesini hesap ayrıntısındaki “Açılışı Düzelt” ile değiştirin." : "Açılış bakiyesi, açılış tarihinin gün başındaki bakiyedir. Bakiyeyi bankadan teyit ettiyseniz “Bakiye Doğrulandı”yı işaretleyin; eksi bakiye denetimi o zaman açılır.",
-      fields: accountFields(account),
-      submitLabel: edit ? "Kaydet" : "Hesabı Aç",
-      onOpen: dialog => {
-        formNode = dialog.querySelector("form");
-        formNode.classList.add("hof-bank-form");
-        wireKindFields(formNode);
-      },
-      onSubmit: async data => {
-        try {
-          if (edit) {
-            const body = { bankName: data.bankName, name: data.name, code: data.code, iban: data.iban, branchName: data.branchName, branchCode: data.branchCode, accountNo: data.accountNo, description: data.description, negativePolicy: data.negativePolicy, showOnInvoice: Boolean(data.showOnInvoice), balanceConfirmed: Boolean(data.balanceConfirmed) };
-            const currency = data.currency || account.currency || "TRY";
-            if (!(account.movementCount > 0 || account.opening?.amountMinor)) Object.assign(body, { kind: data.kind, ...(data.currency ? { currency: data.currency } : {}) });
-            if (["demand", "card", "loan"].includes(data.kind) && currency === "TRY") body.creditLimit = data.creditLimit;
-            if (data.kind === "card") Object.assign(body, { statementDay: data.statementDay, dueDay: data.dueDay });
-            await api(`/accounts/${encodeURIComponent(account.id)}`, { method: "PUT", body });
-            HOF.toast("Banka hesabı güncellendi.", { type: "success" });
-            await reload();
-          } else {
-            const saved = await api("/accounts", { method: "POST", body: createBody(data), requestId });
-            HOF.toast(saved?.replayed ? "Bu hesap zaten açılmıştı." : `${saved.label || "Banka hesabı"} açıldı (${saved.code} · ${saved.glSub}).`, { type: "success" });
-            choicesCache = null;
-            if (saved?.id) openAccount(saved.id);
-            else await reload();
+    let saved = null;
+    return new Promise(resolve => {
+      HOF.formModal({
+        title: edit ? "Banka Hesabını Düzenle" : inline ? "Banka Hesabı Tanımla" : "Yeni Banka Hesabı",
+        eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
+        size: "wide",
+        intro: edit ? "Banka, ad, kod, IBAN ve şube bilgileri her zaman düzeltilir. Açılış bakiyesini hesap ayrıntısındaki “Açılışı Düzelt” ile değiştirin." : `Açılış bakiyesi, açılış tarihinin gün başındaki bakiyedir. Bakiyeyi bankadan teyit ettiyseniz “Bakiye Doğrulandı”yı işaretleyin; eksi bakiye denetimi o zaman açılır.${inline ? " Kaydedince hesap, açık formunuzda seçili gelir; girdiğiniz bilgiler kaybolmaz." : ""}`,
+        fields: accountFields(account, { preset }),
+        submitLabel: edit ? "Kaydet" : "Hesabı Aç",
+        onClose: () => resolve(saved),
+        onOpen: dialog => {
+          formNode = dialog.querySelector("form");
+          formNode.classList.add("hof-bank-form");
+          wireKindFields(formNode);
+        },
+        onSubmit: async data => {
+          try {
+            if (edit) {
+              const body = { bankName: data.bankName, name: data.name, code: data.code, iban: data.iban, branchName: data.branchName, branchCode: data.branchCode, accountNo: data.accountNo, description: data.description, negativePolicy: data.negativePolicy, showOnInvoice: Boolean(data.showOnInvoice), balanceConfirmed: Boolean(data.balanceConfirmed) };
+              const currency = data.currency || account.currency || "TRY";
+              if (!(account.movementCount > 0 || account.opening?.amountMinor)) Object.assign(body, { kind: data.kind, ...(data.currency ? { currency: data.currency } : {}) });
+              if (["demand", "loan"].includes(data.kind) && currency === "TRY") body.creditLimit = data.creditLimit;
+              if (BINDABLE_KINDS.has(data.kind)) Object.assign(body, flagsBody(data));
+              saved = await api(`/accounts/${encodeURIComponent(account.id)}`, { method: "PUT", body });
+              choicesCache = null;
+              HOF.toast("Banka hesabı güncellendi.", { type: "success" });
+              await reload();
+            } else {
+              const result = await api("/accounts", { method: "POST", body: createBody(data), requestId });
+              saved = result?.replayed ? result.account : result;
+              HOF.toast(result?.replayed ? "Bu hesap zaten açılmıştı." : `${result.label || "Banka hesabı"} açıldı (${result.code} · ${result.glSub}).`, { type: "success" });
+              choicesCache = null;
+              HOF.emit("bank-changed");
+              if (inline || !modal) return;
+              if (saved?.id) openAccount(saved.id);
+              else await reload();
+            }
+          } catch (error) {
+            markField(formNode, error);
+            throw error;
           }
-        } catch (error) {
-          markField(formNode, error);
-          throw error;
-        }
-      },
+        },
+      });
     });
+  }
+  /**
+   * v2.2.0 (İz 2.3; müşteri: "kredi kartlarını bankaya bağlamak gerekiyor"): Kredi Kartı formu. Kart bankanın İÇİNDEN eklenir: Bağlı Banka
+   * Hesabı (kartın borcunu ödeyen hesap; banka adı ondan), Kart Adı, Son 4 Hane, Kart Limiti, Hesap Kesim ve Son Ödeme Günü, açılıştaki borç.
+   * Her banka, bir bankada birden çok kart. Düzenle'de bağlı banka değiştirilir (eski bağsız kart "Bağlı Değil" kalabilir; öneri yazılır).
+   * parentId: ön seçili banka; inline: Tanımla'dan (sayfa değişmez). Hiç banka hesabı yoksa "Banka Hesabı Tanımla" önce o hesabı açar.
+   * Dönüş: söz (kaydedilen kart ya da null).
+   */
+  function cardForm({ card = null, parentId = "", inline = false } = {}) {
+    if (!canAccounts()) {
+      HOF.toast("Kredi kartı tanımlama Banka Hesabı Tanımlama yetkisi ister.", { type: "error" });
+      return Promise.resolve(null);
+    }
+    const edit = Boolean(card);
+    const requestId = HOF.requestId();
+    let formNode = null;
+    let saved = null;
+    const bankOptions = data => (data?.forms?.bank?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean);
+    const optionsHtml = (list, value) => `${edit && !card.parentId ? `<option value="">Bağlı Değil</option>` : list.length > 1 || !list.length ? `<option value="">Banka Hesabı Seçin</option>` : ""}${list.map(account => `<option value="${esc(account.id)}" ${account.id === value ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}`;
+    const fields = [
+      { name: "parentId", label: "Bağlı Banka Hesabı", type: "select", required: !edit || Boolean(card?.parentId), value: card?.parentId || parentId, options: [] },
+      { name: "name", label: "Kart Adı", required: true, autofocus: true, value: card?.name || "", maxlength: 120, placeholder: "ör. World, Bonus, Axess" },
+      { name: "cardLast4", label: "Son 4 Hane", value: card?.cardLast4 || "", maxlength: 4, inputmode: "numeric", placeholder: "ör. 1234", autocomplete: "off" },
+      { name: "creditLimit", label: "Kart Limiti", value: amountInput(card?.creditLimitMinor), inputmode: "decimal", placeholder: "ör. 50.000,00" },
+      { name: "statementDay", label: "Hesap Kesim Günü", type: "number", min: 1, max: 31, value: card?.statementDay || "" },
+      { name: "dueDay", label: "Son Ödeme Günü", type: "number", min: 1, max: 31, value: card?.dueDay || "" },
+      { name: "code", label: "Hesap Kodu", value: card?.code || "", maxlength: 30, placeholder: "Boş bırakılırsa önerilir (ör. YAP-KART)" },
+      { name: "negativePolicy", label: "Eksi Bakiye Denetimi", type: "select", value: card?.negativePolicy || "", options: [{ value: "", label: "Banka Ayarlarındaki" }, ...Object.entries(POLICY_LABELS).map(([value, label]) => ({ value, label }))], help: "Kart limitine kadar serbest; açılış doğrulanana kadar denetim kapalıdır." },
+      { name: "description", label: "Açıklama", value: card?.description || "", maxlength: 500 },
+      ...(edit
+        ? [{ name: "balanceConfirmed", label: "Açılış bakiyesi bankadaki gerçek bakiyedir (Bakiye Doğrulandı)", type: "checkbox", value: Boolean(card.balanceConfirmed) }]
+        : openingFields({ kind: "card" })
+            .filter(field => field.name !== "openingRate")
+            .map(field => (field.name === "openingDate" ? { ...field, help: "Bu günün başındaki kart borcu; o günden önceki harcamalar borcun içindedir." } : field.name === "openingAmount" ? { ...field, placeholder: "ör. 12.500,00 (boş: 0)" } : field))),
+    ];
+    return new Promise(resolve => {
+      HOF.formModal({
+        title: edit ? "Kredi Kartını Düzenle" : inline ? "Kredi Kartı Tanımla" : "Kredi Kartı Ekle",
+        eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
+        size: "wide",
+        intro: edit
+          ? "Kartın adı, son 4 hanesi, limiti ve günleri her zaman düzeltilir. Bağlı banka hesabı değişirse kartın banka adı da o hesaptan gelir; kartın bakiyesi değişmez."
+          : `Kart, borcunu ödeyen banka hesabının altına eklenir; kart numarasının yalnız son 4 hanesi yazılır. Açılıştaki borç, açılış gününün başındaki kart borcudur.${inline ? " Kaydedince kart, açık formunuzda seçili gelir; girdiğiniz bilgiler kaybolmaz." : ""}`,
+        fields,
+        extraHtml: '<div class="hof-bank-define-slot" data-card-parent-empty hidden></div>',
+        submitLabel: edit ? "Kaydet" : "Kartı Ekle",
+        onClose: () => resolve(saved),
+        onOpen: async dialog => {
+          formNode = dialog.querySelector("form");
+          formNode.classList.add("hof-bank-form");
+          const select = formNode.querySelector('[name="parentId"]');
+          const empty = formNode.querySelector("[data-card-parent-empty]");
+          const fill = data => {
+            const list = bankOptions(data);
+            const keep = select.value || card?.parentId || parentId;
+            const current = edit && card.parentId && !list.some(account => account.id === card.parentId) ? [{ id: card.parentId, label: card.parentLabel || card.parentId, code: card.parentCode || "" }] : [];
+            const all = [...current, ...list];
+            const value = all.some(account => account.id === keep) ? keep : all.length === 1 && !edit ? all[0].id : "";
+            select.innerHTML = optionsHtml(all, value);
+            select.value = value;
+            // Hiç banka hesabı yoksa: önce kartın bağlı olacağı banka hesabı tanımlanır (üste açılır; kart formu kapanmaz).
+            empty.hidden = all.length > 0;
+            empty.innerHTML = all.length ? "" : `<p class="hof-rep-note">Kartın bağlı olacağı banka hesabı yok. Önce banka hesabını tanımlayın; kaydedince burada seçili gelir.</p><button type="button" class="hof-button hof-button-small" data-card-define-bank>Banka Hesabı Tanımla</button>`;
+            if (edit && !card.parentId && card.parentSuggestions?.length) {
+              const note = formNode.querySelector("[data-card-suggest-note]") || HOF.el("small", { class: "hof-bank-suggest", "data-card-suggest-note": "" });
+              note.textContent = `Öneri: ${card.parentSuggestions[0].label} (aynı banka). Seçerseniz kart o hesabın altına bağlanır.`;
+              select.closest(".hof-field")?.append(note);
+            }
+          };
+          formNode.addEventListener("click", async event => {
+            if (!event.target.closest("[data-card-define-bank]")) return;
+            event.preventDefault();
+            const bankAccount = await accountForm(null, { inline: true, preset: { useCard: true } });
+            if (!formNode.isConnected) return;
+            fill(await choices(true).catch(() => null));
+            if (bankAccount?.id && [...select.options].some(option => option.value === bankAccount.id)) select.value = bankAccount.id;
+            select.focus();
+          });
+          try {
+            fill(await choices(true));
+          } catch {
+            fill(null);
+          }
+        },
+        onSubmit: async data => {
+          try {
+            if (edit) {
+              const body = { name: data.name, cardLast4: data.cardLast4, creditLimit: data.creditLimit, statementDay: data.statementDay, dueDay: data.dueDay, code: data.code, negativePolicy: data.negativePolicy, description: data.description, balanceConfirmed: Boolean(data.balanceConfirmed) };
+              if ((data.parentId || "") !== (card.parentId || "")) body.parentId = data.parentId || "";
+              saved = await api(`/accounts/${encodeURIComponent(card.id)}`, { method: "PUT", body });
+              choicesCache = null;
+              HOF.toast("Kredi kartı güncellendi.", { type: "success" });
+              await reload();
+            } else {
+              const body = { kind: "card", parentId: data.parentId, name: data.name, cardLast4: data.cardLast4, creditLimit: data.creditLimit, statementDay: data.statementDay, dueDay: data.dueDay, code: data.code, negativePolicy: data.negativePolicy, description: data.description, opening: { date: data.openingDate, amount: String(data.openingAmount ?? "").trim() || "0", confirmed: Boolean(data.confirmed) } };
+              const result = await api("/accounts", { method: "POST", body, requestId });
+              saved = result?.replayed ? result.account : result;
+              HOF.toast(result?.replayed ? "Bu kart zaten eklenmişti." : `${result.label || "Kredi kartı"} eklendi (${result.code}).`, { type: "success" });
+              choicesCache = null;
+              HOF.emit("bank-changed");
+              if (inline || !modal) return;
+              await reload();
+            }
+          } catch (error) {
+            markField(formNode, error);
+            throw error;
+          }
+        },
+      });
+    });
+  }
+  /** Eski (bağsız) kartı önerilen banka hesabına bağlar (kendiliğinden bağlanmaz; kullanıcı "Bağla" der). */
+  async function linkCard(cardId, parentId) {
+    const card = view.list?.accounts?.find(item => item.id === cardId) || (view.account?.id === cardId ? view.account : null);
+    const parent = view.list?.accounts?.find(item => item.id === parentId);
+    const go = await HOF.confirm({ title: "Kartı Bankasına Bağla", message: `${card ? accountLabel(card) : "Kart"} ${parent ? accountLabel(parent) : "seçilen"} hesabının altına bağlansın mı? Kartın bakiyesi ve hareketleri değişmez; Kart Borcu Ödemesi'nde ödeyen hesap olarak bu hesap gelir.`, confirmLabel: "Bağla" });
+    if (!go) return;
+    try {
+      await api(`/accounts/${encodeURIComponent(cardId)}`, { method: "PUT", body: { parentId } });
+      choicesCache = null;
+      HOF.toast("Kart bankasına bağlandı.", { type: "success" });
+      await reload();
+    } catch (error) {
+      HOF.toastError(error);
+    }
   }
   function openingForm(account) {
     const correct = Boolean(account.opening?.hasLines);
@@ -1034,7 +1251,8 @@
       const fields = [
         { name: "bankName", label: "Banka Adı", required: true, autofocus: true, maxlength: 120, list: BANK_NAMES, placeholder: "ör. Ziraat Bankası" },
         { name: "name", label: "Hesap Adı", required: true, maxlength: 120, placeholder: "ör. Ana TL Hesabı" },
-        { name: "kind", label: "Hesap Türü", type: "select", value: "demand", options: KINDS.filter(([id]) => id !== "fx").map(([value, label]) => ({ value, label })) },
+        // v2.2.0 (İz 2.3): kredi kartı sihirbazda da açılmaz — hesap açıldıktan sonra hesabın ayrıntısında "+ Kredi Kartı Ekle".
+        { name: "kind", label: "Hesap Türü", type: "select", value: "demand", options: KINDS.filter(([id]) => id !== "fx" && id !== "card").map(([value, label]) => ({ value, label })) },
         ...(fxOn() ? [{ name: "currency", label: "Para Birimi", type: "select", value: "TRY", options: CURRENCIES.map(([value, label]) => ({ value, label })) }] : []),
         { name: "iban", label: "IBAN", maxlength: 40, placeholder: "TR00 0000 0000 0000 0000 0000 00" },
         ...openingFields(),
@@ -1913,7 +2131,17 @@
     };
     // Vergi kipi BSMV ↔ KDV değişince oran o kipin varsayılanına döner (Düzelt'te BSMV %5'in KDV'ye taşınmaması için).
     let lastVat = isVat(field("tax")?.value || defaultTax);
+    // v2.2.0 (İz 2.3): Kart Borcu Ödemesi'nde ödeyen hesap kartın bağlı olduğu banka hesabıyla dolu gelir (kullanıcı hesabı kendisi
+    // değiştirmediyse; Düzelt'te asıl işlemin hesabı korunur). Bağlı banka pasif ya da seçilemiyorsa önceki varsayılan kalır.
+    let payerTouched = mode === "correct";
+    const syncPayer = () => {
+      if (typeNow() !== "card_payment" || payerTouched) return;
+      const card = accounts.find(account => account.id === field("cardAccountId")?.value);
+      const select = field("accountId");
+      if (card?.parentId && select && [...select.options].some(option => option.value === card.parentId)) select.value = card.parentId;
+    };
     form.addEventListener("change", event => {
+      if (event.target.matches?.('[name="accountId"]')) payerTouched = true;
       if (event.target.matches?.('[name="taxRate"]')) rateTouched.value = true;
       if (event.target.matches?.('[name="tax"]')) {
         const vatNow = isVat(event.target.value);
@@ -1921,6 +2149,7 @@
         lastVat = vatNow;
       }
       sync();
+      if (event.target.matches?.('[name="cardAccountId"], [name="type"]')) syncPayer();
     });
     form.addEventListener("input", event => {
       if (event.target.matches?.('[name="taxRate"]')) rateTouched.value = true;
@@ -1935,6 +2164,7 @@
     }
     void mode;
     sync();
+    syncPayer();
   }
   /** Yerel yazımdan sonra: form seçenekleri (son stopaj oranı) ve menü rozeti yenilenir. */
   function afterWrite() {
@@ -2082,6 +2312,11 @@
           return openSubTrial();
         case "edit":
           return account && accountForm(account);
+        // v2.2.0 (İz 2.3): kart bankanın içinden; eski bağsız kartı önerilen bankaya bağlama.
+        case "card-add":
+          return account && cardForm({ parentId: account.id });
+        case "link-card":
+          return linkCard(act.dataset.card, act.dataset.parent);
         case "opening":
           return account && openingForm(account);
         case "status":
@@ -2173,6 +2408,8 @@
     }
     const link = event.target.closest("[data-event-link]");
     if (link) return openEvent(link.dataset.eventLink);
+    const accountLink = event.target.closest("[data-open-account]");
+    if (accountLink) return openAccount(accountLink.dataset.openAccount);
     const party = event.target.closest("[data-open-party]");
     if (party) return HOF.accounts?.open?.(party.dataset.openParty);
     const moveRow = event.target.closest("tr[data-event]");
@@ -2407,7 +2644,25 @@
     return body;
   }
 
-  HOF.bank = { open, openWizard, openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))), choices, pickerHtml, mountPicker, attachPicker, accountBody, withConfirms, noneNote };
+  HOF.bank = {
+    open,
+    openWizard,
+    openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))),
+    choices,
+    pickerHtml,
+    mountPicker,
+    attachPicker,
+    accountBody,
+    withConfirms,
+    noneNote,
+    // v2.2.0 (İz 2.2): hesap ayrıntısına bölüm ekleme (POS izi "POS'lar" bölümünü buradan doldurur): fn(account) → HTML (boşsa yer tutucu).
+    addAccountSection: (key, fn) => {
+      accountSections.set(String(key), fn);
+      if (modal && view.mode === "account") render();
+    },
+    accountForm,
+    cardForm,
+  };
   HOF.on("bank-choices-stale", () => {
     choicesCache = null;
     refreshPickers();
