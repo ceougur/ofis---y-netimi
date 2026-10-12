@@ -2491,40 +2491,139 @@
       });
     return choicesCache;
   }
+
+  // ---------- v2.2.0 (İz 2.4): "… Tanımla" — tek kural, bütün seçiciler ----------
   /**
-   * Hesap seçici: hiç uygun hesap yoksa boş (bugünkü görünüm; satır hesapsız yazılır), tek hesapta bilgi satırı (alan yok; sunucu o hesabı
-   * kendisi seçer), birden çokta zorunlu seçim (varsayılan: Banka Ayarları'ndaki Varsayılan Tahsilat Hesabı, yoksa ilk vadesiz). form: bank | card | fx.
-   * Dönüş: { mode: "none" | "single" | "many", accountId, html }.
+   * Seçicide hesap yoksa düğme: "Banka Hesabı Tanımla" / "Kredi Kartı Tanımla" / "Çek Hesabı Tanımla" (POS izi "POS Tanımla"yı registerDefine ile
+   * ekler). Düğme tanım penceresini formun ÜSTÜNE açar (form kapanmaz, girilenler kaybolmaz); kaydedince yeni tanım formda seçili gelir.
+   * Tanımlama yetkisi yoksa düğme yerine yazı: "… tanımlı değil, yöneticinize başvurun." (sunucu yine 403 verir).
+   *   HOF.bank.registerDefine(kind, { button, missing, permission, open })  open(): söz → kaydedilen kayıt ({ id, … }) ya da null
+   *   HOF.bank.defineHtml(kind)  → kutu (düğme ya da yazı); düğmede data-bank-define="kind"
+   *   HOF.bank.define(kind)      → söz (kayıt | null); seçici listesi tazelenir
+   * Düğmeye basılıp kayıt yapılınca düğmenin yerinden "hof-bank-defined" olayı (detail: { kind, account }) kabarır; attachPicker ve fatura
+   * peşin hücresi bunu dinleyip seçiciyi yeni tanımla kurar.
+   */
+  const DEFINES = new Map();
+  function registerDefine(kind, spec) {
+    DEFINES.set(String(kind), { permission: "bank.accounts", ...spec });
+  }
+  const canDefine = spec => Boolean(spec) && HOF.can(spec.permission) && HOF.license?.writable !== false;
+  function defineHtml(kind) {
+    const spec = DEFINES.get(String(kind));
+    if (!spec) return "";
+    const inner = canDefine(spec) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-bank-define="${esc(kind)}">${esc(spec.button)}</button>` : `<p class="hof-bank-define-missing" data-bank-define-missing="${esc(kind)}">${esc(spec.missing)}</p>`;
+    return `<div class="hof-bank-define" data-bank-define-box="${esc(kind)}">${inner}${spec.hint ? `<small class="hof-bank-pick-note">${esc(spec.hint)}</small>` : ""}</div>`;
+  }
+  const defining = new Set();
+  async function define(kind) {
+    const spec = DEFINES.get(String(kind));
+    if (!canDefine(spec) || defining.has(kind)) return null;
+    defining.add(kind);
+    try {
+      const saved = await spec.open();
+      if (saved) {
+        choicesCache = null;
+        HOF.emit("bank-changed");
+      }
+      return saved || null;
+    } finally {
+      defining.delete(kind);
+    }
+  }
+  /**
+   * Çek Hesabı Tanımla (2.5): çek karnesi olan hesap çoğunlukla zaten tanımlıdır — Çek Kullan işaretsiz havale hesabı varsa onu işaretlemek
+   * önerilir ("+ Yeni Banka Hesabı" da seçilebilir); hiç hesap yoksa doğrudan Çek Kullan işaretli yeni hesap formu.
+   */
+  async function flagDefine(flag, { title, intro, submit }) {
+    const data = await choices(true).catch(() => null);
+    const candidates = (data?.forms?.bank?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(account => account && !account[flag]);
+    if (!candidates.length) return accountForm(null, { inline: true, preset: { [flag]: true } });
+    return new Promise(resolve => {
+      let saved = null;
+      HOF.formModal({
+        title,
+        eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
+        intro,
+        fields: [{ name: "accountId", label: "Banka Hesabı", type: "select", required: true, value: candidates[0].id, options: [...candidates.map(account => ({ value: account.id, label: `${account.label} (${account.code})` })), { value: "new", label: "+ Yeni Banka Hesabı" }] }],
+        submitLabel: submit,
+        onClose: () => resolve(saved),
+        onSubmit: async form => {
+          if (form.accountId === "new") {
+            saved = await accountForm(null, { inline: true, preset: { [flag]: true } });
+            return saved ? undefined : true;
+          }
+          saved = await api(`/accounts/${encodeURIComponent(form.accountId)}`, { method: "PUT", body: { [flag]: true } });
+          choicesCache = null;
+          HOF.toast(`${saved.label} hesabında “${FLAG_FIELDS.find(([key]) => key === flag)?.[1].replace(/\s*\(.*$/, "") || flag}” işaretlendi.`, { type: "success" });
+        },
+      });
+    });
+  }
+  // hint: tanımlamadan kaydedilirse ne olur (plan §3.5/1: hiç uygun hesap yoksa satır bugünkü gibi hesapsız — Hesabı Atanmamış).
+  const UNASSIGNED_HINT = "Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.";
+  registerDefine("bank", { button: "Banka Hesabı Tanımla", missing: "Banka hesabı tanımlı değil, yöneticinize başvurun.", hint: UNASSIGNED_HINT, open: () => accountForm(null, { inline: true }) });
+  registerDefine("card", { button: "Kredi Kartı Tanımla", missing: "Kredi kartı tanımlı değil, yöneticinize başvurun.", hint: UNASSIGNED_HINT, open: () => cardForm({ inline: true }) });
+  registerDefine("cheque", {
+    button: "Çek Hesabı Tanımla",
+    missing: "Çek hesabı tanımlı değil, yöneticinize başvurun.",
+    open: () => flagDefine("useCheque", { title: "Çek Hesabı Tanımla", intro: "Çek karnesi olan banka hesabını seçin; hesapta “Çek Kullan” işaretlenir ve verilen çekte Çek Hesabı olarak seçilir. Hesap tanımlı değilse “+ Yeni Banka Hesabı”.", submit: "Çek Kullan'ı İşaretle" }),
+  });
+  // Formdaki "… Tanımla" düğmesi (her formda aynı; olay belgede tek dinleyiciyle).
+  document.addEventListener("click", async event => {
+    const button = event.target.closest?.("[data-bank-define]");
+    if (!button || button.disabled) return;
+    event.preventDefault();
+    const kind = button.dataset.bankDefine;
+    const form = button.closest("form") || button.closest(".hof-modal");
+    button.disabled = true;
+    let saved = null;
+    try {
+      saved = await define(kind);
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+    if (!saved?.id) return;
+    const target = button.isConnected ? button : form;
+    target?.dispatchEvent(new CustomEvent("hof-bank-defined", { bubbles: true, detail: { kind, account: saved } }));
+  });
+
+  /**
+   * Hesap seçici: hiç uygun hesap yoksa (define verilmişse) "… Tanımla" kutusu, yoksa boş (bugünkü görünüm; satır hesapsız yazılır), tek hesapta
+   * bilgi satırı (alan yok; sunucu o hesabı kendisi seçer), birden çokta zorunlu seçim (varsayılan: Banka Ayarları'ndaki Varsayılan Tahsilat
+   * Hesabı, yoksa ilk vadesiz). form: bank | card | fx | cheque | note. Dönüş: { mode: "none" | "define" | "single" | "many", accountId, html }.
    */
   // keepLabel (Aşama 5–6, düzeltme formları): hesabı atanmamış eski hareketin düzeltmesinde ilk seçenek "değiştirme" (boş değer); sunucu yalnız
   // açıklama değişiyorsa satırı bağsız bırakır, tutar/tarih/yol değişiyorsa hesap ister (plan §3.5 kural 4). value: satırın mevcut hesabı.
   // K2 (plan §3.5, §4.6, §8.9 "'Kredi Kartı' seçilince Kurumsal Kart"): form "card" = Kurumsal Kredi Kartı hesapları. Kartta varsayılan ön seçim
   // yoktur (preselect false): birden çok kartta kullanıcı kartı kendisi seçer (çokta seçim zorunlu); tek kartta bilgi satırı.
-  function pickerHtml(data, { form = "bank", value = "", name = "bankAccountId", label = "Banka Hesabı", keepLabel = "", note = null, choose = "Hesap Seçin", preselect = true } = {}) {
+  // none (2.5): "Hesapsız (Açılıştan Önce)" seçeneği (para satırı formları; çek hesabında yok). required (2.6): senet önerisi zorunlu değil.
+  function pickerHtml(data, { form = "bank", value = "", name = "bankAccountId", label = "Banka Hesabı", keepLabel = "", note = null, choose = "Hesap Seçin", preselect = true, define: defineKind = "", none: noneOption = true, required = true } = {}) {
     const meta = data?.forms?.[form];
     const accounts = (meta?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean);
     const current = value ? data?.accounts?.find(account => account.id === value) : null;
-    if (!accounts.length) return { mode: "none", accountId: "", html: "" };
+    if (!accounts.length && !current) return defineKind && DEFINES.has(defineKind) ? { mode: "define", accountId: "", html: defineHtml(defineKind) } : { mode: "none", accountId: "", html: "" };
     // Tek hesap: yalnız bilgi satırı; kimlik GÖNDERİLMEZ (m1: ekranın eski görünümü sunucunun seçimini ezmesin). Düzeltmede satırın bağı
     // sunucuda korunur (pickRef: önceki bağ), yeni satırda sunucu tek uygun hesabı kendisi seçer.
-    if (accounts.length === 1 && !keepLabel && (!value || value === accounts[0].id)) return { mode: "single", accountId: accounts[0].id, html: `<p class="hof-bank-pick-note" data-bank-single="${esc(accounts[0].id)}">${esc(note ? note(accounts[0].label) : `${accounts[0].label} hesabına yazılır.`)}</p>` };
+    if (accounts.length === 1 && !keepLabel && (!value || value === accounts[0].id) && required) return { mode: "single", accountId: accounts[0].id, html: `<p class="hof-bank-pick-note" data-bank-single="${esc(accounts[0].id)}">${esc(note ? note(accounts[0].label) : `${accounts[0].label} hesabına yazılır.`)}</p>` };
     // Satırın hesabı artık seçilemiyorsa (pasif) seçenek olarak kalır: değiştirilmeden kaydedilebilsin.
     const list = current && !accounts.some(account => account.id === current.id) ? [current, ...accounts] : accounts;
-    const selected = value && list.some(account => account.id === value) ? value : keepLabel || !preselect ? "" : meta.defaultId || "";
+    const selected = value && list.some(account => account.id === value) ? value : keepLabel || !preselect ? "" : meta?.defaultId || "";
     const first = keepLabel ? { value: "", label: keepLabel } : { value: "", label: choose };
     // Yargıç B1 (plan §3.5 kural 1): hareket seçilecek hesabın açılışından önceyse (o gün tutulan hesap yok) satır hesapsız kalır; sunucu bu seçimi
     // yalnız tarih bir hesabın açılışından önceyse kabul eder. Tek hesapta seçici yoktur, sunucu açılıştan önceki tarihi kendisi hesapsız yazar.
-    const none = { value: "none", label: "Hesapsız (Açılıştan Önce)" };
-    return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: !keepLabel, value: selected, options: [first, ...list.map(account => ({ value: account.id, label: `${account.label} (${account.code})` })), none] }) };
+    const none = noneOption ? [{ value: "none", label: "Hesapsız (Açılıştan Önce)" }] : [];
+    return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: required && !keepLabel, value: selected, options: [first, ...list.map(account => ({ value: account.id, label: `${account.label} (${account.code})` })), ...none] }) };
   }
   /** Kurumsal kart seçicisinin ayarları (form "card"; alan cardAccountId — gönderimde accountBody bankAccountId'ye taşır). */
-  const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kurumsal Kart", choose: "Kart Seçin", preselect: false, note: label => `${label} kurumsal kartına yazılır.` });
+  const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kurumsal Kart", choose: "Kart Seçin", preselect: false, define: "card", note: label => `${label} kurumsal kartına yazılır.` });
   /** Seçiciyi anchor öğesinin ardına yerleştirir (data: choices yanıtı); dönüş mode. Zorunluluk data-required'da saklanır (yol gizleyince geri gelsin). */
   function insertPicker(anchor, options, data) {
     if (!anchor) return "none";
     const picked = pickerHtml(data, options);
     if (!picked.html) return picked.mode;
-    anchor.insertAdjacentHTML("afterend", `<div class="hof-bank-pick" data-bank-pick="${options.form === "card" ? "card" : ""}">${picked.html}</div>`);
+    anchor.insertAdjacentHTML("afterend", `<div class="hof-bank-pick" data-bank-pick="${options.form === "card" ? "card" : ""}" data-bank-form="${esc(options.form || "bank")}">${picked.html}</div>`);
     const select = anchor.nextElementSibling?.querySelector("select");
     if (select) select.dataset.required = select.required ? "1" : "";
     return picked.mode;
@@ -2541,23 +2640,25 @@
 
   /**
    * Modül formuna hesap seçici (Aşama 5–6; §8.9): yol alanı (methodName) "Havale / EFT" olduğunda görünür, başka yolda gizli ve gönderilmez
-   * (zorunlu işareti kalkar). methodName verilmezse (Kasa ↔ Banka transferi) hep görünür. Hiç hesap yoksa hiçbir şey eklenmez (bugünkü görünüm).
+   * (zorunlu işareti kalkar). methodName verilmezse (Kasa ↔ Banka transferi) hep görünür. Hiç hesap yoksa "Banka Hesabı Tanımla" (2.4; tanımlama
+   * yetkisi yoksa "tanımlı değil, yöneticinize başvurun" yazısı); tanımlanmadan kaydedilirse satır bugünkü gibi hesapsız yazılır (plan §3.5/1).
    * K2: card verilirse ({ value, keepLabel }) yol "Kredi Kartı" olduğunda Kurumsal Kart seçicisi (yalnız ödeme ve kurumsal karta iade formları:
    * cari ödeme, alış faturası ödemesi, stok alımı; tahsilatta kart yolu POS'tur, seçici yoktur). Yol değişince alan yeniden çizilmez; yalnız
    * gösterilir/gizlenir (Tab ile ilerlerken odak ve seçim kaybolmaz). m1: liste form açılışında tazelenir; sunucu "seçim zorunlu" derse
    * (bank-account-required) seçiciler taze listeyle yeniden kurulur (refreshPickers).
    */
   const pickerForms = new Map();
-  function placePickers(form, setup, data) {
-    // Yeniden kurulumda kullanıcının seçtiği hesap/kart korunur (yeni listede hâlâ varsa).
+  function placePickers(form, setup, data, force = {}) {
+    // Yeniden kurulumda kullanıcının seçtiği hesap/kart korunur (yeni listede hâlâ varsa); force: yeni tanımlanan hesap seçili gelir.
     const kept = {};
     form.querySelectorAll("[data-bank-pick] select").forEach(select => {
       if (select.value) kept[select.name] = select.value;
     });
+    Object.assign(kept, force);
     form.querySelectorAll("[data-bank-pick]").forEach(node => node.remove());
-    const { place, methodNode, card, options } = setup;
+    const { place, card, options } = setup;
     const bankName = options.name || "bankAccountId";
-    const mode = insertPicker(place, { ...options, value: kept[bankName] || options.value || "" }, data);
+    const mode = insertPicker(place, { define: "bank", ...options, value: kept[bankName] || options.value || "" }, data);
     const box = form.querySelector('[data-bank-pick]:not([data-bank-pick="card"])');
     if (card) insertPicker(box || place, { ...CARD_PICKER, value: kept[CARD_PICKER.name] || card.value || "", keepLabel: card.keepLabel || "" }, data);
     return mode;
@@ -2608,6 +2709,22 @@
     // Seçici yeniden kurulsa da (refreshPickers) dinleyici formda: seçim değişince not yerleşir/kalkar.
     form.addEventListener("change", event => {
       if (event.target.closest?.("[data-bank-pick]")) syncNone(form);
+    });
+    // 2.4: "… Tanımla" ile kaydedilen hesap/kart seçicide seçili gelir (alan yeniden kurulur; formun öbür alanları yerinde kalır).
+    form.addEventListener("hof-bank-defined", async event => {
+      const { kind, account } = event.detail || {};
+      if (!account?.id || !["bank", "card"].includes(kind)) return;
+      let fresh;
+      try {
+        fresh = await choices(true);
+      } catch {
+        return;
+      }
+      if (!form.isConnected) return;
+      placePickers(form, setup, fresh, { [kind === "card" ? CARD_PICKER.name : setup.options.name || "bankAccountId"]: account.id });
+      syncPickers(form, setup);
+      const box = form.querySelector(kind === "card" ? '[data-bank-pick="card"]' : '[data-bank-pick]:not([data-bank-pick="card"])');
+      (box?.querySelector("select") || form.querySelector('button[type="submit"]'))?.focus();
     });
     syncPickers(form, setup);
     return mode;
@@ -2662,6 +2779,11 @@
     },
     accountForm,
     cardForm,
+    // v2.2.0 (İz 2.4): "… Tanımla" bileşeni (POS izi registerDefine("pos", { button: "POS Tanımla", missing: "POS tanımlı değil, yöneticinize
+    // başvurun.", permission: "bank.pos", open }) ile ekler; seçicide pickerHtml/attachPicker'a define: "pos").
+    registerDefine,
+    defineHtml,
+    define,
   };
   HOF.on("bank-choices-stale", () => {
     choicesCache = null;

@@ -83,6 +83,8 @@
       modal.dialog.addEventListener("change", onChange);
       modal.dialog.addEventListener("input", onInput);
       modal.dialog.addEventListener("keydown", onKey);
+      // v2.2.0 (İz 2.4): peşin satırdaki "Banka Hesabı / Kredi Kartı Tanımla" ile kaydedilen hesap o satırda seçili gelir.
+      modal.dialog.addEventListener("hof-bank-defined", onBankDefined);
       // Öneri listesi: tıklanırken yazılan kutu odağı kaybetmesin; kutudan çıkınca kapanır; pencere kayınca yer değiştirir.
       modal.dialog.addEventListener("mousedown", event => {
         if (event.target.closest(".hof-inv-item-hits")) event.preventDefault();
@@ -943,7 +945,10 @@
     const legacy = item.legacy && item.legacyMethod === item.method;
     const { data, list } = bankAccounts(kind);
     const current = item.bankAccountId ? data?.accounts?.find(account => account.id === item.bankAccountId) : null;
-    if (!data || (!list.length && !current)) return `<span class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}" hidden></span>`;
+    if (!data) return `<span class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}" hidden></span>`;
+    // v2.2.0 (İz 2.4; kullanıcı isteği 12.10.2026): hiç hesap/kart yoksa hücrede "Banka Hesabı Tanımla" / "Kredi Kartı Tanımla" (form kapanmadan
+    // tanım penceresi; kaydedince satırda seçili gelir); tanımlama yetkisi yoksa "… tanımlı değil, yöneticinize başvurun". Önceden hücre GİZLİYDİ.
+    if (!list.length && !current) return `<span class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-empty${hidden}>${HOF.bank?.defineHtml?.(kind) || ""}</span>`;
     if (list.length === 1 && !legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-single${hidden}>${esc(list[0].label)} ${card ? "kurumsal kartına" : "hesabına"} yazılır.</span>`;
     const options = current && !list.some(account => account.id === current.id) ? [current, ...list] : list;
     const first = legacy ? "Atanmamış (Eski Hareket)" : card ? "Kart Seçin" : "Hesap Seçin";
@@ -983,6 +988,38 @@
         view.bankChoices = null;
       });
   }
+  /**
+   * v2.2.0 (İz 2.4): "… Tanımla" ile kaydedilen hesap/kart. Liste sunucudan tazelenir; tanımın yapıldığı satır yeni hesabı alır (tek hesapsa bilgi
+   * satırı, çoksa seçili), aynı türün öbür boş hücreleri de yeni listeyle çizilir. Satırın tutar/yol alanları yeniden çizilmez (2.0.23 Bulgu 1).
+   */
+  async function onBankDefined(event) {
+    const { kind, account } = event.detail || {};
+    const form = view.form;
+    const cell = event.target.closest?.("[data-bank-cell]");
+    if (!form || !account?.id || !["bank", "card"].includes(kind)) return;
+    try {
+      view.bankChoices = await HOF.bank.choices(true);
+    } catch {
+      return;
+    }
+    if (view.form !== form) return;
+    const index = cell ? Number(cell.dataset.bankCell) : -1;
+    const own = form.pay.cash[index];
+    if (own && cellKind(own) === kind) {
+      own.bankAccountId = account.id;
+      own.legacy = false;
+    }
+    body()
+      ?.querySelectorAll("[data-pay] [data-bank-cell]")
+      .forEach(node => {
+        const position = Number(node.dataset.bankCell);
+        const item = form.pay.cash[position];
+        if (!item || (position !== index && !node.hasAttribute("data-bank-empty"))) return;
+        node.outerHTML = bankCell(item, position);
+      });
+    const next = body()?.querySelector(`[data-bank-cell="${index}"] select`) || body()?.querySelector(`[data-pay="cash"][data-i="${index}"][data-f="amount"]`);
+    next?.focus();
+  }
   // Varsayılan yalnız havalede (Banka Ayarları → Varsayılan Tahsilat Hesabı); kurumsal kartta birden çok kart varsa kullanıcı seçer (§3.5/3).
   const defaultBank = () => {
     const { data, list } = bankAccounts("bank");
@@ -1005,7 +1042,7 @@
       const select = cell.querySelector("select");
       if (select) select.value = item.bankAccountId;
     }
-    cell.hidden = !kind || (!cell.querySelector("select") && !cell.hasAttribute("data-bank-single"));
+    cell.hidden = !kind || (!cell.querySelector("select") && !cell.hasAttribute("data-bank-single") && !cell.hasAttribute("data-bank-empty"));
   }
   // v2.0.23 (Bulgu 1): "Kalan" kutusu ayrı çizilir. Ödeme satırındaki bir alan değişince (tutar, vade, no, banka, yol) yalnız
   // bu kutu yenilenir; satırlar yeniden çizilmez. Önceden bütün bölüm yeniden çiziliyordu: Tab ile ya da fareyle gidilen

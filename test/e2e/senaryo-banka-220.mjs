@@ -5,6 +5,9 @@
 //  2.2  Yeni Hesap: Kredi Kartı / Çek / Senet / POS Kullan işaretleri (Vadeli'de gizli); kaydedilen işaretler sunucuda.
 //  2.3  Yeni Hesap türlerinde kredi kartı YOK; kart bankanın içinden ("+ Kredi Kartı Ekle"): bağlı banka, son 4 hane; Hesaplar'da kart bankanın
 //       altında; eski bağsız karta öneri → Bağla; Kart Borcu Ödemesi'nde ödeyen hesap bağlı banka.
+//  2.4  "… Tanımla" (hiç hesap/kart yokken). NASIL BOZARIM: (a) tanım penceresinde Vazgeç → alttaki formun yazılanları kaybolur mu? (b) çift tık
+//       → iki pencere? (c) kaydedince seçici yeni hesabı göstermez / form kapanır / tutar-yol kaybolur? (d) kaydedilen ödeme yanlış hesaba ya da
+//       hesapsız mı yazılır (veri tabanından)? (e) tanımlama yetkisi yokken düğme görünür mü (avukat: yazı)? (f) kart tanımında banka seçilmeden?
 // Çalıştırma: npm run test:senaryo-banka-220
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -123,6 +126,119 @@ try {
   await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
   await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
   await pause(800);
+
+  // ---------- 2.4 "… Tanımla" (hiç banka hesabı ve kart yokken; formlar kapanmadan) ----------
+  const openParty = async (target, id) => {
+    await target.click('#hof-sidecard [data-action="accounts"]');
+    await target.waitForSelector(`.hof-accounts-modal tr[data-account="${id}"]`, { timeout: 10000 });
+    await target.click(`.hof-accounts-modal tr[data-account="${id}"]`);
+    await target.waitForSelector('.hof-accounts-modal [data-entry="out"]', { timeout: 10000 });
+  };
+  const pickNote = () => textOf(`${top} .hof-form [data-bank-pick]:not([hidden]) [data-bank-single]`);
+  await step("2.4 hazırlık (API): Tedarikçi A; avukat (Banka Hesabı Tanımlama yetkisi yok)", async () => {
+    ctx.supplier = await must("cari", api.post("/api/workspace/accounts", { name: "Tedarikçi A", type: "supplier", registeredOn: "2026-09-01" }));
+    await must("avukat", api.post("/api/admin/users", { username: "avukat220", name: "Avukat 220", role: "avukat", password: "Avukat-2026!", mustChangePassword: false }));
+    const choices = await must("seçici", api.get("/api/workspace/bank/choices"));
+    ok(choices.accounts.length === 0, "hiç banka hesabı yok");
+  });
+
+  await step("2.4 yetkisiz (avukat): Ödeme → Havale / EFT → düğme yok, \"Banka hesabı tanımlı değil, yöneticinize başvurun.\"", async () => {
+    const context2 = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
+    const other = await context2.newPage();
+    other.on("pageerror", error => errors.push(`pageerror (avukat) ${error.message}`));
+    await installPageClock(other, app.config.now);
+    await other.goto(`${BASE}/`);
+    await other.fill("#hof-auth input[name=username]", "avukat220");
+    await other.fill("#hof-auth input[name=password]", "Avukat-2026!");
+    await Promise.all([other.waitForEvent("load"), other.click('#hof-auth button[type="submit"]')]);
+    await other.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    await other.waitForTimeout(800);
+    await openParty(other, ctx.supplier.id);
+    await other.click('.hof-accounts-modal [data-entry="out"]');
+    const form = `${top} .hof-form`;
+    await other.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await other.selectOption(`${form} select[name="method"]`, "bank");
+    await other.waitForSelector(`${form} [data-bank-define-missing="bank"]`, { timeout: 8000 });
+    const missing = await other.$eval(`${form} [data-bank-define-missing="bank"]`, node => node.textContent.trim());
+    ok(missing === "Banka hesabı tanımlı değil, yöneticinize başvurun.", `yazı: “${missing}”`);
+    ok(!(await other.$(`${form} [data-bank-define]`)), "Tanımla düğmesi yok");
+    await other.screenshot({ path: path.join(OUT, "00-avukat-tanimli-degil.png") });
+    await context2.close();
+  });
+
+  await step("2.4 cari Ödeme 1.200 → Havale / EFT → \"Banka Hesabı Tanımla\": Vazgeç (form aynen), çift tık tek pencere, kaydet → seçili, kaydedilen ödeme o hesapta", async () => {
+    await openParty(page, ctx.supplier.id);
+    await page.click('.hof-accounts-modal [data-entry="out"]');
+    const form = `${top} .hof-form`;
+    await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await typeInto(`${form} input[name="amount"]`, "1.200");
+    await page.selectOption(`${form} select[name="method"]`, "bank");
+    await page.waitForSelector(`${form} [data-bank-define="bank"]`, { timeout: 8000 });
+    await shot("tanimla-dugmesi");
+    const formSel = `${modal} .hof-form:has([data-bank-define="bank"])`;
+    // Vazgeç: tanım penceresi kapanır, ödeme formu ve yazılan tutar yerinde.
+    await page.click(`${formSel} [data-bank-define="bank"]`);
+    await page.waitForSelector(`${top} .hof-form input[name="bankName"]`, { timeout: 8000 });
+    ok(/Banka Hesabı Tanımla/.test(await textOf(`${top} .hof-modal-title`)), "üstte Banka Hesabı Tanımla penceresi");
+    await page.click(`${top} [data-cancel]`);
+    await pause(500);
+    ok((await page.$eval(`${formSel} input[name="amount"]`, node => node.value)) === "1.200", "Vazgeç: tutar 1.200 yerinde");
+    // Çift tık: tek pencere.
+    await page.dblclick(`${formSel} [data-bank-define="bank"]`);
+    await page.waitForSelector(`${top} .hof-form input[name="bankName"]`, { timeout: 8000 });
+    await pause(400);
+    const defineWindows = await page.$$eval(".hof-modal-backdrop.is-visible .hof-modal-title", nodes => nodes.filter(node => node.textContent.trim() === "Banka Hesabı Tanımla").length);
+    ok(defineWindows === 1, `çift tıklamada tanım penceresi sayısı ${defineWindows}`);
+    await typeInto(`${top} .hof-form input[name="bankName"]`, "Ziraat Bankası");
+    await page.keyboard.press("Tab");
+    await page.keyboard.type("Ana TL", { delay: 35 });
+    await typeInto(`${top} .hof-form input[name="openingAmount"]`, "10.000");
+    await page.check(`${top} .hof-form input[name="confirmed"]`);
+    await submitTop();
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].every(node => node.textContent.trim() !== "Banka Hesabı Tanımla"), null, { timeout: 10000 });
+    const form2 = `${modal} .hof-form:has(select[name="method"])`;
+    await page.waitForSelector(`${form2} [data-bank-single]`, { timeout: 8000 });
+    const note = await textOf(`${form2} [data-bank-single]`);
+    ok(/Ziraat Bankası · Ana TL hesabına yazılır/.test(note), `form kapanmadı, hesap seçili: “${note}”`);
+    ok((await page.$eval(`${form2} input[name="amount"]`, node => node.value)) === "1.200" && (await page.$eval(`${form2} select[name="method"]`, node => node.value)) === "bank", "tutar ve yol kaybolmadı");
+    await shot("tanimla-sonra-secili");
+    await page.click(`${form2} button[type="submit"]`);
+    await pause(1200);
+    ctx.ziraat = (await must("hesaplar", api.get("/api/workspace/bank/accounts"))).accounts.find(account => account.bankName === "Ziraat Bankası");
+    const entry = (await must("cari", api.get(`/api/workspace/accounts/${ctx.supplier.id}`))).entries.find(item => item.kind === "out" && item.amount === 1200);
+    ok(entry && entry.method === "bank" && entry.finRef === ctx.ziraat?.id, `kaydedilen ödeme: yol ${entry?.method}, hesap ${entry?.finRef === ctx.ziraat?.id ? "Ziraat" : entry?.finRef}`);
+    await closeAll();
+  });
+
+  await step("2.4 cari Ödeme 300 → Kredi Kartı → \"Kredi Kartı Tanımla\": bağlı banka Ziraat ön seçili, Bonus •••• 4321 → seçili, ödeme kartta", async () => {
+    await openParty(page, ctx.supplier.id);
+    await page.click('.hof-accounts-modal [data-entry="out"]');
+    const form = `${modal} .hof-form:has(select[name="method"])`;
+    await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await typeInto(`${form} input[name="amount"]`, "300");
+    await page.selectOption(`${form} select[name="method"]`, "card");
+    await page.waitForSelector(`${form} [data-bank-define="card"]`, { timeout: 8000 });
+    await page.click(`${form} [data-bank-define="card"]`);
+    await page.waitForSelector(`${top} .hof-form input[name="cardLast4"]`, { timeout: 8000 });
+    await page.waitForFunction(() => document.querySelector('.hof-modal-backdrop.is-visible:last-of-type select[name="parentId"]')?.value, null, { timeout: 8000 });
+    const parent = await page.$eval(`${top} .hof-form select[name="parentId"]`, node => node.selectedOptions[0]?.textContent.trim());
+    ok(/Ziraat Bankası · Ana TL/.test(parent), `Bağlı Banka Hesabı: ${parent}`);
+    await page.keyboard.type("Bonus", { delay: 35 });
+    await page.keyboard.press("Tab");
+    await page.keyboard.type("4321", { delay: 35 });
+    await submitTop();
+    await page.waitForSelector(`${form} [data-bank-pick="card"] [data-bank-single]`, { timeout: 10000 });
+    const note = await textOf(`${form} [data-bank-pick="card"] [data-bank-single]`);
+    ok(/Ziraat Bankası · Bonus/.test(note), `kart seçili: “${note}”`);
+    ok((await page.$eval(`${form} input[name="amount"]`, node => node.value)) === "300", "tutar kaybolmadı");
+    await page.click(`${form} button[type="submit"]`);
+    await pause(1200);
+    ctx.bonus = (await must("hesaplar", api.get("/api/workspace/bank/accounts"))).accounts.find(account => account.name === "Bonus");
+    const entry = (await must("cari", api.get(`/api/workspace/accounts/${ctx.supplier.id}`))).entries.find(item => item.kind === "out" && item.amount === 300);
+    ok(ctx.bonus?.parentId === ctx.ziraat?.id && ctx.bonus?.cardLast4 === "4321", "kart Ziraat'in altında, son 4 hane 4321");
+    ok(entry && entry.method === "card" && entry.finRef === ctx.bonus?.id, `kartla ödeme kartta: ${entry?.finRef === ctx.bonus?.id}`);
+    await closeAll();
+  });
 
   await step("Hazırlık (API): Yapı Kredi · TL (açılış 20.000, DOĞRULANMADI) + 2.1.0'dan kalma bağsız kart (Yapı Kredi · World Eski)", async () => {
     ctx.yk = await must("Yapı Kredi", api.post("/api/workspace/bank/accounts", { bankName: "Yapı Kredi", name: "TL", kind: "demand", code: "YAP-TL", opening: { date: "2026-10-01", amount: "20.000", confirmed: false } }));
