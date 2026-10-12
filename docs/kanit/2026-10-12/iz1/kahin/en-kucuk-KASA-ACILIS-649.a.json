@@ -1,0 +1,34 @@
+{
+  "araDurumlar": {},
+  "atlananlar": [],
+  "bankaHesaplari": {},
+  "belirsizler": [],
+  "cariler": {},
+  "dil": "destekofis-senaryo/2",
+  "eksiBakiyeDenetimi": {},
+  "faturalar": {},
+  "hesapKodlari": {},
+  "kasa": 4950500,
+  "kaynak": "kahin",
+  "mizan": {
+    "100": {
+      "alacak": 0,
+      "borc": 4950500
+    },
+    "500": {
+      "alacak": 4950500,
+      "borc": 0
+    }
+  },
+  "ozet": {
+    "gercekBanka": 0,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": 4950500
+  },
+  "retler": [],
+  "senaryo": "en-kucuk-KASA-ACILIS-649",
+  "stok": {},
+  "taksitKartlari": {},
+  "yinelenenler": []
+}

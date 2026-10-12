@@ -1,7 +1,8 @@
 // Senaryo Banka 2.1.0 — TEMEL SÜRÜM: ertelenen özellikler EKRANDA GÖRÜNMEZ (kullanıcı kararı 10.10.2026 "TEMEL SÜRÜME BAŞLA"; plan §12.1 "yarım
 // özellik görünmez") ve Nakit Akış başlangıcı K10 (plan §8.9: "Bugünkü Nakit ve Banka" = Nakit Kasa + Gerçek Banka; Hesabı Atanmamış ayrı satır).
 // Ertelenenler: döviz/kur/değerleme, Bankaya Tahsile Ver, K8 avans, faturanın bankalı iade/iptal ayrıntısı ve toplu kesim, kalan §8.10 raporları,
-// Kasa açılış/devir; POS (2.2.0), ekstre ve mutabakat (2.3.0). API tarafı test/banka-210-ertelenen.test.mjs'te.
+// Kasa devir (yıl sonu; Kasa AÇILIŞI 2.2.0 İz 1.3'te geldi: Kasa → Açılış Bakiyesi); POS (2.2.0), ekstre ve mutabakat (2.3.0). API tarafı
+// test/banka-210-ertelenen.test.mjs'te.
 // Gerçek kullanıcı gibi tıklanır; her ekranda görünen metin ve seçenekler okunur, ekran görüntüsü alınır:
 //  1. Banka penceresi sekmeleri: yalnız Genel Bakış · Hesaplar · Hareketler · Ayarlar (POS, Ekstre ve Mutabakat, Döviz yok).
 //  2. Genel Bakış: Gerçek Banka; POS Bekleyen, Blokeli POS, Güncel Kurla, Eşleşmeyen, Değerleme yok; Hesabı Atanmamış ayrı satır.
@@ -88,7 +89,7 @@ const must = async (label, promise) => {
 const textOf = selector => page.$eval(selector, node => node.innerText.replace(/\s+/g, " ").trim()).catch(() => "");
 const visibleText = selector => page.$$eval(selector, nodes => nodes.filter(node => node.offsetParent !== null).map(node => node.innerText.replace(/\s+/g, " ").trim()).join(" | ")).catch(() => "");
 // Ertelenen özelliklerin ekranda görünebilecek adları (kalıplar büyük/küçük harf duyarlı: "Kurulum" ≠ "Kur").
-const LATER = [/POS Bekleyen/, /Blokeli POS/, /POS Tanımla/, /\+ POS\b/, /Ekstre Yükle/, /Ekstre ve Mutabakat/, /Mutabakat Yap/, /Eşleşmeyen/, /Güncel Kurla/, /Döviz Al/, /Döviz Sat/, /Kur Değerleme/, /Değerleme Kuru/, /Kambiyo/, /Bankaya Tahsile Ver/, /Tahsildeki Çek/, /Sanal POS Bağlantısı/, /Açık Bankacılık/i, /Bağdaştırıcılar/, /Elle Banka Fişi/, /Kanal Alanı/, /Kasa Açılış/, /Avans/];
+const LATER = [/POS Bekleyen/, /Blokeli POS/, /POS Tanımla/, /\+ POS\b/, /Ekstre Yükle/, /Ekstre ve Mutabakat/, /Mutabakat Yap/, /Eşleşmeyen/, /Güncel Kurla/, /Döviz Al/, /Döviz Sat/, /Kur Değerleme/, /Değerleme Kuru/, /Kambiyo/, /Bankaya Tahsile Ver/, /Tahsildeki Çek/, /Sanal POS Bağlantısı/, /Açık Bankacılık/i, /Bağdaştırıcılar/, /Elle Banka Fişi/, /Kanal Alanı/, /Avans/];
 const laterIn = text => LATER.filter(pattern => pattern.test(text)).map(pattern => pattern.source);
 const openBank = async () => {
   await page.click('#hof-sidecard [data-action="bank"]');

@@ -168,7 +168,8 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
 
     // 2) 320: Kasa'ya elle açılış nakdi.
     await must("açılış nakdi", api.post("/api/workspace/cash", { kind: "in", amount: "1000", date: ago(320), description: "Açılış nakdi", method: "cash" }));
-    E.cash.push({ d: ago(320), amt: 1000 });
+    // 2.2.0 İz 1.3: açıklaması "Açılış …" Kasa girişi Kasa açılışıdır (B 100 / A 500; önceden 649).
+    E.cash.push({ d: ago(320), amt: 1000, opening: true });
     // 3) 310: Cem'e açık hizmet satışı (%20) — 120 açık.
     await invoice("S0", { d: ago(310), scenario: "service_sale", acc: "C", lines: [{ itemId: ids.HZM, qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open", dueDate: ago(280) } });
     // 4) 290: tedarikçiden mal alışı (%20 + %10), 2.000 havale peşin ZİRAAT, kalanı açık.
@@ -462,9 +463,9 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
       const toEnd = list => sum(list.filter(r => !range?.to || r.d <= range.to), r => r.amt) || 0;
       assert.equal(signed("100"), toEnd(E.cash), "100 Kasa");
       assert.equal(signed("102"), toEnd(E.bank), "102 Bankalar = açılışlar + bağlı hareketler (transfer net 0)");
-      // 120 + 320 (cari) toplamı = carilerin net bakiyesi; 500 = −açılışlar.
-      const openings = sum(E.bank.filter(r => r.adjust && (!range?.to || r.d <= range.to)), r => r.amt);
-      assert.equal(signed("500"), r2(0 - openings) || 0, "500 Açılış = banka açılışları");
+      // 120 + 320 (cari) toplamı = carilerin net bakiyesi; 500 = −açılışlar (banka hesapları + 2.2.0 İz 1.3: Kasa açılışı).
+      const openings = r2(sum(E.bank.filter(r => r.adjust && (!range?.to || r.d <= range.to)), r => r.amt) + sum(E.cash.filter(r => r.opening && (!range?.to || r.d <= range.to)), r => r.amt));
+      assert.equal(signed("500"), r2(0 - openings) || 0, "500 Açılış = banka açılışları + Kasa açılışı");
     },
     yevmiye(data, c, range) {
       const b = col(data, "Borç");

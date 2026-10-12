@@ -11,6 +11,8 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { FREEZE_CLOSE } from "./plans.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { cashOpenings, firstCashMovement, isCashOpening } from "../lib/cash-opening.mjs";
+import { canUser } from "../lib/permissions.mjs";
 
 const KIND_LABELS = {
   row: "Tablo Kaydı",
@@ -33,7 +35,7 @@ const KIND_LABELS = {
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, now: clock = systemClock }) {
+export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, money: moneyLines = null, now: clock = systemClock }) {
   const now = () => clock().toISOString();
   // Yargıç K2 (plan §3.8 "Silinenler'den geri yükleme", §9.2/7, §3.9 K7): banka bağlı satır geri yüklenirken kaynak modül yetkisi + bank.move,
   // pasif hesap 400, eksi bakiye son durumla (Engelle 409 cash-blocked, Uyar 409 cash-negative + accountId → "Yine de Geri Yükle" cashForce ya da negativeOk; hakem K5).
@@ -350,6 +352,15 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       message = "Tahsilat geri eklendi; Kasa ve tahsilat takvimi güncellendi.";
     } else if (item.kind === "cash") {
       if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Kasa hareketinin bilgisi eksik; geri yüklenemez.");
+      // 2.2.0 İz 1.3: Kasa açılışı (açıklaması "Açılış …" nakit giriş) yalnız yönetici geri yükler; yerine yenisi girildiyse geri gelmez (iki açılış
+      // olurdu); tarihi Kasa'nın ilk hareketinden sonra olamaz (routes/cash.mjs ile aynı kurallar).
+      if (!payload.twin && isCashOpening({ ...payload, method: methodInput(payload.method) })) {
+        if (!canUser(user, "system.manage")) throw new HttpError(403, "Kasa açılış bakiyesini yalnız yönetici geri yükler.", { code: "cash-opening-admin" });
+        const other = cashOpenings(store)[0];
+        if (other) throw new HttpError(409, `Yerine yeni Kasa açılışı girilmiş (${String(other.date).split("-").reverse().join(".")}); eski açılış geri yüklenmez. Gerekirse Kasa → Açılış Bakiyesi'nden düzeltin.`, { code: "cash-opening-exists", id: other.id });
+        const first = firstCashMovement(store, moneyLines, { except: item.ref });
+        if (first && payload.date > first) throw new HttpError(409, `Açılış tarihi Kasa'nın ilk hareketinden (${first.split("-").reverse().join(".")}) sonra; geri yüklenmez. Kasa → Açılış Bakiyesi'nden yeniden girin.`, { code: "cash-opening-after-first", firstMovement: first });
+      }
       restoreDate(payload.date, "Bu kasa hareketi");
       if (payload.twin) restoreDate(payload.twin.date, "Bu transferin öbür tarafı");
       // Yol işlemden önce doğrulanır (bozuk yükte hiçbir satır yazılmaz).

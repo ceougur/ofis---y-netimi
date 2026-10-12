@@ -1,0 +1,11 @@
+
+■ Kurulum: yönetici; küçük bir tablo; muhasebe kullanıcısı; Kasa'da 5 gün önce bir tahsilat (ilk hareket)
+  ✓ sıradan Kasa girişi 649'da (gelir)
+
+■ Yönetici: Kasa → Açılış Bakiyesi → tutar (klavyeyle) → tarih ilk hareketten SONRA → neden ekranda; ilk hareketin günü → kaydedilir
+  ✗ Kasa penceresinde “Açılış Bakiyesi” düğmesi
+HATA: TypeError: Cannot read properties of null (reading 'click')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/e2e/senaryo-iz1-kasa-acilis.mjs:107:16
+  ✓ sayfa hatası yok
+
+SONUÇ: 2 geçti, 2 kaldı

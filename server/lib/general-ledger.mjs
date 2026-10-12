@@ -51,7 +51,12 @@ export const CHART = Object.freeze({
 const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336"]);
 const CONTROL = { customer: "120", supplier: "320", other: "336" };
 const cents = value => Math.round((Number(value) || 0) * 100);
-const opening = note => /^açılış/i.test(String(note || "").trim());
+/**
+ * Açılış (devir) kaydı mı: açıklaması/notu "Açılış" ile başlar (cari Borç/Alacak Yaz açılışı, v2.0.13; Kasa açılışı, 2.2.0 İz 1.3). Karşı hesap
+ * 500 "Açılış ve Devir Bakiyeleri" — banka hesabının açılışı (lib/bank/voucher.mjs openingLines) ve taksit açılışıyla aynı.
+ */
+export const isOpeningText = note => /^açılış/i.test(String(note || "").trim());
+const opening = isOpeningText;
 /** Hesabı atanmamış (fin_ref '') eski ve yeni banka/POS hareketlerinin alt hesapları (§3.11). */
 export const UNASSIGNED_SUBS = Object.freeze({ "102.00": "Hesabı Atanmamış Eski Hareketler", "108.00": "Hesabı Atanmamış Eski Hareketler" });
 
@@ -127,7 +132,10 @@ export function journal(rows) {
       else post(`transfer:${row.transferId}`, row.date, "Kasa ↔ Banka", row.description || "Kasadan Bankaya Yatırma", bank, cash, row.amount);
       continue;
     }
-    if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", moneyOf(row), "649", row.amount);
+    // 2.2.0 İz 1.3 (K6; plan susuyor → yaygın Tekdüzen açılış fişi): Kasa'ya devreden nakit (açıklaması "Açılış …" — Kasa → Açılış Bakiyesi bunu
+    // yazar) gelir değildir: B 100 / A 500, banka/cari/taksit açılışıyla aynı karşı hesap. Önceden 649'a (Diğer Olağan Gelir) yazılıyordu.
+    if (row.kind === "in" && opening(row.description)) post(`cash:${row.id}`, row.date, "Kasa açılışı", row.description, moneyOf(row), "500", row.amount);
+    else if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", moneyOf(row), "649", row.amount);
     else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", "770", moneyOf(row), row.amount);
   }
   for (const row of rows.accountEntries || []) {
