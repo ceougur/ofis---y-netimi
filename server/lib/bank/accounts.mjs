@@ -27,6 +27,7 @@ import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
 import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
+import { CHEQUE_SUB_NAMES, assertNoPendingCollections } from "./collections.mjs";
 
 // limit: hesabın limit alanı (plan §3.5 "KMH Limiti alanı" yalnız Vadesiz; §3.9 "KMH ya da kart limiti"; Kredi Hesabı'nda ekranın "Kredi Limiti" bilgi
 // alanı — eksi bakiye denetimine girmez). Limit alanı olmayan türde 0'dan büyük limit 400 bank-limit (hakem K7).
@@ -434,6 +435,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         if (KIND_GL[kind] !== row.gl) throw new HttpError(409, `${ACCOUNT_KINDS[row.kind].label} hesap ${ACCOUNT_KINDS[kind].label} türüne çevrilemez (ana ve alt hesap kodu değişmez). Yeni hesap açın.`, { code: "bank-kind-family", field: "kind" });
         const opening = openingOf(row.id);
         if (movementInfo(row.id).count || opening?.lines) throw new HttpError(409, "Bu hesabın hareketi ya da açılış bakiyesi var; türü ve para birimi değiştirilemez. Yeni hesap açın.", { code: "bank-account-has-movements" });
+        // v2.2.0 (§3.14): tahsildeki evrakın hesabı tahsile uygun kalmalı (tahsil o hesaba yazılır).
+        assertNoPendingCollections(store, row.id, "türü ve para birimi değiştirilemez");
         next.kind = kind;
         next.currency = currency;
         // Hakem K7: limit alanı olmayan türe çevrilen hesabın limiti sıfırlanır (KMH'li Vadesiz → Ticari'de gizli KMH Engelle'yi atlatıyordu;
@@ -468,6 +471,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const row = mustRow(id);
     if (!STATUSES.includes(status)) throw new HttpError(400, "Hesap durumu Etkin ya da Pasif olmalı.", { code: "bank-status", field: "status" });
     if (row.status === status) return view(row);
+    // v2.2.0 (§3.14): tahsildeki evrakın hesabı pasife alınmaz (tahsil o hesaba yazılır; pasif hesaba hareket girilmez).
+    if (status !== "active") assertNoPendingCollections(store, row.id, "pasife alınamaz");
     bank.post({
       user, module: "bank", op: "update", prev: { status: row.status },
       write: () => {
@@ -487,6 +492,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const row = mustRow(id);
     const moves = movementInfo(row.id);
     if (moves.count) throw new HttpError(409, `Bu hesaba bağlı ${moves.count} hareket var; hesap silinmez. Kullanılmayacaksa Pasife Alın.`, { code: "bank-account-has-movements", count: moves.count });
+    assertNoPendingCollections(store, row.id, "silinemez");
     // GG2: kurulumlu hesap silinince Devir Kapanışı etkin kalıyordu (eski bakiye açılışı olmayan bir hesap adına kapalı); aynı adla yeniden açılıp
     // sihirbaz çalışınca aynı bakiye ikinci kez kapanıyordu. Önce kurulum geri alınır.
     const setupRun = activeSetupOf(row.id);
@@ -1129,11 +1135,31 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       subs.set(target.sub, row);
       mainsOf.set(main, (mainsOf.get(main) || 0) + Number(group.opening) + Number(group.debit) - Number(group.credit));
     }
+    // Bankaya Tahsile Ver (plan §3.11 madde 5, §3.14): tahsil kaydı varsa 101.01 / 101.02 de (Ana Defter'in kendi kuralıyla, yalnız alınan
+    // evrakın maddeleri). Kayıt yoksa ekran ve rapor 2.1.0'daki gibi kalır.
+    const chequeService = ledger?.();
+    if (chequeService?.build && store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'") && store.get("SELECT 1 AS found FROM cheque_collections LIMIT 1")) {
+      const ids = store.all("SELECT id FROM cheques WHERE direction = 'in'").map(row => row.id);
+      for (const entry of chequeService.build({ cheques: ids })) {
+        for (const line of entry.lines) {
+          if (line.account !== "101" || !line.sub) continue;
+          const row = subs.get(line.sub) || { sub: line.sub, account: "101", opening: 0, debit: 0, credit: 0 };
+          if (from && entry.date < from) row.opening += line.debit - line.credit;
+          else if (!to || entry.date <= to) {
+            row.debit += line.debit;
+            row.credit += line.credit;
+          } else continue;
+          subs.set(line.sub, row);
+          mainsOf.set("101", (mainsOf.get("101") || 0) + line.debit - line.credit);
+        }
+      }
+      Object.assign(names, CHEQUE_SUB_NAMES);
+    }
     const tl = value => Math.round(value) / 100;
     const rows = [...subs.values()]
       .sort((a, b) => a.sub.localeCompare(b.sub))
       .map(row => ({ sub: row.sub, account: row.account, name: names[row.sub] || "", opening: tl(row.opening), debit: tl(row.debit), credit: tl(row.credit), balance: tl(row.opening + row.debit - row.credit) }));
-    const mains = ["102", "108", "300", "309"].map(account => {
+    const mains = ["101", "102", "108", "300", "309"].map(account => {
       const balanceMinor = mainsOf.get(account) || 0;
       const subMinor = [...subs.values()].filter(row => row.account === account).reduce((sum, row) => sum + row.opening + row.debit - row.credit, 0);
       return { account, name: CHART[account] || "", balance: tl(balanceMinor), subTotal: tl(subMinor), ok: balanceMinor === subMinor };
