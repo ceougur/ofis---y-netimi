@@ -295,7 +295,7 @@ try {
     ok(Boolean(await admin.$(`${bankWin} [data-bank-empty]`)), "boş durum metni görünür");
     ok(!(await admin.$(`${bankWin} [data-bank-unassigned]`)), "Hesabı Atanmamış Eski Hareketler satırı yok (eski hareket yok)");
     const tabs = await admin.$$eval(`${bankWin} .hof-bank-tabs [data-tab]`, list => list.map(node => node.textContent.trim()));
-    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Aşama 4'te; POS ve Ekstre bu sürümde yok)`);
+    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "POS", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Aşama 4'te; POS 2.2.0'da geldi; Ekstre bu sürümde yok)`);
     await auditLabels(admin, "Genel Bakış (boş)");
     await shot(admin, "bos-sirket-genel-bakis");
     ok((await must("özet", api.get("/api/workspace/bank/summary"))).setup.dismissed === true, "sihirbazın kapatıldığı sunucuda kayıtlı");
@@ -849,7 +849,7 @@ try {
     GARANTI = list.find(account => account.bankName === "Garanti BBVA");
     await openBank(admin);
     const tabs = await admin.$$eval(`${bankWin} .hof-bank-tabs [data-tab]`, items => items.map(node => node.textContent.trim()));
-    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Hesaplar'dan sonra)`);
+    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "POS", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Hesaplar'dan sonra; POS Ayarlar'dan önce)`);
     await tab(admin, "movements");
     await admin.waitForSelector(`${bankWin} [data-moves]`, { timeout: 10000 });
     await selectMovesAccount(admin, ZIRAAT.id);

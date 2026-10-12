@@ -51,7 +51,9 @@ const ok = (cond, what) => {
   return Boolean(cond);
 };
 let page = null;
+// Her ekran görüntüsünde o ekranın adları yazım düzenine göre de denetlenir (sonuç en sonda tek denetim).
 const shot = async name => {
+  if (name !== "hata") await auditLabels(name);
   shotNo += 1;
   await page.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`) });
 };
@@ -164,6 +166,34 @@ const newSaleForm = async () => {
   await page.waitForSelector(`${inv} [data-hits="0"] li[data-item]`, { timeout: 8000 });
   await page.click(`${inv} [data-hits="0"] li[data-item]`);
 };
+
+// Yazım düzeni ekranda (senaryo-211'in denetçisiyle aynı kural): POS ekranlarında programın ürettiği adlar her sözcüğün ilk harfi büyük.
+const SMALL = new Set(["ve", "ile", "veya", "ya", "da", "de", "ki"]);
+const labelProblems = new Map();
+async function auditLabels(where) {
+  const texts = await page.evaluate(() => {
+    const visibleNode = node => {
+      const box = node.getBoundingClientRect();
+      return box.width > 0 && box.height > 0 && getComputedStyle(node).visibility !== "hidden";
+    };
+    const own = node => [...node.childNodes].filter(child => child.nodeType === 3).map(child => child.nodeValue).join(" ").replace(/\s+/g, " ").trim();
+    const sentence = node => Boolean(node.closest("[data-sentence]") || node.closest("label")?.querySelector('input[type="checkbox"], input[type="radio"]'));
+    const out = [];
+    const take = (selector, read = own) => document.querySelectorAll(selector).forEach(node => visibleNode(node) && !sentence(node) && out.push(read(node)));
+    take(".hof-modal-title, .hof-modal button:not(tbody button):not([data-open]), .hof-modal a.hof-button");
+    take(".hof-modal thead th, .hof-modal .hof-field > span, .hof-modal label > span, .hof-modal legend, .hof-rep-stat > span");
+    take(".hof-modal select option", node => node.textContent.trim());
+    return out;
+  });
+  for (const raw of texts) {
+    const text = String(raw || "").split(" · ")[0].replace(/\([^)]*\)/g, "").replace(/[“”"][^“”"]*[“”"]/g, "").trim();
+    if (!text || text.length > 60 || /[.!?]\s|[.!?]$/.test(text) || /\d{2}\.\d{2}\.\d{4}/.test(text) || /₺/.test(text)) continue;
+    const words = text.split(/\s+/).filter(word => /\p{L}/u.test(word));
+    if (words.length < 2) continue;
+    const bad = words.slice(1).filter(word => /^[a-zçğıöşü]/.test(word) && !SMALL.has(word.replace(/[^\p{L}]/gu, "")));
+    if (bad.length) labelProblems.set(raw.trim(), where);
+  }
+}
 
 const ctx = {};
 try {
@@ -664,8 +694,22 @@ try {
   await step("POS sekmesi: Onay Bekleyen ve Komisyon Faturaları boş durum metni; POS'lar listesi iki POS", async () => {
     await posSub("awaiting");
     ok(/Onay bekleyen geçiş yok/.test(await textOf(`${bankWin} [data-pos-body]`)), "Onay Bekleyen boş");
+    await auditLabels("Onay Bekleyen");
     await posSub("commission");
     ok(/KDV'li \(faturalı\) komisyon kipinde POS yok/.test(await textOf(`${bankWin} [data-pos-body]`)), "Komisyon Faturaları: KDV'li POS yok");
+    await auditLabels("Komisyon Faturaları");
+    // Ekleme ve oran formları (aç → Vazgeç; hiçbir şey yazılmaz).
+    await posSub("terminals");
+    await page.click(`${bankWin} [data-pos-row="${ctx.pos.id}"] [data-pos-act="rates"]`);
+    await page.waitForSelector(`${top} [data-rate-row]`, { timeout: 8000 });
+    await auditLabels("Komisyon Oranları formu");
+    await page.click(`${top} [data-cancel]`);
+    await pause(400);
+    await page.click(`${bankWin} [data-pos-row="${ctx.pos.id}"] [data-pos-act="edit"]`);
+    await page.waitForSelector(`${top} .hof-form input[name="name"]`, { timeout: 8000 });
+    await auditLabels("POS'u Düzenle formu");
+    await page.click(`${top} [data-cancel]`);
+    await pause(400);
     await posSub("terminals");
     const rows = await page.$$eval(`${bankWin} [data-pos-row]`, nodes => nodes.length);
     ok(rows === 2, `POS'lar: ${rows}`);
@@ -676,6 +720,7 @@ try {
   failed += 1;
   console.log(`✗ kurulum hatası: ${error.stack || error.message}`);
 } finally {
+  ok(labelProblems.size === 0, `POS ekranlarında yazım düzeni (her sözcüğün ilk harfi büyük)${labelProblems.size ? `: ${[...labelProblems].slice(0, 8).map(([label, where]) => `“${label}” (${where})`).join(", ")}` : ""}`);
   ok(errors.length === 0, `sayfa hatası yok${errors.length ? `: ${errors.slice(0, 3).join(" | ")}` : ""}`);
   console.log(`\n${failed ? "✗" : "✓"} senaryo-pos-220: ${passed} geçti, ${failed} kaldı · ekran görüntüleri ${OUT}`);
   await browser.close();

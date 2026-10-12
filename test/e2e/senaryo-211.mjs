@@ -456,10 +456,19 @@ try {
     await open("bank", "Banka · Kurulum Sihirbazı", async () => {
       if (await admin.$(".hof-bank-wiz-modal")) await closeTop(admin);
       // Aşama 4: Hareketler sekmesi (süzgeç adları, boş durum) ve Planlı İşlemler görünümü.
-      for (const id of ["overview", "accounts", "movements", "settings"]) {
+      // 2.2.0 (İz 3): POS sekmesi ve alt bölümleri (POS İşlemleri, POS Ödeme Takvimi, Onay Bekleyen, Komisyon Faturaları, POS'lar).
+      for (const id of ["overview", "accounts", "movements", "pos", "settings"]) {
         await admin.click(`.hof-bank-tabs [data-tab="${id}"]`);
         await admin.waitForTimeout(600);
         await auditLabels(admin, `Banka › ${id}`);
+        // POS tanımlı değilse bölüm düğmeleri yok (yalnız "POS tanımlı değil." ve nasıl tanımlanacağı); tanımlıysa her bölüm.
+        if (id === "pos" && (await admin.$(".hof-bank-modal [data-pos-sub]"))) {
+          for (const sub of ["calendar", "awaiting", "commission", "terminals", "sales"]) {
+            await admin.click(`.hof-bank-modal [data-pos-sub="${sub}"]`);
+            await admin.waitForTimeout(500);
+            await auditLabels(admin, `Banka › POS › ${sub}`);
+          }
+        }
         if (id === "movements") {
           await admin.click('.hof-bank-modal [data-act="mv-planned"]');
           await admin.waitForTimeout(500);
