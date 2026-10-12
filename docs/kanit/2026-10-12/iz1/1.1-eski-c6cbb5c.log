@@ -1,0 +1,148 @@
+TAP version 13
+# Subtest: İz 1.1 — Rapor Merkezi Excel'inde şirket kodu ve unvanı (PDF ile aynı)
+    # Subtest: 1, 6, 9: 001'in Excel'i başta '001 · Unvan' + rapor adı + kapsam; tablo ekranla birebir; süzgeç ve dondurma başlık satırında; PDF aynı şirket
+    not ok 1 - 1, 6, 9: 001'in Excel'i başta '001 · Unvan' + rapor adı + kapsam; tablo ekranla birebir; süzgeç ve dondurma başlık satırında; PDF aynı şirket
+      ---
+      duration_ms: 35.03156
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:68:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Excel'in ilk satırı şirket kodu ve unvanı
+        + actual - expected
+        
+        + 'Tarih'
+        - '001 · Merkez Ticaret Ltd. Şti.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '001 · Merkez Ticaret Ltd. Şti.'
+      actual: 'Tarih'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:74:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 2, 5: 002'nin Excel'i ve PDF'i '002 · Unvan' (özel karakterler metin olarak, formül değil); 001'in adı geçmez
+    not ok 2 - 2, 5: 002'nin Excel'i ve PDF'i '002 · Unvan' (özel karakterler metin olarak, formül değil); 001'in adı geçmez
+      ---
+      duration_ms: 14.918845
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:104:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002'nin başlığı (XML karakterleri bozulmadan)
+        + actual - expected
+        
+        + 'Tarih'
+        - '002 · Şube & <Deneme> "Ltd" =1+1'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '002 · Şube & <Deneme> "Ltd" =1+1'
+      actual: 'Tarih'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:107:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 3: sunucuda 002 seçiliyken 001'i gösteren pencerenin Excel'i (?hofCompany=001) '001 · Unvan' der
+    not ok 3 - 3: sunucuda 002 seçiliyken 001'i gösteren pencerenin Excel'i (?hofCompany=001) '001 · Unvan' der
+      ---
+      duration_ms: 16.157946
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        pencerenin şirketi
+        + actual - expected
+        
+        + 'Tarih'
+        - '001 · Merkez Ticaret Ltd. Şti.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '001 · Merkez Ticaret Ltd. Şti.'
+      actual: 'Tarih'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:123:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 4: şirketin adı değişince Excel yeni adı yazar
+    not ok 4 - 4: şirketin adı değişince Excel yeni adı yazar
+      ---
+      duration_ms: 23.544261
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'Tarih'
+        - '002 · Yeni Şube A.Ş.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '002 · Yeni Şube A.Ş.'
+      actual: 'Tarih'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:130:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 7, 8: boş raporda (çek portföyü) başlık bloğu ve kolon başlıkları var, süzgeç yok; Özet sayfasında Şirket satırı
+    not ok 5 - 7, 8: boş raporda (çek portföyü) başlık bloğu ve kolon başlıkları var, süzgeç yok; Özet sayfasında Şirket satırı
+      ---
+      duration_ms: 14.888861
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'Vade'
+        - '001 · Merkez Ticaret Ltd. Şti.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '001 · Merkez Ticaret Ltd. Şti.'
+      actual: 'Vade'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:140:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - İz 1.1 — Rapor Merkezi Excel'inde şirket kodu ve unvanı (PDF ile aynı)
+  ---
+  duration_ms: 740.923531
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/iz1-excel-sirket.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1207.653348

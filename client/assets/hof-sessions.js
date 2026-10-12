@@ -369,8 +369,11 @@
     if (change?.kind !== "sessions") return;
     if (removing) return; // bu pencerenin kendi silmesi: remove() bildirir ve yeniden açar
     load().then(data => {
-      // Çalışılan sayfa başka bir bilgisayarda silindiyse ekran sunucunun açtığı sayfayla yeniden açılır.
-      if (data && HOF.datasetKey && data.current !== HOF.datasetKey && !removing) {
+      // Çalışılan sayfa başka bir bilgisayarda silindiyse ekran sunucunun açtığı sayfayla yeniden açılır. 2.2.0 İz 1.2: liste isteği bu
+      // pencerenin sayfasını taşır (?hofPage=); sayfa duruyorsa current odur — aynı hesabın öbür penceresinde yeni sayfa açılması ya da
+      // seçilmesi "silindi" sayılmaz, yeni sayfa yalnız şeride eklenir. Silindi yalnız sayfa listeden kalktığında.
+      const gone = data && HOF.datasetKey && !data.sessions.some(item => item.key === HOF.datasetKey);
+      if (gone && data.current !== HOF.datasetKey && !removing) {
         const next = data.sessions.find(item => item.key === data.current);
         sessionStorage.setItem("hof-flash", `Çalıştığınız sayfa veri yöneticisi tarafından silindi; ${next ? `“${nameOf(next)}” sayfasına` : "başka bir sayfaya"} geçildi.`);
         location.reload();

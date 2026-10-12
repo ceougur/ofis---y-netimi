@@ -1,6 +1,8 @@
 // 2.1.0 TEMEL SÜRÜM — ERTELENENLER GÖRÜNMEZ ve API'DEN ÇAĞRILAMAZ (kullanıcı kararı 10.10.2026 "TEMEL SÜRÜME BAŞLA"; plan §12.1 "yarım özellik
 // görünmez"). Ertelenenler: döviz/kur/değerleme (Aşama 13), Bankaya Tahsile Ver, K8 taksit avans/fazla ödeme, faturanın bankalı iade/iptal
-// ayrıntısı ve toplu kesim, kalan §8.10 raporları, Kasa açılış/devir; POS 2.2.0, ekstre ve mutabakat 2.3.0. Her biri için iki iddia sınanır:
+// ayrıntısı ve toplu kesim, kalan §8.10 raporları, Kasa devir (yıl sonu); POS 2.2.0, ekstre ve mutabakat 2.3.0. Her biri için iki iddia sınanır:
+// (2.2.0 İz 1.3: Kasa AÇILIŞI artık var — Kasa → Açılış Bakiyesi, POST /api/workspace/cash/opening; test/iz1-kasa-acilis.test.mjs. Burada yalnız
+// Kasa'ya açılış/devir TÜRÜNDE hareket ve ayrı devir ucu olmadığı denetlenir.)
 //   (1) GÖRÜNMEZ — sunucunun ekrana verdiği veride (Banka Ayarları bölümleri/kalemleri, hesap türleri, fiş türleri, süzgeç grupları, Rapor
 //       Merkezi listesi, Roller kataloğu, ANLIK DURUM ve Birleşik Rapor sütunları) yer almaz;
 //   (2) API REDDEDER — doğrudan istek 4xx döner ve veri tabanına hiçbir şey yazılmaz (ders 3: reddedilen istek başarı değildir; sayılar okunur).
@@ -153,11 +155,11 @@ describe("2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'de
     assert.equal((await must("çek kartı", ctx.api.get(`/api/workspace/cheques/${cheque.id}`))).status, "portfolio", "çek portföyde");
   });
 
-  it("Kasa açılış/devir: Kasa'da açılış ya da devir hareketi girilemez (400); Kasa yalnız tahsilat ve ödeme", async () => {
+  it("Kasa devir: Kasa'ya açılış/devir TÜRÜNDE hareket girilemez (400) ve ayrı devir ucu yok (Kasa açılışı 2.2.0 İz 1.3'te: Açılış Bakiyesi)", async () => {
     const before = snapshot(ctx.store);
     for (const kind of ["opening", "carry", "devir", "acilis"]) expectStatus(await ctx.api.post("/api/workspace/cash", { kind, amount: "500", date: "2026-10-08", description: "Kasa açılışı" }), 400, null, `Kasa ${kind}`);
-    for (const url of ["/api/workspace/cash/opening", "/api/workspace/cash/carry"]) assert.ok(NO_ROUTE.includes((await ctx.api.post(url, { amount: "500", date: "2026-10-08" })).status), `POST ${url}`);
-    assert.deepEqual(snapshot(ctx.store), before, "Kasa açılış istekleri hiçbir şey yazmadı");
+    for (const url of ["/api/workspace/cash/carry"]) assert.ok(NO_ROUTE.includes((await ctx.api.post(url, { amount: "500", date: "2026-10-08" })).status), `POST ${url}`);
+    assert.deepEqual(snapshot(ctx.store), before, "Kasa devir istekleri hiçbir şey yazmadı");
   });
 
   it("Rapor Merkezi: Banka grubunda yalnız temel 4 rapor; ertelenen §8.10 raporları listede yok ve 404 (ekran, PDF, Excel)", async () => {

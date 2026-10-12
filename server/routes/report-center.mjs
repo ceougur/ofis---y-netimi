@@ -137,9 +137,23 @@ export function footerRow({ headers = [], types = [], rows = [], footer, footerU
   return out;
 }
 
-export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
+  // Rapor başlığındaki şirket (2.2.0 İz 1.1; 2.0.17 m2 kararı "rapor/PDF/Excel başlığında 001 · Unvan"): bu örneğin şirketinin kodu (kayıt defteri)
+  // ve unvanı (office.name; PDF'in başlığında da bu yazıyordu; boşsa şirketin adı). İstek pencerenin şirketine gider (?hofCompany=, app.mjs
+  // dispatch), dolayısıyla etiket de o şirketindir. Önceden Excel'de şirket hiç yoktu, PDF'te yalnız unvan vardı.
+  const companyLabel = () => {
+    let entry = null;
+    try {
+      entry = typeof company === "function" ? company() : null;
+    } catch {
+      entry = null;
+    }
+    const name = String(office() || entry?.name || "").trim();
+    const code = String(entry?.code || "").trim();
+    return code && name ? `${code} · ${name}` : name || code;
+  };
   const admin = { id: "", role: "admin" };
 
   // ---------- Ortak yardımcılar ----------
@@ -1805,7 +1819,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       // PDF kırpılırsa (20.000 satır) TOPLAM satırı yine TÜM satırların toplamıdır; alt başlık bunu söyler.
       footer: data.footer,
       summary: data.summary,
-      officeName: office(),
+      officeName: companyLabel(),
       userName: user.display_name || user.username || "",
       brand: office() || "DestekOfis",
     });
@@ -1818,9 +1832,14 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     const unique = data.headers.map((header, index) => (data.headers.indexOf(header) === index && header ? header : `${header || "Kolon"} ${index + 1}`));
     const rows = data.rows.map(row => Object.fromEntries(unique.map((header, index) => [header, row[index] ?? ""])));
     const footer = data.footer ? Object.fromEntries(unique.map((header, index) => [header, data.footer[index] ?? ""])) : null;
-    const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer }];
-    if (data.summary.length) sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: data.subtitle }, { Kalem: "Hazırlanma", Değer: stamp(clock().toISOString()) }, ...data.summary.map(([label, value]) => ({ Kalem: label, Değer: value }))] });
-    const buffer = buildXlsx(sheets, { now: clock(), title: data.title });
+    // Başlık bloğu (2.2.0 İz 1.1): PDF'in başlığındaki bilgiler — şirket ("001 · Unvan"), rapor adı, kapsam, oluşturma ve hazırlayan.
+    const label = companyLabel();
+    const made = stamp(clock().toISOString());
+    const by = user.display_name || user.username || "";
+    const preamble = [{ text: label, bold: true }, { text: data.title, bold: true }, { text: data.subtitle }, { text: `Oluşturma: ${made}${by ? ` · Hazırlayan: ${by}` : ""}` }];
+    const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer, preamble }];
+    if (data.summary.length) sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [...(label ? [{ Kalem: "Şirket", Değer: label }] : []), { Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: data.subtitle }, { Kalem: "Hazırlanma", Değer: made }, ...data.summary.map(([label, value]) => ({ Kalem: label, Değer: value }))] });
+    const buffer = buildXlsx(sheets, { now: clock(), title: data.title, company: label });
     audit(user, "report.exported", data.id, { format: "xlsx", rows: data.total, ...data.query });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${fileBase(data)}.xlsx` });
   });

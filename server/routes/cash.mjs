@@ -13,6 +13,7 @@ import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, r
 import { systemClock } from "../lib/clock.mjs";
 import { createMoneyLines, waysFor } from "../lib/bank/money-lines.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
+import { CASH_OPENING_TEXT, cashOpenings, firstCashMovement, isCashOpening } from "../lib/cash-opening.mjs";
 
 // Banka Fişi'nin para hareketi olmayan türleri (açılış, Devir Kapanışı, eski bakiye aktarımı): raporda "Açılış ve Devir Düzeltmeleri".
 const ADJUST_TYPES = new Set(["opening", "carry_close", "legacy_reclass"]);
@@ -141,7 +142,16 @@ export function registerCashRoutes(router, context) {
     // GG2: POS / Kredi Kartı (card) yalnız POS ve Hesabı Atanmamış POS'tur; kurumsal kart borcu (ccard) ve kredi (loan) varlık değildir.
     const byMethod = { cash: roundMoney(totalsByWay.cash / 100), bank: roundMoney(totalsByWay.bank / 100), card: roundMoney(totalsByWay.card / 100) };
     let adjust = 0;
-    for (const entry of lines.rows({ ways })) {
+    // 2.2.0 İz 1.3: Kasa açılışı o günün BAŞINDAKİ nakittir — aynı günün öbür hareketlerinden önce gelir (yürüyen bakiye açılışla başlar). Öbür
+    // satırların sırası tek kaynağınkiyle aynı (kararlı sıralama; açılış yoksa liste değişmez).
+    const rowsInOrder = lines.rows({ ways });
+    const firstOfDay = rowsInOrder.findIndex(entry => entry.source === "manual" && isCashOpening(entry));
+    if (firstOfDay > 0) {
+      const opening = rowsInOrder[firstOfDay];
+      const at = rowsInOrder.findIndex(entry => entry.date === opening.date);
+      if (at < firstOfDay) rowsInOrder.splice(at, 0, ...rowsInOrder.splice(firstOfDay, 1));
+    }
+    for (const entry of rowsInOrder) {
       const signed = entry.kind === "in" ? entry.amount : -entry.amount;
       balance = roundMoney(balance + signed);
       totals[entry.kind] = roundMoney(totals[entry.kind] + entry.amount);
@@ -159,6 +169,11 @@ export function registerCashRoutes(router, context) {
       }
       period[entry.kind] = roundMoney(period[entry.kind] + entry.amount);
       const own = entry.actorId === user.id;
+      // 2.2.0 İz 1.3: Kasa açılışı (açıklaması "Açılış …" nakit elle giriş) — yalnız yönetici düzeltir/siler; satır işaretli (Kasa penceresi).
+      if (entry.source === "manual" && isCashOpening(entry)) {
+        list.push({ ...entry, balance, editable: canUser(user, "system.manage"), opening: true });
+        continue;
+      }
       // Taksit, cari ve stok hareketleri kendi kartlarından düzeltilir (Kasa'da yalnız kart açılır).
       const editable =
         entry.source === "plan" ? canUser(user, "plans.manage") || (own && canUser(user, "plans.collect"))
@@ -224,6 +239,89 @@ export function registerCashRoutes(router, context) {
   // İşlem No (BNK-yıl-sıra): yinelemede "Bu işlem zaten kaydedildi (BNK-…); ikinci kez yazılmadı." için (plan §3.10/1).
   const eventNoOf = id => store.get("SELECT e.no FROM cash_entries c JOIN fin_events e ON e.id = c.event_id WHERE c.id = ?", id)?.no || "";
 
+  // ---------- Kasa açılışı / devir (2.2.0 İz 1.3; lib/cash-opening.mjs) ----------
+  // Açılış: Kasa'ya nakit elle giriş, açıklaması "Açılış …" (Ana Defter B 100 / A 500). Yalnız yönetici; bir kez; tarihi Kasa'nın açılış dışındaki
+  // ilk nakit hareketinden sonra olamaz (açılış o günün başındaki nakittir — banka açılışı kuralı); dönem kilidi ve ileri tarih her hareket gibi.
+  // Aynı kurallar Kasa → Açılış Bakiyesi ucunda ve sıradan Kasa ekle/düzelt/sil yolunda (eski yoldan elle "Açılış …" yazılan giriş).
+  const dateText = iso => (iso ? String(iso).split("-").reverse().join(".") : "");
+  const requireOpeningAdmin = user => {
+    if (!canUser(user, "system.manage")) throw new HttpError(403, "Kasa açılış bakiyesini yalnız yönetici girer, düzeltir ya da siler (açıklaması “Açılış” ile başlayan Kasa girişi açılış sayılır).", { code: "cash-opening-admin" });
+  };
+  // entry açılış olacak (yeni ya da düzeltme); except: düzeltilen satırın kendisi.
+  function assertOpening(user, entry, except = "") {
+    requireOpeningAdmin(user);
+    const other = cashOpenings(store, { except })[0];
+    if (other) throw new HttpError(409, `Kasa açılış bakiyesi zaten girilmiş (${dateText(other.date)} · ${money(other.amount)}). Kasa → Açılış Bakiyesi'nden düzeltin.`, { code: "cash-opening-exists", id: other.id });
+    const first = firstCashMovement(store, lines, { except });
+    if (first && entry.date > first) throw new HttpError(409, `Açılış tarihi (${dateText(entry.date)}) Kasa'nın ilk hareketinden (${dateText(first)}) sonra olamaz. Açılış, o günün başındaki nakittir; ilk hareketin günü ya da öncesi seçilir.`, { code: "cash-opening-after-first", firstMovement: first, field: "date" });
+  }
+
+  router.get("/api/workspace/cash/opening", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "cash.view");
+    const opening = cashOpenings(store)[0] || null;
+    ok(res, {
+      opening: opening ? { id: opening.id, date: opening.date, amount: roundMoney(opening.amount), description: opening.description } : null,
+      firstMovement: firstCashMovement(store, lines, { except: opening?.id || "" }),
+      lockedUntil: context.period?.lockedUntil?.() || "",
+      canManage: canUser(user, "system.manage"),
+    });
+  });
+
+  // Gir ya da düzelt (banka hesabının "Açılışı Düzelt"i gibi tek uç): açılış yoksa yazılır, varsa aynı satır düzeltilir (yeni satır açılmaz).
+  router.post("/api/workspace/cash/opening", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req);
+    const amount = parseAmount(body.amount);
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 1e12) throw new HttpError(400, "Açılış tutarını girin (sıfırdan büyük). Kasa'da devreden nakit yoksa açılış girmeyin.", { field: "amount" });
+    const date = context.period ? context.period.movementDate(body) : text(body.date) || clock.today();
+    if (!validDate(date)) throw new HttpError(400, "Geçerli bir tarih girin.", { field: "date" });
+    const existing = cashOpenings(store)[0] || null;
+    const entry = { kind: "in", amount: roundMoney(amount), date, description: existing?.description || CASH_OPENING_TEXT, method: "cash" };
+    if (!existing) {
+      const id = auth.newId("cash");
+      const result = bank.post({
+        user,
+        module: "cash",
+        op: "create",
+        requestId: requestIdOf(req, body),
+        scope: "cash.opening.create",
+        body,
+        prepare: () => assertOpening(user, entry),
+        write: () => {
+          store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", id, entry.kind, entry.amount, entry.date, entry.description, entry.method, bank.eventFor("cash_entries", entry), user.id, now());
+          audit(user, "cash.opening.entered", id, entry);
+          return { id };
+        },
+      });
+      const savedId = result?.replayed ? result.refId : id;
+      if (!result?.replayed) changed(user);
+      return ok(res, { id: savedId, created: !result?.replayed, ...(result?.replayed ? { replayed: true } : {}), opening: { ...entry, id: savedId } });
+    }
+    context.period?.assertOpen(existing.date, "Kasa açılışı");
+    if (existing.date === entry.date && Math.abs(roundMoney(existing.amount) - entry.amount) < 0.005) return ok(res, { id: existing.id, created: false, unchanged: true, opening: { ...entry, id: existing.id } });
+    // Açılışı düşürmek Kasa'yı eksiye düşürecekse sorulur (Uyar) ya da reddedilir (Engelle); "Yine de Kaydet" cashForce.
+    guardChange(existing, entry, body.cashForce === true);
+    const previous = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef FROM cash_entries WHERE id = ?", existing.id);
+    bank.post({
+      user,
+      module: "cash",
+      op: "update",
+      prev: [previous],
+      requestId: requestIdOf(req, body),
+      scope: "cash.opening.update",
+      body: { ...body, id: existing.id },
+      prepare: () => assertOpening(user, entry, existing.id),
+      write: () => {
+        const eventId = bank.eventFor("cash_entries", { ...entry, transfer_id: "", event_id: previous.eventId || "" });
+        store.run("UPDATE cash_entries SET amount = ?, date = ?, description = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.amount, entry.date, entry.description, eventId, user.id, now(), existing.id);
+        audit(user, "cash.opening.corrected", existing.id, { previous: { amount: roundMoney(existing.amount), date: existing.date }, next: { amount: entry.amount, date: entry.date } });
+        return { id: existing.id };
+      },
+    });
+    changed(user);
+    ok(res, { id: existing.id, created: false, opening: { ...entry, id: existing.id } });
+  });
+
   router.post("/api/workspace/cash", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cash.manage");
     const body = await readJson(req);
@@ -243,10 +341,12 @@ export function registerCashRoutes(router, context) {
       // Hakem K4 (plan §3.3 sırası): eksi bakiye ön denetimi istek kimliği bakışından sonra, işlemin içinde (yineleme 409 almaz).
       prepare: () => {
         if (entry.kind === "out") guardOut(entry.amount, entry.date, body.cashForce === true, entry.method);
+        // 2.2.0 İz 1.3: açıklaması "Açılış …" nakit giriş Kasa açılışıdır (B 100 / A 500): yalnız yönetici, bir kez, ilk hareketten önce.
+        if (isCashOpening(entry)) assertOpening(user, entry);
       },
       write: () => {
         store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", id, entry.kind, entry.amount, entry.date, entry.description, entry.method, bank.eventFor("cash_entries", entry), user.id, now());
-        audit(user, "cash.entry.created", id, entry);
+        audit(user, isCashOpening(entry) ? "cash.opening.entered" : "cash.entry.created", id, entry);
         return { id };
       },
     });
@@ -339,6 +439,10 @@ export function registerCashRoutes(router, context) {
     // Eski (2.0.16 öncesi) nakit dışı Kasa kaydının yolu değiştirilmez; transferde yön (kind) de sabittir.
     const entry = { ...input({ ...body, method: undefined }), method: previous.method };
     if (previous.transferId && entry.kind !== previous.kind) throw new HttpError(400, "Transferin yönü değiştirilemez; silip yeniden girin.", { code: "transfer-kind" });
+    // 2.2.0 İz 1.3: Kasa açılışını düzeltmek, açılış olmaktan çıkarmak ya da bir girişi açılışa çevirmek yalnız yöneticide (kurallar: assertOpening).
+    const openingAfter = !previous.transferId && isCashOpening(entry);
+    if (!previous.transferId && isCashOpening(previous)) requireOpeningAdmin(user);
+    if (openingAfter) requireOpeningAdmin(user);
     guardChange(previous, entry, body.cashForce === true);
     const twin = twinOf(previous);
     if (twin) guardChange(twin, { ...twin, amount: entry.amount, date: entry.date }, body.cashForce === true);
@@ -360,6 +464,9 @@ export function registerCashRoutes(router, context) {
       requestId: requestIdOf(req, body),
       scope: "cash.entry.update",
       body: { ...body, id: previous.id },
+      prepare: () => {
+        if (openingAfter) assertOpening(user, entry, previous.id);
+      },
       write: () => {
         k7.capture();
         // Eski (olaysız) satır düzeltilince olay alır; transferin iki bacağı aynı olayda kalır.
@@ -381,6 +488,8 @@ export function registerCashRoutes(router, context) {
     const user = auth.requirePermission(req, "cash.manage");
     const previous = existing(params.id);
     context.period?.assertOpen(previous.date, "Bu kasa hareketi");
+    // 2.2.0 İz 1.3: Kasa açılışını yalnız yönetici siler.
+    if (!previous.transferId && isCashOpening(previous)) requireOpeningAdmin(user);
     guardChange(previous, null, url.searchParams.get("cashForce") === "1", "Bu Kasa hareketi silinince");
     const twin = twinOf(previous);
     if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1", "Bu transferin öbür tarafı silinince");

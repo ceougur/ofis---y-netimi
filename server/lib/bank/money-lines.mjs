@@ -536,6 +536,14 @@ export function createMoneyLines(store, { verify = false } = {}) {
    * aynı toplam, yalnız o yolun satırlarından (yol kaynağa itilir). Kasa'nın eksi bakiye denetimi (her nakit çıkışında) önceden bütün para
    * satırlarının tam özetini kuruyordu (11.10.2026 ölçeği: 100.000 satırda yazım başına ~0,5–0,8 sn).
    */
+  /**
+   * Yolun ilk para satırının tarihi ('' = yok). skip: atlanacak kaynaklar (MONEY_SOURCES id; 2.2.0 İz 1.3 Kasa açılışı: Kasa elle girişleri (2)
+   * ayrıca okunur, açılışın kendisi hareket sayılmaz).
+   */
+  function firstDate(way, { skip = [] } = {}) {
+    const row = store.get(`SELECT MIN(w.date) AS d FROM (${waySql({ light: true, ways: [way] })}) w WHERE w.way = :way${skip.length ? ` AND w.src NOT IN (${skip.map(Number).join(", ")})` : ""}`, { way });
+    return row?.d ? String(row.d) : "";
+  }
   function wayBalance(way, day) {
     const signed = "CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END";
     const row = store.get(`SELECT COALESCE(SUM(${signed}), 0) AS allCents, COALESCE(SUM(CASE WHEN w.date <= :day THEN (${signed}) END), 0) AS atCents FROM (${waySql({ light: true, ways: [way] })}) w WHERE w.way = :way`, { day, way });
@@ -720,7 +728,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     return out;
   }
 
-  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, classified, classifiedTotals, keyTotals, wayBalance, firstDate, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };
