@@ -560,6 +560,26 @@ ikisini birlikte tutuyordu (101 "Alınan Çekler ve Senetler", 103 "Verilen Çek
 - Karşılıksız çek/senet bugünkü gibi cariye döner (128 Şüpheli Ticari Alacaklar ayrı karar, bu ekte yok).
 - Hiçbir rolde 121 ve 321 seçilemez (§3.11 madde 504 listesine eklenir).
 
+### 3.11b Ek (12.10.2026, kullanıcı kararı): Şüpheli Ticari Alacaklar
+
+Kullanıcı: "şüpheli alacaklar … da olsun". Plan susuyordu → yaygın uygulama (Tekdüzen 128/129, VUK md. 323):
+
+1. **Karşılıksız çek / protestolu senet** (mevcut bounce): bugünkü gibi carinin borcuna döner (B 120 / A 101 ya da 121; evrak durumu
+   Karşılıksız / Protestolu). Cari bakiyesi bugünküyle aynı.
+2. **"Şüpheli Alacağa Al"** (cari kartında; karşılıksız evrakın kartında kısayol): tutar (en çok carinin borç bakiyesi) ve tarih; neden
+   (Karşılıksız Çek / Protestolu Senet / Dava / İcra / Diğer) ve açıklama. Yevmiye B 128 / A 120. Cari bakiyesi DEĞİŞMEZ; carinin
+   "Şüpheli" tutarı ve rozeti görünür. Tahsilat gelince önce şüpheli tutardan düşer (A 128 yerine A 120 kalır; defter: B 100/102 / A 128
+   o tutar kadar). "Şüpheliden Çıkar" (geri al) B 120 / A 128.
+3. **"Karşılık Ayır"** (VUK 323; isteğe bağlı, yalnız şüpheli tutar kadar): B 654 Karşılık Giderleri / A 129 Şüpheli Ticari Alacaklar
+   Karşılığı (−). Şüpheli alacak sonradan tahsil edilirse ayrılan karşılık kadar B 129 / A 644 Konusu Kalmayan Karşılıklar. **"Değersiz
+   Alacak Yaz"** (kesinleşmiş kayıp): karşılık varsa B 129 / A 128, yoksa B 659 / A 128; cari bakiyesi o tutar kadar kapanır.
+4. Kurallar: dönem kilidi, ileri tarih, istek kimliği, yetki (cari yönetimi + muhasebe), audit, Silinenler (geri alma ters kayıtla),
+   Şirket Verisini Sıfırla listeleri, Mutabakat Testi: 128 = Σ etkin şüpheli kayıtları − kapananlar; 129 = Σ karşılık − çözülen.
+5. Görünüm: cari kartında "Şüpheli Alacak" bilgisi; Raporlar → "Şüpheli Alacaklar" (cari, neden, tarih, tutar, karşılık, tahsil edilen,
+   kalan); Cari Mizanı/Hesap Mizanı'nda 128/129; ANLIK DURUM alacak toplamında şüpheli ayrı satır. Alacak Yaşlandırma ve hatırlatmalar
+   şüpheli tutarı ayrı gösterir.
+6. Hiçbir rolde 128/129 seçilemez (§3.11 rol listesi).
+
 ### 3.12 Döviz, kur ve değerleme (K9; talimat 21; ek 2, 3)
 
 - **Saklama:** Döviz hesabı kendi para biriminde tutulur. Her satırda döviz tutarı, TL karşılığı, kur (`rate_e6`) ve kur kaynağı bulunur. Kur değişince geçmiş tutar yeniden hesaplanmaz.
