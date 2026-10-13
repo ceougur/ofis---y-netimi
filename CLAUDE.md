@@ -374,5 +374,5 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   5 dosya + latest/ (json, zip, pdf, exe) teslimle bayt bayt aynı, exe .sha256 OK; gerçek eski güncelleyiciler (v2.1.0, 2.0.26, 2.0.19, 2.0.17
   API + yedek yol; 2.0.4, 1.7.0 API — yedek yol 2.0.17'den beri) canlı GitHub'da 2.2.0'ı "available" gördü, indirilen paket 2afaecfb… eşleşti;
   2.2.0 → "up-to-date". NOT: deneme betiği `HUKUK_BOOTSTRAP_VERSION=2` (gerçek kurulumun bootstrap.mjs değeri) vermeyince "incompatible" çıkar
-  — ürün değil test ortamı (ders 14). Site kılavuz PR'ı ceougur/destekofis#13 AÇIK (birleştirme kullanıcının "birleştir"iyle). release.yml
+  — ürün değil test ortamı (ders 14). Site kılavuz PR'ı ceougur/destekofis#13 BİRLEŞTİ (kullanıcı "birleştir", main 831d903; main PDF 07435148… doğrulandı; canlı site ağ politikasıyla okunamadı). release.yml
   koşu 38351603781 sürümlü exe ekleyecek.
