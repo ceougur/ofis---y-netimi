@@ -370,3 +370,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   klonlandı). SIRADA: kullanıcı "geldim" → yayın açar (tag v2.2.0 → master, başlık "DestekOfis 2.2.0", not "İyileştirmeler ve POS entegrasyonu",
   5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (ceougur/destekofis web/indir/). Sonra (limit varsa):
   İz 4.3 Şüpheli Alacaklar, ölçek-20 kök neden, 2.1.0/2.2.0 kapsam ölçümü; Cuma 16.10 planlı test.
+  YAYIMLANDI (13.10.2026 ~05:29 UTC; `v2.2.0` = b24e0c2; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı): yayındaki
+  5 dosya + latest/ (json, zip, pdf, exe) teslimle bayt bayt aynı, exe .sha256 OK; gerçek eski güncelleyiciler (v2.1.0, 2.0.26, 2.0.19, 2.0.17
+  API + yedek yol; 2.0.4, 1.7.0 API — yedek yol 2.0.17'den beri) canlı GitHub'da 2.2.0'ı "available" gördü, indirilen paket 2afaecfb… eşleşti;
+  2.2.0 → "up-to-date". NOT: deneme betiği `HUKUK_BOOTSTRAP_VERSION=2` (gerçek kurulumun bootstrap.mjs değeri) vermeyince "incompatible" çıkar
+  — ürün değil test ortamı (ders 14). Site kılavuz PR'ı ceougur/destekofis#13 AÇIK (birleştirme kullanıcının "birleştir"iyle). release.yml
+  koşu 38351603781 sürümlü exe ekleyecek.
