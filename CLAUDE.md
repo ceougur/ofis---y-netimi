@@ -391,3 +391,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   check() "error" döndü (2316/2317; öbür 3 platform ve önceki/sonraki commit'ler yeşil). Linux'ta keepAlive sınırına denk gelen beklemelerle
   42/42 üretilemedi (ders 18: Linux benzetimi kanıt değil). Kök neden BİLİNMİYOR; teste teşhis mesajı eklendi (nedeni günlüğe yazar). Yeniden
   görülürse günlükteki nedenle kök neden + zorla üretme (ders 20). Ürün etkisi: elle denetim 3 deneme, otomatik denetim saatte bir.
+- MÜŞTERİ İSTEĞİ (13.10.2026, emlakçı; ekran: kayıt detay kartı → Belgeler, resim satırında Görüntüle/Yazdır/İndir/Sil): "WhatsApp'tan Paylaş"
+  simgesi → karttaki resimler + detay kartındaki bilgiler müşteriye gönderilsin. Soru: yapılabilir mi, maliyet, iş yükü, süre. KODDAN: WhatsApp
+  bugün wa.me ile YALNIZ METİN açar (hof-whatsapp.js:13; dosya eki resmî yolla ancak Meta Business API — Pro, ileride); personel bilgisayarı
+  sunucuya http://<ip>:5123 ile bağlanır (launcher/discovery.go) → güvenli bağlam değil: tarayıcının dosya paylaşımı (navigator.share) ve
+  panoya resim kopyalama orada KAPALI; launcher Edge/Chrome uygulama penceresini kendisi açar (platform_windows.go) → bayrakla açılabilir,
+  gerçek Windows'ta denenmeli (ders 18). ÖNERİ (karar kullanıcıda): Yol A ücretsiz — "WhatsApp'ta Paylaş" penceresi: alan seçimi + metin
+  ön izleme + resim seçimi → Windows Paylaş penceresi (WhatsApp masaüstü) ya da yedek "metni aç + resimleri panoya/indir, sohbete yapıştır";
+  Gönder'e kullanıcı basar; bütün sektörlere (Standart). Yol B Meta Business API (tam otomatik; Meta ücreti + işletme doğrulaması; Pro, ayrı iş).
