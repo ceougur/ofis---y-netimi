@@ -376,3 +376,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   2.2.0 → "up-to-date". NOT: deneme betiği `HUKUK_BOOTSTRAP_VERSION=2` (gerçek kurulumun bootstrap.mjs değeri) vermeyince "incompatible" çıkar
   — ürün değil test ortamı (ders 14). Site kılavuz PR'ı ceougur/destekofis#13 BİRLEŞTİ (kullanıcı "birleştir", main 831d903; main PDF 07435148… doğrulandı; canlı site ağ politikasıyla okunamadı). release.yml
   koşu 38351603781 sürümlü exe ekleyecek.
+- KUSUR (13.10.2026, baş mimar fark etti): yayımlanan 2.2.0 kılavuz PDF'inin kapağında "Sürüm 2.1.0" yazıyor (kaynak
+  docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html:14 elle; içerik 2.2.0 — POS/Tahsile Ver var). pdf-denetle sürüm etiketini denetlemiyor.
+  ÖNERİ (karar kullanıcıda): etiketi package.json sürümünden üret + pdf-denetle'ye "kapak sürümü = package.json" denetimi; PDF yeniden
+  üretilip yayındaki kılavuz dosyası ve site (web/indir) değiştirilir — güncelleme paketi/exe DEĞİŞMEZ (kılavuz paketin içinde de varsa
+  bir sonraki sürümle düzelir).
+- İSTEK (kullanıcı, 13.10.2026): satışa yardım eden arkadaş için müşterilere paylaşılacak TANITIM/REKLAM METNİ → `docs/pazarlama/TANITIM-METNI.md`
+  (kısa WhatsApp + uzun; iddialar 2.2.0 kılavuzundan doğrulandı; e-Fatura, bulut, 2+ şirket VAAT EDİLMEZ). Site metni (ceougur/destekofis
+  web/index.html) eski: "oturum", sektör vurgusu; banka/POS/çek/mizan yok — güncelleme önerisi verildi.
