@@ -1,6 +1,8 @@
 // 2.1.0 TEMEL SÜRÜM — ERTELENENLER GÖRÜNMEZ ve API'DEN ÇAĞRILAMAZ (kullanıcı kararı 10.10.2026 "TEMEL SÜRÜME BAŞLA"; plan §12.1 "yarım özellik
 // görünmez"). Ertelenenler: döviz/kur/değerleme (Aşama 13), Bankaya Tahsile Ver, K8 taksit avans/fazla ödeme, faturanın bankalı iade/iptal
-// ayrıntısı ve toplu kesim, kalan §8.10 raporları, Kasa açılış/devir; POS 2.2.0, ekstre ve mutabakat 2.3.0. Her biri için iki iddia sınanır:
+// ayrıntısı ve toplu kesim, kalan §8.10 raporları, Kasa devir (yıl sonu); POS 2.2.0, ekstre ve mutabakat 2.3.0. Her biri için iki iddia sınanır:
+// (2.2.0 İz 1.3: Kasa AÇILIŞI artık var — Kasa → Açılış Bakiyesi, POST /api/workspace/cash/opening; test/iz1-kasa-acilis.test.mjs. Burada yalnız
+// Kasa'ya açılış/devir TÜRÜNDE hareket ve ayrı devir ucu olmadığı denetlenir.)
 //   (1) GÖRÜNMEZ — sunucunun ekrana verdiği veride (Banka Ayarları bölümleri/kalemleri, hesap türleri, fiş türleri, süzgeç grupları, Rapor
 //       Merkezi listesi, Roller kataloğu, ANLIK DURUM ve Birleşik Rapor sütunları) yer almaz;
 //   (2) API REDDEDER — doğrudan istek 4xx döner ve veri tabanına hiçbir şey yazılmaz (ders 3: reddedilen istek başarı değildir; sayılar okunur).
@@ -28,26 +30,27 @@ describe("2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'de
   });
   after(() => ctx.server.close());
 
-  it("Banka Ayarları (ekran verisi): POS, Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi ve Bağdaştırıcılar görünmez", async () => {
+  // 2.2.0 (İz 3.4, bilerek güncellendi): POS geldi — POS ve Gelişmiş → POS bölümleri ile Varsayılan POS görünür (banka-220-pos-iz3); POS'un henüz
+  // olmayan seçenekleri ("Ekstre ile" bankaya geçiş, "Her Valörde Taslak") listede yok.
+  it("Banka Ayarları (ekran verisi): Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi ve Bağdaştırıcılar görünmez; POS'un ertelenen seçenekleri yok", async () => {
     const settings = await must("ayarlar", ctx.api.get(`${BANK}/settings`));
     const section = id => settings.sections.find(item => item.id === id);
-    for (const id of ["pos", "posAdvanced", "statement", "fx", "fxAdvanced", "movement"]) assert.equal(section(id).available, false, `${id} bölümü görünmemeli`);
-    const hiddenItems = [["account", "defaultPosId"], ["holidayAdvanced", "shift"], ["gl", "fxGain"], ["gl", "fxLoss"], ["other", "manualVoucher"], ["other", "adapters"]];
+    for (const id of ["statement", "fx", "fxAdvanced", "movement"]) assert.equal(section(id).available, false, `${id} bölümü görünmemeli`);
+    for (const id of ["pos", "posAdvanced"]) assert.equal(section(id).available, true, `${id} bölümü 2.2.0'da görünür`);
+    const hiddenItems = [["holidayAdvanced", "shift"], ["gl", "fxGain"], ["gl", "fxLoss"], ["other", "manualVoucher"], ["other", "adapters"]];
     for (const [id, key] of hiddenItems) assert.equal(section(id).items.find(item => item.key === key).available, false, `${id}.${key} görünmemeli`);
-    // Görünen bütün kalemlerin adı ve yardımı ertelenen bir özelliği anlatmaz (POS komisyonu masraf türü ve 108 sabit eşlemesi 2.1.0'da kullanılır).
-    const visible = settings.sections.filter(item => item.available !== false).flatMap(item => item.items.filter(entry => entry.available !== false).map(entry => `${item.label} › ${entry.label}: ${entry.text || ""} ${entry.help || ""}`));
-    const later = visible.filter(textLine => /sanal POS|açık bankacılık|ekstre ile|döviz al|kur değerleme|değerleme kuru|valör günü|bloke süresi|tahsile ver/i.test(textLine));
+    // Görünen bütün kalemlerin adı, yardımı ve SEÇENEKLERİ ertelenen bir özelliği anlatmaz (POS komisyonu masraf türü ve 108 sabit eşlemesi kullanılır).
+    const visible = settings.sections.filter(item => item.available !== false).flatMap(item => item.items.filter(entry => entry.available !== false).map(entry => `${item.label} › ${entry.label}: ${entry.text || ""} ${entry.help || ""} ${(entry.options || []).map(([, label]) => label).join(" / ")}`));
+    const later = visible.filter(textLine => /sanal POS|açık bankacılık|ekstre ile|döviz al|kur değerleme|değerleme kuru|her valörde|tahsile ver/i.test(textLine));
     assert.deepEqual(later, [], "görünen ayar ertelenen özelliği anlatmamalı");
   });
 
   it("gizli ayar API'den değiştirilemez (400 bank-setting-later; kayıt değişmez); aynı (varsayılan) değer ve görünen ayar kaydedilir", async () => {
     const raw = () => ctx.store.setting("bank.settings", "");
     const changes = [
-      ["pos", "valorDays", 2],
-      ["pos", "taxMode", "none"],
-      ["pos", "refundCommission", "full"],
-      ["posAdvanced", "blockDays", 3],
-      ["posAdvanced", "settlement", "manual"],
+      // 2.2.0: POS ayarları değiştirilir (banka-220-pos-iz3); POS'un ertelenen seçenekleri reddedilir.
+      ["posAdvanced", "settlement", "statement"],
+      ["posAdvanced", "commissionInvoice", "each_valor"],
       ["statement", "toleranceDays", 5],
       ["statement", "autoConfirmStrong", true],
       ["fx", "source", "manual"],
@@ -112,13 +115,17 @@ describe("2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'de
     assert.deepEqual(snapshot(ctx.store), before, "döviz istekleri hiçbir şey yazmadı");
   });
 
-  it("POS: hesap türü değil, uç yok (404), POS tablolarına yazılmaz; ANLIK DURUM ve Birleşik Rapor'da POS Bekleyen / Blokeli POS yok", async () => {
+  // 2.2.0: POS uçları geldi (plan Aşama 10–11; routes/bank-pos.mjs, testleri banka-220-pos-*). Burada kalan iddia: POS bir banka hesap türü
+  // değildir; eksik gövdeyle istek 4xx döner ve hiçbir şey yazmaz; POS tanımlı değilken ANLIK DURUM'da POS kutusu kapalı, Birleşik Rapor'da
+  // POS sütunu yok (Birleşik Rapor POS sütunları ayrı iş).
+  it("POS: hesap türü değil; eksik gövdeli POS istekleri 4xx ve POS tablolarına yazılmaz; POS yokken ANLIK DURUM ve Birleşik Rapor'da POS Bekleyen / Blokeli POS yok", async () => {
     const before = snapshot(ctx.store);
     expectStatus(await ctx.api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Fiziki POS", kind: "pos" }), 400, "bank-kind", "POS hesap türü");
     for (const url of [`${BANK}/pos`, `${BANK}/pos-terminals`, `${BANK}/pos/sales`, `${BANK}/pos/settle`, `${BANK}/pos/commission`]) {
-      assert.ok(NO_ROUTE.includes((await ctx.api.post(url, { name: "POS", amount: "10" })).status), `POST ${url}`);
-      assert.ok(NO_ROUTE.includes((await ctx.api.get(url)).status), `GET ${url}`);
+      const res = await ctx.api.post(url, { name: "POS", amount: "10" });
+      assert.ok(res.status >= 400 && res.status < 500, `POST ${url}: ${res.status}`);
     }
+    assert.deepEqual((await must("POS listesi", ctx.api.get(`${BANK}/pos`))).pos, [], "POS listesi boş");
     assert.deepEqual(snapshot(ctx.store), before, "POS istekleri hiçbir şey yazmadı");
     const overview = await must("ANLIK DURUM", ctx.api.get("/api/workspace/overview"));
     assert.equal(overview.cash.bank.pos, false, "ANLIK DURUM POS kutusu kapalı");
@@ -153,27 +160,31 @@ describe("2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'de
     assert.equal((await must("çek kartı", ctx.api.get(`/api/workspace/cheques/${cheque.id}`))).status, "portfolio", "çek portföyde");
   });
 
-  it("Kasa açılış/devir: Kasa'da açılış ya da devir hareketi girilemez (400); Kasa yalnız tahsilat ve ödeme", async () => {
+  it("Kasa devir: Kasa'ya açılış/devir TÜRÜNDE hareket girilemez (400) ve ayrı devir ucu yok (Kasa açılışı 2.2.0 İz 1.3'te: Açılış Bakiyesi)", async () => {
     const before = snapshot(ctx.store);
     for (const kind of ["opening", "carry", "devir", "acilis"]) expectStatus(await ctx.api.post("/api/workspace/cash", { kind, amount: "500", date: "2026-10-08", description: "Kasa açılışı" }), 400, null, `Kasa ${kind}`);
-    for (const url of ["/api/workspace/cash/opening", "/api/workspace/cash/carry"]) assert.ok(NO_ROUTE.includes((await ctx.api.post(url, { amount: "500", date: "2026-10-08" })).status), `POST ${url}`);
-    assert.deepEqual(snapshot(ctx.store), before, "Kasa açılış istekleri hiçbir şey yazmadı");
+    for (const url of ["/api/workspace/cash/carry"]) assert.ok(NO_ROUTE.includes((await ctx.api.post(url, { amount: "500", date: "2026-10-08" })).status), `POST ${url}`);
+    assert.deepEqual(snapshot(ctx.store), before, "Kasa devir istekleri hiçbir şey yazmadı");
   });
 
-  it("Rapor Merkezi: Banka grubunda yalnız temel 4 rapor; ertelenen §8.10 raporları listede yok ve 404 (ekran, PDF, Excel)", async () => {
+  // 2.2.0 (bilerek güncellendi): POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar geldi (İz 3.5, banka-220-pos-iz3); plan §8.10 "Tahsildeki
+  // Çekler" Bankaya Tahsile Ver ile geldi ("Tahsildeki Çek ve Senetler", İz 4); kalan §8.10 raporları ertelendi.
+  it("Rapor Merkezi: Banka grubunda temel 4 rapor + POS'un 2 raporu + Tahsildeki Çek ve Senetler; ertelenen §8.10 raporları listede yok ve 404 (ekran, PDF, Excel)", async () => {
     const catalog = await must("rapor listesi", ctx.api.get("/api/workspace/report-center"));
     const bank = catalog.reports.filter(report => report.group === "Banka").map(report => report.id).sort();
-    assert.deepEqual(bank, ["alt-hesap-mizani", "banka-bakiye", "banka-hareket", "banka-masraf"], `Banka grubu: ${bank.join(", ")}`);
+    assert.deepEqual(bank, ["alt-hesap-mizani", "banka-bakiye", "banka-hareket", "banka-masraf", "faturasi-beklenen-komisyonlar", "pos-odeme-takvimi", "tahsildeki-cekler"], `Banka grubu: ${bank.join(", ")}`);
     const titles = catalog.reports.map(report => report.title);
-    for (const title of ["POS Satış Raporu", "POS Komisyon Raporu", "POS Bekleyen Raporu", "POS Valör Raporu", "Banka Mutabakat Raporu", "Kur Değerleme Raporu", "Tahsildeki Çekler", "Banka Nakit Akış Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Bankalar Arası Transfer Raporu", "Faturası Beklenen Komisyonlar"]) assert.ok(!titles.includes(title), `listede ${title} olmamalı`);
-    const ids = ["pos-satis", "pos-komisyon", "pos-bekleyen", "pos-valor", "banka-mutabakat", "kur-degerleme", "tahsildeki-cekler", "banka-nakit-akis", "banka-gunluk", "banka-aylik", "banka-transfer", "kasa-banka-transfer", "banka-bazinda-bakiye", "para-birimi-bakiye", "cari-banka", "fatura-banka", "taksit-banka", "faturasi-beklenen-komisyonlar"];
+    for (const title of ["POS Satış Raporu", "POS Komisyon Raporu", "POS Bekleyen Raporu", "POS Valör Raporu", "Banka Mutabakat Raporu", "Kur Değerleme Raporu", "Banka Nakit Akış Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Bankalar Arası Transfer Raporu"]) assert.ok(!titles.includes(title), `listede ${title} olmamalı`);
+    const ids = ["pos-satis", "pos-komisyon", "pos-bekleyen", "pos-valor", "banka-mutabakat", "kur-degerleme", "banka-nakit-akis", "banka-gunluk", "banka-aylik", "banka-transfer", "kasa-banka-transfer", "banka-bazinda-bakiye", "para-birimi-bakiye", "cari-banka", "fatura-banka", "taksit-banka"];
     for (const id of ids) for (const suffix of ["", "/pdf", "/xlsx"]) assert.equal((await ctx.api.raw("GET", `/api/workspace/report-center/${id}${suffix}?preset=all`)).status, 404, `${id}${suffix}`);
   });
 
-  it("Roller ve Kişiye Özel Yetki kataloğu: POS, komisyon, ekstre ve mutabakat yetkileri görünmez", async () => {
+  // 2.2.0 (İz 3.4, bilerek güncellendi): POS Tanımlama ve Komisyon Oranlarını Değiştirme görünür; ekstre ve mutabakat yetkileri hâlâ gizli.
+  it("Roller ve Kişiye Özel Yetki kataloğu: ekstre ve mutabakat yetkileri görünmez; POS yetkileri görünür", async () => {
     const roles = await must("roller", ctx.api.get("/api/admin/roles"));
     const keys = roles.groups.flatMap(group => group.items.map(item => item.key));
-    for (const key of ["bank.pos", "bank.commission", "bank.statement", "bank.reconcile"]) assert.ok(!keys.includes(key), `${key} katalogda görünmemeli`);
+    for (const key of ["bank.statement", "bank.reconcile"]) assert.ok(!keys.includes(key), `${key} katalogda görünmemeli`);
+    for (const key of ["bank.pos", "bank.commission"]) assert.ok(keys.includes(key), `${key} katalogda görünmeli (2.2.0)`);
     assert.ok(keys.includes("bank.view") && keys.includes("bank.transfer"), "temel banka yetkileri görünür");
   });
 });

@@ -1,0 +1,475 @@
+{
+  "dil": "destekofis-senaryo/3",
+  "ad": "kabul-senet",
+  "aciklama": "Sürüm 3 kabul: çek ve senet portföyü, Bankaya Tahsile Ver, Bankadan Geri Al, karşılıksız, ciro, verilen evrak ödemesi ve retler. planBeklenen sayıları plan kurallarından (§3.7 #9, §3.11 madde 5, §3.11a, §3.11b/1, §3.14) elle hesaplandı; plan bu işlemler için örnek sayı vermiyor.",
+  "dayanak": "PLAN §3.11a, §3.14 (+ §3.7 #9, #21; §3.11 madde 5; §3.11b/1)",
+  "baslangic": {
+    "bugun": "12.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "hesap_ac",
+      "ad": "ZIR",
+      "banka": "Ziraat Bankası",
+      "hesapAdi": "Ana TL Hesabı",
+      "tur": "vadesiz",
+      "paraBirimi": "TRY",
+      "kod": "ZIR-TL",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "100000",
+      "bakiyeDogrulandi": true
+    },
+    {
+      "id": "2",
+      "islem": "hesap_ac",
+      "ad": "GAR",
+      "banka": "Garanti BBVA",
+      "hesapAdi": "Ticari Hesap",
+      "tur": "ticari",
+      "paraBirimi": "TRY",
+      "kod": "GAR-TL",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "50000",
+      "bakiyeDogrulandi": true
+    },
+    {
+      "id": "3",
+      "islem": "hesap_ac",
+      "ad": "KK",
+      "banka": "Yapı Kredi",
+      "hesapAdi": "World",
+      "tur": "kurumsal_kart",
+      "paraBirimi": "TRY",
+      "kod": "KK-TL",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "0",
+      "bakiyeDogrulandi": true,
+      "kartLimiti": "50000"
+    },
+    {
+      "id": "4",
+      "islem": "cari_ac",
+      "ad": "ABC",
+      "unvan": "ABC Ltd.",
+      "tur": "musteri"
+    },
+    {
+      "id": "5",
+      "islem": "cari_ac",
+      "ad": "XYZ",
+      "unvan": "XYZ Tedarik A.Ş.",
+      "tur": "tedarikci"
+    },
+    {
+      "id": "6",
+      "islem": "kasa_acilis",
+      "tutar": "20000",
+      "tarih": "01.10.2026"
+    },
+    {
+      "id": "7",
+      "islem": "evrak_al",
+      "ad": "C1",
+      "tur": "cek",
+      "cari": "ABC",
+      "tutar": "20000",
+      "tarih": "02.10.2026",
+      "vade": "05.10.2026"
+    },
+    {
+      "id": "8",
+      "islem": "evrak_al",
+      "ad": "S1",
+      "tur": "senet",
+      "cari": "ABC",
+      "tutar": "15000",
+      "tarih": "02.10.2026",
+      "vade": "06.10.2026"
+    },
+    {
+      "id": "9",
+      "islem": "evrak_al",
+      "ad": "C2",
+      "tur": "cek",
+      "cari": "ABC",
+      "tutar": "8000",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "10",
+      "islem": "evrak_ver",
+      "ad": "V1",
+      "tur": "cek",
+      "cari": "XYZ",
+      "tutar": "12000",
+      "tarih": "02.10.2026",
+      "vade": "07.10.2026"
+    },
+    {
+      "id": "11",
+      "islem": "evrak_ver",
+      "ad": "V2",
+      "tur": "senet",
+      "cari": "XYZ",
+      "tutar": "6000",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "12",
+      "islem": "evrak_al",
+      "ad": "C6",
+      "tur": "senet",
+      "cari": "ABC",
+      "tutar": "2000",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "13",
+      "islem": "evrak_al",
+      "ad": "C7",
+      "tur": "cek",
+      "cari": "ABC",
+      "tutar": "500",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "k1",
+      "islem": "kontrol",
+      "planMetni": "PLAN §3.11 madde 5 'receive → 101.01'; §3.11a tablo: alınan çek 101.01, alınan senet 121.01, verilen çek 103, verilen senet 321 (sayılar plan kuralından elle)",
+      "planBeklenen": {
+        "mizan": {
+          "101.01": {
+            "borc": 2850000,
+            "alacak": 0
+          },
+          "121.01": {
+            "borc": 1700000,
+            "alacak": 0
+          },
+          "103": {
+            "borc": 0,
+            "alacak": 1200000
+          },
+          "321": {
+            "borc": 0,
+            "alacak": 600000
+          },
+          "120": {
+            "borc": 0,
+            "alacak": 4550000
+          },
+          "320": {
+            "borc": 1800000,
+            "alacak": 0
+          }
+        },
+        "cariler": {
+          "ABC": -4550000,
+          "XYZ": 1800000
+        }
+      }
+    },
+    {
+      "id": "14",
+      "islem": "tahsile_ver",
+      "evrak": "C1",
+      "hesap": "ZIR",
+      "tarih": "05.10.2026"
+    },
+    {
+      "id": "15",
+      "islem": "tahsile_ver",
+      "evrak": "S1",
+      "hesap": "GAR",
+      "tarih": "05.10.2026"
+    },
+    {
+      "id": "k2",
+      "islem": "kontrol",
+      "planMetni": "PLAN §3.14 'Bankaya Tahsile Ver … Yevmiye: B 101.02 / A 101.01. 101 toplamı ve beklenen değeri değişmez'; §3.11a 'alınan SENET için 121.01/121.02'",
+      "planBeklenen": {
+        "mizan": {
+          "101.01": {
+            "borc": 850000,
+            "alacak": 0
+          },
+          "101.02": {
+            "borc": 2000000,
+            "alacak": 0
+          },
+          "121.01": {
+            "borc": 200000,
+            "alacak": 0
+          },
+          "121.02": {
+            "borc": 1500000,
+            "alacak": 0
+          }
+        },
+        "bankaHesaplari": {
+          "ZIR": 10000000,
+          "GAR": 5000000
+        },
+        "cariler": {
+          "ABC": -4550000
+        }
+      }
+    },
+    {
+      "id": "16",
+      "islem": "evrak_ciro",
+      "evrak": "C1",
+      "cari": "XYZ",
+      "tarih": "06.10.2026",
+      "not": "PLAN §3.14: tahsildeki çek ciro edilemez → 409 cheque-deposited"
+    },
+    {
+      "id": "17",
+      "islem": "evrak_sil",
+      "evrak": "C1",
+      "not": "PLAN §3.14: tahsildeki çek silinemez → 409 cheque-deposited"
+    },
+    {
+      "id": "18",
+      "islem": "evrak_tahsil",
+      "evrak": "C1",
+      "yol": "havale",
+      "hesap": "GAR",
+      "tarih": "07.10.2026",
+      "not": "PLAN §3.14: başka hesap 400"
+    },
+    {
+      "id": "19",
+      "islem": "evrak_tahsil",
+      "evrak": "C1",
+      "yol": "havale",
+      "tarih": "07.10.2026",
+      "not": "hesap tahsil kaydının hesabı (ZIR)"
+    },
+    {
+      "id": "20",
+      "islem": "bankadan_geri_al",
+      "evrak": "S1",
+      "tarih": "07.10.2026"
+    },
+    {
+      "id": "21",
+      "islem": "evrak_karsiliksiz",
+      "evrak": "S1",
+      "tarih": "08.10.2026"
+    },
+    {
+      "id": "22",
+      "islem": "evrak_ciro",
+      "evrak": "C2",
+      "cari": "XYZ",
+      "tarih": "08.10.2026"
+    },
+    {
+      "id": "23",
+      "islem": "evrak_odeme",
+      "evrak": "V1",
+      "yol": "havale",
+      "hesap": "GAR",
+      "tarih": "08.10.2026"
+    },
+    {
+      "id": "24",
+      "islem": "evrak_odeme",
+      "evrak": "V2",
+      "yol": "nakit",
+      "tarih": "08.10.2026"
+    },
+    {
+      "id": "25",
+      "islem": "evrak_odeme",
+      "evrak": "V1",
+      "yol": "havale",
+      "hesap": "GAR",
+      "tarih": "08.10.2026",
+      "not": "ödenmiş evrak → 4xx"
+    },
+    {
+      "id": "26",
+      "islem": "bankadan_geri_al",
+      "evrak": "C2",
+      "tarih": "08.10.2026",
+      "not": "ciro edilmiş evrak tahsilde değil → 4xx"
+    },
+    {
+      "id": "27",
+      "islem": "evrak_al",
+      "ad": "C3",
+      "tur": "cek",
+      "cari": "ABC",
+      "tutar": "5000",
+      "tarih": "09.10.2026"
+    },
+    {
+      "id": "28",
+      "islem": "tahsile_ver",
+      "evrak": "C3",
+      "hesap": "KK",
+      "tarih": "09.10.2026",
+      "not": "kart hesabı → 400 bank-account-invalid"
+    },
+    {
+      "id": "29",
+      "islem": "tahsile_ver",
+      "evrak": "C3",
+      "hesap": "ZIR",
+      "tarih": "08.10.2026",
+      "not": "PLAN §3.14: alış tarihinden önce → 4xx"
+    },
+    {
+      "id": "30",
+      "islem": "evrak_sil",
+      "evrak": "C3"
+    },
+    {
+      "id": "31",
+      "islem": "evrak_sil",
+      "evrak": "C3",
+      "not": "silinmiş evrak → 404"
+    },
+    {
+      "id": "32",
+      "islem": "evrak_al",
+      "ad": "C4",
+      "tur": "cek",
+      "cari": "ABC",
+      "tutar": "3000",
+      "tarih": "09.10.2026"
+    },
+    {
+      "id": "33",
+      "islem": "evrak_tahsil",
+      "evrak": "C4",
+      "yol": "havale",
+      "tarih": "09.10.2026",
+      "not": "iki uygun hesap → 400 bank-account-required"
+    },
+    {
+      "id": "34",
+      "islem": "evrak_tahsil",
+      "evrak": "C4",
+      "yol": "nakit",
+      "tarih": "09.10.2026"
+    },
+    {
+      "id": "35",
+      "islem": "donem_kilidi",
+      "kilitTarihi": "03.10.2026"
+    },
+    {
+      "id": "36",
+      "islem": "evrak_al",
+      "ad": "C5",
+      "tur": "cek",
+      "cari": "ABC",
+      "tutar": "1000",
+      "tarih": "03.10.2026",
+      "not": "kilitli tarih → 409 period-locked"
+    },
+    {
+      "id": "37",
+      "islem": "tahsile_ver",
+      "evrak": "C6",
+      "hesap": "ZIR",
+      "tarih": "10.10.2026",
+      "not": "PLAN §3.14 kilitli ayda alınan senet açık ayda tahsile verilir"
+    },
+    {
+      "id": "38",
+      "islem": "evrak_tahsil",
+      "evrak": "C6",
+      "yol": "havale",
+      "tarih": "12.10.2026"
+    },
+    {
+      "id": "39",
+      "islem": "evrak_sil",
+      "evrak": "C7",
+      "not": "kilitli tarihli evrak silinmez → 409 period-locked"
+    },
+    {
+      "id": "k3",
+      "islem": "kontrol",
+      "planMetni": "PLAN §3.7 #9 'B 102 / A 101.01 (tahsildeyse A 101.02); B 103 / A 102'; §3.14 Tahsil Edildi/Bankadan Geri Al/Karşılıksız; §3.11b/1 'B 120 / A 101 ya da 121' (sayılar plan kuralından elle)",
+      "planBeklenen": {
+        "mizan": {
+          "100": {
+            "borc": 1700000,
+            "alacak": 0
+          },
+          "102.01": {
+            "borc": 12200000,
+            "alacak": 0
+          },
+          "102.02": {
+            "borc": 3800000,
+            "alacak": 0
+          },
+          "101.01": {
+            "borc": 50000,
+            "alacak": 0
+          },
+          "101.02": {
+            "borc": 0,
+            "alacak": 0
+          },
+          "121.01": {
+            "borc": 0,
+            "alacak": 0
+          },
+          "121.02": {
+            "borc": 0,
+            "alacak": 0
+          },
+          "103": {
+            "borc": 0,
+            "alacak": 0
+          },
+          "321": {
+            "borc": 0,
+            "alacak": 0
+          },
+          "120": {
+            "borc": 0,
+            "alacak": 3350000
+          },
+          "320": {
+            "borc": 2600000,
+            "alacak": 0
+          },
+          "500": {
+            "borc": 0,
+            "alacak": 17000000
+          }
+        },
+        "bankaHesaplari": {
+          "ZIR": 12200000,
+          "GAR": 3800000,
+          "KK": 0
+        },
+        "kasa": 1700000,
+        "cariler": {
+          "ABC": -3350000,
+          "XYZ": 2600000
+        },
+        "ozet": {
+          "gercekBanka": 16000000,
+          "hesabiAtanmamis": 0,
+          "kartVeKrediBorcu": 0,
+          "kasaVeGercekBanka": 17700000
+        }
+      }
+    }
+  ]
+}

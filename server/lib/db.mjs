@@ -39,7 +39,8 @@ export function createStore(db) {
       "tax_no", "tax_office", "mersis_no", "trade_registry", "party_kind", "first_name", "family_name", "city", "district", "postal_code", "country", "website", "iban", "due_days", "e_invoice", "e_alias", "e_profile"]),
     // v2.1.0 (§5.5): işlem başlığının açıklaması ve karşı taraf metni; hesap ve POS kartlarının adı, banka bilgisi, sırası.
     fin_events: new Set(["description", "reference", "counter_name", "counter_iban", "channel", "updated_by", "updated_at"]),
-    bank_accounts: new Set(["name", "bank_name", "iban", "account_no", "branch_name", "branch_code", "swift", "holder", "description", "position", "statement_template_json", "statement_day", "due_day", "show_on_invoice", "integration", "updated_by", "updated_at"]),
+    // v2.2.0 (İz 2): hesabın kullanım işaretleri, kartın bağlı bankası ve son 4 hanesi de bilgi alanıdır (yevmiyeyi değiştirmez).
+    bank_accounts: new Set(["name", "bank_name", "iban", "account_no", "branch_name", "branch_code", "swift", "holder", "description", "position", "statement_template_json", "statement_day", "due_day", "show_on_invoice", "integration", "parent_id", "card_last4", "use_card", "use_cheque", "use_note", "use_pos", "updated_by", "updated_at"]),
     pos_terminals: new Set(["name", "merchant_no", "terminal_no", "description", "updated_by", "updated_at"]),
   };
   const SET_CLAUSE = /^\s*UPDATE\s+["`]?\w+["`]?\s+SET\s+([\s\S]+?)\s+WHERE\s/i;

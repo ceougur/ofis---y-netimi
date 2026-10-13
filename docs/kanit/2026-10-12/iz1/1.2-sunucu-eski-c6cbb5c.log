@@ -1,0 +1,145 @@
+TAP version 13
+# Subtest: İz 1.2 — her pencere kendi sayfasında: öbür pencerede açılan yeni sayfa 'silindi' sayılmaz
+    # Subtest: 1: B'nin (X) sayfa listesi: current X, yeni sayfa Y listede; A'nın (Y) listesi: current Y
+    not ok 1 - 1: B'nin (X) sayfa listesi: current X, yeni sayfa Y listede; A'nın (Y) listesi: current Y
+      ---
+      duration_ms: 11.882819
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:54:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        B'nin sayfası X kalır (silindi sanılmaz)
+        + actual - expected
+        
+        + 'dataset://oturum-9445b30ba37d'
+        - 'dataset://ofis'
+                      ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'dataset://ofis'
+      actual: 'dataset://oturum-9445b30ba37d'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:56:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 2, 4: B'nin tablosu ve istemci durumu X'in; A'nınki Y'nin
+    not ok 2 - 2, 4: B'nin tablosu ve istemci durumu X'in; A'nınki Y'nin
+      ---
+      duration_ms: 11.971187
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:63:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        B: X'in satırları
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined,
+        +   undefined
+        -   'EM-1',
+        -   'EM-2'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'EM-1'
+        1: 'EM-2'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:64:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 3: B'de girilen yeni kayıt X'e yazılır, Y'ye değil
+    not ok 3 - 3: B'de girilen yeni kayıt X'e yazılır, Y'ye değil
+      ---
+      duration_ms: 7.203064
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kayıt X'e
+        + actual - expected
+        
+        + 'dataset://oturum-9445b30ba37d'
+        - 'dataset://ofis'
+                      ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'dataset://ofis'
+      actual: 'dataset://oturum-9445b30ba37d'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:73:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 7: parametresiz istek (yeni açılan pencere) kullanıcının seçimini (Y) kullanır; personel kendi seçiminde (X)
+    not ok 4 - 7: parametresiz istek (yeni açılan pencere) kullanıcının seçimini (Y) kullanır; personel kendi seçiminde (X)
+      ---
+      duration_ms: 9.619645
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        personelin Y'yi gösteren penceresi
+        + actual - expected
+        
+        + 'dataset://ofis'
+        - 'dataset://oturum-9445b30ba37d'
+                      ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'dataset://oturum-9445b30ba37d'
+      actual: 'dataset://ofis'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:81:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 6: uydurma sayfa anahtarı hata vermez, kullanıcının seçimine düşer
+    ok 5 - 6: uydurma sayfa anahtarı hata vermez, kullanıcının seçimine düşer
+      ---
+      duration_ms: 4.096078
+      type: 'test'
+      ...
+    # Subtest: 5: Y silinince Y'yi gösteren pencerenin listesinde Y yok ve current başka (istemci 'silindi' der); X'teki B etkilenmez
+    ok 6 - 5: Y silinince Y'yi gösteren pencerenin listesinde Y yok ve current başka (istemci 'silindi' der); X'teki B etkilenmez
+      ---
+      duration_ms: 49.521441
+      type: 'test'
+      ...
+    1..6
+not ok 1 - İz 1.2 — her pencere kendi sayfasında: öbür pencerede açılan yeni sayfa 'silindi' sayılmaz
+  ---
+  duration_ms: 898.913541
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-eski-c6cbb5c/test/iz1-sayfa-pencere.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 2
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1445.267151

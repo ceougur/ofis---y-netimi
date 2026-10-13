@@ -1,0 +1,38 @@
+{
+  "ad": "e2e-senaryo-rapor",
+  "komut": "npm run -s test:senaryo-rapor",
+  "commit": "4efb516304c1f70dc4ddd1e223b310418e5b6d49",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T16:37:12.596Z",
+  "sure_sn": 26.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 73,
+    "gecen": 72,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "uzman: Tüm raporlar'da İşlem geçmişi ve Banka grubu, finans raporu yok (banka-bakiye, banka-hareket, banka-masraf, alt-hesap-mizani, tahsildeki-cekler, pos-odeme-takvimi, faturasi-beklenen-komisyonlar, islem-gecmisi)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-12/son-aday-220/2026-10-12/e2e-senaryo-rapor.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "2f2fb16cf60d10e89694b56b72adf167c5229ae08886816f3a0ee4597e1746e7",
+  "ham_cikti_bayt": 6113
+}

@@ -1,0 +1,280 @@
+[
+  {
+    "id": "N1",
+    "what": "T2: karşılıksız maddesi 101.02 yerine 101.01'den",
+    "file": "server/lib/general-ledger.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 30,
+    "fail": 6,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsile Ver, Bankadan Geri Al, tahsildeki evrakın tahsili, karşılıksızı ve karşılıksızın Geri Al'ı: süzgeç yolu; Mutabakat tamam",
+      "T1/D6 — tahsil kaydı yazımları kapının dokunulan varlıklar yolundan geçer (üretim ayarı)",
+      "carili senet: 08.10'da B 120 / A 101.02 tek madde; Alt Hesap Mizanı 101.01 hareketsiz, 101.02 alacak 3.000",
+      "carisiz çek ve taksite sayılmış çek: karşılıksız maddesi A 101.02; 101.01 / 101.02 sıfır; Mutabakat tamam"
+    ]
+  },
+  {
+    "id": "N2",
+    "what": "T2/G1: tahsildeki evrakın tahsil maddesi 101.01'den",
+    "file": "server/lib/general-ledger.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 26,
+    "fail": 10,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsile Ver, Bankadan Geri Al, tahsildeki evrakın tahsili, karşılıksızı ve karşılıksızın Geri Al'ı: süzgeç yolu; Mutabakat tamam",
+      "T1/D6 — tahsil kaydı yazımları kapının dokunulan varlıklar yolundan geçer (üretim ayarı)",
+      "T3: Tahsile Ver maddesi Yevmiye'de 101.02 borç / 101.01 alacak; tahsil maddesi 102.01 borç / 101.02 alacak",
+      "G1: İşlem Kartı — Tahsile Ver başlığında 101.02 / 101.01 satırları; tahsil olayında A 101.02 (adlarıyla)"
+    ]
+  },
+  {
+    "id": "N3",
+    "what": "T1: süzgeç yolu tahsil kayıtlarını denetlemiyor",
+    "file": "server/lib/integrity-scope.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "geri alınmış kayıt yeniden bekleyen; verilme tarihi alıştan önce; verilme başlığı iptal; tahsildeki evrakın tutarı",
+      "Kapı — tahsil kaydını kapı dışından bozma: dokunulan varlıklar yolu yakalar (eşdeğerlik ihlali değil)"
+    ]
+  },
+  {
+    "id": "N4",
+    "what": "T1: tahsil kaydı yazımı yeniden tam kapıya",
+    "file": "server/lib/integrity-scope.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Tahsile Ver, Bankadan Geri Al, tahsildeki evrakın tahsili, karşılıksızı ve karşılıksızın Geri Al'ı: süzgeç yolu; Mutabakat tamam",
+      "T1/D6 — tahsil kaydı yazımları kapının dokunulan varlıklar yolundan geçer (üretim ayarı)"
+    ]
+  },
+  {
+    "id": "N5",
+    "what": "T8/D5: açılıştan önce tahsile verme kabul",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "T8/D5: hesabın açılışından önce tahsile verme 409; açılış günü 200; açılışı ilk tahsile vermeden sonraya alma 409",
+      "T8/D5, D3, D4 — geçiş kuralları"
+    ]
+  },
+  {
+    "id": "N6",
+    "what": "D3: karşılıksızın geri alınmasında hesap uygunluğu yok",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "D3: karşılıksızdan sonra hesap pasif ya da Vadeli → karşılıksızı Geri Al reddedilir; hesap etkinleşince yeniden tahsilde",
+      "T8/D5, D3, D4 — geçiş kuralları"
+    ]
+  },
+  {
+    "id": "N7",
+    "what": "D4: alış tarihi veriliş gününden sonraya alınabiliyor",
+    "file": "server/routes/cheques.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "D4: tahsil kaydı geri alınmış evrakın alış tarihi veriliş gününden sonraya alınamaz (409); veriliş günü olur",
+      "T8/D5, D3, D4 — geçiş kuralları"
+    ]
+  },
+  {
+    "id": "N8",
+    "what": "D4: kapı verilme < alış tarihini görmüyor",
+    "file": "server/lib/bank/collections.mjs",
+    "applied": true,
+    "exit": 0,
+    "tests": 36,
+    "pass": 36,
+    "fail": 0,
+    "cancelled": 0,
+    "killed": false,
+    "failed": []
+  },
+  {
+    "id": "N9",
+    "what": "D1: onarım kapanışı veriliş gününe kısmıyor",
+    "file": "server/lib/bank/repair.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 34,
+    "fail": 2,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "D1 silme (statusDate alış günü 03.10 < veriliş 06.10): kapanış veriliş gününe; Mutabakat tamam",
+      "D1 veriliş gününden önceki tarihle ciro ve tahsil: kapanış veriliş gününe; Mutabakat tamam",
+      "D1/D2 — v2.1.0'a dönüp tahsildeki evraka dokunma; bu dalda açılış onarımı (h)"
+    ]
+  },
+  {
+    "id": "N10",
+    "what": "D2: onarım tutarı değişen tahsildeki evrakı düzeltmiyor",
+    "file": "server/lib/bank/repair.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "D2 tahsildeki evrakın tutarı 800 → 950 ve alış tarihi 08.10'a: verilme başlığı onarılır; Mutabakat tamam",
+      "D1/D2 — v2.1.0'a dönüp tahsildeki evraka dokunma; bu dalda açılış onarımı (h)"
+    ]
+  },
+  {
+    "id": "N11",
+    "what": "T5: zil/takvim tahsildeki çeki vade gününde",
+    "file": "server/routes/cheques.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "zil/takvim (dues): D-1 12.10 'Bankada Tahsilde', D-2 10.10 'Tahsil Edilecek' — Vade Takip ile aynı günler",
+      "T5, T6 — tahsildeki çekin beklenen günü: zil/takvim, Vade Takip, Nakit Akış (kaynak)"
+    ]
+  },
+  {
+    "id": "N12",
+    "what": "T6: Nakit Akış kaynak özeti tahsildekini ayırmıyor",
+    "file": "server/lib/finance-report.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "Nakit Akış: kaynak özetinde tahsildeki 1.000 ve portföydeki 300 ayrı; Excel'de Kaynak 'Tahsildeki Çek ve Senet'",
+      "T5, T6 — tahsildeki çekin beklenen günü: zil/takvim, Vade Takip, Nakit Akış (kaynak)"
+    ]
+  },
+  {
+    "id": "N13",
+    "what": "T7: 'deposited' süzgeci düşüyor",
+    "file": "server/routes/report-center.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "T7: status=deposited yalnız tahsildeki; status=portfolio satır toplamı = özet 'Portföyde (alınan)'; 'Bankada Tahsilde' ayrı",
+      "T7, T9 — Çek / Senet raporları ve Tahsildeki Çek ve Senetler"
+    ]
+  },
+  {
+    "id": "N14",
+    "what": "G1: İşlem Kartı tahsil kaydı başlığında satır yok",
+    "file": "server/lib/bank/movements.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "G1: İşlem Kartı — Tahsile Ver başlığında 101.02 / 101.01 satırları; tahsil olayında A 101.02 (adlarıyla)",
+      "T3, T4, G1 — Yevmiye ve İşlem Kartı alt hesapları; Alt Hesap Mizanı'nda 101"
+    ]
+  },
+  {
+    "id": "N15",
+    "what": "T2: carisiz evrakın karşılıksız maddesi 101.01'den",
+    "file": "server/routes/ledger.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 34,
+    "fail": 2,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "carisiz çek ve taksite sayılmış çek: karşılıksız maddesi A 101.02; 101.01 / 101.02 sıfır; Mutabakat tamam",
+      "T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02",
+      "Senet de bankaya tahsile verilir; taksite sayılmış çek karşılıksız olunca 101.01 / 101.02 sıfır",
+      "Bankaya Tahsile Ver — çalışıyor mu (sayılarla)"
+    ]
+  },
+  {
+    "id": "N16",
+    "what": "T4: Alt Hesap Mizanı 101'i yalnız tahsil kaydı varken gösteriyor",
+    "file": "server/lib/bank/accounts.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 35,
+    "fail": 1,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "T4: hiç tahsile verilmemiş şirkette 101.01 = 2.000 ve 101 ana hesabı",
+      "T3, T4, G1 — Yevmiye ve İşlem Kartı alt hesapları; Alt Hesap Mizanı'nda 101"
+    ]
+  },
+  {
+    "id": "N17",
+    "what": "T3: Yevmiye alt hesabı yazmıyor",
+    "file": "server/routes/report-center.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 36,
+    "pass": 32,
+    "fail": 4,
+    "cancelled": 0,
+    "killed": true,
+    "failed": [
+      "carili senet: 08.10'da B 120 / A 101.02 tek madde; Alt Hesap Mizanı 101.01 hareketsiz, 101.02 alacak 3.000",
+      "carisiz çek ve taksite sayılmış çek: karşılıksız maddesi A 101.02; 101.01 / 101.02 sıfır; Mutabakat tamam",
+      "T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02",
+      "T3: Tahsile Ver maddesi Yevmiye'de 101.02 borç / 101.01 alacak; tahsil maddesi 102.01 borç / 101.02 alacak"
+    ]
+  }
+]

@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: I — komşu yollar
+    # Subtest: I1: Geri alınmış evrakın tutarı düzeltilince (1.000 → 1.250) Yevmiye ve Çek / Senet Hareketleri tahsile verme tutarında anlaşır
+    not ok 1 - I1: Geri alınmış evrakın tutarı düzeltilince (1.000 → 1.250) Yevmiye ve Çek / Senet Hareketleri tahsile verme tutarında anlaşır
+      ---
+      duration_ms: 107.474255
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:38:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Çek / Senet Hareketleri tahsile verme/geri alma tutarı [["15.10.2026","Bankaya Tahsile Verildi",125000],["16.10.2026","Bankadan Geri Alındı",125000]] ↔ Yevmiye 1000
+        + actual - expected
+        
+          [
+        +   125000,
+        +   125000
+        -   100000,
+        -   100000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 100000
+        1: 100000
+      actual:
+        0: 125000
+        1: 125000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:54:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: I2: Geri alınmış evrakı sil → geri yükle: 101.01 / 101.02 ve Mutabakat; yeniden tahsile verilebilir
+    ok 2 - I2: Geri alınmış evrakı sil → geri yükle: 101.01 / 101.02 ve Mutabakat; yeniden tahsile verilebilir
+      ---
+      duration_ms: 107.220357
+      type: 'test'
+      ...
+    # Subtest: I4: Fatura ile alınan evrak tahsildeyken fatura iptali 409; geri alınınca iptal 200 ve evrak defterden çıkar
+    ok 3 - I4: Fatura ile alınan evrak tahsildeyken fatura iptali 409; geri alınınca iptal 200 ve evrak defterden çıkar
+      ---
+      duration_ms: 138.866378
+      type: 'test'
+      ...
+    # Subtest: I5: Yarım gün (arife) 'İş Günü Sayılmaz' seçilince vadesi 28.10 olan tahsildeki evrak 30.10'da beklenir — Nakit Akış, Vade Takip, Zil, Tahsildeki raporu aynı
+    not ok 4 - I5: Yarım gün (arife) 'İş Günü Sayılmaz' seçilince vadesi 28.10 olan tahsildeki evrak 30.10'da beklenir — Nakit Akış, Vade Takip, Zil, Tahsildeki raporu aynı
+      ---
+      duration_ms: 80.978646
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:99:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        arife iş günü sayılmaz: 28.10 → 30.10 (29.10 tatil)
+        + actual - expected
+        
+          {
+            na: '2026-10-30',
+            rep: '30.10.2026',
+            vt: '2026-10-30',
+        +   zil: '2026-10-28'
+        -   zil: '2026-10-30'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        na: '2026-10-30'
+        vt: '2026-10-30'
+        zil: '2026-10-30'
+        rep: '30.10.2026'
+      actual:
+        na: '2026-10-30'
+        vt: '2026-10-30'
+        zil: '2026-10-28'
+        rep: '30.10.2026'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:115:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: I6: Vadesinden sonra (Cumartesi) tahsile verilen evrak: beklenen = veriliş gününden sonraki iş günü (26.10), gecikmiş
+    ok 5 - I6: Vadesinden sonra (Cumartesi) tahsile verilen evrak: beklenen = veriliş gününden sonraki iş günü (26.10), gecikmiş
+      ---
+      duration_ms: 46.1341
+      type: 'test'
+      ...
+    # Subtest: I7: Aynı gün zincir (al → Ziraat'e ver → geri al → Garanti'ye ver → tahsil): Yevmiye 22.10 = plan maddeleri; Garanti +900
+    ok 6 - I7: Aynı gün zincir (al → Ziraat'e ver → geri al → Garanti'ye ver → tahsil): Yevmiye 22.10 = plan maddeleri; Garanti +900
+      ---
+      duration_ms: 132.017034
+      type: 'test'
+      ...
+    # Subtest: I3: Dönem kilidi 20.10: kilitli güne geri alma 409; açık günde karşılıksız (bankada) ve tahsil; 20.10 kesiti değişmez
+    ok 7 - I3: Dönem kilidi 20.10: kilitli güne geri alma 409; açık günde karşılıksız (bankada) ve tahsil; 20.10 kesiti değişmez
+      ---
+      duration_ms: 171.893338
+      type: 'test'
+      ...
+    # Subtest: Son durum (elle beklenen): 101.01 0 · 101.02 1.000 (W1 700 + V1 300) · 102.01 100.000 · 102.02 52.150 (U1 900 + X1 1.250) · 100 0 · cari M3 −3.150 · Mutabakat tamam
+    ok 8 - Son durum (elle beklenen): 101.01 0 · 101.02 1.000 (W1 700 + V1 300) · 102.01 100.000 · 102.02 52.150 (U1 900 + X1 1.250) · 100 0 · cari M3 −3.150 · Mutabakat tamam
+      ---
+      duration_ms: 37.725964
+      type: 'test'
+      ...
+    1..8
+not ok 1 - I — komşu yollar
+  ---
+  duration_ms: 1231.742304
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici-tur2/kos-i.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1790.442525

@@ -1,0 +1,54 @@
+
+■ Hazırlık (API): Yapı Kredi · TL (açılış 20.000, DOĞRULANMADI) + 2.1.0'dan kalma bağsız kart (Yapı Kredi · World Eski)
+  ✗ hesap doğrulanmamış, eski kart bağsız
+
+■ 2.1 Hesaplar: Durum "Açılış Bakiyesi Doğrulanmadı" + ne yapılacağı görünür yazıyla
+  ✗ Durum: “”
+  ✗ açıklama: 
+
+■ 2.1 Hesap ayrıntısı → Açılışı Düzelt bağlantısı → "Bu tutar bankadaki gerçek bakiyedir" → Bakiye Doğrulandı
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-confirm-line]') to be visible[22m
+
+    at openBankAccount (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:101:14)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:143:5
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:60:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:142:3
+
+■ 2.2/2.3 + Yeni Hesap: türlerde kredi kartı YOK; Vadesiz'de işaretler görünür, Vadeli'de gizli; Garanti Ticari Çek + Senet Kullan
+  ✗ Hesap Türü seçenekleri: Vadesiz | Ticari | Vadeli | Kredi Hesabı | Kurumsal Kredi Kartı | Diğer
+  ✗ Vadesiz: işaretler görünür
+  ✓ Vadeli: işaretler gizli
+  ✗ beklenmeyen hata: page.check: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form input[name="useCheque"]')[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:171:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:60:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:156:3
+
+■ 2.3 Yapı Kredi → Düzenle → Kredi Kartı Kullan → "+ Kredi Kartı Ekle": World •••• 1234, limit 50.000, kesim 5, son ödeme 15
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-confirm-line]') to be visible[22m
+
+    at openBankAccount (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:101:14)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:186:5
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:60:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:185:3
+
+■ 2.3 Hesaplar: World Yapı Kredi'nin HEMEN altında (↳); eski kartta öneri → Bağla → bağlandı
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:222:21
+    at async step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:60:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:218:3
+
+■ 2.3 World → + Kart Borcu Ödemesi: ödeyen hesap bağlı banka (Yapı Kredi), Garanti değil
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:236:37
+    at step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:60:11)
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/senaryo-banka-220.mjs:235:9
+  ✓ sayfa hatası yok
+
+✗ senaryo-banka-220: 2 geçti, 10 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski/test/e2e/artifacts/senaryo-banka-220

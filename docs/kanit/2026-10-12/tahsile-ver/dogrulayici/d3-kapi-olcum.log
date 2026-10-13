@@ -1,0 +1,6 @@
+(node:10875) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[d3] veri: 20000 Kasa girişi + 60 çek, 141 sn
+[d3] süreler (ms, 20000 Kasa satırı): {"cariNakitTahsilat":{"n":12,"medianMs":15,"maxMs":54},"cekNormalTahsil":{"n":12,"medianMs":18,"maxMs":44},"tahsileVer":{"n":12,"medianMs":282,"maxMs":328},"bankadanGeriAl":{"n":12,"medianMs":273,"maxMs":384},"tahsildekiTahsil":{"n":12,"medianMs":275,"maxMs":463}}
+[d3] mutabakat: true
+exit=0

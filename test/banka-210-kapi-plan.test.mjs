@@ -31,7 +31,7 @@ const PROD = { now: NOW, gateVerify: false, moneyStrict: false };
 // Büyük (veriyle büyüyen) tablolar: bunlardan biri süzgeç yolunda baştan sona dolaşılırsa süre veriyle doğrusal büyür.
 const BIG = new Set([
   "payments", "cash_entries", "accounts", "account_entries", "plans", "plan_items", "plan_entries", "stock_items", "stock_moves", "cheques", "cheque_events",
-  "invoices", "invoice_lines", "invoice_offsets", "fin_events", "bank_lines",
+  "invoices", "invoice_lines", "invoice_offsets", "fin_events", "bank_lines", "cheque_collections",
 ]);
 
 /** Kapının süzgeç yolunda (evaluate) çalışan bütün SQL'ler: [{ sql, args }]. */
@@ -253,6 +253,27 @@ describe("kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN)
     total += await check("Düzelt (ters + yeni)", () => must("düzelt", api.post(`${BANK}/events/${other.id}/correct`, { amount: "45" })));
     const plan = await must("plan", api.post(`${BANK}/plans`, { kind: "other_out", accountId: bank.id, amount: "30", plannedDate: TODAY }));
     total += await check("Planlı İşlem Gerçekleştir", () => must("gerçekleştir", api.post(`${BANK}/plans/${plan.id}/execute`, {})));
+    assert.ok(total > 20, `süzgeç yolunda kaydedilen sorgu sayısı ${total}`);
+  });
+
+  // 2.2.0 doğrulama T1/D6 (plan §3.11 cheque:collections "Her COMMIT", §3.14): Bankaya Tahsile Ver, Bankadan Geri Al, tahsildeki evrakın Tahsil
+  // Edildi ve Karşılıksız'ı ve karşılıksızın Geri Al'ı süzgeç yolunda; tahsil kaydı denetimleri (101.01/101.02, kayıt kuralları) dokunulan evraktan
+  // başlar (önceden her biri tam kapıya düşüyordu: 100.000 satırda ~1 sn).
+  it("Bankaya Tahsile Ver yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan", async () => {
+    const { api } = ctx;
+    const BANK = "/api/workspace/bank";
+    const CHEQUES = "/api/workspace/cheques";
+    const bank = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Akbank", name: "Tahsil Hesabı", kind: "demand", useCheque: true, useNote: true, opening: { date: day(-10), amount: "1.000", confirmed: true } }));
+    const cheque = await must("çek", api.post(CHEQUES, { direction: "in", instrument: "cheque", amount: "900", issueDate: day(-5), dueDate: day(20), accountId: customer.id, serialNo: "PLN-TV-1", bank: "Test" }));
+    const note = await must("senet", api.post(CHEQUES, { direction: "in", instrument: "note", amount: "300", issueDate: day(-5), dueDate: day(25), accountId: customer.id, serialNo: "PLN-TV-2" }));
+    let total = 0;
+    total += await check("Bankaya Tahsile Ver", () => must("ver", api.post(`${CHEQUES}/${cheque.id}/actions`, { action: "bank-deposit", date: day(-3), bankAccountId: bank.id })));
+    total += await check("Bankadan Geri Al", () => must("geri al", api.post(`${CHEQUES}/${cheque.id}/actions`, { action: "bank-withdraw", date: day(-2) })));
+    total += await check("yeniden Tahsile Ver", () => must("ver 2", api.post(`${CHEQUES}/${cheque.id}/actions`, { action: "bank-deposit", date: day(-2), bankAccountId: bank.id })));
+    total += await check("Tahsil Edildi (tahsildeki)", () => must("tahsil", api.post(`${CHEQUES}/${cheque.id}/actions`, { action: "collect", date: TODAY })));
+    total += await check("senet Tahsile Ver", () => must("senet ver", api.post(`${CHEQUES}/${note.id}/actions`, { action: "bank-deposit", date: day(-3), bankAccountId: bank.id })));
+    total += await check("Karşılıksız (tahsildeki)", () => must("karşılıksız", api.post(`${CHEQUES}/${note.id}/actions`, { action: "bounce", date: TODAY })));
+    total += await check("karşılıksızı Geri Al", () => must("geri al karşılıksız", api.post(`${CHEQUES}/${note.id}/undo`, {})));
     assert.ok(total > 20, `süzgeç yolunda kaydedilen sorgu sayısı ${total}`);
   });
 });

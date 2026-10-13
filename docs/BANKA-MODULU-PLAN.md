@@ -538,6 +538,54 @@ Bütün düzeltme ve silme audit kayıtlarında `previous {amount, date, method,
   4. **Kilitli dönem anlık görüntüsü:** Kilit konunca `ledger_snapshots` yazılır (kilit tarihi; hesap, alt hesap, cari bakiyeleri). Yevmiye yalnız açık dönem satırlarından kurulur ve anlık görüntüye eklenir. Kilit izi her COMMIT'te sha256 olarak kalır. Ölçüm 100.000 satırda bütçeyi aşarsa her COMMIT'te tablo başına SQL sağlamasına (satır sayısı, Σ kuruş, Σ rowid×kuruş) geçilir; sha256 tam taramaya kalır. **Güvenlik ölçülmeden zayıflatılmaz.**
   5. **Bütçe:** Tek yazmada kapı süresi 100.000 para satırında ≤ 150 ms, 1.000.000'da ≤ 1 sn. Banka ekinin payı ≤ %15. Hareketler sayfası ve arama 1.000.000 satırda < 1 sn.
 
+### 3.11a Ek (12.10.2026, kullanıcı kararı): senetler Tekdüzen hesaplarına
+
+Kullanıcı: "muhasebe mantığı gereği ise onu da uygula". Tekdüzen Hesap Planı'nda çek ve senet ayrı hesaplardadır; program 2.0.13'ten beri
+ikisini birlikte tutuyordu (101 "Alınan Çekler ve Senetler", 103 "Verilen Çekler ve Senetler"). Yeni kural (evrak türüne göre):
+
+| Evrak | Yön | Ana hesap | Alt hesaplar |
+|---|---|---|---|
+| Çek | Alınan | 101 Alınan Çekler | 101.01 Portföydeki Çekler · 101.02 Tahsile Verilen Çekler |
+| Senet | Alınan | 121 Alacak Senetleri | 121.01 Portföydeki Senetler · 121.02 Tahsile Verilen Senetler |
+| Çek | Verilen | 103 Verilen Çekler ve Ödeme Emirleri (−) | — |
+| Senet | Verilen | 321 Borç Senetleri | — |
+
+- §3.6/§3.7/§3.14'te 101.01/101.02 yazan her satır alınan SENET için 121.01/121.02 olarak okunur; 103 yazan her satır verilen senet için 321.
+- Ana Defter türetilir, saklanmaz → veri göçü yok; eski sürüm verisinde senetler yeni kuralla 121/321'de görünür (hiçbir tutar değişmez,
+  yalnız hesap). Mizan toplamı ve 101+121 / 103+321 toplamları eski 101 / 103 ile birebir aynı olmalıdır (eşdeğerlik testi).
+- Kilit izi / `ledger_snapshots` ve Mutabakat Testi hesap bazında karşılaştırıyorsa kilitli dönemde sahte fark doğmamalı: kural değişikliği
+  eski dönem anlık görüntülerini yeni hesap düzenine çevirerek ya da hesap eşlemesini sürüme bağlayarak karşılaştırır (uygulamada seçilir,
+  gerekçesi KANIT'a yazılır).
+- Kapı: `cheque:collections` denetimi 101.02 + 121.02 toplamını etkin tahsil kayıtlarıyla karşılaştırır.
+- Karşılıksız çek/senet bugünkü gibi cariye döner (128 Şüpheli Ticari Alacaklar ayrı karar, bu ekte yok).
+- Hiçbir rolde 121 ve 321 seçilemez (§3.11 madde 504 listesine eklenir).
+- Uygulama (İz 4.2): tek kural `server/lib/cheque-gl.mjs` (yevmiye, beklenenler, kapı, Alt Hesap Mizanı, İşlem Kartı, raporlar oradan okur).
+  Kilit izi ham satırlardan kurulur ve açılışta ölçülür, saklanmaz; `ledger_snapshots` yoktur → kural değişikliği çalışma anında sahte fark
+  doğurmaz. Evrak türü artık kilitli mizanın hesabını belirlediği için kilit izine sona `cheques_instrument_lock` eklendi (yalnız senetler satır
+  üretir; çek verisinin izi aynı); bu girdi sürüme bağlıdır (`since: "2.2.0"`) ve eski sürümün kaydettiği izle karşılaştırma
+  `lockDigestOf(store, kilit, { version: "2.1.0" })` ile yapılır ("eşlemeyi sürüme bağlama" yolu). 121/321 Defter Mutabakatı satırları yalnız
+  senet girilmişse açılır (300/309 kuralı gibi).
+
+### 3.11b Ek (12.10.2026, kullanıcı kararı): Şüpheli Ticari Alacaklar
+
+Kullanıcı: "şüpheli alacaklar … da olsun". Plan susuyordu → yaygın uygulama (Tekdüzen 128/129, VUK md. 323):
+
+1. **Karşılıksız çek / protestolu senet** (mevcut bounce): bugünkü gibi carinin borcuna döner (B 120 / A 101 ya da 121; evrak durumu
+   Karşılıksız / Protestolu). Cari bakiyesi bugünküyle aynı.
+2. **"Şüpheli Alacağa Al"** (cari kartında; karşılıksız evrakın kartında kısayol): tutar (en çok carinin borç bakiyesi) ve tarih; neden
+   (Karşılıksız Çek / Protestolu Senet / Dava / İcra / Diğer) ve açıklama. Yevmiye B 128 / A 120. Cari bakiyesi DEĞİŞMEZ; carinin
+   "Şüpheli" tutarı ve rozeti görünür. Tahsilat gelince önce şüpheli tutardan düşer (A 128 yerine A 120 kalır; defter: B 100/102 / A 128
+   o tutar kadar). "Şüpheliden Çıkar" (geri al) B 120 / A 128.
+3. **"Karşılık Ayır"** (VUK 323; isteğe bağlı, yalnız şüpheli tutar kadar): B 654 Karşılık Giderleri / A 129 Şüpheli Ticari Alacaklar
+   Karşılığı (−). Şüpheli alacak sonradan tahsil edilirse ayrılan karşılık kadar B 129 / A 644 Konusu Kalmayan Karşılıklar. **"Değersiz
+   Alacak Yaz"** (kesinleşmiş kayıp): karşılık varsa B 129 / A 128, yoksa B 659 / A 128; cari bakiyesi o tutar kadar kapanır.
+4. Kurallar: dönem kilidi, ileri tarih, istek kimliği, yetki (cari yönetimi + muhasebe), audit, Silinenler (geri alma ters kayıtla),
+   Şirket Verisini Sıfırla listeleri, Mutabakat Testi: 128 = Σ etkin şüpheli kayıtları − kapananlar; 129 = Σ karşılık − çözülen.
+5. Görünüm: cari kartında "Şüpheli Alacak" bilgisi; Raporlar → "Şüpheli Alacaklar" (cari, neden, tarih, tutar, karşılık, tahsil edilen,
+   kalan); Cari Mizanı/Hesap Mizanı'nda 128/129; ANLIK DURUM alacak toplamında şüpheli ayrı satır. Alacak Yaşlandırma ve hatırlatmalar
+   şüpheli tutarı ayrı gösterir.
+6. Hiçbir rolde 128/129 seçilemez (§3.11 rol listesi).
+
 ### 3.12 Döviz, kur ve değerleme (K9; talimat 21; ek 2, 3)
 
 - **Saklama:** Döviz hesabı kendi para biriminde tutulur. Her satırda döviz tutarı, TL karşılığı, kur (`rate_e6`) ve kur kaynağı bulunur. Kur değişince geçmiş tutar yeniden hesaplanmaz.

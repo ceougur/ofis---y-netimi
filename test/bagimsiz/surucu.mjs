@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Bağımsız senaryo koşucusu — program tarafı (test/bagimsiz/SENARYO-DILI.md, dil "destekofis-senaryo/2").
+// Bağımsız senaryo koşucusu — program tarafı (test/bagimsiz/SENARYO-DILI.md, dil "destekofis-senaryo/3"; /2 senaryoları da koşulur).
 //
 //   node test/bagimsiz/surucu.mjs <senaryo.json> [--cikti <dosya>]
 //
@@ -33,7 +33,13 @@ import { ADMIN_PASSWORD, startTestServer } from "../helpers.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
-const DIL = "destekofis-senaryo/2";
+const DIL = "destekofis-senaryo/3";
+const DILLER = new Set(["destekofis-senaryo/2", DIL]); // sürüm 3 yalnız ekler (evrak işlemleri yalnız /3)
+// Sürüm 3 (evrak): çek API'si kara kutu yoklamayla öğrenildi (12.10.2026; program kodu okunmadı): POST /api/workspace/cheques
+// { direction: in|out, instrument: cheque|note, amount, accountId, issueDate, dueDate }; POST /api/workspace/cheques/:id/actions
+// { action: endorse|collect|pay|bounce|bank-deposit|bank-withdraw, … }; DELETE /api/workspace/cheques/:id.
+const EVRAK_TURU = { cek: "cheque", senet: "note" };
+const EVRAK_ISLEMLERI = new Set(["evrak_al", "evrak_ver", "evrak_ciro", "evrak_tahsil", "evrak_odeme", "evrak_karsiliksiz", "tahsile_ver", "bankadan_geri_al", "evrak_sil"]);
 
 // ---------- Senaryo değerleri → program değerleri ----------
 const ROLE = { yonetici: "admin", muhasebe: "muhasebe", personel: "personel" };
@@ -46,7 +52,7 @@ const FEE_TAX = { bsmv_dahil: "bsmv_incl", bsmv_haric: "bsmv_excl", yok: "none",
 const FEE_TYPE = { EFT: "eft", FAST: "fast", Havale: "havale", SWIFT: "swift", "Hesap İşletim": "hesap-isletim", "Döviz İşlem": "doviz-islem", "Diğer": "diger" };
 const EXPENSE = { "Banka Masrafları": "bank" };
 const CASH_DIRECTION = { bankadan_kasaya: "to-cash", kasadan_bankaya: "to-bank" };
-const SUBBED_MAINS = new Set(["102", "108", "300", "309"]);
+const SUBBED_MAINS = new Set(["101", "102", "108", "121", "300", "309"]); // sürüm 3: 101 ve 121 alt hesaplı (§8.2)
 // Kurumsal kartla ödemede kart hesabı (K2, 10.10.2026): koşucu adımdaki hesabı bankAccountId olarak gönderir; program kart yolunda kurumsal kart
 // hesabını bağlar (lib/bank/module-ref.mjs pickRef, corporate). Önceden bağlamadığı için burada sabit bir "eşlenemeyen" notu yazılıyordu (CARD_NOTE);
 // bağ artık programın kendi çıktısından (Banka Bakiye Raporu, Alt Hesap Mizanı) okunur, not kaldırıldı.
@@ -85,6 +91,15 @@ const FIELDS = {
   ters_kayit: ["hedef"],
   sil: ["hedef"],
   kontrol: ["planMetni", "planBeklenen"],
+  evrak_al: ["tur", "cari", "tutar", "vade"],
+  evrak_ver: ["tur", "cari", "tutar", "vade"],
+  evrak_ciro: ["evrak", "cari"],
+  evrak_tahsil: ["evrak", "yol", "hesap"],
+  evrak_odeme: ["evrak", "yol", "hesap"],
+  evrak_karsiliksiz: ["evrak"],
+  tahsile_ver: ["evrak", "hesap"],
+  bankadan_geri_al: ["evrak"],
+  evrak_sil: ["evrak"],
 };
 /** İşlem → hangi alanlar hangi türde takma ad anar (denetim ve atlama için). */
 const REFS = {
@@ -109,6 +124,15 @@ const REFS = {
   kredi_odeme: { kredi: "hesap", kaynak: "hesap" },
   ters_kayit: { hedef: "hareket" },
   sil: { hedef: "hareket" },
+  evrak_al: { cari: "cari" },
+  evrak_ver: { cari: "cari" },
+  evrak_ciro: { evrak: "evrak", cari: "cari" },
+  evrak_tahsil: { evrak: "evrak", hesap: "hesap" },
+  evrak_odeme: { evrak: "evrak", hesap: "hesap" },
+  evrak_karsiliksiz: { evrak: "evrak" },
+  tahsile_ver: { evrak: "evrak", hesap: "hesap" },
+  bankadan_geri_al: { evrak: "evrak" },
+  evrak_sil: { evrak: "evrak" },
 };
 /** `ad` alanı hangi tür varlık tanımlar. */
 const DEFINES = {
@@ -116,6 +140,7 @@ const DEFINES = {
   cari_tahsilat: "hareket", cari_odeme: "hareket", taksit_tahsilat: "hareket", kasa_hareket: "hareket", kasa_banka: "hareket",
   transfer: "hareket", banka_masraf: "hareket", faiz_geliri: "hareket", faiz_gideri: "hareket", diger_gelir: "hareket", diger_gider: "hareket",
   kart_borcu_odeme: "hareket", kredi_kullanim: "hareket", kredi_odeme: "hareket", ters_kayit: "hareket",
+  evrak_al: "evrak", evrak_ver: "evrak",
 };
 const ID_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 const ALIAS_RE = /^[A-Z][A-Z0-9_]{0,15}$/;
@@ -137,7 +162,7 @@ function validate(scenario, fileName) {
   const errors = [];
   const err = message => errors.push(message);
   if (!scenario || typeof scenario !== "object") return ["Senaryo JSON nesnesi değil."];
-  if (scenario.dil !== DIL) err(`dil "${DIL}" olmalı (${scenario.dil}).`);
+  if (!DILLER.has(scenario.dil)) err(`dil "${DIL}" ya da "destekofis-senaryo/2" olmalı (${scenario.dil}).`);
   const base = path.basename(fileName).replace(/\.json$/, "");
   if (scenario.ad !== base) err(`ad dosya adıyla aynı olmalı (ad "${scenario.ad}", dosya "${base}").`);
   const start = scenario.baslangic || {};
@@ -197,6 +222,7 @@ function validate(scenario, fileName) {
       err(`${step.id}: bilinmeyen işlem ${step.islem}`);
       continue;
     }
+    if (EVRAK_ISLEMLERI.has(step.islem) && scenario.dil !== DIL) err(`${step.id}: evrak işlemleri yalnız dil sürüm 3'te.`);
     for (const key of Object.keys(step)) {
       const plain = key.endsWith("Ham") ? key.slice(0, -3) : key;
       const known = COMMON.includes(key) || allowed.includes(key) || (key.endsWith("Ham") && AMOUNT_FIELDS.has(plain) && allowed.includes(plain));
@@ -344,6 +370,17 @@ function validate(scenario, fileName) {
       case "kredi_odeme":
         amountOk(step, "anapara");
         amountOk(step, "faiz", { required: false });
+        break;
+      case "evrak_al":
+      case "evrak_ver":
+        if (!EVRAK_TURU[step.tur]) err(`${step.id}: evrak türü cek/senet olmalı.`);
+        amountOk(step, "tutar");
+        if (step.vade !== undefined && !isoOf(step.vade)) err(`${step.id}: vade geçersiz.`);
+        break;
+      case "evrak_tahsil":
+      case "evrak_odeme":
+        if (!["nakit", "havale"].includes(step.yol)) err(`${step.id}: yol nakit/havale olmalı.`);
+        if (step.yol === "nakit" && step.hesap !== undefined) err(`${step.id}: nakit yolda hesap verilmez.`);
         break;
       default:
         break;
@@ -713,7 +750,8 @@ async function run(scenarioPath, outPath) {
           return result.ok ? { done: true } : refused(result);
         }
         case "kasa_acilis": {
-          const result = await http(client, "POST", "/api/workspace/cash", [], { kind: "in", amount: amountOf(step, "tutar"), date, description: "Açılış Bakiyesi", method: "cash", ...flags }, opt);
+          // 2.2.0 (yargıç Y2): program Kasa açılışını açıklamadan değil Kasa → Açılış Bakiyesi işleminden tanır; koşucu o uca gönderir (beklenen §4.8 aynı).
+          const result = await http(client, "POST", "/api/workspace/cash/opening", [], { amount: amountOf(step, "tutar"), date, ...flags }, opt);
           return result.ok ? { done: true } : refused(result);
         }
         case "kasa_hareket": {
@@ -911,6 +949,50 @@ async function run(scenarioPath, outPath) {
           }
           return result.ok ? { done: true } : refused(result);
         }
+        // ---------- Sürüm 3: evrak (çek ve senet) ----------
+        case "evrak_al":
+        case "evrak_ver": {
+          const body = {
+            direction: step.islem === "evrak_al" ? "in" : "out",
+            instrument: EVRAK_TURU[step.tur],
+            amount: amountOf(step, "tutar"),
+            accountId: idOf(step.cari),
+            issueDate: date,
+            dueDate: step.vade ? isoOf(step.vade) : date,
+            ...flags,
+          };
+          const result = await http(client, "POST", "/api/workspace/cheques", [], body, opt);
+          if (!result.ok) return refused(result);
+          return { created: { tur: "evrak", id: result.data.id }, replayed: Boolean(result.data.replayed) };
+        }
+        case "evrak_ciro":
+        case "evrak_tahsil":
+        case "evrak_odeme":
+        case "evrak_karsiliksiz":
+        case "tahsile_ver":
+        case "bankadan_geri_al": {
+          const action = { evrak_ciro: "endorse", evrak_tahsil: "collect", evrak_odeme: "pay", evrak_karsiliksiz: "bounce", tahsile_ver: "bank-deposit", bankadan_geri_al: "bank-withdraw" }[step.islem];
+          const body = {
+            action,
+            date,
+            ...(step.islem === "evrak_ciro" ? { accountId: idOf(step.cari) } : {}),
+            ...(step.yol !== undefined ? { method: METHOD[step.yol] } : {}),
+            ...(step.hesap !== undefined ? { bankAccountId: idOf(step.hesap) } : {}),
+            ...flags,
+          };
+          // 2.2.0 İz 4.1 (kullanıcı kararı İz 2.6): program tahsile vermeyi yalnız "Çek Kullan" / "Senet Kullan" işaretli hesaba kabul eder; dil
+          // hesap uygunluğunu §3.14'teki gibi tanımlar (işaret yok). Koşucu işareti yalnız bu istek süresince açar (kalıcı açık "Çek Kullan"
+          // verilen çeki kendiliğinden o hesaba bağlar — mutabakat motoru da aynı yolu izler); beklenen değerler değişmez.
+          const flagged = step.islem === "tahsile_ver" && step.hesap !== undefined;
+          if (flagged) await http(client, "PUT", "/api/workspace/bank/accounts/:id", [idOf(step.hesap)], { useCheque: true, useNote: true }, {});
+          const result = await http(client, "POST", "/api/workspace/cheques/:id/actions", [idOf(step.evrak)], body, opt);
+          if (flagged) await http(client, "PUT", "/api/workspace/bank/accounts/:id", [idOf(step.hesap)], { useCheque: false, useNote: false }, {});
+          return result.ok ? { done: true } : refused(result);
+        }
+        case "evrak_sil": {
+          const result = await http(client, "DELETE", "/api/workspace/cheques/:id", [idOf(step.evrak)], undefined, opt);
+          return result.ok ? { done: true } : refused(result);
+        }
         default:
           return { unmapped: `işlem tanınmadı: ${step.islem}` };
       }
@@ -975,7 +1057,7 @@ async function run(scenarioPath, outPath) {
     const pkg = JSON.parse(readFileSync(path.join(ROOT, "package.json"), "utf8"));
     const git = gitInfo();
     const output = {
-      dil: DIL,
+      dil: scenario.dil,
       senaryo: scenario.ad,
       kaynak: "program",
       ...final,
@@ -986,7 +1068,7 @@ async function run(scenarioPath, outPath) {
       belirsizler: [],
       // Karşılaştırılmayan ek alanlar (SENARYO-DILI §8.1: okumaKaynaklari, programSurumu, commit; §10: okumaHatalari).
       okumaKaynaklari: {
-        mizan: "GET /api/workspace/ledger (Ana Defter → Hesap Planı Mizanı, trial.accounts[].balance; ana hesaplar) + GET /api/workspace/bank/sub-trial (Banka → Alt Hesap Mizanı, rows[].balance; 102/108/300/309 yaprakları). Bakiye TL → kuruş; borc = max(0, bakiye), alacak = max(0, −bakiye).",
+        mizan: "GET /api/workspace/ledger (Ana Defter → Hesap Planı Mizanı, trial.accounts[].balance; ana hesaplar) + GET /api/workspace/bank/sub-trial (Banka → Alt Hesap Mizanı, rows[].balance; 101/102/108/121/300/309 yaprakları — sürüm 3: 101.01/101.02/121.01/121.02). Bakiye TL → kuruş; borc = max(0, bakiye), alacak = max(0, −bakiye).",
         bankaHesaplari: "GET /api/workspace/bank/accounts?status=all (Banka → Hesaplar, accounts[].balanceMinor); Alt Hesap Mizanı satırıyla karşılaştırılır.",
         hesapKodlari: "GET /api/workspace/bank/accounts?status=all (accounts[].glSub).",
         eksiBakiyeDenetimi: "GET /api/workspace/bank/accounts?status=all (accounts[].policy: warn → uyar, block → engelle, off → kontrol_yok; doğrulanmamış hesapta program off döner).",
@@ -997,6 +1079,7 @@ async function run(scenarioPath, outPath) {
         taksitKartlari: "GET /api/workspace/plans?status=all (Taksitler penceresi listesi, plans[].totals: total → toplam, paid → odenen, remaining → kalan).",
         ozet: "GET /api/workspace/bank/summary (Banka Genel Bakış K10: realBank.minor → gercekBanka, unassigned.totalMinor → hesabiAtanmamis, debt.totalMinor → kartVeKrediBorcu); kasaVeGercekBanka = GET /api/workspace/overview (ANLIK DURUM) cash.balance + cash.bank.balance.",
         retler: "Yanıtın HTTP durumu + gövdedeki code (ret iletisi retAyrinti'de).",
+        evrak: "Sürüm 3 evrak işlemleri: POST /api/workspace/cheques (alış/veriliş), POST /api/workspace/cheques/:id/actions (endorse, collect, pay, bounce, bank-deposit, bank-withdraw), DELETE /api/workspace/cheques/:id; uçlar kara kutu yoklamayla öğrenildi. Hesaplarda Çek/Senet Kullan işareti gönderilmez (BELİRSİZ-32; bu program sürümü istemedi).",
       },
       hesaplananAlanlar: [
         "Program TL sayıları (mizan, Kasa, cari, fatura, taksit) kuruşa çevrildi: round(TL × 100).",

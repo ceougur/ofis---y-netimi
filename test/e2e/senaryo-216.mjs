@@ -260,10 +260,11 @@ try {
     // 2 adet olarak kaydet; 500 TL POS'la peşin.
     await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "2");
     await admin.waitForTimeout(900);
-    await admin.click(`${inv} [data-act="pay-add-cash"]`);
-    const methods = await admin.$$eval(`${inv} [data-pay="cash"][data-f="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(methods.includes("POS") && !methods.includes("Kredi Kartı"), `satışta tahsilat yolları: ${methods.join(", ")}`);
-    await admin.selectOption(`${inv} [data-pay="cash"][data-f="method"]`, "card");
+    // v2.2.0 İz 2.8: ödeme yola göre eklenir ("+ Nakit · + Havale / EFT · + POS"); satırın başlığı yolun adı.
+    const methods = await admin.$$eval(`${inv} [data-act="pay-add-cash"]`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(methods.includes("+ POS") && methods.includes("+ Nakit") && methods.includes("+ Havale / EFT") && !methods.some(label => /Kredi Kartı/.test(label)), `satışta tahsilat düğmeleri: ${methods.join(", ")}`);
+    await admin.click(`${inv} [data-act="pay-add-cash"][data-method="card"]`);
+    ok((await admin.textContent(`${inv} .hof-inv-pay-row:has([data-pay="cash"][data-i="0"]) .hof-inv-pay-way`)).trim() === "POS", "satırın başlığı POS");
     await admin.fill(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, "500");
     await admin.waitForTimeout(900);
     ids.saleNo = await issue();

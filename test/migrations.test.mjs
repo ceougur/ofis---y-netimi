@@ -3,7 +3,7 @@ import { copyFileSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { after, before, describe, it } from "node:test";
-import { LATEST_VERSION } from "../server/lib/migrations.mjs";
+import { LATEST_VERSION, MIGRATIONS } from "../server/lib/migrations.mjs";
 import { startTestServer } from "./helpers.mjs";
 
 const fixture = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", "v1.0.0.sqlite");
@@ -23,7 +23,8 @@ describe("v1.0.0 veritabanından yükseltme", () => {
 
   it("şemayı son sürüme yükseltir ve öncesinde yedek alır", () => {
     assert.equal(server.app.store.get("PRAGMA user_version").user_version, LATEST_VERSION);
-    assert.deepEqual(server.app.migration.applied, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+    assert.deepEqual(server.app.migration.applied, MIGRATIONS.map(item => item.version));
+    assert.equal(server.app.migration.applied.at(-1), LATEST_VERSION);
     // v2.0.20: göç öncesi yedek şirketin kendi klasöründe ("001 - <ad>"), adında şirket kodu.
     const backups = readdirSync(server.app.backupDir());
     assert.ok(backups.some(name => /^destekofis-001-.*pre-migration/.test(name)), `yedekler: ${backups}`);

@@ -260,7 +260,8 @@ await step("cari-tahsilat", async () => {
   await page.selectOption(`${form} select[name="method"]`, "bank");
   await page.waitForSelector(`${form} [data-bank-pick]:not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
   const options = await page.$$eval(`${form} select[name="bankAccountId"] option`, nodes => nodes.map(node => node.textContent.trim()));
-  check(options[0] === "Hesap Seçin" && options.length === 3, `Banka Hesabı seçenekleri: ${options.join(" | ")}`);
+  // 2.1.0 (yargıç B1) "Hesapsız (Açılıştan Önce)" seçeneği; v2.2.0 (İz 2.7) seçenek adında hesabın bakiyesi.
+  check(options[0] === "Hesap Seçin" && options.length === 4 && options[3] === "Hesapsız (Açılıştan Önce)" && options.slice(1, 3).every(text => / — ₺/.test(text)), `Banka Hesabı seçenekleri: ${options.join(" | ")}`);
   await page.selectOption(`${form} select[name="bankAccountId"]`, ZIRAAT.id);
   await page.waitForTimeout(700);
   await quiet();
@@ -310,10 +311,33 @@ await step("kasa", async () => {
   await closeAll();
 });
 
-// 7b) Kurumsal Kredi Kartı: hesap ekrandan açılır (Kart Limiti, Ekstre Kesim Günü, Son Ödeme Günü); carinin − Ödeme formunda "Kredi Kartı"
-// seçilince Kurumsal Kart; limit aşılınca Eksi Bakiye sorusu; Hesap Detayı'ndan Kart Borcu Ödemesi.
+// 7b) Kredi Kartı (v2.2.0): Yeni Hesap türlerinde kart yok; kart banka hesabının İÇİNDEN eklenir (Düzenle → Kredi Kartı Kullan → + Kredi Kartı
+// Ekle: Kart Adı, Son 4 Hane, Kart Limiti, Hesap Kesim ve Son Ödeme Günü); carinin − Ödeme formunda "Kredi Kartı" seçilince Kredi Kartı alanı;
+// limit aşılınca Eksi Bakiye sorusu; Hesap Detayı'ndan Kart Borcu Ödemesi.
 let KART = null;
+// v2.2.0 (İz 2.1): doğrulanmamış hesapta Hesaplar'da "Açılış Bakiyesi Doğrulanmadı" ve ne yapılacağı. Geçici hesap: ekran metni alınınca silinir.
+await step("dogrulanmadi", async () => {
+  const extra = data(await api("/api/workspace/bank/accounts", { bankName: "Vakıfbank", name: "Ek Hesap", kind: "demand", opening: { date: "2026-10-01", amount: "0", confirmed: false } }));
+  await openBank();
+  await tab("accounts");
+  await grab("hesaplar-dogrulanmadi", bankWin);
+  check((await textOf(bankWin)).includes("Açılış Bakiyesi Doğrulanmadı"), "Hesaplar: Açılış Bakiyesi Doğrulanmadı");
+  await closeAll();
+  const removed = await api(`/api/workspace/bank/accounts/${extra.id}`, null, "DELETE");
+  check(removed.status === 200, `geçici hesap silindi (${removed.status})`);
+});
 await step("kart", async () => {
+  // Kart yokken cari − Ödeme → Kredi Kartı: "Kredi Kartı Tanımla" (form kapanmadan kart tanımlanır; burada kaydedilmez).
+  await page.click('#hof-sidecard [data-action="accounts"]');
+  await page.waitForSelector(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`, { timeout: 10000 });
+  await page.click(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`);
+  await page.waitForSelector('.hof-accounts-modal [data-entry="out"]', { timeout: 10000 });
+  await page.click('.hof-accounts-modal [data-entry="out"]');
+  await page.waitForSelector(`${top} .hof-form select[name="method"]`, { timeout: 8000 });
+  await page.selectOption(`${top} .hof-form select[name="method"]`, "card");
+  await page.waitForSelector(`${top} .hof-form [data-bank-define="card"]`, { timeout: 8000 });
+  await grab("kart-tanimla");
+  await closeAll();
   await openBank();
   await tab("accounts");
   await grab("hesaplar", bankWin);
@@ -321,28 +345,44 @@ await step("kart", async () => {
   const form = `${top} form.hof-bank-form`;
   await page.waitForSelector(`${form} [name="kind"]`, { timeout: 8000 });
   const kinds = await page.$$eval(`${form} select[name="kind"] option`, nodes => nodes.map(node => node.textContent.trim()));
-  check(kinds.join("|") === "Vadesiz|Ticari|Vadeli|Kredi Hesabı|Kurumsal Kredi Kartı|Diğer", `Hesap Türü seçenekleri: ${kinds.join(", ")}`);
+  check(kinds.join("|") === "Vadesiz|Ticari|Vadeli|Kredi Hesabı|Diğer", `Hesap Türü seçenekleri (kart yok): ${kinds.join(", ")}`);
   await grab("yeni-hesap-vadesiz");
-  await page.selectOption(`${form} select[name="kind"]`, "card");
-  await page.fill(`${form} [name="bankName"]`, "Garanti BBVA");
-  await page.fill(`${form} [name="name"]`, "Şirket Kartı");
-  await page.fill(`${form} [name="creditLimit"]`, "40.000");
-  await page.fill(`${form} [name="statementDay"]`, "5");
-  await page.fill(`${form} [name="dueDay"]`, "15");
-  await page.fill(`${form} [name="openingDate"]`, "2026-10-01");
-  await page.fill(`${form} [name="openingAmount"]`, "0");
-  await page.check(`${form} [name="confirmed"]`);
+  await closeAll();
+  // Garanti → Düzenle → Kredi Kartı Kullan → + Kredi Kartı Ekle.
+  await openBank();
+  await tab("accounts");
+  await page.click(`${bankWin} .hof-bank-accounts tbody tr[data-account="${GARANTI.id}"]`);
+  await page.waitForSelector(`${bankWin} [data-act="edit"]`, { timeout: 8000 });
+  await page.click(`${bankWin} [data-act="edit"]`);
+  await page.waitForSelector(`${top} form [name="useCard"]`, { timeout: 8000 });
+  await page.check(`${top} form [name="useCard"]`);
+  await grab("hesap-duzenle-isaretler");
+  await page.click(`${top} form button[type="submit"]`);
+  await page.waitForSelector(`${bankWin} [data-bank-cards] [data-act="card-add"]`, { timeout: 10000 });
+  await grab("hesap-kredi-kartlari", bankWin);
+  await page.click(`${bankWin} [data-bank-cards] [data-act="card-add"]`);
+  const card = `${top} form.hof-bank-form`;
+  await page.waitForSelector(`${card} [name="cardLast4"]`, { timeout: 8000 });
+  await page.waitForFunction(sel => document.querySelector(sel)?.value, `${card} select[name="parentId"]`, { timeout: 8000 });
+  await page.fill(`${card} [name="name"]`, "Şirket Kartı");
+  await page.fill(`${card} [name="cardLast4"]`, "4821");
+  await page.fill(`${card} [name="creditLimit"]`, "40.000");
+  await page.fill(`${card} [name="statementDay"]`, "5");
+  await page.fill(`${card} [name="dueDay"]`, "15");
+  await page.fill(`${card} [name="openingDate"]`, "2026-10-01");
+  await page.fill(`${card} [name="openingAmount"]`, "0");
+  await page.check(`${card} [name="confirmed"]`);
   await page.waitForTimeout(400);
   await quiet();
   await grab("yeni-hesap-kart");
   await shot("k38-banka-kart-hesabi", { clip: pad(await topBox()) });
-  await page.click(`${form} button[type="submit"]`);
-  await page.waitForSelector(form, { state: "detached", timeout: 10000 });
+  await page.click(`${card} button[type="submit"]`);
+  await page.waitForSelector(card, { state: "detached", timeout: 10000 });
   await page.waitForTimeout(700);
   await closeAll();
   KART = (await accountsNow()).find(account => account.kind === "card");
-  check(Boolean(KART), "Kurumsal Kredi Kartı hesabı açıldı");
-  // Cari − Ödeme → Kredi Kartı → Kurumsal Kart (tek kartta kendiliğinden).
+  check(Boolean(KART) && KART.parentId === GARANTI.id && KART.cardLast4 === "4821", "kredi kartı Garanti'nin altında açıldı (son 4 hane 4821)");
+  // Cari − Ödeme → Kredi Kartı → Kredi Kartı alanı (tek kartta kendiliğinden).
   const pay = async amount => {
     await page.click('#hof-sidecard [data-action="accounts"]');
     await page.waitForSelector(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`, { timeout: 10000 });
@@ -363,7 +403,7 @@ await step("kart", async () => {
   let f = await pay("2.500");
   await quiet();
   const note = await textOf(`${f} [data-bank-pick="card"]`);
-  check(note.includes("kurumsal kartına yazılır"), `Kurumsal Kart satırı: ${note}`);
+  check(note.includes("kredi kartına yazılır"), `Kredi Kartı satırı: ${note}`);
   await grab("cari-odeme-kart");
   await shot("k39-banka-kurumsal-kart", { clip: pad(await topBox()) });
   await page.click(`${f} button[type="submit"]`);
@@ -393,7 +433,7 @@ await step("kart", async () => {
   await page.waitForSelector(`${sf} select[name="pay"]`, { timeout: 8000 });
   await page.selectOption(`${sf} select[name="pay"]`, "card");
   await page.waitForSelector(`${sf} [data-bank-pick="card"]:not([hidden])`, { timeout: 8000 });
-  check((await textOf(`${sf} [data-bank-pick="card"]`)).includes("kurumsal kartına yazılır"), "Stok + Giriş: Kredi Kartı → Kurumsal Kart");
+  check((await textOf(`${sf} [data-bank-pick="card"]`)).includes("kredi kartına yazılır"), "Stok + Giriş: Kredi Kartı → Kredi Kartı alanı");
   await page.selectOption(`${sf} select[name="pay"]`, "bank");
   await page.waitForSelector(`${sf} [data-bank-pick]:not([data-bank-pick="card"]):not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
   await grab("stok-giris");
@@ -535,8 +575,14 @@ await step("planli-ikinci-kart", async () => {
   await grab("planli-liste", bankWin);
   check((await textOf(bankWin)).includes("Gerçekleştir"), "Planlı İşlemler'de Gerçekleştir");
   await closeAll();
-  const second = await api("/api/workspace/bank/accounts", { bankName: "Yapı Kredi", name: "Kurumsal Kart 2", kind: "card", creditLimit: "10.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
-  check(second.status === 200, `ikinci kurumsal kart (${second.status})`);
+  // İkinci kart, 2.1.0'dan kalma gibi bankaya bağsız (API): Hesaplar'da altında "Öneri: Ziraat Bankası …" ve "Bağla".
+  const second = await api("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Şirket Kartı 2", kind: "card", creditLimit: "10.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
+  check(second.status === 200, `ikinci kredi kartı (${second.status})`);
+  await openBank();
+  await tab("accounts");
+  await grab("hesaplar-kart-onerisi", bankWin);
+  check((await textOf(bankWin)).includes("Öneri") && (await textOf(bankWin)).includes("Bağla"), "Hesaplar: bağsız kartta Öneri ve Bağla");
+  await closeAll();
   await page.click('#hof-sidecard [data-action="accounts"]');
   await page.waitForSelector(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`, { timeout: 10000 });
   await page.click(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`);
@@ -547,7 +593,7 @@ await step("planli-ikinci-kart", async () => {
   await page.selectOption(`${f} select[name="method"]`, "card");
   await page.waitForSelector(`${f} [data-bank-pick="card"]:not([hidden]) select[name="cardAccountId"]`, { timeout: 8000 });
   await grab("cari-odeme-iki-kart");
-  check((await textOf(`${f} [data-bank-pick="card"]`)).includes("Kurumsal Kart"), "iki kartta Kurumsal Kart seçimi");
+  check((await textOf(`${f} [data-bank-pick="card"]`)).includes("Kredi Kartı"), "iki kartta Kredi Kartı seçimi");
   await closeAll();
 });
 

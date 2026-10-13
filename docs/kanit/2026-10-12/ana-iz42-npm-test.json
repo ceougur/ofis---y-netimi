@@ -1,0 +1,32 @@
+{
+  "ad": "ana-iz42-npm-test",
+  "komut": "npm test",
+  "commit": "30409149a5cc0eba5dfcd6e9e95d556bf9c30f34",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T15:19:52.341Z",
+  "sure_sn": 1108.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2307,
+    "gecen": 2307,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/ana-iz42-npm-test.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "aab1e3bc6f148d31b0f395aef3e391ff081771533c1e0d68cb653dd210cce1fc",
+  "ham_cikti_bayt": 795950
+}

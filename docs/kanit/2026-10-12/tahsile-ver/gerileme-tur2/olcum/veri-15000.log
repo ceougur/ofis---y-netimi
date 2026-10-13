@@ -1,0 +1,8 @@
+(node:3073) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"cheques":15000,"counts":{"collect":7500,"endorse":1500,"bounce":1500,"portfolio":4500},"ms":329324}
+
+real	5m31.504s
+user	4m23.085s
+sys	0m47.800s
+cikis=0

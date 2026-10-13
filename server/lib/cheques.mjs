@@ -48,7 +48,8 @@ export const initialEvent = direction => (direction === "out" ? "issue" : "recei
 
 /** Geçiş kuralı: izin yoksa okunur bir neden döner. */
 export function transition(cheque, action) {
-  const rule = ACTIONS[action];
+  // Doğrulama (tur 2, bozuk girdi): yalnız kendi anahtarı — "hasOwnProperty", "__proto__", "toString" Object.prototype'tan gelir (500 veriyordu).
+  const rule = Object.hasOwn(ACTIONS, action) ? ACTIONS[action] : null;
   if (!rule) return { ok: false, reason: "İşlem tanınmadı." };
   const status = STATUSES[cheque.status];
   if (!status) return { ok: false, reason: "Çekin durumu tanınmadı." };
@@ -77,10 +78,11 @@ export function plannedEffects(cheque, kind, { date, note = "", endorseAccountId
   if (kind === "endorse") return endorseAccountId ? [{ type: "account-entry", accountId: endorseAccountId, kind: "debt", amount, date, note }] : [];
   if (kind === "bounce") {
     const out = [];
-    // Müşteri yeniden borçlanır: taksite sayılan çekte o tahsilat kaldırılır (taksit yeniden açık/gecikmiş olur),
-    // cariye alacak yazılan çekte cariye aynı tutarda borç yazılır.
+    // Müşteri KARŞILIKSIZ GÜNÜ yeniden borçlanır: cariye alacak yazılan çekte cariye aynı tutarda borç yazılır; taksite sayılan çekte o tahsilatın
+    // ters kaydı (taksit iadesi, çekli; taksit yeniden açık/gecikmiş olur). Doğrulama T11 (plan §3.14, §5.5): önceden alış günündeki taksit
+    // tahsilatı SİLİNİYORDU — alış günü maddesi geriye dönük 101/602'ye dönüyor, kilitli dönemde karşılıksız hiç kaydedilemiyordu.
     const planEntry = receiveEffects.find(effect => effect.op === "insert" && effect.table === "plan_entries");
-    if (planEntry) out.push({ type: "remove-plan-entry", id: planEntry.id });
+    if (planEntry) out.push({ type: "reverse-plan-entry", id: planEntry.id, amount, date, note });
     else if (cheque.accountId) out.push({ type: "account-entry", accountId: cheque.accountId, kind: "debt", amount, date, note });
     // Ciro edilmişse: ciro edilen carinin (tedarikçi) alacağı geri gelir.
     const endorsed = endorseEffects.find(effect => effect.op === "insert" && effect.table === "account_entries");

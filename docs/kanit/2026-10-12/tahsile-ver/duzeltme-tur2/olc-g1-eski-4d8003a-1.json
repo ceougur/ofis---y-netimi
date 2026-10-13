@@ -1,0 +1,65 @@
+{
+ "cheques": 15000,
+ "get": {
+  "bank/sub-trial": {
+   "status": 200,
+   "first": 677,
+   "median": 699,
+   "min": 631
+  },
+  "bank/sub-trial dönem": {
+   "status": 200,
+   "first": 659,
+   "median": 649,
+   "min": 623
+  },
+  "rapor alt-hesap-mizani": {
+   "status": 200,
+   "first": 649,
+   "median": 731,
+   "min": 663
+  },
+  "rapor cek-hareketleri": {
+   "status": 200,
+   "first": 389,
+   "median": 360,
+   "min": 353
+  },
+  "cheques": {
+   "status": 200,
+   "first": 515,
+   "median": 401,
+   "min": 380
+  },
+  "dues": {
+   "status": 200,
+   "first": 128,
+   "median": 37,
+   "min": 34
+  }
+ },
+ "rows": {
+  "bank/sub-trial": [
+   {
+    "sub": "101.01",
+    "account": "101",
+    "name": "Portföydeki Çek ve Senetler",
+    "opening": 0,
+    "debit": 10845895,
+    "credit": 7592289,
+    "balance": 3253606
+   }
+  ],
+  "bank/sub-trial dönem": [
+   {
+    "sub": "101.01",
+    "account": "101",
+    "name": "Portföydeki Çek ve Senetler",
+    "opening": 1178129,
+    "debit": 3655404,
+    "credit": 2576116,
+    "balance": 2257417
+   }
+  ]
+ }
+}

@@ -1,0 +1,93 @@
+rastgele-s3-1-500: evrak adımı 49 {'bankadan_geri_al': 1, 'evrak_al': 14, 'evrak_ciro': 1, 'evrak_karsiliksiz': 2, 'evrak_odeme': 7, 'evrak_sil': 2, 'evrak_tahsil': 10, 'evrak_ver': 7, 'tahsile_ver': 5}
+  evrak reti kâhin 2, program 2; aynı adımlar: True
+    evrak_tahsil 400→400 cheque-deposited-account                1
+    evrak_tahsil 4xx→409 None                                    1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 18 kontrol): 158, sıfırdan farklı bakiye: 36
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 200 · program okuma hatası 0 · eşlenemeyen 0
+rastgele-s3-2-500: evrak adımı 54 {'evrak_al': 15, 'evrak_ciro': 1, 'evrak_karsiliksiz': 1, 'evrak_odeme': 2, 'evrak_sil': 5, 'evrak_tahsil': 9, 'evrak_ver': 14, 'tahsile_ver': 7}
+  evrak reti kâhin 3, program 3; aynı adımlar: True
+    evrak_al 400→400 date-future                                 2
+    tahsile_ver 4xx→400 date-before-receive                      1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 19 kontrol): 190, sıfırdan farklı bakiye: 55
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 589 · program okuma hatası 0 · eşlenemeyen 0
+rastgele-s3-3-500: evrak adımı 57 {'bankadan_geri_al': 2, 'evrak_al': 16, 'evrak_ciro': 1, 'evrak_karsiliksiz': 3, 'evrak_odeme': 5, 'evrak_sil': 2, 'evrak_tahsil': 11, 'evrak_ver': 6, 'tahsile_ver': 11}
+  evrak reti kâhin 2, program 2; aynı adımlar: True
+    evrak_karsiliksiz 4xx→409 None                               1
+    evrak_odeme 4xx→409 None                                     1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 19 kontrol): 218, sıfırdan farklı bakiye: 37
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 420 · program okuma hatası 0 · eşlenemeyen 0
+rastgele-s3-1-500-notr: evrak adımı 57 {'bankadan_geri_al': 2, 'evrak_al': 19, 'evrak_karsiliksiz': 3, 'evrak_odeme': 6, 'evrak_sil': 3, 'evrak_tahsil': 10, 'evrak_ver': 6, 'tahsile_ver': 8}
+  evrak reti kâhin 2, program 2; aynı adımlar: True
+    evrak_sil 409→409 cheque-deposited                           1
+    evrak_tahsil 4xx→409 None                                    1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 18 kontrol): 188, sıfırdan farklı bakiye: 74
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 207 · program okuma hatası 0 · eşlenemeyen 0
+rastgele-s3-2-500-notr: evrak adımı 59 {'bankadan_geri_al': 2, 'evrak_al': 11, 'evrak_karsiliksiz': 2, 'evrak_odeme': 8, 'evrak_sil': 2, 'evrak_tahsil': 8, 'evrak_ver': 20, 'tahsile_ver': 6}
+  evrak reti kâhin 1, program 1; aynı adımlar: True
+    tahsile_ver 4xx→400 date-before-receive                      1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 19 kontrol): 188, sıfırdan farklı bakiye: 56
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 696 · program okuma hatası 0 · eşlenemeyen 0
+rastgele-s3-3-500-notr: evrak adımı 57 {'bankadan_geri_al': 2, 'evrak_al': 16, 'evrak_ciro': 1, 'evrak_karsiliksiz': 3, 'evrak_odeme': 5, 'evrak_sil': 2, 'evrak_tahsil': 11, 'evrak_ver': 6, 'tahsile_ver': 11}
+  evrak reti kâhin 2, program 2; aynı adımlar: True
+    evrak_karsiliksiz 4xx→409 None                               1
+    evrak_odeme 4xx→409 None                                     1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 19 kontrol): 218, sıfırdan farklı bakiye: 37
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 420 · program okuma hatası 0 · eşlenemeyen 0
+kabul-senet: evrak adımı 32 {'bankadan_geri_al': 2, 'evrak_al': 8, 'evrak_ciro': 2, 'evrak_karsiliksiz': 1, 'evrak_odeme': 3, 'evrak_sil': 4, 'evrak_tahsil': 5, 'evrak_ver': 2, 'tahsile_ver': 5}
+  evrak reti kâhin 11, program 11; aynı adımlar: True
+    bankadan_geri_al 4xx→409 cheque-not-deposited                1
+    evrak_al 409→409 period-locked                               1
+    evrak_ciro 409→409 cheque-deposited                          1
+    evrak_odeme 4xx→409 None                                     1
+    evrak_sil 404→404 None                                       1
+    evrak_sil 409→409 cheque-deposited                           1
+    evrak_sil 409→409 period-locked                              1
+    evrak_tahsil 400→400 bank-account-required                   1
+    evrak_tahsil 400→400 cheque-deposited-account                1
+    tahsile_ver 400→400 bank-account-invalid                     1
+    tahsile_ver 4xx→400 date-before-receive                      1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 3 kontrol): 44, sıfırdan farklı bakiye: 12
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-a: evrak adımı 3 {'evrak_al': 1, 'evrak_karsiliksiz': 1, 'tahsile_ver': 1}
+  evrak reti kâhin 0, program 0; aynı adımlar: True
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 1 kontrol): 8, sıfırdan farklı bakiye: 1
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-b: evrak adımı 5 {'bankadan_geri_al': 1, 'evrak_al': 1, 'evrak_tahsil': 1, 'tahsile_ver': 2}
+  evrak reti kâhin 0, program 0; aynı adımlar: True
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 0 kontrol): 4, sıfırdan farklı bakiye: 0
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-c: evrak adımı 4 {'evrak_al': 1, 'evrak_odeme': 1, 'evrak_tahsil': 1, 'evrak_ver': 1}
+  evrak reti kâhin 0, program 0; aynı adımlar: True
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 0 kontrol): 4, sıfırdan farklı bakiye: 0
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-d: evrak adımı 4 {'evrak_al': 2, 'evrak_ciro': 1, 'evrak_sil': 1}
+  evrak reti kâhin 0, program 0; aynı adımlar: True
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 0 kontrol): 2, sıfırdan farklı bakiye: 0
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-e: evrak adımı 2 {'evrak_odeme': 1, 'evrak_ver': 1}
+  evrak reti kâhin 1, program 1; aynı adımlar: True
+    evrak_odeme 409→409 cash-blocked                             1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 0 kontrol): 2, sıfırdan farklı bakiye: 1
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-f: evrak adımı 3 {'evrak_al': 1, 'tahsile_ver': 2}
+  evrak reti kâhin 2, program 2; aynı adımlar: True
+    tahsile_ver 400→400 bank-account-invalid                     1
+    tahsile_ver 4xx→409 bank-before-opening                      1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 0 kontrol): 2, sıfırdan farklı bakiye: 1
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-g: evrak adımı 2 {'evrak_al': 1, 'evrak_karsiliksiz': 1}
+  evrak reti kâhin 1, program 1; aynı adımlar: True
+    evrak_al 400→400 date-future                                 1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 0 kontrol): 0, sıfırdan farklı bakiye: 0
+  atlanan evrak adımı: 1 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-h: evrak adımı 5 {'evrak_al': 1, 'evrak_karsiliksiz': 1, 'evrak_tahsil': 2, 'tahsile_ver': 1}
+  evrak reti kâhin 3, program 3; aynı adımlar: True
+    evrak_karsiliksiz 4xx→409 None                               1
+    evrak_tahsil 4xx→409 None                                    1
+    tahsile_ver 4xx→409 cheque-not-in-portfolio                  1
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 0 kontrol): 2, sıfırdan farklı bakiye: 0
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 0 · program okuma hatası 0 · eşlenemeyen 0
+s3-i: evrak adımı 1 {'evrak_al': 1}
+  evrak reti kâhin 0, program 0; aynı adımlar: True
+  evrak hesabı yaprağı (101.01/101.02/121.01/121.02/103/321; son durum + 0 kontrol): 2, sıfırdan farklı bakiye: 1
+  atlanan evrak adımı: 0 · BELİRSİZ-27 yolu (kâhin a): 2 · program okuma hatası 0 · eşlenemeyen 0

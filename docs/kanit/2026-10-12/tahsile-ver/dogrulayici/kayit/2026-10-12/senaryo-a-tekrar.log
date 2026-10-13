@@ -1,0 +1,435 @@
+TAP version 13
+# (node:16012) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu
+    # Subtest: hesap alt kodları beklenenle aynı (102.01 Ziraat, 102.02 Garanti)
+    ok 1 - hesap alt kodları beklenenle aynı (102.01 Ziraat, 102.02 Garanti)
+      ---
+      duration_ms: 1.462157
+      type: 'test'
+      ...
+    # Subtest: adım 1: al C1 2026-10-02 — anlık sayılar = model
+    not ok 2 - adım 1: al C1 2026-10-02 — anlık sayılar = model
+      ---
+      duration_ms: 106.285464
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'alt 101.01: gerçek 0 / beklenen 1000'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'alt 101.01: gerçek 0 / beklenen 1000'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: adım 2: al C2 2026-10-02 — anlık sayılar = model
+    not ok 3 - adım 2: al C2 2026-10-02 — anlık sayılar = model
+      ---
+      duration_ms: 70.647912
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'alt 101.01: gerçek 0 / beklenen 3500'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'alt 101.01: gerçek 0 / beklenen 3500'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: adım 3: al N1 2026-10-03 — anlık sayılar = model
+    not ok 4 - adım 3: al N1 2026-10-03 — anlık sayılar = model
+      ---
+      duration_ms: 71.491267
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'alt 101.01: gerçek 0 / beklenen 6500'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'alt 101.01: gerçek 0 / beklenen 6500'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: adım 4: al C3 2026-10-03 — anlık sayılar = model
+    not ok 5 - adım 4: al C3 2026-10-03 — anlık sayılar = model
+      ---
+      duration_ms: 44.623816
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'alt 101.01: gerçek 0 / beklenen 10500.5'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'alt 101.01: gerçek 0 / beklenen 10500.5'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: adım 5: al C4 2026-10-03 — anlık sayılar = model
+    not ok 6 - adım 5: al C4 2026-10-03 — anlık sayılar = model
+      ---
+      duration_ms: 48.525071
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:84:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'alt 101.01: gerçek 0 / beklenen 11250.75'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'alt 101.01: gerçek 0 / beklenen 11250.75'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: adım 6: ver C1 2026-10-05 → ziraat — anlık sayılar = model
+    ok 7 - adım 6: ver C1 2026-10-05 → ziraat — anlık sayılar = model
+      ---
+      duration_ms: 49.143219
+      type: 'test'
+      ...
+    # Subtest: adım 7: ver C2 2026-10-05 → garanti — anlık sayılar = model
+    ok 8 - adım 7: ver C2 2026-10-05 → garanti — anlık sayılar = model
+      ---
+      duration_ms: 52.492162
+      type: 'test'
+      ...
+    # Subtest: adım 8: ver N1 2026-10-06 → ziraat — anlık sayılar = model
+    ok 9 - adım 8: ver N1 2026-10-06 → ziraat — anlık sayılar = model
+      ---
+      duration_ms: 45.95659
+      type: 'test'
+      ...
+    # Subtest: adım 9: tahsil C1 2026-10-07 — anlık sayılar = model
+    ok 10 - adım 9: tahsil C1 2026-10-07 — anlık sayılar = model
+      ---
+      duration_ms: 50.366102
+      type: 'test'
+      ...
+    # Subtest: adım 10: geri C2 2026-10-08 — anlık sayılar = model
+    ok 11 - adım 10: geri C2 2026-10-08 — anlık sayılar = model
+      ---
+      duration_ms: 79.886417
+      type: 'test'
+      ...
+    # Subtest: adım 11: ver C2 2026-10-09 → ziraat — anlık sayılar = model
+    ok 12 - adım 11: ver C2 2026-10-09 → ziraat — anlık sayılar = model
+      ---
+      duration_ms: 86.859506
+      type: 'test'
+      ...
+    # Subtest: adım 12: karsiliksiz N1 2026-10-12 — anlık sayılar = model
+    ok 13 - adım 12: karsiliksiz N1 2026-10-12 — anlık sayılar = model
+      ---
+      duration_ms: 88.4273
+      type: 'test'
+      ...
+    # Subtest: adım 13: ver C3 2026-10-13 → garanti — anlık sayılar = model
+    ok 14 - adım 13: ver C3 2026-10-13 → garanti — anlık sayılar = model
+      ---
+      duration_ms: 64.340239
+      type: 'test'
+      ...
+    # Subtest: adım 14: son-islemi-geri-al C1 — anlık sayılar = model
+    ok 15 - adım 14: son-islemi-geri-al C1 — anlık sayılar = model
+      ---
+      duration_ms: 78.970656
+      type: 'test'
+      ...
+    # Subtest: adım 15: tahsil C1 2026-10-09 — anlık sayılar = model
+    ok 16 - adım 15: tahsil C1 2026-10-09 — anlık sayılar = model
+      ---
+      duration_ms: 61.195078
+      type: 'test'
+      ...
+    # Subtest: adım 16: son-islemi-geri-al N1 — anlık sayılar = model
+    ok 17 - adım 16: son-islemi-geri-al N1 — anlık sayılar = model
+      ---
+      duration_ms: 47.75895
+      type: 'test'
+      ...
+    # Subtest: adım 17: karsiliksiz N1 2026-10-14 — anlık sayılar = model
+    ok 18 - adım 17: karsiliksiz N1 2026-10-14 — anlık sayılar = model
+      ---
+      duration_ms: 53.495728
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-04: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 19 - kesit 2026-10-04: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 9.880166
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-05: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 20 - kesit 2026-10-05: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 6.654338
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-06: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 21 - kesit 2026-10-06: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 6.938178
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-07: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 22 - kesit 2026-10-07: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 9.031701
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-08: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 23 - kesit 2026-10-08: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 8.475776
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-09: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 24 - kesit 2026-10-09: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 6.638721
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-12: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 25 - kesit 2026-10-12: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 6.867819
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-13: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 26 - kesit 2026-10-13: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 7.775953
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-14: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 27 - kesit 2026-10-14: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 6.912671
+      type: 'test'
+      ...
+    # Subtest: kesit 2026-10-15: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+    ok 28 - kesit 2026-10-15: Ana Defter (?to=) ve Alt Hesap Mizanı (?to=) = model
+      ---
+      duration_ms: 8.673374
+      type: 'test'
+      ...
+    # Subtest: aralık 2026-10-06–2026-10-09: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+    ok 29 - aralık 2026-10-06–2026-10-09: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+      ---
+      duration_ms: 11.20665
+      type: 'test'
+      ...
+    # Subtest: aralık 2026-10-10–2026-10-15: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+    not ok 30 - aralık 2026-10-10–2026-10-15: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+      ---
+      duration_ms: 7.608187
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:121:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'uç 101.01 borc: gerçek 3000 / beklenen 0',
+        +   'uç 101.01 alacak: gerçek 7000.5 / beklenen 4000.5',
+        +   'rapor 101.01 borc: gerçek 3000 / beklenen 0',
+        +   'rapor 101.01 alacak: gerçek 7000.5 / beklenen 4000.5'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'uç 101.01 borc: gerçek 3000 / beklenen 0'
+        1: 'uç 101.01 alacak: gerçek 7000.5 / beklenen 4000.5'
+        2: 'rapor 101.01 borc: gerçek 3000 / beklenen 0'
+        3: 'rapor 101.01 alacak: gerçek 7000.5 / beklenen 4000.5'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:136:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aralık 2026-10-01–2026-10-31: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+    not ok 31 - aralık 2026-10-01–2026-10-31: Alt Hesap Mizanı devir/borç/alacak/bakiye (uç ve Rapor Merkezi) = model
+      ---
+      duration_ms: 7.767704
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:121:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'uç 101.01 borc: gerçek 16750.75 / beklenen 13750.75',
+        +   'uç 101.01 alacak: gerçek 16000.5 / beklenen 13000.5',
+        +   'rapor 101.01 borc: gerçek 16750.75 / beklenen 13750.75',
+        +   'rapor 101.01 alacak: gerçek 16000.5 / beklenen 13000.5'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'uç 101.01 borc: gerçek 16750.75 / beklenen 13750.75'
+        1: 'uç 101.01 alacak: gerçek 16000.5 / beklenen 13000.5'
+        2: 'rapor 101.01 borc: gerçek 16750.75 / beklenen 13750.75'
+        3: 'rapor 101.01 alacak: gerçek 16000.5 / beklenen 13000.5'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:136:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Banka Hareket Raporu (hesap bazında): yalnız tahsil girişi, tahsil günü; tahsile ver / geri al / karşılıksız para hareketi değil
+    ok 32 - Banka Hareket Raporu (hesap bazında): yalnız tahsil girişi, tahsil günü; tahsile ver / geri al / karşılıksız para hareketi değil
+      ---
+      duration_ms: 10.038705
+      type: 'test'
+      ...
+    # Subtest: Banka Bakiye Raporu: dönem sonu ve giriş = model
+    ok 33 - Banka Bakiye Raporu: dönem sonu ve giriş = model
+      ---
+      duration_ms: 11.365904
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış: açık evrak beklenen tarih ve tutarla (tahsildeki: vade + iş günü; portföydeki: vade); başlangıç = Kasa + Gerçek Banka
+    ok 34 - Nakit Akış: açık evrak beklenen tarih ve tutarla (tahsildeki: vade + iş günü; portföydeki: vade); başlangıç = Kasa + Gerçek Banka
+      ---
+      duration_ms: 6.860661
+      type: 'test'
+      ...
+    # Subtest: Vade Takip (açık): evrak kalemleri = Nakit Akış'la aynı beklenen tarih
+    ok 35 - Vade Takip (açık): evrak kalemleri = Nakit Akış'la aynı beklenen tarih
+      ---
+      duration_ms: 4.139686
+      type: 'test'
+      ...
+    # Subtest: Çek listesi: Bankada Tahsilde süzgeci + özet; Portföyde süzgeci tahsildekini içermez; sanal durum etiketleri
+    ok 36 - Çek listesi: Bankada Tahsilde süzgeci + özet; Portföyde süzgeci tahsildekini içermez; sanal durum etiketleri
+      ---
+      duration_ms: 7.134646
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi Çek / Senet Portföyü: 'Portföyde' süzgeci satırları ↔ özet 'Portföyde (alınan)' tutarlı mı
+    not ok 37 - Rapor Merkezi Çek / Senet Portföyü: 'Portföyde' süzgeci satırları ↔ özet 'Portföyde (alınan)' tutarlı mı
+      ---
+      duration_ms: 6.368148
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:213:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   "'Portföyde' süzgecinde satır toplamı 750.25 ↔ özet 'Portföyde (alınan)' 7250.75 (tahsildeki 6500.5 satırda yok, özette var)",
+        +   'rapor status=deposited süzgeci yok sayılıyor: 5 satır (beklenen 2), alt başlık "Alınan"'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: "'Portföyde' süzgecinde satır toplamı 750.25 ↔ özet 'Portföyde (alınan)' 7250.75 (tahsildeki 6500.5 satırda yok, özette var)"
+        1: 'rapor status=deposited süzgeci yok sayılıyor: 5 satır (beklenen 2), alt başlık "Alınan"'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:222:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..37
+not ok 1 - Senaryo: A — iki hesap, çek + senet, tahsil / geri al / karşılıksız / Geri Al, kuruşlu
+  ---
+  duration_ms: 1817.574562
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-a.mjs:66:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 37
+# suites 1
+# pass 29
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2306.707452

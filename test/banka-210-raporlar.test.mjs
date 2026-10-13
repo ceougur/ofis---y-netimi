@@ -32,7 +32,10 @@ import { apiOf, integrityOk, pdfText, unwrap, xlsxSheets } from "./banka-210-ort
 import { BANK, TODAY, bootBank, expectStatus, must, openAccount, trIban } from "./banka-210-hesap-ortak.mjs";
 
 const RC = "/api/workspace/report-center";
-const BANK_REPORTS = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"];
+// 2.2.0 (bilerek güncellendi): Bankaya Tahsile Ver ile plan §8.10 "Tahsildeki Çekler" raporu (Tahsildeki Çek ve Senetler); Banka grubuna
+// POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar eklendi (İz 3.5; yetki ve şirket ayrımı denetimleri onlar için de koşar; içerik
+// denetimi banka-220-pos-iz3'te).
+const BANK_REPORTS = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar"];
 const K10 = { realBank: "Gerçek Banka", debt: "Kart ve Kredi Borcu", unassigned: "Hesabı Atanmamış Eski Hareketler" };
 const NO_SUM = new Set(["Bakiye"]);
 
@@ -233,7 +236,10 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     const xlsx = await get(id, query, "xlsx");
     assert.equal(xlsx.status, 200, `${tag} Excel ${xlsx.status}`);
     const sheets = xlsxSheets(xlsx.buffer);
-    const sheet = Object.values(sheets)[0];
+    // 2.2.0 İz 1.1: tablonun üstünde başlık bloğu (tek hücreli satırlar: "kod · unvan", rapor adı, kapsam, oluşturma); blok atlanır.
+    const book = Object.values(sheets)[0];
+    assert.match(String(book[0]?.[0]), /^\d{3} · /, `${tag} Excel: ilk satır şirket kodu ve unvanı`);
+    const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1)));
     assert.deepEqual(sheet[0], data.headers, `${tag} Excel: başlık satırı`);
     assert.equal(sheet.length, 1 + data.rows.length + (data.footer ? 1 : 0), `${tag} Excel: satır sayısı`);
     const value = cell => moneyOf(cell);
@@ -245,7 +251,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     };
     data.rows.forEach((row, r) => row.forEach((cell, c) => same(sheet[r + 1]?.[c], cell, `satır ${r + 1} "${data.headers[c]}"`)));
     if (data.footer) data.footer.forEach((cell, c) => same(sheet.at(-1)?.[c], cell, `TOPLAM "${data.headers[c]}"`));
-    const ozet = Object.fromEntries((sheets["Özet"] || []).slice(1).map(([key, val]) => [key, val]));
+    const ozet = Object.fromEntries((sheets["Özet"] || []).slice(1).filter(([key]) => key !== "Şirket").map(([key, val]) => [key, val]));
     for (const [key, val] of data.summary) {
       if (moneyOf(val) !== null) assert.equal(typeof ozet[key] === "number" ? Math.round(ozet[key] * 100) : moneyOf(ozet[key]), moneyOf(val), `${tag} Excel Özet "${key}"`);
     }
@@ -263,8 +269,8 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     const catalog = await must("katalog", api.get(RC));
     const bank = catalog.reports.filter(report => report.group === "Banka");
     assert.deepEqual(bank.map(report => report.id), BANK_REPORTS);
-    assert.deepEqual(Object.fromEntries(bank.map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"] });
-    assert.deepEqual(bank.map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı"]);
+    assert.deepEqual(Object.fromEntries(bank.map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"], "tahsildeki-cekler": [], "pos-odeme-takvimi": ["range", "posTerminal", "posKind"], "faturasi-beklenen-komisyonlar": ["range", "posTerminal"] });
+    assert.deepEqual(bank.map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı", "Tahsildeki Çek ve Senetler", "POS Ödeme Takvimi", "Faturası Beklenen Komisyonlar"]);
     assert.deepEqual(catalog.choices.bankAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id, acc.K.id, acc.L.id, "unassigned"]);
     assert.deepEqual(catalog.choices.feeAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id]);
     assert.ok(!/\d,\d{2}/.test(JSON.stringify(catalog.choices)), "seçeneklerde bakiye (tutar) yok");
@@ -396,7 +402,14 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
       const tag = `alt-hesap-mizani ${r.label}`;
       const data = await screen("alt-hesap-mizani", r.q, tag);
       const keys = ALL.filter(key => of([key]).some(row => upTo(row.d, r)));
-      assert.deepEqual(data.rows.map(row => row[0]).sort(), keys.map(key => sub[key]).sort(), `${tag}: alt hesaplar`);
+      // 2.2.0 (doğrulama T4, bilerek güncellendi): alınan evrakın 101.01 satırı da (Bankaya Tahsile Ver, plan §3.11) — RC-1 04.10'da alındı ve
+      // aynı gün tahsil edildi: dönem 04.10'u içeriyorsa borç = alacak = 4.000, bakiye 0; sonraki dönemde devir 0; önceki dönemde satır yok.
+      const cheque = data.rows.find(row => row[0] === "101.01");
+      if (upTo("2026-10-04", r)) {
+        const moved = inRange("2026-10-04", r) ? 400_000 : 0; // kuruş
+        assert.deepEqual([moneyOf(cheque?.[col(data, "Devir")]), moneyOf(cheque?.[col(data, "Borç")]), moneyOf(cheque?.[col(data, "Alacak")]), moneyOf(cheque?.[col(data, "Bakiye")])], [0, moved, moved, 0], `${tag}: 101.01`);
+      } else assert.equal(cheque, undefined, `${tag}: 101.01 dönemden önce yok`);
+      assert.deepEqual(data.rows.map(row => row[0]).filter(code => !code.startsWith("101.")).sort(), keys.map(key => sub[key]).sort(), `${tag}: alt hesaplar`);
       for (const key of keys) {
         const row = data.rows.find(cells => cells[0] === sub[key]);
         const list = of([key]).filter(item => inRange(item.d, r));
@@ -434,8 +447,9 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     // PDF ve Excel aynı süzgeçle (alt başlık ve satırlar).
     const pdf = pdfText((await get("banka-hareket", { preset: "all", bankAccount: acc.Z.id, bankMove: "internal" }, "pdf")).buffer).replace(/\s+/g, " ");
     assert.ok(pdf.includes("Transfer (İç Hareketler)") && pdf.includes(`${label.Z} (${sub.Z})`) && !pdf.includes(label.G), "PDF süzgeçli");
-    const sheet = Object.values(xlsxSheets((await get("banka-hareket", { preset: "all", bankAccount: acc.Z.id, bankMove: "internal" }, "xlsx")).buffer))[0];
-    assert.ok(sheet.slice(1).every(row => row[2] === label.Z || row[0] === "TOPLAM"), "Excel süzgeçli");
+    const book = Object.values(xlsxSheets((await get("banka-hareket", { preset: "all", bankAccount: acc.Z.id, bankMove: "internal" }, "xlsx")).buffer))[0];
+    const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1))); // 2.2.0 İz 1.1: başlık bloğu atlanır
+    assert.ok(sheet.length > 1 && sheet.slice(1).every(row => row[2] === label.Z || row[0] === "TOPLAM"), "Excel süzgeçli");
     for (const [id, query, status] of [
       ["banka-bakiye", { bankGroup: "xyz" }, 400],
       ["banka-hareket", { bankMove: "xyz" }, 400],

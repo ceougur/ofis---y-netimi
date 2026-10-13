@@ -1,0 +1,189 @@
+TAP version 13
+# Subtest: 2.2.0 İz 2.5–2.6: verilen çekin Çek Hesabı, senedin ödeme hesabı önerisi
+    # Subtest: [C1][C7] Çek Kullan hesabı yokken metinle, hesapsız; eski çekin metni vade düzeltmesinde korunur
+    not ok 1 - [C1][C7] Çek Kullan hesabı yokken metinle, hesapsız; eski çekin metni vade düzeltmesinde korunur
+      ---
+      duration_ms: 87.804504
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:45:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:48:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: [C2] tek Çek Kullan hesabı: kendiliğinden o hesap, Banka / Şube hesabın adı
+    not ok 2 - [C2] tek Çek Kullan hesabı: kendiliğinden o hesap, Banka / Şube hesabın adı
+      ---
+      duration_ms: 17.223238
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:58:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:60:51)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [C3][C4] iki Çek Kullan hesabı: hesapsız 400 (yazılmaz), seçilen hesap; yanlış hesaplar 400/404
+    not ok 3 - [C3][C4] iki Çek Kullan hesabı: hesapsız 400 (yazılmaz), seçilen hesap; yanlış hesaplar 400/404
+      ---
+      duration_ms: 32.981756
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iki hesapta hesapsız: 200 {"id":"cheque-ff2453ed-e7fc-4e00-85d7-a0113e01c51e","direction":"out","instrument":"cheque","serialNo":"COK-1","bank":"","drawer":"","accountId":"account-977b3cb4-4c44-4a26-af5b-e6b9a5f092b7","planId":"","amount":1000,"issueDate":"2026-10-08","dueDate":"2026-11-15","status":"pending","statusDate":"2026-10-08","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","createdBy":"user-06446 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:69:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [C5] alınan çekte hesap 400; metin aynen
+    not ok 4 - [C5] alınan çekte hesap 400; metin aynen
+      ---
+      duration_ms: 0.721118
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:85:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:86:225)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [C6][C12] senet: öneri isteğe bağlı; Senet Kullan'sız hesap 400; çek → senet düzeltmesinde bağ düşer
+    not ok 5 - [C6][C12] senet: öneri isteğe bağlı; Senet Kullan'sız hesap 400; çek → senet düzeltmesinde bağ düşer
+      ---
+      duration_ms: 19.467926
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:91:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        senette hesap zorunlu değil, kendiliğinden seçilmez
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:93:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [C8][C9][C10] ödeme çekin hesabından (çok hesapta da); başka hesap seçilirse o; senet önerilen hesaptan; ödenmemiş çekli hesap silinmez
+    not ok 6 - [C8][C9][C10] ödeme çekin hesabından (çok hesapta da); başka hesap seçilirse o; senet önerilen hesaptan; ödenmemiş çekli hesap silinmez
+      ---
+      duration_ms: 21.729658
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Garanti: ödenmemiş verilen çek var: 200 {"deleted":true,"reversed":"BNK-2026-000003"} 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:108:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [C11] alış faturasında verilen çek: çok hesapta hesapsız 400 (fatura yazılmaz), seçilenle o hesap; satış faturasında hesap 400
+    not ok 7 - [C11] alış faturasında verilen çek: çok hesapta hesapsız 400 (fatura yazılmaz), seçilenle o hesap; satış faturasında hesap 400
+      ---
+      duration_ms: 34.966869
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        faturada hesapsız çek: 200 {"id":"invoice-00ecc3b9-daed-401c-a22b-1febad2a94b4","kind":"purchase","kindLabel":"Alış Faturası","scenario":"expense_purchase","scenarioLabel":"Hizmet ve Gider Alışı","status":"issued","statusLabel":"Kaydedildi","number":"AL-CEK-1","displayNo":"AL-CEK-1","ettn":"089879a1-4c3c-46b4-bb64-1fa62259a146","issueDate":"2026-10-08","issueTime":"09:00","accountId":"account-977b3cb4-4c44-4a26-af5b-e6b9a5f 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:136:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [C13] Excel'den yüklemede kural uygulanmaz: çok hesapta da verilen çek metinli, hesapsız alınır
+    not ok 8 - [C13] Excel'den yüklemede kural uygulanmaz: çok hesapta da verilen çek metinli, hesapsız alınır
+      ---
+      duration_ms: 14.619908
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: 'no such column: bank_account_id'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/server/lib/db.mjs:18:22)
+        Object.get (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/server/lib/db.mjs:241:28)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:151:32)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - 2.2.0 İz 2.5–2.6: verilen çekin Çek Hesabı, senedin ödeme hesabı önerisi
+  ---
+  duration_ms: 591.890859
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-c6cbb5c/test/banka-220-cek-hesabi.test.mjs:34:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1074.978212

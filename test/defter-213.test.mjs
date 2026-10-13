@@ -128,7 +128,11 @@ describe("2.0.13 defter ve mantık düzeltmeleri", () => {
     assert.equal(ledger.reconciliation.ok, true);
     const byCode = Object.fromEntries(ledger.trial.accounts.map(row => [row.code, row.balance]));
     assert.equal(byCode["101"], 0, "portföyde açık alınan evrak yok (ciro, tahsil, karşılıksız)");
-    assert.equal(byCode["103"], -900, "ödenecek senet 900");
+    // 2.2.0 İz 4.2 (plan §3.11a; bilerek güncellendi): senet Tekdüzen'in kendi hesaplarında — verilen senet 321 Borç Senetleri, alınan senet 121
+    // (önceden çekle birlikte 103 / 101). Verilen çek ödendi: 103 sıfır.
+    assert.equal(byCode["103"], 0, "ödenecek çek yok (V-1 ödendi)");
+    assert.equal(byCode["321"], -900, "ödenecek senet 900 (321 Borç Senetleri)");
+    assert.equal(byCode["121"], 0, "carisiz senet karşılıksız döndü");
     const report = await admin.get("/api/workspace/report-center/defter-mutabakati");
     assert.equal(report.status, 200);
   });

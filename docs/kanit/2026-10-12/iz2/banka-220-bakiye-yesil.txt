@@ -1,0 +1,65 @@
+TAP version 13
+# Subtest: 2.2.0 İz 2.7: seçicilerde bakiye (sunucu)
+    # Subtest: [B1] yetki: personelde bakiye yok (choices'ta alan yok, /balances 403); avukatta banka + Nakit Kasa bakiyesi
+    ok 1 - [B1] yetki: personelde bakiye yok (choices'ta alan yok, /balances 403); avukatta banka + Nakit Kasa bakiyesi
+      ---
+      duration_ms: 341.183328
+      type: 'test'
+      ...
+    # Subtest: [B2] seçilen tarihteki bakiye: 05.10 → 10.000 (06.10'daki tahsilat yok), bütün 12.000; 08.10 → 12.000; bozuk tarih bugüne düşer
+    ok 2 - [B2] seçilen tarihteki bakiye: 05.10 → 10.000 (06.10'daki tahsilat yok), bütün 12.000; 08.10 → 12.000; bozuk tarih bugüne düşer
+      ---
+      duration_ms: 25.41366
+      type: 'test'
+      ...
+    # Subtest: [B3] Engelle, geçmiş tarih: 05.10'da 10.000,01 ödeme reddedilir (o günkü bakiye 10.000), 10.000 geçer; seçicinin kararı sunucuyla aynı
+    ok 3 - [B3] Engelle, geçmiş tarih: 05.10'da 10.000,01 ödeme reddedilir (o günkü bakiye 10.000), 10.000 geçer; seçicinin kararı sunucuyla aynı
+      ---
+      duration_ms: 59.265584
+      type: 'test'
+      ...
+    # Subtest: [B3] KMH limiti: 1.000 bakiye + 5.000 KMH → 6.000 geçer (−5.000), 6.000,01 reddedilir; bakiye −5.000, limit 5.000
+    ok 4 - [B3] KMH limiti: 1.000 bakiye + 5.000 KMH → 6.000 geçer (−5.000), 6.000,01 reddedilir; bakiye −5.000, limit 5.000
+      ---
+      duration_ms: 39.740251
+      type: 'test'
+      ...
+    # Subtest: [B3] kredi kartı limiti: 3.000 limitli kartla 3.000,01 ödeme reddedilir, 3.000 geçer; kartın bakiyesi −3.000 (borç)
+    ok 5 - [B3] kredi kartı limiti: 3.000 limitli kartla 3.000,01 ödeme reddedilir, 3.000 geçer; kartın bakiyesi −3.000 (borç)
+      ---
+      duration_ms: 56.610661
+      type: 'test'
+      ...
+    # Subtest: [B4] kural: doğrulanmamış hesapta policy off (ödeme geçer, eksi görünür); Uyar'da 409 cash-negative; boş → Banka Ayarları
+    ok 6 - [B4] kural: doğrulanmamış hesapta policy off (ödeme geçer, eksi görünür); Uyar'da 409 cash-negative; boş → Banka Ayarları
+      ---
+      duration_ms: 162.135296
+      type: 'test'
+      ...
+    # Subtest: [B5] pasif hesap bakiye listesinde yok; etkinler var
+    ok 7 - [B5] pasif hesap bakiye listesinde yok; etkinler var
+      ---
+      duration_ms: 3.210898
+      type: 'test'
+      ...
+    # Subtest: [B6] Nakit Kasa: 06.10'da 1.000 tahsilat → 05.10'da 0 / bütün 1.000; Engelle'de Kasadan Bankaya Yatır 1.000,01 reddedilir, 1.000 geçer
+    ok 8 - [B6] Nakit Kasa: 06.10'da 1.000 tahsilat → 05.10'da 0 / bütün 1.000; Engelle'de Kasadan Bankaya Yatır 1.000,01 reddedilir, 1.000 geçer
+      ---
+      duration_ms: 150.648609
+      type: 'test'
+      ...
+    1..8
+ok 1 - 2.2.0 İz 2.7: seçicilerde bakiye (sunucu)
+  ---
+  duration_ms: 1512.200026
+  type: 'suite'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1960.234094

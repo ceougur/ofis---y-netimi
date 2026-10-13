@@ -1,0 +1,20 @@
+(node:21094) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+yetki kaldır: 200
+temiz   200 /api/workspace/bank/choices 
+temiz   200 /api/workspace/bank/choices?date=2026-10-08 
+temiz   200 /api/workspace/bank/balances 
+RED     403 /api/workspace/bank/summary 
+RED     403 /api/workspace/bank/accounts 
+RED     403 /api/workspace/bank/accounts/bacc-6ee78802-8533-403d-b81b-5749a7ddca09 
+temiz   200 /api/workspace/cash 
+temiz   200 /api/workspace/cash/opening 
+RED     403 /api/workspace/overview 
+temiz   200 /api/companies/report 
+temiz   200 /api/workspace/cheques/cheque-6eddd721-a092-4c7b-86a2-b35ba23c793d 
+temiz   200 /api/workspace/cheques 
+temiz   200 /api/workspace/accounts/account-d2d1687d-0e82-491e-820b-f37e4aca2fa1 
+temiz   200 /api/workspace/accounts 
+RED     403 /api/workspace/report-center 
+RED     404 /api/workspace/ledger/trial-balance 
+RED     403 /api/workspace/ledger/integrity 

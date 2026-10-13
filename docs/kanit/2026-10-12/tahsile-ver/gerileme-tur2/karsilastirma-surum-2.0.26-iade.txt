@@ -1,0 +1,41 @@
+eski v2.1.0 (7c6405fca6697cc32e6c661c241dbcd99c438814) ↔ yeni guncel (çalışma ağacı)
+
+== YALNIZ YENİDE OLAN ANAHTARLAR (13) ==
+  reads.sirket-001.cekListe.data.summary.deposited ×1
+  reads.sirket-001.cekListe:portfolio.data.summary.deposited ×1
+  reads.sirket-001.cekListe:collected.data.summary.deposited ×1
+  reads.sirket-001.cekListe:endorsed.data.summary.deposited ×1
+  reads.sirket-001.cekListe:bounced.data.summary.deposited ×1
+  reads.sirket-001.cekListe:paid.data.summary.deposited ×1
+  reads.sirket-001.cekListe:pending.data.summary.deposited ×1
+  reads.sirket-001.cekListe:open.data.summary.deposited ×1
+  reads.sirket-001.cekListe:closed.data.summary.deposited ×1
+  reads.sirket-001.cekListe:overdue.data.summary.deposited ×1
+  reads.sirket-001.cekListe:soon.data.summary.deposited ×1
+  reads.sirket-001.rapor:tahsildeki-cekler ×1
+  reads.sirket-001.rapor:tahsildeki-cekler:varsayilan ×1
+
+== YALNIZ ESKİDE OLAN ANAHTARLAR (0) ==
+
+== DEĞERİ DEĞİŞENLER (7) ==
+  reads.sirket-001.mutabakat.data.log[0].id
+     eski: "int-b3a59e7b-9737-4c99-ba8f-01bf3deb61f0"
+     yeni: "int-80d3ec14-66e5-4c9b-9bad-aeac143c3f84"
+  reads.sirket-001.rapor:cek-portfoy.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-001.rapor:cek-portfoy.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-001.rapor:cek-portfoy.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"
+  reads.sirket-001.rapor:cek-portfoy:varsayilan.data.summary.length
+     eski: 4
+     yeni: 5
+  reads.sirket-001.rapor:cek-portfoy:varsayilan.data.summary[2][0]
+     eski: "Ödenecek (verilen)"
+     yeni: "Bankada Tahsilde"
+  reads.sirket-001.rapor:cek-portfoy:varsayilan.data.summary[3][0]
+     eski: "Vadesi Geçmiş Alınan"
+     yeni: "Ödenecek (verilen)"

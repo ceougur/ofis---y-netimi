@@ -303,3 +303,24 @@ mimarın 10.10.2026 kararları). Değişiklikler dilin "Sürüm 2 değişiklikle
 - **Hakem bulgusu KAHIN-B-KASA-HAREKET-SIL düzeltildi:** doğrulayıcı `kasa_hareket`'in `ad`ını hareket olarak tanımlar (§4.9 "silinecekse zorunlu"); Kasa elle hareketi silinebilir.
 - Testler: `test/bagimsiz/test_surum2.py` (iki kâhine ortak, 18 test, beklenenler dilden elle) + bu klasördeki testler;
   mutasyon: sürüm 2 kurallarına konan 16 hatanın 16'sı yakalandı (model_a 9, model_b 7).
+
+## Sürüm 3 güncellemesi (12.10.2026, dil `destekofis-senaryo/3`): çek ve senet
+
+Güncelleyen: bağımsız kâhin ajanı (temiz oda: `server/`, `client/`, `test/mutabakat/` ve programın testleri okunmadı; kaynak
+yalnız plan §2.3, §3.5/6, §3.7 #9 ve #21, §3.11 madde 5, §3.11a, §3.11b/1, §3.14 ve SENARYO-DILI.md sürüm 3). Değişiklikler dilin
+"Sürüm 3 değişiklikleri" tablosundaki E1–E5'i uygular:
+
+- **E1 evrak işlemleri (§4.30–4.38):** alınan evrak `B 101.01|121.01 / A cari`; verilen `B cari / A 103|321`; ciro `B cari / A
+  101.01|121.01`; tahsil `B para / A 101.01|121.01` (tahsildeyse `101.02|121.02`); ödeme `B 103|321 / A para` (eksi bakiye
+  denetimi kaynakta); karşılıksız `B veren cari / A 101.01|121.01` (tahsildeyse `101.02|121.02`); Bankaya Tahsile Ver `B 101.02|121.02
+  / A 101.01|121.01`; Bankadan Geri Al tersi; silme alış/veriliş satırlarını kaldırır. Tahsildeki evrakı ciro/silme → 409
+  `cheque-deposited` [PLAN §3.14]; tahsildeki evrakta başka hesap → 400; tahsile vermede alıştan önceki tarih → 4xx [PLAN §3.14].
+- **E2 hesap planı:** 101 ve 121 alt hesaplı (101.01/101.02, 121.01/121.02); 103 ve 321 üç haneyle [PLAN §3.11a].
+- **E3 §7:** evrak satırları fatura açığına girmez; evrak satırı olan carinin `faturalar.*.acik` alanları BELİRSİZ-27 ile
+  `belirsizler`e yazılır (taksit kartları yazılmaz); cari değişmezi `… + evrakNet(C)` ile denetlenir.
+- **E5:** BELİRSİZ-28 … 31 "senaryo kurmaz" (çıkış 2); BELİRSİZ-32 (Çek/Senet Kullan işareti) kâhini etkilemez.
+- **Sınır (dürüstçe):** sürüm 3 eki iki kâhinde AYNI ajan tarafından, aynı dil metninden yazıldı (iki ayrı el değil); bağımsızlık
+  programdan bağımsızlıktır (program kodu okunmadan, program çıktısı görülmeden yazıldı ve commit edildi). İki kâhin farklı
+  yapıdadır (model_a Degisim/Ihlaller, model_b Baglam/Ret) ve `test_surum3.py`'nin elle hesaplanmış beklenenlerine karşı sınandı.
+- Testler: `test/bagimsiz/test_surum3.py` (iki kâhine ortak, 15 test, beklenenler plan kurallarından elle; `senaryolar/kabul-senet.json`
+  59 plan-kuralı yaprağı); mutasyon `docs/kanit/2026-10-12/kahin-senet/mutasyon_surum3.py`: 18 hatanın 18'i yakalandı.

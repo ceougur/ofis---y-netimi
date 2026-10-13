@@ -28,15 +28,23 @@
 // src_table …) seçilebildiğinde bütün tabloyu dolaşır: koşul kimlik kümesine çevrilir (id IN (… UNION …)), satır tablosu CROSS JOIN ile dış
 // döngü yapılır, durum kolonu tekli + ile indeksten çıkarılır. test/banka-210-kapi-plan.test.mjs bu kuralı EXPLAIN QUERY PLAN ile denetler.
 import { isMoneyRow, MODULE_TABLES } from "./bank/money-lines.mjs";
+import { collectionProblems } from "./bank/collections.mjs";
+import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentWanted } from "./cheque-gl.mjs";
 import { moneyAccount, partyBalances, subBalances } from "./general-ledger.mjs";
 import { toCents } from "./money.mjs";
 
 const AUDITOR = { id: "integrity", role: "admin", permissions: [] };
 const MONEY_ACCOUNTS = new Set(["100", "102", "108", "309", "300"]);
+// bank:sub yalnız para hesaplarının alt hesapları (101.0x / 121.0x evrak alt hesaplarını cheque:collections denetler; aşağıda, çek/senet bölümü).
+const SUB_MAINS = new Set(["102", "108", "309", "300"]);
+const CHEQUE_MAINS = RECEIVED_MAINS;
 const WAY_ACCOUNT = { cash: "100", bank: "102", card: "108", ccard: "309", loan: "300" };
-// Bu tablolara yazım bu yolda henüz modellenmedi (Aşama 10+ POS, §3.14 tahsile verme): tam kapı. Banka hesap kartı (bank_accounts) Aşama 3'ten
-// beri bu yolda: dokunulan hesabın açılış kuralı (bank:opening) denetlenir; hareketli hesabın türü/para birimi/alt hesabı değişirse tam kapı.
-const FULL_TABLES = new Set(["pos_terminals", "pos_sales", "pos_items", "cheque_collections"]);
+// Bu tablolara yazım bu yolda henüz modellenmedi (Aşama 10+ POS): tam kapı. Banka hesap kartı (bank_accounts) Aşama 3'ten beri bu yolda:
+// dokunulan hesabın açılış kuralı (bank:opening) denetlenir; hareketli hesabın türü/para birimi/alt hesabı değişirse tam kapı.
+// Bankaya Tahsile Ver (cheque_collections, plan §3.14) 2.2.0 doğrulaması T1/D6'dan beri bu yolda: plan §3.11 cheque:collections "Her COMMIT"
+// (indeksli) — dokunulan evrakın 101.01/101.02 satırları ve tahsil kayıtları denetlenir (önceden her tahsile verme, geri alma ve tahsildeki
+// evrakın tahsili/karşılıksızı tam kapıya düşüyordu: 100.000 satırda ~1 sn).
+const FULL_TABLES = new Set(["pos_terminals", "pos_sales", "pos_items"]);
 // Hesap kartında yevmiyeyi etkileyen alanlar (yol türetmesi ve alt hesap): değişirse karar tam kapının.
 const ACCOUNT_LEDGER_FIELDS = ["kind", "gl", "gl_sub", "currency"];
 // Kilit izinin (lib/integrity.mjs LOCK_SQL) satır alanları: kilitli dönemdeki satırda bunlardan biri değişirse, satır eklenir ya da silinirse iz değişir.
@@ -48,7 +56,8 @@ const LOCK_FIELDS = {
   plan_entries: { date: row => row.date, fields: ["plan_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
   cheque_events: { date: row => row.date, fields: ["cheque_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
   invoices: { date: row => (row.status !== "draft" ? row.issue_date : null), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat"] },
-  cheques: { date: row => row.issue_date, fields: ["direction", "amount", "issue_date", "deleted_at"] },
+  // 2.2.0 İz 4.2: evrak türü (cheques_instrument_lock; senet 121/321, çek 101/103).
+  cheques: { date: row => row.issue_date, fields: ["direction", "amount", "issue_date", "deleted_at", "instrument"] },
   fin_events: { date: row => row.date, fields: ["type", "date", "reversal_of", "bank_ref", "counter_ref", "amount_minor", "try_minor"] },
 };
 // Cari satırının kaynakları: '' (elle), fatura, çek/senet, stok, banka (POS kesintisi, Aşama 10). Kaynaklı satır kaynağına bağlıdır.
@@ -79,7 +88,7 @@ export function familyOf(code) {
     // Gözden geçirme B9 (Aşama 2): para alanı hesap bazında (varlık kodu ilkesi, E1.16): 100'deki eski bir sapma yalnız nakit satırına
     // dokunan yazımı tam kapıya gönderir; havale/POS yazımı süzgeçte kalır.
     if (MONEY_ACCOUNTS.has(account)) return `money:${account}`;
-    if (account === "101" || account === "103") return "cheque";
+    if (DOCUMENT_MAINS.has(account)) return "cheque";
     if (["120", "320", "336"].includes(account)) return "party";
     if (account === "127") return "plan";
     if (["191", "391", "360", "193"].includes(account)) return "invoice";
@@ -91,7 +100,7 @@ export function familyOf(code) {
   if (code === "party:plans" || code === "plans:totals" || code === "dates:due-before-start") return "plan";
   if (code === "stock:qty" || code === "stock:account" || code === "stock:orphan") return "stock";
   if (code.startsWith("cents:")) return `rows:${code.slice(6)}`;
-  if (code === "cheque:account") return "cheque";
+  if (code === "cheque:account" || code === "cheque:collections") return "cheque";
   if (code.startsWith("invoice:")) return "invoice";
   if (code.startsWith("dates:format:")) return `rows:${code.slice(13)}`;
   if (code.startsWith("dates:future:") || code === "money:method" || code === "money:report" || code === "money:event" || code.startsWith("bank:event")) return null;
@@ -256,6 +265,13 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       case "bank_accounts":
         add(s.banks, row.id);
         break;
+      case "cheque_collections":
+        // Tahsil kaydı: evrakı (101.01/101.02, kayıt kuralları), verilme ve kapanış başlıkları (bank:event), hesabı (bank:opening).
+        add(s.cheques, row.cheque_id);
+        add(s.banks, row.bank_account_id);
+        add(s.events, row.event_id);
+        add(s.events, row.close_event_id);
+        break;
       default:
         s.reason ||= `${table} yazımı (kapsam dışı)`;
     }
@@ -347,6 +363,12 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
           if (found) return "kilitli dönemde hareketi olan cari";
         }
         if (table === "bank_lines" && store.get("SELECT 1 AS found FROM fin_events WHERE id = ? AND date <= ?", (post || pre).event_id, lock)) return "kilitli banka fişi";
+        // Tahsil kaydı (lib/integrity.mjs LOCK_SQL cheque_collections_given / _closed): verilme ve kapanış ayrı iz girdileri (plan §3.14, §5.5).
+        if (table === "cheque_collections") {
+          if ((inTrace(pre?.given_date) || inTrace(post?.given_date)) && differs(pre, post, ["cheque_id", "bank_account_id", "given_date"])) return "tahsil kaydı kilitli dönem (verilme)";
+          const closedOn = row => (row && row.closed_date ? row.closed_date : null);
+          if ((inTrace(closedOn(pre)) || inTrace(closedOn(post))) && differs(pre, post, ["status", "closed_date", "close_event_id"])) return "tahsil kaydı kilitli dönem (kapanış)";
+        }
       }
     }
     return "";
@@ -449,7 +471,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         const got = sumAccount(fromLedger, account);
         if (got !== (expected[account] || 0)) find(`gl:${account}`, `defter ${got / 100} / kaynak ${(expected[account] || 0) / 100}`);
       }
-      const subsLedger = subBalances(fromLedger);
+      const subsLedger = subBalances(fromLedger, SUB_MAINS);
       const subsSource = service.expectedSubs(groups);
       for (const sub of new Set([...subsLedger.keys(), ...subsSource.keys()])) if ((subsLedger.get(sub) || 0) !== (subsSource.get(sub) || 0)) find(`bank:sub:${sub}`, `defter ${(subsLedger.get(sub) || 0) / 100} / kaynak ${(subsSource.get(sub) || 0) / 100}`);
       // Alt hesap toplamı (Aşama 3): para hesabına alt hesapsız yevmiye satırı yok.
@@ -493,18 +515,26 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       lap("party");
     }
 
-    // Çek/senet: dokunulan evrakın 101/103 satırları = durumu; çek ↔ cari bağı.
+    // Çek/senet: dokunulan evrakın 101/103 (çek) ve 121/321 (senet, 2.2.0 İz 4.2) satırları = durumu; çek ↔ cari bağı.
     if (s.cheques.size && has("cheques")) {
       const list = json(s.cheques);
       const fromLedger = build({ cheques: [...s.cheques] });
-      const want = store.get(
-        `SELECT COALESCE(SUM(CASE WHEN direction = 'in' AND status = 'portfolio' THEN CAST(ROUND(amount * 100) AS INTEGER) END), 0) AS portfolio,
-                COALESCE(SUM(CASE WHEN direction = 'out' AND status = 'pending' THEN CAST(ROUND(amount * 100) AS INTEGER) END), 0) AS pending
-         FROM cheques WHERE +deleted_at IS NULL AND id IN ${IN}`,
-        list,
-      );
-      if (sumAccount(fromLedger, "101") !== Number(want.portfolio)) find("gl:101", `defter ${sumAccount(fromLedger, "101") / 100} / portföy ${want.portfolio / 100}`);
-      if (sumAccount(fromLedger, "103") !== -Number(want.pending)) find("gl:103", `defter ${sumAccount(fromLedger, "103") / 100} / ödenecek ${-want.pending / 100}`);
+      const want = documentWanted(store, s.cheques);
+      for (const code of DOCUMENT_MAINS) {
+        const got = sumAccount(fromLedger, code);
+        if (got !== want.mains.get(code)) find(`gl:${code}`, `defter ${got / 100} / ${RECEIVED_MAINS.has(code) ? "portföy" : "ödenecek"} ${want.mains.get(code) / 100}`);
+      }
+      // Bankaya Tahsile Ver (plan §3.11 cheque:collections, tam kapıyla aynı kural — lib/integrity.mjs): dokunulan evrakta 101.02 / 121.02 =
+      // tahsildeki (bekleyen kaydı olan, silinmemiş, alınan, portföydeki) çek / senet, 101.01 / 121.01 = portföy − tahsildeki; dokunulan evrakın
+      // tahsil kayıtları ve verilme/kapanış başlıkları tutarlı.
+      if (has("cheque_collections")) {
+        const subs = subBalances(fromLedger, CHEQUE_MAINS);
+        for (const sub of Object.keys(DOCUMENT_SUB_NAMES)) {
+          const got = subs.get(sub) || 0;
+          if (got !== want.subs.get(sub)) find("cheque:collections", `${sub}: defter ${got / 100} / ${BANK_SUBS.has(sub) ? "tahsildeki" : "portföydeki"} evrak ${want.subs.get(sub) / 100}`);
+        }
+        for (const item of collectionProblems(store, { cheques: s.cheques })) find("cheque:collections", item.sample);
+      }
       if (has("account_entries")) {
         const entryIds = json(s.entries);
         for (const row of all(

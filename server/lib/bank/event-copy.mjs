@@ -104,7 +104,7 @@ const KIND_DIRECTION = "CASE WHEN r.kind = 'out' THEN 'out' ELSE 'in' END";
 export const COPY_SQL = Object.freeze({
   payments: { type: "'record_in'", direction: "'in'", party: "''" },
   cash_entries: { type: "CASE WHEN COALESCE(r.transfer_id, '') <> '' THEN 'cash_transfer' WHEN r.kind = 'out' THEN 'cash_out' ELSE 'cash_in' END", direction: KIND_DIRECTION, party: "''" },
-  account_entries: { type: "CASE WHEN r.source = 'invoice' THEN 'invoice_cash' WHEN r.kind = 'out' THEN 'party_out' ELSE 'party_in' END", direction: KIND_DIRECTION, party: "COALESCE(r.account_id, '')" },
+  account_entries: { type: "CASE WHEN r.source = 'bank' THEN CASE WHEN r.kind = 'out' THEN 'pos_fee' ELSE 'pos_fee_refund' END WHEN r.source = 'invoice' THEN 'invoice_cash' WHEN r.kind = 'out' THEN 'party_out' ELSE 'party_in' END", direction: KIND_DIRECTION, party: "COALESCE(r.account_id, '')" },
   plan_entries: { type: "CASE WHEN r.kind = 'out' THEN 'plan_out' ELSE 'plan_in' END", direction: KIND_DIRECTION, party: "COALESCE((SELECT p.account_id FROM plans p WHERE p.id = r.plan_id), '')" },
   stock_moves: { type: "'stock_cash'", direction: "CASE WHEN r.kind = 'in' THEN 'out' ELSE 'in' END", party: "COALESCE(r.account_id, '')" },
   cheque_events: { type: "CASE WHEN r.kind = 'pay' THEN 'cheque_pay' ELSE 'cheque_collect' END", direction: "CASE WHEN r.kind = 'pay' THEN 'out' ELSE 'in' END", party: "COALESCE((SELECT c.account_id FROM cheques c WHERE c.id = r.cheque_id), '')" },

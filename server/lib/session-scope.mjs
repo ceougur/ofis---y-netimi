@@ -5,6 +5,6 @@ import { AsyncLocalStorage } from "node:async_hooks";
 
 const storage = new AsyncLocalStorage();
 
-// context: { user?: () => kullanıcı | null (tembel), datasetKey?: string }
+// context: { user?: () => kullanıcı | null (tembel), datasetKey?: string, page?: string (pencerenin sayfası, ?hofPage=; 2.2.0 İz 1.2) }
 export const runScoped = (context, fn) => storage.run(context, fn);
 export const currentScope = () => storage.getStore() || null;

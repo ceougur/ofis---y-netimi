@@ -1,0 +1,32 @@
+{
+  "ad": "uygulayici-testi",
+  "komut": "node --test test/banka-220-tahsile-ver.test.mjs",
+  "commit": "24fcf0af4b1cc272443bcecdcf6014859f53239b",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:43:06.729Z",
+  "sure_sn": 6.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 19,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kayit/2026-10-12/uygulayici-testi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "ef96804645058804e4d6332ef61d387e6a7a1a18a6f9d2e709183a8c1a6d4e1f",
+  "ham_cikti_bayt": 7659
+}

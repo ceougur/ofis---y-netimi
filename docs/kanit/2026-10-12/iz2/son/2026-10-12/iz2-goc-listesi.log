@@ -1,0 +1,209 @@
+TAP version 13
+# Subtest: yetki modeli (birim)
+    # Subtest: havuz her yetkiyi bir kez, açıklamasıyla listeler
+    ok 1 - havuz her yetkiyi bir kez, açıklamasıyla listeler
+      ---
+      duration_ms: 2.092857
+      type: 'test'
+      ...
+    # Subtest: v2.0.7 dizi biçimi eklenen sayılır; yönetime özgü ve bilinmeyen yetkiler atılır
+    ok 2 - v2.0.7 dizi biçimi eklenen sayılır; yönetime özgü ve bilinmeyen yetkiler atılır
+      ---
+      duration_ms: 0.435603
+      type: 'test'
+      ...
+    # Subtest: yönetici her zaman tüm yetkilere sahip; kişiye özel ayar yöneticiye uygulanmaz
+    ok 3 - yönetici her zaman tüm yetkilere sahip; kişiye özel ayar yöneticiye uygulanmaz
+      ---
+      duration_ms: 0.290673
+      type: 'test'
+      ...
+    # Subtest: personel: rol + eklenen − kaldırılan; yönetime özgü yetki eklenemez
+    ok 4 - personel: rol + eklenen − kaldırılan; yönetime özgü yetki eklenemez
+      ---
+      duration_ms: 0.406625
+      type: 'test'
+      ...
+    1..4
+ok 1 - yetki modeli (birim)
+  ---
+  duration_ms: 4.199847
+  type: 'suite'
+  ...
+# Subtest: yetki havuzu ve kullanıcı yönetimi (API)
+    # Subtest: roller: 4 yerleşik rol ve gruplu havuz; yönetim yetkileri kilitli
+    ok 1 - roller: 4 yerleşik rol ve gruplu havuz; yönetim yetkileri kilitli
+      ---
+      duration_ms: 10.290018
+      type: 'test'
+      ...
+    # Subtest: özel rol: oluşturulur, yönetim yetkisi verilemez, ad çakışmaz; kullanıcıya atanınca yetkileri uygulanır
+    ok 2 - özel rol: oluşturulur, yönetim yetkisi verilemez, ad çakışmaz; kullanıcıya atanınca yetkileri uygulanır
+      ---
+      duration_ms: 258.408444
+      type: 'test'
+      ...
+    # Subtest: kişiye özel: rolden yetki kaldırılır ve yetki eklenir; sunucu her uçta uygular
+    ok 3 - kişiye özel: rolden yetki kaldırılır ve yetki eklenir; sunucu her uçta uygular
+      ---
+      duration_ms: 258.286405
+      type: 'test'
+      ...
+    # Subtest: ANLIK DURUM kartı yalnız yönetici; yeni kullanıcı formunda kişiye özel yetkiyle oluşturulur
+    ok 4 - ANLIK DURUM kartı yalnız yönetici; yeni kullanıcı formunda kişiye özel yetkiyle oluşturulur
+      ---
+      duration_ms: 243.111925
+      type: 'test'
+      ...
+    # Subtest: ✎ düzeltme: görünen ad ve kullanıcı adı değişir; yeni adla girilir, eski adla girilmez, oturum açık kalır
+    ok 5 - ✎ düzeltme: görünen ad ve kullanıcı adı değişir; yeni adla girilir, eski adla girilmez, oturum açık kalır
+      ---
+      duration_ms: 366.900788
+      type: 'test'
+      ...
+    # Subtest: silme: kendini ve son yöneticiyi silemez; açık görevde devir sorulur; geçmiş korunur; ad ve kullanıcı adı yeniden kullanılır; geri alınır
+    ok 6 - silme: kendini ve son yöneticiyi silemez; açık görevde devir sorulur; geçmiş korunur; ad ve kullanıcı adı yeniden kullanılır; geri alınır
+      ---
+      duration_ms: 800.683916
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı yönetim uçlarına erişemez
+    ok 7 - yetkisiz kullanıcı yönetim uçlarına erişemez
+      ---
+      duration_ms: 146.144739
+      type: 'test'
+      ...
+    # Subtest: Yönetim paneli yalnız yöneticide; işlem geçmişi yetkisi olan uzman denetim kaydını Raporlar'dan görür, finans raporlarını görmez
+    ok 8 - Yönetim paneli yalnız yöneticide; işlem geçmişi yetkisi olan uzman denetim kaydını Raporlar'dan görür, finans raporlarını görmez
+      ---
+      duration_ms: 291.235759
+      type: 'test'
+      ...
+    1..8
+ok 2 - yetki havuzu ve kullanıcı yönetimi (API)
+  ---
+  duration_ms: 2943.358322
+  type: 'suite'
+  ...
+# Subtest: v2.0.7 ek yetki kayıtları göçü
+    # Subtest: ['overview.view'] → { add: ['overview.view'] }: raporlar açık kalır, kart kapanır
+    ok 1 - ['overview.view'] → { add: ['overview.view'] }: raporlar açık kalır, kart kapanır
+      ---
+      duration_ms: 363.640809
+      type: 'test'
+      ...
+    1..1
+ok 3 - v2.0.7 ek yetki kayıtları göçü
+  ---
+  duration_ms: 376.708109
+  type: 'suite'
+  ...
+# Subtest: v1.0.0 veritabanından yükseltme
+    # Subtest: şemayı son sürüme yükseltir ve öncesinde yedek alır
+    ok 1 - şemayı son sürüme yükseltir ve öncesinde yedek alır
+      ---
+      duration_ms: 7.753577
+      type: 'test'
+      ...
+    # Subtest: mevcut verileri korur
+    ok 2 - mevcut verileri korur
+      ---
+      duration_ms: 0.807952
+      type: 'test'
+      ...
+    # Subtest: tamamlanan görevlerde adı kullanıcı kimliğine çevirir
+    ok 3 - tamamlanan görevlerde adı kullanıcı kimliğine çevirir
+      ---
+      duration_ms: 0.497922
+      type: 'test'
+      ...
+    # Subtest: varsayılan parolalı yöneticiye zorunlu değişim işaretler, diğer kullanıcıya dokunmaz
+    ok 4 - varsayılan parolalı yöneticiye zorunlu değişim işaretler, diğer kullanıcıya dokunmaz
+      ---
+      duration_ms: 249.136755
+      type: 'test'
+      ...
+    # Subtest: ikinci açılışta göç tekrar çalışmaz
+    ok 5 - ikinci açılışta göç tekrar çalışmaz
+      ---
+      duration_ms: 539.2964
+      type: 'test'
+      ...
+    1..5
+ok 4 - v1.0.0 veritabanından yükseltme
+  ---
+  duration_ms: 1486.746456
+  type: 'suite'
+  ...
+# Subtest: ad karşılaştırma
+    # Subtest: Türkçe büyük/küçük harf, boşluk ve Unicode yazım farklarını yok sayar
+    ok 1 - Türkçe büyük/küçük harf, boşluk ve Unicode yazım farklarını yok sayar
+      ---
+      duration_ms: 0.758822
+      type: 'test'
+      ...
+    1..1
+ok 5 - ad karşılaştırma
+  ---
+  duration_ms: 1.735491
+  type: 'suite'
+  ...
+# Subtest: ad çakışması ve görev sahipliği
+    # Subtest: personel adını başka bir kullanıcının adı veya kullanıcı adıyla değiştiremez
+    ok 1 - personel adını başka bir kullanıcının adı veya kullanıcı adıyla değiştiremez
+      ---
+      duration_ms: 63.177131
+      type: 'test'
+      ...
+    # Subtest: yönetici aynı adla ikinci hesap açamaz, adı çakışacak şekilde değiştiremez
+    ok 2 - yönetici aynı adla ikinci hesap açamaz, adı çakışacak şekilde değiştiremez
+      ---
+      duration_ms: 226.656704
+      type: 'test'
+      ...
+    # Subtest: görev kişiye kimliğiyle bağlanır: ad değişse de kişide kalır, adı alan başkası göremez
+    ok 3 - görev kişiye kimliğiyle bağlanır: ad değişse de kişide kalır, adı alan başkası göremez
+      ---
+      duration_ms: 42.116803
+      type: 'test'
+      ...
+    # Subtest: kişiye bağlanamayan serbest adlı görev ad eşleşmesiyle görünür
+    ok 4 - kişiye bağlanamayan serbest adlı görev ad eşleşmesiyle görünür
+      ---
+      duration_ms: 146.719963
+      type: 'test'
+      ...
+    1..4
+ok 6 - ad çakışması ve görev sahipliği
+  ---
+  duration_ms: 1956.221039
+  type: 'suite'
+  ...
+# Subtest: 1.4.0 göçü: belirsiz adlar ve görev bağlama
+    # Subtest: göç hatasız biter; belirsiz alıcı ofis kanalına, tek eşleşme özel yazışmaya gider
+    ok 1 - göç hatasız biter; belirsiz alıcı ofis kanalına, tek eşleşme özel yazışmaya gider
+      ---
+      duration_ms: 5.164339
+      type: 'test'
+      ...
+    # Subtest: görevler tek eşleşen kişiye bağlanır; belirsiz ve serbest adlar bağlanmaz
+    ok 2 - görevler tek eşleşen kişiye bağlanır; belirsiz ve serbest adlar bağlanmaz
+      ---
+      duration_ms: 0.570198
+      type: 'test'
+      ...
+    1..2
+ok 7 - 1.4.0 göçü: belirsiz adlar ve görev bağlama
+  ---
+  duration_ms: 442.303039
+  type: 'suite'
+  ...
+1..7
+# tests 25
+# suites 7
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3865.046547

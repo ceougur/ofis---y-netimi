@@ -1,0 +1,118 @@
+{
+ "J1": [
+  {
+   "status": 200
+  },
+  {
+   "status": 200
+  }
+ ],
+ "J2": {
+  "mid": {
+   "101.01": 0,
+   "101.02": 98765432200,
+   "102.01": 10800000,
+   "102.02": 5000000
+  },
+  "end": {
+   "101.01": 0,
+   "101.02": 98765432199,
+   "102.01": 10800000,
+   "102.02": 5000001
+  },
+  "ok": true,
+  "tah": [
+   [
+    "Evrak Sayısı",
+    "1"
+   ],
+   [
+    "Toplam (101.02)",
+    "987.654.321,99 TL"
+   ],
+   [
+    "Garanti BBVA · Ana TL Hesabı",
+    "987.654.321,99 TL"
+   ]
+  ]
+ },
+ "J3": {
+  "headers": [
+   "Grup",
+   "Banka",
+   "Hesap",
+   "Alt Hesap",
+   "Dönem Başı",
+   "Giriş",
+   "Çıkış",
+   "Transfer Giriş",
+   "Transfer Çıkış",
+   "Açılış ve Devir Düzeltmesi",
+   "Dönem Sonu"
+  ],
+  "rows": [
+   [
+    "Gerçek Banka",
+    "Ziraat Bankası",
+    "Ana TL Hesabı",
+    "102.01",
+    "0,00 TL",
+    "8.000,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "100.000,00 TL",
+    "108.000,00 TL"
+   ],
+   [
+    "Gerçek Banka",
+    "Garanti BBVA",
+    "Ana TL Hesabı",
+    "102.02",
+    "0,00 TL",
+    "0,01 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "0,00 TL",
+    "50.000,00 TL",
+    "50.000,01 TL"
+   ]
+  ]
+ },
+ "J4": {
+  "card": {
+   "amount": 100000,
+   "lines": [
+    [
+     "101.02",
+     "D",
+     100000
+    ],
+    [
+     "101.01",
+     "C",
+     100000
+    ]
+   ]
+  },
+  "rep": [
+   [
+    "Bankaya Tahsile Verildi",
+    125000
+   ]
+  ],
+  "collections": [
+   {
+    "id": "chqcol-0mv54hl320000-a987853d-ca92-4c59",
+    "status": "withdrawn",
+    "statusLabel": "Bankadan Geri Alındı",
+    "bankAccountId": "bacc-e5a3995f-ed12-480e-ae75-b4ff29a79f96",
+    "bankLabel": "Ziraat Bankası · Ana TL Hesabı",
+    "givenDate": "2026-10-15",
+    "closedDate": "2026-10-16",
+    "eventNo": "BNK-2026-000010",
+    "closeEventNo": "BNK-2026-000011"
+   }
+  ]
+ }
+}

@@ -1,0 +1,5 @@
+{"senaryo":"aynı kimlik iki tahsile ver","yanitlar":[[200,null,null],[200,null,true]],"kayit":1,"baslik":1}
+{"senaryo":"farklı kimlik iki geri al","yanitlar":[[200,null],[409,"cheque-not-deposited"]],"geriBaslik":1}
+{"senaryo":"tahsil + geri al","yanitlar":[[200,null],[409,"cheque-not-deposited"]],"kayit":{"status":"collected"},"cek":{"status":"collected"}}
+{"senaryo":"karşılıksız + geri al","yanitlar":[[200,null],[409,"cheque-not-deposited"]],"kayit":{"status":"returned"},"cek":{"status":"bounced"}}
+{"mutabakat":true,"bad":[]}

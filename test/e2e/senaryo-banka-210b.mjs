@@ -643,7 +643,7 @@ try {
     await page.selectOption(`${form} select[name="method"]`, "card");
     await page.waitForSelector(`${form} [data-bank-pick="card"]:not([hidden])`, { timeout: 8000 });
     const note = await textOf(`${form} [data-bank-pick="card"] .hof-bank-pick-note`);
-    ok(has(note, "Garanti BBVA · Kurumsal Kart") && has(note, "kurumsal kartına yazılır"), `tek kart bilgi satırı: “${note}”`);
+    ok(has(note, "Garanti BBVA · Kurumsal Kart") && has(note, "kredi kartına yazılır"), `tek kart bilgi satırı: “${note}”`);
     ok(!(await page.$(`${form} [data-bank-pick]:not([data-bank-pick="card"]):not([hidden])`)), "Kredi Kartı yolunda Banka Hesabı gizli");
     await shot("kurumsal-kart-tek-kart");
     await page.click(`${form} button[type="submit"]`);
@@ -676,7 +676,7 @@ try {
     await page.click(`${form} button[type="submit"]`);
     await pause(600);
     const error = await textOf(`${form} .hof-form-error`);
-    ok(has(error, "Kurumsal Kart") && (await cardBalance(CARD.k2)) === before.k2, `kart seçilmeden kaydedilmedi: “${error}”`);
+    ok(has(error, "Kredi Kartı") && (await cardBalance(CARD.k2)) === before.k2, `kart seçilmeden kaydedilmedi: “${error}”`);
     // Klavye: yol kutusundan Tab → Kurumsal Kart (gizli Banka Hesabı atlanır; alan yeniden çizilmez, değer kaybolmaz).
     await page.focus(`${form} select[name="method"]`);
     const picker = await page.$(`${form} select[name="cardAccountId"]`);
@@ -698,7 +698,9 @@ try {
     await closeAll();
   });
 
-  await step("17. Alış faturası Düzenle: peşin kartla (Kurumsal Kart) satırı Kurumsal Kart 2'ye taşınır; yol Havale/EFT ↔ Kredi Kartı geçişinde hücre doğru aile", async () => {
+  // v2.2.0 İz 2.8: satırda yol kutusu yok (satır yola göre eklenir, başlığı yolun adı) — Havale/EFT ↔ Kredi Kartı geçişi satırı silip yeni yolla
+  // eklemektir; o yolda hücre ailesi yeni satırın yolundan gelir.
+  await step("17. Alış faturası Düzenle: peşin kartla (Kredi Kartı) satırı Kurumsal Kart 2'ye taşınır; + Havale / EFT satırında hücre Banka Hesabı", async () => {
     const doc = await must("kartla alış", api.post("/api/workspace/invoices", { kind: "purchase", accountId: xyzParty.id, number: "AL-KART-E2E", issueDate: TODAY, pricesIncludeVat: true, lines: [{ name: "Kırtasiye", qty: 1, unitPrice: 600, discountRate: 0, vatRate: 0, expenseCode: "office" }], payment: { cash: [{ amount: "600", method: "card", bankAccountId: CARD.k.id, lineKey: "e2e-kart-1" }], cheques: [], endorse: [], rest: "open" }, force: true }));
     const before = { k: await cardBalance(CARD.k), k2: await cardBalance(CARD.k2), bank: await balances() };
     const inv = `${modal} .hof-invoices-modal`;
@@ -707,14 +709,16 @@ try {
     await page.click(`${inv} [data-act="modify"]`);
     const cell = `${inv} [data-bank-cell="0"]`;
     await page.waitForSelector(`${cell}[data-bank-kind="card"] select`, { timeout: 10000 });
-    ok((await textOf(`${cell} span`)) === "Kurumsal Kart" && (await page.$eval(`${cell} select`, node => node.value)) === CARD.k.id, "Düzenle formunda peşin satırı Kurumsal Kart alanıyla açıldı");
-    const method = `${inv} select[data-pay="cash"][data-i="0"][data-f="method"]`;
-    await page.selectOption(method, "bank");
-    await page.waitForSelector(`${cell}[data-bank-kind="bank"]`, { timeout: 8000 });
-    ok(has(await textOf(cell), "Banka Hesabı") || has(await textOf(cell), "hesabına yazılır"), `Havale/EFT'de hücre Banka Hesabı: “${await textOf(cell)}”`);
-    await page.selectOption(method, "card");
+    const way = await textOf(`${inv} .hof-inv-pay-row:has([data-pay="cash"][data-i="0"]) .hof-inv-pay-way`);
+    ok(way === "Kredi Kartı" && (await textOf(`${cell} span`)) === "Kredi Kartı" && (await page.$eval(`${cell} select`, node => node.value)) === CARD.k.id, `Düzenle formunda peşin satırı (başlık “${way}”) Kredi Kartı alanıyla açıldı`);
+    ok(!(await page.$(`${inv} select[data-pay="cash"][data-f="method"]`)), "satırda yol kutusu yok (İz 2.8)");
+    // Havale / EFT satırı eklenir: hücre Banka Hesabı ailesi; sonra silinir (kart satırı yerinde kalır).
+    await page.click(`${inv} [data-act="pay-add-cash"][data-method="bank"]`);
+    await page.waitForSelector(`${inv} [data-bank-cell="1"][data-bank-kind="bank"]`, { timeout: 8000 });
+    ok(has(await textOf(`${inv} [data-bank-cell="1"]`), "Banka Hesabı") || has(await textOf(`${inv} [data-bank-cell="1"]`), "hesabına yazılır"), `+ Havale / EFT satırında hücre Banka Hesabı: “${await textOf(`${inv} [data-bank-cell="1"]`)}”`);
+    await page.click(`${inv} [data-act="pay-remove"][data-pay="cash"][data-i="1"]`);
     await page.waitForSelector(`${cell}[data-bank-kind="card"] select`, { timeout: 8000 });
-    ok((await page.$eval(`${cell} select`, node => node.value)) === "", "karta dönüşte kart yeniden seçilir (önceki hesap taşınmaz)");
+    ok((await page.$eval(`${cell} select`, node => node.value)) === CARD.k.id, "kart satırı ve kartı yerinde");
     await page.selectOption(`${cell} select`, CARD.k2.id);
     await pause(600);
     await shot("alis-faturasi-kurumsal-kart");

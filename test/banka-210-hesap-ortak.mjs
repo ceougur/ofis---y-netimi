@@ -23,10 +23,14 @@ export const bootBank = (options = {}) => boot({ now: NOW, ...options });
 /** Hesap açar (açılış dahil); 200 bekler. */
 export const openAccount = (api, body) => must(`hesap aç ${body.bankName || ""} ${body.name || ""}`, api.post(`${BANK}/accounts`, body));
 
-/** Kabul 1–4: Ziraat Bankası · Ana TL Hesabı (100.000) ve Garanti BBVA · Ana TL Hesabı (50.000), ikisi de 01.10.2026, Bakiye Doğrulandı. */
-export async function openAcceptanceAccounts(api) {
-  const ziraat = await openAccount(api, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: ZIRAAT_IBAN, opening: { date: "2026-10-01", amount: "100.000", confirmed: true } });
-  const garanti = await openAccount(api, { bankName: "Garanti BBVA", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: GARANTI_IBAN, opening: { date: "2026-10-01", amount: "50.000", confirmed: true } });
+/**
+ * Kabul 1–4: Ziraat Bankası · Ana TL Hesabı (100.000) ve Garanti BBVA · Ana TL Hesabı (50.000), ikisi de 01.10.2026, Bakiye Doğrulandı.
+ * extra (2.2.0): iki hesabın gövdesine eklenir — ör. TAHSILE_FLAGS (Bankaya Tahsile Ver yalnız Çek Kullan / Senet Kullan işaretli hesaba).
+ */
+export const TAHSILE_FLAGS = Object.freeze({ useCheque: true, useNote: true });
+export async function openAcceptanceAccounts(api, extra = {}) {
+  const ziraat = await openAccount(api, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: ZIRAAT_IBAN, opening: { date: "2026-10-01", amount: "100.000", confirmed: true }, ...extra });
+  const garanti = await openAccount(api, { bankName: "Garanti BBVA", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: GARANTI_IBAN, opening: { date: "2026-10-01", amount: "50.000", confirmed: true }, ...extra });
   return { ziraat, garanti };
 }
 

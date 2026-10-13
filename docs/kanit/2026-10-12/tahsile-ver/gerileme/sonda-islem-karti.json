@@ -1,0 +1,86 @@
+{
+ "depositEventNo": "BNK-2026-000003",
+ "depositCard": {
+  "status": 200,
+  "type": "cheque_deposit",
+  "source": {
+   "table": "cheque_collections",
+   "id": "chqcol-0mv50knox0000-9bb3b81e-e1c7-40c4",
+   "label": "Bankaya Tahsile Ver"
+  },
+  "lines": [],
+  "linesSource": "journal"
+ },
+ "movementsKeys": [
+  "rows",
+  "nextCursor",
+  "hasMore",
+  "balance",
+  "account"
+ ],
+ "movementRows": [
+  {
+   "no": "BNK-2026-000004",
+   "type": "cheque_collect",
+   "typeLabel": "Çek ve Senet Tahsili",
+   "date": "2026-10-08"
+  },
+  {
+   "no": "BNK-2026-000001",
+   "type": "opening",
+   "typeLabel": "Açılış Bakiyesi",
+   "date": "2026-10-01"
+  }
+ ],
+ "collectEventNo": "BNK-2026-000004",
+ "collectCard": {
+  "status": 200,
+  "type": "cheque_collect",
+  "lines": [
+   {
+    "gl": "102",
+    "sub": "102.01",
+    "subName": "Ziraat Bankası · Ana TL Hesabı",
+    "side": "D",
+    "tryMinor": 100000
+   },
+   {
+    "gl": "101",
+    "sub": "101.01",
+    "subName": "",
+    "side": "C",
+    "tryMinor": 100000
+   }
+  ],
+  "linesSource": "journal"
+ },
+ "subTrial": [
+  {
+   "sub": "101.01",
+   "account": "101",
+   "name": "Portföydeki Çek ve Senetler",
+   "opening": 0,
+   "debit": 1000,
+   "credit": 1000,
+   "balance": 0
+  },
+  {
+   "sub": "101.02",
+   "account": "101",
+   "name": "Bankaya Tahsile Verilen Çek ve Senetler",
+   "opening": 0,
+   "debit": 1000,
+   "credit": 1000,
+   "balance": 0
+  }
+ ],
+ "ledger101": {
+  "code": "101",
+  "name": "Alınan Çekler ve Senetler (Portföy)",
+  "opening": 0,
+  "debit": 2000,
+  "credit": 2000,
+  "balance": 0
+ },
+ "integrityOk": true
+}

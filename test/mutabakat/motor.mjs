@@ -46,6 +46,12 @@
 //   Kaydet'i; saha hataları (aynı hesap 400, ileri tarih, kilitli gün, 3 ondalık, tanınmayan kanal); K7 (gönderen eksiye düşerse onaysız 409
 //   cash-negative, "Yine de Kaydet" geçer; ters kaydı alıcıyı eksiye düşürürse aynı). Model iki bacağı ayrı hesaplarda tutar (gönderen −tutar
 //   −ücret, alıcı +tutar); 102 toplamı ücret kadar düşer.
+// 2.2.0 POS ekseni (plan Aşama 10–11; yalnız banka ekseniyle): Ziraat'e bağlı bir POS ("Aynı Gün" valör, Tek Çekim %2,5, 3 Taksit %3,5, BSMV
+//   Dahil, İadede Komisyon: İade Edilmez). İşlemler: POS tahsilatı (cari, Tek Çekim ya da 3 taksit), cari POS İadesi (asıl satışa bağlı, kısmi),
+//   POS tahsilatını silme (valörden önce void; bankaya geçmişse gün fişi ters kaydedilir — kilitli/eşleşmiş değilse; iadesi varsa 409). Model
+//   komisyonu ve kalemleri planın formülüyle kendi hesaplar (kom = round(brüt × oran / 10^6); taksitte brüt eşit, artık son kaleme; komisyon brüt
+//   ağırlıklı aşağı, artık son kaleme; iade bekleyen kalemlere sondan başa, artanı iade valörüne). Valör GÜNÜ programın iş günü takviminden okunur
+//   (takvim ayrı test edilir); valörü bugüne kadar gelen kalemin gün fişi aynı işlemde yazılır: 108.T −brüt (dış payı komisyon), Ziraat +net.
 // Belirli aralıklarla ve sonda: raporlar (Kasa Hareketleri, Stok Hareketleri, Cari Listesi, Taksit Kartları, Hesap Planı
 // Mizanı, Yevmiye) veri varken boş dönmemeli, tutarları modelle aynı olmalı; veri olmayan aralıkta gerçekten boş dönmeli.
 
@@ -95,7 +101,12 @@ export const addDays = (iso, days) => {
 // bu saatle başlatın: yerel bugün 06:00'dan akar (en uzun koşu 6 sa iş sınırına sığar, gece yarısına ulaşmaz).
 export const motorNow = (base = new Date()) => new Date(base.getFullYear(), base.getMonth(), base.getDate(), 6, 0, 0, 0).getTime();
 
-export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, log = () => {} }) {
+// pos (2.2.0): POS ekseni isteğe bağlı (varsayılan kapalı) — açılınca motor bir POS tanımlar; o andan sonra kartla tahsilatlar POS'a gider ve
+// rastgele sıra değişir. Kapalıyken işlem sırası ve sonuçları 2.1.0 motoruyla aynı (mevcut tohumlu testler: mutabakat-cekirdek, hiz-esdegerlik…).
+// Uzun koşu (npm run test:mutabakat, kos.mjs) POS'u açar.
+// tahsileVer (2.2.0, plan §3.14): Bankaya Tahsile Ver / Bankadan Geri Al işlemleri (yalnız banka ekseniyle). false: torbada yoklar; motorun
+// rastgele sırası 2.1.0'dakiyle aynı kalır (o sıranın verisine bağlı elle adımları olan testler için).
+export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
@@ -110,7 +121,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
 
   // ---------- Bağımsız model ----------
   // deleted: Silinenler'deki cari hareketleri (Yargıç K2: geri yükleme K7'den ve dönem kilidinden geçer).
-  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [], payments: [] };
+  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [], payments: [], posLines: [], posSales: [] };
   const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [] };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   const accounts = [];
@@ -149,7 +160,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     // bacağındaki transfer ücreti; satırın yönünde). Banka ve POS Hareketleri bunları Dönem Giriş/Çıkış'a değil Transfer Giriş/Çıkış'a yazar.
     // K2: bankId (bağlı hesap) her satırda taşınır; kurumsal karta bağlı kart satırı (isCardRow) 309'dur, POS/Kasa görünümlerinde yoktur.
     for (const e of M.cash) out.push({ source: "manual", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount, internal: Boolean(e.transferId) });
-    for (const e of M.entries) if (e.kind === "in" || e.kind === "out") out.push({ source: "account", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount, bankId: e.bankId || "" });
+    for (const e of M.entries) if (e.kind === "in" || e.kind === "out") out.push({ source: "account", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount, bankId: e.bankId || "", posId: e.pos ? e.bankId : "" });
     for (const m of M.moves) if (m.pay === "cash" && m.amount > 0) out.push({ source: "stock", date: m.date, method: m.method, cents: m.kind === "out" ? m.amount : -m.amount, bankId: m.bankId || "" });
     for (const e of M.planEntries) out.push({ source: "plan", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount, bankId: e.bankId || "" });
     for (const e of M.invCash) out.push({ source: "invoice", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount, bankId: e.bankId || "" });
@@ -160,6 +171,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     // GG2: açılış (ve Devir Kapanışı, eski bakiye aktarımı) para hareketi değildir — raporda satır olarak görünür, dönem giriş/çıkışına
     // girmez ("Açılış ve Devir Düzeltmeleri"); bakiyeye girer.
     for (const e of M.bankLines) out.push({ source: "bankLine", date: e.date, method: "bank", cents: e.cents, adjust: e.type === "opening", internal: Boolean(e.transfer), feePart: e.feePart || 0, bankId: e.bankId, feeTotal: e.feeTotal || 0 });
+    // 2.2.0: POS gün sonu fişinin (ve ters kaydının) POS satırı (108.T; iç hareket, dış payı komisyon).
+    for (const e of M.posLines) out.push({ source: "bankLine", date: e.date, method: "card", cents: e.cents, internal: true, feePart: e.feePart || 0, posId: e.posId });
     return out;
   }
   const balAt = (method, date) => cashEffects().filter(x => x.method === method && (!date || x.date <= date)).reduce((s, x) => s + x.cents, 0);
@@ -227,6 +240,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     cards.push({ id: r.data.id, name: "Kurumsal Kart", glSub: r.data.glSub, limit });
   }
   const cardIds = new Set(cards.map(card => card.id));
+  // 2.2.0 POS: Ziraat'e bağlı tek POS (Aynı Gün valör; oranlar çizelgenin ilk gününden geçerli).
+  let posTerminal = null;
+  const POS_RATE = { 1: 25_000, 3: 35_000 };
+  if (bank && pos && banks.length) {
+    // İz 3.1: POS yalnız "POS Kullan" işaretli hesaba bağlanır.
+    const flag = await api("PUT", `/api/workspace/bank/accounts/${banks[0].id}`, { usePos: true });
+    if (flag.status !== 200) throw new Error(`POS Kullan işaretlenemedi: ${flag.status} ${flag.text}`);
+    const r = await api("POST", "/api/workspace/bank/pos", { name: `Motor POS T${seed}`, bankAccountId: banks[0].id, providerKind: "bank", tax: "bsmv_incl", valorRule: "same_day", valorDays: 0, installmentPayout: "monthly", refundCommission: "none", provisionDays: 0, validFrom: D0, rates: [{ installments: 1, rate: "2,5" }, { installments: 3, rate: "3,5" }] });
+    if (r.status !== 200) throw new Error(`POS açılamadı: ${r.status} ${r.text}`);
+    posTerminal = { id: r.data.pos.id, bankId: banks[0].id, glSub: r.data.pos.glSub };
+  }
   const isCardRow = x => x.method === "card" && cardIds.has(x.bankId || "");
 
   // ---------- Doğrulama ----------
@@ -358,6 +382,23 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const gl = code => centsOf(ledger.trial.accounts.find(a => a.code === code)?.balance || 0);
     if (gl("100") !== M.kasa.cash || gl("102") !== M.kasa.bank || gl("108") !== M.kasa.card - ccardNet()) problems.push(`Ana defter kasa hesapları ≠ model: 100 ${gl("100") / 100}, 102 ${gl("102") / 100}, 108 ${gl("108") / 100} (model 108 ${tl(M.kasa.card - ccardNet())})`);
     if (gl("309") !== ccardNet()) problems.push(`Ana defter 309 (Kurumsal Kredi Kartları) ${gl("309") / 100} · model ${tl(ccardNet())}`);
+    // Bankaya Tahsile Ver (plan §3.14): 101.02 (Alt Hesap Mizanı) = modelde tahsildeki evrak; 101.01 = portföy − tahsildeki; 101 toplamı aynı.
+    // Doğrulama T4: Alt Hesap Mizanı'nda 101.01 hiç tahsile verilmemiş şirkette de görünür (önceden yalnız tahsil kaydı varken denetleniyordu).
+    // 2.2.0 İz 4.2 (plan §3.11a; kâhin = modeldeki evrakın türü, programın hesap eşlemesi okunmaz): alınan çek 101 (101.01 / 101.02), alınan senet
+    // 121 (121.01 / 121.02); verilen çek 103, verilen senet 321. Eski sürüm koşusunda (bank kapalı: v2.0.26 kodu) çek ve senet birlikte 101/103'tür,
+    // bu yüzden denetim yalnız banka ekseni açıkken (güncel kod).
+    if (bank) {
+      const subs = Object.fromEntries(((await api("GET", "/api/workspace/bank/sub-trial")).data?.rows || []).map(row => [row.sub, centsOf(row.balance)]));
+      const kindOf = c => (c.instrument === "note" ? "note" : "cheque");
+      for (const [kind, main, given] of [["cheque", "101", "103"], ["note", "121", "321"]]) {
+        const portfolio = [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio" && kindOf(c) === kind);
+        const atBank = portfolio.filter(c => c.deposit).reduce((s, c) => s + c.amount, 0);
+        const inPortfolio = portfolio.filter(c => !c.deposit).reduce((s, c) => s + c.amount, 0);
+        if ((subs[`${main}.02`] || 0) !== atBank || (subs[`${main}.01`] || 0) !== inPortfolio || gl(main) !== atBank + inPortfolio) problems.push(`Alt Hesap Mizanı ${main}.01 ${(subs[`${main}.01`] || 0) / 100} / ${main}.02 ${(subs[`${main}.02`] || 0) / 100} / ${main} ${gl(main) / 100} · model portföy ${tl(inPortfolio)}, tahsilde ${tl(atBank)} (${kind === "note" ? "senet" : "çek"})`);
+        const owed = [...M.cheques.values()].filter(c => c.direction === "out" && c.status === "pending" && kindOf(c) === kind).reduce((s, c) => s + c.amount, 0);
+        if (gl(given) !== -owed) problems.push(`Ana defter ${given} ${gl(given) / 100} · model ödenecek ${kind === "note" ? "senet" : "çek"} ${tl(-owed)}`);
+      }
+    }
     const byType = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
     if (gl("120") !== byType("customer") || gl("320") !== byType("supplier") || gl("336") !== byType("other")) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${byType("customer") / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${byType("other") / 100}`);
     if (problems.length) report.mismatches.push({ at: where, problems });
@@ -423,13 +464,16 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const all = flowOf(banks.flatMap(b => bound(b.id)));
         if (sum(hareket, "Giriş") !== all.in || sum(hareket, "Çıkış") !== all.out || sum(hareket, "Transfer Giriş") !== all.trIn || sum(hareket, "Transfer Çıkış") !== all.trOut || sum(hareket, "Dönem Sonu") !== all.closing) problems.push(`Banka Hareket ${from}–${to}: ${["Giriş", "Çıkış", "Transfer Giriş", "Transfer Çıkış", "Dönem Sonu"].map(k => tl(sum(hareket, k))).join("/")} · model ${[all.in, all.out, all.trIn, all.trOut, all.closing].map(tl).join("/")}`);
         const masraf = await rc("banka-masraf", from, to);
-        const fees = M.bankLines.filter(x => x.date >= from && x.date <= to && x.feeTotal).reduce((t, x) => t + x.feeTotal, 0);
+        // 2.2.0 (doğrulama senet-bozma-1 T1-F3): rapor POS komisyonlarını da gösterir (c9d091f); model önceden yalnız Banka Fişi masraflarını
+        // topluyordu → POS ekseni açık her koşu ilk rapor denetiminde (işlem 50) duruyordu.
+        const fees = M.bankLines.filter(x => x.date >= from && x.date <= to && x.feeTotal).reduce((t, x) => t + x.feeTotal, 0)
+          + M.posLines.filter(x => x.date >= from && x.date <= to).reduce((t, x) => t + (x.fee || 0), 0);
         if (sum(masraf, "Toplam") !== fees) problems.push(`Banka Masraf ${from}–${to}: ${tl(sum(masraf, "Toplam"))} · model ${tl(fees)}`);
         const mizan = await rc("alt-hesap-mizani", from, to);
         const subOf = code => { const row = mizan.rows.find(r => r[0] === code); return row ? centsOfText(row[6]) * (row[7] === "Alacak" ? -1 : 1) : 0; };
         for (const b of banks) if (subOf(b.glSub) !== flowOf(bound(b.id)).closing) problems.push(`Alt Hesap Mizanı ${b.glSub} ${from}–${to}: ${tl(subOf(b.glSub))} · model ${tl(flowOf(bound(b.id)).closing)}`);
         // K2: 108.00 yalnız POS ve hesabı atanmamış kart; kurumsal karta bağlı satırlar kartın alt hesabında (309.NN).
-        const way = method => cashEffects().filter(x => x.method === method && !isCardRow(x) && x.date <= to).reduce((t, x) => t + x.cents, 0);
+        const way = method => cashEffects().filter(x => x.method === method && !isCardRow(x) && !x.posId && x.date <= to).reduce((t, x) => t + x.cents, 0);
         const loose = way("bank") - banks.reduce((t, b) => t + flowOf(bound(b.id)).closing, 0);
         if (subOf("102.00") !== loose || subOf("108.00") !== way("card")) problems.push(`Alt Hesap Mizanı 102.00 / 108.00 ${from}–${to}: ${tl(subOf("102.00"))} / ${tl(subOf("108.00"))} · model ${tl(loose)} / ${tl(way("card"))}`);
         for (const c of cards) if (subOf(c.glSub) !== bankNet(c.id, to)) problems.push(`Alt Hesap Mizanı ${c.glSub} (kurumsal kart) ${from}–${to}: ${tl(subOf(c.glSub))} · model ${tl(bankNet(c.id, to))}`);
@@ -598,7 +642,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       }
     }
     if ((mode === "endorse" || (mode === "mix" && kind === "purchase")) && kind === "purchase") {
-      for (const c of [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio" && c.accountId !== accountId && c.date <= day)) {
+      // Bankada tahsildeki evrak ciro edilmez (seçicide yok; plan §3.14).
+      for (const c of [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio" && !c.deposit && c.accountId !== accountId && c.date <= day)) {
         if (c.amount <= left && R.chance(0.6)) { pay.endorse.push(c.id); left -= c.amount; }
         if (pay.endorse.length >= 2) break;
       }
@@ -729,7 +774,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (issuedInvoices(x => x.originalId === inv.id).length) return ["invoice-has-returns"];
     if (inv.planId && M.planEntries.some(e => e.planId === inv.planId)) return ["plan-has-payments"];
     for (const id of inv.endorsed) if (M.cheques.get(id).status !== "endorsed") return ["cheque-moved"];
-    for (const id of inv.chequesCreated) if (M.cheques.get(id).events > 1) return ["cheque-moved"];
+    // Bankaya Tahsile Ver (plan §3.14): faturanın evrakı bankada tahsildeyse iptal 409 cheque-deposited (evrak sırası programınki; ikisi
+    // birlikteyse ikisinden biri).
+    const deposited = inv.chequesCreated.some(id => M.cheques.get(id).deposit && M.cheques.get(id).status === "portfolio");
+    const moved = inv.chequesCreated.some(id => M.cheques.get(id).events > 1);
+    if (deposited || moved) return [...(deposited ? ["cheque-deposited"] : []), ...(moved ? ["cheque-moved"] : [])];
     const codes = new Set();
     for (const row of inv.cashRows.filter(x => x.kind === "in")) if (blocks(row.amount, row.date, row.method)) { if (policy[row.method] === "block") codes.add("cash-blocked"); else if (!cashForce) codes.add("cash-negative"); }
     if (codes.size) return bankBlocked ? [...codes, "cash-negative"] : [...codes];
@@ -875,6 +924,34 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     expectReject(r, [], kind);
   }
 
+  // ---------- POS modeli (2.2.0; plan §4.2–§4.6) ----------
+  /** Satışın kalemleri: komisyon round(brüt × oran / 10^6); brüt eşit, artık son; komisyon brüt ağırlıklı aşağı, artık son. */
+  function posModel(gross, installments) {
+    const commission = halfAway(BigInt(gross) * BigInt(POS_RATE[installments]), 1_000_000n);
+    const base = Math.floor(gross / installments);
+    const parts = Array.from({ length: installments }, (_, i) => (i === installments - 1 ? gross - base * (installments - 1) : base));
+    const shares = parts.map(g => Number((BigInt(commission) * BigInt(g)) / BigInt(gross)));
+    shares[shares.length - 1] += commission - shares.reduce((a, b) => a + b, 0);
+    return { commission, items: parts.map((g, i) => ({ seq: i + 1, gross: g, commission: shares[i] })) };
+  }
+  // Gün fişi: valör bugüne kadar geldiyse (kilitli günse kilit + 1) yazılır; aksi hâlde kalem bekler.
+  const posSettleDate = valueDate => (valueDate > T ? null : lock && valueDate <= lock ? (addDays(lock, 1) <= T ? addDays(lock, 1) : null) : valueDate);
+  function posVoucher(date, { gross, commission, sign }) {
+    // sign −1: satış kalemi (108 −brüt, Ziraat +net); +1: iade kalemi (108 +brüt, Ziraat −brüt; İade Edilmez) ya da ters kayıt (commission ile).
+    const net = gross - commission;
+    // fee: Banka Masraf Raporu'nun POS komisyonu satırı (plan §8 "hesap 770/653"; gider türü POS Komisyonu → 653): satışta +komisyon, ters
+    // kayıtta −komisyon, İade Edilmez iadede 0.
+    M.posLines.push({ date, cents: sign * gross, feePart: commission, fee: -sign * commission, posId: posTerminal.id });
+    bankAdd({ id: `pos-${M.posLines.length}`, bankId: posTerminal.bankId, type: "pos", date, cents: -sign * net, transfer: true, feePart: 0, status: "active" });
+    M.kasa.card += sign * gross;
+  }
+  async function posSaleOf(entryId) {
+    const r = await api("GET", `/api/workspace/bank/pos/sales?row=${encodeURIComponent(`account_entries:${entryId}`)}`);
+    if (r.status !== 200) throw Object.assign(new Error(`POS işlemi okunamadı: ${r.status} ${r.text}`), { unexpected: true });
+    return (r.data.sales || []).find(item => item.status === "active") || null;
+  }
+  const posMismatch = text => Object.assign(new Error(`POS model ≠ program: ${text}`), { unexpected: true });
+
   async function op(kind) {
     count(kind);
     const acc = R.pick(accounts);
@@ -977,7 +1054,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         return;
       }
       case "cari-duzelt": {
-        const e = pickOpen(M.entries);
+        const e = pickOpen(M.entries.filter(x => !x.pos));
         if (!e) return;
         const amount = moneyCents(1, 60000);
         const method = methodPick();
@@ -997,7 +1074,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         return;
       }
       case "cari-sil": {
-        const e = pickOpen(M.entries);
+        const e = pickOpen(M.entries.filter(x => !x.pos));
         if (!e) return;
         const force = R.chance(0.5);
         const query = [force ? "cashForce=1" : "", e.bankId ? "negativeOk=1" : ""].filter(Boolean).join("&");
@@ -1281,7 +1358,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (which === "ekle-stok") r = await api("POST", `/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: "1", unitPrice: "1", pay: "none", date: past });
         if (which === "kart") r = await api("POST", "/api/workspace/plans", { name: cust.name, accountId: cust.id, total: "300", count: 1, registeredOn: past, firstDue: T });
         if (which === "duzelt-kasa") { const e = locked(M.cash); if (!e) return; r = await api("PUT", `/api/workspace/cash/${e.id}`, { kind: e.kind, amount: tl(e.amount + 100), method: e.method, description: "Kapalı dönem düzeltme", date: e.date, cashForce: true }); }
-        if (which === "sil-cari") { const e = locked(M.entries); if (!e) return; r = await api("DELETE", `/api/workspace/accounts/${e.accountId}/entries/${e.id}?cashForce=1`); }
+        if (which === "sil-cari") { const e = locked(M.entries.filter(x => !x.pos)); if (!e) return; r = await api("DELETE", `/api/workspace/accounts/${e.accountId}/entries/${e.id}?cashForce=1`); }
         if (which === "sil-stok") { const m = locked(M.moves.filter(x => !x.invoiceId)); if (!m) return; r = await api("DELETE", `/api/workspace/stock/${m.itemId}/moves/${m.id}?cashForce=1`); }
         if (which === "sil-taksit") { const e = locked(M.planEntries); if (!e) return; r = await api("DELETE", `/api/workspace/plans/${e.planId}/entries/${e.id}?cashForce=1`); }
         if (which === "fatura-kes") {
@@ -1383,9 +1460,16 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       case "cek-tahsil": {
         const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio"));
         if (!c) return;
-        const method = R.pick(["bank", "bank", "cash"]);
-        const b = bindBank(method);
-        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method, ...(b ? { bankAccountId: b.id, similarOk: true } : {}) });
+        // Bankaya Tahsile Ver (plan §3.14): tahsildeki evrak yalnız kaydın hesabına havaleyle tahsil edilir (hesap ön seçili: gönderilmese de
+        // o hesap); nakit 400 cheque-deposited-method.
+        if (c.deposit && R.chance(0.15)) {
+          const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method: "cash" });
+          return expectReject(r, "cheque-deposited-method", `${kind}/tahsilde-nakit`);
+        }
+        const method = c.deposit ? "bank" : R.pick(["bank", "bank", "cash"]);
+        const b = c.deposit ? banks.find(x => x.id === c.deposit.bankId) : bindBank(method);
+        const body = c.deposit ? (R.chance(0.5) ? { bankAccountId: b.id } : {}) : b ? { bankAccountId: b.id, similarOk: true } : {};
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method, ...body, ...(c.deposit ? { similarOk: true } : {}) });
         mustOk(r, kind);
         c.status = "collected";
         c.events += 1;
@@ -1427,6 +1511,135 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         c.events -= 1;
         M.kasa[row.method] -= row.kind === "in" ? row.amount : -row.amount;
         M.chqCash.splice(M.chqCash.indexOf(row), 1);
+        return;
+      }
+      case "pos-tahsil": {
+        if (!posTerminal) return;
+        const installments = R.pick([1, 1, 1, 3]);
+        const amount = moneyCents(installments === 3 ? 30 : 10, 20000);
+        const r = await api("POST", `/api/workspace/accounts/${cust.id}/entries`, { kind: "in", amount: tl(amount), method: "card", posId: posTerminal.id, installments, note: `POS T${seed}`, date: day, similarOk: true });
+        mustOk(r, kind);
+        cariAdd(cust.id, -amount);
+        M.kasa.card += amount;
+        const entry = { id: r.data.entryId, accountId: cust.id, kind: "in", amount, method: "card", date: day, bankId: posTerminal.id, pos: true };
+        M.entries.push(entry);
+        const sale = await posSaleOf(entry.id);
+        const model = posModel(amount, installments);
+        if (!sale || sale.grossMinor !== amount || sale.commissionMinor !== model.commission || sale.items.length !== installments) throw posMismatch(`satış ${tl(amount)} ${installments} taksit: program ${sale ? `${tl(sale.grossMinor)}/${tl(sale.commissionMinor)}/${sale.items.length}` : "yok"} · model ${tl(amount)}/${tl(model.commission)}/${installments}`);
+        const items = model.items.map((item, i) => ({ ...item, valueDate: sale.items[i].valueDate, settled: false, refunded: 0 }));
+        for (const item of items) {
+          const at = sale.items.find(x => x.seq === item.seq);
+          if (at.grossMinor !== item.gross || at.commissionMinor !== item.commission) throw posMismatch(`kalem ${item.seq}: program ${tl(at.grossMinor)}/${tl(at.commissionMinor)} · model ${tl(item.gross)}/${tl(item.commission)}`);
+          if (at.valueDate < day) throw posMismatch(`kalem ${item.seq} valörü (${at.valueDate}) satıştan (${day}) önce`);
+          const date = posSettleDate(item.valueDate);
+          if (date) {
+            posVoucher(date, { gross: item.gross, commission: item.commission, sign: -1 });
+            item.settled = date;
+          }
+          if (Boolean(date) !== (at.status === "settled")) throw posMismatch(`kalem ${item.seq} (${item.valueDate}): program ${at.status} · model ${date ? "settled" : "pending"}`);
+        }
+        M.posSales.push({ entry, saleId: sale.id, gross: amount, refunded: 0, items });
+        return;
+      }
+      case "pos-iade": {
+        const sale = R.pick(M.posSales.filter(x => x.gross - x.refunded > 0 && x.entry.date <= day));
+        if (!sale) return;
+        const amount = R.int(1, sale.gross - sale.refunded);
+        const r = await api("POST", `/api/workspace/accounts/${sale.entry.accountId}/entries`, { kind: "out", amount: tl(amount), method: "card", posId: posTerminal.id, posRefundOf: sale.saleId, note: `POS İadesi T${seed}`, date: day, similarOk: true });
+        mustOk(r, kind);
+        cariAdd(sale.entry.accountId, amount);
+        M.kasa.card -= amount;
+        const entry = { id: r.data.entryId, accountId: sale.entry.accountId, kind: "out", amount, method: "card", date: day, bankId: posTerminal.id, pos: true };
+        M.entries.push(entry);
+        // Dağıtım: bekleyen satış kalemlerine sondan başa (kalemin kalan brütü kadar), artanı iade valörüne.
+        let left = amount;
+        const parts = [];
+        for (const item of [...sale.items].reverse()) {
+          if (left <= 0 || item.settled) continue;
+          const take = Math.min(left, item.gross - item.refunded);
+          if (take <= 0) continue;
+          parts.push({ seq: item.seq, gross: take, valueDate: item.valueDate });
+          item.refunded += take;
+          left -= take;
+        }
+        const r2 = await api("GET", `/api/workspace/bank/pos/sales?row=${encodeURIComponent(`account_entries:${entry.id}`)}`);
+        const refund = (r2.data?.sales || [])[0];
+        if (!refund || refund.kind !== "refund" || refund.origin?.id !== sale.saleId || refund.grossMinor !== amount) throw posMismatch(`iade ${tl(amount)}: program ${refund ? `${refund.kind} ${tl(refund.grossMinor)} asıl ${refund.origin?.id}` : "yok"}`);
+        const programParts = refund.items.filter(x => x.seq > 0).map(x => [x.seq, x.grossMinor]).sort((a, b) => a[0] - b[0]);
+        const modelParts = parts.map(x => [x.seq, x.gross]).sort((a, b) => a[0] - b[0]);
+        if (JSON.stringify(programParts) !== JSON.stringify(modelParts)) throw posMismatch(`iade dağıtımı: program ${JSON.stringify(programParts)} · model ${JSON.stringify(modelParts)}`);
+        const rest = refund.items.find(x => x.seq === 0);
+        if (Boolean(rest) !== left > 0 || (rest && rest.grossMinor !== left)) throw posMismatch(`iade artanı: program ${rest ? tl(rest.grossMinor) : "yok"} · model ${tl(left)}`);
+        if (rest) {
+          const date = posSettleDate(rest.valueDate);
+          if (date) posVoucher(date, { gross: left, commission: 0, sign: 1 });
+          if (Boolean(date) !== (rest.status === "settled")) throw posMismatch(`iade kalemi (${rest.valueDate}): program ${rest.status} · model ${date ? "settled" : "pending"}`);
+        }
+        sale.refunded += amount;
+        return;
+      }
+      case "pos-sil": {
+        const sale = R.pick(M.posSales);
+        if (!sale) return;
+        const r = await api("DELETE", `/api/workspace/accounts/${sale.entry.accountId}/entries/${sale.entry.id}`);
+        if (!open(sale.entry.date)) return expectReject(r, "period-locked", kind);
+        if (sale.refunded > 0) return expectReject(r, "pos-has-refunds", kind);
+        if (sale.items.some(item => item.settled && !open(item.settled))) return expectReject(r, "pos-settled", kind);
+        mustOk(r, kind);
+        // Bankaya geçmiş kalemlerin gün fişi kendi tarihiyle ters kaydedilir (108 +brüt, dış payı komisyon; Ziraat −net); satır silinir (void).
+        for (const item of sale.items) if (item.settled) posVoucher(item.settled, { gross: item.gross, commission: item.commission, sign: 1, reversal: true });
+        cariAdd(sale.entry.accountId, sale.gross);
+        M.kasa.card -= sale.gross;
+        M.entries.splice(M.entries.indexOf(sale.entry), 1);
+        M.posSales.splice(M.posSales.indexOf(sale), 1);
+        return;
+      }
+      case "cek-tahsile-ver": {
+        // Bankaya Tahsile Ver (plan §3.14): portföydeki alınan çek/senet bir vadesiz hesaba; para hareketi yok (101.01 → 101.02). Kapalı dönemde
+        // 409 period-locked. İz 2.6 (2.2.0): yalnız evrak türünün işareti ("Çek Kullan" / "Senet Kullan") olan hesaba. İşaret istekten hemen önce
+        // açılır, sonra kapanır: verilen çek (alış faturası) tek "Çek Kullan" hesabına kendiliğinden bağlanmasın (modelin hesapsız ödemesi) ve
+        // tahsildeki evrakın tahsil, geri alma ve karşılıksızı işareti kalkmış hesapta koşsun (yalnız YENİ tahsile verme işarete bağlıdır).
+        // Hesapsız istek: iki hesap işaretliyken 400 bank-account-required; işaretsiz hesaba istek 400 bank-account-flag.
+        const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio" && !x.deposit && x.date <= day));
+        if (!c || !banks.length) return;
+        const b = R.pick(banks);
+        const omit = banks.length > 1 && R.chance(0.1);
+        const flag = c.instrument === "note" ? "useNote" : "useCheque";
+        const flagged = omit ? banks : [b];
+        const setFlag = async value => {
+          for (const x of flagged) {
+            const f = await api("PUT", `/api/workspace/bank/accounts/${x.id}`, { [flag]: value });
+            if (f.status !== 200) throw Object.assign(new Error(`${kind}: ${flag} ${value ? "işaretlenemedi" : "kaldırılamadı"} ${f.status} ${f.text}`), { unexpected: true });
+          }
+        };
+        await setFlag(true);
+        try {
+          const other = banks.find(x => !flagged.includes(x));
+          if (other) {
+            const wrong = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, bankAccountId: other.id });
+            expectReject(wrong, open(day) ? "bank-account-flag" : "period-locked", `${kind}/işaretsiz`);
+          }
+          const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, ...(omit ? {} : { bankAccountId: b.id }) });
+          if (!open(day)) return expectReject(r, "period-locked", kind);
+          if (omit) return expectReject(r, "bank-account-required", `${kind}/hesapsız`);
+          mustOk(r, kind);
+          if (!r.data?.id) throw Object.assign(new Error(`${kind}: yanıtta evrak yok ${r.text}`), { unexpected: true });
+          c.deposit = { bankId: b.id, date: day };
+          c.deposited = true;
+          // İkinci kez: 409 cheque-deposited (hiçbir şey yazılmaz).
+          if (R.chance(0.2)) expectReject(await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-deposit", date: day, bankAccountId: b.id }), "cheque-deposited", `${kind}/iki-kez`);
+          return;
+        } finally {
+          await setFlag(false);
+        }
+      }
+      case "cek-bankadan-geri-al": {
+        const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio" && x.deposit));
+        if (!c) return;
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "bank-withdraw", date: day });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        mustOk(r, kind);
+        c.deposit = null;
         return;
       }
       case "kayit-tahsil": {
@@ -1742,7 +1955,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
 
   // bank: false (altın test, v2.0.26'ya karşı): yalnız eski motorun işlemleri — rastgele sıra eski motorla birebir aynı kalır. 2.1.0'da eklenen
   // işlemler (yargıç: kart silme, geri yükleme; plan testleri: kayıt tahsilatı ve düzeltme/silmesi, çek işlemini geri alma) yalnız banka ekseniyle.
-  const BANK_ERA = new Set(["kart-sil", "geri-yukle", "kayit-tahsil", "kayit-duzelt", "kayit-sil", "cek-geri-al"]);
+  const BANK_ERA = new Set(["kart-sil", "geri-yukle", "kayit-tahsil", "kayit-duzelt", "kayit-sil", "cek-geri-al", "cek-tahsile-ver", "cek-bankadan-geri-al"]);
   const WEIGHTS = [
     ["satis", 20], ["alim", 11], ["kasa", 9], ["cari", 11], ["taksit-tahsil", 11], ["kart", 6], ["iade", 5],
     ["kasa-duzelt", 3], ["kasa-sil", 2], ["cari-duzelt", 4], ["cari-sil", 2], ["hareket-duzelt", 3], ["hareket-sil", 2], ["taksit-sil", 3], ["kart-kapat", 2],
@@ -1755,11 +1968,15 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["fatura-acid", 4], ["fatura-hatasi", 9], ["fatura-bagli", 1],
     // 2.1.0 plan testleri: kayıt (detay kartı) tahsilatı ve düzeltme/silmesi; çek tahsil/ödemesini geri alma (bağlıda K7).
     ["kayit-tahsil", 4], ["kayit-duzelt", 2], ["kayit-sil", 2], ["cek-geri-al", 2],
+    // Bankaya Tahsile Ver (plan §3.14): çek/senedi bankaya tahsile verme ve bankadan geri alma (tahsil cek-tahsil'de).
+    ["cek-tahsile-ver", 3], ["cek-bankadan-geri-al", 1],
     // Banka Fişi (v2.1.0 Aşama 4): fiş (+ saha hataları), Ters Kaydet, Düzelt, Benzer İşlem.
     ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
     // Bankalar Arası Transfer (v2.1.0 Aşama 9): transfer (+ saha hataları), Ters Kaydet.
     ["banka-transfer", 3], ["banka-transfer-ters", 1],
-  ].filter(([k]) => bank || !(k.startsWith("banka-") || BANK_ERA.has(k)));
+    // POS (2.2.0, Aşama 10–11): tahsilat (Tek Çekim / 3 taksit), POS İadesi (kısmi, asıl satışa bağlı), silme (void / gün fişi ters kaydı).
+    ["pos-tahsil", 5], ["pos-iade", 2], ["pos-sil", 1],
+  ].filter(([k]) => (bank || !(k.startsWith("banka-") || BANK_ERA.has(k))) && (posTerminal || !k.startsWith("pos-")) && (tahsileVer || !["cek-tahsile-ver", "cek-bankadan-geri-al"].includes(k)));
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
   if (bank) {
     const meta = (await api("GET", "/api/workspace/bank/voucher-meta")).data || {};

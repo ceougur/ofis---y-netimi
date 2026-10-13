@@ -8,15 +8,19 @@
 // karşılaştırır; fark varsa hangi hesapta ve ne kadar olduğunu söyler.
 //
 // Hesap planı: Tekdüzen Hesap Planı'nın ilgili hesapları.
+import { DOCUMENT_GL, documentGl } from "./cheque-gl.mjs";
 import { roundMoney } from "./money.mjs";
 
 export const CHART = Object.freeze({
   100: "Kasa (Nakit)",
-  101: "Alınan Çekler ve Senetler (Portföy)",
+  // 2.2.0 İz 4.2 (plan §3.11a): çek ve senet ayrı Tekdüzen hesaplarında (lib/cheque-gl.mjs) — önceden 101 "Alınan Çekler ve Senetler (Portföy)"
+  // ve 103 "Verilen Çekler ve Senetler" ikisini birlikte tutuyordu.
+  101: "Alınan Çekler",
   102: "Bankalar (Havale / EFT)",
-  103: "Verilen Çekler ve Senetler",
+  103: "Verilen Çekler ve Ödeme Emirleri (−)",
   108: "Kredi Kartı Tahsilatları (POS)",
   120: "Alıcılar (Müşteri Carileri)",
+  121: "Alacak Senetleri",
   127: "Carisiz Taksit Kartları",
   153: "Ticari Mallar (Stok Alımları)",
   191: "İndirilecek KDV",
@@ -24,8 +28,9 @@ export const CHART = Object.freeze({
   255: "Demirbaşlar",
   // v2.1.0 (§3.11): banka kredisi ve kurumsal kredi kartı borcu.
   300: "Banka Kredileri",
-  309: "Diğer Mali Borçlar (Kurumsal Kredi Kartları)",
+  309: "Diğer Mali Borçlar (Kredi Kartları)",
   320: "Satıcılar (Tedarikçi Carileri)",
+  321: "Borç Senetleri",
   336: "Diğer Cariler (Personel vb.)",
   360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
   391: "Hesaplanan KDV",
@@ -51,6 +56,11 @@ export const CHART = Object.freeze({
 const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336"]);
 const CONTROL = { customer: "120", supplier: "320", other: "336" };
 const cents = value => Math.round((Number(value) || 0) * 100);
+/**
+ * Cari açılış (devir) kaydı mı: notu "Açılış" ile başlar (cari Borç/Alacak Yaz açılışı, v2.0.13). Karşı hesap 500 "Açılış ve Devir Bakiyeleri" —
+ * banka hesabının açılışı (lib/bank/voucher.mjs openingLines) ve taksit açılışıyla aynı. Kasa açılışı metinden DEĞİL, satırın işaretinden
+ * (cash_entries.is_opening; Yargıç 2.2.0 Y2/Y3) tanınır.
+ */
 const opening = note => /^açılış/i.test(String(note || "").trim());
 /** Hesabı atanmamış (fin_ref '') eski ve yeni banka/POS hareketlerinin alt hesapları (§3.11). */
 export const UNASSIGNED_SUBS = Object.freeze({ "102.00": "Hesabı Atanmamış Eski Hareketler", "108.00": "Hesabı Atanmamış Eski Hareketler" });
@@ -78,12 +88,14 @@ export function moneyAccount(method, ref = "", refs = {}) {
 /**
  * Yevmiye maddeleri.
  * @param {object} rows  { payments, cashEntries, accountEntries, plans, planEntries, stockMoves, chequeEvents }
- *   accountEntries: { id, kind, amount, date, note, source, method, accountType, chequeDirection?, moveReason? }
+ *   accountEntries: { id, kind, amount, date, note, source, method, accountType, chequeDirection?, chequeInstrument?, moveReason? }
  *   plans: { id, total, status, coversBalance, date, accountType (''/null: carisiz), paid }
- *   planEntries: { id, planId, kind, amount, date, method, chequeId, opening, accountType }
+ *   planEntries: { id, planId, kind, amount, date, method, chequeId, chequeInstrument?, opening, accountType, bankReturned? }  (çekli 'out' = karşılıksız ters kaydı)
  *   stockMoves: { id, kind, amount, date, pay, method, reason }   (yalnız Kasa'ya/Banka'ya yazanlar; cariye yazanlar
  *               cari hareketinden gelir — iki kez sayılmaz)
- *   chequeEvents: { id, kind: 'collect'|'pay', amount, date, method }
+ *   chequeEvents: { id, kind: 'collect'|'pay', amount, date, method, instrument? }
+ *   chequeCollections: { id, status, givenDate, closedDate, amountMinor, instrument?, closedByCollect, serialNo }
+ *   (instrument: 'cheque' | 'note' — 2.2.0 İz 4.2: çek 101 / 103, senet 121 / 321; yoksa çek)
  *   invoices: { id, kind, date, number, glJson ([{ account, net }] TL kuruş), tryVat, tryWithheld, tryStoppage, tryPayable,
  *               accountType, party }  (yalnız kesilmiş; taslak ve iptal deftere girmez)
  *
@@ -107,7 +119,11 @@ export function journal(rows) {
     const line = (target, dr, cr) => {
       const { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
       const out = { account, debit: dr, credit: cr };
+      // Bankaya Tahsile Ver (plan §3.14): alınan evrak 101.01 / 121.01 (portföy) ya da 101.02 / 121.02 (bankaya tahsile verilen) alt hesabında
+      // izlenir; alt hesabı verilmemiş 101 / 121 satırı portföydür. Σ 101.* = 101, Σ 121.* = 121 (alt hesap mutabakatı: cheque:collections).
       if (sub) out.sub = sub;
+      else if (account === DOCUMENT_GL.cheque.received) out.sub = DOCUMENT_GL.cheque.portfolio;
+      else if (account === DOCUMENT_GL.note.received) out.sub = DOCUMENT_GL.note.portfolio;
       if (PARTY_ACCOUNTS.has(account) && party) out.party = party;
       return out;
     };
@@ -115,6 +131,13 @@ export function journal(rows) {
   };
   const refs = rows.refs || {};
   const moneyOf = row => moneyAccount(row.method, row.ref || "", refs);
+  // 2.2.0 İz 4.2 (plan §3.11a; lib/cheque-gl.mjs): evrakın hesabı türüne göre — çek 101 / 103, senet 121 / 321. Türü olmayan satır (eski
+  // çağıran, evrakı bulunamayan satır) çektir.
+  const received = (instrument, atBank = false) => {
+    const gl = documentGl(instrument);
+    return { account: gl.received, sub: atBank ? gl.bank : gl.portfolio };
+  };
+  const given = instrument => documentGl(instrument).given;
   for (const row of rows.payments || []) post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", moneyOf(row), "602", row.amount);
   for (const row of rows.cashEntries || []) {
     // v2.0.17: Kasa ↔ Banka transferi gelir/gider değildir — tek fiş, 100 ↔ 102 (nakit tarafı yazılır, banka tarafı atlanır). v2.1.0: banka
@@ -127,7 +150,11 @@ export function journal(rows) {
       else post(`transfer:${row.transferId}`, row.date, "Kasa ↔ Banka", row.description || "Kasadan Bankaya Yatırma", bank, cash, row.amount);
       continue;
     }
-    if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", moneyOf(row), "649", row.amount);
+    // 2.2.0 İz 1.3 (K6; plan susuyor → yaygın Tekdüzen açılış fişi): Kasa'ya devreden nakit (Kasa → Açılış Bakiyesi'nin işaretli satırı) gelir
+    // değildir: B 100 / A 500, banka/cari/taksit açılışıyla aynı karşı hesap. Yargıç Y2/Y3: açıklaması "Açılış …" olan sıradan giriş 2.1.0'daki
+    // gibi 649'da kalır (eski veride kilitli dönem değişmez).
+    if (row.kind === "in" && Number(row.isOpening) === 1) post(`cash:${row.id}`, row.date, "Kasa açılışı", row.description, moneyOf(row), "500", row.amount);
+    else if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", moneyOf(row), "649", row.amount);
     else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", "770", moneyOf(row), row.amount);
   }
   for (const row of rows.accountEntries || []) {
@@ -135,8 +162,10 @@ export function journal(rows) {
     const control = CONTROL[row.accountType] || CONTROL.customer;
     const id = `account:${row.id}`;
     if (row.source === "cheque") {
-      // Alınan evrak portföyde (101), verilen evrak ödenecekte (103) izlenir; cariye yazılan etki karşı taraftır.
-      const counter = row.chequeDirection === "out" ? "103" : "101";
+      // Alınan evrak portföyde (101 çek, 121 senet), verilen evrak ödenecekte (103 çek, 321 senet) izlenir; cariye yazılan etki karşı taraftır.
+      // Bankada tahsildeki evrak karşılıksız dönünce (plan §3.14 "Yevmiye mevcut bounce maddesinde A 101.02"): karşılıksız maddesinin alacağı
+      // 101.02 / 121.02'dir (bankReturned: routes/ledger.mjs rows; ayrı kapanış maddesi yazılmaz).
+      const counter = row.chequeDirection === "out" ? given(row.chequeInstrument) : received(row.chequeInstrument, Boolean(row.bankReturned));
       if (row.kind === "debt") post(id, row.date, "Çek / Senet", row.note, control, counter, row.amount);
       else post(id, row.date, "Çek / Senet", row.note, counter, control, row.amount);
       continue;
@@ -165,8 +194,12 @@ export function journal(rows) {
     const control = row.accountType ? CONTROL[row.accountType] || CONTROL.customer : "127";
     const id = `plan-entry:${row.id}`;
     if (row.kind === "in") {
-      const debit = row.opening ? "500" : row.chequeId ? "101" : moneyOf(row);
+      const debit = row.opening ? "500" : row.chequeId ? received(row.chequeInstrument) : moneyOf(row);
       post(id, row.date, row.opening ? "Taksit açılışı (devir)" : row.chequeId ? "Taksit (çek/senetle)" : "Taksit tahsilatı", row.note, debit, control, row.amount);
+    } else if (row.chequeId) {
+      // Doğrulama T11 (plan §3.14): taksite sayılmış evrak karşılıksız döndü — karşılıksız günü B kart carisi / A 101 ya da 121 (bankada
+      // tahsildeyse 101.02 / 121.02).
+      post(id, row.date, "Taksit (karşılıksız çek/senet)", row.note, control, received(row.chequeInstrument, Boolean(row.bankReturned)), row.amount);
     } else post(id, row.date, "Taksit iadesi", row.note, control, moneyOf(row), row.amount);
   }
   party = "";
@@ -229,10 +262,29 @@ export function journal(rows) {
     }
   }
   party = "";
+  // Bankaya Tahsile Ver (plan §3.14): tahsil kaydı (cheque_collections) verilişte B 101.02 / A 101.01; Bankadan Geri Al ve bankadan
+  // karşılıksız dönüşte B 101.01 / A 101.02 (kapanış tarihinde); tahsilde paranın karşılığı 101.02'dir (aşağıda). Tutar verilme başlığının
+  // kuruşu (tahsildeki evrakın tutarı değişemez: 409 cheque-deposited).
+  // Eski sürümde (tahsil kaydını bilmeyen kodla) tahsil edilen evrakın kaydını açılış onarımı (repair h) kapanış başlığıyla kapatır; o tahsilin
+  // satırı 101.01'dendir, bu yüzden kayıt 101.02'den kapanış tarihinde geri döner (Bankadan Geri Al gibi).
+  // Karşılıksız dönen (returned) kaydın kapanışı ayrı madde DEĞİLDİR: karşılıksız maddesi (cari borcu, taksit tahsilatının ters kaydı ya da
+  // carisiz evrakın gider maddesi) alacağını 101.02'ye yazar (yukarıda, bankReturned). Kayıt tahsil olayıyla kapandıysa (closedByCollect) tahsil maddesi A 101.02 (aşağıda,
+  // closesDeposit). İki bayrak da satır bazında SQL'de hesaplanır (routes/ledger.mjs): süzgeçli kurulumda (İşlem Kartı, kapı) aynı sonuç.
+  // 2.2.0 İz 4.2: senedin kaydı 121.01 ↔ 121.02 (çekin 101.01 ↔ 101.02).
+  for (const row of rows.chequeCollections || []) {
+    const amount = (Number(row.amountMinor) || 0) / 100;
+    const label = `Evrak${row.serialNo ? ` No ${row.serialNo}` : ""}`;
+    const portfolio = received(row.instrument);
+    const atBank = received(row.instrument, true);
+    post(`cheque-deposit:${row.id}`, row.givenDate, "Bankaya Tahsile Ver", label, atBank, portfolio, amount);
+    if (row.status === "pending" || row.status === "returned" || !row.closedDate) continue;
+    if (row.status === "collected" && row.closedByCollect) continue;
+    post(`cheque-withdraw:${row.id}`, row.closedDate, row.status === "collected" ? "Tahsil Edildi (eski sürüm)" : "Bankadan Geri Al", label, portfolio, atBank, amount);
+  }
   for (const row of rows.chequeEvents || []) {
     const id = `cheque:${row.id}`;
-    if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, moneyOf(row), "101", row.amount);
-    else post(id, row.date, "Çek / senet ödemesi", row.note, "103", moneyOf(row), row.amount);
+    if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, moneyOf(row), received(row.instrument, Boolean(row.closesDeposit)), row.amount);
+    else post(id, row.date, "Çek / senet ödemesi", row.note, given(row.instrument), moneyOf(row), row.amount);
   }
   // Banka Fişi (v2.1.0, §3.11/3): her işlem başlığının satırları tek madde; THP kodu ve alt hesap yazım anında saklanmıştır, kuruş doğrudan.
   const fis = new Map();
@@ -253,9 +305,9 @@ export function journal(rows) {
 }
 
 /** Alt hesap bakiyeleri (v2.1.0, §3.11): alt hesap kodu (102.01, 108.00 …) → kuruş (borç artı). Σ alt hesap = ana hesap. */
-export function subBalances(entries) {
+export function subBalances(entries, mains = null) {
   const out = new Map();
-  for (const entry of entries) for (const line of entry.lines) if (line.sub) out.set(line.sub, (out.get(line.sub) || 0) + line.debit - line.credit);
+  for (const entry of entries) for (const line of entry.lines) if (line.sub && (!mains || mains.has(line.account))) out.set(line.sub, (out.get(line.sub) || 0) + line.debit - line.credit);
   return out;
 }
 

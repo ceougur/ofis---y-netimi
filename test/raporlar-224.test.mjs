@@ -350,7 +350,9 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     }
     const xlsx = await get(id, q, "xlsx");
     assert.equal(xlsx.status, 200, `${tag} Excel: ${xlsx.status}`);
-    const sheet = xlsxRows(xlsx.buffer);
+    // 2.2.0 İz 1.1: tablonun üstündeki başlık bloğu (tek hücreli satırlar: şirket, rapor adı, kapsam, oluşturma) atlanır.
+    const all = xlsxRows(xlsx.buffer);
+    const sheet = all.slice(Math.max(0, all.findIndex(row => row.length > 1)));
     if (data.total > data.rows.length || !data.headers.length) return;
     assert.equal(sheet.length, 1 + data.rows.length + (data.footer ? 1 : 0), `${tag} Excel: satır sayısı (başlık + ${data.rows.length} + TOPLAM)`);
     const cellValue = cell => moneyOf(cell) ?? numberOf(cell);
@@ -381,6 +383,9 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     bankMove: ["", "external", "internal"],
     bankAccount: [""],
     feeAccount: [""],
+    // 2.2.0 (İz 3.5): POS raporlarının süzgeçleri (Banka grubu; her seçenekleriyle test/banka-220-pos-iz3.test.mjs ve senaryo-pos-220'de).
+    posTerminal: [""],
+    posKind: ["", "pos", "blocked", "fee"],
   };
   const combos = report => {
     let list = [{ q: {}, range: null, label: "" }];
@@ -664,7 +669,8 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
   const stats = { reports: 0, combos: 0, requests: 0, footerColumns: 0 };
   test("katalog = testteki rapor listesi (yeni rapor eklenirse test de genişler)", () => {
     // v2.1.0 Aşama 14: Banka grubu (bank.reports) ayrı testte (test/banka-210-raporlar.test.mjs) her süzgeçle denenir.
-    assert.deepEqual(catalog.map(r => r.id).sort(), [...REPORT_IDS, "banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"].sort());
+    // 2.2.0: Tahsildeki Çek ve Senetler (İz 4); POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar da Banka grubunda (test/banka-220-pos-iz3.test.mjs, senaryo-pos-220).
+    assert.deepEqual(catalog.map(r => r.id).sort(), [...REPORT_IDS, "banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar"].sort());
   });
   for (const id of REPORT_IDS) {
     test(`${id}: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle`, async () => {

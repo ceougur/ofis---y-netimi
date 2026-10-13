@@ -1,0 +1,414 @@
+TAP version 13
+# Subtest: İz 3.1: POS yalnız "POS Kullan" işaretli banka hesabına bağlanır
+    # Subtest: işaretsiz hesaba POS açma → 400 pos-account-flag, hiçbir şey yazılmaz; işaretlenince açılır (108.01)
+    ok 1 - işaretsiz hesaba POS açma → 400 pos-account-flag, hiçbir şey yazılmaz; işaretlenince açılır (108.01)
+      ---
+      duration_ms: 50.67121
+      type: 'test'
+      ...
+    # Subtest: bağlı hesabı işaretsiz hesaba değiştirme ve bekleyenleri işaretsiz hesaba taşıma → 400; yalnız ad düzeltmesi serbest; işaretlenince geçer
+    ok 2 - bağlı hesabı işaretsiz hesaba değiştirme ve bekleyenleri işaretsiz hesaba taşıma → 400; yalnız ad düzeltmesi serbest; işaretlenince geçer
+      ---
+      duration_ms: 93.135832
+      type: 'test'
+      ...
+    # Subtest: "Ekstre ile" bankaya geçiş bu sürümde seçilemez (400 pos-settle-later); Otomatik ve Elle Onay seçilir
+    ok 3 - "Ekstre ile" bankaya geçiş bu sürümde seçilemez (400 pos-settle-later); Otomatik ve Elle Onay seçilir
+      ---
+      duration_ms: 45.024348
+      type: 'test'
+      ...
+    1..3
+ok 1 - İz 3.1: POS yalnız "POS Kullan" işaretli banka hesabına bağlanır
+  ---
+  duration_ms: 718.502
+  type: 'suite'
+  ...
+# Subtest: Bilinen hata (İz 3.6): yalnız provizyon no / kartın son 4 hanesi değişen POS satırı
+    # Subtest: fatura Düzenle: aynı tutarda provizyon AAA1 → BBB2, son 4 hane 1111 → 2222 → satış kaydı güncellenir (tek etkin satış, takvim aynı)
+    ok 1 - fatura Düzenle: aynı tutarda provizyon AAA1 → BBB2, son 4 hane 1111 → 2222 → satış kaydı güncellenir (tek etkin satış, takvim aynı)
+      ---
+      duration_ms: 117.592677
+      type: 'test'
+      ...
+    # Subtest: başka satışın provizyonuna düzeltme → 409 pos-auth-duplicate; kayıt değişmez
+    ok 2 - başka satışın provizyonuna düzeltme → 409 pos-auth-duplicate; kayıt değişmez
+      ---
+      duration_ms: 67.178649
+      type: 'test'
+      ...
+    # Subtest: cari tahsilatı düzeltme: yalnız provizyon değişince satış kaydı güncellenir; düzeltme formunun POS bilgisi (GET /bank/pos/row)
+    ok 3 - cari tahsilatı düzeltme: yalnız provizyon değişince satış kaydı güncellenir; düzeltme formunun POS bilgisi (GET /bank/pos/row)
+      ---
+      duration_ms: 53.267318
+      type: 'test'
+      ...
+    1..3
+ok 2 - Bilinen hata (İz 3.6): yalnız provizyon no / kartın son 4 hanesi değişen POS satırı
+  ---
+  duration_ms: 712.568587
+  type: 'suite'
+  ...
+# Subtest: İz 3.2: tahsilat formunun POS önizlemesi ve POS İadesinin asıl işlem önerisi
+    # Subtest: 10.000 Tek Çekim (08.10.2026 Perşembe) → komisyon 250 (%2,50), net 9.750, valör 12.10.2026 (kabul 20–22)
+    ok 1 - 10.000 Tek Çekim (08.10.2026 Perşembe) → komisyon 250 (%2,50), net 9.750, valör 12.10.2026 (kabul 20–22)
+      ---
+      duration_ms: 4.828908
+      type: 'test'
+      ...
+    # Subtest: 12.000 3 Taksit (12.10.2026) → 3 × 3.860; 12.11.2026 · 14.12.2026 (12.12 Cumartesi) · 12.01.2027; komisyon 420 (kabul 25–26)
+    ok 2 - 12.000 3 Taksit (12.10.2026) → 3 × 3.860; 12.11.2026 · 14.12.2026 (12.12 Cumartesi) · 12.01.2027; komisyon 420 (kabul 25–26)
+      ---
+      duration_ms: 3.874553
+      type: 'test'
+      ...
+    # Subtest: tanımsız taksit → 400 pos-rate-missing; personel (tahsilat yetkisi) önizler; yetkisi olmayan rol 403
+    ok 3 - tanımsız taksit → 400 pos-rate-missing; personel (tahsilat yetkisi) önizler; yetkisi olmayan rol 403
+      ---
+      duration_ms: 202.804904
+      type: 'test'
+      ...
+    # Subtest: asıl işlem önerisi: satıştan iade faturasında asıl faturanın POS satışı (kalan 10.000); POS'suz caride boş
+    ok 4 - asıl işlem önerisi: satıştan iade faturasında asıl faturanın POS satışı (kalan 10.000); POS'suz caride boş
+      ---
+      duration_ms: 47.956782
+      type: 'test'
+      ...
+    1..4
+ok 3 - İz 3.2: tahsilat formunun POS önizlemesi ve POS İadesinin asıl işlem önerisi
+  ---
+  duration_ms: 669.421211
+  type: 'suite'
+  ...
+# Subtest: İz 3.4: POS ayarları ve yetkileri açıldı; henüz olmayan seçenekler gizli
+    # Subtest: Banka Ayarları: POS ve Gelişmiş → POS görünür, Varsayılan POS görünür; değer kaydedilir; "Ekstre ile" ve "Her Valörde Taslak" listede yok ve 400
+    ok 1 - Banka Ayarları: POS ve Gelişmiş → POS görünür, Varsayılan POS görünür; değer kaydedilir; "Ekstre ile" ve "Her Valörde Taslak" listede yok ve 400
+      ---
+      duration_ms: 59.563613
+      type: 'test'
+      ...
+    # Subtest: Roller kataloğu: POS Tanımlama (bank.pos) ve Komisyon Oranlarını Değiştirme (bank.commission) görünür; Ekstre / Mutabakat hâlâ gizli
+    ok 2 - Roller kataloğu: POS Tanımlama (bank.pos) ve Komisyon Oranlarını Değiştirme (bank.commission) görünür; Ekstre / Mutabakat hâlâ gizli
+      ---
+      duration_ms: 5.43895
+      type: 'test'
+      ...
+    1..2
+ok 4 - İz 3.4: POS ayarları ve yetkileri açıldı; henüz olmayan seçenekler gizli
+  ---
+  duration_ms: 429.909986
+  type: 'suite'
+  ...
+# Subtest: İz 3.3 ve 3.5: Hareketler POS süzgeci, Birleşik Rapor POS sütunları, Rapor Merkezi POS raporları, Banka Masraf Raporu
+    # Subtest: Birleşik Rapor: POS Bekleyen (Net) 9.750 ve Blokeli POS 0 sütunları (ekran, PDF, Excel); banka yetkisi olmayana POS sütunu yok
+    ok 1 - Birleşik Rapor: POS Bekleyen (Net) 9.750 ve Blokeli POS 0 sütunları (ekran, PDF, Excel); banka yetkisi olmayana POS sütunu yok
+      ---
+      duration_ms: 148.060167
+      type: 'test'
+      ...
+    # Subtest: POS Ödeme Takvimi raporu: 12.10 9.750 · 12.11 / 14.12 / 12.01 3.860; TOPLAM = satırlar (21.330); Tür ve POS süzgeçleri; PDF ve Excel aynı TOPLAM
+    ok 2 - POS Ödeme Takvimi raporu: 12.10 9.750 · 12.11 / 14.12 / 12.01 3.860; TOPLAM = satırlar (21.330); Tür ve POS süzgeçleri; PDF ve Excel aynı TOPLAM
+      ---
+      duration_ms: 78.808822
+      type: 'test'
+      ...
+    # Subtest: Hareketler ?pos= süzgeci: yalnız bu POS'un gün sonu fişi; bilinmeyen POS 404
+    ok 3 - Hareketler ?pos= süzgeci: yalnız bu POS'un gün sonu fişi; bilinmeyen POS 404
+      ---
+      duration_ms: 25.645242
+      type: 'test'
+      ...
+    # Subtest: Banka Masraf Raporu POS komisyonunu kapsar: 12.10 gün sonu → matrah 238,10 · BSMV 11,90 · toplam 250,00 (653)
+    ok 4 - Banka Masraf Raporu POS komisyonunu kapsar: 12.10 gün sonu → matrah 238,10 · BSMV 11,90 · toplam 250,00 (653)
+      ---
+      duration_ms: 17.233852
+      type: 'test'
+      ...
+    1..4
+ok 5 - İz 3.3 ve 3.5: Hareketler POS süzgeci, Birleşik Rapor POS sütunları, Rapor Merkezi POS raporları, Banka Masraf Raporu
+  ---
+  duration_ms: 814.037732
+  type: 'suite'
+  ...
+# Subtest: İz 3.5: Faturası Beklenen Komisyonlar (KDV'li kip; plan §4.3 kabul 24)
+    # Subtest: 10.000 KDV Hariç → 12.10 kesinti 300 → Ekim: Faturası Beklenen 300; Şimdi Oluştur → Taslak Hazır; TOPLAM = satırlar
+    ok 1 - 10.000 KDV Hariç → 12.10 kesinti 300 → Ekim: Faturası Beklenen 300; Şimdi Oluştur → Taslak Hazır; TOPLAM = satırlar
+      ---
+      duration_ms: 515.375841
+      type: 'test'
+      ...
+    1..1
+ok 6 - İz 3.5: Faturası Beklenen Komisyonlar (KDV'li kip; plan §4.3 kabul 24)
+  ---
+  duration_ms: 515.710734
+  type: 'suite'
+  ...
+# Subtest: Yargıç Y1: kilitli dönemdeki satışın bekleyenleri yeni hesaba taşınır (409 değil); kilitli mizan değişmez
+    # Subtest: 05.10 satış, kilit 10.10 → Bekleyenleri Taşı 200 (1 satış); mizan/alt hesap aynı; Geri Alındı kaydı yok; Kasım valörü Garanti'ye
+    not ok 1 - 05.10 satış, kilit 10.10 → Bekleyenleri Taşı 200 (1 satış); mizan/alt hesap aynı; Geri Alındı kaydı yok; Kasım valörü Garanti'ye
+      ---
+      duration_ms: 450.734634
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/banka-220-pos-iz3.test.mjs:292:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Bekleyenleri Taşı: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-10-10 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"period-lock","name":"Kapanmış dönem (2026-10-10 ve öncesi) değişemez","ok":false,"count":1,"tables":["pos_sales"]}]}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/banka-220-pos-iz3.test.mjs:303:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 7 - Yargıç Y1: kilitli dönemdeki satışın bekleyenleri yeni hesaba taşınır (409 değil); kilitli mizan değişmez
+  ---
+  duration_ms: 451.834949
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/banka-220-pos-iz3.test.mjs:291:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+    # Subtest: POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+    ok 1 - POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+      ---
+      duration_ms: 13.086281
+      type: 'test'
+      ...
+    # Subtest: satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+    ok 2 - satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+      ---
+      duration_ms: 107.339369
+      type: 'test'
+      ...
+    # Subtest: Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+    ok 3 - Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+      ---
+      duration_ms: 66.85668
+      type: 'test'
+      ...
+    1..3
+ok 8 - Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+  ---
+  duration_ms: 778.878197
+  type: 'suite'
+  ...
+# Subtest: §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+    # Subtest: komisyon faturası 600
+    ok 1 - komisyon faturası 600
+      ---
+      duration_ms: 537.357332
+      type: 'test'
+      ...
+    # Subtest: komisyon faturası 610
+    ok 2 - komisyon faturası 610
+      ---
+      duration_ms: 524.311528
+      type: 'test'
+      ...
+    1..2
+ok 9 - §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+  ---
+  duration_ms: 1062.361778
+  type: 'suite'
+  ...
+# Subtest: Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+    # Subtest: Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+    ok 1 - Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+      ---
+      duration_ms: 459.545243
+      type: 'test'
+      ...
+    1..1
+ok 10 - Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+  ---
+  duration_ms: 460.10397
+  type: 'suite'
+  ...
+# Subtest: Yargıç Y6: kilitli ayın komisyon taslağı ilk açık günle açılır ve olduğu gibi kaydedilir
+    # Subtest: Eylül satışı 10.000 (%2,5 KDV Hariç) → kesinti 300; Eylül kilitli → taslak 01.10, 300 = 250 + 50; Kaydet 200; 191 = 50; sağlayıcı 0
+    not ok 1 - Eylül satışı 10.000 (%2,5 KDV Hariç) → kesinti 300; Eylül kilitli → taslak 01.10, 300 = 250 + 50; Kaydet 200; 191 = 50; sağlayıcı 0
+      ---
+      duration_ms: 397.598133
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/banka-220-pos-kdv.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taslak ilk açık gün, 300 = 250 + 50
+        + actual - expected
+        
+          [
+        +   '2026-09-30',
+        -   '2026-10-01',
+            300,
+            250,
+            50
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-01'
+        1: 300
+        2: 250
+        3: 50
+      actual:
+        0: '2026-09-30'
+        1: 300
+        2: 250
+        3: 50
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/banka-220-pos-kdv.test.mjs:161:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 11 - Yargıç Y6: kilitli ayın komisyon taslağı ilk açık günle açılır ve olduğu gibi kaydedilir
+  ---
+  duration_ms: 398.845446
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/banka-220-pos-kdv.test.mjs:146:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa girişi açılış DEĞİLDİR (2.1.0 gibi 649)
+    # Subtest: 2, 3: yönetici ve muhasebe 'Açılış …' açıklamalı girişleri sıradan giriş olarak girer (200, 649); açılış yok; Mutabakat Testi tamam
+    not ok 1 - 2, 3: yönetici ve muhasebe 'Açılış …' açıklamalı girişleri sıradan giriş olarak girer (200, 649); açılış yok; Mutabakat Testi tamam
+      ---
+      duration_ms: 66.247642
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/iz1-kasa-acilis.test.mjs:76:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yönetici 'Açılış kampanyası hasılatı' (ilk hareketten sonra): 409 {"ok":false,"error":"Kasa açılış bakiyesi zaten girilmiş (03.10.2026 · 5.000,00 TL). Kasa → Açılış Bakiyesi'nden düzeltin.","code":"cash-opening-exists","id":"cash-c3e052c0-eb70-4cbe-a92b-febc2e6b018c"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/iz1-kasa-acilis.test.mjs:39:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/iz1-kasa-acilis.test.mjs:80:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 3 (eski veri): birden çok 'Açılış …' girişi düzeltilir (muhasebe de); açıklama değişince işaret değişmez; kilitli dönemde 649 kalır
+    not ok 2 - 3 (eski veri): birden çok 'Açılış …' girişi düzeltilir (muhasebe de); açıklama değişince işaret değişmez; kilitli dönemde 649 kalır
+      ---
+      duration_ms: 9.767838
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/iz1-kasa-acilis.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        üç 'Açılış …' açıklamalı sıradan giriş
+        
+        1 !== 3
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/iz1-kasa-acilis.test.mjs:94:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 4: Kasa → Açılış Bakiyesi 'Açılış …' açıklamalı sıradan girişler varken de bir kez girilir; düğme var olanı düzeltir
+    not ok 3 - 4: Kasa → Açılış Bakiyesi 'Açılış …' açıklamalı sıradan girişler varken de bir kez girilir; düğme var olanı düzeltir
+      ---
+      duration_ms: 56.308735
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/iz1-kasa-acilis.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        'Açılış …' sıradan girişler 649'da kalır
+        + actual - expected
+        
+        + undefined
+        - -6500
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -6500
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/iz1-kasa-acilis.test.mjs:124:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 12 - Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa girişi açılış DEĞİLDİR (2.1.0 gibi 649)
+  ---
+  duration_ms: 609.139609
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273/test/iz1-kasa-acilis.test.mjs:64:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, tarih, kilit, eksi bakiye, silme/geri yükleme)
+    # Subtest: 1, 5, 10: yönetici girer → B 100 / A 500; Kasa'da açılış satırı; muhasebe göremez değil ama giremez/düzeltemez/silemez
+    ok 1 - 1, 5, 10: yönetici girer → B 100 / A 500; Kasa'da açılış satırı; muhasebe göremez değil ama giremez/düzeltemez/silemez
+      ---
+      duration_ms: 119.864358
+      type: 'test'
+      ...
+    # Subtest: 6, 7: ilk hareketten (−8) sonraki tarihe açılış/düzeltme 409; ileri tarih 400; kilitli dönemde 409
+    ok 2 - 6, 7: ilk hareketten (−8) sonraki tarihe açılış/düzeltme 409; ileri tarih 400; kilitli dönemde 409
+      ---
+      duration_ms: 123.917872
+      type: 'test'
+      ...
+    # Subtest: 8: açılışı düşürmek Kasa'yı eksiye düşürecekse sorulur (cash-negative), onayla yazılır
+    ok 3 - 8: açılışı düşürmek Kasa'yı eksiye düşürecekse sorulur (cash-negative), onayla yazılır
+      ---
+      duration_ms: 73.621329
+      type: 'test'
+      ...
+    # Subtest: 9: yönetici siler → Silinenler; yönetici olmayan geri yükleyemez; yeni açılış girilince eskisi geri yüklenemez (409)
+    ok 4 - 9: yönetici siler → Silinenler; yönetici olmayan geri yükleyemez; yeni açılış girilince eskisi geri yüklenemez (409)
+      ---
+      duration_ms: 90.557374
+      type: 'test'
+      ...
+    1..4
+ok 13 - İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, tarih, kilit, eksi bakiye, silme/geri yükleme)
+  ---
+  duration_ms: 983.242266
+  type: 'suite'
+  ...
+1..13
+# tests 32
+# suites 13
+# pass 27
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9924.605269

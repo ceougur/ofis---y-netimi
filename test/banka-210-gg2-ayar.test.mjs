@@ -45,7 +45,9 @@ describe("GG2 — Hafta Sonu ayarı iş günü hesabına bağlı (Benzer İşlem
     const view = await must("ayarlar", ctx.api.get(`${BANK}/settings`));
     const section = id => view.sections.find(item => item.id === id);
     const item = (id, key) => section(id).items.find(entry => entry.key === key);
-    for (const id of ["fx", "fxAdvanced", "movement", "pos", "posAdvanced", "statement"]) assert.equal(section(id).available, false, `${id} bölümü görünmez`);
+    // 2.2.0 (İz 3.4, bilerek güncellendi): POS ve Gelişmiş → POS görünür (POS geldi).
+    for (const id of ["fx", "fxAdvanced", "movement", "statement"]) assert.equal(section(id).available, false, `${id} bölümü görünmez`);
+    for (const id of ["pos", "posAdvanced"]) assert.equal(section(id).available, true, `${id} bölümü 2.2.0'da görünür`);
     for (const [id, key] of [["gl", "fxGain"], ["gl", "fxLoss"], ["other", "manualVoucher"]]) assert.equal(item(id, key).available, false, `${id}.${key} görünmez`);
     assert.equal(item("holidayAdvanced", "weekend").available, true, "Hafta Sonu görünür (bağlı)");
     assert.doesNotMatch(item("holiday", "calendar").help, /Tatiller listesi/);
@@ -90,17 +92,20 @@ describe("GG2 — ertelenen döviz ve POS/Ekstre yetkileri görünmez", () => {
     expectStatus(await ctx.api.put(`${BANK}/accounts/${tl.id}`, { currency: "EUR" }), 400, "bank-currency-later", "TL → EUR");
   });
 
-  it("Roller ekranında POS Tanımlama, Komisyon, Ekstre ve Mutabakat yok; özel rol düzenlenince kayıtlı değerleri kalır", async () => {
+  // 2.2.0 (İz 3.4, bilerek güncellendi): POS Tanımlama ve Komisyon görünür; ekranın göndermediği görünür yetki (bank.pos) düzenlemede kalkar,
+  // gizli yetki (bank.statement) korunur.
+  it("Roller ekranında Ekstre ve Mutabakat yok (POS Tanımlama ve Komisyon 2.2.0'da var); özel rol düzenlenince gizli yetkinin kayıtlı değeri kalır", async () => {
     const roles = await must("roller", ctx.api.get("/api/admin/roles"));
     const bankGroup = roles.groups.find(group => group.id === "bank");
     const keys = bankGroup.items.map(item => item.key);
-    for (const hidden of ["bank.pos", "bank.commission", "bank.statement", "bank.reconcile"]) assert.ok(!keys.includes(hidden), `${hidden} görünmez`);
+    for (const hidden of ["bank.statement", "bank.reconcile"]) assert.ok(!keys.includes(hidden), `${hidden} görünmez`);
+    for (const shown of ["bank.pos", "bank.commission"]) assert.ok(keys.includes(shown), `${shown} görünür`);
     assert.ok(keys.includes("bank.move") && keys.includes("bank.settings"));
     assert.doesNotMatch(bankGroup.items.find(item => item.key === "bank.transfer").help, /döviz/i);
     const role = await must("rol", ctx.api.post("/api/admin/roles", { name: "Banka Sorumlusu", permissions: ["bank.view", "bank.move", "bank.pos", "bank.statement"] }));
     const res = await ctx.api.client.patch(`/api/admin/roles/${role.id}`, { name: "Banka Sorumlusu", permissions: ["bank.view", "bank.move", "bank.cancel"] });
     assert.equal(res.status, 200, JSON.stringify(res.data));
     const stored = (await must("roller", ctx.api.get("/api/admin/roles"))).custom.find(item => item.key === role.id);
-    assert.deepEqual(stored.permissions.filter(key => key !== "bank.granted").sort(), ["bank.cancel", "bank.move", "bank.pos", "bank.statement", "bank.view"]);
+    assert.deepEqual(stored.permissions.filter(key => key !== "bank.granted").sort(), ["bank.cancel", "bank.move", "bank.statement", "bank.view"]);
   });
 });

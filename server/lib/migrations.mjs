@@ -1153,6 +1153,44 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 21,
+    name: "v2.2.0 banka hesabı işaretleri (Kredi Kartı / Çek / Senet / POS Kullan), kredi kartının bağlı bankası ve son 4 hanesi, verilen çek/senedin banka hesabı",
+    up(store) {
+      // docs/2.2.0-IS-LISTESI.md İz 2 (2.2, 2.3, 2.5, 2.6). YALNIZ EKLEYİCİ: yeni kolonların varsayılanı kapalı/boş; hiçbir mevcut satır değişmez
+      // (eski hesaplarda işaretler kapalı, eski kartlar bağsız — "aynı adlı bankaya bağla" yalnız ÖNERİ, kendiliğinden bağlanmaz; eski çeklerin
+      // "Banka / Şube" metni olduğu gibi kalır). Para kolonu yok: Ana Defter ve mutabakat bu kolonları okumaz. Eski sürüm (2.1.0) aynı dosyayı
+      // açar; açık kolon listesiyle yazdığı için yeni kolonlar varsayılanıyla kalır.
+      store.raw("migration.v21", () => {
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'bank_accounts'")) {
+          // parent_id: kurumsal kredi kartının bağlı olduğu (borcunu ödeyen) banka hesabı ('' = bağsız; 2.1.0'da açılmış kartlar).
+          addColumn(store, "bank_accounts", "parent_id", "TEXT NOT NULL DEFAULT ''");
+          // card_last4: kartın son 4 hanesi (kart numarasının tamamı saklanmaz; plan §9.2/10).
+          addColumn(store, "bank_accounts", "card_last4", "TEXT NOT NULL DEFAULT ''");
+          for (const flag of ["use_card", "use_cheque", "use_note", "use_pos"]) addColumn(store, "bank_accounts", flag, "INTEGER NOT NULL DEFAULT 0");
+          store.exec("CREATE INDEX IF NOT EXISTS idx_bank_accounts_parent ON bank_accounts(parent_id) WHERE parent_id <> ''");
+        }
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'")) {
+          // Verilen çekin Çek Hesabı / verilen senedin ödeme hesabı önerisi ('' = yok; alınan evrakta hep boş).
+          addColumn(store, "cheques", "bank_account_id", "TEXT NOT NULL DEFAULT ''");
+          store.exec("CREATE INDEX IF NOT EXISTS idx_cheques_bank_account ON cheques(bank_account_id) WHERE bank_account_id <> ''");
+        }
+      });
+    },
+  },
+  {
+    version: 22,
+    name: "v2.2.0 Kasa açılışı işareti (Kasa → Açılış Bakiyesi ile yazılan satır)",
+    up(store) {
+      // Yargıç 2.2.0 Y2/Y3: Kasa açılışı (B 100 / A 500) açıklama metninden ("Açılış …") değil, bu işaretten tanınır. YALNIZ EKLEYİCİ: eski
+      // satırların hepsi 0 (sıradan Kasa girişi, 649) kalır — "Açılış …" açıklamalı eski girişler kendiliğinden açılışa çevrilmez, kapanmış
+      // dönemin mizanı değişmez. İşareti yalnız Kasa → Açılış Bakiyesi ucu yazar (routes/cash.mjs). Eski sürüm (2.1.0) kolonu okumaz.
+      store.raw("migration.v22", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cash_entries'")) return;
+        addColumn(store, "cash_entries", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+      });
+    },
+  },
 ];
 
 function widenIntegrityLog(store) {

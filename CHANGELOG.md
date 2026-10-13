@@ -2,6 +2,10 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.2.0 — İyileştirmeler ve POS Entegrasyonu
+
+- İyileştirmeler ve POS entegrasyonu.
+
 ## 2.1.0 — Banka Modülü (Temel Sürüm)
 
 - Banka modülü eklendi (temel sürüm): sol menüde Taksitler'in altında "Banka". Kullanımı Kullanım Kılavuzu → 8. Banka bölümünde.

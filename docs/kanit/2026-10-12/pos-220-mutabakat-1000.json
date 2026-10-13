@@ -1,0 +1,32 @@
+{
+  "ad": "pos-220-mutabakat-1000",
+  "komut": "npm run test:mutabakat -- --islem 1000",
+  "commit": "a41e35fee6069d100973422f5957fa463c21492c",
+  "dal": "worktree-agent-a1b16de6805c2b496",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T08:42:49.751Z",
+  "sure_sn": 279.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/pos-220-mutabakat-1000.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1b16de6805c2b496",
+  "ham_cikti_sha256": "cbb314284979a24d08635f43516779838794ea0d8f3be8e3b3bee4da6c6cd1a0",
+  "ham_cikti_bayt": 4236
+}

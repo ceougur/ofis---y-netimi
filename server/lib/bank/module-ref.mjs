@@ -54,7 +54,7 @@ export function negativeConfirmed(body, url = null) {
 /**
  * @param {{ store, accounts, negative: { balancesOf, guardNegative, primeTotals } }} options  accounts: banka hesap servisi (rowOf, carryBoundary)
  */
-export function createModuleBank({ store, accounts, negative, legacy = () => false }) {
+export function createModuleBank({ store, accounts, negative, legacy = () => false, pos = () => null }) {
   /** Ailenin seçilebilir hesapları (etkin, TL): bank → Vadesiz/Ticari/Diğer; card → Kurumsal Kredi Kartı. */
   const eligible = (family = "bank") =>
     store
@@ -67,13 +67,13 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
     if (!row) throw bad(404, "Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", "bank-account-missing");
     if (row.status !== "active") throw bad(400, `${labelOf(row)} pasif; bu hesaba hareket girmek için önce Banka → Hesaplar'dan Etkinleştir.`, "bank-account-invalid", { accountId: row.id });
     if (family === "card") {
-      if (row.kind !== "card" || row.currency !== "TRY") throw bad(400, `${labelOf(row)} kurumsal kredi kartı değil: Kredi Kartı yolunda yalnız Kurumsal Kredi Kartı hesabı seçilir (bankadan ödeme için yolu Havale / EFT yapın).`, "bank-account-invalid", { accountId: row.id });
+      if (row.kind !== "card" || row.currency !== "TRY") throw bad(400, `${labelOf(row)} kredi kartı değil: Kredi Kartı yolunda yalnız kredi kartı seçilir (bankadan ödeme için yolu Havale / EFT yapın).`, "bank-account-invalid", { accountId: row.id });
     } else {
       if (row.currency !== "TRY") throw bad(400, `${labelOf(row)} ${row.currency} hesabı; bu işlem yalnız TL hesapla yapılır.`, "bank-currency", { accountId: row.id });
       if (!BANK_FORM_KINDS.has(row.kind)) throw bad(400, `${labelOf(row)}: havale/EFT yalnız Vadesiz, Ticari ya da Diğer TL hesapla yapılır.`, "bank-account-invalid", { accountId: row.id });
     }
     if (date && row.opening_date && date < row.opening_date) {
-      throw bad(409, `İşlem tarihi (${dayText(date)}) ${labelOf(row)} hesabının açılışından (${dayText(row.opening_date)}) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin, başka hesap seçin ya da hareket bu hesabın açılışından önceyse ${family === "card" ? "Kurumsal Kart" : "Banka Hesabı"} alanında "${NONE_LABEL}" seçin (satır Hesabı Atanmamış Eski Hareketler'de kalır).`, "bank-before-opening", { accountId: row.id });
+      throw bad(409, `İşlem tarihi (${dayText(date)}) ${labelOf(row)} hesabının açılışından (${dayText(row.opening_date)}) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin, başka hesap seçin ya da hareket bu hesabın açılışından önceyse ${family === "card" ? "Kredi Kartı" : "Banka Hesabı"} alanında "${NONE_LABEL}" seçin (satır Hesabı Atanmamış Eski Hareketler'de kalır).`, "bank-before-opening", { accountId: row.id });
     }
     const closed = accounts.carryBoundary();
     if (date && closed && date < closed) {
@@ -86,8 +86,13 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
    * Satırın banka hesabı (fin_ref). previous: { method, finRef } (düzeltmede); changed: yol, tutar ya da tarih değişti mi. corporate: kart yolu bu
    * belgede kurumsal kartla ödeme ya da kurumsal karta iade mi (cari ödeme, alış faturası ve alıştan iade, stok alımı); değilse kart yolu POS'tur.
    */
-  function pickRef({ method, value, date = "", previous = null, changed = true, corporate = false } = {}) {
+  function pickRef({ method, value, date = "", previous = null, changed = true, corporate = false, posId = undefined, posRefundOf = "" } = {}) {
     const way = String(method || "");
+    // 2.2.0 (Aşama 10; plan §4.2, §4.6): kart yolunun POS anlamı (tahsilat ve POS iadesi) POS'a bağlanır (lib/bank/pos.mjs pick). Ödemede POS
+    // kullanılmaz (firmanın kartı Kredi Kartı hesabıdır); POS verilirse 400.
+    const posValue = posId === undefined || posId === null ? "" : text(posId);
+    if (posValue && (way !== "card" || corporate)) throw new HttpError(400, way === "card" ? "POS yalnız tahsilatta ve POS iadesinde kullanılır; ödemede kartla ödeme Kredi Kartı hesabından yapılır." : "POS yalnız kart yolunda (POS) seçilir.", { code: "pos-not-for-payment", field: "posId" });
+    if (way === "card" && !corporate && pos()) return pos().pick({ value: posValue, bankValue: value, date, previous, changed, refundOf: text(posRefundOf), legacy: legacy() });
     const family = way === "bank" ? "bank" : way === "card" && corporate ? "card" : "";
     // Yargıç B1: "none" (ekrandaki "Hesapsız (Açılıştan Önce)") ya da API'de açıkça boş verilen alan ("") hesapsız isteğidir; alan hiç yoksa
     // (undefined) istek yoktur. İstek yalnız tarih bir uygun hesabın açılışından (ya da Devir Kapanışı gününden) önceyse kabul edilir (aşağıda).
@@ -96,7 +101,7 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
     const id = raw && raw !== NONE ? raw : "";
     if (!family) {
       // K2: POS tahsilatı / POS iadesi 2.2.0'da POS'a bağlanır; bugün hesaba bağlanmaz. Kimlik verilmişse yanlış türde bağdır (önceden yok sayılıyordu).
-      if (id && way === "card") throw bad(400, "POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; Banka Hesabı alanını boş bırakın (kurumsal kart yalnız ödemede ve kurumsal karta gelen iadede seçilir).", "bank-account-invalid");
+      if (id && way === "card") throw bad(400, "POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; Banka Hesabı alanını boş bırakın (kredi kartı yalnız ödemede ve kredi kartına gelen iadede seçilir).", "bank-account-invalid");
       return "";
     }
     const before = previous && String(previous.method || "") === way ? String(previous.finRef ?? previous.fin_ref ?? "") : "";
@@ -127,11 +132,11 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
     // Açıkça hesapsız: tarih bir uygun hesabın açılışından önceyse kabul (çok hesapta hareket henüz tutulmayan hesaba girmiş olabilir). Değilse
     // "none" 400; API'nin boş alanı ("") eski anlamıyla (verilmemiş) sürer.
     if (none && beforeSome) return "";
-    if (raw === NONE) throw bad(400, `"${NONE_LABEL}" yalnız hesapların açılışından önceki hareket için seçilir; ${dayText(date)} tarihli ${family === "card" ? "kartla ödemenin kurumsal kartını" : "havale/EFT'nin hesabını"} seçin.`, "bank-account-required");
+    if (raw === NONE) throw bad(400, `"${NONE_LABEL}" yalnız hesapların açılışından önceki hareket için seçilir; ${dayText(date)} tarihli ${family === "card" ? "kartla ödemenin kredi kartını" : "havale/EFT'nin hesabını"} seçin.`, "bank-account-required");
     if (!open.length) return "";
     if (open.length > 1) {
       const hint = beforeSome ? ` Hareket seçilecek hesabın açılışından önceyse "${NONE_LABEL}" seçin.` : "";
-      throw bad(400, `${family === "card" ? "Kurumsal Kart seçin: kartla ödeme hangi kurumsal karttan yapıldı (ya da iade hangi karta geldi)?" : "Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?"}${hint}`, "bank-account-required");
+      throw bad(400, `${family === "card" ? "Kredi Kartı seçin: kartla ödeme hangi kredi kartından yapıldı (ya da iade hangi karta geldi)?" : "Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?"}${hint}`, "bank-account-required");
     }
     return check(open[0], date, family);
   }

@@ -16,6 +16,10 @@ const NOT_LABEL = new Set([
   // Madde başı vurguları (kılavuzun kendi sözü; ekranda ad olarak geçmez).
   "Ödeme ve tahsilat yolu", "Kasa ile banka arasında para", "Kasa eksiye düşecekse", "İleri tarih yok", "Hesap ayrıntısı", "Yanlış girdiyseniz", "Kimler kullanır",
   "Hesap açılışından önceki havaleyi girmek ya da düzeltmek", "\"Aktarılmış eski hareket\" uyarısı",
+  // v2.2.0 (İz 2): madde başı vurguları.
+  "Kullanım işaretleri", "Bakiye", "Hesap yoksa",
+  // v2.2.0 (İz 3): POS ile Tahsilat madde başları.
+  "POS tanımlama", "POS ile tahsilat", "İptal ve iade",
 ]);
 const out = { checked: [], missing: [], skipped: [] };
 for (const n of sections) {

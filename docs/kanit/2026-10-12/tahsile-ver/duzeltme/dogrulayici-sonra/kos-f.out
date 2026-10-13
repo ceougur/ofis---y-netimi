@@ -1,0 +1,26 @@
+TAP version 13
+# F yevmiye [["14.10.2026","Çek / Senet","Senet karşılıksız / iade · No N1 · vade 16.11.2026","120","3.000,00 TL",""],["14.10.2026","Çek / Senet","Senet karşılıksız / iade · No N1 · vade 16.11.2026","101.02","","3.000,00 TL"]] madde [ [ 'Madde', '1' ] ]
+# F alt {"101.01":[0,0],"101.02":[0,3000],"102.01":[0,0],"102.02":[0,0]}
+# Subtest: F — karşılıksız (tahsildeki) yevmiyesi
+    # Subtest: 14.10 Yevmiye ve Alt Hesap Mizanı (14.10–14.10)
+    ok 1 - 14.10 Yevmiye ve Alt Hesap Mizanı (14.10–14.10)
+      ---
+      duration_ms: 52.067093
+      type: 'test'
+      ...
+    1..1
+ok 1 - F — karşılıksız (tahsildeki) yevmiyesi
+  ---
+  duration_ms: 2625.13568
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4560.115261
+exit 0

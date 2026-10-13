@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: İz 1.1 — Rapor Merkezi Excel'inde şirket kodu ve unvanı (PDF ile aynı)
+    # Subtest: 1, 6, 9: 001'in Excel'i başta '001 · Unvan' + rapor adı + kapsam; tablo ekranla birebir; süzgeç ve dondurma başlık satırında; PDF aynı şirket
+    ok 1 - 1, 6, 9: 001'in Excel'i başta '001 · Unvan' + rapor adı + kapsam; tablo ekranla birebir; süzgeç ve dondurma başlık satırında; PDF aynı şirket
+      ---
+      duration_ms: 63.369399
+      type: 'test'
+      ...
+    # Subtest: 2, 5: 002'nin Excel'i ve PDF'i '002 · Unvan' (özel karakterler metin olarak, formül değil); 001'in adı geçmez
+    ok 2 - 2, 5: 002'nin Excel'i ve PDF'i '002 · Unvan' (özel karakterler metin olarak, formül değil); 001'in adı geçmez
+      ---
+      duration_ms: 53.388337
+      type: 'test'
+      ...
+    # Subtest: 3: sunucuda 002 seçiliyken 001'i gösteren pencerenin Excel'i (?hofCompany=001) '001 · Unvan' der
+    ok 3 - 3: sunucuda 002 seçiliyken 001'i gösteren pencerenin Excel'i (?hofCompany=001) '001 · Unvan' der
+      ---
+      duration_ms: 27.519461
+      type: 'test'
+      ...
+    # Subtest: 4: şirketin adı değişince Excel yeni adı yazar
+    ok 4 - 4: şirketin adı değişince Excel yeni adı yazar
+      ---
+      duration_ms: 32.735431
+      type: 'test'
+      ...
+    # Subtest: 7, 8: boş raporda (çek portföyü) başlık bloğu ve kolon başlıkları var, süzgeç yok; Özet sayfasında Şirket satırı
+    ok 5 - 7, 8: boş raporda (çek portföyü) başlık bloğu ve kolon başlıkları var, süzgeç yok; Özet sayfasında Şirket satırı
+      ---
+      duration_ms: 16.561656
+      type: 'test'
+      ...
+    1..5
+ok 1 - İz 1.1 — Rapor Merkezi Excel'inde şirket kodu ve unvanı (PDF ile aynı)
+  ---
+  duration_ms: 913.606815
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1378.801895

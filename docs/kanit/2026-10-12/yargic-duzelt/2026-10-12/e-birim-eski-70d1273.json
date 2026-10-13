@@ -1,0 +1,53 @@
+{
+  "ad": "e-birim-eski-70d1273",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/elestirmen-220.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T16:06:29.774Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 0,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Eleştirmen E-1/E-2: POS Ödeme Takvimi ve ANLIK DURUM'da tür kalemin rolünden › C1: 09.11'de POS 9.750 · Blokeli POS 9.750 · Komisyon Tahsili −250 ayrı satır; Komisyon Tahsili 250; aktarım sonrası Ziraat +19.250",
+      "konum": "test/elestirmen-220.test.mjs:23:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "Eleştirmen E-1/E-2: POS Ödeme Takvimi ve ANLIK DURUM'da tür kalemin rolünden › C2: valörden SONRA 3.000 iade → bekleyen iade kalemi Komisyon Tahsili değil (takvim ve ANLIK DURUM 0); nakit akışında posFee yok",
+      "konum": "test/elestirmen-220.test.mjs:51:3",
+      "hata": "[{\"valueDate\":\"2026-10-14\",\"posId\":\"pos-49ddfbd3-b41c-4b82-b05a-68edf7c21fb4\",\"posName\":\"Ziraat Fiziki POS\",\"kind\":\"fee\",\"kindLabel\":\"Komisyon Tahsili\",\"netMinor\":-300000,\"grossMinor\":-300000,\"count\":1,\"due\":false,\"awaiting\":false,\"error\":\"\"}] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Eleştirmen E-4: bekleyen POS kalemi olan hesap pasife alınamaz › 05.10 taksitli satış (Ziraat'e geçecek) → POS Garanti'ye bağlansa da Ziraat Pasife Al 409; Bekleyenleri Taşı'dan sonra pasife alınır; Ziraat değişmez",
+      "konum": "test/elestirmen-220.test.mjs:77:3",
+      "hata": "bekleyen POS'u olan Ziraat pasife: 200 {\"id\":\"bacc-ea4d7fd6-e3ef-40d8-b9a1-8c122487864e\",\"code\":\"ZIR-TL\",\"gl\":\"102\",\"glSub\":\"102.01\",\"kind\":\"demand\",\"kindLabel\":\"Vadesiz\",\"bankName\":\"Ziraat Bankası\",\"name\":\"Ana TL Hesabı\",\"label\":\"Ziraat Bankası · Ana TL Hesabı\",\"currency\":\"TRY\",\"iban\":\"TR340001000000000001234567\",\"ibanText\":\"TR34 0001 0000 0000 0001 2345 67\",\"accountNo\":\"\",\"branchName\":\"\",\"branchCode\":\"\",\"swift\":\"\",\"holder\":\"\",\"descri · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "Eleştirmen E-5: Kasa yanıtı banka bakiyesini bank.view yetkisi olmayana vermez › bank.view kaldırılmış muhasebe: /api/workspace/cash yanıtında byMethod.bank yok, 123.456,78 hiçbir alanda yok; yönetici görür",
+      "konum": "test/elestirmen-220.test.mjs:106:3",
+      "hata": "byMethod.bank yok · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a8fb47e249478c397/docs/kanit/2026-10-12/yargic-duzelt/2026-10-12/e-birim-eski-70d1273.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/yargic-duzelt-eski-70d1273",
+  "ham_cikti_sha256": "2cd2b5f357564fac255e6a94fe9bab1b05dc549047960bac9c5207e495841d5e",
+  "ham_cikti_bayt": 8589
+}

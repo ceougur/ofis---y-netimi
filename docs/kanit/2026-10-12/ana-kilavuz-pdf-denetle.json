@@ -1,0 +1,32 @@
+{
+  "ad": "ana-kilavuz-pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "7a4e70893308f5efeeffa2a2fc649d81a32e10e5",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 3,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T16:34:54.674Z",
+  "sure_sn": 11,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 38,
+    "gecen": 38,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/ana-kilavuz-pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "877b0bbc36b65ecace5664b1f4f828e2c6598131266351ae2f896a8f03142fc5",
+  "ham_cikti_bayt": 2141
+}

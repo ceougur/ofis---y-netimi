@@ -1,0 +1,162 @@
+TAP version 13
+# Subtest: Bankaya Tahsile Ver — hesap işaretleri (Çek Kullan / Senet Kullan)
+    # Subtest: çek yalnız Çek Kullan işaretli hesaba: işaretsiz ve Senet Kullan hesabına 400 bank-account-flag, hiçbir şey yazılmaz; metin işareti ve hesabı söyler
+    not ok 1 - çek yalnız Çek Kullan işaretli hesaba: işaretsiz ve Senet Kullan hesabına 400 bank-account-flag, hiçbir şey yazılmaz; metin işareti ve hesabı söyler
+      ---
+      duration_ms: 47.697333
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çek → işaretsiz: 200 {"id":"cheque-eae22928-a1e1-4623-ab34-8b9cd1529acb","direction":"in","instrument":"cheque","serialNo":"IS-1","bank":"","drawer":"","accountId":"account-ef210092-9ad2-486a-a8e0-df968556e515","planId":"","amount":1000,"issueDate":"2026-10-05","dueDate":"2026-10-31","status":"portfolio","statusDate":"2026-10-05","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","bankAccountId":"","ban 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:52:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: senet yalnız Senet Kullan işaretli hesaba: işaretsiz ve Çek Kullan hesabına 400 bank-account-flag (“Senet Kullan” metni)
+    not ok 2 - senet yalnız Senet Kullan işaretli hesaba: işaretsiz ve Çek Kullan hesabına 400 bank-account-flag (“Senet Kullan” metni)
+      ---
+      duration_ms: 44.686164
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:63:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        senet → işaretsiz: 200 {"id":"cheque-189862b4-846f-410b-bd1a-1fc777b90be7","direction":"in","instrument":"note","serialNo":"IS-2","bank":"","drawer":"","accountId":"account-ef210092-9ad2-486a-a8e0-df968556e515","planId":"","amount":700,"issueDate":"2026-10-05","dueDate":"2026-10-31","status":"portfolio","statusDate":"2026-10-05","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","bankAccountId":"","bankAc 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:68:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seçici (kartın depositAccounts) ve kendiliğinden seçim aynı kuraldan: çekte yalnız Çek Kullan, senette yalnız Senet Kullan; tek uygunda hesapsız istek o hesaba
+    not ok 3 - seçici (kartın depositAccounts) ve kendiliğinden seçim aynı kuraldan: çekte yalnız Çek Kullan, senette yalnız Senet Kullan; tek uygunda hesapsız istek o hesaba
+      ---
+      duration_ms: 36.356292
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:76:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çek seçicisi: yalnız Çek Kullan
+        + actual - expected
+        
+          [
+            'bacc-8606379a-f30c-4287-ad28-68475ca8b162',
+        +   'bacc-6f561a4d-d146-44da-9e72-6610099db016',
+        +   'bacc-8671d4e9-e904-4c4a-b48b-a3b18c41cc28'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'bacc-8606379a-f30c-4287-ad28-68475ca8b162'
+      actual:
+        0: 'bacc-8606379a-f30c-4287-ad28-68475ca8b162'
+        1: 'bacc-6f561a4d-d146-44da-9e72-6610099db016'
+        2: 'bacc-8671d4e9-e904-4c4a-b48b-a3b18c41cc28'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:81:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: çok uygun hesapta seçim zorunlu (400 bank-account-required); hiç uygun hesap yoksa 400 bank-account-required ve metin işareti söyler
+    not ok 4 - çok uygun hesapta seçim zorunlu (400 bank-account-required); hiç uygun hesap yoksa 400 bank-account-required ve metin işareti söyler
+      ---
+      duration_ms: 37.719714
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iki Çek Kullan hesabı
+        + actual - expected
+        
+          [
+            'bacc-3089725e-4d28-4feb-bb35-81f1e9cdc6cc',
+        +   'bacc-6f561a4d-d146-44da-9e72-6610099db016',
+            'bacc-8606379a-f30c-4287-ad28-68475ca8b162',
+        +   'bacc-8671d4e9-e904-4c4a-b48b-a3b18c41cc28'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'bacc-3089725e-4d28-4feb-bb35-81f1e9cdc6cc'
+        1: 'bacc-8606379a-f30c-4287-ad28-68475ca8b162'
+      actual:
+        0: 'bacc-3089725e-4d28-4feb-bb35-81f1e9cdc6cc'
+        1: 'bacc-6f561a4d-d146-44da-9e72-6610099db016'
+        2: 'bacc-8606379a-f30c-4287-ad28-68475ca8b162'
+        3: 'bacc-8671d4e9-e904-4c4a-b48b-a3b18c41cc28'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:93:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: işaret sonradan kalksa da tahsildeki evrak: Tahsil Edildi (banka +tutar), Bankadan Geri Al, Karşılıksız ve karşılıksızın Geri Al'ı çalışır; yeni tahsile verme 400
+    not ok 5 - işaret sonradan kalksa da tahsildeki evrak: Tahsil Edildi (banka +tutar), Bankadan Geri Al, Karşılıksız ve karşılıksızın Geri Al'ı çalışır; yeni tahsile verme 400
+      ---
+      duration_ms: 183.034969
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:106:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeniden tahsile verme: 200 {"id":"cheque-545f466b-3af4-45fe-8f2c-d4cd86e03220","direction":"in","instrument":"cheque","serialNo":"IS-8","bank":"","drawer":"","accountId":"account-ef210092-9ad2-486a-a8e0-df968556e515","planId":"","amount":900,"issueDate":"2026-10-05","dueDate":"2026-10-31","status":"portfolio","statusDate":"2026-10-05","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","bankAccountId":"","bank 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-210-hesap-ortak.mjs:53:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:123:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Bankaya Tahsile Ver — hesap işaretleri (Çek Kullan / Senet Kullan)
+  ---
+  duration_ms: 797.322442
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/tv-ekran-eski-12b82c2/test/banka-220-tahsile-ver-isaret.test.mjs:38:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1181.726428

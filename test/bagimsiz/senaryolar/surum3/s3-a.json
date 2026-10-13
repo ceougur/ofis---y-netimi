@@ -1,0 +1,58 @@
+{
+  "dil": "destekofis-senaryo/3",
+  "ad": "s3-a",
+  "baslangic": {
+    "bugun": "12.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "hesap_ac",
+      "ad": "ZIR",
+      "banka": "Banka ZIR",
+      "hesapAdi": "Hesap ZIR",
+      "tur": "vadesiz",
+      "paraBirimi": "TRY",
+      "acilisTarihi": "01.10.2026",
+      "acilisBakiyesi": "100000",
+      "bakiyeDogrulandi": true
+    },
+    {
+      "id": "2",
+      "islem": "cari_ac",
+      "ad": "M",
+      "unvan": "M Ltd.",
+      "tur": "musteri"
+    },
+    {
+      "id": "3",
+      "islem": "evrak_al",
+      "ad": "S",
+      "tur": "senet",
+      "cari": "M",
+      "tutar": "7000",
+      "tarih": "02.10.2026"
+    },
+    {
+      "id": "4",
+      "islem": "tahsile_ver",
+      "evrak": "S",
+      "tarih": "05.10.2026",
+      "hesap": "ZIR"
+    },
+    {
+      "id": "k",
+      "islem": "kontrol"
+    },
+    {
+      "id": "5",
+      "islem": "evrak_karsiliksiz",
+      "evrak": "S",
+      "tarih": "06.10.2026"
+    }
+  ]
+}

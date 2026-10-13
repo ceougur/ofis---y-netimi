@@ -57,7 +57,9 @@ describe("Banka raporlarının iş parçacığı: ekran, PDF, Excel ve hatalar y
     const expected = plain(await inline({ id: "banka-hareket", q: {} }));
     const xlsx = await api.raw("GET", `${RC}/banka-hareket/xlsx`);
     assert.equal(xlsx.status, 200);
-    const sheet = Object.values(xlsxSheets(xlsx.buffer))[0];
+    // 2.2.0 İz 1.1: tablonun üstündeki başlık bloğu (tek hücreli satırlar) atlanır.
+    const all = Object.values(xlsxSheets(xlsx.buffer))[0];
+    const sheet = all.slice(Math.max(0, all.findIndex(row => row.length > 1)));
     assert.equal(sheet.length - 1, expected.rows.length + (expected.footer ? 1 : 0), "başlık + bütün satırlar + TOPLAM");
     assert.deepEqual(sheet[0].map(String), expected.headers);
     // Excel tutarı sayı hücresine yazar ("49.438,35 TL" → 49438.35).

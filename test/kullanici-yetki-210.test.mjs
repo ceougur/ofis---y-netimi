@@ -192,7 +192,8 @@ describe("yetki havuzu ve kullanıcı yönetimi (API)", () => {
     assert.equal(list.status, 200);
     // v2.1.0 Aşama 14 (bilerek güncellendi): uzman (avukat) Banka Raporları yetkisiyle (bank.reports, plan §9.1) Banka grubunu da görür.
     assert.deepEqual(list.data.data.reports.filter(report => report.group !== "Banka").map(report => report.id), ["islem-gecmisi"], "finans raporlarından yalnız İşlem geçmişi");
-    assert.deepEqual(list.data.data.reports.filter(report => report.group === "Banka").map(report => report.id), ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"], "Banka grubu");
+    // 2.2.0 (bilerek güncellendi): Tahsildeki Çek ve Senetler (İz 4), POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar da Banka Raporları yetkisiyle.
+    assert.deepEqual(list.data.data.reports.filter(report => report.group === "Banka").map(report => report.id), ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar"], "Banka grubu");
     const log = await expert.get("/api/workspace/report-center/islem-gecmisi?preset=all");
     assert.equal(log.status, 200);
     assert.ok(log.data.data.total > 0, "denetim kaydı satırları gelir");
@@ -228,7 +229,8 @@ describe("v2.0.7 ek yetki kayıtları göçü", () => {
         store.db.close();
       },
     });
-    assert.deepEqual(server.app.migration.applied, [15, 16, 17, 18, 19, 20]);
+    // v2.2.0: son göç numarası sabit yazılmaz (yeni göç eklenince test kırılmasın; göçler sırayla uygulanır).
+    assert.deepEqual(server.app.migration.applied, MIGRATIONS.map(item => item.version).filter(version => version >= 15));
     const admin = await loginAdmin(server);
     const user = byName((await admin.get("/api/admin/users")).data.data, "eskipersonel");
     assert.deepEqual(user.grants, { add: ["overview.view"], remove: [] });

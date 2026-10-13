@@ -1,0 +1,13 @@
+(node:12610) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/tools/kapi-olcum.mjs:114
+    if (first.mismatches.length) throw new Error(`tohum 001: ${JSON.stringify(first.mismatches.slice(0, 2))}`);
+                                       ^
+
+Error: tohum 001: [{"at":"işlem 5 (fatura-satis, 2025-10-10)","problems":["fatura-satis: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Banka hesabı seçilmedi: 1. peşin satır havale/EFT; hangi hesaba girdiğini ya da hangi hesaptan çıktığını seçin.\",\"code\":\"bank-account-required\",\"field\":\"payment.cash.0.bankAccountId\",\"line\":0}"]},{"at":"işlem 20 (alim, 2025-10-17)","problems":["alim: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?\",\"code\":\"bank-account-required\",\"field\":\"bankAccountId\"}"]}]
+    at buildSeed (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/tools/kapi-olcum.mjs:114:40)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async fixture (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/tools/kapi-olcum.mjs:221:5)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/tools/kapi-olcum.mjs:380:25
+
+Node.js v22.22.0

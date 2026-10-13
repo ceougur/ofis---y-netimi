@@ -1,0 +1,16 @@
+{"mutasyon": "M1 Alt Hesap Mizanı: taksit ters kaydı tahsilde dönse de 101.01", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 7, "pass": 3, "fail": 4}
+{"mutasyon": "M2 Alt Hesap Mizanı: carisiz evrakın karşılıksızı yok", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 7, "pass": 3, "fail": 4}
+{"mutasyon": "M3 Alt Hesap Mizanı: tahsille kapanan kayda ayrı kapanış (çift)", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 7, "pass": 3, "fail": 4}
+{"mutasyon": "M4 Yevmiye: taksit ters kaydı tahsilde dönse de 101.01", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 7, "pass": 2, "fail": 5}
+{"mutasyon": "M5 Ters kayıt alış gününe yazılır", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 7, "pass": 3, "fail": 4}
+{"mutasyon": "M6 Eylem adı prototip anahtarıyla eşleşir", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 3, "pass": 2, "fail": 1}
+{"mutasyon": "M7 Onarım eski sürümde geri alınan kapanışı açmaz", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 26, "pass": 24, "fail": 2}
+{"mutasyon": "M8 Onarım hesap uygunluğunu denetlemez", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 26, "pass": 23, "fail": 3}
+{"mutasyon": "M9 Onarım veriliş gününü açılışa almaz", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 26, "pass": 25, "fail": 1}
+{"mutasyon": "M10 Zil parmak izi ayarı ve hesap adını görmez", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 3, "pass": 1, "fail": 2}
+{"mutasyon": "M11 Hesap silmede karşılıksız denetimi yok", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 3, "pass": 2, "fail": 1}
+{"mutasyon": "M12 Rapor tutarı evrakın bugünkü tutarı", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 3, "pass": 2, "fail": 1}
+{"mutasyon": "M13 Pencere özeti tahsildekini Portföyde sayar", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 3, "pass": 2, "fail": 1}
+{"mutasyon": "M14 Tahsil Edildi hesap uygunluğu denetimi yok", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 26, "pass": 23, "fail": 3}
+{"mutasyon": "M15 Saklanan toplam yazımdan sonra yenilenmez", "uygulandi": true, "cikis": 1, "yakalandi": true, "tests": 7, "pass": 6, "fail": 1}
+{"toplam": 15, "yakalanan": 15, "uygulanamayan": []}

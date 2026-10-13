@@ -1,0 +1,38 @@
+(node:31275) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[001] motor: 2000 işlem, 6 doğrulama, 498 beklenen ret, 25 sn; uyuşmazlık 0
+[002] motor: 1000 işlem, 6 doğrulama, 237 beklenen ret, 13 sn; uyuşmazlık 0
+  [001] doldurma: 4000 istek, para satırı 5.433 / 100.000 (69 sn) · ortanca ms {"bankalar arası transfer":96,"cari tahsilat nakit":92,"banka masrafı":95,"cari tahsilat havale":94}
+  [001] doldurma: 8000 istek, para satırı 10.052 / 100.000 (130 sn) · ortanca ms {"cari tahsilat havale":117,"cari tahsilat nakit":115,"banka masrafı":119,"bankalar arası transfer":123}
+  [001] doldurma: 12000 istek, para satırı 14.712 / 100.000 (205 sn) · ortanca ms {"cari tahsilat nakit":140,"cari tahsilat havale":144,"bankalar arası transfer":153,"banka masrafı":148}
+  [001] doldurma: 16000 istek, para satırı 19.455 / 100.000 (288 sn) · ortanca ms {"cari tahsilat nakit":158,"cari tahsilat havale":160,"bankalar arası transfer":170,"banka masrafı":167}
+  [001] doldurma: 20000 istek, para satırı 24.156 / 100.000 (399 sn) · ortanca ms {"cari tahsilat nakit":202,"cari tahsilat havale":210,"bankalar arası transfer":231,"banka masrafı":224}
+  [001] doldurma: 24000 istek, para satırı 28.821 / 100.000 (526 sn) · ortanca ms {"cari tahsilat nakit":242,"bankalar arası transfer":265,"cari tahsilat havale":250,"banka masrafı":261}
+  [001] doldurma: 28000 istek, para satırı 33.473 / 100.000 (661 sn) · ortanca ms {"cari tahsilat havale":260,"bankalar arası transfer":282,"cari tahsilat nakit":248,"banka masrafı":273}
+  [001] doldurma: 32000 istek, para satırı 38.168 / 100.000 (806 sn) · ortanca ms {"cari tahsilat nakit":272,"bankalar arası transfer":304,"cari tahsilat havale":278,"banka masrafı":301}
+  [001] doldurma: 36000 istek, para satırı 42.851 / 100.000 (981 sn) · ortanca ms {"cari tahsilat havale":337,"cari tahsilat nakit":327,"bankalar arası transfer":378,"banka masrafı":360}
+  [001] doldurma: 40000 istek, para satırı 47.516 / 100.000 (1167 sn) · ortanca ms {"cari tahsilat nakit":346,"cari tahsilat havale":356,"banka masrafı":388,"bankalar arası transfer":402}
+  [001] doldurma: 44000 istek, para satırı 52.176 / 100.000 (1366 sn) · ortanca ms {"cari tahsilat havale":388,"banka masrafı":404,"cari tahsilat nakit":369,"bankalar arası transfer":427}
+  [001] doldurma: 48000 istek, para satırı 56.853 / 100.000 (1584 sn) · ortanca ms {"banka masrafı":449,"cari tahsilat nakit":407,"bankalar arası transfer":456,"cari tahsilat havale":416}
+  [001] doldurma: 52000 istek, para satırı 61.529 / 100.000 (1816 sn) · ortanca ms {"cari tahsilat nakit":433,"bankalar arası transfer":499,"banka masrafı":477,"cari tahsilat havale":448}
+  [001] doldurma: 56000 istek, para satırı 66.214 / 100.000 (2080 sn) · ortanca ms {"cari tahsilat nakit":497,"cari tahsilat havale":513,"banka masrafı":566,"bankalar arası transfer":580}
+  [001] doldurma: 60000 istek, para satırı 70.836 / 100.000 (2344 sn) · ortanca ms {"cari tahsilat nakit":476,"cari tahsilat havale":518,"banka masrafı":544,"bankalar arası transfer":566}
+  [001] doldurma: 64000 istek, para satırı 75.521 / 100.000 (2607 sn) · ortanca ms {"cari tahsilat nakit":491,"cari tahsilat havale":511,"banka masrafı":556,"bankalar arası transfer":566}
+  [001] doldurma: 68000 istek, para satırı 80.223 / 100.000 (2882 sn) · ortanca ms {"banka masrafı":576,"cari tahsilat havale":535,"bankalar arası transfer":585,"cari tahsilat nakit":509}
+  [001] doldurma: 72000 istek, para satırı 84.903 / 100.000 (3172 sn) · ortanca ms {"bankalar arası transfer":637,"cari tahsilat nakit":531,"banka masrafı":623,"cari tahsilat havale":571}
+  [001] doldurma: 76000 istek, para satırı 89.578 / 100.000 (3480 sn) · ortanca ms {"bankalar arası transfer":663,"cari tahsilat nakit":579,"banka masrafı":658,"cari tahsilat havale":597}
+  [001] doldurma: 80000 istek, para satırı 94.267 / 100.000 (3800 sn) · ortanca ms {"bankalar arası transfer":692,"banka masrafı":678,"cari tahsilat havale":635,"cari tahsilat nakit":602}
+  [001] doldurma: 84000 istek, para satırı 98.947 / 100.000 (4146 sn) · ortanca ms {"banka masrafı":731,"cari tahsilat havale":676,"cari tahsilat nakit":625,"bankalar arası transfer":756}
+  [001] doldurma: 84958 istek, para satırı 100.075 / 100.000 (4237 sn) · ortanca ms {"banka masrafı":785,"cari tahsilat nakit":694,"cari tahsilat havale":750,"bankalar arası transfer":798}
+[001] doldurma bitti: {"bankalar arası transfer":14326,"cari tahsilat nakit":28996,"banka masrafı":14386,"cari tahsilat havale":27226} · ret {"banka masrafı 409 cash-negative":12,"bankalar arası transfer 409 cash-negative":12} · 4237 sn
+  [002] doldurma: 4000 istek, para satırı 5.129 / 12.000 (45 sn) · ortanca ms {"cari tahsilat havale":81,"cari tahsilat nakit":79,"bankalar arası transfer":81,"banka masrafı":81}
+  [002] doldurma: 8000 istek, para satırı 9.812 / 12.000 (94 sn) · ortanca ms {"banka masrafı":96,"bankalar arası transfer":96,"cari tahsilat havale":94,"cari tahsilat nakit":92}
+  [002] doldurma: 9990 istek, para satırı 12.181 / 12.000 (121 sn) · ortanca ms {"cari tahsilat nakit":103,"cari tahsilat havale":107,"bankalar arası transfer":109,"banka masrafı":109}
+[002] doldurma bitti: {"cari tahsilat havale":3160,"cari tahsilat nakit":3383,"bankalar arası transfer":1718,"banka masrafı":1726} · ret {"banka masrafı 409 cash-negative":1,"bankalar arası transfer 409 cash-negative":2} · 121 sn
+[001] para satırı 100.075 ({"payments":26,"cash_entries":108,"account_entries":56470,"plan_entries":73,"stock_moves":179,"cheque_events":45,"bank_lines":43174}), dosya 189.2 MB
+[002] para satırı 12.181 ({"payments":20,"cash_entries":53,"account_entries":6695,"plan_entries":33,"stock_moves":105,"cheque_events":32,"bank_lines":5243}), dosya 25.1 MB
+✓ 001 motor bağımsız modelle uyuşmazlıksız
+✓ 002 motor bağımsız modelle uyuşmazlıksız
+✓ 001 para satırı 100075 ≥ 100000
+✓ 002 para satırı 12181 ≥ 12000
+4 denetim geçti, 0 başarısız

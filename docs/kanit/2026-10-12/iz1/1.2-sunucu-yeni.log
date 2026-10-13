@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: İz 1.2 — her pencere kendi sayfasında: öbür pencerede açılan yeni sayfa 'silindi' sayılmaz
+    # Subtest: 1: B'nin (X) sayfa listesi: current X, yeni sayfa Y listede; A'nın (Y) listesi: current Y
+    ok 1 - 1: B'nin (X) sayfa listesi: current X, yeni sayfa Y listede; A'nın (Y) listesi: current Y
+      ---
+      duration_ms: 14.673573
+      type: 'test'
+      ...
+    # Subtest: 2, 4: B'nin tablosu ve istemci durumu X'in; A'nınki Y'nin
+    ok 2 - 2, 4: B'nin tablosu ve istemci durumu X'in; A'nınki Y'nin
+      ---
+      duration_ms: 18.401256
+      type: 'test'
+      ...
+    # Subtest: 3: B'de girilen yeni kayıt X'e yazılır, Y'ye değil
+    ok 3 - 3: B'de girilen yeni kayıt X'e yazılır, Y'ye değil
+      ---
+      duration_ms: 15.226981
+      type: 'test'
+      ...
+    # Subtest: 7: parametresiz istek (yeni açılan pencere) kullanıcının seçimini (Y) kullanır; personel kendi seçiminde (X)
+    ok 4 - 7: parametresiz istek (yeni açılan pencere) kullanıcının seçimini (Y) kullanır; personel kendi seçiminde (X)
+      ---
+      duration_ms: 10.946518
+      type: 'test'
+      ...
+    # Subtest: 6: uydurma sayfa anahtarı hata vermez, kullanıcının seçimine düşer
+    ok 5 - 6: uydurma sayfa anahtarı hata vermez, kullanıcının seçimine düşer
+      ---
+      duration_ms: 4.304313
+      type: 'test'
+      ...
+    # Subtest: 5: Y silinince Y'yi gösteren pencerenin listesinde Y yok ve current başka (istemci 'silindi' der); X'teki B etkilenmez
+    ok 6 - 5: Y silinince Y'yi gösteren pencerenin listesinde Y yok ve current başka (istemci 'silindi' der); X'teki B etkilenmez
+      ---
+      duration_ms: 44.218202
+      type: 'test'
+      ...
+    1..6
+ok 1 - İz 1.2 — her pencere kendi sayfasında: öbür pencerede açılan yeni sayfa 'silindi' sayılmaz
+  ---
+  duration_ms: 653.647521
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1035.454148

@@ -1,0 +1,35 @@
+eski v2.1.0 (7c6405fca6697cc32e6c661c241dbcd99c438814) ↔ yeni guncel (çalışma ağacı)
+
+== YALNIZ YENİDE OLAN ANAHTARLAR (726) ==
+  reads.sirket-001.steps[].data.deposited ×55
+  reads.sirket-001.steps[].data.collection ×55
+  reads.sirket-001.steps[].data.bankActions ×55
+  reads.sirket-001.steps[].data.depositAccounts ×55
+  reads.sirket-001.steps[].data.collections ×55
+  reads.sirket-001.reads.cekListe.data.cheques[].deposited ×11
+  reads.sirket-001.reads.cekListe.data.cheques[].collection ×11
+  reads.sirket-001.reads.cekListe.data.summary.deposited ×1
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.steps[].data.deposited ×75
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.steps[].data.collection ×75
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.steps[].data.bankActions ×75
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.steps[].data.depositAccounts ×75
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.steps[].data.collections ×75
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.reads.cekListe.data.cheques[].deposited ×10
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.reads.cekListe.data.cheques[].collection ×10
+  reads.sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b.reads.cekListe.data.summary.deposited ×1
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.steps[].data.deposited ×3
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.steps[].data.collection ×3
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.steps[].data.bankActions ×3
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.steps[].data.depositAccounts ×3
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.steps[].data.collections ×3
+  reads.sirket-8e986639-c54d-40c5-a15c-c6d612cb250c.reads.cekListe.data.summary.deposited ×1
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.steps[].data.deposited ×3
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.steps[].data.collection ×3
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.steps[].data.bankActions ×3
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.steps[].data.depositAccounts ×3
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.steps[].data.collections ×3
+  reads.sirket-d14a948c-25a2-4969-bc48-1589af813165.reads.cekListe.data.summary.deposited ×1
+
+== YALNIZ ESKİDE OLAN ANAHTARLAR (0) ==
+
+== DEĞERİ DEĞİŞENLER (0) ==

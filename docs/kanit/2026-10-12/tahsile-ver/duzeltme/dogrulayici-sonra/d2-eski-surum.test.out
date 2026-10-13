@@ -1,0 +1,61 @@
+TAP version 13
+# [d2] o1: {"name":"o1","old":{"status":200},"record":[{"status":"withdrawn","given":"2026-10-06","closed":"2026-10-06"}],"subs":{"101.01":0,"101.02":0},"integrity":{"ok":true,"bad":[]},"writeAfter":{"status":200},"integrityAfterWrite":true}
+# Subtest: D2 — v2.1.0'a dönüp tahsildeki evraka dokunma, sonra bu dal
+    # Subtest: O1 v2.1.0'da tahsile verme gününden (06.10) ÖNCEKİ tarihle (05.10) ciro
+    ok 1 - O1 v2.1.0'da tahsile verme gününden (06.10) ÖNCEKİ tarihle (05.10) ciro
+      ---
+      duration_ms: 3540.031101
+      type: 'test'
+      ...
+# [d2] o2: {"name":"o2","old":{"status":200},"record":[{"status":"pending","given":"2026-10-06","closed":""}],"subs":{"101.01":0,"101.02":950},"integrity":{"ok":true,"bad":[]},"writeAfter":{"status":200},"extra":{"withdraw":{"status":200},"integrityAfterWithdraw":true},"integrityAfterWrite":true}
+    # Subtest: O2 v2.1.0'da tahsildeki evrakın tutarı 800 → 950
+    ok 2 - O2 v2.1.0'da tahsildeki evrakın tutarı 800 → 950
+      ---
+      duration_ms: 1208.628991
+      type: 'test'
+      ...
+# [d2] o3: {"name":"o3","old":{"status":200},"record":[{"status":"collected","given":"2026-10-06","closed":"2026-10-06"}],"subs":{"101.01":0,"101.02":0},"integrity":{"ok":true,"bad":[]},"writeAfter":{"status":200},"integrityAfterWrite":true}
+    # Subtest: O3 v2.1.0'da tahsile verme gününden ÖNCEKİ tarihle (05.10) bankaya tahsil
+    ok 3 - O3 v2.1.0'da tahsile verme gününden ÖNCEKİ tarihle (05.10) bankaya tahsil
+      ---
+      duration_ms: 686.411463
+      type: 'test'
+      ...
+# [d2] o4: {"name":"o4","old":{"status":200},"record":[{"status":"withdrawn","given":"2026-10-06","closed":"2026-10-06"}],"subs":{"101.01":0,"101.02":0},"integrity":{"ok":true,"bad":[]},"writeAfter":{"status":200},"extra":{"cheque":{"status":200},"deposit":{"status":200},"collect":{"status":200},"integrityStill":true,"bad":[]},"integrityAfterWrite":true}
+    # Subtest: O4 v2.1.0'da tahsildeki evrak silinir
+    ok 4 - O4 v2.1.0'da tahsildeki evrak silinir
+      ---
+      duration_ms: 879.268499
+      type: 'test'
+      ...
+# [d2] o5: {"name":"o5","old":{"status":200},"record":[{"status":"pending","given":"2026-10-08","closed":""}],"subs":{"101.01":0,"101.02":800},"integrity":{"ok":true,"bad":[]},"writeAfter":{"status":200},"integrityAfterWrite":true}
+    # Subtest: O5 v2.1.0'da alış tarihi 03.10 → 08.10 (tahsile verme gününden sonraya)
+    ok 5 - O5 v2.1.0'da alış tarihi 03.10 → 08.10 (tahsile verme gününden sonraya)
+      ---
+      duration_ms: 836.482382
+      type: 'test'
+      ...
+# [d2] o6: {"name":"o6","old":{"status":200,"code":"ZIR-TL"},"record":[{"status":"pending","given":"2026-10-06","closed":""}],"subs":{"101.01":0,"101.02":800},"integrity":{"ok":true,"bad":[]},"writeAfter":{"status":200},"extra":{"collect":{"status":400,"code":"bank-account-invalid","error":"Ziraat Bankası · Ana TL Hesabı pasif; bu hesaba hareket girmek için önce Banka → Hesaplar'dan Etkinleştir."},"withdraw":{"status":200}},"integrityAfterWrite":true}
+# [d2] o6 sonuç: {"collect":{"status":400,"code":"bank-account-invalid","error":"Ziraat Bankası · Ana TL Hesabı pasif; bu hesaba hareket girmek için önce Banka → Hesaplar'dan Etkinleştir."},"withdraw":{"status":200}}
+    # Subtest: O6 v2.1.0'da tahsil hesabı pasife alınır; bu dalda tahsil ve geri alma
+    ok 6 - O6 v2.1.0'da tahsil hesabı pasife alınır; bu dalda tahsil ve geri alma
+      ---
+      duration_ms: 787.394586
+      type: 'test'
+      ...
+    1..6
+ok 1 - D2 — v2.1.0'a dönüp tahsildeki evraka dokunma, sonra bu dal
+  ---
+  duration_ms: 7944.250265
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9827.444159
+exit 0

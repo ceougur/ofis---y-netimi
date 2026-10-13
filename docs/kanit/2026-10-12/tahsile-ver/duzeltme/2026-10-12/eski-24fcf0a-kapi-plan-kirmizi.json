@@ -1,0 +1,38 @@
+{
+  "ad": "eski-24fcf0a-kapi-plan-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz4d-eski-24fcf0a/test/banka-210-kapi-plan.test.mjs",
+  "commit": "24fcf0af4b1cc272443bcecdcf6014859f53239b",
+  "dal": "worktree-wf_d306f93b-be4-1",
+  "kirli": 12,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T09:28:08.076Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN) › Bankaya Tahsile Ver yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan",
+      "konum": "test/banka-210-kapi-plan.test.mjs:262:3",
+      "hata": "Bankaya Tahsile Ver: süzgeç yolu (cheque_collections yazımı) · 'full' !== 'scoped' (beklenen scoped, gelen full)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-12/tahsile-ver/duzeltme/2026-10-12/eski-24fcf0a-kapi-plan-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1",
+  "ham_cikti_sha256": "c4bf924ec5795a49f9b3feb1415288e33f7065b0a2eaa0c8817c2ac07501f4fb",
+  "ham_cikti_bayt": 2612
+}

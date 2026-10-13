@@ -37,6 +37,8 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
 const CASH_SOURCE = { payment: "Kayıt tahsilatı", manual: "Kasa", plan: "Taksit", account: "Cari", stock: "Stok", cheque: "Çek / senet", invoice: "Fatura", bankLine: "Banka Fişi" };
 const PRIORITY = { high: "Yüksek", normal: "Normal", low: "Düşük", urgent: "Acil" };
+// Bankaya Tahsile Ver / Bankadan Geri Al (plan §3.14; fin_events başlıkları, cheque_events'te yok): Çek / Senet Hareketleri'nde işlem adı.
+const BANK_EVENT_LABELS = { "bank-deposit": "Bankaya Tahsile Verildi", "bank-withdraw": "Bankadan Geri Alındı" };
 const TASK_STATUS = { open: "Açık", done: "Tamamlandı", completed: "Tamamlandı", cancelled: "İptal" };
 const money = value => (value === "" || value === null || value === undefined ? "" : tl(value));
 const QTY_FORMAT = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 });
@@ -137,9 +139,23 @@ export function footerRow({ headers = [], types = [], rows = [], footer, footerU
   return out;
 }
 
-export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
+  // Rapor başlığındaki şirket (2.2.0 İz 1.1; 2.0.17 m2 kararı "rapor/PDF/Excel başlığında 001 · Unvan"): bu örneğin şirketinin kodu (kayıt defteri)
+  // ve unvanı (office.name; PDF'in başlığında da bu yazıyordu; boşsa şirketin adı). İstek pencerenin şirketine gider (?hofCompany=, app.mjs
+  // dispatch), dolayısıyla etiket de o şirketindir. Önceden Excel'de şirket hiç yoktu, PDF'te yalnız unvan vardı.
+  const companyLabel = () => {
+    let entry = null;
+    try {
+      entry = typeof company === "function" ? company() : null;
+    } catch {
+      entry = null;
+    }
+    const name = String(office() || entry?.name || "").trim();
+    const code = String(entry?.code || "").trim();
+    return code && name ? `${code} · ${name}` : name || code;
+  };
   const admin = { id: "", role: "admin" };
 
   // ---------- Ortak yardımcılar ----------
@@ -211,6 +227,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
   const BANK_MOVES = Object.freeze({ external: "Dış Hareketler", internal: "Transfer (İç Hareketler)" });
   const BANK_GROUPS = Object.freeze({ real: K10_LABELS.realBank, debt: K10_LABELS.debt, unassigned: K10_LABELS.unassigned, all: "Tümü" });
   const UNASSIGNED_CHOICE = "unassigned";
+  // POS Ödeme Takvimi'nin Tür süzgeci (lib/bank/pos.mjs calendarView kind).
+  const POS_KINDS = Object.freeze({ pos: "POS", blocked: K10_LABELS.posBlocked, fee: "Komisyon Tahsili" });
   const isRealKind = kind => kind !== "card" && kind !== "loan";
   const bankRows = () => {
     try {
@@ -432,7 +450,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const rows = [];
         for (const entry of ledger().build()) {
           if ((range.from && entry.date < range.from) || (range.to && entry.date > range.to)) continue;
-          for (const line of entry.lines) rows.push([dayText(entry.date), entry.source, entry.text || "", line.account, money(line.debit / 100), money(line.credit / 100)].map((cell, index) => (index >= 4 && cell === money(0) ? "" : cell)));
+          // Alt hesap (102.01, 101.02 …) varsa o yazılır (doğrulama T3: Bankaya Tahsile Ver maddesi "101 / 101" görünüyordu; evrakın 101.01'den
+          // 101.02'ye geçtiği okunamıyordu). Ana hesap kodu alt hesabın başındadır (Hesap Planı Mizanı ana hesapla toplar).
+          for (const line of entry.lines) rows.push([dayText(entry.date), entry.source, entry.text || "", line.sub || line.account, money(line.debit / 100), money(line.credit / 100)].map((cell, index) => (index >= 4 && cell === money(0) ? "" : cell)));
         }
         return {
           subtitle: rangeText(range),
@@ -709,7 +729,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "banka-masraf",
       group: "Banka",
       title: "Banka Masraf Raporu",
-      description: "Banka masrafları (BSMV'li, vergisiz ve faturalı KDV'li) ve bankalar arası transfer ücretleri: matrah, BSMV ve KDV ayrı kolonlarda; gider hesabı (770 / 653) ve banka hesabı bazında toplamlar. Ters kaydedilen masraf ters kaydının tarihinde eksi yazılır.",
+      description: "Banka masrafları (BSMV'li, vergisiz ve faturalı KDV'li), bankalar arası transfer ücretleri ve POS komisyonları (gün sonunda kesilen; faturalı kipte kaydedilen komisyon faturası): matrah, BSMV ve KDV ayrı kolonlarda; gider hesabı (770 / 653) ve banka hesabı bazında toplamlar. Ters kaydedilen masraf ve iade edilen komisyon eksi yazılır.",
       params: ["range", "feeAccount"],
       preset: "thisYear",
       permission: "bank.reports",
@@ -747,7 +767,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "alt-hesap-mizani",
       group: "Banka",
       title: "Alt Hesap Mizanı",
-      description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, kurumsal kart 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00): devir, dönem borç, dönem alacak ve bakiye; her ana hesap alt hesaplarının toplamına eşittir.",
+      description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, POS 108, kredi kartı 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00) ve alınan evrakın alt hesapları (101.01 Portföydeki Çekler, 101.02 Tahsile Verilen Çekler, 121.01 Portföydeki Senetler, 121.02 Tahsile Verilen Senetler): devir, dönem borç, dönem alacak ve bakiye; her ana hesap alt hesaplarının toplamına eşittir.",
       params: ["range"],
       preset: "thisYear",
       permission: "bank.reports",
@@ -764,6 +784,112 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "money", "money", "money", "money", ""],
           rows: data.rows.map(row => [row.sub, row.name || "", `${row.account} ${CHART[row.account] || ""}`.trim(), money(row.opening), money(row.debit), money(row.credit), money(Math.abs(row.balance)), yon(row.balance)]),
           summary: [...data.mains.map(main => [`${main.account} ${main.name}`, `${money(Math.abs(main.balance))}${main.balance < -0.005 ? " (Alacak)" : ""}`]), ["Alt Hesap Mutabakatı", allOk ? "Tutarlı" : "Fark Var"]],
+        };
+      },
+    },
+    {
+      // Plan §8.10 "Ek: … Tahsildeki Çekler" (doğrulama T9): bankaya tahsile verilmiş, sonucu bekleyen alınan çek ve senetler (101.02); beklenen gün
+      // vade + iş günü takvimi (Nakit Akış ve Vade Takip ile aynı kural, routes/cheques.mjs flows). TOPLAM = Alt Hesap Mizanı'ndaki 101.02 (çek) +
+      // 121.02 (senet; 2.2.0 İz 4.2, plan §3.11a) bakiyeleri; özet ikisini ayrı da verir.
+      id: "tahsildeki-cekler",
+      group: "Banka",
+      title: "Tahsildeki Çek ve Senetler",
+      description: "Bankaya tahsile verilmiş, tahsil edilmeyi bekleyen alınan çek ve senetler: veriliş tarihi, banka hesabı, vade ve bankadan beklenen gün (vade hafta sonu ya da tatile düşerse sonraki iş günü). Çeklerin toplamı Alt Hesap Mizanı'ndaki 101.02, senetlerinki 121.02 bakiyesine eşittir.",
+      params: [],
+      permission: "bank.reports",
+      standalone: true,
+      build() {
+        const has = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'"));
+        const list = has
+          ? store.all(
+            `SELECT k.given_date AS givenDate, COALESCE(b.bank_name || ' · ' || b.name, '') AS bankLabel, COALESCE(b.code, '') AS bankCode, c.id, c.instrument, c.serial_no AS serialNo,
+                    c.due_date AS dueDate, c.amount, COALESCE(a.name, c.drawer, '') AS party
+             FROM cheque_collections k JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL AND c.direction = 'in' AND c.status = 'portfolio'
+               LEFT JOIN bank_accounts b ON b.id = k.bank_account_id LEFT JOIN accounts a ON a.id = c.account_id
+             WHERE k.status = 'pending' ORDER BY k.given_date, c.due_date, k.rowid`,
+          )
+          : [];
+        const expected = new Map((cheques()?.flows ? cheques().flows({ expected: true }) : []).filter(flow => flow.flow === "deposit").map(flow => [flow.ref.id, flow.date]));
+        const byBank = new Map();
+        let total = 0;
+        const byKind = { cheque: 0, note: 0 };
+        for (const row of list) {
+          total = roundMoney(total + row.amount);
+          const kind = row.instrument === "note" ? "note" : "cheque";
+          byKind[kind] = roundMoney(byKind[kind] + row.amount);
+          byBank.set(row.bankLabel, roundMoney((byBank.get(row.bankLabel) || 0) + row.amount));
+        }
+        return {
+          subtitle: `${dayText(today())} itibarıyla · ${list.length} evrak`,
+          headers: ["Veriliş Tarihi", "Banka Hesabı", "Evrak", "No", "Kimden", "Vade", "Beklenen Gün", "Tutar"],
+          types: ["", "", "", "", "", "", "", "money"],
+          rows: list.map(row => [dayText(row.givenDate), row.bankLabel, INSTRUMENTS[row.instrument] || "Çek", row.serialNo, row.party, dayText(row.dueDate), dayText(expected.get(row.id) || row.dueDate), money(row.amount)]),
+          summary: [["Evrak Sayısı", String(list.length)], ["Toplam (101.02 + 121.02)", tl(total)], ["Çekler (101.02)", tl(byKind.cheque)], ["Senetler (121.02)", tl(byKind.note)], ...[...byBank].map(([label, amount]) => [label || "Banka Hesabı", tl(amount)])],
+        };
+      },
+    },
+    // 2.2.0 (İz 3.5; plan §4.7, §8.10): POS raporları — POS Ödeme Takvimi (bekleyen valör kalemleri) ve Faturası Beklenen Komisyonlar (KDV'li kip).
+    {
+      id: "pos-odeme-takvimi",
+      group: "Banka",
+      title: "POS Ödeme Takvimi",
+      description: "Bankaya geçmemiş POS tahsilatları valör gününe göre: bankaya geçecek net tutar ve brüt. Blokeli POS ve Komisyon Tahsili (iade sonrası bankadan çekilecek komisyon) ayrı satırdır. Aralık valör gününe göredir; Tüm Zamanlar bütün bekleyenleri gösterir.",
+      params: ["range", "posTerminal", "posKind"],
+      permission: "bank.reports",
+      standalone: true,
+      build(query) {
+        const range = dueRangeOf(query, "");
+        const pos = bankService()?.pos;
+        const posId = query.posTerminal || "";
+        const kind = POS_KINDS[query.posKind] ? query.posKind : "";
+        const data = pos?.calendarView ? pos.calendarView({ from: range.from, to: range.to, posId }) : { rows: [] };
+        const rows = data.rows.filter(row => !kind || row.kind === kind);
+        const state = row => (row.error ? "Aktarılamadı" : row.awaiting ? "Onay Bekliyor" : row.due ? "Valörü Geldi" : "Bekliyor");
+        const sum = (list, key) => list.reduce((total, row) => total + (Number(row[key]) || 0), 0);
+        const of = name => rows.filter(row => row.kind === name);
+        const posName = posId ? pos?.list?.().find(item => item.id === posId)?.name || "" : "";
+        return {
+          subtitle: [posName || "Tüm POS'lar", POS_KINDS[kind] || "", range.from || range.to ? `valör ${rangeText(range)}` : "Bütün bekleyenler"].filter(Boolean).join(" · "),
+          headers: ["Valör Günü", "POS", "Tür", "Kalem", "Brüt", "Net (Bankaya Geçecek)", "Durum"],
+          types: ["", "", "", "", "money", "money", ""],
+          rows: rows.map(row => [dayText(row.valueDate), row.posName, row.kindLabel, String(row.count), cents(row.grossMinor), cents(row.netMinor), state(row)]),
+          summary: [
+            [K10_LABELS.posPending, cents(sum(of("pos"), "netMinor"))],
+            [K10_LABELS.posBlocked, cents(sum(of("blocked"), "netMinor"))],
+            ["Komisyon Tahsili", cents(-sum(of("fee"), "netMinor"))],
+            ["Toplam (Net)", cents(sum(rows, "netMinor"))],
+          ],
+        };
+      },
+    },
+    {
+      id: "faturasi-beklenen-komisyonlar",
+      group: "Banka",
+      title: "Faturası Beklenen Komisyonlar",
+      description: "Faturalı (KDV'li) POS komisyonu: ödeme kuruluşunun her ay kestiği komisyon, komisyon iadeleri ve net tutar; durum Faturası Beklenen, Taslak Hazır, İade Alacağı ya da Faturalandı. Kaydedilen komisyon faturasında Fark = fatura − bağlı kesinti.",
+      params: ["range", "posTerminal"],
+      preset: "thisYear",
+      permission: "bank.reports",
+      standalone: true,
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const pos = bankService()?.pos;
+        const posId = query.posTerminal || "";
+        const data = pos?.commissionReport ? pos.commissionReport({ from: range.from, to: range.to, posId }) : { rows: [] };
+        const monthText = month => (month ? `${month.slice(5, 7)}.${month.slice(0, 4)}` : "");
+        const total = (key, filter = () => true) => data.rows.filter(filter).reduce((sum, row) => sum + (Number(row[key]) || 0), 0);
+        const posName = posId ? pos?.list?.().find(item => item.id === posId)?.name || "" : "";
+        return {
+          subtitle: `${posName || "Tüm POS'lar"} · ${rangeText(range)}`,
+          headers: ["Ay", "POS", "Sağlayıcı", "Kesinti", "Komisyon İadesi", "Net", "Durum", "Fatura No", "Fatura Tutarı", "Fark"],
+          types: ["", "", "", "money", "money", "money", "", "", "money", "money"],
+          rows: data.rows.map(row => [monthText(row.month), row.posName, row.providerName, cents(row.outMinor), cents(row.inMinor), cents(row.netMinor), row.stateLabel, row.invoiceNo, row.invoiceNo ? cents(row.invoiceMinor) : "", row.invoiceNo ? cents(row.differenceMinor) : ""]),
+          summary: [
+            ["Faturası Beklenen", cents(total("netMinor", row => row.stateLabel === "Faturası Beklenen" || row.stateLabel === "Taslak Hazır"))],
+            ["İade Alacağı", cents(-total("netMinor", row => row.stateLabel === "İade Alacağı"))],
+            ["Faturalandı", cents(total("netMinor", row => /^Faturalandı/.test(row.stateLabel)))],
+            ["Fark", cents(total("differenceMinor"))],
+          ],
         };
       },
     },
@@ -1343,13 +1469,18 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       params: ["direction", "status", "range"],
       build(query) {
         const range = query.from || query.to || query.preset ? dueRangeOf(query, "") : { from: "", to: "" };
-        const data = cheques().list(admin, { direction: ["in", "out"].includes(query.direction) ? query.direction : "", status: STATUSES[query.status] || ["open", "closed", "overdue", "soon"].includes(query.status) ? query.status : "", from: range.from, to: range.to, sort: "due" });
+        // Doğrulama T7 (ders 11): "Bankada Tahsilde" (deposited) süzgeci kabul listesinde yoktu, sessizce düşüyordu; "Portföyde" süzgecinin satırları
+        // tahsildekini içermezken özetteki "Portföyde (alınan)" içeriyordu. Özet artık ikisini ayrı yazar (plan §3.14 "Portföyde ile Bankada
+        // Tahsilde ayrı").
+        const status = Object.hasOwn(STATUSES, String(query.status ?? "")) || ["open", "closed", "overdue", "soon", "deposited"].includes(query.status) ? query.status : "";
+        const data = cheques().list(admin, { direction: ["in", "out"].includes(query.direction) ? query.direction : "", status, from: range.from, to: range.to, sort: "due" });
+        const deposited = data.summary.deposited || { count: 0, amount: 0 };
         return {
-          subtitle: [query.direction ? DIRECTIONS[query.direction] : "Alınan ve verilen", STATUSES[query.status]?.label || "", range.from || range.to ? `vade ${rangeText(range)}` : ""].filter(Boolean).join(" · "),
+          subtitle: [query.direction ? DIRECTIONS[query.direction] : "Alınan ve verilen", STATUSES[status]?.label || (status === "deposited" ? "Bankada Tahsilde" : ""), range.from || range.to ? `vade ${rangeText(range)}` : ""].filter(Boolean).join(" · "),
           headers: ["Vade", "Yön", "Tür", "No", "Banka", "Kimden / Kime", "Durum", "Tutar"],
           types: ["", "", "", "", "", "", "", "money"],
           rows: data.cheques.map(row => [dayText(row.dueDate), row.directionLabel, row.instrumentLabel, row.serialNo, row.bank, row.status === "endorsed" ? `${row.party} → ${row.endorseAccountName}` : row.party, row.statusLabel, money(row.amount)]),
-          summary: [["Listelenen", `${data.listed.count} · ${tl(data.listed.amount)}`], ["Portföyde (alınan)", tl(data.summary.in.open.amount)], ["Ödenecek (verilen)", tl(data.summary.out.open.amount)], ["Vadesi Geçmiş Alınan", tl(data.summary.in.overdue.amount)]],
+          summary: [["Listelenen", `${data.listed.count} · ${tl(data.listed.amount)}`], ["Portföyde (alınan)", tl(data.summary.in.open.amount)], ["Bankada Tahsilde", tl(deposited.amount)], ["Ödenecek (verilen)", tl(data.summary.out.open.amount)], ["Vadesi Geçmiş Alınan", tl(data.summary.in.overdue.amount)]],
           footerUniform: "Yön", // alınan ve verilen evrak toplanmaz; Yön süzülünce toplam çıkar
         };
       },
@@ -1364,16 +1495,33 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       build(query) {
         const range = rangeOf(query, "thisYear");
         const list = store.all(
-          `SELECT ev.date, ev.kind, ev.amount, ev.note, c.direction, c.instrument, c.serial_no AS serialNo, c.drawer, COALESCE(a.name, '') AS accountName, COALESCE(ea.name, '') AS eventAccount, COALESCE(u.display_name, '') AS actorName
+          `SELECT ev.date, ev.kind, ev.amount, ev.note, c.direction, c.instrument, c.serial_no AS serialNo, c.drawer, COALESCE(a.name, '') AS accountName, COALESCE(ea.name, '') AS eventAccount, COALESCE(u.display_name, '') AS actorName, ev.created_at AS createdAt
            FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL LEFT JOIN accounts a ON a.id = c.account_id LEFT JOIN accounts ea ON ea.id = ev.account_id LEFT JOIN users u ON u.id = ev.created_by
            WHERE (? = '' OR ev.date >= ?) AND (? = '' OR ev.date <= ?) ORDER BY ev.date, ev.created_at`,
           range.from, range.from, range.to, range.to,
         );
+        // Doğrulama T9: Bankaya Tahsile Ver ve Bankadan Geri Al (plan §3.14; cheque_events'e yazılmaz, iz fin_events başlıklarında) da evrakın
+        // hareketidir. "İlgili Cari" kolonunda evrakın verildiği banka hesabı. Karşılıksız ve tahsil zaten cheque_events'ten gelir; açılış onarımının
+        // eski sürüm kapanışları ("eski-surum") "Bankadan Geri Alındı" yazılır. Tutar (doğrulama tur 2 T12): yevmiyedeki gibi verilme başlığının kuruşu —
+        // geri alınmış evrakın tutarı sonradan düzeltilse de o günkü işlem o günkü tutarla görünür (Yevmiye ve İşlem Kartı ile aynı).
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'")) {
+          for (const row of store.all(
+            `SELECT e.date, e.type, e.created_at AS createdAt, c.direction, c.instrument, c.serial_no AS serialNo, c.drawer,
+                    COALESCE(NULLIF((SELECT d.try_minor FROM fin_events d WHERE d.id = k.event_id), 0), CAST(ROUND(c.amount * 100) AS INTEGER)) / 100.0 AS amount, COALESCE(a.name, '') AS accountName,
+                    COALESCE(b.bank_name || ' · ' || b.name, '') AS bankLabel, COALESCE(u.display_name, '') AS actorName, e.description AS note
+             FROM fin_events e JOIN cheque_collections k ON k.id = e.src_id JOIN cheques c ON c.id = k.cheque_id AND c.deleted_at IS NULL
+               LEFT JOIN accounts a ON a.id = c.account_id LEFT JOIN bank_accounts b ON b.id = k.bank_account_id LEFT JOIN users u ON u.id = e.created_by
+             WHERE e.type IN ('cheque_deposit', 'cheque_withdraw') AND e.status = 'active' AND e.src_table = 'cheque_collections' AND e.origin_key NOT LIKE 'cheque-return:%'
+               AND (? = '' OR e.date >= ?) AND (? = '' OR e.date <= ?)`,
+            range.from, range.from, range.to, range.to,
+          )) list.push({ date: row.date, kind: row.type === "cheque_deposit" ? "bank-deposit" : "bank-withdraw", amount: row.amount, note: row.note, direction: row.direction, instrument: row.instrument, serialNo: row.serialNo, drawer: row.drawer, accountName: row.accountName, eventAccount: row.bankLabel, actorName: row.actorName, createdAt: row.createdAt });
+          list.sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
+        }
         return {
           subtitle: rangeText(range),
           headers: ["Tarih", "Evrak", "No", "Kimden / Kime", "İşlem", "İlgili Cari", "Tutar", "Açıklama", "Giren"],
           types: ["", "", "", "", "", "", "money", "", ""],
-          rows: list.map(row => [dayText(row.date), `${DIRECTIONS[row.direction]} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}`, row.serialNo, row.accountName || row.drawer, EVENT_LABELS[row.kind] || row.kind, row.eventAccount, money(row.amount), row.note, row.actorName]),
+          rows: list.map(row => [dayText(row.date), `${DIRECTIONS[row.direction]} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}`, row.serialNo, row.accountName || row.drawer, EVENT_LABELS[row.kind] || BANK_EVENT_LABELS[row.kind] || row.kind, row.eventAccount, money(row.amount), row.note, row.actorName]),
           summary: [["İşlem", String(list.length)]],
           footerUniform: "İşlem",
         };
@@ -1742,7 +1890,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     const query = {};
     // v2.0.23 (Bulgu 4): payMethod (Banka ve POS Hareketleri → Yol) listede yoktu; süzgeç 2.0.17'den beri yok sayılıyordu.
     // v2.1.0 Aşama 14: Banka raporlarının süzgeçleri (bankAccount, bankMove, bankGroup, feeAccount) — Bulgu 4 dersi: listede olmayan parametre düşer.
-    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount"]) {
+    // 2.2.0 (İz 3.5): POS raporlarının süzgeçleri (posTerminal, posKind).
+    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount", "posTerminal", "posKind"]) {
       const value = text(params.get(key));
       if (value) query[key] = value.slice(0, 200);
     }
@@ -1772,10 +1921,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     let choices = null;
     if (list.some(report => report.group === "Banka")) {
       const rows = bankRows();
-      const accountsOf = filter => rows.filter(filter).map(row => [row.id, `${bankLabel(row)} · ${row.glSub}${isRealKind(row.kind) ? "" : row.kind === "card" ? " (Kurumsal Kredi Kartı)" : " (Kredi Hesabı)"}`]);
+      const accountsOf = filter => rows.filter(filter).map(row => [row.id, `${bankLabel(row)} · ${row.glSub}${isRealKind(row.kind) ? "" : row.kind === "card" ? " (Kredi Kartı)" : " (Kredi Hesabı)"}`]);
       choices = {
         bankAccount: [["", `${K10_LABELS.realBank} (Tüm Hesaplar)`], ...accountsOf(row => isRealKind(row.kind)), ...accountsOf(row => !isRealKind(row.kind)), [UNASSIGNED_CHOICE, K10_LABELS.unassigned]],
         feeAccount: [["", "Tüm Banka Hesapları"], ...accountsOf(row => isRealKind(row.kind))],
+        posTerminal: [["", "Tüm POS'lar"], ...(bankService()?.pos?.list?.() || []).map(item => [item.id, `${item.name} (${item.code})${item.status === "passive" ? " (Pasif)" : ""}`])],
       };
     }
     ok(res, {
@@ -1805,7 +1955,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       // PDF kırpılırsa (20.000 satır) TOPLAM satırı yine TÜM satırların toplamıdır; alt başlık bunu söyler.
       footer: data.footer,
       summary: data.summary,
-      officeName: office(),
+      officeName: companyLabel(),
       userName: user.display_name || user.username || "",
       brand: office() || "DestekOfis",
     });
@@ -1818,9 +1968,14 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     const unique = data.headers.map((header, index) => (data.headers.indexOf(header) === index && header ? header : `${header || "Kolon"} ${index + 1}`));
     const rows = data.rows.map(row => Object.fromEntries(unique.map((header, index) => [header, row[index] ?? ""])));
     const footer = data.footer ? Object.fromEntries(unique.map((header, index) => [header, data.footer[index] ?? ""])) : null;
-    const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer }];
-    if (data.summary.length) sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: data.subtitle }, { Kalem: "Hazırlanma", Değer: stamp(clock().toISOString()) }, ...data.summary.map(([label, value]) => ({ Kalem: label, Değer: value }))] });
-    const buffer = buildXlsx(sheets, { now: clock(), title: data.title });
+    // Başlık bloğu (2.2.0 İz 1.1): PDF'in başlığındaki bilgiler — şirket ("001 · Unvan"), rapor adı, kapsam, oluşturma ve hazırlayan.
+    const label = companyLabel();
+    const made = stamp(clock().toISOString());
+    const by = user.display_name || user.username || "";
+    const preamble = [{ text: label, bold: true }, { text: data.title, bold: true }, { text: data.subtitle }, { text: `Oluşturma: ${made}${by ? ` · Hazırlayan: ${by}` : ""}` }];
+    const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer, preamble }];
+    if (data.summary.length) sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [...(label ? [{ Kalem: "Şirket", Değer: label }] : []), { Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: data.subtitle }, { Kalem: "Hazırlanma", Değer: made }, ...data.summary.map(([label, value]) => ({ Kalem: label, Değer: value }))] });
+    const buffer = buildXlsx(sheets, { now: clock(), title: data.title, company: label });
     audit(user, "report.exported", data.id, { format: "xlsx", rows: data.total, ...data.query });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${fileBase(data)}.xlsx` });
   });

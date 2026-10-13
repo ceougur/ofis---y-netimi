@@ -1,0 +1,28 @@
+TAP version 13
+# [d1] bekleyenli hesabı sil: {"status":409,"code":"bank-cheques-pending","error":"Bu hesapta bankaya tahsile verilmiş 1 çek/senet var; hesap silinemez. Önce evrakı tahsil edin ya da Çek / Senet'ten Bankadan Geri Al'ın."}
+# [d1] geri alınmış kaydı olan hesabı sil: {"status":200}
+# [d1] kart geçmişi: [{"id":"chqcol-0mv523kk50000-43d18577-8d20-46e6","status":"withdrawn","statusLabel":"Bankadan Geri Alındı","bankAccountId":"bacc-86e70974-f80d-4f61-b29b-125f16026460","bankLabel":"Akbank · Tahsil Hesabı","givenDate":"2026-10-08","closedDate":"2026-10-08","eventNo":"BNK-2026-000004","closeEventNo":"BNK-2026-000005"}]
+# [d1] mutabakat hesap silme: {"ok":true,"bad":[]}
+# [d1] silinmiş hesaba tahsile ver: {"status":404,"code":"bank-account-missing","error":"Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir."}
+# Subtest: D9 — dönem kilidi ve hesap silme (geri alınmış kaydı olan hesap)
+    # Subtest: hareketsiz hesap: tahsile ver → geri al → hesabı sil → mutabakat, İşlem Kartı, kart geçmişi
+    ok 1 - hareketsiz hesap: tahsile ver → geri al → hesabı sil → mutabakat, İşlem Kartı, kart geçmişi
+      ---
+      duration_ms: 164.798018
+      type: 'test'
+      ...
+    1..1
+ok 1 - D9 — dönem kilidi ve hesap silme (geri alınmış kaydı olan hesap)
+  ---
+  duration_ms: 621.156537
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1045.917621

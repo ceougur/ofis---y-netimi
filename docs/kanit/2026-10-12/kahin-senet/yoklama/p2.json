@@ -1,0 +1,13 @@
+[{"m":"POST","u":"/api/workspace/accounts","b":{"name":"ABC Ltd.","type":"customer"},"as":"M","max":60},
+ {"m":"POST","u":"/api/workspace/accounts","b":{"name":"XYZ","type":"supplier"},"as":"T","max":60},
+ {"m":"POST","u":"/api/workspace/bank/accounts","b":{"bankName":"Ziraat","name":"Ana","kind":"demand","currency":"TRY","code":"ZIR","opening":{"date":"2026-10-01","amount":"1000","confirmed":true}},"as":"Z","max":300},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","instrument":"note","amount":"100","accountId":"$M","dueDate":"2026-10-12","issueDate":"2026-10-02"},"max":250},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","instrument":"senet","amount":"100","accountId":"$M","dueDate":"2026-10-12","issueDate":"2026-10-02"},"max":250},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","instrument":"promissory","amount":"100","accountId":"$M","dueDate":"2026-10-12","issueDate":"2026-10-02"},"max":250},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","instrument":"bill","amount":"100","accountId":"$M","dueDate":"2026-10-12","issueDate":"2026-10-02"},"max":250},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","instrument":"cheque","amount":"200","accountId":"$M","dueDate":"2026-10-05","issueDate":"2026-10-02"},"as":"C1","max":200},
+ {"m":"POST","u":"/api/workspace/cheques/$C1/actions","b":{}},
+ {"m":"POST","u":"/api/workspace/cheques/$C1/actions","b":{"action":"bank-deposit"}},
+ {"m":"POST","u":"/api/workspace/cheques/$C1/actions","b":{"action":"bank-deposit","bankAccountId":"$Z"}},
+ {"m":"POST","u":"/api/workspace/cheques/$C1/actions","b":{"action":"bank-deposit","bankAccountId":"$Z","date":"2026-10-05"},"max":1500}
+]

@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-216",
+  "komut": "npm run -s test:senaryo-216",
+  "commit": "4efb516304c1f70dc4ddd1e223b310418e5b6d49",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-12T16:44:08.548Z",
+  "sure_sn": 89.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 54,
+    "gecen": 54,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-12/son-aday-220/2026-10-12/e2e-senaryo-216.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "bfd7b65a0359cdc4ed6408055885ff0143a0b9042555fc5facdda0706919d23d",
+  "ham_cikti_bayt": 3942
+}

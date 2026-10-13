@@ -295,7 +295,7 @@ try {
     ok(Boolean(await admin.$(`${bankWin} [data-bank-empty]`)), "boş durum metni görünür");
     ok(!(await admin.$(`${bankWin} [data-bank-unassigned]`)), "Hesabı Atanmamış Eski Hareketler satırı yok (eski hareket yok)");
     const tabs = await admin.$$eval(`${bankWin} .hof-bank-tabs [data-tab]`, list => list.map(node => node.textContent.trim()));
-    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Aşama 4'te; POS ve Ekstre bu sürümde yok)`);
+    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "POS", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Aşama 4'te; POS 2.2.0'da geldi; Ekstre bu sürümde yok)`);
     await auditLabels(admin, "Genel Bakış (boş)");
     await shot(admin, "bos-sirket-genel-bakis");
     ok((await must("özet", api.get("/api/workspace/bank/summary"))).setup.dismissed === true, "sihirbazın kapatıldığı sunucuda kayıtlı");
@@ -479,14 +479,14 @@ try {
     ok(has(await textOf(admin, `${bankWin} [data-bank]`), "ZIR-TL"), "silindikten sonra Hesaplar listesine dönüldü");
   });
 
-  await step("5. Ayarlar: Temel ve Gelişmiş, POS/Ekstre görünmez, kaydet, geçersiz değer, Tümünü Varsayılanlara Dön", async () => {
+  await step("5. Ayarlar: Temel ve Gelişmiş, Ekstre görünmez (2.2.0: POS görünür), kaydet, geçersiz değer, Tümünü Varsayılanlara Dön", async () => {
     await tab(admin, "settings");
     await admin.waitForSelector(`${bankWin} [data-settings]`);
     const legends = await admin.$$eval(`${bankWin} .hof-bank-set:not([hidden]) legend`, list => list.filter(node => node.offsetParent).map(node => node.textContent.trim()));
-    // GG2 (F10/F12): bu sürümde olmayan özelliklerin ayarları (POS, Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi) görünmez.
-    ok(["Hesap", "Eksi Bakiye", "Mükerrer", "Masraf", "Tatil"].every(name => legends.includes(name)) && !["POS", "Ekstre", "Döviz"].some(name => legends.includes(name)), `Temel bölümler: ${legends.join(", ")}`);
+    // GG2 (F10/F12): bu sürümde olmayan özelliklerin ayarları (Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi) görünmez. 2.2.0 (İz 3): POS geldi.
+    ok(["Hesap", "Eksi Bakiye", "Mükerrer", "POS", "Masraf", "Tatil"].every(name => legends.includes(name)) && !["Ekstre", "Döviz"].some(name => legends.includes(name)), `Temel bölümler: ${legends.join(", ")}`);
     ok(await admin.$eval(`${bankWin} [data-advanced]`, node => node.hidden), "Gelişmiş ayarlar kapalı gelir");
-    ok(!(await admin.$(`${bankWin} [data-set="account.defaultPosId"]`)) && !(await admin.$(`${bankWin} [data-set="holidayAdvanced.shift"]`)), "Varsayılan POS ve Tatile Düşen Valör görünmez");
+    ok(Boolean(await admin.$(`${bankWin} [data-set="account.defaultPosId"]`)) && !(await admin.$(`${bankWin} [data-set="holidayAdvanced.shift"]`)), "Varsayılan POS görünür (2.2.0); Tatile Düşen Valör görünmez");
     ok((await admin.$eval(`${bankWin} [data-set="negative.policy"]`, node => node.value)) === "warn" && (await admin.$eval(`${bankWin} [data-set="similar.enabled"]`, node => node.value)) === "true", "standartlar seçili: Uyar, Benzer İşlem Açık");
     await auditLabels(admin, "Ayarlar (Temel)");
     await shot(admin, "ayarlar-temel");
@@ -849,7 +849,7 @@ try {
     GARANTI = list.find(account => account.bankName === "Garanti BBVA");
     await openBank(admin);
     const tabs = await admin.$$eval(`${bankWin} .hof-bank-tabs [data-tab]`, items => items.map(node => node.textContent.trim()));
-    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Hesaplar'dan sonra)`);
+    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "POS", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Hesaplar'dan sonra; POS Ayarlar'dan önce)`);
     await tab(admin, "movements");
     await admin.waitForSelector(`${bankWin} [data-moves]`, { timeout: 10000 });
     await selectMovesAccount(admin, ZIRAAT.id);
@@ -1903,33 +1903,33 @@ try {
     await admin.selectOption(`${inv} [data-l="0"][data-f="vatRate"]`, "20").catch(() => null);
     await admin.waitForTimeout(1200);
     const amount = `${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`;
-    const method = `${inv} [data-pay="cash"][data-i="0"][data-f="method"]`;
+    // v2.2.0 İz 2.8: ödeme satırı yola göre eklenir ("+ Nakit", "+ Havale / EFT", "+ POS"); satırın başlığı yolun adı, yol kutusu yok.
+    const way = `${inv} .hof-inv-pay-row:has([data-pay="cash"][data-i="0"]) .hof-inv-pay-way`;
     const bankSel = `${inv} [data-bank-cell="0"] select`;
-    await admin.click(`${inv} [data-act="pay-add-cash"]`);
+    await admin.click(`${inv} [data-act="pay-add-cash"][data-method="cash"]`);
     await admin.waitForSelector(amount);
-    ok(!(await admin.$(`${inv} [data-bank-cell="0"]:not([hidden])`)), "Nakit yolda satırda Banka Hesabı görünmez");
+    ok(!(await admin.$(`${inv} [data-bank-cell="0"]:not([hidden])`)) && (await admin.$eval(way, node => node.textContent.trim())) === "Nakit", "+ Nakit satırı (başlık Nakit): Banka Hesabı görünmez");
+    await admin.click(`${inv} [data-act="pay-remove"][data-pay="cash"][data-i="0"]`);
+    await admin.click(`${inv} [data-act="pay-add-cash"][data-method="bank"]`);
+    await admin.waitForSelector(`${inv} [data-bank-cell="0"]:not([hidden]) select`, { timeout: 8000 });
+    ok((await admin.$eval(way, node => node.textContent.trim())) === "Havale / EFT" && !(await admin.$(`${inv} [data-pay="cash"][data-f="method"]`)), "+ Havale / EFT satırı: başlık Havale / EFT, yol kutusu yok");
     await admin.focus(amount);
     await admin.keyboard.type("5000", { delay: 40 });
-    await admin.keyboard.press("Tab");
-    ok(await admin.evaluate(() => document.activeElement?.dataset?.f === "method"), "Tab: tutardan Tahsilat Yolu'na");
-    await admin.selectOption(method, "bank");
-    await admin.waitForSelector(`${inv} [data-bank-cell="0"]:not([hidden]) select`, { timeout: 8000 });
     // Yeniden çizim izi: satırın alanları işaretlenir; hesap seçiminden sonra aynı düğümler yerinde olmalı (2.0.23 Bulgu 1).
-    await admin.evaluate(selectors => selectors.forEach(selector => (document.querySelector(selector).dataset.e2eMark = "1")), [amount, method, bankSel]);
+    await admin.evaluate(selectors => selectors.forEach(selector => (document.querySelector(selector).dataset.e2eMark = "1")), [amount, way, bankSel]);
     const options = await admin.$$eval(`${bankSel} option`, nodes => nodes.map(node => node.textContent.trim()));
     ok(options.length === 4 && options[0] === "Hesap Seçin" && options.some(text => text.startsWith("Ziraat Bankası · Ana TL Hesabı")) && options.some(text => text.startsWith("Garanti BBVA · Ana TL Hesabı")) && options[3] === "Hesapsız (Açılıştan Önce)", `satırda Banka Hesabı seçici: ${options.join(" | ")}`);
-    ok((await admin.$eval(bankSel, node => node.value)) === kabul.ziraat.id, "havaleye geçince varsayılan hesap (Ziraat) önerilir");
-    await admin.focus(method);
+    ok((await admin.$eval(bankSel, node => node.value)) === kabul.ziraat.id, "+ Havale / EFT satırında varsayılan hesap (Ziraat) önerilir");
     await admin.keyboard.press("Tab");
-    ok(await admin.evaluate(() => document.activeElement?.dataset?.f === "bankAccountId"), "Tab: Tahsilat Yolu'ndan Banka Hesabı'na");
+    ok(await admin.evaluate(() => document.activeElement?.dataset?.f === "bankAccountId"), "Tab: tutardan Banka Hesabı'na");
     await admin.keyboard.type("Garanti", { delay: 60 });
     let typed = (await admin.$eval(bankSel, node => node.value)) === kabul.garanti.id;
     if (!typed) await admin.selectOption(bankSel, kabul.garanti.id);
     await admin.keyboard.press("Tab");
     await admin.waitForTimeout(900);
-    const kept = await admin.evaluate(([a, m, b]) => [a, m, b].map(selector => document.querySelector(selector)?.dataset.e2eMark === "1"), [amount, method, bankSel]);
-    ok(kept.every(Boolean), `hesap seçimi ve Tab sonrası satır yeniden çizilmedi (tutar, yol, hesap düğümleri yerinde: ${kept.join("/")}); klavyeyle seçim ${typed ? "yazarak" : "seçimle"}`);
-    ok((await admin.$eval(amount, node => node.value)) === "5000" && (await admin.$eval(method, node => node.value)) === "bank" && (await admin.$eval(bankSel, node => node.value)) === kabul.garanti.id, "tutar 5000, yol Havale/EFT, hesap Garanti kayıpsız");
+    const kept = await admin.evaluate(([a, m, b]) => [a, m, b].map(selector => document.querySelector(selector)?.dataset.e2eMark === "1"), [amount, way, bankSel]);
+    ok(kept.every(Boolean), `hesap seçimi ve Tab sonrası satır yeniden çizilmedi (tutar, başlık, hesap düğümleri yerinde: ${kept.join("/")}); klavyeyle seçim ${typed ? "yazarak" : "seçimle"}`);
+    ok((await admin.$eval(amount, node => node.value)) === "5000" && (await admin.$eval(way, node => node.textContent.trim())) === "Havale / EFT" && (await admin.$eval(bankSel, node => node.value)) === kabul.garanti.id, "tutar 5000, yol Havale/EFT, hesap Garanti kayıpsız");
     ok(await admin.evaluate(() => document.activeElement && document.activeElement !== document.body), "odak sayfaya düşmedi");
     await auditLabels(admin, "fatura formu peşin satırı (havale)");
     await shot(admin, "asama7-fatura-pesin-garanti");
@@ -2422,7 +2422,7 @@ try {
     const groups = await admin.$$eval(`${modal} .hof-rc-group > p`, nodes => nodes.map(node => node.textContent.trim()));
     ok(groups.some(group => group.endsWith("Banka")), `Banka grubu: ${groups.join(", ")}`);
     const items = await admin.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı", `Banka raporları: ${items.join(", ")}`);
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar", `Banka raporları (2.2.0: Tahsildeki Çek ve Senetler, POS raporları): ${items.join(", ")}`);
     await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
     let data = await waitPreview(admin, view => view.rows.length >= 2 && view.footer);
     const byBank = bank => data.rows.find(cells => cells[1] === bank);
@@ -2438,7 +2438,10 @@ try {
     const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
     ok(pdf.status === 200 && text.includes("Banka Bakiye Raporu") && text.includes("Rapor Şirketi") && text.includes("87.984,25 TL") && text.includes("160.484,25 TL") && text.includes("Transfer Çıkış"), "PDF: başlık, şirket, hesap ve TOPLAM tutarı");
     const xlsx = await fileText(admin, xlsxHref);
-    const sheet = Object.values(xlsxSheets(xlsx.buffer))[0];
+    // 2.2.0 İz 1.1: tablonun üstünde başlık bloğu (şirket "kod · unvan", rapor adı, kapsam, oluşturma); blok atlanıp tablo karşılaştırılır.
+    const book = Object.values(xlsxSheets(xlsx.buffer))[0];
+    ok(/^\d{3} · Rapor Şirketi$/.test(String(book[0]?.[0])) && book[1]?.[0] === "Banka Bakiye Raporu", `Excel başlığında şirket kodu ve unvanı (${book[0]?.[0]})`);
+    const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1)));
     ok(xlsx.status === 200 && sheet[0].join("|") === data.heads.join("|") && sheet.at(-1)[0] === "TOPLAM" && Math.round(sheet.at(-1)[sheet[0].indexOf("Dönem Sonu")] * 100) === 16_048_425, `Excel: kolonlar ekranla aynı, TOPLAM 160.484,25 (${sheet.at(-1).join(" | ")})`);
     await admin.selectOption(`${modal} [data-param="bankGroup"]`, "all");
     data = await waitPreview(admin, view => view.rows.length === 4);
@@ -2476,11 +2479,14 @@ try {
     await shot(admin, "rapor-banka-masraf");
   });
 
-  await step("45. Alt Hesap Mizanı: 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak)", async () => {
+  // 2.2.0 (Bankaya Tahsile Ver, doğrulama T4): 101 ve alt hesapları yalnız şirkette alınan evrak varsa görünür. Rapor Şirketi'nde çek/senet
+  // yok (adım 34'teki çek başka şirkette) → 101 satırı YOK; beklenen 2.1.0'daki gibi 4 satır (12.10.2026 ana oturum: önceki "5 satır" beklentisi
+  // ekrandan koşulmadan yazılmıştı, CI 12b82c2 kırmızı).
+  await step("45. Alt Hesap Mizanı: 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak); alınan evrak yok → 101 satırı yok", async () => {
     await admin.click(`${modal} [data-rc-list] [data-report="alt-hesap-mizani"]`);
     const data = await waitPreview(admin, view => view.rows.length === 4);
     const bal = sub => { const cells = data.rows.find(row => row[0] === sub); return cells ? `${cells[data.heads.indexOf("Bakiye")]} ${cells[data.heads.indexOf("Yön")]}` : "yok"; };
-    ok(bal("102.00") === "5.000,00 TL Borç" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
+    ok(bal("101.01") === "yok" && bal("102.00") === "5.000,00 TL Borç" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
     ok(data.summary["Alt Hesap Mutabakatı"] === "Tutarlı", "ana hesaplar alt hesaplarının toplamına eşit");
     await shot(admin, "rapor-alt-hesap-mizani");
   });

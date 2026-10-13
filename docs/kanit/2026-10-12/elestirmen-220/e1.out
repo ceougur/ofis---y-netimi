@@ -1,0 +1,44 @@
+(node:15681) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+UYDU  [bsmv_incl-0] bsmv_incl iadesiz 12.10 valör :: beklenen={"bank":109750,"k653":250,"k108":0,"prov":0,"integ":true} gerçek={"bank":109750,"k653":250,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_incl-none-once] bsmv_incl 3.000 iade, none, valörden once (iade durumu 200) :: beklenen={"bank":106750,"k653":250,"k108":0,"prov":0,"integ":true} gerçek={"bank":106750,"k653":250,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_incl-none-sonra] bsmv_incl 3.000 iade, none, valörden sonra (iade durumu 200) :: beklenen={"bank":106750,"k653":250,"k108":0,"prov":0,"integ":true} gerçek={"bank":106750,"k653":250,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_incl-proportional-once] bsmv_incl 3.000 iade, proportional, valörden once (iade durumu 200) :: beklenen={"bank":106825,"k653":175,"k108":0,"prov":0,"integ":true} gerçek={"bank":106825,"k653":175,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_incl-proportional-sonra] bsmv_incl 3.000 iade, proportional, valörden sonra (iade durumu 200) :: beklenen={"bank":106825,"k653":175,"k108":0,"prov":0,"integ":true} gerçek={"bank":106825,"k653":175,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_incl-tam-takvim] bsmv_incl tam iade: takvimde Komisyon Tahsili satırı (12.10, −kesinti) :: beklenen=[["2026-10-12","fee",-25000]] gerçek=[["2026-10-12","fee",-25000]]
+UYDU  [bsmv_incl-tam] bsmv_incl tam iade valörden önce (iade 200) :: beklenen={"bank":99750,"k653":250,"k108":0,"prov":0,"integ":true} gerçek={"bank":99750,"k653":250,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_excl-0] bsmv_excl iadesiz 12.10 valör :: beklenen={"bank":109737.5,"k653":262.5,"k108":0,"prov":0,"integ":true} gerçek={"bank":109737.5,"k653":262.5,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_excl-none-once] bsmv_excl 3.000 iade, none, valörden once (iade durumu 200) :: beklenen={"bank":106737.5,"k653":262.5,"k108":0,"prov":0,"integ":true} gerçek={"bank":106737.5,"k653":262.5,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_excl-none-sonra] bsmv_excl 3.000 iade, none, valörden sonra (iade durumu 200) :: beklenen={"bank":106737.5,"k653":262.5,"k108":0,"prov":0,"integ":true} gerçek={"bank":106737.5,"k653":262.5,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_excl-proportional-once] bsmv_excl 3.000 iade, proportional, valörden once (iade durumu 200) :: beklenen={"bank":106816.25,"k653":183.75,"k108":0,"prov":0,"integ":true} gerçek={"bank":106816.25,"k653":183.75,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_excl-proportional-sonra] bsmv_excl 3.000 iade, proportional, valörden sonra (iade durumu 200) :: beklenen={"bank":106816.25,"k653":183.75,"k108":0,"prov":0,"integ":true} gerçek={"bank":106816.25,"k653":183.75,"k108":0,"prov":0,"integ":true}
+UYDU  [bsmv_excl-tam-takvim] bsmv_excl tam iade: takvimde Komisyon Tahsili satırı (12.10, −kesinti) :: beklenen=[["2026-10-12","fee",-26250]] gerçek=[["2026-10-12","fee",-26250]]
+UYDU  [bsmv_excl-tam] bsmv_excl tam iade valörden önce (iade 200) :: beklenen={"bank":99737.5,"k653":262.5,"k108":0,"prov":0,"integ":true} gerçek={"bank":99737.5,"k653":262.5,"k108":0,"prov":0,"integ":true}
+UYDU  [vat_incl-0] vat_incl iadesiz 12.10 valör :: beklenen={"bank":109750,"k653":0,"k108":0,"prov":250,"integ":true} gerçek={"bank":109750,"k653":0,"k108":0,"prov":250,"integ":true}
+UYDU  [vat_incl-T1] vat_incl komisyon taslağı (toplam, matrah, KDV) :: beklenen=[250,208.33,41.67] gerçek=[250,208.33,41.67]
+UYDU  [vat_incl-T2] vat_incl taslak kaydı: 191, 653, sağlayıcı, fatura durumu :: beklenen=[200,41.67,208.33,0,"paid"] gerçek=[200,41.67,208.33,0,"paid"]
+UYDU  [vat_incl-none-once] vat_incl 3.000 iade, none, valörden once (iade durumu 200) :: beklenen={"bank":106750,"k653":0,"k108":0,"prov":250,"integ":true} gerçek={"bank":106750,"k653":0,"k108":0,"prov":250,"integ":true}
+UYDU  [vat_incl-none-sonra] vat_incl 3.000 iade, none, valörden sonra (iade durumu 200) :: beklenen={"bank":106750,"k653":0,"k108":0,"prov":250,"integ":true} gerçek={"bank":106750,"k653":0,"k108":0,"prov":250,"integ":true}
+UYDU  [vat_incl-proportional-once] vat_incl 3.000 iade, proportional, valörden once (iade durumu 200) :: beklenen={"bank":106825,"k653":0,"k108":0,"prov":175,"integ":true} gerçek={"bank":106825,"k653":0,"k108":0,"prov":175,"integ":true}
+UYDU  [vat_incl-proportional-sonra] vat_incl 3.000 iade, proportional, valörden sonra (iade durumu 200) :: beklenen={"bank":106825,"k653":0,"k108":0,"prov":175,"integ":true} gerçek={"bank":106825,"k653":0,"k108":0,"prov":175,"integ":true}
+UYDU  [vat_incl-tam-takvim] vat_incl tam iade: takvimde Komisyon Tahsili satırı (12.10, −kesinti) :: beklenen=[["2026-10-12","fee",-25000]] gerçek=[["2026-10-12","fee",-25000]]
+UYDU  [vat_incl-tam] vat_incl tam iade valörden önce (iade 200) :: beklenen={"bank":99750,"k653":0,"k108":0,"prov":250,"integ":true} gerçek={"bank":99750,"k653":0,"k108":0,"prov":250,"integ":true}
+UYDU  [vat_excl-0] vat_excl iadesiz 12.10 valör :: beklenen={"bank":109700,"k653":0,"k108":0,"prov":300,"integ":true} gerçek={"bank":109700,"k653":0,"k108":0,"prov":300,"integ":true}
+UYDU  [vat_excl-T1] vat_excl komisyon taslağı (toplam, matrah, KDV) :: beklenen=[300,250,50] gerçek=[300,250,50]
+UYDU  [vat_excl-T2] vat_excl taslak kaydı: 191, 653, sağlayıcı, fatura durumu :: beklenen=[200,50,250,0,"paid"] gerçek=[200,50,250,0,"paid"]
+UYDU  [vat_excl-none-once] vat_excl 3.000 iade, none, valörden once (iade durumu 200) :: beklenen={"bank":106700,"k653":0,"k108":0,"prov":300,"integ":true} gerçek={"bank":106700,"k653":0,"k108":0,"prov":300,"integ":true}
+UYDU  [vat_excl-none-sonra] vat_excl 3.000 iade, none, valörden sonra (iade durumu 200) :: beklenen={"bank":106700,"k653":0,"k108":0,"prov":300,"integ":true} gerçek={"bank":106700,"k653":0,"k108":0,"prov":300,"integ":true}
+UYDU  [vat_excl-proportional-once] vat_excl 3.000 iade, proportional, valörden once (iade durumu 200) :: beklenen={"bank":106790,"k653":0,"k108":0,"prov":210,"integ":true} gerçek={"bank":106790,"k653":0,"k108":0,"prov":210,"integ":true}
+UYDU  [vat_excl-proportional-sonra] vat_excl 3.000 iade, proportional, valörden sonra (iade durumu 200) :: beklenen={"bank":106790,"k653":0,"k108":0,"prov":210,"integ":true} gerçek={"bank":106790,"k653":0,"k108":0,"prov":210,"integ":true}
+UYDU  [vat_excl-tam-takvim] vat_excl tam iade: takvimde Komisyon Tahsili satırı (12.10, −kesinti) :: beklenen=[["2026-10-12","fee",-30000]] gerçek=[["2026-10-12","fee",-30000]]
+UYDU  [vat_excl-tam] vat_excl tam iade valörden önce (iade 200) :: beklenen={"bank":99700,"k653":0,"k108":0,"prov":300,"integ":true} gerçek={"bank":99700,"k653":0,"k108":0,"prov":300,"integ":true}
+UYDU  [none-0] none iadesiz 12.10 valör :: beklenen={"bank":109750,"k653":250,"k108":0,"prov":0,"integ":true} gerçek={"bank":109750,"k653":250,"k108":0,"prov":0,"integ":true}
+UYDU  [none-none-once] none 3.000 iade, none, valörden once (iade durumu 200) :: beklenen={"bank":106750,"k653":250,"k108":0,"prov":0,"integ":true} gerçek={"bank":106750,"k653":250,"k108":0,"prov":0,"integ":true}
+UYDU  [none-none-sonra] none 3.000 iade, none, valörden sonra (iade durumu 200) :: beklenen={"bank":106750,"k653":250,"k108":0,"prov":0,"integ":true} gerçek={"bank":106750,"k653":250,"k108":0,"prov":0,"integ":true}
+UYDU  [none-proportional-once] none 3.000 iade, proportional, valörden once (iade durumu 200) :: beklenen={"bank":106825,"k653":175,"k108":0,"prov":0,"integ":true} gerçek={"bank":106825,"k653":175,"k108":0,"prov":0,"integ":true}
+UYDU  [none-proportional-sonra] none 3.000 iade, proportional, valörden sonra (iade durumu 200) :: beklenen={"bank":106825,"k653":175,"k108":0,"prov":0,"integ":true} gerçek={"bank":106825,"k653":175,"k108":0,"prov":0,"integ":true}
+UYDU  [none-tam-takvim] none tam iade: takvimde Komisyon Tahsili satırı (12.10, −kesinti) :: beklenen=[["2026-10-12","fee",-25000]] gerçek=[["2026-10-12","fee",-25000]]
+UYDU  [none-tam] none tam iade valörden önce (iade 200) :: beklenen={"bank":99750,"k653":250,"k108":0,"prov":0,"integ":true} gerçek={"bank":99750,"k653":250,"k108":0,"prov":0,"integ":true}
+
+TOPLAM 39 denetim, FARK 0: 
+cikis=0

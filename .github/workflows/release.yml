@@ -49,10 +49,15 @@ jobs:
       - run: npm run test:senaryo-225
       - run: npm run test:senaryo-225-uyari
       - run: npm run test:senaryo-226
+      - run: npm run test:senaryo-iz1-sayfa
+      - run: npm run test:senaryo-iz1-kasa-acilis
       - run: npm run test:senaryo-banka-210
       - run: npm run test:senaryo-banka-210b
       - run: npm run test:senaryo-banka-210-temel
       - run: npm run test:senaryo-banka-210-eski-satir
+      - run: npm run test:senaryo-banka-220
+      - run: npm run test:senaryo-pos-220
+      - run: npm run test:senaryo-tahsile-ver-220
       - run: npm run test:banka-210-saat
       - run: npm run test:banka-210-kart-onbellek
       - run: npm run test:banka-210-daha-fazla

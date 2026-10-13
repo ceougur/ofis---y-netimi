@@ -28,11 +28,14 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const NOW = "2026-10-08T12:00:00+03:00";
 
 /** Ana Defter'den (eski yol) alt hesap mizanı: { rows, mains } — yeni uçla karşılaştırılır. */
+// 2.2.0 (Bankaya Tahsile Ver, plan §3.11 hesap planı 101.01/101.02; bilerek güncellendi): alınan evrakın 101 satırları Ana Defter'de 101.01/101.02
+// alt hesabını taşır ve Alt Hesap Mizanı'nda her zaman görünür (doğrulama T4: önceden yalnız şirkette tahsil kaydı varken görünüyordu).
 function fromLedger(app, { from = "", to = "" } = {}) {
   const entries = app.context.ledger.build();
   const rows = subTrial(entries, { from, to }).map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance }));
   const trial = trialBalance(entries, { from, to });
-  const mains = ["102", "108", "300", "309"].map(code => ({ account: code, balance: trial.accounts.find(row => row.code === code)?.balance || 0 })).filter(item => item.balance);
+  // 2.2.0 İz 4.2 (plan §3.11a; bilerek güncellendi): alınan senet 121 (121.01 / 121.02) da Alt Hesap Mizanı'nda ana hesap.
+  const mains = ["101", "102", "108", "121", "300", "309"].map(code => ({ account: code, balance: trial.accounts.find(row => row.code === code)?.balance || 0 })).filter(item => item.balance);
   return { rows, mains };
 }
 const strip = data => ({ rows: data.rows.map(row => ({ sub: row.sub, account: row.account, opening: row.opening, debit: row.debit, credit: row.credit, balance: row.balance })), mains: data.mains.map(item => ({ account: item.account, balance: item.balance })).filter(item => item.balance) });
@@ -53,6 +56,14 @@ describe("GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter k
     const party = await must("cari", api.post("/api/workspace/accounts", { name: "Eski Müşteri", type: "customer", registeredOn: "2026-01-01" }));
     await must("eski havale", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "3.210,55", method: "bank", date: "2026-07-03" }));
     await must("eski POS", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "1.111,11", method: "card", date: "2026-07-04" }));
+    // 2.2.0 (plan §3.14): bankada tahsilde bir çek ve tahsile verilip geri alınmış bir senet — 101.01/101.02 de Ana Defter'le karşılaştırılır.
+    // İz 2.6: tahsile verme yalnız "Çek Kullan" / "Senet Kullan" işaretli hesaba (motor işareti yalnız kendi işleminde açar).
+    await must("Çek Kullan / Senet Kullan", api.put(`${BANK}/accounts/${bank.id}`, { useCheque: true, useNote: true }));
+    const cheque = await must("çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "2.345,67", issueDate: "2026-08-20", dueDate: "2026-11-20", accountId: party.id, serialNo: "GG2-1" }));
+    await must("tahsile ver", api.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "bank-deposit", date: "2026-09-05", bankAccountId: bank.id }));
+    const note = await must("senet", api.post("/api/workspace/cheques", { direction: "in", instrument: "note", amount: "800", issueDate: "2026-08-25", dueDate: "2026-12-01", accountId: party.id, serialNo: "GG2-2" }));
+    await must("senedi tahsile ver", api.post(`/api/workspace/cheques/${note.id}/actions`, { action: "bank-deposit", date: "2026-08-28", bankAccountId: bank.id }));
+    await must("bankadan geri al", api.post(`/api/workspace/cheques/${note.id}/actions`, { action: "bank-withdraw", date: "2026-09-20" }));
   });
   after(() => ctx.server.close());
 

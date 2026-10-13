@@ -413,8 +413,8 @@ async function uiAgent(codeKey, companyId, acc, item) {
       await page.fill(`${inv} [data-f="note"]`, op.no).catch(() => null);
       await page.waitForTimeout(900);
       if (op.mode === "paid") {
-        await page.click(`${inv} [data-act="pay-add-cash"]`);
-        await page.selectOption(`${inv} [data-pay="cash"][data-f="method"]`, op.method);
+        // v2.2.0 İz 2.8: yol düğmeyle ("+ Nakit · + Havale / EFT · + Kredi Kartı / + POS"); satırda yol kutusu yok.
+        await page.click(`${inv} [data-act="pay-add-cash"][data-method="${op.method}"]`);
         await page.fill(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, trNum(op.payable));
       } else if (op.mode === "cheque") {
         await page.click(`${inv} [data-act="pay-add-cheque"]`);

@@ -12,7 +12,9 @@
 //   f. yolu nakde çevrilmiş ama fin_ref'i dolu satır → açık dönemde fin_ref temizlenir; kilitli dönemde yalnız uyarı
 //   g. olay kopyası satırla uyuşmuyor → açık dönemde ve eşleşmemişse kopya satırdan yenilenir; değilse "Onarım Bekliyor"
 //   h. tahsildeki çek eski sürümde ciro edilmiş / silinmiş / tahsil edilmiş → kayıt "withdrawn" ya da "collected" olarak kapanır; kapanış
-//      işlem başlığı (cheque_withdraw, origin "repair") yazılır
+//      işlem başlığı (cheque_withdraw, origin "repair") yazılır. Kapanış tarihi veriliş gününden önce olamaz (eski sürümün işlemi daha önceki
+//      tarihli olsa da veriliş gününe yazılır). Eski sürümde tahsildeki evrakın tutarı ya da alış tarihi değiştiyse (evrak hâlâ portföyde) açık
+//      dönemde verilme başlığının tutarı evrakın tutarına, veriliş günü alış tarihinden önceyse alış tarihine alınır; kilitli dönemde "Onarım Bekliyor".
 // Yalnız ilgili kayıtlar değişir; değişen ya da bulunan her şey integrity_log'a ("repair") ve meta.bank.repair'e (zil ve Banka modülünün
 // uyarısı için; arayüz Aşama 3/14) yazılır. Onarım tek seferliktir: ikinci açılışta değiştirecek bir şey kalmaz (kilitli dönemdeki kayıtlar
 // "Onarım Bekliyor" listesinde kalır ve kapının tabanıdır).
@@ -22,6 +24,7 @@ import { LEGACY_MARKS_AT_KEY, LEGACY_MARKS_KEY } from "./checks.mjs";
 import { copyMismatchSql, eventCopy, eventDigest, eventRows, isModuleEvent, primaryRow, refreshEvent } from "./event-copy.mjs";
 import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { newEventId, nextEventNo } from "./event-no.mjs";
+import { closedBeforeOpening, depositAccountProblem, reopenLegacyClosures } from "./collections.mjs";
 import { MODULE_TABLES, moneyWhere } from "./money-lines.mjs";
 
 export const REPAIR_KEY = "meta.bank.repair";
@@ -67,7 +70,7 @@ export function repairBank({ store, now = systemClock, period = null, log = null
       return {};
     }
   })();
-  const report = { at, unassigned: 0, unassignedSample: [], unassignedIds: [], undoneMatches: [], voidedSales: [], cancelledEvents: [], clearedRefs: [], refreshedEvents: [], closedCollections: [], pending: [] };
+  const report = { at, unassigned: 0, unassignedSample: [], unassignedIds: [], undoneMatches: [], voidedSales: [], cancelledEvents: [], clearedRefs: [], refreshedEvents: [], closedCollections: [], reopenedCollections: [], pending: [] };
   const pending = (kind, id, reason) => report.pending.push({ kind, id, reason });
 
   store.raw("repair", () =>
@@ -168,18 +171,63 @@ export function repairBank({ store, now = systemClock, period = null, log = null
             pending("d", sale.id, `bankaya geçmiş POS satışının kaynak satırı eski sürümde silinmiş (POS ${sale.posId}); İptal İadesi kaydıyla çözülür`);
           }
         }
+        // g) Eleştirmen E-3 (plan §10.6/g): eski sürüm (POS'u bilmez) POS'lu tahsilatın/iadenin tutarını ya da tarihini değiştirmiş → kayıt satırla
+        // uyuşmuyor. Kayıt "Onarım Bekliyor" olur: valör aktarımından ve POS kapı denetiminden ayrılır (pos.mjs dueGroups, problems), o POS'un öbür
+        // satışları bankaya geçmeye devam eder. Çözüm kullanıcıda (neden listede): tahsilatı silip doğru tutarla yeniden girmek.
+        for (const sale of store.all("SELECT id, event_id AS eventId, pos_id AS posId, kind, status, gross_minor AS gross, date FROM pos_sales WHERE status IN ('active', 'repair') AND src <> 'cancel'")) {
+          const rows = eventRows(store, sale.eventId);
+          if (!rows.length) continue;
+          const own = rows.filter(({ row }) => row.method === "card" && row.fin_ref === sale.posId);
+          if (own.length > 1) continue;
+          const row = own.length === 1 ? own[0].row : null;
+          const minor = row ? Math.round(Math.abs(Number(row.amount) || 0) * 100) : 0;
+          if (row && minor === Number(sale.gross) && row.date === sale.date) continue;
+          if (sale.status === "active") store.run("UPDATE pos_sales SET status = 'repair', updated_by = 'system', updated_at = ? WHERE id = ?", at, sale.id);
+          const was = `${(Number(sale.gross) / 100).toFixed(2)} TL · ${sale.date}`;
+          const now_ = row ? `${(minor / 100).toFixed(2)} TL · ${row.date}` : "POS'suz";
+          pending("g", sale.id, `POS ${sale.kind === "refund" ? "iadesi" : "tahsilatı"} eski sürümde değiştirilmiş (POS kaydı ${was}, satır ${now_}); bankaya aktarılmaz. Çözüm: tahsilatı silip doğru tutarla yeniden girin.`);
+        }
       }
 
       // h) tahsildeki çek eski sürümde ciro edilmiş, silinmiş ya da tahsil edilmiş
       if (tables.has("cheque_collections")) {
+        // Doğrulama tur 2 E5/E6: eski sürümde tahsili ya da karşılıksızı Geri Al'ınmış kayıt yeniden bekleyen olur (aşağıdaki döngü onu da görür).
+        report.reopenedCollections = reopenLegacyClosures(store, { open, at, pending });
         for (const item of store.all(
-          `SELECT k.id, k.cheque_id AS chequeId, k.bank_account_id AS bankAccountId, c.status, c.status_date AS statusDate, c.deleted_at AS deletedAt, c.amount
-           FROM cheque_collections k LEFT JOIN cheques c ON c.id = k.cheque_id WHERE k.status = 'pending'`,
+          `SELECT k.id, k.cheque_id AS chequeId, k.bank_account_id AS bankAccountId, k.given_date AS givenDate, k.event_id AS eventId, c.status, c.status_date AS statusDate,
+                  c.deleted_at AS deletedAt, c.amount, c.issue_date AS issueDate, c.instrument, e.try_minor AS givenMinor, e.date AS eventDate, e.year AS eventYear
+           FROM cheque_collections k LEFT JOIN cheques c ON c.id = k.cheque_id LEFT JOIN fin_events e ON e.id = k.event_id WHERE k.status = 'pending'`,
         )) {
-          if (item.status === "portfolio" && !item.deletedAt) continue;
+          if (item.status === "portfolio" && !item.deletedAt) {
+            // Doğrulama tur 2 E2–E4: eski sürüm tahsildeki evrakın hesabını silmiş, pasife almış ya da türünü değiştirmiş — kayıt değişmez (evrak
+            // bankada olabilir), "Onarım Bekliyor" uyarısı yolu söyler (Etkinleştir ya da Bankadan Geri Al).
+            const account = store.get("SELECT * FROM bank_accounts WHERE id = ?", item.bankAccountId);
+            const problem = depositAccountProblem(account, item.instrument || "cheque");
+            if (problem) pending("h", item.id, `tahsildeki evrakın ${problem.reason} (eski sürüm)`);
+            // Doğrulama D2: eski sürüm (tahsil kaydını bilmeyen) tahsildeki evrakın tutarını ya da alış tarihini değiştirmiş; evrak hâlâ bankada.
+            // Verilme başlığı evrakın bugünkü hâline alınır (açık dönemde; İşlem No'su aynı kalır, yılı değişecekse Onarım Bekliyor). Tur 2 E1: eski
+            // sürüm hesabın açılışını veriliş gününden sonraya almışsa veriliş günü açılış günü olur (Bankaya Tahsile Ver'in kuralı: açılıştan önce
+            // bankaya verilen ve hâlâ tahsildeki evrak açılış gününe yazılır).
+            const cents = Math.round((Number(item.amount) || 0) * 100);
+            const opened = account && !account.deleted_at ? String(account.opening_date || "") : "";
+            const given = [item.issueDate, opened].reduce((day, floor) => (floor && day < floor ? floor : day), item.givenDate);
+            if (Number(item.givenMinor) === cents && given === item.givenDate) continue;
+            if (!item.eventId || !open(item.givenDate) || !open(given) || Number(String(given).slice(0, 4)) !== Number(item.eventYear)) {
+              pending("h", item.id, "tahsildeki evrakın tutarı, alış tarihi ya da hesabın açılış tarihi eski sürümde değişti; Bankadan Geri Al'ıp yeniden tahsile verin");
+              continue;
+            }
+            store.run("UPDATE fin_events SET amount_minor = ?, try_minor = ?, date = ?, updated_by = 'system', updated_at = ? WHERE id = ?", cents, cents, given, at, item.eventId);
+            if (given !== item.givenDate) store.run("UPDATE cheque_collections SET given_date = ?, updated_by = 'system', updated_at = ? WHERE id = ?", given, at, item.id);
+            report.refreshedEvents.push(item.eventId);
+            continue;
+          }
           const collected = item.status === "collected" && !item.deletedAt;
           const collectedOn = collected ? store.get("SELECT date FROM cheque_events WHERE cheque_id = ? AND kind = 'collect' ORDER BY created_at DESC LIMIT 1", item.chequeId)?.date : "";
-          const date = collectedOn || item.statusDate || (item.deletedAt ? String(item.deletedAt).slice(0, 10) : "") || at.slice(0, 10);
+          // Doğrulama D1: eski sürümün işlemi (ciro, tahsil, silme) veriliş gününden önceki tarihli olabilir (silinen portföy çekinde durum tarihi
+          // alış günüdür). Kapanış veriliş gününe kısılır: kayıt o gün açılıp kapanır (yevmiyede 101.01 ↔ 101.02 aynı gün, net sıfır); önceden kapanış
+          // tarihi verilişten önce yazılıyor, onarımın kendi kaydı Mutabakat Testi'nde kalıcı kırmızı kalıyordu.
+          const raw = collectedOn || item.statusDate || (item.deletedAt ? String(item.deletedAt).slice(0, 10) : "") || at.slice(0, 10);
+          const date = item.givenDate && raw < item.givenDate ? item.givenDate : raw;
           const status = collected ? "collected" : "withdrawn";
           const why = !item.status ? "çek kaydı yok" : item.deletedAt ? "eski sürümde silindi" : collected ? "eski sürümde tahsil edildi" : `eski sürümde durumu değişti (${item.status})`;
           const { year, seq, no } = nextEventNo(store, date, { now });
@@ -191,10 +239,11 @@ export function repairBank({ store, now = systemClock, period = null, log = null
           store.run("UPDATE cheque_collections SET status = ?, closed_date = ?, close_event_id = ?, updated_by = 'system', updated_at = ? WHERE id = ?", status, date, eventId, at, item.id);
           report.closedCollections.push({ id: item.id, status, why });
         }
+        for (const item of closedBeforeOpening(store)) pending("h", item.id, item.reason);
       }
 
       store.setSetting(REPAIR_STAMP_KEY, at);
-      const changed = report.undoneMatches.length + report.voidedSales.length + report.cancelledEvents.length + report.clearedRefs.length + report.refreshedEvents.length + report.closedCollections.length;
+      const changed = report.undoneMatches.length + report.voidedSales.length + report.cancelledEvents.length + report.clearedRefs.length + report.refreshedEvents.length + report.closedCollections.length + report.reopenedCollections.length;
       const fresh = report.unassigned > (Number(previous.unassigned) || 0) || report.pending.some(item => !(previous.pending || []).some(old => old.kind === item.kind && old.id === item.id));
       store.setSetting(REPAIR_KEY, JSON.stringify(report));
       if ((changed || fresh) && tables.has("integrity_log")) {
@@ -206,14 +255,15 @@ export function repairBank({ store, now = systemClock, period = null, log = null
           report.clearedRefs.length ? `temizlenen hesap bağı ${report.clearedRefs.length}` : "",
           report.voidedSales.length ? `iptal edilen POS satışı ${report.voidedSales.length}` : "",
           report.closedCollections.length ? `kapanan tahsil kaydı ${report.closedCollections.length}` : "",
+          report.reopenedCollections.length ? `yeniden açılan tahsil kaydı ${report.reopenedCollections.length}` : "",
           report.pending.length ? `Onarım Bekliyor ${report.pending.length}` : "",
         ].filter(Boolean).join("; ");
         store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', '', ?, ?)", newId(), at, `Açılış onarımı (eski sürümden): ${summary}`.slice(0, 500), JSON.stringify({ ...report, unassignedIds: undefined }).slice(0, 20000));
       }
     }),
   );
-  if (report.unassigned || report.pending.length || report.cancelledEvents.length || report.refreshedEvents.length || report.undoneMatches.length || report.closedCollections.length) {
-    log?.warn?.(`Açılış onarımı (eski sürümden): ${JSON.stringify({ unassigned: report.unassigned, pending: report.pending.length, cancelled: report.cancelledEvents.length, refreshed: report.refreshedEvents.length, matches: report.undoneMatches.length, collections: report.closedCollections.length })}`);
+  if (report.unassigned || report.pending.length || report.cancelledEvents.length || report.refreshedEvents.length || report.undoneMatches.length || report.closedCollections.length || report.reopenedCollections.length) {
+    log?.warn?.(`Açılış onarımı (eski sürümden): ${JSON.stringify({ unassigned: report.unassigned, pending: report.pending.length, cancelled: report.cancelledEvents.length, refreshed: report.refreshedEvents.length, matches: report.undoneMatches.length, collections: report.closedCollections.length, reopened: report.reopenedCollections.length })}`);
   }
   return report;
 }

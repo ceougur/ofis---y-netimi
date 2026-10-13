@@ -58,8 +58,10 @@
     // v2.1.0 Aşama 14 (Banka grubu): hareket türü ve hesap grubu. Hesap seçenekleri (bankAccount, feeAccount) sunucunun katalog yanıtından.
     bankMove: { label: "Hareket", options: [["", "Tüm Hareketler"], ["external", "Dış Hareketler"], ["internal", "Transfer (İç Hareketler)"]] },
     bankGroup: { label: "Hesap Grubu", options: [["real", "Gerçek Banka"], ["debt", "Kart ve Kredi Borcu"], ["unassigned", "Hesabı Atanmamış Eski Hareketler"], ["all", "Tümü"]] },
+    // 2.2.0 (İz 3.5): POS Ödeme Takvimi'nin kalem türü (POS seçenekleri sunucunun katalog yanıtından: posTerminal).
+    posKind: { label: "Tür", options: [["", "Tümü"], ["pos", "POS"], ["blocked", "Blokeli POS"], ["fee", "Komisyon Tahsili"]] },
   };
-  const DYNAMIC = { bankAccount: "Banka Hesabı", feeAccount: "Banka Hesabı" };
+  const DYNAMIC = { bankAccount: "Banka Hesabı", feeAccount: "Banka Hesabı", posTerminal: "POS" };
 
   // Raporlar penceresindeki "Tüm raporlar" sekmesine kurulur (hof-overview.js). Sekme her açılışta yeni düğüm verir.
   async function mount(host, reportId = "") {
@@ -186,7 +188,10 @@
     new URLSearchParams(
       Object.fromEntries(
         Object.entries({ ...center.params, account: center.account?.id || "" })
-          .filter(([key, value]) => key !== "preset" && value !== "" && value !== undefined && value !== null),
+          // Dönem düğmeleri açık tarih gönderir; yalnız "Tüm Zamanlar" ayrıca preset=all gider: vade raporları (POS Ödeme Takvimi, Çek /
+          // Senet Portföyü, Taksit Vade Listesi) onunla sınırsızdır (sunucu dueRangeOf; ileri valör/vade bugünle kesilmez). Öbür raporlarda
+          // açık tarih önceliklidir, sonuç değişmez.
+          .filter(([key, value]) => (key !== "preset" || value === "all") && value !== "" && value !== undefined && value !== null),
       ),
     ).toString();
   function paramsHtml(report) {

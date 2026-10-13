@@ -1,0 +1,7 @@
+[{"m":"POST","u":"/api/workspace/accounts","b":{"name":"ABC Ltd.","type":"customer"},"as":"M"},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in"}},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","kind":"cheque"}},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","kind":"cheque","amount":"100"}},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","kind":"cheque","amount":"100","accountId":"$M"}},
+ {"m":"POST","u":"/api/workspace/cheques","b":{"direction":"in","kind":"cheque","amount":"100","accountId":"$M","dueDate":"2026-10-12"}}
+]

@@ -21,6 +21,7 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import { insertBankAccount, insertPos, localDay, rawAll, rawGet, rawRun } from "./banka-210-ortak.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 
 const TODAY = localDay(0);
 const must = async (label, promise) => {
@@ -77,15 +78,21 @@ async function seedBankSide(dataDir, backupDir, data) {
     const editedEvent = eventOf(db, "account_entries", data.edited.entryId);
     const row = rawGet(db, "SELECT * FROM account_entries WHERE id = ?", data.edited.entryId);
     rawRun(db, "INSERT INTO bank_matches (id, line_id, bank_account_id, event_id, amount_minor, digest, kind, created_by, created_at) VALUES ('match-on', 'line-on', 'acc-on', ?, 50000, ?, 'manual', 'test', ?)", editedEvent, eventDigest(eventCopy(server.app.store, "account_entries", row)), now());
-    // POS satışları: bekleyen (kalemi pending) ve bankaya geçmiş (kalemi settled).
+    // POS satışları: bekleyen (kalemi pending) ve bankaya geçmiş (kalemi settled). 2.2.0 Eleştirmen E-3 (bilerek güncellendi): kaydın tarihi
+    // satırınınki (programın yazdığı gibi) — onarım (g) artık satırla uyuşmayan POS kaydını "Onarım Bekliyor" yapar; önceki düzende bankaya geçmiş
+    // satışın kaydı 5 gün önceki satırın tarihini taşımıyordu (eski sürüm satırı silmeden önceki açılışta yanlışlıkla uyuşmaz sayılırdı).
     for (const [sale, entry, status, gross] of [["sale-pending", data.posPending.entryId, "pending", 12000], ["sale-settled", data.posSettled.entryId, "settled", 8000]]) {
-      rawRun(db, "INSERT INTO pos_sales (id, event_id, pos_id, kind, date, rate_ppm, tax_kind, tax_mode, tax_ppm, refund_commission, payout, bank_account_id, gross_minor, net_minor, created_by, created_at) VALUES (?, ?, 'pos-on', 'sale', ?, 20000, 'bsmv', 'included', 50000, 'none', 'single', 'acc-on', ?, ?, 'test', ?)", sale, eventOf(db, "account_entries", entry), TODAY, gross, gross, now());
+      const saleDate = rawGet(db, "SELECT date FROM account_entries WHERE id = ?", entry).date;
+      rawRun(db, "INSERT INTO pos_sales (id, event_id, pos_id, kind, date, rate_ppm, tax_kind, tax_mode, tax_ppm, refund_commission, payout, bank_account_id, gross_minor, net_minor, created_by, created_at) VALUES (?, ?, 'pos-on', 'sale', ?, 20000, 'bsmv', 'included', 50000, 'none', 'single', 'acc-on', ?, ?, 'test', ?)", sale, eventOf(db, "account_entries", entry), saleDate, gross, gross, now());
       rawRun(db, "INSERT INTO pos_items (id, sale_id, pos_id, seq, role, value_date, gross_minor, net_minor, planned_net_minor, status, created_by, created_at) VALUES (?, ?, 'pos-on', 1, 'sale', ?, ?, ?, ?, ?, 'test', ?)", `${sale}-1`, sale, TODAY, gross, gross, gross, status, now());
     }
     // Tahsildeki çekler (Bankaya Tahsile Ver): her biri kendi işlem başlığıyla.
     data.cheques.forEach((cheque, index) => {
       const id = `col-${index + 1}`;
-      rawRun(db, "INSERT INTO fin_events (id, year, seq, no, type, date, status, origin, src_table, src_id, cheque_id, created_by, created_at) VALUES (?, ?, ?, ?, 'cheque_deposit', ?, 'active', 'manual', 'cheque_collections', ?, ?, 'test', ?)", `ev-${id}`, Number(TODAY.slice(0, 4)), 700000 + index, `BNK-${TODAY.slice(0, 4)}-${700000 + index}`, TODAY, id, cheque.id, now());
+      // 2.2.0 (bilerek güncellendi): başlık, Bankaya Tahsile Ver'in kendi yazdığı gibi hesabı (bank_ref) ve evrak tutarını taşır; kapının
+      // cheque:collections denetimi bunları kayıtla karşılaştırır (plan §3.14).
+      const cents = rawGet(db, "SELECT CAST(ROUND(amount * 100) AS INTEGER) AS n FROM cheques WHERE id = ?", cheque.id).n;
+      rawRun(db, "INSERT INTO fin_events (id, year, seq, no, type, date, status, origin, src_table, src_id, cheque_id, bank_ref, amount_minor, try_minor, created_by, created_at) VALUES (?, ?, ?, ?, 'cheque_deposit', ?, 'active', 'manual', 'cheque_collections', ?, ?, 'acc-on', ?, ?, 'test', ?)", `ev-${id}`, Number(TODAY.slice(0, 4)), 700000 + index, `BNK-${TODAY.slice(0, 4)}-${700000 + index}`, TODAY, id, cheque.id, cents, cents, now());
       rawRun(db, "INSERT INTO cheque_collections (id, cheque_id, bank_account_id, given_date, status, event_id, created_by, created_at) VALUES (?, ?, 'acc-on', ?, 'pending', ?, 'test', ?)", id, cheque.id, TODAY, `ev-${id}`, now());
     });
     // Kilit: kilitli tahsilattan sonra, bugünden önce.
@@ -99,7 +106,7 @@ async function seedBankSide(dataDir, backupDir, data) {
 async function oldVersionWrites(version, dataDir, backupDir, data) {
   const server = await bootVersion(version, { dataDir, backupDir });
   try {
-    assert.equal(server.app.store.get("PRAGMA user_version").user_version, 20, `${version} v20 dosyasını açar (göç dönüşü yapar)`);
+    assert.equal(server.app.store.get("PRAGMA user_version").user_version, LATEST_VERSION, `${version} güncel sürümün (v20+) dosyasını açar (göç dönüşü yapar)`);
     const api = await server.login();
     await must(`${version}: Kasa hareketini sil`, api.del(`/api/workspace/cash/${data.deleted.id}?cashForce=1`));
     await must(`${version}: tahsilatı düzelt`, api.put(`/api/workspace/accounts/${data.account.id}/entries/${data.edited.entryId}`, { kind: "in", amount: "550", date: TODAY, method: "bank" }));

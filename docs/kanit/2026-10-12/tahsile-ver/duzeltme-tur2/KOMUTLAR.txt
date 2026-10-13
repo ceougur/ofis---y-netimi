@@ -1,0 +1,39 @@
+Bankaya Tahsile Ver — doğrulama TUR 2 bulgularının düzeltmesi (dal worktree-wf_d306f93b-be4-1; düzeltme öncesi = 4d8003a)
+==========================================================================================================================
+
+Bulgular (bu dalda yeniden üretildi, hepsi gerçek): T11, T12, T13, B1, ozet, proto, A22, E1, E2–E4, E5, E6, G1
+(kaynak betikler: ../dogrulayici-tur2, ../dogrulayici-2, ../gerileme-tur2; reddedilen yok).
+
+Test: test/banka-220-tahsile-ver-tur2.test.mjs (26 test; eski sürüm testleri v2.1.0 etiketiyle, sığ klonda atlanır).
+Bilerek güncellenen eski beklentiler: test/cheques-overview.test.mjs (karşılıksız taksit tahsilatını silmez, ters kayıt yazar),
+test/banka-220-tahsile-ver.test.mjs ("Portföyde (alınan)" tahsildekini saymaz; taksitli çek karşılıksızında in + out),
+test/bank-post-izinli.json (yeni onarım yazıcısı reopenLegacyClosures, tür "ham").
+
+1) Kırmızı (düzeltme öncesi kod, AYRI kopya — ders 23/25):
+   S=<scratchpad>; D=$S/iz4-tur2-eski-4d8003a
+   git -C <worktree> archive 4d8003a | tar -x -C "$D"
+   # kopyada .git yok: yalnız test düzeneği v2.1.0 etiketini çalışma ağacının deposundan çözer (ürün kodu değil):
+   sed -i 's/\["-C", REPO,/["-C", process.env.SURUM_GIT || REPO,/' "$D/test/guvenilirlik/surumler.mjs"
+   cp <worktree>/test/banka-220-tahsile-ver-tur2.test.mjs "$D/test/"
+   cd "$D" && SURUM_GIT=<worktree> node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-220-tahsile-ver-tur2.test.mjs
+   → kirmizi-eski-4d8003a-son.out: 26 testin 18'i kırmızı (çıkış 1). kirmizi-eski-4d8003a.out: ilk taslak (24'te 17).
+   Eski kodda yeşil kalan 8: T11 ön koşul (alış maddeleri), T11 Geri Al, G1 beş dönem eşdeğerliği + saklama testi (eski yol Ana Defter'in
+   kendisi; bu testler yeni SQL yolunun bekçisidir — dişleri mutasyonla: M1–M3, M15).
+
+2) Yeşil (bu dal): node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-220-tahsile-ver-tur2.test.mjs
+   → yesil.out: 26/26 (çıkış 0).
+
+3) Mutasyon (her biri ayrı kopyada): python3 docs/kanit/2026-10-12/tahsile-ver/duzeltme-tur2/mutasyon.py <worktree> <scratch>/iz4-tur2-mut
+   → mutasyon-son.out: 15 mutasyonun 15'i yakalandı (çıkış 0).
+
+4) Bilinen sınır sondası (T11, eski sürüme dönüş): node docs/kanit/2026-10-12/tahsile-ver/duzeltme-tur2/sonda-v210-donus.mjs
+   → sonda-v210-donus.out: bu dalda yazılmış karşılıksız ters kaydı v2.1.0'da Mutabakat'ta gl:100 / gl:101 farkı gösterir (v2.1.0 çekli
+   'out' satırını Kasa iadesi sanar); yazım sürer, v2.1.0'da Geri Al çalışır; bu dala dönünce Mutabakat tamam.
+
+5) G1 hız (aynı 15.000 çeklik veri kopyası, her ölçümde taze kopya; önce/sonra sırayla iki tur — ders 15):
+   node docs/kanit/2026-10-12/tahsile-ver/gerileme-tur2/olcum/veri.mjs <scratch>/iz4-tur2-g1-veri 15000   (olc-g1-veri.log, 5 dk 27 sn)
+   bash docs/kanit/2026-10-12/tahsile-ver/duzeltme-tur2/kos-olc-g1.sh → olc-g1-{eski-4d8003a,yeni}-{1,2}.{json,log}, olc-g1.durum
+   Sonuç (medyan ms; ilk istek ayrı): bank/sub-trial 699/724 → ilk 269/262, sonra 3/3; dönem 649/618 → ilk 222/253, sonra 22/24;
+   rapor alt-hesap-mizani 731/666 → ilk 247/252, sonra 37/31. 101.01/101.02 satırları iki kodda birebir aynı.
+
+6) Tam paket: node tools/kanit.mjs kos tahsile-ver-tur2-npm-test -- npm test → docs/kanit/2026-10-12/tahsile-ver-tur2-npm-test.{json,log}

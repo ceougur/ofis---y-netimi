@@ -1,0 +1,30 @@
+
+===== kilitsiz =====
+(node:16131) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+UYDU  [K1] Papara (1.000 + 9.700) :: beklenen=10700 gerçek=10700
+UYDU  [K2] sağlayıcı bakiyesi (bizim lehimize 300) :: beklenen=300 gerçek=300
+NOT   [K4-taslak] [200,null,null,[{"invoiceId":"invoice-9792b2cb-6f65-4ab6-aa02-c3f2de0dd238","posId":"pos-fb7c004c-1cb0-4fd5-a235-d8eb3a9d469e","providerId":"account-699f6317-1a8c-4a20-8c16-e3cd569ab638","netMinor":30000}]]
+NOT   [K5-taslak] ["2026-09-30",300,250,50]
+NOT   [K6-kaydet (taslak tarihiyle)] [200,null,null]
+NOT   [K8-fatura] ["issued","2026-09-30","paid",null]
+NOT   [K9-mizan 191/653/320/108] [50,250,0,0]
+UYDU  [K10] kayıttan sonra sağlayıcı bakiyesi :: beklenen=0 gerçek=0
+UYDU  [K11] Mutabakat :: beklenen=true gerçek=true
+NOT   [K12-integrity_log] []
+
+===== eylul-kilitli =====
+UYDU  [K1] Papara (1.000 + 9.700) :: beklenen=10700 gerçek=10700
+UYDU  [K2] sağlayıcı bakiyesi (bizim lehimize 300) :: beklenen=300 gerçek=300
+NOT   [K3-kilit] [200,null]
+NOT   [K4-taslak] [200,null,null,[{"invoiceId":"invoice-3f7014b2-279d-45f8-880c-39ae5b674629","posId":"pos-c1e9d81d-a1f3-47f9-8a0e-07758a2ba25b","providerId":"account-e5861b42-408a-4b7a-8882-2aeded5d5c3e","netMinor":30000}]]
+NOT   [K5-taslak] ["2026-09-30",300,250,50]
+NOT   [K6-kaydet (taslak tarihiyle)] [409,"period-locked","Fatura 30.09.2026 tarihli; 30.09.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."]
+NOT   [K7-kaydet (tarih 08.10'a alınarak)] [200,null,null]
+NOT   [K8-fatura] ["issued","2026-10-08","paid",null]
+NOT   [K9-mizan 191/653/320/108] [50,250,0,0]
+UYDU  [K10] kayıttan sonra sağlayıcı bakiyesi :: beklenen=0 gerçek=0
+UYDU  [K11] Mutabakat :: beklenen=true gerçek=true
+NOT   [K12-integrity_log] []
+
+ÖZET 0 fark / 8 denetim

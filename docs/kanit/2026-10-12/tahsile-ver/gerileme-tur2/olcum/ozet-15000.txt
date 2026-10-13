@@ -1,0 +1,17 @@
+15.000 çek (7.500 tahsil, 1.500 ciro, 1.500 karşılıksız, 4.500 portföy) — medyan ms (5 tekrar; ilk istek ısınma)
+uç                          eski1  eski2 |  yeni1  yeni2
+bank/sub-trial                  3      3    713    690 200/200
+rapor alt-hesap-mizani         32     33    734    630 200/200
+rapor yevmiye                 558    546    489    499 200/200
+rapor cek-hareketleri         357    381    350    386 200/200
+rapor cek-portfoy             446    443    522    605 200/200
+ledger                        426    359    406    506 200/200
+ledger/integrity              988    930   1046   1004 200/200
+cheques                       455    391    440    456 200/200
+cheque kart                     1      3      1      2 200/200
+nakit-akisi                   190    186    166    225 200/200
+vade-takip                    160    120    100    118 200/200
+dues                           49     52     37     41 200/200
+invoices/portfolio            172    146    188    177 200/200
+POST collect                   16     16     18     20
+POST create                     7      7      5      8

@@ -1,0 +1,25 @@
+TAP version 13
+# G {"ekran":["500,00 TL","2.000,00 TL"],"excel":[500,2000],"pdf":[true,true]}
+# Subtest: G — Alt Hesap Mizanı ekran / PDF / Excel
+    # Subtest: üç çıktıda 101.01 = 500, 101.02 = 2.000
+    ok 1 - üç çıktıda 101.01 = 500, 101.02 = 2.000
+      ---
+      duration_ms: 389.766747
+      type: 'test'
+      ...
+    1..1
+ok 1 - G — Alt Hesap Mizanı ekran / PDF / Excel
+  ---
+  duration_ms: 2630.163189
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4235.538641
+exit 0

@@ -1,0 +1,15 @@
+(node:18136) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+UYDU  [bsmv_incl-k] bsmv_incl: satış kesintisi = Σ kalem (brüt − net) :: beklenen=[333,333] gerçek=[333,333]
+UYDU  [bsmv_incl-son] bsmv_incl: son durum :: beklenen={"bank":109667.01,"k653":333,"prov":0,"k108":0,"integ":true} gerçek={"bank":109667.01,"k653":333,"prov":0,"k108":0,"integ":true}
+UYDU  [bsmv_excl-k] bsmv_excl: satış kesintisi = Σ kalem (brüt − net) :: beklenen=[349.65,349.65] gerçek=[349.65,349.65]
+UYDU  [bsmv_excl-son] bsmv_excl: son durum :: beklenen={"bank":109650.36,"k653":349.65,"prov":0,"k108":0,"integ":true} gerçek={"bank":109650.36,"k653":349.65,"prov":0,"k108":0,"integ":true}
+UYDU  [vat_incl-k] vat_incl: satış kesintisi = Σ kalem (brüt − net) :: beklenen=[333,333] gerçek=[333,333]
+UYDU  [vat_incl-son] vat_incl: son durum :: beklenen={"bank":109667.01,"k653":0,"prov":333,"k108":0,"integ":true} gerçek={"bank":109667.01,"k653":0,"prov":333,"k108":0,"integ":true}
+UYDU  [vat_excl-k] vat_excl: satış kesintisi = Σ kalem (brüt − net) :: beklenen=[399.6,399.6] gerçek=[399.6,399.6]
+UYDU  [vat_excl-son] vat_excl: son durum :: beklenen={"bank":109600.41,"k653":0,"prov":399.6,"k108":0,"integ":true} gerçek={"bank":109600.41,"k653":0,"prov":399.6,"k108":0,"integ":true}
+UYDU  [none-k] none: satış kesintisi = Σ kalem (brüt − net) :: beklenen=[333,333] gerçek=[333,333]
+UYDU  [none-son] none: son durum :: beklenen={"bank":109667.01,"k653":333,"prov":0,"k108":0,"integ":true} gerçek={"bank":109667.01,"k653":333,"prov":0,"k108":0,"integ":true}
+
+TOPLAM 10, FARK 0
+cikis=0

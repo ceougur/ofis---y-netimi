@@ -1,0 +1,25 @@
+(node:16704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+UYDU  [R1-0] geri yüklemeden önce Ziraat 109.750 :: beklenen=109750 gerçek=109750
+UYDU  [R1-1] geri yükle durum :: beklenen=200 gerçek=200
+   geri yükleme hemen sonra (önce özet): due= {"count":1,"netMinor":975000} net= 975000 takvim= []
+   300 ms sonra (aktar YOK) Ziraat: 109750
+   geri yüklemeden hemen sonra Ziraat: 109750 valörü gelmiş aktarılmadı: {"count":0,"netMinor":0}
+UYDU  [R1-2] geri yükle + aktar → Ziraat 109.750 (çift fiş yok) :: beklenen=109750 gerçek=109750
+UYDU  [R1-3] 108.01 = 0, 102.01 = 109.750 :: beklenen=[0,109750] gerçek=[0,109750]
+UYDU  [R1-4] POS Gün Sonu fişi sayısı 1, tarih 12.10 :: beklenen=["2026-10-12"] gerçek=["2026-10-12"]
+UYDU  [R1-5] Mutabakat :: beklenen=true gerçek=true
+UYDU  [R2-0] iade aktarıldı: Ziraat 106.750 :: beklenen=106750 gerçek=106750
+UYDU  [R2-1] geri yükle durum :: beklenen=200 gerçek=200
+UYDU  [R2-2] geri yükleme sonrası Ziraat 109.750, iade sayısı 0 :: beklenen=[109750,0] gerçek=[109750,0]
+UYDU  [R2-3] yeniden iade (200) → Ziraat 106.750, Mutabakat :: beklenen=[200,106750,true] gerçek=[200,106750,true]
+UYDU  [R3-0] geri yüklemeden önce Ziraat 100.000 + 9.750 + 4.875 :: beklenen=114625 gerçek=114625
+UYDU  [R3-1] kilit 15.10 :: beklenen=200 gerçek=200
+   geri yükle: 200  
+   geri yükleme sonrası kilit: {"ok":false,"error":"Bu yöntem desteklenmiyor."}
+UYDU  [R3-2] geri yükle + aktar → Ziraat 109.750 :: beklenen=109750 gerçek=109750
+UYDU  [R3-3] Mutabakat :: beklenen=true gerçek=true
+   POS Gün Sonu: ["2026-10-12"]
+
+TOPLAM 14 denetim, FARK 0: 
+cikis=0

@@ -100,7 +100,9 @@ async function seed(seedNo, operations) {
   }
 }
 async function fill(ctx, seedNo, operations) {
-  const report = await runReconciliation({ client: await loginAdmin(ctx.server), seed: seedNo, operations, verifyEvery: 100, reportEvery: 1000, burst: 0 });
+  // 2.2.0 (bilerek güncellendi): motorun Bankaya Tahsile Ver işlemleri bu veride yok — aşağıdaki elle adımlar (ör. Bankaya Geçmiş Say 500 TL)
+  // motorun 2.1.0 sırasının ürettiği hesapsız satırlara dayanır; tahsile ver eklenince sıra değişip havuz 150,25 TL'ye düşüyordu.
+  const report = await runReconciliation({ client: await loginAdmin(ctx.server), seed: seedNo, operations, verifyEvery: 100, reportEvery: 1000, burst: 0, tahsileVer: false });
   assert.deepEqual(report.mismatches.slice(0, 3), [], `motor (tohum ${seedNo}) tutarlı`);
   const api = ctx.api;
   const today = (await must("bugün", api.get("/api/workspace/ledger/lock"))).today;

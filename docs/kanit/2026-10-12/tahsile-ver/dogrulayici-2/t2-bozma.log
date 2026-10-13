@@ -1,0 +1,171 @@
+TAP version 13
+# (node:19891) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [t2] A1 kapanmış kaydı olan hesabı sil: {"status":200}
+# [t2] mutabakat A1 sonrası: {"ok":true,"bad":[]}
+# [t2] A1 İşlem Kartı (silinmiş hesap): {"status":200,"lines":[["101.02","D",100000],["101.01","C",100000]],"source":{"table":"cheque_collections","id":"chqcol-0mv53aew00000-4f3d3654-ec58-4d11","label":"Bankaya Tahsile Ver"}}
+# [t2] A1 çek kartı geçmişi: {"status":200,"collections":[["withdrawn","Halkbank · Çek Hesabı"]]}
+# [t2] A2 tür Vadeli: {"status":400,"code":"bank-kind","error":"Hesap türü Vadesiz, Ticari, Vadeli, Döviz, Kredi Hesabı, Kurumsal Kredi Kartı ya da Diğer olmalı."}
+# [t2] mutabakat A2 Vadeli sonrası: {"ok":true,"bad":[]}
+# [t2] A2 para birimi USD: {"status":400,"code":"bank-currency-later","error":"Döviz hesabı bu sürümde açılmaz; yalnız TL hesap açılır."}
+# [t2] mutabakat A2 USD sonrası: {"ok":true,"bad":[]}
+# [t2] A22 karşılıksız kaydı olan hesabı sil: {"status":200}
+# [t2] mutabakat A22 sil sonrası: {"ok":true,"bad":[]}
+# [t2] A22 karşılıksızı geri al (hesap silinmiş): {"status":409,"code":"bank-account-missing","error":"Karşılıksızı geri almak evrakı yeniden bankada tahsilde yapar; Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir."}
+# [t2] A22 kayıt: {"status":"returned"}
+# [t2] mutabakat A22 sonrası: {"ok":true,"bad":[]}
+# [t2] 101 alt hesapları: {"101.01":2000,"101.02":0}
+# Subtest: A — hesap kartı: kapanmış tahsil kaydı olan hesabı sil / türünü / para birimini değiştir
+    # Subtest: A1 deposit → withdraw → hesabı sil; A2 deposit → withdraw → tür Vadeli / para birimi USD; A22 deposit → bounce → hesabı sil → bounce Geri Al
+    ok 1 - A1 deposit → withdraw → hesabı sil; A2 deposit → withdraw → tür Vadeli / para birimi USD; A22 deposit → bounce → hesabı sil → bounce Geri Al
+      ---
+      duration_ms: 467.086704
+      type: 'test'
+      ...
+    1..1
+ok 1 - A — hesap kartı: kapanmış tahsil kaydı olan hesabı sil / türünü / para birimini değiştir
+  ---
+  duration_ms: 1083.839768
+  type: 'suite'
+  ...
+# [t2] A4 kilitli karşılıksızı geri al: {"status":409,"code":"period-locked","error":"Bu çek/senet işlemi 06.10.2026 tarihli; 06.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."}
+# [t2] A4 kayıt: {"status":"returned"}
+# [t2] A21 kilitli verilişli tahsildeki çekin vadesi: {"status":409,"code":"cheque-deposited","error":"Çek No K2 Ziraat Bankası tahsilde (05.10.2026); tutarı, carisi, tarihi ve vadesi değiştirilemez. Önce Bankadan Geri Al'ın."}
+# [t2] A21 açıklama/no: {"status":200}
+# [t2] A21 kayıt yeniden bekleyen: {"status":"pending","g":"2026-10-05"}
+# [t2] A21 kilitli güne geri al: {"status":409,"code":"period-locked","error":"Hareket 06.10.2026 tarihli; 06.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."}
+# [t2] mutabakat kilit senaryosu: {"ok":true,"bad":[]}
+# [t2] sayılar: {"before_":{"cheques":2,"cheque_events":3,"cheque_collections":2,"fin_events":5,"account_entries":3,"plan_entries":0,"invoices":0,"bank_accounts":2},"after_":{"cheques":2,"cheque_events":3,"cheque_collections":2,"fin_events":7,"account_entries":3,"plan_entries":0,"invoices":0,"bank_accounts":2}}
+# [t2] A6 açılışsız hesap: {"status":200,"openingDate":"2026-10-08"}
+# [t2] A6 açılışsız hesaba ver: {"status":409,"code":"bank-before-opening","error":"Tahsile veriliş tarihi (07.10.2026) Denizbank · Açılışsız hesabının açılışından (08.10.2026) önce; program bu hesabı o tarihte tutmuyor. Evrak açılıştan önce bankaya verildiyse ve hâlâ tahsildeyse veriliş tarihini açılış günü (08.10.2026) ya da sonrası yazın (ya da hesabın açılış tarihini Banka → Hesap Detayı → Açılışı Düzelt ile öne alın); açılıştan önce tahsil edildiyse tahsili Banka Hesabı alanında \\"Hesapsız (Açılıştan Önce)\\" seçerek kaydedin."}
+# [t2] A6 Açılış Bakiyesi Gir (verişten sonra): {"status":200}
+# [t2] mutabakat A6 sonrası: {"ok":true,"bad":[]}
+# Subtest: B — dönem kilidi, açılışsız hesap, sıfırlama (Tümünü Sıfırla)
+    # Subtest: A4 karşılıksız kilitli günde → Geri Al reddedilir; A21 kilit sonrası tahsil/geri al/geri al; A6 açılışsız hesap
+    ok 1 - A4 karşılıksız kilitli günde → Geri Al reddedilir; A21 kilit sonrası tahsil/geri al/geri al; A6 açılışsız hesap
+      ---
+      duration_ms: 300.541766
+      type: 'test'
+      ...
+# [t2] A7 ver: {"status":200}
+# [t2] A7 sıfırla all: {"status":200}
+# [t2] A7 sayılar: {"cheques":0,"cheque_events":0,"cheque_collections":0,"fin_events":0,"account_entries":0,"plan_entries":0,"invoices":0,"bank_accounts":0}
+# [t2] mutabakat A7 sonrası: {"ok":true,"bad":[]}
+    # Subtest: A7 Tümünü Sıfırla (mode all) tahsildeki evrakla
+    ok 2 - A7 Tümünü Sıfırla (mode all) tahsildeki evrakla
+      ---
+      duration_ms: 193.240935
+      type: 'test'
+      ...
+    1..2
+ok 2 - B — dönem kilidi, açılışsız hesap, sıfırlama (Tümünü Sıfırla)
+  ---
+  duration_ms: 882.795255
+  type: 'suite'
+  ...
+# [t2] A5 alış faturası ciro tahsildeki: {"status":400,"code":"invoice-invalid","error":"Tedarikçinin fatura numarasını yazın (faturanın üstündeki No)."}
+# [t2] A5 sayılar önce/sonra: {"before_":{"cheques":1,"cheque_events":1,"cheque_collections":1,"fin_events":3,"account_entries":1,"plan_entries":0,"invoices":0,"bank_accounts":2},"after_":{"cheques":1,"cheque_events":1,"cheque_collections":1,"fin_events":3,"account_entries":1,"plan_entries":0,"invoices":0,"bank_accounts":2}}
+# [t2] A5 çek durumu: {"status":"portfolio","e":""}
+# [t2] A5 taslak: {"code":"invoice-invalid","error":"Tedarikçinin fatura numarasını yazın (faturanın üstündeki No)."}
+# [t2] mutabakat A5 sonrası: {"ok":true,"bad":[]}
+# Subtest: C — fatura yolu: alış faturasıyla tahsildeki çeki ciro (API)
+    # Subtest: A5 alış faturası payment.endorse = tahsildeki çek → reddedilmeli; hiçbir şey yazılmamalı
+    ok 1 - A5 alış faturası payment.endorse = tahsildeki çek → reddedilmeli; hiçbir şey yazılmamalı
+      ---
+      duration_ms: 80.801478
+      type: 'test'
+      ...
+    1..1
+ok 3 - C — fatura yolu: alış faturasıyla tahsildeki çeki ciro (API)
+  ---
+  duration_ms: 479.240727
+  type: 'suite'
+  ...
+# [t2] A9 bankAccountId nesne: {"status":400,"code":"bank-account-required","error":"Banka Hesabı seçin: evrak hangi bankaya tahsile verildi?"}
+# [t2] A9 bankAccountId dizi: {"status":400,"code":"bank-account-required","error":"Banka Hesabı seçin: evrak hangi bankaya tahsile verildi?"}
+# [t2] A9 bankAccountId sayı: {"status":404,"code":"bank-account-missing","error":"Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir."}
+# [t2] A9 bankAccountId uzun: {"status":404,"code":"bank-account-missing","error":"Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir."}
+# [t2] A9 bankAccountId boş dize: {"status":400,"code":"bank-account-required","error":"Banka Hesabı seçin: evrak hangi bankaya tahsile verildi?"}
+# [t2] A9 date 13. ay: {"status":400,"code":"date-invalid","error":"Tahsile Veriliş Tarihi geçerli bir tarih değil (2026-13-01). Takvimden seçin."}
+# [t2] A9 date sayı: {"status":400,"code":"date-invalid","error":"Tahsile Veriliş Tarihi geçerli bir tarih değil (20261008). Takvimden seçin."}
+# [t2] A9 date nesne: {"status":400,"code":"date-invalid","error":"Tahsile Veriliş Tarihi geçerli bir tarih değil ([object Object]). Takvimden seçin."}
+# [t2] A9 date TR biçim: {"status":400,"code":"date-invalid","error":"Tahsile Veriliş Tarihi geçerli bir tarih değil (08.10.2026). Takvimden seçin."}
+# [t2] A9 note uzun: {"status":400,"error":"Açıklama en fazla 300 karakter olabilir."}
+# [t2] A9 note HTML: {"status":200,"collection":"yazıldı"}
+# [t2] A9 note HTML kayıt: {"b":"bacc-ed675701-1ce7-4d0c-a238-05731ec67e4e","g":"2026-10-08","status":"pending"}
+# [t2] A9 action boşluklu: {"status":200,"collection":"yazıldı"}
+# [t2] A9 action __proto__: {"status":200}
+# [t2] A9 action constructor: {"status":409,"code":"cheque-not-deposited","error":"Çek No G1 bankada tahsilde değil; geri alınacak tahsil kaydı yok."}
+# [t2] A9 action toString: {"status":409,"code":"cheque-not-deposited","error":"Çek No G1 bankada tahsilde değil; geri alınacak tahsil kaydı yok."}
+# [t2] A9 withdraw portföyde: {"status":409,"code":"cheque-not-deposited","error":"Çek No G1 bankada tahsilde değil; geri alınacak tahsil kaydı yok."}
+# [t2] A9 sayılar önce/sonra: {"before_":{"cheques":1,"cheque_events":1,"cheque_collections":0,"fin_events":2,"account_entries":1,"plan_entries":0,"invoices":0,"bank_accounts":2},"after_":{"cheques":1,"cheque_events":1,"cheque_collections":2,"fin_events":6,"account_entries":1,"plan_entries":0,"invoices":0,"bank_accounts":2}}
+# [t2] mutabakat A9 sonrası: {"ok":true,"bad":[]}
+# Subtest: D — bozuk girdi
+    # Subtest: A9 bankAccountId / date / note / action bozuk
+    ok 1 - A9 bankAccountId / date / note / action bozuk
+      ---
+      duration_ms: 132.929066
+      type: 'test'
+      ...
+    1..1
+ok 4 - D — bozuk girdi
+  ---
+  duration_ms: 501.224084
+  type: 'suite'
+  ...
+# [t2] A12 tur 0: {"dep":200,"put":409,"putCode":"cheque-deposited","del":0,"amount":800,"deleted":false,"kayit":"pending"}
+# [t2] A12 tur 1: {"dep":200,"put":409,"putCode":"cheque-deposited","del":409,"delCode":"cheque-deposited","amount":800,"deleted":false,"kayit":"pending"}
+# [t2] A12 tur 2: {"dep":200,"put":409,"putCode":"cheque-deposited","del":0,"amount":800,"deleted":false,"kayit":"pending"}
+# [t2] A12 tur 3: {"dep":404,"put":404,"del":200,"amount":800,"deleted":true,"kayit":null}
+# [t2] A12 tur 4: {"dep":200,"put":409,"putCode":"cheque-deposited","del":0,"amount":800,"deleted":false,"kayit":"pending"}
+# [t2] A12 tur 5: {"dep":404,"put":404,"del":200,"amount":800,"deleted":true,"kayit":null}
+# [t2] A12 fatura tur 0: {"dep":200,"cancel":409,"cancelCode":"cheque-deposited","invoice":"issued","cheque":"duruyor","kayit":"pending"}
+# [t2] A12 fatura tur 1: {"dep":200,"cancel":409,"cancelCode":"cheque-deposited","invoice":"issued","cheque":"duruyor","kayit":"pending"}
+# [t2] A12 fatura tur 2: {"dep":200,"cancel":409,"cancelCode":"cheque-deposited","invoice":"issued","cheque":"duruyor","kayit":"pending"}
+# [t2] A12 fatura tur 3: {"dep":200,"cancel":409,"cancelCode":"cheque-deposited","invoice":"issued","cheque":"duruyor","kayit":"pending"}
+# [t2] mutabakat A12 sonrası: {"ok":true,"bad":[]}
+# Subtest: E — aynı anda (yarış): tahsile ver ↔ düzenle / sil / fatura iptal
+    # Subtest: A12 eşzamanlı istekler: her yarışta yalnız biri geçer, Mutabakat tamam
+    ok 1 - A12 eşzamanlı istekler: her yarışta yalnız biri geçer, Mutabakat tamam
+      ---
+      duration_ms: 495.315842
+      type: 'test'
+      ...
+    1..1
+ok 5 - E — aynı anda (yarış): tahsile ver ↔ düzenle / sil / fatura iptal
+  ---
+  duration_ms: 864.696425
+  type: 'suite'
+  ...
+# [t2] A16 Garanti Hareketler (tahsile verme satırları?): {"status":200,"rows":[["BNK-2026-000002","opening","Açılış Bakiyesi",null,null]]}
+# [t2] A16 Banka Hareket raporu: {"status":200,"rows":[["01.01.2026","","Ziraat Bankası · Ana TL Hesabı","Devir","Dönem başı bakiye","","","","","0,00 TL"],["01.01.2026","","Garanti BBVA · Ana TL Hesabı","Devir","Dönem başı bakiye","","","","","0,00 TL"],["01.10.2026","BNK-2026-000001","Ziraat Bankası · Ana TL Hesabı","Açılış Bakiyesi","Açılış Bakiyesi · Ziraat Bankası · Ana TL Hesabı (Açılış ve Devir Düzeltmesi: +100.000,00 TL)","","","","","100.000,00 TL"],["01.10.2026","BNK-2026-000002","Garanti BBVA · Ana TL Hesabı","Açılış Bakiyesi","Açılış Bakiyesi · Garanti BBVA · Ana TL Hesabı (Açılış ve Devir Düzeltmesi: +50.000,00 TL)","","","","","50.000,00 TL"]],"summary":[["Hesap","Gerçek Banka (Tüm Hesaplar)"],["Devir","0,00 TL"],["Giriş","0,00 TL"],["Çıkış","0,00 TL"],["Transfer Giriş","0,00 TL"],["Transfer Çıkış","0,00 TL"],["Açılış ve Devir Düzeltmeleri","150.000,00 TL"],["Dönem Sonu","150.000,00 TL"]]}
+# [t2] A15 Tahsildeki raporu: {"status":200,"rows":[["07.10.2026","Garanti BBVA · Ana TL Hesabı","Çek","D1","ABC Ltd.","31.10.2026","02.11.2026","1.234,56 TL"]],"summary":[["Evrak Sayısı","1"],["Toplam (101.02)","1.234,56 TL"],["Garanti BBVA · Ana TL Hesabı","1.234,56 TL"]]}
+# [t2] A15 101 alt hesap (defter): {"101.01":0,"101.02":1234.56}
+# [t2] A10 tahsil sonrası kayıtlar: ["withdrawn(Z)","withdrawn(G)","withdrawn(Z)","withdrawn(G)","withdrawn(Z)","collected(G)"]
+# [t2] A10 Garanti bakiye önce/sonra (kuruş): {"garantiBefore":5000000,"garantiAfter":5123456}
+# [t2] A10 geri al sonrası kayıtlar: ["withdrawn","withdrawn","withdrawn","withdrawn","withdrawn","pending"]
+# [t2] A23 Çek Hareketleri: {"status":200,"n":12,"kinds":["Alındı","Bankaya Tahsile Verildi","Bankadan Geri Alındı","Bankaya Tahsile Verildi","Bankadan Geri Alındı","Bankaya Tahsile Verildi","Bankadan Geri Alındı","Bankaya Tahsile Verildi","Bankadan Geri Alındı","Bankaya Tahsile Verildi","Bankadan Geri Alındı","Bankaya Tahsile Verildi"]}
+# [t2] A15 101 alt hesap (defter) son: {"101.01":0,"101.02":1234.56}
+# [t2] mutabakat F sonrası: {"ok":true,"bad":[]}
+# Subtest: F — çok tur: ver / geri al / başka hesaba ver / tahsil / geri al; raporlar 101.02 ile
+    # Subtest: A10/A15/A16/A23 döngü ve raporlar
+    ok 1 - A10/A15/A16/A23 döngü ve raporlar
+      ---
+      duration_ms: 440.478135
+      type: 'test'
+      ...
+    1..1
+ok 6 - F — çok tur: ver / geri al / başka hesaba ver / tahsil / geri al; raporlar 101.02 ile
+  ---
+  duration_ms: 868.492113
+  type: 'suite'
+  ...
+1..6
+# tests 7
+# suites 6
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5241.332292

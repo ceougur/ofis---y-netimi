@@ -1,0 +1,98 @@
+(node:10724) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+B1 {"onceP":0,"onceB":90000,"p":0,"b":90000,"ana101":90000,"sonP":0,"sonB":0,"mutabakat":true}
+▶ B1 — taksite sayılmış çek: tahsile ver → karşılıksız (geçmiş tarihli mizan)
+  ✔ plan: 10-02 B 101.01 900 / A 120; 10-05 B 101.02 / A 101.01; 10-08 karşılıksız A 101.02 → ?to=10-06: 101.01 = 0, 101.02 = 900 (portföy hiçbir gün eksi olmaz) (130.526393ms)
+✔ B1 — taksite sayılmış çek: tahsile ver → karşılıksız (geçmiş tarihli mizan) (636.759726ms)
+▶ B2 — faturayla alınan çek: Alt Hesap Mizanı 101 = Ana Defter 101
+  ✔ satış faturası 2.000 (çekle, 10-02) → tahsile ver 10-05 → tahsil 10-07: her kesitte 101.01/101.02/102.01 ve ana 101 = alt toplam (109.671455ms)
+✔ B2 — faturayla alınan çek: Alt Hesap Mizanı 101 = Ana Defter 101 (451.967358ms)
+B3 {"p6":0,"b6":150000,"p":0,"b":0,"rngP":[150000,150000],"rngB":[0,150000],"g602":-150000,"g770":150000,"mutabakat":true}
+▶ B3 — carisiz çek (cariye işlenmemiş evrak): tahsile ver → karşılıksız
+  ✖ 10-02 B 101.01 / A 602; 10-05 B 101.02 / A 101.01; 10-08 karşılıksız B 770 / A 101.02 → ?to=10-06 101.02 = 1.500; son 0/0; 10-07..10-15 aralığında 101.01 hareketsiz (76.098539ms)
+✖ B3 — carisiz çek (cariye işlenmemiş evrak): tahsile ver → karşılıksız (415.665365ms)
+B4 {"kilitliGeriAl":409,"tahsil":200,"geriAl":200,"kilitliOnce":[0,400000],"kilitliSonra":[0,400000],"son":[100000,0,1300000],"mutabakat":true}  
+▶ B4 — kilitli dönem: kilitli ayda tahsile verilen çek açık ayda tahsil edilir / geri alınır
+  ✔ 09-20 al 3.000 + 1.000 → 09-25 ver (İş) → kilit 30.09 → 10-05 tahsil (200) → 10-06 Geri Al (200); kilitli kesit değişmez (143.853385ms)
+✔ B4 — kilitli dönem: kilitli ayda tahsile verilen çek açık ayda tahsil edilir / geri alınır (531.227654ms)
+B5 {"nakit":400,"baska":400,"ciro":409,"sil":409,"tutar":409,"vade":409,"no":200,"faturaCiro":409,"ara":[0,190000,10000000,5000000],"son":[0,0,10000000,5000000],"kasa":70000,"xyz":120000,"mutabakat":true}
+▶ B5 — Kasa ve ciro: tahsildeyken nakit tahsil 400; Geri Al sonrası nakit tahsil B 100 / A 101.01, ciro B 320 / A 101.01
+  ✔ sayılar (253.802563ms)
+✔ B5 — Kasa ve ciro: tahsildeyken nakit tahsil 400; Geri Al sonrası nakit tahsil B 100 / A 101.01, ciro B 320 / A 101.01 (624.120147ms)
+B6 {"ikiVer":[200,409],"verCiro":[200,409],"b101_02":150000,"bekleyen":2,"mutabakat":true,"bDurum":"portfolio"} cheque-deposited cheque-deposited
+▶ B6 — aynı anda iki Tahsile Ver / Tahsile Ver + Ciro (çift kayıt yok)
+  ✔ iki eşzamanlı istekten biri 200, öbürü 409; 101.02 = tutar (bir kez); bekleyen kayıt 1 (99.356067ms)
+✔ B6 — aynı anda iki Tahsile Ver / Tahsile Ver + Ciro (çift kayıt yok) (534.18426ms)
+B7 {"silindi":[0,0,0,true],"geri":[100000,0,true],"kesit05":[0,100000,100000]} [] []
+▶ B7 — Silinenler: Geri Al'ınmış (kaydı olan) evrak silinip geri yüklenir
+  ✔ sil → 101 tamamen düşer; geri yükle → 101.01 = 1.000, 101.02 = 0; mutabakat (179.681276ms)
+✔ B7 — Silinenler: Geri Al'ınmış (kaydı olan) evrak silinip geri yüklenir (600.954036ms)
+B8 {"ver":200,"verKod":"","m1":true,"tahsilAcilistanOnce":409,"tahsilKod":"bank-before-opening","tahsil":200,"z":10200000,"m2":true}  İşlem tarihi (29.09.2026) Ziraat Bankası · Ana TL Hesabı hesabının açılışından (01.10.2026) önce; o tarihteki para açılış bakiyesinin içindedir. Tarihi düzeltin, başka hesap seçin ya da hareket bu hesabın açılışından önceyse Banka Hesabı alanında "Hesapsız (Açılıştan Önce)" seçin (satır Hesabı Atanmamış Eski Hareketler'de kalır).
+▶ B8 — hesap açılışından önce tahsile verme ve tahsil
+  ✔ Ziraat açılışı 01.10: 09-28 tahsile ver → ? ; 09-29 tahsil → 409 beklenir; 10-02 tahsil → 200; mutabakat tamam (76.440892ms)
+✔ B8 — hesap açılışından önce tahsile verme ve tahsil (443.335512ms)
+B9 {"yevmiye":[["05.10.2026","Bankaya Tahsile Ver","Evrak No Y-1","101","1.000,00 TL",""],["05.10.2026","Bankaya Tahsile Ver","Evrak No Y-1","101","","1.000,00 TL"]],"hareket":[["02.10.2026","Alındı","1.000,00 TL"]]}
+▶ B9 — Çek / Senet Hareketleri raporu ve Yevmiye: Tahsile Ver / Geri Al izi
+  ✖ Yevmiye 101 satırlarında alt hesap ayrımı görünür mü; Çek/Senet Hareketleri tahsile vermeyi gösterir mi (39.650438ms)
+✖ B9 — Çek / Senet Hareketleri raporu ve Yevmiye: Tahsile Ver / Geri Al izi (409.083339ms)
+ℹ tests 9
+ℹ suites 9
+ℹ pass 7
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5090.582861
+
+✖ failing tests:
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-b.mjs:85:3
+✖ 10-02 B 101.01 / A 602; 10-05 B 101.02 / A 101.01; 10-08 karşılıksız B 770 / A 101.02 → ?to=10-06 101.02 = 1.500; son 0/0; 10-07..10-15 aralığında 101.01 hareketsiz (76.098539ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      b6: 150000,
+      b: 0,
+      g602: -150000,
+      g770: 150000,
+  ...
+      rngP: [
+  +     150000,
+  +     150000
+  -     0,
+  -     0
+      ]
+    }
+  
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-b.mjs:97:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { p6: 0, b6: 150000, p: 0, b: 0, rngP: [ 150000, 150000 ], rngB: [ 0, 150000 ], g602: -150000, g770: 150000, mutabakat: true },
+    expected: { p6: 0, b6: 150000, p: 0, b: 0, rngP: [ 0, 0 ], rngB: [ 0, 150000 ], g602: -150000, g770: 150000, mutabakat: true },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-b.mjs:237:3
+✖ Yevmiye 101 satırlarında alt hesap ayrımı görünür mü; Çek/Senet Hareketleri tahsile vermeyi gösterir mi (39.650438ms)
+  AssertionError [ERR_ASSERTION]: Yevmiye satırlarında 101.02 görünmüyor: [["05.10.2026","Bankaya Tahsile Ver","Evrak No Y-1","101","1.000,00 TL",""],["05.10.2026","Bankaya Tahsile Ver","Evrak No Y-1","101","","1.000,00 TL"]]
+      at TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/wf_d306f93b-be4-1/docs/kanit/2026-10-12/tahsile-ver/dogrulayici/kos-b.mjs:245:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

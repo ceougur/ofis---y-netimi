@@ -1,0 +1,67 @@
+TAP version 13
+# C1 {"ana101":2000,"alt10101":2000,"mains":["101","102"]}
+# Subtest: C1 — hiç tahsile verilmemiş şirkette Alt Hesap Mizanı
+    # Subtest: portföyde 2.000 alınan çek: Ana Defter 101 = 2.000 iken Alt Hesap Mizanı'nda 101.01 satırı ve 101 ana hesabı var mı (plan §3.11: 101.01 Portföydeki Çekler)
+    ok 1 - portföyde 2.000 alınan çek: Ana Defter 101 = 2.000 iken Alt Hesap Mizanı'nda 101.01 satırı ve 101 ana hesabı var mı (plan §3.11: 101.01 Portföydeki Çekler)
+      ---
+      duration_ms: 180.091655
+      type: 'test'
+      ...
+    1..1
+ok 1 - C1 — hiç tahsile verilmemiş şirkette Alt Hesap Mizanı
+  ---
+  duration_ms: 2316.783976
+  type: 'suite'
+  ...
+# C2 bekleyen kaydın verilme başlığı silinir true false ["cheque:collections"]
+# Subtest: C2 — Mutabakat Testi'nin dişi: ham SQL ile bozulan tahsil izi yakalanır mı
+    # Subtest: bekleyen kaydın verilme başlığı silinir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+    ok 1 - bekleyen kaydın verilme başlığı silinir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+      ---
+      duration_ms: 1274.315255
+      type: 'test'
+      ...
+# C2 bekleyen kayıt başlıksız 'withdrawn' yapılır true false ["cheque:collections"]
+    # Subtest: bekleyen kayıt başlıksız 'withdrawn' yapılır → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+    ok 2 - bekleyen kayıt başlıksız 'withdrawn' yapılır → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+      ---
+      duration_ms: 755.448857
+      type: 'test'
+      ...
+# C2 tahsildeki evrakın tutarı değiştirilir true false ["gl:101","cheque:account","cheque:collections"]
+    # Subtest: tahsildeki evrakın tutarı değiştirilir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+    ok 3 - tahsildeki evrakın tutarı değiştirilir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+      ---
+      duration_ms: 668.269529
+      type: 'test'
+      ...
+# C2 tahsildeki evrak 'collected' yapılır (kayıt bekliyor) true false ["gl:101","cheque:collections"]
+    # Subtest: tahsildeki evrak 'collected' yapılır (kayıt bekliyor) → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+    ok 4 - tahsildeki evrak 'collected' yapılır (kayıt bekliyor) → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+      ---
+      duration_ms: 543.953723
+      type: 'test'
+      ...
+# C2 ikinci bekleyen kayıt (başka hesap) eklenir true false ["cheque:collections"]
+    # Subtest: ikinci bekleyen kayıt (başka hesap) eklenir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+    ok 5 - ikinci bekleyen kayıt (başka hesap) eklenir → Mutabakat Testi bozuk (cheque:collections ya da başka denetim)
+      ---
+      duration_ms: 463.868667
+      type: 'test'
+      ...
+    1..5
+ok 2 - C2 — Mutabakat Testi'nin dişi: ham SQL ile bozulan tahsil izi yakalanır mı
+  ---
+  duration_ms: 3706.790128
+  type: 'suite'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7385.287676
+exit 0

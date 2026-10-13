@@ -28,6 +28,9 @@ import { createHash } from "node:crypto";
 import { HttpError } from "./http.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
+import { collectionProblems } from "./bank/collections.mjs";
+import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentGl, documentWanted } from "./cheque-gl.mjs";
+import { compareVersions } from "./semver.mjs";
 import { createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { systemClock } from "./clock.mjs";
@@ -55,6 +58,9 @@ const AMOUNT_COLUMNS = [
 const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
 // Alt hesabı olan para hesapları (v2.1.0 §3.11): banka, POS, kurumsal kart, kredi.
 const SUB_ACCOUNTS = new Set(["102", "108", "309", "300"]);
+// Alınan evrakın alt hesapları (Bankaya Tahsile Ver, plan §3.14): 101.01 / 121.01 portföy, 101.02 / 121.02 bankaya tahsile verilen (2.2.0 İz 4.2:
+// senet 121; lib/cheque-gl.mjs).
+const CHEQUE_MAIN = RECEIVED_MAINS;
 
 /** Testlerde (gateVerify) dokunulan varlıklar yolu "temiz" dedi ama tam kapı reddetti: süzgeç eksik (eşdeğerlik ihlali). */
 export class GateEquivalenceError extends HttpError {
@@ -176,21 +182,32 @@ const LOCK_SQL = {
     requires: ["bank_lines", "fin_events"],
     sql: "SELECT l.id, l.event_id, l.seq, l.role, l.gl, l.sub, l.ref, l.side, l.try_minor, l.currency, l.fx_minor, l.rate_e6 FROM bank_lines l JOIN fin_events e ON e.id = l.event_id WHERE e.date <= ?1 ORDER BY l.id",
   },
-  // POS satışının değişmeyen alanları (durum, güncelleme ve sonradan değişebilen iade/bloke alanları girmez).
+  // POS satışının değişmeyen alanları (plan §4.4/6; durum, güncelleme ve sonradan değişebilen iade/bloke alanları girmez). Yargıç 2.2.0 Y1:
+  // bank_account_id da girmez — "Bekleyenleri Yeni Hesaba Taşı" (§4.6, lib/bank/pos.mjs movePending) kilitli satışın BEKLEYEN kalemlerinin
+  // geçeceği hesabı değiştirir; satışın kendi fişi (bank_lines, kilit izinde) ve kilitli dönemin mizanı değişmez, para yeni hesaba valör günü
+  // (açık dönemde) yazılır. 2.1.0'da pos_sales'e yazan yol yoktu (POS Aşama 10–11 2.2.0'da): eski sürümün kaydettiği iz bu değişiklikten etkilenmez.
   pos_sales_lock: {
     requires: ["pos_sales"],
-    sql: "SELECT id, event_id, pos_id, kind, src, origin_id, date, installments, rate_ppm, tax_kind, tax_mode, tax_ppm, fixed_minor, refund_commission, payout, block_days, bank_account_id, provider_account_id, gross_minor, commission_minor, tax_minor, net_minor, auth_code FROM pos_sales WHERE date <= ?1 ORDER BY id",
+    sql: "SELECT id, event_id, pos_id, kind, src, origin_id, date, installments, rate_ppm, tax_kind, tax_mode, tax_ppm, fixed_minor, refund_commission, payout, block_days, provider_account_id, gross_minor, commission_minor, tax_minor, net_minor, auth_code FROM pos_sales WHERE date <= ?1 ORDER BY id",
   },
   // Bankaya Tahsile Ver (§3.14): verilme ve kapanış ayrı (kilitli ayda verilen çek açık ayda tahsil edilebilir).
   cheque_collections_given: { requires: ["cheque_collections"], sql: "SELECT id, cheque_id, bank_account_id, given_date FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
   cheque_collections_closed: { requires: ["cheque_collections"], sql: "SELECT id, status, closed_date, close_event_id FROM cheque_collections WHERE closed_date <> '' AND closed_date <= ?1 ORDER BY id" },
+  // 2.2.0 İz 4.2 (plan §3.11a): evrakın türü Ana Defter'in hesabını belirler (çek 101 / 103, senet 121 / 321) — kapanmış dönemdeki evrakın türü
+  // değişirse kilitli mizan 101 ↔ 121 ya da 103 ↔ 321 kayar. Yalnız SENETLER satır üretir: çekleri olan eski verinin izi aynı kalır; senedi olan
+  // verinin izi bu girdiyle değişir, bu yüzden girdi sürüme bağlıdır (since): önceki sürümün iziyle karşılaştırma lockDigestOf(…, { version }).
+  // Kartta tür değişikliği kilitli dönemde zaten 409 period-locked (routes/cheques.mjs coreChanged); bu girdi store dışı / eski sürüm / elle
+  // değişikliği yakalar.
+  cheques_instrument_lock: { requires: ["cheques"], since: "2.2.0", sql: "SELECT id, instrument FROM cheques WHERE instrument <> 'cheque' AND issue_date <= ?1 ORDER BY id" },
 };
 
 /**
  * Kapanmış dönemin parmak izi (sha256): LOCK_SQL'in her girdisi, kilit tarihi (ve öncesi) için. Gereksinim "tablo" ya da
  * "tablo.kolon"; karşılanmayan girdi atlanır (eski şema). Göç testleri ve araçlar da kullanır (v2.1.0; K11 ölçütü).
+ * version (2.2.0 İz 4.2): o sürümün iz tanımı — girdinin "since" sürümü daha yeniyse atlanır (eski sürümün kaydettiği izle karşılaştırma;
+ * çalışma anındaki kapı her zaman güncel tanımı kullanır: iz açılışta ölçülür, saklanmaz).
  */
-export function lockDigestOf(store, lock) {
+export function lockDigestOf(store, lock, { version = "" } = {}) {
   if (!lock) return "";
   const tables = new Set(store.all("SELECT name FROM sqlite_master WHERE type = 'table'").map(row => row.name));
   const columns = new Map();
@@ -203,14 +220,15 @@ export function lockDigestOf(store, lock) {
   };
   const hash = createHash("sha256");
   for (const [name, entry] of Object.entries(LOCK_SQL)) {
-    const { requires, sql } = typeof entry === "string" ? { requires: [name], sql: entry } : entry;
+    const { requires, sql, since = "" } = typeof entry === "string" ? { requires: [name], sql: entry } : entry;
+    if (version && since && compareVersions(since, version) > 0) continue;
     if (!requires.every(has)) continue;
     for (const row of store.all(sql, lock)) hash.update(`${name}|${Object.values(row).join("|")}\n`);
   }
   return hash.digest("hex");
 }
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, pos = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
   let bankChecks = null;
@@ -248,23 +266,25 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     for (const entry of entries) {
       const cheque = owner.get(entry.id) || /^account:free-(?:in|out|bounce):(.+)$/.exec(entry.id)?.[1];
       if (!cheque) continue;
+      // 2.2.0 İz 4.2: evrak hesapları 101 / 103 (çek) ve 121 / 321 (senet); evrakın türüne ait OLMAYAN hesaptaki satır da sapmadır.
       for (const line of entry.lines) {
-        if (line.account !== "101" && line.account !== "103") continue;
-        const sums = got.get(cheque) || { 101: 0, 103: 0 };
-        sums[line.account] += line.debit - line.credit;
+        if (!DOCUMENT_MAINS.has(line.account)) continue;
+        const sums = got.get(cheque) || {};
+        sums[line.account] = (sums[line.account] || 0) + line.debit - line.credit;
         got.set(cheque, sums);
       }
     }
     const seen = new Set();
-    for (const row of store.all("SELECT id, direction, status, amount, deleted_at AS deletedAt FROM cheques")) {
+    for (const row of store.all("SELECT id, direction, instrument, status, amount, deleted_at AS deletedAt FROM cheques")) {
       seen.add(row.id);
       const live = !row.deletedAt;
-      const want101 = live && row.direction === "in" && row.status === "portfolio" ? Math.round((Number(row.amount) || 0) * 100) : 0;
-      const want103 = live && row.direction === "out" && row.status === "pending" ? -Math.round((Number(row.amount) || 0) * 100) : 0;
-      const sums = got.get(row.id) || { 101: 0, 103: 0 };
-      if (sums[101] !== want101 || sums[103] !== want103) out.add(row.id);
+      const gl = documentGl(row.instrument);
+      const value = Math.round((Number(row.amount) || 0) * 100);
+      const want = { [gl.received]: live && row.direction === "in" && row.status === "portfolio" ? value : 0, [gl.given]: live && row.direction === "out" && row.status === "pending" ? -value : 0 };
+      const sums = got.get(row.id) || {};
+      if ([...DOCUMENT_MAINS].some(code => (sums[code] || 0) !== (want[code] || 0))) out.add(row.id);
     }
-    for (const [cheque, sums] of got) if (!seen.has(cheque) && (sums[101] || sums[103])) out.add(cheque);
+    for (const [cheque, sums] of got) if (!seen.has(cheque) && Object.values(sums).some(Boolean)) out.add(cheque);
     return out;
   }
 
@@ -282,6 +302,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const bankItems = [];
     const service = ledger();
     let groups = null;
+    let chequeSubs = null;
     if (service?.check) {
       // Cari listesi bir kez hesaplanır: Ana Defter'in beklenen bakiyeleri (120/320/336) ve cari bazında denetim aynı
       // listeyi kullanır (v2.0.22; önceden her yazmada iki kez hesaplanıyordu — aynı veri, aynı sonuç).
@@ -291,12 +312,13 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       groups = moneyGroups || null;
       lap("ledger");
       drift = chequeDriftOf(entries);
+      chequeSubs = subBalances(entries, CHEQUE_MAIN);
       lap("cheques");
       checks.push({ code: "balance", name: "Çift yönlü kayıt (borç = alacak)", ok: reconciliation.balanced, difference: 0 });
       // v2.1.0 (§3.11 bank:sub, E1.16): alt hesap mutabakatı — yevmiyedeki alt hesap (102.01, 108.00 …) = tek kaynağın (yol, hesap) grubu.
       // Varlık bazında kod: bir hesaptaki sapma yalnız kendi kodunu (bank:sub:<alt hesap>) kilitler.
       if (service.expectedSubs && groups) {
-        const fromLedger = subBalances(entries);
+        const fromLedger = subBalances(entries, SUB_ACCOUNTS);
         const fromSource = service.expectedSubs(groups);
         const names = {};
         if (has("bank_accounts")) for (const row of store.all("SELECT gl_sub AS sub, code, name FROM bank_accounts")) names[row.sub] = `${row.code} · ${row.name}`;
@@ -554,6 +576,35 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // GG2: hesaba bağlı modül satırının yolu hesabın türüne uyar (havale → 102, kart → 309); bağlı satır nakit/POS olamaz.
       const refItems = byEntity("bank:ref", "Hesap Bağı ve Yol", bank().refProblems(), { label });
       bankItems.push(...(refItems.length ? refItems : [{ code: "bank:ref", name: "Hesap Bağı ve Yol", ok: true, count: 0 }]));
+      // 2.2.0 (§3.11 pos:terminal, pos:source, pos:refund, pos:schedule, bank:party): POS denetimleri — tam taramada ve POS'a dokunan işlemde
+      // (dokunulan olaylardan birinin POS bağı var: satış/iade, gün fişi, İptal İadesi).
+      const posService = pos?.();
+      if (posService?.checkItems && (!scoped || (touched.size && store.get("SELECT 1 AS found FROM json_each(?) j JOIN fin_events e ON e.id = j.value WHERE e.pos_id <> '' LIMIT 1", JSON.stringify([...touched]))))) bankItems.push(...posService.checkItems({ events: scoped ? touched : null }));
+      // Bankaya Tahsile Ver (plan §3.14): 101.02 = tahsildeki çek, 101.01 = portföydeki çek − tahsildeki; 2.2.0 İz 4.2 (plan §3.11a "101.02 +
+      // 121.02 toplamı etkin tahsil kayıtlarıyla"): senette aynı kural 121.02 / 121.01 — her alt hesap AYRI karşılaştırılır (bir senedin kaydı
+      // 101'e yazılsa toplam tutar, alt hesap tutmaz); tahsil kayıtları başlıklarıyla tutarlı.
+      if (chequeSubs && has("cheque_collections")) {
+        const problems = collectionProblems(store);
+        const wanted = documentWanted(store).subs;
+        const sample = problems.slice(0, 5).map(item => item.sample);
+        let atBank = 0;
+        let deposited = 0;
+        let subsOk = true;
+        for (const sub of Object.keys(DOCUMENT_SUB_NAMES)) {
+          const got = chequeSubs.get(sub) || 0;
+          const want = wanted.get(sub) || 0;
+          if (got !== want) {
+            subsOk = false;
+            sample.unshift(`${sub}: defter ${got / 100} / ${BANK_SUBS.has(sub) ? "tahsildeki" : "portföydeki"} evrak ${want / 100}`);
+          }
+          if (BANK_SUBS.has(sub)) {
+            atBank += got;
+            deposited += want;
+          }
+        }
+        const okay = !problems.length && subsOk;
+        bankItems.push({ code: "cheque:collections", name: "Tahsildeki Çek ve Senetler (101.02 + 121.02 = bankaya tahsile verilen evrak)", ok: okay, count: problems.length, difference: roundMoney((atBank - deposited) / 100), ledger: roundMoney(atBank / 100), subledger: roundMoney(deposited / 100), sample: sample.slice(0, 5) });
+      }
       const report = scoped && !touched.size ? [] : bank().reportMismatches(scope);
       bankItems.push({ code: "money:report", name: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)", ok: report.length === 0, count: report.length, ...(scoped ? { scoped: true, gateCount: report.length } : {}), sample: report.slice(0, 5).map(item => `${item.key}: satırlar ${item.rows / 100} / özet ${item.summary / 100}`) });
       if (!scoped) {

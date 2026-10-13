@@ -71,6 +71,8 @@
     "case.payment.updated": "Tahsilatı düzeltti",
     "case.payment.deleted": "Tahsilatı sildi",
     "cash.entry.created": "Kasaya hareket ekledi",
+    "cash.opening.entered": "Kasa açılış bakiyesini girdi",
+    "cash.opening.corrected": "Kasa açılış bakiyesini düzeltti",
     "cash.exported": "Kasa dökümünü PDF indirdi",
     "dues.settled": "Tahsilat kalemini ödendi saydı",
     "dues.cancelled": "Ödeme sözünü iptal etti",

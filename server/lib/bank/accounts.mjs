@@ -27,6 +27,8 @@ import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
 import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
+import { CHEQUE_SUB_NAMES, assertNoPendingCollections, chequeSubTrial } from "./collections.mjs";
+import { mainOfSub } from "../cheque-gl.mjs";
 
 // limit: hesabın limit alanı (plan §3.5 "KMH Limiti alanı" yalnız Vadesiz; §3.9 "KMH ya da kart limiti"; Kredi Hesabı'nda ekranın "Kredi Limiti" bilgi
 // alanı — eksi bakiye denetimine girmez). Limit alanı olmayan türde 0'dan büyük limit 400 bank-limit (hakem K7).
@@ -36,12 +38,19 @@ export const ACCOUNT_KINDS = Object.freeze({
   time: { label: "Vadeli", forms: [] },
   fx: { label: "Döviz", forms: ["fx"] },
   loan: { label: "Kredi Hesabı", forms: [], limit: "Kredi Limiti" },
-  card: { label: "Kurumsal Kredi Kartı", forms: ["card"], limit: "Kart Limiti" },
+  card: { label: "Kredi Kartı", forms: ["card"], limit: "Kart Limiti" },
   other: { label: "Diğer", forms: ["bank"] },
 });
 /** ANLIK DURUM, Genel Bakış ve Birleşik Rapor'da aynı adlar (K10). */
 export const K10_LABELS = Object.freeze({ realBank: "Gerçek Banka", posPending: "POS Bekleyen (Net)", posBlocked: "Blokeli POS", debt: "Kart ve Kredi Borcu", unassigned: "Hesabı Atanmamış Eski Hareketler" });
 const POLICIES = ["warn", "block", "off"];
+/** v2.2.0 (İz 2.2): hesabın kullanım işaretleri — gövde anahtarı → kolon. */
+export const FLAG_COLUMNS = Object.freeze([
+  ["useCard", "use_card"],
+  ["useCheque", "use_cheque"],
+  ["useNote", "use_note"],
+  ["usePos", "use_pos"],
+]);
 const NOT_CONFIRMED = "Açılış bakiyesi doğrulanmadı; eksi bakiye denetimi kapalı.";
 const BANK_FORM_KINDS = new Set(["demand", "commercial", "other"]);
 const STATUSES = ["active", "passive"];
@@ -66,6 +75,12 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   const stamp = () => now().toISOString();
   const today = () => (period ? period.today() : now().toISOString().slice(0, 10));
   const lock = () => period?.lockedUntil?.() || "";
+  const columnCache = new Map();
+  const columnOf = (table, column) => {
+    const key = `${table}.${column}`;
+    if (!columnCache.has(key)) columnCache.set(key, store.all(`PRAGMA table_info(${table})`).some(item => item.name === column));
+    return columnCache.get(key);
+  };
 
   // ---------- Kartlar ----------
   const rowOf = (id, { deleted = false } = {}) => {
@@ -148,7 +163,25 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const entries = store.get("SELECT COALESCE(SUM(CASE kind WHEN 'in' THEN fx_minor WHEN 'out' THEN -fx_minor ELSE 0 END), 0) AS n FROM account_entries WHERE fin_ref = ? AND fin_ref <> '' AND fx_currency <> ''", row.id).n;
     return Number(lines) + Number(entries);
   }
-  function view(row, { tl = null } = {}) {
+  /** v2.2.0 (İz 2.2–2.3): hesabın işaretleri, kartın bağlı bankası ve bankanın altındaki kartlar. rows: listedeki bütün satırlar (öneri ve kart listesi tek okumayla). */
+  function linkView(row, { tl = null, rows = null } = {}) {
+    const parent = row.parent_id ? (rows ? rows.find(item => item.id === row.parent_id) : null) || rowOf(row.parent_id, { deleted: true }) : null;
+    const children = BANK_FORM_KINDS.has(row.kind) ? (rows ? rows.filter(item => item.parent_id === row.id && !item.deleted_at) : cardsOf(row.id)) : [];
+    return {
+      parentId: row.parent_id || "",
+      parentLabel: parent ? labelOf(parent) : "",
+      parentCode: parent?.code || "",
+      parentActive: Boolean(parent && !parent.deleted_at && parent.status === "active"),
+      cardLast4: row.card_last4 || "",
+      useCard: Boolean(row.use_card),
+      useCheque: Boolean(row.use_cheque),
+      useNote: Boolean(row.use_note),
+      usePos: Boolean(row.use_pos),
+      cards: children.map(card => ({ id: card.id, code: card.code, name: card.name, label: labelOf(card), cardLast4: card.card_last4 || "", status: card.status, creditLimitMinor: Number(card.credit_limit_minor) || 0, debtMinor: -(tl?.has(card.id) ? tl.get(card.id) : money.refTotal({ ref: card.id }).cents), statementDay: card.statement_day, dueDay: card.due_day })),
+      parentSuggestions: parentSuggestions(row, rows),
+    };
+  }
+  function view(row, { tl = null, rows = null } = {}) {
     const confirmed = Boolean(row.balance_confirmed);
     // Hesabın toplamı (moneyLines refTotal; saklanır). Hesap listesinde hesapların toplamları bir kez okunur (tl).
     const balance = tl?.has(row.id) ? tl.get(row.id) : money.refTotal({ ref: row.id }).cents;
@@ -198,10 +231,12 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       movementCount: moves.count,
       firstMovementDate: moves.first,
       lastMovementDate: moves.last,
-      deletable: moves.count === 0 && !activeSetupOf(row.id) && !plannedCount(row.id),
+      deletable: moves.count === 0 && !activeSetupOf(row.id) && !plannedCount(row.id) && !cardsOf(row.id).length && !openChequeCount(row.id),
       plannedCount: plannedCount(row.id),
+      openChequeCount: openChequeCount(row.id),
       createdAt: row.created_at,
       updatedAt: row.updated_at,
+      ...linkView(row, { tl, rows }),
     };
   }
 
@@ -265,7 +300,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   /** Tür ve para birimi kuralı (§3.5): TL dışında 102 ailesi Döviz olur; Döviz türü TL olamaz; kredi, kart ve vadeli yalnız TL. */
   function kindCurrency(kindValue, currencyValue) {
     let kind = text(kindValue);
-    if (!Object.hasOwn(ACCOUNT_KINDS, kind)) throw new HttpError(400, "Hesap türü Vadesiz, Ticari, Vadeli, Döviz, Kredi Hesabı, Kurumsal Kredi Kartı ya da Diğer olmalı.", { code: "bank-kind", field: "kind" });
+    if (!Object.hasOwn(ACCOUNT_KINDS, kind)) throw new HttpError(400, "Hesap türü Vadesiz, Ticari, Vadeli, Döviz, Kredi Hesabı, Kredi Kartı ya da Diğer olmalı.", { code: "bank-kind", field: "kind" });
     const currency = currencyOf(currencyValue);
     // GG2 (orta; kullanıcı kararı "Ertelenenler 2.1.0'da GÖRÜNMEZ"): döviz hesabı, kuru ve değerlemesiyle birlikte sonraki sürümde (Aşama 13).
     // Bu sürümde yalnız TL hesap açılır; döviz hesabı testlerde (config.fxEnabled) açılır.
@@ -312,13 +347,81 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (policy && !POLICIES.includes(policy)) throw new HttpError(400, "Eksi bakiye denetimi Uyar, Engelle ya da Kontrol Yok olmalı (boş: Banka Ayarları'ndaki).", { code: "bank-negative-policy", field: "negativePolicy" });
     return policy;
   }
+  // ---------- v2.2.0 İz 2: kullanım işaretleri, kartın bağlı bankası ve son 4 hanesi ----------
+  /**
+   * Kullanım işaretleri (2.2): Kredi Kartı Kullan (altına kurumsal kart eklenir), Çek Kullan (verilen çekin Çek Hesabı seçicisinde), Senet Kullan
+   * (verilen senedin ödeme hesabı önerisinde), POS Kullan (altına POS tanımlanır; POS'un kendisi POS izinde). Yalnız havale alan hesap türünde
+   * (Vadesiz, Ticari, Diğer — TL): vadeli, kredi, kart ve döviz hesabında işaret 400 bank-flag-kind. Eski hesaplarda hepsi kapalı (göç 21).
+   */
+  function flagsOf(body, kind, current = null) {
+    const out = {};
+    for (const [key, column] of FLAG_COLUMNS) {
+      const value = body?.[key];
+      if (value === undefined || value === null) {
+        out[column] = current ? Number(current[column]) || 0 : 0;
+        continue;
+      }
+      out[column] = value === true || value === 1 || value === "1" || value === "true" ? 1 : 0;
+    }
+    const any = FLAG_COLUMNS.some(([, column]) => out[column]);
+    if (any && !BANK_FORM_KINDS.has(kind)) {
+      throw new HttpError(400, `${ACCOUNT_KINDS[kind]?.label || kind} hesapta Kredi Kartı / Çek / Senet / POS Kullan işareti olmaz; bu işaretler yalnız Vadesiz, Ticari ya da Diğer TL hesapta seçilir.`, { code: "bank-flag-kind", field: "flags" });
+    }
+    return out;
+  }
+  /** Kartın son 4 hanesi (2.3): '' ya da tam 4 rakam; yalnız Kurumsal Kredi Kartı'nda (kart numarasının tamamı saklanmaz, plan §9.2/10). */
+  function last4Of(value, kind) {
+    const raw = value === undefined || value === null ? "" : String(value).replace(/\s+/g, "");
+    if (!raw) return "";
+    if (kind !== "card") throw new HttpError(400, "Son 4 hane yalnız kredi kartında girilir.", { code: "bank-card-last4", field: "cardLast4" });
+    if (!/^\d{4}$/.test(raw)) throw new HttpError(400, "Kartın son 4 hanesi 4 rakam olmalı (ör. 1234); kart numarasının tamamı yazılmaz.", { code: "bank-card-last4", field: "cardLast4" });
+    return raw;
+  }
+  /**
+   * Kartın bağlı olduğu banka hesabı (2.3): etkin, silinmemiş, TL Vadesiz/Ticari/Diğer. Yoksa 404; pasif, başka tür ya da kendisi 400. Kartın
+   * banka adı bu hesaptan gelir ("Yapı Kredi · World"); hesabın "Kredi Kartı Kullan" işareti kart eklenince kendiliğinden açılır.
+   */
+  function parentOf(id, { except = "" } = {}) {
+    const row = rowOf(id);
+    if (!row) throw new HttpError(404, "Kartın bağlanacağı banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", { code: "bank-account-missing", field: "parentId" });
+    if (except && row.id === except) throw new HttpError(400, "Kart kendisine bağlanamaz; bir banka hesabı seçin.", { code: "bank-parent-invalid", field: "parentId" });
+    if (row.status !== "active") throw new HttpError(400, `${labelOf(row)} pasif; kart etkin bir banka hesabının altına eklenir (önce Etkinleştir).`, { code: "bank-parent-invalid", field: "parentId", accountId: row.id });
+    if (!bankFormOk(row)) throw new HttpError(400, `${labelOf(row)} ${ACCOUNT_KINDS[row.kind]?.label || row.kind} hesap; kredi kartı yalnız Vadesiz, Ticari ya da Diğer TL banka hesabının altına eklenir.`, { code: "bank-parent-invalid", field: "parentId", accountId: row.id });
+    return row;
+  }
+  /** Banka hesabının altındaki (silinmemiş) kurumsal kartlar. */
+  const cardsOf = id => store.all("SELECT * FROM bank_accounts WHERE parent_id = ? AND parent_id <> '' AND deleted_at IS NULL ORDER BY position, created_at", String(id || ""));
+  /** Hesaba bağlı açık (ödenmemiş) verilen çek/senet sayısı (hesap silinmesin; 2.5). */
+  const openChequeCount = id =>
+    store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'") && columnOf("cheques", "bank_account_id")
+      ? Number(store.get("SELECT COUNT(*) AS n FROM cheques WHERE bank_account_id = ? AND deleted_at IS NULL AND direction = 'out' AND status = 'pending'", String(id || "")).n) || 0
+      : 0;
+  /** Hesaba bağlı etkin POS sayısı (POS Kullan işareti kapatılmasın; POS izi pos_terminals'a yazar). */
+  const posCount = id => Number(store.get("SELECT COUNT(*) AS n FROM pos_terminals WHERE bank_account_id = ? AND deleted_at IS NULL", String(id || ""))?.n) || 0;
+  /**
+   * Eski (bağsız) kart için öneri (2.3): aynı bankanın etkin havale hesapları — banka adı (Türkçe harfler sadeleştirilip) aynı ya da biri öbürüyle
+   * başlıyor ("Garanti BBVA" ↔ "Garanti"). Kendiliğinden bağlanmaz; kullanıcı "Bağla" der (PUT parentId).
+   */
+  function parentSuggestions(row, rows = null) {
+    if (row.kind !== "card" || row.parent_id) return [];
+    const name = fold(row.bank_name);
+    if (name.length < 3) return [];
+    const list = rows || store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL ORDER BY position, created_at");
+    return list
+      .filter(item => item.id !== row.id && bankFormOk(item))
+      .filter(item => {
+        const other = fold(item.bank_name);
+        return other.length >= 3 && (other === name || other.startsWith(name) || name.startsWith(other));
+      })
+      .map(item => ({ id: item.id, code: item.code, label: labelOf(item) }));
+  }
   const limitOf = value => (value === undefined || value === null || value === "" ? 0 : parseMinor(value, { label: "Limit", allowZero: true }));
   /**
    * Hakem K7 (plan §3.5): limit yalnız limit alanı olan türde (ACCOUNT_KINDS[].limit: Vadesiz KMH, kart, kredi). Önceden API Ticari, Diğer, Vadeli ve
    * Döviz hesapta da KMH saklıyor, eksi bakiye denetimi (vouchers.mjs) onu sayıyordu.
    */
   function kindLimit(kind, minor) {
-    if (minor > 0 && !ACCOUNT_KINDS[kind]?.limit) throw new HttpError(400, `${ACCOUNT_KINDS[kind]?.label || kind} hesapta limit (KMH) olmaz; KMH Limiti yalnız Vadesiz hesapta, kart limiti Kurumsal Kredi Kartı'nda girilir.`, { code: "bank-limit", field: "creditLimit" });
+    if (minor > 0 && !ACCOUNT_KINDS[kind]?.limit) throw new HttpError(400, `${ACCOUNT_KINDS[kind]?.label || kind} hesapta limit (KMH) olmaz; KMH Limiti yalnız Vadesiz hesapta, kart limiti Kredi Kartı'nda girilir.`, { code: "bank-limit", field: "creditLimit" });
     return minor;
   }
   /** Bilgi alanları (kartın parası ve türü değil). */
@@ -363,17 +466,27 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (lines.length) assertLines(lines);
     return bank.voucher({ type: "opening", date: opening.date, bankRef: row.id, currency: row.currency, description: `Açılış Bakiyesi · ${labelOf(row)}` }, lines);
   }
-  /** Yeni açılışın tarihi hesabın ilk hareketinden sonra olamaz (§3.8). */
+  /** Yeni açılışın tarihi hesabın ilk hareketinden sonra olamaz (§3.8). Bankaya tahsile verilen evrak da hesabın hareketidir (para satırı
+   * olmasa da; doğrulama T8/D5: tahsile verme hesabın açılışından önce olamaz). */
   function assertBeforeFirst(id, date) {
     const { first } = movementInfo(id);
     if (first && date > first) throw new HttpError(409, `Açılış tarihi hesabın ilk hareketinden (${first.split("-").reverse().join(".")}) sonra olamaz. Açılış, o günün başındaki bakiyedir.`, { code: "bank-opening-after-first", firstMovement: first });
+    const given = store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_collections'") ? store.get("SELECT MIN(given_date) AS d FROM cheque_collections WHERE bank_account_id = ?", id)?.d || "" : "";
+    if (given && date > given) throw new HttpError(409, `Açılış tarihi, bu hesaba tahsile verilen ilk evrakın veriliş tarihinden (${given.split("-").reverse().join(".")}) sonra olamaz.`, { code: "bank-opening-after-first", firstMovement: given });
   }
 
   // ---------- Hesap aç, düzelt, durum, sil ----------
   function create(user, body = {}, { requestId = "" } = {}) {
-    const bankName = requiredName(body.bankName, "Banka Adı");
-    const name = requiredName(body.name, "Hesap Adı");
-    const { kind, currency } = kindCurrency(body.kind || "demand", body.currency);
+    // v2.2.0 (İz 2.3): kurumsal kart bankanın içinden açılır (parentId: kartın bağlı banka hesabı). Bankasız kart (2.1.0'ın API yolu) geriye
+    // uyumlu kalır: para kuralı aynıdır (309.NN), ekran yalnız bankanın içinden açar (karar: raporda).
+    const parentId = text(body.parentId);
+    const parent = parentId ? parentOf(parentId) : null;
+    if (parent && text(body.kind || "card") !== "card") throw new HttpError(400, "Banka hesabının altına yalnız kredi kartı eklenir.", { code: "bank-parent-kind", field: "kind" });
+    const bankName = parent ? parent.bank_name : requiredName(body.bankName, "Banka Adı");
+    const name = requiredName(body.name, parent ? "Kart Adı" : "Hesap Adı");
+    const { kind, currency } = kindCurrency(body.kind || (parent ? "card" : "demand"), body.currency);
+    const flags = flagsOf(body, kind);
+    const cardLast4 = last4Of(body.cardLast4, kind);
     const iban = normalizeIban(body.iban);
     if (iban && !isValidIban(iban)) ibanOf(iban);
     const code = text(body.code);
@@ -394,18 +507,22 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         const used = store.all("SELECT gl_sub AS sub FROM bank_accounts WHERE gl = ?", gl).map(row => Number(String(row.sub).split(".")[1]) || 0);
         const glSub = `${gl}.${String(Math.max(0, ...used) + 1).padStart(2, "0")}`;
         const position = Number(store.get("SELECT COALESCE(MAX(position), 0) AS n FROM bank_accounts").n) + 1;
+        // Bağlı banka işlemin içinde yeniden okunur (aynı anda silinen/pasife alınan hesaba kart eklenmesin).
+        const linked = parent ? parentOf(parent.id) : null;
         store.run(
           `INSERT INTO bank_accounts (id, code, gl, gl_sub, kind, bank_name, name, currency, iban, account_no, branch_name, branch_code, swift, holder, description, opening_date,
-             balance_confirmed, credit_limit_minor, negative_policy, statement_day, due_day, show_on_invoice, status, position, created_by, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)`,
-          id, finalCode, gl, glSub, kind, bankName, name, currency, iban, info.account_no, info.branch_name, info.branch_code, info.swift, info.holder, info.description, opening.date,
-          opening.confirmed ? 1 : 0, creditLimit, negativePolicy, info.statement_day, info.due_day, info.show_on_invoice, position, user.id, stamp(),
+             balance_confirmed, credit_limit_minor, negative_policy, statement_day, due_day, show_on_invoice, status, position, parent_id, card_last4, use_card, use_cheque, use_note, use_pos, created_by, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          id, finalCode, gl, glSub, kind, linked ? linked.bank_name : bankName, name, currency, iban, info.account_no, info.branch_name, info.branch_code, info.swift, info.holder, info.description, opening.date,
+          opening.confirmed ? 1 : 0, creditLimit, negativePolicy, info.statement_day, info.due_day, info.show_on_invoice, position, linked?.id || "", cardLast4, flags.use_card, flags.use_cheque, flags.use_note, flags.use_pos, user.id, stamp(),
         );
+        // Kart eklenen bankanın "Kredi Kartı Kullan" işareti kendiliğinden açılır (kart listesi hesabın altında görünsün).
+        if (linked && !linked.use_card) store.run("UPDATE bank_accounts SET use_card = ?, updated_by = ?, updated_at = ? WHERE id = ?", 1, user.id, stamp(), linked.id);
         const row = rowOf(id);
         const event = writeOpening(row, opening);
         return { id, eventNo: event.no };
       },
-      audit: { type: "bank.account.created", entityId: id, payload: { code: code || "(önerilen)", bankName, name, kind, currency, iban: iban ? `${iban.slice(0, 4)}…${iban.slice(-4)}` : "", opening: { date: opening.date, amountMinor: opening.amount, tryMinor: opening.tryMinor, confirmed: opening.confirmed } } },
+      audit: { type: "bank.account.created", entityId: id, payload: { code: code || "(önerilen)", bankName: parent ? parent.bank_name : bankName, name, kind, currency, iban: iban ? `${iban.slice(0, 4)}…${iban.slice(-4)}` : "", ...(parent ? { parentId: parent.id, parentUseCard: { previous: Boolean(parent.use_card), next: true } } : {}), ...(cardLast4 ? { cardLast4 } : {}), flags: { useCard: Boolean(flags.use_card), useCheque: Boolean(flags.use_cheque), useNote: Boolean(flags.use_note), usePos: Boolean(flags.use_pos) }, opening: { date: opening.date, amountMinor: opening.amount, tryMinor: opening.tryMinor, confirmed: opening.confirmed } } },
     });
     if (result?.replayed) return { replayed: true, refId: result.refId, account: rowOf(result.refId) ? view(rowOf(result.refId)) : null };
     return view(rowOf(id));
@@ -414,8 +531,25 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   function update(user, id, body = {}) {
     const row = mustRow(id);
     const next = { ...row };
-    if (body.bankName !== undefined) next.bank_name = requiredName(body.bankName, "Banka Adı");
-    if (body.name !== undefined) next.name = requiredName(body.name, "Hesap Adı");
+    // v2.2.0 (İz 2.3): kartın bağlı bankası değişebilir (eski kartı bankasına bağlama önerisi; başka bankaya taşıma); '' bağı kaldırır.
+    if (body.parentId !== undefined) {
+      const wanted = text(body.parentId);
+      if (wanted && row.kind !== "card") throw new HttpError(400, "Bağlı banka hesabı yalnız kredi kartında seçilir.", { code: "bank-parent-kind", field: "parentId" });
+      if (wanted !== (row.parent_id || "")) {
+        const parent = wanted ? parentOf(wanted, { except: row.id }) : null;
+        next.parent_id = parent?.id || "";
+        if (parent) next.bank_name = parent.bank_name;
+      }
+    }
+    // Bağlı kartın banka adı bankasından gelir (başka bankaya taşımak için Bağlı Banka Hesabı değişir).
+    const linkedParent = next.parent_id ? rowOf(next.parent_id) : null;
+    if (body.bankName !== undefined) {
+      const wantedName = requiredName(body.bankName, "Banka Adı");
+      if (linkedParent && wantedName !== linkedParent.bank_name) throw new HttpError(400, `Kartın banka adı bağlı olduğu hesaptan gelir (${linkedParent.bank_name}); başka bankanın kartıysa Bağlı Banka Hesabı'nı değiştirin.`, { code: "bank-card-bank-name", field: "bankName" });
+      next.bank_name = wantedName;
+    }
+    if (body.name !== undefined) next.name = requiredName(body.name, row.kind === "card" && next.parent_id ? "Kart Adı" : "Hesap Adı");
+    if (body.cardLast4 !== undefined) next.card_last4 = last4Of(body.cardLast4, row.kind);
     if (body.code !== undefined) next.code = codeOf(body.code, row.id);
     if (body.iban !== undefined) next.iban = ibanOf(body.iban, row.id);
     Object.assign(next, infoOf(body, row));
@@ -434,6 +568,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         if (KIND_GL[kind] !== row.gl) throw new HttpError(409, `${ACCOUNT_KINDS[row.kind].label} hesap ${ACCOUNT_KINDS[kind].label} türüne çevrilemez (ana ve alt hesap kodu değişmez). Yeni hesap açın.`, { code: "bank-kind-family", field: "kind" });
         const opening = openingOf(row.id);
         if (movementInfo(row.id).count || opening?.lines) throw new HttpError(409, "Bu hesabın hareketi ya da açılış bakiyesi var; türü ve para birimi değiştirilemez. Yeni hesap açın.", { code: "bank-account-has-movements" });
+        // v2.2.0 (§3.14): tahsildeki evrakın hesabı tahsile uygun kalmalı (tahsil o hesaba yazılır).
+        assertNoPendingCollections(store, row.id, "türü ve para birimi değiştirilemez");
         next.kind = kind;
         next.currency = currency;
         // Hakem K7: limit alanı olmayan türe çevrilen hesabın limiti sıfırlanır (KMH'li Vadesiz → Ticari'de gizli KMH Engelle'yi atlatıyordu;
@@ -444,22 +580,44 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       }
     }
     if (body.creditLimit !== undefined || next.kind !== row.kind) kindLimit(next.kind, Number(next.credit_limit_minor) || 0);
+    // v2.2.0 (İz 2.2): kullanım işaretleri. Havale alan türden başka türe çevrilen (hareketsiz) hesabın işaretleri kalkar; altında kart varsa 409.
+    const kindChanged = next.kind !== row.kind;
+    if (kindChanged && !BANK_FORM_KINDS.has(next.kind)) {
+      const cards = cardsOf(row.id).length;
+      if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kredi kartı var; ${ACCOUNT_KINDS[next.kind].label} türüne çevrilemez. Önce kartları başka banka hesabına bağlayın.`, { code: "bank-account-has-cards", count: cards, field: "kind" });
+      for (const [, column] of FLAG_COLUMNS) next[column] = 0;
+    }
+    if (FLAG_COLUMNS.some(([key]) => body[key] !== undefined)) Object.assign(next, flagsOf(body, next.kind, next));
+    if (row.use_card && !next.use_card) {
+      const cards = cardsOf(row.id).length;
+      if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kredi kartı var; "Kredi Kartı Kullan" kapatılamaz. Önce kartları başka banka hesabına bağlayın ya da silin.`, { code: "bank-flag-in-use", count: cards, field: "useCard" });
+    }
+    if (row.use_pos && !next.use_pos) {
+      const pos = posCount(row.id);
+      if (pos) throw new HttpError(409, `Bu hesaba bağlı ${pos} POS var; "POS Kullan" kapatılamaz. Önce POS'ları başka hesaba bağlayın ya da silin.`, { code: "bank-flag-in-use", count: pos, field: "usePos" });
+    }
+    // Bağlı banka (taşımada yeni banka) "Kredi Kartı Kullan" kendiliğinden açılır; bankanın adı değişince altındaki kartların banka adı da değişir.
+    const newParent = next.parent_id && next.parent_id !== row.parent_id ? rowOf(next.parent_id) : null;
+    const cascade = BANK_FORM_KINDS.has(row.kind) && next.bank_name !== row.bank_name ? cardsOf(row.id) : [];
     const changed = Object.keys(next).filter(key => next[key] !== row[key]);
     if (!changed.length) return view(row);
     const previous = Object.fromEntries(changed.map(key => [key, row[key]]));
     bank.post({
       user, module: "bank", op: "update", prev: previous,
       write: () => {
+        if (newParent) parentOf(newParent.id, { except: row.id });
         const columns = [...changed, "updated_by", "updated_at"];
         const values = [...changed.map(key => next[key]), user.id, stamp()];
         store.run(`UPDATE bank_accounts SET ${columns.map(key => `${key} = ?`).join(", ")} WHERE id = ?`, ...values, row.id);
+        if (newParent && !newParent.use_card) store.run("UPDATE bank_accounts SET use_card = ?, updated_by = ?, updated_at = ? WHERE id = ?", 1, user.id, stamp(), newParent.id);
+        for (const card of cascade) store.run("UPDATE bank_accounts SET bank_name = ?, updated_by = ?, updated_at = ? WHERE id = ?", next.bank_name, user.id, stamp(), card.id);
         if (reopen) {
           bank.cancelBare(reopen.eventId);
           writeOpening(rowOf(row.id), { date: reopen.date, amount: 0, tryMinor: 0, rateE6: 1_000_000, rateSource: "" });
         }
         return { id: row.id };
       },
-      audit: { type: "bank.account.updated", entityId: row.id, payload: { previous, next: Object.fromEntries(changed.map(key => [key, next[key]])) } },
+      audit: { type: "bank.account.updated", entityId: row.id, payload: { previous, next: Object.fromEntries(changed.map(key => [key, next[key]])), ...(newParent && !newParent.use_card ? { parentUseCard: { id: newParent.id, previous: false, next: true } } : {}), ...(cascade.length ? { cardsRenamed: cascade.map(card => ({ id: card.id, previous: card.bank_name, next: next.bank_name })) } : {}) } },
     });
     return view(rowOf(row.id));
   }
@@ -468,6 +626,14 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const row = mustRow(id);
     if (!STATUSES.includes(status)) throw new HttpError(400, "Hesap durumu Etkin ya da Pasif olmalı.", { code: "bank-status", field: "status" });
     if (row.status === status) return view(row);
+    // v2.2.0 (§3.14): tahsildeki evrakın hesabı pasife alınmaz (tahsil o hesaba yazılır; pasif hesaba hareket girilmez).
+    if (status !== "active") assertNoPendingCollections(store, row.id, "pasife alınamaz");
+    // Eleştirmen E-4 (plan §4.6): POS satışının bekleyen kalemleri valör günü satışın hesap kopyasına (pos_sales.bank_account_id) yazılır — o hesap
+    // pasife alınırsa para pasif hesaba sessizce geçerdi. Önce POS → Bekleyenleri Yeni Hesaba Taşı.
+    if (status !== "active") {
+      const waiting = store.get("SELECT COUNT(DISTINCT s.id) AS n FROM pos_items i JOIN pos_sales s ON s.id = i.sale_id WHERE i.status = 'pending' AND s.bank_account_id = ?", row.id);
+      if (Number(waiting?.n) > 0) throw new HttpError(409, `${row.bank_name} · ${row.name} hesabına geçecek bekleyen POS tutarı var (${waiting.n} işlem); pasife alınamaz. Önce POS → Bekleyenleri Yeni Hesaba Taşı ile başka bir hesaba taşıyın.`, { code: "bank-pos-pending" });
+    }
     bank.post({
       user, module: "bank", op: "update", prev: { status: row.status },
       write: () => {
@@ -487,12 +653,18 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const row = mustRow(id);
     const moves = movementInfo(row.id);
     if (moves.count) throw new HttpError(409, `Bu hesaba bağlı ${moves.count} hareket var; hesap silinmez. Kullanılmayacaksa Pasife Alın.`, { code: "bank-account-has-movements", count: moves.count });
+    assertNoPendingCollections(store, row.id, "silinemez", { returned: true });
     // GG2: kurulumlu hesap silinince Devir Kapanışı etkin kalıyordu (eski bakiye açılışı olmayan bir hesap adına kapalı); aynı adla yeniden açılıp
     // sihirbaz çalışınca aynı bakiye ikinci kez kapanıyordu. Önce kurulum geri alınır.
     const setupRun = activeSetupOf(row.id);
     if (setupRun) throw new HttpError(409, `Bu hesabın Kurulum Sihirbazı kaydı var${setupRun.no ? ` (${setupRun.no})` : ""}; hesap silinmez. Önce Hesabı Atanmamış Eski Hareketler → Kurulum Geçmişi'nden Geri Al'ın.`, { code: "bank-account-has-setup", eventNo: setupRun.no });
     const plans = plannedCount(row.id);
     if (plans) throw new HttpError(409, `Bu hesabın ${plans} planlı işlemi var; hesap silinmez. Önce Hareketler → Planlı İşlemler'den silin.`, { code: "bank-account-has-plans", count: plans });
+    // v2.2.0 (İz 2.3, 2.5): altında kurumsal kart ya da ödenmemiş verilen çek/senet olan hesap silinmez (kart bağsız, çek hesapsız kalırdı).
+    const cards = cardsOf(row.id).length;
+    if (cards) throw new HttpError(409, `Bu hesabın altında ${cards} kredi kartı var; hesap silinmez. Önce kartları başka banka hesabına bağlayın ya da silin.`, { code: "bank-account-has-cards", count: cards });
+    const cheques = openChequeCount(row.id);
+    if (cheques) throw new HttpError(409, `Bu hesaptan verilmiş ${cheques} ödenmemiş çek/senet var; hesap silinmez. Kullanılmayacaksa Pasife Alın.`, { code: "bank-account-has-cheques", count: cheques });
     const opening = openingOf(row.id);
     if (opening) period?.assertOpen(opening.date, "Bu hesabın açılışı");
     let reversed = null;
@@ -557,11 +729,33 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   }
 
   // ---------- Liste, özet, seçici ----------
+  /**
+   * v2.2.0 (İz 2.3): Hesaplar listesinde kurumsal kart bağlı olduğu bankanın HEMEN ALTINDA (depth 1); bağsız kartlar ve öbür hesaplar kendi
+   * sıralarında (bağ yoksa sıra 2.1.0'dakiyle aynı).
+   */
+  function nestedOrder(rows) {
+    const ids = new Set(rows.map(row => row.id));
+    const childrenOf = new Map();
+    for (const row of rows) {
+      if (row.parent_id && ids.has(row.parent_id)) {
+        if (!childrenOf.has(row.parent_id)) childrenOf.set(row.parent_id, []);
+        childrenOf.get(row.parent_id).push(row);
+      }
+    }
+    const out = [];
+    for (const row of rows) {
+      if (row.parent_id && ids.has(row.parent_id)) continue;
+      out.push(row);
+      for (const child of childrenOf.get(row.id) || []) out.push(child);
+    }
+    return out;
+  }
   function list({ status = "" } = {}) {
     const rows = store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL ORDER BY position, created_at");
     const tl = balances(rows);
-    const shown = rows.filter(row => !status || status === "all" || row.status === status);
-    return { accounts: shown.map(row => view(row, { tl })), totals: totalsOf(tl, rows) };
+    const shown = nestedOrder(rows).filter(row => !status || status === "all" || row.status === status);
+    const shownIds = new Set(shown.map(row => row.id));
+    return { accounts: shown.map(row => ({ ...view(row, { tl, rows }), depth: row.parent_id && shownIds.has(row.parent_id) ? 1 : 0 })), totals: totalsOf(tl, rows) };
   }
   /**
    * Gerçek Banka (102.k), kart ve kredi borcu (309/300) ve Hesabı Atanmamış (102.00 / 108.00). Hesaplar kendi toplamlarından (tl), hesabı
@@ -643,7 +837,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return {
       labels: K10_LABELS,
       realBank: { minor: totals.realBankMinor, defined: bankRows.length > 0 },
-      posPending: { netMinor: 0, blockedMinor: 0 },
+      // 2.2.0 (K10, §4.7): POS Bekleyen (Net) ve Blokeli POS bekleyen valör kalemlerinden (lib/bank/pos.mjs).
+      posPending: posService ? posService.pendingStats() : { netMinor: 0, blockedMinor: 0 },
       debt: { cardMinor: totals.cardDebtMinor, loanMinor: totals.loanDebtMinor, totalMinor: totals.cardDebtMinor + totals.loanDebtMinor },
       unassigned: { bankMinor: totals.unassignedBankMinor, cardMinor: totals.unassignedCardMinor, totalMinor: unassigned, newCount: newCount(), future: totals.futureUnassigned },
       byCurrency: totals.byCurrency,
@@ -666,21 +861,58 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   }
   function choices() {
     const rows = store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL AND status = 'active' ORDER BY position, created_at");
-    const accounts = rows.map(row => ({ id: row.id, code: row.code, label: labelOf(row), bankName: row.bank_name, name: row.name, kind: row.kind, kindLabel: ACCOUNT_KINDS[row.kind]?.label || row.kind, currency: row.currency, glSub: row.gl_sub }));
+    // v2.2.0 (İz 2.3): bağlı bankası ve son 4 hanesi kart seçicisinde ("Yapı Kredi · World (•••• 1234)"); işaretler Çek Hesabı ve senet önerisi için.
+    const accounts = rows.map(row => ({ id: row.id, code: row.code, label: labelOf(row), bankName: row.bank_name, name: row.name, kind: row.kind, kindLabel: ACCOUNT_KINDS[row.kind]?.label || row.kind, currency: row.currency, glSub: row.gl_sub, parentId: row.parent_id || "", cardLast4: row.card_last4 || "", useCard: Boolean(row.use_card), useCheque: Boolean(row.use_cheque), useNote: Boolean(row.use_note), usePos: Boolean(row.use_pos), openingDate: row.opening_date }));
     const preferred = settings.read().account.defaultAccountId;
     const formOf = (filter, preferId = "") => {
       const ids = rows.filter(filter).map(row => row.id);
       const fallback = rows.find(row => filter(row) && row.kind === "demand")?.id || ids[0] || "";
       return { ids, single: ids.length === 1, required: ids.length > 0, defaultId: preferId && ids.includes(preferId) ? preferId : fallback };
     };
+    const posChoices = posService ? posService.choices() : { pos: [], form: { ids: [], single: false, required: false, defaultId: "" } };
     return {
       accounts,
       forms: {
         bank: formOf(bankFormOk, preferred),
         card: formOf(row => row.kind === "card"),
         fx: formOf(row => row.kind === "fx"),
+        pos: posChoices.form,
+        // v2.2.0 (İz 2.5, 2.6): verilen çekin Çek Hesabı (Çek Kullan işaretli) ve verilen senedin ödeme hesabı önerisi (Senet Kullan işaretli).
+        cheque: formOf(row => bankFormOk(row) && Boolean(row.use_cheque)),
+        note: formOf(row => bankFormOk(row) && Boolean(row.use_note)),
       },
+      // 2.2.0: POS seçicisi (taksit oranları; bakiye dönmez).
+      pos: posChoices.pos,
     };
+  }
+  // 2.2.0: POS servisi (routes/bank.mjs kurar): özetin POS Bekleyen'i ve seçicinin POS listesi.
+  let posService = null;
+  function usePos(service) {
+    posService = service;
+  }
+  /**
+   * v2.2.0 (İz 2.7): seçicilerdeki bakiye — her etkin hesabın SEÇİLEN TARİHTEKİ bakiyesi (kuruş; moneyLines tek kaynağı, K7'nin formülüyle):
+   * atMinor (o gün sonuna kadar), totalMinor (ileri tarihliler dahil bütün hareketler), limitMinor (KMH / kart limiti), policy (Bakiye Doğrulandı
+   * değilse 'off'; K7: Uyar/Engelle/Kontrol Yok), confirmed (Bakiye Doğrulandı; ekranın açıklaması için), guarded (eksi bakiye denetimine giren tür). Ekran "İşlemden Sonra"yı min(at, total) − tutar ile
+   * bulur (sunucunun 409'uyla aynı formül). Yalnız Banka Görüntüleme yetkisine döner (rota denetler). Hesap başına saklanan toplam + (gerekirse)
+   * o günden sonraki satırların toplamı: büyük veride de hesap başına iki indeksli sorgu.
+   */
+  const GUARDED_KINDS = new Set(["demand", "commercial", "other", "time", "card"]);
+  // Takvimde olan gün (2026-13-45 gibi biçimi doğru ama olmayan gün de bugüne düşer; dize karşılaştırmasında "bütün hareketler" sayılıyordu).
+  const realDay = value => {
+    const at = isDate(value) ? new Date(`${value}T00:00:00Z`) : null;
+    return Boolean(at) && !Number.isNaN(at.getTime()) && at.toISOString().slice(0, 10) === value;
+  };
+  function selectorBalances({ date = "" } = {}) {
+    const day = realDay(date) ? date : today();
+    const fallback = settings.read().negative?.policy || "warn";
+    const out = {};
+    for (const row of store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL AND status = 'active' ORDER BY position, created_at")) {
+      const total = money.refTotal({ ref: row.id }).cents;
+      const at = money.afterIsEmpty(row.id, day) ? total : total - money.refTotal({ ref: row.id, after: day }).cents;
+      out[row.id] = { atMinor: at, totalMinor: total, limitMinor: Number(row.credit_limit_minor) || 0, policy: row.balance_confirmed ? row.negative_policy || fallback : "off", confirmed: Boolean(row.balance_confirmed), guarded: GUARDED_KINDS.has(row.kind) && row.currency === "TRY", currency: row.currency };
+    }
+    return { date: day, accounts: out };
   }
 
   // ---------- Hesabı Atanmamış Eski Hareketler ----------
@@ -1058,7 +1290,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const account = rowOf(body.accountId);
     if (!account) throw new HttpError(404, "Banka hesabı bulunamadı.", { code: "bank-account-missing" });
     assertActive(account);
-    if (mode === "bank" ? !bankFormOk(account) : !(account.kind === "card" && account.status === "active")) throw new HttpError(400, mode === "bank" ? `${labelOf(account)}: POS bakiyesi yalnız etkin TL Vadesiz, Ticari ya da Diğer hesaba aktarılır.` : `${labelOf(account)} kurumsal kredi kartı hesabı değil.`, { code: "bank-account-invalid" });
+    if (mode === "bank" ? !bankFormOk(account) : !(account.kind === "card" && account.status === "active")) throw new HttpError(400, mode === "bank" ? `${labelOf(account)}: POS bakiyesi yalnız etkin TL Vadesiz, Ticari ya da Diğer hesaba aktarılır.` : `${labelOf(account)} kredi kartı hesabı değil.`, { code: "bank-account-invalid" });
     const date = period ? period.movementDate(body, { label: "Tarih" }) : today();
     if (date < account.opening_date) throw new HttpError(409, `Tarih hesabın açılışından (${account.opening_date.split("-").reverse().join(".")}) önce olamaz.`, { code: "bank-before-opening" });
     const amount = parseMinor(body.amount, { label: "Tutar" });
@@ -1086,7 +1318,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
 
   // ---------- Alt Hesap Mizanı (rapor verisi) ----------
   /**
-   * Alt Hesap Mizanı (102/108/300/309 alt hesapları; dönem). GG2 (1.000.000 hareket): para satırları tek kaynaktan tek geçişte toplanır
+   * Alt Hesap Mizanı (102/108/300/309 alt hesapları ve alınan evrakın 101.01/101.02, 121.01/121.02 alt hesapları; dönem). GG2 (1.000.000 hareket): para satırları tek kaynaktan tek geçişte toplanır
    * (moneyLines periodGroups) — önceden bütün Ana Defter kuruluyordu (100.000 satırda ~1,7 sn, 1.000.000'da ~40 sn; o sürede sunucu başka isteğe
    * yanıt vermiyordu). Alt hesap, Ana Defter'in kuralıyla (moneyAccount: yol + bağ) bulunur; ana hesap yoldan (havale 102, POS 108, kurumsal kart
    * 309, kredi 300). Ana Defter ↔ tek kaynak eşitliğini kapı her yazımda ve Mutabakat Testi denetler.
@@ -1129,11 +1361,24 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       subs.set(target.sub, row);
       mainsOf.set(main, (mainsOf.get(main) || 0) + Number(group.opening) + Number(group.debit) - Number(group.credit));
     }
+    // Bankaya Tahsile Ver (plan §3.11 hesap planı "101.01 Portföydeki Çekler, 101.02 Tahsile Verilen Çekler", madde 6): alınan evrak varsa 101 ve
+    // alt hesapları (Ana Defter'in kendi kuralıyla, yalnız alınan evrakın maddeleri). Doğrulama T4: önceden yalnız şirkette bir tahsil kaydı
+    // varken görünüyordu; Ana Defter 101'de portföy dururken Alt Hesap Mizanı'nda 101.01 yoktu.
+    // Doğrulama tur 2 G1 (plan §3.11 madde 5): Ana Defter KURULMADAN, SQL toplamıyla (lib/bank/collections.mjs chequeSubTrial; kurallar Ana Defter'in
+    // 101 satırlarının aynısı, eşdeğerlik testi). Önceden her açılışta bütün alınan evrak için yevmiye kuruluyordu (15.000 evrakta ~0,7 sn).
+    // 2.2.0 İz 4.2 (plan §3.11a): senet 121.01 / 121.02 (ana hesabı 121); çek 101.01 / 101.02.
+    const documents = chequeSubTrial(store, { from, to });
+    for (const [sub, sums] of documents) {
+      const account = mainOfSub(sub);
+      subs.set(sub, { sub, account, ...sums });
+      mainsOf.set(account, (mainsOf.get(account) || 0) + sums.opening + sums.debit - sums.credit);
+    }
+    if (documents.size) Object.assign(names, CHEQUE_SUB_NAMES);
     const tl = value => Math.round(value) / 100;
     const rows = [...subs.values()]
       .sort((a, b) => a.sub.localeCompare(b.sub))
       .map(row => ({ sub: row.sub, account: row.account, name: names[row.sub] || "", opening: tl(row.opening), debit: tl(row.debit), credit: tl(row.credit), balance: tl(row.opening + row.debit - row.credit) }));
-    const mains = ["102", "108", "300", "309"].map(account => {
+    const mains = ["101", "102", "108", "121", "300", "309"].map(account => {
       const balanceMinor = mainsOf.get(account) || 0;
       const subMinor = [...subs.values()].filter(row => row.account === account).reduce((sum, row) => sum + row.opening + row.debit - row.credit, 0);
       return { account, name: CHART[account] || "", balance: tl(balanceMinor), subTotal: tl(subMinor), ok: balanceMinor === subMinor };
@@ -1141,5 +1386,5 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return { rows, mains, from, to };
   }
 
-  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, useNegative, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain, newCount, badgeCount, carryBoundary };
+  return { create, update, setStatus, remove, setOpening, list, summary, choices, selectorBalances, cardsOf, legacy, assign, setup, runs, undo, reclass, useNegative, usePos, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain, newCount, badgeCount, carryBoundary };
 }

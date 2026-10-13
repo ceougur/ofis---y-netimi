@@ -37,13 +37,14 @@ describe("çek/senet kural motoru (saf)", () => {
     assert.deepEqual(plannedEffects({ ...base, direction: "out" }, "issue", { date: "2026-01-01" }).map(e => [e.accountId, e.kind]), [["A", "debt"]]);
     assert.deepEqual(plannedEffects(base, "endorse", { date: "2026-01-01", endorseAccountId: "T" }).map(e => [e.accountId, e.kind]), [["T", "debt"]]);
     assert.deepEqual(plannedEffects(base, "collect", { date: "2026-01-01" }), [], "tahsil yalnız Kasa");
-    // Karşılıksız: taksite sayılan çekte tahsilat kaldırılır; ciro edilmişse tedarikçiye alacak geri yazılır.
+    // Karşılıksız: taksite sayılan çekte tahsilatın karşılıksız günü ters kaydı (2.2.0 doğrulama T11 — bilerek güncellendi: önceden tahsilat
+    // siliniyordu, alış günü maddesi geriye dönük değişiyordu); ciro edilmişse tedarikçiye alacak geri yazılır.
     const bounced = plannedEffects({ ...base, planId: "P", endorseAccountId: "T" }, "bounce", {
       date: "2026-02-01",
       receiveEffects: [{ op: "insert", table: "plan_entries", id: "E1" }],
       endorseEffects: [{ op: "insert", table: "account_entries", id: "X" }],
     });
-    assert.deepEqual(bounced.map(e => [e.type, e.id || e.accountId, e.kind || ""]), [["remove-plan-entry", "E1", ""], ["account-entry", "T", "credit"]]);
+    assert.deepEqual(bounced.map(e => [e.type, e.id || e.accountId, e.kind || "", e.date || ""]), [["reverse-plan-entry", "E1", "", "2026-02-01"], ["account-entry", "T", "credit", "2026-02-01"]]);
     assert.deepEqual(plannedEffects(base, "bounce", { date: "2026-02-01" }).map(e => [e.accountId, e.kind]), [["A", "debt"]]);
     assert.deepEqual(plannedEffects({ ...base, accountId: "" }, "receive", { date: "2026-01-01" }), [], "carisiz çek cariye yazılmaz");
   });
@@ -260,7 +261,8 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
     await act(cheque, "bounce");
     const reopened = (await admin.get(`/api/workspace/plans/${plan.id}`)).data.data;
     assert.equal(reopened.items[0].state, "overdue", "karşılıksız çek taksiti yeniden açar");
-    assert.ok(!reopened.entries.some(item => item.chequeId === cheque.id));
+    // 2.2.0 (doğrulama T11; bilerek güncellendi): alış günündeki tahsilat kalır, karşılıksız günü çekli ters kayıt (düzenlenemez) yazılır.
+    assert.deepEqual(reopened.entries.filter(item => item.chequeId === cheque.id).map(item => [item.id === entry.id, item.kind, item.editable]).sort(), [[false, "out", false], [true, "in", false]]);
     await admin.post(`/api/workspace/cheques/${cheque.id}/undo`, {});
     const restored = (await admin.get(`/api/workspace/plans/${plan.id}`)).data.data;
     assert.equal(restored.entries.find(item => item.chequeId === cheque.id)?.id, entry.id, "geri alınca aynı tahsilat aynı kimlikle döner");

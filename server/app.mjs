@@ -32,6 +32,7 @@ import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerLedgerRoutes } from "./routes/ledger.mjs";
 import { registerBankRoutes } from "./routes/bank.mjs";
+import { createPosQueue } from "./lib/bank/pos.mjs";
 import { registerWhatsappRoutes } from "./routes/whatsapp.mjs";
 import { createIntegrity } from "./lib/integrity.mjs";
 import { createIdempotency } from "./lib/idempotency.mjs";
@@ -285,13 +286,13 @@ export function createApp(overrides = {}) {
   // Fatura (v2.0.15): belge birincil kayıt; stok, cari, Kasa (peşin), çek/senet ve taksit (vadeli) aynı işlemde yazılır.
   context.invoices = registerInvoiceRoutes(router, { ...context, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, cheques: () => context.cheques, bankModule: () => context.bankAccounts?.module });
   // Ana Defter (v2.0.13): alt defterlerden türetilen çift yönlü yevmiye, hesap planı mizanı ve mutabakat kapısı.
-  context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity });
+  context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity, pos: () => context.bankAccounts?.pos });
   // Banka (v2.1.0 Aşama 3; plan §8.1): hesap kartları, açılış, Hesabı Atanmamış Eski Hareketler, Kurulum ve Aktarım Sihirbazı, Banka Ayarları,
   // Alt Hesap Mizanı. Ana Defter servisine (Alt Hesap Mizanı) istek anında ulaşır.
   context.bankAccounts = registerBankRoutes(router, context);
   // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;
   // sapma yaratacaksa ROLLBACK edilir ve günlüğe yazılır (lib/integrity.mjs).
-  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, money: () => context.money, events, strict: config.moneyStrict, verify: config.gateVerify, partyRows: config.scopePartyRows, dbPath: config.dbPath, log, now: config.now });
+  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, money: () => context.money, pos: () => context.bankAccounts?.pos, events, strict: config.moneyStrict, verify: config.gateVerify, partyRows: config.scopePartyRows, dbPath: config.dbPath, log, now: config.now });
   // Açılış onarımı (v2.1.0, §10.6): eski sürüme (2.0.25/2.0.26) dönülüp yeniden güncellenen dosyada eski sürümün izleri kapı kurulmadan
   // toplanır (tek işlem; yalnız ilgili kayıtlar). Onarım başarısız olsa da program açılır; sapmalar kapının tabanı ve Mutabakat Testi'nde.
   try {
@@ -314,6 +315,13 @@ export function createApp(overrides = {}) {
     context.integrity.scanInBackground().catch(error => log.error?.("Mutabakat taraması çalışmadı", error));
   }, INTEGRITY_SCAN_MINUTES * 60_000);
   context.integrity.scanTimer?.unref?.();
+  // POS valör kuyruğu (2.2.0, plan §4.4/2): (a) açılışta bir tur — ilk şirkette dinlemeye başladıktan sonra (listen), şirket örneğinde açılınca;
+  // (b) 15 dakikada bir (unref; kapanışta durur); (f) "Şimdi Aktar" ve (g) dönem kilidi öncesi uçlarda; (d) ortak katmanda günde bir: bu süreçte
+  // açılmamış şirketin veri dosyasında vadesi gelmiş POS kalemi varsa şirket açılır (açılış kendi kuyruğunu çalıştırır). Gün dönümü (c) 15
+  // dakikalık turla karşılanır (karar). Kuyruk açılışı beklemez (setImmediate).
+  const posQueue = createPosQueue({ pos: () => context.bankAccounts?.pos, log });
+  context.posQueue = posQueue;
+  if (hub && overrides.posQueue !== false) setImmediate(() => posQueue.start());
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
   registerWhatsappRoutes(router, { ...context, accounts: () => context.accounts });
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
@@ -370,9 +378,18 @@ export function createApp(overrides = {}) {
   }
 
   // Her istek, isteği yapan kullanıcının seçtiği veri oturumunda çalışır (v2.0.1; kullanıcı gerektiğinde bir kez okunur).
+  // 2.2.0 İz 1.2: istemci her isteğe penceresinin sayfasını ekler (?hofPage=; ?hofCompany= gibi); şirketin sayfasıysa istek o sayfada
+  // çalışır (lib/dataset.mjs activeKey). Aynı kullanıcının öbür penceresinde yeni sayfa açılması ya da seçilmesi bu pencereyi değiştirmez.
+  const pageOf = req => {
+    try {
+      return String(new URL(req.url || "/", "http://x").searchParams.get("hofPage") || "").slice(0, 200);
+    } catch {
+      return "";
+    }
+  };
   const scoped = (req, res) => {
     let resolved;
-    return runScoped({ user: () => (resolved === undefined ? (resolved = auth.currentUser(req) || null) : resolved) }, () => handle(req, res));
+    return runScoped({ user: () => (resolved === undefined ? (resolved = auth.currentUser(req) || null) : resolved), page: pageOf(req) }, () => handle(req, res));
   };
   // ---------- Çoklu şirket dağıtımı (v2.0.17) ----------
   // Ortak katman yolları hub'da kalır; öbür her istek kullanıcının SEÇİLİ şirketinin örneğine gider (her şirket ayrı
@@ -497,6 +514,36 @@ export function createApp(overrides = {}) {
   server.keepAliveTimeout = 65_000;
   server.headersTimeout = 70_000;
   server.requestTimeout = 5 * 60_000;
+
+  // POS (2.2.0, plan §4.4/2 d): bu süreçte açılmamış şirketlerde vadesi gelmiş POS kalemi var mı (veri dosyası kısa süreliğine salt okunur
+  // açılır, yedek zamanlayıcısının kalıbı); varsa şirket açılır — şirket örneği açılınca kendi kuyruğunu çalıştırır.
+  let posHubTimer = null;
+  function posDueCompanies() {
+    if (hub || closed) return;
+    const day = context.period?.today?.() || "";
+    for (const company of companies.list()) {
+      if (!company || company.id === ROOT_COMPANY_ID || children.has(company.id) || company.deletedAt || company.deleted_at) continue;
+      let due = null;
+      try {
+        due = withCompanyDb(company, temp => {
+          try {
+            return temp.prepare("SELECT 1 AS found FROM pos_items WHERE status = 'pending' AND value_date <= ? LIMIT 1").get(day) || null;
+          } catch {
+            return null;
+          }
+        });
+      } catch (error) {
+        log.warn?.(`POS valör denetimi: ${company.code} okunamadı (${error.message})`);
+      }
+      if (!due) continue;
+      try {
+        appFor(company);
+        log.info?.(`POS valörü gelmiş kalem için şirket açıldı: ${company.code} · ${company.name}`);
+      } catch (error) {
+        log.warn?.(`POS valör denetimi: ${company.code} açılamadı (${error.message})`);
+      }
+    }
+  }
 
   // Otomatik yedek (v2.0.20): ortak katmanda tek zamanlayıcı BÜTÜN şirketleri yedekler — bu açılışta hiç açılmamış şirket
   // de (veri tabanı kısa süreliğine salt okunur açılır); her şirket kendi klasörüne.
@@ -640,6 +687,12 @@ export function createApp(overrides = {}) {
         server.once("error", reject);
         server.listen(port, host, () => {
           server.off("error", reject);
+          if (!hub && overrides.posQueue !== false) {
+            posQueue.start();
+            setImmediate(posDueCompanies);
+            posHubTimer ||= setInterval(posDueCompanies, 24 * 3_600_000);
+            posHubTimer.unref?.();
+          }
           resolve(server.address());
         });
       });
@@ -647,6 +700,8 @@ export function createApp(overrides = {}) {
     async close({ reason = "shutdown" } = {}) {
       if (closed) return;
       closed = true;
+      posQueue.stop();
+      clearInterval(posHubTimer);
       stopBackups();
       clearInterval(sessionTimer);
       clearInterval(context.integrity?.scanTimer);

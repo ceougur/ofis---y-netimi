@@ -203,9 +203,11 @@ describe("Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı s
       const xlsx = await admin.raw("GET", `/api/workspace/report-center/${report.id}/xlsx?preset=all`);
       const xml = sheetXml(xlsx.buffer);
       const rowsInSheet = [...xml.matchAll(/<row r="(\d+)">/g)].map(match => Number(match[1]));
-      assert.equal(Math.max(...rowsInSheet), data.total + 2, `${report.id}: Excel'de TOPLAM verinin altında`);
-      assert.match(xml.split(`<row r="${data.total + 2}">`)[1], /TOPLAM/, `${report.id}: Excel TOPLAM satırı`);
-      if (/<autoFilter/.test(xml)) assert.match(xml, new RegExp(`<autoFilter ref="A1:[A-Z]+${data.total + 1}"/>`), `${report.id}: süzgeç TOPLAM'ı kapsamaz`);
+      // 2.2.0 İz 1.1: tablonun üstünde başlık bloğu (şirket, rapor adı, kapsam, oluşturma); kolon başlığı satırı dondurulan son satırdır.
+      const head = Number(/<pane ySplit="(\d+)"/.exec(xml)?.[1] || 1);
+      assert.equal(Math.max(...rowsInSheet), data.total + head + 1, `${report.id}: Excel'de TOPLAM verinin altında`);
+      assert.match(xml.split(`<row r="${data.total + head + 1}">`)[1], /TOPLAM/, `${report.id}: Excel TOPLAM satırı`);
+      if (/<autoFilter/.test(xml)) assert.match(xml, new RegExp(`<autoFilter ref="A${head}:[A-Z]+${data.total + head}"/>`), `${report.id}: süzgeç TOPLAM'ı kapsamaz`);
     }
     console.log(`TOPLAM yok: ${without.join(", ")}`);
     assert.ok(withFooter >= 20, `TOPLAM satırı olan rapor sayısı ${withFooter}`);

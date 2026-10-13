@@ -1,0 +1,123 @@
+
+■ Ön koşul (API): stok, Ziraat 100.000 + Garanti 50.000, ABC, tahsilat, Kasa'ya 10.000, transfer → Ziraat 90.000
+  ✓ Ziraat 90.000, Garanti 70.000
+
+■ 17–19 Ziraat → Düzenle → "POS Kullan"; işaretsiz hesapta POS bölümü yok; API'den işaretsiz hesaba POS 400 pos-account-flag
+  ✓ işaretsizken POS'lar bölümü yok
+  ✓ işaretsiz hesaba POS: 400 pos-account-flag
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-bank-pos="bacc-606c4830-c892-47af-9722-068156cf9c43"] [data-pos-act="add"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:204:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:195:3
+
+■ 17–19 "+ POS Ekle": Ziraat Fiziki POS, Banka, BSMV Dahil, valör 2 iş günü, Tek Çekim %2,5 + 3 Taksit %3,5 (Tab ile) → 108.01
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-bank-pos="bacc-606c4830-c892-47af-9722-068156cf9c43"] [data-pos-act="add"]')[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:211:16
+    at step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:11)
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:210:9
+
+■ 20–22 Satış Faturası Ürün B 10 × 1.000 "+ POS" Tek Çekim: önizleme 250 · 9.750 · valör 12.10; provizyon ve son 4 Tab ile → Ürün B 15, ABC 0, Ziraat 90.000, POS Bekleyen 10.000 / 9.750
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-pos-cell="0"] [data-f="posInstallments"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:266:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:260:3
+
+■ 21–22 Banka → POS: Ödeme Takvimi 12.10.2026 · ₺9.750,00; POS İşlemleri'nde faturanın satışı — İptal Et pasif, nedeni yazılı; Ayarlar'da POS
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal .hof-bank-tabs [data-tab="pos"]')[22m
+
+    at bankTab (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:116:14)
+    at async posSub (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:126:3)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:292:5
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:291:3
+
+■ 23–24 saat 12.10 → Şimdi Aktar → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı valör açıklaması; Hareketler POS süzgeci
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal .hof-bank-tabs [data-tab="pos"]')[22m
+
+    at bankTab (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:116:14)
+    at async posSub (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:126:3)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:314:5
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:311:3
+
+■ 25–26 12.10 Satış Faturası 12 × 1.000 "+ POS" 3 Taksit: önizleme 3.860 × 3 · İlk Valör 12.11.2026 → Ürün B 3; takvim 12.11 · 14.12 · 12.01.2027
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-pos-cell="0"] [data-f="posInstallments"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:349:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:343:3
+
+■ 27–28 13.10 Satıştan İade (asıl: adım 20) Ürün B 3 Adet = 3.000 "+ POS İadesi", Asıl POS İşlemi önerisi → Ürün B 6; ABC 0; iade valörü 15.10
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-act="return"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:369:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:366:3
+
+■ Cari tahsilatı 500 POS (önizleme, provizyon, son 4) → POS İşlemleri → İptal Et (aynı gün, komisyonsuz void) → ABC bakiyesi geri döner
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form [data-pos-pick]:not([hidden]) select[name="posInstallments"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:411:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:401:3
+
+■ Ziraat Fiziki POS → Pasife Al; yetkisiz (avukat) cari tahsilatında POS: "POS tanımlı değil, yöneticinize başvurun." (düğme yok)
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:445:59
+    at async step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:442:3
+
+■ Stok satışı (Ürün B 1 × 1.000) → POS: "POS Tanımla" → Vazgeç (form aynen) → tanımla (Ziraat Mobil POS) → seçili gelir → kaydet → satış yeni POS'ta
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-form:has(select[name="pay"]) [data-bank-define="pos"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:485:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:475:3
+
+■ İki etkin POS: Ziraat Fiziki POS → Etkinleştir; taksit tahsilatı (POS seçimi zorunlu, 3 Taksit önizleme) → seçilen POS'a
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'id')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:514:59
+    at async step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:512:3
+
+■ Bilinen hata (İz 3.6) ekrandan: fatura Düzenle'de yalnız provizyon (PRV001 → PRV009) değişince POS kaydı güncellenir
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of undefined (reading 'invoice')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:548:62
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:544:3
+
+■ POS sekmesi: Onay Bekleyen ve Komisyon Faturaları boş durum metni; POS'lar listesi iki POS
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal .hof-bank-tabs [data-tab="pos"]')[22m
+
+    at bankTab (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:116:14)
+    at async posSub (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:126:3)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:563:5
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/senaryo-pos-220.mjs:562:3
+  ✓ sayfa hatası yok
+
+✗ senaryo-pos-220: 4 geçti, 13 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/pos-ui-eski-c9d091f/test/e2e/artifacts/senaryo-pos-220

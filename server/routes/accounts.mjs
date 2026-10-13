@@ -7,6 +7,7 @@
 import { randomUUID } from "node:crypto";
 import { methodInput } from "../lib/pay-method.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
+import { posMetaOf } from "../lib/bank/pos.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -560,7 +561,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     store.setSetting("plans.receiptSeq", String(current + 1));
     return current + 1;
   };
-  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "" }) {
+  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null }) {
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
@@ -570,7 +571,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // stoktan gelen satır para satırı değildir (olay yok). Para satırı yalnız bank.post'un write geri çağrısında yazılır (K6).
     // keepEvent (gözden geçirme D2): fatura düzenlenirken özeti (yön, tutar, yol, tarih) aynı kalan peşin satır eski işlem başlığıyla yeniden
     // yazılır (İşlem No değişmez); bank.post satırı kalmayan olayı iptal eder, satırı geri gelen olayı yeniden etkin yapar.
-    const eventId = bank.eventFor("account_entries", { kind, source, date, method: way, event_id: keepEvent, fin_ref: finRef });
+    // pos (2.2.0): POS satırının taksit sayısı, provizyon, kart son 4 hanesi, asıl POS işlemi (bank.post'un POS kancası okur).
+    const eventId = bank.eventFor("account_entries", { kind, source, date, method: way, event_id: keepEvent, fin_ref: finRef, ...(pos ? { pos } : {}) });
     // finRef (v2.1.0 Aşama 4): banka hesabına bağlı satır (şimdilik yalnız Banka → KDV'li masrafın faturasının havale ödemesi; modül formlarındaki
     // hesap seçimi Aşama 5/7).
     store.run(
@@ -666,9 +668,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const module = banking();
     if (!module || !isMoney(input.kind)) return "";
     const changed = !previous || previous.method !== input.method || Math.abs(roundMoney(previous.amount) - roundMoney(input.amount)) > 0.004 || previous.date !== input.date;
-    // K2 (plan §3.7 #3, §4.6): cari ödemesinde kart yolu kurumsal kartla ödemedir (309); tahsilatta POS (2.2.0).
-    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: input.kind === "out" });
+    // K2 (plan §3.7 #3, §4.6): cari ödemesinde kart yolu firmanın kartıyla ödemedir (309); tahsilatta POS (2.2.0). Cari "POS İadesi"
+    // (posRefund / posRefundOf / posSourceless) çıkış olsa da POS'tur (plan §4.6 "alan belge türüne göre seçilir").
+    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: input.kind === "out" && !posRefundOf(body, previous), posId: body.posId, posRefundOf: body.posRefundOf });
   };
+  // 2.2.0: cari "POS İadesi" — kart yolunda müşteriye POS'tan iade (POS'a bağlı önceki satır da öyledir).
+  const posRefundOf = (body, previous = null) =>
+    body?.posRefund === true || Boolean(text(body?.posRefundOf)) || body?.posSourceless === true || Boolean(previous && previous.kind === "out" && previous.method === "card" && previous.finRef && store.get("SELECT 1 AS found FROM pos_terminals WHERE id = ?", previous.finRef));
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
   // Hakem K5: onay cashForce (plan §3.9) ya da eşanlamlı negativeOk (module-ref.mjs negativeConfirmed).
   const negativeForced = (body, url) => negativeConfirmed(body, url);
@@ -696,7 +702,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       },
       write: () => {
         k7.capture();
-        const entry = addEntry(user, account.id, { ...input, finRef });
+        const entry = addEntry(user, account.id, { ...input, finRef, pos: finRef ? posMetaOf(body) : null });
         audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, receiptNo: entry.receiptNo });
         return entry;
       },
@@ -733,7 +739,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       body: { ...body, entryId: previous.id },
       write: () => {
         k7.capture();
-        const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef });
+        const meta = finRef ? posMetaOf(body) : null;
+        const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
         store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, user.id, now(), previous.id);
         audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
         return { id: previous.id };
@@ -759,6 +766,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       module: "account",
       op: "delete",
       prev: previous,
+      // 2.2.0 (§3.8): POS'lu satırı silmek kayıt hatası düzeltmesidir (valörden önce void; bankaya geçtiyse yeniden planlama ya da 409 pos-settled).
+      posOutcome: "entry-error",
       write: () => {
         k7.capture();
         store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
@@ -1271,11 +1280,55 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // v2.0.15: faturadan doğan cari satırları (borç/alacak + varsa peşin tahsilat/ödeme). source = 'invoice', source_id = fatura.
   // Kasa'ya etkisi fatura modülünün kendi kaynağından gelir (routes/invoices.mjs cashSource); cari kartından düzeltilemez.
   const invoiceEntry = {
-    add(user, accountId, { kind, amount, date, note, invoiceId, method = "cash", eventId = "", finRef = "" }) {
-      return addEntry(user, accountId, { kind, amount, date, note, source: "invoice", sourceId: invoiceId, method, eventId, finRef });
+    add(user, accountId, { kind, amount, date, note, invoiceId, method = "cash", eventId = "", finRef = "", pos = null }) {
+      return addEntry(user, accountId, { kind, amount, date, note, source: "invoice", sourceId: invoiceId, method, eventId, finRef, pos });
     },
     removeFor(invoiceId) {
       return store.run("DELETE FROM account_entries WHERE source = 'invoice' AND source_id = ?", invoiceId).changes;
+    },
+  };
+  // 2.2.0 (plan §7 "POST /bank/pos/sales/:id/refund · void"): Banka → POS İşlemleri'nden cari satırı. refund: cari "POS İadesi" (cari kartındaki
+  // ile aynı satır, aynı yetki: ödeme girişi + bankadan çıkış); remove: POS İşlemleri → İptal Et (void; satır Silinenler'e gider).
+  const posEntry = {
+    refund(user, accountId, { amount, date, note = "", posId = "", refundOf = "", requestId = "" }) {
+      requireKindRight(user, "out");
+      if (!canUser(user, "bank.move")) throw new HttpError(403, 'POS İadesi için "Banka Hareketi Girme ve Bankadan Çıkış" yetkisi gerekir.', { code: "bank-permission", permission: "bank.move" });
+      const account = accountRow(accountId);
+      const input = { kind: "out", amount, date, note: limited(note, 300, "Açıklama"), method: "card", invoiceId: "" };
+      period?.assertOpen(date, "Cari hareketi");
+      const finRef = refOf(input, { posId, posRefundOf: refundOf, posRefund: true });
+      const created = bank.post({
+        user, module: "account", op: "create", requestId, scope: "account.entry.create", body: { accountId: account.id, amount, date, posId, refundOf },
+        write: () => {
+          const entry = addEntry(user, account.id, { ...input, finRef, pos: { installments: 1, authCode: "", cardLast4: "", refundOf, sourceless: false } });
+          audit(user, "account.entry.out", entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, posRefundOf: refundOf });
+          return entry;
+        },
+      });
+      touched(user, account);
+      changed(user, { kind: "cash" });
+      return created;
+    },
+    remove(user, entryId) {
+      const head = store.get("SELECT account_id AS accountId FROM account_entries WHERE id = ?", text(entryId));
+      if (!head) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
+      const account = accountRow(head.accountId);
+      const previous = entryOf(account.id, entryId);
+      requireEntryRight(user, previous);
+      period?.assertOpen(previous.date, "Bu cari hareketi");
+      assertOffsetFree(previous);
+      const result = bank.post({
+        user, module: "account", op: "delete", prev: previous, posOutcome: "void",
+        write: () => {
+          store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
+          trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, accountId: account.id, accountName: account.name }, user });
+          audit(user, "account.entry.deleted", previous.id, { accountId: account.id, ...previous, posVoid: true });
+          return { id: previous.id };
+        },
+      });
+      touched(user, account);
+      changed(user, { kind: "cash" });
+      return result;
     },
   };
   const fingerprint = () => {
@@ -1368,5 +1421,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
+  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
 }

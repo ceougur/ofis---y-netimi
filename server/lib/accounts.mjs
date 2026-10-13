@@ -42,7 +42,8 @@ export function accountLedger(entries = [], plans = []) {
     const meta = ENTRY_KINDS[entry.kind];
     if (!meta) continue;
     const amount = roundMoney(Number(entry.amount) || 0);
-    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : entry.source === "invoice" ? "invoice" : "account";
+    // 2.2.0 (plan §4.3/2): POS komisyon kesintisi/iadesi (source 'bank') "pos-fee": yalnız bağlandığı komisyon faturasını kapatır, FIFO'ya girmez.
+    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : entry.source === "invoice" ? "invoice" : entry.source === "bank" ? "pos-fee" : "account";
     lines.push({
       id: entry.id,
       origin,
@@ -51,7 +52,7 @@ export function accountLedger(entries = [], plans = []) {
       at: entry.createdAt || "",
       // Çek/senetten gelen satır (v2.0.7): alınan/ciro/karşılıksız açıklamada yazar; etiket evrak olduğunu söyler.
       // v2.0.15: faturadan gelen borç/alacak "Fatura" olarak görünür (açıklamada fatura türü ve numarası yazar).
-      label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : meta.label,
+      label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : origin === "pos-fee" ? (entry.kind === "in" ? "POS Komisyon İadesi" : entry.method === "bank" ? "POS Komisyon Tahsili" : "POS Komisyon Kesintisi") : meta.label,
       sourceId: entry.sourceId || "",
       // v2.0.17: cari kartından girilen tahsilat/ödemenin "Kapatılacak Fatura" bağı (boş = otomatik, en eski açık fatura).
       invoiceId: entry.invoiceId || "",
@@ -94,7 +95,8 @@ export function accountLedger(entries = [], plans = []) {
         date: entry.date,
         at: entry.createdAt || "",
         // Açılış (devir, v2.0.8): Excel'de programa girmeden önce ödenmiş kısım; alacak tarafına yazılır, Kasa'da yoktur.
-        label: incoming ? `${entry.opening ? "Açılış (devir)" : "Taksit tahsilatı"}${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : "Taksit iadesi",
+        // Çekli ters kayıt (doğrulama T11): taksite sayılmış evrak karşılıksız döndü — iade değil, tahsilatın geri alınması.
+        label: incoming ? `${entry.opening ? "Açılış (devir)" : "Taksit tahsilatı"}${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : entry.chequeId ? "Karşılıksız çek / senet (taksit)" : "Taksit iadesi",
         note: entry.note || "",
         receiptNo: entry.receiptNo || null,
         debit: incoming ? 0 : amount,
