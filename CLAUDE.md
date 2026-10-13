@@ -441,3 +441,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KARAR (kullanıcı, 13.10.2026 ~23:30 UTC: "1"): DÖVİZ (İz 4, plan §3.12) ERTELENDİ — 2.3.0 dövizsiz çıkar (Şüpheli Alacaklar + K8 + bankalı
   iade/iptal + kalan raporlar + düzeltmeler); döviz isteyen müşteri çıkınca yapılır; `fxEnabled` kapalı sürer. İz 1 çekirdek birleşti (5de225f), ana
   oturum doğruladı (86b061b kanıt); 1.6/1.7 ekran+rapor+e2e ve 1.8 kâhin sürüm 4 (+K8) ajanları başladı.
+  DURDURULDU (kullanıcı, 13.10.2026 ~20:00 UTC: "perşembe gününe göre ayarla ve işlemleri durdur"): dört ajan (İz 3.2+3.4, 3.3, 1.6/1.7, kâhin 4)
+  erken aşamada durduruldu, yarım işler `docs/2.3.0-WIP-13.10/*.patch` + OKU-BENI; CI beklemeleri kesildi (91bd774, 5de225f, 86b061b CI'si
+  PERŞEMBE ilk iş `node tools/kanit.mjs ci <sha>` ile okunur — ders 21; 3.1 K8 ve 1.1–1.5 ancak o zaman üstü çizilir). Hatırlatıcı Perşembe
+  15.10.2026 09:00 TR. Devam sırası: CI oku → yamaları uygula/ajanları yeniden başlat (3.2+3.4, 3.3, 1.6/1.7, kâhin 4) → bitiş turu.
