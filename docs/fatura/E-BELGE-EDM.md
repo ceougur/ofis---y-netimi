@@ -43,6 +43,10 @@ gelince entegre ederiz")
 - AĞ: bu bulut ortamı `test.edmbilisim.com.tr`'ye bağlanamıyor (13.10.2026 denendi: ağ politikası reddetti, 403). Adım 2 için: ortam ayarlarında
   bu alan adına izin verilir (ortam → Network access → Allowed domains: `test.edmbilisim.com.tr`, `dosya.edmbilisim.com.tr`) YA DA testler GitHub
   Actions'ta (açık internet) koşar — kimlik bilgisi GitHub secret olur. Karar kullanıcıda. Adım 1 ağsız yapılabilir (paket kullanıcıdan yüklenir).
+- AĞ GÜNCEL (13.10.2026, kullanıcı ortam ayarında izin verdi): `test.edmbilisim.com.tr` ERİŞİLİYOR — `EFaturaEDM.svc?singleWsdl` 200, WSDL
+  `targetNamespace="http://tempuri.org/"` (koddaki WSDL'siz varsayılan i2i ad alanından FARKLI; program WSDL'i okuduğu için uyum sağlamalı — işte
+  ilk denetlenecek nokta). `dosya.edmbilisim.com.tr`'ye bağlanılamıyor: sunucunun SSL sertifika zinciri doğrulanamıyor ("unable to get local
+  issuer certificate"); TLS denetimi KAPATILMAZ → belge paketi kullanıcıdan zip olarak yüklenir.
 - ownCloud paketi 35,3 MB: kullanıcı "İndir" ile zip alıp oturuma yükler (ya da yalnız E-FATURA/E-ARŞİV + uç nokta docx + XSLT).
 - Yasal: canlıya geçiş için firmanın EDM ile sözleşmesi, GİB'de e-Fatura/e-Arşiv kaydı ve mali mühür/e-imza (entegratör tarafında) gerekir;
   program bunu kendisi yapamaz. Test ortamından canlıya belge gitmemesi için adres + anahtar ayrımı testle korunur.
