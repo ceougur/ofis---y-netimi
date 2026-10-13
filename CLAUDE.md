@@ -423,3 +423,5 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   görmek ister, devir yapmaz. GÜNCEL ÖNERİ (karar kullanıcıda): İKİ KİP — (1) Devirsiz (varsayılan, bugünkü sürekli kayıt; isteyene yıl kilidi);
   (2) "Devir Yap": yeni yıl için yeni veri dosyası, yalnız devreden kalemler (cari/kasa/banka/kart bakiyeleri, vadesi gelmemiş çek/senet, bitmemiş
   taksitler tek tek, stok miktar+değer) taşınır; eski yıl SALT OKUNUR ARŞİV (şirket seçicide "001 · 2026 (Arşiv)", 2 şirket sınırına sayılmaz).
+  İSTEK (kullanıcı, aynı gün): "nasıl yapacağımızı tablo olarak ver, arkadaşımın görüşünü alayım" → `docs/devir/DestekOfis-Devir-Plani.png`
+  + `.pdf` (iki kip tablosu + görüş istenen 5 nokta: varsayılan kip, bakiye tipi, kapanmamış faturalar, stok yöntemi, arşiv düzeltme). Görüş bekleniyor.
