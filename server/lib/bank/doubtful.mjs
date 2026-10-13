@@ -45,13 +45,24 @@ export function doubtfulRows(store, { parties = null } = {}) {
   if (!hasDoubtful(store)) return { records: [], provisions: [] };
   const list = parties ? JSON.stringify([...parties]) : null;
   if (list === "[]") return { records: [], provisions: [] };
-  const where = list ? "d.account_id IN (SELECT value FROM json_each(?))" : "1";
-  const records = store.all(`${RECORD_SQL} WHERE ${where} AND a.deleted_at IS NULL AND +d.status <> 'cancelled' ORDER BY d.date, d.rowid`, ...(list ? [list] : [])).map(withControl);
-  const provisions = store.all(
-    `${PROVISION_SQL} JOIN doubtful_receivables d ON d.id = p.doubtful_id JOIN accounts a ON a.id = d.account_id AND a.deleted_at IS NULL
-     WHERE ${where} AND +p.status = 'active' AND +d.status <> 'cancelled' ORDER BY p.date, p.rowid`,
-    ...(list ? [list] : []),
-  );
+  // Süzgeçli okuma (kapının dokunulan varlıklar yolu; test/banka-210-kapi-plan.test.mjs): kimlik listesinden başlar (json_each CROSS JOIN →
+  // idx_doubtful_receivables_account → idx_doubtful_provisions_record), cari ve başlık birincil anahtarla; silinme/durum kolonlarının indeksi
+  // tekli + ile kapalı (istatistiksiz planlayıcı accounts.deleted_at indeksini seçip tabloyu dolaşıyordu).
+  const records = list
+    ? store.all(`${RECORD_SQL.replace("FROM doubtful_receivables d", "FROM json_each(?) j CROSS JOIN doubtful_receivables d ON d.account_id = j.value")} WHERE +a.deleted_at IS NULL AND +d.status <> 'cancelled' ORDER BY d.date, d.rowid`, list).map(withControl)
+    : store.all(`${RECORD_SQL} WHERE +a.deleted_at IS NULL AND +d.status <> 'cancelled' ORDER BY d.date, d.rowid`).map(withControl);
+  const provisions = list
+    ? store.all(
+        `SELECT p.id, p.doubtful_id AS recordId, p.date, p.amount_minor AS amountMinor, p.note, p.status, p.event_id AS eventId, COALESCE(e.no, '') AS eventNo
+         FROM json_each(?) j CROSS JOIN doubtful_receivables d ON d.account_id = j.value CROSS JOIN doubtful_provisions p ON p.doubtful_id = d.id
+           JOIN accounts a ON a.id = d.account_id LEFT JOIN fin_events e ON e.id = p.event_id
+         WHERE +a.deleted_at IS NULL AND +p.status = 'active' AND +d.status <> 'cancelled' ORDER BY p.date, p.rowid`,
+        list,
+      )
+    : store.all(
+        `${PROVISION_SQL} JOIN doubtful_receivables d ON d.id = p.doubtful_id JOIN accounts a ON a.id = d.account_id
+         WHERE +a.deleted_at IS NULL AND +p.status = 'active' AND +d.status <> 'cancelled' ORDER BY p.date, p.rowid`,
+      );
   return { records, provisions };
 }
 
@@ -72,9 +83,10 @@ export function doubtfulCredits(store, parties) {
   ];
   if (has("plans") && has("plan_entries")) {
     parts.push(`SELECT 'plan-entry:' || pe.id, p.account_id, pe.date, ${c("pe.amount")}, '' FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE pe.kind = 'in'`);
+    // Vazgeçilen kalan kuruşla: kart tutarı (kuruş) − net tahsilat (her satır kuruşa çevrilip toplanır; banka kodunda REAL toplam yok).
     parts.push(
       `SELECT 'plan-close:' || p.id, p.account_id, MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))),
-              MAX(0, ${c(`(p.total - COALESCE((SELECT SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) FROM plan_entries x WHERE x.plan_id = p.id), 0))`)}), ''
+              MAX(0, ${c("p.total")} - COALESCE((SELECT SUM(CAST(ROUND((CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) * 100) AS INTEGER)) FROM plan_entries x WHERE x.plan_id = p.id), 0)), ''
        FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL WHERE p.status = 'closed'`,
     );
   }
