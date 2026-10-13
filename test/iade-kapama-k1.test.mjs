@@ -306,7 +306,9 @@ describe("K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, a
     const acc = await h.account("N15 Müşteri");
     const f1 = await h.sale(acc, { qty: 3, price: 1000, cash: nakit(2000), date: dayOf(-40), installments: { count: 1, firstDue: dayOf(20), everyMonths: 1 } });
     const r1 = await h.giveBack(acc, f1, 1, [], { date: dayOf(-30) });
-    await must("kart tahsilatı (fazla)", api.post(`/api/workspace/plans/${f1.planId}/entries`, { kind: "in", amount: "1500", method: "cash", date: dayOf(-29) }));
+    // K8 (2.3.0 İz 3.1; plan §3.10/3, §11.4): iade kartı 0'a küçülttü → kalan 0 olan karta tahsilat 409 plan-paid; bu senaryodaki fazla tahsilat
+    // yönetici "Fazlasını Avans Yaz" (overpay:true) ile yazılır; kapama kuralı (K1) ve sayılar aynı kalır.
+    await must("kart tahsilatı (fazla, avans)", api.post(`/api/workspace/plans/${f1.planId}/entries`, { kind: "in", amount: "1500", method: "cash", date: dayOf(-29), overpay: true }));
     const r2 = await h.giveBack(acc, f1, 1, nakit(300), { date: dayOf(-28) });
     const doc = await h.doc(f1.id);
     const plan = await must("kart", api.get(`/api/workspace/plans/${f1.planId}`));

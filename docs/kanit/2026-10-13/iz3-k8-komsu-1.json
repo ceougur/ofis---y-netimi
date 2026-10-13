@@ -1,0 +1,38 @@
+{
+  "ad": "iz3-k8-komsu-1",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-230-k8-taksit.test.mjs test/plans.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/yazim-duzeni.test.mjs test/trash.test.mjs test/banka-210-istek-kimligi.test.mjs test/istek-kimligi-222.test.mjs test/hakem-k3-kasa-istek-kimligi.test.mjs test/iade-224.test.mjs test/cheques-overview.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-gg3-bag.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-pos-moduller.test.mjs test/hakem-k7-kmh.test.mjs test/hakem-k8-kredi.test.mjs test/iade-kapama-k1.test.mjs test/mutabakat-cekirdek.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg2-hiz.test.mjs",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a958f5cc6657a2287",
+  "kirli": 7,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T18:59:02.896Z",
+  "sure_sn": 154.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 219,
+    "gecen": 218,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K1 — iade kapanışı: geri ödenen iade asıl faturayı kapatmaz, artan alacak iade belgesinin açığıdır › N15: sıra — taksitli 3.000 (2.000 peşin) → R1 1.000 açık → karttan 1.500 (fazla) → R2 1.000 + 300 geri: iadeler bağlı ödemelerden SONRA mahsup",
+      "konum": "test/iade-kapama-k1.test.mjs:302:3",
+      "hata": "kart tahsilatı (fazla): 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-35783a38-db4b-4eff-9e97-829fab2f7996\",\"remaining\":0,\"amount\":1500,\"excess\":1500} · 409 !== 200 (beklenen 200, gelen 409)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/iz3-k8-komsu-1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a958f5cc6657a2287",
+  "ham_cikti_sha256": "b333e8fbdd7f58e032bff12e51699654d1542ddba62b63e972fe40749417463f",
+  "ham_cikti_bayt": 80422
+}

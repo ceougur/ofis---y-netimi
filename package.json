@@ -43,6 +43,7 @@
     "test:senaryo-banka-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-220.mjs",
     "test:senaryo-pos-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-pos-220.mjs",
     "test:senaryo-tahsile-ver-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tahsile-ver-220.mjs",
+    "test:senaryo-k8-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-k8-230.mjs",
     "test:banka-210-kart-onbellek": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-kart-onbellek-yaris.mjs",
     "test:banka-210-daha-fazla": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-daha-fazla-yaris.mjs",
     "test:acilis-yanit-yaris": "node --disable-warning=ExperimentalWarning test/e2e/acilis-yanit-yaris.mjs",

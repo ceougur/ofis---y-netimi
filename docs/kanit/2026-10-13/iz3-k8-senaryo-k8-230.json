@@ -1,0 +1,43 @@
+{
+  "ad": "iz3-k8-senaryo-k8-230",
+  "komut": "npm run test:senaryo-k8-230",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a958f5cc6657a2287",
+  "kirli": 9,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:07:04.995Z",
+  "sure_sn": 14.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 16,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "700 kaydedildi, kalan 0, fazla yok; KPI: \"₺1.000,00Toplam Tutar₺1.000,00Tahsil Edilen · %100₺0,00Kalan₺0,00Geciken · 0 taksit\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-k8-230: 16 geçti, 1 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/iz3-k8-senaryo-k8-230.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a958f5cc6657a2287",
+  "ham_cikti_sha256": "6bc775cfdcb52f387669bbe889c16ce39dacddc3d36b3a9955a356b7ccc138fd",
+  "ham_cikti_bayt": 2194
+}

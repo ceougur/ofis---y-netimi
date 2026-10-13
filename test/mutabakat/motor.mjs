@@ -106,7 +106,10 @@ export const motorNow = (base = new Date()) => new Date(base.getFullYear(), base
 // Uzun koşu (npm run test:mutabakat, kos.mjs) POS'u açar.
 // tahsileVer (2.2.0, plan §3.14): Bankaya Tahsile Ver / Bankadan Geri Al işlemleri (yalnız banka ekseniyle). false: torbada yoklar; motorun
 // rastgele sırası 2.1.0'dakiyle aynı kalır (o sıranın verisine bağlı elle adımları olan testler için).
-export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, log = () => {} }) {
+// k8 (2.3.0 İz 3.1, plan §3.10/3 ve §11.4 — bilinçli değişiklik): taksit-tahsil dalı kalan 0 olan karta tahsilatta 409 plan-paid, kalanı aşan tutarda
+// 409 plan-overpay bekler; yarı olasılıkla (mevcut `force` çekimi; ek rastgele çekim yok) yönetici overpay:true gönderir → avans (program: kartta
+// "extra", caride alacak; modelde p.paid ve cari). k8:false → 2.2.0 motoru: K8'siz eski sürüm kodunu süren testler (banka-210-altin v2.0.26).
+export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, k8 = true, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
@@ -1262,9 +1265,22 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           M.planEntries.push({ id: r.data.entryId, planId: id, kind: "out", amount, method, date: day });
           return;
         }
-        const amount = Math.max(1, Math.min(planLeft(p) || moneyCents(1, 2000), moneyCents(1, 12000)));
+        // K8 (2.3.0; plan §3.10/3): kalan 0 → plan-paid; tutar > kalan → plan-overpay; `force` ise yönetici "Fazlasını Avans Yaz" (overpay:true) → 200,
+        // fazlası avans. k8:false: 2.2.0 motoru (kalan 0'da rastgele tutar, aşan tutar kalana kırpılır; eski sürüm kodu 200 döner).
+        const left = planLeft(p);
+        let amount;
+        let over = false;
+        if (!k8) amount = Math.max(1, Math.min(left || moneyCents(1, 2000), moneyCents(1, 12000)));
+        else if (left <= 0) {
+          amount = moneyCents(1, 2000);
+          over = true;
+        } else {
+          amount = moneyCents(1, 12000);
+          over = amount > left;
+        }
         const b = bindBank(method);
-        const r = await api("POST", `/api/workspace/plans/${id}/entries`, { kind: "in", amount: tl(amount), method, date: day, ...(b ? { bankAccountId: b.id, similarOk: true } : {}) });
+        const r = await api("POST", `/api/workspace/plans/${id}/entries`, { kind: "in", amount: tl(amount), method, date: day, ...(over && force ? { overpay: true } : {}), ...(b ? { bankAccountId: b.id, similarOk: true } : {}) });
+        if (over && !force) return expectReject(r, left <= 0 ? "plan-paid" : "plan-overpay", kind);
         mustOk(r, kind);
         p.paid += amount;
         syncOwn(p);

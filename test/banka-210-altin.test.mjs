@@ -394,8 +394,9 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
       try {
         await prepareStaff(old);
         const admin = await old.login();
-        // v2.0.26'da banka modülü yok: motorun banka ekseni kapalı (rastgele sıra eski motorla birebir aynı kalır).
-        const report = await runReconciliation({ client: admin.client, seed: 210, operations: 260, verifyEvery: 100_000, reportEvery: 100_000, burst: 8, span: 120, bank: false });
+        // v2.0.26'da banka modülü yok: motorun banka ekseni kapalı (rastgele sıra eski motorla birebir aynı kalır). K8 taksit kuralı (2.3.0) da yok:
+        // k8:false (kalan 0 olan karta tahsilat 2.0.26'da 200 döner; motor 409 beklememeli).
+        const report = await runReconciliation({ client: admin.client, seed: 210, operations: 260, verifyEvery: 100_000, reportEvery: 100_000, burst: 8, span: 120, bank: false, k8: false });
         assert.ok(report.operations >= 260, JSON.stringify(report.byKind));
         // Görünürlük kuralları için v2.0.26'nın kendi API'siyle: tahsilatı olan cari ve taksit kartı silinir, peşinli fatura iptal edilir,
         // stokta havaleyle peşin satış (tek kaynak bunları 2.0.26'daki modül tanımları gibi düşürmeli / tutmalı).

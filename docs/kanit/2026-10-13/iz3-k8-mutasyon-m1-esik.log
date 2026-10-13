@@ -1,0 +1,389 @@
+TAP version 13
+# Subtest: K8 taksit kuralı — nakit yolu (N1, N2, N4, N5)
+    # Subtest: N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir
+    not ok 1 - N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir
+      ---
+      duration_ms: 144.917374
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ödenmiş karta 0,01: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 0,01 TL, fazlası 0,01 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa "Fazlasını Avans Yaz" ile kaydedin.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:75:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200
+    ok 2 - N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200
+      ---
+      duration_ms: 203.050524
+      type: 'test'
+      ...
+    # Subtest: N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid
+    not ok 3 - N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid
+      ---
+      duration_ms: 93.32612
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeniden ödenmiş kart: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 0,01 TL, fazlası 0,01 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa "Fazlasını Avans Yaz" ile kaydedin.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:108:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - K8 taksit kuralı — nakit yolu (N1, N2, N4, N5)
+  ---
+  duration_ms: 881.819187
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:56:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13)
+    # Subtest: N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500
+    not ok 1 - N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500
+      ---
+      duration_ms: 40.553629
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:129:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid
+    ok 2 - N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid
+      ---
+      duration_ms: 37.957701
+      type: 'test'
+      ...
+    # Subtest: N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200
+    ok 3 - N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200
+      ---
+      duration_ms: 76.076059
+      type: 'test'
+      ...
+    # Subtest: N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200
+    not ok 4 - N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200
+      ---
+      duration_ms: 44.745502
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:157:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        R2 ilk gönderim: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 100,00 TL, fazlası 100,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa "Fazlasını Avans Yaz" ile kaydedin.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:163:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13)
+  ---
+  duration_ms: 516.912617
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:113:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6)
+    # Subtest: N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez
+    not ok 1 - N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez
+      ---
+      duration_ms: 51.313531
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ikinci havale: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 1.000,00 TL, fazlası 1.000,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa "Fazlasını Avans Yaz" ile kaydedin.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:191:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid
+    not ok 2 - N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid
+      ---
+      duration_ms: 88.117691
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        4. havale: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 1.000,00 TL, fazlası 1.000,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa "Fazlasını Avans Yaz" ile kaydedin.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:205:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı
+    not ok 3 - N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı
+      ---
+      duration_ms: 47.422553
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS ödenmiş karta: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 100,00 TL, fazlası 100,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa "Fazlasını Avans Yaz" ile kaydedin.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:216:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6)
+  ---
+  duration_ms: 589.126078
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:171:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)
+    # Subtest: N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz
+    not ok 1 - N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz
+      ---
+      duration_ms: 50.459334
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:239:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        personel ödenmiş karta: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 50,00 TL, fazlası 50,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Bu karta avans yazılacaksa yöneticinize başvurun.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:243:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)
+    ok 2 - N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)
+      ---
+      duration_ms: 60.754403
+      type: 'test'
+      ...
+    # Subtest: N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200
+    not ok 3 - N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200
+      ---
+      duration_ms: 50.344813
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:269:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fazla tahsilatlı karta yeni tahsilat: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 10,00 TL, fazlası 10,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa "Fazlasını Avans Yaz" ile kaydedin.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:275:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)
+  ---
+  duration_ms: 601.983762
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:226:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9)
+    # Subtest: N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)
+    not ok 1 - N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)
+      ---
+      duration_ms: 120.496173
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:302:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yükleme ödenmiş karta: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 1.000,00 TL, fazlası 1.000,00 TL; silinen tahsilat geri yüklenmez. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa "Fazlasını Avans Yaz" ile kaydedin.)
+        + actual - expected
+        
+        + 'plan-overpay'
+        - 'plan-paid'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'plan-overpay'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:308:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200
+    ok 2 - N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200
+      ---
+      duration_ms: 135.52563
+      type: 'test'
+      ...
+    # Subtest: N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı
+    ok 3 - N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı
+      ---
+      duration_ms: 318.1057
+      type: 'test'
+      ...
+    1..3
+not ok 5 - K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9)
+  ---
+  duration_ms: 901.809982
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs:285:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 16
+# suites 5
+# pass 6
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3934.589668

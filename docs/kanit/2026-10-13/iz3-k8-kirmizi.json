@@ -1,0 +1,113 @@
+{
+  "ad": "iz3-k8-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a958f5cc6657a2287",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T18:54:03.525Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 0,
+    "basarisiz": 16,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 16 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K8 taksit kuralı — nakit yolu (N1, N2, N4, N5) › N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir",
+      "konum": "test/banka-230-k8-taksit.test.mjs:67:3",
+      "hata": "ödenmiş karta 0,01: 200 {\"id\":\"plan-7cb5a649-7c95-45db-b109-0543610f4df8\",\"accountId\":\"account-86f2ec3e-8fd9-4d3e-8e76-66ba2b530b56\",\"refNo\":\"1\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Nakit Müşteri K8-1\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-002f0028-95f4-428f-bc · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — nakit yolu (N1, N2, N4, N5) › N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:86:3",
+      "hata": "kalan 0,01 iken 0,02: 200 {\"id\":\"plan-e1dd4bb8-e279-4a8a-a696-af21f5a92099\",\"accountId\":\"account-86f2ec3e-8fd9-4d3e-8e76-66ba2b530b56\",\"refNo\":\"2\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Nakit Müşteri K8-2\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-002f0028-95f4-428f-bc · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — nakit yolu (N1, N2, N4, N5) › N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid",
+      "konum": "test/banka-230-k8-taksit.test.mjs:100:3",
+      "hata": "iadeden sonra 300: 200 {\"id\":\"plan-afbee96e-a5fa-4bc9-8824-5821816c1faa\",\"accountId\":\"account-86f2ec3e-8fd9-4d3e-8e76-66ba2b530b56\",\"refNo\":\"3\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Nakit Müşteri K8-3\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-002f0028-95f4-428f-bc · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13) › N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500",
+      "konum": "test/banka-230-k8-taksit.test.mjs:124:3",
+      "hata": "durumlar [[400,\"request-id-invalid\"],[400,\"request-id-invalid\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13) › N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid",
+      "konum": "test/banka-230-k8-taksit.test.mjs:135:3",
+      "hata": "[[400,\"request-id-invalid\"],[400,\"request-id-invalid\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13) › N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:145:3",
+      "hata": "ödenmiş 1. taksite: 200 {\"id\":\"plan-a99b7831-0868-4096-8a90-73cdabc16b69\",\"accountId\":\"account-8e8bf2e7-5665-4284-96f4-b21262546ee5\",\"refNo\":\"3\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Eşzamanlı Müşteri K8-6\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-346536a4-3fdd-456 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13) › N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:157:3",
+      "hata": "500 R1: 400 {\"ok\":false,\"error\":\"İstek kimliği geçerli değil.\",\"code\":\"request-id-invalid\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6) › N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez",
+      "konum": "test/banka-230-k8-taksit.test.mjs:187:3",
+      "hata": "ikinci havale: kod bank-similar (Aynı iş gününde aynı hesapta aynı tutarda benzer bir işlem kayıtlı (BNK-2026-000003, 08.10.2026, Ofis yöneticisi). Gerçekten ikinci bir işlemse \"Yine de Kaydet\" ile kaydedin.) · + actual - expected · + 'bank-similar' (beklenen plan-paid, gelen bank-similar)"
+    },
+    {
+      "ad": "K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6) › N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid",
+      "konum": "test/banka-230-k8-taksit.test.mjs:198:3",
+      "hata": "4. havale: 200 {\"id\":\"plan-f5a5c625-d6cc-434c-9189-89ecaea1ed9c\",\"accountId\":\"account-7a3dee52-a339-441e-9e96-fc3b6b711cb4\",\"refNo\":\"2\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Banka Müşteri K8-9\",\"note\":\"\",\"phone\":\"\",\"total\":3000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-02f9a41b-19d2-4c3e-9c · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6) › N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı",
+      "konum": "test/banka-230-k8-taksit.test.mjs:210:3",
+      "hata": "POS aşan: 200 {\"id\":\"plan-cde75ad9-2a63-4b7f-9638-52b098571de9\",\"accountId\":\"account-7a3dee52-a339-441e-9e96-fc3b6b711cb4\",\"refNo\":\"3\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Banka Müşteri K8-10\",\"note\":\"\",\"phone\":\"\",\"total\":2000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-02f9a41b-19d2-4c3e-9 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7) › N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz",
+      "konum": "test/banka-230-k8-taksit.test.mjs:239:3",
+      "hata": "personel ödenmiş karta: 200 {\"id\":\"plan-8c39fbcc-ee20-4351-b9a6-31a53d095111\",\"accountId\":\"account-76e8ccd2-288a-4a0e-8df5-1bcc430dd060\",\"refNo\":\"1\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Yetki Müşteri K8-11\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-cfcca438-1b51-4351-8 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7) › N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)",
+      "konum": "test/banka-230-k8-taksit.test.mjs:259:3",
+      "hata": "personel aşan: 200 {\"id\":\"plan-a053eb03-706f-458f-b7bb-60eac219efad\",\"accountId\":\"account-76e8ccd2-288a-4a0e-8df5-1bcc430dd060\",\"refNo\":\"2\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Yetki Müşteri K8-12\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-cfcca438-1b51-4351-8 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7) › N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:269:3",
+      "hata": "mevcut fazla gösterilir, değişmez · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9) › N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)",
+      "konum": "test/banka-230-k8-taksit.test.mjs:302:3",
+      "hata": "geri yükleme ödenmiş karta: 200 {\"restored\":\"plan-entry\",\"message\":\"Taksit hareketi geri eklendi; kart ve Kasa yeniden hesaplandı.\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9) › N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:316:3",
+      "hata": "geri yükleme kalanı aşıyor: 200 {\"restored\":\"plan-entry\",\"message\":\"Taksit hareketi geri eklendi; kart ve Kasa yeniden hesaplandı.\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9) › N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı",
+      "konum": "test/banka-230-k8-taksit.test.mjs:328:3",
+      "hata": "A 600: 200 {\"id\":\"plan-c13dc364-7c84-452b-b0b8-f57e1ba634be\",\"accountId\":\"account-83fbf673-fda9-40a8-868a-1961da717341\",\"refNo\":\"3\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Geri Yükleme Müşteri K8-16\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-3ed9aeb7-f651 · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/iz3-k8-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a958f5cc6657a2287",
+  "ham_cikti_sha256": "3e2d6b8aed7ba5cd49f1aeab0c77be2d5fcfcd4e8fc5282e022e057437112bd3",
+  "ham_cikti_bayt": 27222
+}
