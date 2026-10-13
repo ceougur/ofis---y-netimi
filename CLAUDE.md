@@ -438,3 +438,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   DURUM (13.10 ~22:30 UTC): İz 3.1 K8 birleşti (972daa3) ve ana oturum doğruladı (eski kopya 0/16 kırmızı, yeni 16/16, komşu 71/71, e2e k8-230
   17/17, banka-210 408/408; CI okunacak). İz 2 kök neden: ürün DEĞİL, ölçek aracının soru-bekleme adımı (d0a442a; zorla üretme CI'de) — 20 kullanıcı tam
   koşusu son adayda. İz 1 çekirdek ajan worktree'sinde commit (217410f), ajan sürüyor. İz 3.2+3.4 ve 3.3 ajanları başlatıldı; 3.1b kâhin K8 İz 1.8 ile.
+  KARAR (kullanıcı, 13.10.2026 ~23:30 UTC: "1"): DÖVİZ (İz 4, plan §3.12) ERTELENDİ — 2.3.0 dövizsiz çıkar (Şüpheli Alacaklar + K8 + bankalı
+  iade/iptal + kalan raporlar + düzeltmeler); döviz isteyen müşteri çıkınca yapılır; `fxEnabled` kapalı sürer. İz 1 çekirdek birleşti (5de225f), ana
+  oturum doğruladı (86b061b kanıt); 1.6/1.7 ekran+rapor+e2e ve 1.8 kâhin sürüm 4 (+K8) ajanları başladı.
