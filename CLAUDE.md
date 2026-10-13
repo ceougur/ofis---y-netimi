@@ -380,7 +380,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html:14 elle; içerik 2.2.0 — POS/Tahsile Ver var). pdf-denetle sürüm etiketini denetlemiyor.
   KARAR (kullanıcı, 13.10.2026: "kılavuzda gördüğün sorunları düzelt") → DÜZELTİLDİ: kapak + dip not 2.2.0; test/kilavuz-surum.test.mjs (kaynak
   HTML sürümü = package.json; eski hâlde 2/2 kırmızı) + pdf-denetle "PDF kapağı ve dip notu program sürümü" (eski PDF'te kırmızı, yeni 39/39);
-  PDF metin farkı yalnız bu iki satır; yeni PDF sha256 21b262c1…. Yayındaki kılavuz dosyası kullanıcı tarafından değiştirilir, site PR'ı açılır;
+  PDF metin farkı yalnız bu iki satır; yeni PDF sha256 21b262c1…. Yayındaki kılavuz kullanıcı tarafından değiştirildi (v2.2.0 + latest 21b262c1… doğrulandı; öbür 4 dosya bayt bayt aynı); site PR ceougur/destekofis#14 BİRLEŞTİ (de0153e, main PDF doğrulandı);
   programın içindeki kopya (client/kilavuz) bir sonraki sürümle gider (2.2.0 kurulumlarında kapak 2.1.0 kalır).
 - İSTEK (kullanıcı, 13.10.2026): satışa yardım eden arkadaş için müşterilere paylaşılacak TANITIM/REKLAM METNİ → `docs/pazarlama/TANITIM-METNI.md`
   (kısa WhatsApp + uzun; iddialar 2.2.0 kılavuzundan doğrulandı; e-Fatura, bulut, 2+ şirket VAAT EDİLMEZ). Site metni (ceougur/destekofis
