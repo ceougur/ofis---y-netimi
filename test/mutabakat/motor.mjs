@@ -106,7 +106,10 @@ export const motorNow = (base = new Date()) => new Date(base.getFullYear(), base
 // Uzun koşu (npm run test:mutabakat, kos.mjs) POS'u açar.
 // tahsileVer (2.2.0, plan §3.14): Bankaya Tahsile Ver / Bankadan Geri Al işlemleri (yalnız banka ekseniyle). false: torbada yoklar; motorun
 // rastgele sırası 2.1.0'dakiyle aynı kalır (o sıranın verisine bağlı elle adımları olan testler için).
-export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, log = () => {} }) {
+// supheli (2.3.0 İz 1, plan §3.11b): Şüpheli Ticari Alacaklar işlemleri (yalnız banka ekseniyle; false: torbada yoklar, motorun rastgele sırası
+// 2.2.0'dakiyle aynı). İşlemler yalnız motorun bu iş için açtığı iki müşteride koşar (accounts/customers havuzunda değildir: öbür işlemlerin
+// rastgele seçimleri değişmez); model 128/129/644/654'ü plandan yazılmış kendi ayırma kuralıyla (doubtfulModel) hesaplar.
+export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, supheli = true, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
@@ -217,6 +220,68 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   const customers = accounts.filter(a => a.type === "customer");
   const suppliers = accounts.filter(a => a.type === "supplier");
+  // 2.3.0 İz 1 (plan §3.11b): şüpheli alacak işlemlerinin iki müşterisi (accounts havuzunda değil). Model olay listesi D.events: { kind: take |
+  // provision | credit | release, date, cents, id, recordId, target }; durum her doğrulamada plandan yazılmış kuralla sıfırdan kurulur (doubtfulModel).
+  const doubtfulCustomers = [];
+  const D = { events: [], records: new Map(), seq: 0 };
+  const doubtfulOn = bank && supheli;
+  if (doubtfulOn) {
+    for (const name of ["Şüpheli Müşteri A", "Şüpheli Müşteri B"]) {
+      const r = await api("POST", "/api/workspace/accounts", { name: `${name} T${seed}`, type: "customer", registeredOn: D0 });
+      if (r.status !== 200) throw new Error(`şüpheli müşterisi açılamadı: ${r.status} ${r.text}`);
+      doubtfulCustomers.push({ id: r.data.id, name });
+      M.cari.set(r.data.id, 0);
+    }
+  }
+  /**
+   * Bağımsız model (docs/2.3.0-SUPHELI-KABUL.md §1 K1–K7; programın kodu okunmadı): cari başına olaylar tarih sırasıyla (aynı günde al → karşılık
+   * → alacak satırı → çıkar). al: kalan = tutar · karşılık: karşılık += tutar · alacak satırı: önce en eski açık kayıttan düşer, artan cariye; düşümden
+   * sonra karşılık > kalan ise aşan kısım 644 (konusu kalmayan) · Değersiz Alacak (hedefli): kendi kaydından düşer, borcu önce karşılıktan (129),
+   * kalanı 659 · çıkar: kalan 120'ye döner, karşılık 644'e. Dönüş: { open (128), provision (129 eksi), groundless (644), expense (654), loss (659),
+   * records: Map(id → { remaining, provision, closed }) }.
+   */
+  function doubtfulModel() {
+    const ORDER = { take: 0, provision: 1, credit: 2, release: 3 };
+    const state = new Map();
+    const out = { open: 0, provision: 0, groundless: 0, expense: 0, loss: 0, records: state };
+    for (const party of doubtfulCustomers) {
+      const events = D.events.filter(e => e.party === party.id).sort((a, b) => (a.date === b.date ? ORDER[a.kind] - ORDER[b.kind] || a.seq - b.seq : a.date < b.date ? -1 : 1));
+      const open = [];
+      for (const e of events) {
+        if (e.kind === "take") {
+          state.set(e.id, { remaining: e.cents, provision: 0, closed: false, party: party.id });
+          open.push(e.id);
+        } else if (e.kind === "provision") {
+          const s = state.get(e.recordId);
+          if (s && !s.closed) { s.provision += e.cents; out.expense += e.cents; }
+        } else if (e.kind === "release") {
+          const s = state.get(e.recordId);
+          if (s && !s.closed) { s.remaining = 0; out.groundless += s.provision; s.provision = 0; s.closed = true; open.splice(open.indexOf(e.recordId), 1); }
+        } else if (e.target) {
+          const s = state.get(e.target);
+          if (s && !s.closed && s.remaining > 0) {
+            const part = Math.min(e.cents, s.remaining);
+            const used = Math.min(part, s.provision);
+            s.remaining -= part; s.provision -= used; out.loss += part - used;
+            if (s.remaining === 0) { s.closed = true; open.splice(open.indexOf(e.target), 1); }
+          } else out.loss += e.cents;
+        } else {
+          let left = e.cents;
+          for (const id of [...open]) {
+            if (left <= 0) break;
+            const s = state.get(id);
+            const part = Math.min(left, s.remaining);
+            s.remaining -= part; left -= part;
+            if (s.provision > s.remaining) { out.groundless += s.provision - s.remaining; s.provision = s.remaining; }
+            if (s.remaining === 0) { s.closed = true; open.splice(open.indexOf(id), 1); }
+          }
+        }
+      }
+    }
+    for (const s of state.values()) { out.open += s.remaining; out.provision += s.provision; }
+    return out;
+  }
+  const doubtfulRoom = party => (M.cari.get(party) || 0) - [...doubtfulModel().records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
   // v2.1.0: iki vadesiz banka hesabı, açılış çizelgenin ilk günü (Bakiye Doğrulandı). Açılış 102.k borç / 500 alacak; banka etkisi modelde.
   const banks = [];
   for (const bankName of bank ? ["Ziraat Bankası", "Garanti BBVA"] : []) {
@@ -400,7 +465,16 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       }
     }
     const byType = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
-    if (gl("120") !== byType("customer") || gl("320") !== byType("supplier") || gl("336") !== byType("other")) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${byType("customer") / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${byType("other") / 100}`);
+    // 2.3.0 İz 1 (plan §3.11b/4): 120 = müşteri bakiyeleri − açık şüpheli (128); 128 = Σ kalan; 129 = −Σ karşılık; 654 = Σ ayrılan; 644 = Σ çözülen.
+    const dm = doubtfulOn ? doubtfulModel() : null;
+    const dc = doubtfulCustomers.reduce((s, a) => s + (M.cari.get(a.id) || 0), 0) - (dm ? dm.open : 0);
+    if (gl("120") !== byType("customer") + dc || gl("320") !== byType("supplier") || gl("336") !== byType("other")) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${(byType("customer") + dc) / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${byType("other") / 100}`);
+    if (dm) {
+      for (const [code, want] of [["128", dm.open], ["129", -dm.provision], ["654", dm.expense], ["644", -dm.groundless]]) if (gl(code) !== want) problems.push(`Ana defter ${code} ${gl(code) / 100} · model ${tl(want)} (şüpheli alacak)`);
+      const list2 = (await api("GET", "/api/workspace/doubtful?status=all")).data;
+      const got = (list2?.rows || []).reduce((s, row) => s + row.remainingMinor, 0);
+      if (got !== dm.open) problems.push(`Şüpheli Alacaklar raporu kalan toplamı ${tl(got)} · model ${tl(dm.open)}`);
+    }
     if (problems.length) report.mismatches.push({ at: where, problems });
     return problems;
   }
@@ -515,7 +589,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       return row[6] === "Alacak" ? -value : value;
     };
     const byTypeR = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
-    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card - ccardNet()], ["309", ccardNet()], ["120", byTypeR("customer")], ["320", byTypeR("supplier")], ["336", byTypeR("other")]]) {
+    // 2.3.0 İz 1: 120 = müşteri bakiyeleri (şüpheli müşterileri dahil) − açık şüpheli (128).
+    const dcR = doubtfulCustomers.reduce((s, a) => s + (M.cari.get(a.id) || 0), 0) - (doubtfulOn ? doubtfulModel().open : 0);
+    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card - ccardNet()], ["309", ccardNet()], ["120", byTypeR("customer") + dcR], ["320", byTypeR("supplier")], ["336", byTypeR("other")]]) {
       if (signedRow(code) !== want) problems.push(`Hesap Planı Mizanı raporu ${code}: ${tl(signedRow(code))} · model ${tl(want)}`);
     }
     if (sum(mizan, "Fark") !== 0) problems.push(`Hesap Planı Mizanı raporu: Fark ${tl(sum(mizan, "Fark"))}`);
@@ -1054,7 +1130,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         return;
       }
       case "cari-duzelt": {
-        const e = pickOpen(M.entries.filter(x => !x.pos));
+        const e = pickOpen(M.entries.filter(x => !x.pos && !x.doubtful));
         if (!e) return;
         const amount = moneyCents(1, 60000);
         const method = methodPick();
@@ -1074,7 +1150,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         return;
       }
       case "cari-sil": {
-        const e = pickOpen(M.entries.filter(x => !x.pos));
+        const e = pickOpen(M.entries.filter(x => !x.pos && !x.doubtful));
         if (!e) return;
         const force = R.chance(0.5);
         const query = [force ? "cashForce=1" : "", e.bankId ? "negativeOk=1" : ""].filter(Boolean).join("&");
@@ -1948,6 +2024,120 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         bankAdd({ id: r2.data.id, bankId: e.bankId, type: e.type, date: e.body.date, cents: e.cents, status: "active", voucher: true, body: e.body, feeTotal: e.type === "fee" ? -e.cents : 0 });
         return;
       }
+      // ---------- 2.3.0 İz 1: Şüpheli Ticari Alacaklar (plan §3.11b; yalnız motorun kendi iki müşterisinde) ----------
+      case "supheli-borc": {
+        const c = R.pick(doubtfulCustomers);
+        const amount = moneyCents(100, 20000);
+        const r = await api("POST", `/api/workspace/accounts/${c.id}/entries`, { kind: "debt", amount: tl(amount), note: "Şüpheli borç", date: day });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        mustOk(r, kind);
+        cariAdd(c.id, amount);
+        M.entries.push({ id: r.data.entryId, accountId: c.id, kind: "debt", amount, method: "cash", date: day, bankId: "", doubtful: true });
+        return;
+      }
+      case "supheli-tahsil": {
+        // Nakit tahsilat: önce şüpheliden düşer (K3); artan 120'ye. Model olay listesine alacak satırı olarak girer.
+        const c = R.pick(doubtfulCustomers);
+        const balance = M.cari.get(c.id) || 0;
+        if (balance <= 0) return;
+        const amount = R.chance(0.25) ? balance + moneyCents(1, 500) : moneyCents(1, Math.max(1, Math.floor(balance / 100)));
+        const r = await api("POST", `/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: tl(amount), method: "cash", note: "Şüpheli tahsilat", date: day });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        mustOk(r, kind);
+        cariAdd(c.id, -amount);
+        M.kasa.cash += amount;
+        M.entries.push({ id: r.data.entryId, accountId: c.id, kind: "in", amount, method: "cash", date: day, bankId: "", doubtful: true });
+        D.events.push({ kind: "credit", party: c.id, date: day, cents: amount, seq: ++D.seq });
+        return;
+      }
+      case "supheli-al": {
+        const c = R.pick(doubtfulCustomers);
+        const room = doubtfulRoom(c.id);
+        if (room <= 0) return;
+        // %20: borç bakiyesini (− zaten şüphelideki) aşan tutar → 400 doubtful-exceeds-balance; hiçbir şey yazılmaz.
+        const over = R.chance(0.2);
+        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : moneyCents(1, Math.max(1, Math.floor(room / 100)));
+        const reason = R.pick(["lawsuit", "enforcement", "other"]);
+        const r = await api("POST", `/api/workspace/accounts/${c.id}/doubtful`, { amount: tl(amount), date: day, reason, note: `Şüpheli ${reason}` });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        if (over) return expectReject(r, "doubtful-exceeds-balance", `${kind}/aşım`);
+        mustOk(r, kind);
+        if (!r.data?.record?.id) throw Object.assign(new Error(`${kind}: yanıtta kayıt yok ${r.text}`), { unexpected: true });
+        D.events.push({ kind: "take", party: c.id, date: day, cents: amount, id: r.data.record.id, seq: ++D.seq });
+        D.records.set(r.data.record.id, { id: r.data.record.id, party: c.id, date: day, cents: amount, provisions: [], writeOffs: 0, closedDate: "" });
+        return;
+      }
+      case "supheli-karsilik": {
+        const dm = doubtfulModel();
+        const rec = R.pick([...D.records.values()].filter(x => dm.records.get(x.id) && !dm.records.get(x.id).closed));
+        if (!rec) return;
+        const s = dm.records.get(rec.id);
+        const room = s.remaining - s.provision;
+        const over = R.chance(0.2) || room <= 0;
+        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : moneyCents(1, Math.max(1, Math.floor(room / 100)));
+        const r = await api("POST", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}/provision`, { amount: tl(amount), date: day, note: "Karşılık" });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        if (over) return expectReject(r, "doubtful-provision-exceeds", `${kind}/aşım`);
+        mustOk(r, kind);
+        const pid = r.data?.record?.provisions?.at(-1)?.id || "";
+        D.events.push({ kind: "provision", party: rec.party, date: day, cents: amount, recordId: rec.id, seq: ++D.seq });
+        rec.provisions.push({ id: pid, date: day, cents: amount });
+        return;
+      }
+      case "supheli-degersiz": {
+        const dm = doubtfulModel();
+        const rec = R.pick([...D.records.values()].filter(x => dm.records.get(x.id) && !dm.records.get(x.id).closed));
+        if (!rec) return;
+        const s = dm.records.get(rec.id);
+        const over = R.chance(0.15);
+        const amount = over ? s.remaining + moneyCents(1, 100) : R.chance(0.5) ? s.remaining : moneyCents(1, Math.max(1, Math.floor(s.remaining / 100)));
+        const r = await api("POST", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}/write-off`, { amount: tl(amount), date: day, note: "Değersiz" });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        if (over) return expectReject(r, "doubtful-writeoff-exceeds", `${kind}/aşım`);
+        mustOk(r, kind);
+        cariAdd(rec.party, -amount);
+        D.events.push({ kind: "credit", party: rec.party, date: day, cents: amount, target: rec.id, seq: ++D.seq });
+        rec.writeOffs += 1;
+        return;
+      }
+      case "supheli-cikar": {
+        const dm = doubtfulModel();
+        const closedOne = R.chance(0.15) ? R.pick([...D.records.values()].filter(x => dm.records.get(x.id)?.closed)) : null;
+        const rec = closedOne || R.pick([...D.records.values()].filter(x => dm.records.get(x.id) && !dm.records.get(x.id).closed));
+        if (!rec) return;
+        const r = await api("POST", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}/release`, { date: day, note: "Çıkar" });
+        if (!open(day)) return expectReject(r, "period-locked", kind);
+        if (closedOne) return expectReject(r, "doubtful-closed", `${kind}/kapanmış`);
+        mustOk(r, kind);
+        D.events.push({ kind: "release", party: rec.party, date: day, recordId: rec.id, seq: ++D.seq });
+        rec.closedDate = day;
+        return;
+      }
+      case "supheli-sil": {
+        // Sil (kayıt hatası): kayıt ve karşılıkları defterden düşer; değersiz satırı olan kayıt 409; kilitli günün kaydı 409. %30 hemen geri yükle.
+        const rec = R.pick([...D.records.values()]);
+        if (!rec) return;
+        const r = await api("DELETE", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}`);
+        const dates = [rec.date, rec.closedDate, ...rec.provisions.map(p => p.date)].filter(Boolean);
+        if (dates.some(d => !open(d))) return expectReject(r, "period-locked", kind);
+        if (rec.writeOffs > 0) return expectReject(r, "doubtful-has-writeoffs", `${kind}/değersizli`);
+        mustOk(r, kind);
+        const mine = e => e.id === rec.id || e.recordId === rec.id;
+        const removed = D.events.filter(mine);
+        D.events = D.events.filter(e => !mine(e));
+        D.records.delete(rec.id);
+        if (!R.chance(0.3)) return;
+        const list = (await api("GET", "/api/admin/trash")).data || [];
+        const item = (Array.isArray(list) ? list : []).find(x => x.kind === "doubtful" && x.ref === rec.id);
+        if (!item) throw Object.assign(new Error(`${kind}: silinen şüpheli kaydı Silinenler'de yok (${rec.id})`), { unexpected: true });
+        const r2 = await api("POST", "/api/admin/trash/restore", { id: item.id });
+        // Geri yükleme: açık kayıt borç bakiyesini (− öbür açık şüpheli) aşıyorsa 409; çıkarılmış kayıt sınırsız. (Tarihler açık: yukarıda denendi.)
+        if (!rec.closedDate && rec.cents > doubtfulRoom(rec.party)) return expectReject(r2, "doubtful-exceeds-balance", `${kind}/geri-aşım`);
+        mustOk(r2, `${kind}/geri`);
+        D.events.push(...removed);
+        D.records.set(rec.id, rec);
+        return;
+      }
       default:
         throw new Error(kind);
     }
@@ -1976,7 +2166,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["banka-transfer", 3], ["banka-transfer-ters", 1],
     // POS (2.2.0, Aşama 10–11): tahsilat (Tek Çekim / 3 taksit), POS İadesi (kısmi, asıl satışa bağlı), silme (void / gün fişi ters kaydı).
     ["pos-tahsil", 5], ["pos-iade", 2], ["pos-sil", 1],
-  ].filter(([k]) => (bank || !(k.startsWith("banka-") || BANK_ERA.has(k))) && (posTerminal || !k.startsWith("pos-")) && (tahsileVer || !["cek-tahsile-ver", "cek-bankadan-geri-al"].includes(k)));
+    // Şüpheli Ticari Alacaklar (2.3.0 İz 1, plan §3.11b): borç, tahsilat (önce şüpheliden), al (+ aşım), karşılık (+ aşım), değersiz (+ aşım), çıkar, sil (+ geri yükle).
+    ["supheli-borc", 3], ["supheli-tahsil", 3], ["supheli-al", 3], ["supheli-karsilik", 2], ["supheli-degersiz", 1], ["supheli-cikar", 1], ["supheli-sil", 1],
+  ].filter(([k]) => (bank || !(k.startsWith("banka-") || BANK_ERA.has(k))) && (posTerminal || !k.startsWith("pos-")) && (tahsileVer || !["cek-tahsile-ver", "cek-bankadan-geri-al"].includes(k)) && (doubtfulOn || !k.startsWith("supheli-")));
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
   if (bank) {
     const meta = (await api("GET", "/api/workspace/bank/voucher-meta")).data || {};
@@ -2099,7 +2291,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   const invList = [...M.invoices.values()];
   report.invoices = { kesilen: invList.filter(x => x.status === "issued").length, iptal: invList.filter(x => x.status === "cancelled").length, taslak: M.drafts.size, turler: invList.reduce((o, x) => ((o[x.kind] = (o[x.kind] || 0) + 1), o), {}), cek: M.cheques.size };
-  report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, bankaSatiri: M.bankLines.length, bankaTersKayit: M.bankLines.filter(x => x.type === "reversal").length, bankalarArasiTransfer: M.bankLines.filter(x => x.transfer && x.type === "transfer").length / 2, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length, hesabaBagliModulHavalesi: boundRows().filter(x => !cardIds.has(x.bankId)).length, kurumsalKartaBagli: boundRows().filter(x => cardIds.has(x.bankId)).length, kurumsalKartBakiyesi: tl(ccardNet()) };
+  report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, bankaSatiri: M.bankLines.length, bankaTersKayit: M.bankLines.filter(x => x.type === "reversal").length, bankalarArasiTransfer: M.bankLines.filter(x => x.transfer && x.type === "transfer").length / 2, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length, hesabaBagliModulHavalesi: boundRows().filter(x => !cardIds.has(x.bankId)).length, kurumsalKartaBagli: boundRows().filter(x => cardIds.has(x.bankId)).length, kurumsalKartBakiyesi: tl(ccardNet()), supheliKayit: D.records.size, supheliAcik: doubtfulOn ? tl(doubtfulModel().open) : "-" };
   // Deney sonrası kilidi kaldır (aynı veritabanında başka koşu olabilir).
   if (lock) await api("PUT", "/api/admin/period-lock", { lockedUntil: "" });
   await api("PUT", "/api/admin/negative-policy", { cash: "warn", bank: "warn", card: "warn" });
