@@ -408,3 +408,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   ya da şüpheli alacaklar için yeterli limit?" DEVİR MODÜLÜ (yıl sonu dönem devri) bu listede DAHA ÖNCE YOKTU (yalnız banka planında Devir Kapanışı
   ve K6 Kasa devri var). CEVAP: %17 ile para çekirdeğine dokunan iş BAŞLATILMAZ (yarım para işi en kötü sonuç); öneri: Perşembe sıfırlamasına
   kadar yalnız tasarım/plan (devir modülü planı, Şüpheli Alacaklar §3.11b iş listesi) ya da küçük iş; uygulama sıfırlamadan sonra.
+  GİRDİ (kullanıcı, aynı gün; satış arkadaşından, "devir modülü yine bizim arayüzümüzle olacak ama mantık şöyle olmalı"): AKINSOFT Wolvox
+  "Devir İşlemleri" 4 ekran (yükleme zip, yerelde açıldı; depoya girmedi): Oluşturulacak Çalışma Yılı 2027 + Devir İçin Son İşlem Tarihi
+  31.12.2026; Cari (kart/grup/bakiye aktar, Bakiye Tipi "borç ve alacakları"/"sadece bakiye", Minimum Bakiye, valör işlem/vade esaslı); Stok
+  (kart/bakiye/grup, devir fiyatı: ortalama ağırlıklı/son alış/FIFO/LIFO…, kalan miktar ya da kümülatif); Kasa (kart/bakiye/grup); İrsaliye,
+  Teklif, Sipariş; Çek/Senet (tahsil edilmeyen müşteri evrakı, ödenmeyen kendi evrakımız); Banka (kart/bakiye/kredi kartı bakiyesi, ödemesi biten
+  krediler); Üretim, Döviz, Seri No. Wolvox modeli = her yıl AYRI veri dosyası. ÖNERİ verildi (karar kullanıcıda): aynı ekran ve seçenekler,
+  altta sürekli kayıt + yıl kapanışı (kilit + kapanış/açılış fişleri + devir değerlemesi); ayrıntı yanıtta.
