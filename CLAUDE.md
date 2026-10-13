@@ -404,24 +404,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   hem metin hem çok resim tek adımda yalnız API ile; API'siz en yakın: (1) Windows Paylaş → WhatsApp: metin + resimler hazır, kişi WhatsApp'ta
   seçilir (yeni numara için önce wa.me ile sohbet açılır); (2) wa.me: numara + metin hazır, resim yapıştırılır; (3) öneri: bilgiler + resimler
   tek "Portföy Sunumu" PDF/görsel → wa.me + tek dosya. Gerçek Windows + WhatsApp masaüstünde denenmeden söz verilmez.
-- YENİ (kullanıcı, 13.10.2026 ~16:00 TR; ekran: haftalık kullanım %83, "bu hızla yarın akşam tükenir", sıfırlanma Perşembe 02:00): "devir modülü
-  ya da şüpheli alacaklar için yeterli limit?" DEVİR MODÜLÜ (yıl sonu dönem devri) bu listede DAHA ÖNCE YOKTU (yalnız banka planında Devir Kapanışı
-  ve K6 Kasa devri var). CEVAP: %17 ile para çekirdeğine dokunan iş BAŞLATILMAZ (yarım para işi en kötü sonuç); öneri: Perşembe sıfırlamasına
-  kadar yalnız tasarım/plan (devir modülü planı, Şüpheli Alacaklar §3.11b iş listesi) ya da küçük iş; uygulama sıfırlamadan sonra.
-  GİRDİ (kullanıcı, aynı gün; satış arkadaşından, "devir modülü yine bizim arayüzümüzle olacak ama mantık şöyle olmalı"): AKINSOFT Wolvox
-  "Devir İşlemleri" 4 ekran (yükleme zip, yerelde açıldı; depoya girmedi): Oluşturulacak Çalışma Yılı 2027 + Devir İçin Son İşlem Tarihi
-  31.12.2026; Cari (kart/grup/bakiye aktar, Bakiye Tipi "borç ve alacakları"/"sadece bakiye", Minimum Bakiye, valör işlem/vade esaslı); Stok
-  (kart/bakiye/grup, devir fiyatı: ortalama ağırlıklı/son alış/FIFO/LIFO…, kalan miktar ya da kümülatif); Kasa (kart/bakiye/grup); İrsaliye,
-  Teklif, Sipariş; Çek/Senet (tahsil edilmeyen müşteri evrakı, ödenmeyen kendi evrakımız); Banka (kart/bakiye/kredi kartı bakiyesi, ödemesi biten
-  krediler); Üretim, Döviz, Seri No. Wolvox modeli = her yıl AYRI veri dosyası. ÖNERİ verildi (karar kullanıcıda): aynı ekran ve seçenekler,
-  altta sürekli kayıt + yıl kapanışı (kilit + kapanış/açılış fişleri + devir değerlemesi); ayrıntı yanıtta.
-  SORU (kullanıcı): "Wolvox modeli daha sağlıklı değil mi, diğer programlar nasıl yapıyor?" → karşılaştırma verildi (yerli masaüstü Logo/Mikro/
-  Netsis/Wolvox: yıl/dönem ayrı; uluslararası ve bulut: sürekli + yıl kapanışı). HATIRLATICI (kullanıcı): devir modülü yapımı 22.10.2026
-  Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv). Model kararı bekleniyor.
-  GİRDİ (satış arkadaşı, aynı gün): Wolvox 2026→2027 aktarır; çekte "vadesi gelmemiş çekleri aktar"; vadesi bitmeyen taksitleri komple alır;
-  her yıl ayrı klasör (26/27/28). Müşterilerin bir kısmı "eskiyi görmesin, program rahatlasın" diye devir yapar, bir kısmı her şeyi tek yılda
-  görmek ister, devir yapmaz. GÜNCEL ÖNERİ (karar kullanıcıda): İKİ KİP — (1) Devirsiz (varsayılan, bugünkü sürekli kayıt; isteyene yıl kilidi);
-  (2) "Devir Yap": yeni yıl için yeni veri dosyası, yalnız devreden kalemler (cari/kasa/banka/kart bakiyeleri, vadesi gelmemiş çek/senet, bitmemiş
-  taksitler tek tek, stok miktar+değer) taşınır; eski yıl SALT OKUNUR ARŞİV (şirket seçicide "001 · 2026 (Arşiv)", 2 şirket sınırına sayılmaz).
-  İSTEK (kullanıcı, aynı gün): "nasıl yapacağımızı tablo olarak ver, arkadaşımın görüşünü alayım" → `docs/devir/DestekOfis-Devir-Plani.png`
-  + `.pdf` (iki kip tablosu + görüş istenen 5 nokta: varsayılan kip, bakiye tipi, kapanmamış faturalar, stok yöntemi, arşiv düzeltme). Görüş bekleniyor.
+- DEVİR MODÜLÜ (yıl sonu devri; 13.10.2026'da YENİ madde — önceden listede yoktu): BÜTÜN BİLGİ `docs/devir/DEVIR-MODULU.md` (Wolvox ekranlarının
+  dökümü, satış arkadaşının anlatımı, diğer programlar, iki kipli öneri, bakiye tipi örneği, görüş soruları, mevcut altyapı, riskler) + tablo
+  `docs/devir/DestekOfis-Devir-Plani.png/.pdf`. KARAR BEKLENİYOR (kullanıcı: "arkadaş düşünüp kararı iletecek; bizim yöntem mi Wolvox yöntemi mi
+  karar verilince ona göre yaparız"). Hatırlatıcı 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv). Kullanım sınırı (13.10 %83):
+  para çekirdeğine dokunan iş Perşembe 02:00 sıfırlamasından önce başlatılmaz.
