@@ -16,7 +16,7 @@ DestekOfis — işletmenizin cari, kasa, banka, POS, çek/senet, fatura, stok ve
 ✅ Ofisteki herkes aynı anda, kendi yetkisiyle çalışır
 
 30 gün ücretsiz, tüm özellikleriyle. Kredi kartı istemez.
-Bilgi ve demo: [telefon] · [web adresi]
+Bilgi ve demo: 0536 771 50 55 · https://destek-ofis.vercel.app/
 
 ## Uzun
 
@@ -42,4 +42,4 @@ Cari hesaplar bir Excel'de, kasa defterde, çekler bir klasörde, banka hareketl
 
 **30 gün ücretsiz deneyin.** Deneme sürümü tüm özellikleriyle çalışır; kredi kartı, üyelik ya da sözleşme istemez. Süre dolsa da kayıtlarınız silinmez.
 
-📞 [telefon] · 🌐 [web adresi]
+📞 0536 771 50 55 · 🌐 https://destek-ofis.vercel.app/
