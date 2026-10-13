@@ -25,8 +25,13 @@ Fatura işi için gerekenler TAM ve sağlam:
 - `XSLT ÖRNEKLERİ.rar` (19/19 sağlam): general.xslt, generalearchive.xslt, generalexport.xslt … (fatura/e-Arşiv basımı).
 - `SSS/Sıkça Sorulan Sorular.docx`, `SSS/EDM E-Fatura - WebServis durum kodları ve aciklamalari.xlsx` (hata/durum kodları).
 - `POSTMAN/EdmEntegration.postman_collection.json` (örnek istekler), `WEB SERVİS ENDPOINT URL ADRESLERİ.docx`, `RESTAPI/…Swagger linkleri.txt`.
-- EKSİK: GİB'in resmî UBL-TR şema (XSD) + şematron paketi pakette YOK. Gerekli (Adım 1'in kâhini). ebelge.gib.gov.tr bu ortamdan erişilemiyor →
-  ortam ayarında izin (ebelge.gib.gov.tr) ya da kullanıcı GİB sitesinden "UBL-TR paketi"ni indirip yükler.
+- GİB resmî paketleri (13.10.2026, kullanıcı ortamda ebelge.gib.gov.tr'ye izin verdi; https://ebelge.gib.gov.tr/dosyalar/kilavuzlar/ altından
+  indirildi, depoya KONMADI — kamu belgesi ama büyük; adres + sha256 burada, işe başlarken yeniden indirilir):
+  `e-FaturaPaketi (29).zip` sha256 12901476…: schematron/UBL-TR_Main_Schematron.xml + UBL-TR_Common_Schematron.xml + UBL-TR_Codelist.xml
+  (21.08.2026 güncel), zarf XSD'leri (Envelope/Package…), kullanıcı listesi XSD'leri. `earsiv_paket_v1.1_8.zip` sha256 97a6f705…: EArsiv.xsd,
+  earsiv_schematron.xsl, eArsivVeri.xsd, faturaOzet.xsd, XAdES. `e-FaturaTestPlani.pdf` 690db731…, `e-Arsiv_Teknik_Kilavuzu_V.1.18.pdf` 3cdf04b3….
+- EKSİK: UBL 2.1 Invoice XSD'leri (OASIS standardı; GİB paketinde yok). docs.oasis-open.org bu ortamdan erişilemiyor (13.10.2026 denendi) →
+  işe başlarken ortam ayarına `docs.oasis-open.org` izni (os-UBL-2.1/UBL-2.1.zip) ya da kullanıcı yükler.
 
 ## 2. Programda bugün olan (koddan, 13.10.2026; yayımlanan v2.2.0 ile aynı)
 - `server/lib/config.mjs:62` `edocEnabled` yalnız testlerle açılır; ortam değişkeniyle açılmaz.
