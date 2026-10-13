@@ -3,6 +3,15 @@ name: CI
 on:
   push:
     branches: ["**"]
+    # Yalnız belge değişen push'ta koşmaz (kullanıcı kararı 13.10.2026). Liste tools/kanit.mjs BELGE_YOLLARI ile AYNI (test denetler);
+    # testlerin okuduğu plan/kanıt/kılavuz belgeleri listede YOK. pull_request (master'a) her zaman tam koşar.
+    paths-ignore:
+      - "CLAUDE.md"
+      - "docs/GECMIS-KARARLAR.md"
+      - "docs/DURUM-VE-DEVAM.md"
+      - "docs/devir/**"
+      - "docs/fatura/**"
+      - "docs/pazarlama/**"
   pull_request:
 
 jobs:

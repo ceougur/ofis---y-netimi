@@ -76,6 +76,12 @@ ajan yükler): kapanan sürümlerin ayrıntısı ve eski kararlar `docs/GECMIS-K
   Windows AYNI sayıda test, atlanan yok → yeşil; `package` kapıya bağlı. `tools/kanit.mjs ci <sha>` kapı yeşil değilse YEŞİL demez.
   `tools/release.mjs` temiz ağaç + CI yeşil değilse imzalı paket ÜRETMEZ; release.yml yayımdan önce `kanit.mjs ci "$GITHUB_SHA" --bekle 90`;
   `.claude/settings.json` Stop/SubagentStop kancası durum yeşil değilse yanıtı bir kez durdurur.
+- YALNIZ BELGE (kullanıcı kararı 13.10.2026: "sadece doküman/plan değiştiğinde CI testleri koşmasın, sadece gerçek kod değiştiğinde çalışsın"):
+  ci.yml push `paths-ignore` = `tools/kanit.mjs` BELGE_YOLLARI (CLAUDE.md, docs/GECMIS-KARARLAR.md, docs/DURUM-VE-DEVAM.md, docs/devir/**,
+  docs/fatura/**, docs/pazarlama/**; testlerin okuduğu plan/kanıt/kılavuz belgeleri listede YOK; liste aynılığı test/kanit-araci.test.mjs'te).
+  Yalnız belge commit'inde `kanit.mjs ci` hükmü koşusu olan en yakın ata commit'ten okur (aradaki her commit yalnız belge olmalı). PR (master)
+  her zaman tam koşar. Ders 21 bu commit'ler için ata koşusuyla karşılanır. BEDELİ: yalnız belge commit'lerinde ara sıra düşen testler artık
+  görülmez (13.10'da ikisi böyle görüldü: updater Windows, senaryo-pos-220) — kod push'larında ve PR'da görülür.
 - Sunucu tarafı bağlayıcı: master kural seti 24836150 "Doğrulama Kapısı" (bypass yok, PR zorunlu, required status "Doğrulama Kapısı"
   integration 15368 = GitHub Actions). Çalışma dallarında kural yok.
 - Ağ erişim ayarı (*.blob.core.windows.net) EKLENMEZ (kullanıcı kararı): tam CI günlüğü/artifact indirilemez; araç başarısız testleri
@@ -391,6 +397,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   check() "error" döndü (2316/2317; öbür 3 platform ve önceki/sonraki commit'ler yeşil). Linux'ta keepAlive sınırına denk gelen beklemelerle
   42/42 üretilemedi (ders 18: Linux benzetimi kanıt değil). Kök neden BİLİNMİYOR; teste teşhis mesajı eklendi (nedeni günlüğe yazar). Yeniden
   görülürse günlükteki nedenle kök neden + zorla üretme (ders 20). Ürün etkisi: elle denetim 3 deneme, otomatik denetim saatte bir.
+- AÇIK (13.10.2026): CI #684 bc36256 (yalnız belge) e2e senaryo-pos-220 102/106 — 4 stok miktarı denetimi ("Ürün B 15/3/6/5") kırmızı; aynı kod
+  sabahki koşularda ve yerelde (a346ef5, 18:13 TR) 106/106 yeşil; senaryo sahte saatle koşuyor. Kök neden BİLİNMİYOR (gelen değer günlükte yok).
+  Banka kalan işlerinde: teste gelen değeri yazdır + zorla üret (ders 20); ürün hatası olabilir (stok miktarı), geçiştirilmez.
 - MÜŞTERİ İSTEĞİ (13.10.2026, emlakçı; ekran: kayıt detay kartı → Belgeler, resim satırında Görüntüle/Yazdır/İndir/Sil): "WhatsApp'tan Paylaş"
   simgesi → karttaki resimler + detay kartındaki bilgiler müşteriye gönderilsin. Soru: yapılabilir mi, maliyet, iş yükü, süre. KODDAN: WhatsApp
   bugün wa.me ile YALNIZ METİN açar (hof-whatsapp.js:13; dosya eki resmî yolla ancak Meta Business API — Pro, ileride); personel bilgisayarı
