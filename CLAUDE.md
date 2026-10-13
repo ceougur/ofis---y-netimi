@@ -387,3 +387,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   web/index.html) eski: "oturum", sektör vurgusu; banka/POS/çek/mizan yok — güncelleme önerisi verildi.
   İSTEK (kullanıcı, aynı gün): kısa metne LOGO → logolu görsel `docs/pazarlama/DestekOfis-Tanitim.png` (1080×1350; marka işareti
   client/assets/brand/destekofis-mark.svg, Manrope/DM Sans); iletişim: 0536 771 50 55 · https://destek-ofis.vercel.app/ (kullanıcı verdi).
+- AÇIK (13.10.2026): CI 60ed59d (yalnız CLAUDE.md değişti) Windows Node 22'de test/updater.test.mjs:151 "kurulu sürüm işlevle okunur" ikinci
+  check() "error" döndü (2316/2317; öbür 3 platform ve önceki/sonraki commit'ler yeşil). Linux'ta keepAlive sınırına denk gelen beklemelerle
+  42/42 üretilemedi (ders 18: Linux benzetimi kanıt değil). Kök neden BİLİNMİYOR; teste teşhis mesajı eklendi (nedeni günlüğe yazar). Yeniden
+  görülürse günlükteki nedenle kök neden + zorla üretme (ders 20). Ürün etkisi: elle denetim 3 deneme, otomatik denetim saatte bir.

@@ -1,0 +1,32 @@
+{
+  "ad": "updater-teshis",
+  "komut": "node --test test/updater.test.mjs",
+  "commit": "60ed59dd863729ed92d89a0caf5214e250a4c567",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T07:04:27.929Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/updater-teshis.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "c0991df808ce231fb46f90a835ccebe5c6a3944d776345c2ee3ae9942d8eca3a",
+  "ham_cikti_bayt": 4729
+}
