@@ -28,6 +28,9 @@ const appDir = (root, version) => path.join(root, "app", version);
 const hazirDir = root => path.join(root, "app", ".hazir");
 const hazirList = root => (existsSync(hazirDir(root)) ? readdirSync(hazirDir(root)) : []);
 const stateOf = root => readJson(path.join(root, "app", "update-state.json"));
+// Teşhis (13.10.2026, CI a53a4bc Windows Node 22'de (2) bir kez kırmızı; kök neden bilinmiyor): düşerse geçmiş olayları ve açılış günlüğünün
+// durum/yayın satırları mesaja yazılır — "Güncelleme durumu kaydedilemedi" (saveState yazamadı) ile "yayından kaldırıldı" ayrımı oradan okunur.
+const teshis = (state, service) => `geçmiş: ${JSON.stringify((state.history || []).map(item => `${item.event}:${item.version || ""}`))}; günlük: ${JSON.stringify((service.bootLog() || "").split(/\r?\n/).filter(line => /kaydedilemedi|yayından|hazır|Hazır/.test(line)).slice(-12))}`;
 const appStarts = text => [...text.matchAll(/Uygulama başlatılıyor \(([^,]+),/g)].map(match => match[1].replace(/\\/g, "/"));
 const activated = root => stateOf(root).history.filter(item => item.event === "activated").map(item => item.version);
 
@@ -88,7 +91,7 @@ describe("Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerç
       assert.ok(!existsSync(appDir(ctx.root, "9.0.1")), "hazır paketin açılımı (app\\9.0.1) silindi");
       const state = stateOf(ctx.root);
       assert.equal(state.prepared, null);
-      assert.ok(state.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.1"), "geçmişte 'yayından kaldırıldı' kaydı");
+      assert.ok(state.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.1"), `geçmişte 'yayından kaldırıldı' kaydı — ${teshis(state, next)}`);
       assert.match(next.bootLog(), /9\.0\.1 sürümü yayından kaldırıldığı için kurulmadı/);
       assert.doesNotMatch(next.bootLog(), /9\.0\.1 sürümü indiriliyor/);
       const status = await next.status();
@@ -116,7 +119,7 @@ describe("Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerç
       assert.ok(!existsSync(appDir(ctx.root, "9.0.2")), "9.0.2 açılımı silindi");
       assert.deepEqual(hazirList(ctx.root), []);
       const state = stateOf(ctx.root);
-      assert.ok(state.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.2"));
+      assert.ok(state.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.2"), `geçmişte 'yayından kaldırıldı' kaydı — ${teshis(state, next)}`);
       assert.match(next.bootLog(), /9\.0\.2 sürümü yayından kaldırıldığı için kurulmadı/);
       assert.equal((await next.status()).updates.lastResult?.outcome, "success");
     });

@@ -393,10 +393,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   web/index.html) eski: "oturum", sektör vurgusu; banka/POS/çek/mizan yok — güncelleme önerisi verildi.
   İSTEK (kullanıcı, aynı gün): kısa metne LOGO → logolu görsel `docs/pazarlama/DestekOfis-Tanitim.png` (1080×1350; marka işareti
   client/assets/brand/destekofis-mark.svg, Manrope/DM Sans); iletişim: 0536 771 50 55 · https://destek-ofis.vercel.app/ (kullanıcı verdi).
-- AÇIK (13.10.2026): CI 60ed59d (yalnız CLAUDE.md değişti) Windows Node 22'de test/updater.test.mjs:151 "kurulu sürüm işlevle okunur" ikinci
-  check() "error" döndü (2316/2317; öbür 3 platform ve önceki/sonraki commit'ler yeşil). Linux'ta keepAlive sınırına denk gelen beklemelerle
-  42/42 üretilemedi (ders 18: Linux benzetimi kanıt değil). Kök neden BİLİNMİYOR; teste teşhis mesajı eklendi (nedeni günlüğe yazar). Yeniden
-  görülürse günlükteki nedenle kök neden + zorla üretme (ders 20). Ürün etkisi: elle denetim 3 deneme, otomatik denetim saatte bir.
+- AÇIK (13.10.2026): WINDOWS NODE 22 GÜNCELLEYİCİ ARA SIRA KIRMIZI — iki ayrı test, aynı gün, yalnız Windows Node 22: (a) CI 60ed59d
+  test/updater.test.mjs:151 ikinci check() "error" (2316/2317); (b) CI #690 a53a4bc (yalnız kanıt dosyası değişti) test/guncelleme-hazir-geri-cekilen
+  (2): 9.0.1 kuruldu, 9.0.2 etkinleşmedi ama geçmişte "prepared-withdrawn" kaydı YOK (2321/2322) — aday: saveState'in writeJsonAtomic'i Windows'ta
+  (okuyucu dosyayı açıkken rename EPERM) 12 denemede de yazamayıp yalnız uyarı yazması (updater.mjs:106) → geçmiş olayı sessizce kaybolur.
+  Linux'ta üretilemedi (ders 18). İki teste de teşhis eklendi (gelen neden / geçmiş + açılış günlüğü satırları mesaja yazılır). Yeniden görülünce
+  günlükle kök neden + zorla üretme (ders 20); saveState yazamazsa olay kaybı ürün hatasıdır (yeniden deneme / kuyruk gerekir). Ürün etkisi: elle
+  denetim 3 deneme, otomatik denetim saatte bir; geçmiş kaydı bilgi amaçlı.
 - KAPANDI (13.10.2026 akşam): CI #684 bc36256 senaryo-pos-220 "Ürün B 15/3/6/5" — KÖK NEDEN testin ürün seçici yarışı (ders 20 ile zorla üretildi:
   son arama yanıtı 1,5 sn gecikince + tuş aralığı 260 ms → ara arama [Ürün A, Ürün B] listeler, test ilk satıra basar → Ürün A satılır; tutar/cari/
   banka doğru, yalnız stok). Düzeltme: pos-220 kimlikle seçer + "Stokta" bağ denetimi + gelen değer mesajda + `POS220_YARIS=1` zorla kipi;
