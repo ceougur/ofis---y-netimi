@@ -27,7 +27,9 @@ export function createStore(db) {
   // v2.1.0 (§5.5): banka çekirdeği tabloları da para taşır (işlem başlığı, banka fişi, hesap ve POS kartı, POS satışı ve valör
   // takvimi, bankaya tahsile verilen çek). Kur, tatil, ekstre, eşleşme, plan, iş kuyruğu ve istek kimliği kapı dışında.
   const FINANCIAL = new Set(["payments", "cash_entries", "accounts", "account_entries", "plans", "plan_items", "plan_entries", "stock_items", "stock_moves", "cheques", "cheque_events",
-    "fin_events", "bank_lines", "bank_accounts", "pos_terminals", "pos_sales", "pos_items", "cheque_collections"]);
+    "fin_events", "bank_lines", "bank_accounts", "pos_terminals", "pos_sales", "pos_items", "cheque_collections",
+    // 2.3.0 İz 1: şüpheli alacak kayıtları ve karşılıkları (128/129; lib/bank/doubtful.mjs) — para dışı ama yevmiyeyi değiştirir, kapıdan geçer.
+    "doubtful_receivables", "doubtful_provisions"]);
   const WRITE = /^\s*(?:INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE(?:\s+OR\s+\w+)?|DELETE\s+FROM|REPLACE\s+INTO)\s+["`]?(\w+)/i;
   const guards = [];
   // v2.0.22 (yük ölçümü): carinin yalnız BİLGİ kolonlarına (ad, telefon, adres, not, grup, ek alan, vergi bilgisi…) yazan

@@ -17,6 +17,9 @@ export const EVENT_TYPES = new Set([
   // Aşama 3 (plana ek, bilinçli): Hesabı Atanmamış POS/kart bakiyesinin aktarımı — "Bankaya Geçmiş Say" (B 102.k / A 108.00) ve "Kart
   // Borcuna Aktar" (B 108.00 / A 309.k), §10.3. Şirketin kendi hesapları arasında iç harekettir.
   "legacy_reclass",
+  // 2.3.0 İz 1 (plan §3.11b; lib/bank/doubtful.mjs): Şüpheli Alacağa Al / Şüpheliden Çıkar / Karşılık Ayır / Değersiz Alacak Yaz başlıkları (para
+  // satırı yok; yevmiye Ana Defter'in kuralıyla türetilir).
+  "doubtful_take", "doubtful_release", "doubtful_provision", "doubtful_writeoff",
 ]);
 
 // İç hareket (§3.4 internal): şirketin kendi hesapları arasında para geçişi (Kasa ↔ Banka, bankalar arası, kredi kullanımı/geri ödemesi,
@@ -24,7 +27,7 @@ export const EVENT_TYPES = new Set([
 export const INTERNAL_TYPES = new Set(["cash_transfer", "transfer", "loan_draw", "loan_repay", "fx_exchange", "pos_settlement", "card_payment", "legacy_reclass"]);
 // Para satırı taşımayan işlem başlıkları (§3.11 bank:event): kendi tablolarıyla denetlenir (tahsile verilen çek, eski hareket atama, POS
 // iptal iadesi); kopya = satır denetimine girmez.
-export const NON_MONEY_TYPES = new Set(["cheque_deposit", "cheque_withdraw", "legacy_assign", "pos_cancel_refund"]);
+export const NON_MONEY_TYPES = new Set(["cheque_deposit", "cheque_withdraw", "legacy_assign", "pos_cancel_refund", "doubtful_take", "doubtful_release", "doubtful_provision", "doubtful_writeoff"]);
 
 /** Modül satırının olay türü (tablo + satırın kolonlarından). */
 export function typeOf(table, row = {}) {
@@ -99,6 +102,10 @@ const TYPE_LABELS = Object.freeze({
   legacy_assign: "Kurulum ve Aktarım",
   legacy_reclass: "Eski Bakiye Aktarımı",
   reversal: "Ters Kayıt",
+  doubtful_take: "Şüpheli Alacağa Al",
+  doubtful_release: "Şüpheliden Çıkar",
+  doubtful_provision: "Karşılık Ayır",
+  doubtful_writeoff: "Değersiz Alacak Yaz",
 });
 export function typeLabel(type, direction = "") {
   if (type === "invoice_cash") return direction === "out" ? "Fatura Ödemesi" : "Fatura Tahsilatı";

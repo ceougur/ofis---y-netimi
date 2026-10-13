@@ -89,14 +89,15 @@ export function familyOf(code) {
     // dokunan yazımı tam kapıya gönderir; havale/POS yazımı süzgeçte kalır.
     if (MONEY_ACCOUNTS.has(account)) return `money:${account}`;
     if (DOCUMENT_MAINS.has(account)) return "cheque";
-    if (["120", "320", "336"].includes(account)) return "party";
+    // 128/129 (2.3.0 İz 1): şüpheli alacak cari alanındadır (120 + 128 = cari kartı; lib/doubtful-gl.mjs).
+    if (["120", "320", "336", "128", "129"].includes(account)) return "party";
     if (account === "127") return "plan";
     if (["191", "391", "360", "193"].includes(account)) return "invoice";
     return "all";
   }
   if (code.startsWith("bank:sub:")) return `money:${code.slice(9, 12)}`;
   if (code.startsWith("bank:sub")) return "money";
-  if (code === "party:accounts") return "party";
+  if (code === "party:accounts" || code === "doubtful:records") return "party";
   if (code === "party:plans" || code === "plans:totals" || code === "dates:due-before-start") return "plan";
   if (code === "stock:qty" || code === "stock:account" || code === "stock:orphan") return "stock";
   if (code.startsWith("cents:")) return `rows:${code.slice(6)}`;
