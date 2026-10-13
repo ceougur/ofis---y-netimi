@@ -1191,7 +1191,39 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 23,
+    name: "v2.3.0 Şüpheli Ticari Alacaklar (128/129): kayıt ve karşılık tabloları",
+    up(store) {
+      // docs/BANKA-MODULU-PLAN.md §3.11b; lib/bank/doubtful.mjs. YALNIZ EKLEYİCİ: iki yeni tablo; hiçbir mevcut satır ve kolon değişmez. Eski
+      // sürüm (2.2.0) aynı dosyayı açar, tabloları okumaz (kaydı yoksa Ana Defter aynı). Kilit izi: şüpheli kaydı olmayan veride göç öncesiyle
+      // birebir aynı (lib/integrity.mjs LOCK_SQL doubtful_* since "2.3.0").
+      store.raw("migration.v23", () => store.exec(DOUBTFUL_SCHEMA_V23));
+    },
+  },
 ];
+
+// 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık
+// (kayıt başına; active | cancelled). Değersiz Alacak satırı account_entries'tedir (source 'doubtful', source_id = kayıt).
+const DOUBTFUL_SCHEMA_V23 = `
+  CREATE TABLE IF NOT EXISTS doubtful_receivables (
+    id TEXT PRIMARY KEY, account_id TEXT NOT NULL, date TEXT NOT NULL,
+    amount_minor INTEGER NOT NULL CHECK (amount_minor > 0),
+    reason TEXT NOT NULL DEFAULT 'other', note TEXT NOT NULL DEFAULT '', cheque_id TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'open', closed_date TEXT NOT NULL DEFAULT '',
+    event_id TEXT NOT NULL, close_event_id TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_doubtful_receivables_account ON doubtful_receivables(account_id, date);
+
+  CREATE TABLE IF NOT EXISTS doubtful_provisions (
+    id TEXT PRIMARY KEY, doubtful_id TEXT NOT NULL, date TEXT NOT NULL,
+    amount_minor INTEGER NOT NULL CHECK (amount_minor > 0), note TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'active', event_id TEXT NOT NULL,
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_doubtful_provisions_record ON doubtful_provisions(doubtful_id, date);
+`;
 
 function widenIntegrityLog(store) {
   const row = store.get("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'integrity_log'");

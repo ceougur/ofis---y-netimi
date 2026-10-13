@@ -1,0 +1,19 @@
+YAKALANDI M1 işaret: Şüpheli Alacağa Al maddesi ters (B 120 / A 128) · çıkış 1 · geçen 1, düşen 27 · F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1
+YAKALANDI M2 tutar sınırı: alacak satırı kalanı aşsa da tamamı 128'den düşer · çıkış 1 · geçen 26, düşen 2 · D — tahsilat şüpheliyi aşınca: al 4.000 → tahsilat 5.000: A 128 4.000 + A 120 1.000; 128 =
+YAKALANDI M3 644 kuralı: karşılık fazlası çözülmez · çıkış 1 · geçen 25, düşen 3 · adım 3: tahsilat 3.000 nakit (07.10) → B 100 / A 128 (önce şüpheliden); 644 kuralı B 129 /
+YAKALANDI M4 hesap: değersizde karşılık kullanılmaz (hepsi 659) · çıkış 1 · geçen 26, düşen 2 · adım 4: Değersiz Alacak Yaz 1.000 (08.10) → B 129 / A 128 (karşılıklı; 659'a 0); 128 = 0, 
+YAKALANDI M5 çıkarma tutarı: kalan yerine alınan tutar · çıkış 1 · geçen 24, düşen 4 · R — audit: doubtful.take / provision / writeoff / release / deleted; S — FORBIDDEN_GL 128/
+YAKALANDI M6 tarih: kayıt tarihinden önceki karşılık/değersiz/çıkarma kabul edilir · çıkış 1 · geçen 27, düşen 1 · G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date
+YAKALANDI M7 tutar sınırı: zaten şüphelideki tutar sayılmaz (bakiye − açık yerine bakiye) · çıkış 1 · geçen 26, düşen 2 · F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1
+YAKALANDI M8 karşılık sınırı: ayrılmış karşılık sayılmaz · çıkış 1 · geçen 27, düşen 1 · G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date
+YAKALANDI M9 beklenen: 120'den kalan şüpheli düşülmez (kapı) · çıkış 1 · geçen 1, düşen 27 · F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1
+YAKALANDI M10 kapanış: Şüpheliden Çıkar kapanış tarihini yazmaz · çıkış 1 · geçen 23, düşen 5 · I / J — kilitli dönem 409 (al / çıkar / karşılık / değersiz / sil), ileri 400 date-future,
+KAÇTI     M11 cari bazında: 128 satırı cariyi taşımaz (120 + 128 ≠ kart) · çıkış 0 · geçen 28, düşen 0
+YAKALANDI M12 hedef: Değersiz Alacak satırı kendi kaydı yerine en eski kayıttan düşer · çıkış 1 · geçen 24, düşen 4 · adım 4: Değersiz Alacak Yaz 1.000 (08.10) → B 129 / A 128 (karşılıklı; 659'a 0); 128 = 0, 
+
+# tests 12
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0

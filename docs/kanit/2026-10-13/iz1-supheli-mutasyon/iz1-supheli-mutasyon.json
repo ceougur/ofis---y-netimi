@@ -1,0 +1,169 @@
+[
+  {
+    "no": 1,
+    "name": "M1 işaret: Şüpheli Alacağa Al maddesi ters (B 120 / A 128)",
+    "file": "server/lib/doubtful-gl.mjs",
+    "exit": 1,
+    "pass": 1,
+    "fail": 27,
+    "caught": true,
+    "sample": [
+      "F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1.000, 120 = 0; 0 / eksi / 3 ondalık 400",
+      "G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date-before-record; karşılık 700 + 300 tamam",
+      "I / J — kilitli dönem 409 (al / çıkar / karşılık / değersiz / sil), ileri 400 date-future, geçersiz 400 date-invalid, boş 400 date-missing",
+      "K — aynı kimlik + aynı gövde → replayed (tek kayıt); aynı kimlik farklı gövde → 409 request-id-reused"
+    ]
+  },
+  {
+    "no": 2,
+    "name": "M2 tutar sınırı: alacak satırı kalanı aşsa da tamamı 128'den düşer",
+    "file": "server/lib/doubtful-gl.mjs",
+    "exit": 1,
+    "pass": 26,
+    "fail": 2,
+    "caught": true,
+    "sample": [
+      "D — tahsilat şüpheliyi aşınca: al 4.000 → tahsilat 5.000: A 128 4.000 + A 120 1.000; 128 = 0, 120 = 5.000 (tek madde iki alacak satırı)",
+      "E — iki kayıt: al 2.000 (03.10) ve 3.000 (04.10) → tahsilat 2.500 (05.10): en eski önce (kalan 0 ve 2.500); 02.10 tarihli tahsilat şüpheliden düşmez"
+    ]
+  },
+  {
+    "no": 3,
+    "name": "M3 644 kuralı: karşılık fazlası çözülmez",
+    "file": "server/lib/doubtful-gl.mjs",
+    "exit": 1,
+    "pass": 25,
+    "fail": 3,
+    "caught": true,
+    "sample": [
+      "adım 3: tahsilat 3.000 nakit (07.10) → B 100 / A 128 (önce şüpheliden); 644 kuralı B 129 / A 644 1.500; 128 = 1.000, 129 = −1.000, cari 7.000",
+      "adım 4: Değersiz Alacak Yaz 1.000 (08.10) → B 129 / A 128 (karşılıklı; 659'a 0); 128 = 0, 129 = 0, cari 6.000 (satır cari kartında)",
+      "rapor verisi (GET /api/workspace/doubtful): cari, neden, tarih, tutar, karşılık, tahsil edilen, değersiz, kalan; toplamlar = satırlar; süzgeç"
+    ]
+  },
+  {
+    "no": 4,
+    "name": "M4 hesap: değersizde karşılık kullanılmaz (hepsi 659)",
+    "file": "server/lib/doubtful-gl.mjs",
+    "exit": 1,
+    "pass": 26,
+    "fail": 2,
+    "caught": true,
+    "sample": [
+      "adım 4: Değersiz Alacak Yaz 1.000 (08.10) → B 129 / A 128 (karşılıklı; 659'a 0); 128 = 0, 129 = 0, cari 6.000 (satır cari kartında)",
+      "rapor verisi (GET /api/workspace/doubtful): cari, neden, tarih, tutar, karşılık, tahsil edilen, değersiz, kalan; toplamlar = satırlar; süzgeç"
+    ]
+  },
+  {
+    "no": 5,
+    "name": "M5 çıkarma tutarı: kalan yerine alınan tutar",
+    "file": "server/lib/doubtful-gl.mjs",
+    "exit": 1,
+    "pass": 24,
+    "fail": 4,
+    "caught": true,
+    "sample": [
+      "R — audit: doubtful.take / provision / writeoff / release / deleted; S — FORBIDDEN_GL 128/129/644/654, Banka Ayarları fee=128 → 400",
+      "C — Şüpheliden Çıkar: borç 8.000 → al 3.000 → karşılık 1.000 → tahsilat 500 → çıkar: B 120 / A 128 2.500, B 129 / A 644 1.000; 120 = 7.500",
+      "D — tahsilat şüpheliyi aşınca: al 4.000 → tahsilat 5.000: A 128 4.000 + A 120 1.000; 128 = 0, 120 = 5.000 (tek madde iki alacak satırı)",
+      "E — iki kayıt: al 2.000 (03.10) ve 3.000 (04.10) → tahsilat 2.500 (05.10): en eski önce (kalan 0 ve 2.500); 02.10 tarihli tahsilat şüpheliden düşmez"
+    ]
+  },
+  {
+    "no": 6,
+    "name": "M6 tarih: kayıt tarihinden önceki karşılık/değersiz/çıkarma kabul edilir",
+    "file": "server/lib/bank/doubtful.mjs",
+    "exit": 1,
+    "pass": 27,
+    "fail": 1,
+    "caught": true,
+    "sample": [
+      "G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date-before-record; karşılık 700 + 300 tamam"
+    ]
+  },
+  {
+    "no": 7,
+    "name": "M7 tutar sınırı: zaten şüphelideki tutar sayılmaz (bakiye − açık yerine bakiye)",
+    "file": "server/lib/bank/doubtful.mjs",
+    "exit": 1,
+    "pass": 26,
+    "fail": 2,
+    "caught": true,
+    "sample": [
+      "F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1.000, 120 = 0; 0 / eksi / 3 ondalık 400",
+      "O — aynı anda iki istek (600 + 600, borç 1.000): biri 200, öbürü 400 doubtful-exceeds-balance; 128 = 600"
+    ]
+  },
+  {
+    "no": 8,
+    "name": "M8 karşılık sınırı: ayrılmış karşılık sayılmaz",
+    "file": "server/lib/bank/doubtful.mjs",
+    "exit": 1,
+    "pass": 27,
+    "fail": 1,
+    "caught": true,
+    "sample": [
+      "G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date-before-record; karşılık 700 + 300 tamam"
+    ]
+  },
+  {
+    "no": 9,
+    "name": "M9 beklenen: 120'den kalan şüpheli düşülmez (kapı)",
+    "file": "server/routes/ledger.mjs",
+    "exit": 1,
+    "pass": 1,
+    "fail": 27,
+    "caught": true,
+    "sample": [
+      "F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1.000, 120 = 0; 0 / eksi / 3 ondalık 400",
+      "G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date-before-record; karşılık 700 + 300 tamam",
+      "I / J — kilitli dönem 409 (al / çıkar / karşılık / değersiz / sil), ileri 400 date-future, geçersiz 400 date-invalid, boş 400 date-missing",
+      "K — aynı kimlik + aynı gövde → replayed (tek kayıt); aynı kimlik farklı gövde → 409 request-id-reused"
+    ]
+  },
+  {
+    "no": 10,
+    "name": "M10 kapanış: Şüpheliden Çıkar kapanış tarihini yazmaz",
+    "file": "server/lib/bank/doubtful.mjs",
+    "exit": 1,
+    "pass": 23,
+    "fail": 5,
+    "caught": true,
+    "sample": [
+      "I / J — kilitli dönem 409 (al / çıkar / karşılık / değersiz / sil), ileri 400 date-future, geçersiz 400 date-invalid, boş 400 date-missing",
+      "R — audit: doubtful.take / provision / writeoff / release / deleted; S — FORBIDDEN_GL 128/129/644/654, Banka Ayarları fee=128 → 400",
+      "C — Şüpheliden Çıkar: borç 8.000 → al 3.000 → karşılık 1.000 → tahsilat 500 → çıkar: B 120 / A 128 2.500, B 129 / A 644 1.000; 120 = 7.500",
+      "D — tahsilat şüpheliyi aşınca: al 4.000 → tahsilat 5.000: A 128 4.000 + A 120 1.000; 128 = 0, 120 = 5.000 (tek madde iki alacak satırı)"
+    ]
+  },
+  {
+    "no": 11,
+    "name": "M11 cari bazında: 128 alacak satırı cariyi taşımaz (120 + 128 ≠ kart)",
+    "file": "server/lib/doubtful-gl.mjs",
+    "exit": 1,
+    "pass": 16,
+    "fail": 12,
+    "caught": true,
+    "sample": [
+      "R — audit: doubtful.take / provision / writeoff / release / deleted; S — FORBIDDEN_GL 128/129/644/654, Banka Ayarları fee=128 → 400",
+      "W / V — tedarikçi 409 doubtful-customer-only; silinmiş cari 404; açık şüpheli kaydı olan cari silinemez; Değersiz Alacak satırı cari kartından silinmez/düzeltilmez",
+      "karşılığı sil → 129 = 0 → geri yükle → 129 = −1.000; değersizi sil → 128 ve cari geri → geri yükle; değersizi olan kayıt silinemez (önce değersiz)",
+      "adım 3: tahsilat 3.000 nakit (07.10) → B 100 / A 128 (önce şüpheliden); 644 kuralı B 129 / A 644 1.500; 128 = 1.000, 129 = −1.000, cari 7.000"
+    ]
+  },
+  {
+    "no": 12,
+    "name": "M12 hedef: Değersiz Alacak satırı kendi kaydı yerine en eski kayıttan düşer",
+    "file": "server/lib/doubtful-gl.mjs",
+    "exit": 1,
+    "pass": 24,
+    "fail": 4,
+    "caught": true,
+    "sample": [
+      "adım 4: Değersiz Alacak Yaz 1.000 (08.10) → B 129 / A 128 (karşılıklı; 659'a 0); 128 = 0, 129 = 0, cari 6.000 (satır cari kartında)",
+      "kapanmış kayıt: değersiz/karşılık/çıkar 409 doubtful-closed; kayıt listede 'Değersiz Yazıldı'",
+      "rapor verisi (GET /api/workspace/doubtful): cari, neden, tarih, tutar, karşılık, tahsil edilen, değersiz, kalan; toplamlar = satırlar; süzgeç",
+      "B — karşılıksız değersiz: borç 5.000 → al 5.000 → tahsilat 2.000 → değersiz 3.000: 659 = 3.000, 128 = 0, 129 = 0, cari 0"
+    ]
+  }
+]

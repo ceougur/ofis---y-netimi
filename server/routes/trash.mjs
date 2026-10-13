@@ -32,10 +32,15 @@ const KIND_LABELS = {
   "stock-move": "Stok Hareketi",
   cheque: "Çek / Senet",
   invoice: "Fatura",
+  // 2.3.0 İz 1 (plan §3.11b/4 "Silinenler — geri alma ters kayıtla"): şüpheli alacak kaydı, karşılığı ve Değersiz Alacak satırı.
+  doubtful: "Şüpheli Alacak",
+  "doubtful-provision": "Şüpheli Alacak Karşılığı",
+  "doubtful-writeoff": "Değersiz Alacak",
 };
+const DOUBTFUL_KINDS = new Set(["doubtful", "doubtful-provision", "doubtful-writeoff"]);
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, money: moneyLines = null, now: clock = systemClock }) {
+export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, doubtful = () => null, money: moneyLines = null, now: clock = systemClock }) {
   const now = () => clock().toISOString();
   // Yargıç K2 (plan §3.8 "Silinenler'den geri yükleme", §9.2/7, §3.9 K7): banka bağlı satır geri yüklenirken kaynak modül yetkisi + bank.move,
   // pasif hesap 400, eksi bakiye son durumla (Engelle 409 cash-blocked, Uyar 409 cash-negative + accountId → "Yine de Geri Yükle" cashForce ya da negativeOk; hakem K5).
@@ -295,6 +300,13 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
     const item = trash.get(ref);
     if (!item) throw new HttpError(404, "Bu öğe zaten geri yüklenmiş.");
     const payload = JSON.parse(item.payload_json || "{}");
+    // 2.3.0 İz 1: şüpheli alacak kaydı / karşılığı / Değersiz Alacak satırı (routes/doubtful.mjs restoreDeleted; bank.post op 'restore').
+    if (DOUBTFUL_KINDS.has(item.kind)) {
+      if (!doubtful?.()?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
+      const text_ = doubtful().restoreDeleted(user, item, payload);
+      publish(user, { kind: "accounts", accountId: payload.accountId });
+      return ok(res, { restored: item.kind, message: text_ });
+    }
     let message = "";
     // v2.0.26 (A7): para hareketi kapanmış dönemdeyse geri yüklenmez (silmedeki kuralın aynısı; önceden kapıda nedensiz 409).
     // Tutar kuruşa yuvarlanır, ödeme yolu katı okunur (B7: tanınmayan yol 400; sessizce nakit sayılmaz).

@@ -39,6 +39,9 @@ export const PERMISSIONS = Object.freeze({
   "accounts.view": ALL,
   "accounts.collect": ALL,
   "accounts.manage": ["admin", "avukat", "muhasebe"],
+  // Şüpheli Ticari Alacaklar (2.3.0 İz 1; plan §3.11b/4 "cari yönetimi + muhasebe"): Şüpheli Alacağa Al / Şüpheliden Çıkar / Karşılık Ayır /
+  // Değersiz Alacak Yaz ve bunların silinmesi/geri yüklenmesi — Cari Yönetimi ile BİRLİKTE istenir (rota ikisini de arar).
+  "accounts.doubtful": ["admin", "muhasebe"],
   // Stok (v2.0.6): herkes stoku görür ve miktar hareketi (giriş/çıkış) girer; ürün kartı, Excel'den yükleme ve
   // Kasa'ya ya da cariye para yazan hareketler yönetim yetkisidir.
   "stock.view": ALL,
@@ -168,6 +171,7 @@ export const PERMISSION_GROUPS = Object.freeze([
       ["accounts.view", "Carileri Görme", "Cari listesi, bakiyeler ve ekstre."],
       ["accounts.collect", "Cariden Tahsilat Girme", "Cari kartından tahsilat girer."],
       ["accounts.manage", "Cari Yönetimi", "Cari açar, düzenler; borç, alacak ve ödeme girer."],
+      ["accounts.doubtful", "Şüpheli Alacak İşlemleri", "Şüpheli alacağa alır, şüpheliden çıkarır, karşılık ayırır, değersiz alacak yazar (Cari Yönetimi ile birlikte)."],
     ],
   },
   {

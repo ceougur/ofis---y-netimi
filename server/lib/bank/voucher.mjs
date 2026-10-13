@@ -34,7 +34,8 @@ export const ROLE_METHOD = Object.freeze({ bank: "bank", pos: "card", card: "car
 /** Hesabı atanmamış para rollerinin alt hesabı. */
 export const UNASSIGNED_SUB = Object.freeze({ bank: "102.00", pos: "108.00" });
 /** Hiçbir Banka Fişi satırının yazamadığı hesaplar (§3.11). */
-export const FORBIDDEN_GL = Object.freeze(new Set(["100", "101", "103", "120", "121", "127", "191", "320", "321", "336", "360", "391"]));
+// 128/129/644/654 (2.3.0 İz 1, plan §3.11b/6): şüpheli alacak ve karşılığı yalnız cari kartındaki Şüpheli Alacak işlemlerinden yazılır.
+export const FORBIDDEN_GL = Object.freeze(new Set(["100", "101", "103", "120", "121", "127", "128", "129", "191", "320", "321", "336", "360", "391", "644", "654"]));
 
 const forbidden = (message, extra = {}) => new HttpError(400, message, { code: "bank-gl-forbidden", ...extra });
 
