@@ -30,6 +30,7 @@ import path from "node:path";
 import { monitorEventLoopDelay } from "node:perf_hooks";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { ekranKaydet } from "./olcek-ekran.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SELF = fileURLToPath(import.meta.url);
@@ -596,13 +597,6 @@ async function level(users, info) {
     await page.keyboard.press("Escape");
     await page.waitForTimeout(300);
   };
-  const answerConfirms = async page => {
-    for (let i = 0; i < 3; i += 1) {
-      const yes = await page.waitForSelector(`${MODAL}:last-of-type [data-answer="yes"]`, { timeout: 1200 }).catch(() => null);
-      if (!yes) return;
-      await yes.click().catch(() => null);
-    }
-  };
   // Tıklama: öğe yeniden çizildiği için "kararsız/ayrıldı" olursa 5 sn'lik denemelerle en çok 6 kez; deneme sayısı kaydedilir (ekranın
   // yük altında yeniden çizilmesi kullanıcıya da tıklanamayan düğme olarak yansır).
   const unstable = {};
@@ -784,11 +778,14 @@ async function level(users, info) {
           await page.selectOption('form.hof-bank-voucher [name="feeType"]', "eft").catch(() => null);
           await page.fill('form.hof-bank-voucher [name="amount"]', amountText(amount));
           await page.fill('form.hof-bank-voucher [name="description"]', own);
-          t = performance.now();
-          await page.click('form.hof-bank-voucher button[type="submit"]');
-          await answerConfirms(page);
-          const seen = await page.waitForFunction(needle => [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")].some(row => new RegExp(`${needle}(?![0-9])`).test(row.textContent)), own, { timeout: 30000 }).then(() => true).catch(() => false);
-          item.kaydetListedeMs = seen ? r0(performance.now() - t) : -1;
+          // Kaydet → liste beklemesi boyunca üstte beliren sorular (Benzer İşlem K8, Eksi Bakiye K7) yanıtlanır (tools/olcek-ekran.mjs; 13.10.2026:
+          // önceden soru yalnız 1,2 sn bekleniyordu, yük altında geç gelen soru kaçınca kayıt yazılmıyor ve form açık kalıyordu — 2.2.0 BİLİNEN
+          // SINIR'ın kök nedeni; zorla üretimi test/e2e/banka-230-hareket-yaris.mjs). Yanıtlanan sorular, POST durumları ve formdaki hata kayda girer.
+          const saved = await ekranKaydet(page, { submit: 'form.hof-bank-voucher button[type="submit"]', rows: rowsSel, needle: own, timeoutMs: 30000, modal: MODAL });
+          item.kaydetListedeMs = saved.listedeMs;
+          item.kaydetOnay = saved.onaylar;
+          item.kaydetDurum = saved.durumlar;
+          item.kaydetHata = saved.hata;
           item.kaydetHesap = bank.id;
           item.kaydetTutar = amount;
           item.kaydetIz = own;
@@ -914,7 +911,9 @@ async function level(users, info) {
     item.veritabaninda = rows.length;
     if (rows.length === 1) book("001", "bank", -item.kaydetTutar, item.kaydetHesap);
     else if (rows.length > 1) hatalar.push(`ekrandan masraf ${item.kaydetIz} veritabanında ${rows.length} kez (çift kayıt)`);
+    // Görünmeyen kayıt: yazılmış mı (liste gecikmesi) yoksa hiç yazılmamış mı (soru/hata) kayıtta ayrı okunur (13.10.2026 kök neden dersi).
     if (item.kaydetListedeMs === -1 && rows.length === 1) screen.hatalar.push(`ekrandan masraf ${item.kaydetIz} kaydedildi ama 30 sn'de listede görünmedi`);
+    if (item.kaydetListedeMs === -1 && rows.length === 0) screen.hatalar.push(`ekrandan masraf ${item.kaydetIz} KAYDEDİLMEDİ (sorular ${JSON.stringify(item.kaydetOnay || [])}, POST ${JSON.stringify(item.kaydetDurum || [])}, form hatası “${item.kaydetHata || ""}”)`);
   }
 
   // ---------- Yedek bütünlüğü ----------
@@ -1053,8 +1052,9 @@ async function level(users, info) {
     kaydetGorunmedi: screen.banka.filter(item => item.kaydetListedeMs === -1).length,
     bankaTur: screen.banka.length,
     bankaYenidenAcilis: screen.banka.filter(item => item.yenidenAcildi).length,
-    // Ekrandan kaydedilen her masraf: iz, tutar (kuruş), veri tabanında kaç kez (1 olmalı), listede görünme süresi.
-    kaydedilenler: screen.banka.filter(item => item.kaydetIz).map(item => ({ iz: item.kaydetIz, kurus: item.kaydetTutar, veritabaninda: item.veritabaninda, listedeMs: item.kaydetListedeMs })),
+    // Ekrandan kaydedilen her masraf: iz, tutar (kuruş), veri tabanında kaç kez (1 olmalı), listede görünme süresi, yanıtlanan sorular
+    // (Benzer İşlem / Eksi Bakiye), POST /vouchers durumları, formda kalan hata (boş olmalı).
+    kaydedilenler: screen.banka.filter(item => item.kaydetIz).map(item => ({ iz: item.kaydetIz, kurus: item.kaydetTutar, veritabaninda: item.veritabaninda, listedeMs: item.kaydetListedeMs, sorular: item.kaydetOnay || [], post: item.kaydetDurum || [], hata: item.kaydetHata || "" })),
     baskasininKaydiListede: stat(field(screen.banka, "baskasininKaydiMs")),
     baskasininKaydiGorunmedi: screen.banka.filter(item => item.baskasininKaydiMs === -1).length,
     raporlarAcilis: stat(field(screen.rapor, "raporlarAcilisMs")),
