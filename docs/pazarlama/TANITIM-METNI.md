@@ -13,7 +13,7 @@ DestekOfis — işletmenizin cari, kasa, banka, POS, çek/senet, fatura, stok ve
 ✅ Çek/senet portföyü, ciro, bankaya tahsile verme
 ✅ Mizan, yevmiye, nakit akışı; her rapor PDF ve Excel
 ✅ Verileriniz bulutta değil, kendi ofisinizde; 6 saatte bir otomatik yedek
-✅ Ofisteki herkes aynı anda, kendi yetkisiyle çalışır
+✅ Ofisteki herkes aynı anda, kendi yetkisiyle birlikte çalışır
 
 30 gün ücretsiz, tüm özellikleriyle. Kredi kartı istemez.
 Bilgi ve demo: 0536 771 50 55 · https://destek-ofis.vercel.app/
