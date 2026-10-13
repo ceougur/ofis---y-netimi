@@ -415,3 +415,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Teklif, Sipariş; Çek/Senet (tahsil edilmeyen müşteri evrakı, ödenmeyen kendi evrakımız); Banka (kart/bakiye/kredi kartı bakiyesi, ödemesi biten
   krediler); Üretim, Döviz, Seri No. Wolvox modeli = her yıl AYRI veri dosyası. ÖNERİ verildi (karar kullanıcıda): aynı ekran ve seçenekler,
   altta sürekli kayıt + yıl kapanışı (kilit + kapanış/açılış fişleri + devir değerlemesi); ayrıntı yanıtta.
+  SORU (kullanıcı): "Wolvox modeli daha sağlıklı değil mi, diğer programlar nasıl yapıyor?" → karşılaştırma verildi (yerli masaüstü Logo/Mikro/
+  Netsis/Wolvox: yıl/dönem ayrı; uluslararası ve bulut: sürekli + yıl kapanışı). HATIRLATICI (kullanıcı): devir modülü yapımı 22.10.2026
+  Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv). Model kararı bekleniyor.
