@@ -1,0 +1,32 @@
+{
+  "ad": "iz2-olcek-duman",
+  "komut": "node --disable-warning=ExperimentalWarning tools/olcek-210.mjs --klasor /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-olcek-duman --kullanici 2 --sure 40 --pencere 3 --islem-001 150 --islem-002 80 --hedef-001 400 --hedef-002 200 --cari 20 --json /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-olcek-duman.json",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a7e349711147dc850",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:12:24.576Z",
+  "sure_sn": 68.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 29,
+    "gecen": 29,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/iz2-olcek-duman.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7e349711147dc850",
+  "ham_cikti_sha256": "48bffc0d3f4f0b47a1fcc3454fee82fbaec5b92587b8d5a8749a648410c5ed33",
+  "ham_cikti_bayt": 7850
+}
