@@ -404,3 +404,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   hem metin hem çok resim tek adımda yalnız API ile; API'siz en yakın: (1) Windows Paylaş → WhatsApp: metin + resimler hazır, kişi WhatsApp'ta
   seçilir (yeni numara için önce wa.me ile sohbet açılır); (2) wa.me: numara + metin hazır, resim yapıştırılır; (3) öneri: bilgiler + resimler
   tek "Portföy Sunumu" PDF/görsel → wa.me + tek dosya. Gerçek Windows + WhatsApp masaüstünde denenmeden söz verilmez.
+- YENİ (kullanıcı, 13.10.2026 ~16:00 TR; ekran: haftalık kullanım %83, "bu hızla yarın akşam tükenir", sıfırlanma Perşembe 02:00): "devir modülü
+  ya da şüpheli alacaklar için yeterli limit?" DEVİR MODÜLÜ (yıl sonu dönem devri) bu listede DAHA ÖNCE YOKTU (yalnız banka planında Devir Kapanışı
+  ve K6 Kasa devri var). CEVAP: %17 ile para çekirdeğine dokunan iş BAŞLATILMAZ (yarım para işi en kötü sonuç); öneri: Perşembe sıfırlamasına
+  kadar yalnız tasarım/plan (devir modülü planı, Şüpheli Alacaklar §3.11b iş listesi) ya da küçük iş; uygulama sıfırlamadan sonra.
