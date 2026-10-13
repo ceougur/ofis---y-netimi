@@ -420,16 +420,21 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       const method = methodInput(payload.method);
       const planRef = payload.opening ? "" : bank.keepRef(payload.finRef, { method, date: payload.date }).ref;
       const k7 = banking.restore(user, { refs: [planRef], date: payload.date, force: banking.forced(body), permission: "plans.collect" });
+      const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
       const result = bank.post({
         user,
         module: "plan",
         op: "restore",
         prev: payload,
         guard: k7.guard,
+        // K8 (2.3.0, plan §3.10/3 restore): geri gelen tahsilat için kartın kalanı işlemin içinde yeniden okunur (plan-paid / plan-overpay /
+        // installment-paid); "Fazlasını Avans Yaz" (overpay:true) yalnız plans.manage. Açılış (devir) satırı ve iade kural dışı.
+        prepare: () => {
+          if (payload.kind === "in" && !payload.opening && !store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) plans?.assertRoom?.(user, plan.id, money(payload.amount), { itemId, overpay: body.overpay === true, op: "restore" });
+        },
         write: () => {
           k7.capture();
           if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
-            const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
             const opening = payload.opening ? 1 : 0;
             store.run(
               // Açılış (devir) kaydı geri gelince yine açılıştır (v2.0.8): Kasa'ya girmez (para satırı değil, olay almaz).

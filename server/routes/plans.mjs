@@ -5,6 +5,7 @@
 import { randomUUID } from "node:crypto";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { toMinor } from "../lib/minor.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -792,6 +793,41 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const after = roundMoney(netPaid(planId, exceptId) + change);
     if (after < -0.005) throw new HttpError(400, `Bu kartta tahsil edilen net tutar ${tl(roundMoney(after - change))}; iade ya da düzeltme sonrası ${tl(after)} olur. İade tahsil edilenden fazla olamaz.`, { code: "refund-exceeds" });
   };
+  // 2.3.0 İz 3.1 — K8 hedef kuralı (plan §3.10/3, Özet K8): yeni tahsilat (create), Silinenler'den geri yükleme (restore) ve tutarı BÜYÜYEN
+  // düzeltme (update) kartın kalanını bank.post adım 2'de (prepare: istek kimliğinden SONRA, Benzer İşlem'den ÖNCE, aynı BEGIN IMMEDIATE
+  // içinde) yeniden okur: kalan 0 → 409 plan-paid; tutar kalanı aşıyor → 409 plan-overpay; seçilen taksit ödenmiş → 409 installment-paid.
+  // "Fazlasını Avans Yaz" (overpay:true) yalnız plans.manage sahibine açık (yetkisizde 403 plan-overpay-permission): fazlası kartta "extra"
+  // (lib/plans.mjs allocate), caride alacak olur. Taksite Aktar (op 'move', routes/plan-transfer.mjs) yeni para değildir; bugünkü kuralla
+  // (payments-exceed uyarısıyla izinli) kalır. Mevcut veride bulunan fazla tahsilat okunur ve gösterilir, değiştirilmez. Karşılaştırma kuruş
+  // tamsayısıyla (toMinor): kalan 0,01 iken 0,02 aşar, 0,01 geçer. 2.2.0'a kadar kural yoktu (davranış 2.0.26 gibi): kalan 0 olan karta da,
+  // kalanı aşan tutar da yazılıyordu.
+  const AVANS = "Fazlasını Avans Yaz";
+  const K8_WHAT = { create: "yeni tahsilat yazılmaz", restore: "silinen tahsilat geri yüklenmez", update: "tahsilat tutarı büyütülmez" };
+  function assertRoom(user, planId, amount, { itemId = null, overpay = false, exceptId = "", op = "create" } = {}) {
+    const row = store.get("SELECT total, status FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
+    if (!row) return;
+    const left = roundMoney(Math.max(0, (Number(row.total) || 0) - Math.max(0, netPaid(planId, exceptId))));
+    const leftMinor = toMinor(left);
+    const amountMinor = toMinor(roundMoney(Number(amount) || 0));
+    const rule = leftMinor <= 0 ? "plan-paid" : amountMinor > leftMinor ? "plan-overpay" : "";
+    if (rule) {
+      const manage = canUser(user, "plans.manage");
+      const excess = roundMoney(Math.max(0, amount - left));
+      const what = K8_WHAT[op] || K8_WHAT.create;
+      if (overpay) {
+        if (!manage) throw new HttpError(403, `Kartın kalanını aşan tahsilatı (avans) yalnızca yönetici, uzman ve muhasebe yazabilir; yöneticinize başvurun. Kalan ${tl(left)}, girilen ${tl(amount)}.`, { code: "plan-overpay-permission", permission: "plans.manage", planId, remaining: left, amount, excess });
+      } else {
+        const hint = manage ? ` Gerçekten bu karta avans yazılacaksa "${AVANS}" ile kaydedin.` : " Bu karta avans yazılacaksa yöneticinize başvurun.";
+        if (rule === "plan-paid") throw new HttpError(409, `Bu kart ödendi (kalan ${tl(0)}); ${what}. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-paid", planId, remaining: 0, amount, excess });
+        throw new HttpError(409, `Tutar kartın kalanını aşıyor: kalan ${tl(left)}, girilen ${tl(amount)}, fazlası ${tl(excess)}; ${what}. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-overpay", planId, remaining: left, amount, excess });
+      }
+    }
+    if (itemId) {
+      const entries = entriesOf(planId).filter(entry => entry.id !== exceptId);
+      const item = allocate({ total: row.total, status: row.status }, itemsOf(planId), entries, { today: today() }).items.find(candidate => candidate.id === itemId);
+      if (item && toMinor(item.remaining) <= 0) throw new HttpError(409, `Seçilen ${item.seq}. taksit ödendi (kalan ${tl(0)}); tahsilatı açık bir taksite ya da "En Eski Açık Taksite (önerilen)" seçeneğiyle yazın.`, { code: "installment-paid", planId, itemId, seq: item.seq });
+    }
+  }
   // v2.0.24 (mutabakat bulgusu): faturanın kendi kartında tahsilat eklenince/düzeltilince/silinince kartın kalanı faturanın
   // açığına eşitlenir (iade avansa taşmışken tahsilat silinirse kart, iadenin düşürdüğü kısmı da geri istiyordu).
   const syncInvoiceCard = (user, planId) => {
@@ -799,7 +835,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (invoiceId) invoices()?.syncOwnCard?.(user, invoiceId);
   };
   // v2.1.0 Aşama 8 (plan §3.7 #6): havale/EFT tahsilatı ve iadesi banka hesabına bağlanır (fin_ref), istek kimliği, Benzer İşlem, K7 (iadede ve
-  // düzeltme/silmede hesaptan para çıkar), bankadan iade bank.move ister. K8 hedef kuralları (plan-paid / plan-overpay) sonraki dilimde.
+  // düzeltme/silmede hesaptan para çıkar), bankadan iade bank.move ister. K8 hedef kuralları (plan-paid / plan-overpay): 2.3.0, assertRoom (yukarıda).
   const banking = bankForm(bankModule);
   router.post("/api/workspace/plans/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
@@ -826,7 +862,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // SONRA, işlemin içinde. Önceden önce çalışıyordu: kartın net tahsilatını ve Kasa'yı 0'a indiren iadenin yinelemesi 400 "iade tahsil
       // edilenden fazla" ya da 409 "Kasa eksiye düşer" alıyordu.
       prepare: () => {
-        if (input.kind !== "out") return;
+        // K8 (2.3.0): tahsilatta kartın kalanı işlemin içinde yeniden okunur (plan-paid / plan-overpay / installment-paid; Benzer İşlem'den önce).
+        if (input.kind === "in") return assertRoom(user, plan.id, input.amount, { itemId: input.itemId, overpay: body.overpay === true, op: "create" });
         assertNetPaid(plan.id, -input.amount);
         cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
       },
@@ -872,6 +909,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       requestId: banking.requestId(req, body),
       scope: "plan.entry.update",
       body: { ...body, entryId: previous.id },
+      // K8 (2.3.0, plan §3.10/3 update): yalnız tutarı BÜYÜYEN tahsilat düzeltmesinde kartın kalanı (bu satır hariç) işlemin içinde yeniden okunur.
+      prepare: () => {
+        if (previous.kind === "in" && !previous.opening && input.amount > roundMoney(Number(previous.amount) || 0) + 0.004) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
+      },
       write: () => {
         k7.capture();
         // Açılış (opening) satırı para satırı değildir: olay almaz; eski (olaysız) tahsilat düzeltilince olay alır.
@@ -1489,5 +1530,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
 }

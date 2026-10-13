@@ -36,7 +36,11 @@ describe("R5 — fazla tahsilatlı kartta iade iptali kartı faturanın açığ�
     const ret = await must("iade 2.400", client.post("/api/workspace/invoices", { kind: "sale_return", accountId: acc.id, originalId: doc.id, issueDate: "2026-08-20", issueTime: "11:00", currency: "TRY", rate: 1, lines: [{ originLineId: doc.lines[0].id, qty: 8 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true, cashForce: true }));
     let plan = await must("kart", client.get(`/api/workspace/plans/${planId}`));
     assert.equal(plan.totals.total, 0, "iade kartı tümüyle küçülttü");
-    await must("karta 500 tahsilat", client.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: "500", method: "cash", date: "2026-08-25" }));
+    // K8 (2.3.0 İz 3.1; plan §3.10/3, §11.4): kalan 0 olan karta tahsilat artık 409 plan-paid; bu senaryodaki avans yönetici "Fazlasını Avans Yaz"
+    // (overpay:true) ile yazılır — fazla tahsilatlı kart davranışı (R5) aynı kalır.
+    const bare = unwrap(await client.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: "500", method: "cash", date: "2026-08-25" }));
+    assert.deepEqual([bare.status, bare.data?.code], [409, "plan-paid"], "kalan 0 olan karta bayraksız tahsilat (K8)");
+    await must("karta 500 tahsilat (avans)", client.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: "500", method: "cash", date: "2026-08-25", overpay: true }));
     await must("iadeyi iptal et", client.post(`/api/workspace/invoices/${ret.id}/cancel`, { reason: "Yanlış iade", force: true, cashForce: true }));
     const invoice = await must("fatura", client.get(`/api/workspace/invoices/${doc.id}`));
     plan = await must("kart", client.get(`/api/workspace/plans/${planId}`));

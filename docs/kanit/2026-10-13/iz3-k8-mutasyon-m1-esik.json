@@ -1,0 +1,83 @@
+{
+  "ad": "iz3-k8-mutasyon-m1-esik",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/iz3-k8-mut-m1-esik/test/banka-230-k8-taksit.test.mjs",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a958f5cc6657a2287",
+  "kirli": 7,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:00:55.964Z",
+  "sure_sn": 4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 6,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K8 taksit kuralı — nakit yolu (N1, N2, N4, N5) › N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir",
+      "konum": "test/banka-230-k8-taksit.test.mjs:67:3",
+      "hata": "ödenmiş karta 0,01: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 0,01 TL, fazlası 0,01 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — nakit yolu (N1, N2, N4, N5) › N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid",
+      "konum": "test/banka-230-k8-taksit.test.mjs:100:3",
+      "hata": "yeniden ödenmiş kart: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 0,01 TL, fazlası 0,01 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13) › N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500",
+      "konum": "test/banka-230-k8-taksit.test.mjs:124:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13) › N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:157:3",
+      "hata": "R2 ilk gönderim: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 100,00 TL, fazlası 100,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6) › N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez",
+      "konum": "test/banka-230-k8-taksit.test.mjs:187:3",
+      "hata": "ikinci havale: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 1.000,00 TL, fazlası 1.000,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6) › N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid",
+      "konum": "test/banka-230-k8-taksit.test.mjs:198:3",
+      "hata": "4. havale: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 1.000,00 TL, fazlası 1.000,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6) › N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı",
+      "konum": "test/banka-230-k8-taksit.test.mjs:210:3",
+      "hata": "POS ödenmiş karta: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 100,00 TL, fazlası 100,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7) › N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz",
+      "konum": "test/banka-230-k8-taksit.test.mjs:239:3",
+      "hata": "personel ödenmiş karta: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 50,00 TL, fazlası 50,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Bu karta avans yazılacaksa yöneticinize başvurun.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7) › N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:269:3",
+      "hata": "fazla tahsilatlı karta yeni tahsilat: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 10,00 TL, fazlası 10,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    },
+    {
+      "ad": "K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9) › N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)",
+      "konum": "test/banka-230-k8-taksit.test.mjs:302:3",
+      "hata": "geri yükleme ödenmiş karta: kod plan-overpay (Tutar kartın kalanını aşıyor: kalan 0,00 TL, girilen 1.000,00 TL, fazlası 1.000,00 TL; silinen tahsilat geri yüklenmez. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \"Fazlasını Avans Yaz\" ile kaydedin.) · + actual - expected · + 'plan-overpay' (beklenen plan-paid, gelen plan-overpay)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/iz3-k8-mutasyon-m1-esik.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a958f5cc6657a2287",
+  "ham_cikti_sha256": "b5fd7853a0b54018f79f576ad7e9b40687e1d3b3fb43df55229e62ce1b31ccfa",
+  "ham_cikti_bayt": 21023
+}

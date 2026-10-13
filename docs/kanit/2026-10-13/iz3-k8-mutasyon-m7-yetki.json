@@ -1,0 +1,43 @@
+{
+  "ad": "iz3-k8-mutasyon-m7-yetki",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/iz3-k8-mut-m7-yetki/test/banka-230-k8-taksit.test.mjs",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a958f5cc6657a2287",
+  "kirli": 7,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:01:20.144Z",
+  "sure_sn": 4.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 14,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7) › N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz",
+      "konum": "test/banka-230-k8-taksit.test.mjs:239:3",
+      "hata": "personel overpay: 200 {\"id\":\"plan-62c7cacd-a57f-48cd-90f7-10e876613452\",\"accountId\":\"account-bcc01f30-5c5e-4b99-857d-63ce26e6d53e\",\"refNo\":\"1\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Yetki Müşteri K8-12\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-cea8d04b-27db-4f5a-b · 200 !== 403 (beklenen 403, gelen 200)"
+    },
+    {
+      "ad": "K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7) › N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)",
+      "konum": "test/banka-230-k8-taksit.test.mjs:259:3",
+      "hata": "personel overpay: 200 {\"id\":\"plan-171af16d-227c-4051-b90b-8085b367918a\",\"accountId\":\"account-bcc01f30-5c5e-4b99-857d-63ce26e6d53e\",\"refNo\":\"2\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Yetki Müşteri K8-13\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-cea8d04b-27db-4f5a-b · 200 !== 403 (beklenen 403, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/iz3-k8-mutasyon-m7-yetki.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a958f5cc6657a2287",
+  "ham_cikti_sha256": "a225fc839092a55814af611c0e3066a8d474fa577f660074e852ce162e545663",
+  "ham_cikti_bayt": 10153
+}
