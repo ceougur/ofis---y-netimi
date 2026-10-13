@@ -418,3 +418,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   SORU (kullanıcı): "Wolvox modeli daha sağlıklı değil mi, diğer programlar nasıl yapıyor?" → karşılaştırma verildi (yerli masaüstü Logo/Mikro/
   Netsis/Wolvox: yıl/dönem ayrı; uluslararası ve bulut: sürekli + yıl kapanışı). HATIRLATICI (kullanıcı): devir modülü yapımı 22.10.2026
   Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv). Model kararı bekleniyor.
+  GİRDİ (satış arkadaşı, aynı gün): Wolvox 2026→2027 aktarır; çekte "vadesi gelmemiş çekleri aktar"; vadesi bitmeyen taksitleri komple alır;
+  her yıl ayrı klasör (26/27/28). Müşterilerin bir kısmı "eskiyi görmesin, program rahatlasın" diye devir yapar, bir kısmı her şeyi tek yılda
+  görmek ister, devir yapmaz. GÜNCEL ÖNERİ (karar kullanıcıda): İKİ KİP — (1) Devirsiz (varsayılan, bugünkü sürekli kayıt; isteyene yıl kilidi);
+  (2) "Devir Yap": yeni yıl için yeni veri dosyası, yalnız devreden kalemler (cari/kasa/banka/kart bakiyeleri, vadesi gelmemiş çek/senet, bitmemiş
+  taksitler tek tek, stok miktar+değer) taşınır; eski yıl SALT OKUNUR ARŞİV (şirket seçicide "001 · 2026 (Arşiv)", 2 şirket sınırına sayılmaz).
