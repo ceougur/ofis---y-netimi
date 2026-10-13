@@ -16,6 +16,18 @@ Sıra (kullanıcı, 13.10.2026): Perşembe kullanım sınırı sıfırlanınca �
 - Test kullanıcı adı / parolası: e-postada. DEPOYA YAZILMAZ (depo herkese açık; anayasa: API gizli anahtarı hiçbir dosyaya girmez). Test
   koşusunda oturuma yüklenen dosyadan ya da GitHub "secret"ından okunur.
 
+## 1a. Kullanıcının yüklediği EDM belge paketi (13.10.2026; `/root/.claude/uploads/<oturum>/…-DOK_MANLAR.rar`, 18,7 MB, RAR5 — DEPOYA KONMAZ)
+Denetlendi (unar ile ayrı klasöre açıldı): 25 dosya; ilgisiz iki iç arşiv (İngilizce belgeler, E-Defter) bozuk/yarım — fatura işini etkilemez.
+Fatura işi için gerekenler TAM ve sağlam:
+- `E-FATURA VE E-ARŞİV FATURA/e-Fatura teknik doküman.zip` (bütünlük OK): "EDM E-Fatura Web API v4.2.1.docx" (18.05.2026), "Web API v4 Request-
+  Response.docx", `EFaturaEDMConnectorLibrary.cs` (EDM'nin C# istemcisi — istek alanları/sırası için kâhin), "XML ÖRNEKLERİ.rar": satis/iade/
+  istisna/ihracat/ihraç kayıtlı/özel matrah/tevkifat/SGK/yolcu beraber/dövizli — temel ve ticari, + general.xslt, generalexport.xslt.
+- `XSLT ÖRNEKLERİ.rar` (19/19 sağlam): general.xslt, generalearchive.xslt, generalexport.xslt … (fatura/e-Arşiv basımı).
+- `SSS/Sıkça Sorulan Sorular.docx`, `SSS/EDM E-Fatura - WebServis durum kodları ve aciklamalari.xlsx` (hata/durum kodları).
+- `POSTMAN/EdmEntegration.postman_collection.json` (örnek istekler), `WEB SERVİS ENDPOINT URL ADRESLERİ.docx`, `RESTAPI/…Swagger linkleri.txt`.
+- EKSİK: GİB'in resmî UBL-TR şema (XSD) + şematron paketi pakette YOK. Gerekli (Adım 1'in kâhini). ebelge.gib.gov.tr bu ortamdan erişilemiyor →
+  ortam ayarında izin (ebelge.gib.gov.tr) ya da kullanıcı GİB sitesinden "UBL-TR paketi"ni indirip yükler.
+
 ## 2. Programda bugün olan (koddan, 13.10.2026; yayımlanan v2.2.0 ile aynı)
 - `server/lib/config.mjs:62` `edocEnabled` yalnız testlerle açılır; ortam değişkeniyle açılmaz.
 - `server/routes/invoices.mjs`: kapalıyken entegratör testi, mükellef sorgusu, gelen kutusu, gönder, durum sorgula, XML indir → 404
