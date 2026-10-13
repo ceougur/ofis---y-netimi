@@ -30,8 +30,10 @@ Fatura işi için gerekenler TAM ve sağlam:
   `e-FaturaPaketi (29).zip` sha256 12901476…: schematron/UBL-TR_Main_Schematron.xml + UBL-TR_Common_Schematron.xml + UBL-TR_Codelist.xml
   (21.08.2026 güncel), zarf XSD'leri (Envelope/Package…), kullanıcı listesi XSD'leri. `earsiv_paket_v1.1_8.zip` sha256 97a6f705…: EArsiv.xsd,
   earsiv_schematron.xsl, eArsivVeri.xsd, faturaOzet.xsd, XAdES. `e-FaturaTestPlani.pdf` 690db731…, `e-Arsiv_Teknik_Kilavuzu_V.1.18.pdf` 3cdf04b3….
-- EKSİK: UBL 2.1 Invoice XSD'leri (OASIS standardı; GİB paketinde yok). docs.oasis-open.org bu ortamdan erişilemiyor (13.10.2026 denendi) →
-  işe başlarken ortam ayarına `docs.oasis-open.org` izni (os-UBL-2.1/UBL-2.1.zip) ya da kullanıcı yükler.
+- UBL 2.1 XSD'leri (OASIS; GİB paketinde yok): kullanıcı ortamda `docs.oasis-open.org`'a izin verdi (13.10.2026); indirildi:
+  https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip (57,9 MB) sha256 60b80d76…; içinde xsd/maindoc/UBL-Invoice-2.1.xsd. Kâhin seti TAM:
+  OASIS XSD + GİB şematron/kod listesi + EDM XML örnekleri + EDM C# istemcisi. Ağ izinleri: test.edmbilisim.com.tr, ebelge.gib.gov.tr,
+  docs.oasis-open.org açık; dosya.edmbilisim.com.tr SSL zinciri doğrulanmıyor (paket kullanıcıdan).
 
 ## 2. Programda bugün olan (koddan, 13.10.2026; yayımlanan v2.2.0 ile aynı)
 - `server/lib/config.mjs:62` `edocEnabled` yalnız testlerle açılır; ortam değişkeniyle açılmaz.
