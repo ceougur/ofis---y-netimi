@@ -161,10 +161,23 @@ const newSaleForm = async () => {
   await page.waitForSelector(`${inv} .hof-acc-picker li[data-id="${ctx.abc.id}"]`, { timeout: 8000 });
   await (await page.$(`${inv} .hof-acc-picker li[data-id="${ctx.abc.id}"]`)).dispatchEvent("mousedown");
   if (!(await page.$eval(`${inv} [data-f="pricesIncludeVat"]`, node => node.checked))) await page.click(`${inv} [data-f="pricesIncludeVat"]`);
+  // Ürün seçici yarışı (13.10.2026, CI #684 bc36256 "Ürün B 15/3/6/5" kırmızı — ders 20 ile zorla üretildi): yavaş koşucuda tuş aralığı
+  // 180 ms debounce'u aşınca "Ürün" araması [Ürün A, Ürün B] listeler, son aramanın yanıtı gecikir; "ilk satıra bas" Ürün A'yı seçerdi (tutar,
+  // cari ve banka doğru, yalnız stok yanlış). Seçim KİMLİKLE yapılır ve satırın stok kartına bağlandığı ("Stokta …") okunur.
+  // POS220_YARIS=1: ön koşul zorla kurulur (son aramanın yanıtı 1,5 sn gecikir, tuş aralığı 260 ms) — düzeltmenin yeşili bu kipte de görülür.
+  if (YARIS && !ctx.yarisRoute) {
+    ctx.yarisRoute = true;
+    await page.route(/\/api\/workspace\/invoices\/items\?q=/, async route => {
+      const q = decodeURIComponent(new URL(route.request().url()).searchParams.get("q") || "");
+      if (q === "Ürün B") await new Promise(resolve => setTimeout(resolve, 1500));
+      await route.continue();
+    });
+  }
   await page.click(`${inv} [data-l="0"][data-f="name"]`);
-  await page.keyboard.type("Ürün B", { delay: 35 });
-  await page.waitForSelector(`${inv} [data-hits="0"] li[data-item]`, { timeout: 8000 });
-  await page.click(`${inv} [data-hits="0"] li[data-item]`);
+  await page.keyboard.type("Ürün B", { delay: YARIS ? 260 : 35 });
+  await page.waitForSelector(`${inv} [data-hits="0"] li[data-item="${ctx.urunB.id}"]`, { timeout: 8000 });
+  await page.click(`${inv} [data-hits="0"] li[data-item="${ctx.urunB.id}"]`);
+  await page.waitForFunction(({ sel }) => /Stokta/.test(document.querySelector(sel)?.closest("td")?.querySelector("small")?.textContent || ""), { sel: `${inv} [data-l="0"][data-f="name"]` }, { timeout: 8000 });
 };
 
 // Yazım düzeni ekranda (senaryo-211'in denetçisiyle aynı kural): POS ekranlarında programın ürettiği adlar her sözcüğün ilk harfi büyük.
@@ -195,6 +208,7 @@ async function auditLabels(where) {
   }
 }
 
+const YARIS = process.env.POS220_YARIS === "1";
 const ctx = {};
 try {
   await api.login("admin", PASS);
@@ -315,7 +329,8 @@ try {
     ctx.sale20 = sale;
     ctx.invoice20 = sale?.invoice?.id || "";
     ok(sale && sale.authCode === "PRV001" && sale.cardLast4 === "1234" && sale.installments === 1, `POS satışı: provizyon ${sale?.authCode}, son 4 ${sale?.cardLast4}`);
-    ok((await qtyOf(ctx.urunB.id)) === 15 && (await partyBalance(ctx.abc.id)) === 0 && (await balanceOf(ctx.ziraat.id)) === kurus(90000), "Ürün B 15; ABC 0; Ziraat 90.000 (satış anında banka +0)");
+    ctx.q20 = [await qtyOf(ctx.urunB.id), await partyBalance(ctx.abc.id), await balanceOf(ctx.ziraat.id)];
+    ok(ctx.q20[0] === 15 && ctx.q20[1] === 0 && ctx.q20[2] === kurus(90000), `Ürün B 15; ABC 0; Ziraat 90.000 (satış anında banka +0) — gelen: ${ctx.q20.join(" / ")}`);
     const s = await summary();
     ok(s.posPending.grossMinor === kurus(10000) && s.posPending.netMinor === kurus(9750), `POS Bekleyen ${s.posPending.grossMinor / 100} brüt / ${s.posPending.netMinor / 100} net`);
     await closeAll();
@@ -387,7 +402,8 @@ try {
     ok(/Komisyon %3,50 \(₺420,00\)/.test(preview) && /Bankaya Geçecek ₺3\.860,00 × 3/.test(preview) && /İlk Valör 12\.11\.2026/.test(preview), `önizleme: “${preview}”`);
     await shot("fatura-pos-3-taksit");
     ok(await issueInvoice(), "fatura kaydedildi");
-    ok((await qtyOf(ctx.urunB.id)) === 3, "Ürün B 3");
+    ctx.q25 = await qtyOf(ctx.urunB.id);
+    ok(ctx.q25 === 3, `Ürün B 3 — gelen ${ctx.q25}`);
     const cal = await calendar();
     ok(JSON.stringify(cal.rows.map(row => [row.valueDate, row.netMinor])) === JSON.stringify([["2026-11-12", kurus(3860)], ["2026-12-14", kurus(3860)], ["2027-01-12", kurus(3860)]]), `takvim: ${JSON.stringify(cal.rows.map(row => [row.valueDate, row.netMinor / 100]))}`);
     const s = await summary();
@@ -416,7 +432,8 @@ try {
     await page.selectOption(`${inv} [data-pos-cell="0"] [data-f="posRefundOf"]`, ctx.sale20.id);
     await shot("satistan-iade-pos-iadesi");
     ok(await issueInvoice(), "iade faturası kaydedildi");
-    ok((await qtyOf(ctx.urunB.id)) === 6 && (await partyBalance(ctx.abc.id)) === 0, "Ürün B 6; ABC 0");
+    ctx.q27 = [await qtyOf(ctx.urunB.id), await partyBalance(ctx.abc.id)];
+    ok(ctx.q27[0] === 6 && ctx.q27[1] === 0, `Ürün B 6; ABC 0 — gelen ${ctx.q27.join(" / ")}`);
     const refund = (await sales("?kind=refund")).find(item => item.origin?.id === ctx.sale20.id);
     ok(refund && refund.grossMinor === kurus(3000) && refund.items.some(item => item.valueDate === "2026-10-15"), `iade: ${refund?.grossMinor / 100}, valör ${refund?.items?.map(item => item.valueDate).join(",")}`);
     const origin = (await sales("?kind=sale")).find(item => item.id === ctx.sale20.id);
@@ -538,7 +555,8 @@ try {
     ctx.mobile = mobile;
     const sale = (await sales(`?pos=${mobile?.id || "-"}`))[0];
     ok(mobile?.glSub === "108.02" && sale?.grossMinor === kurus(1000) && sale.items[0]?.valueDate === "2026-10-16", `stok satışı Ziraat Mobil POS'ta (108.02): ${sale?.grossMinor / 100}, valör ${sale?.items?.[0]?.valueDate}`);
-    ok((await qtyOf(ctx.urunB.id)) === 5, "Ürün B 5");
+    ctx.q508 = await qtyOf(ctx.urunB.id);
+    ok(ctx.q508 === 5, `Ürün B 5 — gelen ${ctx.q508}`);
     await closeAll();
   });
 

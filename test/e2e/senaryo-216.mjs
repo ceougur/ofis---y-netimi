@@ -101,8 +101,9 @@ const pickAccount = async (query, nth = 0) => {
 const addItemLine = async (index, query, qty, price = null) => {
   await admin.click(`${inv} [data-l="${index}"][data-f="name"]`);
   await admin.keyboard.type(query);
-  await admin.waitForSelector(`${inv} [data-hits="${index}"] li[data-item]`);
-  await admin.click(`${inv} [data-hits="${index}"] li[data-item]`);
+  // Yazılan adla eşleşen satır seçilir (ilk satır değil; ürün seçici yarışı — senaryo-pos-220 notu, 13.10.2026).
+  await admin.waitForSelector(`${inv} [data-hits="${index}"] li[data-item]:has-text("${query}")`);
+  await admin.click(`${inv} [data-hits="${index}"] li[data-item]:has-text("${query}")`);
   await admin.fill(`${inv} [data-l="${index}"][data-f="qty"]`, String(qty));
   if (price !== null) await admin.fill(`${inv} [data-l="${index}"][data-f="unitPrice"]`, String(price));
   await admin.waitForTimeout(900);

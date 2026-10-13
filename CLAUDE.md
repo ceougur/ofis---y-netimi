@@ -397,9 +397,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   check() "error" döndü (2316/2317; öbür 3 platform ve önceki/sonraki commit'ler yeşil). Linux'ta keepAlive sınırına denk gelen beklemelerle
   42/42 üretilemedi (ders 18: Linux benzetimi kanıt değil). Kök neden BİLİNMİYOR; teste teşhis mesajı eklendi (nedeni günlüğe yazar). Yeniden
   görülürse günlükteki nedenle kök neden + zorla üretme (ders 20). Ürün etkisi: elle denetim 3 deneme, otomatik denetim saatte bir.
-- AÇIK (13.10.2026): CI #684 bc36256 (yalnız belge) e2e senaryo-pos-220 102/106 — 4 stok miktarı denetimi ("Ürün B 15/3/6/5") kırmızı; aynı kod
-  sabahki koşularda ve yerelde (a346ef5, 18:13 TR) 106/106 yeşil; senaryo sahte saatle koşuyor. Kök neden BİLİNMİYOR (gelen değer günlükte yok).
-  Banka kalan işlerinde: teste gelen değeri yazdır + zorla üret (ders 20); ürün hatası olabilir (stok miktarı), geçiştirilmez.
+- KAPANDI (13.10.2026 akşam): CI #684 bc36256 senaryo-pos-220 "Ürün B 15/3/6/5" — KÖK NEDEN testin ürün seçici yarışı (ders 20 ile zorla üretildi:
+  son arama yanıtı 1,5 sn gecikince + tuş aralığı 260 ms → ara arama [Ürün A, Ürün B] listeler, test ilk satıra basar → Ürün A satılır; tutar/cari/
+  banka doğru, yalnız stok). Düzeltme: pos-220 kimlikle seçer + "Stokta" bağ denetimi + gelen değer mesajda + `POS220_YARIS=1` zorla kipi;
+  215/216/217/222 `li[data-item]:has-text(ad)`. ÜRÜN düzeltmesi (küçük): pickItem geç gelen arama yanıtını iptal eder (liste seçimden sonra
+  yeniden açılmıyor). Kanıt docs/kanit/2026-10-13/pos220-yaris-*.
 - MÜŞTERİ İSTEĞİ (13.10.2026, emlakçı; ekran: kayıt detay kartı → Belgeler, resim satırında Görüntüle/Yazdır/İndir/Sil): "WhatsApp'tan Paylaş"
   simgesi → karttaki resimler + detay kartındaki bilgiler müşteriye gönderilsin. Soru: yapılabilir mi, maliyet, iş yükü, süre. KODDAN: WhatsApp
   bugün wa.me ile YALNIZ METİN açar (hof-whatsapp.js:13; dosya eki resmî yolla ancak Meta Business API — Pro, ileride); personel bilgisayarı
@@ -426,3 +428,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   WhatsApp paylaşımı (emlakçı isteği) ŞİMDİLİK BEKLER (kullanıcı: "şimdilik kalsın").
   2.3.0 BANKA EKSTRESİ (ekstre yükleme + eşleştirme) LİSTEDEN ÇIKTI (kullanıcı, 13.10.2026: "müşteri portföyüm pek ilgilenmez, sonra ihtiyaç
   duyulursa yaparız") — plan bölümü yerinde kalır, ihtiyaç olursa açılır.
+- BAŞLADI (kullanıcı, 13.10.2026 ~21:00 TR: "fable'a geçtim, başla"): model Fable 5.1 (ayrı haftalık sınır, %0 → Perşembe beklenmedi). İş listesi
+  `docs/2.3.0-IS-LISTESI.md` (İz 0 açık kırmızılar · İz 1 Şüpheli Alacaklar · İz 2 ölçek-20 kök neden · İz 3 K8 taksit, bankalı iade/iptal §4.6, §8.10
+  kalan raporlar, fatura ayarları banka · İz 4 döviz §3.12 — kapsam kararı kullanıcıda). Ajanlar worktree'de (İz 1, İz 2, İz 3.1 paralel); ana oturum
+  kırmızı/yeşili ayrı kopyada yeniden koşar, CI'yi kendisi okur. Sürüm no paketlemede (2.3.0 önerilir).

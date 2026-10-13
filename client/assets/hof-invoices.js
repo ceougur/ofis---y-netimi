@@ -871,6 +871,10 @@
     const item = items.find(entry => entry.id === itemId);
     const line = form?.lines[index];
     if (!item || !line) return;
+    // Seçimden sonra bekleyen/yolda olan arama yanıtı listeyi yeniden açmasın (13.10.2026: yavaş sunucuda geç gelen yanıt seçili satırın
+    // üstüne listeyi geri getiriyordu).
+    clearTimeout(itemTimer);
+    itemTicket += 1;
     // Önce odaktaki kutudan çık: çıkarken tetiklenen "change" yazılan değeri ("fk-a4") satıra geri yazmasın; sonra
     // kartın adı ve Stok Kodu yazılır ve satır yeniden çizilir (odak korunması yazılan metni de geri getirmez).
     document.activeElement?.blur?.();
