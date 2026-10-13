@@ -9,6 +9,7 @@ on:
       - "CLAUDE.md"
       - "docs/GECMIS-KARARLAR.md"
       - "docs/DURUM-VE-DEVAM.md"
+      - "docs/2.3.0-IS-LISTESI.md"
       - "docs/devir/**"
       - "docs/fatura/**"
       - "docs/pazarlama/**"
