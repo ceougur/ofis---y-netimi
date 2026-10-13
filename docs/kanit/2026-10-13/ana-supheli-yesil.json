@@ -1,0 +1,32 @@
+{
+  "ad": "ana-supheli-yesil",
+  "komut": "node --test test/banka-230-supheli.test.mjs test/banka-230-supheli-bozma.test.mjs",
+  "commit": "5de225f89cbc3d9b4a97f2a6ce7ba93cd7285fee",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:45:05.926Z",
+  "sure_sn": 4.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/ana-supheli-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "7f183d88b50ab2a77933eeb11115f9be4f7277efa73cebd234f6821acd3afc7f",
+  "ham_cikti_bayt": 12312
+}
