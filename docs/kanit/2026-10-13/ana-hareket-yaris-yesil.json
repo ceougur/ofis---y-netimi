@@ -1,0 +1,32 @@
+{
+  "ad": "ana-hareket-yaris-yesil",
+  "komut": "npm run test:banka-230-hareket-yaris",
+  "commit": "8d6ef03f95a347ada0ac5cbcf0183da52ce259f3",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:18:16.430Z",
+  "sure_sn": 38.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 37,
+    "gecen": 37,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/ana-hareket-yaris-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ba707560ba71c800866493f3713dafb82b588ef9280aeb4083eead99b3224148",
+  "ham_cikti_bayt": 4935
+}

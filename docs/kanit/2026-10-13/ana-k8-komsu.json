@@ -1,0 +1,32 @@
+{
+  "ad": "ana-k8-komsu",
+  "komut": "node --test test/iade-kapama-k1.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/banka-210-altin.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/trash.test.mjs test/idempotency.test.mjs test/mutabakat-cekirdek.test.mjs",
+  "commit": "8d6ef03f95a347ada0ac5cbcf0183da52ce259f3",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:18:55.400Z",
+  "sure_sn": 69.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 71,
+    "gecen": 71,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/ana-k8-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "92733da934bd8735ec5cd9c1d10ea579ac1e9d3d0b0012c693cfb1e345ff8b65",
+  "ham_cikti_bayt": 25835
+}
