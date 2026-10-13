@@ -435,3 +435,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   `docs/2.3.0-IS-LISTESI.md` (İz 0 açık kırmızılar · İz 1 Şüpheli Alacaklar · İz 2 ölçek-20 kök neden · İz 3 K8 taksit, bankalı iade/iptal §4.6, §8.10
   kalan raporlar, fatura ayarları banka · İz 4 döviz §3.12 — kapsam kararı kullanıcıda). Ajanlar worktree'de (İz 1, İz 2, İz 3.1 paralel); ana oturum
   kırmızı/yeşili ayrı kopyada yeniden koşar, CI'yi kendisi okur. Sürüm no paketlemede (2.3.0 önerilir).
+  DURUM (13.10 ~22:30 UTC): İz 3.1 K8 birleşti (972daa3) ve ana oturum doğruladı (eski kopya 0/16 kırmızı, yeni 16/16, komşu 71/71, e2e k8-230
+  17/17, banka-210 408/408; CI okunacak). İz 2 kök neden: ürün DEĞİL, ölçek aracının soru-bekleme adımı (d0a442a; zorla üretme CI'de) — 20 kullanıcı tam
+  koşusu son adayda. İz 1 çekirdek ajan worktree'sinde commit (217410f), ajan sürüyor. İz 3.2+3.4 ve 3.3 ajanları başlatıldı; 3.1b kâhin K8 İz 1.8 ile.
