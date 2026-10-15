@@ -570,7 +570,7 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     // raporları (overview.view) kapalı kalır.
     const staffCatalog = (await staff.get("/api/workspace/report-center")).data.data;
     // 2.3.0 İz 1.7 (bilerek güncellendi): Cari grubundaki Şüpheli Alacaklar raporu Şüpheli Alacak İşlemleri yetkisiyle de açılır (plan §3.11b/5).
-    assert.deepEqual([...new Set(staffCatalog.reports.map(report => report.group))], ["Banka", "Cari"], "muhasebe Banka raporları + Şüpheli Alacaklar");
+    assert.deepEqual([...new Set(staffCatalog.reports.map(report => report.group))], ["Cari", "Banka"], "muhasebe Şüpheli Alacaklar (Cari) + Banka raporları — İz 5.4 grup sırası");
     assert.deepEqual(staffCatalog.reports.filter(report => report.group === "Cari").map(report => report.id), ["supheli-alacaklar"], "Cari grubunda yalnız Şüpheli Alacaklar");
     assert.equal((await staff.get("/api/workspace/report-center/kasa-hareketleri")).status, 403, "finans raporu kapalı");
     const users = (await admin.get("/api/admin/users")).data.data;
