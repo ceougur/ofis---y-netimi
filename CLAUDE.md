@@ -472,3 +472,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
      başı eşleşme ("alış f" → Alış Faturaları, Yeni Alış Faturası, Alış Faturası Raporu), Türkçe harf duyarsız (ı/i, ş/s); sonuç yalnız yetkisi
      olanlar; Enter ile açılır; dizin sunucudan değil istemcideki menü/rapor tanımlarından (rapor listesi API'den). Cari/kayıt adı araması bu
      kutuya girmez (ayrı, sonra).
+  6. (ekran: kayıt detay kartı → işlem geçmişi "Araç haczi · düşüm 14.10.2027") "işlem geçmişindeki kayıtları düzeltebilmeli ve X ile silebilmeliyiz;
+     3'ten fazlaysa 'daha fazla göster'". KODDAN (hof-workspace.js ~1008): geçmiş türleri not / telefon / tahsilat / taksit hareketi / haciz / görev;
+     yalnız TAHSİLATTA düzelt/sil var; not, telefon ve haciz için sunucuda yalnız POST (workspace.mjs:346, 359, 486), düzelt/sil ucu YOK; liste
+     sınırsız uzuyor. Plan: her satırda Düzelt + X (not/telefon/haciz: yeni PUT/DELETE + audit + Silinenler; taksit hareketi ve görev kendi
+     modülünden — satırda "Kayda Git"); ilk 3 satır + "Daha Fazla Göster (n)". Yetki: kayıt düzenleme yetkisi.
+  KARAR (kullanıcı, 15.10.2026: "bu son müşteri talebiydi; hepsini pakete ekle, işlem bitince yükleyelim, canlıya alalım") → 1–6 2.3.0 kapsamına
+  (İz 5, `docs/2.3.0-IS-LISTESI.md`); 2.3.0 bitince teslim düzeniyle yayın (kullanıcı yükler).
