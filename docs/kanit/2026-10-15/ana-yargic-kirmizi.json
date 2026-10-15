@@ -1,0 +1,88 @@
+{
+  "ad": "ana-yargic-kirmizi",
+  "komut": "node --test test/banka-230-k8-cek.test.mjs test/supheli-230-yargic.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T06:22:56.245Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 1,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar › ödenmiş karta çek → 409 plan-paid; kart, cari ve 101 değişmez; evrak yazılmaz",
+      "konum": "test/banka-230-k8-cek.test.mjs:24:3",
+      "hata": "ödenmiş karta çek: 200 {\"id\":\"cheque-8149c378-5815-4ccc-b7b8-0f5d12a7276d\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"K8-1\",\"bank\":\"Ziraat\",\"drawer\":\"Keşideci\",\"accountId\":\"account-a6814664-eb00-4168-b84c-ee2abac46256\",\"planId\":\"plan-0b3a0591-765c-470f-bafa-9957aa35dd64\",\"amount\":500,\"issueDate\":\"2026-10-03\",\"dueDate\":\"2026-12-31\",\"status\":\"portfolio\",\"statusDate\":\"2026-10-03\",\"endorseAccountId\":\"\",\"note\":\"\",\"in · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar › kalanı aşan çek → 409 plan-overpay (kalan/fazla ek alanda); kalan kadar çek → 200, kart kapanır",
+      "konum": "test/banka-230-k8-cek.test.mjs:42:3",
+      "hata": "kalanı aşan çek: 200 {\"id\":\"cheque-0dac9b0d-b9be-4711-bf80-9907e279c47e\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"K8-2\",\"bank\":\"Ziraat\",\"drawer\":\"Keşideci\",\"accountId\":\"account-92b8ac9f-9e6b-4eaf-ad4b-daf7e473ccb9\",\"planId\":\"plan-68455e7c-d6ac-437a-a0ed-c1b89ec1f150\",\"amount\":1500,\"issueDate\":\"2026-10-03\",\"dueDate\":\"2026-12-31\",\"status\":\"portfolio\",\"statusDate\":\"2026-10-03\",\"endorseAccountId\":\"\",\"note\":\"\",\"i · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar › ödenmiş taksite seçili çek → 409 installment-paid; açık taksite → 200; karşılıksızda ters kayıt kurala girmez (yeniden açılır)",
+      "konum": "test/banka-230-k8-cek.test.mjs:58:3",
+      "hata": "ödenmiş taksite çek: 200 {\"id\":\"cheque-2d43e2b6-2588-4476-92d4-a3facd9d02e6\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"K8-5\",\"bank\":\"Ziraat\",\"drawer\":\"Keşideci\",\"accountId\":\"account-2b749290-bf67-4e14-bd34-41cdf5c7140d\",\"planId\":\"plan-c03febb8-5b99-4129-b749-7a04a49bb55d\",\"amount\":500,\"issueDate\":\"2026-10-03\",\"dueDate\":\"2026-12-31\",\"status\":\"portfolio\",\"statusDate\":\"2026-10-03\",\"endorseAccountId\":\"\",\"note\":\"\",\"in · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0",
+      "konum": "test/supheli-230-yargic.test.mjs:36:3",
+      "hata": "129: aşan 600 çözüldü (karşılık 400 = kalan 400) · 0 !== 600 (beklenen 600, gelen 0)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez",
+      "konum": "test/supheli-230-yargic.test.mjs:64:3",
+      "hata": "geriye tarihli tahsilat: 409 beklenir — gelen 200 {\"id\":\"account-c1e2be99-7c21-48fc-b343-8d178f29812b\",\"refNo\":\"2\",\"type\":\"customer\",\"name\":\"Y3 Değersiz Sonra Tahsilat\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"t · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam",
+      "konum": "test/supheli-230-yargic.test.mjs:79:3",
+      "hata": "geri yükleme — gelen 409 {\"ok\":false,\"error\":\"Kayıt geri yüklenemez: carinin borç bakiyesi (2.000,00 ₺) şüpheliye alınan tutarı (10.000,00 ₺) artık karşılamıyor.\",\"code\":\"doubtful-exceeds-balance\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest",
+      "konum": "test/supheli-230-yargic.test.mjs:115:3",
+      "hata": "tür değişimi: 200 {\"id\":\"account-6efe213a-55f1-4f15-9244-bb6aa5300eec\",\"refNo\":\"5\",\"type\":\"supplier\",\"name\":\"Y5 Tür Değişimi\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz",
+      "konum": "test/supheli-230-yargic.test.mjs:127:3",
+      "hata": "kartsız kredi kartına iade: 200 {\"id\":\"account-a8acb601-c7f4-4056-8a6e-e1982d65b84e\",\"refNo\":\"6\",\"type\":\"supplier\",\"name\":\"Y6 Tedarikçi\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200",
+      "konum": "test/supheli-230-yargic.test.mjs:134:3",
+      "hata": "muhasebe raporu görür — {\"ok\":false,\"error\":\"Bu işlem için yetkiniz yok.\",\"code\":\"FORBIDDEN\",\"permission\":\"overview.view\"} · 403 !== 200 (beklenen 200, gelen 403)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400",
+      "konum": "test/supheli-230-yargic.test.mjs:144:3",
+      "hata": "borç hareketi yok: kod doubtful-exceeds-balance (Şüpheliye alınacak tutar (1,00 ₺) carinin borç bakiyesini aşıyor: bakiye 0,00 ₺ → en çok 0,00 ₺.) · + actual - expected · + 'doubtful-exceeds-balance' (beklenen doubtful-before-debt, gelen doubtful-exceeds-balance)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır",
+      "konum": "test/supheli-230-yargic.test.mjs:156:3",
+      "hata": "çıkarmadan önceye düşen tahsilat: 409 beklenir — gelen 200 {\"id\":\"account-23d3a146-f372-4836-87d7-ef5ca5a85a1d\",\"refNo\":\"8\",\"type\":\"customer\",\"name\":\"Y8b Çıkar\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mer · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/docs/kanit/2026-10-15/ana-yargic-kirmizi.log",
+  "klasor": "/tmp/claude-0/ana-yargic-eski-1fc87bb",
+  "ham_cikti_sha256": "9ccbe14265db9b05d8b6761bc220ab980005a0a488d2fac1adc1f201409bf31f",
+  "ham_cikti_bayt": 17506
+}
