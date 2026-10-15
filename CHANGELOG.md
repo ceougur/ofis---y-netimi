@@ -2,10 +2,9 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.3.0 — İyileştirmeler ve Şüpheli Alacaklar
+## 2.3.0 — İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi
 
-- Şüpheli ticari alacaklar (şüpheliye al, karşılık ayır, değersiz alacak yaz, rapor), yeni banka ve POS raporları, Hızlı Arama (Ctrl+K)
-  ve müşteri taleplerine göre iyileştirmeler.
+- İyileştirmeler ve Ticari Şüpheli Alacaklar eklentisi (Kullanım Kılavuzu → 9. Cari → Ticari Şüpheli Alacaklar).
 
 ## 2.2.0 — İyileştirmeler ve POS Entegrasyonu
 

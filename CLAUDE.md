@@ -500,6 +500,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
      modülünden — satırda "Kayda Git"); ilk 3 satır + "Daha Fazla Göster (n)". Yetki: kayıt düzenleme yetkisi.
   KARAR (kullanıcı, 15.10.2026: "bu son müşteri talebiydi; hepsini pakete ekle, işlem bitince yükleyelim, canlıya alalım") → 1–6 2.3.0 kapsamına
   (İz 5, `docs/2.3.0-IS-LISTESI.md`); 2.3.0 bitince teslim düzeniyle yayın (kullanıcı yükler).
+- KARAR (kullanıcı, 15.10.2026 ~19:30 UTC): kılavuzda hap bilgi "Ticari Şüpheli Alacaklar" başlığında (9. Cari altındaki bölüm başlığı
+  "Şüpheli Alacak" → "Ticari Şüpheli Alacaklar"; içerik zaten hap bilgi); 2.3.0 SÜRÜM NOTU = "İyileştirmeler ve Ticari Şüpheli Alacaklar
+  Eklentisi" (CHANGELOG başlığı + GitHub yayın metni; güncelleyici notu CHANGELOG gövdesinden). Rapor adı "Şüpheli Alacaklar" (program) değişmedi.
 - OPERATÖR MERKEZİ "SÜRÜM 9.0.0" (kullanıcı sorusu, 15.10.2026): yayımlanmış 9.0.0 yok; lisans.installations'ta 3 kayıt (30.09 7b44b046…, 12.10 38efc2d5…,
   15.10 07:04 UTC db54a00b…), hepsi Microsoft Azure = GitHub Actions; makeVersion ile 9.0.0 olarak paketlenen GERÇEK program CI'de açılıp kendiliğinden
   deneme başlatmış (ders 30). Etki: yalnız operatör listesinde sahte "Adı yazılmamış ofis" satırları ve servis istekleri; müşteriye etkisi yok. Adsız 2.2.0

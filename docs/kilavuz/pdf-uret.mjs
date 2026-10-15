@@ -6,6 +6,12 @@ const browser = await chromium.launch();
 const page = await browser.newPage();
 for (const name of process.argv.slice(3)) {
   await page.goto(`file://${path.join(dir, name)}.html`, { waitUntil: "networkidle" });
+  // 15.10.2026: networkidle yetmiyor — yazı tipleri/resimler yerleşmeden page.pdf 1 sayfalık, resimsiz PDF üretti (ara sıra; ders 20).
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await Promise.all([...document.images].map(img => img.decode().catch(() => {})));
+  });
+  await page.waitForTimeout(500);
   await page.pdf({ path: path.join(dir, `${name}.pdf`), format: "A4", printBackground: true, margin: { top: "14mm", bottom: "16mm", left: "13mm", right: "13mm" }, displayHeaderFooter: true, headerTemplate: "<span></span>", footerTemplate: `<div style="font-size:8px;color:#8a9a93;width:100%;text-align:center;font-family:sans-serif">DestekOfis · <span class="pageNumber"></span> / <span class="totalPages"></span></div>` });
   console.log("pdf:", name);
 }
