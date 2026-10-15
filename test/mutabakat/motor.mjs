@@ -252,11 +252,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     throw Object.assign(new Error(`${kind}: beklenmeyen kapı reddi ${JSON.stringify(failures)}\n  program kayıtları: ${JSON.stringify(list.data)}\n  model olayları: ${JSON.stringify(mine)}`), { unexpected: true });
   }
   function doubtfulModel() {
-    const ORDER = { take: 0, provision: 1, credit: 2, release: 3 };
+    // Aynı gün: al → karşılık → değersiz (hedefli) → tahsilat → çıkar (kâhin dili §4.15; programla aynı — 15.10.2026).
+    const ORDER = { take: 0, provision: 1, writeoff: 2, credit: 3, release: 4 };
+    const orderOf = e => (e.kind === "credit" && e.target ? ORDER.writeoff : ORDER[e.kind]);
     const state = new Map();
     const out = { open: 0, provision: 0, groundless: 0, expense: 0, loss: 0, records: state };
     for (const party of doubtfulCustomers) {
-      const events = D.events.filter(e => e.party === party.id).sort((a, b) => (a.date === b.date ? ORDER[a.kind] - ORDER[b.kind] || a.seq - b.seq : a.date < b.date ? -1 : 1));
+      const events = D.events.filter(e => e.party === party.id).sort((a, b) => (a.date === b.date ? orderOf(a) - orderOf(b) || a.seq - b.seq : a.date < b.date ? -1 : 1));
       const open = [];
       for (const e of events) {
         if (e.kind === "take") {

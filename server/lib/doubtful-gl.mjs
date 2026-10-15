@@ -50,7 +50,10 @@ export function doubtfulStatusOf(record, state) {
 }
 export const doubtfulStatusLabel = (record, state) => DOUBTFUL_STATUS_LABELS[doubtfulStatusOf(record, state)];
 
-const ORDER = { take: 0, provision: 1, credit: 2, release: 3 };
+// Aynı gün sırası (kâhin dili §4.15, plan §3.11b K3): al → karşılık → DEĞERSİZ (hedefli satır) → alacak satırı → çıkar. Değersiz satırıyla tahsilat
+// ayrı sınıftadır (15.10.2026, Uzun Doğrulama #199: aynı sınıfta anahtara — rastgele UUID; kapı 'account:<id>', yevmiye '<id>#<satır>' — göre
+// sıralanınca sıra rastgele ve iki yükleyicide farklıydı; tahsilat önce gelince değersiz satırı kalanı aşıp kayıt dışına düşüyordu).
+const ORDER = { take: 0, provision: 1, writeoff: 2, credit: 3, release: 4 };
 const by = (a, b) => (a.date === b.date ? (a.order === b.order ? (a.tie < b.tie ? -1 : a.tie > b.tie ? 1 : 0) : a.order - b.order) : a.date < b.date ? -1 : 1);
 const fresh = record => ({ taken: record.amountMinor, collected: 0, writtenOff: 0, released: 0, remaining: record.amountMinor, provision: 0, provisionAdded: 0, provisionReleased: 0, provisionUsed: 0, lost: 0, closedOn: "", lastCreditDate: "", collectedSameDay: 0, collectedOnCloseDay: 0 });
 
@@ -89,7 +92,7 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
       // (kâhin sürüm 4 tohum 4, 15.10.2026: aynı gün iki kayıt, tahsilat yanlış kayıttan düştü). seq yoksa kimlik.
       ...group.records.map(record => ({ kind: "take", date: record.date, order: ORDER.take, tie: record.seq ?? record.id, record })),
       ...group.provisions.map(item => ({ kind: "provision", date: item.date, order: ORDER.provision, tie: item.id, item })),
-      ...group.credits.map(credit => ({ kind: "credit", date: credit.date, order: ORDER.credit, tie: credit.key, credit })),
+      ...group.credits.map(credit => ({ kind: "credit", date: credit.date, order: credit.target ? ORDER.writeoff : ORDER.credit, tie: credit.key, credit })),
       ...group.records.filter(record => record.status === "released" && record.closedDate).map(record => ({ kind: "release", date: record.closedDate, order: ORDER.release, tie: record.id, record })),
     ].sort(by);
     // Açık (alınmış, kapanmamış) kayıtlar en eskiden yeniye; aynı tarihte açılış (rowid) sırası.
