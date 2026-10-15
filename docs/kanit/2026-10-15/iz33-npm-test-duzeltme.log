@@ -1,0 +1,520 @@
+TAP version 13
+# (node:8289) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# K1 zincir: durumu değişen belge 12; karşılaştırılan yanıt 550; senet katlaması (2.2.0 İz 4.2) 0 yanıt, ekranla karşılaştırılan dosya 0
+# Subtest: altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+    # Subtest: zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+    ok 1 - zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+      ---
+      duration_ms: 25070.021069
+      type: 'test'
+      ...
+# K1 motor: durumu değişen belge 8; karşılaştırılan yanıt 154; senet katlaması (2.2.0 İz 4.2, toplam) 8 yanıt, ekranla karşılaştırılan dosya 8
+    # Subtest: v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+    ok 2 - v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+      ---
+      duration_ms: 7702.668202
+      type: 'test'
+      ...
+    1..2
+ok 1 - altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+  ---
+  duration_ms: 32775.066448
+  type: 'suite'
+  ...
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+    # Subtest: Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+    ok 1 - Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+      ---
+      duration_ms: 552.633032
+      type: 'test'
+      ...
+    1..1
+ok 2 - kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+  ---
+  duration_ms: 556.237364
+  type: 'suite'
+  ...
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 4.763705
+      type: 'test'
+      ...
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 17232.114948
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5368
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 636.542854
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 811.318932
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 2008.253374
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5661, moneyLines denetimi 493
+    1..5
+ok 3 - hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 32309.579549
+  type: 'suite'
+  ...
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 3.681169
+      type: 'test'
+      ...
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 14619.23116
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5102
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 575.158108
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 660.89988
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1700.48683
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5317, moneyLines denetimi 493
+    1..5
+ok 4 - hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 24754.348873
+  type: 'suite'
+  ...
+# (node:8296) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8296) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: createClock — çalışıyor mu
+    # Subtest: gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün
+    ok 1 - gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün
+      ---
+      duration_ms: 1.440373
+      type: 'test'
+      ...
+    # Subtest: sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası
+    ok 2 - sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası
+      ---
+      duration_ms: 0.643647
+      type: 'test'
+      ...
+    # Subtest: akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen
+    ok 3 - akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen
+      ---
+      duration_ms: 73.935942
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası)
+    ok 4 - nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası)
+      ---
+      duration_ms: 0.669949
+      type: 'test'
+      ...
+    1..4
+ok 5 - createClock — çalışıyor mu
+  ---
+  duration_ms: 77.776592
+  type: 'suite'
+  ...
+# Subtest: Sunucu sahte saatle (startTestServer({ now }))
+    # Subtest: sunucunun saati paylaşılır: server.clock = app.config.now = context.now
+    ok 1 - sunucunun saati paylaşılır: server.clock = app.config.now = context.now
+      ---
+      duration_ms: 0.482361
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır
+    ok 2 - çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır
+      ---
+      duration_ms: 409.55595
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez
+    ok 3 - nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez
+      ---
+      duration_ms: 81.431386
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle
+    ok 4 - nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle
+      ---
+      duration_ms: 27.778364
+      type: 'test'
+      ...
+    # Subtest: çocuk şirket (002) aynı saati kullanır
+    ok 5 - çocuk şirket (002) aynı saati kullanır
+      ---
+      duration_ms: 220.095724
+      type: 'test'
+      ...
+    1..5
+ok 6 - Sunucu sahte saatle (startTestServer({ now }))
+  ---
+  duration_ms: 1355.850208
+  type: 'suite'
+  ...
+# Subtest: Gerçek saat (now verilmezse) davranış değişmez
+    # Subtest: bugün = gerçek yerel gün; app.config.now gerçek saat
+    ok 1 - bugün = gerçek yerel gün; app.config.now gerçek saat
+      ---
+      duration_ms: 482.07582
+      type: 'test'
+      ...
+    1..1
+ok 7 - Gerçek saat (now verilmezse) davranış değişmez
+  ---
+  duration_ms: 482.354641
+  type: 'suite'
+  ...
+# Subtest: Statik tarama: iş modüllerinde saat tek kaynaktan
+    # Subtest: tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer
+    ok 1 - tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer
+      ---
+      duration_ms: 0.746065
+      type: 'test'
+      ...
+    # Subtest: iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)
+    ok 2 - iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)
+      ---
+      duration_ms: 80.281962
+      type: 'test'
+      ...
+    1..2
+ok 8 - Statik tarama: iş modüllerinde saat tek kaynaktan
+  ---
+  duration_ms: 81.259196
+  type: 'suite'
+  ...
+# (node:8327) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül uçları × 6 rol
+    # Subtest: kapsam: server/routes/bank.mjs'teki her uç matriste (yeni uç → matrise eklenmeli)
+    ok 1 - kapsam: server/routes/bank.mjs'teki her uç matriste (yeni uç → matrise eklenmeli)
+      ---
+      duration_ms: 1.465968
+      type: 'test'
+      ...
+    # Subtest: banka uçları × yonetici
+    ok 2 - banka uçları × yonetici
+      ---
+      duration_ms: 1230.242569
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × yonetici
+    ok 3 - bankaya bağlı modül uçları × yonetici
+      ---
+      duration_ms: 674.457188
+      type: 'test'
+      ...
+    # Subtest: banka uçları × avukat
+    ok 4 - banka uçları × avukat
+      ---
+      duration_ms: 1092.113261
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × avukat
+    ok 5 - bankaya bağlı modül uçları × avukat
+      ---
+      duration_ms: 677.393477
+      type: 'test'
+      ...
+    # Subtest: banka uçları × muhasebe
+    ok 6 - banka uçları × muhasebe
+      ---
+      duration_ms: 1264.429927
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × muhasebe
+    ok 7 - bankaya bağlı modül uçları × muhasebe
+      ---
+      duration_ms: 813.672606
+      type: 'test'
+      ...
+    # Subtest: banka uçları × personel
+    ok 8 - banka uçları × personel
+      ---
+      duration_ms: 1001.03734
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × personel
+    ok 9 - bankaya bağlı modül uçları × personel
+      ---
+      duration_ms: 322.715818
+      type: 'test'
+      ...
+    # Subtest: banka uçları × ozel
+    ok 10 - banka uçları × ozel
+      ---
+      duration_ms: 1151.194637
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × ozel
+    ok 11 - bankaya bağlı modül uçları × ozel
+      ---
+      duration_ms: 734.678845
+      type: 'test'
+      ...
+    # Subtest: banka uçları × kaldirilmis
+    ok 12 - banka uçları × kaldirilmis
+      ---
+      duration_ms: 1161.438287
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × kaldirilmis
+    ok 13 - bankaya bağlı modül uçları × kaldirilmis
+      ---
+      duration_ms: 519.085216
+      type: 'test'
+      ...
+# [yetki-matrisi] hücre 354 (izinli 210, izinsiz 144) — 45 banka ucu durumu + 14 modül ucu × 6 rol
+    # Subtest: Y1: kendi girdiği havale tahsilatı (cari, kayıt, taksit): sil → bank.cancel; nakde çevir / başka hesaba taşı → bank.move; açıklama herkese açık
+    ok 14 - Y1: kendi girdiği havale tahsilatı (cari, kayıt, taksit): sil → bank.cancel; nakde çevir / başka hesaba taşı → bank.move; açıklama herkese açık
+      ---
+      duration_ms: 3470.213383
+      type: 'test'
+      ...
+    # Subtest: özet: matris hücre sayısı; Mutabakat Testi tutarlı
+    ok 15 - özet: matris hücre sayısı; Mutabakat Testi tutarlı
+      ---
+      duration_ms: 21.097232
+      type: 'test'
+      ...
+    1..15
+ok 9 - Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül uçları × 6 rol
+  ---
+  duration_ms: 15655.957239
+  type: 'suite'
+  ...
+# Subtest: Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yönünde istek kimliği, kredi/kart hesabından ödeme, şirket ayrımı
+    # Subtest: Y3: iki ayrı muhasebe kullanıcısı (iki oturum, iki bağlantı) aynı anda Engelle'deki Garanti'den XYZ ve KLM'ye 40.000 → biri 200, öbürü 409 cash-blocked
+    ok 1 - Y3: iki ayrı muhasebe kullanıcısı (iki oturum, iki bağlantı) aynı anda Engelle'deki Garanti'den XYZ ve KLM'ye 40.000 → biri 200, öbürü 409 cash-blocked
+      ---
+      duration_ms: 464.387955
+      type: 'test'
+      ...
+    # Subtest: Y4: ödeme yönünde aynı istek kimliği iki kez → tek satır, ikinci yanıt replayed (cari ödeme, alış faturası peşini, çek ödemesi)
+    ok 2 - Y4: ödeme yönünde aynı istek kimliği iki kez → tek satır, ikinci yanıt replayed (cari ödeme, alış faturası peşini, çek ödemesi)
+      ---
+      duration_ms: 136.41107
+      type: 'test'
+      ...
+    # Subtest: Y5: kredi, vadeli ve kurumsal kart hesabından cari ödemesi → 400 bank-account-invalid; hiçbir şey yazılmaz
+    ok 3 - Y5: kredi, vadeli ve kurumsal kart hesabından cari ödemesi → 400 bank-account-invalid; hiçbir şey yazılmaz
+      ---
+      duration_ms: 112.92485
+      type: 'test'
+      ...
+    # Subtest: Y6: ?hofCompany= — yetkisiz şirket 403; başka şirketin hesabı 404; 002'deki işlem 001'i değiştirmez
+    ok 4 - Y6: ?hofCompany= — yetkisiz şirket 403; başka şirketin hesabı 404; 002'deki işlem 001'i değiştirmez
+      ---
+      duration_ms: 516.693003
+      type: 'test'
+      ...
+    1..4
+ok 10 - Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yönünde istek kimliği, kredi/kart hesabından ödeme, şirket ayrımı
+  ---
+  duration_ms: 1850.973071
+  type: 'suite'
+  ...
+# [yetki-matrisi] previous denetlenen banka audit türü: 3
+# Subtest: Aşama 15 — Y2: salt okunur lisansta bankaya bağlı modül havale uçları 403 LICENSE_READ_ONLY
+    # Subtest: veri girilmiş şirket salt okunur açılır: cari/kayıt/taksit/stok/çek/fatura/Kasa ↔ Banka/transfer yazımı 403; okuma 200; hiçbir şey değişmez
+    ok 1 - veri girilmiş şirket salt okunur açılır: cari/kayıt/taksit/stok/çek/fatura/Kasa ↔ Banka/transfer yazımı 403; okuma 200; hiçbir şey değişmez
+      ---
+      duration_ms: 937.46322
+      type: 'test'
+      ...
+    1..1
+ok 11 - Aşama 15 — Y2: salt okunur lisansta bankaya bağlı modül havale uçları 403 LICENSE_READ_ONLY
+  ---
+  duration_ms: 937.651841
+  type: 'suite'
+  ...
+# Subtest: Aşama 15 — Y7: previous alanı olmayan audit (statik tarama)
+    # Subtest: bank.post'a op 'update' | 'delete' | 'move' | 'restore' | 'assign' ile giden her çağrı prev taşır (bank.post prev'siz çağrıyı zaten reddeder; burada kaynakta)
+    ok 1 - bank.post'a op 'update' | 'delete' | 'move' | 'restore' | 'assign' ile giden her çağrı prev taşır (bank.post prev'siz çağrıyı zaten reddeder; burada kaynakta)
+      ---
+      duration_ms: 14.556999
+      type: 'test'
+      ...
+    # Subtest: banka rotalarındaki düzeltme/silme/ters kayıt audit kayıtları previous yazar (kaynak: lib/bank/*.mjs)
+    ok 2 - banka rotalarındaki düzeltme/silme/ters kayıt audit kayıtları previous yazar (kaynak: lib/bank/*.mjs)
+      ---
+      duration_ms: 4.309174
+      type: 'test'
+      ...
+    1..2
+ok 12 - Aşama 15 — Y7: previous alanı olmayan audit (statik tarama)
+  ---
+  duration_ms: 19.029654
+  type: 'suite'
+  ...
+# (node:8523) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası
+    # Subtest: 5.4 katalog grup sırası: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (tanım sırasından bağımsız)
+    ok 1 - 5.4 katalog grup sırası: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (tanım sırasından bağımsız)
+      ---
+      duration_ms: 149.870516
+      type: 'test'
+      ...
+    # Subtest: 5.3 POS Satış Raporu: her POS × tür × dönem — satış, taksitli satış, iade ayrı satır (eksi); komisyon matrah, BSMV ayrı, net; TOPLAM; PDF/Excel
+    ok 2 - 5.3 POS Satış Raporu: her POS × tür × dönem — satış, taksitli satış, iade ayrı satır (eksi); komisyon matrah, BSMV ayrı, net; TOPLAM; PDF/Excel
+      ---
+      duration_ms: 320.910163
+      type: 'test'
+      ...
+    # Subtest: 5.3 POS Komisyon Raporu: Aylık / Yıllık / Dönem Toplamı × POS × tür — satış ve iade ayrı satır, kip; TOPLAM = satırlar; PDF/Excel
+    ok 3 - 5.3 POS Komisyon Raporu: Aylık / Yıllık / Dönem Toplamı × POS × tür — satış ve iade ayrı satır, kip; TOPLAM = satırlar; PDF/Excel
+      ---
+      duration_ms: 104.129033
+      type: 'test'
+      ...
+    # Subtest: 5.1 Banka → Hareketler PDF / Excel: ekrandaki süzgeçle aynı satırlar (hesap, tür, yön, tarih, arama), alt TOPLAM, Rapor Merkezi başlığı; bank.view yeter, personel 403
+    ok 4 - 5.1 Banka → Hareketler PDF / Excel: ekrandaki süzgeçle aynı satırlar (hesap, tür, yön, tarih, arama), alt TOPLAM, Rapor Merkezi başlığı; bank.view yeter, personel 403
+      ---
+      duration_ms: 532.710381
+      type: 'test'
+      ...
+    # Subtest: 5.2 Tüm Zamanlar: her raporun ekran başlığı ve PDF'i '1976' / '19xx' içermez, dönem metni 'Tüm Zamanlar'; POS Ödeme Takvimi boşken ipucu + Banka → Hareketler bağı
+    ok 5 - 5.2 Tüm Zamanlar: her raporun ekran başlığı ve PDF'i '1976' / '19xx' içermez, dönem metni 'Tüm Zamanlar'; POS Ödeme Takvimi boşken ipucu + Banka → Hareketler bağı
+      ---
+      duration_ms: 274.066565
+      type: 'test'
+      ...
+    1..5
+ok 13 - 2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası
+  ---
+  duration_ms: 2562.661153
+  type: 'suite'
+  ...
+1..13
+# tests 52
+# suites 13
+# pass 52
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 58168.618319

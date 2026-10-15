@@ -347,7 +347,7 @@ export function registerBankRoutes(router, context) {
     const code = String(entry?.code || "").trim();
     return code && name ? `${code} · ${name}` : name || code;
   };
-  const fileCtx = user => ({ now: context.now ? context.now() : new Date(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: store.setting("office.name", "") || "DestekOfis" });
+  const fileCtx = user => ({ now: context.now(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: store.setting("office.name", "") || "DestekOfis" });
   router.get(`${BASE}/movements.pdf`, async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "bank.view");
     const data = movementsTable(url.searchParams);
