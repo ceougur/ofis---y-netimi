@@ -1,0 +1,4 @@
+rastgele-s4-4-500: çıkış a=0 b=0 program=0 · karşılaştırılan 6104 · atlanan 569 · fark 297 {'A=B≠P': 297}
+  KDV-DAHIL-ISKONTO                                             142 yaprak  {'A=B≠P': 142}
+  TUREV:KDV-DAHIL-ISKONTO                                       155 yaprak  {'A=B≠P': 155}
+5807 denetim geçti, 0 başarısız (bilinen sınıf 297 yaprak, toplam fark 297)

@@ -1,0 +1,32 @@
+{
+  "ad": "ana-karar2-kahin-t4",
+  "komut": "python3 -I test/bagimsiz/fark.py --tohum 4 --islem 500",
+  "commit": "092c7d625d56c1eaa55bb6b61efc50d48a0bc70d",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T09:28:10.681Z",
+  "sure_sn": 33.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5807,
+    "gecen": 5807,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-karar2-kahin-t4.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "affeae94c275c60bb203c6b94303c944f0673398b8b0a9afdba51cec4b6b7f6b",
+  "ham_cikti_bayt": 388
+}
