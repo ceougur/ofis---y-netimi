@@ -76,6 +76,12 @@ ajan yükler): kapanan sürümlerin ayrıntısı ve eski kararlar `docs/GECMIS-K
   Windows AYNI sayıda test, atlanan yok → yeşil; `package` kapıya bağlı. `tools/kanit.mjs ci <sha>` kapı yeşil değilse YEŞİL demez.
   `tools/release.mjs` temiz ağaç + CI yeşil değilse imzalı paket ÜRETMEZ; release.yml yayımdan önce `kanit.mjs ci "$GITHUB_SHA" --bekle 90`;
   `.claude/settings.json` Stop/SubagentStop kancası durum yeşil değilse yanıtı bir kez durdurur.
+- YALNIZ BELGE (kullanıcı kararı 13.10.2026: "sadece doküman/plan değiştiğinde CI testleri koşmasın, sadece gerçek kod değiştiğinde çalışsın"):
+  ci.yml push `paths-ignore` = `tools/kanit.mjs` BELGE_YOLLARI (CLAUDE.md, docs/GECMIS-KARARLAR.md, docs/DURUM-VE-DEVAM.md, docs/devir/**,
+  docs/fatura/**, docs/pazarlama/**; testlerin okuduğu plan/kanıt/kılavuz belgeleri listede YOK; liste aynılığı test/kanit-araci.test.mjs'te).
+  Yalnız belge commit'inde `kanit.mjs ci` hükmü koşusu olan en yakın ata commit'ten okur (aradaki her commit yalnız belge olmalı). PR (master)
+  her zaman tam koşar. Ders 21 bu commit'ler için ata koşusuyla karşılanır. BEDELİ: yalnız belge commit'lerinde ara sıra düşen testler artık
+  görülmez (13.10'da ikisi böyle görüldü: updater Windows, senaryo-pos-220) — kod push'larında ve PR'da görülür.
 - Sunucu tarafı bağlayıcı: master kural seti 24836150 "Doğrulama Kapısı" (bypass yok, PR zorunlu, required status "Doğrulama Kapısı"
   integration 15368 = GitHub Actions). Çalışma dallarında kural yok.
 - Ağ erişim ayarı (*.blob.core.windows.net) EKLENMEZ (kullanıcı kararı): tam CI günlüğü/artifact indirilemez; araç başarısız testleri
@@ -164,6 +170,24 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 28. BEKLENTİ DEĞİŞEN SENARYO KOŞULUR. Bir arayüz senaryosunun beklentisini "bilerek güncellendi" diye değiştiren, o senaryoyu koşup yeşilini görür;
     koşulmayan beklenti değişikliği teslim edilmez. (12.10: Tahsile Ver T4 düzeltmesi senaryo-banka-210 adım 45'i "5 satır" yaptı, koşmadı; o şirkette çek
     yoktu → CI 12b82c2 e2e kırmızı. İş akışı ajanlarına "değiştirdiğin e2e'yi koş" yazılır.)
+29. node_modules GENEL KLASÖRE BAĞLANMAZ. Depoda `node_modules` → `/opt/node22/lib/node_modules` sembolik bağı kurulup `npm ci` koşulursa npm
+    bağın HEDEFİNİ siler (genel npm + playwright gitti). Playwright depoya `npm ci` ile gelir; genel araç gerekirse `NODE_PATH` kullanılır.
+    (12–13.10: npm tarball'dan, playwright `npm install -g --force` ile geri kuruldu; paket `node tools/build-windows.mjs` ile doğrudan derlendi.)
+30. TEST GERÇEK LİSANS SERVİSİNE ULAŞMAZ. Gerçek programı ayrı süreçte açan her test/araç (supervisor, bootstrap.mjs, server.mjs; sahte sürüm paketleri
+    dahil) `HUKUK_LICENSE_URL=http://127.0.0.1:9` verir; program açılıştan 3 sn sonra kendiliğinden deneme başlatır ve GitHub koşucusundan GERÇEK Operatör
+    Merkezi'ne sahte "ofis" düşer. Denetim `test/lisans-servisi-izolasyonu.test.mjs` (kaynak tarar). (15.10: Operatör Merkezi'nde "Sürüm 9.0.0 · Denemede"
+    kayıtları — 30.09, 12.10, 15.10; hepsi Azure/GitHub Actions adresi; lisans.installations/events'ten doğrulandı; update-flow/supervisor/yedek/packaging
+    testleri adresi vermiyordu.)
+
+31. AYNI TARİHLİ KAYITLAR KİMLİKLE SIRALANMAZ. Rastgele UUID'ye göre sıralama rastgele sıradır; iki yükleyici farklı anahtar kullanınca (kapı
+    'account:<id>', yevmiye '<id>#<satır>') aynı veriden farklı sonuç çıkar ve kapı "sapma" der. Aynı tarihte sıra: olay sınıfı (plan/kâhin dili
+    kuralı) → yazım sırası (rowid/seq); sınıf içi sıranın toplamları değiştirmediği gösterilir. (15.10: be53818 kayıt sırası, 4d4da18 değersiz/tahsilat
+    sırası — Uzun Doğrulama #199/#213 7 tohum kırmızı; birim test anahtarları ters çevirerek üretir.)
+
+32. SON ADAY, PARA ÇEKİRDEĞİNE SON DOKUNUŞTAN SONRA BAĞIMSIZ GÖZ GÖRMEDEN İLAN EDİLMEZ. Yargıç/eleştirmen turu bir commit'te koşar; ondan sonra
+    para çekirdeğine giren her değişiklik (düzeltme dahil) dar kapsamlı bir kontrol turu görür; kâhin ve motor yeni kuralı aynı elden aldıysa
+    kâhin sayılmaz (ders 5). (15.10: 469d547 turundan sonra dört değişiklik girdi; kullanıcı sorunca başlatılan kontrol turu K1 YÜKSEK buldu —
+    "mevcut borcu taksitlendir" kartı yeni satış sayılıp taksiti 128'den düşmüyordu; kâhin dili ve motor aynı eksik kuralı taşıyordu.)
 
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
@@ -359,3 +383,156 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   devam et" → 2.2.0: uzun koşu sonucu → son commit + CI yeşil → imzalı paket + kurulum → 5 dosya + arşiv teslim → PR → CI/kapı yeşil →
   BİRLEŞTİRME (bu sürüm için kullanıcı izni) → yayın bağlantısı hazır. Hata çıkarsa kural aynı: yeniden üret, kırmızı test, en küçük düzeltme,
   ilgili testler + CI yeşil, sonra devam; yapılanlar teslimde ayrıca yazılır. Yayını açmak/yüklemek kullanıcıda.
+- 2.2.0 TESLİM + BİRLEŞTİRME (13.10.2026 ~04:3x UTC): son aday c629758 (CI #660 push + #661 PR YEŞİL; Uzun Doğrulama 23/23) → PR
+  ceougur/ofis---y-netimi#28 squash → `master` = b24e0c2 (ağaç c629758 ile AYNI). İmzalı paket destekofis-guncelleme-2.2.0.zip 2afaecfb…,
+  bildirge json 4d6aa76f… (anahtar destekofis-2026-1; 2.1.0/2.0.26/2.0.19/1.7.0 "uygun", kurcalanmış bildirge reddedildi; zip = HEAD 241/241),
+  kılavuz PDF 07435148… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum .exe 7e8424bd… (35,4 MB, simgeli; 30 MiB gönderim sınırını aştığı için
+  İKİ PARÇA gönderildi: `copy /b …parca0 + …parca1 DestekOfis-Kurulum.exe`). Arşiv 4 parça (1 belge+kanıt, 2–4 git bundle parçaları; birleştirilip
+  klonlandı). SIRADA: kullanıcı "geldim" → yayın açar (tag v2.2.0 → master, başlık "DestekOfis 2.2.0", not "İyileştirmeler ve POS entegrasyonu",
+  5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (ceougur/destekofis web/indir/). Sonra (limit varsa):
+  İz 4.3 Şüpheli Alacaklar, ölçek-20 kök neden, 2.1.0/2.2.0 kapsam ölçümü; Cuma 16.10 planlı test.
+  YAYIMLANDI (13.10.2026 ~05:29 UTC; `v2.2.0` = b24e0c2; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı): yayındaki
+  5 dosya + latest/ (json, zip, pdf, exe) teslimle bayt bayt aynı, exe .sha256 OK; gerçek eski güncelleyiciler (v2.1.0, 2.0.26, 2.0.19, 2.0.17
+  API + yedek yol; 2.0.4, 1.7.0 API — yedek yol 2.0.17'den beri) canlı GitHub'da 2.2.0'ı "available" gördü, indirilen paket 2afaecfb… eşleşti;
+  2.2.0 → "up-to-date". NOT: deneme betiği `HUKUK_BOOTSTRAP_VERSION=2` (gerçek kurulumun bootstrap.mjs değeri) vermeyince "incompatible" çıkar
+  — ürün değil test ortamı (ders 14). Site kılavuz PR'ı ceougur/destekofis#13 BİRLEŞTİ (kullanıcı "birleştir", main 831d903; main PDF 07435148… doğrulandı; canlı site ağ politikasıyla okunamadı). release.yml
+  koşu 38351603781 sürümlü exe ekleyecek.
+- KUSUR (13.10.2026, baş mimar fark etti): yayımlanan 2.2.0 kılavuz PDF'inin kapağında "Sürüm 2.1.0" yazıyor (kaynak
+  docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html:14 elle; içerik 2.2.0 — POS/Tahsile Ver var). pdf-denetle sürüm etiketini denetlemiyor.
+  KARAR (kullanıcı, 13.10.2026: "kılavuzda gördüğün sorunları düzelt") → DÜZELTİLDİ: kapak + dip not 2.2.0; test/kilavuz-surum.test.mjs (kaynak
+  HTML sürümü = package.json; eski hâlde 2/2 kırmızı) + pdf-denetle "PDF kapağı ve dip notu program sürümü" (eski PDF'te kırmızı, yeni 39/39);
+  PDF metin farkı yalnız bu iki satır; yeni PDF sha256 21b262c1…. Yayındaki kılavuz kullanıcı tarafından değiştirildi (v2.2.0 + latest 21b262c1… doğrulandı; öbür 4 dosya bayt bayt aynı); site PR ceougur/destekofis#14 BİRLEŞTİ (de0153e, main PDF doğrulandı);
+  programın içindeki kopya (client/kilavuz) bir sonraki sürümle gider (2.2.0 kurulumlarında kapak 2.1.0 kalır).
+- İSTEK (kullanıcı, 13.10.2026): satışa yardım eden arkadaş için müşterilere paylaşılacak TANITIM/REKLAM METNİ → `docs/pazarlama/TANITIM-METNI.md`
+  (kısa WhatsApp + uzun; iddialar 2.2.0 kılavuzundan doğrulandı; e-Fatura, bulut, 2+ şirket VAAT EDİLMEZ). Site metni (ceougur/destekofis
+  web/index.html) eski: "oturum", sektör vurgusu; banka/POS/çek/mizan yok — güncelleme önerisi verildi.
+  İSTEK (kullanıcı, aynı gün): kısa metne LOGO → logolu görsel `docs/pazarlama/DestekOfis-Tanitim.png` (1080×1350; marka işareti
+  client/assets/brand/destekofis-mark.svg, Manrope/DM Sans); iletişim: 0536 771 50 55 · https://destek-ofis.vercel.app/ (kullanıcı verdi).
+- AÇIK (13.10.2026): WINDOWS NODE 22 GÜNCELLEYİCİ ARA SIRA KIRMIZI — iki ayrı test, aynı gün, yalnız Windows Node 22: (a) CI 60ed59d
+  test/updater.test.mjs:151 ikinci check() "error" (2316/2317); (b) CI #690 a53a4bc (yalnız kanıt dosyası değişti) test/guncelleme-hazir-geri-cekilen
+  (2): 9.0.1 kuruldu, 9.0.2 etkinleşmedi ama geçmişte "prepared-withdrawn" kaydı YOK (2321/2322) — aday: saveState'in writeJsonAtomic'i Windows'ta
+  (okuyucu dosyayı açıkken rename EPERM) 12 denemede de yazamayıp yalnız uyarı yazması (updater.mjs:106) → geçmiş olayı sessizce kaybolur.
+  Linux'ta üretilemedi (ders 18). İki teste de teşhis eklendi (gelen neden / geçmiş + açılış günlüğü satırları mesaja yazılır). Yeniden görülünce
+  günlükle kök neden + zorla üretme (ders 20); saveState yazamazsa olay kaybı ürün hatasıdır (yeniden deneme / kuyruk gerekir). Ürün etkisi: elle
+  denetim 3 deneme, otomatik denetim saatte bir; geçmiş kaydı bilgi amaçlı.
+  (a) KAPANDI (15.10.2026; üçüncü görülüş CI 037fcc7 Windows Node 22, aynı kodla sonraki koşu yeşil): KÖK NEDEN keep-alive yarışı — sunucu boşta kalan
+  bağlantıyı tam istemci yeniden kullanırken kapatıyor (Windows ECONNRESET, Linux undici UND_ERR_SOCKET "other side closed"); Windows'ta stage() yavaş
+  olduğu için ikinci denetim 5 sn boşta kalma sınırına denk geliyor. Zorla üretme (ders 20) `test/guncelleme-230-baglanti-sifirlama.test.mjs`
+  (mock GitHub `resetOnReuse`: yeniden kullanılan bağlantıdaki ikinci isteği koparır; eski kodda 3/6 denetim "error", yeni 6/6). Düzeltme updater.mjs
+  request(): yalnız kopan bağlantı sınıfında istek yeni bağlantıyla bir kez hemen yinelenir. (b) KÖK NEDEN BULUNDU (15.10.2026 ~23:00 UTC; CI #744/#745 cd63cf6 Windows 22+24 üç kez): saveState DEĞİL — test yayın listesini değiştirip servisi
+  durdururken periyodik denetim (600 ms) araya giriyor; ürün geri çekilen 9.0.2'yi 9.0.1 ile değiştiriyor ama çalışma anı yolunda "prepared-withdrawn" kaydı
+  yoktu. ÜRÜN düzeltmesi update-orchestrator withdrawPreparedIfGone; testler "açılışta" senaryolarında yayını servis durduktan sonra değiştirir; zorla üretme
+  (2b) eski kodda 0/1. (d) zipHits 2 de aynı yarış (çalışırken başlayan indirme kesilip açılışta yinelenir). Ders 18: Windows'ta iki yeşil koşu sonra KAPANDI.
+  PAKET: ürün kodu değiştiği için 2.3.0 paketi/kurulumu/arşivi son commit'ten YENİDEN üretilip gönderilir (d7e66bd paketi geçersiz).
+- KAPANDI (13.10.2026 akşam): CI #684 bc36256 senaryo-pos-220 "Ürün B 15/3/6/5" — KÖK NEDEN testin ürün seçici yarışı (ders 20 ile zorla üretildi:
+  son arama yanıtı 1,5 sn gecikince + tuş aralığı 260 ms → ara arama [Ürün A, Ürün B] listeler, test ilk satıra basar → Ürün A satılır; tutar/cari/
+  banka doğru, yalnız stok). Düzeltme: pos-220 kimlikle seçer + "Stokta" bağ denetimi + gelen değer mesajda + `POS220_YARIS=1` zorla kipi;
+  215/216/217/222 `li[data-item]:has-text(ad)`. ÜRÜN düzeltmesi (küçük): pickItem geç gelen arama yanıtını iptal eder (liste seçimden sonra
+  yeniden açılmıyor). Kanıt docs/kanit/2026-10-13/pos220-yaris-*.
+- MÜŞTERİ İSTEĞİ (13.10.2026, emlakçı; ekran: kayıt detay kartı → Belgeler, resim satırında Görüntüle/Yazdır/İndir/Sil): "WhatsApp'tan Paylaş"
+  simgesi → karttaki resimler + detay kartındaki bilgiler müşteriye gönderilsin. Soru: yapılabilir mi, maliyet, iş yükü, süre. KODDAN: WhatsApp
+  bugün wa.me ile YALNIZ METİN açar (hof-whatsapp.js:13; dosya eki resmî yolla ancak Meta Business API — Pro, ileride); personel bilgisayarı
+  sunucuya http://<ip>:5123 ile bağlanır (launcher/discovery.go) → güvenli bağlam değil: tarayıcının dosya paylaşımı (navigator.share) ve
+  panoya resim kopyalama orada KAPALI; launcher Edge/Chrome uygulama penceresini kendisi açar (platform_windows.go) → bayrakla açılabilir,
+  gerçek Windows'ta denenmeli (ders 18). ÖNERİ (karar kullanıcıda): Yol A ücretsiz — "WhatsApp'ta Paylaş" penceresi: alan seçimi + metin
+  ön izleme + resim seçimi → Windows Paylaş penceresi (WhatsApp masaüstü) ya da yedek "metni aç + resimleri panoya/indir, sohbete yapıştır";
+  Gönder'e kullanıcı basar; bütün sektörlere (Standart). Yol B Meta Business API (tam otomatik; Meta ücreti + işletme doğrulaması; Pro, ayrı iş).
+  DÜZELTME (kullanıcı, aynı gün): alıcı numarası karttan GELMEZ (karttaki numara genelde ev sahibinin) → alıcı alanı boş gelir, kullanıcı
+  müşteri numarasını yazar (öneri: son alıcılar + Cari'den seç). SORU: metin + resimler sohbete hazır yüklü gelebilir mi (API'siz)? CEVAP: numaraya
+  hem metin hem çok resim tek adımda yalnız API ile; API'siz en yakın: (1) Windows Paylaş → WhatsApp: metin + resimler hazır, kişi WhatsApp'ta
+  seçilir (yeni numara için önce wa.me ile sohbet açılır); (2) wa.me: numara + metin hazır, resim yapıştırılır; (3) öneri: bilgiler + resimler
+  tek "Portföy Sunumu" PDF/görsel → wa.me + tek dosya. Gerçek Windows + WhatsApp masaüstünde denenmeden söz verilmez.
+- DEVİR MODÜLÜ (yıl sonu devri; 13.10.2026'da YENİ madde — önceden listede yoktu): BÜTÜN BİLGİ `docs/devir/DEVIR-MODULU.md` (Wolvox ekranlarının
+  dökümü, satış arkadaşının anlatımı, diğer programlar, iki kipli öneri, bakiye tipi örneği, görüş soruları, mevcut altyapı, riskler) + tablo
+  `docs/devir/DestekOfis-Devir-Plani.png/.pdf`. KARAR BEKLENİYOR (kullanıcı: "arkadaş düşünüp kararı iletecek; bizim yöntem mi Wolvox yöntemi mi
+  karar verilince ona göre yaparız"). Hatırlatıcı 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv). Kullanım sınırı (13.10 %83):
+  para çekirdeğine dokunan iş Perşembe 02:00 sıfırlamasından önce başlatılmaz.
+- FATURA / e-BELGE (EDM) (kullanıcı, 13.10.2026): EDM'den API belgeleri + test/canlı adresleri geldi → BÜTÜN BİLGİ `docs/fatura/E-BELGE-EDM.md`
+  ("fatura modülünü yap" denince oradan başlanır). Plan: XML uygunluğu (şema/şematron, ağsız) → EDM test ortamı → kullanıcı "entegre et" → açma.
+  Test kimlik bilgisi depoya YAZILMAZ. Bu ortam test.edmbilisim.com.tr'ye bağlanamıyor (ağ politikası) → izin ya da GitHub Actions; karar kullanıcıda.
+- SIRA (kullanıcı, 13.10.2026): Perşembe (sıfırlamadan sonra) → (1) banka kalan işleri — ŞÜPHELİ ALACAKLAR (İz 4.3, plan §3.11b) DAHİL
+  (kullanıcı: "banka kalan işlerine say") + ölçek-20 kök neden ve öbür ertelenen banka maddeleri → (2) fatura/e-Belge (EDM) → (3) devir modülü.
+  WhatsApp paylaşımı (emlakçı isteği) ŞİMDİLİK BEKLER (kullanıcı: "şimdilik kalsın").
+  2.3.0 BANKA EKSTRESİ (ekstre yükleme + eşleştirme) LİSTEDEN ÇIKTI (kullanıcı, 13.10.2026: "müşteri portföyüm pek ilgilenmez, sonra ihtiyaç
+  duyulursa yaparız") — plan bölümü yerinde kalır, ihtiyaç olursa açılır.
+- BAŞLADI (kullanıcı, 13.10.2026 ~21:00 TR: "fable'a geçtim, başla"): model Fable 5.1 (ayrı haftalık sınır, %0 → Perşembe beklenmedi). İş listesi
+  `docs/2.3.0-IS-LISTESI.md` (İz 0 açık kırmızılar · İz 1 Şüpheli Alacaklar · İz 2 ölçek-20 kök neden · İz 3 K8 taksit, bankalı iade/iptal §4.6, §8.10
+  kalan raporlar, fatura ayarları banka · İz 4 döviz §3.12 — kapsam kararı kullanıcıda). Ajanlar worktree'de (İz 1, İz 2, İz 3.1 paralel); ana oturum
+  kırmızı/yeşili ayrı kopyada yeniden koşar, CI'yi kendisi okur. Sürüm no paketlemede (2.3.0 önerilir).
+  DURUM (13.10 ~22:30 UTC): İz 3.1 K8 birleşti (972daa3) ve ana oturum doğruladı (eski kopya 0/16 kırmızı, yeni 16/16, komşu 71/71, e2e k8-230
+  17/17, banka-210 408/408; CI okunacak). İz 2 kök neden: ürün DEĞİL, ölçek aracının soru-bekleme adımı (d0a442a; zorla üretme CI'de) — 20 kullanıcı tam
+  koşusu son adayda. İz 1 çekirdek ajan worktree'sinde commit (217410f), ajan sürüyor. İz 3.2+3.4 ve 3.3 ajanları başlatıldı; 3.1b kâhin K8 İz 1.8 ile.
+  KARAR (kullanıcı, 13.10.2026 ~23:30 UTC: "1"): DÖVİZ (İz 4, plan §3.12) ERTELENDİ — 2.3.0 dövizsiz çıkar (Şüpheli Alacaklar + K8 + bankalı
+  iade/iptal + kalan raporlar + düzeltmeler); döviz isteyen müşteri çıkınca yapılır; `fxEnabled` kapalı sürer. İz 1 çekirdek birleşti (5de225f), ana
+  oturum doğruladı (86b061b kanıt); 1.6/1.7 ekran+rapor+e2e ve 1.8 kâhin sürüm 4 (+K8) ajanları başladı.
+  DURDURULDU (kullanıcı, 13.10.2026 ~20:00 UTC: "perşembe gününe göre ayarla ve işlemleri durdur"): dört ajan (İz 3.2+3.4, 3.3, 1.6/1.7, kâhin 4)
+  erken aşamada durduruldu, yarım işler `docs/2.3.0-WIP-13.10/*.patch` + OKU-BENI; CI beklemeleri kesildi (91bd774, 5de225f, 86b061b CI'si
+  PERŞEMBE ilk iş `node tools/kanit.mjs ci <sha>` ile okunur — ders 21; 3.1 K8 ve 1.1–1.5 ancak o zaman üstü çizilir). Hatırlatıcı Perşembe
+  15.10.2026 09:00 TR. Devam sırası: CI oku → yamaları uygula/ajanları yeniden başlat (3.2+3.4, 3.3, 1.6/1.7, kâhin 4) → bitiş turu.
+- 15.10.2026 "başla": CI dördü yeşil → 3.1 ve 1.1–1.5 kapandı (012c8d3); dört ajan yamalarla yeniden başlatıldı.
+- MÜŞTERİ TALEPLERİ TURU (kullanıcı, 15.10.2026: "düzeltme ve ekleme taleplerini tek tek atıyorum; hepsini atınca planlamaya alıp başlarsın") —
+  liste tamamlanana kadar YALNIZ KAYDEDİLİR, iş başlatılmaz; hepsi gelince plan sunulur:
+  1. (ekran: Banka → Hareketler listesi, süzgeçler + tablo) "buraya PDF koysak iyi olur" → Hareketler listesinin seçili süzgeçlerle PDF (ve Excel) çıktısı.
+     KODDAN: hof-bank.js Hareketler sekmesinde PDF/Excel düğmesi YOK; aynı veri Rapor Merkezi "Banka Hareket Raporu" (banka-hareket) ile PDF/Excel
+     alınabiliyor ama ekranda bağ yok. Öneri: sekmeye "PDF" + "Excel" düğmeleri (aynı süzgeçlerle, rapor altyapısı; TOPLAM satırı; yetki bank.reports
+     yoksa bank.view ile yalnız kendi gördüğü liste).
+  2. (ekran: Rapor Merkezi → POS Ödeme Takvimi, Başlangıç 01.10.2026 işaretli) "tüm raporlarda / POS Ödeme Takvimi'nde Başlangıç ilk açılışta 1976
+     geliyor; Tüm Zamanları Göster deyince de 1976'ya atıyor ve boş geliyor". KODDAN: `finance-report.mjs:172` presetRange("all") = bugün − 50 yıl
+     (→ 1976) — Tüm Zamanlar'da Başlangıç alanı bu tarihi gösteriyor; vade raporları (POS Ödeme Takvimi, çek/senet) ilk açılışta "all" ile açılıyor
+     (hof-report-center.js:162). Boşluk: takvim yalnız BANKAYA GEÇMEMİŞ kalemleri gösterir; ekranda bekleyen yoksa boş (14.10 valörü geçmiş 495 TL
+     Hareketler'de) — ama kullanıcı boşluğu 1976'ya bağlıyor, ekran anlatmıyor. Öneri: Tüm Zamanlar'da Başlangıç alanı BOŞ ("başlangıç yok") ve
+     dönem metni "Tüm Zamanlar"; takvim boşken "Bekleyen POS kalemi yok; geçenler Banka → Hareketler'de" ipucu + bağ; bütün raporlarda 1976 görünmez.
+  3. YENİ RAPOR: "POS Komisyon (Provizyon Kesintisi) Raporu" — aylık/yıllık/tarih aralığına göre POS başına kesilen komisyon (brüt, komisyon, BSMV/KDV,
+     net; iade komisyonu ayrı; TOPLAM; PDF/Excel; her süzgeç). KODDAN: Rapor Merkezi'nde bugün yalnız banka-pos-hareketleri ve pos-odeme-takvimi var;
+     plan §8.10'daki "POS Satış Raporu / POS Komisyon Raporu" (kip ve vergi ayrımıyla; İptal İadeleri ayrı satır) henüz yok → İz 3.3 kapsamına eklenir
+     (ajana iletilir).
+  4. (ekran: Rapor Merkezi sol liste: Kasa, Ana Defter, Banka, …) "rapor sıralamasını programa uygun yapalım: önce Cari, sonra Kasa, Stok, Fatura,
+     Çek/Senet, Taksit, Banka". KODDAN: sıra tanım sırasıyla geliyor (report-center.mjs grupları: Kasa, Ana Defter, Banka, Cari, Fatura, Taksit,
+     Çek / Senet, Stok, Kayıtlar, Ofis). YENİ SIRA: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (son üçü
+     kullanıcı saymadı, sona). Grup sırası tek listede (sunucu) tanımlanır; senaryo-211/rapor e2e beklentileri güncellenir ve koşulur (ders 28).
+  5. "Sol sabit menünün üstüne ARAMA penceresi: 'Alış f' yazınca alış faturasıyla ilgili modüller, 'cari h' yazınca Cari Hareket Raporu, 'çek'
+     yazınca çekle ilgili şeyler gelsin". KODDAN: bugün genel arama/komut paleti YOK (yalnız sayfa içi aramalar). Öneri: menü üstünde "Ara" kutusu
+     (+ Ctrl+K): sayfalar/sekmeler, işlemler ("Yeni Alış Faturası", "Şüpheli Alacağa Al"…), bütün raporlar ve ayar bölümleri tek dizinden; sözcük
+     başı eşleşme ("alış f" → Alış Faturaları, Yeni Alış Faturası, Alış Faturası Raporu), Türkçe harf duyarsız (ı/i, ş/s); sonuç yalnız yetkisi
+     olanlar; Enter ile açılır; dizin sunucudan değil istemcideki menü/rapor tanımlarından (rapor listesi API'den). Cari/kayıt adı araması bu
+     kutuya girmez (ayrı, sonra).
+  6. (ekran: kayıt detay kartı → işlem geçmişi "Araç haczi · düşüm 14.10.2027") "işlem geçmişindeki kayıtları düzeltebilmeli ve X ile silebilmeliyiz;
+     3'ten fazlaysa 'daha fazla göster'". KODDAN (hof-workspace.js ~1008): geçmiş türleri not / telefon / tahsilat / taksit hareketi / haciz / görev;
+     yalnız TAHSİLATTA düzelt/sil var; not, telefon ve haciz için sunucuda yalnız POST (workspace.mjs:346, 359, 486), düzelt/sil ucu YOK; liste
+     sınırsız uzuyor. Plan: her satırda Düzelt + X (not/telefon/haciz: yeni PUT/DELETE + audit + Silinenler; taksit hareketi ve görev kendi
+     modülünden — satırda "Kayda Git"); ilk 3 satır + "Daha Fazla Göster (n)". Yetki: kayıt düzenleme yetkisi.
+  KARAR (kullanıcı, 15.10.2026: "bu son müşteri talebiydi; hepsini pakete ekle, işlem bitince yükleyelim, canlıya alalım") → 1–6 2.3.0 kapsamına
+  (İz 5, `docs/2.3.0-IS-LISTESI.md`); 2.3.0 bitince teslim düzeniyle yayın (kullanıcı yükler).
+- KARAR (kullanıcı, 15.10.2026 ~19:30 UTC): kılavuzda hap bilgi "Ticari Şüpheli Alacaklar" başlığında (9. Cari altındaki bölüm başlığı
+  "Şüpheli Alacak" → "Ticari Şüpheli Alacaklar"; içerik zaten hap bilgi); 2.3.0 SÜRÜM NOTU = "İyileştirmeler ve Ticari Şüpheli Alacaklar
+  Eklentisi" (CHANGELOG başlığı + GitHub yayın metni; güncelleyici notu CHANGELOG gövdesinden). Rapor adı "Şüpheli Alacaklar" (program) değişmedi.
+- OPERATÖR MERKEZİ "SÜRÜM 9.0.0" (kullanıcı sorusu, 15.10.2026): yayımlanmış 9.0.0 yok; lisans.installations'ta 3 kayıt (30.09 7b44b046…, 12.10 38efc2d5…,
+  15.10 07:04 UTC db54a00b…), hepsi Microsoft Azure = GitHub Actions; makeVersion ile 9.0.0 olarak paketlenen GERÇEK program CI'de açılıp kendiliğinden
+  deneme başlatmış (ders 30). Etki: yalnız operatör listesinde sahte "Adı yazılmamış ofis" satırları ve servis istekleri; müşteriye etkisi yok. Adsız 2.2.0
+  kayıtları (88.225…, 178.233…, 88.241…) Türkiye adresleri = GERÇEK demo kullanıcıları. Düzeltme: testlere ölü adres + tarama testi. Sahte 3 kaydın
+  silinmesi (installations + events) kullanıcı kararı; silinmedi. KARAR (kullanıcı, 15.10.2026): "zararsızsa dursun, tekrarı olmasın; basit işler için kod
+  tabanına dokunmayalım" → 3 kayıt DURUR (silinmez); önlem yalnız testlerde (210ac8e; ürün kodu değişmedi); operatör verisine dokunulmaz.
+- KONTROL TURU 2 (15.10.2026 ~16:45 UTC; kullanıcı "yargıç/eleştirmen geride mi kaldı?"): 469d547 sonrası 12 dosya; K1 YÜKSEK kapsayan kart
+  taksiti (düzeltildi), K2 geri yükleme çakışması açık 409, K3 düzeltmede yanlış 409 (düzeltildi) — test supheli-230-kontrol2 0/3 → 3/3; K4–K7
+  BİLGİ (KANIT'a). YENİ SON ADAY = 91e6dea; Uzun Doğrulama #225 (6312e8b) iptal, 91e6dea'da yeniden (~16:58 UTC). Ders 32.
+- UZUN DOĞRULAMA #230 (91e6dea) 23/23 + kapı YEŞİL (15.10.2026 20:02 UTC; KANIT satırı dolduruldu, B.1 kapandı). Ürün kodu 91e6dea; üstüne yalnız belge/kılavuz/CHANGELOG/pdf-uret (6f0d309) ve kanıt. SIRADA: imzalı paket (release.mjs --anahtar yüklenen pem) + build:windows → 5 dosya + arşiv teslim → PR → kullanıcı "birleştir" → yayın (kullanıcı) → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (yeni PDF: "Ticari Şüpheli Alacaklar").
+- TESLİM BİÇİMİ (kullanıcı, 15.10.2026 ~20:20 UTC, 2.3.0 için teyit): GitHub'a yüklenecek İMZALI 5 dosya AYRI AYRI verilir; birleştirmeleri (PR → master) ben yaparım, dosyaları kullanıcı yükler. Kurulum .exe 30 MB'ı aşarsa İKİ PARÇA (parca0 + parca1) + "BIRLESTIR.md" (copy /b komutu + beklenen sha256) verilir.
+- 2.3.0 TESLİM (15.10.2026 ~21:20 UTC): paketlenen commit d7e66bd (ürün kodu 91e6dea); imzalı zip 2de92b82…, bildirge cd356847…, kılavuz PDF 879d1df4…, kurulum exe 6f0c61a6… (37,2 MB → iki parça + BIRLESTIR.md); arşiv 4 zip (1 belge+kanıt, 2–4 bundle parçaları; birleştirilip klonlandı). Dosyalar kullanıcıya gönderildi; PR açıldı (ceougur/ofis---y-netimi, master). SIRADA: PR CI + kapı yeşil → squash birleştirme (kullanıcı izni: "sen birleştirmeleri yapınca ben yüklerim") → kullanıcı yayın açar (v2.3.0, 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (ceougur/destekofis web/indir/). Sonra: İz 4.3? (yok — bitti), ölçek-30/1M planlı test Cuma 16.10, güncelleyici (b) saveState yarışı, kapsam ölçümü.
+- AÇIK (15.10.2026 21:58 UTC): CI #742 aed598e Windows Node 24 guncelleme-gercek S2 kırmızı (PR koşusu #743 aynı commit yeşil). Mekanizma: testin etkinlik pingi bir önceki isteği bekliyordu, takılan tek istek 4 sn boşluk açtı, sunucu haklı olarak kurdu (ürün doğru). Düzeltme test yardımcısında (zamanlayıcılı + zaman aşımlı pingler + istatistik; zorla üretme GUNCELLEME_S2_ZORLA_BOSLUK=1). İsteğin CI'de neden takıldığı (ağ/yük/ürün) yeni tanılamayla bir sonraki görülüşte okunur; ders 18 gereği Windows'ta iki yeşil koşu görülmeden kapanmaz.
+- SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
+  iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
+  (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
+  eşitlendi (615a7b4, 6312e8b; ürün doğruydu). Yerelde tohum 1,3,4,6,7,8,9,10 × 5.000 GEÇTİ. Uzun Doğrulama 6312e8b'de GitHub'da koşuyor (~14:55 UTC
+  başladı); yeşil → KANIT satırı doldurulur → imzalı paket → teslim → PR (kullanıcı: "kuralımıza göre bekleyelim").
+- DURDURULDU (kullanıcı, 15.10.2026 06:55 UTC: "5 saatlik kullanım limitim %99, 11:10'da yenilenecek, uygun yerde dur"): karar ajanı
+  (644 plan metni / tahsilatta "Normal Cari Hesaba İşle" seçimi / yaşlandırma "Vade Gecikme (Gün)") durduruldu; yarım işi worktree dalı
+  `worktree-agent-ae29a6d1c9c3d14a0` commit 4c725a7 (WIP, 34 dosya; test KOŞULMADI, birleştirilmedi). Dal HEAD d274311; CI 469d547/6a599ba/
+  d274311 SÜRÜYOR (okunmadı — ders 21, devamda ilk iş). Uzun Doğrulama #199 (43322ab) kuyrukta; para çekirdeği sonra değiştiği için son adayda
+  yeniden koşulur. DEVAM (11:15 TR hatırlatıcısı): CI oku → ajanı 4c725a7'den sürdür (kalan: model_b, kart tarih, taksit fişi, supheli_turet,
+  testler, kılavuz) → birleştir + ayrı kopyada doğrula → KANIT belgesi → son CI + Uzun Doğrulama → imzalı paket → teslim → PR.
+- KARAR (kullanıcı, 15.10.2026, bitiş turu — eleştirmen/yargıç soruları; baş mali müşavir denetimiyle UYGUN): (1) 644 kuralı = UYGULANAN KURAL
+  (K6: karşılık ≤ kalan; tahsilatta yalnız aşan kısım 644'e; tam tahsil/kapanışta kalan karşılığın tamamı 644) — plan §3.11b/3 metni buna göre
+  düzeltilir, kâhin plandan. (2) Tahsilatta KULLANICI SEÇİMİ, varsayılan "Şüpheli Alacaktan Düş"; cari tahsilat formunda "Normal Cari Hesaba İşle"
+  kutusu; fatura peşini ve faturaya bağlı (Kapatılacak Fatura) tahsilat KENDİLİĞİNDEN normal (yeni satışın parası) — yargıç #3. (3) Alacak Yaşlandırma
+  raporuna "Vade Gecikme (Gün)" (carinin en eski açık kaleminin gecikmesi) ve vade dilimi; "Şüpheli Alacak" kolonu kalır, başlığında "(dilimlere
+  dahil)". Uygulama: yargıç düzeltmeleri birleşince aynı dosyalarda (doubtful-gl, hof-accounts, report-center) ayrı ajan; 2.3.0'a girer.

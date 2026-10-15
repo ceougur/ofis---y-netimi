@@ -91,7 +91,7 @@ async function withService(installRoot, t, work) {
 function runBootstrapBackup(installRoot) {
   return new Promise(resolve => {
     const started = Date.now();
-    execFile(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(installRoot, "bootstrap.mjs"), "yedek"], { env: { ...process.env, HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "" } }, (error, stdout, stderr) => {
+    execFile(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(installRoot, "bootstrap.mjs"), "yedek"], { env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "" } }, (error, stdout, stderr) => {
       resolve({ code: error ? (error.code ?? 1) : 0, stdout: String(stdout).trim(), stderr: String(stderr).trim(), ms: Date.now() - started });
     });
   });
@@ -119,7 +119,7 @@ function backupDiagnosis(installRoot, result, pids = []) {
 
 async function startService(installRoot, port) {
   const child = spawn(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(installRoot, "bootstrap.mjs")], {
-    env: { ...process.env, PORT: String(port), HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "warn", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!", HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "", HUKUK_UPDATES: "0" },
+    env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", PORT: String(port), HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "warn", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!", HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "", HUKUK_UPDATES: "0" },
     stdio: ["ignore", "pipe", "pipe"],
   });
   let output = "";
@@ -325,7 +325,7 @@ describe("kurulum sonrası sağlık kontrolü (bootstrap saglik)", () => {
       : null;
     const port = server ? server.address().port : await freePort();
     try {
-      const { stdout } = await run(process.execPath, [path.join(dir, "bootstrap.mjs"), "saglik", String(seconds)], { env: { ...process.env, PORT: String(port) } });
+      const { stdout } = await run(process.execPath, [path.join(dir, "bootstrap.mjs"), "saglik", String(seconds)], { env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", PORT: String(port) } });
       return { code: 0, stdout };
     } catch (error) {
       return { code: error.code, stdout: error.stdout };

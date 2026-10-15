@@ -1,0 +1,32 @@
+{
+  "ad": "lisans-izolasyon-hizmet",
+  "komut": "node --test test/guncelleme-hazir-geri-cekilen.test.mjs",
+  "commit": "996d7d1be03fbbcc321a6a665dfbf39c1a9945d0",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 7,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T09:11:54.790Z",
+  "sure_sn": 21.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/lisans-izolasyon-hizmet.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "3d4e20dd3f78cc1991fb2d1d63b96949ffe644398dfae1c67a5c7bf79099c4b5",
+  "ham_cikti_bayt": 2087
+}

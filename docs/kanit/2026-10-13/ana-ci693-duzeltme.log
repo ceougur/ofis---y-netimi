@@ -1,0 +1,135 @@
+TAP version 13
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 4.013869
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.443795
+      type: 'test'
+      ...
+    1..2
+ok 1 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 5.604051
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 1.717423
+      type: 'test'
+      ...
+    1..1
+ok 2 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 1.861265
+  type: 'suite'
+  ...
+# (node:29571) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını büyütmez
+    # Subtest: C: 1.000 (500 peşin, 500 taksit) → malın tamamı iade, 500 nakit geri → kart 0, cari 0, Kasa 0, gecikme yok
+    ok 1 - C: 1.000 (500 peşin, 500 taksit) → malın tamamı iade, 500 nakit geri → kart 0, cari 0, Kasa 0, gecikme yok
+      ---
+      duration_ms: 606.648123
+      type: 'test'
+      ...
+    # Subtest: C2: aynı akış 2 taksitle (vadeler geçmiş) → kart 0
+    ok 2 - C2: aynı akış 2 taksitle (vadeler geçmiş) → kart 0
+      ---
+      duration_ms: 427.500846
+      type: 'test'
+      ...
+    # Subtest: B: 1.000 (500 peşin) → 600 açık iade (cari −100) → 400 iade + 400 nakit geri → kart 0, cari −100
+    ok 3 - B: 1.000 (500 peşin) → 600 açık iade (cari −100) → 400 iade + 400 nakit geri → kart 0, cari −100
+      ---
+      duration_ms: 497.676899
+      type: 'test'
+      ...
+    # Subtest: A: 3.000 (2.000 peşin, 1.000 taksit) → 1 açık iade → karttan 1.500 (fazla) → 1 iade + 300 nakit geri → kart büyümez
+    ok 4 - A: 3.000 (2.000 peşin, 1.000 taksit) → 1 açık iade → karttan 1.500 (fazla) → 1 iade + 300 nakit geri → kart büyümez
+      ---
+      duration_ms: 460.25805
+      type: 'test'
+      ...
+    # Subtest: D (G1 korunur): peşinsiz 1.000 taksit → 400 iade + 400 nakit geri → kart 1.000 kalır
+    ok 5 - D (G1 korunur): peşinsiz 1.000 taksit → 400 iade + 400 nakit geri → kart 1.000 kalır
+      ---
+      duration_ms: 459.836478
+      type: 'test'
+      ...
+    # Subtest: E (korunur): 1.000 (500 peşin) → 300 iade + 300 nakit geri → kart 500 kalır
+    ok 6 - E (korunur): 1.000 (500 peşin) → 300 iade + 300 nakit geri → kart 500 kalır
+      ---
+      duration_ms: 464.243615
+      type: 'test'
+      ...
+    # Subtest: F: peşin çekle (500) alınmış; malın tamamı iade + 500 nakit geri → kart 0
+    ok 7 - F: peşin çekle (500) alınmış; malın tamamı iade + 500 nakit geri → kart 0
+      ---
+      duration_ms: 457.93322
+      type: 'test'
+      ...
+    # Subtest: G: peşin banka hesabına havale; tam iade + aynı hesaptan havale geri → kart 0, hesap bakiyesi eski hâline döner
+    ok 8 - G: peşin banka hesabına havale; tam iade + aynı hesaptan havale geri → kart 0, hesap bakiyesi eski hâline döner
+      ---
+      duration_ms: 540.189546
+      type: 'test'
+      ...
+    # Subtest: H: iki iade arka arkaya (500 + 250 nakit geri, 500 + 250 nakit geri) → önce 250, sonra 0
+    ok 9 - H: iki iade arka arkaya (500 + 250 nakit geri, 500 + 250 nakit geri) → önce 250, sonra 0
+      ---
+      duration_ms: 553.631289
+      type: 'test'
+      ...
+    # Subtest: H2: önce açık iade (500) sonra paralı iade (500 + 500 nakit geri) → kart 0
+    ok 10 - H2: önce açık iade (500) sonra paralı iade (500 + 500 nakit geri) → kart 0
+      ---
+      duration_ms: 604.65706
+      type: 'test'
+      ...
+    # Subtest: I: iade iptal edilince kart 500'e döner; yeniden kesilince 0; iade silinince yine 500
+    ok 11 - I: iade iptal edilince kart 500'e döner; yeniden kesilince 0; iade silinince yine 500
+      ---
+      duration_ms: 755.727145
+      type: 'test'
+      ...
+    # Subtest: J: kısmi tahsilatlı kart (400 peşin, 600 taksit, 300 tahsil) → tam iade + 700 nakit geri → kart 0
+    ok 12 - J: kısmi tahsilatlı kart (400 peşin, 600 taksit, 300 tahsil) → tam iade + 700 nakit geri → kart 0
+      ---
+      duration_ms: 573.800026
+      type: 'test'
+      ...
+    # Subtest: K (korunur): peşinli açık fatura + Mevcut Borç kartı (500) → 500 + 250 geri, 500 + 250 geri → kart 250, sonra 0
+    ok 13 - K (korunur): peşinli açık fatura + Mevcut Borç kartı (500) → 500 + 250 geri, 500 + 250 geri → kart 250, sonra 0
+      ---
+      duration_ms: 565.865008
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi her senaryodan sonra tutarlı (C + B + A aynı şirkette)
+    ok 14 - Mutabakat Testi her senaryodan sonra tutarlı (C + B + A aynı şirkette)
+      ---
+      duration_ms: 544.367294
+      type: 'test'
+      ...
+    1..14
+ok 3 - 2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını büyütmez
+  ---
+  duration_ms: 7515.802278
+  type: 'suite'
+  ...
+1..3
+# tests 17
+# suites 3
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7914.993897

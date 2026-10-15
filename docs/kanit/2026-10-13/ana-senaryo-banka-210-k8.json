@@ -1,0 +1,32 @@
+{
+  "ad": "ana-senaryo-banka-210-k8",
+  "komut": "npm run test:senaryo-banka-210",
+  "commit": "8d6ef03f95a347ada0ac5cbcf0183da52ce259f3",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:20:19.002Z",
+  "sure_sn": 303.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 408,
+    "gecen": 408,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/ana-senaryo-banka-210-k8.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "6699e4fb8415e6d4ed20f857630c580207eeed333d46e5b28f944630ee882b42",
+  "ham_cikti_bayt": 43898
+}

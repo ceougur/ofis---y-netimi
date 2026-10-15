@@ -1,0 +1,32 @@
+{
+  "ad": "kilavuz-ticari-supheli-testler",
+  "komut": "node --test test/kilavuz-surum.test.mjs test/updater.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "38fcad17032a870a99ec6ec0426cba7ea6e6bf48",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 5,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T19:34:15.157Z",
+  "sure_sn": 6.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/kilavuz-ticari-supheli-testler.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "416ab78b73b3536f1269962892ea8b2d99e1096cb3d39e83a8924a411024b844",
+  "ham_cikti_bayt": 5917
+}

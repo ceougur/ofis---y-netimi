@@ -268,6 +268,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         const id = newId("entry");
         const receiptNo = plans()?.receiptSeq ? plans().receiptSeq() : null;
         const itemId = effect.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ? AND plan_id = ?", effect.itemId, plan.id) ? effect.itemId : null;
+        // K8 (plan §3.10/3; yargıç 2.3.0 #1, 15.10.2026): çekle sayılan taksit tahsilatı da kartın kalanına bakar — ödenmiş kart 409 plan-paid,
+        // kalanı aşan 409 plan-overpay, ödenmiş taksit 409 installment-paid (routes/plans.mjs assertRoom ile aynı kodlar/metinler). Çek yolunda
+        // "Fazlasını Avans Yaz" seçeneği yoktur. Ters kayıt (reverse-plan-entry, karşılıksız) bu kurala girmez.
+        plans()?.assertRoom?.(user, plan.id, effect.amount, { itemId, op: "create", avans: false });
         // Çekle sayılan taksit tahsilatı (cheque_id dolu) para satırı değildir: Kasa'ya çek tahsil edilince düşer.
         store.run(
           "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, cheque_id, created_by, created_at) VALUES (?, ?, ?, 'in', ?, ?, ?, ?, ?, ?, ?)",

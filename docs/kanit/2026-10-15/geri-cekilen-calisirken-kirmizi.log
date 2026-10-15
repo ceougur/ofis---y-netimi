@@ -1,0 +1,57 @@
+TAP version 13
+# (node:1242) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ---- eski-calisirken servis günlüğü (son) ----
+# 2026-10-15T22:52:58.942Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:42421
+# 2026-10-15T22:52:58.945Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 42257)
+# 2026-10-15T22:52:59.338Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+# 2026-10-15T22:52:59.576Z [INFO] Yeni sürüm bulundu: 9.0.2 (kurulu 9.0.0)
+# 2026-10-15T22:52:59.576Z [INFO] 9.0.2 sürümü hazır; kullanıcılar çalışıyor; paket arka planda indirilip doğrulanacak, sunucu bir sonraki açılışta ya da 15 dakika boş kalınca / mesai dışında kendiliğinden kuracak (saatte bir bakılır) (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).
+# 2026-10-15T22:52:59.808Z [INFO] 9.0.2 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:53:00.171Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:53:00.171Z [INFO] 9.0.1 sürümü hazır; kullanıcılar çalışıyor; paket arka planda indirilip doğrulanacak, sunucu bir sonraki açılışta ya da 15 dakika boş kalınca / mesai dışında kendiliğinden kuracak (saatte bir bakılır) (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).
+# 2026-10-15T22:53:00.603Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.2
+# 2026-10-15T22:53:00.603Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# Subtest: Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerçek süreçler)
+    # Subtest: (2b) zorla: geri çekilme çalışan servisin periyodik denetimine yakalanır (servis durdurulmadan) → kayıt + günlük + hazır paket silinir; açılışta 9.0.1 kurulur
+    not ok 1 - (2b) zorla: geri çekilme çalışan servisin periyodik denetimine yakalanır (servis durdurulmadan) → kayıt + günlük + hazır paket silinir; açılışta 9.0.1 kurulur
+      ---
+      duration_ms: 2444.522735
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski-cd63cf6-gc/test/guncelleme-hazir-geri-cekilen.test.mjs:130:3'
+      failureType: 'testCodeFailure'
+      error: 'çalışırken geri çekilme kaydı — geçmiş: ["prepared:9.0.2","prepared:9.0.1"]; günlük: ["2026-10-15T22:52:59.338Z [INFO] Uygulama hazır: DestekOfis 9.0.0","2026-10-15T22:52:59.576Z [INFO] 9.0.2 sürümü hazır; kullanıcılar çalışıyor; paket arka planda indirilip doğrulanacak, sunucu bir sonraki açılışta ya da 15 dakika boş kalınca / mesai dışında kendiliğinden kuracak (saatte bir bakılır) (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).","2026-10-15T22:53:00.171Z [INFO] 9.0.1 sürümü hazır; kullanıcılar çalışıyor; paket arka planda indirilip doğrulanacak, sunucu bir sonraki açılışta ya da 15 dakika boş kalınca / mesai dışında kendiliğinden kuracak (saatte bir bakılır) (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).","2026-10-15T22:53:00.603Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.2"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski-cd63cf6-gc/test/guncelleme-hazir-geri-cekilen.test.mjs:141:14
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async withFeed (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski-cd63cf6-gc/test/guncelleme-hazir-geri-cekilen.test.mjs:55:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski-cd63cf6-gc/test/guncelleme-hazir-geri-cekilen.test.mjs:133:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 2)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerçek süreçler)
+  ---
+  duration_ms: 2446.015461
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/eski-cd63cf6-gc/test/guncelleme-hazir-geri-cekilen.test.mjs:80:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4077.091301

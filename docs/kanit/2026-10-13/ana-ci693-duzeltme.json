@@ -1,0 +1,32 @@
+{
+  "ad": "ana-ci693-duzeltme",
+  "komut": "node --test test/iade-210.test.mjs test/ci-kapi-listesi.test.mjs",
+  "commit": "a0f6ee27721aab7e556dcebe7f88298af2cb82a9",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:30:35.134Z",
+  "sure_sn": 8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/ana-ci693-duzeltme.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a22c95ead76c5df8767e3b68470e266f1107938ff2efb55939414a7d61842f4b",
+  "ham_cikti_bayt": 5787
+}

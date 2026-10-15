@@ -115,8 +115,8 @@ try {
     await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
     await admin.click(`${inv} [data-l="0"][data-f="name"]`);
     await admin.keyboard.type("Deneme");
-    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
-    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]:has-text("Deneme")`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]:has-text("Deneme")`);
     await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "2");
     await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
     await admin.waitForTimeout(1000);
@@ -166,8 +166,8 @@ try {
     await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
     await admin.click(`${inv} [data-l="0"][data-f="name"]`);
     await admin.keyboard.type("Deneme");
-    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
-    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]:has-text("Deneme")`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]:has-text("Deneme")`);
     await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "2");
     await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
     await admin.waitForTimeout(1000);
@@ -266,8 +266,8 @@ try {
     await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
     await admin.click(`${inv} [data-l="0"][data-f="name"]`);
     await admin.keyboard.type("Deneme");
-    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`, { timeout: 15000 });
-    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]:has-text("Deneme")`, { timeout: 15000 });
+    await admin.click(`${inv} [data-hits="0"] li[data-item]:has-text("Deneme")`);
     await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "1");
     await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
     await admin.waitForTimeout(1000);
@@ -647,8 +647,8 @@ try {
     await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
     await admin.click(`${inv} [data-l="0"][data-f="name"]`);
     await admin.keyboard.type("Deneme");
-    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
-    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]:has-text("Deneme")`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]:has-text("Deneme")`);
     await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "1");
     await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
     await admin.waitForTimeout(1000);

@@ -564,7 +564,7 @@ describe("geri yükleme: doğru şirkete; yanlış şirkete 409; 002 hemen, 001 
     await addAccounts(seedApi, ["Üç (yedekten sonra)"]);
     await seed.app.close();
     const silent = { info() {}, warn() {}, error() {}, debug() {} };
-    const supervisor = await startSupervisor({ installRoot, appDir: ROOT, port: 0, host: "127.0.0.1", discoveryPort: 0, log: silent, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_LOG_LEVEL: "silent", HUKUK_DATASET_AUTOSYNC: "0" } });
+    const supervisor = await startSupervisor({ installRoot, appDir: ROOT, port: 0, host: "127.0.0.1", discoveryPort: 0, log: silent, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9", HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_LOG_LEVEL: "silent", HUKUK_DATASET_AUTOSYNC: "0" } });
     const base = `http://127.0.0.1:${supervisor.port}`;
     const health = async () => (await fetch(`${base}/__supervisor/health`)).json();
     const until = async (check, timeoutMs = 30_000) => {

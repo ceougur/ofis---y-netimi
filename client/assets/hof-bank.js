@@ -1557,6 +1557,9 @@
     if (!node) return;
     node.dataset.account = state.account || "";
     HOF.swap(node, movesListHtml(state));
+    // 2.3.0 İz 5.1: PDF / Excel bağları süzgeçle birlikte yenilenir (süzgeç değişince yalnız liste çizilir).
+    const exportBar = state.key === "main" ? root()?.querySelector("[data-mv-export]") : null;
+    if (exportBar) exportBar.outerHTML = movesExportHtml(state);
   }
   /** Hareket satırları: tarih, İşlem No, tür (durum rozetiyle), [hesap], açıklama (cari, açıklama, referans, fatura), tutar, [bakiye]. */
   // debt (GG2 düşük): kurumsal kart ve kredi hesabında yürüyen bakiye "Borç" kolonunda artı gösterilir (başlıktaki Borç ve Açılıştaki Borç gibi).
@@ -1648,9 +1651,20 @@
           filter("Ara", `<input type="search" data-mv="q" value="${esc(s.filter.q)}" maxlength="100" placeholder="Cari adı, açıklama, referans ya da İşlem No">`, true),
         ].join("");
     return `<div class="hof-bank-toolbar">${tools}<div class="hof-rep-presets" role="group" aria-label="Görünüm"><button type="button" class="hof-rep-chip ${s.planned ? "is-on" : ""}" aria-pressed="${s.planned}" data-act="mv-planned">Planlı İşlemler</button></div></div>
-      <div class="hof-bank-filters" data-mv-filters>${filters}${filtered(s) && !s.planned ? '<button type="button" class="hof-link-button" data-act="mv-clear">Süzgeçleri Temizle</button>' : ""}</div>
+      <div class="hof-bank-filters" data-mv-filters>${filters}${filtered(s) && !s.planned ? '<button type="button" class="hof-link-button" data-act="mv-clear">Süzgeçleri Temizle</button>' : ""}${s.planned ? "" : movesExportHtml(s)}</div>
       <div class="hof-bank-moves-wrap" data-moves="main" data-account="${esc(s.account)}">${movesListHtml(s)}</div>
       <p class="hof-rep-note">${s.planned ? "Planlı işlemler deftere kendiliğinden yazılmaz; bankada gerçekleşince “Gerçekleştir” ile planlı ya da gerçek tarihle kaydedilir." : "Yürüyen bakiye tek hesap seçiliyken ve başka süzgeç yokken görünür. Satıra tıklayınca İşlem Kartı açılır."}</p>`;
+  }
+  // 2.3.0 İz 5.1 (müşteri isteği): Hareketler'in PDF / Excel düğmeleri — ekrandaki süzgeçlerle (hesap, tür, yön, durum, POS, tarih, tutar, arama)
+  // sunucunun aynı listesi, alt TOPLAM (routes/bank.mjs movements.pdf / .xlsx; Rapor Merkezi'nin üreticisi). bank.view yeter: kullanıcı yalnız
+  // ekranda gördüğü satırları indirir.
+  function movesExportHtml(state) {
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(state.filter)) if (String(value ?? "").trim()) query.set(key, String(value).trim());
+    const qs = String(query);
+    return `<span class="hof-rep-export hof-bank-export" role="group" aria-label="Dışa aktar" data-mv-export>
+      <a class="hof-rep-out is-pdf" href="${esc(`${BASE}/movements.pdf${qs ? `?${qs}` : ""}`)}" target="_blank" rel="noopener" title="Süzgeçteki hareketleri PDF olarak aç">PDF İndir</a>
+      <a class="hof-rep-out is-xlsx" href="${esc(`${BASE}/movements.xlsx${qs ? `?${qs}` : ""}`)}" download title="Süzgeçteki hareketleri Excel olarak indir">Excel İndir</a></span>`;
   }
   let searchTimer = 0;
   /**
@@ -2842,9 +2856,11 @@
   function syncPickers(form, setup) {
     syncNone(form);
     const { methodNode } = setup;
+    // 2.3.0 (İz 3.2): tahsilat formunda kart seçicisi yalnız "Kredi Kartına İade" (cardRefund) işaretliyken (aksi hâlde kart yolu POS alanıdır).
+    const refundToggle = form.querySelector('input[name="cardRefund"]');
     if (methodNode)
       form.querySelectorAll("[data-bank-pick]").forEach(node => {
-        const on = methodNode.value === (node.dataset.bankPick === "card" ? "card" : "bank");
+        const on = methodNode.value === (node.dataset.bankPick === "card" ? "card" : "bank") && (node.dataset.bankPick !== "card" || !refundToggle || refundToggle.checked);
         node.hidden = !on;
         node.querySelectorAll("[name]").forEach(input => {
           input.disabled = !on;
@@ -2898,6 +2914,7 @@
     // Seçici yeniden kurulsa da (refreshPickers) dinleyici formda: seçim değişince not yerleşir/kalkar.
     form.addEventListener("change", event => {
       if (event.target.closest?.("[data-bank-pick]")) syncNone(form);
+      if (event.target.name === "cardRefund") syncPickers(form, setup);
       // 2.7: tarih değişince o günün bakiyeleri (tek istek; seçici yeniden kurulmaz); başka alan değişince satır yeniden hesaplanır.
       if (dateNode && event.target === dateNode) reloadBalances(form, setup);
       else syncBalances(form, setup);
@@ -3062,11 +3079,16 @@
   const POS_FIELDS = ["posId", "posInstallments", "authCode", "cardLast4", "posRefundOf", "posSourceless"];
   function accountBody(body, method = body?.method) {
     if (!body) return body;
-    const cardId = body.cardAccountId;
+    // 2.3.0 (İz 3.2): tahsilat formunda "Kredi Kartına İade" kutusu — işaretli değilse kart seçicisinin (gizli) değeri gönderilmez (kart yolu POS'tur);
+    // işaretliyse POS alanları gönderilmez. Kutusu olmayan formlar (ödeme) eskisi gibi.
+    const refundToggle = "cardRefund" in body;
+    const cardRefund = body.cardRefund === true;
+    if (refundToggle && !cardRefund) delete body.cardRefund;
+    const cardId = refundToggle && !cardRefund ? "" : body.cardAccountId;
     delete body.cardAccountId;
     if (method === "card" && cardId) body.bankAccountId = cardId;
     else if (method !== "bank") delete body.bankAccountId;
-    if (method !== "card" || cardId) for (const key of POS_FIELDS) delete body[key];
+    if (method !== "card" || cardId || cardRefund) for (const key of POS_FIELDS) delete body[key];
     else {
       if (body.posSourceless === false || body.posSourceless === "") delete body.posSourceless;
       for (const key of POS_FIELDS) if (body[key] === "") delete body[key];
@@ -3076,8 +3098,33 @@
   // POS alanı (hof-bank-pos.js registerPosField): attachPicker'ın kart yolu POS alanını kurar.
   let posField = null;
 
+  // 2.3.0 İz 5.5 Hızlı Arama: sekmeler tabList()'ten (POS sekmesi hof-bank-pos.js'nin eklediğiyle gelir), işlemler yetkiye göre; fiş
+  // penceresi Hareketler sekmesi açıldıktan sonra açılır.
+  HOF.search?.register(() => {
+    if (!HOF.can("bank.view")) return [];
+    const withMoves = fn => open({ tab: "movements" }).then(fn);
+    const tabs = tabList().map(([id, label]) => ({ group: id === "settings" ? "Ayar" : "Sayfa", label: id === "settings" ? `${moduleName()} Ayarları` : label, path: moduleName(), keywords: ["Banka", id === "accounts" ? "Banka Hesapları" : id === "movements" ? "Banka Hareketleri" : ""], run: () => open({ tab: id }) }));
+    const acts = [];
+    if (HOF.can("bank.move")) {
+      acts.push(
+        { group: "İşlem", label: "+ Masraf", path: moduleName(), keywords: ["Banka Masrafı", "Masraf Fişi", "Komisyon"], run: () => withMoves(() => voucherForm({ group: "fee" })) },
+        { group: "İşlem", label: "+ Faiz", path: moduleName(), keywords: ["Faiz Geliri", "Faiz Gideri"], run: () => withMoves(() => voucherForm({ group: "interest" })) },
+        { group: "İşlem", label: "+ Diğer İşlem", path: moduleName(), keywords: ["Banka Fişi"], run: () => withMoves(() => voucherForm({ group: "other" })) },
+      );
+    }
+    if (HOF.can("bank.transfer")) acts.push({ group: "İşlem", label: "Bankalar Arası Transfer", path: moduleName(), keywords: ["Virman", "Havale"], run: () => withMoves(() => voucherForm({ group: "transfer" })) });
+    if (canAccounts()) {
+      acts.push(
+        { group: "İşlem", label: "Yeni Banka Hesabı", path: moduleName(), keywords: ["Hesap Aç", "Banka Hesabı Tanımla"], run: () => open({ tab: "accounts" }).then(() => accountForm(null)) },
+        { group: "İşlem", label: "Kurulum Sihirbazı", path: moduleName(), keywords: ["Banka Kurulumu"], run: () => open({ tab: "accounts" }).then(() => openWizard()) },
+      );
+    }
+    return [...tabs, ...acts];
+  });
   HOF.bank = {
     open,
+    // 2.3.0 İz 3.3: zildeki planlı banka işlemi kalemi → Hareketler → Planlı İşlemler görünümü.
+    openPlans: () => Promise.resolve(open({ tab: "movements" })).then(() => (modal ? openMovements({ account: "", planned: true }) : null)),
     openWizard,
     openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))),
     choices,

@@ -32,10 +32,43 @@ const KIND_LABELS = {
   "stock-move": "Stok Hareketi",
   cheque: "Çek / Senet",
   invoice: "Fatura",
+  // 2.3.0 İz 1 (plan §3.11b/4 "Silinenler — geri alma ters kayıtla"): şüpheli alacak kaydı, karşılığı ve Değersiz Alacak satırı.
+  doubtful: "Şüpheli Alacak",
+  "doubtful-provision": "Şüpheli Alacak Karşılığı",
+  "doubtful-writeoff": "Değersiz Alacak",
+  // 2.3.0 İz 5.6: kayıt detay kartının işlem geçmişinden silinen not / telefon / haciz.
+  note: "Not",
+  phone: "Telefon",
+  lien: "Haciz",
+};
+const DOUBTFUL_KINDS = new Set(["doubtful", "doubtful-provision", "doubtful-writeoff"]);
+// İşlem geçmişi satırları (routes/workspace.mjs HISTORY ile aynı tablolar): aynı kimlikle, silinmeden önceki haliyle geri eklenir.
+const HISTORY_KINDS = {
+  note: {
+    table: "notes",
+    label: "Not",
+    permission: "notes.write",
+    insert: "INSERT INTO notes (id, case_key, note, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    values: (p, ref, user, at) => [ref, p.caseKey, p.note || "", p.createdBy || user.id, p.createdAt || at, user.id, at],
+  },
+  phone: {
+    table: "phones",
+    label: "Telefon",
+    permission: "phones.create",
+    insert: "INSERT INTO phones (id, case_key, phone, label, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    values: (p, ref, user, at) => [ref, p.caseKey, p.phone || "", p.label || "Telefon", p.createdBy || user.id, p.createdAt || at, user.id, at],
+  },
+  lien: {
+    table: "liens",
+    label: "Haciz",
+    permission: "liens.create",
+    insert: "INSERT INTO liens (id, case_key, title, placed_at, expires_at, status, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    values: (p, ref, user, at) => [ref, p.caseKey, p.title || "Haciz", p.placedAt, p.expiresAt, p.status || "active", p.createdBy || user.id, p.createdAt || at, user.id, at],
+  },
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, money: moneyLines = null, now: clock = systemClock }) {
+export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, doubtful = () => null, money: moneyLines = null, now: clock = systemClock }) {
   const now = () => clock().toISOString();
   // Yargıç K2 (plan §3.8 "Silinenler'den geri yükleme", §9.2/7, §3.9 K7): banka bağlı satır geri yüklenirken kaynak modül yetkisi + bank.move,
   // pasif hesap 400, eksi bakiye son durumla (Engelle 409 cash-blocked, Uyar 409 cash-negative + accountId → "Yine de Geri Yükle" cashForce ya da negativeOk; hakem K5).
@@ -180,7 +213,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
         deletedAt: item.deleted_at,
         actorName: item.actor_name,
         restorable: true,
-        note: item.kind === "invoice" ? (payload.wasStatus === "draft" ? "Taslak olarak Fatura listesine geri döner." : "Etkisiz, “İptal Edildi” olarak Fatura listesine geri döner (stok, cari, Kasa değişmez).") : item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
+        note: item.kind === "invoice" ? (payload.wasStatus === "draft" ? "Taslak olarak Fatura listesine geri döner." : "Etkisiz, “İptal Edildi” olarak Fatura listesine geri döner (stok, cari, Kasa değişmez).") : item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : HISTORY_KINDS[item.kind] ? "Kaydın işlem geçmişine aynı haliyle geri döner." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
       });
     }
     items.sort((a, b) => (a.deletedAt < b.deletedAt ? 1 : -1));
@@ -295,6 +328,13 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
     const item = trash.get(ref);
     if (!item) throw new HttpError(404, "Bu öğe zaten geri yüklenmiş.");
     const payload = JSON.parse(item.payload_json || "{}");
+    // 2.3.0 İz 1: şüpheli alacak kaydı / karşılığı / Değersiz Alacak satırı (routes/doubtful.mjs restoreDeleted; bank.post op 'restore').
+    if (DOUBTFUL_KINDS.has(item.kind)) {
+      if (!doubtful?.()?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
+      const text_ = doubtful().restoreDeleted(user, item, payload);
+      publish(user, { kind: "accounts", accountId: payload.accountId });
+      return ok(res, { restored: item.kind, message: text_ });
+    }
     let message = "";
     // v2.0.26 (A7): para hareketi kapanmış dönemdeyse geri yüklenmez (silmedeki kuralın aynısı; önceden kapıda nedensiz 409).
     // Tutar kuruşa yuvarlanır, ödeme yolu katı okunur (B7: tanınmayan yol 400; sessizce nakit sayılmaz).
@@ -420,16 +460,21 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       const method = methodInput(payload.method);
       const planRef = payload.opening ? "" : bank.keepRef(payload.finRef, { method, date: payload.date }).ref;
       const k7 = banking.restore(user, { refs: [planRef], date: payload.date, force: banking.forced(body), permission: "plans.collect" });
+      const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
       const result = bank.post({
         user,
         module: "plan",
         op: "restore",
         prev: payload,
         guard: k7.guard,
+        // K8 (2.3.0, plan §3.10/3 restore): geri gelen tahsilat için kartın kalanı işlemin içinde yeniden okunur (plan-paid / plan-overpay /
+        // installment-paid); "Fazlasını Avans Yaz" (overpay:true) yalnız plans.manage. Açılış (devir) satırı ve iade kural dışı.
+        prepare: () => {
+          if (payload.kind === "in" && !payload.opening && !store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) plans?.assertRoom?.(user, plan.id, money(payload.amount), { itemId, overpay: body.overpay === true, op: "restore" });
+        },
         write: () => {
           k7.capture();
           if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
-            const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
             const opening = payload.opening ? 1 : 0;
             store.run(
               // Açılış (devir) kaydı geri gelince yine açılıştır (v2.0.8): Kasa'ya girmez (para satırı değil, olay almaz).
@@ -470,6 +515,19 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
         item.kind === "free-row"
           ? `Satır “${result.sheet}” sayfasına ${result.position}. satır olarak eklendi${result.lost.length ? ` (${result.lost.join(", ")} kolonu artık yok)` : ""}.`
           : `“${result.column}” kolonu “${result.sheet}” sayfasına ${result.position}. kolon olarak eklendi${result.lost ? ` (${result.lost} hücrenin satırı artık yok)` : ""}.`;
+    } else if (HISTORY_KINDS[item.kind]) {
+      // 2.3.0 İz 5.6: kayıt detay kartından silinen not / telefon / haciz aynı kimlikle, silinmeden önceki haliyle geri gelir (para etkisi yok).
+      const spec = HISTORY_KINDS[item.kind];
+      if (!canUser(user, spec.permission)) throw new HttpError(403, `${spec.label} geri yüklemek için ${spec.label.toLocaleLowerCase("tr-TR")} ekleme yetkisi gerekir.`);
+      // Silmeyle simetrik (eleştirmen E6): geri yükleme de Kayıt Düzeltme ister.
+      if (!canUser(user, "records.edit")) throw new HttpError(403, `${spec.label} geri yüklemek için Kayıt Düzeltme yetkisi gerekir.`);
+      store.tx(() => {
+        if (!store.get(`SELECT 1 AS found FROM ${spec.table} WHERE id = ?`, item.ref)) store.run(spec.insert, ...spec.values(payload, item.ref, user, now()));
+        trash.markRestored(item.id, user);
+        audit(user, `case.${item.kind}.restored`, item.ref, { caseKey: payload.caseKey });
+      });
+      publish(user, { kind: "activity", caseKey: payload.caseKey });
+      message = `${spec.label} kaydın işlem geçmişine geri eklendi.`;
     } else throw new HttpError(400, "Bu öğe geri yüklenemez.");
     if (dropped) message = `${message} ${bank.droppedText(dropped)}`;
     return ok(res, { restored: item.kind, message });

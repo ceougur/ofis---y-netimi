@@ -1,0 +1,138 @@
+{
+  "ad": "iz2-hareket-kirmizi",
+  "komut": "env DEPO=/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz2-eski-b24e0c2 node --disable-warning=ExperimentalWarning test/e2e/banka-230-hareket-yaris.mjs",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a7e349711147dc850",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:00:21.123Z",
+  "sure_sn": 109.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 33,
+    "gecen": 13,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "A1: kayıt veri tabanında bir kez (0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A1: kayıt listede göründü (-1 ms)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A1: masraf formu kapandı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A1: sonraki \"+ Masraf\" tıklanabilir (üstte açık pencere yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A1: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409; kimlik 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B1: kayıt veri tabanında bir kez (0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B1: kayıt listede göründü (-1 ms)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B1: masraf formu kapandı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B1: sonraki \"+ Masraf\" tıklanabilir (üstte açık pencere yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B1: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409; kimlik 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A2: kayıt veri tabanında bir kez (0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A2: kayıt listede göründü (-1 ms)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A2: masraf formu kapandı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A2: sonraki \"+ Masraf\" tıklanabilir (üstte açık pencere yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A2: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409; kimlik 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B2: kayıt veri tabanında bir kez (0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B2: kayıt listede göründü (-1 ms)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B2: masraf formu kapandı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B2: sonraki \"+ Masraf\" tıklanabilir (üstte açık pencere yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B2: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409; kimlik 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "banka-230-hareket-yaris: 13 geçti, 20 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/iz2-hareket-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7e349711147dc850",
+  "ham_cikti_sha256": "9585b7e94668410165c61428e483f62e221a2cf5cffe6061100ff97409e4b814",
+  "ham_cikti_bayt": 4745
+}

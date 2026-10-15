@@ -1,0 +1,32 @@
+{
+  "ad": "ana-e2e-senaryo-222",
+  "komut": "npm run test:senaryo-222",
+  "commit": "61772ea197c1c8170c617ad431d7724b5ad2a1b8",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:55:05.467Z",
+  "sure_sn": 101.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-e2e-senaryo-222.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "93d5c0cbb47c6bfbb38908cd5b76ecdba9d64f768a0b99cd7f89856fe3d283fa",
+  "ham_cikti_bayt": 5842
+}

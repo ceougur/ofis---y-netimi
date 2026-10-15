@@ -3,6 +3,8 @@
 //   GET /api/workspace/ledger?from=&to=  → mizan + mutabakat (Finans raporları yetkisi)
 // Rapor merkezi "Hesap Planı Mizanı", "Yevmiye Defteri" ve "Defter Mutabakatı" raporlarını bu servisten üretir.
 import { journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
+import { DOUBTFUL_GL } from "../lib/doubtful-gl.mjs";
+import { doubtfulExpected, doubtfulRows, doubtfulUsed } from "../lib/bank/doubtful.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
@@ -72,8 +74,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
         ? "CASE WHEN e.source = 'cheque' AND e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') THEN 1 ELSE 0 END"
         : "0";
       out.accountEntries = all(
-        `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
-                COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, ${returned} AS bankReturned
+        `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.source_id AS sourceId, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
+                COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, ${returned} AS bankReturned,
+                e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip
          FROM account_entries e ${J} accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
            LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where("e", [[set?.parties, "SELECT id FROM account_entries WHERE account_id IN $"], [set?.entries, own("m_entries")], [set?.cheques, "SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN $"]])}`,
@@ -96,7 +99,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       // 2.2.0 İz 4.2 (plan §3.11a): taksite sayılan evrakın türü (senet 121, çek 101); evrak silinmiş olsa da türü okunur (satır deftere girer).
       const planInstrument = has("cheques") ? "CASE WHEN e.cheque_id <> '' THEN COALESCE((SELECT x.instrument FROM cheques x WHERE x.id = e.cheque_id), '') ELSE '' END" : "''";
       out.planEntries = all(
-        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, ${planInstrument} AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planReturned} AS bankReturned
+        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, ${planInstrument} AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planReturned} AS bankReturned,
+                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate, p.covers_balance AS planCovers
          FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );
@@ -159,6 +163,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
         wanted(set?.cheques),
       );
     }
+    // Şüpheli Ticari Alacaklar (2.3.0 İz 1; plan §3.11b; lib/bank/doubtful.mjs): kayıtlar ve karşılıklar — süzgeçte yalnız dokunulan carilerinki
+    // (carinin bütün satırlarıyla; yalnız para satırı / evrak / fatura süzgecinde yüklenmez: ayırma carinin tam geçmişini ister, o denetimler
+    // kontrol hesabına bakmaz).
+    if (!filter || set?.parties) out.doubtful = doubtfulRows(store, { parties: filter ? filter.parties : null });
     return out;
   }
   // Carisiz evrakın karşı hesabı gelir/gider (602 / 770): journal() cariyi kontrol hesabı sayar; burada düzeltilir.
@@ -247,6 +255,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     if (has("bank_lines")) {
       const stoppage = store.get("SELECT COALESCE(SUM(CASE side WHEN 'D' THEN try_minor ELSE -try_minor END), 0) AS n FROM bank_lines WHERE gl = '193'").n;
       if (stoppage) out[193] = roundMoney((out[193] || 0) + stoppage / 100);
+    }
+    // Şüpheli Ticari Alacaklar (2.3.0 İz 1; plan §3.11b/4 "128 = Σ etkin şüpheli − kapananlar; 129 = Σ karşılık − çözülen"): ikinci yükleyici
+    // (SQL alacak satırları + aynı ayırma kuralı; lib/bank/doubtful.mjs). Carinin kontrol hesabı (120/320/336) kalan şüpheli kadar düşer (cari
+    // kartı bakiyesi değişmez: 120 + 128 = kart). 128/129 satırı yalnız şüpheli alacak kullanılmışsa açılır (300/309, 121/321 kuralı).
+    if (doubtfulUsed(store)) {
+      const d = doubtfulExpected(store);
+      for (const [control, minor] of d.byControl) out[control] = roundMoney((out[control] || 0) - minor / 100);
+      out[DOUBTFUL_GL.doubtful] = roundMoney(d.openMinor / 100);
+      out[DOUBTFUL_GL.provision] = -roundMoney(d.provisionMinor / 100);
     }
     return out;
   }

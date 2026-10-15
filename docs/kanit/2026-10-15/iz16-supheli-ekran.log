@@ -1,0 +1,115 @@
+TAP version 13
+# (node:15785) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DURUM, vade takip, rapor, yaşlandırma, mizan)
+    # Subtest: ön koşul (kâhin adım 3 + XYZ): 128 = 1.000, 129 = −1.000, 659 = 5.000; ABC kartı 7.000, XYZ 0
+    ok 1 - ön koşul (kâhin adım 3 + XYZ): 128 = 1.000, 129 = −1.000, 659 = 5.000; ABC kartı 7.000, XYZ 0
+      ---
+      duration_ms: 10.334841
+      type: 'test'
+      ...
+    # Subtest: cari listesi: ABC doubtfulOpen 1.000 (rozet), XYZ 0; totals.doubtful 1.000, doubtfulCount 1; borçlular toplamı şüpheliyi KAPSAR (120 + 128 = kart)
+    ok 2 - cari listesi: ABC doubtfulOpen 1.000 (rozet), XYZ 0; totals.doubtful 1.000, doubtfulCount 1; borçlular toplamı şüpheliyi KAPSAR (120 + 128 = kart)
+      ---
+      duration_ms: 3.23665
+      type: 'test'
+      ...
+    # Subtest: cari kartı: doubtful özeti (açık 1.000, karşılık 1.000, tahsil 3.000) ve canDoubtful yönetici/muhasebe true, personel false
+    ok 3 - cari kartı: doubtful özeti (açık 1.000, karşılık 1.000, tahsil 3.000) ve canDoubtful yönetici/muhasebe true, personel false
+      ---
+      duration_ms: 13.338024
+      type: 'test'
+      ...
+    # Subtest: yetkisiz: personel Şüpheli Alacağa Al → 403 doubtful-permission ya da FORBIDDEN; hiçbir şey yazılmaz
+    ok 4 - yetkisiz: personel Şüpheli Alacağa Al → 403 doubtful-permission ya da FORBIDDEN; hiçbir şey yazılmaz
+      ---
+      duration_ms: 4.582749
+      type: 'test'
+      ...
+    # Subtest: ANLIK DURUM: receivable.doubtful 1.000 (1 cari) ayrı satır; total = cari borçluları + çek (şüpheli toplamın İÇİNDE, ayrıca eklenmez)
+    ok 5 - ANLIK DURUM: receivable.doubtful 1.000 (1 cari) ayrı satır; total = cari borçluları + çek (şüpheli toplamın İÇİNDE, ayrıca eklenmez)
+      ---
+      duration_ms: 15.445724
+      type: 'test'
+      ...
+    # Subtest: Vade Takip (hatırlatmalar): doubtful { amount 1.000, accountCount 1 } ayrı alan; Tahsil Edilecek'e girmez; Ödenecek süzgecinde 0; PDF özetinde satır
+    ok 6 - Vade Takip (hatırlatmalar): doubtful { amount 1.000, accountCount 1 } ayrı alan; Tahsil Edilecek'e girmez; Ödenecek süzgecinde 0; PDF özetinde satır
+      ---
+      duration_ms: 49.792831
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi kataloğu: Şüpheli Alacaklar (Cari grubu; range + doubtfulStatus + doubtfulReason; ilk açılış Bu Yıl)
+    ok 7 - Rapor Merkezi kataloğu: Şüpheli Alacaklar (Cari grubu; range + doubtfulStatus + doubtfulReason; ilk açılış Bu Yıl)
+      ---
+      duration_ms: 5.148288
+      type: 'test'
+      ...
+    # Subtest: rapor varsayılan (Bu Yıl, Açık): yalnız ABC; Tutar 4.000, Karşılık 1.000, Tahsil 3.000, Değersiz 0, Kalan 1.000, Durum Şüpheli Alacakta; TOPLAM = satır
+    ok 8 - rapor varsayılan (Bu Yıl, Açık): yalnız ABC; Tutar 4.000, Karşılık 1.000, Tahsil 3.000, Değersiz 0, Kalan 1.000, Durum Şüpheli Alacakta; TOPLAM = satır
+      ---
+      duration_ms: 7.158887
+      type: 'test'
+      ...
+    # Subtest: Durum süzgeci: Kapanan → yalnız XYZ (Değersiz Yazıldı, Kalan 0, Değersiz 5.000); Tümü → 2 satır, TOPLAM = satırlar
+    ok 9 - Durum süzgeci: Kapanan → yalnız XYZ (Değersiz Yazıldı, Kalan 0, Değersiz 5.000); Tümü → 2 satır, TOPLAM = satırlar
+      ---
+      duration_ms: 8.037103
+      type: 'test'
+      ...
+    # Subtest: Neden süzgeci (her seçenek): Dava 1 (ABC), Karşılıksız Çek 1 (XYZ; Tümü), Protestolu Senet / İcra / Diğer 0; geçersiz neden 400
+    ok 10 - Neden süzgeci (her seçenek): Dava 1 (ABC), Karşılıksız Çek 1 (XYZ; Tümü), Protestolu Senet / İcra / Diğer 0; geçersiz neden 400
+      ---
+      duration_ms: 18.002711
+      type: 'test'
+      ...
+    # Subtest: dönem süzgeci: 01–04.10 Tümü → yalnız XYZ (kayıt tarihine göre); 2025 → boş (ipucu ekranda); geçersiz tarih 400
+    ok 11 - dönem süzgeci: 01–04.10 Tümü → yalnız XYZ (kayıt tarihine göre); 2025 → boş (ipucu ekranda); geçersiz tarih 400
+      ---
+      duration_ms: 8.525919
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel = ekran: Tümü süzgecinde her para hücresi PDF'te; Excel satırları ve TOPLAM aynı
+    ok 12 - PDF ve Excel = ekran: Tümü süzgecinde her para hücresi PDF'te; Excel satırları ve TOPLAM aynı
+      ---
+      duration_ms: 37.690444
+      type: 'test'
+      ...
+    # Subtest: yetki: muhasebe (Şüpheli Alacak İşlemleri var, finans raporları yok) raporu açar; personel 403; Alacak Yaşlandırma muhasebeye kapalı kalır
+    ok 13 - yetki: muhasebe (Şüpheli Alacak İşlemleri var, finans raporları yok) raporu açar; personel 403; Alacak Yaşlandırma muhasebeye kapalı kalır
+      ---
+      duration_ms: 9.421634
+      type: 'test'
+      ...
+    # Subtest: Alacak Yaşlandırma: 'Şüpheli Alacak' kolonu ABC 1.000 (Toplam'a girmez: vade kalemi yok → Toplam 0), XYZ satırı yok; özette 'Şüpheli Alacak (ayrı)'
+    ok 14 - Alacak Yaşlandırma: 'Şüpheli Alacak' kolonu ABC 1.000 (Toplam'a girmez: vade kalemi yok → Toplam 0), XYZ satırı yok; özette 'Şüpheli Alacak (ayrı)'
+      ---
+      duration_ms: 3.502688
+      type: 'test'
+      ...
+    # Subtest: Hesap Planı Mizanı (Rapor Merkezi): 128 Şüpheli Ticari Alacaklar 1.000 Borç, 129 1.000 Alacak, 654 2.500, 644 1.500, 659 5.000
+    ok 15 - Hesap Planı Mizanı (Rapor Merkezi): 128 Şüpheli Ticari Alacaklar 1.000 Borç, 129 1.000 Alacak, 654 2.500, 644 1.500, 659 5.000
+      ---
+      duration_ms: 4.7295
+      type: 'test'
+      ...
+    # Subtest: şüpheli hiç kullanılmamış şirkette: rapor boş, liste/ANLIK DURUM alanları 0 (eski veride gösterim bozulmaz)
+    ok 16 - şüpheli hiç kullanılmamış şirkette: rapor boş, liste/ANLIK DURUM alanları 0 (eski veride gösterim bozulmaz)
+      ---
+      duration_ms: 286.896102
+      type: 'test'
+      ...
+    1..16
+ok 1 - Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DURUM, vade takip, rapor, yaşlandırma, mizan)
+  ---
+  duration_ms: 1184.9492
+  type: 'suite'
+  ...
+1..1
+# tests 16
+# suites 1
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1541.389453

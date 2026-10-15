@@ -18,6 +18,7 @@
         "URA": 10,
         "URB": 25
       },
+      "supheliAlacaklar": {},
       "taksitKartlari": {}
     },
     "k1-2": {
@@ -53,6 +54,7 @@
         "URA": 10,
         "URB": 25
       },
+      "supheliAlacaklar": {},
       "taksitKartlari": {}
     },
     "k13-14": {
@@ -120,6 +122,7 @@
         "URA": 9,
         "URB": 25
       },
+      "supheliAlacaklar": {},
       "taksitKartlari": {}
     },
     "k15-16": {
@@ -187,6 +190,7 @@
         "URA": 9,
         "URB": 25
       },
+      "supheliAlacaklar": {},
       "taksitKartlari": {}
     },
     "k3-4": {
@@ -229,6 +233,7 @@
         "URA": 10,
         "URB": 25
       },
+      "supheliAlacaklar": {},
       "taksitKartlari": {}
     },
     "k6": {
@@ -292,6 +297,7 @@
         "URA": 9,
         "URB": 25
       },
+      "supheliAlacaklar": {},
       "taksitKartlari": {}
     },
     "k7-8": {
@@ -355,6 +361,7 @@
         "URA": 9,
         "URB": 25
       },
+      "supheliAlacaklar": {},
       "taksitKartlari": {}
     },
     "k9-12": {
@@ -418,6 +425,7 @@
         "URA": 9,
         "URB": 25
       },
+      "supheliAlacaklar": {},
       "taksitKartlari": {}
     }
   },
@@ -498,6 +506,7 @@
     "URA": 9,
     "URB": 25
   },
+  "supheliAlacaklar": {},
   "taksitKartlari": {},
   "yinelenenler": []
 }

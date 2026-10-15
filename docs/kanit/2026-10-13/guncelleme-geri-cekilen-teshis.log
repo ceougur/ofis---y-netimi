@@ -1,0 +1,43 @@
+TAP version 13
+# (node:21055) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerçek süreçler)
+    # Subtest: (1) hazır 9.0.1 yayından geri çekildi (yayın listesi boş, kaynak çalışıyor) → açılışta KURULMAZ, hazır paket silinir, durum ve günlükte 'yayından kaldırıldı'
+    ok 1 - (1) hazır 9.0.1 yayından geri çekildi (yayın listesi boş, kaynak çalışıyor) → açılışta KURULMAZ, hazır paket silinir, durum ve günlükte 'yayından kaldırıldı'
+      ---
+      duration_ms: 2712.784058
+      type: 'test'
+      ...
+    # Subtest: (2) hazır 9.0.2 geri çekildi, yayındaki en yeni 9.0.1 (hazırdakinden ESKİ) → 9.0.2 kurulmaz/silinir; 9.0.1 kurulur, tek geçiş
+    ok 2 - (2) hazır 9.0.2 geri çekildi, yayındaki en yeni 9.0.1 (hazırdakinden ESKİ) → 9.0.2 kurulmaz/silinir; 9.0.1 kurulur, tek geçiş
+      ---
+      duration_ms: 3159.112868
+      type: 'test'
+      ...
+    # Subtest: (3) son denetim ağ hatasıyla döner → hazırdaki kurulur (bugünkü davranış); günlükte 'indiriliyor' değil 'hazırdaki paket kuruluyor'
+    ok 3 - (3) son denetim ağ hatasıyla döner → hazırdaki kurulur (bugünkü davranış); günlükte 'indiriliyor' değil 'hazırdaki paket kuruluyor'
+      ---
+      duration_ms: 2717.259946
+      type: 'test'
+      ...
+    # Subtest: (4) açılışta daha yeni sürüm var → o indirilip kurulur (bugünkü davranış); hazırdaki eski paket silinir
+    ok 4 - (4) açılışta daha yeni sürüm var → o indirilip kurulur (bugünkü davranış); hazırdaki eski paket silinir
+      ---
+      duration_ms: 3484.985572
+      type: 'test'
+      ...
+    1..4
+ok 1 - Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerçek süreçler)
+  ---
+  duration_ms: 12075.551969
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15266.257048

@@ -328,10 +328,11 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     const list = (sql, type) => store.all(sql, key).map(row => ({ ...row, type }));
     const planEntries = plans()?.entriesForCase ? plans().entriesForCase(key, dataset.currentKey()) : [];
     const items = [
-      ...list(`SELECT n.id, n.note AS text, n.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM notes n LEFT JOIN users u ON u.id = n.created_by WHERE n.case_key = ?`, "note"),
-      ...list(`SELECT p.id, p.phone, p.label, p.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM phones p LEFT JOIN users u ON u.id = p.created_by WHERE p.case_key = ?`, "phone"),
+      // 2.3.0 İz 5.6: not / telefon / haciz satırları düzeltilip silinebilir; düzeltme izi (updatedAt, updatedByName) tahsilattaki gibi.
+      ...list(`SELECT n.id, n.note AS text, n.created_at AS createdAt, n.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(e.display_name, '') AS updatedByName FROM notes n LEFT JOIN users u ON u.id = n.created_by LEFT JOIN users e ON e.id = n.updated_by WHERE n.case_key = ?`, "note"),
+      ...list(`SELECT p.id, p.phone, p.label, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(e.display_name, '') AS updatedByName FROM phones p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN users e ON e.id = p.updated_by WHERE p.case_key = ?`, "phone"),
       ...list(`SELECT p.id, p.amount, p.date, p.note, p.method, p.fin_ref AS finRef, p.created_by AS actorId, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(e.display_name, '') AS updatedByName FROM payments p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN users e ON e.id = p.updated_by WHERE p.case_key = ?`, "payment"),
-      ...list(`SELECT l.id, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM liens l LEFT JOIN users u ON u.id = l.created_by WHERE l.case_key = ?`, "lien"),
+      ...list(`SELECT l.id, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_at AS createdAt, l.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(e.display_name, '') AS updatedByName FROM liens l LEFT JOIN users u ON u.id = l.created_by LEFT JOIN users e ON e.id = l.updated_by WHERE l.case_key = ?`, "lien"),
       // Dosya geçmişindeki görevler de görev yetkisine uyar (personel yalnızca kendi görevlerini görür).
       ...visibleTasks(user, list(`SELECT t.id, t.title, COALESCE(a.display_name, t.assignee) AS assignee, t.assignee_id AS assigneeId, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, t.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users a ON a.id = t.assignee_id WHERE t.case_key = ?`, "task")),
       // Kayda bağlı taksit kartlarının tahsilat ve ödemeleri (v2.0.6): karttan girilen tahsilat kişinin geçmişinde de görünür.
@@ -497,6 +498,82 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     changed(user, "activity", { caseKey: key });
     ok(res, { id: itemId, expiresAt: expires.toISOString() });
   });
+
+  // ---- İşlem geçmişi düzeltme ve silme (2.3.0 İz 5.6; müşteri talebi 6) ----
+  // Kayıt detay kartındaki not, telefon ve haciz satırları düzeltilip silinebilir. Yetki: kayıt düzeltme (records.edit) + satır türünün
+  // kendi yetkisi (notes.write / phones.create / liens.create). Silinen satır Silinenler'e gider (trash; routes/trash.mjs geri yükler),
+  // her adım denetim kaydına yazılır. Taksit hareketi ve görev kendi modülünden düzenlenir (ekranda "Kayda Git"); burada ucu yoktur.
+  // Haciz düzeltmede düşüm tarihi yeniden hesaplanır (konulduğu tarih + 1 yıl); Haciz Uyarıları listesi (GET /liens) etkin satırlardan
+  // okunduğu için silinen/düzeltilen hacze kendiliğinden uyar.
+  const HISTORY = {
+    // SQL cümleleri sabittir (tablo adı değişkenle kurulmaz): K6 statik tarayıcı (test/banka-210-post-statik.test.mjs) para tablosu yazımını ayırt edebilsin.
+    note: { permission: "notes.write", label: "Not", select: "SELECT id, case_key AS caseKey, note, created_by AS createdBy, created_at AS createdAt FROM notes WHERE id = ?", remove: "DELETE FROM notes WHERE id = ?" },
+    phone: { permission: "phones.create", label: "Telefon", select: "SELECT id, case_key AS caseKey, phone, label, created_by AS createdBy, created_at AS createdAt FROM phones WHERE id = ?", remove: "DELETE FROM phones WHERE id = ?" },
+    lien: { permission: "liens.create", label: "Haciz", select: "SELECT id, case_key AS caseKey, title, placed_at AS placedAt, expires_at AS expiresAt, status, created_by AS createdBy, created_at AS createdAt FROM liens WHERE id = ?", remove: "DELETE FROM liens WHERE id = ?" },
+  };
+  const editableHistory = (req, kind, id) => {
+    const spec = HISTORY[kind];
+    const user = auth.requirePermission(req, "records.edit");
+    auth.requirePermission(req, spec.permission);
+    const row = store.get(spec.select, limited(id, 120, spec.label));
+    if (!row) throw new HttpError(404, `${spec.label} kaydı bulunamadı. Başka biri silmiş olabilir.`);
+    return { user, row, spec };
+  };
+  const phoneInput = body => {
+    const phone = text(body.phone).replace(/[^\d+]/g, "");
+    if (phone.length < 7 || phone.length > 20) throw new HttpError(400, "Geçerli bir telefon numarası gerekli.");
+    return { phone, label: limited(body.label, 60, "Etiket") || "Telefon" };
+  };
+  const lienInput = body => {
+    const placed = new Date(text(body.placedAt));
+    if (Number.isNaN(placed.getTime())) throw new HttpError(400, "Geçerli bir haciz tarihi gerekli.");
+    const expires = new Date(placed);
+    expires.setFullYear(expires.getFullYear() + 1);
+    return { title: limited(body.title, 200, "Haciz başlığı") || "Haciz", placedAt: placed.toISOString(), expiresAt: expires.toISOString() };
+  };
+  const historyDelete = (kind, apiPath) => {
+    router.delete(`/api/workspace/${apiPath}/:id`, async ({ req, res, params }) => {
+      const { user, row, spec } = editableHistory(req, kind, params.id);
+      const title = kind === "note" ? row.note : kind === "phone" ? `${row.label}: ${row.phone}` : row.title;
+      // Silme, Silinenler kaydı ve denetim kaydı tek işlemde (tahsilat silmedeki B5 kuralı: yarıda kesilirse üçü birden yazılmaz).
+      store.tx(() => {
+        store.run(spec.remove, row.id);
+        trash?.add({ kind, ref: row.id, title: String(title || spec.label).slice(0, 120), detail: `Kayıt: ${row.caseKey}`, payload: row, user });
+        audit(user, `case.${kind}.deleted`, row.id, { caseKey: row.caseKey, ...row });
+      });
+      changed(user, "activity", { caseKey: row.caseKey });
+      ok(res, { id: row.id });
+    });
+  };
+  router.put("/api/workspace/notes/:id", async ({ req, res, params }) => {
+    const { user, row } = editableHistory(req, "note", params.id);
+    const body = await readJson(req);
+    const note = limited(body.note, 5000, "Not");
+    if (!note) throw new HttpError(400, "Not metni gerekli.");
+    store.run("UPDATE notes SET note = ?, updated_by = ?, updated_at = ? WHERE id = ?", note, user.id, now(), row.id);
+    audit(user, "case.note.updated", row.id, { caseKey: row.caseKey, previous: { note: row.note }, note });
+    changed(user, "activity", { caseKey: row.caseKey });
+    ok(res, { id: row.id });
+  });
+  router.put("/api/workspace/phones/:id", async ({ req, res, params }) => {
+    const { user, row } = editableHistory(req, "phone", params.id);
+    const { phone, label } = phoneInput(await readJson(req));
+    store.run("UPDATE phones SET phone = ?, label = ?, updated_by = ?, updated_at = ? WHERE id = ?", phone, label, user.id, now(), row.id);
+    audit(user, "case.phone.updated", row.id, { caseKey: row.caseKey, previous: { phone: row.phone, label: row.label }, phone, label });
+    changed(user, "activity", { caseKey: row.caseKey });
+    ok(res, { id: row.id });
+  });
+  router.put("/api/workspace/liens/:id", async ({ req, res, params }) => {
+    const { user, row } = editableHistory(req, "lien", params.id);
+    const { title, placedAt, expiresAt } = lienInput(await readJson(req));
+    store.run("UPDATE liens SET title = ?, placed_at = ?, expires_at = ?, updated_by = ?, updated_at = ? WHERE id = ?", title, placedAt, expiresAt, user.id, now(), row.id);
+    audit(user, "case.lien.updated", row.id, { caseKey: row.caseKey, previous: { title: row.title, placedAt: row.placedAt, expiresAt: row.expiresAt }, title, placedAt, expiresAt });
+    changed(user, "activity", { caseKey: row.caseKey });
+    ok(res, { id: row.id, expiresAt });
+  });
+  historyDelete("note", "notes");
+  historyDelete("phone", "phones");
+  historyDelete("lien", "liens");
 
   router.get("/api/workspace/liens", async ({ req, res, url }) => {
     auth.requireUser(req);

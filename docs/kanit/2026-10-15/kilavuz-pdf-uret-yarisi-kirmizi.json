@@ -1,0 +1,158 @@
+{
+  "ad": "kilavuz-pdf-uret-yarisi-kirmizi",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "38fcad17032a870a99ec6ec0426cba7ea6e6bf48",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 5,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T19:33:47.646Z",
+  "sure_sn": 27.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 13,
+    "basarisiz": 26,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 26 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "PDF'teki resim sayısı 0 ≥ kılavuzdaki farklı ekran 39",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “8. Banka”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Kurulum Sihirbazı”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Hesabı Atanmamış Eski Hareketler”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Tarihi Gelince Atanabilir”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Seçilenleri Bu Hesaba Ata”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “+ Kredi Kartı Ekle”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Kredi Kartı Kullan”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Çek Hesabı”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “İşlemden Sonra”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Kalanın Tamamını Öde”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Kart ve Kredi Borcu”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “+ Kart Borcu Ödemesi”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Bankalar Arası Transfer”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Ters Kaydet”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Gerçek Banka”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Bugünkü Nakit ve Banka”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Banka Bakiye Raporu”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Alt Hesap Mizanı”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Banka ve POS”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Yine de Kaydet”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Hesapsız (Açılıştan Önce)”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Kurulum Geçmişi”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Kart Borcuna Aktar”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF metninde: “Bankaya Geçmiş Say”",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/kilavuz-ticari-supheli-pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "9aa875f48bba1d08a2688f655166d2553bc4eaac4c4fd6ad0ed5ed1b23523341",
+  "ham_cikti_bayt": 2208
+}

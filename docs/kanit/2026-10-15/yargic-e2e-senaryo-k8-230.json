@@ -1,0 +1,32 @@
+{
+  "ad": "yargic-e2e-senaryo-k8-230",
+  "komut": "npm run test:senaryo-k8-230",
+  "commit": "03db78c94afc03cfcba5587e698acf9d2bd55cee",
+  "dal": "worktree-agent-aded053a756b1e4c8",
+  "kirli": 11,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T06:02:59.299Z",
+  "sure_sn": 12.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/yargic-e2e-senaryo-k8-230.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aded053a756b1e4c8",
+  "ham_cikti_sha256": "1d1ea9b3d0190ff62a78e7c76e65f5bd677c436e4ba270c014e5f22c609066f0",
+  "ham_cikti_bayt": 2194
+}

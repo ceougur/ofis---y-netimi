@@ -52,9 +52,13 @@ const MODULE_REASONS = Object.freeze({
   stock_moves: "Bu hareket Stok penceresinden girildi; Stok penceresinden düzeltilir ya da silinir.",
   cheque_events: "Bu hareket Çek / Senet penceresinden girildi; oradan geri alınır.",
   cheque_collections: "Bu işlem Çek / Senet penceresinden yapıldı; evrakın kartından Bankadan Geri Al ile geri alınır.",
+  doubtful_receivables: "Bu işlem cari kartındaki Şüpheli Alacak kaydından yapıldı; oradan silinir ya da geri alınır.",
+  doubtful_provisions: "Bu karşılık cari kartındaki Şüpheli Alacak kaydından ayrıldı; oradan silinir.",
 });
-// İşlem Kartı'nda kaynağın adı: para satırı olmayan Bankaya Tahsile Ver kaydı (plan §3.14) da (satırları SOURCE_LABELS'tan aranmaz).
-const SOURCE_NAMES = Object.freeze({ ...SOURCE_LABELS, cheque_collections: "Bankaya Tahsile Ver" });
+// İşlem Kartı'nda kaynağın adı: para satırı olmayan Bankaya Tahsile Ver kaydı (plan §3.14) ve şüpheli alacak kayıtları (2.3.0 İz 1) da.
+const SOURCE_NAMES = Object.freeze({ ...SOURCE_LABELS, cheque_collections: "Bankaya Tahsile Ver", doubtful_receivables: "Şüpheli Alacak", doubtful_provisions: "Şüpheli Alacak Karşılığı" });
+// 2.3.0 İz 1: şüpheli alacak başlıklarının yevmiye maddesi (lib/doubtful-gl.mjs kimlikleri; Değersiz Alacak satırı cari satırıdır).
+const DOUBTFUL_ENTRY_OF = Object.freeze({ doubtful_take: id => `doubtful-take:${id}`, doubtful_release: id => `doubtful-release:${id}`, doubtful_provision: id => `doubtful-provision:${id}`, doubtful_writeoff: id => `account:${id}` });
 const WIZARD_TYPES = new Set(["carry_close", "legacy_assign", "legacy_reclass"]);
 // Transferin kanalı (fin_events.channel adla saklanır) → Düzelt formunun anahtarı.
 const CHANNEL_KEY = Object.freeze({ EFT: "eft", FAST: "fast", Havale: "havale", Virman: "virman" });
@@ -351,6 +355,12 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
         ? entry => entry.id.startsWith("account:") && entry.date === event.date && entry.lines.some(line => BANK_SUBS.has(line.sub) && line.credit > 0)
         : entry => entry.id === wanted;
       lines = event.cheque_id ? journalLines({ cheques: [event.cheque_id] }, map, keep) : [];
+      linesSource = "journal";
+    } else if (DOUBTFUL_ENTRY_OF[event.type]) {
+      // Şüpheli alacak başlıkları (2.3.0 İz 1; para satırı yok): maddesi Ana Defter'in kuralıyla carinin bütün satırlarından (ayırma kuralı carinin
+      // tam geçmişini ister; süzgeç cari bazında). Değersiz Alacak başlığında madde cari satırınınkidir (B 129/659 / A 128).
+      const wanted = DOUBTFUL_ENTRY_OF[event.type](event.src_id);
+      lines = event.party_id ? journalLines({ parties: [event.party_id] }, map, entry => entry.id === wanted) : [];
       linesSource = "journal";
     } else {
       const rows = moduleRows(event);

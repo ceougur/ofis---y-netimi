@@ -1,0 +1,32 @@
+{
+  "ad": "ana-supheli-mutabakat-kisa",
+  "komut": "node test/mutabakat/kos.mjs --islem 1000 --tohum 3 --tohumlar 1",
+  "commit": "5de225f89cbc3d9b4a97f2a6ce7ba93cd7285fee",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:45:18.708Z",
+  "sure_sn": 134.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/ana-supheli-mutabakat-kisa.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "bcf33f7e72b8698c863f103a3e336ad61d7066645a144946f686e4661f99336f",
+  "ham_cikti_bayt": 2648
+}

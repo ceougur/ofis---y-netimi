@@ -65,7 +65,11 @@ describe("otomatik güncelleme — gerçek süreçlerle", () => {
     const IDLE = 4000;
     await withService("s2", { feedOptions: { releases: [] }, quiet: "never", retryDelays: [], timings: { idleMs: IDLE, periodicCheckMs: 800, periodicJitterMs: 0, deferRecheckMs: 600 } }, async ({ installRoot, feed, service, before }) => {
       assert.equal(await service.appVersion(), "9.0.0");
-      const activity = await startActivity(service.base, { intervalMs: 400 });
+      // Zorla üretme (ders 20): GUNCELLEME_S2_ZORLA_BOSLUK=1 → pingler 2 sn sonra boşta süresinden uzun durur; sunucu haklı olarak kurar
+      // ve bu test "etkinlik pingleri ... durdu" açıklamasıyla kırmızı olmalıdır (CI #742 Windows Node 24'teki sınıf).
+      const stall = process.env.GUNCELLEME_S2_ZORLA_BOSLUK ? { stallMs: IDLE + 1500, stallAfterMs: 2000 } : {};
+      const activity = await startActivity(service.base, { intervalMs: 400, ...stall });
+      const pingNote = () => `etkinlik pingleri: ${JSON.stringify(activity.stats)} (en uzun boşluk boşta süresi ${IDLE} ms'yi aşarsa test ortamı sorunudur, ürün değil)`;
       feed.setReleases([release]);
       const found = await waitFor(async () => {
         const status = await service.status();
@@ -73,7 +77,8 @@ describe("otomatik güncelleme — gerçek süreçlerle", () => {
       }, { timeoutMs: 20_000 });
       assert.equal(found.updates.deferred.version, "9.0.1");
       assert.equal(found.updates.available?.version, "9.0.1");
-      assert.equal(found.activity.busy, true);
+      assert.ok(activity.stats.maxGapMs < IDLE, `etkinlik pingleri ${activity.stats.maxGapMs} ms durdu (boşta süresi ${IDLE} ms) — ${pingNote()}`);
+      assert.equal(found.activity.busy, true, `kullanıcı çalışırken sunucu 'boşta' gördü (son etkinlik ${found.activity.lastActivityAt}); ${pingNote()}`);
       // Yönetici paneli de "hazır" gösterir (bu istek de etkinliktir; zaten çalışılıyor).
       const admin = client(service.base);
       assert.equal((await admin.login("admin", ADMIN_PASSWORD)).status, 200);
@@ -83,11 +88,12 @@ describe("otomatik güncelleme — gerçek süreçlerle", () => {
       // Kullanıcı çalışmayı sürdürürken birçok periyodik denetim ve yeniden bakış geçer; kurulmamalı.
       const checksBefore = feed.listHits();
       await sleep(3 * IDLE);
+      assert.ok(activity.stats.maxGapMs < IDLE, `etkinlik pingleri ${activity.stats.maxGapMs} ms durdu (boşta süresi ${IDLE} ms) — ${pingNote()}`);
       assert.ok(feed.listHits() - checksBefore >= 5, `çalışırken de denetlendi (${feed.listHits() - checksBefore})`);
       // 2.1.0: kullanıcı çalışırken paket arka planda BİR KEZ indirilip hazırlanır (kurulmaz; servis durmaz).
       assert.equal(feed.zipHits(), 1, "kullanıcı çalışırken paket arka planda bir kez indirildi");
       assert.equal((await service.status()).updates.prepared?.version, "9.0.1", "hazır: sonraki açılışta kurulacak");
-      assert.equal(await service.appVersion(), "9.0.0", "kullanıcı çalışırken kurulmadı");
+      assert.equal(await service.appVersion(), "9.0.0", `kullanıcı çalışırken kurulmadı — ${pingNote()}`);
       const lastAt = await activity.stop();
       await waitVersion(service, "9.0.1", 60_000);
       const status = await service.status();

@@ -569,10 +569,16 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     // v2.1.0 Aşama 14 (bilerek güncellendi): muhasebe Banka Raporları yetkisiyle (bank.reports, plan §9.1) yalnız Banka grubunu görür; finans
     // raporları (overview.view) kapalı kalır.
     const staffCatalog = (await staff.get("/api/workspace/report-center")).data.data;
-    assert.deepEqual([...new Set(staffCatalog.reports.map(report => report.group))], ["Banka"], "muhasebe yalnız Banka raporlarını görür");
+    // 2.3.0 İz 1.7 (bilerek güncellendi): Cari grubundaki Şüpheli Alacaklar raporu Şüpheli Alacak İşlemleri yetkisiyle de açılır (plan §3.11b/5).
+    assert.deepEqual([...new Set(staffCatalog.reports.map(report => report.group))], ["Cari", "Banka"], "muhasebe Şüpheli Alacaklar (Cari) + Banka raporları — İz 5.4 grup sırası");
+    assert.deepEqual(staffCatalog.reports.filter(report => report.group === "Cari").map(report => report.id), ["supheli-alacaklar"], "Cari grubunda yalnız Şüpheli Alacaklar");
     assert.equal((await staff.get("/api/workspace/report-center/kasa-hareketleri")).status, 403, "finans raporu kapalı");
     const users = (await admin.get("/api/admin/users")).data.data;
     await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["bank.reports"] } });
-    assert.equal((await staff.get("/api/workspace/report-center")).status, 403, "Banka Raporları yetkisi de kaldırılınca rapor merkezi kapalı");
+    // 2.3.0 İz 1.7 (bilerek güncellendi): Şüpheli Alacak İşlemleri kaldığı sürece katalog yalnız Şüpheli Alacaklar ile açık; o da kalkınca kapalı.
+    const narrowed = (await staff.get("/api/workspace/report-center")).data.data;
+    assert.deepEqual(narrowed.reports.map(report => report.id), ["supheli-alacaklar"], "Banka Raporları kalkınca yalnız Şüpheli Alacaklar");
+    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["bank.reports", "accounts.doubtful"] } });
+    assert.equal((await staff.get("/api/workspace/report-center")).status, 403, "Şüpheli Alacak İşlemleri de kaldırılınca rapor merkezi kapalı");
   });
 });

@@ -1,0 +1,117 @@
+TAP version 13
+# (node:20379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6)
+    # Subtest: not: personel ekler, yönetici düzeltir (düzeltme izi), siler, Silinenler'den geri gelir; denetim kaydı tam
+    not ok 1 - not: personel ekler, yönetici düzeltir (düzeltme izi), siler, Silinenler'den geri gelir; denetim kaydı tam
+      ---
+      duration_ms: 16.460234
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:42:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:48:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: telefon: düzeltme numarayı temizler, bozuk numara 400; silme Silinenler'e gider ve geri gelir
+    not ok 2 - telefon: düzeltme numarayı temizler, bozuk numara 400; silme Silinenler'e gider ve geri gelir
+      ---
+      duration_ms: 13.610677
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kısa numara reddedilir
+        
+        404 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:85:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: haciz: düzeltmede düşüm tarihi yeniden hesaplanır; Haciz Uyarıları (7 gün) düzeltilen ve silinen hacze uyar
+    not ok 3 - haciz: düzeltmede düşüm tarihi yeniden hesaplanır; Haciz Uyarıları (7 gün) düzeltilen ve silinen hacze uyar
+      ---
+      duration_ms: 9.487489
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:102:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        404 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:112:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: kayıt düzeltme yetkisi kaldırılan kullanıcı not ekler ama düzeltemez / silemez (403); oturumsuz 401
+    not ok 4 - yetki: kayıt düzeltme yetkisi kaldırılan kullanıcı not ekler ama düzeltemez / silemez (403); oturumsuz 401
+      ---
+      duration_ms: 6.77312
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:138:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:143:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6)
+  ---
+  duration_ms: 574.751128
+  type: 'suite'
+  location: '/tmp/claude-0/ana-iz5-eski-012c8d3/test/isgecmisi-230.test.mjs:15:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 916.608542

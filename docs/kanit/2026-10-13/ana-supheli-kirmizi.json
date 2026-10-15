@@ -1,0 +1,158 @@
+{
+  "ad": "ana-supheli-kirmizi",
+  "komut": "node --test test/banka-230-supheli.test.mjs test/banka-230-supheli-bozma.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:45:03.658Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 1,
+    "basarisiz": 27,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 27 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Şüpheli — sınırlar: tutar, karşılık, değersiz, tarih › F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1.000, 120 = 0; 0 / eksi / 3 ondalık 400",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:35:3",
+      "hata": "no such table: doubtful_receivables"
+    },
+    {
+      "ad": "Şüpheli — sınırlar: tutar, karşılık, değersiz, tarih › G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date-before-record; karşılık 700 + 300 tamam",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:53:3",
+      "hata": "şüpheli listesi: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — sınırlar: tutar, karşılık, değersiz, tarih › I / J — kilitli dönem 409 (al / çıkar / karşılık / değersiz / sil), ileri 400 date-future, geçersiz 400 date-invalid, boş 400 date-missing",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:69:3",
+      "hata": "şüpheli listesi: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki, audit › K — aynı kimlik + aynı gövde → replayed (tek kayıt); aynı kimlik farklı gövde → 409 request-id-reused",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:99:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki, audit › O — aynı anda iki istek (600 + 600, borç 1.000): biri 200, öbürü 400 doubtful-exceeds-balance; 128 = 600",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:125:3",
+      "hata": "[[404,null],[404,null]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki, audit › P — aynı adlı iki cari: birinde al; öbürünün 120'si, kartı ve rapor satırı ayrı",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:138:3",
+      "hata": "al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki, audit › Q — yetki: personel 403; avukat (Cari Yönetimi var, Şüpheli Alacak İşlemleri yok) 403; muhasebe 200; kişiye özel ekle → 200, kaldır → 403; katalog",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:155:3",
+      "hata": "yetki kataloğu · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki, audit › R — audit: doubtful.take / provision / writeoff / release / deleted; S — FORBIDDEN_GL 128/129/644/654, Banka Ayarları fee=128 → 400",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:183:3",
+      "hata": "al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki, audit › W / V — tedarikçi 409 doubtful-customer-only; silinmiş cari 404; açık şüpheli kaydı olan cari silinemez; Değersiz Alacak satırı cari kartından silinmez/düzeltilmez",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:200:3",
+      "hata": "tedarikçi: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} Endpoint bulunamadı. · 404 !== 409 (beklenen 409, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — sil + geri al (ters kayıt), Silinenler, Şirket Verisini Sıfırla › L — kaydı sil → 128 = 0, cari 10.000 değişmez, başlık iptal, Silinenler'de; geri yükle → 128 = 4.000; her adımda Mutabakat Testi tamam",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:228:3",
+      "hata": "al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — sil + geri al (ters kayıt), Silinenler, Şirket Verisini Sıfırla › karşılığı sil → 129 = 0 → geri yükle → 129 = −1.000; değersizi sil → 128 ve cari geri → geri yükle; değersizi olan kayıt silinemez (önce değersiz)",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:258:3",
+      "hata": "şüpheli listesi: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — sil + geri al (ters kayıt), Silinenler, Şirket Verisini Sıfırla › geri yükleme kuralları: geri yüklenen kayıt borç bakiyesini aşarsa 409; kilitli tarih 409 period-locked",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:290:3",
+      "hata": "al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — sil + geri al (ters kayıt), Silinenler, Şirket Verisini Sıfırla › M — Şirket Verisini Sıfırla (hareketler): şüpheli tabloları boş, 128 = 129 = 0, Mutabakat Testi tamam",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:305:3",
+      "hata": "no such table: doubtful_receivables"
+    },
+    {
+      "ad": "Şüpheli — kapı ve tarama: ham SQL bozması yakalanır; eski sürüm dosyası (göç 23, kilit izi sürüme bağlı) › T — tutarı değiştir → gl:128/doubtful:records kırmızı; başlığı iptal et → kırmızı; kaydı olmayan başlık → kırmızı; düzeltince tamam",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:326:3",
+      "hata": "al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli — kapı ve tarama: ham SQL bozması yakalanır; eski sürüm dosyası (göç 23, kilit izi sürüme bağlı) › N — eski sürüm dosyası: user_version 22 + tablolar yok → göç 23 açar; kilit izi { version: '2.2.0' } göç öncesiyle aynı; şüpheli yokken denetim listesi aynı",
+      "konum": "test/banka-230-supheli-bozma.test.mjs:352:3",
+      "hata": "göç sürümü 22 (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — kabul tablosu (plan §3.11b; sayılar docs/2.3.0-SUPHELI-KABUL.md §2) › adım 1: Şüpheli Alacağa Al 4.000 (05.10, Dava) → B 128 / A 120; 128 = 4.000, 120 = 6.000; cari bakiyesi 10.000 DEĞİŞMEZ",
+      "konum": "test/banka-230-supheli.test.mjs:40:3",
+      "hata": "şüpheliye al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — kabul tablosu (plan §3.11b; sayılar docs/2.3.0-SUPHELI-KABUL.md §2) › adım 2: Karşılık Ayır 2.500 (06.10) → B 654 / A 129; 129 = −2.500, 654 = 2.500; 128 ve cari aynı",
+      "konum": "test/banka-230-supheli.test.mjs:66:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — kabul tablosu (plan §3.11b; sayılar docs/2.3.0-SUPHELI-KABUL.md §2) › adım 3: tahsilat 3.000 nakit (07.10) → B 100 / A 128 (önce şüpheliden); 644 kuralı B 129 / A 644 1.500; 128 = 1.000, 129 = −1.000, cari 7.000",
+      "konum": "test/banka-230-supheli.test.mjs:81:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 1000 (beklenen 1000, gelen 0)"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — kabul tablosu (plan §3.11b; sayılar docs/2.3.0-SUPHELI-KABUL.md §2) › adım 4: Değersiz Alacak Yaz 1.000 (08.10) → B 129 / A 128 (karşılıklı; 659'a 0); 128 = 0, 129 = 0, cari 6.000 (satır cari kartında)",
+      "konum": "test/banka-230-supheli.test.mjs:101:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — kabul tablosu (plan §3.11b; sayılar docs/2.3.0-SUPHELI-KABUL.md §2) › kapanmış kayıt: değersiz/karşılık/çıkar 409 doubtful-closed; kayıt listede 'Değersiz Yazıldı'",
+      "konum": "test/banka-230-supheli.test.mjs:137:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — kabul tablosu (plan §3.11b; sayılar docs/2.3.0-SUPHELI-KABUL.md §2) › rapor verisi (GET /api/workspace/doubtful): cari, neden, tarih, tutar, karşılık, tahsil edilen, değersiz, kalan; toplamlar = satırlar; süzgeç",
+      "konum": "test/banka-230-supheli.test.mjs:145:3",
+      "hata": "rapor: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — yan senaryolar (kabul §2 B–E, H, K3) › B — karşılıksız değersiz: borç 5.000 → al 5.000 → tahsilat 2.000 → değersiz 3.000: 659 = 3.000, 128 = 0, 129 = 0, cari 0",
+      "konum": "test/banka-230-supheli.test.mjs:171:3",
+      "hata": "al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — yan senaryolar (kabul §2 B–E, H, K3) › C — Şüpheliden Çıkar: borç 8.000 → al 3.000 → karşılık 1.000 → tahsilat 500 → çıkar: B 120 / A 128 2.500, B 129 / A 644 1.000; 120 = 7.500",
+      "konum": "test/banka-230-supheli.test.mjs:190:3",
+      "hata": "al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — yan senaryolar (kabul §2 B–E, H, K3) › D — tahsilat şüpheliyi aşınca: al 4.000 → tahsilat 5.000: A 128 4.000 + A 120 1.000; 128 = 0, 120 = 5.000 (tek madde iki alacak satırı)",
+      "konum": "test/banka-230-supheli.test.mjs:222:3",
+      "hata": "al: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Şüpheli Ticari Alacaklar — yan senaryolar (kabul §2 B–E, H, K3) › E — iki kayıt: al 2.000 (03.10) ve 3.000 (04.10) → tahsilat 2.500 (05.10): en eski önce (kalan 0 ve 2.500); 02.10 tarihli tahsilat şüpheliden düşmez",
+      "konum": "test/banka-230-supheli.test.mjs:239:3",
+      "hata": "al 2: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/docs/kanit/2026-10-13/ana-supheli-kirmizi.log",
+  "klasor": "/tmp/claude-0/ana-iz1-eski-b24e0c2",
+  "ham_cikti_sha256": "ecdec75fe4ea57d109d470e36201452841e8762a29590d90c460de21bf411cc7",
+  "ham_cikti_bayt": 35925
+}

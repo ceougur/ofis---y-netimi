@@ -1,0 +1,32 @@
+{
+  "ad": "ana-yargic-e2e-senaryo-supheli-230",
+  "komut": "npm run test:senaryo-supheli-230",
+  "commit": "469d547ec5b092a59394403ed3135b5c4f51dc54",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T06:23:52.208Z",
+  "sure_sn": 34.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 57,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-yargic-e2e-senaryo-supheli-230.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "168d135bb328d62af9c43f0e0df9af6a325e7f262b8ff234ab9bfbc012794274",
+  "ham_cikti_bayt": 5395
+}

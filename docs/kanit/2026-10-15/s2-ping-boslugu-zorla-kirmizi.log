@@ -1,0 +1,86 @@
+TAP version 13
+# (node:11359) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ---- s2 servis günlüğü (son) ----
+# 2026-10-15T22:01:43.977Z [INFO] DestekOfis servis yöneticisi http://127.0.0.1:44337
+# 2026-10-15T22:01:43.980Z [INFO] Uygulama başlatılıyor (app/9.0.0, iç port 40855)
+# 2026-10-15T22:01:44.584Z [INFO] Uygulama hazır: DestekOfis 9.0.0
+# 2026-10-15T22:01:44.815Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:44.816Z [INFO] 9.0.1 sürümü hazır; kullanıcılar çalışıyor; paket arka planda indirilip doğrulanacak, sunucu bir sonraki açılışta ya da 15 dakika boş kalınca / mesai dışında kendiliğinden kuracak (saatte bir bakılır) (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).
+# 2026-10-15T22:01:45.213Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:45.428Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:45.429Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:45.602Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:45.603Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:46.215Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:46.216Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:46.438Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:46.438Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:47.048Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:47.048Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:47.203Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:47.203Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# [uygulama] 2026-10-15T22:01:47.581Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+# 2026-10-15T22:01:47.812Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:47.813Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:48.004Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:48.005Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:48.614Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:48.614Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:48.803Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:48.803Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:49.410Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:49.410Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:49.605Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:49.606Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:50.211Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:50.212Z [INFO] 9.0.1 sürümü arka planda indirildi ve doğrulandı; sunucu bir sonraki açılışta (ya da boşta / mesai dışında) kuracak.
+# 2026-10-15T22:01:50.403Z [INFO] Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# 2026-10-15T22:01:50.415Z [INFO] 9.0.1 sürümü hazırdaki paketten kuruluyor (paket yeniden doğrulanıyor; indirme yok)…
+# 2026-10-15T22:01:50.808Z [INFO] Uygulama başlatılıyor (app/9.0.1, iç port 40709)
+# 2026-10-15T22:01:51.277Z [INFO] Uygulama hazır: DestekOfis 9.0.1
+# 2026-10-15T22:01:51.303Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.1
+# 2026-10-15T22:01:51.304Z [INFO] DestekOfis 9.0.1 sürümüne güncellendi (önceki 9.0.0).
+# [uygulama] 2026-10-15T22:01:54.274Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+# Subtest: otomatik güncelleme — gerçek süreçlerle
+    # Subtest: S2 kullanıcı çalışırken (mesai içi) bulunan sürüm KURULMAZ, 'hazır' görünür; etkinlik kesilince boşta süresi dolunca kurulur
+    not ok 1 - S2 kullanıcı çalışırken (mesai içi) bulunan sürüm KURULMAZ, 'hazır' görünür; etkinlik kesilince boşta süresi dolunca kurulur
+      ---
+      duration_ms: 14465.116532
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/guncelleme-gercek.test.mjs:64:3'
+      failureType: 'testCodeFailure'
+      error: `etkinlik pingleri 5903 ms durdu (boşta süresi 4000 ms) — etkinlik pingleri: {"requests":18,"errors":0,"slowestMs":45,"maxGapMs":5903,"lastOkAgoMs":173,"intervalMs":400} (en uzun boşluk boşta süresi 4000 ms'yi aşarsa test ortamı sorunudur, ürün değil)`
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        file:///home/user/ofis---y-netimi/test/guncelleme-gercek.test.mjs:91:14
+        async withService (file:///home/user/ofis---y-netimi/test/guncelleme-gercek.test.mjs:32:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/guncelleme-gercek.test.mjs:66:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 1)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - otomatik güncelleme — gerçek süreçlerle
+  ---
+  duration_ms: 14467.514713
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/guncelleme-gercek.test.mjs:44:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15610.855956

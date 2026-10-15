@@ -1,0 +1,39 @@
+{
+  "ad": "karar2-tam-npm-test-2",
+  "komut": "npm test",
+  "commit": "4c725a74d3820ad387c0e64befdb6bfcdb59c443",
+  "dal": "worktree-agent-ae29a6d1c9c3d14a0",
+  "kirli": 23,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T09:02:24.885Z",
+  "sure_sn": 1385.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2457,
+    "gecen": 2456,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerçek süreçler) › (2) hazır 9.0.2 geri çekildi, yayındaki en yeni 9.0.1 (hazırdakinden ESKİ) → 9.0.2 kurulmaz/silinir; 9.0.1 kurulur, tek geçiş",
+      "konum": "test/guncelleme-hazir-geri-cekilen.test.mjs:111:3",
+      "hata": "`geçmişte 'yayından kaldırıldı' kaydı — geçmiş: [\"prepared:9.0.2\",\"prepared:9.0.1\",\"activated:9.0.1\",\"installed:9.0.1\"]; günlük: [\"2026-10-15T09:16:15.272Z [INFO] Açılışta hazır güncelleme var (9.0.1); kurmadan önce son denetim (en çok 60 sn).\",\"2026-10-15T09:16:15.301Z [INFO] 9.0.1 sürümü hazırdaki paketten kuruluyor (paket yeniden doğrulanıyor; indirme yok)…\",\"2026-10-15T09:16:16.121Z [INFO] Uygulama hazır: DestekOfis 9.0.1\",\"2026-10-15T09:16:16.194Z [INFO] Hazırdaki güncelleme paketi silindi: 9.0.1\"]` (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/karar2-tam-npm-test-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae29a6d1c9c3d14a0",
+  "ham_cikti_sha256": "a01508913931c3fe9b6c8668681870bbf394bc7a1df30e37adb537fca6779180",
+  "ham_cikti_bayt": 865113,
+  "not": "Tek kırmızı: test/guncelleme-hazir-geri-cekilen (2) — CLAUDE.md 'AÇIK (13.10) güncelleyici ara sıra kırmızı' maddesi (geçmişte prepared-withdrawn kaydı yok); bu kez LINUX'ta, tam koşu yükü altında. Bu işin dokunduğu kodla ilgisiz (updater). Tek başına 3/3 yeşil: karar2-guncelleme-geri-cekilen-yeniden. İlk tam koşuda aynı test yeşildi."
+}

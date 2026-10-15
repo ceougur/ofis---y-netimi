@@ -184,6 +184,8 @@
       .join("");
     // v2.2.0 (plan §3.14): Bankaya Tahsile Ver (portföydeki alınan evrak) / Bankadan Geri Al (tahsildeki evrak) — sunucunun bankActions'ı.
     const bankButtons = (cheque.bankActions || []).map(action => `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-bank-action="${esc(action.key)}">${esc(action.label)}</button>`).join("");
+    // 2.3.0 İz 1.6 (plan §3.11b/2 K11): karşılıksız dönen ALINAN evrakın kartında kısayol — neden ve tutar evraktan (sunucu chequeId). Yetkisizde gizli.
+    const doubtfulButton = cheque.direction === "in" && cheque.status === "bounced" && cheque.accountId && HOF.can("accounts.manage") && HOF.can("accounts.doubtful") && HOF.accounts?.doubtfulFromCheque ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="doubtful" title="Evrakın tutarı şüpheli alacağa alınır (B 128 / A 120); neden evraktan">Şüpheli Alacağa Al</button>' : "";
     // Tahsildeki evrak: Ciro Et ve Sil pasif; nedeni düğmelerin yanında görünür yazı (yalnız ipucu değil). Düzenle'de yalnız no, banka, açıklama.
     const held = cheque.deposited && cheque.collection ? cheque.collection : null;
     const why = held && cheque.canManage ? `Ciro Et ve Sil kapalı: evrak ${held.bankLabel} hesabında tahsilde (${HOF.formatDate(held.givenDate)}). Tutar, cari, tarih ve vade değişmez; Düzenle'de yalnız no, banka ve açıklama düzeltilir. Önce Bankadan Geri Al'ın.` : "";
@@ -218,7 +220,7 @@
         ${fact("Fatura", cheque.invoiceId && HOF.can("invoices.view") ? `<a href="#" data-open-invoice="${esc(cheque.invoiceId)}" title="Bu evrak faturanın ödemesidir; faturayı iptal etmeden silinmez">${esc(cheque.invoiceNumber || "Faturayı Aç")}</a>` : "")}
         ${fact("Açıklama", esc(cheque.note))}
       </dl>
-      <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${offCiro}${bankButtons}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : offDelete}${why ? `<p class="hof-chq-why" id="hof-chq-why" data-chq-why>${esc(why)}</p>` : ""}</div>
+      <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${offCiro}${bankButtons}${doubtfulButton}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : offDelete}${why ? `<p class="hof-chq-why" id="hof-chq-why" data-chq-why>${esc(why)}</p>` : ""}</div>
       ${cheque.lockNote && !why ? `<p class="hof-rep-note hof-chq-lock-note">${esc(cheque.lockNote)}</p>` : ""}
       <p class="hof-rep-note">${cheque.direction === "in" ? "Alınınca carinin borcu düşer (ya da taksite sayılır); para tahsil edilince banka hesabına ya da Kasa'ya girer. Ciro edilince tedarikçiye olan borç düşer. Karşılıksız çıkarsa müşteri yeniden borçlanır." : "Verilince tedarikçiye olan borç düşer; para ödenince bankadan ya da Kasa'dan çıkar."}</p>
       <h4 class="hof-chq-subtitle">İşlem Geçmişi</h4>
@@ -637,6 +639,7 @@
     }
     if (!view.cheque) return;
     if (act === "undo") return undo(view.cheque);
+    if (act === "doubtful") return HOF.accounts.doubtfulFromCheque(view.cheque);
     if (act === "edit") return chequeForm({ direction: view.cheque.direction, cheque: view.cheque });
     if (act === "delete") return remove(view.cheque);
   }
@@ -653,6 +656,22 @@
     chequeForm({ direction, preset: { account, amount } });
   };
   HOF.cheques = { open, newFor };
+  // 2.3.0 İz 5.5 Hızlı Arama: yönler (alınan portföy / verilen evrak) ve yeni evrak işlemleri; "çek" ya da "senet" yazınca hepsi gelir.
+  HOF.search?.register(() => {
+    if (!HOF.can("cheques.view")) return [];
+    const name = moduleName();
+    const list = [
+      { group: "Sayfa", label: "Alınan Çek / Senet", path: name, keywords: ["Portföy", "Müşteri Çeki", "Senet"], run: () => open({ direction: "in" }) },
+      { group: "Sayfa", label: "Verilen Çek / Senet", path: name, keywords: ["Verilen Evrak", "Senet"], run: () => open({ direction: "out" }) },
+    ];
+    if (canManage()) {
+      list.push(
+        { group: "İşlem", label: "Çek / Senet Al", path: name, keywords: ["Portföye Al", "Senet Al", "Çek Al"], run: () => { open({ direction: "in" }); return chequeForm({ direction: "in" }); } },
+        { group: "İşlem", label: "Çek / Senet Ver", path: name, keywords: ["Senet Ver", "Çek Ver"], run: () => { open({ direction: "out" }); return chequeForm({ direction: "out" }); } },
+      );
+    }
+    return list;
+  });
   HOF.whenReady(() => {
     // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher).
     const refreshList = HOF.refresher(() => (modal && view.mode === "list" ? loadList(false, { quiet: true }) : null));

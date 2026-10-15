@@ -1,0 +1,58 @@
+{
+  "ad": "iz33-iz5-kirmizi",
+  "komut": "node --test test/rapor-230-iz5.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:52:07.048Z",
+  "sure_sn": 2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 0,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.4 katalog grup sırası: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (tanım sırasından bağımsız)",
+      "konum": "test/rapor-230-iz5.test.mjs:114:3",
+      "hata": "grup sırası: Kasa · Ana Defter · Banka · Cari · Fatura · Taksit · Çek / Senet · Stok · Kayıtlar · Ofis · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.3 POS Satış Raporu: her POS × tür × dönem — satış, taksitli satış, iade ayrı satır (eksi); komisyon matrah, BSMV ayrı, net; TOPLAM; PDF/Excel",
+      "konum": "test/rapor-230-iz5.test.mjs:131:3",
+      "hata": "pos-satis tümü tüm türler Bu Yıl: 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.3 POS Komisyon Raporu: Aylık / Yıllık / Dönem Toplamı × POS × tür — satış ve iade ayrı satır, kip; TOPLAM = satırlar; PDF/Excel",
+      "konum": "test/rapor-230-iz5.test.mjs:172:3",
+      "hata": "pos-komisyon month tümü: 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.1 Banka → Hareketler PDF / Excel: ekrandaki süzgeçle aynı satırlar (hesap, tür, yön, tarih, arama), alt TOPLAM, Rapor Merkezi başlığı; bank.view yeter, personel 403",
+      "konum": "test/rapor-230-iz5.test.mjs:209:3",
+      "hata": "tümü Excel 404 · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.2 Tüm Zamanlar: her raporun ekran başlığı ve PDF'i '1976' / '19xx' içermez, dönem metni 'Tüm Zamanlar'; POS Ödeme Takvimi boşken ipucu + Banka → Hareketler bağı",
+      "konum": "test/rapor-230-iz5.test.mjs:274:3",
+      "hata": "banka-bakiye PDF: Tüm Zamanlar (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/.claude/worktrees/agent-afa90b5a72737cee4/docs/kanit/2026-10-15/iz33-iz5-kirmizi.log",
+  "klasor": "/tmp/claude-0/iz33-eski-b24e0c2",
+  "ham_cikti_sha256": "c16d6d5734cfe1622e12f9ba6f28b7ff786aa88b557d54ff7eb3182547a3217b",
+  "ham_cikti_bayt": 7518
+}

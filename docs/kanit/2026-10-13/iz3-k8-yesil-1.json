@@ -1,0 +1,32 @@
+{
+  "ad": "iz3-k8-yesil-1",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-230-k8-taksit.test.mjs",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a958f5cc6657a2287",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T18:55:53.475Z",
+  "sure_sn": 3.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 16,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/iz3-k8-yesil-1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a958f5cc6657a2287",
+  "ham_cikti_sha256": "bbc4bea7405d5575def3a02585b187dadeba3ea624a4d84ec16e801a59cd216c",
+  "ham_cikti_bayt": 7259
+}

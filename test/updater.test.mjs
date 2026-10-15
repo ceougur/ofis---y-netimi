@@ -176,7 +176,8 @@ describe("güncelleyici (sahte GitHub ile)", () => {
     // Servis yöneticisi yeniden başlamadan 9.0.1'e geçildi: artık öneri yok, açma da reddedilir.
     running = "9.0.1";
     const again = await updater.check();
-    assert.equal(again.status, "up-to-date");
+    // Teşhis (13.10.2026, CI 60ed59d Windows Node 22'de bir kez "error"; Linux'ta 42/42 üretilemedi): düşerse nedeni günlükte görünsün.
+    assert.equal(again.status, "up-to-date", `ikinci denetim: ${JSON.stringify({ status: again.status, reason: again.reason, code: again.code, problems: again.problems })}`);
     assert.equal(again.currentVersion, "9.0.1");
     assert.throws(() => updater.stage(found, zip), error => error.code === "NOT_NEWER");
   });

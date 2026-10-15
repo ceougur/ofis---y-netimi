@@ -489,7 +489,7 @@ try {
     await admin.waitForFunction(() => document.querySelector("#hof-activity li:last-child")?.textContent.includes("1.250,00"), null, { timeout: 10000 });
     const order = await admin.$$eval("#hof-activity li", items => items.map(item => item.dataset.type));
     expect(order.at(-1) === "payment" && order.includes("note") && order.indexOf("note") < order.indexOf("payment"), `yeni işlem en altta olmalı: ${order}`);
-    await admin.click("#hof-activity [data-payment-edit]");
+    await admin.click("#hof-activity li[data-type=payment] [data-edit]");
     await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="amount"]');
     await admin.fill('.hof-modal input[name="amount"]', "1.500,00");
     await admin.click('.hof-modal button[type="submit"]');
@@ -506,7 +506,7 @@ try {
     expect(ledger.length === 2 && ledger[1].includes("Kırtasiye"), `kasa hareketleri eskiden yeniye: ${ledger.join(" | ")}`);
     await admin.screenshot({ path: path.join(artifacts, "04b-kasa.png") });
     await admin.click('.hof-modal [data-close]');
-    await admin.click("#hof-activity [data-payment-delete]");
+    await admin.click("#hof-activity li[data-type=payment] [data-delete]");
     await admin.click('.hof-modal [data-answer="yes"]');
     // 2.0.26 (A1): tahsilat silme de eksi bakiye denetiminden geçer. Kasa 1.300; 1.500 tahsilat silinince −200 olur → program
     // "Kasa Eksiye Düşecek" diye sorar (Uyar); "Yine de Sil" ile silinir.

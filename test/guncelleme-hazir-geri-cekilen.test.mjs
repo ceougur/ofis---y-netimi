@@ -28,6 +28,9 @@ const appDir = (root, version) => path.join(root, "app", version);
 const hazirDir = root => path.join(root, "app", ".hazir");
 const hazirList = root => (existsSync(hazirDir(root)) ? readdirSync(hazirDir(root)) : []);
 const stateOf = root => readJson(path.join(root, "app", "update-state.json"));
+// Teşhis (13.10.2026, CI a53a4bc Windows Node 22'de (2) bir kez kırmızı; kök neden bilinmiyor): düşerse geçmiş olayları ve açılış günlüğünün
+// durum/yayın satırları mesaja yazılır — "Güncelleme durumu kaydedilemedi" (saveState yazamadı) ile "yayından kaldırıldı" ayrımı oradan okunur.
+const teshis = (state, service) => `geçmiş: ${JSON.stringify((state.history || []).map(item => `${item.event}:${item.version || ""}`))}; günlük: ${JSON.stringify((service.bootLog() || "").split(/\r?\n/).filter(line => /kaydedilemedi|yayından|hazır|Hazır/.test(line)).slice(-12))}`;
 const appStarts = text => [...text.matchAll(/Uygulama başlatılıyor \(([^,]+),/g)].map(match => match[1].replace(/\\/g, "/"));
 const activated = root => stateOf(root).history.filter(item => item.event === "activated").map(item => item.version);
 
@@ -43,9 +46,13 @@ async function withFeed(name, body) {
     service.bootLog = () => readFileSync(service.logFile, "utf8").slice(offset);
     return service;
   };
-  const restart = async () => {
+  // "Açılışta" senaryoları: yayın kaynağı SERVİS DURDUKTAN SONRA değiştirilir (change), yoksa çalışan servisin 600 ms'lik periyodik
+  // denetimi durdurma sürerken değişikliği yakalar ve karar çalışma anında verilir (15.10.2026: Windows'ta durdurma uzun sürdüğü için
+  // (2) böyle düşüyordu; çalışma anı yolu ayrıca (2b)'de denenir).
+  const restart = async (change = null) => {
     await stopAllActivity();
     await services.at(-1).stop();
+    change?.();
     return boot({ retryDelays: [] });
   };
   try {
@@ -78,8 +85,7 @@ describe("Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerç
   it("(1) hazır 9.0.1 yayından geri çekildi (yayın listesi boş, kaynak çalışıyor) → açılışta KURULMAZ, hazır paket silinir, durum ve günlükte 'yayından kaldırıldı'", async () => {
     await withFeed("bos", async ctx => {
       await prepareDuringDay(ctx, [rel.v901], "9.0.1");
-      ctx.feed.setReleases([]);
-      const next = await ctx.restart();
+      const next = await ctx.restart(() => ctx.feed.setReleases([]));
       assert.equal(await next.appVersion(), "9.0.0", "geri çekilen 9.0.1 kurulmadı; 9.0.0 çalışıyor");
       assert.deepEqual(appStarts(next.bootLog()), ["app/9.0.0"], "bu açılışta uygulama yalnız 9.0.0 ile başlatıldı");
       assert.deepEqual(activated(ctx.root), [], "hiçbir sürüm etkinleştirilmedi");
@@ -88,7 +94,7 @@ describe("Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerç
       assert.ok(!existsSync(appDir(ctx.root, "9.0.1")), "hazır paketin açılımı (app\\9.0.1) silindi");
       const state = stateOf(ctx.root);
       assert.equal(state.prepared, null);
-      assert.ok(state.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.1"), "geçmişte 'yayından kaldırıldı' kaydı");
+      assert.ok(state.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.1"), `geçmişte 'yayından kaldırıldı' kaydı — ${teshis(state, next)}`);
       assert.match(next.bootLog(), /9\.0\.1 sürümü yayından kaldırıldığı için kurulmadı/);
       assert.doesNotMatch(next.bootLog(), /9\.0\.1 sürümü indiriliyor/);
       const status = await next.status();
@@ -108,25 +114,47 @@ describe("Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerç
   it("(2) hazır 9.0.2 geri çekildi, yayındaki en yeni 9.0.1 (hazırdakinden ESKİ) → 9.0.2 kurulmaz/silinir; 9.0.1 kurulur, tek geçiş", async () => {
     await withFeed("eski", async ctx => {
       await prepareDuringDay(ctx, [rel.v902, rel.v901], "9.0.2");
-      ctx.feed.setReleases([rel.v901]);
-      const next = await ctx.restart();
+      const next = await ctx.restart(() => ctx.feed.setReleases([rel.v901]));
       assert.equal(await next.appVersion(), "9.0.1", "kurulabilir en yeni sürüm (9.0.1) çalışıyor");
       assert.deepEqual(appStarts(next.bootLog()), ["app/9.0.1"], "bu açılışta uygulama bir kez, 9.0.1 ile başlatıldı");
       assert.deepEqual(activated(ctx.root), ["9.0.1"], "geri çekilen 9.0.2 hiç etkinleştirilmedi");
       assert.ok(!existsSync(appDir(ctx.root, "9.0.2")), "9.0.2 açılımı silindi");
       assert.deepEqual(hazirList(ctx.root), []);
       const state = stateOf(ctx.root);
-      assert.ok(state.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.2"));
-      assert.match(next.bootLog(), /9\.0\.2 sürümü yayından kaldırıldığı için kurulmadı/);
+      assert.ok(state.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.2"), `geçmişte 'yayından kaldırıldı' kaydı — ${teshis(state, next)}`);
+      // Karar iki yoldan birinde verilir: servis durdurulmadan önce periyodik denetim yetişirse çalışan servisin günlüğünde, yetişmezse
+      // açılış günlüğünde (aynı dosya). 15.10.2026: Windows'ta durdurma uzun sürdüğü için ilk yol gerçekleşiyor, kayıt yazılmıyordu.
+      assert.match(readFileSync(next.logFile, "utf8"), /9\.0\.2 sürümü yayından kaldırıldığı için kurulmadı/);
       assert.equal((await next.status()).updates.lastResult?.outcome, "success");
+    });
+  });
+
+  it("(2b) zorla: geri çekilme çalışan servisin periyodik denetimine yakalanır (servis durdurulmadan) → kayıt + günlük + hazır paket silinir; açılışta 9.0.1 kurulur", async () => {
+    // Ders 20: (2)'nin Windows'taki yarışının ön koşulu burada kesin oluşturulur — yayın listesi değişir ve servis durdurulmadan periyodik denetimin
+    // (600 ms) 9.0.1'i hazırlaması beklenir. Eski kodda geçmişte "prepared-withdrawn" yoktu (yalnız prepared:9.0.2 → prepared:9.0.1).
+    await withFeed("eski-calisirken", async ctx => {
+      const service = await prepareDuringDay(ctx, [rel.v902, rel.v901], "9.0.2");
+      ctx.feed.setReleases([rel.v901]);
+      const status = await waitFor(async () => {
+        const value = await service.status();
+        return value.updates.prepared?.version === "9.0.1" ? value : Promise.reject(new Error(`hazır: ${JSON.stringify(value.updates.prepared)}`));
+      }, { timeoutMs: 60_000, interval: 200 });
+      const before = stateOf(ctx.root);
+      assert.ok(before.history.some(item => item.event === "prepared-withdrawn" && item.version === "9.0.2"), `çalışırken geri çekilme kaydı — ${teshis(before, service)}`);
+      assert.equal(status.updates.lastResult?.outcome, "withdrawn");
+      assert.match(service.log(), /9\.0\.2 sürümü yayından kaldırıldığı için kurulmadı/);
+      assert.deepEqual(hazirList(ctx.root), ["9.0.1"], "hazırda yalnız yayındaki 9.0.1");
+      const next = await ctx.restart();
+      assert.equal(await next.appVersion(), "9.0.1");
+      assert.deepEqual(activated(ctx.root), ["9.0.1"], "geri çekilen 9.0.2 hiç etkinleştirilmedi");
+      assert.ok(!existsSync(appDir(ctx.root, "9.0.2")), "9.0.2 açılımı silindi");
     });
   });
 
   it("(3) son denetim ağ hatasıyla döner → hazırdaki kurulur (bugünkü davranış); günlükte 'indiriliyor' değil 'hazırdaki paket kuruluyor'", async () => {
     await withFeed("agyok", async ctx => {
       await prepareDuringDay(ctx, [rel.v901], "9.0.1");
-      ctx.feed.setDown(true);
-      const next = await ctx.restart();
+      const next = await ctx.restart(() => ctx.feed.setDown(true));
       assert.equal(await next.appVersion(), "9.0.1");
       assert.deepEqual(appStarts(next.bootLog()), ["app/9.0.1"]);
       assert.match(next.bootLog(), /son denetim yapılamadı/);
@@ -139,8 +167,7 @@ describe("Otomatik güncelleme: geri çekilen hazır sürüm (yargıç B5, gerç
   it("(4) açılışta daha yeni sürüm var → o indirilip kurulur (bugünkü davranış); hazırdaki eski paket silinir", async () => {
     await withFeed("yeni", async ctx => {
       await prepareDuringDay(ctx, [rel.v901], "9.0.1");
-      ctx.feed.setReleases([rel.v902, rel.v901]);
-      const next = await ctx.restart();
+      const next = await ctx.restart(() => ctx.feed.setReleases([rel.v902, rel.v901]));
       assert.equal(await next.appVersion(), "9.0.2");
       assert.deepEqual(appStarts(next.bootLog()), ["app/9.0.2"]);
       assert.deepEqual(activated(ctx.root), ["9.0.2"]);

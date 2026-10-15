@@ -36,7 +36,7 @@ describe("servis yöneticisi (supervisor)", () => {
 
   before(async () => {
     installRoot = mkdtempSync(path.join(tmpdir(), "destekofis-sup-"));
-    supervisor = await startSupervisor({ installRoot, appDir: root, port: 0, host: "127.0.0.1", discoveryPort: 0, log: silent, env: { HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!", HUKUK_LOG_LEVEL: "silent" } });
+    supervisor = await startSupervisor({ installRoot, appDir: root, port: 0, host: "127.0.0.1", discoveryPort: 0, log: silent, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!", HUKUK_LOG_LEVEL: "silent" } });
     base = `http://127.0.0.1:${supervisor.port}`;
     await waitFor(async () => (await health()).phase === "ready");
   });
@@ -143,7 +143,7 @@ describe("öksüz süreç koruması", () => {
   it("servis yöneticisi zorla kapatılınca uygulama da kapanır", async () => {
     const installRoot = mkdtempSync(path.join(tmpdir(), "destekofis-orphan-"));
     const processHandle = spawn(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(root, "server", "supervisor.mjs")], {
-      env: { ...process.env, HUKUK_INSTALL_ROOT: installRoot, PORT: "0", HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "info", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!" },
+      env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", HUKUK_INSTALL_ROOT: installRoot, PORT: "0", HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "info", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!" },
       stdio: ["ignore", "pipe", "pipe"],
     });
     let output = "";

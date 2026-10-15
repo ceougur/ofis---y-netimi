@@ -43,7 +43,8 @@ export function accountLedger(entries = [], plans = []) {
     if (!meta) continue;
     const amount = roundMoney(Number(entry.amount) || 0);
     // 2.2.0 (plan §4.3/2): POS komisyon kesintisi/iadesi (source 'bank') "pos-fee": yalnız bağlandığı komisyon faturasını kapatır, FIFO'ya girmez.
-    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : entry.source === "invoice" ? "invoice" : entry.source === "bank" ? "pos-fee" : "account";
+    // 2.3.0 İz 1: Değersiz Alacak satırı (source 'doubtful'; cari kartındaki Şüpheli Alacak işlemlerinden, oradan silinir).
+    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : entry.source === "invoice" ? "invoice" : entry.source === "bank" ? "pos-fee" : entry.source === "doubtful" ? "doubtful" : "account";
     lines.push({
       id: entry.id,
       origin,
@@ -52,10 +53,13 @@ export function accountLedger(entries = [], plans = []) {
       at: entry.createdAt || "",
       // Çek/senetten gelen satır (v2.0.7): alınan/ciro/karşılıksız açıklamada yazar; etiket evrak olduğunu söyler.
       // v2.0.15: faturadan gelen borç/alacak "Fatura" olarak görünür (açıklamada fatura türü ve numarası yazar).
-      label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : origin === "pos-fee" ? (entry.kind === "in" ? "POS Komisyon İadesi" : entry.method === "bank" ? "POS Komisyon Tahsili" : "POS Komisyon Kesintisi") : meta.label,
+      label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : origin === "pos-fee" ? (entry.kind === "in" ? "POS Komisyon İadesi" : entry.method === "bank" ? "POS Komisyon Tahsili" : "POS Komisyon Kesintisi") : origin === "doubtful" ? "Değersiz Alacak" : meta.label,
       sourceId: entry.sourceId || "",
       // v2.0.17: cari kartından girilen tahsilat/ödemenin "Kapatılacak Fatura" bağı (boş = otomatik, en eski açık fatura).
       invoiceId: entry.invoiceId || "",
+      // Karar 15.10.2026 (plan §3.11b/2): tahsilat şüpheliden düşmedi ("Normal Cari Hesaba İşle" işareti, fatura peşini, Kapatılacak Fatura).
+      doubtfulSkip: entry.doubtfulSkip === true,
+      doubtfulNormal: entry.doubtfulNormal === true,
       // v2.0.13: tahsilat/ödemenin yolu (Nakit, Havale / EFT, Kredi Kartı); borç/alacakta boş.
       method: meta.cash ? entry.method || "cash" : "",
       note: entry.note || "",

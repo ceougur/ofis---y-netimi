@@ -22,8 +22,13 @@ import os
 import re
 import sys
 
-DIL = "destekofis-senaryo/3"
-KABUL_EDILEN_DILLER = ("destekofis-senaryo/2", "destekofis-senaryo/3")   # sürüm 3 yalnız ekler
+DIL = "destekofis-senaryo/4"
+DIL3 = "destekofis-senaryo/3"
+KABUL_EDILEN_DILLER = ("destekofis-senaryo/2", DIL3, DIL)   # sürüm 3 ve 4 yalnız ekler
+# Sürüm 4 (15.10.2026): Şüpheli Ticari Alacaklar (PLAN §3.11b) ve K8 taksit kuralı (PLAN §3.10/3).
+# KABUL_KURALLARI: planın susan yerlerinde kabul belgesinin (docs/2.3.0-SUPHELI-KABUL.md §1) kuralları. False = yalnız planın
+# sözüyle yazılmış ilk okuma (KARARLAR.md "Sürüm 4": plan-only okuma ile KABUL'ün ayrıştığı yerler ve seçilen kural).
+KABUL_KURALLARI = True
 EN_BUYUK_KURUS = 10 ** 14          # 1e12 TL (SENARYO-DILI §3.3; PLAN §2.1)
 GECIKME = object()                 # hesap seçimi başarısız (bağımlı denetimler atlanır)
 
@@ -171,9 +176,9 @@ SEMA = {
     "stok_giris": ({"urun", "miktar"}, set(), False, None),
     "fatura": ({"tur", "cari", "kalemler"}, {"odeme"}, True, "zorunlu"),
     "iade": ({"asilFatura", "kalemler", "geri"}, set(), True, "zorunlu"),
-    "cari_tahsilat": ({"cari", "yol"}, {"tutar", "tutarHam", "hesap", "kapatilacakFatura"}, True, "secimli"),
+    "cari_tahsilat": ({"cari", "yol"}, {"tutar", "tutarHam", "hesap", "kapatilacakFatura", "normalCari"}, True, "secimli"),
     "cari_odeme": ({"cari", "yol"}, {"tutar", "tutarHam", "hesap", "kapatilacakFatura"}, True, "secimli"),
-    "taksit_tahsilat": ({"kart", "tutar", "yol"}, {"hesap", "taksitNo"}, True, "secimli"),
+    "taksit_tahsilat": ({"kart", "tutar", "yol"}, {"hesap", "taksitNo", "fazlaAvans"}, True, "secimli"),
     "kasa_banka": ({"yon", "tutar"}, {"hesap"}, True, "secimli"),
     "transfer": ({"kaynak", "hedef"}, {"tutar", "tutarHam", "ucret", "ucretHam", "ucretVergi"}, True, "secimli"),
     "banka_masraf": ({"hesap", "masrafTuru", "vergi"}, {"tutar", "tutarHam", "saglayici", "fatura", "kdvOrani"}, True,
@@ -198,9 +203,17 @@ SEMA = {
     "tahsile_ver": ({"evrak", "hesap"}, set(), True, None),
     "bankadan_geri_al": ({"evrak"}, set(), True, None),
     "evrak_sil": ({"evrak"}, set(), False, None),
+    # sürüm 4: Şüpheli Ticari Alacaklar — SENARYO-DILI §4.39–4.42
+    "supheli_al": ({"cari"}, {"tutar", "neden", "evrak", "aciklama"}, True, "zorunlu"),
+    "karsilik_ayir": ({"kayit", "tutar"}, set(), True, "secimli"),
+    "supheli_cikar": ({"kayit"}, set(), True, None),
+    "degersiz_yaz": ({"kayit", "tutar"}, set(), True, "secimli"),
 }
 EVRAK_OPLARI = {"evrak_al", "evrak_ver", "evrak_ciro", "evrak_tahsil", "evrak_odeme", "evrak_karsiliksiz", "tahsile_ver",
                 "bankadan_geri_al", "evrak_sil"}
+SUPHELI_OPLARI = {"supheli_al", "karsilik_ayir", "supheli_cikar", "degersiz_yaz"}
+NEDENLER = {"karsiliksiz_cek", "protestolu_senet", "dava", "icra", "diger"}        # PLAN §3.11b/2
+SUPHELI_KODLARI = {"120", "128", "129", "644", "654", "659"}                      # türetilmiş satırların yazıldığı hesaplar
 
 # tutar alanı (ve Ham çifti) zorunlu olan işlemler: alan → uç türü ('banka' | 'modul' | None = Ham yok, BELİRSİZ-22)
 TUTAR_ALANLARI = {
@@ -223,6 +236,8 @@ TUTAR_ALANLARI = {
     "kredi_odeme": {"anapara": "banka"},
     "evrak_al": {"tutar": None},
     "evrak_ver": {"tutar": None},
+    "karsilik_ayir": {"tutar": None},
+    "degersiz_yaz": {"tutar": None},
 }
 # isteğe bağlı tutar alanları
 SECIMLI_TUTAR = {"transfer": {"ucret": "banka"}, "kredi_odeme": {"faiz": "banka"}}
@@ -240,6 +255,7 @@ ROLLER = {"yonetici", "muhasebe", "personel"}
 # Takma ad türleri
 T_HESAP, T_CARI, T_URUN, T_FATURA, T_TAKSIT, T_HAREKET = "hesap", "cari", "urun", "fatura", "taksit", "hareket"
 T_EVRAK = "evrak"                                              # sürüm 3
+T_SUPHELI = "supheli"                                          # sürüm 4: şüpheli alacak kaydı
 
 # Sürüm 3 hesapları (PLAN §3.11a tablo): (yön, evrak türü) → hesap
 PORTFOY_HESABI = {"cek": "101.01", "senet": "121.01"}          # alınan, portföyde
@@ -249,7 +265,7 @@ VERILEN_HESABI = {"cek": "103", "senet": "321"}                # verilen (kendi)
 FIS_ISLEMLERI = {"banka_masraf", "faiz_geliri", "faiz_gideri", "diger_gelir", "diger_gider", "kart_borcu_odeme",
                  "kredi_kullanim", "kredi_odeme"}
 TERS_HEDEFLERI = {"transfer"} | FIS_ISLEMLERI
-SIL_HEDEFLERI = {"cari_tahsilat", "cari_odeme", "taksit_tahsilat", "kasa_hareket", "kasa_banka"}
+SIL_HEDEFLERI = {"cari_tahsilat", "cari_odeme", "taksit_tahsilat", "kasa_hareket", "kasa_banka", "karsilik_ayir"}
 BENZER_ISLEMLERI = {"cari_tahsilat", "cari_odeme", "taksit_tahsilat"}
 DUBLE_GRUBU = {"kasa_banka", "transfer"} | FIS_ISLEMLERI      # BELİRSİZ-4
 
@@ -276,7 +292,8 @@ def senaryo_dogrula(sen, dosya_adi):
         raise SenaryoHatasi(f"bilinmeyen üst alan: {sorted(fazla)}")
     if sen.get("dil") not in KABUL_EDILEN_DILLER:
         raise SenaryoHatasi(f"dil {DIL!r} değil")
-    surum3 = sen.get("dil") == DIL
+    surum3 = sen.get("dil") in (DIL3, DIL)
+    surum4 = sen.get("dil") == DIL
     beklenen_ad = os.path.basename(dosya_adi)
     if beklenen_ad.endswith(".json"):
         beklenen_ad = beklenen_ad[:-5]
@@ -347,6 +364,10 @@ def senaryo_dogrula(sen, dosya_adi):
             raise SenaryoHatasi(f"{aid}: bilinmeyen islem {op!r}")
         if op in EVRAK_OPLARI and not surum3:
             raise SenaryoHatasi(f"{aid}: evrak işlemi yalnız dil sürüm 3'te (SENARYO-DILI §13/9)")
+        if (op in SUPHELI_OPLARI or (op == "taksit_tahsilat" and "fazlaAvans" in a) or (op == "cari_tahsilat" and "normalCari" in a)) and not surum4:
+            raise SenaryoHatasi(f"{aid}: şüpheli işlemi / fazlaAvans / normalCari yalnız dil sürüm 4'te (SENARYO-DILI §13/10)")
+        if op == "cari_tahsilat" and "normalCari" in a and a["normalCari"] is not True:
+            raise SenaryoHatasi(f"{aid}: normalCari yalnız true olabilir (SENARYO-DILI §4.15)")
         zorunlu, secimli, tarihli, ad_durum = SEMA[op]
         izinli = set(zorunlu) | set(secimli) | {"id", "islem", "not"}
         if op not in ("kontrol", "saat"):
@@ -532,6 +553,28 @@ def senaryo_dogrula(sen, dosya_adi):
                 ref(aid, a["hesap"], T_HESAP)
             if "taksitNo" in a:
                 _miktar(aid, a["taksitNo"])
+            if "fazlaAvans" in a and a["fazlaAvans"] is not True:
+                raise SenaryoHatasi(f"{aid}: fazlaAvans yalnız true (§4.17)")
+            if "ad" in a:
+                tanimla(aid, a["ad"], T_HAREKET, op)
+        elif op == "supheli_al":
+            ref(aid, a["cari"], T_CARI)
+            if "evrak" in a:
+                if "tutar" in a or "neden" in a:
+                    raise SenaryoHatasi(f"{aid}: evrak kısayolunda tutar ve neden verilmez (§13/10)")
+                if ref(aid, a["evrak"], T_EVRAK)[1] != "alinan":
+                    raise SenaryoHatasi(f"{aid}: kısayol alınan evrakı anar (§4.39)")
+            else:
+                if "tutar" not in a or "neden" not in a:
+                    raise SenaryoHatasi(f"{aid}: tutar ve neden zorunlu (§13/10)")
+                _tutar_bicim(aid, "tutar", a["tutar"])
+                if a["neden"] not in NEDENLER:
+                    raise SenaryoHatasi(f"{aid}: neden {a['neden']!r} listede yok (§4.39)")
+            if "aciklama" in a and not isinstance(a["aciklama"], str):
+                raise SenaryoHatasi(f"{aid}: aciklama metin")
+            tanimla(aid, a["ad"], T_SUPHELI)
+        elif op in ("karsilik_ayir", "supheli_cikar", "degersiz_yaz"):
+            ref(aid, a["kayit"], T_SUPHELI)
             if "ad" in a:
                 tanimla(aid, a["ad"], T_HAREKET, op)
         elif op == "kasa_banka":
@@ -598,9 +641,14 @@ def senaryo_dogrula(sen, dosya_adi):
             if "ad" in a:
                 tanimla(aid, a["ad"], T_HAREKET, "ters_kayit")
         elif op == "sil":
-            hedef_tur = ref(aid, a["hedef"], T_HAREKET)[1]
-            if hedef_tur not in SIL_HEDEFLERI | TERS_HEDEFLERI | {"banka_masraf_kdv", "ters_kayit"}:
-                raise SenaryoHatasi(f"{aid}: {hedef_tur} bu dilde silinmez")
+            _alias_bicim(aid, a["hedef"])
+            if a["hedef"] in tanim and tanim[a["hedef"]][0] == T_SUPHELI:
+                if not surum4:
+                    raise SenaryoHatasi(f"{aid}: şüpheli kaydı silme yalnız dil sürüm 4'te")
+            else:
+                hedef_tur = ref(aid, a["hedef"], T_HAREKET)[1]
+                if hedef_tur not in SIL_HEDEFLERI | TERS_HEDEFLERI | {"banka_masraf_kdv", "ters_kayit"}:
+                    raise SenaryoHatasi(f"{aid}: {hedef_tur} bu dilde silinmez")
         elif op == "kontrol":
             if "planBeklenen" in a and not isinstance(a["planBeklenen"], dict):
                 raise SenaryoHatasi(f"{aid}: planBeklenen nesne olmalı")
@@ -763,6 +811,10 @@ class Durum:
         self.belgeler = {}         # faturalar, iadeler, KDV'li masraf faturaları
         self.kartlar = {}          # taksit kartları
         self.evraklar = {}         # sürüm 3: çek ve senetler
+        self.supheliler = {}       # sürüm 4: şüpheli alacak kayıtları {cari, tarih, sira, T, fis, silindi}
+        self.supheli_olaylar = []  # sürüm 4: karşılık / değersiz / çıkar olayları {tur, kayit, tarih, sira, tutar, etkin, fis}
+        self.supheli_gun = {}      # sürüm 4, BELİRSİZ-35: cari → (son şüpheli işlemi günü, son değersiz/çıkar günü, son alacak satırı günü)
+        self._turet_onbellek = None
         self.hareketler = {}
         self.para = []             # para satırları (Benzer İşlem ve §7 için)
         self.istekler = {}
@@ -792,7 +844,8 @@ class Durum:
         self.takma[ad] = (tur, anahtar)
 
     # ── defter
-    def fis_yaz(self, tur, tarih, satirlar, sira):
+    def fis_yaz(self, tur, tarih, satirlar, sira, kart_tarih=None):
+        # kart_tarih (PLAN §3.11b/2 (c)): taksit tahsilatı fişinde kartın tarihi — kartın tarihinden sonra alınan şüpheli kaydından düşmez.
         satirlar = [s for s in satirlar if s[2] != 0]
         for kod, taraf, tutar, _ in satirlar:
             if taraf not in ("B", "A") or not isinstance(tutar, int) or tutar < 0:
@@ -802,8 +855,9 @@ class Durum:
         if borc != alacak:
             raise KahinHatasi(f"fiş dengesiz ({tur}): borç {borc} ≠ alacak {alacak}")
         fis = {"id": self.yeni_anahtar("FS"), "tur": tur, "tarih": tarih, "satirlar": satirlar, "etkin": True,
-               "sira": sira}
+               "sira": sira, "kart_tarih": kart_tarih}
         self.fisler.append(fis)
+        self._turet_onbellek = None
         return fis["id"]
 
     def fis(self, fid):
@@ -821,7 +875,16 @@ class Durum:
                 if k != kod or (cari is not None and c != cari):
                     continue
                 t += tutar if taraf == "B" else -tutar
+        if kod in SUPHELI_KODLARI and self.supheliler:
+            for k, taraf, tutar, c, t_ in self.supheli_turet()[0]:
+                if k != kod or (cari is not None and c != cari) or (tarih is not None and t_ > tarih):
+                    continue
+                t += tutar if taraf == "B" else -tutar
         return t
+
+    def cari_bakiye(self, ck):
+        """Sürüm 4 (§4 gösterimi, KABUL K9): müşteri carisinin bakiyesi = 120 + 128 (cariye bağlı) satırları."""
+        return self.bakiye(self.cari_kodu(ck), cari=ck) + (self.bakiye("128", cari=ck) if self.cariler[ck]["tur"] == "musteri" else 0)
 
     def hesap_kodu_hareketli(self):
         kodlar = set()
@@ -829,7 +892,112 @@ class Durum:
             if f["etkin"]:
                 for k, _, _, _ in f["satirlar"]:
                     kodlar.add(k)
+        if self.supheliler:
+            for k, _, _, _, _ in self.supheli_turet()[0]:
+                kodlar.add(k)
         return kodlar
+
+    # ── sürüm 4: şüpheli alacak türetmesi (SENARYO-DILI §4.42a)
+    def supheli_turet(self):
+        """Bütün etkin satırlardan şüpheli durumunu yeniden türetir. Dönüş: (türetilmiş satırlar [(kod, taraf, tutar, cari, tarih)],
+        kayıt → {tahsil, degersiz, cikarilan, karsilik, kalan, durum}). Saklanan "tahsil edilen" yoktur (KABUL K3)."""
+        if self._turet_onbellek is not None:
+            return self._turet_onbellek
+        satirlar = []
+        durum = {}
+        kayitlar_cari = {}
+        for sk, r in self.supheliler.items():
+            if r["silindi"]:
+                continue
+            kayitlar_cari.setdefault(r["cari"], []).append(sk)
+        for ck, kayitlar in kayitlar_cari.items():
+            olaylar = []                                    # (tarih, tür sırası, adım sırası, tür, veri)
+            for sk in kayitlar:
+                r = self.supheliler[sk]
+                olaylar.append((r["tarih"], 0, r["sira"], "al", sk))
+                durum[sk] = {"tahsil": 0, "degersiz": 0, "cikarilan": 0, "karsilik": 0, "kalan": r["T"], "durum": "acik"}
+            for o in self.supheli_olaylar:
+                if not o["etkin"] or self.supheliler[o["kayit"]]["silindi"] or self.supheliler[o["kayit"]]["cari"] != ck:
+                    continue
+                sira_no = {"karsilik": 1, "degersiz": 2, "cikar": 4}[o["tur"]]
+                olaylar.append((o["tarih"], sira_no, o["sira"], o["tur"], o))
+            for f in self.fisler:
+                if not f["etkin"] or f["tur"] not in ALACAK_SATIRI_TURLERI:
+                    continue
+                for k, taraf, tutar, c in f["satirlar"]:
+                    if c == ck and taraf == "A" and k == "120" and tutar > 0:
+                        olaylar.append((f["tarih"], 3, f["sira"], "alacak", (tutar, f.get("kart_tarih"))))
+            if not KABUL_KURALLARI:
+                olaylar.sort(key=lambda o: (o[0], o[2]))    # plan-only okuma: aynı günde adım sırası
+            else:
+                olaylar.sort(key=lambda o: (o[0], o[1], o[2]))
+            acik = []                                       # (tarih, sira, sk) — en eski kayıt önce
+            for tarih, _, sira, tur, veri in olaylar:
+                if tur == "al":
+                    acik.append((tarih, sira, veri))
+                    acik.sort()
+                elif tur == "karsilik":
+                    s = durum[veri["kayit"]]
+                    s["karsilik"] += veri["tutar"]
+                    if KABUL_KURALLARI:
+                        fazla = s["karsilik"] - s["kalan"]    # KABUL K6 eki: karşılık ayrılırken de karşılık ≤ kalan; aşan aynı gün 644
+                        if fazla > 0:
+                            s["karsilik"] -= fazla
+                            satirlar.append(("129", "B", fazla, None, tarih))
+                            satirlar.append(("644", "A", fazla, None, tarih))
+                elif tur == "degersiz":
+                    s = durum[veri["kayit"]]
+                    y = min(s["karsilik"], veri["tutar"])
+                    s["karsilik"] -= y
+                    s["degersiz"] += veri["tutar"]
+                    s["kalan"] -= veri["tutar"]
+                    satirlar.append(("129", "B", y, None, tarih))
+                    satirlar.append(("659", "B", veri["tutar"] - y, None, tarih))
+                    satirlar.append(("128", "A", veri["tutar"], ck, tarih))
+                elif tur == "alacak":
+                    tutar_a, kart_tarih = veri
+                    kalan_t = tutar_a
+                    for kayit_tarihi, _, sk in acik:
+                        s = durum[sk]
+                        if s["durum"] != "acik" or kalan_t == 0:
+                            continue
+                        if kart_tarih is not None and kart_tarih > kayit_tarihi:
+                            continue            # PLAN §3.11b/2 (c): kart kayıttan sonra açıldıysa o kayıttan düşmez
+                        x = min(kalan_t, s["kalan"])
+                        if x <= 0:
+                            continue
+                        s["tahsil"] += x
+                        s["kalan"] -= x
+                        kalan_t -= x
+                        # PLAN §3.11b/3 (15.10.2026 kararıyla planın açık sözü; önceden KABUL K6 ↔ plan-only "tahsil kadar" ayrışıyordu):
+                        # karşılık ≤ kalan; yalnız aşan kısım 644. Plan-only okuma da artık aynı.
+                        fazla = s["karsilik"] - s["kalan"]
+                        if fazla > 0:
+                            s["karsilik"] -= fazla
+                            satirlar.append(("129", "B", fazla, None, tarih))
+                            satirlar.append(("644", "A", fazla, None, tarih))
+                    d_ = tutar_a - kalan_t
+                    if d_ > 0:                                      # A 120 yerine A 128 (o tutar kadar)
+                        satirlar.append(("120", "B", d_, ck, tarih))
+                        satirlar.append(("128", "A", d_, ck, tarih))
+                elif tur == "cikar":
+                    s = durum[veri["kayit"]]
+                    x = s["kalan"]
+                    satirlar.append(("120", "B", x, ck, tarih))
+                    satirlar.append(("128", "A", x, ck, tarih))
+                    if s["karsilik"] > 0:
+                        satirlar.append(("129", "B", s["karsilik"], None, tarih))
+                        satirlar.append(("644", "A", s["karsilik"], None, tarih))
+                    s["cikarilan"] = x
+                    s["kalan"] = 0
+                    s["karsilik"] = 0
+                    s["durum"] = "cikarildi"
+            for sk in kayitlar:
+                s = durum[sk]
+                if s["kalan"] < 0 or s["karsilik"] < 0 or s["karsilik"] > s["kalan"]:
+                    raise KahinHatasi(f"şüpheli değişmezi bozuk ({sk}): {s}")
+        self._turet_onbellek = ([x for x in satirlar if x[2] != 0], durum)
+        return self._turet_onbellek
 
     # ── hesap yardımcıları
     def hesap_alt(self, hk):
@@ -885,7 +1053,19 @@ YETKI = {
     "sil_nakit_baska": {"yonetici": 200, "muhasebe": "B", "personel": "B"},
     # sürüm 3: evrak işlemleri (PLAN §3.7 #9, #21 cheques.manage; §9.1 rolleri saymıyor → BELİRSİZ-18)
     "evrak": {"yonetici": 200, "muhasebe": "B", "personel": "B"},
+    # sürüm 4: şüpheli işlemleri (PLAN §3.11b/4 "cari yönetimi + muhasebe"); Fazlasını Avans Yaz (PLAN §3.10/3 plans.manage)
+    "supheli": {"yonetici": 200, "muhasebe": 200, "personel": 403},
+    "taksit_fazla": {"yonetici": 200, "muhasebe": "B", "personel": 403},
 }
+
+# §4.42a: müşteri carisinde "A 120" yazan ve şüpheliden düşen satırların fiş türleri (KABUL K3 listesi).
+# Plan-only okuma: "Tahsilat gelince" → yalnız para girişi olan tahsilatlar.
+ALACAK_SATIRI_TURLERI = {"cari_tahsilat", "taksit_tahsilat", "iade", "evrak_al"} if KABUL_KURALLARI else {"cari_tahsilat", "taksit_tahsilat"}
+# Sürüm 4 eki (15.10.2026; PLAN §3.11b/2 "Tahsilatta seçim" (a)–(b)): A 120 yazan ama şüpheliden DÜŞMEYEN satırlar — satış faturasının
+# peşin satırı, kapatilacakFatura bağlı tahsilat ve normalCari tahsilatı. Gün sırası (BELİRSİZ-35) denetimine girmez.
+NORMAL_TURLERI = {"pesin", "cari_tahsilat_normal"}
+# BELİRSİZ-38: şüpheli kaydı olan caride planda ve kabul listesinde olmayan A 120 satırları → senaryo kurmaz
+BELIRSIZ38_TURLERI = {"iade_geri", "fatura"}
 
 
 class Baglam:
@@ -998,7 +1178,7 @@ def _uygun(h, kategori):
 
 
 GOVDE_REF = {"hesap", "cari", "urun", "asilFatura", "kapatilacakFatura", "kart", "kaynak", "hedef", "kredi", "saglayici",
-             "evrak"}
+             "evrak", "kayit"}
 
 
 def govde(a, d=None):
@@ -1446,9 +1626,12 @@ def h_fatura(c):
     cari_kod = d.cari_kodu(ck)
     if a["tur"] == "satis":
         satirlar = [(cari_kod, "B", t_top, ck), ("600", "A", m_top, None), ("391", "A", k_top, None)]
+        if pesinler:
+            alacak_satiri_yaz(c, ck, tarih, "pesin")                 # BELİRSİZ-38: şüpheli caride satış peşini
     else:
         satirlar = [("153", "B", m_stok, None), ("770", "B", m_hizmet, None), ("191", "B", k_top, None),
                     (cari_kod, "A", t_top, ck)]
+        alacak_satiri_yaz(c, ck, tarih, "fatura")                    # BELİRSİZ-38: şüpheli müşteri carisine alış faturası
     bk = d.yeni_anahtar("F")
     fisler = [d.fis_yaz("fatura", tarih, satirlar, c.sira)]
     belge = {"tur": a["tur"], "cari": ck, "tarih": tarih, "sira": c.sira, "M": m_top, "K": k_top, "T": t_top,
@@ -1480,7 +1663,7 @@ def h_fatura(c):
         if toplam <= 0:
             raise SenaryoHatasi(f"{a['id']}: taksit kartının tutarı sıfır (K19)")
         tk = d.yeni_anahtar("K")
-        d.kartlar[tk] = {"belge": bk, "cari": ck, "toplam": toplam, "sayi": od["taksit"]["sayi"]}
+        d.kartlar[tk] = {"belge": bk, "cari": ck, "toplam": toplam, "sayi": od["taksit"]["sayi"], "tarih": tarih}
         belge["kart"] = tk
         c.tanimlar.append(("odeme.taksit.ad", T_TAKSIT, tk))
     eksi_denetle(c, etki_top, tarih)
@@ -1537,10 +1720,13 @@ def h_iade(c):
         iade_kalemleri.append({"no": no, "miktar": mik, "M": m, "K": k, "T": t})
     cari_kod = d.cari_kodu(ck)
     if satis:
+        alacak_satiri_yaz(c, ck, tarih, "iade")                      # sürüm 4: satıştan iade A 120 (KABUL K3)
         satirlar = [("610", "B", m_top, None), ("391", "B", k_top, None), (cari_kod, "A", t_top, ck)]
     else:
         satirlar = [(cari_kod, "B", t_top, ck), ("153", "A", m_stok, None), ("770", "A", m_hizmet, None),
                     ("191", "A", k_top, None)]
+        if g["yol"] != "acik":
+            alacak_satiri_yaz(c, ck, tarih, "iade_geri")             # BELİRSİZ-38 (müşteri carisinde)
     ik = d.yeni_anahtar("F")
     fisler = [d.fis_yaz("iade", tarih, satirlar, c.sira)]
     belge = {"tur": "satis_iade" if satis else "alis_iade", "cari": ck, "tarih": tarih, "sira": c.sira, "M": m_top,
@@ -1608,9 +1794,22 @@ def h_cari_tahsilat_odeme(c):
         hedef = ("fatura", bagli) if bagli else ("hedefsiz",)
         satir = para_satiri(d, a["islem"], yon, yol, hk, ck, t, tarih, hedef, bagli=bagli)
         benzer_denetle(c, satir)
+    # PLAN §3.11b/2 (a) "Sınır" (F13; §5.6 grup 4): açık şüpheli kaydı varken normalCari / bağlı tahsilat carinin 120 bakiyesini
+    # (= cari bakiyesi − açık kayıtların kalanı) aşarsa 409 doubtful-normal-exceeds; hiçbir şey yazılmaz.
+    if tahsilat and t is not None and (bagli is not None or a.get("normalCari") is True) and d.cariler[ck]["tur"] == "musteri":
+        _, durumlar = d.supheli_turet()
+        acik_kalan = sum(s["kalan"] for sk, s in durumlar.items() if d.supheliler[sk]["cari"] == ck)
+        if acik_kalan > 0 and t > d.cari_bakiye(ck) - acik_kalan:
+            c.ekle(4, 409, "doubtful-normal-exceeds", "PLAN")
     c.on_kapi()
     if bagli is not None and t > belge_acik_kapasitesi(d, bagli):
         raise SenaryoHatasi(f"{a['id']}: bağlı tutar belge açığını aşıyor (BELİRSİZ-10)")
+    # Sürüm 4 eki (PLAN §3.11b/2 (a)–(b)): kapatilacakFatura bağlı ya da normalCari tahsilatı şüpheliden DÜŞMEZ (A 120 kalır).
+    fis_turu = a["islem"]
+    if tahsilat and (bagli is not None or a.get("normalCari") is True):
+        fis_turu = "cari_tahsilat_normal"
+    if tahsilat:
+        alacak_satiri_yaz(c, ck, tarih, fis_turu)
     kod = d.para_kodu(yol, hk)
     cari_kod = d.cari_kodu(ck)
     if tahsilat:
@@ -1618,7 +1817,7 @@ def h_cari_tahsilat_odeme(c):
     else:
         satirlar = [(cari_kod, "B", t, ck), (kod, "A", t, None)]
     kasa_sirasi_denetle(d, a["id"], tarih, satirlar)
-    fid = d.fis_yaz(a["islem"], tarih, satirlar, c.sira)
+    fid = d.fis_yaz(fis_turu, tarih, satirlar, c.sira)
     d.para.append(satir)
     yeni_hareket(c, a["islem"], tarih, [fid], para=[satir["id"]], hesapli=hk is not None)
     eksi_denetle(c, etki_hesapla(satirlar), tarih)
@@ -1639,18 +1838,35 @@ def h_taksit_tahsilat(c):
     c.kilit(tarih)
     c.acilis_oncesi(hk, tarih)
     ck = kart["cari"]
+    # sürüm 4 K8 (§4.17): kalan 0 → 409 plan-paid; aşan → 409 plan-overpay; fazlaAvans yalnız yetkiliye [PLAN §3.10/3]
+    kalan = kart_kalan(d, tk)
+    fazla = a.get("fazlaAvans") is True
+    if "taksitNo" in a and kart_odenen(d, tk) > 0:
+        raise SenaryoHatasi(f"{a['id']}: taksitNo yalnız kartın ilk tahsilatında (BELİRSİZ-33)")
+    if t is not None:
+        if fazla and t <= kalan:
+            raise SenaryoHatasi(f"{a['id']}: fazlaAvans yalnız kalanı aşan tutarla (BELİRSİZ-33)")
+        if not fazla and kalan == 0:
+            c.ekle(4, 409, "plan-paid", "PLAN")
+        elif not fazla and t > kalan:
+            c.ekle(4, 409, "plan-overpay", "PLAN")
+        elif fazla:
+            izin = YETKI["taksit_fazla"][c.rol]
+            if izin == "B":
+                raise SenaryoHatasi(f"{a['id']}: fazlaAvans × {c.rol} planda yok (BELİRSİZ-18)")
+            if izin == 403:
+                c.ekle(4, 403, "plan-overpay-permission", "CIKARIM")
     satir = None
     if t is not None and hk is not GECIKME:
         hedef = ("taksit", tk, a["taksitNo"]) if "taksitNo" in a else ("kart", tk)
         satir = para_satiri(d, "taksit", "giris", yol, hk, ck, t, tarih, hedef, kart=tk)
         benzer_denetle(c, satir)
     c.on_kapi()
-    if t > kart_kalan(d, tk):
-        raise SenaryoHatasi(f"{a['id']}: tutar kartın kalanını aşıyor ya da kart kapalı (BELİRSİZ-6)")
+    alacak_satiri_yaz(c, ck, tarih, "taksit_tahsilat")
     kod = d.para_kodu(yol, hk)
     satirlar = [(kod, "B", t, None), (d.cari_kodu(ck), "A", t, ck)]
     kasa_sirasi_denetle(d, a["id"], tarih, satirlar)
-    fid = d.fis_yaz("taksit_tahsilat", tarih, satirlar, c.sira)
+    fid = d.fis_yaz("taksit_tahsilat", tarih, satirlar, c.sira, kart_tarih=kart["tarih"])   # PLAN §3.11b/2 (c)
     d.para.append(satir)
     yeni_hareket(c, "taksit_tahsilat", tarih, [fid], para=[satir["id"]], hesapli=hk is not None)
     eksi_denetle(c, etki_hesapla(satirlar), tarih)
@@ -1661,7 +1877,181 @@ def kart_odenen(d, tk):
 
 
 def kart_kalan(d, tk):
-    return d.kartlar[tk]["toplam"] - kart_odenen(d, tk)
+    """Sürüm 4 (§7): kalan = max(0, toplam − ödenen); fazlası carinin avansıdır (kart_fazla)."""
+    return max(0, d.kartlar[tk]["toplam"] - kart_odenen(d, tk))
+
+
+def kart_fazla(d, tk):
+    return max(0, kart_odenen(d, tk) - d.kartlar[tk]["toplam"])
+
+
+# ─────────────────────────────────────────────────── sürüm 4: şüpheli alacak yardımcıları (§4.39–4.42a)
+
+def supheli_gun_denetle(d, adim_id, ck, tarih, tur):
+    """BELİRSİZ-35: aynı caride aynı gün, adım sırasıyla: alacak satırından SONRA şüpheli işlemi; değersiz/çıkarmadan SONRA alacak satırı."""
+    g = d.supheli_gun.get(ck, {})
+    if tur == "alacak" and g.get("degersiz_cikar") == tarih:
+        raise SenaryoHatasi(f"{adim_id}: aynı gün değersiz/çıkarmadan sonra alacak satırı (BELİRSİZ-35)")
+    if tur in ("supheli", "degersiz_cikar") and g.get("alacak") == tarih:
+        raise SenaryoHatasi(f"{adim_id}: aynı gün alacak satırından sonra şüpheli işlemi (BELİRSİZ-35)")
+
+
+def supheli_gun_kaydet(d, ck, tarih, tur):
+    g = d.supheli_gun.setdefault(ck, {})
+    if tur == "degersiz_cikar":
+        g["degersiz_cikar"] = tarih
+    g[tur if tur == "alacak" else "supheli"] = tarih
+
+
+def supheli_kayitlari(d, ck):
+    return [sk for sk, r in d.supheliler.items() if r["cari"] == ck and not r["silindi"]]
+
+
+def alacak_satiri_yaz(c, ck, tarih, fis_turu):
+    """Müşteri carisine A 120 yazan satır: BELİRSİZ-35 (gün sırası) ve BELİRSİZ-38 (listede olmayan satır türü) denetimi."""
+    d = c.d
+    if d.cariler[ck]["tur"] != "musteri":
+        return
+    if fis_turu in NORMAL_TURLERI:
+        return                          # şüpheliden düşmez (PLAN §3.11b/2 (a)–(b)); gün sırası denetimi gerekmez
+    if fis_turu in BELIRSIZ38_TURLERI:
+        if any(d.supheliler[sk]["tarih"] <= tarih for sk in supheli_kayitlari(d, ck)):
+            raise SenaryoHatasi(f"{c.a['id']}: şüpheli kaydı olan caride {fis_turu} satırı (BELİRSİZ-38)")
+        return
+    supheli_gun_denetle(d, c.a["id"], ck, tarih, "alacak")
+    supheli_gun_kaydet(d, ck, tarih, "alacak")
+    d._turet_onbellek = None
+
+
+def _supheli_kayit(c):
+    sk = c.d.coz(c.a["kayit"], T_SUPHELI)
+    r = c.d.supheliler[sk]
+    if r["silindi"]:
+        raise SenaryoHatasi(f"{c.a['id']}: silinmiş şüpheli kaydıyla işlem (BELİRSİZ-37)")
+    return sk, r
+
+
+def _supheli_ret(c, oncelik, durum, kod):
+    """KABUL kodları yalnız KABUL_KURALLARI açıkken; plan-only okumada durum sınıfı ve kodsuz."""
+    if KABUL_KURALLARI:
+        c.ekle(oncelik, durum, kod, "KABUL")
+    else:
+        c.ekle(oncelik, durum if durum == 403 else "4xx")
+
+
+def h_supheli_al(c):
+    """§4.39: B 128 T (cari) / A 120 T (cari); cari bakiyesi değişmez [PLAN §3.11b/2]."""
+    a, d = c.a, c.d
+    c.yetki("supheli")
+    ck = d.coz(a["cari"], T_CARI)
+    tarih = c.tarih()
+    t = None
+    ek = None
+    if "evrak" in a:
+        ek = d.coz(a["evrak"], T_EVRAK)
+        e = d.evraklar[ek]
+        if e["cari"] != ck:
+            raise SenaryoHatasi(f"{a['id']}: kısayoldaki evrak başka carinin (§4.39)")
+        t = e["T"]
+    else:
+        t = c.tutar("tutar", None)
+    supheli_gun_denetle(d, a["id"], ck, tarih, "supheli")
+    c.istek()
+    c.kilit(tarih)
+    if d.cariler[ck]["tur"] != "musteri":
+        _supheli_ret(c, 4, 409, "doubtful-customer-only")
+    elif ek is not None and d.evraklar[ek]["durum"] != "karsiliksiz":
+        c.ekle(4, 409)                                            # KABUL §3/13: karşılıksız olmayan evrakla kısayol
+    else:
+        _, durumlar = d.supheli_turet()
+        acik_kalan = sum(s["kalan"] for sk, s in durumlar.items() if d.supheliler[sk]["cari"] == ck)
+        yuz_yirmi = d.cari_bakiye(ck) - acik_kalan
+        if t is not None and (yuz_yirmi <= 0 or t > yuz_yirmi):
+            _supheli_ret(c, 2, 400, "doubtful-exceeds-balance")
+    c.on_kapi()
+    satirlar = [("128", "B", t, ck), ("120", "A", t, ck)]
+    fid = d.fis_yaz("supheli_al", tarih, satirlar, c.sira)
+    sk = d.yeni_anahtar("S")
+    d.supheliler[sk] = {"cari": ck, "tarih": tarih, "sira": c.sira, "T": t, "fis": fid, "silindi": False,
+                        "neden": a.get("neden"), "evrak": ek, "kullanici": c.kullanici}
+    d._turet_onbellek = None
+    supheli_gun_kaydet(d, ck, tarih, "supheli")
+    c.tanimlar.append(("ad", T_SUPHELI, sk))
+
+
+def h_karsilik_ayir(c):
+    """§4.40: B 654 K / A 129 K; karşılık ≤ kaydın kalanı [PLAN §3.11b/3]."""
+    a, d = c.a, c.d
+    c.yetki("supheli")
+    sk, r = _supheli_kayit(c)
+    k = c.tutar("tutar", None)
+    tarih = c.tarih()
+    supheli_gun_denetle(d, a["id"], r["cari"], tarih, "supheli")
+    if tarih < r["tarih"]:
+        _supheli_ret(c, 2, 400, "date-before-record")
+    c.istek()
+    c.kilit(tarih)
+    _, durumlar = d.supheli_turet()
+    s = durumlar[sk]
+    if s["durum"] != "acik":
+        _supheli_ret(c, 4, 409, "doubtful-closed")
+    elif k is not None and s["karsilik"] + k > s["kalan"]:
+        _supheli_ret(c, 2, 400, "doubtful-provision-exceeds")
+    c.on_kapi()
+    satirlar = [("654", "B", k, None), ("129", "A", k, None)]
+    fid = d.fis_yaz("karsilik_ayir", tarih, satirlar, c.sira)
+    d.supheli_olaylar.append({"tur": "karsilik", "kayit": sk, "tarih": tarih, "sira": c.sira, "tutar": k, "etkin": True, "fis": fid})
+    d._turet_onbellek = None
+    supheli_gun_kaydet(d, r["cari"], tarih, "supheli")
+    yeni_hareket(c, "karsilik_ayir", tarih, [fid], hesapli=False, olay=len(d.supheli_olaylar) - 1)
+
+
+def h_supheli_cikar(c):
+    """§4.41: kalan X: B 120 X / A 128 X; karşılık varsa B 129 / A 644 [PLAN §3.11b/2–3]. Satırlar türetilir (§4.42a)."""
+    a, d = c.a, c.d
+    c.yetki("supheli")
+    sk, r = _supheli_kayit(c)
+    tarih = c.tarih()
+    supheli_gun_denetle(d, a["id"], r["cari"], tarih, "degersiz_cikar")
+    if tarih < r["tarih"]:
+        _supheli_ret(c, 2, 400, "date-before-record")
+    c.istek()
+    c.kilit(tarih)
+    _, durumlar = d.supheli_turet()
+    s = durumlar[sk]
+    if s["durum"] != "acik":
+        _supheli_ret(c, 4, 409, "doubtful-closed")
+    elif s["kalan"] == 0:
+        c.ekle(4, 409)                                            # KABUL K4: çıkarılacak şey yok
+    c.on_kapi()
+    d.supheli_olaylar.append({"tur": "cikar", "kayit": sk, "tarih": tarih, "sira": c.sira, "tutar": None, "etkin": True, "fis": None})
+    d._turet_onbellek = None
+    supheli_gun_kaydet(d, r["cari"], tarih, "degersiz_cikar")
+
+
+def h_degersiz_yaz(c):
+    """§4.42: Y = min(karşılık, Z): B 129 Y / B 659 (Z − Y) / A 128 Z [PLAN §3.11b/3]. Satırlar türetilir (§4.42a)."""
+    a, d = c.a, c.d
+    c.yetki("supheli")
+    sk, r = _supheli_kayit(c)
+    z = c.tutar("tutar", None)
+    tarih = c.tarih()
+    supheli_gun_denetle(d, a["id"], r["cari"], tarih, "degersiz_cikar")
+    if tarih < r["tarih"]:
+        _supheli_ret(c, 2, 400, "date-before-record")
+    c.istek()
+    c.kilit(tarih)
+    _, durumlar = d.supheli_turet()
+    s = durumlar[sk]
+    if s["durum"] != "acik":
+        _supheli_ret(c, 4, 409, "doubtful-closed")
+    elif z is not None and z > s["kalan"]:
+        _supheli_ret(c, 2, 400, "doubtful-writeoff-exceeds")
+    c.on_kapi()
+    d.supheli_olaylar.append({"tur": "degersiz", "kayit": sk, "tarih": tarih, "sira": c.sira, "tutar": z, "etkin": True, "fis": None})
+    d._turet_onbellek = None
+    supheli_gun_kaydet(d, r["cari"], tarih, "degersiz_cikar")
+    yeni_hareket(c, "degersiz_yaz", tarih, [], hesapli=False, olay=len(d.supheli_olaylar) - 1)
 
 
 def h_kasa_banka(c):
@@ -1928,10 +2318,43 @@ def h_ters_kayit(c):
     eksi_denetle(c, etki_hesapla(satirlar), tarih)
 
 
+def h_sil_supheli(c, sk):
+    """§4.28 sürüm 4: sade şüpheli kaydı (karşılığı, değersizi, çıkarması yok) silinir; satırları kalkar, türetme yeniden yapılır."""
+    a, d = c.a, c.d
+    r = d.supheliler[sk]
+    c.yetki("supheli")
+    c.istek()
+    if r["silindi"]:
+        c.ekle(4, 404)
+    elif any(o["etkin"] and o["kayit"] == sk for o in d.supheli_olaylar):
+        raise SenaryoHatasi(f"{a['id']}: karşılığı/değersizi/çıkarması olan kaydın silinmesi (BELİRSİZ-37)")
+    c.kilit(r["tarih"])
+    c.on_kapi()
+    d.fis(r["fis"])["etkin"] = False
+    r["silindi"] = True
+    d._turet_onbellek = None
+
+
 def h_sil(c):
     a, d = c.a, c.d
+    if a["hedef"] in d.takma and d.takma[a["hedef"]][0] == T_SUPHELI:
+        h_sil_supheli(c, d.takma[a["hedef"]][1])
+        return
     mk = d.coz(a["hedef"], T_HAREKET)
     h = d.hareketler[mk]
+    if h["islem"] == "karsilik_ayir":
+        c.yetki("supheli")
+        c.istek()
+        if h["silindi"]:
+            c.ekle(4, 404)
+        c.kilit(h["tarih"])
+        c.on_kapi()
+        for fid in h["fisler"]:
+            d.fis(fid)["etkin"] = False
+        d.supheli_olaylar[h["olay"]]["etkin"] = False
+        h["silindi"] = True
+        d._turet_onbellek = None
+        return
     if h["islem"] in SIL_HEDEFLERI:
         if h.get("hesapli"):
             c.yetki("sil_bagli")
@@ -1954,6 +2377,7 @@ def h_sil(c):
         f["etkin"] = False
         satirlar.extend(f["satirlar"])
     h["silindi"] = True
+    d._turet_onbellek = None
     for pid in h.get("para", []):
         for p in d.para:
             if p["id"] == pid:
@@ -2007,6 +2431,7 @@ def h_evrak_al_ver(c):
     tur = a["tur"]
     cari_kod = d.cari_kodu(ck)
     if alinan:
+        alacak_satiri_yaz(c, ck, tarih, "evrak_al")                  # sürüm 4: alınan evrak A 120 (KABUL K3)
         satirlar = [(PORTFOY_HESABI[tur], "B", t, None), (cari_kod, "A", t, ck)]
     else:
         satirlar = [(cari_kod, "B", t, ck), (VERILEN_HESABI[tur], "A", t, None)]
@@ -2175,6 +2600,7 @@ def h_evrak_sil(c):
     for fid in e["fisler"]:
         d.fis(fid)["etkin"] = False
     e["durum"] = "silindi"
+    d._turet_onbellek = None
 
 
 ISLEYICI = {
@@ -2189,6 +2615,7 @@ ISLEYICI = {
     "evrak_al": h_evrak_al_ver, "evrak_ver": h_evrak_al_ver, "evrak_ciro": h_evrak_ciro, "evrak_tahsil": h_evrak_tahsil,
     "evrak_odeme": h_evrak_odeme, "evrak_karsiliksiz": h_evrak_karsiliksiz, "tahsile_ver": h_tahsile_ver,
     "bankadan_geri_al": h_bankadan_geri_al, "evrak_sil": h_evrak_sil,
+    "supheli_al": h_supheli_al, "karsilik_ayir": h_karsilik_ayir, "supheli_cikar": h_supheli_cikar, "degersiz_yaz": h_degersiz_yaz,
 }
 
 # Adımın tanımladığı takma adlar (yineleme ve atlama için): alan yolu → değer
@@ -2214,8 +2641,12 @@ def anilan_adlar(a):
         r.append((a["kart"], T_HESAP))
     if op == "taksit_tahsilat":
         r.append((a["kart"], T_TAKSIT))
-    if op in ("ters_kayit", "sil"):
+    if op == "ters_kayit":
         r.append((a["hedef"], T_HAREKET))
+    if op == "sil":
+        r.append((a["hedef"], None))                       # tür hareket ya da şüpheli kaydı; adim_isle yalnız varlığına bakar
+    if op in ("karsilik_ayir", "supheli_cikar", "degersiz_yaz"):
+        r.append((a["kayit"], T_SUPHELI))
     for alan in ("cari", "saglayici"):
         if alan in a:
             r.append((a[alan], T_CARI))
@@ -2288,11 +2719,15 @@ def faturalari_hesapla(d):
             acik[ik] -= x
     # 7 bağsız satırlar FIFO
     dagitilmamis = {}
+    fazlali = set()                                         # sürüm 4 BELİRSİZ-34: taksit fazlası (avans) olan cariler
     for ck in d.cariler:
         giris = sum(p["tutar"] for p in d.para if p["etkin"] and p["cari"] == ck and p["tur"] == "cari_tahsilat"
                     and not p.get("bagli"))
         cikis = sum(p["tutar"] for p in d.para if p["etkin"] and p["cari"] == ck and p["tur"] == "cari_odeme"
                     and not p.get("bagli"))
+        fazla = sum(kart_fazla(d, tk) for tk, k in d.kartlar.items() if k["cari"] == ck)
+        if fazla:
+            fazlali.add(ck)
         alacak = sorted((b["tarih"], b["sira"], bk) for bk, b in d.belgeler.items()
                         if b["cari"] == ck and b["tur"] in ("satis", "alis_iade") and b["kart"] is None)
         borc = sorted((b["tarih"], b["sira"], bk) for bk, b in d.belgeler.items()
@@ -2305,7 +2740,7 @@ def faturalari_hesapla(d):
             al = min(cikis, acik[bk])
             acik[bk] -= al
             cikis -= al
-        dagitilmamis[ck] = (giris, cikis)
+        dagitilmamis[ck] = (giris + fazla, cikis)          # fazla hiçbir belgeyi kapatmaz (§7 sürüm 4)
     for bk, v in acik.items():
         if v < 0:
             raise KahinHatasi(f"belge açığı eksi: {bk} {v}")
@@ -2320,6 +2755,10 @@ def faturalari_hesapla(d):
         nedenler = []
         if _evrak_fisleri(d, ck):
             nedenler.append("BELİRSİZ-27")         # sürüm 3: evrakın fatura açığına etkisi planda yok
+        if ck in fazlali:
+            nedenler.append("BELİRSİZ-34")         # sürüm 4: taksit fazlasının (avans) belge kapaması planda yok
+        if _degersiz_toplam(d, ck):
+            nedenler.append("BELİRSİZ-36")         # sürüm 4: Değersiz Alacak'ın fatura açığına etkisi planda yok
         if (bagsiz_giris or ck in artanli_satis_iade) and any(b["kart"] is not None for b in belgeler):
             nedenler.append("BELİRSİZ-7")          # sürüm 2: iade artanı da (BELİRSİZ-9 kalktı)
         if (bagsiz_giris and any(b["tur"] in ("alis", "satis_iade") for b in belgeler)) or \
@@ -2327,11 +2766,11 @@ def faturalari_hesapla(d):
             nedenler.append("BELİRSİZ-11")
         if nedenler:
             belirsiz[ck] = nedenler
-    # değişmez: cariBakiye = Σ açık(alacak) − Σ açık(borç) − dağıtılmamış giriş + dağıtılmamış çıkış
+    # değişmez: cariBakiye = Σ açık(alacak) − Σ açık(borç) − dağıtılmamış giriş + dağıtılmamış çıkış (+ evrakNet − Σ değersiz)
     for ck in d.cariler:
         evrak_net = sum((u if t == "B" else -u) for f in _evrak_fisleri(d, ck) for k, t, u, cc in f["satirlar"]
                         if cc == ck)
-        bakiye = d.bakiye(d.cari_kodu(ck), cari=ck) - evrak_net
+        bakiye = d.cari_bakiye(ck) - evrak_net + _degersiz_toplam(d, ck)
         al = sum(acik[bk] for bk, b in d.belgeler.items() if b["cari"] == ck and b["tur"] in ("satis", "alis_iade"))
         bo = sum(acik[bk] for bk, b in d.belgeler.items() if b["cari"] == ck and b["tur"] in ("alis", "satis_iade"))
         g, c_ = dagitilmamis[ck]
@@ -2343,6 +2782,14 @@ def faturalari_hesapla(d):
 def _evrak_fisleri(d, ck):
     return [f for f in d.fisler if f["etkin"] and f["tur"] in EVRAK_FIS_TURLERI
             and any(cc == ck for _, _, _, cc in f["satirlar"])]
+
+
+def _degersiz_toplam(d, ck):
+    """Sürüm 4: carinin değersiz yazılan toplamı (türetilmiş; cari bakiyesini kapatır, §7 belgelerini kapatmaz — BELİRSİZ-36)."""
+    if not d.supheliler:
+        return 0
+    _, durumlar = d.supheli_turet()
+    return sum(s["degersiz"] for sk, s in durumlar.items() if d.supheliler[sk]["cari"] == ck)
 
 
 def anlik(d):
@@ -2370,7 +2817,7 @@ def anlik(d):
     banka = {ad: d.bakiye(d.hesaplar[hk]["alt"]) for ad, hk in takmalar(T_HESAP)}
     kodlari = {ad: d.hesaplar[hk]["alt"] for ad, hk in takmalar(T_HESAP)}
     eksi = {ad: d.etkin_politika(hk) for ad, hk in takmalar(T_HESAP)}
-    cariler = {ad: d.bakiye(d.cari_kodu(ck), cari=ck) for ad, ck in takmalar(T_CARI)}
+    cariler = {ad: d.cari_bakiye(ck) for ad, ck in takmalar(T_CARI)}
     stok = {ad: d.urunler[uk]["miktar"] for ad, uk in takmalar(T_URUN)}
     acik, belirsiz_cari = faturalari_hesapla(d)
     faturalar = {ad: {"toplam": d.belgeler[bk]["T"], "matrah": d.belgeler[bk]["M"], "kdv": d.belgeler[bk]["K"],
@@ -2378,7 +2825,18 @@ def anlik(d):
     kartlar = {}
     for ad, tk in takmalar(T_TAKSIT):
         od = kart_odenen(d, tk)
-        kartlar[ad] = {"toplam": d.kartlar[tk]["toplam"], "odenen": od, "kalan": d.kartlar[tk]["toplam"] - od}
+        kartlar[ad] = {"toplam": d.kartlar[tk]["toplam"], "odenen": od, "kalan": kart_kalan(d, tk)}
+    supheliler = {}
+    if d.supheliler:
+        _, durumlar = d.supheli_turet()
+        for ad, sk in takmalar(T_SUPHELI):
+            if d.supheliler[sk]["silindi"]:
+                continue
+            s = durumlar[sk]
+            supheliler[ad] = {"tutar": d.supheliler[sk]["T"], "karsilik": s["karsilik"], "tahsilEdilen": s["tahsil"],
+                              "degersiz": s["degersiz"], "cikarilan": s["cikarilan"], "kalan": s["kalan"], "durum": s["durum"]}
+        if sum(s["kalan"] for s in durumlar.values()) != d.bakiye("128") or -sum(s["karsilik"] for s in durumlar.values()) != d.bakiye("129"):
+            raise KahinHatasi("şüpheli değişmezi: 128 = Σ kalan ya da 129 = −Σ karşılık tutmuyor")
     gercek = sum(d.bakiye(h["alt"]) for h in d.hesaplar.values() if h["ana"] == "102")
     atanmamis = d.bakiye("102.00") + d.bakiye("108.00")
     borc = -sum(d.bakiye(h["alt"]) for h in d.hesaplar.values() if h["ana"] in ("309", "300"))
@@ -2388,7 +2846,8 @@ def anlik(d):
             raise KahinHatasi("stok eksi")
     durum = {
         "mizan": mizan, "bankaHesaplari": banka, "kasa": kasa, "cariler": cariler, "stok": stok,
-        "faturalar": faturalar, "taksitKartlari": kartlar, "hesapKodlari": kodlari, "eksiBakiyeDenetimi": eksi,
+        "faturalar": faturalar, "taksitKartlari": kartlar, "supheliAlacaklar": supheliler,
+        "hesapKodlari": kodlari, "eksiBakiyeDenetimi": eksi,
         "ozet": {"gercekBanka": gercek, "hesabiAtanmamis": atanmamis, "kartVeKrediBorcu": borc,
                  "kasaVeGercekBanka": kasa + gercek},
     }
@@ -2399,7 +2858,7 @@ def anlik(d):
             belirsiz.append((f"faturalar.{ad}.acik", belirsiz_cari[ck][0]))
     for ad, tk in takmalar(T_TAKSIT):
         ck = d.kartlar[tk]["cari"]
-        kart_nedeni = [n for n in belirsiz_cari.get(ck, []) if n != "BELİRSİZ-27"]   # evrak taksit kartını etkilemez
+        kart_nedeni = [n for n in belirsiz_cari.get(ck, []) if n not in ("BELİRSİZ-27", "BELİRSİZ-34", "BELİRSİZ-36")]   # evrak/avans/değersiz kartı etkilemez
         if kart_nedeni:
             for alan in ("toplam", "odenen", "kalan"):
                 belirsiz.append((f"taksitKartlari.{ad}.{alan}", kart_nedeni[0]))
@@ -2426,6 +2885,8 @@ def adim_isle(d, a, sira):
         if ad not in d.takma:
             d.atlananlar.append((sira, a["id"]))
             return d
+    if "sil" == op and d.takma[a["hedef"]][0] not in (T_HAREKET, T_SUPHELI):
+        raise SenaryoHatasi(f"{a['id']}: sil hedefi hareket ya da şüpheli kaydı olmalı")
     yeni = copy.deepcopy(d)
     c = Baglam(yeni, a, sira)
     try:

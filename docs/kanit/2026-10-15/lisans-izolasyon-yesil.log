@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: gerçek programı ayrı süreçte açan her test lisans servisini yerel ölü adrese yönlendirir
+ok 1 - gerçek programı ayrı süreçte açan her test lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 3.375511
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 2 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.180607
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 240.857313

@@ -1,0 +1,12 @@
+# verifyEnvelope: {"manifest":{"schema":1,"product":"DestekOfis","version":"2.3.0","channel":"stable","releasedAt":"2026-10-15T21:14:36.717Z","notes":"2.3.0 — İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi\n\n• İyileştirmeler ve Ticari Şüpheli Alacaklar eklentisi (Kullanım Kılavuzu → 9. Cari → Ticari Şüpheli Al
+ok - bildirge imzası güvenilir anahtarla doğrulanır
+ok - sürüm 2.3.0 stable
+ok - zip sha256 + boyut bildirgeyle aynı
+ok - kurcalanmış bildirge reddedilir: {"error":"Güncelleme bildirgesinin imzası doğrulanamadı; güncelleme reddedildi."}
+# APP_ITEMS: server, client, docs/KURULUM-VE-KULLANIM.md, package.json, CHANGELOG.md, README.md, tools/backup.mjs, tools/mutabakat.mjs
+# zip 246 HEAD 246 fazla:  eksik: 
+ok - HEAD'deki uygulama dosyalarının hepsi zip'te
+
+1..4
+# pass 4
+# fail 0

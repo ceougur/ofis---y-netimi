@@ -197,6 +197,8 @@ async function compareReports(app, label, today, firstDay, banks, { viaWorker: u
       let error = null;
       try {
         expected = plain(await old.center.run(user, id, new URLSearchParams(query)));
+        // 2.3.0 İz 5.2 (bilerek): dönem metni "Tüm hareketler" → "Tüm Zamanlar"; eski fikstür eski metni yazar, sayılar aynıdır.
+        if (typeof expected.subtitle === "string") expected.subtitle = expected.subtitle.split("Tüm hareketler").join("Tüm Zamanlar").split("Tüm zamanlar").join("Tüm Zamanlar");
       } catch (caught) {
         error = caught;
       }

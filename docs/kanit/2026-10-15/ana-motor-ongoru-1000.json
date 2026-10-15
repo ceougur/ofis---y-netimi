@@ -1,0 +1,32 @@
+{
+  "ad": "ana-motor-ongoru-1000",
+  "komut": "npm run test:mutabakat -- --islem 1000 --tohum 7 --tohumlar 2",
+  "commit": "91bee2f80f89a5634c392bee0680aa5137f50745",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 1,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T13:14:29.844Z",
+  "sure_sn": 243.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-motor-ongoru-1000.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "78221a987d3fb02d8c7083b8f8370c8b1de2525bdca95673960dbba1e212a0e2",
+  "ham_cikti_bayt": 5043
+}

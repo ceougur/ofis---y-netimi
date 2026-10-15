@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: 2.3.0 yargıç bulguları — Şüpheli Alacaklar
+    # Subtest: Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0
+    ok 1 - Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0
+      ---
+      duration_ms: 144.576937
+      type: 'test'
+      ...
+    # Subtest: Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez
+    ok 2 - Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez
+      ---
+      duration_ms: 91.802211
+      type: 'test'
+      ...
+    # Subtest: Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam
+    ok 3 - Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam
+      ---
+      duration_ms: 89.242645
+      type: 'test'
+      ...
+    # Subtest: Y4b: 120'yi eksiye düşürecek geri yükleme 409 doubtful-exceeds-balance (anlamlı metin), kayıt Silinenler'de kalır
+    ok 4 - Y4b: 120'yi eksiye düşürecek geri yükleme 409 doubtful-exceeds-balance (anlamlı metin), kayıt Silinenler'de kalır
+      ---
+      duration_ms: 78.025363
+      type: 'test'
+      ...
+    # Subtest: Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest
+    ok 5 - Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest
+      ---
+      duration_ms: 54.154679
+      type: 'test'
+      ...
+    # Subtest: Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz
+    ok 6 - Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz
+      ---
+      duration_ms: 12.26122
+      type: 'test'
+      ...
+    # Subtest: Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200
+    ok 7 - Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200
+      ---
+      duration_ms: 198.60464
+      type: 'test'
+      ...
+    # Subtest: Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400
+    ok 8 - Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400
+      ---
+      duration_ms: 43.001921
+      type: 'test'
+      ...
+    # Subtest: Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır
+    ok 9 - Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır
+      ---
+      duration_ms: 107.455983
+      type: 'test'
+      ...
+    1..9
+ok 1 - 2.3.0 yargıç bulguları — Şüpheli Alacaklar
+  ---
+  duration_ms: 1133.433916
+  type: 'suite'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1459.064654

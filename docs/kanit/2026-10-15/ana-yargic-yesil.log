@@ -1,0 +1,958 @@
+TAP version 13
+# (node:15136) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar
+    # Subtest: ödenmiş karta çek → 409 plan-paid; kart, cari ve 101 değişmez; evrak yazılmaz
+    ok 1 - ödenmiş karta çek → 409 plan-paid; kart, cari ve 101 değişmez; evrak yazılmaz
+      ---
+      duration_ms: 223.992373
+      type: 'test'
+      ...
+    # Subtest: kalanı aşan çek → 409 plan-overpay (kalan/fazla ek alanda); kalan kadar çek → 200, kart kapanır
+    ok 2 - kalanı aşan çek → 409 plan-overpay (kalan/fazla ek alanda); kalan kadar çek → 200, kart kapanır
+      ---
+      duration_ms: 109.869035
+      type: 'test'
+      ...
+    # Subtest: ödenmiş taksite seçili çek → 409 installment-paid; açık taksite → 200; karşılıksızda ters kayıt kurala girmez (yeniden açılır)
+    ok 3 - ödenmiş taksite seçili çek → 409 installment-paid; açık taksite → 200; karşılıksızda ters kayıt kurala girmez (yeniden açılır)
+      ---
+      duration_ms: 143.535523
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar
+  ---
+  duration_ms: 887.704241
+  type: 'suite'
+  ...
+# (node:15137) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K8 taksit kuralı — nakit yolu (N1, N2, N4, N5)
+    # Subtest: N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir
+    ok 1 - N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir
+      ---
+      duration_ms: 171.812598
+      type: 'test'
+      ...
+    # Subtest: N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200
+    ok 2 - N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200
+      ---
+      duration_ms: 166.223743
+      type: 'test'
+      ...
+    # Subtest: N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid
+    ok 3 - N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid
+      ---
+      duration_ms: 118.42168
+      type: 'test'
+      ...
+    1..3
+ok 2 - K8 taksit kuralı — nakit yolu (N1, N2, N4, N5)
+  ---
+  duration_ms: 916.137858
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13)
+    # Subtest: N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500
+    ok 1 - N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500
+      ---
+      duration_ms: 73.369713
+      type: 'test'
+      ...
+    # Subtest: N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid
+    ok 2 - N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid
+      ---
+      duration_ms: 39.790371
+      type: 'test'
+      ...
+    # Subtest: N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200
+    ok 3 - N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200
+      ---
+      duration_ms: 69.596072
+      type: 'test'
+      ...
+    # Subtest: N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200
+    ok 4 - N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200
+      ---
+      duration_ms: 51.312127
+      type: 'test'
+      ...
+    1..4
+ok 3 - K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13)
+  ---
+  duration_ms: 560.312575
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6)
+    # Subtest: N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez
+    ok 1 - N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez
+      ---
+      duration_ms: 69.133033
+      type: 'test'
+      ...
+    # Subtest: N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid
+    ok 2 - N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid
+      ---
+      duration_ms: 134.163644
+      type: 'test'
+      ...
+    # Subtest: N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı
+    ok 3 - N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı
+      ---
+      duration_ms: 112.010465
+      type: 'test'
+      ...
+    1..3
+ok 4 - K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6)
+  ---
+  duration_ms: 780.083541
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)
+    # Subtest: N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz
+    ok 1 - N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz
+      ---
+      duration_ms: 83.726457
+      type: 'test'
+      ...
+    # Subtest: N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)
+    ok 2 - N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)
+      ---
+      duration_ms: 63.408267
+      type: 'test'
+      ...
+    # Subtest: N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200
+    ok 3 - N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200
+      ---
+      duration_ms: 117.792692
+      type: 'test'
+      ...
+    1..3
+ok 5 - K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)
+  ---
+  duration_ms: 750.018186
+  type: 'suite'
+  ...
+# Subtest: K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9)
+    # Subtest: N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)
+    ok 1 - N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)
+      ---
+      duration_ms: 125.344851
+      type: 'test'
+      ...
+    # Subtest: N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200
+    ok 2 - N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200
+      ---
+      duration_ms: 98.490659
+      type: 'test'
+      ...
+    # Subtest: N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı
+    ok 3 - N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı
+      ---
+      duration_ms: 229.142093
+      type: 'test'
+      ...
+    1..3
+ok 6 - K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9)
+  ---
+  duration_ms: 817.505273
+  type: 'suite'
+  ...
+# (node:15138) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şüpheli Alacaklar — aynı gün açılan kayıtlarda tahsilat önce açılandan düşer
+    # Subtest: çift 1: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 1 - çift 1: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 221.15422
+      type: 'test'
+      ...
+    # Subtest: çift 2: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 2 - çift 2: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 125.671706
+      type: 'test'
+      ...
+    # Subtest: çift 3: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 3 - çift 3: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 118.945899
+      type: 'test'
+      ...
+    # Subtest: çift 4: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 4 - çift 4: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 129.232107
+      type: 'test'
+      ...
+    # Subtest: çift 5: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 5 - çift 5: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 84.964593
+      type: 'test'
+      ...
+    # Subtest: çift 6: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 6 - çift 6: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 129.390919
+      type: 'test'
+      ...
+    # Subtest: çift 7: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 7 - çift 7: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 103.44432
+      type: 'test'
+      ...
+    # Subtest: çift 8: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 8 - çift 8: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 95.352217
+      type: 'test'
+      ...
+    1..8
+ok 7 - Şüpheli Alacaklar — aynı gün açılan kayıtlarda tahsilat önce açılandan düşer
+  ---
+  duration_ms: 1471.988248
+  type: 'suite'
+  ...
+# (node:15157) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şüpheli — sınırlar: tutar, karşılık, değersiz, tarih
+    # Subtest: F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1.000, 120 = 0; 0 / eksi / 3 ondalık 400
+    ok 1 - F — tutar > borç bakiyesi 400; 600 tamam; 500 (600 + 500 > 1.000) 400; 400 tamam → 128 = 1.000, 120 = 0; 0 / eksi / 3 ondalık 400
+      ---
+      duration_ms: 160.567959
+      type: 'test'
+      ...
+    # Subtest: G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date-before-record; karşılık 700 + 300 tamam
+    ok 2 - G / U / tarih — karşılık > kalan 400; değersiz > kalan 400; kayıt tarihinden önce 400 date-before-record; karşılık 700 + 300 tamam
+      ---
+      duration_ms: 106.426769
+      type: 'test'
+      ...
+    # Subtest: I / J — kilitli dönem 409 (al / çıkar / karşılık / değersiz / sil), ileri 400 date-future, geçersiz 400 date-invalid, boş 400 date-missing
+    ok 3 - I / J — kilitli dönem 409 (al / çıkar / karşılık / değersiz / sil), ileri 400 date-future, geçersiz 400 date-invalid, boş 400 date-missing
+      ---
+      duration_ms: 162.010358
+      type: 'test'
+      ...
+    1..3
+ok 8 - Şüpheli — sınırlar: tutar, karşılık, değersiz, tarih
+  ---
+  duration_ms: 861.124888
+  type: 'suite'
+  ...
+# Subtest: Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki, audit
+    # Subtest: K — aynı kimlik + aynı gövde → replayed (tek kayıt); aynı kimlik farklı gövde → 409 request-id-reused
+    ok 1 - K — aynı kimlik + aynı gövde → replayed (tek kayıt); aynı kimlik farklı gövde → 409 request-id-reused
+      ---
+      duration_ms: 111.44954
+      type: 'test'
+      ...
+    # Subtest: O — aynı anda iki istek (600 + 600, borç 1.000): biri 200, öbürü 400 doubtful-exceeds-balance; 128 = 600
+    ok 2 - O — aynı anda iki istek (600 + 600, borç 1.000): biri 200, öbürü 400 doubtful-exceeds-balance; 128 = 600
+      ---
+      duration_ms: 102.00092
+      type: 'test'
+      ...
+    # Subtest: P — aynı adlı iki cari: birinde al; öbürünün 120'si, kartı ve rapor satırı ayrı
+    ok 3 - P — aynı adlı iki cari: birinde al; öbürünün 120'si, kartı ve rapor satırı ayrı
+      ---
+      duration_ms: 90.2176
+      type: 'test'
+      ...
+    # Subtest: Q — yetki: personel 403; avukat (Cari Yönetimi var, Şüpheli Alacak İşlemleri yok) 403; muhasebe 200; kişiye özel ekle → 200, kaldır → 403; katalog
+    ok 4 - Q — yetki: personel 403; avukat (Cari Yönetimi var, Şüpheli Alacak İşlemleri yok) 403; muhasebe 200; kişiye özel ekle → 200, kaldır → 403; katalog
+      ---
+      duration_ms: 433.110972
+      type: 'test'
+      ...
+    # Subtest: R — audit: doubtful.take / provision / writeoff / release / deleted; S — FORBIDDEN_GL 128/129/644/654, Banka Ayarları fee=128 → 400
+    ok 5 - R — audit: doubtful.take / provision / writeoff / release / deleted; S — FORBIDDEN_GL 128/129/644/654, Banka Ayarları fee=128 → 400
+      ---
+      duration_ms: 89.943244
+      type: 'test'
+      ...
+    # Subtest: W / V — tedarikçi 409 doubtful-customer-only; silinmiş cari 404; açık şüpheli kaydı olan cari silinemez; Değersiz Alacak satırı cari kartından silinmez/düzeltilmez
+    ok 6 - W / V — tedarikçi 409 doubtful-customer-only; silinmiş cari 404; açık şüpheli kaydı olan cari silinemez; Değersiz Alacak satırı cari kartından silinmez/düzeltilmez
+      ---
+      duration_ms: 109.034575
+      type: 'test'
+      ...
+    1..6
+ok 9 - Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki, audit
+  ---
+  duration_ms: 1257.307105
+  type: 'suite'
+  ...
+# Subtest: Şüpheli — sil + geri al (ters kayıt), Silinenler, Şirket Verisini Sıfırla
+    # Subtest: L — kaydı sil → 128 = 0, cari 10.000 değişmez, başlık iptal, Silinenler'de; geri yükle → 128 = 4.000; her adımda Mutabakat Testi tamam
+    ok 1 - L — kaydı sil → 128 = 0, cari 10.000 değişmez, başlık iptal, Silinenler'de; geri yükle → 128 = 4.000; her adımda Mutabakat Testi tamam
+      ---
+      duration_ms: 139.078459
+      type: 'test'
+      ...
+    # Subtest: karşılığı sil → 129 = 0 → geri yükle → 129 = −1.000; değersizi sil → 128 ve cari geri → geri yükle; değersizi olan kayıt silinemez (önce değersiz)
+    ok 2 - karşılığı sil → 129 = 0 → geri yükle → 129 = −1.000; değersizi sil → 128 ve cari geri → geri yükle; değersizi olan kayıt silinemez (önce değersiz)
+      ---
+      duration_ms: 154.859993
+      type: 'test'
+      ...
+    # Subtest: geri yükleme kuralları: geri yüklenen kayıt borç bakiyesini aşarsa 409; kilitli tarih 409 period-locked
+    ok 3 - geri yükleme kuralları: geri yüklenen kayıt borç bakiyesini aşarsa 409; kilitli tarih 409 period-locked
+      ---
+      duration_ms: 148.910889
+      type: 'test'
+      ...
+    # Subtest: M — Şirket Verisini Sıfırla (hareketler): şüpheli tabloları boş, 128 = 129 = 0, Mutabakat Testi tamam
+    ok 4 - M — Şirket Verisini Sıfırla (hareketler): şüpheli tabloları boş, 128 = 129 = 0, Mutabakat Testi tamam
+      ---
+      duration_ms: 151.922339
+      type: 'test'
+      ...
+    1..4
+ok 10 - Şüpheli — sil + geri al (ters kayıt), Silinenler, Şirket Verisini Sıfırla
+  ---
+  duration_ms: 897.878997
+  type: 'suite'
+  ...
+# Subtest: Şüpheli — kapı ve tarama: ham SQL bozması yakalanır; eski sürüm dosyası (göç 23, kilit izi sürüme bağlı)
+    # Subtest: T — tutarı değiştir → gl:128/doubtful:records kırmızı; başlığı iptal et → kırmızı; kaydı olmayan başlık → kırmızı; düzeltince tamam
+    ok 1 - T — tutarı değiştir → gl:128/doubtful:records kırmızı; başlığı iptal et → kırmızı; kaydı olmayan başlık → kırmızı; düzeltince tamam
+      ---
+      duration_ms: 176.814672
+      type: 'test'
+      ...
+    # Subtest: N — eski sürüm dosyası: user_version 22 + tablolar yok → göç 23 açar; kilit izi { version: '2.2.0' } göç öncesiyle aynı; şüpheli yokken denetim listesi aynı
+    ok 2 - N — eski sürüm dosyası: user_version 22 + tablolar yok → göç 23 açar; kilit izi { version: '2.2.0' } göç öncesiyle aynı; şüpheli yokken denetim listesi aynı
+      ---
+      duration_ms: 631.418984
+      type: 'test'
+      ...
+    1..2
+ok 11 - Şüpheli — kapı ve tarama: ham SQL bozması yakalanır; eski sürüm dosyası (göç 23, kilit izi sürüme bağlı)
+  ---
+  duration_ms: 1101.654251
+  type: 'suite'
+  ...
+# (node:15164) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DURUM, vade takip, rapor, yaşlandırma, mizan)
+    # Subtest: ön koşul (kâhin adım 3 + XYZ): 128 = 1.000, 129 = −1.000, 659 = 5.000; ABC kartı 7.000, XYZ 0
+    ok 1 - ön koşul (kâhin adım 3 + XYZ): 128 = 1.000, 129 = −1.000, 659 = 5.000; ABC kartı 7.000, XYZ 0
+      ---
+      duration_ms: 29.074041
+      type: 'test'
+      ...
+    # Subtest: cari listesi: ABC doubtfulOpen 1.000 (rozet), XYZ 0; totals.doubtful 1.000, doubtfulCount 1; borçlular toplamı şüpheliyi KAPSAR (120 + 128 = kart)
+    ok 2 - cari listesi: ABC doubtfulOpen 1.000 (rozet), XYZ 0; totals.doubtful 1.000, doubtfulCount 1; borçlular toplamı şüpheliyi KAPSAR (120 + 128 = kart)
+      ---
+      duration_ms: 10.125642
+      type: 'test'
+      ...
+    # Subtest: cari kartı: doubtful özeti (açık 1.000, karşılık 1.000, tahsil 3.000) ve canDoubtful yönetici/muhasebe true, personel false
+    ok 3 - cari kartı: doubtful özeti (açık 1.000, karşılık 1.000, tahsil 3.000) ve canDoubtful yönetici/muhasebe true, personel false
+      ---
+      duration_ms: 32.790822
+      type: 'test'
+      ...
+    # Subtest: yetkisiz: personel Şüpheli Alacağa Al → 403 doubtful-permission ya da FORBIDDEN; hiçbir şey yazılmaz
+    ok 4 - yetkisiz: personel Şüpheli Alacağa Al → 403 doubtful-permission ya da FORBIDDEN; hiçbir şey yazılmaz
+      ---
+      duration_ms: 11.053976
+      type: 'test'
+      ...
+    # Subtest: ANLIK DURUM: receivable.doubtful 1.000 (1 cari) ayrı satır; total = cari borçluları + çek (şüpheli toplamın İÇİNDE, ayrıca eklenmez)
+    ok 5 - ANLIK DURUM: receivable.doubtful 1.000 (1 cari) ayrı satır; total = cari borçluları + çek (şüpheli toplamın İÇİNDE, ayrıca eklenmez)
+      ---
+      duration_ms: 20.000091
+      type: 'test'
+      ...
+    # Subtest: Vade Takip (hatırlatmalar): doubtful { amount 1.000, accountCount 1 } ayrı alan; Tahsil Edilecek'e girmez; Ödenecek süzgecinde 0; PDF özetinde satır
+    ok 6 - Vade Takip (hatırlatmalar): doubtful { amount 1.000, accountCount 1 } ayrı alan; Tahsil Edilecek'e girmez; Ödenecek süzgecinde 0; PDF özetinde satır
+      ---
+      duration_ms: 79.199667
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi kataloğu: Şüpheli Alacaklar (Cari grubu; range + doubtfulStatus + doubtfulReason; ilk açılış Bu Yıl)
+    ok 7 - Rapor Merkezi kataloğu: Şüpheli Alacaklar (Cari grubu; range + doubtfulStatus + doubtfulReason; ilk açılış Bu Yıl)
+      ---
+      duration_ms: 8.882603
+      type: 'test'
+      ...
+    # Subtest: rapor varsayılan (Bu Yıl, Açık): yalnız ABC; Tutar 4.000, Karşılık 1.000, Tahsil 3.000, Değersiz 0, Kalan 1.000, Durum Şüpheli Alacakta; TOPLAM = satır
+    ok 8 - rapor varsayılan (Bu Yıl, Açık): yalnız ABC; Tutar 4.000, Karşılık 1.000, Tahsil 3.000, Değersiz 0, Kalan 1.000, Durum Şüpheli Alacakta; TOPLAM = satır
+      ---
+      duration_ms: 9.724083
+      type: 'test'
+      ...
+    # Subtest: Durum süzgeci: Kapanan → yalnız XYZ (Değersiz Yazıldı, Kalan 0, Değersiz 5.000); Tümü → 2 satır, TOPLAM = satırlar
+    ok 9 - Durum süzgeci: Kapanan → yalnız XYZ (Değersiz Yazıldı, Kalan 0, Değersiz 5.000); Tümü → 2 satır, TOPLAM = satırlar
+      ---
+      duration_ms: 10.166544
+      type: 'test'
+      ...
+    # Subtest: Neden süzgeci (her seçenek): Dava 1 (ABC), Karşılıksız Çek 1 (XYZ; Tümü), Protestolu Senet / İcra / Diğer 0; geçersiz neden 400
+    ok 10 - Neden süzgeci (her seçenek): Dava 1 (ABC), Karşılıksız Çek 1 (XYZ; Tümü), Protestolu Senet / İcra / Diğer 0; geçersiz neden 400
+      ---
+      duration_ms: 22.894795
+      type: 'test'
+      ...
+    # Subtest: dönem süzgeci: 01–04.10 Tümü → yalnız XYZ (kayıt tarihine göre); 2025 → boş (ipucu ekranda); geçersiz tarih 400
+    ok 11 - dönem süzgeci: 01–04.10 Tümü → yalnız XYZ (kayıt tarihine göre); 2025 → boş (ipucu ekranda); geçersiz tarih 400
+      ---
+      duration_ms: 10.234176
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel = ekran: Tümü süzgecinde her para hücresi PDF'te; Excel satırları ve TOPLAM aynı
+    ok 12 - PDF ve Excel = ekran: Tümü süzgecinde her para hücresi PDF'te; Excel satırları ve TOPLAM aynı
+      ---
+      duration_ms: 46.852982
+      type: 'test'
+      ...
+    # Subtest: yetki: muhasebe (Şüpheli Alacak İşlemleri var, finans raporları yok) raporu açar; personel 403; Alacak Yaşlandırma muhasebeye kapalı kalır
+    ok 13 - yetki: muhasebe (Şüpheli Alacak İşlemleri var, finans raporları yok) raporu açar; personel 403; Alacak Yaşlandırma muhasebeye kapalı kalır
+      ---
+      duration_ms: 33.161687
+      type: 'test'
+      ...
+    # Subtest: Alacak Yaşlandırma: 'Şüpheli Alacak' kolonu ABC 1.000 (Toplam'a girmez: vade kalemi yok → Toplam 0), XYZ satırı yok; özette 'Şüpheli Alacak (ayrı)'
+    ok 14 - Alacak Yaşlandırma: 'Şüpheli Alacak' kolonu ABC 1.000 (Toplam'a girmez: vade kalemi yok → Toplam 0), XYZ satırı yok; özette 'Şüpheli Alacak (ayrı)'
+      ---
+      duration_ms: 8.221419
+      type: 'test'
+      ...
+    # Subtest: Hesap Planı Mizanı (Rapor Merkezi): 128 Şüpheli Ticari Alacaklar 1.000 Borç, 129 1.000 Alacak, 654 2.500, 644 1.500, 659 5.000
+    ok 15 - Hesap Planı Mizanı (Rapor Merkezi): 128 Şüpheli Ticari Alacaklar 1.000 Borç, 129 1.000 Alacak, 654 2.500, 644 1.500, 659 5.000
+      ---
+      duration_ms: 12.418123
+      type: 'test'
+      ...
+    # Subtest: şüpheli hiç kullanılmamış şirkette: rapor boş, liste/ANLIK DURUM alanları 0 (eski veride gösterim bozulmaz)
+    ok 16 - şüpheli hiç kullanılmamış şirkette: rapor boş, liste/ANLIK DURUM alanları 0 (eski veride gösterim bozulmaz)
+      ---
+      duration_ms: 470.589185
+      type: 'test'
+      ...
+    1..16
+ok 12 - Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DURUM, vade takip, rapor, yaşlandırma, mizan)
+  ---
+  duration_ms: 1846.489661
+  type: 'suite'
+  ...
+# (node:15171) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şüpheli Ticari Alacaklar — kabul tablosu (plan §3.11b; sayılar docs/2.3.0-SUPHELI-KABUL.md §2)
+    # Subtest: adım 0: borç 10.000 → 120 = 10.000, 128 = 0, cari 10.000
+    ok 1 - adım 0: borç 10.000 → 120 = 10.000, 128 = 0, cari 10.000
+      ---
+      duration_ms: 31.460284
+      type: 'test'
+      ...
+    # Subtest: adım 1: Şüpheli Alacağa Al 4.000 (05.10, Dava) → B 128 / A 120; 128 = 4.000, 120 = 6.000; cari bakiyesi 10.000 DEĞİŞMEZ
+    ok 2 - adım 1: Şüpheli Alacağa Al 4.000 (05.10, Dava) → B 128 / A 120; 128 = 4.000, 120 = 6.000; cari bakiyesi 10.000 DEĞİŞMEZ
+      ---
+      duration_ms: 49.597894
+      type: 'test'
+      ...
+    # Subtest: adım 2: Karşılık Ayır 2.500 (06.10) → B 654 / A 129; 129 = −2.500, 654 = 2.500; 128 ve cari aynı
+    ok 3 - adım 2: Karşılık Ayır 2.500 (06.10) → B 654 / A 129; 129 = −2.500, 654 = 2.500; 128 ve cari aynı
+      ---
+      duration_ms: 58.240678
+      type: 'test'
+      ...
+    # Subtest: adım 3: tahsilat 3.000 nakit (07.10) → B 100 / A 128 (önce şüpheliden); 644 kuralı B 129 / A 644 1.500; 128 = 1.000, 129 = −1.000, cari 7.000
+    ok 4 - adım 3: tahsilat 3.000 nakit (07.10) → B 100 / A 128 (önce şüpheliden); 644 kuralı B 129 / A 644 1.500; 128 = 1.000, 129 = −1.000, cari 7.000
+      ---
+      duration_ms: 65.510606
+      type: 'test'
+      ...
+    # Subtest: adım 4: Değersiz Alacak Yaz 1.000 (08.10) → B 129 / A 128 (karşılıklı; 659'a 0); 128 = 0, 129 = 0, cari 6.000 (satır cari kartında)
+    ok 5 - adım 4: Değersiz Alacak Yaz 1.000 (08.10) → B 129 / A 128 (karşılıklı; 659'a 0); 128 = 0, 129 = 0, cari 6.000 (satır cari kartında)
+      ---
+      duration_ms: 46.859502
+      type: 'test'
+      ...
+    # Subtest: kapanmış kayıt: değersiz/karşılık/çıkar 409 doubtful-closed; kayıt listede 'Değersiz Yazıldı'
+    ok 6 - kapanmış kayıt: değersiz/karşılık/çıkar 409 doubtful-closed; kayıt listede 'Değersiz Yazıldı'
+      ---
+      duration_ms: 14.678211
+      type: 'test'
+      ...
+    # Subtest: rapor verisi (GET /api/workspace/doubtful): cari, neden, tarih, tutar, karşılık, tahsil edilen, değersiz, kalan; toplamlar = satırlar; süzgeç
+    ok 7 - rapor verisi (GET /api/workspace/doubtful): cari, neden, tarih, tutar, karşılık, tahsil edilen, değersiz, kalan; toplamlar = satırlar; süzgeç
+      ---
+      duration_ms: 17.662694
+      type: 'test'
+      ...
+    1..7
+ok 13 - Şüpheli Ticari Alacaklar — kabul tablosu (plan §3.11b; sayılar docs/2.3.0-SUPHELI-KABUL.md §2)
+  ---
+  duration_ms: 779.956757
+  type: 'suite'
+  ...
+# Subtest: Şüpheli Ticari Alacaklar — yan senaryolar (kabul §2 B–E, H, K3)
+    # Subtest: B — karşılıksız değersiz: borç 5.000 → al 5.000 → tahsilat 2.000 → değersiz 3.000: 659 = 3.000, 128 = 0, 129 = 0, cari 0
+    ok 1 - B — karşılıksız değersiz: borç 5.000 → al 5.000 → tahsilat 2.000 → değersiz 3.000: 659 = 3.000, 128 = 0, 129 = 0, cari 0
+      ---
+      duration_ms: 118.257069
+      type: 'test'
+      ...
+    # Subtest: C — Şüpheliden Çıkar: borç 8.000 → al 3.000 → karşılık 1.000 → tahsilat 500 → çıkar: B 120 / A 128 2.500, B 129 / A 644 1.000; 120 = 7.500
+    ok 2 - C — Şüpheliden Çıkar: borç 8.000 → al 3.000 → karşılık 1.000 → tahsilat 500 → çıkar: B 120 / A 128 2.500, B 129 / A 644 1.000; 120 = 7.500
+      ---
+      duration_ms: 169.35029
+      type: 'test'
+      ...
+    # Subtest: D — tahsilat şüpheliyi aşınca: al 4.000 → tahsilat 5.000: A 128 4.000 + A 120 1.000; 128 = 0, 120 = 5.000 (tek madde iki alacak satırı)
+    ok 3 - D — tahsilat şüpheliyi aşınca: al 4.000 → tahsilat 5.000: A 128 4.000 + A 120 1.000; 128 = 0, 120 = 5.000 (tek madde iki alacak satırı)
+      ---
+      duration_ms: 84.759337
+      type: 'test'
+      ...
+    # Subtest: E — iki kayıt: al 2.000 (03.10) ve 3.000 (04.10) → tahsilat 2.500 (05.10): en eski önce (kalan 0 ve 2.500); 02.10 tarihli tahsilat şüpheliden düşmez
+    ok 4 - E — iki kayıt: al 2.000 (03.10) ve 3.000 (04.10) → tahsilat 2.500 (05.10): en eski önce (kalan 0 ve 2.500); 02.10 tarihli tahsilat şüpheliden düşmez
+      ---
+      duration_ms: 156.044729
+      type: 'test'
+      ...
+    # Subtest: H — karşılıksız çek kısayolu: borç 1.000 → çek 1.000 alındı → karşılıksız → al (chequeId): neden Karşılıksız Çek, tutar evraktan; 128 = 1.000, 120 = 0
+    ok 5 - H — karşılıksız çek kısayolu: borç 1.000 → çek 1.000 alındı → karşılıksız → al (chequeId): neden Karşılıksız Çek, tutar evraktan; 128 = 1.000, 120 = 0
+      ---
+      duration_ms: 159.195606
+      type: 'test'
+      ...
+    # Subtest: K3 — çekle ödeme ve Alacak Yaz da önce şüpheliden düşer (B 101 / A 128; B 770 / A 128): 120 eksiye düşmez
+    ok 6 - K3 — çekle ödeme ve Alacak Yaz da önce şüpheliden düşer (B 101 / A 128; B 770 / A 128): 120 eksiye düşmez
+      ---
+      duration_ms: 144.321103
+      type: 'test'
+      ...
+    1..6
+ok 14 - Şüpheli Ticari Alacaklar — yan senaryolar (kabul §2 B–E, H, K3)
+  ---
+  duration_ms: 1205.55038
+  type: 'suite'
+  ...
+# (node:15178) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: çek/senet kural motoru (saf)
+    # Subtest: durum geçişleri: izinli olanlar geçer, diğerleri okunur nedenle reddedilir
+    ok 1 - durum geçişleri: izinli olanlar geçer, diğerleri okunur nedenle reddedilir
+      ---
+      duration_ms: 3.111156
+      type: 'test'
+      ...
+    # Subtest: defter etkileri: alınan → cariye alacak ya da taksite tahsilat; ciro → tedarikçiye borç; karşılıksız → geri çevirme
+    ok 2 - defter etkileri: alınan → cariye alacak ya da taksite tahsilat; ciro → tedarikçiye borç; karşılıksız → geri çevirme
+      ---
+      duration_ms: 0.985073
+      type: 'test'
+      ...
+    # Subtest: portföy özeti vadeye göre (geçmiş / bugün / 7 gün)
+    ok 3 - portföy özeti vadeye göre (geçmiş / bugün / 7 gün)
+      ---
+      duration_ms: 0.956895
+      type: 'test'
+      ...
+    # Subtest: Excel başlıkları ve hücre değerleri
+    ok 4 - Excel başlıkları ve hücre değerleri
+      ---
+      duration_ms: 2.629257
+      type: 'test'
+      ...
+    1..4
+ok 15 - çek/senet kural motoru (saf)
+  ---
+  duration_ms: 9.190948
+  type: 'suite'
+  ...
+# Subtest: rapor motoru (saf): mizan, ekstre, nakit akışı
+    # Subtest: mizan: devir + dönem borç/alacak = bakiye; hareketsiz cari istenmezse yazılmaz
+    ok 1 - mizan: devir + dönem borç/alacak = bakiye; hareketsiz cari istenmezse yazılmaz
+      ---
+      duration_ms: 0.983229
+      type: 'test'
+      ...
+    # Subtest: ekstre: devir satırı ve yürüyen bakiye
+    ok 2 - ekstre: devir satırı ve yürüyen bakiye
+      ---
+      duration_ms: 0.437832
+      type: 'test'
+      ...
+    # Subtest: nakit akışı: gecikmişler ayrı, aynı gün önce çıkış, en düşük bakiye, başlangıç bugünden sonraysa aradakiler taşınır
+    ok 3 - nakit akışı: gecikmişler ayrı, aynı gün önce çıkış, en düşük bakiye, başlangıç bugünden sonraysa aradakiler taşınır
+      ---
+      duration_ms: 1.052276
+      type: 'test'
+      ...
+    # Subtest: hazır aralıklar takvim günüyle (ay sonu, artık yıl, yıl dönümü)
+    ok 4 - hazır aralıklar takvim günüyle (ay sonu, artık yıl, yıl dönümü)
+      ---
+      duration_ms: 0.737977
+      type: 'test'
+      ...
+    1..4
+ok 16 - rapor motoru (saf): mizan, ekstre, nakit akışı
+  ---
+  duration_ms: 3.750182
+  type: 'suite'
+  ...
+# Subtest: çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü
+    # Subtest: alınan çek: carinin borcu düşer, Kasa değişmez; toplam alacak değişmez (cariden portföye geçer)
+    ok 1 - alınan çek: carinin borcu düşer, Kasa değişmez; toplam alacak değişmez (cariden portföye geçer)
+      ---
+      duration_ms: 88.202605
+      type: 'test'
+      ...
+    # Subtest: tahsil: Kasa artar, cari değişmez; geri al: Kasa eski haline döner
+    ok 2 - tahsil: Kasa artar, cari değişmez; geri al: Kasa eski haline döner
+      ---
+      duration_ms: 102.959087
+      type: 'test'
+      ...
+    # Subtest: ciro → tedarikçi borcu düşer; karşılıksız → müşteri yeniden borçlanır, ciro geri alınır; geri al hepsini çevirir
+    ok 3 - ciro → tedarikçi borcu düşer; karşılıksız → müşteri yeniden borçlanır, ciro geri alınır; geri al hepsini çevirir
+      ---
+      duration_ms: 109.783431
+      type: 'test'
+      ...
+    # Subtest: verilen çek: tedarikçi borcu düşer, toplam borç korunur; ödenince Kasa'dan çıkar ve borç kapanır
+    ok 4 - verilen çek: tedarikçi borcu düşer, toplam borç korunur; ödenince Kasa'dan çıkar ve borç kapanır
+      ---
+      duration_ms: 130.692958
+      type: 'test'
+      ...
+    # Subtest: taksite sayılan çek: taksit ödenmiş olur, Kasa değişmez; karşılıksız taksiti yeniden açar; kart silinemez, tahsilat karttan düzeltilemez
+    ok 5 - taksite sayılan çek: taksit ödenmiş olur, Kasa değişmez; karşılıksız taksiti yeniden açar; kart silinemez, tahsilat karttan düzeltilemez
+      ---
+      duration_ms: 156.401237
+      type: 'test'
+      ...
+    # Subtest: silme etkileri geri alır; Silinenler'den geri yükleme yeniden yazar; işlem görmüş evrak silinmez
+    ok 6 - silme etkileri geri alır; Silinenler'den geri yükleme yeniden yazar; işlem görmüş evrak silinmez
+      ---
+      duration_ms: 85.258348
+      type: 'test'
+      ...
+    # Subtest: doğrulama: tutar, tarih, kişi, çift seri no, işlem tarihi; personel çek göremez
+    ok 7 - doğrulama: tutar, tarih, kişi, çift seri no, işlem tarihi; personel çek göremez
+      ---
+      duration_ms: 154.858315
+      type: 'test'
+      ...
+    # Subtest: kısmi yazma geri alınır (ROLLBACK): ikinci etki başarısız olursa ilk etki de yazılmaz
+    ok 8 - kısmi yazma geri alınır (ROLLBACK): ikinci etki başarısız olursa ilk etki de yazılmaz
+      ---
+      duration_ms: 59.675751
+      type: 'test'
+      ...
+    # Subtest: Excel/Sheets'ten portföy: kapı raporu; varsayılan carilere dokunmaz, 'carilere işle' ile yazar; kapanmış ve çift satır alınmaz
+    ok 9 - Excel/Sheets'ten portföy: kapı raporu; varsayılan carilere dokunmaz, 'carilere işle' ile yazar; kapanmış ve çift satır alınmaz
+      ---
+      duration_ms: 41.612861
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel çıktıları: portföy, mizan, ekstre, nakit akışı
+    ok 10 - PDF ve Excel çıktıları: portföy, mizan, ekstre, nakit akışı
+      ---
+      duration_ms: 161.253012
+      type: 'test'
+      ...
+    1..10
+ok 17 - çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü
+  ---
+  duration_ms: 1683.830791
+  type: 'suite'
+  ...
+# Subtest: ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 işlem)
+    # Subtest: Kasa, alacak, borç, kritik stok, mizan ve nakit akışı her adımda tutarlı
+    ok 1 - Kasa, alacak, borç, kritik stok, mizan ve nakit akışı her adımda tutarlı
+      ---
+      duration_ms: 5762.228421
+      type: 'test'
+      ...
+    # Subtest: para ya da stok değişince herkese (işlemi yapan dahil) tek 'overview.changed' olayı gider
+    ok 2 - para ya da stok değişince herkese (işlemi yapan dahil) tek 'overview.changed' olayı gider
+      ---
+      duration_ms: 326.159793
+      type: 'test'
+      ...
+    # Subtest: kart yalnız yöneticide; kişiye verilen finans raporları yetkisi raporları açar, kartı açmaz; geri alınınca kapanır
+    ok 3 - kart yalnız yöneticide; kişiye verilen finans raporları yetkisi raporları açar, kartı açmaz; geri alınınca kapanır
+      ---
+      duration_ms: 254.106837
+      type: 'test'
+      ...
+    1..3
+ok 18 - ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 işlem)
+  ---
+  duration_ms: 6704.49981
+  type: 'suite'
+  ...
+# Subtest: rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak alınır
+    # Subtest: katalogdaki her rapor çalışır; PDF ve Excel üretilir; yetkisiz kişi göremez
+    ok 1 - katalogdaki her rapor çalışır; PDF ve Excel üretilir; yetkisiz kişi göremez
+      ---
+      duration_ms: 991.588883
+      type: 'test'
+      ...
+    1..1
+ok 19 - rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak alınır
+  ---
+  duration_ms: 1364.716468
+  type: 'suite'
+  ...
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 4.250324
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.477023
+      type: 'test'
+      ...
+    1..2
+ok 20 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 5.663444
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 1.618755
+      type: 'test'
+      ...
+    1..1
+ok 21 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 1.942207
+  type: 'suite'
+  ...
+# (node:15192) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını büyütmez
+    # Subtest: C: 1.000 (500 peşin, 500 taksit) → malın tamamı iade, 500 nakit geri → kart 0, cari 0, Kasa 0, gecikme yok
+    ok 1 - C: 1.000 (500 peşin, 500 taksit) → malın tamamı iade, 500 nakit geri → kart 0, cari 0, Kasa 0, gecikme yok
+      ---
+      duration_ms: 685.657033
+      type: 'test'
+      ...
+    # Subtest: C2: aynı akış 2 taksitle (vadeler geçmiş) → kart 0
+    ok 2 - C2: aynı akış 2 taksitle (vadeler geçmiş) → kart 0
+      ---
+      duration_ms: 504.854642
+      type: 'test'
+      ...
+    # Subtest: B: 1.000 (500 peşin) → 600 açık iade (cari −100) → 400 iade + 400 nakit geri → kart 0, cari −100
+    ok 3 - B: 1.000 (500 peşin) → 600 açık iade (cari −100) → 400 iade + 400 nakit geri → kart 0, cari −100
+      ---
+      duration_ms: 560.447286
+      type: 'test'
+      ...
+    # Subtest: A: 3.000 (2.000 peşin, 1.000 taksit) → 1 açık iade → karttan 1.500 (fazla) → 1 iade + 300 nakit geri → kart büyümez
+    ok 4 - A: 3.000 (2.000 peşin, 1.000 taksit) → 1 açık iade → karttan 1.500 (fazla) → 1 iade + 300 nakit geri → kart büyümez
+      ---
+      duration_ms: 619.686009
+      type: 'test'
+      ...
+    # Subtest: D (G1 korunur): peşinsiz 1.000 taksit → 400 iade + 400 nakit geri → kart 1.000 kalır
+    ok 5 - D (G1 korunur): peşinsiz 1.000 taksit → 400 iade + 400 nakit geri → kart 1.000 kalır
+      ---
+      duration_ms: 490.875818
+      type: 'test'
+      ...
+    # Subtest: E (korunur): 1.000 (500 peşin) → 300 iade + 300 nakit geri → kart 500 kalır
+    ok 6 - E (korunur): 1.000 (500 peşin) → 300 iade + 300 nakit geri → kart 500 kalır
+      ---
+      duration_ms: 441.000389
+      type: 'test'
+      ...
+    # Subtest: F: peşin çekle (500) alınmış; malın tamamı iade + 500 nakit geri → kart 0
+    ok 7 - F: peşin çekle (500) alınmış; malın tamamı iade + 500 nakit geri → kart 0
+      ---
+      duration_ms: 422.3886
+      type: 'test'
+      ...
+    # Subtest: G: peşin banka hesabına havale; tam iade + aynı hesaptan havale geri → kart 0, hesap bakiyesi eski hâline döner
+    ok 8 - G: peşin banka hesabına havale; tam iade + aynı hesaptan havale geri → kart 0, hesap bakiyesi eski hâline döner
+      ---
+      duration_ms: 494.425883
+      type: 'test'
+      ...
+    # Subtest: H: iki iade arka arkaya (500 + 250 nakit geri, 500 + 250 nakit geri) → önce 250, sonra 0
+    ok 9 - H: iki iade arka arkaya (500 + 250 nakit geri, 500 + 250 nakit geri) → önce 250, sonra 0
+      ---
+      duration_ms: 504.128477
+      type: 'test'
+      ...
+    # Subtest: H2: önce açık iade (500) sonra paralı iade (500 + 500 nakit geri) → kart 0
+    ok 10 - H2: önce açık iade (500) sonra paralı iade (500 + 500 nakit geri) → kart 0
+      ---
+      duration_ms: 509.530694
+      type: 'test'
+      ...
+    # Subtest: I: iade iptal edilince kart 500'e döner; yeniden kesilince 0; iade silinince yine 500
+    ok 11 - I: iade iptal edilince kart 500'e döner; yeniden kesilince 0; iade silinince yine 500
+      ---
+      duration_ms: 694.457217
+      type: 'test'
+      ...
+    # Subtest: J: kısmi tahsilatlı kart (400 peşin, 600 taksit, 300 tahsil) → tam iade + 700 nakit geri → kart 0
+    ok 12 - J: kısmi tahsilatlı kart (400 peşin, 600 taksit, 300 tahsil) → tam iade + 700 nakit geri → kart 0
+      ---
+      duration_ms: 412.624994
+      type: 'test'
+      ...
+    # Subtest: K (korunur): peşinli açık fatura + Mevcut Borç kartı (500) → 500 + 250 geri, 500 + 250 geri → kart 250, sonra 0
+    ok 13 - K (korunur): peşinli açık fatura + Mevcut Borç kartı (500) → 500 + 250 geri, 500 + 250 geri → kart 250, sonra 0
+      ---
+      duration_ms: 461.328627
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi her senaryodan sonra tutarlı (C + B + A aynı şirkette)
+    ok 14 - Mutabakat Testi her senaryodan sonra tutarlı (C + B + A aynı şirkette)
+      ---
+      duration_ms: 502.942248
+      type: 'test'
+      ...
+    1..14
+ok 22 - 2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını büyütmez
+  ---
+  duration_ms: 7308.855488
+  type: 'suite'
+  ...
+# (node:15199) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: İşlem geçmişi geri yükleme yetkisi (records.edit)
+    # Subtest: records.edit yetkisi olmayan kullanıcı silinmiş notu geri yükleyemez (403); yönetici yükler
+    ok 1 - records.edit yetkisi olmayan kullanıcı silinmiş notu geri yükleyemez (403); yönetici yükler
+      ---
+      duration_ms: 39.013077
+      type: 'test'
+      ...
+    1..1
+ok 23 - İşlem geçmişi geri yükleme yetkisi (records.edit)
+  ---
+  duration_ms: 679.121598
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 1.697859
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.260525
+      type: 'test'
+      ...
+    1..2
+ok 24 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 2.90951
+  type: 'suite'
+  ...
+# (node:15213) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.3.0 eleştirmen bulguları — Şüpheli Alacaklar
+    # Subtest: E1: geçen yıl açılmış açık kayıt 'Bu Yıl · Açık' raporunda görünür; TOPLAM Kalan = 128
+    ok 1 - E1: geçen yıl açılmış açık kayıt 'Bu Yıl · Açık' raporunda görünür; TOPLAM Kalan = 128
+      ---
+      duration_ms: 168.102565
+      type: 'test'
+      ...
+    # Subtest: E2: kayıt tarihinden önce tarihli tahsilat 120'yi eksiye düşürecekse KAPI reddeder (doubtful:balance); sayılar değişmez
+    ok 2 - E2: kayıt tarihinden önce tarihli tahsilat 120'yi eksiye düşürecekse KAPI reddeder (doubtful:balance); sayılar değişmez
+      ---
+      duration_ms: 154.066022
+      type: 'test'
+      ...
+    1..2
+ok 25 - 2.3.0 eleştirmen bulguları — Şüpheli Alacaklar
+  ---
+  duration_ms: 759.818143
+  type: 'suite'
+  ...
+# (node:15221) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.3.0 yargıç bulguları — Şüpheli Alacaklar
+    # Subtest: Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0
+    ok 1 - Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0
+      ---
+      duration_ms: 234.91113
+      type: 'test'
+      ...
+    # Subtest: Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez
+    ok 2 - Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez
+      ---
+      duration_ms: 169.366323
+      type: 'test'
+      ...
+    # Subtest: Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam
+    ok 3 - Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam
+      ---
+      duration_ms: 225.335016
+      type: 'test'
+      ...
+    # Subtest: Y4b: 120'yi eksiye düşürecek geri yükleme 409 doubtful-exceeds-balance (anlamlı metin), kayıt Silinenler'de kalır
+    ok 4 - Y4b: 120'yi eksiye düşürecek geri yükleme 409 doubtful-exceeds-balance (anlamlı metin), kayıt Silinenler'de kalır
+      ---
+      duration_ms: 129.784078
+      type: 'test'
+      ...
+    # Subtest: Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest
+    ok 5 - Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest
+      ---
+      duration_ms: 84.503949
+      type: 'test'
+      ...
+    # Subtest: Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz
+    ok 6 - Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz
+      ---
+      duration_ms: 17.567285
+      type: 'test'
+      ...
+    # Subtest: Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200
+    ok 7 - Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200
+      ---
+      duration_ms: 229.892658
+      type: 'test'
+      ...
+    # Subtest: Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400
+    ok 8 - Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400
+      ---
+      duration_ms: 66.670304
+      type: 'test'
+      ...
+    # Subtest: Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır
+    ok 9 - Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır
+      ---
+      duration_ms: 147.538481
+      type: 'test'
+      ...
+    1..9
+ok 26 - 2.3.0 yargıç bulguları — Şüpheli Alacaklar
+  ---
+  duration_ms: 1725.154235
+  type: 'suite'
+  ...
+1..26
+# tests 124
+# suites 26
+# pass 124
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14536.208714

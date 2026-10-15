@@ -1,0 +1,32 @@
+{
+  "ad": "iz2-komsu-banka-210-daha-fazla",
+  "komut": "npm run test:banka-210-daha-fazla",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a7e349711147dc850",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:07:01.046Z",
+  "sure_sn": 82,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 31,
+    "gecen": 31,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/iz2-komsu-banka-210-daha-fazla.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7e349711147dc850",
+  "ham_cikti_sha256": "aa84e9c1d6f10030b4c51a90fa53edeaf90478d3d80e8c6a909f773844e49e70",
+  "ham_cikti_bayt": 5444
+}

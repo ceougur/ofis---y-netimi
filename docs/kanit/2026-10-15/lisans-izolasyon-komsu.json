@@ -1,0 +1,32 @@
+{
+  "ad": "lisans-izolasyon-komsu",
+  "komut": "node --test test/update-flow.test.mjs test/supervisor.test.mjs test/yedek-hizmet-yaris.mjs test/packaging.test.mjs test/yedek-220.test.mjs",
+  "commit": "996d7d1be03fbbcc321a6a665dfbf39c1a9945d0",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 7,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T09:10:38.991Z",
+  "sure_sn": 69.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 47,
+    "gecen": 47,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/lisans-izolasyon-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "33f23bb746c7f3e104e664ed346f20bdd7e70deed7e67ee337ebb48c4b20ba6d",
+  "ham_cikti_bayt": 19088
+}

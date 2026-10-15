@@ -1,0 +1,35 @@
+TAP version 13
+# Subtest: 2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar
+    # Subtest: ödenmiş karta çek → 409 plan-paid; kart, cari ve 101 değişmez; evrak yazılmaz
+    ok 1 - ödenmiş karta çek → 409 plan-paid; kart, cari ve 101 değişmez; evrak yazılmaz
+      ---
+      duration_ms: 106.751065
+      type: 'test'
+      ...
+    # Subtest: kalanı aşan çek → 409 plan-overpay (kalan/fazla ek alanda); kalan kadar çek → 200, kart kapanır
+    ok 2 - kalanı aşan çek → 409 plan-overpay (kalan/fazla ek alanda); kalan kadar çek → 200, kart kapanır
+      ---
+      duration_ms: 66.326962
+      type: 'test'
+      ...
+    # Subtest: ödenmiş taksite seçili çek → 409 installment-paid; açık taksite → 200; karşılıksızda ters kayıt kurala girmez (yeniden açılır)
+    ok 3 - ödenmiş taksite seçili çek → 409 installment-paid; açık taksite → 200; karşılıksızda ters kayıt kurala girmez (yeniden açılır)
+      ---
+      duration_ms: 91.101404
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.3.0 K8 — çekle sayılan taksit tahsilatı kartın kalanına bakar
+  ---
+  duration_ms: 597.059236
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 915.362195

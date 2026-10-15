@@ -97,7 +97,7 @@ export async function bootProcess(version, { dataDir, backupDir }) {
       probe.close(() => resolve(free));
     });
   });
-  const env = { ...process.env, PORT: String(port), HOST: "127.0.0.1", HUKUK_DATA_DIR: dataDir, HUKUK_BACKUP_DIR: backupDir, HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD };
+  const env = { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", PORT: String(port), HOST: "127.0.0.1", HUKUK_DATA_DIR: dataDir, HUKUK_BACKUP_DIR: backupDir, HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD };
   const child = spawn(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(code.dir, "server", "server.mjs")], { cwd: code.dir, env, stdio: ["ignore", "pipe", "pipe"] });
   let output = "";
   child.stdout.on("data", chunk => (output += chunk));

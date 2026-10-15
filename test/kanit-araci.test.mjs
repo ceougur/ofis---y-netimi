@@ -140,7 +140,7 @@ describe("kanıt aracı: gerçek koşu kaydı", () => {
 });
 
 // ---- Doğrulama kapısı (10.10.2026; kullanıcı: "yapmadığı işi yapılmış, doğrulamadığı sonucu doğrulanmış gösteremeyen süreç") ----
-const { ciState, gateVerdict, machineState, hookDecision, releaseGate, GATE_JOB } = await import(pathToFileURL(TOOL).href);
+const { ciState, gateVerdict, machineState, hookDecision, releaseGate, GATE_JOB, BELGE_YOLLARI, yalnizBelge } = await import(pathToFileURL(TOOL).href);
 const SHA = "a".repeat(40);
 const fakeGit = (over = {}) => (...args) => {
   const key = args.join(" ");
@@ -160,6 +160,48 @@ const fakeGh = runs => args => {
   return { jobs: runs[id - 1].jobs };
 };
 const ALL = [job("Test (ubuntu-latest, Node 22)"), job("Test (windows-latest, Node 22)"), job("Uçtan uca (Chromium)"), job(GATE_JOB), job("Dağıtım paketi")];
+
+describe("yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)", () => {
+  const PARENT = "b".repeat(40);
+  const GRAND = "c".repeat(40);
+  const ghFor = byCommit => args => {
+    const url = args[0];
+    if (url.includes("/actions/runs?head_sha=")) {
+      const sha = url.match(/head_sha=([0-9a-f]+)/)[1];
+      return { workflow_runs: (byCommit[sha] || []).map((run, index) => ({ id: sha.charCodeAt(0) * 10 + index + 1, path: ".github/workflows/ci.yml", name: "CI", run_number: 700, event: "push", html_url: "u", status: "completed", conclusion: "success", ...run })) };
+    }
+    const id = Number(url.match(/runs\/(\d+)\/jobs/)[1]);
+    const sha = Object.keys(byCommit).find(key => key.charCodeAt(0) === Math.floor((id - 1) / 10));
+    return { jobs: byCommit[sha][(id - 1) % 10].jobs };
+  };
+  const gitWith = files => fakeGit({ [`rev-parse ${SHA}^`]: PARENT, [`rev-parse ${PARENT}^`]: GRAND, [`diff-tree --no-commit-id --name-only -r --root ${SHA}`]: files.self, [`diff-tree --no-commit-id --name-only -r --root ${PARENT}`]: files.parent ?? "server/app.mjs" });
+  it("yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)", () => {
+    const result = ciState(SHA, { gh: ghFor({ [PARENT]: [{ jobs: ALL }] }), gitFn: gitWith({ self: "CLAUDE.md\ndocs/devir/DEVIR-MODULU.md" }) });
+    assert.equal(result.result, "YEŞİL");
+    assert.match(result.reason, /yalnız belge/);
+  });
+  it("ata commit kırmızıysa yalnız belge commit'i de KIRMIZI", () => {
+    const jobs = ALL.map(item => (item.name.includes("windows") ? job(item.name, "completed", "failure") : item));
+    assert.equal(ciState(SHA, { gh: ghFor({ [PARENT]: [{ jobs, conclusion: "failure" }] }), gitFn: gitWith({ self: "CLAUDE.md" }) }).result, "KIRMIZI");
+  });
+  it("kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)", () => {
+    assert.equal(ciState(SHA, { gh: ghFor({ [PARENT]: [{ jobs: ALL }] }), gitFn: gitWith({ self: "server/app.mjs\nCLAUDE.md" }) }).result, "BELİRSİZ");
+  });
+  it("testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz", () => {
+    assert.equal(yalnizBelge(["docs/BANKA-MODULU-PLAN.md"]), false);
+    assert.equal(yalnizBelge(["docs/kanit/2026-10-13/x.json"]), false);
+    assert.equal(yalnizBelge(["docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html"]), false);
+    assert.equal(yalnizBelge([]), false);
+    assert.equal(yalnizBelge(["docs/fatura/E-BELGE-EDM.md", "CLAUDE.md"]), true);
+  });
+  it("ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz", () => {
+    const yml = readFileSync(path.join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
+    const block = yml.split(/\r?\n  pull_request:/)[0].split("paths-ignore:")[1] || "";
+    const listed = [...block.matchAll(/- "([^"]+)"/g)].map(m => m[1]);
+    assert.deepEqual(listed, BELGE_YOLLARI);
+    assert.match(yml, /\n  pull_request:\r?\n\r?\njobs:|\n  pull_request:\r?\n(?! {4}paths)/);
+  });
+});
 
 describe("doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)", () => {
   const state = runs => ciState(SHA, { gh: fakeGh(runs), gitFn: fakeGit() });

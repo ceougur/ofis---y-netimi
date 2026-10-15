@@ -1,0 +1,32 @@
+{
+  "ad": "karar2-kahin-fark-t1-2",
+  "komut": "bash -c set -euo pipefail; python3 -I test/bagimsiz/fark.py --tohum 1 --islem 500 && python3 -I test/bagimsiz/fark.py --tohum 2 --islem 500",
+  "commit": "4c725a74d3820ad387c0e64befdb6bfcdb59c443",
+  "dal": "worktree-agent-ae29a6d1c9c3d14a0",
+  "kirli": 9,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T08:22:37.762Z",
+  "sure_sn": 65.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 6206,
+    "gecen": 6206,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/karar2-kahin-fark-t1-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae29a6d1c9c3d14a0",
+  "ham_cikti_sha256": "499ac4607bbf258117ce649cd65eb4f887e1bc2865b114abf0924954a39e41ab",
+  "ham_cikti_bayt": 776
+}

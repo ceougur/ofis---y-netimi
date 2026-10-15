@@ -1,0 +1,38 @@
+{
+  "ad": "supheli-ayni-gun-degersiz-kirmizi",
+  "komut": "node --test test/supheli-230-ayni-gun-degersiz.test.mjs",
+  "commit": "1fa698ffd2d6bd821e54b37d012fb9fe7d2f3032",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T11:50:03.576Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "aynı gün değersiz satırı tahsilattan ÖNCE düşer; anahtar sırası sonucu değiştirmez",
+      "konum": "test/supheli-230-ayni-gun-degersiz.test.mjs:22:1",
+      "hata": "tahsilat anahtarı küçükken · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/supheli-ayni-gun-degersiz-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "1019e2a516bc76b23275ada990d26117c84b9c79e508492ea2d72a4936aef182",
+  "ham_cikti_bayt": 1726
+}

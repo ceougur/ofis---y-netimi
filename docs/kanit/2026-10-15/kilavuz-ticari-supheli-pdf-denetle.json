@@ -1,0 +1,32 @@
+{
+  "ad": "kilavuz-ticari-supheli-pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "38fcad17032a870a99ec6ec0426cba7ea6e6bf48",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 6,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T19:35:51.613Z",
+  "sure_sn": 10.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/kilavuz-ticari-supheli-pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a33633d19e09e25495505a87601d58e1e76409072fefcf0fa51c265648df337d",
+  "ham_cikti_bayt": 2210
+}

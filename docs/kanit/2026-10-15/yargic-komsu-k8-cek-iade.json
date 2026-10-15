@@ -1,0 +1,32 @@
+{
+  "ad": "yargic-komsu-k8-cek-iade",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-230-k8-taksit.test.mjs test/banka-230-k8-cek.test.mjs test/hakem-k8-kredi.test.mjs test/cheques-overview.test.mjs test/iade-210.test.mjs test/banka-230-46-iade-iptal.test.mjs",
+  "commit": "03db78c94afc03cfcba5587e698acf9d2bd55cee",
+  "dal": "worktree-agent-aded053a756b1e4c8",
+  "kirli": 11,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T05:57:06.613Z",
+  "sure_sn": 12.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 74,
+    "gecen": 74,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/yargic-komsu-k8-cek-iade.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aded053a756b1e4c8",
+  "ham_cikti_sha256": "72642c9f7947913037f47b7ff5f7ee95f69fb259fb483f185fd5a63e21e46528",
+  "ham_cikti_bayt": 31264
+}

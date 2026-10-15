@@ -29,8 +29,19 @@ import re
 import sys
 from collections import defaultdict
 
-DIL = "destekofis-senaryo/3"
-DILLER = {"destekofis-senaryo/2", "destekofis-senaryo/3"}    # sürüm 3 yalnız ekler (SENARYO-DILI "Sürüm 3 değişiklikleri")
+DIL = "destekofis-senaryo/4"
+DIL3 = "destekofis-senaryo/3"
+DILLER = {"destekofis-senaryo/2", DIL3, DIL}    # sürüm 3 ve 4 yalnız ekler (SENARYO-DILI "Sürüm 3/4 değişiklikleri")
+# Sürüm 4 (15.10.2026): Şüpheli Ticari Alacaklar [PLAN §3.11b; KABUL K1–K12] ve K8 taksit kuralı [PLAN §3.10/3].
+SUPHELI_ISLEMLERI = {"supheli_al", "karsilik_ayir", "supheli_cikar", "degersiz_yaz"}
+NEDENLER = {"karsiliksiz_cek", "protestolu_senet", "dava", "icra", "diger"}
+SUPHELI_KODLARI = {"120", "128", "129", "644", "654", "659"}
+# §4.42a: müşteri carisinde A 120 yazan ve şüpheliden düşen fiş türleri [KABUL K3]; BELİRSİZ-38: listede olmayan A 120 türleri
+ALACAK_SATIRI_TURLERI = {"cari_giris", "taksit", "iade", "evrak_al"}
+# Sürüm 4 eki (15.10.2026; PLAN §3.11b/2 "Tahsilatta seçim" (a)–(b)): A 120 yazan ama şüpheliden DÜŞMEYEN satırlar — satış faturasının
+# peşin satırı, kapatilacakFatura bağlı tahsilat ve normalCari tahsilatı (cari_giris_normal). Gün sırası (BELİRSİZ-35) denetimine girmez.
+NORMAL_TURLERI = {"pesin", "cari_giris_normal"}
+BELIRSIZ38_TURLERI = {"iade_geri", "fatura"}
 MAX_KURUS = 10 ** 14          # 1e12 TL [PLAN §9.2/9]
 ROLLER = {"yonetici", "muhasebe", "personel"}
 HESAP_TURLERI = {"vadesiz", "ticari", "vadeli", "diger", "kurumsal_kart", "kredi"}
@@ -62,14 +73,14 @@ BELIRSIZ4_ISLEMLER = {"kasa_banka", "transfer"} | BANKA_FISI
 TARIHLI = {"kasa_acilis", "kasa_hareket", "fatura", "iade", "cari_tahsilat", "cari_odeme",
            "taksit_tahsilat", "kasa_banka", "transfer", "banka_masraf", "faiz_geliri",
            "faiz_gideri", "diger_gelir", "diger_gider", "kart_borcu_odeme", "kredi_kullanim",
-           "kredi_odeme"} | (EVRAK_ISLEMLERI - {"evrak_sil"})
+           "kredi_odeme"} | (EVRAK_ISLEMLERI - {"evrak_sil"}) | SUPHELI_ISLEMLERI
 ORTAK_ALANLAR = {"id", "islem", "kullanici", "istekKimligi", "benzerOnay", "yineDeKaydet",
                  "ayniAnda", "not"}
 # İstek kimliği gövdesinden çıkarılan alanlar [SENARYO-DILI §5.4]
 GOVDE_DISI = {"id", "ad", "not", "istekKimligi", "benzerOnay", "yineDeKaydet", "ayniAnda"}
 # Takma ad gösteren anahtarlar (gövde karşılaştırmasında kimliğe çevrilir)
 REF_ANAHTARLARI = {"hesap", "cari", "urun", "asilFatura", "kapatilacakFatura", "kart", "kaynak",
-                   "hedef", "kredi", "saglayici", "evrak"}
+                   "hedef", "kredi", "saglayici", "evrak", "kayit"}
 
 # Her işlemin alanları. Demet = ikisinden tam biri ("tutar" ya da "tutarHam").
 ALANLAR = {
@@ -90,9 +101,9 @@ ALANLAR = {
     "stok_giris": (["urun", "miktar"], []),
     "fatura": (["ad", "tur", "cari", "kalemler"], ["odeme"]),
     "iade": (["ad", "asilFatura", "kalemler", "geri"], []),
-    "cari_tahsilat": (["cari", ("tutar", "tutarHam"), "yol"], ["ad", "hesap", "kapatilacakFatura"]),
+    "cari_tahsilat": (["cari", ("tutar", "tutarHam"), "yol"], ["ad", "hesap", "kapatilacakFatura", "normalCari"]),
     "cari_odeme": (["cari", ("tutar", "tutarHam"), "yol"], ["ad", "hesap", "kapatilacakFatura"]),
-    "taksit_tahsilat": (["kart", "tutar", "yol"], ["ad", "hesap", "taksitNo"]),
+    "taksit_tahsilat": (["kart", "tutar", "yol"], ["ad", "hesap", "taksitNo", "fazlaAvans"]),
     "kasa_banka": (["yon", "tutar"], ["ad", "hesap"]),
     "transfer": (["kaynak", "hedef", ("tutar", "tutarHam")], ["ad", ("ucret", "ucretHam"), "ucretVergi"]),
     "banka_masraf": (["hesap", ("tutar", "tutarHam"), "masrafTuru", "vergi"],
@@ -117,6 +128,11 @@ ALANLAR = {
     "tahsile_ver": (["evrak", "hesap"], []),
     "bankadan_geri_al": (["evrak"], []),
     "evrak_sil": (["evrak"], []),
+    # sürüm 4 (§4.39–4.42)
+    "supheli_al": (["ad", "cari"], ["tutar", "neden", "evrak", "aciklama"]),
+    "karsilik_ayir": (["kayit", "tutar"], ["ad"]),
+    "supheli_cikar": (["kayit"], []),
+    "degersiz_yaz": (["kayit", "tutar"], ["ad"]),
 }
 
 # Her işlemde hangi alan hangi türde takma ad tanımlar / anar
@@ -124,10 +140,11 @@ TANIMLAR = {
     "hesap_ac": {"ad": "hesap"}, "cari_ac": {"ad": "cari"}, "urun_ac": {"ad": "urun"},
     "fatura": {"ad": "fatura"}, "iade": {"ad": "fatura"},
     "evrak_al": {"ad": "evrak"}, "evrak_ver": {"ad": "evrak"},
+    "supheli_al": {"ad": "supheli"},
 }
 for _i in ("kasa_hareket", "cari_tahsilat", "cari_odeme", "taksit_tahsilat", "kasa_banka", "transfer",
            "banka_masraf", "faiz_geliri", "faiz_gideri", "diger_gelir", "diger_gider",
-           "kart_borcu_odeme", "kredi_kullanim", "kredi_odeme", "ters_kayit"):
+           "kart_borcu_odeme", "kredi_kullanim", "kredi_odeme", "ters_kayit", "karsilik_ayir", "degersiz_yaz"):
     TANIMLAR[_i] = {"ad": "hareket"}
 REFERANSLAR = {
     "hesap_durum": {"hesap": "hesap"}, "hesap_eksi_politika": {"hesap": "hesap"},
@@ -144,7 +161,9 @@ REFERANSLAR = {
     "kart_borcu_odeme": {"kaynak": "hesap", "kart": "hesap"},
     "kredi_kullanim": {"kredi": "hesap", "hedef": "hesap"},
     "kredi_odeme": {"kredi": "hesap", "kaynak": "hesap"},
-    "ters_kayit": {"hedef": "hareket"}, "sil": {"hedef": "hareket"},
+    "ters_kayit": {"hedef": "hareket"}, "sil": {"hedef": ("hareket", "supheli")},
+    "supheli_al": {"cari": "cari", "evrak": "evrak"},
+    "karsilik_ayir": {"kayit": "supheli"}, "supheli_cikar": {"kayit": "supheli"}, "degersiz_yaz": {"kayit": "supheli"},
     "evrak_al": {"cari": "cari"}, "evrak_ver": {"cari": "cari"},
     "evrak_ciro": {"evrak": "evrak", "cari": "cari"},
     "evrak_tahsil": {"evrak": "evrak", "hesap": "hesap"}, "evrak_odeme": {"evrak": "evrak", "hesap": "hesap"},
@@ -316,7 +335,8 @@ def senaryo_dogrula(sen, dosya):
             raise SenaryoHatasi("üst düzeyde bilinmeyen alan: %r" % k)
     if sen.get("dil") not in DILLER:
         raise SenaryoHatasi("dil %r değil" % DIL)
-    surum3 = sen.get("dil") == DIL
+    surum3 = sen.get("dil") in (DIL3, DIL)
+    surum4 = sen.get("dil") == DIL
     kok = os.path.basename(dosya)
     if kok.endswith(".json"):
         kok = kok[:-5]
@@ -379,8 +399,9 @@ def senaryo_dogrula(sen, dosya):
     def ad_an(a, tur, i, alan):
         if not isinstance(a, str) or a not in adlar:
             raise SenaryoHatasi("adım %d: %s tanımsız takma ad: %r" % (i, alan, a))
-        if adlar[a][0] != tur:
-            raise SenaryoHatasi("adım %d: %s %s türünde değil (%s)" % (i, alan, tur, adlar[a][0]))
+        turler = tur if isinstance(tur, tuple) else (tur,)
+        if adlar[a][0] not in turler:
+            raise SenaryoHatasi("adım %d: %s %s türünde değil (%s)" % (i, alan, "/".join(turler), adlar[a][0]))
         return tanim_adim[a]
 
     for i, adim in enumerate(adimlar):
@@ -395,6 +416,10 @@ def senaryo_dogrula(sen, dosya):
             raise SenaryoHatasi("adım %s: bilinmeyen islem %r" % (aid, islem))
         if islem in EVRAK_ISLEMLERI and not surum3:
             raise SenaryoHatasi("adım %s: evrak işlemleri yalnız dil sürüm 3'te (§13/9)" % aid)
+        if (islem in SUPHELI_ISLEMLERI or (islem == "taksit_tahsilat" and "fazlaAvans" in adim) or (islem == "cari_tahsilat" and "normalCari" in adim)) and not surum4:
+            raise SenaryoHatasi("adım %s: şüpheli işlemleri / fazlaAvans / normalCari yalnız dil sürüm 4'te (§13/10)" % aid)
+        if islem == "cari_tahsilat" and "normalCari" in adim and adim["normalCari"] is not True:
+            raise SenaryoHatasi("adım %s: normalCari yalnız true olabilir" % aid)
         yer = "adım %s (%s)" % (aid, islem)
         _alan_denetle(adim, yer)
         k = adim.get("kullanici", "Y")
@@ -560,6 +585,24 @@ def senaryo_dogrula(sen, dosya):
             tutar_coz(adim["tutar"], yer + ".tutar")
             if "taksitNo" in adim:
                 _miktar(adim["taksitNo"], yer + ".taksitNo")
+            if "fazlaAvans" in adim and adim["fazlaAvans"] is not True:
+                raise SenaryoHatasi("%s: fazlaAvans yalnız true (§4.17)" % yer)
+        elif islem == "supheli_al":
+            if "evrak" in adim:
+                if "tutar" in adim or "neden" in adim:
+                    raise SenaryoHatasi("%s: evrak kısayolunda tutar ve neden verilmez (§13/10)" % yer)
+                if tanim_adim[adim["evrak"]]["islem"] != "evrak_al":
+                    raise SenaryoHatasi("%s: kısayol alınan evrakı anar (§4.39)" % yer)
+            else:
+                if "tutar" not in adim or "neden" not in adim:
+                    raise SenaryoHatasi("%s: tutar ve neden zorunlu (§13/10)" % yer)
+                tutar_coz(adim["tutar"], yer + ".tutar")
+                if adim["neden"] not in NEDENLER:
+                    raise SenaryoHatasi("%s: neden listede yok (§4.39)" % yer)
+            if "aciklama" in adim and not isinstance(adim["aciklama"], str):
+                raise SenaryoHatasi("%s: aciklama metin" % yer)
+        elif islem in ("karsilik_ayir", "degersiz_yaz"):
+            tutar_coz(adim["tutar"], yer + ".tutar")
         elif islem == "kasa_banka":
             if adim["yon"] not in ("bankadan_kasaya", "kasadan_bankaya"):
                 raise SenaryoHatasi("%s: yon geçersiz" % yer)
@@ -608,6 +651,10 @@ def senaryo_dogrula(sen, dosya):
                 tutar_coz(adim["faiz"], yer + ".faiz")
         elif islem == "sil":
             h = tanim_adim[adim["hedef"]]
+            if adlar[adim["hedef"]][0] == "supheli" and not surum4:
+                raise SenaryoHatasi("%s: şüpheli kaydı silme yalnız dil sürüm 4'te" % yer)
+            if h.get("islem") == "degersiz_yaz":
+                raise SenaryoHatasi("%s: değersiz yazımının silinmesi (BELİRSİZ-37)" % yer)
             # BELİRSİZ-1: Kasa'yı azaltan silme
             if kasa_pol is None and _kasa_arttiran(h):
                 raise SenaryoHatasi("%s: BELİRSİZ-1 — Kasa'yı azaltan silmeden önce kasaEksiBakiye verilmeli" % yer)
@@ -840,6 +887,10 @@ class Model:
         self.tipler = defaultdict(list)  # tip → [anahtar] (oluşma sırası)
         self.olusan = {}                 # adım id → {"ad"|"taksit"|"fatura": varlık anahtarı}
         self.odenen = defaultdict(int)   # taksit kartı → etkin tahsilat toplamı
+        # sürüm 4: şüpheli alacak (§4.39–4.42a); durum her seferinde satırlardan türetilir (KABUL K3)
+        self.supheli_olaylar = []        # {tur: karsilik|degersiz|cikar, kayit, tarih, seq, tutar, aktif, fis}
+        self.supheli_gun = defaultdict(dict)   # cari → {"supheli": tarih, "degersiz_cikar": tarih, "alacak": tarih}  (BELİRSİZ-35)
+        self._turet = None
 
     # ---------------- varlıklar ----------------
     def yeni_anahtar(self, tur):
@@ -884,11 +935,16 @@ class Model:
             raise KahinHatasi("fiş dengesiz (%s, adım %s): borç %d ≠ alacak %d" % (tur, adim, b, a))
         self.fis_no += 1
         fid = self.fis_no
-        self.fisler[fid] = {"id": fid, "tarih": tarih, "satirlar": satirlar, "tur": tur, "adim": adim}
+        # tur bir demet olabilir: ("taksit", kart_tarihi) — PLAN §3.11b/2 (c): kartın tarihi kayıt tarihinden sonraysa o kayıttan düşmez.
+        kart_tarih = None
+        if isinstance(tur, tuple):
+            tur, kart_tarih = tur
+        self.fisler[fid] = {"id": fid, "tarih": tarih, "satirlar": satirlar, "tur": tur, "adim": adim, "seq": self.seq, "kart_tarih": kart_tarih}
         for kod, bo, al, cari in satirlar:
             self.hidx[kod].setdefault(fid, []).append((tarih, bo - al))
             if cari is not None:
                 self.cidx[cari][fid] = self.cidx[cari].get(fid, 0) + bo - al
+        self._turet = None
         return fid
 
     def fis_sil(self, fid):
@@ -897,6 +953,7 @@ class Model:
             self.hidx[kod].pop(fid, None)
             if cari is not None:
                 self.cidx[cari].pop(fid, None)
+        self._turet = None
 
     def bakiye(self, kod, kadar=None):
         t = 0
@@ -904,7 +961,138 @@ class Model:
             for tarih, d in satirlar:
                 if kadar is None or tarih <= kadar:
                     t += d
+        if kod in SUPHELI_KODLARI and self.tipler.get("supheli"):
+            for k, bo, al, _c, tarih in self.supheli_turet()[0]:
+                if k == kod and (kadar is None or tarih <= kadar):
+                    t += bo - al
         return t
+
+    # ---------------- sürüm 4: şüpheli alacak türetmesi (§4.42a) ----------------
+    def supheli_turet(self):
+        """Dönüş: (türetilmiş satırlar [(kod, borç, alacak, cari|None, tarih)], kayıt anahtarı → durum sözlüğü).
+        Olay sırası (tarih, tür sırası al→karşılık→değersiz→alacak→çıkar, adım sırası) [KABUL K3]; 644: karşılık ≤ kalan [KABUL K6]."""
+        if self._turet is not None:
+            return self._turet
+        satirlar = []
+        durum = {}
+        cariler = defaultdict(list)
+        for key in self.tipler.get("supheli", []):
+            r = self.v[key]
+            if r["aktif"]:
+                cariler[r["cari"]].append(key)
+        for ck, kayitlar in cariler.items():
+            olaylar = []
+            for key in kayitlar:
+                r = self.v[key]
+                olaylar.append((r["tarih"], 0, r["seq"], "al", key))
+                durum[key] = {"tahsil": 0, "degersiz": 0, "cikarilan": 0, "karsilik": 0, "kalan": r["T"], "durum": "acik"}
+            for o in self.supheli_olaylar:
+                if not o["aktif"] or not self.v[o["kayit"]]["aktif"] or self.v[o["kayit"]]["cari"] != ck:
+                    continue
+                olaylar.append((o["tarih"], {"karsilik": 1, "degersiz": 2, "cikar": 4}[o["tur"]], o["seq"], o["tur"], o))
+            for fid, f in self.fisler.items():
+                if f["tur"] not in ALACAK_SATIRI_TURLERI:
+                    continue
+                for kod, bo, al, c in f["satirlar"]:
+                    if c == ck and kod == "120" and al > 0:
+                        olaylar.append((f["tarih"], 3, f["seq"], "alacak", (al, f.get("kart_tarih"))))
+            olaylar.sort(key=lambda o: (o[0], o[1], o[2]))
+            acik = []
+            for tarih, _, seq, tur, veri in olaylar:
+                if tur == "al":
+                    acik.append((tarih, seq, veri))
+                    acik.sort()
+                elif tur == "karsilik":
+                    s = durum[veri["kayit"]]
+                    s["karsilik"] += veri["tutar"]
+                    fazla = s["karsilik"] - s["kalan"]        # KABUL K6 eki: karşılık ayrılırken de karşılık ≤ kalan; aşan 644
+                    if fazla > 0:
+                        s["karsilik"] -= fazla
+                        satirlar.append(("129", fazla, 0, None, tarih))
+                        satirlar.append(("644", 0, fazla, None, tarih))
+                elif tur == "degersiz":
+                    s = durum[veri["kayit"]]
+                    y = min(s["karsilik"], veri["tutar"])
+                    s["karsilik"] -= y
+                    s["degersiz"] += veri["tutar"]
+                    s["kalan"] -= veri["tutar"]
+                    satirlar.append(("129", y, 0, None, tarih))
+                    satirlar.append(("659", veri["tutar"] - y, 0, None, tarih))
+                    satirlar.append(("128", 0, veri["tutar"], ck, tarih))
+                elif tur == "alacak":
+                    tutar_a, kart_tarih = veri
+                    kalan_t = tutar_a
+                    for kayit_tarihi, _, key in acik:
+                        s = durum[key]
+                        if s["durum"] != "acik" or kalan_t == 0 or s["kalan"] <= 0:
+                            continue
+                        if kart_tarih is not None and kart_tarih > kayit_tarihi:
+                            continue            # PLAN §3.11b/2 (c): kart kayıttan sonra açıldıysa o kayıttan düşmez
+                        x = min(kalan_t, s["kalan"])
+                        s["tahsil"] += x
+                        s["kalan"] -= x
+                        kalan_t -= x
+                        fazla = s["karsilik"] - s["kalan"]      # PLAN §3.11b/3 (15.10 kararı): karşılık ≤ kalan; aşan 644
+                        if fazla > 0:
+                            s["karsilik"] -= fazla
+                            satirlar.append(("129", fazla, 0, None, tarih))
+                            satirlar.append(("644", 0, fazla, None, tarih))
+                    d_ = tutar_a - kalan_t
+                    if d_ > 0:
+                        satirlar.append(("120", d_, 0, ck, tarih))
+                        satirlar.append(("128", 0, d_, ck, tarih))
+                elif tur == "cikar":
+                    s = durum[veri["kayit"]]
+                    x = s["kalan"]
+                    satirlar.append(("120", x, 0, ck, tarih))
+                    satirlar.append(("128", 0, x, ck, tarih))
+                    if s["karsilik"] > 0:
+                        satirlar.append(("129", s["karsilik"], 0, None, tarih))
+                        satirlar.append(("644", 0, s["karsilik"], None, tarih))
+                    s["cikarilan"] = x
+                    s["kalan"] = 0
+                    s["karsilik"] = 0
+                    s["durum"] = "cikarildi"
+            for key in kayitlar:
+                s = durum[key]
+                if s["kalan"] < 0 or s["karsilik"] < 0 or s["karsilik"] > s["kalan"]:
+                    raise KahinHatasi("şüpheli değişmezi bozuk (%s): %r" % (key, s))
+        self._turet = ([x for x in satirlar if x[1] or x[2]], durum)
+        return self._turet
+
+    def supheli_durum(self, key):
+        return self.supheli_turet()[1][key]
+
+    def degersiz_toplam(self, ck):
+        if not self.tipler.get("supheli"):
+            return 0
+        return sum(s["degersiz"] for key, s in self.supheli_turet()[1].items() if self.v[key]["cari"] == ck)
+
+    def supheli_gun_denetle(self, adim, ck, tarih, tur):
+        """BELİRSİZ-35: aynı caride aynı gün, adım sırasıyla: alacak satırından SONRA şüpheli işlemi; değersiz/çıkarmadan SONRA alacak."""
+        g = self.supheli_gun.get(ck, {})
+        if tur == "alacak" and g.get("degersiz_cikar") == tarih:
+            raise SenaryoHatasi("adım %s: BELİRSİZ-35 — aynı gün değersiz/çıkarmadan sonra alacak satırı" % adim["id"])
+        if tur != "alacak" and g.get("alacak") == tarih:
+            raise SenaryoHatasi("adım %s: BELİRSİZ-35 — aynı gün alacak satırından sonra şüpheli işlemi" % adim["id"])
+
+    def alacak_satiri(self, deg, adim, cari, tarih, fis_turu):
+        """Müşteri carisine A 120 yazan satır: BELİRSİZ-35 (gün sırası) ve BELİRSİZ-38 (listede olmayan tür) denetimi; gün kaydı."""
+        if cari["tur"] != "musteri":
+            return
+        ck = cari["key"]
+        if fis_turu in NORMAL_TURLERI:
+            return                      # şüpheliden düşmez (PLAN §3.11b/2 (a)–(b)); gün sırası denetimi gerekmez
+        kayitlar = [self.v[k] for k in self.tipler.get("supheli", []) if self.v[k]["aktif"] and self.v[k]["cari"] == ck]
+        if fis_turu in BELIRSIZ38_TURLERI:
+            if any(r["tarih"] <= tarih for r in kayitlar):
+                raise SenaryoHatasi("adım %s: BELİRSİZ-38 — şüpheli kaydı olan caride %s satırı" % (adim["id"], fis_turu))
+            return
+        self.supheli_gun_denetle(adim, ck, tarih, "alacak")
+
+        def f(_):
+            self.supheli_gun[ck]["alacak"] = tarih
+        deg.uygula.append(f)
 
     def tarihler(self, kod):
         out = set()
@@ -914,7 +1102,13 @@ class Model:
         return out
 
     def cari_bakiye(self, ckey):
-        return sum(self.cidx.get(ckey, {}).values())
+        """Sürüm 4 (§4 gösterimi; KABUL K9): 120 + 128 (cariye bağlı) satırları; türetilmiş satırlar dahil."""
+        t = sum(self.cidx.get(ckey, {}).values())
+        if self.tipler.get("supheli"):
+            for kod, bo, al, c, _t in self.supheli_turet()[0]:
+                if c == ckey:
+                    t += bo - al
+        return t
 
     # ---------------- ortak kurallar ----------------
     def tarih_denetle(self, t, ih):
@@ -1162,6 +1356,11 @@ class Model:
         kul = adim.get("kullanici", "Y")
         rol = self.roller[kul]
         tarih = tarih_coz(adim["tarih"], "tarih") if "tarih" in adim else self.bugun
+        # 0) senaryo kurmayan silme (BELİRSİZ-37): yetkiden önce — "senaryo kurmaz" sonuçtan bağımsız (K-38; model_b ile aynı)
+        if islem == "sil":
+            hd0 = self.varlik(adim["hedef"])
+            if hd0["tip"] == "supheli" and hd0["aktif"] and any(o["aktif"] and o["kayit"] == hd0["key"] for o in self.supheli_olaylar):
+                raise SenaryoHatasi("adım %s: BELİRSİZ-37 — karşılığı/değersizi/çıkarması olan kaydın silinmesi" % adim["id"])
         # 1) yetki
         y = self.yetki(adim, rol, kul)
         if y == "B":
@@ -1284,6 +1483,12 @@ class Model:
         if islem in ("ayar", "donem_kilidi", "kasa_acilis", "kasa_hareket", "cari_ac", "urun_ac",
                      "stok_giris", "fatura", "iade") or islem in EVRAK_ISLEMLERI:
             return "B"        # evrak: plan §9.1 çek yetkisinin rollerini saymıyor (§5.5, sürüm 3)
+        if islem in SUPHELI_ISLEMLERI:
+            return 200 if rol == "muhasebe" else 403      # PLAN §3.11b/4 "cari yönetimi + muhasebe"; KABUL Q
+        if islem == "sil":
+            h = self.varlik(adim["hedef"])
+            if h["tip"] == "supheli" or h["islem"] == "karsilik_ayir":
+                return 200 if rol == "muhasebe" else 403
         if islem in ("hesap_ac", "hesap_durum", "hesap_eksi_politika", "acilis_duzelt", "transfer",
                      "kredi_kullanim", "kredi_odeme", "ters_kayit"):
             return 200 if rol == "muhasebe" else 403
@@ -1303,6 +1508,8 @@ class Model:
             return 200 if rol == "muhasebe" else 403
         if islem == "sil":
             h = self.varlik(adim["hedef"])
+            if h["tip"] == "supheli":
+                raise KahinHatasi("yetki: şüpheli kaydı yukarıda")
             if h["hesaba_bagli"] or h["islem"] in BANKA_FISI | {"transfer", "ters_kayit"}:
                 return "B" if rol == "muhasebe" else 403
             if rol == "muhasebe":
@@ -1624,10 +1831,13 @@ class Model:
         deg = Degisim()
         if tur == "satis":
             fs = [(c, T, 0, cari["key"]), ("600", 0, M, None), ("391", 0, K, None)]
+            if pesinler:
+                self.alacak_satiri(deg, adim, cari, tarih, "pesin")       # BELİRSİZ-38: şüpheli caride satış peşini
         else:
             m153 = sum(k["M"] for k in kal if k["urun"] is not None)
             m770 = sum(k["M"] for k in kal if k["urun"] is None)
             fs = [("153", m153, 0, None), ("770", m770, 0, None), ("191", K, 0, None), (c, 0, T, cari["key"])]
+            self.alacak_satiri(deg, adim, cari, tarih, "fatura")          # BELİRSİZ-38: şüpheli müşteri carisine alış
         deg.yeni.append((tarih, fs, "fatura"))
         fkey = self.yeni_anahtar("fatura")
         benzer_kayitlari = []
@@ -1695,8 +1905,11 @@ class Model:
         self._stok_denetle(stok, adim)
         deg = Degisim()
         if satis:
+            self.alacak_satiri(deg, adim, cari, tarih, "iade")             # sürüm 4: satıştan iade A 120 (KABUL K3)
             fs = [("610", M, 0, None), ("391", K, 0, None), (c, 0, T, cari["key"])]
         else:
+            if geri["yol"] != "acik":
+                self.alacak_satiri(deg, adim, cari, tarih, "iade_geri")   # BELİRSİZ-38 (müşteri carisinde)
             m153 = sum(k["M"] for k in kal if k["urun"] is not None)
             m770 = sum(k["M"] for k in kal if k["urun"] is None)
             fs = [(c, T, 0, cari["key"]), ("153", 0, m153, None), ("770", 0, m770, None), ("191", 0, K, None)]
@@ -1771,13 +1984,24 @@ class Model:
             if T > acik[b["key"]]:
                 raise SenaryoHatasi("adım %s: BELİRSİZ-10 — bağlı tutar belgenin açığını aşıyor" % adim["id"])
             kf = b["key"]
+        # PLAN §3.11b/2 (a) "Sınır" (F13; §5.6 grup 4): açık şüpheli kaydı varken normalCari / bağlı tahsilat carinin 120 bakiyesini
+        # (= cari bakiyesi − açık kayıtların kalanı) aşarsa 409 doubtful-normal-exceeds; hiçbir şey yazılmaz.
+        if yon == "giris" and (kf is not None or adim.get("normalCari") is True) and cari["tur"] == "musteri":
+            _, durumlar = self.supheli_turet()
+            acik_kalan = sum(s["kalan"] for key, s in durumlar.items() if self.v[key]["cari"] == cari["key"])
+            if acik_kalan > 0 and T > self.cari_bakiye(cari["key"]) - acik_kalan:
+                ih.ekle(4, 409, "doubtful-normal-exceeds", "PLAN", "normal cariye tahsilat 120 bakiyesini aşıyor")
         ph = self.para_hesabi(yol, h)
         deg = Degisim()
         if yon == "giris":
             s = [(ph, T, 0, None), (cari["gl"], 0, T, cari["key"])]
+            # Sürüm 4 eki (PLAN §3.11b/2 (a)–(b)): kapatilacakFatura bağlı ya da normalCari tahsilatı şüpheliden DÜŞMEZ (A 120 kalır).
+            fis_turu = "cari_giris_normal" if (kf is not None or adim.get("normalCari") is True) else "cari_giris"
+            self.alacak_satiri(deg, adim, cari, tarih, fis_turu)          # sürüm 4 §4.42a
         else:
             s = [(cari["gl"], T, 0, cari["key"]), (ph, 0, T, None)]
-        deg.yeni.append((tarih, s, "cari_" + yon))
+            fis_turu = "cari_cikis"
+        deg.yeni.append((tarih, s, fis_turu))
         islem = "cari_tahsilat" if yon == "giris" else "cari_odeme"
         key, hr = self._hareket(adim, islem, kul, tarih, tutar=T, yol=yol, cari=cari["key"], kapatilacak=kf,
                                 hesaba_bagli=h is not None, hesaplar={h["key"]} if h else set())
@@ -1798,16 +2022,31 @@ class Model:
             h = self.hesap_sec("havale", adim.get("hesap"), ih)
             self.acilis_denetle(h, tarih, ih)
         self._hafta_sonu(adim, tarih, h)
-        kalan = kart["toplam"] - self.kart_odenen(kart["key"])
-        if kalan <= 0 or T > kalan:
-            raise SenaryoHatasi("adım %s: BELİRSİZ-6 — kalanı aşan / kapanmış karta tahsilat" % adim["id"])
+        # sürüm 4 K8 (§4.17) [PLAN §3.10/3]: kalan 0 → 409 plan-paid; aşan → 409 plan-overpay; fazlaAvans yalnız yetkiliye
+        kalan = max(0, kart["toplam"] - self.kart_odenen(kart["key"]))
+        fazla = adim.get("fazlaAvans") is True
+        if "taksitNo" in adim and self.kart_odenen(kart["key"]) > 0:
+            raise SenaryoHatasi("adım %s: BELİRSİZ-33 — taksitNo yalnız kartın ilk tahsilatında" % adim["id"])
+        if fazla and T <= kalan:
+            raise SenaryoHatasi("adım %s: BELİRSİZ-33 — fazlaAvans yalnız kalanı aşan tutarla" % adim["id"])
+        if not fazla and kalan == 0:
+            ih.ekle(4, 409, "plan-paid", "PLAN", "kart ödendi")
+        elif not fazla and T > kalan:
+            ih.ekle(4, 409, "plan-overpay", "PLAN", "kalanı aşan tutar")
+        elif fazla:
+            if rol == "muhasebe":
+                raise SenaryoHatasi("adım %s: BELİRSİZ-18 — muhasebenin plans.manage'ı planda yok" % adim["id"])
+            if rol == "personel":
+                ih.ekle(4, 403, "plan-overpay-permission", "CIKARIM", "avans yetkisi yok")
         if "taksitNo" in adim and adim["taksitNo"] > kart["sayi"]:
             raise SenaryoHatasi("adım %s: taksitNo kartın taksit sayısını aşıyor" % adim["id"])
         if tarih < kart["tarih"]:
             raise SenaryoHatasi("adım %s: K-12 — faturadan önce tarihli taksit tahsilatı planda tanımsız" % adim["id"])
         ph = self.para_hesabi(adim["yol"], h)
         deg = Degisim()
-        deg.yeni.append((tarih, [(ph, T, 0, None), (cari["gl"], 0, T, cari["key"])], "taksit"))
+        self.alacak_satiri(deg, adim, cari, tarih, "taksit")              # sürüm 4 §4.42a
+        # PLAN §3.11b/2 (c): fiş kartın tarihini taşır — kartın tarihinden sonra alınmış şüpheli kaydından düşmez (supheli_turet).
+        deg.yeni.append((tarih, [(ph, T, 0, None), (cari["gl"], 0, T, cari["key"])], ("taksit", kart["tarih"])))
         key, hr = self._hareket(adim, "taksit_tahsilat", kul, tarih, tutar=T, yol=adim["yol"], cari=cari["key"],
                                 kart=kart["key"], hesaba_bagli=h is not None, hesaplar={h["key"]} if h else set())
         if h is not None:
@@ -2121,9 +2360,166 @@ class Model:
         self._hareket_kaydet(deg, adim, key, hr)
         return deg
 
+    # ---- sürüm 4: Şüpheli Ticari Alacaklar (§4.39–4.42) ----
+    def _supheli_ret(self, ih, grup, durum, kod, neden):
+        ih.ekle(grup, durum, kod, "KABUL", neden)
+        raise Dur()
+
+    def _i_supheli_al(self, adim, tarih, ih, rol, kul):
+        cari = self.varlik(adim["cari"])
+        self.tarih_denetle(tarih, ih)
+        ev = None
+        if "evrak" in adim:
+            ev = self.varlik(adim["evrak"])
+            if ev["cari"] != cari["key"]:
+                raise SenaryoHatasi("adım %s: kısayoldaki evrak başka carinin (§4.39)" % adim["id"])
+            T = ev["T"]
+        else:
+            T = tutar_coz(adim["tutar"], "tutar")
+        self.supheli_gun_denetle(adim, cari["key"], tarih, "supheli")
+        if cari["tur"] != "musteri":
+            self._supheli_ret(ih, 4, 409, "doubtful-customer-only", "tedarikçi carisi")       # PLAN §3.11b/2; KABUL K2
+        if ev is not None and ev["durum"] != "karsiliksiz":
+            ih.ekle(4, 409, None, None, "kısayoldaki evrak karşılıksız değil")                  # KABUL §3/13
+            raise Dur()
+        _, durumlar = self.supheli_turet()
+        acik_kalan = sum(s["kalan"] for key, s in durumlar.items() if self.v[key]["cari"] == cari["key"])
+        yuz_yirmi = self.cari_bakiye(cari["key"]) - acik_kalan
+        if yuz_yirmi <= 0 or T > yuz_yirmi:
+            # Grup 4 (istek kimliğinden SONRA; model_b ve program gibi — bank.post sırası 1 istek kimliği → 2 yazım): aynı kimlikli yineleme
+            # kayıt yazıldıktan sonra gelince 120 bakiyesi küçülmüştür; grup 2'de olsaydı yineleme 400 sayılırdı (fark tohum 6 adım 519, 15.10.2026).
+            self._supheli_ret(ih, 4, 400, "doubtful-exceeds-balance", "120 bakiyesini aşıyor")   # PLAN §3.11b/2; KABUL K1
+        deg = Degisim()
+        deg.yeni.append((tarih, [("128", T, 0, cari["key"]), ("120", 0, T, cari["key"])], "supheli_al"))
+        key = self.yeni_anahtar("supheli")
+        r = {"tip": "supheli", "key": key, "cari": cari["key"], "tarih": tarih, "seq": self.seq, "T": T, "aktif": True,
+             "neden": adim.get("neden"), "evrak": ev["key"] if ev else None, "fis": None, "kullanici": kul}
+
+        def f(fids):
+            r["fis"] = fids[0]
+            self.kaydet(adim, "ad", key, r, adim["ad"])
+            self.supheli_gun[cari["key"]]["supheli"] = tarih
+            self._turet = None
+        deg.uygula.append(f)
+        return deg
+
+    def _supheli_kayit(self, adim):
+        r = self.varlik(adim["kayit"])
+        if not r["aktif"]:
+            raise SenaryoHatasi("adım %s: BELİRSİZ-37 — silinmiş şüpheli kaydıyla işlem" % adim["id"])
+        return r
+
+    def _i_karsilik_ayir(self, adim, tarih, ih, rol, kul):
+        r = self._supheli_kayit(adim)
+        K = tutar_coz(adim["tutar"], "tutar")
+        self.tarih_denetle(tarih, ih)
+        self.supheli_gun_denetle(adim, r["cari"], tarih, "supheli")
+        if tarih < r["tarih"]:
+            self._supheli_ret(ih, 2, 400, "date-before-record", "kayıt tarihinden önce")            # KABUL §3/4
+        s = self.supheli_durum(r["key"])
+        if s["durum"] != "acik":
+            self._supheli_ret(ih, 4, 409, "doubtful-closed", "çıkarılmış kayıt")                    # KABUL U
+        if s["karsilik"] + K > s["kalan"]:
+            self._supheli_ret(ih, 2, 400, "doubtful-provision-exceeds", "karşılık kalanı aşıyor")  # PLAN §3.11b/3; KABUL K5
+        deg = Degisim()
+        deg.yeni.append((tarih, [("654", K, 0, None), ("129", 0, K, None)], "karsilik_ayir"))
+        key, hr = self._hareket(adim, "karsilik_ayir", kul, tarih, tutar=K, kayit=r["key"], olay=None)
+        olay = {"tur": "karsilik", "kayit": r["key"], "tarih": tarih, "seq": self.seq, "tutar": K, "aktif": True}
+
+        def f(fids):
+            olay["fis"] = fids[0]
+            hr["olay"] = olay
+            self.supheli_olaylar.append(olay)
+            self.supheli_gun[r["cari"]]["supheli"] = tarih
+            self._turet = None
+        deg.uygula.append(f)
+        self._hareket_kaydet(deg, adim, key, hr)
+        return deg
+
+    def _i_supheli_cikar(self, adim, tarih, ih, rol, kul):
+        r = self._supheli_kayit(adim)
+        self.tarih_denetle(tarih, ih)
+        self.supheli_gun_denetle(adim, r["cari"], tarih, "degersiz_cikar")
+        if tarih < r["tarih"]:
+            self._supheli_ret(ih, 2, 400, "date-before-record", "kayıt tarihinden önce")
+        s = self.supheli_durum(r["key"])
+        if s["durum"] != "acik":
+            self._supheli_ret(ih, 4, 409, "doubtful-closed", "çıkarılmış kayıt")
+        if s["kalan"] == 0:
+            ih.ekle(4, 409, None, None, "çıkarılacak kalan yok")                                   # KABUL K4
+            raise Dur()
+        deg = Degisim()
+        olay = {"tur": "cikar", "kayit": r["key"], "tarih": tarih, "seq": self.seq, "tutar": None, "aktif": True, "fis": None}
+
+        def f(_):
+            self.supheli_olaylar.append(olay)
+            self.supheli_gun[r["cari"]]["supheli"] = tarih
+            self.supheli_gun[r["cari"]]["degersiz_cikar"] = tarih
+            self._turet = None
+        deg.uygula.append(f)
+        return deg
+
+    def _i_degersiz_yaz(self, adim, tarih, ih, rol, kul):
+        r = self._supheli_kayit(adim)
+        Z = tutar_coz(adim["tutar"], "tutar")
+        self.tarih_denetle(tarih, ih)
+        self.supheli_gun_denetle(adim, r["cari"], tarih, "degersiz_cikar")
+        if tarih < r["tarih"]:
+            self._supheli_ret(ih, 2, 400, "date-before-record", "kayıt tarihinden önce")
+        s = self.supheli_durum(r["key"])
+        if s["durum"] != "acik":
+            self._supheli_ret(ih, 4, 409, "doubtful-closed", "çıkarılmış kayıt")
+        if Z > s["kalan"]:
+            self._supheli_ret(ih, 2, 400, "doubtful-writeoff-exceeds", "değersiz kalanı aşıyor")   # KABUL K7
+        deg = Degisim()
+        key, hr = self._hareket(adim, "degersiz_yaz", kul, tarih, tutar=Z, kayit=r["key"], olay=None)
+        olay = {"tur": "degersiz", "kayit": r["key"], "tarih": tarih, "seq": self.seq, "tutar": Z, "aktif": True, "fis": None}
+
+        def f(_):
+            hr["olay"] = olay
+            self.supheli_olaylar.append(olay)
+            self.supheli_gun[r["cari"]]["supheli"] = tarih
+            self.supheli_gun[r["cari"]]["degersiz_cikar"] = tarih
+            self._turet = None
+        deg.uygula.append(f)
+        self._hareket_kaydet(deg, adim, key, hr)
+        return deg
+
     def _i_sil(self, adim, tarih, ih, rol, kul):
         hd = self.varlik(adim["hedef"])
+        if hd["tip"] == "supheli":
+            # §4.28 sürüm 4: yalnız karşılığı / değersizi / çıkarması olmayan kayıt (BELİRSİZ-37); satırları kalkar, türetme yenilenir
+            if not hd["aktif"]:
+                ih.ekle(4, 404, None, None, "zaten silinmiş")
+                raise Dur()
+            if any(o["aktif"] and o["kayit"] == hd["key"] for o in self.supheli_olaylar):
+                raise SenaryoHatasi("adım %s: BELİRSİZ-37 — karşılığı/değersizi/çıkarması olan kaydın silinmesi" % adim["id"])
+            if self.kilit is not None and hd["tarih"] <= self.kilit:
+                ih.ekle(4, 409, "period-locked", "CIKARIM", "kilitli kayıt silinmez")
+            deg = Degisim()
+            deg.silinen.append(hd["fis"])
+
+            def f(_):
+                hd["aktif"] = False
+                self._turet = None
+            deg.uygula.append(f)
+            return deg
         isl = hd["islem"]
+        if isl == "karsilik_ayir":
+            if not hd["aktif"]:
+                ih.ekle(4, 404, None, None, "zaten silinmiş")
+                raise Dur()
+            if self.kilit is not None and hd["tarih"] <= self.kilit:
+                ih.ekle(4, 409, "period-locked", "CIKARIM", "kilitli karşılık silinmez")
+            deg = Degisim()
+            deg.silinen.extend(hd["fisler"])
+
+            def f(_):
+                hd["aktif"] = False
+                hd["olay"]["aktif"] = False
+                self._turet = None
+            deg.uygula.append(f)
+            return deg
         if isl not in SILINEBILIR:
             if isl in BANKA_FISI | {"transfer", "ters_kayit"}:
                 ih.ekle(4, "4xx", None, None, "Banka Fişi/transfer silinmez")
@@ -2171,6 +2567,7 @@ class Model:
         deg = Degisim()
         if yon == "alinan":
             # B a(E) / A c(cari) [PLAN §3.11 madde 5 "receive → 101.01"; §3.11a; ÇIKARIM §3.11b/1]
+            self.alacak_satiri(deg, adim, cari, tarih, "evrak_al")        # sürüm 4: alınan evrak A 120 (KABUL K3)
             s_ = [(EVRAK_PORTFOY[tur], T, 0, None), (cari["gl"], 0, T, cari["key"])]
         else:
             # B c(cari) / A v(E) [ÇIKARIM §3.7 #9; §3.11a]
@@ -2368,13 +2765,15 @@ class Model:
             db = sorted(belge_cari[ck], key=lambda b: (b["tarih"], b["seq"]))
             alacak = [b for b in db if b["tur"] in ("satis", "alis_iade")]
             borc = [b for b in db if b["tur"] in ("alis", "satis_iade")]
+            fazla = 0                                                       # sürüm 4: taksit fazlası (avans), BELİRSİZ-34
             for b in db:
                 acik[b["key"]] = b["T"] - b["pesin"]                       # kural 1
                 if b["asil"] is not None and b["geri"] != "acik":
                     acik[b["key"]] = 0                                      # kural 2
                 if b["kart"] is not None:                                   # kural 3
                     kart = self.v[b["kart"]]
-                    acik[b["key"]] = kart["toplam"] - self.kart_odenen(kart["key"])
+                    acik[b["key"]] = max(0, kart["toplam"] - self.kart_odenen(kart["key"]))
+                    fazla += max(0, self.kart_odenen(kart["key"]) - kart["toplam"])
             ch = hareket_cari[ck]
             for x in ch:                                                    # kural 4
                 if x["kapatilacak"] is not None:
@@ -2419,7 +2818,13 @@ class Model:
                 d = min(havuz_c, acik[b["key"]])
                 acik[b["key"]] -= d
                 havuz_c -= d
+            havuz_g += fazla                                                # fazla hiçbir belgeyi kapatmaz (§7 sürüm 4)
             dagitilmamis[ck] = (havuz_g, havuz_c)
+            if fazla:
+                belirsiz[ck].add("BELİRSİZ-34")
+            degersiz = self.degersiz_toplam(ck)
+            if degersiz:
+                belirsiz[ck].add("BELİRSİZ-36")
             # kesinlik (sürüm 2: BELİRSİZ-9 kalktı; BELİRSİZ-7 iade artanını da kapsar)
             if (bg or artan_satis_iade) and any(b["kart"] is not None for b in db):
                 belirsiz[ck].add("BELİRSİZ-7")
@@ -2430,8 +2835,8 @@ class Model:
             if evrak_fis:
                 belirsiz[ck].add("BELİRSİZ-27")
             evrak_net = sum(self.cidx[ck][fid] for fid in evrak_fis)
-            # değişmez
-            sol = self.cari_bakiye(ck) - evrak_net
+            # değişmez (sürüm 4: − Σ değersiz; şüpheli al/çıkar bakiyeyi değiştirmez, tahsilatın 128'e kayması da)
+            sol = self.cari_bakiye(ck) - evrak_net + degersiz
             sag = sum(acik[b["key"]] for b in alacak) - sum(acik[b["key"]] for b in borc) - havuz_g + havuz_c
             if sol != sag:
                 raise KahinHatasi("cari değişmezi bozuk (%s): bakiye %d ≠ açıklar %d" % (ck, sol, sag))
@@ -2444,6 +2849,9 @@ class Model:
         kodlar = set()
         for fid, f in self.fisler.items():
             for kod, _, _, _ in f["satirlar"]:
+                kodlar.add(kod)
+        if self.tipler.get("supheli"):
+            for kod, _, _, _, _ in self.supheli_turet()[0]:
                 kodlar.add(kod)
         toplam_b = toplam_a = 0
         for kod in kodlar:
@@ -2479,11 +2887,25 @@ class Model:
         for k in self.tip("kart"):
             od = self.kart_odenen(k["key"])
             for ad in adlari[k["key"]]:
-                kartlar[ad] = {"toplam": k["toplam"], "odenen": od, "kalan": k["toplam"] - od}
-                kart_bel = set(belirsiz.get(k["cari"], ())) - {"BELİRSİZ-27"}   # evrak taksit kartını etkilemez
+                kartlar[ad] = {"toplam": k["toplam"], "odenen": od, "kalan": max(0, k["toplam"] - od)}
+                kart_bel = set(belirsiz.get(k["cari"], ())) - {"BELİRSİZ-27", "BELİRSİZ-34", "BELİRSİZ-36"}   # evrak, avans, değersiz kartı etkilemez
                 if kart_bel:
                     for alan in ("toplam", "odenen", "kalan"):
                         bel.append(("taksitKartlari.%s.%s" % (ad, alan), ", ".join(sorted(kart_bel))))
+        supheliler = {}
+        if self.tipler.get("supheli"):
+            _, durumlar = self.supheli_turet()
+            for r in self.tip("supheli"):
+                if not r["aktif"]:
+                    continue
+                s = durumlar[r["key"]]
+                for ad in adlari[r["key"]]:
+                    supheliler[ad] = {"tutar": r["T"], "karsilik": s["karsilik"], "tahsilEdilen": s["tahsil"],
+                                      "degersiz": s["degersiz"], "cikarilan": s["cikarilan"], "kalan": s["kalan"],
+                                      "durum": s["durum"]}
+            if sum(s["kalan"] for s in durumlar.values()) != self.bakiye("128") or \
+                    -sum(s["karsilik"] for s in durumlar.values()) != self.bakiye("129"):
+                raise KahinHatasi("şüpheli değişmezi: 128 = Σ kalan ya da 129 = −Σ karşılık tutmuyor")
         if self.alis_urun & self.satis_urun:
             bel.append(("mizan.153", "BELİRSİZ-15"))
             bel.append(("mizan.621", "BELİRSİZ-15"))
@@ -2498,7 +2920,7 @@ class Model:
         ozet = {"gercekBanka": gercek, "hesabiAtanmamis": atanmamis, "kartVeKrediBorcu": borc,
                 "kasaVeGercekBanka": kasa + gercek}
         return ({"mizan": miz, "bankaHesaplari": banka, "kasa": kasa, "cariler": cariler, "stok": stok,
-                 "faturalar": faturalar, "taksitKartlari": kartlar, "hesapKodlari": hk,
+                 "faturalar": faturalar, "taksitKartlari": kartlar, "supheliAlacaklar": supheliler, "hesapKodlari": hk,
                  "eksiBakiyeDenetimi": eb, "ozet": ozet}, bel)
 
     def cikti(self):
@@ -2580,9 +3002,9 @@ def plan_denetimi(sen, sonuc):
             yield yol, x
 
     def al(x, yol):
-        for p in yol:          # yol demettir: "102.01" gibi noktalı anahtarlar bölünmez
+        for i, p in enumerate(yol):   # yol demettir: "102.01" gibi noktalı anahtarlar bölünmez
             if not isinstance(x, dict) or p not in x:
-                return "<YOK>"
+                return 0 if (yol[0] == "mizan" and i <= 2) else "<YOK>"   # §9/2: eksik mizan anahtarı {0, 0}
             x = x[p]
         return x
     alts = sonuc["alternatifler"] if "alternatifler" in sonuc else [sonuc]

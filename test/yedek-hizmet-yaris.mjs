@@ -52,7 +52,7 @@ function stageInstall(installRoot) {
   cpSync(path.join(root, "packaging", "windows", "bootstrap.mjs"), path.join(installRoot, "bootstrap.mjs"));
 }
 
-const serviceEnv = port => ({ ...process.env, PORT: String(port), HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "warn", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!", HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "", HUKUK_UPDATES: "0" });
+const serviceEnv = port => ({ ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", PORT: String(port), HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "warn", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!", HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "", HUKUK_UPDATES: "0" });
 
 async function startService(installRoot) {
   const port = await freePort();

@@ -1,0 +1,58 @@
+{
+  "ad": "iz1-supheli-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-acilis.test.mjs test/banka-210-altin.test.mjs test/banka-210-arayuz-hareket.test.mjs test/banka-210-arayuz.test.mjs test/banka-210-ariza.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-210-asama6-kasa.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-ayarlar.test.mjs test/banka-210-benzer.test.mjs test/banka-210-bozarim.test.mjs test/banka-210-defter.test.mjs test/banka-210-dun-bugun.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-fis-kapi.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg-eski.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-gg-yetki.test.mjs test/banka-210-gg2-ayar.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-gg2-devir.test.mjs test/banka-210-gg2-fis.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-gg2-hesap.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-gg3-bag.test.mjs test/banka-210-gg3-eski-satir.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-hareketler.test.mjs test/banka-210-hesap.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-isgunu.test.mjs test/banka-210-islem-no.test.mjs test/banka-210-istek-kimligi.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-kapi.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-minor.test.mjs test/banka-210-mutabakat-araci.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/banka-210-onarim.test.mjs test/banka-210-planli.test.mjs test/banka-210-post-kesinti.test.mjs test/banka-210-post-statik.test.mjs test/banka-210-post.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/banka-210-rapor-is-parcacigi.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-sihirbaz.test.mjs test/banka-210-sira.test.mjs test/banka-210-statik.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-210-transfer.test.mjs test/banka-210-yargic.test.mjs test/banka-210-yetki-katalog.test.mjs test/banka-210-yetki-matrisi.test.mjs test/banka-220-bakiye.test.mjs test/banka-220-cek-hesabi.test.mjs test/banka-220-hesap-kart.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/banka-220-pos-bozma.test.mjs test/banka-220-pos-hesap.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-kabul.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-pos-kuyruk.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-isaret.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/defter-213.test.mjs test/mutabakat-213.test.mjs test/mutabakat-cekirdek.test.mjs test/trash.test.mjs test/banka-230-supheli.test.mjs test/banka-230-supheli-bozma.test.mjs",
+  "commit": "217410f4d4513e3a751fe954a14d5f8aea55ba59",
+  "dal": "worktree-agent-add08b66b0506a926",
+  "kirli": 2,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:30:59.133Z",
+  "sure_sn": 551.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 914,
+    "gecen": 909,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN) › günlük işlerin hiçbirinde büyük tablo baştan sona dolaşılmaz",
+      "konum": "test/banka-210-kapi-plan.test.mjs:167:3",
+      "hata": "cari havale tahsilatı: süzgeç yolunda tam tarama · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN) › banka hesabı yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan",
+      "konum": "test/banka-210-kapi-plan.test.mjs:201:3",
+      "hata": "Bu Hesaba Ata: süzgeç yolunda tam tarama · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN) › Banka Fişi yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan",
+      "konum": "test/banka-210-kapi-plan.test.mjs:232:3",
+      "hata": "masraf (KDV: fatura + havale): süzgeç yolunda tam tarama · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN) › Bankaya Tahsile Ver yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan",
+      "konum": "test/banka-210-kapi-plan.test.mjs:262:3",
+      "hata": "Bankaya Tahsile Ver: süzgeç yolunda tam tarama · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Statik tarama: banka kodunda REAL toplam ve parseFloat yasak › banka kodu dosyaları var ve hiçbirinde REAL toplam ya da parseFloat yok",
+      "konum": "test/banka-210-statik.test.mjs:89:3",
+      "hata": "server/lib/bank/doubtful.mjs:77 SUM() REAL tutar kolonunu topluyor: SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/iz1-supheli-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-add08b66b0506a926",
+  "ham_cikti_sha256": "2fae62e24e9a4f52f9b40d74a7e6a16040e6ebe607f80671e0b257b1a4f23dc3",
+  "ham_cikti_bayt": 358417
+}

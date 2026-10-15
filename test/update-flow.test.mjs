@@ -64,7 +64,7 @@ async function supervise(installRoot, github, { appVersion = "9.0.0", ...options
     host: "127.0.0.1",
     discovery: false,
     log,
-    env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_LOG_LEVEL: "warn", HUKUK_BOOTSTRAP_VERSION: "2", HUKUK_BACKUP_START_DELAY_MS: "600000" },
+    env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9", HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_LOG_LEVEL: "warn", HUKUK_BOOTSTRAP_VERSION: "2", HUKUK_BACKUP_START_DELAY_MS: "600000" },
     trustedKeys: keys.trusted,
     githubApi: github.url,
     updateFeed: "github:test/repo",

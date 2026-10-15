@@ -1,0 +1,69 @@
+TAP version 13
+# Subtest: güncelleme denetimi: sunucu boşta keep-alive bağlantısını kapatınca ikinci denetim düşmez
+    # Subtest: ön koşul gerçekleşir (sunucu bağlantıyı koparır) ve denetim yine sonuç verir
+    not ok 1 - ön koşul gerçekleşir (sunucu bağlantıyı koparır) ve denetim yine sonuç verir
+      ---
+      duration_ms: 404.244766
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/guncelleme-230-baglanti-sifirlama.test.mjs:30:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kopan bağlantıdan sonra denetim: [{"status":"error","code":"NETWORK","reason":"Güncelleme sunucusuna ulaşılamadı (UND_ERR_SOCKET)."},{"status":"up-to-date"},{"status":"error","code":"NETWORK","reason":"Güncelleme sunucusuna ulaşılamadı (UND_ERR_SOCKET)."},{"status":"up-to-date"},{"status":"error","code":"NETWORK","reason":"Güncelleme sunucusuna ulaşılamadı (UND_ERR_SOCKET)."},{"status":"up-to-date"}] (resets=3)
+        + actual - expected
+        
+          [
+        +   'error',
+            'up-to-date',
+        +   'error',
+            'up-to-date',
+        +   'error',
+            'up-to-date',
+        -   'up-to-date',
+        -   'up-to-date',
+        -   'up-to-date'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'up-to-date'
+        1: 'up-to-date'
+        2: 'up-to-date'
+        3: 'up-to-date'
+        4: 'up-to-date'
+        5: 'up-to-date'
+      actual:
+        0: 'error'
+        1: 'up-to-date'
+        2: 'error'
+        3: 'up-to-date'
+        4: 'error'
+        5: 'up-to-date'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/guncelleme-230-baglanti-sifirlama.test.mjs:43:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - güncelleme denetimi: sunucu boşta keep-alive bağlantısını kapatınca ikinci denetim düşmez
+  ---
+  duration_ms: 1156.984527
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/guncelleme-230-baglanti-sifirlama.test.mjs:17:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1331.197787

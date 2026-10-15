@@ -1,0 +1,53 @@
+{
+  "ad": "iz5-isgecmisi-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/isgecmisi-230.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:55:47.629Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 0,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6) › not: personel ekler, yönetici düzeltir (düzeltme izi), siler, Silinenler'den geri gelir; denetim kaydı tam",
+      "konum": "test/isgecmisi-230.test.mjs:42:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6) › telefon: düzeltme numarayı temizler, bozuk numara 400; silme Silinenler'e gider ve geri gelir",
+      "konum": "test/isgecmisi-230.test.mjs:81:3",
+      "hata": "kısa numara reddedilir · 404 !== 400 (beklenen 400, gelen 404)"
+    },
+    {
+      "ad": "işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6) › haciz: düzeltmede düşüm tarihi yeniden hesaplanır; Haciz Uyarıları (7 gün) düzeltilen ve silinen hacze uyar",
+      "konum": "test/isgecmisi-230.test.mjs:102:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 400 (beklenen 400, gelen 404)"
+    },
+    {
+      "ad": "işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6) › yetki: kayıt düzeltme yetkisi kaldırılan kullanıcı not ekler ama düzeltemez / silemez (403); oturumsuz 401",
+      "konum": "test/isgecmisi-230.test.mjs:138:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 403 (beklenen 403, gelen 404)"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ad77a61686fa8f8ad/docs/kanit/2026-10-15/iz5-isgecmisi-kirmizi.log",
+  "klasor": "/tmp/claude-0/iz5-eski-083ba74",
+  "ham_cikti_sha256": "0b341e3f90b42ffddfd61e786d7fe3bd971de19cf58080157ee86f88acbeaa31",
+  "ham_cikti_bayt": 4646
+}

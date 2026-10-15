@@ -142,8 +142,9 @@
         icon: ICONS.in,
         label: "Toplam Alacak",
         value: moneyHtml(r.total, { compact: true }),
-        sub: `Cari <b>${esc(shortMoney(r.accounts))}</b> · Çek <b>${esc(shortMoney(r.cheques))}</b>${r.overdue > 0.005 ? `<br><span class="hof-pulse-flag is-late">${ICONS.warn}${esc(shortMoney(r.overdue))} gecikmiş taksit</span>` : ""}`,
-        title: `Carilerin bize borcu (${money(r.accounts)}) + portföydeki alınan çek/senet (${money(r.cheques)}).`,
+        // 2.3.0 İz 1.6 (plan §3.11b/5): alacak toplamının içindeki açık şüpheli alacak ayrı satır (toplam değişmez; 120 + 128 = kart).
+        sub: `Cari <b>${esc(shortMoney(r.accounts))}</b> · Çek <b>${esc(shortMoney(r.cheques))}</b>${r.doubtful > 0.005 ? `<br><span class="hof-pulse-flag is-late" data-overview-doubtful title="Cari toplamının içinde; ${r.doubtfulCount} caride şüpheli alacağa alınmış, henüz tahsil edilmemiş tutar">${ICONS.warn}Şüpheli Alacak ${esc(shortMoney(r.doubtful))}</span>` : ""}${r.overdue > 0.005 ? `<br><span class="hof-pulse-flag is-late">${ICONS.warn}${esc(shortMoney(r.overdue))} gecikmiş taksit</span>` : ""}`,
+        title: `Carilerin bize borcu (${money(r.accounts)}) + portföydeki alınan çek/senet (${money(r.cheques)}).${r.doubtful > 0.005 ? ` Bunun ${money(r.doubtful)} kadarı şüpheli alacakta (${r.doubtfulCount} cari).` : ""}`,
       });
     }
     if (data.payable) {
@@ -286,7 +287,8 @@
   ];
   // m2 (10.10.2026; plan §8.9): "invoice" eksikti — vadeli fatura satırı ekranda ham "invoice", süzgeç seçeneği adsız çiziliyordu. Ad PDF/Excel ile
   // aynı (server/routes/overview.mjs SOURCE_TEXT); "Ödeme Sözü" ve "Son Tarih" yazım düzeninde (m3).
-  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
+  // 2.3.0 İz 3.3 (plan §8.9; eşleme 301): planlı banka işlemleri "bank" (sunucu SOURCE_TEXT.bank ile aynı ad; yalnız banka rakamını görebilene).
+  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", bank: "Planlı Banka İşlemi", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
   // Satırın kaynak adı (süzgeç seçeneği değil): eski sürümden kalan, hesaba atanmamış ileri tarihli havale / POS (sunucu SOURCE_TEXT.legacy ile aynı
   // ad; PDF ve Excel de böyle yazar). Kasa süzgeciyle gelir; önceden "Kasa" yazıyordu (2.1.0 temel sürüm, küçük düzeltmeler).
   const ROW_LABELS = { ...SOURCE_LABELS, legacy: "Hesabı Atanmamış (ileri tarihli)" };
@@ -296,6 +298,7 @@
     note: "Portföydeki alınan ve ödenecek verilen senetler",
     invoice: "Vadeli (açık hesap) satış ve alış faturalarının ödenmemiş kısmı",
     cash: "Kasa'ya ileri tarihle girilen giriş ve çıkışlar (kira, maaş…)",
+    bank: "Banka → Hareketler → Planlı İşlemler'deki gerçekleştirilmemiş planlı masraf, faiz, diğer işlem, kart borcu, kredi ve transferler",
     table: "Excel/Sheets tablolarındaki ödeme günleri (tahsilat takvimiyle aynı kalemler)",
     promise: "Tablolarda yazılı ödeme sözleri",
     deadline: "Tablolardaki son tarihler (sözleşme, sigorta, belge bitişi…); tutarı yoktur",
@@ -505,7 +508,7 @@
   // --- Vade takip (v2.0.9) ---
   const dueDays = row => (row.state === "overdue" ? `${Math.abs(row.days)} gün geçti` : row.state === "today" ? "bugün" : row.state === "month" ? "bu ay" : `${row.days} gün`);
   function vadeView(s) {
-    const allowed = s.data?.allowed || Object.keys(SOURCE_LABELS).filter(id => canSee() || !["cheque", "note", "cash", "invoice"].includes(id) || (id === "cash" ? HOF.can("cash.view") : id === "invoice" ? HOF.can("invoices.view") : HOF.can("cheques.view")));
+    const allowed = s.data?.allowed || Object.keys(SOURCE_LABELS).filter(id => canSee() || !["cheque", "note", "cash", "invoice", "bank"].includes(id) || (id === "cash" ? HOF.can("cash.view") : id === "invoice" ? HOF.can("invoices.view") : id === "bank" ? HOF.can("bank.view") : HOF.can("cheques.view")));
     const chosen = new Set(s.sources.length ? s.sources : allowed);
     const params = { ...(s.preset ? { preset: s.preset } : { from: s.from, to: s.to }), direction: s.direction, sources: s.sources.join(","), q: s.q, late: s.late ? "" : "0" };
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_DUE)}${exportButtons(`/api/workspace/overview/vade-takip.pdf?${query(params)}`, `/api/workspace/overview/vade-takip.xlsx?${query(params)}`)}</div>
@@ -529,6 +532,8 @@
         { label: "Tahsil Edilecek", html: moneyHtml(t.in.total.amount), help: `${t.in.total.count} kalem · bugün ${esc(money(t.in.today.amount))}`, tone: "is-in" },
         { label: "Ödenecek", html: moneyHtml(t.out.total.amount), help: `${t.out.total.count} kalem${t.out.overdue.count ? ` · ${t.out.overdue.count} gecikmiş` : ""}`, tone: "is-out" },
         { label: "Net (tahsil − ödeme)", html: moneyHtml(t.net), tone: t.net < 0 ? "is-bad" : "" },
+        // 2.3.0 İz 1.6 (plan §3.11b/5): şüpheli alacak vade kalemlerinin dışında, ayrı kutu (vadesi yoktur; Tahsil Edilecek'e girmez).
+        d.doubtful?.amount > 0.005 ? { label: "Şüpheli Alacak", html: moneyHtml(d.doubtful.amount), help: `${d.doubtful.accountCount} cari · vade takibinin dışında`, tone: "is-bad" } : null,
         t.noAmount ? { label: "Tutarsız Kalem", value: t.noAmount.toLocaleString("tr-TR"), help: "son tarih ya da tutarı yazılmamış ödeme günü" } : null,
       ])}
       <div class="hof-rep-table"><table class="hof-table hof-rep-vade"><thead><tr><th>Vade</th><th>Kimden / Kime</th><th>Kaynak</th><th>Açıklama</th><th class="num">Tahsil Edilecek</th><th class="num">Ödenecek</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${d.totals.count === 0 && !s.q && !s.direction ? "Bu aralıkta vadesi gelen açık kalem yok. Taksit kartı, çek/senet ya da tablodaki ödeme günleri eklendikçe burada listelenir." : "Bu süzgeçlere uyan açık kalem yok."}</td></tr>`}</tbody></table></div>

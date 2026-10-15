@@ -120,10 +120,21 @@ export function createUpdater({
   }
 
   // ---------- Ağ ----------
+  // Kopan bağlantı (sunucu boşta kalan keep-alive bağlantısını tam istemcinin yeniden kullandığı anda kapatmış: ECONNRESET, EPIPE,
+  // undici "other side closed"): istek YENİ bağlantıyla bir kez hemen yinelenir — 15.10.2026, CI 60ed59d/037fcc7 Windows Node 22 ikinci denetim
+  // "bağlanılamadı"; zorla üretme test/guncelleme-230-baglanti-sifirlama.test.mjs. Öbür ağ hataları (ulaşılamıyor, zaman aşımı) yinelenmez.
+  const isConnectionReset = error => /ECONNRESET|EPIPE|UND_ERR_SOCKET/.test(error?.cause?.code || error?.code || "") || /other side closed|socket hang up/i.test(error?.cause?.message || error?.message || "");
   async function request(url, { accept = "application/json", timeoutMs = requestTimeoutMs, signal } = {}) {
     const signals = [AbortSignal.timeout(timeoutMs), signal].filter(Boolean);
+    const once = () => fetchImpl(url, { headers: { accept, "user-agent": userAgent(), "x-github-api-version": "2022-11-28" }, redirect: "follow", signal: signals.length > 1 ? AbortSignal.any(signals) : signals[0] });
     try {
-      return await fetchImpl(url, { headers: { accept, "user-agent": userAgent(), "x-github-api-version": "2022-11-28" }, redirect: "follow", signal: signals.length > 1 ? AbortSignal.any(signals) : signals[0] });
+      try {
+        return await once();
+      } catch (error) {
+        if (signal?.aborted || !isConnectionReset(error)) throw error;
+        log.info(`Güncelleme sunucusuyla bağlantı koptu (${error?.cause?.code || error?.code || error?.message}); yeni bağlantıyla yineleniyor.`);
+        return await once();
+      }
     } catch (error) {
       if (signal?.aborted) throw new UpdateError("Güncelleme durduruldu.", "ABORTED");
       throw new UpdateError(describeNetworkError(error), "NETWORK", { retryable: true });

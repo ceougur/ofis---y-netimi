@@ -93,7 +93,7 @@ export const SOURCE_TABLES = Object.freeze([...new Set(MONEY_SOURCES.map(source 
 /** Modül satırı tabloları (event_id kolonu, bugünkü modüllerin yazdığı): bank_lines Banka Fişi'dir. */
 export const MODULE_TABLES = Object.freeze(["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"]);
 /** K6'nın para tabloları (§3.3/a): yazımı bank.post'tan, store.raw'dan ya da izinli listeden geçer. */
-export const LEDGER_TABLES = Object.freeze([...MODULE_TABLES, "bank_lines", "fin_events", "pos_sales", "pos_items", "cheque_collections"]);
+export const LEDGER_TABLES = Object.freeze([...MODULE_TABLES, "bank_lines", "fin_events", "pos_sales", "pos_items", "cheque_collections", "doubtful_receivables", "doubtful_provisions"]);
 /** Yollar (way). */
 export const WAYS = Object.freeze(["cash", "bank", "card", "ccard", "loan", "unknown"]);
 /** Kasa/rapor yol süzgeci (2.0.26'daki methodFilter'ın karşılığı): cash | bank | card | noncash | "" (hepsi). */
@@ -109,6 +109,12 @@ export function waysFor(method) {
       return ["card"];
     case "noncash":
       return ["bank", "card"];
+    // 2.3.0 İz 3.3 (plan §8.10 kuralı "Yol seçenekleri: Banka / POS / Kurumsal Kart / Kredi"): Banka ve POS Hareketleri'nde kurumsal kart (309)
+    // ve kredi (300) yolu ayrı seçilir; "noncash" (Banka ve POS) değişmez — borç yolları varlık görünümüne karışmaz (GG2).
+    case "ccard":
+      return ["ccard"];
+    case "loan":
+      return ["loan"];
     default:
       return null;
   }

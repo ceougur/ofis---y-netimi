@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: gerçek programı ayrı süreçte açan her test lisans servisini yerel ölü adrese yönlendirir
+not ok 1 - gerçek programı ayrı süreçte açan her test lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 3.680141
+  type: 'test'
+  location: '/home/user/ofis---y-netimi/test/lisans-servisi-izolasyonu.test.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    HUKUK_LICENSE_URL vermeyen başlatıcılar (gerçek lisans servisine deneme kaydı atar)
+    + actual - expected
+    
+    + [
+    +   'test/guncelleme-gercek/hizmet.mjs',
+    +   'test/guvenilirlik/surumler.mjs',
+    +   'test/packaging.test.mjs',
+    +   'test/supervisor.test.mjs',
+    +   'test/update-flow.test.mjs',
+    +   'test/yedek-220.test.mjs',
+    +   'test/yedek-hizmet-yaris.mjs',
+    +   'tools/build-windows.mjs'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'test/guncelleme-gercek/hizmet.mjs'
+    1: 'test/guvenilirlik/surumler.mjs'
+    2: 'test/packaging.test.mjs'
+    3: 'test/supervisor.test.mjs'
+    4: 'test/update-flow.test.mjs'
+    5: 'test/yedek-220.test.mjs'
+    6: 'test/yedek-hizmet-yaris.mjs'
+    7: 'tools/build-windows.mjs'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/lisans-servisi-izolasyonu.test.mjs:34:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 2 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 0.840662
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 285.646196

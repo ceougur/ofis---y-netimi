@@ -1191,7 +1191,80 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 23,
+    name: "v2.3.0 Şüpheli Ticari Alacaklar (128/129): kayıt ve karşılık tabloları",
+    up(store) {
+      // docs/BANKA-MODULU-PLAN.md §3.11b; lib/bank/doubtful.mjs. YALNIZ EKLEYİCİ: iki yeni tablo; hiçbir mevcut satır ve kolon değişmez. Eski
+      // sürüm (2.2.0) aynı dosyayı açar, tabloları okumaz (kaydı yoksa Ana Defter aynı). Kilit izi: şüpheli kaydı olmayan veride göç öncesiyle
+      // birebir aynı (lib/integrity.mjs LOCK_SQL doubtful_* since "2.3.0").
+      store.raw("migration.v23", () => store.exec(DOUBTFUL_SCHEMA_V23));
+    },
+  },
+  {
+    version: 24,
+    name: "v2.3.0 Fatura Ayarları eski banka listesi → hesap kartında IBAN Faturada Gösterilsin (bir kez)",
+    up(store) {
+      // İz 3.4 (plan §8.9 E2.16 / #31): banka hesabı açıldıktan sonra fatura yalnız "IBAN Faturada Gösterilsin" işaretli hesapları basar; eski liste
+      // (invoice.settings seller.banks) yalnız sihirbaz önerisidir. Mevcut kurulumda iş kesilmesin: hiçbir hesap işaretli değilse eski listedeki
+      // IBAN'ı taşıyan hesaplar bir kez işaretlenir (yalnız işaret; para/defter değişmez). İşaretli hesap varsa kullanıcı seçimine dokunulmaz.
+      store.raw("migration.v24", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'bank_accounts'")) return;
+        if (store.get("SELECT 1 AS found FROM bank_accounts WHERE show_on_invoice = 1 AND deleted_at IS NULL LIMIT 1")) return;
+        const settings = parseJson(store.get("SELECT value FROM settings WHERE key = 'invoice.settings'")?.value, {});
+        const ibans = (Array.isArray(settings?.seller?.banks) ? settings.seller.banks : []).map(bank => String(bank?.iban || "").replace(/\s+/g, "").toUpperCase()).filter(Boolean);
+        if (!ibans.length) return;
+        store.run(`UPDATE bank_accounts SET show_on_invoice = 1 WHERE deleted_at IS NULL AND iban <> '' AND upper(replace(iban, ' ', '')) IN (SELECT value FROM json_each(?))`, JSON.stringify(ibans));
+      });
+    },
+  },
+  {
+    version: 25,
+    name: "v2.3.0 işlem geçmişi düzeltme izi: not, telefon ve haciz satırlarında düzelten/düzeltme zamanı",
+    up(store) {
+      // 2.3.0 İz 5.6 (müşteri talebi 6): kayıt detay kartındaki not / telefon / haciz satırları düzeltilip silinebilir; düzeltme izi
+      // tahsilattaki gibi (updated_by/updated_at). YALNIZ EKLEYİCİ: boş kolon; eski sürüm aynı dosyayı okur.
+      store.raw("migration.v25", () => {
+        for (const table of ["notes", "phones", "liens"]) {
+          addColumn(store, table, "updated_by", "TEXT");
+          addColumn(store, table, "updated_at", "TEXT");
+        }
+      });
+    },
+  },
+  {
+    version: 26,
+    name: "v2.3.0 cari tahsilatında 'Normal Cari Hesaba İşle' işareti (şüpheliden düşmez)",
+    up(store) {
+      // Ürün sahibi kararı 15.10.2026 (plan §3.11b/2): şüpheli kaydı açık müşteride tahsilat varsayılan şüpheliden düşer; kullanıcı
+      // "Normal Cari Hesaba İşle" derse satır 120'de kalır (doubtful_skip = 1). YALNIZ EKLEYİCİ: varsayılan 0 → eski satırlar bugünkü gibi
+      // şüpheliden düşer; eski sürüm (2.2.0) aynı dosyayı okur, kolonu görmez. Kilit izi account_entries kolon listesini okumaz.
+      store.raw("migration.v26", () => addColumn(store, "account_entries", "doubtful_skip", "INTEGER NOT NULL DEFAULT 0"));
+    },
+  },
 ];
+
+// 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık
+// (kayıt başına; active | cancelled). Değersiz Alacak satırı account_entries'tedir (source 'doubtful', source_id = kayıt).
+const DOUBTFUL_SCHEMA_V23 = `
+  CREATE TABLE IF NOT EXISTS doubtful_receivables (
+    id TEXT PRIMARY KEY, account_id TEXT NOT NULL, date TEXT NOT NULL,
+    amount_minor INTEGER NOT NULL CHECK (amount_minor > 0),
+    reason TEXT NOT NULL DEFAULT 'other', note TEXT NOT NULL DEFAULT '', cheque_id TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'open', closed_date TEXT NOT NULL DEFAULT '',
+    event_id TEXT NOT NULL, close_event_id TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_doubtful_receivables_account ON doubtful_receivables(account_id, date);
+
+  CREATE TABLE IF NOT EXISTS doubtful_provisions (
+    id TEXT PRIMARY KEY, doubtful_id TEXT NOT NULL, date TEXT NOT NULL,
+    amount_minor INTEGER NOT NULL CHECK (amount_minor > 0), note TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'active', event_id TEXT NOT NULL,
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_doubtful_provisions_record ON doubtful_provisions(doubtful_id, date);
+`;
 
 function widenIntegrityLog(store) {
   const row = store.get("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'integrity_log'");

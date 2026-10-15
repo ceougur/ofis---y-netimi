@@ -1,0 +1,38 @@
+{
+  "ad": "ana-supheli-ayni-gun-kirmizi",
+  "komut": "node --test test/banka-230-supheli-ayni-gun.test.mjs",
+  "commit": "27fa05fd95085b69ad7391396cec6e2c78df39f1",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:29:36.374Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 7,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Şüpheli Alacaklar — aynı gün açılan kayıtlarda tahsilat önce açılandan düşer › çift 3: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer",
+      "konum": "test/banka-230-supheli-ayni-gun.test.mjs:18:5",
+      "hata": "ilk açılan kayıt (ilk) tahsil edilen — gelen [[\"ilk\",0,300000],[\"ikinci\",150000,50000]] · 0 !== 150000 (beklenen 150000, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-supheli-ayni-gun-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "69b0786b706a2349f45863c8161c5369ed61cc84dee9dce2c498fed6e9d64d10",
+  "ham_cikti_bayt": 3619
+}

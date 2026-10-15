@@ -1,0 +1,32 @@
+{
+  "ad": "lisans-izolasyon-yesil",
+  "komut": "node --test test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "996d7d1be03fbbcc321a6a665dfbf39c1a9945d0",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T09:10:38.469Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/lisans-izolasyon-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "f25190faff5c6dfa071255a7b4a6f351b22b87c430b6f3fc90c0d2a1a26b6c67",
+  "ham_cikti_bayt": 605
+}

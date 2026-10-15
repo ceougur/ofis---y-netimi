@@ -35,10 +35,19 @@ export function buildRelease(versionDir, outDir, keys, options = {}) {
 }
 
 // releases: [{ tag, prerelease?, draft?, files: { "<ad>": "<yerel dosya yolu>" | Buffer }, sizes?: { "<ad>": sayı } }]
-export async function startMockGithub(initial = [], { packageDelayMs = 0 } = {}) {
+// resetOnReuse: keep-alive ile YENİDEN KULLANILAN bağlantıdaki ikinci istek yanıt verilmeden koparılır (gerçek sunucuların boşta bağlantıyı tam
+// istemcinin yeniden kullandığı anda kapatması; istemcide ECONNRESET / "other side closed" — Windows Node 22 ara sıra kırmızısı, ders 20 zorla üretme).
+export async function startMockGithub(initial = [], { packageDelayMs = 0, resetOnReuse = false } = {}) {
   let releases = initial;
-  const hits = { list: 0, downloads: [] };
+  const hits = { list: 0, downloads: [], resets: 0 };
+  const seen = new WeakMap();
   const server = http.createServer((req, res) => {
+    if (resetOnReuse) {
+      const socket = req.socket;
+      const count = (seen.get(socket) || 0) + 1;
+      seen.set(socket, count);
+      if (count === 2) { hits.resets += 1; socket.destroy(); return; }
+    }
     const url = new URL(req.url, "http://localhost");
     if (url.pathname === "/repos/test/repo/releases") {
       hits.list += 1;

@@ -12,7 +12,7 @@
 //  4. Hesap Detayı: + Masraf, + Faiz, + Diğer İşlem, Transfer; Ekstre Yükle, Döviz Al/Sat, POS yok.
 //  5. Hareketler: İşlem Türü süzgecinde Döviz, Kur Değerlemesi, POS, Tahsile Ver yok; Planlı İşlem formunda döviz/POS türü yok.
 //  6. Ayarlar Temel ve Gelişmiş: POS, Ekstre, Döviz, Hareket (Kanal Alanı), Elle Banka Fişi, Bağdaştırıcılar, Kambiyo eşlemeleri yok.
-//  7. Raporlar → Tüm Raporlar: Banka grubunda yalnız Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı.
+//  7. Raporlar → Tüm Raporlar: Banka grubunda 2.1.0/2.2.0 + 2.3.0 (İz 3.3/5.3) raporları; ertelenenler (Mutabakat, Kur Değerleme, POS Bekleyen/Valör) yok.
 //  8. Raporlar → Nakit Akış: "Bugünkü Nakit ve Banka" = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; Hesabı Atanmamış (POS 900) ayrı kutu,
 //     başlangıca girmez; tablonun Başlangıç satırı 12.000.
 //  9. Çek/Senet kartı (2.2.0, bilerek güncellendi): Bankaya Tahsile Ver GELDİ — portföydeki alınan çekte düğme var (ayrıntı ekrandan
@@ -534,15 +534,19 @@ try {
   });
 
   // 2.2.0 (bilerek güncellendi): Bankaya Tahsile Ver ile plan §8.10 "Tahsildeki Çekler" raporu (Tahsildeki Çek ve Senetler) geldi.
-  await step("7. Raporlar → Tüm Raporlar: Banka grubunda Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı ve (2.2.0) Tahsildeki Çek ve Senetler, POS Ödeme Takvimi, Faturası Beklenen Komisyonlar", async () => {
+  await step("7. Raporlar → Tüm Raporlar: Banka grubunda 2.1.0/2.2.0 raporları + (2.3.0 İz 3.3/5.3) POS Satış, POS Komisyon, Günlük/Aylık Banka, Banka/Para Birimi Bazında Bakiye, transfer, Cari/Fatura/Taksit ve Banka Hareketleri, Banka Nakit Akış; ertelenenler (Mutabakat Raporu, Kur Değerleme, POS Bekleyen/Valör) yok", async () => {
     await page.click('#hof-sidecard [data-action="analytics"]');
     await page.waitForSelector(`${modal} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
     await page.click(`${modal} .hof-rep-tab[data-tab="all"]`);
     await page.waitForSelector(`${modal} [data-rc-list] [data-report]`, { timeout: 15000 });
     const items = await page.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar", `Banka raporları: ${items.join(", ")}`);
+    // 2.3.0 (bilerek güncellendi; İz 3.3 + 5.3 birleşince): §8.10'un kalan raporları ve POS Satış/Komisyon geldi.
+    const expected = ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı", "Tahsildeki Çek ve Senetler", "POS Ödeme Takvimi", "Faturası Beklenen Komisyonlar",
+      "POS Satış Raporu", "POS Komisyon Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Banka Bazında Bakiye", "Para Birimi Bazında Bakiye", "Bankalar Arası Transfer Raporu",
+      "Kasa ve Banka Transfer Raporu", "Cari ve Banka Hareketleri", "Fatura ve Banka Hareketleri", "Taksit ve Banka Hareketleri", "Banka Nakit Akış Raporu"];
+    ok(items.join("|") === expected.join("|"), `Banka raporları: ${items.join(", ")}`);
     const all = await page.$$eval(`${modal} [data-rc-list] [data-report]`, nodes => nodes.map(node => node.textContent.trim()));
-    const later = all.filter(title => /POS Satış|POS Komisyon|POS Bekleyen|POS Valör|Mutabakat Raporu|Kur Değerleme|Banka Nakit Akış|Günlük Banka|Aylık Banka|Bankalar Arası Transfer Raporu/.test(title));
+    const later = all.filter(title => /POS Bekleyen|POS Valör|Banka Mutabakat Raporu|Kur Değerleme/.test(title));
     ok(!later.length, `ertelenen §8.10 raporu listede yok${later.length ? `: ${later.join(", ")}` : ""}`);
     await shot("tum-raporlar-banka");
   });

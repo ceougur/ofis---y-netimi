@@ -1,0 +1,32 @@
+{
+  "ad": "ana-yargic-yesil",
+  "komut": "node --test test/banka-230-k8-cek.test.mjs test/supheli-230-yargic.test.mjs test/supheli-230-elestirmen.test.mjs test/banka-230-supheli.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-230-supheli-ayni-gun.test.mjs test/banka-230-k8-taksit.test.mjs test/cheques-overview.test.mjs test/iade-210.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/kilavuz-surum.test.mjs test/ci-kapi-listesi.test.mjs",
+  "commit": "469d547ec5b092a59394403ed3135b5c4f51dc54",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T06:22:58.341Z",
+  "sure_sn": 14.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 124,
+    "gecen": 124,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-yargic-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e52ea474683491d8c4c28113b05f06d6d04eae283161416a581003bfaa01405f",
+  "ham_cikti_bayt": 48650
+}

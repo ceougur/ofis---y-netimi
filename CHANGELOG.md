@@ -2,6 +2,10 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.3.0 — İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi
+
+- İyileştirmeler ve Ticari Şüpheli Alacaklar eklentisi (Kullanım Kılavuzu → 9. Cari → Ticari Şüpheli Alacaklar).
+
 ## 2.2.0 — İyileştirmeler ve POS Entegrasyonu
 
 - İyileştirmeler ve POS entegrasyonu.

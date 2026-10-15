@@ -1,0 +1,32 @@
+{
+  "ad": "ana-yargic-kahin-t7",
+  "komut": "python3 -I test/bagimsiz/fark.py --tohum 7 --islem 500",
+  "commit": "469d547ec5b092a59394403ed3135b5c4f51dc54",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T06:23:13.080Z",
+  "sure_sn": 39,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7540,
+    "gecen": 7540,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-yargic-kahin-t7.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "72467529ac0195d2b2dd912bc6cab889d5ef29f40c4c2dc1d353a3a97b0cd444",
+  "ham_cikti_bayt": 383
+}

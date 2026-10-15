@@ -1,0 +1,54 @@
+TAP version 13
+# Subtest: A — Fatura Ayarları → Banka Hesapları (E2.16 / \#31): ilk hesap açılana kadar eski liste; sonra yalnız IBAN Faturada Gösterilsin işaretli hesaplar
+    # Subtest: A1 hesap yokken: bankAccounts.active false; eski liste düzenlenir ve belgeye basılır
+    ok 1 - A1 hesap yokken: bankAccounts.active false; eski liste düzenlenir ve belgeye basılır
+      ---
+      duration_ms: 437.401375
+      type: 'test'
+      ...
+    # Subtest: A2 ilk hesap açılınca: belgede yalnız işaretli hesap (eski listedeki B basılmaz); B öneriye döner; PUT eski listeyi değiştirmez; işaret kalkınca / hesap pasifken listeden düşer
+    ok 2 - A2 ilk hesap açılınca: belgede yalnız işaretli hesap (eski listedeki B basılmaz); B öneriye döner; PUT eski listeyi değiştirmez; işaret kalkınca / hesap pasifken listeden düşer
+      ---
+      duration_ms: 512.749771
+      type: 'test'
+      ...
+    # Subtest: A3 göç v24: hiçbir hesap işaretli değilse eski listedeki IBAN'ı taşıyan hesaplar bir kez işaretlenir; işaretli hesap varsa dokunulmaz; silinmiş hesap işaretlenmez
+    ok 3 - A3 göç v24: hiçbir hesap işaretli değilse eski listedeki IBAN'ı taşıyan hesaplar bir kez işaretlenir; işaretli hesap varsa dokunulmaz; silinmiş hesap işaretlenmez
+      ---
+      duration_ms: 318.367051
+      type: 'test'
+      ...
+    1..3
+ok 1 - A — Fatura Ayarları → Banka Hesapları (E2.16 / \#31): ilk hesap açılana kadar eski liste; sonra yalnız IBAN Faturada Gösterilsin işaretli hesaplar
+  ---
+  duration_ms: 1270.028807
+  type: 'suite'
+  ...
+# Subtest: B — toplu kesim (plan A7; eşleme 92, 175, 289): 200 belge, her belge kendi işleminde; kapıda düşen yalnız o belge; kesim sürerken tekil tahsilat beklemez
+    # Subtest: B1 200 taslak + 1 pasif hesaba bağlı taslak → 200 kesildi, 1 düştü (bank-account-invalid); öbürleri numaralı; mutabakat ok
+    ok 1 - B1 200 taslak + 1 pasif hesaba bağlı taslak → 200 kesildi, 1 düştü (bank-account-invalid); öbürleri numaralı; mutabakat ok
+      ---
+      duration_ms: 6875.699523
+      type: 'test'
+      ...
+    # Subtest: B2 toplu kesim (120 belge) sürerken başka kullanıcının tekil tahsilatı toplu yanıttan ÖNCE döner; her iki iş de yazılır
+    ok 2 - B2 toplu kesim (120 belge) sürerken başka kullanıcının tekil tahsilatı toplu yanıttan ÖNCE döner; her iki iş de yazılır
+      ---
+      duration_ms: 3703.68429
+      type: 'test'
+      ...
+    1..2
+ok 2 - B — toplu kesim (plan A7; eşleme 92, 175, 289): 200 belge, her belge kendi işleminde; kapıda düşen yalnız o belge; kesim sürerken tekil tahsilat beklemez
+  ---
+  duration_ms: 10579.749675
+  type: 'suite'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12229.56946

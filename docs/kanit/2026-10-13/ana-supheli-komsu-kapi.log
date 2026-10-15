@@ -1,0 +1,388 @@
+TAP version 13
+# (node:6291) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kapı süzgeci (dokunulan varlıklar) — çalışıyor mu
+    # Subtest: günlük işler süzgeç yolundan geçer; tam kapı çalışmaz; Mutabakat Testi tutarlı
+    ok 1 - günlük işler süzgeç yolundan geçer; tam kapı çalışmaz; Mutabakat Testi tutarlı
+      ---
+      duration_ms: 211.978267
+      type: 'test'
+      ...
+    # Subtest: kilitli dönemin satırında yalnız açıklama: 200 ve süzgeç yolu; tutar değişirse 409 (aşağıda)
+    ok 2 - kilitli dönemin satırında yalnız açıklama: 200 ve süzgeç yolu; tutar değişirse 409 (aşağıda)
+      ---
+      duration_ms: 80.753341
+      type: 'test'
+      ...
+    1..2
+ok 1 - kapı süzgeci (dokunulan varlıklar) — çalışıyor mu
+  ---
+  duration_ms: 708.248382
+  type: 'suite'
+  ...
+# Subtest: kapı süzgeci — nasıl bozarım (üretim kipi; işlem içinde doğrudan SQL)
+    # Subtest: 1. kuruştan küçük küsurat → 409, satır yazılmaz
+    ok 1 - 1. kuruştan küçük küsurat → 409, satır yazılmaz
+      ---
+      duration_ms: 15.574746
+      type: 'test'
+      ...
+    # Subtest: 2. para satırının tutarını bank.post dışında değiştir (işlem başlığı kopyası tutmaz): üretimde 2.0.26/dilim 3 gibi K6 günlüğü, tam tarama bank:event bulur; test kipinde 500
+    ok 2 - 2. para satırının tutarını bank.post dışında değiştir (işlem başlığı kopyası tutmaz): üretimde 2.0.26/dilim 3 gibi K6 günlüğü, tam tarama bank:event bulur; test kipinde 500
+      ---
+      duration_ms: 439.862581
+      type: 'test'
+      ...
+    # Subtest: 3. ileri tarihli ve 30 Şubat tarihli Kasa satırı → 409
+    ok 3 - 3. ileri tarihli ve 30 Şubat tarihli Kasa satırı → 409
+      ---
+      duration_ms: 50.01895
+      type: 'test'
+      ...
+    # Subtest: 4. tanınmayan yol (bitcoin) → 409
+    ok 4 - 4. tanınmayan yol (bitcoin) → 409
+      ---
+      duration_ms: 30.091455
+      type: 'test'
+      ...
+    # Subtest: 5–6. kilitli satırı sil / tutarını değiştir; kilitli dönemde hareketi olan carinin türünü değiştir → 409 period-lock
+    ok 5 - 5–6. kilitli satırı sil / tutarını değiştir; kilitli dönemde hareketi olan carinin türünü değiştir → 409 period-lock
+      ---
+      duration_ms: 108.674588
+      type: 'test'
+      ...
+    # Subtest: 7. stok: açık hesap hareketinin tutarı carideki satırdan ayrı; hareketi olmayan stok kaynaklı cari satırı → 409
+    ok 6 - 7. stok: açık hesap hareketinin tutarı carideki satırdan ayrı; hareketi olmayan stok kaynaklı cari satırı → 409
+      ---
+      duration_ms: 29.385078
+      type: 'test'
+      ...
+    # Subtest: 8. çek kaynaklı cari satırı çekten farklı tutarda → 409
+    ok 7 - 8. çek kaynaklı cari satırı çekten farklı tutarda → 409
+      ---
+      duration_ms: 24.112787
+      type: 'test'
+      ...
+    # Subtest: 9. faturanın cari satırı faturadan farklı → 409
+    ok 8 - 9. faturanın cari satırı faturadan farklı → 409
+      ---
+      duration_ms: 35.157874
+      type: 'test'
+      ...
+    # Subtest: 10. olaysız para satırı: üretimde K6 günlüğe yazar ve iş durmaz; tam tarama money:event bulur
+    ok 9 - 10. olaysız para satırı: üretimde K6 günlüğe yazar ve iş durmaz; tam tarama money:event bulur
+      ---
+      duration_ms: 22.04055
+      type: 'test'
+      ...
+    1..9
+ok 2 - kapı süzgeci — nasıl bozarım (üretim kipi; işlem içinde doğrudan SQL)
+  ---
+  duration_ms: 1254.873014
+  type: 'suite'
+  ...
+# Subtest: kapı süzgeci — nasıl bozarım: bağlı varlıkta çıkan sapma (üretim kipi)
+    # Subtest: 15. peşin satışı olan ürünü ham DELETE ile sil → tek kaynak ürünsüz hareketi görmez, yevmiye görür (100) → 409
+    ok 1 - 15. peşin satışı olan ürünü ham DELETE ile sil → tek kaynak ürünsüz hareketi görmez, yevmiye görür (100) → 409
+      ---
+      duration_ms: 31.149293
+      type: 'test'
+      ...
+    # Subtest: 16. tahsil edilmiş çeki ham UPDATE ile sil → cari satırının 101 karşılığı kalır, portföy değişmez → 409
+    ok 2 - 16. tahsil edilmiş çeki ham UPDATE ile sil → cari satırının 101 karşılığı kalır, portföy değişmez → 409
+      ---
+      duration_ms: 31.344652
+      type: 'test'
+      ...
+    # Subtest: 17. peşinli faturayı ham DELETE ile sil (aynı işlemde bir para yazımıyla) → tek kaynak peşin satırını görmez, yevmiye görür → 409
+    ok 3 - 17. peşinli faturayı ham DELETE ile sil (aynı işlemde bir para yazımıyla) → tek kaynak peşin satırını görmez, yevmiye görür → 409
+      ---
+      duration_ms: 55.303438
+      type: 'test'
+      ...
+    # Subtest: BİLİNEN SINIR (2.0.15'ten beri, değişmedi): YALNIZ fatura tablosuna yazan işlem kapıyı tetiklemez; Mutabakat Testi (tam tarama) bulur
+    ok 4 - BİLİNEN SINIR (2.0.15'ten beri, değişmedi): YALNIZ fatura tablosuna yazan işlem kapıyı tetiklemez; Mutabakat Testi (tam tarama) bulur
+      ---
+      duration_ms: 52.348408
+      type: 'test'
+      ...
+    # Subtest: 18. Kasa ↔ Banka transferinin banka bacağını ham UPDATE ile değiştir → 102 kayar → 409
+    ok 5 - 18. Kasa ↔ Banka transferinin banka bacağını ham UPDATE ile değiştir → 102 kayar → 409
+      ---
+      duration_ms: 25.439087
+      type: 'test'
+      ...
+    # Subtest: 19. fatura kalemini ham UPDATE ile değiştir (aynı işlemde bir cari yazımıyla) → başlık ≠ kalemler, kalem ≠ stok hareketi → 409
+    ok 6 - 19. fatura kalemini ham UPDATE ile değiştir (aynı işlemde bir cari yazımıyla) → başlık ≠ kalemler, kalem ≠ stok hareketi → 409
+      ---
+      duration_ms: 23.244022
+      type: 'test'
+      ...
+    # Subtest: 20. kapatılmış (kilitli dönemde) kartın tahsilatı: karta bugün tahsilat → kilit izi (vazgeçilen kalan) → 409
+    ok 7 - 20. kapatılmış (kilitli dönemde) kartın tahsilatı: karta bugün tahsilat → kilit izi (vazgeçilen kalan) → 409
+      ---
+      duration_ms: 95.48209
+      type: 'test'
+      ...
+    # Subtest: süzgeç her durumda sapmayı gördü (karar tam kapının) ve normal işler yine süzgeç yolunda
+    ok 8 - süzgeç her durumda sapmayı gördü (karar tam kapının) ve normal işler yine süzgeç yolunda
+      ---
+      duration_ms: 21.085985
+      type: 'test'
+      ...
+    1..8
+ok 3 - kapı süzgeci — nasıl bozarım: bağlı varlıkta çıkan sapma (üretim kipi)
+  ---
+  duration_ms: 634.939566
+  type: 'suite'
+  ...
+# Subtest: kapı süzgeci — store dışı yazım, çözülemeyen yazım, taban sapması
+    # Subtest: 11. aynı bağlantıdan store dışı bozuk satır → ilgisiz API yazımı tam kapıya döner → 409 (2.0.26 gibi); satır silinince geçer
+    ok 1 - 11. aynı bağlantıdan store dışı bozuk satır → ilgisiz API yazımı tam kapıya döner → 409 (2.0.26 gibi); satır silinince geçer
+      ---
+      duration_ms: 33.196959
+      type: 'test'
+      ...
+    # Subtest: 12. başka bağlantıdan (ikinci DatabaseSync) bozuk satır → data_version → tam kapı → 409
+    ok 2 - 12. başka bağlantıdan (ikinci DatabaseSync) bozuk satır → data_version → tam kapı → 409
+      ---
+      duration_ms: 15.170025
+      type: 'test'
+      ...
+    # Subtest: 13. çözülemeyen yazım (upsert) → tam kapı
+    ok 3 - 13. çözülemeyen yazım (upsert) → tam kapı
+      ---
+      duration_ms: 24.894556
+      type: 'test'
+      ...
+    # Subtest: taban sapması: açılışta kuruşu bozuk Kasa satırı → yeni Kasa yazımı süzgeç yolunda, eski satıra dokunan yazım tam kapıda geçer (sapma büyümedi), cari yazımı süzgeç yolunda
+    ok 4 - taban sapması: açılışta kuruşu bozuk Kasa satırı → yeni Kasa yazımı süzgeç yolunda, eski satıra dokunan yazım tam kapıda geçer (sapma büyümedi), cari yazımı süzgeç yolunda
+      ---
+      duration_ms: 65.640829
+      type: 'test'
+      ...
+    1..4
+ok 4 - kapı süzgeci — store dışı yazım, çözülemeyen yazım, taban sapması
+  ---
+  duration_ms: 476.306186
+  type: 'suite'
+  ...
+# Subtest: kapı süzgeci — eşdeğerlik koruması (test kipi)
+    # Subtest: 14. süzgeç bilerek kör edilirse bozuk yazım 500 gate-equivalence ile kırılır (tam kapı her işlemde çalışır)
+    ok 1 - 14. süzgeç bilerek kör edilirse bozuk yazım 500 gate-equivalence ile kırılır (tam kapı her işlemde çalışır)
+      ---
+      duration_ms: 26.499392
+      type: 'test'
+      ...
+    # Subtest: test kipinde temiz işlemler tam kapıyla aynı karar (süzgeç sayacı)
+    ok 2 - test kipinde temiz işlemler tam kapıyla aynı karar (süzgeç sayacı)
+      ---
+      duration_ms: 24.046149
+      type: 'test'
+      ...
+    1..2
+ok 5 - kapı süzgeci — eşdeğerlik koruması (test kipi)
+  ---
+  duration_ms: 351.90465
+  type: 'suite'
+  ...
+# (node:6292) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN)
+    # Subtest: günlük işlerin hiçbirinde büyük tablo baştan sona dolaşılmaz
+    ok 1 - günlük işlerin hiçbirinde büyük tablo baştan sona dolaşılmaz
+      ---
+      duration_ms: 620.009318
+      type: 'test'
+      ...
+    # Subtest: banka hesabı yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan
+    ok 2 - banka hesabı yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan
+      ---
+      duration_ms: 322.237815
+      type: 'test'
+      ...
+    # Subtest: Banka Fişi yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan
+    ok 3 - Banka Fişi yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan
+      ---
+      duration_ms: 313.363949
+      type: 'test'
+      ...
+    # Subtest: Bankaya Tahsile Ver yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan
+    ok 4 - Bankaya Tahsile Ver yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan
+      ---
+      duration_ms: 241.33794
+      type: 'test'
+      ...
+    1..4
+ok 6 - kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN)
+  ---
+  duration_ms: 1977.00417
+  type: 'suite'
+  ...
+# (node:6298) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kapı — olay bazlı denetimler ve tam tarama
+    # Subtest: çalışıyor mu: bank.post sonrası kopyalar satırla aynı; gizli banka denetimleri tamam ve banka kullanılmadığı için görünmez
+    ok 1 - çalışıyor mu: bank.post sonrası kopyalar satırla aynı; gizli banka denetimleri tamam ve banka kullanılmadığı için görünmez
+      ---
+      duration_ms: 29.070651
+      type: 'test'
+      ...
+    # Subtest: NASIL BOZARIM: kopyayı ham SQL ile boz → tam tarama bank:event; o olaya dokunan işlem kopyayı yeniler; başka olaydaki işlem geçer
+    ok 2 - NASIL BOZARIM: kopyayı ham SQL ile boz → tam tarama bank:event; o olaya dokunan işlem kopyayı yeniler; başka olaydaki işlem geçer
+      ---
+      duration_ms: 112.547192
+      type: 'test'
+      ...
+    # Subtest: NASIL BOZARIM: fin_ref dolu ama olay yok; iptal olayın etkin satırı; satırı olmayan etkin olay → bank:event
+    ok 3 - NASIL BOZARIM: fin_ref dolu ama olay yok; iptal olayın etkin satırı; satırı olmayan etkin olay → bank:event
+      ---
+      duration_ms: 84.413024
+      type: 'test'
+      ...
+    # Subtest: money:event (tam tarama): v20 sonrası olaysız para satırı görünür; açılıştakiler eski (engellemez), yenisi taramada bulunur
+    ok 4 - money:event (tam tarama): v20 sonrası olaysız para satırı görünür; açılıştakiler eski (engellemez), yenisi taramada bulunur
+      ---
+      duration_ms: 259.910491
+      type: 'test'
+      ...
+    1..4
+ok 7 - kapı — olay bazlı denetimler ve tam tarama
+  ---
+  duration_ms: 938.303464
+  type: 'suite'
+  ...
+# Subtest: kapı — 15 dakikalık tam tarama (üretim kipi)
+    # Subtest: NASIL BOZARIM: bank.post dışında ham UPDATE → tarama bank:event bulur, integrity_log 'scan' + zil; ikinci taramada yinelenmez; veri değişmez
+    ok 1 - NASIL BOZARIM: bank.post dışında ham UPDATE → tarama bank:event bulur, integrity_log 'scan' + zil; ikinci taramada yinelenmez; veri değişmez
+      ---
+      duration_ms: 40.113195
+      type: 'test'
+      ...
+    # Subtest: tarama zamanlayıcısı kurulur (15 dakika) ve kapanışta durur
+    ok 2 - tarama zamanlayıcısı kurulur (15 dakika) ve kapanışta durur
+      ---
+      duration_ms: 0.342735
+      type: 'test'
+      ...
+    1..2
+ok 8 - kapı — 15 dakikalık tam tarama (üretim kipi)
+  ---
+  duration_ms: 474.267829
+  type: 'suite'
+  ...
+# Subtest: kapı — varlık bazında kod, ileri tarihli Banka Fişi, taksit kartı carisi
+    # Subtest: A hesabında taban sapması varken B'de işlem geçer; B'de yeni sapma bank:sub:<B> ile engellenir
+    ok 1 - A hesabında taban sapması varken B'de işlem geçer; B'de yeni sapma bank:sub:<B> ile engellenir
+      ---
+      duration_ms: 104.291901
+      type: 'test'
+      ...
+    # Subtest: A13 (fin_events): ileri tarihli eski Banka Fişi taban; gün ilerleyince işlem geçer; yeni ileri tarihli fiş engellenir
+    ok 2 - A13 (fin_events): ileri tarihli eski Banka Fişi taban; gün ilerleyince işlem geçer; yeni ileri tarihli fiş engellenir
+      ---
+      duration_ms: 67.648432
+      type: 'test'
+      ...
+    # Subtest: taksit kartının carisi değişince taksit tahsilatlarının olay kopyası yenilenir (tam tarama yanlış alarm vermez)
+    ok 3 - taksit kartının carisi değişince taksit tahsilatlarının olay kopyası yenilenir (tam tarama yanlış alarm vermez)
+      ---
+      duration_ms: 107.21483
+      type: 'test'
+      ...
+    1..3
+ok 9 - kapı — varlık bazında kod, ileri tarihli Banka Fişi, taksit kartı carisi
+  ---
+  duration_ms: 643.065346
+  type: 'suite'
+  ...
+# Subtest: kapı — görünürlük
+    # Subtest: banka kullanılmayan kurulum: Mutabakat Testi denetim listesi banka denetimi içermez; hesap tanımlanınca görünür
+    ok 1 - banka kullanılmayan kurulum: Mutabakat Testi denetim listesi banka denetimi içermez; hesap tanımlanınca görünür
+      ---
+      duration_ms: 392.090015
+      type: 'test'
+      ...
+    1..1
+ok 10 - kapı — görünürlük
+  ---
+  duration_ms: 392.409361
+  type: 'suite'
+  ...
+# Subtest: K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+    # Subtest: tarayıcı kendini sınar
+    ok 1 - tarayıcı kendini sınar
+      ---
+      duration_ms: 6.910399
+      type: 'test'
+      ...
+    # Subtest: izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+    ok 2 - izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+      ---
+      duration_ms: 0.688305
+      type: 'test'
+      ...
+    # Subtest: gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+    ok 3 - gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+      ---
+      duration_ms: 667.283632
+      type: 'test'
+      ...
+    # Subtest: 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+    ok 4 - 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+      ---
+      duration_ms: 777.160188
+      type: 'test'
+      ...
+    # Subtest: olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+    ok 5 - olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+      ---
+      duration_ms: 0.533338
+      type: 'test'
+      ...
+    # Subtest: cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+    ok 6 - cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+      ---
+      duration_ms: 45.361455
+      type: 'test'
+      ...
+    1..6
+ok 11 - K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+  ---
+  duration_ms: 1499.70367
+  type: 'suite'
+  ...
+# Subtest: Statik tarama: banka kodunda REAL toplam ve parseFloat yasak
+    # Subtest: tarayıcı kendini sınar: yakalaması gerekenler
+    ok 1 - tarayıcı kendini sınar: yakalaması gerekenler
+      ---
+      duration_ms: 1.871713
+      type: 'test'
+      ...
+    # Subtest: tarayıcı kendini sınar: geçirmesi gerekenler
+    ok 2 - tarayıcı kendini sınar: geçirmesi gerekenler
+      ---
+      duration_ms: 3.008007
+      type: 'test'
+      ...
+    # Subtest: banka kodu dosyaları var ve hiçbirinde REAL toplam ya da parseFloat yok
+    ok 3 - banka kodu dosyaları var ve hiçbirinde REAL toplam ya da parseFloat yok
+      ---
+      duration_ms: 15.989272
+      type: 'test'
+      ...
+    1..3
+ok 12 - Statik tarama: banka kodunda REAL toplam ve parseFloat yasak
+  ---
+  duration_ms: 22.367753
+  type: 'suite'
+  ...
+1..12
+# tests 48
+# suites 12
+# pass 48
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4111.278436

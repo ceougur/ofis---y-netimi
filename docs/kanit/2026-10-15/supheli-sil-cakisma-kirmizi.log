@@ -1,0 +1,56 @@
+TAP version 13
+# (node:4446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: şüpheli kaydı silme: başka kaydın çıkarma başlığını bozacaksa açık 409 doubtful-delete-conflict
+    # Subtest: A silinince tahsilat B'ye kayar, B'nin çıkarma başlığı (500) tutmaz → 409 doubtful-delete-conflict; hiçbir şey yazılmaz
+    not ok 1 - A silinince tahsilat B'ye kayar, B'nin çıkarma başlığı (500) tutmaz → 409 doubtful-delete-conflict; hiçbir şey yazılmaz
+      ---
+      duration_ms: 30.596236
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/supheli-230-sil-cakisma.test.mjs:29:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"doubtful:records","name":"Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)","ok":false,"count":1,"sample":["dbt-e13aab5
+        + actual - expected
+        
+        + 'ledger-integrity'
+        - 'doubtful-delete-conflict'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'doubtful-delete-conflict'
+      actual: 'ledger-integrity'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/supheli-230-sil-cakisma.test.mjs:33:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: çakışma yoksa silme çalışır: B (çıkarılmış) silinir; A'nın durumu değişmez
+    ok 2 - çakışma yoksa silme çalışır: B (çıkarılmış) silinir; A'nın durumu değişmez
+      ---
+      duration_ms: 36.263973
+      type: 'test'
+      ...
+    1..2
+not ok 1 - şüpheli kaydı silme: başka kaydın çıkarma başlığını bozacaksa açık 409 doubtful-delete-conflict
+  ---
+  duration_ms: 529.079324
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/supheli-230-sil-cakisma.test.mjs:11:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 908.073994

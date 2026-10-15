@@ -165,6 +165,26 @@
       const due = item.state !== "upcoming";
       if (!due && item.days > 7) continue;
       const amount = item.amount ? `${money(item.amount)}${item.partial ? " (kalan)" : ""}` : "tutar yazılmamış";
+      // Planlı banka işlemi: "tahsilat" değil, bankada yapılacak / yapılmış olması beklenen işlem (ödeme ya da tahsilat; transfer yönsüz).
+      if (item.source === "bank") {
+        out.push({
+          id: `${due ? "unpaid" : "soon"}|${item.id}`,
+          type: due ? "unpaid" : "upcoming",
+          tone: due ? (item.state === "overdue" ? "late" : "soon") : "info",
+          eyebrow: due ? (item.state === "overdue" ? `PLANLI BANKA İŞLEMİ GERÇEKLEŞTİRİLMEDİ · ${Math.abs(item.days)} GÜN GEÇTİ` : "PLANLI BANKA İŞLEMİ · BUGÜN") : item.days === 1 ? "YARIN PLANLI BANKA İŞLEMİ VAR" : `${item.days} GÜN SONRA PLANLI BANKA İŞLEMİ VAR`,
+          title: who(item),
+          when: item.state === "overdue" ? `${Math.abs(item.days)} gün geçti` : item.state === "today" ? "Bugün" : item.days === 1 ? "Yarın" : `${item.days} gün kaldı`,
+          text: `${item.label} · tarih ${item.dueText} · ${amount}`,
+          caseKey: "",
+          tab: "",
+          planId: "",
+          due: item,
+          item,
+          days: item.days,
+          rank: due ? 0 : 4,
+        });
+        continue;
+      }
       out.push({
         id: `${due ? "unpaid" : "soon"}|${item.id}`,
         type: due ? "unpaid" : "upcoming",
@@ -247,9 +267,13 @@
   const isPlan = item => item?.source === "plan";
   // Çek / senet kalemi (v2.0.7): tahsil ve ödeme evrak kartından yapılır (hof-cheques.js).
   const isCheque = item => item?.source === "cheque";
-  const canPay = item => (isCheque(item) ? HOF.can("cheques.manage") && Boolean(HOF.cheques) : isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : HOF.can("payments.create") && Boolean(HOF.workspace?.payment));
+  // Planlı banka işlemi (2.3.0 İz 3.3; plan §8.9 "Zil … planlı ödemeler"): deftere girmez; Banka → Hareketler → Planlı İşlemler'den Gerçekleştir.
+  const isBank = item => item?.source === "bank";
+  const canPay = item => (isBank(item) ? HOF.can("bank.move") && Boolean(HOF.bank?.openPlans) : isCheque(item) ? HOF.can("cheques.manage") && Boolean(HOF.cheques) : isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : HOF.can("payments.create") && Boolean(HOF.workspace?.payment));
   const pay = item =>
-    isCheque(item)
+    isBank(item)
+      ? HOF.bank.openPlans()
+      : isCheque(item)
       ? HOF.cheques.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" })
       : isPlan(item)
       ? HOF.plans.pay(item)
@@ -271,7 +295,7 @@
   };
   const canDone = alert => {
     if (alert.type === "task") return Boolean(alert.taskId) && HOF.can("tasks.complete");
-    if (!alert.item || !HOF.can("records.edit") || isPlan(alert.item) || isCheque(alert.item)) return false;
+    if (!alert.item || !HOF.can("records.edit") || isPlan(alert.item) || isCheque(alert.item) || isBank(alert.item)) return false;
     // Başka sayfanın kaydı (2.0.25): işaret açık sayfaya yazılırdı (yanlış sayfa, uyarı kapanmazdı); "Kayda Git" ile o
     // sayfaya geçilip orada işaretlenir.
     if (alert.item.foreign) return false;
@@ -534,7 +558,7 @@
           .map(
             ([title, items]) => `<section class="hof-alert-group"><h3>${esc(title)} <span>${items.length}</span></h3><ul>${items
               .map(
-                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">Tahsilat Gir</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda Git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit Kartı</button>` : ""}${item.admin ? '<a class="hof-button hof-button-small hof-button-ghost" href="/admin.html#system">Yönetim → Sistem</a>' : ""}</span></li>`,
+                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">${isBank(item.due) ? "Planlı İşlemler" : "Tahsilat Gir"}</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda Git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit Kartı</button>` : ""}${item.admin ? '<a class="hof-button hof-button-small hof-button-ghost" href="/admin.html#system">Yönetim → Sistem</a>' : ""}</span></li>`,
               )
               .join("")}</ul></section>`,
           )

@@ -1,0 +1,32 @@
+{
+  "ad": "son-aday-ui-ux-217",
+  "komut": "node test/e2e/ui-ux-217.mjs",
+  "commit": "bfcc92ba15e9ad855be345b8a8114eaf21354aea",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T08:15:06.592Z",
+  "sure_sn": 225.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 407,
+    "gecen": 407,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/son-aday-ui-ux-217.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "2c2630890d9fca249ddac3a6050f212ddf08126bd2363a28fa298cae62e467fd",
+  "ham_cikti_bayt": 4131
+}

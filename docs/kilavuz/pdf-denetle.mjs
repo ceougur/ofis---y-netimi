@@ -28,7 +28,13 @@ const imgs = [...html.matchAll(/<img src="([^"]+)"/g)].map(m => m[1]);
 const pdfImages = execFileSync("pdfimages", ["-list", DOC], { encoding: "utf8" }).split("\n").filter(line => /^\s*\d+\s+\d+\s+image/.test(line)).length;
 check(pdfImages >= new Set(imgs).size, `PDF'teki resim sayısı ${pdfImages} ≥ kılavuzdaki farklı ekran ${new Set(imgs).size}`);
 for (const phrase of ["8. Banka", "Kurulum Sihirbazı", "Hesabı Atanmamış Eski Hareketler", "Tarihi Gelince Atanabilir", "Seçilenleri Bu Hesaba Ata", "+ Kredi Kartı Ekle", "Kredi Kartı Kullan", "Çek Hesabı", "İşlemden Sonra", "Kalanın Tamamını Öde", "Kart ve Kredi Borcu", "+ Kart Borcu Ödemesi", "Bankalar Arası Transfer", "Ters Kaydet", "Gerçek Banka", "Bugünkü Nakit ve Banka", "Banka Bakiye Raporu", "Alt Hesap Mizanı", "Banka ve POS", "Yine de Kaydet", "Hesapsız (Açılıştan Önce)", "Kurulum Geçmişi", "Kart Borcuna Aktar", "Bankaya Geçmiş Say"]) check(text.includes(phrase), `PDF metninde: “${phrase}”`);
-for (const phrase of ["Drive", "OneDrive", "Kasa ve Banka", "bugünkü kasadan", "Banka / POS", "Kurumsal Kart", "Kurumsal Kredi", "Tamamı Peşin"]) check(!text.includes(phrase), `PDF metninde YOK: “${phrase}”`);
+// 2.3.0: "Kasa ve Banka Transfer Raporu" (plan §8.10) meşru; eski "Kasa ve Banka" başlığı yine yasak.
+const scrubbed = text.replace(/Kasa ve Banka Transfer/g, "");
+for (const phrase of ["Drive", "OneDrive", "Kasa ve Banka", "bugünkü kasadan", "Banka / POS", "Kurumsal Kart", "Kurumsal Kredi", "Tamamı Peşin"]) check(!scrubbed.includes(phrase), `PDF metninde YOK: “${phrase}”`);
+// Kapak ve dip nottaki sürüm = programın sürümü (13.10.2026: yayımlanan 2.2.0 kılavuzunun kapağında "Sürüm 2.1.0" kalmıştı).
+const { version } = JSON.parse(readFileSync(path.join(R, "package.json"), "utf8"));
+const pdfVersions = [...text.matchAll(/Sürüm (\d+\.\d+\.\d+)|DestekOfis (\d+\.\d+\.\d+) · Kısa Kullanım Kılavuzu/g)].map(m => m[1] || m[2]);
+check(text.includes(`Sürüm ${version}`) && text.includes(`DestekOfis ${version} · Kısa Kullanım Kılavuzu`) && pdfVersions.every(v => v === version), `PDF kapağı ve dip notu program sürümü ${version} (bulunan: ${[...new Set(pdfVersions)].join(", ") || "yok"})`);
 const docBuf = readFileSync(DOC);
 const appBuf = readFileSync(APP);
 check(sha(docBuf) === sha(appBuf), `client/kilavuz kopyası aynı dosya (sha256 ${sha(appBuf)})`);

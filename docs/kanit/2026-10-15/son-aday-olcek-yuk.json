@@ -1,0 +1,32 @@
+{
+  "ad": "son-aday-olcek-yuk",
+  "komut": "node tools/olcek-210.mjs --asama yuk --klasor /tmp/claude-0/olcek-230 --kullanici 10,20 --sure 240 --json docs/kanit/2026-10-15/son-aday-230/olcek-sonuc.json",
+  "commit": "469d547ec5b092a59394403ed3135b5c4f51dc54",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T06:24:46.259Z",
+  "sure_sn": 556.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 58,
+    "gecen": 58,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/son-aday-olcek-yuk.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e393000e8aaa543e4e738bba20d7da7eabf58c17ca7befbff4c202d86947e1c3",
+  "ham_cikti_bayt": 17210
+}

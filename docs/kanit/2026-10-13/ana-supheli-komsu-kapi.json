@@ -1,0 +1,32 @@
+{
+  "ad": "ana-supheli-komsu-kapi",
+  "komut": "node --test test/banka-210-kapi-plan.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-statik.test.mjs test/banka-210-post-statik.test.mjs test/banka-210-kapi.test.mjs",
+  "commit": "5de225f89cbc3d9b4a97f2a6ce7ba93cd7285fee",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:47:34.509Z",
+  "sure_sn": 4.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 48,
+    "gecen": 48,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/ana-supheli-komsu-kapi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "bc89b5d4389824c9c6760f7aceb447c6f3f7e85d002f57953c706c4b9a3d7b82",
+  "ham_cikti_bayt": 17435
+}

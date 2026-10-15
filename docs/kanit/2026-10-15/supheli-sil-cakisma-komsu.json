@@ -1,0 +1,32 @@
+{
+  "ad": "supheli-sil-cakisma-komsu",
+  "komut": "node --test test/supheli-230-ayni-gun-degersiz.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/banka-230-supheli-ayni-gun.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs",
+  "commit": "3b0c9bc933120ae8310d2bf2152bed9c51822dc4",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T12:35:39.660Z",
+  "sure_sn": 6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 66,
+    "gecen": 66,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/supheli-sil-cakisma-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "f172b922e3847ddfa95c9fb3d1332943b6621be6a58befe823f480e5ab740b66",
+  "ham_cikti_bayt": 27230
+}

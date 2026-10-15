@@ -1,0 +1,43 @@
+{
+  "ad": "ud199-tohum10",
+  "komut": "npm run test:mutabakat -- --islem 5000 --tohum 10 --tohumlar 1",
+  "commit": "bfcc92ba15e9ad855be345b8a8114eaf21354aea",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T08:16:00.324Z",
+  "sure_sn": 4138.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "işlem 988 supheli-sil: supheli-sil: beklenmeyen ret 409 {\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.\",\"code\":\"ledger-integrity\",\"failu",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UYUŞMAZLIK (1):",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/ud199-tohum10.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "1b6cd892c85b5b74a0b1984aa1eab2123c97e00fab5df067d2d256a0e6e26c97",
+  "ham_cikti_bayt": 3845
+}

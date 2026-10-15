@@ -1,0 +1,505 @@
+TAP version 13
+# Subtest: K8 taksit kuralı — nakit yolu (N1, N2, N4, N5)
+    # Subtest: N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir
+    not ok 1 - N4+N1: kısmi 300 + kalan 700 → 200; ödenmiş karta 0,01 → 409 plan-paid; kart, Kasa ve cari değişmez; metin yol gösterir
+      ---
+      duration_ms: 155.51324
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ödenmiş karta 0,01: 200 {"id":"plan-7cb5a649-7c95-45db-b109-0543610f4df8","accountId":"account-86f2ec3e-8fd9-4d3e-8e76-66ba2b530b56","refNo":"1","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Nakit Müşteri K8-1","note":"","phone":"","total":1000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-002f0028-95f4-428f-bc 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:75:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200
+    not ok 2 - N2: kuruş sınırı — kalan 0,01 iken 0,02 → plan-overpay (kalan/fazla ek alanda), 0,01 → 200; 1.000'e 1.000,01 → plan-overpay, 1.000,00 → 200
+      ---
+      duration_ms: 60.206832
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kalan 0,01 iken 0,02: 200 {"id":"plan-e1dd4bb8-e279-4a8a-a696-af21f5a92099","accountId":"account-86f2ec3e-8fd9-4d3e-8e76-66ba2b530b56","refNo":"2","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Nakit Müşteri K8-2","note":"","phone":"","total":1000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-002f0028-95f4-428f-bc 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:89:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid
+    not ok 3 - N5: iade sonrası yeniden — iade kadar 200; iadeyi aşan plan-overpay; sonra 1 kuruş plan-paid
+      ---
+      duration_ms: 74.294876
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iadeden sonra 300: 200 {"id":"plan-afbee96e-a5fa-4bc9-8824-5821816c1faa","accountId":"account-86f2ec3e-8fd9-4d3e-8e76-66ba2b530b56","refNo":"3","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Nakit Müşteri K8-3","note":"","phone":"","total":1000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-002f0028-95f4-428f-bc 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:105:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - K8 taksit kuralı — nakit yolu (N1, N2, N4, N5)
+  ---
+  duration_ms: 668.436819
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:56:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13)
+    # Subtest: N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500
+    not ok 1 - N3: aynı karta iki eşzamanlı 500 (farklı istek kimliği) → biri 200, biri 409 plan-paid; tek hareket; Kasa +500
+      ---
+      duration_ms: 29.216882
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        durumlar [[400,"request-id-invalid"],[400,"request-id-invalid"]]
+        + actual - expected
+        
+          [
+        +   400,
+        +   400
+        -   200,
+        -   409
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 200
+        1: 409
+      actual:
+        0: 400
+        1: 400
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:128:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid
+    not ok 2 - N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid
+      ---
+      duration_ms: 20.338605
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:135:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [[400,"request-id-invalid"],[400,"request-id-invalid"]]
+        + actual - expected
+        
+          [
+        +   400,
+        +   400
+        -   200,
+        -   409
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 200
+        1: 409
+      actual:
+        0: 400
+        1: 400
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:139:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200
+    not ok 3 - N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200
+      ---
+      duration_ms: 52.469878
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:145:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ödenmiş 1. taksite: 200 {"id":"plan-a99b7831-0868-4096-8a90-73cdabc16b69","accountId":"account-8e8bf2e7-5665-4284-96f4-b21262546ee5","refNo":"3","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Eşzamanlı Müşteri K8-6","note":"","phone":"","total":1000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-346536a4-3fdd-456 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:149:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200
+    not ok 4 - N13: aynı istek kimliğiyle yineleme ödenmiş kartta replayed (409 değil); 409'dan sonra aynı kimlik + overpay:true → 200
+      ---
+      duration_ms: 16.25484
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:157:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        500 R1: 400 {"ok":false,"error":"İstek kimliği geçerli değil.","code":"request-id-invalid"}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:159:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13)
+  ---
+  duration_ms: 406.056859
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:113:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6)
+    # Subtest: N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez
+    not ok 1 - N6a: havale 1.000 ile ödenen karta aynı gün aynı tutar ikinci havale → 409 plan-paid (bank-similar DEĞİL; K8 Benzer İşlem'den önce); similarOk da geçmez; hesap bakiyesi değişmez
+      ---
+      duration_ms: 50.085669
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ikinci havale: kod bank-similar (Aynı iş gününde aynı hesapta aynı tutarda benzer bir işlem kayıtlı (BNK-2026-000003, 08.10.2026, Ofis yöneticisi). Gerçekten ikinci bir işlemse "Yine de Kaydet" ile kaydedin.)
+        + actual - expected
+        
+        + 'bank-similar'
+        - 'plan-paid'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan-paid'
+      actual: 'bank-similar'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:58:20)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:191:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid
+    not ok 2 - N6b: kalanı olan kartta aynı gün aynı tutar → 409 bank-similar, similarOk ile 200; kalan dolunca similarOk'lu dördüncü → plan-paid
+      ---
+      duration_ms: 141.039239
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        4. havale: 200 {"id":"plan-f5a5c625-d6cc-434c-9189-89ecaea1ed9c","accountId":"account-7a3dee52-a339-441e-9e96-fc3b6b711cb4","refNo":"2","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Banka Müşteri K8-9","note":"","phone":"","total":3000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-02f9a41b-19d2-4c3e-9c 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:205:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı
+    not ok 3 - N6c: POS yolu — 2.000 karta POS 2.000,01 → plan-overpay (POS satışı açılmaz); POS 2.000 → 200; POS 100 → plan-paid; yönetici overpay POS 100 → 200 ve POS satışı
+      ---
+      duration_ms: 37.985727
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS aşan: 200 {"id":"plan-cde75ad9-2a63-4b7f-9638-52b098571de9","accountId":"account-7a3dee52-a339-441e-9e96-fc3b6b711cb4","refNo":"3","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Banka Müşteri K8-10","note":"","phone":"","total":2000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-02f9a41b-19d2-4c3e-9 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:213:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - K8 taksit kuralı — banka ve POS yolu, Benzer İşlem sırası (N6)
+  ---
+  duration_ms: 568.496279
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:171:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)
+    # Subtest: N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz
+    not ok 1 - N10: personel ödenmiş karta → plan-paid 'yöneticinize'; personel overpay:true → 403 plan-overpay-permission; yönetici overpay:true → 200, extra, cari alacak; avans yer açmaz
+      ---
+      duration_ms: 54.354626
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:239:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        personel ödenmiş karta: 200 {"id":"plan-8c39fbcc-ee20-4351-b9a6-31a53d095111","accountId":"account-76e8ccd2-288a-4a0e-8df5-1bcc430dd060","refNo":"1","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Yetki Müşteri K8-11","note":"","phone":"","total":1000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-cfcca438-1b51-4351-8 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:243:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)
+    not ok 2 - N10b: kalanı aşan tutar personelde plan-overpay (403 değil, bayraksız); overpay:true personelde 403; yönetici overpay:true 200 (kalan kadar + fazlası)
+      ---
+      duration_ms: 45.314939
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:259:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        personel aşan: 200 {"id":"plan-a053eb03-706f-458f-b7bb-60eac219efad","accountId":"account-76e8ccd2-288a-4a0e-8df5-1bcc430dd060","refNo":"2","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Yetki Müşteri K8-12","note":"","phone":"","total":1000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-cfcca438-1b51-4351-8 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:262:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200
+    not ok 3 - N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200
+      ---
+      duration_ms: 49.513108
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:269:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        mevcut fazla gösterilir, değişmez
+        + actual - expected
+        
+          [
+            800,
+            1000,
+        -   200,
+            0,
+        +   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 800
+        1: 1000
+        2: 200
+        3: 0
+      actual:
+        0: 800
+        1: 1000
+        2: 0
+        3: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:274:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7)
+  ---
+  duration_ms: 525.074384
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:226:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9)
+    # Subtest: N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)
+    not ok 1 - N8: 1.000 tahsilat sil → yeniden 1.000 → silineni geri yükle: 409 plan-paid; overpay:true → 200 (extra 1.000)
+      ---
+      duration_ms: 120.435399
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:302:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yükleme ödenmiş karta: 200 {"restored":"plan-entry","message":"Taksit hareketi geri eklendi; kart ve Kasa yeniden hesaplandı."} 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:308:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200
+    not ok 2 - N8b: 1.000 sil → 600 → geri yükle: 409 plan-overpay (kalan 400, fazlası 600); overpay:true → 200
+      ---
+      duration_ms: 90.812272
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:316:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yükleme kalanı aşıyor: 200 {"restored":"plan-entry","message":"Taksit hareketi geri eklendi; kart ve Kasa yeniden hesaplandı."} 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:322:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı
+    not ok 3 - N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı
+      ---
+      duration_ms: 65.855772
+      type: 'test'
+      location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:328:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        A 600: 200 {"id":"plan-c13dc364-7c84-452b-b0b8-f57e1ba634be","accountId":"account-83fbf673-fda9-40a8-868a-1961da717341","refNo":"3","registeredOn":"2026-10-01","caseKey":"","caseSource":"","caseTitle":"","groupId":null,"subgroupId":null,"name":"K8 Geri Yükleme Müşteri K8-16","note":"","phone":"","total":1000,"status":"active","coversBalance":0,"invoiceId":"","invoiceNumber":"","createdBy":"user-3ed9aeb7-f651 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-210-hesap-ortak.mjs:57:10)
+        rejected (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:51:3)
+        TestContext.<anonymous> (file:///tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:333:17)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9)
+  ---
+  duration_ms: 557.633142
+  type: 'suite'
+  location: '/tmp/claude-0/iz3-k8-eski-b24e0c2/test/banka-230-k8-taksit.test.mjs:285:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 16
+# suites 5
+# pass 0
+# fail 16
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3130.584541

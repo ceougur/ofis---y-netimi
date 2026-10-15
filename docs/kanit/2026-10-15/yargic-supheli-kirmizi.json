@@ -1,0 +1,73 @@
+{
+  "ad": "yargic-supheli-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/supheli-230-yargic.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T05:54:03.250Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 1,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0",
+      "konum": "test/supheli-230-yargic.test.mjs:36:3",
+      "hata": "129: aşan 600 çözüldü (karşılık 400 = kalan 400) · 0 !== 600 (beklenen 600, gelen 0)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez",
+      "konum": "test/supheli-230-yargic.test.mjs:64:3",
+      "hata": "geriye tarihli tahsilat: 409 beklenir — gelen 200 {\"id\":\"account-298ad88a-1964-41f3-9809-8d50a8f9af06\",\"refNo\":\"2\",\"type\":\"customer\",\"name\":\"Y3 Değersiz Sonra Tahsilat\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"t · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam",
+      "konum": "test/supheli-230-yargic.test.mjs:79:3",
+      "hata": "geri yükleme — gelen 409 {\"ok\":false,\"error\":\"Kayıt geri yüklenemez: carinin borç bakiyesi (2.000,00 ₺) şüpheliye alınan tutarı (10.000,00 ₺) artık karşılamıyor.\",\"code\":\"doubtful-exceeds-balance\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest",
+      "konum": "test/supheli-230-yargic.test.mjs:115:3",
+      "hata": "tür değişimi: 200 {\"id\":\"account-98c6908e-8561-4b04-82cb-1ff131feb231\",\"refNo\":\"5\",\"type\":\"supplier\",\"name\":\"Y5 Tür Değişimi\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz",
+      "konum": "test/supheli-230-yargic.test.mjs:127:3",
+      "hata": "kartsız kredi kartına iade: 200 {\"id\":\"account-31acc4c1-8326-4274-8b66-7ea5f4f5714f\",\"refNo\":\"6\",\"type\":\"supplier\",\"name\":\"Y6 Tedarikçi\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200",
+      "konum": "test/supheli-230-yargic.test.mjs:134:3",
+      "hata": "muhasebe raporu görür — {\"ok\":false,\"error\":\"Bu işlem için yetkiniz yok.\",\"code\":\"FORBIDDEN\",\"permission\":\"overview.view\"} · 403 !== 200 (beklenen 200, gelen 403)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400",
+      "konum": "test/supheli-230-yargic.test.mjs:144:3",
+      "hata": "borç hareketi yok: kod doubtful-exceeds-balance (Şüpheliye alınacak tutar (1,00 ₺) carinin borç bakiyesini aşıyor: bakiye 0,00 ₺ → en çok 0,00 ₺.) · + actual - expected · + 'doubtful-exceeds-balance' (beklenen doubtful-before-debt, gelen doubtful-exceeds-balance)"
+    },
+    {
+      "ad": "2.3.0 yargıç bulguları — Şüpheli Alacaklar › Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır",
+      "konum": "test/supheli-230-yargic.test.mjs:156:3",
+      "hata": "çıkarmadan önceye düşen tahsilat: 409 beklenir — gelen 200 {\"id\":\"account-96de5ff0-cc74-45f9-a7fa-78084bfe22ef\",\"refNo\":\"8\",\"type\":\"customer\",\"name\":\"Y8b Çıkar\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mer · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/.claude/worktrees/agent-aded053a756b1e4c8/docs/kanit/2026-10-15/yargic-supheli-kirmizi.log",
+  "klasor": "/tmp/claude-0/yargic-fix-eski-1fc87bb",
+  "ham_cikti_sha256": "f36e22b049b2998dcef3a90e93e12b7674a687a36c687ae4944207f018a1a9a6",
+  "ham_cikti_bayt": 12056
+}

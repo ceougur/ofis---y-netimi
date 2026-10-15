@@ -36,6 +36,10 @@ const RC = "/api/workspace/report-center";
 // POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar eklendi (İz 3.5; yetki ve şirket ayrımı denetimleri onlar için de koşar; içerik
 // denetimi banka-220-pos-iz3'te).
 const BANK_REPORTS = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar"];
+// 2.3.0 (bilerek güncellendi): §8.10 kalan raporlar (İz 3.3; içerik denetimi test/raporlar-230-banka.test.mjs) ve POS Satış / Komisyon (İz 5.3;
+// test/rapor-230-iz5.test.mjs) Banka grubunda; yetki ve şirket ayrımı burada da koşar.
+const BANK_REPORTS_230 = ["pos-satis", "pos-komisyon", "banka-gunluk", "banka-aylik", "banka-bazinda-bakiye", "para-birimi-bazinda-bakiye", "bankalar-arasi-transfer", "kasa-banka-transfer", "cari-banka-hareketleri", "fatura-banka-hareketleri", "taksit-banka-hareketleri", "banka-nakit-akis"];
+const ALL_BANK_REPORTS = [...BANK_REPORTS, ...BANK_REPORTS_230];
 const K10 = { realBank: "Gerçek Banka", debt: "Kart ve Kredi Borcu", unassigned: "Hesabı Atanmamış Eski Hareketler" };
 const NO_SUM = new Set(["Bakiye"]);
 
@@ -268,9 +272,9 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
   it("katalog: Banka grubu dört rapor; süzgeçleri ve hesap seçenekleri (bakiye dönmez)", async () => {
     const catalog = await must("katalog", api.get(RC));
     const bank = catalog.reports.filter(report => report.group === "Banka");
-    assert.deepEqual(bank.map(report => report.id), BANK_REPORTS);
-    assert.deepEqual(Object.fromEntries(bank.map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"], "tahsildeki-cekler": [], "pos-odeme-takvimi": ["range", "posTerminal", "posKind"], "faturasi-beklenen-komisyonlar": ["range", "posTerminal"] });
-    assert.deepEqual(bank.map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı", "Tahsildeki Çek ve Senetler", "POS Ödeme Takvimi", "Faturası Beklenen Komisyonlar"]);
+    assert.deepEqual(bank.map(report => report.id), ALL_BANK_REPORTS);
+    assert.deepEqual(Object.fromEntries(bank.filter(report => BANK_REPORTS.includes(report.id)).map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"], "tahsildeki-cekler": [], "pos-odeme-takvimi": ["range", "posTerminal", "posKind"], "faturasi-beklenen-komisyonlar": ["range", "posTerminal"] });
+    assert.deepEqual(bank.filter(report => BANK_REPORTS.includes(report.id)).map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı", "Tahsildeki Çek ve Senetler", "POS Ödeme Takvimi", "Faturası Beklenen Komisyonlar"]);
     assert.deepEqual(catalog.choices.bankAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id, acc.K.id, acc.L.id, "unassigned"]);
     assert.deepEqual(catalog.choices.feeAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id]);
     assert.ok(!/\d,\d{2}/.test(JSON.stringify(catalog.choices)), "seçeneklerde bakiye (tutar) yok");
@@ -574,19 +578,28 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     }
     const accountant = apiOf(await createUser(ctx.server, api.client, { username: "rapor-muhasebe", role: "muhasebe" }));
     const catalog = await must("muhasebe katalog", accountant.get(RC));
-    assert.deepEqual(catalog.reports.map(report => report.id), BANK_REPORTS, "muhasebe yalnız Banka grubu (Finans Raporları yok)");
+    // 2.3.0 İz 1.7 (bilerek güncellendi): Şüpheli Alacaklar raporu Şüpheli Alacak İşlemleri YA DA finans raporları yetkisiyle açılır (plan §3.11b/5);
+    // muhasebe accounts.doubtful ile onu da görür.
+    assert.deepEqual(catalog.reports.map(report => report.id), ["supheli-alacaklar", ...ALL_BANK_REPORTS], "muhasebe Şüpheli Alacaklar (Cari grubu önce; İz 5.4 sırası) + Banka grubu (Finans Raporları yok)");
     assert.equal((await accountant.get(`${RC}/banka-bakiye?preset=all`)).status, 200);
     assert.equal((await accountant.get(`${RC}/kasa-hareketleri`)).status, 403);
     const users = await must("kullanıcılar", api.get("/api/admin/users"));
     await must("yetki kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "rapor-muhasebe").id}`, { grants: { add: [], remove: ["bank.reports"] } }).then(unwrap));
-    assert.equal((await accountant.get(RC)).status, 403, "Banka Raporları kaldırılınca katalog");
-    for (const id of BANK_REPORTS) assert.equal((await accountant.raw("GET", `${RC}/${id}/xlsx?preset=all`)).status, 403, `muhasebe ${id}`);
+    // 2.3.0 İz 1.7 (bilerek güncellendi): Şüpheli Alacak İşlemleri yetkisi kaldığı için katalog açık, yalnız Şüpheli Alacaklar listelenir.
+    const narrowed = await accountant.get(RC);
+    assert.equal(narrowed.status, 200, "Banka Raporları kaldırılınca katalog (Şüpheli Alacaklar kalır)");
+    assert.deepEqual(narrowed.data.reports.map(report => report.id), ["supheli-alacaklar"], "yalnız Şüpheli Alacaklar");
+    for (const id of ALL_BANK_REPORTS) assert.equal((await accountant.raw("GET", `${RC}/${id}/xlsx?preset=all`)).status, 403, `muhasebe ${id}`);
+    assert.equal((await accountant.raw("GET", `${RC}/supheli-alacaklar/xlsx?preset=all`)).status, 200, "Banka Raporları kalkınca Şüpheli Alacaklar yine açık (accounts.doubtful)");
+    await must("şüpheli yetkisini kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "rapor-muhasebe").id}`, { grants: { add: [], remove: ["bank.reports", "accounts.doubtful"] } }).then(unwrap));
+    assert.equal((await accountant.get(RC)).status, 403, "Şüpheli Alacak İşlemleri de kaldırılınca katalog kapalı");
+    assert.equal((await accountant.raw("GET", `${RC}/supheli-alacaklar/xlsx?preset=all`)).status, 403, "Şüpheli Alacaklar da kapalı");
     const role = await must("rol", api.post("/api/admin/roles", { name: "Finans Okuyucu", permissions: ["overview.view", "accounts.view"] }));
     const reader = apiOf(await createUser(ctx.server, api.client, { username: "rapor-finans", role: role.id }));
     const list = await must("finans katalog", reader.get(RC));
     assert.ok(!list.reports.some(report => report.group === "Banka"), "Finans Raporları rolü Banka grubunu görmez");
     assert.ok(!list.choices, "hesap seçenekleri dönmez");
-    for (const id of BANK_REPORTS) assert.equal((await reader.get(`${RC}/${id}`)).status, 403, `finans ${id}`);
+    for (const id of ALL_BANK_REPORTS) assert.equal((await reader.get(`${RC}/${id}`)).status, 403, `finans ${id}`);
   });
 
   it("R4/R7: 002 boş — raporlar boş, ANLIK DURUM \"Banka Hesabı Tanımlanmadı\"; ?hofCompany= ile 001'in hesabı 404; 001'in verisi 002'de görünmez", async () => {
