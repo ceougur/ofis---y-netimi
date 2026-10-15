@@ -208,6 +208,32 @@ export function doubtfulSummary(store, accountId) {
 }
 
 /**
+ * Cari başına AÇIK şüpheli tutar (2.3.0 İz 1.6; plan §3.11b/5 "ANLIK DURUM, Alacak Yaşlandırma ve hatırlatmalar şüpheli tutarı ayrı gösterir"):
+ * kalanı olan kayıtların carisi → { openMinor, provisionMinor, count }; totals bütün carilerin toplamı. Şüpheli hiç kullanılmamışsa tek sorgu
+ * (doubtfulUsed) ve boş sonuç — listeler ve ANLIK DURUM bu yardımcıyı her istekte çağırır.
+ */
+export function doubtfulOpenByAccount(store) {
+  const byAccount = new Map();
+  const totals = { openMinor: 0, provisionMinor: 0, count: 0, accountCount: 0 };
+  if (!doubtfulUsed(store)) return { byAccount, totals };
+  const { records, state } = doubtfulState(store);
+  for (const record of records) {
+    const s = state.get(record.id);
+    if (!s || s.remaining <= 0) continue;
+    const item = byAccount.get(record.party) || { openMinor: 0, provisionMinor: 0, count: 0 };
+    item.openMinor += s.remaining;
+    item.provisionMinor += s.provision;
+    item.count += 1;
+    byAccount.set(record.party, item);
+    totals.openMinor += s.remaining;
+    totals.provisionMinor += s.provision;
+    totals.count += 1;
+  }
+  totals.accountCount = byAccount.size;
+  return { byAccount, totals };
+}
+
+/**
  * @param {{ store, bank, period, now: () => Date, accounts: () => object, trash?: object }} options  bank: lib/bank/post.mjs (para dışı yazıcı
  *   denetimi); period: hareket tarihi ve dönem kilidi; accounts: cari servisi (bakiye, Değersiz Alacak satırı yazıcısı)
  */
@@ -491,5 +517,5 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const n = Number(store.get("SELECT COUNT(*) AS n FROM doubtful_receivables WHERE account_id = ? AND status <> 'cancelled'", accountId)?.n) || 0;
     if (n) throw new HttpError(409, `Bu carinin ${n} şüpheli alacak kaydı var; cari ${what}. Önce kayıtları silin ya da cariyi pasife alın.`, { code: "account-doubtful-open", count: n });
   }
-  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
+  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: () => doubtfulOpenByAccount(store), take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
 }

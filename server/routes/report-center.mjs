@@ -22,6 +22,7 @@ import { K10_LABELS } from "../lib/bank/accounts.mjs";
 import { typeLabel } from "../lib/bank/event-types.mjs";
 import { waysFor } from "../lib/bank/money-lines.mjs";
 import { CHART } from "../lib/general-ledger.mjs";
+import { DOUBTFUL_REASONS, DOUBTFUL_STATUS_LABELS } from "../lib/doubtful-gl.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => {
@@ -139,7 +140,7 @@ export function footerRow({ headers = [], types = [], rows = [], footer, footerU
   return out;
 }
 
-export function registerReportCenter(router, { store, auth, audit, dataset, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, doubtful = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   // Rapor başlığındaki şirket (2.2.0 İz 1.1; 2.0.17 m2 kararı "rapor/PDF/Excel başlığında 001 · Unvan"): bu örneğin şirketinin kodu (kayıt defteri)
@@ -1074,14 +1075,49 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
           if (item.side !== "sale") continue;
           add(item.accountId, names.get(item.accountId) || item.accountName, -item.days, item.open);
         }
-        const list = [...rows.values()].map(row => ({ ...row, late: roundMoney(row.b30 + row.b60 + row.b90 + row.b90p) })).sort((a, b) => b.late - a.late || collator.compare(a.name, b.name));
+        // 2.3.0 İz 1.6 (plan §3.11b/5 "Alacak Yaşlandırma şüpheli tutarı ayrı gösterir"): carinin açık şüpheli alacağı (128) ayrı kolon; vade
+        // kovalarına ve Toplam'a GİRMEZ (şüpheli alacağın vadesi yoktur; 120 + 128 = kart). Yalnız şüphelisi olan cari de satır alır.
+        const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount().byAccount : new Map();
+        for (const [accountId, item] of doubtfulMap) {
+          if (!rows.has(accountId)) rows.set(accountId, { name: names.get(accountId) || "", notDue: 0, b30: 0, b60: 0, b90: 0, b90p: 0 });
+          rows.get(accountId).doubtful = roundMoney(item.openMinor / 100);
+        }
+        const list = [...rows.values()].map(row => ({ ...row, doubtful: row.doubtful || 0, late: roundMoney(row.b30 + row.b60 + row.b90 + row.b90p) })).sort((a, b) => b.late - a.late || collator.compare(a.name, b.name));
         const sum = key => roundMoney(list.reduce((total, row) => total + row[key], 0));
         return {
-          subtitle: `${dayText(day)} itibarıyla · taksit, vadeli fatura ve portföydeki alınan çek/senet vadelerine göre`,
-          headers: ["Cari / Kişi", "Vadesi Gelmemiş", "1–30 Gün", "31–60 Gün", "61–90 Gün", "90+ Gün", "Toplam Gecikmiş", "Toplam"],
-          types: ["", "money", "money", "money", "money", "money", "money", "money"],
-          rows: list.map(row => [row.name, money(row.notDue), money(row.b30), money(row.b60), money(row.b90), money(row.b90p), money(row.late), money(roundMoney(row.late + row.notDue))]),
-          summary: [["Vadesi Gelmemiş", money(sum("notDue"))], ["1–30 gün", money(sum("b30"))], ["31–60 gün", money(sum("b60"))], ["61–90 gün", money(sum("b90"))], ["90+ gün", money(sum("b90p"))], ["Toplam Gecikmiş", money(sum("late"))]],
+          subtitle: `${dayText(day)} itibarıyla · taksit, vadeli fatura ve portföydeki alınan çek/senet vadelerine göre · Şüpheli Alacak ayrı kolondur, Toplam'a girmez`,
+          headers: ["Cari / Kişi", "Vadesi Gelmemiş", "1–30 Gün", "31–60 Gün", "61–90 Gün", "90+ Gün", "Toplam Gecikmiş", "Toplam", "Şüpheli Alacak"],
+          types: ["", "money", "money", "money", "money", "money", "money", "money", "money"],
+          rows: list.map(row => [row.name, money(row.notDue), money(row.b30), money(row.b60), money(row.b90), money(row.b90p), money(row.late), money(roundMoney(row.late + row.notDue)), row.doubtful ? money(row.doubtful) : ""]),
+          summary: [["Vadesi Gelmemiş", money(sum("notDue"))], ["1–30 gün", money(sum("b30"))], ["31–60 gün", money(sum("b60"))], ["61–90 gün", money(sum("b90"))], ["90+ gün", money(sum("b90p"))], ["Toplam Gecikmiş", money(sum("late"))], ["Şüpheli Alacak (ayrı)", money(sum("doubtful"))]],
+        };
+      },
+    },
+    // 2.3.0 İz 1.7 (plan §3.11b/5): Şüpheli Alacaklar — kayıt tarihine göre dönem; Durum (Açık / Kapanan / Tümü) ve Neden süzgeçleri. Veri
+    // lib/bank/doubtful.mjs report (cari kartı ve Mutabakat Testi ile aynı ayırma kuralı). Yetki: Şüpheli Alacak İşlemleri YA DA finans raporları.
+    {
+      id: "supheli-alacaklar",
+      group: "Cari",
+      title: "Şüpheli Alacaklar",
+      description: "Şüpheli alacağa alınan kayıtlar (128): cari, neden, tarih, tutar, ayrılan karşılık (129), tahsil edilen, değersiz yazılan, kalan ve durum. Dönem kayıt tarihine göredir; Durum süzgeci Açık (kalanı olan), Kapanan (tahsil edildi, değersiz yazıldı ya da şüpheliden çıkarıldı) ya da Tümü.",
+      params: ["range", "doubtfulStatus", "doubtfulReason"],
+      preset: "thisYear",
+      anyOf: ["accounts.doubtful", "overview.view"],
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const status = ["open", "closed", "all"].includes(query.doubtfulStatus) ? query.doubtfulStatus : "open";
+        const reason = Object.hasOwn(DOUBTFUL_REASONS, query.doubtfulReason || "") ? query.doubtfulReason : "";
+        if (query.doubtfulReason && !reason) throw new HttpError(400, "Neden süzgeci Karşılıksız Çek, Protestolu Senet, Dava, İcra ya da Diğer olmalı.", { code: "doubtful-filter", field: "doubtfulReason" });
+        const data = doubtful()?.report ? doubtful().report({ from: range.from, to: range.to, status }) : { rows: [], totals: {} };
+        const rows = data.rows.filter(row => !reason || row.reason === reason);
+        const sum = key => rows.reduce((total, row) => total + (Number(row[key]) || 0), 0);
+        const STATUS_TEXT = { open: "Açık", closed: "Kapanan", all: "Tümü" };
+        return {
+          subtitle: [rangeText(range), `Durum: ${STATUS_TEXT[status]}`, reason ? `Neden: ${DOUBTFUL_REASONS[reason]}` : "Tüm nedenler"].join(" · "),
+          headers: ["Cari No", "Cari", "Neden", "Tarih", "Tutar", "Karşılık", "Tahsil Edilen", "Değersiz", "Kalan", "Durum"],
+          types: ["", "", "", "", "money", "money", "money", "money", "money", ""],
+          rows: rows.map(row => [row.accountRefNo || "", row.accountName, row.reasonLabel + (row.chequeSerialNo ? ` · No ${row.chequeSerialNo}` : ""), dayText(row.date), cents(row.amountMinor), cents(row.provisionMinor), cents(row.collectedMinor), cents(row.writtenOffMinor), cents(row.remainingMinor), DOUBTFUL_STATUS_LABELS[row.stateKey] || row.statusLabel || ""]),
+          summary: [["Kayıt", String(rows.length)], ["Tutar", cents(sum("amountMinor"))], ["Karşılık", cents(sum("provisionMinor"))], ["Tahsil Edilen", cents(sum("collectedMinor"))], ["Değersiz", cents(sum("writtenOffMinor"))], ["Şüpheliden Çıkarılan", cents(sum("releasedMinor"))], ["Kalan", cents(sum("remainingMinor"))]],
         };
       },
     },
@@ -1879,8 +1915,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
   // Finans raporları "overview.view" ister. Kendi izniyle tek başına açılan rapor (standalone: İşlem geçmişi → audit.view)
   // finans yetkisi olmayana da açılır (v2.0.10): Yönetim paneli yalnız yöneticiye kaldığından uzman işlem geçmişini
   // Raporlar → Tüm raporlar'dan görür.
+  // anyOf (2.3.0 İz 1.7): listelenen yetkilerden biri yeter (Şüpheli Alacaklar: Şüpheli Alacak İşlemleri ya da finans raporları).
   const allowed = (user, report) =>
-    report.standalone ? canUser(user, report.permission) : canUser(user, "overview.view") && (!report.permission || canUser(user, report.permission));
+    report.anyOf ? report.anyOf.some(permission => canUser(user, permission)) : report.standalone ? canUser(user, report.permission) : canUser(user, "overview.view") && (!report.permission || canUser(user, report.permission));
   const enter = req => {
     const user = auth.requireUser(req);
     if (!REPORTS.some(report => allowed(user, report))) throw new HttpError(403, "Bu işlem için yetkiniz yok.", { code: "FORBIDDEN", permission: "overview.view" });
@@ -1890,8 +1927,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
     const query = {};
     // v2.0.23 (Bulgu 4): payMethod (Banka ve POS Hareketleri → Yol) listede yoktu; süzgeç 2.0.17'den beri yok sayılıyordu.
     // v2.1.0 Aşama 14: Banka raporlarının süzgeçleri (bankAccount, bankMove, bankGroup, feeAccount) — Bulgu 4 dersi: listede olmayan parametre düşer.
-    // 2.2.0 (İz 3.5): POS raporlarının süzgeçleri (posTerminal, posKind).
-    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount", "posTerminal", "posKind"]) {
+    // 2.2.0 (İz 3.5): POS raporlarının süzgeçleri (posTerminal, posKind). 2.3.0 (İz 1.7): Şüpheli Alacaklar (doubtfulStatus, doubtfulReason).
+    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount", "posTerminal", "posKind", "doubtfulStatus", "doubtfulReason"]) {
       const value = text(params.get(key));
       if (value) query[key] = value.slice(0, 200);
     }

@@ -170,8 +170,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       sums.get(row.accountId)[row.kind] = Number(row.amount) || 0;
     }
     const planMap = plans()?.summariesByAccount ? plans().summariesByAccount(ids) : new Map();
+    // 2.3.0 İz 1.6 (plan §3.11b/5): cari başına açık şüpheli alacak (TL) — listede "Şüpheli" rozeti, ANLIK DURUM alacak toplamında ayrı satır.
+    // Şüpheli hiç kullanılmamışsa tek sorgu, boş (lib/bank/doubtful.mjs doubtfulOpenByAccount).
+    const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount().byAccount : new Map();
     const search = searchOf(q);
-    const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0 };
+    const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0, doubtful: 0, doubtfulCount: 0 };
     const labels = new Set();
     const out = [];
     for (const row of rows) {
@@ -224,6 +227,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       totals.overdue = roundMoney(totals.overdue + overdue);
       totals.overdueCount += overdueCount;
       totals.planRemaining = roundMoney(totals.planRemaining + planRemaining);
+      const doubtfulOpen = roundMoney((doubtfulMap.get(row.id)?.openMinor || 0) / 100);
+      if (doubtfulOpen > 0) {
+        totals.doubtful = roundMoney(totals.doubtful + doubtfulOpen);
+        totals.doubtfulCount += 1;
+      }
       out.push({
         id: row.id,
         refNo: row.refNo || "",
@@ -260,6 +268,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         overdue: roundMoney(overdue),
         overdueCount,
         next,
+        // Açık şüpheli alacak (TL; 0 = yok). Kart bakiyesi şüpheliyi de kapsar (120 + 128 = kart).
+        doubtfulOpen,
         fieldsJson: row.fieldsJson,
       });
     }

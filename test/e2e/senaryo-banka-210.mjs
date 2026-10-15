@@ -2548,7 +2548,9 @@ try {
     ok(visible, "muhasebe menüde Raporlar'ı görür (Banka Raporları yetkisi)");
     await openAllReports(muhasebe);
     const groups = await muhasebe.$$eval(`${modal} .hof-rc-group > p`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(groups.length === 1 && groups[0].endsWith("Banka"), `muhasebenin Tüm Raporlar'ı: ${groups.join(", ")}`);
+    // 2.3.0 İz 1.7 (bilerek güncellendi): Cari grubunda yalnız Şüpheli Alacaklar (Şüpheli Alacak İşlemleri yetkisi; plan §3.11b/5) da görünür.
+    const cariReports = await muhasebe.$$eval(`${modal} [data-rc-list] [data-report]`, nodes => nodes.map(node => node.dataset.report).filter(id => !id.startsWith("banka") && id !== "alt-hesap-mizani" && id !== "tahsildeki-cekler" && id !== "pos-odeme-takvimi" && id !== "faturasi-beklenen-komisyonlar"));
+    ok(groups.length === 2 && groups[0].endsWith("Banka") && groups[1].endsWith("Cari") && cariReports.join(",") === "supheli-alacaklar", `muhasebenin Tüm Raporlar'ı: ${groups.join(", ")} · Cari: ${cariReports.join(", ")}`);
     await muhasebe.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
     const data = await waitPreview(muhasebe, view => view.rows.length > 0);
     ok(data.title === "Banka Bakiye Raporu" && data.rows.length > 0, "muhasebe Banka Bakiye Raporu'nu açar");

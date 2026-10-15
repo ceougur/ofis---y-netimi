@@ -142,8 +142,9 @@
         icon: ICONS.in,
         label: "Toplam Alacak",
         value: moneyHtml(r.total, { compact: true }),
-        sub: `Cari <b>${esc(shortMoney(r.accounts))}</b> · Çek <b>${esc(shortMoney(r.cheques))}</b>${r.overdue > 0.005 ? `<br><span class="hof-pulse-flag is-late">${ICONS.warn}${esc(shortMoney(r.overdue))} gecikmiş taksit</span>` : ""}`,
-        title: `Carilerin bize borcu (${money(r.accounts)}) + portföydeki alınan çek/senet (${money(r.cheques)}).`,
+        // 2.3.0 İz 1.6 (plan §3.11b/5): alacak toplamının içindeki açık şüpheli alacak ayrı satır (toplam değişmez; 120 + 128 = kart).
+        sub: `Cari <b>${esc(shortMoney(r.accounts))}</b> · Çek <b>${esc(shortMoney(r.cheques))}</b>${r.doubtful > 0.005 ? `<br><span class="hof-pulse-flag is-late" data-overview-doubtful title="Cari toplamının içinde; ${r.doubtfulCount} caride şüpheli alacağa alınmış, henüz tahsil edilmemiş tutar">${ICONS.warn}Şüpheli Alacak ${esc(shortMoney(r.doubtful))}</span>` : ""}${r.overdue > 0.005 ? `<br><span class="hof-pulse-flag is-late">${ICONS.warn}${esc(shortMoney(r.overdue))} gecikmiş taksit</span>` : ""}`,
+        title: `Carilerin bize borcu (${money(r.accounts)}) + portföydeki alınan çek/senet (${money(r.cheques)}).${r.doubtful > 0.005 ? ` Bunun ${money(r.doubtful)} kadarı şüpheli alacakta (${r.doubtfulCount} cari).` : ""}`,
       });
     }
     if (data.payable) {
@@ -529,6 +530,8 @@
         { label: "Tahsil Edilecek", html: moneyHtml(t.in.total.amount), help: `${t.in.total.count} kalem · bugün ${esc(money(t.in.today.amount))}`, tone: "is-in" },
         { label: "Ödenecek", html: moneyHtml(t.out.total.amount), help: `${t.out.total.count} kalem${t.out.overdue.count ? ` · ${t.out.overdue.count} gecikmiş` : ""}`, tone: "is-out" },
         { label: "Net (tahsil − ödeme)", html: moneyHtml(t.net), tone: t.net < 0 ? "is-bad" : "" },
+        // 2.3.0 İz 1.6 (plan §3.11b/5): şüpheli alacak vade kalemlerinin dışında, ayrı kutu (vadesi yoktur; Tahsil Edilecek'e girmez).
+        d.doubtful?.amount > 0.005 ? { label: "Şüpheli Alacak", html: moneyHtml(d.doubtful.amount), help: `${d.doubtful.accountCount} cari · vade takibinin dışında`, tone: "is-bad" } : null,
         t.noAmount ? { label: "Tutarsız Kalem", value: t.noAmount.toLocaleString("tr-TR"), help: "son tarih ya da tutarı yazılmamış ödeme günü" } : null,
       ])}
       <div class="hof-rep-table"><table class="hof-table hof-rep-vade"><thead><tr><th>Vade</th><th>Kimden / Kime</th><th>Kaynak</th><th>Açıklama</th><th class="num">Tahsil Edilecek</th><th class="num">Ödenecek</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${d.totals.count === 0 && !s.q && !s.direction ? "Bu aralıkta vadesi gelen açık kalem yok. Taksit kartı, çek/senet ya da tablodaki ödeme günleri eklendikçe burada listelenir." : "Bu süzgeçlere uyan açık kalem yok."}</td></tr>`}</tbody></table></div>

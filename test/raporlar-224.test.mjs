@@ -386,6 +386,9 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     // 2.2.0 (İz 3.5): POS raporlarının süzgeçleri (Banka grubu; her seçenekleriyle test/banka-220-pos-iz3.test.mjs ve senaryo-pos-220'de).
     posTerminal: [""],
     posKind: ["", "pos", "blocked", "fee"],
+    // 2.3.0 (İz 1.7): Şüpheli Alacaklar (her seçenek; sayılarla test/banka-230-supheli-ekran.test.mjs ve senaryo-supheli-230).
+    doubtfulStatus: ["open", "closed", "all"],
+    doubtfulReason: ["", "cheque", "note", "lawsuit", "enforcement", "other"],
   };
   const combos = report => {
     let list = [{ q: {}, range: null, label: "" }];
@@ -665,7 +668,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
   });
 
   // Her rapor kendi testinde: bütün süzgeç birleşimleri × ekran + PDF + Excel.
-  const REPORT_IDS = ["kasa-hareketleri", "kasa-gunluk", "kasa-kaynak", "kasa-aylik", "hesap-mizani", "yevmiye", "defter-mutabakati", "mutabakat-gunlugu", "banka-pos-hareketleri", "mizan", "cari-listesi", "cari-ekstre", "cari-hareketleri", "cari-tahsilat", "alacak-yaslandirma", "fatura-satis", "fatura-alis", "fatura-iade", "kdv-ozeti", "ba-bs", "urun-satis-karlilik", "cari-satis-alis", "gider-raporu", "stopaj-tevkifat", "acik-faturalar", "taksit-kartlari", "taksit-vadeleri", "geciken-taksitler", "taksit-performans", "taksit-tahsilatlari", "cek-portfoy", "cek-hareketleri", "cek-vade-dagilimi", "stok-durumu", "stok-hareketleri", "stok-ozet", "stok-kategori", "kayit-tahsilatlari", "notlar", "gorevler", "belgeler", "tablo-verisi", "islem-gecmisi"];
+  const REPORT_IDS = ["kasa-hareketleri", "kasa-gunluk", "kasa-kaynak", "kasa-aylik", "hesap-mizani", "yevmiye", "defter-mutabakati", "mutabakat-gunlugu", "banka-pos-hareketleri", "mizan", "cari-listesi", "cari-ekstre", "cari-hareketleri", "cari-tahsilat", "alacak-yaslandirma", "fatura-satis", "fatura-alis", "fatura-iade", "kdv-ozeti", "ba-bs", "urun-satis-karlilik", "cari-satis-alis", "gider-raporu", "stopaj-tevkifat", "acik-faturalar", "taksit-kartlari", "taksit-vadeleri", "geciken-taksitler", "taksit-performans", "taksit-tahsilatlari", "cek-portfoy", "cek-hareketleri", "cek-vade-dagilimi", "stok-durumu", "stok-hareketleri", "stok-ozet", "stok-kategori", "kayit-tahsilatlari", "notlar", "gorevler", "belgeler", "tablo-verisi", "islem-gecmisi", "supheli-alacaklar"];
   const stats = { reports: 0, combos: 0, requests: 0, footerColumns: 0 };
   test("katalog = testteki rapor listesi (yeni rapor eklenirse test de genişler)", () => {
     // v2.1.0 Aşama 14: Banka grubu (bank.reports) ayrı testte (test/banka-210-raporlar.test.mjs) her süzgeçle denenir.
@@ -746,7 +749,9 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     const open = await must("açık", get("acik-faturalar"));
     assert.deepEqual([summaryOf(open, "Açık Alacak"), summaryOf(open, "Açık Borç")], [280, 5100]);
     const aging = await must("yaşlandırma", get("alacak-yaslandirma"));
-    assert.equal(moneyOf(aging.footer.at(-1)), 4380, "780 müşteri bakiyesi + 3.600 portföydeki senet");
+    // 2.3.0 İz 1.6: son kolon "Şüpheli Alacak" (ayrı; Toplam'a girmez) → Toplam kolonu adıyla okunur.
+    assert.equal(moneyOf(aging.footer[col(aging, "Toplam")]), 4380, "780 müşteri bakiyesi + 3.600 portföydeki senet");
+    assert.equal(moneyOf(aging.footer[col(aging, "Şüpheli Alacak")]), null, "şüpheli yokken Şüpheli Alacak kolonu boş");
   });
 
   test("Cari Mizanı 'Geciken Taksiti Olan' süzgeci yalnız gecikeni listeler (2.0.23'te bütün cariler)", async () => {
