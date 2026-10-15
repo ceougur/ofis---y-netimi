@@ -167,6 +167,9 @@ describe("Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül 
     { route: "POST /vouchers", label: "kredi kullanımı", need: r => has(r, "bank.move", "bank.transfer"), run: (api, _, role) => api.post(`${BANK}/vouchers`, { type: "loan_draw", accountId: acc.garanti.id, loanAccountId: loan.id, amount: amt(1000, role), similarOk: true }) },
     { route: "POST /transfers", need: r => has(r, "bank.transfer"), run: (api, _, role) => api.post(`${BANK}/transfers`, { accountId: acc.ziraat.id, toAccountId: acc.garanti.id, amount: amt(200, role), date: TODAY, similarOk: true }) },
     { route: "GET /movements", need: r => has(r, "bank.view"), run: api => api.get(`${BANK}/movements`) },
+    // 2.3.0 İz 5.1: Hareketler PDF / Excel — listeyle aynı yetki (bank.view); kullanıcı yalnız ekranda gördüğü satırları indirir.
+    { route: "GET /movements.pdf", need: r => has(r, "bank.view"), run: api => api.raw("GET", `${BANK}/movements.pdf`) },
+    { route: "GET /movements.xlsx", need: r => has(r, "bank.view"), run: api => api.raw("GET", `${BANK}/movements.xlsx`) },
     { route: "GET /events/:ref", need: r => has(r, "bank.view"), prep: () => fee(), run: (api, id) => api.get(`${BANK}/events/${id}`) },
     { route: "POST /events/:ref/reverse", need: r => has(r, "bank.cancel"), prep: () => fee(), run: (api, id) => api.post(`${BANK}/events/${id}/reverse`, { reason: "matris" }) },
     { route: "POST /events/:ref/reverse", label: "transfer", need: r => has(r, "bank.cancel", "bank.transfer"), prep: async () => (await must("transfer", ctx.api.post(`${BANK}/transfers`, { accountId: acc.ziraat.id, toAccountId: acc.garanti.id, amount: "7", date: TODAY, similarOk: true }))).id, run: (api, id) => api.post(`${BANK}/events/${id}/reverse`, { reason: "matris" }) },

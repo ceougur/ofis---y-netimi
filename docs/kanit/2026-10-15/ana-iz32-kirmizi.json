@@ -1,0 +1,73 @@
+{
+  "ad": "ana-iz32-kirmizi",
+  "komut": "node --test test/banka-230-46-iade-iptal.test.mjs test/fatura-230-ayarlar-banka.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:08:45.675Z",
+  "sure_sn": 16,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 9,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "A — fatura İptal / Sil penceresinin POS İşlemi seçimi (Müşteriye İade Edildi / Kayıt Hatası) toplu yollarda ve liste bayrağı (plan §3.8 Fatura, §4.6) › bankaya geçmiş ve eşleşmiş POS'lu faturalar: toplu iptal Kayıt Hatası → yalnız o belge 409 pos-settled; Müşteriye İade Edildi → İptal İadesi; toplu silme Kayıt Hatası → 409",
+      "konum": "test/banka-230-46-iade-iptal.test.mjs:33:3",
+      "hata": "B Kayıt Hatası ile iptal edilemez: {\"id\":\"invoice-07187d05-25a5-4a29-8fc9-a7894a10f18f\",\"ok\":true,\"number\":\"FIS2026000000002\",\"displayNo\":\"FIS2026000000002\",\"accountName\":\"ABC Ltd.\"} · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "A — fatura İptal / Sil penceresinin POS İşlemi seçimi (Müşteriye İade Edildi / Kayıt Hatası) toplu yollarda ve liste bayrağı (plan §3.8 Fatura, §4.6) › liste ve kart: POS peşinli satış faturasında posCash true (pencere POS İşlemi seçimini yalnız bunlarda gösterir); nakit faturada ve alışta false",
+      "konum": "test/banka-230-46-iade-iptal.test.mjs:78:3",
+      "hata": "liste: POS'lu undefined · + actual - expected · + undefined"
+    },
+    {
+      "ad": "B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer › giriş + kart + cardRefund → satır kart hesabına (fin_ref = kart), POS kaydı yok, kart borcu 600 → 360, 309.NN −360; tek kartta kart kendiliğinden; posId verilirse 400",
+      "konum": "test/banka-230-46-iade-iptal.test.mjs:110:3",
+      "hata": "ödeme iadesi karta: 400 {\"ok\":false,\"error\":\"POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; POS seçin (banka hesabı alanını boş bırakın).\",\"code\":\"bank-account-invalid\",\"field\":\"bankAccountId\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer › cardRefund olmadan giriş + kart POS'tur (kart hesabı verilirse 400 bank-account-invalid; verilmezse POS satışı); düzeltmede kart bağı korunur (tutar 240 → 300)",
+      "konum": "test/banka-230-46-iade-iptal.test.mjs:138:3",
+      "hata": "ödeme iadesi karta: 400 {\"ok\":false,\"error\":\"POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; POS seçin (banka hesabı alanını boş bırakın).\",\"code\":\"bank-account-invalid\",\"field\":\"bankAccountId\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "A — Fatura Ayarları → Banka Hesapları (E2.16 / \\#31): ilk hesap açılana kadar eski liste; sonra yalnız IBAN Faturada Gösterilsin işaretli hesaplar › A1 hesap yokken: bankAccounts.active false; eski liste düzenlenir ve belgeye basılır",
+      "konum": "test/fatura-230-ayarlar-banka.test.mjs:34:3",
+      "hata": "hesap yok: modül etkin değil · + actual - expected · + undefined"
+    },
+    {
+      "ad": "A — Fatura Ayarları → Banka Hesapları (E2.16 / \\#31): ilk hesap açılana kadar eski liste; sonra yalnız IBAN Faturada Gösterilsin işaretli hesaplar › A2 ilk hesap açılınca: belgede yalnız işaretli hesap (eski listedeki B basılmaz); B öneriye döner; PUT eski listeyi değiştirmez; işaret kalkınca / hesap pasifken listeden düşer",
+      "konum": "test/fatura-230-ayarlar-banka.test.mjs:49:3",
+      "hata": "Cannot read properties of undefined (reading 'active')"
+    },
+    {
+      "ad": "A — Fatura Ayarları → Banka Hesapları (E2.16 / \\#31): ilk hesap açılana kadar eski liste; sonra yalnız IBAN Faturada Gösterilsin işaretli hesaplar › A3 göç v24: hiçbir hesap işaretli değilse eski listedeki IBAN'ı taşıyan hesaplar bir kez işaretlenir; işaretli hesap varsa dokunulmaz; silinmiş hesap işaretlenmez",
+      "konum": "test/fatura-230-ayarlar-banka.test.mjs:79:3",
+      "hata": "v24 göçü tanımlı"
+    },
+    {
+      "ad": "B — toplu kesim (plan A7; eşleme 92, 175, 289): 200 belge, her belge kendi işleminde; kapıda düşen yalnız o belge; kesim sürerken tekil tahsilat beklemez › B2 toplu kesim (120 belge) sürerken başka kullanıcının tekil tahsilatı toplu yanıttan ÖNCE döner; her iki iş de yazılır",
+      "konum": "test/fatura-230-ayarlar-banka.test.mjs:138:3",
+      "hata": "tekil tahsilat toplu kesimin sonunu beklemedi · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/docs/kanit/2026-10-15/ana-iz32-kirmizi.log",
+  "klasor": "/tmp/claude-0/ana-iz32-eski-b24e0c2",
+  "ham_cikti_sha256": "dd9a2b5f68c15592b8956068aa6dbbe7c4676aad6379d36607e96e6bfc7de700",
+  "ham_cikti_bayt": 19441
+}

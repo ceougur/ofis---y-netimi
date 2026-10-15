@@ -1,0 +1,561 @@
+TAP version 13
+# (node:11388) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası
+    # Subtest: 5.4 katalog grup sırası: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (tanım sırasından bağımsız)
+    not ok 1 - 5.4 katalog grup sırası: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (tanım sırasından bağımsız)
+      ---
+      duration_ms: 10.970082
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:114:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        grup sırası: Kasa · Ana Defter · Banka · Cari · Fatura · Taksit · Çek / Senet · Stok · Kayıtlar · Ofis
+        + actual - expected
+        
+          [
+        +   'Kasa',
+        +   'Ana Defter',
+        +   'Banka',
+            'Cari',
+        -   'Kasa',
+        -   'Stok',
+            'Fatura',
+        +   'Taksit',
+            'Çek / Senet',
+        +   'Stok',
+        -   'Taksit',
+        -   'Banka',
+        -   'Ana Defter',
+            'Kayıtlar',
+            'Ofis'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Cari'
+        1: 'Kasa'
+        2: 'Stok'
+        3: 'Fatura'
+        4: 'Çek / Senet'
+        5: 'Taksit'
+        6: 'Banka'
+        7: 'Ana Defter'
+        8: 'Kayıtlar'
+        9: 'Ofis'
+      actual:
+        0: 'Kasa'
+        1: 'Ana Defter'
+        2: 'Banka'
+        3: 'Cari'
+        4: 'Fatura'
+        5: 'Taksit'
+        6: 'Çek / Senet'
+        7: 'Stok'
+        8: 'Kayıtlar'
+        9: 'Ofis'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:117:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 5.3 POS Satış Raporu: her POS × tür × dönem — satış, taksitli satış, iade ayrı satır (eksi); komisyon matrah, BSMV ayrı, net; TOPLAM; PDF/Excel
+    not ok 2 - 5.3 POS Satış Raporu: her POS × tür × dönem — satış, taksitli satış, iade ayrı satır (eksi); komisyon matrah, BSMV ayrı, net; TOPLAM; PDF/Excel
+      ---
+      duration_ms: 4.785827
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        pos-satis tümü tüm türler Bu Yıl: 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:83:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:146:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5.3 POS Komisyon Raporu: Aylık / Yıllık / Dönem Toplamı × POS × tür — satış ve iade ayrı satır, kip; TOPLAM = satırlar; PDF/Excel
+    not ok 3 - 5.3 POS Komisyon Raporu: Aylık / Yıllık / Dönem Toplamı × POS × tür — satış ve iade ayrı satır, kip; TOPLAM = satırlar; PDF/Excel
+      ---
+      duration_ms: 3.740844
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        pos-komisyon month tümü: 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:83:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:177:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5.1 Banka → Hareketler PDF / Excel: ekrandaki süzgeçle aynı satırlar (hesap, tür, yön, tarih, arama), alt TOPLAM, Rapor Merkezi başlığı; bank.view yeter, personel 403
+    not ok 4 - 5.1 Banka → Hareketler PDF / Excel: ekrandaki süzgeçle aynı satırlar (hesap, tür, yön, tarih, arama), alt TOPLAM, Rapor Merkezi başlığı; bank.view yeter, personel 403
+      ---
+      duration_ms: 9.662004
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:209:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tümü Excel 404
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:223:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5.2 Tüm Zamanlar: her raporun ekran başlığı ve PDF'i '1976' / '19xx' içermez, dönem metni 'Tüm Zamanlar'; POS Ödeme Takvimi boşken ipucu + Banka → Hareketler bağı
+    not ok 5 - 5.2 Tüm Zamanlar: her raporun ekran başlığı ve PDF'i '1976' / '19xx' içermez, dönem metni 'Tüm Zamanlar'; POS Ödeme Takvimi boşken ipucu + Banka → Hareketler bağı
+      ---
+      duration_ms: 186.395539
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:274:3'
+      failureType: 'testCodeFailure'
+      error: 'banka-bakiye PDF: Tüm Zamanlar'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:294:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - 2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası
+  ---
+  duration_ms: 937.732255
+  type: 'suite'
+  location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/rapor-230-iz5.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:11389) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+    # Subtest: katalog: Banka grubunda on yeni rapor, başlıkları ve süzgeçleri; anyAccount seçenekleri (bakiye dönmez)
+    not ok 1 - katalog: Banka grubunda on yeni rapor, başlıkları ve süzgeçleri; anyAccount seçenekleri (bakiye dönmez)
+      ---
+      duration_ms: 9.680235
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:248:3'
+      failureType: 'testCodeFailure'
+      error: 'Banka grubunda banka-gunluk yok (banka-bakiye, banka-hareket, banka-masraf, alt-hesap-mizani, tahsildeki-cekler, pos-odeme-takvimi, faturasi-beklenen-komisyonlar)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:251:42)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Günlük Banka Raporu: her hesap × her dönem — gün gün dış giriş/çıkış, transfer ayrı, Net = bakiye değişimi, Gün Sonu Bakiye yürür; devir dönem öncesi
+    not ok 2 - Günlük Banka Raporu: her hesap × her dönem — gün gün dış giriş/çıkış, transfer ayrı, Net = bakiye değişimi, Gün Sonu Bakiye yürür; devir dönem öncesi
+      ---
+      duration_ms: 12.625529
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:262:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        banka-gunluk Gerçek Banka varsayılan (Bu Yıl): 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:267:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Aylık Banka Raporu: her hesap × her dönem — Ay Başı/Ay Sonu Bakiye, hareketsiz ay devirle; boş dönemde satır yok
+    not ok 3 - Aylık Banka Raporu: her hesap × her dönem — Ay Başı/Ay Sonu Bakiye, hareketsiz ay devirle; boş dönemde satır yok
+      ---
+      duration_ms: 2.905538
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:298:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        banka-aylik Gerçek Banka varsayılan (Bu Yıl): 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:316:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Banka Bazında Bakiye ve Para Birimi Bazında Bakiye: her dönem — banka (hesapları birlikte) ve TL satırı; Gerçek Banka / Borç / Net; Hesabı Atanmamış özette
+    not ok 4 - Banka Bazında Bakiye ve Para Birimi Bazında Bakiye: her dönem — banka (hesapları birlikte) ve TL satırı; Gerçek Banka / Borç / Net; Hesabı Atanmamış özette
+      ---
+      duration_ms: 4.249019
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:350:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        banka-bazinda varsayılan (Bu Yıl): 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:353:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Bankalar Arası Transfer Raporu: her hesap × her dönem — ücretli transfer, ters kaydedilen asıl + eksi Ters Kayıt; TOPLAM net; kanal ve durum
+    not ok 5 - Bankalar Arası Transfer Raporu: her hesap × her dönem — ücretli transfer, ters kaydedilen asıl + eksi Ters Kayıt; TOPLAM net; kanal ve durum
+      ---
+      duration_ms: 2.437054
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:392:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bankalar-arasi Gerçek Banka varsayılan (Bu Yıl): 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:403:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Kasa ve Banka Transfer Raporu: her hesap × her dönem — iki yön ayrı kolon, Net (Bankaya); hesabı atanmamış süzgeci boş
+    not ok 6 - Kasa ve Banka Transfer Raporu: her hesap × her dönem — iki yön ayrı kolon, Net (Bankaya); hesabı atanmamış süzgeci boş
+      ---
+      duration_ms: 2.399304
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:426:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kasa-banka Gerçek Banka varsayılan (Bu Yıl): 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:435:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Cari ve Banka Hareketleri: her hesap × cari × dönem — yalnız carili satırlar (cari, fatura peşini, taksit, eski havale); masraf, transfer, kart borcu girmez
+    not ok 7 - Cari ve Banka Hareketleri: her hesap × cari × dönem — yalnız carili satırlar (cari, fatura peşini, taksit, eski havale); masraf, transfer, kart borcu girmez
+      ---
+      duration_ms: 2.560263
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:456:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari-banka tümü tüm cariler varsayılan (Bu Yıl): 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:462:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Fatura ve Banka Hareketleri: bağ türü Peşin / Kapatılacak Fatura / Otomatik (En Eski); fatura no; taksit ve masraf girmez; özet bağ türüne göre
+    not ok 8 - Fatura ve Banka Hareketleri: bağ türü Peşin / Kapatılacak Fatura / Otomatik (En Eski); fatura no; taksit ve masraf girmez; özet bağ türüne göre
+      ---
+      duration_ms: 2.260564
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:488:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fatura-banka tümü varsayılan (Bu Yıl): 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:494:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksit ve Banka Hareketleri: her hesap × her dönem — yalnız taksit kartı tahsilatı; kart adı ve cari
+    not ok 9 - Taksit ve Banka Hareketleri: her hesap × her dönem — yalnız taksit kartı tahsilatı; kart adı ve cari
+      ---
+      duration_ms: 5.34397
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:514:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit-banka tümü varsayılan (Bu Yıl): 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:519:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Banka Nakit Akış Raporu: başlangıç Gerçek Banka (Hesabı Atanmamış girmez); planlı masraf/gelir, kart borcu son ödeme günü, tahsildeki çek; Planlanan Transfer ayrı kolon (bakiye değişmez); gecikmiş planlı girmez, özette
+    not ok 10 - Banka Nakit Akış Raporu: başlangıç Gerçek Banka (Hesabı Atanmamış girmez); planlı masraf/gelir, kart borcu son ödeme günü, tahsildeki çek; Planlanan Transfer ayrı kolon (bakiye değişmez); gecikmiş planlı girmez, özette
+      ---
+      duration_ms: 3.215632
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:535:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        nakit-akis Bütün beklenenler: 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        screen (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:242:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:545:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Banka ve POS Hareketleri: Yol Kredi Kartı (309) ve Kredi (300) + Hesap süzgeci — her seçenek satırları değiştirir; eski üç seçim aynen; tanınmayan hesap 404
+    not ok 11 - Banka ve POS Hareketleri: Yol Kredi Kartı (309) ve Kredi (300) + Hesap süzgeci — her seçenek satırları değiştirir; eski üç seçim aynen; tanınmayan hesap 404
+      ---
+      duration_ms: 9.938182
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:582:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart satırları: 01.01.2026 |  | Devir | Dönem başı banka ve pos |  |  | 0,00 TL | 
+        20.09.2026 | Havale / EFT | Cari | ABC Ltd. | 5.000,00 TL |  | 5.000,00 TL | Ofis yöneticisi
+        01.10.2026 | Havale / EFT | Banka Fişi | Açılış Bakiyesi · Ziraat Bankası · Ana TL Hesabı (Açılış ve Devir Düzeltmesi: +100.000,00 TL) |  |  | 105.000,00 TL | Ofis yöneticisi
+        01.10.2026 | Havale / EFT | Banka Fişi | Açılış Bakiyesi · Garanti BBVA · Ana TL Hesabı (Açılış ve Devir Düzeltmesi: +50.000,00 TL) |  |  | 155.000,00 TL | Ofis yöneticisi
+        02.10.2026 | Havale / EFT | Cari | ABC Ltd. | 20.000,00 TL |  | 175.000,00 TL | Ofis yöneticisi
+        02.10.2026 | Havale / EFT | Cari | XYZ Tedarik |  | 3.000,00 TL | 172.000,00 TL | Ofis yöneticisi
+        03.10.2026 | Havale / EFT | Fatura | Satış FIS2026000000001 · tahsilat · ABC Ltd. | 5.000,00 TL |  | 177.000,00 TL | Ofis yöneticisi
+        03.10.2026 | Havale / EFT | Taksit | ABC Ltd. | 2.000,00 TL |  | 179.000,00 TL | Ofis yöneticisi
+        05.10.2026 | Havale / EFT | Kasa ↔ Banka | Bankadan Kasaya Aktarım (Transfer Çıkış: 10.000,00 TL) |  |  | 169.000,00 TL | Ofis yöneticisi
+        05.10.2026 | Havale / EFT | Kasa ↔ Banka | Kasadan Bankaya Yatırma (Transfer Giriş: 2.000,00 TL) |  |  | 171.000,00 TL | Ofis yöneticisi
+        06.10.2026 | Havale / EFT | Banka Fişi | Bankalar Arası Transfer · BNK-2026-000012 (Transfer Giriş: 20.000,00 TL) |  |  | 191.000,00 TL | Ofis yöneticisi
+        06.10.2026 | Havale / EFT | Banka Fişi | Bankalar Arası Transfer · BNK-2026-000012 (Transfer Çıkış: 20.000,00 TL) |  | 5,25 TL | 170.994,75 TL | Ofis yöneticisi
+        06.10.2026 | Havale / EFT | Banka Fişi | Bankalar Arası Transfer · BNK-2026-000013 (Transfer Giriş: 1.000,00 TL) |  |  | 171.994,75 TL | Ofis yöneticisi
+        06.10.2026 | Havale / EFT | Banka Fişi | Bankalar Arası Transfer · BNK-2026-000013 (Transfer Çıkış: 1.000,00 TL) |  |  | 170.994,75 TL | Ofis yöneticisi
+        06.10.2026 | Havale / EFT | Banka Fişi | Ters Kayıt · BNK-2026-000013 (Transfer Çıkış: 1.000,00 TL) |  |  | 169.994,75 TL | Ofis yöneticisi
+        06.10.2026 | Havale / EFT | Banka Fişi | Ters Kayıt · BNK-2026-000013 (Transfer Giriş: 1.000,00 TL) |  |  | 170.994,75 TL | Ofis yöneticisi
+        07.10.2026 | Havale / EFT | Banka Fişi | Banka Masrafı · BNK-2026-000015 |  | 10,50 TL | 170.984,25 TL | Ofis yöneticisi
+        07.10.2026 | Havale / EFT | Banka Fişi | Kart Borcu Ödemesi · BNK-2026-000016 (Transfer Çıkış: 2.000,00 TL) |  |  | 168.984,25 TL | Ofis yöneticisi
+        08.10.2026 | Havale / EFT | Cari | ABC Ltd. | 1.500,00 TL |  | 170.484,25 TL | Ofis yöneticisi
+        
+        18 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 18
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:587:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Nakit Akış, Vade Takip ve Zil: planlı banka işlemleri ve kart borcu son ödeme günü kalemleri; planlı transfer genel Nakit Akış'a girmez (toplam 0), Vade Takip'te tutarsız
+    not ok 12 - Nakit Akış, Vade Takip ve Zil: planlı banka işlemleri ve kart borcu son ödeme günü kalemleri; planlı transfer genel Nakit Akış'a girmez (toplam 0), Vade Takip'te tutarsız
+      ---
+      duration_ms: 16.007547
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:636:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nakit Akış planlı banka kalemleri: []
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     '2026-10-15',
+        -     'out',
+        -     20000
+        -   ],
+        -   [
+        -     '2026-10-20',
+        -     'out',
+        -     300000
+        -   ],
+        -   [
+        -     '2026-10-25',
+        -     'in',
+        -     100000
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '2026-10-15'
+          1: 'out'
+          2: 20000
+        1:
+          0: '2026-10-20'
+          1: 'out'
+          2: 300000
+        2:
+          0: '2026-10-25'
+          1: 'in'
+          2: 100000
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:640:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: personel 403 (ekran, PDF, Excel; dosya sızmaz); muhasebe yeni raporları görür; Finans Raporları rolü görmez
+    not ok 13 - yetki: personel 403 (ekran, PDF, Excel; dosya sızmaz); muhasebe yeni raporları görür; Finans Raporları rolü görmez
+      ---
+      duration_ms: 238.108091
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:673:3'
+      failureType: 'testCodeFailure'
+      error: 'muhasebe banka-gunluk listede'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:685:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket: 002 boş — yeni raporlar boş (500 yok), Banka Nakit Akış 'Banka Hesabı Tanımlanmadı'; ?hofCompany= ile 001'in hesabı 404; ileri tarihli hareket 400
+    not ok 14 - iki şirket: 002 boş — yeni raporlar boş (500 yok), Banka Nakit Akış 'Banka Hesabı Tanımlanmadı'; ?hofCompany= ile 001'in hesabı 404; ileri tarihli hareket 400
+      ---
+      duration_ms: 123.96196
+      type: 'test'
+      location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:697:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002 banka-gunluk: 404 {"ok":false,"error":"Rapor bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:703:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..14
+not ok 2 - 2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+  ---
+  duration_ms: 1341.662803
+  type: 'suite'
+  location: '/tmp/claude-0/ana-iz33-eski-b24e0c2/test/raporlar-230-banka.test.mjs:69:1'
+  failureType: 'subtestsFailed'
+  error: '14 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 19
+# suites 2
+# pass 0
+# fail 19
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1775.611377

@@ -29,6 +29,7 @@ import { HttpError } from "./http.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
 import { collectionProblems } from "./bank/collections.mjs";
+import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentGl, documentWanted } from "./cheque-gl.mjs";
 import { compareVersions } from "./semver.mjs";
 import { createScopedGate, familyOf } from "./integrity-scope.mjs";
@@ -199,6 +200,13 @@ const LOCK_SQL = {
   // Kartta tür değişikliği kilitli dönemde zaten 409 period-locked (routes/cheques.mjs coreChanged); bu girdi store dışı / eski sürüm / elle
   // değişikliği yakalar.
   cheques_instrument_lock: { requires: ["cheques"], since: "2.2.0", sql: "SELECT id, instrument FROM cheques WHERE instrument <> 'cheque' AND issue_date <= ?1 ORDER BY id" },
+  // 2.3.0 İz 1 (plan §3.11b; lib/bank/doubtful.mjs): şüpheli alacak kaydı (cari, tarih, tutar, neden) ve iptali; kapanış (çıkarma) ayrı girdi
+  // (kilitli ayda alınan kayıt açık ayda çıkarılır: durum open → released ize girmez, closed_date kendi girdisiyle); karşılık (kayıt, tarih,
+  // tutar, iptali). Girdiler sürüme bağlı (since): 2.2.0'ın kaydettiği izle karşılaştırma lockDigestOf(…, { version: "2.2.0" }) ile aynı kalır;
+  // şüpheli kaydı olmayan veride satır üretmezler (iz 2.2.0 ile birebir).
+  doubtful_lock: { requires: ["doubtful_receivables"], since: "2.3.0", sql: "SELECT id, account_id, date, amount_minor, reason, cheque_id, CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END AS cancelled, event_id FROM doubtful_receivables WHERE date <= ?1 ORDER BY id" },
+  doubtful_closed_lock: { requires: ["doubtful_receivables"], since: "2.3.0", sql: "SELECT id, status, closed_date, close_event_id FROM doubtful_receivables WHERE closed_date <> '' AND closed_date <= ?1 ORDER BY id" },
+  doubtful_provisions_lock: { requires: ["doubtful_provisions"], since: "2.3.0", sql: "SELECT id, doubtful_id, date, amount_minor, CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END AS cancelled, event_id FROM doubtful_provisions WHERE date <= ?1 ORDER BY id" },
 };
 
 /**
@@ -370,7 +378,25 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         }
         checks.push({ code: "party:plans", name: "Carisiz taksit kartları (kart bazında)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
       }
+      if (doubtfulUsed(store)) {
+      // Eleştirmen E2 (15.10.2026): kayıt tarihinden ÖNCE tarihli (geriye tarihli) tahsilat şüpheliden düşmez (K3) → carinin normal alacağı (120 =
+        // kart − açık şüpheli) eksiye düşebilir; bu kural dışıdır ve burada KIRMIZI görünür (düzeltme: kaydı Şüpheliden Çıkar ya da tutarını düzelt).
+        const negatives = [];
+        for (const row of store.all("SELECT DISTINCT d.account_id AS party, COALESCE(a.name, '') AS name FROM doubtful_receivables d LEFT JOIN accounts a ON a.id = d.account_id WHERE d.status = 'open' AND a.deleted_at IS NULL")) {
+          const open = doubtfulSummary(store, row.party).openMinor;
+          const normal = (parties.get(row.party) || 0) - open;
+          if (open > 0 && normal < 0) negatives.push(`${row.name || row.party}: 120 = ${(normal / 100).toFixed(2)} (açık şüpheli ${(open / 100).toFixed(2)}; geriye tarihli tahsilat/alacak kaydın tarihinden önce)`);
+        }
+        checks.push({ code: "doubtful:balance", name: "Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)", ok: negatives.length === 0, count: negatives.length, sample: negatives.slice(0, 5) });
+      }
       lap("parties");
+    }
+    // Şüpheli Ticari Alacaklar (2.3.0 İz 1; plan §3.11b/4): kayıt ↔ başlık ↔ karşılık ↔ Değersiz Alacak satırı tutarlılığı (lib/bank/doubtful.mjs);
+    // 128/129 toplamı gl:128 / gl:129 (reconciliation) ile. Yalnız şüpheli alacak kullanılmış veride görünür (denetim sayısı 2.2.0 ile aynı kalır).
+    if (doubtfulUsed(store)) {
+      const problems = doubtfulProblems(store);
+      checks.push({ code: "doubtful:records", name: "Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)", ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5).map(item => item.sample) });
+      lap("doubtful");
     }
     // Taksit alt defteri: Taksitler ekranının her kart için gösterdiği toplam ve tahsilat = kartın satırları.
     if (plans()?.list && has("plans")) {

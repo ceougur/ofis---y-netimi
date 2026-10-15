@@ -1,0 +1,43 @@
+{
+  "ad": "kilavuz-surum-kirmizi",
+  "komut": "node --test test/kilavuz-surum.test.mjs",
+  "commit": "c31d25034ab85cd52be5949b8c23d1309b773e46",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T06:11:01.353Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Kullanım kılavuzu sürümü › kapakta “Sürüm <program sürümü>” yazar",
+      "konum": "test/kilavuz-surum.test.mjs:17:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Kullanım kılavuzu sürümü › dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar",
+      "konum": "test/kilavuz-surum.test.mjs:22:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/kilavuz-surum-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "55d45b573ce6777d2c2ce919effc324b1ed28708db727c5fb2d1af9c672e6d92",
+  "ham_cikti_bayt": 2967
+}

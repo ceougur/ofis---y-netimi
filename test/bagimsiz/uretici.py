@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Rastgele senaryo üreteci — dil `destekofis-senaryo/3` (test/bagimsiz/SENARYO-DILI.md); `--surum 2` sürüm 2 üretimini AYNEN verir.
+"""Rastgele senaryo üreteci — dil `destekofis-senaryo/4` (test/bagimsiz/SENARYO-DILI.md); `--surum 3|2` eski üretimleri AYNEN verir.
 
 Kullanım:
-  python3 -I test/bagimsiz/uretici.py --tohum 7 [--islem 500] [--kontrol 25] [--surum 3|2] [--cikti <dosya>]
+  python3 -I test/bagimsiz/uretici.py --tohum 7 [--islem 500] [--kontrol 25] [--surum 4|3|2] [--cikti <dosya>]
+
+Sürüm 4 (15.10.2026): Şüpheli Ticari Alacaklar (al / karşılık / değersiz / çıkar / sil, karşılıksız evrak kısayolu, istek kimliği
+yinelemesi, kasıtlı retler: 120'yi aşan tutar, tedarikçi, personel 403, karşılık/değersiz aşımı, çıkarılmışa işlem, kalanı 0 kaydı
+çıkarma, kayıt öncesi tarih, portföydeki evrakla kısayol, ileri tarih, ikinci silme, personel silme) ve K8 taksit (kapalı karta tahsilat
+409 plan-paid, aşan 409 plan-overpay, personel fazlaAvans 403, yönetici fazlaAvans yazılır). Şüpheli yalnız bağsız müşteri carilerinde;
+o carilerde satış peşini / alış / alıştan iade kurulmaz (BELİRSİZ-38), aynı gün ters sıralı birleşimler kurulmaz (BELİRSİZ-35),
+taksitNo yalnız kartın ilk tahsilatında (BELİRSİZ-33). Ad "rastgele-s4-…".
 
 Sürüm 3 (12.10.2026): evrak (çek / senet) işlemleri eklendi — alış, veriliş, Bankaya Tahsile Ver, Bankadan Geri Al, tahsil (nakit /
 havale; tahsildeyse kaydın hesabına), ödeme, karşılıksız, ciro, silme ve kasıtlı evrak retleri (tahsildeki evrakı ciro/silme 409
@@ -43,8 +50,13 @@ import os
 import random
 import sys
 
+DIL4 = "destekofis-senaryo/4"
 DIL = "destekofis-senaryo/3"
 DIL2 = "destekofis-senaryo/2"
+# Sürüm 4 (15.10.2026): Şüpheli Ticari Alacaklar (SENARYO-DILI §4.39–4.42a) ve K8 taksit (§4.17). Üreteç, carinin 120 bakiyesini ve
+# şüpheli kayıtlarının kalanını kendi küçük izleyicisiyle (sup_durum: dil §4.42a sırası) izler — yalnız "senaryo kurmaz" sınırlarına
+# (BELİRSİZ-33/35/37/38) uymak ve kasıtlı retlerin tek ihlal taşıması için; beklenen değer üretmez.
+NEDENLER = ["karsiliksiz_cek", "protestolu_senet", "dava", "icra", "diger"]
 PAY = 50000  # 500 TL güvenlik payı (kuruş): başarılı çıkış sonrası en az bu kadar; kasıtlı ihlalde en az bu kadar eksi
 # Kâhinlerle ilgili eski iki uyum kuralı (sürüm 1) KALKTI (10.10.2026, hakem bulguları düzeltildi):
 #  1. model_b artık `kasa_hareket`in `ad`ını tanımlıyor → Kasa elle hareketi de sil hedefi olur.
@@ -229,6 +241,14 @@ class Uretec:
         self.evraklar = {}      # sürüm 3: ad → {yon, tur, cari, T, tarih, vade, durum, tahsil_hesap, son_tarih, gecmis}
         self.evrakli = []       # evrak kullanılan (bağsız) cariler
         self.depo = {}          # hesap → tahsile verme tarihleri (Açılışı Düzelt bu tarihlerden sonraya alınmaz)
+        # sürüm 4: şüpheli alacak izleyicisi (dil §4.42a sırasıyla türetilir; beklenen değer değil, geçerlilik sınırı)
+        self.bakiye_c = {}      # cari → işaretli bakiye (120 + 128; borçlu +)
+        self.supheliler = {}    # ad → {cari, T, tarih, seq, aktif, evrak}
+        self.sup_olaylar = []   # {tur: karsilik|degersiz|cikar, kayit, tarih, seq, tutar, aktif, ad}
+        self.alacaklar = {}     # cari → [(tarih, seq, tutar)]  (müşteri carisine A 120 yazan etkin satırlar; sil ile düşer)
+        self.supheli_gun = {}   # cari → {"alacak": gün, "degersiz_cikar": gün, "supheli": gün}  (BELİRSİZ-35)
+        self.supheli_carileri = set()
+        self.yaris_carileri = set()   # eşzamanlı ödeme yarışında bakiyesi belirsiz kalan cariler
         # tohumun işlem ağırlıkları (her tohumda biraz farklı karışım)
         taban = {
             "satis": 16, "alis": 9, "iade": 3, "tahsilat": 13, "odeme": 9, "taksit_tahsilat": 7, "kasa_hareket": 4,
@@ -239,6 +259,8 @@ class Uretec:
         }
         if surum >= 3:
             taban["evrak"] = 16        # sürüm 3: çek / senet işlemleri (§4.30–4.38)
+        if surum >= 4:
+            taban["supheli"] = 10      # sürüm 4: şüpheli alacak işlemleri (§4.39–4.42); K8 op_taksit içinde
         self.agirlik = {k: v * R.uniform(0.4, 1.8) for k, v in taban.items()}
         if self.yogun:
             self.agirlik["iade"] *= 6
@@ -331,6 +353,82 @@ class Uretec:
     def geri_al_etkiler(self, etkiler):
         for a, t, x in etkiler:
             self.para[a].remove((t, x))
+
+    # ---------- sürüm 4: cari bakiyesi ve şüpheli izleyicisi ----------
+    def cb(self, cari, delta):
+        self.bakiye_c[cari] = self.bakiye_c.get(cari, 0) + delta
+
+    def alacak_uygun(self, cari):
+        """BELİRSİZ-35: aynı gün değersiz/çıkarmadan sonra alacak satırı yazılmaz."""
+        return self.supheli_gun.get(cari, {}).get("degersiz_cikar") != self.bugun
+
+    def alacak_kaydet(self, cari, tutar, seq=None):
+        if self.surum < 4:
+            return
+        self.alacaklar.setdefault(cari, []).append((self.bugun, self.sayac if seq is None else seq, tutar))
+        self.supheli_gun.setdefault(cari, {})["alacak"] = self.bugun
+
+    def alacak_sil(self, cari, ref):
+        if ref in self.alacaklar.get(cari, []):
+            self.alacaklar[cari].remove(ref)
+
+    def supheli_uygun(self, cari):
+        """BELİRSİZ-35: aynı gün alacak satırından sonra şüpheli işlemi yazılmaz (ret de olsa kâhin senaryoyu geçersiz sayar)."""
+        return self.supheli_gun.get(cari, {}).get("alacak") != self.bugun
+
+    def sup_durum(self, cari):
+        """Dil §4.42a türetmesi: ad → {kalan, karsilik, tahsil, degersiz, durum}. Yalnız geçerlilik için."""
+        olaylar = []
+        durum = {}
+        for ad, r in self.supheliler.items():
+            if r["cari"] != cari or not r["aktif"]:
+                continue
+            olaylar.append((r["tarih"], 0, r["seq"], "al", ad))
+            durum[ad] = {"kalan": r["T"], "karsilik": 0, "tahsil": 0, "degersiz": 0, "durum": "acik"}
+        for o in self.sup_olaylar:
+            r = self.supheliler[o["kayit"]]
+            if not o["aktif"] or not r["aktif"] or r["cari"] != cari:
+                continue
+            olaylar.append((o["tarih"], {"karsilik": 1, "degersiz": 2, "cikar": 4}[o["tur"]], o["seq"], o["tur"], o))
+        for tarih, seq, tutar in self.alacaklar.get(cari, []):
+            olaylar.append((tarih, 3, seq, "alacak", tutar))
+        olaylar.sort(key=lambda o: (o[0], o[1], o[2]))
+        acik = []
+        for tarih, _, seq, tur, veri in olaylar:
+            if tur == "al":
+                acik.append((tarih, seq, veri))
+                acik.sort()
+            elif tur == "karsilik":
+                durum[veri["kayit"]]["karsilik"] += veri["tutar"]
+            elif tur == "degersiz":
+                s = durum[veri["kayit"]]
+                s["karsilik"] -= min(s["karsilik"], veri["tutar"])
+                s["degersiz"] += veri["tutar"]
+                s["kalan"] -= veri["tutar"]
+            elif tur == "alacak":
+                kalan_t = veri
+                for _, _, ad in acik:
+                    s = durum[ad]
+                    if s["durum"] != "acik" or kalan_t <= 0 or s["kalan"] <= 0:
+                        continue
+                    x = min(kalan_t, s["kalan"])
+                    s["tahsil"] += x
+                    s["kalan"] -= x
+                    kalan_t -= x
+                    s["karsilik"] = min(s["karsilik"], s["kalan"])
+            elif tur == "cikar":
+                s = durum[veri["kayit"]]
+                s["kalan"] = 0
+                s["karsilik"] = 0
+                s["durum"] = "cikarildi"
+        return durum
+
+    def yuz_yirmi(self, cari):
+        """Carinin 120 bakiyesi = cari bakiyesi − açık şüpheli kayıtlarının kalanı (dil §4.39)."""
+        return self.bakiye_c.get(cari, 0) - sum(s["kalan"] for s in self.sup_durum(cari).values())
+
+    def supheli_var(self, cari):
+        return any(r["aktif"] and r["cari"] == cari for r in self.supheliler.values())
 
     # ---------- hesap seçimi ----------
     def uygunlar(self, kategori):
@@ -656,6 +754,9 @@ class Uretec:
             cari = self.cari_sec("tedarikci") if R.random() < 0.97 else self.cari_sec("musteri")
         if cari is None:
             return False
+        supheli_cari = cari in self.supheli_carileri
+        if supheli_cari and tur == "alis":
+            return False   # BELİRSİZ-38: şüpheli kaydı olan müşteri carisine alış faturası (A 120) kurulmaz
         kur = self.kalemler_kur(tur)
         if kur is None:
             return False
@@ -678,6 +779,8 @@ class Uretec:
             return True
         secim = R.choices(["acik", "tam", "kismi", "taksit", "pesin_taksit", "coklu"], [30, 22, 14, 12, 8, 6] if tur == "satis"
                           else [40, 30, 20, 0, 0, 10])[0]
+        if supheli_cari and secim != "acik":
+            secim = R.choice(["acik", "taksit"])   # BELİRSİZ-38: şüpheli caride satış peşin satırı kurulmaz
         yon = "giris" if tur == "satis" else "cikis"
         isaret = 1 if tur == "satis" else -1
         yollar = ["nakit", "havale"] + (["kart"] if tur == "alis" else [])
@@ -756,6 +859,7 @@ class Uretec:
         # durum
         self.uygula_etkiler(etkiler)
         self.hesap_dokun([a for a, t, x in etkiler])
+        self.cb(cari, (T - Pt) if tur == "satis" else -(T - Pt))
         for b in benzer:
             self.benzer_ekle(b)
         for u, d in stok_deg.items():
@@ -789,6 +893,12 @@ class Uretec:
             return False
         if "iade" in self.notr and not kasitli_fazla:
             adaylar = [a for a in adaylar if self.cariler[self.faturalar[a]["cari"]]["stil"] == "bagli"]
+            if not adaylar:
+                return False
+        if not kasitli_fazla:
+            # sürüm 4: şüpheli caride alıştan iade (geri ödemesi A 120, BELİRSİZ-38) kurulmaz; satıştan iade alacak satırıdır (gün sırası)
+            adaylar = [a for a in adaylar if not (self.faturalar[a]["cari"] in self.supheli_carileri and self.faturalar[a]["tur"] == "alis")
+                       and (self.faturalar[a]["tur"] != "satis" or self.alacak_uygun(self.faturalar[a]["cari"]))]
             if not adaylar:
                 return False
         fa = R.choice(adaylar)
@@ -846,6 +956,11 @@ class Uretec:
             return True
         self.uygula_etkiler(etkiler)
         self.hesap_dokun([a for a, t, x in etkiler])
+        if f["tur"] == "satis":
+            self.cb(f["cari"], -toplamT + (toplamT if geri_yol != "acik" else 0))
+            self.alacak_kaydet(f["cari"], toplamT)          # satıştan iade: A 120 (KABUL K3)
+        else:
+            self.cb(f["cari"], toplamT - (toplamT if geri_yol != "acik" else 0))
         if anahtar in self.hesaplar:
             yon = "cikis" if f["tur"] == "satis" else "giris"
             self.benzer_ekle(self.benzer_anahtar(yon, geri_yol, anahtar, f["cari"], toplamT, self.bugun, ("fatura", ad)))
@@ -876,6 +991,8 @@ class Uretec:
         cari = self.cari_sec(tur)
         if cari is None:
             return False
+        if yon == "giris" and not self.alacak_uygun(cari):
+            return False   # BELİRSİZ-35
         stil = self.cariler[cari]["stil"]
         kf = None
         if stil == "bagli" and self.cariler[cari].get("iade_artan"):
@@ -946,13 +1063,19 @@ class Uretec:
         self.ekle(adim)
         self.uygula_etkiler(etkiler)
         self.hesap_dokun([anahtar])
+        self.cb(cari, -T if yon == "giris" else T)
+        alacak_ref = None
+        if yon == "giris":
+            alacak_ref = (self.bugun, self.sayac, T)
+            self.alacak_kaydet(cari, T)
         if bkey is not None:
             self.benzer_ekle(bkey)
         if kf is not None:
             self.faturalar[kf]["bagli"] += T
         if hareket_ad:
             self.hareket_kaydet(hareket_ad, islem=islem, kullanici=kul, etkiler=etkiler, tarih=self.bugun, kf=kf, tutar=T,
-                                benzer=bkey, nakit_tipi=not bagli_hesap, hesaplar={anahtar} & set(self.hesaplar))
+                                benzer=bkey, nakit_tipi=not bagli_hesap, hesaplar={anahtar} & set(self.hesaplar),
+                                cari=cari, alacak=alacak_ref)
         # yineleme
         if "istekKimligi" in adim and "tutarHam" not in adim and R.random() < 0.6:   # sürüm 2: açığı dolduranın da
             farkli = kf is None and R.random() < 0.3
@@ -970,6 +1093,9 @@ class Uretec:
                     self.ekle(kopya)
                     self.uygula_etkiler(etkiler)
                     self.benzer_ekle(bkey)
+                    self.cb(cari, -T if yon == "giris" else T)
+                    if yon == "giris":
+                        self.alacak_kaydet(cari, T)
                     if kf is not None:
                         self.faturalar[kf]["bagli"] += T
         return True
@@ -977,17 +1103,28 @@ class Uretec:
     # ─────────────────────────────────────────── taksit tahsilatı
     def op_taksit(self):
         R = self.R
-        aday = [k for k, v in self.kartlar.items() if v["toplam"] - v["odenen"] > 0]
-        if not aday:
-            return False
-        k = R.choice(aday)
-        kart = self.kartlar[k]
-        kalan = kart["toplam"] - kart["odenen"]
-        if R.random() < 0.35 or kalan < 200:
-            T = kalan
+        aday = [k for k, v in self.kartlar.items() if v["toplam"] - v["odenen"] > 0 and self.alacak_uygun(v["cari"])]
+        kapali = [k for k, v in self.kartlar.items() if v["toplam"] - v["odenen"] <= 0 and self.alacak_uygun(v["cari"])]
+        k8 = None    # sürüm 4 K8 (§4.17): None | "paid" (409) | "overpay" (409) | "pe" (403 fazlaAvans) | "avans" (Y fazlaAvans, yazılır)
+        if self.surum >= 4 and kapali and (not aday or R.random() < 0.15):
+            k = R.choice(kapali)
+            kart = self.kartlar[k]
+            k8 = R.choice(["paid", "paid", "avans"])
+            T = self.tutar(10, 3000, 0.5)
         else:
-            taksit = rh(kart["toplam"], kart["sayi"])
-            T = min(kalan, max(100, taksit + R.randint(-taksit // 5, taksit // 5)))
+            if not aday:
+                return False
+            k = R.choice(aday)
+            kart = self.kartlar[k]
+            kalan = kart["toplam"] - kart["odenen"]
+            if self.surum >= 4 and R.random() < 0.15:
+                k8 = R.choices(["overpay", "pe", "avans"], [4, 3, 3])[0]
+                T = kalan + self.tutar(10, 3000, 0.5)
+            elif R.random() < 0.35 or kalan < 200:
+                T = kalan
+            else:
+                taksit = rh(kart["toplam"], kart["sayi"])
+                T = min(kalan, max(100, taksit + R.randint(-taksit // 5, taksit // 5)))
         yol = R.choices(["nakit", "havale"], [4, 6])[0]
         anahtar, ver = "KASA", None
         if yol == "havale":
@@ -997,36 +1134,46 @@ class Uretec:
             ver, anahtar = sec
         if not self.acilis_tamam(anahtar, self.bugun):
             return False
-        kul = self.kullanici(["Y", "MU", "PE"])
+        kul = {"pe": "PE", "avans": "Y"}.get(k8) or self.kullanici(["Y", "MU", "PE"])
         adim = {"islem": "taksit_tahsilat"}
-        had = self.yeni_ad("H") if R.random() < 0.7 else None
+        had = self.yeni_ad("H") if R.random() < 0.7 and k8 in (None, "avans") else None
         if had:
             adim["ad"] = had
         adim.update({"kart": k, "tutar": tl(T, R), "yol": yol})
         if ver is not None:
             adim["hesap"] = ver
         hedef = ("kart", k)
-        if R.random() < 0.3:
+        if R.random() < 0.3 and kart["odenen"] == 0 and k8 is None:   # BELİRSİZ-33: taksitNo yalnız kartın ilk tahsilatında
             adim["taksitNo"] = R.randint(1, kart["sayi"])
             hedef = ("kart", k, adim["taksitNo"])
+        if k8 in ("pe", "avans"):
+            adim["fazlaAvans"] = True
         bkey = None
         if anahtar in self.hesaplar:
             bkey = self.benzer_anahtar("giris", yol, anahtar, kart["cari"], T, self.bugun, hedef)
             if self.benzer_gerekli(bkey) != "yok":
+                if k8 in ("paid", "overpay", "pe"):
+                    return False                       # kasıtlı ret tek ihlal taşısın (Benzer İşlem karışmasın)
                 adim["benzerOnay"] = True
-        self.kimlik_ver(adim, 0.08)
+        if k8 is None:
+            self.kimlik_ver(adim, 0.08)
         self.kullanici_ekle(adim, kul)
         self.ekle(adim)
+        if k8 in ("paid", "overpay", "pe"):
+            return True                                # 409 plan-paid / 409 plan-overpay / 403 plan-overpay-permission
         etkiler = [(anahtar, self.bugun, T)]
         self.uygula_etkiler(etkiler)
         self.hesap_dokun([anahtar])
         kart["odenen"] += T
+        self.cb(kart["cari"], -T)
+        alacak_ref = (self.bugun, self.sayac, T)
+        self.alacak_kaydet(kart["cari"], T)
         if bkey:
             self.benzer_ekle(bkey)
         if had:
             self.hareket_kaydet(had, islem="taksit_tahsilat", kullanici=kul, etkiler=etkiler, tarih=self.bugun, kart=k,
                                 tutar=T, benzer=bkey, nakit_tipi=anahtar not in self.hesaplar,
-                                hesaplar={anahtar} & set(self.hesaplar))
+                                hesaplar={anahtar} & set(self.hesaplar), cari=kart["cari"], alacak=alacak_ref)
         if "istekKimligi" in adim and R.random() < 0.5:     # sürüm 2: kalanı dolduran tahsilatın yinelemesi de
             self.yineleme_ekle(adim, farkli=False)
         return True
@@ -1366,6 +1513,10 @@ class Uretec:
             self.faturalar[m["kf"]]["bagli"] -= m["tutar"]
         if m.get("kart"):
             self.kartlar[m["kart"]]["odenen"] -= m["tutar"]
+        if m.get("cari") is not None:
+            self.cb(m["cari"], m["tutar"] if m["islem"] in ("cari_tahsilat", "taksit_tahsilat") else -m["tutar"])
+            if m.get("alacak"):
+                self.alacak_sil(m["cari"], m["alacak"])
         return True
 
     # ─────────────────────────────────────────── hesap yönetimi
@@ -1511,7 +1662,7 @@ class Uretec:
     def evrak_al(self, yon="alinan"):
         R = self.R
         c = self.evrak_cari("musteri" if yon == "alinan" else "tedarikci")
-        if c is None:
+        if c is None or (yon == "alinan" and not self.alacak_uygun(c)):
             return False
         T = self.tutar(100, 60000, 0.4)
         tur = R.choice(["cek", "cek", "senet"])
@@ -1525,7 +1676,12 @@ class Uretec:
         self.ekle(adim)
         self.evraklar[ad] = {"yon": yon, "tur": tur, "cari": c, "T": T, "tarih": self.bugun, "vade": vade,
                              "durum": "portfoy" if yon == "alinan" else "verildi", "tahsil_hesap": None,
-                             "son_tarih": self.bugun, "gecmis": False}
+                             "son_tarih": self.bugun, "gecmis": False, "supheli": False, "seq": self.sayac}
+        if yon == "alinan":
+            self.cb(c, -T)
+            self.alacak_kaydet(c, T)                    # alınan evrak A 120 (KABUL K3)
+        else:
+            self.cb(c, T)
         return True
 
     def evrak_ver(self):
@@ -1621,6 +1777,7 @@ class Uretec:
             return False
         self.ekle({"islem": "evrak_karsiliksiz", "evrak": a})
         self._evrak_gecis(self.evraklar[a], "karsiliksiz")
+        self.cb(self.evraklar[a]["cari"], self.evraklar[a]["T"])
         return True
 
     def evrak_ciro(self):
@@ -1630,14 +1787,21 @@ class Uretec:
             return False
         self.ekle({"islem": "evrak_ciro", "evrak": a, "cari": c})
         self._evrak_gecis(self.evraklar[a], "ciro")
+        self.cb(c, self.evraklar[a]["T"])
         return True
 
     def evrak_sil(self):
         a = self.evrak_sec(lambda e: e["durum"] in ("portfoy", "verildi") and not e["gecmis"])
         if a is None:
             return False
+        e = self.evraklar[a]
         self.ekle({"islem": "evrak_sil", "evrak": a})
-        self.evraklar[a]["durum"] = "silindi"
+        e["durum"] = "silindi"
+        if e["yon"] == "alinan":
+            self.cb(e["cari"], e["T"])
+            self.alacak_sil(e["cari"], (e["tarih"], e.get("seq"), e["T"]))
+        else:
+            self.cb(e["cari"], -e["T"])
         return True
 
     def ret_evrak(self):
@@ -2105,8 +2269,9 @@ class Uretec:
         R = self.R
         g = "g%d" % self.sayac
         if R.random() < 0.5:
-            # iki tahsilat, iki ayrı cari, iki kullanıcı → ikisi de geçer
-            cs = [a for a, v in self.cariler.items() if v["tur"] == "musteri" and v["stil"] == "bagsiz"]
+            # iki tahsilat, iki ayrı cari, iki kullanıcı → ikisi de geçer (şüpheli carileri dışarıda: gün sırası / dağıtım karışmasın)
+            cs = [a for a, v in self.cariler.items() if v["tur"] == "musteri" and v["stil"] == "bagsiz"
+                  and a not in self.supheli_carileri]
             if len(cs) < 2:
                 return False
             c1, c2 = R.sample(cs, 2)
@@ -2116,6 +2281,8 @@ class Uretec:
                 self.kullanici_ekle(adim, kul)
                 self.ekle(adim)
                 self.uygula_etkiler([("KASA", self.bugun, T)])
+                self.cb(c, -T)
+                self.alacak_kaydet(c, T)
             return True
         # yarış: aynı doğrulanmış hesaptan eşit iki ödeme; yalnız biri sığar (§12.5 adım 37)
         h = [a for a, v in self.hesaplar.items() if v["aktif"] and v["dogrulandi"] and v["tur"] in HAVALE_TURLERI
@@ -2137,9 +2304,238 @@ class Uretec:
             self.ekle(adim)
         self.uygula_etkiler([(H, self.bugun, -X)])
         self.hesap_dokun([H])
-        # hangi carinin ödendiği belirsiz → bu iki cari bundan sonra yalnız bağsız kalır (zaten bağsız)
+        # hangi carinin ödendiği belirsiz → bu iki cari bundan sonra yalnız bağsız kalır (zaten bağsız); bakiyeleri belirsiz
         self.b_yaris = True
+        self.yaris_carileri.update({t1, t2})
         return True
+
+    # ─────────────────────────────────────────── sürüm 4: şüpheli alacak (SENARYO-DILI §4.39–4.42a)
+    def sup_adaylar(self):
+        """Şüpheli Alacağa Al için cariler: bağsız müşteri, yarışsız, bugün alacak satırı yazılmamış, 120 bakiyesi ≥ 2 pay."""
+        return [c for c, v in self.cariler.items() if v["tur"] == "musteri" and v["stil"] == "bagsiz"
+                and c not in self.yaris_carileri and self.supheli_uygun(c) and self.yuz_yirmi(c) >= 2 * PAY]
+
+    def sup_kayitlar(self, kosul):
+        out = []
+        for ad, r in self.supheliler.items():
+            if not r["aktif"] or not self.supheli_uygun(r["cari"]):
+                continue
+            s = self.sup_durum(r["cari"])[ad]
+            if kosul(r, s):
+                out.append((ad, r, s))
+        return out
+
+    def sup_yaz(self, ad, cari, T, evrak=None):
+        self.supheliler[ad] = {"cari": cari, "T": T, "tarih": self.bugun, "seq": self.sayac, "aktif": True, "evrak": evrak}
+        self.supheli_carileri.add(cari)
+        self.supheli_gun.setdefault(cari, {})["supheli"] = self.bugun
+
+    def sup_olay(self, tur, kayit, tutar, ad=None):
+        self.sup_olaylar.append({"tur": tur, "kayit": kayit, "tarih": self.bugun, "seq": self.sayac, "tutar": tutar, "aktif": True,
+                                 "ad": ad})
+        g = self.supheli_gun.setdefault(self.supheliler[kayit]["cari"], {})
+        g["supheli"] = self.bugun
+        if tur in ("degersiz", "cikar"):
+            g["degersiz_cikar"] = self.bugun
+
+    def op_supheli(self):
+        R = self.R
+        alt = R.choices(["al", "karsilik", "degersiz", "cikar", "sil_kayit", "sil_karsilik", "kisayol", "ret"],
+                        [5, 3.5, 2, 2, 1, 0.7, 2.5, 3])[0]
+        return getattr(self, "sup_" + alt)()
+
+    def sup_al(self):
+        R = self.R
+        c_ = self.sup_adaylar()
+        if not c_:
+            return False
+        c = R.choice(c_)
+        ust = self.yuz_yirmi(c) - PAY
+        T = R.randint(PAY, ust) if R.random() < 0.8 else self.tutar(5, max(5, ust // 100), 0.5)
+        T = min(max(T, 100), ust)
+        ad = self.yeni_ad("S")
+        adim = {"islem": "supheli_al", "ad": ad, "cari": c, "tutar": tl(T, R), "neden": R.choice(NEDENLER[2:])}
+        if R.random() < 0.4:
+            adim["aciklama"] = R.choice(["Dava dosyası", "İcra takibi", "Ödeme sözü tutulmadı", "Protesto"])
+        kul = self.kullanici(["Y", "MU"])
+        self.kimlik_ver(adim, 0.1)
+        self.kullanici_ekle(adim, kul)
+        self.ekle(adim)
+        self.sup_yaz(ad, c, T)
+        if "istekKimligi" in adim and R.random() < 0.6:
+            y = {k: v for k, v in adim.items() if k != "id"}
+            y["ad"] = self.yeni_ad("Z")                  # yineleme: aynı gövde, yeni ad (kâhin: aynı kayıt, ikinci ad)
+            self.ekle(y)
+        return True
+
+    def sup_kisayol(self):
+        """Karşılıksız dönmüş alınan evrakla kısayol (KABUL H): tutar ve neden evraktan."""
+        R = self.R
+        aday = [a for a, e in self.evraklar.items() if e["yon"] == "alinan" and e["durum"] == "karsiliksiz" and not e["supheli"]
+                and self.cariler[e["cari"]]["tur"] == "musteri" and e["cari"] not in self.yaris_carileri
+                and self.supheli_uygun(e["cari"]) and self.yuz_yirmi(e["cari"]) >= e["T"]]
+        if not aday:
+            return False
+        a = R.choice(aday)
+        e = self.evraklar[a]
+        ad = self.yeni_ad("S")
+        self.ekle(self.kullanici_ekle({"islem": "supheli_al", "ad": ad, "cari": e["cari"], "evrak": a}, self.kullanici(["Y", "MU"])))
+        e["supheli"] = True
+        self.sup_yaz(ad, e["cari"], e["T"], evrak=a)
+        return True
+
+    def sup_karsilik(self):
+        R = self.R
+        aday = self.sup_kayitlar(lambda r, s: s["durum"] == "acik" and s["kalan"] - s["karsilik"] >= 2 * PAY)
+        if not aday:
+            return False
+        ad, r, s = R.choice(aday)
+        ust = s["kalan"] - s["karsilik"] - PAY
+        K = R.randint(100, ust) if R.random() < 0.5 else min(ust, max(100, rh(s["kalan"] * R.randint(20, 100), 100) - s["karsilik"]))
+        adim = {"islem": "karsilik_ayir"}
+        kad = self.yeni_ad("KR") if R.random() < 0.6 else None
+        if kad:
+            adim["ad"] = kad
+        adim.update({"kayit": ad, "tutar": tl(K, R)})
+        self.kimlik_ver(adim, 0.08)
+        self.kullanici_ekle(adim, self.kullanici(["Y", "MU"]))
+        self.ekle(adim)
+        self.sup_olay("karsilik", ad, K, kad)
+        if "istekKimligi" in adim and R.random() < 0.5:
+            self.yineleme_ekle(adim)
+        return True
+
+    def sup_degersiz(self):
+        R = self.R
+        aday = self.sup_kayitlar(lambda r, s: s["durum"] == "acik" and s["kalan"] >= 2 * PAY)
+        if not aday:
+            return False
+        ad, r, s = R.choice(aday)
+        Z = s["kalan"] if R.random() < 0.25 else R.randint(100, s["kalan"] - PAY)
+        adim = {"islem": "degersiz_yaz"}
+        if R.random() < 0.5:
+            adim["ad"] = self.yeni_ad("DG")
+        adim.update({"kayit": ad, "tutar": tl(Z, R)})
+        self.kullanici_ekle(adim, self.kullanici(["Y", "MU"]))
+        self.ekle(adim)
+        self.sup_olay("degersiz", ad, Z)
+        self.cb(r["cari"], -Z)
+        return True
+
+    def sup_cikar(self):
+        R = self.R
+        aday = self.sup_kayitlar(lambda r, s: s["durum"] == "acik" and s["kalan"] >= PAY)
+        if not aday:
+            return False
+        ad, r, s = R.choice(aday)
+        self.ekle(self.kullanici_ekle({"islem": "supheli_cikar", "kayit": ad}, self.kullanici(["Y", "MU"])))
+        self.sup_olay("cikar", ad, None)
+        return True
+
+    def sup_sil_kayit(self):
+        R = self.R
+        aday = [ad for ad, r in self.supheliler.items() if r["aktif"] and self.supheli_uygun(r["cari"])
+                and not any(o["aktif"] and o["kayit"] == ad for o in self.sup_olaylar)]
+        if not aday:
+            return False
+        ad = R.choice(aday)
+        self.ekle(self.kullanici_ekle({"islem": "sil", "hedef": ad}, self.kullanici(["Y", "MU"])))
+        self.supheliler[ad]["aktif"] = False
+        return True
+
+    def sup_sil_karsilik(self):
+        R = self.R
+        aday = [o for o in self.sup_olaylar if o["tur"] == "karsilik" and o["aktif"] and o["ad"]
+                and self.supheliler[o["kayit"]]["aktif"] and self.supheli_uygun(self.supheliler[o["kayit"]]["cari"])]
+        if not aday:
+            return False
+        o = R.choice(aday)
+        self.ekle(self.kullanici_ekle({"islem": "sil", "hedef": o["ad"]}, self.kullanici(["Y", "MU"])))
+        o["aktif"] = False
+        return True
+
+    def sup_ret(self):
+        """Kasıtlı şüpheli retleri (tek ihlal; durum değişmez)."""
+        R = self.R
+        cesit = R.choice(["asan", "tedarikci", "yetki", "karsilik_asan", "degersiz_asan", "kapali", "cikar_kalan0",
+                          "tarih_once", "kisayol_portfoy", "ileri", "sil_iki", "yetki_sil"])
+        if cesit == "asan":
+            c_ = [c for c, v in self.cariler.items() if v["tur"] == "musteri" and v["stil"] == "bagsiz"
+                  and c not in self.yaris_carileri and self.supheli_uygun(c)]
+            if not c_:
+                return False
+            c = R.choice(c_)
+            T = max(self.yuz_yirmi(c), 0) + self.tutar(600, 20000, 0.3)
+            self.ekle({"islem": "supheli_al", "ad": self.yeni_ad("Z"), "cari": c, "tutar": tl(T, R), "neden": R.choice(NEDENLER)})
+            return True
+        if cesit == "tedarikci":
+            c = self.cari_sec("tedarikci")
+            if c is None or not self.supheli_uygun(c):
+                return False
+            self.ekle({"islem": "supheli_al", "ad": self.yeni_ad("Z"), "cari": c, "tutar": tl(self.tutar(10, 900)), "neden": "diger"})
+            return True
+        if cesit == "yetki":
+            c_ = self.sup_adaylar()
+            if not c_:
+                return False
+            c = R.choice(c_)
+            self.ekle({"islem": "supheli_al", "ad": self.yeni_ad("Z"), "cari": c, "tutar": tl(PAY), "neden": "dava", "kullanici": "PE"})
+            return True
+        if cesit in ("karsilik_asan", "degersiz_asan", "cikar_kalan0", "kapali", "tarih_once", "yetki_sil"):
+            if cesit == "cikar_kalan0":
+                aday = self.sup_kayitlar(lambda r, s: s["durum"] == "acik" and s["kalan"] == 0)
+            elif cesit == "kapali":
+                aday = self.sup_kayitlar(lambda r, s: s["durum"] == "cikarildi")
+            elif cesit == "tarih_once":
+                aday = self.sup_kayitlar(lambda r, s: s["durum"] == "acik" and r["tarih"] > self.baslangic)
+            else:
+                aday = self.sup_kayitlar(lambda r, s: s["durum"] == "acik" and s["kalan"] > 0)
+            if cesit == "yetki_sil":   # BELİRSİZ-37: olaylı kaydın silinmesi (ret de olsa) senaryo kurmaz → yalnız sade kayıt
+                aday = [x for x in aday if not any(o["aktif"] and o["kayit"] == x[0] for o in self.sup_olaylar)]
+            if not aday:
+                return False
+            ad, r, s = R.choice(aday)
+            if cesit == "karsilik_asan":
+                K = s["kalan"] - s["karsilik"] + self.tutar(600, 5000, 0.3)
+                self.ekle({"islem": "karsilik_ayir", "kayit": ad, "tutar": tl(K, R)})
+            elif cesit == "degersiz_asan":
+                self.ekle({"islem": "degersiz_yaz", "kayit": ad, "tutar": tl(s["kalan"] + self.tutar(600, 5000, 0.3), R)})
+            elif cesit == "cikar_kalan0":
+                self.ekle({"islem": "supheli_cikar", "kayit": ad})
+            elif cesit == "kapali":
+                self.ekle(R.choice([{"islem": "karsilik_ayir", "kayit": ad, "tutar": "100"},
+                                    {"islem": "degersiz_yaz", "kayit": ad, "tutar": "100"},
+                                    {"islem": "supheli_cikar", "kayit": ad}]))
+            elif cesit == "tarih_once":
+                t = r["tarih"] - datetime.timedelta(days=R.randint(1, 3))
+                self.ekle(R.choice([{"islem": "karsilik_ayir", "kayit": ad, "tutar": "100", "tarih": tarih_metni(t)},
+                                    {"islem": "supheli_cikar", "kayit": ad, "tarih": tarih_metni(t)}]))
+            else:
+                self.ekle({"islem": "sil", "hedef": ad, "kullanici": "PE"})
+            return True
+        if cesit == "kisayol_portfoy":
+            aday = [a for a, e in self.evraklar.items() if e["yon"] == "alinan" and e["durum"] in ("portfoy", "tahsilde", "tahsil", "ciro")
+                    and self.cariler[e["cari"]]["tur"] == "musteri" and self.supheli_uygun(e["cari"]) and self.yuz_yirmi(e["cari"]) >= e["T"] + PAY]
+            if not aday:
+                return False
+            a = R.choice(aday)
+            self.ekle({"islem": "supheli_al", "ad": self.yeni_ad("Z"), "cari": self.evraklar[a]["cari"], "evrak": a})
+            return True
+        if cesit == "ileri":
+            c_ = self.sup_adaylar()
+            if not c_:
+                return False
+            c = R.choice(c_)
+            self.ekle({"islem": "supheli_al", "ad": self.yeni_ad("Z"), "cari": c, "tutar": tl(PAY), "neden": "dava",
+                       "tarih": tarih_metni(self.bugun + datetime.timedelta(days=R.randint(1, 4)))})
+            return True
+        if cesit == "sil_iki":
+            aday = [ad for ad, r in self.supheliler.items() if not r["aktif"] and self.supheli_uygun(r["cari"])]
+            if not aday:
+                return False
+            self.ekle({"islem": "sil", "hedef": R.choice(aday)})
+            return True
+        raise ValueError(cesit)
 
     # ─────────────────────────────────────────── ana döngü
     def gun_ilerlet(self):
@@ -2176,9 +2572,9 @@ class Uretec:
             if self.islem_sayisi < self.hedef_islem:
                 self.gun_ilerlet()
         return {
-            "dil": DIL if self.surum >= 3 else DIL2,
-            "ad": ("rastgele-s3-" if self.surum >= 3 else "rastgele-") + "%d-%d" % (self.tohum, self.hedef_islem) + (
-                "-notr" if self.notr else "") + ("-yogun" if self.yogun else ""),
+            "dil": DIL4 if self.surum >= 4 else (DIL if self.surum == 3 else DIL2),
+            "ad": ("rastgele-s4-" if self.surum >= 4 else ("rastgele-s3-" if self.surum == 3 else "rastgele-")) + "%d-%d" % (
+                self.tohum, self.hedef_islem) + ("-notr" if self.notr else "") + ("-yogun" if self.yogun else ""),
             "aciklama": ("uretici.py ile tohum %d'den üretildi (%d işlem, kontrol aralığı %d). Gerçekçi sıra, kasıtlı "
                          "retler, istek kimliği yinelemeleri%s.%s" % (
                              self.tohum, self.hedef_islem, self.kontrol_araligi,
@@ -2247,10 +2643,12 @@ class Uretec:
             return self.op_ret()
         if op == "evrak":
             return self.op_evrak()
+        if op == "supheli":
+            return self.op_supheli()
         raise ValueError(op)
 
 
-def uret(tohum, islem=500, kontrol_araligi=25, eszamanli=None, notr=(), yogun=False, surum=3):
+def uret(tohum, islem=500, kontrol_araligi=25, eszamanli=None, notr=(), yogun=False, surum=4):
     u = Uretec(tohum, islem, kontrol_araligi, eszamanli, notr, yogun, surum)
     u.ilk_kasa_politika = u.kasa_politika
     u.ilk_benzer = u.benzer_acik
@@ -2265,7 +2663,7 @@ def main(argv):
     ap.add_argument("--cikti", default=None)
     ap.add_argument("--notr", default="", help="virgülle: iskonto_dahil,kasa_acilis,kart,fatura_yineleme")
     ap.add_argument("--yogun", action="store_true", help="iade, kasıtlı ret ve eksi bakiye (kart/banka/Kasa) ağırlıklı")
-    ap.add_argument("--surum", type=int, choices=(2, 3), default=3, help="dil sürümü (2: evraksız eski üretim, aynı tohum aynı senaryo)")
+    ap.add_argument("--surum", type=int, choices=(2, 3, 4), default=4, help="dil sürümü (4: şüpheli + K8; 3: evrak; 2: eski üretim — aynı tohum aynı senaryo)")
     a = ap.parse_args(argv[1:])
     if not 1 <= a.islem <= 100000:
         ap.error("islem 1..100000")

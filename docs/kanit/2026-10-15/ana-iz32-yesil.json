@@ -1,0 +1,32 @@
+{
+  "ad": "ana-iz32-yesil",
+  "komut": "node --test test/banka-230-46-iade-iptal.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/iade-210.test.mjs test/banka-230-k8-taksit.test.mjs test/banka-230-supheli.test.mjs test/ci-kapi-listesi.test.mjs",
+  "commit": "0200ed22e17ecbbeddb7737e07baae9e797afdaa",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:09:01.820Z",
+  "sure_sn": 24,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 63,
+    "gecen": 63,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-iz32-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "f7d86537c4f5d1b209362fb3179b27786d57a4c0404837c4ffc77d2a0063e592",
+  "ham_cikti_bayt": 30094
+}

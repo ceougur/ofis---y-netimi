@@ -234,7 +234,10 @@ export async function ledgerFacts(api) {
   }
   const { at, ...overviewLive } = overview;
   const { box, k10 } = await legacyBankBox(api, overview);
-  const overviewStable = overviewLive.cash ? { ...overviewLive, cash: { ...overviewLive.cash, bank: box } } : overviewLive;
+  // 2.3.0 İz 1.6 (bilerek): receivable.doubtful / doubtfulCount yeni alan (eski sürüm üretmez, eski veride 0) — özetten düşülür.
+  const { doubtful: _doubtful, doubtfulCount: _doubtfulCount, ...receivableStable } = overviewLive.receivable || {};
+  const overviewSansDoubtful = overviewLive.receivable ? { ...overviewLive, receivable: receivableStable } : overviewLive;
+  const overviewStable = overviewSansDoubtful.cash ? { ...overviewSansDoubtful, cash: { ...overviewSansDoubtful.cash, bank: box } } : overviewSansDoubtful;
   return {
     today: lock.today,
     lockedUntil: lock.lockedUntil || "",

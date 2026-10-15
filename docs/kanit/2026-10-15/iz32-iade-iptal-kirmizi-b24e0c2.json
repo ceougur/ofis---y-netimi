@@ -1,0 +1,53 @@
+{
+  "ad": "iz32-iade-iptal-kirmizi-b24e0c2",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-230-46-iade-iptal.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:43:32.106Z",
+  "sure_sn": 5.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 8,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "A — fatura İptal / Sil penceresinin POS İşlemi seçimi (Müşteriye İade Edildi / Kayıt Hatası) toplu yollarda ve liste bayrağı (plan §3.8 Fatura, §4.6) › bankaya geçmiş ve eşleşmiş POS'lu faturalar: toplu iptal Kayıt Hatası → yalnız o belge 409 pos-settled; Müşteriye İade Edildi → İptal İadesi; toplu silme Kayıt Hatası → 409",
+      "konum": "test/banka-230-46-iade-iptal.test.mjs:33:3",
+      "hata": "B Kayıt Hatası ile iptal edilemez: {\"id\":\"invoice-2657d9e3-0880-42fd-8336-f3f524263a6e\",\"ok\":true,\"number\":\"FIS2026000000002\",\"displayNo\":\"FIS2026000000002\",\"accountName\":\"ABC Ltd.\"} · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "A — fatura İptal / Sil penceresinin POS İşlemi seçimi (Müşteriye İade Edildi / Kayıt Hatası) toplu yollarda ve liste bayrağı (plan §3.8 Fatura, §4.6) › liste ve kart: POS peşinli satış faturasında posCash true (pencere POS İşlemi seçimini yalnız bunlarda gösterir); nakit faturada ve alışta false",
+      "konum": "test/banka-230-46-iade-iptal.test.mjs:78:3",
+      "hata": "liste: POS'lu undefined · + actual - expected · + undefined"
+    },
+    {
+      "ad": "B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer › giriş + kart + cardRefund → satır kart hesabına (fin_ref = kart), POS kaydı yok, kart borcu 600 → 360, 309.NN −360; tek kartta kart kendiliğinden; posId verilirse 400",
+      "konum": "test/banka-230-46-iade-iptal.test.mjs:110:3",
+      "hata": "ödeme iadesi karta: 400 {\"ok\":false,\"error\":\"POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; POS seçin (banka hesabı alanını boş bırakın).\",\"code\":\"bank-account-invalid\",\"field\":\"bankAccountId\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer › cardRefund olmadan giriş + kart POS'tur (kart hesabı verilirse 400 bank-account-invalid; verilmezse POS satışı); düzeltmede kart bağı korunur (tutar 240 → 300)",
+      "konum": "test/banka-230-46-iade-iptal.test.mjs:138:3",
+      "hata": "ödeme iadesi karta: 400 {\"ok\":false,\"error\":\"POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; POS seçin (banka hesabı alanını boş bırakın).\",\"code\":\"bank-account-invalid\",\"field\":\"bankAccountId\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/docs/kanit/2026-10-15/iz32-iade-iptal-kirmizi-b24e0c2.log",
+  "klasor": "/tmp/claude-0/iz32-eski-b24e0c2",
+  "ham_cikti_sha256": "5298a204b3eef04a10ef77aded7ac9354b2d1824c56054892b3160e4339f2c67",
+  "ham_cikti_bayt": 12764
+}

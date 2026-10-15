@@ -1,0 +1,32 @@
+{
+  "ad": "kardes-senaryo-215",
+  "komut": "npm run test:senaryo-215",
+  "commit": "31bc541b48555772a41aa3e9b7e040cfd88bc6d3",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T18:45:41.477Z",
+  "sure_sn": 93.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 73,
+    "gecen": 73,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/kardes-senaryo-215.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "95085f1ca516c1fe8007c62739eb9ab370ea74adc92b7a83bb6311ca8449d35c",
+  "ham_cikti_bayt": 4924
+}

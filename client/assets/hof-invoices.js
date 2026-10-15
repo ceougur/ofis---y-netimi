@@ -366,6 +366,7 @@
     }
     if (act === "bulk-issue") return bulkIssue();
     if (act === "bulk-cancel") return bulkCancel();
+    if (act === "open-bank") return HOF.bank?.open?.({ tab: "accounts" });
     if (act === "bulk-delete") return bulkDelete();
     if (act === "clear-account") {
       view.account = null;
@@ -871,6 +872,10 @@
     const item = items.find(entry => entry.id === itemId);
     const line = form?.lines[index];
     if (!item || !line) return;
+    // Seçimden sonra bekleyen/yolda olan arama yanıtı listeyi yeniden açmasın (13.10.2026: yavaş sunucuda geç gelen yanıt seçili satırın
+    // üstüne listeyi geri getiriyordu).
+    clearTimeout(itemTimer);
+    itemTicket += 1;
     // Önce odaktaki kutudan çık: çıkarken tetiklenen "change" yazılan değeri ("fk-a4") satıra geri yazmasın; sonra
     // kartın adı ve Stok Kodu yazılır ve satır yeniden çizilir (odak korunması yazılan metni de geri getirmez).
     document.activeElement?.blur?.();
@@ -2218,6 +2223,15 @@
       },
     });
   }
+  // 2.3.0 (İz 3.2; plan §3.8 Fatura, §4.6): POS peşinli belgede İptal / Sil penceresi "POS İşlemi"ni sorar. Müşteriye İade Edildi (varsayılan):
+  // provizyon içinde ve valörden önce void (komisyon yok), sonrasında İptal İadesi (geçmiş gün fişleri değişmez). Kayıt Hatası: POS işlemi hiç
+  // olmadı — valörden önce void; bankaya geçmişse gün fişi yeniden planlanır, eşleşmiş/kilitliyse belge iptal edilmez (409 pos-settled).
+  const posOutcomeField = (count = 1) => ({
+    name: "posOutcome", label: count > 1 ? `POS İşlemi (${count.toLocaleString("tr-TR")} belgede POS tahsilatı var)` : "POS İşlemi", type: "select", value: "refunded",
+    options: [{ value: "refunded", label: "Müşteriye İade Edildi" }, { value: "entry-error", label: "Kayıt Hatası (POS işlemi hiç olmadı)" }],
+    help: "Müşteriye İade Edildi: provizyon içinde iptal, komisyon doğmaz; sonrasında İptal İadesi (bankaya geçen tutar iade valöründe bankadan çıkar). Kayıt Hatası: POS kaydı silinir; bankaya geçmiş ve ekstreyle eşleşmiş ya da kilitli dönemdeyse belge iptal edilmez.",
+  });
+  const posOutcomeOf = data => (data?.posOutcome === "entry-error" ? "entry-error" : "refunded");
   function cancelForm(doc) {
     const sentEInvoice = edoc() && ["TEMELFATURA", "TICARIFATURA"].includes(doc.profile) && ["sent", "accepted"].includes(doc.eStatus);
     const earchive = edoc() && doc.profile === "EARSIVFATURA" && ["processing", "sent", "accepted", "error"].includes(doc.eStatus);
@@ -2227,13 +2241,14 @@
       intro: `Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır.${earchive ? " e-Arşiv fatura önce entegratörde (EDM) iptal edilir." : ""}`,
       fields: [
         { name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Müşteri vazgeçti, yanlış tutar", autofocus: true },
+        ...(doc.posCash ? [posOutcomeField()] : []),
         ...(sentEInvoice ? [{ name: "confirmExternal", label: "Bu e-Fatura alıcı tarafından reddedildi ya da GİB'den iptal edildi; programda da iptal edilsin.", type: "checkbox", value: false }] : []),
       ],
       submitLabel: "İptal Et",
       onSubmit: async data => {
         if (sentEInvoice && !data.confirmExternal) throw new Error("Gönderilmiş e-Fatura önce GİB / alıcı tarafında iptal edilmeli (ret ya da iptal talebi); sonra kutuyu işaretleyin. Gerekirse iade faturası kesin.");
         return keepOnCancel(async () => {
-          const saved = await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/cancel`, { method: "POST", body: { reason: data.reason, confirmExternal: data.confirmExternal === true, ...force } }), "cancel");
+          const saved = await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/cancel`, { method: "POST", body: { reason: data.reason, confirmExternal: data.confirmExternal === true, ...(doc.posCash ? { posOutcome: posOutcomeOf(data) } : {}), ...force } }), "cancel");
           HOF.toast(`${docTitle(doc)} iptal edildi; etkileri geri alındı.`, { type: "success" });
           HOF.emit("invoices-changed", saved);
           showDoc(saved);
@@ -2317,10 +2332,10 @@
       title: `${docTitle(doc)} Silinsin mi?`,
       eyebrow: "SİL",
       intro: `${deleteIntro(doc.status)} Tutar ${money(doc.tryPayable)}.`,
-      fields: doc.status === "issued" ? [{ name: "reason", label: "Silme Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kaydedildi", autofocus: true }] : [],
+      fields: doc.status === "issued" ? [{ name: "reason", label: "Silme Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kaydedildi", autofocus: true }, ...(doc.posCash ? [posOutcomeField()] : [])] : [],
       submitLabel: "Sil",
       onSubmit: async data => {
-        const query = new URLSearchParams({ reason: data.reason || "" });
+        const query = new URLSearchParams({ reason: data.reason || "", ...(doc.status === "issued" && doc.posCash ? { posOutcome: posOutcomeOf(data) } : {}) });
         return keepOnCancel(async () => {
           await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}?${query}${force.force ? "&force=1" : ""}${force.negativeOk ? "&negativeOk=1" : ""}`, { method: "DELETE" }), "delete");
           HOF.toast(`${docTitle(doc)} silindi; Silinenler'den geri alınabilir.`, { type: "success" });
@@ -2337,14 +2352,15 @@
     if (!docs.length) return;
     const total = docs.reduce((sum, doc) => sum + (isReturn(doc.kind) ? -1 : 1) * (Number(doc.tryPayable) || 0), 0);
     const counts = { draft: docs.filter(doc => doc.status === "draft").length, issued: docs.filter(doc => doc.status === "issued").length, cancelled: docs.filter(doc => doc.status === "cancelled").length };
+    const posCount = docs.filter(doc => doc.status === "issued" && doc.posCash).length;
     HOF.formModal({
       title: `${docs.length.toLocaleString("tr-TR")} Belge Silinsin mi?`,
       eyebrow: "TOPLU SİL",
       intro: `${[counts.issued ? `${counts.issued} kaydedilmiş` : "", counts.cancelled ? `${counts.cancelled} iptal edilmiş` : "", counts.draft ? `${counts.draft} taslak` : ""].filter(Boolean).join(", ")} · toplam ${money(Math.abs(total))}. ${deleteIntro("issued")} İade belgeleri önce silinir. İadesi olan, e-Belgesi gönderilmiş, kilitli dönemdeki ya da taksitinden tahsilat alınmış belge silinmez; nedeni belge belge bildirilir.`,
-      fields: counts.issued ? [{ name: "reason", label: "Silme Nedeni", maxlength: 300, placeholder: "ör. Deneme kayıtları", autofocus: true }] : [],
+      fields: counts.issued ? [{ name: "reason", label: "Silme Nedeni", maxlength: 300, placeholder: "ör. Deneme kayıtları", autofocus: true }, ...(posCount ? [posOutcomeField(posCount)] : [])] : [],
       submitLabel: `Seçilenleri Sil (${docs.length})`,
       onSubmit: async data => {
-        const result = await bulkWithNegative("/api/workspace/invoices/bulk-delete", { ids: docs.map(doc => doc.id), reason: data.reason, force: true }, "delete");
+        const result = await bulkWithNegative("/api/workspace/invoices/bulk-delete", { ids: docs.map(doc => doc.id), reason: data.reason, force: true, ...(posCount ? { posOutcome: posOutcomeOf(data) } : {}) }, "delete");
         bulkOutcome(result, "silindi (Silinenler'den geri alınabilir)", "silinemedi");
         HOF.emit("invoices-changed", {});
         HOF.emit("accounts-changed");
@@ -2356,14 +2372,15 @@
   async function bulkCancel() {
     const docs = selectedBy("issued");
     if (!docs.length) return;
+    const posCount = docs.filter(doc => doc.posCash).length;
     HOF.formModal({
       title: `${docs.length.toLocaleString("tr-TR")} Belge İptal Edilsin mi?`,
       eyebrow: "TOPLU İPTAL",
       intro: "Her belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numaralar korunur. İadesi olan, kilitli dönemdeki ya da çeki tahsil edilmiş belge iptal edilmez; nedeni bildirilir.",
-      fields: [{ name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kaydedildi", autofocus: true }],
+      fields: [{ name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kaydedildi", autofocus: true }, ...(posCount ? [posOutcomeField(posCount)] : [])],
       submitLabel: "Seçilenleri İptal Et",
       onSubmit: async data => {
-        const result = await bulkWithNegative("/api/workspace/invoices/bulk-cancel", { ids: docs.map(doc => doc.id), reason: data.reason }, "cancel");
+        const result = await bulkWithNegative("/api/workspace/invoices/bulk-cancel", { ids: docs.map(doc => doc.id), reason: data.reason, ...(posCount ? { posOutcome: posOutcomeOf(data) } : {}) }, "cancel");
         bulkOutcome(result, "iptal edildi", "iptal edilemedi");
         HOF.emit("invoices-changed", {});
         loadList();
@@ -2441,6 +2458,9 @@
     const seller = s.seller;
     const input = (key, label, value, extra = "") => `<label class="hof-field"><span>${label}</span><input data-s="${key}" value="${esc(value ?? "")}" ${extra}></label>`;
     const banks = [...(seller.banks || []), {}, {}, {}, {}].slice(0, 4);
+    // 2.3.0 (İz 3.4; plan §8.9 E2.16 / #31): Banka modülünde hesap açıldıktan sonra liste hesap kartından (IBAN Faturada Gösterilsin) gelir.
+    const bankState = s.bankAccounts && typeof s.bankAccounts === "object" ? { active: s.bankAccounts.active === true, accounts: s.bankAccounts.accounts || [], suggestions: s.bankAccounts.suggestions || [] } : { active: false, accounts: [], suggestions: [] };
+    const ibanText = iban => String(iban || "").replace(/\s+/g, "").replace(/(.{4})/g, "$1 ").trim();
     const series = Object.entries(s.nextNumbers || {});
     const integ = s.integrator || {};
     const problems = s.problems?.KAGIT || [];
@@ -2470,9 +2490,14 @@
           <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-logo-preview>${logoNow() ? `<img src="${esc(logoNow())}" alt="Logo">` : '<small>Logo yok</small>'}</div>
           <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label>${logoNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear">Logoyu Kaldır</button>' : ""}<small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
       </div></section>
-      <section class="hof-inv-settings"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4><p class="hof-muted">Banka penceresinde “IBAN faturada gösterilsin” işaretli hesaplar da belgeye basılır (önce onlar; en çok 4 hesap).</p><div class="hof-inv-banks">
+      <section class="hof-inv-settings" data-inv-banks="${bankState.active ? "accounts" : "legacy"}"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4>${bankState.active
+        ? `<p class="hof-muted">Banka modülü etkin: belgeye yalnız Banka → Hesaplar'da hesap kartında <b>IBAN Faturada Gösterilsin</b> işaretli etkin TL hesaplar basılır (en çok 4; sırası hesap sırası). Buradaki eski liste artık düzenlenmez.</p>
+        ${bankState.accounts.length ? `<ul class="hof-inv-bank-list">${bankState.accounts.slice(0, 4).map(row => `<li data-inv-bank="${esc(row.id)}"><b>${esc(row.bankName)}</b> · ${esc(row.name)} · ${esc(ibanText(row.iban))}</li>`).join("")}</ul>` : `<p class="hof-inv-empty" data-inv-banks-empty>İşaretli hesap yok: belgeye banka bilgisi basılmaz. Banka → Hesaplar → hesap kartı → “IBAN Faturada Gösterilsin”.</p>`}
+        ${bankState.suggestions.length ? `<p class="hof-muted" data-inv-bank-suggest>Eski listede olup hesap olarak açılmamış: ${bankState.suggestions.map(bank => `<b>${esc(bank.name || "Banka")}</b> · ${esc(ibanText(bank.iban))}`).join(", ")}. Banka → Hesaplar → “+ Yeni Hesap” ile açıp (sihirbaz bu IBAN'ı önerir) işaretleyin.</p>` : ""}
+        ${HOF.bank?.open ? '<div class="hof-plan-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="open-bank">Banka → Hesaplar</button></div>' : ""}`
+        : `<p class="hof-muted">Banka modülünde ilk hesap açılana kadar bu liste belgeye basılır (en çok 4). İlk hesap açılınca liste hesap kartındaki “IBAN Faturada Gösterilsin” işaretinden dolar; buradaki bilgiler sihirbazda hesap olarak açılmak üzere önerilir.</p><div class="hof-inv-banks">
         ${banks.map((bank, index) => `<div class="hof-inv-pay-row"><label><span>Banka</span><input data-bank="${index}" data-k="name" maxlength="80" value="${esc(bank.name || "")}"></label><label><span>IBAN</span><input data-bank="${index}" data-k="iban" maxlength="34" value="${esc(bank.iban || "")}" placeholder="TR00 0000 0000 0000 0000 0000 00"></label></div>`).join("")}
-      </div></section>
+      </div>`}</section>
       <section class="hof-inv-settings"><h4>Numaralar</h4><p class="hof-muted">Numara: seri (3 harf) + yıl + 9 hane, ör. FIS2026000000001. Sıradaki numarayı yalnız ileri alabilirsiniz (kâğıt faturadan geçişte kaldığınız yerden devam etmek için).</p><div class="hof-inv-head">
         ${series.map(([key, item]) => `<label class="hof-field"><span>${esc(SERIES_LABELS[key] || key)}</span><input data-series="${esc(key)}" maxlength="3" value="${esc(item.series)}"><small>Sıradaki: ${esc(item.number)}</small></label><label class="hof-field"><span>Sıradaki No (${item.year})</span><input data-start="${esc(key)}" data-year="${item.year}" inputmode="numeric" value="${item.seq}" data-original="${item.seq}"></label>`).join("")}
       </div></section>
@@ -2569,6 +2594,8 @@
       (payload.seller.banks[index] ||= { name: "", iban: "" })[input.dataset.k] = input.value.trim();
     }
     payload.seller.banks = payload.seller.banks.filter(bank => bank && (bank.name || bank.iban));
+    // 2.3.0 (İz 3.4): Banka modülü etkinken eski liste ekranda yok, gövdeye girmez (sunucu da yok sayar; önceki liste öneri olarak kalır).
+    if (s.bankAccounts?.active === true) delete payload.seller.banks;
     for (const input of root.querySelectorAll("[data-series]")) payload.series[input.dataset.series] = input.value.trim().toLocaleUpperCase("tr-TR");
     for (const input of root.querySelectorAll("[data-start]")) {
       if (input.value.trim() === input.dataset.original) continue;
@@ -2751,6 +2778,20 @@
     return open({ account: account || {}, tab: "all" });
   };
   HOF.invoices = { open, newFor, openDoc, forAccount, edocEnabled: () => meta?.edocEnabled === true };
+  // 2.3.0 İz 5.5 Hızlı Arama: sekmeler TABS'tan (purchase sekmesi "Alınan" — müşteri "alış f" yazar: Alış Faturaları eş adı), işlemler
+  // yetkiye göre (Yeni Satış / Alış Faturası → senaryo seçimi; Yeni İade → İadeler sekmesi).
+  HOF.search?.register(() => {
+    if (!canView()) return [];
+    const ALIAS = { purchase: "Alış Faturaları", sale: "Satış Faturaları", returns: "İade Faturaları" };
+    const tabs = TABS.map(([id, label]) => ({ group: "Sayfa", label: ALIAS[id] && ALIAS[id] !== label ? `${ALIAS[id]} (${label})` : label, path: moduleName(), keywords: ["Fatura"], run: () => open({ tab: id }) }));
+    const acts = canManage()
+      ? [
+          { group: "İşlem", label: "Yeni Satış Faturası", path: moduleName(), keywords: ["Fatura Kes", "Satış"], run: () => open({ side: "sale" }) },
+          { group: "İşlem", label: "Yeni Alış Faturası", path: moduleName(), keywords: ["Alınan Fatura", "Alış"], run: () => open({ side: "purchase" }) },
+        ]
+      : [];
+    return [...tabs, ...acts];
+  });
   // Stok hareketi, çek/senet kartı, taksit kartı ve Kasa satırındaki "Fatura" bağlantısı (data-open-invoice): faturayı
   // açar. Kendi penceresinde işleyen modül (cari kartı, fatura penceresi) tıklamayı işaretler; burada ikinci kez açılmaz.
   document.addEventListener("click", event => {

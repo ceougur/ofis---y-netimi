@@ -1,0 +1,32 @@
+{
+  "ad": "ana-k8-yesil",
+  "komut": "node --test test/banka-230-k8-taksit.test.mjs",
+  "commit": "d0a442a94e7f565f42d4f625d9634c16fd1b885e",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:18:12.332Z",
+  "sure_sn": 4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 16,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/ana-k8-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "037b7d5944443d0ecd058a7079e55eae99394b7aba070e703e063d69bba61d4e",
+  "ham_cikti_bayt": 7433
+}

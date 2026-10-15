@@ -886,7 +886,8 @@
   $("#adm-audit-type").addEventListener("change", loadAudit);
 
   // ---------- Silinenler (v2.0.2) ----------
-  const TRASH_GROUPS = { row: ["row", "tab", "column"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash", "plan", "plan-entry"], invoice: ["invoice"] };
+  // 2.3.0 İz 5.6: işlem geçmişinden silinen not / telefon / haciz ayrı süzgeçte.
+  const TRASH_GROUPS = { row: ["row", "tab", "column"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash", "plan", "plan-entry"], invoice: ["invoice"], history: ["note", "phone", "lien"] };
   let trashItems = [];
   function renderTrash() {
     const body = $("#adm-trash");

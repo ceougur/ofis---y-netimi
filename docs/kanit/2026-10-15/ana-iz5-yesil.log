@@ -1,0 +1,244 @@
+TAP version 13
+# Subtest: K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+    # Subtest: tarayıcı kendini sınar
+    ok 1 - tarayıcı kendini sınar
+      ---
+      duration_ms: 4.819594
+      type: 'test'
+      ...
+    # Subtest: izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+    ok 2 - izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+      ---
+      duration_ms: 0.392184
+      type: 'test'
+      ...
+    # Subtest: gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+    ok 3 - gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+      ---
+      duration_ms: 575.782105
+      type: 'test'
+      ...
+    # Subtest: 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+    ok 4 - 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+      ---
+      duration_ms: 685.683646
+      type: 'test'
+      ...
+    # Subtest: olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+    ok 5 - olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+      ---
+      duration_ms: 0.45307
+      type: 'test'
+      ...
+    # Subtest: cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+    ok 6 - cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+      ---
+      duration_ms: 32.47602
+      type: 'test'
+      ...
+    1..6
+ok 1 - K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+  ---
+  duration_ms: 1300.844873
+  type: 'suite'
+  ...
+# (node:20419) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6)
+    # Subtest: not: personel ekler, yönetici düzeltir (düzeltme izi), siler, Silinenler'den geri gelir; denetim kaydı tam
+    ok 1 - not: personel ekler, yönetici düzeltir (düzeltme izi), siler, Silinenler'den geri gelir; denetim kaydı tam
+      ---
+      duration_ms: 46.756085
+      type: 'test'
+      ...
+    # Subtest: telefon: düzeltme numarayı temizler, bozuk numara 400; silme Silinenler'e gider ve geri gelir
+    ok 2 - telefon: düzeltme numarayı temizler, bozuk numara 400; silme Silinenler'e gider ve geri gelir
+      ---
+      duration_ms: 23.969648
+      type: 'test'
+      ...
+    # Subtest: haciz: düzeltmede düşüm tarihi yeniden hesaplanır; Haciz Uyarıları (7 gün) düzeltilen ve silinen hacze uyar
+    ok 3 - haciz: düzeltmede düşüm tarihi yeniden hesaplanır; Haciz Uyarıları (7 gün) düzeltilen ve silinen hacze uyar
+      ---
+      duration_ms: 35.169901
+      type: 'test'
+      ...
+    # Subtest: yetki: kayıt düzeltme yetkisi kaldırılan kullanıcı not ekler ama düzeltemez / silemez (403); oturumsuz 401
+    ok 4 - yetki: kayıt düzeltme yetkisi kaldırılan kullanıcı not ekler ama düzeltemez / silemez (403); oturumsuz 401
+      ---
+      duration_ms: 14.179502
+      type: 'test'
+      ...
+    1..4
+ok 2 - işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6)
+  ---
+  duration_ms: 686.853912
+  type: 'suite'
+  ...
+# (node:20421) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: yetki modeli (birim)
+    # Subtest: havuz her yetkiyi bir kez, açıklamasıyla listeler
+    ok 1 - havuz her yetkiyi bir kez, açıklamasıyla listeler
+      ---
+      duration_ms: 1.928484
+      type: 'test'
+      ...
+    # Subtest: v2.0.7 dizi biçimi eklenen sayılır; yönetime özgü ve bilinmeyen yetkiler atılır
+    ok 2 - v2.0.7 dizi biçimi eklenen sayılır; yönetime özgü ve bilinmeyen yetkiler atılır
+      ---
+      duration_ms: 0.447851
+      type: 'test'
+      ...
+    # Subtest: yönetici her zaman tüm yetkilere sahip; kişiye özel ayar yöneticiye uygulanmaz
+    ok 3 - yönetici her zaman tüm yetkilere sahip; kişiye özel ayar yöneticiye uygulanmaz
+      ---
+      duration_ms: 0.255533
+      type: 'test'
+      ...
+    # Subtest: personel: rol + eklenen − kaldırılan; yönetime özgü yetki eklenemez
+    ok 4 - personel: rol + eklenen − kaldırılan; yönetime özgü yetki eklenemez
+      ---
+      duration_ms: 0.366743
+      type: 'test'
+      ...
+    1..4
+ok 3 - yetki modeli (birim)
+  ---
+  duration_ms: 3.941344
+  type: 'suite'
+  ...
+# Subtest: yetki havuzu ve kullanıcı yönetimi (API)
+    # Subtest: roller: 4 yerleşik rol ve gruplu havuz; yönetim yetkileri kilitli
+    ok 1 - roller: 4 yerleşik rol ve gruplu havuz; yönetim yetkileri kilitli
+      ---
+      duration_ms: 16.375521
+      type: 'test'
+      ...
+    # Subtest: özel rol: oluşturulur, yönetim yetkisi verilemez, ad çakışmaz; kullanıcıya atanınca yetkileri uygulanır
+    ok 2 - özel rol: oluşturulur, yönetim yetkisi verilemez, ad çakışmaz; kullanıcıya atanınca yetkileri uygulanır
+      ---
+      duration_ms: 167.127613
+      type: 'test'
+      ...
+    # Subtest: kişiye özel: rolden yetki kaldırılır ve yetki eklenir; sunucu her uçta uygular
+    ok 3 - kişiye özel: rolden yetki kaldırılır ve yetki eklenir; sunucu her uçta uygular
+      ---
+      duration_ms: 120.752917
+      type: 'test'
+      ...
+    # Subtest: ANLIK DURUM kartı yalnız yönetici; yeni kullanıcı formunda kişiye özel yetkiyle oluşturulur
+    ok 4 - ANLIK DURUM kartı yalnız yönetici; yeni kullanıcı formunda kişiye özel yetkiyle oluşturulur
+      ---
+      duration_ms: 117.550608
+      type: 'test'
+      ...
+    # Subtest: ✎ düzeltme: görünen ad ve kullanıcı adı değişir; yeni adla girilir, eski adla girilmez, oturum açık kalır
+    ok 5 - ✎ düzeltme: görünen ad ve kullanıcı adı değişir; yeni adla girilir, eski adla girilmez, oturum açık kalır
+      ---
+      duration_ms: 209.239656
+      type: 'test'
+      ...
+    # Subtest: silme: kendini ve son yöneticiyi silemez; açık görevde devir sorulur; geçmiş korunur; ad ve kullanıcı adı yeniden kullanılır; geri alınır
+    ok 6 - silme: kendini ve son yöneticiyi silemez; açık görevde devir sorulur; geçmiş korunur; ad ve kullanıcı adı yeniden kullanılır; geri alınır
+      ---
+      duration_ms: 480.749429
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı yönetim uçlarına erişemez
+    ok 7 - yetkisiz kullanıcı yönetim uçlarına erişemez
+      ---
+      duration_ms: 91.791369
+      type: 'test'
+      ...
+    # Subtest: Yönetim paneli yalnız yöneticide; işlem geçmişi yetkisi olan uzman denetim kaydını Raporlar'dan görür, finans raporlarını görmez
+    ok 8 - Yönetim paneli yalnız yöneticide; işlem geçmişi yetkisi olan uzman denetim kaydını Raporlar'dan görür, finans raporlarını görmez
+      ---
+      duration_ms: 207.851791
+      type: 'test'
+      ...
+    1..8
+ok 4 - yetki havuzu ve kullanıcı yönetimi (API)
+  ---
+  duration_ms: 1777.344975
+  type: 'suite'
+  ...
+# Subtest: v2.0.7 ek yetki kayıtları göçü
+    # Subtest: ['overview.view'] → { add: ['overview.view'] }: raporlar açık kalır, kart kapanır
+    ok 1 - ['overview.view'] → { add: ['overview.view'] }: raporlar açık kalır, kart kapanır
+      ---
+      duration_ms: 250.0971
+      type: 'test'
+      ...
+    1..1
+ok 5 - v2.0.7 ek yetki kayıtları göçü
+  ---
+  duration_ms: 264.461252
+  type: 'suite'
+  ...
+# (node:20439) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: silinenler ve geri yükleme (v2.0.2)
+    # Subtest: personel silinenleri göremez ve geri yükleyemez
+    ok 1 - personel silinenleri göremez ve geri yükleyemez
+      ---
+      duration_ms: 9.916284
+      type: 'test'
+      ...
+    # Subtest: silinen tablo kaydı listede adıyla görünür; geri yüklenince eski yerine döner
+    ok 2 - silinen tablo kaydı listede adıyla görünür; geri yüklenince eski yerine döner
+      ---
+      duration_ms: 27.565323
+      type: 'test'
+      ...
+    # Subtest: tahsilat ve kasa hareketi silinip geri yüklenir; Kasa yeniden hesaplanır
+    ok 3 - tahsilat ve kasa hareketi silinip geri yüklenir; Kasa yeniden hesaplanır
+      ---
+      duration_ms: 127.564222
+      type: 'test'
+      ...
+    # Subtest: serbest sayfa satırı eski sırasına araya eklenir; o arada eklenen satırın üzerine yazılmaz
+    ok 4 - serbest sayfa satırı eski sırasına araya eklenir; o arada eklenen satırın üzerine yazılmaz
+      ---
+      duration_ms: 37.368794
+      type: 'test'
+      ...
+    # Subtest: serbest sayfa kolonu eski sırasına geri eklenir; adı alınmışsa '(geri yüklendi)'
+    ok 5 - serbest sayfa kolonu eski sırasına geri eklenir; adı alınmışsa '(geri yüklendi)'
+      ---
+      duration_ms: 17.59639
+      type: 'test'
+      ...
+    # Subtest: silinen serbest sayfa geri gelir; adı başka bir sekmede kullanılıyorsa yeni adla
+    ok 6 - silinen serbest sayfa geri gelir; adı başka bir sekmede kullanılıyorsa yeni adla
+      ---
+      duration_ms: 13.550228
+      type: 'test'
+      ...
+    # Subtest: silinen belge geri yüklenir
+    ok 7 - silinen belge geri yüklenir
+      ---
+      duration_ms: 13.243858
+      type: 'test'
+      ...
+    # Subtest: 2.0.1'de silinmiş tahsilat göçle silinenlere alınır
+    ok 8 - 2.0.1'de silinmiş tahsilat göçle silinenlere alınır
+      ---
+      duration_ms: 1.515802
+      type: 'test'
+      ...
+    1..8
+ok 6 - silinenler ve geri yükleme (v2.0.2)
+  ---
+  duration_ms: 750.477491
+  type: 'suite'
+  ...
+1..6
+# tests 31
+# suites 6
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2407.932309

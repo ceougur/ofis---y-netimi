@@ -1,0 +1,32 @@
+{
+  "ad": "iz33-raporlar-230",
+  "komut": "node --test test/raporlar-230-banka.test.mjs",
+  "commit": "6ce9c4c50976b308eb0492982fff0e2b65f2315f",
+  "dal": "worktree-agent-afa90b5a72737cee4",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:52:09.292Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/iz33-raporlar-230.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afa90b5a72737cee4",
+  "ham_cikti_sha256": "974001167d6ec678411d6cd1e08df456bab906669907626fd67bea24b36a73eb",
+  "ham_cikti_bayt": 6250
+}

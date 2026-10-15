@@ -1,0 +1,32 @@
+{
+  "ad": "ana-kahin4-tohum-4-duzeltme",
+  "komut": "python3 -I test/bagimsiz/fark.py --tohum 4 --islem 500",
+  "commit": "27fa05fd95085b69ad7391396cec6e2c78df39f1",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:29:53.839Z",
+  "sure_sn": 20.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5524,
+    "gecen": 5524,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-kahin4-tohum-4-duzeltme.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "afaf2227e11854c12ba5e671807b3845930e14470a1fad8a07388e7f32beda69",
+  "ham_cikti_bayt": 382
+}

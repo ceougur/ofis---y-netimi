@@ -1,0 +1,43 @@
+{
+  "ad": "iz3-k8-mutasyon-m5-taksit",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/iz3-k8-mut-m5-taksit/test/banka-230-k8-taksit.test.mjs",
+  "commit": "b24e0c263031a8dcc2622ba01e5b633e05d24b23",
+  "dal": "worktree-agent-a958f5cc6657a2287",
+  "kirli": 7,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:01:11.117Z",
+  "sure_sn": 4.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 14,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13) › N3b: aynı taksite iki eşzamanlı 500 (kartta 2 taksit) → biri 200, biri 409 installment-paid",
+      "konum": "test/banka-230-k8-taksit.test.mjs:135:3",
+      "hata": "[[200,null],[200,null]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K8 taksit kuralı — eşzamanlı, taksit seçimi, istek kimliği (N3, N11, N13) › N11: ödenmiş taksite seçili tahsilat → 409 installment-paid (taksit no metinde); açık taksite → 200; taksitsiz (en eski açık) → 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:145:3",
+      "hata": "ödenmiş 1. taksite: 200 {\"id\":\"plan-b3c1ea15-7226-4e62-95e7-6ae373dd97be\",\"accountId\":\"account-d7a9f414-9bdf-4f9f-b9d1-da48f3a7d897\",\"refNo\":\"3\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"K8 Eşzamanlı Müşteri K8-7\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-7986a6c1-f903-4f1 · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-13/iz3-k8-mutasyon-m5-taksit.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a958f5cc6657a2287",
+  "ham_cikti_sha256": "5d3965e87fbc954747fb78d03259b70dd5b55811e3a8f0c46837a59793091555",
+  "ham_cikti_bayt": 9601
+}

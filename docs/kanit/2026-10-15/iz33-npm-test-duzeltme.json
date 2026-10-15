@@ -1,0 +1,32 @@
+{
+  "ad": "iz33-npm-test-duzeltme",
+  "komut": "node --test test/banka-210-altin.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-saat.test.mjs test/banka-210-yetki-matrisi.test.mjs test/rapor-230-iz5.test.mjs",
+  "commit": "b27f025bef95410326f451c8ce5b97cf4a0a811c",
+  "dal": "worktree-agent-afa90b5a72737cee4",
+  "kirli": 4,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:28:13.495Z",
+  "sure_sn": 58.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 52,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/iz33-npm-test-duzeltme.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afa90b5a72737cee4",
+  "ham_cikti_sha256": "f0432bbd3614011ee0e6eb62beda62ec7617e216976b5a25348a8d549cce0478",
+  "ham_cikti_bayt": 27456
+}

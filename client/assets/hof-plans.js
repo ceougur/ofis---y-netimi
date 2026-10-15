@@ -470,15 +470,20 @@
     const span = plan.items.length ? `${plan.items.length} taksit · ${HOF.formatDate(plan.items[0].dueDate)} – ${HOF.formatDate(plan.items.at(-1).dueDate)}` : "Taksit kurulmadı";
     const share = t.total > 0 ? Math.max(0, Math.min(100, Math.round((t.paid / t.total) * 100))) : 0;
     const sums = entries.reduce((sum, entry) => ({ in: sum.in + (entry.kind === "in" ? entry.amount : 0), out: sum.out + (entry.kind === "out" ? entry.amount : 0) }), { in: 0, out: 0 });
+    // K8 (2.3.0, plan §3.10/3): ödenmiş kartta yeni tahsilat sunucuda 409 plan-paid. Yetkisizde "+ Tahsilat" pasif, nedeni görünür yazı
+    // (pasif düğme kuralı); yönetici/uzman/muhasebe avans yazabilir (pencerede ve kaydederken "Fazlasını Avans Yaz" onayı sorulur).
+    const paidOff = active && t.total > 0.005 && t.remaining <= 0.005;
+    const payBlock = paidOff && !manage ? "Kart ödendi; yeni tahsilat yazılmaz. Fazla alınan para için yöneticinize başvurun (avans)." : "";
+    const payButton = `<button type="button" class="hof-button hof-button-small" data-act="pay"${payBlock ? ` disabled title="${esc(payBlock)}"` : paidOff ? ' title="Kart ödendi; girilen tutar avans (fazla tahsilat) olur, kaydederken onay sorulur"' : ""}>+ Tahsilat</button>`;
     HOF.swap(root, `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3>${plan.refNo ? `<span class="hof-plan-refno" title="Sıra No">No ${esc(plan.refNo)}</span>` : ""}${esc(plan.name)} ${badge(label, tone)}</h3><small>${esc(whereText(plan) || "Grupsuz")}${plan.phone ? ` · ${esc(plan.phone)}` : ""}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Kart işlemleri">
-          <span class="hof-plan-toolgroup">${collect && active ? '<button type="button" class="hof-button hof-button-small" data-act="pay">+ Tahsilat</button>' : ""}${manage && active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="refund" title="Müşteriye yapılan ödeme ya da iade">− Ödeme / İade</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="addItem">+ Taksit</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="distribute" title="Toplam tutarı eşit taksitlere böler">Otomatik Dağıt</button>' : ""}</span>
+          <span class="hof-plan-toolgroup">${collect && active ? payButton : ""}${manage && active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="refund" title="Müşteriye yapılan ödeme ya da iade">− Ödeme / İade</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="addItem">+ Taksit</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="distribute" title="Toplam tutarı eşit taksitlere böler">Otomatik Dağıt</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${outputButtons(cardPdfUrl(plan), "card", "Taksit Ekstresi - PDF")}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
           ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>${active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="close" title="Kart kapanır; uyarı vermez, listede Kapalı altında durur">Kapat</button>' : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="reopen">Yeniden Aç</button>'}<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete"${plan.deleteBlock ? ` disabled title="${esc(plan.deleteBlock)}"` : ""}>Sil</button></span>` : ""}
         </div></div>
-      ${manage && plan.deleteBlock ? `<ul class="hof-inv-blocks" data-plan-blocks><li><b>Sil Kapalı:</b> ${esc(plan.deleteBlock)}</li></ul>` : ""}
+      ${(manage && plan.deleteBlock) || (collect && payBlock) ? `<ul class="hof-inv-blocks" data-plan-blocks>${manage && plan.deleteBlock ? `<li><b>Sil Kapalı:</b> ${esc(plan.deleteBlock)}</li>` : ""}${collect && payBlock ? `<li><b>Tahsilat Kapalı:</b> ${esc(payBlock)}</li>` : ""}</ul>` : ""}
       <section class="hof-plan-profile" aria-label="Kişi bilgileri">
         <dl class="hof-plan-facts">
           <div><dt>Sıra No</dt><dd>${esc(plan.refNo || "—")}</dd></div>
@@ -761,12 +766,19 @@
     const suggested = entry ? amountText(entry.amount) : amount ? amountText(amount) : item ? amountText(item.remaining) : plan.next ? amountText(plan.next.remaining) : "";
     // v2.1.0 Aşama 8: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
     const requestId = HOF.requestId();
+    // K8 (2.3.0, plan §3.10/3): ödenmiş kartta yeni tahsilat 409 plan-paid, kalanı aşan tutar 409 plan-overpay; yönetici/uzman/muhasebe
+    // "Fazlasını Avans Yaz" ile aynı istek kimliğiyle overpay:true gönderir; yetkisizde sunucunun yol gösteren metni formda kalır.
+    const paidOff = incoming && !entry && plan.totals.total > 0.005 && plan.totals.remaining <= 0.005;
     HOF.formModal({
       title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsilat Gir" : "Ödeme / İade Gir",
       eyebrow: plan.name,
-      intro: incoming
-        ? `Kalan ${money(plan.totals.remaining)}${plan.next ? ` · sıradaki ${plan.next.seq}. taksit ${money(plan.next.remaining)} (${dayLabel(plan.next.days)})` : ""}. Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; çekle/senetle ödemede Çek / Senet Al’da “Taksite Say”ı seçin. Makbuz PDF’i hareketler listesinden alınır.`
-        : "Müşteriye geri verilen ya da onun adına yapılan ödeme. Kasa’dan düşer ve kartın ödenen tutarını azaltır.",
+      intro: paidOff
+        ? canManage()
+          ? "Bu kart ödendi (kalan 0,00 ₺). Girilen tutar fazla tahsilat (avans) olarak karta ve cariye alacak yazılır; kaydederken onay sorulur."
+          : "Bu kart ödendi (kalan 0,00 ₺); yeni tahsilat yazılmaz. Fazla alınan para için yöneticinize başvurun."
+        : incoming
+          ? `Kalan ${money(plan.totals.remaining)}${plan.next ? ` · sıradaki ${plan.next.seq}. taksit ${money(plan.next.remaining)} (${dayLabel(plan.next.days)})` : ""}. Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; kalanı aşan tutar kaydedilmez (yönetici avans yazabilir); çekle/senetle ödemede Çek / Senet Al’da “Taksite Say”ı seçin. Makbuz PDF’i hareketler listesinden alınır.`
+          : "Müşteriye geri verilen ya da onun adına yapılan ödeme. Kasa’dan düşer ve kartın ödenen tutarını azaltır.",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: suggested, autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: entry?.date || todayIso() },
@@ -787,7 +799,23 @@
         const body = { ...data, kind: entry?.kind || kind };
         if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
         else if (data.method !== "bank") delete body.bankAccountId;
-        const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });
+        // K8: 409 plan-paid / plan-overpay → yetkili "Fazlasını Avans Yaz" derse overpay:true ile (istek kimliği aynı; bayrak içerik sayılmaz) yeniden
+        // gönderilir ve Benzer İşlem / eksi bakiye soruları (withConfirms) sürer. Vazgeç ya da yetkisiz: sunucunun metni formda kalır.
+        let overpay = false;
+        const send = async flags => {
+          try {
+            return await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags, ...(overpay ? { overpay: true } : {}) }, requestId });
+          } catch (error) {
+            const code = error?.data?.code;
+            if ((code === "plan-paid" || code === "plan-overpay") && !overpay && canManage()) {
+              const go = await HOF.confirm({ title: code === "plan-paid" ? "Kart Ödendi" : "Kalanı Aşan Tutar", message: error.message, confirmLabel: "Fazlasını Avans Yaz", cancelLabel: "Vazgeç" });
+              if (!go) throw new HOF.ApiError(`Kaydedilmedi: ${code === "plan-paid" ? "kart ödendi" : "tutar kartın kalanını aşıyor"}. Kalan kadar yazın ya da fazlasını avans olarak kaydedin.`, 409, { code: `${code}-cancelled`, field: "amount" });
+              overpay = true;
+              return send(flags);
+            }
+            throw error;
+          }
+        };
         const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         if (result.replayed) {
           applyPlan(result);
@@ -1394,6 +1422,21 @@
       else refreshOpen();
     }, 350);
   });
+  // 2.3.0 İz 5.5 Hızlı Arama: Taksitler listesi, yeni kart, gruplar ve Excel'den yükleme (yetkiye göre).
+  HOF.search?.register(() =>
+    HOF.can("plans.view")
+      ? [
+          { group: "Sayfa", label: `${moduleName()} Listesi`, path: moduleName(), keywords: ["Taksit Kartları", "Ödeme Planı", "Aidat"], run: () => open() },
+          ...(canManage()
+            ? [
+                { group: "İşlem", label: "Yeni Taksit Kartı", path: moduleName(), keywords: ["Kart Aç", "Taksitlendir"], run: () => { open(); return editPlan(null, null); } },
+                { group: "Ayar", label: "Taksit Grupları", path: moduleName(), keywords: ["Grup", "Alt Grup"], run: () => { open(); return openGroups(); } },
+                { group: "İşlem", label: "Taksit Kartlarını Excel / Sheets'ten Yükle", path: moduleName(), keywords: ["Toplu Taksit", "İçe Aktar"], run: () => { open(); return importFromExcel(); } },
+              ]
+            : []),
+        ]
+      : [],
+  );
   HOF.plans = {
     open,
     pay,

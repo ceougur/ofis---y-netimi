@@ -1,0 +1,34 @@
+======================================================================
+ERROR: bagimsiz (unittest.loader._FailedTest.bagimsiz)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: bagimsiz
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.bagimsiz'
+
+
+======================================================================
+ERROR: bagimsiz (unittest.loader._FailedTest.bagimsiz)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: bagimsiz
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.bagimsiz'
+
+
+======================================================================
+ERROR: bagimsiz (unittest.loader._FailedTest.bagimsiz)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: bagimsiz
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test.bagimsiz'
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (errors=3)

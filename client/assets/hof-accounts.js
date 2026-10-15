@@ -49,7 +49,8 @@
     in: {
       cash: () => ENTRY_HELP.in,
       bank: (picked, none) => (none ? "Cariden para alındı: bakiyeden düşer; banka hesabının açılışından önceki hareket olduğu için hiçbir hesaba girmez, Hesabı Atanmamış Eski Hareketler'de (Havale / EFT) kalır, makbuzu alınır." : picked ? "Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır." : "Cariden para alındı: bakiyeden düşer; banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır, makbuzu alınır."),
-      card: () => "Cariden POS ile tahsil edildi: bakiyeden düşer; Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır.",
+      // 2.3.0 (İz 3.2; plan §4.6 "ödeme iadesi (giriş) → Kredi Kartı"): "Kredi Kartına İade" işaretliyse tedarikçi parayı firmanın kredi kartına iade etti.
+      card: (picked, none, refund) => (refund ? (none ? "Tedarikçi parayı kredi kartımıza iade etti: bakiyeden düşer; kartın açılışından önceki hareket olduğu için hiçbir kartın borcuna yazılmaz, Hesabı Atanmamış Eski Hareketler'de (POS / Kart) kalır." : picked ? "Tedarikçi parayı kredi kartımıza iade etti: bakiyeden düşer, seçilen kredi kartının borcu azalır; POS satışı oluşmaz, Kasa değişmez." : "Tedarikçi parayı kredi kartımıza iade etti: kredi kartı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (POS / Kart) yazılır.") : "Cariden POS ile tahsil edildi: bakiyeden düşer; Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır."),
       cheque: () => "Cariden çek / senet alındı: evrak formu açılır; evrak portföye girer, carinin bakiyesinden düşer, Kasa değişmez.",
     },
     out: {
@@ -68,8 +69,10 @@
     const form = dialog?.querySelector("form");
     const intro = dialog?.querySelector(".hof-modal-text");
     const method = form?.querySelector('[name="method"]')?.value || "cash";
-    const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" ? form?.querySelector('[data-bank-pick="card"]') : null;
-    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick), pick?.querySelector("select")?.value === "none");
+    // 2.3.0 (İz 3.2): tahsilatta kart yolu POS'tur; "Kredi Kartına İade" işaretliyse kart seçicisi (kart borcu azalır).
+    const refund = method === "card" && Boolean(form?.querySelector('input[name="cardRefund"]')?.checked);
+    const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" && (type === "out" || refund) ? form?.querySelector('[data-bank-pick="card"]') : null;
+    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick), pick?.querySelector("select")?.value === "none", refund);
     if (intro && text) intro.textContent = wrap(text);
   }
   const LEDGER_FILTERS = [
@@ -291,7 +294,7 @@
       const next = item.next ? `<small class="${item.next.days < 0 ? "is-warn" : ""}">${esc(HOF.formatDate(item.next.dueDate))} · ${item.next.days < 0 ? `${Math.abs(item.next.days)} gün gecikti` : "sıradaki taksit"}</small>` : "";
       const plansCell = item.activePlans ? `<b>${esc(money(item.planRemaining))}</b><small>${item.activePlans} kart${item.overdueCount ? ` · <span class="is-warn">${item.overdueCount} geciken</span>` : ""}</small>${next}` : '<small class="hof-muted">—</small>';
       const extra = item.extra?.length ? `<small class="hof-acc-extra">${item.extra.map(field => `${esc(field.label)}: ${esc(field.value)}`).join(" · ")}</small>` : "";
-      return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${isSelected(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}</td><td>${plansCell}</td></tr>`;
+      return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${isSelected(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}${item.doubtfulOpen > 0.005 ? ` <span class="hof-plan-badge is-late" data-doubtful-badge title="Şüpheli alacakta: ${esc(money(item.doubtfulOpen))}">Şüpheli</span>` : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}</td><td>${plansCell}</td></tr>`;
     };
     const allChecked = (view.selectAll && !view.excluded.size) || (!view.selectAll && data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id)));
     const total = data?.total ?? data?.accounts.length ?? 0;
@@ -333,7 +336,7 @@
       if (!entry) return "";
       const receipt = entry.kind === "in" || entry.kind === "out" ? `<a class="hof-mini hof-mini-text" href="/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(entry.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz (PDF)">Makbuz</a>` : "";
       if (entry.source === "invoice") return HOF.can("invoices.view") ? `<button type="button" class="hof-mini hof-mini-text" data-open-invoice="${esc(entry.sourceId)}" title="Faturadan gelir; Fatura ekranından iptal edilir ya da iade kesilir">Fatura</button>` : '<small class="hof-muted" title="Faturadan gelir">faturadan</small>';
-      const stock = entry.source === "stock" ? '<small class="hof-muted" title="Stok hareketinden gelir; Stok’tan düzeltilir">stoktan</small>' : entry.source === "cheque" ? (HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.sourceId)}" title="Çek / senetten gelir; evrak kartından geri alınır" aria-label="Çek / senet kartını aç">↗</button>` : '<small class="hof-muted" title="Çek / senetten gelir; evrak kartından geri alınır">çek / senet</small>') : "";
+      const stock = entry.source === "stock" ? '<small class="hof-muted" title="Stok hareketinden gelir; Stok’tan düzeltilir">stoktan</small>' : entry.source === "doubtful" ? '<small class="hof-muted" title="Değersiz alacak yazımından gelir; Şüpheli Alacak bölümündeki satırdan silinir">şüpheli alacaktan</small>' : entry.source === "cheque" ? (HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.sourceId)}" title="Çek / senetten gelir; evrak kartından geri alınır" aria-label="Çek / senet kartını aç">↗</button>` : '<small class="hof-muted" title="Çek / senetten gelir; evrak kartından geri alınır">çek / senet</small>') : "";
       return `${receipt}${stock}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}`;
     };
     const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : ""))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}${line.invoiceId && line.origin === "account" ? ` <a href="#" class="hof-plan-receipt" data-open-invoice="${esc(line.invoiceId)}" title="Bu kayıt seçilen faturayı kapatır">Faturaya Bağlı</a>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
@@ -347,7 +350,7 @@
     const active = account.status === "active";
     HOF.swap(root, `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
-          <div class="hof-plan-title"><h3>${account.refNo ? `<span class="hof-plan-refno" title="Cari No">No ${esc(account.refNo)}</span>` : ""}${esc(account.name)} ${typeBadge(account.type)}${active ? "" : badgeMuted("Pasif")}</h3><small>${esc(whereText(account) || "Grupsuz")}${account.phone ? ` · ${esc(account.phone)}` : ""}</small></div></div>
+          <div class="hof-plan-title"><h3>${account.refNo ? `<span class="hof-plan-refno" title="Cari No">No ${esc(account.refNo)}</span>` : ""}${esc(account.name)} ${typeBadge(account.type)}${active ? "" : badgeMuted("Pasif")}${doubtfulBadge(account.doubtful)}</h3><small>${esc(whereText(account) || "Grupsuz")}${account.phone ? ` · ${esc(account.phone)}` : ""}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Cari işlemleri">
           <span class="hof-plan-toolgroup">${collect ? '<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="debt" title="Cari size borçlanır">Borç Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="credit" title="Siz cariye borçlanırsınız">Alacak Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="out" title="Cariye para verildi (Kasa, banka hesabı ya da kredi kartı)">− Ödeme</button>' : ""}${canPlan() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="newPlan" title="Bu cariye taksit kartı aç">+ Taksit Planı</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(account), "card", "Cari Ekstre - PDF") : ""}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
@@ -378,10 +381,12 @@
       ${HOF.can("invoices.view") && HOF.invoices ? '<div class="hof-plan-section"><h4>Faturalar <span data-acc-inv-count></span></h4><button type="button" class="hof-link-button" data-act="allInvoices">Tümünü Gör</button></div><div class="hof-cash-list" data-acc-invoices><p class="hof-empty">Yükleniyor…</p></div>' : ""}
       <div class="hof-plan-section"><h4>Taksit Kartları <span>${account.plans.length}</span></h4></div>
       <div class="hof-cash-list hof-plans-items">${account.plans.length ? `<table class="hof-table hof-cash-table hof-plans-table"><thead><tr><th class="hof-plan-no">No</th><th>Kart</th><th class="num">Toplam</th><th class="num">Ödenen</th><th class="num">Kalan</th><th>Durum</th></tr></thead><tbody>${account.plans.map(planRow).join("")}</tbody></table>` : `<p class="hof-empty">Bu carinin taksit kartı yok.${canPlan() ? " <b>+ Taksit Planı</b> ile açın; tahsilatlar taksitten düşer ve burada görünür." : ""}</p>`}</div>
+      ${doubtfulSectionHtml(account)}
       <div class="hof-plan-section"><h4>Hareketler <span>${account.ledger.length}</span></h4>${account.ledger.length ? `<span class="hof-plan-chips" role="group">${LEDGER_FILTERS.map(([id, label, check]) => `<button type="button" data-ledger-filter="${id}" aria-pressed="${String(id === view.ledgerFilter)}">${label} <b>${account.ledger.filter(check).length}</b></button>`).join("")}</span>` : ""}</div>
       <div class="hof-cash-list hof-plans-entries">${lines.length ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>İşlem</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th></th></tr></thead><tbody>${lines.map(ledgerRow).join("")}</tbody><tfoot><tr><td></td><td>Toplam</td><td class="num hof-cash-out">${esc(money(sums.debit))}</td><td class="num hof-cash-in">${esc(money(sums.credit))}</td><td></td><td></td></tr></tfoot></table>` : account.ledger.length ? '<p class="hof-empty">Bu süzgeçte hareket yok.</p>' : '<p class="hof-empty">Henüz hareket yok. Tahsilat, borç, alacak ve ödeme burada, yürüyen bakiyeyle görünür.</p>'}</div>
       <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="back">Listeye Dön</button><button type="button" class="hof-button" data-close>Kapat</button></div>`);
     loadAccountInvoices(account);
+    loadDoubtful(account);
   }
   // Cari kartında son faturalar (v2.0.15): kesilen, alınan, iade, taslak ve iptal; satırdan fatura açılır.
   let invoiceTicket = 0;
@@ -777,6 +782,9 @@
         ...(type === "in" || type === "out"
           ? [{ name: "method", label: type === "in" ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: entry?.method || "cash", options: [...HOF.payMethods(type === "in" ? "in" : "out"), ...(!entry && HOF.cheques?.newFor && HOF.can("cheques.manage") ? [{ value: "cheque", label: type === "in" ? "Çek / Senet (portföye alınır)" : "Çek / Senet (verilir)" }] : [])] }]
           : []),
+        // 2.3.0 (İz 3.2; plan §4.6 "alıştan iade, ödeme iadesi (giriş) → Kredi Kartı; POS satışı oluşmaz, 309 düşer"): tahsilatta Kredi Kartı yolu POS'tur;
+        // tedarikçi parayı firmanın kredi kartına iade ettiyse bu kutu işaretlenir → POS alanı yerine kredi kartı seçicisi (yalnız yol Kredi Kartı iken görünür).
+        ...(type === "in" && HOF.bank?.attachPicker ? [{ name: "cardRefund", label: "Kredi Kartına İade (tedarikçi parayı firmanın kredi kartına iade etti; POS tahsilatı değil)", type: "checkbox", value: entry?.cardRefund === true }] : []),
         // v2.0.13: yanlış yönde yazılan borç/alacak düzeltilirken yön değiştirilebilir (açılış bakiyesi gibi).
         ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
         { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
@@ -786,17 +794,27 @@
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
       onOpen: dialog => {
         // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
-        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
+        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : type === "in" ? { value: entry?.cardRefund === true ? entry.finRef || "" : "", keepLabel: "" } : null;
         // 2.7: seçicide bakiye — tahsilat hesaba girer, ödeme çıkar (kartla ödeme kart borcunu artırır); düzeltmede eski tutar bakiyede (original).
         const original = entry && (entry.method === "bank" || entry.method === "card") && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null;
         // 2.2.0 (İz 3.2): tahsilatta kart yolu POS'tur — POS, POS Taksit Sayısı, Provizyon No, Kartın Son 4 Hanesi ve önizleme (düzeltmede satırın
         // POS kaydından). Cari "POS İadesi" Banka → POS → POS İşlemleri → İade'den (asıl satışa bağlı).
-        const pos = type === "in" ? { value: entry?.method === "card" ? entry.finRef || "" : "", row: entry ? `account_entries:${entry.id}` : "" } : null;
+        const pos = type === "in" ? { value: entry?.method === "card" && entry?.cardRefund !== true ? entry.finRef || "" : "", row: entry && entry.cardRefund !== true ? `account_entries:${entry.id}` : "" } : null;
         const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card, pos, direction: type === "out" ? "out" : "in", original }) : null;
         // Ek iş B: açıklama yola göre (seçici yerleşince ve yol değişince).
         if (money_) {
+          // "Kredi Kartına İade" kutusu yalnız yol Kredi Kartı iken görünür.
+          const syncCardRefund = () => {
+            const form = dialog.querySelector("form");
+            const box = form?.querySelector('input[name="cardRefund"]')?.closest(".hof-check");
+            if (box) box.hidden = form.querySelector('[name="method"]')?.value !== "card";
+          };
           // Yol ya da hesap seçimi değişince (Hesapsız (Açılıştan Önce) dahil); dinleyici formda — seçici yeniden kurulsa da çalışır.
-          dialog.querySelector("form")?.addEventListener("change", () => syncEntryHelp(dialog, type));
+          dialog.querySelector("form")?.addEventListener("change", () => {
+            syncCardRefund();
+            syncEntryHelp(dialog, type);
+          });
+          syncCardRefund();
           syncEntryHelp(dialog, type);
           Promise.resolve(picker).then(() => syncEntryHelp(dialog, type)).catch(() => null);
         }
@@ -823,6 +841,195 @@
         HOF.toast(`${entry ? "Hareket düzeltildi" : `${ENTRY_LABEL[type]} kaydedildi`}. Bakiye ${money(Math.abs(result.totals.balance))}${sideWord(result.totals.balance) ? ` ${sideWord(result.totals.balance)}` : ""}.`, { type: "success", action: receipt });
       },
     });
+  }
+
+  // ---------- Şüpheli Ticari Alacaklar (2.3.0 İz 1.6; plan §3.11b; sunucu routes/doubtful.mjs) ----------
+  // Yalnız müşteri carisinde (K2). Düğmeler yalnız canDoubtful (Cari Yönetimi + Şüpheli Alacak İşlemleri) ile; bilgi herkese görünür.
+  // Tahsil edilen / kalan sunucuda her seferinde türetilir (K3); kart bakiyesi şüpheliyi de kapsar (120 + 128 = kart).
+  const DOUBTFUL_REASONS = [["cheque", "Karşılıksız Çek"], ["note", "Protestolu Senet"], ["lawsuit", "Dava"], ["enforcement", "İcra"], ["other", "Diğer"]];
+  const minorMoney = minor => money((Number(minor) || 0) / 100);
+  const doubtfulUrl = (accountId, tail = "") => `/api/workspace/accounts/${encodeURIComponent(accountId)}/doubtful${tail}`;
+  const doubtfulBadge = summary => (summary && summary.openMinor > 0 ? ` <span class="hof-plan-badge is-late" data-doubtful-badge title="Şüpheli alacakta: ${esc(minorMoney(summary.openMinor))}">Şüpheli</span>` : "");
+  function doubtfulSectionHtml(account) {
+    const d = account.doubtful;
+    if (!d || (account.type !== "customer" && !d.count)) return "";
+    const taken = d.openMinor + d.collectedMinor + d.writtenOffMinor + d.releasedMinor;
+    const facts = d.count
+      ? `<dl class="hof-plan-facts hof-acc-doubtful-facts" data-doubtful-facts>
+          <div><dt>Şüpheliye Alınan</dt><dd data-dbt="taken">${esc(minorMoney(taken))}</dd></div>
+          <div><dt>Karşılık</dt><dd data-dbt="provision">${esc(minorMoney(d.provisionMinor))}</dd></div>
+          <div><dt>Tahsil Edilen</dt><dd data-dbt="collected">${esc(minorMoney(d.collectedMinor))}</dd></div>
+          <div><dt>Değersiz Yazılan</dt><dd data-dbt="writtenOff">${esc(minorMoney(d.writtenOffMinor))}</dd></div>
+          <div><dt>Şüpheliden Çıkarılan</dt><dd data-dbt="released">${esc(minorMoney(d.releasedMinor))}</dd></div>
+          <div><dt>Kalan (Şüphelide)</dt><dd data-dbt="open"><b>${esc(minorMoney(d.openMinor))}</b></dd></div>
+        </dl>`
+      : `<p class="hof-empty" data-doubtful-empty>Şüpheli alacak yok.${account.canDoubtful ? " Tahsili şüpheli hâle gelen borç (karşılıksız çek, protestolu senet, dava, icra) <b>Şüpheli Alacağa Al</b> ile 128 hesabına alınır; bakiye değişmez, tahsilat önce şüpheliden düşer." : ""}</p>`;
+    return `<div class="hof-plan-section"><h4>Şüpheli Alacak <span>${d.count}</span>${doubtfulBadge(d)}</h4>${account.canDoubtful ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="doubtfulTake" title="Borç bakiyesinin tahsili şüpheli kısmını 128 Şüpheli Ticari Alacaklar hesabına alır; cari bakiyesi değişmez">Şüpheli Alacağa Al</button>' : '<span class="hof-muted" data-doubtful-noperm>Şüpheli Alacak İşlemleri yetkisi gerekir; yöneticinize başvurun.</span>'}</div>
+      <div class="hof-cash-list hof-acc-doubtful" data-acc-doubtful>${facts}${d.count ? '<p class="hof-empty" data-doubtful-list>Yükleniyor…</p>' : ""}</div>`;
+  }
+  // Kayıt listesi (kart açılınca; cari kartının özeti sunucudan gelir, kayıtlar ayrıca okunur).
+  let doubtfulTicket = 0;
+  async function loadDoubtful(account) {
+    const slot = body()?.querySelector("[data-doubtful-list]");
+    if (!slot) return;
+    const ticket = ++doubtfulTicket;
+    try {
+      const data = await HOF.api(doubtfulUrl(account.id));
+      if (ticket !== doubtfulTicket || !slot.isConnected) return;
+      const can = account.canDoubtful;
+      const sub = record =>
+        [
+          ...record.provisions.map(item => `<small class="hof-acc-doubtful-sub">Karşılık ${esc(HOF.formatDate(item.date))} · ${esc(minorMoney(item.amountMinor))}${item.eventNo ? ` · ${esc(item.eventNo)}` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${can ? ` <button type="button" class="hof-mini hof-mini-danger" data-dbt-prov-del="${esc(item.id)}" data-dbt-id="${esc(record.id)}" title="Karşılığı sil" aria-label="Karşılığı sil">×</button>` : ""}</small>`),
+          ...record.writeOffs.map(item => `<small class="hof-acc-doubtful-sub">Değersiz ${esc(HOF.formatDate(item.date))} · ${esc(minorMoney(item.amountMinor))}${item.eventNo ? ` · ${esc(item.eventNo)}` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${can ? ` <button type="button" class="hof-mini hof-mini-danger" data-dbt-wo-del="${esc(item.entryId)}" data-dbt-id="${esc(record.id)}" title="Değersiz alacak satırını sil" aria-label="Değersiz alacak satırını sil">×</button>` : ""}</small>`),
+        ].join("");
+      const actions = record =>
+        can
+          ? `${record.stateKey === "open" ? `<button type="button" class="hof-mini hof-mini-text" data-dbt-act="provision" data-dbt-id="${esc(record.id)}" title="VUK 323: B 654 / A 129; en çok kalan şüpheli tutar">Karşılık Ayır</button><button type="button" class="hof-mini hof-mini-text" data-dbt-act="writeoff" data-dbt-id="${esc(record.id)}" title="Kesinleşmiş kayıp: cari bakiyesi o tutar kadar kapanır">Değersiz Alacak Yaz</button><button type="button" class="hof-mini hof-mini-text" data-dbt-act="release" data-dbt-id="${esc(record.id)}" title="Kalanı 120'ye geri alır (B 120 / A 128); karşılık 644'e çözülür">Şüpheliden Çıkar</button>` : ""}<button type="button" class="hof-mini hof-mini-danger" data-dbt-act="delete" data-dbt-id="${esc(record.id)}" title="Kaydı sil (Silinenler'e)" aria-label="Kaydı sil">×</button>`
+          : "";
+      slot.outerHTML = data.records.length
+        ? `<table class="hof-table hof-cash-table hof-acc-doubtful-table" data-doubtful-list><thead><tr><th>Tarih</th><th>Neden</th><th class="num">Tutar</th><th class="num">Karşılık</th><th class="num">Tahsil Edilen</th><th class="num">Değersiz</th><th class="num">Kalan</th><th>Durum</th><th></th></tr></thead><tbody>${data.records
+            .map(record => `<tr data-doubtful-record="${esc(record.id)}" class="is-${esc(record.stateKey)}"><td>${esc(HOF.formatDate(record.date))}${record.eventNo ? `<small>${esc(record.eventNo)}</small>` : ""}</td><td><b>${esc(record.reasonLabel)}</b>${record.chequeSerialNo ? `<small>Evrak No ${esc(record.chequeSerialNo)}</small>` : ""}${record.note ? `<small>${esc(record.note)}</small>` : ""}${sub(record)}</td><td class="num">${esc(minorMoney(record.amountMinor))}</td><td class="num">${esc(minorMoney(record.provisionMinor))}</td><td class="num">${esc(minorMoney(record.collectedMinor))}</td><td class="num">${esc(minorMoney(record.writtenOffMinor))}</td><td class="num"><b>${esc(minorMoney(record.remainingMinor))}</b></td><td><span class="hof-plan-badge ${record.stateKey === "open" ? "is-late" : record.stateKey === "collected" ? "is-done" : "is-muted"}">${esc(record.statusLabel)}</span>${record.closedOn ? `<small>${esc(HOF.formatDate(record.closedOn))}</small>` : ""}</td><td class="hof-cash-actions">${actions(record)}</td></tr>`)
+            .join("")}</tbody></table>`
+        : '<p class="hof-empty" data-doubtful-list>Kayıt yok.</p>';
+    } catch (error) {
+      if (ticket === doubtfulTicket && slot.isConnected) slot.textContent = `Şüpheli alacak kayıtları okunamadı: ${error.message}`;
+    }
+  }
+  const doubtfulRefresh = async accountId => {
+    if (view.id === accountId && view.mode === "card") await loadAccount(accountId, { quiet: true });
+    else loadList();
+    HOF.emit("accounts-changed", { accountId });
+  };
+  /** Şüpheli Alacağa Al: account { id, name, totals, doubtful } (kart verisi); preset { chequeId, amount, reason, serialNo } evrak kısayolu. */
+  function doubtfulTakeForm(account, preset = null) {
+    const roomMinor = Math.max(0, Math.round((Number(account.totals?.balance) || 0) * 100) - (account.doubtful?.openMinor || 0));
+    const requestId = HOF.requestId();
+    const amountText = minor => office().amountText?.(minor / 100) || String(minor / 100);
+    HOF.formModal({
+      title: "Şüpheli Alacağa Al",
+      eyebrow: account.name,
+      intro: `Tutar 128 Şüpheli Ticari Alacaklar hesabına alınır (B 128 / A 120); cari bakiyesi değişmez, sonraki tahsilat önce şüpheliden düşer. En çok ${minorMoney(roomMinor)} (borç bakiyesi${account.doubtful?.openMinor ? " − zaten şüphelideki" : ""}).${preset?.serialNo ? ` Evrak No ${preset.serialNo}: neden ve tutar evraktan.` : ""}`,
+      fields: [
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: preset?.amount !== undefined ? amountText(Math.round(Number(preset.amount) * 100)) : roomMinor ? amountText(roomMinor) : "", autofocus: true },
+        { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: office().todayIso?.() || "" },
+        { name: "reason", label: "Neden", type: "select", value: preset?.reason || "lawsuit", options: DOUBTFUL_REASONS.map(([value, label]) => ({ value, label })) },
+        { name: "note", label: "Açıklama", maxlength: 300, placeholder: "Ör. dava dosya no, icra dairesi" },
+      ],
+      submitLabel: "Şüpheli Alacağa Al",
+      onSubmit: async data => {
+        const result = await HOF.api(doubtfulUrl(account.id), { method: "POST", body: { amount: data.amount, date: data.date, reason: data.reason, note: data.note, ...(preset?.chequeId ? { chequeId: preset.chequeId } : {}) }, requestId });
+        await doubtfulRefresh(account.id);
+        HOF.toast(result.replayed ? "Bu işlem zaten kaydedildi; ikinci kez yazılmadı." : `Şüpheli alacağa alındı: ${minorMoney(result.record?.amountMinor)} · şüphelide ${minorMoney(result.summary?.openMinor)}.`, { type: result.replayed ? "info" : "success" });
+      },
+    });
+  }
+  function doubtfulProvisionForm(account, record) {
+    const requestId = HOF.requestId();
+    const room = Math.max(0, record.remainingMinor - record.provisionMinor);
+    HOF.formModal({
+      title: "Karşılık Ayır",
+      eyebrow: `${account.name} · ${record.reasonLabel} · ${minorMoney(record.amountMinor)}`,
+      intro: `VUK 323: B 654 Karşılık Giderleri / A 129. Bu kayıtta kalan şüpheli ${minorMoney(record.remainingMinor)}, ayrılmış karşılık ${minorMoney(record.provisionMinor)}; en çok ${minorMoney(room)} daha ayrılabilir. Tahsilat gelince karşılık kalanı aşarsa aşan kısım 644'e çözülür.`,
+      fields: [
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: room ? office().amountText?.(room / 100) || String(room / 100) : "", autofocus: true },
+        { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: office().todayIso?.() || "" },
+        { name: "note", label: "Açıklama", maxlength: 300 },
+      ],
+      submitLabel: "Karşılık Ayır",
+      onSubmit: async data => {
+        const result = await HOF.api(doubtfulUrl(account.id, `/${encodeURIComponent(record.id)}/provision`), { method: "POST", body: data, requestId });
+        await doubtfulRefresh(account.id);
+        HOF.toast(result.replayed ? "Bu işlem zaten kaydedildi; ikinci kez yazılmadı." : `Karşılık ayrıldı: ${minorMoney(result.record?.provisionMinor)}.`, { type: result.replayed ? "info" : "success" });
+      },
+    });
+  }
+  function doubtfulWriteOffForm(account, record) {
+    const requestId = HOF.requestId();
+    HOF.formModal({
+      title: "Değersiz Alacak Yaz",
+      eyebrow: `${account.name} · ${record.reasonLabel} · ${minorMoney(record.amountMinor)}`,
+      intro: `Kesinleşmiş kayıp: karşılık varsa önce 129'dan, kalanı 659 Diğer Olağandışı Gider'den düşer; A 128. Cari kartına "Değersiz Alacak" alacak satırı yazılır, bakiye o tutar kadar kapanır. En çok ${minorMoney(record.remainingMinor)} (kalan şüpheli).`,
+      fields: [
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: office().amountText?.(record.remainingMinor / 100) || String(record.remainingMinor / 100), autofocus: true },
+        { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: office().todayIso?.() || "" },
+        { name: "note", label: "Açıklama", maxlength: 300, placeholder: "Ör. mahkeme kararı, aciz vesikası" },
+      ],
+      submitLabel: "Değersiz Alacak Yaz",
+      onSubmit: async (data, dialog) => {
+        const go = await HOF.confirm({ title: "Değersiz Alacak Yaz", message: `${String(data.amount).trim()} ₺ değersiz alacak yazılacak: ${account.name} carisinin bakiyesi o tutar kadar kapanır, tutar gider olarak defterde kalır. Kayıt Silinenler'den geri yüklenebilir. Devam edilsin mi?`, confirmLabel: "Değersiz Alacak Yaz", danger: true });
+        if (!go) {
+          const error = dialog?.dialog?.querySelector(".hof-form-error");
+          if (error) error.textContent = "Kaydedilmedi: değersiz alacak yazımı onaylanmadı.";
+          return true;
+        }
+        const result = await HOF.api(doubtfulUrl(account.id, `/${encodeURIComponent(record.id)}/write-off`), { method: "POST", body: data, requestId });
+        await doubtfulRefresh(account.id);
+        HOF.toast(result.replayed ? "Bu işlem zaten kaydedildi; ikinci kez yazılmadı." : `Değersiz alacak yazıldı: ${minorMoney(result.record?.writtenOffMinor)} · şüphelide kalan ${minorMoney(result.record?.remainingMinor)}.`, { type: result.replayed ? "info" : "success" });
+      },
+    });
+  }
+  function doubtfulReleaseForm(account, record) {
+    const requestId = HOF.requestId();
+    HOF.formModal({
+      title: "Şüpheliden Çıkar",
+      eyebrow: `${account.name} · ${record.reasonLabel} · ${minorMoney(record.amountMinor)}`,
+      intro: `Kalan şüpheli tutar (${minorMoney(record.remainingMinor)}) 120'ye geri alınır (B 120 / A 128)${record.provisionMinor ? `; ayrılmış karşılık (${minorMoney(record.provisionMinor)}) 644 Konusu Kalmayan Karşılıklar'a çözülür` : ""}. Cari bakiyesi değişmez.`,
+      fields: [
+        { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: office().todayIso?.() || "" },
+        { name: "note", label: "Açıklama", maxlength: 300, placeholder: "Ör. uzlaşıldı, teminat alındı" },
+      ],
+      submitLabel: "Şüpheliden Çıkar",
+      onSubmit: async data => {
+        const result = await HOF.api(doubtfulUrl(account.id, `/${encodeURIComponent(record.id)}/release`), { method: "POST", body: data, requestId });
+        await doubtfulRefresh(account.id);
+        HOF.toast(result.replayed ? "Bu işlem zaten kaydedildi; ikinci kez yazılmadı." : "Şüpheliden çıkarıldı; tutar yeniden 120'de.", { type: result.replayed ? "info" : "success" });
+      },
+    });
+  }
+  async function doubtfulDelete(account, { recordId, provisionId = "", entryId = "" }) {
+    const what = provisionId ? "karşılık" : entryId ? "değersiz alacak satırı" : "şüpheli alacak kaydı";
+    const ok = await HOF.confirm({ title: provisionId ? "Karşılığı Sil" : entryId ? "Değersiz Alacak Satırını Sil" : "Şüpheli Alacak Kaydını Sil", message: `Bu ${what} silinecek; defter kaydı ters kayıtla düşer, Yönetim → Silinenler'den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    if (!ok) return;
+    try {
+      await HOF.api(doubtfulUrl(account.id, `/${encodeURIComponent(recordId)}${provisionId ? `/provisions/${encodeURIComponent(provisionId)}` : entryId ? `/write-offs/${encodeURIComponent(entryId)}` : ""}`), { method: "DELETE" });
+      await doubtfulRefresh(account.id);
+      HOF.toast(`${what[0].toLocaleUpperCase("tr-TR")}${what.slice(1)} silindi; Silinenler'den geri yüklenebilir.`, { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  async function doubtfulRecordOf(account, recordId) {
+    const data = await HOF.api(doubtfulUrl(account.id));
+    const record = data.records.find(item => item.id === recordId);
+    if (!record) throw new Error("Şüpheli alacak kaydı bulunamadı; kart yenilendi.");
+    return record;
+  }
+  async function onDoubtfulClick(button, account) {
+    try {
+      if (button.dataset.act === "doubtfulTake") return doubtfulTakeForm(account);
+      if (button.dataset.dbtProvDel) return doubtfulDelete(account, { recordId: button.dataset.dbtId, provisionId: button.dataset.dbtProvDel });
+      if (button.dataset.dbtWoDel) return doubtfulDelete(account, { recordId: button.dataset.dbtId, entryId: button.dataset.dbtWoDel });
+      const act = button.dataset.dbtAct;
+      if (!act) return false;
+      if (act === "delete") return doubtfulDelete(account, { recordId: button.dataset.dbtId });
+      const record = await doubtfulRecordOf(account, button.dataset.dbtId);
+      if (act === "provision") return doubtfulProvisionForm(account, record);
+      if (act === "writeoff") return doubtfulWriteOffForm(account, record);
+      if (act === "release") return doubtfulReleaseForm(account, record);
+    } catch (error) {
+      HOF.toastError(error);
+    }
+    return true;
+  }
+  /** Karşılıksız evrak kartından kısayol (hof-cheques.js): cari kartı okunur, form evrakın neden ve tutarıyla açılır. */
+  async function doubtfulFromCheque(cheque) {
+    try {
+      const account = await HOF.api(`/api/workspace/accounts/${encodeURIComponent(cheque.accountId)}`);
+      if (!account.canDoubtful) return HOF.toast("Şüpheli alacak işlemleri için Cari Yönetimi ve Şüpheli Alacak İşlemleri yetkisi gerekir.", { type: "error" });
+      doubtfulTakeForm(account, { chequeId: cheque.id, amount: cheque.amount, reason: cheque.instrument === "note" ? "note" : "cheque", serialNo: cheque.serialNo || "" });
+    } catch (error) {
+      HOF.toastError(error);
+    }
   }
   // Tahsilat: carinin açık taksit kartı varsa önce sorulur — taksite mi (taksitten düşer), taksit dışı mı (carinin
   // hesabına). Böylece taksitli kişinin parası yanlışlıkla taksit dışı yazılıp taksit "ödenmemiş" görünmez.
@@ -1187,6 +1394,7 @@
       return HOF.revealRecord?.(account.caseKey);
     }
     if (act === "edit") return editAccount(account);
+    if (act === "doubtfulTake" || button.dataset.dbtAct || button.dataset.dbtProvDel || button.dataset.dbtWoDel) return onDoubtfulClick(button, account);
     if (act === "saleInvoice" || act === "purchaseInvoice") {
       modal.close();
       return HOF.invoices?.newFor({ side: act === "saleInvoice" ? "sale" : "purchase", account: { id: account.id, name: account.name } });
@@ -1259,11 +1467,26 @@
     }, 350);
   });
   HOF.office = Object.assign(HOF.office || {}, { gateHtml, wireGate });
+  // 2.3.0 İz 5.5 Hızlı Arama: Cari listesi ve yeni cari / Excel'den yükleme (yetkiye göre).
+  HOF.search?.register(() =>
+    HOF.can("accounts.view")
+      ? [
+          { group: "Sayfa", label: `${moduleName()} Listesi`, path: moduleName(), keywords: ["Müşteri", "Tedarikçi", "Cari Kartları"], run: () => open() },
+          ...(canManage()
+            ? [
+                { group: "İşlem", label: "Yeni Cari", path: moduleName(), keywords: ["Cari Aç", "Müşteri Ekle", "Tedarikçi Ekle"], run: () => editAccount(null, null, {}) },
+                { group: "İşlem", label: "Cari Listesini Excel / Sheets'ten Yükle", path: moduleName(), keywords: ["Toplu Cari", "İçe Aktar"], run: () => { open(); return importFromExcel(); } },
+              ]
+            : []),
+        ]
+      : [],
+  );
   HOF.accounts = {
     open,
     picker,
     bulkPlanForm,
     syncEntryHelp,
+    doubtfulFromCheque,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: (preset, options = {}) => (canManage() ? editAccount(null, preset, options) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     collect: async accountId => {

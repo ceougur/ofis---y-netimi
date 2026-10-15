@@ -142,7 +142,12 @@ describe("2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını b
     const acc = await customer(ctx.api, "A Müşteri");
     const inv = await sale(ctx.api, acc, { qty: 3, price: 1000, cash: nakit(2000) });
     await giveBack(ctx.api, acc, inv, 1);
-    await must("kart tahsilatı", ctx.api.post(`/api/workspace/plans/${inv.planId}/entries`, { kind: "in", amount: "1500", method: "cash", date: RET_DAY }));
+    // K8 (2.3.0, plan §3.10/3): iade kartı kapattı (kalan 0) → yeni tahsilat 409 plan-paid; yönetici "Fazlasını Avans Yaz" (overpay:true) ile
+    // yazar, fazlası kartta "extra". Para akışı 2.2.0 ile aynı; senaryonun amacı (kart büyümez) değişmez.
+    const paid = await ctx.api.post(`/api/workspace/plans/${inv.planId}/entries`, { kind: "in", amount: "1500", method: "cash", date: RET_DAY });
+    assert.equal(paid.status, 409, `K8: kapanmış karta tahsilat ${paid.status} ${JSON.stringify(paid.data).slice(0, 200)}`);
+    assert.equal(paid.data?.code, "plan-paid", "K8: plan-paid");
+    await must("kart tahsilatı (Fazlasını Avans Yaz)", ctx.api.post(`/api/workspace/plans/${inv.planId}/entries`, { kind: "in", amount: "1500", method: "cash", date: RET_DAY, overpay: true }));
     await giveBack(ctx.api, acc, inv, 1, nakit(300));
     await expectCard(ctx, acc, inv, { left: 0, balance: -2200, total: 0 }, "A");
   }));

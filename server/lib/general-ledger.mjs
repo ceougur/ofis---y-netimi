@@ -9,6 +9,7 @@
 //
 // Hesap planı: Tekdüzen Hesap Planı'nın ilgili hesapları.
 import { DOCUMENT_GL, documentGl } from "./cheque-gl.mjs";
+import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal } from "./doubtful-gl.mjs";
 import { roundMoney } from "./money.mjs";
 
 export const CHART = Object.freeze({
@@ -22,6 +23,10 @@ export const CHART = Object.freeze({
   120: "Alıcılar (Müşteri Carileri)",
   121: "Alacak Senetleri",
   127: "Carisiz Taksit Kartları",
+  // 2.3.0 İz 1 (plan §3.11b; lib/doubtful-gl.mjs): şüpheli ticari alacaklar ve karşılığı (129 eksi bakiyeli), karşılık gideri (654) ve konusu
+  // kalmayan karşılık geliri (644). 659 zaten var (karşılıksız değersiz alacak).
+  128: DOUBTFUL_CHART[128],
+  129: DOUBTFUL_CHART[129],
   153: "Ticari Mallar (Stok Alımları)",
   191: "İndirilecek KDV",
   193: "Peşin Ödenen Vergiler (Stopaj)",
@@ -40,12 +45,14 @@ export const CHART = Object.freeze({
   610: "Satıştan İadeler",
   // v2.1.0 (§3.11): faiz geliri ve kambiyo kârı (banka fişi, döviz değerlemesi).
   642: "Faiz Gelirleri",
+  644: DOUBTFUL_CHART[644],
   646: "Kambiyo Kârları",
   // v2.1.0 Aşama 4 (plan §3.11): Tekdüzen Hesap Planı'ndaki adı. Kasa'ya elle giriş ve Banka Fişi'nin "Diğer Gelir"i buraya yazar (2.0.26'daki
   // ad "Diğer Olağan Gelirler (Kasaya Elle)"; tutarlar değişmez). Aşama 2'de (gözden geçirme D3) ad bilinçli olarak eski kalmıştı.
   649: "Diğer Olağan Gelir ve Kârlar",
   // v2.1.0 (§3.11): POS komisyonu, kambiyo zararı, diğer olağan giderler, finansman giderleri.
   653: "Komisyon Giderleri",
+  654: DOUBTFUL_CHART[654],
   656: "Kambiyo Zararları",
   659: "Diğer Olağan Gider ve Zararlar",
   689: "Kapatılan Kartlardan Vazgeçilen Alacaklar",
@@ -53,7 +60,9 @@ export const CHART = Object.freeze({
   770: "Genel Giderler ve Alış Faturaları",
   780: "Finansman Giderleri",
 });
-const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336"]);
+// 128 (2.3.0 İz 1): şüpheli alacak satırları da cariyi taşır — carinin defter bakiyesi 120 + 128 = cari kartı (Şüpheli Alacağa Al cari bakiyesini
+// değiştirmez; lib/doubtful-gl.mjs).
+const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336", DOUBTFUL_GL.doubtful]);
 const CONTROL = { customer: "120", supplier: "320", other: "336" };
 const cents = value => Math.round((Number(value) || 0) * 100);
 /**
@@ -88,7 +97,9 @@ export function moneyAccount(method, ref = "", refs = {}) {
 /**
  * Yevmiye maddeleri.
  * @param {object} rows  { payments, cashEntries, accountEntries, plans, planEntries, stockMoves, chequeEvents }
- *   accountEntries: { id, kind, amount, date, note, source, method, accountType, chequeDirection?, chequeInstrument?, moveReason? }
+ *   accountEntries: { id, kind, amount, date, note, source, sourceId?, method, accountType, chequeDirection?, chequeInstrument?, moveReason? }
+ *   doubtful: { records, provisions } (2.3.0 İz 1; lib/doubtful-gl.mjs applyDoubtfulToJournal) — şüpheli alacak kayıtları: carinin alacak
+ *               satırları önce 128'den düşer; al / karşılık / 644 / çıkar maddeleri eklenir
  *   plans: { id, total, status, coversBalance, date, accountType (''/null: carisiz), paid }
  *   planEntries: { id, planId, kind, amount, date, method, chequeId, chequeInstrument?, opening, accountType, bankReturned? }  (çekli 'out' = karşılıksız ters kaydı)
  *   stockMoves: { id, kind, amount, date, pay, method, reason }   (yalnız Kasa'ya/Banka'ya yazanlar; cariye yazanlar
@@ -172,6 +183,14 @@ export function journal(rows) {
     }
     // Faturanın borç/alacak satırı faturanın maddesinden gelir (yukarıda değil, aşağıda invoices döngüsünde).
     if (row.source === "invoice" && (row.kind === "debt" || row.kind === "credit")) continue;
+    // 2.3.0 İz 1 (plan §3.11b/3 "Değersiz Alacak Yaz"): cari kartındaki alacak satırı (source 'doubtful', kaydı source_id) B 659 / A 120; ayırma
+    // kuralı (applyDoubtfulToJournal) alacağı kendi kaydının 128'ine, borcu karşılık kadar 129'a taşır.
+    if (row.source === "doubtful") {
+      const n = out.length;
+      post(id, row.date, "Değersiz Alacak", row.note || "Değersiz alacak", DOUBTFUL_GL.loss, control, row.amount);
+      if (out.length > n) out[out.length - 1].doubtful = { record: String(row.sourceId || ""), writeOff: true };
+      continue;
+    }
     if (row.source === "stock") {
       if (row.kind === "debt") post(id, row.date, "Stok (veresiye satış)", row.note, control, "600", row.amount);
       else post(id, row.date, row.moveReason === "return" ? "Stok (satış iadesi)" : "Stok (açık hesap alım)", row.note, row.moveReason === "return" ? "610" : "153", control, row.amount);
@@ -300,6 +319,9 @@ export function journal(rows) {
       .map(line => ({ account: String(line.gl), debit: line.side === "D" ? Number(line.tryMinor) : 0, credit: line.side === "C" ? Number(line.tryMinor) : 0, ...(line.sub ? { sub: String(line.sub) } : {}) }));
     if (lines.length) out.push({ id: `bank:${eventId}`, date: item.date, source: "Banka fişi", text: item.text, lines });
   }
+  // 2.3.0 İz 1 (plan §3.11b; lib/doubtful-gl.mjs): şüpheli alacak kayıtları varsa carinin alacak satırları önce 128'den düşer (A 120 → A 128),
+  // al / karşılık / 644 / çıkar maddeleri eklenir. Kayıt yoksa (ya da süzgeç yüklemediyse) yevmiye 2.2.0'dakiyle aynıdır.
+  if (rows.doubtful?.records?.length) applyDoubtfulToJournal(out, rows.doubtful);
   out.sort((a, b) => (a.date === b.date ? (a.id < b.id ? -1 : 1) : a.date < b.date ? -1 : 1));
   return out;
 }

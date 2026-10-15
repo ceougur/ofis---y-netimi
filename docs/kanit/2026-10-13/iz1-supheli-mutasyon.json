@@ -1,0 +1,32 @@
+{
+  "ad": "iz1-supheli-mutasyon",
+  "komut": "node /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz1-mutasyon.mjs /home/user/ofis---y-netimi/.claude/worktrees/agent-add08b66b0506a926 /home/user/ofis---y-netimi/.claude/worktrees/agent-add08b66b0506a926/docs/kanit/2026-10-13/iz1-supheli-mutasyon",
+  "commit": "217410f4d4513e3a751fe954a14d5f8aea55ba59",
+  "dal": "worktree-agent-add08b66b0506a926",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:26:04.034Z",
+  "sure_sn": 50.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 11,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/iz1-supheli-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-add08b66b0506a926",
+  "ham_cikti_sha256": "42e8b8a1602730fe7ecf97c22be79b5aa51777895a7088655a24e54af2775b5b",
+  "ham_cikti_bayt": 2564
+}

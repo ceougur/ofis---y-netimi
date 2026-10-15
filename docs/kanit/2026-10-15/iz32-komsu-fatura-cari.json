@@ -1,0 +1,32 @@
+{
+  "ad": "iz32-komsu-fatura-cari",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-durum-222.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-kapama-k1.test.mjs test/einvoice-edm.test.mjs test/backup.test.mjs test/banka-210-goc.test.mjs test/banka-210-goc-zinciri.test.mjs test/accounts-stock.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs test/yazim-duzeni.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-230-k8-taksit.test.mjs",
+  "commit": "012c8d3b7ce8ea81e2bc5a5b7e97e6639f77dc59",
+  "dal": "worktree-agent-a20bc05b1c4590bdc",
+  "kirli": 12,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:42:40.517Z",
+  "sure_sn": 105.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 279,
+    "gecen": 279,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/iz32-komsu-fatura-cari.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc",
+  "ham_cikti_sha256": "ba05e74d63eace98ffed2facbdcad6f5f26fe7452e5ec86a86ad7d4e2bf3ed4b",
+  "ham_cikti_bayt": 98428
+}

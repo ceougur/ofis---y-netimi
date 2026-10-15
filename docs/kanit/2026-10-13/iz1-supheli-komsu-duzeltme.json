@@ -1,0 +1,32 @@
+{
+  "ad": "iz1-supheli-komsu-duzeltme",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-kapi-plan.test.mjs test/banka-210-statik.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-post-statik.test.mjs test/banka-230-supheli.test.mjs test/banka-230-supheli-bozma.test.mjs",
+  "commit": "1d0cf27af76d0f96b35a8786b4426c0749dc1318",
+  "dal": "worktree-agent-add08b66b0506a926",
+  "kirli": 1,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:42:15.494Z",
+  "sure_sn": 6.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 66,
+    "gecen": 66,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/iz1-supheli-komsu-duzeltme.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-add08b66b0506a926",
+  "ham_cikti_sha256": "a5bdab6d72131fc572c4566dd790b9aaf1000c690ebc599a345854eee25f8e1f",
+  "ham_cikti_bayt": 24699
+}

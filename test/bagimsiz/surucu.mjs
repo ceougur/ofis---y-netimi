@@ -33,8 +33,17 @@ import { ADMIN_PASSWORD, startTestServer } from "../helpers.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
-const DIL = "destekofis-senaryo/3";
-const DILLER = new Set(["destekofis-senaryo/2", DIL]); // sürüm 3 yalnız ekler (evrak işlemleri yalnız /3)
+const DIL = "destekofis-senaryo/4";
+const DIL3 = "destekofis-senaryo/3";
+const DILLER = new Set(["destekofis-senaryo/2", DIL3, DIL]); // sürüm 3 ve 4 yalnız ekler (evrak /3+, şüpheli ve fazlaAvans /4)
+// Sürüm 4 (15.10.2026; kara kutu yoklamasıyla öğrenildi, program kodu okunmadı): POST /api/workspace/accounts/:id/doubtful
+// { amount, date, reason: cheque|note|lawsuit|enforcement|other, note, chequeId? } → data.record.id; POST …/doubtful/:did/provision
+// { amount, date } → data.record.provisions[]; POST …/doubtful/:did/release { date }; POST …/doubtful/:did/write-off { amount, date };
+// DELETE …/doubtful/:did; DELETE …/doubtful/:did/provisions/:pid; GET /api/workspace/accounts/:id/doubtful → records[] (amountMinor,
+// provisionMinor, collectedMinor, writtenOffMinor, releasedMinor, remainingMinor, status open|released). Taksit: overpay:true.
+const SUPHELI_ISLEMLERI = new Set(["supheli_al", "karsilik_ayir", "supheli_cikar", "degersiz_yaz"]);
+const REASON = { karsiliksiz_cek: "cheque", protestolu_senet: "note", dava: "lawsuit", icra: "enforcement", diger: "other" };
+const DOUBTFUL_STATUS = { open: "acik", released: "cikarildi" };
 // Sürüm 3 (evrak): çek API'si kara kutu yoklamayla öğrenildi (12.10.2026; program kodu okunmadı): POST /api/workspace/cheques
 // { direction: in|out, instrument: cheque|note, amount, accountId, issueDate, dueDate }; POST /api/workspace/cheques/:id/actions
 // { action: endorse|collect|pay|bounce|bank-deposit|bank-withdraw, … }; DELETE /api/workspace/cheques/:id.
@@ -77,7 +86,7 @@ const FIELDS = {
   iade: ["asilFatura", "kalemler", "geri"],
   cari_tahsilat: ["cari", "tutar", "yol", "hesap", "kapatilacakFatura"],
   cari_odeme: ["cari", "tutar", "yol", "hesap", "kapatilacakFatura"],
-  taksit_tahsilat: ["kart", "tutar", "yol", "hesap", "taksitNo"],
+  taksit_tahsilat: ["kart", "tutar", "yol", "hesap", "taksitNo", "fazlaAvans"],
   kasa_banka: ["yon", "hesap", "tutar"],
   transfer: ["kaynak", "hedef", "tutar", "ucret", "ucretVergi"],
   banka_masraf: ["hesap", "tutar", "masrafTuru", "vergi", "saglayici", "fatura", "kdvOrani"],
@@ -100,8 +109,12 @@ const FIELDS = {
   tahsile_ver: ["evrak", "hesap"],
   bankadan_geri_al: ["evrak"],
   evrak_sil: ["evrak"],
+  supheli_al: ["cari", "tutar", "neden", "evrak", "aciklama"],
+  karsilik_ayir: ["kayit", "tutar"],
+  supheli_cikar: ["kayit"],
+  degersiz_yaz: ["kayit", "tutar"],
 };
-/** İşlem → hangi alanlar hangi türde takma ad anar (denetim ve atlama için). */
+/** İşlem → hangi alanlar hangi türde takma ad anar (denetim ve atlama için). Dizi = türlerden biri. */
 const REFS = {
   hesap_durum: { hesap: "hesap" },
   hesap_eksi_politika: { hesap: "hesap" },
@@ -123,7 +136,11 @@ const REFS = {
   kredi_kullanim: { kredi: "hesap", hedef: "hesap" },
   kredi_odeme: { kredi: "hesap", kaynak: "hesap" },
   ters_kayit: { hedef: "hareket" },
-  sil: { hedef: "hareket" },
+  sil: { hedef: ["hareket", "supheli"] },
+  supheli_al: { cari: "cari", evrak: "evrak" },
+  karsilik_ayir: { kayit: "supheli" },
+  supheli_cikar: { kayit: "supheli" },
+  degersiz_yaz: { kayit: "supheli" },
   evrak_al: { cari: "cari" },
   evrak_ver: { cari: "cari" },
   evrak_ciro: { evrak: "evrak", cari: "cari" },
@@ -141,6 +158,7 @@ const DEFINES = {
   transfer: "hareket", banka_masraf: "hareket", faiz_geliri: "hareket", faiz_gideri: "hareket", diger_gelir: "hareket", diger_gider: "hareket",
   kart_borcu_odeme: "hareket", kredi_kullanim: "hareket", kredi_odeme: "hareket", ters_kayit: "hareket",
   evrak_al: "evrak", evrak_ver: "evrak",
+  supheli_al: "supheli", karsilik_ayir: "hareket", degersiz_yaz: "hareket",
 };
 const ID_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 const ALIAS_RE = /^[A-Z][A-Z0-9_]{0,15}$/;
@@ -202,7 +220,8 @@ function validate(scenario, fileName) {
     const alias = step[field];
     if (alias === undefined) return;
     if (!ALIAS_RE.test(String(alias)) || !aliases.has(alias)) return err(`${step.id}: ${field} "${alias}" önceki bir adımda tanımlı değil.`);
-    if (aliases.get(alias) !== kind) err(`${step.id}: ${field} "${alias}" ${kind} değil (${aliases.get(alias)}).`);
+    const kinds = Array.isArray(kind) ? kind : [kind];
+    if (!kinds.includes(aliases.get(alias))) err(`${step.id}: ${field} "${alias}" ${kinds.join("/")} değil (${aliases.get(alias)}).`);
   };
   const define = (step, alias, kind) => {
     if (!ALIAS_RE.test(String(alias))) return err(`${step.id}: takma ad biçimsiz: ${alias}`);
@@ -222,7 +241,8 @@ function validate(scenario, fileName) {
       err(`${step.id}: bilinmeyen işlem ${step.islem}`);
       continue;
     }
-    if (EVRAK_ISLEMLERI.has(step.islem) && scenario.dil !== DIL) err(`${step.id}: evrak işlemleri yalnız dil sürüm 3'te.`);
+    if (EVRAK_ISLEMLERI.has(step.islem) && ![DIL3, DIL].includes(scenario.dil)) err(`${step.id}: evrak işlemleri yalnız dil sürüm 3'te.`);
+    if ((SUPHELI_ISLEMLERI.has(step.islem) || (step.islem === "taksit_tahsilat" && step.fazlaAvans !== undefined)) && scenario.dil !== DIL) err(`${step.id}: şüpheli işlemleri / fazlaAvans yalnız dil sürüm 4'te.`);
     for (const key of Object.keys(step)) {
       const plain = key.endsWith("Ham") ? key.slice(0, -3) : key;
       const known = COMMON.includes(key) || allowed.includes(key) || (key.endsWith("Ham") && AMOUNT_FIELDS.has(plain) && allowed.includes(plain));
@@ -382,9 +402,22 @@ function validate(scenario, fileName) {
         if (!["nakit", "havale"].includes(step.yol)) err(`${step.id}: yol nakit/havale olmalı.`);
         if (step.yol === "nakit" && step.hesap !== undefined) err(`${step.id}: nakit yolda hesap verilmez.`);
         break;
+      case "supheli_al":
+        if (step.evrak !== undefined) {
+          if (step.tutar !== undefined || step.neden !== undefined) err(`${step.id}: evrak kısayolunda tutar ve neden verilmez.`);
+        } else {
+          amountOk(step, "tutar");
+          if (!REASON[step.neden]) err(`${step.id}: neden listede yok (${step.neden}).`);
+        }
+        break;
+      case "karsilik_ayir":
+      case "degersiz_yaz":
+        amountOk(step, "tutar");
+        break;
       default:
         break;
     }
+    if (step.fazlaAvans !== undefined && step.fazlaAvans !== true) err(`${step.id}: fazlaAvans yalnız true.`);
     if (step.ad !== undefined && DEFINES[step.islem]) define(step, step.ad, DEFINES[step.islem]);
     else if (step.ad !== undefined && !DEFINES[step.islem]) err(`${step.id}: ${step.islem} takma ad tanımlamaz.`);
   }
@@ -517,7 +550,7 @@ async function run(scenarioPath, outPath) {
         }
         return result.data;
       };
-      const state = { mizan: {}, bankaHesaplari: {}, kasa: null, cariler: {}, stok: {}, faturalar: {}, taksitKartlari: {}, hesapKodlari: {}, eksiBakiyeDenetimi: {}, ozet: {} };
+      const state = { mizan: {}, bankaHesaplari: {}, kasa: null, cariler: {}, stok: {}, faturalar: {}, taksitKartlari: {}, supheliAlacaklar: {}, hesapKodlari: {}, eksiBakiyeDenetimi: {}, ozet: {} };
       // Mizan: Ana Defter mizanı (ana hesaplar) + Alt Hesap Mizanı (102/108/300/309 yaprakları).
       const ledger = await must("/api/workspace/ledger");
       const sub = await must("/api/workspace/bank/sub-trial");
@@ -600,6 +633,24 @@ async function run(scenarioPath, outPath) {
             continue;
           }
           state.taksitKartlari[alias] = { toplam: kurus(row.totals.total), odenen: kurus(row.totals.paid), kalan: kurus(row.totals.remaining) };
+        }
+      }
+      // Şüpheli alacaklar (sürüm 4): cari kartındaki Şüpheli Alacak listesi (GET /api/workspace/accounts/:id/doubtful) — kayıt başına
+      // tutar / karşılık / tahsil edilen / değersiz / çıkarılan / kalan / durum. Silinmiş kayıt listede yoksa çıktıda da yoktur (§8.3).
+      state.supheliAlacaklar = {};
+      const supheliCariler = new Set(aliasesOf("supheli").map(([, rec]) => rec.cariId));
+      for (const cariId of supheliCariler) {
+        const list = await must("/api/workspace/accounts/:id/doubtful", [cariId]);
+        if (!list) continue;
+        for (const [alias, rec] of aliasesOf("supheli")) {
+          if (rec.cariId !== cariId) continue;
+          const row = (list.records || []).find(item => item.id === rec.id);
+          if (!row) continue;
+          state.supheliAlacaklar[alias] = {
+            tutar: Number(row.amountMinor) || 0, karsilik: Number(row.provisionMinor) || 0, tahsilEdilen: Number(row.collectedMinor) || 0,
+            degersiz: Number(row.writtenOffMinor) || 0, cikarilan: Number(row.releasedMinor) || 0, kalan: Number(row.remainingMinor) || 0,
+            durum: DOUBTFUL_STATUS[row.status] || `tanınmadı:${row.status}`,
+          };
         }
       }
       // Özet: Banka Genel Bakış (K10) + ANLIK DURUM.
@@ -849,7 +900,8 @@ async function run(scenarioPath, outPath) {
             itemId = (plan.data.items || []).find(item => Number(item.seq) === Number(step.taksitNo))?.id;
             if (!itemId) return { unmapped: `taksit kartında ${step.taksitNo}. taksit yok.` };
           }
-          const body = { kind: "in", amount: amountOf(step, "tutar"), date, method: METHOD[step.yol], ...(step.hesap !== undefined ? { bankAccountId: idOf(step.hesap) } : {}), ...(itemId ? { itemId } : {}), ...flags };
+          // Sürüm 4 K8: fazlaAvans → "Fazlasını Avans Yaz" (overpay:true; PLAN §3.10/3).
+          const body = { kind: "in", amount: amountOf(step, "tutar"), date, method: METHOD[step.yol], ...(step.hesap !== undefined ? { bankAccountId: idOf(step.hesap) } : {}), ...(itemId ? { itemId } : {}), ...(step.fazlaAvans ? { overpay: true } : {}), ...flags };
           const result = await http(client, "POST", "/api/workspace/plans/:id/entries", [planId], body, opt);
           if (!result.ok) return refused(result);
           return { created: { tur: "hareket", hareket: "taksit", id: result.data.entryId, planId }, replayed: Boolean(result.data.replayed) };
@@ -939,7 +991,10 @@ async function run(scenarioPath, outPath) {
           const target = registry.get(step.hedef);
           const query = deleteFlags(step);
           let result;
-          if (target.hareket === "cari") result = await http(client, "DELETE", `/api/workspace/accounts/:id/entries/:entryId${query}`, [target.cariId, target.id], undefined, opt);
+          if (target.tur === "supheli") result = await http(client, "DELETE", "/api/workspace/accounts/:id/doubtful/:did", [target.cariId, target.id], undefined, opt);
+          else if (target.hareket === "karsilik") result = await http(client, "DELETE", "/api/workspace/accounts/:id/doubtful/:did/provisions/:pid", [target.cariId, target.did, target.id], undefined, opt);
+          else if (target.hareket === "degersiz") result = await http(client, "DELETE", "/api/workspace/accounts/:id/doubtful/:did/write-offs/:entryId", [target.cariId, target.did, target.id], undefined, opt);
+          else if (target.hareket === "cari") result = await http(client, "DELETE", `/api/workspace/accounts/:id/entries/:entryId${query}`, [target.cariId, target.id], undefined, opt);
           else if (target.hareket === "taksit") result = await http(client, "DELETE", `/api/workspace/plans/:id/entries/:entryId${query}`, [target.planId, target.id], undefined, opt);
           else if (target.hareket === "kasa") result = await http(client, "DELETE", `/api/workspace/cash/:id${query}`, [target.id], undefined, opt);
           else {
@@ -992,6 +1047,36 @@ async function run(scenarioPath, outPath) {
         case "evrak_sil": {
           const result = await http(client, "DELETE", "/api/workspace/cheques/:id", [idOf(step.evrak)], undefined, opt);
           return result.ok ? { done: true } : refused(result);
+        }
+        // ---------- Sürüm 4: Şüpheli Ticari Alacaklar ----------
+        case "supheli_al": {
+          const cariId = idOf(step.cari);
+          const body = {
+            date,
+            ...(step.evrak !== undefined ? { chequeId: idOf(step.evrak) } : { amount: amountOf(step, "tutar"), reason: REASON[step.neden] }),
+            ...(step.aciklama !== undefined ? { note: step.aciklama } : {}),
+            ...flags,
+          };
+          const result = await http(client, "POST", "/api/workspace/accounts/:id/doubtful", [cariId], body, opt);
+          if (!result.ok) return refused(result);
+          const id = result.data.record?.id || result.data.recordId || result.data.id;
+          if (!id) return { unmapped: "şüpheli alacak kaydı kimliği (record.id) yanıtta yok." };
+          return { created: { tur: "supheli", id, cariId }, replayed: Boolean(result.data.replayed) };
+        }
+        case "karsilik_ayir":
+        case "supheli_cikar":
+        case "degersiz_yaz": {
+          const rec = registry.get(step.kayit);
+          const path = { karsilik_ayir: "provision", supheli_cikar: "release", degersiz_yaz: "write-off" }[step.islem];
+          const body = { date, ...(step.islem !== "supheli_cikar" ? { amount: amountOf(step, "tutar") } : {}), ...flags };
+          const result = await http(client, "POST", `/api/workspace/accounts/:id/doubtful/:did/${path}`, [rec.cariId, rec.id], body, opt);
+          if (!result.ok) return refused(result);
+          if (step.islem === "supheli_cikar") return { done: true, replayed: Boolean(result.data.replayed) };
+          const list = step.islem === "karsilik_ayir" ? result.data.record?.provisions : result.data.record?.writeOffs;
+          const last = Array.isArray(list) && list.length ? list[list.length - 1] : null;
+          const id = last ? (last.id || last.entryId) : "";
+          if (!id) return { created: { tur: "hareket", hareket: step.islem === "karsilik_ayir" ? "karsilik" : "degersiz", id: "", cariId: rec.cariId, did: rec.id }, note: `${step.id}: ${path} yanıtında kayıt kimliği yok (silme hedefi olamaz).` };
+          return { created: { tur: "hareket", hareket: step.islem === "karsilik_ayir" ? "karsilik" : "degersiz", id, cariId: rec.cariId, did: rec.id }, replayed: Boolean(result.data.replayed) };
         }
         default:
           return { unmapped: `işlem tanınmadı: ${step.islem}` };
@@ -1077,6 +1162,7 @@ async function run(scenarioPath, outPath) {
         stok: "GET /api/workspace/stock?limit=5000 (Stok penceresi listesi, items[].qty).",
         faturalar: "GET /api/workspace/invoices/:id (fatura kartı: payableTotal → toplam, netTotal → matrah, vatTotal → kdv, open → acik).",
         taksitKartlari: "GET /api/workspace/plans?status=all (Taksitler penceresi listesi, plans[].totals: total → toplam, paid → odenen, remaining → kalan).",
+        supheliAlacaklar: "GET /api/workspace/accounts/:id/doubtful (cari kartı → Şüpheli Alacak listesi, records[]: amountMinor → tutar, provisionMinor → karsilik, collectedMinor → tahsilEdilen, writtenOffMinor → degersiz, releasedMinor → cikarilan, remainingMinor → kalan, status open → acik / released → cikarildi). Sürüm 4; uçlar kara kutu yoklamayla öğrenildi.",
         ozet: "GET /api/workspace/bank/summary (Banka Genel Bakış K10: realBank.minor → gercekBanka, unassigned.totalMinor → hesabiAtanmamis, debt.totalMinor → kartVeKrediBorcu); kasaVeGercekBanka = GET /api/workspace/overview (ANLIK DURUM) cash.balance + cash.bank.balance.",
         retler: "Yanıtın HTTP durumu + gövdedeki code (ret iletisi retAyrinti'de).",
         evrak: "Sürüm 3 evrak işlemleri: POST /api/workspace/cheques (alış/veriliş), POST /api/workspace/cheques/:id/actions (endorse, collect, pay, bounce, bank-deposit, bank-withdraw), DELETE /api/workspace/cheques/:id; uçlar kara kutu yoklamayla öğrenildi. Hesaplarda Çek/Senet Kullan işareti gönderilmez (BELİRSİZ-32; bu program sürümü istemedi).",

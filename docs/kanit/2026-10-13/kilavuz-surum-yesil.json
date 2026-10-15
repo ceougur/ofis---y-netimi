@@ -1,0 +1,32 @@
+{
+  "ad": "kilavuz-surum-yesil",
+  "komut": "node --test test/kilavuz-surum.test.mjs",
+  "commit": "c31d25034ab85cd52be5949b8c23d1309b773e46",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T06:11:10.815Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/kilavuz-surum-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e48ed3809caa07f8b8455fa597d4051a01e3ef2ad5ee2a4bc888cb4e84b1abfa",
+  "ham_cikti_bayt": 704
+}

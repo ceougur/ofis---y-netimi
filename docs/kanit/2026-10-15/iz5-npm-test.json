@@ -1,0 +1,38 @@
+{
+  "ad": "iz5-npm-test",
+  "komut": "npm test",
+  "commit": "083ba74d96ce86c66eb5924c7413428f1637c6b3",
+  "dal": "worktree-agent-ad77a61686fa8f8ad",
+  "kirli": 24,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:04:13.363Z",
+  "sure_sn": 1041.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2370,
+    "gecen": 2369,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede › gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok",
+      "konum": "test/banka-210-post-statik.test.mjs:87:3",
+      "hata": "bank.post dışında, izinli listede olmayan para tablosu yazımı · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/iz5-npm-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad77a61686fa8f8ad",
+  "ham_cikti_sha256": "4b323f3d171a0abd7366803180ce26927e1bb44ff22b3d35c68c70c5eae80bcb",
+  "ham_cikti_bayt": 824640
+}

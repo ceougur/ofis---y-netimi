@@ -1,4 +1,4 @@
-"""model_b mutasyon testi: model.py'ye bilerek 22 hata enjekte eder (geçici kopyalarda); her birinde
+"""model_b mutasyon testi: model.py'ye bilerek 33 hata enjekte eder (geçici kopyalarda; 22 sürüm 1–2 + 11 sürüm 4); her birinde
 test_model.py kırmızı olmalı. Koşu: python3 -I test/bagimsiz/model_b/mutasyon.py  (çıkış 1 = kaçan mutant var)."""
 import os, shutil, subprocess, sys
 KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,6 +32,25 @@ MUT = [
  ("kart odenen silinmişi sayar", 'return sum(p["tutar"] for p in d.para if p["etkin"] and p.get("kart") == tk)',
                                  'return sum(p["tutar"] for p in d.para if p.get("kart") == tk)'),
  ("engelle uyar gibi", '    if c.a.get("yineDeKaydet") and not engel:', '    if c.a.get("yineDeKaydet"):'),
+ # ── sürüm 4: şüpheli alacak (PLAN §3.11b; KABUL K1–K9) ve K8 taksit (PLAN §3.10/3)
+ ("644: tahsil kadar (plan-only okuma)", 'fazla = s["karsilik"] - s["kalan"]        # KABUL K6: karşılık ≤ kalan',
+                                          'fazla = min(s["karsilik"], x)'),
+ ("644 kuralı yok", "                        if fazla > 0:\n", "                        if False:\n"),
+ # ("aynı gün tür sırası yok": eşdeğer mutant — BELİRSİZ-35 kuralı aynı günde tür sırasının adım sırasından ayrıştığı her
+ #  birleşimi senaryo dışı bıraktığı için tür sırası olmadan da aynı sonuç çıkar; 15.10.2026'da görüldü, listeden çıkarıldı)
+ ("en yeni kayıt önce", "                    acik.sort()\n", "                    acik.sort(reverse=True)\n"),
+ ("değersiz hep 659", '                    y = min(s["karsilik"], veri["tutar"])', "                    y = 0"),
+ ("çıkarmada karşılık 644'e gitmez", '                    if s["karsilik"] > 0:\n                        satirlar.append(("129", "B", s["karsilik"], None, tarih))',
+                                      '                    if False:\n                        satirlar.append(("129", "B", s["karsilik"], None, tarih))'),
+ ("cari bakiyesinde 128 yok", 'return self.bakiye(self.cari_kodu(ck), cari=ck) + (self.bakiye("128", cari=ck) if self.cariler[ck]["tur"] == "musteri" else 0)',
+                              'return self.bakiye(self.cari_kodu(ck), cari=ck)'),
+ ("120 sınırı şüpheliyi düşmez", "        yuz_yirmi = d.cari_bakiye(ck) - acik_kalan", "        yuz_yirmi = d.cari_bakiye(ck)"),
+ ("karşılık sınırı kayıt tutarı", 'elif k is not None and s["karsilik"] + k > s["kalan"]:', 'elif k is not None and s["karsilik"] + k > r["T"]:'),
+ ("evrak alacak satırı değil", 'ALACAK_SATIRI_TURLERI = {"cari_tahsilat", "taksit_tahsilat", "iade", "evrak_al"} if KABUL_KURALLARI',
+                               'ALACAK_SATIRI_TURLERI = {"cari_tahsilat", "taksit_tahsilat", "iade"} if KABUL_KURALLARI'),
+ ("plan-paid yok", '        if not fazla and kalan == 0:\n            c.ekle(4, 409, "plan-paid", "PLAN")',
+                   '        if False:\n            c.ekle(4, 409, "plan-paid", "PLAN")'),
+ ("kart kalanı eksiye düşer", 'return max(0, d.kartlar[tk]["toplam"] - kart_odenen(d, tk))', 'return d.kartlar[tk]["toplam"] - kart_odenen(d, tk)'),
 ]
 kaynak = open(os.path.join(KOK, "model_b", "model.py"), encoding="utf-8").read()
 yakalanmayan = []
@@ -49,5 +68,6 @@ for ad, eski, yeni in MUT:
     if r.returncode == 0: yakalanmayan.append(ad)
     print(f"{durum:10} {ad:32} {son}")
 print("toplam", len(MUT), "yakalanan", len(MUT) - len(yakalanmayan), "kaçan", yakalanmayan)
+print("%d geçti, %d kaldı" % (len(MUT) - len(yakalanmayan), len(yakalanmayan)))   # tools/kanit.mjs özeti
 shutil.rmtree(HEDEF, ignore_errors=True)
 sys.exit(1 if yakalanmayan else 0)

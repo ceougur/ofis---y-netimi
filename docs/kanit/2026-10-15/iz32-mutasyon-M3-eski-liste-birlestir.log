@@ -1,0 +1,63 @@
+TAP version 13
+# Subtest: A — Fatura Ayarları → Banka Hesapları (E2.16 / \#31): ilk hesap açılana kadar eski liste; sonra yalnız IBAN Faturada Gösterilsin işaretli hesaplar
+    # Subtest: A1 hesap yokken: bankAccounts.active false; eski liste düzenlenir ve belgeye basılır
+    ok 1 - A1 hesap yokken: bankAccounts.active false; eski liste düzenlenir ve belgeye basılır
+      ---
+      duration_ms: 513.900074
+      type: 'test'
+      ...
+    # Subtest: A2 ilk hesap açılınca: belgede yalnız işaretli hesap (eski listedeki B basılmaz); B öneriye döner; PUT eski listeyi değiştirmez; işaret kalkınca / hesap pasifken listeden düşer
+    not ok 2 - A2 ilk hesap açılınca: belgede yalnız işaretli hesap (eski listedeki B basılmaz); B öneriye döner; PUT eski listeyi değiştirmez; işaret kalkınca / hesap pasifken listeden düşer
+      ---
+      duration_ms: 351.225093
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/fatura-230-ayarlar-banka.test.mjs:49:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        belgede yalnız hesaptan gelen IBAN (eski listedeki B basılmaz)
+        + actual - expected
+        
+          [
+            'TR380001000000000001111111',
+        +   'TR050006200000000002222222'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'TR380001000000000001111111'
+      actual:
+        0: 'TR380001000000000001111111'
+        1: 'TR050006200000000002222222'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/fatura-230-ayarlar-banka.test.mjs:59:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A3 göç v24: hiçbir hesap işaretli değilse eski listedeki IBAN'ı taşıyan hesaplar bir kez işaretlenir; işaretli hesap varsa dokunulmaz; silinmiş hesap işaretlenmez
+    ok 3 - A3 göç v24: hiçbir hesap işaretli değilse eski listedeki IBAN'ı taşıyan hesaplar bir kez işaretlenir; işaretli hesap varsa dokunulmaz; silinmiş hesap işaretlenmez
+      ---
+      duration_ms: 377.023547
+      type: 'test'
+      ...
+    1..3
+not ok 1 - A — Fatura Ayarları → Banka Hesapları (E2.16 / \#31): ilk hesap açılana kadar eski liste; sonra yalnız IBAN Faturada Gösterilsin işaretli hesaplar
+  ---
+  duration_ms: 1244.391991
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/fatura-230-ayarlar-banka.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 2
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1658.98488

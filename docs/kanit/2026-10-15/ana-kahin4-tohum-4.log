@@ -1,0 +1,6 @@
+rastgele-s4-4-500: çıkış a=0 b=0 program=0 · karşılaştırılan 5608 · atlanan 706 · fark 88 {'A=B≠P': 88}
+  ACIKLANMAMIS:A=B≠P:supheliAlacaklar.*.kalan                     2 yaprak  {'A=B≠P': 2}
+  ACIKLANMAMIS:A=B≠P:supheliAlacaklar.*.tahsilEdilen              2 yaprak  {'A=B≠P': 2}
+  KDV-DAHIL-ISKONTO                                              62 yaprak  {'A=B≠P': 62}
+  TUREV:KDV-DAHIL-ISKONTO                                        22 yaprak  {'A=B≠P': 22}
+5520 denetim geçti, 4 başarısız (bilinen sınıf 84 yaprak, toplam fark 88)

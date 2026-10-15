@@ -1,5 +1,5 @@
 /* DestekOfis — akıllı arama: Türkçe karakter duyarsız eşleşme, Enter ile ilk sonuca gitme (gerekirse sonucun sekmesine
- * geçerek), Ctrl+K kısayolu. */
+ * geçerek), Ctrl+Shift+F kısayolu (Ctrl+K 2.3.0'dan beri menü üstündeki Hızlı Arama'nındır; hof-palette.js). */
 (() => {
   "use strict";
   const HOF = window.HOF;
@@ -17,7 +17,7 @@
     if (input.dataset.hofSearch) return;
     input.dataset.hofSearch = "1";
     const field = input.closest(".search-field");
-    if (field && !field.querySelector(".smart-search-hint")) field.appendChild(HOF.el("span", { class: "smart-search-hint", text: "Enter · ilk sonuca git  ·  Ctrl+K" }));
+    if (field && !field.querySelector(".smart-search-hint")) field.appendChild(HOF.el("span", { class: "smart-search-hint", text: "Enter · ilk sonuca git  ·  Ctrl+Shift+F" }));
     // Enter: açık sekmedeki ilk sonuca, açık sekmede sonuç yoksa sonucu olan ilk sekmedeki ilk kayda gider (v1.7.0: "Tümü"
     // sekmesi olmadığından arama her sekmeyi tarar; sekme düğmeleri eşleşme sayısını gösterir).
     input.addEventListener("keydown", async event => {
@@ -62,7 +62,7 @@
   }, true);
 
   document.addEventListener("keydown", event => {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === "f") {
       const input = document.querySelector(".search-field input");
       if (!input) return;
       event.preventDefault();

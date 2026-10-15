@@ -1,0 +1,32 @@
+{
+  "ad": "guncelleme-geri-cekilen-teshis",
+  "komut": "node --test test/guncelleme-hazir-geri-cekilen.test.mjs",
+  "commit": "e3c763f36fc20fedc8a47670735a1a366508defb",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-13T19:14:27.227Z",
+  "sure_sn": 15.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-13/guncelleme-geri-cekilen-teshis.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "53fd4cebd9a2de9bd1f9a8c2c860b86493323116c967c096932db6e4648fc2c2",
+  "ham_cikti_bayt": 2087
+}

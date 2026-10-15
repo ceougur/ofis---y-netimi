@@ -144,6 +144,12 @@ export const PATCHES = [
     find: 'w.displayRows.length," öncelikli kayıt · ",w.columns.length," kolon otomatik oluşturuldu"',
     replace: 'w.displayRows.length," kayıt · ",w.columns.length," kolon"',
   },
+  {
+    id: "tablo-arama-kisayolu",
+    why: "2.3.0 İz 5.5: Ctrl+K artık menü üstündeki Hızlı Arama'nın (hof-palette.js); tablo aramasının kısayolu Ctrl+Shift+F (hof-search.js).",
+    find: 'x.jsx("kbd",{"data-loc":"client/src/pages/Home.tsx:89",children:"⌘ K"})',
+    replace: 'x.jsx("kbd",{"data-loc":"client/src/pages/Home.tsx:89",children:"Ctrl+Shift+F"})',
+  },
   // ---- v2.0.6: büyük tabloda arama hızı ----
   // 9 bin satırlık veride her tuşta tüm satırlar yeniden çiziliyordu (9 bin satır × 24 kolon ≈ 216 bin hücre) ve her satırın
   // metni yeniden küçük harfe çevriliyordu. Artık paket yalnız açık sayfanın satırlarını çizer (sayfa penceresi

@@ -1,0 +1,38 @@
+{
+  "ad": "iz32-mutasyon-M3-eski-liste-birlestir",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=^A —  test/fatura-230-ayarlar-banka.test.mjs",
+  "commit": "012c8d3b7ce8ea81e2bc5a5b7e97e6639f77dc59",
+  "dal": "worktree-agent-a20bc05b1c4590bdc",
+  "kirli": 12,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:46:33.652Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "A — Fatura Ayarları → Banka Hesapları (E2.16 / \\#31): ilk hesap açılana kadar eski liste; sonra yalnız IBAN Faturada Gösterilsin işaretli hesaplar › A2 ilk hesap açılınca: belgede yalnız işaretli hesap (eski listedeki B basılmaz); B öneriye döner; PUT eski listeyi değiştirmez; işaret kalkınca / hesap pasifken listeden düşer",
+      "konum": "test/fatura-230-ayarlar-banka.test.mjs:49:3",
+      "hata": "belgede yalnız hesaptan gelen IBAN (eski listedeki B basılmaz) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/iz32-mutasyon-M3-eski-liste-birlestir.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc",
+  "ham_cikti_sha256": "9bb82ffc313f04e0d3b6e58111b383bcd48b09071b27f0c8e62b6e5c67c456a0",
+  "ham_cikti_bayt": 2983
+}

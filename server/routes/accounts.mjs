@@ -33,7 +33,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerAccountRoutes(router, { store, bank, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null, bankModule = () => null, now: clock = systemClock }) {
+export function registerAccountRoutes(router, { store, bank, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null, bankModule = () => null, doubtful = () => null, now: clock = systemClock }) {
   // İş saati (v2.1.0): context.now (config.now); sahte saatli testlerde de tek kaynak.
   const now = () => clock().toISOString();
   const today = () => isoDay(clock());
@@ -95,7 +95,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const account = accountRow(id);
     const manage = canUser(user, "accounts.manage");
     // Stok ve çek/senetten gelen satırlar (v2.0.6, v2.0.7) kendi kartlarından düzeltilir.
-    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")) }));
+    // 2.3.0 (İz 3.2): giriş + kart + kart hesabına bağlı satır "Kredi Kartına İade"dir (ekran düzeltme formunu kart seçicisiyle açar; POS alanı değil).
+    let cardIds = new Set();
+    try {
+      cardIds = new Set(store.all("SELECT id FROM bank_accounts WHERE kind = 'card'").map(row => row.id));
+    } catch {
+      cardIds = new Set(); // banka tabloları yoksa (göç öncesi veri)
+    }
+    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entries, planList);
     return {
@@ -108,6 +115,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       side: balanceSide(ledger.totals.balance),
       canManage: manage,
       canCollect: canUser(user, "accounts.collect"),
+      // 2.3.0 İz 1 (plan §3.11b/5 "cari kartında Şüpheli Alacak bilgisi"): açık şüpheli, karşılık, tahsil edilen, değersiz yazılan (kuruş).
+      doubtful: doubtful()?.summary ? doubtful().summary(account.id) : null,
+      canDoubtful: manage && canUser(user, "accounts.doubtful"),
     };
   }
 
@@ -167,8 +177,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       sums.get(row.accountId)[row.kind] = Number(row.amount) || 0;
     }
     const planMap = plans()?.summariesByAccount ? plans().summariesByAccount(ids) : new Map();
+    // 2.3.0 İz 1.6 (plan §3.11b/5): cari başına açık şüpheli alacak (TL) — listede "Şüpheli" rozeti, ANLIK DURUM alacak toplamında ayrı satır.
+    // Şüpheli hiç kullanılmamışsa tek sorgu, boş (lib/bank/doubtful.mjs doubtfulOpenByAccount).
+    const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount().byAccount : new Map();
     const search = searchOf(q);
-    const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0 };
+    const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0, doubtful: 0, doubtfulCount: 0 };
     const labels = new Set();
     const out = [];
     for (const row of rows) {
@@ -221,6 +234,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       totals.overdue = roundMoney(totals.overdue + overdue);
       totals.overdueCount += overdueCount;
       totals.planRemaining = roundMoney(totals.planRemaining + planRemaining);
+      const doubtfulOpen = roundMoney((doubtfulMap.get(row.id)?.openMinor || 0) / 100);
+      if (doubtfulOpen > 0) {
+        totals.doubtful = roundMoney(totals.doubtful + doubtfulOpen);
+        totals.doubtfulCount += 1;
+      }
       out.push({
         id: row.id,
         refNo: row.refNo || "",
@@ -257,6 +275,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         overdue: roundMoney(overdue),
         overdueCount,
         next,
+        // Açık şüpheli alacak (TL; 0 = yok). Kart bakiyesi şüpheliyi de kapsar (120 + 128 = kart).
+        doubtfulOpen,
         fieldsJson: row.fieldsJson,
       });
     }
@@ -518,6 +538,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // banka bakiyesi bankadakinden ayrılırdı). Pasife Al önerilir.
     const bankLinked = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ? AND fin_ref <> ''", account.id).n;
     if (bankLinked) throw new HttpError(409, `Bu carinin banka hesabına bağlı ${bankLinked} hareketi var; cari silinirse banka hesabının bakiyesi değişirdi. Cariyi pasife alın (hareketleri korunur).`, { code: "account-bank-linked", count: bankLinked });
+    // 2.3.0 İz 1 (plan §3.11b): şüpheli alacak kaydı olan cari silinmez (kayıt ve 128 satırları defterden düşerdi).
+    doubtful()?.assertNone?.(account.id, "silinemez");
     // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer). Silinen carinin
     // tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
     assertUnlocked(account.id, "silinemez");
@@ -623,6 +645,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     if (entry.source === "invoice") throw new HttpError(409, "Bu hareket bir faturadan geldi; Fatura ekranından iptal edin ya da iade faturası kesin.", { code: "invoice-linked", invoiceId: entry.sourceId });
     if (entry.source === "bank") throw new HttpError(409, "Bu hareket Banka penceresinden geldi; Banka → Hareketler'deki işlemden düzeltin (Ters Kaydet ya da Düzelt).", { code: "bank-linked", eventId: entry.eventId || "" });
     if (entry.source === "cheque") throw new HttpError(409, "Bu hareket bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (geri al ya da sil).", { code: "cheque-linked", chequeId: entry.sourceId });
+    // 2.3.0 İz 1: Değersiz Alacak satırı cari kartından silinmez/düzeltilmez; şüpheli alacak kaydından (Değersiz Alacaklar → Sil) kaldırılır.
+    if (entry.source === "doubtful") throw new HttpError(409, "Bu satır şüpheli alacağın değersiz yazılmasından geldi; cari kartındaki Şüpheli Alacak kaydından silin.", { code: "doubtful-linked", recordId: entry.sourceId });
     if (entry.createdBy !== user.id && !canUser(user, "accounts.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
     requireKindRight(user, entry.kind);
   };
@@ -670,11 +694,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const changed = !previous || previous.method !== input.method || Math.abs(roundMoney(previous.amount) - roundMoney(input.amount)) > 0.004 || previous.date !== input.date;
     // K2 (plan §3.7 #3, §4.6): cari ödemesinde kart yolu firmanın kartıyla ödemedir (309); tahsilatta POS (2.2.0). Cari "POS İadesi"
     // (posRefund / posRefundOf / posSourceless) çıkış olsa da POS'tur (plan §4.6 "alan belge türüne göre seçilir").
-    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: input.kind === "out" && !posRefundOf(body, previous), posId: body.posId, posRefundOf: body.posRefundOf });
+    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: corporateOf(input, body, previous), posId: body.posId, posRefundOf: body.posRefundOf });
   };
   // 2.2.0: cari "POS İadesi" — kart yolunda müşteriye POS'tan iade (POS'a bağlı önceki satır da öyledir).
   const posRefundOf = (body, previous = null) =>
     body?.posRefund === true || Boolean(text(body?.posRefundOf)) || body?.posSourceless === true || Boolean(previous && previous.kind === "out" && previous.method === "card" && previous.finRef && store.get("SELECT 1 AS found FROM pos_terminals WHERE id = ?", previous.finRef));
+  // 2.3.0 (İz 3.2; plan §4.6 "ödeme iadesi (giriş) → Kurumsal Kart, POS satışı oluşmaz, 309 düşer"): cari "Kredi Kartına İade" — tedarikçi parayı
+  // firmanın kredi kartına iade etti (cardRefund). Giriş olsa da kart yolu POS değil Kredi Kartı hesabıdır; karta bağlı önceki satır da öyledir.
+  const isCardAccount = id => Boolean(id && store.get("SELECT 1 AS found FROM bank_accounts WHERE id = ? AND kind = 'card'", id));
+  const cardRefundOf = (body, previous = null) => body?.cardRefund === true || Boolean(previous && previous.kind === "in" && previous.method === "card" && isCardAccount(previous.finRef));
+  // Kart yolunun anlamı (plan §4.6 "alan belge türüne göre"): çıkış = kartla ödeme (309) — "POS İadesi" değilse; giriş = POS — "Kredi Kartına İade" değilse.
+  const corporateOf = (input, body, previous = null) => (input.kind === "out" ? !posRefundOf(body, previous) : input.kind === "in" && input.method === "card" && cardRefundOf(body, previous));
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
   // Hakem K5: onay cashForce (plan §3.9) ya da eşanlamlı negativeOk (module-ref.mjs negativeConfirmed).
   const negativeForced = (body, url) => negativeConfirmed(body, url);
@@ -702,8 +732,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       },
       write: () => {
         k7.capture();
-        const entry = addEntry(user, account.id, { ...input, finRef, pos: finRef ? posMetaOf(body) : null });
-        audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, receiptNo: entry.receiptNo });
+        const cardRefund = corporateOf(input, body) && input.kind === "in";
+        const entry = addEntry(user, account.id, { ...input, finRef, pos: finRef && !corporateOf(input, body) ? posMetaOf(body) : null });
+        audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, receiptNo: entry.receiptNo, ...(cardRefund ? { cardRefund: true } : {}) });
         return entry;
       },
       guard: k7.guard,
@@ -739,7 +770,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       body: { ...body, entryId: previous.id },
       write: () => {
         k7.capture();
-        const meta = finRef ? posMetaOf(body) : null;
+        const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
         store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, user.id, now(), previous.id);
         audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
@@ -1277,6 +1308,28 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       return id;
     },
   };
+  // 2.3.0 İz 1 (plan §3.11b/3 "Değersiz Alacak Yaz … cari bakiyesi o tutar kadar kapanır"): şüpheli alacağın değersiz yazılması cari kartına
+  // ALACAK satırı yazar (source 'doubtful', source_id = şüpheli alacak kaydı; para satırı değil, olay yok). Yevmiyesi B 129/659 / A 128
+  // (lib/doubtful-gl.mjs). Satır cari kartından düzeltilmez/silinmez (requireEntryRight); kaydın kendi silmesi (reinsert ile geri yükleme).
+  const doubtfulEntry = {
+    add(user, accountId, { amount, date, note, recordId }) {
+      const id = addEntry(user, accountId, { kind: "credit", amount: amountOf(amount), date, note: limited(note, 300, "Açıklama"), source: "doubtful", sourceId: recordId }).id;
+      bank.assertWrittenNonMoney("account_entries", id);
+      return { id };
+    },
+    remove(entryId) {
+      return store.run("DELETE FROM account_entries WHERE id = ? AND source = 'doubtful'", entryId).changes;
+    },
+    // Silinenler'den geri yükleme: aynı kimlik, tarih ve tutarla (Değersiz Alacak satırı).
+    reinsert(user, row) {
+      store.run(
+        "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, 'credit', ?, ?, ?, NULL, 'doubtful', ?, 'cash', '', '', '', ?, ?)",
+        row.id, row.account_id, amountOf(row.amount), row.date, String(row.note || ""), row.source_id, row.created_by || user.id, row.created_at || now(),
+      );
+      bank.assertWrittenNonMoney("account_entries", row.id);
+      return { id: row.id };
+    },
+  };
   // v2.0.15: faturadan doğan cari satırları (borç/alacak + varsa peşin tahsilat/ödeme). source = 'invoice', source_id = fatura.
   // Kasa'ya etkisi fatura modülünün kendi kaynağından gelir (routes/invoices.mjs cashSource); cari kartından düzeltilemez.
   const invoiceEntry = {
@@ -1421,5 +1474,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
+  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
 }

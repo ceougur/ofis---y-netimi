@@ -1,0 +1,73 @@
+{
+  "ad": "iz33-npm-test",
+  "komut": "npm test",
+  "commit": "b27f025bef95410326f451c8ce5b97cf4a0a811c",
+  "dal": "worktree-agent-afa90b5a72737cee4",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:07:41.927Z",
+  "sure_sn": 1028.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2385,
+    "gecen": 2377,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)",
+      "konum": "test/banka-210-altin.test.mjs:365:3",
+      "hata": "24 fark: · zincir · 001 · admin · pdf /api/workspace/cash.pdf: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:388:3",
+      "hata": "9 fark: · motor · 001 · admin · pdf /api/workspace/cash.pdf: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri) › Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+      "konum": "test/banka-210-hiz-esdegerlik.test.mjs:419:5",
+      "hata": "tohum 21 bugün · banka-bakiye {} · Tüm Zamanlar (yerinde) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri) › saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+      "konum": "test/banka-210-hiz-esdegerlik.test.mjs:443:5",
+      "hata": "tohum 21 +15 gün · banka-bakiye {} · Tüm Zamanlar (yerinde) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri) › Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)",
+      "konum": "test/banka-210-hiz-esdegerlik.test.mjs:419:5",
+      "hata": "tohum 22 bugün · banka-bakiye {} · Tüm Zamanlar (yerinde) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri) › saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir",
+      "konum": "test/banka-210-hiz-esdegerlik.test.mjs:443:5",
+      "hata": "tohum 22 +15 gün · banka-bakiye {} · Tüm Zamanlar (yerinde) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "Statik tarama: iş modüllerinde saat tek kaynaktan › iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)",
+      "konum": "test/banka-210-saat.test.mjs:283:3",
+      "hata": "İş saati dışarıdan okunuyor: · server/routes/bank.mjs:350  const fileCtx = user => ({ now: context.now ? context.now() : new Date(), companyLabel: companyLabel(), userName: user.display_name || user.username || \"\", bran · + actual - expected (beklenen , gelen )"
+    },
+    {
+      "ad": "Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül uçları × 6 rol › kapsam: server/routes/bank.mjs'teki her uç matriste (yeni uç → matrise eklenmeli)",
+      "konum": "test/banka-210-yetki-matrisi.test.mjs:226:3",
+      "hata": "matriste olmayan banka uçları: GET /movements.pdf, GET /movements.xlsx · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/iz33-npm-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afa90b5a72737cee4",
+  "ham_cikti_sha256": "e20e51e96d88342b6dd4fd6402ff3a375269de14c67c5d597486085d42a87cd0",
+  "ham_cikti_bayt": 1014163
+}

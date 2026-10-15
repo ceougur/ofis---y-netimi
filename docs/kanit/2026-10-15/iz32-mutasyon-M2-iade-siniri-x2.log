@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: F — iade kuralları (§4.6): Σ iade (İptal İadesi dahil) ≤ satış; 3 ondalık; iade silme ve geri yükleme (ders 10 komşuları)
+    # Subtest: 10.000 satış: iade 3.000 + 4.000 → İptal İadesi kalan 3.000 (Σ 10.000); iptal edilmiş satışa yeni iade → 404; iade tutarı 3 ondalık → 400
+    not ok 1 - 10.000 satış: iade 3.000 + 4.000 → İptal İadesi kalan 3.000 (Σ 10.000); iptal edilmiş satışa yeni iade → 404; iade tutarı 3 ondalık → 400
+      ---
+      duration_ms: 645.009029
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-230-46-iade-iptal.test.mjs:269:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Σ iade > satış: kod ledger-integrity (İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (POS İadesi ≤ Satış). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.)
+        + actual - expected
+        
+        + 'ledger-integrity'
+        - 'pos-refund-exceeds'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'pos-refund-exceeds'
+      actual: 'ledger-integrity'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-210-hesap-ortak.mjs:58:20)
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-230-46-iade-iptal.test.mjs:277:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: valörden sonra kısmi iade (İade Edilmez) → iade valöründe banka −3.000; sonra İptal İadesi kalan 7.000 (iadeler yalnız modülden silinmişse)
+    ok 2 - valörden sonra kısmi iade (İade Edilmez) → iade valöründe banka −3.000; sonra İptal İadesi kalan 7.000 (iadeler yalnız modülden silinmişse)
+      ---
+      duration_ms: 558.159231
+      type: 'test'
+      ...
+    1..2
+not ok 1 - F — iade kuralları (§4.6): Σ iade (İptal İadesi dahil) ≤ satış; 3 ondalık; iade silme ve geri yükleme (ders 10 komşuları)
+  ---
+  duration_ms: 1204.301348
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-230-46-iade-iptal.test.mjs:268:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1588.772088
