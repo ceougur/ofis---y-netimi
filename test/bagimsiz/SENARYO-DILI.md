@@ -36,6 +36,7 @@ Yalnız planın açık sözüne dayanan kurallar [PLAN §3.11b] etiketini taşı
 | F10 | §4.42a | Alacak satırı kapsamı planın sözüyle: `kapatilacakFatura` bağlı `cari_tahsilat`, satış faturasının **peşin satırı** ve `normalCari` tahsilatı DÜŞMEZ (A 120); `taksit_tahsilat` yalnız kartın tarihi ≤ kayıt tarihi olan kayıtlardan düşer | [PLAN §3.11b/2 (a)–(c)] |
 | F11 | §4.42a, F2 | 644 kuralı artık planın açık sözü: K6 etiketi **[PLAN §3.11b/3]** oldu; programla fark **BULGU** (önceden [KABUL K6] → İNCELE) | [PLAN §3.11b/3 (15.10 kararı)] |
 | F12 | §12 BELİRSİZ-38 | Peşin satırı ve bağlı tahsilat tanımlandı → listeden çıktı; alıştan iade geri ödemesi ve müşteri carisine alış faturası belirsiz kalır | [PLAN §3.11b/2 (b)] |
+| F13 | §4.15, §5.6, §5.7 | Açık şüpheli kaydı olan caride `normalCari` ya da `kapatilacakFatura` bağlı tahsilat carinin 120 bakiyesini (= cari bakiyesi − açık kayıtların kalanı) aşarsa **409 `doubtful-normal-exceeds`** (grup 4; hiçbir şey yazılmaz). Açık kayıt yoksa sınır yok | [PLAN §3.11b/2 (a) "Sınır"] |
 
 ### Sürüm 3 değişiklikleri (12.10.2026)
 
@@ -501,6 +502,9 @@ acik}.
 Yevmiye: `B p(yol,H) T / A c(cari) T` [PLAN §3.7 #2 "B 102.01 20.000 / A 120. Ziraat 100.000 → 120.000"]. Fatura açığına etkisi §7.
 `kapatilacakFatura` verilirse tutar o belgenin o anki açığını aşmaz [BELİRSİZ-10]. `kapatilacakFatura` verilen ya da `normalCari: true`
 olan tahsilat şüpheli alacaktan düşmez (§4.42a) [PLAN §3.11b/2 (a)–(b)]; `normalCari` şüpheli kaydı olmayan caride etkisizdir.
+Carinin **açık** şüpheli kaydı (kalanı > 0) varken böyle bir tahsilatın tutarı carinin 120 bakiyesini (= cari bakiyesi − açık kayıtların
+kalanları toplamı, §4.39'daki tanım) aşarsa **409 `doubtful-normal-exceeds`** (§5.6 grup 4; hiçbir şey yazılmaz) [PLAN §3.11b/2 (a) "Sınır"];
+açık kayıt yoksa sınır yoktur (fazlası alacak bakiyesi olur, §4 gösterim).
 
 ### 4.16 `cari_odeme` — cariye ödeme
 
@@ -1188,7 +1192,8 @@ Bir adımda birden çok ihlal varsa kâhin ilkini yazar:
 3. İstek kimliği (yineleme ya da 409)
 4. 404 hedef yok; 409 kilit, açılış öncesi, açılış kuralları, ters kaydı iki kez; iade sınırı; evrak durumu (`cheque-deposited`
    ve evrak durumu 4xx'leri, tahsile vermede alıştan önceki tarih; sürüm 3); sürüm 4: K8 taksit (`plan-paid`, `plan-overpay`,
-   `plan-overpay-permission`; PLAN §3.10/3 "adım 2'de") ve şüpheli kuralları (`doubtful-*`, `date-before-record`, 409'lar)
+   `plan-overpay-permission`; PLAN §3.10/3 "adım 2'de") ve şüpheli kuralları (`doubtful-*`, `date-before-record`, 409'lar; §4.15
+   `doubtful-normal-exceeds` de burada — program girdi denetiminden sonra, eksi bakiye / Benzer İşlem'den önce bakar)
 5. 409 `bank-similar`
 6. 409 eksi bakiye
 
@@ -1243,6 +1248,7 @@ Kâhin `retler`e (§8.5) şu değerleri yazar. `kodDayanak: "PLAN"` = plan bu du
 | Fazlasını Avans Yaz yetkisiz (§4.17; sürüm 4) | 403 | `plan-overpay-permission` | CIKARIM (plan yalnız "`plans.manage` sahibine açık" der; kod adı programın) |
 | Şüpheliye tedarikçi carisi (§4.39; sürüm 4) | 409 | `doubtful-customer-only` | KABUL |
 | Şüpheli tutarı 120 bakiyesini aşar (§4.39) | 400 | `doubtful-exceeds-balance` | KABUL |
+| Açık şüpheli kayıtlı caride `normalCari` / bağlı tahsilat 120 bakiyesini aşar (§4.15; sürüm 4 eki) | 409 | `doubtful-normal-exceeds` | PLAN |
 | Kısayoldaki evrak karşılıksız değil (§4.39) | 409 | null | null |
 | Karşılık kalanı aşar (§4.40) | 400 | `doubtful-provision-exceeds` | KABUL |
 | Değersiz kalanı aşar (§4.42) | 400 | `doubtful-writeoff-exceeds` | KABUL |

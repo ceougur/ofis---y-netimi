@@ -1984,6 +1984,13 @@ class Model:
             if T > acik[b["key"]]:
                 raise SenaryoHatasi("adım %s: BELİRSİZ-10 — bağlı tutar belgenin açığını aşıyor" % adim["id"])
             kf = b["key"]
+        # PLAN §3.11b/2 (a) "Sınır" (F13; §5.6 grup 4): açık şüpheli kaydı varken normalCari / bağlı tahsilat carinin 120 bakiyesini
+        # (= cari bakiyesi − açık kayıtların kalanı) aşarsa 409 doubtful-normal-exceeds; hiçbir şey yazılmaz.
+        if yon == "giris" and (kf is not None or adim.get("normalCari") is True) and cari["tur"] == "musteri":
+            _, durumlar = self.supheli_turet()
+            acik_kalan = sum(s["kalan"] for key, s in durumlar.items() if self.v[key]["cari"] == cari["key"])
+            if acik_kalan > 0 and T > self.cari_bakiye(cari["key"]) - acik_kalan:
+                ih.ekle(4, 409, "doubtful-normal-exceeds", "PLAN", "normal cariye tahsilat 120 bakiyesini aşıyor")
         ph = self.para_hesabi(yol, h)
         deg = Degisim()
         if yon == "giris":

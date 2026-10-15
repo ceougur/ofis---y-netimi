@@ -580,6 +580,10 @@ Kullanıcı: "şüpheli alacaklar … da olsun". Plan susuyordu → yaygın uygu
    - (a) **Serbest cari tahsilatı** (faturaya bağlı olmayan "+ Tahsilat") varsayılan şüpheliden düşer. Şüpheli kaydı AÇIK olan müşteride
      tahsilat formunda **"Normal Cari Hesaba İşle"** onay kutusu vardır; işaretlenirse satır şüpheliden düşmez, 120'de kalır (A 120).
      İşaret düzeltmede korunur; Silinenler'den geri yüklemede korunur. Veri: `account_entries.doubtful_skip` (göç v26, yalnız ekleyici).
+     **Sınır:** carinin AÇIK şüpheli kaydı varken normal cari hesaba işlenen tahsilat (işaretli ya da (b)'deki bağlı tahsilat) carinin
+     şüpheli dışı borç bakiyesini (120 = cari bakiyesi − açık kayıtların kalanı) aşamaz; aşarsa **409 `doubtful-normal-exceeds`**, hiçbir
+     şey yazılmaz (aşan kısım şüpheli alacaktan düşmek zorundadır; 120 eksiye düşmez). Açık şüpheli kaydı yoksa sınır yoktur (fazlası
+     bugünkü gibi avans / alacak bakiyesi olur).
    - (b) **Satış faturasının peşini** (`source 'invoice'`) ve **"Kapatılacak Fatura" bağlı tahsilat** (`invoice_id` dolu) KENDİLİĞİNDEN
      normal cari hesaba işlenir (yeni satışın parasıdır, eski şüpheli alacağı kapatmaz); kutu gerekmez.
    - (c) **Taksit tahsilatı** (ve kapatılan kartın vazgeçilen kalanı): kart şüpheli kaydının tarihinden **sonra** açıldıysa normal (o

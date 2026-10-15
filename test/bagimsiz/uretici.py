@@ -1061,6 +1061,20 @@ class Uretec:
         if yon == "giris" and self.surum >= 4 and kf is None and R.random() < (0.3 if self.supheli_var(cari) else 0.03):
             adim["normalCari"] = True
             normal = True
+        # PLAN §3.11b/2 (a) "Sınır" (dil F13): açık şüpheli kaydı varken normalCari / bağlı tahsilat 120 bakiyesini aşamaz (409
+        # doubtful-normal-exceeds). Aşıyorsa normalCari çoğunlukla kaldırılır (geçerli adım); bazen kasıtlı ret olarak bırakılır (durum
+        # değişmez). Bağlı tahsilatta (kf) aşım kasıtlı ret olur.
+        if yon == "giris" and self.surum >= 4 and (normal or kf is not None) and self.supheli_var(cari):
+            acik_kalan = sum(s["kalan"] for s in self.sup_durum(cari).values())
+            if acik_kalan > 0 and T > self.bakiye_c.get(cari, 0) - acik_kalan:
+                if normal and R.random() < 0.7:
+                    del adim["normalCari"]
+                    normal = False
+                else:
+                    self.kimlik_ver(adim)
+                    self.kullanici_ekle(adim, kul)
+                    self.ekle(adim)                  # 409 doubtful-normal-exceeds (tek ihlal; hiçbir şey yazılmaz)
+                    return True
         # kapatilacakFatura bağlı ya da normalCari tahsilatı şüpheliden düşmez → alacak satırı sayılmaz (§4.42a).
         duser = yon == "giris" and kf is None and not normal
         bagli_hesap = anahtar in self.hesaplar

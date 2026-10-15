@@ -67,7 +67,7 @@ const RANGES = [
 ];
 const within = (day, range) => !range || ((!range.from || day >= range.from) && (!range.to || day <= range.to));
 const before_ = (day, range) => Boolean(range?.from) && day < range.from;
-const NO_SUM = new Set(["Bakiye", "Gün Sonu Kasa", "Ay Başı Kasa", "Ay Sonu Kasa", "Birim Fiyat", "KDV %", "Stopaj %", "Kritik Seviye"]);
+const NO_SUM = new Set(["Bakiye", "Gün Sonu Kasa", "Ay Başı Kasa", "Ay Sonu Kasa", "Birim Fiyat", "KDV %", "Stopaj %", "Kritik Seviye", "Vade Gecikme (Gün)"]);
 
 // Banka bağlı veriyle denenen raporlar (raporlar-224'ün para içeren 38 raporu).
 const REPORT_IDS = ["kasa-hareketleri", "kasa-gunluk", "kasa-kaynak", "kasa-aylik", "hesap-mizani", "yevmiye", "defter-mutabakati", "mutabakat-gunlugu", "banka-pos-hareketleri", "mizan", "cari-listesi", "cari-ekstre", "cari-hareketleri", "cari-tahsilat", "alacak-yaslandirma", "fatura-satis", "fatura-alis", "fatura-iade", "kdv-ozeti", "ba-bs", "urun-satis-karlilik", "cari-satis-alis", "gider-raporu", "stopaj-tevkifat", "acik-faturalar", "taksit-kartlari", "taksit-vadeleri", "geciken-taksitler", "taksit-performans", "taksit-tahsilatlari", "cek-portfoy", "cek-hareketleri", "cek-vade-dagilimi", "stok-durumu", "stok-hareketleri", "stok-ozet", "stok-kategori", "kayit-tahsilatlari"];

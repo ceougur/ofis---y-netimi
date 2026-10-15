@@ -847,6 +847,26 @@ class Surum4TahsilattaSecim(unittest.TestCase):
         self.assertEqual(o["taksitKartlari"]["T"], {"toplam": 200000, "odenen": 30000, "kalan": 170000})
         mizan_dengede(self, o)
 
+    def test_normal_cari_siniri_120_bakiyesi(self):
+        """F13 (PLAN §3.11b/2 (a) "Sınır"): F 1.000 (01.10) → S 800 al (06.10) → 120 = 200: normalCari 300 → 409 doubtful-normal-exceeds
+        (hiçbir şey yazılmaz); normalCari 200 → geçer (120 = 0, S kalan 800); F'ye bağlı 1 → 409 (120 = 0); S'siz cari için sınır yok."""
+        o = kos("s4-sinir", [cari("ABC"), cari("DEF"),
+                             {"id": "f", "islem": "fatura", "ad": "F", "tur": "satis", "cari": "ABC", "tarih": "01.10.2026",
+                              "kalemler": [{"hizmet": "Danışmanlık", "miktar": 1, "birimFiyat": "1000", "kdvOrani": 20, "kdvDahil": True}]},
+                             {"id": "f2", "islem": "fatura", "ad": "F2", "tur": "satis", "cari": "DEF", "tarih": "01.10.2026",
+                              "kalemler": [{"hizmet": "Danışmanlık", "miktar": 1, "birimFiyat": "100", "kdvOrani": 20, "kdvDahil": True}]},
+                             {"id": "1", "islem": "supheli_al", "ad": "S", "cari": "ABC", "tutar": "800", "neden": "dava", "tarih": "06.10.2026"},
+                             {"id": "2", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "300", "yol": "nakit", "tarih": "07.10.2026", "normalCari": True},
+                             {"id": "3", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "200", "yol": "nakit", "tarih": "07.10.2026", "normalCari": True},
+                             {"id": "4", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "1", "yol": "nakit", "tarih": "08.10.2026", "kapatilacakFatura": "F"},
+                             {"id": "5", "islem": "cari_tahsilat", "cari": "DEF", "tutar": "500", "yol": "nakit", "tarih": "08.10.2026", "normalCari": True}],
+                bugun="12.10.2026")
+        self.assertEqual([(r["adim"], r["durum"], r["kod"], r["kodDayanak"]) for r in o["retler"]],
+                         [("2", 409, "doubtful-normal-exceeds", "PLAN"), ("4", 409, "doubtful-normal-exceeds", "PLAN")])
+        self.assertEqual(o["supheliAlacaklar"]["S"]["kalan"], 80000)
+        self.assertEqual((miz(o, "120")["borc"], miz(o, "128")["borc"], o["cariler"]["ABC"], o["cariler"]["DEF"], o["kasa"]), (0, 80000, 80000, -40000, 70000))
+        mizan_dengede(self, o)
+
     def test_normal_cari_yalniz_surum4_ve_true(self):
         """§13/10: normalCari yalnız dil sürüm 4'te ve yalnız true (geçersiz senaryo → SenaryoHatasi)."""
         adimlar = [cari("ABC"), {"id": "1", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "1", "yol": "nakit", "normalCari": False}]

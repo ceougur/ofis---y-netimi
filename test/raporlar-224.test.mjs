@@ -757,6 +757,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     // 2.3.0 İz 1.6: "Şüpheli Alacak (dilimlere dahil)" kolonu Toplam'a ikinci kez girmez → Toplam kolonu adıyla okunur (karar 15.10.2026: Vade Gecikme (Gün) de var).
     assert.equal(moneyOf(aging.footer[col(aging, "Toplam")]), 4380, "780 müşteri bakiyesi + 3.600 portföydeki senet");
     assert.equal(moneyOf(aging.footer[col(aging, "Şüpheli Alacak (dilimlere dahil)")]), null, "şüpheli yokken Şüpheli Alacak kolonu boş");
+    assert.ok(aging.headers.includes("Vade Gecikme (Gün)"), `Vade Gecikme (Gün) kolonu (başlıklar: ${aging.headers.join(" | ")})`);
     assert.equal(String(aging.footer[col(aging, "Vade Gecikme (Gün)")] ?? ""), "", "Vade Gecikme (Gün) TOPLAM'da toplanmaz");
   });
 

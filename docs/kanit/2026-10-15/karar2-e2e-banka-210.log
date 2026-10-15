@@ -418,7 +418,7 @@
   ✓ iki belge İptal Edildi; Garanti -22000
 
 ■ 38. Yargıç: peşin satırların satır anahtarı ekranda tekil (iki peşin satır); kayıt 200 · şirket 003
-  ✓ gönderilen peşin satır anahtarları tekil: ke4u2oi877luu, kswlxzk5s7m00
+  ✓ gönderilen peşin satır anahtarları tekil: kf863d7io83pm, kn0m9j6fw83uz
   ✓ iki peşin satırlı fatura kaydedildi
 
 ■ 39. Yargıç: taksit kartında banka bağlı tahsilat varken Sil pasif ve nedeni kartta yazılı (409 plan-bank-linked) · şirket 003
@@ -455,7 +455,7 @@
 
 ■ 40d. Hakem K3: Kasadan Ödeme — ilk yanıt ağda kaybolur, Kaydet'e yeniden basılır → aynı istek kimliği, tek satır; “Bu işlem zaten kaydedildi (BNK-…)” · şirket 001
   ✓ ilk gönderim sunucuda yazıldı, yanıt kayboldu; form açık: “Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.”
-  ✓ iki gönderim aynı istek kimliğiyle: 124e4b617d3be1e1dc96b9bb92366d42 · 124e4b617d3be1e1dc96b9bb92366d42
+  ✓ iki gönderim aynı istek kimliğiyle: 8b6b6fd6756168a03aee5e06fa86337d · 8b6b6fd6756168a03aee5e06fa86337d
   ✓ tek satır, Kasa 750 (1 satır · 750)
   ✓ ekran bildirimi: “Bu işlem zaten kaydedildi (BNK-2026-000029); ikinci kez yazılmadı.”
   ✓ Kabul Şirketi'nde mutabakat ok (hakem K3)
@@ -479,7 +479,7 @@
   ✓ hesaplar: Ziraat Bankası 87.984,25 TL · Garanti BBVA 72.500,00 TL
   ✓ TOPLAM: TOPLAM |  |  |  | 0,00 TL | 21.500,00 TL | 15,75 TL | 21.000,00 TL | 32.000,00 TL | 150.000,00 TL | 160.484,25 TL
   ✓ özet K10 adlarıyla: {"Gerçek Banka":"160.484,25 TL","Kart ve Kredi Borcu":"3.000,00 TL","Hesabı Atanmamış Eski Hareketler":"5.000,00 TL","Hesap":"3"}
-  ✓ PDF ve Excel bu pencerenin şirketinden iner (/api/workspace/report-center/banka-bakiye/pdf?from=2026-01-01&to=2026-12-31&bankGroup=real&hofCompany=sirket-0421ecb6-0917-4eb0-9e57-02415e19679d&hofPage=dataset%3A%2F%2Fofis)
+  ✓ PDF ve Excel bu pencerenin şirketinden iner (/api/workspace/report-center/banka-bakiye/pdf?from=2026-01-01&to=2026-12-31&bankGroup=real&hofCompany=sirket-76049bd3-9689-42e5-8fb0-9fc921456f9d&hofPage=dataset%3A%2F%2Fofis)
   ✓ PDF: başlık, şirket, hesap ve TOPLAM tutarı
   ✓ Excel başlığında şirket kodu ve unvanı (004 · Rapor Şirketi)
   ✓ Excel: kolonlar ekranla aynı, TOPLAM 160.484,25 (TOPLAM |  |  |  | 0 | 21500 | 15.75 | 21000 | 32000 | 150000 | 160484.25)
@@ -523,7 +523,7 @@
 
 ■ 46d. Banka → Hareketler PDF / Excel düğmeleri (İz 5.1): Ziraat seçili + Transfer türü → Excel satırları ekrandaki satırlarla aynı, TOPLAM; PDF açılır · şirket 004
   ✓ Ziraat hareketleri ekranda (6)
-  ✓ düğmeler süzgeçli bağ taşır: [["PDF İndir","/api/workspace/bank/movements.pdf?account=bacc-ecd4883c-360e-4bbe-b92f-c85c05c4dd8c"],["Excel İndir","/api/workspace/bank/movements.xlsx?account=bacc-ecd4883c-360e-4bbe-b92f-c85c05c4dd8c"]]
+  ✓ düğmeler süzgeçli bağ taşır: [["PDF İndir","/api/workspace/bank/movements.pdf?account=bacc-637d061f-0c2c-4c8e-8836-db5f8938ad49"],["Excel İndir","/api/workspace/bank/movements.xlsx?account=bacc-637d061f-0c2c-4c8e-8836-db5f8938ad49"]]
   ✓ Excel: 6 satır = ekran 6, TOPLAM (TOPLAM |  |  |  |  | 120000 | 32015.75 |  |  | )
   ✓ İşlem No sırası ekranla aynı (BNK-2026-000009,BNK-2026-000008,BNK-2026-000007,BNK-2026-000006,BNK-2026-000005,BNK-2026-000002 / BNK-2026-000009,BNK-2026-000008,BNK-2026-000007,BNK-2026-000006,BNK-2026-000005,BNK-2026-000002)
   ✓ PDF açılır

@@ -1794,6 +1794,13 @@ def h_cari_tahsilat_odeme(c):
         hedef = ("fatura", bagli) if bagli else ("hedefsiz",)
         satir = para_satiri(d, a["islem"], yon, yol, hk, ck, t, tarih, hedef, bagli=bagli)
         benzer_denetle(c, satir)
+    # PLAN §3.11b/2 (a) "Sınır" (F13; §5.6 grup 4): açık şüpheli kaydı varken normalCari / bağlı tahsilat carinin 120 bakiyesini
+    # (= cari bakiyesi − açık kayıtların kalanı) aşarsa 409 doubtful-normal-exceeds; hiçbir şey yazılmaz.
+    if tahsilat and t is not None and (bagli is not None or a.get("normalCari") is True) and d.cariler[ck]["tur"] == "musteri":
+        _, durumlar = d.supheli_turet()
+        acik_kalan = sum(s["kalan"] for sk, s in durumlar.items() if d.supheliler[sk]["cari"] == ck)
+        if acik_kalan > 0 and t > d.cari_bakiye(ck) - acik_kalan:
+            c.ekle(4, 409, "doubtful-normal-exceeds", "PLAN")
     c.on_kapi()
     if bagli is not None and t > belge_acik_kapasitesi(d, bagli):
         raise SenaryoHatasi(f"{a['id']}: bağlı tutar belge açığını aşıyor (BELİRSİZ-10)")

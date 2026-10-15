@@ -284,7 +284,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const s of state.values()) { out.open += s.remaining; out.provision += s.provision; }
     return out;
   }
-  const doubtfulRoom = party => (M.cari.get(party) || 0) - [...doubtfulModel().records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
+  const doubtfulOpenOf = party => [...doubtfulModel().records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
+  const doubtfulRoom = party => (M.cari.get(party) || 0) - doubtfulOpenOf(party);
   // v2.1.0: iki vadesiz banka hesabı, açılış çizelgenin ilk günü (Bakiye Doğrulandı). Açılış 102.k borç / 500 alacak; banka etkisi modelde.
   const banks = [];
   for (const bankName of bank ? ["Ziraat Bankası", "Garanti BBVA"] : []) {
@@ -2062,7 +2063,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const normal = R.chance(0.3);
         const r = await api("POST", `/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: tl(amount), method: "cash", note: normal ? "Şüpheli tahsilat (normal cari)" : "Şüpheli tahsilat", date: day, ...(normal ? { doubtfulSkip: true } : {}) });
         if (!open(day)) return expectReject(r, "period-locked", kind);
-        if (normal && amount > doubtfulRoom(c.id)) return expectReject(r, "doubtful-normal-exceeds", `${kind}/normal-aşım`);
+        // Sınır yalnız AÇIK şüpheli kaydı (kalan > 0) varken: açık kayıt yoksa fazlası bugünkü gibi avans olur (plan §3.11b/2 (a) "Sınır").
+        if (normal && doubtfulOpenOf(c.id) > 0 && amount > doubtfulRoom(c.id)) return expectReject(r, "doubtful-normal-exceeds", `${kind}/normal-aşım`);
         mustOk(r, kind);
         cariAdd(c.id, -amount);
         M.kasa.cash += amount;

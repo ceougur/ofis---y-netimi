@@ -1,6 +1,6 @@
 {
-  "ad": "karar-supheli-kirmizi",
-  "komut": "node --test test/supheli-230-karar.test.mjs",
+  "ad": "karar2-eski-469d547-kirmizi",
+  "komut": "node --test test/supheli-230-karar.test.mjs test/raporlar-224.test.mjs test/banka-230-supheli-ekran.test.mjs",
   "commit": null,
   "dal": null,
   "kirli": null,
@@ -9,22 +9,37 @@
   "node": "v22.22.0",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-10-15T06:31:59.025Z",
-  "sure_sn": 2.1,
+  "basladi": "2026-10-15T08:16:43.663Z",
+  "sure_sn": 48.8,
   "cikis_kodu": 1,
   "sinyal": null,
   "zaman_asimi": false,
   "ozet": {
     "bicim": "node:test",
-    "toplam": 10,
-    "gecen": 1,
-    "basarisiz": 9,
+    "toplam": 79,
+    "gecen": 66,
+    "basarisiz": 13,
     "iptal": 0,
     "atlanan": 0
   },
   "hukum": "BAŞARISIZ",
-  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
   "basarisiz_testler": [
+    {
+      "ad": "Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DURUM, vade takip, rapor, yaşlandırma, mizan) › Alacak Yaşlandırma: 'Şüpheli Alacak (dilimlere dahil)' kolonu ABC 1.000 (Toplam'a ikinci kez girmez: vade kalemi yok → Toplam 0), XYZ satırı yok; özette aynı ad (karar 15.10.2026)",
+      "konum": "test/banka-230-supheli-ekran.test.mjs:229:3",
+      "hata": "kolon Şüpheli Alacak (dilimlere dahil) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DURUM, vade takip, rapor, yaşlandırma, mizan) › şüpheli hiç kullanılmamış şirkette: rapor boş, liste/ANLIK DURUM alanları 0 (eski veride gösterim bozulmaz)",
+      "konum": "test/banka-230-supheli-ekran.test.mjs:255:3",
+      "hata": "The expression evaluated to a falsy value: · assert.ok(aging.headers.includes(\"Şüpheli Alacak (dilimlere dahil)\") && aging.headers.includes(\"Vade Gecikme (Gün)\")) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF/Excel, yetki › anahtar toplamlar bağımsız defterle (tüm zamanlar)",
+      "konum": "test/raporlar-224.test.mjs:738:3",
+      "hata": "Vade Gecikme (Gün) kolonu (başlıklar: Cari / Kişi | Vadesi Gelmemiş | 1–30 Gün | 31–60 Gün | 61–90 Gün | 90+ Gün | Şüpheli Alacak | Toplam Gecikmiş | Toplam) (beklenen true, gelen false)"
+    },
     {
       "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › (a) doubtfulSkip:true: 04.10 tahsilat 200 normal cari hesaba (120'den) → kayıt kalanı 700 kalır; kartta doubtfulSkip + doubtfulNormal; bakiye 1.000",
       "konum": "test/supheli-230-karar.test.mjs:60:3",
@@ -56,23 +71,28 @@
       "hata": "sonra açılan kartın taksiti şüpheliden düşmez · 0 !== 60000 (beklenen 60000, gelen 0)"
     },
     {
-      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › doubtfulSkip yalnız tahsilatta: borç/alacak satırında ve ödemede 400",
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › normal cariye tahsilat carinin şüpheli dışı borç bakiyesini aşamaz: 409 doubtful-normal-exceeds, hiçbir şey yazılmaz (kapı 'ledger-integrity' yerine açık metin)",
       "konum": "test/supheli-230-karar.test.mjs:140:3",
-      "hata": "borç satırında doubtfulSkip 400 — gelen 200 {\"id\":\"account-dd0a42d8-2b83-4b7c-8312-922bf411ed0b\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Karar Müşteri\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":nul · 200 !== 400 (beklenen 400, gelen 200)"
+      "hata": "409 beklenir — gelen 200 {\"id\":\"account-2ab57009-e205-4b3f-9d94-864a3845ad7d\",\"refNo\":\"2\",\"type\":\"customer\",\"name\":\"Oda Müşteri\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"m · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › doubtfulSkip yalnız tahsilatta: borç/alacak satırında ve ödemede 400",
+      "konum": "test/supheli-230-karar.test.mjs:160:3",
+      "hata": "borç satırında doubtfulSkip 400 — gelen 200 {\"id\":\"account-aab6837f-5ff9-415f-9fd8-cd1deaa7f8b0\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Karar Müşteri\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":nul · 200 !== 400 (beklenen 400, gelen 200)"
     },
     {
       "ad": "Karar 3 — Alacak Yaşlandırma: 'Vade Gecikme (Gün)' ve 'Şüpheli Alacak (dilimlere dahil)' (ekran / PDF / Excel) › kolonlar: Vade Gecikme (Gün) = 18 (Geciken), boş (Yalnız Şüpheli); Şüpheli Alacak (dilimlere dahil) 2.000; TOPLAM'da gecikme toplanmaz",
-      "konum": "test/supheli-230-karar.test.mjs:163:3",
+      "konum": "test/supheli-230-karar.test.mjs:183:3",
       "hata": "kolon \"Vade Gecikme (Gün)\" (başlıklar: Cari / Kişi | Vadesi Gelmemiş | 1–30 Gün | 31–60 Gün | 61–90 Gün | 90+ Gün | Şüpheli Alacak | Toplam Gecikmiş | Toplam) (beklenen true, gelen false)"
     },
     {
       "ad": "Karar 3 — Alacak Yaşlandırma: 'Vade Gecikme (Gün)' ve 'Şüpheli Alacak (dilimlere dahil)' (ekran / PDF / Excel) › PDF ve Excel aynı başlıklar ve değerler",
-      "konum": "test/supheli-230-karar.test.mjs:182:3",
+      "konum": "test/supheli-230-karar.test.mjs:202:3",
       "hata": "PDF başlık \"Vade Gecikme (Gün)\" (beklenen true, gelen false)"
     }
   ],
-  "ham_cikti": "../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ae29a6d1c9c3d14a0/docs/kanit/2026-10-15/karar-supheli-kirmizi.log",
-  "klasor": "/tmp/claude-0/karar-eski-469d547",
-  "ham_cikti_sha256": "23f5362f61c5e2199f89c4194d233db56dd2e410788b5012afe2f0eda9b98e25",
-  "ham_cikti_bayt": 11584
+  "ham_cikti": "docs/kanit/2026-10-15/karar2-eski-469d547-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/karar2-eski-469d547",
+  "ham_cikti_sha256": "9b8b9b9885c17031f97b8553b4128f8c8e3cbe6356ab44515d1fc70ff605a3dd",
+  "ham_cikti_bayt": 39458
 }
