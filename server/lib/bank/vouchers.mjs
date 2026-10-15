@@ -710,6 +710,115 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
   }
   /** Rozet: vadesi gelen planlı işlemler (yazmaz). */
   const dueCount = () => Number(store.get("SELECT COUNT(*) AS n FROM bank_plans WHERE status = 'planned' AND planned_date <= ?", today()).n) || 0;
+  /**
+   * 2.3.0 İz 3.3 (plan §8.9 "Akış kaynakları: … Planlı Banka, Planlanan Transferler", §8.10 Banka Nakit Akış Raporu; 2.1.0 eşleme 301 "Vade Takip /
+   * Zil banka kalemleri (planlı işlemler)"): gerçekleştirilmemiş planlı işlemler, Nakit Akış / Vade Takip kalemi biçiminde (TL). Deftere girmez; tutar
+   * planın kendisidir (planlı transferin ücreti, planlı faizin stopajı yazılmaz — gerçekleştiğinde fişten okunur).
+   *   - fee, interest_out, other_out, card_payment, loan_repay → bankadan çıkış; interest_in, other_in, loan_draw → bankaya giriş;
+   *   - transfer → iç hareket (internal: true; Gerçek Banka toplamında 0: Banka Nakit Akış Raporu "Planlanan Transfer" kolonu, genel Nakit Akış'a
+   *     girmez, Vade Takip'te tutarsız kalem olarak adıyla).
+   * Tekrarlı plan yalnız bir sonraki tarihiyle (planned_date) yazılır; sonraki tekrar gerçekleştirilince doğar. Yazmaz.
+   */
+  const PLAN_OUT = new Set(["fee", "interest_out", "other_out", "card_payment", "loan_repay"]);
+  const amountText = amount => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)} TL`;
+  function planFlows() {
+    let rows = [];
+    try {
+      rows = store.all("SELECT id, kind, bank_account_id AS accountId, to_account_id AS toAccountId, amount_minor AS amountMinor, planned_date AS date, repeat, description FROM bank_plans WHERE status = 'planned' ORDER BY planned_date, created_at");
+    } catch {
+      return []; // banka tabloları yoksa (göç öncesi veri) planlı işlem yok
+    }
+    const map = new Map(store.all("SELECT id, bank_name, name FROM bank_accounts").map(item => [item.id, item]));
+    const label = id => (map.get(id) ? `${map.get(id).bank_name} · ${map.get(id).name}` : "");
+    return rows.map(row => {
+      const transfer = row.kind === "transfer";
+      const amount = Number(row.amountMinor) / 100;
+      const name = `Planlı ${typeLabel(row.kind).toLocaleLowerCase("tr-TR")}`;
+      return {
+        date: row.date,
+        direction: transfer ? "" : PLAN_OUT.has(row.kind) ? "out" : "in",
+        amount,
+        source: "bank",
+        internal: transfer,
+        planKind: row.kind,
+        label: `${name}${transfer ? ` ${amountText(amount)} · ${label(row.accountId)} → ${label(row.toAccountId)}` : ""}${row.description ? ` · ${row.description}` : ""}`,
+        party: transfer ? "" : label(row.accountId),
+        detail: row.repeat && row.repeat !== "none" ? `Tekrar: ${PLAN_REPEATS[row.repeat] || row.repeat}` : "",
+        accountId: row.accountId,
+        toAccountId: row.toAccountId,
+        accountLabel: label(row.accountId),
+        toAccountLabel: label(row.toAccountId),
+        ref: { type: "bankPlan", id: row.id },
+      };
+    });
+  }
+  /** Zil / tahsilat takvimi kalemleri (routes/dues.mjs; çek dueItems ile aynı alanlar): planlı tarihi geçmiş, bugün ve 7 gün içindeki planlı işlemler. */
+  function planDueItems(day = today(), { soonDays = 7 } = {}) {
+    const out = [];
+    for (const flow of planFlows()) {
+      const days = Math.round((Date.parse(`${flow.date}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000);
+      if (!Number.isFinite(days) || days > soonDays) continue;
+      out.push({
+        id: `bank|${flow.ref.id}`,
+        source: "bank",
+        bankPlanId: flow.ref.id,
+        direction: flow.direction,
+        person: flow.internal ? `${flow.accountLabel} → ${flow.toAccountLabel}` : flow.accountLabel,
+        caseNo: "",
+        caseKey: "",
+        tab: "",
+        label: flow.label,
+        kind: "date",
+        dueDate: flow.date,
+        dueText: dayText(flow.date),
+        amount: flow.amount,
+        partial: false,
+        days,
+        state: days === 0 ? "today" : days < 0 ? "overdue" : "upcoming",
+      });
+    }
+    return out;
+  }
+  /**
+   * Kart borcu son ödeme günü (plan §8.9 "Akış kaynakları: … Kart Borcu (son ödeme günü)"): etkin kurumsal kart hesabının bugünkü borcu, kartın bir
+   * sonraki son ödeme gününde (Son Ödeme Günü alanı; ayın gün sayısını aşarsa ayın son günü) bankadan çıkış. O kart için planlı Kart Borcu Ödemesi
+   * varsa yazılmaz (iki kez sayılmaz); Son Ödeme Günü girilmemiş kartta kalem yok. Tutar kartın bütün satırlarından (money.refTotal; K7 ile aynı).
+   */
+  function cardDueFlows(day = today()) {
+    let cards = [];
+    try {
+      cards = store.all("SELECT id, bank_name AS bankName, name, due_day AS dueDay FROM bank_accounts WHERE deleted_at IS NULL AND kind = 'card' AND status = 'active' AND due_day > 0 ORDER BY position, created_at");
+    } catch {
+      return [];
+    }
+    if (!cards.length || !money?.refTotal) return [];
+    const planned = new Set(store.all("SELECT to_account_id AS id FROM bank_plans WHERE status = 'planned' AND kind = 'card_payment'").map(row => row.id));
+    const out = [];
+    for (const card of cards) {
+      if (planned.has(card.id)) continue;
+      const debt = -(Number(money.refTotal({ ref: card.id }).cents) || 0);
+      if (debt <= 0) continue;
+      out.push({ date: nextDueDay(day, Number(card.dueDay)), direction: "out", amount: debt / 100, source: "bank", internal: false, planKind: "card_due", label: `Kart borcu son ödeme günü · ${card.bankName} · ${card.name}`, party: `${card.bankName} · ${card.name}`, detail: "", accountId: card.id, toAccountId: "", accountLabel: `${card.bankName} · ${card.name}`, toAccountLabel: "", ref: { type: "bankAccount", id: card.id } });
+    }
+    return out;
+  }
+  function nextDueDay(day, dueDay) {
+    const [year, month] = day.split("-").map(Number);
+    const at = (y, m) => {
+      const last = new Date(Date.UTC(y, m, 0)).getUTCDate();
+      return `${y}-${String(m).padStart(2, "0")}-${String(Math.min(dueDay, last)).padStart(2, "0")}`;
+    };
+    const current = at(year, month);
+    return current >= day ? current : month === 12 ? at(year + 1, 1) : at(year, month + 1);
+  }
+  /** Zil önbelleğinin anahtarı: planlı işlemler değişince (ekleme, gerçekleştirme, atlama, iptal) takvim yeniden hesaplanır. */
+  const plansFingerprint = () => {
+    try {
+      return String(store.get("SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') || '/' || COALESCE(MAX(planned_date), '') AS f FROM bank_plans WHERE status = 'planned'")?.f || "");
+    } catch {
+      return "";
+    }
+  };
   // Planın türe özgü alanları (payload_json). Aşama 4 dilim 4: kredi geri ödemesinin faizi (interestAmount) ve referans da saklanır;
   // önceden saklanmadığı için planlı kredi taksiti faizsiz gerçekleşiyordu.
   // Aşama 9: planlı transferin ücreti ve kanalı da saklanır (feeAmount, feeTax, feeRate, channel; masraf türü feeType ortak).
@@ -856,5 +965,5 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
   }
 
   // negative (Aşama 5–6): K7'nin aynı kuralı modül yazımlarında (cari havale, Kasa ↔ Banka transferi; lib/bank/module-ref.mjs).
-  return { negative: { balancesOf, guardNegative, primeTotals }, meta, specOf, needsInvoice, create, reverse, correct, info, listPlans, createPlan, executePlan, skipPlan, cancelPlan, dueCount, planRow, mustPlan };
+  return { negative: { balancesOf, guardNegative, primeTotals }, meta, specOf, needsInvoice, create, reverse, correct, info, listPlans, createPlan, executePlan, skipPlan, cancelPlan, dueCount, planRow, mustPlan, planFlows, planDueItems, plansFingerprint, cardDueFlows };
 }

@@ -21,7 +21,7 @@ export function rangeLabel(from, to) {
   if (from && to) return `${dayText(from)} – ${dayText(to)}`;
   if (from) return `${dayText(from)} ve sonrası`;
   if (to) return `${dayText(to)} tarihine kadar`;
-  return "Tüm hareketler";
+  return "Tüm Zamanlar";
 }
 
 const describe = entry => {

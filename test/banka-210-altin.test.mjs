@@ -47,8 +47,13 @@ const STAMP = /\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}(:\d{2})?/g;
 
 // 2.2.0 İz 4.2 (plan §3.11a, bilerek): 101 / 103'ün adı Tekdüzen adı ("Alınan Çekler", "Verilen Çekler ve Ödeme Emirleri (−)"); iki taraf da aynı belirtece
 // (defter-olgulari normDocumentNames). Senet hesapları (121 / 321) yeni tarafta eski düzene katlanır (legacyDocuments; aşağıda).
-const norm649 = value => JSON.parse(normDocumentNames(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD")));
-const textNorm = value => normDocumentNames(value.replace(STAMP, "TARİH SAAT").split(OLD_649).join("649-AD").split(NEW_649).join("649-AD"));
+// 2.3.0 İz 5.2 (bilerek, kullanıcı kararı 15.10.2026): dönem metni "Tüm hareketler" → "Tüm Zamanlar" (rapor alt başlığı, PDF/Excel kapsamı);
+// sayılar ve satırlar değişmez — iki taraf aynı belirtece.
+const OLD_ALL = "Tüm hareketler";
+const NEW_ALL = "Tüm Zamanlar";
+const normAll = value => value.split(OLD_ALL).join("ALL-AD").split("Tüm zamanlar").join("ALL-AD").split(NEW_ALL).join("ALL-AD");
+const norm649 = value => JSON.parse(normAll(normDocumentNames(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD"))));
+const textNorm = value => normAll(normDocumentNames(value.replace(STAMP, "TARİH SAAT").split(OLD_649).join("649-AD").split(NEW_649).join("649-AD")));
 /** Yeni tarafın Ana Defter / Mutabakat Testi / Hesap Planı Mizanı / Defter Mutabakatı JSON'u eski düzende (121 → 101, 321 → 103; eski adlar). */
 // Kaç yanıtta senet hesabı katlandı / kaç dosya ekranla karşılaştırıldı (günlüğe yazılır: katlamanın gerçekten çalıştığının kanıtı).
 const documentTally = { folded: 0, selfChecked: 0 };
@@ -119,6 +124,10 @@ async function fetchOne(api, request, side = "eski", company = null) {
     }
     if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);
     if (side === "yeni" && response.status === 200) data = legacyDocuments(request.url, data);
+    // 2.3.0 İz 3.3 (plan §8.9, eşleme 301; bilerek): Vade Takip'e "bank" kaynağı (planlı banka işlemleri) geldi; eski veride planlı işlem yok, satırlar aynı.
+    if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/vade-takip" && Array.isArray(data.allowed)) {
+      data = { ...data, allowed: data.allowed.filter(item => item !== "bank"), sources: Array.isArray(data.sources) ? data.sources.filter(item => item !== "bank") : data.sources };
+    }
     // 2.1.0 temel sürüm (K10, plan §8.9, bilerek): Nakit Akış başlangıcı Nakit + Gerçek Banka; 2.0.26 karşılığına aynı satırlardan çevrilir.
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/nakit-akisi") {
       const { flow, problem } = await legacyCashFlow(apiLike(api), data);

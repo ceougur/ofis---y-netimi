@@ -2422,7 +2422,10 @@ try {
     const groups = await admin.$$eval(`${modal} .hof-rc-group > p`, nodes => nodes.map(node => node.textContent.trim()));
     ok(groups.some(group => group.endsWith("Banka")), `Banka grubu: ${groups.join(", ")}`);
     const items = await admin.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar", `Banka raporları (2.2.0: Tahsildeki Çek ve Senetler, POS raporları): ${items.join(", ")}`);
+    // 2.3.0 (bilerek güncellendi): §8.10 kalan raporlar (İz 3.3) ve POS Satış / Komisyon (İz 5.3); grup sırası İz 5.4 (Cari önce, Banka Taksit'ten sonra).
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar|POS Satış Raporu|POS Komisyon Raporu|Günlük Banka Raporu|Aylık Banka Raporu|Banka Bazında Bakiye|Para Birimi Bazında Bakiye|Bankalar Arası Transfer Raporu|Kasa ve Banka Transfer Raporu|Cari ve Banka Hareketleri|Fatura ve Banka Hareketleri|Taksit ve Banka Hareketleri|Banka Nakit Akış Raporu", `Banka raporları (2.3.0): ${items.join(", ")}`);
+    const groupNames = groups.map(group => group.replace(/^[^\p{L}]+/u, "").trim());
+    ok(groupNames.join("|") === "Cari|Kasa|Stok|Fatura|Çek / Senet|Taksit|Banka|Ana Defter|Kayıtlar|Ofis".split("|").filter(name => groupNames.includes(name)).join("|"), `grup sırası (İz 5.4): ${groupNames.join(" · ")}`);
     await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
     let data = await waitPreview(admin, view => view.rows.length >= 2 && view.footer);
     const byBank = bank => data.rows.find(cells => cells[1] === bank);
@@ -2500,6 +2503,77 @@ try {
     ok(data.footer?.[col("Giriş")] === "26.500,00 TL" && data.footer?.[col("Çıkış")] === "15,75 TL", `TOPLAM = dış giriş/çıkış (${data.footer?.join(" | ")})`);
     ok(data.rows.some(cells => /\(Transfer Çıkış: 20\.000,00 TL\)/.test(cells[col("Açıklama")]) && cells[col("Çıkış")] === "5,25 TL"), "ücretli transfer satırı: Çıkış 5,25, transfer tutarı açıklamada");
     await shot(admin, "rapor-banka-pos-transfer-ayri");
+  });
+
+  await step("46b. 2.3.0 İz 3.3 raporları ekrandan: Günlük Banka (6 gün, Dönem Sonu 160.484,25; TOPLAM Giriş 21.500 / Çıkış 15,75 / Transfer 21.000 · 32.000), Banka Bazında (Ziraat 87.984,25 · borç 3.000; Garanti 72.500; TOPLAM 160.484,25), Kasa–Banka Transfer 2 satır, Bankalar Arası 1 satır (ücret 5,25)", async () => {
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-gunluk"]`);
+    let data = await waitPreview(admin, view => view.rows.length === 6 && view.footer);
+    let col = header => data.heads.indexOf(header);
+    ok(data.rows.length === 6 && data.summary["Dönem Sonu"] === "160.484,25 TL" && data.summary["Gün Sayısı"] === "6", `Günlük Banka Raporu: ${data.rows.length} gün, Dönem Sonu ${data.summary["Dönem Sonu"]}`);
+    ok(data.footer?.[col("Giriş")] === "21.500,00 TL" && data.footer?.[col("Çıkış")] === "15,75 TL" && data.footer?.[col("Transfer Giriş")] === "21.000,00 TL" && data.footer?.[col("Transfer Çıkış")] === "32.000,00 TL" && data.footer?.[col("Gün Sonu Bakiye")] === "", `TOPLAM = dış giriş/çıkış, transfer ayrı, yürüyen bakiye toplanmaz (${data.footer?.join(" | ")})`);
+    ok(data.rows.at(-1)[col("Gün Sonu Bakiye")] === "160.484,25 TL" && data.rows.at(-1)[0] === "08.10.2026", `son günün Gün Sonu Bakiyesi = Gerçek Banka (${data.rows.at(-1).join(" | ")})`);
+    await shot(admin, "rapor-banka-gunluk");
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-bazinda-bakiye"]`);
+    data = await waitPreview(admin, view => view.rows.length === 2 && view.footer);
+    col = header => data.heads.indexOf(header);
+    const ziraat = data.rows.find(cells => cells[0] === "Ziraat Bankası");
+    const garanti = data.rows.find(cells => cells[0] === "Garanti BBVA");
+    ok(ziraat?.[col("Gerçek Banka")] === "87.984,25 TL" && ziraat?.[col("Kart ve Kredi Borcu")] === "3.000,00 TL" && ziraat?.[col("Net")] === "84.984,25 TL" && garanti?.[col("Gerçek Banka")] === "72.500,00 TL", `Banka Bazında: ${data.rows.map(cells => cells.join(" | ")).join(" · ")}`);
+    ok(data.footer?.[col("Gerçek Banka")] === "160.484,25 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === "5.000,00 TL", `TOPLAM Gerçek Banka 160.484,25; Hesabı Atanmamış özette ayrı (${data.footer?.join(" | ")})`);
+    await shot(admin, "rapor-banka-bazinda");
+    await admin.click(`${modal} [data-rc-list] [data-report="kasa-banka-transfer"]`);
+    data = await waitPreview(admin, view => view.rows.length === 2);
+    col = header => data.heads.indexOf(header);
+    ok(data.rows.some(cells => cells[col("Yön")] === "Bankadan Kasaya Aktar" && cells[col("Bankadan Kasaya")] === "10.000,00 TL") && data.rows.some(cells => cells[col("Yön")] === "Kasadan Bankaya Yatır" && cells[col("Kasadan Bankaya")] === "1.000,00 TL") && data.summary["Net (Bankaya)"] === "-9.000,00 TL", `Kasa ve Banka Transfer: ${data.rows.map(cells => cells.join(" | ")).join(" · ")} · ${JSON.stringify(data.summary)}`);
+    await admin.click(`${modal} [data-rc-list] [data-report="bankalar-arasi-transfer"]`);
+    data = await waitPreview(admin, view => view.rows.length === 1);
+    col = header => data.heads.indexOf(header);
+    ok(data.rows[0][col("Gönderen Hesap")] === "Ziraat Bankası · Ana TL Hesabı" && data.rows[0][col("Alıcı Hesap")] === "Garanti BBVA · Ana TL Hesabı" && data.rows[0][col("Tutar")] === "20.000,00 TL" && data.rows[0][col("Ücret")] === "5,25 TL" && data.rows[0][col("Gönderenden Çıkan")] === "20.005,25 TL" && data.rows[0][col("Kanal")] === "EFT", `Bankalar Arası Transfer: ${data.rows[0].join(" | ")}`);
+    await shot(admin, "rapor-bankalar-arasi-transfer");
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-nakit-akis"]`);
+    data = await waitPreview(admin, view => view.rows.length >= 1 && view.summary["Başlangıç"]);
+    ok(data.rows[0][1] === "Başlangıç" && data.summary["Bugünkü Gerçek Banka"] === "160.484,25 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === "5.000,00 TL", `Banka Nakit Akış: başlangıç Gerçek Banka (${JSON.stringify(data.summary)})`);
+  });
+
+  await step("46c. Tüm Zamanlar (İz 5.2): Banka Hareket Raporu'nda Tüm Zamanlar seçilince Başlangıç alanı BOŞ, kapsam metni 'Tüm Zamanlar', ekranda ve PDF'te '1976' yok", async () => {
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-hareket"]`);
+    await waitPreview(admin, view => view.rows.length > 0);
+    await admin.click(`${modal} [data-rc-main] [data-preset="all"]`);
+    const data = await waitPreview(admin, view => /Tüm Zamanlar/.test(view.title) || view.rows.length > 0);
+    await admin.waitForTimeout(400);
+    const from = await admin.$eval(`${modal} [data-rc-main] [data-param="from"]`, node => node.value);
+    const scope = await textOf(admin, `${modal} [data-rc-main] .hof-rc-scope`);
+    const mainText = await textOf(admin, `${modal} [data-rc-main]`);
+    ok(from === "" && /Tüm Zamanlar/.test(scope) && !/\b19\d\d\b/.test(mainText), `Tüm Zamanlar: Başlangıç "${from}", kapsam "${scope}", 19xx ${/\b19\d\d\b/.test(mainText)}`);
+    const [pdfHref] = data.links.length ? data.links : [(await admin.$eval(`${modal} [data-rc-main] .hof-rep-out.is-pdf`, node => node.getAttribute("href")))];
+    const pdf = await fileText(admin, pdfHref);
+    const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
+    ok(pdf.status === 200 && /Tüm Zamanlar/.test(text) && !/\b19\d\d\b/.test(text), "PDF: Tüm Zamanlar, 19xx yok");
+    await shot(admin, "rapor-tum-zamanlar-bos-baslangic");
+    await closeAll(admin);
+  });
+
+  await step("46d. Banka → Hareketler PDF / Excel düğmeleri (İz 5.1): Ziraat seçili + Transfer türü → Excel satırları ekrandaki satırlarla aynı, TOPLAM; PDF açılır", async () => {
+    await openBank(admin);
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves]`, { timeout: 10000 });
+    await selectMovesAccount(admin, R6.ziraat.id);
+    await admin.waitForTimeout(500);
+    const rows = await moveRows(admin);
+    ok(rows.length >= 5, `Ziraat hareketleri ekranda (${rows.length})`);
+    const links = await admin.$$eval(`${bankWin} [data-mv-export] a`, nodes => nodes.map(node => [node.textContent.trim(), node.getAttribute("href")]));
+    ok(links.length === 2 && links[0][0] === "PDF İndir" && links[1][0] === "Excel İndir" && links.every(([, href]) => href.includes(`account=${R6.ziraat.id}`)), `düğmeler süzgeçli bağ taşır: ${JSON.stringify(links)}`);
+    const xlsx = await fileText(admin, links[1][1]);
+    const book = Object.values(xlsxSheets(xlsx.buffer))[0];
+    const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1)));
+    const body = sheet.slice(1).filter(row => row[0] !== "TOPLAM");
+    ok(xlsx.status === 200 && book[1]?.[0] === "Banka Hareketleri" && sheet[0].join("|") === "Tarih|İşlem No|Tür|Hesap|Açıklama|Giriş|Çıkış|Bakiye|Durum|Giren" && body.length === rows.length && sheet.at(-1)[0] === "TOPLAM", `Excel: ${body.length} satır = ekran ${rows.length}, TOPLAM (${sheet.at(-1)?.join(" | ")})`);
+    ok(body.map(row => row[1]).join() === rows.map(row => row.no).join(), `İşlem No sırası ekranla aynı (${body.map(row => row[1]).join(",")} / ${rows.map(row => row.no).join(",")})`);
+    const pdf = await fileText(admin, links[0][1]);
+    ok(pdf.status === 200 && pdf.buffer.subarray(0, 5).toString("latin1") === "%PDF-" && pdfText(pdf.buffer).includes("Banka Hareketleri"), "PDF açılır");
+    await shot(admin, "hareketler-pdf-excel");
+    await closeAll(admin);
+    await openAllReports(admin);
   });
 
   await step("47. Canlı yenileme: açık Banka Bakiye Raporu ve ANLIK DURUM — başka oturumdan Garanti'ye masraf 100 → ikisi de yeni sayıyı kendiliğinden gösterir", async () => {

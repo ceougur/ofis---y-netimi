@@ -34,11 +34,12 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
 // legacy (2.1.0 temel sürüm, küçük düzeltmeler): eski sürümden kalan, hesaba atanmamış İLERİ TARİHLİ havale / POS satırı (102.00 / 108.00).
 // Önceden "Kasa (ileri tarihli)" yazılıyordu (Nakit Kasa'da olmayan bir hareket). Ekran (hof-overview.js ROW_LABELS), PDF ve Excel aynı adı yazar.
-const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet" };
+// 2.3.0 İz 3.3 (plan §8.9 "Planlı Banka"; eşleme 301): planlı banka işlemleri (bank_plans; deftere girmemiş) kaynak "bank".
+const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", bank: "Planlı Banka İşlemi" };
 // Satırın kaynak adı (PDF/Excel): akışın kendi kaynağı (flow; ör. bankada tahsildeki evrak "deposit", plan §8.9) varsa o, yoksa süzgeç kaynağı.
 const sourceText = row => SOURCE_TEXT[row.flow] || SOURCE_TEXT[row.source] || row.source;
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
-const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "table", "promise", "deadline"];
+const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "bank", "table", "promise", "deadline"];
 const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu Ay", upcoming: "Yaklaşan" };
 const GROUPS = new Set(["day", "week", "month"]);
 
@@ -224,7 +225,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     return { from, to };
   };
   const allTime = from => isAllTimeStart(from, today());
-  const rangeText = ({ from, to }) => (allTime(from) ? `Tüm hareketler · ${to ? dayText(to) : "bugün"} tarihine kadar` : `${from ? dayText(from) : "…"} – ${to ? dayText(to) : "…"}`);
+  const rangeText = ({ from, to }) => (allTime(from) ? `Tüm Zamanlar · ${to ? dayText(to) : "bugün"} tarihine kadar` : `${from ? dayText(from) : "…"} – ${to ? dayText(to) : "…"}`);
   const fileRange = ({ from, to }) => `${from && !allTime(from) ? dayText(from) : "baslangic"}-${to ? dayText(to) : "bugun"}`;
   const openingDay = from => (allTime(from) ? "" : dayText(from));
 
@@ -370,6 +371,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     flows.push(...aheadFlows(day));
     // 2.2.0 (plan §4.7, §8.9): bekleyen POS kalemleri valör gününde net tutarla (POS, Blokeli POS; eksi gün Komisyon Tahsili).
     flows.push(...(bankService()?.pos?.flows?.() || []));
+    // 2.3.0 İz 3.3 (plan §8.9 "Planlı Banka, Planlanan Transferler (iç transfer toplamda 0)"): planlı masraf/faiz/diğer/kart borcu/kredi kendi tarihinde
+    // giriş ya da çıkış; planlı bankalar arası transfer Nakit + Gerçek Banka toplamını değiştirmez → girmez (Banka Nakit Akış Raporu'nda ayrı kolon).
+    flows.push(...bankPlanFlows().filter(flow => !flow.internal));
+    // Kart borcu son ödeme günü (plan §8.9): bugünkü kart borcu kartın bir sonraki son ödeme gününde çıkış (planlı Kart Borcu Ödemesi varsa o kart atlanır).
+    flows.push(...(bankService()?.plans?.cardDues?.(day) || []));
     const result = projection({ today: day, from: range.from, to: range.to, cashToday: start.total, flows, includeOverdue });
     return { ...result, start, requested: range, withTable, group, periods: group ? groupFlows(result, group) : null };
   }
@@ -481,7 +487,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (!canDues(user)) throw new HttpError(403, "Vade takip raporu yönetici ve uzman hesapları ile finans raporları yetkisi verilen kişiler içindir.", { code: "FORBIDDEN" });
     return user;
   };
-  const visibleSources = user => DUE_SOURCES.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : true));
+  // 2.3.0 İz 3.3: planlı banka işlemleri (bank) yalnız banka rakamını görebilene (plan §8.9 "Vade Takip / Zil / Takvim: … bank.view ile").
+  const visibleSources = user => DUE_SOURCES.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : source === "bank" ? canSeeBank(user) : true));
   // Açık fatura → nakit akışı / vade takip kalemi (fatura modülünün kapama hesabından; tek kaynak).
   const invoiceFlow = item => ({
     date: item.dueDate,
@@ -535,6 +542,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     return out;
   }
   const canSeeBank = user => canUser(user, "overview.view") || canUser(user, "bank.view");
+  // Planlı banka işlemleri (lib/bank/vouchers.mjs planFlows; tek kaynak): banka tabloları yoksa boş.
+  const bankPlanFlows = () => bankService()?.plans?.flows?.() || [];
   function cashFlow(entry) {
     const ref = entry.source === "account" && entry.accountId ? { type: "account", id: entry.accountId } : entry.source === "plan" && entry.planId ? { type: "plan", id: entry.planId } : entry.source === "cheque" && entry.chequeId ? { type: "cheque", id: entry.chequeId } : { type: "cash" };
     return { date: entry.date, direction: entry.kind === "out" ? "out" : "in", amount: entry.amount, source: "cash", label: entry.description || (entry.kind === "in" ? "Tahsilat" : "Ödeme"), party: entry.accountName || entry.planName || entry.caseTitle || "", ref };
@@ -569,6 +578,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if ((sources.has("cheque") || sources.has("note")) && cheques()?.flows) for (const flow of cheques().flows({ expected: true })) if (sources.has(flow.source)) items.push(flow);
     if (sources.has("invoice") && invoices()?.openItems) for (const item of invoices().openItems(day, { net: true })) items.push(invoiceFlow(item));
     if (sources.has("cash")) items.push(...aheadFlows(day, { bank: canSeeBank(user) }));
+    // 2.3.0 İz 3.3: planlı banka işlemleri kendi tarihinde (planlı transfer yönsüz ve tutarsız kalem: adında tutar ve iki hesap).
+    if (sources.has("bank")) items.push(...bankPlanFlows());
     let dormant = [];
     if (sources.has("table") || sources.has("promise") || sources.has("deadline")) {
       const calendar = tables()?.calendar ? await tables().calendar(clock()) : { items: [], dormant: [] };

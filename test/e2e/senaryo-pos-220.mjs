@@ -695,6 +695,36 @@ try {
     }
   });
 
+  await step("Raporlar → POS Satış Raporu ve POS Komisyon Raporu (İz 5.3): satırlar = POS işlemleri, TOPLAM = satırlar, iki raporun Net'i aynı; Tür ve Dönem süzgeçleri; PDF ve Excel", async () => {
+    await page.click(`${modal} [data-rc-list] [data-report="pos-satis"]`);
+    let data = await waitRc(view => view.rows.length >= 1 && view.footer);
+    let col = header => data.heads.indexOf(header);
+    const sumOf = (rows, header) => Math.round(rows.reduce((total, cells) => total + num(cells[col(header)]), 0) * 100);
+    const satisNet = Math.round(num(data.footer[col("Net")]) * 100);
+    ok(sumOf(data.rows, "Net") === satisNet && sumOf(data.rows, "Brüt") === Math.round(num(data.footer[col("Brüt")]) * 100), `POS Satış: TOPLAM = satırlar (net ${satisNet / 100})`);
+    ok(data.rows.every(cells => /^(POS Satışı|POS İadesi|POS İptal İadesi)$/.test(cells[col("Tür")]) && cells[col("Kip")] === "BSMV Dahil" && cells[col("POS")]), `satırlar: ${data.rows.map(cells => cells.join(" | ")).join("\n")}`);
+    const satisRows = data.rows.filter(cells => cells[col("Tür")] === "POS Satışı").length;
+    await page.selectOption(`${modal} [data-param="posSale"]`, "sale");
+    data = await waitRc(view => view.rows.length === satisRows);
+    ok(data.rows.length === satisRows && data.rows.every(cells => cells[col("Tür")] === "POS Satışı"), `Tür süzgeci yalnız satışlar (${data.rows.length})`);
+    await page.selectOption(`${modal} [data-param="posSale"]`, "");
+    await shot("rapor-pos-satis");
+    const pdf = await download(data.links[0]);
+    const xlsx = await download(data.links[1]);
+    ok(pdf.status === 200 && pdfText(pdf.buffer).includes("POS Satış Raporu") && xlsx.status === 200, "POS Satış PDF ve Excel");
+    await page.click(`${modal} [data-rc-list] [data-report="pos-komisyon"]`);
+    data = await waitRc(view => view.rows.length >= 1 && view.footer);
+    col = header => data.heads.indexOf(header);
+    const komisyonNet = Math.round(num(data.footer[col("Net")]) * 100);
+    ok(komisyonNet === satisNet && sumOf(data.rows, "Komisyon") === Math.round(num(data.footer[col("Komisyon")]) * 100) && data.footer[col("Kesinti %")] === "", `POS Komisyon: TOPLAM net ${komisyonNet / 100} = POS Satış net; oran toplanmaz`);
+    ok(data.rows.every(cells => /^(Ekim|Kasım|Aralık|Eylül) \d{4}$/.test(cells[col("Dönem")])), `aylık dönem satırları: ${data.rows.map(cells => cells[col("Dönem")]).join(", ")}`);
+    await page.selectOption(`${modal} [data-param="posPeriod"]`, "year");
+    data = await waitRc(view => view.rows.length >= 1 && view.rows.every(cells => /^\d{4}$/.test(cells[0])));
+    ok(data.rows.every(cells => cells[0] === "2026") && Math.round(num(data.footer[col("Net")]) * 100) === satisNet, `yıllık: ${data.rows.map(cells => cells.join(" | ")).join(" · ")}`);
+    await shot("rapor-pos-komisyon");
+    await auditLabels("POS Komisyon Raporu");
+  });
+
   await step("Raporlar → Banka Masraf Raporu: POS komisyonu 653 · matrah 238,10 + BSMV 11,90 = 250; Faturası Beklenen Komisyonlar boş (KDV'li POS yok)", async () => {
     await page.click(`${modal} [data-rc-list] [data-report="banka-masraf"]`);
     let data = await waitRc(view => view.rows.length >= 1 && view.footer);
