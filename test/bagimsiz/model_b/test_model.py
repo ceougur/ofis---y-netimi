@@ -809,6 +809,55 @@ class Surum4Supheli(unittest.TestCase):
         self.assertEqual({b["alan"] for b in o["belirsizler"]}, {"faturalar.F.acik"})
 
 
+class Surum4TahsilattaSecim(unittest.TestCase):
+    """Sürüm 4 eki (15.10.2026; PLAN §3.11b/2 "Tahsilatta seçim", SENARYO-DILI F9–F11). Sayılar elle, plandan:
+    F 8.000 (01.10) → S 3.000 al (06.10) + karşılık 1.000 → normalCari 500 ve F'ye bağlı 400 (07.10) DÜŞMEZ → F2 1.000 peşin 1.000 (08.10)
+    DÜŞMEZ → hedefsiz 300 (08.10) S'den düşer (kalan 2.700; karşılık 1.000 ≤ 2.700 → 644 yok) → F3 2.000 taksitli (09.10; kart S'den SONRA)
+    → taksit 200 (09.10) S'den DÜŞMEZ → S2 500 al (10.10; kart 09.10 ≤ 10.10) → taksit 100 (11.10) yalnız S2'den düşer.
+    Sonuç: S kalan 2.700 / tahsil 300 / karşılık 1.000; S2 kalan 400 / tahsil 100; 120 = 5.400, 128 = 3.100, 129 = −1.000, 644 = 0;
+    cari = 8.500 (= 11.000 borç − 2.500 tahsilat)."""
+
+    def test_normal_cari_bagli_pesin_ve_kart_tarihi(self):
+        o = kos("s4-secim", [cari("ABC"),
+                             {"id": "f", "islem": "fatura", "ad": "F", "tur": "satis", "cari": "ABC", "tarih": "01.10.2026",
+                              "kalemler": [{"hizmet": "Danışmanlık", "miktar": 1, "birimFiyat": "8000", "kdvOrani": 20, "kdvDahil": True}]},
+                             {"id": "1", "islem": "supheli_al", "ad": "S", "cari": "ABC", "tutar": "3000", "neden": "dava", "tarih": "06.10.2026"},
+                             {"id": "2", "islem": "karsilik_ayir", "kayit": "S", "tutar": "1000", "tarih": "06.10.2026"},
+                             {"id": "3", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "500", "yol": "nakit", "tarih": "07.10.2026", "normalCari": True},
+                             {"id": "4", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "400", "yol": "nakit", "tarih": "07.10.2026", "kapatilacakFatura": "F"},
+                             {"id": "f2", "islem": "fatura", "ad": "F2", "tur": "satis", "cari": "ABC", "tarih": "08.10.2026",
+                              "kalemler": [{"hizmet": "Danışmanlık", "miktar": 1, "birimFiyat": "1000", "kdvOrani": 20, "kdvDahil": True}],
+                              "odeme": {"pesin": [{"yol": "nakit", "tutar": "1000"}]}},
+                             {"id": "5", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "300", "yol": "nakit", "tarih": "08.10.2026"},
+                             {"id": "f3", "islem": "fatura", "ad": "F3", "tur": "satis", "cari": "ABC", "tarih": "09.10.2026",
+                              "kalemler": [{"hizmet": "Danışmanlık", "miktar": 1, "birimFiyat": "2000", "kdvOrani": 20, "kdvDahil": True}],
+                              "odeme": {"taksit": {"ad": "T", "sayi": 2}}},
+                             {"id": "6", "islem": "taksit_tahsilat", "kart": "T", "tutar": "200", "yol": "nakit", "tarih": "09.10.2026"},
+                             {"id": "7", "islem": "supheli_al", "ad": "S2", "cari": "ABC", "tutar": "500", "neden": "icra", "tarih": "10.10.2026"},
+                             {"id": "8", "islem": "taksit_tahsilat", "kart": "T", "tutar": "100", "yol": "nakit", "tarih": "11.10.2026"}],
+                bugun="12.10.2026")
+        self.assertEqual(o["retler"], [])
+        self.assertEqual(o["supheliAlacaklar"]["S"], {"tutar": 300000, "karsilik": 100000, "tahsilEdilen": 30000, "degersiz": 0,
+                                                       "cikarilan": 0, "kalan": 270000, "durum": "acik"})
+        self.assertEqual(o["supheliAlacaklar"]["S2"], {"tutar": 50000, "karsilik": 0, "tahsilEdilen": 10000, "degersiz": 0,
+                                                        "cikarilan": 0, "kalan": 40000, "durum": "acik"})
+        self.assertEqual((miz(o, "120")["borc"], miz(o, "128")["borc"], miz(o, "129")["alacak"], miz(o, "644")["alacak"]),
+                         (540000, 310000, 100000, 0))
+        self.assertEqual((o["cariler"]["ABC"], o["kasa"]), (850000, 250000))
+        self.assertEqual(o["taksitKartlari"]["T"], {"toplam": 200000, "odenen": 30000, "kalan": 170000})
+        mizan_dengede(self, o)
+
+    def test_normal_cari_yalniz_surum4_ve_true(self):
+        """§13/10: normalCari yalnız dil sürüm 4'te ve yalnız true (geçersiz senaryo → SenaryoHatasi)."""
+        adimlar = [cari("ABC"), {"id": "1", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "1", "yol": "nakit", "normalCari": False}]
+        with self.assertRaises(m.SenaryoHatasi):
+            kos("s4-secim-false", adimlar)
+        sen3 = senaryo("s3-secim", [cari("ABC"), {"id": "1", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "1", "yol": "nakit", "normalCari": True}])
+        sen3["dil"] = "destekofis-senaryo/3"
+        with self.assertRaises(m.SenaryoHatasi):
+            m.kos(sen3, "s3-secim.json")
+
+
 class GecersizSenaryo(unittest.TestCase):
     def gecersiz(self, sen, ad):
         with self.assertRaises(m.SenaryoHatasi):

@@ -16,7 +16,19 @@
 //               B 129 / A 644. Değersiz Alacak satırı (source 'doubtful') HEDEFLİ: yalnız kendi kaydından düşer; borç tarafı önce 129
 //               (karşılık kadar), kalanı 659; kalanı aşan kısım A 120 / B 659 (kayıt dışı kayıp; yazımda engellenir, eski veri için).
 //   çıkar     : kapanış günü kalan B 120 / A 128; karşılık varsa B 129 / A 644 (konusu kalmadı); kayıt kapanır.
+//   SEÇİM (ürün sahibi 15.10.2026; plan §3.11b/2): alacak satırı `skip` taşıyorsa ŞÜPHELİDEN DÜŞMEZ, A 120 kalır — "Normal Cari Hesaba İşle"
+//               işaretli tahsilat (doubtful_skip), fatura peşini (source 'invoice') ve "Kapatılacak Fatura" bağlı tahsilat (invoice_id dolu):
+//               doubtfulSkipOf. Taksit tahsilatı / kapatılan kartın kalanı `openedOn` (kartın açılış tarihi) taşır: kart kayıttan SONRA açıldıysa
+//               (openedOn > kayıt tarihi) o kayıttan düşmez; önce ya da aynı gün açıldıysa düşer.
 import { roundMoney } from "./money.mjs";
+
+/**
+ * Karar 15.10.2026 (plan §3.11b/2): tahsilat satırı şüpheliden düşmeyip 120'de kalır mı? Kullanıcı işareti (doubtful_skip = 1, "Normal Cari
+ * Hesaba İşle"), fatura peşini (source 'invoice') ya da Kapatılacak Fatura bağı (invoice_id). Yalnız tahsilat ('in') satırında anlamlı.
+ * SQL ikizi: lib/bank/doubtful.mjs doubtfulCredits (e.doubtful_skip = 0 AND e.source <> 'invoice' AND e.invoice_id = '').
+ */
+export const doubtfulSkipOf = ({ kind, source = "", invoiceId = "", doubtfulSkip = 0 } = {}) =>
+  kind === "in" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === "invoice" || Boolean(invoiceId));
 
 export const DOUBTFUL_GL = Object.freeze({ doubtful: "128", provision: "129", groundless: "644", expense: "654", loss: "659" });
 export const DOUBTFUL_CHART = Object.freeze({
@@ -45,8 +57,9 @@ const fresh = record => ({ taken: record.amountMinor, collected: 0, writtenOff: 
 /**
  * Ayırma kuralı.
  * @param {{ records: Array<{ id, party, date, amountMinor, status, closedDate }>, provisions: Array<{ id, recordId, date, amountMinor }>,
- *           credits: Array<{ key, party, date, minor, target? }> }} input  credits: kontrol hesabını alacaklandıran satırlar (kuruş, artı);
- *           target: Değersiz Alacak satırının kaydı ('' = hedefsiz)
+ *           credits: Array<{ key, party, date, minor, target?, skip?, openedOn? }> }} input  credits: kontrol hesabını alacaklandıran satırlar
+ *           (kuruş, artı); target: Değersiz Alacak satırının kaydı ('' = hedefsiz); skip: 120'de kalır (doubtfulSkipOf); openedOn: taksit
+ *           kartının açılış tarihi (kayıttan sonra açılan karttan düşmez)
  * @returns {{ allocations: Map<string, { records: Array<{ recordId, minor }>, provisionUsed: number, lossMinor: number, outsideMinor?: number }>,
  *             extras: Array<{ kind: 'release644' | 'release' | 'release644close', recordId, party, date, minor, key? }>,
  *             state: Map<string, object> }}
@@ -68,7 +81,8 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
     if (!record || !byParty.has(record.party)) continue;
     byParty.get(record.party).provisions.push({ ...item, party: record.party });
   }
-  for (const credit of credits) if (byParty.has(credit.party) && credit.minor > 0) byParty.get(credit.party).credits.push(credit);
+  // skip'li satır (Normal Cari Hesaba İşle, fatura peşini, Kapatılacak Fatura) ayırmaya hiç girmez: A 120 kalır.
+  for (const credit of credits) if (byParty.has(credit.party) && credit.minor > 0 && !credit.skip) byParty.get(credit.party).credits.push(credit);
   for (const [party, group] of byParty) {
     const events = [
       // Aynı tarihte AÇILIŞ sırası (rowid = seq): kimlik rastgele UUID olduğundan ona göre sıralamak sırayı rastgele yapıyordu
@@ -149,6 +163,8 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
           if (left <= 0) break;
           const s = state.get(record.id);
           if (!s || s.remaining <= 0) continue;
+          // Taksit kartı şüpheli kaydından SONRA açıldıysa o kayıttan düşmez (yeni satışın parası); önce ya da aynı gün açılan kart düşer.
+          if (credit.openedOn && credit.openedOn > record.date) continue;
           const minor = Math.min(left, s.remaining);
           s.remaining -= minor;
           s.collected += minor;
@@ -213,7 +229,7 @@ export function applyDoubtfulToJournal(entries, doubtful) {
     entry.lines.forEach((line, index) => {
       if (!line.party || line.credit <= 0 || controlOf.get(line.party) !== line.account) return;
       const key = `${entry.id}#${index}`;
-      credits.push({ key, party: line.party, date: entry.date, minor: line.credit, target: entry.doubtful?.record || "" });
+      credits.push({ key, party: line.party, date: entry.date, minor: line.credit, target: entry.doubtful?.record || "", skip: entry.doubtful?.skip === true, openedOn: entry.doubtful?.openedOn || "" });
       lineRefs.set(key, { entry, line });
     });
   }

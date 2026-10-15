@@ -84,7 +84,7 @@ const FIELDS = {
   stok_giris: ["urun", "miktar"],
   fatura: ["tur", "cari", "kalemler", "odeme"],
   iade: ["asilFatura", "kalemler", "geri"],
-  cari_tahsilat: ["cari", "tutar", "yol", "hesap", "kapatilacakFatura"],
+  cari_tahsilat: ["cari", "tutar", "yol", "hesap", "kapatilacakFatura", "normalCari"],
   cari_odeme: ["cari", "tutar", "yol", "hesap", "kapatilacakFatura"],
   taksit_tahsilat: ["kart", "tutar", "yol", "hesap", "taksitNo", "fazlaAvans"],
   kasa_banka: ["yon", "hesap", "tutar"],
@@ -242,7 +242,8 @@ function validate(scenario, fileName) {
       continue;
     }
     if (EVRAK_ISLEMLERI.has(step.islem) && ![DIL3, DIL].includes(scenario.dil)) err(`${step.id}: evrak işlemleri yalnız dil sürüm 3'te.`);
-    if ((SUPHELI_ISLEMLERI.has(step.islem) || (step.islem === "taksit_tahsilat" && step.fazlaAvans !== undefined)) && scenario.dil !== DIL) err(`${step.id}: şüpheli işlemleri / fazlaAvans yalnız dil sürüm 4'te.`);
+    if ((SUPHELI_ISLEMLERI.has(step.islem) || (step.islem === "taksit_tahsilat" && step.fazlaAvans !== undefined) || (step.islem === "cari_tahsilat" && step.normalCari !== undefined)) && scenario.dil !== DIL) err(`${step.id}: şüpheli işlemleri / fazlaAvans / normalCari yalnız dil sürüm 4'te.`);
+    if (step.islem === "cari_tahsilat" && step.normalCari !== undefined && step.normalCari !== true) err(`${step.id}: normalCari yalnız true olabilir.`);
     for (const key of Object.keys(step)) {
       const plain = key.endsWith("Ham") ? key.slice(0, -3) : key;
       const known = COMMON.includes(key) || allowed.includes(key) || (key.endsWith("Ham") && AMOUNT_FIELDS.has(plain) && allowed.includes(plain));
@@ -885,6 +886,8 @@ async function run(scenarioPath, outPath) {
             method: METHOD[step.yol],
             ...(step.hesap !== undefined ? { bankAccountId: idOf(step.hesap) } : {}),
             ...(step.kapatilacakFatura !== undefined ? { invoiceId: idOf(step.kapatilacakFatura) } : {}),
+            // Sürüm 4 eki (PLAN §3.11b/2 (a)): normalCari → "Normal Cari Hesaba İşle" (doubtfulSkip:true; satır şüpheliden düşmez).
+            ...(step.normalCari === true ? { doubtfulSkip: true } : {}),
             ...flags,
           };
           const result = await http(client, "POST", "/api/workspace/accounts/:id/entries", [idOf(step.cari)], body, opt);

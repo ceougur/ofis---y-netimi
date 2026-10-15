@@ -84,7 +84,7 @@ const percent = (part, whole) => (whole > 0.005 ? `%${new Intl.NumberFormat("tr-
 //   - rapor, yönü karışık satırlarda (alınan/verilen, satış/alış) footerUniform ile toplamı yalnız tek yön süzülünce
 //     gösterir; footer: false toplamı kapatır; footer: { Kolon: değer } hesaplanan satırın üstüne yazar (ör. net bakiye).
 // 2.3.0 İz 3.3 (plan §8.10 kuralı): banka raporlarının yürüyen bakiye kolonları da (Gün Sonu / Ay Başı / Ay Sonu Bakiye, Beklenen Gerçek Banka).
-const NO_SUM = /^(Bakiye|Gün Sonu Kasa|Ay Başı Kasa|Ay Sonu Kasa|Gün Sonu Bakiye|Ay Başı Bakiye|Ay Sonu Bakiye|Beklenen Gerçek Banka|Birim Fiyat|KDV %|Stopaj %|Kesinti %|Kritik Seviye)$/;
+const NO_SUM = /^(Bakiye|Gün Sonu Kasa|Ay Başı Kasa|Ay Sonu Kasa|Gün Sonu Bakiye|Ay Başı Bakiye|Ay Sonu Bakiye|Beklenen Gerçek Banka|Birim Fiyat|KDV %|Stopaj %|Kesinti %|Kritik Seviye|Vade Gecikme \(Gün\))$/;
 const MONEY_CELL = /^(-?)((?:\d{1,3}(?:\.\d{3})*|\d+)),(\d{2}) TL$/;
 const NUMBER_CELL = /^-?(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?$/;
 // Mutabakat Günlüğü olay adları (integrity_log.action).
@@ -1761,9 +1761,12 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
         const day = today();
         const rows = new Map();
         const bucket = days => (days <= 0 ? "notDue" : days <= 30 ? "b30" : days <= 60 ? "b60" : days <= 90 ? "b90" : "b90p");
+        // Karar 15.10.2026: "Vade Gecikme (Gün)" = carinin en eski AÇIK kaleminin bugüne göre gecikmesi (gecikmiş kalem yoksa boş; TOPLAM'da
+        // toplanmaz — NO_SUM). Dilimler aynı; şüpheli kolonu "dilimlere dahil" (altındaki fatura/taksit kalemi dilimlerde yaşlanır).
         const add = (key, name, lateDays, amount) => {
-          const row = rows.get(key) || { name, notDue: 0, b30: 0, b60: 0, b90: 0, b90p: 0 };
+          const row = rows.get(key) || { name, gap: 0, notDue: 0, b30: 0, b60: 0, b90: 0, b90p: 0 };
           row[bucket(lateDays)] = roundMoney(row[bucket(lateDays)] + amount);
+          if (lateDays > row.gap) row.gap = lateDays;
           rows.set(key, row);
         };
         const names = new Map(store.all("SELECT id, name FROM accounts").map(row => [row.id, row.name]));
@@ -1790,17 +1793,17 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
         // Kolon Toplam Gecikmiş'ten önce: son kolon "Toplam" kalır (raporu satır sonundan okuyan ekran/testler değişmez).
         const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount().byAccount : new Map();
         for (const [accountId, item] of doubtfulMap) {
-          if (!rows.has(accountId)) rows.set(accountId, { name: names.get(accountId) || "", notDue: 0, b30: 0, b60: 0, b90: 0, b90p: 0 });
+          if (!rows.has(accountId)) rows.set(accountId, { name: names.get(accountId) || "", gap: 0, notDue: 0, b30: 0, b60: 0, b90: 0, b90p: 0 });
           rows.get(accountId).doubtful = roundMoney(item.openMinor / 100);
         }
         const list = [...rows.values()].map(row => ({ ...row, doubtful: row.doubtful || 0, late: roundMoney(row.b30 + row.b60 + row.b90 + row.b90p) })).sort((a, b) => b.late - a.late || collator.compare(a.name, b.name));
         const sum = key => roundMoney(list.reduce((total, row) => total + row[key], 0));
         return {
-          subtitle: `${dayText(day)} itibarıyla · taksit, vadeli fatura ve portföydeki alınan çek/senet vadelerine göre · Şüpheli Alacak ayrı kolondur, Toplam'a girmez`,
-          headers: ["Cari / Kişi", "Vadesi Gelmemiş", "1–30 Gün", "31–60 Gün", "61–90 Gün", "90+ Gün", "Şüpheli Alacak", "Toplam Gecikmiş", "Toplam"],
-          types: ["", "money", "money", "money", "money", "money", "money", "money", "money"],
-          rows: list.map(row => [row.name, money(row.notDue), money(row.b30), money(row.b60), money(row.b90), money(row.b90p), row.doubtful ? money(row.doubtful) : "", money(row.late), money(roundMoney(row.late + row.notDue))]),
-          summary: [["Vadesi Gelmemiş", money(sum("notDue"))], ["1–30 gün", money(sum("b30"))], ["31–60 gün", money(sum("b60"))], ["61–90 gün", money(sum("b90"))], ["90+ gün", money(sum("b90p"))], ["Toplam Gecikmiş", money(sum("late"))], ["Şüpheli Alacak (ayrı)", money(sum("doubtful"))]],
+          subtitle: `${dayText(day)} itibarıyla · taksit, vadeli fatura ve portföydeki alınan çek/senet vadelerine göre · Vade Gecikme: en eski açık kalemin gecikmesi · Şüpheli Alacak dilimlere dahildir (kalemi dilimlerde yaşlanır), Toplam'a ikinci kez girmez`,
+          headers: ["Cari / Kişi", "Vade Gecikme (Gün)", "Vadesi Gelmemiş", "1–30 Gün", "31–60 Gün", "61–90 Gün", "90+ Gün", "Şüpheli Alacak (dilimlere dahil)", "Toplam Gecikmiş", "Toplam"],
+          types: ["", "number", "money", "money", "money", "money", "money", "money", "money", "money"],
+          rows: list.map(row => [row.name, row.gap > 0 ? String(row.gap) : "", money(row.notDue), money(row.b30), money(row.b60), money(row.b90), money(row.b90p), row.doubtful ? money(row.doubtful) : "", money(row.late), money(roundMoney(row.late + row.notDue))]),
+          summary: [["Vadesi Gelmemiş", money(sum("notDue"))], ["1–30 gün", money(sum("b30"))], ["31–60 gün", money(sum("b60"))], ["61–90 gün", money(sum("b90"))], ["90+ gün", money(sum("b90p"))], ["Toplam Gecikmiş", money(sum("late"))], ["Şüpheli Alacak (dilimlere dahil)", money(sum("doubtful"))]],
         };
       },
     },

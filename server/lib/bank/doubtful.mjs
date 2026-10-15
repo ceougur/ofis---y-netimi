@@ -68,8 +68,9 @@ export function doubtfulRows(store, { parties = null } = {}) {
 
 /**
  * İkinci yükleyici: carinin kontrol hesabını alacaklandıran satırlar SQL'den (yevmiyenin kuralıyla aynı; lib/general-ledger.mjs journal):
- *   cari satırı: tahsilat (her kaynak) ve alacak (fatura kaynaklı hariç; Değersiz Alacak satırı hedefli) · taksit tahsilatı (silinmemiş kart) ·
- *   kapatılan kartın vazgeçilen kalanı (689; kapanış günü) · kesilmiş satıştan iade ve alış faturası (ödenecek).
+ *   cari satırı: tahsilat ("Normal Cari Hesaba İşle" işaretli, fatura peşini ve Kapatılacak Fatura bağlı olanlar HARİÇ — karar 15.10.2026) ve
+ *   alacak (fatura kaynaklı hariç; Değersiz Alacak satırı hedefli) · taksit tahsilatı (silinmemiş kart; kartın açılış tarihi openedOn) ·
+ *   kapatılan kartın vazgeçilen kalanı (689; kapanış günü; openedOn) · kesilmiş satıştan iade ve alış faturası (ödenecek).
  */
 export function doubtfulCredits(store, parties) {
   const list = JSON.stringify([...parties]);
@@ -77,21 +78,25 @@ export function doubtfulCredits(store, parties) {
   const c = column => `CAST(ROUND(${column} * 100) AS INTEGER)`;
   const has = name => hasTable(store, name);
   const parts = [
-    `SELECT 'account:' || e.id AS key, e.account_id AS party, e.date, ${c("e.amount")} AS minor, CASE WHEN e.source = 'doubtful' THEN e.source_id ELSE '' END AS target
+    // Karar 15.10.2026 (plan §3.11b/2; lib/doubtful-gl.mjs doubtfulSkipOf ikizi): "Normal Cari Hesaba İşle" (doubtful_skip), fatura peşini
+    // (source 'invoice') ve Kapatılacak Fatura bağlı (invoice_id) tahsilat şüpheliden düşmez → hiç yüklenmez.
+    `SELECT 'account:' || e.id AS key, e.account_id AS party, e.date, ${c("e.amount")} AS minor, CASE WHEN e.source = 'doubtful' THEN e.source_id ELSE '' END AS target, '' AS openedOn
      FROM json_each(?1) j CROSS JOIN account_entries e ON e.account_id = j.value
-     WHERE e.kind = 'in' OR (e.kind = 'credit' AND e.source <> 'invoice')`,
+     WHERE (e.kind = 'in' AND e.doubtful_skip = 0 AND e.source <> 'invoice' AND e.invoice_id = '') OR (e.kind = 'credit' AND e.source <> 'invoice')`,
   ];
   if (has("plans") && has("plan_entries")) {
-    parts.push(`SELECT 'plan-entry:' || pe.id, p.account_id, pe.date, ${c("pe.amount")}, '' FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE pe.kind = 'in'`);
+    // openedOn: kartın açılış tarihi — şüpheli kaydından SONRA açılan kartın taksiti / vazgeçilen kalanı o kayıttan düşmez (doubtful-gl).
+    const openedOn = "COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))";
+    parts.push(`SELECT 'plan-entry:' || pe.id, p.account_id, pe.date, ${c("pe.amount")}, '', ${openedOn} FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE pe.kind = 'in'`);
     // Vazgeçilen kalan kuruşla: kart tutarı (kuruş) − net tahsilat (her satır kuruşa çevrilip toplanır; banka kodunda REAL toplam yok).
     parts.push(
-      `SELECT 'plan-close:' || p.id, p.account_id, MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))),
-              MAX(0, ${c("p.total")} - COALESCE((SELECT SUM(CAST(ROUND((CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) * 100) AS INTEGER)) FROM plan_entries x WHERE x.plan_id = p.id), 0)), ''
+      `SELECT 'plan-close:' || p.id, p.account_id, MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), ${openedOn}),
+              MAX(0, ${c("p.total")} - COALESCE((SELECT SUM(CAST(ROUND((CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) * 100) AS INTEGER)) FROM plan_entries x WHERE x.plan_id = p.id), 0)), '', ${openedOn}
        FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL WHERE p.status = 'closed'`,
     );
   }
-  if (has("invoices")) parts.push(`SELECT 'invoice:' || i.id, i.account_id, i.issue_date, ${c("i.try_payable")}, '' FROM json_each(?1) j CROSS JOIN invoices i ON i.account_id = j.value WHERE i.status = 'issued' AND i.kind IN ('sale_return', 'purchase')`);
-  return store.all(`SELECT * FROM (${parts.join("\nUNION ALL\n")}) WHERE minor > 0`, list).map(row => ({ key: row.key, party: row.party, date: row.date, minor: Number(row.minor), target: row.target || "" }));
+  if (has("invoices")) parts.push(`SELECT 'invoice:' || i.id, i.account_id, i.issue_date, ${c("i.try_payable")}, '', '' FROM json_each(?1) j CROSS JOIN invoices i ON i.account_id = j.value WHERE i.status = 'issued' AND i.kind IN ('sale_return', 'purchase')`);
+  return store.all(`SELECT * FROM (${parts.join("\nUNION ALL\n")}) WHERE minor > 0`, list).map(row => ({ key: row.key, party: row.party, date: row.date, minor: Number(row.minor), target: row.target || "", openedOn: row.openedOn || "" }));
 }
 
 /** Kayıtlar + karşılıklar + SQL alacak satırlarıyla ayırma: { records, provisions, state, allocations }. */
@@ -553,5 +558,5 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const n = Number(store.get("SELECT COUNT(*) AS n FROM doubtful_receivables WHERE account_id = ? AND status <> 'cancelled'", accountId)?.n) || 0;
     if (n) throw new HttpError(409, `Bu carinin ${n} şüpheli alacak kaydı var; cari ${what}. ${hint}`, { code: "account-doubtful-open", count: n });
   }
-  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: () => doubtfulOpenByAccount(store), take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
+  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: () => doubtfulOpenByAccount(store), headroom, take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
 }

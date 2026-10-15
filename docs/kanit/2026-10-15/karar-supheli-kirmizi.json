@@ -1,0 +1,78 @@
+{
+  "ad": "karar-supheli-kirmizi",
+  "komut": "node --test test/supheli-230-karar.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T06:31:59.025Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 1,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › (a) doubtfulSkip:true: 04.10 tahsilat 200 normal cari hesaba (120'den) → kayıt kalanı 700 kalır; kartta doubtfulSkip + doubtfulNormal; bakiye 1.000",
+      "konum": "test/supheli-230-karar.test.mjs:60:3",
+      "hata": "kalan 700 (şüpheliden düşmedi) · 50000 !== 70000 (beklenen 70000, gelen 50000)"
+    },
+    {
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › (a) düzeltmede korunur: açıklama düzeltmesi işareti bozmaz; doubtfulSkip:false → şüpheliden düşer (kalan 500); true → yine 700",
+      "konum": "test/supheli-230-karar.test.mjs:75:3",
+      "hata": "işaret korunur · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › (a) sil + Silinenler'den geri yükle: işaret korunur (kalan 700 kalır, satır yine normal)",
+      "konum": "test/supheli-230-karar.test.mjs:87:3",
+      "hata": "işaret geri yüklemede korunur · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › (b) satış faturasının peşini (05.10, 400 nakit) KENDİLİĞİNDEN normal: kalan 700, bakiye 1.000; kartta peşin satırı doubtfulNormal",
+      "konum": "test/supheli-230-karar.test.mjs:102:3",
+      "hata": "kalan 700 (peşin şüpheliden düşmedi) · 10000 !== 70000 (beklenen 70000, gelen 10000)"
+    },
+    {
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › (b) 'Kapatılacak Fatura' bağlı tahsilat (06.10, 500) KENDİLİĞİNDEN normal: kalan 700; bağsız 100 ise şüpheliden düşer → 600",
+      "konum": "test/supheli-230-karar.test.mjs:112:3",
+      "hata": "kalan 700 (bağlı tahsilat şüpheliden düşmedi) · 0 !== 70000 (beklenen 70000, gelen 0)"
+    },
+    {
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › (c) kart şüpheli kaydından SONRA açıldıysa (07.10) taksit tahsilatı 100 normal: kalan 600; ÖNCE açılmış kartın (15.09) taksiti şüpheliden düşer",
+      "konum": "test/supheli-230-karar.test.mjs:123:3",
+      "hata": "sonra açılan kartın taksiti şüpheliden düşmez · 0 !== 60000 (beklenen 60000, gelen 0)"
+    },
+    {
+      "ad": "Karar 2 — tahsilatta seçim: varsayılan Şüpheli Alacaktan Düş, 'Normal Cari Hesaba İşle' (doubtfulSkip), fatura ve taksit kuralları › doubtfulSkip yalnız tahsilatta: borç/alacak satırında ve ödemede 400",
+      "konum": "test/supheli-230-karar.test.mjs:140:3",
+      "hata": "borç satırında doubtfulSkip 400 — gelen 200 {\"id\":\"account-dd0a42d8-2b83-4b7c-8312-922bf411ed0b\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Karar Müşteri\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":nul · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "Karar 3 — Alacak Yaşlandırma: 'Vade Gecikme (Gün)' ve 'Şüpheli Alacak (dilimlere dahil)' (ekran / PDF / Excel) › kolonlar: Vade Gecikme (Gün) = 18 (Geciken), boş (Yalnız Şüpheli); Şüpheli Alacak (dilimlere dahil) 2.000; TOPLAM'da gecikme toplanmaz",
+      "konum": "test/supheli-230-karar.test.mjs:163:3",
+      "hata": "kolon \"Vade Gecikme (Gün)\" (başlıklar: Cari / Kişi | Vadesi Gelmemiş | 1–30 Gün | 31–60 Gün | 61–90 Gün | 90+ Gün | Şüpheli Alacak | Toplam Gecikmiş | Toplam) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Karar 3 — Alacak Yaşlandırma: 'Vade Gecikme (Gün)' ve 'Şüpheli Alacak (dilimlere dahil)' (ekran / PDF / Excel) › PDF ve Excel aynı başlıklar ve değerler",
+      "konum": "test/supheli-230-karar.test.mjs:182:3",
+      "hata": "PDF başlık \"Vade Gecikme (Gün)\" (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ae29a6d1c9c3d14a0/docs/kanit/2026-10-15/karar-supheli-kirmizi.log",
+  "klasor": "/tmp/claude-0/karar-eski-469d547",
+  "ham_cikti_sha256": "23f5362f61c5e2199f89c4194d233db56dd2e410788b5012afe2f0eda9b98e25",
+  "ham_cikti_bayt": 11584
+}

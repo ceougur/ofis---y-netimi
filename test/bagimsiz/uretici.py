@@ -246,6 +246,7 @@ class Uretec:
         self.supheliler = {}    # ad → {cari, T, tarih, seq, aktif, evrak}
         self.sup_olaylar = []   # {tur: karsilik|degersiz|cikar, kayit, tarih, seq, tutar, aktif, ad}
         self.alacaklar = {}     # cari → [(tarih, seq, tutar)]  (müşteri carisine A 120 yazan etkin satırlar; sil ile düşer)
+        self.alacak_kart = {}   # (tarih, seq, tutar) → kartın tarihi (taksit tahsilatı; PLAN §3.11b/2 (c): sonra açılan karttan düşmez)
         self.supheli_gun = {}   # cari → {"alacak": gün, "degersiz_cikar": gün, "supheli": gün}  (BELİRSİZ-35)
         self.supheli_carileri = set()
         self.yaris_carileri = set()   # eşzamanlı ödeme yarışında bakiyesi belirsiz kalan cariler
@@ -362,10 +363,13 @@ class Uretec:
         """BELİRSİZ-35: aynı gün değersiz/çıkarmadan sonra alacak satırı yazılmaz."""
         return self.supheli_gun.get(cari, {}).get("degersiz_cikar") != self.bugun
 
-    def alacak_kaydet(self, cari, tutar, seq=None):
+    def alacak_kaydet(self, cari, tutar, seq=None, kart_tarih=None):
         if self.surum < 4:
             return
-        self.alacaklar.setdefault(cari, []).append((self.bugun, self.sayac if seq is None else seq, tutar))
+        ref = (self.bugun, self.sayac if seq is None else seq, tutar)
+        self.alacaklar.setdefault(cari, []).append(ref)
+        if kart_tarih is not None:
+            self.alacak_kart[ref] = kart_tarih
         self.supheli_gun.setdefault(cari, {})["alacak"] = self.bugun
 
     def alacak_sil(self, cari, ref):
@@ -391,7 +395,7 @@ class Uretec:
                 continue
             olaylar.append((o["tarih"], {"karsilik": 1, "degersiz": 2, "cikar": 4}[o["tur"]], o["seq"], o["tur"], o))
         for tarih, seq, tutar in self.alacaklar.get(cari, []):
-            olaylar.append((tarih, 3, seq, "alacak", tutar))
+            olaylar.append((tarih, 3, seq, "alacak", (tutar, self.alacak_kart.get((tarih, seq, tutar)))))
         olaylar.sort(key=lambda o: (o[0], o[1], o[2]))
         acik = []
         for tarih, _, seq, tur, veri in olaylar:
@@ -406,11 +410,13 @@ class Uretec:
                 s["degersiz"] += veri["tutar"]
                 s["kalan"] -= veri["tutar"]
             elif tur == "alacak":
-                kalan_t = veri
-                for _, _, ad in acik:
+                kalan_t, kart_tarih = veri
+                for kayit_tarihi, _, ad in acik:
                     s = durum[ad]
                     if s["durum"] != "acik" or kalan_t <= 0 or s["kalan"] <= 0:
                         continue
+                    if kart_tarih is not None and kart_tarih > kayit_tarihi:
+                        continue        # PLAN §3.11b/2 (c): kart kayıttan sonra açıldıysa o kayıttan düşmez
                     x = min(kalan_t, s["kalan"])
                     s["tahsil"] += x
                     s["kalan"] -= x
@@ -779,8 +785,7 @@ class Uretec:
             return True
         secim = R.choices(["acik", "tam", "kismi", "taksit", "pesin_taksit", "coklu"], [30, 22, 14, 12, 8, 6] if tur == "satis"
                           else [40, 30, 20, 0, 0, 10])[0]
-        if supheli_cari and secim != "acik":
-            secim = R.choice(["acik", "taksit"])   # BELİRSİZ-38: şüpheli caride satış peşin satırı kurulmaz
+        # (15.10.2026 kararı, PLAN §3.11b/2 (b): şüpheli caride satış peşini artık tanımlı — DÜŞMEZ; BELİRSİZ-38'den çıktı, peşin kurulur.)
         yon = "giris" if tur == "satis" else "cikis"
         isaret = 1 if tur == "satis" else -1
         yollar = ["nakit", "havale"] + (["kart"] if tur == "alis" else [])
@@ -872,7 +877,7 @@ class Uretec:
                               "kalemler": ozet, "iade_q": {o["n"]: 0 for o in ozet}, "taksitli": bool(taksit),
                               "tarih": self.bugun, "iade": False}
         if taksit:
-            self.kartlar[taksit["ad"]] = {"fatura": ad, "cari": cari, "toplam": T - Pt, "odenen": 0, "sayi": taksit["sayi"]}
+            self.kartlar[taksit["ad"]] = {"fatura": ad, "cari": cari, "toplam": T - Pt, "odenen": 0, "sayi": taksit["sayi"], "tarih": self.bugun}
         if "istekKimligi" in adim and R.random() < 0.5 and "fatura_yineleme" not in self.notr:   # sürüm 2: stoğu bitirenin de
             # aynı faturanın yeniden gönderilmesi (çift tıklama) → yinelenen. Fatura için `ad` zorunlu olduğundan yinelemeye
             # hiç anılmayan yeni bir ad (Z…) verilir; taksit kartı adı da öyle. (İki kâhin bu adın çıktıya yazılışında
@@ -1051,6 +1056,13 @@ class Uretec:
             adim["hesap"] = ver
         if kf is not None:
             adim["kapatilacakFatura"] = kf
+        # Sürüm 4 eki (PLAN §3.11b/2 (a)): "Normal Cari Hesaba İşle" — şüpheli kaydı olan müşteride sık, öbürlerinde seyrek (etkisiz ama geçerli).
+        normal = False
+        if yon == "giris" and self.surum >= 4 and kf is None and R.random() < (0.3 if self.supheli_var(cari) else 0.03):
+            adim["normalCari"] = True
+            normal = True
+        # kapatilacakFatura bağlı ya da normalCari tahsilatı şüpheliden düşmez → alacak satırı sayılmaz (§4.42a).
+        duser = yon == "giris" and kf is None and not normal
         bagli_hesap = anahtar in self.hesaplar
         bkey = None
         if bagli_hesap:
@@ -1065,7 +1077,7 @@ class Uretec:
         self.hesap_dokun([anahtar])
         self.cb(cari, -T if yon == "giris" else T)
         alacak_ref = None
-        if yon == "giris":
+        if duser:
             alacak_ref = (self.bugun, self.sayac, T)
             self.alacak_kaydet(cari, T)
         if bkey is not None:
@@ -1094,7 +1106,7 @@ class Uretec:
                     self.uygula_etkiler(etkiler)
                     self.benzer_ekle(bkey)
                     self.cb(cari, -T if yon == "giris" else T)
-                    if yon == "giris":
+                    if duser:
                         self.alacak_kaydet(cari, T)
                     if kf is not None:
                         self.faturalar[kf]["bagli"] += T
@@ -1167,7 +1179,7 @@ class Uretec:
         kart["odenen"] += T
         self.cb(kart["cari"], -T)
         alacak_ref = (self.bugun, self.sayac, T)
-        self.alacak_kaydet(kart["cari"], T)
+        self.alacak_kaydet(kart["cari"], T, kart_tarih=kart["tarih"])   # PLAN §3.11b/2 (c): kartın tarihi
         if bkey:
             self.benzer_ekle(bkey)
         if had:

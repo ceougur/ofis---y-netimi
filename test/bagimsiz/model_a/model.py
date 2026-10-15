@@ -38,7 +38,10 @@ NEDENLER = {"karsiliksiz_cek", "protestolu_senet", "dava", "icra", "diger"}
 SUPHELI_KODLARI = {"120", "128", "129", "644", "654", "659"}
 # §4.42a: müşteri carisinde A 120 yazan ve şüpheliden düşen fiş türleri [KABUL K3]; BELİRSİZ-38: listede olmayan A 120 türleri
 ALACAK_SATIRI_TURLERI = {"cari_giris", "taksit", "iade", "evrak_al"}
-BELIRSIZ38_TURLERI = {"pesin", "iade_geri", "fatura"}
+# Sürüm 4 eki (15.10.2026; PLAN §3.11b/2 "Tahsilatta seçim" (a)–(b)): A 120 yazan ama şüpheliden DÜŞMEYEN satırlar — satış faturasının
+# peşin satırı, kapatilacakFatura bağlı tahsilat ve normalCari tahsilatı (cari_giris_normal). Gün sırası (BELİRSİZ-35) denetimine girmez.
+NORMAL_TURLERI = {"pesin", "cari_giris_normal"}
+BELIRSIZ38_TURLERI = {"iade_geri", "fatura"}
 MAX_KURUS = 10 ** 14          # 1e12 TL [PLAN §9.2/9]
 ROLLER = {"yonetici", "muhasebe", "personel"}
 HESAP_TURLERI = {"vadesiz", "ticari", "vadeli", "diger", "kurumsal_kart", "kredi"}
@@ -98,7 +101,7 @@ ALANLAR = {
     "stok_giris": (["urun", "miktar"], []),
     "fatura": (["ad", "tur", "cari", "kalemler"], ["odeme"]),
     "iade": (["ad", "asilFatura", "kalemler", "geri"], []),
-    "cari_tahsilat": (["cari", ("tutar", "tutarHam"), "yol"], ["ad", "hesap", "kapatilacakFatura"]),
+    "cari_tahsilat": (["cari", ("tutar", "tutarHam"), "yol"], ["ad", "hesap", "kapatilacakFatura", "normalCari"]),
     "cari_odeme": (["cari", ("tutar", "tutarHam"), "yol"], ["ad", "hesap", "kapatilacakFatura"]),
     "taksit_tahsilat": (["kart", "tutar", "yol"], ["ad", "hesap", "taksitNo", "fazlaAvans"]),
     "kasa_banka": (["yon", "tutar"], ["ad", "hesap"]),
@@ -413,8 +416,10 @@ def senaryo_dogrula(sen, dosya):
             raise SenaryoHatasi("adım %s: bilinmeyen islem %r" % (aid, islem))
         if islem in EVRAK_ISLEMLERI and not surum3:
             raise SenaryoHatasi("adım %s: evrak işlemleri yalnız dil sürüm 3'te (§13/9)" % aid)
-        if (islem in SUPHELI_ISLEMLERI or (islem == "taksit_tahsilat" and "fazlaAvans" in adim)) and not surum4:
-            raise SenaryoHatasi("adım %s: şüpheli işlemleri / fazlaAvans yalnız dil sürüm 4'te (§13/10)" % aid)
+        if (islem in SUPHELI_ISLEMLERI or (islem == "taksit_tahsilat" and "fazlaAvans" in adim) or (islem == "cari_tahsilat" and "normalCari" in adim)) and not surum4:
+            raise SenaryoHatasi("adım %s: şüpheli işlemleri / fazlaAvans / normalCari yalnız dil sürüm 4'te (§13/10)" % aid)
+        if islem == "cari_tahsilat" and "normalCari" in adim and adim["normalCari"] is not True:
+            raise SenaryoHatasi("adım %s: normalCari yalnız true olabilir" % aid)
         yer = "adım %s (%s)" % (aid, islem)
         _alan_denetle(adim, yer)
         k = adim.get("kullanici", "Y")
@@ -930,7 +935,11 @@ class Model:
             raise KahinHatasi("fiş dengesiz (%s, adım %s): borç %d ≠ alacak %d" % (tur, adim, b, a))
         self.fis_no += 1
         fid = self.fis_no
-        self.fisler[fid] = {"id": fid, "tarih": tarih, "satirlar": satirlar, "tur": tur, "adim": adim, "seq": self.seq}
+        # tur bir demet olabilir: ("taksit", kart_tarihi) — PLAN §3.11b/2 (c): kartın tarihi kayıt tarihinden sonraysa o kayıttan düşmez.
+        kart_tarih = None
+        if isinstance(tur, tuple):
+            tur, kart_tarih = tur
+        self.fisler[fid] = {"id": fid, "tarih": tarih, "satirlar": satirlar, "tur": tur, "adim": adim, "seq": self.seq, "kart_tarih": kart_tarih}
         for kod, bo, al, cari in satirlar:
             self.hidx[kod].setdefault(fid, []).append((tarih, bo - al))
             if cari is not None:
@@ -986,7 +995,7 @@ class Model:
                     continue
                 for kod, bo, al, c in f["satirlar"]:
                     if c == ck and kod == "120" and al > 0:
-                        olaylar.append((f["tarih"], 3, f["seq"], "alacak", al))
+                        olaylar.append((f["tarih"], 3, f["seq"], "alacak", (al, f.get("kart_tarih"))))
             olaylar.sort(key=lambda o: (o[0], o[1], o[2]))
             acik = []
             for tarih, _, seq, tur, veri in olaylar:
@@ -1011,21 +1020,24 @@ class Model:
                     satirlar.append(("659", veri["tutar"] - y, 0, None, tarih))
                     satirlar.append(("128", 0, veri["tutar"], ck, tarih))
                 elif tur == "alacak":
-                    kalan_t = veri
-                    for _, _, key in acik:
+                    tutar_a, kart_tarih = veri
+                    kalan_t = tutar_a
+                    for kayit_tarihi, _, key in acik:
                         s = durum[key]
                         if s["durum"] != "acik" or kalan_t == 0 or s["kalan"] <= 0:
                             continue
+                        if kart_tarih is not None and kart_tarih > kayit_tarihi:
+                            continue            # PLAN §3.11b/2 (c): kart kayıttan sonra açıldıysa o kayıttan düşmez
                         x = min(kalan_t, s["kalan"])
                         s["tahsil"] += x
                         s["kalan"] -= x
                         kalan_t -= x
-                        fazla = s["karsilik"] - s["kalan"]
+                        fazla = s["karsilik"] - s["kalan"]      # PLAN §3.11b/3 (15.10 kararı): karşılık ≤ kalan; aşan 644
                         if fazla > 0:
                             s["karsilik"] -= fazla
                             satirlar.append(("129", fazla, 0, None, tarih))
                             satirlar.append(("644", 0, fazla, None, tarih))
-                    d_ = veri - kalan_t
+                    d_ = tutar_a - kalan_t
                     if d_ > 0:
                         satirlar.append(("120", d_, 0, ck, tarih))
                         satirlar.append(("128", 0, d_, ck, tarih))
@@ -1069,6 +1081,8 @@ class Model:
         if cari["tur"] != "musteri":
             return
         ck = cari["key"]
+        if fis_turu in NORMAL_TURLERI:
+            return                      # şüpheliden düşmez (PLAN §3.11b/2 (a)–(b)); gün sırası denetimi gerekmez
         kayitlar = [self.v[k] for k in self.tipler.get("supheli", []) if self.v[k]["aktif"] and self.v[k]["cari"] == ck]
         if fis_turu in BELIRSIZ38_TURLERI:
             if any(r["tarih"] <= tarih for r in kayitlar):
@@ -1974,10 +1988,13 @@ class Model:
         deg = Degisim()
         if yon == "giris":
             s = [(ph, T, 0, None), (cari["gl"], 0, T, cari["key"])]
-            self.alacak_satiri(deg, adim, cari, tarih, "cari_giris")      # sürüm 4 §4.42a
+            # Sürüm 4 eki (PLAN §3.11b/2 (a)–(b)): kapatilacakFatura bağlı ya da normalCari tahsilatı şüpheliden DÜŞMEZ (A 120 kalır).
+            fis_turu = "cari_giris_normal" if (kf is not None or adim.get("normalCari") is True) else "cari_giris"
+            self.alacak_satiri(deg, adim, cari, tarih, fis_turu)          # sürüm 4 §4.42a
         else:
             s = [(cari["gl"], T, 0, cari["key"]), (ph, 0, T, None)]
-        deg.yeni.append((tarih, s, "cari_" + yon))
+            fis_turu = "cari_cikis"
+        deg.yeni.append((tarih, s, fis_turu))
         islem = "cari_tahsilat" if yon == "giris" else "cari_odeme"
         key, hr = self._hareket(adim, islem, kul, tarih, tutar=T, yol=yol, cari=cari["key"], kapatilacak=kf,
                                 hesaba_bagli=h is not None, hesaplar={h["key"]} if h else set())
@@ -2021,7 +2038,8 @@ class Model:
         ph = self.para_hesabi(adim["yol"], h)
         deg = Degisim()
         self.alacak_satiri(deg, adim, cari, tarih, "taksit")              # sürüm 4 §4.42a
-        deg.yeni.append((tarih, [(ph, T, 0, None), (cari["gl"], 0, T, cari["key"])], "taksit"))
+        # PLAN §3.11b/2 (c): fiş kartın tarihini taşır — kartın tarihinden sonra alınmış şüpheli kaydından düşmez (supheli_turet).
+        deg.yeni.append((tarih, [(ph, T, 0, None), (cari["gl"], 0, T, cari["key"])], ("taksit", kart["tarih"])))
         key, hr = self._hareket(adim, "taksit_tahsilat", kul, tarih, tutar=T, yol=adim["yol"], cari=cari["key"],
                                 kart=kart["key"], hesaba_bagli=h is not None, hesaplar={h["key"]} if h else set())
         if h is not None:

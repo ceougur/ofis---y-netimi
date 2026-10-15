@@ -6,6 +6,7 @@
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
 import { randomUUID } from "node:crypto";
 import { methodInput } from "../lib/pay-method.mjs";
+import { doubtfulSkipOf } from "../lib/doubtful-gl.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
@@ -86,7 +87,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const entriesOf = accountId =>
     store.all(
       `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
-              COALESCE(u.display_name, '') AS actorName
+              e.doubtful_skip AS doubtfulSkip, COALESCE(u.display_name, '') AS actorName
        FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       accountId,
     );
@@ -102,7 +103,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     } catch {
       cardIds = new Set(); // banka tabloları yoksa (göç öncesi veri)
     }
-    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}) }));
+    // Karar 15.10.2026 (plan §3.11b/2): doubtfulSkip = kullanıcı işareti ("Normal Cari Hesaba İşle"); doubtfulNormal = satırın şüpheliden
+    // düşmediği (işaret, fatura peşini ya da Kapatılacak Fatura bağı; lib/doubtful-gl.mjs doubtfulSkipOf) — ekranda "Normal Cariye İşlendi";
+    // yalnız şüpheli kaydı olan caride (yoksa her peşin satırı etiketlenirdi).
+    const doubtfulSummary = doubtful()?.summary ? doubtful().summary(account.id) : null;
+    const hasDoubtful = Boolean(doubtfulSummary && doubtfulSummary.count > 0);
+    const entries = entriesOf(account.id).map(entry => ({ ...entry, doubtfulSkip: Number(entry.doubtfulSkip) === 1, doubtfulNormal: hasDoubtful && doubtfulSkipOf(entry), editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entries, planList);
     return {
@@ -116,7 +122,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       canManage: manage,
       canCollect: canUser(user, "accounts.collect"),
       // 2.3.0 İz 1 (plan §3.11b/5 "cari kartında Şüpheli Alacak bilgisi"): açık şüpheli, karşılık, tahsil edilen, değersiz yazılan (kuruş).
-      doubtful: doubtful()?.summary ? doubtful().summary(account.id) : null,
+      doubtful: doubtfulSummary,
       canDoubtful: manage && canUser(user, "accounts.doubtful"),
     };
   }
@@ -585,7 +591,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     store.setSetting("plans.receiptSeq", String(current + 1));
     return current + 1;
   };
-  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null }) {
+  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false }) {
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
@@ -600,11 +606,34 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // finRef (v2.1.0 Aşama 4): banka hesabına bağlı satır (şimdilik yalnız Banka → KDV'li masrafın faturasının havale ödemesi; modül formlarındaki
     // hesap seçimi Aşama 5/7).
     store.run(
-      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, way, invoiceId || "", finRef || "", eventId, user.id, now(),
+      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, doubtful_skip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, way, invoiceId || "", finRef || "", eventId, user.id, now(), doubtfulSkip === true ? 1 : 0,
     );
     return { id, receiptNo };
   }
+  // Karar 15.10.2026 (plan §3.11b/2): "Normal Cari Hesaba İşle" — tahsilat şüpheliden düşmez, 120'de kalır (lib/doubtful-gl.mjs doubtfulSkipOf).
+  // Yalnız tahsilatta (kind 'in'); borç/alacak/ödemede verilirse 400. Düzeltmede anahtar yoksa önceki işaret korunur.
+  const doubtfulSkipInput = (body, kind, previous = null) => {
+    if (!body || !Object.hasOwn(body, "doubtfulSkip") || body.doubtfulSkip === undefined) return previous ? Number(previous.doubtfulSkip) === 1 : false;
+    const value = body.doubtfulSkip === true || body.doubtfulSkip === 1 || body.doubtfulSkip === "1" || body.doubtfulSkip === "true";
+    if (value && kind !== "in") throw new HttpError(400, "“Normal Cari Hesaba İşle” yalnız tahsilatta seçilir.", { code: "doubtful-skip-kind", field: "doubtfulSkip" });
+    return value;
+  };
+  // Normal cari hesaba işlenen tahsilat (işaret ya da Kapatılacak Fatura bağı) carinin şüpheli dışı borç bakiyesini (120 = kart − açık şüpheli)
+  // aşamaz: aşan kısım şüpheli alacaktan düşmek zorundadır (tam kapı doubtful:balance aynı kuralı sonradan "ledger-integrity" ile reddederdi;
+  // burada hiçbir şey yazılmadan açık 409 doubtful-normal-exceeds). Düzeltmede yalnız eklenen fark sayılır.
+  const assertNormalRoom = (account, input, previous = null) => {
+    if (input.kind !== "in" || account.type !== "customer" || !doubtful()?.headroom) return;
+    if (!doubtfulSkipOf({ kind: "in", invoiceId: input.invoiceId, doubtfulSkip: input.doubtfulSkip })) return;
+    const room = doubtful().headroom(account.id);
+    if (!(room.openMinor > 0)) return;
+    const previousMinor = previous && previous.kind === "in" && doubtfulSkipOf({ kind: "in", source: previous.source, invoiceId: previous.invoiceId, doubtfulSkip: previous.doubtfulSkip }) ? Math.round(Number(previous.amount) * 100) : 0;
+    const deltaMinor = Math.round(input.amount * 100) - previousMinor;
+    if (deltaMinor <= room.roomMinor) return;
+    const roomTl = roundMoney(Math.max(0, room.roomMinor) / 100);
+    const why = input.doubtfulSkip ? "“Normal Cari Hesaba İşle” işaretini kaldırın" : "Kapatılacak Fatura bağını kaldırın";
+    throw new HttpError(409, `Normal cari hesaba işlenecek tahsilat (${tl(input.amount)}) carinin şüpheli dışı borç bakiyesini (${tl(roomTl)}) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı ${tl(roomTl)}'ye indirin ya da ${why}.`, { code: "doubtful-normal-exceeds", field: "amount", roomMinor: room.roomMinor, openMinor: room.openMinor });
+  };
   // v2.0.17: tahsilat/ödeme "Kapatılacak Fatura" ile bağlanabilir (boş = otomatik: carinin en eski açık faturası).
   // Bağ yalnız kapamayı belirler; cari bakiyesi ve Kasa değişmez. Fatura aynı carinin, kesilmiş, aynı yönde olmalı.
   // keep (v2.0.23): hareket düzeltilirken değişmeyen eski bağ yeni kurallara takılmaz (taksitli ya da iptal edilmiş faturaya
@@ -631,10 +660,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const amount = amountOf(body.amount);
     if (!(amount > 0)) throw new HttpError(400, "Tutar sıfırdan büyük olmalı.");
     // v2.0.13: tahsilat/ödemenin yolu (nakit, havale/EFT, kredi kartı); borç/alacak yazmada para hareketi yoktur.
-    return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || "") };
+    return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || ""), doubtfulSkip: doubtfulSkipInput(body, kind, previous) };
   };
   const entryOf = (accountId, entryId) => {
-    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt, doubtful_skip AS doubtfulSkip FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
@@ -716,6 +745,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const body = await readJson(req);
     const input = entryInput(body, account.id);
     requireKindRight(user, input.kind);
+    assertNormalRoom(account, input);
     const finRef = refOf(input, body);
     requireBankOut(user, input.kind, finRef);
     // Yargıç 2.3.0 #6 (15.10.2026): "Kredi Kartına İade" (cardRefund) kart hesabı ister; tanımlı etkin kart yoksa 108.00'a sessiz yazım yok (400).
@@ -759,6 +789,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
     const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
     assertOffsetFree(previous, input);
+    assertNormalRoom(account, input, previous);
     const finRef = refOf(input, body, previous);
     if (finRef !== previous.finRef) requireBankOut(user, input.kind, finRef);
     const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
@@ -776,7 +807,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         k7.capture();
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
-        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, user.id, now(), previous.id);
+        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, user.id, now(), previous.id);
         audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
         return { id: previous.id };
       },
@@ -1457,9 +1488,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         k7.capture();
         if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
           store.run(
-            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?)",
+            // Karar 15.10.2026: "Normal Cari Hesaba İşle" işareti (doubtful_skip) silinmeden önceki hâliyle döner.
+            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at, doubtful_skip) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, kept.ref,
             bank.eventFor("account_entries", { kind: payload.kind, source: "", date: payload.date, method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+            payload.kind === "in" && (payload.doubtfulSkip === true || Number(payload.doubtfulSkip) === 1) ? 1 : 0,
           );
         }
         trash.markRestored(item.id, user);

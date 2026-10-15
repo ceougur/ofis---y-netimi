@@ -116,7 +116,7 @@ const within = (day, range) => !range || ((!range.from || day >= range.from) && 
 const before_ = (day, range) => Boolean(range?.from) && day < range.from;
 
 // Toplanmayan kolonlar (yürüyen bakiye, birim fiyat, oran) — kolonun anlamından; rapor kendi toplamını yazıyorsa (net bakiye) ayrı denetlenir.
-const NO_SUM = new Set(["Bakiye", "Gün Sonu Kasa", "Ay Başı Kasa", "Ay Sonu Kasa", "Birim Fiyat", "KDV %", "Stopaj %", "Kritik Seviye"]);
+const NO_SUM = new Set(["Bakiye", "Gün Sonu Kasa", "Ay Başı Kasa", "Ay Sonu Kasa", "Birim Fiyat", "KDV %", "Stopaj %", "Kritik Seviye", "Vade Gecikme (Gün)"]);
 
 describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF/Excel, yetki", () => {
   let server;
@@ -754,9 +754,10 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     const open = await must("açık", get("acik-faturalar"));
     assert.deepEqual([summaryOf(open, "Açık Alacak"), summaryOf(open, "Açık Borç")], [280, 5100]);
     const aging = await must("yaşlandırma", get("alacak-yaslandirma"));
-    // 2.3.0 İz 1.6: son kolon "Şüpheli Alacak" (ayrı; Toplam'a girmez) → Toplam kolonu adıyla okunur.
+    // 2.3.0 İz 1.6: "Şüpheli Alacak (dilimlere dahil)" kolonu Toplam'a ikinci kez girmez → Toplam kolonu adıyla okunur (karar 15.10.2026: Vade Gecikme (Gün) de var).
     assert.equal(moneyOf(aging.footer[col(aging, "Toplam")]), 4380, "780 müşteri bakiyesi + 3.600 portföydeki senet");
-    assert.equal(moneyOf(aging.footer[col(aging, "Şüpheli Alacak")]), null, "şüpheli yokken Şüpheli Alacak kolonu boş");
+    assert.equal(moneyOf(aging.footer[col(aging, "Şüpheli Alacak (dilimlere dahil)")]), null, "şüpheli yokken Şüpheli Alacak kolonu boş");
+    assert.equal(String(aging.footer[col(aging, "Vade Gecikme (Gün)")] ?? ""), "", "Vade Gecikme (Gün) TOPLAM'da toplanmaz");
   });
 
   test("Cari Mizanı 'Geciken Taksiti Olan' süzgeci yalnız gecikeni listeler (2.0.23'te bütün cariler)", async () => {

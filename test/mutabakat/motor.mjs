@@ -2057,13 +2057,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const balance = M.cari.get(c.id) || 0;
         if (balance <= 0) return;
         const amount = R.chance(0.25) ? balance + moneyCents(1, 500) : moneyCents(1, Math.max(1, Math.floor(balance / 100)));
-        const r = await api("POST", `/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: tl(amount), method: "cash", note: "Şüpheli tahsilat", date: day });
+        // Karar 15.10.2026 (plan §3.11b/2 (a)): %30 "Normal Cari Hesaba İşle" (doubtfulSkip) — satır 120'de kalır, modelde alacak satırı SAYILMAZ.
+        // Tutar carinin şüpheli dışı borç bakiyesini (120 = kart − açık şüpheli) aşarsa 409 doubtful-normal-exceeds (hiçbir şey yazılmaz).
+        const normal = R.chance(0.3);
+        const r = await api("POST", `/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: tl(amount), method: "cash", note: normal ? "Şüpheli tahsilat (normal cari)" : "Şüpheli tahsilat", date: day, ...(normal ? { doubtfulSkip: true } : {}) });
         if (!open(day)) return expectReject(r, "period-locked", kind);
+        if (normal && amount > doubtfulRoom(c.id)) return expectReject(r, "doubtful-normal-exceeds", `${kind}/normal-aşım`);
         mustOk(r, kind);
         cariAdd(c.id, -amount);
         M.kasa.cash += amount;
         M.entries.push({ id: r.data.entryId, accountId: c.id, kind: "in", amount, method: "cash", date: day, bankId: "", doubtful: true });
-        D.events.push({ kind: "credit", party: c.id, date: day, cents: amount, seq: ++D.seq });
+        if (!normal) D.events.push({ kind: "credit", party: c.id, date: day, cents: amount, seq: ++D.seq });
         return;
       }
       case "supheli-al": {

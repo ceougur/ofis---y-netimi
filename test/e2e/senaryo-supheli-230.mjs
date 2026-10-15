@@ -311,9 +311,10 @@ try {
   ok(rc.rows.length === 0 && /Bu dönemde kayıt yok/.test(rc.text) && (await page.$(`${modal} [data-rc-main] .hof-empty [data-preset="all"]`)), "Geçen Ay: boş dönemde ipucu + “Tüm Zamanları Göster”");
 
   await page.click(`${modal} [data-rc-list] [data-report="alacak-yaslandirma"]`);
-  rc = await waitRc(page, view => /Alacak Yaşlandırma/.test(view.text) && view.heads.includes("Şüpheli Alacak"));
+  // Karar 15.10.2026: "Vade Gecikme (Gün)" kolonu ve "Şüpheli Alacak (dilimlere dahil)" başlığı.
+  rc = await waitRc(page, view => /Alacak Yaşlandırma/.test(view.text) && view.heads.includes("Şüpheli Alacak (dilimlere dahil)") && view.heads.includes("Vade Gecikme (Gün)"));
   const agingRow = rc.rows.find(cells => cells[0] === "İcralık Müşteri");
-  ok(agingRow && kurus(num(agingRow[rc.heads.indexOf("Şüpheli Alacak")])) === 200000 && kurus(num(agingRow[rc.heads.indexOf("Toplam")])) === 0, `Alacak Yaşlandırma: Şüpheli Alacak 2.000, Toplam 0 (${agingRow?.join(" | ")})`);
+  ok(agingRow && kurus(num(agingRow[rc.heads.indexOf("Şüpheli Alacak (dilimlere dahil)")])) === 200000 && kurus(num(agingRow[rc.heads.indexOf("Toplam")])) === 0 && agingRow[rc.heads.indexOf("Vade Gecikme (Gün)")] === "", `Alacak Yaşlandırma: Şüpheli Alacak (dilimlere dahil) 2.000, Toplam 0, Vade Gecikme boş (${agingRow?.join(" | ")})`);
 
   await page.click(`${modal} [data-rc-list] [data-report="hesap-mizani"]`);
   rc = await waitRc(page, view => /Hesap Planı Mizanı/.test(view.text) && view.rows.some(cells => cells[0] === "128"));
@@ -390,6 +391,44 @@ try {
   await lawyer.evaluate(id => window.HOF.cheques.open({ id }), cheque.id);
   await lawyer.waitForSelector(`${CHQ} .hof-chq-actions`, { timeout: 10000 });
   ok(!(await lawyer.$(`${CHQ} [data-act="doubtful"]`)), "avukat: karşılıksız çek kartında “Şüpheli Alacağa Al” yok");
+
+  console.log("\n■ 6 Tahsilatta seçim (karar 15.10.2026): varsayılan şüpheliden düşer; “Normal Cari Hesaba İşle” kutusu → satır 120'de kalır");
+  await must("ek borç", admin.post(`/api/workspace/accounts/${second.id}/entries`, { kind: "debt", amount: 500, date: D0, note: "Yeni satış" }));
+  // Bölüm 4 yönetici sayfasını Yönetim → Silinenler'e götürmüştü; ana ekrana dön.
+  await page.goto(`${BASE}/`, { waitUntil: "load" });
+  await page.waitForFunction(() => Boolean(window.HOF?.accounts?.open), null, { timeout: 20000 });
+  await openCard(page, second.id);
+  await page.click(`${card} [data-entry="in"]`);
+  await page.waitForSelector(`${top} .hof-form input[name="amount"]`);
+  ok(await page.$(`${top} .hof-form input[name="doubtfulSkip"]`), "açık şüpheli kaydı olan müşteride “Normal Cari Hesaba İşle” kutusu var");
+  await page.fill(`${top} input[name="amount"]`, "300");
+  await page.check(`${top} input[name="doubtfulSkip"]`);
+  await submit(page);
+  await formClosed(page);
+  await page.waitForSelector(`${card} .hof-plans-entries [data-doubtful-normal]`, { timeout: 10000 });
+  const normalTag = await textOf(page, `${card} .hof-plans-entries [data-doubtful-normal]`);
+  ok(normalTag === "Normal Cariye İşlendi", `Hareketler'de etiket: “${normalTag}”`);
+  const afterNormal = await summaryOf(second.id);
+  const gl7 = await trial();
+  ok(afterNormal.openMinor === 200000 && afterNormal.collectedMinor === 0 && gl7(128) === 3500 && kurus(await balanceOnScreen(page)) === 220000, `normal cariye: şüphelide 2.000 kaldı, 128 = ${gl7(128)}, bakiye ${await balanceOnScreen(page)} (2.500 − 300)`);
+  await shot(page, "iz16-ekran-7-normal-cari-hesaba-isle", `${card} .hof-plans-entries`);
+  await page.click(`${card} [data-entry="in"]`);
+  await page.waitForSelector(`${top} .hof-form input[name="amount"]`);
+  await page.fill(`${top} input[name="amount"]`, "100");
+  await submit(page);
+  await formClosed(page);
+  await waitFacts(page, "collected", 100);
+  const afterDefault = await summaryOf(second.id);
+  const gl8 = await trial();
+  ok(afterDefault.openMinor === 190000 && afterDefault.collectedMinor === 10000 && gl8(128) === 3400, `kutusuz tahsilat 100 şüpheliden düştü: şüphelide 1.900, 128 = ${gl8(128)}`);
+  const integrity6 = await must("Mutabakat Testi", admin.get("/api/workspace/ledger/integrity"));
+  ok(integrity6.ok === true, "Mutabakat Testi tamam (iki yükleyici aynı kuralı okur)");
+  await closeAll(page);
+  await openCard(page, abc.id);
+  await page.click(`${card} [data-entry="in"]`);
+  await page.waitForSelector(`${top} .hof-form input[name="amount"]`);
+  ok(!(await page.$(`${top} .hof-form input[name="doubtfulSkip"]`)), "açık şüpheli kaydı olmayan (kapanmış) caride kutu yok");
+  await closeAll(page);
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
