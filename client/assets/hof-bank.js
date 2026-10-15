@@ -2842,9 +2842,11 @@
   function syncPickers(form, setup) {
     syncNone(form);
     const { methodNode } = setup;
+    // 2.3.0 (İz 3.2): tahsilat formunda kart seçicisi yalnız "Kredi Kartına İade" (cardRefund) işaretliyken (aksi hâlde kart yolu POS alanıdır).
+    const refundToggle = form.querySelector('input[name="cardRefund"]');
     if (methodNode)
       form.querySelectorAll("[data-bank-pick]").forEach(node => {
-        const on = methodNode.value === (node.dataset.bankPick === "card" ? "card" : "bank");
+        const on = methodNode.value === (node.dataset.bankPick === "card" ? "card" : "bank") && (node.dataset.bankPick !== "card" || !refundToggle || refundToggle.checked);
         node.hidden = !on;
         node.querySelectorAll("[name]").forEach(input => {
           input.disabled = !on;
@@ -2898,6 +2900,7 @@
     // Seçici yeniden kurulsa da (refreshPickers) dinleyici formda: seçim değişince not yerleşir/kalkar.
     form.addEventListener("change", event => {
       if (event.target.closest?.("[data-bank-pick]")) syncNone(form);
+      if (event.target.name === "cardRefund") syncPickers(form, setup);
       // 2.7: tarih değişince o günün bakiyeleri (tek istek; seçici yeniden kurulmaz); başka alan değişince satır yeniden hesaplanır.
       if (dateNode && event.target === dateNode) reloadBalances(form, setup);
       else syncBalances(form, setup);
@@ -3062,11 +3065,16 @@
   const POS_FIELDS = ["posId", "posInstallments", "authCode", "cardLast4", "posRefundOf", "posSourceless"];
   function accountBody(body, method = body?.method) {
     if (!body) return body;
-    const cardId = body.cardAccountId;
+    // 2.3.0 (İz 3.2): tahsilat formunda "Kredi Kartına İade" kutusu — işaretli değilse kart seçicisinin (gizli) değeri gönderilmez (kart yolu POS'tur);
+    // işaretliyse POS alanları gönderilmez. Kutusu olmayan formlar (ödeme) eskisi gibi.
+    const refundToggle = "cardRefund" in body;
+    const cardRefund = body.cardRefund === true;
+    if (refundToggle && !cardRefund) delete body.cardRefund;
+    const cardId = refundToggle && !cardRefund ? "" : body.cardAccountId;
     delete body.cardAccountId;
     if (method === "card" && cardId) body.bankAccountId = cardId;
     else if (method !== "bank") delete body.bankAccountId;
-    if (method !== "card" || cardId) for (const key of POS_FIELDS) delete body[key];
+    if (method !== "card" || cardId || cardRefund) for (const key of POS_FIELDS) delete body[key];
     else {
       if (body.posSourceless === false || body.posSourceless === "") delete body.posSourceless;
       for (const key of POS_FIELDS) if (body[key] === "") delete body[key];

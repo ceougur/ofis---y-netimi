@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer
+    # Subtest: giriş + kart + cardRefund → satır kart hesabına (fin_ref = kart), POS kaydı yok, kart borcu 600 → 360, 309.NN −360; tek kartta kart kendiliğinden; posId verilirse 400
+    not ok 1 - giriş + kart + cardRefund → satır kart hesabına (fin_ref = kart), POS kaydı yok, kart borcu 600 → 360, 309.NN −360; tek kartta kart kendiliğinden; posId verilirse 400
+      ---
+      duration_ms: 573.029588
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-230-46-iade-iptal.test.mjs:110:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ödeme iadesi karta: 400 {"ok":false,"error":"POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; POS seçin (banka hesabı alanını boş bırakın).","code":"bank-account-invalid","field":"bankAccountId"}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-230-46-iade-iptal.test.mjs:113:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: cardRefund olmadan giriş + kart POS'tur (kart hesabı verilirse 400 bank-account-invalid; verilmezse POS satışı); düzeltmede kart bağı korunur (tutar 240 → 300)
+    not ok 2 - cardRefund olmadan giriş + kart POS'tur (kart hesabı verilirse 400 bank-account-invalid; verilmezse POS satışı); düzeltmede kart bağı korunur (tutar 240 → 300)
+      ---
+      duration_ms: 417.018353
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-230-46-iade-iptal.test.mjs:138:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ödeme iadesi karta: 400 {"ok":false,"error":"POS tahsilatı ve POS iadesi banka hesabına bağlanmaz; POS seçin (banka hesabı alanını boş bırakın).","code":"bank-account-invalid","field":"bankAccountId"}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-230-46-iade-iptal.test.mjs:145:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer
+  ---
+  duration_ms: 991.390819
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc/test/banka-230-46-iade-iptal.test.mjs:98:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1435.566116
