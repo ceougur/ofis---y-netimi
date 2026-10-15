@@ -86,7 +86,9 @@ export function doubtfulCredits(store, parties) {
   ];
   if (has("plans") && has("plan_entries")) {
     // openedOn: kartın açılış tarihi — şüpheli kaydından SONRA açılan kartın taksiti / vazgeçilen kalanı o kayıttan düşmez (doubtful-gl).
-    const openedOn = "COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))";
+    // Kontrol turu 2 K1 (15.10.2026): "Mevcut borcu taksitlendir" (covers_balance) kartı yeni alacak getirmez (yevmiyede 602 yazılmaz; borç
+    // caride zaten yazılı) → tarih kapısı YOK, taksiti şüpheliden düşer (önceden 128'den hiç düşmüyor, 120 bitince kapı reddediyordu).
+    const openedOn = "CASE WHEN p.covers_balance = 1 THEN '' ELSE COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) END";
     parts.push(`SELECT 'plan-entry:' || pe.id, p.account_id, pe.date, ${c("pe.amount")}, '', ${openedOn} FROM json_each(?1) j CROSS JOIN plans p ON p.account_id = j.value AND p.deleted_at IS NULL CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE pe.kind = 'in'`);
     // Vazgeçilen kalan kuruşla: kart tutarı (kuruş) − net tahsilat (her satır kuruşa çevrilip toplanır; banka kodunda REAL toplam yok).
     parts.push(
@@ -463,10 +465,10 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
    * kaydın "Şüpheliden Çıkar" başlığı ya da bir Değersiz Alacak satırı artık kalana sığmazsa yazım tamamen geri alınır ve neden AÇIK yazılır
    * (önceden yalnız kapı "ledger-integrity … yöneticinize bildirin" diyordu). Silme işleminden sonra, aynı işlem içinde çağrılır.
    */
-  const assertNoConflict = (party, what) => {
+  const assertNoConflict = (party, what, verb = "silinemez") => {
     const problems = doubtfulProblems(store, { parties: [party] });
     if (!problems.length) return;
-    throw new HttpError(409, `${what} silinemez: carinin öbür şüpheli kayıtları bozulurdu — ${problems[0].sample}`, { code: "doubtful-delete-conflict", problems: problems.map(item => item.sample) });
+    throw new HttpError(409, `${what} ${verb}: carinin öbür şüpheli kayıtları bozulurdu — ${problems[0].sample}`, { code: "doubtful-delete-conflict", problems: problems.map(item => item.sample) });
   };
   /** Sil (kayıt hatası): kayıt + karşılıkları iptal (başlıklar cancelled), Silinenler'e. Değersiz satırı olan kayıt silinmez (önce satır). */
   function remove(ctx, { user, accountId, did }) {
@@ -540,6 +542,8 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
         bank.assertWrittenNonMoney("doubtful_provisions", item.id);
         setEventStatus(ctx, item.eventId, "active", user);
       }
+      // Kontrol turu 2 K2 (15.10.2026): geri yükleme de silme gibi carinin öbür kayıtlarını (çıkarma başlığı, değersiz satırı) bozabilir → açık 409.
+      assertNoConflict(account.id, "Şüpheli alacak kaydı", "geri yüklenemez");
       return { id: row.id, accountId: row.account_id, message: `“${account.name}” şüpheli alacak kaydı (${tl(row.amount_minor)}) geri geldi.` };
     }
     if (kind === "provision") {
@@ -570,5 +574,7 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const n = Number(store.get("SELECT COUNT(*) AS n FROM doubtful_receivables WHERE account_id = ? AND status <> 'cancelled'", accountId)?.n) || 0;
     if (n) throw new HttpError(409, `Bu carinin ${n} şüpheli alacak kaydı var; cari ${what}. ${hint}`, { code: "account-doubtful-open", count: n });
   }
-  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: () => doubtfulOpenByAccount(store), headroom, take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
+  /** Cari satırının (account_entries) ayırma kuralıyla şüpheli kayıtlara düşen kuruşu (kontrol turu 2 K3; routes/accounts.mjs assertNormalRoom). */
+  const allocatedMinor = (accountId, entryId) => (doubtfulState(store, { parties: [accountId] }).allocations.get(`account:${entryId}`)?.records || []).reduce((sum, item) => sum + item.minor, 0);
+  return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: () => doubtfulOpenByAccount(store), headroom, allocatedMinor, take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
 }

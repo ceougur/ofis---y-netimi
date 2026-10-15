@@ -1,0 +1,32 @@
+{
+  "ad": "supheli-kontrol2-motor-1000",
+  "komut": "npm run test:mutabakat -- --islem 1000 --tohum 3 --tohumlar 2",
+  "commit": "9625b638eddaddc92e56819d8e9389aefecedd3e",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 6,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T16:59:09.731Z",
+  "sure_sn": 254.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/supheli-kontrol2-motor-1000.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e6848e399b0c38a56bc83b31935964a9149924a3e32f12a30d35b51c2237c84a",
+  "ham_cikti_bayt": 5133
+}

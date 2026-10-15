@@ -215,7 +215,8 @@ export function journal(rows) {
       const n = out.length;
       post(`plan-close:${plan.id}`, plan.closedOn && plan.closedOn > plan.date ? plan.closedOn : plan.date, "Taksit kartı kapatıldı", "Kalan alacaktan vazgeçildi", "689", control, Math.max(0, roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0))));
       // Karar 15.10.2026 (plan §3.11b/2): kartın açılış tarihi — şüpheli kaydından SONRA açılan kartın satırı o kayıttan düşmez (doubtful-gl openedOn).
-      if (out.length > n && plan.date) out[out.length - 1].doubtful = { openedOn: plan.date };
+      // Kontrol turu 2 K1: "Mevcut borcu taksitlendir" (coversBalance) kartı yeni alacak değildir → tarih kapısı yok (lib/bank/doubtful.mjs SQL ikizi).
+      if (out.length > n && plan.date && !plan.coversBalance) out[out.length - 1].doubtful = { openedOn: plan.date };
     }
   }
   for (const row of rows.planEntries || []) {
@@ -227,7 +228,8 @@ export function journal(rows) {
       const n = out.length;
       post(id, row.date, row.opening ? "Taksit açılışı (devir)" : row.chequeId ? "Taksit (çek/senetle)" : "Taksit tahsilatı", row.note, debit, control, row.amount);
       // Karar 15.10.2026 (plan §3.11b/2): kartın açılış tarihi (planDate) — şüpheli kaydından SONRA açılan kartın taksiti o kayıttan düşmez.
-      if (out.length > n && row.planDate) out[out.length - 1].doubtful = { openedOn: row.planDate };
+      // Kontrol turu 2 K1: kapsayan kartta (planCovers) tarih kapısı yok — taksit şüpheliden düşer.
+      if (out.length > n && row.planDate && !Number(row.planCovers)) out[out.length - 1].doubtful = { openedOn: row.planDate };
     } else if (row.chequeId) {
       // Doğrulama T11 (plan §3.14): taksite sayılmış evrak karşılıksız döndü — karşılıksız günü B kart carisi / A 101 ya da 121 (bankada
       // tahsildeyse 101.02 / 121.02).

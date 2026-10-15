@@ -33,7 +33,7 @@ Yalnız planın açık sözüne dayanan kurallar [PLAN §3.11b] etiketini taşı
 | # | Yer | Değişiklik | Dayanak |
 |---|---|---|---|
 | F9 | §4.15 | `cari_tahsilat`'a seçimli **`normalCari: true`**: satır şüpheliden düşmez, `A 120` kalır ("Normal Cari Hesaba İşle"). Yalnız dil sürüm 4; şüpheli kaydı olmayan caride de yazılabilir (etkisiz) | [PLAN §3.11b/2 (a)] |
-| F10 | §4.42a | Alacak satırı kapsamı planın sözüyle: `kapatilacakFatura` bağlı `cari_tahsilat`, satış faturasının **peşin satırı** ve `normalCari` tahsilatı DÜŞMEZ (A 120); `taksit_tahsilat` yalnız kartın tarihi ≤ kayıt tarihi olan kayıtlardan düşer | [PLAN §3.11b/2 (a)–(c)] |
+| F10 | §4.42a | Alacak satırı kapsamı planın sözüyle: `kapatilacakFatura` bağlı `cari_tahsilat`, satış faturasının **peşin satırı** ve `normalCari` tahsilatı DÜŞMEZ (A 120); `taksit_tahsilat` yalnız kartın tarihi ≤ kayıt tarihi olan kayıtlardan düşer (programda ek: "mevcut borcu taksitlendir" kartı yeni alacak değildir, tarih kapısı yok — kontrol turu 2 K1, 15.10.2026; bu kart türü dilde YOK, kapsam dışı) | [PLAN §3.11b/2 (a)–(c)] |
 | F11 | §4.42a, F2 | 644 kuralı artık planın açık sözü: K6 etiketi **[PLAN §3.11b/3]** oldu; programla fark **BULGU** (önceden [KABUL K6] → İNCELE) | [PLAN §3.11b/3 (15.10 kararı)] |
 | F12 | §12 BELİRSİZ-38 | Peşin satırı ve bağlı tahsilat tanımlandı → listeden çıktı; alıştan iade geri ödemesi ve müşteri carisine alış faturası belirsiz kalır | [PLAN §3.11b/2 (b)] |
 | F13 | §4.15, §5.6, §5.7 | Açık şüpheli kaydı olan caride `normalCari` ya da `kapatilacakFatura` bağlı tahsilat carinin 120 bakiyesini (= cari bakiyesi − açık kayıtların kalanı) aşarsa **409 `doubtful-normal-exceeds`** (grup 4; hiçbir şey yazılmaz). Açık kayıt yoksa sınır yok | [PLAN §3.11b/2 (a) "Sınır"] |

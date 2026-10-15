@@ -627,7 +627,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     if (!doubtfulSkipOf({ kind: "in", invoiceId: input.invoiceId, doubtfulSkip: input.doubtfulSkip })) return;
     const room = doubtful().headroom(account.id);
     if (!(room.openMinor > 0)) return;
-    const previousMinor = previous && previous.kind === "in" && doubtfulSkipOf({ kind: "in", source: previous.source, invoiceId: previous.invoiceId, doubtfulSkip: previous.doubtfulSkip }) ? Math.round(Number(previous.amount) * 100) : 0;
+    // Önceki satırın ZATEN 120'de olan kısmı sayılmaz (işaretliyse tamamı; değilse ayırma kuralının şüpheliye düşürmediği kısmı — ör. kayıt
+    // tarihinden önceki tahsilat; kontrol turu 2 K3: önceden tamamı yeni sayılıp defter değişmediği hâlde 409).
+    const previousMinor = previous && previous.kind === "in"
+      ? (doubtfulSkipOf({ kind: "in", source: previous.source, invoiceId: previous.invoiceId, doubtfulSkip: previous.doubtfulSkip })
+        ? Math.round(Number(previous.amount) * 100)
+        : Math.round(Number(previous.amount) * 100) - (doubtful().allocatedMinor?.(account.id, previous.id) ?? 0))
+      : 0;
     const deltaMinor = Math.round(input.amount * 100) - previousMinor;
     if (deltaMinor <= room.roomMinor) return;
     const roomTl = roundMoney(Math.max(0, room.roomMinor) / 100);

@@ -100,7 +100,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       const planInstrument = has("cheques") ? "CASE WHEN e.cheque_id <> '' THEN COALESCE((SELECT x.instrument FROM cheques x WHERE x.id = e.cheque_id), '') ELSE '' END" : "''";
       out.planEntries = all(
         `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, ${planInstrument} AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planReturned} AS bankReturned,
-                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate
+                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate, p.covers_balance AS planCovers
          FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );
