@@ -513,6 +513,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   taksiti (düzeltildi), K2 geri yükleme çakışması açık 409, K3 düzeltmede yanlış 409 (düzeltildi) — test supheli-230-kontrol2 0/3 → 3/3; K4–K7
   BİLGİ (KANIT'a). YENİ SON ADAY = 91e6dea; Uzun Doğrulama #225 (6312e8b) iptal, 91e6dea'da yeniden (~16:58 UTC). Ders 32.
 - UZUN DOĞRULAMA #230 (91e6dea) 23/23 + kapı YEŞİL (15.10.2026 20:02 UTC; KANIT satırı dolduruldu, B.1 kapandı). Ürün kodu 91e6dea; üstüne yalnız belge/kılavuz/CHANGELOG/pdf-uret (6f0d309) ve kanıt. SIRADA: imzalı paket (release.mjs --anahtar yüklenen pem) + build:windows → 5 dosya + arşiv teslim → PR → kullanıcı "birleştir" → yayın (kullanıcı) → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (yeni PDF: "Ticari Şüpheli Alacaklar").
+- TESLİM BİÇİMİ (kullanıcı, 15.10.2026 ~20:20 UTC, 2.3.0 için teyit): GitHub'a yüklenecek İMZALI 5 dosya AYRI AYRI verilir; birleştirmeleri (PR → master) ben yaparım, dosyaları kullanıcı yükler. Kurulum .exe 30 MB'ı aşarsa İKİ PARÇA (parca0 + parca1) + "BIRLESTIR.md" (copy /b komutu + beklenen sha256) verilir.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
