@@ -117,7 +117,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
     const data = response.data?.data ?? response.data;
-    return { status: response.status, data, code: response.data?.code || data?.code || "", text: JSON.stringify(response.data || "").slice(0, 400) };
+    return { status: response.status, data, code: response.data?.code || data?.code || "", text: JSON.stringify(response.data || "").slice(0, 400), full: JSON.stringify(response.data || "") };
   };
   const T = (await api("GET", "/api/workspace/ledger/lock")).data.today;
   const D0 = addDays(T, -span);
@@ -243,6 +243,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
    * kalanı 659 · çıkar: kalan 120'ye döner, karşılık 644'e. Dönüş: { open (128), provision (129 eksi), groundless (644), expense (654), loss (659),
    * records: Map(id → { remaining, provision, closed }) }.
    */
+  // Teşhis (15.10.2026, Uzun Doğrulama #199 sınıfı): kapı (ledger-integrity) beklenmeyen ret verirse carinin şüpheli kayıtları + kapı örnekleri tam yazılır.
+  async function doubtfulDiag(kind, party, r) {
+    if (r.status !== 409 || r.code !== "ledger-integrity") return;
+    const list = await api("GET", `/api/workspace/accounts/${party}/doubtful`);
+    const failures = (() => { try { return JSON.parse(r.full).failures; } catch { return r.full; } })();
+    const mine = D.events.filter(e => e.party === party).map(e => ({ kind: e.kind, date: e.date, cents: e.cents, id: e.id || e.recordId || e.target || "", seq: e.seq }));
+    throw Object.assign(new Error(`${kind}: beklenmeyen kapı reddi ${JSON.stringify(failures)}\n  program kayıtları: ${JSON.stringify(list.data)}\n  model olayları: ${JSON.stringify(mine)}`), { unexpected: true });
+  }
   function doubtfulModel() {
     const ORDER = { take: 0, provision: 1, credit: 2, release: 3 };
     const state = new Map();
@@ -2065,6 +2073,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!open(day)) return expectReject(r, "period-locked", kind);
         // Sınır yalnız AÇIK şüpheli kaydı (kalan > 0) varken: açık kayıt yoksa fazlası bugünkü gibi avans olur (plan §3.11b/2 (a) "Sınır").
         if (normal && doubtfulOpenOf(c.id) > 0 && amount > doubtfulRoom(c.id)) return expectReject(r, "doubtful-normal-exceeds", `${kind}/normal-aşım`);
+        await doubtfulDiag(kind, c.id, r);
         mustOk(r, kind);
         cariAdd(c.id, -amount);
         M.kasa.cash += amount;
@@ -2140,6 +2149,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const rec = R.pick([...D.records.values()]);
         if (!rec) return;
         const r = await api("DELETE", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}`);
+        await doubtfulDiag(kind, rec.party, r);
         const dates = [rec.date, rec.closedDate, ...rec.provisions.map(p => p.date)].filter(Boolean);
         if (dates.some(d => !open(d))) return expectReject(r, "period-locked", kind);
         if (rec.writeOffs > 0) return expectReject(r, "doubtful-has-writeoffs", `${kind}/değersizli`);
