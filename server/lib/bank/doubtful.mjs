@@ -182,6 +182,27 @@ export function doubtfulProblems(store, { parties = null } = {}) {
        AND NOT EXISTS (SELECT 1 FROM account_entries x WHERE e.type = 'doubtful_writeoff' AND x.id = e.src_id AND x.source = 'doubtful')`,
     ...args,
   )) fail(`${row.id}:orphan`, `${row.no}: şüpheli alacak başlığının (${row.type}) kaydı yok ya da kayıt başka başlığı gösteriyor`);
+  // Türetilmiş durum (yargıç 2.3.0 #2, #3, #8; 15.10.2026): kayıt bazında karşılık ≤ kalan (K5/K6) ve kapanan kayıtta karşılık 0; Değersiz Alacak
+  // satırı kaydın kalanı içinde (K7 sonradan da: değersiz satırından önceye düşen geriye tarihli tahsilat satırı kayıt dışına taşırırdı — A 120 /
+  // B 659, 120 eksi); Şüpheliden Çıkar başlığının tutarı yevmiyedeki çıkarılan tutar (çıkarma gününden önceye düşen tahsilat kalanı değiştirirdi).
+  // Tam kapı ve dokunulan yol (lib/integrity-scope.mjs) aynı denetimi koşar: bozan yazım 409 ile reddedilir.
+  const derived = doubtfulState(store, { parties });
+  for (const record of derived.records) {
+    const s = derived.state.get(record.id);
+    if (!s) continue;
+    const tag = `${record.id} (${record.accountName || record.party})`;
+    if (s.provision > s.remaining) fail(`${record.id}:provision`, `${tag}: karşılık (${tl(s.provision)}) kalanı (${tl(s.remaining)}) aşıyor`);
+    if (s.remaining <= 0 && s.provision > 0) fail(`${record.id}:provision-left`, `${tag}: kayıt kapandı, karşılık (${tl(s.provision)}) 129'da kaldı`);
+    if (record.status === "released" && record.closeEventId) {
+      const close = header(record.closeEventId);
+      // Başlık çıkarma günündeki yazım sırasına göre o günün (günün sonunda sayılan) tahsilatlarının bir kısmını içerebilir: tolerans
+      // [çıkarılan, çıkarılan + o gün düşen]; önceki güne düşen geriye tarihli tahsilat tolerans dışıdır (yargıç G).
+      if (close && (Number(close.tryMinor) < s.released || Number(close.tryMinor) > s.released + (s.collectedOnCloseDay || 0))) fail(`${record.id}:close-amount`, `${tag}: Şüpheliden Çıkar başlığı ${tl(close.tryMinor)}, yevmiyedeki çıkarılan ${tl(s.released)} (çıkarma gününden önceye düşen tahsilat kalanı değiştirirdi); tahsilatı çıkarma gününden sonraya yazın ya da kaydı silip yeniden alın`);
+    }
+  }
+  for (const [key, hit] of derived.allocations) {
+    if ((hit.outsideMinor || 0) > 0) fail(`${key}:outside`, `Değersiz Alacak satırı ${key.replace(/^account:/, "")}: kaydın kalanını ${tl(hit.outsideMinor)} aşıyor (değersiz satırından önceye düşen tahsilat kalanı küçülttü); tahsilatı değersiz satırından sonraki tarihe yazın ya da önce değersiz satırını silin`);
+  }
   return out;
 }
 
@@ -272,11 +293,12 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const { records, state, allocations } = doubtfulState(store, { parties: [accountId] });
     return { records: records.map(record => view(record, state.get(record.id), allocations)), summary: doubtfulSummary(store, accountId) };
   }
-  /** Rapor verisi: bütün (silinmemiş) carilerin kayıtları; status open | closed | all; from/to kayıt tarihine. */
+  /** Rapor verisi: bütün (silinmemiş) carilerin kayıtları; status open | closed | all; from/to kayıt tarihine. "Açık" durumu TARİH İTİBARIYLA
+   *  listedir (eleştirmen E1, 15.10.2026): dönem başlangıcı süzmez — geçen yıl açılmış, hâlâ açık kayıt "Bu Yıl"da görünür, TOPLAM Kalan = 128. */
   function report({ from = "", to = "", status = "open" } = {}) {
     const { records, state, allocations } = doubtfulState(store);
     const rows = records
-      .filter(record => (!from || record.date >= from) && (!to || record.date <= to))
+      .filter(record => (!from || status === "open" || record.date >= from) && (!to || record.date <= to))
       .map(record => view(record, state.get(record.id), allocations))
       .filter(row => (status === "all" ? true : status === "closed" ? row.stateKey !== "open" : row.stateKey === "open"));
     const totals = { count: rows.length, amountMinor: 0, provisionMinor: 0, provisionReleasedMinor: 0, collectedMinor: 0, writtenOffMinor: 0, releasedMinor: 0, remainingMinor: 0 };
@@ -322,6 +344,13 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const openMinor = doubtfulSummary(store, accountId).openMinor;
     return { balanceMinor, openMinor, roomMinor: balanceMinor - openMinor };
   }
+  /** Carinin ilk borç tarihi: cari satırı (borç / ödeme), taksit kartı başlangıcı, kesilmiş satış faturası; yoksa ''. */
+  function firstDebitDate(accountId) {
+    const dates = [store.get("SELECT MIN(date) AS d FROM account_entries WHERE account_id = ? AND kind IN ('debt', 'out')", accountId)?.d];
+    if (hasTable(store, "plans")) dates.push(store.get("SELECT MIN(COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10))) AS d FROM plans WHERE account_id = ? AND deleted_at IS NULL", accountId)?.d);
+    if (hasTable(store, "invoices")) dates.push(store.get("SELECT MIN(issue_date) AS d FROM invoices WHERE account_id = ? AND status = 'issued' AND kind IN ('sale', 'purchase_return')", accountId)?.d);
+    return dates.filter(Boolean).sort()[0] || "";
+  }
   const dateAfterRecord = (date, record, label) => {
     if (date < record.date) throw new HttpError(400, `${label} (${dayText(date)}) şüpheli alacak kaydının tarihinden (${dayText(record.date)}) önce olamaz.`, { code: "date-before-record", field: "date" });
   };
@@ -346,6 +375,10 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     if (!isDoubtfulReason(reason)) throw new HttpError(400, "Neden seçin: Karşılıksız Çek, Protestolu Senet, Dava, İcra ya da Diğer.", { code: "doubtful-reason", field: "reason" });
     const date = period.movementDate(body, { label: "Tarih" });
     const minor = body.amount === undefined || body.amount === null || body.amount === "" ? (cheque ? toMinor(Number(cheque.amount) || 0) : amountOf(body.amount)) : amountOf(body.amount);
+    // Yargıç 2.3.0 #7 (15.10.2026): kayıt tarihi carinin ilk borç satırından (cari satırı borç/ödeme, taksit kartı, kesilmiş fatura) önce olamaz —
+    // o tarihte alacak yokken 128'e alınırdı (o ayın mizanında 120 eksi).
+    const firstDebit = firstDebitDate(account.id);
+    if (!firstDebit || date < firstDebit) throw new HttpError(400, firstDebit ? `Kayıt tarihi (${dayText(date)}) carinin ilk borç hareketinden (${dayText(firstDebit)}) önce olamaz; o tarihte şüpheliye alınacak alacak yoktu.` : "Carinin borç hareketi yok; şüpheliye alınacak alacak bulunmuyor.", { code: "doubtful-before-debt", field: "date", firstDebit: firstDebit || "" });
     const room = headroom(account.id);
     if (minor > room.roomMinor) {
       throw new HttpError(400, `Şüpheliye alınacak tutar (${tl(minor)}) carinin borç bakiyesini aşıyor: bakiye ${tl(room.balanceMinor)}${room.openMinor ? `, zaten şüphelide ${tl(room.openMinor)}` : ""} → en çok ${tl(Math.max(0, room.roomMinor))}.`, { code: "doubtful-exceeds-balance", field: "amount", balanceMinor: room.balanceMinor, openMinor: room.openMinor });
@@ -473,12 +506,15 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
       period.restoreDate(row.date, "Bu şüpheli alacak kaydı");
       if (payload.status === "released" && payload.closedDate) period.restoreDate(payload.closedDate, "Bu kaydın çıkarılması");
       const account = liveAccount(row.account_id);
-      if (payload.status !== "released") {
-        const room = headroom(account.id);
-        if (Number(row.amount_minor) > room.roomMinor) throw new HttpError(409, `Kayıt geri yüklenemez: carinin borç bakiyesi (${tl(room.balanceMinor)}${room.openMinor ? `, şüphelide ${tl(room.openMinor)}` : ""}) şüpheliye alınan tutarı (${tl(row.amount_minor)}) artık karşılamıyor.`, { code: "doubtful-exceeds-balance" });
-      }
       store.run("UPDATE doubtful_receivables SET status = ?, closed_date = ?, close_event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", payload.status === "released" ? "released" : "open", payload.status === "released" ? payload.closedDate || "" : "", payload.status === "released" ? payload.closeEventId || "" : "", byId(user), stamp(), row.id);
       bank.assertWrittenNonMoney("doubtful_receivables", row.id);
+      // Yargıç 2.3.0 #4 (15.10.2026): önceki ön denetim kayıt tutarını bugünkü bakiyeyle kıyaslıyor, ayırma kuralının (K3) bu kayda düşüreceği
+      // tahsilatı saymıyordu (tahsilatlı kayıt kalıcı 409). Şimdi kayıt geri yüklenmiş hâliyle (aynı işlemde) denetlenir: carinin normal alacağı
+      // (120 = kart − açık şüpheli) eksiye düşerse 409, işlem geri alınır; tam kapı (doubtful:balance) aynı kuralı ayrıca koşar.
+      if (payload.status !== "released") {
+        const room = headroom(account.id);
+        if (room.roomMinor < 0) throw new HttpError(409, `Kayıt geri yüklenemez: carinin borç bakiyesi (${tl(room.balanceMinor)}) geri yüklenen kayıtla birlikte açık şüpheli tutarı (${tl(room.openMinor)}) artık karşılamıyor; carinin 120 bakiyesi ${tl(room.roomMinor)} olurdu. Önce carinin tahsilat/alacak satırlarını ya da öbür şüpheli kayıtlarını düzeltin.`, { code: "doubtful-exceeds-balance", balanceMinor: room.balanceMinor, openMinor: room.openMinor });
+      }
       setEventStatus(ctx, row.event_id, "active", user);
       if (payload.status === "released") setEventStatus(ctx, payload.closeEventId, "active", user);
       for (const item of payload.provisions || []) {
@@ -512,10 +548,10 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     throw new HttpError(400, "Bilinmeyen öğe.");
   }
   /** Cari silinmeden önce (routes/accounts.mjs): şüpheli alacak kaydı olan cari silinmez (defter izi; açık ya da kapanmış). */
-  function assertNone(accountId, what = "silinemez") {
+  function assertNone(accountId, what = "silinemez", hint = "Önce kayıtları silin ya da cariyi pasife alın.") {
     if (!hasDoubtful(store)) return;
     const n = Number(store.get("SELECT COUNT(*) AS n FROM doubtful_receivables WHERE account_id = ? AND status <> 'cancelled'", accountId)?.n) || 0;
-    if (n) throw new HttpError(409, `Bu carinin ${n} şüpheli alacak kaydı var; cari ${what}. Önce kayıtları silin ya da cariyi pasife alın.`, { code: "account-doubtful-open", count: n });
+    if (n) throw new HttpError(409, `Bu carinin ${n} şüpheli alacak kaydı var; cari ${what}. ${hint}`, { code: "account-doubtful-open", count: n });
   }
   return { recordRow, listFor, report, summary: accountId => doubtfulSummary(store, accountId), openByAccount: () => doubtfulOpenByAccount(store), take, release, provision, writeOff, remove, removeProvision, removeWriteOff, restore, assertNone, statusOf: doubtfulStatusOf };
 }

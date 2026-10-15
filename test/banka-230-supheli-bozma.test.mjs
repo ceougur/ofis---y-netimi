@@ -292,10 +292,12 @@ describe("Şüpheli — sil + geri al (ters kayıt), Silinenler, Şirket Verisin
     await debt(ctx.api, other.id, 1000, "2026-10-01");
     const { record } = await must("al", take(ctx.api, other.id, { amount: 1000, date: "2026-10-02", reason: "other" }));
     await must("sil", deleteRecord(ctx.api, other.id, record.id));
-    await collect(ctx.api, other.id, 700, "2026-10-03");
+    // Kayıt tarihinden ÖNCE tarihli tahsilat: geri yüklenince kayda düşmez (K3) → 120 = 300 − 1.000 → 409. (Kayıt tarihinden sonraki tahsilat
+    // kayda düşer ve geri yükleme 200'dür: yargıç #4, test/supheli-230-yargic.test.mjs Y4.)
+    await collect(ctx.api, other.id, 700, "2026-10-01");
     const trash = await must("Silinenler", ctx.api.get("/api/admin/trash"));
     const item = trash.find(row => row.kind === "doubtful" && row.ref === record.id);
-    expectStatus(await ctx.api.post("/api/admin/trash/restore", { id: item.id }), 409, "doubtful-exceeds-balance", "bakiye artık 300");
+    expectStatus(await ctx.api.post("/api/admin/trash/restore", { id: item.id }), 409, "doubtful-exceeds-balance", "bakiye artık 300, kayda düşmeyen tahsilat");
     await lockPeriod(ctx.api, "2026-10-02");
     expectStatus(await ctx.api.post("/api/admin/trash/restore", { id: item.id }), 409, "period-locked", "kilitli tarih");
     await lockPeriod(ctx.api, "");
@@ -385,7 +387,7 @@ describe("Şüpheli — kapı ve tarama: ham SQL bozması yakalanır; eski sür�
       const result = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
       assert.equal(result.ok, true, JSON.stringify(result.failures).slice(0, 500));
       // Aynı sunucuda T testinin kaydı vardı (128/129 denetimleri açıktı); eski şemada kayıt yok → 2.2.0'ın listesi (128/129/doubtful yok).
-      assert.deepEqual(result.checks.map(item => item.code), codesBefore.filter(code => !["gl:128", "gl:129", "doubtful:records"].includes(code)), "denetim listesi 2.2.0 ile aynı");
+      assert.deepEqual(result.checks.map(item => item.code), codesBefore.filter(code => !["gl:128", "gl:129", "doubtful:records", "doubtful:balance"].includes(code)), "denetim listesi 2.2.0 ile aynı");
       const account = (await must("cari", api.get(`${ACC}?status=all`))).accounts.find(item => item.name === "Eski Ltd.");
       await must("eski dosyada al", api.post(`${ACC}/${account.id}/doubtful`, { amount: 100, date: TODAY, reason: "other" }));
       assert.notEqual(lockDigestOf(server.app.store, "2026-10-08"), lockDigestOf(server.app.store, "2026-10-08", { version: "2.2.0" }), "kilitli dönemdeki şüpheli kaydı yalnız 2.3.0 izine girer");

@@ -994,7 +994,13 @@ class Model:
                     acik.append((tarih, seq, veri))
                     acik.sort()
                 elif tur == "karsilik":
-                    durum[veri["kayit"]]["karsilik"] += veri["tutar"]
+                    s = durum[veri["kayit"]]
+                    s["karsilik"] += veri["tutar"]
+                    fazla = s["karsilik"] - s["kalan"]        # KABUL K6 eki: karşılık ayrılırken de karşılık ≤ kalan; aşan 644
+                    if fazla > 0:
+                        s["karsilik"] -= fazla
+                        satirlar.append(("129", fazla, 0, None, tarih))
+                        satirlar.append(("644", 0, fazla, None, tarih))
                 elif tur == "degersiz":
                     s = durum[veri["kayit"]]
                     y = min(s["karsilik"], veri["tutar"])
@@ -2355,7 +2361,9 @@ class Model:
         acik_kalan = sum(s["kalan"] for key, s in durumlar.items() if self.v[key]["cari"] == cari["key"])
         yuz_yirmi = self.cari_bakiye(cari["key"]) - acik_kalan
         if yuz_yirmi <= 0 or T > yuz_yirmi:
-            self._supheli_ret(ih, 2, 400, "doubtful-exceeds-balance", "120 bakiyesini aşıyor")   # PLAN §3.11b/2; KABUL K1
+            # Grup 4 (istek kimliğinden SONRA; model_b ve program gibi — bank.post sırası 1 istek kimliği → 2 yazım): aynı kimlikli yineleme
+            # kayıt yazıldıktan sonra gelince 120 bakiyesi küçülmüştür; grup 2'de olsaydı yineleme 400 sayılırdı (fark tohum 6 adım 519, 15.10.2026).
+            self._supheli_ret(ih, 4, 400, "doubtful-exceeds-balance", "120 bakiyesini aşıyor")   # PLAN §3.11b/2; KABUL K1
         deg = Degisim()
         deg.yeni.append((tarih, [("128", T, 0, cari["key"]), ("120", 0, T, cari["key"])], "supheli_al"))
         key = self.yeni_anahtar("supheli")

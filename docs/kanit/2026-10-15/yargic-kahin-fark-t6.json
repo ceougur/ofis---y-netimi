@@ -1,0 +1,32 @@
+{
+  "ad": "yargic-kahin-fark-t6",
+  "komut": "python3 -I test/bagimsiz/fark.py --tohum 6 --islem 500",
+  "commit": "03db78c94afc03cfcba5587e698acf9d2bd55cee",
+  "dal": "worktree-agent-aded053a756b1e4c8",
+  "kirli": 11,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T05:59:48.106Z",
+  "sure_sn": 19.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 6012,
+    "gecen": 6012,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/yargic-kahin-fark-t6.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aded053a756b1e4c8",
+  "ham_cikti_sha256": "3374c05f503effd97c035b0db5cc6156242dd04d9ac4618a2fd5656b9c7f7436",
+  "ham_cikti_bayt": 382
+}

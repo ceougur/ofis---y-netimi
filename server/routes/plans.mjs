@@ -803,7 +803,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // kalanı aşan tutar da yazılıyordu.
   const AVANS = "Fazlasını Avans Yaz";
   const K8_WHAT = { create: "yeni tahsilat yazılmaz", restore: "silinen tahsilat geri yüklenmez", update: "tahsilat tutarı büyütülmez" };
-  function assertRoom(user, planId, amount, { itemId = null, overpay = false, exceptId = "", op = "create" } = {}) {
+  // avans: "Fazlasını Avans Yaz" seçeneği olan yollarda ipucu metne girer; çek/senet yolunda (routes/cheques.mjs) seçenek yok → ipucu yok.
+  function assertRoom(user, planId, amount, { itemId = null, overpay = false, exceptId = "", op = "create", avans = true } = {}) {
     const row = store.get("SELECT total, status FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     if (!row) return;
     const left = roundMoney(Math.max(0, (Number(row.total) || 0) - Math.max(0, netPaid(planId, exceptId))));
@@ -817,7 +818,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       if (overpay) {
         if (!manage) throw new HttpError(403, `Kartın kalanını aşan tahsilatı (avans) yalnızca yönetici, uzman ve muhasebe yazabilir; yöneticinize başvurun. Kalan ${tl(left)}, girilen ${tl(amount)}.`, { code: "plan-overpay-permission", permission: "plans.manage", planId, remaining: left, amount, excess });
       } else {
-        const hint = manage ? ` Gerçekten bu karta avans yazılacaksa "${AVANS}" ile kaydedin.` : " Bu karta avans yazılacaksa yöneticinize başvurun.";
+        const hint = !avans ? "" : manage ? ` Gerçekten bu karta avans yazılacaksa "${AVANS}" ile kaydedin.` : " Bu karta avans yazılacaksa yöneticinize başvurun.";
         if (rule === "plan-paid") throw new HttpError(409, `Bu kart ödendi (kalan ${tl(0)}); ${what}. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-paid", planId, remaining: 0, amount, excess });
         throw new HttpError(409, `Tutar kartın kalanını aşıyor: kalan ${tl(left)}, girilen ${tl(amount)}, fazlası ${tl(excess)}; ${what}. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-overpay", planId, remaining: left, amount, excess });
       }
@@ -911,7 +912,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       body: { ...body, entryId: previous.id },
       // K8 (2.3.0, plan §3.10/3 update): yalnız tutarı BÜYÜYEN tahsilat düzeltmesinde kartın kalanı (bu satır hariç) işlemin içinde yeniden okunur.
       prepare: () => {
-        if (previous.kind === "in" && !previous.opening && input.amount > roundMoney(Number(previous.amount) || 0) + 0.004) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
+        if (previous.kind === "in" && !previous.opening && toMinor(input.amount) > toMinor(Number(previous.amount) || 0)) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
       },
       write: () => {
         k7.capture();

@@ -934,7 +934,14 @@ class Durum:
                     acik.append((tarih, sira, veri))
                     acik.sort()
                 elif tur == "karsilik":
-                    durum[veri["kayit"]]["karsilik"] += veri["tutar"]
+                    s = durum[veri["kayit"]]
+                    s["karsilik"] += veri["tutar"]
+                    if KABUL_KURALLARI:
+                        fazla = s["karsilik"] - s["kalan"]    # KABUL K6 eki: karşılık ayrılırken de karşılık ≤ kalan; aşan aynı gün 644
+                        if fazla > 0:
+                            s["karsilik"] -= fazla
+                            satirlar.append(("129", "B", fazla, None, tarih))
+                            satirlar.append(("644", "A", fazla, None, tarih))
                 elif tur == "degersiz":
                     s = durum[veri["kayit"]]
                     y = min(s["karsilik"], veri["tutar"])

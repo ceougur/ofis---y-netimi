@@ -1,0 +1,221 @@
+TAP version 13
+# Subtest: 2.3.0 yargıç bulguları — Şüpheli Alacaklar
+    # Subtest: Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0
+    not ok 1 - Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0
+      ---
+      duration_ms: 150.598302
+      type: 'test'
+      location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:36:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        129: aşan 600 çözüldü (karşılık 400 = kalan 400)
+        
+        0 !== 600
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 600
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:45:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez
+    not ok 2 - Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez
+      ---
+      duration_ms: 155.15356
+      type: 'test'
+      location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:64:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geriye tarihli tahsilat: 409 beklenir — gelen 200 {"id":"account-298ad88a-1964-41f3-9809-8d50a8f9af06","refNo":"2","type":"customer","name":"Y3 Değersiz Sonra Tahsilat","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","t
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        rejectedByGate (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:24:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:70:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam
+    not ok 3 - Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam
+      ---
+      duration_ms: 153.307033
+      type: 'test'
+      location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yükleme — gelen 409 {"ok":false,"error":"Kayıt geri yüklenemez: carinin borç bakiyesi (2.000,00 ₺) şüpheliye alınan tutarı (10.000,00 ₺) artık karşılamıyor.","code":"doubtful-exceeds-balance"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:89:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y4b: 120'yi eksiye düşürecek geri yükleme 409 doubtful-exceeds-balance (anlamlı metin), kayıt Silinenler'de kalır
+    ok 4 - Y4b: 120'yi eksiye düşürecek geri yükleme 409 doubtful-exceeds-balance (anlamlı metin), kayıt Silinenler'de kalır
+      ---
+      duration_ms: 144.253652
+      type: 'test'
+      ...
+    # Subtest: Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest
+    not ok 5 - Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest
+      ---
+      duration_ms: 85.447602
+      type: 'test'
+      location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:115:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tür değişimi: 200 {"id":"account-98c6908e-8561-4b04-82cb-1ff131feb231","refNo":"5","type":"supplier","name":"Y5 Tür Değişimi","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:120:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz
+    not ok 6 - Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz
+      ---
+      duration_ms: 49.403124
+      type: 'test'
+      location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kartsız kredi kartına iade: 200 {"id":"account-31acc4c1-8326-4274-8b66-7ea5f4f5714f","refNo":"6","type":"supplier","name":"Y6 Tedarikçi","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":" 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:130:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200
+    not ok 7 - Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200
+      ---
+      duration_ms: 371.235716
+      type: 'test'
+      location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        muhasebe raporu görür — {"ok":false,"error":"Bu işlem için yetkiniz yok.","code":"FORBIDDEN","permission":"overview.view"}
+        
+        403 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 403
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:138:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400
+    not ok 8 - Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400
+      ---
+      duration_ms: 55.103474
+      type: 'test'
+      location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:144:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        borç hareketi yok: kod doubtful-exceeds-balance (Şüpheliye alınacak tutar (1,00 ₺) carinin borç bakiyesini aşıyor: bakiye 0,00 ₺ → en çok 0,00 ₺.)
+        + actual - expected
+        
+        + 'doubtful-exceeds-balance'
+        - 'doubtful-before-debt'
+                    ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'doubtful-before-debt'
+      actual: 'doubtful-exceeds-balance'
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/banka-210-hesap-ortak.mjs:58:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:146:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır
+    not ok 9 - Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır
+      ---
+      duration_ms: 109.498465
+      type: 'test'
+      location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çıkarmadan önceye düşen tahsilat: 409 beklenir — gelen 200 {"id":"account-96de5ff0-cc74-45f9-a7fa-78084bfe22ef","refNo":"8","type":"customer","name":"Y8b Çıkar","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mer
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        rejectedByGate (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:24:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:161:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 1 - 2.3.0 yargıç bulguları — Şüpheli Alacaklar
+  ---
+  duration_ms: 1630.558945
+  type: 'suite'
+  location: '/tmp/claude-0/yargic-fix-eski-1fc87bb/test/supheli-230-yargic.test.mjs:29:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 1
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2005.41951

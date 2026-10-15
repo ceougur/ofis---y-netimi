@@ -519,6 +519,8 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       // 2.3.0 İz 5.6: kayıt detay kartından silinen not / telefon / haciz aynı kimlikle, silinmeden önceki haliyle geri gelir (para etkisi yok).
       const spec = HISTORY_KINDS[item.kind];
       if (!canUser(user, spec.permission)) throw new HttpError(403, `${spec.label} geri yüklemek için ${spec.label.toLocaleLowerCase("tr-TR")} ekleme yetkisi gerekir.`);
+      // Silmeyle simetrik (eleştirmen E6): geri yükleme de Kayıt Düzeltme ister.
+      if (!canUser(user, "records.edit")) throw new HttpError(403, `${spec.label} geri yüklemek için Kayıt Düzeltme yetkisi gerekir.`);
       store.tx(() => {
         if (!store.get(`SELECT 1 AS found FROM ${spec.table} WHERE id = ?`, item.ref)) store.run(spec.insert, ...spec.values(payload, item.ref, user, now()));
         trash.markRestored(item.id, user);

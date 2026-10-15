@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.3.0 — İyileştirmeler ve Şüpheli Alacaklar
+
+- Şüpheli ticari alacaklar (şüpheliye al, karşılık ayır, değersiz alacak yaz, rapor), yeni banka ve POS raporları, Hızlı Arama (Ctrl+K)
+  ve müşteri taleplerine göre iyileştirmeler.
+
 ## 2.2.0 — İyileştirmeler ve POS Entegrasyonu
 
 - İyileştirmeler ve POS entegrasyonu.

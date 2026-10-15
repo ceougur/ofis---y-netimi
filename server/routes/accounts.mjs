@@ -498,6 +498,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const input = accountInput({ ...previous, groupName: "", subgroupName: "", ...body }, user, previous);
       // v2.0.26 (A3): kapanmış dönemde hareketi olan carinin türü değişmez (kilitli mizanda 120/320/336 sınıfı kayardı).
       if (input.type !== previous.type) assertUnlocked(previous.id, "türü değiştirilemez");
+      // Yargıç 2.3.0 #5 (15.10.2026; kabul K2 yalnız müşteri): şüpheli alacak kaydı olan carinin türü değişmez (128 satırları 320/336'ya kayardı).
+      if (input.type !== previous.type) doubtful()?.assertNone?.(previous.id, "türü değiştirilemez", "Şüpheli ticari alacak yalnız müşteri (120) carisinde izlenir; önce kayıtları silin.");
       // v2.0.22: bilgi kolonları ayrı yazılır; tür ve durum yalnız değiştiyse (bilgi düzeltmesi mutabakat kapısını
       // tetiklemez — lib/db.mjs INFO_COLUMNS).
       store.run(
@@ -716,6 +718,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     requireKindRight(user, input.kind);
     const finRef = refOf(input, body);
     requireBankOut(user, input.kind, finRef);
+    // Yargıç 2.3.0 #6 (15.10.2026): "Kredi Kartına İade" (cardRefund) kart hesabı ister; tanımlı etkin kart yoksa 108.00'a sessiz yazım yok (400).
+    if (input.kind === "in" && input.method === "card" && body.cardRefund === true && !finRef) throw new HttpError(400, "Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir; tanımlı kart yoksa Banka → Hesaplar'dan ekleyin ya da yolu değiştirin.", { code: "bank-account-invalid", field: "bankAccountId" });
     const k7 = negativeOf([finRef], input.date, negativeForced(body));
     const created = bank.post({
       user,
