@@ -329,13 +329,13 @@ export function createApp(overrides = {}) {
   registerWhatsappRoutes(router, { ...context, accounts: () => context.accounts });
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
   // Vade takip ve nakit akışı (v2.0.9) tablolardaki ödeme günlerini de okur (tüm veri oturumları; routes/reports.mjs).
-  context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, tables: () => context.tableReports });
+  context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, tables: () => context.tableReports, doubtful: () => context.doubtful });
   // Rapor merkezi (v2.0.7): programdaki her bilginin hazır raporu; ekranda ön izleme, PDF ve Excel.
   // 11.10.2026 hız düzeltmesi (§3.11 madde 5): büyük banka raporları ayrı iş parçacığında, bu şirketin veri dosyasının salt okunur anlık
   // görüntüsünden (lib/report-runner.mjs; aynı kod, aynı çıktı). Bellek içi veri tabanında (dosyası yok) ve kapalıyken yerinde hazırlanır.
   const reportRunner = config.reportWorker && config.dbPath && config.dbPath !== ":memory:" ? createReportRunner(config.reportWorkerEntry ? { entry: config.reportWorkerEntry } : {}) : null;
   context.reportRunner = reportRunner;
-  context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity, offload: reportRunner ? job => reportRunner.run({ ...job, dbPath: config.dbPath, fx: config.fxEnabled === true, later: config.bankLater === true }) : null });
+  context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity, doubtful: () => context.doubtful, offload: reportRunner ? job => reportRunner.run({ ...job, dbPath: config.dbPath, fx: config.fxEnabled === true, later: config.bankLater === true }) : null });
   registerDueRoutes(router, { ...context, calendar: () => context.tableReports?.calendar });
   const documents = registerDocumentRoutes(router, context);
   registerTrashRoutes(router, { ...context, documents, invoices: context.invoices, bankModule: () => context.bankAccounts?.module, doubtful: () => context.doubtful });

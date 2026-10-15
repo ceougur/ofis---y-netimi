@@ -64,6 +64,9 @@
     // 2.3.0 İz 5.3: POS Satış / POS Komisyon raporlarının tür ve dönem süzgeçleri.
     posSale: { label: "Tür", options: [["", "Tümü"], ["sale", "POS Satışı"], ["refund", "POS İadesi"], ["cancel", "POS İptal İadesi"]] },
     posPeriod: { label: "Dönem", options: [["month", "Aylık"], ["year", "Yıllık"], ["range", "Dönem Toplamı"]] },
+    // 2.3.0 (İz 1.7): Şüpheli Alacaklar raporunun Durum ve Neden süzgeçleri (sunucu lib/doubtful-gl.mjs DOUBTFUL_REASONS ile aynı anahtarlar).
+    doubtfulStatus: { label: "Durum", options: [["open", "Açık"], ["closed", "Kapanan"], ["all", "Tümü"]] },
+    doubtfulReason: { label: "Neden", options: [["", "Tüm Nedenler"], ["cheque", "Karşılıksız Çek"], ["note", "Protestolu Senet"], ["lawsuit", "Dava"], ["enforcement", "İcra"], ["other", "Diğer"]] },
   };
   const DYNAMIC = { bankAccount: "Banka Hesabı", feeAccount: "Banka Hesabı", posTerminal: "POS", anyAccount: "Hesap" };
 
@@ -179,6 +182,7 @@
     if (report.params.includes("taskStatus")) params.taskStatus = "all";
     if (report.params.includes("payMethod")) params.payMethod = "noncash";
     if (report.params.includes("bankGroup")) params.bankGroup = "real";
+    if (report.params.includes("doubtfulStatus")) params.doubtfulStatus = "open";
     if (report.id === "cek-portfoy") params.status = "open";
     center.params = params;
     center.account = null;

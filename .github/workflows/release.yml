@@ -60,6 +60,7 @@ jobs:
       - run: npm run test:senaryo-tahsile-ver-220
       - run: npm run test:senaryo-k8-230
       - run: npm run test:senaryo-iz32-230
+      - run: npm run test:senaryo-supheli-230
       - run: npm run test:banka-230-hareket-yaris
       - run: npm run test:banka-210-saat
       - run: npm run test:banka-210-kart-onbellek

@@ -45,7 +45,7 @@ const GROUPS = new Set(["day", "week", "month"]);
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock }) {
+export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, doubtful: doubtfulApi = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const userName = user => user.display_name || user.username || "";
@@ -162,6 +162,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       overdue: accountTotals.overdue,
       overdueCount: accountTotals.overdueCount,
       chequesDue: roundMoney(chequeIn.overdue.amount + chequeIn.today.amount + chequeIn.soon.amount),
+      // 2.3.0 İz 1.6 (plan §3.11b/5): alacak toplamının içindeki açık şüpheli alacak (128) ayrı satır; toplam değişmez (120 + 128 = kart).
+      doubtful: roundMoney(accountTotals.doubtful || 0),
+      doubtfulCount: accountTotals.doubtfulCount || 0,
     };
     const payable = {
       total: roundMoney(accountTotals.creditor + chequeOut.open.amount),
@@ -598,7 +601,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     };
     const result = dueList({ today: day, from, to, late, items: items.filter(matches) });
     if (needle) dormant = dormant.filter(item => foldText(`${item.party} ${item.detail}`).includes(needle));
-    return { ...result, preset, direction, sources: [...sources], allowed, dormant: direction === "out" ? [] : dormant };
+    // 2.3.0 İz 1.6 (plan §3.11b/5 "hatırlatmalar şüpheli tutarı ayrı gösterir"): vade kalemlerinin DIŞINDA, açık şüpheli alacak toplamı
+    // (bütün cariler; tarih süzgecine girmez — şüpheli alacağın vadesi yoktur). Yalnız tahsil yönü; Ödenecek süzgecinde 0.
+    const doubtfulTotals = direction !== "out" && doubtfulApi()?.openByAccount ? doubtfulApi().openByAccount().totals : null;
+    const doubtful = { amount: roundMoney((doubtfulTotals?.openMinor || 0) / 100), accountCount: doubtfulTotals?.accountCount || 0 };
+    return { ...result, preset, direction, sources: [...sources], allowed, dormant: direction === "out" ? [] : dormant, doubtful };
   }
   router.get("/api/workspace/overview/vade-takip", async ({ req, res, url }) => {
     const user = requireDues(req);
@@ -614,6 +621,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     ["Ödenecek", tl(data.totals.out.total.amount)],
     ["  gecikmiş", `${tl(data.totals.out.overdue.amount)} (${data.totals.out.overdue.count})`],
     ["Net (tahsil − ödeme)", tl(data.totals.net)],
+    ...(data.doubtful?.amount > 0.005 ? [["Şüpheli Alacak (vade takibinin dışında)", `${tl(data.doubtful.amount)} (${data.doubtful.accountCount} cari)`]] : []),
     ...(data.totals.noAmount ? [["Tutarsız Kalem (son tarih vb.)", String(data.totals.noAmount)]] : []),
   ];
   const vadeRange = data => (data.from || data.to ? `${data.from ? dayText(data.from) : "…"} – ${data.to ? dayText(data.to) : "…"}` : "Tüm açık kalemler") + (data.late && data.from ? " · gecikmişler dahil" : "");
