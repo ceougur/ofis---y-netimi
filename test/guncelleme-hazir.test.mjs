@@ -53,9 +53,12 @@ async function withFeed(name, { config, previous, feedOptions = {} }, body) {
     service.bootLog = () => readFileSync(service.logFile, "utf8").slice(offset);
     return service;
   };
-  const restart = async (options = { retryDelays: [] }) => {
+  // change: yayın kaynağı değişikliği servis DURDUKTAN SONRA uygulanır ("açılışta" senaryoları; aksi hâlde çalışan servisin periyodik denetimi
+  // durdurma sürerken indirmeye başlar, açılışta yeniden indirilir — 15.10.2026 CI #744 Windows (d) zipHits 2).
+  const restart = async (options = { retryDelays: [] }, change = null) => {
     await stopAllActivity();
     await services.at(-1).stop();
+    change?.();
     return boot(options);
   };
   try {
@@ -147,13 +150,14 @@ describe("Otomatik güncelleme: arka planda indir, sonraki açılışta kur (ger
   it("(d) açılışta daha yeni sürüm var → o indirilip kurulur; tek geçiş, ara sürüm kurulmaz", async () => {
     await withFeed("d", { feedOptions: { releases: [] } }, async ctx => {
       await foundDuringDay(ctx, [rel.v901]);
-      ctx.feed.setReleases([rel.v902, rel.v901]);
-      const next = await ctx.restart({ retryDelays: [] });
+      const next = await ctx.restart({ retryDelays: [] }, () => ctx.feed.setReleases([rel.v902, rel.v901]));
       assert.equal(await next.appVersion(), "9.0.2");
       assert.deepEqual(appStarts(next.bootLog()), ["app/9.0.2"], "uygulama bu açılışta bir kez, 9.0.2 ile başlatıldı");
       const activated = stateOf(ctx.root).history.filter(item => item.event === "activated").map(item => item.version);
       assert.deepEqual(activated, ["9.0.2"], "yalnız 9.0.2 etkinleştirildi");
-      assert.equal(ctx.feed.zipHits("9.0.2"), 1);
+      // 15.10.2026 (CI #744 Windows Node 22): 2 indirme görüldü, kurulum tek ve doğruydu; aday neden kopan bağlantıda bir kez yineleme (updater
+      // request). Düşerse günlüğün indirme/yineleme satırları mesaja yazılır (kök neden oradan okunur).
+      assert.equal(ctx.feed.zipHits("9.0.2"), 1, `9.0.2 paketi bir kez indirildi — günlük: ${JSON.stringify(next.log().split(/\r?\n/).filter(line => /yinelen|koptu|indiril|NETWORK|ECONN/.test(line)).slice(-8))}`);
       assert.deepEqual(hazirList(ctx.root), []);
       assert.ok(!existsSync(appDir(ctx.root, "9.0.1")), "kullanılmayan 9.0.1 açılımı silindi");
     });

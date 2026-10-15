@@ -117,6 +117,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
       }
     })();
     const result = await checking;
+    if (auto && !stopped) withdrawPreparedIfGone(result);
     if (auto && !stopped) {
       if (result.status === "available" && newer(result)) {
         if (updater.config().enabled && (quietTime() || !controller.busy?.())) install(result);
@@ -127,6 +128,20 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
       } else if (result.status === "error" && result.retryable) scheduleRetry();
     }
     return result;
+  }
+  // Çalışırken (periyodik denetim) hazırdaki paketin yayından geri çekildiği görülürse açılış yolundaki (installPreparedAtStartup) kararın
+  // aynısı verilir: günlük + "prepared-withdrawn" kaydı + hazır paket silinir. 15.10.2026 (CI #744/#745 Windows, test (2)): yayın listesi
+  // değişince servis durdurulurken periyodik denetim araya giriyor, geri çekilen 9.0.2 sessizce (kayıtsız) 9.0.1 ile değişiyordu.
+  function withdrawPreparedIfGone(latest) {
+    const prepared = updater.state?.().prepared;
+    if (!prepared || !updater.discardPrepared || !updater.addHistory) return;
+    if (latest.status === "available" && compareVersions(latest.version, prepared.version) >= 0) return;
+    if (latest.status !== "available" && latest.status !== "up-to-date") return;
+    const reason = `${prepared.version} sürümü yayından kaldırıldığı için kurulmadı (son denetim: ${latest.status === "available" ? `yayındaki en yeni ${latest.version}` : "yayında daha yeni sürüm yok"}); hazırdaki paket silindi.`;
+    log.warn?.(reason);
+    updater.addHistory("prepared-withdrawn", { version: prepared.version, reason });
+    updater.discardPrepared({ all: true, protectedDirs: [controller.appDir(), runningDir] });
+    status.lastResult = { outcome: "withdrawn", version: prepared.version, reason, at: now() };
   }
   // Hemen kurulmayan sürüm: yönetici panelinde "hazır" görünür. "Kendiliğinden kur" kapalıysa öyle kalır (yönetici Şimdi
   // Güncelle der). Açıksa (mesai içinde kullanıcılar çalışıyordu) saatte bir yeniden bakılır — o anda sunucu 15 dakikadır

@@ -1,0 +1,32 @@
+{
+  "ad": "geri-cekilen-calisirken-yesil",
+  "komut": "node --test test/guncelleme-hazir-geri-cekilen.test.mjs test/guncelleme-hazir.test.mjs test/guncelleme-gercek.test.mjs",
+  "commit": "cd63cf62e4d8a0537f09a66b3e0c48fd511ec953",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T22:54:23.909Z",
+  "sure_sn": 50.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 18,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/geri-cekilen-calisirken-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e4ab9218b355eda63394fd822f826b5cbd428df7e45d0be44b07f36d32406572",
+  "ham_cikti_bayt": 8258
+}
