@@ -1,0 +1,49 @@
+TAP version 13
+# (node:2410) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası
+    # Subtest: 5.4 katalog grup sırası: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (tanım sırasından bağımsız)
+    ok 1 - 5.4 katalog grup sırası: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (tanım sırasından bağımsız)
+      ---
+      duration_ms: 151.166188
+      type: 'test'
+      ...
+    # Subtest: 5.3 POS Satış Raporu: her POS × tür × dönem — satış, taksitli satış, iade ayrı satır (eksi); komisyon matrah, BSMV ayrı, net; TOPLAM; PDF/Excel
+    ok 2 - 5.3 POS Satış Raporu: her POS × tür × dönem — satış, taksitli satış, iade ayrı satır (eksi); komisyon matrah, BSMV ayrı, net; TOPLAM; PDF/Excel
+      ---
+      duration_ms: 198.402227
+      type: 'test'
+      ...
+    # Subtest: 5.3 POS Komisyon Raporu: Aylık / Yıllık / Dönem Toplamı × POS × tür — satış ve iade ayrı satır, kip; TOPLAM = satırlar; PDF/Excel
+    ok 3 - 5.3 POS Komisyon Raporu: Aylık / Yıllık / Dönem Toplamı × POS × tür — satış ve iade ayrı satır, kip; TOPLAM = satırlar; PDF/Excel
+      ---
+      duration_ms: 47.506908
+      type: 'test'
+      ...
+    # Subtest: 5.1 Banka → Hareketler PDF / Excel: ekrandaki süzgeçle aynı satırlar (hesap, tür, yön, tarih, arama), alt TOPLAM, Rapor Merkezi başlığı; bank.view yeter, personel 403
+    ok 4 - 5.1 Banka → Hareketler PDF / Excel: ekrandaki süzgeçle aynı satırlar (hesap, tür, yön, tarih, arama), alt TOPLAM, Rapor Merkezi başlığı; bank.view yeter, personel 403
+      ---
+      duration_ms: 447.481852
+      type: 'test'
+      ...
+    # Subtest: 5.2 Tüm Zamanlar: her raporun ekran başlığı ve PDF'i '1976' / '19xx' içermez, dönem metni 'Tüm Zamanlar'; POS Ödeme Takvimi boşken ipucu + Banka → Hareketler bağı
+    ok 5 - 5.2 Tüm Zamanlar: her raporun ekran başlığı ve PDF'i '1976' / '19xx' içermez, dönem metni 'Tüm Zamanlar'; POS Ödeme Takvimi boşken ipucu + Banka → Hareketler bağı
+      ---
+      duration_ms: 316.46096
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası
+  ---
+  duration_ms: 2102.411883
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2620.337495

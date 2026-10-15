@@ -1,0 +1,32 @@
+{
+  "ad": "iz33-iz5",
+  "komut": "node --test test/rapor-230-iz5.test.mjs",
+  "commit": "6ce9c4c50976b308eb0492982fff0e2b65f2315f",
+  "dal": "worktree-agent-afa90b5a72737cee4",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:52:13.944Z",
+  "sure_sn": 2.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/iz33-iz5.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afa90b5a72737cee4",
+  "ham_cikti_sha256": "6b8813c77848086abd9b5111a0d7c78d6a20ad21440a6375b94c0b2f5488379b",
+  "ham_cikti_bayt": 2695
+}
