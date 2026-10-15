@@ -1557,6 +1557,9 @@
     if (!node) return;
     node.dataset.account = state.account || "";
     HOF.swap(node, movesListHtml(state));
+    // 2.3.0 İz 5.1: PDF / Excel bağları süzgeçle birlikte yenilenir (süzgeç değişince yalnız liste çizilir).
+    const exportBar = state.key === "main" ? root()?.querySelector("[data-mv-export]") : null;
+    if (exportBar) exportBar.outerHTML = movesExportHtml(state);
   }
   /** Hareket satırları: tarih, İşlem No, tür (durum rozetiyle), [hesap], açıklama (cari, açıklama, referans, fatura), tutar, [bakiye]. */
   // debt (GG2 düşük): kurumsal kart ve kredi hesabında yürüyen bakiye "Borç" kolonunda artı gösterilir (başlıktaki Borç ve Açılıştaki Borç gibi).

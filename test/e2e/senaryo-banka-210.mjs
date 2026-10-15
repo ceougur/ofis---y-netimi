@@ -2424,7 +2424,7 @@ try {
     const items = await admin.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
     // 2.3.0 (bilerek güncellendi): §8.10 kalan raporlar (İz 3.3) ve POS Satış / Komisyon (İz 5.3); grup sırası İz 5.4 (Cari önce, Banka Taksit'ten sonra).
     ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar|POS Satış Raporu|POS Komisyon Raporu|Günlük Banka Raporu|Aylık Banka Raporu|Banka Bazında Bakiye|Para Birimi Bazında Bakiye|Bankalar Arası Transfer Raporu|Kasa ve Banka Transfer Raporu|Cari ve Banka Hareketleri|Fatura ve Banka Hareketleri|Taksit ve Banka Hareketleri|Banka Nakit Akış Raporu", `Banka raporları (2.3.0): ${items.join(", ")}`);
-    const groupNames = groups.map(group => group.replace(/^\S+\s*/, "").trim());
+    const groupNames = groups.map(group => group.replace(/^[^\p{L}]+/u, "").trim());
     ok(groupNames.join("|") === "Cari|Kasa|Stok|Fatura|Çek / Senet|Taksit|Banka|Ana Defter|Kayıtlar|Ofis".split("|").filter(name => groupNames.includes(name)).join("|"), `grup sırası (İz 5.4): ${groupNames.join(" · ")}`);
     await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
     let data = await waitPreview(admin, view => view.rows.length >= 2 && view.footer);
