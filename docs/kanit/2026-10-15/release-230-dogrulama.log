@@ -1,4 +1,4 @@
-# verifyEnvelope: {"manifest":{"schema":1,"product":"DestekOfis","version":"2.3.0","channel":"stable","releasedAt":"2026-10-15T21:14:36.717Z","notes":"2.3.0 — İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi\n\n• İyileştirmeler ve Ticari Şüpheli Alacaklar eklentisi (Kullanım Kılavuzu → 9. Cari → Ticari Şüpheli Al
+# verifyEnvelope: {"manifest":{"schema":1,"product":"DestekOfis","version":"2.3.0","channel":"stable","releasedAt":"2026-10-15T23:44:36.410Z","notes":"2.3.0 — İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi\n\n• İyileştirmeler ve Ticari Şüpheli Alacaklar eklentisi (Kullanım Kılavuzu → 9. Cari → Ticari Şüpheli Al
 ok - bildirge imzası güvenilir anahtarla doğrulanır
 ok - sürüm 2.3.0 stable
 ok - zip sha256 + boyut bildirgeyle aynı
