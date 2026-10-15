@@ -26,7 +26,7 @@ export const hasDoubtful = store => hasTable(store, "doubtful_receivables");
 /** Şüpheli alacak hiç kullanılmış mı (iptal edilenler dahil): 128/129 denetimleri yalnız kullanılınca açılır (300/309 ve 121/321 kuralı). */
 export const doubtfulUsed = store => hasDoubtful(store) && Boolean(store.get("SELECT 1 AS found FROM doubtful_receivables LIMIT 1"));
 
-const RECORD_SQL = `SELECT d.id, d.account_id AS party, d.date, d.amount_minor AS amountMinor, d.reason, d.note, d.cheque_id AS chequeId, d.status,
+const RECORD_SQL = `SELECT d.id, d.rowid AS seq, d.account_id AS party, d.date, d.amount_minor AS amountMinor, d.reason, d.note, d.cheque_id AS chequeId, d.status,
     d.closed_date AS closedDate, d.event_id AS eventId, d.close_event_id AS closeEventId, d.created_by AS createdBy, d.created_at AS createdAt,
     COALESCE(a.type, '') AS accountType, COALESCE(a.name, '') AS accountName, COALESCE(a.ref_no, '') AS accountRefNo, a.deleted_at AS accountDeletedAt,
     COALESCE(c.serial_no, '') AS chequeSerialNo, COALESCE(c.instrument, '') AS chequeInstrument,

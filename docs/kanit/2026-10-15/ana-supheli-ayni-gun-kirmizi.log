@@ -1,0 +1,88 @@
+TAP version 13
+# (node:9332) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şüpheli Alacaklar — aynı gün açılan kayıtlarda tahsilat önce açılandan düşer
+    # Subtest: çift 1: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 1 - çift 1: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 111.015078
+      type: 'test'
+      ...
+    # Subtest: çift 2: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 2 - çift 2: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 77.887786
+      type: 'test'
+      ...
+    # Subtest: çift 3: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    not ok 3 - çift 3: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 84.814849
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/banka-230-supheli-ayni-gun.test.mjs:18:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        ilk açılan kayıt (ilk) tahsil edilen — gelen [["ilk",0,300000],["ikinci",150000,50000]]
+        
+        0 !== 150000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 150000
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/banka-230-supheli-ayni-gun.test.mjs:26:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: çift 4: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 4 - çift 4: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 74.540954
+      type: 'test'
+      ...
+    # Subtest: çift 5: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 5 - çift 5: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 68.44157
+      type: 'test'
+      ...
+    # Subtest: çift 6: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 6 - çift 6: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 66.402855
+      type: 'test'
+      ...
+    # Subtest: çift 7: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 7 - çift 7: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 70.524262
+      type: 'test'
+      ...
+    # Subtest: çift 8: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+    ok 8 - çift 8: aynı gün 3.000 + 2.000 şüpheli → 1.500 tahsilat ilk kayıttan düşer
+      ---
+      duration_ms: 71.925876
+      type: 'test'
+      ...
+    1..8
+not ok 1 - Şüpheli Alacaklar — aynı gün açılan kayıtlarda tahsilat önce açılandan düşer
+  ---
+  duration_ms: 969.333951
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/banka-230-supheli-ayni-gun.test.mjs:10:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1355.528033

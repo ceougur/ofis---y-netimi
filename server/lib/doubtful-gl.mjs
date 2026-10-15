@@ -70,12 +70,14 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
   for (const credit of credits) if (byParty.has(credit.party) && credit.minor > 0) byParty.get(credit.party).credits.push(credit);
   for (const [party, group] of byParty) {
     const events = [
-      ...group.records.map(record => ({ kind: "take", date: record.date, order: ORDER.take, tie: record.id, record })),
+      // Aynı tarihte AÇILIŞ sırası (rowid = seq): kimlik rastgele UUID olduğundan ona göre sıralamak sırayı rastgele yapıyordu
+      // (kâhin sürüm 4 tohum 4, 15.10.2026: aynı gün iki kayıt, tahsilat yanlış kayıttan düştü). seq yoksa kimlik.
+      ...group.records.map(record => ({ kind: "take", date: record.date, order: ORDER.take, tie: record.seq ?? record.id, record })),
       ...group.provisions.map(item => ({ kind: "provision", date: item.date, order: ORDER.provision, tie: item.id, item })),
       ...group.credits.map(credit => ({ kind: "credit", date: credit.date, order: ORDER.credit, tie: credit.key, credit })),
       ...group.records.filter(record => record.status === "released" && record.closedDate).map(record => ({ kind: "release", date: record.closedDate, order: ORDER.release, tie: record.id, record })),
     ].sort(by);
-    // Açık (alınmış, kapanmamış) kayıtlar en eskiden yeniye; aynı tarihte kimlik sırası (sabit).
+    // Açık (alınmış, kapanmamış) kayıtlar en eskiden yeniye; aynı tarihte açılış (rowid) sırası.
     const open = [];
     for (const event of events) {
       if (event.kind === "take") {
