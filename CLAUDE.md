@@ -184,6 +184,11 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     kuralı) → yazım sırası (rowid/seq); sınıf içi sıranın toplamları değiştirmediği gösterilir. (15.10: be53818 kayıt sırası, 4d4da18 değersiz/tahsilat
     sırası — Uzun Doğrulama #199/#213 7 tohum kırmızı; birim test anahtarları ters çevirerek üretir.)
 
+32. SON ADAY, PARA ÇEKİRDEĞİNE SON DOKUNUŞTAN SONRA BAĞIMSIZ GÖZ GÖRMEDEN İLAN EDİLMEZ. Yargıç/eleştirmen turu bir commit'te koşar; ondan sonra
+    para çekirdeğine giren her değişiklik (düzeltme dahil) dar kapsamlı bir kontrol turu görür; kâhin ve motor yeni kuralı aynı elden aldıysa
+    kâhin sayılmaz (ders 5). (15.10: 469d547 turundan sonra dört değişiklik girdi; kullanıcı sorunca başlatılan kontrol turu K1 YÜKSEK buldu —
+    "mevcut borcu taksitlendir" kartı yeni satış sayılıp taksiti 128'den düşmüyordu; kâhin dili ve motor aynı eksik kuralı taşıyordu.)
+
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
@@ -501,7 +506,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kayıtları (88.225…, 178.233…, 88.241…) Türkiye adresleri = GERÇEK demo kullanıcıları. Düzeltme: testlere ölü adres + tarama testi. Sahte 3 kaydın
   silinmesi (installations + events) kullanıcı kararı; silinmedi. KARAR (kullanıcı, 15.10.2026): "zararsızsa dursun, tekrarı olmasın; basit işler için kod
   tabanına dokunmayalım" → 3 kayıt DURUR (silinmez); önlem yalnız testlerde (210ac8e; ürün kodu değişmedi); operatör verisine dokunulmaz.
-- SON ADAY 2.3.0 = 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
+- KONTROL TURU 2 (15.10.2026 ~16:45 UTC; kullanıcı "yargıç/eleştirmen geride mi kaldı?"): 469d547 sonrası 12 dosya; K1 YÜKSEK kapsayan kart
+  taksiti (düzeltildi), K2 geri yükleme çakışması açık 409, K3 düzeltmede yanlış 409 (düzeltildi) — test supheli-230-kontrol2 0/3 → 3/3; K4–K7
+  BİLGİ (KANIT'a). YENİ SON ADAY = 91e6dea; Uzun Doğrulama #225 (6312e8b) iptal, 91e6dea'da yeniden (~16:58 UTC). Ders 32.
+- SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
   eşitlendi (615a7b4, 6312e8b; ürün doğruydu). Yerelde tohum 1,3,4,6,7,8,9,10 × 5.000 GEÇTİ. Uzun Doğrulama 6312e8b'de GitHub'da koşuyor (~14:55 UTC
