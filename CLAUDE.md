@@ -479,6 +479,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
      modülünden — satırda "Kayda Git"); ilk 3 satır + "Daha Fazla Göster (n)". Yetki: kayıt düzenleme yetkisi.
   KARAR (kullanıcı, 15.10.2026: "bu son müşteri talebiydi; hepsini pakete ekle, işlem bitince yükleyelim, canlıya alalım") → 1–6 2.3.0 kapsamına
   (İz 5, `docs/2.3.0-IS-LISTESI.md`); 2.3.0 bitince teslim düzeniyle yayın (kullanıcı yükler).
+- DURDURULDU (kullanıcı, 15.10.2026 06:55 UTC: "5 saatlik kullanım limitim %99, 11:10'da yenilenecek, uygun yerde dur"): karar ajanı
+  (644 plan metni / tahsilatta "Normal Cari Hesaba İşle" seçimi / yaşlandırma "Vade Gecikme (Gün)") durduruldu; yarım işi worktree dalı
+  `worktree-agent-ae29a6d1c9c3d14a0` commit 4c725a7 (WIP, 34 dosya; test KOŞULMADI, birleştirilmedi). Dal HEAD d274311; CI 469d547/6a599ba/
+  d274311 SÜRÜYOR (okunmadı — ders 21, devamda ilk iş). Uzun Doğrulama #199 (43322ab) kuyrukta; para çekirdeği sonra değiştiği için son adayda
+  yeniden koşulur. DEVAM (11:15 TR hatırlatıcısı): CI oku → ajanı 4c725a7'den sürdür (kalan: model_b, kart tarih, taksit fişi, supheli_turet,
+  testler, kılavuz) → birleştir + ayrı kopyada doğrula → KANIT belgesi → son CI + Uzun Doğrulama → imzalı paket → teslim → PR.
 - KARAR (kullanıcı, 15.10.2026, bitiş turu — eleştirmen/yargıç soruları; baş mali müşavir denetimiyle UYGUN): (1) 644 kuralı = UYGULANAN KURAL
   (K6: karşılık ≤ kalan; tahsilatta yalnız aşan kısım 644'e; tam tahsil/kapanışta kalan karşılığın tamamı 644) — plan §3.11b/3 metni buna göre
   düzeltilir, kâhin plandan. (2) Tahsilatta KULLANICI SEÇİMİ, varsayılan "Şüpheli Alacaktan Düş"; cari tahsilat formunda "Normal Cari Hesaba İşle"
