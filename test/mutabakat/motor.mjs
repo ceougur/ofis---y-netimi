@@ -2166,8 +2166,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const sim = doubtfulModel(D.events.filter(e => !mine(e)));
         // Çıkarma başlığı toleransı (ürün doubtfulProblems close-amount): başlık ∈ [çıkarılan, çıkarılan + çıkarma günü düşen tahsilat].
         const headerOff = other => { const rel = sim.records.get(other.id); return !rel || other.closedCents < (rel.releasedCents ?? 0) || other.closedCents > (rel.releasedCents ?? 0) + (rel.collectedOnCloseDay || 0); };
-        const conflict = sim.writeOffOverflow > 0 || [...D.records.values()].some(other => other.id !== rec.id && other.closedDate && other.closedCents != null && headerOff(other));
-        if (conflict) return expectReject(r, "doubtful-delete-conflict", `${kind}/çakışma`);
+        const offenders = [...D.records.values()].filter(other => other.id !== rec.id && other.closedDate && other.closedCents != null && headerOff(other));
+        const conflict = sim.writeOffOverflow > 0 || offenders.length > 0;
+        if (conflict) {
+          // Teşhis: hangi koşul (değersiz taşması / çıkarma başlığı) ve program kayıtları — motor öngörüsü ürünle ayrışırsa nedeni görünsün.
+          const detail = { writeOffOverflow: sim.writeOffOverflow, offenders: offenders.map(o => ({ id: o.id, closedDate: o.closedDate, closedCents: o.closedCents, sim: sim.records.get(o.id) })) };
+          if (r.status === 200) {
+            const list = await api("GET", `/api/workspace/accounts/${rec.party}/doubtful`);
+            throw Object.assign(new Error(`${kind}/çakışma: reddedilmesi gerekirken kaydedildi (doubtful-delete-conflict)\n  benzetim: ${JSON.stringify(detail)}\n  program kayıtları (silme sonrası): ${JSON.stringify(list.data)}`), { unexpected: true });
+          }
+          return expectReject(r, "doubtful-delete-conflict", `${kind}/çakışma`);
+        }
         mustOk(r, kind);
         const removed = D.events.filter(mine);
         D.events = D.events.filter(e => !mine(e));
