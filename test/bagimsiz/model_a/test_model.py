@@ -677,15 +677,35 @@ class FaturaIade(unittest.TestCase):
         self.assertIn("taksitKartlari.T1.kalan", alanlar)
         self.assertNotIn("araDurumlar.k4.faturalar.F.acik", alanlar)
 
-    def test_taksit_kalani_asma_senaryo_hatasi(self):
+    def test_taksit_kalani_asma_k8(self):
+        """Sürüm 4 K8 [PLAN §3.10/3]: kalanı aşan tutar 409 plan-overpay (BELİRSİZ-6 kalktı); kart ve cari değişmez."""
         s = sen("taksit-asim", [
             cari("1", "ABC"),
             hizmet_satis("2", "F", "ABC", "100", odeme={"taksit": {"ad": "T1", "sayi": 1}}),
             {"id": "3", "islem": "taksit_tahsilat", "kart": "T1", "tutar": "101", "yol": "nakit"},
         ])
-        kod, _, err = kos_cli(s)
-        self.assertEqual(kod, 2)
-        self.assertIn("BELİRSİZ-6", err)
+        o = kos(s)
+        r = ret(o, "3")
+        self.assertEqual((r["durum"], r["kod"]), (409, "plan-overpay"))
+        self.assertEqual(o["taksitKartlari"]["T1"], {"toplam": 10000, "odenen": 0, "kalan": 10000})
+        self.assertEqual(o["cariler"]["ABC"], 10000)
+
+
+class Surum4Kabul(unittest.TestCase):
+    """Sürüm 4: docs/2.3.0-SUPHELI-KABUL.md §2 adım 0–4 sayıları (senaryolar/kabul-supheli.json planBeklenen, 83 yaprak)."""
+
+    def test_kabul_supheli_plan_sayilari(self):
+        with open(os.path.join(SENARYOLAR, "kabul-supheli.json"), encoding="utf-8") as fh:
+            s = json.load(fh)
+        o = model.kahin(s, os.path.join(SENARYOLAR, "kabul-supheli.json"))
+        sayac, farklar = model.plan_denetimi(s, o)
+        self.assertEqual(farklar, [])
+        self.assertEqual(sayac, 83)
+        self.assertEqual(o["retler"], [])
+        # KABUL K9: cari bazında 120 + 128 = cari kartı bakiyesi (adım 1–3: 6.000 + 4.000; 6.000 + 1.000)
+        k1, k3 = o["araDurumlar"]["k1"], o["araDurumlar"]["k3"]
+        self.assertEqual(k1["mizan"]["120"]["borc"] + k1["mizan"]["128"]["borc"], k1["cariler"]["ABC"])
+        self.assertEqual(k3["mizan"]["120"]["borc"] + k3["mizan"]["128"]["borc"], k3["cariler"]["ABC"])
 
     def test_silme_ve_404_ve_fatura_acigi(self):
         s = sen("silme", [

@@ -28,7 +28,7 @@ KABUL_EDILEN_DILLER = ("destekofis-senaryo/2", DIL3, DIL)   # sürüm 3 ve 4 yal
 # Sürüm 4 (15.10.2026): Şüpheli Ticari Alacaklar (PLAN §3.11b) ve K8 taksit kuralı (PLAN §3.10/3).
 # KABUL_KURALLARI: planın susan yerlerinde kabul belgesinin (docs/2.3.0-SUPHELI-KABUL.md §1) kuralları. False = yalnız planın
 # sözüyle yazılmış ilk okuma (KARARLAR.md "Sürüm 4": plan-only okuma ile KABUL'ün ayrıştığı yerler ve seçilen kural).
-KABUL_KURALLARI = False
+KABUL_KURALLARI = True
 EN_BUYUK_KURUS = 10 ** 14          # 1e12 TL (SENARYO-DILI §3.3; PLAN §2.1)
 GECIKME = object()                 # hesap seçimi başarısız (bağımlı denetimler atlanır)
 
@@ -2830,7 +2830,7 @@ def anlik(d):
             belirsiz.append((f"faturalar.{ad}.acik", belirsiz_cari[ck][0]))
     for ad, tk in takmalar(T_TAKSIT):
         ck = d.kartlar[tk]["cari"]
-        kart_nedeni = [n for n in belirsiz_cari.get(ck, []) if n != "BELİRSİZ-27"]   # evrak taksit kartını etkilemez
+        kart_nedeni = [n for n in belirsiz_cari.get(ck, []) if n not in ("BELİRSİZ-27", "BELİRSİZ-34", "BELİRSİZ-36")]   # evrak/avans/değersiz kartı etkilemez
         if kart_nedeni:
             for alan in ("toplam", "odenen", "kalan"):
                 belirsiz.append((f"taksitKartlari.{ad}.{alan}", kart_nedeni[0]))

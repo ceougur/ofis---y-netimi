@@ -43,8 +43,8 @@ import time
 BURASI = os.path.dirname(os.path.abspath(__file__))
 KOK = os.path.abspath(os.path.join(BURASI, "..", ".."))
 CIKTI = os.path.join(BURASI, "cikti")
-DURUM_ALANLARI = ["mizan", "bankaHesaplari", "kasa", "cariler", "stok", "faturalar", "taksitKartlari", "hesapKodlari",
-                  "eksiBakiyeDenetimi", "ozet"]
+DURUM_ALANLARI = ["mizan", "bankaHesaplari", "kasa", "cariler", "stok", "faturalar", "taksitKartlari", "supheliAlacaklar",
+                  "hesapKodlari", "eksiBakiyeDenetimi", "ozet"]
 YOK = "<yok>"
 
 
@@ -123,7 +123,7 @@ def durum_yapraklari(d, onek=()):
     for alan in ("bankaHesaplari", "cariler", "stok", "hesapKodlari", "eksiBakiyeDenetimi"):
         for k, v in (d.get(alan) or {}).items():
             y[onek + (alan, k)] = v
-    for alan in ("faturalar", "taksitKartlari"):
+    for alan in ("faturalar", "taksitKartlari", "supheliAlacaklar"):
         for k, v in (d.get(alan) or {}).items():
             if isinstance(v, dict):
                 for kk, vv in v.items():
@@ -280,7 +280,7 @@ def aile(f, adimlar_by_id):
         if re.match(r"^(102|108|300|309)\.\d\d$", kod):
             kod = kod[:3] + (".00" if kod.endswith(".00") else ".NN")
         return "mizan." + kod
-    if bas in ("faturalar", "taksitKartlari") and len(yol) == 3:
+    if bas in ("faturalar", "taksitKartlari", "supheliAlacaklar") and len(yol) == 3:
         return "%s.*.%s" % (bas, yol[2])
     if bas in ("bankaHesaplari", "cariler", "stok", "hesapKodlari", "eksiBakiyeDenetimi"):
         return bas + ".*"
@@ -344,7 +344,7 @@ KAPANAN_SINIFLAR = {
 DURUMSUZ_SINIFLAR = set()
 
 TUREV_AILELER = ("cariler.*", "bankaHesaplari.*", "kasa", "mizan.", "ozet.", "taksitKartlari.*.", "faturalar.*.acik",
-                 "stok.*")
+                 "stok.*", "supheliAlacaklar.*.")
 
 
 def _num(v):
@@ -572,7 +572,7 @@ def _atlama_sinifi(bag, sid):
     """Programda atlanan adım: andığı takma adı tanımlayan adımın sınıfı."""
     x = bag["adimlar"].get(sid, {})
     adlar = [x.get(a_) for a_ in ("hedef", "hesap", "cari", "kart", "asilFatura", "kapatilacakFatura", "kaynak",
-                                   "kredi", "saglayici")]
+                                   "kredi", "saglayici", "evrak", "kayit")]
     adlar += [r_.get("hesap") for r_ in (x.get("odeme") or {}).get("pesin") or []]
     adlar += [(x.get("geri") or {}).get("hesap")] + [k_.get("urun") for k_ in x.get("kalemler") or []]
     for ad_ in adlar:
@@ -1041,7 +1041,7 @@ def ozet_yaz():
     for d in dosyalar:
         with open(d, encoding="utf-8") as fh:
             r = json.load(fh)
-        m = re.match(r"rastgele-(?:s3-)?(\d+)-(\d+)$", r.get("senaryo", ""))   # sürüm 3 üretimi "rastgele-s3-…"
+        m = re.match(r"rastgele-(?:s\d-)?(\d+)-(\d+)$", r.get("senaryo", ""))   # sürüm 3/4 üretimi "rastgele-s3-…" / "rastgele-s4-…"
         tohum = int(m.group(1)) if m else None
         kosular.append({"dosya": os.path.basename(d), "senaryo": r.get("senaryo"), "tohum": tohum,
                         "islem": r.get("islemSayisi"), "durum": r.get("durum"), "cikis": r.get("cikisKodlari"),
@@ -1070,7 +1070,7 @@ def ozet_yaz():
             r = json.load(fh)
         if r.get("durum") != "TAMAM":
             continue
-        m = re.match(r"rastgele-(\d+)-(\d+)(-notr)?$", r.get("senaryo", ""))
+        m = re.match(r"rastgele-(?:s\d-)?(\d+)-(\d+)(-notr)?$", r.get("senaryo", ""))
         tohum = int(m.group(1)) if m else None
         notr = bool(m and m.group(3))
         sira = {}
@@ -1173,6 +1173,12 @@ def main(argv):
         r.get("karsilastirilanYaprak"), r.get("atlananBelirsizYaprak"), r.get("farkSayisi"), r.get("desenSayilari")))
     for ad, s in (r.get("siniflar") or {}).items():
         sys.stdout.write("  %-60s %4d yaprak  %s\n" % (ad[:60], s["yaprak"], s["desenler"]))
+    # tools/kanit.mjs özeti (ders 2): karşılaştırılan yaprak = denetim; fark = başarısız (bilinen sınıf da sayılır, gizlenmez)
+    if r.get("durum") == "TAMAM":
+        fark = r.get("farkSayisi") or 0
+        sys.stdout.write("%d denetim geçti, %d başarısız\n" % ((r.get("karsilastirilanYaprak") or 0) - fark, fark))
+    else:
+        sys.stdout.write("0 denetim geçti, 1 başarısız (koşu EKSİK)\n")
     return kod
 
 

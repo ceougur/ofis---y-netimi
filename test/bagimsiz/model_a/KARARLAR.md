@@ -395,3 +395,31 @@ yalnız plan §2.3, §3.5/6, §3.7 #9 ve #21, §3.11 madde 5, §3.11a, §3.11b/1
   yapıdadır (model_a Degisim/Ihlaller, model_b Baglam/Ret) ve `test_surum3.py`'nin elle hesaplanmış beklenenlerine karşı sınandı.
 - Testler: `test/bagimsiz/test_surum3.py` (iki kâhine ortak, 15 test, beklenenler plan kurallarından elle; `senaryolar/kabul-senet.json`
   59 plan-kuralı yaprağı); mutasyon `docs/kanit/2026-10-12/kahin-senet/mutasyon_surum3.py`: 18 hatanın 18'i yakalandı.
+
+## Sürüm 4 güncellemesi (15.10.2026, dil `destekofis-senaryo/4`): Şüpheli Ticari Alacaklar ve K8 taksit
+
+Güncelleyen: bağımsız kâhin ajanı (temiz oda: `server/`, `client/` açılmadı; kaynak plan §3.11b ve §3.10/3, SENARYO-DILI.md sürüm 4 ve
+`docs/2.3.0-SUPHELI-KABUL.md` §1 K1–K12, §2). model_a doğrudan KABUL §1 kurallarıyla yazıldı (model_b önce yalnız plandan yazılıp sonra
+hizalandı; ayrışan yerler `model_b/KARARLAR.md` "Sürüm 4" tablosunda — B-1 alacak satırı kapsamı, B-2 aynı gün sırası, B-3 644 kuralı,
+B-4 ret kodları, B-5 kayıt öncesi tarih). İki kâhin farklı yapıdadır (model_a `Degisim`/`Ihlaller` + `uygula` geri çağrıları,
+model_b `Baglam`/`Ret`) ve `test_surum4.py`'nin elle hesaplanmış 18 testinde aynı çıktıyı verir.
+
+Kararlar (K-34 … K-40):
+
+- **K-34 Türetme.** `Model.supheli_turet()` (§4.42a): olaylar (tarih, tür sırası, adım `seq`) ile sıralanır; "al" fişi ve karşılık fişi
+  saklı, tahsilatın 128'e kayması / 644 / değersiz / çıkarma satırları türetilmiş; `bakiye()` ve `cari_bakiye()` türetilmiş satırları
+  içerir (cari bakiyesi = 120 + 128, KABUL K9). Önbellek her fiş ekleme/silme ve şüpheli olayında sıfırlanır.
+- **K-35 BELİRSİZ-35/38.** `alacak_satiri()` her A 120 satırında gün sırası ve tür denetimi yapar; gün kaydı `deg.uygula`'da (yalnız
+  başarılı adımda). Şüpheli işlemlerinin gün kaydı da `uygula`'da.
+- **K-36 Ret grupları.** 400 şüpheli retleri grup 2 (`_supheli_ret` + `Dur`), 409'lar grup 4; `plan-overpay-permission` 403 grup 4.
+  `kodDayanak` "KABUL"; `date-before-record` 400 grup 2.
+- **K-37 K8.** Kart kalanı `max(0, …)`; fazla `aciklar()`'da dağıtılmamış giriş havuzuna (`havuz_g += fazla`) eklenir ve BELİRSİZ-34 işareti;
+  taksit kartı alanları BELİRSİZ-27/34/36 ile işaretlenmez (evrak, avans ve değersiz kartı etkilemez).
+- **K-38 Silme.** Şüpheli kaydı (tip `supheli`) `sil` hedefi olabilir: olaylı kayıt BELİRSİZ-37; karşılık hareketi silinince fişi ve olayı
+  düşer; değersiz hareketi silinmez (statik denetim). Yetki: şüpheli kaydı/karşılık silme = şüpheli işlemi yetkisi (muhasebe 200, personel 403).
+- **K-39 Değişmez.** `aciklar()` sol tarafı `cari_bakiye − evrakNet + Σ değersiz`; `durum()` Σ kalan = bakiye(128), −Σ karşılık = bakiye(129).
+- **K-40 Plan denetimi.** `plan_denetimi` eksik mizan anahtarını {0, 0} sayar (§9/2; kabul-supheli'de 128/129/644/659'un 0 beklendiği
+  kontrol adımları için).
+
+Testler: `test_model.py` 43 test (`Surum4Kabul`: kabul-supheli 83 yaprak + K9 eşitliği; K8 `test_taksit_kalani_asma_k8` eski
+BELİRSİZ-6 testinin yerine); ortak `test_surum4.py` 18 test; `kabul-1-16.beklenen.json`'a boş `supheliAlacaklar` alanı eklendi (§8.1).

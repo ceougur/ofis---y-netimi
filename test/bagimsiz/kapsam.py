@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Bir koşunun sürüm 2 kapsam sayacı: senaryoda ve üç tarafın ham çıktısında sürüm 2 ile değişen yolların gerçekten
+"""Bir koşunun sürüm 2/3/4 kapsam sayacı: senaryoda ve üç tarafın ham çıktısında dil sürümleriyle değişen yolların gerçekten
 sınanıp sınanmadığını sayar (rapor için; karşılaştırma değil, beklenen değer üretmez).
 
-Kullanım (depo kökünden):  python3 -I test/bagimsiz/kapsam.py rastgele-1-500 [rastgele-2-500 ...]
+Kullanım (depo kökünden):  python3 -I test/bagimsiz/kapsam.py rastgele-s4-1-500 [rastgele-s4-2-500 ...]
 Okur: test/bagimsiz/cikti/senaryolar/<ad>.json ve cikti/ham/<ad>.{a,b,program}.json
+Sürüm 4 sayaçları: şüpheli işlemleri (al / karşılık / çıkar / değersiz / sil, evrak kısayolu), retleri, K8 retleri (plan-paid,
+plan-overpay, plan-overpay-permission), fazlaAvans, şüpheliden düşen alacak satırları (kâhin çıktısındaki tahsilEdilen > 0).
 """
 
 import json
@@ -28,7 +30,7 @@ def say(ad):
     if "alternatifler" in a:
         # eşzamanlı grup: fark.py'nin programa en yakın seçtiği alternatif (fark-<tohum>.json → alternatifSecimi.a.secilen)
         sec = 0
-        m_ = re.match(r"rastgele-(\d+)-\d+(.*)$", ad)
+        m_ = re.match(r"rastgele-(?:s\d-)?(\d+)-\d+(.*)$", ad)
         fy = os.path.join(CIKTI, "fark-%s.json" % ((m_.group(1) + m_.group(2)) if m_ else ad))
         if os.path.exists(fy):
             sec = ((oku(fy).get("alternatifSecimi") or {}).get("a") or {}).get("secilen") or 0
@@ -76,6 +78,29 @@ def say(ad):
                 ekle("  … programda aynı kod")
         if x["islem"] == "iade" and (x.get("geri") or {}).get("yol") == "acik" and i not in a_ret:
             ekle("geri ödenmemiş iade")
+        # sürüm 4
+        if x["islem"] in ("supheli_al", "karsilik_ayir", "supheli_cikar", "degersiz_yaz"):
+            ekle("şüpheli işlemi: %s%s" % (x["islem"], " (evrak kısayolu)" if x.get("evrak") else ""))
+            if i in a_ret:
+                ekle("  … kâhin reti %s %s" % (a_ret[i].get("durum"), a_ret[i].get("kod") or "-"))
+                if i in p_ret:
+                    ekle("  … programda da ret (%s %s)" % (p_ret[i].get("durum"), p_ret[i].get("kod") or "-"))
+            elif i in p_ret:
+                ekle("  … yalnız programda ret")
+        if x["islem"] == "sil" and tur.get(x["hedef"], {}).get("islem") in ("supheli_al", "karsilik_ayir"):
+            ekle("şüpheli/karşılık silme adımı")
+        if x["islem"] == "taksit_tahsilat":
+            if x.get("fazlaAvans"):
+                ekle("taksit fazlaAvans adımı (%s)" % (x.get("kullanici") or "Y"))
+            if a_ret.get(i, {}).get("kod") in ("plan-paid", "plan-overpay", "plan-overpay-permission"):
+                ekle("K8 reti %s (kâhin)" % a_ret[i]["kod"])
+                if p_ret.get(i, {}).get("kod") == a_ret[i]["kod"]:
+                    ekle("  … programda aynı kod")
+    sup = a.get("supheliAlacaklar") or {}
+    ekle("şüpheli kayıt (çıktıda)", len(sup))
+    ekle("şüpheliden düşen alacak satırı olan kayıt", sum(1 for v in sup.values() if v.get("tahsilEdilen", 0) > 0))
+    ekle("çıkarılmış kayıt", sum(1 for v in sup.values() if v.get("durum") == "cikarildi"))
+    ekle("değersiz yazılmış kayıt", sum(1 for v in sup.values() if v.get("degersiz", 0) > 0))
     # iade artanı: kâhin çıktısında iade belgesi açığı < toplam ve asıl kapalı olan durumlar (yaklaşık sayaç)
     fat = a.get("faturalar") or {}
     bel = {b["alan"] for b in a.get("belirsizler") or []}
