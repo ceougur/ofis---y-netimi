@@ -479,3 +479,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
      modülünden — satırda "Kayda Git"); ilk 3 satır + "Daha Fazla Göster (n)". Yetki: kayıt düzenleme yetkisi.
   KARAR (kullanıcı, 15.10.2026: "bu son müşteri talebiydi; hepsini pakete ekle, işlem bitince yükleyelim, canlıya alalım") → 1–6 2.3.0 kapsamına
   (İz 5, `docs/2.3.0-IS-LISTESI.md`); 2.3.0 bitince teslim düzeniyle yayın (kullanıcı yükler).
+- KARAR (kullanıcı, 15.10.2026, bitiş turu — eleştirmen/yargıç soruları; baş mali müşavir denetimiyle UYGUN): (1) 644 kuralı = UYGULANAN KURAL
+  (K6: karşılık ≤ kalan; tahsilatta yalnız aşan kısım 644'e; tam tahsil/kapanışta kalan karşılığın tamamı 644) — plan §3.11b/3 metni buna göre
+  düzeltilir, kâhin plandan. (2) Tahsilatta KULLANICI SEÇİMİ, varsayılan "Şüpheli Alacaktan Düş"; cari tahsilat formunda "Normal Cari Hesaba İşle"
+  kutusu; fatura peşini ve faturaya bağlı (Kapatılacak Fatura) tahsilat KENDİLİĞİNDEN normal (yeni satışın parası) — yargıç #3. (3) Alacak Yaşlandırma
+  raporuna "Vade Gecikme (Gün)" (carinin en eski açık kaleminin gecikmesi) ve vade dilimi; "Şüpheli Alacak" kolonu kalır, başlığında "(dilimlere
+  dahil)". Uygulama: yargıç düzeltmeleri birleşince aynı dosyalarda (doubtful-gl, hof-accounts, report-center) ayrı ajan; 2.3.0'a girer.
