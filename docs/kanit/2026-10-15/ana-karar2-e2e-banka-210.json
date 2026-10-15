@@ -1,0 +1,32 @@
+{
+  "ad": "ana-karar2-e2e-banka-210",
+  "komut": "node test/e2e/senaryo-banka-210.mjs",
+  "commit": "3992e3e0cfc9215a1dcbf60b52dcd66d78d48d24",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T09:28:47.980Z",
+  "sure_sn": 333.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 424,
+    "gecen": 424,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-karar2-e2e-banka-210.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "7fec8fc5ba732e15c8614426aeec0de8db0e61069aecedb38c58e43e494c83a8",
+  "ham_cikti_bayt": 48291
+}
