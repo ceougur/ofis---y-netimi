@@ -1,0 +1,32 @@
+{
+  "ad": "kahin4-test-model-b",
+  "komut": "python3 -I test/bagimsiz/model_b/test_model.py",
+  "commit": "3077fb661c7c0ce02d09ab0aa1f517a5e81b5bed",
+  "dal": "worktree-agent-a6b9096e8bc2ec5bb",
+  "kirli": 3,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:24:45.515Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/kahin4-test-model-b.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6b9096e8bc2ec5bb",
+  "ham_cikti_sha256": "6d9f6f9ea3a5d52acc653782cb9b936353045cfd6e446064adcabb116099f55f",
+  "ham_cikti_bayt": 169
+}

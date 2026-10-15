@@ -880,4 +880,8 @@ class Gecerlilik(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # tools/kanit.mjs özeti (ders 2): "N geçti, M kaldı" — unittest'in kendi sonucundan türetilir, çıkış kodu aynı kalır
+    _r = unittest.main(exit=False).result
+    _basarisiz = len(_r.failures) + len(_r.errors)
+    print("%d geçti, %d kaldı" % (_r.testsRun - _basarisiz, _basarisiz))
+    sys.exit(1 if _basarisiz or _r.testsRun == 0 else 0)

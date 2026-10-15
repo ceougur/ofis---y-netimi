@@ -68,5 +68,6 @@ for ad, eski, yeni in MUT:
     if r.returncode == 0: yakalanmayan.append(ad)
     print(f"{durum:10} {ad:32} {son}")
 print("toplam", len(MUT), "yakalanan", len(MUT) - len(yakalanmayan), "kaçan", yakalanmayan)
+print("%d geçti, %d kaldı" % (len(MUT) - len(yakalanmayan), len(yakalanmayan)))   # tools/kanit.mjs özeti
 shutil.rmtree(HEDEF, ignore_errors=True)
 sys.exit(1 if yakalanmayan else 0)
