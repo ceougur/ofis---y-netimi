@@ -270,7 +270,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         } else if (e.kind === "release") {
           const s = state.get(e.recordId);
           // releasedCents: çıkarma anındaki kalan = programın "Şüpheliden Çıkar" başlığı (silme benzetiminde karşılaştırılır).
-          if (s && !s.closed) { s.releasedCents = s.remaining; s.collectedOnCloseDay = s.lastCreditDate === e.date ? s.collectedSameDay : 0; s.remaining = 0; out.groundless += s.provision; s.provision = 0; s.closed = true; open.splice(open.indexOf(e.recordId), 1); }
+          // Ürünle aynı (doubtful-gl release): tahsilatla kapanmış kayıtta da çıkar işlenir → çıkarılan 0, çıkarma günü düşen tahsilat toleransa girer.
+          if (s && !s.released) {
+            s.released = true;
+            s.releasedCents = s.remaining;
+            s.collectedOnCloseDay = s.lastCreditDate === e.date ? (s.collectedSameDay || 0) : 0;
+            if (!s.closed) { s.remaining = 0; out.groundless += s.provision; s.provision = 0; s.closed = true; open.splice(open.indexOf(e.recordId), 1); }
+          }
         } else if (e.target) {
           const s = state.get(e.target);
           if (s && !s.closed && s.remaining > 0) {
