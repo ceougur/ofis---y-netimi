@@ -1,0 +1,32 @@
+{
+  "ad": "kahin4-fark-tohum-2",
+  "komut": "python3 -I test/bagimsiz/fark.py --tohum 2",
+  "commit": "3077fb661c7c0ce02d09ab0aa1f517a5e81b5bed",
+  "dal": "worktree-agent-a6b9096e8bc2ec5bb",
+  "kirli": 0,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:24:22.252Z",
+  "sure_sn": 21.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 6347,
+    "gecen": 6347,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/kahin4-fark-tohum-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6b9096e8bc2ec5bb",
+  "ham_cikti_sha256": "858ac6199810f88f2989f3cb1a5d861acb359e2f85b7c2564c5a597544d498c7",
+  "ham_cikti_bayt": 388
+}

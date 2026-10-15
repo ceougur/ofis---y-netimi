@@ -324,3 +324,56 @@ yalnız plan §2.3, §3.5/6, §3.7 #9 ve #21, §3.11 madde 5, §3.11a, §3.11b/1
   yapıdadır (model_a Degisim/Ihlaller, model_b Baglam/Ret) ve `test_surum3.py`'nin elle hesaplanmış beklenenlerine karşı sınandı.
 - Testler: `test/bagimsiz/test_surum3.py` (iki kâhine ortak, 15 test, beklenenler plan kurallarından elle; `senaryolar/kabul-senet.json`
   59 plan-kuralı yaprağı); mutasyon `docs/kanit/2026-10-12/kahin-senet/mutasyon_surum3.py`: 18 hatanın 18'i yakalandı.
+
+## Sürüm 4 güncellemesi (15.10.2026, dil `destekofis-senaryo/4`): Şüpheli Ticari Alacaklar ve K8 taksit
+
+Güncelleyen: bağımsız kâhin ajanı (temiz oda: `server/`, `client/` açılmadı; kaynak plan §3.11b ve §3.10/3, SENARYO-DILI.md sürüm 4,
+`docs/2.3.0-SUPHELI-KABUL.md` §1–§2). Program yalnız kara kutu (koşucu HTTP API'si).
+
+**Yöntem: önce yalnız plan, sonra kabul.** model_b önce YALNIZ planın sözüyle yazıldı (`KABUL_KURALLARI = False`, commit d008f56) ve
+kabul §2'nin sayılarıyla karşılaştırıldı (kanıt `docs/kanit/2026-10-15/kahin4-model-b-plan-only-kabul`): 83 yaprağın **5'i ayrıştı**
+(k3: 129 −1.000 ↔ 0, 644 −1.500 ↔ −2.500, S1.karsilik 1.000 ↔ 0; k4: 644 −1.500 ↔ −2.500, 659 0 ↔ 1.000). Hepsi tek yorum farkından
+(aşağıda B-3). Sonra kabulün kuralları açıldı (`KABUL_KURALLARI = True`): 83/83. Plan-only okuma ile kabulün ayrıştığı yerler ve seçim:
+
+| # | Konu | Plan-only okuma (model_b ilk sürüm) | KABUL kuralı (dil sürüm 4'ün seçtiği) | Gerekçe |
+|---|---|---|---|---|
+| B-1 | Şüpheliden düşen "alacak satırı"nın kapsamı | Plan "Tahsilat gelince" → yalnız para girişi (cari tahsilatı, taksit tahsilatı) | K3: her alacak satırı — alınan evrak ve satıştan iade de (ALACAK_SATIRI_TURLERI) | Aksi hâlde evrakla ödenen şüpheli alacak 120'de eksi, 128'de artı görünürdü (K3'ün gerekçesi); satış peşini / alıştan iade geri ödemesi / müşteriye alış ikisinde de yok → BELİRSİZ-38 |
+| B-2 | Aynı gün sırası | Adım sırası | K3: tarih, sonra tür sırası al → karşılık → (değersiz) → alacak → çıkar, sonra adım sırası | "Tahsil edilen saklanmaz, türetilir" ilkesinde sıra tarihten gelmek zorunda; BELİRSİZ-35 ayrışan birleşimleri dışarıda bırakır (mutasyon testinde "tür sırası yok" mutantı bu yüzden eşdeğer çıktı) |
+| B-3 | 644 kuralı (karşılığın çözülmesi) | "Ayrılan karşılık kadar B 129 / A 644" → tahsil edilen kadar: `min(karşılık, tahsil)` | K6: yalnız karşılığın KALAN şüpheli tutarı aşan kısmı (`karşılık − kalan`); karşılık ≤ kalan değişmezi | İki okuma da VUK 323'e uyar; kabul tablosu K6'yı sayıya bağlamış (adım 3: 644 −1.500, 129 −1.000) → dilde [KABUL K6] etiketi, programla fark İNCELE |
+| B-4 | Ret kodları | Plan kod adı vermiyor → `"4xx"` kodsuz | Kabulün adları (`doubtful-exceeds-balance` 400, `doubtful-provision-exceeds` 400, `doubtful-writeoff-exceeds` 400, `doubtful-closed` 409, `doubtful-customer-only` 409, `date-before-record` 400) | `kodDayanak: "KABUL"`; program başka kod verirse İNCELE |
+| B-5 | Kayıt tarihinden önce tarihli karşılık/çıkarma/değersiz | Senaryo kurmaz | 400 `date-before-record` | KABUL §3/4 |
+| B-6 | Çıkarmada karşılık | B 129 / A 644 (plan §3.11b/3 "konusu kalmayan") — aynı | aynı (K4) | — |
+| B-7 | Değersizde karışık karşılık | önce 129 karşılık kadar, kalanı 659 — aynı | aynı (K7) | — |
+| B-8 | Cari bakiyesi = 120 + 128 | aynı ("cari bakiyesi değişmez") | aynı (K9) | — |
+
+Koddaki kararlar (K-numaralı; sürüm 4):
+
+**K41. Türetme, saklama değil.** Şüpheli kaydının tahsil edilen/kalan/karşılık/644 satırları her çıktıda bütün etkin satırlardan
+yeniden türetilir (`Durum.supheli_turet`, §4.42a); yalnız "al" fişi (B 128 / A 120) ve karşılık fişi (B 654 / A 129) saklanır, öbür satırlar
+(tahsilatın 128'e kayması B 120 / A 128, 644, değersiz, çıkarma) türetilmiştir ve `bakiye()`/`hesap_kodu_hareketli()` bunları içerir.
+Tahsilatın silinmesi, evrakın silinmesi ve kaydın silinmesi kendiliğinden tutarlıdır (K3 "SAKLANMAZ").
+
+**K42. BELİRSİZ-35 gün kilidi.** Cari başına son şüpheli işlemi / son değersiz-çıkarma / son alacak satırı günü tutulur; aynı gün ters
+sıralı birleşim (alacak → şüpheli işlemi; değersiz/çıkar → alacak) SenaryoHatasi (çıkış 2). Kara kutu yoklamasında aynı günde çıkarmadan
+sonra girilen alacak satırının (dönem kilidi sonrası) tutarsız dağıtıldığı görüldüğü için bu sınır bilinçli konuldu.
+
+**K43. BELİRSİZ-38.** Şüpheli kaydı (tarihi ≤ satır tarihi) olan müşteri carisine satış peşini, alıştan iade geri ödemesi ve alış faturası
+(A 120 yazan ama K3 listesinde olmayan türler) → SenaryoHatasi.
+
+**K44. Şüpheli ret öncelikleri.** 400'ler (`doubtful-exceeds-balance`, `doubtful-provision-exceeds`, `doubtful-writeoff-exceeds`,
+`date-before-record`) §5.6 grup 2; 409'lar (`doubtful-customer-only`, `doubtful-closed`, kalanı 0 kaydı çıkarma, karşılıksız olmayan
+evrakla kısayol) grup 4. Çıkarılmış kayıtta önce `doubtful-closed`, sonra tutar sınırı bakılır (tek ihlal varsayımı).
+
+**K45. K8 taksit.** `kart_kalan = max(0, toplam − ödenen)`, `kart_fazla = max(0, ödenen − toplam)`; fazla §7'de dağıtılmamış giriş
+(hiçbir belgeyi kapatmaz, BELİRSİZ-34). `plan-paid`/`plan-overpay` grup 4; `plan-overpay-permission` 403 ama grup 4 (yalnız tutar kalanı
+aşınca sorulur). `fazlaAvans` + kalan 0 → yazılır (ÇIKARIM: kalan 0, aşmanın özel hâli). Muhasebenin `plans.manage`'ı planda yok → B.
+
+**K46. Silme.** Sade şüpheli kaydı (olayı yok) ve karşılık (`ad` ile) silinir; olaylı kayıt ve değersiz yazımı BELİRSİZ-37 (çıkış 2).
+Silmede kilit kaydın/karşılığın tarihine bakılır.
+
+**K47. `supheliAlacaklar` çıktısı** yalnız silinmemiş kayıtlar; `karsilik` güncel karşılık (çözülenler düşülmüş), `durum` `acik` /
+`cikarildi`. Öz denetim: Σ kalan = bakiye(128), −Σ karşılık = bakiye(129); her kayıtta karşılık ≤ kalan (`KahinHatasi`, çıkış 3).
+
+Testler: `test_model.py` 50 test (kabul-supheli 83 yaprak, KABUL E/C/F/G/U/W, K8); `mutasyon.py` 33 mutant (22 eski + 11 sürüm 4),
+33'ü yakalandı — ilk koşuda 3 mutant bir testin kendi tarih hatası yüzünden "yakalanmış" görünüyordu (ders 7: test düzeltilince kaçtılar;
+iki yeni adımla gerçekten yakalanır oldular; "tür sırası" mutantı eşdeğer çıktı, listeden çıkarıldı). Ortak: `test_surum4.py` 18 test.

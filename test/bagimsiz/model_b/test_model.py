@@ -726,6 +726,89 @@ class HamVeAtlama(unittest.TestCase):
 
 # ═══════════════════════════════════════════════════════════════════════════ geçersiz senaryolar
 
+class Surum4Supheli(unittest.TestCase):
+    """Sürüm 4: Şüpheli Ticari Alacaklar (PLAN §3.11b; KABUL §1–§2) ve K8 taksit (PLAN §3.10/3). Beklenenler plandan/kabulden elle."""
+
+    @staticmethod
+    def borc(aid, ad, c, tutar, **kw):
+        a = {"id": aid, "islem": "fatura", "ad": ad, "tur": "satis", "cari": c, "tarih": "01.10.2026",
+             "kalemler": [{"hizmet": "Danışmanlık", "miktar": 1, "birimFiyat": tutar, "kdvOrani": 20, "kdvDahil": True}]}
+        a.update(kw)
+        return a
+
+    def test_kabul_supheli_83_yaprak(self):
+        """senaryolar/kabul-supheli.json: KABUL §2 adım 0–4 (120 10.000/6.000/6.000/6.000/6.000 · 128 0/4.000/4.000/1.000/0 ·
+        129 0/0/−2.500/−1.000/0 · 644 −1.500 · 654 2.500 · cari 10.000/10.000/10.000/7.000/6.000)."""
+        with open(os.path.join(KOK, "test", "bagimsiz", "senaryolar", "kabul-supheli.json"), encoding="utf-8") as fh:
+            s = json.load(fh)
+        o = m.kos(s, "kabul-supheli.json")
+        sayi, farklar = m.plan_karsilastir(o, s)
+        self.assertEqual(farklar, [])
+        self.assertEqual(sayi, 83)
+        self.assertEqual(o["retler"], [])
+        self.assertEqual([miz(o["araDurumlar"][k], "128")["borc"] for k in ("k0", "k1", "k2", "k3", "k4")], [0, 400000, 400000, 100000, 0])
+        self.assertEqual([o["araDurumlar"][k]["cariler"]["ABC"] for k in ("k0", "k1", "k2", "k3", "k4")],
+                         [1000000, 1000000, 1000000, 700000, 600000])
+
+    def test_iki_kayit_en_eski_once_ve_evrak_k3(self):
+        """KABUL E: al 2.000 (03.10) + al 3.000 (04.10, önce girilir) → tahsilat 2.500 → kayıt 1 tahsil 2.000, kayıt 2 tahsil 500;
+        alınan çek 1.000 (06.10) de şüpheliden düşer (K3): kayıt 2 tahsil 1.500, 128 1.500, 101.01 1.000."""
+        o = kos("s4-e", [cari("ABC"), self.borc("f", "F", "ABC", "10000"),
+                         {"id": "2", "islem": "supheli_al", "ad": "S2", "cari": "ABC", "tutar": "3000", "neden": "icra", "tarih": "04.10.2026"},
+                         {"id": "1", "islem": "supheli_al", "ad": "S1", "cari": "ABC", "tutar": "2000", "neden": "dava", "tarih": "03.10.2026"},
+                         {"id": "t", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "2500", "yol": "nakit", "tarih": "05.10.2026"},
+                         {"id": "k", "islem": "kontrol"},
+                         {"id": "c", "islem": "evrak_al", "ad": "C", "tur": "cek", "cari": "ABC", "tutar": "1000", "tarih": "06.10.2026"}])
+        k = o["araDurumlar"]["k"]
+        self.assertEqual(k["supheliAlacaklar"]["S1"]["tahsilEdilen"], 200000)
+        self.assertEqual(k["supheliAlacaklar"]["S2"]["tahsilEdilen"], 50000)
+        self.assertEqual(miz(k, "128")["borc"], 250000)
+        self.assertEqual(o["supheliAlacaklar"]["S2"]["tahsilEdilen"], 150000)
+        self.assertEqual((miz(o, "128")["borc"], miz(o, "101.01")["borc"], o["cariler"]["ABC"]), (150000, 100000, 650000))
+        mizan_dengede(self, o)
+
+    def test_cikar_644_ve_retler(self):
+        """KABUL C/F/G/U/W: çıkarınca kalan B 120 / A 128 ve karşılık B 129 / A 644; aşan tutar/karşılık/değersiz 400; tedarikçi 409;
+        çıkarılmışa işlem 409 doubtful-closed; kalanı 0 kaydı çıkarma 409."""
+        o = kos("s4-c", [cari("ABC"), cari("TED", "tedarikci"), self.borc("f", "F", "ABC", "8000"),
+                         {"id": "1", "islem": "supheli_al", "ad": "S", "cari": "ABC", "tutar": "3000", "neden": "dava", "tarih": "06.10.2026"},
+                         {"id": "2", "islem": "karsilik_ayir", "kayit": "S", "tutar": "1000", "tarih": "07.10.2026"},
+                         {"id": "3", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "500", "yol": "nakit", "tarih": "08.10.2026"},
+                         {"id": "3b", "islem": "karsilik_ayir", "kayit": "S", "tutar": "1600", "tarih": "09.10.2026"},   # 1.000 + 1.600 > kalan 2.500 (≤ 3.000)
+                         {"id": "4", "islem": "supheli_cikar", "kayit": "S", "tarih": "09.10.2026"},
+                         {"id": "5", "islem": "karsilik_ayir", "kayit": "S", "tutar": "1", "tarih": "09.10.2026"},
+                         {"id": "6", "islem": "supheli_al", "ad": "Z1", "cari": "ABC", "tutar": "8000", "neden": "dava", "tarih": "09.10.2026"},
+                         {"id": "7", "islem": "supheli_al", "ad": "Z2", "cari": "TED", "tutar": "1", "neden": "dava", "tarih": "09.10.2026"},
+                         {"id": "8", "islem": "supheli_al", "ad": "S2", "cari": "ABC", "tutar": "1000", "neden": "icra", "tarih": "09.10.2026"},
+                         {"id": "8b", "islem": "supheli_al", "ad": "Z3", "cari": "ABC", "tutar": "7000", "neden": "icra", "tarih": "09.10.2026"},  # 120 = 7.500 − 1.000 (şüphelide) = 6.500 < 7.000 (cari bakiyesi 7.500 ile yanlışlıkla geçerdi)
+                         {"id": "9", "islem": "karsilik_ayir", "kayit": "S2", "tutar": "1001", "tarih": "09.10.2026"},
+                         {"id": "10", "islem": "degersiz_yaz", "kayit": "S2", "tutar": "1001", "tarih": "09.10.2026"},
+                         {"id": "11", "islem": "degersiz_yaz", "kayit": "S2", "tutar": "1000", "tarih": "10.10.2026"},
+                         {"id": "12", "islem": "supheli_cikar", "kayit": "S2", "tarih": "10.10.2026"}], bugun="12.10.2026")
+        self.assertEqual([(r["adim"], r["durum"], r["kod"]) for r in o["retler"]],
+                         [("3b", 400, "doubtful-provision-exceeds"), ("5", 409, "doubtful-closed"), ("6", 400, "doubtful-exceeds-balance"),
+                          ("7", 409, "doubtful-customer-only"), ("8b", 400, "doubtful-exceeds-balance"),
+                          ("9", 400, "doubtful-provision-exceeds"), ("10", 400, "doubtful-writeoff-exceeds"), ("12", 409, None)])
+        self.assertEqual(o["supheliAlacaklar"]["S"], {"tutar": 300000, "karsilik": 0, "tahsilEdilen": 50000, "degersiz": 0,
+                                                       "cikarilan": 250000, "kalan": 0, "durum": "cikarildi"})
+        self.assertEqual((miz(o, "644")["alacak"], miz(o, "129")["alacak"], miz(o, "659")["borc"]), (100000, 0, 100000))
+        self.assertEqual((miz(o, "120")["borc"], o["cariler"]["ABC"]), (650000, 650000))
+        mizan_dengede(self, o)
+
+    def test_k8_taksit(self):
+        """PLAN §3.10/3: kart 1.200/2; 1.000 → kalan 200; 500 → 409 plan-overpay; fazlaAvans 500 → odenen 1.500 kalan 0 cari −300;
+        100 → 409 plan-paid."""
+        o = kos("s4-k8", [cari("ABC"), self.borc("f", "F", "ABC", "1200", odeme={"taksit": {"ad": "T", "sayi": 2}}),
+                          {"id": "1", "islem": "taksit_tahsilat", "kart": "T", "tutar": "1000", "yol": "nakit", "tarih": "02.10.2026"},
+                          {"id": "2", "islem": "taksit_tahsilat", "kart": "T", "tutar": "500", "yol": "nakit", "tarih": "03.10.2026"},
+                          {"id": "3", "islem": "taksit_tahsilat", "kart": "T", "tutar": "500", "yol": "nakit", "tarih": "03.10.2026", "fazlaAvans": True},
+                          {"id": "4", "islem": "taksit_tahsilat", "kart": "T", "tutar": "100", "yol": "nakit", "tarih": "04.10.2026"}])
+        self.assertEqual([(r["adim"], r["durum"], r["kod"]) for r in o["retler"]], [("2", 409, "plan-overpay"), ("4", 409, "plan-paid")])
+        self.assertEqual(o["taksitKartlari"]["T"], {"toplam": 120000, "odenen": 150000, "kalan": 0})
+        self.assertEqual((o["cariler"]["ABC"], o["kasa"]), (-30000, 150000))
+        self.assertEqual({b["alan"] for b in o["belirsizler"]}, {"faturalar.F.acik"})
+
+
 class GecersizSenaryo(unittest.TestCase):
     def gecersiz(self, sen, ad):
         with self.assertRaises(m.SenaryoHatasi):
@@ -733,7 +816,7 @@ class GecersizSenaryo(unittest.TestCase):
 
     def test_dil_ad_alan(self):
         s = senaryo("g1", [cari("ABC")])
-        s["dil"] = "destekofis-senaryo/4"
+        s["dil"] = "destekofis-senaryo/5"
         self.gecersiz(s, "g1")
         self.gecersiz(senaryo("g2", [cari("ABC")]), "baska-ad")
         self.gecersiz(senaryo("g3", [cari("ABC"), cari("ABC")]), "g3")                 # takma ad iki kez (id de)
@@ -773,4 +856,8 @@ class GecersizSenaryo(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # tools/kanit.mjs özeti (ders 2): "N geçti, M kaldı" — unittest'in kendi sonucundan türetilir, çıkış kodu aynı kalır
+    _r = unittest.main(exit=False).result
+    _basarisiz = len(_r.failures) + len(_r.errors)
+    print("%d geçti, %d kaldı" % (_r.testsRun - _basarisiz, _basarisiz))
+    sys.exit(1 if _basarisiz or _r.testsRun == 0 else 0)
