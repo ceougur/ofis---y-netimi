@@ -20,13 +20,23 @@ Yalnız planın açık sözüne dayanan kurallar [PLAN §3.11b] etiketini taşı
 | # | Yer | Değişiklik | Dayanak |
 |---|---|---|---|
 | F1 | §4.39–4.42 (yeni) | Şüpheli alacak işlemleri: Şüpheli Alacağa Al, Karşılık Ayır, Şüpheliden Çıkar, Değersiz Alacak Yaz. Yeni takma ad türü: **supheli** (kayıt) | [PLAN §3.11b/2–3] |
-| F2 | §4 gösterim, §7, §8.3 | Carinin bakiyesi 120 **ve 128**'deki satırlarının toplamıdır ("Cari bakiyesi DEĞİŞMEZ"); carinin alacak satırı önce şüpheli tutardan düşer (A 120 yerine A 128); 644 kuralı; Değersiz Alacak cari bakiyesini kapatır | [PLAN §3.11b/2–3; KABUL K3, K6, K7] |
+| F2 | §4 gösterim, §7, §8.3 | Carinin bakiyesi 120 **ve 128**'deki satırlarının toplamıdır ("Cari bakiyesi DEĞİŞMEZ"); carinin alacak satırı önce şüpheli tutardan düşer (A 120 yerine A 128); 644 kuralı; Değersiz Alacak cari bakiyesini kapatır | [PLAN §3.11b/2–3 (644 kuralı 15.10.2026 kararıyla planın açık sözü); KABUL K3, K7] |
 | F3 | §4.17 | K8: kalan 0 → 409 `plan-paid`; kalanı aşan tutar → 409 `plan-overpay`; `fazlaAvans: true` (programda `overpay:true`) yalnız yetkiliye (403 `plan-overpay-permission`); fazlası kartta extra, caride alacak | [PLAN §3.10/3] |
 | F4 | §4.28 | `sil` hedefleri: şüpheli kaydı ve karşılık (ters kayıtla defterden düşer) | [PLAN §3.11b/4 "Silinenler (geri alma ters kayıtla)"] |
 | F5 | §5.5, §5.6, §5.7 | Şüpheli işlemlerinin yetkisi, ret önceliği ve ret kodları (`doubtful-*`, `date-before-record`, `plan-*`) | [PLAN §3.11b/4; §3.10/3; KABUL K8, F, G, U, W] |
 | F6 | §8.1, §8.3 | Yeni çıktı alanı **`supheliAlacaklar`** (kayıt başına tutar, karşılık, tahsil edilen, değersiz, çıkarılan, kalan, durum) | [PLAN §3.11b/5 rapor sütunları] |
 | F7 | §11 | Hesap planına 128, 129, 644, 654 (659 zaten vardı) | [PLAN §3.11b/2–3] |
 | F8 | §12, §13 | BELİRSİZ-33 … 38; §13/10 geçerlilik kuralları | Plan susuyor |
+
+**Sürüm 4 eki (15.10.2026, ürün sahibi kararı; plan §3.11b/2 "Tahsilatta seçim" ve §3.11b/3 644 kuralı planın açık sözü oldu):**
+
+| # | Yer | Değişiklik | Dayanak |
+|---|---|---|---|
+| F9 | §4.15 | `cari_tahsilat`'a seçimli **`normalCari: true`**: satır şüpheliden düşmez, `A 120` kalır ("Normal Cari Hesaba İşle"). Yalnız dil sürüm 4; şüpheli kaydı olmayan caride de yazılabilir (etkisiz) | [PLAN §3.11b/2 (a)] |
+| F10 | §4.42a | Alacak satırı kapsamı planın sözüyle: `kapatilacakFatura` bağlı `cari_tahsilat`, satış faturasının **peşin satırı** ve `normalCari` tahsilatı DÜŞMEZ (A 120); `taksit_tahsilat` yalnız kartın tarihi ≤ kayıt tarihi olan kayıtlardan düşer | [PLAN §3.11b/2 (a)–(c)] |
+| F11 | §4.42a, F2 | 644 kuralı artık planın açık sözü: K6 etiketi **[PLAN §3.11b/3]** oldu; programla fark **BULGU** (önceden [KABUL K6] → İNCELE) | [PLAN §3.11b/3 (15.10 kararı)] |
+| F12 | §12 BELİRSİZ-38 | Peşin satırı ve bağlı tahsilat tanımlandı → listeden çıktı; alıştan iade geri ödemesi ve müşteri carisine alış faturası belirsiz kalır | [PLAN §3.11b/2 (b)] |
+| F13 | §4.15, §5.6, §5.7 | Açık şüpheli kaydı olan caride `normalCari` ya da `kapatilacakFatura` bağlı tahsilat carinin 120 bakiyesini (= cari bakiyesi − açık kayıtların kalanı) aşarsa **409 `doubtful-normal-exceeds`** (grup 4; hiçbir şey yazılmaz). Açık kayıt yoksa sınır yok | [PLAN §3.11b/2 (a) "Sınır"] |
 
 ### Sürüm 3 değişiklikleri (12.10.2026)
 
@@ -487,9 +497,14 @@ acik}.
 | `yol` | evet | `nakit` · `havale` |
 | `hesap` | §5.2'ye göre | Havalede banka hesabı |
 | `kapatilacakFatura` | hayır | Aynı carinin taksitsiz alacak belgesi (satış faturası ya da alıştan iade) |
+| `normalCari` | hayır (sürüm 4) | `true`: "Normal Cari Hesaba İşle" — satır şüpheli alacaktan DÜŞMEZ, `A 120` kalır (§4.42a) [PLAN §3.11b/2 (a)] |
 
 Yevmiye: `B p(yol,H) T / A c(cari) T` [PLAN §3.7 #2 "B 102.01 20.000 / A 120. Ziraat 100.000 → 120.000"]. Fatura açığına etkisi §7.
-`kapatilacakFatura` verilirse tutar o belgenin o anki açığını aşmaz [BELİRSİZ-10].
+`kapatilacakFatura` verilirse tutar o belgenin o anki açığını aşmaz [BELİRSİZ-10]. `kapatilacakFatura` verilen ya da `normalCari: true`
+olan tahsilat şüpheli alacaktan düşmez (§4.42a) [PLAN §3.11b/2 (a)–(b)]; `normalCari` şüpheli kaydı olmayan caride etkisizdir.
+Carinin **açık** şüpheli kaydı (kalanı > 0) varken böyle bir tahsilatın tutarı carinin 120 bakiyesini (= cari bakiyesi − açık kayıtların
+kalanları toplamı, §4.39'daki tanım) aşarsa **409 `doubtful-normal-exceeds`** (§5.6 grup 4; hiçbir şey yazılmaz) [PLAN §3.11b/2 (a) "Sınır"];
+açık kayıt yoksa sınır yoktur (fazlası alacak bakiyesi olur, §4 gösterim).
 
 ### 4.16 `cari_odeme` — cariye ödeme
 
@@ -995,8 +1010,10 @@ Değersiz yazımının fatura açığına etkisi planda yok → o carinin `fatur
 #### 4.42a Alacak satırının şüpheliden düşmesi ve 644 kuralı (türetme)
 
 [PLAN §3.11b/2 "Tahsilat gelince önce şüpheli tutardan düşer (A 128 yerine A 120 kalır; defter: B 100/102 / A 128 o tutar kadar)"; §3.11b/3
-"Şüpheli alacak sonradan tahsil edilirse ayrılan karşılık kadar B 129 / A 644"; KABUL K3 (her alacak satırı, tarih sırası, en eski kayıt
-önce, saklanmaz-türetilir), K6 (644 yalnız karşılığın kalanı aşan kısmı), K9 (cari bazında 120 + 128 = cari bakiyesi)]
+"karşılık hiçbir zaman kaydın kalan şüpheli tutarını aşmaz … kısmi tahsilatta yalnız karşılığın kalanı AŞAN kısmı aynı gün B 129 / A 644 …
+tam tahsilde ve Şüpheliden Çıkar'da kalan karşılığın tamamı 644'e gider" (15.10.2026 kararıyla planın açık sözü; önceden KABUL K6); KABUL K3
+(her alacak satırı, tarih sırası, en eski kayıt önce, saklanmaz-türetilir), K9 (cari bazında 120 + 128 = cari bakiyesi); §3.11b/2 "Tahsilatta
+seçim" (a)–(c): normalCari / kapatilacakFatura / peşin satırı düşmez, taksit kartın tarihine göre]
 
 Kâhin, carinin şüpheli durumunu **her çıktı anında bütün etkin satırlardan yeniden türetir** (hiçbir "tahsil edilen" saklanmaz; tahsilatın
 silinmesi kendiliğinden tutarlı). Cari C için olaylar şu anahtarla sıralanır: **(tarih, tür sırası, adım sırası)**, tür sırası:
@@ -1006,17 +1023,20 @@ değersizin yeri: YAYGIN — aynı günde alacak satırıyla birlikte senaryo ku
 - **al R:** R açık kayıtlara eklenir (kalan = A_R, karşılık 0).
 - **karşılık (R, K):** R.karşılık += K.
 - **değersiz (R, Z):** Y = min(R.karşılık, Z); R.karşılık −= Y; R.degersiz += Z; R.kalan −= Z. Satırlar: `B 129 Y / B 659 (Z − Y) / A 128 Z`.
-- **alacak satırı (T):** carinin `A c(C) T` satırı (bkz. aşağıdaki liste). Açık kayıtlar (tarih, adım sırası) sırasıyla: x = min(kalan T,
+- **alacak satırı (T):** carinin `A c(C) T` satırı (bkz. aşağıdaki liste). Açık kayıtlar (tarih, adım sırası) sırasıyla — `taksit_tahsilat`
+  satırı yalnız **kartın tarihi ≤ d_R** olan kayıtlara uğrar, kartın tarihinden sonra alınmış kayıt atlanır [PLAN §3.11b/2 (c)] — x = min(kalan T,
   R.kalan); R.tahsilEdilen += x; R.kalan −= x; kalan T −= x. Toplam düşülen D = T − kalan: satır **`A 128 D (cari)` + `A 120 (T − D) (cari)`**
   olarak yazılmış sayılır (işlemin kendi tablosundaki `A c(C) T` yerine). Sonra her kayıtta R.karşılık > R.kalan ise fazla F = R.karşılık −
-  R.kalan: **`B 129 F / A 644 F`** aynı tarihle; R.karşılık = R.kalan [KABUL K6].
+  R.kalan: **`B 129 F / A 644 F`** aynı tarihle; R.karşılık = R.kalan [PLAN §3.11b/3 (15.10 kararı); önceden KABUL K6].
 - **çıkar R:** X = R.kalan; `B 120 X / A 128 X`; Kk = R.karşılık: `B 129 Kk / A 644 Kk`; R.cikarilan = X; R.kalan = 0; R.karşılık = 0;
   durum `cikarildi`. Kalan 0 ise çıkarma yazılmaz (409).
 
-**Alacak satırı sayılanlar** (müşteri carisinde `A 120 T` yazan etkin satırlar): `cari_tahsilat`, `taksit_tahsilat` (fazlaAvans'lı T'nin
-tamamı), satıştan iade (`iade`, asıl satış), `evrak_al` (alınan evrak) [KABUL K3 listesi: "tahsilat, alınan evrak, Alacak Yaz, iade faturası,
-taksit tahsilatı, kapatılan kartın vazgeçilen kalanı"]. Satış faturasının **peşin satırı**, alıştan iadenin geri ödemesi ve müşteri carisine
-alış faturası planda ve kabul listesinde yok → şüpheli kaydı olan caride senaryo kurmaz [BELİRSİZ-38]. `cari_odeme`, satış faturası,
+**Alacak satırı sayılanlar** (müşteri carisinde `A 120 T` yazan etkin satırlar): `cari_tahsilat` (**`kapatilacakFatura` ve `normalCari`
+olmayan**), `taksit_tahsilat` (fazlaAvans'lı T'nin tamamı; kartın tarihi kuralıyla), satıştan iade (`iade`, asıl satış), `evrak_al` (alınan
+evrak) [KABUL K3 listesi: "tahsilat, alınan evrak, Alacak Yaz, iade faturası, taksit tahsilatı, kapatılan kartın vazgeçilen kalanı"].
+**Düşmeyenler** [PLAN §3.11b/2 (a)–(b), 15.10 kararı]: `kapatilacakFatura` bağlı `cari_tahsilat`, `normalCari: true` tahsilatı ve satış
+faturasının **peşin satırı** — `A 120 T` olduğu gibi kalır (yeni satışın parası). Alıştan iadenin geri ödemesi ve müşteri carisine alış
+faturası planda ve kabul listesinde yok → şüpheli kaydı olan caride senaryo kurmaz [BELİRSİZ-38]. `cari_odeme`, satış faturası,
 `evrak_karsiliksiz`, `evrak_ciro` borç satırıdır (B 120), düşmez.
 
 Kayıt tarihinden **önce** tarihli alacak satırı kaydı düşürmez (sıralama tarihle). Düşülen tutar `kapatilacakFatura` ve §7 açık hesabını
@@ -1172,7 +1192,8 @@ Bir adımda birden çok ihlal varsa kâhin ilkini yazar:
 3. İstek kimliği (yineleme ya da 409)
 4. 404 hedef yok; 409 kilit, açılış öncesi, açılış kuralları, ters kaydı iki kez; iade sınırı; evrak durumu (`cheque-deposited`
    ve evrak durumu 4xx'leri, tahsile vermede alıştan önceki tarih; sürüm 3); sürüm 4: K8 taksit (`plan-paid`, `plan-overpay`,
-   `plan-overpay-permission`; PLAN §3.10/3 "adım 2'de") ve şüpheli kuralları (`doubtful-*`, `date-before-record`, 409'lar)
+   `plan-overpay-permission`; PLAN §3.10/3 "adım 2'de") ve şüpheli kuralları (`doubtful-*`, `date-before-record`, 409'lar; §4.15
+   `doubtful-normal-exceeds` de burada — program girdi denetiminden sonra, eksi bakiye / Benzer İşlem'den önce bakar)
 5. 409 `bank-similar`
 6. 409 eksi bakiye
 
@@ -1227,6 +1248,7 @@ Kâhin `retler`e (§8.5) şu değerleri yazar. `kodDayanak: "PLAN"` = plan bu du
 | Fazlasını Avans Yaz yetkisiz (§4.17; sürüm 4) | 403 | `plan-overpay-permission` | CIKARIM (plan yalnız "`plans.manage` sahibine açık" der; kod adı programın) |
 | Şüpheliye tedarikçi carisi (§4.39; sürüm 4) | 409 | `doubtful-customer-only` | KABUL |
 | Şüpheli tutarı 120 bakiyesini aşar (§4.39) | 400 | `doubtful-exceeds-balance` | KABUL |
+| Açık şüpheli kayıtlı caride `normalCari` / bağlı tahsilat 120 bakiyesini aşar (§4.15; sürüm 4 eki) | 409 | `doubtful-normal-exceeds` | PLAN |
 | Kısayoldaki evrak karşılıksız değil (§4.39) | 409 | null | null |
 | Karşılık kalanı aşar (§4.40) | 400 | `doubtful-provision-exceeds` | KABUL |
 | Değersiz kalanı aşar (§4.42) | 400 | `doubtful-writeoff-exceeds` | KABUL |
@@ -1613,7 +1635,7 @@ K8'in `update` (tutar artırma), `restore` ve `move` (Taksite Aktar) yolları, `
 | 35 | Aynı caride aynı gün (adım sırasıyla): alacak satırından SONRA girilen şüpheli işlemi (al, karşılık, değersiz, çıkar); değersiz ya da çıkarmadan SONRA girilen alacak satırı | §3.11b aynı gün sırasını yazmıyor; KABUL K3 yalnız al/karşılık/alacak/çıkar tür sırasını verir | Kâhin §4.42a tür sırasını uygular; senaryo bu birleşimleri kurmaz (kâhin çıkış 2) (sürüm 4) |
 | 36 | Değersiz Alacak satırının fatura açığına etkisi | §3.11b/3 yalnız "cari bakiyesi o tutar kadar kapanır" | O carinin `faturalar.*.acik` alanları `belirsizler`e (sürüm 4) |
 | 37 | Karşılığı / değersiz yazımı / çıkarması olan şüpheli kaydının silinmesi; değersiz yazımının silinmesi; Silinenler'den geri yükleme | §3.11b/4 yalnız "Silinenler (geri alma ters kayıtla)" | Senaryo kurmaz; yalnız sade kayıt ve karşılık silinir (sürüm 4) |
-| 38 | Şüpheli kaydı olan müşteri carisinde satış faturası peşin satırı, alıştan iade geri ödemesi, alış faturası / KDV'li masraf (A 120 yazan ama KABUL K3 listesinde olmayan satırlar) ve Şüpheliden Çıkar'dan sonraki alacak satırının aynı gün çıkarmayla sırası | §3.11b/2 yalnız "tahsilat" der; KABUL K3 listesi sınırlı | Senaryo kurmaz (sürüm 4) |
+| 38 | Şüpheli kaydı olan müşteri carisinde alıştan iade geri ödemesi, alış faturası / KDV'li masraf (A 120 yazan ama KABUL K3 listesinde olmayan satırlar) ve Şüpheliden Çıkar'dan sonraki alacak satırının aynı gün çıkarmayla sırası. (Satış faturasının peşin satırı ve `kapatilacakFatura` bağlı tahsilat 15.10.2026 kararıyla tanımlandı — DÜŞMEZ, §4.42a; listeden çıktı.) | §3.11b/2 yalnız "tahsilat" der; KABUL K3 listesi sınırlı | Senaryo kurmaz (sürüm 4; peşin satırı ve bağlı tahsilat kurulur) |
 
 ---
 

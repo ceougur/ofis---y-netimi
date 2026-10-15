@@ -75,7 +75,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
         : "0";
       out.accountEntries = all(
         `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.source_id AS sourceId, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
-                COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, ${returned} AS bankReturned
+                COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, ${returned} AS bankReturned,
+                e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip
          FROM account_entries e ${J} accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
            LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where("e", [[set?.parties, "SELECT id FROM account_entries WHERE account_id IN $"], [set?.entries, own("m_entries")], [set?.cheques, "SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN $"]])}`,
@@ -98,7 +99,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       // 2.2.0 İz 4.2 (plan §3.11a): taksite sayılan evrakın türü (senet 121, çek 101); evrak silinmiş olsa da türü okunur (satır deftere girer).
       const planInstrument = has("cheques") ? "CASE WHEN e.cheque_id <> '' THEN COALESCE((SELECT x.instrument FROM cheques x WHERE x.id = e.cheque_id), '') ELSE '' END" : "''";
       out.planEntries = all(
-        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, ${planInstrument} AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planReturned} AS bankReturned
+        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, ${planInstrument} AS chequeInstrument, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party, ${planReturned} AS bankReturned,
+                COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS planDate
          FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );

@@ -1232,6 +1232,16 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 26,
+    name: "v2.3.0 cari tahsilatında 'Normal Cari Hesaba İşle' işareti (şüpheliden düşmez)",
+    up(store) {
+      // Ürün sahibi kararı 15.10.2026 (plan §3.11b/2): şüpheli kaydı açık müşteride tahsilat varsayılan şüpheliden düşer; kullanıcı
+      // "Normal Cari Hesaba İşle" derse satır 120'de kalır (doubtful_skip = 1). YALNIZ EKLEYİCİ: varsayılan 0 → eski satırlar bugünkü gibi
+      // şüpheliden düşer; eski sürüm (2.2.0) aynı dosyayı okur, kolonu görmez. Kilit izi account_entries kolon listesini okumaz.
+      store.raw("migration.v26", () => addColumn(store, "account_entries", "doubtful_skip", "INTEGER NOT NULL DEFAULT 0"));
+    },
+  },
 ];
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık

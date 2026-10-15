@@ -284,7 +284,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const s of state.values()) { out.open += s.remaining; out.provision += s.provision; }
     return out;
   }
-  const doubtfulRoom = party => (M.cari.get(party) || 0) - [...doubtfulModel().records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
+  const doubtfulOpenOf = party => [...doubtfulModel().records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
+  const doubtfulRoom = party => (M.cari.get(party) || 0) - doubtfulOpenOf(party);
   // v2.1.0: iki vadesiz banka hesabı, açılış çizelgenin ilk günü (Bakiye Doğrulandı). Açılış 102.k borç / 500 alacak; banka etkisi modelde.
   const banks = [];
   for (const bankName of bank ? ["Ziraat Bankası", "Garanti BBVA"] : []) {
@@ -2057,13 +2058,18 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const balance = M.cari.get(c.id) || 0;
         if (balance <= 0) return;
         const amount = R.chance(0.25) ? balance + moneyCents(1, 500) : moneyCents(1, Math.max(1, Math.floor(balance / 100)));
-        const r = await api("POST", `/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: tl(amount), method: "cash", note: "Şüpheli tahsilat", date: day });
+        // Karar 15.10.2026 (plan §3.11b/2 (a)): %30 "Normal Cari Hesaba İşle" (doubtfulSkip) — satır 120'de kalır, modelde alacak satırı SAYILMAZ.
+        // Tutar carinin şüpheli dışı borç bakiyesini (120 = kart − açık şüpheli) aşarsa 409 doubtful-normal-exceeds (hiçbir şey yazılmaz).
+        const normal = R.chance(0.3);
+        const r = await api("POST", `/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: tl(amount), method: "cash", note: normal ? "Şüpheli tahsilat (normal cari)" : "Şüpheli tahsilat", date: day, ...(normal ? { doubtfulSkip: true } : {}) });
         if (!open(day)) return expectReject(r, "period-locked", kind);
+        // Sınır yalnız AÇIK şüpheli kaydı (kalan > 0) varken: açık kayıt yoksa fazlası bugünkü gibi avans olur (plan §3.11b/2 (a) "Sınır").
+        if (normal && doubtfulOpenOf(c.id) > 0 && amount > doubtfulRoom(c.id)) return expectReject(r, "doubtful-normal-exceeds", `${kind}/normal-aşım`);
         mustOk(r, kind);
         cariAdd(c.id, -amount);
         M.kasa.cash += amount;
         M.entries.push({ id: r.data.entryId, accountId: c.id, kind: "in", amount, method: "cash", date: day, bankId: "", doubtful: true });
-        D.events.push({ kind: "credit", party: c.id, date: day, cents: amount, seq: ++D.seq });
+        if (!normal) D.events.push({ kind: "credit", party: c.id, date: day, cents: amount, seq: ++D.seq });
         return;
       }
       case "supheli-al": {

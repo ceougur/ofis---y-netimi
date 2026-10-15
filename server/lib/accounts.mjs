@@ -57,6 +57,9 @@ export function accountLedger(entries = [], plans = []) {
       sourceId: entry.sourceId || "",
       // v2.0.17: cari kartından girilen tahsilat/ödemenin "Kapatılacak Fatura" bağı (boş = otomatik, en eski açık fatura).
       invoiceId: entry.invoiceId || "",
+      // Karar 15.10.2026 (plan §3.11b/2): tahsilat şüpheliden düşmedi ("Normal Cari Hesaba İşle" işareti, fatura peşini, Kapatılacak Fatura).
+      doubtfulSkip: entry.doubtfulSkip === true,
+      doubtfulNormal: entry.doubtfulNormal === true,
       // v2.0.13: tahsilat/ödemenin yolu (Nakit, Havale / EFT, Kredi Kartı); borç/alacakta boş.
       method: meta.cash ? entry.method || "cash" : "",
       note: entry.note || "",

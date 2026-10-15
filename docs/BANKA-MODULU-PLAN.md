@@ -576,9 +576,27 @@ Kullanıcı: "şüpheli alacaklar … da olsun". Plan susuyordu → yaygın uygu
    (Karşılıksız Çek / Protestolu Senet / Dava / İcra / Diğer) ve açıklama. Yevmiye B 128 / A 120. Cari bakiyesi DEĞİŞMEZ; carinin
    "Şüpheli" tutarı ve rozeti görünür. Tahsilat gelince önce şüpheli tutardan düşer (A 128 yerine A 120 kalır; defter: B 100/102 / A 128
    o tutar kadar). "Şüpheliden Çıkar" (geri al) B 120 / A 128.
+   **Tahsilatta seçim (ürün sahibi kararı 15.10.2026; varsayılan "Şüpheli Alacaktan Düş"):**
+   - (a) **Serbest cari tahsilatı** (faturaya bağlı olmayan "+ Tahsilat") varsayılan şüpheliden düşer. Şüpheli kaydı AÇIK olan müşteride
+     tahsilat formunda **"Normal Cari Hesaba İşle"** onay kutusu vardır; işaretlenirse satır şüpheliden düşmez, 120'de kalır (A 120).
+     İşaret düzeltmede korunur; Silinenler'den geri yüklemede korunur. Veri: `account_entries.doubtful_skip` (göç v26, yalnız ekleyici).
+     **Sınır:** carinin AÇIK şüpheli kaydı varken normal cari hesaba işlenen tahsilat (işaretli ya da (b)'deki bağlı tahsilat) carinin
+     şüpheli dışı borç bakiyesini (120 = cari bakiyesi − açık kayıtların kalanı) aşamaz; aşarsa **409 `doubtful-normal-exceeds`**, hiçbir
+     şey yazılmaz (aşan kısım şüpheli alacaktan düşmek zorundadır; 120 eksiye düşmez). Açık şüpheli kaydı yoksa sınır yoktur (fazlası
+     bugünkü gibi avans / alacak bakiyesi olur).
+   - (b) **Satış faturasının peşini** (`source 'invoice'`) ve **"Kapatılacak Fatura" bağlı tahsilat** (`invoice_id` dolu) KENDİLİĞİNDEN
+     normal cari hesaba işlenir (yeni satışın parasıdır, eski şüpheli alacağı kapatmaz); kutu gerekmez.
+   - (c) **Taksit tahsilatı** (ve kapatılan kartın vazgeçilen kalanı): kart şüpheli kaydının tarihinden **sonra** açıldıysa normal (o
+     kayıttan düşmez); kayıt tarihinde ya da **önce** açıldıysa şüpheliden düşer. Kartın açılış tarihi = kayıt tarihi (`registered_on`).
+   - Öbür alacak satırları (alınan evrak, satıştan iade, Alacak Yaz) bugünkü gibi şüpheliden düşer. Kartta ve hareket satırında "Normal
+     Cariye İşlendi" bilgisi görünür. Hiçbir seçim cari bakiyesini (120 + 128) değiştirmez; yalnız 120/128 ayrımıdır.
 3. **"Karşılık Ayır"** (VUK 323; isteğe bağlı, yalnız şüpheli tutar kadar): B 654 Karşılık Giderleri / A 129 Şüpheli Ticari Alacaklar
-   Karşılığı (−). Şüpheli alacak sonradan tahsil edilirse ayrılan karşılık kadar B 129 / A 644 Konusu Kalmayan Karşılıklar. **"Değersiz
-   Alacak Yaz"** (kesinleşmiş kayıp): karşılık varsa B 129 / A 128, yoksa B 659 / A 128; cari bakiyesi o tutar kadar kapanır.
+   Karşılığı (−). **644 kuralı (ürün sahibi kararı 15.10.2026; uygulanan kural = kabul §1 K6):** karşılık hiçbir zaman kaydın kalan şüpheli
+   tutarını aşmaz (karşılık ≤ kalan; ayrılırken de, sonradan da). Kısmi tahsilatta yalnız karşılığın kalanı AŞAN kısmı aynı gün B 129 / A 644
+   Konusu Kalmayan Karşılıklar'a çözülür (tahsil edilen tutar kadar değil). Tam tahsilde (kalan 0) ve "Şüpheliden Çıkar"da kalan karşılığın
+   tamamı 644'e gider. "Değersiz Alacak Yaz"da karşılık önce kullanılır (B 129 / A 128, en çok karşılık kadar), karşılığı aşan kısım 659;
+   değersizden sonra da karşılık ≤ kalan korunur (aşan olmaz, 644 yazılmaz). **"Değersiz Alacak Yaz"** (kesinleşmiş kayıp): karşılık varsa
+   B 129 / A 128, yoksa B 659 / A 128; cari bakiyesi o tutar kadar kapanır.
 4. Kurallar: dönem kilidi, ileri tarih, istek kimliği, yetki (cari yönetimi + muhasebe), audit, Silinenler (geri alma ters kayıtla),
    Şirket Verisini Sıfırla listeleri, Mutabakat Testi: 128 = Σ etkin şüpheli kayıtları − kapananlar; 129 = Σ karşılık − çözülen.
 5. Görünüm: cari kartında "Şüpheli Alacak" bilgisi; Raporlar → "Şüpheli Alacaklar" (cari, neden, tarih, tutar, karşılık, tahsil edilen,
