@@ -1,0 +1,32 @@
+{
+  "ad": "ana-karar2-mutabakat-t8",
+  "komut": "npm run test:mutabakat -- --islem 5000 --tohum 8 --tohumlar 1",
+  "commit": "092c7d625d56c1eaa55bb6b61efc50d48a0bc70d",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T09:28:17.033Z",
+  "sure_sn": 3168.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-karar2-mutabakat-t8.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "558028c25264bddc708f739b7f38b79e496055efe7fcbe2571cf517931d06d4e",
+  "ham_cikti_bayt": 2978
+}
