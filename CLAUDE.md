@@ -466,3 +466,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
      Çek/Senet, Taksit, Banka". KODDAN: sıra tanım sırasıyla geliyor (report-center.mjs grupları: Kasa, Ana Defter, Banka, Cari, Fatura, Taksit,
      Çek / Senet, Stok, Kayıtlar, Ofis). YENİ SIRA: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (son üçü
      kullanıcı saymadı, sona). Grup sırası tek listede (sunucu) tanımlanır; senaryo-211/rapor e2e beklentileri güncellenir ve koşulur (ders 28).
+  5. "Sol sabit menünün üstüne ARAMA penceresi: 'Alış f' yazınca alış faturasıyla ilgili modüller, 'cari h' yazınca Cari Hareket Raporu, 'çek'
+     yazınca çekle ilgili şeyler gelsin". KODDAN: bugün genel arama/komut paleti YOK (yalnız sayfa içi aramalar). Öneri: menü üstünde "Ara" kutusu
+     (+ Ctrl+K): sayfalar/sekmeler, işlemler ("Yeni Alış Faturası", "Şüpheli Alacağa Al"…), bütün raporlar ve ayar bölümleri tek dizinden; sözcük
+     başı eşleşme ("alış f" → Alış Faturaları, Yeni Alış Faturası, Alış Faturası Raporu), Türkçe harf duyarsız (ı/i, ş/s); sonuç yalnız yetkisi
+     olanlar; Enter ile açılır; dizin sunucudan değil istemcideki menü/rapor tanımlarından (rapor listesi API'den). Cari/kayıt adı araması bu
+     kutuya girmez (ayrı, sonra).
