@@ -292,10 +292,12 @@ describe("Şüpheli — sil + geri al (ters kayıt), Silinenler, Şirket Verisin
     await debt(ctx.api, other.id, 1000, "2026-10-01");
     const { record } = await must("al", take(ctx.api, other.id, { amount: 1000, date: "2026-10-02", reason: "other" }));
     await must("sil", deleteRecord(ctx.api, other.id, record.id));
-    await collect(ctx.api, other.id, 700, "2026-10-03");
+    // Kayıt tarihinden ÖNCE tarihli tahsilat: geri yüklenince kayda düşmez (K3) → 120 = 300 − 1.000 → 409. (Kayıt tarihinden sonraki tahsilat
+    // kayda düşer ve geri yükleme 200'dür: yargıç #4, test/supheli-230-yargic.test.mjs Y4.)
+    await collect(ctx.api, other.id, 700, "2026-10-01");
     const trash = await must("Silinenler", ctx.api.get("/api/admin/trash"));
     const item = trash.find(row => row.kind === "doubtful" && row.ref === record.id);
-    expectStatus(await ctx.api.post("/api/admin/trash/restore", { id: item.id }), 409, "doubtful-exceeds-balance", "bakiye artık 300");
+    expectStatus(await ctx.api.post("/api/admin/trash/restore", { id: item.id }), 409, "doubtful-exceeds-balance", "bakiye artık 300, kayda düşmeyen tahsilat");
     await lockPeriod(ctx.api, "2026-10-02");
     expectStatus(await ctx.api.post("/api/admin/trash/restore", { id: item.id }), 409, "period-locked", "kilitli tarih");
     await lockPeriod(ctx.api, "");

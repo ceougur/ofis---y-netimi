@@ -8,7 +8,8 @@
 //
 // Kural (kuruş; cari başına, tarih sırasıyla; aynı günde sıra: al → karşılık → alacak satırı → çıkar):
 //   al        : B 128 / A 120 (tutar); kayıt "kalan" = tutar
-//   karşılık  : B 654 / A 129; kaydın karşılığı += tutar (yazımda ≤ kalan)
+//   karşılık  : B 654 / A 129; kaydın karşılığı += tutar (yazımda ≤ kalan); türetmede de karşılık ≤ kalan: aşan kısım aynı gün B 129 / A 644
+//               (geriye tarihli tahsilat kalanı karşılık tarihinden önce küçültmüşse; yargıç 2.3.0 #2)
 //   alacak    : carinin kontrol hesabını alacaklandıran satır (tahsilat, alınan evrak, Alacak Yaz, iade/alış faturası, taksit tahsilatı,
 //               kapatılan kartın vazgeçilen kalanı) kayıt tarihinden sonra geldiyse ÖNCE şüpheliden düşer: A 120 yerine A 128 (en eski
 //               açık kayıttan başlayarak, kalan kadar; artan A 120). 644 kuralı: düşümden sonra karşılık > kalan ise aşan kısım aynı gün
@@ -39,14 +40,14 @@ export const doubtfulStatusLabel = (record, state) => DOUBTFUL_STATUS_LABELS[dou
 
 const ORDER = { take: 0, provision: 1, credit: 2, release: 3 };
 const by = (a, b) => (a.date === b.date ? (a.order === b.order ? (a.tie < b.tie ? -1 : a.tie > b.tie ? 1 : 0) : a.order - b.order) : a.date < b.date ? -1 : 1);
-const fresh = record => ({ taken: record.amountMinor, collected: 0, writtenOff: 0, released: 0, remaining: record.amountMinor, provision: 0, provisionAdded: 0, provisionReleased: 0, provisionUsed: 0, lost: 0, closedOn: "" });
+const fresh = record => ({ taken: record.amountMinor, collected: 0, writtenOff: 0, released: 0, remaining: record.amountMinor, provision: 0, provisionAdded: 0, provisionReleased: 0, provisionUsed: 0, lost: 0, closedOn: "", lastCreditDate: "", collectedSameDay: 0, collectedOnCloseDay: 0 });
 
 /**
  * Ayırma kuralı.
  * @param {{ records: Array<{ id, party, date, amountMinor, status, closedDate }>, provisions: Array<{ id, recordId, date, amountMinor }>,
  *           credits: Array<{ key, party, date, minor, target? }> }} input  credits: kontrol hesabını alacaklandıran satırlar (kuruş, artı);
  *           target: Değersiz Alacak satırının kaydı ('' = hedefsiz)
- * @returns {{ allocations: Map<string, { records: Array<{ recordId, minor }>, provisionUsed: number, lossMinor: number }>,
+ * @returns {{ allocations: Map<string, { records: Array<{ recordId, minor }>, provisionUsed: number, lossMinor: number, outsideMinor?: number }>,
  *             extras: Array<{ kind: 'release644' | 'release' | 'release644close', recordId, party, date, minor, key? }>,
  *             state: Map<string, object> }}
  */
@@ -89,6 +90,15 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
         if (!s || s.closedOn) continue;
         s.provision += event.item.amountMinor;
         s.provisionAdded += event.item.amountMinor;
+        // K6 eki (yargıç 2.3.0 #2, 15.10.2026; kabul §1 K6): karşılık AYRILIRKEN de karşılık ≤ kalan — karşılık tarihinden önceye düşen
+        // geriye tarihli tahsilat kalanı küçültmüşse aşan kısım aynı gün B 129 / A 644 (önceden 129 kalanı aşıyor, kayıt kapanınca 129'da
+        // yetim karşılık kalıyordu). Anahtar karşılık kimliği (yevmiye maddesi doubtful-644:<kayıt>:provision:<karşılık>).
+        if (s.provision > s.remaining) {
+          const release = s.provision - s.remaining;
+          s.provision -= release;
+          s.provisionReleased += release;
+          extras.push({ kind: "release644", recordId: event.item.recordId, party, date: event.date, minor: release, key: `provision:${event.item.id}` });
+        }
         continue;
       }
       if (event.kind === "release") {
@@ -99,6 +109,9 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
           s.released = s.remaining;
           s.remaining = 0;
         }
+        // Çıkarma gününde (K3: çıkarma günün sonunda) düşen alacaklar: başlık o günün yazım sırasına göre bunların bir kısmını içerebilir
+        // (lib/bank/doubtful.mjs doubtfulProblems close-amount toleransı); önceki günlere düşen geriye tarihli alacak toleransta değildir.
+        s.collectedOnCloseDay = s.lastCreditDate === event.date ? s.collectedSameDay : 0;
         if (s.provision > 0) {
           extras.push({ kind: "release644close", recordId: event.record.id, party, date: event.date, minor: s.provision });
           s.provisionReleased += s.provision;
@@ -128,6 +141,9 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
           hit.provisionUsed = used;
         }
         hit.lossMinor = credit.minor - hit.provisionUsed;
+        // Kaydın kalanını aşan kısım (K7 sonradan bozulmuş: değersiz satırından önceye düşen geriye tarihli tahsilat kalanı küçülttü) kayıt dışı
+        // kayıptır (A 120 / B 659; 120 eksiye düşer) — yazımda kapı reddeder (doubtfulProblems; yargıç 2.3.0 #3).
+        hit.outsideMinor = credit.minor - hit.records.reduce((sum, item) => sum + item.minor, 0);
       } else {
         for (const record of open) {
           if (left <= 0) break;
@@ -137,6 +153,8 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
           s.remaining -= minor;
           s.collected += minor;
           left -= minor;
+          s.collectedSameDay = s.lastCreditDate === credit.date ? s.collectedSameDay + minor : minor;
+          s.lastCreditDate = credit.date;
           hit.records.push({ recordId: record.id, minor });
           if (s.provision > s.remaining) {
             const release = s.provision - s.remaining;

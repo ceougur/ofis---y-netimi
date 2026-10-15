@@ -29,7 +29,7 @@
 // döngü yapılır, durum kolonu tekli + ile indeksten çıkarılır. test/banka-210-kapi-plan.test.mjs bu kuralı EXPLAIN QUERY PLAN ile denetler.
 import { isMoneyRow, MODULE_TABLES } from "./bank/money-lines.mjs";
 import { collectionProblems } from "./bank/collections.mjs";
-import { doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
+import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentWanted } from "./cheque-gl.mjs";
 import { moneyAccount, partyBalances, subBalances } from "./general-ledger.mjs";
 import { toCents } from "./money.mjs";
@@ -522,6 +522,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
           const normal = (balances.get(account.id) || 0) - open;
           if (open > 0 && normal < 0) find("doubtful:balance", `${account.name || account.id}: 120 = ${(normal / 100).toFixed(2)} (açık şüpheli ${(open / 100).toFixed(2)}; geriye tarihli tahsilat/alacak kaydın tarihinden önce)`);
         }
+        // Yargıç 2.3.0 #2/#3/#8: dokunulan carinin şüpheli kayıtları türetilmiş durumla (karşılık ≤ kalan, Değersiz Alacak satırı kalan içinde,
+        // Şüpheliden Çıkar başlığı = çıkarılan) — tam kapıdaki doubtful:records ile aynı denetim, yalnız dokunulan cariler.
+        for (const item of doubtfulProblems(store, { parties: [...s.parties] })) find("doubtful:records", item.sample);
       }
       lap("party");
     }

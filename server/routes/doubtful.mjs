@@ -41,7 +41,9 @@ export function registerDoubtfulRoutes(router, { store, bank, auth, audit, event
     ok(res, doubtful.listFor(params.id));
   });
   router.get("/api/workspace/doubtful", async ({ req, res, url }) => {
-    auth.requirePermission(req, "overview.view");
+    // Rapor Merkezi'ndeki Şüpheli Alacaklar raporuyla aynı kural (routes/report-center.mjs anyOf; yargıç 2.3.0 #11): Şüpheli Alacak İşlemleri ya da Finans Raporları.
+    const user = auth.requireUser(req);
+    if (!canUser(user, "accounts.doubtful") && !canUser(user, "overview.view")) throw new HttpError(403, "Şüpheli Alacaklar raporu için “Şüpheli Alacak İşlemleri” ya da “Finans Raporları” yetkisi gerekir.", { code: "FORBIDDEN", permission: "overview.view" });
     const from = text(url.searchParams.get("from"));
     const to = text(url.searchParams.get("to"));
     if ((from && !isIsoDate(from)) || (to && !isIsoDate(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.", { code: "date-invalid" });
