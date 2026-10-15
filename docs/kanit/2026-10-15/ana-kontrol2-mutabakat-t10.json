@@ -1,0 +1,32 @@
+{
+  "ad": "ana-kontrol2-mutabakat-t10",
+  "komut": "npm run test:mutabakat -- --islem 5000 --tohum 10 --tohumlar 1",
+  "commit": "91e6dea10695e9efb171307d97e829280b532a69",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T17:04:08.483Z",
+  "sure_sn": 2466.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-kontrol2-mutabakat-t10.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "5812dd05917a42abf9ba974b50150eaff556d450a094f5ac54f7d4b04932f527",
+  "ham_cikti_bayt": 3006
+}
