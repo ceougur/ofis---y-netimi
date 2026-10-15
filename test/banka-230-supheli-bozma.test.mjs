@@ -385,7 +385,7 @@ describe("Şüpheli — kapı ve tarama: ham SQL bozması yakalanır; eski sür�
       const result = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
       assert.equal(result.ok, true, JSON.stringify(result.failures).slice(0, 500));
       // Aynı sunucuda T testinin kaydı vardı (128/129 denetimleri açıktı); eski şemada kayıt yok → 2.2.0'ın listesi (128/129/doubtful yok).
-      assert.deepEqual(result.checks.map(item => item.code), codesBefore.filter(code => !["gl:128", "gl:129", "doubtful:records"].includes(code)), "denetim listesi 2.2.0 ile aynı");
+      assert.deepEqual(result.checks.map(item => item.code), codesBefore.filter(code => !["gl:128", "gl:129", "doubtful:records", "doubtful:balance"].includes(code)), "denetim listesi 2.2.0 ile aynı");
       const account = (await must("cari", api.get(`${ACC}?status=all`))).accounts.find(item => item.name === "Eski Ltd.");
       await must("eski dosyada al", api.post(`${ACC}/${account.id}/doubtful`, { amount: 100, date: TODAY, reason: "other" }));
       assert.notEqual(lockDigestOf(server.app.store, "2026-10-08"), lockDigestOf(server.app.store, "2026-10-08", { version: "2.2.0" }), "kilitli dönemdeki şüpheli kaydı yalnız 2.3.0 izine girer");

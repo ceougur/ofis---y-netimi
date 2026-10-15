@@ -108,8 +108,10 @@
         const folded = fold(part);
         const token = tokens.find(item => folded.startsWith(item));
         if (!token) return esc(part);
-        // Katlanmış uzunluk özgün uzunlukla aynıdır (tek karakter → tek karakter).
-        return `<mark>${esc(part.slice(0, token.length))}</mark>${esc(part.slice(token.length))}`;
+        // Katlama noktalama/parantez silebilir ("(Alınan)" → "alinan"): vurgu sınırı özgün dizgede, katlanmış karakter sayarak bulunur.
+        let cut = 0;
+        for (let seen = 0; cut < part.length && seen < token.length; cut += 1) if (fold(part[cut]).length) seen += 1;
+        return `<mark>${esc(part.slice(0, cut))}</mark>${esc(part.slice(cut))}`;
       })
       .join("");
   }

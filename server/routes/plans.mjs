@@ -911,7 +911,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       body: { ...body, entryId: previous.id },
       // K8 (2.3.0, plan §3.10/3 update): yalnız tutarı BÜYÜYEN tahsilat düzeltmesinde kartın kalanı (bu satır hariç) işlemin içinde yeniden okunur.
       prepare: () => {
-        if (previous.kind === "in" && !previous.opening && input.amount > roundMoney(Number(previous.amount) || 0) + 0.004) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
+        if (previous.kind === "in" && !previous.opening && toMinor(input.amount) > toMinor(Number(previous.amount) || 0)) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
       },
       write: () => {
         k7.capture();

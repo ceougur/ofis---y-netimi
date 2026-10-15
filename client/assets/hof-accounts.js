@@ -864,7 +864,7 @@
           <div><dt>Kalan (Şüphelide)</dt><dd data-dbt="open"><b>${esc(minorMoney(d.openMinor))}</b></dd></div>
         </dl>`
       : `<p class="hof-empty" data-doubtful-empty>Şüpheli alacak yok.${account.canDoubtful ? " Tahsili şüpheli hâle gelen borç (karşılıksız çek, protestolu senet, dava, icra) <b>Şüpheli Alacağa Al</b> ile 128 hesabına alınır; bakiye değişmez, tahsilat önce şüpheliden düşer." : ""}</p>`;
-    return `<div class="hof-plan-section"><h4>Şüpheli Alacak <span>${d.count}</span>${doubtfulBadge(d)}</h4>${account.canDoubtful ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="doubtfulTake" title="Borç bakiyesinin tahsili şüpheli kısmını 128 Şüpheli Ticari Alacaklar hesabına alır; cari bakiyesi değişmez">Şüpheli Alacağa Al</button>' : ""}</div>
+    return `<div class="hof-plan-section"><h4>Şüpheli Alacak <span>${d.count}</span>${doubtfulBadge(d)}</h4>${account.canDoubtful ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="doubtfulTake" title="Borç bakiyesinin tahsili şüpheli kısmını 128 Şüpheli Ticari Alacaklar hesabına alır; cari bakiyesi değişmez">Şüpheli Alacağa Al</button>' : '<span class="hof-muted" data-doubtful-noperm>Şüpheli Alacak İşlemleri yetkisi gerekir; yöneticinize başvurun.</span>'}</div>
       <div class="hof-cash-list hof-acc-doubtful" data-acc-doubtful>${facts}${d.count ? '<p class="hof-empty" data-doubtful-list>Yükleniyor…</p>' : ""}</div>`;
   }
   // Kayıt listesi (kart açılınca; cari kartının özeti sunucudan gelir, kayıtlar ayrıca okunur).

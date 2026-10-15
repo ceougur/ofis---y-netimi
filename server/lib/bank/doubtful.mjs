@@ -272,11 +272,12 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     const { records, state, allocations } = doubtfulState(store, { parties: [accountId] });
     return { records: records.map(record => view(record, state.get(record.id), allocations)), summary: doubtfulSummary(store, accountId) };
   }
-  /** Rapor verisi: bütün (silinmemiş) carilerin kayıtları; status open | closed | all; from/to kayıt tarihine. */
+  /** Rapor verisi: bütün (silinmemiş) carilerin kayıtları; status open | closed | all; from/to kayıt tarihine. "Açık" durumu TARİH İTİBARIYLA
+   *  listedir (eleştirmen E1, 15.10.2026): dönem başlangıcı süzmez — geçen yıl açılmış, hâlâ açık kayıt "Bu Yıl"da görünür, TOPLAM Kalan = 128. */
   function report({ from = "", to = "", status = "open" } = {}) {
     const { records, state, allocations } = doubtfulState(store);
     const rows = records
-      .filter(record => (!from || record.date >= from) && (!to || record.date <= to))
+      .filter(record => (!from || status === "open" || record.date >= from) && (!to || record.date <= to))
       .map(record => view(record, state.get(record.id), allocations))
       .filter(row => (status === "all" ? true : status === "closed" ? row.stateKey !== "open" : row.stateKey === "open"));
     const totals = { count: rows.length, amountMinor: 0, provisionMinor: 0, provisionReleasedMinor: 0, collectedMinor: 0, writtenOffMinor: 0, releasedMinor: 0, remainingMinor: 0 };

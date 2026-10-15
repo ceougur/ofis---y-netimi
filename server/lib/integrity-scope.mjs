@@ -29,6 +29,7 @@
 // döngü yapılır, durum kolonu tekli + ile indeksten çıkarılır. test/banka-210-kapi-plan.test.mjs bu kuralı EXPLAIN QUERY PLAN ile denetler.
 import { isMoneyRow, MODULE_TABLES } from "./bank/money-lines.mjs";
 import { collectionProblems } from "./bank/collections.mjs";
+import { doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentWanted } from "./cheque-gl.mjs";
 import { moneyAccount, partyBalances, subBalances } from "./general-ledger.mjs";
 import { toCents } from "./money.mjs";
@@ -97,7 +98,7 @@ export function familyOf(code) {
   }
   if (code.startsWith("bank:sub:")) return `money:${code.slice(9, 12)}`;
   if (code.startsWith("bank:sub")) return "money";
-  if (code === "party:accounts" || code === "doubtful:records") return "party";
+  if (code === "party:accounts" || code === "doubtful:records" || code === "doubtful:balance") return "party";
   if (code === "party:plans" || code === "plans:totals" || code === "dates:due-before-start") return "plan";
   if (code === "stock:qty" || code === "stock:account" || code === "stock:orphan") return "stock";
   if (code.startsWith("cents:")) return `rows:${code.slice(6)}`;
@@ -513,6 +514,15 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         if (d) find("party:accounts", `${account.refNo || account.id} ${account.name}: defter ${(balances.get(account.id) || 0) / 100} / kart ${account.balance}`);
       }
       for (const [party, value] of balances) if (s.parties.has(party) && !seen.has(party) && value) find("party:accounts", `${party}: listede yok, defterde ${value / 100}`);
+      // Eleştirmen E2 (15.10.2026): dokunulan caride açık şüpheli varken normal alacak (120 = kart − açık şüpheli) eksiye düşemez — geriye
+      // tarihli tahsilat/alacak kaydın tarihinden önce kalıp şüpheliden düşmezse (K3) burada yakalanır; tam kapıdaki doubtful:balance ile aynı kural.
+      if (doubtfulUsed(store)) {
+        for (const account of list) {
+          const open = doubtfulSummary(store, account.id).openMinor;
+          const normal = (balances.get(account.id) || 0) - open;
+          if (open > 0 && normal < 0) find("doubtful:balance", `${account.name || account.id}: 120 = ${(normal / 100).toFixed(2)} (açık şüpheli ${(open / 100).toFixed(2)}; geriye tarihli tahsilat/alacak kaydın tarihinden önce)`);
+        }
+      }
       lap("party");
     }
 

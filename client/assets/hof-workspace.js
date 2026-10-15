@@ -739,7 +739,7 @@
   }
 
   // ---------- Operasyon pencereleri ----------
-  async function openTasks(initial = "mine") {
+  async function openTasks(initial = "mine", { focus = "" } = {}) {
     let view = initial;
     // Herkesin görevlerini yalnızca avukat ve yönetici görür; diğerleri kendi görevlerini (sunucu da süzer).
     const everyone = HOF.can("tasks.viewAll");
@@ -755,8 +755,10 @@
         const query = view === "mine" ? "status=open&mine=1" : `status=${view}`;
         const tasks = await HOF.api(`/api/workspace/tasks?${query}`);
         list.innerHTML = tasks.length
-          ? tasks.map(task => `<article class="hof-list-item${task.status === "open" && task.priority !== "normal" ? ` is-${esc(task.priority)}` : ""}"><header><b>${task.status === "open" && task.priority === "urgent" ? '<span class="hof-urgent-mark" aria-hidden="true">!</span>' : ""}${esc(task.title)}</b><span class="hof-chip ${task.priority !== "normal" ? `hof-chip-${esc(task.priority)}` : ""}">${esc(priorityLabel[task.priority] || task.priority)}</span></header><small>${esc(task.assignee)}${task.dueDate ? ` · son tarih ${esc(HOF.formatDate(task.dueDate))}` : ""}${task.caseKey ? ` · ${esc(HOF.vocab.record)} ${esc(task.caseKey)}` : ""} · ${esc(task.actorName)} tarafından</small>${task.status === "open" && HOF.can("tasks.complete") ? `<div class="hof-actions"><button type="button" class="hof-button hof-button-small" data-complete="${esc(task.id)}">Tamamlandı</button></div>` : task.completedAt ? `<small>✓ ${esc(task.completedByName || "")} · ${esc(HOF.formatDateTime(task.completedAt))}</small>` : ""}</article>`).join("")
+          ? tasks.map(task => `<article class="hof-list-item${task.status === "open" && task.priority !== "normal" ? ` is-${esc(task.priority)}` : ""}${focus && task.id === focus ? " is-highlight" : ""}"${focus && task.id === focus ? ' data-task-focus="1"' : ""}><header><b>${task.status === "open" && task.priority === "urgent" ? '<span class="hof-urgent-mark" aria-hidden="true">!</span>' : ""}${esc(task.title)}</b><span class="hof-chip ${task.priority !== "normal" ? `hof-chip-${esc(task.priority)}` : ""}">${esc(priorityLabel[task.priority] || task.priority)}</span></header><small>${esc(task.assignee)}${task.dueDate ? ` · son tarih ${esc(HOF.formatDate(task.dueDate))}` : ""}${task.caseKey ? ` · ${esc(HOF.vocab.record)} ${esc(task.caseKey)}` : ""} · ${esc(task.actorName)} tarafından</small>${task.status === "open" && HOF.can("tasks.complete") ? `<div class="hof-actions"><button type="button" class="hof-button hof-button-small" data-complete="${esc(task.id)}">Tamamlandı</button></div>` : task.completedAt ? `<small>✓ ${esc(task.completedByName || "")} · ${esc(HOF.formatDateTime(task.completedAt))}</small>` : ""}</article>`).join("")
           : `<p class="hof-empty">${view === "mine" ? "Size atanmış açık görev yok." : "Görev bulunmuyor."}</p>`;
+        // Kayıt detay kartındaki "Kayda Git" (eleştirmen E13): ilgili görev vurgulanır ve görünür alana getirilir.
+        list.querySelector("[data-task-focus]")?.scrollIntoView?.({ block: "center" });
       } catch (error) {
         list.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
       }
@@ -1123,7 +1125,7 @@
   // Taksit hareketi ve görev kendi modülünde düzenlenir: satırdaki "Kayda Git" kartı / görev listesini açar.
   function gotoActivityRecord(item) {
     if (item.type === "plan-entry") return item.planId && HOF.plans?.open ? HOF.plans.open(item.planId) : HOF.toast("Taksit kartı bulunamadı.", { type: "error" });
-    if (item.type === "task") return openTasks(item.status === "completed" ? "completed" : HOF.can("tasks.viewAll") ? "open" : "mine");
+    if (item.type === "task") return openTasks(item.status === "completed" ? "completed" : HOF.can("tasks.viewAll") ? "open" : "mine", { focus: item.id });
     return null;
   }
 

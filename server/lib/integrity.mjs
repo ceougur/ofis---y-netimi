@@ -29,7 +29,7 @@ import { HttpError } from "./http.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
 import { collectionProblems } from "./bank/collections.mjs";
-import { doubtfulProblems, doubtfulUsed } from "./bank/doubtful.mjs";
+import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentGl, documentWanted } from "./cheque-gl.mjs";
 import { compareVersions } from "./semver.mjs";
 import { createScopedGate, familyOf } from "./integrity-scope.mjs";
@@ -377,6 +377,17 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
           if (got !== want) wrong.push(`${plan.name}: defter ${got / 100} / kart ${want / 100}`);
         }
         checks.push({ code: "party:plans", name: "Carisiz taksit kartları (kart bazında)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+      }
+      if (doubtfulUsed(store)) {
+      // Eleştirmen E2 (15.10.2026): kayıt tarihinden ÖNCE tarihli (geriye tarihli) tahsilat şüpheliden düşmez (K3) → carinin normal alacağı (120 =
+        // kart − açık şüpheli) eksiye düşebilir; bu kural dışıdır ve burada KIRMIZI görünür (düzeltme: kaydı Şüpheliden Çıkar ya da tutarını düzelt).
+        const negatives = [];
+        for (const row of store.all("SELECT DISTINCT d.account_id AS party, COALESCE(a.name, '') AS name FROM doubtful_receivables d LEFT JOIN accounts a ON a.id = d.account_id WHERE d.status = 'open' AND a.deleted_at IS NULL")) {
+          const open = doubtfulSummary(store, row.party).openMinor;
+          const normal = (parties.get(row.party) || 0) - open;
+          if (open > 0 && normal < 0) negatives.push(`${row.name || row.party}: 120 = ${(normal / 100).toFixed(2)} (açık şüpheli ${(open / 100).toFixed(2)}; geriye tarihli tahsilat/alacak kaydın tarihinden önce)`);
+        }
+        checks.push({ code: "doubtful:balance", name: "Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)", ok: negatives.length === 0, count: negatives.length, sample: negatives.slice(0, 5) });
       }
       lap("parties");
     }
