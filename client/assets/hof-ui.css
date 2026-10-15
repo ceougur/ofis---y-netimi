@@ -3069,6 +3069,16 @@ html.hof-no-haciz .filter-strip { display: none !important; }
   color: var(--do-faint);
   font-size: 11px;
 }
+/* 2.3.0 İz 1.6: cari kartındaki Şüpheli Alacak tablosu — tarih altındaki İşlem No, neden altındaki açıklama, karşılık ve değersiz satırları alt alta. */
+.hof-acc-doubtful-table td > small,
+.hof-acc-doubtful-table .hof-acc-doubtful-sub {
+  display: block;
+  margin-top: 2px;
+}
+.hof-acc-doubtful-table .hof-acc-doubtful-sub .hof-mini {
+  margin-left: 4px;
+  vertical-align: middle;
+}
 .hof-cash-table td.hof-cash-in {
   color: #177245;
   font-weight: 700;

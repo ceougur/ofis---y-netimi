@@ -1077,6 +1077,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
         }
         // 2.3.0 İz 1.6 (plan §3.11b/5 "Alacak Yaşlandırma şüpheli tutarı ayrı gösterir"): carinin açık şüpheli alacağı (128) ayrı kolon; vade
         // kovalarına ve Toplam'a GİRMEZ (şüpheli alacağın vadesi yoktur; 120 + 128 = kart). Yalnız şüphelisi olan cari de satır alır.
+        // Kolon Toplam Gecikmiş'ten önce: son kolon "Toplam" kalır (raporu satır sonundan okuyan ekran/testler değişmez).
         const doubtfulMap = doubtful()?.openByAccount ? doubtful().openByAccount().byAccount : new Map();
         for (const [accountId, item] of doubtfulMap) {
           if (!rows.has(accountId)) rows.set(accountId, { name: names.get(accountId) || "", notDue: 0, b30: 0, b60: 0, b90: 0, b90p: 0 });
@@ -1086,9 +1087,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
         const sum = key => roundMoney(list.reduce((total, row) => total + row[key], 0));
         return {
           subtitle: `${dayText(day)} itibarıyla · taksit, vadeli fatura ve portföydeki alınan çek/senet vadelerine göre · Şüpheli Alacak ayrı kolondur, Toplam'a girmez`,
-          headers: ["Cari / Kişi", "Vadesi Gelmemiş", "1–30 Gün", "31–60 Gün", "61–90 Gün", "90+ Gün", "Toplam Gecikmiş", "Toplam", "Şüpheli Alacak"],
+          headers: ["Cari / Kişi", "Vadesi Gelmemiş", "1–30 Gün", "31–60 Gün", "61–90 Gün", "90+ Gün", "Şüpheli Alacak", "Toplam Gecikmiş", "Toplam"],
           types: ["", "money", "money", "money", "money", "money", "money", "money", "money"],
-          rows: list.map(row => [row.name, money(row.notDue), money(row.b30), money(row.b60), money(row.b90), money(row.b90p), money(row.late), money(roundMoney(row.late + row.notDue)), row.doubtful ? money(row.doubtful) : ""]),
+          rows: list.map(row => [row.name, money(row.notDue), money(row.b30), money(row.b60), money(row.b90), money(row.b90p), row.doubtful ? money(row.doubtful) : "", money(row.late), money(roundMoney(row.late + row.notDue))]),
           summary: [["Vadesi Gelmemiş", money(sum("notDue"))], ["1–30 gün", money(sum("b30"))], ["31–60 gün", money(sum("b60"))], ["61–90 gün", money(sum("b90"))], ["90+ gün", money(sum("b90p"))], ["Toplam Gecikmiş", money(sum("late"))], ["Şüpheli Alacak (ayrı)", money(sum("doubtful"))]],
         };
       },

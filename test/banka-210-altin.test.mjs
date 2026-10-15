@@ -77,10 +77,12 @@ function requests() {
     for (const q of ["", "?method=all", "?method=noncash", "?method=bank", "?method=card", `?from=${PAST.from}&to=${PAST.to}`, `?method=all&from=${MONTH}&to=${TODAY}`, `?method=noncash&from=${PAST.from}`]) json(`/api/workspace/cash${q}`, { who });
     for (const q of ["", `?from=${PAST.from}&to=${PAST.to}`, "?method=noncash"]) out.push({ kind: "pdf", url: `/api/workspace/cash.pdf${q}`, who });
   }
-  json("/api/workspace/overview", { drop: ["at"] });
+  // 2.3.0 İz 1.6 (bilerek): ANLIK DURUM alacak toplamındaki şüpheli alacak alanları (receivable.doubtful, doubtfulCount) ve Vade Takip'in
+  // doubtful kutusu 2.0.26'da yok; eski veride 0'dır, karşılaştırmadan düşülür.
+  json("/api/workspace/overview", { drop: ["at", "doubtful", "doubtfulCount"] });
   json("/api/workspace/overview/nakit-akisi");
   json(`/api/workspace/overview/nakit-akisi?preset=next90&overdue=1`);
-  json(`/api/workspace/overview/vade-takip?sources=cash,plan,cheque,note,invoice`);
+  json(`/api/workspace/overview/vade-takip?sources=cash,plan,cheque,note,invoice`, { drop: ["doubtful"] });
   json("/api/workspace/ledger");
   json("/api/workspace/ledger/integrity", { drop: ["durationMs", "log"] });
   const reports = {

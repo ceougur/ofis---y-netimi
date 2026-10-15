@@ -1,0 +1,32 @@
+{
+  "ad": "iz16-supheli-ekran",
+  "komut": "node --test test/banka-230-supheli-ekran.test.mjs",
+  "commit": "012c8d3b7ce8ea81e2bc5a5b7e97e6639f77dc59",
+  "dal": "worktree-agent-aa4407e890a98dc94",
+  "kirli": 9,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:35:00.848Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 16,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/iz16-supheli-ekran.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa4407e890a98dc94",
+  "ham_cikti_sha256": "17adba1c15ea00575f7a2d434d88313ecc822c0d601c8e0786165f5f4de17176",
+  "ham_cikti_bayt": 6378
+}
