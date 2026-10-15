@@ -458,6 +458,16 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   const assertOpenDates = (dates, what) => {
     for (const date of dates.filter(Boolean)) period.assertOpen(date, what);
   };
+  /**
+   * Silme çakışması (15.10.2026; Uzun Doğrulama #199 tohum 10): silinen kaydın tahsilatları carinin öbür kayıtlarına kayar; daha önce çıkarılmış
+   * kaydın "Şüpheliden Çıkar" başlığı ya da bir Değersiz Alacak satırı artık kalana sığmazsa yazım tamamen geri alınır ve neden AÇIK yazılır
+   * (önceden yalnız kapı "ledger-integrity … yöneticinize bildirin" diyordu). Silme işleminden sonra, aynı işlem içinde çağrılır.
+   */
+  const assertNoConflict = (party, what) => {
+    const problems = doubtfulProblems(store, { parties: [party] });
+    if (!problems.length) return;
+    throw new HttpError(409, `${what} silinemez: carinin öbür şüpheli kayıtları bozulurdu — ${problems[0].sample}`, { code: "doubtful-delete-conflict", problems: problems.map(item => item.sample) });
+  };
   /** Sil (kayıt hatası): kayıt + karşılıkları iptal (başlıklar cancelled), Silinenler'e. Değersiz satırı olan kayıt silinmez (önce satır). */
   function remove(ctx, { user, accountId, did }) {
     const record = recordRow(did, { accountId });
@@ -474,6 +484,7 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     setEventStatus(ctx, record.closeEventId, "cancelled", user);
     store.run("UPDATE doubtful_receivables SET status = 'cancelled', updated_by = ?, updated_at = ? WHERE id = ?", byId(user), stamp(), record.id);
     bank.assertWrittenNonMoney("doubtful_receivables", record.id);
+    assertNoConflict(record.party, "Şüpheli alacak kaydı");
     const payload = { kind: "record", id: record.id, accountId: record.party, accountName: record.accountName, date: record.date, amountMinor: record.amountMinor, reason: record.reason, note: record.note, status: record.status, closedDate: record.closedDate, eventId: record.eventId, closeEventId: record.closeEventId, provisions: provisions.map(item => ({ id: item.id, date: item.date, amountMinor: item.amountMinor, eventId: item.eventId })) };
     trash?.add({ kind: "doubtful", ref: record.id, title: record.accountName, detail: `${record.reasonLabel} · ${tl(record.amountMinor)} · ${dayText(record.date)}`, payload, user });
     return { record: payload, provisions: provisions.length };
@@ -499,6 +510,7 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
     accounts().doubtfulEntry.remove(entry.id);
     setEventStatus(ctx, head?.id, "cancelled", user);
     const payload = { kind: "writeoff", id: entry.id, recordId: record.id, accountId: record.party, accountName: record.accountName, date: entry.date, amountMinor: toMinor(Number(entry.amount) || 0), entry, eventId: head?.id || "" };
+    assertNoConflict(record.party, "Değersiz Alacak satırı");
     trash?.add({ kind: "doubtful-writeoff", ref: entry.id, title: record.accountName, detail: `Değersiz alacak ${tl(payload.amountMinor)} · ${dayText(entry.date)}`, payload, user });
     return { writeOff: payload };
   }

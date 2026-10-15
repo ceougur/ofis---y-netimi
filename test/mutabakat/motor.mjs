@@ -251,14 +251,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const mine = D.events.filter(e => e.party === party).map(e => ({ kind: e.kind, date: e.date, cents: e.cents, id: e.id || e.recordId || e.target || "", seq: e.seq }));
     throw Object.assign(new Error(`${kind}: beklenmeyen kapı reddi ${JSON.stringify(failures)}\n  program kayıtları: ${JSON.stringify(list.data)}\n  model olayları: ${JSON.stringify(mine)}`), { unexpected: true });
   }
-  function doubtfulModel() {
+  function doubtfulModel(allEvents = D.events) {
     // Aynı gün: al → karşılık → değersiz (hedefli) → tahsilat → çıkar (kâhin dili §4.15; programla aynı — 15.10.2026).
     const ORDER = { take: 0, provision: 1, writeoff: 2, credit: 3, release: 4 };
     const orderOf = e => (e.kind === "credit" && e.target ? ORDER.writeoff : ORDER[e.kind]);
     const state = new Map();
-    const out = { open: 0, provision: 0, groundless: 0, expense: 0, loss: 0, records: state };
+    const out = { open: 0, provision: 0, groundless: 0, expense: 0, loss: 0, records: state, writeOffOverflow: 0 };
     for (const party of doubtfulCustomers) {
-      const events = D.events.filter(e => e.party === party.id).sort((a, b) => (a.date === b.date ? orderOf(a) - orderOf(b) || a.seq - b.seq : a.date < b.date ? -1 : 1));
+      const events = allEvents.filter(e => e.party === party.id).sort((a, b) => (a.date === b.date ? orderOf(a) - orderOf(b) || a.seq - b.seq : a.date < b.date ? -1 : 1));
       const open = [];
       for (const e of events) {
         if (e.kind === "take") {
@@ -269,15 +269,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           if (s && !s.closed) { s.provision += e.cents; out.expense += e.cents; }
         } else if (e.kind === "release") {
           const s = state.get(e.recordId);
-          if (s && !s.closed) { s.remaining = 0; out.groundless += s.provision; s.provision = 0; s.closed = true; open.splice(open.indexOf(e.recordId), 1); }
+          // releasedCents: çıkarma anındaki kalan = programın "Şüpheliden Çıkar" başlığı (silme benzetiminde karşılaştırılır).
+          if (s && !s.closed) { s.releasedCents = s.remaining; s.remaining = 0; out.groundless += s.provision; s.provision = 0; s.closed = true; open.splice(open.indexOf(e.recordId), 1); }
         } else if (e.target) {
           const s = state.get(e.target);
           if (s && !s.closed && s.remaining > 0) {
             const part = Math.min(e.cents, s.remaining);
             const used = Math.min(part, s.provision);
             s.remaining -= part; s.provision -= used; out.loss += part - used;
+            if (e.cents > part) out.writeOffOverflow += e.cents - part;
             if (s.remaining === 0) { s.closed = true; open.splice(open.indexOf(e.target), 1); }
-          } else out.loss += e.cents;
+          } else { out.loss += e.cents; out.writeOffOverflow += e.cents; }
         } else {
           let left = e.cents;
           for (const id of [...open]) {
@@ -2144,6 +2146,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         mustOk(r, kind);
         D.events.push({ kind: "release", party: rec.party, date: day, recordId: rec.id, seq: ++D.seq });
         rec.closedDate = day;
+        rec.closedCents = doubtfulModel().records.get(rec.id)?.releasedCents ?? 0;
         return;
       }
       case "supheli-sil": {
@@ -2155,8 +2158,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const dates = [rec.date, rec.closedDate, ...rec.provisions.map(p => p.date)].filter(Boolean);
         if (dates.some(d => !open(d))) return expectReject(r, "period-locked", kind);
         if (rec.writeOffs > 0) return expectReject(r, "doubtful-has-writeoffs", `${kind}/değersizli`);
-        mustOk(r, kind);
         const mine = e => e.id === rec.id || e.recordId === rec.id;
+        // Silme çakışması (15.10.2026): silinen kaydın tahsilatları öbür kayıtlara kayar; daha önce çıkarılmış bir kaydın çıkarma tutarı değişir
+        // ya da bir değersiz satırı kalana sığmaz hâle gelirse program 409 doubtful-delete-conflict (hiçbir şey yazılmaz).
+        const sim = doubtfulModel(D.events.filter(e => !mine(e)));
+        const conflict = sim.writeOffOverflow > 0 || [...D.records.values()].some(other => other.id !== rec.id && other.closedDate && other.closedCents != null && sim.records.get(other.id)?.releasedCents !== other.closedCents);
+        if (conflict) return expectReject(r, "doubtful-delete-conflict", `${kind}/çakışma`);
+        mustOk(r, kind);
         const removed = D.events.filter(mine);
         D.events = D.events.filter(e => !mine(e));
         D.records.delete(rec.id);

@@ -1,0 +1,32 @@
+{
+  "ad": "supheli-sil-cakisma-yesil",
+  "komut": "node --test test/supheli-230-sil-cakisma.test.mjs",
+  "commit": "3b0c9bc933120ae8310d2bf2152bed9c51822dc4",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 1,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T12:30:47.370Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/supheli-sil-cakisma-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a07f37081d76aa36b5a3888a4b13f42aa7f6a587fd65b710be8dba4d20e1e259",
+  "ham_cikti_bayt": 1223
+}

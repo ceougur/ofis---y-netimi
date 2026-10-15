@@ -1,0 +1,32 @@
+{
+  "ad": "ana-sil-cakisma-motor-1000",
+  "komut": "npm run test:mutabakat -- --islem 1000 --tohum 10 --tohumlar 2",
+  "commit": "3b0c9bc933120ae8310d2bf2152bed9c51822dc4",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T12:31:20.328Z",
+  "sure_sn": 246.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-sil-cakisma-motor-1000.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ae3aebbde48eb70ad843548121408ca67ebd09c50ed7da60fa94266e1913d0f6",
+  "ham_cikti_bayt": 5224
+}
