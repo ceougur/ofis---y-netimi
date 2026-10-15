@@ -1,0 +1,32 @@
+{
+  "ad": "ana-ayni-gun-kahin-t1",
+  "komut": "python3 -I test/bagimsiz/fark.py --tohum 1 --islem 500",
+  "commit": "4d4da18e7acf82d18bba87b3067e783356b3bba6",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T11:51:40.719Z",
+  "sure_sn": 28.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7423,
+    "gecen": 7423,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/ana-ayni-gun-kahin-t1.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "edb0f8dc9830285f39ea687fa2736d39b070a91329a8a1c4a179aa583a4a5db8",
+  "ham_cikti_bayt": 389
+}
