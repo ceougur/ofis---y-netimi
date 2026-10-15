@@ -1,0 +1,32 @@
+{
+  "ad": "son-aday-senaryo-213",
+  "komut": "npm run test:senaryo-213",
+  "commit": "43322abcff5ef6c69523a8560a37287298173d21",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T05:03:07.792Z",
+  "sure_sn": 48.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/son-aday-senaryo-213.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "36775dc496690cbfb79272265103c6bb49b8ed2d2e7d36f6d396601753aa1a80",
+  "ham_cikti_bayt": 5218
+}
