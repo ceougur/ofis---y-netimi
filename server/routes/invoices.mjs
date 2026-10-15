@@ -158,7 +158,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       phone: pick("phone", 60, "Telefon"),
       email: pick("email", 160, "E-Posta"),
       website: pick("website", 200, "Web Sitesi"),
-      banks: (Array.isArray(seller.banks) ? seller.banks : previous.seller.banks || []).slice(0, 4).map(bank => ({ name: limited(bank?.name, 80, "Banka"), iban: normalizeIban(bank?.iban) })).filter(bank => bank.iban || bank.name),
+      // 2.3.0 (İz 3.4, E2.16): Banka modülünde hesap açıldıktan sonra eski liste düzenlenmez (ekran salt okunur gösterir; gövdedekiler yok sayılır).
+      banks: (Array.isArray(seller.banks) && !bankModuleActive() ? seller.banks : previous.seller.banks || []).slice(0, 4).map(bank => ({ name: limited(bank?.name, 80, "Banka"), iban: normalizeIban(bank?.iban) })).filter(bank => bank.iban || bank.name),
       logo: seller.logo === undefined ? previous.seller.logo || "" : logoInput(seller.logo),
     };
     if (next.seller.taxNo) {
@@ -240,16 +241,51 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const sellerProblems = (profile, s = settings()) => partyProblems(sellerParty(s), { profile: profile === "KAGIT" ? "KAGIT" : profile === "EARSIVFATURA" ? "EARSIV" : profile === "ESMM" ? "EARSIV" : "EFATURA", role: "seller" });
   // GG2 (orta; plan §8.9): Banka hesap kartındaki "IBAN Faturada Gösterilsin" işaretli hesaplar faturanın satıcı banka listesine girer (önce Banka
   // hesapları, sonra Fatura Ayarları'ndaki liste; aynı IBAN bir kez; en çok 4). Önceden kutunun hiçbir etkisi yoktu.
-  const invoiceBanks = list => {
-    let rows = [];
+  // 2.3.0 (İz 3.4; plan §8.9 "Fatura Ayarları → Banka Hesapları", E2.16, #31): Banka modülünde İLK HESAP AÇILANA KADAR Fatura Ayarları'ndaki eski
+  // liste (seller.banks) belgeye basılır ve düzenlenebilir; ilk hesap açıldıktan sonra liste YALNIZ "IBAN Faturada Gösterilsin" işaretli hesaplardan
+  // dolar, eski liste yalnız sihirbazın "Hesap Olarak Aç" önerisi olur (göç v23 eski listedeki IBAN'ı taşıyan hesapları bir kez işaretler; mevcut iş
+  // kesilmez). Önceden (2.1.0 GG2) iki liste birleştiriliyordu: hesabı pasife alınan / işareti kaldırılan IBAN eski listeden basılmaya devam ediyordu.
+  const bankModuleActive = () => {
     try {
-      rows = store.all("SELECT bank_name AS name, iban FROM bank_accounts WHERE show_on_invoice = 1 AND iban <> '' AND status = 'active' AND deleted_at IS NULL ORDER BY position, created_at");
+      return Boolean(store.get("SELECT 1 AS found FROM bank_accounts WHERE deleted_at IS NULL LIMIT 1"));
     } catch {
-      rows = [];
+      return false;
     }
+  };
+  const invoiceBankRows = () => {
+    try {
+      return store.all("SELECT id, bank_name AS bankName, name, iban FROM bank_accounts WHERE show_on_invoice = 1 AND iban <> '' AND status = 'active' AND deleted_at IS NULL ORDER BY position, created_at");
+    } catch {
+      return [];
+    }
+  };
+  /** Fatura Ayarları ekranı için durum: modül etkin mi, basılacak hesaplar, eski listeden henüz hesap olarak açılmamış IBAN'lar (öneri). */
+  const bankAccountsState = s => {
+    const active = bankModuleActive();
+    const accounts = active ? invoiceBankRows() : [];
+    let known = new Set();
+    try {
+      known = new Set(store.all("SELECT iban FROM bank_accounts WHERE deleted_at IS NULL AND iban <> ''").map(row => normalizeIban(row.iban)));
+    } catch {
+      known = new Set();
+    }
+    const legacy = (Array.isArray(s?.seller?.banks) ? s.seller.banks : []).map(bank => ({ name: String(bank?.name || ""), iban: normalizeIban(bank?.iban || "") })).filter(bank => bank.iban);
+    return { active, accounts, suggestions: active ? legacy.filter(bank => !known.has(bank.iban)) : [] };
+  };
+  // 2.3.0 (İz 3.2): peşininde etkin POS satışı olan belgeler (İptal / Sil penceresinin "POS İşlemi" seçimi). POS tabloları yoksa boş.
+  const posCashSet = ids => {
+    if (!ids.length) return new Set();
+    try {
+      return new Set(store.all("SELECT DISTINCT e.source_id AS id FROM account_entries e JOIN pos_sales s ON s.event_id = e.event_id WHERE e.source = 'invoice' AND s.kind = 'sale' AND s.status = 'active' AND s.src <> 'cancel' AND e.source_id IN (SELECT value FROM json_each(?))", JSON.stringify(ids)).map(row => row.id));
+    } catch {
+      return new Set();
+    }
+  };
+  const invoiceBanks = list => {
+    const rows = bankModuleActive() ? invoiceBankRows().map(row => ({ name: row.bankName, iban: row.iban })) : list || [];
     const seen = new Set();
     const out = [];
-    for (const bank of [...rows, ...(list || [])]) {
+    for (const bank of rows) {
       const key = normalizeIban(bank?.iban || "");
       if (key && seen.has(key)) continue;
       if (key) seen.add(key);
@@ -740,6 +776,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       cheques: linkedCheques.map(cheque => ({ id: cheque.id, direction: cheque.direction, instrument: cheque.instrument, instrumentLabel: cheque.instrumentLabel, serialNo: cheque.serialNo, bank: cheque.bank, amount: cheque.amount, dueDate: cheque.dueDate, status: cheque.status, statusLabel: cheque.statusLabel, endorsed: cheque.invoiceId !== row.id })),
       plan,
       payments,
+      // 2.3.0 (İz 3.2): peşininde etkin POS satışı olan belge — İptal / Sil penceresi "POS İşlemi" seçimini (Müşteriye İade Edildi / Kayıt Hatası) yalnız bunlarda gösterir.
+      posCash: posCashSet([row.id]).has(row.id),
       canManage: manage,
       canEdit: manage && row.status === "draft",
       // v2.0.16 (müşteri): kaydedilmiş belge düzenlenir (aynı numara; eski etkiler geri alınıp yenileri yazılır).
@@ -864,7 +902,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       rows = rows.filter(row => lineHits.has(row.id) || `${row.number} ${row.accountName} ${parseJson(row.partyJson, {}).name || ""} ${row.accountTaxNo} ${row.note} ${row.orderNo} ${row.despatchNo} ${row.paperNo} ${row.ettn}`.toLocaleLowerCase("tr-TR").includes(needle));
     }
     const states = paymentStates(rows.filter(row => row.status === "issued"));
-    let shaped = rows.map(row => shape(row, states.get(row.id)));
+    const posCash = posCashSet(rows.filter(row => row.status === "issued").map(row => row.id));
+    let shaped = rows.map(row => ({ ...shape(row, states.get(row.id)), posCash: posCash.has(row.id) }));
     if (query.pay) shaped = shaped.filter(row => (query.pay === "open" ? ["open", "partial", "overdue", "installment"].includes(row.payState) : query.pay === "unpaid" ? row.payState === "open" : row.payState === query.pay));
     const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
     const compare = {
@@ -1930,7 +1969,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.get("/api/workspace/invoices/settings", async ({ req, res }) => {
     requireView(req);
     const s = settings();
-    ok(res, { ...publicSettings(s), edocEnabled, nextNumbers: nextNumbers(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
+    ok(res, { ...publicSettings(s), edocEnabled, nextNumbers: nextNumbers(s), bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
   });
   router.put("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = auth.requirePermission(req, "invoices.settings");
@@ -1944,7 +1983,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       audit(user, "invoice.settings.updated", "settings", { efatura: next.efatura, earsiv: next.earsiv, series: next.series, integrator: integratorLog });
     });
     publish(user, { kind: "invoices", settings: true });
-    ok(res, { ...publicSettings(next), edocEnabled, nextNumbers: nextNumbers(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
+    ok(res, { ...publicSettings(next), edocEnabled, nextNumbers: nextNumbers(next), bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
   });
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);
@@ -2162,6 +2201,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Toplu işlemler (v2.0.15, QA A6): seçilen taslaklar tarih sırasıyla kesilir, seçilen belgeler iptal edilir. Her belge
   // kendi işleminde (biri düşerse diğerleri etkilenmez); sonuç belge belge döner. En çok 200 belge.
   const bulkIds = body => [...new Set((Array.isArray(body.ids) ? body.ids : []).map(value => text(value)).filter(Boolean))].slice(0, 200);
+  // POS İşlemi seçimi (plan §3.8 Fatura): "refunded" = Müşteriye İade Edildi (varsayılan), "entry-error" = Kayıt Hatası (POS işlemi hiç olmadı).
+  const posOutcomeOf = body => (text(body?.posOutcome) === "entry-error" ? "entry-error" : "refunded");
   // Hakem K5: banka hesabının eksi bakiye reddi Kasa'nınkiyle aynı kodu (cash-negative) taşır; accountId istemcinin sorusunu ayırır.
   const bulkError = error => ({ ok: false, message: error?.message || String(error), code: error?.extra?.code || "", status: error?.status || 500, ...(error?.extra?.accountId ? { accountId: error.extra.accountId } : {}) });
   router.post("/api/workspace/invoices/bulk-issue", async ({ req, res }) => {
@@ -2191,6 +2232,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       } catch (error) {
         results.push({ id: row.id, accountName: row.accountName, ...bulkError(error) });
       }
+      // 2.3.0 (İz 3.4; plan A7 "kesim sürerken başka kullanıcının tekil tahsilatı beklemez"): her belge kendi bank.post işleminde (store.tx) kesilir;
+      // belgeler arasında olay döngüsüne dönülür ki başka isteğin (tekil tahsilat, liste) yanıtı 200 belgenin sonunu beklemesin. e-Belge kapalıyken
+      // issueDraft'ın await'i gerçek G/Ç'ye inmez, döngü tek parça koşardı.
+      await new Promise(resolve => setImmediate(resolve));
     }
     ok(res, { results, issued: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length });
   });
@@ -2200,7 +2245,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const ids = bulkIds(body);
     if (!ids.length) fail400("İptal edilecek belge seçilmedi.", "ids");
     // Yargıç K3: gövdedeki negativeOk / cashForce (Uyar'daki hesap için "Yine de İptal Et"; hakem K5 negativeConfirmed) toplu silmedeki gibi işlenir; Engelle hiçbir koşulda delinmez.
-    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, negativeOk: typeof body.negativeOk === "boolean" ? body.negativeOk : undefined, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true };
+    // 2.3.0 (İz 3.2, plan §3.8 Fatura / §4.6): toplu iptalde de POS İşlemi seçimi (posOutcome) belge belge uygulanır; önceden toplu yol seçimi
+    // taşımıyordu — "Kayıt Hatası" seçilse de İptal İadesi yapılıyordu.
+    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, negativeOk: typeof body.negativeOk === "boolean" ? body.negativeOk : undefined, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true, posOutcome: posOutcomeOf(body) };
     const results = [];
     // Yeni tarihli belge önce iptal edilir (iade faturası asıl faturadan önce; aynı seçimde ikisi de varsa sıra tutar).
     const rows = ids.map(id => {
@@ -2334,7 +2381,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         continue;
       }
       try {
-        const doc = deleteInvoice(user, row.id, { reason: limited(body.reason, 300, "Silme nedeni"), force: forceOf(body) });
+        const doc = deleteInvoice(user, row.id, { reason: limited(body.reason, 300, "Silme nedeni"), force: forceOf(body), posOutcome: posOutcomeOf(body) });
         results.push({ id: row.id, ok: true, number: doc.number, displayNo: displayNo(doc), accountName: parseJson(doc.partyJson, {}).name || doc.accountName, amount: doc.tryPayable });
       } catch (error) {
         results.push({ id: row.id, number: row.number, displayNo: displayNo(row), accountName: parseJson(row.partyJson, {}).name || row.accountName, ...bulkError(error) });

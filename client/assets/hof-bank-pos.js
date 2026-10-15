@@ -914,7 +914,8 @@
       sync();
     };
     const sync = () => {
-      const on = methodNode.value === "card";
+      // 2.3.0 (İz 3.2): "Kredi Kartına İade" (cardRefund) işaretliyse kart yolu POS değil kredi kartıdır; POS alanı gizlenir, alanları gönderilmez.
+      const on = methodNode.value === "card" && !form.querySelector('input[name="cardRefund"]')?.checked;
       box.hidden = !on;
       box.querySelectorAll("select, input").forEach(node => {
         node.disabled = !on;
@@ -945,6 +946,7 @@
       if (!box.contains(event.target)) preview();
     });
     form.addEventListener("change", event => {
+      if (event.target.name === "cardRefund") return sync();
       if (!box.contains(event.target) && event.target !== methodNode) preview();
     });
     render();

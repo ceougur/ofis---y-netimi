@@ -1,0 +1,62 @@
+
+■ 1 Fatura Ayarları → Banka Hesapları: banka hesabı yokken eski liste düzenlenir (4 satır; A ve B dolu)
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-inv-banks]') to be visible[22m
+
+    at openSettings (/tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:110:14)
+    at async file:///tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:171:5
+    at async step (/tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:66:5)
+    at async file:///tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:170:3
+
+■ 2 İlk hesap (Ziraat, IBAN A, IBAN Faturada Gösterilsin) + POS + kredi kartı → Fatura Ayarları: salt okunur liste yalnız A; B öneride; Kaydet eski listeyi değiştirmez
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-inv-banks]') to be visible[22m
+
+    at openSettings (/tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:110:14)
+    at async file:///tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:184:5
+    at async step (/tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:66:5)
+    at async file:///tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:180:3
+
+■ 3 POS'lu faturada İptal Et → POS İşlemi seçimi (Kayıt Hatası → void, iade yok); nakit faturada alan yok; Sil penceresinde alan var
+  ✓ nakit faturada POS İşlemi alanı yok
+  ✗ Sil penceresinde POS İşlemi alanı
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form select[name="posOutcome"]') to be visible[22m
+
+    at /tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:220:16
+    at async step (/tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:66:5)
+    at async file:///tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:204:3
+
+■ 4 Cari Tahsilat formu: Kredi Kartı yolunda "Kredi Kartına İade" kutusu → POS alanı yerine kart seçicisi; tedarikçiden 240 iade → karta bağlı, POS yok, kart borcu 600 → 360
+  ✓ kart borcu 600
+  ✓ Nakit yolunda kutu görünmez
+  ✗ Kredi Kartı yolunda Kredi Kartına İade kutusu görünür
+  ✓ işaretsiz: kart seçicisi gizli (POS alanı açık)
+  ✗ beklenmeyen hata: page.check: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form input[name="cardRefund"]')[22m
+
+    at /tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:257:16
+    at async step (/tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:66:5)
+    at async file:///tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:243:3
+
+■ 5 Toplu kesim: Taslaklar'da 3 taslak seç → Seçilenleri Kaydet → 3 belge kaydedildi
+  ✓ Seçilenleri Kaydet düğmesi
+  ✓ 3 taslak kaydedildi: 3
+  ✓ toplu kesim: Mutabakat Testi tamam
+
+■ 6 Toplu iptal: 2 POS'lu belge seç → Seçilenleri İptal Et → POS İşlemi (2 belgede) → Müşteriye İade Edildi → provizyon içinde void
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type .hof-form select[name="posOutcome"]') to be visible[22m
+
+    at /tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:315:16
+    at async step (/tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:66:5)
+    at async file:///tmp/claude-0/iz32-eski-b24e0c2/test/e2e/senaryo-iz32-230.mjs:305:3
+  ✓ ekranlarda yazım düzeni (her sözcüğün ilk harfi büyük)
+  ✓ sayfa hatası yok
+
+✗ senaryo-iz32-230: 9 geçti, 7 kaldı · ekran görüntüleri /tmp/claude-0/iz32-eski-b24e0c2/test/e2e/artifacts/senaryo-iz32-230

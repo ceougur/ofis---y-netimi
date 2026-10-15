@@ -1,0 +1,32 @@
+{
+  "ad": "iz34-ayarlar-banka",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/fatura-230-ayarlar-banka.test.mjs",
+  "commit": "012c8d3b7ce8ea81e2bc5a5b7e97e6639f77dc59",
+  "dal": "worktree-agent-a20bc05b1c4590bdc",
+  "kirli": 12,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T03:46:54.974Z",
+  "sure_sn": 12.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/iz34-ayarlar-banka.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a20bc05b1c4590bdc",
+  "ham_cikti_sha256": "0cde62e28287e4cc38ec230712078abb786b76958bdc4959e0cc9bc34c4f0f7c",
+  "ham_cikti_bayt": 2841
+}

@@ -9723,6 +9723,11 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-settings h4 { margin: 0 0 8px; color: var(--do-ink-soft); font: 800 12px/1 var(--do-display); letter-spacing: 0.12em; text-transform: uppercase; }
 .hof-inv-settings h4 small { text-transform: none; letter-spacing: 0; color: var(--do-faint); font-weight: 600; }
 .hof-inv-banks { display: grid; gap: 4px; }
+/* 2.3.0 (İz 3.4): Banka modülü etkinken Fatura Ayarları'nda hesap kartından gelen (salt okunur) banka listesi. */
+.hof-inv-bank-list { margin: 0 0 8px; padding: 0 0 0 18px; display: grid; gap: 4px; color: var(--do-ink); font-size: 13px; }
+.hof-inv-empty { margin: 0 0 8px; color: var(--do-muted); font-size: 13px; }
+/* 2.3.0 (İz 3.2): formdaki onay kutusu (ör. "Kredi Kartına İade") yol uymayınca gizlenir; display:flex hidden özniteliğini ezmesin. */
+.hof-check[hidden] { display: none; }
 @media (max-width: 760px) {
   .hof-inv-bottom { grid-template-columns: 1fr; }
   .hof-inv-account { grid-column: 1 / -1; }

@@ -1201,6 +1201,23 @@ export const MIGRATIONS = [
       store.raw("migration.v23", () => store.exec(DOUBTFUL_SCHEMA_V23));
     },
   },
+  {
+    version: 24,
+    name: "v2.3.0 Fatura Ayarları eski banka listesi → hesap kartında IBAN Faturada Gösterilsin (bir kez)",
+    up(store) {
+      // İz 3.4 (plan §8.9 E2.16 / #31): banka hesabı açıldıktan sonra fatura yalnız "IBAN Faturada Gösterilsin" işaretli hesapları basar; eski liste
+      // (invoice.settings seller.banks) yalnız sihirbaz önerisidir. Mevcut kurulumda iş kesilmesin: hiçbir hesap işaretli değilse eski listedeki
+      // IBAN'ı taşıyan hesaplar bir kez işaretlenir (yalnız işaret; para/defter değişmez). İşaretli hesap varsa kullanıcı seçimine dokunulmaz.
+      store.raw("migration.v24", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'bank_accounts'")) return;
+        if (store.get("SELECT 1 AS found FROM bank_accounts WHERE show_on_invoice = 1 AND deleted_at IS NULL LIMIT 1")) return;
+        const settings = parseJson(store.get("SELECT value FROM settings WHERE key = 'invoice.settings'")?.value, {});
+        const ibans = (Array.isArray(settings?.seller?.banks) ? settings.seller.banks : []).map(bank => String(bank?.iban || "").replace(/\s+/g, "").toUpperCase()).filter(Boolean);
+        if (!ibans.length) return;
+        store.run(`UPDATE bank_accounts SET show_on_invoice = 1 WHERE deleted_at IS NULL AND iban <> '' AND upper(replace(iban, ' ', '')) IN (SELECT value FROM json_each(?))`, JSON.stringify(ibans));
+      });
+    },
+  },
 ];
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık

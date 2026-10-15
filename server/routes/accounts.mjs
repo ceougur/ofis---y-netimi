@@ -95,7 +95,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const account = accountRow(id);
     const manage = canUser(user, "accounts.manage");
     // Stok ve çek/senetten gelen satırlar (v2.0.6, v2.0.7) kendi kartlarından düzeltilir.
-    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")) }));
+    // 2.3.0 (İz 3.2): giriş + kart + kart hesabına bağlı satır "Kredi Kartına İade"dir (ekran düzeltme formunu kart seçicisiyle açar; POS alanı değil).
+    let cardIds = new Set();
+    try {
+      cardIds = new Set(store.all("SELECT id FROM bank_accounts WHERE kind = 'card'").map(row => row.id));
+    } catch {
+      cardIds = new Set(); // banka tabloları yoksa (göç öncesi veri)
+    }
+    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entries, planList);
     return {
@@ -677,11 +684,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const changed = !previous || previous.method !== input.method || Math.abs(roundMoney(previous.amount) - roundMoney(input.amount)) > 0.004 || previous.date !== input.date;
     // K2 (plan §3.7 #3, §4.6): cari ödemesinde kart yolu firmanın kartıyla ödemedir (309); tahsilatta POS (2.2.0). Cari "POS İadesi"
     // (posRefund / posRefundOf / posSourceless) çıkış olsa da POS'tur (plan §4.6 "alan belge türüne göre seçilir").
-    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: input.kind === "out" && !posRefundOf(body, previous), posId: body.posId, posRefundOf: body.posRefundOf });
+    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: corporateOf(input, body, previous), posId: body.posId, posRefundOf: body.posRefundOf });
   };
   // 2.2.0: cari "POS İadesi" — kart yolunda müşteriye POS'tan iade (POS'a bağlı önceki satır da öyledir).
   const posRefundOf = (body, previous = null) =>
     body?.posRefund === true || Boolean(text(body?.posRefundOf)) || body?.posSourceless === true || Boolean(previous && previous.kind === "out" && previous.method === "card" && previous.finRef && store.get("SELECT 1 AS found FROM pos_terminals WHERE id = ?", previous.finRef));
+  // 2.3.0 (İz 3.2; plan §4.6 "ödeme iadesi (giriş) → Kurumsal Kart, POS satışı oluşmaz, 309 düşer"): cari "Kredi Kartına İade" — tedarikçi parayı
+  // firmanın kredi kartına iade etti (cardRefund). Giriş olsa da kart yolu POS değil Kredi Kartı hesabıdır; karta bağlı önceki satır da öyledir.
+  const isCardAccount = id => Boolean(id && store.get("SELECT 1 AS found FROM bank_accounts WHERE id = ? AND kind = 'card'", id));
+  const cardRefundOf = (body, previous = null) => body?.cardRefund === true || Boolean(previous && previous.kind === "in" && previous.method === "card" && isCardAccount(previous.finRef));
+  // Kart yolunun anlamı (plan §4.6 "alan belge türüne göre"): çıkış = kartla ödeme (309) — "POS İadesi" değilse; giriş = POS — "Kredi Kartına İade" değilse.
+  const corporateOf = (input, body, previous = null) => (input.kind === "out" ? !posRefundOf(body, previous) : input.kind === "in" && input.method === "card" && cardRefundOf(body, previous));
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
   // Hakem K5: onay cashForce (plan §3.9) ya da eşanlamlı negativeOk (module-ref.mjs negativeConfirmed).
   const negativeForced = (body, url) => negativeConfirmed(body, url);
@@ -709,8 +722,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       },
       write: () => {
         k7.capture();
-        const entry = addEntry(user, account.id, { ...input, finRef, pos: finRef ? posMetaOf(body) : null });
-        audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, receiptNo: entry.receiptNo });
+        const cardRefund = corporateOf(input, body) && input.kind === "in";
+        const entry = addEntry(user, account.id, { ...input, finRef, pos: finRef && !corporateOf(input, body) ? posMetaOf(body) : null });
+        audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, receiptNo: entry.receiptNo, ...(cardRefund ? { cardRefund: true } : {}) });
         return entry;
       },
       guard: k7.guard,
@@ -746,7 +760,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       body: { ...body, entryId: previous.id },
       write: () => {
         k7.capture();
-        const meta = finRef ? posMetaOf(body) : null;
+        const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
         store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, user.id, now(), previous.id);
         audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });

@@ -49,7 +49,8 @@
     in: {
       cash: () => ENTRY_HELP.in,
       bank: (picked, none) => (none ? "Cariden para alındı: bakiyeden düşer; banka hesabının açılışından önceki hareket olduğu için hiçbir hesaba girmez, Hesabı Atanmamış Eski Hareketler'de (Havale / EFT) kalır, makbuzu alınır." : picked ? "Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır." : "Cariden para alındı: bakiyeden düşer; banka hesabı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (Havale / EFT) yazılır, makbuzu alınır."),
-      card: () => "Cariden POS ile tahsil edildi: bakiyeden düşer; Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır.",
+      // 2.3.0 (İz 3.2; plan §4.6 "ödeme iadesi (giriş) → Kredi Kartı"): "Kredi Kartına İade" işaretliyse tedarikçi parayı firmanın kredi kartına iade etti.
+      card: (picked, none, refund) => (refund ? (none ? "Tedarikçi parayı kredi kartımıza iade etti: bakiyeden düşer; kartın açılışından önceki hareket olduğu için hiçbir kartın borcuna yazılmaz, Hesabı Atanmamış Eski Hareketler'de (POS / Kart) kalır." : picked ? "Tedarikçi parayı kredi kartımıza iade etti: bakiyeden düşer, seçilen kredi kartının borcu azalır; POS satışı oluşmaz, Kasa değişmez." : "Tedarikçi parayı kredi kartımıza iade etti: kredi kartı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (POS / Kart) yazılır.") : "Cariden POS ile tahsil edildi: bakiyeden düşer; Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır."),
       cheque: () => "Cariden çek / senet alındı: evrak formu açılır; evrak portföye girer, carinin bakiyesinden düşer, Kasa değişmez.",
     },
     out: {
@@ -68,8 +69,10 @@
     const form = dialog?.querySelector("form");
     const intro = dialog?.querySelector(".hof-modal-text");
     const method = form?.querySelector('[name="method"]')?.value || "cash";
-    const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" ? form?.querySelector('[data-bank-pick="card"]') : null;
-    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick), pick?.querySelector("select")?.value === "none");
+    // 2.3.0 (İz 3.2): tahsilatta kart yolu POS'tur; "Kredi Kartına İade" işaretliyse kart seçicisi (kart borcu azalır).
+    const refund = method === "card" && Boolean(form?.querySelector('input[name="cardRefund"]')?.checked);
+    const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" && (type === "out" || refund) ? form?.querySelector('[data-bank-pick="card"]') : null;
+    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick), pick?.querySelector("select")?.value === "none", refund);
     if (intro && text) intro.textContent = wrap(text);
   }
   const LEDGER_FILTERS = [
@@ -777,6 +780,9 @@
         ...(type === "in" || type === "out"
           ? [{ name: "method", label: type === "in" ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: entry?.method || "cash", options: [...HOF.payMethods(type === "in" ? "in" : "out"), ...(!entry && HOF.cheques?.newFor && HOF.can("cheques.manage") ? [{ value: "cheque", label: type === "in" ? "Çek / Senet (portföye alınır)" : "Çek / Senet (verilir)" }] : [])] }]
           : []),
+        // 2.3.0 (İz 3.2; plan §4.6 "alıştan iade, ödeme iadesi (giriş) → Kredi Kartı; POS satışı oluşmaz, 309 düşer"): tahsilatta Kredi Kartı yolu POS'tur;
+        // tedarikçi parayı firmanın kredi kartına iade ettiyse bu kutu işaretlenir → POS alanı yerine kredi kartı seçicisi (yalnız yol Kredi Kartı iken görünür).
+        ...(type === "in" && HOF.bank?.attachPicker ? [{ name: "cardRefund", label: "Kredi Kartına İade (tedarikçi parayı firmanın kredi kartına iade etti; POS tahsilatı değil)", type: "checkbox", value: entry?.cardRefund === true }] : []),
         // v2.0.13: yanlış yönde yazılan borç/alacak düzeltilirken yön değiştirilebilir (açılış bakiyesi gibi).
         ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
         { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
@@ -786,17 +792,27 @@
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
       onOpen: dialog => {
         // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
-        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
+        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : type === "in" ? { value: entry?.cardRefund === true ? entry.finRef || "" : "", keepLabel: "" } : null;
         // 2.7: seçicide bakiye — tahsilat hesaba girer, ödeme çıkar (kartla ödeme kart borcunu artırır); düzeltmede eski tutar bakiyede (original).
         const original = entry && (entry.method === "bank" || entry.method === "card") && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null;
         // 2.2.0 (İz 3.2): tahsilatta kart yolu POS'tur — POS, POS Taksit Sayısı, Provizyon No, Kartın Son 4 Hanesi ve önizleme (düzeltmede satırın
         // POS kaydından). Cari "POS İadesi" Banka → POS → POS İşlemleri → İade'den (asıl satışa bağlı).
-        const pos = type === "in" ? { value: entry?.method === "card" ? entry.finRef || "" : "", row: entry ? `account_entries:${entry.id}` : "" } : null;
+        const pos = type === "in" ? { value: entry?.method === "card" && entry?.cardRefund !== true ? entry.finRef || "" : "", row: entry && entry.cardRefund !== true ? `account_entries:${entry.id}` : "" } : null;
         const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card, pos, direction: type === "out" ? "out" : "in", original }) : null;
         // Ek iş B: açıklama yola göre (seçici yerleşince ve yol değişince).
         if (money_) {
+          // "Kredi Kartına İade" kutusu yalnız yol Kredi Kartı iken görünür.
+          const syncCardRefund = () => {
+            const form = dialog.querySelector("form");
+            const box = form?.querySelector('input[name="cardRefund"]')?.closest(".hof-check");
+            if (box) box.hidden = form.querySelector('[name="method"]')?.value !== "card";
+          };
           // Yol ya da hesap seçimi değişince (Hesapsız (Açılıştan Önce) dahil); dinleyici formda — seçici yeniden kurulsa da çalışır.
-          dialog.querySelector("form")?.addEventListener("change", () => syncEntryHelp(dialog, type));
+          dialog.querySelector("form")?.addEventListener("change", () => {
+            syncCardRefund();
+            syncEntryHelp(dialog, type);
+          });
+          syncCardRefund();
           syncEntryHelp(dialog, type);
           Promise.resolve(picker).then(() => syncEntryHelp(dialog, type)).catch(() => null);
         }
