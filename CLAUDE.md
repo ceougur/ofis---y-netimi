@@ -462,3 +462,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
      net; iade komisyonu ayrı; TOPLAM; PDF/Excel; her süzgeç). KODDAN: Rapor Merkezi'nde bugün yalnız banka-pos-hareketleri ve pos-odeme-takvimi var;
      plan §8.10'daki "POS Satış Raporu / POS Komisyon Raporu" (kip ve vergi ayrımıyla; İptal İadeleri ayrı satır) henüz yok → İz 3.3 kapsamına eklenir
      (ajana iletilir).
+  4. (ekran: Rapor Merkezi sol liste: Kasa, Ana Defter, Banka, …) "rapor sıralamasını programa uygun yapalım: önce Cari, sonra Kasa, Stok, Fatura,
+     Çek/Senet, Taksit, Banka". KODDAN: sıra tanım sırasıyla geliyor (report-center.mjs grupları: Kasa, Ana Defter, Banka, Cari, Fatura, Taksit,
+     Çek / Senet, Stok, Kayıtlar, Ofis). YENİ SIRA: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (son üçü
+     kullanıcı saymadı, sona). Grup sırası tek listede (sunucu) tanımlanır; senaryo-211/rapor e2e beklentileri güncellenir ve koşulur (ders 28).
