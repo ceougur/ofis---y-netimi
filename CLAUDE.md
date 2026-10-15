@@ -405,6 +405,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Linux'ta üretilemedi (ders 18). İki teste de teşhis eklendi (gelen neden / geçmiş + açılış günlüğü satırları mesaja yazılır). Yeniden görülünce
   günlükle kök neden + zorla üretme (ders 20); saveState yazamazsa olay kaybı ürün hatasıdır (yeniden deneme / kuyruk gerekir). Ürün etkisi: elle
   denetim 3 deneme, otomatik denetim saatte bir; geçmiş kaydı bilgi amaçlı.
+  (a) KAPANDI (15.10.2026; üçüncü görülüş CI 037fcc7 Windows Node 22, aynı kodla sonraki koşu yeşil): KÖK NEDEN keep-alive yarışı — sunucu boşta kalan
+  bağlantıyı tam istemci yeniden kullanırken kapatıyor (Windows ECONNRESET, Linux undici UND_ERR_SOCKET "other side closed"); Windows'ta stage() yavaş
+  olduğu için ikinci denetim 5 sn boşta kalma sınırına denk geliyor. Zorla üretme (ders 20) `test/guncelleme-230-baglanti-sifirlama.test.mjs`
+  (mock GitHub `resetOnReuse`: yeniden kullanılan bağlantıdaki ikinci isteği koparır; eski kodda 3/6 denetim "error", yeni 6/6). Düzeltme updater.mjs
+  request(): yalnız kopan bağlantı sınıfında istek yeni bağlantıyla bir kez hemen yinelenir. (b) AÇIK: ajan tam npm test yükünde LINUX'ta da gördü
+  (15.10, karar2-tam-npm-test-2) → artık "Linux'ta üretilemedi" değil; saveState yazım yarışı kök nedeni ve zorla üretme yayından sonra.
 - KAPANDI (13.10.2026 akşam): CI #684 bc36256 senaryo-pos-220 "Ürün B 15/3/6/5" — KÖK NEDEN testin ürün seçici yarışı (ders 20 ile zorla üretildi:
   son arama yanıtı 1,5 sn gecikince + tuş aralığı 260 ms → ara arama [Ürün A, Ürün B] listeler, test ilk satıra basar → Ürün A satılır; tutar/cari/
   banka doğru, yalnız stok). Düzeltme: pos-220 kimlikle seçer + "Stokta" bağ denetimi + gelen değer mesajda + `POS220_YARIS=1` zorla kipi;

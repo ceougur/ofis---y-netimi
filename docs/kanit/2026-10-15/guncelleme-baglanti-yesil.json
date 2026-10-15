@@ -1,0 +1,32 @@
+{
+  "ad": "guncelleme-baglanti-yesil",
+  "komut": "node --test test/guncelleme-230-baglanti-sifirlama.test.mjs",
+  "commit": "de5977a747d46bb34aad57edc1d6acee21f4941b",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T10:18:47.305Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/guncelleme-baglanti-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "bcee41a5131049cad1a3b54047e26ddd060b1a0a1bafe0a83e68290ee6afe9bc",
+  "ham_cikti_bayt": 666
+}
