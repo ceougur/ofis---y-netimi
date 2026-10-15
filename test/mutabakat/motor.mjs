@@ -270,7 +270,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         } else if (e.kind === "release") {
           const s = state.get(e.recordId);
           // releasedCents: çıkarma anındaki kalan = programın "Şüpheliden Çıkar" başlığı (silme benzetiminde karşılaştırılır).
-          if (s && !s.closed) { s.releasedCents = s.remaining; s.remaining = 0; out.groundless += s.provision; s.provision = 0; s.closed = true; open.splice(open.indexOf(e.recordId), 1); }
+          if (s && !s.closed) { s.releasedCents = s.remaining; s.collectedOnCloseDay = s.lastCreditDate === e.date ? s.collectedSameDay : 0; s.remaining = 0; out.groundless += s.provision; s.provision = 0; s.closed = true; open.splice(open.indexOf(e.recordId), 1); }
         } else if (e.target) {
           const s = state.get(e.target);
           if (s && !s.closed && s.remaining > 0) {
@@ -287,6 +287,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
             const s = state.get(id);
             const part = Math.min(left, s.remaining);
             s.remaining -= part; left -= part;
+            s.collectedSameDay = s.lastCreditDate === e.date ? (s.collectedSameDay || 0) + part : part;
+            s.lastCreditDate = e.date;
             if (s.provision > s.remaining) { out.groundless += s.provision - s.remaining; s.provision = s.remaining; }
             if (s.remaining === 0) { s.closed = true; open.splice(open.indexOf(id), 1); }
           }
@@ -2162,7 +2164,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         // Silme çakışması (15.10.2026): silinen kaydın tahsilatları öbür kayıtlara kayar; daha önce çıkarılmış bir kaydın çıkarma tutarı değişir
         // ya da bir değersiz satırı kalana sığmaz hâle gelirse program 409 doubtful-delete-conflict (hiçbir şey yazılmaz).
         const sim = doubtfulModel(D.events.filter(e => !mine(e)));
-        const conflict = sim.writeOffOverflow > 0 || [...D.records.values()].some(other => other.id !== rec.id && other.closedDate && other.closedCents != null && sim.records.get(other.id)?.releasedCents !== other.closedCents);
+        // Çıkarma başlığı toleransı (ürün doubtfulProblems close-amount): başlık ∈ [çıkarılan, çıkarılan + çıkarma günü düşen tahsilat].
+        const headerOff = other => { const rel = sim.records.get(other.id); return !rel || other.closedCents < (rel.releasedCents ?? 0) || other.closedCents > (rel.releasedCents ?? 0) + (rel.collectedOnCloseDay || 0); };
+        const conflict = sim.writeOffOverflow > 0 || [...D.records.values()].some(other => other.id !== rec.id && other.closedDate && other.closedCents != null && headerOff(other));
         if (conflict) return expectReject(r, "doubtful-delete-conflict", `${kind}/çakışma`);
         mustOk(r, kind);
         const removed = D.events.filter(mine);
@@ -2174,7 +2178,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!item) throw Object.assign(new Error(`${kind}: silinen şüpheli kaydı Silinenler'de yok (${rec.id})`), { unexpected: true });
         const r2 = await api("POST", "/api/admin/trash/restore", { id: item.id });
         // Geri yükleme: açık kayıt borç bakiyesini (− öbür açık şüpheli) aşıyorsa 409; çıkarılmış kayıt sınırsız. (Tarihler açık: yukarıda denendi.)
-        if (!rec.closedDate && rec.cents > doubtfulRoom(rec.party)) return expectReject(r2, "doubtful-exceeds-balance", `${kind}/geri-aşım`);
+        // Ürün (headroom): geri yüklemeden SONRA 120 = kart − Σ açık kalan (geri yüklenen kaydın kalanı ayırmayla) < 0 ise 409 (tam tutar değil, kalan).
+        const openAfter = [...doubtfulModel([...D.events, ...removed]).records.values()].filter(s => s.party === rec.party).reduce((sum, s) => sum + s.remaining, 0);
+        if (!rec.closedDate && (M.cari.get(rec.party) || 0) - openAfter < 0) return expectReject(r2, "doubtful-exceeds-balance", `${kind}/geri-aşım`);
         mustOk(r2, `${kind}/geri`);
         D.events.push(...removed);
         D.records.set(rec.id, rec);

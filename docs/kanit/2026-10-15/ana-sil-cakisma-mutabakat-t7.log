@@ -1,0 +1,23 @@
+
+> destekofis@2.3.0 test:mutabakat
+> node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 5000 --tohum 7 --tohumlar 1
+
+✗ işlem 4348 supheli-sil: supheli-sil/geri-aşım: reddedilmesi gerekirken kaydedildi (doubtful-exceeds-balance)
+✗ işlem 4348 supheli-sil:
+  Ana defter cari hesapları ≠ model: 120 506352.06/512527.07, 320 -2867834.11/-2867834.11, 336 231126.87/231126.87
+  Ana defter 128 10363.91 · model 4188,90 (şüpheli alacak)
+  Şüpheli Alacaklar raporu kalan toplamı 10363,91 · model 4188,90
+
+Tohum 7: 4348 işlem, 4348 doğrulama, 1023 beklenen ret (eksiye düşürme / aşım), eşzamanlı 0 istek · 1975.0 sn
+  Beklenen retler: period-locked 162, due-before-start 73, date-invalid 63, date-missing 59, date-future 56, bank-account-flag 54, 400 50, cash-negative 49, stock-negative 40, plan-overpay 40, plan-paid 31, refund-exceeds 28, invoice-linked 27, bank-similar 22, issueDate 22, cheque-duplicate 20, cash-method 13, payment.rest 13, invoice-cancelled 12, invoice-duplicate 11, vatRate 11, return-before-original 11, return-exceeds 10, cheque-due-before-issue 10, payment.cheques 10, invoice-has-returns 10, originalId 10, payment-exceeds 10, chronology 10, lines 8, cheque-deposited 8, bank-account-invalid 7, cheque-not-in-portfolio 6, doubtful-exceeds-balance 4, bank-correct-type 4, doubtful-closed 4, bank-before-opening 4, bank-already-reversed 4, 404 3, 409 3, cheque-deposited-method 3, pos-has-refunds 3, cheque-moved 3, doubtful-normal-exceeds 3, doubtful-provision-exceeds 3, bank-account-required 3, doubtful-writeoff-exceeds 3, plan-bank-linked 2, bank-channel 2, cash-blocked 2, bank-event-opening 1, plan-has-payments 1, doubtful-has-writeoffs 1, amount-precision 1
+  İşlem türleri: alim 241, kasa 177, fatura-satis 258, satis 374, taksit-tahsil 230, cari 251, kart-sil 38, fatura-hatasi 178, kayit-duzelt 39, cek-ode 46, hareket-duzelt 62, pos-tahsil 84, fatura-taslak 62, kayit-tahsil 71, kart 130, iade 96, cek-tahsil 57, kilit-ihlali 106, tarih-hatasi 134, banka-fis 129, hareket-sil 38, taksit-sil 60, fatura-iade 121, fatura-alis 155, cari-sil 42, kart-kapat 47, kayit-sil 39, supheli-sil 28, pos-iade 34, cek-tahsile-ver 70, banka-transfer-ters 24, kasa-sil 33, kasa-duzelt 59, vade-hatasi 80, supheli-tahsil 66, banka-ters 37, cari-duzelt 54, cek-geri-al 37, fatura-iptal 95, supheli-degersiz 24, banka-transfer 48, fatura-acid 83, banka-benzer 22, supheli-borc 50, cek-bankadan-geri-al 29, supheli-al 56, banka-duzelt 40, supheli-karsilik 29, supheli-cikar 21, pos-sil 18, fatura-bagli 14, geri-yukle 43
+  Model: {"kasa":{"cash":"378495,89","bank":"792324,83","card":"-54803,06"},"cariler":12,"urunler":10,"kartlar":163,"kasaHareketi":171,"bankaSatiri":496,"bankaTersKayit":112,"bankalarArasiTransfer":38,"cariHareketi":437,"stokHareketi":1279,"taksitHareketi":66,"hesabaBagliModulHavalesi":313,"kurumsalKartaBagli":29,"kurumsalKartBakiyesi":"-352461,63","supheliKayit":17,"supheliAcik":"4188,90"}
+  Fatura: {"kesilen":486,"iptal":34,"taslak":0,"turler":{"sale":232,"smm":15,"sale_return":72,"purchase":152,"purchase_return":49},"cek":162} · seriler {} · tekil ETTN -
+  Mutabakat kapısı süresi: ortanca 67 ms, en çok 206 ms
+  ✗ UYUŞMAZLIK (2):
+    işlem 4348 (supheli-sil, 2026-09-29)
+      supheli-sil/geri-aşım: reddedilmesi gerekirken kaydedildi (doubtful-exceeds-balance)
+    işlem 4348 (supheli-sil, 2026-09-29)
+      Ana defter cari hesapları ≠ model: 120 506352.06/512527.07, 320 -2867834.11/-2867834.11, 336 231126.87/231126.87
+      Ana defter 128 10363.91 · model 4188,90 (şüpheli alacak)
+      Şüpheli Alacaklar raporu kalan toplamı 10363,91 · model 4188,90
