@@ -28,10 +28,13 @@
 //   GET  /bank/plans · POST · /:id/execute · /:id/skip · DELETE /:id   view · move  Planlı İşlemler (deftere girmez; Gerçekleştir fiş yazar)
 //   GET  /bank/reports/fees?from=&to=&account=&format=xlsx  bank.reports  Banka Masraf Raporu verisi (Excel: metin hücreleri)
 import { HttpError, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
+import { footerRow } from "./report-center.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createBankAccounts } from "../lib/bank/accounts.mjs";
 import { createBankMovements } from "../lib/bank/movements.mjs";
 import { TRANSFER_TYPES, createBankVouchers } from "../lib/bank/vouchers.mjs";
+import { GROUP_LABELS } from "../lib/bank/event-types.mjs";
 import { CHART } from "../lib/general-ledger.mjs";
 import { createModuleBank } from "../lib/bank/module-ref.mjs";
 import { createPos } from "../lib/bank/pos.mjs";
@@ -277,6 +280,86 @@ export function registerBankRoutes(router, context) {
     auth.requirePermission(req, "bank.view");
     ok(res, movements.list(url.searchParams));
   });
+  // 2.3.0 İz 5.1 (müşteri isteği): Hareketler sekmesinin PDF / Excel düğmeleri — ekrandaki süzgeçlerle (hesap, tür, yön, durum, POS, tarih, tutar,
+  // arama) aynı liste (movements.list; veri ikinci kez hesaplanmaz, sayfalar imleçle birleştirilir), alt TOPLAM, Rapor Merkezi'nin üreticisi
+  // (lib/report-files.mjs). Yetki: bank.view — kullanıcı yalnız ekranda gördüğü satırları indirir (aynı süzgeç, aynı yetki).
+  const EXPORT_ROWS = 20_000;
+  function movementsTable(params) {
+    const query = new URLSearchParams(params);
+    query.delete("cursor");
+    query.delete("limit");
+    query.delete("planned");
+    query.set("limit", "200");
+    const rows = [];
+    let cursor = "";
+    let page = movements.list(query);
+    const balance = page.balance;
+    const account = page.account;
+    for (;;) {
+      rows.push(...page.rows);
+      if (!page.hasMore || !page.nextCursor || rows.length >= EXPORT_ROWS) break;
+      cursor = page.nextCursor;
+      query.set("cursor", cursor);
+      page = movements.list(query);
+    }
+    const accountLabel = account ? service.rowOf(account) : null;
+    const name = accountLabel ? `${accountLabel.bank_name} · ${accountLabel.name}` : "Tüm Hesaplar";
+    const cents = minor => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((Number(minor) || 0) / 100)} TL`;
+    const dayOf = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
+    const filters = [];
+    const get = key => text(query.get(key) || "");
+    if (get("type")) filters.push(`Tür: ${GROUP_LABELS[get("type")] || get("type")}`);
+    if (get("dir")) filters.push(get("dir") === "in" ? "Giriş" : "Çıkış");
+    if (get("status")) filters.push(`Durum: ${{ active: "Etkin", reversed: "Ters Kaydedildi", cancelled: "İptal Edildi", all: "Tümü" }[get("status")] || get("status")}`);
+    if (get("pos")) filters.push(`POS: ${service.pos?.list?.().find(item => item.id === get("pos"))?.name || get("pos")}`);
+    if (get("from") || get("to")) filters.push(`${get("from") ? dayOf(get("from")) : "…"} – ${get("to") ? dayOf(get("to")) : "…"}`);
+    if (get("min") || get("max")) filters.push(`Tutar ${get("min") || "…"} – ${get("max") || "…"}`);
+    if (get("q")) filters.push(`Arama: ${get("q")}`);
+    const totals = { in: 0, out: 0 };
+    const body = rows.map(row => {
+      const amount = Number(row.signedMinor) || 0;
+      if (row.status === "active") totals[amount >= 0 ? "in" : "out"] += Math.abs(amount);
+      const desc = [row.partyName, row.counterAccountLabel ? `Karşı Hesap ${row.counterAccountLabel}` : "", row.description, row.reference ? `Ref. ${row.reference}` : "", row.invoiceNo ? `Fatura ${row.invoiceNo}` : ""].filter(Boolean).join(" · ");
+      return [dayOf(row.date), row.no || "", row.typeLabel || "", row.accountLabel || "", desc, amount >= 0 ? cents(amount) : "", amount < 0 ? cents(-amount) : "", balance && row.balanceAfterMinor !== null ? cents(row.balanceAfterMinor) : "", row.statusLabel || "", row.createdByName || ""];
+    });
+    const data = {
+      id: "banka-hareketler",
+      title: "Banka Hareketleri",
+      subtitle: [name, ...filters, rows.length >= EXPORT_ROWS ? `ilk ${EXPORT_ROWS.toLocaleString("tr-TR")} satır` : ""].filter(Boolean).join(" · "),
+      headers: ["Tarih", "İşlem No", "Tür", "Hesap", "Açıklama", "Giriş", "Çıkış", "Bakiye", "Durum", "Giren"],
+      types: ["", "", "", "", "", "money", "money", "money", "", ""],
+      rows: body,
+      summary: [["Hesap", name], ["Hareket", String(rows.length)], ["Giriş (Etkin)", cents(totals.in)], ["Çıkış (Etkin)", cents(totals.out)], ["Net", cents(totals.in - totals.out)]],
+      total: rows.length,
+      query: Object.fromEntries(query.entries()),
+    };
+    data.footer = footerRow(data);
+    return data;
+  }
+  const companyLabel = () => {
+    let entry = null;
+    try {
+      entry = typeof context.company === "function" ? context.company() : null;
+    } catch {
+      entry = null;
+    }
+    const name = String(store.setting("office.name", "") || entry?.name || "").trim();
+    const code = String(entry?.code || "").trim();
+    return code && name ? `${code} · ${name}` : name || code;
+  };
+  const fileCtx = user => ({ now: context.now ? context.now() : new Date(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: store.setting("office.name", "") || "DestekOfis" });
+  router.get(`${BASE}/movements.pdf`, async ({ req, res, url }) => {
+    const user = auth.requirePermission(req, "bank.view");
+    const data = movementsTable(url.searchParams);
+    audit(user, "report.exported", data.id, { format: "pdf", rows: data.total, ...data.query });
+    sendBuffer(res, reportPdf(data, fileCtx(user)), { type: "application/pdf", name: `${reportFileBase(data.title, period.today())}.pdf`, inline: url.searchParams.get("download") !== "1" });
+  });
+  router.get(`${BASE}/movements.xlsx`, async ({ req, res, url }) => {
+    const user = auth.requirePermission(req, "bank.view");
+    const data = movementsTable(url.searchParams);
+    audit(user, "report.exported", data.id, { format: "xlsx", rows: data.total, ...data.query });
+    sendBuffer(res, reportXlsx(data, fileCtx(user)), { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${reportFileBase(data.title, period.today())}.xlsx` });
+  });
   router.get(`${BASE}/events/:ref`, async ({ req, res, params }) => {
     auth.requirePermission(req, "bank.view");
     ok(res, movements.card(params.ref));
@@ -363,5 +446,8 @@ export function registerBankRoutes(router, context) {
   service.module.pos = pos;
   // Rapor Merkezi'nin Banka grubu (Aşama 14): Banka Masraf Raporu bu uçla aynı kaynaktan (movements.feeReport) okur.
   service.movements = movements;
+  // 2.3.0 İz 3.3 (plan §8.9, §8.10; eşleme 301): planlı işlemler Nakit Akış / Banka Nakit Akış Raporu (flows), Vade Takip (flows) ve Zil'e (dueItems)
+  // bu okuma yollarıyla girer (routes/overview.mjs, routes/dues.mjs, routes/report-center.mjs); fingerprint zilin önbellek anahtarına.
+  service.plans = { flows: vouchers.planFlows, dueItems: vouchers.planDueItems, fingerprint: vouchers.plansFingerprint, cardDues: vouchers.cardDueFlows };
   return service;
 }

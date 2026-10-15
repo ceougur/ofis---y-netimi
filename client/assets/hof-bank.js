@@ -1648,9 +1648,20 @@
           filter("Ara", `<input type="search" data-mv="q" value="${esc(s.filter.q)}" maxlength="100" placeholder="Cari adı, açıklama, referans ya da İşlem No">`, true),
         ].join("");
     return `<div class="hof-bank-toolbar">${tools}<div class="hof-rep-presets" role="group" aria-label="Görünüm"><button type="button" class="hof-rep-chip ${s.planned ? "is-on" : ""}" aria-pressed="${s.planned}" data-act="mv-planned">Planlı İşlemler</button></div></div>
-      <div class="hof-bank-filters" data-mv-filters>${filters}${filtered(s) && !s.planned ? '<button type="button" class="hof-link-button" data-act="mv-clear">Süzgeçleri Temizle</button>' : ""}</div>
+      <div class="hof-bank-filters" data-mv-filters>${filters}${filtered(s) && !s.planned ? '<button type="button" class="hof-link-button" data-act="mv-clear">Süzgeçleri Temizle</button>' : ""}${s.planned ? "" : movesExportHtml(s)}</div>
       <div class="hof-bank-moves-wrap" data-moves="main" data-account="${esc(s.account)}">${movesListHtml(s)}</div>
       <p class="hof-rep-note">${s.planned ? "Planlı işlemler deftere kendiliğinden yazılmaz; bankada gerçekleşince “Gerçekleştir” ile planlı ya da gerçek tarihle kaydedilir." : "Yürüyen bakiye tek hesap seçiliyken ve başka süzgeç yokken görünür. Satıra tıklayınca İşlem Kartı açılır."}</p>`;
+  }
+  // 2.3.0 İz 5.1 (müşteri isteği): Hareketler'in PDF / Excel düğmeleri — ekrandaki süzgeçlerle (hesap, tür, yön, durum, POS, tarih, tutar, arama)
+  // sunucunun aynı listesi, alt TOPLAM (routes/bank.mjs movements.pdf / .xlsx; Rapor Merkezi'nin üreticisi). bank.view yeter: kullanıcı yalnız
+  // ekranda gördüğü satırları indirir.
+  function movesExportHtml(state) {
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(state.filter)) if (String(value ?? "").trim()) query.set(key, String(value).trim());
+    const qs = String(query);
+    return `<span class="hof-rep-export hof-bank-export" role="group" aria-label="Dışa aktar" data-mv-export>
+      <a class="hof-rep-out is-pdf" href="${esc(`${BASE}/movements.pdf${qs ? `?${qs}` : ""}`)}" target="_blank" rel="noopener" title="Süzgeçteki hareketleri PDF olarak aç">PDF İndir</a>
+      <a class="hof-rep-out is-xlsx" href="${esc(`${BASE}/movements.xlsx${qs ? `?${qs}` : ""}`)}" download title="Süzgeçteki hareketleri Excel olarak indir">Excel İndir</a></span>`;
   }
   let searchTimer = 0;
   /**
@@ -3078,6 +3089,8 @@
 
   HOF.bank = {
     open,
+    // 2.3.0 İz 3.3: zildeki planlı banka işlemi kalemi → Hareketler → Planlı İşlemler görünümü.
+    openPlans: () => Promise.resolve(open({ tab: "movements" })).then(() => (modal ? openMovements({ account: "", planned: true }) : null)),
     openWizard,
     openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))),
     choices,

@@ -383,6 +383,10 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     bankMove: ["", "external", "internal"],
     bankAccount: [""],
     feeAccount: [""],
+    // 2.3.0: Hesap süzgeci (İz 3.3; test/raporlar-230-banka) ve POS Satış / Komisyon süzgeçleri (İz 5.3; test/rapor-230-iz5) her seçenekleriyle kendi testlerinde.
+    anyAccount: [""],
+    posSale: [""],
+    posPeriod: ["month"],
     // 2.2.0 (İz 3.5): POS raporlarının süzgeçleri (Banka grubu; her seçenekleriyle test/banka-220-pos-iz3.test.mjs ve senaryo-pos-220'de).
     posTerminal: [""],
     posKind: ["", "pos", "blocked", "fee"],
@@ -670,7 +674,8 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
   test("katalog = testteki rapor listesi (yeni rapor eklenirse test de genişler)", () => {
     // v2.1.0 Aşama 14: Banka grubu (bank.reports) ayrı testte (test/banka-210-raporlar.test.mjs) her süzgeçle denenir.
     // 2.2.0: Tahsildeki Çek ve Senetler (İz 4); POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar da Banka grubunda (test/banka-220-pos-iz3.test.mjs, senaryo-pos-220).
-    assert.deepEqual(catalog.map(r => r.id).sort(), [...REPORT_IDS, "banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar"].sort());
+    // 2.3.0: §8.10 kalan raporlar (test/raporlar-230-banka.test.mjs) ve POS Satış / Komisyon (test/rapor-230-iz5.test.mjs).
+    assert.deepEqual(catalog.map(r => r.id).sort(), [...REPORT_IDS, "banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar", "pos-satis", "pos-komisyon", "banka-gunluk", "banka-aylik", "banka-bazinda-bakiye", "para-birimi-bazinda-bakiye", "bankalar-arasi-transfer", "kasa-banka-transfer", "cari-banka-hareketleri", "fatura-banka-hareketleri", "taksit-banka-hareketleri", "banka-nakit-akis"].sort());
   });
   for (const id of REPORT_IDS) {
     test(`${id}: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle`, async () => {

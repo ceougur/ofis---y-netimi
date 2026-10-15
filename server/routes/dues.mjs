@@ -11,7 +11,9 @@ const MAX_SETTLED = 5000;
 // calendar (v2.0.17): raporların tüm sayfalar takvimi (routes/reports.mjs allCalendar; tembel, çünkü raporlar sonra kaydolur).
 // Sayfa düzeninde şirketin BÜTÜN sayfalarının tarih uyarıları zile/takvime girer: öbür sayfaların kalemleri "foreign"
 // işaretiyle ve sayfa adıyla eklenir (madde 13: "tarih uyarısı vermiyor" şikâyeti kökten kapanır).
-export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices, calendar = null, now: clock = systemClock }) {
+export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices, bankAccounts = null, calendar = null, now: clock = systemClock }) {
+  // 2.3.0 İz 3.3 (plan §8.9 "Vade Takip / Zil / Takvim: … planlı ödemeler … bank.view ile"; eşleme 301): planlı banka işlemleri (lib/bank/vouchers.mjs).
+  const bankPlans = () => (typeof bankAccounts === "function" ? bankAccounts() : bankAccounts)?.plans || null;
   const cache = new Map(); // oturum → { key, result }
   const settingKey = () => (dataset.settingKey ? dataset.settingKey(SETTLED_KEY) : SETTLED_KEY);
   const readSettled = () => {
@@ -39,7 +41,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const pages = dataset.sessions ? dataset.sessions() : [];
     const pagesState = pages.length > 1 ? pages.map(page => `${page.key}:${page.rowCount}:${page.recordCount}:${page.changedAt || ""}`).join("|") : "";
     const tableKey = [pagesState, profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
-    const key = [tableKey, plans?.fingerprint ? plans.fingerprint() : "", cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : ""].join("|");
+    const key = [tableKey, plans?.fingerprint ? plans.fingerprint() : "", cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", bankPlans()?.fingerprint ? bankPlans().fingerprint() : ""].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;
@@ -71,6 +73,9 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const chequeItems = cheques?.dueItems ? cheques.dueItems(local) : [];
     // Fatura (v2.0.15): vadesi geçen, bugün ve 7 gün içinde vadesi gelen açık (vadeli) faturalar.
     const invoiceItems = invoices?.dueItems ? invoices.dueItems(local) : [];
+    // Planlı banka işlemleri (2.3.0 İz 3.3): planlı tarihi geçen, bugün ve 7 gün içindekiler; deftere girmez, Banka → Hareketler → Planlı İşlemler'den
+    // gerçekleştirilir. Yalnız banka rakamını görebilene gider (aşağıdaki süzgeç).
+    const bankItems = bankPlans()?.dueItems ? bankPlans().dueItems(local) : [];
     // Öbür sayfaların kalemleri (v2.0.17): aynı motor (reports.calendar), sayfa adıyla; tıklanınca o sayfaya geçilir.
     const foreignItems = [];
     const foreignDeadlines = [];
@@ -92,7 +97,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
         // öbür sayfalar okunamazsa açık sayfanın takvimi yine verilir
       }
     }
-    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, today: local, generatedAt: now.toISOString() };
+    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, today: local, generatedAt: now.toISOString() };
     cache.set(session, { key, result });
     return result;
   }
@@ -102,7 +107,8 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const data = await compute();
     // Çek/senet kalemleri yalnız çekleri görebilenlere (kasa yetkisi olanlar) gider.
     // Fatura kalemleri yalnız faturaları görebilenlere.
-    ok(res, { ...data, items: data.items.filter(item => (item.source !== "cheque" || canUser(user, "cheques.view")) && (item.source !== "invoice" || canUser(user, "invoices.view"))) });
+    // Planlı banka işlemleri yalnız banka rakamını görebilene (bank.view ∨ overview.view; routes/overview.mjs canSeeBank ile aynı kural).
+    ok(res, { ...data, items: data.items.filter(item => (item.source !== "cheque" || canUser(user, "cheques.view")) && (item.source !== "invoice" || canUser(user, "invoices.view")) && (item.source !== "bank" || canUser(user, "bank.view") || canUser(user, "overview.view"))) });
   });
 
   // "Ödendi say" / "İptal": kalem, tahsilat girilmeden kapatılır (veri değişmez; kim, ne zaman kaydedilir).

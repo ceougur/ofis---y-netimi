@@ -109,6 +109,12 @@ export function waysFor(method) {
       return ["card"];
     case "noncash":
       return ["bank", "card"];
+    // 2.3.0 İz 3.3 (plan §8.10 kuralı "Yol seçenekleri: Banka / POS / Kurumsal Kart / Kredi"): Banka ve POS Hareketleri'nde kurumsal kart (309)
+    // ve kredi (300) yolu ayrı seçilir; "noncash" (Banka ve POS) değişmez — borç yolları varlık görünümüne karışmaz (GG2).
+    case "ccard":
+      return ["ccard"];
+    case "loan":
+      return ["loan"];
     default:
       return null;
   }

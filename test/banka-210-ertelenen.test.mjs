@@ -168,14 +168,18 @@ describe("2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'de
   });
 
   // 2.2.0 (bilerek güncellendi): POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar geldi (İz 3.5, banka-220-pos-iz3); plan §8.10 "Tahsildeki
-  // Çekler" Bankaya Tahsile Ver ile geldi ("Tahsildeki Çek ve Senetler", İz 4); kalan §8.10 raporları ertelendi.
-  it("Rapor Merkezi: Banka grubunda temel 4 rapor + POS'un 2 raporu + Tahsildeki Çek ve Senetler; ertelenen §8.10 raporları listede yok ve 404 (ekran, PDF, Excel)", async () => {
+  // Çekler" Bankaya Tahsile Ver ile geldi ("Tahsildeki Çek ve Senetler", İz 4).
+  // 2.3.0 (bilerek güncellendi): §8.10 kalan raporlar (İz 3.3; raporlar-230-banka) ve POS Satış / POS Komisyon (İz 5.3; rapor-230-iz5) geldi.
+  // Hâlâ yok: POS Bekleyen / Valör raporları (Banka penceresinin POS sekmeleri), Banka Mutabakat Raporu (ekstre listeden çıktı, 13.10.2026),
+  // Kur Değerleme Raporu (döviz ertelendi).
+  it("Rapor Merkezi: Banka grubu 19 rapor; Mutabakat, Kur Değerleme, POS Bekleyen / Valör listede yok ve 404 (ekran, PDF, Excel)", async () => {
     const catalog = await must("rapor listesi", ctx.api.get("/api/workspace/report-center"));
     const bank = catalog.reports.filter(report => report.group === "Banka").map(report => report.id).sort();
-    assert.deepEqual(bank, ["alt-hesap-mizani", "banka-bakiye", "banka-hareket", "banka-masraf", "faturasi-beklenen-komisyonlar", "pos-odeme-takvimi", "tahsildeki-cekler"], `Banka grubu: ${bank.join(", ")}`);
+    assert.deepEqual(bank, ["alt-hesap-mizani", "banka-aylik", "banka-bakiye", "banka-bazinda-bakiye", "banka-gunluk", "banka-hareket", "banka-masraf", "banka-nakit-akis", "bankalar-arasi-transfer", "cari-banka-hareketleri", "fatura-banka-hareketleri", "faturasi-beklenen-komisyonlar", "kasa-banka-transfer", "para-birimi-bazinda-bakiye", "pos-komisyon", "pos-odeme-takvimi", "pos-satis", "tahsildeki-cekler", "taksit-banka-hareketleri"], `Banka grubu: ${bank.join(", ")}`);
     const titles = catalog.reports.map(report => report.title);
-    for (const title of ["POS Satış Raporu", "POS Komisyon Raporu", "POS Bekleyen Raporu", "POS Valör Raporu", "Banka Mutabakat Raporu", "Kur Değerleme Raporu", "Banka Nakit Akış Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Bankalar Arası Transfer Raporu"]) assert.ok(!titles.includes(title), `listede ${title} olmamalı`);
-    const ids = ["pos-satis", "pos-komisyon", "pos-bekleyen", "pos-valor", "banka-mutabakat", "kur-degerleme", "banka-nakit-akis", "banka-gunluk", "banka-aylik", "banka-transfer", "kasa-banka-transfer", "banka-bazinda-bakiye", "para-birimi-bakiye", "cari-banka", "fatura-banka", "taksit-banka"];
+    for (const title of ["POS Bekleyen Raporu", "POS Valör Raporu", "Banka Mutabakat Raporu", "Kur Değerleme Raporu"]) assert.ok(!titles.includes(title), `listede ${title} olmamalı`);
+    for (const title of ["POS Satış Raporu", "POS Komisyon Raporu", "Banka Nakit Akış Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Bankalar Arası Transfer Raporu"]) assert.ok(titles.includes(title), `listede ${title} olmalı (2.3.0)`);
+    const ids = ["pos-bekleyen", "pos-valor", "banka-mutabakat", "kur-degerleme", "banka-transfer", "para-birimi-bakiye", "cari-banka", "fatura-banka", "taksit-banka"];
     for (const id of ids) for (const suffix of ["", "/pdf", "/xlsx"]) assert.equal((await ctx.api.raw("GET", `/api/workspace/report-center/${id}${suffix}?preset=all`)).status, 404, `${id}${suffix}`);
   });
 

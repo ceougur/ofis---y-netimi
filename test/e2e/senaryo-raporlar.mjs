@@ -397,7 +397,8 @@ try {
     const listed = await expert.$$eval(`${modal} [data-report]`, nodes => nodes.map(node => node.dataset.report));
     // v2.1.0 Aşama 14: uzman (avukat) Banka Raporları yetkisiyle (bank.reports) Banka grubunu da görür; finans raporlarını görmez.
     // 2.2.0 (bilerek güncellendi; CI dışı senaryo, son aday koşusunda yakalandı): POS Ödeme Takvimi ve Faturası Beklenen Komisyonlar da bank.reports.
-    const bankIds = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar"];
+    // 2.3.0 (bilerek güncellendi): §8.10 kalan raporlar ve POS Satış / Komisyon da bank.reports.
+    const bankIds = ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani", "tahsildeki-cekler", "pos-odeme-takvimi", "faturasi-beklenen-komisyonlar", "pos-satis", "pos-komisyon", "banka-gunluk", "banka-aylik", "banka-bazinda-bakiye", "para-birimi-bazinda-bakiye", "bankalar-arasi-transfer", "kasa-banka-transfer", "cari-banka-hareketleri", "fatura-banka-hareketleri", "taksit-banka-hareketleri", "banka-nakit-akis"];
     ok(listed.filter(id => !bankIds.includes(id)).join() === "islem-gecmisi" && bankIds.every(id => listed.includes(id)), `uzman: Tüm raporlar'da İşlem geçmişi ve Banka grubu, finans raporu yok (${listed.join(", ")})`);
     await shot("uzman-islem-gecmisi", expert);
     await other2.close();

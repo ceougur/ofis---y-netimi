@@ -54,14 +54,18 @@
     state: { label: "Kalem", options: [["", "Tüm Kalemler"], ["low", "Kritik Seviyedekiler"], ["out", "Tükenenler"], ["negative", "Eksi Stoktakiler"], ["product", "Ürünler"], ["service", "Hizmetler"]] },
     planStatus: { label: "Kartlar", options: [["active", "Açık Kartlar"], ["closed", "Kapatılanlar"], ["all", "Tümü"]] },
     taskStatus: { label: "Görevler", options: [["all", "Tümü"], ["open", "Açık"], ["done", "Tamamlanan"]] },
-    payMethod: { label: "Yol", options: [["noncash", "Banka ve POS (Tümü)"], ["bank", "Banka (Havale / EFT)"], ["card", "POS / Kredi Kartı"]] },
+    // 2.3.0 İz 3.3 (plan §8.10 kuralı; görünen metinde "Kurumsal" yok): Kredi Kartı (309) ve Kredi (300) yolları; Hesap süzgeci sunucudan (anyAccount).
+    payMethod: { label: "Yol", options: [["noncash", "Banka ve POS (Tümü)"], ["bank", "Banka (Havale / EFT)"], ["card", "POS / Kredi Kartı"], ["ccard", "Kredi Kartı"], ["loan", "Kredi"]] },
     // v2.1.0 Aşama 14 (Banka grubu): hareket türü ve hesap grubu. Hesap seçenekleri (bankAccount, feeAccount) sunucunun katalog yanıtından.
     bankMove: { label: "Hareket", options: [["", "Tüm Hareketler"], ["external", "Dış Hareketler"], ["internal", "Transfer (İç Hareketler)"]] },
     bankGroup: { label: "Hesap Grubu", options: [["real", "Gerçek Banka"], ["debt", "Kart ve Kredi Borcu"], ["unassigned", "Hesabı Atanmamış Eski Hareketler"], ["all", "Tümü"]] },
     // 2.2.0 (İz 3.5): POS Ödeme Takvimi'nin kalem türü (POS seçenekleri sunucunun katalog yanıtından: posTerminal).
     posKind: { label: "Tür", options: [["", "Tümü"], ["pos", "POS"], ["blocked", "Blokeli POS"], ["fee", "Komisyon Tahsili"]] },
+    // 2.3.0 İz 5.3: POS Satış / POS Komisyon raporlarının tür ve dönem süzgeçleri.
+    posSale: { label: "Tür", options: [["", "Tümü"], ["sale", "POS Satışı"], ["refund", "POS İadesi"], ["cancel", "POS İptal İadesi"]] },
+    posPeriod: { label: "Dönem", options: [["month", "Aylık"], ["year", "Yıllık"], ["range", "Dönem Toplamı"]] },
   };
-  const DYNAMIC = { bankAccount: "Banka Hesabı", feeAccount: "Banka Hesabı", posTerminal: "POS" };
+  const DYNAMIC = { bankAccount: "Banka Hesabı", feeAccount: "Banka Hesabı", posTerminal: "POS", anyAccount: "Hesap" };
 
   // Raporlar penceresindeki "Tüm raporlar" sekmesine kurulur (hof-overview.js). Sekme her açılışta yeni düğüm verir.
   async function mount(host, reportId = "") {
@@ -96,7 +100,8 @@
   }
   // Eski giriş noktası (ANLIK DURUM kutucukları, kısayollar): Raporlar penceresi "Tüm raporlar" sekmesinde açılır.
   function open(reportId = "") {
-    if (!HOF.can("overview.view") && !(HOF.can("bank.reports") && /^(banka-bakiye|banka-hareket|banka-masraf|alt-hesap-mizani)$/.test(reportId))) return HOF.toast("Raporlar yalnız yönetici ve yönetici yetki verdiği kişilere açıktır.", { type: "error" });
+    // Banka grubu (bank.reports; 2.2.0 ve 2.3.0 İz 3.3 raporları dahil) Finans Raporları olmadan da açılır.
+    if (!HOF.can("overview.view") && !(HOF.can("bank.reports") && /^(banka-|alt-hesap-mizani$|tahsildeki-cekler$|pos-odeme-takvimi$|faturasi-beklenen-komisyonlar$|para-birimi-bazinda-bakiye$|bankalar-arasi-transfer$|kasa-banka-transfer$|cari-banka-hareketleri$|fatura-banka-hareketleri$|taksit-banka-hareketleri$)/.test(reportId))) return HOF.toast("Raporlar yalnız yönetici ve yönetici yetki verdiği kişilere açıktır.", { type: "error" });
     return HOF.overview?.openReports ? HOF.overview.openReports("all", { report: reportId }) : null;
   }
   const root = () => center?.host?.querySelector("[data-rc]");
@@ -200,7 +205,7 @@
     if (report.params.includes("account")) parts.push('<div class="hof-rc-param hof-rc-account" data-account-slot></div>');
     if (report.params.includes("range")) {
       parts.push(`<div class="hof-rc-param hof-rc-range"><div class="hof-rep-presets">${PRESETS.map(([id, label]) => `<button type="button" class="hof-rep-chip ${p.preset === id ? "is-on" : ""}" data-preset="${id}">${esc(label)}</button>`).join("")}</div>
-        <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-param="from" value="${esc(p.from || "")}"></label>
+        <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-param="from" value="${esc(p.preset === "all" ? "" : p.from || "")}"></label>
         <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-param="to" value="${esc(p.to || "")}"></label></div>`);
     }
     for (const name of report.params) {
@@ -254,8 +259,11 @@
     });
   });
   // Boş sonuç (v2.0.20): dönemli raporda "Tüm Zamanlar" seçili değilse ipucu ve tek tıkla Tüm Zamanlar.
+  // 2.3.0 İz 5.2: raporun kendi ipucu (sunucu emptyHint; ör. POS Ödeme Takvimi → Banka → Hareketler bağı) varsa o.
   const emptyText = report =>
-    report.params.includes("range") && center.params.preset !== "all"
+    report.emptyHint
+      ? `${esc(report.emptyHint.text)} ${report.emptyHint.bankTab ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-bank-tab="${esc(report.emptyHint.bankTab)}">${esc(report.emptyHint.label || "Banka")}</button>` : ""}`
+      : report.params.includes("range") && center.params.preset !== "all"
       ? `Bu dönemde kayıt yok. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-preset="all">Tüm Zamanları Göster</button>`
       : "Bu süzgeçte kayıt yok.";
   function renderMain() {
@@ -328,6 +336,7 @@
       return HOF.toast("Önce cariyi seçin.", { type: "error" });
     }
     if (target.dataset.report) return select(target.dataset.report);
+    if (target.dataset.bankTab) return HOF.bank?.open ? HOF.bank.open({ tab: target.dataset.bankTab }) : null;
     if (target.dataset.preset) {
       Object.assign(center.params, { preset: target.dataset.preset }, presetRange(target.dataset.preset));
       rememberRange(center.id, center.params);
@@ -339,7 +348,9 @@
       const to = main.querySelector('[data-param="to"]')?.value;
       if (from && to && from > to) return HOF.toast("Başlangıç tarihi bitiş tarihinden sonra olamaz.", { type: "error" });
       if (from !== undefined) {
-        Object.assign(center.params, { from: from || "", to: to || "", preset: "" });
+        // Tüm Zamanlar seçiliyken Başlangıç boş kalır (2.3.0 İz 5.2: "1976" görünmez); boş bırakılıp Ön İzle denince aralık yine Tüm Zamanlar.
+        if (!from && center.params.preset === "all") Object.assign(center.params, { to: to || presetRange("all").to });
+        else Object.assign(center.params, { from: from || "", to: to || "", preset: "" });
         rememberRange(center.id, center.params);
       }
       const category = main.querySelector('[data-param="category"]');

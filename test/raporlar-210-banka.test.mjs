@@ -378,6 +378,8 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     state: ["", "low", "out", "negative", "product", "service"],
     category: ["", "Yok Böyle Kategori"],
     planStatus: ["active", "closed", "all"],
+    // 2.3.0 İz 3.3: Banka ve POS Hareketleri'nin Hesap süzgeci (her seçeneğiyle test/raporlar-230-banka.test.mjs'te; burada yalnız "Tüm Hesaplar").
+    anyAccount: [""],
   };
   const combos = report => {
     let list = [{ q: {}, range: null, label: "" }];
