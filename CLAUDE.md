@@ -179,6 +179,11 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     kayıtları — 30.09, 12.10, 15.10; hepsi Azure/GitHub Actions adresi; lisans.installations/events'ten doğrulandı; update-flow/supervisor/yedek/packaging
     testleri adresi vermiyordu.)
 
+31. AYNI TARİHLİ KAYITLAR KİMLİKLE SIRALANMAZ. Rastgele UUID'ye göre sıralama rastgele sıradır; iki yükleyici farklı anahtar kullanınca (kapı
+    'account:<id>', yevmiye '<id>#<satır>') aynı veriden farklı sonuç çıkar ve kapı "sapma" der. Aynı tarihte sıra: olay sınıfı (plan/kâhin dili
+    kuralı) → yazım sırası (rowid/seq); sınıf içi sıranın toplamları değiştirmediği gösterilir. (15.10: be53818 kayıt sırası, 4d4da18 değersiz/tahsilat
+    sırası — Uzun Doğrulama #199/#213 7 tohum kırmızı; birim test anahtarları ters çevirerek üretir.)
+
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
@@ -496,6 +501,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kayıtları (88.225…, 178.233…, 88.241…) Türkiye adresleri = GERÇEK demo kullanıcıları. Düzeltme: testlere ölü adres + tarama testi. Sahte 3 kaydın
   silinmesi (installations + events) kullanıcı kararı; silinmedi. KARAR (kullanıcı, 15.10.2026): "zararsızsa dursun, tekrarı olmasın; basit işler için kod
   tabanına dokunmayalım" → 3 kayıt DURUR (silinmez); önlem yalnız testlerde (210ac8e; ürün kodu değişmedi); operatör verisine dokunulmaz.
+- SON ADAY 2.3.0 = 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
+  iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
+  (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
+  eşitlendi (615a7b4, 6312e8b; ürün doğruydu). Yerelde tohum 1,3,4,6,7,8,9,10 × 5.000 GEÇTİ. Uzun Doğrulama 6312e8b'de GitHub'da koşuyor (~14:55 UTC
+  başladı); yeşil → KANIT satırı doldurulur → imzalı paket → teslim → PR (kullanıcı: "kuralımıza göre bekleyelim").
 - DURDURULDU (kullanıcı, 15.10.2026 06:55 UTC: "5 saatlik kullanım limitim %99, 11:10'da yenilenecek, uygun yerde dur"): karar ajanı
   (644 plan metni / tahsilatta "Normal Cari Hesaba İşle" seçimi / yaşlandırma "Vade Gecikme (Gün)") durduruldu; yarım işi worktree dalı
   `worktree-agent-ae29a6d1c9c3d14a0` commit 4c725a7 (WIP, 34 dosya; test KOŞULMADI, birleştirilmedi). Dal HEAD d274311; CI 469d547/6a599ba/
