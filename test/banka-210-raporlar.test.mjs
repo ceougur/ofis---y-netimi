@@ -580,7 +580,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     const catalog = await must("muhasebe katalog", accountant.get(RC));
     // 2.3.0 İz 1.7 (bilerek güncellendi): Şüpheli Alacaklar raporu Şüpheli Alacak İşlemleri YA DA finans raporları yetkisiyle açılır (plan §3.11b/5);
     // muhasebe accounts.doubtful ile onu da görür.
-    assert.deepEqual(catalog.reports.map(report => report.id), [...ALL_BANK_REPORTS, "supheli-alacaklar"], "muhasebe Banka grubu + Şüpheli Alacaklar (Finans Raporları yok)");
+    assert.deepEqual(catalog.reports.map(report => report.id), ["supheli-alacaklar", ...ALL_BANK_REPORTS], "muhasebe Şüpheli Alacaklar (Cari grubu önce; İz 5.4 sırası) + Banka grubu (Finans Raporları yok)");
     assert.equal((await accountant.get(`${RC}/banka-bakiye?preset=all`)).status, 200);
     assert.equal((await accountant.get(`${RC}/kasa-hareketleri`)).status, 403);
     const users = await must("kullanıcılar", api.get("/api/admin/users"));

@@ -1,0 +1,128 @@
+{
+  "ad": "ana-iz33-kirmizi",
+  "komut": "node --test test/raporlar-230-banka.test.mjs test/rapor-230-iz5.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:31:24.812Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 0,
+    "basarisiz": 19,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 19 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.4 katalog grup sırası: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (tanım sırasından bağımsız)",
+      "konum": "test/rapor-230-iz5.test.mjs:114:3",
+      "hata": "grup sırası: Kasa · Ana Defter · Banka · Cari · Fatura · Taksit · Çek / Senet · Stok · Kayıtlar · Ofis · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.3 POS Satış Raporu: her POS × tür × dönem — satış, taksitli satış, iade ayrı satır (eksi); komisyon matrah, BSMV ayrı, net; TOPLAM; PDF/Excel",
+      "konum": "test/rapor-230-iz5.test.mjs:131:3",
+      "hata": "pos-satis tümü tüm türler Bu Yıl: 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.3 POS Komisyon Raporu: Aylık / Yıllık / Dönem Toplamı × POS × tür — satış ve iade ayrı satır, kip; TOPLAM = satırlar; PDF/Excel",
+      "konum": "test/rapor-230-iz5.test.mjs:172:3",
+      "hata": "pos-komisyon month tümü: 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.1 Banka → Hareketler PDF / Excel: ekrandaki süzgeçle aynı satırlar (hesap, tür, yön, tarih, arama), alt TOPLAM, Rapor Merkezi başlığı; bank.view yeter, personel 403",
+      "konum": "test/rapor-230-iz5.test.mjs:209:3",
+      "hata": "tümü Excel 404 · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Komisyon raporları, grup sırası › 5.2 Tüm Zamanlar: her raporun ekran başlığı ve PDF'i '1976' / '19xx' içermez, dönem metni 'Tüm Zamanlar'; POS Ödeme Takvimi boşken ipucu + Banka → Hareketler bağı",
+      "konum": "test/rapor-230-iz5.test.mjs:274:3",
+      "hata": "banka-bakiye PDF: Tüm Zamanlar (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › katalog: Banka grubunda on yeni rapor, başlıkları ve süzgeçleri; anyAccount seçenekleri (bakiye dönmez)",
+      "konum": "test/raporlar-230-banka.test.mjs:248:3",
+      "hata": "Banka grubunda banka-gunluk yok (banka-bakiye, banka-hareket, banka-masraf, alt-hesap-mizani, tahsildeki-cekler, pos-odeme-takvimi, faturasi-beklenen-komisyonlar) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Günlük Banka Raporu: her hesap × her dönem — gün gün dış giriş/çıkış, transfer ayrı, Net = bakiye değişimi, Gün Sonu Bakiye yürür; devir dönem öncesi",
+      "konum": "test/raporlar-230-banka.test.mjs:262:3",
+      "hata": "banka-gunluk Gerçek Banka varsayılan (Bu Yıl): 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Aylık Banka Raporu: her hesap × her dönem — Ay Başı/Ay Sonu Bakiye, hareketsiz ay devirle; boş dönemde satır yok",
+      "konum": "test/raporlar-230-banka.test.mjs:298:3",
+      "hata": "banka-aylik Gerçek Banka varsayılan (Bu Yıl): 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Banka Bazında Bakiye ve Para Birimi Bazında Bakiye: her dönem — banka (hesapları birlikte) ve TL satırı; Gerçek Banka / Borç / Net; Hesabı Atanmamış özette",
+      "konum": "test/raporlar-230-banka.test.mjs:350:3",
+      "hata": "banka-bazinda varsayılan (Bu Yıl): 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Bankalar Arası Transfer Raporu: her hesap × her dönem — ücretli transfer, ters kaydedilen asıl + eksi Ters Kayıt; TOPLAM net; kanal ve durum",
+      "konum": "test/raporlar-230-banka.test.mjs:392:3",
+      "hata": "bankalar-arasi Gerçek Banka varsayılan (Bu Yıl): 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Kasa ve Banka Transfer Raporu: her hesap × her dönem — iki yön ayrı kolon, Net (Bankaya); hesabı atanmamış süzgeci boş",
+      "konum": "test/raporlar-230-banka.test.mjs:426:3",
+      "hata": "kasa-banka Gerçek Banka varsayılan (Bu Yıl): 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Cari ve Banka Hareketleri: her hesap × cari × dönem — yalnız carili satırlar (cari, fatura peşini, taksit, eski havale); masraf, transfer, kart borcu girmez",
+      "konum": "test/raporlar-230-banka.test.mjs:456:3",
+      "hata": "cari-banka tümü tüm cariler varsayılan (Bu Yıl): 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Fatura ve Banka Hareketleri: bağ türü Peşin / Kapatılacak Fatura / Otomatik (En Eski); fatura no; taksit ve masraf girmez; özet bağ türüne göre",
+      "konum": "test/raporlar-230-banka.test.mjs:488:3",
+      "hata": "fatura-banka tümü varsayılan (Bu Yıl): 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Taksit ve Banka Hareketleri: her hesap × her dönem — yalnız taksit kartı tahsilatı; kart adı ve cari",
+      "konum": "test/raporlar-230-banka.test.mjs:514:3",
+      "hata": "taksit-banka tümü varsayılan (Bu Yıl): 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Banka Nakit Akış Raporu: başlangıç Gerçek Banka (Hesabı Atanmamış girmez); planlı masraf/gelir, kart borcu son ödeme günü, tahsildeki çek; Planlanan Transfer ayrı kolon (bakiye değişmez); gecikmiş planlı girmez, özette",
+      "konum": "test/raporlar-230-banka.test.mjs:535:3",
+      "hata": "nakit-akis Bütün beklenenler: 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Banka ve POS Hareketleri: Yol Kredi Kartı (309) ve Kredi (300) + Hesap süzgeci — her seçenek satırları değiştirir; eski üç seçim aynen; tanınmayan hesap 404",
+      "konum": "test/raporlar-230-banka.test.mjs:582:3",
+      "hata": "kart satırları: 01.01.2026 |  | Devir | Dönem başı banka ve pos |  |  | 0,00 TL | · 20.09.2026 | Havale / EFT | Cari | ABC Ltd. | 5.000,00 TL |  | 5.000,00 TL | Ofis yöneticisi · 01.10.2026 | Havale / EFT | Banka Fişi | Açılış Bakiyesi · Ziraat Bankası · Ana TL Hesabı (Açılış ve Devir Düzeltmesi: +100.000,00 TL) |  |  | 105.000,00 TL | Ofis yöneticisi (beklenen 2, gelen 18)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › Nakit Akış, Vade Takip ve Zil: planlı banka işlemleri ve kart borcu son ödeme günü kalemleri; planlı transfer genel Nakit Akış'a girmez (toplam 0), Vade Takip'te tutarsız",
+      "konum": "test/raporlar-230-banka.test.mjs:636:3",
+      "hata": "Nakit Akış planlı banka kalemleri: [] · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › yetki: personel 403 (ekran, PDF, Excel; dosya sızmaz); muhasebe yeni raporları görür; Finans Raporları rolü görmez",
+      "konum": "test/raporlar-230-banka.test.mjs:673:3",
+      "hata": "muhasebe banka-gunluk listede (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel) › iki şirket: 002 boş — yeni raporlar boş (500 yok), Banka Nakit Akış 'Banka Hesabı Tanımlanmadı'; ?hofCompany= ile 001'in hesabı 404; ileri tarihli hareket 400",
+      "konum": "test/raporlar-230-banka.test.mjs:697:3",
+      "hata": "002 banka-gunluk: 404 {\"ok\":false,\"error\":\"Rapor bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    }
+  ],
+  "ham_cikti": "../../../home/user/ofis---y-netimi/docs/kanit/2026-10-15/ana-iz33-kirmizi.log",
+  "klasor": "/tmp/claude-0/ana-iz33-eski-b24e0c2",
+  "ham_cikti_sha256": "b502e99ccaaf905fb38b88ee25b9383a00a4cfcbcc26d788adda97f107905d4b",
+  "ham_cikti_bayt": 28790
+}

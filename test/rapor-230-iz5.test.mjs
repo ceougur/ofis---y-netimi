@@ -267,7 +267,11 @@ describe("2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Kom
     const accountant = apiOf(await createUser(ctx.server, api.client, { username: "iz5-muhasebe-2", role: "muhasebe" }));
     const users = await must("kullanıcılar", api.get("/api/admin/users"));
     await must("rapor yetkisini kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "iz5-muhasebe-2").id}`, { grants: { add: [], remove: ["bank.reports"] } }));
-    assert.equal((await accountant.get(RC)).status, 403, "Banka Raporları yok");
+    // 2.3.0 İz 1.7 ile birleşince (bilerek güncellendi): muhasebenin Şüpheli Alacak İşlemleri yetkisi katalogda yalnız Şüpheli Alacaklar'ı bırakır;
+    // Banka grubu yine kapalı (aşağıdaki hareket dışa aktarımı bank.view ile ayrı).
+    const narrowed = await accountant.get(RC);
+    assert.equal(narrowed.status, 200, "Banka Raporları yok (katalog yalnız Şüpheli Alacaklar)");
+    assert.deepEqual(narrowed.data.reports.map(report => report.id), ["supheli-alacaklar"], "Banka grubu listelenmez");
     assert.equal((await accountant.raw("GET", `${BANK}/movements.xlsx?account=${base.acc.ziraat.id}`)).status, 200, "bank.view ile Hareketler Excel");
   });
 
