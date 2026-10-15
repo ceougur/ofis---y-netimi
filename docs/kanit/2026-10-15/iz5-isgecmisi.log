@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6)
+    # Subtest: not: personel ekler, yönetici düzeltir (düzeltme izi), siler, Silinenler'den geri gelir; denetim kaydı tam
+    ok 1 - not: personel ekler, yönetici düzeltir (düzeltme izi), siler, Silinenler'den geri gelir; denetim kaydı tam
+      ---
+      duration_ms: 88.885291
+      type: 'test'
+      ...
+    # Subtest: telefon: düzeltme numarayı temizler, bozuk numara 400; silme Silinenler'e gider ve geri gelir
+    ok 2 - telefon: düzeltme numarayı temizler, bozuk numara 400; silme Silinenler'e gider ve geri gelir
+      ---
+      duration_ms: 28.016191
+      type: 'test'
+      ...
+    # Subtest: haciz: düzeltmede düşüm tarihi yeniden hesaplanır; Haciz Uyarıları (7 gün) düzeltilen ve silinen hacze uyar
+    ok 3 - haciz: düzeltmede düşüm tarihi yeniden hesaplanır; Haciz Uyarıları (7 gün) düzeltilen ve silinen hacze uyar
+      ---
+      duration_ms: 53.276823
+      type: 'test'
+      ...
+    # Subtest: yetki: kayıt düzeltme yetkisi kaldırılan kullanıcı not ekler ama düzeltemez / silemez (403); oturumsuz 401
+    ok 4 - yetki: kayıt düzeltme yetkisi kaldırılan kullanıcı not ekler ama düzeltemez / silemez (403); oturumsuz 401
+      ---
+      duration_ms: 23.83442
+      type: 'test'
+      ...
+    1..4
+ok 1 - işlem geçmişi düzelt / sil / geri yükle (2.3.0 İz 5.6)
+  ---
+  duration_ms: 1157.12869
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1579.257524
