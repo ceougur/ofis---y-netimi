@@ -960,8 +960,20 @@ def tek_kosu(senaryo_yolu, cikti_adi, kucuk_rapor=False, hamdan=False):
         "ucTarafSayilari": uc_taraf_sayilari(a, b, pv),
         "farklar": farklar if not kucuk_rapor else [f for f in farklar if f["yol"][0] != "araDurumlar"],
     })
+    # Çıkış kodu (ders 2, 6): açıklanmış bilinen sınıf (SINIF_ACIKLAMALARI'nda; "program doğru" ya da ertelenmiş) dışında
+    # fark varsa 1 — ACIKLANMAMIS / SINIFLANMAMIS ya da listede olmayan sınıf gizlenmez, koşu BAŞARISIZ sayılır.
+    rapor["bilinenSinifYaprak"] = sum(s["yaprak"] for ad_, s in siniflar.items() if _bilinen_sinif(ad_))
+    rapor["aciklanmamisYaprak"] = len(farklar) - rapor["bilinenSinifYaprak"]
     yaz_json(os.path.join(CIKTI, cikti_adi), rapor)
-    return rapor, 0
+    return rapor, (1 if rapor["aciklanmamisYaprak"] else 0)
+
+
+def _bilinen_sinif(ad):
+    """Kök sınıf adı (ör. "KDV-DAHIL-ISKONTO", "TUREV:KDV-DAHIL-ISKONTO", "A+B") yalnız bilinen köklerden mi oluşuyor?"""
+    if ad.startswith(("ACIKLANMAMIS", "SINIFLANMAMIS")):
+        return False
+    kok = ad[6:] if ad.startswith("TUREV:") else ad
+    return all(k in SINIF_ACIKLAMALARI for k in kok.split("+"))
 
 
 def uc_taraf_sayilari(a, b, p):
@@ -1173,10 +1185,13 @@ def main(argv):
         r.get("karsilastirilanYaprak"), r.get("atlananBelirsizYaprak"), r.get("farkSayisi"), r.get("desenSayilari")))
     for ad, s in (r.get("siniflar") or {}).items():
         sys.stdout.write("  %-60s %4d yaprak  %s\n" % (ad[:60], s["yaprak"], s["desenler"]))
-    # tools/kanit.mjs özeti (ders 2): karşılaştırılan yaprak = denetim; fark = başarısız (bilinen sınıf da sayılır, gizlenmez)
+    # tools/kanit.mjs özeti (ders 2): karşılaştırılan yaprak = denetim; başarısız = bilinen sınıf dışındaki fark (çıkış koduyla
+    # aynı kural); bilinen sınıfın yaprakları ayrıca yazılır, gizlenmez (sınıf listesi yukarıda).
     if r.get("durum") == "TAMAM":
         fark = r.get("farkSayisi") or 0
-        sys.stdout.write("%d denetim geçti, %d başarısız\n" % ((r.get("karsilastirilanYaprak") or 0) - fark, fark))
+        acik = r.get("aciklanmamisYaprak") or 0
+        sys.stdout.write("%d denetim geçti, %d başarısız (bilinen sınıf %d yaprak, toplam fark %d)\n" % (
+            (r.get("karsilastirilanYaprak") or 0) - fark, acik, fark - acik, fark))
     else:
         sys.stdout.write("0 denetim geçti, 1 başarısız (koşu EKSİK)\n")
     return kod

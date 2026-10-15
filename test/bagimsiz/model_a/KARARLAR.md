@@ -415,8 +415,9 @@ Kararlar (K-34 … K-40):
   `kodDayanak` "KABUL"; `date-before-record` 400 grup 2.
 - **K-37 K8.** Kart kalanı `max(0, …)`; fazla `aciklar()`'da dağıtılmamış giriş havuzuna (`havuz_g += fazla`) eklenir ve BELİRSİZ-34 işareti;
   taksit kartı alanları BELİRSİZ-27/34/36 ile işaretlenmez (evrak, avans ve değersiz kartı etkilemez).
-- **K-38 Silme.** Şüpheli kaydı (tip `supheli`) `sil` hedefi olabilir: olaylı kayıt BELİRSİZ-37; karşılık hareketi silinince fişi ve olayı
-  düşer; değersiz hareketi silinmez (statik denetim). Yetki: şüpheli kaydı/karşılık silme = şüpheli işlemi yetkisi (muhasebe 200, personel 403).
+- **K-38 Silme.** Şüpheli kaydı (tip `supheli`) `sil` hedefi olabilir: olaylı kayıt BELİRSİZ-37 — bu denetim YETKİDEN ÖNCE yapılır (personel
+  403 alsa da senaryo kurmaz; model_b K46 ile aynı; uretici sürüm 4 koşusunda ayrışma görülüp hizalandı); karşılık hareketi silinince fişi ve
+  olayı düşer; değersiz hareketi silinmez (statik denetim). Yetki: şüpheli kaydı/karşılık silme = şüpheli işlemi yetkisi (muhasebe 200, personel 403).
 - **K-39 Değişmez.** `aciklar()` sol tarafı `cari_bakiye − evrakNet + Σ değersiz`; `durum()` Σ kalan = bakiye(128), −Σ karşılık = bakiye(129).
 - **K-40 Plan denetimi.** `plan_denetimi` eksik mizan anahtarını {0, 0} sayar (§9/2; kabul-supheli'de 128/129/644/659'un 0 beklendiği
   kontrol adımları için).

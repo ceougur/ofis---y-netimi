@@ -1336,6 +1336,11 @@ class Model:
         kul = adim.get("kullanici", "Y")
         rol = self.roller[kul]
         tarih = tarih_coz(adim["tarih"], "tarih") if "tarih" in adim else self.bugun
+        # 0) senaryo kurmayan silme (BELİRSİZ-37): yetkiden önce — "senaryo kurmaz" sonuçtan bağımsız (K-38; model_b ile aynı)
+        if islem == "sil":
+            hd0 = self.varlik(adim["hedef"])
+            if hd0["tip"] == "supheli" and hd0["aktif"] and any(o["aktif"] and o["kayit"] == hd0["key"] for o in self.supheli_olaylar):
+                raise SenaryoHatasi("adım %s: BELİRSİZ-37 — karşılığı/değersizi/çıkarması olan kaydın silinmesi" % adim["id"])
         # 1) yetki
         y = self.yetki(adim, rol, kul)
         if y == "B":
