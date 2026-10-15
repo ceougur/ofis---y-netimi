@@ -1,0 +1,392 @@
+{
+  "araDurumlar": {
+    "k0": {
+      "bankaHesaplari": {},
+      "cariler": {
+        "ABC": 1000000
+      },
+      "eksiBakiyeDenetimi": {},
+      "faturalar": {
+        "F1": {
+          "acik": 1000000,
+          "kdv": 166667,
+          "matrah": 833333,
+          "toplam": 1000000
+        }
+      },
+      "hesapKodlari": {},
+      "kasa": 0,
+      "mizan": {
+        "120": {
+          "alacak": 0,
+          "borc": 1000000
+        },
+        "391": {
+          "alacak": 166667,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 833333,
+          "borc": 0
+        }
+      },
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 0
+      },
+      "stok": {},
+      "supheliAlacaklar": {},
+      "taksitKartlari": {}
+    },
+    "k1": {
+      "bankaHesaplari": {},
+      "cariler": {
+        "ABC": 1000000
+      },
+      "eksiBakiyeDenetimi": {},
+      "faturalar": {
+        "F1": {
+          "acik": 1000000,
+          "kdv": 166667,
+          "matrah": 833333,
+          "toplam": 1000000
+        }
+      },
+      "hesapKodlari": {},
+      "kasa": 0,
+      "mizan": {
+        "120": {
+          "alacak": 0,
+          "borc": 600000
+        },
+        "128": {
+          "alacak": 0,
+          "borc": 400000
+        },
+        "391": {
+          "alacak": 166667,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 833333,
+          "borc": 0
+        }
+      },
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 0
+      },
+      "stok": {},
+      "supheliAlacaklar": {
+        "S1": {
+          "cikarilan": 0,
+          "degersiz": 0,
+          "durum": "acik",
+          "kalan": 400000,
+          "karsilik": 0,
+          "tahsilEdilen": 0,
+          "tutar": 400000
+        }
+      },
+      "taksitKartlari": {}
+    },
+    "k2": {
+      "bankaHesaplari": {},
+      "cariler": {
+        "ABC": 1000000
+      },
+      "eksiBakiyeDenetimi": {},
+      "faturalar": {
+        "F1": {
+          "acik": 1000000,
+          "kdv": 166667,
+          "matrah": 833333,
+          "toplam": 1000000
+        }
+      },
+      "hesapKodlari": {},
+      "kasa": 0,
+      "mizan": {
+        "120": {
+          "alacak": 0,
+          "borc": 600000
+        },
+        "128": {
+          "alacak": 0,
+          "borc": 400000
+        },
+        "129": {
+          "alacak": 250000,
+          "borc": 0
+        },
+        "391": {
+          "alacak": 166667,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 833333,
+          "borc": 0
+        },
+        "654": {
+          "alacak": 0,
+          "borc": 250000
+        }
+      },
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 0
+      },
+      "stok": {},
+      "supheliAlacaklar": {
+        "S1": {
+          "cikarilan": 0,
+          "degersiz": 0,
+          "durum": "acik",
+          "kalan": 400000,
+          "karsilik": 250000,
+          "tahsilEdilen": 0,
+          "tutar": 400000
+        }
+      },
+      "taksitKartlari": {}
+    },
+    "k3": {
+      "bankaHesaplari": {},
+      "cariler": {
+        "ABC": 700000
+      },
+      "eksiBakiyeDenetimi": {},
+      "faturalar": {
+        "F1": {
+          "acik": 700000,
+          "kdv": 166667,
+          "matrah": 833333,
+          "toplam": 1000000
+        }
+      },
+      "hesapKodlari": {},
+      "kasa": 300000,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 300000
+        },
+        "120": {
+          "alacak": 0,
+          "borc": 600000
+        },
+        "128": {
+          "alacak": 0,
+          "borc": 100000
+        },
+        "129": {
+          "alacak": 0,
+          "borc": 0
+        },
+        "391": {
+          "alacak": 166667,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 833333,
+          "borc": 0
+        },
+        "644": {
+          "alacak": 250000,
+          "borc": 0
+        },
+        "654": {
+          "alacak": 0,
+          "borc": 250000
+        }
+      },
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 300000
+      },
+      "stok": {},
+      "supheliAlacaklar": {
+        "S1": {
+          "cikarilan": 0,
+          "degersiz": 0,
+          "durum": "acik",
+          "kalan": 100000,
+          "karsilik": 0,
+          "tahsilEdilen": 300000,
+          "tutar": 400000
+        }
+      },
+      "taksitKartlari": {}
+    },
+    "k4": {
+      "bankaHesaplari": {},
+      "cariler": {
+        "ABC": 600000
+      },
+      "eksiBakiyeDenetimi": {},
+      "faturalar": {
+        "F1": {
+          "acik": 700000,
+          "kdv": 166667,
+          "matrah": 833333,
+          "toplam": 1000000
+        }
+      },
+      "hesapKodlari": {},
+      "kasa": 300000,
+      "mizan": {
+        "100": {
+          "alacak": 0,
+          "borc": 300000
+        },
+        "120": {
+          "alacak": 0,
+          "borc": 600000
+        },
+        "128": {
+          "alacak": 0,
+          "borc": 0
+        },
+        "129": {
+          "alacak": 0,
+          "borc": 0
+        },
+        "391": {
+          "alacak": 166667,
+          "borc": 0
+        },
+        "600": {
+          "alacak": 833333,
+          "borc": 0
+        },
+        "644": {
+          "alacak": 250000,
+          "borc": 0
+        },
+        "654": {
+          "alacak": 0,
+          "borc": 250000
+        },
+        "659": {
+          "alacak": 0,
+          "borc": 100000
+        }
+      },
+      "ozet": {
+        "gercekBanka": 0,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": 300000
+      },
+      "stok": {},
+      "supheliAlacaklar": {
+        "S1": {
+          "cikarilan": 0,
+          "degersiz": 100000,
+          "durum": "acik",
+          "kalan": 0,
+          "karsilik": 0,
+          "tahsilEdilen": 300000,
+          "tutar": 400000
+        }
+      },
+      "taksitKartlari": {}
+    }
+  },
+  "atlananlar": [],
+  "bankaHesaplari": {},
+  "belirsizler": [
+    {
+      "alan": "araDurumlar.k4.faturalar.F1.acik",
+      "neden": "BELİRSİZ-36"
+    },
+    {
+      "alan": "faturalar.F1.acik",
+      "neden": "BELİRSİZ-36"
+    }
+  ],
+  "cariler": {
+    "ABC": 600000
+  },
+  "dil": "destekofis-senaryo/4",
+  "eksiBakiyeDenetimi": {},
+  "faturalar": {
+    "F1": {
+      "acik": 700000,
+      "kdv": 166667,
+      "matrah": 833333,
+      "toplam": 1000000
+    }
+  },
+  "hesapKodlari": {},
+  "kasa": 300000,
+  "kaynak": "kahin",
+  "mizan": {
+    "100": {
+      "alacak": 0,
+      "borc": 300000
+    },
+    "120": {
+      "alacak": 0,
+      "borc": 600000
+    },
+    "128": {
+      "alacak": 0,
+      "borc": 0
+    },
+    "129": {
+      "alacak": 0,
+      "borc": 0
+    },
+    "391": {
+      "alacak": 166667,
+      "borc": 0
+    },
+    "600": {
+      "alacak": 833333,
+      "borc": 0
+    },
+    "644": {
+      "alacak": 250000,
+      "borc": 0
+    },
+    "654": {
+      "alacak": 0,
+      "borc": 250000
+    },
+    "659": {
+      "alacak": 0,
+      "borc": 100000
+    }
+  },
+  "ozet": {
+    "gercekBanka": 0,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": 300000
+  },
+  "retler": [],
+  "senaryo": "kabul-supheli",
+  "stok": {},
+  "supheliAlacaklar": {
+    "S1": {
+      "cikarilan": 0,
+      "degersiz": 100000,
+      "durum": "acik",
+      "kalan": 0,
+      "karsilik": 0,
+      "tahsilEdilen": 300000,
+      "tutar": 400000
+    }
+  },
+  "taksitKartlari": {},
+  "yinelenenler": []
+}
