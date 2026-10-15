@@ -173,6 +173,11 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 29. node_modules GENEL KLASÖRE BAĞLANMAZ. Depoda `node_modules` → `/opt/node22/lib/node_modules` sembolik bağı kurulup `npm ci` koşulursa npm
     bağın HEDEFİNİ siler (genel npm + playwright gitti). Playwright depoya `npm ci` ile gelir; genel araç gerekirse `NODE_PATH` kullanılır.
     (12–13.10: npm tarball'dan, playwright `npm install -g --force` ile geri kuruldu; paket `node tools/build-windows.mjs` ile doğrudan derlendi.)
+30. TEST GERÇEK LİSANS SERVİSİNE ULAŞMAZ. Gerçek programı ayrı süreçte açan her test/araç (supervisor, bootstrap.mjs, server.mjs; sahte sürüm paketleri
+    dahil) `HUKUK_LICENSE_URL=http://127.0.0.1:9` verir; program açılıştan 3 sn sonra kendiliğinden deneme başlatır ve GitHub koşucusundan GERÇEK Operatör
+    Merkezi'ne sahte "ofis" düşer. Denetim `test/lisans-servisi-izolasyonu.test.mjs` (kaynak tarar). (15.10: Operatör Merkezi'nde "Sürüm 9.0.0 · Denemede"
+    kayıtları — 30.09, 12.10, 15.10; hepsi Azure/GitHub Actions adresi; lisans.installations/events'ten doğrulandı; update-flow/supervisor/yedek/packaging
+    testleri adresi vermiyordu.)
 
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
@@ -479,6 +484,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
      modülünden — satırda "Kayda Git"); ilk 3 satır + "Daha Fazla Göster (n)". Yetki: kayıt düzenleme yetkisi.
   KARAR (kullanıcı, 15.10.2026: "bu son müşteri talebiydi; hepsini pakete ekle, işlem bitince yükleyelim, canlıya alalım") → 1–6 2.3.0 kapsamına
   (İz 5, `docs/2.3.0-IS-LISTESI.md`); 2.3.0 bitince teslim düzeniyle yayın (kullanıcı yükler).
+- OPERATÖR MERKEZİ "SÜRÜM 9.0.0" (kullanıcı sorusu, 15.10.2026): yayımlanmış 9.0.0 yok; lisans.installations'ta 3 kayıt (30.09 7b44b046…, 12.10 38efc2d5…,
+  15.10 07:04 UTC db54a00b…), hepsi Microsoft Azure = GitHub Actions; makeVersion ile 9.0.0 olarak paketlenen GERÇEK program CI'de açılıp kendiliğinden
+  deneme başlatmış (ders 30). Etki: yalnız operatör listesinde sahte "Adı yazılmamış ofis" satırları ve servis istekleri; müşteriye etkisi yok. Adsız 2.2.0
+  kayıtları (88.225…, 178.233…, 88.241…) Türkiye adresleri = GERÇEK demo kullanıcıları. Düzeltme: testlere ölü adres + tarama testi. Sahte 3 kaydın
+  silinmesi (installations + events) kullanıcı kararı; silinmedi.
 - DURDURULDU (kullanıcı, 15.10.2026 06:55 UTC: "5 saatlik kullanım limitim %99, 11:10'da yenilenecek, uygun yerde dur"): karar ajanı
   (644 plan metni / tahsilatta "Normal Cari Hesaba İşle" seçimi / yaşlandırma "Vade Gecikme (Gün)") durduruldu; yarım işi worktree dalı
   `worktree-agent-ae29a6d1c9c3d14a0` commit 4c725a7 (WIP, 34 dosya; test KOŞULMADI, birleştirilmedi). Dal HEAD d274311; CI 469d547/6a599ba/

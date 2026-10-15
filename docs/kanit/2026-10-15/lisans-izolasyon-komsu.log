@@ -1,0 +1,426 @@
+TAP version 13
+# (node:14648) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kurulum sonrası sürüm etkinleştirme (bootstrap etkinlestir)
+    # Subtest: ilk kurulumda kurulan sürümü etkinleştirir
+    ok 1 - ilk kurulumda kurulan sürümü etkinleştirir
+      ---
+      duration_ms: 105.953051
+      type: 'test'
+      ...
+    # Subtest: yükseltmede yeni sürümü etkinleştirir, öncekini saklar, daha eskileri siler
+    ok 2 - yükseltmede yeni sürümü etkinleştirir, öncekini saklar, daha eskileri siler
+      ---
+      duration_ms: 138.107603
+      type: 'test'
+      ...
+    # Subtest: otomatik güncellemeyle gelmiş daha yeni sürümü eski kurulum dosyası geri almaz
+    ok 3 - otomatik güncellemeyle gelmiş daha yeni sürümü eski kurulum dosyası geri almaz
+      ---
+      duration_ms: 378.172451
+      type: 'test'
+      ...
+    1..3
+ok 1 - kurulum sonrası sürüm etkinleştirme (bootstrap etkinlestir)
+  ---
+  duration_ms: 623.691285
+  type: 'suite'
+  ...
+# Subtest: Windows kurulum düzeni (bootstrap)
+    # Subtest: bootstrap etkin sürümü açar; veri kurulum kökündeki data klasörüne yazılır
+    ok 1 - bootstrap etkin sürümü açar; veri kurulum kökündeki data klasörüne yazılır
+      ---
+      duration_ms: 2506.760004
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: 'surum' ve 'yedek' alt komutları çalışır
+    ok 2 - 'surum' ve 'yedek' alt komutları çalışır
+      ---
+      duration_ms: 279.263105
+      type: 'test'
+      ...
+    # Subtest: hizmet ÇALIŞIRKEN ve yazarken 'yedek' alınır; yedek bütün ve okunur
+    ok 3 - hizmet ÇALIŞIRKEN ve yazarken 'yedek' alınır; yedek bütün ve okunur
+      ---
+      duration_ms: 2764.143608
+      type: 'test'
+      ...
+    # hizmet açıkken yedek 577 ms; bu sürede 5 giriş yazıldı
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: etkin sürüm açılamazsa önceki sürüme dönülür ve açılamayan sürüm işaretlenir
+    ok 4 - etkin sürüm açılamazsa önceki sürüme dönülür ve açılamayan sürüm işaretlenir
+      ---
+      duration_ms: 1408.017439
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: current.json bozuk veya olmayan sürümü gösteriyorsa kurulu en yeni sürümle açılır
+    ok 5 - current.json bozuk veya olmayan sürümü gösteriyorsa kurulu en yeni sürümle açılır
+      ---
+      duration_ms: 1620.036227
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    1..5
+ok 2 - Windows kurulum düzeni (bootstrap)
+  ---
+  duration_ms: 8699.386931
+  type: 'suite'
+  ...
+# Subtest: kurulum sonrası sağlık kontrolü (bootstrap saglik)
+    # Subtest: sağlık ucu 200 dönünce hemen başarılı olur
+    ok 1 - sağlık ucu 200 dönünce hemen başarılı olur
+      ---
+      duration_ms: 200.803646
+      type: 'test'
+      ...
+    # Subtest: servis bakım yanıtı veriyorsa (açılışta güncelleme) çalışıyor sayılır
+    ok 2 - servis bakım yanıtı veriyorsa (açılışta güncelleme) çalışıyor sayılır
+      ---
+      duration_ms: 2177.578042
+      type: 'test'
+      ...
+    # Subtest: servis başlatılamadıysa veya hiç yanıt yoksa başarısız olur ve servis günlüğünü yazdırır
+    ok 3 - servis başlatılamadıysa veya hiç yanıt yoksa başarısız olur ve servis günlüğünü yazdırır
+      ---
+      duration_ms: 4557.12407
+      type: 'test'
+      ...
+    1..3
+ok 3 - kurulum sonrası sağlık kontrolü (bootstrap saglik)
+  ---
+  duration_ms: 6940.234213
+  type: 'suite'
+  ...
+# (node:14649) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: servis yöneticisi (supervisor)
+    # Subtest: bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+    ok 1 - bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+      ---
+      duration_ms: 1.593427
+      type: 'test'
+      ...
+    # Subtest: istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+    ok 2 - istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+      ---
+      duration_ms: 166.186136
+      type: 'test'
+      ...
+    # Subtest: canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+    ok 3 - canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+      ---
+      duration_ms: 176.22496
+      type: 'test'
+      ...
+    # Subtest: UDP keşif sinyaline sunucu adresiyle yanıt verir
+    ok 4 - UDP keşif sinyaline sunucu adresiyle yanıt verir
+      ---
+      duration_ms: 802.527213
+      type: 'test'
+      ...
+    # Subtest: uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+    ok 5 - uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+      ---
+      duration_ms: 2551.431403
+      type: 'test'
+      ...
+    # Subtest: güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+    ok 6 - güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+      ---
+      duration_ms: 1000.222061
+      type: 'test'
+      ...
+    1..6
+ok 4 - servis yöneticisi (supervisor)
+  ---
+  duration_ms: 6025.745493
+  type: 'suite'
+  ...
+# Subtest: servis günlükleri
+    # Subtest: nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+    ok 1 - nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+      ---
+      duration_ms: 22.568772
+      type: 'test'
+      ...
+    1..1
+ok 5 - servis günlükleri
+  ---
+  duration_ms: 34.073182
+  type: 'suite'
+  ...
+# Subtest: öksüz süreç koruması
+    # Subtest: servis yöneticisi zorla kapatılınca uygulama da kapanır
+    ok 1 - servis yöneticisi zorla kapatılınca uygulama da kapanır
+      ---
+      duration_ms: 8625.092729
+      type: 'test'
+      ...
+    1..1
+ok 6 - öksüz süreç koruması
+  ---
+  duration_ms: 8625.592053
+  type: 'suite'
+  ...
+# (node:14650) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: otomatik güncelleme akışı
+    # Subtest: açılışta yeni sürüm indirilir, bakım sayfası gösterilir, yeni sürüme geçilir; veriler korunur
+    ok 1 - açılışta yeni sürüm indirilir, bakım sayfası gösterilir, yeni sürüme geçilir; veriler korunur
+      ---
+      duration_ms: 7511.097278
+      type: 'test'
+      ...
+    # Subtest: yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez
+    ok 2 - yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez
+      ---
+      duration_ms: 4715.847961
+      type: 'test'
+      ...
+# [uygulama] 2026-10-15T09:10:56.970Z [WARN] Ücretsiz deneme başlatılamadı: Lisans servisine ulaşılamadı.
+    # Subtest: otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir
+    ok 3 - otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir
+      ---
+      duration_ms: 7733.524696
+      type: 'test'
+      ...
+    # Subtest: elektrik kesintisinden kalan onaylanmamış sürüm açılışta denenir, açılmazsa önceki sürüme dönülür
+    ok 4 - elektrik kesintisinden kalan onaylanmamış sürüm açılışta denenir, açılmazsa önceki sürüme dönülür
+      ---
+      duration_ms: 2846.700795
+      type: 'test'
+      ...
+    # Subtest: güncelleme sunucusuna ulaşılamazsa uygulama normal açılır
+    ok 5 - güncelleme sunucusuna ulaşılamazsa uygulama normal açılır
+      ---
+      duration_ms: 1443.250748
+      type: 'test'
+      ...
+    1..5
+ok 7 - otomatik güncelleme akışı
+  ---
+  duration_ms: 24252.27382
+  type: 'suite'
+  ...
+# (node:14906) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: yedek klasörü ve dosya adı kuralları
+    # Subtest: klasör adı: '<kod> - <ad>'; Windows'ta geçersiz karakterler temizlenir, Türkçe harfler kalır
+    ok 1 - klasör adı: '<kod> - <ad>'; Windows'ta geçersiz karakterler temizlenir, Türkçe harfler kalır
+      ---
+      duration_ms: 5.482089
+      type: 'test'
+      ...
+    # Subtest: ad: destekofis-<kod>-<zaman>-<etiket>; eski adlar tanınır; yol geçişi reddedilir
+    ok 2 - ad: destekofis-<kod>-<zaman>-<etiket>; eski adlar tanınır; yol geçişi reddedilir
+      ---
+      duration_ms: 1.846048
+      type: 'test'
+      ...
+    1..2
+ok 8 - yedek klasörü ve dosya adı kuralları
+  ---
+  duration_ms: 8.516896
+  type: 'suite'
+  ...
+# Subtest: iki şirket: Tüm Şirketler / Yalnız, liste, indirme, otomatik yedek, ad değişimi, sıfırlama, silme, yetki
+    # Subtest: Yedek Al (varsayılan Tüm Şirketler): her şirket kendi klasöründe, adında kodu, içinde doğru veri ve kimlik
+    ok 1 - Yedek Al (varsayılan Tüm Şirketler): her şirket kendi klasöründe, adında kodu, içinde doğru veri ve kimlik
+      ---
+      duration_ms: 207.65594
+      type: 'test'
+      ...
+    # Subtest: Yalnız <kod · ad>: yalnız seçili şirket (ya da verilen şirket) yedeklenir
+    ok 2 - Yalnız <kod · ad>: yalnız seçili şirket (ya da verilen şirket) yedeklenir
+      ---
+      duration_ms: 330.762312
+      type: 'test'
+      ...
+    # Subtest: liste bütün şirketleri Şirket bilgisiyle, yeniden eskiye gösterir; indirme şirketiyle ve kodla bulunur
+    ok 3 - liste bütün şirketleri Şirket bilgisiyle, yeniden eskiye gösterir; indirme şirketiyle ve kodla bulunur
+      ---
+      duration_ms: 525.738323
+      type: 'test'
+      ...
+    # Subtest: Yönetim → Şirketler: veri dosyası, boyutu, cari/kayıt sayısı, son yedek ve yedek klasörü
+    ok 4 - Yönetim → Şirketler: veri dosyası, boyutu, cari/kayıt sayısı, son yedek ve yedek klasörü
+      ---
+      duration_ms: 35.045914
+      type: 'test'
+      ...
+    # Subtest: yetki: personel yedekleri göremez/alamaz/indiremez/geri yükleyemez (403); yetkisi olmayan şirketin yedeği listede yok
+    ok 5 - yetki: personel yedekleri göremez/alamaz/indiremez/geri yükleyemez (403); yetkisi olmayan şirketin yedeği listede yok
+      ---
+      duration_ms: 122.814636
+      type: 'test'
+      ...
+    # Subtest: ad ve kod değişince klasör yeniden adlandırılır, yedekler korunur; özel karakterler temizlenir
+    ok 6 - ad ve kod değişince klasör yeniden adlandırılır, yedekler korunur; özel karakterler temizlenir
+      ---
+      duration_ms: 429.830648
+      type: 'test'
+      ...
+    # Subtest: ad değişince dolu klasörle çakışma: ek alır, karışmaz; yarım kalan taşıma kayda yazılır ve tamamlanır
+    ok 7 - ad değişince dolu klasörle çakışma: ek alır, karışmaz; yarım kalan taşıma kayda yazılır ve tamamlanır
+      ---
+      duration_ms: 153.045027
+      type: 'test'
+      ...
+    # Subtest: şirket meşgulken (geri yükleniyor/siliniyor) o şirkete gelen istek 503 alır; başka şirketin verisi gösterilmez
+    ok 8 - şirket meşgulken (geri yükleniyor/siliniyor) o şirkete gelen istek 503 alır; başka şirketin verisi gösterilmez
+      ---
+      duration_ms: 109.297078
+      type: 'test'
+      ...
+    # Subtest: sıfırlama ve silme öncesi yedekler şirketin klasörüne; şirket silinince yedek klasörü yerinde kalır
+    ok 9 - sıfırlama ve silme öncesi yedekler şirketin klasörüne; şirket silinince yedek klasörü yerinde kalır
+      ---
+      duration_ms: 892.625187
+      type: 'test'
+      ...
+    1..9
+ok 9 - iki şirket: Tüm Şirketler / Yalnız, liste, indirme, otomatik yedek, ad değişimi, sıfırlama, silme, yetki
+  ---
+  duration_ms: 4457.237995
+  type: 'suite'
+  ...
+# Subtest: otomatik yedek: bu açılışta hiç açılmamış şirket de yedeklenir; npm run backup bütün şirketler
+    # Subtest: zamanlayıcı turu bütün şirketleri yedekler; 002'nin örneği açılmaz, veri tabanı bağlantısı kalmaz
+    ok 1 - zamanlayıcı turu bütün şirketleri yedekler; 002'nin örneği açılmaz, veri tabanı bağlantısı kalmaz
+      ---
+      duration_ms: 147.884323
+      type: 'test'
+      ...
+    # Subtest: gerçek zamanlayıcı (açılıştan kısa süre sonra) ve npm run backup aracı
+    ok 2 - gerçek zamanlayıcı (açılıştan kısa süre sonra) ve npm run backup aracı
+      ---
+      duration_ms: 2235.843628
+      type: 'test'
+      ...
+    1..2
+ok 10 - otomatik yedek: bu açılışta hiç açılmamış şirket de yedeklenir; npm run backup bütün şirketler
+  ---
+  duration_ms: 3708.265571
+  type: 'suite'
+  ...
+# Subtest: göç: eski yedekler (kök ve sirket-002) şirket klasörlerine taşınır; tekrar açılışta iş yapmaz
+    # Subtest: açılışta taşınır (silinmez); yedek olmayan dosya, taze güncelleme yedeği ve sahipsiz klasör yerinde kalır
+    ok 1 - açılışta taşınır (silinmez); yedek olmayan dosya, taze güncelleme yedeği ve sahipsiz klasör yerinde kalır
+      ---
+      duration_ms: 87.266663
+      type: 'test'
+      ...
+    # Subtest: tekrar açılışta iş yapmaz; taşınan eski yedek kendi şirketine geri yüklenebilir, öbürüne yüklenemez (409)
+    ok 2 - tekrar açılışta iş yapmaz; taşınan eski yedek kendi şirketine geri yüklenebilir, öbürüne yüklenemez (409)
+      ---
+      duration_ms: 254.089898
+      type: 'test'
+      ...
+    1..2
+ok 11 - göç: eski yedekler (kök ve sirket-002) şirket klasörlerine taşınır; tekrar açılışta iş yapmaz
+  ---
+  duration_ms: 1624.274264
+  type: 'suite'
+  ...
+# Subtest: geri yükleme: doğru şirkete; yanlış şirkete 409; 002 hemen, 001 yeniden açılışta; ortak katman korunur
+    # Subtest: yanlış şirkete geri yükleme reddedilir (409): hedef farklı, ya da yedek elle başka şirketin klasörüne konmuş
+    ok 1 - yanlış şirkete geri yükleme reddedilir (409): hedef farklı, ya da yedek elle başka şirketin klasörüne konmuş
+      ---
+      duration_ms: 25.549283
+      type: 'test'
+      ...
+    # Subtest: onay ve parola: yanlış kod 400, yanlış parola 403; daha yeni sürümün yedeği 409
+    ok 2 - onay ve parola: yanlış kod 400, yanlış parola 403; daha yeni sürümün yedeği 409
+      ---
+      duration_ms: 136.346475
+      type: 'test'
+      ...
+    # Subtest: 002: hemen geri yüklenir; önce bugünkü veri yedeklenir; 001 ve kullanıcılar etkilenmez
+    ok 3 - 002: hemen geri yüklenir; önce bugünkü veri yedeklenir; 001 ve kullanıcılar etkilenmez
+      ---
+      duration_ms: 431.81672
+      type: 'test'
+      ...
+    # Subtest: 001: geri yükleme hazırlanır, sunucu yeniden açılınca uygulanır; kullanıcılar, lisans ve şirket listesi korunur
+    ok 4 - 001: geri yükleme hazırlanır, sunucu yeniden açılınca uygulanır; kullanıcılar, lisans ve şirket listesi korunur
+      ---
+      duration_ms: 1083.689217
+      type: 'test'
+      ...
+    # Subtest: servis yöneticisi altında: 001 geri yüklemesinde uygulama kendini yeniden başlatır, veri yedekteki hâline döner
+    ok 5 - servis yöneticisi altında: 001 geri yüklemesinde uygulama kendini yeniden başlatır, veri yedekteki hâline döner
+      ---
+      duration_ms: 4072.569288
+      type: 'test'
+      ...
+    # Subtest: bozuk işaret ya da kaybolmuş yedek: sunucu mevcut veriyle açılır
+    ok 6 - bozuk işaret ya da kaybolmuş yedek: sunucu mevcut veriyle açılır
+      ---
+      duration_ms: 239.654959
+      type: 'test'
+      ...
+    1..6
+ok 12 - geri yükleme: doğru şirkete; yanlış şirkete 409; 002 hemen, 001 yeniden açılışta; ortak katman korunur
+  ---
+  duration_ms: 7170.959509
+  type: 'suite'
+  ...
+# Subtest: geri yükleme dosya değiştirme: WAL'daki son işlem kaybolmaz
+    # Subtest: rename başarısız olsa da canlı veri (WAL'daki satır dahil) yerinde
+    ok 1 - rename başarısız olsa da canlı veri (WAL'daki satır dahil) yerinde
+      ---
+      duration_ms: 147.942964
+      type: 'test'
+      ...
+    1..1
+ok 13 - geri yükleme dosya değiştirme: WAL'daki son işlem kaybolmaz
+  ---
+  duration_ms: 148.124266
+  type: 'suite'
+  ...
+# {"kip":"oksuz","deneme":1,"onkosul":true,"oldurmeOfseti":-87,"kod":0,"ms":617,"hata":null}
+# {"kip":"acik","deneme":1,"onkosul":true,"giris":200,"yazilan":7,"yazmaHatasi":0,"kod":0,"ms":576,"hata":null}
+# {"kip":"oksuz","deneme":2,"onkosul":true,"oldurmeOfseti":381,"kod":0,"ms":381,"hata":null}
+# {"kip":"acik","deneme":2,"onkosul":true,"giris":200,"yazilan":8,"yazmaHatasi":0,"kod":0,"ms":358,"hata":null}
+# {"kip":"oksuz","deneme":3,"onkosul":true,"oldurmeOfseti":54,"kod":0,"ms":285,"hata":null}
+# {"kip":"acik","deneme":3,"onkosul":true,"giris":200,"yazilan":7,"yazmaHatasi":0,"kod":0,"ms":322,"hata":null}
+# {"kip":"oksuz","deneme":4,"onkosul":true,"oldurmeOfseti":213,"kod":0,"ms":213,"hata":null}
+# {"kip":"acik","deneme":4,"onkosul":true,"giris":200,"yazilan":6,"yazmaHatasi":0,"kod":0,"ms":297,"hata":null}
+# {"kip":"oksuz","deneme":5,"onkosul":true,"oldurmeOfseti":10,"kod":0,"ms":227,"hata":null}
+# {"kip":"acik","deneme":5,"onkosul":true,"giris":200,"yazilan":7,"yazmaHatasi":0,"kod":0,"ms":350,"hata":null}
+# {"kip":"oksuz","deneme":6,"onkosul":true,"oldurmeOfseti":227,"kod":0,"ms":227,"hata":null}
+# {"kip":"acik","deneme":6,"onkosul":true,"giris":200,"yazilan":7,"yazmaHatasi":0,"kod":0,"ms":327,"hata":null}
+# {"kip":"oksuz","deneme":7,"onkosul":true,"oldurmeOfseti":175,"kod":0,"ms":212,"hata":null}
+# {"kip":"acik","deneme":7,"onkosul":true,"giris":200,"yazilan":5,"yazmaHatasi":0,"kod":0,"ms":269,"hata":null}
+# {"kip":"oksuz","deneme":8,"onkosul":true,"oldurmeOfseti":164,"kod":0,"ms":328,"hata":null}
+# {"kip":"acik","deneme":8,"onkosul":true,"giris":200,"yazilan":6,"yazmaHatasi":0,"kod":0,"ms":273,"hata":null}
+# {"kip":"oksuz","deneme":9,"onkosul":true,"oldurmeOfseti":243,"kod":0,"ms":243,"hata":null}
+# {"kip":"acik","deneme":9,"onkosul":true,"giris":200,"yazilan":5,"yazmaHatasi":0,"kod":0,"ms":191,"hata":null}
+# {"kip":"oksuz","deneme":10,"onkosul":true,"oldurmeOfseti":126,"kod":0,"ms":266,"hata":null}
+# {"kip":"acik","deneme":10,"onkosul":true,"giris":200,"yazilan":7,"yazmaHatasi":0,"kod":0,"ms":246,"hata":null}
+# \# oksuz: deneme 10 · onkosul 10 · basarisiz 0 (onkosullu basarisiz 0)
+# \# acik: deneme 10 · onkosul 10 · basarisiz 0 (onkosullu basarisiz 0)
+# \# deneme 20 · onkosul 20 · basarisiz 0
+# \# tests 20
+# \# pass 20
+# \# fail 0
+# \# cancelled 0
+# \# skipped 0
+# \# todo 0
+# Subtest: test/yedek-hizmet-yaris.mjs
+ok 5 - test/yedek-hizmet-yaris.mjs
+  ---
+  duration_ms: 52496.966316
+  type: 'test'
+  ...
+1..14
+# tests 47
+# suites 13
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69124.044664

@@ -1,0 +1,38 @@
+{
+  "ad": "lisans-izolasyon-kirmizi",
+  "komut": "node --test test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "996d7d1be03fbbcc321a6a665dfbf39c1a9945d0",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T09:09:56.459Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "gerçek programı ayrı süreçte açan her test lisans servisini yerel ölü adrese yönlendirir",
+      "konum": "test/lisans-servisi-izolasyonu.test.mjs:31:1",
+      "hata": "HUKUK_LICENSE_URL vermeyen başlatıcılar (gerçek lisans servisine deneme kaydı atar) · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/lisans-izolasyon-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "320e15b8027a17d97edfc4e034ca5934aa3f344810b7b99c02001907258b93f9",
+  "ham_cikti_bayt": 1940
+}

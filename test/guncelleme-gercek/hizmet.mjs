@@ -33,6 +33,8 @@ const supervisor = await startSupervisor({
   host: "127.0.0.1",
   discovery: false,
   logLevel: "info",
+  // Lisans servisi hiçbir zaman gerçek adres olmaz (test/lisans-servisi-izolasyonu.test.mjs).
+  env: { HUKUK_LICENSE_URL: process.env.HUKUK_LICENSE_URL || "http://127.0.0.1:9" },
   trustedKeys: options.trustedKeys,
   githubApi: options.feed,
   githubWeb: options.feed,
