@@ -865,6 +865,29 @@
   ];
   const sideTitle = () => HOF.uiLabel?.("side.title", "OPERASYON MERKEZİ") || "OPERASYON MERKEZİ";
   const sideLabel = item => HOF.uiLabel?.(item.key, item.label()) || item.label();
+  // 2.3.0 İz 5.5 Hızlı Arama (hof-palette.js): Operasyon Merkezi düğmeleri SIDE_ITEMS'tan (yöneticinin verdiği adla; varsayılan ad eş
+  // ad olarak aranır), tablo başlığındaki Yeni Kayıt, kenar çubuğundaki Ayarlar ve Yönetim panelinin sekmeleri (admin.html; yetkiye göre).
+  const ADMIN_SECTIONS = [
+    ["users", "Kullanıcılar ve Yetkiler", "users.manage"],
+    ["backups", "Yedekler", "system.manage"],
+    ["audit", "Değişiklik Geçmişi", "audit.view"],
+    ["trash", "Silinenler", "records.delete"],
+    ["companies", "Şirketler", "system.manage"],
+    ["system", "Sistem Ayarları", "system.manage"],
+    ["license", "Lisans", "license.manage"],
+  ];
+  HOF.search?.register(() => [
+    ...SIDE_ITEMS.filter(item => (!item.module || HOF.modules[item.module]) && (!item.requires || HOF.can(item.requires))).map(item => ({
+      group: item.action === "newTask" ? "İşlem" : "Sayfa",
+      label: sideLabel(item),
+      path: item.action === "guide" ? "PDF" : "",
+      keywords: [item.label(), item.action === "analytics" ? "Rapor Merkezi" : "", item.action === "liens" ? "Haciz Düşümü" : ""],
+      run: () => document.querySelector(`#hof-sidecard [data-action="${item.action}"]`)?.click(),
+    })),
+    ...(document.getElementById("hof-toolbar-new") && HOF.can("records.create") ? [{ group: "İşlem", label: "Yeni Kayıt", path: "Tablo", keywords: ["Kişi Ekle", "Satır Ekle"], run: () => document.getElementById("hof-toolbar-new")?.click() }] : []),
+    ...(document.getElementById("hof-side-settings") ? [{ group: "Ayar", label: "Ayarlar", path: "Veri Kaynağı ve Görünüm", keywords: ["Excel", "Google Sheets", "Sektör", "Eşitleme"], run: () => document.getElementById("hof-side-settings")?.click() }] : []),
+    ...ADMIN_SECTIONS.filter(([, , permission]) => HOF.can(permission)).map(([tab, label]) => ({ group: "Ayar", label, path: "Yönetim", keywords: ["Yönetim Paneli"], run: () => window.location.assign(`/admin.html#${tab}`) })),
+  ]);
   const PENCIL = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
 
   function renderSideLabels() {
@@ -941,6 +964,8 @@
     const bottom = sidebar.querySelector(".sidebar-bottom");
     if (bottom && bottom.parentNode === sidebar) sidebar.insertBefore(card, bottom);
     else sidebar.appendChild(card);
+    // Hızlı Arama kutusu kartın hemen üstünde (2.3.0 İz 5.5).
+    HOF.search?.mount(card);
     renderUser();
     card.addEventListener("click", event => {
       const action = event.target.closest("[data-action]")?.dataset.action;
@@ -1022,16 +1047,85 @@
   };
 
   let activityItems = new Map();
-  // İşlem geçmişindeki tahsilatın düzelt/sil düğmeleri (liste her çizimde yenilendiği için tek dinleyici).
+  // 2.3.0 İz 5.6 (müşteri talebi 6): geçmişte ilk 3 satır (en yeniler) görünür, "Daha Fazla Göster (n)" tamamını açar; tercih kart
+  // kapanınca ya da başka kayıt seçilince sıfırlanır.
+  let activityExpanded = false;
+  const ACTIVITY_SHOWN = 3;
+  // İşlem geçmişindeki düzelt/sil/Kayda Git/Daha Fazla düğmeleri (liste her çizimde yenilendiği için tek dinleyici).
   document.addEventListener("click", event => {
-    const button = event.target.closest("#hof-activity [data-payment-edit], #hof-activity [data-payment-delete]");
+    const button = event.target.closest("#hof-activity [data-edit], #hof-activity [data-delete], #hof-activity [data-goto], #hof-activity [data-more]");
     if (!button) return;
-    const item = activityItems.get(button.dataset.paymentEdit || button.dataset.paymentDelete);
+    if (button.dataset.more !== undefined) {
+      activityExpanded = true;
+      activityKey = "";
+      renderActivity();
+      return;
+    }
+    const item = activityItems.get(button.dataset.edit || button.dataset.delete || button.dataset.goto);
     if (!item) return;
     const title = HOF.selectedCase()?.title || "";
-    if (button.dataset.paymentEdit) editPayment(item, { title, after: afterCaseChange });
-    else deletePayment(item, { title, after: afterCaseChange });
+    if (button.dataset.goto !== undefined) return gotoActivityRecord(item);
+    if (item.type === "payment") {
+      if (button.dataset.edit !== undefined) editPayment(item, { title, after: afterCaseChange });
+      else deletePayment(item, { title, after: afterCaseChange });
+      return;
+    }
+    if (button.dataset.edit !== undefined) editHistoryItem(item, title);
+    else deleteHistoryItem(item, title);
   });
+  // Not / telefon / haciz düzeltme ve silme (sunucu: PUT/DELETE /api/workspace/notes|phones|liens/:id; silinen Silinenler'e gider).
+  const HISTORY_PATH = { note: "notes", phone: "phones", lien: "liens" };
+  const HISTORY_LABEL = { note: "Not", phone: "Telefon", lien: "Haciz" };
+  const canEditHistory = item => Boolean(HISTORY_PATH[item.type]) && HOF.can("records.edit") && HOF.can(item.type === "note" ? "notes.write" : item.type === "phone" ? "phones.create" : "liens.create");
+  function editHistoryItem(item, title = "") {
+    const fields =
+      item.type === "note"
+        ? [{ name: "note", label: "Not", type: "textarea", required: true, maxlength: 5000, value: item.text || "" }]
+        : item.type === "phone"
+          ? [
+              { name: "phone", label: "Telefon", type: "tel", required: true, inputmode: "tel", value: item.phone || "" },
+              { name: "label", label: "Etiket", value: item.label || "", list: ["Cep", "İş", "Ev", "Vekil", "Yakını"] },
+            ]
+          : [
+              { name: "title", label: "Haciz Başlığı", required: true, value: item.title || "", list: ["Araç haczi", "Taşınmaz Haczi", "Banka haczi", "Maaş haczi", "Menkul haczi"] },
+              { name: "placedAt", label: "Konulduğu Tarih", type: "date", required: true, value: isoDate(item.placedAt) },
+            ];
+    HOF.formModal({
+      title: `${HISTORY_LABEL[item.type]} Düzelt`,
+      eyebrow: title || "İŞLEM GEÇMİŞİ",
+      intro: item.type === "lien" ? "Düşüm tarihi konulduğu tarihten bir yıl sonrası olarak yeniden hesaplanır; Haciz Uyarıları buna göre güncellenir." : "",
+      fields,
+      submitLabel: "Kaydet",
+      onSubmit: async data => {
+        const result = await HOF.api(`/api/workspace/${HISTORY_PATH[item.type]}/${encodeURIComponent(item.id)}`, { method: "PUT", body: data });
+        HOF.toast(item.type === "lien" ? `Haciz düzeltildi. Düşüm tarihi: ${HOF.formatDate(result.expiresAt)}` : `${HISTORY_LABEL[item.type]} düzeltildi.`, { type: "success" });
+        afterCaseChange();
+      },
+    });
+  }
+  async function deleteHistoryItem(item, title = "") {
+    const what = item.type === "note" ? `“${String(item.text || "").slice(0, 80)}${String(item.text || "").length > 80 ? "…" : ""}” notu` : item.type === "phone" ? `${item.label}: ${item.phone} telefonu` : `“${item.title}” haczi`;
+    const ok = await HOF.confirm({
+      title: `${HISTORY_LABEL[item.type]} Sil`,
+      message: `${what}${title ? ` (${title})` : ""} işlem geçmişinden silinecek. Yönetim → Silinenler'den geri yüklenebilir; silme işlem kayıtlarında saklanır.`,
+      confirmLabel: "Sil",
+      danger: true,
+    });
+    if (!ok) return;
+    try {
+      await HOF.api(`/api/workspace/${HISTORY_PATH[item.type]}/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+      HOF.toast(`${HISTORY_LABEL[item.type]} silindi.`, { type: "success" });
+      afterCaseChange();
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  // Taksit hareketi ve görev kendi modülünde düzenlenir: satırdaki "Kayda Git" kartı / görev listesini açar.
+  function gotoActivityRecord(item) {
+    if (item.type === "plan-entry") return item.planId && HOF.plans?.open ? HOF.plans.open(item.planId) : HOF.toast("Taksit kartı bulunamadı.", { type: "error" });
+    if (item.type === "task") return openTasks(item.status === "completed" ? "completed" : HOF.can("tasks.viewAll") ? "open" : "mine");
+    return null;
+  }
 
   async function renderActivity() {
     const selected = HOF.selectedCase();
@@ -1039,6 +1133,7 @@
     let box = document.getElementById("hof-activity");
     if (!selected || !panel) {
       if (box) box.hidden = true;
+      activityExpanded = false;
       return;
     }
     if (!box) {
@@ -1051,25 +1146,34 @@
     const request = ++activityRequest;
     // v2.1.0: aynı kaydın geçmişi yeniden yüklenirken (kendi notu, başka bilgisayardaki işlem — canlı olay) eski liste
     // yeni liste gelene kadar yerinde kalır; kutu bir an boşalıp "Yükleniyor…" yazmaz (titreme). Kayıt değişince boşalır.
-    if (box.dataset.hofKey !== selected.key) box.innerHTML = '<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3></div><p class="hof-empty">Yükleniyor…</p>';
+    if (box.dataset.hofKey !== selected.key) {
+      box.innerHTML = '<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3></div><p class="hof-empty">Yükleniyor…</p>';
+      activityExpanded = false;
+    }
     box.dataset.hofKey = selected.key;
     try {
       const result = await HOF.api(caseUrl(selected.key, "activity"));
       if (request !== activityRequest) return;
       const tools = ["not", "telefon", HOF.modules.tahsilat ? "tahsilat" : "", HOF.modules.haciz ? "haciz" : ""].filter(Boolean);
       const toolsText = `${tools.slice(0, -1).join(", ")} veya ${tools[tools.length - 1]}`;
-      // Eskiden yeniye (v2.0.1): yeni eklenen işlem en altta; uzun geçmişte son 30 işlem gösterilir.
-      const shown = result.items.slice(-30);
+      // Eskiden yeniye (v2.0.1): yeni eklenen işlem en altta. 2.3.0 İz 5.6: ilk 3 satır (en yeniler) görünür; "Daha Fazla Göster (n)"
+      // tamamını açar.
+      const shown = activityExpanded ? result.items : result.items.slice(-ACTIVITY_SHOWN);
       const hidden = result.items.length - shown.length;
       activityItems = new Map(shown.map(item => [item.id, item]));
-      const itemActions = item =>
-        item.type === "payment" && canEditPayment(item)
-          ? `<span class="hof-activity-tools"><button type="button" class="hof-mini" data-payment-edit="${esc(item.id)}" title="Tahsilatı düzelt" aria-label="Tahsilatı düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-payment-delete="${esc(item.id)}" title="Tahsilatı sil" aria-label="Tahsilatı sil">×</button></span>`
-          : item.type === "plan-entry" && item.kind === "in" && !item.opening
-            ? `<span class="hof-activity-tools"><a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(item.planId)}/entries/${encodeURIComponent(item.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz PDF">Makbuz</a></span>`
-            : "";
+      const tool = (attr, id, label, danger = false) => `<button type="button" class="hof-mini${danger ? " hof-mini-danger" : ""}" ${attr}="${esc(id)}" title="${esc(label)}" aria-label="${esc(label)}">${danger ? "×" : "✎"}</button>`;
+      const itemActions = item => {
+        if (item.type === "payment") return canEditPayment(item) ? `<span class="hof-activity-tools">${tool("data-edit", item.id, "Tahsilatı düzelt")}${tool("data-delete", item.id, "Tahsilatı sil", true)}</span>` : "";
+        if (HISTORY_PATH[item.type]) return canEditHistory(item) ? `<span class="hof-activity-tools">${tool("data-edit", item.id, `${HISTORY_LABEL[item.type]} düzelt`)}${tool("data-delete", item.id, `${HISTORY_LABEL[item.type]} sil`, true)}</span>` : "";
+        // Taksit hareketi ve görev kendi modülünden düzenlenir: "Kayda Git".
+        if (item.type === "plan-entry")
+          return `<span class="hof-activity-tools">${item.kind === "in" && !item.opening ? `<a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(item.planId)}/entries/${encodeURIComponent(item.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz PDF">Makbuz</a>` : ""}${item.planId && HOF.can("plans.view") ? `<button type="button" class="hof-mini hof-mini-text" data-goto="${esc(item.id)}" title="Taksit kartını aç">Kayda Git</button>` : ""}</span>`;
+        if (item.type === "task") return `<span class="hof-activity-tools"><button type="button" class="hof-mini hof-mini-text" data-goto="${esc(item.id)}" title="Görevler listesini aç">Kayda Git</button></span>`;
+        return "";
+      };
       const edited = item => (item.updatedAt ? ` · düzeltildi${item.updatedByName ? ` (${esc(item.updatedByName)})` : ""}` : "");
-      box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam Tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `${hidden ? `<p class="hof-empty">Önceki ${hidden} işlem gösterilmiyor.</p>` : ""}<ol>${shown.map(item => `<li data-type="${esc(item.type)}"${item.type === "task" && item.priority === "urgent" && item.status !== "completed" ? ' data-urgent=""' : ""}><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}${edited(item)}</small></span>${itemActions(item)}</li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
+      const more = hidden ? `<p class="hof-activity-more"><button type="button" class="hof-link-button" data-more>Daha Fazla Göster (${hidden})</button></p>` : "";
+      box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam Tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `${more}<ol>${shown.map(item => `<li data-type="${esc(item.type)}" data-id="${esc(item.id)}"${item.type === "task" && item.priority === "urgent" && item.status !== "completed" ? ' data-urgent=""' : ""}><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}${edited(item)}</small></span>${itemActions(item)}</li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
     } catch (error) {
       if (request === activityRequest) box.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
     }

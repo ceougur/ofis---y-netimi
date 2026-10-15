@@ -1422,6 +1422,21 @@
       else refreshOpen();
     }, 350);
   });
+  // 2.3.0 İz 5.5 Hızlı Arama: Taksitler listesi, yeni kart, gruplar ve Excel'den yükleme (yetkiye göre).
+  HOF.search?.register(() =>
+    HOF.can("plans.view")
+      ? [
+          { group: "Sayfa", label: `${moduleName()} Listesi`, path: moduleName(), keywords: ["Taksit Kartları", "Ödeme Planı", "Aidat"], run: () => open() },
+          ...(canManage()
+            ? [
+                { group: "İşlem", label: "Yeni Taksit Kartı", path: moduleName(), keywords: ["Kart Aç", "Taksitlendir"], run: () => { open(); return editPlan(null, null); } },
+                { group: "Ayar", label: "Taksit Grupları", path: moduleName(), keywords: ["Grup", "Alt Grup"], run: () => { open(); return openGroups(); } },
+                { group: "İşlem", label: "Taksit Kartlarını Excel / Sheets'ten Yükle", path: moduleName(), keywords: ["Toplu Taksit", "İçe Aktar"], run: () => { open(); return importFromExcel(); } },
+              ]
+            : []),
+        ]
+      : [],
+  );
   HOF.plans = {
     open,
     pay,
