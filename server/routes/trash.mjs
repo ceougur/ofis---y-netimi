@@ -36,8 +36,36 @@ const KIND_LABELS = {
   doubtful: "Şüpheli Alacak",
   "doubtful-provision": "Şüpheli Alacak Karşılığı",
   "doubtful-writeoff": "Değersiz Alacak",
+  // 2.3.0 İz 5.6: kayıt detay kartının işlem geçmişinden silinen not / telefon / haciz.
+  note: "Not",
+  phone: "Telefon",
+  lien: "Haciz",
 };
 const DOUBTFUL_KINDS = new Set(["doubtful", "doubtful-provision", "doubtful-writeoff"]);
+// İşlem geçmişi satırları (routes/workspace.mjs HISTORY ile aynı tablolar): aynı kimlikle, silinmeden önceki haliyle geri eklenir.
+const HISTORY_KINDS = {
+  note: {
+    table: "notes",
+    label: "Not",
+    permission: "notes.write",
+    insert: "INSERT INTO notes (id, case_key, note, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    values: (p, ref, user, at) => [ref, p.caseKey, p.note || "", p.createdBy || user.id, p.createdAt || at, user.id, at],
+  },
+  phone: {
+    table: "phones",
+    label: "Telefon",
+    permission: "phones.create",
+    insert: "INSERT INTO phones (id, case_key, phone, label, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    values: (p, ref, user, at) => [ref, p.caseKey, p.phone || "", p.label || "Telefon", p.createdBy || user.id, p.createdAt || at, user.id, at],
+  },
+  lien: {
+    table: "liens",
+    label: "Haciz",
+    permission: "liens.create",
+    insert: "INSERT INTO liens (id, case_key, title, placed_at, expires_at, status, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    values: (p, ref, user, at) => [ref, p.caseKey, p.title || "Haciz", p.placedAt, p.expiresAt, p.status || "active", p.createdBy || user.id, p.createdAt || at, user.id, at],
+  },
+};
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
 export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, doubtful = () => null, money: moneyLines = null, now: clock = systemClock }) {
@@ -185,7 +213,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
         deletedAt: item.deleted_at,
         actorName: item.actor_name,
         restorable: true,
-        note: item.kind === "invoice" ? (payload.wasStatus === "draft" ? "Taslak olarak Fatura listesine geri döner." : "Etkisiz, “İptal Edildi” olarak Fatura listesine geri döner (stok, cari, Kasa değişmez).") : item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
+        note: item.kind === "invoice" ? (payload.wasStatus === "draft" ? "Taslak olarak Fatura listesine geri döner." : "Etkisiz, “İptal Edildi” olarak Fatura listesine geri döner (stok, cari, Kasa değişmez).") : item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : HISTORY_KINDS[item.kind] ? "Kaydın işlem geçmişine aynı haliyle geri döner." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
       });
     }
     items.sort((a, b) => (a.deletedAt < b.deletedAt ? 1 : -1));
@@ -487,6 +515,17 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
         item.kind === "free-row"
           ? `Satır “${result.sheet}” sayfasına ${result.position}. satır olarak eklendi${result.lost.length ? ` (${result.lost.join(", ")} kolonu artık yok)` : ""}.`
           : `“${result.column}” kolonu “${result.sheet}” sayfasına ${result.position}. kolon olarak eklendi${result.lost ? ` (${result.lost} hücrenin satırı artık yok)` : ""}.`;
+    } else if (HISTORY_KINDS[item.kind]) {
+      // 2.3.0 İz 5.6: kayıt detay kartından silinen not / telefon / haciz aynı kimlikle, silinmeden önceki haliyle geri gelir (para etkisi yok).
+      const spec = HISTORY_KINDS[item.kind];
+      if (!canUser(user, spec.permission)) throw new HttpError(403, `${spec.label} geri yüklemek için ${spec.label.toLocaleLowerCase("tr-TR")} ekleme yetkisi gerekir.`);
+      store.tx(() => {
+        if (!store.get(`SELECT 1 AS found FROM ${spec.table} WHERE id = ?`, item.ref)) store.run(spec.insert, ...spec.values(payload, item.ref, user, now()));
+        trash.markRestored(item.id, user);
+        audit(user, `case.${item.kind}.restored`, item.ref, { caseKey: payload.caseKey });
+      });
+      publish(user, { kind: "activity", caseKey: payload.caseKey });
+      message = `${spec.label} kaydın işlem geçmişine geri eklendi.`;
     } else throw new HttpError(400, "Bu öğe geri yüklenemez.");
     if (dropped) message = `${message} ${bank.droppedText(dropped)}`;
     return ok(res, { restored: item.kind, message });

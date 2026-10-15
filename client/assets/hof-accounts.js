@@ -1467,6 +1467,20 @@
     }, 350);
   });
   HOF.office = Object.assign(HOF.office || {}, { gateHtml, wireGate });
+  // 2.3.0 İz 5.5 Hızlı Arama: Cari listesi ve yeni cari / Excel'den yükleme (yetkiye göre).
+  HOF.search?.register(() =>
+    HOF.can("accounts.view")
+      ? [
+          { group: "Sayfa", label: `${moduleName()} Listesi`, path: moduleName(), keywords: ["Müşteri", "Tedarikçi", "Cari Kartları"], run: () => open() },
+          ...(canManage()
+            ? [
+                { group: "İşlem", label: "Yeni Cari", path: moduleName(), keywords: ["Cari Aç", "Müşteri Ekle", "Tedarikçi Ekle"], run: () => editAccount(null, null, {}) },
+                { group: "İşlem", label: "Cari Listesini Excel / Sheets'ten Yükle", path: moduleName(), keywords: ["Toplu Cari", "İçe Aktar"], run: () => { open(); return importFromExcel(); } },
+              ]
+            : []),
+        ]
+      : [],
+  );
   HOF.accounts = {
     open,
     picker,

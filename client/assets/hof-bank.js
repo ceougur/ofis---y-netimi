@@ -3098,6 +3098,29 @@
   // POS alanı (hof-bank-pos.js registerPosField): attachPicker'ın kart yolu POS alanını kurar.
   let posField = null;
 
+  // 2.3.0 İz 5.5 Hızlı Arama: sekmeler tabList()'ten (POS sekmesi hof-bank-pos.js'nin eklediğiyle gelir), işlemler yetkiye göre; fiş
+  // penceresi Hareketler sekmesi açıldıktan sonra açılır.
+  HOF.search?.register(() => {
+    if (!HOF.can("bank.view")) return [];
+    const withMoves = fn => open({ tab: "movements" }).then(fn);
+    const tabs = tabList().map(([id, label]) => ({ group: id === "settings" ? "Ayar" : "Sayfa", label: id === "settings" ? `${moduleName()} Ayarları` : label, path: moduleName(), keywords: ["Banka", id === "accounts" ? "Banka Hesapları" : id === "movements" ? "Banka Hareketleri" : ""], run: () => open({ tab: id }) }));
+    const acts = [];
+    if (HOF.can("bank.move")) {
+      acts.push(
+        { group: "İşlem", label: "+ Masraf", path: moduleName(), keywords: ["Banka Masrafı", "Masraf Fişi", "Komisyon"], run: () => withMoves(() => voucherForm({ group: "fee" })) },
+        { group: "İşlem", label: "+ Faiz", path: moduleName(), keywords: ["Faiz Geliri", "Faiz Gideri"], run: () => withMoves(() => voucherForm({ group: "interest" })) },
+        { group: "İşlem", label: "+ Diğer İşlem", path: moduleName(), keywords: ["Banka Fişi"], run: () => withMoves(() => voucherForm({ group: "other" })) },
+      );
+    }
+    if (HOF.can("bank.transfer")) acts.push({ group: "İşlem", label: "Bankalar Arası Transfer", path: moduleName(), keywords: ["Virman", "Havale"], run: () => withMoves(() => voucherForm({ group: "transfer" })) });
+    if (canAccounts()) {
+      acts.push(
+        { group: "İşlem", label: "Yeni Banka Hesabı", path: moduleName(), keywords: ["Hesap Aç", "Banka Hesabı Tanımla"], run: () => open({ tab: "accounts" }).then(() => accountForm(null)) },
+        { group: "İşlem", label: "Kurulum Sihirbazı", path: moduleName(), keywords: ["Banka Kurulumu"], run: () => open({ tab: "accounts" }).then(() => openWizard()) },
+      );
+    }
+    return [...tabs, ...acts];
+  });
   HOF.bank = {
     open,
     // 2.3.0 İz 3.3: zildeki planlı banka işlemi kalemi → Hareketler → Planlı İşlemler görünümü.

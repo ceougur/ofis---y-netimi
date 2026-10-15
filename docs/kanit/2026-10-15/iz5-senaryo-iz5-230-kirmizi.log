@@ -1,0 +1,15 @@
+
+■ Kurulum: yönetici girer; 5 kayıtlık Rehber.xlsx; personel hesabı açılır
+  ✓ sayfa yüklendi
+  ✓ personel hesabı açıldı
+
+■ 5.5 Hızlı Arama: kutu menünün üstünde; Ctrl+K odaklar; “alış f” → Enter → Alınan (Alış Faturaları) sekmesi
+  ✗ Ara kutusu Operasyon Merkezi kartının hemen üstünde, kenar çubuğunda
+HATA: page.waitForFunction: Timeout 5000ms exceeded.
+    at typeQuery (/tmp/claude-0/iz5-eski-083ba74/test/e2e/senaryo-iz5-230.mjs:90:14)
+    at async file:///tmp/claude-0/iz5-eski-083ba74/test/e2e/senaryo-iz5-230.mjs:123:14 {
+  name: 'TimeoutError'
+}
+  ✓ sayfa hatası yok
+
+SONUÇ: 3 geçti, 2 kaldı

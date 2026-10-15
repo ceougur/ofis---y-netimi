@@ -1218,6 +1218,20 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 25,
+    name: "v2.3.0 işlem geçmişi düzeltme izi: not, telefon ve haciz satırlarında düzelten/düzeltme zamanı",
+    up(store) {
+      // 2.3.0 İz 5.6 (müşteri talebi 6): kayıt detay kartındaki not / telefon / haciz satırları düzeltilip silinebilir; düzeltme izi
+      // tahsilattaki gibi (updated_by/updated_at). YALNIZ EKLEYİCİ: boş kolon; eski sürüm aynı dosyayı okur.
+      store.raw("migration.v25", () => {
+        for (const table of ["notes", "phones", "liens"]) {
+          addColumn(store, table, "updated_by", "TEXT");
+          addColumn(store, table, "updated_at", "TEXT");
+        }
+      });
+    },
+  },
 ];
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık

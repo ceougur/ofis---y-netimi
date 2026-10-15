@@ -1,0 +1,32 @@
+{
+  "ad": "iz5-e2e",
+  "komut": "npm run test:e2e",
+  "commit": "083ba74d96ce86c66eb5924c7413428f1637c6b3",
+  "dal": "worktree-agent-ad77a61686fa8f8ad",
+  "kirli": 24,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T04:00:03.782Z",
+  "sure_sn": 188.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-15/iz5-e2e.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad77a61686fa8f8ad",
+  "ham_cikti_sha256": "3589772e3975cc5b5ca93788d34fbc2c9bf13820035e32ec15d852258827a4e3",
+  "ham_cikti_bayt": 5642
+}

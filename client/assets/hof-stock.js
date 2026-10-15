@@ -625,4 +625,18 @@
     }, 350);
   });
   HOF.stock = { open, refreshAlerts: () => alertsSoon() };
+  // 2.3.0 İz 5.5 Hızlı Arama: Stok listesi, yeni ürün ve Excel'den yükleme (yetkiye göre).
+  HOF.search?.register(() =>
+    HOF.can("stock.view")
+      ? [
+          { group: "Sayfa", label: `${moduleName()} Listesi`, path: moduleName(), keywords: ["Ürünler", "Stok Kartları", "Depo"], run: () => open() },
+          ...(canManage()
+            ? [
+                { group: "İşlem", label: "Yeni Ürün", path: moduleName(), keywords: ["Stok Kartı Aç", "Ürün Ekle"], run: () => { open(); return editItem(null); } },
+                { group: "İşlem", label: "Ürünleri Excel / Sheets'ten Yükle", path: moduleName(), keywords: ["Toplu Ürün", "İçe Aktar"], run: () => { open(); return importFromExcel(); } },
+              ]
+            : []),
+        ]
+      : [],
+  );
 })();

@@ -656,6 +656,22 @@
     chequeForm({ direction, preset: { account, amount } });
   };
   HOF.cheques = { open, newFor };
+  // 2.3.0 İz 5.5 Hızlı Arama: yönler (alınan portföy / verilen evrak) ve yeni evrak işlemleri; "çek" ya da "senet" yazınca hepsi gelir.
+  HOF.search?.register(() => {
+    if (!HOF.can("cheques.view")) return [];
+    const name = moduleName();
+    const list = [
+      { group: "Sayfa", label: "Alınan Çek / Senet", path: name, keywords: ["Portföy", "Müşteri Çeki", "Senet"], run: () => open({ direction: "in" }) },
+      { group: "Sayfa", label: "Verilen Çek / Senet", path: name, keywords: ["Verilen Evrak", "Senet"], run: () => open({ direction: "out" }) },
+    ];
+    if (canManage()) {
+      list.push(
+        { group: "İşlem", label: "Çek / Senet Al", path: name, keywords: ["Portföye Al", "Senet Al", "Çek Al"], run: () => { open({ direction: "in" }); return chequeForm({ direction: "in" }); } },
+        { group: "İşlem", label: "Çek / Senet Ver", path: name, keywords: ["Senet Ver", "Çek Ver"], run: () => { open({ direction: "out" }); return chequeForm({ direction: "out" }); } },
+      );
+    }
+    return list;
+  });
   HOF.whenReady(() => {
     // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher).
     const refreshList = HOF.refresher(() => (modal && view.mode === "list" ? loadList(false, { quiet: true }) : null));

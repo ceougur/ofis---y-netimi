@@ -2778,6 +2778,20 @@
     return open({ account: account || {}, tab: "all" });
   };
   HOF.invoices = { open, newFor, openDoc, forAccount, edocEnabled: () => meta?.edocEnabled === true };
+  // 2.3.0 İz 5.5 Hızlı Arama: sekmeler TABS'tan (purchase sekmesi "Alınan" — müşteri "alış f" yazar: Alış Faturaları eş adı), işlemler
+  // yetkiye göre (Yeni Satış / Alış Faturası → senaryo seçimi; Yeni İade → İadeler sekmesi).
+  HOF.search?.register(() => {
+    if (!canView()) return [];
+    const ALIAS = { purchase: "Alış Faturaları", sale: "Satış Faturaları", returns: "İade Faturaları" };
+    const tabs = TABS.map(([id, label]) => ({ group: "Sayfa", label: ALIAS[id] && ALIAS[id] !== label ? `${ALIAS[id]} (${label})` : label, path: moduleName(), keywords: ["Fatura"], run: () => open({ tab: id }) }));
+    const acts = canManage()
+      ? [
+          { group: "İşlem", label: "Yeni Satış Faturası", path: moduleName(), keywords: ["Fatura Kes", "Satış"], run: () => open({ side: "sale" }) },
+          { group: "İşlem", label: "Yeni Alış Faturası", path: moduleName(), keywords: ["Alınan Fatura", "Alış"], run: () => open({ side: "purchase" }) },
+        ]
+      : [];
+    return [...tabs, ...acts];
+  });
   // Stok hareketi, çek/senet kartı, taksit kartı ve Kasa satırındaki "Fatura" bağlantısı (data-open-invoice): faturayı
   // açar. Kendi penceresinde işleyen modül (cari kartı, fatura penceresi) tıklamayı işaretler; burada ikinci kez açılmaz.
   document.addEventListener("click", event => {
