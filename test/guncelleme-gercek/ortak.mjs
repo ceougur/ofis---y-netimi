@@ -171,16 +171,17 @@ export function counts(installRoot) {
 
 export function client(base) {
   let cookie = "";
-  const request = async (method, url, body) => {
+  const request = async (method, url, body, { timeoutMs } = {}) => {
     const headers = cookie ? { cookie } : {};
     if (body !== undefined) headers["content-type"] = "application/json";
-    const response = await fetch(base + url, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    const signal = timeoutMs ? AbortSignal.timeout(timeoutMs) : undefined;
+    const response = await fetch(base + url, { method, headers, body: body === undefined ? undefined : JSON.stringify(body), signal });
     const setCookie = response.headers.get("set-cookie");
     if (setCookie) cookie = setCookie.split(";")[0];
     const type = response.headers.get("content-type") || "";
     return { status: response.status, data: type.includes("json") ? await response.json() : await response.text() };
   };
-  return { get: url => request("GET", url), post: (url, body = {}) => request("POST", url, body), login: (username, password) => request("POST", "/api/auth/login", { username, password }) };
+  return { get: (url, options) => request("GET", url, undefined, options), post: (url, body = {}) => request("POST", url, body), login: (username, password) => request("POST", "/api/auth/login", { username, password }) };
 }
 
 // Servisi ayrı süreçte açar (hizmet.mjs). Günlük (stdout + stderr) kurulum kökünde logs\servis.log'a yazılır (nssm gibi).
@@ -255,20 +256,44 @@ const activities = new Set();
 export async function stopAllActivity() {
   await Promise.all([...activities].map(activity => activity.stop()));
 }
-export async function startActivity(base, { intervalMs = 500 } = {}) {
+export async function startActivity(base, { intervalMs = 500, requestTimeoutMs = 2000, stallMs = 0, stallAfterMs = 0 } = {}) {
+  // 15.10.2026 (CI #742 Windows Node 24, S2): pingler bir önceki isteği BEKLİYORDU; yavaş/takılan tek istek boşta süresini aşan bir
+  // boşluk açıyor, sunucu haklı olarak "kimse çalışmıyor" deyip kuruyordu (ürün doğru; testin kendi yarışı). Şimdi pingler zamanlayıcıyla,
+  // birbirini beklemeden ve zaman aşımıyla gider; boşluk/hata/en yavaş istek ölçülür ve iddialar bu sayılarla açıklanır. `stallMs`
+  // yalnız zorla üretme içindir (ders 20): pingler `stallAfterMs` sonra `stallMs` boyunca durur.
   const user = client(base);
   const login = await user.login(STAFF.username, STAFF.password);
   if (login.status !== 200) throw new Error(`personel girişi: ${login.status} ${JSON.stringify(login.data)}`);
-  let lastAt = Date.now();
+  const startedAt = Date.now();
+  let lastAt = startedAt;
+  let lastOkAt = startedAt;
   let running = true;
   let requests = 1;
+  let errors = 0;
+  let slowestMs = 0;
+  let maxGapMs = 0;
+  let stalled = false;
+  const pending = new Set();
+  const ping = () => {
+    const sentAt = Date.now();
+    maxGapMs = Math.max(maxGapMs, sentAt - lastAt);
+    lastAt = sentAt;
+    requests += 1;
+    const job = user.get("/api/workspace/client-state", { timeoutMs: requestTimeoutMs })
+      .then(() => { lastOkAt = Date.now(); }, () => { errors += 1; })
+      .finally(() => { slowestMs = Math.max(slowestMs, Date.now() - sentAt); pending.delete(job); });
+    pending.add(job);
+  };
   const loop = (async () => {
     while (running) {
       await sleep(intervalMs);
       if (!running) break;
-      await user.get("/api/workspace/client-state").catch(() => null);
-      lastAt = Date.now();
-      requests += 1;
+      if (stallMs && !stalled && Date.now() - startedAt >= stallAfterMs) {
+        stalled = true;
+        await sleep(stallMs);
+        if (!running) break;
+      }
+      ping();
     }
   })();
   const activity = {
@@ -278,10 +303,15 @@ export async function startActivity(base, { intervalMs = 500 } = {}) {
     get requests() {
       return requests;
     },
+    // Tanılama: istek sayısı, hata sayısı, en yavaş istek, iki ping gönderimi arasındaki en uzun boşluk (ms).
+    get stats() {
+      return { requests, errors, slowestMs, maxGapMs, lastOkAgoMs: Date.now() - lastOkAt, intervalMs };
+    },
     async stop() {
       running = false;
       activities.delete(activity);
       await loop;
+      await Promise.allSettled([...pending]);
       return lastAt;
     },
   };

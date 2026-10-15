@@ -1,0 +1,38 @@
+{
+  "ad": "s2-ping-boslugu-zorla-kirmizi",
+  "komut": "node --test --test-name-pattern=S2 test/guncelleme-gercek.test.mjs",
+  "commit": "aed598e54ba1f119a049ce6cba7268aa60cadb54",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-15T22:01:42.027Z",
+  "sure_sn": 15.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "otomatik güncelleme — gerçek süreçlerle › S2 kullanıcı çalışırken (mesai içi) bulunan sürüm KURULMAZ, 'hazır' görünür; etkinlik kesilince boşta süresi dolunca kurulur",
+      "konum": "test/guncelleme-gercek.test.mjs:64:3",
+      "hata": "`etkinlik pingleri 5903 ms durdu (boşta süresi 4000 ms) — etkinlik pingleri: {\"requests\":18,\"errors\":0,\"slowestMs\":45,\"maxGapMs\":5903,\"lastOkAgoMs\":173,\"intervalMs\":400} (en uzun boşluk boşta süresi 4000 ms'yi aşarsa test ortamı sorunudur, ürün değil)` (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-15/s2-ping-boslugu-zorla-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "f299cf70299ff864a032c7900c04c79103a117565a656b8ccf3df618b376af4f",
+  "ham_cikti_bayt": 6824
+}
