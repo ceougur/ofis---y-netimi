@@ -653,6 +653,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Site kılavuz PR'ı ceougur/destekofis#16 BİRLEŞTİ (kullanıcı "kılavuza hap bilgiyi koyduysan birleştir"; PDF'te e-Fatura denemesi, Canlıya geçiş, ölçü birimi,
   görünüm maddeleri doğrulandı; main c8a7706, main PDF ca4b478d… doğrulandı). 30 dk raporu DURDU (site PR birleşti). 2.4.0 KAPANDI; açık: master 5b45c5d CI +
   release.yml sonucu okunacak. Sonra: Pazar 18.10 planlı test, 2.4.1 adayı (canlı giriş iletisi), fiyat/lisans kararları, devir modülü kararı (22.10).
+- İSTEK (kullanıcı, 16.10.2026 ~20:45 UTC): "maliyeti olmayacak şekilde 4-5 saat sürecek; gerçek kullanıcılı, EDM test entegratörüne gönderilecek, sonra sonuçlar
+  incelenecek; çeşitli sektör/ürün/vergi oranı; e-Arşiv + e-SMM + e-Fatura; logolu, kaşeli, karekodlu; dişli test" → BAŞLADI: betik + bağımsız Python kâhin
+  + diş kanıtı (bozulmuş girdiyle kırmızı) docs/kanit/2026-10-16/edm-dayaniklilik (ajan yazıyor, yalnız sahte EDM'yle ayıklıyor); gerçek EDM koşusunu ana oturum
+  başlatır (270 dk, 2 şirket × 5 kullanıcı, ekrandan). BULGU (YÜKSEK, ana oturum yeniden üretti): e-SMM EDM'ye GÖNDERİLEMİYOR — "e-SMM kullanıcısıyım"
+  işaretlenince serbest meslek makbuzu TES/ESM serisinden numara alıyor (ProfileID ESMM) ama Gönder → 409 "Bu belge gönderilemez."; kartta işaret açık
+  (hof-invoices.js:2804). Canlıda avukat müşteri işaretlerse numara harcanır, belge GİB'e gitmez. KARAR BEKLENİYOR: 2.4.1'de işareti gizle (hızlı) ve/veya
+  EDM e-SMM servisini bağla (EDM paketi E-SMM klasörü; ayrı API).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
