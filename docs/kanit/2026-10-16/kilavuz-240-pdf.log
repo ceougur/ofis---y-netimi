@@ -1,0 +1,44 @@
+✓ PDF sayfa sayısı: 37
+✓ PDF'teki resim sayısı 39 ≥ kılavuzdaki farklı ekran 39
+✓ PDF metninde: “8. Banka”
+✓ PDF metninde: “Kurulum Sihirbazı”
+✓ PDF metninde: “Hesabı Atanmamış Eski Hareketler”
+✓ PDF metninde: “Tarihi Gelince Atanabilir”
+✓ PDF metninde: “Seçilenleri Bu Hesaba Ata”
+✓ PDF metninde: “+ Kredi Kartı Ekle”
+✓ PDF metninde: “Kredi Kartı Kullan”
+✓ PDF metninde: “Çek Hesabı”
+✓ PDF metninde: “İşlemden Sonra”
+✓ PDF metninde: “Kalanın Tamamını Öde”
+✓ PDF metninde: “Kart ve Kredi Borcu”
+✓ PDF metninde: “+ Kart Borcu Ödemesi”
+✓ PDF metninde: “Bankalar Arası Transfer”
+✓ PDF metninde: “Ters Kaydet”
+✓ PDF metninde: “Gerçek Banka”
+✓ PDF metninde: “Bugünkü Nakit ve Banka”
+✓ PDF metninde: “Banka Bakiye Raporu”
+✓ PDF metninde: “Alt Hesap Mizanı”
+✓ PDF metninde: “Banka ve POS”
+✓ PDF metninde: “Yine de Kaydet”
+✓ PDF metninde: “Hesapsız (Açılıştan Önce)”
+✓ PDF metninde: “Kurulum Geçmişi”
+✓ PDF metninde: “Kart Borcuna Aktar”
+✓ PDF metninde: “Bankaya Geçmiş Say”
+✓ PDF metninde YOK: “Drive”
+✓ PDF metninde YOK: “OneDrive”
+✓ PDF metninde YOK: “Kasa ve Banka”
+✓ PDF metninde YOK: “bugünkü kasadan”
+✓ PDF metninde YOK: “Banka / POS”
+✓ PDF metninde YOK: “Kurumsal Kart”
+✓ PDF metninde YOK: “Kurumsal Kredi”
+✓ PDF metninde YOK: “Tamamı Peşin”
+✓ PDF kapağı ve dip notu program sürümü 2.4.0 (bulunan: 2.4.0)
+✓ client/kilavuz kopyası aynı dosya (sha256 7b2cdc6c92076993c3c4df08cc04bbd2bc408dfa9243a68847441e527626c853)
+(node:26804) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ açılış ekranında “Resimli kullanım kılavuzunu açın” bağlantısı /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+✓ sunucunun verdiği kılavuz: 200 application/pdf sha256 7b2cdc6c92076993c3c4df08cc04bbd2bc408dfa9243a68847441e527626c853
+✓ sol menü “Kullanım Kılavuzu” → yeni sekme /kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+# tests 39
+# pass 39
+# fail 0
