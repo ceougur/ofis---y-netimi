@@ -1,0 +1,14 @@
+# EDM TEST ortamı — durum izleme ve e-Arşiv iptali (16.10.2026; programın EDM istemcisi, adim3.mjs). Kimlik bilgisi yok.
+04:52:39 DOA2026596432372: {"status":"sent","message":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED","raw":"SEND - SUCCEED","gibCode":""}
+04:52:39 DOF2026596432372: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+04:53:25 DOF2026596432372: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+04:54:10 DOF2026596432372: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+04:54:56 DOF2026596432372: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+04:55:42 DOF2026596432372: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+04:56:28 DOF2026596432372: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+04:57:14 DOF2026596432372: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+04:57:59 DOF2026596432372: {"status":"processing","message":"Alıcı sistemin yanıtı bekleniyor. WAIT_SYSTEM_RESPONSE","raw":"SEND - WAIT_SYSTEM_RESPONSE","gibCode":""}
+04:58:45 DOF2026596432372: {"status":"sent","message":"Alıcıya ulaştı. SUCCEED","raw":"SEND - SUCCEED","gibCode":""}
+e-Arşiv İPTAL: {"status":"cancelled","message":"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır."}
+İPTAL SONRASI DURUM: {"status":"cancelled","message":"Fatura EDM'de iptal edildi. SUCCEED","raw":"CANCELLED - SUCCEED","gibCode":""}
+cikis=0

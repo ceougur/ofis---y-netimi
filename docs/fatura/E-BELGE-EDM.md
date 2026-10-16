@@ -2,7 +2,11 @@
 
 Durum (16.10.2026): **Adım 1 (XML uygunluğu) YAPILDI** — kâhin aracı `tools/ebelge/dogrula.mjs` (UBL 2.1 XSD + GİB şematronu), test
 `test/ebelge-uygunluk.test.mjs`; üç kusur düzeltildi (boş imza yuvası, istisna 308 → 304, iade referansı). İş listesi `docs/2.4.0-IS-LISTESI.md`.
-Sırada: Entegratör Ayarları kartı, K4/K5, Adım 2 (EDM test ortamı; kimlik bilgisi kullanıcıdan dosya olarak).
+Entegratör Ayarları kartı ve K4/K5 YAPILDI. **Adım 2 (EDM test ortamı) YAPILDI (16.10.2026):** gerçek EDM test servisinde programın kendi
+API'siyle giriş, Mükellef Sorgula, e-Arşiv gönder → başarılı → iptal → başarılı, e-Fatura gönder → alıcıya ulaştı; gerçek servisin gösterdiği
+dört kusur düzeltildi (CheckUser sözleşme dışı alan, "erreceipt", çoklu PK, işlenirken iptal). Kanıt docs/kanit/2026-10-16/edm-test-ortami-*.
+Kalan: oturum düşmesi/hata kodları gerçek serviste, gelen e-Fatura → alış taslağı gerçek belgeyle, e-SMM, vekil sunucu (proxy) desteği.
+Adım 3 (açma) kullanıcının "entegre et" kararıyla.
 Eski durum: **SIRADA, BAŞLANMADI.** Kullanıcı "fatura modülünü yap" deyince buradan başlanır. e-Belge bağlantısı bugün KAPALI
 (`config.edocEnabled` false; belge "Müşteri Fişi", mali değeri yok — 13.10.2026'da koddan ve testle doğrulandı, aşağıda §2).
 Sıra (kullanıcı, 13.10.2026): Perşembe kullanım sınırı sıfırlanınca → (1) banka kalan işleri → (2) bu fatura/e-Belge işi → (3) devir modülü

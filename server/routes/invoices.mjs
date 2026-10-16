@@ -2443,6 +2443,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (remote) {
       cancel(user, existing.id, { ...options, confirmExternal: true, dryRun: true });
       const doc = detail(existing.id, user);
+      // Gerçek EDM test ortamı (16.10.2026): belge EDM'de işlenirken (PROCESSING) iptal reddedilir ("Fatura'ler iptal edilemedi", 11049).
+      // Önce durum sorulur; işleniyorsa iptal gönderilmez, açık ileti verilir.
+      const current = await integrator().status({ invoice: doc }).catch(() => null);
+      if (current?.status === "processing") {
+        throw new HttpError(409, "e-Arşiv fatura EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Birkaç dakika sonra Durum Sorgula ile bakıp yeniden deneyin.", { code: "einvoice-processing" });
+      }
       const result = await integrator().cancel({ invoice: doc });
       store.tx(() => {
         store.run("UPDATE invoices SET e_status = 'cancelled', e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", String(result.message || "").slice(0, 500), now(), now(), existing.id);

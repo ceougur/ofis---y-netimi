@@ -245,6 +245,15 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     assert.equal(last.earchive, "true");
     assert.match(last.xml, /<cbc:DocumentTypeCode>SendingType<\/cbc:DocumentTypeCode>/);
     assert.match(last.xml, /<cbc:ID>ELEKTRONIK<\/cbc:ID>/);
+    // Gerçek EDM test ortamı (16.10.2026): belge işlenirken (PROCESSING) iptal EDM'de reddedilir (11049). Program önce durumu sorar; işleniyorsa
+    // iptali göndermez, açık ileti verir, belge kesilmiş kalır.
+    const cancelsBefore = edm.state.calls.filter(call => call.op === "CancelInvoice").length;
+    const early = await api.post(`/api/workspace/invoices/${issued.data.id}/cancel`, { reason: "Müşteri vazgeçti" });
+    assert.equal(early.status, 409, JSON.stringify(early.data));
+    assert.equal(early.data.code, "einvoice-processing");
+    assert.match(early.data.error, /henüz işleniyor/);
+    assert.equal(edm.state.calls.filter(call => call.op === "CancelInvoice").length, cancelsBefore, "işlenirken EDM'ye iptal gönderilmedi");
+    assert.equal((await api.get(`/api/workspace/invoices/${issued.data.id}`)).data.status, "issued", "belge kesilmiş kalır");
     const cancelled = await api.post(`/api/workspace/invoices/${issued.data.id}/cancel`, { reason: "Müşteri vazgeçti" });
     assert.equal(cancelled.status, 200, JSON.stringify(cancelled.data));
     assert.equal(cancelled.data.status, "cancelled");
