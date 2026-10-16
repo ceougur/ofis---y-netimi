@@ -126,12 +126,13 @@ describe("Canlıya geçiş (canlı kilidi açılmış kurulum)", () => {
   let edm;
   let server;
   let api;
+  let client;
   let buyerId;
   before(async () => {
     resetEdmCaches();
     edm = await startMockEdm();
     server = await startTestServer({ edocEnabled: true, edocLive: true });
-    const client = server.client();
+    client = server.client();
     api = { get: async url => unwrap(await client.get(url)), post: async (url, body) => unwrap(await client.post(url, body)), put: async (url, body) => unwrap(await client.put(url, body)) };
     assert.equal((await client.login("admin", ADMIN_PASSWORD)).status, 200);
     await api.put("/api/workspace/invoices/settings", {
@@ -159,6 +160,13 @@ describe("Canlıya geçiş (canlı kilidi açılmış kurulum)", () => {
     const real = (await sale(120)).data;
     assert.equal(real.number, `EFT${year()}000000001`, "firmanın serisi 1'den");
     assert.equal(real.eTest, false);
+    // Canlı belgede kırmızı "TEST ORTAMI" şeridi ve PDF'teki TEST ibaresi yok (kullanıcı sorusu 16.10.2026).
+    const realXml = (await client.get(`/api/workspace/invoices/${real.id}/ubl.xml`)).data;
+    const realView = renderView(realXml, embeddedXslt(realXml)).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+    assert.ok(realView.includes(real.number) && !/TEST ORTAMI/.test(realView), "canlı görünümde TEST şeridi yok");
+    const realPdf = await client.raw("GET", `/api/workspace/invoices/${real.id}/fatura.pdf`);
+    assert.equal(realPdf.status, 200);
+    assert.doesNotMatch(pdfText(realPdf.buffer).replace(/\s+/g, " "), /TEST ORTAMI|e-FATURA · TEST/, "canlı PDF'te TEST ibaresi yok");
     const again = (await api.get(`/api/workspace/invoices/${first.id}`)).data;
     assert.equal(again.number, `TEF${year()}000000001`);
     assert.equal(again.eTest, true);
