@@ -614,6 +614,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Uzun Doğrulama (34761ca) bitince son commit CI yeşil → imzalı paket + kurulum → 5 dosya + arşiv teslim.
   İSTEK (kullanıcı, aynı gün, EDM görünümü ekran görüntüsü: "alttaki kesilen kişiyi buraya alsak… senin kararın nedir"; "bunu da taşıyalım" e-Arşiv) →
   YAPILDI: SAYIN bloğu üst bölümün sol sütununda satıcının altında (GİB örnek düzeni); e-Fatura + e-Arşiv tek şablon; kanıt docs/kanit/2026-10-16/gorunum-alici.
+  SORU (kullanıcı, aynı gün): "canlı kesilince kırmızı test ortamı yazısı olmayacak doğru mu" → EVET (şerit yalnız TEF/TEA/TES serisinde; canlı seri bunlar olamaz);
+  test eklendi (edoc-uretim: canlı görünüm + PDF'te TEST yok; mutasyon 0/1 kırmızı, b02a171).
+  ELEŞTİRİ (kullanıcı, aynı gün: "anayasamızdaki kör noktamı bulma ilkeni sorguluyorum") → baş mimar kör noktaları bildirdi: (1) GitHub'a yayın = OTOMATİK
+  GÜNCELLEMEYLE BÜTÜN müşterilere gider; canlı hafta sonu denenmeden yayımlanırsa deneme müşteride olur → öneri: hafta sonu kurulum .exe ile kendi makinede dene,
+  yayın sonra; (2) canlı adres https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc (EDM belgesinden) test adresinden farklı sürüm yolu ("EFaturaEDM21ea"
+  ↔ "EFaturaEDM"); bu ortamdan erişilemiyor (ağ izni yok), WSDL/sözleşme aynılığı doğrulanmadı → EDM'ye sorulmalı ya da ilk canlı Bağlantıyı Test Et ile görülür;
+  (3) birim kodu kabulü yalnız test ortamında ölçüldü. Karar kullanıcıda.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
