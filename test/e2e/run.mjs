@@ -11,6 +11,7 @@ import { generateKeyPairSync } from "node:crypto";
 import { createApp } from "../../server/app.mjs";
 import { readZip } from "../../server/lib/zip.mjs";
 import { createReferenceLicenseService } from "../../tools/lib/license-service.mjs";
+import { relativeFixture } from "../fixtures/goreli-tarih.mjs";
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
 import { acilirListelerXlsx } from "../fixtures/acilir-listeler.mjs";
 // Tarihe bağlı olmasın (CLAUDE.md): ilk vade bugünden ileri.
@@ -31,7 +32,8 @@ async function firstUpload(page, input, files) {
 const here = path.dirname(fileURLToPath(import.meta.url));
 const artifacts = path.join(here, "artifacts");
 mkdirSync(artifacts, { recursive: true });
-const fixture = path.join(here, "..", "fixtures", "ornek-dosyalar.xlsx");
+// Ödeme Sözü tarihleri koşu gününe göre (ders 13): 15.10.2026 → bugün + 5 gün ("Önümüzdeki 30 Gün" listesinde 3 kayıt).
+const fixture = relativeFixture(path.join(here, "..", "fixtures", "ornek-dosyalar.xlsx"), { "15.10.2026": 5 });
 const ADMIN_PASSWORD = "Test-Admin-2026!";
 
 // Lisans (v2.0.0): test anahtarıyla imzalayan başvuru lisans servisi; saat ileri alınarak süre dolumu sınanır.
