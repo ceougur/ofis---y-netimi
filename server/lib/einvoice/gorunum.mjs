@@ -85,8 +85,8 @@ table{border-collapse:collapse;font-size:inherit}
 .ad{font-weight:bold;font-size:12px}
 .baslik{text-align:center;font-size:20px;font-weight:bold;letter-spacing:1px;color:#1f5f4a;padding-top:4px}
 .bilgi{border:1px solid #9aa8a2;margin-left:auto}.bilgi th,.bilgi td{border:1px solid #9aa8a2;padding:3px 6px;text-align:left}.bilgi th{background:#eef3f0;white-space:nowrap}
-.alici{margin:14px 0;border-top:1px solid #1f5f4a;border-bottom:1px solid #1f5f4a;padding:6px 0}
-.ettn{margin:6px 0 10px}
+.alici{margin:14px 12px 0 0;border-top:1px solid #1f5f4a;border-bottom:1px solid #1f5f4a;padding:6px 0}
+.ettn{margin:12px 0 10px}
 .kalem{width:100%}.kalem th,.kalem td{border:1px solid #9aa8a2;padding:3px 5px}.kalem th{background:#eef3f0;text-align:center}.kalem td.s{text-align:right;white-space:nowrap}
 .kalem .aciklama{color:#55615b;font-size:10px}
 .toplam{margin-left:auto;margin-top:8px}.toplam th,.toplam td{border:1px solid #9aa8a2;padding:3px 6px}.toplam th{text-align:right;background:#eef3f0}.toplam td{text-align:right;white-space:nowrap;min-width:110px}
@@ -99,7 +99,7 @@ table{border-collapse:collapse;font-size:inherit}
 </style></head>
 <body><div class="sayfa">${test ? '<div class="test">TEST ORTAMI — Bu belge deneme amaçlıdır; yasal geçerliliği yoktur.</div>' : ""}<xsl:for-each select="n1:Invoice">
 <table class="ust"><tr>
-  <td style="width:38%"><xsl:call-template name="party"><xsl:with-param name="p" select="cac:AccountingSupplierParty/cac:Party"/></xsl:call-template></td>
+  <td style="width:38%"><xsl:call-template name="party"><xsl:with-param name="p" select="cac:AccountingSupplierParty/cac:Party"/></xsl:call-template><div class="alici"><div><b>SAYIN</b></div><xsl:call-template name="party"><xsl:with-param name="p" select="cac:AccountingCustomerParty/cac:Party"/></xsl:call-template></div></td>
   <td style="width:24%" class="baslik">${showLogo ? `<div class="logo"><img alt="" src="${xml(logo)}"/></div>` : ""}<div class="gib"><img alt="GİB" src="${GIB_LOGO}"/></div><xsl:choose><xsl:when test="cbc:ProfileID='EARSIVFATURA'">e-Arşiv Fatura</xsl:when><xsl:otherwise>e-FATURA</xsl:otherwise></xsl:choose>${showStamp ? `<xsl:if test="${view.stampEfatura === true ? "true()" : "cbc:ProfileID='EARSIVFATURA'"}"><div class="kase"><img alt="Kaşe / İmza" src="${xml(stamp)}"/></div></xsl:if>` : ""}</td>
   <td style="width:38%">${/^data:image\/svg\+xml;base64,[A-Za-z0-9+/=]+$/.test(qr) ? `<div class="karekod"><img alt="Karekod" src="${qr}"/></div>` : ""}<table class="bilgi">
     ${row("Özelleştirme No", '<xsl:value-of select="cbc:CustomizationID"/>')}
@@ -117,7 +117,6 @@ table{border-collapse:collapse;font-size:inherit}
     ${row("Gönderim Şekli", '<xsl:choose><xsl:when test="cac:AdditionalDocumentReference[cbc:DocumentTypeCode=\'SendingType\']/cbc:DocumentType=\'ELEKTRONIK\'">Elektronik</xsl:when><xsl:otherwise>Kâğıt</xsl:otherwise></xsl:choose>', "cbc:ProfileID='EARSIVFATURA'")}
   </table></td>
 </tr></table>
-<div class="alici"><div><b>SAYIN</b></div><xsl:call-template name="party"><xsl:with-param name="p" select="cac:AccountingCustomerParty/cac:Party"/></xsl:call-template></div>
 <div class="ettn"><b>ETTN:</b>&#160;<xsl:value-of select="cbc:UUID"/></div>
 <table class="kalem"><tr><th>Sıra No</th><th>Mal Hizmet</th><th>Miktar</th><th>Birim Fiyat</th><th>İskonto Oranı</th><th>İskonto Tutarı</th><th>KDV Oranı</th><th>KDV Tutarı</th><th>Diğer Vergiler</th><th>Mal Hizmet Tutarı</th></tr>
 <xsl:for-each select="cac:InvoiceLine"><tr>

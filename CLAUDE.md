@@ -612,6 +612,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kilitli). Baş mimar uyarısı verildi: canlı hiç denenmedi (canlı kimlik yok), canlı belge yasaldır, seri TEF/TEA olamaz, ilk belge küçük tutarla kendi firmasına.
   Ekran notu + kılavuz "Canlıya geçiş" hap bilgisi; sürüm notu "İyileştirmeler ve e-Fatura / e-Arşiv Entegrasyonu"; e2e entegrator-240 §14 canlı kip 69/69.
   Uzun Doğrulama (34761ca) bitince son commit CI yeşil → imzalı paket + kurulum → 5 dosya + arşiv teslim.
+  İSTEK (kullanıcı, aynı gün, EDM görünümü ekran görüntüsü: "alttaki kesilen kişiyi buraya alsak… senin kararın nedir"; "bunu da taşıyalım" e-Arşiv) →
+  YAPILDI: SAYIN bloğu üst bölümün sol sütununda satıcının altında (GİB örnek düzeni); e-Fatura + e-Arşiv tek şablon; kanıt docs/kanit/2026-10-16/gorunum-alici.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

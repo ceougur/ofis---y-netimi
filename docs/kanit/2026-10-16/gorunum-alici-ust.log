@@ -1,0 +1,526 @@
+TAP version 13
+# (node:11444) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şahıs firmasında ticari unvan e-Belgeye girer
+    # Subtest: TCKN'li şahıs firması: ad-soyad Person'da, cari adı (ticari unvan) PartyName'de; GİB şematronu ve XSD temiz
+    ok 1 - TCKN'li şahıs firması: ad-soyad Person'da, cari adı (ticari unvan) PartyName'de; GİB şematronu ve XSD temiz
+      ---
+      duration_ms: 3764.701416
+      type: 'test'
+      ...
+    # Subtest: unvansız gerçek kişi: PartyName yazılmaz (ad-soyad tekrarlanmaz); belge temiz
+    ok 2 - unvansız gerçek kişi: PartyName yazılmaz (ad-soyad tekrarlanmaz); belge temiz
+      ---
+      duration_ms: 544.314751
+      type: 'test'
+      ...
+    1..2
+ok 1 - Şahıs firmasında ticari unvan e-Belgeye girer
+  ---
+  duration_ms: 4502.424817
+  type: 'suite'
+  ...
+# Subtest: e-Belge görünüm tasarımı (gömülü XSLT)
+    # Subtest: görünüm ayarı varsayılanı açık (logo, banka, alt not; kaşe / imza e-Arşivde, e-Faturada kapalı)
+    ok 1 - görünüm ayarı varsayılanı açık (logo, banka, alt not; kaşe / imza e-Arşivde, e-Faturada kapalı)
+      ---
+      duration_ms: 1.75968
+      type: 'test'
+      ...
+    # Subtest: şablon GİB örnek biçiminde gömülür (fatura no .xslt, base64, application/xml); belge XSD + GİB şematronundan temiz
+    ok 2 - şablon GİB örnek biçiminde gömülür (fatura no .xslt, base64, application/xml); belge XSD + GİB şematronundan temiz
+      ---
+      duration_ms: 646.417382
+      type: 'test'
+      ...
+    # Subtest: görünüm belgenin kendi sayılarını gösterir: numara, ETTN, alıcı, kalemler, KDV oranları, ödenecek tutar (Türkçe sayı biçimi)
+    ok 3 - görünüm belgenin kendi sayılarını gösterir: numara, ETTN, alıcı, kalemler, KDV oranları, ödenecek tutar (Türkçe sayı biçimi)
+      ---
+      duration_ms: 1936.39954
+      type: 'test'
+      ...
+    # Subtest: alıcı (SAYIN) üst bölümün sol sütununda, satıcının altında; bilgi tablosunun yanındaki boşluk kalmaz (kullanıcı 16.10.2026)
+    ok 4 - alıcı (SAYIN) üst bölümün sol sütununda, satıcının altında; bilgi tablosunun yanındaki boşluk kalmaz (kullanıcı 16.10.2026)
+      ---
+      duration_ms: 20.491184
+      type: 'test'
+      ...
+    # Subtest: logo, banka hesabı (IBAN dörderli) ve alt not şablona gömülü; alt nottaki HTML metin olarak kalır (komut çalışmaz)
+    ok 5 - logo, banka hesabı (IBAN dörderli) ve alt not şablona gömülü; alt nottaki HTML metin olarak kalır (komut çalışmaz)
+      ---
+      duration_ms: 20.284723
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv: başlık GİB ibaresiyle "e-Arşiv Fatura", gönderim şekli ve elektronik iletim ibaresi; belge e-Arşiv şematronundan temiz
+    ok 6 - e-Arşiv: başlık GİB ibaresiyle "e-Arşiv Fatura", gönderim şekli ve elektronik iletim ibaresi; belge e-Arşiv şematronundan temiz
+      ---
+      duration_ms: 2366.93877
+      type: 'test'
+      ...
+    # Subtest: alış faturasının XML'inde satıcı karşı taraftır: bizim logomuz ve IBAN'ımızla şablon gömülmez
+    ok 7 - alış faturasının XML'inde satıcı karşı taraftır: bizim logomuz ve IBAN'ımızla şablon gömülmez
+      ---
+      duration_ms: 35.75418
+      type: 'test'
+      ...
+    # Subtest: ayar: logo ve banka kapatılınca şablonda yok; görünüm kapatılınca belgeye şablon gömülmez (entegratörün varsayılanı)
+    ok 8 - ayar: logo ve banka kapatılınca şablonda yok; görünüm kapatılınca belgeye şablon gömülmez (entegratörün varsayılanı)
+      ---
+      duration_ms: 2262.258084
+      type: 'test'
+      ...
+    1..8
+ok 2 - e-Belge görünüm tasarımı (gömülü XSLT)
+  ---
+  duration_ms: 7334.190476
+  type: 'suite'
+  ...
+# (node:11445) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi)
+    # Subtest: bozulmamış belge iki denetimden de geçer ve şematron kural çalıştırır
+    ok 1 - bozulmamış belge iki denetimden de geçer ve şematron kural çalıştırır
+      ---
+      duration_ms: 880.070961
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: CustomizationID TR1.0 (eski sürüm)
+    ok 2 - şematron düşürür: CustomizationID TR1.0 (eski sürüm)
+      ---
+      duration_ms: 84.037796
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: fatura numarası GİB biçiminde değil
+    ok 3 - şematron düşürür: fatura numarası GİB biçiminde değil
+      ---
+      duration_ms: 86.252029
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: döviz faturasında kur yok
+    ok 4 - şematron düşürür: döviz faturasında kur yok
+      ---
+      duration_ms: 81.43646
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: geçersiz profil
+    ok 5 - şematron düşürür: geçersiz profil
+      ---
+      duration_ms: 69.573914
+      type: 'test'
+      ...
+    # Subtest: XSD düşürür: boş IssueTime ve boş imza yuvası
+    ok 6 - XSD düşürür: boş IssueTime ve boş imza yuvası
+      ---
+      duration_ms: 831.337194
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv kipi: e-Fatura profili e-Arşiv kuralında, e-Arşiv profili e-Fatura kuralında düşer
+    ok 7 - e-Arşiv kipi: e-Fatura profili e-Arşiv kuralında, e-Arşiv profili e-Fatura kuralında düşer
+      ---
+      duration_ms: 443.075105
+      type: 'test'
+      ...
+    1..7
+ok 3 - Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi)
+  ---
+  duration_ms: 2830.826295
+  type: 'suite'
+  ...
+# Subtest: Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar
+    # Subtest: Temel e-Fatura (hizmet)
+    ok 1 - Temel e-Fatura (hizmet)
+      ---
+      duration_ms: 2584.942343
+      type: 'test'
+      ...
+    # Subtest: Ticari e-Fatura
+    ok 2 - Ticari e-Fatura
+      ---
+      duration_ms: 2220.179221
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv (kişi, e-postalı)
+    ok 3 - e-Arşiv (kişi, e-postalı)
+      ---
+      duration_ms: 2195.733949
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv (firma, e-postasız → kâğıt gönderim)
+    ok 4 - e-Arşiv (firma, e-postasız → kâğıt gönderim)
+      ---
+      duration_ms: 2259.50217
+      type: 'test'
+      ...
+    # Subtest: çok KDV oranı, satır iskontosu, ondalık miktar ve birimler
+    ok 5 - çok KDV oranı, satır iskontosu, ondalık miktar ve birimler
+      ---
+      duration_ms: 2067.891327
+      type: 'test'
+      ...
+    # Subtest: KDV dahil fiyat ve iskonto
+    ok 6 - KDV dahil fiyat ve iskonto
+      ---
+      duration_ms: 1887.441764
+      type: 'test'
+      ...
+    # Subtest: %0 KDV, 351 (istisna olmayan)
+    ok 7 - %0 KDV, 351 (istisna olmayan)
+      ---
+      duration_ms: 1947.18577
+      type: 'test'
+      ...
+    # Subtest: döviz (USD, kur)
+    ok 8 - döviz (USD, kur)
+      ---
+      duration_ms: 1901.075793
+      type: 'test'
+      ...
+    # Subtest: fiyat farkı faturası
+    ok 9 - fiyat farkı faturası
+      ---
+      duration_ms: 1965.787323
+      type: 'test'
+      ...
+    # Subtest: istisna 301
+    ok 10 - istisna 301
+      ---
+      duration_ms: 1955.698511
+      type: 'test'
+      ...
+    # Subtest: istisna 302
+    ok 11 - istisna 302
+      ---
+      duration_ms: 1889.609922
+      type: 'test'
+      ...
+    # Subtest: istisna 304
+    ok 12 - istisna 304
+      ---
+      duration_ms: 2096.561206
+      type: 'test'
+      ...
+    # Subtest: istisna 350
+    ok 13 - istisna 350
+      ---
+      duration_ms: 1943.683611
+      type: 'test'
+      ...
+    # Subtest: tevkifat 601
+    ok 14 - tevkifat 601
+      ---
+      duration_ms: 2286.847672
+      type: 'test'
+      ...
+    # Subtest: tevkifat 602
+    ok 15 - tevkifat 602
+      ---
+      duration_ms: 2064.397869
+      type: 'test'
+      ...
+    # Subtest: tevkifat 603
+    ok 16 - tevkifat 603
+      ---
+      duration_ms: 2140.583932
+      type: 'test'
+      ...
+    # Subtest: tevkifat 604
+    ok 17 - tevkifat 604
+      ---
+      duration_ms: 1902.363132
+      type: 'test'
+      ...
+    # Subtest: tevkifat 605
+    ok 18 - tevkifat 605
+      ---
+      duration_ms: 2174.900499
+      type: 'test'
+      ...
+    # Subtest: tevkifat 606
+    ok 19 - tevkifat 606
+      ---
+      duration_ms: 2251.537571
+      type: 'test'
+      ...
+    # Subtest: tevkifat 607
+    ok 20 - tevkifat 607
+      ---
+      duration_ms: 1979.735633
+      type: 'test'
+      ...
+    # Subtest: tevkifat 608
+    ok 21 - tevkifat 608
+      ---
+      duration_ms: 2012.367783
+      type: 'test'
+      ...
+    # Subtest: tevkifat 609
+    ok 22 - tevkifat 609
+      ---
+      duration_ms: 1954.073087
+      type: 'test'
+      ...
+    # Subtest: tevkifat 610
+    ok 23 - tevkifat 610
+      ---
+      duration_ms: 2012.270507
+      type: 'test'
+      ...
+    # Subtest: tevkifat 611
+    ok 24 - tevkifat 611
+      ---
+      duration_ms: 2000.780287
+      type: 'test'
+      ...
+    # Subtest: tevkifat 612
+    ok 25 - tevkifat 612
+      ---
+      duration_ms: 1896.871911
+      type: 'test'
+      ...
+    # Subtest: tevkifat 613
+    ok 26 - tevkifat 613
+      ---
+      duration_ms: 1922.503195
+      type: 'test'
+      ...
+    # Subtest: tevkifat 614
+    ok 27 - tevkifat 614
+      ---
+      duration_ms: 1969.347103
+      type: 'test'
+      ...
+    # Subtest: tevkifat 615
+    ok 28 - tevkifat 615
+      ---
+      duration_ms: 1900.347695
+      type: 'test'
+      ...
+    # Subtest: tevkifat 616
+    ok 29 - tevkifat 616
+      ---
+      duration_ms: 2174.439654
+      type: 'test'
+      ...
+    # Subtest: tevkifat 617
+    ok 30 - tevkifat 617
+      ---
+      duration_ms: 1993.409566
+      type: 'test'
+      ...
+    # Subtest: tevkifat 618
+    ok 31 - tevkifat 618
+      ---
+      duration_ms: 2049.898523
+      type: 'test'
+      ...
+    # Subtest: tevkifat 619
+    ok 32 - tevkifat 619
+      ---
+      duration_ms: 2125.66719
+      type: 'test'
+      ...
+    # Subtest: tevkifat 620
+    ok 33 - tevkifat 620
+      ---
+      duration_ms: 2028.704996
+      type: 'test'
+      ...
+    # Subtest: tevkifat 621
+    ok 34 - tevkifat 621
+      ---
+      duration_ms: 1904.867464
+      type: 'test'
+      ...
+    # Subtest: tevkifat 622
+    ok 35 - tevkifat 622
+      ---
+      duration_ms: 1895.266936
+      type: 'test'
+      ...
+    # Subtest: tevkifat 623
+    ok 36 - tevkifat 623
+      ---
+      duration_ms: 1886.107409
+      type: 'test'
+      ...
+    # Subtest: tevkifat 624
+    ok 37 - tevkifat 624
+      ---
+      duration_ms: 1877.006409
+      type: 'test'
+      ...
+    # Subtest: tevkifat 625
+    ok 38 - tevkifat 625
+      ---
+      duration_ms: 1887.82627
+      type: 'test'
+      ...
+    # Subtest: tevkifat 626
+    ok 39 - tevkifat 626
+      ---
+      duration_ms: 1795.874073
+      type: 'test'
+      ...
+    # Subtest: tevkifat 627
+    ok 40 - tevkifat 627
+      ---
+      duration_ms: 2067.65181
+      type: 'test'
+      ...
+    # Subtest: alıştan iade (e-Fatura): asıl faturaya DocumentTypeCode IADE ile 16 haneli numarayla bağlanır
+    ok 41 - alıştan iade (e-Fatura): asıl faturaya DocumentTypeCode IADE ile 16 haneli numarayla bağlanır
+      ---
+      duration_ms: 275.868275
+      type: 'test'
+      ...
+    # Subtest: alıştan iade: asıl faturanın numarası 16 hane değilse e-Belge iadesi kaydedilmeden söylenir (entegratörde reddedilmez)
+    ok 42 - alıştan iade: asıl faturanın numarası 16 hane değilse e-Belge iadesi kaydedilmeden söylenir (entegratörde reddedilmez)
+      ---
+      duration_ms: 18.356461
+      type: 'test'
+      ...
+    # Subtest: eski kayıttaki 308 (2.3.0'a dek 13/a) GİB'in 13/a kodu 304 olarak yazılır ve kurallara uyar
+    ok 43 - eski kayıttaki 308 (2.3.0'a dek 13/a) GİB'in 13/a kodu 304 olarak yazılır ve kurallara uyar
+      ---
+      duration_ms: 287.237233
+      type: 'test'
+      ...
+    1..43
+ok 4 - Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar
+  ---
+  duration_ms: 81658.474001
+  type: 'suite'
+  ...
+# Subtest: Programın kod tabloları GİB kod listesiyle aynı (UBL-TR_Codelist.xml)
+    # Subtest: her tevkifat kodu ve oranı GİB'in WithholdingTaxTypeWithPercent listesinde
+    ok 1 - her tevkifat kodu ve oranı GİB'in WithholdingTaxTypeWithPercent listesinde
+      ---
+      duration_ms: 2.648991
+      type: 'test'
+      ...
+    # Subtest: her KDV istisna kodu GİB'in TaxExemptionReasonCodeType listesinde
+    ok 2 - her KDV istisna kodu GİB'in TaxExemptionReasonCodeType listesinde
+      ---
+      duration_ms: 0.230015
+      type: 'test'
+      ...
+    1..2
+ok 5 - Programın kod tabloları GİB kod listesiyle aynı (UBL-TR_Codelist.xml)
+  ---
+  duration_ms: 3.051988
+  type: 'suite'
+  ...
+# Subtest: Kâhin dosyaları kaynaktaki baytlarıyla duruyor (KAYNAK.md sha256; Windows CRLF dönüşümü yok)
+    # Subtest: her dosyanın sha256'sı KAYNAK.md'deki değerle aynı
+    ok 1 - her dosyanın sha256'sı KAYNAK.md'deki değerle aynı
+      ---
+      duration_ms: 5.39241
+      type: 'test'
+      ...
+    1..1
+ok 6 - Kâhin dosyaları kaynaktaki baytlarıyla duruyor (KAYNAK.md sha256; Windows CRLF dönüşümü yok)
+  ---
+  duration_ms: 5.496117
+  type: 'suite'
+  ...
+# (node:11446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Üretim girişi: e-Belge açık, test ve canlı ortam açık
+    # Subtest: server/server.mjs e-Belgeyi ve canlı ortamı açar (kullanıcı 16.10.2026: "hem testi hem canlıyı aç"); config canlıyı ortam değişkeniyle açmaz
+    ok 1 - server/server.mjs e-Belgeyi ve canlı ortamı açar (kullanıcı 16.10.2026: "hem testi hem canlıyı aç"); config canlıyı ortam değişkeniyle açmaz
+      ---
+      duration_ms: 1.820834
+      type: 'test'
+      ...
+    1..1
+ok 7 - Üretim girişi: e-Belge açık, test ve canlı ortam açık
+  ---
+  duration_ms: 3.335492
+  type: 'suite'
+  ...
+# Subtest: Test ortamı belgeleri (sahte EDM)
+    # Subtest: canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır
+    ok 1 - canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır
+      ---
+      duration_ms: 13.458368
+      type: 'test'
+      ...
+    # Subtest: test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez
+    ok 2 - test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez
+      ---
+      duration_ms: 167.845263
+      type: 'test'
+      ...
+    # Subtest: Gönderilecekler'deki belge numarasını gönderimde test serisinden alır
+    ok 3 - Gönderilecekler'deki belge numarasını gönderimde test serisinden alır
+      ---
+      duration_ms: 55.979161
+      type: 'test'
+      ...
+    # Subtest: test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz
+    ok 4 - test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz
+      ---
+      duration_ms: 3241.24308
+      type: 'test'
+      ...
+    # Subtest: firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)
+    ok 5 - firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)
+      ---
+      duration_ms: 11.939927
+      type: 'test'
+      ...
+    1..5
+ok 8 - Test ortamı belgeleri (sahte EDM)
+  ---
+  duration_ms: 3939.458016
+  type: 'suite'
+  ...
+# Subtest: Canlıya geçiş (canlı kilidi açılmış kurulum)
+    # Subtest: testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez
+    ok 1 - testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez
+      ---
+      duration_ms: 77.905786
+      type: 'test'
+      ...
+    1..1
+ok 9 - Canlıya geçiş (canlı kilidi açılmış kurulum)
+  ---
+  duration_ms: 391.13471
+  type: 'suite'
+  ...
+# (node:11505) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Resmî e-Belge görüntüsü (sahte EDM)
+    # Subtest: gönderilmemiş belgede düğme yok ve uç 409; gönderilen belgede görünüm şablonu (logo dahil) EDM'ye gider
+    ok 1 - gönderilmemiş belgede düğme yok ve uç 409; gönderilen belgede görünüm şablonu (logo dahil) EDM'ye gider
+      ---
+      duration_ms: 131.422248
+      type: 'test'
+      ...
+    # Subtest: Resmî Görüntü: EDM'den PDF alınır; son hâldeki belgede veri klasörüne saklanır, ikinci açılış EDM'ye gitmez
+    ok 2 - Resmî Görüntü: EDM'den PDF alınır; son hâldeki belgede veri klasörüne saklanır, ikinci açılış EDM'ye gitmez
+      ---
+      duration_ms: 21.870497
+      type: 'test'
+      ...
+    # Subtest: fatura görme yetkisi olmayan kullanıcı resmî görüntüyü açamaz
+    ok 3 - fatura görme yetkisi olmayan kullanıcı resmî görüntüyü açamaz
+      ---
+      duration_ms: 145.168686
+      type: 'test'
+      ...
+    1..3
+ok 10 - Resmî e-Belge görüntüsü (sahte EDM)
+  ---
+  duration_ms: 770.853511
+  type: 'suite'
+  ...
+1..10
+# tests 73
+# suites 10
+# pass 73
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 85261.525706

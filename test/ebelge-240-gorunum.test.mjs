@@ -110,6 +110,13 @@ describe("e-Belge görünüm tasarımı (gömülü XSLT)", () => {
       assert.ok(page.includes(expected), `görünümde yok: "${expected}"\n${page.slice(page.indexOf("Sıra No"))}`);
     }
   });
+  test("alıcı (SAYIN) üst bölümün sol sütununda, satıcının altında; bilgi tablosunun yanındaki boşluk kalmaz (kullanıcı 16.10.2026)", () => {
+    const html = renderView(efaturaXml);
+    const top = html.match(/<table class="ust">[\s\S]*?class="baslik"/)?.[0] || "";
+    assert.ok(top.includes('class="alici"') && text(top).includes("SAYIN") && text(top).includes("Alıcı Ticaret A.Ş."), "alıcı sol sütunda");
+    assert.ok(text(top).indexOf("Deneme Ofis Ltd. Şti.") < text(top).indexOf("SAYIN"), "önce satıcı, altında alıcı");
+    assert.equal((html.match(/class="alici"/g) || []).length, 1, "alıcı bloğu bir kez");
+  });
   test("logo, banka hesabı (IBAN dörderli) ve alt not şablona gömülü; alt nottaki HTML metin olarak kalır (komut çalışmaz)", () => {
     const html = renderView(efaturaXml);
     assert.match(html, /class="baslik"><div class="logo"><img alt="" src="data:image\/jpeg;base64,\/9j\//, "firma logosu orta sütunun en üstünde (GİB logosunun üstünde)");
