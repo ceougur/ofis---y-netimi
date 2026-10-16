@@ -560,6 +560,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KARAR (kullanıcı, aynı gün: "kalan 4 madde … isteğe bağlı olarak olsun") → cari bakiyesini nota ekleme, ödeme şekli kodu, EDM portalına taslak
   yükleme, kalemde Seri No / Lot No alanları YAPILDI; dördü de ayardan açılır, varsayılan KAPALI (İz 7, `docs/2.4.0-IS-LISTESI.md`; gerçek EDM test
   ortamında taslak + dört seçenek uçtan uca denendi, docs/kanit/2026-10-16/edm-taslak). Göç v27 (invoice_lines serial_no, lot_no; yalnız ekleyici).
+- KARAR (kullanıcı, 16.10.2026: "entegre et ama müşteriler şimdilik sadece test linki girip deneme yapabilsin, ben de öyle yapacağım; sorunsuzca
+  'canlıyı da aç' dersem o kısmı da aktif edersin") → 2.4.0'da e-Belge AÇIK (edocEnabled), CANLI ORTAM KİLİTLİ (edocLive kapalı; ekran + sunucu +
+  bağlantı katmanı zaten kilitli). "Canlıyı da aç" denince yalnız edocLive açılır (ayrı sürüm). Baş mimar uyarısı verildi (test belgesi gerçek
+  deftere yazılır, numara serisi tüketilir, belgede "test" işareti yok) — güvenceler için kullanıcı onayı bekleniyor.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
