@@ -625,6 +625,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kimliği olmadan canlıya belge gidemez; yayın normal akışla (teslim → PR → yayın). (2)–(3) kullanıcının ilk canlı kurulumunda Bağlantıyı Test Et + ilk belgeyle görülür.
   (2) KAPANDI (kullanıcı ağ iznini açtı, "yaptım, dene"): canlı adres erişilebilir, SSL geçerli; WSDL + 7 şema test 21ea ile adres dışında AYNI; programın
   istemcisiyle bilerek yanlış giriş → canlı ve test aynı "Kullanıcı Bulunamadı!" (EDM 11010). Gerçek giriş canlı üyelikle. Kanıt docs/kanit/2026-10-16/canli-erisim.
+  İSTEK (kullanıcı, aynı gün: "kartı kullandın mı… onu da dene, test portalına karekodlu son halini dener misin") → YAPILDI: (a) kartla EKRANDAN Canlı Ortam +
+  bilerek yanlış kullanıcı → Durum "Bağlantı kurulamadı… Kullanıcı Bulunamadı! (EDM 11010)", adres boşken canlı adres (canli-kart); (b) canlı AÇIK üretim
+  ayarıyla (edocLive) test ortamına 4 belge TEF2026250609970–72 + TEA2026250609970: GİB'den geçti, TEF/TEA + TEST şeridi, yeni SAYIN düzeni EDM resmî PDF'inde,
+  karekod jsQR ile çözüldü, ödenecek 470/1200/900/740 (edm-son-hal-2).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

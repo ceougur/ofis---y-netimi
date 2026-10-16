@@ -1,0 +1,6 @@
+18:37:56 FİRMA (API): {"status":200}
+18:37:58 CANLI NOTU (ekran): Canlı Ortam'da gönderilen belgeler yasal belgedir; kullanıcı adı ve parola EDM'nin canlı hesabıdır, numara firmanın kendi serisinden alınır.
+18:38:00 KAYIT (veri tabanı): {"env":"live","url":"https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc","baseUrl":""}
+18:38:03 BAĞLANTIYI TEST ET — DURUM SATIRI (ekran): Durum: Bağlantı kurulamadı · 16.10.2026 18:38: EDM isteği reddetti: Kullanıcı Bulunamadı! (EDM hata kodu 11010)
+18:38:03 BİLDİRİM (ekran): ["Entegratör ayarları kaydedildi.×"]
+18:38:03 SAYFA HATASI: []
