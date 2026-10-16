@@ -383,6 +383,29 @@ try {
     await page.waitForTimeout(250);
   }
 
+  console.log("\n■ 13 e-Faturada ölçü birimi: kodu olmayan birim (Çuval) için ipucu (gerçek EDM SA'yı reddetti; e-Belgede Adet + kalem notu)");
+  await openInvoices(page);
+  await page.click(`${modal} .hof-invoices-modal [data-act="new"]`);
+  await page.click(`${modal} .hof-invoices-modal [data-scenario="service_sale"]`);
+  await page.waitForSelector(`${modal} .hof-invoices-modal [data-lines] [data-l="0"][data-f="unit"]`);
+  ok(await page.$eval(`${modal} [data-unit-hint]`, node => node.hidden), "Adet biriminde ipucu yok");
+  await page.click(`${modal} [data-l="0"][data-f="unit"]`, { clickCount: 3 });
+  await page.keyboard.type("Çuval", { delay: 40 });
+  await page.waitForFunction(sel => !document.querySelector(sel)?.hidden, `${modal} [data-unit-hint]`, { timeout: 5000 });
+  const unitHint = await textOf(page, `${modal} [data-unit-hint]`);
+  ok(/^Çuval: e-Fatura \/ e-Arşivde “Adet” kodu ile gider; birim adı kalem notunda yazar\.$/.test(unitHint), `Çuval yazılınca ipucu: ${unitHint}`);
+  await shot(page, "entegrator-13-birim-ipucu");
+  await page.click(`${modal} [data-l="0"][data-f="unit"]`, { clickCount: 3 });
+  await page.keyboard.type("Kg", { delay: 40 });
+  await page.waitForFunction(sel => document.querySelector(sel)?.hidden, `${modal} [data-unit-hint]`, { timeout: 5000 });
+  ok(true, "Kg yazılınca ipucu kalkar (EDM'nin kabul ettiği kod)");
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+    const yes = await page.$(`${modal} [data-answer="yes"]`);
+    if (yes) await yes.click();
+  }
+
   console.log("\n■ 6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu)");
   await page.goto(`${BASE}/admin.html#system`);
   await page.waitForFunction(() => !/Yükleniyor/.test(document.querySelector("#adm-network-summary")?.textContent || "Yükleniyor"), null, { timeout: 15000 });

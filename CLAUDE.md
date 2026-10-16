@@ -594,6 +594,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   5 kullanıcı (3 Muhasebe + 2 Avukat) ayrı tarayıcı oturumlarında AYNI ANDA ekrandan 30 belge (15 e-Fatura Temel/Ticari + 15 e-Arşiv; Kaydet ve Gönder /
   Sonra Gönder karışık) gerçek EDM test ortamına; denetim: numara benzersiz/boşluksuz, tek gönderim, son durum, bakiye, defter (kanıt docs/kanit/2026-10-16/edm-stres).
   SORU (aynı gün, TEF2026347991651 Ticari, portal "Kabul/Red yanıtı bekleniyor"): kabul/red Giden'den değil Gelen Fatura'dan verilir (kendine gönderim).
+- İSTEK (kullanıcı, 16.10.2026: "çok kullanıcılı yüklü testler yap, müşteriler / kesen şirket / kalemler / sektörler farklı olsun"; "sunucunun testler
+  sonrası doğru yedeklemeyi aldığını da kontrol et"; "iade temel… deniyor muyuz") → gerçek EDM'de 2 şirket (001 DESTEK OFİS hizmet, 002 ATLAS YAPI stok) ×
+  5 kullanıcı, 64 belge (+ Alıştan İade TEMEL/IADE) + yedek tatbikatı (otomatik + elle + geri yükleme). Gerçek EDM birim kodu kusurunu buldu (Çuval SA vb.
+  reddedildi) → düzeltildi. KARAR (kullanıcı: "en uygun haliyle yap"): birimler programda KALIR; e-Belgede Adet + kalem notu, formda/stok kartında ipucu,
+  kılavuzda hap bilgi. Canlı açılırken birim sorgusu canlı ortamda yinelenir. Ayrıntı docs/2.4.0-IS-LISTESI.md "Dar kontrol turu 4".
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

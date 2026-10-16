@@ -625,6 +625,7 @@
           </span>
         </div>
         <div class="hof-rep-table hof-inv-lines-scroll"><table class="hof-table hof-inv-lines"><thead><tr><th>#</th><th>Stok Kodu</th><th>Ürün / Hizmet</th><th class="num">Miktar</th><th>Birim</th><th class="num">Birim Fiyat</th><th class="num">İsk. %</th><th>KDV</th>${hasExpenseCol(form) ? "<th>Gider Türü</th>" : ""}<th class="num">Tutar</th><th></th></tr></thead><tbody data-lines></tbody></table></div>
+        <p class="hof-muted hof-inv-unit-hint" data-unit-hint hidden></p>
         ${ret ? "" : `<div class="hof-inv-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="add-line">+ Kalem Ekle</button><small>${offersNewItem(form) ? "Stok Kodu ya da ürün adı yazın; stokta yoksa listeden “+ Yeni Stok Kartı” ile kart açılır (fatura kaydedilince)." : form.kind === "purchase" ? "Stok Kodu ya da ad yazın; stokta olmayan ad gider kalemi olur." : "Stok Kodu (barkod) ya da ürün adı yazın; stoktaki ürünler listelenir. Listede olmayan ad hizmet kalemi olur."}</small></div>`}
         <datalist id="hof-inv-units">${(meta.units || []).map(unit => `<option value="${esc(unit)}"></option>`).join("")}</datalist>
       </section>
@@ -739,6 +740,22 @@
   }
   // ---------- Kalemler ----------
   const vatOptions = value => (meta.vatRates || [0, 1, 10, 20]).map(rate => `<option value="${rate}" ${String(rate) === String(value) ? "selected" : ""}>%${rate}</option>`).join("");
+  // e-Belgede kodu olmayan birim (Çuval, Koli, Hafta…) Adet koduyla gider, adı kalem notuna yazılır: kullanıcı faturayı kesmeden önce görür.
+  const eUnitAsAdet = unit => {
+    const name = String(unit || "").trim();
+    const key = name.toLocaleLowerCase("tr-TR");
+    return Boolean(name) && eUnitsOn() && !["adet", "ad", "tane"].includes(key) && !(meta?.eUnits || []).includes(key);
+  };
+  const eUnitsOn = () => meta?.edocEnabled === true && (meta?.settings?.efatura || meta?.settings?.earsiv) && (meta?.eUnits || []).length > 0;
+  function updateUnitHint() {
+    const hint = body()?.querySelector("[data-unit-hint]");
+    const form = view.form;
+    if (!hint || !form) return;
+    const names = [...new Set(form.lines.map(line => String(line.unit || "").trim()).filter(eUnitAsAdet))];
+    // Yalnız bizim kesip e-Belge olarak gönderdiğimiz türlerde (satış, alıştan iade…); alış faturası karşı tarafın belgesidir.
+    hint.hidden = !names.length || !meta?.kinds?.[form.kind]?.send;
+    hint.textContent = names.length ? `${names.join(", ")}: e-Fatura / e-Arşivde “Adet” kodu ile gider; birim adı kalem notunda yazar.` : "";
+  }
   function renderLines() {
     const form = view.form;
     const tbody = body()?.querySelector("[data-lines]");
@@ -773,6 +790,7 @@
       })
       .join("");
     HOF.swap(tbody, rows);
+    updateUnitHint();
   }
   // Son fiyat ipucu: bu cariye son satış/alış, başka carilere son fiyatlar, stok kartı (mevcut, maliyet, satış fiyatı).
   function priceHint(line, index) {
@@ -1473,6 +1491,7 @@
       if (!line) return;
       const field = target.dataset.f;
       line[field] = target.type === "checkbox" ? target.checked : target.value;
+      if (field === "unit") updateUnitHint();
       if (field === "name") {
         if (line.itemId) {
           // Seçilen ürünün adı değiştirildi: kalem artık serbest (stoksuz) kalemdir.
@@ -3076,7 +3095,7 @@
     view.tab = "all";
     return open({ account: account || {}, tab: "all" });
   };
-  HOF.invoices = { open, newFor, openDoc, forAccount, edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
+  HOF.invoices = { open, newFor, openDoc, forAccount, eUnitAsAdet: unit => Boolean(meta) && eUnitAsAdet(unit), edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
   // 2.3.0 İz 5.5 Hızlı Arama: sekmeler TABS'tan (purchase sekmesi "Alınan" — müşteri "alış f" yazar: Alış Faturaları eş adı), işlemler
   // yetkiye göre (Yeni Satış / Alış Faturası → senaryo seçimi; Yeni İade → İadeler sekmesi).
   HOF.search?.register(() => {

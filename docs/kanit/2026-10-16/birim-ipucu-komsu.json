@@ -1,0 +1,32 @@
+{
+  "ad": "birim-ipucu-komsu",
+  "komut": "node --test test/yazim-duzeni.test.mjs test/ebelge-240-birim.test.mjs test/ebelge-240-kontrol3.test.mjs test/accounts-stock.test.mjs test/eksi-stok-217.test.mjs test/fatura-model.test.mjs test/kilavuz-surum.test.mjs",
+  "commit": "d7d7b3879ae84ff5c860931857b473e366fabfa0",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 6,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T15:50:22.380Z",
+  "sure_sn": 16.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 54,
+    "gecen": 54,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/birim-ipucu-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "3e196da557d9dd7a1fd39cd6e9ce92d9813043addb826fdd49ac20fa595b09f0",
+  "ham_cikti_bayt": 19038
+}

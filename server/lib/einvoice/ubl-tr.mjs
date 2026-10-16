@@ -24,6 +24,8 @@ const UNIT_CODES = {
 };
 // Gerçek EDM'nin kabul ettiği kodlar (aynı kanıt; test/ebelge-240-birim.test.mjs program birimlerini buna karşı denetler).
 export const EDM_ACCEPTED_UNIT_CODES = Object.freeze(["C62", "KGM", "GRM", "TNE", "LTR", "MLT", "MTR", "CMT", "MMT", "MTK", "MTQ", "PA", "BX", "PR", "SET", "HUR", "DAY", "MON", "ANN", "MIN", "DZN", "NIU", "PK", "CMQ"]);
+// Kendi koduyla giden birimler (küçük harf): istemci, Adet koduyla gidecek birimde ipucu gösterir (tek kaynak bu liste).
+export const UNIT_CODE_KEYS = Object.freeze(Object.keys(UNIT_CODES));
 export const unitCode = unit => UNIT_CODES[String(unit || "").trim().toLocaleLowerCase("tr-TR")] || "C62";
 // Adet dışında olup Adet koduyla giden birimin (Çuval, Koli, Şişe, Teneke, Hafta, Seans…) adı: alıcı belgede gerçek birimi görür.
 export const unitNote = unit => {

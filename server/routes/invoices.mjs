@@ -17,7 +17,7 @@ import path from "node:path";
 import { parseQty } from "../lib/accounts.mjs";
 import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl, testOnlyUrl } from "../lib/einvoice/adapters.mjs";
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
-import { buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
+import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
@@ -2083,6 +2083,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       expenses: Object.entries(EXPENSES).map(([code, value]) => ({ code, label: value.label, account: value.account })),
       currencies: Object.entries(CURRENCIES).map(([code, value]) => ({ code, label: value.label, symbol: value.symbol })),
       units: UNITS,
+      // e-Belgede kendi koduyla giden birimler; öbürleri Adet (C62) + kalem notu gider (gerçek EDM, docs/kanit/2026-10-16/edm-birim).
+      eUnits: edocEnabled ? UNIT_CODE_KEYS : [],
       methods: METHODS,
       methodsIn: METHODS_IN,
       methodsOut: METHODS_OUT,
