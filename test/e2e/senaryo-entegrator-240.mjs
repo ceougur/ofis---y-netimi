@@ -6,8 +6,11 @@
 //   3 Bağlantıyı Test Et → Durum "Bağlantı kuruldu"; Etiketleri Getir → GB ve PK listeleri; seçilip kaydedilir (veri tabanından okunur).
 //   4 Sekme değişince yazılanlar kaybolmaz; Firma sekmesinde firma özeti (tek kaynak) ve "Fatura Ayarları'nda Düzenle"; Otomatik Seriler kaydedilir.
 //   5 Fatura Ayarları'nda e-Belge alanları yok, karta yönlendiren düğme var. Avukat (fatura keser, Fatura Ayarları yetkisi yok): düğme yok.
+//   6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu, 16.10.2026): Otomatik seçili; Elle Yazılan Adres insan hızında + Tab; Kaydet → dosyada,
+//     parola ekrana dönmez; Bağlantıyı Dene → istek sahte vekile gider (CONNECT), ret iletisi Türkçe; Entegratör kartında yol satırı.
 // Çıkış: "N geçti, M kaldı". Ekran görüntüleri EKRAN_DIR (yoksa geçici klasör).
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { chromium } from "playwright";
@@ -24,7 +27,17 @@ const must = async (label, promise) => {
   return res.data;
 };
 const edm = await startMockEdm();
-const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", edocEnabled: true });
+// Sahte vekil sunucu (bölüm 6): CONNECT isteklerini kaydeder ve reddeder (403) — dışarıya hiçbir istek çıkmaz.
+const proxyLog = [];
+const fakeProxy = http.createServer((req, res) => res.writeHead(403).end());
+fakeProxy.on("connect", (req, socket) => {
+  proxyLog.push(req.url);
+  socket.end("HTTP/1.1 403 Forbidden\r\n\r\n");
+});
+await new Promise(resolve => fakeProxy.listen(0, "127.0.0.1", resolve));
+const NO_ENV_PROXY = { HTTPS_PROXY: "", https_proxy: "", HTTP_PROXY: "", http_proxy: "", NO_PROXY: "", no_proxy: "" };
+const networkFile = path.join(root, "ag-ayari.json");
+const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", edocEnabled: true, env: { ...NO_ENV_PROXY, HUKUK_NETWORK_FILE: networkFile }, networkTestUrl: "https://guncelleme.test/" });
 const admin = await server.login();
 const BASE = server.base;
 await must("kurulum geç", admin.post("/api/workspace/bank/setup/dismiss", {}));
@@ -181,6 +194,39 @@ try {
   const staff = await login("avukat", PASS);
   await openInvoices(staff);
   ok(!(await staff.$(`${modal} [data-act="integrator"]`)) && Boolean(await staff.$(`${modal} [data-act="new"]`)), "avukatta (fatura keser, ayar yetkisi yok) “Entegratör Ayarları” düğmesi yok");
+
+  console.log("\n■ 6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu)");
+  await page.goto(`${BASE}/admin.html#system`);
+  await page.waitForFunction(() => !/Yükleniyor/.test(document.querySelector("#adm-network-summary")?.textContent || "Yükleniyor"), null, { timeout: 15000 });
+  const autoChecked = await page.$eval('#adm-network input[name="mode"][value="auto"]', node => node.checked);
+  ok(autoChecked && (await page.$eval("#adm-network-manual", node => node.hidden)), "varsayılan Otomatik (Windows Ayarı); elle alanları gizli");
+  await page.click('#adm-network input[name="mode"][value="manual"]');
+  ok(!(await page.$eval("#adm-network-manual", node => node.hidden)), "Elle Yazılan Adres seçilince adres alanları açılır");
+  await page.click("#adm-network-address");
+  await page.keyboard.type(`127.0.0.1:${fakeProxy.address().port}`, { delay: 40 });
+  await page.keyboard.press("Tab");
+  await page.keyboard.type("ofis", { delay: 40 });
+  await page.keyboard.press("Tab");
+  await page.keyboard.type("Vekil-Parola-9", { delay: 40 });
+  await page.click("#adm-network-save");
+  await page.waitForFunction(() => /elle yazılan vekil sunucu/.test(document.querySelector("#adm-network-summary")?.textContent || ""), null, { timeout: 10000 });
+  const savedFile = JSON.parse(readFileSync(networkFile, "utf8"));
+  ok(savedFile.mode === "manual" && savedFile.proxy === `http://ofis:Vekil-Parola-9@127.0.0.1:${fakeProxy.address().port}`, `ayar dosyaya yazıldı (mode ${savedFile.mode})`);
+  const passwordShown = await page.$eval("#adm-network-password", node => ({ value: node.value, hint: node.placeholder }));
+  const pageHtml = await page.content();
+  ok(passwordShown.value === "" && /Kayıtlı parola korunur/.test(passwordShown.hint) && !pageHtml.includes("Vekil-Parola-9"), "parola ekrana dönmez; “Kayıtlı parola korunur”");
+  await page.click("#adm-network-test");
+  await page.waitForFunction(() => /ulaşılamadı|ulaşıldı/.test(document.querySelector("#adm-network-result")?.textContent || ""), null, { timeout: 30000 });
+  const tried = await textOf(page, "#adm-network-result");
+  ok(/Vekil sunucu bağlantıyı reddetti \(403\)/.test(tried) && proxyLog.includes("guncelleme.test:443"), `Bağlantıyı Dene vekilden geçti, ret iletisi: ${tried}`);
+  await shot(page, "entegrator-6-ag-baglantisi");
+  await page.goto(`${BASE}/`);
+  await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open), null, { timeout: 20000 });
+  await openInvoices(page);
+  await page.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
+  await page.waitForSelector(`${card} [data-integ-network]`);
+  const networkText = await textOf(page, `${card} [data-integ-network]`);
+  ok(/elle yazılan vekil sunucu \(http:\/\/127\.0\.0\.1:\d+\)/.test(networkText) && /Yönetim → Sistem → Ağ Bağlantısı/.test(networkText) && !networkText.includes("ofis:"), `Entegratör kartında yol satırı: ${networkText}`);
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
@@ -191,6 +237,7 @@ try {
   await browser.close();
   await server.close();
   await edm.close();
+  await new Promise(resolve => fakeProxy.close(resolve));
   rmSync(root, { recursive: true, force: true });
   process.exitCode = failed ? 1 : 0;
 }

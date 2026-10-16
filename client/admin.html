@@ -165,6 +165,27 @@
           <label class="adm-update-channel"><span>Güncelleme Kanalı</span><select id="adm-update-channel"><option value="stable">Kararlı (önerilen)</option><option value="beta">Deneme (beta)</option></select></label>
         </div>
       </section>
+      <form class="adm-card adm-network" id="adm-network" novalidate aria-labelledby="adm-network-title">
+        <h2 id="adm-network-title">Ağ Bağlantısı (Vekil Sunucu)</h2>
+        <p class="adm-muted">Program internete güncelleme, lisans, Google E-Tablolar ve e-Belge için çıkar. Ağınız internete bir vekil sunucu (proxy) üzerinden çıkıyorsa program Windows'un makine geneli ayarını kendiliğinden kullanır; o ayar yoksa ya da farklı bir sunucu gerekiyorsa adresi burada yazın. Ofis içindeki adresler her zaman doğrudan gider.</p>
+        <p class="adm-muted" id="adm-network-summary" aria-live="polite">Yükleniyor…</p>
+        <div class="adm-network-modes" role="radiogroup" aria-label="Vekil Sunucu Seçeneği">
+          <label class="adm-check"><input type="radio" name="mode" value="auto"><span>Otomatik (Windows Ayarı)</span></label>
+          <label class="adm-check"><input type="radio" name="mode" value="manual"><span>Elle Yazılan Adres</span></label>
+          <label class="adm-check"><input type="radio" name="mode" value="none"><span>Vekil Sunucu Kullanma</span></label>
+        </div>
+        <div class="adm-network-manual" id="adm-network-manual" hidden>
+          <label class="hof-field"><span>Vekil Sunucu Adresi</span><input type="text" name="address" id="adm-network-address" autocomplete="off" spellcheck="false" placeholder="vekil.firma.local:8080"></label>
+          <label class="hof-field"><span>Kullanıcı Adı</span><input type="text" name="username" id="adm-network-username" autocomplete="off" spellcheck="false" placeholder="Gerekmiyorsa boş bırakın"></label>
+          <label class="hof-field"><span>Parola</span><input type="password" name="password" id="adm-network-password" autocomplete="new-password"></label>
+        </div>
+        <label class="hof-field adm-network-bypass"><span>Vekil Sunucudan Geçmeyecek Adresler</span><input type="text" name="bypass" id="adm-network-bypass" autocomplete="off" spellcheck="false" placeholder="*.firma.local; 10.*"></label>
+        <div class="adm-inline">
+          <button type="submit" class="hof-button" id="adm-network-save">Kaydet</button>
+          <button type="button" class="hof-button hof-button-ghost" id="adm-network-test">Bağlantıyı Dene</button>
+        </div>
+        <p class="adm-muted" id="adm-network-result" aria-live="polite"></p>
+      </form>
       <div class="adm-grid" id="adm-system"></div>
     </section>
 

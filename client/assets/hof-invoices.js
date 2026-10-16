@@ -2635,6 +2635,12 @@
     ["earsiv", "e-Arşiv Serisi"],
     ["esmm", "e-SMM Serisi"],
   ];
+  // Entegratöre hangi yoldan çıkılıyor (vekil sunucu ayarı makine genelidir; Yönetim → Sistem → Ağ Bağlantısı).
+  function networkLine(network) {
+    if (!network) return "";
+    const via = { manual: `elle yazılan vekil sunucu (${network.address})`, env: `ortam değişkenindeki vekil sunucu (${network.address})`, windows: `Windows'un vekil sunucu ayarı (${network.address})`, none: "doğrudan (vekil sunucu kapalı)", direct: "doğrudan" }[network.source] || "doğrudan";
+    return `İnternet bağlantısı: ${via}. Vekil sunucu Yönetim → Sistem → Ağ Bağlantısı'ndan değiştirilir.`;
+  }
   function integratorStatus(integ) {
     if (!integ.username || !integ.hasPassword) return { cls: "is-off", text: "Bağlantı Yok (kullanıcı adı ve parolayı yazıp kaydedin)" };
     const last = integ.lastTest;
@@ -2682,6 +2688,7 @@
             <label class="hof-check"><input type="checkbox" data-i="autoCheckUser" ${integ.autoCheckUser ? "checked" : ""}><span>Cari kartında VKN / TCKN yazılınca e-Fatura mükellefiyeti kendiliğinden sorgulansın</span></label>
           </div>
         </div>
+        <p class="hof-muted" data-integ-network>${esc(networkLine(integ.network))}</p>
         <div class="hof-plan-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="test" ${integ.username && integ.hasPassword ? "" : "disabled"} title="Önce kullanıcı adı ve parolayı kaydedin">Bağlantıyı Test Et</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="aliases" ${integ.username && integ.hasPassword ? "" : "disabled"} title="Firmanın GB ve PK etiketleri EDM'den getirilir">Etiketleri Getir</button></div>
         <div data-integ-result></div>`,
         firm: `<div class="hof-inv-head">

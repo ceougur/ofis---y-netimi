@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { createClock } from "./clock.mjs";
 import { resolveDbPath } from "./db-path.mjs";
 import { DEFAULT_LICENSE_SERVICES } from "./license.mjs";
+import { cachedResolver, createProxyFetch, describeNetwork } from "./net-proxy.mjs";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 export const DEFAULT_ADMIN_PASSWORD = "Ofis2026!";
@@ -23,6 +24,8 @@ export function loadConfig(overrides = {}) {
   const env = { ...process.env, ...(overrides.env || {}) };
   const dataDir = path.resolve(overrides.dataDir ?? env.HUKUK_DATA_DIR ?? path.join(ROOT, "data"));
   const backupDir = path.resolve(overrides.backupDir ?? env.HUKUK_BACKUP_DIR ?? path.join(ROOT, "backups"));
+  // Ağ (vekil sunucu) ayarı dosyası: servis yöneticisi altında kurulumun config klasöründe (güncelleyiciyle ortak), yoksa veri klasöründe.
+  const networkFile = path.resolve(overrides.networkFile ?? env.HUKUK_NETWORK_FILE ?? path.join(dataDir, "ag-ayari.json"));
   return Object.freeze({
     root: ROOT,
     productName: PRODUCT_NAME,
@@ -55,7 +58,14 @@ export function loadConfig(overrides = {}) {
     datasetTickMs: number(overrides.datasetTickMs ?? env.HUKUK_DATASET_TICK_MS, 60_000),
     // Lisans servisi adresleri (virgülle birden çok). Yanıtlar imzalı olduğundan adres değişikliği güveni zayıflatmaz.
     licenseServices: (overrides.licenseServices ?? env.HUKUK_LICENSE_URL ?? DEFAULT_LICENSE_SERVICES.join(",")).toString(),
-    fetchImpl: overrides.fetchImpl || ((...args) => globalThis.fetch(...args)),
+    networkFile,
+    // Ekranda gösterilecek etkin vekil ayarı (fetchImpl ile aynı ortam değişkenleri; kimlik bilgisi yok).
+    describeNetwork: () => describeNetwork({ file: networkFile, env }),
+    // Yönetim → Ağ Bağlantısı → Bağlantıyı Dene adresi (güncelleme sunucusu); testler yerel sahte sunucu verir.
+    networkTestUrl: overrides.networkTestUrl || "https://api.github.com/",
+    // Dışarı çıkan bütün istekler (lisans, E-Tablolar, e-Belge entegratörü) vekil sunucu ayarına uyar (lib/net-proxy.mjs; 16.10.2026).
+    // outboundTls yalnız testlerden (kendinden imzalı sahte sunucu sertifikası); ortam değişkeniyle verilmez, üretimde sistem sertifikaları.
+    fetchImpl: overrides.fetchImpl || createProxyFetch({ resolve: cachedResolver({ file: networkFile, env }), tlsOptions: overrides.outboundTls || {} }),
     // e-Belge (e-Fatura / e-Arşiv / entegratör) bağlantısı — program sahibinin kararıyla KAPALI (01.10.2026: "sana entegre
     // et diyene kadar"). Kapalıyken fatura modülü tam çalışır; belge resmî hükmü olmayan müşteri fişi olarak basılır,
     // e-Belge seçenekleri ekranda görünmez. Yalnız testler (overrides.edocEnabled) açabilir; ortam değişkeniyle açılmaz.

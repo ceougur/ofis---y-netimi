@@ -317,9 +317,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   };
 
   // Ekrana giden ayarlar: parola (şifreli hâli de) hiç gönderilmez; yalnız girilmiş olup olmadığı.
+  // Entegratör kartında bağlantının hangi yoldan çıktığı (vekil sunucu; ayar Yönetim → Sistem → Ağ Bağlantısı'nda, kimlik bilgisi yok).
+  const networkSummary = () => (edocEnabled && config.describeNetwork ? config.describeNetwork().effective : null);
   const publicSettings = s => {
     const { passwordSealed, ...rest } = s.integrator;
-    return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive } };
+    return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive, network: networkSummary() } };
   };
   const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true, autoCheckUser: s.integrator.autoCheckUser === true });
   function integrator(s = settings()) {
@@ -331,7 +333,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!cfg.username || !cfg.passwordSealed) throw new HttpError(409, `${ADAPTERS[cfg.id]?.label || "Entegratör"} web servis kullanıcı adı ve parolası girilmemiş. Fatura → Entegratör Ayarları'ndan girin.`, { code: "integrator-not-configured" });
     const password = secrets().open(cfg.passwordSealed);
     if (!password) throw new HttpError(409, "Kayıtlı entegratör parolası bu bilgisayarda açılamadı (veriler başka bilgisayardan taşınmış olabilir). Fatura → Entegratör Ayarları'nda parolayı yeniden girin.", { code: "integrator-password" });
-    return connect({ integrator: { ...cfg, password }, seller: sellerParty(s) });
+    return connect({ integrator: { ...cfg, password }, seller: sellerParty(s), fetchImpl: config.fetchImpl });
   }
 
   // ---------- Okuma ----------

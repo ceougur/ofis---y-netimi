@@ -10,6 +10,7 @@ import { hashPassword, passwordProblem, verifyPassword } from "../lib/passwords.
 import { ADMIN_ONLY, GRANTABLE, NOT_YET_PERMISSIONS, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
 import { migrateBankGrants, withGrantsDone } from "../lib/bank/grants.mjs";
 import { compareVersions } from "../lib/semver.mjs";
+import { prepareNetworkSettings, readNetworkSettings, splitProxy, writeNetworkSettings } from "../lib/net-proxy.mjs";
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
 function lanAddresses(port) {
@@ -507,6 +508,38 @@ export function registerAdminRoutes(router, context) {
     const status = sanitizeUpdate(await updateLink().request("update:config", payload, { timeoutMs: 10_000 }));
     audit(admin, "system.update_settings", "update", payload);
     ok(res, status);
+  });
+
+  // ---------- Ağ bağlantısı: vekil sunucu (16.10.2026; lib/net-proxy.mjs) ----------
+  // Ayar makine geneli: güncelleyici (servis yöneticisi) ve bütün şirketler aynı dosyayı okur; değişiklik bir sonraki istekte geçerli olur.
+  // Parola ekrana hiç dönmez; boş bırakılırsa kayıtlı parola korunur.
+  const networkFile = () => config.networkFile;
+  router.get("/api/admin/network", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, config.describeNetwork());
+  });
+  router.put("/api/admin/network", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    if (!networkFile()) throw new HttpError(409, "Ağ ayarı bu kurulumda yazılamıyor.");
+    const prepared = prepareNetworkSettings(await readJson(req), readNetworkSettings(networkFile()));
+    if (prepared.error) throw new HttpError(400, prepared.error, { code: "network-invalid" });
+    writeNetworkSettings(networkFile(), prepared.value);
+    const shown = splitProxy(prepared.value.proxy);
+    audit(admin, "system.network_settings", "network", { mode: prepared.value.mode, address: prepared.value.mode === "manual" ? shown.address : "", username: prepared.value.mode === "manual" ? shown.username : "", bypass: prepared.value.bypass });
+    ok(res, config.describeNetwork());
+  });
+  // Bağlantıyı Dene: güncelleme sunucusuna (GitHub) bu ayarla gidilebiliyor mu? Yanıt kodu değil, ulaşılabilirlik ölçülür.
+  router.post("/api/admin/network/test", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    const started = Date.now();
+    const via = config.describeNetwork().effective;
+    try {
+      const response = await config.fetchImpl(config.networkTestUrl || "https://api.github.com/", { method: "GET", headers: { "user-agent": "DestekOfis" }, signal: AbortSignal.timeout(20_000) });
+      await response.body?.cancel().catch(() => {});
+      ok(res, { ok: response.status < 500, status: response.status, ms: Date.now() - started, via });
+    } catch (error) {
+      ok(res, { ok: false, error: error?.name === "TimeoutError" ? "20 saniyede yanıt gelmedi." : error?.message || String(error), ms: Date.now() - started, via });
+    }
   });
 
   router.get("/api/admin/system", async ({ req, res }) => {

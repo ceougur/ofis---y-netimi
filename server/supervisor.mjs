@@ -22,6 +22,7 @@ import { resolveDbPath } from "./lib/db-path.mjs";
 import { openDatabase } from "./lib/db.mjs";
 import { startDiscoveryResponder } from "./lib/discovery.mjs";
 import { createLogger } from "./lib/logger.mjs";
+import { cachedResolver, createProxyFetch } from "./lib/net-proxy.mjs";
 import { UpdateError } from "./lib/update-envelope.mjs";
 import { createUpdateOrchestrator } from "./lib/update-orchestrator.mjs";
 import { createUpdater } from "./lib/updater.mjs";
@@ -107,6 +108,9 @@ export async function startSupervisor(options = {}) {
   const dataDir = path.resolve(options.dataDir || env.HUKUK_DATA_DIR || path.join(installRoot, "data"));
   const backupDir = path.resolve(options.backupDir || env.HUKUK_BACKUP_DIR || path.join(installRoot, "backups"));
   const configDir = path.resolve(options.configDir || path.join(installRoot, "config"));
+  // Vekil sunucu ayarı (lib/net-proxy.mjs): güncelleyici ve uygulama aynı dosyayı okur; uygulama Yönetim → Sistem'den yazar.
+  const networkFile = path.resolve(env.HUKUK_NETWORK_FILE || path.join(configDir, "ag-ayari.json"));
+  const outboundFetch = options.fetchImpl || createProxyFetch({ resolve: cachedResolver({ file: networkFile, env }) });
   // Veritabanı yolu her kullanımda çözülür (yeni kurulumda dosyayı uygulama oluşturur; eski kurulum eski adı korur).
   const dbPath = () => resolveDbPath(dataDir);
   const backupKeep = Math.max(3, Number(env.HUKUK_BACKUP_KEEP || 30));
@@ -151,6 +155,7 @@ export async function startSupervisor(options = {}) {
         HUKUK_BACKUP_DIR: backupDir,
         HUKUK_SUPERVISED: "1",
         HUKUK_PUBLIC_PORT: String(publicPort),
+        HUKUK_NETWORK_FILE: networkFile,
       },
       stdio: ["ignore", "pipe", "pipe", "ipc"],
       windowsHide: true,
@@ -348,7 +353,7 @@ export async function startSupervisor(options = {}) {
       configDir,
       // Çalışan uygulamanın sürümü her denetimde okunur (yeniden başlamadan yeni sürüme geçilmiş olabilir).
       currentVersion: () => controller.appVersion() || layout.version,
-      fetchImpl: options.fetchImpl,
+      fetchImpl: outboundFetch,
       trustedKeys: options.trustedKeys,
       githubApi: options.githubApi,
       githubWeb: options.githubWeb,

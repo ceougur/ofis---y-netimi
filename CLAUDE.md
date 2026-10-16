@@ -540,7 +540,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   e2e senaryo-entegrator-240 CI'de. Ayrıca e2e tarih tuzağı (ders 13) düzeltildi (0d83358). İz 4 EDM TEST ORTAMI YAPILDI (16.10.2026; kullanıcı
   test kimliğini dosya olarak yükledi — uploads/…edm-test..txt; depoya/kanıta girmedi, taranarak denetlendi): gerçek serviste e-Arşiv gönder/iptal ve
   e-Fatura alıcıya ulaştı; 4 kusur düzeltildi (CheckUser DOCUMENT_TYPE, "erreceipt", çoklu PK seçimi, işlenirken iptal). Bu ortamda Node fetch için
-  NODE_USE_ENV_PROXY=1 + NODE_EXTRA_CA_CERTS gerekir. AÇIK KARAR: müşteride vekil sunucu (proxy) desteği — e-Belge açılmadan önce.
+  NODE_USE_ENV_PROXY=1 + NODE_EXTRA_CA_CERTS gerekir. KARAR (kullanıcı, 16.10.2026: "yap"): VEKİL SUNUCU desteği bu sürüme — program Windows
+  makine geneli (WinHTTP) ayarını kendiliğinden kullanır + Entegratör Ayarları'nda elle "Vekil Sunucu" alanı; güncelleme, lisans, E-Tablolar, EDM aynı
+  yoldan (server/lib/net-proxy.mjs). Not: hizmet "NT SERVICE\DestekOfis" hesabıyla çalışır, kullanıcının tarayıcı vekil ayarını görmez → WinHTTP. YAPILDI (İz 5, `docs/2.4.0-IS-LISTESI.md`): ayar Yönetim → Sistem → Ağ Bağlantısı'nda (makine geneli; e-Belge kapalıyken de görünür),
+  Entegratör kartında yol satırı; testler Linux + Windows (CI'de gerçek netsh winhttp). BİLİNEN SINIR: PAC/WPAD ve NTLM vekil yok; gerçek ofis vekilinde denenmedi.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

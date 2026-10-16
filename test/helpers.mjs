@@ -30,6 +30,9 @@ export async function startTestServer(options = {}) {
     ...(options.bankLater ? { bankLater: true } : {}),
     ...(options.bankPickLegacy ? { bankPickLegacy: true } : {}),
     ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
+    // Yönetim → Ağ Bağlantısı → Bağlantıyı Dene adresi (vekil sunucu testleri yerel sahte sunucu verir).
+    ...(options.networkTestUrl ? { networkTestUrl: options.networkTestUrl } : {}),
+    ...(options.outboundTls ? { outboundTls: options.outboundTls } : {}),
     // Şirket sınırı (en fazla 2): 2'den çok şirketi olan eski kurulumu canlandıran testler sınırı yükseltir.
     ...(options.maxCompanies ? { maxCompanies: options.maxCompanies } : {}),
     // Sahte saat (v2.1.0): sunucunun "bugün"ü ve iş zaman damgaları (config.now). Zaman (Date/sayı/ISO metni; akar) ya da

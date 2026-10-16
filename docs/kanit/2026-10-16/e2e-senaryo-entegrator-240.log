@@ -1,3 +1,5 @@
+(node:26421) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
 ■ 1 Düğme, kart, sekmeler, canlı ortam kilidi
   ✓ Fatura sayfasında “Entegratör Ayarları” düğmesi
   ✓ başlık: “e-Dönüşüm ve Entegrasyon Ayarları”
@@ -16,7 +18,7 @@
   ✓ kayıttan sonra parola alanı boş, “Kayıtlı” yazıyor
 
 ■ 3 Bağlantıyı Test Et, Etiketleri Getir, GB/PK seç ve kaydet
-  ✓ Durum: “Durum: Bağlantı kuruldu · 16.10.2026 04:29”
+  ✓ Durum: “Durum: Bağlantı kuruldu · 16.10.2026 05:50”
   ✓ veri tabanında GB urn:mail:defaultgb@deneme.com.tr · PK urn:mail:defaultpk@deneme.com.tr
   ✓ tercih kaydı bağlantı durumunu silmedi
 
@@ -26,10 +28,23 @@
   ✓ sekme dönüşünde işaretlenen kutu korunur
   ✓ kaydedildi: kendiliğinden sorgu true, e-Fatura true, seri EFX
 
+■ 4b Cari formu: VKN yazılıp alandan çıkınca mükellefiyet kendiliğinden sorgulanır; iki posta kutusu varsa kullanıcı seçer
+  ✓ Yeni Cari formu açıldı
+  ✓ iki PK seçenek, varsayılan defaultpk: urn:mail:muhasebepk@coklu.com.tr, urn:mail:defaultpk@coklu.com.tr (seçili urn:mail:defaultpk@coklu.com.tr)
+  ✓ seçilen PK forma yazıldı, e-Fatura mükellefi işaretli
+
 ■ 5 Fatura Ayarları yönlendirmesi; ayar yetkisi olmayan kullanıcı
   ✓ Fatura Ayarları'nda e-Belge alanları yok, yönlendirme var
   ✓ avukatta (fatura keser, ayar yetkisi yok) “Entegratör Ayarları” düğmesi yok
+
+■ 6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu)
+  ✓ varsayılan Otomatik (Windows Ayarı); elle alanları gizli
+  ✓ Elle Yazılan Adres seçilince adres alanları açılır
+  ✓ ayar dosyaya yazıldı (mode manual)
+  ✓ parola ekrana dönmez; “Kayıtlı parola korunur”
+  ✓ Bağlantıyı Dene vekilden geçti, ret iletisi: Güncelleme sunucusuna ulaşılamadı (http://127.0.0.1:46191 üzerinden): Vekil sunucu bağlantıyı reddetti (403).
+  ✓ Entegratör kartında yol satırı: İnternet bağlantısı: elle yazılan vekil sunucu (http://127.0.0.1:46191). Vekil sunucu Yönetim → Sistem → Ağ Bağlantısı'ndan değiştirilir.
   ✓ sayfa hatası yok
   ✓ sahte EDM sözleşme ihlali yok
 
-✓ senaryo-entegrator-240: 24 geçti, 0 kaldı
+✓ senaryo-entegrator-240: 33 geçti, 0 kaldı
