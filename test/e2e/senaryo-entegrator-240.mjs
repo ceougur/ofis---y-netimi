@@ -150,7 +150,9 @@ try {
   ok(firm.includes(OUR_VKN) && firm.includes("Deneme Ofis Ltd."), `firma özeti Fatura Ayarları'ndan: ${firm.slice(0, 80)}`);
   ok(await page.$(`${card} [data-integ-act="firm"]`), "“Fatura Ayarları'nda Düzenle” düğmesi");
   await page.check(`${card} input[data-i="efatura"]`);
+  ok(!(await page.$(`${card} input[data-i="esmm"]`)), "e-SMM işareti gizli (2.4.1: e-SMM gönderimi EDM'ye bağlanana kadar)");
   await page.click(`${card} [data-integ-tab="series"]`);
+  ok(!(await page.$(`${card} input[data-i-series="esmm"]`)), "Otomatik Seriler'de e-SMM satırı yok");
   await page.fill(`${card} input[data-i-series="efatura"]`, "efx");
   await page.click(`${card} [data-integ-tab="connection"]`);
   ok(await page.$eval(`${card} input[data-i="autoCheckUser"]`, input => input.checked), "sekme dönüşünde işaretlenen kutu korunur");

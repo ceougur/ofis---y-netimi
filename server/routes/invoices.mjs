@@ -127,6 +127,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
   const edocLive = edocEnabled && config.edocLive === true;
+  // e-SMM gönderimi hazır olana dek kapalı (config.mjs esmmEnabled): eski "esmm: true" kaydı da etkisizdir (makbuz kâğıt).
+  const esmmEnabled = edocEnabled && config.esmmEnabled === true;
   // Fatura kapaması (lib/invoice-settle.mjs). config.legacyClosing yalnız testlerde: K1 öncesi kural (2.0.26 ile birebir karşılaştırmalar);
   // o kuralda iadenin geri ödenen kısmı da faturadan düşülür ve kartın hedefine geri eklenir (ownTarget, açılış onarımı, retarget).
   const settle = config.legacyClosing || settleInvoices;
@@ -212,6 +214,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (body.efatura !== undefined) next.efatura = body.efatura === true;
     if (body.earsiv !== undefined) next.earsiv = body.earsiv === true;
     if (next.earsiv && !next.efatura) fail400("e-Arşiv için önce e-Fatura mükellefi olmak gerekir (GİB): e-Fatura kutusunu da işaretleyin.", "earsiv");
+    if (body.esmm === true && !esmmEnabled) fail400("e-SMM gönderimi bu sürümde yok; serbest meslek makbuzu kâğıt olarak düzenlenir.", "esmm", { code: "esmm-unavailable" });
     if (body.esmm !== undefined) next.esmm = body.esmm === true;
     if (body.series && typeof body.series === "object") {
       for (const key of Object.keys(DEFAULTS.series)) {
@@ -396,7 +399,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const networkSummary = () => (edocEnabled && config.describeNetwork ? config.describeNetwork().effective : null);
   // Entegratör bağlantı ayrıntısı (kullanıcı adı, servis adresi, son test iletisi, vekil) yalnız Fatura Ayarları yetkisine (bitiş turu E10); öbürleri
   // yalnız ortamı ve bağlantının kurulu olup olmadığını görür.
-  const publicSettings = (s, full = true) => {
+  const publicSettings = (raw, full = true) => {
+    const s = esmmEnabled || !raw.esmm ? raw : { ...raw, esmm: false };
     const { passwordSealed, ...rest } = s.integrator;
     if (!full) return { ...s, integrator: { id: rest.id, env: rest.env, label: ADAPTERS[s.integrator.id]?.label || "", configured: Boolean(rest.username && passwordSealed), autoSend: rest.autoSend === true, autoCheckUser: rest.autoCheckUser === true, liveAllowed: edocLive } };
     return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive, network: networkSummary() } };
@@ -1081,7 +1085,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // bize nasıl geldiğidir (bilgi).
   const allowedProfiles = (kind, account, s) => {
     if (!edocEnabled) return ["KAGIT"];
-    if (kind === "smm") return s.esmm ? ["ESMM"] : ["KAGIT"];
+    if (kind === "smm") return esmmEnabled && s.esmm ? ["ESMM"] : ["KAGIT"];
     if (!INVOICE_KINDS[kind].own) return ["KAGIT", "EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"];
     if (!s.efatura) return ["KAGIT"];
     if (Number(account.eInvoice) === 1) return ["TEMELFATURA", "TICARIFATURA"];
@@ -1455,14 +1459,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Ayarlar ekranı: bu yıl her serinin sıradaki numarası (kâğıt / iç seri; e-Belge açıksa e-Belge serileri de).
   function nextNumbers(s) {
     const year = Number(today().slice(0, 4));
-    const keys = edocEnabled ? Object.keys(s.series) : ["paper", "smm", "internal"];
+    const keys = edocEnabled ? Object.keys(s.series).filter(key => key !== "esmm" || esmmEnabled) : ["paper", "smm", "internal"];
     return Object.fromEntries(keys.map(key => [key, { series: s.series[key], year, ...nextNumber(s.series[key], year, s) }]));
   }
   // Test ortamındayken e-Belgenin gerçekte alacağı numara (TEST_SERIES); canlıdaysa boş.
   function testNumbers(s) {
     if (!edocEnabled || liveEnv(s)) return null;
     const year = Number(today().slice(0, 4));
-    return Object.fromEntries(Object.entries(TEST_SERIES).map(([key, series]) => [key, { series, year, ...nextNumber(series, year, s) }]));
+    return Object.fromEntries(Object.entries(TEST_SERIES).filter(([key]) => key !== "esmm" || esmmEnabled).map(([key, series]) => [key, { series, year, ...nextNumber(series, year, s) }]));
   }
   // VUK md. 231 ve GİB: aynı seride numara sırası ile tarih sırası uyuşmalı — yeni fatura serinin son faturasından eski
   // tarihli olamaz (iptal edilmiş numara da sırada yer tutar).
@@ -2092,7 +2096,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       eStates: E_STATES,
       adapters: edocEnabled ? Object.entries(ADAPTERS).map(([id, value]) => adapterInfo(id, value)) : [],
       edocEnabled,
-      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: edocEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
+      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: esmmEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
       today: today(),
       repeated: repeated.length,
       lockedUntil: period?.lockedUntil?.() || "",
@@ -2105,7 +2109,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.get("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = requireView(req);
     const s = settings();
-    ok(res, { ...publicSettings(s, canUser(user, "invoices.settings")), edocEnabled, nextNumbers: nextNumbers(s), testNumbers: testNumbers(s), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
+    ok(res, { ...publicSettings(s, canUser(user, "invoices.settings")), edocEnabled, esmmAvailable: esmmEnabled, nextNumbers: nextNumbers(s), testNumbers: testNumbers(s), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
   });
   router.put("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = auth.requirePermission(req, "invoices.settings");
@@ -2119,7 +2123,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       audit(user, "invoice.settings.updated", "settings", { efatura: next.efatura, earsiv: next.earsiv, series: next.series, integrator: integratorLog });
     });
     publish(user, { kind: "invoices", settings: true });
-    ok(res, { ...publicSettings(next), edocEnabled, nextNumbers: nextNumbers(next), testNumbers: testNumbers(next), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
+    ok(res, { ...publicSettings(next), edocEnabled, esmmAvailable: esmmEnabled, nextNumbers: nextNumbers(next), testNumbers: testNumbers(next), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
   });
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);

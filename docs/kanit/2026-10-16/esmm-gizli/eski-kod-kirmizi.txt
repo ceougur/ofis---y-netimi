@@ -1,0 +1,108 @@
+TAP version 13
+# (node:3378) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: e-SMM gizli (esmmEnabled kapalı — üretim)
+    # Subtest: işaret API'den açılamaz: 400 esmm-unavailable; ayar kaydı e-SMM'yi kapalı döndürür
+    not ok 1 - işaret API'den açılamaz: 400 esmm-unavailable; ayar kaydı e-SMM'yi kapalı döndürür
+      ---
+      duration_ms: 12.380543
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esmm-gizli-wt/test/esmm-gizli-241.test.mjs:33:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"seller":{"name":"Av. Deneme Ali","partyKind":"person","firstName":"Ali","familyName":"Deneme","taxNo":"10000000146","taxOffice":"Kadıköy","mersisNo":"","tradeRegistry":"","address":"Moda Cd. 1","district":"Kadıköy","city":"İstanbul","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","banks":[],"logo":"","stamp":""},"efatura":true,"earsiv":true,"esmm":true,"series":{"paper":"FIS","earsiv":"EAR","efatura":"EFT","smm":"SMM","esmm":"ESM","internal":"IAD"},"start":{},"defaults":{"vatRate":20,"pricesIncludeVat":false,"stoppageRate":20,"efaturaProfile":"TEMELFATURA","dueDays":0,"footer":"","saleScenario":"","purchaseScenario":"","signatureArea":true,"itemTracking":false},"eView":{"enabled":true,"logo":true,"banks":true,"footer":true,"stamp":true,"stampEfatura":false},"eOptions":{"balanceNote":false,"paymentMeans":false,"draftUpload":false},"integrator":{"id":"edm","env":"test","baseUrl":"","username":"","senderAlias":"","mailboxAlias":"","autoSend":false,"earchiveEmail":true,"autoCheckUser":false,"lastTest":null,"hasPassword":false,"url":"https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc","label":"EDM Bilişim","liveAllowed":false,"network":{"source":"env","address":"http://127.0.0.1:44221"}},"edocEnabled":true,"nextNumbers":{"paper":{"series":"FIS","year":2026,"seq":1,"number":"FIS2026000000001"},"earsiv":{"series":"EAR","year":2026,"seq":1,"number":"EAR2026000000001"},"efatura":{"series":"EFT","year":2026,"seq":1,"number":"EFT2026000000001"},"smm":{"series":"SMM","year":2026,"seq":1,"number":"SMM2026000000001"},"esmm":{"series":"ESM","year":2026,"seq":1,"number":"ESM2026000000001"},"internal":{"series":"IAD","year":2026,"seq":1,"number":"IAD2026000000001"}},"testNumbers":{"efatura":{"series":"TEF","year":2026,"seq":1,"number":"TEF2026000000001"},"earsiv":{"series":"TEA","year":2026,"seq":1,"number":"TEA2026000000001"},"esmm":{"series":"TES","year":2026,"seq":1,"number":"TES2026000000001"}},"testSeries":{"efatura":"TEF","earsiv":"TEA","esmm":"TES"},"bankAccounts":{"active":false,"accounts":[],"suggestions":[]},"problems":{"KAGIT":[],"EARSIVFATURA":[],"TEMELFATURA":[]}}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esmm-gizli-wt/test/esmm-gizli-241.test.mjs:35:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 2.4.0'da açılmış eski kayıt (esmm: true) makbuzu e-SMM yapmaz: kâğıt SMM serisi, ayar e-SMM'yi kapalı gösterir
+    not ok 2 - 2.4.0'da açılmış eski kayıt (esmm: true) makbuzu e-SMM yapmaz: kâğıt SMM serisi, ayar e-SMM'yi kapalı gösterir
+      ---
+      duration_ms: 9.102156
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esmm-gizli-wt/test/esmm-gizli-241.test.mjs:44:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski kayıt ekranda kapalı görünür
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esmm-gizli-wt/test/esmm-gizli-241.test.mjs:49:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - e-SMM gizli (esmmEnabled kapalı — üretim)
+  ---
+  duration_ms: 426.319585
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esmm-gizli-wt/test/esmm-gizli-241.test.mjs:25:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: e-SMM bayrağı açık kurulum (ileride, EDM e-SMM bağlanınca) eski davranışı korur
+    # Subtest: işaret açılır, makbuz e-SMM (test serisi TES) olur
+    not ok 1 - işaret açılır, makbuz e-SMM (test serisi TES) olur
+      ---
+      duration_ms: 6.279547
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esmm-gizli-wt/test/esmm-gizli-241.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esmm-gizli-wt/test/esmm-gizli-241.test.mjs:69:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - e-SMM bayrağı açık kurulum (ileride, EDM e-SMM bağlanınca) eski davranışı korur
+  ---
+  duration_ms: 310.456287
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esmm-gizli-wt/test/esmm-gizli-241.test.mjs:57:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1142.632068

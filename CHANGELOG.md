@@ -2,6 +2,10 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.1 — İyileştirmeler
+
+- İyileştirmeler ve hata düzeltmeleri (e-Fatura / e-Arşiv). Ayrıntı: docs/2.4.1-DEGISIKLIKLER.md.
+
 ## 2.4.0 — İyileştirmeler ve e-Fatura / e-Arşiv Entegrasyonu
 
 - İyileştirmeler ve e-Fatura / e-Arşiv entegrasyonu (EDM Bilişim; test ve canlı ortam). Kullanım Kılavuzu → 13. Fatura → e-Fatura / e-Arşiv denemesi ve Canlıya geçiş.
