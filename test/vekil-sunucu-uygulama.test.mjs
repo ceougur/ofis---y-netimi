@@ -80,7 +80,9 @@ describe("Vekil sunucu: program uçları ve EDM trafiği", () => {
     await new Promise(resolve => proxy.listen(0, "127.0.0.1", resolve));
     proxyPort = proxy.address().port;
     root = mkdtempSync(path.join(tmpdir(), "vekil-uygulama-"));
-    server = await startTestServer({ edocEnabled: true, outboundTls: { ca: cert }, env: { ...NO_ENV_PROXY, HUKUK_NETWORK_FILE: path.join(root, "ag-ayari.json") } });
+    // Servis adresi yerel olmayan bir ad (edm.test, vekil sunucunun arkasında): canlı kilidi test dışı adresi reddettiği için (2.4.0 bitiş turu Y1/E1)
+    // bu sınama canlı açık kurulumla yapılır; ortam yine "test" seçili.
+    server = await startTestServer({ edocEnabled: true, edocLive: true, outboundTls: { ca: cert }, env: { ...NO_ENV_PROXY, HUKUK_NETWORK_FILE: path.join(root, "ag-ayari.json") } });
     const client = server.client();
     api = { login: (...args) => client.login(...args), get: async url => unwrap(await client.get(url)), post: async (url, body) => unwrap(await client.post(url, body)), put: async (url, body) => unwrap(await client.put(url, body)) };
     assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);

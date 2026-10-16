@@ -166,7 +166,12 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
       }
       if (op === "GetInvoiceStatus") {
         const uuid = child(request, "INVOICE")?.attrs.UUID;
-        const queue = state.statuses.get(uuid) || ["UNKNOWN - UNKNOWN"];
+        // Gerçek EDM test ortamı (16.10.2026, docs/kanit/2026-10-16/edm-bilinmeyen): hiç gönderilmemiş / yüklenmemiş belge → "Fatura bulunamadı" (11017).
+        if (!state.statuses.has(uuid)) {
+          res.writeHead(500, { "content-type": "text/xml" }).end(fault(11017, "Fatura bulunamadı"));
+          return;
+        }
+        const queue = state.statuses.get(uuid);
         const status = queue.length > 1 ? queue.shift() : queue[0];
         respond(`<GetInvoiceStatusResponse xmlns="${NS}"><INVOICE_STATUS ID="x" UUID="${uuid}"><STATUS>${status}</STATUS><STATUS_DESCRIPTION>${status}</STATUS_DESCRIPTION><GIB_STATUS_CODE>1300</GIB_STATUS_CODE><GIB_STATUS_DESCRIPTION>BASARIYLA TAMAMLANDI</GIB_STATUS_DESCRIPTION></INVOICE_STATUS></GetInvoiceStatusResponse>`);
         return;

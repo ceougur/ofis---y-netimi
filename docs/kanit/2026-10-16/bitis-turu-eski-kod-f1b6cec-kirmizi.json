@@ -1,0 +1,98 @@
+{
+  "ad": "bitis-turu-eski-kod-f1b6cec-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/bitis-eski-f1b6cec && HUKUK_LICENSE_URL=http://127.0.0.1:9 node --test test/ebelge-240-bitis-turu.test.mjs",
+  "commit": "f1b6cec26d6c86783d3c845ef8bbf508f9b47f6e",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 9,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T12:24:42.108Z",
+  "sure_sn": 2.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 0,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Y1/E1: canlı kilidi Servis Adresi'yle delinmez (ayar 400; veri tabanında kalmış adres 409, ağa çıkılmaz)",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:82:3",
+      "hata": "https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc → 200 · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Y2: bağlantısı kurulmamış entegratörle Gönder, Gönderilecekler'deki belgeye numara vermez",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:108:3",
+      "hata": "numara verilmedi · + actual - expected · + 'TEF2026000000001' (beklenen , gelen TEF2026000000001)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › E2: portaldan gönderilmiş taslak programda düzenlenmez, e-Fatura taslağı onayla da iptal edilmez; durum güncellenir",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:123:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düzenlenmez; yeniden Gönder ikinci kez göndermez, durumu alır",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:146:3",
+      "hata": "Expected values to be strictly equal: · 409 !== 502 (beklenen 502, gelen 409)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgula belirsizliği kaldırır (EDM 11017 'Fatura bulunamadı')",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:167:3",
+      "hata": "Expected values to be strictly equal: · 409 !== 502 (beklenen 502, gelen 409)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:192:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › E4/Y7/Y6: karekod yalnız numaralı, entegratöre ulaşmış e-Fatura / e-Arşivde (PDF ve görünüm); e-SMM'ye basılmaz",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:211:3",
+      "hata": "Gönderilecek belgenin PDF'inde karekod yok (1225 dikdörtgen) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Y4: istisnalı kalem + KDV'li kalem → ISTISNA ve GİB şematronundan temiz; 351 + 301'de iki istisna kodu da belgede",
+      "konum": "/Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxTotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxSubtotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxCategory[1]",
+      "hata": "301 + 20: GİB / XSD temiz · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › E5: U+FFFE / U+FFFF kalem adından ayıklanır; belge şemadan geçer",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:244:3",
+      "hata": "The input was expected to not match the regular expression /[￾￿]/. Input: · '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\\n' + · '<Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\" xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"><cbc:UBLVersionID>2.1</cbc:UBLVersionID><cbc:CustomizationID>TR1.2</cbc:CustomizationID><cbc:ProfileID>TEMELFATURA</cbc:ProfileID><cbc:ID>TEF2026000000006</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator><cbc:UUID>800306ee-e6ff-4512-b352-77644fb605ea</cbc:UUID><cbc:IssueDate>2026-10-16</cbc:IssueDate><cbc:IssueTime>12:24:00</cbc:IssueTime><cbc:InvoiceTypeCode>SATIS</cbc:InvoiceTypeCode><cbc:Note>Yalnız On İki Türk Lirası</cbc:Note><cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode><cbc:LineCountNumeric>1</cbc:LineCountNumeric><cac:AdditionalDocumentReference><cbc:ID>13ddc346-ed6d-45fa-a66d-d75eebd6e3cc</cbc:ID><cbc:IssueDate>2026-10-16</cbc:IssueDate><cac:Attachment><cbc:EmbeddedDocumentBinaryObject characterSetCode=\"UTF-8\" encodingCode=\"Base64\" filename=\"TEF2026000000006.xslt\" mimeCode=\"application/xml\">PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHhzbDpzdHlsZXNoZWV0IHZlcnNpb249IjEuMCIgeG1sbnM6eHNsPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L1hTTC9UcmFuc2Zvcm0iCiAgeG1sbnM6bjE9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkludm9pY2UtMiIKICB4bWxuczpjYWM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkFnZ3JlZ2F0ZUNvbXBvbmVudHMtMiIKICB4bWxuczpjYmM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkJhc2ljQ29tcG9uZW50cy0yIgogIGV4Y2x1ZGUtcmVzdWx0LXByZWZpeGVzPSJuMSBjYWMgY2JjIj4KPHhzbDpvdXRwdXQgbWV0aG9kPSJodG1sIiBlbmNvZGluZz0iVVRGLTgiIGluZGVudD0ibm8iLz4KPCEtLSBFbnRlZ3JhdMO2csO8biBQREYgw6dpemljaXNpIChFRE06IElyb25QZGYvQ2hyb21pdW0pIMOnxLFrdMSxecSxIERPQ1RZUEUnc8SxeiwgdXl1bWx1bHVrIGtpcGluZGUgYcOnYXI7IG8ga2lwdGUgdGFibG9sYXIgeWF6xLEgYm95dW51IGRldnJhbG1hegogICAgIChFRE0gdGVzdCBvcnRhbcSxIDE2LjEwLjIwMjY6IGFkcmVzIHNhdMSxcmxhcsSxIGFkZGFuIGLDvHnDvGsgw6fEsWt0xLEpIOKAlCB0YWJsZXtmb250LXNpemU6aW5oZXJpdH0gYnVudSBnaWRlcmlyLiAtLT4KPHhzbDpkZWNpbWFsLWZvcm1hdCBuYW1lPSJ0ciIgZGVjaW1hbC1zZXBhcmF0b3I9IiwiIGdyb3VwaW5nLXNlcGFyYXRvcj0iLiIvPgo8eHNsOnRlbXBsYXRlIG5hbWU9ImN1cnJlbmN5Ij48eHNsOnBhcmFtIG5hbWU9ImNvZGUiLz48eHNsOmNob29zZT48eHNsOndoZW4gdGVzdD0iJGNvZGU9J1RSWScgb3IgJGNvZGU9J1RSTCcgb3IgJGNvZGU9JyciPlRMPC94c2w6d2hlbj48eHNsOm90aGVyd2lzZT48eHNsOnZhbHVlLW9mIHNlbGVjdD0iJGNvZGUiLz48L3hzbDpvdGhlcndpc2U+PC94c2w6Y2hvb3NlPjwveHNsOnRlbXBsYXRlPgo8eHNsOnRlbXBsYXRlIG5hbWU9ImRhdGUiPjx4c2w6cGFyYW0gbmFtZT0idmFsdWUiLz48eHNsOmlmIHRlc3Q9InN0cmluZy1sZW5ndGgoJHZhbHVlKSAmZ3Q7PSAxMCI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImNvbmNhdChzdWJzdHJpbmcoJHZhbHVlLDksMiksJy4nLHN1YnN0cmluZygkdmFsdWUsNiwyKSwnLicsc3Vic3RyaW5nKCR2YWx1ZSwxLDQpKSIvPjwveHNsOmlmPjwveHNsOnRlbXBsYXRlPgo8eHNsOnRlbXBsYXRlIG5hbWU9InVuaXQiPjx4c2w6cGFyYW0gbmFtZT0iY29kZSIvPjx4c2w6Y2hvb3NlPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nQzYyJyI+QWRldDwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdLR00nIj5LZzwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdHUk0nIj5HcjwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdUTkUnIj5Ub248L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTFRSJyI+THQ8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTUxUJyI+TWw8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTVRSJyI+TTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdDTVQnIj5DbTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdNTVQnIj5NbTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdNVEsnIj5NwrI8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTVRRJyI+TcKzPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J1BBJyI+UGFrZXQ8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nQlgnIj5LdXR1PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J0NUJyI+S29saTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdQUiciPsOHaWZ0PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J1NFVCciPlRha8SxbTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdIVVInIj5TYWF0PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J0RBWSciPkfDvG48L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTU9OJyI+QXk8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nQU5OJyI+WcSxbDwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdNSU4nIj5EYWtpa2E8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nV0VFJyI+SGFmdGE8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nUk8nIj5SdWxvPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J0JPJyI+xZ5pxZ9lPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J0JHJyI+VG9yYmE8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nU0EnIj7Dh3V2YWw8L3hzbDp3aGVuPjx4c2w6b3RoZXJ3aXNlPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkY29kZSIvPjwveHNsOm90aGVyd2lzZT48L3hzbDpjaG9vc2U+PC94c2w6dGVtcGxhdGU+Cjx4c2w6dGVtcGxhdGUgbmFtZT0icGFydHkiPjx4c2w6cGFyYW0gbmFtZT0icCIvPgogIDx4c2w6Y2hvb3NlPgogICAgPHhzbDp3aGVuIHRlc3Q9IiRwL2NhYzpQYXJ0eU5hbWUvY2JjOk5hbWUgYW5kICRwL2NhYzpQZXJzb24iPjxkaXYgY2xhc3M9ImFkIj48eHNsOnZhbHVlLW9mIHNlbGVjdD0iJHAvY2FjOlBhcnR5TmFtZS9jYmM6TmFtZSIvPjwvZGl2PjxkaXY+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImNvbmNhdCgkcC9jYWM6UGVyc29uL2NiYzpGaXJzdE5hbWUsJyAnLCRwL2NhYzpQZXJzb24vY2JjOkZhbWlseU5hbWUpIi8+PC9kaXY+PC94c2w6d2hlbj4KICAgIDx4c2w6d2hlbiB0ZXN0PSIkcC9jYWM6UGFydHlOYW1lL2NiYzpOYW1lIj48ZGl2IGNsYXNzPSJhZCI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IiRwL2NhYzpQYXJ0eU5hbWUvY2JjOk5hbWUiLz48L2Rpdj48L3hzbDp3aGVuPgogICAgPHhzbDpvdGhlcndpc2U+PGRpdiBjbGFzcz0iYWQiPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjb25jYXQoJHAvY2FjOlBlcnNvbi9jYmM6Rmlyc3ROYW1lLCcgJywkcC9jYWM6UGVyc29uL2NiYzpGYW1pbHlOYW1lKSIvPjwvZGl2PjwveHNsOm90aGVyd2lzZT4KICA8L3hzbDpjaG9vc2U+CiAgPGRpdj48eHNsOnZhbHVlLW9mIHNlbGVjdD0iJHAvY2FjOlBvc3RhbEFkZHJlc3MvY2JjOlN0cmVldE5hbWUiLz48L2Rpdj4KICA8ZGl2Pjx4c2w6aWYgdGVzdD0iJHAvY2FjOlBvc3RhbEFkZHJlc3MvY2JjOlBvc3RhbFpvbmUiPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkcC9jYWM6UG9zdGFsQWRkcmVzcy9jYmM6UG9zdGFsWm9uZSIvPiYjMTYwOzwveHNsOmlmPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkcC9jYWM6UG9zdGFsQWRkcmVzcy9jYmM6Q2l0eVN1YmRpdmlzaW9uTmFtZSIvPiAvIDx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkcC9jYWM6UG9zdGFsQWRkcmVzcy9jYmM6Q2l0eU5hbWUiLz48L2Rpdj4KICA8eHNsOmlmIHRlc3Q9IiRwL2NhYzpDb250YWN0L2NiYzpUZWxlcGhvbmUiPjxkaXY+VGVsOiA8eHNsOnZhbHVlLW9mIHNlbGVjdD0iJHAvY2FjOkNvbnRhY3QvY2JjOlRlbGVwaG9uZSIvPjwvZGl2PjwveHNsOmlmPgogIDx4c2w6aWYgdGVzdD0iJHAvY2FjOkNvbnRhY3QvY2JjOkVsZWN0cm9uaWNNYWlsIj48ZGl2PkUtUG9zdGE6IDx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkcC9jYWM6Q29udGFjdC9jYmM6RWxlY3Ryb25pY01haWwiLz48L2Rpdj48L3hzbDppZj4KICA8eHNsOmlmIHRlc3Q9IiRwL2NiYzpXZWJzaXRlVVJJIj48ZGl2PldlYiBTaXRlc2k6IDx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkcC9jYmM6V2Vic2l0ZVVSSSIvPjwvZGl2PjwveHNsOmlmPgogIDxkaXY+VmVyZ2kgRGFpcmVzaTogPHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IiRwL2NhYzpQYXJ0eVRheFNjaGVtZS9jYWM6VGF4U2NoZW1lL2NiYzpOYW1lIi8+PC9kaXY+CiAgPHhzbDpmb3ItZWFjaCBzZWxlY3Q9IiRwL2NhYzpQYXJ0eUlkZW50aWZpY2F0aW9uL2NiYzpJRCI+PGRpdj48eHNsOmNob29zZT48eHNsOndoZW4gdGVzdD0iQHNjaGVtZUlEPSdNRVJTSVNOTyciPk1FUlPEsFMgTm88L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSJAc2NoZW1lSUQ9J1RJQ0FSRVRTSUNJTE5PJyI+VGljYXJldCBTaWNpbCBObzwveHNsOndoZW4+PHhzbDpvdGhlcndpc2U+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IkBzY2hlbWVJRCIvPjwveHNsOm90aGVyd2lzZT48L3hzbDpjaG9vc2U+OiA8eHNsOnZhbHVlLW9mIHNlbGVjdD0iLiIvPjwvZGl2PjwveHNsOmZvci1lYWNoPgo8L3hzbDp0ZW1wbGF0ZT4KPHhzbDp0ZW1wbGF0ZSBtYXRjaD0iLyI+CjxodG1sPjxoZWFkPjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PVVURi04Ii8+PHRpdGxlPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJuMTpJbnZvaWNlL2NiYzpJRCIvPjwvdGl0bGU+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CmJvZHl7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7Zm9udC1zaXplOjExcHg7Y29sb3I6IzFkMjYyMjttYXJnaW46MDtiYWNrZ3JvdW5kOiNmZmZ9Ci5zYXlmYXttYXgtd2lkdGg6ODAwcHg7bWFyZ2luOjEycHggYXV0bztwYWRkaW5nOjAgOHB4fQp0YWJsZXtib3JkZXItY29sbGFwc2U6Y29sbGFwc2U7Zm9udC1zaXplOmluaGVyaXR9Ci51c3R7d2lkdGg6MTAwJX0udXN0IHRke3ZlcnRpY2FsLWFsaWduOnRvcH0KLmxvZ297bWFyZ2luLWJvdHRvbTo2cHh9LmxvZ28gaW1ne21heC13aWR0aDoxODBweDttYXgtaGVpZ2h0OjgwcHh9Ci5hZHtmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToxMnB4fQouYmFzbGlre3RleHQtYWxpZ246Y2VudGVyO2ZvbnQtc2l6ZToyMHB4O2ZvbnQtd2VpZ2h0OmJvbGQ7bGV0dGVyLXNwYWNpbmc6MXB4O2NvbG9yOiMxZjVmNGE7cGFkZGluZy10b3A6NHB4fQouYmlsZ2l7Ym9yZGVyOjFweCBzb2xpZCAjOWFhOGEyO21hcmdpbi1sZWZ0OmF1dG99LmJpbGdpIHRoLC5iaWxnaSB0ZHtib3JkZXI6MXB4IHNvbGlkICM5YWE4YTI7cGFkZGluZzozcHggNnB4O3RleHQtYWxpZ246bGVmdH0uYmlsZ2kgdGh7YmFja2dyb3VuZDojZWVmM2YwO3doaXRlLXNwYWNlOm5vd3JhcH0KLmFsaWNpe21hcmdpbjoxNHB4IDA7Ym9yZGVyLXRvcDoxcHggc29saWQgIzFmNWY0YTtib3JkZXItYm90dG9tOjFweCBzb2xpZCAjMWY1ZjRhO3BhZGRpbmc6NnB4IDB9Ci5ldHRue21hcmdpbjo2cHggMCAxMHB4fQoua2FsZW17d2lkdGg6MTAwJX0ua2FsZW0gdGgsLmthbGVtIHRke2JvcmRlcjoxcHggc29saWQgIzlhYThhMjtwYWRkaW5nOjNweCA1cHh9LmthbGVtIHRoe2JhY2tncm91bmQ6I2VlZjNmMDt0ZXh0LWFsaWduOmNlbnRlcn0ua2FsZW0gdGQuc3t0ZXh0LWFsaWduOnJpZ2h0O3doaXRlLXNwYWNlOm5vd3JhcH0KLmthbGVtIC5hY2lrbGFtYXtjb2xvcjojNTU2MTViO2ZvbnQtc2l6ZToxMHB4fQoudG9wbGFte21hcmdpbi1sZWZ0OmF1dG87bWFyZ2luLXRvcDo4cHh9LnRvcGxhbSB0aCwudG9wbGFtIHRke2JvcmRlcjoxcHggc29saWQgIzlhYThhMjtwYWRkaW5nOjNweCA2cHh9LnRvcGxhbSB0aHt0ZXh0LWFsaWduOnJpZ2h0O2JhY2tncm91bmQ6I2VlZjNmMH0udG9wbGFtIHRke3RleHQtYWxpZ246cmlnaHQ7d2hpdGUtc3BhY2U6bm93cmFwO21pbi13aWR0aDoxMTBweH0KLm9kZW5lY2VrIHRoLC5vZGVuZWNlayB0ZHtmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToxMnB4fQoubm90bGFye21hcmdpbi10b3A6MTBweDtib3JkZXI6MXB4IHNvbGlkICM5YWE4YTI7cGFkZGluZzo2cHh9Ci5iYW5rYWxhcnttYXJnaW4tdG9wOjEwcHh9LmJhbmthbGFyIHRoLC5iYW5rYWxhciB0ZHtib3JkZXI6MXB4IHNvbGlkICM5YWE4YTI7cGFkZGluZzozcHggNnB4O3RleHQtYWxpZ246bGVmdH0uYmFua2FsYXIgdGh7YmFja2dyb3VuZDojZWVmM2YwfQouYWx0e21hcmdpbi10b3A6MTBweDtjb2xvcjojNTU2MTViO3doaXRlLXNwYWNlOnByZS1saW5lfQoua2FyZWtvZHt0ZXh0LWFsaWduOnJpZ2h0O21hcmdpbi1ib3R0b206NHB4fS5rYXJla29kIGltZ3t3aWR0aDoxMjBweDtoZWlnaHQ6MTIwcHh9LmdpYiBpbWd7d2lkdGg6ODBweDtoZWlnaHQ6ODBweH0ua2FzZXttYXJnaW4tdG9wOjZweH0ua2FzZSBpbWd7bWF4LXdpZHRoOjE3MHB4O21heC1oZWlnaHQ6OTBweH0KLnRlc3R7Ym9yZGVyOjJweCBzb2xpZCAjYjQyMzE4O2NvbG9yOiNiNDIzMTg7Zm9udC13ZWlnaHQ6Ym9sZDt0ZXh0LWFsaWduOmNlbnRlcjtwYWRkaW5nOjZweDttYXJnaW4tYm90dG9tOjEwcHh9Cjwvc3R5bGU+PC9oZWFkPgo8Ym9keT48ZGl2IGNsYXNzPSJzYXlmYSI+PGRpdiBjbGFzcz0idGVzdCI+VEVTVCBPUlRBTUkg4oCUIEJ1IGJlbGdlIGRlbmVtZSBhbWHDp2zEsWTEsXI7IHlhc2FsIGdlw6dlcmxpbGnEn2kgeW9rdHVyLjwvZGl2Pjx4c2w6Zm9yLWVhY2ggc2VsZWN0PSJuMTpJbnZvaWNlIj4KPHRhYmxlIGNsYXNzPSJ1c3QiPjx0cj4KICA8dGQgc3R5bGU9IndpZHRoOjM4JSI+PHhzbDpjYWxsLXRlbXBsYXRlIG5hbWU9InBhcnR5Ij48eHNsOndpdGgtcGFyYW0gbmFtZT0icCIgc2VsZWN0PSJjYWM6QWNjb3VudGluZ1N1cH'... 66678 more characters (beklenen , gelen |-)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › E9: resmî görüntü önbelleği belgenin durumuna bağlı — e-Arşiv iptalinden sonra EDM'den yeniden alınır",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:252:3",
+      "hata": "Expected values to be strictly equal: · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › E10: Fatura Ayarları yetkisi olmayan kullanıcı entegratör kullanıcı adını, adresini ve son test iletisini görmez",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:266:3",
+      "hata": "username gizli · + actual - expected · + 'edmkullanici'"
+    },
+    {
+      "ad": "E6: vekil sunucu adresindeki boşluk sessizce kesilmez › 'vekil.firma.local 8080' → 400",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:278:3",
+      "hata": "vekil.firma.local 8080 → 200 · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "Y5: görünüm kapatılınca karekodun da kalkacağı ekranda yazar › onay kutusu metni karekodu anar",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:295:3",
+      "hata": "The input did not match the regular expression /Kendi görünüm tasarımımızı kullan \\([^)]*karekod[^)]*\\)/. Input: · '/* DestekOfis — Fatura (v2.0.15).\\n' + · ' * Satış, alış, satıştan/alıştan iade ve serbest meslek makbuzu. Akış: önce senaryo seçilir (Stoktan Satış, Hizmet\\n' + (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/bitis-turu-eski-kod-f1b6cec-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "fdad6e54e6430b388aca68dcdb13ccc382415ed825195dc953ba0b8e3e687d78",
+  "ham_cikti_bayt": 375156
+}

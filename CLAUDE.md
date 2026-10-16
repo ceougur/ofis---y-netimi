@@ -579,6 +579,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   bırakılmaz, İz 9 commit'inden HEMEN SONRA koşar (birer ajan; kapsam 7888371..HEAD = 2.3.0 sonrası her şey; öncelik canlı kilidi/test serisi, karekod,
   şablona giren alanlar (logo/kaşe/alt not), gönder/iptal/taslak, K4, göç v27). Bulgu → yeniden üret → kırmızı test → düzelt → dar kontrol turu (ders 32).
   Uzun Doğrulama son adayda GitHub'da bir kez.
+  SONUÇ (16.10.2026): yargıç 1 YÜKSEK + 3 ORTA, eleştirmen 2 YÜKSEK + 2 ORTA (+ düşükler); hepsi ana oturumda yeniden üretildi ve DÜZELTİLDİ — canlı
+  kilidi Servis Adresi'nden delinebiliyordu (iki ajan ayrı ayrı buldu), portaldan gönderilmiş taslak düzenlenebiliyordu, belirsiz gönderimden sonra
+  silme numara çakıştırıyordu, karışık istisnalı belge GİB'den düşüyordu… Ayrıntı `docs/2.4.0-IS-LISTESI.md` "Bitiş turu". Sırada: dar kontrol turu.
+- İSTEK (kullanıcı, 16.10.2026: "edm test linkinden son haliyle 3-4 çeşit test faturaları kes, ben de portaldan kontrol edeyim") → YAPILDI: son kodla
+  (bitiş turu düzeltmeleri dahil) EDM test ortamına 4 belge — TEF2026481687272 Temel (%20+%10, 470,00), TEF2026481687273 Ticari (1.200,00), TEA2026481687272
+  e-Arşiv kişiye (900,00), TEF2026481687274 İstisna 301+%20 (740,00); hepsi GİB'den geçti; resmî PDF karekodları jsQR ile çözüldü, tutarlar elle hesapla
+  aynı (docs/kanit/2026-10-16/edm-son-hal). PDF'ler kullanıcıya gönderildi; kullanıcı portaldan kontrol ediyor.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

@@ -15,11 +15,16 @@ const partyId = party => {
   return textOf(id);
 };
 
-/** UBL-TR fatura XML'inden karekod içeriği (sıralı nesne). e-Belge değilse (ProfileID yoksa) null. */
+// Kılavuzun §2.1 / §2.2 alanları e-Fatura ve e-Arşiv içindir; e-SMM (§2.4: brutucret, tahsilkdv…) ve e-Müstahsil başka alanlar ister → onlara
+// bu biçimde karekod basılmaz (2.4.0 bitiş turu, yargıç Y6). Numarası olmayan belge (Gönderilecekler) henüz e-Belge değildir → karekod yok (Y7, E4).
+const OTHER_PROFILES = new Set(["ESMM", "EMM", "EMUSTAHSIL"]);
+const cents = value => Math.round((Number(value) || 0) * 100);
+
+/** UBL-TR fatura XML'inden karekod içeriği (sıralı nesne). e-Fatura / e-Arşiv değilse ya da numarası yoksa null. */
 export function karekodData(xml) {
   const invoice = child(parseXml(xml), "Invoice");
   const profile = textOf(child(invoice, "ProfileID"));
-  if (!invoice || !profile) return null;
+  if (!invoice || !profile || OTHER_PROFILES.has(profile.toUpperCase()) || !textOf(child(invoice, "ID"))) return null;
   const total = child(invoice, "LegalMonetaryTotal");
   const data = {
     vkntckn: partyId(child(invoice, "AccountingSupplierParty")),
@@ -32,13 +37,24 @@ export function karekodData(xml) {
     parabirimi: textOf(child(invoice, "DocumentCurrencyCode")),
     malhizmettoplam: textOf(child(total, "LineExtensionAmount")),
   };
-  // Belge düzeyindeki KDV (vergi kodu 0015) alt toplamları, oran sırasıyla (tevkifat ayrı bölümdedir, karekoda girmez).
+  // Belge düzeyindeki KDV (vergi kodu 0015) alt toplamları, oran sırasıyla (tevkifat ayrı bölümdedir, karekoda girmez). Aynı oranın birden çok alt
+  // toplamı (ör. %0'da iki ayrı istisna kodu) karekodda tek alan: toplanır.
+  const sums = new Map();
   for (const subtotal of children(child(invoice, "TaxTotal"), "TaxSubtotal")) {
     const code = textOf(find(subtotal, "TaxCategory/TaxScheme/TaxTypeCode"));
     if (code && code !== "0015") continue;
     const rate = textOf(child(subtotal, "Percent"));
-    data[`kdvmatrah(${rate})`] = textOf(child(subtotal, "TaxableAmount"));
-    data[`hesaplanankdv(${rate})`] = textOf(child(subtotal, "TaxAmount"));
+    const item = sums.get(rate) || { base: 0, tax: 0, count: 0, baseText: "", taxText: "" };
+    item.base += cents(textOf(child(subtotal, "TaxableAmount")));
+    item.tax += cents(textOf(child(subtotal, "TaxAmount")));
+    item.count += 1;
+    item.baseText = textOf(child(subtotal, "TaxableAmount"));
+    item.taxText = textOf(child(subtotal, "TaxAmount"));
+    sums.set(rate, item);
+  }
+  for (const [rate, item] of sums) {
+    data[`kdvmatrah(${rate})`] = item.count === 1 ? item.baseText : (item.base / 100).toFixed(2);
+    data[`hesaplanankdv(${rate})`] = item.count === 1 ? item.taxText : (item.tax / 100).toFixed(2);
   }
   data.vergidahil = textOf(child(total, "TaxInclusiveAmount"));
   data.odenecek = textOf(child(total, "PayableAmount"));

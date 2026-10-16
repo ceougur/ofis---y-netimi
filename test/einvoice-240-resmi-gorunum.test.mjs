@@ -70,7 +70,8 @@ describe("Resmî e-Belge görüntüsü (sahte EDM)", () => {
     assert.ok(first.buffer.toString("latin1").includes(detail.number), "doğru belgenin görüntüsü");
     assert.equal(edm.state.pdfRequests, before + 1);
     const cacheDir = path.join(server.dataDir, "e-belge-gorunum");
-    assert.ok(existsSync(path.join(cacheDir, `${detail.ettn}.pdf`)), "saklandı");
+    // Önbellek dosyası belgenin durumuna bağlı (2.4.0 bitiş turu E9: iptal/kabul sonrası yeniden alınır).
+    assert.ok(existsSync(path.join(cacheDir, `${detail.ettn}-${detail.eStatus}.pdf`)), "saklandı");
     assert.deepEqual(readdirSync(cacheDir).filter(name => name.endsWith(".tmp")), [], "yarım dosya kalmadı");
     const second = await client.raw("GET", `/api/workspace/invoices/${id}/resmi.pdf`);
     assert.equal(second.status, 200);

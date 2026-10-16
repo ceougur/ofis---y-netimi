@@ -153,6 +153,8 @@ describe("e-Belge görünümünde karekod ve GİB logosu (programın API'si)", (
 
   test("programın PDF'i de karekod taşır; görünüm şablonu kapatılsa da PDF'te kalır", async () => {
     const doc = (await client.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ids.firm, lines: [{ name: "Destek", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" } })).data;
+    // Karekod yalnız entegratöre ulaşmış belgenin PDF'inde (2.4.0 bitiş turu E4/Y7; gönderilmemiş belge: test/ebelge-240-bitis-turu). Belge gönderilmiş sayılır.
+    server.app.store.run("UPDATE invoices SET e_status = 'sent', e_adapter = 'edm' WHERE id = ?", doc.id);
     const before = await client.raw("GET", `/api/workspace/invoices/${doc.id}/fatura.pdf`);
     assert.equal(before.status, 200);
     // Karekod dolu dikdörtgenlerle çizilir: içerik akışında yüzlerce "re f" işlemi (karekodsuz fişte yalnız birkaç kutu).

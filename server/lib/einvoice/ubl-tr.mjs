@@ -20,7 +20,8 @@ const UNIT_CODES = {
   dakika: "MIN", hafta: "WEE", rulo: "RO", şişe: "BO", torba: "BG", çuval: "SA", top: "C62", porsiyon: "C62", kişi: "C62", seans: "C62", ders: "C62",
 };
 export const unitCode = unit => UNIT_CODES[String(unit || "").trim().toLocaleLowerCase("tr-TR")] || "C62";
-const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
+// XML 1.0'da geçersiz karakterler (C0 denetim, U+FFFE/U+FFFF, eşsiz vekil yarısı) ayıklanır (2.4.0 bitiş turu, eleştirmen E5: belge şemadan düşüyordu).
+const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f￾￿]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/g, "");
 const amount = value => (Math.round((Number(value) || 0) * 100) / 100).toFixed(2);
 const tag = (name, value, attrs = "") => (value === undefined || value === null || value === "" ? "" : `<${name}${attrs}>${escape(value)}</${name}>`);
 // Birim fiyat 4 ondalığa kadar (en az 2): 33.3333, 12.50.
@@ -120,12 +121,15 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const lines = doc.lines || [];
   const seller = doc.kind === "purchase" || doc.kind === "sale_return" ? doc.party : doc.seller;
   const buyer = doc.kind === "purchase" || doc.kind === "sale_return" ? doc.seller : doc.party;
+  // KDV alt toplamı oran + istisna koduna göre (2.4.0 bitiş turu, yargıç Y4): %0'da iki ayrı istisna kodu (ör. 351 ve 301) ayrı satırda; önceden
+  // ilk kalemin kodu hepsine yazılıyor, ikincisi kayboluyordu.
   const byRate = new Map();
   for (const line of lines) {
-    const item = byRate.get(line.vatRate) || { rate: line.vatRate, net: 0, vat: 0, exemptionCode: line.exemptionCode };
+    const key = Number(line.vatRate) === 0 ? `0|${line.exemptionCode || ""}` : String(line.vatRate);
+    const item = byRate.get(key) || { rate: line.vatRate, net: 0, vat: 0, exemptionCode: line.exemptionCode };
     item.net += Number(line.net) || 0;
     item.vat += Number(line.vat) || 0;
-    byRate.set(line.vatRate, item);
+    byRate.set(key, item);
   }
   const byWithholding = new Map();
   for (const line of lines.filter(item => item.withholdingCode)) {

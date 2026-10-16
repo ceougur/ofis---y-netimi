@@ -9,7 +9,7 @@
 import { createHash } from "node:crypto";
 import { GIB_LOGO } from "./gib-logo.mjs";
 
-const xml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
+const xml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f￾￿]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/g, "");
 
 export const DEFAULT_VIEW = Object.freeze({ enabled: true, logo: true, banks: true, footer: true, stamp: true, stampEfatura: false });
 

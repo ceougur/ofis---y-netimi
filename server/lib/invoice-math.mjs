@@ -331,11 +331,13 @@ export function grossFromNet(netAmount, stoppageRate = STOPPAGE_DEFAULT) {
   return roundMoney(net / (1 - r / 100));
 }
 
-/** GİB fatura tipi: iade → IADE; tevkifatlı → TEVKIFAT; tüm kalemler istisnalı (%0, 351 dışı) → ISTISNA; yoksa SATIS. */
+/** GİB fatura tipi: iade → IADE; tevkifatlı → TEVKIFAT; istisna kodlu (%0, 351 dışı) kalemi olan → ISTISNA; yoksa SATIS. */
+// 2.4.0 bitiş turu (yargıç Y4): GİB şematronu istisna kodu (301, 304, 350…) taşıyan belgede tipin ISTISNA olmasını ister — KDV'li kalemlerle
+// karışık belgede de. Önceden yalnız BÜTÜN kalemler istisnalıysa ISTISNA oluyordu; karışık belge kaydediliyor ama GİB'de reddedilecekti.
 export function typeCode(kind, lines) {
   if (INVOICE_KINDS[kind]?.return) return "IADE";
   if (lines.some(line => line.withholdingCode)) return "TEVKIFAT";
-  if (lines.length && lines.every(line => line.vatRate === 0 && line.exemptionCode && line.exemptionCode !== "351")) return "ISTISNA";
+  if (lines.some(line => Number(line.vatRate) === 0 && line.exemptionCode && line.exemptionCode !== "351")) return "ISTISNA";
   return "SATIS";
 }
 

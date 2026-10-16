@@ -336,6 +336,8 @@ export function prepareNetworkSettings(body = {}, previous = DEFAULT_NETWORK) {
   const keep = body.password === undefined || body.password === "";
   const old = splitProxy(previous.proxy);
   const password = keep && old.username === username ? passwordOf(previous.proxy) : String(body.password ?? "");
+  // 2.4.0 bitiş turu (eleştirmen E6): adresteki fazlalık (ör. "vekil.firma.local 8080" — iki nokta yerine boşluk) sessizce kesilip kaydedilmez.
+  if (/\s/.test(String(body.address ?? "").trim())) return { error: "Vekil sunucu adresinde boşluk olamaz. Örnek: vekil.firma.local:8080 ya da http://10.0.0.5:3128" };
   const proxy = composeProxy({ address: body.address, username, password });
   if (!proxy) return { error: "Vekil sunucu adresi geçersiz. Örnek: vekil.firma.local:8080 ya da http://10.0.0.5:3128" };
   return { value: { mode, proxy, bypass } };

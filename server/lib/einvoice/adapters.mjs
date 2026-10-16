@@ -38,6 +38,13 @@ const toHttp = error => {
 };
 
 export const integratorUrl = integrator => String(integrator?.baseUrl || "").trim() || (integrator?.env === "live" ? EDM_URLS.live : EDM_URLS.test);
+// Canlı kilidi açılmadan kullanılabilecek servis adresi (2.4.0 bitiş turu: yargıç Y1 / eleştirmen E1 — env "test" iken Servis Adresi'ne canlı adres
+// yazılınca bütün istekler canlıya gidiyordu). İzin listesi: boş (ortamın adresi), entegratörün test adresi, yerel adres (testlerin sahte servisi).
+// Kara liste değil: canlı adresin büyük harf / port / yol varyantları da reddedilir.
+export const testOnlyUrl = url => {
+  const value = String(url || "").trim();
+  return !value || value === EDM_URLS.test || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/\S*)?$/i.test(value);
+};
 
 /**
  * @param {{ integrator: { id, env, baseUrl, username, password, senderAlias }, seller, fetchImpl }} options
