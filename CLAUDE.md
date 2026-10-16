@@ -604,6 +604,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Fault). Koddan: satışta gelir vergisi STOPAJI YOK (yalnız SMM/alış; e-SMM kapsam dışı) → 2'de KDV tevkifatlı hizmet e-Arşiv; döviz VAR (fxEnabled banka
   modülü içindir — önceki "döviz kapalı" sözüm yanlıştı). Çıktı docs/fatura/ornek. AYRICA: büyük yük/stres testi planı (20 kullanıcı, dakikada 100–1.000,
   oturum düşmesi, 5 MB XML…) için süre/maliyet verildi (~5–6,5 sa + düzeltmeler; 0 TL); karar ("A A A" önerisi) BEKLENİYOR.
+- İSTEK (kullanıcı, 16.10.2026 ~17:40 UTC): "kalan işleri ve zaman maliyetini yaz; her 30 dk bir rapor ver" → 30 dk raporu send_later ile (her raporda
+  yeniden kurulur); 2.4.0 yayımlanıp site PR'ı birleşince ya da kullanıcı "durdur" deyince durur. 2.4.0 son aday 77ba737 (CI #778 yeşil), Uzun Doğrulama
+  34761ca run 38933795436 17:36 UTC başladı. Stres testi (100/500/1000 dk) bitti: tavan ~320/dk, 1.599/1.600, kanıt docs/kanit/2026-10-16/edm-hiz.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
