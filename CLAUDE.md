@@ -636,8 +636,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (süre / kullanıcı / güncelleme); tek seferlikte sürekli giderler (mevzuat güncellemesi, destek, uzaktan bağlanma sunucusu, WhatsApp Meta mesaj ücreti, EDM
   kontörü müşteride); gelecek özellik vaadi yazılı taahhüt olmaz. Lisans altyapısı süresiz lisansı destekliyor (license-token expiresAt null). KARAR BEKLENİYOR:
   güncelleme/destek süresi ve WhatsApp/uzaktan bağlanma giderlerinin kime ait olduğu.
+  FİKİR (kullanıcı, aynı gün; "bunlar sadece fikir şimdilik"): Pro yerine TEK PAKET (bütün özellikler); WhatsApp kontörünü müşteri öder; uzaktan bağlanma için
+  Tailscale benzeri çözüm (net değil); ömür boyu kullanım, güncelleme yalnız ZORUNLU hallerde ve 2 YILLA sınırlı. Karar değil — uygulanmaz, kod değişmez.
 - 2.4.0 UZUN DOĞRULAMA run 38933795436 23/23 + kapı YEŞİL (16.10.2026 ~19:40 UTC); 6 CI yeşil. İmzalı paket 652bdc7: zip c226ed33…, kurulum exe 8aefa8fb… (35,5 MB,
   simgeli); paket denetimi 4/4 (imza, sha/boyut, kurcalanmış ret, zip = HEAD 251/251). SIRADA: teslim (5 dosya + arşiv) → PR → kullanıcı "birleştir" → yayın.
+  TESLİM EDİLDİ (16.10.2026 ~19:45 UTC): 5 dosya (exe iki parça + BIRLESTIR.bat/.md; bildirge json 60b6bd7b…, kılavuz PDF ca4b478d…) + arşiv 6 zip
+  (1 belge+kanıt, 2–6 bundle parçaları; birleştirilip klonlandı, a11b0a7). PR açıldı.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
