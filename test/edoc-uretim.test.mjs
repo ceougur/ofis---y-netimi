@@ -20,11 +20,10 @@ const unwrap = response => ({ ...response, data: response.data && typeof respons
 const strip = source => source.replace(/\/\*[\s\S]*?\*\//g, "").split(/\r?\n/).map(line => line.replace(/^\s*\/\/.*$/, "")).join("\n");
 const year = () => new Date().getFullYear();
 
-describe("Üretim girişi: e-Belge açık, canlı ortam kilitli", () => {
-  test("server/server.mjs e-Belgeyi açar, canlıyı açmaz; config canlıyı ortam değişkeniyle açmaz", () => {
+describe("Üretim girişi: e-Belge açık, test ve canlı ortam açık", () => {
+  test("server/server.mjs e-Belgeyi ve canlı ortamı açar (kullanıcı 16.10.2026: \"hem testi hem canlıyı aç\"); config canlıyı ortam değişkeniyle açmaz", () => {
     const entry = strip(readFileSync(new URL("../server/server.mjs", import.meta.url), "utf8"));
-    assert.match(entry, /createApp\(\{\s*edocEnabled:\s*true\s*\}\)/, "üretim girişi edocEnabled: true verir");
-    assert.doesNotMatch(entry, /edocLive/, "üretim girişi canlıyı açmaz");
+    assert.match(entry, /createApp\(\{\s*edocEnabled:\s*true,\s*edocLive:\s*true\s*\}\)/, "üretim girişi edocEnabled ve edocLive verir");
     const config = strip(readFileSync(new URL("../server/lib/config.mjs", import.meta.url), "utf8"));
     assert.match(config, /edocLive:\s*overrides\.edocLive === true,/, "canlı yalnız program içinden (ortam değişkeni yok)");
   });

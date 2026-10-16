@@ -9,6 +9,7 @@
 //   7 Görünüm sekmesi (16.10.2026 İz 6): dört seçenek açık; Önizle → şablon TARAYICININ XSLT 1.0 işlemcisiyle (libxslt) çizilir, örnek belgenin
 //     sayıları ve logo görünür; Banka Hesaplarını Göster kapatılıp kaydedilir (veri tabanından okunur), önizlemede IBAN yok.
 //   8 Gönderilen faturada "Resmî Görüntü" (sahte EDM PDF'i); gönderilmemişte yok.
+//   14 Canlı ortam açık sürüm (edocLive: true): Canlı Ortam seçilebilir, notu yazılı; canlı kullanıcıyla kaydedilir ve bağlantı denenir (sahte EDM).
 //   6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu, 16.10.2026): Otomatik seçili; Elle Yazılan Adres insan hızında + Tab; Kaydet → dosyada,
 //     parola ekrana dönmez; Bağlantıyı Dene → istek sahte vekile gider (CONNECT), ret iletisi Türkçe; Entegratör kartında yol satırı.
 // Çıkış: "N geçti, M kaldı". Ekran görüntüleri EKRAN_DIR (yoksa geçici klasör).
@@ -61,13 +62,13 @@ const browser = await chromium.launch();
 const errors = [];
 const modal = ".hof-modal-backdrop.is-visible";
 const card = `${modal} [data-integ-root]`;
-async function login(username, password) {
+async function login(username, password, base = BASE) {
   const context = await browser.newContext({ viewport: { width: 1360, height: 900 }, locale: "tr-TR" });
   await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
   const page = await context.newPage();
   page.setDefaultTimeout(10000);
   page.on("pageerror", error => errors.push(`${username}: ${error.message}`));
-  await page.goto(`${BASE}/`);
+  await page.goto(`${base}/`);
   await page.fill("#hof-auth input[name=username]", username);
   await page.fill("#hof-auth input[name=password]", password);
   await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
@@ -438,6 +439,39 @@ try {
   await page.waitForSelector(`${card} [data-integ-network]`);
   const networkText = await textOf(page, `${card} [data-integ-network]`);
   ok(/elle yazılan vekil sunucu \(http:\/\/127\.0\.0\.1:\d+\)/.test(networkText) && /Yönetim → Sistem → Ağ Bağlantısı/.test(networkText) && !networkText.includes("ofis:"), `Entegratör kartında yol satırı: ${networkText}`);
+
+  console.log("\n■ 14 Canlı ortam açık sürüm (kullanıcı kararı 16.10.2026: \"hem testi hem canlıyı aç\"; üretim girişi edocLive: true)");
+  const liveServer = await bootVersion(CURRENT, { dataDir: path.join(root, "data-canli"), backupDir: path.join(root, "backups-canli"), logLevel: "warn", edocEnabled: true, edocLive: true, env: { ...NO_ENV_PROXY, HUKUK_NETWORK_FILE: path.join(root, "ag-canli.json") } });
+  try {
+    const liveAdmin = await liveServer.login();
+    await must("canlı: kurulum geç", liveAdmin.post("/api/workspace/bank/setup/dismiss", {}));
+    await must("canlı: firma", liveAdmin.put("/api/workspace/invoices/settings", { seller: { name: "Deneme Ofis Ltd.", taxNo: OUR_VKN, taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara" } }));
+    const livePage = await login("admin", ADMIN_PASSWORD, liveServer.base);
+    await openInvoices(livePage);
+    await livePage.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
+    await livePage.waitForSelector(`${card} [data-integ-tab]`);
+    const liveRadio = await livePage.$eval(`${card} input[data-i="env"][value="live"]`, input => ({ disabled: input.disabled, checked: input.checked }));
+    ok(!liveRadio.disabled && !liveRadio.checked, "Canlı Ortam seçilebilir; ilk açılışta Test Ortamı seçili");
+    const liveNote = await textOf(livePage, `${card} [data-integ-live-note]`);
+    ok(/Canlı Ortam'da gönderilen belgeler yasal belgedir/.test(liveNote) && /kendi serisinden/.test(liveNote), `canlı notu: ${liveNote}`);
+    await livePage.check(`${card} input[data-i="env"][value="live"]`);
+    await livePage.click(`${card} input[data-i="username"]`);
+    await livePage.keyboard.type("edmkullanici", { delay: 35 });
+    await livePage.keyboard.press("Tab");
+    await livePage.keyboard.type("Gizli-Parola-1", { delay: 35 });
+    await livePage.fill(`${card} input[data-i="baseUrl"]`, edm.url);
+    await livePage.click(`${card} [data-integ-act="save"]`);
+    await livePage.waitForFunction(selector => /Bağlantı denenmedi/.test(document.querySelector(selector)?.textContent || ""), `${card} [data-integ-status]`, { timeout: 10000 });
+    const liveStored = JSON.parse(liveServer.app.store.setting("invoice.settings", "{}")).integrator;
+    ok(liveStored.env === "live" && liveStored.username === "edmkullanici", `veri tabanında ortam ${liveStored.env}, kullanıcı ${liveStored.username}`);
+    await livePage.click(`${card} [data-integ-act="test"]`);
+    await livePage.waitForFunction(selector => /Bağlantı kuruldu/.test(document.querySelector(selector)?.textContent || ""), `${card} [data-integ-status]`, { timeout: 15000 });
+    ok(true, `canlı ayarla bağlantı (sahte EDM): “${await status(livePage)}”`);
+    await shot(livePage, "entegrator-14-canli-ortam");
+    await livePage.context().close();
+  } finally {
+    await liveServer.close();
+  }
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);

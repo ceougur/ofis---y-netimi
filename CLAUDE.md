@@ -607,6 +607,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - İSTEK (kullanıcı, 16.10.2026 ~17:40 UTC): "kalan işleri ve zaman maliyetini yaz; her 30 dk bir rapor ver" → 30 dk raporu send_later ile (her raporda
   yeniden kurulur); 2.4.0 yayımlanıp site PR'ı birleşince ya da kullanıcı "durdur" deyince durur. 2.4.0 son aday 77ba737 (CI #778 yeşil), Uzun Doğrulama
   34761ca run 38933795436 17:36 UTC başladı. Stres testi (100/500/1000 dk) bitti: tavan ~320/dk, 1.599/1.600, kanıt docs/kanit/2026-10-16/edm-hiz.
+- KARAR (kullanıcı, 16.10.2026 ~17:45 UTC: "hem testi hem canlıyı aç, hafta sonu fatura kesecek kimse yok, ben hafta sonu testler yapınca zaten düzeltilecek
+  kısım olursa yaparız. buna göre üret zipi") → 2.4.0'da CANLI ORTAM AÇIK: server/server.mjs `edocLive: true` (kilit altyapısı yerinde; testler varsayılan
+  kilitli). Baş mimar uyarısı verildi: canlı hiç denenmedi (canlı kimlik yok), canlı belge yasaldır, seri TEF/TEA olamaz, ilk belge küçük tutarla kendi firmasına.
+  Ekran notu + kılavuz "Canlıya geçiş" hap bilgisi; sürüm notu "İyileştirmeler ve e-Fatura / e-Arşiv Entegrasyonu"; e2e entegrator-240 §14 canlı kip 69/69.
+  Uzun Doğrulama (34761ca) bitince son commit CI yeşil → imzalı paket + kurulum → 5 dosya + arşiv teslim.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

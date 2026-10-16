@@ -2,9 +2,9 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.4.0 — İyileştirmeler ve e-Fatura / e-Arşiv Entegrasyonu (Test Ortamı)
+## 2.4.0 — İyileştirmeler ve e-Fatura / e-Arşiv Entegrasyonu
 
-- İyileştirmeler ve e-Fatura / e-Arşiv entegrasyonu (EDM Bilişim; şimdilik yalnız test ortamı). Kullanım Kılavuzu → 13. Fatura → e-Fatura / e-Arşiv denemesi.
+- İyileştirmeler ve e-Fatura / e-Arşiv entegrasyonu (EDM Bilişim; test ve canlı ortam). Kullanım Kılavuzu → 13. Fatura → e-Fatura / e-Arşiv denemesi ve Canlıya geçiş.
 
 ## 2.3.0 — İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi
 

@@ -2781,7 +2781,7 @@
           <fieldset class="hof-field hof-integ-env"><span>Çalışma Ortamı</span>
             <label class="hof-check"><input type="radio" name="integ-env" value="test" data-i="env" ${integ.env !== "live" ? "checked" : ""}><span>Test Ortamı</span></label>
             <label class="hof-check"><input type="radio" name="integ-env" value="live" data-i="env" ${integ.env === "live" ? "checked" : ""} ${integ.liveAllowed ? "" : "disabled"}><span>Canlı Ortam</span></label>
-            ${integ.liveAllowed ? "" : '<small data-integ-live-note>Canlı ortam, test ortamındaki kabulden sonra açılır.</small>'}
+            ${integ.liveAllowed ? '<small data-integ-live-note>Canlı Ortam\'da gönderilen belgeler yasal belgedir; kullanıcı adı ve parola EDM\'nin canlı hesabıdır, numara firmanın kendi serisinden alınır.</small>' : '<small data-integ-live-note>Canlı ortam, test ortamındaki kabulden sonra açılır.</small>'}
           </fieldset>
           <label class="hof-field"><span>Web Servis Kullanıcı Adı</span><input data-i="username" value="${esc(integ.username || "")}" maxlength="120" autocomplete="off"></label>
           <label class="hof-field"><span>Web Servis Parolası</span><span class="hof-integ-pass"><input type="password" data-i="password" value="" maxlength="200" autocomplete="new-password" placeholder="${integ.hasPassword ? "Kayıtlı" : ""}"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-eye aria-label="Yazılan parolayı göster" title="Yazılan parolayı göster">Göster</button></span><small>Şifreli saklanır; kayıtlı parola ekranda gösterilmez.${integ.hasPassword ? " Değiştirmek için yenisini yazın." : ""}</small></label>
