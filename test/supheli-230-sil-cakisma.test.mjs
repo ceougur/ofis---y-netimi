@@ -31,7 +31,12 @@ describe("şüpheli kaydı silme: başka kaydın çıkarma başlığını bozaca
     const res = await api.del(`${ACC}/${acc.id}/doubtful/${a.id}`);
     assert.equal(res.status, 409, JSON.stringify(res.data).slice(0, 400));
     assert.equal(res.data.code, "doubtful-delete-conflict", JSON.stringify(res.data).slice(0, 400));
-    assert.match(res.data.error, /Şüpheliden Çıkar başlığı/, "neden metni kapı örneğinden");
+    // K5 (16.10.2026): ileti kapının iç örneği değil — ham kayıt kimliği yok, kayıt tarih + tutarla, para "TL", ne yapılacağı yazılı.
+    assert.match(res.data.error, /02\.10\.2026 tarihli 500,00 TL şüpheli kaydının Şüpheliden Çıkar tutarı değişirdi/, res.data.error);
+    assert.match(res.data.error, /Önce o kaydı silin, sonra yeniden deneyin\./, res.data.error);
+    assert.doesNotMatch(res.data.error, new RegExp(`${a.id}|${b.id}`), "ham kayıt kimliği yok");
+    assert.doesNotMatch(res.data.error, /₺|başlığı \d|yevmiyedeki/, "kapı jargonu ve ₺ yok");
+    assert.ok(res.data.problems?.length >= 1, "kapı örneği destek için problems alanında");
     assert.doesNotMatch(res.data.error, /yöneticinize bildirin/, "genel kapı metni değil");
     const after_ = await listOf(api, acc.id);
     assert.deepEqual(after_.records.map(r => [r.id, r.status, r.remainingMinor]), before.records.map(r => [r.id, r.status, r.remainingMinor]), "kayıtlar değişmedi");

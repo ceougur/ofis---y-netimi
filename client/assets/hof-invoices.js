@@ -2238,7 +2238,7 @@
     HOF.formModal({
       title: `${docTitle(doc)} İptal Edilsin mi?`,
       eyebrow: "İPTAL",
-      intro: `Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır.${earchive ? " e-Arşiv fatura önce entegratörde (EDM) iptal edilir." : ""}`,
+      intro: `Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır.${doc.cancelNotice ? ` ${doc.cancelNotice}` : ""}${earchive ? " e-Arşiv fatura önce entegratörde (EDM) iptal edilir." : ""}`,
       fields: [
         { name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Müşteri vazgeçti, yanlış tutar", autofocus: true },
         ...(doc.posCash ? [posOutcomeField()] : []),
@@ -2250,6 +2250,7 @@
         return keepOnCancel(async () => {
           const saved = await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/cancel`, { method: "POST", body: { reason: data.reason, confirmExternal: data.confirmExternal === true, ...(doc.posCash ? { posOutcome: posOutcomeOf(data) } : {}), ...force } }), "cancel");
           HOF.toast(`${docTitle(doc)} iptal edildi; etkileri geri alındı.`, { type: "success" });
+          for (const notice of saved.notices || []) HOF.toast(notice, { type: "info", timeout: 12000 });
           HOF.emit("invoices-changed", saved);
           showDoc(saved);
         });
@@ -2382,6 +2383,8 @@
       onSubmit: async data => {
         const result = await bulkWithNegative("/api/workspace/invoices/bulk-cancel", { ids: docs.map(doc => doc.id), reason: data.reason, ...(posCount ? { posOutcome: posOutcomeOf(data) } : {}) }, "cancel");
         bulkOutcome(result, "iptal edildi", "iptal edilemedi");
+        // K4: iptal edilen belgeye bağlı şüpheli cari tahsilatı artık şüpheliden düşüyor; belge numarasıyla söylenir.
+        for (const item of (result.results || []).filter(item => item.ok && item.notices?.length)) HOF.toast(`${item.displayNo || item.number}: ${item.notices.join(" ")}`, { type: "info", timeout: 12000 });
         HOF.emit("invoices-changed", {});
         loadList();
       },

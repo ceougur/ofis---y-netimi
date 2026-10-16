@@ -1,0 +1,32 @@
+{
+  "ad": "k4-iptal-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/supheli-240-k4-iptal.test.mjs",
+  "commit": "0d8335819df7c140bc548df7ae483cc9396a5969",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:15:43.732Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/k4-iptal-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "3cde620a5f43fac19d6bfc384ada651a1ea4aa1d272664916f5ac62443777730",
+  "ham_cikti_bayt": 1443
+}

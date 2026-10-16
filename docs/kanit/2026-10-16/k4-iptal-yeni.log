@@ -1,0 +1,35 @@
+TAP version 13
+# Subtest: K4 — şüpheli carinin faturaya bağlı tahsilatı: fatura iptalinde önceden ve sonradan söylenir, işlem kaydına yazılır
+    # Subtest: iptal penceresi: bağlı 400 TL tahsilat şüpheliden düşmeye başlayacağı önceden yazılır; bağsız faturada yazı yok
+    ok 1 - iptal penceresi: bağlı 400 TL tahsilat şüpheliden düşmeye başlayacağı önceden yazılır; bağsız faturada yazı yok
+      ---
+      duration_ms: 104.678107
+      type: 'test'
+      ...
+    # Subtest: iptal: yanıtta bildirim, kalan 600'e iner (para kuralı 2.3.0 ile aynı), işlem kaydında hangi tahsilat olduğu yazar; kapı yeşil
+    ok 2 - iptal: yanıtta bildirim, kalan 600'e iner (para kuralı 2.3.0 ile aynı), işlem kaydında hangi tahsilat olduğu yazar; kapı yeşil
+      ---
+      duration_ms: 43.029111
+      type: 'test'
+      ...
+    # Subtest: toplu iptal: bildirim belge numarasıyla sonuçta döner; bağsız belgede bildirim yok
+    ok 3 - toplu iptal: bildirim belge numarasıyla sonuçta döner; bağsız belgede bildirim yok
+      ---
+      duration_ms: 102.987052
+      type: 'test'
+      ...
+    1..3
+ok 1 - K4 — şüpheli carinin faturaya bağlı tahsilatı: fatura iptalinde önceden ve sonradan söylenir, işlem kaydına yazılır
+  ---
+  duration_ms: 667.494925
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1075.238993

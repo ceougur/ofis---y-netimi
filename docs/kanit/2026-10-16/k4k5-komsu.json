@@ -1,0 +1,32 @@
+{
+  "ad": "k4k5-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-230-46-iade-iptal.test.mjs test/banka-230-supheli-ayni-gun.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-230-supheli.test.mjs test/ebelge-uygunluk.test.mjs test/einvoice-edm.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-model.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/supheli-240-k4-iptal.test.mjs",
+  "commit": "0d8335819df7c140bc548df7ae483cc9396a5969",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 4,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:17:18.091Z",
+  "sure_sn": 65.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 222,
+    "gecen": 222,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/k4k5-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "08d9fcb9345b46c2c76be51dc53bc6a95910cc8471fa3b9977a02b8b5a59f723",
+  "ham_cikti_bayt": 77631
+}

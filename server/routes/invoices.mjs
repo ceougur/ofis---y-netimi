@@ -794,6 +794,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       canDelete: manage && !deleteBlock(row, activeReturns, plan),
       deleteBlock: manage ? deleteBlock(row, activeReturns, plan) : "",
       canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee,
+      // K4: iptal penceresinde söylenir (şüpheli carinin "Normal Cariye İşlendi" tahsilatı iptalle şüpheliden düşmeye başlar).
+      cancelNotice: manage && row.status === "issued" ? doubtfulRelinkText(doubtfulRelinks(row.id)) : "",
       cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
       canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0) && !bankFee,
       // v2.0.17: pasif düğmenin nedeni ekranda yazılı (yalnız title değil).
@@ -1849,8 +1851,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // v2.0.17: iptal edilen belgenin mahsup fişleri ve ona bağlanmış tahsilat/ödemelerin bağı kalkar (satırlar kalır,
       // kapama yeniden hesaplanır: otomatik en eski açık faturaya).
       store.run("DELETE FROM invoice_offsets WHERE invoice_id = ? OR (counter_type = 'invoice' AND counter_id = ?)", invoice.id, invoice.id);
+      // K4 (2.3.0 kontrol turu 2): bağ kalkınca şüpheli cariye tahsilat "Normal Cariye İşlendi" olmaktan çıkar ve şüpheli alacaktan düşer
+      // (lib/doubtful-gl doubtfulSkipOf). Para kuralı aynı; değişiklik işlem kaydına yazılır, ekranda iptalden önce ve sonra söylenir.
+      const relinked = doubtfulRelinks(invoice.id);
       store.run("UPDATE account_entries SET invoice_id = '' WHERE invoice_id = ?", invoice.id);
-      audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason });
+      audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason, ...(relinked.length ? { doubtfulRelinked: relinked.map(entry => ({ id: entry.id, date: entry.date, amount: entry.amount })) } : {}) });
       if (dryRun) throw DRY_RUN;
       return invoice;
       } });
@@ -2271,7 +2276,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
       try {
         const doc = await cancelInvoice(user, row.id, options);
-        results.push({ id: row.id, ok: true, number: doc.number, displayNo: doc.displayNo, accountName: doc.accountName });
+        results.push({ id: row.id, ok: true, number: doc.number, displayNo: doc.displayNo, accountName: doc.accountName, ...(doc.notices?.length ? { notices: doc.notices } : {}) });
       } catch (error) {
         results.push({ id: row.id, number: row.number, accountName: row.accountName, ...bulkError(error) });
       }
@@ -2395,7 +2400,27 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     ok(res, { results, deleted: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length });
   });
+  // K4: iptal edilince Kapatılacak Fatura bağı kalkacak, şüpheli alacağı açık carideki "Normal Cariye İşlendi" tahsilatlar.
+  function doubtfulRelinks(invoiceId) {
+    return store.all(
+      `SELECT e.id, e.date, e.amount FROM account_entries e
+       WHERE e.invoice_id = ? AND e.kind = 'in' AND e.doubtful_skip = 0 AND e.source <> 'invoice'
+         AND EXISTS (SELECT 1 FROM doubtful_receivables d WHERE d.account_id = e.account_id AND d.status NOT IN ('cancelled', 'released'))
+       ORDER BY e.date, e.rowid`,
+      invoiceId,
+    );
+  }
+  function doubtfulRelinkText(list, { done = false } = {}) {
+    if (!list.length) return "";
+    const total = list.reduce((sum, entry) => sum + Math.round((Number(entry.amount) || 0) * 100), 0) / 100;
+    const what = list.length === 1 ? `Bu faturaya bağlı ${moneyText(total)} tahsilat` : `Bu faturaya bağlı ${list.length} tahsilat (toplam ${moneyText(total)})`;
+    return done
+      ? `${what} artık şüpheli alacaktan düşüyor (faturayla bağı kalktı). Normal cari hesapta kalmasını isterseniz cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.`
+      : `${what} şu an normal cari hesaba işli (cari şüpheli alacakta). Fatura iptal edilince bağı kalkar ve tahsilat şüpheli alacaktan düşer. Normal cari hesapta kalmasını isterseniz iptalden sonra cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.`;
+  }
   async function cancelInvoice(user, id, body) {
+    const relinks = invoiceRow(id).status === "issued" ? doubtfulRelinks(id) : [];
+    const notices = relinks.length ? [doubtfulRelinkText(relinks, { done: true })] : [];
     const options = { reason: text(body.reason), force: forceOf(body), confirmExternal: body.confirmExternal === true, posOutcome: text(body.posOutcome) === "entry-error" ? "entry-error" : "refunded" };
     const existing = invoiceRow(id);
     // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
@@ -2411,10 +2436,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         audit(user, "invoice.e.cancelled", existing.id, { number: existing.number, adapter: existing.eAdapter });
       });
       const row = cancel(user, existing.id, { ...options, confirmExternal: true });
-      return { ...detail(row.id, user), integratorResult: result };
+      return { ...detail(row.id, user), integratorResult: result, notices };
     }
     const row = cancel(user, existing.id, options);
-    return detail(row.id, user);
+    return { ...detail(row.id, user), notices };
   }
   router.post("/api/workspace/invoices/:id/cancel", async ({ req, res, params }) => {
     const user = requireManage(req);

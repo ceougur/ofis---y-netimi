@@ -20,7 +20,8 @@ export const DOUBTFUL_TYPES = Object.freeze(new Set(["doubtful_take", "doubtful_
 export const DOUBTFUL_SOURCE = "doubtful";
 const AUDITOR = Object.freeze({ id: "integrity", role: "admin", permissions: [] });
 const dayText = iso => (iso ? String(iso).split("-").reverse().join(".") : "");
-const tl = minor => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((Number(minor) || 0) / 100)} ₺`;
+// K5 (2.3.0): iletilerde para işareti programın öbür iletileri gibi "TL" (önceden bu modülde "₺", öbürlerinde "TL").
+const tl = minor => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((Number(minor) || 0) / 100)} TL`;
 const hasTable = (store, name) => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", name));
 export const hasDoubtful = store => hasTable(store, "doubtful_receivables");
 /** Şüpheli alacak hiç kullanılmış mı (iptal edilenler dahil): 128/129 denetimleri yalnız kullanılınca açılır (300/309 ve 121/321 kuralı). */
@@ -465,10 +466,29 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
    * kaydın "Şüpheliden Çıkar" başlığı ya da bir Değersiz Alacak satırı artık kalana sığmazsa yazım tamamen geri alınır ve neden AÇIK yazılır
    * (önceden yalnız kapı "ledger-integrity … yöneticinize bildirin" diyordu). Silme işleminden sonra, aynı işlem içinde çağrılır.
    */
+  // K5 (2.3.0 kontrol turu 2): kullanıcıya kapının iç örneği (ham kayıt kimliği) değil, kaydın tarihi ve tutarıyla neden + ne yapacağı yazılır;
+  // kapı örnekleri yanıtın `problems` alanında kalır (destek için).
+  const conflictReason = key => {
+    const [id, kind] = [key.slice(0, key.lastIndexOf(":")), key.slice(key.lastIndexOf(":") + 1)];
+    if (kind === "outside") {
+      const entry = store.get("SELECT date, amount FROM account_entries WHERE id = ?", id.replace(/^account:/, ""));
+      return entry ? { text: `${dayText(entry.date)} tarihli ${tl(Math.round(Number(entry.amount) * 100))} Değersiz Alacak satırı kaydın kalanını aşardı`, fix: "Değersiz Alacak satırını" } : null;
+    }
+    const record = store.get("SELECT date, amount_minor AS amountMinor FROM doubtful_receivables WHERE id = ?", id);
+    if (!record) return null;
+    const label = `${dayText(record.date)} tarihli ${tl(record.amountMinor)} şüpheli kaydının`;
+    if (kind === "close-amount") return { text: `${label} Şüpheliden Çıkar tutarı değişirdi`, fix: "o kaydı" };
+    if (kind === "provision" || kind === "provision-left") return { text: `${label} karşılığı kalan tutarı aşardı`, fix: "o kaydı" };
+    return null;
+  };
   const assertNoConflict = (party, what, verb = "silinemez") => {
     const problems = doubtfulProblems(store, { parties: [party] });
     if (!problems.length) return;
-    throw new HttpError(409, `${what} ${verb}: carinin öbür şüpheli kayıtları bozulurdu — ${problems[0].sample}`, { code: "doubtful-delete-conflict", problems: problems.map(item => item.sample) });
+    const reasons = [...new Map(problems.map(item => conflictReason(item.key)).filter(Boolean).map(item => [item.text, item])).values()];
+    const message = reasons.length
+      ? `${what} ${verb}: carinin öbür şüpheli kayıtları bozulurdu (${reasons.map(item => item.text).join("; ")}). Önce ${reasons[0].fix} silin, sonra yeniden deneyin.`
+      : `${what} ${verb}: carinin öbür şüpheli kayıtları bozulurdu. Önce carinin sonraki şüpheli işlemlerini silin, sonra yeniden deneyin.`;
+    throw new HttpError(409, message, { code: "doubtful-delete-conflict", problems: problems.map(item => item.sample) });
   };
   /** Sil (kayıt hatası): kayıt + karşılıkları iptal (başlıklar cancelled), Silinenler'e. Değersiz satırı olan kayıt silinmez (önce satır). */
   function remove(ctx, { user, accountId, did }) {

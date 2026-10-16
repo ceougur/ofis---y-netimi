@@ -429,6 +429,32 @@ try {
   await page.waitForSelector(`${top} .hof-form input[name="amount"]`);
   ok(!(await page.$(`${top} .hof-form input[name="doubtfulSkip"]`)), "açık şüpheli kaydı olmayan (kapanmış) caride kutu yok");
   await closeAll(page);
+
+  console.log("\n■ 7 K4 (16.10.2026): şüpheli caride faturaya bağlı tahsilat — İptal penceresi önceden söyler, iptalden sonra bildirim; tahsilat şüpheliden düşer");
+  const k4Sale = await must("K4 satış", admin.post("/api/workspace/invoices", { kind: "sale", accountId: second.id, issueDate: D0, issueTime: "10:00", currency: "TRY", rate: 1, pricesIncludeVat: false, lines: [{ name: "Hizmet", qty: 1, unitPrice: 250, discountRate: 0, vatRate: 0 }], payment: { cash: [], cheques: [], endorse: [], rest: "open", dueDate: D0 }, force: true, cashForce: true }));
+  await must("K4 bağlı tahsilat", admin.post(`/api/workspace/accounts/${second.id}/entries`, { kind: "in", method: "cash", note: "Fatura tahsilatı", amount: "250", date: D0, invoiceId: k4Sale.id }));
+  const beforeK4 = await summaryOf(second.id);
+  const invModal = `${modal} .hof-invoices-modal`;
+  await page.evaluate(id => window.HOF.invoices.openDoc(id), k4Sale.id);
+  await page.waitForSelector(`${invModal} [data-act="cancel"]:not([disabled])`);
+  await page.click(`${invModal} [data-act="cancel"]`);
+  await page.waitForSelector(`${top} form [name="reason"]`);
+  const k4Intro = await textOf(page, `${top} .hof-modal-text`);
+  ok(/250,00 TL tahsilat şu an normal cari hesaba işli/.test(k4Intro) && /şüpheli alacaktan düşer/.test(k4Intro) && /Normal Cari Hesaba İşle/.test(k4Intro), `İptal penceresi önceden söyler: “${k4Intro.slice(-230)}”`);
+  await shot(page, "k4-iptal-penceresi");
+  await page.fill(`${top} form [name="reason"]`, "Müşteri vazgeçti");
+  await page.click(`${top} form button[type="submit"]`);
+  const k4Toast = await page
+    .waitForFunction(() => [...document.querySelectorAll("#hof-toasts .hof-toast")].find(node => node.textContent.includes("artık şüpheli alacaktan düşüyor"))?.textContent || "", null, { timeout: 10000 })
+    .then(handle => handle.jsonValue())
+    .catch(() => "");
+  ok(/250,00 TL tahsilat artık şüpheli alacaktan düşüyor/.test(k4Toast), `iptalden sonra bildirim: “${k4Toast.slice(0, 200)}”`);
+  await shot(page, "k4-iptal-bildirimi");
+  const afterK4 = await summaryOf(second.id);
+  ok(afterK4.openMinor === beforeK4.openMinor - 25000, `şüphelide kalan ${beforeK4.openMinor / 100} → ${afterK4.openMinor / 100} (bağı kalkan 250 şüpheliden düştü)`);
+  const integrity7 = await must("Mutabakat Testi", admin.get("/api/workspace/ledger/integrity"));
+  ok(integrity7.ok === true, "Mutabakat Testi tamam (K4 iptalinden sonra)");
+  await closeAll(page);
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
