@@ -6,6 +6,7 @@
 // program imza anahtarı tutmaz. Tutarlar faturanın kendi kuruş hesabından gelir (lib/invoice-math.mjs) — ekranda, PDF'te,
 // defterde ve XML'de aynı sayı.
 import { EXEMPTIONS, exclusiveParts, normalizeExemption } from "../invoice-math.mjs";
+import { viewReference } from "./gorunum.mjs";
 const NS = {
   invoice: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
   cac: "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
@@ -28,6 +29,15 @@ const priceText = value => {
   return fixed.replace(/(\.\d\d)(\d*?)0+$/, "$1$2");
 };
 const money = (name, value, currency) => `<${name} currencyID="${escape(currency)}">${amount(value)}</${name}>`;
+
+// Şahıs firmasının ticari unvanı (16.10.2026, Wolvox karşılaştırması): TCKN'li tarafta GİB ad ve soyadı Person'da ister; cari adı ad-soyaddan
+// farklıysa ("Ahmet Yılmaz İnşaat") o ad ticari unvandır ve PartyName'e de yazılır — yoksa e-Belgede yalnız ad-soyad görünür, unvan kaybolur.
+const folded = text => String(text || "").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
+export function tradeNameOf(p) {
+  const name = String(p.name || "").replace(/\s+/g, " ").trim();
+  if (!name) return "";
+  return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
+}
 
 function party(p, { variant }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
@@ -61,7 +71,7 @@ function party(p, { variant }) {
     id ? `<cac:PartyIdentification><cbc:ID schemeID="${scheme}">${escape(id)}</cbc:ID></cac:PartyIdentification>` : "",
     p.mersisNo ? `<cac:PartyIdentification><cbc:ID schemeID="MERSISNO">${escape(p.mersisNo)}</cbc:ID></cac:PartyIdentification>` : "",
     p.tradeRegistry ? `<cac:PartyIdentification><cbc:ID schemeID="TICARETSICILNO">${escape(p.tradeRegistry)}</cbc:ID></cac:PartyIdentification>` : "",
-    person ? "" : `<cac:PartyName>${tag("cbc:Name", p.name)}</cac:PartyName>`,
+    person && !tradeNameOf(p) ? "" : `<cac:PartyName>${tag("cbc:Name", person ? tradeNameOf(p) : p.name)}</cac:PartyName>`,
     address,
     `<cac:PartyTaxScheme><cac:TaxScheme>${tag("cbc:Name", p.taxOffice || "-")}</cac:TaxScheme></cac:PartyTaxScheme>`,
     p.phone || p.email ? `<cac:Contact>${tag("cbc:Telephone", p.phone)}${tag("cbc:ElectronicMail", p.email)}</cac:Contact>` : "",
@@ -86,7 +96,8 @@ const exemptionLabel = code => EXEMPTIONS[normalizeExemption(code)] || "";
  * @param {object} doc  routes/invoices.mjs detail() çıktısı (kesilmiş fatura)
  * @param {{ variant?: 'tr' | 'peppol' }} options
  */
-export function buildUbl(doc, { variant = "tr", earchiveEmail = true } = {}) {
+// xslt: görünüm şablonu (gorunum.mjs viewXslt); verilirse belgeye gömülür ve alıcının gördüğü sayfayı o çizer. Yalnız UBL-TR.
+export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "" } = {}) {
   const currency = doc.currency || "TRY";
   const includeVat = Boolean(doc.pricesIncludeVat);
   const lines = doc.lines || [];
@@ -139,6 +150,7 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true } = {}) {
     // yoksa KAGIT (çıktısı verilir).
     // Entegratör Ayarları "e-Arşiv faturasında PDF'i müşteriye e-postayla gönder" kapalıysa KAGIT (çıktısı verilir).
     variant !== "peppol" && doc.profile === "EARSIVFATURA" ? `<cac:AdditionalDocumentReference>${tag("cbc:ID", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}${tag("cbc:IssueDate", doc.issueDate)}${tag("cbc:DocumentTypeCode", "SendingType")}${tag("cbc:DocumentType", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}</cac:AdditionalDocumentReference>` : "",
+    variant !== "peppol" && xslt ? viewReference({ number: doc.number, issueDate: doc.issueDate, ettn: doc.ettn, xslt }) : "",
     // İmzalayan taraf (UBL-TR'de zorunlu cac:Signature): belgeyi entegratör mali mühürle imzalar; burada imzanın kime ait
     // olduğu ve imzanın yeri (#Signature) bildirilir.
     variant !== "peppol" && seller?.taxNo

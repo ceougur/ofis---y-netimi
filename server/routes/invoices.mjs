@@ -12,10 +12,13 @@
 //                     ya da ciro edilmiş çek, satılmış mal (stok eksiye düşer), kilitli dönem ve iadesi olan fatura
 //                     iptali durdurur (iade faturası kesilir).
 import { randomUUID } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import path from "node:path";
 import { parseQty } from "../lib/accounts.mjs";
 import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl } from "../lib/einvoice/adapters.mjs";
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
+import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
@@ -57,6 +60,9 @@ const E_STATES = Object.freeze({ waiting: "Gönderilecek", withdrawn: "Gönderil
 // Gönderilebilir (ilk kez ya da hatadan sonra yeniden) ve sorgulanabilir e-Belge durumları.
 const E_SENDABLE = new Set(["", "none", "exported", "error", "waiting", "withdrawn"]);
 const E_TRACKED = new Set(["processing", "sent", "accepted", "rejected", "error", "cancelled"]);
+const E_VIEWABLE = new Set(["processing", "sent", "accepted", "rejected", "cancelled"]);
+// Resmî görüntü önbelleğe yalnız son hâlinde alınır (işlenirken entegratörün görüntüsü değişebilir).
+const E_FINAL_VIEW = new Set(["sent", "accepted", "rejected", "cancelled"]);
 const SIDE_KINDS = { sale: ["sale", "smm", "sale_return"], purchase: ["purchase", "purchase_return"] };
 const MAX_LINES = 500;
 const DEFAULTS = Object.freeze({
@@ -76,6 +82,9 @@ const DEFAULTS = Object.freeze({
   // mailboxAlias: firmanın kendi posta kutusu (PK, gelen fatura); senderAlias: gönderici birim (GB). earchiveEmail: e-Arşiv faturası alıcının
   // e-postasına entegratörce gönderilir (ELEKTRONIK; kapalıysa KAGIT). autoCheckUser: cari kartında VKN/TCKN yazılınca mükellefiyet sorgulanır.
   // lastTest: son Bağlantıyı Test Et sonucu (Durum satırı). Kullanıcı kararı 16.10.2026 (Entegratör Ayarları kartı).
+  // eView: e-Belge görünüm tasarımı (16.10.2026; lib/einvoice/gorunum.mjs). enabled kapalıysa entegratörün varsayılan görünümü; logo, banka
+  // hesapları ve alt not Fatura Ayarları'ndaki değerlerdir (tek kaynak), burada yalnız gösterilip gösterilmeyeceği seçilir.
+  eView: { enabled: true, logo: true, banks: true, footer: true },
   integrator: { id: "edm", env: "test", baseUrl: "", username: "", passwordSealed: "", senderAlias: "", mailboxAlias: "", autoSend: false, earchiveEmail: true, autoCheckUser: false, lastTest: null },
 });
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -197,6 +206,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         next.start[key] = seq;
       }
     }
+    if (body.eView && typeof body.eView === "object") {
+      for (const key of ["enabled", "logo", "banks", "footer"]) if (body.eView[key] !== undefined) next.eView[key] = body.eView[key] === true;
+    }
     if (body.defaults && typeof body.defaults === "object") {
       const d = body.defaults;
       if (d.vatRate !== undefined) {
@@ -317,6 +329,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   };
 
   // Ekrana giden ayarlar: parola (şifreli hâli de) hiç gönderilmez; yalnız girilmiş olup olmadığı.
+  // e-Belge XML'i (gönderilen, indirilen ve toplu dışa aktarılan aynı): görünüm şablonu açıksa belgeye gömülür (lib/einvoice/gorunum.mjs).
+  // Şablon yalnız satıcısı biz olan belgeye gömülür: alış faturası ve satıştan iade XML'inde satıcı karşı taraftır — logomuz ve IBAN'ımız basılmaz.
+  const ownsDocument = doc => doc.kind !== "purchase" && doc.kind !== "sale_return";
+  const ublFor = (doc, { variant = "tr" } = {}, s = settings()) =>
+    buildUbl(doc, { variant, earchiveEmail: s.integrator.earchiveEmail !== false, xslt: variant === "tr" && s.eView.enabled !== false && ownsDocument(doc) ? viewXslt({ logo: s.seller.logo, banks: doc.seller?.banks || [], footer: s.defaults.footer, view: s.eView }) : "" });
   // Entegratör kartında bağlantının hangi yoldan çıktığı (vekil sunucu; ayar Yönetim → Sistem → Ağ Bağlantısı'nda, kimlik bilgisi yok).
   const networkSummary = () => (edocEnabled && config.describeNetwork ? config.describeNetwork().effective : null);
   const publicSettings = s => {
@@ -821,6 +838,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       canWithdraw: edocEnabled && manage && row.status === "issued" && row.eStatus === "waiting",
       sendBlock: edocEnabled ? sendBlockOf(row) : "",
       canRefresh: edocEnabled && manage && kind?.send && row.profile !== "KAGIT" && E_TRACKED.has(row.eStatus),
+      // Resmî görüntü (entegratörün ürettiği PDF): entegratöre ulaşmış belge (hata alanlar hariç).
+      canOfficial: edocEnabled && kind?.send && row.profile !== "KAGIT" && E_VIEWABLE.has(row.eStatus) && Boolean(row.ettn),
       edocEnabled,
     };
   }
@@ -2567,12 +2586,34 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     audit(user, "invoice.pdf", row.id, { number: row.number });
     sendBuffer(res, pdf, { type: "application/pdf", name: `${safeName(row.number || "Taslak Fatura")} ${safeName(parseJson(row.partyJson, {}).name || row.accountName)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
+  // Görünüm önizlemesi (Entegratör Ayarları → Görünüm → Önizle): firmanın bilgisiyle ÖRNEK bir e-Fatura (kayıt yazılmaz, numara harcanmaz) ve
+  // ekrandaki (kaydedilmemiş olabilir) görünüm seçimleriyle şablon. Tarayıcı XSLT'yi kendisi işler (XSLTProcessor) — entegratörün göreceği şablon.
+  router.post("/api/workspace/invoices/view-preview", async ({ req, res }) => {
+    auth.requirePermission(req, "invoices.settings");
+    requireEdoc();
+    const body = await readJson(req);
+    const s = settings();
+    const view = { ...s.eView, ...Object.fromEntries(["logo", "banks", "footer"].filter(key => body?.eView?.[key] !== undefined).map(key => [key, body.eView[key] === true])), enabled: true };
+    const lines = [
+      { name: "Örnek Ürün", code: "URN-001", qty: 2, unit: "Adet", unitPrice: 500, discount: 0, net: 1000, vat: 200, vatRate: 20 },
+      { name: "Örnek Hizmet", description: "Kalem açıklaması örneği", qty: 1, unit: "Saat", unitPrice: 250, discount: 0, net: 250, vat: 25, vatRate: 10 },
+    ];
+    const day = today();
+    const seller = sellerParty(s);
+    const doc = {
+      kind: "sale", number: `${s.series.efatura || "EFT"}${day.slice(0, 4)}000000001`, ettn: "00000000-0000-4000-8000-000000000000", issueDate: day, issueTime: "10:30",
+      profile: "TEMELFATURA", typeCode: "SATIS", currency: "TRY", pricesIncludeVat: false, lines, payableTotal: 1475, amountInWords: amountInWords(1475, "TRY"),
+      seller, party: { name: "Örnek Müşteri A.Ş.", partyKind: "company", taxNo: "1234567890", taxOffice: "Örnek", address: "Örnek Cad. No:1", district: "Merkez", city: "Ankara", country: "Türkiye" },
+    };
+    const xslt = viewXslt({ logo: s.seller.logo, banks: seller.banks || [], footer: s.defaults.footer, view });
+    ok(res, { xml: buildUbl(doc, { variant: "tr", xslt }), xslt });
+  });
   router.get("/api/workspace/invoices/:id/ubl.xml", async ({ req, res, params, url }) => {
     const user = requireView(req);
     requireEdoc();
     const doc = detail(params.id, user);
     if (doc.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.");
-    const xml = buildUbl(doc, { variant: url.searchParams.get("peppol") === "1" ? "peppol" : "tr", earchiveEmail: settings().integrator.earchiveEmail !== false });
+    const xml = ublFor(doc, { variant: url.searchParams.get("peppol") === "1" ? "peppol" : "tr" });
     sendBuffer(res, Buffer.from(xml, "utf8"), { type: "application/xml; charset=utf-8", name: ublFileName(doc, url.searchParams.get("peppol") === "1"), inline: false });
   });
   // ---------- e-Belge: gönder, durum, mükellef, bağlantı ----------
@@ -2653,7 +2694,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     sending.add(doc.id);
     try {
       const link = integrator(s);
-      const xml = buildUbl(doc, { variant: "tr", earchiveEmail: settings().integrator.earchiveEmail !== false });
+      const xml = ublFor(doc, {}, s);
       let result;
       try {
         result = await link.send({ invoice: doc, xml });
@@ -2752,6 +2793,28 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const hint = result.status === "rejected" && doc.status === "issued" ? "Alıcı faturayı reddetti: faturayı programda İptal edin (stok, cari ve kasa etkileri geri alınır), gerekirse yeniden kesin." : "";
     ok(res, { ...detail(doc.id, user), statusResult: { ...result, hint } });
   });
+  // Resmî görüntü (16.10.2026, Wolvox karşılaştırması madde 2): entegratörün belgeden ürettiği PDF — alıcının ve GİB'in gördüğü sayfa. İlk
+  // açılışta EDM'den alınır; belge son hâlindeyse veri klasöründe saklanır (e-belge-gorunum/<ETTN>.pdf; veri tabanına girmez — her faturanın
+  // ~70 KB'ı 30 yedeğin hepsini büyütmesin; yasal saklama entegratördedir, dosya silinse yeniden alınır).
+  router.get("/api/workspace/invoices/:id/resmi.pdf", async ({ req, res, params, url }) => {
+    const user = requireView(req);
+    requireEdoc();
+    const doc = detail(invoiceRow(params.id).id, user);
+    if (!doc.canOfficial) throw new HttpError(409, doc.profile === "KAGIT" ? "Kâğıt belgenin resmî e-Belge görüntüsü olmaz." : "Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.", { code: "einvoice-not-sent" });
+    const cacheDir = path.join(config.dataDir || ".", "e-belge-gorunum");
+    const file = path.join(cacheDir, `${String(doc.ettn).replace(/[^0-9a-f-]/gi, "")}.pdf`);
+    let data = existsSync(file) ? readFileSync(file) : null;
+    if (!data) {
+      data = (await integrator().officialPdf({ invoice: doc })).data;
+      if (E_FINAL_VIEW.has(doc.eStatus)) {
+        mkdirSync(cacheDir, { recursive: true });
+        writeFileSync(`${file}.tmp`, data);
+        renameSync(`${file}.tmp`, file);
+      }
+    }
+    audit(user, "invoice.e.official", doc.id, { number: doc.number });
+    sendBuffer(res, data, { type: "application/pdf", name: `${safeName(doc.number)} Resmi Gorunum.pdf`, inline: url.searchParams.get("inline") === "1" });
+  });
   router.post("/api/workspace/invoices/integrator/test", async ({ req, res }) => {
     const user = auth.requirePermission(req, "invoices.settings");
     requireEdoc();
@@ -2830,7 +2893,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     for (const id of ids) {
       const doc = detail(id, user);
       if (doc.status !== "issued" || doc.profile === "KAGIT" || !INVOICE_KINDS[doc.kind].send) continue;
-      entries.push({ name: ublFileName(doc, false), data: Buffer.from(buildUbl(doc, { variant: "tr", earchiveEmail: settings().integrator.earchiveEmail !== false }), "utf8") });
+      entries.push({ name: ublFileName(doc, false), data: Buffer.from(ublFor(doc), "utf8") });
     }
     if (!entries.length) fail400("Seçilenler arasında e-Belge olarak gönderilecek kaydedilmiş fatura yok (kâğıt fatura, taslak, iptal ve alış faturası XML'e girmez).", "ids");
     audit(user, "invoice.ubl.bulk", "bulk", { count: entries.length });

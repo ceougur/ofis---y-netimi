@@ -73,6 +73,7 @@ export function connect({ integrator, seller = {}, fetchImpl }) {
       if (!earchive(invoice)) throw new IntegratorError("e-Fatura entegratör üzerinden iptal edilmez: Ticari faturayı alıcı reddedebilir; Temel faturada iade faturası kesilir ya da GİB'in iptal yolu (e-Fatura portalı) kullanılır.", { code: "einvoice-cancel-unsupported", status: 409 });
       return client.cancelEArchive({ uuid: invoice.ettn, number: invoice.number });
     }),
+    officialPdf: wrap(({ invoice }) => client.officialPdf({ uuid: invoice.ettn, number: invoice.number })),
     inbox: wrap(range => client.inbox(range)),
     markRead: wrap(uuids => client.markRead(uuids)),
   };

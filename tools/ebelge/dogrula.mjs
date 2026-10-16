@@ -94,6 +94,35 @@ export function schematronErrors(xml, { type = "efatura" } = {}) {
   }));
 }
 
+/** Belgeye gömülü görünüm şablonunu (cac:AdditionalDocumentReference → *.xslt) çıkarır; yoksa "". */
+export function embeddedXslt(xml) {
+  const match = xml.match(/<cbc:EmbeddedDocumentBinaryObject\b[^>]*filename="[^"]*\.xslt"[^>]*>([^<]*)<\/cbc:EmbeddedDocumentBinaryObject>/);
+  return match ? Buffer.from(match[1].replace(/\s+/g, ""), "base64").toString("utf8") : "";
+}
+
+const viewCache = new Map();
+/**
+ * Görünüm: belgedeki şablonu (yoksa verilen şablonu) SaxonJS ile işler, HTML döner. Şablon xslt3 ile derlenir (derleme hatası = şablon
+ * hatalı). Programdan bağımsız işlemci; tarayıcıdaki XSLT 1.0 işlemcisi (libxslt) e2e senaryosunda ayrıca denenir.
+ */
+export function renderView(xml, xslt = embeddedXslt(xml)) {
+  if (!xslt) throw new Error("Belgede görünüm şablonu (XSLT) yok.");
+  const key = sha(xslt);
+  if (!viewCache.has(key)) {
+    const work = join(tmpdir(), `destekofis-gorunum-${key.slice(0, 16)}`);
+    mkdirSync(work, { recursive: true });
+    const sef = join(work, "gorunum.sef.json");
+    if (!existsSync(sef)) {
+      writeFileSync(join(work, "gorunum.xsl"), xslt);
+      xslt3([`-xsl:${join(work, "gorunum.xsl")}`, `-export:${sef}.tmp`, "-nogo"]);
+      renameSync(`${sef}.tmp`, sef);
+    }
+    viewCache.set(key, JSON.parse(readFileSync(sef, "utf8")));
+  }
+  const SaxonJS = require("saxon-js");
+  return SaxonJS.transform({ stylesheetInternal: viewCache.get(key), sourceText: xml, destination: "serialized" }, "sync").principalResult;
+}
+
 let xsdFiles;
 /** OASIS UBL 2.1 XSD: [hata iletisi] — boş dizi = şemaya uygun. */
 export async function xsdErrors(xml) {

@@ -6,6 +6,9 @@
 //   3 Bağlantıyı Test Et → Durum "Bağlantı kuruldu"; Etiketleri Getir → GB ve PK listeleri; seçilip kaydedilir (veri tabanından okunur).
 //   4 Sekme değişince yazılanlar kaybolmaz; Firma sekmesinde firma özeti (tek kaynak) ve "Fatura Ayarları'nda Düzenle"; Otomatik Seriler kaydedilir.
 //   5 Fatura Ayarları'nda e-Belge alanları yok, karta yönlendiren düğme var. Avukat (fatura keser, Fatura Ayarları yetkisi yok): düğme yok.
+//   7 Görünüm sekmesi (16.10.2026 İz 6): dört seçenek açık; Önizle → şablon TARAYICININ XSLT 1.0 işlemcisiyle (libxslt) çizilir, örnek belgenin
+//     sayıları ve logo görünür; Banka Hesaplarını Göster kapatılıp kaydedilir (veri tabanından okunur), önizlemede IBAN yok.
+//   8 Gönderilen faturada "Resmî Görüntü" (sahte EDM PDF'i); gönderilmemişte yok.
 //   6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu, 16.10.2026): Otomatik seçili; Elle Yazılan Adres insan hızında + Tab; Kaydet → dosyada,
 //     parola ekrana dönmez; Bağlantıyı Dene → istek sahte vekile gider (CONNECT), ret iletisi Türkçe; Entegratör kartında yol satırı.
 // Çıkış: "N geçti, M kaldı". Ekran görüntüleri EKRAN_DIR (yoksa geçici klasör).
@@ -15,10 +18,11 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
-import { MULTI_VKN, OUR_VKN, startMockEdm } from "../einvoice-mock.mjs";
+import { BUYER_VKN, MULTI_VKN, OUR_VKN, startMockEdm } from "../einvoice-mock.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
 
 const PASS = "Personel-2026!";
+const LOGO = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
 const root = mkdtempSync(path.join(tmpdir(), "senaryo-entegrator-240-"));
 const shots = process.env.EKRAN_DIR || root;
 const must = async (label, promise) => {
@@ -90,7 +94,7 @@ try {
   const title = await textOf(page, `${modal}:last-of-type .hof-modal-title`);
   ok(title === "e-Dönüşüm ve Entegrasyon Ayarları", `başlık: “${title}”`);
   const tabs = await page.$$eval(`${card} [data-integ-tab]`, nodes => nodes.map(node => node.textContent.trim()));
-  ok(tabs.join(" | ") === "Entegrasyon Bilgileri | Firma / Etiket Tanımları | Otomatik Seriler", `sekmeler: ${tabs.join(" | ")}`);
+  ok(tabs.join(" | ") === "Entegrasyon Bilgileri | Firma / Etiket Tanımları | Otomatik Seriler | Görünüm", `sekmeler: ${tabs.join(" | ")}`);
   const live = await page.$eval(`${card} input[data-i="env"][value="live"]`, input => ({ disabled: input.disabled, checked: input.checked }));
   const test = await page.$eval(`${card} input[data-i="env"][value="test"]`, input => input.checked);
   ok(live.disabled && !live.checked && test, "Canlı Ortam pasif, Test Ortamı seçili");
@@ -194,6 +198,63 @@ try {
   const staff = await login("avukat", PASS);
   await openInvoices(staff);
   ok(!(await staff.$(`${modal} [data-act="integrator"]`)) && Boolean(await staff.$(`${modal} [data-act="new"]`)), "avukatta (fatura keser, ayar yetkisi yok) “Entegratör Ayarları” düğmesi yok");
+
+  console.log("\n■ 7 Görünüm sekmesi ve tarayıcı önizlemesi");
+  await must("logo ve banka", admin.put("/api/workspace/invoices/settings", { seller: { logo: LOGO, banks: [{ name: "Örnek Bankası", iban: "TR330006100519786457841326" }] }, defaults: { footer: "Görünüm alt notu" } }));
+  await openInvoices(page);
+  await page.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
+  await page.click(`${card} [data-integ-tab="view"]`);
+  const viewChecks = await page.$$eval(`${card} [data-i^="view."]`, nodes => nodes.map(node => `${node.dataset.i}:${node.checked}`));
+  ok(viewChecks.join(",") === "view.enabled:true,view.logo:true,view.banks:true,view.footer:true", `Görünüm seçenekleri varsayılan açık: ${viewChecks.join(", ")}`);
+  await page.click(`${card} [data-integ-act="preview"]`);
+  const frameHandle = await page.waitForSelector("iframe.hof-integ-preview", { timeout: 10000 });
+  const frame = await frameHandle.contentFrame();
+  await frame.waitForSelector("table.kalem", { timeout: 10000 });
+  const previewText = (await frame.$eval("body", body => body.innerText)).replace(/\s+/g, " ");
+  ok(["e-FATURA", "Örnek Müşteri A.Ş.", "Deneme Ofis Ltd.", "Ödenecek Tutar 1.475,00 TL", "Hesaplanan KDV (%20) 200,00 TL", "TR33 0006 1005", "Görünüm alt notu"].every(part => previewText.includes(part)), `tarayıcının XSLT işlemcisi şablonu çizdi: ${previewText.slice(0, 160)}…`);
+  ok(Boolean(await frame.$('img[src^="data:image/jpeg"]')), "önizlemede logo var");
+  ok((await frameHandle.getAttribute("sandbox")) === "", "önizleme betiksiz çerçevede (sandbox)");
+  await page.waitForTimeout(400);
+  const onTop = await page.evaluate(() => {
+    const frameNode = document.querySelector("iframe.hof-integ-preview");
+    const box = frameNode.getBoundingClientRect();
+    return document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2) === frameNode;
+  });
+  ok(onTop, "önizleme penceresi Entegratör kartının üstünde (görünür, kartın arkasında kalmıyor)");
+  await shot(page, "entegrator-7-gorunum-onizleme");
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(250);
+  await page.click(`${card} [data-i="view.banks"]`);
+  await page.click(`${card} [data-integ-act="save"]`);
+  await page.waitForFunction(() => document.querySelector(".hof-toast")?.textContent?.includes("kaydedildi"), null, { timeout: 8000 }).catch(() => null);
+  ok(stored().eView?.banks === false && stored().eView?.logo === true, `Banka Hesaplarını Göster kapatılıp kaydedildi (veri tabanı: ${JSON.stringify(stored().eView)})`);
+  await page.click(`${card} [data-integ-tab="view"]`);
+  await page.click(`${card} [data-integ-act="preview"]`);
+  const frame2 = await (await page.waitForSelector(".hof-modal-backdrop.is-visible:last-of-type iframe.hof-integ-preview")).contentFrame();
+  await frame2.waitForSelector("table.kalem");
+  ok(!(await frame2.$eval("body", body => body.innerText)).includes("TR33 0006"), "banka kapalıyken önizlemede IBAN yok");
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
+
+  console.log("\n■ 8 Resmî Görüntü (gönderilen e-Belge)");
+  const buyer = await must("alıcı", admin.post("/api/workspace/accounts", { name: "Resmî Görüntü Alıcı A.Ş.", type: "customer", taxNo: BUYER_VKN, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 10", district: "Çankaya", city: "Ankara", eInvoice: true, eAlias: "urn:mail:defaultpk@alici.com.tr" }));
+  const issuedDoc = await must("fatura", admin.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyer.id || buyer.account?.id, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } }));
+  await page.evaluate(id => window.HOF.invoices.openDoc(id), issuedDoc.id);
+  await page.waitForSelector(`${modal} [data-act="e-send"]`, { timeout: 10000 });
+  ok(!(await page.$(`${modal} [data-act="e-official"]`)), "gönderilmemiş faturada Resmî Görüntü yok");
+  await page.click(`${modal} [data-act="e-send"]`);
+  await page.waitForSelector(`${modal} [data-act="e-official"]`, { timeout: 15000 });
+  const officialHref = await page.$eval(`${modal} [data-act="e-official"]`, node => node.getAttribute("href"));
+  const officialPdf = await page.request.get(`${BASE}${officialHref}`);
+  const officialBody = await officialPdf.body();
+  ok(officialPdf.status() === 200 && officialBody.subarray(0, 5).toString("latin1") === "%PDF-" && officialBody.toString("latin1").includes(issuedDoc.number), `Resmî Görüntü EDM'nin PDF'ini açar (${officialPdf.status()}, ${officialBody.length} bayt)`);
+  await shot(page, "entegrator-8-resmi-goruntu");
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
 
   console.log("\n■ 6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu)");
   await page.goto(`${BASE}/admin.html#system`);

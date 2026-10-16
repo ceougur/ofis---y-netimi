@@ -10,7 +10,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { after, before, describe, test } from "node:test";
 import { EXEMPTIONS, WITHHOLDING } from "../server/lib/invoice-math.mjs";
-import { SEMA, schematronErrors, validateInvoice, xsdErrors } from "../tools/ebelge/dogrula.mjs";
+import { SEMA, renderView, schematronErrors, validateInvoice, xsdErrors } from "../tools/ebelge/dogrula.mjs";
 import { ADMIN_PASSWORD, startTestServer } from "./helpers.mjs";
 
 // VKN denetim hanesi (GİB algoritması) ile geçerli VKN.
@@ -126,8 +126,14 @@ describe("Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 �
     test(name, async () => {
       const invoice = await issue(body());
       assert.equal(invoice.profile, profile);
-      const result = await validateInvoice(await xmlOf(invoice.id), { type });
+      const xml = await xmlOf(invoice.id);
+      const result = await validateInvoice(xml, { type });
       assert.equal(describeErrors(result), "", `${name}: GİB/XSD hataları`);
+      // Gömülü görünüm şablonu (16.10.2026) her türde çizilir; sayfada belge numarası ve ödenecek tutar (NaN yok).
+      const page = renderView(xml).replace(/<[^>]+>/g, " ");
+      assert.ok(page.includes(invoice.number), `${name}: görünümde belge numarası yok`);
+      assert.match(page, /Ödenecek Tutar/);
+      assert.doesNotMatch(page, /NaN/, `${name}: görünümde sayı biçimlenemedi`);
     });
   }
   test("alıştan iade (e-Fatura): asıl faturaya DocumentTypeCode IADE ile 16 haneli numarayla bağlanır", async () => {

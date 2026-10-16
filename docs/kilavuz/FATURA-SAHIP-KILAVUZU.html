@@ -142,6 +142,9 @@
   <li>EDM reddederse durum <b>Hata</b>: belge düzeltilip yeniden gönderilir. Bağlantı koparsa durum değişmez; önce <i>Durumu Yenile</i> (aynı ETTN ikinci kez kabul edilmez). "Aktif session bulunamadı (10011)" gelirse program kendiliğinden yeniden giriş yapıp isteği bir kez tekrarlar. Logout hiç çağrılmaz (EDM'de aynı kullanıcının diğer oturumlarını kapatır).</li>
   <li>e-Fatura ve e-Arşiv aynı gönderim ucuyla gider; belge türünü UBL'deki profil belirler. UBL-TR XML her belge için <i>XML İndir</i> ile alınabilir (e-Belge açıkken).</li>
   <li>Entegratör parolası veritabanında şifreli (AES-256-GCM); anahtar veri klasöründe ayrı dosyada, yedeğe girmez; günlüğe ve ekrana parola çıkmaz.</li>
+  <li><b>Görünüm:</b> Entegratör Ayarları → <b>Görünüm</b>: alıcının ve GİB'in gördüğü sayfaya logonuz, banka hesaplarınız (IBAN) ve fatura alt notunuz basılır (değerler Fatura Ayarları'ndan). <b>Önizle</b> örnek belgeyle gösterir. Kapatılırsa entegratörün varsayılan görünümü kullanılır.</li>
+  <li><b>Resmî Görüntü:</b> gönderilen faturada <b>Resmî Görüntü</b> düğmesi, entegratörün ürettiği PDF'i (alıcının gördüğü) açar; ilk açılışta internetten alınır, sonra bilgisayarda saklanır.</li>
+  <li><b>Şahıs firması:</b> cari kartında Kişi Türü <i>Gerçek Kişi</i>, Adı ve Soyadı ayrı yazılır; cari adı ticari unvan olarak e-Belgeye ayrıca basılır (ör. "Ahmet Yılmaz İnşaat").</li>
 </ul>
 <h3>11.4 Sorun giderme</h3>
 <table>

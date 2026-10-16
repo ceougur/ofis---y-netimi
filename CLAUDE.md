@@ -553,6 +553,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (5) peşin/kapalı faturada ödeme şekli kodu (nakit 10, kart 48) — bugün banka varsa 42, yoksa 1; (6) EDM portalına taslak yükleme (seçenek);
   (7) opsiyonel alanlar (seri/lot, garanti, kalem açıklaması → AdditionalItemProperty). Kapsam dışı: e-İrsaliye, e-Müstahsil, ÖTV, IMEI/tıbbi cihaz,
   ayrı SMTP (EDM e-Arşiv e-postasını kendisi gönderir), portal kullanıcısı (web servis yeterli).
+  KARAR (kullanıcı, 16.10.2026: "önerini yap") → 1, 2, 3 YAPILDI (İz 6, `docs/2.4.0-IS-LISTESI.md`; gerçek EDM test ortamında EDM belgeyi
+  bizim şablonla çizdi — kanıt docs/kanit/2026-10-16/edm-gorunum); 4–7 bekler. Resmî PDF veri tabanına değil veri klasörüne (yedek şişmesin).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

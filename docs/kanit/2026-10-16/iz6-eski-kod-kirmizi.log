@@ -1,0 +1,259 @@
+TAP version 13
+# Subtest: Şahıs firmasında ticari unvan e-Belgeye girer
+    # Subtest: TCKN'li şahıs firması: ad-soyad Person'da, cari adı (ticari unvan) PartyName'de; GİB şematronu ve XSD temiz
+    not ok 1 - TCKN'li şahıs firması: ad-soyad Person'da, cari adı (ticari unvan) PartyName'de; GİB şematronu ve XSD temiz
+      ---
+      duration_ms: 37.574773
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: "ticari unvan PartyName'de"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: '<cac:Party><cac:PartyIdentification><cbc:ID schemeID="TCKN">10000000146</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>Alsancak 3</cbc:StreetName><cbc:CitySubdivisionName>Konak</cbc:CitySubdivisionName><cbc:CityName>İzmir</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Konak</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:ElectronicMail>ahmet@example.com</cbc:ElectronicMail></cac:Contact><cac:Person><cbc:FirstName>Ahmet</cbc:FirstName><cbc:FamilyName>Yılmaz</cbc:FamilyName></cac:Person></cac:Party>'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:77:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: unvansız gerçek kişi: PartyName yazılmaz (ad-soyad tekrarlanmaz); belge temiz
+    ok 2 - unvansız gerçek kişi: PartyName yazılmaz (ad-soyad tekrarlanmaz); belge temiz
+      ---
+      duration_ms: 722.699386
+      type: 'test'
+      ...
+    1..2
+not ok 1 - Şahıs firmasında ticari unvan e-Belgeye girer
+  ---
+  duration_ms: 913.019046
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:72:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: e-Belge görünüm tasarımı (gömülü XSLT)
+    # Subtest: görünüm ayarı varsayılanı açık (logo, banka, alt not)
+    not ok 1 - görünüm ayarı varsayılanı açık (logo, banka, alt not)
+      ---
+      duration_ms: 2.174091
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:98:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + undefined
+        - {
+        -   banks: true,
+        -   enabled: true,
+        -   footer: true,
+        -   logo: true
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        enabled: true
+        logo: true
+        banks: true
+        footer: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:99:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: şablon GİB örnek biçiminde gömülür (fatura no .xslt, base64, application/xml); belge XSD + GİB şematronundan temiz
+    not ok 2 - şablon GİB örnek biçiminde gömülür (fatura no .xslt, base64, application/xml); belge XSD + GİB şematronundan temiz
+      ---
+      duration_ms: 0.663269
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /<cac:AdditionalDocumentReference><cbc:ID>[0-9a-f-]{36}<\/cbc:ID><cbc:IssueDate>2026-10-16<\/cbc:IssueDate><cac:Attachment><cbc:EmbeddedDocumentBinaryObject characterSetCode="UTF-8" encodingCode="Base64" filename="EFT2026000000001\.xslt" mimeCode="application\/xml">/. Input:
+        
+        '<?xml version="1.0" encoding="UTF-8"?>\n' +
+          '<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"><cbc:UBLVersionID>2.1</cbc:UBLVersionID><cbc:CustomizationID>TR1.2</cbc:CustomizationID><cbc:ProfileID>TEMELFATURA</cbc:ProfileID><cbc:ID>EFT2026000000001</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator><cbc:UUID>eb1a5cff-c42b-4c12-8553-90de8e31eb1e</cbc:UUID><cbc:IssueDate>2026-10-16</cbc:IssueDate><cbc:IssueTime>07:08:00</cbc:IssueTime><cbc:InvoiceTypeCode>SATIS</cbc:InvoiceTypeCode><cbc:Note>Yalnız Bin Dört Yüz Yetmiş Beş Türk Lirası</cbc:Note><cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode><cbc:LineCountNumeric>2</cbc:LineCountNumeric><cac:Signature><cbc:ID schemeID="VKN_TCKN">1234567890</cbc:ID><cac:SignatoryParty><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress></cac:SignatoryParty><cac:DigitalSignatureAttachment><cac:ExternalReference><cbc:URI>#Signature_EFT2026000000001</cbc:URI></cac:ExternalReference></cac:DigitalSignatureAttachment></cac:Signature><cac:AccountingSupplierParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Deneme Ofis Ltd. Şti.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Çankaya</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:ElectronicMail>bilgi@deneme.com.tr</cbc:ElectronicMail></cac:Contact></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">9876543217</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Alıcı Ticaret A.Ş.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Cinnah Cd. 10</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Kavaklıdere</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingCustomerParty><cac:PaymentMeans><cbc:PaymentMeansCode>42</cbc:PaymentMeansCode><cbc:PaymentDueDate>2026-10-16</cbc:PaymentDueDate><cac:PayeeFinancialAccount><cbc:ID>TR330006100519786457841326</cbc:ID><cbc:CurrencyCode>TRY</cbc:CurrencyCode></cac:PayeeFinancialAccount></cac:PaymentMeans><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">225.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">250.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">25.00</cbc:TaxAmount><cbc:Percent>10</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="TRY">1250.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="TRY">1250.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="TRY">1475.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="TRY">1475.00</cbc:PayableAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">1000.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Danışmanlık</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">500.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine><cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:Note>Yerinde kurulum</cbc:Note><cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">250.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">25.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">250.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">25.00</cbc:TaxAmount><cbc:Percent>10</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Kurulum</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">250.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>\n'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"><cbc:UBLVersionID>2.1</cbc:UBLVersionID><cbc:CustomizationID>TR1.2</cbc:CustomizationID><cbc:ProfileID>TEMELFATURA</cbc:ProfileID><cbc:ID>EFT2026000000001</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator><cbc:UUID>eb1a5cff-c42b-4c12-8553-90de8e31eb1e</cbc:UUID><cbc:IssueDate>2026-10-16</cbc:IssueDate><cbc:IssueTime>07:08:00</cbc:IssueTime><cbc:InvoiceTypeCode>SATIS</cbc:InvoiceTypeCode><cbc:Note>Yalnız Bin Dört Yüz Yetmiş Beş Türk Lirası</cbc:Note><cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode><cbc:LineCountNumeric>2</cbc:LineCountNumeric><cac:Signature><cbc:ID schemeID="VKN_TCKN">1234567890</cbc:ID><cac:SignatoryParty><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress></cac:SignatoryParty><cac:DigitalSignatureAttachment><cac:ExternalReference><cbc:URI>#Signature_EFT2026000000001</cbc:URI></cac:ExternalReference></cac:DigitalSignatureAttachment></cac:Signature><cac:AccountingSupplierParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Deneme Ofis Ltd. Şti.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Çankaya</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:ElectronicMail>bilgi@deneme.com.tr</cbc:ElectronicMail></cac:Contact></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">9876543217</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Alıcı Ticaret A.Ş.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Cinnah Cd. 10</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Kavaklıdere</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingCustomerParty><cac:PaymentMeans><cbc:PaymentMeansCode>42</cbc:PaymentMeansCode><cbc:PaymentDueDate>2026-10-16</cbc:PaymentDueDate><cac:PayeeFinancialAccount><cbc:ID>TR330006100519786457841326</cbc:ID><cbc:CurrencyCode>TRY</cbc:CurrencyCode></cac:PayeeFinancialAccount></cac:PaymentMeans><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">225.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">250.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">25.00</cbc:TaxAmount><cbc:Percent>10</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="TRY">1250.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="TRY">1250.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="TRY">1475.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="TRY">1475.00</cbc:PayableAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="C62">2</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">1000.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Danışmanlık</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">500.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine><cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:Note>Yerinde kurulum</cbc:Note><cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">250.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">25.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">250.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">25.00</cbc:TaxAmount><cbc:Percent>10</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Kurulum</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">250.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:102:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: görünüm belgenin kendi sayılarını gösterir: numara, ETTN, alıcı, kalemler, KDV oranları, ödenecek tutar (Türkçe sayı biçimi)
+    not ok 3 - görünüm belgenin kendi sayılarını gösterir: numara, ETTN, alıcı, kalemler, KDV oranları, ödenecek tutar (Türkçe sayı biçimi)
+      ---
+      duration_ms: 0.492235
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: 'Belgede görünüm şablonu (XSLT) yok.'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        renderView (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/tools/ebelge/dogrula.mjs:109:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:108:23)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: logo, banka hesabı (IBAN dörderli) ve alt not şablona gömülü; alt nottaki HTML metin olarak kalır (komut çalışmaz)
+    not ok 4 - logo, banka hesabı (IBAN dörderli) ve alt not şablona gömülü; alt nottaki HTML metin olarak kalır (komut çalışmaz)
+      ---
+      duration_ms: 0.210014
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:113:3'
+      failureType: 'testCodeFailure'
+      error: 'Belgede görünüm şablonu (XSLT) yok.'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        renderView (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/tools/ebelge/dogrula.mjs:109:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:114:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Arşiv: başlık e-ARŞİV FATURA, gönderim şekli ve elektronik iletim ibaresi; belge e-Arşiv şematronundan temiz
+    not ok 5 - e-Arşiv: başlık e-ARŞİV FATURA, gönderim şekli ve elektronik iletim ibaresi; belge e-Arşiv şematronundan temiz
+      ---
+      duration_ms: 248.082906
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: 'Belgede görünüm şablonu (XSLT) yok.'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        renderView (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/tools/ebelge/dogrula.mjs:109:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:124:23)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ayar: logo ve banka kapatılınca şablonda yok; görünüm kapatılınca belgeye şablon gömülmez (entegratörün varsayılanı)
+    not ok 6 - ayar: logo ve banka kapatılınca şablonda yok; görünüm kapatılınca belgeye şablon gömülmez (entegratörün varsayılanı)
+      ---
+      duration_ms: 9.291769
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: 'Belgede görünüm şablonu (XSLT) yok.'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        renderView (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/tools/ebelge/dogrula.mjs:109:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:129:19)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 2 - e-Belge görünüm tasarımı (gömülü XSLT)
+  ---
+  duration_ms: 285.414778
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/ebelge-240-gorunum.test.mjs:91:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Resmî e-Belge görüntüsü (sahte EDM)
+    # Subtest: gönderilmemiş belgede düğme yok ve uç 409; gönderilen belgede görünüm şablonu (logo dahil) EDM'ye gider
+    not ok 1 - gönderilmemiş belgede düğme yok ve uç 409; gönderilen belgede görünüm şablonu (logo dahil) EDM'ye gider
+      ---
+      duration_ms: 30.280268
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/einvoice-240-resmi-gorunum.test.mjs:44:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/einvoice-240-resmi-gorunum.test.mjs:47:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Resmî Görüntü: EDM'den PDF alınır; son hâldeki belgede veri klasörüne saklanır, ikinci açılış EDM'ye gitmez
+    not ok 2 - Resmî Görüntü: EDM'den PDF alınır; son hâldeki belgede veri klasörüne saklanır, ikinci açılış EDM'ye gitmez
+      ---
+      duration_ms: 1.037077
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/einvoice-240-resmi-gorunum.test.mjs:58:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/einvoice-240-resmi-gorunum.test.mjs:59:102)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: fatura görme yetkisi olmayan kullanıcı resmî görüntüyü açamaz
+    not ok 3 - fatura görme yetkisi olmayan kullanıcı resmî görüntüyü açamaz
+      ---
+      duration_ms: 197.154714
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/einvoice-240-resmi-gorunum.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/einvoice-240-resmi-gorunum.test.mjs:88:95)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - Resmî e-Belge görüntüsü (sahte EDM)
+  ---
+  duration_ms: 625.302802
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227/test/einvoice-240-resmi-gorunum.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 11
+# suites 3
+# pass 1
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1828.296531

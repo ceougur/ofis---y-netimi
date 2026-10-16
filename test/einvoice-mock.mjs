@@ -144,6 +144,17 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
       }
       if (op === "GetInvoice") {
         const key = child(request, "INVOICE_SEARCH_KEY");
+        // Giden belgenin resmî görüntüsü (gerçek EDM test ortamında 16.10.2026 denendi: e-Fatura ve e-Arşiv için base64 PDF döner).
+        if (textOf(child(key, "DIRECTION")) === "OUT") {
+          const uuid = textOf(child(key, "UUID"));
+          const type = textOf(child(request, "INVOICE_CONTENT_TYPE"));
+          if (type !== "PDF") state.violations.push(`GetInvoice OUT içerik türü ${type}`);
+          state.pdfRequests = (state.pdfRequests || 0) + 1;
+          const sent = state.sent.find(item => item.uuid === uuid);
+          if (!sent) return respond(`<GetInvoiceResponse xmlns="${NS}"/>`);
+          const pdf = Buffer.from(`%PDF-1.4\n% sahte EDM resmi gorunum ${sent.id}\n%%EOF\n`, "latin1").toString("base64");
+          return respond(`<GetInvoiceResponse xmlns="${NS}"><INVOICE ID="${sent.id}" UUID="${uuid}"><HEADER><STATUS>SEND - SUCCEED</STATUS></HEADER><CONTENT>${pdf}</CONTENT></INVOICE></GetInvoiceResponse>`);
+        }
         if (textOf(child(key, "DIRECTION")) !== "IN") state.violations.push("GetInvoice DIRECTION IN değil");
         const content = Buffer.from(incomingUbl(), "utf8").toString("base64");
         respond(`<GetInvoiceResponse xmlns="${NS}"><INVOICE ID="TDR2026000000042" UUID="${INCOMING_UUID}"><HEADER><SENDER>${SUPPLIER_VKN}</SENDER><RECEIVER>${OUR_VKN}</RECEIVER><SUPPLIER>Toptan Kırtasiye A.Ş.</SUPPLIER><ISSUE_DATE>2026-09-20</ISSUE_DATE><PAYABLE_AMOUNT currencyID="TRY">360.00</PAYABLE_AMOUNT><FROM>urn:mail:defaultgb@toptan.com.tr</FROM><PROFILEID>TEMELFATURA</PROFILEID><STATUS>RECEIVE - SUCCEED</STATUS></HEADER><CONTENT>${content}</CONTENT></INVOICE></GetInvoiceResponse>`);

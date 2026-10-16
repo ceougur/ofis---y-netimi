@@ -329,6 +329,21 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
         });
       });
     },
+    // Gönderilen belgenin RESMÎ görüntüsü (16.10.2026): entegratörün belgeden (gömülü görünüm şablonuyla) ürettiği PDF — alıcının ve GİB'in
+    // gördüğü sayfa. GetInvoice, giden yön (DIRECTION=OUT), ETTN ile; içerik base64 PDF (ZIP'liyse içindeki .pdf).
+    async officialPdf({ uuid, number = "" }) {
+      return withSession(async session => {
+        const key = E("INVOICE_SEARCH_KEY", [E("LIMIT", 1), E("UUID", uuid), E("DIRECTION", "OUT")]);
+        const body = await call("GetInvoice", E("GetInvoiceRequest", [header(session), key, E("HEADER_ONLY", "N"), E("INVOICE_CONTENT_TYPE", "PDF")]), { session, wait: 120_000 });
+        touch();
+        const invoice = children(find(body, "GetInvoiceResponse") || deep(body, "GetInvoiceResponse") || body, "INVOICE").find(item => (item.attrs.UUID || textOf(find(item, "UUID"))).toLowerCase() === String(uuid).toLowerCase());
+        if (!invoice) throw new IntegratorError(`${number || uuid} EDM'de bulunamadı (belge henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin).`, { code: "integrator-not-found", status: 404 });
+        let data = Buffer.from(textOf(find(invoice, "CONTENT")).replace(/\s+/g, ""), "base64");
+        if (data.length > 4 && data.readUInt32LE(0) === 0x04034b50) data = (readZip(data).find(item => !item.directory && /\.pdf$/i.test(item.name)) || {}).data || Buffer.alloc(0);
+        if (data.subarray(0, 5).toString("latin1") !== "%PDF-") throw new IntegratorError(`EDM ${number || uuid} için PDF görüntüsü vermedi (görüntü henüz hazır olmayabilir; birkaç dakika sonra yeniden deneyin).`, { code: "integrator-no-pdf", status: 409 });
+        return { data, mime: "application/pdf" };
+      });
+    },
     async markRead(uuids) {
       if (!uuids.length) return { ok: true };
       return withSession(async session => {

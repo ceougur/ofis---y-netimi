@@ -2033,7 +2033,7 @@
     const email = String(party.email || "").trim();
     const eTools =
       edoc() && doc.status !== "draft" && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && meta.kinds[doc.kind]?.own
-        ? `<span class="hof-plan-toolgroup">${doc.canSend ? '<button type="button" class="hof-button hof-button-small" data-act="e-send">e-Belge Gönder</button>' : ""}${doc.canWithdraw ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="Belge gönderilmez, Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri değişmez">Listeden Sil</button>' : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
+        ? `<span class="hof-plan-toolgroup">${doc.canSend ? '<button type="button" class="hof-button hof-button-small" data-act="e-send">e-Belge Gönder</button>' : ""}${doc.canWithdraw ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="Belge gönderilmez, Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri değişmez">Listeden Sil</button>' : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.canOfficial ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/resmi.pdf?inline=1" target="_blank" rel="noopener" data-act="e-official" title="Entegratörün ürettiği, alıcının ve GİB'in gördüğü görüntü">Resmî Görüntü</a>` : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
         : "";
     HOF.swap(
       root,
@@ -2648,6 +2648,23 @@
     const at = last.at ? ` · ${HOF.formatDate(String(last.at).slice(0, 10))} ${String(last.at).slice(11, 16)}` : "";
     return last.ok ? { cls: "is-ok", text: `Bağlantı kuruldu${at}` } : { cls: "is-cancelled", text: `Bağlantı kurulamadı${at}: ${last.message || ""}` };
   }
+  // Görünüm önizlemesi: şablon tarayıcının XSLT işlemcisiyle (XSLTProcessor) işlenir — entegratörün göreceği şablonun aynısı. Çıktı
+  // betiksiz (sandbox) çerçevede gösterilir.
+  function showViewPreview({ xml, xslt }) {
+    const parser = new DOMParser();
+    const processor = new XSLTProcessor();
+    processor.importStylesheet(parser.parseFromString(xslt, "application/xml"));
+    const result = processor.transformToDocument(parser.parseFromString(xml, "application/xml"));
+    const html = result?.documentElement ? `<!doctype html>${result.documentElement.outerHTML}` : "";
+    if (!html) return HOF.toast("Önizleme hazırlanamadı.", { type: "error" });
+    const preview = HOF.modal({ title: "e-Belge Görünümü Önizlemesi", eyebrow: "FATURA", size: "wide", body: '<p class="hof-muted">Örnek belge: firma bilgileriniz ve örnek bir müşteriyle. Kayıt yazılmaz, numara harcanmaz.</p><div data-integ-preview></div>' });
+    const frame = document.createElement("iframe");
+    frame.setAttribute("sandbox", "");
+    frame.className = "hof-integ-preview";
+    frame.title = "e-Belge Görünümü Önizlemesi";
+    frame.srcdoc = html;
+    preview.dialog.querySelector("[data-integ-preview]").append(frame);
+  }
   async function showIntegrator() {
     if (!edoc() || !canSettings()) return HOF.toast("Entegratör ayarları yönetici ve muhasebe yetkisindedir.", { type: "error" });
     let s;
@@ -2702,12 +2719,22 @@
         <div class="hof-plan-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="firm">Fatura Ayarları'nda Düzenle</button></div>
         <h4>Etiketler</h4>
         <p class="hof-muted" data-integ-labels>${state.aliases ? `Gönderici Birim (GB): ${esc((state.aliases.senders || []).join(", ") || "yok")} · Posta Kutusu (PK): ${esc((state.aliases.mailboxes || []).join(", ") || "yok")}` : `Seçili: GB ${esc(integ.senderAlias || "—")} · PK ${esc(integ.mailboxAlias || "—")}. Güncel liste Entegrasyon Bilgileri → Etiketleri Getir ile alınır.`}</p>`,
+        view: `<div class="hof-inv-head">
+          <div class="hof-field hof-inv-wide"><span>e-Belge Görünümü</span>
+            <label class="hof-check"><input type="checkbox" data-i="view.enabled" ${st.eView?.enabled !== false ? "checked" : ""}><span>Kendi görünüm tasarımımızı kullan (kapalıysa entegratörün varsayılan görünümü: logo ve banka hesapları görünmez)</span></label>
+            <label class="hof-check"><input type="checkbox" data-i="view.logo" ${st.eView?.logo !== false ? "checked" : ""}><span>Logoyu Göster${st.seller?.logo ? "" : " — Fatura Ayarları'nda logo yüklenmemiş"}</span></label>
+            <label class="hof-check"><input type="checkbox" data-i="view.banks" ${st.eView?.banks !== false ? "checked" : ""}><span>Banka Hesaplarını Göster (IBAN)</span></label>
+            <label class="hof-check"><input type="checkbox" data-i="view.footer" ${st.eView?.footer !== false ? "checked" : ""}><span>Fatura Alt Notunu Göster${st.defaults?.footer ? "" : " — Fatura Ayarları'nda alt not yazılmamış"}</span></label>
+          </div>
+        </div>
+        <p class="hof-muted">Logo, banka hesapları ve alt not Fatura Ayarları'ndan gelir; burada yalnız e-Belgede gösterilip gösterilmeyeceği seçilir. Görünüm belgenin içine gömülür; alıcı ve GİB belgeyi bu tasarımla görür.</p>
+        <div class="hof-plan-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="preview">Önizle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="firm">Fatura Ayarları'nda Düzenle</button></div>`,
         series: `<div class="hof-inv-head">${E_SERIES.map(([key, label]) => `<label class="hof-field"><span>${label}</span><input data-i-series="${key}" value="${esc(st.series?.[key] || "")}" maxlength="3"><small>Sıradaki: ${esc((st.nextNumbers || {})[key] || "—")}</small></label>`).join("")}</div>
         <p class="hof-muted">Seri üç karakterdir (büyük harf ya da rakam; Türkçe harf yok). e-Belge numarası seri + yıl + 9 hane olur (ör. EFT2026000000001).</p>`,
       };
       HOF.swap(
         root,
-        `<div class="hof-inv-tabs" role="tablist">${tab("connection", "Entegrasyon Bilgileri")}${tab("firm", "Firma / Etiket Tanımları")}${tab("series", "Otomatik Seriler")}</div>
+        `<div class="hof-inv-tabs" role="tablist">${tab("connection", "Entegrasyon Bilgileri")}${tab("firm", "Firma / Etiket Tanımları")}${tab("series", "Otomatik Seriler")}${tab("view", "Görünüm")}</div>
         <div data-integ-panel="${state.tab}">${panels[state.tab]}</div>
         <p class="hof-form-error" role="alert" data-form-error></p>
         <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-integ-act="close">Vazgeç</button><button type="button" class="hof-button" data-integ-act="save">Kaydet</button></div>
@@ -2743,6 +2770,8 @@
       for (const key of ["efatura", "earsiv", "esmm"]) if (draft[key] !== undefined) body[key] = draft[key];
       if (draft.efaturaProfile !== undefined) body.defaults = { efaturaProfile: draft.efaturaProfile };
       if (draft.series) body.series = draft.series;
+      const eView = Object.fromEntries(["enabled", "logo", "banks", "footer"].filter(key => draft[`view.${key}`] !== undefined).map(key => [key, draft[`view.${key}`]]));
+      if (Object.keys(eView).length) body.eView = eView;
       return body;
     };
     const showResult = (html, cls = "") => {
@@ -2788,6 +2817,17 @@
           HOF.toastError(failure);
         } finally {
           target.disabled = false;
+        }
+        return;
+      }
+      if (act === "preview") {
+        collect();
+        const eView = Object.fromEntries(["logo", "banks", "footer"].map(key => [key, draft[`view.${key}`] ?? state.settings.eView?.[key] !== false]));
+        try {
+          const sample = await HOF.api("/api/workspace/invoices/view-preview", { method: "POST", body: { eView } });
+          showViewPreview(sample);
+        } catch (failure) {
+          HOF.toastError(failure);
         }
         return;
       }
