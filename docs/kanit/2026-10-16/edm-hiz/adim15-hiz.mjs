@@ -147,6 +147,17 @@ try {
   log("HATA", String(error?.stack || error).slice(0, 900));
   fail += 1;
 } finally {
+  // 16.10.2026 ilk koşu dersi: reddedilen belgenin XML'i sunucu kapanınca (veri klasörü silinir) kayboluyordu → kapanmadan saklanır.
+  for (const d of all.filter(x => x.code && x.id)) {
+    try {
+      const xml = String((await api.get(`/api/workspace/invoices/${d.id}/ubl.xml`)).data);
+      writeFileSync(path.join(OUT, `reddedilen-${d.n}.xml`), xml);
+      const row = db.get("SELECT number, e_status AS eStatus, e_message AS eMessage FROM invoices WHERE id = ?", d.id);
+      writeFileSync(path.join(OUT, `reddedilen-${d.n}.json`), mask(JSON.stringify(row, null, 1)));
+    } catch (error) {
+      log("reddedilen belge saklanamadı", String(error?.message || error));
+    }
+  }
   writeFileSync(path.join(OUT, "ozet.json"), mask(JSON.stringify(summary, null, 1)));
   writeFileSync(path.join(OUT, "belgeler.json"), mask(JSON.stringify(all.map(({ n, tier, efatura, ms, code, expected, final, sendMsg }) => ({ n, tier, efatura, ms, code, expected, final, sendMsg })), null, 0)));
   log("ÖZET", summary);

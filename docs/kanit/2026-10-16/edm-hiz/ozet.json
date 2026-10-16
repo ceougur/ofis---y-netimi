@@ -1,0 +1,52 @@
+{
+ "tiers": [
+  {
+   "hedef": "100/dk",
+   "baslatilan": 100,
+   "basarili": 100,
+   "hata": 0,
+   "hatalar": {},
+   "baslatmaSn": 59,
+   "bitisSn": 62,
+   "ulasilanHiz": 97,
+   "p50ms": 2746,
+   "p95ms": 4991,
+   "enCokMs": 6078
+  },
+  {
+   "hedef": "500/dk",
+   "baslatilan": 500,
+   "basarili": 500,
+   "hata": 0,
+   "hatalar": {},
+   "baslatmaSn": 83,
+   "bitisSn": 92,
+   "ulasilanHiz": 326,
+   "p50ms": 9902,
+   "p95ms": 14206,
+   "enCokMs": 22850
+  },
+  {
+   "hedef": "1000/dk",
+   "baslatilan": 1000,
+   "basarili": 999,
+   "hata": 1,
+   "hatalar": {
+    "gönderim: EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Result": 1
+   },
+   "baslatmaSn": 181,
+   "bitisSn": 190,
+   "ulasilanHiz": 315,
+   "p50ms": 10954,
+   "p95ms": 14699,
+   "enCokMs": 18884
+  }
+ ],
+ "edmSon": {
+  "sent": 1599
+ },
+ "numaralar": {
+  "eFatura": "TEF2026184244040 … TEF2026184244839 (800)",
+  "eArsiv": "TEA2026184244040 … TEA2026184244839 (800)"
+ }
+}
