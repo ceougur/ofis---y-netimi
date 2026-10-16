@@ -60,6 +60,9 @@ export function loadConfig(overrides = {}) {
     // et diyene kadar"). Kapalıyken fatura modülü tam çalışır; belge resmî hükmü olmayan müşteri fişi olarak basılır,
     // e-Belge seçenekleri ekranda görünmez. Yalnız testler (overrides.edocEnabled) açabilir; ortam değişkeniyle açılmaz.
     edocEnabled: overrides.edocEnabled === true,
+    // Entegratörde CANLI ortam (kullanıcı kararı 16.10.2026): "entegre et" kararına dek kapalı; açıkken bile yalnız bu bayrakla seçilir.
+    // Ortam değişkeniyle açılmaz (yanlışlıkla canlıya belge gitmesin); testler ve kabul sonrası kurulum ayarı verir.
+    edocLive: overrides.edocLive === true,
     // Döviz banka hesabı (v2.1.0 GG2): kur, değerleme ve döviz fişleriyle birlikte sonraki sürümde; o zamana kadar yalnız testler açar.
     fxEnabled: overrides.fxEnabled === true,
     // Bu sürümde olmayan banka özelliklerinin gizli ayarları (POS, Ekstre, Döviz, Elle Banka Fişi; lib/bank/settings.mjs NOT_YET): üretimde

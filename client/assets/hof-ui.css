@@ -10803,3 +10803,16 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-search-item .hof-search-path { margin-left: auto; color: var(--do-faint); font-size: 11px; font-weight: 600; white-space: nowrap; }
 .hof-search-item mark { padding: 0; background: #fff2b3; color: inherit; border-radius: 2px; }
 .hof-search-empty { margin: 0; padding: 10px 8px; color: var(--do-faint); font: 600 12px/1.4 var(--do-font); }
+
+/* Entegratör Ayarları (16.10.2026): ortam seçimi, parola + göster, firma özeti, durum satırı. */
+.hof-integ-env { border: 0; margin: 0; padding: 0; display: grid; gap: 4px; }
+.hof-integ-env small { color: var(--do-muted); }
+@media (min-width: 720px) { .hof-integ-alias { grid-column: span 2; } }
+.hof-integ-pass { display: flex; gap: 6px; align-items: center; }
+.hof-integ-pass input { flex: 1; min-width: 0; }
+.hof-integ-firm { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 12px 0 4px; font: 500 13px/1.5 var(--do-font); }
+.hof-integ-firm dt { color: var(--do-muted); }
+.hof-integ-firm dd { margin: 0; color: var(--do-ink); }
+.hof-integ-status { margin: 12px 0 0; padding: 8px 12px; border-radius: 10px; background: var(--do-surface-soft); color: var(--do-ink-soft); font: 600 12.5px/1.5 var(--do-font); }
+.hof-integ-status.is-ok { background: #e3f2e9; color: #2d6a4b; }
+.hof-integ-status.is-cancelled { background: var(--do-danger-soft); color: var(--do-danger); }

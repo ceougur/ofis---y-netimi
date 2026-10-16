@@ -73,7 +73,10 @@ const DEFAULTS = Object.freeze({
   defaults: { vatRate: 20, pricesIncludeVat: false, stoppageRate: STOPPAGE_DEFAULT, efaturaProfile: "TEMELFATURA", dueDays: 0, footer: "", saleScenario: "", purchaseScenario: "", signatureArea: true },
   // Entegratör bağlantısı (kullanıcı kararı: şimdilik yalnız EDM Bilişim). Parola veritabanında şifreli tutulur
   // (lib/secret-box.mjs); ekrana ve günlüğe hiç çıkmaz.
-  integrator: { id: "edm", env: "test", baseUrl: "", username: "", passwordSealed: "", senderAlias: "", autoSend: false },
+  // mailboxAlias: firmanın kendi posta kutusu (PK, gelen fatura); senderAlias: gönderici birim (GB). earchiveEmail: e-Arşiv faturası alıcının
+  // e-postasına entegratörce gönderilir (ELEKTRONIK; kapalıysa KAGIT). autoCheckUser: cari kartında VKN/TCKN yazılınca mükellefiyet sorgulanır.
+  // lastTest: son Bağlantıyı Test Et sonucu (Durum satırı). Kullanıcı kararı 16.10.2026 (Entegratör Ayarları kartı).
+  integrator: { id: "edm", env: "test", baseUrl: "", username: "", passwordSealed: "", senderAlias: "", mailboxAlias: "", autoSend: false, earchiveEmail: true, autoCheckUser: false, lastTest: null },
 });
 const clone = value => JSON.parse(JSON.stringify(value));
 const LOGO_MAX_BYTES = 150 * 1024;
@@ -90,6 +93,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
+  const edocLive = edocEnabled && config.edocLive === true;
   // Fatura kapaması (lib/invoice-settle.mjs). config.legacyClosing yalnız testlerde: K1 öncesi kural (2.0.26 ile birebir karşılaştırmalar);
   // o kuralda iadenin geri ödenen kısmı da faturadan düşülür ve kartın hedefine geri eklenir (ownTarget, açılış onarımı, retarget).
   const settle = config.legacyClosing || settleInvoices;
@@ -222,6 +226,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const id = text(input.id ?? prev.id) || DEFAULT_ADAPTER;
       if (!ADAPTERS[id]) fail400("Entegratör tanınmadı.", "integrator.id");
       const env = input.env === undefined ? prev.env : input.env === "live" ? "live" : "test";
+      // Canlı ortam "entegre et" kararına dek seçilemez (yanlışlıkla canlıya belge gitmesin); kayıtlı eski "live" de test sayılmaz → reddedilir.
+      if (env === "live" && !edocLive) fail400("Canlı ortam, test ortamındaki kabulden sonra açılır. Şimdilik Test Ortamı'nı kullanın.", "integrator.env", { code: "integrator-live-locked" });
       const baseUrl = input.baseUrl === undefined ? prev.baseUrl : String(input.baseUrl || "").trim().replace(/\?.*$/, "");
       if (baseUrl && !/^https:\/\/[^\s/]+\/\S+$/i.test(baseUrl) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/\S*$/i.test(baseUrl)) fail400("Servis adresi https:// ile başlayan tam adres olmalı (ör. https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc); boş bırakılırsa seçilen ortamın adresi kullanılır.", "integrator.baseUrl");
       const username = input.username === undefined ? prev.username : limited(input.username, 120, "Kullanıcı Adı");
@@ -233,8 +239,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
       const senderAlias = input.senderAlias === undefined ? prev.senderAlias : String(input.senderAlias || "").trim();
       if (senderAlias && !/^urn:mail:[^\s@]+@[^\s@]+$/i.test(senderAlias)) fail400("Gönderici birim etiketi urn:mail:…@… biçiminde olmalı (ör. urn:mail:defaultgb@edmbilisim.com.tr); bilmiyorsanız boş bırakın.", "integrator.senderAlias");
-      const autoSend = input.autoSend === undefined ? prev.autoSend === true : input.autoSend === true;
-      next.integrator = { id, env, baseUrl, username, passwordSealed, senderAlias, autoSend };
+      const mailboxAlias = input.mailboxAlias === undefined ? prev.mailboxAlias || "" : String(input.mailboxAlias || "").trim();
+      if (mailboxAlias && !/^urn:mail:[^\s@]+@[^\s@]+$/i.test(mailboxAlias)) fail400("Posta kutusu etiketi urn:mail:…@… biçiminde olmalı (ör. urn:mail:defaultpk@firmaniz.com.tr); bilmiyorsanız boş bırakın.", "integrator.mailboxAlias");
+      const flag = (name, fallback) => (input[name] === undefined ? (prev[name] === undefined ? fallback : prev[name] === true) : input[name] === true);
+      const autoSend = flag("autoSend", false);
+      const changed = id !== prev.id || env !== prev.env || baseUrl !== prev.baseUrl || username !== prev.username || passwordSealed !== prev.passwordSealed;
+      next.integrator = { id, env, baseUrl, username, passwordSealed, senderAlias, mailboxAlias, autoSend, earchiveEmail: flag("earchiveEmail", true), autoCheckUser: flag("autoCheckUser", false), lastTest: changed ? null : prev.lastTest || null };
     }
     return next;
   }
@@ -309,9 +319,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Ekrana giden ayarlar: parola (şifreli hâli de) hiç gönderilmez; yalnız girilmiş olup olmadığı.
   const publicSettings = s => {
     const { passwordSealed, ...rest } = s.integrator;
-    return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "" } };
+    return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive } };
   };
-  const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true });
+  const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true, autoCheckUser: s.integrator.autoCheckUser === true });
   function integrator(s = settings()) {
     requireEdoc();
     const cfg = s.integrator;
@@ -2551,7 +2561,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     requireEdoc();
     const doc = detail(params.id, user);
     if (doc.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.");
-    const xml = buildUbl(doc, { variant: url.searchParams.get("peppol") === "1" ? "peppol" : "tr" });
+    const xml = buildUbl(doc, { variant: url.searchParams.get("peppol") === "1" ? "peppol" : "tr", earchiveEmail: settings().integrator.earchiveEmail !== false });
     sendBuffer(res, Buffer.from(xml, "utf8"), { type: "application/xml; charset=utf-8", name: ublFileName(doc, url.searchParams.get("peppol") === "1"), inline: false });
   });
   // ---------- e-Belge: gönder, durum, mükellef, bağlantı ----------
@@ -2632,7 +2642,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     sending.add(doc.id);
     try {
       const link = integrator(s);
-      const xml = buildUbl(doc, { variant: "tr" });
+      const xml = buildUbl(doc, { variant: "tr", earchiveEmail: settings().integrator.earchiveEmail !== false });
       let result;
       try {
         result = await link.send({ invoice: doc, xml });
@@ -2735,9 +2745,32 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const user = auth.requirePermission(req, "invoices.settings");
     requireEdoc();
     const s = settings();
-    const result = await integrator(s).test();
+    let result;
+    try {
+      result = await integrator(s).test();
+    } catch (error) {
+      saveLastTest({ ok: false, message: String(error?.message || error).slice(0, 300) });
+      throw error;
+    }
+    saveLastTest({ ok: true, message: String(result.message || "").slice(0, 300) });
     audit(user, "invoice.integrator.tested", "settings", { id: s.integrator.id, env: s.integrator.env, contract: result.contract?.source || "" });
     ok(res, result);
+  });
+  // Durum satırı (Entegratör Ayarları): son testin sonucu ayarlarda saklanır; kullanıcı adı/parola/ortam değişince silinir (settingsInput).
+  function saveLastTest({ ok: success, message }) {
+    const current = settings();
+    current.integrator.lastTest = { ok: success, message, at: now() };
+    store.setSetting(SETTINGS_KEY, JSON.stringify(current));
+  }
+  // Firmanın kendi etiketleri (Entegratör Ayarları → GB / PK listeleri): kayıtlı bağlantıyla EDM'de kendi VKN'si sorgulanır.
+  router.post("/api/workspace/invoices/integrator/aliases", async ({ req, res }) => {
+    auth.requirePermission(req, "invoices.settings");
+    requireEdoc();
+    const s = settings();
+    const taxNo = String(s.seller.taxNo || "").replace(/\s+/g, "");
+    if (!classifyTaxId(taxNo).ok) fail400("Önce Firma / Etiket Tanımları'nda firmanın VKN'sini (ya da TCKN'sini) yazıp kaydedin.", "seller.taxNo", { code: "seller-tax-id" });
+    const result = await integrator(s).checkUser(taxNo);
+    ok(res, { taxNo, registered: result.registered, title: result.title, senders: result.senderAliases || [], mailboxes: result.aliases || [] });
   });
   // Mükellef sorgusu: VKN/TCKN GİB e-Fatura kullanıcısı mı, posta kutusu etiketi ne? Cari verilirse kartına yazılır.
   router.post("/api/workspace/invoices/check-user", async ({ req, res }) => {
@@ -2786,7 +2819,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     for (const id of ids) {
       const doc = detail(id, user);
       if (doc.status !== "issued" || doc.profile === "KAGIT" || !INVOICE_KINDS[doc.kind].send) continue;
-      entries.push({ name: ublFileName(doc, false), data: Buffer.from(buildUbl(doc, { variant: "tr" }), "utf8") });
+      entries.push({ name: ublFileName(doc, false), data: Buffer.from(buildUbl(doc, { variant: "tr", earchiveEmail: settings().integrator.earchiveEmail !== false }), "utf8") });
     }
     if (!entries.length) fail400("Seçilenler arasında e-Belge olarak gönderilecek kaydedilmiş fatura yok (kâğıt fatura, taslak, iptal ve alış faturası XML'e girmez).", "ids");
     audit(user, "invoice.ubl.bulk", "bulk", { count: entries.length });

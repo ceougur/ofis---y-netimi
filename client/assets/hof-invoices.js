@@ -243,7 +243,7 @@
         <div class="hof-plan-actions" role="toolbar" aria-label="Fatura işlemleri">
           ${canManage() ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Fatura</button>' : ""}
           ${edoc() && canManage() && view.tab === "pending" && data?.invoices?.length ? `<button type="button" class="hof-button hof-button-small" data-act="send-pending" title="Listedeki belgeler sırayla entegratöre gönderilir; numara gönderimde verilir">Tümünü Gönder (${data.invoices.length.toLocaleString("tr-TR")})</button>` : ""}
-          ${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}
+          ${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}${edoc() && canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator">Entegratör Ayarları</button>' : ""}
           <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/invoices/liste.pdf?${esc(listParams())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/invoices/export.xlsx?${esc(listParams())}" download>Liste - Excel</a></span>
         </div></div>
       <div class="hof-inv-tabs" role="tablist" aria-label="Fatura listeleri">${tabs.map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.tab === id ? "is-on" : ""}" aria-selected="${view.tab === id}" data-tab="${id}">${label}${id !== "inbox" && counts[id] ? ` <b>${counts[id].toLocaleString("tr-TR")}</b>` : ""}</button>`).join("")}</div>
@@ -354,6 +354,7 @@
     if (act === "new") return showPick("", view.account);
     if (act === "send-pending") return sendPending();
     if (act === "settings") return showSettings();
+    if (act === "integrator") return showIntegrator();
     if (act === "more") return loadList(true);
     if (act === "retryList") {
       view.listError = "";
@@ -2517,22 +2518,8 @@
       ${
         s.edocEnabled
           ? `<section class="hof-inv-settings"><h4>e-Belge Bağlantısı</h4>
-        <p class="hof-muted">Entegratörle (EDM Bilişim) kendiniz sözleşir, kontörü kendiniz alırsınız; EDM'nin verdiği web servis kullanıcı bilgilerini buraya girin. Önce Test Ortamı'nda deneyin.</p>
-        <div class="hof-inv-head">
-          <label class="hof-check"><input type="checkbox" data-s="efatura" ${s.efatura ? "checked" : ""}><span>e-Fatura mükellefiyim</span></label>
-          <label class="hof-check"><input type="checkbox" data-s="earsiv" ${s.earsiv ? "checked" : ""}><span>e-Arşiv kullanıcısıyım</span></label>
-          <label class="hof-check"><input type="checkbox" data-s="esmm" ${s.esmm ? "checked" : ""}><span>e-SMM kullanıcısıyım</span></label>
-          <label class="hof-field"><span>Varsayılan e-Fatura Senaryosu</span><select data-s="defaults.efaturaProfile"><option value="TEMELFATURA" ${s.defaults.efaturaProfile !== "TICARIFATURA" ? "selected" : ""}>Temel Fatura</option><option value="TICARIFATURA" ${s.defaults.efaturaProfile === "TICARIFATURA" ? "selected" : ""}>Ticari Fatura</option></select></label>
-          <label class="hof-field"><span>Entegratör</span><input value="${esc(integ.label || "EDM Bilişim")}" readonly></label>
-          <label class="hof-field"><span>Ortam</span><select data-s="integrator.env"><option value="test" ${integ.env !== "live" ? "selected" : ""}>Test Ortamı</option><option value="live" ${integ.env === "live" ? "selected" : ""}>Canlı Ortam</option></select></label>
-          <label class="hof-field hof-inv-wide"><span>Servis Adresi</span><input data-s="integrator.baseUrl" value="${esc(integ.baseUrl || "")}" placeholder="${esc(integ.url || "")}"><small>Boş bırakılırsa seçilen ortamın adresi kullanılır. EDM size farklı bir adres verdiyse yazın.</small></label>
-          <label class="hof-field"><span>Kullanıcı Adı</span><input data-s="integrator.username" value="${esc(integ.username || "")}" maxlength="120" autocomplete="off"></label>
-          <label class="hof-field"><span>Parola</span><input type="password" data-s="integrator.password" value="" maxlength="200" autocomplete="new-password" placeholder="${integ.hasPassword ? "Kayıtlı (değiştirmek için yazın)" : ""}"><small>Şifreli saklanır; ekranda gösterilmez.</small></label>
-          <label class="hof-field"><span>Gönderici Birim Etiketi</span><input data-s="integrator.senderAlias" value="${esc(integ.senderAlias || "")}" placeholder="urn:mail:defaultgb@firmaniz.com.tr"><small>Bilmiyorsanız boş bırakın.</small></label>
-          <label class="hof-check"><input type="checkbox" data-s="integrator.autoSend" ${integ.autoSend ? "checked" : ""}><span>Kaydedilen e-Belge entegratöre hemen gönderilsin</span></label>
-        </div>
-        <div class="hof-inv-pay-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator-test" ${integ.hasPassword && integ.username ? "" : "disabled"} title="Önce kullanıcı adı ve parolayı kaydedin">Bağlantıyı Sına</button></div>
-        <div data-integrator-result></div></section>`
+        <p class="hof-muted">e-Fatura / e-Arşiv mükellefiyeti, entegratör kullanıcı bilgileri, gönderici birim ve posta kutusu etiketleri, e-Belge serileri <b>Entegratör Ayarları</b> penceresindedir.</p>
+        <div class="hof-plan-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator">Entegratör Ayarları</button></div></section>`
           : ""
       }
       <p class="hof-form-error" role="alert" data-form-error></p>
@@ -2637,17 +2624,193 @@
         HOF.toastError(failure);
       }
     }
-    if (act === "integrator-test") {
-      const slot = body()?.querySelector("[data-integrator-result]");
-      if (slot) slot.innerHTML = '<p class="hof-muted">Bağlanılıyor…</p>';
-      try {
-        const result = await HOF.api("/api/workspace/invoices/integrator/test", { method: "POST", body: {} });
-        const c = result.contract || {};
-        if (slot) slot.innerHTML = `<div class="hof-inv-banner is-ok"><b>${esc(result.message)}</b>${c.operations?.length ? `<small>Sözleşme: ${esc(c.source === "wsdl" ? "sunucudan okundu" : "varsayılan")} · SOAP ${esc(c.soap)} · ${esc(c.endpoint)}${c.missing?.length ? ` · eksik işlem: ${esc(c.missing.join(", "))}` : ""}</small>` : ""}</div>`;
-      } catch (failure) {
-        if (slot) slot.innerHTML = `<div class="hof-inv-banner is-cancelled"><b>Bağlantı kurulamadı.</b> ${esc(failure.message)}</div>`;
-      }
+  }
+
+  // ---------- Entegratör Ayarları (kullanıcı taslağı + onaylanan düzeltmeler, 16.10.2026) ----------
+  // Tek yer: e-Fatura / e-Arşiv / e-SMM mükellefiyeti, entegratör bağlantısı, GB (gönderici birim) ve PK (posta kutusu) etiketleri, e-Belge serileri.
+  // Firma bilgisi Fatura Ayarları'ndadır (tek kaynak); burada özet ve oraya geçiş. Canlı Ortam "entegre et" kararına dek seçilemez (sunucu da reddeder).
+  // Parola ekrana hiç gelmez; göz düğmesi yalnız şimdi yazılan parolayı gösterir.
+  const E_SERIES = [
+    ["efatura", "e-Fatura Serisi"],
+    ["earsiv", "e-Arşiv Serisi"],
+    ["esmm", "e-SMM Serisi"],
+  ];
+  function integratorStatus(integ) {
+    if (!integ.username || !integ.hasPassword) return { cls: "is-off", text: "Bağlantı Yok (kullanıcı adı ve parolayı yazıp kaydedin)" };
+    const last = integ.lastTest;
+    if (!last) return { cls: "is-off", text: "Bağlantı denenmedi (Bağlantıyı Test Et)" };
+    const at = last.at ? ` · ${HOF.formatDate(String(last.at).slice(0, 10))} ${String(last.at).slice(11, 16)}` : "";
+    return last.ok ? { cls: "is-ok", text: `Bağlantı kuruldu${at}` } : { cls: "is-cancelled", text: `Bağlantı kurulamadı${at}: ${last.message || ""}` };
+  }
+  async function showIntegrator() {
+    if (!edoc() || !canSettings()) return HOF.toast("Entegratör ayarları yönetici ve muhasebe yetkisindedir.", { type: "error" });
+    let s;
+    try {
+      s = await HOF.api("/api/workspace/invoices/settings");
+    } catch (error) {
+      return HOF.toastError(error);
     }
+    const state = { tab: "connection", settings: s, aliases: null };
+    const modalApi = HOF.modal({ title: "e-Dönüşüm ve Entegrasyon Ayarları", eyebrow: "FATURA", size: "wide", body: '<div data-integ-root></div>' });
+    const root = modalApi.dialog.querySelector("[data-integ-root]");
+    const aliasOptions = (list, current) => {
+      const values = [...new Set([current, ...(list || [])].filter(Boolean))];
+      return `<option value="">${values.length ? "Seçin" : "Önce Etiketleri Getir"}</option>${values.map(value => `<option value="${esc(value)}" ${value === current ? "selected" : ""}>${esc(value)}</option>`).join("")}`;
+    };
+    const render = () => {
+      const st = state.settings;
+      const integ = st.integrator || {};
+      const seller = st.seller || {};
+      const status = integratorStatus(integ);
+      const tab = (id, label) => `<button type="button" role="tab" class="hof-rep-chip ${state.tab === id ? "is-on" : ""}" aria-selected="${state.tab === id}" data-integ-tab="${id}">${label}</button>`;
+      const panels = {
+        connection: `<div class="hof-inv-head">
+          <label class="hof-field"><span>Entegratör Firması</span><select data-i="id"><option value="edm" selected>${esc(integ.label || "EDM Bilişim")}</option></select></label>
+          <fieldset class="hof-field hof-integ-env"><span>Çalışma Ortamı</span>
+            <label class="hof-check"><input type="radio" name="integ-env" value="test" data-i="env" ${integ.env !== "live" ? "checked" : ""}><span>Test Ortamı</span></label>
+            <label class="hof-check"><input type="radio" name="integ-env" value="live" data-i="env" ${integ.env === "live" ? "checked" : ""} ${integ.liveAllowed ? "" : "disabled"}><span>Canlı Ortam</span></label>
+            ${integ.liveAllowed ? "" : '<small data-integ-live-note>Canlı ortam, test ortamındaki kabulden sonra açılır.</small>'}
+          </fieldset>
+          <label class="hof-field"><span>Web Servis Kullanıcı Adı</span><input data-i="username" value="${esc(integ.username || "")}" maxlength="120" autocomplete="off"></label>
+          <label class="hof-field"><span>Web Servis Parolası</span><span class="hof-integ-pass"><input type="password" data-i="password" value="" maxlength="200" autocomplete="new-password" placeholder="${integ.hasPassword ? "Kayıtlı" : ""}"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-eye aria-label="Yazılan parolayı göster" title="Yazılan parolayı göster">Göster</button></span><small>Şifreli saklanır; kayıtlı parola ekranda gösterilmez.${integ.hasPassword ? " Değiştirmek için yenisini yazın." : ""}</small></label>
+          <label class="hof-field hof-integ-alias"><span>Gönderici Birim (GB)</span><select data-i="senderAlias">${aliasOptions(state.aliases?.senders, integ.senderAlias)}</select></label>
+          <label class="hof-field hof-integ-alias"><span>Posta Kutusu (PK)</span><select data-i="mailboxAlias">${aliasOptions(state.aliases?.mailboxes, integ.mailboxAlias)}</select></label>
+          <label class="hof-field hof-inv-wide"><span>Servis Adresi</span><input data-i="baseUrl" value="${esc(integ.baseUrl || "")}" placeholder="${esc(integ.url || "")}"><small>Boş bırakılırsa seçilen ortamın adresi kullanılır.</small></label>
+          <div class="hof-field hof-inv-wide"><span>Ek Ayarlar ve Tercihler</span>
+            <label class="hof-check"><input type="checkbox" data-i="autoSend" ${integ.autoSend ? "checked" : ""}><span>Toplu kaydedilen faturalar entegratöre hemen gönderilsin (kapalıyken Gönderilecekler'de bekler; fatura formunda “Kaydet ve Gönder” düğmesi her zaman vardır)</span></label>
+            <label class="hof-check"><input type="checkbox" data-i="earchiveEmail" ${integ.earchiveEmail !== false ? "checked" : ""}><span>e-Arşiv faturası müşterinin e-postasına entegratörce gönderilsin (e-postası olmayana kâğıt çıktı)</span></label>
+            <label class="hof-check"><input type="checkbox" data-i="autoCheckUser" ${integ.autoCheckUser ? "checked" : ""}><span>Cari kartında VKN / TCKN yazılınca e-Fatura mükellefiyeti kendiliğinden sorgulansın</span></label>
+          </div>
+        </div>
+        <div class="hof-plan-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="test" ${integ.username && integ.hasPassword ? "" : "disabled"} title="Önce kullanıcı adı ve parolayı kaydedin">Bağlantıyı Test Et</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="aliases" ${integ.username && integ.hasPassword ? "" : "disabled"} title="Firmanın GB ve PK etiketleri EDM'den getirilir">Etiketleri Getir</button></div>
+        <div data-integ-result></div>`,
+        firm: `<div class="hof-inv-head">
+          <label class="hof-check"><input type="checkbox" data-i="efatura" ${st.efatura ? "checked" : ""}><span>e-Fatura mükellefiyim</span></label>
+          <label class="hof-check"><input type="checkbox" data-i="earsiv" ${st.earsiv ? "checked" : ""}><span>e-Arşiv kullanıcısıyım</span></label>
+          <label class="hof-check"><input type="checkbox" data-i="esmm" ${st.esmm ? "checked" : ""}><span>e-SMM kullanıcısıyım</span></label>
+          <label class="hof-field"><span>Varsayılan e-Fatura Senaryosu</span><select data-i="efaturaProfile"><option value="TEMELFATURA" ${st.defaults?.efaturaProfile !== "TICARIFATURA" ? "selected" : ""}>Temel Fatura</option><option value="TICARIFATURA" ${st.defaults?.efaturaProfile === "TICARIFATURA" ? "selected" : ""}>Ticari Fatura</option></select></label>
+        </div>
+        <dl class="hof-integ-firm" data-integ-firm><dt>Unvan</dt><dd>${esc(seller.name || "—")}</dd><dt>VKN / TCKN</dt><dd>${esc(seller.taxNo || "—")}</dd><dt>Vergi Dairesi</dt><dd>${esc(seller.taxOffice || "—")}</dd><dt>Adres</dt><dd>${esc([seller.address, seller.district, seller.city].filter(Boolean).join(", ") || "—")}</dd><dt>E-Posta</dt><dd>${esc(seller.email || "—")}</dd></dl>
+        <p class="hof-muted">Firma bilgisi Fatura Ayarları'nda tutulur; burada yalnız gösterilir.</p>
+        <div class="hof-plan-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="firm">Fatura Ayarları'nda Düzenle</button></div>
+        <h4>Etiketler</h4>
+        <p class="hof-muted" data-integ-labels>${state.aliases ? `Gönderici Birim (GB): ${esc((state.aliases.senders || []).join(", ") || "yok")} · Posta Kutusu (PK): ${esc((state.aliases.mailboxes || []).join(", ") || "yok")}` : `Seçili: GB ${esc(integ.senderAlias || "—")} · PK ${esc(integ.mailboxAlias || "—")}. Güncel liste Entegrasyon Bilgileri → Etiketleri Getir ile alınır.`}</p>`,
+        series: `<div class="hof-inv-head">${E_SERIES.map(([key, label]) => `<label class="hof-field"><span>${label}</span><input data-i-series="${key}" value="${esc(st.series?.[key] || "")}" maxlength="3"><small>Sıradaki: ${esc((st.nextNumbers || {})[key] || "—")}</small></label>`).join("")}</div>
+        <p class="hof-muted">Seri üç karakterdir (büyük harf ya da rakam; Türkçe harf yok). e-Belge numarası seri + yıl + 9 hane olur (ör. EFT2026000000001).</p>`,
+      };
+      HOF.swap(
+        root,
+        `<div class="hof-inv-tabs" role="tablist">${tab("connection", "Entegrasyon Bilgileri")}${tab("firm", "Firma / Etiket Tanımları")}${tab("series", "Otomatik Seriler")}</div>
+        <div data-integ-panel="${state.tab}">${panels[state.tab]}</div>
+        <p class="hof-form-error" role="alert" data-form-error></p>
+        <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-integ-act="close">Vazgeç</button><button type="button" class="hof-button" data-integ-act="save">Kaydet</button></div>
+        <p class="hof-integ-status ${status.cls}" data-integ-status>Durum: ${esc(status.text)}</p>`,
+      );
+    };
+    // Sekmeler arası geçişte yazılanlar kaybolmasın: her sekmenin alanları taslakta tutulur.
+    const draft = {};
+    const collect = () => {
+      for (const input of root.querySelectorAll("[data-i]")) {
+        if (input.type === "radio") {
+          if (input.checked) draft[input.dataset.i] = input.value;
+        } else draft[input.dataset.i] = input.type === "checkbox" ? input.checked : input.value;
+      }
+      for (const input of root.querySelectorAll("[data-i-series]")) (draft.series ||= {})[input.dataset.iSeries] = input.value.trim().toLocaleUpperCase("tr-TR");
+    };
+    const restore = () => {
+      for (const input of root.querySelectorAll("[data-i]")) {
+        const value = draft[input.dataset.i];
+        if (value === undefined) continue;
+        if (input.type === "radio") input.checked = input.value === value;
+        else if (input.type === "checkbox") input.checked = value === true;
+        else input.value = value;
+      }
+      for (const input of root.querySelectorAll("[data-i-series]")) if (draft.series?.[input.dataset.iSeries] !== undefined) input.value = draft.series[input.dataset.iSeries];
+    };
+    const payload = () => {
+      collect();
+      const integrator = { id: "edm" };
+      for (const key of ["env", "username", "password", "senderAlias", "mailboxAlias", "baseUrl", "autoSend", "earchiveEmail", "autoCheckUser"]) if (draft[key] !== undefined) integrator[key] = draft[key];
+      if (!integrator.password) delete integrator.password;
+      const body = { integrator };
+      for (const key of ["efatura", "earsiv", "esmm"]) if (draft[key] !== undefined) body[key] = draft[key];
+      if (draft.efaturaProfile !== undefined) body.defaults = { efaturaProfile: draft.efaturaProfile };
+      if (draft.series) body.series = draft.series;
+      return body;
+    };
+    const showResult = (html, cls = "") => {
+      const slot = root.querySelector("[data-integ-result]");
+      if (slot) slot.innerHTML = html ? `<div class="hof-inv-banner ${cls}">${html}</div>` : "";
+    };
+    root.addEventListener("click", async event => {
+      const target = event.target.closest("[data-integ-tab], [data-integ-act], [data-integ-eye]");
+      if (!target) return;
+      if (target.dataset.integTab) {
+        collect();
+        state.tab = target.dataset.integTab;
+        render();
+        return restore();
+      }
+      if (target.hasAttribute("data-integ-eye")) {
+        const input = root.querySelector('[data-i="password"]');
+        const show = input.type === "password";
+        input.type = show ? "text" : "password";
+        target.textContent = show ? "Gizle" : "Göster";
+        return;
+      }
+      const act = target.dataset.integAct;
+      const error = root.querySelector("[data-form-error]");
+      if (act === "close") return modalApi.close();
+      if (act === "firm") {
+        modalApi.close();
+        return showSettings();
+      }
+      if (act === "save") {
+        if (error) error.textContent = "";
+        target.disabled = true;
+        try {
+          const saved = await HOF.api("/api/workspace/invoices/settings", { method: "PUT", body: payload() });
+          state.settings = { ...state.settings, ...saved };
+          delete draft.password;
+          await loadMeta(true);
+          HOF.toast("Entegratör ayarları kaydedildi.", { type: "success" });
+          render();
+          restore();
+        } catch (failure) {
+          if (error) error.textContent = failure.message;
+          HOF.toastError(failure);
+        } finally {
+          target.disabled = false;
+        }
+        return;
+      }
+      if (act === "test" || act === "aliases") {
+        collect();
+        showResult('<p class="hof-muted">Bağlanılıyor…</p>');
+        try {
+          if (act === "test") {
+            const result = await HOF.api("/api/workspace/invoices/integrator/test", { method: "POST", body: {} });
+            showResult(`<b>${esc(result.message)}</b>`, "is-ok");
+          } else {
+            state.aliases = await HOF.api("/api/workspace/invoices/integrator/aliases", { method: "POST", body: {} });
+            showResult(`<b>Etiketler getirildi.</b> GB: ${esc(state.aliases.senders.join(", ") || "yok")} · PK: ${esc(state.aliases.mailboxes.join(", ") || "yok")}`, "is-ok");
+          }
+        } catch (failure) {
+          showResult(`<b>Bağlantı kurulamadı.</b> ${esc(failure.message)}`, "is-cancelled");
+        }
+        try {
+          state.settings = await HOF.api("/api/workspace/invoices/settings");
+        } catch {
+          /* durum satırı eski kalır */
+        }
+        const keep = root.querySelector("[data-integ-result]")?.innerHTML || "";
+        render();
+        restore();
+        const slot = root.querySelector("[data-integ-result]");
+        if (slot) slot.innerHTML = keep;
+      }
+    });
+    render();
   }
 
   // ---------- Gelen e-Faturalar (e-Belge açıkken) ----------
@@ -2680,7 +2843,7 @@
     HOF.swap(
       root,
       `<div class="hof-plan-head"><div class="hof-plan-title"><h3>Gelen e-Faturalar</h3><small>Size kesilen e-Faturalar entegratörden çekilir; alış faturası olarak alınca stok, cari ve KDV kayıtları açılır.</small></div>
-        <div class="hof-plan-actions">${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}</div></div>
+        <div class="hof-plan-actions">${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator">Entegratör Ayarları</button>' : ""}</div></div>
       <div class="hof-inv-tabs" role="tablist">${tabs.map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.tab === id ? "is-on" : ""}" data-tab="${id}">${label}</button>`).join("")}</div>
       <div class="hof-plans-filters hof-chq-filters">
         <div class="hof-rep-presets" role="group" aria-label="Durum">${INBOX_STATES.map(([id, label]) => `<button type="button" class="hof-rep-chip ${view.inboxState === id ? "is-on" : ""}" data-inbox-state="${id}">${label}${id && data.counts?.[id] ? ` <b>${data.counts[id]}</b>` : ""}</button>`).join("")}</div>
@@ -2780,7 +2943,7 @@
     view.tab = "all";
     return open({ account: account || {}, tab: "all" });
   };
-  HOF.invoices = { open, newFor, openDoc, forAccount, edocEnabled: () => meta?.edocEnabled === true };
+  HOF.invoices = { open, newFor, openDoc, forAccount, edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
   // 2.3.0 İz 5.5 Hızlı Arama: sekmeler TABS'tan (purchase sekmesi "Alınan" — müşteri "alış f" yazar: Alış Faturaları eş adı), işlemler
   // yetkiye göre (Yeni Satış / Alış Faturası → senaryo seçimi; Yeni İade → İadeler sekmesi).
   HOF.search?.register(() => {

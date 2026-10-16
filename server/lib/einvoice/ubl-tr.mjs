@@ -86,7 +86,7 @@ const exemptionLabel = code => EXEMPTIONS[normalizeExemption(code)] || "";
  * @param {object} doc  routes/invoices.mjs detail() çıktısı (kesilmiş fatura)
  * @param {{ variant?: 'tr' | 'peppol' }} options
  */
-export function buildUbl(doc, { variant = "tr" } = {}) {
+export function buildUbl(doc, { variant = "tr", earchiveEmail = true } = {}) {
   const currency = doc.currency || "TRY";
   const includeVat = Boolean(doc.pricesIncludeVat);
   const lines = doc.lines || [];
@@ -137,7 +137,8 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
     doc.despatchNo ? `<cac:DespatchDocumentReference>${tag("cbc:ID", doc.despatchNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.despatchDate || doc.issueDate)}</cac:DespatchDocumentReference>` : "",
     // e-Arşiv gönderim şekli (GİB e-Arşiv kılavuzu): alıcının e-postası varsa ELEKTRONIK (entegratör e-postayla iletir),
     // yoksa KAGIT (çıktısı verilir).
-    variant !== "peppol" && doc.profile === "EARSIVFATURA" ? `<cac:AdditionalDocumentReference>${tag("cbc:ID", buyer?.email ? "ELEKTRONIK" : "KAGIT")}${tag("cbc:IssueDate", doc.issueDate)}${tag("cbc:DocumentTypeCode", "SendingType")}${tag("cbc:DocumentType", buyer?.email ? "ELEKTRONIK" : "KAGIT")}</cac:AdditionalDocumentReference>` : "",
+    // Entegratör Ayarları "e-Arşiv faturasında PDF'i müşteriye e-postayla gönder" kapalıysa KAGIT (çıktısı verilir).
+    variant !== "peppol" && doc.profile === "EARSIVFATURA" ? `<cac:AdditionalDocumentReference>${tag("cbc:ID", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}${tag("cbc:IssueDate", doc.issueDate)}${tag("cbc:DocumentTypeCode", "SendingType")}${tag("cbc:DocumentType", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}</cac:AdditionalDocumentReference>` : "",
     // İmzalayan taraf (UBL-TR'de zorunlu cac:Signature): belgeyi entegratör mali mühürle imzalar; burada imzanın kime ait
     // olduğu ve imzanın yeri (#Signature) bildirilir.
     variant !== "peppol" && seller?.taxNo

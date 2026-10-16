@@ -608,6 +608,14 @@
     if (!edocOn()) return;
     const button = HOF.el("button", { type: "button", class: "hof-button hof-button-small hof-button-ghost" }, "Mükellef Sorgula");
     taxNo.closest(".hof-field").append(button);
+    // Entegratör Ayarları "VKN / TCKN yazılınca mükellefiyet kendiliğinden sorgulansın": alandan çıkınca (10 ya da 11 hane, değiştiyse) bir kez.
+    let lastChecked = taxNo.value.replace(/\D/g, "");
+    taxNo.addEventListener("change", () => {
+      const digits = taxNo.value.replace(/\D/g, "");
+      if (!HOF.invoices?.autoCheckUser?.() || ![10, 11].includes(digits.length) || digits === lastChecked || button.disabled) return;
+      lastChecked = digits;
+      button.click();
+    });
     button.addEventListener("click", async () => {
       button.disabled = true;
       try {

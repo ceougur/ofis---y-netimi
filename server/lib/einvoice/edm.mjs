@@ -255,7 +255,9 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
         }));
         const active = users.filter(user => user.alias && !/^(Y|E|TRUE|1)$/i.test(user.deleted) && !(user.deleted && /\d{4}/.test(user.deleted)) && (!user.documentType || user.documentType === "INVOICE"));
         const inboxes = active.filter(user => user.unit ? user.unit === "PK" : !/defaultgb|:gb@|gb@/i.test(user.alias));
-        return { registered: inboxes.length > 0, title: inboxes[0]?.title || active[0]?.title || "", aliases: [...new Set(inboxes.map(user => user.alias))], type: inboxes[0]?.type || "" };
+        // senderAliases: gönderici birim (GB) etiketleri — firmanın kendi VKN'si sorgulanınca Entegratör Ayarları'nda GB listesi olur.
+        const senders = active.filter(user => (user.unit ? user.unit === "GB" : /defaultgb|:gb@|gb@/i.test(user.alias)));
+        return { registered: inboxes.length > 0, title: inboxes[0]?.title || active[0]?.title || "", aliases: [...new Set(inboxes.map(user => user.alias))], senderAliases: [...new Set(senders.map(user => user.alias))], type: inboxes[0]?.type || "" };
       });
     },
     // e-Fatura ve e-Arşiv ikisi de SendInvoice ile gider; EDM belge türünü UBL'deki ProfileID'den anlar. Sözleşmede

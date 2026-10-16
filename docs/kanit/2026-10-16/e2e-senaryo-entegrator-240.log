@@ -1,0 +1,35 @@
+■ 1 Düğme, kart, sekmeler, canlı ortam kilidi
+  ✓ Fatura sayfasında “Entegratör Ayarları” düğmesi
+  ✓ başlık: “e-Dönüşüm ve Entegrasyon Ayarları”
+  ✓ sekmeler: Entegrasyon Bilgileri | Firma / Etiket Tanımları | Otomatik Seriler
+  ✓ Canlı Ortam pasif, Test Ortamı seçili
+  ✓ pasif seçeneğin nedeni yazılı
+  ✓ Durum: “Durum: Bağlantı Yok (kullanıcı adı ve parolayı yazıp kaydedin)”
+  ✓ GB ve PK doğru adlarla: Gönderici Birim (GB), Posta Kutusu (PK)
+  ✓ otomatik gönderim varsayılan kapalı
+
+■ 2 Kullanıcı adı / parola insan hızında, Göster, Kaydet
+  ✓ Tab parolaya geçer (odak: password)
+  ✓ Göster: yazılan parola görünür
+  ✓ kaydedildi; Durum: “Durum: Bağlantı denenmedi (Bağlantıyı Test Et)”
+  ✓ parola veri tabanında açık metin değil; kullanıcı adı kayıtlı
+  ✓ kayıttan sonra parola alanı boş, “Kayıtlı” yazıyor
+
+■ 3 Bağlantıyı Test Et, Etiketleri Getir, GB/PK seç ve kaydet
+  ✓ Durum: “Durum: Bağlantı kuruldu · 16.10.2026 04:29”
+  ✓ veri tabanında GB urn:mail:defaultgb@deneme.com.tr · PK urn:mail:defaultpk@deneme.com.tr
+  ✓ tercih kaydı bağlantı durumunu silmedi
+
+■ 4 Sekmeler: yazılanlar kaybolmaz; firma özeti; seriler
+  ✓ firma özeti Fatura Ayarları'ndan: UnvanDeneme Ofis Ltd.VKN / TCKN1234567890Vergi DairesiÇankayaAdresAtatürk Blv. 1
+  ✓ “Fatura Ayarları'nda Düzenle” düğmesi
+  ✓ sekme dönüşünde işaretlenen kutu korunur
+  ✓ kaydedildi: kendiliğinden sorgu true, e-Fatura true, seri EFX
+
+■ 5 Fatura Ayarları yönlendirmesi; ayar yetkisi olmayan kullanıcı
+  ✓ Fatura Ayarları'nda e-Belge alanları yok, yönlendirme var
+  ✓ avukatta (fatura keser, ayar yetkisi yok) “Entegratör Ayarları” düğmesi yok
+  ✓ sayfa hatası yok
+  ✓ sahte EDM sözleşme ihlali yok
+
+✓ senaryo-entegrator-240: 24 geçti, 0 kaldı
