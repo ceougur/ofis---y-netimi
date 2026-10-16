@@ -544,6 +544,15 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   makine geneli (WinHTTP) ayarını kendiliğinden kullanır + Entegratör Ayarları'nda elle "Vekil Sunucu" alanı; güncelleme, lisans, E-Tablolar, EDM aynı
   yoldan (server/lib/net-proxy.mjs). Not: hizmet "NT SERVICE\DestekOfis" hesabıyla çalışır, kullanıcının tarayıcı vekil ayarını görmez → WinHTTP. YAPILDI (İz 5, `docs/2.4.0-IS-LISTESI.md`): ayar Yönetim → Sistem → Ağ Bağlantısı'nda (makine geneli; e-Belge kapalıyken de görünür),
   Entegratör kartında yol satırı; testler Linux + Windows (CI'de gerçek netsh winhttp). BİLİNEN SINIR: PAC/WPAD ve NTLM vekil yok; gerçek ofis vekilinde denenmedi.
+- KARŞILAŞTIRMA (kullanıcı, 16.10.2026; Wolvox "e-Fatura/e-İrsaliye Ayarları" ekranları — "fikir vermesi için; EDM tek seçenek, ona takılma"): koddan
+  değerlendirme verildi, KARAR BEKLENİYOR. Bizde VAR: senaryo varsayılanı, gönderim tipi (ELEKTRONIK/KAGIT), GB/PK, not → Note, yazıyla tutar
+  (amountInWords), vade (PaymentDueDate), IBAN (PaymentMeans), sipariş/irsaliye no referansı, stok kodu, otomatik gönder, e-Arşiv e-postası, bağlantı testi.
+  EKSİK (öneri sırası): (1) e-Belge görüntü tasarımı (XSLT: logo, banka, alt not — "e-Fatura Script") — bugün EDM'nin varsayılan görüntüsü;
+  (2) gönderilen belgenin RESMÎ görüntüsünü (EDM GetInvoice PDF) faturanın Belgeler'ine ekleme — bugün yalnız kendi PDF'imiz; (3) şahıs firmasında
+  (TCKN) ticari unvan e-Belgeye girmiyor (ubl-tr.mjs: person → PartyName yazılmıyor) — küçük düzeltme; (4) cari bakiyesini nota ekle (seçenek);
+  (5) peşin/kapalı faturada ödeme şekli kodu (nakit 10, kart 48) — bugün banka varsa 42, yoksa 1; (6) EDM portalına taslak yükleme (seçenek);
+  (7) opsiyonel alanlar (seri/lot, garanti, kalem açıklaması → AdditionalItemProperty). Kapsam dışı: e-İrsaliye, e-Müstahsil, ÖTV, IMEI/tıbbi cihaz,
+  ayrı SMTP (EDM e-Arşiv e-postasını kendisi gönderir), portal kullanıcısı (web servis yeterli).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
