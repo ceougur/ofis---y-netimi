@@ -286,7 +286,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 ## Açık iş (yalnız güncel; kapanan sürümler `docs/GECMIS-KARARLAR.md`)
 - Yayın geçmişi özeti: 2.0.12 … 2.0.26 ve 2.1.0 yayımlandı (her biri PR + etiket + 5 dosya bayt bayt + güncelleyici "available" + site
   kılavuz PR'ı); ayrıntı arşivde. Kâhin bilinen sınıfları: KDV-DAHIL-ISKONTO (program doğru), KASA-ACILIS-649 (İz 1.3 ile kapanacak).
-- PLANLI TEST (kullanıcı, ertelendi): Cuma 16.10.2026 09:00 TR (trig_0144BJLRwsZFizXTTYrJVszA): 2.0.24 DENENMEYEN/BİLİNEN SINIRLAR
+- PLANLI TEST (kullanıcı, ertelendi; 16.10.2026'da yine ertelendi: "cuma testini pazara ertele"): Pazar 18.10.2026 09:00 TR (trig_0144BJLRwsZFizXTTYrJVszA): 2.0.24 DENENMEYEN/BİLİNEN SINIRLAR
   (`docs/2.0.24-KANIT.md`) + ölçek/yük (30 kullanıcı, 1.000.000 satır; sunucu + ARAYÜZDEN, tablo iki sütun).
 - 2.1.0 kapsam ölçümü (satır/dal/arayüz) — yayından sonra yapılacak iş (kullanıcı 11.10.2026).
 - 2.2.0 SÜRÜM NOTU (kullanıcı, 12.10.2026): "bitişte sürüm notunda iyileştirmeler ve POS entegrasyonu yazması yeterli, kılavuza eklerken
@@ -521,6 +521,16 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - AÇIK (15.10.2026 21:58 UTC): CI #742 aed598e Windows Node 24 guncelleme-gercek S2 kırmızı (PR koşusu #743 aynı commit yeşil). Mekanizma: testin etkinlik pingi bir önceki isteği bekliyordu, takılan tek istek 4 sn boşluk açtı, sunucu haklı olarak kurdu (ürün doğru). Düzeltme test yardımcısında (zamanlayıcılı + zaman aşımlı pingler + istatistik; zorla üretme GUNCELLEME_S2_ZORLA_BOSLUK=1). İsteğin CI'de neden takıldığı (ağ/yük/ürün) yeni tanılamayla bir sonraki görülüşte okunur; ders 18 gereği Windows'ta iki yeşil koşu görülmeden kapanmaz.
 - 2.3.0 BİRLEŞTİ (15.10.2026 23:46 UTC): PR ceougur/ofis---y-netimi#29 squash → `master` = ec1ef3f (ağaç 7888371 ile AYNI; CI #746 push + #747 PR yeşil, Windows 22+24 ikisinde de → güncelleyici (b) ve (d) kırmızıları KAPANDI). İmzalı paket 7888371'den: zip 3cf3b956…, bildirge b38ffd12…, kılavuz PDF 879d1df4…, kurulum exe 2aa3d03f… (iki parça + BIRLESTIR.md); arşiv 4 zip. Dosyalar kullanıcıya YENİDEN gönderildi (d7e66bd paketi geçersiz). SIRADA: kullanıcı yayın açar (v2.3.0 → master, "DestekOfis 2.3.0", not "İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi", 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (ceougur/destekofis web/indir/, PDF 879d1df4…). Sonra: ölçek-30/1M planlı test Cuma 16.10, kapsam ölçümü, K4/K5 2.3.1 adayları, S2 ping tanılamasının CI'de okunması.
 - 2.3.0 YAYIMLANDI (16.10.2026 ~00:30 UTC; `v2.3.0` = ec1ef3f; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı): yayındaki 5 dosya + latest/ teslimle bayt bayt aynı, exe .sha256 OK; gerçek eski güncelleyiciler (v2.2.0, v2.1.0 kodu) canlı GitHub'da 2.3.0'ı "available" gördü, 2.3.0 → "up-to-date". Kurulum parçaları için BIRLESTIR.bat (çift tık: copy /b + certutil sha256) verildi — bundan sonra her teslimde parçalarla birlikte. Site kılavuz PR'ı ceougur/destekofis (dal main'den yeniden başlatıldı; PDF 879d1df4…) ceougur/destekofis#15 BİRLEŞTİ (kullanıcı "birleştir", 16.10 ~00:45 UTC; main 462df1c, main PDF 879d1df4… doğrulandı). 2.3.0 KAPANDI; sonra: ölçek-30/1M planlı test Cuma 16.10, kapsam ölçümü, K4/K5 2.3.1 adayları, S2 ping tanılaması.
+- SIRADAKİ İŞ (kullanıcı, 16.10.2026: "K4 ve K5 ile birlikte fatura modülü… oradan devam edeceğiz"): `docs/fatura/E-BELGE-EDM.md` + K4/K5 (2.3.1
+  adayları, `docs/2.3.0-KANIT.md`). Adım 1 (XML uygunluğu) başladı: GİB paketleri yeniden indirildi (sha256 12901476…/97a6f705… eşleşti), OASIS
+  UBL 2.1 XSD (60b80d76…), EDM örnekleri açıldı; GİB şematronu XPath 2.0 (matches) → Saxon gerekir; SchXslt bu ortamdan indirilemiyor (GitHub 403,
+  Maven'de yok) → araç seçimi sürüyor (SaxonJS/xmllint-wasm devDependency, lisans test için uygun).
+  TASLAK (kullanıcı, aynı gün; ekran görüntüsü, yalnız görsel): Fatura sayfasında "Entegratör Ayarları" düğmesi → "e-Dönüşüm ve Entegrasyon Ayarları"
+  kartı (sekmeler Entegrasyon Bilgileri / Firma / Etiket Tanımları / Otomatik Seriler; Entegratör, Ortam, Kullanıcı Adı, Parola, GB, PK, üç
+  onay kutusu, Bağlantıyı Test Et, Kaydet, Durum satırı). KODDAN: arka uç hazır (Fatura Ayarları → "e-Belge Bağlantısı", edocEnabled kapalıyken
+  gizli; parola secret-box ile şifreli, istemciye dönmez; senderAlias, autoSend, series, seller). Değerlendirme kullanıcıya verildi (GB/PK etiketleri
+  taslakta ters; Canlı Ortam "entegre et"e kadar seçilemez; otomatik gönder varsayılan kapalı ve düğme "Kaydet ve Gönder" olur; firma/seri tek
+  kaynak; yazım düzeni). KARAR BEKLENİYOR.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
