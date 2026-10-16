@@ -1,0 +1,2 @@
+test https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc · 2012 ms · integrator-rejected · EDM 11010 · EDM isteği reddetti: Kullanıcı Bulunamadı! (EDM hata kodu 11010)
+live https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc · 1364 ms · integrator-rejected · EDM 11010 · EDM isteği reddetti: Kullanıcı Bulunamadı! (EDM hata kodu 11010)

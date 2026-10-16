@@ -1,0 +1,86 @@
+■ 1 Düğme, kart, sekmeler, canlı ortam kilidi
+  ✓ Fatura sayfasında “Entegratör Ayarları” düğmesi
+  ✓ başlık: “e-Dönüşüm ve Entegrasyon Ayarları”
+  ✓ sekmeler: Entegrasyon Bilgileri | Firma / Etiket Tanımları | Otomatik Seriler | Görünüm | Ek Seçenekler
+  ✓ Canlı Ortam pasif, Test Ortamı seçili
+  ✓ pasif seçeneğin nedeni yazılı
+  ✓ Durum: “Durum: Bağlantı Yok (kullanıcı adı ve parolayı yazıp kaydedin)”
+  ✓ GB ve PK doğru adlarla: Gönderici Birim (GB), Posta Kutusu (PK)
+  ✓ otomatik gönderim varsayılan kapalı
+
+■ 2 Kullanıcı adı / parola insan hızında, Göster, Kaydet
+  ✓ Tab parolaya geçer (odak: password)
+  ✓ Göster: yazılan parola görünür
+  ✓ kaydedildi; Durum: “Durum: Bağlantı denenmedi (Bağlantıyı Test Et)”
+  ✓ parola veri tabanında açık metin değil; kullanıcı adı kayıtlı
+  ✓ kayıttan sonra parola alanı boş, “Kayıtlı” yazıyor
+
+■ 3 Bağlantıyı Test Et, Etiketleri Getir, GB/PK seç ve kaydet
+  ✓ Durum: “Durum: Bağlantı kuruldu · 16.10.2026 15:50”
+  ✓ veri tabanında GB urn:mail:defaultgb@deneme.com.tr · PK urn:mail:defaultpk@deneme.com.tr
+  ✓ tercih kaydı bağlantı durumunu silmedi
+
+■ 4 Sekmeler: yazılanlar kaybolmaz; firma özeti; seriler
+  ✓ firma özeti Fatura Ayarları'ndan: UnvanDeneme Ofis Ltd.VKN / TCKN1234567890Vergi DairesiÇankayaAdresAtatürk Blv. 1
+  ✓ “Fatura Ayarları'nda Düzenle” düğmesi
+  ✓ sekme dönüşünde işaretlenen kutu korunur
+  ✓ kaydedildi: kendiliğinden sorgu true, e-Fatura true, seri EFX
+
+■ 4b Cari formu: VKN yazılıp alandan çıkınca mükellefiyet kendiliğinden sorgulanır; iki posta kutusu varsa kullanıcı seçer
+  ✓ Yeni Cari formu açıldı
+  ✓ iki PK seçenek, varsayılan defaultpk: urn:mail:muhasebepk@coklu.com.tr, urn:mail:defaultpk@coklu.com.tr (seçili urn:mail:defaultpk@coklu.com.tr)
+  ✓ seçilen PK forma yazıldı, e-Fatura mükellefi işaretli
+
+■ 5 Fatura Ayarları yönlendirmesi; ayar yetkisi olmayan kullanıcı
+  ✓ Fatura Ayarları'nda e-Belge alanları yok, yönlendirme var
+  ✓ avukatta (fatura keser, ayar yetkisi yok) “Entegratör Ayarları” düğmesi yok
+
+■ 7 Görünüm sekmesi ve tarayıcı önizlemesi
+  ✓ Görünüm seçenekleri varsayılan (kaşe e-Arşivde açık, e-Faturada kapalı): view.enabled:true, view.logo:true, view.banks:true, view.footer:true, view.stamp:true, view.stampEfatura:false
+  ✓ tarayıcının XSLT işlemcisi şablonu çizdi: Deneme Ofis Ltd. Atatürk Blv. 1 Çankaya / Ankara E-Posta: bilgi@deneme.com.tr Vergi Dairesi: Çankaya VKN: 1234567890 e-FATURA Özelleştirme No TR1.2 Senaryo Teme…
+  ✓ önizlemede logo var
+  ✓ önizlemede karekod sağ üstte; ortada firma logosu ve GİB logosu alt alta ( | GİB)
+  ✓ önizleme betiksiz çerçevede (sandbox)
+  ✓ önizleme penceresi Entegratör kartının üstünde (görünür, kartın arkasında kalmıyor)
+  ✓ Banka Hesaplarını Göster kapatılıp kaydedildi (veri tabanı: {"enabled":true,"logo":true,"banks":false,"footer":true,"stamp":true,"stampEfatura":false})
+  ✓ banka kapalıyken önizlemede IBAN yok
+
+■ 8 Resmî Görüntü (gönderilen e-Belge)
+  ✓ gönderilmemiş faturada Resmî Görüntü yok
+  ✓ Resmî Görüntü EDM'nin PDF'ini açar (200, 58 bayt)
+
+■ 9 Ek Seçenekler (Wolvox kalan maddeleri; isteğe bağlı) — portala taslak, ödeme şekli, Seri No / Lot No
+  ✓ Ek Seçenekler varsayılan kapalı: opt.balanceNote:false, opt.paymentMeans:false, opt.draftUpload:false
+  ✓ sekme dönüşünde işaret korunur
+  ✓ kaydedildi (veri tabanı: {"balanceNote":false,"paymentMeans":true,"draftUpload":true})
+  ✓ belge ayrıntısında Seri No görünür
+  ✓ ayar açıkken “e-Belge Gönder” yerine “Portala Taslak Yükle”
+  ✓ Düzenle formunda Seri No dolu
+  ✓ veri tabanında kalem: {"serialNo":"SN-100","lotNo":"LOT-5"}
+  ✓ taslak yüklendi: “Portalda Taslak”, “Taslağı Gönder”, “Taslağı Yenile”
+  ✓ EDM'deki taslakta Seri No ve Lot No
+  ✓ Taslağı Gönder: EDM'deki taslak gönderildi, durum Gönderildi
+
+■ 10 Yalnız test ortamı: test hesabı notu, test serisi, “Test” rozeti (kullanıcı kararı 16.10.2026)
+  ✓ listede test ortamına giden belgelerde “Test” rozeti (2)
+  ✓ Test Ortamı notu: Test Ortamı: kullanıcı adı ve parolayı EDM Bilişim'den test hesabı olarak isteyin. Test belgelerinin yasal geçerliliği yoktur; TEF, TEA, TES serisinden numara alır ve "Test" olarak işaretlenir. Test faturaları da cari, stok ve kasaya işlenir: denemeyi ikinci bir şirkette yapmanızı öneririz.
+  ✓ Otomatik Seriler: sıradaki numara ve test serisi doğru yazılır (e-Fatura SerisiSıradaki: EFX2026000000001 · Test ortamında: TEF2026000000003e-Arşiv SerisiSıradaki: EAR2026000000001 · Test ortamında: TEA2026000000001e-SMM Ser…)
+
+■ 11 Kaşe / İmza (Fatura Ayarları, Logo'nun altında; e-Arşivde basılır)
+  ✓ Fatura Ayarları'nda Kaşe / İmza alanı: Kaşe / İmza (e-Arşiv Faturasına Basılır)
+  ✓ kaşe / imza JPEG olarak kaydedildi (22 KB metin)
+
+■ 12 Çıkış yolu: entegratöre ulaşılamıyorsa sonucu belirsiz belge yalnız programda iptal edilir (kullanıcı kararı 16.10.2026)
+  ✓ sonucu belirsiz belgede “İptal Et” kapalı, “Yalnız Programda İptal Et” görünür
+  ✓ onay kutusu işaretlenmeden iptal edilmez
+  ✓ yalnız programda iptal edildi, işlem kaydında (cancelled, kayıt 1)
+  ✓ iptal edilmiş belgenin tutar başlığı: “Belge Tutarı (İptal Edildi)”
+
+■ 13 e-Faturada ölçü birimi: kodu olmayan birim (Çuval) için ipucu (gerçek EDM SA'yı reddetti; e-Belgede Adet + kalem notu)
+✗ beklenmeyen hata: page.$eval: Failed to find element matching selector ".hof-modal-backdrop.is-visible [data-unit-hint]"
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ipucu-eski-d7d7b38/test/e2e/senaryo-entegrator-240.mjs:391:17
+  ✓ sayfa hatası yok
+  ✓ sahte EDM sözleşme ihlali yok
+
+✗ senaryo-entegrator-240: 56 geçti, 1 kaldı
+cikis=1

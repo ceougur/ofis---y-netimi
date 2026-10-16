@@ -1,0 +1,32 @@
+{
+  "ad": "kilavuz-240-pdf",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "051e37b46dce0d25d5acce7e52f6143e28e9051e",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 5,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T16:16:25.316Z",
+  "sure_sn": 9.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/kilavuz-240-pdf.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "d97ec40c36208ea8180627a21fd9868634eca36d9709b5eaf1268b9956c1368e",
+  "ham_cikti_bayt": 2211
+}

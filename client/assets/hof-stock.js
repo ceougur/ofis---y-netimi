@@ -28,6 +28,12 @@
     const text = String(unit || "").trim();
     return UNITS.find(item => unitKey(item) === unitKey(text)) || (text ? text.charAt(0).toLocaleUpperCase("tr-TR") + text.slice(1) : "");
   };
+  // e-Belge açıkken: kodu olmayan birimlerin (Çuval, Koli, Şişe, Rulo, Torba, Hafta…) e-Faturada nasıl gittiği (gerçek EDM ile sınandı).
+  const eUnitHelp = () => {
+    if (!HOF.invoices?.edocEnabled?.()) return "";
+    const plain = UNITS.filter(unit => HOF.invoices.eUnitAsAdet?.(unit));
+    return plain.length ? `e-Fatura / e-Arşivde ${plain.slice(0, 6).join(", ")}${plain.length > 6 ? " gibi" : ""} birimler “Adet” kodu ile gider; birim adı kalem notunda yazar.` : "";
+  };
   const unitOptions = (current = "") => {
     const seen = new Set();
     return [...UNITS, ...(view.list?.items || []).map(item => item.unit), current].map(unitLabel).filter(unit => unit && !seen.has(unitKey(unit)) && seen.add(unitKey(unit)));
@@ -220,7 +226,7 @@
         // v2.0.16 (müşteri): Stok Kodu en üstte (ürün adının hemen üstünde); her ürünün kodu ayrı (barkod okutulabilir).
         { name: "code", label: "Stok Kodu", maxlength: 60, value: item?.code || "", placeholder: "İsteğe bağlı: barkod okutun ya da kodu yazın (ör. FK-A4)", help: "Faturada kalem satırına bu kod yazılınca (ya da barkod okutulunca) ürün kendiliğinden seçilir. Aynı kod iki ürüne verilmez." },
         { name: "name", label: "Ürün / Hizmet Adı", required: true, maxlength: 160, value: item?.name || "", autofocus: true, placeholder: "Ör. Çay, Motor yağı 5W-30, Servis ücreti" },
-        { name: "unit", label: "Birim", type: "choice", required: true, value: unitLabel(item?.unit) || "Adet", options: unitOptions(item?.unit), blankLabel: "— Birim Seçin —" },
+        { name: "unit", label: "Birim", type: "choice", required: true, value: unitLabel(item?.unit) || "Adet", options: unitOptions(item?.unit), blankLabel: "— Birim Seçin —", help: eUnitHelp() },
         { name: "category", label: "Kategori", maxlength: 80, value: item?.category || "", list: categories, placeholder: "Ör. Mutfak, Araç, Kırtasiye" },
         { name: "minQty", label: "Kritik Seviye", inputmode: "decimal", value: item?.minQty ? qtyText(item.minQty) : "", placeholder: "Bu miktara inince uyarı verir (boş: uyarı yok)" },
         { name: "unitPrice", label: "Alış Fiyatı (₺)", inputmode: "decimal", value: item?.unitPrice ? office().amountText?.(item.unitPrice) || item.unitPrice : "", placeholder: "Son alış fiyatı (maliyet, stok değeri)" },

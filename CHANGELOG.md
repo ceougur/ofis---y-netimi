@@ -2,6 +2,10 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.0 — İyileştirmeler ve e-Fatura / e-Arşiv Entegrasyonu
+
+- İyileştirmeler ve e-Fatura / e-Arşiv entegrasyonu (EDM Bilişim; test ve canlı ortam). Kullanım Kılavuzu → 13. Fatura → e-Fatura / e-Arşiv denemesi ve Canlıya geçiş.
+
 ## 2.3.0 — İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi
 
 - İyileştirmeler ve Ticari Şüpheli Alacaklar eklentisi (Kullanım Kılavuzu → 9. Cari → Ticari Şüpheli Alacaklar).

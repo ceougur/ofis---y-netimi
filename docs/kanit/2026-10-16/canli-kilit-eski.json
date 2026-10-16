@@ -1,0 +1,38 @@
+{
+  "ad": "canli-kilit-eski",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=canlı kilit|409 integrator-live-locked test/einvoice-edm.test.mjs",
+  "commit": "b5b45ada6ab75d51771b6116b14d4a4dff5b616d",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:33:48.746Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Entegratör Ayarları: canlı kilit — veri tabanında kalmış 'live' kaydı bile ağa çıkmadan reddedilir › Bağlantıyı Test Et, Etiketleri Getir ve Mükellef Sorgula 409 integrator-live-locked; sahte EDM'ye tek istek bile gitmez",
+      "konum": "test/einvoice-edm.test.mjs:521:3",
+      "hata": "/api/workspace/invoices/integrator/test: 200 {\"ok\":true,\"message\":\"EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 8 işlem.\",\"contract\":{\"source\":\"wsdl\",\"error\":\"\",\"namespace\":\"urn:edm:test\",\"soap\":\"1.1\",\"endpoint\":\"http://127.0.0.1:44871/EFaturaEDM21ea/EFaturaEDM.svc\",\"operations\":[\"CancelInvoice\",\"CheckUser\",\"GetInvoice\",\"GetInvoiceStatus\",\"Login\",\"Logout\",\"MarkInvoice\",\"SendInvoice\"],\"missing\":[],\"earchiveHeader\":true}} · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/canli-kilit-eski.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/canli-kilit-eski-b5b45ad",
+  "ham_cikti_sha256": "f29b262ca6f4f311ab52f738dc234bf152e831ce06bfda8f34594302ea257fb5",
+  "ham_cikti_bayt": 2372
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "vekil-yeni-ve-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-timeout=120000 test/vekil-sunucu.test.mjs test/vekil-sunucu-uygulama.test.mjs test/edm-gercek-sozlesme.test.mjs test/einvoice-edm.test.mjs test/guncelleme-230-baglanti-sifirlama.test.mjs test/license.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/sheets-yedek.test.mjs test/sirketler-217.test.mjs test/supervisor.test.mjs test/update-flow.test.mjs test/updater.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "1e8d8481b0b1a12948bef3bafddda140c9d2a932",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 11,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T05:48:56.326Z",
+  "sure_sn": 19.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 134,
+    "gecen": 134,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/vekil-yeni-ve-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ce79090f8ecce94f97b63da33edd8c8c31d65d443d6b8b37f7ff67bf9e5e389a",
+  "ham_cikti_bayt": 41514
+}

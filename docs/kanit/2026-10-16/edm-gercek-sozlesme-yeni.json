@@ -1,0 +1,32 @@
+{
+  "ad": "edm-gercek-sozlesme-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/edm-gercek-sozlesme.test.mjs",
+  "commit": "b5b45ada6ab75d51771b6116b14d4a4dff5b616d",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 5,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:36:20.752Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/edm-gercek-sozlesme-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "04eac96731113302bb53e01e0ab6a2428a8bbbfa7da9f45a5e581504ea48a4ea",
+  "ham_cikti_bayt": 1384
+}

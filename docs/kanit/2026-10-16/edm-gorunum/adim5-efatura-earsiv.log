@@ -1,0 +1,23 @@
+07:04:44 AYAR: {"status":200,"eView":{"enabled":true,"logo":true,"banks":true,"footer":true},"network":{"source":"env","address":"http://127.0.0.1:41321"}}
+07:04:47 MÜKELLEF: true
+07:04:47 earsiv KAYIT: {"status":200,"number":"DOA2026608211453","profile":"EARSIVFATURA"}
+07:04:48 earsiv XML: {"xsd":0,"gib":[],"xsltBayt":21539,"xmlBayt":35234}
+07:04:50 earsiv GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+07:04:50 efatura KAYIT: {"status":200,"number":"DOF2026608211453","profile":"TEMELFATURA"}
+07:04:51 efatura XML: {"xsd":0,"gib":[],"xsltBayt":21539,"xmlBayt":34808}
+07:04:53 efatura GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+07:04:54 earsiv DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+07:04:54 efatura DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+07:05:40 earsiv DURUM 2: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+07:05:41 efatura DURUM 2: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+07:06:27 efatura DURUM 3: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+07:07:13 efatura DURUM 4: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+07:07:59 efatura DURUM 5: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+07:08:44 efatura DURUM 6: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+07:09:30 efatura DURUM 7: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+07:10:16 efatura DURUM 8: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+07:11:03 efatura DURUM 9: {"status":200,"eStatus":"processing","msg":"Alıcı sistemin yanıtı bekleniyor. WAIT_SYSTEM_RESPONSE"}
+07:11:49 efatura DURUM 10: {"status":200,"eStatus":"sent","msg":"Alıcıya ulaştı. SUCCEED"}
+07:11:53 earsiv RESMÎ GÖRÜNTÜ: {"status":200,"bayt":66086,"pdf":"%PDF-"}
+07:11:56 efatura RESMÎ GÖRÜNTÜ: {"status":200,"bayt":64124,"pdf":"%PDF-"}
+cikis=0

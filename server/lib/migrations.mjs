@@ -1242,6 +1242,19 @@ export const MIGRATIONS = [
       store.raw("migration.v26", () => addColumn(store, "account_entries", "doubtful_skip", "INTEGER NOT NULL DEFAULT 0"));
     },
   },
+  {
+    version: 27,
+    name: "v2.4.0 fatura kaleminde Seri No / Lot No (isteğe bağlı)",
+    up(store) {
+      // İz 7.4 (Wolvox karşılaştırması, kullanıcı kararı 16.10.2026 "isteğe bağlı olarak olsun"): kalemde iki serbest metin; e-Belgede
+      // cac:Item/cac:ItemInstance. YALNIZ EKLEYİCİ: varsayılan boş; eski sürüm aynı dosyayı okur, kolonları görmez; kilit izi ve mutabakat
+      // kapısı invoice_lines'ın bu kolonlarını okumaz (para alanı değil).
+      store.raw("migration.v27", () => {
+        addColumn(store, "invoice_lines", "serial_no", "TEXT NOT NULL DEFAULT ''");
+        addColumn(store, "invoice_lines", "lot_no", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
 ];
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık

@@ -1,0 +1,9 @@
+07:14:16 AYAR: {"status":200,"eView":{"enabled":true,"logo":true,"banks":true,"footer":true},"network":{"source":"env","address":"http://127.0.0.1:41321"}}
+07:14:18 MÜKELLEF: true
+07:14:18 earsiv KAYIT: {"status":200,"number":"DOA2026465266448","profile":"EARSIVFATURA"}
+07:14:19 earsiv XML: {"xsd":0,"gib":[],"xsltBayt":21828,"xmlBayt":35646}
+07:14:22 earsiv GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+07:14:23 earsiv DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+07:15:09 earsiv DURUM 2: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+07:15:54 earsiv DURUM 3: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+07:15:57 earsiv RESMÎ GÖRÜNTÜ: {"status":200,"bayt":66070,"pdf":"%PDF-"}

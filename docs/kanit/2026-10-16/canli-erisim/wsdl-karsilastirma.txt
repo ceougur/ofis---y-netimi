@@ -1,0 +1,9 @@
+xsd0 test 8a193b7709447700 canlı e023ad62ba90cd70
+xsd1 test 0e15878065a85519 canlı 0e15878065a85519
+xsd2 test 1fe4ea2821cf25df canlı 1fe4ea2821cf25df
+xsd3 test d2cfe1e8e964acc1 canlı d2cfe1e8e964acc1
+xsd4 test c9e4dd1b54f4635a canlı c9e4dd1b54f4635a
+xsd5 test a477c1736b6c0d1d canlı a477c1736b6c0d1d
+xsd6 test c8312437fc88a542 canlı c8312437fc88a542
+WSDL fark: yalnız 8 adres satırı (schemaLocation ×7 + soap:address)
+Not: xsd0 özetleri farklı görünür çünkü içinde servis adresi geçer; adresler aynı yer tutucuyla değiştirilince fark 0 satır (7 şemanın hepsi).

@@ -1,0 +1,48 @@
+{
+  "ad": "k4-iptal-eski",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/supheli-240-k4-iptal.test.mjs",
+  "commit": "0d8335819df7c140bc548df7ae483cc9396a5969",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:15:42.316Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 0,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K4 — şüpheli carinin faturaya bağlı tahsilatı: fatura iptalinde önceden ve sonradan söylenir, işlem kaydına yazılır › iptal penceresi: bağlı 400 TL tahsilat şüpheliden düşmeye başlayacağı önceden yazılır; bağsız faturada yazı yok",
+      "konum": "test/supheli-240-k4-iptal.test.mjs:33:3",
+      "hata": "The \"string\" argument must be of type string. Received type undefined (undefined)"
+    },
+    {
+      "ad": "K4 — şüpheli carinin faturaya bağlı tahsilatı: fatura iptalinde önceden ve sonradan söylenir, işlem kaydına yazılır › iptal: yanıtta bildirim, kalan 600'e iner (para kuralı 2.3.0 ile aynı), işlem kaydında hangi tahsilat olduğu yazar; kapı yeşil",
+      "konum": "test/supheli-240-k4-iptal.test.mjs:47:3",
+      "hata": "Cannot destructure property 'doc' of 'ctx.k4' as it is undefined."
+    },
+    {
+      "ad": "K4 — şüpheli carinin faturaya bağlı tahsilatı: fatura iptalinde önceden ve sonradan söylenir, işlem kaydına yazılır › toplu iptal: bildirim belge numarasıyla sonuçta döner; bağsız belgede bildirim yok",
+      "konum": "test/supheli-240-k4-iptal.test.mjs:62:3",
+      "hata": "The input did not match the regular expression /100,00 TL tahsilat artık şüpheli alacaktan düşüyor/. Input: · '' (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/k4-iptal-eski.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/k4-eski-0d83358",
+  "ham_cikti_sha256": "78ef044d18d94bdc1324c4ae105d082ddba2feb6f545b3d808c0151df2309402",
+  "ham_cikti_bayt": 4251
+}

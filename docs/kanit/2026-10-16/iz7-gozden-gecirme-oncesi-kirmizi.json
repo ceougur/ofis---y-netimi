@@ -1,0 +1,43 @@
+{
+  "ad": "iz7-gozden-gecirme-oncesi-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz7-duzeltme-oncesi && node --test test/einvoice-240-taslak.test.mjs",
+  "commit": "112f99b9c59582ff08106e7fa01087d97889a3a5",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 15,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T09:35:57.957Z",
+  "sure_sn": 2.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 6,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Portala taslak (sahte EDM) › 8 günden eski e-Arşiv taslağı da iptal edilir (GİB'e gitmedi; 8 gün kuralı gönderilmiş belge için)",
+      "konum": "test/einvoice-240-taslak.test.mjs:61:3",
+      "hata": "{\"ok\":false,\"error\":\"e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (06.10.2026 tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.\",\"code\":\"einvoice-cancel-late\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Portala taslak (sahte EDM) › taslak yükle → düzenle (taslak eskidi) → yenile (EDM'deki içerik değişti) → gönder: giden belge son hâl",
+      "konum": "test/einvoice-240-taslak.test.mjs:74:3",
+      "hata": "Expected values to be strictly equal: · 'error' !== 'draft' (beklenen draft, gelen error)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/iz7-gozden-gecirme-oncesi-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "4f164e967994085d99186b969d9b4299587740f9139f9223be7b582fedd1083f",
+  "ham_cikti_bayt": 4860
+}

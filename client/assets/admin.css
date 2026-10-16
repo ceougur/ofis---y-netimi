@@ -979,3 +979,27 @@ td.adm-row-actions > .hof-button + .hof-button {
 #adm-company-new[hidden] {
   display: none;
 }
+
+/* Ağ Bağlantısı (Vekil Sunucu) */
+.adm-network-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 10px 0;
+}
+.adm-network-manual {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.adm-network-manual .hof-field,
+.adm-network-bypass {
+  margin: 0 0 10px;
+}
+.adm-network-ok {
+  color: var(--hof-success, #15803d);
+}
+.adm-network-warn {
+  color: var(--hof-danger, #b91c1c);
+}

@@ -1,0 +1,43 @@
+{
+  "ad": "iptal-etiketi-eski-kod-d8c4bec-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/etiket-eski-d8c4bec && npm run test:senaryo-entegrator-240",
+  "commit": "d8c4becc1842e991b9f03c883bafd89c67048b0b",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 18,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T14:07:24.886Z",
+  "sure_sn": 66.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 62,
+    "gecen": 61,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal edilmiş belgenin tutar başlığı: “Tahsil Edilecek”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-entegrator-240: 61 geçti, 1 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/iptal-etiketi-eski-kod-d8c4bec-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "903b5092a1f4dd0e06739a1b17aa6dc7f05699188745b7ca1e36b98d06719b98",
+  "ham_cikti_bayt": 6472
+}

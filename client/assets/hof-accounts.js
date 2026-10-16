@@ -608,12 +608,39 @@
     if (!edocOn()) return;
     const button = HOF.el("button", { type: "button", class: "hof-button hof-button-small hof-button-ghost" }, "Mükellef Sorgula");
     taxNo.closest(".hof-field").append(button);
+    // Entegratör Ayarları "VKN / TCKN yazılınca mükellefiyet kendiliğinden sorgulansın": alandan çıkınca (10 ya da 11 hane, değiştiyse) bir kez.
+    let lastChecked = taxNo.value.replace(/\D/g, "");
+    taxNo.addEventListener("change", () => {
+      const digits = taxNo.value.replace(/\D/g, "");
+      if (!HOF.invoices?.autoCheckUser?.() || ![10, 11].includes(digits.length) || digits === lastChecked || button.disabled) return;
+      lastChecked = digits;
+      button.click();
+    });
     button.addEventListener("click", async () => {
       button.disabled = true;
       try {
         const result = await HOF.api("/api/workspace/invoices/check-user", { method: "POST", body: { taxNo: taxNo.value } });
         dialog.querySelector('input[name="eInvoice"]').checked = result.registered;
-        dialog.querySelector('input[name="eAlias"]').value = result.aliases[0] || "";
+        // Birden çok posta kutusu (gerçek EDM: bir firmada 11 PK görüldü, 16.10.2026): ilki sessizce yazılmaz, kullanıcı seçer.
+        let alias = result.aliases[0] || "";
+        if (result.aliases.length > 1) {
+          const preferred = result.aliases.find(item => /defaultpk@/i.test(item)) || result.aliases[0];
+          alias = await new Promise(resolve => {
+            let chosen = "";
+            HOF.formModal({
+              title: "Posta Kutusu Seçin",
+              eyebrow: "E-FATURA",
+              intro: `${result.title || "Bu mükellef"} için ${result.aliases.length} posta kutusu (PK) etiketi var. Faturanın gideceği etiketi seçin; bilmiyorsanız müşterinize sorun.`,
+              fields: [{ name: "alias", label: "Posta Kutusu (PK)", type: "select", value: preferred, options: result.aliases.map(item => ({ value: item, label: item })) }],
+              submitLabel: "Seç",
+              onSubmit: data => {
+                chosen = data.alias;
+              },
+              onClose: () => resolve(chosen || preferred),
+            });
+          });
+        }
+        dialog.querySelector('input[name="eAlias"]').value = alias;
         HOF.toast(result.registered ? `e-Fatura mükellefi${result.title ? `: ${result.title}` : ""}. Posta kutusu etiketi yazıldı.` : "e-Fatura mükellefi değil; bu cariye e-Arşiv fatura kesilir.", { type: "success", timeout: 7000 });
       } catch (error) {
         HOF.toastError(error);

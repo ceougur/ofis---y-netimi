@@ -1,0 +1,129 @@
+TAP version 13
+# (node:20572) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)
+    # Subtest: B1: belgeye yazılan mükellef VKN'si perakende cariyi e-Fatura mükellefi yapmaz; sonraki kişi satışı e-Arşiv kalır
+    ok 1 - B1: belgeye yazılan mükellef VKN'si perakende cariyi e-Fatura mükellefi yapmaz; sonraki kişi satışı e-Arşiv kalır
+      ---
+      duration_ms: 78.642328
+      type: 'test'
+      ...
+    # Subtest: B1 (komşu): carinin KENDİ numarası mükellefse cari işaretlenir (önceki davranış korunur)
+    ok 2 - B1 (komşu): carinin KENDİ numarası mükellefse cari işaretlenir (önceki davranış korunur)
+      ---
+      duration_ms: 30.592327
+      type: 'test'
+      ...
+    # Subtest: B2: belirsiz gönderim → Yalnız Programda İptal Et → Sil reddedilir; numara yeni belgeye verilmez
+    ok 3 - B2: belirsiz gönderim → Yalnız Programda İptal Et → Sil reddedilir; numara yeni belgeye verilmez
+      ---
+      duration_ms: 131.857405
+      type: 'test'
+      ...
+    # Subtest: B2 (aynı sınıf): EDM'de iptal edilmiş e-Arşiv ve onaylı iptal edilmiş e-Fatura silinmez; hiç gönderilmemiş fiş silinir
+    ok 4 - B2 (aynı sınıf): EDM'de iptal edilmiş e-Arşiv ve onaylı iptal edilmiş e-Fatura silinmez; hiç gönderilmemiş fiş silinir
+      ---
+      duration_ms: 152.311023
+      type: 'test'
+      ...
+    # Subtest: B3: gönderilmiş e-Arşivi yalnız programda iptal Fatura Ayarları yetkisi + onay ister ve işlem kaydına düşer
+    ok 5 - B3: gönderilmiş e-Arşivi yalnız programda iptal Fatura Ayarları yetkisi + onay ister ve işlem kaydına düşer
+      ---
+      duration_ms: 142.371776
+      type: 'test'
+      ...
+    # Subtest: B4: buyer-alias iletisinin söylediği yapılınca gönderim geçer
+    ok 6 - B4: buyer-alias iletisinin söylediği yapılınca gönderim geçer
+      ---
+      duration_ms: 63.605901
+      type: 'test'
+      ...
+    # Subtest: B5: mükellef sorgusu bağlantı hatasıyla düşerse numara verilmez; belge belirsiz kalmaz
+    ok 7 - B5: mükellef sorgusu bağlantı hatasıyla düşerse numara verilmez; belge belirsiz kalmaz
+      ---
+      duration_ms: 31.941512
+      type: 'test'
+      ...
+    # Subtest: B6: aynı e-Arşivi iki kullanıcı aynı anda iptal eder → EDM'ye tek iptal isteği, tek işlem kaydı
+    ok 8 - B6: aynı e-Arşivi iki kullanıcı aynı anda iptal eder → EDM'ye tek iptal isteği, tek işlem kaydı
+      ---
+      duration_ms: 96.536959
+      type: 'test'
+      ...
+    # Subtest: C1: entegratöre gitmiş kaydedilmiş belge (İşleniyor / Hata) doğrudan silinmez; numara yeniden verilmez
+    ok 9 - C1: entegratöre gitmiş kaydedilmiş belge (İşleniyor / Hata) doğrudan silinmez; numara yeniden verilmez
+      ---
+      duration_ms: 39.278165
+      type: 'test'
+      ...
+    # Subtest: C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)
+    ok 10 - C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)
+      ---
+      duration_ms: 47.12137
+      type: 'test'
+      ...
+    # Subtest: D1: gönderim sürerken Sil reddedilir; belge yerinde, numara yeniden verilmez
+    not ok 11 - D1: gönderim sürerken Sil reddedilir; belge yerinde, numara yeniden verilmez
+      ---
+      duration_ms: 52.620575
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol5-eski-c3f0abd/test/ebelge-240-kontrol3.test.mjs:269:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-c8c36542-1085-4a72-8f7a-77d79405c0ff","number":"TEA2026000000006","status":"cancelled"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol5-eski-c3f0abd/test/ebelge-240-kontrol3.test.mjs:272:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D2: gönderim sürerken Düzenle reddedilir; defterdeki tutar gönderilen belgeyle aynı
+    not ok 12 - D2: gönderim sürerken Düzenle reddedilir; defterdeki tutar gönderilen belgeyle aynı
+      ---
+      duration_ms: 50.243588
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol5-eski-c3f0abd/test/ebelge-240-kontrol3.test.mjs:281:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-340f8f69-27a1-4404-97ba-f6a0c9f4fd3d","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"TEA2026000000006","displayNo":"TEA2026000000006","ettn":"7945a669-af18-45f9-8e5b-8a3aff6e495f","issueDate":"2026-10-16","issueTime":"15:59","accountId":"account-4f8589e0-d793-42c9-8301-204dc319ae9f","accountName":"Ayşe Demir","accountRef":"2","accountPhone":"","profile":"EARSIVFATURA","profileLabel":"e-Arşiv Fatura","typeCode":"SATIS","currency":"TRY","rate":1,"netTotal":5000,"vatTotal":1000,"withheldTotal":0,"stoppageTotal":0,"payableTotal":6000,"tryNet":5000,"tryVat":1000,"tryPayable":6000,"dueDate":"2026-10-16","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"none","eStatusLabel":"Gönderilmedi","eTest":true,"actorName":"Ofis yöneticisi","createdAt":"2026-10-16T15:59:42.006Z","payState":"open","payStateLabel":"Açık","paid":0,"open":6000,"closers":[],"party":{"id":"account-4f8589e0-d793-42c9-8301-204dc319ae9f","name":"Ayşe Demir","partyKind":"person","firstName":"Ayşe","familyName":"Demir","taxNo":"10000000078","taxOffice":"","mersisNo":"","tradeRegistry":"","address":"Karşıyaka 9","district":"Karşıyaka","city":"İzmir","postalCode":"","country":"Türkiye","phone":"","email":"ayse@example.com","website":"","iban":"","eInvoice":false,"eAlias":""},"seller":{"name":"Deneme Ofis Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":5000,"discountTotal":0,"baseNetTotal":5000,"discountNetTotal":0,"goodsNet":0,"serviceNet":5000,"grossTotal":6000,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"600","net":500000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":6000},"eMessage":"","eAt":"","eAdapter":"","cancelledAt":null,"cancelReason":"","amountInWords":"Yalnız Altı Bin Türk Lirası","byRate":[{"rate":20,"net":5000,"vat":1000,"withheld":0}],"lines":[{"id":"iline-55c054a8-e272-4727-a8b3-619654f39bdd","invoiceId":"invoice-340f8f69-27a1-4404-97ba-f6a0c9f4fd3d","seq":1,"itemId":"","goods":false,"code":"","name":"Danışmanlık","description":"","unit":"Adet","qty":5,"unitPrice":1000,"discountRate":0,"base":5000,"discount":0,"net":5000,"vatRate":20,"vat":1000,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":6000,"payable":6000,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-55c054a8-e272-4727-a8b3-619654f39bdd","left":5}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":true,"modifyBlock":"","canIssue":false,"canDelete":true,"deleteBlock":"","canCancel":true,"canLocalCancel":false,"cancelNotice":"","cancelBlock":"","canReturn":true,"returnBlock":"","repeat":null,"canRepeat":true,"canSend":true,"canWithdraw":false,"sendBlock":"","canRefresh":false,"canDraft":false,"draftStale":false,"canOfficial":false,"edocEnabled":true}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol5-eski-c3f0abd/test/ebelge-240-kontrol3.test.mjs:284:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..12
+not ok 1 - Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)
+  ---
+  duration_ms: 1283.699978
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol5-eski-c3f0abd/test/ebelge-240-kontrol3.test.mjs:29:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 12
+# suites 1
+# pass 10
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1671.406737

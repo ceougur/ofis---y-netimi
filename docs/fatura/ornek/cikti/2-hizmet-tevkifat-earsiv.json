@@ -1,0 +1,17 @@
+{
+  "scenario": "service_sale",
+  "accountId": "account-1fee7cae-307a-421a-b805-1fd840b05e0a",
+  "lines": [
+    {
+      "name": "Ofis Temizlik Hizmeti (Ekim)",
+      "unit": "Ay",
+      "qty": 1,
+      "unitPrice": 10000,
+      "vatRate": 20,
+      "withholdingCode": "612"
+    }
+  ],
+  "payment": {
+    "rest": "open"
+  }
+}

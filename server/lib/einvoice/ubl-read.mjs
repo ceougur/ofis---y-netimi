@@ -3,7 +3,9 @@
 // Tutarlar belgedeki gibi alınır; taslak programın hesap motorundan geçince kalem toplamları belgeyle karşılaştırılır.
 import { child, children, deep, deepAll, find, parseXml, textOf } from "./xml-lite.mjs";
 
-const UNIT_NAMES = { C62: "Adet", NIU: "Adet", KGM: "Kg", GRM: "Gr", TNE: "Ton", LTR: "Lt", MLT: "Ml", MTR: "M", CMT: "Cm", MMT: "Mm", MTK: "M²", MTQ: "M³", PA: "Paket", BX: "Kutu", CT: "Koli", PR: "Çift", SET: "Takım", HUR: "Saat", DAY: "Gün", MON: "Ay", ANN: "Yıl", MIN: "Dakika", WEE: "Hafta", RO: "Rulo", BO: "Şişe", BG: "Torba", SA: "Çuval" };
+const UNIT_NAMES = { C62: "Adet", NIU: "Adet", KGM: "Kg", GRM: "Gr", TNE: "Ton", LTR: "Lt", MLT: "Ml", MTR: "M", CMT: "Cm", MMT: "Mm", MTK: "M²", MTQ: "M³", PA: "Paket", BX: "Kutu", CT: "Koli", PR: "Çift", SET: "Takım", HUR: "Saat", DAY: "Gün", DZN: "Düzine", PK: "Paket", CMQ: "Cm³", MON: "Ay", ANN: "Yıl", MIN: "Dakika", WEE: "Hafta", RO: "Rulo", BO: "Şişe", BG: "Torba", SA: "Çuval" };
+const UNIT_NOTE = /^Birim: (.{1,20})$/;
+const lineNotes = line => children(line, "Note").map(node => textOf(node).trim()).filter(Boolean);
 const num = value => {
   const n = Number(String(value ?? "").trim());
   return Number.isFinite(n) ? n : 0;
@@ -51,12 +53,20 @@ export function readUbl(xml) {
     const tax = find(line, "TaxTotal/TaxSubtotal");
     const withholding = find(line, "WithholdingTaxTotal/TaxSubtotal");
     const quantity = num(textOf(qty)) || 1;
+    const notes = lineNotes(line);
+    const fullName = textOf(find(line, "Item/Name")) || textOf(find(line, "Item/Description")) || "Kalem";
+    const unitAttr = qty?.attrs?.unitCode || "";
+    const unitIndex = ["", "C62", "NIU"].includes(unitAttr) ? notes.map(note => UNIT_NOTE.test(note)).lastIndexOf(true) : -1;
     return {
-      name: textOf(find(line, "Item/Name")) || textOf(find(line, "Item/Description")) || "Kalem",
-      code: textOf(find(line, "Item/SellersItemIdentification/ID")),
-      description: textOf(child(line, "Note")),
+      // İçe alma sınırları (kalem adı 200, stok kodu 60): uzun ad kısaltılır, tamamı açıklamanın başına yazılır (kontrol turu 7).
+      name: fullName.slice(0, 200),
+      code: textOf(find(line, "Item/SellersItemIdentification/ID")).slice(0, 60),
+      // Kalem notları: açıklama + (DestekOfis'in e-Belgesinde, son not olarak yazılır; okurken son eşleşen not) "Birim: Çuval" — entegratörün kodu olmayan birim Adet koduyla gider, adı notta
+      // taşınır. Not yalnız birim kodu Adet / boşken birim sayılır (kontrol turu 6: Kg'lık kalemde "Birim: Koli" miktarı koliye çeviriyordu); açıklama
+      // içe almadaki sınıra (300) göre kısaltılır (çok notlu kalem içe alınamıyordu).
+      description: [fullName.length > 200 ? fullName : "", ...notes.filter((_, index) => index !== unitIndex)].filter(Boolean).join(" · ").slice(0, 300),
       qty: quantity,
-      unit: UNIT_NAMES[qty?.attrs?.unitCode] || "Adet",
+      unit: (unitIndex >= 0 ? notes[unitIndex].match(UNIT_NOTE)[1] : "") || UNIT_NAMES[unitAttr] || "Adet",
       unitPrice: price || (quantity ? (net + discount) / quantity : 0),
       discountRate: base > 0 && discount > 0 ? Math.round((discount / base) * 10000) / 100 : 0,
       vatRate: num(textOf(child(tax, "Percent"))),

@@ -6,15 +6,14 @@
 // - Program uçları: ayarlar (parola şifreli, ekrana çıkmaz), Bağlantıyı Sına, Mükellef Sorgula, gönder, durum, e-Arşiv
 //   iptali (önce programda deneme), gelen kutusu (çek, alış taslağı olarak al, yok say), e-Belge kapalıyken 404.
 import assert from "node:assert/strict";
-import { createServer } from "node:http";
 import { after, before, describe, test } from "node:test";
 import { createEdmClient, mapEdmStatus, resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
 import { E, readWsdl, renderTree, shape } from "../server/lib/einvoice/soap-contract.mjs";
-import { child, deep, find, parseXml, textOf } from "../server/lib/einvoice/xml-lite.mjs";
+import { child, deep, parseXml } from "../server/lib/einvoice/xml-lite.mjs";
 import { classifyTaxId } from "../server/lib/tax-id.mjs";
+import { ACTION, BUYER_VKN, INCOMING_UUID, NS, OPS, OUR_VKN, SUPPLIER_VKN, incomingUbl, startMockEdm, vkn, wsdl } from "./einvoice-mock.mjs";
 import { ADMIN_PASSWORD, startTestServer } from "./helpers.mjs";
 
-const NS = "urn:edm:test";
 // Program yanıtı { ok, data } zarfındadır; testte gövde doğrudan okunur (hatada { ok: false, error, code }).
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
 const apiOf = client => ({
@@ -24,158 +23,6 @@ const apiOf = client => ({
   put: async (url, body) => unwrap(await client.put(url, body)),
   del: async url => unwrap(await client.del(url)),
 });
-const ACTION = op => `http://tempuri.org/EFaturaEDMPort/${op}`;
-
-// VKN denetim hanesi (GİB algoritması) ile geçerli VKN üretir.
-function vkn(nine) {
-  const digits = String(nine).padStart(9, "0").split("").map(Number);
-  let sum = 0;
-  digits.forEach((digit, index) => {
-    const tmp = (digit + (9 - index)) % 10;
-    let value = (tmp * 2 ** (9 - index)) % 9;
-    if (tmp !== 0 && value === 0) value = 9;
-    sum += value;
-  });
-  return `${digits.join("")}${(10 - (sum % 10)) % 10}`;
-}
-const OUR_VKN = vkn(123456789);
-const BUYER_VKN = vkn(987654321);
-const SUPPLIER_VKN = vkn(555444333);
-
-// WCF singleWsdl benzeri sözleşme: alanlar nitelikli (elementFormDefault="qualified"), istekler REQUEST'ten türer,
-// SOAP 1.1 ve 1.2 bağlamaları, işlem başına SOAPAction.
-const OPS = ["Login", "Logout", "CheckUser", "SendInvoice", "GetInvoiceStatus", "GetInvoice", "CancelInvoice", "MarkInvoice"];
-function wsdl({ statusInvoice = true } = {}) {
-  const ext = (name, body) => `<xs:element name="${name}"><xs:complexType><xs:complexContent><xs:extension base="t:REQUEST"><xs:sequence>${body}</xs:sequence></xs:extension></xs:complexContent></xs:complexType></xs:element>`;
-  const schema = `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="${NS}" targetNamespace="${NS}" elementFormDefault="qualified">
-    <xs:complexType name="REQUEST_HEADERType"><xs:sequence>${["SESSION_ID", "CLIENT_TXN_ID", "ACTION_DATE", "REASON", "APPLICATION_NAME", "HOSTNAME", "CHANNEL_NAME", "COMPRESSED"].map(name => `<xs:element minOccurs="0" name="${name}" type="xs:string"/>`).join("")}</xs:sequence></xs:complexType>
-    <xs:complexType name="REQUEST"><xs:sequence><xs:element name="REQUEST_HEADER" type="t:REQUEST_HEADERType"/></xs:sequence></xs:complexType>
-    <xs:complexType name="INVOICE"><xs:sequence><xs:element minOccurs="0" name="HEADER"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="SENDER" type="xs:string"/><xs:element minOccurs="0" name="RECEIVER" type="xs:string"/><xs:element minOccurs="0" name="EARCHIVE" type="xs:boolean"/></xs:sequence></xs:complexType></xs:element><xs:element minOccurs="0" name="CONTENT" type="xs:base64Binary"/></xs:sequence><xs:attribute name="ID" type="xs:string"/><xs:attribute name="UUID" type="xs:string"/></xs:complexType>
-    <xs:complexType name="PARTY"><xs:attribute name="vkn" type="xs:string"/><xs:attribute name="alias" type="xs:string"/></xs:complexType>
-    ${ext("LoginRequest", `<xs:element name="USER_NAME" type="xs:string"/><xs:element name="PASSWORD" type="xs:string"/>`)}
-    ${ext("LogoutRequest", "")}
-    ${ext("CheckUserRequest", `<xs:element name="USER"><xs:complexType><xs:sequence><xs:element name="IDENTIFIER" type="xs:string"/></xs:sequence></xs:complexType></xs:element><xs:element minOccurs="0" name="DOCUMENT_TYPE" type="xs:string"/>`)}
-    ${ext("SendInvoiceRequest", `<xs:element minOccurs="0" name="SENDER" type="t:PARTY"/><xs:element minOccurs="0" name="RECEIVER" type="t:PARTY"/><xs:element maxOccurs="unbounded" name="INVOICE" type="t:INVOICE"/>`)}
-    ${ext("GetInvoiceStatusRequest", statusInvoice ? `<xs:element name="INVOICE" type="t:INVOICE"/>` : `<xs:element name="UUID" type="xs:string"/>`)}
-    ${ext("GetInvoiceRequest", `<xs:element name="INVOICE_SEARCH_KEY"><xs:complexType><xs:sequence>${["LIMIT", "ID", "UUID", "START_DATE", "END_DATE", "READ_INCLUDED", "DIRECTION"].map(name => `<xs:element minOccurs="0" name="${name}" type="xs:string"/>`).join("")}</xs:sequence></xs:complexType></xs:element><xs:element minOccurs="0" name="HEADER_ONLY" type="xs:string"/><xs:element minOccurs="0" name="INVOICE_CONTENT_TYPE" type="xs:string"/>`)}
-    ${ext("CancelInvoiceRequest", `<xs:element maxOccurs="unbounded" name="INVOICE" type="t:INVOICE"/>`)}
-    ${ext("MarkInvoiceRequest", `<xs:element name="MARK"><xs:complexType><xs:sequence><xs:element maxOccurs="unbounded" name="INVOICE" type="t:INVOICE"/></xs:sequence><xs:attribute name="value" type="xs:string"/></xs:complexType></xs:element>`)}
-  </xs:schema>`;
-  const messages = OPS.map(op => `<wsdl:message name="${op}In"><wsdl:part name="parameters" element="t:${op}Request"/></wsdl:message>`).join("");
-  const portOps = OPS.map(op => `<wsdl:operation name="${op}"><wsdl:input message="tns:${op}In"/></wsdl:operation>`).join("");
-  const binding = (name, prefix) => `<wsdl:binding name="${name}" type="tns:EFaturaEDMPort"><${prefix}:binding transport="http://schemas.xmlsoap.org/soap/http"/>${OPS.map(op => `<wsdl:operation name="${op}"><${prefix}:operation soapAction="${ACTION(op)}" style="document"/></wsdl:operation>`).join("")}</wsdl:binding>`;
-  return `<?xml version="1.0" encoding="utf-8"?><wsdl:definitions name="EFaturaEDM" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://tempuri.org/" xmlns:t="${NS}">
-    <wsdl:types>${schema}</wsdl:types>${messages}<wsdl:portType name="EFaturaEDMPort">${portOps}</wsdl:portType>
-    ${binding("Soap12Binding", "soap12")}${binding("BasicBinding", "soap")}
-    <wsdl:service name="EFaturaEDM"><wsdl:port name="P12" binding="tns:Soap12Binding"><soap12:address location="http://sunucu-ic/EFaturaEDM.svc/soap12"/></wsdl:port><wsdl:port name="P11" binding="tns:BasicBinding"><soap:address location="http://sunucu-ic/EFaturaEDM.svc"/></wsdl:port></wsdl:service>
-  </wsdl:definitions>`;
-}
-
-const INCOMING_UUID = "6b1f6a8e-0c1e-4a8b-9d3c-1f2e3d4c5b6a";
-const incomingUbl = () => `<?xml version="1.0" encoding="UTF-8"?><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
-  <cbc:ProfileID>TEMELFATURA</cbc:ProfileID><cbc:ID>TDR2026000000042</cbc:ID><cbc:UUID>${INCOMING_UUID}</cbc:UUID><cbc:IssueDate>2026-09-20</cbc:IssueDate><cbc:IssueTime>10:15:00</cbc:IssueTime><cbc:InvoiceTypeCode>SATIS</cbc:InvoiceTypeCode><cbc:Note>Teslim depoya</cbc:Note><cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode>
-  <cac:AccountingSupplierParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">${SUPPLIER_VKN}</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Toptan Kırtasiye A.Ş.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Sanayi Cd.</cbc:StreetName><cbc:BuildingNumber>5</cbc:BuildingNumber><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Kavaklıdere</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingSupplierParty>
-  <cac:AccountingCustomerParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">${OUR_VKN}</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Deneme Ofis Ltd.</cbc:Name></cac:PartyName></cac:Party></cac:AccountingCustomerParty>
-  <cac:TaxTotal><cbc:TaxAmount currencyID="TRY">60.00</cbc:TaxAmount></cac:TaxTotal>
-  <cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="TRY">300.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="TRY">300.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="TRY">360.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="TRY">360.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
-  <cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="C62">10</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">200.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">40.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">200.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">40.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>A4 Kağıt</cbc:Name><cac:SellersItemIdentification><cbc:ID>KG-A4</cbc:ID></cac:SellersItemIdentification></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">20</cbc:PriceAmount></cac:Price></cac:InvoiceLine>
-  <cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:InvoicedQuantity unitCode="HUR">2</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">100.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">20.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">100.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">20.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Kurulum Hizmeti</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">50</cbc:PriceAmount></cac:Price></cac:InvoiceLine>
-</Invoice>`;
-
-/** Sahte EDM: WSDL yayımlar (ya da yayımlamaz), istekleri sözleşmeye göre denetler, kayıt tutar. */
-async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
-  const state = { calls: [], sent: [], cancelled: [], marked: [], sessions: new Set(), counter: 0, expireNext: false, statuses: new Map(), wsdlHits: 0, violations: [] };
-  const fault = (code, message) => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>${message}</faultstring><detail><RequestFault xmlns="${NS}"><ERROR_CODE>${code}</ERROR_CODE><ERROR_SHORT_DES>${message}</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`;
-  const okEnvelope = body => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body>${body}</s:Body></s:Envelope>`;
-  const server = createServer((req, res) => {
-    let raw = "";
-    req.on("data", chunk => (raw += chunk));
-    req.on("end", () => {
-      if (req.method === "GET") {
-        state.wsdlHits += 1;
-        if (!serveWsdl) {
-          res.writeHead(404).end("yok");
-          return;
-        }
-        res.writeHead(200, { "content-type": "text/xml" }).end(wsdl(contract));
-        return;
-      }
-      const tree = parseXml(raw);
-      const body = deep(tree, "Body");
-      const request = body.children[0];
-      const op = request.name.replace(/Request$/, "");
-      const action = String(req.headers.soapaction || "").replace(/^"|"$/g, "");
-      state.calls.push({ op, action, ns: request.ns, raw });
-      const expectNs = serveWsdl ? NS : "http://schemas.i2i.com/ei/wsdl";
-      if (request.ns !== expectNs) state.violations.push(`${op}: kök ad alanı ${request.ns}`);
-      if (action !== (serveWsdl ? ACTION(op) : "")) state.violations.push(`${op}: SOAPAction ${action}`);
-      const header = child(request, "REQUEST_HEADER");
-      if (request.children[0] !== header) state.violations.push(`${op}: REQUEST_HEADER ilk sırada değil`);
-      for (const item of request.children) if (item.ns !== (serveWsdl ? NS : "")) state.violations.push(`${op}: ${item.name} ad alanı ${item.ns}`);
-      const session = textOf(child(header, "SESSION_ID"));
-      const respond = xml => res.writeHead(200, { "content-type": "text/xml" }).end(okEnvelope(xml));
-      if (op === "Login") {
-        if (textOf(child(request, "USER_NAME")) !== "edmkullanici" || textOf(child(request, "PASSWORD")) !== "Gizli-Parola-1") {
-          res.writeHead(500, { "content-type": "text/xml" }).end(fault(2001, "Kullanıcı adı veya şifre hatalı"));
-          return;
-        }
-        state.counter += 1;
-        const id = `S-${state.counter}`;
-        state.sessions.add(id);
-        respond(`<LoginResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN><SESSION_ID>${id}</SESSION_ID></LoginResponse>`);
-        return;
-      }
-      if (op === "Logout") state.violations.push("Logout çağrıldı (başka oturumları kapatır)");
-      if (!state.sessions.has(session) || state.expireNext) {
-        state.expireNext = false;
-        state.sessions.delete(session);
-        res.writeHead(500, { "content-type": "text/xml" }).end(fault(10011, "Aktif Session bulunamadi"));
-        return;
-      }
-      if (op === "CheckUser") {
-        const id = textOf(find(request, "USER/IDENTIFIER"));
-        const users = id === BUYER_VKN ? `<USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultgb@alici.com.tr</ALIAS><TITLE>ALICI TİCARET A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>GB</UNIT></USER><USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultpk@alici.com.tr</ALIAS><TITLE>ALICI TİCARET A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>PK</UNIT></USER>` : "";
-        respond(`<CheckUserResponse xmlns="${NS}">${users}</CheckUserResponse>`);
-        return;
-      }
-      if (op === "SendInvoice") {
-        const invoice = child(request, "INVOICE");
-        state.sent.push({ sender: child(request, "SENDER")?.attrs, receiver: child(request, "RECEIVER")?.attrs, id: invoice.attrs.ID, uuid: invoice.attrs.UUID, earchive: textOf(find(invoice, "HEADER/EARCHIVE")), order: invoice.children.map(item => item.name), xml: Buffer.from(textOf(child(invoice, "CONTENT")), "base64").toString("utf8") });
-        state.statuses.set(invoice.attrs.UUID, ["SEND - WAIT_GIB_RESPONSE", "SEND - SUCCEED"]);
-        respond(`<SendInvoiceResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN><INVOICE ID="${invoice.attrs.ID}" UUID="${invoice.attrs.UUID}"/></SendInvoiceResponse>`);
-        return;
-      }
-      if (op === "GetInvoiceStatus") {
-        const uuid = child(request, "INVOICE")?.attrs.UUID;
-        const queue = state.statuses.get(uuid) || ["UNKNOWN - UNKNOWN"];
-        const status = queue.length > 1 ? queue.shift() : queue[0];
-        respond(`<GetInvoiceStatusResponse xmlns="${NS}"><INVOICE_STATUS ID="x" UUID="${uuid}"><STATUS>${status}</STATUS><STATUS_DESCRIPTION>${status}</STATUS_DESCRIPTION><GIB_STATUS_CODE>1300</GIB_STATUS_CODE><GIB_STATUS_DESCRIPTION>BASARIYLA TAMAMLANDI</GIB_STATUS_DESCRIPTION></INVOICE_STATUS></GetInvoiceStatusResponse>`);
-        return;
-      }
-      if (op === "CancelInvoice") {
-        state.cancelled.push(child(request, "INVOICE")?.attrs.UUID);
-        respond(`<CancelInvoiceResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN></CancelInvoiceResponse>`);
-        return;
-      }
-      if (op === "GetInvoice") {
-        const key = child(request, "INVOICE_SEARCH_KEY");
-        if (textOf(child(key, "DIRECTION")) !== "IN") state.violations.push("GetInvoice DIRECTION IN değil");
-        const content = Buffer.from(incomingUbl(), "utf8").toString("base64");
-        respond(`<GetInvoiceResponse xmlns="${NS}"><INVOICE ID="TDR2026000000042" UUID="${INCOMING_UUID}"><HEADER><SENDER>${SUPPLIER_VKN}</SENDER><RECEIVER>${OUR_VKN}</RECEIVER><SUPPLIER>Toptan Kırtasiye A.Ş.</SUPPLIER><ISSUE_DATE>2026-09-20</ISSUE_DATE><PAYABLE_AMOUNT currencyID="TRY">360.00</PAYABLE_AMOUNT><FROM>urn:mail:defaultgb@toptan.com.tr</FROM><PROFILEID>TEMELFATURA</PROFILEID><STATUS>RECEIVE - SUCCEED</STATUS></HEADER><CONTENT>${content}</CONTENT></INVOICE></GetInvoiceResponse>`);
-        return;
-      }
-      if (op === "MarkInvoice") {
-        for (const item of find(request, "MARK")?.children || []) state.marked.push(item.attrs.UUID);
-        respond(`<MarkInvoiceResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN></MarkInvoiceResponse>`);
-        return;
-      }
-      respond(`<Unknown/>`);
-    });
-  });
-  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
-  const url = `http://127.0.0.1:${server.address().port}/EFaturaEDM21ea/EFaturaEDM.svc`;
-  return { url, state, close: () => new Promise(resolve => server.close(resolve)) };
-}
 
 describe("EDM: sözleşme (WSDL) okuyucu", () => {
   test("WCF tarzı WSDL: SOAP 1.1 bağlaması seçilir, SOAPAction ve istek öğesi okunur", () => {
@@ -212,7 +59,8 @@ describe("EDM: sözleşme (WSDL) okuyucu", () => {
     assert.equal(mapEdmStatus({ status: "SEND - FAILED" }).status, "error");
     assert.equal(mapEdmStatus({ status: "PACKAGE - FAIL" }).status, "error");
     assert.equal(mapEdmStatus({ status: "CANCELLED - SUCCEED" }).status, "cancelled");
-    assert.equal(mapEdmStatus({ status: "LOAD - SUCCEED" }).status, "processing");
+    // İz 7.3: taslak (LoadInvoice) artık "draft" — portaldan ya da programdan gönderilmeyi bekler (gerçek EDM test ortamı, docs/kanit/2026-10-16/edm-taslak).
+    assert.equal(mapEdmStatus({ status: "LOAD - SUCCEED" }).status, "draft");
     assert.match(mapEdmStatus({ status: "SEND - SUCCEED", earchive: true }).message, /e-Arşiv/);
   });
 });
@@ -398,6 +246,15 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     assert.equal(last.earchive, "true");
     assert.match(last.xml, /<cbc:DocumentTypeCode>SendingType<\/cbc:DocumentTypeCode>/);
     assert.match(last.xml, /<cbc:ID>ELEKTRONIK<\/cbc:ID>/);
+    // Gerçek EDM test ortamı (16.10.2026): belge işlenirken (PROCESSING) iptal EDM'de reddedilir (11049). Program önce durumu sorar; işleniyorsa
+    // iptali göndermez, açık ileti verir, belge kesilmiş kalır.
+    const cancelsBefore = edm.state.calls.filter(call => call.op === "CancelInvoice").length;
+    const early = await api.post(`/api/workspace/invoices/${issued.data.id}/cancel`, { reason: "Müşteri vazgeçti" });
+    assert.equal(early.status, 409, JSON.stringify(early.data));
+    assert.equal(early.data.code, "einvoice-processing");
+    assert.match(early.data.error, /henüz işleniyor/);
+    assert.equal(edm.state.calls.filter(call => call.op === "CancelInvoice").length, cancelsBefore, "işlenirken EDM'ye iptal gönderilmedi");
+    assert.equal((await api.get(`/api/workspace/invoices/${issued.data.id}`)).data.status, "issued", "belge kesilmiş kalır");
     const cancelled = await api.post(`/api/workspace/invoices/${issued.data.id}/cancel`, { reason: "Müşteri vazgeçti" });
     assert.equal(cancelled.status, 200, JSON.stringify(cancelled.data));
     assert.equal(cancelled.data.status, "cancelled");
@@ -534,5 +391,168 @@ describe("e-Belge kapalıyken (varsayılan) entegratör uçları çalışmaz", (
     assert.equal(meta.data.edocEnabled, false);
     assert.deepEqual(meta.data.adapters, []);
     assert.equal(meta.data.settings.integrator, null);
+  });
+});
+
+// Entegratör Ayarları kartı (kullanıcı taslağı + onaylanan düzeltmeler, 16.10.2026; docs/2.4.0-IS-LISTESI.md İz 2). Eski kodda (8bc680b) kırmızı:
+// docs/kanit/2026-10-16/entegrator-ayarlari-eski.
+describe("Entegratör Ayarları: canlı ortam kilidi, GB/PK etiketleri, durum satırı, tercihler, yetki", () => {
+  let server;
+  let edm;
+  let api;
+  let client;
+  const SETTINGS = "/api/workspace/invoices/settings";
+  before(async () => {
+    resetEdmCaches();
+    edm = await startMockEdm();
+    server = await startTestServer({ edocEnabled: true });
+    client = server.client();
+    api = apiOf(client);
+    assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);
+  });
+  after(async () => {
+    await server.close();
+    await edm.close();
+  });
+
+  test("varsayılanlar: Test Ortamı, otomatik gönderim kapalı, e-Arşiv e-postası açık, kendiliğinden sorgu kapalı; canlı ortam seçilemez", async () => {
+    const s = (await api.get(SETTINGS)).data;
+    assert.equal(s.integrator.env, "test");
+    assert.equal(s.integrator.autoSend, false);
+    assert.equal(s.integrator.earchiveEmail, true);
+    assert.equal(s.integrator.autoCheckUser, false);
+    assert.equal(s.integrator.liveAllowed, false);
+    assert.equal(s.integrator.lastTest, null);
+    const live = await api.put(SETTINGS, { integrator: { env: "live" } });
+    assert.equal(live.status, 400, JSON.stringify(live.data));
+    assert.equal(live.data.code, "integrator-live-locked");
+    assert.match(live.data.error, /Canlı ortam, test ortamındaki kabulden sonra açılır/);
+    assert.equal((await api.get(SETTINGS)).data.integrator.env, "test", "reddedilen istek ortamı değiştirmedi");
+    assert.match(server.app.store.setting("invoice.settings", ""), /"env":"test"|^\{\}$|^$/);
+  });
+
+  test("Posta Kutusu (PK) etiketi biçim denetimi; tercihler kaydedilir ve geri okunur", async () => {
+    const bad = await api.put(SETTINGS, { integrator: { mailboxAlias: "defaultpk" } });
+    assert.equal(bad.status, 400);
+    assert.match(bad.data.error, /Posta kutusu etiketi urn:mail/);
+    const saved = await api.put(SETTINGS, {
+      seller: { name: "Deneme Ofis Ltd.", taxNo: OUR_VKN, taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara", email: "bilgi@deneme.com.tr" },
+      efatura: true,
+      earsiv: true,
+      integrator: { env: "test", baseUrl: edm.url, username: "edmkullanici", password: "Gizli-Parola-1", mailboxAlias: "urn:mail:defaultpk@deneme.com.tr", earchiveEmail: false, autoCheckUser: true },
+    });
+    assert.equal(saved.status, 200, JSON.stringify(saved.data));
+    assert.equal(saved.data.integrator.mailboxAlias, "urn:mail:defaultpk@deneme.com.tr");
+    assert.equal(saved.data.integrator.earchiveEmail, false);
+    assert.equal(saved.data.integrator.autoCheckUser, true);
+    assert.equal(saved.data.integrator.autoSend, false, "dokunulmayan tercih korunur");
+    const meta = (await api.get("/api/workspace/invoices/meta")).data;
+    assert.equal(meta.settings.integrator.autoCheckUser, true, "cari formu için meta'da");
+  });
+
+  test("Bağlantıyı Test Et: sonuç Durum satırı için saklanır; kullanıcı adı değişince silinir; hata da saklanır", async () => {
+    const tested = await api.post("/api/workspace/invoices/integrator/test", {});
+    assert.equal(tested.status, 200, JSON.stringify(tested.data));
+    let last = (await api.get(SETTINGS)).data.integrator.lastTest;
+    assert.equal(last.ok, true);
+    assert.match(last.message, /bağlantı çalışıyor/);
+    assert.match(last.at, /^\d{4}-\d{2}-\d{2}T/);
+    assert.equal((await api.put(SETTINGS, { integrator: { earchiveEmail: false } })).data.integrator.lastTest?.ok, true, "tercih değişince durum kalır");
+    assert.equal((await api.put(SETTINGS, { integrator: { username: "baskakullanici" } })).data.integrator.lastTest, null, "kullanıcı adı değişince durum silinir");
+    const failed = await api.post("/api/workspace/invoices/integrator/test", {});
+    assert.notEqual(failed.status, 200, "yanlış kullanıcı adıyla bağlantı kurulmaz");
+    last = (await api.get(SETTINGS)).data.integrator.lastTest;
+    assert.equal(last.ok, false, "başarısız test de Durum satırına yazılır");
+    assert.ok(last.message.length > 0);
+    await api.put(SETTINGS, { integrator: { username: "edmkullanici" } });
+  });
+
+  test("Etiketleri Getir: firmanın kendi VKN'si sorgulanır; GB ve PK ayrı listelerde", async () => {
+    const res = await api.post("/api/workspace/invoices/integrator/aliases", {});
+    assert.equal(res.status, 200, JSON.stringify(res.data));
+    assert.equal(res.data.taxNo, OUR_VKN);
+    assert.deepEqual(res.data.senders, ["urn:mail:defaultgb@deneme.com.tr"]);
+    assert.deepEqual(res.data.mailboxes, ["urn:mail:defaultpk@deneme.com.tr"]);
+    const saved = await api.put(SETTINGS, { integrator: { senderAlias: res.data.senders[0], mailboxAlias: res.data.mailboxes[0] } });
+    assert.equal(saved.data.integrator.senderAlias, "urn:mail:defaultgb@deneme.com.tr");
+  });
+
+  test("e-Arşiv e-postası kapalıyken e-postalı müşteriye bile KAGIT; açıkken ELEKTRONIK", async () => {
+    const person = await api.post("/api/workspace/accounts", { name: "Ayşe Yılmaz", type: "customer", taxNo: "10000000146", city: "İzmir", address: "Alsancak 3", district: "Konak", email: "ayse@example.com" });
+    const personId = person.data.id || person.data.account?.id;
+    const issued = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: personId, lines: [{ name: "Bakım", qty: 1, unitPrice: 300, vatRate: 20 }], payment: { rest: "open" } });
+    assert.equal(issued.status, 200, JSON.stringify(issued.data));
+    assert.equal(issued.data.profile, "EARSIVFATURA");
+    const xmlOf = async () => {
+      const response = await client.get(`/api/workspace/invoices/${issued.data.id}/ubl.xml`);
+      return typeof response.data === "string" ? response.data : response.text;
+    };
+    await api.put(SETTINGS, { integrator: { earchiveEmail: false } });
+    assert.match(await xmlOf(), /<cbc:ID>KAGIT<\/cbc:ID>/);
+    await api.put(SETTINGS, { integrator: { earchiveEmail: true } });
+    assert.match(await xmlOf(), /<cbc:ID>ELEKTRONIK<\/cbc:ID>/);
+  });
+
+  test("yetki: personel Entegratör Ayarları'nı kaydedemez, etiket getiremez, bağlantıyı test edemez", async () => {
+    const created = await client.post("/api/admin/users", { username: "personel-entegrator", name: "Personel", role: "personel", password: "Personel-2026!", mustChangePassword: false });
+    assert.equal(created.status, 200, JSON.stringify(created.data));
+    const staff = server.client();
+    assert.equal((await staff.login("personel-entegrator", "Personel-2026!")).status, 200);
+    for (const [method, url, body] of [["put", SETTINGS, { integrator: { username: "x" } }], ["post", "/api/workspace/invoices/integrator/aliases", {}], ["post", "/api/workspace/invoices/integrator/test", {}]]) {
+      const res = await staff[method](url, body);
+      assert.equal(res.status, 403, `${method} ${url}: ${res.status}`);
+    }
+    assert.equal((await api.get(SETTINGS)).data.integrator.username, "edmkullanici", "personelin isteği hiçbir şey yazmadı");
+  });
+});
+
+describe("Entegratör Ayarları: canlı kilit — veri tabanında kalmış 'live' kaydı bile ağa çıkmadan reddedilir", () => {
+  let server;
+  let edm;
+  let api;
+  before(async () => {
+    resetEdmCaches();
+    edm = await startMockEdm();
+    server = await startTestServer({ edocEnabled: true });
+    api = apiOf(server.client());
+    assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);
+    const ok = await api.put("/api/workspace/invoices/settings", { seller: { name: "Deneme Ofis Ltd.", taxNo: OUR_VKN, taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara" }, efatura: true, integrator: { env: "test", baseUrl: edm.url, username: "edmkullanici", password: "Gizli-Parola-1" } });
+    assert.equal(ok.status, 200, JSON.stringify(ok.data));
+    // Eski bir kurulumdan kalmış gibi: ayar kaydında ortam "live" (ekrandan seçilemez; doğrudan yazılır). Adres sahte EDM — kilit bozulursa
+    // istek gerçek canlıya değil sahte sunucuya gider ve aşağıdaki "hiç istek yok" denetimi düşer.
+    const raw = JSON.parse(server.app.store.setting("invoice.settings", "{}"));
+    raw.integrator.env = "live";
+    server.app.store.setSetting("invoice.settings", JSON.stringify(raw));
+  });
+  after(async () => {
+    await server.close();
+    await edm.close();
+  });
+  test("Bağlantıyı Test Et, Etiketleri Getir ve Mükellef Sorgula 409 integrator-live-locked; sahte EDM'ye tek istek bile gitmez", async () => {
+    const before = edm.state.calls.length + (edm.state.wsdlHits || 0);
+    for (const [url, body] of [["/api/workspace/invoices/integrator/test", {}], ["/api/workspace/invoices/integrator/aliases", {}], ["/api/workspace/invoices/check-user", { taxNo: BUYER_VKN }]]) {
+      const res = await api.post(url, body);
+      assert.equal(res.status, 409, `${url}: ${res.status} ${JSON.stringify(res.data)}`);
+      assert.equal(res.data.code, "integrator-live-locked");
+    }
+    assert.equal(edm.state.calls.length + (edm.state.wsdlHits || 0), before, "ağa çıkılmadı");
+  });
+});
+
+describe("Entegratör Ayarları: canlı ortam yalnız ayrı kurulum bayrağıyla (edocLive) seçilir", () => {
+  let server;
+  let api;
+  before(async () => {
+    server = await startTestServer({ edocEnabled: true, edocLive: true });
+    api = apiOf(server.client());
+    assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);
+  });
+  after(() => server.close());
+  test("edocLive açıkken Canlı Ortam kaydedilir ve canlı adres seçilir", async () => {
+    const saved = await api.put("/api/workspace/invoices/settings", { integrator: { env: "live" } });
+    assert.equal(saved.status, 200, JSON.stringify(saved.data));
+    assert.equal(saved.data.integrator.liveAllowed, true);
+    assert.equal(saved.data.integrator.env, "live");
+    assert.match(saved.data.integrator.url, /portal2\.edmbilisim\.com\.tr/);
   });
 });

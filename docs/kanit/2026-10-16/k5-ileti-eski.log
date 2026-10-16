@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: şüpheli kaydı silme: başka kaydın çıkarma başlığını bozacaksa açık 409 doubtful-delete-conflict
+    # Subtest: A silinince tahsilat B'ye kayar, B'nin çıkarma başlığı (500) tutmaz → 409 doubtful-delete-conflict; hiçbir şey yazılmaz
+    not ok 1 - A silinince tahsilat B'ye kayar, B'nin çıkarma başlığı (500) tutmaz → 409 doubtful-delete-conflict; hiçbir şey yazılmaz
+      ---
+      duration_ms: 11.230632
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/k5-eski-0d83358/test/supheli-230-sil-cakisma.test.mjs:29:3'
+      failureType: 'testCodeFailure'
+      error: 'Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu — dbt-55f65c2f-af30-4569-868e-c6959fe86c04 (Silme Çakışma Müşterisi): Şüpheliden Çıkar başlığı 500,00 ₺, yevmiyedeki çıkarılan 0,00 ₺ (çıkarma gününden önceye düşen tahsilat kalanı değiştirirdi); tahsilatı çıkarma gününden sonraya yazın ya da kaydı silip yeniden alın'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu — dbt-55f65c2f-af30-4569-868e-c6959fe86c04 (Silme Çakışma Müşterisi): Şüpheliden Çıkar başlığı 500,00 ₺, yevmiyedeki çıkarılan 0,00 ₺ (çıkarma gününden önceye düşen tahsilat kalanı değiştirirdi); tahsilatı çıkarma gününden sonraya yazın ya da kaydı silip yeniden alın'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/k5-eski-0d83358/test/supheli-230-sil-cakisma.test.mjs:35:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: çakışma yoksa silme çalışır: B (çıkarılmış) silinir; A'nın durumu değişmez
+    ok 2 - çakışma yoksa silme çalışır: B (çıkarılmış) silinir; A'nın durumu değişmez
+      ---
+      duration_ms: 34.807696
+      type: 'test'
+      ...
+    1..2
+not ok 1 - şüpheli kaydı silme: başka kaydın çıkarma başlığını bozacaksa açık 409 doubtful-delete-conflict
+  ---
+  duration_ms: 500.696409
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/k5-eski-0d83358/test/supheli-230-sil-cakisma.test.mjs:11:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 894.496214

@@ -24,11 +24,15 @@ export async function startTestServer(options = {}) {
     startLicenseTimers: options.startLicenseTimers ?? false,
     // e-Belge bağlantısı programda kapalıdır; yalnız entegratör testleri açar.
     ...(options.edocEnabled ? { edocEnabled: true } : {}),
+    ...(options.edocLive ? { edocLive: true } : {}),
     ...(options.fxEnabled ? { fxEnabled: true } : {}),
     // Bu sürümde olmayan banka özelliklerinin gizli ayarlarını değiştiren testler (doğrulama kuralları, Elle Banka Fişi).
     ...(options.bankLater ? { bankLater: true } : {}),
     ...(options.bankPickLegacy ? { bankPickLegacy: true } : {}),
     ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
+    // Yönetim → Ağ Bağlantısı → Bağlantıyı Dene adresi (vekil sunucu testleri yerel sahte sunucu verir).
+    ...(options.networkTestUrl ? { networkTestUrl: options.networkTestUrl } : {}),
+    ...(options.outboundTls ? { outboundTls: options.outboundTls } : {}),
     // Şirket sınırı (en fazla 2): 2'den çok şirketi olan eski kurulumu canlandıran testler sınırı yükseltir.
     ...(options.maxCompanies ? { maxCompanies: options.maxCompanies } : {}),
     // Sahte saat (v2.1.0): sunucunun "bugün"ü ve iş zaman damgaları (config.now). Zaman (Date/sayı/ISO metni; akar) ya da

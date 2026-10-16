@@ -1,0 +1,32 @@
+{
+  "ad": "edm-test-ortami-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/accounts-stock.test.mjs test/ci-kapi-listesi.test.mjs test/edm-gercek-sozlesme.test.mjs test/einvoice-edm.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "b6534780a6f944aacc498352b522a0d4706c9d0c",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 5,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:55:26.130Z",
+  "sure_sn": 19.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 73,
+    "gecen": 73,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/edm-test-ortami-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "9c0cb7c3c85defb8f3ca4cf822cd62fa8d7040f53f0421fbdbf0e684c4172c17",
+  "ham_cikti_bayt": 24975
+}

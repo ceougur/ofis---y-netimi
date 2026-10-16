@@ -1,0 +1,32 @@
+{
+  "ad": "edoc-canli-acik",
+  "komut": "node --test test/edoc-uretim.test.mjs test/einvoice-edm.test.mjs test/kilavuz-surum.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "c1fcef4ea562a591016dee417bcccb120163b23f",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T17:46:57.630Z",
+  "sure_sn": 3.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 41,
+    "gecen": 41,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/edoc-canli-acik.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "0eee7458ab3227077ccc31b330e53aee8ba2f255fb5a6ab4414c633ec273c39f",
+  "ham_cikti_bayt": 14250
+}

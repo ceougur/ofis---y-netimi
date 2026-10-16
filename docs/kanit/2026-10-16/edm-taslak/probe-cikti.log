@@ -1,0 +1,25 @@
+08:53:41 eArşiv belge: {"number":"DOA2026806748741","ettn":"746ad872-82e3-48cf-8786-b7072baa386f","profile":"EARSIVFATURA"}
+08:53:45 A1 loadDraft: {"status":"draft","message":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir.","reference":"DOA2026806748741","uuid":"746ad872-82e3-48cf-8786-b7072baa386f"}
+08:53:46 A1 status: {"status":"processing","message":"Taslak olarak EDM'ye yüklendi; gönderilmeyi bekliyor. SUCCEED","raw":"LOAD - SUCCEED","gibCode":""}
+08:53:48 A2 loadDraft aynı UUID: {"status":"draft","message":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir.","reference":"DOA2026806748741","uuid":"746ad872-82e3-48cf-8786-b7072baa386f"}
+08:53:49 A3 sendDraft: {"status":"sent","message":"Taslak e-Arşiv fatura gönderildi; sonucu Durum Sorgula ile görün.","reference":"DOA2026806748741","uuid":"746ad872-82e3-48cf-8786-b7072baa386f"}
+08:53:49 eArşiv-2 belge: {"number":"DOA2026806748742"}
+08:53:51 B1 loadDraft: {"status":"draft","message":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir.","reference":"DOA2026806748742","uuid":"20ad4d8c-8fbf-44a2-896e-73f998306890"}
+08:53:52 B2 cancel taslak: {"status":"cancelled","message":"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır."}
+08:53:53 B2 status: {"status":"cancelled","message":"Fatura EDM'de iptal edildi. SUCCEED","raw":"CANCELLED - SUCCEED","gibCode":""}
+08:53:53 eFatura belge: {"number":"DOA2026806748743","profile":"EARSIVFATURA"}
+08:53:55 F1 loadDraft: {"status":"draft","message":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir.","reference":"DOA2026806748743","uuid":"9200bb68-8743-4bd7-9414-2220d306c62b"}
+08:53:56 F1 status: {"status":"processing","message":"Taslak olarak EDM'ye yüklendi; gönderilmeyi bekliyor. SUCCEED","raw":"LOAD - SUCCEED","gibCode":""}
+08:53:57 F2 sendDraft: {"status":"sent","message":"Taslak e-Fatura gönderildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","reference":"DOA2026806748743","uuid":"9200bb68-8743-4bd7-9414-2220d306c62b"}
+08:54:27 A durum 1: {"status":"processing","message":"EDM'de paketleniyor. PROCESSING","raw":"PACKAGE - PROCESSING","gibCode":""}
+08:54:28 F durum 1: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+08:54:59 A durum 2: {"status":"sent","message":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED","raw":"SEND - SUCCEED","gibCode":""}
+08:54:59 F durum 2: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+08:55:30 A durum 3: {"status":"sent","message":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED","raw":"SEND - SUCCEED","gibCode":""}
+08:55:31 F durum 3: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+08:56:02 A durum 4: {"status":"sent","message":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED","raw":"SEND - SUCCEED","gibCode":""}
+08:56:02 F durum 4: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+08:56:33 A durum 5: {"status":"sent","message":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED","raw":"SEND - SUCCEED","gibCode":""}
+08:56:34 F durum 5: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+08:57:05 A durum 6: {"status":"sent","message":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED","raw":"SEND - SUCCEED","gibCode":""}
+08:57:05 F durum 6: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}

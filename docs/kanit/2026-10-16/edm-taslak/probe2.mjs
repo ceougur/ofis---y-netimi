@@ -1,0 +1,50 @@
+// EDM TEST ORTAMI (16.10.2026, İz 7.3): LoadInvoice (taslak) davranışı — aynı UUID ile ikinci yükleme, taslağı gönderme (CONTENT boş),
+// e-Arşiv taslağının iptali. Kimlik yalnız yüklenen dosyadan; çıktıda maskelenir. Canlı ortam yok.
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+const R = "/home/user/ofis---y-netimi";
+const { startTestServer, ADMIN_PASSWORD } = await import(`${R}/test/helpers.mjs`);
+const { createEdmClient } = await import(`${R}/server/lib/einvoice/edm.mjs`);
+const { createProxyFetch, cachedResolver } = await import(`${R}/server/lib/net-proxy.mjs`);
+const text = readFileSync(process.argv[2], "utf8");
+const username = (text.match(/kullan[ıi]c[ıi] ad[ıi]\s*:\s*(\S+)/i) || [])[1];
+const password = (text.match(/şifre\s*:\s*(\S+)/i) || [])[1];
+const OUT = process.argv[3]; mkdirSync(OUT, { recursive: true });
+const mask = v => JSON.stringify(v ?? "").split(password).join("***").split(username).join("<kullanıcı>");
+const log = (l, v) => console.log(`${new Date().toISOString().slice(11, 19)} ${l}: ${mask(v).slice(0, 700)}`);
+const unwrap = r => ({ ...r, data: r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data });
+const server = await startTestServer({ edocEnabled: true });
+const c = server.client(); await c.login("admin", ADMIN_PASSWORD);
+const post = async (u, b) => unwrap(await c.post(u, b)); const put = async (u, b) => unwrap(await c.put(u, b));
+const seq = 100_000_000 + Math.floor(Math.random() * 800_000_000);
+await put("/api/workspace/invoices/settings", { seller: { name: "ETA BILGISAYAR TEST 3", taxNo: "3230512384", taxOffice: "Kadıköy", address: "Test Cd. 1", district: "Kadıköy", city: "İstanbul", postalCode: "34000" }, efatura: true, earsiv: true, series: { earsiv: "DOA", efatura: "DOF" }, start: { DOA2026: seq, DOF2026: seq } });
+const acc = async b => { const r = await post("/api/workspace/accounts", b); return r.data.id || r.data.account?.id; };
+const person = await acc({ name: "Taslak Deneme Alıcı", type: "customer", partyKind: "person", firstName: "Taslak", familyName: "Alıcı", taxNo: "10000000146", taxOffice: "Kadıköy", city: "İstanbul", address: "Sk. 2", district: "Kadıköy" });
+const firm = await acc({ name: "ETA BILGISAYAR TEST 3", type: "customer", taxNo: "3230512384", taxOffice: "Kadıköy", address: "Test Cd. 1", district: "Kadıköy", city: "İstanbul" });
+const make = async (accountId, price) => { const d = await post("/api/workspace/invoices", { scenario: "service_sale", accountId, lines: [{ name: "Taslak Denemesi", qty: 1, unitPrice: price, vatRate: 20 }], payment: { rest: "open" } }); const xml = (await c.get(`/api/workspace/invoices/${d.data.id}/ubl.xml`)).data; return { ...d.data, xml }; };
+const client = createEdmClient({ baseUrl: "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc", username, password, fetchImpl: createProxyFetch({ resolve: cachedResolver({ file: "/nonexistent-ag.json", env: process.env }) }) });
+const step = async (label, fn) => { try { const r = await fn(); log(label, r); return r; } catch (e) { log(`${label} HATA`, { code: e.code, msg: e.message, ic: e.integratorCode, detail: e.detail }); return null; } };
+const common = { senderVkn: "3230512384", senderAlias: "urn:mail:defaultgb@edmbilisim.com.tr" };
+const prev = JSON.parse(readFileSync(`${OUT}/belgeler.json`, "utf8"));
+const zlib = await import("node:zlib");
+const pdfText = buf => { const t = buf.toString("latin1"); let out = ""; for (const m of t.matchAll(/stream\r?\n([\s\S]*?)endstream/g)) { try { out += zlib.inflateSync(Buffer.from(m[1], "latin1")).toString("latin1"); } catch {} } return out; };
+const amounts = (buf, list) => { const t = pdfText(buf); return Object.fromEntries(list.map(x => [x, t.includes(x)])); };
+const pa = await step("A resmî PDF", async () => { const r = await client.officialPdf({ uuid: prev.a[1], number: prev.a[0] }); writeFileSync(`${OUT}/A-${prev.a[0]}.pdf`, r.data); return { bayt: r.data.length, ...amounts(r.data, ["133,20", "134,40", "111,00", "112,00"]) }; });
+const f = await (async () => { const r = await post("/api/workspace/accounts", { name: "ETA BILGISAYAR TEST 3 EF", type: "customer", taxNo: "3230512384", taxOffice: "Kadıköy", address: "Test Cd. 1", district: "Kadıköy", city: "İstanbul", eInvoice: true, eAlias: "urn:mail:defaultpk@edmbilisim.com.tr" }); return make(r.data.id || r.data.account?.id, 333); })();
+log("eFatura belge", { number: f.number, profile: f.profile });
+const rcv = { receiverVkn: "3230512384", receiverAlias: "urn:mail:defaultpk@edmbilisim.com.tr" };
+await step("F1 loadDraft", () => client.loadDraft({ xml: f.xml, number: f.number, uuid: f.ettn, ...common, ...rcv }));
+await step("F1 status", () => client.status({ uuid: f.ettn, number: f.number }));
+const fxml2 = f.xml.replace(/>333\.00</g, ">334.00<").replace(/>399\.60</g, ">400.80<").replace(/>66\.60</g, ">66.80<");
+await step("F2 loadDraft aynı UUID (334)", () => client.loadDraft({ xml: fxml2, number: f.number, uuid: f.ettn, ...common, ...rcv }));
+await step("F3 sendDraft", () => client.sendDraft({ number: f.number, uuid: f.ettn, ...common, ...rcv }));
+await step("F4 sendDraft ikinci kez", () => client.sendDraft({ number: f.number, uuid: f.ettn, ...common, ...rcv }));
+await step("F5 loadDraft gönderildikten sonra", () => client.loadDraft({ xml: f.xml, number: f.number, uuid: f.ettn, ...common, ...rcv }));
+for (let i = 1; i <= 10; i += 1) {
+  await new Promise(r => setTimeout(r, 30_000));
+  const sf = await step(`F durum ${i}`, () => client.status({ uuid: f.ettn, number: f.number }));
+  if (sf?.status !== "processing") break;
+}
+await step("F resmî PDF", async () => { const r = await client.officialPdf({ uuid: f.ettn, number: f.number }); writeFileSync(`${OUT}/F-${f.number}.pdf`, r.data); return { bayt: r.data.length, ...amounts(r.data, ["399,60", "400,80", "333,00", "334,00"]) }; });
+prev.f2 = [f.number, f.ettn];
+writeFileSync(`${OUT}/belgeler.json`, JSON.stringify(prev, null, 1));
+await server.close();

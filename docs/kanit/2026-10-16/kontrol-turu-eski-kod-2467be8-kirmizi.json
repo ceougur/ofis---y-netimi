@@ -1,0 +1,48 @@
+{
+  "ad": "kontrol-turu-eski-kod-2467be8-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol-eski-2467be8 && HUKUK_LICENSE_URL=http://127.0.0.1:9 node --test test/ebelge-240-bitis-turu.test.mjs",
+  "commit": "2467be8fa8eb92d85327eb80c60aabded3c0e20c",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T13:08:16.167Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 13,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Kontrol K1: Gönderilecekler'den silinmiş (withdrawn) belge bağlantısız Gönder'de de numara almaz",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:192:3",
+      "hata": "fiş numarası yerinde, e-Belge numarası verilmedi · + actual - expected · + 'TEF2026000000007' (beklenen FIS2026000000001, gelen TEF2026000000007)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:210:3",
+      "hata": "Expected values to be strictly equal: · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Kontrol K3: tevkifatlı + istisnalı kalem aynı e-Belgede kaydedilmez (geçerli GİB tipi yok)",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:228:3",
+      "hata": "{\"id\":\"invoice-dc7f6ed5-6962-44fb-86f7-2d36a544d9d4\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"TEF2026000000009\",\"displayNo\":\"TEF2026000000009\",\"ettn\":\"220a6829-6836-4019-b3af-50a0a0f4858c\",\"issueDate\":\"2026-10-16\",\"issueTime\":\"13:08\",\"accountId\":\"account-fb374adb-002d-4252-97bf-f063a5760560\",\"accountName\":\"Alıcı Ticaret A.Ş.\",\"accountRef\":\"1\",\"accountPhone\":\"\",\"profile\":\"TEMELFATURA\",\"profileLabel\":\"e-Fatura (Temel)\",\"typeCode\":\"TEVKIFAT\",\"currency\":\"TRY\",\"rate\":1,\"netTotal\":1100,\"vatTotal\":200,\"withheldTotal\":80,\"stoppageTotal\":0,\"payableTotal\":1220,\"tryNet\":1100,\"tryVat\":200,\"tryPayable\":1220,\"dueDate\":\"2026-10-16\",\"planId\":\"\",\"originalId\":\"\",\"originalNumber\":\"\",\"originalDate\":\"\",\"note\":\"\",\"eStatus\":\"none\",\"eStatusLabel\":\"Gönderilmedi\",\"eTest\":true,\"actorName\":\"Ofis yöneticisi\",\"createdAt\":\"2026-10-16T13:08:17.630Z\",\"payState\":\"open\",\"payStateLabel\":\"Açık\",\"paid\":0,\"open\":1220,\"closers\":[],\"party\":{\"id\":\"account-fb374adb-002d-4252-97bf-f063a5760560\",\"name\":\"Alıcı Ticaret A.Ş.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"9876543217\",\"taxOffice\":\"Kavaklıdere\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Cinnah Cd. 10\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"\",\"website\":\"\",\"iban\":\"\",\"eInvoice\":true,\"eAlias\":\"urn:mail:defaultpk@alici.com.tr\"},\"seller\":{\"name\":\"Deneme Ofis Ltd.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1234567890\",\"taxOffice\":\"Çankaya\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Atatürk Blv. 1\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"bilgi@deneme.com.tr\",\"website\":\"\",\"banks\":[]},\"pricesIncludeVat\":false,\"discountRate\":0,\"stoppageRate\":0,\"baseTotal\":1100,\"discountTotal\":0,\"baseNetTotal\":1100,\"discountNetTotal\":0,\"goodsNet\":0,\"serviceNet\":1100,\"grossTotal\":1300,\"tryWithheld\":80,\"tryStoppage\":0,\"gl\":[{\"account\":\"600\",\"net\":110000}],\"orderNo\":\"\",\"orderDate\":\"\",\"despatchNo\":\"\",\"despatchDate\":\"\",\"paperNo\":\"\",\"payment\":{\"cash\":[],\"cheques\":[],\"endorse\":[],\"mode\":\"open\",\"installments\":null,\"rest\":1220},\"eMessage\":\"\",\"eAt\":\"\",\"eAdapter\":\"\",\"cancelledAt\":null,\"cancelReason\":\"\",\"amountInWords\":\"Yalnız Bin İki Yüz Yirmi Türk Lirası\",\"byRate\":[{\"rate\":0,\"net\":100,\"vat\":0,\"withheld\":0},{\"rate\":20,\"net\":1000,\"vat\":200,\"withheld\":80}],\"lines\":[{\"id\":\"iline-6bd30239-e1d0-45cc-82ca-7df080665d03\",\"invoiceId\":\"invoice-dc7f6ed5-6962-44fb-86f7-2d36a544d9d4\",\"seq\":1,\"itemId\":\"\",\"goods\":false,\"code\":\"\",\"name\":\"Etüt\",\"description\":\"\",\"unit\":\"Adet\",\"qty\":1,\"unitPrice\":1000,\"discountRate\":0,\"base\":1000,\"discount\":0,\"net\":1000,\"vatRate\":20,\"vat\":200,\"withholdingCode\":\"601\",\"withholdingNum\":4,\"withholdingDen\":10,\"withheld\":80,\"exemptionCode\":\"\",\"gross\":1200,\"payable\":1120,\"glAccount\":\"600\",\"expenseCode\":\"\",\"unitCost\":0,\"originLineId\":\"\",\"moveId\":\"\",\"serialNo\":\"\",\"lotNo\":\"\",\"returned\":0,\"expenseLabel\":\"\"},{\"id\":\"iline-8e6ab4ec-94f1-40df-934d-f7bcfdde3dda\",\"invoiceId\":\"invoice-dc7f6ed5-6962-44fb-86f7-2d36a544d9d4\",\"seq\":2,\"itemId\":\"\",\"goods\":false,\"code\":\"\",\"name\":\"İhracat\",\"description\":\"\",\"unit\":\"Adet\",\"qty\":1,\"unitPrice\":100,\"discountRate\":0,\"base\":100,\"discount\":0,\"net\":100,\"vatRate\":0,\"vat\":0,\"withholdingCode\":\"\",\"withholdingNum\":0,\"withholdingDen\":0,\"withheld\":0,\"exemptionCode\":\"301\",\"gross\":100,\"payable\":100,\"glAccount\":\"600\",\"expenseCode\":\"\",\"unitCost\":0,\"originLineId\":\"\",\"moveId\":\"\",\"serialNo\":\"\",\"lotNo\":\"\",\"returned\":0,\"expenseLabel\":\"\"}],\"returnable\":[{\"id\":\"iline-6bd30239-e1d0-45cc-82ca-7df080665d03\",\"left\":1},{\"id\":\"iline-8e6ab4ec-94f1-40df-934d-f7bcfdde3dda\",\"left\":1}],\"returns\":[],\"cheques\":[],\"plan\":null,\"payments\":[],\"posCash\":false,\"canManage\":true,\"canEdit\":false,\"canModify\":true,\"modifyBlock\":\"\",\"canIssue\":false,\"canDelete\":true,\"deleteBlock\":\"\",\"canCancel\":true,\"cancelNotice\":\"\",\"cancelBlock\":\"\",\"canReturn\":true,\"returnBlock\":\"\",\"repeat\":null,\"canRepeat\":true,\"canSend\":true,\"canWithdraw\":false,\"sendBlock\":\"\",\"canRefresh\":false,\"canDraft\":false,\"draftStale\":false,\"canOfficial\":false,\"edocEnabled\":true} · 200 !== 400 (beklenen 400, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/kontrol-turu-eski-kod-2467be8-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "d20129e3cb275673f4066da83fa69d27c7fa4feac0269656a904d15c11a14e22",
+  "ham_cikti_bayt": 12737
+}

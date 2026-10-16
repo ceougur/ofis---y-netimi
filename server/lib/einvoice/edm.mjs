@@ -28,7 +28,7 @@ export const EDM_URLS = Object.freeze({
   live: "https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc",
 });
 export const EDM_DEFAULT_NS = "http://schemas.i2i.com/ei/wsdl";
-export const EDM_OPERATIONS = Object.freeze(["Login", "SendInvoice", "GetInvoiceStatus", "GetInvoice", "CheckUser", "CancelInvoice", "MarkInvoice"]);
+export const EDM_OPERATIONS = Object.freeze(["Login", "SendInvoice", "LoadInvoice", "GetInvoiceStatus", "GetInvoice", "CheckUser", "CancelInvoice", "MarkInvoice"]);
 const APP = "DestekOfis";
 const CONTRACT_TTL = 12 * 60 * 60 * 1000;
 const SESSION_TTL = 20 * 60 * 1000;
@@ -40,7 +40,7 @@ const EDM_STATES = Object.freeze({
   "PACKAGE-PROCESSING": ["processing", "EDM'de paketleniyor."],
   "PACKAGE-FAIL": ["error", "Paketleme hatası: belgeyi düzeltip aynı numarayla yeniden gönderin."],
   "PACKAGE-FAILED": ["error", "Paketleme hatası: belgeyi düzeltip aynı numarayla yeniden gönderin."],
-  "LOAD-SUCCEED": ["processing", "Taslak olarak EDM'ye yüklendi; gönderilmeyi bekliyor."],
+  "LOAD-SUCCEED": ["draft", "Taslak olarak EDM portalına yüklendi; gönderilmeyi bekliyor (EDM portalından ya da programdan Gönder)."],
   "SEND-PROCESSING": ["processing", "Gönderiliyor; sonuç bekleniyor."],
   "SEND-WAIT_GIB_RESPONSE": ["processing", "GİB yanıtı bekleniyor."],
   "SEND-WAIT_SYSTEM_RESPONSE": ["processing", "Alıcı sistemin yanıtı bekleniyor."],
@@ -56,7 +56,10 @@ const EDM_STATES = Object.freeze({
 export function mapEdmStatus({ status = "", description = "", gibCode = "", gibDescription = "", responseCode = "", responseDescription = "", earchive = false }) {
   const normalized = String(status).replace(/\s+/g, "").toUpperCase();
   const extra = [description && description !== status ? description : "", gibDescription, responseDescription].filter(Boolean).join(" · ");
-  const known = EDM_STATES[normalized];
+  // Gerçek EDM test ortamı (16.10.2026, docs/kanit/2026-10-16/edm-arayuz): alıcının posta kutusu da aynı hesaptaysa (kendine gönderim) EDM giden
+  // belgenin durumunu alıcı tarafından da verebiliyor ("RECEIVE - WAIT_APPLICATION_RESPONSE"); program bunu "işleniyor"da bırakıyordu. Alıcı
+  // tarafının durumu belgenin alıcıya ulaştığını gösterir: gönderen tarafın karşılığıyla aynı eşlenir.
+  const known = EDM_STATES[normalized] || (normalized.startsWith("RECEIVE-") ? EDM_STATES[`SEND-${normalized.slice(8)}`] : undefined);
   const response = `${responseCode} ${responseDescription}`.toLocaleUpperCase("tr-TR");
   let state;
   let text;
@@ -71,6 +74,13 @@ export function mapEdmStatus({ status = "", description = "", gibCode = "", gibD
   return { status: state, message: [text, extra].filter(Boolean).join(" "), raw: String(status).trim(), gibCode: String(gibCode || "") };
 }
 
+// Belge türü ↔ gönderim kanalı (16.10.2026, gerçek EDM test ortamı): e-Arşiv profilli belge e-Fatura kanalından (posta kutusu etiketiyle)
+// gönderilince EDM kabul edip GİB reddetti (SEND-FAILED). Uyuşmazlık isteğe dönüşmeden reddedilir.
+function assertChannel(xml, earchive) {
+  const profile = (String(xml || "").match(/<cbc:ProfileID>([^<]*)<\/cbc:ProfileID>/) || [])[1] || "";
+  if (!profile) return;
+  if ((profile === "EARSIVFATURA") !== Boolean(earchive)) throw new IntegratorError(`Belge türü (${profile}) ile gönderim kanalı (${earchive ? "e-Arşiv" : "e-Fatura"}) uyuşmuyor; belge gönderilmedi.`, { code: "integrator-channel", status: 400 });
+}
 const pad = value => String(value).padStart(2, "0");
 const localStamp = (date = new Date()) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 const base64Text = value => Buffer.from(String(value ?? ""), "utf8").toString("base64");
@@ -91,7 +101,7 @@ const sessionError = (code, message) => String(code) === "10011" || /aktif\s*ses
 export function createEdmClient({ baseUrl, username, password, fetchImpl = (...args) => globalThis.fetch(...args), timeoutMs = 45_000, useWsdl = true, appName = APP }) {
   const base = String(baseUrl || "").trim().replace(/\/+$/, "").replace(/\?.*$/, "");
   if (!/^https:\/\//i.test(base) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//i.test(`${base}/`)) throw new IntegratorError("EDM servis adresi https:// ile başlamalı.", { code: "integrator-url", status: 400 });
-  if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura Ayarları → e-Belge Bağlantısı).", { code: "integrator-credentials", status: 400 });
+  if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura → Entegratör Ayarları).", { code: "integrator-credentials", status: 400 });
   const sessionKey = `${base}|${username}`;
 
   async function http(url, { method = "GET", headers = {}, body } = {}, wait = timeoutMs) {
@@ -150,7 +160,7 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
   async function call(operation, payload, { session = "", wait } = {}) {
     const { contract } = await loadContract();
     const shaped = shape(contract, operation, payload, { defaultNs: EDM_DEFAULT_NS });
-    if (shaped.warnings.length) throw new IntegratorError(`EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (${shaped.warnings.join(", ")}). İstek gönderilmedi. Fatura Ayarları'nda Bağlantıyı Sına'nın sonucunu destek hattına iletin.`, { code: "integrator-contract", status: 409, detail: shaped.warnings.join(", ") });
+    if (shaped.warnings.length) throw new IntegratorError(`EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (${shaped.warnings.join(", ")}). İstek gönderilmedi. Entegratör Ayarları'nda Bağlantıyı Test Et'in sonucunu destek hattına iletin.`, { code: "integrator-contract", status: 409, detail: shaped.warnings.join(", ") });
     const action = contract?.operations?.[operation]?.action ?? "";
     const endpoint = endpointOf(contract);
     const request = soapRequest({ version: contract?.version || "1.1", action, body: renderTree(shaped.tree), addressing: contract?.addressing, to: endpoint });
@@ -242,7 +252,10 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
     // GİB e-Fatura kullanıcısı mı? Posta kutusu (PK) etiketleri (alıcı olarak) döner.
     async checkUser(taxNo) {
       return withSession(async session => {
-        const body = await call("CheckUser", E("CheckUserRequest", [header(session), E("USER", [E("IDENTIFIER", taxNo)]), E("DOCUMENT_TYPE", "INVOICE")]), { session });
+        // Gerçek EDM sözleşmesi (16.10.2026, tools/ebelge/sema/edm): CheckUserRequest yalnız USER (GIBUSER) taşır; belge türü USER içindeki
+        // DOCUMENTTYPE'tır ve EDM'nin C# istemcisi onu da göndermez → yalnız IDENTIFIER (önceden sözleşmede olmayan DOCUMENT_TYPE kardeş alanı
+        // gönderilmek istendiği için istek hiç yapılmıyordu). Fatura dışı etiketler yanıttaki DOCUMENTTYPE ile ayıklanır.
+        const body = await call("CheckUser", E("CheckUserRequest", [header(session), E("USER", [E("IDENTIFIER", taxNo)])]), { session });
         touch();
         const users = deepAll(body, "USER").map(user => ({
           identifier: textOf(find(user, "IDENTIFIER")),
@@ -250,17 +263,21 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
           title: textOf(find(user, "TITLE")),
           type: textOf(find(user, "TYPE")),
           unit: textOf(find(user, "UNIT")).toUpperCase(),
-          deleted: textOf(find(user, "DELETED")) || textOf(find(user, "ALIAS_DELETION_TIME")),
-          documentType: textOf(find(user, "DOCUMENT_TYPE")).toUpperCase(),
+          deleted: textOf(find(user, "DELETED")) || textOf(find(user, "ALIAS_REMOVAL_TIME")) || textOf(find(user, "ALIAS_DELETION_TIME")),
+          documentType: (textOf(find(user, "DOCUMENTTYPE")) || textOf(find(user, "DOCUMENT_TYPE"))).toUpperCase(),
         }));
-        const active = users.filter(user => user.alias && !/^(Y|E|TRUE|1)$/i.test(user.deleted) && !(user.deleted && /\d{4}/.test(user.deleted)) && (!user.documentType || user.documentType === "INVOICE"));
+        // Yalnız urn:mail etiketleri (gerçek EDM test yanıtında GB listesinde "erreceipt" gibi etiket olmayan değer de geliyor).
+        const active = users.filter(user => /^urn:mail:/i.test(user.alias) && !/^(Y|E|TRUE|1)$/i.test(user.deleted) && !(user.deleted && /\d{4}/.test(user.deleted)) && (!user.documentType || user.documentType === "INVOICE"));
         const inboxes = active.filter(user => user.unit ? user.unit === "PK" : !/defaultgb|:gb@|gb@/i.test(user.alias));
-        return { registered: inboxes.length > 0, title: inboxes[0]?.title || active[0]?.title || "", aliases: [...new Set(inboxes.map(user => user.alias))], type: inboxes[0]?.type || "" };
+        // senderAliases: gönderici birim (GB) etiketleri — firmanın kendi VKN'si sorgulanınca Entegratör Ayarları'nda GB listesi olur.
+        const senders = active.filter(user => (user.unit ? user.unit === "GB" : /defaultgb|:gb@|gb@/i.test(user.alias)));
+        return { registered: inboxes.length > 0, title: inboxes[0]?.title || active[0]?.title || "", aliases: [...new Set(inboxes.map(user => user.alias))], senderAliases: [...new Set(senders.map(user => user.alias))], type: inboxes[0]?.type || "" };
       });
     },
     // e-Fatura ve e-Arşiv ikisi de SendInvoice ile gider; EDM belge türünü UBL'deki ProfileID'den anlar. Sözleşmede
     // INVOICE/HEADER/EARCHIVE alanı varsa e-Arşiv işareti de konur.
     async send({ xml, number, uuid, earchive = false, senderVkn = "", senderAlias = "", receiverVkn = "", receiverAlias = "" }) {
+      assertChannel(xml, earchive);
       if (!earchive && !receiverAlias) throw new IntegratorError("Alıcının e-Fatura posta kutusu etiketi bilinmiyor; cari kartında Mükellef Sorgula ile alın.", { code: "integrator-alias", status: 400 });
       return withSession(async session => {
         const invoice = E("INVOICE", [E("HEADER", earchive ? [E("EARCHIVE", "true", {}, { optional: true })] : [], {}, { optional: true }), E("CONTENT", base64Text(xml))], { ID: number, UUID: uuid });
@@ -271,6 +288,41 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
         return {
           status: "sent",
           message: earchive ? "e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün." : "e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.",
+          reference: sent?.attrs?.ID || textOf(find(sent, "ID")) || number,
+          uuid: sent?.attrs?.UUID || textOf(find(sent, "UUID")) || uuid,
+        };
+      });
+    },
+    // Portala taslak (Wolvox karşılaştırması, kullanıcı kararı 16.10.2026, isteğe bağlı): LoadInvoice belgeyi gönderilmeden EDM'ye
+    // taslak olarak yükler (EDM Web API v4.2.1 §5.3); numarayı program verir (GENERATEINVOICEIDONLOAD=false). Taslak sonra EDM
+    // portalından ya da sendDraft ile (SendInvoice: CONTENT boş + UUID, §5.4) gönderilir.
+    async loadDraft({ xml, number, uuid, earchive = false, senderVkn = "", senderAlias = "", receiverVkn = "", receiverAlias = "" }) {
+      assertChannel(xml, earchive);
+      if (!earchive && !receiverAlias) throw new IntegratorError("Alıcının e-Fatura posta kutusu etiketi bilinmiyor; cari kartında Mükellef Sorgula ile alın.", { code: "integrator-alias", status: 400 });
+      return withSession(async session => {
+        const invoice = E("INVOICE", [E("HEADER", earchive ? [E("EARCHIVE", "true", {}, { optional: true })] : [], {}, { optional: true }), E("CONTENT", base64Text(xml))], { ID: number, UUID: uuid });
+        const request = E("LoadInvoiceRequest", [header(session), invoice, E("SENDER", "", { vkn: senderVkn, alias: senderAlias }), E("RECEIVER", "", { vkn: receiverVkn, alias: earchive ? "" : receiverAlias }), E("GENERATEINVOICEIDONLOAD", "false")]);
+        const body = await call("LoadInvoice", request, { session, wait: 90_000 });
+        touch();
+        const loaded = deepAll(body, "INVOICE")[0];
+        return {
+          status: "draft",
+          message: "Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir.",
+          reference: loaded?.attrs?.ID || textOf(find(loaded, "ID")) || number,
+          uuid: loaded?.attrs?.UUID || textOf(find(loaded, "UUID")) || uuid,
+        };
+      });
+    },
+    async sendDraft({ number, uuid, earchive = false, senderVkn = "", senderAlias = "", receiverVkn = "", receiverAlias = "" }) {
+      return withSession(async session => {
+        const invoice = E("INVOICE", [E("HEADER", earchive ? [E("EARCHIVE", "true", {}, { optional: true })] : [], {}, { optional: true })], { ID: number, UUID: uuid });
+        const request = E("SendInvoiceRequest", [header(session), E("SENDER", "", { vkn: senderVkn, alias: senderAlias }), E("RECEIVER", "", { vkn: receiverVkn, alias: earchive ? "" : receiverAlias }), invoice]);
+        const body = await call("SendInvoice", request, { session, wait: 90_000 });
+        touch();
+        const sent = deepAll(body, "INVOICE")[0];
+        return {
+          status: "sent",
+          message: earchive ? "Taslak e-Arşiv fatura gönderildi; sonucu Durum Sorgula ile görün." : "Taslak e-Fatura gönderildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.",
           reference: sent?.attrs?.ID || textOf(find(sent, "ID")) || number,
           uuid: sent?.attrs?.UUID || textOf(find(sent, "UUID")) || uuid,
         };
@@ -321,6 +373,21 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
             xml: textOf(content) ? decodeContent(textOf(content)) : "",
           };
         });
+      });
+    },
+    // Gönderilen belgenin RESMÎ görüntüsü (16.10.2026): entegratörün belgeden (gömülü görünüm şablonuyla) ürettiği PDF — alıcının ve GİB'in
+    // gördüğü sayfa. GetInvoice, giden yön (DIRECTION=OUT), ETTN ile; içerik base64 PDF (ZIP'liyse içindeki .pdf).
+    async officialPdf({ uuid, number = "" }) {
+      return withSession(async session => {
+        const key = E("INVOICE_SEARCH_KEY", [E("LIMIT", 1), E("UUID", uuid), E("DIRECTION", "OUT")]);
+        const body = await call("GetInvoice", E("GetInvoiceRequest", [header(session), key, E("HEADER_ONLY", "N"), E("INVOICE_CONTENT_TYPE", "PDF")]), { session, wait: 120_000 });
+        touch();
+        const invoice = children(find(body, "GetInvoiceResponse") || deep(body, "GetInvoiceResponse") || body, "INVOICE").find(item => (item.attrs.UUID || textOf(find(item, "UUID"))).toLowerCase() === String(uuid).toLowerCase());
+        if (!invoice) throw new IntegratorError(`${number || uuid} EDM'de bulunamadı (belge henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin).`, { code: "integrator-not-found", status: 404 });
+        let data = Buffer.from(textOf(find(invoice, "CONTENT")).replace(/\s+/g, ""), "base64");
+        if (data.length > 4 && data.readUInt32LE(0) === 0x04034b50) data = (readZip(data).find(item => !item.directory && /\.pdf$/i.test(item.name)) || {}).data || Buffer.alloc(0);
+        if (data.subarray(0, 5).toString("latin1") !== "%PDF-") throw new IntegratorError(`EDM ${number || uuid} için PDF görüntüsü vermedi (görüntü henüz hazır olmayabilir; birkaç dakika sonra yeniden deneyin).`, { code: "integrator-no-pdf", status: 409 });
+        return { data, mime: "application/pdf" };
       });
     },
     async markRead(uuids) {

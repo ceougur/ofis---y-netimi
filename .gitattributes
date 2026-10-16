@@ -9,3 +9,5 @@
 *.woff2 binary
 *.sqlite binary
 *.xlsx binary
+# e-Belge resmî şema/kural dosyaları kaynaktaki baytlarıyla durur (sha256 tools/ebelge/sema/KAYNAK.md; Windows CRLF dönüşümü yok)
+tools/ebelge/sema/** -text

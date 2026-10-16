@@ -1,0 +1,83 @@
+{
+  "ad": "iz6-eski-kod-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-timeout=300000 test/ebelge-240-gorunum.test.mjs test/einvoice-240-resmi-gorunum.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T07:08:26.232Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 1,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Şahıs firmasında ticari unvan e-Belgeye girer › TCKN'li şahıs firması: ad-soyad Person'da, cari adı (ticari unvan) PartyName'de; GİB şematronu ve XSD temiz",
+      "konum": "test/ebelge-240-gorunum.test.mjs:73:3",
+      "hata": "ticari unvan PartyName'de (beklenen , gelen <cac:Party><cac:PartyIdentification><cbc:ID schemeID=\"TCKN\">10000000146</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>Alsancak 3</cbc:StreetName><cbc:CitySubdivisionName>Konak</cbc:CitySubdivisionName><cbc:CityName>İzmir</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Konak</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:ElectronicMail>ahmet@example.com</cbc:ElectronicMail></cac:Contact><cac:Person><cbc:FirstName>Ahmet</cbc:FirstName><cbc:FamilyName>Yılmaz</cbc:FamilyName></cac:Person></cac:Party>)"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › görünüm ayarı varsayılanı açık (logo, banka, alt not)",
+      "konum": "test/ebelge-240-gorunum.test.mjs:98:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › şablon GİB örnek biçiminde gömülür (fatura no .xslt, base64, application/xml); belge XSD + GİB şematronundan temiz",
+      "konum": "test/ebelge-240-gorunum.test.mjs:101:3",
+      "hata": "The input did not match the regular expression /<cac:AdditionalDocumentReference><cbc:ID>[0-9a-f-]{36}<\\/cbc:ID><cbc:IssueDate>2026-10-16<\\/cbc:IssueDate><cac:Attachment><cbc:EmbeddedDocumentBinaryObject characterSetCode=\"UTF-8\" encodingCode=\"Base64\" filename=\"EFT2026000000001\\.xslt\" mimeCode=\"application\\/xml\">/. Input: · '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\\n' + · '<Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\" xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"><cbc:UBLVersionID>2.1</cbc:UBLVersionID><cbc:CustomizationID>TR1.2</cbc:CustomizationID><cbc:ProfileID>TEMELFATURA</cbc:ProfileID><cbc:ID>EFT2026000000001</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator><cbc:UUID>eb1a5cff-c42b-4c12-8553-90de8e31eb1e</cbc:UUID><cbc:IssueDate>2026-10-16</cbc:IssueDate><cbc:IssueTime>07:08:00</cbc:IssueTime><cbc:InvoiceTypeCode>SATIS</cbc:InvoiceTypeCode><cbc:Note>Yalnız Bin Dört Yüz Yetmiş Beş Türk Lirası</cbc:Note><cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode><cbc:LineCountNumeric>2</cbc:LineCountNumeric><cac:Signature><cbc:ID schemeID=\"VKN_TCKN\">1234567890</cbc:ID><cac:SignatoryParty><cac:PartyIdentification><cbc:ID schemeID=\"VKN\">1234567890</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress></cac:SignatoryParty><cac:DigitalSignatureAttachment><cac:ExternalReference><cbc:URI>#Signature_EFT2026000000001</cbc:URI></cac:ExternalReference></cac:DigitalSignatureAttachment></cac:Signature><cac:AccountingSupplierParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID=\"VKN\">1234567890</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Deneme Ofis Ltd. Şti.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Çankaya</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:ElectronicMail>bilgi@deneme.com.tr</cbc:ElectronicMail></cac:Contact></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID=\"VKN\">9876543217</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Alıcı Ticaret A.Ş.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Cinnah Cd. 10</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Kavaklıdere</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingCustomerParty><cac:PaymentMeans><cbc:PaymentMeansCode>42</cbc:PaymentMeansCode><cbc:PaymentDueDate>2026-10-16</cbc:PaymentDueDate><cac:PayeeFinancialAccount><cbc:ID>TR330006100519786457841326</cbc:ID><cbc:CurrencyCode>TRY</cbc:CurrencyCode></cac:PayeeFinancialAccount></cac:PaymentMeans><cac:TaxTotal><cbc:TaxAmount currencyID=\"TRY\">225.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"TRY\">250.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"TRY\">25.00</cbc:TaxAmount><cbc:Percent>10</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"TRY\">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"TRY\">200.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID=\"TRY\">1250.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID=\"TRY\">1250.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID=\"TRY\">1475.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID=\"TRY\">1475.00</cbc:PayableAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode=\"C62\">2</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"TRY\">1000.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID=\"TRY\">200.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"TRY\">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"TRY\">200.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Danışmanlık</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"TRY\">500.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine><cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:Note>Yerinde kurulum</cbc:Note><cbc:InvoicedQuantity unitCode=\"C62\">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"TRY\">250.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID=\"TRY\">25.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"TRY\">250.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"TRY\">25.00</cbc:TaxAmount><cbc:Percent>10</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Kurulum</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"TRY\">250.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>\\n' (beklenen , gelen |-)"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › görünüm belgenin kendi sayılarını gösterir: numara, ETTN, alıcı, kalemler, KDV oranları, ödenecek tutar (Türkçe sayı biçimi)",
+      "konum": "test/ebelge-240-gorunum.test.mjs:107:3",
+      "hata": "Belgede görünüm şablonu (XSLT) yok."
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › logo, banka hesabı (IBAN dörderli) ve alt not şablona gömülü; alt nottaki HTML metin olarak kalır (komut çalışmaz)",
+      "konum": "test/ebelge-240-gorunum.test.mjs:113:3",
+      "hata": "Belgede görünüm şablonu (XSLT) yok."
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › e-Arşiv: başlık e-ARŞİV FATURA, gönderim şekli ve elektronik iletim ibaresi; belge e-Arşiv şematronundan temiz",
+      "konum": "test/ebelge-240-gorunum.test.mjs:120:3",
+      "hata": "Belgede görünüm şablonu (XSLT) yok."
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › ayar: logo ve banka kapatılınca şablonda yok; görünüm kapatılınca belgeye şablon gömülmez (entegratörün varsayılanı)",
+      "konum": "test/ebelge-240-gorunum.test.mjs:127:3",
+      "hata": "Belgede görünüm şablonu (XSLT) yok."
+    },
+    {
+      "ad": "Resmî e-Belge görüntüsü (sahte EDM) › gönderilmemiş belgede düğme yok ve uç 409; gönderilen belgede görünüm şablonu (logo dahil) EDM'ye gider",
+      "konum": "test/einvoice-240-resmi-gorunum.test.mjs:44:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Resmî e-Belge görüntüsü (sahte EDM) › Resmî Görüntü: EDM'den PDF alınır; son hâldeki belgede veri klasörüne saklanır, ikinci açılış EDM'ye gitmez",
+      "konum": "test/einvoice-240-resmi-gorunum.test.mjs:58:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "Resmî e-Belge görüntüsü (sahte EDM) › fatura görme yetkisi olmayan kullanıcı resmî görüntüyü açamaz",
+      "konum": "test/einvoice-240-resmi-gorunum.test.mjs:84:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/iz6-eski-kod-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz6-eski-5c9d227",
+  "ham_cikti_sha256": "084f724d8928ab2b25ec94f39f6f16ced760bf13a02c1c51b6b4004663da7d0a",
+  "ham_cikti_bayt": 25789
+}

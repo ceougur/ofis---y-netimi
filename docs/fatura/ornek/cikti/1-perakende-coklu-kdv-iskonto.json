@@ -1,0 +1,32 @@
+{
+  "scenario": "service_sale",
+  "accountId": "account-57973856-45ff-4a04-b6c0-971a9a43c9cc",
+  "discountRate": 5,
+  "lines": [
+    {
+      "name": "Tam Buğday Ekmeği",
+      "unit": "Adet",
+      "qty": 10,
+      "unitPrice": 12.5,
+      "vatRate": 1,
+      "discountRate": 10
+    },
+    {
+      "name": "Süt 1 Lt",
+      "unit": "Adet",
+      "qty": 6,
+      "unitPrice": 35,
+      "vatRate": 10
+    },
+    {
+      "name": "Çamaşır Deterjanı 3 Kg",
+      "unit": "Adet",
+      "qty": 2,
+      "unitPrice": 180,
+      "vatRate": 20
+    }
+  ],
+  "payment": {
+    "rest": "open"
+  }
+}

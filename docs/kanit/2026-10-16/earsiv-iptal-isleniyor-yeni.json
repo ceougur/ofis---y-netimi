@@ -1,0 +1,32 @@
+{
+  "ad": "earsiv-iptal-isleniyor-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/einvoice-edm.test.mjs test/edm-gercek-sozlesme.test.mjs",
+  "commit": "80d2a4feecd85a77d633c15a01ebc039b164ca76",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:59:58.833Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 33,
+    "gecen": 33,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/earsiv-iptal-isleniyor-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "5b4e6a3f3180e0394527d84602cf374e72d9f7929879bf3f84ea4dc35b8e077e",
+  "ham_cikti_bayt": 11338
+}

@@ -5,21 +5,35 @@
 // e-imza (UBLExtensions içindeki imza) ve GİB zarfı belgeyi gönderen entegratör ya da GİB portalı tarafından eklenir;
 // program imza anahtarı tutmaz. Tutarlar faturanın kendi kuruş hesabından gelir (lib/invoice-math.mjs) — ekranda, PDF'te,
 // defterde ve XML'de aynı sayı.
-import { exclusiveParts } from "../invoice-math.mjs";
+import { EXEMPTIONS, exclusiveParts, normalizeExemption } from "../invoice-math.mjs";
+import { viewReference } from "./gorunum.mjs";
 const NS = {
   invoice: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
   cac: "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
   cbc: "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
   ext: "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2",
 };
-// Birimler → UN/ECE Rec. 20 kodları (UBL InvoicedQuantity/@unitCode).
+// Birimler → UN/ECE Rec. 20 kodları (UBL InvoicedQuantity/@unitCode). Yalnız entegratörün KABUL ETTİĞİ kodlar: gerçek EDM test ortamı (16.10.2026,
+// docs/kanit/2026-10-16/edm-birim) GİB kod listesinde olan Çuval SA, Koli CT, Şişe BO, Rulo RO, Torba BG ve Hafta WEE kodlarını "Geçersiz Ölçü Birim
+// Kodu" (11059/11047) ile reddetti (iki şirket / on kullanıcı yük denemesinde Çuval'lı e-Faturalar düştü). Karşılığı kabul edilmeyen birim Adet (C62)
+// gider; birimin adı kalem notuna yazılır (unitNote).
 const UNIT_CODES = {
   adet: "C62", ad: "C62", tane: "C62", kg: "KGM", gr: "GRM", g: "GRM", ton: "TNE", lt: "LTR", l: "LTR", ml: "MLT", m: "MTR", metre: "MTR", cm: "CMT", mm: "MMT",
-  "m²": "MTK", m2: "MTK", "m³": "MTQ", m3: "MTQ", paket: "PA", kutu: "BX", koli: "CT", çift: "PR", takım: "SET", set: "SET", saat: "HUR", gün: "DAY", ay: "MON", yıl: "ANN",
-  dakika: "MIN", hafta: "WEE", rulo: "RO", şişe: "BO", torba: "BG", çuval: "SA", top: "C62", porsiyon: "C62", kişi: "C62", seans: "C62", ders: "C62",
+  "m²": "MTK", m2: "MTK", "m³": "MTQ", m3: "MTQ", paket: "PA", kutu: "BX", çift: "PR", takım: "SET", set: "SET", saat: "HUR", gün: "DAY", ay: "MON", yıl: "ANN",
+  dakika: "MIN", düzine: "DZN",
 };
+// Gerçek EDM'nin kabul ettiği kodlar (aynı kanıt; test/ebelge-240-birim.test.mjs program birimlerini buna karşı denetler).
+export const EDM_ACCEPTED_UNIT_CODES = Object.freeze(["C62", "KGM", "GRM", "TNE", "LTR", "MLT", "MTR", "CMT", "MMT", "MTK", "MTQ", "PA", "BX", "PR", "SET", "HUR", "DAY", "MON", "ANN", "MIN", "DZN", "NIU", "PK", "CMQ"]);
+// Kendi koduyla giden birimler (küçük harf): istemci, Adet koduyla gidecek birimde ipucu gösterir (tek kaynak bu liste).
+export const UNIT_CODE_KEYS = Object.freeze(Object.keys(UNIT_CODES));
 export const unitCode = unit => UNIT_CODES[String(unit || "").trim().toLocaleLowerCase("tr-TR")] || "C62";
-const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
+// Adet dışında olup Adet koduyla giden birimin (Çuval, Koli, Şişe, Teneke, Hafta, Seans…) adı: alıcı belgede gerçek birimi görür.
+export const unitNote = unit => {
+  const name = String(unit || "").trim();
+  return name && unitCode(name) === "C62" && !["adet", "ad", "tane"].includes(name.toLocaleLowerCase("tr-TR")) ? `Birim: ${name}` : "";
+};
+// XML 1.0'da geçersiz karakterler (C0 denetim, U+FFFE/U+FFFF, eşsiz vekil yarısı) ayıklanır (2.4.0 bitiş turu, eleştirmen E5: belge şemadan düşüyordu).
+const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f￾￿]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/g, "");
 const amount = value => (Math.round((Number(value) || 0) * 100) / 100).toFixed(2);
 const tag = (name, value, attrs = "") => (value === undefined || value === null || value === "" ? "" : `<${name}${attrs}>${escape(value)}</${name}>`);
 // Birim fiyat 4 ondalığa kadar (en az 2): 33.3333, 12.50.
@@ -28,6 +42,15 @@ const priceText = value => {
   return fixed.replace(/(\.\d\d)(\d*?)0+$/, "$1$2");
 };
 const money = (name, value, currency) => `<${name} currencyID="${escape(currency)}">${amount(value)}</${name}>`;
+
+// Şahıs firmasının ticari unvanı (16.10.2026, Wolvox karşılaştırması): TCKN'li tarafta GİB ad ve soyadı Person'da ister; cari adı ad-soyaddan
+// farklıysa ("Ahmet Yılmaz İnşaat") o ad ticari unvandır ve PartyName'e de yazılır — yoksa e-Belgede yalnız ad-soyad görünür, unvan kaybolur.
+const folded = text => String(text || "").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
+export function tradeNameOf(p) {
+  const name = String(p.name || "").replace(/\s+/g, " ").trim();
+  if (!name) return "";
+  return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
+}
 
 function party(p, { variant }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
@@ -61,7 +84,7 @@ function party(p, { variant }) {
     id ? `<cac:PartyIdentification><cbc:ID schemeID="${scheme}">${escape(id)}</cbc:ID></cac:PartyIdentification>` : "",
     p.mersisNo ? `<cac:PartyIdentification><cbc:ID schemeID="MERSISNO">${escape(p.mersisNo)}</cbc:ID></cac:PartyIdentification>` : "",
     p.tradeRegistry ? `<cac:PartyIdentification><cbc:ID schemeID="TICARETSICILNO">${escape(p.tradeRegistry)}</cbc:ID></cac:PartyIdentification>` : "",
-    person ? "" : `<cac:PartyName>${tag("cbc:Name", p.name)}</cac:PartyName>`,
+    person && !tradeNameOf(p) ? "" : `<cac:PartyName>${tag("cbc:Name", person ? tradeNameOf(p) : p.name)}</cac:PartyName>`,
     address,
     `<cac:PartyTaxScheme><cac:TaxScheme>${tag("cbc:Name", p.taxOffice || "-")}</cac:TaxScheme></cac:PartyTaxScheme>`,
     p.phone || p.email ? `<cac:Contact>${tag("cbc:Telephone", p.phone)}${tag("cbc:ElectronicMail", p.email)}</cac:Contact>` : "",
@@ -77,26 +100,48 @@ const discountNet = (line, includeVat) => (includeVat ? exclusiveParts(line, tru
 
 function taxCategory(rate, exemptionCode, exemptionLabel, variant) {
   if (variant === "peppol") return `<cac:TaxCategory>${tag("cbc:ID", rate > 0 ? "S" : exemptionCode && exemptionCode !== "351" ? "E" : "Z")}${tag("cbc:Percent", rate)}${rate > 0 ? "" : tag("cbc:TaxExemptionReason", exemptionLabel || "Exempt")}<cac:TaxScheme>${tag("cbc:ID", "VAT")}</cac:TaxScheme></cac:TaxCategory>`;
-  return `<cac:TaxCategory>${rate === 0 ? `${tag("cbc:TaxExemptionReasonCode", exemptionCode || "351")}${tag("cbc:TaxExemptionReason", exemptionLabel || "")}` : ""}<cac:TaxScheme>${tag("cbc:Name", "KDV")}${tag("cbc:TaxTypeCode", "0015")}</cac:TaxScheme></cac:TaxCategory>`;
+  return `<cac:TaxCategory>${rate === 0 ? `${tag("cbc:TaxExemptionReasonCode", normalizeExemption(exemptionCode) || "351")}${tag("cbc:TaxExemptionReason", exemptionLabel || "")}` : ""}<cac:TaxScheme>${tag("cbc:Name", "KDV")}${tag("cbc:TaxTypeCode", "0015")}</cac:TaxScheme></cac:TaxCategory>`;
 }
-const EXEMPTION_LABELS = { 351: "KDV - İstisna Olmayan Diğer", 301: "11/1-a Mal İhracatı", 302: "11/1-a Hizmet İhracatı", 308: "13/a Deniz, Hava ve Demiryolu Taşıma Araçlarının Teslimi", 350: "Diğerleri" };
+// İstisna adları tek kaynaktan (invoice-math EXEMPTIONS, GİB kod listesi); eski kayıttaki 308 → 304 (aynı anlam, 13/a).
+const exemptionLabel = code => EXEMPTIONS[normalizeExemption(code)] || "";
+
+// Ödeme şekli (Wolvox karşılaştırması, kullanıcı kararı 16.10.2026: isteğe bağlı): faturanın peşin satırlarının yolu ve bağlı çek/senet → GİB kod listesi
+// PaymentMeansCodeTypeList (UN/ECE 4461) kodu. Kalan (vadeli) kısım ayrıca açık ödeme olarak yazılır (IBAN varsa 42 + son ödeme tarihi).
+export const PAYMENT_MEANS_CODES = Object.freeze({ cash: "10", bank: "42", card: "48", cheque: "20", note: "60" });
+export function paymentMeansOf(doc) {
+  const codes = [];
+  let covered = 0;
+  const add = (code, value) => {
+    if (!codes.includes(code)) codes.push(code);
+    covered += Number(value) || 0;
+  };
+  for (const entry of doc.payments || []) add(PAYMENT_MEANS_CODES[entry.method] || PAYMENT_MEANS_CODES.cash, entry.amount);
+  for (const cheque of doc.cheques || []) add(PAYMENT_MEANS_CODES[cheque.instrument] || PAYMENT_MEANS_CODES.cheque, cheque.amount);
+  const payable = Number(doc.tryPayable ?? doc.payableTotal) || 0;
+  return { codes, rest: Math.round((payable - covered) * 100) > 0 };
+}
 
 /**
  * @param {object} doc  routes/invoices.mjs detail() çıktısı (kesilmiş fatura)
  * @param {{ variant?: 'tr' | 'peppol' }} options
  */
-export function buildUbl(doc, { variant = "tr" } = {}) {
+// xslt: görünüm şablonu (gorunum.mjs viewXslt); verilirse belgeye gömülür ve alıcının gördüğü sayfayı o çizer. Yalnız UBL-TR.
+// notes: ek cbc:Note satırları (ör. cari bakiyesi). paymentMeans: ödeme şekli kodları yazılsın mı (kapalıyken eski davranış: IBAN varsa 42, yoksa 1).
+export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "", notes: extraNotes = [], paymentMeans = false } = {}) {
   const currency = doc.currency || "TRY";
   const includeVat = Boolean(doc.pricesIncludeVat);
   const lines = doc.lines || [];
   const seller = doc.kind === "purchase" || doc.kind === "sale_return" ? doc.party : doc.seller;
   const buyer = doc.kind === "purchase" || doc.kind === "sale_return" ? doc.seller : doc.party;
+  // KDV alt toplamı oran + istisna koduna göre (2.4.0 bitiş turu, yargıç Y4): %0'da iki ayrı istisna kodu (ör. 351 ve 301) ayrı satırda; önceden
+  // ilk kalemin kodu hepsine yazılıyor, ikincisi kayboluyordu.
   const byRate = new Map();
   for (const line of lines) {
-    const item = byRate.get(line.vatRate) || { rate: line.vatRate, net: 0, vat: 0, exemptionCode: line.exemptionCode };
+    const key = Number(line.vatRate) === 0 ? `0|${line.exemptionCode || ""}` : String(line.vatRate);
+    const item = byRate.get(key) || { rate: line.vatRate, net: 0, vat: 0, exemptionCode: line.exemptionCode };
     item.net += Number(line.net) || 0;
     item.vat += Number(line.vat) || 0;
-    byRate.set(line.vatRate, item);
+    byRate.set(key, item);
   }
   const byWithholding = new Map();
   for (const line of lines.filter(item => item.withholdingCode)) {
@@ -109,12 +154,13 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
   const taxTotal = [...byRate.values()].sort((a, b) => a.rate - b.rate);
   const discountTotal = lines.reduce((sum, line) => sum + discountNet(line, includeVat), 0);
   const lineExtension = lines.reduce((sum, line) => sum + (Number(line.net) || 0), 0);
-  const notes = [doc.amountInWords, doc.note, doc.originalNumber ? `İade edilen fatura: ${doc.originalNumber}` : "", doc.stoppageTotal > 0 ? `Gelir Vergisi Stopajı %${doc.stoppageRate}: ${amount(doc.stoppageTotal)} ${currency}` : ""].filter(Boolean);
+  const notes = [doc.amountInWords, doc.note, doc.originalNumber ? `İade edilen fatura: ${doc.originalNumber}` : "", doc.stoppageTotal > 0 ? `Gelir Vergisi Stopajı %${doc.stoppageRate}: ${amount(doc.stoppageTotal)} ${currency}` : "", ...(variant === "peppol" ? [] : extraNotes)].filter(Boolean);
   const head =
     variant === "peppol"
       ? [tag("cbc:CustomizationID", "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0"), tag("cbc:ProfileID", "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"), tag("cbc:ID", doc.number), tag("cbc:IssueDate", doc.issueDate), tag("cbc:DueDate", doc.dueDate || doc.issueDate), tag("cbc:InvoiceTypeCode", doc.typeCode === "IADE" ? "381" : "380"), ...notes.map(note => tag("cbc:Note", note)), tag("cbc:DocumentCurrencyCode", currency), tag("cbc:TaxCurrencyCode", currency === "TRY" ? "" : "TRY")]
       : [
-          "<ext:UBLExtensions><ext:UBLExtension><ext:ExtensionContent/></ext:UBLExtension></ext:UBLExtensions>",
+          // ext:UBLExtensions (mali mühür / e-imza) yazılmaz: imzayı entegratör ekler (EDM örnek belgelerinde de yok); boş
+          // ext:ExtensionContent UBL 2.1 şemasına aykırıdır (en az bir öğe ister) — test/ebelge-uygunluk.test.mjs.
           tag("cbc:UBLVersionID", "2.1"),
           tag("cbc:CustomizationID", "TR1.2"),
           tag("cbc:ProfileID", doc.profile),
@@ -130,11 +176,14 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
         ];
   const references = [
     doc.orderNo ? `<cac:OrderReference>${tag("cbc:ID", doc.orderNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.orderDate || doc.issueDate)}</cac:OrderReference>` : "",
-    doc.originalNumber ? `<cac:BillingReference><cac:InvoiceDocumentReference>${tag("cbc:ID", doc.originalNumber)}${tag("cbc:IssueDate", doc.originalDate || "")}</cac:InvoiceDocumentReference></cac:BillingReference>` : "",
+    // GİB (IADEInvioceCheck): iade faturasında asıl fatura DocumentTypeCode "IADE" ile gösterilir.
+    doc.originalNumber ? `<cac:BillingReference><cac:InvoiceDocumentReference>${tag("cbc:ID", doc.originalNumber)}${tag("cbc:IssueDate", doc.originalDate || "")}${variant !== "peppol" && doc.typeCode === "IADE" ? tag("cbc:DocumentTypeCode", "IADE") : ""}</cac:InvoiceDocumentReference></cac:BillingReference>` : "",
     doc.despatchNo ? `<cac:DespatchDocumentReference>${tag("cbc:ID", doc.despatchNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.despatchDate || doc.issueDate)}</cac:DespatchDocumentReference>` : "",
     // e-Arşiv gönderim şekli (GİB e-Arşiv kılavuzu): alıcının e-postası varsa ELEKTRONIK (entegratör e-postayla iletir),
     // yoksa KAGIT (çıktısı verilir).
-    variant !== "peppol" && doc.profile === "EARSIVFATURA" ? `<cac:AdditionalDocumentReference>${tag("cbc:ID", buyer?.email ? "ELEKTRONIK" : "KAGIT")}${tag("cbc:IssueDate", doc.issueDate)}${tag("cbc:DocumentTypeCode", "SendingType")}${tag("cbc:DocumentType", buyer?.email ? "ELEKTRONIK" : "KAGIT")}</cac:AdditionalDocumentReference>` : "",
+    // Entegratör Ayarları "e-Arşiv faturasında PDF'i müşteriye e-postayla gönder" kapalıysa KAGIT (çıktısı verilir).
+    variant !== "peppol" && doc.profile === "EARSIVFATURA" ? `<cac:AdditionalDocumentReference>${tag("cbc:ID", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}${tag("cbc:IssueDate", doc.issueDate)}${tag("cbc:DocumentTypeCode", "SendingType")}${tag("cbc:DocumentType", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}</cac:AdditionalDocumentReference>` : "",
+    variant !== "peppol" && xslt ? viewReference({ number: doc.number, issueDate: doc.issueDate, ettn: doc.ettn, xslt }) : "",
     // İmzalayan taraf (UBL-TR'de zorunlu cac:Signature): belgeyi entegratör mali mühürle imzalar; burada imzanın kime ait
     // olduğu ve imzanın yeri (#Signature) bildirilir.
     variant !== "peppol" && seller?.taxNo
@@ -142,11 +191,19 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
       : "",
   ];
   const bank = (doc.seller?.banks || []).find(item => item.iban);
-  const payment = bank || doc.dueDate ? `<cac:PaymentMeans>${tag("cbc:PaymentMeansCode", bank ? (variant === "peppol" ? "58" : "42") : "1")}${variant === "peppol" ? "" : tag("cbc:PaymentDueDate", doc.dueDate || doc.issueDate)}${bank ? `<cac:PayeeFinancialAccount>${tag("cbc:ID", bank.iban)}${variant === "peppol" ? "" : tag("cbc:CurrencyCode", currency)}</cac:PayeeFinancialAccount>` : ""}</cac:PaymentMeans>` : "";
+  const openMeans = `<cac:PaymentMeans>${tag("cbc:PaymentMeansCode", bank ? (variant === "peppol" ? "58" : "42") : "1")}${variant === "peppol" ? "" : tag("cbc:PaymentDueDate", doc.dueDate || doc.issueDate)}${bank ? `<cac:PayeeFinancialAccount>${tag("cbc:ID", bank.iban)}${variant === "peppol" ? "" : tag("cbc:CurrencyCode", currency)}</cac:PayeeFinancialAccount>` : ""}</cac:PaymentMeans>`;
+  let payment = bank || doc.dueDate ? openMeans : "";
+  if (paymentMeans && variant !== "peppol") {
+    // Ödenen kısım yoluyla (son ödeme tarihi yazılmaz: ödenmiştir), kalan kısım açık ödeme olarak (son ödeme tarihi + IBAN). Hiç peşin yoksa
+    // eski davranış. Peşine belge tarihi yazılınca görüntüleyiciler "Son Ödeme Tarihi"ni ilk satırdan okuyup vadeyi yanlış gösteriyordu
+    // (gerçek EDM denemesi 16.10.2026).
+    const { codes, rest } = paymentMeansOf(doc);
+    if (codes.length) payment = codes.map(code => `<cac:PaymentMeans>${tag("cbc:PaymentMeansCode", code)}</cac:PaymentMeans>`).join("") + (rest ? openMeans : "");
+  }
   const exchange = currency !== "TRY" && variant !== "peppol" ? `<cac:PricingExchangeRate>${tag("cbc:SourceCurrencyCode", currency)}${tag("cbc:TargetCurrencyCode", "TRY")}${tag("cbc:CalculationRate", doc.rate)}${tag("cbc:Date", doc.issueDate)}</cac:PricingExchangeRate>` : "";
   const vatTotal = taxTotal.reduce((sum, item) => sum + item.vat, 0);
   const tax = `<cac:TaxTotal>${money("cbc:TaxAmount", vatTotal, currency)}${taxTotal
-    .map(item => `<cac:TaxSubtotal>${money("cbc:TaxableAmount", item.net, currency)}${money("cbc:TaxAmount", item.vat, currency)}${variant === "peppol" ? "" : tag("cbc:Percent", item.rate)}${taxCategory(item.rate, item.exemptionCode, EXEMPTION_LABELS[item.exemptionCode], variant)}</cac:TaxSubtotal>`)
+    .map(item => `<cac:TaxSubtotal>${money("cbc:TaxableAmount", item.net, currency)}${money("cbc:TaxAmount", item.vat, currency)}${variant === "peppol" ? "" : tag("cbc:Percent", item.rate)}${taxCategory(item.rate, item.exemptionCode, exemptionLabel(item.exemptionCode), variant)}</cac:TaxSubtotal>`)
     .join("")}</cac:TaxTotal>`;
   const withholding =
     byWithholding.size && variant !== "peppol"
@@ -168,12 +225,13 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
         "<cac:InvoiceLine>",
         tag("cbc:ID", index + 1),
         variant === "peppol" ? "" : tag("cbc:Note", line.description),
+        variant === "peppol" ? "" : tag("cbc:Note", unitNote(line.unit)),
         `<cbc:InvoicedQuantity unitCode="${unitCode(line.unit)}">${escape(line.qty)}</cbc:InvoicedQuantity>`,
         money("cbc:LineExtensionAmount", line.net, currency),
         discount > 0 ? `<cac:AllowanceCharge>${tag("cbc:ChargeIndicator", "false")}${variant === "peppol" ? tag("cbc:AllowanceChargeReason", "İskonto") : tag("cbc:MultiplierFactorNumeric", (Math.round((discount / ((Number(line.net) || 0) + discount || 1)) * 10000) / 10000).toString())}${money("cbc:Amount", discount, currency)}${money("cbc:BaseAmount", (Number(line.net) || 0) + discount, currency)}</cac:AllowanceCharge>` : "",
-        variant === "peppol" ? "" : `<cac:TaxTotal>${money("cbc:TaxAmount", line.vat, currency)}<cac:TaxSubtotal>${money("cbc:TaxableAmount", line.net, currency)}${money("cbc:TaxAmount", line.vat, currency)}${tag("cbc:Percent", line.vatRate)}${taxCategory(line.vatRate, line.exemptionCode, EXEMPTION_LABELS[line.exemptionCode], variant)}</cac:TaxSubtotal></cac:TaxTotal>`,
+        variant === "peppol" ? "" : `<cac:TaxTotal>${money("cbc:TaxAmount", line.vat, currency)}<cac:TaxSubtotal>${money("cbc:TaxableAmount", line.net, currency)}${money("cbc:TaxAmount", line.vat, currency)}${tag("cbc:Percent", line.vatRate)}${taxCategory(line.vatRate, line.exemptionCode, exemptionLabel(line.exemptionCode), variant)}</cac:TaxSubtotal></cac:TaxTotal>`,
         lineWithholding,
-        `<cac:Item>${variant === "peppol" ? tag("cbc:Description", line.description) : ""}${tag("cbc:Name", line.name)}${line.code ? `<cac:SellersItemIdentification>${tag("cbc:ID", line.code)}</cac:SellersItemIdentification>` : ""}${variant === "peppol" ? taxCategory(line.vatRate, line.exemptionCode, EXEMPTION_LABELS[line.exemptionCode], "peppol").replace("cac:TaxCategory", "cac:ClassifiedTaxCategory").replace("</cac:TaxCategory>", "</cac:ClassifiedTaxCategory>") : ""}</cac:Item>`,
+        `<cac:Item>${variant === "peppol" ? tag("cbc:Description", line.description) : ""}${tag("cbc:Name", line.name)}${line.code ? `<cac:SellersItemIdentification>${tag("cbc:ID", line.code)}</cac:SellersItemIdentification>` : ""}${variant !== "peppol" && (line.serialNo || line.lotNo) ? `<cac:ItemInstance>${tag("cbc:SerialID", line.serialNo)}${line.lotNo ? `<cac:LotIdentification>${tag("cbc:LotNumberID", line.lotNo)}</cac:LotIdentification>` : ""}</cac:ItemInstance>` : ""}${variant === "peppol" ? taxCategory(line.vatRate, line.exemptionCode, exemptionLabel(line.exemptionCode), "peppol").replace("cac:TaxCategory", "cac:ClassifiedTaxCategory").replace("</cac:TaxCategory>", "</cac:ClassifiedTaxCategory>") : ""}</cac:Item>`,
         `<cac:Price><cbc:PriceAmount currencyID="${escape(currency)}">${priceText(price)}</cbc:PriceAmount></cac:Price>`,
         "</cac:InvoiceLine>",
       ].join("");

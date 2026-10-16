@@ -1,0 +1,105 @@
+TAP version 13
+# (node:5263) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Portala taslak (sahte EDM)
+    # Subtest: ayar kapalıyken taslak düğmesi yok ve uç 409; belge her zamanki gibi gönderilebilir
+    ok 1 - ayar kapalıyken taslak düğmesi yok ve uç 409; belge her zamanki gibi gönderilebilir
+      ---
+      duration_ms: 68.489469
+      type: 'test'
+      ...
+    # Subtest: 8 günden eski e-Arşiv taslağı da iptal edilir (GİB'e gitmedi; 8 gün kuralı gönderilmiş belge için)
+    not ok 2 - 8 günden eski e-Arşiv taslağı da iptal edilir (GİB'e gitmedi; 8 gün kuralı gönderilmiş belge için)
+      ---
+      duration_ms: 119.074621
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz7-duzeltme-oncesi/test/einvoice-240-taslak.test.mjs:61:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (06.10.2026 tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.","code":"einvoice-cancel-late"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz7-duzeltme-oncesi/test/einvoice-240-taslak.test.mjs:69:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taslak yükle → düzenle (taslak eskidi) → yenile (EDM'deki içerik değişti) → gönder: giden belge son hâl
+    not ok 3 - taslak yükle → düzenle (taslak eskidi) → yenile (EDM'deki içerik değişti) → gönder: giden belge son hâl
+      ---
+      duration_ms: 155.704068
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz7-duzeltme-oncesi/test/einvoice-240-taslak.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        'error' !== 'draft'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'draft'
+      actual: 'error'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz7-duzeltme-oncesi/test/einvoice-240-taslak.test.mjs:101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taslak EDM portalından gönderildiyse program yeniden yüklemez (11056 yok); durumu EDM'den alır
+    ok 4 - taslak EDM portalından gönderildiyse program yeniden yüklemez (11056 yok); durumu EDM'den alır
+      ---
+      duration_ms: 64.687521
+      type: 'test'
+      ...
+    # Subtest: Kaydet ve Gönder (eSend now) ayar açıkken taslak yükler; Gönderilecekler'den toplu gönderim de
+    ok 5 - Kaydet ve Gönder (eSend now) ayar açıkken taslak yükler; Gönderilecekler'den toplu gönderim de
+      ---
+      duration_ms: 103.244474
+      type: 'test'
+      ...
+    # Subtest: taslaktaki belge silinmez; e-Fatura taslağı onaysız iptal edilmez, onayla iptal edilir (EDM'ye iptal gönderilmez)
+    ok 6 - taslaktaki belge silinmez; e-Fatura taslağı onaysız iptal edilmez, onayla iptal edilir (EDM'ye iptal gönderilmez)
+      ---
+      duration_ms: 59.404855
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv taslağı iptal edilince EDM'de de iptal edilir
+    ok 7 - e-Arşiv taslağı iptal edilince EDM'de de iptal edilir
+      ---
+      duration_ms: 75.960007
+      type: 'test'
+      ...
+    # Subtest: ayar sonradan kapatılsa da taslaktaki belge yenilenip gönderilebilir; yeni belge yine doğrudan gönderilir
+    ok 8 - ayar sonradan kapatılsa da taslaktaki belge yenilenip gönderilebilir; yeni belge yine doğrudan gönderilir
+      ---
+      duration_ms: 118.662914
+      type: 'test'
+      ...
+    1..8
+not ok 1 - Portala taslak (sahte EDM)
+  ---
+  duration_ms: 1576.14527
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz7-duzeltme-oncesi/test/einvoice-240-taslak.test.mjs:15:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2356.610148

@@ -1,0 +1,73 @@
+{
+  "ad": "vekil-eski-kod-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-timeout=60000 test/vekil-sunucu.test.mjs test/vekil-sunucu-uygulama.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T05:48:43.234Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 0,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Vekil sunucu: program uçları ve EDM trafiği › Ağ Bağlantısı ayarı: varsayılan Otomatik; elle adres kaydedilir; parola ekrana ve işlem kaydına çıkmaz, boş bırakılınca korunur",
+      "konum": "test/vekil-sunucu-uygulama.test.mjs:98:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Vekil sunucu: program uçları ve EDM trafiği › Yetkisiz kullanıcı ağ ayarını göremez ve değiştiremez",
+      "konum": "test/vekil-sunucu-uygulama.test.mjs:123:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 403 (beklenen 403, gelen 404)"
+    },
+    {
+      "ad": "Vekil sunucu: program uçları ve EDM trafiği › EDM: Bağlantıyı Test Et istekleri vekil sunucudan geçer; vekil kapatılınca aynı adrese ulaşılamaz",
+      "konum": "test/vekil-sunucu-uygulama.test.mjs:131:3",
+      "hata": "Entegratör kartı yolu gösterir · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Vekil sunucu: program uçları ve EDM trafiği › Bağlantıyı Dene: kaydedilmiş ayarla güncelleme sunucusuna gidilir, yol ve süre yazılır",
+      "konum": "test/vekil-sunucu-uygulama.test.mjs:167:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Vekil sunucu: program uçları ve EDM trafiği › İkinci şirket aynı (makine geneli) ayarı görür",
+      "konum": "test/vekil-sunucu-uygulama.test.mjs:184:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Vekil sunucu: bağlantılar (kaynak denetimi) › servis yöneticisi güncelleyiciye vekil fetch'i verir ve uygulamaya aynı ayar dosyasını geçirir",
+      "konum": "test/vekil-sunucu-uygulama.test.mjs:196:3",
+      "hata": "The input did not match the regular expression /const outboundFetch = options\\.fetchImpl \\|\\| createProxyFetch\\(\\{ resolve: cachedResolver\\(\\{ file: networkFile, env \\}\\) \\}\\)/. Input: · '// DestekOfis servis yöneticisi (Windows servisi olarak nssm altında çalışır).\\n' + · '//\\n' + (beklenen , gelen |-)"
+    },
+    {
+      "ad": "Vekil sunucu: bağlantılar (kaynak denetimi) › lisans, E-Tablolar ve entegratör programın (vekil) fetch'ini kullanır",
+      "konum": "test/vekil-sunucu-uygulama.test.mjs:202:3",
+      "hata": "The input did not match the regular expression /connect\\(\\{ integrator: \\{ \\.\\.\\.cfg, password \\}, seller: sellerParty\\(s\\), fetchImpl: config\\.fetchImpl \\}\\)/. Input: · '// Fatura (v2.0.15): satış, alış, satıştan iade, alıştan iade ve serbest meslek makbuzu. Belge birincil kayıttır; stok\\n' + · '// hareketi, cari borç/alacağı, peşin tahsilat/ödeme (Kasa), çek/senet (portföy, verilen evrak, ciro) ve vadeli satışın\\n' + (beklenen , gelen |-)"
+    },
+    {
+      "ad": "test/vekil-sunucu.test.mjs",
+      "konum": "test/vekil-sunucu.test.mjs:1:1",
+      "hata": "test failed"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/vekil-eski-kod-kirmizi.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/vekil-eski-1e8d848",
+  "ham_cikti_sha256": "c7a961ef8c9126649598b6d3ee12eeab5fb4a5f000ef296d6c1535d432d6536c",
+  "ham_cikti_bayt": 326635
+}

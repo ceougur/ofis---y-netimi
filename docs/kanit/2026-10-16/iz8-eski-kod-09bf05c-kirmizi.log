@@ -1,0 +1,283 @@
+TAP version 13
+# (node:12398) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Üretim girişi: e-Belge açık, canlı ortam kilitli
+    # Subtest: server/server.mjs e-Belgeyi açar, canlıyı açmaz; config canlıyı ortam değişkeniyle açmaz
+    not ok 1 - server/server.mjs e-Belgeyi açar, canlıyı açmaz; config canlıyı ortam değişkeniyle açmaz
+      ---
+      duration_ms: 1.579193
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:24:3'
+      failureType: 'testCodeFailure'
+      error: 'üretim girişi edocEnabled: true verir'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        
+        
+        
+        import { createApp } from "./app.mjs";
+        
+        const app = createApp();
+        const address = await app.listen().catch(error => {
+          app.log.error(error.code === "EADDRINUSE" ? `Port ${app.config.port} kullanımda. Başka bir DestekOfis sunucusu çalışıyor olabilir.` : "Sunucu başlatılamadı", error);
+          process.exit(1);
+        });
+        app.log.info(`${app.config.productName} ${app.config.version} merkezi sunucusu http://${app.config.host}:${address.port}`);
+        
+        let stopping = false;
+        const shutdown = async reason => {
+          if (stopping) return;
+          stopping = true;
+          app.log.info(`${reason}: sunucu kapatılıyor…`);
+          const force = setTimeout(() => process.exit(0), 5000);
+          force.unref();
+          await app.close();
+          process.exit(0);
+        };
+        process.on("SIGINT", () => shutdown("SIGINT"));
+        process.on("SIGTERM", () => shutdown("SIGTERM"));
+        process.on("SIGBREAK", () => shutdown("SIGBREAK"));
+        
+        
+        process.on("unhandledRejection", reason => {
+          app.log.error("Sahipsiz söz reddi (istek sürüyor)", reason instanceof Error ? reason : new Error(String(reason)));
+        });
+        process.on("uncaughtException", error => {
+          app.log.error("Yakalanmamış hata; sunucu yeniden başlatılmak üzere kapanıyor", error);
+          if (stopping) return;
+          stopping = true;
+          const force = setTimeout(() => process.exit(1), 3000);
+          force.unref();
+          app.close().catch(() => {}).finally(() => process.exit(1));
+        });
+        
+        if (process.send) {
+          const report = () => process.send?.({ type: "info", ...app.info() });
+          process.send({ type: "ready", port: address.port, ...app.info() });
+          app.onInfoChange(report);
+        
+        
+          app.onRestartRequest(reason => shutdown(reason || "Yeniden başlatma istendi"));
+          process.on("message", message => {
+            if (message && message.type === "shutdown") shutdown("Servis yöneticisi kapatma istedi");
+          });
+        
+          process.on("disconnect", () => shutdown("Servis yöneticisi bağlantısı koptu"));
+        }
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:26:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - Üretim girişi: e-Belge açık, canlı ortam kilitli
+  ---
+  duration_ms: 2.466004
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:23:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Test ortamı belgeleri (sahte EDM)
+    # Subtest: canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır
+    not ok 1 - canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır
+      ---
+      duration_ms: 22.167556
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + undefined
+        - {
+        -   earsiv: 'TEA',
+        -   efatura: 'TEF',
+        -   esmm: 'TES'
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        efatura: 'TEF'
+        earsiv: 'TEA'
+        esmm: 'TES'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:74:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez
+    not ok 2 - test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez
+      ---
+      duration_ms: 84.720785
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'EFT2026000000001'
+        - 'TEF2026000000001'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'TEF2026000000001'
+      actual: 'EFT2026000000001'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:82:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Gönderilecekler'deki belge numarasını gönderimde test serisinden alır
+    not ok 3 - Gönderilecekler'deki belge numarasını gönderimde test serisinden alır
+      ---
+      duration_ms: 69.999239
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:97:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'EFT2026000000002'
+        - 'TEF2026000000002'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'TEF2026000000002'
+      actual: 'EFT2026000000002'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz
+    not ok 4 - test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz
+      ---
+      duration_ms: 54.973921
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:105:3'
+      failureType: 'testCodeFailure'
+      error: 'Deneme Ofis Ltd. Atatürk Blv. 1 Çankaya / Ankara Vergi Dairesi: Çankaya VKN: 1234567890 E-Posta: bilgi@deneme.com.tr e-FATURA Fatura No EFT2026000000003 Tarih / Saat 16.10.2026 10:33 Senaryo e-Fatura (Temel) Fatura Tipi SATIS ETTN ed8ac51c-9d88-4426-a3cd-7b4b047f0d7b SAYIN Alıcı Ticaret A.Ş. Cinnah '
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Deneme Ofis Ltd. Atatürk Blv. 1 Çankaya / Ankara Vergi Dairesi: Çankaya VKN: 1234567890 E-Posta: bilgi@deneme.com.tr e-FATURA Fatura No EFT2026000000003 Tarih / Saat 16.10.2026 10:33 Senaryo e-Fatura (Temel) Fatura Tipi SATIS ETTN ed8ac51c-9d88-4426-a3cd-7b4b047f0d7b SAYIN Alıcı Ticaret A.Ş. Cinnah Cd. 10 Çankaya / Ankara Vergi Dairesi: Kavaklıdere VKN: 9876543217 Sıra Mal / Hizmet Miktar Birim Fiyat İsk. % KDV % KDV Tutar 1 Danışmanlık 1 Adet 70,00 20 14,00 70,00 Mal / Hizmet Toplamı 70,00 TL Matrah (KDV Hariç) 70,00 TL KDV %20 (Matrah 70,00) 14,00 TL Vergiler Dahil Toplam 84,00 TL Ödenecek Tutar 84,00 TL Yalnız Seksen Dört Türk Lirası Ödeme: kalan vadeli (vade 16.10.2026) TESLİM ALAN Ad Soyad / İmza DÜZENLEYEN Kaşe / İmza EFT2026000000003 · Sayfa 1 / 1'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:110:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)
+    not ok 5 - firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)
+      ---
+      duration_ms: 5.889743
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"efatura":"TEF"}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:120:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 2 - Test ortamı belgeleri (sahte EDM)
+  ---
+  duration_ms: 695.954411
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Canlıya geçiş (canlı kilidi açılmış kurulum)
+    # Subtest: testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez
+    not ok 1 - testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez
+      ---
+      duration_ms: 35.692477
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'EFT2026000000001',
+        +   'EFT2026000000002'
+        -   'TEF2026000000001',
+        -   'TEF2026000000002'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'TEF2026000000001'
+        1: 'TEF2026000000002'
+      actual:
+        0: 'EFT2026000000001'
+        1: 'EFT2026000000002'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:156:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - Canlıya geçiş (canlı kilidi açılmış kurulum)
+  ---
+  duration_ms: 313.156931
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c/test/edoc-uretim.test.mjs:126:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 7
+# suites 3
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1429.009887

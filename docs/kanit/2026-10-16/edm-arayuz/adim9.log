@@ -1,0 +1,93 @@
+  ✓ Bağlantıyı Test Et: Durum: Bağlantı kuruldu · 16.10.2026 13:44
+13:44:36 CARİ (ekrandan) ETA Bilgisayar Test: {"id":"account-d3f03a63-1d38-4d4e-9e85-871cc709c174","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ firma carisi ekrandan: mükellef, posta kutusu seçildi
+13:44:45 CARİ (ekrandan) Ayşe Kaya: {"id":"account-594b6a69-a77d-4da6-8a43-b9e10ffa3f60","eInvoice":0,"eAlias":""}
+  ✓ kişi carisi ekrandan: mükellef değil (e-Arşiv)
+13:44:45 BAŞLANGIÇ BAKİYELERİ: {"firma":0,"kisi":0}
+
+■ K1 e-Fatura Temel — Kaydet ve Gönder
+13:44:55 K1: {"no":"TEF2026347991650","profil":"TEMELFATURA","eStatus":"sent","toasts":["Satış Faturası TEF2026347991650 kaydedildi.×","e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"]}
+  ✓ K1 e-Fatura gönderildi (TEF2026347991650, sent)
+
+■ K2 e-Fatura Ticari — Kaydet, Sonra Gönder → kartta e-Belge Gönder
+  ✓ K2 Gönderilecekler'de, numarasız (waiting)
+13:45:10 K2: {"no":"TEF2026347991651","profil":"TICARIFATURA","eStatus":"sent","toasts":["e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"]}
+  ✓ K2 Ticari gönderildi (TEF2026347991651)
+
+■ K3 e-Arşiv (kişi) — Kaydet ve Gönder
+13:45:19 K3: {"no":"TEA2026347991650","profil":"EARSIVFATURA","eStatus":"sent","toasts":["Satış Faturası TEA2026347991650 kaydedildi.×","e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"]}
+  ✓ K3 e-Arşiv gönderildi (TEA2026347991650)
+
+■ K4 e-Arşiv (kişi) — Kaydet, Sonra Gönder → e-Belge Gönder
+13:45:32 K4: {"no":"TEA2026347991651","eStatus":"sent","toasts":["e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"]}
+  ✓ K4 e-Arşiv gönderildi (TEA2026347991651)
+
+■ K5 Gönderilecekler'den Listeden Sil (gönderilmeden vazgeçme)
+13:45:41 K5: {"no":"FIS2026000000001","profil":"KAGIT","eStatus":"withdrawn","toasts":["Belge listeden silindi; FIS2026000000001 numaralı Müşteri Fişi olarak kaldı.×"]}
+  ✓ K5 Müşteri Fişi olarak kaldı (FIS2026000000001); e-Belge numarası harcanmadı
+
+■ Durum Sorgula (ekran) — dört gönderilen belge
+13:45:45   K1 Durum Sorgula 1: {"eStatus":"processing","ileti":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:46:24   K1 Durum Sorgula 2: {"eStatus":"processing","ileti":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:47:02   K1 Durum Sorgula 3: {"eStatus":"processing","ileti":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:47:41   K1 Durum Sorgula 4: {"eStatus":"processing","ileti":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:48:20   K1 Durum Sorgula 5: {"eStatus":"processing","ileti":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:48:59   K1 Durum Sorgula 6: {"eStatus":"processing","ileti":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:49:38   K1 Durum Sorgula 7: {"eStatus":"processing","ileti":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:50:16   K1 Durum Sorgula 8: {"eStatus":"processing","ileti":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:50:55   K1 Durum Sorgula 9: {"eStatus":"sent","ileti":"İşlem tamamlandı. SUCCEED"}
+13:50:59   K2 Durum Sorgula 1: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_GIB_RESPONSE"}
+13:51:38   K2 Durum Sorgula 2: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:52:17   K2 Durum Sorgula 3: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:52:55   K2 Durum Sorgula 4: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:53:34   K2 Durum Sorgula 5: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:54:13   K2 Durum Sorgula 6: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:54:52   K2 Durum Sorgula 7: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:55:31   K2 Durum Sorgula 8: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:56:09   K2 Durum Sorgula 9: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:56:48   K2 Durum Sorgula 10: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:57:27   K2 Durum Sorgula 11: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:58:06   K2 Durum Sorgula 12: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:58:45   K2 Durum Sorgula 13: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+13:59:23   K2 Durum Sorgula 14: {"eStatus":"processing","ileti":"EDM'de işleniyor. WAIT_APPLICATION_RESPONSE"}
+14:00:02   K3 Durum Sorgula 1: {"eStatus":"sent","ileti":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+14:00:06   K4 Durum Sorgula 1: {"eStatus":"sent","ileti":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+  ✓ K1 son durum: sent — İşlem tamamlandı. SUCCEED
+  ✗ K2 son durum: processing — EDM'de işleniyor. WAIT_APPLICATION_RESPONSE
+  ✓ K3 son durum: sent — e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED
+  ✓ K4 son durum: sent — e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED
+  ✓ K1 Resmî Görüntü alındı
+  ✓ K3 Resmî Görüntü alındı
+14:00:13 SATIŞLARDAN SONRA BAKİYE: {"firma":3440,"kisi":1920}
+
+■ İ1 e-Arşiv iptali (K3) — İptal Et → EDM'de de iptal
+14:00:19 İ1: {"formHata":"","toasts":["Satış Faturası TEA2026347991650 iptal edildi; etkileri geri alındı.×"],"status":"cancelled","eStatus":"cancelled"}
+  ✓ İ1 belge programda ve EDM'de iptal
+  ✓ İ1 kişi bakiyesi iptal tutarı kadar düştü (1920 → 840, fatura 1080)
+14:00:23   İ1 Durum Sorgula 1: {"eStatus":"cancelled","ileti":"Fatura EDM'de iptal edildi. SUCCEED"}
+  ✓ İ1 Durum Sorgula: cancelled
+
+■ İ2 e-Fatura iptali (K1) — onay kutusu olmadan reddedilir, onayla programda iptal (GİB tarafı ayrı)
+14:00:29 İ2a onaysız: {"formHata":"Gönderilmiş e-Fatura önce GİB / alıcı tarafında iptal edilmeli (ret ya da iptal talebi); sonra kutuyu işaretleyin. Gerekirse iade faturası kesin.","status":"issued"}
+  ✓ İ2a onaysız iptal edilmedi: “Gönderilmiş e-Fatura önce GİB / alıcı tarafında iptal edilmeli (ret ya da iptal talebi); sonra kutuyu işaretleyin. Gerek”
+14:00:36 İ2b onaylı: {"formHata":"","toasts":["Satış Faturası TEF2026347991650 iptal edildi; etkileri geri alındı.×"],"status":"cancelled","eStatus":"sent"}
+  ✓ İ2b onayla programda iptal
+  ✓ İ2 firma bakiyesi düştü (3440 → 1200, fatura 2240)
+
+■ İ3 İşlenirken iptal: yeni e-Arşiv kesilip hemen iptal
+14:00:51 İ3: {"formHata":"e-Arşiv fatura EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Birkaç dakika sonra Durum Sorgula ile bakıp yeniden deneyin.","toasts":[],"status":"issued","eStatus":"sent"}
+  ✓ İ3 ya iptal edildi ya da "işleniyor" denip beklendi (issued/sent)
+14:00:55   İ3 Durum Sorgula 1: {"eStatus":"processing","ileti":"EDM'de paketleniyor. PROCESSING"}
+14:01:34   İ3 Durum Sorgula 2: {"eStatus":"sent","ileti":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+14:01:40 İ3 yeniden: {"formHata":"","status":"cancelled","eStatus":"cancelled"}
+  ✓ İ3 işlem bitince iptal edildi
+
+■ İ4 Müşteri Fişine dönmüş belge (K5) iptali
+  ✓ İ4 fiş iptal (cancelled)
+14:01:46 SON BAKİYELER: {"firma":1200,"kisi":600,"beklenenFirma":1200,"beklenenKisi":600}
+  ✓ son bakiyeler iptallerle tutarlı
+14:01:46 DEFTER BÜTÜNLÜĞÜ: {"status":200,"veri":"{\"ok\":true,\"checks\":[{\"code\":\"balance\",\"name\":\"Çift yönlü kayıt (borç = alacak)\",\"ok\":true,\"difference\":0},{\"code\":\"gl:100\",\"name\":\"100 Kasa (Nakit)\",\"ok\":true,\"difference\":0,\"ledger\":0,\"subledger\":0},{\"code\":\"gl:101\",\"name\":\"101 Alınan Çekler\",\"ok\":true,\"difference\":0,\"ledger\":0,\"subledger\":0},{\"co"}
+  ✓ defter bütünlüğü (ledger/integrity) temiz
+ÖZET {"K1":{"no":"TEF2026347991650","ettn":"45ef4b3a-22d4-4c62-a103-5722cdef2446","profil":"TEMELFATURA","durum":"cancelled","eDurum":"sent","tutar":2240},"K2":{"no":"TEF2026347991651","ettn":"482e2568-ff9f-48db-a08b-22e0a48a279c","profil":"TICARIFATURA","durum":"issued","eDurum":"processing","tutar":1200},"K3":{"no":"TEA2026347991650","ettn":"bbc0d793-c263-4bd1-892f-4999d006dfd6","profil":"EARSIVFATURA","durum":"cancelled","eDurum":"cancelled","tutar":1080},"K4":{"no":"TEA2026347991651","ettn":"ebb1f3f2-cabc-4b56-899e-5916c80ff94c","profil":"EARSIVFATURA","durum":"issued","eDurum":"sent","tutar":600},"K5":{"no":"FIS2026000000001","ettn":"39569e1f-cf88-4eed-a599-0d2b95c2c3df","profil":"KAGIT","durum":"cancelled","eDurum":"withdrawn","tutar":240},"K6":{"no":"TEA2026347991652","ettn":"af9e73e2-4ade-4a61-adb3-21f6351454a0","profil":"EARSIVFATURA","durum":"cancelled","eDurum":"cancelled","tutar":180}}
+14:01:46 SAYFA HATALARI: yok
+SONUÇ: 25 geçti, 1 kaldı

@@ -1,0 +1,28 @@
+  ✓ ayarlar 200
+17:17:15 ■ KADEME 100/dk başlıyor
+17:18:17 KADEME 100/dk SONUÇ: {"hedef":"100/dk","baslatilan":100,"basarili":100,"hata":0,"hatalar":{},"baslatmaSn":59,"bitisSn":62,"ulasilanHiz":97,"p50ms":2746,"p95ms":4991,"enCokMs":6078}
+17:18:17 ■ KADEME 500/dk başlıyor
+17:19:49 KADEME 500/dk SONUÇ: {"hedef":"500/dk","baslatilan":500,"basarili":500,"hata":0,"hatalar":{},"baslatmaSn":83,"bitisSn":92,"ulasilanHiz":326,"p50ms":9902,"p95ms":14206,"enCokMs":22850}
+17:19:49 ■ KADEME 1000/dk başlıyor
+17:22:59 KADEME 1000/dk SONUÇ: {"hedef":"1000/dk","baslatilan":1000,"basarili":999,"hata":1,"hatalar":{"gönderim: EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Result":1},"baslatmaSn":181,"bitisSn":190,"ulasilanHiz":315,"p50ms":10954,"p95ms":14699,"enCokMs":18884}
+
+■ Denetim
+  ✓ kaydedilen belge 1600/1600
+  ✓ TEF numaraları benzersiz true + boşluksuz true: 800 belge TEF2026184244040 … TEF2026184244839
+  ✓ TEA numaraları benzersiz true + boşluksuz true: 800 belge TEA2026184244040 … TEA2026184244839
+  ✓ hiçbir belge iki kez gönderilmedi (en çok 1)
+17:22:59 EDM'YE GİDEN: 1599/1600
+  ✓ ödenecek tutarlar = bağımsız hesap (1600/1600)
+  ✓ DESTEK OFİS bakiyesi 2515599.8 = beklenen 2515599.8
+  ✓ DESTEK OFİS Bireysel bakiyesi 2866480.2 = beklenen 2866480.2
+  ✓ defter bütünlüğü temiz
+
+■ EDM son durumları
+17:25:03 durum turu 1: {"processing":799,"sent":800}
+17:26:41 durum turu 2: {"sent":1010,"processing":589}
+17:28:04 durum turu 3: {"sent":1227,"processing":372}
+17:29:10 durum turu 4: {"sent":1459,"processing":140}
+17:30:00 durum turu 5: {"sent":1599}
+  ✓ EDM son durum: {"sent":1599}
+17:30:00 ÖZET: {"tiers":[{"hedef":"100/dk","baslatilan":100,"basarili":100,"hata":0,"hatalar":{},"baslatmaSn":59,"bitisSn":62,"ulasilanHiz":97,"p50ms":2746,"p95ms":4991,"enCokMs":6078},{"hedef":"500/dk","baslatilan":500,"basarili":500,"hata":0,"hatalar":{},"baslatmaSn":83,"bitisSn":92,"ulasilanHiz":326,"p50ms":9902,"p95ms":14206,"enCokMs":22850},{"hedef":"1000/dk","baslatilan":1000,"basarili":999,"hata":1,"hatalar":{"gönderim: EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Result":1},"baslatmaSn":181,"bitisSn":190,"ulasilanHiz":315,"p50ms":10954,"p95ms":14699,"enCokMs":18884}],"edmSon":{"sent":1599},"numaralar":{"eFatura":"TEF2026184244040 … TEF2026184244839 (800)","eArsiv":"TEA2026184244040 … TEA2026184244839 (800)"}}
+SONUÇ: 10 geçti, 0 kaldı

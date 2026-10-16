@@ -423,6 +423,8 @@ export function createApp(overrides = {}) {
       child = createApp({
         ...overrides,
         dataDir: dirs.dataDir,
+        // Vekil sunucu ayarı makine genelidir: bütün şirketler ortak katmanın dosyasını okur (veri klasörü şirkete göre değişse de).
+        networkFile: config.networkFile,
         // Yedek kökü ortak; şirketin klasörü (<kod> - <ad>) kayıt defterinden her kullanımda çözülür.
         backupDir: config.backupDir,
         log,

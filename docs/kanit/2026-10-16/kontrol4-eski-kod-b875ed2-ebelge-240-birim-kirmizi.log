@@ -1,0 +1,123 @@
+TAP version 13
+# (node:10262) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: programın bütün birimleri entegratörün (EDM) kabul ettiği kodla gider
+not ok 1 - programın bütün birimleri entegratörün (EDM) kabul ettiği kodla gider
+  ---
+  duration_ms: 3.301913
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol4-eski-b875ed2/test/ebelge-240-birim.test.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    EDM'nin reddettiği kod: [["Koli","CT"],["Çuval","SA"],["Şişe","BO"],["Rulo","RO"],["Hafta","WEE"]]
+    + actual - expected
+    
+    + [
+    +   [
+    +     'Koli',
+    +     'CT'
+    +   ],
+    +   [
+    +     'Çuval',
+    +     'SA'
+    +   ],
+    +   [
+    +     'Şişe',
+    +     'BO'
+    +   ],
+    +   [
+    +     'Rulo',
+    +     'RO'
+    +   ],
+    +   [
+    +     'Hafta',
+    +     'WEE'
+    +   ]
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      0: 'Koli'
+      1: 'CT'
+    1:
+      0: 'Çuval'
+      1: 'SA'
+    2:
+      0: 'Şişe'
+      1: 'BO'
+    3:
+      0: 'Rulo'
+      1: 'RO'
+    4:
+      0: 'Hafta'
+      1: 'WEE'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol4-eski-b875ed2/test/ebelge-240-birim.test.mjs:20:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: Adet koduyla giden birimin adı belgede kalır; XML GİB/XSD'den geçer
+    # Subtest: Çuval / Hafta / Kg kalemli e-Fatura
+    not ok 1 - Çuval / Hafta / Kg kalemli e-Fatura
+      ---
+      duration_ms: 107.956635
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol4-eski-b875ed2/test/ebelge-240-birim.test.mjs:37:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'SA',
+        +   'WEE',
+        -   'C62',
+        -   'C62',
+            'KGM'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'C62'
+        1: 'C62'
+        2: 'KGM'
+      actual:
+        0: 'SA'
+        1: 'WEE'
+        2: 'KGM'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol4-eski-b875ed2/test/ebelge-240-birim.test.mjs:44:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - Adet koduyla giden birimin adı belgede kalır; XML GİB/XSD'den geçer
+  ---
+  duration_ms: 429.081979
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol4-eski-b875ed2/test/ebelge-240-birim.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 782.160693

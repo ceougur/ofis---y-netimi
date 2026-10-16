@@ -1,6 +1,13 @@
 # Fatura Modülü — e-Fatura / e-Arşiv (EDM Bilişim) Bilgi Dosyası
 
-Durum: **SIRADA, BAŞLANMADI.** Kullanıcı "fatura modülünü yap" deyince buradan başlanır. e-Belge bağlantısı bugün KAPALI
+Durum (16.10.2026): **Adım 1 (XML uygunluğu) YAPILDI** — kâhin aracı `tools/ebelge/dogrula.mjs` (UBL 2.1 XSD + GİB şematronu), test
+`test/ebelge-uygunluk.test.mjs`; üç kusur düzeltildi (boş imza yuvası, istisna 308 → 304, iade referansı). İş listesi `docs/2.4.0-IS-LISTESI.md`.
+Entegratör Ayarları kartı ve K4/K5 YAPILDI. **Adım 2 (EDM test ortamı) YAPILDI (16.10.2026):** gerçek EDM test servisinde programın kendi
+API'siyle giriş, Mükellef Sorgula, e-Arşiv gönder → başarılı → iptal → başarılı, e-Fatura gönder → alıcıya ulaştı; gerçek servisin gösterdiği
+dört kusur düzeltildi (CheckUser sözleşme dışı alan, "erreceipt", çoklu PK, işlenirken iptal). Kanıt docs/kanit/2026-10-16/edm-test-ortami-*.
+Kalan: oturum düşmesi/hata kodları gerçek serviste, gelen e-Fatura → alış taslağı gerçek belgeyle, e-SMM. Vekil sunucu (proxy) desteği YAPILDI (16.10.2026; Yönetim → Sistem → Ağ Bağlantısı, `docs/2.4.0-IS-LISTESI.md` İz 5).
+Adım 3 (açma) kullanıcının "entegre et" kararıyla.
+Eski durum: **SIRADA, BAŞLANMADI.** Kullanıcı "fatura modülünü yap" deyince buradan başlanır. e-Belge bağlantısı bugün KAPALI
 (`config.edocEnabled` false; belge "Müşteri Fişi", mali değeri yok — 13.10.2026'da koddan ve testle doğrulandı, aşağıda §2).
 Sıra (kullanıcı, 13.10.2026): Perşembe kullanım sınırı sıfırlanınca → (1) banka kalan işleri → (2) bu fatura/e-Belge işi → (3) devir modülü
 (`docs/devir/DEVIR-MODULU.md`).
@@ -46,6 +53,8 @@ Fatura işi için gerekenler TAM ve sağlam:
   Temel/Ticari, e-Arşiv), `ubl-read.mjs`, `adapters.mjs`, `integrator-error.mjs`. edm.mjs'teki test/canlı adresleri EDM'nin verdiği
   adreslerle AYNI (satır 27–28).
 - Kaynak (v2.0.15'te): EDM'nin herkese açık belgeleri + açık kaynak istemci; gerçek EDM test ortamında HİÇ denenmedi.
+- EDM'nin örnek faturalarında `cbc:ID` (fatura no) ve `cbc:IssueTime` BOŞ, `ext:UBLExtensions` YOK: numarayı/saati ve imzayı EDM verebiliyor.
+  Program kendi numarasını verir (seri + yıl + 9 hane, GİB biçimi); Adım 2'de EDM'nin bu numarayı kabul ettiği test ortamında görülecek.
 
 ## 3. Plan (kullanıcı: "önce uyumlu XML paketini yaptığımızı doğrulayalım, sonra testlerden geçirelim, sonra entegre et diyebileceğim hale
 gelince entegre ederiz")

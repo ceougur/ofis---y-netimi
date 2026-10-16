@@ -1,0 +1,32 @@
+{
+  "ad": "iz8-yeni-ve-komsu",
+  "komut": "bash -c cd test && node --test edoc-uretim.test.mjs ebelge-240-ek-secenekler.test.mjs ebelge-240-gorunum.test.mjs ebelge-uygunluk.test.mjs edm-gercek-sozlesme.test.mjs einvoice-240-resmi-gorunum.test.mjs einvoice-240-taslak.test.mjs einvoice-edm.test.mjs einvoice-mock.mjs fatura-215.test.mjs fatura-216.test.mjs fatura-217.test.mjs fatura-230-ayarlar-banka.test.mjs fatura-buyuk-tutar-210.test.mjs fatura-durum-222.test.mjs fatura-model.test.mjs kilavuz-surum.test.mjs yazim-duzeni.test.mjs ",
+  "commit": "09bf05ce93cc8ed5197951cfb01ab254b43772de",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 8,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T10:33:46.435Z",
+  "sure_sn": 25.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 182,
+    "gecen": 182,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/iz8-yeni-ve-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "85ff35860d888c8eb48f2c460f0e0955efdbdd4d5adb866094353bcefb8ee6fa",
+  "ham_cikti_bayt": 57360
+}

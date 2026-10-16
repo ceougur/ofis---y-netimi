@@ -1,0 +1,231 @@
+  ✓ şirket 002 açıldı (200 )
+  ✓ 001 Fatura Ayarları + entegratör (200 )
+  ✓ 001 Bağlantıyı Test Et (200)
+15:52:14 001 ALIŞ FATURASI (iade için): {"no":"ANB2026000000417","tedarikci":"Anadolu Bilişim Dağıtım A.Ş.","tutar":18000}
+15:52:14 001 CARİLER: {"efatura":["Yıldız Hukuk Bürosu","Kuzey Emlak Danışmanlık Ltd. Şti.","Marmara Gıda San. ve Tic. A.Ş."],"earsiv":["Mehmet Demir (TCKN)","Güneş Kafe Gıda Ltd. Şti. (VKN)","Zeynep Arslan (TCKN)"],"stok":[]}
+  ✓ 002 Fatura Ayarları + entegratör (200 )
+  ✓ 002 Bağlantıyı Test Et (200)
+15:52:18 002 ALIŞ FATURASI (iade için): {"no":"OAC2026000000582","tedarikci":"Orta Anadolu Çimento Pazarlama A.Ş.","tutar":2520}
+15:52:18 002 CARİLER: {"efatura":["Başkent İnşaat Taahhüt A.Ş.","Ege Tekstil Konfeksiyon Ltd. Şti.","Akdeniz Otelcilik ve Turizm A.Ş."],"earsiv":["Can Öztürk (TCKN)","Deniz Oto Servis Ltd. Şti. (VKN)","Elif Şahin (TCKN)"],"stok":["Portland Çimento 50 Kg","İnşaat Demiri Q12","İç Cephe Boyası 15 Lt","Seramik Yer Karosu 60x60","Kırmızı Tuğla 13,5"]}
+  ✓ 10 kullanıcı açıldı, her biri yalnız kendi şirketinde yetkili
+15:52:22 OTURUMLAR: ["destek1","destek2","destek3","destek4","destek5","atlas1","atlas2","atlas3","atlas4","atlas5"]
+
+■ 10 kullanıcı (2 şirket) aynı anda başlıyor
+15:52:42 destek3 #1 eF-Ticari issue-later → Kuzey Emlak Danışmanlık Ltd. Şti.: {"no":"TEF2026307378396","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":5400,"sn":19,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:52:42 atlas4 #1 eA issue-later → Deniz Oto Servis Ltd. Şti.: {"no":"TEA2026307878396","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":8100,"sn":20,"ileti":"Satış Faturası kaydedildi; Gönderilecekler'de bekliyor.×"}
+15:52:43 atlas1 #1 eF-Temel issue-now → Başkent İnşaat Taahhüt A.Ş.: {"no":"TEF2026307878396","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":68400,"sn":20,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:52:43 destek2 #1 eA issue-now → Mehmet Demir: {"no":"TEA2026307378396","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2430,"sn":21,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:52:44 destek5 #1 eF-Tevkifat issue-now → Marmara Gıda San. ve Tic. A.Ş.: {"no":"TEF2026307378397","profil":"TEMELFATURA","tip":"TEVKIFAT","eStatus":"sent","tutar":10200,"sn":21,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:52:44 atlas5 #1 eF-İstisna issue-now → Akdeniz Otelcilik ve Turizm A.Ş.: {"no":"TEF2026307878397","profil":"TEMELFATURA","tip":"ISTISNA","eStatus":"sent","tutar":49203.2,"sn":21,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:52:45 atlas3 #1 eF-Ticari issue-later → Ege Tekstil Konfeksiyon Ltd. Şti.: {"no":"TEF2026307878398","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":24012,"sn":23,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:52:46 atlas2 #1 eA issue-now → Can Öztürk: {"no":"TEA2026307878397","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":23880,"sn":24,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:52:49 destek1 #1 eF-Temel issue-now → Yıldız Hukuk Bürosu: {"no":"TEF2026307378398","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":6240,"sn":26,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:52:49 destek4 #1 eA issue-later → Güneş Kafe Gıda Ltd. Şti.: {"no":"TEA2026307378397","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":3571.5,"sn":26,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:01 destek2 #2 eF-Ticari issue-later → Kuzey Emlak Danışmanlık Ltd. Şti.: {"no":"TEF2026307378399","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":5400,"sn":18,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:02 atlas3 #2 eA issue-later → Deniz Oto Servis Ltd. Şti.: {"no":"TEA2026307878399","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":8100,"sn":17,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:02 atlas1 #2 eA issue-now → Can Öztürk: {"no":"TEA2026307878398","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":23880,"sn":20,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:03 destek5 #2 eA issue-now → Zeynep Arslan: {"no":"TEA2026307378398","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2160,"sn":19,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:03 destek3 #2 eA issue-later → Güneş Kafe Gıda Ltd. Şti.: {"no":"TEA2026307378399","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":3571.5,"sn":22,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:04 atlas2 #2 eF-Ticari issue-later → Ege Tekstil Konfeksiyon Ltd. Şti.: {"no":"TEF2026307878400","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":24012,"sn":18,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:05 atlas4 #2 eF-İstisna issue-now → Akdeniz Otelcilik ve Turizm A.Ş.: {"no":"TEF2026307878399","profil":"TEMELFATURA","tip":"ISTISNA","eStatus":"sent","tutar":49203.2,"sn":22,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:06 destek4 #2 eF-Tevkifat issue-now → Marmara Gıda San. ve Tic. A.Ş.: {"no":"TEF2026307378400","profil":"TEMELFATURA","tip":"TEVKIFAT","eStatus":"sent","tutar":10200,"sn":17,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:06 atlas5 #2 eA issue-now → Elif Şahin: {"no":"TEA2026307878400","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":6600,"sn":22,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:11 destek1 #2 eA issue-now → Mehmet Demir: {"no":"TEA2026307378400","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2430,"sn":22,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:20 atlas1 #3 eF-Ticari issue-later → Ege Tekstil Konfeksiyon Ltd. Şti.: {"no":"TEF2026307878401","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":24012,"sn":17,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:22 atlas2 #3 eA issue-later → Deniz Oto Servis Ltd. Şti.: {"no":"TEA2026307878401","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":8100,"sn":18,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:23 destek2 #3 eA issue-later → Güneş Kafe Gıda Ltd. Şti.: {"no":"TEA2026307378401","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":3571.5,"sn":22,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:25 destek4 #3 eA issue-now → Zeynep Arslan: {"no":"TEA2026307378402","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2160,"sn":20,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:27 atlas5 #3 eF-Temel issue-now → Başkent İnşaat Taahhüt A.Ş.: {"no":"TEF2026307878402","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":68400,"sn":20,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:27 atlas4 #3 eA issue-now → Elif Şahin: {"no":"TEA2026307878402","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":6600,"sn":22,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:28 atlas3 #3 eF-İstisna issue-now → Akdeniz Otelcilik ve Turizm A.Ş.: {"no":"TEF2026307878403","profil":"TEMELFATURA","tip":"ISTISNA","eStatus":"sent","tutar":49203.2,"sn":26,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:28 destek3 #3 eF-Tevkifat issue-now → Marmara Gıda San. ve Tic. A.Ş.: {"no":"TEF2026307378401","profil":"TEMELFATURA","tip":"TEVKIFAT","eStatus":"sent","tutar":10200,"sn":25,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:30 destek1 #3 eF-Ticari issue-later → Kuzey Emlak Danışmanlık Ltd. Şti.: {"no":"TEF2026307378403","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":5400,"sn":19,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:30 destek5 #3 eF-Temel issue-now → Yıldız Hukuk Bürosu: {"no":"TEF2026307378402","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":6240,"sn":27,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:33 destek2 #4 eF-İade → Anadolu Bilişim Dağıtım A.Ş.: {"no":"TEF2026307378404","profil":"TEMELFATURA","tip":"IADE","eStatus":"sent","tutar":3600,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:35 atlas2 #4 eF-İade → Orta Anadolu Çimento Pazarlama A.Ş.: {"no":"TEF2026307878404","profil":"TEMELFATURA","tip":"IADE","eStatus":"sent","tutar":504,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:36 atlas1 #4 eA issue-later → Deniz Oto Servis Ltd. Şti.: {"no":"TEA2026307878403","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":8100,"sn":17,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:45 destek3 #4 eA issue-now → Zeynep Arslan: {"no":"TEA2026307378403","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2160,"sn":17,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:47 atlas5 #4 eA issue-now → Can Öztürk: {"no":"TEA2026307878404","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":23880,"sn":21,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:48 destek4 #4 eF-Temel issue-now → Yıldız Hukuk Bürosu: {"no":"TEF2026307378405","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":6240,"sn":22,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:48 atlas4 #4 eF-Temel issue-now → Başkent İnşaat Taahhüt A.Ş.: {"no":"TEF2026307878405","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":68400,"sn":21,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:51 destek2 #5 eF-Tevkifat issue-now → Marmara Gıda San. ve Tic. A.Ş.: {"no":"TEF2026307378406","profil":"TEMELFATURA","tip":"TEVKIFAT","eStatus":"sent","tutar":10200,"sn":18,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:54 destek5 #4 eA issue-now → Mehmet Demir: {"no":"TEA2026307378404","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2430,"sn":24,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:55 atlas1 #5 eF-İstisna issue-now → Akdeniz Otelcilik ve Turizm A.Ş.: {"no":"TEF2026307878406","profil":"TEMELFATURA","tip":"ISTISNA","eStatus":"sent","tutar":49203.2,"sn":18,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:53:55 destek1 #4 eA issue-later → Güneş Kafe Gıda Ltd. Şti.: {"no":"TEA2026307378405","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":3571.5,"sn":25,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:57 atlas3 #4 eA issue-now → Elif Şahin: {"no":"TEA2026307878405","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":6600,"sn":29,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:53:59 atlas2 #5 eF-İstisna issue-now → Akdeniz Otelcilik ve Turizm A.Ş.: {"no":"TEF2026307878407","profil":"TEMELFATURA","tip":"ISTISNA","eStatus":"sent","tutar":49203.2,"sn":23,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:02 atlas5 #5 eF-Ticari issue-later → Ege Tekstil Konfeksiyon Ltd. Şti.: {"no":"TEF2026307878408","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":24012,"sn":15,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:03 destek3 #5 eF-Temel issue-now → Yıldız Hukuk Bürosu: {"no":"TEF2026307378407","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":6240,"sn":19,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:06 destek2 #6 eA issue-now → Zeynep Arslan: {"no":"TEA2026307378406","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2160,"sn":15,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:10 atlas4 #5 eA issue-now → Can Öztürk: {"no":"TEA2026307878406","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":23880,"sn":22,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:12 destek4 #5 eA issue-now → Mehmet Demir: {"no":"TEA2026307378407","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2430,"sn":24,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:15 destek1 #5 eF-Tevkifat issue-now → Marmara Gıda San. ve Tic. A.Ş.: {"no":"TEF2026307378408","profil":"TEMELFATURA","tip":"TEVKIFAT","eStatus":"sent","tutar":10200,"sn":20,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:15 atlas1 #6 eA issue-now → Elif Şahin: {"no":"TEA2026307878407","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":6600,"sn":20,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:17 atlas3 #5 eF-Temel issue-now → Başkent İnşaat Taahhüt A.Ş.: {"no":"TEF2026307878409","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":68400,"sn":21,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:18 destek5 #5 eF-Ticari issue-later → Kuzey Emlak Danışmanlık Ltd. Şti.: {"no":"TEF2026307378409","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":5400,"sn":24,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:18 atlas5 #6 eA issue-later → Deniz Oto Servis Ltd. Şti.: {"no":"TEA2026307878408","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":8100,"sn":16,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:21 atlas2 #6 eA issue-now → Elif Şahin: {"no":"TEA2026307878409","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":6600,"sn":22,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:25 destek2 #7 eF-Temel issue-now → Yıldız Hukuk Bürosu: {"no":"TEF2026307378410","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":6240,"sn":19,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:27 destek3 #6 eA issue-now → Mehmet Demir: {"no":"TEA2026307378408","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2430,"sn":23,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:29 atlas4 #6 eF-Ticari issue-later → Ege Tekstil Konfeksiyon Ltd. Şti.: {"no":"TEF2026307878410","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":24012,"sn":19,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:30 atlas1 #7 eF-Temel (yarış) hold → Başkent İnşaat Taahhüt A.Ş.: {"no":"(numarasız)","profil":"TEMELFATURA","tip":"SATIS","eStatus":"waiting","tutar":81,"sn":15,"ileti":"Satış Faturası kaydedildi; Gönderilecekler'de bekliyor.×"}
+15:54:31 destek4 #6 eF-Ticari issue-later → Kuzey Emlak Danışmanlık Ltd. Şti.: {"no":"TEF2026307378411","profil":"TICARIFATURA","tip":"SATIS","eStatus":"sent","tutar":5400,"sn":20,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:32 destek1 #6 eA issue-now → Zeynep Arslan: {"no":"TEA2026307378409","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":2160,"sn":17,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:37 atlas3 #6 eA issue-now → Can Öztürk: {"no":"TEA2026307878410","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":23880,"sn":19,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:39 atlas2 #7 eF-Temel issue-now → Başkent İnşaat Taahhüt A.Ş.: {"no":"TEF2026307878411","profil":"TEMELFATURA","tip":"SATIS","eStatus":"sent","tutar":68400,"sn":18,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+15:54:39 destek5 #6 eA issue-later → Güneş Kafe Gıda Ltd. Şti.: {"no":"TEA2026307378410","profil":"EARSIVFATURA","tip":"SATIS","eStatus":"sent","tutar":3571.5,"sn":21,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+15:54:40 destek1 #7 eF-Temel (yarış) hold → Yıldız Hukuk Bürosu: {"no":"(numarasız)","profil":"TEMELFATURA","tip":"SATIS","eStatus":"waiting","tutar":120,"sn":8,"ileti":"Satış Faturası kaydedildi; Gönderilecekler'de bekliyor.×"}
+15:54:40 KESİM SÜRESİ (sn): 137
+  ✓ 64 belge ekrandan kesildi (hatalı 0)
+
+■ Yarış 1 — iki kullanıcı aynı belgeye aynı anda e-Belge Gönder
+15:54:49 001 YARIŞ 1: {"no":"TEF2026307378412","eStatus":"sent","gonderim":1,"iletiler":{"destek1":["Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.×"],"destek2":["e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"]}}
+  ✓ 001 aynı belgeye iki gönderim → EDM'ye BİR kez gitti (TEF2026307378412), öbür kullanıcıya ileti verildi
+15:54:59 002 YARIŞ 1: {"no":"TEF2026307878412","eStatus":"sent","gonderim":1,"iletiler":{"atlas1":["Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.×"],"atlas2":["e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"]}}
+  ✓ 002 aynı belgeye iki gönderim → EDM'ye BİR kez gitti (TEF2026307878412), öbür kullanıcıya ileti verildi
+
+■ Kesim sonrası denetim (şirket başına)
+  ✓ 001 32 ayrı belge (32)
+  ✓ 001 e-Fatura TEF benzersiz + boşluksuz TEF2026307378396 … TEF2026307378412
+  ✓ 001 e-Arşiv TEA benzersiz + boşluksuz TEA2026307378396 … TEA2026307378410
+  ✓ 001 belge türleri plana uygun (Temel/Ticari/e-Arşiv; TEVKIFAT/ISTISNA tipi)
+  ✓ 001 her belge EDM'ye BİR kez gönderildi
+  ✓ 001 her belge kesen kullanıcının adıyla gönderildi
+  ✓ 002 32 ayrı belge (32)
+  ✓ 002 e-Fatura TEF benzersiz + boşluksuz TEF2026307878396 … TEF2026307878412
+  ✓ 002 e-Arşiv TEA benzersiz + boşluksuz TEA2026307878396 … TEA2026307878410
+  ✓ 002 belge türleri plana uygun (Temel/Ticari/e-Arşiv; TEVKIFAT/ISTISNA tipi)
+  ✓ 002 her belge EDM'ye BİR kez gönderildi
+  ✓ 002 her belge kesen kullanıcının adıyla gönderildi
+  ✓ 001 kullanıcısı 002'nin belgesini göremiyor (404)
+
+■ Durum Sorgula — 64 belge, son duruma kadar
+15:55:40 DURUM TURU 1: {"001:processing":19,"001:sent":13,"002:processing":17,"002:sent":15}
+15:56:39 DURUM TURU 2: {"001:processing":17,"001:sent":15,"002:processing":17,"002:sent":15}
+15:57:38 DURUM TURU 3: {"001:processing":17,"001:sent":15,"002:processing":17,"002:sent":15}
+15:58:37 DURUM TURU 4: {"001:processing":17,"001:sent":15,"002:processing":17,"002:sent":15}
+15:59:36 DURUM TURU 5: {"001:sent":18,"001:processing":14,"002:sent":18,"002:processing":14}
+16:00:32 DURUM TURU 6: {"001:sent":26,"001:processing":6,"002:sent":26,"002:processing":6}
+16:01:20 DURUM TURU 7: {"001:sent":30,"001:processing":2,"002:sent":31,"002:processing":1}
+16:02:02 DURUM TURU 8: {"001:sent":32,"002:sent":32}
+  ✓ 64 belgenin son durumu Gönderildi (hepsi)
+
+■ Yarış 2 — iki kullanıcı aynı e-Arşivi aynı anda iptal; Yarış 3 — dört farklı e-Arşiv aynı anda iptal
+16:02:10 001 YARIŞ 2: {"no":"TEA2026307378398","status":"cancelled","eStatus":"cancelled","iptal":1,"eIptal":1,"iletiler":{"destek3":["Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin."],"destek4":["Satış Faturası TEA2026307378398 iptal edildi; etkileri geri alındı.×"]}}
+  ✓ 001 aynı belgeye iki iptal → BİR kez iptal edildi (TEA2026307378398; cancelled)
+16:02:19 002 YARIŞ 2: {"no":"TEA2026307878400","status":"cancelled","eStatus":"cancelled","iptal":1,"eIptal":1,"iletiler":{"atlas3":["Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin."],"atlas4":["Satış Faturası TEA2026307878400 iptal edildi; etkileri geri alındı.×"]}}
+  ✓ 002 aynı belgeye iki iptal → BİR kez iptal edildi (TEA2026307878400; cancelled)
+  ✓ dört farklı e-Arşiv aynı anda iptal edildi (TEA2026307378400, TEA2026307378405, TEA2026307878398, TEA2026307878403)
+16:03:06 DURUM TURU 1: {"001:sent":29,"001:cancelled":3,"002:sent":29,"002:cancelled":3}
+  ✓ iptal edilen 6 e-Arşiv EDM'de de iptal
+
+■ Bakiyeler, stok ve defter
+  ✓ 001 Yıldız Hukuk Bürosu bakiyesi = kesilen (iptal hariç) 31320.00 (31320)
+  ✓ 001 Kuzey Emlak Danışmanlık Ltd. Şti. bakiyesi = kesilen (iptal hariç) 27000.00 (27000)
+  ✓ 001 Marmara Gıda San. ve Tic. A.Ş. bakiyesi = kesilen (iptal hariç) 51000.00 (51000)
+  ✓ 001 Mehmet Demir bakiyesi = kesilen (iptal hariç) 9720.00 (9720)
+  ✓ 001 Güneş Kafe Gıda Ltd. Şti. bakiyesi = kesilen (iptal hariç) 14286.00 (14286)
+  ✓ 001 Zeynep Arslan bakiyesi = kesilen (iptal hariç) 8640.00 (8640)
+  ✓ 001 defter bütünlüğü temiz
+  ✓ 002 Başkent İnşaat Taahhüt A.Ş. bakiyesi = kesilen (iptal hariç) 342081.00 (342081)
+  ✓ 002 Ege Tekstil Konfeksiyon Ltd. Şti. bakiyesi = kesilen (iptal hariç) 120060.00 (120060)
+  ✓ 002 Akdeniz Otelcilik ve Turizm A.Ş. bakiyesi = kesilen (iptal hariç) 246016.00 (246016)
+  ✓ 002 Can Öztürk bakiyesi = kesilen (iptal hariç) 95520.00 (95520)
+  ✓ 002 Deniz Oto Servis Ltd. Şti. bakiyesi = kesilen (iptal hariç) 32400.00 (32400)
+  ✓ 002 Elif Şahin bakiyesi = kesilen (iptal hariç) 26400.00 (26400)
+  ✓ 002 defter bütünlüğü temiz
+
+■ Yedek 1 — sunucu yeniden açılır, otomatik yedek zamanlayıcısı
+  ✓ 001 otomatik yedek alındı (destekofis-001-2026-10-16T16-03-07-898Z.sqlite)
+  ✓ Otomatik yedek 001: destekofis-001-2026-10-16T16-03-07-898Z.sqlite — 33 fatura (numara/ETTN/durum/tutar birebir), cari/stok sayıları aynı, bütünlük ok
+  ✓ 002 otomatik yedek alındı (destekofis-002-2026-10-16T16-03-07-920Z.sqlite)
+  ✓ Otomatik yedek 002: destekofis-002-2026-10-16T16-03-07-920Z.sqlite — 33 fatura (numara/ETTN/durum/tutar birebir), cari/stok sayıları aynı, bütünlük ok
+
+■ Yedek 2 — Yedek Al (Tüm Şirketler)
+  ✓ Yedek Al: 200 ["destekofis-001-2026-10-16T16-03-08-476Z-manuel.sqlite","destekofis-002-2026-10-16T16-03-08-476Z-manuel.sqlite"]
+  ✓ Elle yedek 001: destekofis-001-2026-10-16T16-03-08-476Z-manuel.sqlite — 33 fatura (numara/ETTN/durum/tutar birebir), cari/stok sayıları aynı, bütünlük ok
+  ✓ Elle yedek 002: destekofis-002-2026-10-16T16-03-08-476Z-manuel.sqlite — 33 fatura (numara/ETTN/durum/tutar birebir), cari/stok sayıları aynı, bütünlük ok
+16:03:08 Yedekleri Denetle: {"ok":true,"backupRoot":"/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/edm-canli-test/yuk-veri-2/backups","companies":[{"id":"sirket-001","code":"001","name":"DESTEK OFİS","folder":"001 - DESTEK OFİS","exists":true,"count":2,"files":[{"name":"destekofis-001-2026-10-16T16-0
+
+■ Geri yükleme tatbikatı
+  ✓ 002 geri yükleme (200 {"restored":true,"company":"002 · ATLAS YAPI MALZEMELERİ LTD. ŞTİ.","name":"destekofis-002-2026-10-16T16-03-08-476Z-manuel.sqlite","safety":"destekofis-002-2026)
+  ✓ 002 geri yüklemeden sonra faturalar yedekle birebir
+  ✓ 002 yedekten sonra açılan cari geri yüklemeyle kalktı
+  ✓ 002 bakiyeler geri yüklemeden sonra aynı
+  ✓ 002 defter bütünlüğü geri yüklemeden sonra temiz
+  ✓ 002 geri yüklemeden sonra Durum Sorgula çalışıyor (TEF2026307878396: 200 sent)
+  ✓ 001 geri yükleme sıraya alındı (200 {"staged":true,"restarting":false,"restartRequired":true,"company":"001 · DESTEK OFİS","name":"destekofis-001-2026-10-16T16-03-08-476Z-manuel.sqlite"})
+  ✓ 001 geri yüklemeden sonra faturalar yedekle birebir
+  ✓ 001 yedekten sonra açılan cari geri yüklemeyle kalktı
+  ✓ 001 bakiyeler geri yüklemeden sonra aynı
+  ✓ 001 defter bütünlüğü geri yüklemeden sonra temiz
+  ✓ 001 geri yüklemeden sonra Durum Sorgula çalışıyor (TEF2026307378398: 200 sent)
+
+ÖZET TABLO
+  001 TEA2026307378396  cf5827c1-2d56-474b-ba77-30db1b5e0899  eA               destek2  Mehmet Demir                               2430  issued/sent
+  001 TEA2026307378397  bcb4bd65-40b0-4adb-9fbc-100173fc0dd8  eA               destek4  Güneş Kafe Gıda Ltd. Şti.                3571.5  issued/sent
+  001 TEA2026307378398  fe61e8fe-b399-48ae-ace6-eb3f78b86a8b  eA               destek5  Zeynep Arslan                              2160  cancelled/cancelled
+  001 TEA2026307378399  a93369b1-1b6a-4494-9df9-dd94187758de  eA               destek3  Güneş Kafe Gıda Ltd. Şti.                3571.5  issued/sent
+  001 TEA2026307378400  06e50778-36b3-49e5-8cf4-7e5d1ce63e5c  eA               destek1  Mehmet Demir                               2430  cancelled/cancelled
+  001 TEA2026307378401  ce2ebb06-b0a8-4e3e-bfb7-84ef20f0bd48  eA               destek2  Güneş Kafe Gıda Ltd. Şti.                3571.5  issued/sent
+  001 TEA2026307378402  b37b3914-93cd-4d9e-8f91-50e5777f38cd  eA               destek4  Zeynep Arslan                              2160  issued/sent
+  001 TEA2026307378403  c7b0c8c2-c85f-4751-8576-f7f0c8221631  eA               destek3  Zeynep Arslan                              2160  issued/sent
+  001 TEA2026307378404  e701f7ad-9e17-43ca-99c1-3bd04c9ab02b  eA               destek5  Mehmet Demir                               2430  issued/sent
+  001 TEA2026307378405  e610ef5d-9f35-4e6f-9c38-bba407313adf  eA               destek1  Güneş Kafe Gıda Ltd. Şti.                3571.5  cancelled/cancelled
+  001 TEA2026307378406  b0b6c65a-a1af-4af3-ab9d-7b3d2e7b6251  eA               destek2  Zeynep Arslan                              2160  issued/sent
+  001 TEA2026307378407  49b8c986-500f-464d-9da8-9a383583fb20  eA               destek4  Mehmet Demir                               2430  issued/sent
+  001 TEA2026307378408  9efdef01-8a33-405a-a119-afd2f3ab3581  eA               destek3  Mehmet Demir                               2430  issued/sent
+  001 TEA2026307378409  57f6173e-3040-4367-b658-3a6566b20502  eA               destek1  Zeynep Arslan                              2160  issued/sent
+  001 TEA2026307378410  4e05511d-a833-4849-82fc-877b304bad94  eA               destek5  Güneş Kafe Gıda Ltd. Şti.                3571.5  issued/sent
+  001 TEF2026307378396  21a5e8e9-cad3-47e9-811f-ce9a70174fb2  eF-Ticari        destek3  Kuzey Emlak Danışmanlık Ltd. Şti.          5400  issued/sent
+  001 TEF2026307378397  85e8e326-7087-4ae5-b9fe-425b0c3bb8ed  eF-Tevkifat      destek5  Marmara Gıda San. ve Tic. A.Ş.            10200  issued/sent
+  001 TEF2026307378398  2f6dff62-bfd2-45b0-be2a-8312459f15fc  eF-Temel         destek1  Yıldız Hukuk Bürosu                        6240  issued/sent
+  001 TEF2026307378399  a51dfa1d-f732-43bd-b4c1-bf1302fe866e  eF-Ticari        destek2  Kuzey Emlak Danışmanlık Ltd. Şti.          5400  issued/sent
+  001 TEF2026307378400  597a412b-6975-43ed-9684-8160dbc250b4  eF-Tevkifat      destek4  Marmara Gıda San. ve Tic. A.Ş.            10200  issued/sent
+  001 TEF2026307378401  9ca7e230-7648-452b-97f2-785c6e853a28  eF-Tevkifat      destek3  Marmara Gıda San. ve Tic. A.Ş.            10200  issued/sent
+  001 TEF2026307378402  f0d58fbc-6c90-45be-a2db-076f49502b30  eF-Temel         destek5  Yıldız Hukuk Bürosu                        6240  issued/sent
+  001 TEF2026307378403  d96fd4f9-6646-4c6d-8b58-60d126da44d2  eF-Ticari        destek1  Kuzey Emlak Danışmanlık Ltd. Şti.          5400  issued/sent
+  001 TEF2026307378404  0c7073d4-b1fc-4aec-96dd-90d97417b228  eF-İade          destek2  Anadolu Bilişim Dağıtım A.Ş.               3600  issued/sent
+  001 TEF2026307378405  5ea65024-1c28-4789-8343-223bb9041a68  eF-Temel         destek4  Yıldız Hukuk Bürosu                        6240  issued/sent
+  001 TEF2026307378406  16c205bc-0a1a-4ee1-a315-644a680be86f  eF-Tevkifat      destek2  Marmara Gıda San. ve Tic. A.Ş.            10200  issued/sent
+  001 TEF2026307378407  3a4f9505-612a-4154-8b61-68364a3b343e  eF-Temel         destek3  Yıldız Hukuk Bürosu                        6240  issued/sent
+  001 TEF2026307378408  5ae00935-adc3-4702-9a21-4230360129ec  eF-Tevkifat      destek1  Marmara Gıda San. ve Tic. A.Ş.            10200  issued/sent
+  001 TEF2026307378409  022e807f-648c-4509-87b2-96a2a5176a1c  eF-Ticari        destek5  Kuzey Emlak Danışmanlık Ltd. Şti.          5400  issued/sent
+  001 TEF2026307378410  88dda368-aa27-41f9-8ccc-f15048bec50c  eF-Temel         destek2  Yıldız Hukuk Bürosu                        6240  issued/sent
+  001 TEF2026307378411  5e919bf6-92b9-4697-a64e-8afed1f80c44  eF-Ticari        destek4  Kuzey Emlak Danışmanlık Ltd. Şti.          5400  issued/sent
+  001 TEF2026307378412  f050e054-af33-45ae-a3bc-724b46c573e0  eF-Temel (yarış) destek1  Yıldız Hukuk Bürosu                         120  issued/sent
+  002 TEA2026307878396  9e7fbc4d-a20d-466a-a176-1407167e9794  eA               atlas4   Deniz Oto Servis Ltd. Şti.                 8100  issued/sent
+  002 TEA2026307878397  b3460597-5d8f-4008-8db9-2651593b8021  eA               atlas2   Can Öztürk                                23880  issued/sent
+  002 TEA2026307878398  c8c58a59-c3c3-462d-9d51-0a643b17dde6  eA               atlas1   Can Öztürk                                23880  cancelled/cancelled
+  002 TEA2026307878399  57b99cfe-4f1e-43cc-be0e-6fcb59305b02  eA               atlas3   Deniz Oto Servis Ltd. Şti.                 8100  issued/sent
+  002 TEA2026307878400  30a13ae6-55a4-441f-b6a6-e8be2ee0ba69  eA               atlas5   Elif Şahin                                 6600  cancelled/cancelled
+  002 TEA2026307878401  922b564a-c55d-4e1f-ae0a-2e4d8826fd25  eA               atlas2   Deniz Oto Servis Ltd. Şti.                 8100  issued/sent
+  002 TEA2026307878402  ccdf73cd-f23b-4679-b0f6-104d4083fb56  eA               atlas4   Elif Şahin                                 6600  issued/sent
+  002 TEA2026307878403  010a6e12-06db-400f-a95d-83070d57ba75  eA               atlas1   Deniz Oto Servis Ltd. Şti.                 8100  cancelled/cancelled
+  002 TEA2026307878404  d641dd3d-a034-424d-8dc4-27b850ee690c  eA               atlas5   Can Öztürk                                23880  issued/sent
+  002 TEA2026307878405  27f82609-d644-4e16-8e8d-8a7aea0089a2  eA               atlas3   Elif Şahin                                 6600  issued/sent
+  002 TEA2026307878406  e44e6788-11db-4824-bf44-a0e25572827a  eA               atlas4   Can Öztürk                                23880  issued/sent
+  002 TEA2026307878407  97ea4efe-a5fa-416e-8097-3f2db0f810be  eA               atlas1   Elif Şahin                                 6600  issued/sent
+  002 TEA2026307878408  a32bc4cc-2ce0-4b89-a327-0d005f19c9ac  eA               atlas5   Deniz Oto Servis Ltd. Şti.                 8100  issued/sent
+  002 TEA2026307878409  25a22129-6d62-4cec-a77a-df678e3790e9  eA               atlas2   Elif Şahin                                 6600  issued/sent
+  002 TEA2026307878410  98590ae2-ba0e-4cef-9df8-6e9cb87c9a1c  eA               atlas3   Can Öztürk                                23880  issued/sent
+  002 TEF2026307878396  8ba29cd8-d55e-4278-9544-1f19cf2bab28  eF-Temel         atlas1   Başkent İnşaat Taahhüt A.Ş.               68400  issued/sent
+  002 TEF2026307878397  8bca3e1a-7307-4987-8a2b-58612fa0e445  eF-İstisna       atlas5   Akdeniz Otelcilik ve Turizm A.Ş.        49203.2  issued/sent
+  002 TEF2026307878398  6d4b96fc-8264-4331-8c85-8393be58c59b  eF-Ticari        atlas3   Ege Tekstil Konfeksiyon Ltd. Şti.         24012  issued/sent
+  002 TEF2026307878399  b9d1266b-5890-4bb7-9135-d19dc15360e4  eF-İstisna       atlas4   Akdeniz Otelcilik ve Turizm A.Ş.        49203.2  issued/sent
+  002 TEF2026307878400  b5d8fd52-0d86-4d5d-9142-782f196d2510  eF-Ticari        atlas2   Ege Tekstil Konfeksiyon Ltd. Şti.         24012  issued/sent
+  002 TEF2026307878401  4d043807-40dc-44ea-a03d-02914d3a9c41  eF-Ticari        atlas1   Ege Tekstil Konfeksiyon Ltd. Şti.         24012  issued/sent
+  002 TEF2026307878402  94c25a0e-3cdf-471e-8362-4ed899ac3aa9  eF-Temel         atlas5   Başkent İnşaat Taahhüt A.Ş.               68400  issued/sent
+  002 TEF2026307878403  39dcf679-4e5a-4bc4-913d-1f22e8be27d2  eF-İstisna       atlas3   Akdeniz Otelcilik ve Turizm A.Ş.        49203.2  issued/sent
+  002 TEF2026307878404  0ddb1714-a8fe-4fd9-bf09-1ad906c128e9  eF-İade          atlas2   Orta Anadolu Çimento Pazarlama A.Ş.         504  issued/sent
+  002 TEF2026307878405  617a6149-575c-4b66-87bc-be513cbe3ff5  eF-Temel         atlas4   Başkent İnşaat Taahhüt A.Ş.               68400  issued/sent
+  002 TEF2026307878406  cafe2dbd-8c4b-44b9-b547-bc6b564a4337  eF-İstisna       atlas1   Akdeniz Otelcilik ve Turizm A.Ş.        49203.2  issued/sent
+  002 TEF2026307878407  d2c36ee8-a1df-496d-8e7c-84341fbea3b4  eF-İstisna       atlas2   Akdeniz Otelcilik ve Turizm A.Ş.        49203.2  issued/sent
+  002 TEF2026307878408  3fb504be-15eb-434e-bd0a-cd76af398abe  eF-Ticari        atlas5   Ege Tekstil Konfeksiyon Ltd. Şti.         24012  issued/sent
+  002 TEF2026307878409  48579294-d0f3-403c-a0f4-4635d200d8dc  eF-Temel         atlas3   Başkent İnşaat Taahhüt A.Ş.               68400  issued/sent
+  002 TEF2026307878410  dcf7a4e1-4dfa-4487-80e0-e5d8dc14ed80  eF-Ticari        atlas4   Ege Tekstil Konfeksiyon Ltd. Şti.         24012  issued/sent
+  002 TEF2026307878411  593b4ea8-8a9f-40e3-ae37-220dc3f1b5cc  eF-Temel         atlas2   Başkent İnşaat Taahhüt A.Ş.               68400  issued/sent
+  002 TEF2026307878412  66d0f969-1459-4734-99aa-11639bb4e824  eF-Temel (yarış) atlas1   Başkent İnşaat Taahhüt A.Ş.                  81  issued/sent
+16:03:10 SAYFA HATALARI: yok
+  ✓ 10 kullanıcının sayfasında hata yok
+SONUÇ: 61 geçti, 0 kaldı

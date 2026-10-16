@@ -1,0 +1,43 @@
+# mut-M1-yuklemeden-gonder
+    not ok 2 - taslak yükle → düzenle (taslak eskidi) → yenile (EDM'deki içerik değişti) → gönder: giden belge son hâl
+not ok 1 - Portala taslak (sahte EDM)
+# tests 7
+# pass 6
+# fail 1
+# mut-M2-portal-denetimi
+    not ok 3 - taslak EDM portalından gönderildiyse program yeniden yüklemez (11056 yok); durumu EDM'den alır
+not ok 1 - Portala taslak (sahte EDM)
+# tests 7
+# pass 6
+# fail 1
+# mut-M3-bakiye-yonu
+    not ok 1 - kapalıyken not yok; açıkken bu fatura dahil bakiye (2 × 500 + %20 = 1.200,00 TL borç); belge GİB'e uygun
+    not ok 2 - ikinci fatura (1 × 250 + %20 = 300) ve 2.000 TL tahsilattan sonra: 1.200 + 300 − 2.000 = 500,00 TL alacak
+not ok 2 - Cari bakiyesi faturanın notunda
+# tests 13
+# pass 11
+# fail 2
+# mut-M4-kalan-kisim
+    not ok 3 - 400 nakit + 500 kart + kalan 300 vadeli: 10, 48 ve açık kısım 42 (IBAN + son ödeme tarihi)
+not ok 3 - Ödeme şekli kodu (GİB kod listesi)
+# tests 13
+# pass 12
+# fail 1
+# mut-M5-eski-taslak
+    not ok 2 - taslak yükle → düzenle (taslak eskidi) → yenile (EDM'deki içerik değişti) → gönder: giden belge son hâl
+not ok 1 - Portala taslak (sahte EDM)
+# tests 7
+# pass 6
+# fail 1
+# mut-M6-taslak-iptal
+    not ok 5 - taslaktaki belge silinmez; e-Fatura taslağı onaysız iptal edilmez, onayla iptal edilir (EDM'ye iptal gönderilmez)
+not ok 1 - Portala taslak (sahte EDM)
+# tests 7
+# pass 6
+# fail 1
+# mut-M7-kart-kodu
+    not ok 3 - 400 nakit + 500 kart + kalan 300 vadeli: 10, 48 ve açık kısım 42 (IBAN + son ödeme tarihi)
+not ok 3 - Ödeme şekli kodu (GİB kod listesi)
+# tests 13
+# pass 12
+# fail 1

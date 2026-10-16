@@ -9,7 +9,8 @@
 //   test()                                  → bağlantı, giriş ve servis sözleşmesi raporu
 //   checkUser(taxNo)                        → { registered, title, aliases[] }  (GİB e-Fatura kullanıcı listesi)
 //   send({ invoice, xml })                  → { status: 'sent', message, reference }
-//   status({ invoice })                     → { status: 'processing'|'sent'|'accepted'|'rejected'|'error'|'cancelled', message }
+//   loadDraft({ invoice, xml }) / sendDraft({ invoice }) → portala taslak (EDM LoadInvoice) ve taslağı gönderme
+//   status({ invoice })                     → { status: 'draft'|'processing'|'sent'|'accepted'|'rejected'|'error'|'cancelled', message }
 //   cancel({ invoice })                     → e-Arşiv iptali (e-Fatura entegratörden iptal edilmez)
 //   inbox({ from, to })                     → gelen e-Faturalar [{ uuid, number, senderVkn, senderName, issueDate, payable, currency, xml }]
 //   markRead(uuids)
@@ -28,7 +29,7 @@ export const adapterInfo = (id, adapter = ADAPTERS[id]) => ({
   protocol: adapter.protocol,
   implemented: adapter.implemented,
   urls: adapter.urls,
-  note: "EDM Bilişim'in verdiği web servis kullanıcı adı ve parolasını girin; önce Test ortamında Bağlantıyı Sına ile deneyin.",
+  note: "EDM Bilişim'in verdiği web servis kullanıcı adı ve parolasını girin; önce Test Ortamı'nda Bağlantıyı Test Et ile deneyin.",
 });
 
 const toHttp = error => {
@@ -37,6 +38,13 @@ const toHttp = error => {
 };
 
 export const integratorUrl = integrator => String(integrator?.baseUrl || "").trim() || (integrator?.env === "live" ? EDM_URLS.live : EDM_URLS.test);
+// Canlı kilidi açılmadan kullanılabilecek servis adresi (2.4.0 bitiş turu: yargıç Y1 / eleştirmen E1 — env "test" iken Servis Adresi'ne canlı adres
+// yazılınca bütün istekler canlıya gidiyordu). İzin listesi: boş (ortamın adresi), entegratörün test adresi, yerel adres (testlerin sahte servisi).
+// Kara liste değil: canlı adresin büyük harf / port / yol varyantları da reddedilir.
+export const testOnlyUrl = url => {
+  const value = String(url || "").trim();
+  return !value || value === EDM_URLS.test || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/\S*)?$/i.test(value);
+};
 
 /**
  * @param {{ integrator: { id, env, baseUrl, username, password, senderAlias }, seller, fetchImpl }} options
@@ -68,11 +76,19 @@ export function connect({ integrator, seller = {}, fetchImpl }) {
     send: wrap(({ invoice, xml }) =>
       client.send({ xml, number: invoice.number, uuid: invoice.ettn, earchive: earchive(invoice), senderVkn: seller.taxNo || "", senderAlias: integrator.senderAlias || "", receiverVkn: invoice.party?.taxNo || "", receiverAlias: invoice.party?.eAlias || "" }),
     ),
+    // Portala taslak (İz 7.3): yükle / aynı ETTN ile yenile; taslağı gönder (içerik EDM'deki taslaktır).
+    loadDraft: wrap(({ invoice, xml }) =>
+      client.loadDraft({ xml, number: invoice.number, uuid: invoice.ettn, earchive: earchive(invoice), senderVkn: seller.taxNo || "", senderAlias: integrator.senderAlias || "", receiverVkn: invoice.party?.taxNo || "", receiverAlias: invoice.party?.eAlias || "" }),
+    ),
+    sendDraft: wrap(({ invoice }) =>
+      client.sendDraft({ number: invoice.number, uuid: invoice.ettn, earchive: earchive(invoice), senderVkn: seller.taxNo || "", senderAlias: integrator.senderAlias || "", receiverVkn: invoice.party?.taxNo || "", receiverAlias: invoice.party?.eAlias || "" }),
+    ),
     status: wrap(({ invoice }) => client.status({ uuid: invoice.ettn, number: invoice.number, earchive: earchive(invoice) })),
     cancel: wrap(({ invoice }) => {
       if (!earchive(invoice)) throw new IntegratorError("e-Fatura entegratör üzerinden iptal edilmez: Ticari faturayı alıcı reddedebilir; Temel faturada iade faturası kesilir ya da GİB'in iptal yolu (e-Fatura portalı) kullanılır.", { code: "einvoice-cancel-unsupported", status: 409 });
       return client.cancelEArchive({ uuid: invoice.ettn, number: invoice.number });
     }),
+    officialPdf: wrap(({ invoice }) => client.officialPdf({ uuid: invoice.ettn, number: invoice.number })),
     inbox: wrap(range => client.inbox(range)),
     markRead: wrap(uuids => client.markRead(uuids)),
   };

@@ -1,0 +1,113 @@
+  ✓ Bağlantıyı Test Et: Durum: Bağlantı kuruldu · 16.10.2026 14:23
+14:23:39 CARİ (ekrandan) DESTEK OFİS: {"id":"account-8b388738-dd76-485b-8056-abebc42e39d4","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ DESTEK OFİS carisi: e-Fatura mükellefi, posta kutusu seçildi
+14:23:50 CARİ (ekrandan) DESTEK OFİS Bireysel: {"id":"account-ba9e7976-00ce-4e7b-870a-619417323289","eInvoice":0,"eAlias":""}
+  ✓ DESTEK OFİS Bireysel carisi: e-Arşiv alıcısı
+  ✓ kullanıcı destek1 (muhasebe) açıldı: 200 
+  ✓ kullanıcı destek2 (muhasebe) açıldı: 200 
+  ✓ kullanıcı destek3 (muhasebe) açıldı: 200 
+  ✓ kullanıcı destek4 (avukat) açıldı: 200 
+  ✓ kullanıcı destek5 (avukat) açıldı: 200 
+14:23:53 OTURUMLAR: ["destek1","destek2","destek3","destek4","destek5"]
+
+■ 5 kullanıcı aynı anda başlıyor
+14:24:03 destek1 #1 eF-Temel issue-now: {"no":"TEF2026240635390","eStatus":"sent","tutar":264,"sn":11,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:04 destek5 #25 eF-Temel issue-later: {"no":"TEF2026240635391","eStatus":"sent","tutar":840,"sn":11,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:04 destek4 #19 eA issue-later: {"no":"TEA2026240635391","eStatus":"sent","tutar":696,"sn":12,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:05 destek3 #13 eF-Ticari issue-later: {"no":"TEF2026240635392","eStatus":"sent","tutar":552,"sn":12,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:06 destek2 #7 eA issue-now: {"no":"TEA2026240635390","eStatus":"sent","tutar":408,"sn":13,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:14 destek1 #2 eA issue-now: {"no":"TEA2026240635392","eStatus":"sent","tutar":432,"sn":11,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:16 destek5 #26 eA issue-now: {"no":"TEA2026240635393","eStatus":"sent","tutar":1296,"sn":12,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:17 destek3 #14 eA issue-later: {"no":"TEA2026240635394","eStatus":"sent","tutar":864,"sn":12,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:17 destek4 #20 eF-Temel issue-later: {"no":"TEF2026240635393","eStatus":"sent","tutar":1157,"sn":13,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:19 destek2 #8 eF-Ticari issue-later: {"no":"TEF2026240635394","eStatus":"sent","tutar":711.8,"sn":13,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:27 destek1 #3 eF-Ticari issue-later: {"no":"TEF2026240635396","eStatus":"sent","tutar":156,"sn":12,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:27 destek3 #15 eF-Temel issue-later: {"no":"TEF2026240635397","eStatus":"sent","tutar":300,"sn":11,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:28 destek5 #27 eF-Temel issue-now: {"no":"TEF2026240635395","eStatus":"sent","tutar":444,"sn":12,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:30 destek4 #21 eA issue-now: {"no":"TEA2026240635395","eStatus":"sent","tutar":372,"sn":13,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:32 destek2 #9 eA issue-later: {"no":"TEA2026240635396","eStatus":"sent","tutar":228,"sn":13,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:40 destek1 #4 eA issue-later: {"no":"TEA2026240635398","eStatus":"sent","tutar":395.4,"sn":13,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:41 destek3 #16 eA issue-now: {"no":"TEA2026240635397","eStatus":"sent","tutar":696.6,"sn":13,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:41 destek5 #28 eA issue-now: {"no":"TEA2026240635399","eStatus":"sent","tutar":997.8,"sn":14,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:42 destek4 #22 eF-Temel issue-now: {"no":"TEF2026240635398","eStatus":"sent","tutar":768,"sn":12,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:43 destek2 #10 eF-Temel issue-later: {"no":"TEF2026240635399","eStatus":"sent","tutar":480,"sn":11,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:51 destek3 #17 eF-Temel issue-now: {"no":"TEF2026240635400","eStatus":"sent","tutar":972,"sn":10,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:52 destek1 #5 eF-Temel issue-later: {"no":"TEF2026240635401","eStatus":"sent","tutar":540,"sn":12,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:54 destek5 #29 eF-Ticari issue-later: {"no":"TEF2026240635402","eStatus":"sent","tutar":1404,"sn":12,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:24:54 destek4 #23 eA issue-now: {"no":"TEA2026240635400","eStatus":"sent","tutar":1188,"sn":13,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:24:56 destek2 #11 eA issue-now: {"no":"TEA2026240635401","eStatus":"sent","tutar":756,"sn":13,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:25:04 destek1 #6 eA issue-now: {"no":"TEA2026240635402","eStatus":"sent","tutar":192,"sn":12,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:25:05 destek3 #18 eA issue-now: {"no":"TEA2026240635403","eStatus":"sent","tutar":336,"sn":14,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:25:06 destek5 #30 eA issue-later: {"no":"TEA2026240635404","eStatus":"sent","tutar":480,"sn":12,"ileti":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.×"}
+14:25:09 destek4 #24 eF-Ticari issue-later: {"no":"TEF2026240635404","eStatus":"sent","tutar":489.4,"sn":15,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:25:10 destek2 #12 eF-Temel issue-now: {"no":"TEF2026240635403","eStatus":"sent","tutar":332.2,"sn":14,"ileti":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"}
+14:25:10 KESİM SÜRESİ (sn): 78
+
+■ Kesim sonrası denetim
+  ✓ 30 belge ekrandan kesildi (30; hata 0)
+  ✓ her belge ayrı kayıt (kimlikler benzersiz)
+  ✓ e-Fatura numaraları TEF, benzersiz, boşluksuz TEF2026240635390 … TEF2026240635404
+  ✓ e-Arşiv numaraları TEA, benzersiz, boşluksuz TEA2026240635390 … TEA2026240635404
+  ✓ ETTN'ler benzersiz
+  ✓ belge türleri plana uygun (Temel / Ticari / e-Arşiv)
+  ✓ hepsi EDM'ye ulaştı (durumlar: sent)
+  ✓ her belge EDM'ye BİR kez gönderildi (işlem kaydı)
+  ✓ her belge kendisini kesen kullanıcının adıyla gönderildi
+
+■ Durum Sorgula — 30 belge, son duruma kadar
+14:25:14 TUR 1: {"processing":25,"sent":5}
+14:25:58 TUR 2: {"processing":15,"sent":15}
+14:26:40 TUR 3: {"processing":15,"sent":15}
+14:27:22 TUR 4: {"processing":15,"sent":15}
+14:28:04 TUR 5: {"processing":15,"sent":15}
+14:28:46 TUR 6: {"processing":15,"sent":15}
+14:29:28 TUR 7: {"processing":15,"sent":15}
+14:30:10 TUR 8: {"sent":17,"processing":13}
+14:30:52 TUR 9: {"sent":25,"processing":5}
+14:31:34 TUR 10: {"sent":29,"processing":1}
+14:32:14 TUR 11: {"sent":30}
+  ✓ 30 belgenin son durumu Gönderildi (hepsi)
+14:32:14 BAKİYELER: {"firma":[0,9410.4,9410.4],"kisi":[0,9337.8,9337.8]}
+  ✓ DESTEK OFİS bakiyesi = 15 e-Fatura toplamı (9410.40)
+  ✓ DESTEK OFİS Bireysel bakiyesi = 15 e-Arşiv toplamı (9337.80)
+  ✓ defter bütünlüğü temiz ({"ok":true,"checks":[{"code":"balance","name":"Çift yönlü kayıt (borç = alacak)","ok":true,"difference":0},{"code":"gl:100","name":"100 Kasa (Nakit)","ok":true,)
+  ✓ TEF2026240635390 Resmî Görüntü (EDM) alındı
+  ✓ TEA2026240635390 Resmî Görüntü (EDM) alındı
+  ✓ TEF2026240635392 Resmî Görüntü (EDM) alındı
+  ✓ TEA2026240635391 Resmî Görüntü (EDM) alındı
+  ✓ TEF2026240635391 Resmî Görüntü (EDM) alındı
+
+ÖZET TABLO
+  TEA2026240635390  b0acfa34-1262-4930-a62b-624c8a5b3031  eA        issue-now   destek2       408  sent
+  TEA2026240635391  2ec8986b-d7f5-4d33-9ef9-f656ba76652f  eA        issue-later destek4       696  sent
+  TEA2026240635392  5e13628a-3be2-4849-b8ca-ca5521f3e88e  eA        issue-now   destek1       432  sent
+  TEA2026240635393  f0da0769-5d9a-466c-8a45-db98107e6c80  eA        issue-now   destek5      1296  sent
+  TEA2026240635394  cf8d0ec0-9530-47e5-a65a-dbe97ee48446  eA        issue-later destek3       864  sent
+  TEA2026240635395  b9758bef-3a30-483b-8c46-71f826a8942d  eA        issue-now   destek4       372  sent
+  TEA2026240635396  0073a537-0543-4c65-b59e-417ee0e5aea1  eA        issue-later destek2       228  sent
+  TEA2026240635397  aa1817ac-2fbf-49ab-9705-6f7698fa0626  eA        issue-now   destek3     696.6  sent
+  TEA2026240635398  5151ba15-dae5-4d1a-b33f-b3db1f041bf7  eA        issue-later destek1     395.4  sent
+  TEA2026240635399  5efa73dd-361e-425c-a451-76f4b099b468  eA        issue-now   destek5     997.8  sent
+  TEA2026240635400  7efe49a6-f365-463e-b1f2-e0641e3dde4a  eA        issue-now   destek4      1188  sent
+  TEA2026240635401  c80dc068-eb62-475c-80ba-e534f0295afe  eA        issue-now   destek2       756  sent
+  TEA2026240635402  ccec4d00-8fa0-40eb-8e3e-47a151fb30a2  eA        issue-now   destek1       192  sent
+  TEA2026240635403  de087216-fe69-4a17-b0f5-0ca3ac417559  eA        issue-now   destek3       336  sent
+  TEA2026240635404  7df65ad6-1cf3-4225-a3fb-e77efb8f849b  eA        issue-later destek5       480  sent
+  TEF2026240635390  0f62255c-2eac-4e0d-ba36-8182701c8221  eF-Temel  issue-now   destek1       264  sent
+  TEF2026240635391  6487dde0-132c-4de4-a83d-79462ca6e2fc  eF-Temel  issue-later destek5       840  sent
+  TEF2026240635392  0525d765-a1ce-4fbc-b43c-7ea35350a4bf  eF-Ticari issue-later destek3       552  sent
+  TEF2026240635393  1c0eb4ef-2006-416b-86cc-9e3fbcea93d4  eF-Temel  issue-later destek4      1157  sent
+  TEF2026240635394  f0242506-ab74-4794-966d-68725baf7609  eF-Ticari issue-later destek2     711.8  sent
+  TEF2026240635395  1f7000b0-d0d8-4335-ac13-2cff8635f32e  eF-Temel  issue-now   destek5       444  sent
+  TEF2026240635396  c3087bea-0a11-4a3d-83de-19bdd0c4b949  eF-Ticari issue-later destek1       156  sent
+  TEF2026240635397  f96049f6-c86b-423d-98f9-92f76d77646f  eF-Temel  issue-later destek3       300  sent
+  TEF2026240635398  03185e5a-5143-4bba-971d-709793102959  eF-Temel  issue-now   destek4       768  sent
+  TEF2026240635399  29add5f0-b4fc-4976-a55d-01b7f7da6fc7  eF-Temel  issue-later destek2       480  sent
+  TEF2026240635400  a43fa1b3-b655-4080-8cd1-15740de18402  eF-Temel  issue-now   destek3       972  sent
+  TEF2026240635401  c76923c7-7605-45b1-a467-91cb5967b5cf  eF-Temel  issue-later destek1       540  sent
+  TEF2026240635402  470721de-ba58-47f2-b787-2ee463f10cc5  eF-Ticari issue-later destek5      1404  sent
+  TEF2026240635403  d8d33b0c-a4a0-4298-b07e-15dcbd2be5bd  eF-Temel  issue-now   destek2     332.2  sent
+  TEF2026240635404  414c72b7-77f8-43d1-b460-8d0f58c49445  eF-Ticari issue-later destek4     489.4  sent
+14:32:31 SAYFA HATALARI: yok
+  ✓ 5 kullanıcının sayfasında hata yok
+SONUÇ: 27 geçti, 0 kaldı

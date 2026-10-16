@@ -1,0 +1,32 @@
+{
+  "ad": "cikis-yolu-e2e-senaryo-entegrator-240",
+  "komut": "npm run test:senaryo-entegrator-240",
+  "commit": "90aecfb328fa161b8642557a29ea624b01fd3054",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T13:17:45.615Z",
+  "sure_sn": 60.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 61,
+    "gecen": 61,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/cikis-yolu-e2e-senaryo-entegrator-240.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e21f10ac77dec0430f54dd67b2a12b6ab43e36f7feb6124a037480e2336c5a38",
+  "ham_cikti_bayt": 6401
+}

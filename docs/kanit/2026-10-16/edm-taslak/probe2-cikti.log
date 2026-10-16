@@ -1,0 +1,19 @@
+08:57:38 A resmî PDF: {"bayt":58236,"133,20":false,"134,40":false,"111,00":false,"112,00":false}
+08:57:38 eFatura belge: {"number":"DOF2026892600315","profile":"TEMELFATURA"}
+08:57:41 F1 loadDraft: {"status":"draft","message":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir.","reference":"DOF2026892600315","uuid":"7707a488-5c5b-45ee-9107-bc485c6d1779"}
+08:57:41 F1 status: {"status":"processing","message":"Taslak olarak EDM'ye yüklendi; gönderilmeyi bekliyor. SUCCEED","raw":"LOAD - SUCCEED","gibCode":""}
+08:57:43 F2 loadDraft aynı UUID (334): {"status":"draft","message":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir.","reference":"DOF2026892600315","uuid":"7707a488-5c5b-45ee-9107-bc485c6d1779"}
+08:57:44 F3 sendDraft: {"status":"sent","message":"Taslak e-Fatura gönderildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","reference":"DOF2026892600315","uuid":"7707a488-5c5b-45ee-9107-bc485c6d1779"}
+08:57:45 F4 sendDraft ikinci kez HATA: {"code":"integrator-rejected","msg":"EDM isteği reddetti: UUID=7707a488-5c5b-45ee-9107-bc485c6d1779 ID=DOF2026892600315 için taslak gönderimi yapılamadı (UUID=7707a488-5c5b-45ee-9107-bc485c6d1779 ID=DOF2026892600315 faturası gönderilemez) (EDM hata kodu 11028)","ic":"11028","detail":"UUID=7707a488-5c5b-45ee-9107-bc485c6d1779 ID=DOF2026892600315 için taslak gönderimi yapılamadı (UUID=7707a488-5c5b-45ee-9107-bc485c6d1779 ID=DOF2026892600315 faturası gönderilemez)"}
+08:57:46 F5 loadDraft gönderildikten sonra HATA: {"code":"integrator-rejected","msg":"EDM isteği reddetti: UUID=7707a488-5c5b-45ee-9107-bc485c6d1779 ID=DOF2026892600315 için Daha önce yüklediğiniz bir fatura'yi tekrar yüklemeye çalıştınız (EDM hata kodu 11056)","ic":"11056","detail":"UUID=7707a488-5c5b-45ee-9107-bc485c6d1779 ID=DOF2026892600315 için Daha önce yüklediğiniz bir fatura'yi tekrar yüklemeye çalıştınız"}
+08:58:17 F durum 1: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+08:58:48 F durum 2: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+08:59:19 F durum 3: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+08:59:50 F durum 4: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+09:00:21 F durum 5: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+09:00:51 F durum 6: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+09:01:22 F durum 7: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+09:01:53 F durum 8: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+09:02:24 F durum 9: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+09:02:55 F durum 10: {"status":"processing","message":"Gönderiliyor; sonuç bekleniyor. PROCESSING","raw":"SEND - PROCESSING","gibCode":""}
+09:02:57 F resmî PDF: {"bayt":57486,"399,60":false,"400,80":false,"333,00":false,"334,00":false}

@@ -3,7 +3,10 @@
 // Servis yöneticisi (supervisor.mjs) altında: IPC kanalı üzerinden "hazır" bildirir ve kapat komutunu dinler.
 import { createApp } from "./app.mjs";
 
-const app = createApp();
+// e-Belge AÇIK; test VE canlı ortam AÇIK (kullanıcı kararı 16.10.2026: "hem testi hem canlıyı aç"). Önceki karar (aynı gün): yalnız test linki,
+// "canlıyı da aç" denince edocLive. Canlıda firma kendi serisini seçer; TEF/TEA/TES test serileri canlıda kullanılamaz (invoices.mjs).
+// Testler bu dosyayı çalıştırmaz; kendi bayraklarını verir (test/helpers.mjs, varsayılan canlı kilitli). Denetim: test/edoc-uretim.test.mjs.
+const app = createApp({ edocEnabled: true, edocLive: true });
 const address = await app.listen().catch(error => {
   app.log.error(error.code === "EADDRINUSE" ? `Port ${app.config.port} kullanımda. Başka bir DestekOfis sunucusu çalışıyor olabilir.` : "Sunucu başlatılamadı", error);
   process.exit(1);

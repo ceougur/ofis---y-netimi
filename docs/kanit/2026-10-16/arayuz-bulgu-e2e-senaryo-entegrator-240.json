@@ -1,0 +1,32 @@
+{
+  "ad": "arayuz-bulgu-e2e-senaryo-entegrator-240",
+  "komut": "npm run test:senaryo-entegrator-240",
+  "commit": "d8c4becc1842e991b9f03c883bafd89c67048b0b",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T14:04:03.734Z",
+  "sure_sn": 59.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 62,
+    "gecen": 62,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/arayuz-bulgu-e2e-senaryo-entegrator-240.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "dabc779d48822b2c6e626e28a09c46e741f73a4c1bfbedc3ec9d46076ba9cd60",
+  "ham_cikti_bayt": 6486
+}

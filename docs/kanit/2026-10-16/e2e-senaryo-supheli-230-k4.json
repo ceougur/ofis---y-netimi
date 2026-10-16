@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-supheli-230-k4",
+  "komut": "npm run test:senaryo-supheli-230",
+  "commit": "0d8335819df7c140bc548df7ae483cc9396a5969",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 5,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:19:11.021Z",
+  "sure_sn": 39,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 67,
+    "gecen": 67,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/e2e-senaryo-supheli-230-k4.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "4453f571a7dc45803e27ab834203196db7429fb8c7a43ba7acaf46fad3ad510a",
+  "ham_cikti_bayt": 6865
+}

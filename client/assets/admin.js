@@ -123,6 +123,7 @@
     "system.update_checked": "Güncellemeleri denetledi",
     "system.update_requested": "Güncellemeyi başlattı",
     "system.update_settings": "Güncelleme ayarını değiştirdi",
+    "system.network_settings": "Vekil sunucu ayarını değiştirdi",
     "license.trial_started": "Ücretsiz deneme başladı",
     "license.activated": "Lisansı etkinleştirdi",
     "license.code_applied": "Etkinleştirme kodu uyguladı",
@@ -1189,8 +1190,83 @@
   $("#adm-update-auto").addEventListener("change", event => saveUpdateSettings({ autoUpdate: event.target.checked }));
   $("#adm-update-channel").addEventListener("change", event => saveUpdateSettings({ channel: event.target.value }));
 
+  // ---------- Ağ Bağlantısı (Vekil Sunucu) ----------
+  const NETWORK_SOURCES = { manual: "elle yazılan vekil sunucu", env: "ortam değişkenindeki vekil sunucu", windows: "Windows'un vekil sunucu ayarı", none: "doğrudan (vekil sunucu kapalı)", direct: "doğrudan" };
+  const networkForm = $("#adm-network");
+  const describeNetworkState = state => {
+    const via = state.effective;
+    const where = via.address ? `${NETWORK_SOURCES[via.source] || via.source} (${via.address})` : NETWORK_SOURCES[via.source] || "doğrudan";
+    const win = state.windows ? `Windows ayarı: ${state.windows.address}` : "Windows'ta makine geneli vekil sunucu ayarı yok";
+    return `Şu an internete ${where} üzerinden çıkılıyor. ${win}.`;
+  };
+  const syncNetworkMode = () => {
+    const mode = networkForm.querySelector('input[name="mode"]:checked')?.value || "auto";
+    $("#adm-network-manual").hidden = mode !== "manual";
+    $("#adm-network-bypass").disabled = mode === "none";
+  };
+  function renderNetwork(state) {
+    $("#adm-network-summary").textContent = describeNetworkState(state);
+    for (const input of networkForm.querySelectorAll('input[name="mode"]')) input.checked = input.value === state.mode;
+    $("#adm-network-address").value = state.manual.address || "";
+    $("#adm-network-username").value = state.manual.username || "";
+    $("#adm-network-password").value = "";
+    $("#adm-network-password").placeholder = state.manual.hasPassword ? "Kayıtlı parola korunur; değiştirmek için yazın" : "Gerekmiyorsa boş bırakın";
+    $("#adm-network-bypass").value = state.manual.bypass || "";
+    syncNetworkMode();
+  }
+  async function loadNetwork() {
+    try {
+      renderNetwork(await HOF.api("/api/admin/network"));
+    } catch (error) {
+      $("#adm-network-summary").textContent = error.message;
+    }
+  }
+  networkForm.addEventListener("change", event => {
+    if (event.target.name === "mode") syncNetworkMode();
+  });
+  networkForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = $("#adm-network-save");
+    button.disabled = true;
+    try {
+      const body = {
+        mode: networkForm.querySelector('input[name="mode"]:checked')?.value || "auto",
+        address: $("#adm-network-address").value,
+        username: $("#adm-network-username").value,
+        password: $("#adm-network-password").value,
+        bypass: $("#adm-network-bypass").value,
+      };
+      renderNetwork(await HOF.api("/api/admin/network", { method: "PUT", body }));
+      $("#adm-network-result").textContent = "";
+      HOF.toast("Vekil sunucu ayarı kaydedildi.", { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+  $("#adm-network-test").addEventListener("click", async () => {
+    const button = $("#adm-network-test");
+    const result = $("#adm-network-result");
+    button.disabled = true;
+    result.className = "adm-muted";
+    result.textContent = "Deneniyor… (kaydedilmiş ayarla)";
+    try {
+      const outcome = await HOF.api("/api/admin/network/test", { method: "POST", timeoutMs: 30_000 });
+      const via = outcome.via?.address ? ` (${outcome.via.address} üzerinden)` : " (doğrudan)";
+      result.className = outcome.ok ? "adm-network-ok" : "adm-network-warn";
+      result.textContent = outcome.ok ? `✓ Güncelleme sunucusuna ulaşıldı${via} · ${outcome.ms} ms` : `Güncelleme sunucusuna ulaşılamadı${via}: ${outcome.error || `yanıt ${outcome.status}`}`;
+    } catch (error) {
+      result.className = "adm-network-warn";
+      result.textContent = error.message;
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   async function loadSystem() {
     loadUpdate();
+    loadNetwork();
     loadPeriod();
     loadNegative();
     const target = $("#adm-system");

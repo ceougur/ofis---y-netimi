@@ -1,0 +1,38 @@
+{
+  "ad": "k5-ileti-eski",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/supheli-230-sil-cakisma.test.mjs",
+  "commit": "0d8335819df7c140bc548df7ae483cc9396a5969",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:17:07.315Z",
+  "sure_sn": 1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "şüpheli kaydı silme: başka kaydın çıkarma başlığını bozacaksa açık 409 doubtful-delete-conflict › A silinince tahsilat B'ye kayar, B'nin çıkarma başlığı (500) tutmaz → 409 doubtful-delete-conflict; hiçbir şey yazılmaz",
+      "konum": "test/supheli-230-sil-cakisma.test.mjs:29:3",
+      "hata": "Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu — dbt-55f65c2f-af30-4569-868e-c6959fe86c04 (Silme Çakışma Müşterisi): Şüpheliden Çıkar başlığı 500,00 ₺, yevmiyedeki çıkarılan 0,00 ₺ (çıkarma gününden önceye düşen tahsilat kalanı değiştirirdi); tahsilatı çıkarma gününden sonraya yazın ya da kaydı silip yeniden alın (beklenen , gelen Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu — dbt-55f65c2f-af30-4569-868e-c6959fe86c04 (Silme Çakışma Müşterisi): Şüpheliden Çıkar başlığı 500,00 ₺, yevmiyedeki çıkarılan 0,00 ₺ (çıkarma gününden önceye düşen tahsilat kalanı değiştirirdi); tahsilatı çıkarma gününden sonraya yazın ya da kaydı silip yeniden alın)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/k5-ileti-eski.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/k5-eski-0d83358",
+  "ham_cikti_sha256": "d5757d55c37f92b31c03a7fa33137d57c1eaf2210f900ab842b40b721fe120d6",
+  "ham_cikti_bayt": 2906
+}

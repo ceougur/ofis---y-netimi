@@ -1,0 +1,68 @@
+{
+  "ad": "iz8-eski-kod-09bf05c-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz8-eski-09bf05c && node --test test/edoc-uretim.test.mjs",
+  "commit": "09bf05ce93cc8ed5197951cfb01ab254b43772de",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 8,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T10:33:44.830Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 0,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Üretim girişi: e-Belge açık, canlı ortam kilitli › server/server.mjs e-Belgeyi açar, canlıyı açmaz; config canlıyı ortam değişkeniyle açmaz",
+      "konum": "test/edoc-uretim.test.mjs:24:3",
+      "hata": "üretim girişi edocEnabled: true verir (beklenen , gelen |-)"
+    },
+    {
+      "ad": "Test ortamı belgeleri (sahte EDM) › canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır",
+      "konum": "test/edoc-uretim.test.mjs:69:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "Test ortamı belgeleri (sahte EDM) › test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez",
+      "konum": "test/edoc-uretim.test.mjs:79:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'EFT2026000000001' (beklenen TEF2026000000001, gelen EFT2026000000001)"
+    },
+    {
+      "ad": "Test ortamı belgeleri (sahte EDM) › Gönderilecekler'deki belge numarasını gönderimde test serisinden alır",
+      "konum": "test/edoc-uretim.test.mjs:97:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'EFT2026000000002' (beklenen TEF2026000000002, gelen EFT2026000000002)"
+    },
+    {
+      "ad": "Test ortamı belgeleri (sahte EDM) › test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz",
+      "konum": "test/edoc-uretim.test.mjs:105:3",
+      "hata": "Deneme Ofis Ltd. Atatürk Blv. 1 Çankaya / Ankara Vergi Dairesi: Çankaya VKN: 1234567890 E-Posta: bilgi@deneme.com.tr e-FATURA Fatura No EFT2026000000003 Tarih / Saat 16.10.2026 10:33 Senaryo e-Fatura (Temel) Fatura Tipi SATIS ETTN ed8ac51c-9d88-4426-a3cd-7b4b047f0d7b SAYIN Alıcı Ticaret A.Ş. Cinnah  (beklenen , gelen Deneme Ofis Ltd. Atatürk Blv. 1 Çankaya / Ankara Vergi Dairesi: Çankaya VKN: 1234567890 E-Posta: bilgi@deneme.com.tr e-FATURA Fatura No EFT2026000000003 Tarih / Saat 16.10.2026 10:33 Senaryo e-Fatura (Temel) Fatura Tipi SATIS ETTN ed8ac51c-9d88-4426-a3cd-7b4b047f0d7b SAYIN Alıcı Ticaret A.Ş. Cinnah Cd. 10 Çankaya / Ankara Vergi Dairesi: Kavaklıdere VKN: 9876543217 Sıra Mal / Hizmet Miktar Birim Fiyat İsk. % KDV % KDV Tutar 1 Danışmanlık 1 Adet 70,00 20 14,00 70,00 Mal / Hizmet Toplamı 70,00 TL Matrah (KDV Hariç) 70,00 TL KDV %20 (Matrah 70,00) 14,00 TL Vergiler Dahil Toplam 84,00 TL Ödenecek Tutar 84,00 TL Yalnız Seksen Dört Türk Lirası Ödeme: kalan vadeli (vade 16.10.2026) TESLİM ALAN Ad Soyad / İmza DÜZENLEYEN Kaşe / İmza EFT2026000000003 · Sayfa 1 / 1)"
+    },
+    {
+      "ad": "Test ortamı belgeleri (sahte EDM) › firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)",
+      "konum": "test/edoc-uretim.test.mjs:117:3",
+      "hata": "{\"efatura\":\"TEF\"} · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "Canlıya geçiş (canlı kilidi açılmış kurulum) › testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez",
+      "konum": "test/edoc-uretim.test.mjs:153:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/iz8-eski-kod-09bf05c-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "48ab26abd9539ee0a38bef9508727444fe1a580880b840a64a9fdb679d13b656",
+  "ham_cikti_bayt": 13473
+}

@@ -1,6 +1,6 @@
 {
   "name": "destekofis",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
   "description": "DestekOfis — ofisler için merkezi kayıt takip ve yönetim sunucusu (server/client); yüklenen veriye göre sektöre uyum sağlar",
   "type": "module",
@@ -47,6 +47,7 @@
     "test:senaryo-iz32-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz32-230.mjs",
     "test:senaryo-supheli-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-supheli-230.mjs",
     "test:senaryo-iz5-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz5-230.mjs",
+    "test:senaryo-entegrator-240": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-entegrator-240.mjs",
     "test:banka-210-kart-onbellek": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-kart-onbellek-yaris.mjs",
     "test:banka-210-daha-fazla": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-daha-fazla-yaris.mjs",
     "test:banka-230-hareket-yaris": "node --disable-warning=ExperimentalWarning test/e2e/banka-230-hareket-yaris.mjs",
@@ -67,7 +68,11 @@
   },
   "devDependencies": {
     "innosetup": "6.4.1",
+    "jsqr": "1.4.0",
     "marked": "^16.4.2",
-    "playwright": "1.56.0"
+    "playwright": "1.56.0",
+    "saxon-js": "2.7.0",
+    "xmllint-wasm": "5.3.0",
+    "xslt3": "2.7.0"
   }
 }

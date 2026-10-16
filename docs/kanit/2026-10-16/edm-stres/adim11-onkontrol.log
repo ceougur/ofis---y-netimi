@@ -1,0 +1,16 @@
+14:21:01 AYAR: {"status":200}
+14:21:04 MÜKELLEF: true
+14:21:07 e-Arşiv GÖNDER: {"no":"TEA2026135209507","status":200,"eStatus":"sent","msg":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+14:21:10 e-Fatura GÖNDER: {"no":"TEF2026135209507","status":200,"eStatus":"sent","msg":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+14:21:10 e-Arşiv DURUM 1: {"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+14:21:11 e-Fatura DURUM 1: {"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+14:21:57 e-Arşiv DURUM 2: {"eStatus":"sent","msg":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+14:21:57 e-Fatura DURUM 2: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+14:22:43 e-Fatura DURUM 3: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+14:23:29 e-Fatura DURUM 4: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+14:24:15 e-Fatura DURUM 5: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+14:25:01 e-Fatura DURUM 6: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+14:25:47 e-Fatura DURUM 7: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+14:26:33 e-Fatura DURUM 8: {"eStatus":"processing","msg":"Alıcı sistemin yanıtı bekleniyor. WAIT_SYSTEM_RESPONSE"}
+14:27:19 e-Fatura DURUM 9: {"eStatus":"sent","msg":"Alıcıya ulaştı. SUCCEED"}
+ÖZET [{"name":"e-Arşiv","id":"invoice-6f0ac654-b3e7-4dfc-b697-e964163a03ea","number":"TEA2026135209507","ettn":"64edeb17-1378-48ef-8266-948fdf7875fd"},{"name":"e-Fatura","id":"invoice-829308cb-5c7e-470d-b0fa-fc19f99a3f4b","number":"TEF2026135209507","ettn":"809a5afb-9146-48c9-ba5c-75fc83f64874"}]

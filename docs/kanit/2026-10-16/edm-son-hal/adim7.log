@@ -1,0 +1,54 @@
+12:42:06 AYAR: {"status":200,"url":"https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc","liveAllowed":false,"testNumbers":{"efatura":{"series":"TEF","year":2026,"seq":481687272,"number":"TEF2026481687272"},"earsiv":{"series":"TEA","year":2026,"seq":481687272,"number":"TEA2026481687272"},"esmm":{"series":"TES","year":2026,"seq":1,"number":"TES2026000000001"}}}
+12:42:08 MÜKELLEF SORGUSU: true
+12:42:09 1-e-Fatura TEMEL (iki KDV oranı) KAYIT: {"status":200,"number":"TEF2026481687272","profile":"TEMELFATURA","typeCode":"SATIS","eTest":true,"payable":470}
+12:42:09 1-e-Fatura TEMEL (iki KDV oranı) GİB/XSD KÂHİN: {"xsd":0,"gib":[]}
+12:42:12 1-e-Fatura TEMEL (iki KDV oranı) GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+12:42:12 2-e-Fatura TİCARİ KAYIT: {"status":200,"number":"TEF2026481687273","profile":"TICARIFATURA","typeCode":"SATIS","eTest":true,"payable":1200}
+12:42:13 2-e-Fatura TİCARİ GİB/XSD KÂHİN: {"xsd":0,"gib":[]}
+12:42:16 2-e-Fatura TİCARİ GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+12:42:16 3-e-Arşiv (kişiye, logo + kaşe) KAYIT: {"status":200,"number":"TEA2026481687272","profile":"EARSIVFATURA","typeCode":"SATIS","eTest":true,"payable":900}
+12:42:16 3-e-Arşiv (kişiye, logo + kaşe) GİB/XSD KÂHİN: {"xsd":0,"gib":[]}
+12:42:19 3-e-Arşiv (kişiye, logo + kaşe) GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+12:42:19 4-e-Fatura İSTİSNA (301 + %20 karışık) KAYIT: {"status":200,"number":"TEF2026481687274","profile":"TEMELFATURA","typeCode":"ISTISNA","eTest":true,"payable":740}
+12:42:19 4-e-Fatura İSTİSNA (301 + %20 karışık) GİB/XSD KÂHİN: {"xsd":0,"gib":[]}
+12:42:22 4-e-Fatura İSTİSNA (301 + %20 karışık) GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+12:42:22 1-e-Fatura TEMEL (iki KDV oranı) DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+12:42:23 2-e-Fatura TİCARİ DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+12:42:24 3-e-Arşiv (kişiye, logo + kaşe) DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+12:42:24 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+12:43:10 1-e-Fatura TEMEL (iki KDV oranı) DURUM 2: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:43:11 2-e-Fatura TİCARİ DURUM 2: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:43:11 3-e-Arşiv (kişiye, logo + kaşe) DURUM 2: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+12:43:12 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 2: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:43:58 1-e-Fatura TEMEL (iki KDV oranı) DURUM 3: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:43:58 2-e-Fatura TİCARİ DURUM 3: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:43:59 3-e-Arşiv (kişiye, logo + kaşe) DURUM 3: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+12:43:59 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 3: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:44:45 1-e-Fatura TEMEL (iki KDV oranı) DURUM 4: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:44:46 2-e-Fatura TİCARİ DURUM 4: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:44:46 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 4: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:45:32 1-e-Fatura TEMEL (iki KDV oranı) DURUM 5: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:45:33 2-e-Fatura TİCARİ DURUM 5: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:45:34 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 5: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:46:19 1-e-Fatura TEMEL (iki KDV oranı) DURUM 6: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:46:20 2-e-Fatura TİCARİ DURUM 6: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:46:21 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 6: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:47:06 1-e-Fatura TEMEL (iki KDV oranı) DURUM 7: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:47:07 2-e-Fatura TİCARİ DURUM 7: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:47:08 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 7: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:47:54 1-e-Fatura TEMEL (iki KDV oranı) DURUM 8: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:47:54 2-e-Fatura TİCARİ DURUM 8: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:47:55 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 8: {"status":200,"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+12:48:41 1-e-Fatura TEMEL (iki KDV oranı) DURUM 9: {"status":200,"eStatus":"processing","msg":"Alıcı sistemin yanıtı bekleniyor. WAIT_SYSTEM_RESPONSE"}
+12:48:41 2-e-Fatura TİCARİ DURUM 9: {"status":200,"eStatus":"processing","msg":"Alıcı sistemin yanıtı bekleniyor. WAIT_SYSTEM_RESPONSE"}
+12:48:42 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 9: {"status":200,"eStatus":"processing","msg":"Alıcı sistemin yanıtı bekleniyor. WAIT_SYSTEM_RESPONSE"}
+12:49:28 1-e-Fatura TEMEL (iki KDV oranı) DURUM 10: {"status":200,"eStatus":"sent","msg":"Alıcıya ulaştı. SUCCEED"}
+12:49:28 2-e-Fatura TİCARİ DURUM 10: {"status":200,"eStatus":"sent","msg":"Alıcıya ulaştı; alıcının kabul ya da red yanıtı bekleniyor (Ticari Fatura). WAIT_APPLICATION_RESPONSE"}
+12:49:29 4-e-Fatura İSTİSNA (301 + %20 karışık) DURUM 10: {"status":200,"eStatus":"sent","msg":"Alıcıya ulaştı. SUCCEED"}
+12:49:32 1-e-Fatura TEMEL (iki KDV oranı) RESMÎ GÖRÜNTÜ: {"status":200,"bayt":113435,"pdf":"%PDF-"}
+12:49:36 2-e-Fatura TİCARİ RESMÎ GÖRÜNTÜ: {"status":200,"bayt":110131,"pdf":"%PDF-"}
+12:49:39 3-e-Arşiv (kişiye, logo + kaşe) RESMÎ GÖRÜNTÜ: {"status":200,"bayt":129773,"pdf":"%PDF-"}
+12:49:42 4-e-Fatura İSTİSNA (301 + %20 karışık) RESMÎ GÖRÜNTÜ: {"status":200,"bayt":113929,"pdf":"%PDF-"}
+ÖZET [{"belge":"1-e-Fatura TEMEL (iki KDV oranı)","no":"TEF2026481687272","ettn":"e521ef94-c641-4efe-8d9d-3bf73c612d69"},{"belge":"2-e-Fatura TİCARİ","no":"TEF2026481687273","ettn":"a183c532-46d3-427a-8c93-67cb59f404a6"},{"belge":"3-e-Arşiv (kişiye, logo + kaşe)","no":"TEA2026481687272","ettn":"b2ca8fdd-91f7-41f8-832f-f47cc5028b27"},{"belge":"4-e-Fatura İSTİSNA (301 + %20 karışık)","no":"TEF2026481687274","ettn":"4921a889-bf8c-4da6-8e29-bed8b45d3322"}]
+
+[exited with code 0]

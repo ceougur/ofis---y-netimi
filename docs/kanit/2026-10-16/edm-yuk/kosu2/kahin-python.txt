@@ -1,0 +1,13 @@
+Bağımsız kâhin (Python, kalemlerden): belge 62 tutar farkı 0
+beklenen bakiye 001 Güneş Kafe Gıda Ltd. Şti. 14286.00
+beklenen bakiye 001 Kuzey Emlak Danışmanlık Ltd. Şti. 27000.00
+beklenen bakiye 001 Marmara Gıda San. ve Tic. A.Ş. 51000.00
+beklenen bakiye 001 Mehmet Demir 9720.00
+beklenen bakiye 001 Yıldız Hukuk Bürosu 31320.00
+beklenen bakiye 001 Zeynep Arslan 8640.00
+beklenen bakiye 002 Akdeniz Otelcilik ve Turizm A.Ş. 246016.00
+beklenen bakiye 002 Başkent İnşaat Taahhüt A.Ş. 342081.00
+beklenen bakiye 002 Can Öztürk 95520.00
+beklenen bakiye 002 Deniz Oto Servis Ltd. Şti. 32400.00
+beklenen bakiye 002 Ege Tekstil Konfeksiyon Ltd. Şti. 120060.00
+beklenen bakiye 002 Elif Şahin 26400.00

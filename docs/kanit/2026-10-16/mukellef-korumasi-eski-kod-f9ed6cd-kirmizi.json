@@ -1,0 +1,38 @@
+{
+  "ad": "mukellef-korumasi-eski-kod-f9ed6cd-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/mukellef-eski-f9ed6cd && HUKUK_LICENSE_URL=http://127.0.0.1:9 node --test test/ebelge-240-bitis-turu.test.mjs",
+  "commit": "f9ed6cdd312f0337c0fe01564c40a851284e41ce",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T13:28:14.789Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 17,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Arayüz denemesi (gerçek EDM): mükellefiyeti sorgulanmamış e-Fatura mükellefine e-Arşiv gönderilmez; cari işaretlenir, numara harcanmaz",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:273:3",
+      "hata": "{\"id\":\"invoice-55c0e12f-fea5-414d-90fd-a596c307504c\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"TEA2026000000001\",\"displayNo\":\"TEA2026000000001\",\"ettn\":\"27c766fb-dedf-4916-870c-99518bedce03\",\"issueDate\":\"2026-10-16\",\"issueTime\":\"13:28\",\"accountId\":\"account-870ab702-e65c-4ad5-89f9-bbd1c7c04f8c\",\"accountName\":\"Sorgulanmamış Ticaret A.Ş.\",\"accountRef\":\"2\",\"accountPhone\":\"\",\"profile\":\"EARSIVFATURA\",\"profileLabel\":\"e-Arşiv Fatura\",\"typeCode\":\"SATIS\",\"currency\":\"TRY\",\"rate\":1,\"netTotal\":100,\"vatTotal\":20,\"withheldTotal\":0,\"stoppageTotal\":0,\"payableTotal\":120,\"tryNet\":100,\"tryVat\":20,\"tryPayable\":120,\"dueDate\":\"2026-10-16\",\"planId\":\"\",\"originalId\":\"\",\"originalNumber\":\"\",\"originalDate\":\"\",\"note\":\"\",\"eStatus\":\"sent\",\"eStatusLabel\":\"Gönderildi\",\"eTest\":true,\"actorName\":\"Ofis yöneticisi\",\"createdAt\":\"2026-10-16T13:28:16.667Z\",\"payState\":\"open\",\"payStateLabel\":\"Açık\",\"paid\":0,\"open\":120,\"closers\":[],\"party\":{\"id\":\"account-870ab702-e65c-4ad5-89f9-bbd1c7c04f8c\",\"name\":\"Sorgulanmamış Ticaret A.Ş.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"9876543217\",\"taxOffice\":\"Kavaklıdere\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Cinnah Cd. 10\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"\",\"website\":\"\",\"iban\":\"\",\"eInvoice\":false,\"eAlias\":\"\"},\"seller\":{\"name\":\"Deneme Ofis Ltd.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1234567890\",\"taxOffice\":\"Çankaya\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Atatürk Blv. 1\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"bilgi@deneme.com.tr\",\"website\":\"\",\"banks\":[]},\"pricesIncludeVat\":false,\"discountRate\":0,\"stoppageRate\":0,\"baseTotal\":100,\"discountTotal\":0,\"baseNetTotal\":100,\"discountNetTotal\":0,\"goodsNet\":0,\"serviceNet\":100,\"grossTotal\":120,\"tryWithheld\":0,\"tryStoppage\":0,\"gl\":[{\"account\":\"600\",\"net\":10000}],\"orderNo\":\"\",\"orderDate\":\"\",\"despatchNo\":\"\",\"despatchDate\":\"\",\"paperNo\":\"\",\"payment\":{\"cash\":[],\"cheques\":[],\"endorse\":[],\"mode\":\"open\",\"installments\":null,\"rest\":120},\"eMessage\":\"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.\",\"eAt\":\"2026-10-16T13:28:16.710Z\",\"eAdapter\":\"edm\",\"cancelledAt\":null,\"cancelReason\":\"\",\"amountInWords\":\"Yalnız Yüz Yirmi Türk Lirası\",\"byRate\":[{\"rate\":20,\"net\":100,\"vat\":20,\"withheld\":0}],\"lines\":[{\"id\":\"iline-7cda2e94-9910-408b-9dd7-5bd78ceea23d\",\"invoiceId\":\"invoice-55c0e12f-fea5-414d-90fd-a596c307504c\",\"seq\":1,\"itemId\":\"\",\"goods\":false,\"code\":\"\",\"name\":\"Hizmet\",\"description\":\"\",\"unit\":\"Adet\",\"qty\":1,\"unitPrice\":100,\"discountRate\":0,\"base\":100,\"discount\":0,\"net\":100,\"vatRate\":20,\"vat\":20,\"withholdingCode\":\"\",\"withholdingNum\":0,\"withholdingDen\":0,\"withheld\":0,\"exemptionCode\":\"\",\"gross\":120,\"payable\":120,\"glAccount\":\"600\",\"expenseCode\":\"\",\"unitCost\":0,\"originLineId\":\"\",\"moveId\":\"\",\"serialNo\":\"\",\"lotNo\":\"\",\"returned\":0,\"expenseLabel\":\"\"}],\"returnable\":[{\"id\":\"iline-7cda2e94-9910-408b-9dd7-5bd78ceea23d\",\"left\":1}],\"returns\":[],\"cheques\":[],\"plan\":null,\"payments\":[],\"posCash\":false,\"canManage\":true,\"canEdit\":false,\"canModify\":false,\"modifyBlock\":\"Bu belge e-Belge olarak gönderildi; düzenlenmez. İptal ya da iade faturasıyla düzeltin.\",\"canIssue\":false,\"canDelete\":false,\"deleteBlock\":\"Bu belge e-Belge olarak gönderildi; silinmez. Önce entegratör tarafında iptal edin.\",\"canCancel\":true,\"canLocalCancel\":false,\"cancelNotice\":\"\",\"cancelBlock\":\"\",\"canReturn\":true,\"returnBlock\":\"\",\"repeat\":null,\"canRepeat\":true,\"canSend\":false,\"canWithdraw\":false,\"sendBlock\":\"\",\"canRefresh\":true,\"canDraft\":false,\"draftStale\":false,\"canOfficial\":true,\"edocEnabled\":true,\"sendResult\":{\"status\":\"sent\",\"message\":\"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.\",\"reference\":\"TEA2026000000001\",\"uuid\":\"27c766fb-dedf-4916-870c-99518bedce03\"}} · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/mukellef-korumasi-eski-kod-f9ed6cd-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a10bbe0fc7c8c442f1713ae901bf3149afa3420c7018d6547d1b253b04206208",
+  "ham_cikti_bayt": 11502
+}

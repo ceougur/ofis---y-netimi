@@ -1,0 +1,58 @@
+{
+  "ad": "iz9-eski-kod-959bd2c-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c && node --test test/karekod.test.mjs",
+  "commit": "959bd2ca4326c23366a097517679d3e445e01de4",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 7,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T11:23:25.113Z",
+  "sure_sn": 5.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 5,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-Belge görünümünde karekod ve GİB logosu (programın API'si) › e-Fatura iki KDV oranı: karekod GİB JSON'u, alan sırası kılavuzdaki gibi, tutarlar ELLE hesapla ve XML'le aynı",
+      "konum": "test/karekod.test.mjs:105:3",
+      "hata": "görünümde okunabilir karekod var (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "e-Belge görünümünde karekod ve GİB logosu (programın API'si) › tevkifatlı e-Fatura: ödenecek (1.120,00) vergiler dahilden (1.200,00) ayrı okunur; tip TEVKIFAT",
+      "konum": "test/karekod.test.mjs:139:3",
+      "hata": "Cannot read properties of null (reading 'tip')"
+    },
+    {
+      "ad": "e-Belge görünümünde karekod ve GİB logosu (programın API'si) › e-Arşiv, alıcı TCKN: senaryo EARSIVFATURA, avkntckn 11 hane (MERSİS değil)",
+      "konum": "test/karekod.test.mjs:146:3",
+      "hata": "Cannot read properties of null (reading 'senaryo')"
+    },
+    {
+      "ad": "e-Belge görünümünde karekod ve GİB logosu (programın API'si) › programın PDF'i de karekod taşır; görünüm şablonu kapatılsa da PDF'te kalır",
+      "konum": "test/karekod.test.mjs:154:3",
+      "hata": "karekod çizildi (3 dikdörtgen) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "EDM: belge türü ile gönderim kanalı uyuşmazlığı isteğe dönüşmez › e-Arşiv profilli belge e-Fatura kanalından (ve tersi) gönderilmez; taslak yüklemede de",
+      "konum": "test/karekod.test.mjs:211:3",
+      "hata": "Missing expected rejection."
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/iz9-eski-kod-959bd2c-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "e07597a1fc77e33a3c18cf9cdb7295ece4833b1c54ed953fdfcd24b44c7350dd",
+  "ham_cikti_bayt": 8047
+}
