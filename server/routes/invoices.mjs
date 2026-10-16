@@ -64,6 +64,12 @@ const E_TRACKED = new Set(["draft", "processing", "sent", "accepted", "rejected"
 const E_VIEWABLE = new Set(["processing", "sent", "accepted", "rejected", "cancelled"]);
 // Resmî görüntü önbelleğe yalnız son hâlinde alınır (işlenirken entegratörün görüntüsü değişebilir).
 const E_FINAL_VIEW = new Set(["sent", "accepted", "rejected", "cancelled"]);
+// Test ortamı serileri (kullanıcı kararı 16.10.2026: "entegre et ama müşteriler şimdilik yalnız test linkiyle denesin"): entegratörün TEST
+// ortamına giden e-Belge firmanın kendi serisinden değil bu serilerden numara alır — canlıya geçince firmanın serisi 1'den başlar, test
+// belgesinin numarası değişmez, belgenin test olduğu serisinden anlaşılır (ekranda, PDF'te ve görünümde "Test" işareti). Firma bu adları
+// kendi serisi olarak seçemez; test serisinden numara almış belge canlı ortamda gönderilmez.
+export const TEST_SERIES = Object.freeze({ efatura: "TEF", earsiv: "TEA", esmm: "TES" });
+const TEST_SERIES_SET = new Set(Object.values(TEST_SERIES));
 const SIDE_KINDS = { sale: ["sale", "smm", "sale_return"], purchase: ["purchase", "purchase_return"] };
 const MAX_LINES = 500;
 const DEFAULTS = Object.freeze({
@@ -200,6 +206,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         if (!/^[A-Z0-9]{3}$/.test(value)) fail400("Seri 3 karakter olmalı: büyük harf (Türkçe harfsiz) ya da rakam (ör. FTR, EAR).", `series.${key}`);
         next.series[key] = value;
       }
+      const reserved = Object.values(next.series).find(value => TEST_SERIES_SET.has(value));
+      if (reserved) fail400(`${reserved} serisi entegratörün test ortamına ayrılmıştır (TEF, TEA, TES); başka bir seri yazın.`, "series", { code: "series-reserved" });
       const used = Object.values(next.series);
       if (new Set(used).size !== used.length) fail400("Her belge türünün serisi farklı olmalı (aynı seri iki türde kullanılamaz).", "series");
     }
@@ -346,7 +354,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     buildUbl(doc, {
       variant,
       earchiveEmail: s.integrator.earchiveEmail !== false,
-      xslt: variant === "tr" && s.eView.enabled !== false && ownsDocument(doc) ? viewXslt({ logo: s.seller.logo, banks: doc.seller?.banks || [], footer: s.defaults.footer, view: s.eView }) : "",
+      xslt: variant === "tr" && s.eView.enabled !== false && ownsDocument(doc) ? viewXslt({ logo: s.seller.logo, banks: doc.seller?.banks || [], footer: s.defaults.footer, view: s.eView, test: doc.eTest === true }) : "",
       notes: s.eOptions.balanceNote === true ? [balanceNoteOf(doc)] : [],
       paymentMeans: s.eOptions.paymentMeans === true,
     });
@@ -586,6 +594,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     note: row.note,
     eStatus: row.eStatus,
     eStatusLabel: E_STATES[row.eStatus] || row.eStatus,
+    // Test ortamı belgesi (seri TEF / TEA / TES): yasal geçerliliği yok.
+    eTest: TEST_SERIES_SET.has(row.series),
     actorName: row.actorName,
     createdAt: row.createdAt,
     payState: state?.state || (row.status === "draft" ? "draft" : row.status === "cancelled" ? "cancelled" : ""),
@@ -1394,10 +1404,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
 
   // ---------- Numara ----------
+  // Canlı ortam açık ve seçili değilse e-Belge test serisinden numara alır (TEST_SERIES).
+  const liveEnv = s => edocLive && s.integrator.env === "live";
   const seriesFor = (kind, profile, s) => {
-    if (kind === "smm") return profile === "ESMM" ? s.series.esmm : s.series.smm;
-    if (profile === "EARSIVFATURA") return s.series.earsiv;
-    if (profile === "TEMELFATURA" || profile === "TICARIFATURA") return s.series.efatura;
+    const own = liveEnv(s) ? s.series : { ...s.series, ...TEST_SERIES };
+    if (kind === "smm") return profile === "ESMM" ? own.esmm : s.series.smm;
+    if (profile === "EARSIVFATURA") return own.earsiv;
+    if (profile === "TEMELFATURA" || profile === "TICARIFATURA") return own.efatura;
     return s.series.paper;
   };
   function nextNumber(series, year, s = settings()) {
@@ -1411,6 +1424,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const year = Number(today().slice(0, 4));
     const keys = edocEnabled ? Object.keys(s.series) : ["paper", "smm", "internal"];
     return Object.fromEntries(keys.map(key => [key, { series: s.series[key], year, ...nextNumber(s.series[key], year, s) }]));
+  }
+  // Test ortamındayken e-Belgenin gerçekte alacağı numara (TEST_SERIES); canlıdaysa boş.
+  function testNumbers(s) {
+    if (!edocEnabled || liveEnv(s)) return null;
+    const year = Number(today().slice(0, 4));
+    return Object.fromEntries(Object.entries(TEST_SERIES).map(([key, series]) => [key, { series, year, ...nextNumber(series, year, s) }]));
   }
   // VUK md. 231 ve GİB: aynı seride numara sırası ile tarih sırası uyuşmalı — yeni fatura serinin son faturasından eski
   // tarihli olamaz (iptal edilmiş numara da sırada yer tutar).
@@ -2051,7 +2070,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.get("/api/workspace/invoices/settings", async ({ req, res }) => {
     requireView(req);
     const s = settings();
-    ok(res, { ...publicSettings(s), edocEnabled, nextNumbers: nextNumbers(s), bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
+    ok(res, { ...publicSettings(s), edocEnabled, nextNumbers: nextNumbers(s), testNumbers: testNumbers(s), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
   });
   router.put("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = auth.requirePermission(req, "invoices.settings");
@@ -2065,7 +2084,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       audit(user, "invoice.settings.updated", "settings", { efatura: next.efatura, earsiv: next.earsiv, series: next.series, integrator: integratorLog });
     });
     publish(user, { kind: "invoices", settings: true });
-    ok(res, { ...publicSettings(next), edocEnabled, nextNumbers: nextNumbers(next), bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
+    ok(res, { ...publicSettings(next), edocEnabled, nextNumbers: nextNumbers(next), testNumbers: testNumbers(next), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
   });
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);
@@ -2725,6 +2744,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     numberForSend(user, id);
     const doc = detail(id, user);
+    if (doc.eTest && liveEnv(settings())) throw new HttpError(409, `${doc.number} test ortamında numara almış bir belgedir; canlı ortamda gönderilmez (seri ${doc.number.slice(0, 3)}). Belgeyi iptal edip yeniden kaydedin: firmanızın serisinden numara alır.`, { code: "einvoice-test-series" });
     if (!doc.canSend) {
       if (doc.profile === "KAGIT") throw new HttpError(409, "Kâğıt belge / müşteri fişi e-Belge olarak gönderilmez.", { code: "einvoice-paper" });
       if (doc.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura gönderilir.", { code: "einvoice-not-issued" });

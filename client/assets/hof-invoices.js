@@ -206,7 +206,9 @@
     if (doc.status === "cancelled") return '<span class="hof-inv-pill is-cancelled">İptal Edildi</span>';
     const pay = doc.payState ? `<span class="hof-inv-pill is-${esc(doc.payState)}">${esc(doc.payStateLabel)}</span>` : "";
     const e = edoc() && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && doc.eStatus && doc.eStatus !== "none" ? `<span class="hof-inv-pill is-e-${esc(doc.eStatus)}" title="e-Belge durumu">${esc(doc.eStatusLabel)}</span>` : "";
-    return `${pay}${e}`;
+    // Entegratörün test ortamına giden belge (seri TEF / TEA / TES): yasal geçerliliği yok.
+    const test = doc.eTest ? '<span class="hof-inv-pill is-e-test" title="Entegratörün test ortamında denenen belge; yasal geçerliliği yoktur">Test</span>' : "";
+    return `${pay}${e}${test}`;
   };
   const docTitle = doc => `${kindLabel(doc.kind)}${doc.displayNo ? ` ${doc.displayNo}` : ""}`;
   function renderList() {
@@ -2723,6 +2725,7 @@
             <label class="hof-check"><input type="checkbox" data-i="autoCheckUser" ${integ.autoCheckUser ? "checked" : ""}><span>Cari kartında VKN / TCKN yazılınca e-Fatura mükellefiyeti kendiliğinden sorgulansın</span></label>
           </div>
         </div>
+        ${integ.env !== "live" ? `<div class="hof-inv-banner" data-integ-test-note><b>Test Ortamı:</b> kullanıcı adı ve parolayı EDM Bilişim'den test hesabı olarak isteyin. Test belgelerinin yasal geçerliliği yoktur; ${esc(Object.values(st.testSeries || {}).join(", ") || "test")} serisinden numara alır ve "Test" olarak işaretlenir. Test faturaları da cari, stok ve kasaya işlenir: denemeyi ikinci bir şirkette yapmanızı öneririz.</div>` : ""}
         <p class="hof-muted" data-integ-network>${esc(networkLine(integ.network))}</p>
         <div class="hof-plan-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="test" ${integ.username && integ.hasPassword ? "" : "disabled"} title="Önce kullanıcı adı ve parolayı kaydedin">Bağlantıyı Test Et</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-act="aliases" ${integ.username && integ.hasPassword ? "" : "disabled"} title="Firmanın GB ve PK etiketleri EDM'den getirilir">Etiketleri Getir</button></div>
         <div data-integ-result></div>`,
@@ -2758,7 +2761,8 @@
           </div>
         </div>
         <p class="hof-muted">Kalemde Seri No / Lot No alanları Fatura Ayarları → Varsayılanlar'dan açılır.</p>`,
-        series: `<div class="hof-inv-head">${E_SERIES.map(([key, label]) => `<label class="hof-field"><span>${label}</span><input data-i-series="${key}" value="${esc(st.series?.[key] || "")}" maxlength="3"><small>Sıradaki: ${esc((st.nextNumbers || {})[key] || "—")}</small></label>`).join("")}</div>
+        series: `<div class="hof-inv-head">${E_SERIES.map(([key, label]) => `<label class="hof-field"><span>${label}</span><input data-i-series="${key}" value="${esc(st.series?.[key] || "")}" maxlength="3"><small>Sıradaki: ${esc((st.nextNumbers || {})[key]?.number || "—")}${st.testNumbers?.[key] ? ` · Test ortamında: ${esc(st.testNumbers[key].number)}` : ""}</small></label>`).join("")}</div>
+        ${st.testNumbers ? `<p class="hof-muted" data-integ-test-series>Test ortamında gönderilen belgeler ${esc(Object.values(st.testSeries || {}).join(", "))} serisinden numara alır ve "Test" olarak işaretlenir; canlı ortama geçince yukarıdaki serileriniz 1'den başlar.</p>` : ""}
         <p class="hof-muted">Seri üç karakterdir (büyük harf ya da rakam; Türkçe harf yok). e-Belge numarası seri + yıl + 9 hane olur (ör. EFT2026000000001).</p>`,
       };
       HOF.swap(

@@ -1,0 +1,18 @@
+10:35:39 AYAR: {"status":200,"testNumbers":"TEF2026331793662","own":"EFT2026000000001"}
+10:35:39 efatura KAYIT: {"status":200,"number":"TEF2026331793662","eTest":true,"profile":"TEMELFATURA"}
+10:35:44 efatura GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+10:35:44 earsiv KAYIT: {"status":200,"number":"TEA2026331793662","eTest":true,"profile":"EARSIVFATURA"}
+10:35:46 earsiv GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+10:35:47 efatura DURUM 1: {"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+10:35:47 earsiv DURUM 1: {"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+10:36:33 efatura DURUM 2: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+10:36:34 earsiv DURUM 2: {"eStatus":"sent","msg":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+10:37:20 efatura DURUM 3: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+10:38:05 efatura DURUM 4: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+10:38:51 efatura DURUM 5: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+10:39:37 efatura DURUM 6: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+10:40:23 efatura DURUM 7: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+10:41:09 efatura DURUM 8: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+10:41:55 efatura DURUM 9: {"eStatus":"sent","msg":"İşlem tamamlandı. SUCCEED"}
+10:41:58 efatura RESMÎ: {"status":200,"bayt":58521}
+10:42:00 earsiv RESMÎ: {"status":200,"bayt":59854}

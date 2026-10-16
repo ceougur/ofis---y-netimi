@@ -32,7 +32,8 @@ const choose = (select, map, fallback = `<xsl:value-of select="${select}"/>`) =>
  *   logo: data:image/jpeg;base64,… (Fatura Ayarları'ndaki logo; sunucu JPEG ve boyutunu denetler), banks: belgedeki banka hesapları,
  *   footer: Fatura Ayarları → Fatura Alt Notu.
  */
-export function viewXslt({ logo = "", banks = [], footer = "", view = DEFAULT_VIEW } = {}) {
+// test: entegratörün test ortamına giden belge (seri TEF / TEA / TES) — sayfanın üstünde kırmızı "TEST ORTAMI" şeridi.
+export function viewXslt({ logo = "", banks = [], footer = "", view = DEFAULT_VIEW, test = false } = {}) {
   const showLogo = view.logo !== false && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(logo);
   const bankRows = view.banks !== false ? banks.filter(bank => bank?.iban) : [];
   const footerText = view.footer !== false ? String(footer || "").trim() : "";
@@ -86,8 +87,9 @@ table{border-collapse:collapse;font-size:inherit}
 .notlar{margin-top:10px;border:1px solid #9aa8a2;padding:6px}
 .bankalar{margin-top:10px}.bankalar th,.bankalar td{border:1px solid #9aa8a2;padding:3px 6px;text-align:left}.bankalar th{background:#eef3f0}
 .alt{margin-top:10px;color:#55615b;white-space:pre-line}
+.test{border:2px solid #b42318;color:#b42318;font-weight:bold;text-align:center;padding:6px;margin-bottom:10px}
 </style></head>
-<body><div class="sayfa"><xsl:for-each select="n1:Invoice">
+<body><div class="sayfa">${test ? '<div class="test">TEST ORTAMI — Bu belge deneme amaçlıdır; yasal geçerliliği yoktur.</div>' : ""}<xsl:for-each select="n1:Invoice">
 <table class="ust"><tr>
   <td style="width:38%">${showLogo ? `<div class="logo"><img alt="" src="${xml(logo)}"/></div>` : ""}<xsl:call-template name="party"><xsl:with-param name="p" select="cac:AccountingSupplierParty/cac:Party"/></xsl:call-template></td>
   <td style="width:24%" class="baslik"><xsl:choose><xsl:when test="cbc:ProfileID='EARSIVFATURA'">e-Arşiv Fatura</xsl:when><xsl:otherwise>e-FATURA</xsl:otherwise></xsl:choose></td>

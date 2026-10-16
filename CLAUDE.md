@@ -563,7 +563,14 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - KARAR (kullanıcı, 16.10.2026: "entegre et ama müşteriler şimdilik sadece test linki girip deneme yapabilsin, ben de öyle yapacağım; sorunsuzca
   'canlıyı da aç' dersem o kısmı da aktif edersin") → 2.4.0'da e-Belge AÇIK (edocEnabled), CANLI ORTAM KİLİTLİ (edocLive kapalı; ekran + sunucu +
   bağlantı katmanı zaten kilitli). "Canlıyı da aç" denince yalnız edocLive açılır (ayrı sürüm). Baş mimar uyarısı verildi (test belgesi gerçek
-  deftere yazılır, numara serisi tüketilir, belgede "test" işareti yok) — güvenceler için kullanıcı onayı bekleniyor.
+  deftere yazılır, numara serisi tüketilir, belgede "test" işareti yok). KARAR (kullanıcı: "önerilerin mantıklı, yapalım") → YAPILDI (İz 8):
+  test belgeleri TEF/TEA/TES serisi + "Test" rozeti/PDF/görünüm şeridi + kartta test hesabı ve "ikinci şirkette deneyin" notu; gerçek EDM'de doğrulandı.
+- İSTEK (kullanıcı, 16.10.2026, örnek FIRAT e-Faturası: "kırmızı maliye logosu, karekod çıkması çok mu zor, yapamaz mıyız?"; sabahki EDM varsayılan görünümünde
+  GİB logosu var) → KAREKOD ZORUNLU (GİB Karekod Standardı Kılavuzu V.1.2, Kasım 2023, sha256 0db9831a…: 509 VUK GT "bulunması gereken bilgi", belgenin
+  SAĞ ÜST köşesi, JSON içerik). Görünüm şablonumuzda ve EDM varsayılanında karekod YOK → canlıdan önce ŞART; İz 6'daki "karekod bilinen sınır" değerlendirmesi
+  yanlıştı. YAPILACAK (İz 9, 2.4.0): sunucuda üretilen karekod (GİB JSON) şablona + programın e-Belge PDF'ine; GİB logosu (GİB örnek şablonundaki resmî görsel)
+  "e-FATURA" başlığının üstüne; bağımsız çözücüyle kâhin, gerçek EDM'de resmî PDF. Ayrıca: EDM istemcisinde belge türü (ProfileID) ↔ gönderim kanalı
+  uyuşmazlığı reddedilir (sabahki deneme betiği e-Arşiv belgesini e-Fatura kanalından göndermişti → GİB SEND-FAILED; program yolunda olmaz).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

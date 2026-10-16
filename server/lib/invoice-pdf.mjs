@@ -29,9 +29,11 @@ const isFormal = doc => ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA", "ESMM"].
 const titleOf = doc => {
   if (doc.status === "draft") return "PROFORMA";
   if (!isFormal(doc)) return { sale: "MÜŞTERİ FİŞİ", smm: "MÜŞTERİ FİŞİ (SERBEST MESLEK)", sale_return: "İADE FİŞİ", purchase: "ALIŞ KAYDI", purchase_return: "İADE FİŞİ (ALIŞTAN)" }[doc.kind] || "MÜŞTERİ FİŞİ";
-  if (doc.kind === "smm") return "e-SERBEST MESLEK MAKBUZU";
+  if (doc.kind === "smm") return doc.eTest ? "e-SERBEST MESLEK MAKBUZU · TEST" : "e-SERBEST MESLEK MAKBUZU";
   const head = doc.profile === "EARSIVFATURA" ? "e-ARŞİV FATURA" : "e-FATURA";
-  return doc.typeCode === "IADE" ? `${head} (İADE)` : head;
+  // Entegratörün test ortamına giden belge (seri TEF / TEA / TES): yasal geçerliliği yoktur, başlıkta da yazar.
+  const title = doc.typeCode === "IADE" ? `${head} (İADE)` : head;
+  return doc.eTest ? `${title} · TEST` : title;
 };
 const partyLines = p => {
   const id = String(p?.taxNo || "");
@@ -201,6 +203,7 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
     paymentText(invoice),
     (invoice.seller?.banks || []).filter(bank => bank.iban).map(bank => `${bank.name ? `${bank.name} ` : ""}IBAN: ${bank.iban.replace(/(.{4})/g, "$1 ").trim()}`).join("   "),
     invoice.profile === "EARSIVFATURA" ? "e-Arşiv izni kapsamında elektronik ortamda iletilmiştir." : "",
+    invoice.eTest && isFormal(invoice) ? "TEST ORTAMI: Bu belge entegratörün test ortamında denenmiştir; yasal geçerliliği yoktur." : "",
     invoice.status === "draft" ? "Bu belge proformadır; yasal fatura yerine geçmez." : !isFormal(invoice) ? "Bu belge bilgi amaçlıdır; resmî fatura yerine geçmez ve mali değeri yoktur." : "",
     invoice.status === "cancelled" ? `Bu fatura ${dayText((invoice.cancelledAt || "").slice(0, 10))} tarihinde iptal edildi${invoice.cancelReason ? `: ${invoice.cancelReason}` : ""}.` : "",
     footer,

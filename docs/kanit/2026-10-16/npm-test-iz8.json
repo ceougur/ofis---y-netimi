@@ -1,0 +1,32 @@
+{
+  "ad": "npm-test-iz8",
+  "komut": "npm test",
+  "commit": "09bf05ce93cc8ed5197951cfb01ab254b43772de",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 13,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T10:42:54.102Z",
+  "sure_sn": 1194.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2596,
+    "gecen": 2596,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/npm-test-iz8.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "9e5e4ac268e87e50f948f64278f77d5f0fc16ca02eb7b050f00c3b70b68fa4b0",
+  "ham_cikti_bayt": 900955
+}

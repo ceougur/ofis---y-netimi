@@ -311,6 +311,23 @@ try {
     await page.waitForTimeout(250);
   }
 
+  console.log("\n■ 10 Yalnız test ortamı: test hesabı notu, test serisi, “Test” rozeti (kullanıcı kararı 16.10.2026)");
+  await openInvoices(page);
+  const testPills = await page.$$eval(`${modal} .hof-inv-pill.is-e-test`, nodes => nodes.map(node => node.textContent.trim()));
+  ok(testPills.length > 0 && testPills.every(text => text === "Test"), `listede test ortamına giden belgelerde “Test” rozeti (${testPills.length})`);
+  await page.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
+  await page.waitForSelector(`${card} [data-integ-test-note]`, { timeout: 8000 });
+  const testNote = await textOf(page, `${card} [data-integ-test-note]`);
+  ok(/EDM Bilişim'den test hesabı/.test(testNote) && /TEF, TEA, TES/.test(testNote) && /ikinci bir şirkette/.test(testNote), `Test Ortamı notu: ${testNote}`);
+  await page.click(`${card} [data-integ-tab="series"]`);
+  const seriesText = await textOf(page, `${card} [data-integ-panel="series"]`);
+  ok(!seriesText.includes("[object Object]") && /Sıradaki: EFX\d{13}/.test(seriesText) && /Test ortamında: TEF\d{13}/.test(seriesText), `Otomatik Seriler: sıradaki numara ve test serisi doğru yazılır (${seriesText.slice(0, 160)}…)`);
+  await shot(page, "entegrator-10-test-seri");
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
+
   console.log("\n■ 6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu)");
   await page.goto(`${BASE}/admin.html#system`);
   await page.waitForFunction(() => !/Yükleniyor/.test(document.querySelector("#adm-network-summary")?.textContent || "Yükleniyor"), null, { timeout: 15000 });

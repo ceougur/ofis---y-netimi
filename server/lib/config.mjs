@@ -68,7 +68,8 @@ export function loadConfig(overrides = {}) {
     fetchImpl: overrides.fetchImpl || createProxyFetch({ resolve: cachedResolver({ file: networkFile, env }), tlsOptions: overrides.outboundTls || {} }),
     // e-Belge (e-Fatura / e-Arşiv / entegratör) bağlantısı — program sahibinin kararıyla KAPALI (01.10.2026: "sana entegre
     // et diyene kadar"). Kapalıyken fatura modülü tam çalışır; belge resmî hükmü olmayan müşteri fişi olarak basılır,
-    // e-Belge seçenekleri ekranda görünmez. Yalnız testler (overrides.edocEnabled) açabilir; ortam değişkeniyle açılmaz.
+    // e-Belge seçenekleri ekranda görünmez. Testler ve üretim girişi (server/server.mjs, 16.10.2026'dan beri açık) overrides ile açar;
+    // ortam değişkeniyle açılmaz.
     edocEnabled: overrides.edocEnabled === true,
     // Entegratörde CANLI ortam (kullanıcı kararı 16.10.2026): "entegre et" kararına dek kapalı; açıkken bile yalnız bu bayrakla seçilir.
     // Ortam değişkeniyle açılmaz (yanlışlıkla canlıya belge gitmesin); testler ve kabul sonrası kurulum ayarı verir.

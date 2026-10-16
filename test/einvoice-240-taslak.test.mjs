@@ -147,7 +147,7 @@ describe("Portala taslak (sahte EDM)", () => {
     assert.equal(bulk.data.sent, 1, JSON.stringify(bulk.data));
     const pending = (await api.get(`/api/workspace/invoices/${later.data.id}`)).data;
     assert.equal(pending.eStatus, "draft");
-    assert.ok(/^EFT\d{13}$/.test(pending.number), `numara taslak yüklenirken verildi: ${pending.number}`);
+    assert.ok(/^TEF\d{13}$/.test(pending.number), `numara taslak yüklenirken verildi: ${pending.number}`);
   });
 
   test("taslaktaki belge silinmez; e-Fatura taslağı onaysız iptal edilmez, onayla iptal edilir (EDM'ye iptal gönderilmez)", async () => {
