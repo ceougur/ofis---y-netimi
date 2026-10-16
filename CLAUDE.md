@@ -644,6 +644,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (1 belge+kanıt, 2–6 bundle parçaları; birleştirilip klonlandı, a11b0a7). PR açıldı.
   PR ceougur/ofis---y-netimi#30; master çakışması "ours" birleştirmesiyle giderildi (515222c, ağaç aynı). KARAR (kullanıcı, 16.10.2026 ~19:50 UTC: "CI yeşil
   olunca birleştir") → PR CI + kapı yeşil olunca squash birleştirme; sonra kullanıcı yayını açar (bağlantı verildi).
+  BİRLEŞTİ (16.10.2026 20:24 UTC): PR #30 squash → `master` = 5b45c5d (ağaç 4b4eca1 ile AYNI; uygulama dosyaları paket 652bdc7 ile aynı; head CI + kapı yeşil).
+  SIRADA: kullanıcı yayın açar (v2.4.0 → master, 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF ca4b478d…).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
