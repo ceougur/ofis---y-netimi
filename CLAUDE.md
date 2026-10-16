@@ -599,6 +599,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   5 kullanıcı, 64 belge (+ Alıştan İade TEMEL/IADE) + yedek tatbikatı (otomatik + elle + geri yükleme). Gerçek EDM birim kodu kusurunu buldu (Çuval SA vb.
   reddedildi) → düzeltildi. KARAR (kullanıcı: "en uygun haliyle yap"): birimler programda KALIR; e-Belgede Adet + kalem notu, formda/stok kartında ipucu,
   kılavuzda hap bilgi. Canlı açılırken birim sorgusu canlı ortamda yinelenir. Ayrıntı docs/2.4.0-IS-LISTESI.md "Dar kontrol turu 4".
+- İSTEK (kullanıcı, 16.10.2026, "başla"): EDM test ortamı için 5 senaryo örnek UBL-TR XML/JSON + kontrol listesi + yanıt/UUID doğrulama kodu (1 perakende
+  %1/%10/%20 + satır ve genel iskonto, 2 hizmet stopaj/tevkifat e-Arşiv, 3 tevkifatlı e-Fatura 5/10 ve 9/10, 4 USD dövizli, 5 hatalı VKN/eksik alan SOAP
+  Fault). Koddan: satışta gelir vergisi STOPAJI YOK (yalnız SMM/alış; e-SMM kapsam dışı) → 2'de KDV tevkifatlı hizmet e-Arşiv; döviz VAR (fxEnabled banka
+  modülü içindir — önceki "döviz kapalı" sözüm yanlıştı). Çıktı docs/fatura/ornek. AYRICA: büyük yük/stres testi planı (20 kullanıcı, dakikada 100–1.000,
+  oturum düşmesi, 5 MB XML…) için süre/maliyet verildi (~5–6,5 sa + düzeltmeler; 0 TL); karar ("A A A" önerisi) BEKLENİYOR.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
