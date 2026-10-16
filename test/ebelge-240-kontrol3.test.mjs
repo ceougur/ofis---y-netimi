@@ -15,6 +15,9 @@
 // Dar kontrol turu 5 (d7d7b38 + c3f0abd):
 //   D1 YÜKSEK  gönderim sürerken Sil → belge EDM'de geçerli, programda silinir; numara yeniden verilir.
 //   D2 YÜKSEK  gönderim sürerken Düzenle → defter 6.000 TL, GİB'e giden belge 1.200 TL.
+// Dar kontrol turu 6 (c3f0abd..eae82f3):
+//   E1 ORTA    gönderim mükellef sorgusunu beklerken "Listeden Sil" → fiş numarası harcanır, belge yine e-Arşiv olarak gider.
+//   E2 DÜŞÜK   kimliğin başına boşluk eklenmiş Düzenle isteği kilidi deler (D2 geri gelir).
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
@@ -36,11 +39,12 @@ describe("Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)", () => {
   let loseSendResponse = false;
   let down = false;
   let holdSend = null;
+  let holdOp = /SendInvoiceRequest/;
   const fetchImpl = async (input, init) => {
     const url = String(typeof input === "string" || input instanceof URL ? input : input.url);
     if (!url.startsWith("http://127.0.0.1")) throw new Error(`ağa çıkılmaz (test): ${url}`);
     if (down) throw Object.assign(new TypeError("fetch failed"), { cause: Object.assign(new Error("connect ECONNREFUSED"), { code: "ECONNREFUSED" }) });
-    if (holdSend && /SendInvoiceRequest/.test(String(init?.body || ""))) await holdSend;
+    if (holdSend && holdOp.test(String(init?.body || ""))) await holdSend;
     const response = await globalThis.fetch(input, init);
     if (loseSendResponse && /SendInvoiceRequest/.test(String(init?.body || ""))) {
       loseSendResponse = false;
@@ -287,5 +291,31 @@ describe("Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)", () => {
     const sentXml = Buffer.from(edm.state.sent.find(item => item.uuid === row.ettn).content || "", "base64").toString("utf8") || edm.state.sent.find(item => item.uuid === row.ettn).xml || "";
     const payable = Number((sentXml.match(/<cbc:PayableAmount[^>]*>([^<]+)</) || [])[1]);
     assert.equal(row.payableTotal ?? row.tryPayable, payable, `defter ${row.payableTotal ?? row.tryPayable} ↔ gönderilen ${payable}`);
+  });
+
+  test("E1: mükellef sorgusu sürerken Listeden Sil reddedilir; belge fişe dönmez", async () => {
+    const doc = (await sale(personId, { eSend: "later" })).data;
+    let open;
+    holdOp = /CheckUserRequest/;
+    holdSend = new Promise(resolve => (open = resolve));
+    const sending = api.post(`/api/workspace/invoices/${doc.id}/send`, {});
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const during = await api.post(`/api/workspace/invoices/${doc.id}/withdraw`, {});
+    open();
+    holdSend = null;
+    holdOp = /SendInvoiceRequest/;
+    const done = await sending;
+    assert.equal(during.status, 409, JSON.stringify(during.data));
+    assert.equal(done.status, 200, JSON.stringify(done.data));
+    const row = await card(doc.id);
+    assert.equal(row.profile, "EARSIVFATURA");
+    assert.equal(row.paperNo || "", "", "fiş numarası harcanmadı");
+  });
+
+  test("E2: boşluklu kimlikle Düzenle de gönderim kilidine düşer", async () => {
+    const doc = (await sale(personId, { eSend: "later" })).data;
+    const { during, done } = await whileSending(doc, () => api.post(`/api/workspace/invoices/%20${doc.id}/edit`, { kind: doc.kind, scenario: "service_sale", accountId: personId, issueDate: doc.issueDate, lines: [{ name: "Danışmanlık", qty: 5, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } }));
+    assert.equal(during.status, 409, JSON.stringify(during.data));
+    assert.equal(done.status, 200);
   });
 });

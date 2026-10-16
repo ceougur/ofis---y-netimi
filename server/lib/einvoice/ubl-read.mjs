@@ -53,13 +53,18 @@ export function readUbl(xml) {
     const tax = find(line, "TaxTotal/TaxSubtotal");
     const withholding = find(line, "WithholdingTaxTotal/TaxSubtotal");
     const quantity = num(textOf(qty)) || 1;
+    const notes = lineNotes(line);
+    const unitAttr = qty?.attrs?.unitCode || "";
+    const unitIndex = ["", "C62", "NIU"].includes(unitAttr) ? notes.map(note => UNIT_NOTE.test(note)).lastIndexOf(true) : -1;
     return {
       name: textOf(find(line, "Item/Name")) || textOf(find(line, "Item/Description")) || "Kalem",
       code: textOf(find(line, "Item/SellersItemIdentification/ID")),
-      // Kalem notları: açıklama + (DestekOfis'in e-Belgesinde) "Birim: Çuval" — entegratörün kodu olmayan birim Adet koduyla gider, adı notta taşınır.
-      description: lineNotes(line).filter(note => !UNIT_NOTE.test(note)).join(" · "),
+      // Kalem notları: açıklama + (DestekOfis'in e-Belgesinde, SON not) "Birim: Çuval" — entegratörün kodu olmayan birim Adet koduyla gider, adı notta
+      // taşınır. Not yalnız birim kodu Adet / boşken birim sayılır (kontrol turu 6: Kg'lık kalemde "Birim: Koli" miktarı koliye çeviriyordu); açıklama
+      // içe almadaki sınıra (300) göre kısaltılır (çok notlu kalem içe alınamıyordu).
+      description: notes.filter((_, index) => index !== unitIndex).join(" · ").slice(0, 300),
       qty: quantity,
-      unit: lineNotes(line).map(note => (note.match(UNIT_NOTE) || [])[1]).find(Boolean) || UNIT_NAMES[qty?.attrs?.unitCode] || "Adet",
+      unit: (unitIndex >= 0 ? notes[unitIndex].match(UNIT_NOTE)[1] : "") || UNIT_NAMES[unitAttr] || "Adet",
       unitPrice: price || (quantity ? (net + discount) / quantity : 0),
       discountRate: base > 0 && discount > 0 ? Math.round((discount / base) * 10000) / 100 : 0,
       vatRate: num(textOf(child(tax, "Percent"))),

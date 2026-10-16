@@ -66,3 +66,16 @@ describe("Adet koduyla giden birimin adı belgede kalır; XML GİB/XSD'den geçe
     assert.deepEqual(read.lines.map(line => ({ unit: line.unit, description: line.description })), [{ unit: "Çuval", description: "Teslim şantiyede" }, { unit: "Düzine", description: "" }]);
   });
 });
+
+// Kontrol turu 6: gelen e-Fatura okuması — birim notu yalnız Adet kodlu kalemde ve SON not olarak; açıklama içe alma sınırında (300).
+test("gelen e-Fatura: birim notu yalnız Adet kodunda, son not; uzun notlar kısaltılır", () => {
+  const line = (code, notes) => `<cac:InvoiceLine><cbc:ID>1</cbc:ID>${notes.map(note => `<cbc:Note>${note}</cbc:Note>`).join("")}<cbc:InvoicedQuantity unitCode="${code}">10</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">100</cbc:LineExtensionAmount><cac:Item><cbc:Name>Kalem</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">10</cbc:PriceAmount></cac:Price></cac:InvoiceLine>`;
+  const doc = body => readUbl(`<?xml version="1.0"?><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"><cbc:ID>ABC2026000000001</cbc:ID>${body}</Invoice>`).lines[0];
+  const kg = doc(line("KGM", ["Birim: Koli"]));
+  assert.deepEqual({ unit: kg.unit, description: kg.description }, { unit: "Kg", description: "Birim: Koli" });
+  const own = doc(line("C62", ["Birim: Torba", "Birim: Çuval"]));
+  assert.deepEqual({ unit: own.unit, description: own.description }, { unit: "Çuval", description: "Birim: Torba" });
+  const long = doc(line("C62", ["a".repeat(200), "b".repeat(200)]));
+  assert.ok(long.description.length <= 300, `açıklama ${long.description.length}`);
+});
+

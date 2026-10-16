@@ -2589,14 +2589,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     cancelling: ["Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin.", "invoice-cancelling"],
     editing: ["Bu belge şu anda başka bir kullanıcı tarafından düzenleniyor; birkaç saniye sonra yenileyin.", "invoice-editing"],
   };
+  // Kontrol turu 6: anahtar her zaman belgenin kayıtlı kimliği (istekteki kimlik boşluklu / farklı yazılmış olsa da aynı kilide düşer).
+  const busyKey = id => invoiceRow(id).id;
   function assertNotBusy(id) {
-    const held = busy.get(id);
+    const held = busy.get(busyKey(id));
     if (held) throw new HttpError(409, BUSY_TEXT[held][0], { code: BUSY_TEXT[held][1] });
   }
   function holdInvoice(id, kind) {
-    assertNotBusy(id);
-    busy.set(id, kind);
-    return () => busy.delete(id);
+    const key = busyKey(id);
+    assertNotBusy(key);
+    busy.set(key, kind);
+    return () => busy.delete(key);
   }
   async function cancelInvoice(user, id, body) {
     const release = holdInvoice(id, "cancelling");
@@ -3055,7 +3058,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.post("/api/workspace/invoices/:id/withdraw", async ({ req, res, params }) => {
     const user = requireManage(req);
     requireEdoc();
-    withdraw(user, invoiceRow(params.id).id);
+    // Kontrol turu 6: gönderim sürerken "Listeden Sil" belgeyi fişe çeviriyor, gönderim yine e-Arşiv olarak gidiyordu.
+    const withdrawId = invoiceRow(params.id).id;
+    const release = holdInvoice(withdrawId, "editing");
+    try {
+      withdraw(user, withdrawId);
+    } finally {
+      release();
+    }
     ok(res, detail(params.id, user));
   });
   router.post("/api/workspace/invoices/send-pending", async ({ req, res }) => {
