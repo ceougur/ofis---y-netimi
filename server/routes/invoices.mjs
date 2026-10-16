@@ -2435,6 +2435,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (row.status === "draft") return "";
     const lock = period?.lockedUntil?.();
     if (lock && row.issueDate <= lock) return `Belge ${dayText(row.issueDate)} tarihli; ${dayText(lock)} ve öncesi kilitli dönem. Silmek için dönem kilidi açılmalı.`;
+    // Dar kontrol turu 3 (B2): numarası entegratörde kullanılmış (ya da kullanılmış olabilecek) iptal belgesi silinirse seri MAX(seq) ile geri gelir
+    // ve aynı e-Belge numarası yeni belgeye verilir (EDM'de ilk belge durur). Entegratör izi olan iptal belgesi "İptal Edildi" olarak kalır.
+    if (row.status === "cancelled" && row.number && (row.eAdapter || E_TRACKED.has(row.eStatus))) return "Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.";
     if (row.status === "cancelled") return "";
     const fee = bankFeeOf(row.id);
     if (fee) return bankFeeText(fee);
@@ -2563,7 +2566,19 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       ? `${what} artık şüpheli alacaktan düşüyor (faturayla bağı kalktı). Normal cari hesapta kalmasını isterseniz cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.`
       : `${what} şu an normal cari hesaba işli (cari şüpheli alacakta). Fatura iptal edilince bağı kalkar ve tahsilat şüpheli alacaktan düşer. Normal cari hesapta kalmasını isterseniz iptalden sonra cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.`;
   }
+  // Yük denemesi (iki şirket, on kullanıcı; dar kontrol turu 3 B6): iki kullanıcı aynı e-Arşivi aynı anda iptal edince ikisi de entegratöre iptal
+  // isteği gönderiyordu (program bir kez iptal eder). Gönderimdeki gibi belge başına tek iptal.
+  const cancelling = new Set();
   async function cancelInvoice(user, id, body) {
+    if (cancelling.has(id)) throw new HttpError(409, "Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin.", { code: "invoice-cancelling" });
+    cancelling.add(id);
+    try {
+      return await cancelInvoiceOnce(user, id, body);
+    } finally {
+      cancelling.delete(id);
+    }
+  }
+  async function cancelInvoiceOnce(user, id, body) {
     const relinks = invoiceRow(id).status === "issued" ? doubtfulRelinks(id) : [];
     const notices = relinks.length ? [doubtfulRelinkText(relinks, { done: true })] : [];
     const options = { reason: text(body.reason), force: forceOf(body), confirmExternal: body.confirmExternal === true, posOutcome: text(body.posOutcome) === "entry-error" ? "entry-error" : "refunded" };
@@ -2572,17 +2587,20 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const head = invoiceRow(id);
     const localOnly = body.localOnly === true;
     const stuck = head.status === "issued" && (uncertainSend(head) || head.eStatus === "draft");
-    if (localOnly && stuck) {
+    // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
+    const remoteEligible = row => edocEnabled && row.status === "issued" && row.profile === "EARSIVFATURA" && ["draft", "processing", "sent", "accepted", "error"].includes(row.eStatus);
+    // Dar kontrol turu 3 (B3): entegratörü atlayan her "yalnız programda" iptal (belirsiz / taslak ya da EDM'de iptal edilecek e-Arşiv) aynı kapıdan geçer.
+    const bypass = localOnly && (stuck || remoteEligible(head));
+    if (bypass) {
       if (!canUser(user, "invoices.settings")) throw new HttpError(403, "Yalnız programda iptal, Fatura Ayarları yetkisi ister; yöneticinize başvurun.", { code: "FORBIDDEN", permission: "invoices.settings" });
       if (body.confirmLocal !== true) throw new HttpError(409, "Belgenin entegratörde olmadığını ya da entegratöre ulaşılamadığını onaylayın (onay kutusu).", { code: "einvoice-local-confirm" });
     }
     if (uncertainSend(head) && !localOnly) throw new HttpError(409, UNCERTAIN_TEXT, { code: "einvoice-uncertain" });
-    if (!(localOnly && stuck)) await confirmDraft(user, id);
-    if (localOnly && stuck) options.confirmExternal = true;
+    if (!bypass) await confirmDraft(user, id);
+    if (bypass) options.confirmExternal = true;
     const existing = invoiceRow(id);
-    // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
     // Önce programdaki iptal denenir (iade, kilitli dönem, tahsil edilmiş çek, stok…); geçerse entegratör, sonra program.
-    const remote = edocEnabled && existing.status === "issued" && existing.profile === "EARSIVFATURA" && ["draft", "processing", "sent", "accepted", "error"].includes(existing.eStatus) && body.localOnly !== true;
+    const remote = remoteEligible(existing) && !localOnly;
     // 8 gün kuralı GİB'e raporlanmış e-Arşiv içindir; portaldaki taslak (İz 7.3) GİB'e gitmedi, her zaman iptal edilir.
     if (remote && existing.eStatus !== "draft" && daysBetween(existing.issueDate, today()) > 8) throw new HttpError(409, `e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (${dayText(existing.issueDate)} tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.`, { code: "einvoice-cancel-late" });
     if (remote) {
@@ -2603,9 +2621,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       return { ...detail(row.id, user), integratorResult: result, notices };
     }
     const row = cancel(user, existing.id, options);
-    if (localOnly && stuck) {
+    if (bypass) {
       store.tx(() => {
-        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", "Yalnız programda iptal edildi (entegratördeki durum bilinmiyordu ya da portalda taslaktı). Entegratörde belge varsa orada ayrıca iptal edin.", existing.id);
+        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", "Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.", existing.id);
         audit(user, "invoice.e.local-cancel", existing.id, { number: existing.number, eStatus: head.eStatus || "none", adapter: head.eAdapter || "" });
       });
     }
@@ -2829,7 +2847,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (ret.length) throw new HttpError(409, ret.join(" "), { code: "einvoice-return-reference", problems: ret });
     // e-Fatura alıcının posta kutusu etiketi bilinmeden gönderilmez (EDM istemcisi de reddeder ama numara verildikten sonra) — arayüz denemesi.
     if (["TEMELFATURA", "TICARIFATURA"].includes(doc.profile) && !["purchase", "sale_return"].includes(doc.kind) && !String(doc.party?.eAlias || "").trim()) {
-      throw new HttpError(409, "Alıcının e-Fatura posta kutusu etiketi bilinmiyor: cari kartında Mükellef Sorgula ile posta kutusunu seçin, sonra gönderin.", { code: "buyer-alias" });
+      throw new HttpError(409, "Alıcının e-Fatura posta kutusu etiketi bilinmiyor: cari kartında Mükellef Sorgula ile posta kutusunu seçin, sonra bu faturayı Düzenle ile yeniden kaydedip gönderin (belge alıcı bilgisini kaydedildiği anki cari kartından alır).", { code: "buyer-alias" });
     }
     const mix = mixProblems(doc.profile, doc.lines || []);
     if (mix.length) throw new HttpError(409, mix.join(" "), { code: "einvoice-type-mix", problems: mix });
@@ -2845,15 +2863,23 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     let result;
     try {
       result = await link.checkUser(taxNo);
-    } catch {
-      return;
+    } catch (error) {
+      // Dar kontrol turu 3 (B5): sorgu yapılamadıysa (bağlantı, giriş, zaman aşımı) numara verilmeden durulur — mükellefe giden e-Arşiv numarası
+      // hiç gönderilemeyecek bir belgede kalmasın. Belge Gönderilecekler'de, numarasız kalır.
+      throw new HttpError(502, `Alıcının e-Fatura mükellefiyeti entegratöre sorulamadı (${String(error?.message || error).slice(0, 200)}). Belge numara verilmeden Gönderilecekler'de kaldı; bağlantı düzelince yeniden gönderin.`, { code: "buyer-check-failed" });
     }
     if (!result?.registered) return;
     // Posta kutusu yalnız tekse kendiliğinden yazılır; birden çoksa kullanıcı cari kartında seçer (yanlış kutuya fatura gitmesin).
     const aliases = result.aliases || [];
-    if (doc.accountId) accounts().taxIdentity.setEInvoice(user, doc.accountId, { registered: true, alias: aliases.length === 1 ? aliases[0] : "", title: result.title });
-    const choose = aliases.length > 1 ? ` Alıcının ${aliases.length} posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin.` : "";
-    throw new HttpError(409, `Alıcı (${taxNo}) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi.${choose} Bu belgeyi iptal edip yeniden kaydedin: e-Fatura olarak kesilir.`, { code: "buyer-is-efatura", aliases });
+    // Dar kontrol turu 3 (B1): sorgulanan numara BELGEDEKİ alıcının numarasıdır; cari kartı yalnız kendi numarası aynıysa işaretlenir. Kimliksiz
+    // (perakende) cariye belgede yazılan firma numarası o cariyi e-Fatura mükellefi yapmaz (sonraki kişi satışları yanlış kutuya giderdi).
+    const own = doc.accountId ? String(store.get("SELECT tax_no AS taxNo FROM accounts WHERE id = ?", doc.accountId)?.taxNo || "").replace(/\D/g, "") : "";
+    if (own === taxNo) {
+      accounts().taxIdentity.setEInvoice(user, doc.accountId, { registered: true, alias: aliases.length === 1 ? aliases[0] : "", title: result.title });
+      const choose = aliases.length > 1 ? ` Alıcının ${aliases.length} posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin.` : "";
+      throw new HttpError(409, `Alıcı (${taxNo}) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi.${choose} Bu belgeyi iptal edip yeniden kaydedin: e-Fatura olarak kesilir.`, { code: "buyer-is-efatura", aliases });
+    }
+    throw new HttpError(409, `Belgedeki alıcı numarası (${taxNo}) e-Fatura mükellefine ait; ona e-Arşiv fatura kesilemez (GİB). Bu belge carinin kendi numarasıyla kesilmedi: o firmanın carisini VKN'siyle açıp faturayı ona e-Fatura olarak kesin; bu belgeyi iptal edin.`, { code: "buyer-is-efatura", aliases });
   }
   async function sendInvoice(user, id, { draft = false } = {}) {
     requireEdoc();
