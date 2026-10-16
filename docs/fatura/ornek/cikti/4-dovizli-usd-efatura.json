@@ -1,0 +1,25 @@
+{
+  "scenario": "service_sale",
+  "accountId": "account-88d995f8-d6d2-4fa9-b345-ef8f5353d263",
+  "currency": "USD",
+  "rate": 41.25,
+  "lines": [
+    {
+      "name": "Yedek Parça Kataloğu Lisansı",
+      "unit": "Adet",
+      "qty": 2,
+      "unitPrice": 150,
+      "vatRate": 20
+    },
+    {
+      "name": "Uzaktan Destek",
+      "unit": "Saat",
+      "qty": 3,
+      "unitPrice": 40,
+      "vatRate": 20
+    }
+  ],
+  "payment": {
+    "rest": "open"
+  }
+}

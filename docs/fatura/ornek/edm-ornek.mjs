@@ -65,7 +65,9 @@ try {
   check(Boolean(firmEA), "e-Arşiv firma alıcısı (EDM'de mükellef değil)");
 
   // ---------- Senaryolar (JSON gövdesi = DestekOfis API / ekrandaki form) ----------
-  // beklenen(): programdan BAĞIMSIZ hesap — satır net = miktar × fiyat × (1 − satır iskonto) × (1 − genel iskonto); KDV = net × oran; tevkifat = KDV × pay/payda.
+  // beklenen(): programdan BAĞIMSIZ hesap (muhasebe kuralı: iskonto TUTARLARI kuruşa yuvarlanır) — brüt = miktar × fiyat; satır iskontosu = brüt × oran;
+  // genel iskonto = (brüt − satır iskontosu) × genel oran; net = brüt − iskontolar; KDV = net × oran; tevkifat = KDV × pay/payda (hepsi kuruşa).
+  // Not (16.10.2026 ilk koşu): neti doğrudan yuvarlayan hesap 1. senaryoda 1 kuruş farklı çıkar (106,875 → 106,88; program 112,50 − 5,63 = 106,87).
   const SCENARIOS = [
     { key: "1-perakende-coklu-kdv-iskonto", title: "Perakende: 3 kalem, %1 / %10 / %20 KDV, 1. kalemde satır iskontosu, dipte genel iskonto (e-Arşiv, kişi)",
       body: { scenario: "service_sale", accountId: person, discountRate: 5, lines: [
@@ -90,7 +92,9 @@ try {
     const g = (sc.body.discountRate || 0) / 100;
     let net = 0, vat = 0, wh = 0;
     for (const l of sc.body.lines) {
-      const n = k(l.qty * l.unitPrice * (1 - (l.discountRate || 0) / 100) * (1 - g));
+      const brut = k(l.qty * l.unitPrice);
+      const d1 = k(brut * (l.discountRate || 0) / 100);
+      const n = k(brut - d1 - k((brut - d1) * g));
       const v = k(n * l.vatRate / 100);
       const [p, q] = sc.wh?.[l.withholdingCode] || [0, 1];
       net += n; vat += v; wh += k(v * p / q);
@@ -139,7 +143,8 @@ try {
 
   // ---------- 5 (a): programın gönderimden ÖNCE durdurdukları ----------
   console.log("\n■ 5a Programın kendi denetimi (EDM'ye hiç gitmez)");
-  const bad = await post("/api/workspace/accounts", { name: "Hatalı VKN Ltd.", type: "customer", taxNo: "1234567890" });
+  // Not: 1234567890 algoritmaya göre GEÇERLİ bir VKN'dir (ilk koşuda yanlış örnek seçilmişti); geçersiz örnek 1234567891.
+  const bad = await post("/api/workspace/accounts", { name: "Hatalı VKN Ltd.", type: "customer", taxNo: "1234567891" });
   check(bad.status === 400, `geçersiz VKN (sağlama hanesi) cari: ${bad.status} — ${bad.data?.error}`);
   const badT = await post("/api/workspace/accounts", { name: "Hatalı TCKN", type: "customer", partyKind: "person", taxNo: "12345678901" });
   check(badT.status === 400, `geçersiz TCKN: ${badT.status} — ${badT.data?.error}`);
@@ -155,7 +160,7 @@ try {
   const oldUuid = base.match(/<cbc:UUID>([^<]+)</)[1];
   const oldId = base.match(/<cbc:ID>(TEF\d+)<\/cbc:ID>/)[1];
   const FAULTS = [
-    ["alıcı VKN geçersiz (1234567890)", xml => xml.replace(/(<cac:AccountingCustomerParty>[\s\S]*?<cbc:ID schemeID="VKN">)\d+/, "$11234567890"), { receiverVkn: "1234567890" }],
+    ["alıcı VKN geçerli ama e-Fatura mükellefi değil (1234567890)", xml => xml.replace(/(<cac:AccountingCustomerParty>[\s\S]*?<cbc:ID schemeID="VKN">)\d+/, "$11234567890"), { receiverVkn: "1234567890" }],
     ["alıcı VKN boş", xml => xml.replace(/(<cac:AccountingCustomerParty>[\s\S]*?<cbc:ID schemeID="VKN">)\d+/, "$1"), {}],
     ["e-Fatura alıcısı TCKN 11111111111", xml => xml.replace(/(<cac:AccountingCustomerParty>[\s\S]*?<cbc:ID schemeID=")VKN(">)\d+/, "$1TCKN$211111111111"), { receiverVkn: "11111111111" }],
     ["ölçü birimi boş (unitCode=\"\")", xml => xml.replace(/unitCode="[^"]*"/g, 'unitCode=""'), {}],

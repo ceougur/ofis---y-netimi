@@ -1,0 +1,17 @@
+{
+  "scenario": "service_sale",
+  "accountId": "account-88d995f8-d6d2-4fa9-b345-ef8f5353d263",
+  "lines": [
+    {
+      "name": "Yazılım Danışmanlığı",
+      "unit": "Saat",
+      "qty": 12,
+      "unitPrice": 1500,
+      "vatRate": 20,
+      "withholdingCode": "602"
+    }
+  ],
+  "payment": {
+    "rest": "open"
+  }
+}

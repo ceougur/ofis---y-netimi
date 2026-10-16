@@ -1,0 +1,6 @@
+✓ 1-perakende-coklu-kdv-iskonto: matrah 648.37 KDV 89.42 tevkifat 0.00 ödenecek 737.79 ↔ XML 648.37 / 737.79
+✓ 2-hizmet-tevkifat-earsiv: matrah 10000.00 KDV 2000.00 tevkifat 1800.00 ödenecek 10200.00 ↔ XML 10000.00 / 10200.00
+✓ 3a-tevkifat-5-10-efatura: matrah 6000.00 KDV 1200.00 tevkifat 600.00 ödenecek 6600.00 ↔ XML 6000.00 / 6600.00
+✓ 3b-tevkifat-9-10-efatura: matrah 18000.00 KDV 3600.00 tevkifat 3240.00 ödenecek 18360.00 ↔ XML 18000.00 / 18360.00
+✓ 4-dovizli-usd-efatura: matrah 420.00 KDV 84.00 tevkifat 0.00 ödenecek 504.00 ↔ XML 420.00 / 504.00
+fark: 0

@@ -1,0 +1,114 @@
+[
+ {
+  "senaryo": "1-perakende-coklu-kdv-iskonto",
+  "no": "TEA2026233739842",
+  "ettn": "2ec27890-5565-47d9-81eb-ac606adec396",
+  "durum": "sent",
+  "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED",
+  "beklenen": {
+   "net": 648.38,
+   "vat": 89.42,
+   "wh": 0,
+   "payable": 737.8
+  }
+ },
+ {
+  "senaryo": "2-hizmet-tevkifat-earsiv",
+  "no": "TEA2026233739843",
+  "ettn": "6cedf9af-b0d3-4ce4-a932-1e21b26e3eaf",
+  "durum": "sent",
+  "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED",
+  "beklenen": {
+   "net": 10000,
+   "vat": 2000,
+   "wh": 1800,
+   "payable": 10200
+  }
+ },
+ {
+  "senaryo": "3a-tevkifat-5-10-efatura",
+  "no": "TEF2026233739842",
+  "ettn": "e45ec124-09a3-49ef-a106-4ff604943891",
+  "durum": "sent",
+  "ileti": "Alıcıya ulaştı. SUCCEED",
+  "beklenen": {
+   "net": 6000,
+   "vat": 1200,
+   "wh": 600,
+   "payable": 6600
+  }
+ },
+ {
+  "senaryo": "3b-tevkifat-9-10-efatura",
+  "no": "TEF2026233739843",
+  "ettn": "36c8007e-a206-43f4-b5fe-1db5405a4c40",
+  "durum": "sent",
+  "ileti": "Alıcıya ulaştı. SUCCEED",
+  "beklenen": {
+   "net": 18000,
+   "vat": 3600,
+   "wh": 3240,
+   "payable": 18360
+  }
+ },
+ {
+  "senaryo": "4-dovizli-usd-efatura",
+  "no": "TEF2026233739844",
+  "ettn": "b5666601-3f05-461b-a1dd-b2fc9b8d2347",
+  "durum": "sent",
+  "ileti": "Alıcıya ulaştı. SUCCEED",
+  "beklenen": {
+   "net": 420,
+   "vat": 84,
+   "wh": 0,
+   "payable": 504
+  }
+ },
+ {
+  "senaryo": "5a-program",
+  "tckn": "TC kimlik numarası geçersiz: denetim haneleri tutmuyor.",
+  "kdv": "1. kalem: KDV oranı %0, %1, %10, %20 olabilir."
+ },
+ {
+  "senaryo": "5b alıcı VKN geçersiz (1234567890)",
+  "gonderim": "SOAP Fault",
+  "edmKodu": "11030",
+  "programKodu": "integrator-rejected",
+  "ileti": "EDM isteği reddetti: Ubl içeriği hatalı (Schematron hatası) : Geçersiz cbc:ProfileID elemanı değeri : 'TEMELFATURA'. Geçerli cbc:ProfileID değerleri için ProfileIDTypeEarchive listesine bakınız. (EDM hata kodu 11030)"
+ },
+ {
+  "senaryo": "5b alıcı VKN boş",
+  "gonderim": "SOAP Fault",
+  "edmKodu": "11030",
+  "programKodu": "integrator-rejected",
+  "ileti": "EDM isteği reddetti: Ubl içeriği hatalı (Schematron hatası) : cbc:ID elemanının schemeID niteliği değeri 'VKN' olması durumunda cbc:ID elemanına 10 haneli vergi kimlik numarası yazılmalıdır. (EDM hata kodu 11030)"
+ },
+ {
+  "senaryo": "5b e-Fatura alıcısı TCKN 11111111111",
+  "gonderim": "SOAP Fault",
+  "edmKodu": "11030",
+  "programKodu": "integrator-rejected",
+  "ileti": "EDM isteği reddetti: Ubl içeriği hatalı (Schematron hatası) : Geçersiz cbc:ProfileID elemanı değeri : 'TEMELFATURA'. Geçerli cbc:ProfileID değerleri için ProfileIDTypeEarchive listesine bakınız.\r\nschemeID niteliği değeri 'TCKN' olması durumunda cac:Person elemanı bulunmalıdır. (EDM hata kodu 11030)"
+ },
+ {
+  "senaryo": "5b ölçü birimi boş (unitCode=\"\")",
+  "gonderim": "SOAP Fault",
+  "edmKodu": "11059",
+  "programKodu": "integrator-rejected",
+  "ileti": "EDM isteği reddetti: Geçersiz Ölçü Birim Kodu. (EDM hata kodu 11059)"
+ },
+ {
+  "senaryo": "5b KDV toplamı yok (TaxTotal silindi)",
+  "gonderim": "SOAP Fault",
+  "edmKodu": "11029",
+  "programKodu": "integrator-rejected",
+  "ileti": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Invoice' in namespace 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2' has invalid child element 'WithholdingTaxTotal' . List of possible elements expected: ':PaymentMeans :PaymentTerms :AllowanceCharge :TaxExchangeRate :PricingExchangeRate :PaymentExchangeRate :PaymentAlternativeExchangeRate :TaxTotal'.\r\n  At: (Line: 91, Column: 1517) (EDM hata kodu 11029)"
+ },
+ {
+  "senaryo": "5b geçersiz posta kutusu (PK)",
+  "gonderim": "SOAP Fault",
+  "edmKodu": "11059",
+  "programKodu": "integrator-rejected",
+  "ileti": "EDM isteği reddetti: Alıcının GİB postakutusu etiketi (urn:mail:yokboyle@ornek.com.tr) hatalı (EDM hata kodu 11059)"
+ }
+]
