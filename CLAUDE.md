@@ -555,6 +555,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   ayrı SMTP (EDM e-Arşiv e-postasını kendisi gönderir), portal kullanıcısı (web servis yeterli).
   KARAR (kullanıcı, 16.10.2026: "önerini yap") → 1, 2, 3 YAPILDI (İz 6, `docs/2.4.0-IS-LISTESI.md`; gerçek EDM test ortamında EDM belgeyi
   bizim şablonla çizdi — kanıt docs/kanit/2026-10-16/edm-gorunum); 4–7 bekler. Resmî PDF veri tabanına değil veri klasörüne (yedek şişmesin).
+  CI #761 d133455 YEŞİL (4 platform + e2e + kapı). İSTEK (kullanıcı, aynı gün): kendi şirketinin faturasında kullanmak için DestekOfis logosu →
+  `docs/pazarlama/DestekOfis-Logo-Fatura-Yatay.jpg` (1000×300) ve `-Kare.jpg` (600×600); marka işareti + Manrope; program ikisini de kabul etti.
+  Wolvox kalan 4 madde (cari bakiyesi notu, ödeme şekli kodu, portala taslak, ek alanlar) için kullanıcı kararını yazacak.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
