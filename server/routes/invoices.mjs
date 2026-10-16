@@ -893,6 +893,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       canDelete: manage && !deleteBlock(row, activeReturns, plan),
       deleteBlock: manage ? deleteBlock(row, activeReturns, plan) : "",
       canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee && !uncertainSend(row),
+      // Yalnız programda iptal (entegratöre ulaşılamıyorsa; belirsiz gönderim ya da portal taslağı): Fatura Ayarları yetkisi.
+      canLocalCancel: edocEnabled && manage && canUser(user, "invoices.settings") && row.status === "issued" && activeReturns === 0 && !bankFee && (uncertainSend(row) || row.eStatus === "draft"),
       // K4: iptal penceresinde söylenir (şüpheli carinin "Normal Cariye İşlendi" tahsilatı iptalle şüpheliden düşmeye başlar).
       cancelNotice: manage && row.status === "issued" ? doubtfulRelinkText(doubtfulRelinks(row.id)) : "",
       cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
@@ -2399,7 +2401,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // Yargıç K3: gövdedeki negativeOk / cashForce (Uyar'daki hesap için "Yine de İptal Et"; hakem K5 negativeConfirmed) toplu silmedeki gibi işlenir; Engelle hiçbir koşulda delinmez.
     // 2.3.0 (İz 3.2, plan §3.8 Fatura / §4.6): toplu iptalde de POS İşlemi seçimi (posOutcome) belge belge uygulanır; önceden toplu yol seçimi
     // taşımıyordu — "Kayıt Hatası" seçilse de İptal İadesi yapılıyordu.
-    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, negativeOk: typeof body.negativeOk === "boolean" ? body.negativeOk : undefined, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true, posOutcome: posOutcomeOf(body) };
+    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, negativeOk: typeof body.negativeOk === "boolean" ? body.negativeOk : undefined, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true, confirmLocal: body.confirmLocal === true, posOutcome: posOutcomeOf(body) };
     const results = [];
     // Yeni tarihli belge önce iptal edilir (iade faturası asıl faturadan önce; aynı seçimde ikisi de varsa sıra tutar).
     const rows = ids.map(id => {
@@ -2565,8 +2567,18 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const relinks = invoiceRow(id).status === "issued" ? doubtfulRelinks(id) : [];
     const notices = relinks.length ? [doubtfulRelinkText(relinks, { done: true })] : [];
     const options = { reason: text(body.reason), force: forceOf(body), confirmExternal: body.confirmExternal === true, posOutcome: text(body.posOutcome) === "entry-error" ? "entry-error" : "refunded" };
-    if (uncertainSend(invoiceRow(id)) && body.localOnly !== true) throw new HttpError(409, UNCERTAIN_TEXT, { code: "einvoice-uncertain" });
-    await confirmDraft(user, id);
+    // Çıkış yolu (kullanıcı kararı 16.10.2026, kontrol turu K4): entegratöre ulaşılamıyor ya da test hesabı kapandıysa belirsiz / portalda taslak belge
+    // yalnız programda iptal edilir — Fatura Ayarları yetkisi + açık onay ("Entegratörde yok, yalnız programda iptal et"); işlem kaydına düşer.
+    const head = invoiceRow(id);
+    const localOnly = body.localOnly === true;
+    const stuck = head.status === "issued" && (uncertainSend(head) || head.eStatus === "draft");
+    if (localOnly && stuck) {
+      if (!canUser(user, "invoices.settings")) throw new HttpError(403, "Yalnız programda iptal, Fatura Ayarları yetkisi ister; yöneticinize başvurun.", { code: "FORBIDDEN", permission: "invoices.settings" });
+      if (body.confirmLocal !== true) throw new HttpError(409, "Belgenin entegratörde olmadığını ya da entegratöre ulaşılamadığını onaylayın (onay kutusu).", { code: "einvoice-local-confirm" });
+    }
+    if (uncertainSend(head) && !localOnly) throw new HttpError(409, UNCERTAIN_TEXT, { code: "einvoice-uncertain" });
+    if (!(localOnly && stuck)) await confirmDraft(user, id);
+    if (localOnly && stuck) options.confirmExternal = true;
     const existing = invoiceRow(id);
     // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
     // Önce programdaki iptal denenir (iade, kilitli dönem, tahsil edilmiş çek, stok…); geçerse entegratör, sonra program.
@@ -2591,6 +2603,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       return { ...detail(row.id, user), integratorResult: result, notices };
     }
     const row = cancel(user, existing.id, options);
+    if (localOnly && stuck) {
+      store.tx(() => {
+        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", "Yalnız programda iptal edildi (entegratördeki durum bilinmiyordu ya da portalda taslaktı). Entegratörde belge varsa orada ayrıca iptal edin.", existing.id);
+        audit(user, "invoice.e.local-cancel", existing.id, { number: existing.number, eStatus: head.eStatus || "none", adapter: head.eAdapter || "" });
+      });
+    }
     return { ...detail(row.id, user), notices };
   }
   router.post("/api/workspace/invoices/:id/cancel", async ({ req, res, params }) => {

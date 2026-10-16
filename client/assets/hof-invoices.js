@@ -2060,7 +2060,7 @@
       <div class="hof-chq-actions" role="toolbar" aria-label="Belge işlemleri">
         <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(pdfUrl(doc), "card", `${doc.status === "draft" ? "Proforma" : kindLabel(doc.kind)} - PDF`) : `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(pdfUrl(doc))}" target="_blank" rel="noopener">PDF</a>`}${phone && doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}${doc.status === "issued" && isOwn(doc.kind) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="email" data-mail="${esc(email)}" title="${email ? `${esc(email)} adresine e-posta penceresi açılır; PDF indirilir` : "Cari kartında e-posta adresi yok"}">E-Posta</button>` : ""}</span>
         ${doc.status === "issued" && doc.open > 0.004 && !ret && HOF.can(sideOf(doc.kind) === "sale" ? "accounts.collect" : "accounts.manage") ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small" data-act="pay">${sideOf(doc.kind) === "sale" ? "+ Tahsilat Ekle" : "+ Ödeme Yap"}</button></span>` : ""}
-        ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kaydet</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small" data-act="modify" ${doc.canModify ? "" : "disabled"} title="${esc(doc.modifyBlock || "Belgeyi düzeltip yeniden kaydedin; numara değişmez, stok, cari, Kasa ve taksit kayıtları yeni hale göre yazılır")}">Düzenle</button>` : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.status === "draft" || doc.status === "cancelled" || doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete" ${doc.canDelete ? "" : "disabled"} title="${esc(doc.deleteBlock || (doc.status === "draft" ? "Taslağı Silinenler'e gönder" : "Bütün etkileri geri alınır, belge Silinenler'e gider"))}">Sil</button>` : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
+        ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kaydet</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small" data-act="modify" ${doc.canModify ? "" : "disabled"} title="${esc(doc.modifyBlock || "Belgeyi düzeltip yeniden kaydedin; numara değişmez, stok, cari, Kasa ve taksit kayıtları yeni hale göre yazılır")}">Düzenle</button>` : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.status === "draft" || doc.status === "cancelled" || doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete" ${doc.canDelete ? "" : "disabled"} title="${esc(doc.deleteBlock || (doc.status === "draft" ? "Taslağı Silinenler'e gönder" : "Bütün etkileri geri alınır, belge Silinenler'e gider"))}">Sil</button>` : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}${doc.canLocalCancel ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="local-cancel" title="Entegratöre ulaşılamıyorsa: belge yalnız programda iptal edilir (yetkili)">Yalnız Programda İptal Et</button>' : ""}</span>` : ""}
         ${eTools}
       </div>
       ${blocksHtml(doc)}
@@ -2102,6 +2102,7 @@
     if (act === "return") return doc.canReturn ? startReturn(doc.id) : null;
     if (act === "delete") return doc.canDelete ? deleteForm(doc) : HOF.toast(doc.deleteBlock || "Bu belge silinemez.", { type: "error" });
     if (act === "cancel") return cancelForm(doc);
+    if (act === "local-cancel") return localCancelForm(doc);
     if (act === "pay") return payForm(doc);
     if (act === "offset") return offsetForm(doc);
     if (act === "offset-remove") {
@@ -2261,6 +2262,31 @@
         return keepOnCancel(async () => {
           const saved = await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/cancel`, { method: "POST", body: { reason: data.reason, confirmExternal: data.confirmExternal === true, ...(doc.posCash ? { posOutcome: posOutcomeOf(data) } : {}), ...force } }), "cancel");
           HOF.toast(`${docTitle(doc)} iptal edildi; etkileri geri alındı.`, { type: "success" });
+          for (const notice of saved.notices || []) HOF.toast(notice, { type: "info", timeout: 12000 });
+          HOF.emit("invoices-changed", saved);
+          showDoc(saved);
+        });
+      },
+    });
+  }
+  // Çıkış yolu (kullanıcı kararı 16.10.2026): sonucu belirsiz gönderim ya da EDM portalındaki taslak, entegratöre ulaşılamıyorsa (bağlantı yok, test
+  // hesabı kapandı) yalnız programda iptal edilir. Fatura Ayarları yetkisi + açık onay; sunucu işlem kaydına yazar.
+  function localCancelForm(doc) {
+    HOF.formModal({
+      title: `${docTitle(doc)} Yalnız Programda İptal Edilsin mi?`,
+      eyebrow: "İPTAL",
+      intro: `Belge entegratöre sorulmadan yalnız programda iptal edilir; stok, cari, Kasa, çek/senet ve taksit etkileri geri alınır. Bunu yalnız entegratöre ulaşılamıyorsa (bağlantı yok, test hesabı kapandı) kullanın. Belge entegratörde duruyorsa orada ayrıca iptal edilmelidir.${doc.eMessage ? ` Son durum: ${doc.eMessage}` : ""}`,
+      fields: [
+        { name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. EDM test hesabı kapandı", autofocus: true },
+        ...(doc.posCash ? [posOutcomeField()] : []),
+        { name: "confirmLocal", label: "Belge entegratörde yok ya da entegratöre ulaşılamıyor; yalnız programda iptal edilsin.", type: "checkbox", value: false },
+      ],
+      submitLabel: "Yalnız Programda İptal Et",
+      onSubmit: async data => {
+        if (!data.confirmLocal) throw new Error("Onay kutusunu işaretleyin: belge entegratöre sorulmadan iptal edilecek.");
+        return keepOnCancel(async () => {
+          const saved = await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/cancel`, { method: "POST", body: { reason: data.reason, localOnly: true, confirmLocal: true, ...(doc.posCash ? { posOutcome: posOutcomeOf(data) } : {}), ...force } }), "cancel");
+          HOF.toast(`${docTitle(doc)} yalnız programda iptal edildi; etkileri geri alındı.`, { type: "success" });
           for (const notice of saved.notices || []) HOF.toast(notice, { type: "info", timeout: 12000 });
           HOF.emit("invoices-changed", saved);
           showDoc(saved);

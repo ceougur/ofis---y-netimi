@@ -233,6 +233,43 @@ describe("Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, a�
     assert.equal(withheld.status, 200, "351 (istisna değil) tevkifatla birlikte olabilir");
   });
 
+  test("Çıkış yolu (kullanıcı kararı): entegratöre ulaşılamıyorsa belirsiz / taslak belge yalnız programda iptal edilir — yetki + onay + işlem kaydı", async () => {
+    // Belirsiz belge: gönderimin yanıtı kayboldu, sonra test hesabı kapandı (parola silindi).
+    const doc = (await sale()).data;
+    loseSendResponse = true;
+    assert.equal((await api.post(`/api/workspace/invoices/${doc.id}/send`, {})).status, 502);
+    await api.put("/api/workspace/invoices/settings", { integrator: { clearPassword: true } });
+    try {
+      const card = (await api.get(`/api/workspace/invoices/${doc.id}`)).data;
+      assert.equal(card.canCancel, false);
+      assert.equal(card.canLocalCancel, true, "yetkiliye çıkış yolu görünür");
+      assert.equal((await api.post(`/api/workspace/invoices/${doc.id}/e-refresh`, {})).status, 409, "durum sorulamıyor (bağlantı yok)");
+      const lawyer = await createUser(server, { post: async (url, body) => client.post(url, body) }, { username: "avukat-cikis", role: "avukat" });
+      const lawyerCard = unwrap(await lawyer.get(`/api/workspace/invoices/${doc.id}`)).data;
+      assert.equal(lawyerCard.canLocalCancel, false, "ayar yetkisi olmayana düğme yok");
+      const forbidden = unwrap(await lawyer.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "x", localOnly: true, confirmLocal: true }));
+      assert.equal(forbidden.status, 403);
+      const unconfirmed = await api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "x", localOnly: true });
+      assert.equal(unconfirmed.status, 409);
+      assert.equal(unconfirmed.data.code, "einvoice-local-confirm");
+      const done = await api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "EDM test hesabı kapandı", localOnly: true, confirmLocal: true });
+      assert.equal(done.status, 200, JSON.stringify(done.data));
+      assert.equal(done.data.status, "cancelled");
+      const logged = server.app.store.get("SELECT COUNT(*) AS n FROM audit_events WHERE type = 'invoice.e.local-cancel' AND entity_id = ?", doc.id);
+      assert.equal(logged.n, 1, "işlem kaydında");
+      // Portal taslağı + EDM'ye ulaşılamıyor: normal iptal bağlantı hatası verir, yalnız programda iptal çalışır.
+      await api.put("/api/workspace/invoices/settings", { integrator: integ(), eOptions: { draftUpload: true } });
+      const draftDoc = (await sale()).data;
+      assert.equal((await api.post(`/api/workspace/invoices/${draftDoc.id}/e-draft`, {})).data.eStatus, "draft");
+      await api.put("/api/workspace/invoices/settings", { integrator: { clearPassword: true } });
+      assert.notEqual((await api.post(`/api/workspace/invoices/${draftDoc.id}/cancel`, { reason: "x", confirmExternal: true })).status, 200);
+      const local = await api.post(`/api/workspace/invoices/${draftDoc.id}/cancel`, { reason: "x", localOnly: true, confirmLocal: true });
+      assert.equal(local.status, 200, JSON.stringify(local.data));
+    } finally {
+      await api.put("/api/workspace/invoices/settings", { integrator: integ(), eOptions: { draftUpload: false } });
+    }
+  });
+
   test("E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz", async () => {
     const raw = JSON.parse(server.app.store.setting("invoice.settings", "{}"));
     raw.series = { ...(raw.series || {}), paper: "TEA" };

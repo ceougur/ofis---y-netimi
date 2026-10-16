@@ -352,6 +352,33 @@ try {
     await page.waitForTimeout(250);
   }
 
+  console.log("\n■ 12 Çıkış yolu: entegratöre ulaşılamıyorsa sonucu belirsiz belge yalnız programda iptal edilir (kullanıcı kararı 16.10.2026)");
+  const stuck = await must("belirsiz belge", admin.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyer.id || buyer.account?.id, lines: [{ name: "Bakım", qty: 1, unitPrice: 300, vatRate: 20 }], payment: { rest: "open" } }));
+  // Gönderimin yanıtı kaybolmuş belge (numaralı, durum yok, entegratör yazılı) veri tabanında kurulur; bağlantı yolu sunucu testinde (ebelge-240-bitis-turu).
+  server.app.store.run("UPDATE invoices SET e_adapter = 'edm', e_status = 'none' WHERE id = ?", stuck.id);
+  await page.evaluate(id => window.HOF.invoices.openDoc(id), stuck.id);
+  await page.waitForSelector(`${modal} [data-act="local-cancel"]`, { timeout: 10000 });
+  ok(await page.$eval(`${modal} [data-act="cancel"]`, node => node.disabled), "sonucu belirsiz belgede “İptal Et” kapalı, “Yalnız Programda İptal Et” görünür");
+  await page.click(`${modal} [data-act="local-cancel"]`);
+  const dialog = ".hof-modal-backdrop.is-visible:last-of-type";
+  await page.waitForSelector(`${dialog} input[name="confirmLocal"]`, { timeout: 8000 });
+  await page.click(`${dialog} input[name="reason"]`);
+  await page.keyboard.type("EDM test hesabı kapandı", { delay: 40 });
+  await page.click(`${dialog} button[type="submit"]`);
+  await page.waitForFunction(selector => /Onay kutusunu/.test(document.querySelector(`${selector} .hof-form-error`)?.textContent || ""), dialog, { timeout: 8000 });
+  ok(server.app.store.get("SELECT status FROM invoices WHERE id = ?", stuck.id).status === "issued", "onay kutusu işaretlenmeden iptal edilmez");
+  await page.check(`${dialog} input[name="confirmLocal"]`);
+  await page.click(`${dialog} button[type="submit"]`);
+  for (let index = 0; index < 40 && server.app.store.get("SELECT status FROM invoices WHERE id = ?", stuck.id).status !== "cancelled"; index += 1) await page.waitForTimeout(250);
+  const localRow = server.app.store.get("SELECT status, e_message AS eMessage FROM invoices WHERE id = ?", stuck.id);
+  const localAudit = server.app.store.get("SELECT COUNT(*) AS n FROM audit_events WHERE type = 'invoice.e.local-cancel' AND entity_id = ?", stuck.id).n;
+  ok(localRow.status === "cancelled" && /Yalnız programda iptal/.test(localRow.eMessage) && localAudit === 1, `yalnız programda iptal edildi, işlem kaydında (${localRow.status}, kayıt ${localAudit})`);
+  await shot(page, "entegrator-12-yalniz-programda-iptal");
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
+
   console.log("\n■ 6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu)");
   await page.goto(`${BASE}/admin.html#system`);
   await page.waitForFunction(() => !/Yükleniyor/.test(document.querySelector("#adm-network-summary")?.textContent || "Yükleniyor"), null, { timeout: 15000 });
