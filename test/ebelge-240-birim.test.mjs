@@ -5,7 +5,8 @@
 //   belge EDM'de düşer; ya da Adet koduyla giden birimin adı kaybolur (alıcı "100 Adet" görür, "100 Çuval" değil).
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
-import { validateInvoice } from "../tools/ebelge/dogrula.mjs";
+import { renderView, validateInvoice } from "../tools/ebelge/dogrula.mjs";
+import { readUbl } from "../server/lib/einvoice/ubl-read.mjs";
 import { UNITS } from "../server/lib/units.mjs";
 import { unitCode } from "../server/lib/einvoice/ubl-tr.mjs";
 import { BUYER_VKN, OUR_VKN } from "./einvoice-mock.mjs";
@@ -47,5 +48,21 @@ describe("Adet koduyla giden birimin adı belgede kalır; XML GİB/XSD'den geçe
     assert.doesNotMatch(xml, /Birim: Kg/);
     const check = await validateInvoice(xml, { type: "efatura" });
     assert.deepEqual({ xsd: check.xsd.length, gib: check.schematron.map(item => item.text) }, { xsd: 0, gib: [] });
+  });
+
+  // Kontrol turu 5: açıklamalı kalemde birim notu görünümde çıkmıyordu (XSLT 1.0 value-of ilk Note'u yazar); Düzine (DZN) görünümde ham kod;
+  // gelen e-Faturada birim notu açıklamaya karışıyordu.
+  test("açıklamalı kalemde birim notu görünümde; Düzine adıyla; gelen e-Faturada birim geri okunur", async () => {
+    const account = await api.post("/api/workspace/accounts", { name: "Alıcı Gıda A.Ş.", type: "customer", taxNo: BUYER_VKN, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 10", district: "Çankaya", city: "Ankara", eInvoice: true, eAlias: "urn:mail:defaultpk@alici.com.tr" });
+    const lines = [{ name: "Portland Çimento 50 Kg", description: "Teslim şantiyede", unit: "Çuval", qty: 10, unitPrice: 285, vatRate: 20 }, { name: "Yumurta", unit: "Düzine", qty: 2, unitPrice: 60, vatRate: 1 }];
+    const doc = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: account.data.id, lines, payment: { rest: "open" } });
+    assert.equal(doc.status, 200, JSON.stringify(doc.data));
+    const xml = String((await api.get(`/api/workspace/invoices/${doc.data.id}/ubl.xml`)).data);
+    const html = String(await renderView(xml)).replace(/\s+/g, " ");
+    assert.match(html, /Teslim şantiyede/);
+    assert.match(html, /Birim: Çuval/, "birim notu görünümde");
+    assert.match(html, /2 Düzine/, "Düzine adıyla");
+    const read = readUbl(xml);
+    assert.deepEqual(read.lines.map(line => ({ unit: line.unit, description: line.description })), [{ unit: "Çuval", description: "Teslim şantiyede" }, { unit: "Düzine", description: "" }]);
   });
 });

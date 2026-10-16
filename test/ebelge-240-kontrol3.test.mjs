@@ -12,6 +12,9 @@
 // Dar kontrol turu 4 (b875ed2):
 //   C1 YÜKSEK  B2 yalnız iptal edilmiş belgeyi koruyordu: "İşleniyor" / "Hata" durumundaki kaydedilmiş belge doğrudan Sil ile silinip numarası yeniden verilir.
 //   C2 YÜKSEK  gönderim sürerken başka kullanıcı iptal eder → gönderim bitince iptal edilmiş belge "Gönderildi" (GİB'de geçerli, defterde iptal).
+// Dar kontrol turu 5 (d7d7b38 + c3f0abd):
+//   D1 YÜKSEK  gönderim sürerken Sil → belge EDM'de geçerli, programda silinir; numara yeniden verilir.
+//   D2 YÜKSEK  gönderim sürerken Düzenle → defter 6.000 TL, GİB'e giden belge 1.200 TL.
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
@@ -249,5 +252,40 @@ describe("Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)", () => {
     assert.equal(during.data.code, "einvoice-sending");
     const row = await card(doc.id);
     assert.deepEqual({ status: row.status, eStatus: row.eStatus }, { status: "issued", eStatus: "sent" });
+  });
+
+  // Gönderim EDM'de beklerken (SendInvoice tutulur) başka kullanıcının işlemi.
+  const whileSending = async (doc, action) => {
+    let open;
+    holdSend = new Promise(resolve => (open = resolve));
+    const sending = api.post(`/api/workspace/invoices/${doc.id}/send`, {});
+    for (let i = 0; i < 50 && !(await card(doc.id)).number; i += 1) await new Promise(resolve => setTimeout(resolve, 20));
+    const during = await action();
+    open();
+    holdSend = null;
+    return { during, done: await sending };
+  };
+
+  test("D1: gönderim sürerken Sil reddedilir; belge yerinde, numara yeniden verilmez", async () => {
+    const doc = (await sale(personId, { eSend: "later" })).data;
+    const { during, done } = await whileSending(doc, () => api.del(`/api/workspace/invoices/${doc.id}?reason=x`));
+    assert.equal(during.status, 409, JSON.stringify(during.data));
+    assert.equal(done.status, 200, JSON.stringify(done.data));
+    const row = await card(doc.id);
+    assert.equal(row.status, "issued");
+    const next = (await sale(personId)).data;
+    assert.equal((await api.post(`/api/workspace/invoices/${next.id}/send`, {})).status, 200);
+    assert.notEqual((await card(next.id)).number, row.number);
+  });
+
+  test("D2: gönderim sürerken Düzenle reddedilir; defterdeki tutar gönderilen belgeyle aynı", async () => {
+    const doc = (await sale(personId, { eSend: "later" })).data;
+    const { during, done } = await whileSending(doc, () => api.post(`/api/workspace/invoices/${doc.id}/edit`, { kind: doc.kind, scenario: "service_sale", accountId: personId, issueDate: doc.issueDate, lines: [{ name: "Danışmanlık", qty: 5, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } }));
+    assert.equal(during.status, 409, JSON.stringify(during.data));
+    assert.equal(done.status, 200);
+    const row = await card(doc.id);
+    const sentXml = Buffer.from(edm.state.sent.find(item => item.uuid === row.ettn).content || "", "base64").toString("utf8") || edm.state.sent.find(item => item.uuid === row.ettn).xml || "";
+    const payable = Number((sentXml.match(/<cbc:PayableAmount[^>]*>([^<]+)</) || [])[1]);
+    assert.equal(row.payableTotal ?? row.tryPayable, payable, `defter ${row.payableTotal ?? row.tryPayable} ↔ gönderilen ${payable}`);
   });
 });

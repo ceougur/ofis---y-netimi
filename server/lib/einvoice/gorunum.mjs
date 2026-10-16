@@ -17,6 +17,7 @@ export const DEFAULT_VIEW = Object.freeze({ enabled: true, logo: true, banks: tr
 const UNIT_NAMES = {
   C62: "Adet", KGM: "Kg", GRM: "Gr", TNE: "Ton", LTR: "Lt", MLT: "Ml", MTR: "M", CMT: "Cm", MMT: "Mm", MTK: "M²", MTQ: "M³", PA: "Paket", BX: "Kutu", CT: "Koli",
   PR: "Çift", SET: "Takım", HUR: "Saat", DAY: "Gün", MON: "Ay", ANN: "Yıl", MIN: "Dakika", WEE: "Hafta", RO: "Rulo", BO: "Şişe", BG: "Torba", SA: "Çuval",
+  DZN: "Düzine", NIU: "Adet", PK: "Paket", CMQ: "Cm³",
 };
 const PROFILES = { TEMELFATURA: "Temel Fatura", TICARIFATURA: "Ticari Fatura", EARSIVFATURA: "e-Arşiv Fatura", IHRACAT: "İhracat", YOLCUBERABERFATURA: "Yolcu Beraber Fatura" };
 const TYPES = { SATIS: "Satış", IADE: "İade", TEVKIFAT: "Tevkifat", ISTISNA: "İstisna", OZELMATRAH: "Özel Matrah", IHRACKAYITLI: "İhraç Kayıtlı", SGK: "SGK", KOMISYONCU: "Komisyoncu" };
@@ -121,7 +122,7 @@ table{border-collapse:collapse;font-size:inherit}
 <table class="kalem"><tr><th>Sıra No</th><th>Mal Hizmet</th><th>Miktar</th><th>Birim Fiyat</th><th>İskonto Oranı</th><th>İskonto Tutarı</th><th>KDV Oranı</th><th>KDV Tutarı</th><th>Diğer Vergiler</th><th>Mal Hizmet Tutarı</th></tr>
 <xsl:for-each select="cac:InvoiceLine"><tr>
   <td class="s"><xsl:value-of select="cbc:ID"/></td>
-  <td><xsl:value-of select="cac:Item/cbc:Name"/><xsl:if test="cac:Item/cac:SellersItemIdentification/cbc:ID"> (<xsl:value-of select="cac:Item/cac:SellersItemIdentification/cbc:ID"/>)</xsl:if><xsl:if test="cbc:Note"><div class="aciklama"><xsl:value-of select="cbc:Note"/></div></xsl:if><xsl:for-each select="cac:Item/cac:ItemInstance"><div class="aciklama"><xsl:if test="cbc:SerialID">Seri No: <xsl:value-of select="cbc:SerialID"/></xsl:if><xsl:if test="cbc:SerialID and cac:LotIdentification/cbc:LotNumberID"> · </xsl:if><xsl:if test="cac:LotIdentification/cbc:LotNumberID">Lot No: <xsl:value-of select="cac:LotIdentification/cbc:LotNumberID"/></xsl:if></div></xsl:for-each></td>
+  <td><xsl:value-of select="cac:Item/cbc:Name"/><xsl:if test="cac:Item/cac:SellersItemIdentification/cbc:ID"> (<xsl:value-of select="cac:Item/cac:SellersItemIdentification/cbc:ID"/>)</xsl:if><xsl:for-each select="cbc:Note"><div class="aciklama"><xsl:value-of select="."/></div></xsl:for-each><xsl:for-each select="cac:Item/cac:ItemInstance"><div class="aciklama"><xsl:if test="cbc:SerialID">Seri No: <xsl:value-of select="cbc:SerialID"/></xsl:if><xsl:if test="cbc:SerialID and cac:LotIdentification/cbc:LotNumberID"> · </xsl:if><xsl:if test="cac:LotIdentification/cbc:LotNumberID">Lot No: <xsl:value-of select="cac:LotIdentification/cbc:LotNumberID"/></xsl:if></div></xsl:for-each></td>
   <td class="s"><xsl:value-of select="format-number(number(cbc:InvoicedQuantity), '###.##0,####', 'tr')"/>&#160;<xsl:call-template name="unit"><xsl:with-param name="code" select="cbc:InvoicedQuantity/@unitCode"/></xsl:call-template></td>
   <td class="s"><xsl:value-of select="format-number(number(cac:Price/cbc:PriceAmount), '###.##0,00##', 'tr')"/>&#160;<xsl:call-template name="currency"><xsl:with-param name="code" select="cac:Price/cbc:PriceAmount/@currencyID"/></xsl:call-template></td>
   <td class="s"><xsl:if test="cac:AllowanceCharge/cbc:MultiplierFactorNumeric">%<xsl:value-of select="format-number(number(cac:AllowanceCharge/cbc:MultiplierFactorNumeric * 100), '##0,##', 'tr')"/></xsl:if></td>

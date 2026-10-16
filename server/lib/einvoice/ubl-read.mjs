@@ -3,7 +3,9 @@
 // Tutarlar belgedeki gibi alınır; taslak programın hesap motorundan geçince kalem toplamları belgeyle karşılaştırılır.
 import { child, children, deep, deepAll, find, parseXml, textOf } from "./xml-lite.mjs";
 
-const UNIT_NAMES = { C62: "Adet", NIU: "Adet", KGM: "Kg", GRM: "Gr", TNE: "Ton", LTR: "Lt", MLT: "Ml", MTR: "M", CMT: "Cm", MMT: "Mm", MTK: "M²", MTQ: "M³", PA: "Paket", BX: "Kutu", CT: "Koli", PR: "Çift", SET: "Takım", HUR: "Saat", DAY: "Gün", MON: "Ay", ANN: "Yıl", MIN: "Dakika", WEE: "Hafta", RO: "Rulo", BO: "Şişe", BG: "Torba", SA: "Çuval" };
+const UNIT_NAMES = { C62: "Adet", NIU: "Adet", KGM: "Kg", GRM: "Gr", TNE: "Ton", LTR: "Lt", MLT: "Ml", MTR: "M", CMT: "Cm", MMT: "Mm", MTK: "M²", MTQ: "M³", PA: "Paket", BX: "Kutu", CT: "Koli", PR: "Çift", SET: "Takım", HUR: "Saat", DAY: "Gün", DZN: "Düzine", PK: "Paket", CMQ: "Cm³", MON: "Ay", ANN: "Yıl", MIN: "Dakika", WEE: "Hafta", RO: "Rulo", BO: "Şişe", BG: "Torba", SA: "Çuval" };
+const UNIT_NOTE = /^Birim: (.{1,20})$/;
+const lineNotes = line => children(line, "Note").map(node => textOf(node).trim()).filter(Boolean);
 const num = value => {
   const n = Number(String(value ?? "").trim());
   return Number.isFinite(n) ? n : 0;
@@ -54,9 +56,10 @@ export function readUbl(xml) {
     return {
       name: textOf(find(line, "Item/Name")) || textOf(find(line, "Item/Description")) || "Kalem",
       code: textOf(find(line, "Item/SellersItemIdentification/ID")),
-      description: textOf(child(line, "Note")),
+      // Kalem notları: açıklama + (DestekOfis'in e-Belgesinde) "Birim: Çuval" — entegratörün kodu olmayan birim Adet koduyla gider, adı notta taşınır.
+      description: lineNotes(line).filter(note => !UNIT_NOTE.test(note)).join(" · "),
       qty: quantity,
-      unit: UNIT_NAMES[qty?.attrs?.unitCode] || "Adet",
+      unit: lineNotes(line).map(note => (note.match(UNIT_NOTE) || [])[1]).find(Boolean) || UNIT_NAMES[qty?.attrs?.unitCode] || "Adet",
       unitPrice: price || (quantity ? (net + discount) / quantity : 0),
       discountRate: base > 0 && discount > 0 ? Math.round((discount / base) * 10000) / 100 : 0,
       vatRate: num(textOf(child(tax, "Percent"))),

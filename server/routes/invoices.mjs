@@ -2345,8 +2345,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.post("/api/workspace/invoices/:id/edit", async ({ req, res, params }) => {
     const user = requireManage(req);
     const body = await readJson(req, { limit: 2_000_000 });
-    await confirmDraft(user, params.id);
-    const result = editInvoice(user, params.id, body);
+    const release = holdInvoice(params.id, "editing");
+    let result;
+    try {
+      await confirmDraft(user, params.id);
+      result = editInvoice(user, params.id, body);
+    } finally {
+      release();
+    }
     ok(res, detail(result.id, user));
   });
   router.post("/api/workspace/invoices/:id/issue", async ({ req, res, params }) => {
@@ -2457,6 +2463,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   function deleteInvoice(user, id, { reason = "", force = {}, posOutcome = "refunded" } = {}) {
     const row = bank.post({ user, module: "invoice", op: "delete", prev: { invoiceId: id }, posOutcome: posOutcome === "entry-error" ? "entry-error" : "refunded", write: () => {
       let invoice = invoiceRow(id);
+      assertNotBusy(invoice.id);
       const activeReturns = store.get("SELECT COUNT(*) AS n FROM invoices WHERE original_id = ? AND status = 'issued'", invoice.id).n;
       const block = deleteBlock(invoice, activeReturns);
       if (block) throw new HttpError(409, block, { code: "invoice-locked" });
@@ -2574,11 +2581,20 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Belge başına tek entegratör işlemi (gönderim YA DA iptal). Yük denemesi (iki şirket, on kullanıcı; dar kontrol turu 3 B6): iki kullanıcı aynı
   // e-Arşivi aynı anda iptal edince ikisi de entegratöre iptal gönderiyordu. Kontrol turu 4: gönderim sürerken başka kullanıcı iptal edebiliyordu
   // (numaralı, durumu "none" belge onaysız iptal edilir; gönderim bitince iptal edilmiş belge "Gönderildi" olur — GİB'de geçerli, defterde iptal).
+  // Kontrol turu 5: Sil ve Düzenle de aynı kilide bakar — gönderim sürerken silinen belge EDM'de geçerli kalıp numarası yeniden veriliyordu, düzenlenen
+  // belgede defter (6.000 TL) ile GİB'e giden belge (1.200 TL) ayrışıyordu.
   const busy = new Map();
-  function holdInvoice(id, kind) {
+  const BUSY_TEXT = {
+    sending: ["Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.", "einvoice-sending"],
+    cancelling: ["Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin.", "invoice-cancelling"],
+    editing: ["Bu belge şu anda başka bir kullanıcı tarafından düzenleniyor; birkaç saniye sonra yenileyin.", "invoice-editing"],
+  };
+  function assertNotBusy(id) {
     const held = busy.get(id);
-    if (held === "sending") throw new HttpError(409, "Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.", { code: "einvoice-sending" });
-    if (held === "cancelling") throw new HttpError(409, "Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin.", { code: "invoice-cancelling" });
+    if (held) throw new HttpError(409, BUSY_TEXT[held][0], { code: BUSY_TEXT[held][1] });
+  }
+  function holdInvoice(id, kind) {
+    assertNotBusy(id);
     busy.set(id, kind);
     return () => busy.delete(id);
   }
