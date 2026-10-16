@@ -1,0 +1,158 @@
+{
+  "ad": "ebelge-uygunluk-eski",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/ebelge-uygunluk.test.mjs",
+  "commit": "769f54f9409f36824462d60412c418787778d8cc",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:02:56.487Z",
+  "sure_sn": 13.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 7,
+    "basarisiz": 45,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 45 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › bozulmamış belge iki denetimden de geçer ve şematron kural çalıştırır",
+      "konum": "test/ebelge-uygunluk.test.mjs:77:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › Temel e-Fatura (hizmet)",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "Temel e-Fatura (hizmet): GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › Ticari e-Fatura",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "Ticari e-Fatura: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › e-Arşiv (kişi, e-postalı)",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "e-Arşiv (kişi, e-postalı): GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › e-Arşiv (firma, e-postasız → kâğıt gönderim)",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "e-Arşiv (firma, e-postasız → kâğıt gönderim): GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › çok KDV oranı, satır iskontosu, ondalık miktar ve birimler",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "çok KDV oranı, satır iskontosu, ondalık miktar ve birimler: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › KDV dahil fiyat ve iskonto",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "KDV dahil fiyat ve iskonto: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › %0 KDV, 351 (istisna olmayan)",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "%0 KDV, 351 (istisna olmayan): GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › döviz (USD, kur)",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "döviz (USD, kur): GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › fiyat farkı faturası",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "fiyat farkı faturası: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › istisna 301",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "istisna 301: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › istisna 302",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "istisna 302: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › istisna 308",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "istisna 308: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\\n\" + (beklenen , gelen |-)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › istisna 350",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "istisna 350: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 601",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 601: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 602",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 602: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 603",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 603: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 604",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 604: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 605",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 605: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 606",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 606: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 607",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 607: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 608",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 608: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 609",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 609: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 610",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 610: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    },
+    {
+      "ad": "Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar › tevkifat 611",
+      "konum": "test/ebelge-uygunluk.test.mjs:125:5",
+      "hata": "tevkifat 611: GİB/XSD hataları · + actual - expected · + \"XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\" (beklenen , gelen XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/ebelge-uygunluk-eski.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f",
+  "ham_cikti_sha256": "017b3b423424453606f85b80b6490ea2ab49f2f4ea51d235213d88927127da82",
+  "ham_cikti_bayt": 85864
+}

@@ -123,14 +123,18 @@ export const WITHHOLDING = Object.freeze({
   626: { label: "Diğer Teslimler", num: 2, den: 10 },
   627: { label: "Demir-Çelik Ürünlerinin Teslimi", num: 5, den: 10 },
 });
-// %0 KDV'li kalemin istisna / muafiyet nedeni (UBL TaxExemptionReasonCode). 351: istisna olmayan diğer.
+// %0 KDV'li kalemin istisna / muafiyet nedeni (UBL TaxExemptionReasonCode). 351: istisna olmayan diğer. Kod ve ad GİB "UBL-TR Kod
+// Listeleri" v1.43'ten (Temmuz 2026); denetim test/ebelge-uygunluk.test.mjs (GİB şematron kod listesi).
 export const EXEMPTIONS = Object.freeze({
   351: "KDV - İstisna Olmayan Diğer",
   301: "11/1-a Mal İhracatı",
   302: "11/1-a Hizmet İhracatı",
-  308: "13/a Deniz, Hava ve Demiryolu Taşıma Araçlarının Teslimi",
+  304: "13/a Deniz, Hava ve Demiryolu Taşıma Araçlarının Teslimi ile İnşa, Tadil, Bakım ve Onarımları",
   350: "Diğerleri",
 });
+// 2.0.15–2.3.0 programı 13/a istisnasını yanlış kodla (308) yazıyordu; GİB'de 308 "13/d Teşvikli Yatırım Mallarının Teslimi"dir ve
+// yatırım teşvik faturası dışında reddedilir. Eski kayıttaki 308 aynı anlamla (13/a) 304 okunur ve yazılır; veri tabanına dokunulmaz.
+export const normalizeExemption = code => (String(code ?? "").trim() === "308" ? "304" : String(code ?? "").trim());
 
 const EPS = 1e-9;
 // x × 100'ü kayan nokta artığından arındırıp kuruşa yuvarlar (roundMoney ile aynı yöntem).
@@ -194,7 +198,7 @@ export function computeLine(input, { pricesIncludeVat = false, index = 0, extraD
   const withholding = code ? WITHHOLDING[code] : null;
   if (code && !withholding) fail(`${at}: tevkifat kodu (${code}) tanınmadı.`, "withholdingCode");
   if (withholding && vatRate === 0) fail(`${at}: KDV'siz kalemde tevkifat olmaz.`, "withholdingCode");
-  const exemption = vatRate === 0 ? String(input.exemptionCode || "351").trim() : "";
+  const exemption = vatRate === 0 ? normalizeExemption(input.exemptionCode || "351") : "";
   if (exemption && !EXEMPTIONS[exemption]) fail(`${at}: KDV istisna kodu (${exemption}) tanınmadı.`, "exemptionCode");
 
   const base = toCentsExact(qty * unitPrice);

@@ -238,6 +238,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     return next;
   }
+  // GİB UBL-TR şematronu (IADEInvioceCheck): iade e-Belgesi asıl faturayı 16 haneli numarasıyla gösterir; kâğıt numaralı asıl faturaya
+  // e-Belge iadesi entegratörde reddedilir. Kayıtta ve gönderimde önceden söylenir.
+  const returnProblems = (profile, kind, originalNumber) =>
+    profile && profile !== "KAGIT" && INVOICE_KINDS[kind]?.return && String(originalNumber || "").trim().length !== 16
+      ? [`İade e-Belgesi asıl faturanın 16 haneli numarasını taşımalıdır (GİB kuralı; ör. ABC2026000000123). Asıl faturanın numarası: ${String(originalNumber || "").trim() || "yok"}. Asıl faturanın numarasını düzeltin.`]
+      : [];
   const sellerProblems = (profile, s = settings()) => partyProblems(sellerParty(s), { profile: profile === "KAGIT" ? "KAGIT" : profile === "EARSIVFATURA" ? "EARSIV" : profile === "ESMM" ? "EARSIV" : "EFATURA", role: "seller" });
   // GG2 (orta; plan §8.9): Banka hesap kartındaki "IBAN Faturada Gösterilsin" işaretli hesaplar faturanın satıcı banka listesine girer (önce Banka
   // hesapları, sonra Fatura Ayarları'ndaki liste; aynı IBAN bir kez; en çok 4). Önceden kutunun hiçbir etkisi yoktu.
@@ -328,7 +334,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id LEFT JOIN users u ON u.id = i.created_by LEFT JOIN invoices o ON o.id = i.original_id`;
   const LINE_SQL = `SELECT l.id, l.invoice_id AS invoiceId, l.seq, l.item_id AS itemId, l.goods, l.code, l.name, l.description, l.unit, l.qty, l.unit_price AS unitPrice, l.discount_rate AS discountRate,
       l.base, l.discount, l.net, l.vat_rate AS vatRate, l.vat, l.withholding_code AS withholdingCode, l.withholding_num AS withholdingNum, l.withholding_den AS withholdingDen, l.withheld,
-      l.exemption_code AS exemptionCode, l.gross, l.payable, l.gl_account AS glAccount, l.expense_code AS expenseCode, l.unit_cost AS unitCost, l.origin_line_id AS originLineId, l.move_id AS moveId
+      CASE l.exemption_code WHEN '308' THEN '304' ELSE l.exemption_code END AS exemptionCode, l.gross, l.payable, l.gl_account AS glAccount, l.expense_code AS expenseCode, l.unit_cost AS unitCost, l.origin_line_id AS originLineId, l.move_id AS moveId
     FROM invoice_lines l`;
   const invoiceRow = id => {
     const row = store.get(`${INVOICE_SQL} WHERE i.id = ?`, limited(id, 120, "Fatura"));
@@ -1498,7 +1504,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const later = Boolean(!edit && defer && edocEnabled && meta.own && meta.send && doc.profile !== "KAGIT");
     // e-Belge: alıcı ve satıcı bilgisi eksiksiz olmalı (GİB doğrulaması).
     if (doc.profile !== "KAGIT" && meta.own) {
-      const problems = [...sellerProblems(doc.profile, s), ...partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) })];
+      const problems = [...sellerProblems(doc.profile, s), ...partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }), ...returnProblems(doc.profile, doc.kind, doc.original?.number)];
       if (problems.length) fail400(problems.join(" "), "party", { code: "einvoice-party", problems });
     }
     const invoiceId = id || newId("invoice");
@@ -2595,6 +2601,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (seller.length) throw new HttpError(409, `Firma bilgisi eksik (Fatura Ayarları): ${seller.join(" ")}`, { code: "seller-incomplete", problems: seller });
     const buyer = partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: doc.tryPayable });
     if (buyer.length) throw new HttpError(409, `Alıcı bilgisi eksik: ${buyer.join(" ")}`, { code: "buyer-incomplete", problems: buyer });
+    const ret = returnProblems(doc.profile, doc.kind, doc.originalNumber);
+    if (ret.length) throw new HttpError(409, ret.join(" "), { code: "einvoice-return-reference", problems: ret });
     if (sending.has(doc.id)) throw new HttpError(409, "Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.", { code: "einvoice-sending" });
     sending.add(doc.id);
     try {

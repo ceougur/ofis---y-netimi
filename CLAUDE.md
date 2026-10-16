@@ -530,7 +530,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   onay kutusu, Bağlantıyı Test Et, Kaydet, Durum satırı). KODDAN: arka uç hazır (Fatura Ayarları → "e-Belge Bağlantısı", edocEnabled kapalıyken
   gizli; parola secret-box ile şifreli, istemciye dönmez; senderAlias, autoSend, series, seller). Değerlendirme kullanıcıya verildi (GB/PK etiketleri
   taslakta ters; Canlı Ortam "entegre et"e kadar seçilemez; otomatik gönder varsayılan kapalı ve düğme "Kaydet ve Gönder" olur; firma/seri tek
-  kaynak; yazım düzeni). KARAR BEKLENİYOR.
+  kaynak; yazım düzeni). ONAYLANDI (kullanıcı, aynı gün: "düzeltilmesi gerekenler uygun, kullanacağın gerekli araçları edin"; test şifresini
+  "buraya yazayım" dedi → dosya olarak yüklemesi istendi). İş listesi `docs/2.4.0-IS-LISTESI.md`. İz 1 (XML uygunluğu) BİTTİ: kâhin aracı
+  tools/ebelge (xmllint-wasm + SaxonJS + SchXslt, Java yok), test ebelge-uygunluk 53/53, eski kodda 45/52 kırmızı; üç kusur düzeltildi (boş imza
+  yuvası, istisna 308 → 304 — GİB'de 13/a = 304, iade referansı DocumentTypeCode IADE + 16 hane ön denetimi).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

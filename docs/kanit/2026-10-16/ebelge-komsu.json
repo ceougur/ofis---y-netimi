@@ -1,0 +1,32 @@
+{
+  "ad": "ebelge-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/einvoice-edm.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-model.test.mjs test/kanit-araci.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/packaging.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "769f54f9409f36824462d60412c418787778d8cc",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 6,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T04:03:28.838Z",
+  "sure_sn": 41.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 140,
+    "gecen": 140,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/ebelge-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "c8eecae8e1b9f8ebc870fce2503700a6ff26a64399f471a5187c9cf7788746eb",
+  "ham_cikti_bayt": 46045
+}

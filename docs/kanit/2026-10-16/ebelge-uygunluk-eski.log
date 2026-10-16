@@ -1,0 +1,1224 @@
+TAP version 13
+# Subtest: Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi)
+    # Subtest: bozulmamış belge iki denetimden de geçer ve şematron kural çalıştırır
+    not ok 1 - bozulmamış belge iki denetimden de geçer ve şematron kural çalıştırır
+      ---
+      duration_ms: 644.958203
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:77:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:79:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: şematron düşürür: CustomizationID TR1.0 (eski sürüm)
+    ok 2 - şematron düşürür: CustomizationID TR1.0 (eski sürüm)
+      ---
+      duration_ms: 59.212903
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: fatura numarası GİB biçiminde değil
+    ok 3 - şematron düşürür: fatura numarası GİB biçiminde değil
+      ---
+      duration_ms: 35.623619
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: döviz faturasında kur yok
+    ok 4 - şematron düşürür: döviz faturasında kur yok
+      ---
+      duration_ms: 32.667547
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: geçersiz profil
+    ok 5 - şematron düşürür: geçersiz profil
+      ---
+      duration_ms: 76.601441
+      type: 'test'
+      ...
+    # Subtest: XSD düşürür: boş IssueTime ve boş imza yuvası
+    ok 6 - XSD düşürür: boş IssueTime ve boş imza yuvası
+      ---
+      duration_ms: 536.46409
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv kipi: e-Fatura profili e-Arşiv kuralında, e-Arşiv profili e-Fatura kuralında düşer
+    ok 7 - e-Arşiv kipi: e-Fatura profili e-Arşiv kuralında, e-Arşiv profili e-Fatura kuralında düşer
+      ---
+      duration_ms: 306.467295
+      type: 'test'
+      ...
+    1..7
+not ok 1 - Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi)
+  ---
+  duration_ms: 1959.296179
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:72:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar
+    # Subtest: Temel e-Fatura (hizmet)
+    not ok 1 - Temel e-Fatura (hizmet)
+      ---
+      duration_ms: 389.651379
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Temel e-Fatura (hizmet): GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Ticari e-Fatura
+    not ok 2 - Ticari e-Fatura
+      ---
+      duration_ms: 296.897391
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ticari e-Fatura: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Arşiv (kişi, e-postalı)
+    not ok 3 - e-Arşiv (kişi, e-postalı)
+      ---
+      duration_ms: 268.418875
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        e-Arşiv (kişi, e-postalı): GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Arşiv (firma, e-postasız → kâğıt gönderim)
+    not ok 4 - e-Arşiv (firma, e-postasız → kâğıt gönderim)
+      ---
+      duration_ms: 269.109794
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        e-Arşiv (firma, e-postasız → kâğıt gönderim): GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: çok KDV oranı, satır iskontosu, ondalık miktar ve birimler
+    not ok 5 - çok KDV oranı, satır iskontosu, ondalık miktar ve birimler
+      ---
+      duration_ms: 343.096604
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        çok KDV oranı, satır iskontosu, ondalık miktar ve birimler: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: KDV dahil fiyat ve iskonto
+    not ok 6 - KDV dahil fiyat ve iskonto
+      ---
+      duration_ms: 302.598461
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        KDV dahil fiyat ve iskonto: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: %0 KDV, 351 (istisna olmayan)
+    not ok 7 - %0 KDV, 351 (istisna olmayan)
+      ---
+      duration_ms: 310.129891
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        %0 KDV, 351 (istisna olmayan): GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: döviz (USD, kur)
+    not ok 8 - döviz (USD, kur)
+      ---
+      duration_ms: 235.995175
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        döviz (USD, kur): GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: fiyat farkı faturası
+    not ok 9 - fiyat farkı faturası
+      ---
+      duration_ms: 246.90229
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        fiyat farkı faturası: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istisna 301
+    not ok 10 - istisna 301
+      ---
+      duration_ms: 267.549862
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        istisna 301: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istisna 302
+    not ok 11 - istisna 302
+      ---
+      duration_ms: 271.280522
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        istisna 302: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istisna 308
+    not ok 12 - istisna 308
+      ---
+      duration_ms: 262.497597
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        istisna 308: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).\n" +
+        +   "GİB: Geçersiz cbc:TaxExemptionReasonCode niteliği : '308' cbc:TaxExemptionReason(vergi istisna muhafiyet sebebi) elemanı varken cbc:TaxExemptionReasonCode elamanı dolu ve geçerli bir değer olmalıdır. Geçerli değerler için kod listesine bakınız. [/Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxTotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxSubtotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxCategory[1]]"
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: |-
+        XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* ).
+        GİB: Geçersiz cbc:TaxExemptionReasonCode niteliği : '308' cbc:TaxExemptionReason(vergi istisna muhafiyet sebebi) elemanı varken cbc:TaxExemptionReasonCode elamanı dolu ve geçerli bir değer olmalıdır. Geçerli değerler için kod listesine bakınız. [/Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxTotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxSubtotal[1]/Q{urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2}TaxCategory[1]]
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istisna 350
+    not ok 13 - istisna 350
+      ---
+      duration_ms: 271.500471
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        istisna 350: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 601
+    not ok 14 - tevkifat 601
+      ---
+      duration_ms: 262.384681
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 601: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 602
+    not ok 15 - tevkifat 602
+      ---
+      duration_ms: 319.641585
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 602: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 603
+    not ok 16 - tevkifat 603
+      ---
+      duration_ms: 241.568525
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 603: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 604
+    not ok 17 - tevkifat 604
+      ---
+      duration_ms: 295.661372
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 604: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 605
+    not ok 18 - tevkifat 605
+      ---
+      duration_ms: 274.048108
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 605: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 606
+    not ok 19 - tevkifat 606
+      ---
+      duration_ms: 358.628659
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 606: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 607
+    not ok 20 - tevkifat 607
+      ---
+      duration_ms: 287.429983
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 607: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 608
+    not ok 21 - tevkifat 608
+      ---
+      duration_ms: 280.052392
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 608: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 609
+    not ok 22 - tevkifat 609
+      ---
+      duration_ms: 242.248234
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 609: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 610
+    not ok 23 - tevkifat 610
+      ---
+      duration_ms: 232.922904
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 610: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 611
+    not ok 24 - tevkifat 611
+      ---
+      duration_ms: 258.662963
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 611: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 612
+    not ok 25 - tevkifat 612
+      ---
+      duration_ms: 310.261206
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 612: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 613
+    not ok 26 - tevkifat 613
+      ---
+      duration_ms: 245.981802
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 613: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 614
+    not ok 27 - tevkifat 614
+      ---
+      duration_ms: 272.678261
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 614: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 615
+    not ok 28 - tevkifat 615
+      ---
+      duration_ms: 256.258412
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 615: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 616
+    not ok 29 - tevkifat 616
+      ---
+      duration_ms: 292.362363
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 616: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 617
+    not ok 30 - tevkifat 617
+      ---
+      duration_ms: 240.484674
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 617: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 618
+    not ok 31 - tevkifat 618
+      ---
+      duration_ms: 233.309138
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 618: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 619
+    not ok 32 - tevkifat 619
+      ---
+      duration_ms: 241.030764
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 619: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 620
+    not ok 33 - tevkifat 620
+      ---
+      duration_ms: 292.072688
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 620: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 621
+    not ok 34 - tevkifat 621
+      ---
+      duration_ms: 240.738942
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 621: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 622
+    not ok 35 - tevkifat 622
+      ---
+      duration_ms: 237.012205
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 622: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 623
+    not ok 36 - tevkifat 623
+      ---
+      duration_ms: 245.894715
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 623: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 624
+    not ok 37 - tevkifat 624
+      ---
+      duration_ms: 290.464883
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 624: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 625
+    not ok 38 - tevkifat 625
+      ---
+      duration_ms: 247.039116
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 625: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 626
+    not ok 39 - tevkifat 626
+      ---
+      duration_ms: 263.752738
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 626: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifat 627
+    not ok 40 - tevkifat 627
+      ---
+      duration_ms: 239.782055
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:125:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tevkifat 627: GİB/XSD hataları
+        + actual - expected
+        
+        + "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: "XSD: fatura.xml:2: Schemas validity error : Element '{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}ExtensionContent': Missing child element(s). Expected is ( ##other{urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2}* )."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:129:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: alıştan iade (e-Fatura): asıl faturaya DocumentTypeCode IADE ile 16 haneli numarayla bağlanır
+    not ok 41 - alıştan iade (e-Fatura): asıl faturaya DocumentTypeCode IADE ile 16 haneli numarayla bağlanır
+      ---
+      duration_ms: 35.131927
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:132:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /<cac:InvoiceDocumentReference><cbc:ID>TPT2026000000123<\/cbc:ID><cbc:IssueDate>[^<]+<\/cbc:IssueDate><cbc:DocumentTypeCode>IADE<\/cbc:DocumentTypeCode>/. Input:
+        
+        '<?xml version="1.0" encoding="UTF-8"?>\n' +
+          '<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"><ext:UBLExtensions><ext:UBLExtension><ext:ExtensionContent/></ext:UBLExtension></ext:UBLExtensions><cbc:UBLVersionID>2.1</cbc:UBLVersionID><cbc:CustomizationID>TR1.2</cbc:CustomizationID><cbc:ProfileID>TEMELFATURA</cbc:ProfileID><cbc:ID>EFT2026000000040</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator><cbc:UUID>0c5a64b6-e41e-4264-932c-74f29cc37c7f</cbc:UUID><cbc:IssueDate>2026-10-16</cbc:IssueDate><cbc:IssueTime>04:03:00</cbc:IssueTime><cbc:InvoiceTypeCode>IADE</cbc:InvoiceTypeCode><cbc:Note>Yalnız Altı Yüz Türk Lirası</cbc:Note><cbc:Note>İade edilen fatura: TPT2026000000123</cbc:Note><cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode><cbc:LineCountNumeric>1</cbc:LineCountNumeric><cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>TPT2026000000123</cbc:ID><cbc:IssueDate>2026-10-16</cbc:IssueDate></cac:InvoiceDocumentReference></cac:BillingReference><cac:Signature><cbc:ID schemeID="VKN_TCKN">1234567890</cbc:ID><cac:SignatoryParty><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cbc:PostalZone>06100</cbc:PostalZone><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress></cac:SignatoryParty><cac:DigitalSignatureAttachment><cac:ExternalReference><cbc:URI>#Signature_EFT2026000000040</cbc:URI></cac:ExternalReference></cac:DigitalSignatureAttachment></cac:Signature><cac:AccountingSupplierParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Deneme Ofis Ltd. Şti.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cbc:PostalZone>06100</cbc:PostalZone><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Çankaya</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:Telephone>03121234567</cbc:Telephone><cbc:ElectronicMail>bilgi@deneme.com.tr</cbc:ElectronicMail></cac:Contact></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">5554443334</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Toptancı A.Ş.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Bağdat Cd. 7</cbc:StreetName><cbc:CitySubdivisionName>Kadıköy</cbc:CitySubdivisionName><cbc:CityName>İstanbul</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Kadıköy</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingCustomerParty><cac:PaymentMeans><cbc:PaymentMeansCode>1</cbc:PaymentMeansCode><cbc:PaymentDueDate>2026-10-16</cbc:PaymentDueDate></cac:PaymentMeans><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">100.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">500.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">100.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="TRY">500.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="TRY">500.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="TRY">600.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="TRY">600.00</cbc:PayableAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">500.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">100.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">500.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">100.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Kırtasiye</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">500.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>\n'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"><ext:UBLExtensions><ext:UBLExtension><ext:ExtensionContent/></ext:UBLExtension></ext:UBLExtensions><cbc:UBLVersionID>2.1</cbc:UBLVersionID><cbc:CustomizationID>TR1.2</cbc:CustomizationID><cbc:ProfileID>TEMELFATURA</cbc:ProfileID><cbc:ID>EFT2026000000040</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator><cbc:UUID>0c5a64b6-e41e-4264-932c-74f29cc37c7f</cbc:UUID><cbc:IssueDate>2026-10-16</cbc:IssueDate><cbc:IssueTime>04:03:00</cbc:IssueTime><cbc:InvoiceTypeCode>IADE</cbc:InvoiceTypeCode><cbc:Note>Yalnız Altı Yüz Türk Lirası</cbc:Note><cbc:Note>İade edilen fatura: TPT2026000000123</cbc:Note><cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode><cbc:LineCountNumeric>1</cbc:LineCountNumeric><cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>TPT2026000000123</cbc:ID><cbc:IssueDate>2026-10-16</cbc:IssueDate></cac:InvoiceDocumentReference></cac:BillingReference><cac:Signature><cbc:ID schemeID="VKN_TCKN">1234567890</cbc:ID><cac:SignatoryParty><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cbc:PostalZone>06100</cbc:PostalZone><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress></cac:SignatoryParty><cac:DigitalSignatureAttachment><cac:ExternalReference><cbc:URI>#Signature_EFT2026000000040</cbc:URI></cac:ExternalReference></cac:DigitalSignatureAttachment></cac:Signature><cac:AccountingSupplierParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Deneme Ofis Ltd. Şti.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Atatürk Blv. No:1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cbc:PostalZone>06100</cbc:PostalZone><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Çankaya</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:Telephone>03121234567</cbc:Telephone><cbc:ElectronicMail>bilgi@deneme.com.tr</cbc:ElectronicMail></cac:Contact></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">5554443334</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Toptancı A.Ş.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Bağdat Cd. 7</cbc:StreetName><cbc:CitySubdivisionName>Kadıköy</cbc:CitySubdivisionName><cbc:CityName>İstanbul</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Kadıköy</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingCustomerParty><cac:PaymentMeans><cbc:PaymentMeansCode>1</cbc:PaymentMeansCode><cbc:PaymentDueDate>2026-10-16</cbc:PaymentDueDate></cac:PaymentMeans><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">100.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">500.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">100.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="TRY">500.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="TRY">500.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="TRY">600.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="TRY">600.00</cbc:PayableAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">500.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">100.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">500.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">100.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Kırtasiye</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">500.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:137:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: alıştan iade: asıl faturanın numarası 16 hane değilse e-Belge iadesi kaydedilmeden söylenir (entegratörde reddedilmez)
+    not ok 42 - alıştan iade: asıl faturanın numarası 16 hane değilse e-Belge iadesi kaydedilmeden söylenir (entegratörde reddedilmez)
+      ---
+      duration_ms: 32.082515
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-647e1bd7-48cc-4369-add3-d0890b5280e7","kind":"purchase_return","kindLabel":"Alıştan İade Faturası","scenario":"purchase_return","scenarioLabel":"Alıştan İade","status":"issued","statusLabel":"Kaydedildi","number":"EFT2026000000041","displayNo":"EFT2026000000041","ettn":"87814fad-2bbc-470c-b9b6-89b215301eaf","issueDate":"2026-10-16","issueTime":"04:03","accountId":"account-e1f2cbda-fd4c-42dd-b2b4-87b8d0a325fa","accountName":"Toptancı A.Ş.","accountRef":"4","accountPhone":"","profile":"TEMELFATURA","profileLabel":"e-Fatura (Temel)","typeCode":"IADE","currency":"TRY","rate":1,"netTotal":500,"vatTotal":100,"withheldTotal":0,"stoppageTotal":0,"payableTotal":600,"tryNet":500,"tryVat":100,"tryPayable":600,"dueDate":"2026-10-16","planId":"","originalId":"invoice-5e47f31d-890c-4259-9f12-67b1308ea00e","originalNumber":"A-4711","originalDate":"2026-10-16","note":"","eStatus":"none","eStatusLabel":"Gönderilmedi","actorName":"Ofis yöneticisi","createdAt":"2026-10-16T04:03:10.251Z","payState":"return","payStateLabel":"İade","paid":600,"open":0,"closers":[{"id":"aentry-986d0d07-8de5-467d-9d5d-b3220475a56f","date":"2026-10-16","label":"Fatura","note":"Alış Faturası A-4711","method":"","amount":600,"mode":"linked","modeLabel":"Bağlı","methodLabel":""}],"party":{"id":"account-e1f2cbda-fd4c-42dd-b2b4-87b8d0a325fa","name":"Toptancı A.Ş.","partyKind":"company","firstName":"","familyName":"","taxNo":"5554443334","taxOffice":"Kadıköy","mersisNo":"","tradeRegistry":"","address":"Bağdat Cd. 7","district":"Kadıköy","city":"İstanbul","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","iban":"","eInvoice":true,"eAlias":"urn:mail:defaultpk@toptanci.com.tr"},"seller":{"name":"Deneme Ofis Ltd. Şti.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. No:1","district":"Çankaya","city":"Ankara","postalCode":"06100","country":"Türkiye","phone":"03121234567","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":500,"discountTotal":0,"baseNetTotal":500,"discountNetTotal":0,"goodsNet":0,"serviceNet":500,"grossTotal":600,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"770","net":50000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"offset","installments":null,"rest":600},"eMessage":"","eAt":"","eAdapter":"","cancelledAt":null,"cancelReason":"","amountInWords":"Yalnız Altı Yüz Türk Lirası","byRate":[{"rate":20,"net":500,"vat":100,"withheld":0}],"lines":[{"id":"iline-95ca7678-d166-4025-90c4-2c7064ae9106","invoiceId":"invoice-647e1bd7-48cc-4369-add3-d0890b5280e7","seq":1,"itemId":"","goods":false,"code":"","name":"Kırtasiye","description":"","unit":"Adet","qty":1,"unitPrice":500,"discountRate":0,"base":500,"discount":0,"net":500,"vatRate":20,"vat":100,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":600,"payable":600,"glAccount":"770","expenseCode":"other","unitCost":0,"originLineId":"iline-e6f03d0f-d4d6-4ca4-936f-01bdd76c896d","moveId":"","returned":0,"expenseLabel":"Diğer Giderler"}],"returnable":[{"id":"iline-95ca7678-d166-4025-90c4-2c7064ae9106","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":true,"modifyBlock":"","canIssue":false,"canDelete":true,"deleteBlock":"","canCancel":true,"cancelBlock":"","canReturn":false,"returnBlock":"","repeat":null,"canRepeat":false,"canSend":true,"canWithdraw":false,"sendBlock":"","canRefresh":false,"edocEnabled":true}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:144:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: eski kayıttaki 308 (2.3.0'a dek 13/a) GİB'in 13/a kodu 304 olarak yazılır ve kurallara uyar
+    not ok 43 - eski kayıttaki 308 (2.3.0'a dek 13/a) GİB'in 13/a kodu 304 olarak yazılır ve kurallara uyar
+      ---
+      duration_ms: 16.742003
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni kayıtta 308 → 304
+        
+        '308' !== '304'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '304'
+      actual: '308'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:151:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..43
+not ok 2 - Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar
+  ---
+  duration_ms: 11027.338089
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:108:1'
+  failureType: 'subtestsFailed'
+  error: '43 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Programın kod tabloları GİB kod listesiyle aynı (UBL-TR_Codelist.xml)
+    # Subtest: her tevkifat kodu ve oranı GİB'in WithholdingTaxTypeWithPercent listesinde
+    ok 1 - her tevkifat kodu ve oranı GİB'in WithholdingTaxTypeWithPercent listesinde
+      ---
+      duration_ms: 1.914401
+      type: 'test'
+      ...
+    # Subtest: her KDV istisna kodu GİB'in TaxExemptionReasonCodeType listesinde
+    not ok 2 - her KDV istisna kodu GİB'in TaxExemptionReasonCodeType listesinde
+      ---
+      duration_ms: 0.677412
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '308'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '308'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:174:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - Programın kod tabloları GİB kod listesiyle aynı (UBL-TR_Codelist.xml)
+  ---
+  duration_ms: 2.735427
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/ebelge-eski-769f54f/test/ebelge-uygunluk.test.mjs:160:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 52
+# suites 3
+# pass 7
+# fail 45
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13795.717253

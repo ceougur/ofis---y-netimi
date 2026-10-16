@@ -5,7 +5,7 @@
 // e-imza (UBLExtensions içindeki imza) ve GİB zarfı belgeyi gönderen entegratör ya da GİB portalı tarafından eklenir;
 // program imza anahtarı tutmaz. Tutarlar faturanın kendi kuruş hesabından gelir (lib/invoice-math.mjs) — ekranda, PDF'te,
 // defterde ve XML'de aynı sayı.
-import { exclusiveParts } from "../invoice-math.mjs";
+import { EXEMPTIONS, exclusiveParts, normalizeExemption } from "../invoice-math.mjs";
 const NS = {
   invoice: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
   cac: "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
@@ -77,9 +77,10 @@ const discountNet = (line, includeVat) => (includeVat ? exclusiveParts(line, tru
 
 function taxCategory(rate, exemptionCode, exemptionLabel, variant) {
   if (variant === "peppol") return `<cac:TaxCategory>${tag("cbc:ID", rate > 0 ? "S" : exemptionCode && exemptionCode !== "351" ? "E" : "Z")}${tag("cbc:Percent", rate)}${rate > 0 ? "" : tag("cbc:TaxExemptionReason", exemptionLabel || "Exempt")}<cac:TaxScheme>${tag("cbc:ID", "VAT")}</cac:TaxScheme></cac:TaxCategory>`;
-  return `<cac:TaxCategory>${rate === 0 ? `${tag("cbc:TaxExemptionReasonCode", exemptionCode || "351")}${tag("cbc:TaxExemptionReason", exemptionLabel || "")}` : ""}<cac:TaxScheme>${tag("cbc:Name", "KDV")}${tag("cbc:TaxTypeCode", "0015")}</cac:TaxScheme></cac:TaxCategory>`;
+  return `<cac:TaxCategory>${rate === 0 ? `${tag("cbc:TaxExemptionReasonCode", normalizeExemption(exemptionCode) || "351")}${tag("cbc:TaxExemptionReason", exemptionLabel || "")}` : ""}<cac:TaxScheme>${tag("cbc:Name", "KDV")}${tag("cbc:TaxTypeCode", "0015")}</cac:TaxScheme></cac:TaxCategory>`;
 }
-const EXEMPTION_LABELS = { 351: "KDV - İstisna Olmayan Diğer", 301: "11/1-a Mal İhracatı", 302: "11/1-a Hizmet İhracatı", 308: "13/a Deniz, Hava ve Demiryolu Taşıma Araçlarının Teslimi", 350: "Diğerleri" };
+// İstisna adları tek kaynaktan (invoice-math EXEMPTIONS, GİB kod listesi); eski kayıttaki 308 → 304 (aynı anlam, 13/a).
+const exemptionLabel = code => EXEMPTIONS[normalizeExemption(code)] || "";
 
 /**
  * @param {object} doc  routes/invoices.mjs detail() çıktısı (kesilmiş fatura)
@@ -114,7 +115,8 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
     variant === "peppol"
       ? [tag("cbc:CustomizationID", "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0"), tag("cbc:ProfileID", "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"), tag("cbc:ID", doc.number), tag("cbc:IssueDate", doc.issueDate), tag("cbc:DueDate", doc.dueDate || doc.issueDate), tag("cbc:InvoiceTypeCode", doc.typeCode === "IADE" ? "381" : "380"), ...notes.map(note => tag("cbc:Note", note)), tag("cbc:DocumentCurrencyCode", currency), tag("cbc:TaxCurrencyCode", currency === "TRY" ? "" : "TRY")]
       : [
-          "<ext:UBLExtensions><ext:UBLExtension><ext:ExtensionContent/></ext:UBLExtension></ext:UBLExtensions>",
+          // ext:UBLExtensions (mali mühür / e-imza) yazılmaz: imzayı entegratör ekler (EDM örnek belgelerinde de yok); boş
+          // ext:ExtensionContent UBL 2.1 şemasına aykırıdır (en az bir öğe ister) — test/ebelge-uygunluk.test.mjs.
           tag("cbc:UBLVersionID", "2.1"),
           tag("cbc:CustomizationID", "TR1.2"),
           tag("cbc:ProfileID", doc.profile),
@@ -130,7 +132,8 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
         ];
   const references = [
     doc.orderNo ? `<cac:OrderReference>${tag("cbc:ID", doc.orderNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.orderDate || doc.issueDate)}</cac:OrderReference>` : "",
-    doc.originalNumber ? `<cac:BillingReference><cac:InvoiceDocumentReference>${tag("cbc:ID", doc.originalNumber)}${tag("cbc:IssueDate", doc.originalDate || "")}</cac:InvoiceDocumentReference></cac:BillingReference>` : "",
+    // GİB (IADEInvioceCheck): iade faturasında asıl fatura DocumentTypeCode "IADE" ile gösterilir.
+    doc.originalNumber ? `<cac:BillingReference><cac:InvoiceDocumentReference>${tag("cbc:ID", doc.originalNumber)}${tag("cbc:IssueDate", doc.originalDate || "")}${variant !== "peppol" && doc.typeCode === "IADE" ? tag("cbc:DocumentTypeCode", "IADE") : ""}</cac:InvoiceDocumentReference></cac:BillingReference>` : "",
     doc.despatchNo ? `<cac:DespatchDocumentReference>${tag("cbc:ID", doc.despatchNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.despatchDate || doc.issueDate)}</cac:DespatchDocumentReference>` : "",
     // e-Arşiv gönderim şekli (GİB e-Arşiv kılavuzu): alıcının e-postası varsa ELEKTRONIK (entegratör e-postayla iletir),
     // yoksa KAGIT (çıktısı verilir).
@@ -146,7 +149,7 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
   const exchange = currency !== "TRY" && variant !== "peppol" ? `<cac:PricingExchangeRate>${tag("cbc:SourceCurrencyCode", currency)}${tag("cbc:TargetCurrencyCode", "TRY")}${tag("cbc:CalculationRate", doc.rate)}${tag("cbc:Date", doc.issueDate)}</cac:PricingExchangeRate>` : "";
   const vatTotal = taxTotal.reduce((sum, item) => sum + item.vat, 0);
   const tax = `<cac:TaxTotal>${money("cbc:TaxAmount", vatTotal, currency)}${taxTotal
-    .map(item => `<cac:TaxSubtotal>${money("cbc:TaxableAmount", item.net, currency)}${money("cbc:TaxAmount", item.vat, currency)}${variant === "peppol" ? "" : tag("cbc:Percent", item.rate)}${taxCategory(item.rate, item.exemptionCode, EXEMPTION_LABELS[item.exemptionCode], variant)}</cac:TaxSubtotal>`)
+    .map(item => `<cac:TaxSubtotal>${money("cbc:TaxableAmount", item.net, currency)}${money("cbc:TaxAmount", item.vat, currency)}${variant === "peppol" ? "" : tag("cbc:Percent", item.rate)}${taxCategory(item.rate, item.exemptionCode, exemptionLabel(item.exemptionCode), variant)}</cac:TaxSubtotal>`)
     .join("")}</cac:TaxTotal>`;
   const withholding =
     byWithholding.size && variant !== "peppol"
@@ -171,9 +174,9 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
         `<cbc:InvoicedQuantity unitCode="${unitCode(line.unit)}">${escape(line.qty)}</cbc:InvoicedQuantity>`,
         money("cbc:LineExtensionAmount", line.net, currency),
         discount > 0 ? `<cac:AllowanceCharge>${tag("cbc:ChargeIndicator", "false")}${variant === "peppol" ? tag("cbc:AllowanceChargeReason", "İskonto") : tag("cbc:MultiplierFactorNumeric", (Math.round((discount / ((Number(line.net) || 0) + discount || 1)) * 10000) / 10000).toString())}${money("cbc:Amount", discount, currency)}${money("cbc:BaseAmount", (Number(line.net) || 0) + discount, currency)}</cac:AllowanceCharge>` : "",
-        variant === "peppol" ? "" : `<cac:TaxTotal>${money("cbc:TaxAmount", line.vat, currency)}<cac:TaxSubtotal>${money("cbc:TaxableAmount", line.net, currency)}${money("cbc:TaxAmount", line.vat, currency)}${tag("cbc:Percent", line.vatRate)}${taxCategory(line.vatRate, line.exemptionCode, EXEMPTION_LABELS[line.exemptionCode], variant)}</cac:TaxSubtotal></cac:TaxTotal>`,
+        variant === "peppol" ? "" : `<cac:TaxTotal>${money("cbc:TaxAmount", line.vat, currency)}<cac:TaxSubtotal>${money("cbc:TaxableAmount", line.net, currency)}${money("cbc:TaxAmount", line.vat, currency)}${tag("cbc:Percent", line.vatRate)}${taxCategory(line.vatRate, line.exemptionCode, exemptionLabel(line.exemptionCode), variant)}</cac:TaxSubtotal></cac:TaxTotal>`,
         lineWithholding,
-        `<cac:Item>${variant === "peppol" ? tag("cbc:Description", line.description) : ""}${tag("cbc:Name", line.name)}${line.code ? `<cac:SellersItemIdentification>${tag("cbc:ID", line.code)}</cac:SellersItemIdentification>` : ""}${variant === "peppol" ? taxCategory(line.vatRate, line.exemptionCode, EXEMPTION_LABELS[line.exemptionCode], "peppol").replace("cac:TaxCategory", "cac:ClassifiedTaxCategory").replace("</cac:TaxCategory>", "</cac:ClassifiedTaxCategory>") : ""}</cac:Item>`,
+        `<cac:Item>${variant === "peppol" ? tag("cbc:Description", line.description) : ""}${tag("cbc:Name", line.name)}${line.code ? `<cac:SellersItemIdentification>${tag("cbc:ID", line.code)}</cac:SellersItemIdentification>` : ""}${variant === "peppol" ? taxCategory(line.vatRate, line.exemptionCode, exemptionLabel(line.exemptionCode), "peppol").replace("cac:TaxCategory", "cac:ClassifiedTaxCategory").replace("</cac:TaxCategory>", "</cac:ClassifiedTaxCategory>") : ""}</cac:Item>`,
         `<cac:Price><cbc:PriceAmount currencyID="${escape(currency)}">${priceText(price)}</cbc:PriceAmount></cac:Price>`,
         "</cac:InvoiceLine>",
       ].join("");
