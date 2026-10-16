@@ -590,6 +590,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (bitiş turu düzeltmeleri dahil) EDM test ortamına 4 belge — TEF2026481687272 Temel (%20+%10, 470,00), TEF2026481687273 Ticari (1.200,00), TEA2026481687272
   e-Arşiv kişiye (900,00), TEF2026481687274 İstisna 301+%20 (740,00); hepsi GİB'den geçti; resmî PDF karekodları jsQR ile çözüldü, tutarlar elle hesapla
   aynı (docs/kanit/2026-10-16/edm-son-hal). PDF'ler kullanıcıya gönderildi; kullanıcı portaldan kontrol ediyor.
+- İSTEK (kullanıcı, 16.10.2026: "müşteri DESTEK OFİS şeklinde 5 kullanıcı ile 30 tane e-fatura, e-arşiv karışık kesmeye zorlar mısın") → firma DESTEK OFİS,
+  5 kullanıcı (3 Muhasebe + 2 Avukat) ayrı tarayıcı oturumlarında AYNI ANDA ekrandan 30 belge (15 e-Fatura Temel/Ticari + 15 e-Arşiv; Kaydet ve Gönder /
+  Sonra Gönder karışık) gerçek EDM test ortamına; denetim: numara benzersiz/boşluksuz, tek gönderim, son durum, bakiye, defter (kanıt docs/kanit/2026-10-16/edm-stres).
+  SORU (aynı gün, TEF2026347991651 Ticari, portal "Kabul/Red yanıtı bekleniyor"): kabul/red Giden'den değil Gelen Fatura'dan verilir (kendine gönderim).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
