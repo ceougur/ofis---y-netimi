@@ -325,9 +325,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   function integrator(s = settings()) {
     requireEdoc();
     const cfg = s.integrator;
-    if (!cfg.username || !cfg.passwordSealed) throw new HttpError(409, `${ADAPTERS[cfg.id]?.label || "Entegratör"} web servis kullanıcı adı ve parolası girilmemiş. Fatura Ayarları → e-Belge Bağlantısı'ndan girin.`, { code: "integrator-not-configured" });
+    // Canlıya çıkış kilidi (16.10.2026): ayar ekranı canlıyı reddeder; veri tabanında eskiden kalmış "live" kaydı da bağlantı katmanında
+    // reddedilir — ağa hiç çıkılmaz (test/einvoice-edm.test.mjs "canlı kilit").
+    if (cfg.env === "live" && !edocLive) throw new HttpError(409, "Entegratör ayarında Canlı Ortam seçili ama canlı ortam henüz açılmadı (test ortamındaki kabulden sonra açılır). Entegratör Ayarları'nda Test Ortamı'nı seçin.", { code: "integrator-live-locked" });
+    if (!cfg.username || !cfg.passwordSealed) throw new HttpError(409, `${ADAPTERS[cfg.id]?.label || "Entegratör"} web servis kullanıcı adı ve parolası girilmemiş. Fatura → Entegratör Ayarları'ndan girin.`, { code: "integrator-not-configured" });
     const password = secrets().open(cfg.passwordSealed);
-    if (!password) throw new HttpError(409, "Kayıtlı entegratör parolası bu bilgisayarda açılamadı (veriler başka bilgisayardan taşınmış olabilir). Fatura Ayarları'nda parolayı yeniden girin.", { code: "integrator-password" });
+    if (!password) throw new HttpError(409, "Kayıtlı entegratör parolası bu bilgisayarda açılamadı (veriler başka bilgisayardan taşınmış olabilir). Fatura → Entegratör Ayarları'nda parolayı yeniden girin.", { code: "integrator-password" });
     return connect({ integrator: { ...cfg, password }, seller: sellerParty(s) });
   }
 

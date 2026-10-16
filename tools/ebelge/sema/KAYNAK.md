@@ -7,6 +7,7 @@ Programla dağıtılmaz; yalnız `tools/ebelge/dogrula.mjs` ve `test/ebelge-uygu
 |---|---|---|---|
 | `ubl-2.1/` (maindoc/UBL-Invoice-2.1.xsd + common/) | OASIS UBL 2.1 — https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip (Copyright © OASIS Open 2013; OASIS IPR Policy kapsamında, telif notuyla kopyalanabilir) | 16.10.2026 | 60b80d76… |
 | `gib/` (UBL-TR_Main_Schematron.xml, UBL-TR_Common_Schematron.xml, UBL-TR_Codelist.xml) | GİB e-Fatura Paketi — https://ebelge.gib.gov.tr/dosyalar/kilavuzlar/e-FaturaPaketi%20(29).zip, `schematron/` (dosya tarihi 21.08.2026) | 16.10.2026 | 12901476… |
+| `edm/EFaturaEDM-test-singleWsdl.xml` | EDM Bilişim test e-Fatura servisinin sözleşmesi — https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc?singleWsdl (herkese açık adres; kimlik bilgisi içermez). Kâhin: test/edm-gercek-sozlesme.test.mjs | 16.10.2026 | ba4e1c1c… |
 | `schxslt-1.9.5/` (2.0/ ve LICENSE) | SchXslt 1.9.5 (David Maus, MIT lisansı) — npm `node-xsl-schematron@1.1.0` paketindeki kopya | 16.10.2026 | — |
 
 Kod adlarının ve istisna/tevkifat açıklamalarının kaynağı: GİB "UBL-TR Kod Listeleri" v1.43 (Temmuz 2026),
@@ -59,4 +60,5 @@ a4f726bcf8cc3f7d9ffa4dab99e005535a8e8b60dced1e5d94578d2e05afa96e  ./ubl-2.1/comm
 1fa4625e9cefcb7a9abb5ac1b64315547450031eece8a55bd584e4ba4b79dbc1  ./ubl-2.1/common/UBL-XAdESv141-2.1.xsd
 101909c9f06456d61ddcc4fb982f1d40dc357b439f393b1a2eb46e42acd60809  ./ubl-2.1/common/UBL-xmldsig-core-schema-2.1.xsd
 40fae8cb436f3a9506d7acce65ba162caef3b0bed4d5cbc0992b2153ded4edf4  ./ubl-2.1/maindoc/UBL-Invoice-2.1.xsd
+ba4e1c1c270390e0e5a96341bfef4f575c4030a7a851ce3a263e92ea1e3b3bfc  ./edm/EFaturaEDM-test-singleWsdl.xml
 ```

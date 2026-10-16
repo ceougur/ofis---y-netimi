@@ -34,7 +34,7 @@ export function wsdl({ statusInvoice = true } = {}) {
     <xs:complexType name="PARTY"><xs:attribute name="vkn" type="xs:string"/><xs:attribute name="alias" type="xs:string"/></xs:complexType>
     ${ext("LoginRequest", `<xs:element name="USER_NAME" type="xs:string"/><xs:element name="PASSWORD" type="xs:string"/>`)}
     ${ext("LogoutRequest", "")}
-    ${ext("CheckUserRequest", `<xs:element name="USER"><xs:complexType><xs:sequence><xs:element name="IDENTIFIER" type="xs:string"/></xs:sequence></xs:complexType></xs:element><xs:element minOccurs="0" name="DOCUMENT_TYPE" type="xs:string"/>`)}
+    ${ext("CheckUserRequest", `<xs:element name="USER"><xs:complexType><xs:sequence><xs:element name="IDENTIFIER" type="xs:string"/></xs:sequence></xs:complexType></xs:element>`)}
     ${ext("SendInvoiceRequest", `<xs:element minOccurs="0" name="SENDER" type="t:PARTY"/><xs:element minOccurs="0" name="RECEIVER" type="t:PARTY"/><xs:element maxOccurs="unbounded" name="INVOICE" type="t:INVOICE"/>`)}
     ${ext("GetInvoiceStatusRequest", statusInvoice ? `<xs:element name="INVOICE" type="t:INVOICE"/>` : `<xs:element name="UUID" type="xs:string"/>`)}
     ${ext("GetInvoiceRequest", `<xs:element name="INVOICE_SEARCH_KEY"><xs:complexType><xs:sequence>${["LIMIT", "ID", "UUID", "START_DATE", "END_DATE", "READ_INCLUDED", "DIRECTION"].map(name => `<xs:element minOccurs="0" name="${name}" type="xs:string"/>`).join("")}</xs:sequence></xs:complexType></xs:element><xs:element minOccurs="0" name="HEADER_ONLY" type="xs:string"/><xs:element minOccurs="0" name="INVOICE_CONTENT_TYPE" type="xs:string"/>`)}

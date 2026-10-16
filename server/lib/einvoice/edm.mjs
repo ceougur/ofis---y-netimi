@@ -91,7 +91,7 @@ const sessionError = (code, message) => String(code) === "10011" || /aktif\s*ses
 export function createEdmClient({ baseUrl, username, password, fetchImpl = (...args) => globalThis.fetch(...args), timeoutMs = 45_000, useWsdl = true, appName = APP }) {
   const base = String(baseUrl || "").trim().replace(/\/+$/, "").replace(/\?.*$/, "");
   if (!/^https:\/\//i.test(base) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//i.test(`${base}/`)) throw new IntegratorError("EDM servis adresi https:// ile başlamalı.", { code: "integrator-url", status: 400 });
-  if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura Ayarları → e-Belge Bağlantısı).", { code: "integrator-credentials", status: 400 });
+  if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura → Entegratör Ayarları).", { code: "integrator-credentials", status: 400 });
   const sessionKey = `${base}|${username}`;
 
   async function http(url, { method = "GET", headers = {}, body } = {}, wait = timeoutMs) {
@@ -150,7 +150,7 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
   async function call(operation, payload, { session = "", wait } = {}) {
     const { contract } = await loadContract();
     const shaped = shape(contract, operation, payload, { defaultNs: EDM_DEFAULT_NS });
-    if (shaped.warnings.length) throw new IntegratorError(`EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (${shaped.warnings.join(", ")}). İstek gönderilmedi. Fatura Ayarları'nda Bağlantıyı Sına'nın sonucunu destek hattına iletin.`, { code: "integrator-contract", status: 409, detail: shaped.warnings.join(", ") });
+    if (shaped.warnings.length) throw new IntegratorError(`EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (${shaped.warnings.join(", ")}). İstek gönderilmedi. Entegratör Ayarları'nda Bağlantıyı Test Et'in sonucunu destek hattına iletin.`, { code: "integrator-contract", status: 409, detail: shaped.warnings.join(", ") });
     const action = contract?.operations?.[operation]?.action ?? "";
     const endpoint = endpointOf(contract);
     const request = soapRequest({ version: contract?.version || "1.1", action, body: renderTree(shaped.tree), addressing: contract?.addressing, to: endpoint });
@@ -242,7 +242,10 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
     // GİB e-Fatura kullanıcısı mı? Posta kutusu (PK) etiketleri (alıcı olarak) döner.
     async checkUser(taxNo) {
       return withSession(async session => {
-        const body = await call("CheckUser", E("CheckUserRequest", [header(session), E("USER", [E("IDENTIFIER", taxNo)]), E("DOCUMENT_TYPE", "INVOICE")]), { session });
+        // Gerçek EDM sözleşmesi (16.10.2026, tools/ebelge/sema/edm): CheckUserRequest yalnız USER (GIBUSER) taşır; belge türü USER içindeki
+        // DOCUMENTTYPE'tır ve EDM'nin C# istemcisi onu da göndermez → yalnız IDENTIFIER (önceden sözleşmede olmayan DOCUMENT_TYPE kardeş alanı
+        // gönderilmek istendiği için istek hiç yapılmıyordu). Fatura dışı etiketler yanıttaki DOCUMENTTYPE ile ayıklanır.
+        const body = await call("CheckUser", E("CheckUserRequest", [header(session), E("USER", [E("IDENTIFIER", taxNo)])]), { session });
         touch();
         const users = deepAll(body, "USER").map(user => ({
           identifier: textOf(find(user, "IDENTIFIER")),
@@ -250,8 +253,8 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
           title: textOf(find(user, "TITLE")),
           type: textOf(find(user, "TYPE")),
           unit: textOf(find(user, "UNIT")).toUpperCase(),
-          deleted: textOf(find(user, "DELETED")) || textOf(find(user, "ALIAS_DELETION_TIME")),
-          documentType: textOf(find(user, "DOCUMENT_TYPE")).toUpperCase(),
+          deleted: textOf(find(user, "DELETED")) || textOf(find(user, "ALIAS_REMOVAL_TIME")) || textOf(find(user, "ALIAS_DELETION_TIME")),
+          documentType: (textOf(find(user, "DOCUMENTTYPE")) || textOf(find(user, "DOCUMENT_TYPE"))).toUpperCase(),
         }));
         const active = users.filter(user => user.alias && !/^(Y|E|TRUE|1)$/i.test(user.deleted) && !(user.deleted && /\d{4}/.test(user.deleted)) && (!user.documentType || user.documentType === "INVOICE"));
         const inboxes = active.filter(user => user.unit ? user.unit === "PK" : !/defaultgb|:gb@|gb@/i.test(user.alias));

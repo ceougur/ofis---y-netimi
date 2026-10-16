@@ -28,7 +28,7 @@ export const adapterInfo = (id, adapter = ADAPTERS[id]) => ({
   protocol: adapter.protocol,
   implemented: adapter.implemented,
   urls: adapter.urls,
-  note: "EDM Bilişim'in verdiği web servis kullanıcı adı ve parolasını girin; önce Test ortamında Bağlantıyı Sına ile deneyin.",
+  note: "EDM Bilişim'in verdiği web servis kullanıcı adı ve parolasını girin; önce Test Ortamı'nda Bağlantıyı Test Et ile deneyin.",
 });
 
 const toHttp = error => {

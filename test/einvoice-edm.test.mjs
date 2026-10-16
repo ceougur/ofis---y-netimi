@@ -496,6 +496,39 @@ describe("Entegratör Ayarları: canlı ortam kilidi, GB/PK etiketleri, durum sa
   });
 });
 
+describe("Entegratör Ayarları: canlı kilit — veri tabanında kalmış 'live' kaydı bile ağa çıkmadan reddedilir", () => {
+  let server;
+  let edm;
+  let api;
+  before(async () => {
+    resetEdmCaches();
+    edm = await startMockEdm();
+    server = await startTestServer({ edocEnabled: true });
+    api = apiOf(server.client());
+    assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);
+    const ok = await api.put("/api/workspace/invoices/settings", { seller: { name: "Deneme Ofis Ltd.", taxNo: OUR_VKN, taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara" }, efatura: true, integrator: { env: "test", baseUrl: edm.url, username: "edmkullanici", password: "Gizli-Parola-1" } });
+    assert.equal(ok.status, 200, JSON.stringify(ok.data));
+    // Eski bir kurulumdan kalmış gibi: ayar kaydında ortam "live" (ekrandan seçilemez; doğrudan yazılır). Adres sahte EDM — kilit bozulursa
+    // istek gerçek canlıya değil sahte sunucuya gider ve aşağıdaki "hiç istek yok" denetimi düşer.
+    const raw = JSON.parse(server.app.store.setting("invoice.settings", "{}"));
+    raw.integrator.env = "live";
+    server.app.store.setSetting("invoice.settings", JSON.stringify(raw));
+  });
+  after(async () => {
+    await server.close();
+    await edm.close();
+  });
+  test("Bağlantıyı Test Et, Etiketleri Getir ve Mükellef Sorgula 409 integrator-live-locked; sahte EDM'ye tek istek bile gitmez", async () => {
+    const before = edm.state.calls.length + (edm.state.wsdlHits || 0);
+    for (const [url, body] of [["/api/workspace/invoices/integrator/test", {}], ["/api/workspace/invoices/integrator/aliases", {}], ["/api/workspace/invoices/check-user", { taxNo: BUYER_VKN }]]) {
+      const res = await api.post(url, body);
+      assert.equal(res.status, 409, `${url}: ${res.status} ${JSON.stringify(res.data)}`);
+      assert.equal(res.data.code, "integrator-live-locked");
+    }
+    assert.equal(edm.state.calls.length + (edm.state.wsdlHits || 0), before, "ağa çıkılmadı");
+  });
+});
+
 describe("Entegratör Ayarları: canlı ortam yalnız ayrı kurulum bayrağıyla (edocLive) seçilir", () => {
   let server;
   let api;
