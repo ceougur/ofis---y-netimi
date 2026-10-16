@@ -642,6 +642,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   simgeli); paket denetimi 4/4 (imza, sha/boyut, kurcalanmış ret, zip = HEAD 251/251). SIRADA: teslim (5 dosya + arşiv) → PR → kullanıcı "birleştir" → yayın.
   TESLİM EDİLDİ (16.10.2026 ~19:45 UTC): 5 dosya (exe iki parça + BIRLESTIR.bat/.md; bildirge json 60b6bd7b…, kılavuz PDF ca4b478d…) + arşiv 6 zip
   (1 belge+kanıt, 2–6 bundle parçaları; birleştirilip klonlandı, a11b0a7). PR açıldı.
+  PR ceougur/ofis---y-netimi#30; master çakışması "ours" birleştirmesiyle giderildi (515222c, ağaç aynı). KARAR (kullanıcı, 16.10.2026 ~19:50 UTC: "CI yeşil
+  olunca birleştir") → PR CI + kapı yeşil olunca squash birleştirme; sonra kullanıcı yayını açar (bağlantı verildi).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
