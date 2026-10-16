@@ -1,0 +1,29 @@
+13:35:23 FİRMA (API): {"status":200}
+13:35:24 GİRİŞ (ekran): tamam
+13:35:29 BAĞLANTIYI TEST ET (ekran): Durum: Bağlantı kuruldu · 16.10.2026 13:35
+13:35:30 ETİKETLER (ekran): {"gb":["urn:mail:avsaroglugb@kollektif.com","urn:mail:defaultgb@edmbilisim.com.tr","urn:mail:imzatestgb@edmbilisim.com.tr"],"pk":["urn:mail:avsaroglupk@kollektif.com","urn:mail:defaultpk@abctest.com.tr","urn:mail:defaultpk@edmbilisim.com.tr"]}
+13:35:32 ENTEGRATÖR AYARI (veri tabanı): {"env":"test","baseUrl":"(boş = test adresi)","gb":"urn:mail:defaultgb@edmbilisim.com.tr","pk":"urn:mail:defaultpk@edmbilisim.com.tr","parolaSifreli":true,"sonTest":true}
+13:35:37 Sorgulanmamış firma kart açıldı: true
+13:35:48 KORUMA (ekran iletisi)
+13:35:48 KORUMA (veri tabanı): {"belge":{"number":"","profile":"EARSIVFATURA","eStatus":"waiting"},"cariMukellef":{"eInvoice":1,"eAlias":""}}
+13:35:48 koruma belgesi iptal: 200
+13:35:51 CARİ FORMU MÜKELLEF SORGUSU (ekran) posta kutuları: ["urn:mail:avsaroglupk@kollektif.com","urn:mail:defaultpk@abctest.com.tr","urn:mail:defaultpk@edmbilisim.com.tr","urn:mail:defaultpk@yenibirfirmadaha.com.tr","urn:mail:defaultpk@yeniedmbilisim.com.tr","urn:mail:demopk@nobel.com.tr","urn:mail:demopk@nobel2.com.tr","urn:mail:imzatestpk@edmbilisim.com.tr","urn:mail:test1pk@etabilgisayar.com","urn:mail:test2pk@etabilgisayar.com","urn:mail:test3pk@etabilgisayar.com"]
+13:35:57 YENİ CARİ (ekrandan, veri tabanı): {"id":"account-683995b4-6474-4d2a-9f9d-173baa5f7523","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr","taxNo":"3230512384"}
+13:36:07 e-Fatura kart açıldı: true
+13:36:09 e-Fatura (veri tabanı): {"id":"invoice-027c2622-6b2a-4428-8735-f8f39e236c1a","number":"TEF2026349667219","ettn":"551228c9-3b75-480a-a680-e66d0f900e81","profile":"TEMELFATURA","eStatus":"sent","eMessage":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","payable":2240}
+13:36:14 e-Arşiv kart açıldı: true
+13:36:24 e-Arşiv (veri tabanı): {"id":"invoice-41453a4d-6fd4-497e-9844-ef21f9dc2efd","number":"TEA2026349667219","ettn":"583e117f-aefa-4f5d-b0d9-c002115b1e8e","profile":"EARSIVFATURA","eStatus":"sent","eMessage":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","payable":1080}
+13:36:28 TEF2026349667219 DURUM SORGULA 1 (ekran): {"eStatus":"processing","eMessage":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:37:12 TEF2026349667219 DURUM SORGULA 2 (ekran): {"eStatus":"processing","eMessage":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:37:55 TEF2026349667219 DURUM SORGULA 3 (ekran): {"eStatus":"processing","eMessage":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:38:39 TEF2026349667219 DURUM SORGULA 4 (ekran): {"eStatus":"processing","eMessage":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:39:23 TEF2026349667219 DURUM SORGULA 5 (ekran): {"eStatus":"processing","eMessage":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:40:06 TEF2026349667219 DURUM SORGULA 6 (ekran): {"eStatus":"processing","eMessage":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:40:50 TEF2026349667219 DURUM SORGULA 7 (ekran): {"eStatus":"processing","eMessage":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:41:33 TEF2026349667219 DURUM SORGULA 8 (ekran): {"eStatus":"processing","eMessage":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+13:42:17 TEF2026349667219 DURUM SORGULA 9 (ekran): {"eStatus":"sent","eMessage":"İşlem tamamlandı. SUCCEED"}
+13:42:21 TEF2026349667219 RESMÎ GÖRÜNTÜ: {"status":200,"bayt":112555}
+13:42:25 TEA2026349667219 DURUM SORGULA 1 (ekran): {"eStatus":"sent","eMessage":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+13:42:27 TEA2026349667219 RESMÎ GÖRÜNTÜ: {"status":200,"bayt":128997}
+ÖZET [{"no":"TEF2026349667219","ettn":"551228c9-3b75-480a-a680-e66d0f900e81","profil":"TEMELFATURA","tutar":2240,"son":"sent","ileti":"İşlem tamamlandı. SUCCEED"},{"no":"TEA2026349667219","ettn":"583e117f-aefa-4f5d-b0d9-c002115b1e8e","profil":"EARSIVFATURA","tutar":1080,"son":"sent","ileti":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}]
+13:42:27 SAYFA HATALARI: yok

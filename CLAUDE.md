@@ -585,7 +585,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - İSTEK (kullanıcı, 16.10.2026): "test faturaları arayüzden de kesilebiliyor mu, sen koddan mı gönderdin?" → API'den (ekranın çağırdığı uçlar) gönderilmişti;
   "kapat" → tarayıcıyla ekrandan gerçek EDM'ye gönderildi; BULGU: sorgusuz mükellefe e-Arşiv → EDM reddi + numara kaybı → DÜZELTİLDİ (mükellef sorgusu
   numaradan önce, posta kutusu denetimi). İSTEK (aynı gün): "fatura, e-Arşiv, kesme ve iptal durumlarını gerçek kullanıcı gibi test edelim, hataya yer
-  bırakma" → arayüzden gerçek EDM'de kesme + iptal matrisi (sürüyor).
+  bırakma" → YAPILDI: arayüzden gerçek EDM'de kesme (5) + iptal (4) matrisi, 25/26; bulunan 2 kusur düzeltildi (Ticari durum "RECEIVE -" eşlemesi; iptal edilmiş kartta "Tahsil Edilecek" başlığı) — `docs/2.4.0-IS-LISTESI.md`.
 - İSTEK (kullanıcı, 16.10.2026: "edm test linkinden son haliyle 3-4 çeşit test faturaları kes, ben de portaldan kontrol edeyim") → YAPILDI: son kodla
   (bitiş turu düzeltmeleri dahil) EDM test ortamına 4 belge — TEF2026481687272 Temel (%20+%10, 470,00), TEF2026481687273 Ticari (1.200,00), TEA2026481687272
   e-Arşiv kişiye (900,00), TEF2026481687274 İstisna 301+%20 (740,00); hepsi GİB'den geçti; resmî PDF karekodları jsQR ile çözüldü, tutarlar elle hesapla

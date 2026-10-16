@@ -56,7 +56,10 @@ const EDM_STATES = Object.freeze({
 export function mapEdmStatus({ status = "", description = "", gibCode = "", gibDescription = "", responseCode = "", responseDescription = "", earchive = false }) {
   const normalized = String(status).replace(/\s+/g, "").toUpperCase();
   const extra = [description && description !== status ? description : "", gibDescription, responseDescription].filter(Boolean).join(" · ");
-  const known = EDM_STATES[normalized];
+  // Gerçek EDM test ortamı (16.10.2026, docs/kanit/2026-10-16/edm-arayuz): alıcının posta kutusu da aynı hesaptaysa (kendine gönderim) EDM giden
+  // belgenin durumunu alıcı tarafından da verebiliyor ("RECEIVE - WAIT_APPLICATION_RESPONSE"); program bunu "işleniyor"da bırakıyordu. Alıcı
+  // tarafının durumu belgenin alıcıya ulaştığını gösterir: gönderen tarafın karşılığıyla aynı eşlenir.
+  const known = EDM_STATES[normalized] || (normalized.startsWith("RECEIVE-") ? EDM_STATES[`SEND-${normalized.slice(8)}`] : undefined);
   const response = `${responseCode} ${responseDescription}`.toLocaleUpperCase("tr-TR");
   let state;
   let text;

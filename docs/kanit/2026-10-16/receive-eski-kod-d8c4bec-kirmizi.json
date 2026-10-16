@@ -1,0 +1,38 @@
+{
+  "ad": "receive-eski-kod-d8c4bec-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/receive-eski-d8c4bec && HUKUK_LICENSE_URL=http://127.0.0.1:9 node --test test/ebelge-240-bitis-turu.test.mjs",
+  "commit": "d8c4becc1842e991b9f03c883bafd89c67048b0b",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T14:03:09.708Z",
+  "sure_sn": 4.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 19,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Arayüz denemesi (gerçek EDM): kendine gönderilen belgenin alıcı tarafı durumu › 'RECEIVE - WAIT_APPLICATION_RESPONSE' (gerçek EDM ham yanıtı) 'işleniyor'da kalmaz, gönderen karşılığıyla aynı eşlenir",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:421:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'processing' (beklenen sent, gelen processing)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-16/receive-eski-kod-d8c4bec-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "fdc8f5609433a324ae103891e2a0132f4c402808af75b38ac17a09edb9265530",
+  "ham_cikti_bayt": 9321
+}

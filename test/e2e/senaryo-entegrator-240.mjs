@@ -373,6 +373,10 @@ try {
   const localRow = server.app.store.get("SELECT status, e_message AS eMessage FROM invoices WHERE id = ?", stuck.id);
   const localAudit = server.app.store.get("SELECT COUNT(*) AS n FROM audit_events WHERE type = 'invoice.e.local-cancel' AND entity_id = ?", stuck.id).n;
   ok(localRow.status === "cancelled" && /Yalnız programda iptal/.test(localRow.eMessage) && localAudit === 1, `yalnız programda iptal edildi, işlem kaydında (${localRow.status}, kayıt ${localAudit})`);
+  // İptal edilmiş belgenin kartında tutar "Tahsil Edilecek" diye görünmez (arayüzden gerçek EDM denemesinde fark edildi, 16.10.2026).
+  await page.waitForFunction(selector => /İptal Edildi/.test(document.querySelector(selector)?.textContent || ""), `${modal} .hof-chq-amount span`, { timeout: 8000 }).catch(() => null);
+  const amountLabel = await textOf(page, `${modal} .hof-chq-amount span`);
+  ok(amountLabel === "Belge Tutarı (İptal Edildi)", `iptal edilmiş belgenin tutar başlığı: “${amountLabel}”`);
   await shot(page, "entegrator-12-yalniz-programda-iptal");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
     await page.keyboard.press("Escape");

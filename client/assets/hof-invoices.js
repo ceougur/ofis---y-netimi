@@ -2045,7 +2045,7 @@
       `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3>${esc(docTitle(doc))} ${statusPill(doc)}</h3><small>${esc(doc.accountName)} · ${esc(HOF.formatDate(doc.issueDate))} ${esc(doc.issueTime || "")}${doc.scenarioLabel ? ` · ${esc(doc.scenarioLabel)}` : ""}</small></div></div>
-        <div class="hof-chq-amount"><span>${sideOf(doc.kind) === "sale" ? (ret ? "İade Tutarı" : "Tahsil Edilecek") : ret ? "İade Tutarı" : "Ödenecek"}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}</div>
+        <div class="hof-chq-amount"><span>${doc.status === "cancelled" ? "Belge Tutarı (İptal Edildi)" : sideOf(doc.kind) === "sale" ? (ret ? "İade Tutarı" : "Tahsil Edilecek") : ret ? "İade Tutarı" : "Ödenecek"}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}</div>
       </div>
       <div class="hof-inv-pills" role="group" aria-label="Bağlı kartlar">
         <button type="button" class="hof-inv-big-pill" data-open-account="${esc(doc.accountId)}"><b>Cari Kartı</b><small>${esc(doc.accountName)}</small></button>

@@ -14,7 +14,7 @@ import { readFileSync } from "node:fs";
 import { inflateSync } from "node:zlib";
 import { after, before, describe, test } from "node:test";
 import { validateInvoice } from "../tools/ebelge/dogrula.mjs";
-import { EDM_URLS, resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
+import { EDM_URLS, mapEdmStatus, resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
 import { karekodData } from "../server/lib/einvoice/karekod.mjs";
 import { BUYER_VKN, MULTI_VKN, OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
 import { ADMIN_PASSWORD, createUser, startTestServer } from "./helpers.mjs";
@@ -414,5 +414,17 @@ describe("Y5: görünüm kapatılınca karekodun da kalkacağı ekranda yazar", 
   test("onay kutusu metni karekodu anar", () => {
     const source = readFileSync(new URL("../client/assets/hof-invoices.js", import.meta.url), "utf8");
     assert.match(source, /Kendi görünüm tasarımımızı kullan \([^)]*karekod[^)]*\)/);
+  });
+});
+
+describe("Arayüz denemesi (gerçek EDM): kendine gönderilen belgenin alıcı tarafı durumu", () => {
+  test("'RECEIVE - WAIT_APPLICATION_RESPONSE' (gerçek EDM ham yanıtı) 'işleniyor'da kalmaz, gönderen karşılığıyla aynı eşlenir", () => {
+    // docs/kanit/2026-10-16/edm-arayuz/adim10.log: TEF2026347991651 için EDM STATUS "RECEIVE - WAIT_APPLICATION_RESPONSE".
+    const receive = mapEdmStatus({ status: "RECEIVE - WAIT_APPLICATION_RESPONSE", description: "WAIT_APPLICATION_RESPONSE" });
+    const send = mapEdmStatus({ status: "SEND - WAIT_APPLICATION_RESPONSE", description: "WAIT_APPLICATION_RESPONSE" });
+    assert.equal(receive.status, "sent");
+    assert.equal(receive.status, send.status);
+    assert.equal(mapEdmStatus({ status: "RECEIVE - SUCCEED" }).status, "sent");
+    assert.equal(mapEdmStatus({ status: "RECEIVE - WAIT_GIB_RESPONSE" }).status, "processing");
   });
 });
