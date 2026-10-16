@@ -2827,8 +2827,33 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (buyer.length) throw new HttpError(409, `Alıcı bilgisi eksik: ${buyer.join(" ")}`, { code: "buyer-incomplete", problems: buyer });
     const ret = returnProblems(doc.profile, doc.kind, doc.originalNumber);
     if (ret.length) throw new HttpError(409, ret.join(" "), { code: "einvoice-return-reference", problems: ret });
+    // e-Fatura alıcının posta kutusu etiketi bilinmeden gönderilmez (EDM istemcisi de reddeder ama numara verildikten sonra) — arayüz denemesi.
+    if (["TEMELFATURA", "TICARIFATURA"].includes(doc.profile) && !["purchase", "sale_return"].includes(doc.kind) && !String(doc.party?.eAlias || "").trim()) {
+      throw new HttpError(409, "Alıcının e-Fatura posta kutusu etiketi bilinmiyor: cari kartında Mükellef Sorgula ile posta kutusunu seçin, sonra gönderin.", { code: "buyer-alias" });
+    }
     const mix = mixProblems(doc.profile, doc.lines || []);
     if (mix.length) throw new HttpError(409, mix.join(" "), { code: "einvoice-type-mix", problems: mix });
+  }
+  // GİB: e-Fatura mükellefine e-Arşiv kesilemez. Arayüzden gerçek EDM test ortamında görüldü (16.10.2026, docs/kanit/2026-10-16/edm-arayuz): cari
+  // kartında mükellefiyet sorgulanmamışsa program alıcıyı e-Arşiv sayar, EDM belgeyi e-Fatura kurallarıyla reddeder ("Geçersiz cbc:ProfileID
+  // 'EARSIVFATURA'") ve numara harcanır. e-Arşiv, kimlik numaralı alıcıya gönderilmeden (numara verilmeden) önce mükellefiyet sorulur; mükellefse
+  // cari kartı işaretlenir ve gönderim açık iletiyle durur. Sorgu yapılamazsa (bağlantı) gönderim sürer — sonucu entegratör söyler.
+  async function assertNotEFaturaBuyer(user, doc, link) {
+    if (doc.profile !== "EARSIVFATURA" || doc.kind === "purchase" || doc.kind === "sale_return") return;
+    const taxNo = String(doc.party?.taxNo || "").replace(/\D/g, "");
+    if (![10, 11].includes(taxNo.length) || taxNo === "11111111111" || taxNo === "2222222222") return;
+    let result;
+    try {
+      result = await link.checkUser(taxNo);
+    } catch {
+      return;
+    }
+    if (!result?.registered) return;
+    // Posta kutusu yalnız tekse kendiliğinden yazılır; birden çoksa kullanıcı cari kartında seçer (yanlış kutuya fatura gitmesin).
+    const aliases = result.aliases || [];
+    if (doc.accountId) accounts().taxIdentity.setEInvoice(user, doc.accountId, { registered: true, alias: aliases.length === 1 ? aliases[0] : "", title: result.title });
+    const choose = aliases.length > 1 ? ` Alıcının ${aliases.length} posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin.` : "";
+    throw new HttpError(409, `Alıcı (${taxNo}) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi.${choose} Bu belgeyi iptal edip yeniden kaydedin: e-Fatura olarak kesilir.`, { code: "buyer-is-efatura", aliases });
   }
   async function sendInvoice(user, id, { draft = false } = {}) {
     requireEdoc();
@@ -2846,8 +2871,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (pre.status === "issued" && (pre.profile !== "KAGIT" || withdrawn)) {
         const clash = Object.entries(s.series).find(([, value]) => TEST_SERIES_SET.has(value));
         if (clash) throw new HttpError(409, `${clash[1]} serisi test ortamına ayrılmıştır; Fatura Ayarları → Seriler'de ${SERIES_LABELS[clash[0]] || clash[0]} serisini değiştirin, sonra gönderin.`, { code: "series-reserved" });
-        integrator(s);
-        preflight(withdrawn ? { ...pre, profile: invoiceRow(id).eProfile } : pre, s);
+        const link = integrator(s);
+        const checked = withdrawn ? { ...pre, profile: invoiceRow(id).eProfile } : pre;
+        preflight(checked, s);
+        await assertNotEFaturaBuyer(user, checked, link);
       }
     }
     numberForSend(user, id);

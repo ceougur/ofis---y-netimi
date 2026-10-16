@@ -16,7 +16,7 @@ import { after, before, describe, test } from "node:test";
 import { validateInvoice } from "../tools/ebelge/dogrula.mjs";
 import { EDM_URLS, resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
 import { karekodData } from "../server/lib/einvoice/karekod.mjs";
-import { BUYER_VKN, OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
+import { BUYER_VKN, MULTI_VKN, OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
 import { ADMIN_PASSWORD, createUser, startTestServer } from "./helpers.mjs";
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
@@ -268,6 +268,44 @@ describe("Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, a�
     } finally {
       await api.put("/api/workspace/invoices/settings", { integrator: integ(), eOptions: { draftUpload: false } });
     }
+  });
+
+  test("Arayüz denemesi (gerçek EDM): mükellefiyeti sorgulanmamış e-Fatura mükellefine e-Arşiv gönderilmez; cari işaretlenir, numara harcanmaz", async () => {
+    // Cari VKN'siyle açılmış ama Mükellef Sorgula yapılmamış: program alıcıyı e-Arşiv sayar (sahte EDM bu VKN'yi mükellef bilir).
+    const unchecked = await api.post("/api/workspace/accounts", { ...BUYER, name: "Sorgulanmamış Ticaret A.Ş.", eInvoice: false, eAlias: "" });
+    assert.equal(unchecked.status, 200, JSON.stringify(unchecked.data));
+    const accountId = unchecked.data.id || unchecked.data.account?.id;
+    const doc = (await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId, eSend: "later", lines: [{ name: "Hizmet", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" } })).data;
+    assert.equal(doc.profile, "EARSIVFATURA");
+    const before = edm.state.sent.length;
+    const sent = await api.post(`/api/workspace/invoices/${doc.id}/send`, {});
+    assert.equal(sent.status, 409, JSON.stringify(sent.data));
+    assert.equal(sent.data.code, "buyer-is-efatura");
+    assert.equal(edm.state.sent.length, before, "EDM'ye gitmedi");
+    const after = (await api.get(`/api/workspace/invoices/${doc.id}`)).data;
+    assert.equal(after.number, "", "numara harcanmadı");
+    const account = server.app.store.get("SELECT e_invoice AS eInvoice FROM accounts WHERE id = ?", accountId);
+    assert.equal(Number(account.eInvoice), 1, "cari kartı e-Fatura mükellefi olarak işaretlendi");
+  });
+
+  test("Arayüz denemesi: birden çok posta kutulu mükellefte kutu kendiliğinden seçilmez; kutusu bilinmeyen alıcıya e-Fatura numara almadan durur", async () => {
+    const multi = await api.post("/api/workspace/accounts", { ...BUYER, name: "Çok Kutulu Ticaret A.Ş.", taxNo: MULTI_VKN, eInvoice: false, eAlias: "" });
+    assert.equal(multi.status, 200, JSON.stringify(multi.data));
+    const accountId = multi.data.id || multi.data.account?.id;
+    const first = (await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId, eSend: "later", lines: [{ name: "Hizmet", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" } })).data;
+    const guarded = await api.post(`/api/workspace/invoices/${first.id}/send`, {});
+    assert.equal(guarded.status, 409);
+    assert.equal(guarded.data.code, "buyer-is-efatura");
+    assert.match(guarded.data.error, /posta kutusu var/);
+    const account = server.app.store.get("SELECT e_invoice AS eInvoice, e_alias AS eAlias FROM accounts WHERE id = ?", accountId);
+    assert.deepEqual([Number(account.eInvoice), account.eAlias], [1, ""], "mükellef işaretlendi, kutu seçimi kullanıcıya bırakıldı");
+    // Yeni belge e-Fatura olur ama posta kutusu bilinmiyor: gönderim numara verilmeden durur.
+    const second = (await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId, eSend: "later", lines: [{ name: "Hizmet", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" } })).data;
+    assert.equal(second.profile, "TEMELFATURA");
+    const noAlias = await api.post(`/api/workspace/invoices/${second.id}/send`, {});
+    assert.equal(noAlias.status, 409);
+    assert.equal(noAlias.data.code, "buyer-alias");
+    assert.equal((await api.get(`/api/workspace/invoices/${second.id}`)).data.number, "", "numara harcanmadı");
   });
 
   test("E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz", async () => {

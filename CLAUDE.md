@@ -582,6 +582,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   SONUÇ (16.10.2026): yargıç 1 YÜKSEK + 3 ORTA, eleştirmen 2 YÜKSEK + 2 ORTA (+ düşükler); hepsi ana oturumda yeniden üretildi ve DÜZELTİLDİ — canlı
   kilidi Servis Adresi'nden delinebiliyordu (iki ajan ayrı ayrı buldu), portaldan gönderilmiş taslak düzenlenebiliyordu, belirsiz gönderimden sonra
   silme numara çakıştırıyordu, karışık istisnalı belge GİB'den düşüyordu… Ayrıntı `docs/2.4.0-IS-LISTESI.md` "Bitiş turu". DAR KONTROL TURU (2467be8): K1 withdrawn belge, K2 "Hata"dan yeniden gönderimde belirsizlik, K3 tevkifat + istisna karışık → DÜZELTİLDİ (16/16, eski 3 kırmızı). KARAR (kullanıcı: "Yetkiliye onaylı iptal") → YAPILDI: belirsiz / portal taslağı belgede Fatura Ayarları yetkilisine "Yalnız Programda İptal Et" (onay kutusu + işlem kaydı).
+- İSTEK (kullanıcı, 16.10.2026): "test faturaları arayüzden de kesilebiliyor mu, sen koddan mı gönderdin?" → API'den (ekranın çağırdığı uçlar) gönderilmişti;
+  "kapat" → tarayıcıyla ekrandan gerçek EDM'ye gönderildi; BULGU: sorgusuz mükellefe e-Arşiv → EDM reddi + numara kaybı → DÜZELTİLDİ (mükellef sorgusu
+  numaradan önce, posta kutusu denetimi). İSTEK (aynı gün): "fatura, e-Arşiv, kesme ve iptal durumlarını gerçek kullanıcı gibi test edelim, hataya yer
+  bırakma" → arayüzden gerçek EDM'de kesme + iptal matrisi (sürüyor).
 - İSTEK (kullanıcı, 16.10.2026: "edm test linkinden son haliyle 3-4 çeşit test faturaları kes, ben de portaldan kontrol edeyim") → YAPILDI: son kodla
   (bitiş turu düzeltmeleri dahil) EDM test ortamına 4 belge — TEF2026481687272 Temel (%20+%10, 470,00), TEF2026481687273 Ticari (1.200,00), TEA2026481687272
   e-Arşiv kişiye (900,00), TEF2026481687274 İstisna 301+%20 (740,00); hepsi GİB'den geçti; resmî PDF karekodları jsQR ile çözüldü, tutarlar elle hesapla
