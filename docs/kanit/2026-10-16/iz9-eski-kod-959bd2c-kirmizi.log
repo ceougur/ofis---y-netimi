@@ -1,0 +1,168 @@
+TAP version 13
+# (node:21110) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Karekod üreticisi (ISO/IEC 18004) bağımsız çözücüyle
+    # Subtest: kısa ve uzun içerik, Türkçe karakter: jsQR aynı metni okur (sürüm 1'den 31'e)
+    ok 1 - kısa ve uzun içerik, Türkçe karakter: jsQR aynı metni okur (sürüm 1'den 31'e)
+      ---
+      duration_ms: 441.131445
+      type: 'test'
+      ...
+    # Subtest: GİB kılavuzundaki örnek JSON okunur
+    ok 2 - GİB kılavuzundaki örnek JSON okunur
+      ---
+      duration_ms: 22.420777
+      type: 'test'
+      ...
+    # Subtest: ISO/IEC 18004 kapasite tablosu (bayt kipi, M): her sürümün tam kapasitesi o sürüme, bir fazlası sonrakine; 40 sürümün hepsi okunur
+    ok 3 - ISO/IEC 18004 kapasite tablosu (bayt kipi, M): her sürümün tam kapasitesi o sürüme, bir fazlası sonrakine; 40 sürümün hepsi okunur
+      ---
+      duration_ms: 3523.030226
+      type: 'test'
+      ...
+    # Subtest: karekoda sığmayacak metin açık hatayla reddedilir
+    ok 4 - karekoda sığmayacak metin açık hatayla reddedilir
+      ---
+      duration_ms: 0.893525
+      type: 'test'
+      ...
+    1..4
+ok 1 - Karekod üreticisi (ISO/IEC 18004) bağımsız çözücüyle
+  ---
+  duration_ms: 3988.605487
+  type: 'suite'
+  ...
+# Subtest: e-Belge görünümünde karekod ve GİB logosu (programın API'si)
+    # Subtest: e-Fatura iki KDV oranı: karekod GİB JSON'u, alan sırası kılavuzdaki gibi, tutarlar ELLE hesapla ve XML'le aynı
+    not ok 1 - e-Fatura iki KDV oranı: karekod GİB JSON'u, alan sırası kılavuzdaki gibi, tutarlar ELLE hesapla ve XML'le aynı
+      ---
+      duration_ms: 252.804901
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:105:3'
+      failureType: 'testCodeFailure'
+      error: 'görünümde okunabilir karekod var'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:111:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tevkifatlı e-Fatura: ödenecek (1.120,00) vergiler dahilden (1.200,00) ayrı okunur; tip TEVKIFAT
+    not ok 2 - tevkifatlı e-Fatura: ödenecek (1.120,00) vergiler dahilden (1.200,00) ayrı okunur; tip TEVKIFAT
+      ---
+      duration_ms: 60.56196
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:139:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of null (reading 'tip')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:143:28)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Arşiv, alıcı TCKN: senaryo EARSIVFATURA, avkntckn 11 hane (MERSİS değil)
+    not ok 3 - e-Arşiv, alıcı TCKN: senaryo EARSIVFATURA, avkntckn 11 hane (MERSİS değil)
+      ---
+      duration_ms: 39.037817
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of null (reading 'senaryo')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:149:23)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: programın PDF'i de karekod taşır; görünüm şablonu kapatılsa da PDF'te kalır
+    not ok 4 - programın PDF'i de karekod taşır; görünüm şablonu kapatılsa da PDF'te kalır
+      ---
+      duration_ms: 45.153532
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:154:3'
+      failureType: 'testCodeFailure'
+      error: 'karekod çizildi (3 dikdörtgen)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:173:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - e-Belge görünümünde karekod ve GİB logosu (programın API'si)
+  ---
+  duration_ms: 810.782963
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:84:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Karekod içeriği XML'den: kimlik VKN / TCKN şemasından okunur
+    # Subtest: MERSİS numarası kimlikten önce yazılmış olsa da avkntckn VKN'dir
+    ok 1 - MERSİS numarası kimlikten önce yazılmış olsa da avkntckn VKN'dir
+      ---
+      duration_ms: 1.697639
+      type: 'test'
+      ...
+    1..1
+ok 3 - Karekod içeriği XML'den: kimlik VKN / TCKN şemasından okunur
+  ---
+  duration_ms: 1.968113
+  type: 'suite'
+  ...
+# Subtest: EDM: belge türü ile gönderim kanalı uyuşmazlığı isteğe dönüşmez
+    # Subtest: e-Arşiv profilli belge e-Fatura kanalından (ve tersi) gönderilmez; taslak yüklemede de
+    not ok 1 - e-Arşiv profilli belge e-Fatura kanalından (ve tersi) gönderilmez; taslak yüklemede de
+      ---
+      duration_ms: 19.577929
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:211:3'
+      failureType: 'testCodeFailure'
+      error: 'Missing expected rejection.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      stack: |-
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:216:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - EDM: belge türü ile gönderim kanalı uyuşmazlığı isteğe dönüşmez
+  ---
+  duration_ms: 22.692221
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/iz9-eski-959bd2c/test/karekod.test.mjs:202:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..4
+# tests 10
+# suites 4
+# pass 5
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5399.651112

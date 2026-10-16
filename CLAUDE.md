@@ -571,6 +571,14 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yanlıştı. YAPILACAK (İz 9, 2.4.0): sunucuda üretilen karekod (GİB JSON) şablona + programın e-Belge PDF'ine; GİB logosu (GİB örnek şablonundaki resmî görsel)
   "e-FATURA" başlığının üstüne; bağımsız çözücüyle kâhin, gerçek EDM'de resmî PDF. Ayrıca: EDM istemcisinde belge türü (ProfileID) ↔ gönderim kanalı
   uyuşmazlığı reddedilir (sabahki deneme betiği e-Arşiv belgesini e-Fatura kanalından göndermişti → GİB SEND-FAILED; program yolunda olmaz).
+  İSTEK (kullanıcının yardımcısı, aynı gün): kaşe üzerine imzanın resmi e-Arşivde GİB logosunun altında çıksın (e-Faturada zorunlu değil) → Fatura
+  Ayarları'nda Logo'nun yanında "Kaşe / İmza". İSTEK (kullanıcı): "şirket logosu, GİB logosu, kaşe ortada alt alta"; "e-Faturada da ortada olsa logolar".
+  YAPILDI (İz 9, `docs/2.4.0-IS-LISTESI.md`): karekod sağ üstte (şablon + programın PDF'i), ortada firma logosu → GİB logosu → başlık → kaşe; kaşe
+  varsayılan yalnız e-Arşivde (Görünüm'den e-Faturada da); EDM kanal güvencesi. Gerçek EDM'de resmî PDF karekodu bağımsız çözücüyle doğrulandı.
+- KARAR (kullanıcı, 16.10.2026, "kâhin-yargıç-eleştirmenden geçiyor mu?" sorusuna verdiğim cevaba "önerin uygun"): 2.4.0'ın yargıç + eleştirmen turu bitişe
+  bırakılmaz, İz 9 commit'inden HEMEN SONRA koşar (birer ajan; kapsam 7888371..HEAD = 2.3.0 sonrası her şey; öncelik canlı kilidi/test serisi, karekod,
+  şablona giren alanlar (logo/kaşe/alt not), gönder/iptal/taslak, K4, göç v27). Bulgu → yeniden üret → kırmızı test → düzelt → dar kontrol turu (ders 32).
+  Uzun Doğrulama son adayda GitHub'da bir kez.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

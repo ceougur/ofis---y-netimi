@@ -9610,8 +9610,8 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-account-row > :first-child { flex: 1 1 auto; min-width: 0; }
 .hof-inv-account-new { flex: 0 0 auto; margin-top: 24px; white-space: nowrap; }
 .hof-inv-logo-row { display: flex; gap: 12px; align-items: flex-start; }
-.hof-inv-logo-box { display: grid; place-items: center; width: 160px; height: 72px; border: 1px dashed var(--do-border); border-radius: 10px; background: #fff; overflow: hidden; color: var(--do-faint); }
-.hof-inv-logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.hof-inv-logo-box { display: grid; place-items: center; flex: 0 0 160px; width: 160px; height: 72px; border: 1px dashed var(--do-border); border-radius: 10px; background: #fff; overflow: hidden; color: var(--do-faint); }
+.hof-inv-logo-box img { max-width: 100%; max-height: 70px; object-fit: contain; }
 .hof-inv-logo-tools { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
 .hof-inv-logo-tools small { flex-basis: 100%; color: var(--do-faint); }
 .hof-inv-fixed { padding: 9px 0; font: 700 14px var(--do-font); }

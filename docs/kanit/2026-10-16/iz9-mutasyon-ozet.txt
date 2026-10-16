@@ -1,0 +1,50 @@
+# iz9-mut-M1-odenecek
+    not ok 2 - tevkifatlı e-Fatura: ödenecek (1.120,00) vergiler dahilden (1.200,00) ayrı okunur; tip TEVKIFAT
+not ok 2 - e-Belge görünümünde karekod ve GİB logosu (programın API'si)
+# tests 10
+# pass 9
+# fail 1
+# iz9-mut-M2-tek-oran
+    not ok 1 - e-Fatura iki KDV oranı: karekod GİB JSON'u, alan sırası kılavuzdaki gibi, tutarlar ELLE hesapla ve XML'le aynı
+not ok 2 - e-Belge görünümünde karekod ve GİB logosu (programın API'si)
+# tests 7
+# pass 6
+# fail 1
+# iz9-mut-M3-blok-tablosu
+    not ok 3 - ISO/IEC 18004 kapasite tablosu (bayt kipi, M): her sürümün tam kapasitesi o sürüme, bir fazlası sonrakine; 40 sürümün hepsi okunur
+not ok 1 - Karekod üreticisi (ISO/IEC 18004) bağımsız çözücüyle
+# tests 10
+# pass 9
+# fail 1
+# iz9-mut-M4-kanal
+    not ok 1 - e-Arşiv profilli belge e-Fatura kanalından (ve tersi) gönderilmez; taslak yüklemede de
+not ok 3 - EDM: belge türü ile gönderim kanalı uyuşmazlığı isteğe dönüşmez
+# tests 7
+# pass 6
+# fail 1
+# iz9-mut-M5-mersis
+    not ok 1 - MERSİS numarası kimlikten önce yazılmış olsa da avkntckn VKN'dir
+not ok 3 - Karekod içeriği XML'den: kimlik VKN / TCKN şemasından okunur
+# tests 10
+# pass 9
+# fail 1
+# iz9-mut-M6-sag-ust
+    not ok 1 - e-Fatura iki KDV oranı: karekod GİB JSON'u, alan sırası kılavuzdaki gibi, tutarlar ELLE hesapla ve XML'le aynı
+    not ok 2 - e-Arşiv, alıcı TCKN: senaryo EARSIVFATURA, avkntckn 11 hane (MERSİS değil)
+not ok 2 - e-Belge görünümünde karekod ve GİB logosu (programın API'si)
+# tests 7
+# pass 5
+# fail 2
+# iz9-mut-M7-ecc-tablosu
+    not ok 1 - kısa ve uzun içerik, Türkçe karakter: jsQR aynı metni okur (sürüm 1'den 31'e)
+    not ok 3 - ISO/IEC 18004 kapasite tablosu (bayt kipi, M): her sürümün tam kapasitesi o sürüme, bir fazlası sonrakine; 40 sürümün hepsi okunur
+not ok 1 - Karekod üreticisi (ISO/IEC 18004) bağımsız çözücüyle
+# tests 10
+# pass 8
+# fail 2
+# iz9-mut-M8-maske
+    not ok 3 - ISO/IEC 18004 kapasite tablosu (bayt kipi, M): her sürümün tam kapasitesi o sürüme, bir fazlası sonrakine; 40 sürümün hepsi okunur
+not ok 1 - Karekod üreticisi (ISO/IEC 18004) bağımsız çözücüyle
+# tests 10
+# pass 9
+# fail 1

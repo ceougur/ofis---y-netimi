@@ -396,7 +396,7 @@
   }
   function onChange(event) {
     if (view.mode === "form") return formChange(event);
-    if (view.mode === "settings") return event.target.matches("[data-logo-file]") ? pickLogo(event.target) : undefined;
+    if (view.mode === "settings") return event.target.matches("[data-logo-file]") ? pickLogo(event.target) : event.target.matches("[data-stamp-file]") ? pickStamp(event.target) : undefined;
     const name = event.target.dataset.filter;
     if (!name || name === "q") return;
     view[name] = event.target.value;
@@ -2465,6 +2465,7 @@
   const SERIES_LABELS = { paper: "Belge Serisi (Fiş ve Kâğıt Belge)", smm: "Serbest Meslek Makbuzu Serisi", internal: "İç İade Serisi", efatura: "e-Fatura Serisi", earsiv: "e-Arşiv Serisi", esmm: "e-SMM Serisi" };
   async function showSettings() {
     view.logo = undefined;
+    view.stamp = undefined;
     if (!canSettings()) return HOF.toast("Fatura ayarları yönetici ve muhasebe yetkisindedir.", { type: "error" });
     try {
       view.settings = await HOF.api("/api/workspace/invoices/settings");
@@ -2509,9 +2510,12 @@
         ${input("seller.phone", "Telefon", seller.phone, 'maxlength="60"')}
         ${input("seller.email", "E-Posta", seller.email, 'maxlength="160" type="email"')}
         ${input("seller.website", "Web Sitesi", seller.website, 'maxlength="200"')}
-        <div class="hof-field hof-inv-wide hof-inv-logo"><span>Logo (Belgenin Sol Üstüne Basılır)</span>
+        <div class="hof-field hof-inv-wide hof-inv-logo"><span>Logo (PDF'te Sol Üstte, e-Belgede Ortada)</span>
           <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-logo-preview>${logoNow() ? `<img src="${esc(logoNow())}" alt="Logo">` : '<small>Logo yok</small>'}</div>
           <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label>${logoNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear">Logoyu Kaldır</button>' : ""}<small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
+        <div class="hof-field hof-inv-wide hof-inv-logo" data-stamp-field><span>Kaşe / İmza (e-Arşiv Faturasına Basılır)</span>
+          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-stamp-preview>${stampNow() ? `<img src="${esc(stampNow())}" alt="Kaşe / İmza">` : '<small>Kaşe / imza yok</small>'}</div>
+          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label>${stampNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear">Kaşe / İmzayı Kaldır</button>' : ""}<small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.</small></div></div></div>
       </div></section>
       <section class="hof-inv-settings" data-inv-banks="${bankState.active ? "accounts" : "legacy"}"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4>${bankState.active
         ? `<p class="hof-muted">Banka modülü etkin: belgeye yalnız Banka → Hesaplar'da hesap kartında <b>IBAN Faturada Gösterilsin</b> işaretli etkin TL hesaplar basılır (en çok 4; sırası hesap sırası). Buradaki eski liste artık düzenlenmez.</p>
@@ -2548,6 +2552,19 @@
   }
   // Logo: view.logo tanımsızsa değişmedi; "" kaldırıldı; data URL yeni seçildi (kaydedilince sunucuya gider).
   const logoNow = () => (view.logo === undefined ? view.settings?.seller?.logo || "" : view.logo);
+  const stampNow = () => (view.stamp === undefined ? view.settings?.seller?.stamp || "" : view.stamp);
+  async function pickStamp(input) {
+    const file = input.files?.[0];
+    input.value = "";
+    if (!file) return;
+    try {
+      view.stamp = await imageToJpeg(file, { maxSide: 600, maxBytes: 150 * 1024 });
+      renderSettings();
+      HOF.toast("Kaşe / imza hazır; Ayarları Kaydet ile saklanır.", { type: "info" });
+    } catch (error) {
+      HOF.toast(error.message || "Görsel okunamadı.", { type: "error" });
+    }
+  }
   async function pickLogo(input) {
     const file = input.files?.[0];
     input.value = "";
@@ -2593,6 +2610,7 @@
     const s = view.settings;
     const payload = { seller: { banks: [] }, defaults: {}, series: {}, start: { ...(s.start || {}) } };
     if (view.logo !== undefined) payload.seller.logo = view.logo;
+    if (view.stamp !== undefined) payload.seller.stamp = view.stamp;
     for (const input of root.querySelectorAll("[data-s]")) {
       const [group, key] = input.dataset.s.split(".");
       const value = input.type === "checkbox" ? input.checked : input.value;
@@ -2630,12 +2648,17 @@
       view.logo = "";
       return renderSettings();
     }
+    if (act === "stamp-clear") {
+      view.stamp = "";
+      return renderSettings();
+    }
     if (act === "save-settings") {
       if (error) error.textContent = "";
       try {
         const saved = await HOF.api("/api/workspace/invoices/settings", { method: "PUT", body: settingsPayload() });
         view.settings = saved;
         view.logo = undefined;
+        view.stamp = undefined;
         await loadMeta(true);
         HOF.toast("Fatura ayarları kaydedildi.", { type: "success" });
         renderSettings();
@@ -2746,6 +2769,8 @@
             <label class="hof-check"><input type="checkbox" data-i="view.logo" ${st.eView?.logo !== false ? "checked" : ""}><span>Logoyu Göster${st.seller?.logo ? "" : " — Fatura Ayarları'nda logo yüklenmemiş"}</span></label>
             <label class="hof-check"><input type="checkbox" data-i="view.banks" ${st.eView?.banks !== false ? "checked" : ""}><span>Banka Hesaplarını Göster (IBAN)</span></label>
             <label class="hof-check"><input type="checkbox" data-i="view.footer" ${st.eView?.footer !== false ? "checked" : ""}><span>Fatura Alt Notunu Göster${st.defaults?.footer ? "" : " — Fatura Ayarları'nda alt not yazılmamış"}</span></label>
+            <label class="hof-check"><input type="checkbox" data-i="view.stamp" ${st.eView?.stamp !== false ? "checked" : ""}><span>Kaşe / İmzayı e-Arşiv Faturasında Göster${st.seller?.stamp ? "" : " — Fatura Ayarları'nda kaşe / imza yüklenmemiş"}</span></label>
+            <label class="hof-check"><input type="checkbox" data-i="view.stampEfatura" ${st.eView?.stampEfatura ? "checked" : ""}><span>Kaşe / İmzayı e-Faturada da Göster</span></label>
           </div>
         </div>
         <p class="hof-muted">Logo, banka hesapları ve alt not Fatura Ayarları'ndan gelir; burada yalnız e-Belgede gösterilip gösterilmeyeceği seçilir. Görünüm belgenin içine gömülür; alıcı ve GİB belgeyi bu tasarımla görür.</p>
@@ -2803,7 +2828,7 @@
       for (const key of ["efatura", "earsiv", "esmm"]) if (draft[key] !== undefined) body[key] = draft[key];
       if (draft.efaturaProfile !== undefined) body.defaults = { efaturaProfile: draft.efaturaProfile };
       if (draft.series) body.series = draft.series;
-      const eView = Object.fromEntries(["enabled", "logo", "banks", "footer"].filter(key => draft[`view.${key}`] !== undefined).map(key => [key, draft[`view.${key}`]]));
+      const eView = Object.fromEntries(["enabled", "logo", "banks", "footer", "stamp", "stampEfatura"].filter(key => draft[`view.${key}`] !== undefined).map(key => [key, draft[`view.${key}`]]));
       if (Object.keys(eView).length) body.eView = eView;
       const eOptions = Object.fromEntries(["balanceNote", "paymentMeans", "draftUpload"].filter(key => draft[`opt.${key}`] !== undefined).map(key => [key, draft[`opt.${key}`]]));
       if (Object.keys(eOptions).length) body.eOptions = eOptions;
@@ -2857,7 +2882,7 @@
       }
       if (act === "preview") {
         collect();
-        const eView = Object.fromEntries(["logo", "banks", "footer"].map(key => [key, draft[`view.${key}`] ?? state.settings.eView?.[key] !== false]));
+        const eView = { ...Object.fromEntries(["logo", "banks", "footer", "stamp"].map(key => [key, draft[`view.${key}`] ?? state.settings.eView?.[key] !== false])), stampEfatura: draft["view.stampEfatura"] ?? state.settings.eView?.stampEfatura === true };
         try {
           const sample = await HOF.api("/api/workspace/invoices/view-preview", { method: "POST", body: { eView } });
           showViewPreview(sample);

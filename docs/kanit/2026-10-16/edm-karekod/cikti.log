@@ -1,0 +1,17 @@
+11:13:04 efatura PROGRAM PDF KAREKOD: {"number":"TEF2026176894460","okundu":true,"sol":"0.82","ust":"0.04","json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"3230512384\",\"senaryo\":\"TEMELFATURA\",\"tip\":\"SATIS\",\"tarih\":\"2026-10-16\",\"no\":\"TEF2026176894460\",\"ettn\":\"0247f707-6667-4f06-af64-e3eab4a2e752\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"1250.00\",\"kdvmatrah(10)\":\"250.00\",\"hesaplanankdv(10)\":\"25.00\",\"kdvmatrah(20)\":\"1000.00\",\"hesaplanankdv(20)\":\"200.00\",\"vergidahil\":\"1475.00\",\"odenecek\":\"1475.00\"}"}
+11:13:09 efatura GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+11:13:09 earsiv PROGRAM PDF KAREKOD: {"number":"TEA2026176894460","okundu":true,"sol":"0.82","ust":"0.04","json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"10000000146\",\"senaryo\":\"EARSIVFATURA\",\"tip\":\"SATIS\",\"tarih\":\"2026-10-16\",\"no\":\"TEA2026176894460\",\"ettn\":\"b3480c53-fe54-459c-a688-76f2014dd2b2\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"300.00\",\"kdvmatrah(20)\":\"300.00\",\"hesaplanankdv(20)\":\"60.00\",\"vergidahil\":\"360.00\",\"odenecek\":\"360.00\"}"}
+11:13:12 earsiv GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+11:13:13 efatura DURUM 1: {"eStatus":"processing"}
+11:13:13 earsiv DURUM 1: {"eStatus":"processing"}
+11:13:59 efatura DURUM 2: {"eStatus":"processing"}
+11:14:00 earsiv DURUM 2: {"eStatus":"sent"}
+11:14:46 efatura DURUM 3: {"eStatus":"processing"}
+11:15:31 efatura DURUM 4: {"eStatus":"processing"}
+11:16:17 efatura DURUM 5: {"eStatus":"processing"}
+11:17:03 efatura DURUM 6: {"eStatus":"processing"}
+11:17:49 efatura DURUM 7: {"eStatus":"processing"}
+11:18:35 efatura DURUM 8: {"eStatus":"sent"}
+11:18:38 efatura RESMÎ PDF KAREKOD: {"status":200,"okundu":true,"sagUst":"0.80,0.10","farklar":[],"programlaAyni":true,"json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"3230512384\",\"senaryo\":\"TEMELFATURA\",\"tip\":\"SATIS\",\"tarih\":\"2026-10-16\",\"no\":\"TEF2026176894460\",\"ettn\":\"0247f707-6667-4f06-af64-e3eab4a2e752\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"1250.00\",\"kdvmatrah(10)\":\"250.00\",\"hesaplanankdv(10)\":\"25.00\",\"kdvmatrah(20)\":\"1000.00\",\"hesaplanankdv(20)\":\"200.00\",\"vergidahil\":\"1475.00\",\"odenecek\":\"1475.00\"}"}
+11:18:43 earsiv RESMÎ PDF KAREKOD: {"status":200,"okundu":true,"sagUst":"0.80,0.10","farklar":[],"programlaAyni":true,"json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"10000000146\",\"senaryo\":\"EARSIVFATURA\",\"tip\":\"SATIS\",\"tarih\":\"2026-10-16\",\"no\":\"TEA2026176894460\",\"ettn\":\"b3480c53-fe54-459c-a688-76f2014dd2b2\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"300.00\",\"kdvmatrah(20)\":\"300.00\",\"hesaplanankdv(20)\":\"60.00\",\"vergidahil\":\"360.00\",\"odenecek\":\"360.00\"}"}
+11:18:43 SONUÇ: "GEÇTİ"

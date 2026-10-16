@@ -4,6 +4,7 @@
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { A4, PdfDocument, loadFont } from "./pdf-write.mjs";
+import { encodeQr } from "./qr.mjs";
 
 const FONT_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "assets", "fonts");
 let fonts = null;
@@ -48,7 +49,7 @@ const partyLines = p => {
   ].filter(Boolean);
 };
 
-function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = false }) {
+function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = false, stamp = null, stampEfatura = false }) {
   const M = 36;
   const W = A4.width - M * 2;
   const ink = "#111827";
@@ -103,11 +104,31 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
         top += 10;
       }
     }
-    // Başlık kutusu (sağ üst).
+    // Başlık kutusu (sağ üst). e-Belgede karekod (GİB Karekod Standardı: sağ üst köşe, zorunlu) köşededir; başlık solunda, bilgiler altında.
     const boxX = M + W * 0.6;
     const boxW = W * 0.4;
-    page.rect(boxX, 36, boxW, 24, { fill: accent, radius: 3 });
-    page.text(boxX, 52, titleOf(invoice), { font: "bold", size: 11, color: "#ffffff", align: "center", width: boxW });
+    const qr = invoice.karekodText && isFormal(invoice) ? encodeQr(invoice.karekodText) : null;
+    const qrSize = 74;
+    if (qr) {
+      const cell = qrSize / (qr.size + 2);
+      const qx = M + W - qrSize;
+      page.rect(qx, 36, qrSize, qrSize, { fill: "#ffffff" });
+      qr.modules.forEach((row, ry) => {
+        for (let rx = 0; rx < qr.size; ) {
+          if (!row[rx]) {
+            rx += 1;
+            continue;
+          }
+          let end = rx;
+          while (end < qr.size && row[end]) end += 1;
+          page.rect(qx + (rx + 1) * cell, 36 + (ry + 1) * cell, (end - rx) * cell, cell, { fill: "#000000" });
+          rx = end;
+        }
+      });
+    }
+    const titleW = qr ? boxW - qrSize - 6 : boxW;
+    page.rect(boxX, 36, titleW, 24, { fill: accent, radius: 3 });
+    page.text(boxX, 52, titleOf(invoice), { font: "bold", size: qr ? 9 : 11, color: "#ffffff", align: "center", width: titleW });
     const facts = [
       [isFormal(invoice) ? "Fatura No" : "Fiş No", invoice.displayNo || invoice.number || "Taslak"],
       invoice.paperNo ? ["Kâğıt Fatura No", invoice.paperNo] : null,
@@ -121,7 +142,7 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
       currency !== "TRY" ? ["Döviz / Kur", `${currency} · ${String(invoice.rate).replace(".", ",")}`] : null,
       invoice.profile !== "KAGIT" && invoice.ettn ? ["ETTN", invoice.ettn] : null,
     ].filter(Boolean);
-    let factTop = 74;
+    let factTop = qr ? 36 + qrSize + 10 : 74;
     for (const [label, value] of facts) {
       page.text(boxX + 4, factTop, label, { size: 7.5, color: muted });
       const strong = label === "Fatura No" || label === "Fiş No";
@@ -246,6 +267,14 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
       page.text(bx + 6, sy + 11, title, { font: "bold", size: 7, color: muted });
       page.text(bx + 6, sy + boxH - 6, hint, { size: 6.5, color: muted });
     }
+    // Kaşe / imza görseli (Fatura Ayarları): "Düzenleyen" kutusunda; e-Faturada yalnız seçilirse (e-Belge görünümüyle aynı kural).
+    const image = stamp && (stampEfatura || !["TEMELFATURA", "TICARIFATURA"].includes(invoice.profile)) ? stamp() : null;
+    if (image) {
+      const maxW = boxW - 12;
+      const maxH = boxH - 22;
+      const scale = Math.min(maxW / image.width, maxH / image.height);
+      page.image(image, M + W - boxW + (boxW - image.width * scale) / 2, sy + 14, image.width * scale, image.height * scale);
+    }
   }
   // Sayfa altbilgisi.
   pages.forEach((item, index) => item.text(M, A4.height - 30, `${invoice.displayNo || ""} · Sayfa ${index + 1} / ${pages.length}`, { size: 7, color: muted, align: "right", width: W }));
@@ -284,10 +313,11 @@ const logoOf = (doc, value) => {
 };
 
 /** docs: routes/invoices.mjs detail() çıktıları. logo: JPEG data URL ya da Buffer; signatureArea: kaşe / imza kutuları. */
-export function invoicePdf(docs, { footer = "", officeName = "", logo = "", signatureArea = false } = {}) {
+export function invoicePdf(docs, { footer = "", officeName = "", logo = "", signatureArea = false, stamp = "", stampEfatura = false } = {}) {
   const list = Array.isArray(docs) ? docs : [docs];
   const doc = new PdfDocument({ fonts: loadFonts(), size: A4, title: list.length === 1 ? `${list[0].kindLabel} ${list[0].displayNo || ""}`.trim() : `Faturalar (${list.length})`, author: officeName || "DestekOfis", subject: "Fatura" });
   const image = logoOf(doc, logo);
-  for (const invoice of list) drawInvoice(doc, invoice, { footer, logo: image, signatureArea: signatureArea === true });
+  const stampImage = logoOf(doc, stamp);
+  for (const invoice of list) drawInvoice(doc, invoice, { footer, logo: image, signatureArea: signatureArea === true, stamp: stampImage, stampEfatura: stampEfatura === true });
   return doc.toBuffer();
 }

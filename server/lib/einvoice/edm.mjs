@@ -71,6 +71,13 @@ export function mapEdmStatus({ status = "", description = "", gibCode = "", gibD
   return { status: state, message: [text, extra].filter(Boolean).join(" "), raw: String(status).trim(), gibCode: String(gibCode || "") };
 }
 
+// Belge türü ↔ gönderim kanalı (16.10.2026, gerçek EDM test ortamı): e-Arşiv profilli belge e-Fatura kanalından (posta kutusu etiketiyle)
+// gönderilince EDM kabul edip GİB reddetti (SEND-FAILED). Uyuşmazlık isteğe dönüşmeden reddedilir.
+function assertChannel(xml, earchive) {
+  const profile = (String(xml || "").match(/<cbc:ProfileID>([^<]*)<\/cbc:ProfileID>/) || [])[1] || "";
+  if (!profile) return;
+  if ((profile === "EARSIVFATURA") !== Boolean(earchive)) throw new IntegratorError(`Belge türü (${profile}) ile gönderim kanalı (${earchive ? "e-Arşiv" : "e-Fatura"}) uyuşmuyor; belge gönderilmedi.`, { code: "integrator-channel", status: 400 });
+}
 const pad = value => String(value).padStart(2, "0");
 const localStamp = (date = new Date()) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 const base64Text = value => Buffer.from(String(value ?? ""), "utf8").toString("base64");
@@ -267,6 +274,7 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
     // e-Fatura ve e-Arşiv ikisi de SendInvoice ile gider; EDM belge türünü UBL'deki ProfileID'den anlar. Sözleşmede
     // INVOICE/HEADER/EARCHIVE alanı varsa e-Arşiv işareti de konur.
     async send({ xml, number, uuid, earchive = false, senderVkn = "", senderAlias = "", receiverVkn = "", receiverAlias = "" }) {
+      assertChannel(xml, earchive);
       if (!earchive && !receiverAlias) throw new IntegratorError("Alıcının e-Fatura posta kutusu etiketi bilinmiyor; cari kartında Mükellef Sorgula ile alın.", { code: "integrator-alias", status: 400 });
       return withSession(async session => {
         const invoice = E("INVOICE", [E("HEADER", earchive ? [E("EARCHIVE", "true", {}, { optional: true })] : [], {}, { optional: true }), E("CONTENT", base64Text(xml))], { ID: number, UUID: uuid });
@@ -286,6 +294,7 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
     // taslak olarak yükler (EDM Web API v4.2.1 §5.3); numarayı program verir (GENERATEINVOICEIDONLOAD=false). Taslak sonra EDM
     // portalından ya da sendDraft ile (SendInvoice: CONTENT boş + UUID, §5.4) gönderilir.
     async loadDraft({ xml, number, uuid, earchive = false, senderVkn = "", senderAlias = "", receiverVkn = "", receiverAlias = "" }) {
+      assertChannel(xml, earchive);
       if (!earchive && !receiverAlias) throw new IntegratorError("Alıcının e-Fatura posta kutusu etiketi bilinmiyor; cari kartında Mükellef Sorgula ile alın.", { code: "integrator-alias", status: 400 });
       return withSession(async session => {
         const invoice = E("INVOICE", [E("HEADER", earchive ? [E("EARCHIVE", "true", {}, { optional: true })] : [], {}, { optional: true }), E("CONTENT", base64Text(xml))], { ID: number, UUID: uuid });

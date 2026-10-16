@@ -19,6 +19,7 @@ import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl } from "
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
+import { karekodOf } from "../lib/einvoice/karekod.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
@@ -73,8 +74,10 @@ const TEST_SERIES_SET = new Set(Object.values(TEST_SERIES));
 const SIDE_KINDS = { sale: ["sale", "smm", "sale_return"], purchase: ["purchase", "purchase_return"] };
 const MAX_LINES = 500;
 const DEFAULTS = Object.freeze({
+  // stamp: kaşe / imza görseli (JPEG, logo kurallarıyla; İz 9, kullanıcı isteği 16.10.2026) — e-Belge görünümünde GİB logosunun altında, PDF'te
+  // "Düzenleyen" kutusunda; varsayılan yalnız e-Arşivde (eView.stampEfatura ile e-Faturada da). Belgeye kopyalanmaz.
   // logo: belgenin sol üstüne basılan JPEG (data:image/jpeg;base64,…; en çok LOGO_MAX_BYTES). Belgeye kopyalanmaz (seller_json'a girmez); PDF her zaman güncel logoyu basar.
-  seller: { name: "", partyKind: "company", firstName: "", familyName: "", taxNo: "", taxOffice: "", mersisNo: "", tradeRegistry: "", address: "", district: "", city: "", postalCode: "", country: "Türkiye", phone: "", email: "", website: "", banks: [], logo: "" },
+  seller: { name: "", partyKind: "company", firstName: "", familyName: "", taxNo: "", taxOffice: "", mersisNo: "", tradeRegistry: "", address: "", district: "", city: "", postalCode: "", country: "Türkiye", phone: "", email: "", website: "", banks: [], logo: "", stamp: "" },
   // e-Dönüşüm (firmanın GİB'e kayıtlı olduğu sistemler). e-Arşiv, e-Fatura kaydı olmadan kullanılamaz.
   efatura: false,
   earsiv: false,
@@ -92,7 +95,7 @@ const DEFAULTS = Object.freeze({
   // lastTest: son Bağlantıyı Test Et sonucu (Durum satırı). Kullanıcı kararı 16.10.2026 (Entegratör Ayarları kartı).
   // eView: e-Belge görünüm tasarımı (16.10.2026; lib/einvoice/gorunum.mjs). enabled kapalıysa entegratörün varsayılan görünümü; logo, banka
   // hesapları ve alt not Fatura Ayarları'ndaki değerlerdir (tek kaynak), burada yalnız gösterilip gösterilmeyeceği seçilir.
-  eView: { enabled: true, logo: true, banks: true, footer: true },
+  eView: { enabled: true, logo: true, banks: true, footer: true, stamp: true, stampEfatura: false },
   // eOptions (Wolvox karşılaştırmasının kalan maddeleri; kullanıcı kararı 16.10.2026 "isteğe bağlı olarak olsun"; hepsi varsayılan KAPALI):
   // balanceNote: cari bakiyesi e-Belgenin notuna; paymentMeans: ödeme şekli kodu (Nakit 10, Havale / EFT 42, Kart 48, Çek 20, Senet 60);
   // draftUpload: Gönder yerine EDM portalına taslak yükle (LoadInvoice; gönderim portaldan ya da programdan).
@@ -151,15 +154,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return out;
   }
   // Logo: yalnız JPEG, data URL, en çok 150 KB ve 1200 piksel (PDF'e olduğu gibi gömülür; dev dosya her belgeyi şişirir).
-  function logoInput(value) {
+  // Logo ve kaşe / imza görseli aynı kurallarla (JPEG, en çok 150 KB ve 1200 piksel).
+  function logoInput(value, field = "seller.logo", label = "Logo") {
     if (value === null || value === "" || value === false) return "";
     const match = /^data:image\/jpeg;base64,([A-Za-z0-9+/=\s]+)$/i.exec(String(value || ""));
-    if (!match) fail400("Logo JPEG olmalı (ekrandan seçilen görsel programca JPEG'e çevrilir).", "seller.logo");
+    if (!match) fail400(`${label} JPEG olmalı (ekrandan seçilen görsel programca JPEG'e çevrilir).`, field);
     const raw = Buffer.from(match[1].replace(/\s+/g, ""), "base64");
-    if (raw.length > LOGO_MAX_BYTES) fail400(`Logo en çok ${Math.round(LOGO_MAX_BYTES / 1024)} KB olmalı (şu an ${Math.round(raw.length / 1024)} KB).`, "seller.logo");
+    if (raw.length > LOGO_MAX_BYTES) fail400(`${label} en çok ${Math.round(LOGO_MAX_BYTES / 1024)} KB olmalı (şu an ${Math.round(raw.length / 1024)} KB).`, field);
     const info = jpegInfo(raw);
-    if (!info) fail400("Logo dosyası okunamadı; geçerli bir JPEG seçin.", "seller.logo");
-    if (info.width > LOGO_MAX_SIDE || info.height > LOGO_MAX_SIDE) fail400(`Logo en çok ${LOGO_MAX_SIDE} piksel olmalı (${info.width}×${info.height}).`, "seller.logo");
+    if (!info) fail400(`${label} dosyası okunamadı; geçerli bir JPEG seçin.`, field);
+    if (info.width > LOGO_MAX_SIDE || info.height > LOGO_MAX_SIDE) fail400(`${label} en çok ${LOGO_MAX_SIDE} piksel olmalı (${info.width}×${info.height}).`, field);
     return `data:image/jpeg;base64,${raw.toString("base64")}`;
   }
   function settingsInput(body, previous) {
@@ -186,6 +190,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // 2.3.0 (İz 3.4, E2.16): Banka modülünde hesap açıldıktan sonra eski liste düzenlenmez (ekran salt okunur gösterir; gövdedekiler yok sayılır).
       banks: (Array.isArray(seller.banks) && !bankModuleActive() ? seller.banks : previous.seller.banks || []).slice(0, 4).map(bank => ({ name: limited(bank?.name, 80, "Banka"), iban: normalizeIban(bank?.iban) })).filter(bank => bank.iban || bank.name),
       logo: seller.logo === undefined ? previous.seller.logo || "" : logoInput(seller.logo),
+      stamp: seller.stamp === undefined ? previous.seller.stamp || "" : logoInput(seller.stamp, "seller.stamp", "Kaşe / İmza görseli"),
     };
     if (next.seller.taxNo) {
       const id = classifyTaxId(next.seller.taxNo);
@@ -221,7 +226,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
     }
     if (body.eView && typeof body.eView === "object") {
-      for (const key of ["enabled", "logo", "banks", "footer"]) if (body.eView[key] !== undefined) next.eView[key] = body.eView[key] === true;
+      for (const key of Object.keys(DEFAULTS.eView)) if (body.eView[key] !== undefined) next.eView[key] = body.eView[key] === true;
     }
     if (body.eOptions && typeof body.eOptions === "object") {
       for (const key of Object.keys(DEFAULTS.eOptions)) if (body.eOptions[key] !== undefined) next.eOptions[key] = body.eOptions[key] === true;
@@ -342,6 +347,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const sellerParty = s => {
     const seller = { ...s.seller, banks: invoiceBanks(s.seller?.banks) };
     delete seller.logo;
+    delete seller.stamp;
     if (seller.partyKind === "person" && (!seller.firstName || !seller.familyName)) Object.assign(seller, { ...splitPersonName(seller.name), ...(seller.firstName ? { firstName: seller.firstName } : {}), ...(seller.familyName ? { familyName: seller.familyName } : {}) });
     return seller;
   };
@@ -350,14 +356,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // e-Belge XML'i (gönderilen, indirilen ve toplu dışa aktarılan aynı): görünüm şablonu açıksa belgeye gömülür (lib/einvoice/gorunum.mjs).
   // Şablon yalnız satıcısı biz olan belgeye gömülür: alış faturası ve satıştan iade XML'inde satıcı karşı taraftır — logomuz ve IBAN'ımız basılmaz.
   const ownsDocument = doc => doc.kind !== "purchase" && doc.kind !== "sale_return";
-  const ublFor = (doc, { variant = "tr" } = {}, s = settings()) =>
-    buildUbl(doc, {
-      variant,
-      earchiveEmail: s.integrator.earchiveEmail !== false,
-      xslt: variant === "tr" && s.eView.enabled !== false && ownsDocument(doc) ? viewXslt({ logo: s.seller.logo, banks: doc.seller?.banks || [], footer: s.defaults.footer, view: s.eView, test: doc.eTest === true }) : "",
-      notes: s.eOptions.balanceNote === true ? [balanceNoteOf(doc)] : [],
-      paymentMeans: s.eOptions.paymentMeans === true,
-    });
+  // Karekod (İz 9; GİB Karekod Standardı, zorunlu): şablonsuz belge önce üretilir, karekod o XML'in kendi alanlarından okunur (karekodda ne varsa
+  // belgede de o), sonra şablon karekodla gömülür. Şablon gömülmesi XML'in karekoda giren alanlarını değiştirmez.
+  const ublFor = (doc, { variant = "tr" } = {}, s = settings()) => {
+    const options = { variant, earchiveEmail: s.integrator.earchiveEmail !== false, notes: s.eOptions.balanceNote === true ? [balanceNoteOf(doc)] : [], paymentMeans: s.eOptions.paymentMeans === true };
+    if (!(variant === "tr" && s.eView.enabled !== false && ownsDocument(doc))) return buildUbl(doc, options);
+    const qr = karekodOf(buildUbl(doc, options))?.dataUrl || "";
+    return buildUbl(doc, { ...options, xslt: viewXslt({ logo: s.seller.logo, banks: doc.seller?.banks || [], footer: s.defaults.footer, view: s.eView, test: doc.eTest === true, qr, stamp: s.seller.stamp }) });
+  };
   // Cari bakiyesi notu (İz 7.1): cari listesinin bakiyesiyle aynı hesap (taksit kartları dahil; lib tek kaynak). Belgenin üretildiği an itibarıyla,
   // bu fatura dahil; alıcının gözünden "borç" (bize borçlu) ya da "alacak". Yalnız satıcısı biz olan ve cariye bağlı belgede.
   const balanceNoteOf = doc => {
@@ -2632,9 +2638,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
 
   // ---------- Belge çıktıları ----------
   const pdfFor = (ids, user) => {
-    const docs = ids.map(id => detail(id, user));
     const s = settings();
-    return invoicePdf(docs, { footer: s.defaults.footer, officeName: store.setting("office.name", "") || "", logo: s.seller.logo, signatureArea: s.defaults.signatureArea === true });
+    // e-Belge (kayıtlı, satıcısı biz) PDF'inde de aynı karekod: belgenin XML'inden (karekod.mjs).
+    const docs = ids.map(id => detail(id, user)).map(doc => (edocEnabled && doc.status === "issued" && doc.profile !== "KAGIT" && ownsDocument(doc) ? { ...doc, karekodText: karekodOf(ublFor(doc, {}, s))?.text || "" } : doc));
+    return invoicePdf(docs, { footer: s.defaults.footer, officeName: store.setting("office.name", "") || "", logo: s.seller.logo, signatureArea: s.defaults.signatureArea === true, stamp: s.eView.stamp !== false ? s.seller.stamp : "", stampEfatura: s.eView.stampEfatura === true });
   };
   const safeName = value => String(value || "Fatura").replace(/[^\p{L}\p{N} _.-]+/gu, "-").slice(0, 80);
   router.get("/api/workspace/invoices/:id/fatura.pdf", async ({ req, res, params, url }) => {
@@ -2651,7 +2658,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     requireEdoc();
     const body = await readJson(req);
     const s = settings();
-    const view = { ...s.eView, ...Object.fromEntries(["logo", "banks", "footer"].filter(key => body?.eView?.[key] !== undefined).map(key => [key, body.eView[key] === true])), enabled: true };
+    const view = { ...s.eView, ...Object.fromEntries(["logo", "banks", "footer", "stamp", "stampEfatura"].filter(key => body?.eView?.[key] !== undefined).map(key => [key, body.eView[key] === true])), enabled: true };
     const lines = [
       { name: "Örnek Ürün", code: "URN-001", qty: 2, unit: "Adet", unitPrice: 500, discount: 0, net: 1000, vat: 200, vatRate: 20 },
       { name: "Örnek Hizmet", description: "Kalem açıklaması örneği", qty: 1, unit: "Saat", unitPrice: 250, discount: 0, net: 250, vat: 25, vatRate: 10 },
@@ -2663,7 +2670,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       profile: "TEMELFATURA", typeCode: "SATIS", currency: "TRY", pricesIncludeVat: false, lines, payableTotal: 1475, amountInWords: amountInWords(1475, "TRY"),
       seller, party: { name: "Örnek Müşteri A.Ş.", partyKind: "company", taxNo: "1234567890", taxOffice: "Örnek", address: "Örnek Cad. No:1", district: "Merkez", city: "Ankara", country: "Türkiye" },
     };
-    const xslt = viewXslt({ logo: s.seller.logo, banks: seller.banks || [], footer: s.defaults.footer, view });
+    const xslt = viewXslt({ logo: s.seller.logo, banks: seller.banks || [], footer: s.defaults.footer, view, stamp: s.seller.stamp, qr: karekodOf(buildUbl(doc, { variant: "tr" }))?.dataUrl || "" });
     ok(res, { xml: buildUbl(doc, { variant: "tr", xslt }), xslt });
   });
   router.get("/api/workspace/invoices/:id/ubl.xml", async ({ req, res, params, url }) => {

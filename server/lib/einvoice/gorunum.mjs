@@ -7,10 +7,11 @@
 // tarayıcılar (Entegratör Ayarları → Görünüm → Önizle) aynı şablonu işler. Firmaya özel içerik (logo, banka hesapları, alt not) şablona
 // gömülür; geri kalan her şey faturanın kendi XML'inden okunur — ekranda görünen sayı belgedeki sayıdır.
 import { createHash } from "node:crypto";
+import { GIB_LOGO } from "./gib-logo.mjs";
 
 const xml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
 
-export const DEFAULT_VIEW = Object.freeze({ enabled: true, logo: true, banks: true, footer: true });
+export const DEFAULT_VIEW = Object.freeze({ enabled: true, logo: true, banks: true, footer: true, stamp: true, stampEfatura: false });
 
 // UN/ECE Rec. 20 birim kodu → görünen ad (ubl-tr.mjs UNIT_CODES'un tersi; yazım düzeni: her sözcüğün ilk harfi büyük).
 const UNIT_NAMES = {
@@ -33,7 +34,12 @@ const choose = (select, map, fallback = `<xsl:value-of select="${select}"/>`) =>
  *   footer: Fatura Ayarları → Fatura Alt Notu.
  */
 // test: entegratörün test ortamına giden belge (seri TEF / TEA / TES) — sayfanın üstünde kırmızı "TEST ORTAMI" şeridi.
-export function viewXslt({ logo = "", banks = [], footer = "", view = DEFAULT_VIEW, test = false } = {}) {
+// qr: belgenin karekodu (karekod.mjs dataUrl; GİB Karekod Standardı — sağ üst köşe, zorunlu). GİB logosu "e-FATURA" başlığının üstünde.
+// Düzen (kullanıcı isteği 16.10.2026, örnek e-Arşiv tasarımı): sol satıcı ve alıcı; ORTADA alt alta firma logosu, GİB logosu, başlık, kaşe / imza;
+// sağ üstte karekod ve bilgi tablosu. e-Fatura ve e-Arşiv aynı düzende.
+// stamp: kaşe / imza görseli (JPEG) — GİB logosu ve başlığın altında; varsayılan yalnız e-Arşivde (view.stampEfatura ile e-Faturada da).
+export function viewXslt({ logo = "", banks = [], footer = "", view = DEFAULT_VIEW, test = false, qr = "", stamp = "" } = {}) {
+  const showStamp = view.stamp !== false && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(stamp);
   const showLogo = view.logo !== false && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(logo);
   const bankRows = view.banks !== false ? banks.filter(bank => bank?.iban) : [];
   const footerText = view.footer !== false ? String(footer || "").trim() : "";
@@ -74,9 +80,9 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#1d2622;margin:
 .sayfa{max-width:800px;margin:12px auto;padding:0 8px}
 table{border-collapse:collapse;font-size:inherit}
 .ust{width:100%}.ust td{vertical-align:top}
-.logo img{max-width:200px;max-height:90px}
+.logo{margin-bottom:6px}.logo img{max-width:180px;max-height:80px}
 .ad{font-weight:bold;font-size:12px}
-.baslik{text-align:center;font-size:20px;font-weight:bold;letter-spacing:1px;color:#1f5f4a;padding-top:20px}
+.baslik{text-align:center;font-size:20px;font-weight:bold;letter-spacing:1px;color:#1f5f4a;padding-top:4px}
 .bilgi{border:1px solid #9aa8a2;margin-left:auto}.bilgi th,.bilgi td{border:1px solid #9aa8a2;padding:3px 6px;text-align:left}.bilgi th{background:#eef3f0;white-space:nowrap}
 .alici{margin:14px 0;border-top:1px solid #1f5f4a;border-bottom:1px solid #1f5f4a;padding:6px 0}
 .ettn{margin:6px 0 10px}
@@ -87,13 +93,14 @@ table{border-collapse:collapse;font-size:inherit}
 .notlar{margin-top:10px;border:1px solid #9aa8a2;padding:6px}
 .bankalar{margin-top:10px}.bankalar th,.bankalar td{border:1px solid #9aa8a2;padding:3px 6px;text-align:left}.bankalar th{background:#eef3f0}
 .alt{margin-top:10px;color:#55615b;white-space:pre-line}
+.karekod{text-align:right;margin-bottom:4px}.karekod img{width:120px;height:120px}.gib img{width:80px;height:80px}.kase{margin-top:6px}.kase img{max-width:170px;max-height:90px}
 .test{border:2px solid #b42318;color:#b42318;font-weight:bold;text-align:center;padding:6px;margin-bottom:10px}
 </style></head>
 <body><div class="sayfa">${test ? '<div class="test">TEST ORTAMI — Bu belge deneme amaçlıdır; yasal geçerliliği yoktur.</div>' : ""}<xsl:for-each select="n1:Invoice">
 <table class="ust"><tr>
-  <td style="width:38%">${showLogo ? `<div class="logo"><img alt="" src="${xml(logo)}"/></div>` : ""}<xsl:call-template name="party"><xsl:with-param name="p" select="cac:AccountingSupplierParty/cac:Party"/></xsl:call-template></td>
-  <td style="width:24%" class="baslik"><xsl:choose><xsl:when test="cbc:ProfileID='EARSIVFATURA'">e-Arşiv Fatura</xsl:when><xsl:otherwise>e-FATURA</xsl:otherwise></xsl:choose></td>
-  <td style="width:38%"><table class="bilgi">
+  <td style="width:38%"><xsl:call-template name="party"><xsl:with-param name="p" select="cac:AccountingSupplierParty/cac:Party"/></xsl:call-template></td>
+  <td style="width:24%" class="baslik">${showLogo ? `<div class="logo"><img alt="" src="${xml(logo)}"/></div>` : ""}<div class="gib"><img alt="GİB" src="${GIB_LOGO}"/></div><xsl:choose><xsl:when test="cbc:ProfileID='EARSIVFATURA'">e-Arşiv Fatura</xsl:when><xsl:otherwise>e-FATURA</xsl:otherwise></xsl:choose>${showStamp ? `<xsl:if test="${view.stampEfatura === true ? "true()" : "cbc:ProfileID='EARSIVFATURA'"}"><div class="kase"><img alt="Kaşe / İmza" src="${xml(stamp)}"/></div></xsl:if>` : ""}</td>
+  <td style="width:38%">${/^data:image\/svg\+xml;base64,[A-Za-z0-9+/=]+$/.test(qr) ? `<div class="karekod"><img alt="Karekod" src="${qr}"/></div>` : ""}<table class="bilgi">
     ${row("Özelleştirme No", '<xsl:value-of select="cbc:CustomizationID"/>')}
     ${row("Senaryo", choose("cbc:ProfileID", PROFILES))}
     ${row("Fatura Tipi", choose("cbc:InvoiceTypeCode", TYPES))}

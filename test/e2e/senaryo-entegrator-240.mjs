@@ -205,7 +205,7 @@ try {
   await page.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
   await page.click(`${card} [data-integ-tab="view"]`);
   const viewChecks = await page.$$eval(`${card} [data-i^="view."]`, nodes => nodes.map(node => `${node.dataset.i}:${node.checked}`));
-  ok(viewChecks.join(",") === "view.enabled:true,view.logo:true,view.banks:true,view.footer:true", `Görünüm seçenekleri varsayılan açık: ${viewChecks.join(", ")}`);
+  ok(viewChecks.join(",") === "view.enabled:true,view.logo:true,view.banks:true,view.footer:true,view.stamp:true,view.stampEfatura:false", `Görünüm seçenekleri varsayılan (kaşe e-Arşivde açık, e-Faturada kapalı): ${viewChecks.join(", ")}`);
   await page.click(`${card} [data-integ-act="preview"]`);
   const frameHandle = await page.waitForSelector("iframe.hof-integ-preview", { timeout: 10000 });
   const frame = await frameHandle.contentFrame();
@@ -213,6 +213,9 @@ try {
   const previewText = (await frame.$eval("body", body => body.innerText)).replace(/\s+/g, " ");
   ok(["e-FATURA", "Örnek Müşteri A.Ş.", "Deneme Ofis Ltd.", "Ödenecek Tutar 1.475,00 TL", "Hesaplanan KDV (%20) 200,00 TL", "TR33 0006 1005", "Görünüm alt notu"].every(part => previewText.includes(part)), `tarayıcının XSLT işlemcisi şablonu çizdi: ${previewText.slice(0, 160)}…`);
   ok(Boolean(await frame.$('img[src^="data:image/jpeg"]')), "önizlemede logo var");
+  // İz 9: karekod (GİB standardı, sağ üst) ve GİB logosu; ortada alt alta firma logosu → GİB logosu → başlık.
+  const centre = await frame.$$eval("td.baslik img", nodes => nodes.map(node => node.getAttribute("alt")));
+  ok(Boolean(await frame.$('.karekod img[alt="Karekod"][src^="data:image/svg+xml"]')) && centre.join(",") === ",GİB", `önizlemede karekod sağ üstte; ortada firma logosu ve GİB logosu alt alta (${centre.join(" | ")})`);
   ok((await frameHandle.getAttribute("sandbox")) === "", "önizleme betiksiz çerçevede (sandbox)");
   await page.waitForTimeout(400);
   const onTop = await page.evaluate(() => {
@@ -323,6 +326,27 @@ try {
   const seriesText = await textOf(page, `${card} [data-integ-panel="series"]`);
   ok(!seriesText.includes("[object Object]") && /Sıradaki: EFX\d{13}/.test(seriesText) && /Test ortamında: TEF\d{13}/.test(seriesText), `Otomatik Seriler: sıradaki numara ve test serisi doğru yazılır (${seriesText.slice(0, 160)}…)`);
   await shot(page, "entegrator-10-test-seri");
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
+
+  console.log("\n■ 11 Kaşe / İmza (Fatura Ayarları, Logo'nun altında; e-Arşivde basılır)");
+  await openInvoices(page);
+  await page.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
+  await page.click(`${card} [data-integ-tab="firm"]`);
+  await page.click(`${card} [data-integ-act="firm"]`);
+  await page.waitForSelector(`${modal} [data-stamp-field]`, { timeout: 10000 });
+  const stampLabel = await textOf(page, `${modal} [data-stamp-field] > span`);
+  ok(stampLabel === "Kaşe / İmza (e-Arşiv Faturasına Basılır)", `Fatura Ayarları'nda Kaşe / İmza alanı: ${stampLabel}`);
+  await page.setInputFiles(`${modal} input[data-stamp-file]`, path.join(process.cwd(), "docs/pazarlama/DestekOfis-Logo-Fatura-Kare.jpg"));
+  await page.waitForSelector(`${modal} [data-stamp-preview] img`, { timeout: 10000 });
+  await page.click(`${modal} [data-act="save-settings"]`);
+  await page.waitForFunction(() => document.querySelector(".hof-toast")?.textContent?.includes("Fatura ayarları kaydedildi"), null, { timeout: 10000 }).catch(() => null);
+  const storedStamp = stored().seller?.stamp || "";
+  ok(/^data:image\/jpeg;base64,\/9j\//.test(storedStamp) && storedStamp.length < 220 * 1024, `kaşe / imza JPEG olarak kaydedildi (${Math.round(storedStamp.length / 1024)} KB metin)`);
+  await page.$eval(`${modal} [data-stamp-field]`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
+  await shot(page, "entegrator-11-kase-imza");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
     await page.keyboard.press("Escape");
     await page.waitForTimeout(250);

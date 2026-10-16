@@ -95,8 +95,8 @@ describe("e-Belge görünüm tasarımı (gömülü XSLT)", () => {
     efatura = await issue({ scenario: "service_sale", accountId: ids.eFirm, lines: [line(), line({ name: "Kurulum", qty: 1, unitPrice: 250, vatRate: 10, description: "Yerinde kurulum" })], payment: { rest: "open" } });
     efaturaXml = await xmlOf(efatura.id);
   });
-  test("görünüm ayarı varsayılanı açık (logo, banka, alt not)", () => {
-    assert.deepEqual(ids.savedView, { enabled: true, logo: true, banks: true, footer: true });
+  test("görünüm ayarı varsayılanı açık (logo, banka, alt not; kaşe / imza e-Arşivde, e-Faturada kapalı)", () => {
+    assert.deepEqual(ids.savedView, { enabled: true, logo: true, banks: true, footer: true, stamp: true, stampEfatura: false });
   });
   test("şablon GİB örnek biçiminde gömülür (fatura no .xslt, base64, application/xml); belge XSD + GİB şematronundan temiz", async () => {
     assert.match(efaturaXml, new RegExp(`<cac:AdditionalDocumentReference><cbc:ID>[0-9a-f-]{36}</cbc:ID><cbc:IssueDate>${efatura.issueDate}</cbc:IssueDate><cac:Attachment><cbc:EmbeddedDocumentBinaryObject characterSetCode="UTF-8" encodingCode="Base64" filename="${efatura.number}\\.xslt" mimeCode="application/xml">`));
@@ -112,7 +112,7 @@ describe("e-Belge görünüm tasarımı (gömülü XSLT)", () => {
   });
   test("logo, banka hesabı (IBAN dörderli) ve alt not şablona gömülü; alt nottaki HTML metin olarak kalır (komut çalışmaz)", () => {
     const html = renderView(efaturaXml);
-    assert.match(html, /<img[^>]+src="data:image\/jpeg;base64,\/9j\//, "logo");
+    assert.match(html, /class="baslik"><div class="logo"><img alt="" src="data:image\/jpeg;base64,\/9j\//, "firma logosu orta sütunun en üstünde (GİB logosunun üstünde)");
     assert.ok(text(html).includes("Örnek Bankası TR33 0006 1005 1978 6457 8413 26"), "banka hesabı");
     assert.ok(text(html).includes("Ödemelerinizi IBAN'a açıklamaya fatura numarasıyla yapınız."), "alt not");
     assert.doesNotMatch(html, /<script/i, "alt nottaki etiket öğe olmaz");
@@ -123,7 +123,8 @@ describe("e-Belge görünüm tasarımı (gömülü XSLT)", () => {
     assert.equal(describeErrors(await validateInvoice(xml, { type: "earsiv" })), "");
     const html = renderView(xml);
     // GİB ibaresi aynen "e-Arşiv Fatura" (EDM büyük harfli başlığı da bu ibareye çeviriyor — test ortamı 16.10.2026).
-    assert.match(html, /class="baslik"[^>]*>e-Arşiv Fatura</);
+    // Orta sütun (İz 9): firma logosu, GİB logosu, sonra başlık.
+    assert.match(html, /class="baslik"[^>]*>(?:<div class="logo">.*?<\/div>)?(?:<div class="gib">.*?<\/div>)?e-Arşiv Fatura</);
     const page = text(html);
     for (const expected of ["Gönderim Şekli Elektronik", "e-Arşiv izni kapsamında elektronik ortamda iletilmiştir."]) assert.ok(page.includes(expected), `görünümde yok: "${expected}"`);
   });
@@ -138,7 +139,9 @@ describe("e-Belge görünüm tasarımı (gömülü XSLT)", () => {
   test("ayar: logo ve banka kapatılınca şablonda yok; görünüm kapatılınca belgeye şablon gömülmez (entegratörün varsayılanı)", async () => {
     assert.equal((await api.put("/api/workspace/invoices/settings", { eView: { logo: false, banks: false } })).status, 200);
     const plain = renderView(await xmlOf(efatura.id));
-    assert.doesNotMatch(plain, /<img/);
+    // Firma logosu kapalı; GİB logosu ve karekod (zorunlu) bu ayardan bağımsız kalır (İz 9).
+    assert.doesNotMatch(plain, /class="logo"/);
+    assert.equal((plain.match(/<img/g) || []).length, 2, "yalnız GİB logosu ve karekod");
     assert.ok(!text(plain).includes(IBAN.slice(0, 4) + " " + IBAN.slice(4, 8)));
     assert.ok(text(plain).includes("Ödemelerinizi IBAN'a"), "alt not açık kaldı");
     const off = await api.put("/api/workspace/invoices/settings", { eView: { enabled: false } });
