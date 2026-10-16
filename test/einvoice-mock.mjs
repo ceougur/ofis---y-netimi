@@ -21,6 +21,8 @@ export function vkn(nine) {
 export const OUR_VKN = vkn(123456789);
 export const BUYER_VKN = vkn(987654321);
 export const SUPPLIER_VKN = vkn(555444333);
+// İki posta kutusu (PK) olan mükellef (gerçek EDM test yanıtında bir firmada 11 PK görüldü, 16.10.2026).
+export const MULTI_VKN = vkn(222333444);
 
 // WCF singleWsdl benzeri sözleşme: alanlar nitelikli (elementFormDefault="qualified"), istekler REQUEST'ten türer,
 // SOAP 1.1 ve 1.2 bağlamaları, işlem başına SOAPAction.
@@ -116,7 +118,8 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
         const id = textOf(find(request, "USER/IDENTIFIER"));
         // Firmanın kendi VKN'si (Entegratör Ayarları → Etiketleri Getir): GB + PK.
         const own = `<USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultgb@deneme.com.tr</ALIAS><TITLE>DENEME OFİS LTD.</TITLE><TYPE>OZEL</TYPE><UNIT>GB</UNIT></USER><USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultpk@deneme.com.tr</ALIAS><TITLE>DENEME OFİS LTD.</TITLE><TYPE>OZEL</TYPE><UNIT>PK</UNIT></USER>`;
-        const users = id === OUR_VKN ? own : id === BUYER_VKN ? `<USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultgb@alici.com.tr</ALIAS><TITLE>ALICI TİCARET A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>GB</UNIT></USER><USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultpk@alici.com.tr</ALIAS><TITLE>ALICI TİCARET A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>PK</UNIT></USER>` : "";
+        const multi = `<USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:muhasebepk@coklu.com.tr</ALIAS><TITLE>ÇOKLU A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>PK</UNIT></USER><USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultpk@coklu.com.tr</ALIAS><TITLE>ÇOKLU A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>PK</UNIT></USER>`;
+        const users = id === MULTI_VKN ? multi : id === OUR_VKN ? own : id === BUYER_VKN ? `<USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultgb@alici.com.tr</ALIAS><TITLE>ALICI TİCARET A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>GB</UNIT></USER><USER><IDENTIFIER>${id}</IDENTIFIER><ALIAS>urn:mail:defaultpk@alici.com.tr</ALIAS><TITLE>ALICI TİCARET A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>PK</UNIT></USER>` : "";
         respond(`<CheckUserResponse xmlns="${NS}">${users}</CheckUserResponse>`);
         return;
       }

@@ -1,0 +1,23 @@
+# EDM TEST ortamı — programın kendi API'siyle uçtan uca (16.10.2026, kod b653478 + çalışma ağacı)
+# Komut: NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=… node scratchpad/edm-canli-test/adim2.mjs <yüklenen kimlik dosyası> <çıktı>
+# Adres: https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc (TEST). Kimlik bilgisi yazılmadı (maskeli).
+AYAR: {"status":200,"url":"https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc","env":"test"}
+TEST: "EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 55 işlem."
+ETİKET: {"status":200,"gb":12,"pk":11}
+MÜKELLEF SORGULA (cari): {"status":200,"registered":true,"alias":"urn:mail:avsaroglupk@kollektif.com"}
+earsiv KAYIT: {"status":200,"number":"DOA2026596432372","profile":"EARSIVFATURA"}
+earsiv XML (GİB+XSD): {"xsd":0,"gib":[]}
+earsiv GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+earsiv DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+earsiv DURUM 2: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+earsiv DURUM 3: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+earsiv DURUM 4: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+efatura KAYIT: {"status":200,"number":"DOF2026596432372","profile":"TEMELFATURA"}
+efatura XML (GİB+XSD): {"xsd":0,"gib":[]}
+efatura GÖNDER: {"status":200,"eStatus":"sent","msg":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+efatura DURUM 1: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+efatura DURUM 2: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+efatura DURUM 3: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+efatura DURUM 4: {"status":200,"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+earsiv İPTAL: {"status":502,"err":"EDM isteği reddetti: Fatura'ler iptal edilemedi (EDM hata kodu 11049)"}
+GELEN KUTUSU: {"status":200,"keys":["from","to","received","added","known","marked"]}

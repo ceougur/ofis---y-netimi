@@ -256,7 +256,8 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
           deleted: textOf(find(user, "DELETED")) || textOf(find(user, "ALIAS_REMOVAL_TIME")) || textOf(find(user, "ALIAS_DELETION_TIME")),
           documentType: (textOf(find(user, "DOCUMENTTYPE")) || textOf(find(user, "DOCUMENT_TYPE"))).toUpperCase(),
         }));
-        const active = users.filter(user => user.alias && !/^(Y|E|TRUE|1)$/i.test(user.deleted) && !(user.deleted && /\d{4}/.test(user.deleted)) && (!user.documentType || user.documentType === "INVOICE"));
+        // Yalnız urn:mail etiketleri (gerçek EDM test yanıtında GB listesinde "erreceipt" gibi etiket olmayan değer de geliyor).
+        const active = users.filter(user => /^urn:mail:/i.test(user.alias) && !/^(Y|E|TRUE|1)$/i.test(user.deleted) && !(user.deleted && /\d{4}/.test(user.deleted)) && (!user.documentType || user.documentType === "INVOICE"));
         const inboxes = active.filter(user => user.unit ? user.unit === "PK" : !/defaultgb|:gb@|gb@/i.test(user.alias));
         // senderAliases: gönderici birim (GB) etiketleri — firmanın kendi VKN'si sorgulanınca Entegratör Ayarları'nda GB listesi olur.
         const senders = active.filter(user => (user.unit ? user.unit === "GB" : /defaultgb|:gb@|gb@/i.test(user.alias)));

@@ -43,6 +43,8 @@ describe("EDM gerçek test sözleşmesi (WSDL): program her işlemin isteğini s
       ["urn:mail:defaultpk@alici.com", "PK", "INVOICE", ""],
       ["urn:mail:eskipk@alici.com", "PK", "INVOICE", "2025-01-01T00:00:00"],
       ["urn:mail:irsaliyepk@alici.com", "PK", "DESPATCHADVICE", ""],
+      // Gerçek EDM test yanıtında (16.10.2026) GB listesinde urn:mail olmayan "erreceipt" değeri geldi; etiket sayılmaz.
+      ["erreceipt", "GB", "", ""],
     ]
       .map(([alias, unit, type, removed]) => `<USER><IDENTIFIER>9876543210</IDENTIFIER><ALIAS>${alias}</ALIAS><TITLE>ALICI A.Ş.</TITLE><TYPE>OZEL</TYPE><UNIT>${unit}</UNIT>${removed ? `<ALIAS_REMOVAL_TIME>${removed}</ALIAS_REMOVAL_TIME>` : ""}<DOCUMENTTYPE>${type}</DOCUMENTTYPE></USER>`)
       .join("");

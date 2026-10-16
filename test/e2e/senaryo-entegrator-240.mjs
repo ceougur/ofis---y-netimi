@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
-import { OUR_VKN, startMockEdm } from "../einvoice-mock.mjs";
+import { MULTI_VKN, OUR_VKN, startMockEdm } from "../einvoice-mock.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
 
 const PASS = "Personel-2026!";
@@ -143,7 +143,36 @@ try {
   await page.click(`${card} [data-integ-tab="series"]`);
   await shot(page, "entegrator-3-seriler");
 
+  console.log("\n■ 4b Cari formu: VKN yazılıp alandan çıkınca mükellefiyet kendiliğinden sorgulanır; iki posta kutusu varsa kullanıcı seçer");
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
+  await page.evaluate(() => window.HOF.accounts.newFor({}));
+  const formOpen = await page.waitForSelector(`${modal} input[name="taxNo"]`, { timeout: 8000 }).then(() => true).catch(() => false);
+  if (ok(formOpen, "Yeni Cari formu açıldı")) {
+    await page.fill(`${modal} input[name="name"]`, "Çoklu A.Ş.");
+    await page.click(`${modal} input[name="taxNo"]`);
+    await page.keyboard.type(MULTI_VKN, { delay: 30 });
+    await page.keyboard.press("Tab");
+    await page.waitForSelector(`${modal}:last-of-type select[name="alias"]`, { timeout: 10000 });
+    const options = await page.$$eval(`${modal}:last-of-type select[name="alias"] option`, nodes => nodes.map(node => node.value));
+    const preselected = await page.$eval(`${modal}:last-of-type select[name="alias"]`, node => node.value);
+    ok(options.length === 2 && preselected === "urn:mail:defaultpk@coklu.com.tr", `iki PK seçenek, varsayılan defaultpk: ${options.join(", ")} (seçili ${preselected})`);
+    await shot(page, "entegrator-4-pk-secimi");
+    await page.selectOption(`${modal}:last-of-type select[name="alias"]`, "urn:mail:muhasebepk@coklu.com.tr");
+    await page.click(`${modal}:last-of-type .hof-form button[type="submit"]`);
+    await page.waitForFunction(() => document.querySelector('input[name="eAlias"]')?.value === "urn:mail:muhasebepk@coklu.com.tr", null, { timeout: 8000 });
+    const eInvoice = await page.$eval('input[name="eInvoice"]', node => node.checked);
+    ok(eInvoice, "seçilen PK forma yazıldı, e-Fatura mükellefi işaretli");
+  }
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
+
   console.log("\n■ 5 Fatura Ayarları yönlendirmesi; ayar yetkisi olmayan kullanıcı");
+  await openInvoices(page);
+  await page.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
+  await page.waitForSelector(`${card} [data-integ-tab]`);
   await page.click(`${card} [data-integ-tab="firm"]`);
   await page.click(`${card} [data-integ-act="firm"]`);
   await page.waitForSelector(`${modal} .hof-inv-settings`, { timeout: 10000 });
