@@ -660,6 +660,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   işaretlenince serbest meslek makbuzu TES/ESM serisinden numara alıyor (ProfileID ESMM) ama Gönder → 409 "Bu belge gönderilemez."; kartta işaret açık
   (hof-invoices.js:2804). Canlıda avukat müşteri işaretlerse numara harcanır, belge GİB'e gitmez. KARAR BEKLENİYOR: 2.4.1'de işareti gizle (hızlı) ve/veya
   EDM e-SMM servisini bağla (EDM paketi E-SMM klasörü; ayrı API).
+  KARAR (kullanıcı, 16.10.2026 ~21:00 UTC, bir süre ekran başında değil): "dayanıklılık testlerini yap, 30 dk bir kontrol et, düzeltme gerektiren bulgular
+  olursa uygula ve e-SMM gizli yaparak test sonucu ile zipi teslim et" → 2.4.1: e-SMM işareti gizli + sunucu reddeder (config.esmmEnabled, varsayılan kapalı;
+  eski "esmm: true" kayıtta makbuz kâğıt kalır); dayanıklılık koşusu son kodla; bulgu → yeniden üret → kırmızı test → düzelt; teslim: 5 dosya + arşiv +
+  test sonucu. Birleştirme/yayın kullanıcı dönünce. e-SMM gönderimi için EDM'den servis adresi + doküman + test yetkisi istenecek (metin kullanıcıya verildi).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
