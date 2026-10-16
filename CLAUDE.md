@@ -664,6 +664,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   olursa uygula ve e-SMM gizli yaparak test sonucu ile zipi teslim et" → 2.4.1: e-SMM işareti gizli + sunucu reddeder (config.esmmEnabled, varsayılan kapalı;
   eski "esmm: true" kayıtta makbuz kâğıt kalır); dayanıklılık koşusu son kodla; bulgu → yeniden üret → kırmızı test → düzelt; teslim: 5 dosya + arşiv +
   test sonucu. Birleştirme/yayın kullanıcı dönünce. e-SMM gönderimi için EDM'den servis adresi + doküman + test yetkisi istenecek (metin kullanıcıya verildi).
+  DURUM (16.10.2026 22:20 UTC): e-SMM gizli birleşti (465cc33; test 0/3 → 3/3, e2e 71/71); dayanıklılık betiği + kâhin + diş kanıtı ce6777f (sahte EDM 68/69;
+  tek ✗ KDV yuvarlama KURAL FARKI: kâhin oran başına, program satır başına; 17/174 belge 1 kuruş, satır kuralıyla 174/174 aynı — hüküm: açıklanan fark).
+  GERÇEK EDM KOŞUSU 22:14 UTC başladı (SURE_DK=270, 10 kullanıcı, TOHUM=1; günlük scratchpad/dayaniklilik-gercek/kosu.log; çıktı oraya, özet sonra depoya).
+  Koşu sürerken server/ ve client/ DEĞİŞTİRİLMEZ. Ajan gözlemleri (BİLGİ): iptal edilmiş belgenin XML'i inmiyor (409), iptal PDF'inde karekod yok,
+  PUT settings kısmi "start" haritası öbür serilerin başlangıcını sıfırlar (yalnız API; ekran tam harita gönderir).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
