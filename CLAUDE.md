@@ -650,6 +650,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.0; gerçek eski güncelleyiciler (v2.3.0, v2.2.0, v2.1.0 kodu) canlı GitHub'da 2.4.0'ı
   "available" gördü, 2.4.0 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#16 açıldı (PDF ca4b478d…; kullanıcı "birleştir" bekleniyor).
   release.yml "Sürüm yayımla" master CI'yi bekliyor (sürümlü exe ekleyecek).
+  Site kılavuz PR'ı ceougur/destekofis#16 BİRLEŞTİ (kullanıcı "kılavuza hap bilgiyi koyduysan birleştir"; PDF'te e-Fatura denemesi, Canlıya geçiş, ölçü birimi,
+  görünüm maddeleri doğrulandı; main c8a7706, main PDF ca4b478d… doğrulandı). 30 dk raporu DURDU (site PR birleşti). 2.4.0 KAPANDI; açık: master 5b45c5d CI +
+  release.yml sonucu okunacak. Sonra: Pazar 18.10 planlı test, 2.4.1 adayı (canlı giriş iletisi), fiyat/lisans kararları, devir modülü kararı (22.10).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
