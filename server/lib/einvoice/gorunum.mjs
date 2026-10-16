@@ -85,7 +85,7 @@ table{border-collapse:collapse;font-size:inherit}
 .ad{font-weight:bold;font-size:12px}
 .baslik{text-align:center;font-size:20px;font-weight:bold;letter-spacing:1px;color:#1f5f4a;padding-top:4px}
 .bilgi{border:1px solid #9aa8a2;margin-left:auto}.bilgi th,.bilgi td{border:1px solid #9aa8a2;padding:3px 6px;text-align:left}.bilgi th{background:#eef3f0;white-space:nowrap}
-.alici{margin:14px 12px 0 0;border-top:1px solid #1f5f4a;border-bottom:1px solid #1f5f4a;padding:6px 0}
+.alici{margin:44px 12px 0 0;border-top:1px solid #1f5f4a;border-bottom:1px solid #1f5f4a;padding:6px 0}
 .ettn{margin:12px 0 10px}
 .kalem{width:100%}.kalem th,.kalem td{border:1px solid #9aa8a2;padding:3px 5px}.kalem th{background:#eef3f0;text-align:center}.kalem td.s{text-align:right;white-space:nowrap}
 .kalem .aciklama{color:#55615b;font-size:10px}
