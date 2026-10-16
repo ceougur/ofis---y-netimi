@@ -646,6 +646,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   olunca birleştir") → PR CI + kapı yeşil olunca squash birleştirme; sonra kullanıcı yayını açar (bağlantı verildi).
   BİRLEŞTİ (16.10.2026 20:24 UTC): PR #30 squash → `master` = 5b45c5d (ağaç 4b4eca1 ile AYNI; uygulama dosyaları paket 652bdc7 ile aynı; head CI + kapı yeşil).
   SIRADA: kullanıcı yayın açar (v2.4.0 → master, 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF ca4b478d…).
+  YAYIMLANDI (16.10.2026 20:36 UTC; `v2.4.0` = 5b45c5d; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı): yayındaki 5 dosya +
+  latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.0; gerçek eski güncelleyiciler (v2.3.0, v2.2.0, v2.1.0 kodu) canlı GitHub'da 2.4.0'ı
+  "available" gördü, 2.4.0 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#16 açıldı (PDF ca4b478d…; kullanıcı "birleştir" bekleniyor).
+  release.yml "Sürüm yayımla" master CI'yi bekliyor (sürümlü exe ekleyecek).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
