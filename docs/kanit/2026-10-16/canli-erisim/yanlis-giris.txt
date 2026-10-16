@@ -1,0 +1,6 @@
+(node:16378) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+adres: https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc
+süre: 773 ms
+kod: integrator-rejected · EDM kodu: 11010 · durum: 502
+ileti: EDM isteği reddetti: Kullanıcı Bulunamadı! (EDM hata kodu 11010)

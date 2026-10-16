@@ -623,6 +623,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (3) birim kodu kabulü yalnız test ortamında ölçüldü. Karar kullanıcıda.
   KARAR (kullanıcı, aynı gün: "canlıda da müşterilere ben EDM üyeliği alıp kuracağım için henüz müşteri keser riski yok") → (1) kapandı: canlı EDM
   kimliği olmadan canlıya belge gidemez; yayın normal akışla (teslim → PR → yayın). (2)–(3) kullanıcının ilk canlı kurulumunda Bağlantıyı Test Et + ilk belgeyle görülür.
+  (2) KAPANDI (kullanıcı ağ iznini açtı, "yaptım, dene"): canlı adres erişilebilir, SSL geçerli; WSDL + 7 şema test 21ea ile adres dışında AYNI; programın
+  istemcisiyle bilerek yanlış giriş → canlı ve test aynı "Kullanıcı Bulunamadı!" (EDM 11010). Gerçek giriş canlı üyelikle. Kanıt docs/kanit/2026-10-16/canli-erisim.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
