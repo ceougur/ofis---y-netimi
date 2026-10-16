@@ -752,8 +752,8 @@
     const form = view.form;
     if (!hint || !form) return;
     const names = [...new Set(form.lines.map(line => String(line.unit || "").trim()).filter(eUnitAsAdet))];
-    // Yalnız bizim kesip e-Belge olarak gönderdiğimiz türlerde (satış, alıştan iade…); alış faturası karşı tarafın belgesidir.
-    hint.hidden = !names.length || !meta?.kinds?.[form.kind]?.send;
+    // Yalnız e-Belge olarak gidecek belgede (satış, alıştan iade…; Müşteri Fişi / kâğıt değil); alış faturası karşı tarafın belgesidir.
+    hint.hidden = !names.length || !sendable(form);
     hint.textContent = names.length ? `${names.join(", ")}: e-Fatura / e-Arşivde “Adet” kodu ile gider; birim adı kalem notunda yazar.` : "";
   }
   function renderLines() {
@@ -1472,6 +1472,7 @@
     const profiles = form.calc.profiles || [];
     field.hidden = !edoc() || profiles.length < 2;
     form.profile = form.calc.profile;
+    updateUnitHint();
     field.querySelector("select").innerHTML = profiles.map(item => `<option value="${esc(item.id)}" ${item.id === form.calc.profile ? "selected" : ""}>${esc(item.label)}</option>`).join("");
     field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : "";
   }

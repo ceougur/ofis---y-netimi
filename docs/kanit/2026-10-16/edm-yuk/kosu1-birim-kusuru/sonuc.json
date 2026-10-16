@@ -1,0 +1,2341 @@
+{
+ "mode": "GERÇEK EDM TEST",
+ "companies": [
+  {
+   "code": "001",
+   "name": "DESTEK OFİS",
+   "sector": "Yazılım ve Danışmanlık",
+   "tef": [
+    "TEF2026106939313",
+    "TEF2026106939314",
+    "TEF2026106939315",
+    "TEF2026106939316",
+    "TEF2026106939317",
+    "TEF2026106939318",
+    "TEF2026106939319",
+    "TEF2026106939320",
+    "TEF2026106939321",
+    "TEF2026106939322",
+    "TEF2026106939323",
+    "TEF2026106939324",
+    "TEF2026106939325",
+    "TEF2026106939326",
+    "TEF2026106939327",
+    "TEF2026106939328",
+    "TEF2026106939329"
+   ],
+   "tea": [
+    "TEA2026106939313",
+    "TEA2026106939314",
+    "TEA2026106939315",
+    "TEA2026106939316",
+    "TEA2026106939317",
+    "TEA2026106939318",
+    "TEA2026106939319",
+    "TEA2026106939320",
+    "TEA2026106939321",
+    "TEA2026106939322",
+    "TEA2026106939323",
+    "TEA2026106939324",
+    "TEA2026106939325",
+    "TEA2026106939326",
+    "TEA2026106939327"
+   ]
+  },
+  {
+   "code": "002",
+   "name": "ATLAS YAPI MALZEMELERİ LTD. ŞTİ.",
+   "sector": "İnşaat Malzemesi Ticareti",
+   "tef": [
+    "TEF2026107439313",
+    "TEF2026107439314",
+    "TEF2026107439315",
+    "TEF2026107439316",
+    "TEF2026107439317",
+    "TEF2026107439318",
+    "TEF2026107439319",
+    "TEF2026107439320",
+    "TEF2026107439321",
+    "TEF2026107439322",
+    "TEF2026107439323",
+    "TEF2026107439324",
+    "TEF2026107439325",
+    "TEF2026107439326",
+    "TEF2026107439327",
+    "TEF2026107439328",
+    "TEF2026107439329"
+   ],
+   "tea": [
+    "TEA2026107439313",
+    "TEA2026107439314",
+    "TEA2026107439315",
+    "TEA2026107439316",
+    "TEA2026107439317",
+    "TEA2026107439318",
+    "TEA2026107439319",
+    "TEA2026107439320",
+    "TEA2026107439321",
+    "TEA2026107439322",
+    "TEA2026107439323",
+    "TEA2026107439324",
+    "TEA2026107439325",
+    "TEA2026107439326",
+    "TEA2026107439327"
+   ]
+  }
+ ],
+ "docs": [
+  {
+   "sirket": "001",
+   "kullanici": "destek1",
+   "rol": "muhasebe",
+   "cari": "Yıldız Hukuk Bürosu",
+   "sektor": "Hukuk",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939315",
+   "ettn": "d5206b0f-47a5-4be4-9515-1c263f00e0a4",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6240,
+   "kalemler": [
+    {
+     "ad": "Muhasebe Yazılımı Lisansı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 2500,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kurulum ve Eğitim",
+     "birim": "Saat",
+     "miktar": 4,
+     "fiyat": 750,
+     "kdv": 20,
+     "iskonto": 10,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek1",
+   "rol": "muhasebe",
+   "cari": "Mehmet Demir",
+   "sektor": "Bireysel (Serbest Meslek)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939317",
+   "ettn": "09bd0136-d284-48b0-b207-70e3a9427fad",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "tutar": 2430,
+   "kalemler": [
+    {
+     "ad": "Bireysel Lisans",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 1200,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Online Eğitim",
+     "birim": "Kişi",
+     "miktar": 2,
+     "fiyat": 450,
+     "kdv": 10,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek1",
+   "rol": "muhasebe",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "sektor": "Emlak",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026106939320",
+   "ettn": "94d832eb-690c-44f6-b9b3-3e3952c1890c",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 5400,
+   "kalemler": [
+    {
+     "ad": "Emlak Portföy Yazılımı Aboneliği",
+     "birim": "Ay",
+     "miktar": 5,
+     "fiyat": 900,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek1",
+   "rol": "muhasebe",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "sektor": "Kafe / Restoran",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026106939322",
+   "ettn": "664033df-b1bd-438b-865a-f809fbc7b5bd",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "tutar": 3571.5,
+   "kalemler": [
+    {
+     "ad": "Adisyon Yazılımı Kurulumu",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 3000,
+     "kdv": 20,
+     "iskonto": 5,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "El Terminali Kılıfı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 150,
+     "kdv": 1,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek1",
+   "rol": "muhasebe",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "sektor": "Gıda",
+   "tur": "eF-Tevkifat",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939326",
+   "ettn": "3c893c72-ee31-4bd6-b04e-de84af926049",
+   "profil": "TEMELFATURA",
+   "tip": "TEVKIFAT",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 10200,
+   "kalemler": [
+    {
+     "ad": "Yazılım Danışmanlığı",
+     "birim": "Saat",
+     "miktar": 10,
+     "fiyat": 1000,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "602",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek1",
+   "rol": "muhasebe",
+   "cari": "Zeynep Arslan",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939327",
+   "ettn": "0528fa3d-1cb9-4960-b8d5-c5902788cb2a",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 2160,
+   "kalemler": [
+    {
+     "ad": "Teknik Destek Paketi",
+     "birim": "Ay",
+     "miktar": 3,
+     "fiyat": 600,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek1",
+   "rol": "muhasebe",
+   "cari": "Yıldız Hukuk Bürosu",
+   "sektor": "Hukuk",
+   "tur": "eF-Temel (yarış)",
+   "kaydet": "hold",
+   "no": "TEF2026106939329",
+   "ettn": "3a88cfa4-aa6e-41f9-8449-66b768150420",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 120,
+   "kalemler": [
+    {
+     "ad": "Yarış Deneme Hizmeti",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 100,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek2",
+   "rol": "muhasebe",
+   "cari": "Mehmet Demir",
+   "sektor": "Bireysel (Serbest Meslek)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939313",
+   "ettn": "16636e0c-ef85-41f0-a993-a14ca8c87815",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 2430,
+   "kalemler": [
+    {
+     "ad": "Bireysel Lisans",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 1200,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Online Eğitim",
+     "birim": "Kişi",
+     "miktar": 2,
+     "fiyat": 450,
+     "kdv": 10,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek2",
+   "rol": "muhasebe",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "sektor": "Emlak",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026106939316",
+   "ettn": "af3d6dbd-afdf-4b5e-9627-8131c32d1785",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 5400,
+   "kalemler": [
+    {
+     "ad": "Emlak Portföy Yazılımı Aboneliği",
+     "birim": "Ay",
+     "miktar": 5,
+     "fiyat": 900,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek2",
+   "rol": "muhasebe",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "sektor": "Kafe / Restoran",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026106939319",
+   "ettn": "127a3903-57cb-4b9b-9eac-255a9b4178ef",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 3571.5,
+   "kalemler": [
+    {
+     "ad": "Adisyon Yazılımı Kurulumu",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 3000,
+     "kdv": 20,
+     "iskonto": 5,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "El Terminali Kılıfı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 150,
+     "kdv": 1,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek2",
+   "rol": "muhasebe",
+   "cari": "Anadolu Bilişim Dağıtım A.Ş.",
+   "sektor": "Tedarikçi",
+   "tur": "eF-İade",
+   "kaydet": "return",
+   "no": "TEF2026106939321",
+   "ettn": "1c5775e6-e8ba-49ac-885d-d887143936e5",
+   "profil": "TEMELFATURA",
+   "tip": "IADE",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 3600,
+   "kalemler": []
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek2",
+   "rol": "muhasebe",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "sektor": "Gıda",
+   "tur": "eF-Tevkifat",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939323",
+   "ettn": "f184ce36-e8f1-45d4-b39e-f17b19b86715",
+   "profil": "TEMELFATURA",
+   "tip": "TEVKIFAT",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 10200,
+   "kalemler": [
+    {
+     "ad": "Yazılım Danışmanlığı",
+     "birim": "Saat",
+     "miktar": 10,
+     "fiyat": 1000,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "602",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek2",
+   "rol": "muhasebe",
+   "cari": "Zeynep Arslan",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939324",
+   "ettn": "4546c6f6-8db8-4dfd-ad38-b3a6d4342e8f",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 2160,
+   "kalemler": [
+    {
+     "ad": "Teknik Destek Paketi",
+     "birim": "Ay",
+     "miktar": 3,
+     "fiyat": 600,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek2",
+   "rol": "muhasebe",
+   "cari": "Yıldız Hukuk Bürosu",
+   "sektor": "Hukuk",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939328",
+   "ettn": "821f30c2-7dcc-42a3-9be2-b334b8801497",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6240,
+   "kalemler": [
+    {
+     "ad": "Muhasebe Yazılımı Lisansı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 2500,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kurulum ve Eğitim",
+     "birim": "Saat",
+     "miktar": 4,
+     "fiyat": 750,
+     "kdv": 20,
+     "iskonto": 10,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek3",
+   "rol": "avukat",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "sektor": "Emlak",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026106939313",
+   "ettn": "70a6028f-9d1f-4b7a-8f69-1353cbcaf78b",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 5400,
+   "kalemler": [
+    {
+     "ad": "Emlak Portföy Yazılımı Aboneliği",
+     "birim": "Ay",
+     "miktar": 5,
+     "fiyat": 900,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek3",
+   "rol": "avukat",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "sektor": "Kafe / Restoran",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026106939316",
+   "ettn": "b6eba758-72fe-4f05-9f00-6790894c0803",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 3571.5,
+   "kalemler": [
+    {
+     "ad": "Adisyon Yazılımı Kurulumu",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 3000,
+     "kdv": 20,
+     "iskonto": 5,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "El Terminali Kılıfı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 150,
+     "kdv": 1,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek3",
+   "rol": "avukat",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "sektor": "Gıda",
+   "tur": "eF-Tevkifat",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939318",
+   "ettn": "20fbc02d-b1f3-420c-b00c-26d812c6558b",
+   "profil": "TEMELFATURA",
+   "tip": "TEVKIFAT",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 10200,
+   "kalemler": [
+    {
+     "ad": "Yazılım Danışmanlığı",
+     "birim": "Saat",
+     "miktar": 10,
+     "fiyat": 1000,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "602",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek3",
+   "rol": "avukat",
+   "cari": "Zeynep Arslan",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939320",
+   "ettn": "4eaaae31-aa49-4cb3-97f1-16c8a2979213",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 2160,
+   "kalemler": [
+    {
+     "ad": "Teknik Destek Paketi",
+     "birim": "Ay",
+     "miktar": 3,
+     "fiyat": 600,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek3",
+   "rol": "avukat",
+   "cari": "Yıldız Hukuk Bürosu",
+   "sektor": "Hukuk",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939324",
+   "ettn": "b6b1f2bb-e7f0-4b2a-84e7-7d0d9eed604f",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6240,
+   "kalemler": [
+    {
+     "ad": "Muhasebe Yazılımı Lisansı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 2500,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kurulum ve Eğitim",
+     "birim": "Saat",
+     "miktar": 4,
+     "fiyat": 750,
+     "kdv": 20,
+     "iskonto": 10,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek3",
+   "rol": "avukat",
+   "cari": "Mehmet Demir",
+   "sektor": "Bireysel (Serbest Meslek)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939325",
+   "ettn": "e198ebf1-b781-4289-8164-86286f85a92a",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 2430,
+   "kalemler": [
+    {
+     "ad": "Bireysel Lisans",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 1200,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Online Eğitim",
+     "birim": "Kişi",
+     "miktar": 2,
+     "fiyat": 450,
+     "kdv": 10,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek4",
+   "rol": "muhasebe",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "sektor": "Kafe / Restoran",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026106939314",
+   "ettn": "4f7d7c88-77df-42f6-8188-d6f3154fee46",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 3571.5,
+   "kalemler": [
+    {
+     "ad": "Adisyon Yazılımı Kurulumu",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 3000,
+     "kdv": 20,
+     "iskonto": 5,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "El Terminali Kılıfı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 150,
+     "kdv": 1,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek4",
+   "rol": "muhasebe",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "sektor": "Gıda",
+   "tur": "eF-Tevkifat",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939317",
+   "ettn": "42d3b7b2-d382-4d48-8277-c7f5d4fbdaa7",
+   "profil": "TEMELFATURA",
+   "tip": "TEVKIFAT",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 10200,
+   "kalemler": [
+    {
+     "ad": "Yazılım Danışmanlığı",
+     "birim": "Saat",
+     "miktar": 10,
+     "fiyat": 1000,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "602",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek4",
+   "rol": "muhasebe",
+   "cari": "Zeynep Arslan",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939318",
+   "ettn": "6263ac00-09dc-4d4e-bf86-695daf41cb00",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 2160,
+   "kalemler": [
+    {
+     "ad": "Teknik Destek Paketi",
+     "birim": "Ay",
+     "miktar": 3,
+     "fiyat": 600,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek4",
+   "rol": "muhasebe",
+   "cari": "Yıldız Hukuk Bürosu",
+   "sektor": "Hukuk",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939322",
+   "ettn": "8f0f61af-9114-47cf-8be8-dd8d02f9bec6",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6240,
+   "kalemler": [
+    {
+     "ad": "Muhasebe Yazılımı Lisansı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 2500,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kurulum ve Eğitim",
+     "birim": "Saat",
+     "miktar": 4,
+     "fiyat": 750,
+     "kdv": 20,
+     "iskonto": 10,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek4",
+   "rol": "muhasebe",
+   "cari": "Mehmet Demir",
+   "sektor": "Bireysel (Serbest Meslek)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939323",
+   "ettn": "d02a0807-6766-44bd-ab55-2994c713247d",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 2430,
+   "kalemler": [
+    {
+     "ad": "Bireysel Lisans",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 1200,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Online Eğitim",
+     "birim": "Kişi",
+     "miktar": 2,
+     "fiyat": 450,
+     "kdv": 10,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek4",
+   "rol": "muhasebe",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "sektor": "Emlak",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026106939327",
+   "ettn": "c23e8808-b1ff-4af0-b93f-8e1f25d85199",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 5400,
+   "kalemler": [
+    {
+     "ad": "Emlak Portföy Yazılımı Aboneliği",
+     "birim": "Ay",
+     "miktar": 5,
+     "fiyat": 900,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek5",
+   "rol": "avukat",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "sektor": "Gıda",
+   "tur": "eF-Tevkifat",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939314",
+   "ettn": "67fa2331-be98-49aa-a6ce-67519028f0a6",
+   "profil": "TEMELFATURA",
+   "tip": "TEVKIFAT",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 10200,
+   "kalemler": [
+    {
+     "ad": "Yazılım Danışmanlığı",
+     "birim": "Saat",
+     "miktar": 10,
+     "fiyat": 1000,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "602",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek5",
+   "rol": "avukat",
+   "cari": "Zeynep Arslan",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939315",
+   "ettn": "6c0a6f36-3f9c-4a7e-bfd8-a68732760fdb",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "tutar": 2160,
+   "kalemler": [
+    {
+     "ad": "Teknik Destek Paketi",
+     "birim": "Ay",
+     "miktar": 3,
+     "fiyat": 600,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek5",
+   "rol": "avukat",
+   "cari": "Yıldız Hukuk Bürosu",
+   "sektor": "Hukuk",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026106939319",
+   "ettn": "609f38d3-b6aa-4df9-91e4-255e74820ef2",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6240,
+   "kalemler": [
+    {
+     "ad": "Muhasebe Yazılımı Lisansı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 2500,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kurulum ve Eğitim",
+     "birim": "Saat",
+     "miktar": 4,
+     "fiyat": 750,
+     "kdv": 20,
+     "iskonto": 10,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek5",
+   "rol": "avukat",
+   "cari": "Mehmet Demir",
+   "sektor": "Bireysel (Serbest Meslek)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026106939321",
+   "ettn": "a5be1d08-d037-45b6-8b15-200ba0f35a83",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 2430,
+   "kalemler": [
+    {
+     "ad": "Bireysel Lisans",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 1200,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Online Eğitim",
+     "birim": "Kişi",
+     "miktar": 2,
+     "fiyat": 450,
+     "kdv": 10,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek5",
+   "rol": "avukat",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "sektor": "Emlak",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026106939325",
+   "ettn": "49cfc80f-a4b4-4e97-8a8c-0993229cfa7c",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 5400,
+   "kalemler": [
+    {
+     "ad": "Emlak Portföy Yazılımı Aboneliği",
+     "birim": "Ay",
+     "miktar": 5,
+     "fiyat": 900,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "001",
+   "kullanici": "destek5",
+   "rol": "avukat",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "sektor": "Kafe / Restoran",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026106939326",
+   "ettn": "7a8ca9e3-9b99-4d5a-828b-7da57b284bc6",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 3571.5,
+   "kalemler": [
+    {
+     "ad": "Adisyon Yazılımı Kurulumu",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 3000,
+     "kdv": 20,
+     "iskonto": 5,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "El Terminali Kılıfı",
+     "birim": "Adet",
+     "miktar": 1,
+     "fiyat": 150,
+     "kdv": 1,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "rol": "muhasebe",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "sektor": "İnşaat Taahhüt",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439314",
+   "ettn": "85bfbc8f-e203-430c-bd84-2e5091b703e7",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "error",
+   "tutar": 68400,
+   "kalemler": [
+    {
+     "ad": "Portland Çimento 50 Kg",
+     "birim": "Çuval",
+     "miktar": 100,
+     "fiyat": 285,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 1000,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "rol": "muhasebe",
+   "cari": "Can Öztürk",
+   "sektor": "Bireysel (Ev Tadilatı)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439315",
+   "ettn": "4e1a0b78-ce8e-41a0-9ff2-21d09fddeed3",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "tutar": 23880,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 40,
+     "fiyat": 425,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 2,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "rol": "muhasebe",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "sektor": "Tekstil",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026107439318",
+   "ettn": "ed826528-de48-4609-904a-6a0354779329",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 24012,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 15,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 8,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "rol": "muhasebe",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "sektor": "Otomotiv Servisi",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026107439320",
+   "ettn": "63079b44-57ea-49d0-b655-780d709bd34c",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "tutar": 8100,
+   "kalemler": [
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 1000,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "rol": "muhasebe",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "sektor": "Turizm",
+   "tur": "eF-İstisna",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439323",
+   "ettn": "47447d69-948b-4671-ac42-acf7666704e4",
+   "profil": "TEMELFATURA",
+   "tip": "ISTISNA",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 49203.2,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 100,
+     "fiyat": 425,
+     "kdv": 0,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": "301"
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 200,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 2,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "rol": "muhasebe",
+   "cari": "Elif Şahin",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439324",
+   "ettn": "a7f7d3a0-3aa1-4228-8925-02943dcf8aaa",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6600,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 1,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 600,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "rol": "muhasebe",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "sektor": "İnşaat Taahhüt",
+   "tur": "eF-Temel (yarış)",
+   "kaydet": "hold",
+   "no": "TEF2026107439329",
+   "ettn": "5845f7a4-c25c-4a20-b9fc-8ab8dc291f49",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 81,
+   "kalemler": [
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 10,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "rol": "muhasebe",
+   "cari": "Can Öztürk",
+   "sektor": "Bireysel (Ev Tadilatı)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439314",
+   "ettn": "29817473-1390-483b-acf0-8eceb4a23d95",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 23880,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 40,
+     "fiyat": 425,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 2,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "rol": "muhasebe",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "sektor": "Tekstil",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026107439317",
+   "ettn": "6299b2dd-49f1-4d97-b992-060c539848c6",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 24012,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 15,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 8,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "rol": "muhasebe",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "sektor": "Otomotiv Servisi",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026107439318",
+   "ettn": "9fce7bbb-a1ea-4f14-95ff-e7ea9ba933ac",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 8100,
+   "kalemler": [
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 1000,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "rol": "muhasebe",
+   "cari": "Orta Anadolu Çimento Pazarlama A.Ş.",
+   "sektor": "Tedarikçi",
+   "tur": "eF-İade",
+   "kaydet": "return",
+   "no": "TEF2026107439321",
+   "ettn": "3e47d39a-8eec-4c5b-b373-f6f427759721",
+   "profil": "TEMELFATURA",
+   "tip": "IADE",
+   "durum": "issued",
+   "eDurum": "error",
+   "tutar": 504,
+   "kalemler": []
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "rol": "muhasebe",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "sektor": "Turizm",
+   "tur": "eF-İstisna",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439324",
+   "ettn": "34d8f539-5915-438c-abea-aaaa4f896a18",
+   "profil": "TEMELFATURA",
+   "tip": "ISTISNA",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 49203.2,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 100,
+     "fiyat": 425,
+     "kdv": 0,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": "301"
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 200,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 2,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "rol": "muhasebe",
+   "cari": "Elif Şahin",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439325",
+   "ettn": "6e8e4fbd-f313-49ae-a1c3-1e3bf692771d",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6600,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 1,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 600,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "rol": "muhasebe",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "sektor": "İnşaat Taahhüt",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439328",
+   "ettn": "fd4e9257-7cc8-4160-8b5a-9d63c5378fcc",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "error",
+   "tutar": 68400,
+   "kalemler": [
+    {
+     "ad": "Portland Çimento 50 Kg",
+     "birim": "Çuval",
+     "miktar": 100,
+     "fiyat": 285,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 1000,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "rol": "avukat",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "sektor": "Tekstil",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026107439313",
+   "ettn": "e439895d-0b76-4097-93f9-aa445011807e",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 24012,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 15,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 8,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "rol": "avukat",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "sektor": "Otomotiv Servisi",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026107439316",
+   "ettn": "04b2b448-cdf9-40b2-bc78-5d4d18acea2b",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 8100,
+   "kalemler": [
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 1000,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "rol": "avukat",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "sektor": "Turizm",
+   "tur": "eF-İstisna",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439319",
+   "ettn": "f77eb1cd-7f33-4a80-ae9d-9c1a4c70e944",
+   "profil": "TEMELFATURA",
+   "tip": "ISTISNA",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 49203.2,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 100,
+     "fiyat": 425,
+     "kdv": 0,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": "301"
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 200,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 2,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "rol": "avukat",
+   "cari": "Elif Şahin",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439321",
+   "ettn": "24e46163-a18f-43e8-a448-e3f7876938d6",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6600,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 1,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 600,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "rol": "avukat",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "sektor": "İnşaat Taahhüt",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439325",
+   "ettn": "4f8374ef-fbe8-4dda-901c-df23193184e3",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "error",
+   "tutar": 68400,
+   "kalemler": [
+    {
+     "ad": "Portland Çimento 50 Kg",
+     "birim": "Çuval",
+     "miktar": 100,
+     "fiyat": 285,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 1000,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "rol": "avukat",
+   "cari": "Can Öztürk",
+   "sektor": "Bireysel (Ev Tadilatı)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439327",
+   "ettn": "15d709aa-3311-43cc-a7b5-83ad6cd01376",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 23880,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 40,
+     "fiyat": 425,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 2,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "rol": "muhasebe",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "sektor": "Otomotiv Servisi",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026107439313",
+   "ettn": "c5c4a022-a868-439f-82cc-3546b96927c4",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 8100,
+   "kalemler": [
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 1000,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "rol": "muhasebe",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "sektor": "Turizm",
+   "tur": "eF-İstisna",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439316",
+   "ettn": "5d01525a-3d1b-4a7b-89e8-2d1ce7f34eb2",
+   "profil": "TEMELFATURA",
+   "tip": "ISTISNA",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 49203.2,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 100,
+     "fiyat": 425,
+     "kdv": 0,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": "301"
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 200,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 2,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "rol": "muhasebe",
+   "cari": "Elif Şahin",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439319",
+   "ettn": "6cb8a924-ba50-41cb-a8bc-ef0805199f13",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 6600,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 1,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 600,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "rol": "muhasebe",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "sektor": "İnşaat Taahhüt",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439322",
+   "ettn": "0c6105c4-ca98-407c-9344-44d44c569acf",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "error",
+   "tutar": 68400,
+   "kalemler": [
+    {
+     "ad": "Portland Çimento 50 Kg",
+     "birim": "Çuval",
+     "miktar": 100,
+     "fiyat": 285,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 1000,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "rol": "muhasebe",
+   "cari": "Can Öztürk",
+   "sektor": "Bireysel (Ev Tadilatı)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439323",
+   "ettn": "a32bce64-0882-4745-9a19-4b933c37f135",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 23880,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 40,
+     "fiyat": 425,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 2,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "rol": "muhasebe",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "sektor": "Tekstil",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026107439327",
+   "ettn": "4a37e89c-e6e7-43b0-9fc2-632edad3cace",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 24012,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 15,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 8,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "rol": "avukat",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "sektor": "Turizm",
+   "tur": "eF-İstisna",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439315",
+   "ettn": "18942b77-15ef-4a5a-951b-cf8cb631c9ee",
+   "profil": "TEMELFATURA",
+   "tip": "ISTISNA",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 49203.2,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 100,
+     "fiyat": 425,
+     "kdv": 0,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": "301"
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 200,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 2,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "rol": "avukat",
+   "cari": "Elif Şahin",
+   "sektor": "Bireysel",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439317",
+   "ettn": "8eb04a75-2d6f-46a9-a3df-f606b33f305c",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "tutar": 6600,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 1,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 600,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "rol": "avukat",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "sektor": "İnşaat Taahhüt",
+   "tur": "eF-Temel",
+   "kaydet": "issue-now",
+   "no": "TEF2026107439320",
+   "ettn": "234bf915-3414-4f25-92b9-cd537d0335d4",
+   "profil": "TEMELFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "error",
+   "tutar": 68400,
+   "kalemler": [
+    {
+     "ad": "Portland Çimento 50 Kg",
+     "birim": "Çuval",
+     "miktar": 100,
+     "fiyat": 285,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İnşaat Demiri Q12",
+     "birim": "Kg",
+     "miktar": 1000,
+     "fiyat": 28.5,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "rol": "avukat",
+   "cari": "Can Öztürk",
+   "sektor": "Bireysel (Ev Tadilatı)",
+   "tur": "eA",
+   "kaydet": "issue-now",
+   "no": "TEA2026107439322",
+   "ettn": "4c04e601-34ef-4b28-94d2-31febca935d8",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 23880,
+   "kalemler": [
+    {
+     "ad": "Seramik Yer Karosu 60x60",
+     "birim": "M²",
+     "miktar": 40,
+     "fiyat": 425,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    },
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 2,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "rol": "avukat",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "sektor": "Tekstil",
+   "tur": "eF-Ticari",
+   "kaydet": "issue-later",
+   "no": "TEF2026107439326",
+   "ettn": "9bfd6a48-f382-4cf1-af3a-9d41e6bc40e9",
+   "profil": "TICARIFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 24012,
+   "kalemler": [
+    {
+     "ad": "İç Cephe Boyası 15 Lt",
+     "birim": "Teneke",
+     "miktar": 15,
+     "fiyat": 1450,
+     "kdv": 20,
+     "iskonto": 8,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  },
+  {
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "rol": "avukat",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "sektor": "Otomotiv Servisi",
+   "tur": "eA",
+   "kaydet": "issue-later",
+   "no": "TEA2026107439326",
+   "ettn": "2cf4ed21-1f1c-45dc-b8b4-e642ca1b59d2",
+   "profil": "EARSIVFATURA",
+   "tip": "SATIS",
+   "durum": "issued",
+   "eDurum": "sent",
+   "tutar": 8100,
+   "kalemler": [
+    {
+     "ad": "Kırmızı Tuğla 13,5",
+     "birim": "Adet",
+     "miktar": 1000,
+     "fiyat": 6.75,
+     "kdv": 20,
+     "iskonto": 0,
+     "tevkifat": "",
+     "istisna": ""
+    }
+   ]
+  }
+ ],
+ "races": {
+  "gonder-001": {
+   "no": "TEF2026106939329",
+   "gonderim": 1,
+   "iletiler": {
+    "destek1": [
+     "Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.×"
+    ],
+    "destek2": [
+     "e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"
+    ]
+   }
+  },
+  "gonder-002": {
+   "no": "TEF2026107439329",
+   "gonderim": 1,
+   "iletiler": {
+    "atlas1": [
+     "e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.×"
+    ],
+    "atlas2": [
+     "Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.×"
+    ]
+   }
+  },
+  "iptal-001": {
+   "no": "TEA2026106939315",
+   "iptal": 1,
+   "eIptal": 1,
+   "iletiler": {
+    "destek3": [
+     "Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin."
+    ],
+    "destek4": [
+     "Satış Faturası TEA2026106939315 iptal edildi; etkileri geri alındı.×"
+    ]
+   }
+  },
+  "iptal-002": {
+   "no": "TEA2026107439317",
+   "iptal": 1,
+   "eIptal": 1,
+   "iletiler": {
+    "atlas3": [
+     "Satış Faturası TEA2026107439317 iptal edildi; etkileri geri alındı.×"
+    ],
+    "atlas4": [
+     "Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin."
+    ]
+   }
+  }
+ },
+ "backup": {
+  "oto-001": {
+   "file": "destekofis-001-2026-10-16T15-23-01-063Z.sqlite",
+   "counts": {
+    "invoices": 33,
+    "invoice_lines": 48,
+    "accounts": 7,
+    "stock_items": 1,
+    "audit_events": 300
+   },
+   "same": true,
+   "integrity": "ok"
+  },
+  "oto-002": {
+   "file": "destekofis-002-2026-10-16T15-23-01-097Z.sqlite",
+   "counts": {
+    "invoices": 33,
+    "invoice_lines": 53,
+    "accounts": 7,
+    "stock_items": 5,
+    "audit_events": 204
+   },
+   "same": true,
+   "integrity": "ok"
+  },
+  "elle-001": {
+   "file": "destekofis-001-2026-10-16T15-23-01-643Z-manuel.sqlite",
+   "counts": {
+    "invoices": 33,
+    "invoice_lines": 48,
+    "accounts": 7,
+    "stock_items": 1,
+    "audit_events": 300
+   },
+   "same": true,
+   "integrity": "ok"
+  },
+  "elle-002": {
+   "file": "destekofis-002-2026-10-16T15-23-01-643Z-manuel.sqlite",
+   "counts": {
+    "invoices": 33,
+    "invoice_lines": 53,
+    "accounts": 7,
+    "stock_items": 5,
+    "audit_events": 204
+   },
+   "same": true,
+   "integrity": "ok"
+  }
+ },
+ "snapshot": {
+  "001": {
+   "balances": {
+    "Yıldız Hukuk Bürosu": 31320,
+    "Kuzey Emlak Danışmanlık Ltd. Şti.": 27000,
+    "Marmara Gıda San. ve Tic. A.Ş.": 51000,
+    "Mehmet Demir": 9720,
+    "Güneş Kafe Gıda Ltd. Şti.": 14286,
+    "Zeynep Arslan": 8640
+   },
+   "stock": {}
+  },
+  "002": {
+   "balances": {
+    "Başkent İnşaat Taahhüt A.Ş.": 342081,
+    "Ege Tekstil Konfeksiyon Ltd. Şti.": 120060,
+    "Akdeniz Otelcilik ve Turizm A.Ş.": 246016,
+    "Can Öztürk": 95520,
+    "Deniz Oto Servis Ltd. Şti.": 32400,
+    "Elif Şahin": 26400
+   },
+   "stock": {
+    "Portland Çimento 50 Kg": 99508,
+    "İnşaat Demiri Q12": 94000,
+    "İç Cephe Boyası 15 Lt": 99913,
+    "Seramik Yer Karosu 60x60": 99340,
+    "Kırmızı Tuğla 13,5": 93590
+   }
+  }
+ }
+}
