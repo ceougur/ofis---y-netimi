@@ -54,15 +54,17 @@ export function readUbl(xml) {
     const withholding = find(line, "WithholdingTaxTotal/TaxSubtotal");
     const quantity = num(textOf(qty)) || 1;
     const notes = lineNotes(line);
+    const fullName = textOf(find(line, "Item/Name")) || textOf(find(line, "Item/Description")) || "Kalem";
     const unitAttr = qty?.attrs?.unitCode || "";
     const unitIndex = ["", "C62", "NIU"].includes(unitAttr) ? notes.map(note => UNIT_NOTE.test(note)).lastIndexOf(true) : -1;
     return {
-      name: textOf(find(line, "Item/Name")) || textOf(find(line, "Item/Description")) || "Kalem",
-      code: textOf(find(line, "Item/SellersItemIdentification/ID")),
-      // Kalem notları: açıklama + (DestekOfis'in e-Belgesinde, SON not) "Birim: Çuval" — entegratörün kodu olmayan birim Adet koduyla gider, adı notta
+      // İçe alma sınırları (kalem adı 200, stok kodu 60): uzun ad kısaltılır, tamamı açıklamanın başına yazılır (kontrol turu 7).
+      name: fullName.slice(0, 200),
+      code: textOf(find(line, "Item/SellersItemIdentification/ID")).slice(0, 60),
+      // Kalem notları: açıklama + (DestekOfis'in e-Belgesinde, son not olarak yazılır; okurken son eşleşen not) "Birim: Çuval" — entegratörün kodu olmayan birim Adet koduyla gider, adı notta
       // taşınır. Not yalnız birim kodu Adet / boşken birim sayılır (kontrol turu 6: Kg'lık kalemde "Birim: Koli" miktarı koliye çeviriyordu); açıklama
       // içe almadaki sınıra (300) göre kısaltılır (çok notlu kalem içe alınamıyordu).
-      description: notes.filter((_, index) => index !== unitIndex).join(" · ").slice(0, 300),
+      description: [fullName.length > 200 ? fullName : "", ...notes.filter((_, index) => index !== unitIndex)].filter(Boolean).join(" · ").slice(0, 300),
       qty: quantity,
       unit: (unitIndex >= 0 ? notes[unitIndex].match(UNIT_NOTE)[1] : "") || UNIT_NAMES[unitAttr] || "Adet",
       unitPrice: price || (quantity ? (net + discount) / quantity : 0),

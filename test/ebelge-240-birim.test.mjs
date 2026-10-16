@@ -79,3 +79,12 @@ test("gelen e-Fatura: birim notu yalnız Adet kodunda, son not; uzun notlar kıs
   assert.ok(long.description.length <= 300, `açıklama ${long.description.length}`);
 });
 
+// Kontrol turu 7 (komşu, 2.3.0'dan): adı 200 / stok kodu 60 karakteri aşan gelen e-Fatura kalemi içe alınamıyordu (içe alma sınırları).
+test("gelen e-Fatura: uzun kalem adı ve stok kodu içe alma sınırına kısaltılır; adın tamamı açıklamada", () => {
+  const name = "Ad".repeat(150);
+  const xml = `<?xml version="1.0"?><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"><cbc:ID>ABC2026000000001</cbc:ID><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">10</cbc:LineExtensionAmount><cac:Item><cbc:Name>${name}</cbc:Name><cac:SellersItemIdentification><cbc:ID>${"K".repeat(80)}</cbc:ID></cac:SellersItemIdentification></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">10</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>`;
+  const line = readUbl(xml).lines[0];
+  assert.ok(line.name.length <= 200 && line.code.length <= 60 && line.description.length <= 300, JSON.stringify({ name: line.name.length, code: line.code.length, description: line.description.length }));
+  assert.ok(line.description.startsWith(name.slice(0, 250)), "adın tamamı açıklamada (sınıra kadar)");
+});
+
