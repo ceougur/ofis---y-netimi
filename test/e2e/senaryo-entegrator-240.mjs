@@ -94,7 +94,7 @@ try {
   const title = await textOf(page, `${modal}:last-of-type .hof-modal-title`);
   ok(title === "e-Dönüşüm ve Entegrasyon Ayarları", `başlık: “${title}”`);
   const tabs = await page.$$eval(`${card} [data-integ-tab]`, nodes => nodes.map(node => node.textContent.trim()));
-  ok(tabs.join(" | ") === "Entegrasyon Bilgileri | Firma / Etiket Tanımları | Otomatik Seriler | Görünüm", `sekmeler: ${tabs.join(" | ")}`);
+  ok(tabs.join(" | ") === "Entegrasyon Bilgileri | Firma / Etiket Tanımları | Otomatik Seriler | Görünüm | Ek Seçenekler", `sekmeler: ${tabs.join(" | ")}`);
   const live = await page.$eval(`${card} input[data-i="env"][value="live"]`, input => ({ disabled: input.disabled, checked: input.checked }));
   const test = await page.$eval(`${card} input[data-i="env"][value="test"]`, input => input.checked);
   ok(live.disabled && !live.checked && test, "Canlı Ortam pasif, Test Ortamı seçili");
@@ -251,6 +251,61 @@ try {
   const officialBody = await officialPdf.body();
   ok(officialPdf.status() === 200 && officialBody.subarray(0, 5).toString("latin1") === "%PDF-" && officialBody.toString("latin1").includes(issuedDoc.number), `Resmî Görüntü EDM'nin PDF'ini açar (${officialPdf.status()}, ${officialBody.length} bayt)`);
   await shot(page, "entegrator-8-resmi-goruntu");
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
+
+  console.log("\n■ 9 Ek Seçenekler (Wolvox kalan maddeleri; isteğe bağlı) — portala taslak, ödeme şekli, Seri No / Lot No");
+  await openInvoices(page);
+  await page.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
+  await page.click(`${card} [data-integ-tab="extras"]`);
+  const extraChecks = await page.$$eval(`${card} [data-i^="opt."]`, nodes => nodes.map(node => `${node.dataset.i}:${node.checked}`));
+  ok(extraChecks.join(",") === "opt.balanceNote:false,opt.paymentMeans:false,opt.draftUpload:false", `Ek Seçenekler varsayılan kapalı: ${extraChecks.join(", ")}`);
+  await page.click(`${card} [data-i="opt.draftUpload"]`);
+  await page.click(`${card} [data-i="opt.paymentMeans"]`);
+  await page.click(`${card} [data-integ-tab="view"]`);
+  await page.click(`${card} [data-integ-tab="extras"]`);
+  ok(await page.$eval(`${card} [data-i="opt.draftUpload"]`, node => node.checked), "sekme dönüşünde işaret korunur");
+  await page.click(`${card} [data-integ-act="save"]`);
+  await page.waitForFunction(() => document.querySelector(".hof-toast")?.textContent?.includes("kaydedildi"), null, { timeout: 8000 }).catch(() => null);
+  ok(stored().eOptions?.draftUpload === true && stored().eOptions?.paymentMeans === true && stored().eOptions?.balanceNote === false, `kaydedildi (veri tabanı: ${JSON.stringify(stored().eOptions)})`);
+  await shot(page, "entegrator-9-ek-secenekler");
+  for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+  }
+  await must("seri / lot alanları", admin.put("/api/workspace/invoices/settings", { defaults: { itemTracking: true } }));
+  const tracked = await must("seri numaralı fatura", admin.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyer.id || buyer.account?.id, lines: [{ name: "Kombi Bakımı", qty: 1, unitPrice: 500, vatRate: 20, serialNo: "SN-100" }], payment: { rest: "open" } }));
+  await page.evaluate(id => window.HOF.invoices.openDoc(id), tracked.id);
+  await page.waitForSelector(`${modal} [data-act="e-draft"]`, { timeout: 10000 });
+  const docText = await textOf(page, `${modal} .hof-invoices-modal`);
+  ok(/Seri No: SN-100/.test(docText), "belge ayrıntısında Seri No görünür");
+  ok(!(await page.$(`${modal} [data-act="e-send"]`)) && /Portala Taslak Yükle/.test(await textOf(page, `${modal} [data-act="e-draft"]`)), "ayar açıkken “e-Belge Gönder” yerine “Portala Taslak Yükle”");
+  // Düzenle: seri numarası alanı dolu açılır; insan hızında lot numarası yazılır (Tab ile çıkılır).
+  await page.click(`${modal} [data-act="modify"]`);
+  await page.waitForSelector(`${modal} input[data-f="serialNo"]`, { timeout: 10000 });
+  ok((await page.$eval(`${modal} input[data-f="serialNo"]`, node => node.value)) === "SN-100", "Düzenle formunda Seri No dolu");
+  await page.click(`${modal} input[data-f="lotNo"]`);
+  await page.keyboard.type("LOT-5", { delay: 60 });
+  await page.keyboard.press("Tab");
+  await page.click(`${modal} [data-act="issue"]`);
+  await page.waitForSelector(`${modal} [data-answer="yes"]`, { timeout: 8000 });
+  await page.click(`${modal} [data-answer="yes"]`);
+  await page.waitForSelector(`${modal} [data-act="e-draft"]`, { timeout: 15000 });
+  const editedLine = server.app.store.get("SELECT serial_no AS serialNo, lot_no AS lotNo FROM invoice_lines WHERE invoice_id = ?", tracked.id);
+  ok(editedLine?.serialNo === "SN-100" && editedLine?.lotNo === "LOT-5", `veri tabanında kalem: ${JSON.stringify(editedLine)}`);
+  await page.click(`${modal} [data-act="e-draft"]`);
+  await page.waitForSelector(`${modal} [data-act="e-send"]`, { timeout: 15000 });
+  const draftText = await textOf(page, `${modal} .hof-invoices-modal`);
+  ok(/Portalda Taslak/.test(draftText) && /Taslağı Gönder/.test(draftText) && /Taslağı Yenile/.test(draftText), "taslak yüklendi: “Portalda Taslak”, “Taslağı Gönder”, “Taslağı Yenile”");
+  const ettn = server.app.store.get("SELECT ettn FROM invoices WHERE id = ?", tracked.id).ettn;
+  ok(edm.state.drafts.has(ettn) && /<cbc:SerialID>SN-100<\/cbc:SerialID>/.test(edm.state.drafts.get(ettn).xml) && /<cbc:LotNumberID>LOT-5<\/cbc:LotNumberID>/.test(edm.state.drafts.get(ettn).xml), "EDM'deki taslakta Seri No ve Lot No");
+  await shot(page, "entegrator-9-portalda-taslak");
+  await page.click(`${modal} [data-act="e-send"]`);
+  await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible [data-act="e-draft"]'), null, { timeout: 15000 });
+  const sentDraft = edm.state.sent.find(item => item.uuid === ettn);
+  ok(Boolean(sentDraft?.fromDraft) && server.app.store.get("SELECT e_status AS s FROM invoices WHERE id = ?", tracked.id).s === "sent", "Taslağı Gönder: EDM'deki taslak gönderildi, durum Gönderildi");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
     await page.keyboard.press("Escape");
     await page.waitForTimeout(250);

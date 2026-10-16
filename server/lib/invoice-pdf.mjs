@@ -155,7 +155,8 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   const bottom = A4.height - 60;
   for (const [index, item] of (invoice.lines || []).entries()) {
     const nameLines = doc.wrap(item.name, nameCol.w - 6, "regular", 8).slice(0, 4);
-    const extra = [item.description, item.withholdingCode ? `Tevkifat ${item.withholdingCode} (${item.withholdingNum}/${item.withholdingDen}): ${money(item.withheld, currency)}` : "", item.vatRate === 0 && item.exemptionCode ? `İstisna ${item.exemptionCode}` : "", item.expenseLabel ? `Gider: ${item.expenseLabel}` : ""].filter(Boolean);
+    const tracking = [item.serialNo ? `Seri No: ${item.serialNo}` : "", item.lotNo ? `Lot No: ${item.lotNo}` : ""].filter(Boolean).join(" · ");
+    const extra = [item.description, tracking, item.withholdingCode ? `Tevkifat ${item.withholdingCode} (${item.withholdingNum}/${item.withholdingDen}): ${money(item.withheld, currency)}` : "", item.vatRate === 0 && item.exemptionCode ? `İstisna ${item.exemptionCode}` : "", item.expenseLabel ? `Gider: ${item.expenseLabel}` : ""].filter(Boolean);
     const extraLines = extra.flatMap(text => doc.wrap(text, nameCol.w - 6, "regular", 7)).slice(0, 4);
     const height = Math.max(14, nameLines.length * 10 + extraLines.length * 9 + 5);
     if (y + height > bottom) header();

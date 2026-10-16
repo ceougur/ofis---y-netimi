@@ -1,0 +1,22 @@
+09:24:09 AYAR: {"status":200,"eOptions":{"balanceNote":true,"paymentMeans":true,"draftUpload":true},"itemTracking":true,"network":{"source":"env","address":"http://127.0.0.1:34069"}}
+09:24:09 KAYIT: {"status":200,"number":"DOF2026352275183","profile":"TEMELFATURA","payable":12600,"canDraft":true}
+09:24:10 XML: {"xsd":0,"gib":[],"notlar":["Cari hesap bakiyeniz (16.10.2026 itibarıyla, bu fatura dahil): 7.600,00 TL borç"],"odeme":["10","48","42"],"seri":true}
+09:24:14 TASLAK YÜKLE: {"status":200,"eStatus":"draft","msg":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir."}
+09:24:15 DURUM: {"eStatus":"draft","msg":"Taslak olarak EDM portalına yüklendi; gönderilmeyi bekliyor (EDM portalından ya da programdan Gönder). SUCCEED"}
+09:24:15 DÜZENLE: {"status":200,"payable":13800,"eStatus":"draft","draftStale":true}
+09:24:17 TASLAĞI YENİLE: {"status":200,"eStatus":"draft","draftStale":false,"msg":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir."}
+09:24:21 TASLAĞI GÖNDER: {"status":200,"eStatus":"sent","msg":"Taslak e-Fatura gönderildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır."}
+09:24:21 SON XML: {"xsd":0,"gib":[],"odenecek":"13800.00","notlar":["Cari hesap bakiyeniz (16.10.2026 itibarıyla, bu fatura dahil): 8.800,00 TL borç"]}
+09:24:23 eARŞİV TASLAK: {"number":"DOA2026352275183","profile":"EARSIVFATURA","eStatus":"draft","msg":"Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir."}
+09:24:24 eARŞİV TASLAK İPTAL: {"status":200,"status2":"cancelled","eStatus":"cancelled","msg":"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır."}
+09:24:25 DURUM 1: {"eStatus":"processing","msg":"EDM'de paketleniyor. PROCESSING"}
+09:25:11 DURUM 2: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+09:25:57 DURUM 3: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+09:26:43 DURUM 4: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+09:27:28 DURUM 5: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+09:28:14 DURUM 6: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+09:29:00 DURUM 7: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+09:29:46 DURUM 8: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+09:30:32 DURUM 9: {"eStatus":"processing","msg":"Gönderiliyor; sonuç bekleniyor. PROCESSING"}
+09:31:18 DURUM 10: {"eStatus":"sent","msg":"İşlem tamamlandı. SUCCEED"}
+09:31:20 RESMÎ GÖRÜNTÜ: {"status":200,"bayt":62147}

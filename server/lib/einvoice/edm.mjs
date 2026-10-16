@@ -28,7 +28,7 @@ export const EDM_URLS = Object.freeze({
   live: "https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc",
 });
 export const EDM_DEFAULT_NS = "http://schemas.i2i.com/ei/wsdl";
-export const EDM_OPERATIONS = Object.freeze(["Login", "SendInvoice", "GetInvoiceStatus", "GetInvoice", "CheckUser", "CancelInvoice", "MarkInvoice"]);
+export const EDM_OPERATIONS = Object.freeze(["Login", "SendInvoice", "LoadInvoice", "GetInvoiceStatus", "GetInvoice", "CheckUser", "CancelInvoice", "MarkInvoice"]);
 const APP = "DestekOfis";
 const CONTRACT_TTL = 12 * 60 * 60 * 1000;
 const SESSION_TTL = 20 * 60 * 1000;
@@ -40,7 +40,7 @@ const EDM_STATES = Object.freeze({
   "PACKAGE-PROCESSING": ["processing", "EDM'de paketleniyor."],
   "PACKAGE-FAIL": ["error", "Paketleme hatası: belgeyi düzeltip aynı numarayla yeniden gönderin."],
   "PACKAGE-FAILED": ["error", "Paketleme hatası: belgeyi düzeltip aynı numarayla yeniden gönderin."],
-  "LOAD-SUCCEED": ["processing", "Taslak olarak EDM'ye yüklendi; gönderilmeyi bekliyor."],
+  "LOAD-SUCCEED": ["draft", "Taslak olarak EDM portalına yüklendi; gönderilmeyi bekliyor (EDM portalından ya da programdan Gönder)."],
   "SEND-PROCESSING": ["processing", "Gönderiliyor; sonuç bekleniyor."],
   "SEND-WAIT_GIB_RESPONSE": ["processing", "GİB yanıtı bekleniyor."],
   "SEND-WAIT_SYSTEM_RESPONSE": ["processing", "Alıcı sistemin yanıtı bekleniyor."],
@@ -277,6 +277,40 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
         return {
           status: "sent",
           message: earchive ? "e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün." : "e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.",
+          reference: sent?.attrs?.ID || textOf(find(sent, "ID")) || number,
+          uuid: sent?.attrs?.UUID || textOf(find(sent, "UUID")) || uuid,
+        };
+      });
+    },
+    // Portala taslak (Wolvox karşılaştırması, kullanıcı kararı 16.10.2026, isteğe bağlı): LoadInvoice belgeyi gönderilmeden EDM'ye
+    // taslak olarak yükler (EDM Web API v4.2.1 §5.3); numarayı program verir (GENERATEINVOICEIDONLOAD=false). Taslak sonra EDM
+    // portalından ya da sendDraft ile (SendInvoice: CONTENT boş + UUID, §5.4) gönderilir.
+    async loadDraft({ xml, number, uuid, earchive = false, senderVkn = "", senderAlias = "", receiverVkn = "", receiverAlias = "" }) {
+      if (!earchive && !receiverAlias) throw new IntegratorError("Alıcının e-Fatura posta kutusu etiketi bilinmiyor; cari kartında Mükellef Sorgula ile alın.", { code: "integrator-alias", status: 400 });
+      return withSession(async session => {
+        const invoice = E("INVOICE", [E("HEADER", earchive ? [E("EARCHIVE", "true", {}, { optional: true })] : [], {}, { optional: true }), E("CONTENT", base64Text(xml))], { ID: number, UUID: uuid });
+        const request = E("LoadInvoiceRequest", [header(session), invoice, E("SENDER", "", { vkn: senderVkn, alias: senderAlias }), E("RECEIVER", "", { vkn: receiverVkn, alias: earchive ? "" : receiverAlias }), E("GENERATEINVOICEIDONLOAD", "false")]);
+        const body = await call("LoadInvoice", request, { session, wait: 90_000 });
+        touch();
+        const loaded = deepAll(body, "INVOICE")[0];
+        return {
+          status: "draft",
+          message: "Taslak olarak EDM portalına yüklendi; EDM portalından ya da programdan Taslağı Gönder ile gönderilir.",
+          reference: loaded?.attrs?.ID || textOf(find(loaded, "ID")) || number,
+          uuid: loaded?.attrs?.UUID || textOf(find(loaded, "UUID")) || uuid,
+        };
+      });
+    },
+    async sendDraft({ number, uuid, earchive = false, senderVkn = "", senderAlias = "", receiverVkn = "", receiverAlias = "" }) {
+      return withSession(async session => {
+        const invoice = E("INVOICE", [E("HEADER", earchive ? [E("EARCHIVE", "true", {}, { optional: true })] : [], {}, { optional: true })], { ID: number, UUID: uuid });
+        const request = E("SendInvoiceRequest", [header(session), E("SENDER", "", { vkn: senderVkn, alias: senderAlias }), E("RECEIVER", "", { vkn: receiverVkn, alias: earchive ? "" : receiverAlias }), invoice]);
+        const body = await call("SendInvoice", request, { session, wait: 90_000 });
+        touch();
+        const sent = deepAll(body, "INVOICE")[0];
+        return {
+          status: "sent",
+          message: earchive ? "Taslak e-Arşiv fatura gönderildi; sonucu Durum Sorgula ile görün." : "Taslak e-Fatura gönderildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.",
           reference: sent?.attrs?.ID || textOf(find(sent, "ID")) || number,
           uuid: sent?.attrs?.UUID || textOf(find(sent, "UUID")) || uuid,
         };

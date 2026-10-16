@@ -59,7 +59,8 @@ describe("EDM: sözleşme (WSDL) okuyucu", () => {
     assert.equal(mapEdmStatus({ status: "SEND - FAILED" }).status, "error");
     assert.equal(mapEdmStatus({ status: "PACKAGE - FAIL" }).status, "error");
     assert.equal(mapEdmStatus({ status: "CANCELLED - SUCCEED" }).status, "cancelled");
-    assert.equal(mapEdmStatus({ status: "LOAD - SUCCEED" }).status, "processing");
+    // İz 7.3: taslak (LoadInvoice) artık "draft" — portaldan ya da programdan gönderilmeyi bekler (gerçek EDM test ortamı, docs/kanit/2026-10-16/edm-taslak).
+    assert.equal(mapEdmStatus({ status: "LOAD - SUCCEED" }).status, "draft");
     assert.match(mapEdmStatus({ status: "SEND - SUCCEED", earchive: true }).message, /e-Arşiv/);
   });
 });

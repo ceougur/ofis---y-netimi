@@ -26,7 +26,7 @@ export const MULTI_VKN = vkn(222333444);
 
 // WCF singleWsdl benzeri sözleşme: alanlar nitelikli (elementFormDefault="qualified"), istekler REQUEST'ten türer,
 // SOAP 1.1 ve 1.2 bağlamaları, işlem başına SOAPAction.
-export const OPS = ["Login", "Logout", "CheckUser", "SendInvoice", "GetInvoiceStatus", "GetInvoice", "CancelInvoice", "MarkInvoice"];
+export const OPS = ["Login", "Logout", "CheckUser", "SendInvoice", "LoadInvoice", "GetInvoiceStatus", "GetInvoice", "CancelInvoice", "MarkInvoice"];
 export function wsdl({ statusInvoice = true } = {}) {
   const ext = (name, body) => `<xs:element name="${name}"><xs:complexType><xs:complexContent><xs:extension base="t:REQUEST"><xs:sequence>${body}</xs:sequence></xs:extension></xs:complexContent></xs:complexType></xs:element>`;
   const schema = `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="${NS}" targetNamespace="${NS}" elementFormDefault="qualified">
@@ -38,6 +38,7 @@ export function wsdl({ statusInvoice = true } = {}) {
     ${ext("LogoutRequest", "")}
     ${ext("CheckUserRequest", `<xs:element name="USER"><xs:complexType><xs:sequence><xs:element name="IDENTIFIER" type="xs:string"/></xs:sequence></xs:complexType></xs:element>`)}
     ${ext("SendInvoiceRequest", `<xs:element minOccurs="0" name="SENDER" type="t:PARTY"/><xs:element minOccurs="0" name="RECEIVER" type="t:PARTY"/><xs:element maxOccurs="unbounded" name="INVOICE" type="t:INVOICE"/>`)}
+    ${ext("LoadInvoiceRequest", `<xs:element minOccurs="0" maxOccurs="unbounded" name="INVOICE" type="t:INVOICE"/><xs:element minOccurs="0" name="SENDER" type="t:PARTY"/><xs:element minOccurs="0" name="RECEIVER" type="t:PARTY"/><xs:element minOccurs="1" name="GENERATEINVOICEIDONLOAD" type="xs:boolean"/>`)}
     ${ext("GetInvoiceStatusRequest", statusInvoice ? `<xs:element name="INVOICE" type="t:INVOICE"/>` : `<xs:element name="UUID" type="xs:string"/>`)}
     ${ext("GetInvoiceRequest", `<xs:element name="INVOICE_SEARCH_KEY"><xs:complexType><xs:sequence>${["LIMIT", "ID", "UUID", "START_DATE", "END_DATE", "READ_INCLUDED", "DIRECTION"].map(name => `<xs:element minOccurs="0" name="${name}" type="xs:string"/>`).join("")}</xs:sequence></xs:complexType></xs:element><xs:element minOccurs="0" name="HEADER_ONLY" type="xs:string"/><xs:element minOccurs="0" name="INVOICE_CONTENT_TYPE" type="xs:string"/>`)}
     ${ext("CancelInvoiceRequest", `<xs:element maxOccurs="unbounded" name="INVOICE" type="t:INVOICE"/>`)}
@@ -66,7 +67,9 @@ export const incomingUbl = () => `<?xml version="1.0" encoding="UTF-8"?><Invoice
 
 /** Sahte EDM: WSDL yayımlar (ya da yayımlamaz), istekleri sözleşmeye göre denetler, kayıt tutar. */
 export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
-  const state = { calls: [], sent: [], cancelled: [], marked: [], sessions: new Set(), counter: 0, expireNext: false, statuses: new Map(), wsdlHits: 0, violations: [] };
+  // drafts: portala taslak (LoadInvoice) — gerçek EDM test ortamındaki davranış (docs/kanit/2026-10-16/edm-taslak): aynı ETTN ile yeniden yükleme
+  // içeriği değiştirir; gönderilmiş belgeyi yükleme 11056; taslağı (CONTENT boş) ikinci kez gönderme 11028.
+  const state = { calls: [], sent: [], drafts: new Map(), cancelled: [], marked: [], sessions: new Set(), counter: 0, expireNext: false, statuses: new Map(), wsdlHits: 0, violations: [] };
   const fault = (code, message) => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>${message}</faultstring><detail><RequestFault xmlns="${NS}"><ERROR_CODE>${code}</ERROR_CODE><ERROR_SHORT_DES>${message}</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`;
   const okEnvelope = body => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body>${body}</s:Body></s:Envelope>`;
   const server = createServer((req, res) => {
@@ -123,6 +126,37 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
         respond(`<CheckUserResponse xmlns="${NS}">${users}</CheckUserResponse>`);
         return;
       }
+      if (op === "LoadInvoice") {
+        const invoice = child(request, "INVOICE");
+        const uuid = invoice.attrs.UUID;
+        if (state.failNextLoad) {
+          state.failNextLoad = false;
+          res.writeHead(500, { "content-type": "text/xml" }).end(fault(11999, "Geçici sistem hatası"));
+          return;
+        }
+        if (textOf(child(request, "GENERATEINVOICEIDONLOAD")) !== "false") state.violations.push("LoadInvoice: GENERATEINVOICEIDONLOAD false değil (numarayı program verir)");
+        if (state.sent.some(item => item.uuid === uuid)) {
+          res.writeHead(500, { "content-type": "text/xml" }).end(fault(11056, `UUID=${uuid} ID=${invoice.attrs.ID} için Daha önce yüklediğiniz bir fatura'yi tekrar yüklemeye çalıştınız`));
+          return;
+        }
+        state.drafts.set(uuid, { sender: child(request, "SENDER")?.attrs, receiver: child(request, "RECEIVER")?.attrs, id: invoice.attrs.ID, uuid, earchive: textOf(find(invoice, "HEADER/EARCHIVE")), loads: (state.drafts.get(uuid)?.loads || 0) + 1, xml: Buffer.from(textOf(child(invoice, "CONTENT")), "base64").toString("utf8") });
+        state.statuses.set(uuid, ["LOAD - SUCCEED"]);
+        respond(`<LoadInvoiceResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN><INVOICE ID="${invoice.attrs.ID}" UUID="${uuid}"/></LoadInvoiceResponse>`);
+        return;
+      }
+      if (op === "SendInvoice" && !textOf(child(child(request, "INVOICE"), "CONTENT"))) {
+        // Taslağı gönder: içerik EDM'deki taslaktır.
+        const invoice = child(request, "INVOICE");
+        const draft = state.drafts.get(invoice.attrs.UUID);
+        if (!draft || state.sent.some(item => item.uuid === invoice.attrs.UUID)) {
+          res.writeHead(500, { "content-type": "text/xml" }).end(fault(11028, `UUID=${invoice.attrs.UUID} ID=${invoice.attrs.ID} için taslak gönderimi yapılamadı`));
+          return;
+        }
+        state.sent.push({ ...draft, fromDraft: true, order: invoice.children.map(item => item.name) });
+        state.statuses.set(invoice.attrs.UUID, ["SEND - WAIT_GIB_RESPONSE", "SEND - SUCCEED"]);
+        respond(`<SendInvoiceResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN><INVOICE ID="${invoice.attrs.ID}" UUID="${invoice.attrs.UUID}"/></SendInvoiceResponse>`);
+        return;
+      }
       if (op === "SendInvoice") {
         const invoice = child(request, "INVOICE");
         state.sent.push({ sender: child(request, "SENDER")?.attrs, receiver: child(request, "RECEIVER")?.attrs, id: invoice.attrs.ID, uuid: invoice.attrs.UUID, earchive: textOf(find(invoice, "HEADER/EARCHIVE")), order: invoice.children.map(item => item.name), xml: Buffer.from(textOf(child(invoice, "CONTENT")), "base64").toString("utf8") });
@@ -139,6 +173,7 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
       }
       if (op === "CancelInvoice") {
         state.cancelled.push(child(request, "INVOICE")?.attrs.UUID);
+        state.statuses.set(child(request, "INVOICE")?.attrs.UUID, ["CANCELLED - SUCCEED"]);
         respond(`<CancelInvoiceResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN></CancelInvoiceResponse>`);
         return;
       }
@@ -170,5 +205,11 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
   });
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
   const url = `http://127.0.0.1:${server.address().port}/EFaturaEDM21ea/EFaturaEDM.svc`;
-  return { url, state, close: () => new Promise(resolve => server.close(resolve)) };
+  // Kullanıcı taslağı EDM portalından gönderdi (programın haberi yok).
+  const sendFromPortal = uuid => {
+    const draft = state.drafts.get(uuid);
+    state.sent.push({ ...draft, fromDraft: true, portal: true });
+    state.statuses.set(uuid, ["SEND - SUCCEED"]);
+  };
+  return { url, state, sendFromPortal, close: () => new Promise(resolve => server.close(resolve)) };
 }

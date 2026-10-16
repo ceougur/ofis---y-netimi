@@ -56,10 +56,11 @@ export const PROFILES = Object.freeze({
 });
 // waiting: "Kes, Sonra Gönder" — etkileri işlenmiş, e-Belge numarası gönderimde verilir (GİB serisinde boşluk kalmaz).
 // withdrawn: Gönderilecekler'den silindi — etkiler yerinde, Müşteri Fişi numarasıyla kalır; istenirse yine gönderilir.
-const E_STATES = Object.freeze({ waiting: "Gönderilecek", withdrawn: "Gönderilmeyecek", none: "Gönderilmedi", exported: "XML Hazır", processing: "İşleniyor", sent: "Gönderildi", accepted: "Kabul Edildi", rejected: "Reddedildi", error: "Hata", cancelled: "Entegratörde İptal" });
+const E_STATES = Object.freeze({ waiting: "Gönderilecek", withdrawn: "Gönderilmeyecek", none: "Gönderilmedi", exported: "XML Hazır", draft: "Portalda Taslak", processing: "İşleniyor", sent: "Gönderildi", accepted: "Kabul Edildi", rejected: "Reddedildi", error: "Hata", cancelled: "Entegratörde İptal" });
 // Gönderilebilir (ilk kez ya da hatadan sonra yeniden) ve sorgulanabilir e-Belge durumları.
-const E_SENDABLE = new Set(["", "none", "exported", "error", "waiting", "withdrawn"]);
-const E_TRACKED = new Set(["processing", "sent", "accepted", "rejected", "error", "cancelled"]);
+// draft (İz 7.3): EDM portalına taslak yüklendi (LoadInvoice) — henüz gönderilmedi; belge düzenlenebilir, taslak yenilenir ya da gönderilir.
+const E_SENDABLE = new Set(["", "none", "exported", "error", "waiting", "withdrawn", "draft"]);
+const E_TRACKED = new Set(["draft", "processing", "sent", "accepted", "rejected", "error", "cancelled"]);
 const E_VIEWABLE = new Set(["processing", "sent", "accepted", "rejected", "cancelled"]);
 // Resmî görüntü önbelleğe yalnız son hâlinde alınır (işlenirken entegratörün görüntüsü değişebilir).
 const E_FINAL_VIEW = new Set(["sent", "accepted", "rejected", "cancelled"]);
@@ -76,7 +77,8 @@ const DEFAULTS = Object.freeze({
   series: { paper: "FIS", earsiv: "EAR", efatura: "EFT", smm: "SMM", esmm: "ESM", internal: "IAD" },
   start: {},
   // signatureArea: PDF'in altında "Teslim Alan" ve "Düzenleyen (Kaşe / İmza)" kutuları (v2.0.15, QA A9).
-  defaults: { vatRate: 20, pricesIncludeVat: false, stoppageRate: STOPPAGE_DEFAULT, efaturaProfile: "TEMELFATURA", dueDays: 0, footer: "", saleScenario: "", purchaseScenario: "", signatureArea: true },
+  // itemTracking: fatura kaleminde Seri No / Lot No alanları (İz 7.4, isteğe bağlı; e-Belgede cac:ItemInstance, PDF'te kalem adının altında).
+  defaults: { vatRate: 20, pricesIncludeVat: false, stoppageRate: STOPPAGE_DEFAULT, efaturaProfile: "TEMELFATURA", dueDays: 0, footer: "", saleScenario: "", purchaseScenario: "", signatureArea: true, itemTracking: false },
   // Entegratör bağlantısı (kullanıcı kararı: şimdilik yalnız EDM Bilişim). Parola veritabanında şifreli tutulur
   // (lib/secret-box.mjs); ekrana ve günlüğe hiç çıkmaz.
   // mailboxAlias: firmanın kendi posta kutusu (PK, gelen fatura); senderAlias: gönderici birim (GB). earchiveEmail: e-Arşiv faturası alıcının
@@ -85,6 +87,10 @@ const DEFAULTS = Object.freeze({
   // eView: e-Belge görünüm tasarımı (16.10.2026; lib/einvoice/gorunum.mjs). enabled kapalıysa entegratörün varsayılan görünümü; logo, banka
   // hesapları ve alt not Fatura Ayarları'ndaki değerlerdir (tek kaynak), burada yalnız gösterilip gösterilmeyeceği seçilir.
   eView: { enabled: true, logo: true, banks: true, footer: true },
+  // eOptions (Wolvox karşılaştırmasının kalan maddeleri; kullanıcı kararı 16.10.2026 "isteğe bağlı olarak olsun"; hepsi varsayılan KAPALI):
+  // balanceNote: cari bakiyesi e-Belgenin notuna; paymentMeans: ödeme şekli kodu (Nakit 10, Havale / EFT 42, Kart 48, Çek 20, Senet 60);
+  // draftUpload: Gönder yerine EDM portalına taslak yükle (LoadInvoice; gönderim portaldan ya da programdan).
+  eOptions: { balanceNote: false, paymentMeans: false, draftUpload: false },
   integrator: { id: "edm", env: "test", baseUrl: "", username: "", passwordSealed: "", senderAlias: "", mailboxAlias: "", autoSend: false, earchiveEmail: true, autoCheckUser: false, lastTest: null },
 });
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -209,6 +215,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (body.eView && typeof body.eView === "object") {
       for (const key of ["enabled", "logo", "banks", "footer"]) if (body.eView[key] !== undefined) next.eView[key] = body.eView[key] === true;
     }
+    if (body.eOptions && typeof body.eOptions === "object") {
+      for (const key of Object.keys(DEFAULTS.eOptions)) if (body.eOptions[key] !== undefined) next.eOptions[key] = body.eOptions[key] === true;
+    }
     if (body.defaults && typeof body.defaults === "object") {
       const d = body.defaults;
       if (d.vatRate !== undefined) {
@@ -229,6 +238,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
       if (d.footer !== undefined) next.defaults.footer = limited(d.footer, 500, "Fatura Alt Notu");
       if (d.signatureArea !== undefined) next.defaults.signatureArea = d.signatureArea === true;
+      if (d.itemTracking !== undefined) next.defaults.itemTracking = d.itemTracking === true;
       if (d.saleScenario !== undefined) next.defaults.saleScenario = SCENARIOS[d.saleScenario] && ["sale", "smm"].includes(SCENARIOS[d.saleScenario].kind) ? d.saleScenario : "";
       if (d.purchaseScenario !== undefined) next.defaults.purchaseScenario = SCENARIOS[d.purchaseScenario]?.kind === "purchase" ? d.purchaseScenario : "";
     }
@@ -333,7 +343,22 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Şablon yalnız satıcısı biz olan belgeye gömülür: alış faturası ve satıştan iade XML'inde satıcı karşı taraftır — logomuz ve IBAN'ımız basılmaz.
   const ownsDocument = doc => doc.kind !== "purchase" && doc.kind !== "sale_return";
   const ublFor = (doc, { variant = "tr" } = {}, s = settings()) =>
-    buildUbl(doc, { variant, earchiveEmail: s.integrator.earchiveEmail !== false, xslt: variant === "tr" && s.eView.enabled !== false && ownsDocument(doc) ? viewXslt({ logo: s.seller.logo, banks: doc.seller?.banks || [], footer: s.defaults.footer, view: s.eView }) : "" });
+    buildUbl(doc, {
+      variant,
+      earchiveEmail: s.integrator.earchiveEmail !== false,
+      xslt: variant === "tr" && s.eView.enabled !== false && ownsDocument(doc) ? viewXslt({ logo: s.seller.logo, banks: doc.seller?.banks || [], footer: s.defaults.footer, view: s.eView }) : "",
+      notes: s.eOptions.balanceNote === true ? [balanceNoteOf(doc)] : [],
+      paymentMeans: s.eOptions.paymentMeans === true,
+    });
+  // Cari bakiyesi notu (İz 7.1): cari listesinin bakiyesiyle aynı hesap (taksit kartları dahil; lib tek kaynak). Belgenin üretildiği an itibarıyla,
+  // bu fatura dahil; alıcının gözünden "borç" (bize borçlu) ya da "alacak". Yalnız satıcısı biz olan ve cariye bağlı belgede.
+  const balanceNoteOf = doc => {
+    if (!doc.accountId || !ownsDocument(doc) || !accounts()?.list) return "";
+    const item = accounts().list(AUDITOR, { ids: [doc.accountId], status: "all" }).accounts.find(row => row.id === doc.accountId);
+    if (!item) return "";
+    const side = item.balance > 0.004 ? " borç" : item.balance < -0.004 ? " alacak" : "";
+    return `Cari hesap bakiyeniz (${dayText(today())} itibarıyla, bu fatura dahil): ${moneyText(Math.abs(item.balance))}${side}`;
+  };
   // Entegratör kartında bağlantının hangi yoldan çıktığı (vekil sunucu; ayar Yönetim → Sistem → Ağ Bağlantısı'nda, kimlik bilgisi yok).
   const networkSummary = () => (edocEnabled && config.describeNetwork ? config.describeNetwork().effective : null);
   const publicSettings = s => {
@@ -366,7 +391,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id LEFT JOIN users u ON u.id = i.created_by LEFT JOIN invoices o ON o.id = i.original_id`;
   const LINE_SQL = `SELECT l.id, l.invoice_id AS invoiceId, l.seq, l.item_id AS itemId, l.goods, l.code, l.name, l.description, l.unit, l.qty, l.unit_price AS unitPrice, l.discount_rate AS discountRate,
       l.base, l.discount, l.net, l.vat_rate AS vatRate, l.vat, l.withholding_code AS withholdingCode, l.withholding_num AS withholdingNum, l.withholding_den AS withholdingDen, l.withheld,
-      CASE l.exemption_code WHEN '308' THEN '304' ELSE l.exemption_code END AS exemptionCode, l.gross, l.payable, l.gl_account AS glAccount, l.expense_code AS expenseCode, l.unit_cost AS unitCost, l.origin_line_id AS originLineId, l.move_id AS moveId
+      CASE l.exemption_code WHEN '308' THEN '304' ELSE l.exemption_code END AS exemptionCode, l.gross, l.payable, l.gl_account AS glAccount, l.expense_code AS expenseCode, l.unit_cost AS unitCost, l.origin_line_id AS originLineId, l.move_id AS moveId,
+      l.serial_no AS serialNo, l.lot_no AS lotNo
     FROM invoice_lines l`;
   const invoiceRow = id => {
     const row = store.get(`${INVOICE_SQL} WHERE i.id = ?`, limited(id, 120, "Fatura"));
@@ -838,6 +864,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       canWithdraw: edocEnabled && manage && row.status === "issued" && row.eStatus === "waiting",
       sendBlock: edocEnabled ? sendBlockOf(row) : "",
       canRefresh: edocEnabled && manage && kind?.send && row.profile !== "KAGIT" && E_TRACKED.has(row.eStatus),
+      // İz 7.3: portala taslak (ayar açıkken ya da belge zaten taslaktaysa yenileme). draftStale: taslak yüklendikten sonra belge düzenlendi.
+      canDraft: edocEnabled && manage && row.status === "issued" && kind?.send && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row) && (row.eStatus === "draft" || settings().eOptions.draftUpload === true),
+      draftStale: row.eStatus === "draft" && Boolean(row.updatedAt && row.eAt && row.updatedAt > row.eAt),
       // Resmî görüntü (entegratörün ürettiği PDF): entegratöre ulaşmış belge (hata alanlar hariç).
       canOfficial: edocEnabled && kind?.send && row.profile !== "KAGIT" && E_VIEWABLE.has(row.eStatus) && Boolean(row.ettn),
       edocEnabled,
@@ -1195,6 +1224,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
           code: origin.code,
           name: origin.name,
           description: origin.description,
+          serialNo: origin.serialNo,
+          lotNo: origin.lotNo,
           unit: origin.unit,
           qty,
           unitPrice: origin.unitPrice,
@@ -1232,6 +1263,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         code: limited(stockItem ? stockItem.code || item.code || "" : item.code || "", 60, "Stok Kodu"),
         name,
         description: limited(item.description, 300, "Açıklama"),
+        // İz 7.4 (isteğe bağlı): Seri No / Lot No — yalnız belgede (e-Belge cac:ItemInstance, PDF); stokta izlenmez.
+        serialNo: limited(item.serialNo, 60, "Seri No"),
+        lotNo: limited(item.lotNo, 60, "Lot No"),
         unit: unitLabel(limited(item.unit || stockItem?.unit || "Adet", 20, "Birim")),
         qty: qtyOf(item.qty, at),
         unitPrice: Math.round(unitPrice * 10000) / 10000,
@@ -1681,10 +1715,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         } else if (input.itemId && doc.kind === "sale") unitCost = Number(stock()?.invoiceStock?.itemFor(input.itemId)?.unitPrice) || 0;
         store.run(
           `INSERT INTO invoice_lines (id, invoice_id, seq, item_id, goods, code, name, description, unit, qty, unit_price, discount_rate, base, discount, net, vat_rate, vat, withholding_code, withholding_num,
-             withholding_den, withheld, exemption_code, gross, payable, gl_account, expense_code, unit_cost, origin_line_id, move_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             withholding_den, withheld, exemption_code, gross, payable, gl_account, expense_code, unit_cost, origin_line_id, move_id, serial_no, lot_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           lineId, invoiceId, index + 1, input.itemId, input.goods ? 1 : 0, input.code, input.name, input.description, input.unit, line.qty, line.unitPrice, line.discountRate, c2(line.base), c2(line.discount), c2(line.net),
           line.vatRate, c2(line.vat), line.withholdingCode, line.withholdingNum, line.withholdingDen, c2(line.withheld), line.exemptionCode, c2(line.gross), c2(line.payable), input.account, input.expenseCode, unitCost,
-          input.originLineId, moveId,
+          input.originLineId, moveId, input.serialNo || "", input.lotNo || "",
         );
       });
       // Cari: faturanın borcu/alacağı (TL karşılığı).
@@ -1805,9 +1839,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         const input = doc.lines[index];
         store.run(
           `INSERT INTO invoice_lines (id, invoice_id, seq, item_id, goods, code, name, description, unit, qty, unit_price, discount_rate, base, discount, net, vat_rate, vat, withholding_code, withholding_num,
-             withholding_den, withheld, exemption_code, gross, payable, gl_account, expense_code, unit_cost, origin_line_id, move_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, '')`,
+             withholding_den, withheld, exemption_code, gross, payable, gl_account, expense_code, unit_cost, origin_line_id, move_id, serial_no, lot_no) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, '', ?, ?)`,
           newId("iline"), invoiceId, index + 1, input.itemId, input.goods ? 1 : 0, input.code, input.name, input.description, input.unit, line.qty, line.unitPrice, line.discountRate, c2(line.base), c2(line.discount), c2(line.net),
           line.vatRate, c2(line.vat), line.withholdingCode, line.withholdingNum, line.withholdingDen, c2(line.withheld), line.exemptionCode, c2(line.gross), c2(line.payable), input.account, input.expenseCode, input.originLineId,
+          input.serialNo || "", input.lotNo || "",
         );
       });
       audit(user, id ? "invoice.draft.updated" : "invoice.draft.created", invoiceId, { kind: doc.kind, accountId: doc.account.id, payable: c2(money.payable) });
@@ -1873,6 +1908,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       period?.assertOpen(invoice.issueDate, "Bu fatura");
       const returns = store.get("SELECT COUNT(*) AS n FROM invoices WHERE original_id = ? AND status = 'issued'", invoice.id).n;
       if (returns) throw new HttpError(409, `Bu faturanın ${returns} iade faturası var; önce iade faturalarını iptal edin.`, { code: "invoice-has-returns" });
+      // İz 7.3: e-Fatura taslağı EDM'den programla silinemez (EDM'de iptal yalnız e-Arşiv'de); kullanıcı portaldan siler, burada onaylar.
+      if (invoice.eStatus === "draft" && invoice.profile !== "EARSIVFATURA" && !confirmExternal) throw new HttpError(409, "Bu e-Fatura EDM portalında taslak olarak duruyor. Önce EDM portalında taslağı silin, sonra burada onaylayın (yoksa taslak portaldan gönderilebilir).", { code: "einvoice-draft" });
       if (["sent", "accepted"].includes(invoice.eStatus) && !confirmExternal) throw new HttpError(409, `Bu belge ${E_STATES[invoice.eStatus].toLocaleLowerCase("tr-TR")}. Önce GİB / entegratör tarafında iptal edin (e-Arşiv iptali ya da e-Fatura iade/itiraz), sonra burada onaylayın.`, { code: "einvoice-sent" });
       reverseEffects(user, invoice, touched, { force });
       const stamp = now();
@@ -2001,7 +2038,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       eStates: E_STATES,
       adapters: edocEnabled ? Object.entries(ADAPTERS).map(([id, value]) => adapterInfo(id, value)) : [],
       edocEnabled,
-      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: edocEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null },
+      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: edocEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
       today: today(),
       repeated: repeated.length,
       lockedUntil: period?.lockedUntil?.() || "",
@@ -2331,6 +2368,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (fee) return bankFeeText(fee);
     if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; önce iade faturalarını silin ya da iptal edin.`;
     if (["sent", "accepted"].includes(row.eStatus)) return `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; silinmez. Önce entegratör tarafında iptal edin.`;
+    if (row.eStatus === "draft") return "Bu belge EDM portalına taslak olarak yüklendi; silinmez. Önce İptal edin (e-Arşiv taslağı EDM'de de iptal edilir; e-Fatura taslağını EDM portalından silin).";
     const planId = plan?.id || row.planId;
     if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return "Faturanın taksit kartında tahsilat var; silinmez. Önce tahsilatları silin ya da iade faturası kaydedin.";
     return "";
@@ -2459,8 +2497,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const existing = invoiceRow(id);
     // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
     // Önce programdaki iptal denenir (iade, kilitli dönem, tahsil edilmiş çek, stok…); geçerse entegratör, sonra program.
-    const remote = edocEnabled && existing.status === "issued" && existing.profile === "EARSIVFATURA" && ["processing", "sent", "accepted", "error"].includes(existing.eStatus) && body.localOnly !== true;
-    if (remote && daysBetween(existing.issueDate, today()) > 8) throw new HttpError(409, `e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (${dayText(existing.issueDate)} tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.`, { code: "einvoice-cancel-late" });
+    const remote = edocEnabled && existing.status === "issued" && existing.profile === "EARSIVFATURA" && ["draft", "processing", "sent", "accepted", "error"].includes(existing.eStatus) && body.localOnly !== true;
+    // 8 gün kuralı GİB'e raporlanmış e-Arşiv içindir; portaldaki taslak (İz 7.3) GİB'e gitmedi, her zaman iptal edilir.
+    if (remote && existing.eStatus !== "draft" && daysBetween(existing.issueDate, today()) > 8) throw new HttpError(409, `e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (${dayText(existing.issueDate)} tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.`, { code: "einvoice-cancel-late" });
     if (remote) {
       cancel(user, existing.id, { ...options, confirmExternal: true, dryRun: true });
       const doc = detail(existing.id, user);
@@ -2618,10 +2657,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   });
   // ---------- e-Belge: gönder, durum, mükellef, bağlantı ----------
   const sending = new Set();
+  // e_at ile updated_at aynı damga: portaldaki taslağın eskidiği (belge taslaktan sonra düzenlendi) updated_at > e_at ile anlaşılır.
   const setE = (user, id, { status, adapter = null, message = "" }, action, extra = {}) => {
     store.tx(() => {
-      if (adapter) store.run("UPDATE invoices SET e_status = ?, e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, adapter, String(message || "").slice(0, 500), now(), now(), id);
-      else store.run("UPDATE invoices SET e_status = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, String(message || "").slice(0, 500), now(), now(), id);
+      const stamp = now();
+      if (adapter) store.run("UPDATE invoices SET e_status = ?, e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, adapter, String(message || "").slice(0, 500), stamp, stamp, id);
+      else store.run("UPDATE invoices SET e_status = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, String(message || "").slice(0, 500), stamp, stamp, id);
       audit(user, action, id, { status, ...extra });
     });
     publish(user, { kind: "invoices", invoiceId: id });
@@ -2673,8 +2714,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       return number;
     });
   }
-  async function sendInvoice(user, id) {
+  // draft (İz 7.3, isteğe bağlı): EDM portalına taslak yükle / yenile (LoadInvoice; aynı ETTN ile yeniden yükleme EDM'de içeriği değiştirir —
+  // gerçek test ortamında görüldü, docs/kanit/2026-10-16/edm-taslak). Taslaktaki belge "Gönder"le gönderilirken ÖNCE son hâli yüklenir, sonra
+  // gönderilir: defterdeki belge ile giden e-Belge aynı kalır. Taslak portaldan gönderilmişse (EDM durumu artık taslak değil) yükleme yapılmaz.
+  async function sendInvoice(user, id, { draft = false } = {}) {
     requireEdoc();
+    if (draft) {
+      const row = invoiceRow(id);
+      if (settings().eOptions.draftUpload !== true && row.eStatus !== "draft") throw new HttpError(409, "Portala taslak yükleme kapalı (Entegratör Ayarları → Ek Seçenekler).", { code: "einvoice-draft-off" });
+    }
     numberForSend(user, id);
     const doc = detail(id, user);
     if (!doc.canSend) {
@@ -2694,19 +2742,40 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     sending.add(doc.id);
     try {
       const link = integrator(s);
+      if (doc.eStatus === "draft") {
+        const remote = await link.status({ invoice: doc });
+        if (remote.status !== "draft") {
+          setE(user, doc.id, { status: remote.status, message: remote.message }, "invoice.e.status", { raw: remote.raw || "" });
+          return { ...remote, message: `Taslak EDM'de artık taslak değil (portaldan gönderilmiş ya da işlenmiş olabilir); durum güncellendi. ${remote.message}` };
+        }
+      }
       const xml = ublFor(doc, {}, s);
       let result;
       try {
-        result = await link.send({ invoice: doc, xml });
+        if (draft) result = await link.loadDraft({ invoice: doc, xml });
+        else if (doc.eStatus === "draft") {
+          await link.loadDraft({ invoice: doc, xml });
+          result = await link.sendDraft({ invoice: doc });
+        } else result = await link.send({ invoice: doc, xml });
       } catch (error) {
         // Entegratör reddettiyse belge gitmemiştir: "Hata" işlenir, düzeltilip yeniden gönderilir. Bağlantı koptuysa
         // sonuç belirsizdir: durum değişmez (aynı ETTN ikinci kez kabul edilmez; önce Durum Sorgula).
         const code = error?.extra?.code || error?.code || "";
         const rejected = ["integrator-rejected", "integrator-contract", "integrator-alias"].includes(code);
-        setE(user, doc.id, { status: rejected ? "error" : doc.eStatus || "none", adapter: link.id, message: error?.message || String(error) }, "invoice.e.send-failed", { adapter: link.id, code });
+        // Portaldaki taslak reddedilse de taslak olarak kalır (yeniden yüklenir); "Hata"ya düşerse sonraki Gönder taslağı tanımaz.
+        // Taslaktaki belgede damga (e_at) değişmez: yenileme başarısızsa portaldaki kopya hâlâ eskidir, "taslak eski" uyarısı kalkmamalı.
+        if (doc.eStatus === "draft") {
+          store.tx(() => {
+            store.run("UPDATE invoices SET e_message = ? WHERE id = ?", String(error?.message || error).slice(0, 500), doc.id);
+            audit(user, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", doc.id, { status: "draft", adapter: link.id, code });
+          });
+          publish(user, { kind: "invoices", invoiceId: doc.id });
+          throw error;
+        }
+        setE(user, doc.id, { status: rejected ? "error" : doc.eStatus || "none", adapter: link.id, message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
         throw error;
       }
-      setE(user, doc.id, { status: result.status, adapter: link.id, message: result.message }, "invoice.e.sent", { adapter: link.id, reference: result.reference });
+      setE(user, doc.id, { status: result.status, adapter: link.id, message: result.message }, draft ? "invoice.e.draft" : "invoice.e.sent", { adapter: link.id, reference: result.reference });
       return result;
     } finally {
       sending.delete(doc.id);
@@ -2731,6 +2800,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     publish(user, { kind: "accounts", accountId: invoiceRow(result.id).accountId });
     return result;
   }
+  // Portala taslak açıkken (İz 7.3) otomatik / toplu / "Kes ve Gönder" gönderimi taslak yükler; taslaktaki belge "Gönder"le gönderilir.
+  const draftFirst = id => settings().eOptions.draftUpload === true && invoiceRow(id).eStatus !== "draft";
   async function maybeAutoSend(user, id) {
     if (!edocEnabled) return null;
     const s = settings();
@@ -2738,7 +2809,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const doc = detail(id, user);
     if (!doc.canSend) return null;
     try {
-      return { ok: true, ...(await sendInvoice(user, id)) };
+      return { ok: true, ...(await sendInvoice(user, id, { draft: draftFirst(id) })) };
     } catch (error) {
       return { ok: false, message: error?.message || String(error) };
     }
@@ -2750,7 +2821,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (choice !== "now") return maybeAutoSend(user, id);
     if (!edocEnabled || !detail(id, user).canSend) return null;
     try {
-      return { ok: true, ...(await sendInvoice(user, id)) };
+      return { ok: true, ...(await sendInvoice(user, id, { draft: draftFirst(id) })) };
     } catch (error) {
       return { ok: false, message: error?.message || String(error) };
     }
@@ -2769,7 +2840,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const results = [];
     for (const id of ids) {
       try {
-        const sent = await sendInvoice(user, invoiceRow(id).id);
+        const sent = await sendInvoice(user, invoiceRow(id).id, { draft: draftFirst(invoiceRow(id).id) });
         results.push({ id, ok: true, number: invoiceRow(id).number, status: sent.status });
       } catch (error) {
         results.push({ id, ok: false, message: error?.message || String(error) });
@@ -2781,6 +2852,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const user = requireManage(req);
     requireEdoc();
     const result = await sendInvoice(user, invoiceRow(params.id).id);
+    ok(res, { ...detail(params.id, user), sendResult: result });
+  });
+  // Portala taslak yükle / taslağı yenile (İz 7.3).
+  router.post("/api/workspace/invoices/:id/e-draft", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    requireEdoc();
+    const result = await sendInvoice(user, invoiceRow(params.id).id, { draft: true });
     ok(res, { ...detail(params.id, user), sendResult: result });
   });
   router.post("/api/workspace/invoices/:id/e-refresh", async ({ req, res, params }) => {

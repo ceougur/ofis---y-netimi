@@ -9,7 +9,8 @@
 //   test()                                  → bağlantı, giriş ve servis sözleşmesi raporu
 //   checkUser(taxNo)                        → { registered, title, aliases[] }  (GİB e-Fatura kullanıcı listesi)
 //   send({ invoice, xml })                  → { status: 'sent', message, reference }
-//   status({ invoice })                     → { status: 'processing'|'sent'|'accepted'|'rejected'|'error'|'cancelled', message }
+//   loadDraft({ invoice, xml }) / sendDraft({ invoice }) → portala taslak (EDM LoadInvoice) ve taslağı gönderme
+//   status({ invoice })                     → { status: 'draft'|'processing'|'sent'|'accepted'|'rejected'|'error'|'cancelled', message }
 //   cancel({ invoice })                     → e-Arşiv iptali (e-Fatura entegratörden iptal edilmez)
 //   inbox({ from, to })                     → gelen e-Faturalar [{ uuid, number, senderVkn, senderName, issueDate, payable, currency, xml }]
 //   markRead(uuids)
@@ -67,6 +68,13 @@ export function connect({ integrator, seller = {}, fetchImpl }) {
     checkUser: wrap(taxNo => client.checkUser(taxNo)),
     send: wrap(({ invoice, xml }) =>
       client.send({ xml, number: invoice.number, uuid: invoice.ettn, earchive: earchive(invoice), senderVkn: seller.taxNo || "", senderAlias: integrator.senderAlias || "", receiverVkn: invoice.party?.taxNo || "", receiverAlias: invoice.party?.eAlias || "" }),
+    ),
+    // Portala taslak (İz 7.3): yükle / aynı ETTN ile yenile; taslağı gönder (içerik EDM'deki taslaktır).
+    loadDraft: wrap(({ invoice, xml }) =>
+      client.loadDraft({ xml, number: invoice.number, uuid: invoice.ettn, earchive: earchive(invoice), senderVkn: seller.taxNo || "", senderAlias: integrator.senderAlias || "", receiverVkn: invoice.party?.taxNo || "", receiverAlias: invoice.party?.eAlias || "" }),
+    ),
+    sendDraft: wrap(({ invoice }) =>
+      client.sendDraft({ number: invoice.number, uuid: invoice.ettn, earchive: earchive(invoice), senderVkn: seller.taxNo || "", senderAlias: integrator.senderAlias || "", receiverVkn: invoice.party?.taxNo || "", receiverAlias: invoice.party?.eAlias || "" }),
     ),
     status: wrap(({ invoice }) => client.status({ uuid: invoice.ettn, number: invoice.number, earchive: earchive(invoice) })),
     cancel: wrap(({ invoice }) => {

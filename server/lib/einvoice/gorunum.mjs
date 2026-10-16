@@ -19,6 +19,8 @@ const UNIT_NAMES = {
 };
 const PROFILES = { TEMELFATURA: "Temel Fatura", TICARIFATURA: "Ticari Fatura", EARSIVFATURA: "e-Arşiv Fatura", IHRACAT: "İhracat", YOLCUBERABERFATURA: "Yolcu Beraber Fatura" };
 const TYPES = { SATIS: "Satış", IADE: "İade", TEVKIFAT: "Tevkifat", ISTISNA: "İstisna", OZELMATRAH: "Özel Matrah", IHRACKAYITLI: "İhraç Kayıtlı", SGK: "SGK", KOMISYONCU: "Komisyoncu" };
+// Ödeme şekli kodu (GİB PaymentMeansCodeTypeList = UN/ECE 4461; ubl-tr.mjs PAYMENT_MEANS_CODES) → görünen ad. Listede olmayan kod (1 = belirtilmemiş) basılmaz.
+const PAYMENT_NAMES = { 10: "Nakit", 20: "Çek", 42: "Havale / EFT", 48: "Kredi Kartı", 60: "Senet" };
 const choose = (select, map, fallback = `<xsl:value-of select="${select}"/>`) =>
   `<xsl:choose>${Object.entries(map)
     .map(([key, label]) => `<xsl:when test="${select}='${key}'">${xml(label)}</xsl:when>`)
@@ -100,7 +102,8 @@ table{border-collapse:collapse;font-size:inherit}
     ${row("Sipariş No", '<xsl:value-of select="cac:OrderReference/cbc:ID"/>', "cac:OrderReference")}
     ${row("Sipariş Tarihi", date("cac:OrderReference/cbc:IssueDate"), "cac:OrderReference/cbc:IssueDate")}
     ${row("İade Edilen Fatura", `<xsl:value-of select="cac:BillingReference/cac:InvoiceDocumentReference/cbc:ID"/>&#160;${date("cac:BillingReference/cac:InvoiceDocumentReference/cbc:IssueDate")}`, "cac:BillingReference/cac:InvoiceDocumentReference")}
-    ${row("Son Ödeme Tarihi", date("cac:PaymentMeans/cbc:PaymentDueDate"), "cac:PaymentMeans/cbc:PaymentDueDate and cac:PaymentMeans/cbc:PaymentDueDate != cbc:IssueDate")}
+    ${row("Son Ödeme Tarihi", date("cac:PaymentMeans[cbc:PaymentDueDate != ../cbc:IssueDate][1]/cbc:PaymentDueDate"), "cac:PaymentMeans[cbc:PaymentDueDate != ../cbc:IssueDate]")}
+    ${row("Ödeme Şekli", `<xsl:for-each select="cac:PaymentMeans[${Object.keys(PAYMENT_NAMES).map(code => `cbc:PaymentMeansCode='${code}'`).join(" or ")}]"><xsl:if test="position() > 1">, </xsl:if>${choose("cbc:PaymentMeansCode", PAYMENT_NAMES)}</xsl:for-each>`, Object.keys(PAYMENT_NAMES).map(code => `cac:PaymentMeans/cbc:PaymentMeansCode='${code}'`).join(" or "))}
     ${row("Gönderim Şekli", '<xsl:choose><xsl:when test="cac:AdditionalDocumentReference[cbc:DocumentTypeCode=\'SendingType\']/cbc:DocumentType=\'ELEKTRONIK\'">Elektronik</xsl:when><xsl:otherwise>Kâğıt</xsl:otherwise></xsl:choose>', "cbc:ProfileID='EARSIVFATURA'")}
   </table></td>
 </tr></table>
@@ -109,7 +112,7 @@ table{border-collapse:collapse;font-size:inherit}
 <table class="kalem"><tr><th>Sıra No</th><th>Mal Hizmet</th><th>Miktar</th><th>Birim Fiyat</th><th>İskonto Oranı</th><th>İskonto Tutarı</th><th>KDV Oranı</th><th>KDV Tutarı</th><th>Diğer Vergiler</th><th>Mal Hizmet Tutarı</th></tr>
 <xsl:for-each select="cac:InvoiceLine"><tr>
   <td class="s"><xsl:value-of select="cbc:ID"/></td>
-  <td><xsl:value-of select="cac:Item/cbc:Name"/><xsl:if test="cac:Item/cac:SellersItemIdentification/cbc:ID"> (<xsl:value-of select="cac:Item/cac:SellersItemIdentification/cbc:ID"/>)</xsl:if><xsl:if test="cbc:Note"><div class="aciklama"><xsl:value-of select="cbc:Note"/></div></xsl:if></td>
+  <td><xsl:value-of select="cac:Item/cbc:Name"/><xsl:if test="cac:Item/cac:SellersItemIdentification/cbc:ID"> (<xsl:value-of select="cac:Item/cac:SellersItemIdentification/cbc:ID"/>)</xsl:if><xsl:if test="cbc:Note"><div class="aciklama"><xsl:value-of select="cbc:Note"/></div></xsl:if><xsl:for-each select="cac:Item/cac:ItemInstance"><div class="aciklama"><xsl:if test="cbc:SerialID">Seri No: <xsl:value-of select="cbc:SerialID"/></xsl:if><xsl:if test="cbc:SerialID and cac:LotIdentification/cbc:LotNumberID"> · </xsl:if><xsl:if test="cac:LotIdentification/cbc:LotNumberID">Lot No: <xsl:value-of select="cac:LotIdentification/cbc:LotNumberID"/></xsl:if></div></xsl:for-each></td>
   <td class="s"><xsl:value-of select="format-number(number(cbc:InvoicedQuantity), '###.##0,####', 'tr')"/>&#160;<xsl:call-template name="unit"><xsl:with-param name="code" select="cbc:InvoicedQuantity/@unitCode"/></xsl:call-template></td>
   <td class="s"><xsl:value-of select="format-number(number(cac:Price/cbc:PriceAmount), '###.##0,00##', 'tr')"/>&#160;<xsl:call-template name="currency"><xsl:with-param name="code" select="cac:Price/cbc:PriceAmount/@currencyID"/></xsl:call-template></td>
   <td class="s"><xsl:if test="cac:AllowanceCharge/cbc:MultiplierFactorNumeric">%<xsl:value-of select="format-number(number(cac:AllowanceCharge/cbc:MultiplierFactorNumeric * 100), '##0,##', 'tr')"/></xsl:if></td>

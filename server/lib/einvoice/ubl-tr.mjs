@@ -92,12 +92,29 @@ function taxCategory(rate, exemptionCode, exemptionLabel, variant) {
 // İstisna adları tek kaynaktan (invoice-math EXEMPTIONS, GİB kod listesi); eski kayıttaki 308 → 304 (aynı anlam, 13/a).
 const exemptionLabel = code => EXEMPTIONS[normalizeExemption(code)] || "";
 
+// Ödeme şekli (Wolvox karşılaştırması, kullanıcı kararı 16.10.2026: isteğe bağlı): faturanın peşin satırlarının yolu ve bağlı çek/senet → GİB kod listesi
+// PaymentMeansCodeTypeList (UN/ECE 4461) kodu. Kalan (vadeli) kısım ayrıca açık ödeme olarak yazılır (IBAN varsa 42 + son ödeme tarihi).
+export const PAYMENT_MEANS_CODES = Object.freeze({ cash: "10", bank: "42", card: "48", cheque: "20", note: "60" });
+export function paymentMeansOf(doc) {
+  const codes = [];
+  let covered = 0;
+  const add = (code, value) => {
+    if (!codes.includes(code)) codes.push(code);
+    covered += Number(value) || 0;
+  };
+  for (const entry of doc.payments || []) add(PAYMENT_MEANS_CODES[entry.method] || PAYMENT_MEANS_CODES.cash, entry.amount);
+  for (const cheque of doc.cheques || []) add(PAYMENT_MEANS_CODES[cheque.instrument] || PAYMENT_MEANS_CODES.cheque, cheque.amount);
+  const payable = Number(doc.tryPayable ?? doc.payableTotal) || 0;
+  return { codes, rest: Math.round((payable - covered) * 100) > 0 };
+}
+
 /**
  * @param {object} doc  routes/invoices.mjs detail() çıktısı (kesilmiş fatura)
  * @param {{ variant?: 'tr' | 'peppol' }} options
  */
 // xslt: görünüm şablonu (gorunum.mjs viewXslt); verilirse belgeye gömülür ve alıcının gördüğü sayfayı o çizer. Yalnız UBL-TR.
-export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "" } = {}) {
+// notes: ek cbc:Note satırları (ör. cari bakiyesi). paymentMeans: ödeme şekli kodları yazılsın mı (kapalıyken eski davranış: IBAN varsa 42, yoksa 1).
+export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "", notes: extraNotes = [], paymentMeans = false } = {}) {
   const currency = doc.currency || "TRY";
   const includeVat = Boolean(doc.pricesIncludeVat);
   const lines = doc.lines || [];
@@ -121,7 +138,7 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "" 
   const taxTotal = [...byRate.values()].sort((a, b) => a.rate - b.rate);
   const discountTotal = lines.reduce((sum, line) => sum + discountNet(line, includeVat), 0);
   const lineExtension = lines.reduce((sum, line) => sum + (Number(line.net) || 0), 0);
-  const notes = [doc.amountInWords, doc.note, doc.originalNumber ? `İade edilen fatura: ${doc.originalNumber}` : "", doc.stoppageTotal > 0 ? `Gelir Vergisi Stopajı %${doc.stoppageRate}: ${amount(doc.stoppageTotal)} ${currency}` : ""].filter(Boolean);
+  const notes = [doc.amountInWords, doc.note, doc.originalNumber ? `İade edilen fatura: ${doc.originalNumber}` : "", doc.stoppageTotal > 0 ? `Gelir Vergisi Stopajı %${doc.stoppageRate}: ${amount(doc.stoppageTotal)} ${currency}` : "", ...(variant === "peppol" ? [] : extraNotes)].filter(Boolean);
   const head =
     variant === "peppol"
       ? [tag("cbc:CustomizationID", "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0"), tag("cbc:ProfileID", "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"), tag("cbc:ID", doc.number), tag("cbc:IssueDate", doc.issueDate), tag("cbc:DueDate", doc.dueDate || doc.issueDate), tag("cbc:InvoiceTypeCode", doc.typeCode === "IADE" ? "381" : "380"), ...notes.map(note => tag("cbc:Note", note)), tag("cbc:DocumentCurrencyCode", currency), tag("cbc:TaxCurrencyCode", currency === "TRY" ? "" : "TRY")]
@@ -158,7 +175,15 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "" 
       : "",
   ];
   const bank = (doc.seller?.banks || []).find(item => item.iban);
-  const payment = bank || doc.dueDate ? `<cac:PaymentMeans>${tag("cbc:PaymentMeansCode", bank ? (variant === "peppol" ? "58" : "42") : "1")}${variant === "peppol" ? "" : tag("cbc:PaymentDueDate", doc.dueDate || doc.issueDate)}${bank ? `<cac:PayeeFinancialAccount>${tag("cbc:ID", bank.iban)}${variant === "peppol" ? "" : tag("cbc:CurrencyCode", currency)}</cac:PayeeFinancialAccount>` : ""}</cac:PaymentMeans>` : "";
+  const openMeans = `<cac:PaymentMeans>${tag("cbc:PaymentMeansCode", bank ? (variant === "peppol" ? "58" : "42") : "1")}${variant === "peppol" ? "" : tag("cbc:PaymentDueDate", doc.dueDate || doc.issueDate)}${bank ? `<cac:PayeeFinancialAccount>${tag("cbc:ID", bank.iban)}${variant === "peppol" ? "" : tag("cbc:CurrencyCode", currency)}</cac:PayeeFinancialAccount>` : ""}</cac:PaymentMeans>`;
+  let payment = bank || doc.dueDate ? openMeans : "";
+  if (paymentMeans && variant !== "peppol") {
+    // Ödenen kısım yoluyla (son ödeme tarihi yazılmaz: ödenmiştir), kalan kısım açık ödeme olarak (son ödeme tarihi + IBAN). Hiç peşin yoksa
+    // eski davranış. Peşine belge tarihi yazılınca görüntüleyiciler "Son Ödeme Tarihi"ni ilk satırdan okuyup vadeyi yanlış gösteriyordu
+    // (gerçek EDM denemesi 16.10.2026).
+    const { codes, rest } = paymentMeansOf(doc);
+    if (codes.length) payment = codes.map(code => `<cac:PaymentMeans>${tag("cbc:PaymentMeansCode", code)}</cac:PaymentMeans>`).join("") + (rest ? openMeans : "");
+  }
   const exchange = currency !== "TRY" && variant !== "peppol" ? `<cac:PricingExchangeRate>${tag("cbc:SourceCurrencyCode", currency)}${tag("cbc:TargetCurrencyCode", "TRY")}${tag("cbc:CalculationRate", doc.rate)}${tag("cbc:Date", doc.issueDate)}</cac:PricingExchangeRate>` : "";
   const vatTotal = taxTotal.reduce((sum, item) => sum + item.vat, 0);
   const tax = `<cac:TaxTotal>${money("cbc:TaxAmount", vatTotal, currency)}${taxTotal
@@ -189,7 +214,7 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "" 
         discount > 0 ? `<cac:AllowanceCharge>${tag("cbc:ChargeIndicator", "false")}${variant === "peppol" ? tag("cbc:AllowanceChargeReason", "İskonto") : tag("cbc:MultiplierFactorNumeric", (Math.round((discount / ((Number(line.net) || 0) + discount || 1)) * 10000) / 10000).toString())}${money("cbc:Amount", discount, currency)}${money("cbc:BaseAmount", (Number(line.net) || 0) + discount, currency)}</cac:AllowanceCharge>` : "",
         variant === "peppol" ? "" : `<cac:TaxTotal>${money("cbc:TaxAmount", line.vat, currency)}<cac:TaxSubtotal>${money("cbc:TaxableAmount", line.net, currency)}${money("cbc:TaxAmount", line.vat, currency)}${tag("cbc:Percent", line.vatRate)}${taxCategory(line.vatRate, line.exemptionCode, exemptionLabel(line.exemptionCode), variant)}</cac:TaxSubtotal></cac:TaxTotal>`,
         lineWithholding,
-        `<cac:Item>${variant === "peppol" ? tag("cbc:Description", line.description) : ""}${tag("cbc:Name", line.name)}${line.code ? `<cac:SellersItemIdentification>${tag("cbc:ID", line.code)}</cac:SellersItemIdentification>` : ""}${variant === "peppol" ? taxCategory(line.vatRate, line.exemptionCode, exemptionLabel(line.exemptionCode), "peppol").replace("cac:TaxCategory", "cac:ClassifiedTaxCategory").replace("</cac:TaxCategory>", "</cac:ClassifiedTaxCategory>") : ""}</cac:Item>`,
+        `<cac:Item>${variant === "peppol" ? tag("cbc:Description", line.description) : ""}${tag("cbc:Name", line.name)}${line.code ? `<cac:SellersItemIdentification>${tag("cbc:ID", line.code)}</cac:SellersItemIdentification>` : ""}${variant !== "peppol" && (line.serialNo || line.lotNo) ? `<cac:ItemInstance>${tag("cbc:SerialID", line.serialNo)}${line.lotNo ? `<cac:LotIdentification>${tag("cbc:LotNumberID", line.lotNo)}</cac:LotIdentification>` : ""}</cac:ItemInstance>` : ""}${variant === "peppol" ? taxCategory(line.vatRate, line.exemptionCode, exemptionLabel(line.exemptionCode), "peppol").replace("cac:TaxCategory", "cac:ClassifiedTaxCategory").replace("</cac:TaxCategory>", "</cac:ClassifiedTaxCategory>") : ""}</cac:Item>`,
         `<cac:Price><cbc:PriceAmount currencyID="${escape(currency)}">${priceText(price)}</cbc:PriceAmount></cac:Price>`,
         "</cac:InvoiceLine>",
       ].join("");

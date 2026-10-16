@@ -557,7 +557,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   bizim şablonla çizdi — kanıt docs/kanit/2026-10-16/edm-gorunum); 4–7 bekler. Resmî PDF veri tabanına değil veri klasörüne (yedek şişmesin).
   CI #761 d133455 YEŞİL (4 platform + e2e + kapı). İSTEK (kullanıcı, aynı gün): kendi şirketinin faturasında kullanmak için DestekOfis logosu →
   `docs/pazarlama/DestekOfis-Logo-Fatura-Yatay.jpg` (1000×300) ve `-Kare.jpg` (600×600); marka işareti + Manrope; program ikisini de kabul etti.
-  Wolvox kalan 4 madde (cari bakiyesi notu, ödeme şekli kodu, portala taslak, ek alanlar) için kullanıcı kararını yazacak.
+  KARAR (kullanıcı, aynı gün: "kalan 4 madde … isteğe bağlı olarak olsun") → cari bakiyesini nota ekleme, ödeme şekli kodu, EDM portalına taslak
+  yükleme, kalemde Seri No / Lot No alanları YAPILDI; dördü de ayardan açılır, varsayılan KAPALI (İz 7, `docs/2.4.0-IS-LISTESI.md`; gerçek EDM test
+  ortamında taslak + dört seçenek uçtan uca denendi, docs/kanit/2026-10-16/edm-taslak). Göç v27 (invoice_lines serial_no, lot_no; yalnız ekleyici).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
