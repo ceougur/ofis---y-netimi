@@ -302,6 +302,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     profile && profile !== "KAGIT" && INVOICE_KINDS[kind]?.return && String(originalNumber || "").trim().length !== 16
       ? [`İade e-Belgesi asıl faturanın 16 haneli numarasını taşımalıdır (GİB kuralı; ör. ABC2026000000123). Asıl faturanın numarası: ${String(originalNumber || "").trim() || "yok"}. Asıl faturanın numarasını düzeltin.`]
       : [];
+  // Kontrol turu K3: tevkifatlı kalem ile istisna kodlu (%0, 351 dışı) kalem aynı e-Belgede geçerli tip bulamaz (GİB şematronu: tevkifat → TEVKIFAT,
+  // istisna kodu → ISTISNA; ikisi birden reddedilir). Kayıtta ve gönderimde önceden söylenir.
+  const mixProblems = (profile, lines = []) =>
+    profile && profile !== "KAGIT" && lines.some(line => line.withholdingCode) && lines.some(line => Number(line.vatRate) === 0 && line.exemptionCode && line.exemptionCode !== "351")
+      ? ["Tevkifatlı kalem ile KDV istisnalı kalem (351 dışı) aynı e-Belgede olamaz (GİB: tevkifatlı belgenin tipi TEVKIFAT, istisnalınınki ISTISNA). Bu kalemleri ayrı faturalarda kesin."]
+      : [];
   const sellerProblems = (profile, s = settings()) => partyProblems(sellerParty(s), { profile: profile === "KAGIT" ? "KAGIT" : profile === "EARSIVFATURA" ? "EARSIV" : profile === "ESMM" ? "EARSIV" : "EFATURA", role: "seller" });
   // GG2 (orta; plan §8.9): Banka hesap kartındaki "IBAN Faturada Gösterilsin" işaretli hesaplar faturanın satıcı banka listesine girer (önce Banka
   // hesapları, sonra Fatura Ayarları'ndaki liste; aynı IBAN bir kez; en çok 4). Önceden kutunun hiçbir etkisi yoktu.
@@ -886,7 +892,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // v2.0.17 (müşteri): her belge silinebilir — taslak, kaydedilmiş (etkiler iptaldeki gibi geri alınır), iptal edilmiş.
       canDelete: manage && !deleteBlock(row, activeReturns, plan),
       deleteBlock: manage ? deleteBlock(row, activeReturns, plan) : "",
-      canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee,
+      canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee && !uncertainSend(row),
       // K4: iptal penceresinde söylenir (şüpheli carinin "Normal Cariye İşlendi" tahsilatı iptalle şüpheliden düşmeye başlar).
       cancelNotice: manage && row.status === "issued" ? doubtfulRelinkText(doubtfulRelinks(row.id)) : "",
       cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
@@ -1618,7 +1624,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const later = Boolean(!edit && defer && edocEnabled && meta.own && meta.send && doc.profile !== "KAGIT");
     // e-Belge: alıcı ve satıcı bilgisi eksiksiz olmalı (GİB doğrulaması).
     if (doc.profile !== "KAGIT" && meta.own) {
-      const problems = [...sellerProblems(doc.profile, s), ...partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }), ...returnProblems(doc.profile, doc.kind, doc.original?.number)];
+      const problems = [...sellerProblems(doc.profile, s), ...partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }), ...returnProblems(doc.profile, doc.kind, doc.original?.number), ...mixProblems(doc.profile, doc.computed?.lines || [])];
       if (problems.length) fail400(problems.join(" "), "party", { code: "einvoice-party", problems });
     }
     const invoiceId = id || newId("invoice");
@@ -2803,6 +2809,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (buyer.length) throw new HttpError(409, `Alıcı bilgisi eksik: ${buyer.join(" ")}`, { code: "buyer-incomplete", problems: buyer });
     const ret = returnProblems(doc.profile, doc.kind, doc.originalNumber);
     if (ret.length) throw new HttpError(409, ret.join(" "), { code: "einvoice-return-reference", problems: ret });
+    const mix = mixProblems(doc.profile, doc.lines || []);
+    if (mix.length) throw new HttpError(409, mix.join(" "), { code: "einvoice-type-mix", problems: mix });
   }
   async function sendInvoice(user, id, { draft = false } = {}) {
     requireEdoc();
@@ -2815,11 +2823,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     {
       const s = settings();
       const pre = detail(id, user);
-      if (pre.status === "issued" && pre.profile !== "KAGIT") {
+      // Gönderilecekler'den silinmiş (withdrawn) belge KAGIT görünür ama e-Belge profiliyle (eProfile) gönderilir — denetim onu da kapsar (kontrol turu K1).
+      const withdrawn = pre.eStatus === "withdrawn";
+      if (pre.status === "issued" && (pre.profile !== "KAGIT" || withdrawn)) {
         const clash = Object.entries(s.series).find(([, value]) => TEST_SERIES_SET.has(value));
         if (clash) throw new HttpError(409, `${clash[1]} serisi test ortamına ayrılmıştır; Fatura Ayarları → Seriler'de ${SERIES_LABELS[clash[0]] || clash[0]} serisini değiştirin, sonra gönderin.`, { code: "series-reserved" });
         integrator(s);
-        preflight(pre, s);
+        preflight(withdrawn ? { ...pre, profile: invoiceRow(id).eProfile } : pre, s);
       }
     }
     numberForSend(user, id);
@@ -2878,7 +2888,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
           publish(user, { kind: "invoices", invoiceId: doc.id });
           throw error;
         }
-        setE(user, doc.id, { status: rejected ? "error" : doc.eStatus || "none", adapter: link.id, message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
+        // Kontrol turu K2: istek gitmiş olabilecek her hata (bağlantı, zaman aşımı, okunamayan yanıt) önceki durum ne olursa olsun (ör. "Hata"dan yeniden
+        // gönderim) "belirsiz" yazılır. K5: isteğin hiç gitmediği bilinen hatalar (kanal, adres, kimlik, oturum) belirsiz sayılmaz, durum değişmez.
+        const notSent = ["integrator-channel", "integrator-url", "integrator-credentials", "integrator-login", "integrator-session"].includes(code);
+        if (notSent) setE(user, doc.id, { status: doc.eStatus || "none", message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
+        else setE(user, doc.id, { status: rejected ? "error" : "none", adapter: link.id, message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
         throw error;
       }
       setE(user, doc.id, { status: result.status, adapter: link.id, message: result.message }, draft ? "invoice.e.draft" : "invoice.e.sent", { adapter: link.id, reference: result.reference });

@@ -189,6 +189,50 @@ describe("Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, a�
     assert.equal(refreshed.data.canModify, true);
   });
 
+  test("Kontrol K1: Gönderilecekler'den silinmiş (withdrawn) belge bağlantısız Gönder'de de numara almaz", async () => {
+    const waiting = (await sale({ eSend: "later" })).data;
+    assert.equal((await api.post(`/api/workspace/invoices/${waiting.id}/withdraw`, {})).status, 200);
+    const withdrawn = (await api.get(`/api/workspace/invoices/${waiting.id}`)).data;
+    assert.equal(withdrawn.eStatus, "withdrawn");
+    await api.put("/api/workspace/invoices/settings", { integrator: { clearPassword: true } });
+    try {
+      const sent = await api.post(`/api/workspace/invoices/${waiting.id}/send`, {});
+      assert.equal(sent.status, 409);
+      assert.equal(sent.data.code, "integrator-not-configured");
+      const after = (await api.get(`/api/workspace/invoices/${waiting.id}`)).data;
+      assert.equal(after.number, withdrawn.number, "fiş numarası yerinde, e-Belge numarası verilmedi");
+      assert.equal(after.eStatus, "withdrawn");
+    } finally {
+      await api.put("/api/workspace/invoices/settings", { integrator: integ() });
+    }
+  });
+
+  test("Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez", async () => {
+    const doc = (await sale()).data;
+    assert.equal((await api.post(`/api/workspace/invoices/${doc.id}/send`, {})).status, 200);
+    // İlk gönderimi reddedilmiş belgeye çevir (EDM'de yok, programda "Hata").
+    edm.state.sent.splice(edm.state.sent.findIndex(item => item.uuid === doc.ettn), 1);
+    edm.state.statuses.delete(doc.ettn);
+    server.app.store.run("UPDATE invoices SET e_status = 'error' WHERE id = ?", doc.id);
+    loseSendResponse = true;
+    assert.equal((await api.post(`/api/workspace/invoices/${doc.id}/send`, {})).status, 502);
+    const after = (await api.get(`/api/workspace/invoices/${doc.id}`)).data;
+    assert.equal(edm.state.sent.filter(item => item.uuid === doc.ettn).length, 1, "EDM belgeyi aldı");
+    assert.equal(after.canModify, false);
+    assert.equal(after.canDelete, false);
+    assert.equal(after.canCancel, false, "iptal düğmesi de kapalı (K4)");
+    assert.equal((await api.post(`/api/workspace/invoices/${doc.id}/send`, {})).status, 200);
+    assert.equal(edm.state.sent.filter(item => item.uuid === doc.ettn).length, 1, "ikinci kez gönderilmedi");
+  });
+
+  test("Kontrol K3: tevkifatlı + istisnalı kalem aynı e-Belgede kaydedilmez (geçerli GİB tipi yok)", async () => {
+    const mixed = await sale({}, [{ name: "Etüt", qty: 1, unitPrice: 1000, vatRate: 20, withholdingCode: "601" }, { name: "İhracat", qty: 1, unitPrice: 100, vatRate: 0, exemptionCode: "301" }]);
+    assert.equal(mixed.status, 400, JSON.stringify(mixed.data));
+    assert.match(mixed.data.error, /ayrı faturalarda/);
+    const withheld = await sale({}, [{ name: "Etüt", qty: 1, unitPrice: 1000, vatRate: 20, withholdingCode: "601" }, { name: "Diğer", qty: 1, unitPrice: 100, vatRate: 0, exemptionCode: "351" }]);
+    assert.equal(withheld.status, 200, "351 (istisna değil) tevkifatla birlikte olabilir");
+  });
+
   test("E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz", async () => {
     const raw = JSON.parse(server.app.store.setting("invoice.settings", "{}"));
     raw.series = { ...(raw.series || {}), paper: "TEA" };

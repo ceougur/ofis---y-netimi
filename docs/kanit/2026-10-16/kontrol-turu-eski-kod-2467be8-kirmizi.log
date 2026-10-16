@@ -1,0 +1,186 @@
+TAP version 13
+# (node:14433) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz)
+    # Subtest: Y1/E1: canlı kilidi Servis Adresi'yle delinmez (ayar 400; veri tabanında kalmış adres 409, ağa çıkılmaz)
+    ok 1 - Y1/E1: canlı kilidi Servis Adresi'yle delinmez (ayar 400; veri tabanında kalmış adres 409, ağa çıkılmaz)
+      ---
+      duration_ms: 77.410586
+      type: 'test'
+      ...
+    # Subtest: Y2: bağlantısı kurulmamış entegratörle Gönder, Gönderilecekler'deki belgeye numara vermez
+    ok 2 - Y2: bağlantısı kurulmamış entegratörle Gönder, Gönderilecekler'deki belgeye numara vermez
+      ---
+      duration_ms: 132.142182
+      type: 'test'
+      ...
+    # Subtest: E2: portaldan gönderilmiş taslak programda düzenlenmez, e-Fatura taslağı onayla da iptal edilmez; durum güncellenir
+    ok 3 - E2: portaldan gönderilmiş taslak programda düzenlenmez, e-Fatura taslağı onayla da iptal edilmez; durum güncellenir
+      ---
+      duration_ms: 120.767717
+      type: 'test'
+      ...
+    # Subtest: Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düzenlenmez; yeniden Gönder ikinci kez göndermez, durumu alır
+    ok 4 - Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düzenlenmez; yeniden Gönder ikinci kez göndermez, durumu alır
+      ---
+      duration_ms: 62.971746
+      type: 'test'
+      ...
+    # Subtest: Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgula belirsizliği kaldırır (EDM 11017 'Fatura bulunamadı')
+    ok 5 - Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgula belirsizliği kaldırır (EDM 11017 'Fatura bulunamadı')
+      ---
+      duration_ms: 48.55515
+      type: 'test'
+      ...
+    # Subtest: Kontrol K1: Gönderilecekler'den silinmiş (withdrawn) belge bağlantısız Gönder'de de numara almaz
+    not ok 6 - Kontrol K1: Gönderilecekler'den silinmiş (withdrawn) belge bağlantısız Gönder'de de numara almaz
+      ---
+      duration_ms: 67.923741
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol-eski-2467be8/test/ebelge-240-bitis-turu.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fiş numarası yerinde, e-Belge numarası verilmedi
+        + actual - expected
+        
+        + 'TEF2026000000007'
+        - 'FIS2026000000001'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000001'
+      actual: 'TEF2026000000007'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol-eski-2467be8/test/ebelge-240-bitis-turu.test.mjs:203:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez
+    not ok 7 - Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez
+      ---
+      duration_ms: 84.103034
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol-eski-2467be8/test/ebelge-240-bitis-turu.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol-eski-2467be8/test/ebelge-240-bitis-turu.test.mjs:221:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Kontrol K3: tevkifatlı + istisnalı kalem aynı e-Belgede kaydedilmez (geçerli GİB tipi yok)
+    not ok 8 - Kontrol K3: tevkifatlı + istisnalı kalem aynı e-Belgede kaydedilmez (geçerli GİB tipi yok)
+      ---
+      duration_ms: 28.719573
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol-eski-2467be8/test/ebelge-240-bitis-turu.test.mjs:228:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-dc7f6ed5-6962-44fb-86f7-2d36a544d9d4","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"TEF2026000000009","displayNo":"TEF2026000000009","ettn":"220a6829-6836-4019-b3af-50a0a0f4858c","issueDate":"2026-10-16","issueTime":"13:08","accountId":"account-fb374adb-002d-4252-97bf-f063a5760560","accountName":"Alıcı Ticaret A.Ş.","accountRef":"1","accountPhone":"","profile":"TEMELFATURA","profileLabel":"e-Fatura (Temel)","typeCode":"TEVKIFAT","currency":"TRY","rate":1,"netTotal":1100,"vatTotal":200,"withheldTotal":80,"stoppageTotal":0,"payableTotal":1220,"tryNet":1100,"tryVat":200,"tryPayable":1220,"dueDate":"2026-10-16","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"none","eStatusLabel":"Gönderilmedi","eTest":true,"actorName":"Ofis yöneticisi","createdAt":"2026-10-16T13:08:17.630Z","payState":"open","payStateLabel":"Açık","paid":0,"open":1220,"closers":[],"party":{"id":"account-fb374adb-002d-4252-97bf-f063a5760560","name":"Alıcı Ticaret A.Ş.","partyKind":"company","firstName":"","familyName":"","taxNo":"9876543217","taxOffice":"Kavaklıdere","mersisNo":"","tradeRegistry":"","address":"Cinnah Cd. 10","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","iban":"","eInvoice":true,"eAlias":"urn:mail:defaultpk@alici.com.tr"},"seller":{"name":"Deneme Ofis Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":1100,"discountTotal":0,"baseNetTotal":1100,"discountNetTotal":0,"goodsNet":0,"serviceNet":1100,"grossTotal":1300,"tryWithheld":80,"tryStoppage":0,"gl":[{"account":"600","net":110000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":1220},"eMessage":"","eAt":"","eAdapter":"","cancelledAt":null,"cancelReason":"","amountInWords":"Yalnız Bin İki Yüz Yirmi Türk Lirası","byRate":[{"rate":0,"net":100,"vat":0,"withheld":0},{"rate":20,"net":1000,"vat":200,"withheld":80}],"lines":[{"id":"iline-6bd30239-e1d0-45cc-82ca-7df080665d03","invoiceId":"invoice-dc7f6ed5-6962-44fb-86f7-2d36a544d9d4","seq":1,"itemId":"","goods":false,"code":"","name":"Etüt","description":"","unit":"Adet","qty":1,"unitPrice":1000,"discountRate":0,"base":1000,"discount":0,"net":1000,"vatRate":20,"vat":200,"withholdingCode":"601","withholdingNum":4,"withholdingDen":10,"withheld":80,"exemptionCode":"","gross":1200,"payable":1120,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""},{"id":"iline-8e6ab4ec-94f1-40df-934d-f7bcfdde3dda","invoiceId":"invoice-dc7f6ed5-6962-44fb-86f7-2d36a544d9d4","seq":2,"itemId":"","goods":false,"code":"","name":"İhracat","description":"","unit":"Adet","qty":1,"unitPrice":100,"discountRate":0,"base":100,"discount":0,"net":100,"vatRate":0,"vat":0,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"301","gross":100,"payable":100,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-6bd30239-e1d0-45cc-82ca-7df080665d03","left":1},{"id":"iline-8e6ab4ec-94f1-40df-934d-f7bcfdde3dda","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":true,"modifyBlock":"","canIssue":false,"canDelete":true,"deleteBlock":"","canCancel":true,"cancelNotice":"","cancelBlock":"","canReturn":true,"returnBlock":"","repeat":null,"canRepeat":true,"canSend":true,"canWithdraw":false,"sendBlock":"","canRefresh":false,"canDraft":false,"draftStale":false,"canOfficial":false,"edocEnabled":true}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol-eski-2467be8/test/ebelge-240-bitis-turu.test.mjs:230:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz
+    ok 9 - E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz
+      ---
+      duration_ms: 68.22225
+      type: 'test'
+      ...
+    # Subtest: E4/Y7/Y6: karekod yalnız numaralı, entegratöre ulaşmış e-Fatura / e-Arşivde (PDF ve görünüm); e-SMM'ye basılmaz
+    ok 10 - E4/Y7/Y6: karekod yalnız numaralı, entegratöre ulaşmış e-Fatura / e-Arşivde (PDF ve görünüm); e-SMM'ye basılmaz
+      ---
+      duration_ms: 169.622883
+      type: 'test'
+      ...
+    # Subtest: Y4: istisnalı kalem + KDV'li kalem → ISTISNA ve GİB şematronundan temiz; 351 + 301'de iki istisna kodu da belgede
+    ok 11 - Y4: istisnalı kalem + KDV'li kalem → ISTISNA ve GİB şematronundan temiz; 351 + 301'de iki istisna kodu da belgede
+      ---
+      duration_ms: 1111.641402
+      type: 'test'
+      ...
+    # Subtest: E5: U+FFFE / U+FFFF kalem adından ayıklanır; belge şemadan geçer
+    ok 12 - E5: U+FFFE / U+FFFF kalem adından ayıklanır; belge şemadan geçer
+      ---
+      duration_ms: 361.48606
+      type: 'test'
+      ...
+    # Subtest: E9: resmî görüntü önbelleği belgenin durumuna bağlı — e-Arşiv iptalinden sonra EDM'den yeniden alınır
+    ok 13 - E9: resmî görüntü önbelleği belgenin durumuna bağlı — e-Arşiv iptalinden sonra EDM'den yeniden alınır
+      ---
+      duration_ms: 118.197084
+      type: 'test'
+      ...
+    # Subtest: E10: Fatura Ayarları yetkisi olmayan kullanıcı entegratör kullanıcı adını, adresini ve son test iletisini görmez
+    ok 14 - E10: Fatura Ayarları yetkisi olmayan kullanıcı entegratör kullanıcı adını, adresini ve son test iletisini görmez
+      ---
+      duration_ms: 124.818251
+      type: 'test'
+      ...
+    1..14
+not ok 1 - Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz)
+  ---
+  duration_ms: 3010.592583
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kontrol-eski-2467be8/test/ebelge-240-bitis-turu.test.mjs:40:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: E6: vekil sunucu adresindeki boşluk sessizce kesilmez
+    # Subtest: 'vekil.firma.local 8080' → 400
+    ok 1 - 'vekil.firma.local 8080' → 400
+      ---
+      duration_ms: 287.975891
+      type: 'test'
+      ...
+    1..1
+ok 2 - E6: vekil sunucu adresindeki boşluk sessizce kesilmez
+  ---
+  duration_ms: 288.424716
+  type: 'suite'
+  ...
+# Subtest: Y5: görünüm kapatılınca karekodun da kalkacağı ekranda yazar
+    # Subtest: onay kutusu metni karekodu anar
+    ok 1 - onay kutusu metni karekodu anar
+      ---
+      duration_ms: 2.73431
+      type: 'test'
+      ...
+    1..1
+ok 3 - Y5: görünüm kapatılınca karekodun da kalkacağı ekranda yazar
+  ---
+  duration_ms: 2.917731
+  type: 'suite'
+  ...
+1..3
+# tests 16
+# suites 3
+# pass 13
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3744.068219

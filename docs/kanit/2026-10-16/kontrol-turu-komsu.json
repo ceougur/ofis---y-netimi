@@ -1,0 +1,32 @@
+{
+  "ad": "kontrol-turu-komsu",
+  "komut": "bash -c HUKUK_LICENSE_URL=http://127.0.0.1:9 node --test test/ebelge-240-bitis-turu.test.mjs test/ebelge-240-ek-secenekler.test.mjs test/ebelge-240-gorunum.test.mjs test/ebelge-uygunluk.test.mjs test/edm-gercek-sozlesme.test.mjs test/edoc-uretim.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/einvoice-240-taslak.test.mjs test/einvoice-edm.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-model.test.mjs test/karekod.test.mjs test/supheli-240-k4-iptal.test.mjs test/vekil-sunucu-uygulama.test.mjs test/vekil-sunucu.test.mjs  test/ebelge-240-bitis-turu.test.mjs",
+  "commit": "2467be8fa8eb92d85327eb80c60aabded3c0e20c",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-16T13:08:28.010Z",
+  "sure_sn": 114.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 231,
+    "gecen": 231,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-16/kontrol-turu-komsu.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8b6e03609afcb54be87613f557181458ea51a8afd3efe98da92947d170be601b",
+  "ham_cikti_bayt": 74663
+}
