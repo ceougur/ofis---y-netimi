@@ -629,6 +629,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   bilerek yanlış kullanıcı → Durum "Bağlantı kurulamadı… Kullanıcı Bulunamadı! (EDM 11010)", adres boşken canlı adres (canli-kart); (b) canlı AÇIK üretim
   ayarıyla (edocLive) test ortamına 4 belge TEF2026250609970–72 + TEA2026250609970: GİB'den geçti, TEF/TEA + TEST şeridi, yeni SAYIN düzeni EDM resmî PDF'inde,
   karekod jsQR ile çözüldü, ödenecek 470/1200/900/740 (edm-son-hal-2).
+  KARAR (kullanıcı, aynı gün: "bilgi eklentisini 2.4.1'e bırakalım") → 2.4.1 ADAYI: canlıda "Kullanıcı Bulunamadı!" (EDM 11010) iletisine yönlendirme
+  ("Canlı Ortam için EDM'nin canlı kullanıcı adı ve parolasını girin"; testte test hesabı). 2.4.0'a girmez.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
