@@ -2437,14 +2437,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (lock && row.issueDate <= lock) return `Belge ${dayText(row.issueDate)} tarihli; ${dayText(lock)} ve öncesi kilitli dönem. Silmek için dönem kilidi açılmalı.`;
     // Dar kontrol turu 3 (B2): numarası entegratörde kullanılmış (ya da kullanılmış olabilecek) iptal belgesi silinirse seri MAX(seq) ile geri gelir
     // ve aynı e-Belge numarası yeni belgeye verilir (EDM'de ilk belge durur). Entegratör izi olan iptal belgesi "İptal Edildi" olarak kalır.
-    if (row.status === "cancelled" && row.number && (row.eAdapter || E_TRACKED.has(row.eStatus))) return "Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.";
-    if (row.status === "cancelled") return "";
+    // Kontrol turu 4: kural iptal edilmemiş belgede de geçerli — "İşleniyor", "Reddedildi", "Hata" durumundaki kaydedilmiş belge doğrudan Sil ile
+    // (arkada onaysız iptal) silinip numarası yeniden veriliyordu.
+    const traced = Boolean(row.number) && (Boolean(row.eAdapter) || E_TRACKED.has(row.eStatus));
+    if (row.status === "cancelled") return traced ? "Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır." : "";
     const fee = bankFeeOf(row.id);
     if (fee) return bankFeeText(fee);
     if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; önce iade faturalarını silin ya da iptal edin.`;
     if (["sent", "accepted"].includes(row.eStatus)) return `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; silinmez. Önce entegratör tarafında iptal edin.`;
     if (uncertainSend(row)) return UNCERTAIN_TEXT;
     if (row.eStatus === "draft") return "Bu belge EDM portalına taslak olarak yüklendi; silinmez. Önce İptal edin (e-Arşiv taslağı EDM'de de iptal edilir; e-Fatura taslağını EDM portalından silin).";
+    if (traced) return `Bu belge entegratöre (EDM) iletildi (durum: ${E_STATES[row.eStatus] || row.eStatus}); numarası kullanıldı, silinmez. Gerekirse İptal edin: belge “İptal Edildi” olarak kalır.`;
     const planId = plan?.id || row.planId;
     if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return "Faturanın taksit kartında tahsilat var; silinmez. Önce tahsilatları silin ya da iade faturası kaydedin.";
     return "";
@@ -2566,16 +2569,23 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       ? `${what} artık şüpheli alacaktan düşüyor (faturayla bağı kalktı). Normal cari hesapta kalmasını isterseniz cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.`
       : `${what} şu an normal cari hesaba işli (cari şüpheli alacakta). Fatura iptal edilince bağı kalkar ve tahsilat şüpheli alacaktan düşer. Normal cari hesapta kalmasını isterseniz iptalden sonra cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.`;
   }
-  // Yük denemesi (iki şirket, on kullanıcı; dar kontrol turu 3 B6): iki kullanıcı aynı e-Arşivi aynı anda iptal edince ikisi de entegratöre iptal
-  // isteği gönderiyordu (program bir kez iptal eder). Gönderimdeki gibi belge başına tek iptal.
-  const cancelling = new Set();
+  // Belge başına tek entegratör işlemi (gönderim YA DA iptal). Yük denemesi (iki şirket, on kullanıcı; dar kontrol turu 3 B6): iki kullanıcı aynı
+  // e-Arşivi aynı anda iptal edince ikisi de entegratöre iptal gönderiyordu. Kontrol turu 4: gönderim sürerken başka kullanıcı iptal edebiliyordu
+  // (numaralı, durumu "none" belge onaysız iptal edilir; gönderim bitince iptal edilmiş belge "Gönderildi" olur — GİB'de geçerli, defterde iptal).
+  const busy = new Map();
+  function holdInvoice(id, kind) {
+    const held = busy.get(id);
+    if (held === "sending") throw new HttpError(409, "Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.", { code: "einvoice-sending" });
+    if (held === "cancelling") throw new HttpError(409, "Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin.", { code: "invoice-cancelling" });
+    busy.set(id, kind);
+    return () => busy.delete(id);
+  }
   async function cancelInvoice(user, id, body) {
-    if (cancelling.has(id)) throw new HttpError(409, "Bu belge şu anda başka bir kullanıcı tarafından iptal ediliyor; birkaç saniye sonra yenileyin.", { code: "invoice-cancelling" });
-    cancelling.add(id);
+    const release = holdInvoice(id, "cancelling");
     try {
       return await cancelInvoiceOnce(user, id, body);
     } finally {
-      cancelling.delete(id);
+      release();
     }
   }
   async function cancelInvoiceOnce(user, id, body) {
@@ -2866,7 +2876,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     } catch (error) {
       // Dar kontrol turu 3 (B5): sorgu yapılamadıysa (bağlantı, giriş, zaman aşımı) numara verilmeden durulur — mükellefe giden e-Arşiv numarası
       // hiç gönderilemeyecek bir belgede kalmasın. Belge Gönderilecekler'de, numarasız kalır.
-      throw new HttpError(502, `Alıcının e-Fatura mükellefiyeti entegratöre sorulamadı (${String(error?.message || error).slice(0, 200)}). Belge numara verilmeden Gönderilecekler'de kaldı; bağlantı düzelince yeniden gönderin.`, { code: "buyer-check-failed" });
+      const where = doc.number ? "Belge gönderilmedi" : "Belge numara verilmeden Gönderilecekler'de kaldı";
+      throw new HttpError(502, `Alıcının e-Fatura mükellefiyeti entegratöre sorulamadı (${String(error?.message || error).slice(0, 200)}). ${where}; bağlantı düzelince yeniden gönderin.`, { code: "buyer-check-failed" });
     }
     if (!result?.registered) return;
     // Posta kutusu yalnız tekse kendiliğinden yazılır; birden çoksa kullanıcı cari kartında seçer (yanlış kutuya fatura gitmesin).
@@ -2879,9 +2890,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const choose = aliases.length > 1 ? ` Alıcının ${aliases.length} posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin.` : "";
       throw new HttpError(409, `Alıcı (${taxNo}) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi.${choose} Bu belgeyi iptal edip yeniden kaydedin: e-Fatura olarak kesilir.`, { code: "buyer-is-efatura", aliases });
     }
-    throw new HttpError(409, `Belgedeki alıcı numarası (${taxNo}) e-Fatura mükellefine ait; ona e-Arşiv fatura kesilemez (GİB). Bu belge carinin kendi numarasıyla kesilmedi: o firmanın carisini VKN'siyle açıp faturayı ona e-Fatura olarak kesin; bu belgeyi iptal edin.`, { code: "buyer-is-efatura", aliases });
+    throw new HttpError(409, `Belgedeki alıcı numarası (${taxNo}) e-Fatura mükellefine ait; ona e-Arşiv fatura kesilemez (GİB). Belgedeki numara carinin şimdiki numarasıyla aynı olmadığı için cari kartı işaretlenmedi: alıcı firmanın carisini VKN'siyle açıp faturayı ona e-Fatura olarak kesin; bu belgeyi iptal edin.`, { code: "buyer-is-efatura", aliases });
   }
-  async function sendInvoice(user, id, { draft = false } = {}) {
+  async function sendInvoice(user, id, options = {}) {
+    const release = holdInvoice(id, "sending");
+    try {
+      return await sendInvoiceOnce(user, id, options);
+    } finally {
+      release();
+    }
+  }
+  async function sendInvoiceOnce(user, id, { draft = false } = {}) {
     requireEdoc();
     if (draft) {
       const row = invoiceRow(id);
@@ -2914,8 +2933,6 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     const s = settings();
     preflight(doc, s);
-    if (sending.has(doc.id)) throw new HttpError(409, "Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.", { code: "einvoice-sending" });
-    sending.add(doc.id);
     try {
       const link = integrator(s);
       // Önceki gönderimin sonucu belirsizse (Y3/S1) önce sorulur: belge EDM'deyse yeniden gönderilmez (aynı ETTN ikinci kez reddedilir ve belge
@@ -2969,7 +2986,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       setE(user, doc.id, { status: result.status, adapter: link.id, message: result.message }, draft ? "invoice.e.draft" : "invoice.e.sent", { adapter: link.id, reference: result.reference });
       return result;
     } finally {
-      sending.delete(doc.id);
+      // kilit sendInvoice'ta (gönderim ↔ iptal)
     }
   }
   // Gönderilecekler'den silme: hiçbir etki geri alınmaz. Belge Müşteri Fişi olarak kalır ve fiş serisinden numara alır

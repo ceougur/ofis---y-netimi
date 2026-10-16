@@ -9,6 +9,9 @@
 //   B5 ORTA    mükellef sorgusu bağlantı hatası verince numara yine harcanır; belge önce belirsiz, sonra hiç gönderilemez.
 //   B6 ORTA    (iki şirket / on kullanıcı yük denemesinde bulundu) iki kullanıcı aynı e-Arşivi aynı anda iptal eder → program bir kez iptal
 //              eder ama EDM'ye iki iptal isteği gider, işlem kaydında iki "EDM'de iptal" satırı olur.
+// Dar kontrol turu 4 (b875ed2):
+//   C1 YÜKSEK  B2 yalnız iptal edilmiş belgeyi koruyordu: "İşleniyor" / "Hata" durumundaki kaydedilmiş belge doğrudan Sil ile silinip numarası yeniden verilir.
+//   C2 YÜKSEK  gönderim sürerken başka kullanıcı iptal eder → gönderim bitince iptal edilmiş belge "Gönderildi" (GİB'de geçerli, defterde iptal).
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
@@ -29,10 +32,12 @@ describe("Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)", () => {
   let personId;
   let loseSendResponse = false;
   let down = false;
+  let holdSend = null;
   const fetchImpl = async (input, init) => {
     const url = String(typeof input === "string" || input instanceof URL ? input : input.url);
     if (!url.startsWith("http://127.0.0.1")) throw new Error(`ağa çıkılmaz (test): ${url}`);
     if (down) throw Object.assign(new TypeError("fetch failed"), { cause: Object.assign(new Error("connect ECONNREFUSED"), { code: "ECONNREFUSED" }) });
+    if (holdSend && /SendInvoiceRequest/.test(String(init?.body || ""))) await holdSend;
     const response = await globalThis.fetch(input, init);
     if (loseSendResponse && /SendInvoiceRequest/.test(String(init?.body || ""))) {
       loseSendResponse = false;
@@ -213,5 +218,36 @@ describe("Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)", () => {
     assert.equal(edm.state.cancelled.length - before, 1, "EDM'ye tek iptal isteği");
     assert.equal(audits(doc.id).filter(type => type === "invoice.e.cancelled").length, 1);
     assert.equal(audits(doc.id).filter(type => type === "invoice.cancelled").length, 1);
+  });
+
+  test("C1: entegratöre gitmiş kaydedilmiş belge (İşleniyor / Hata) doğrudan silinmez; numara yeniden verilmez", async () => {
+    const doc = (await sale(personId)).data;
+    assert.equal((await api.post(`/api/workspace/invoices/${doc.id}/send`, {})).status, 200);
+    const sent = await card(doc.id);
+    server.app.store.run("UPDATE invoices SET e_status = 'processing' WHERE id = ?", doc.id);
+    const processing = await card(doc.id);
+    assert.equal(processing.canDelete, false, "İşleniyor belge silinmez");
+    assert.equal((await api.del(`/api/workspace/invoices/${doc.id}?reason=x`)).status, 409);
+    server.app.store.run("UPDATE invoices SET e_status = 'error' WHERE id = ?", doc.id);
+    assert.equal((await card(doc.id)).canDelete, false, "Hata durumundaki belge silinmez");
+    assert.equal((await api.del(`/api/workspace/invoices/${doc.id}?reason=x`)).status, 409);
+    assert.equal((await card(doc.id)).number, sent.number);
+  });
+
+  test("C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)", async () => {
+    const doc = (await sale(personId, { eSend: "later" })).data;
+    let open;
+    holdSend = new Promise(resolve => (open = resolve));
+    const sending = api.post(`/api/workspace/invoices/${doc.id}/send`, {});
+    for (let i = 0; i < 50 && !(await card(doc.id)).number; i += 1) await new Promise(resolve => setTimeout(resolve, 20));
+    const during = await api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "yarış" });
+    open();
+    holdSend = null;
+    const done = await sending;
+    assert.equal(done.status, 200, JSON.stringify(done.data));
+    assert.equal(during.status, 409, JSON.stringify(during.data));
+    assert.equal(during.data.code, "einvoice-sending");
+    const row = await card(doc.id);
+    assert.deepEqual({ status: row.status, eStatus: row.eStatus }, { status: "issued", eStatus: "sent" });
   });
 });

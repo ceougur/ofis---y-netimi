@@ -13,13 +13,23 @@ const NS = {
   cbc: "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
   ext: "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2",
 };
-// Birimler → UN/ECE Rec. 20 kodları (UBL InvoicedQuantity/@unitCode).
+// Birimler → UN/ECE Rec. 20 kodları (UBL InvoicedQuantity/@unitCode). Yalnız entegratörün KABUL ETTİĞİ kodlar: gerçek EDM test ortamı (16.10.2026,
+// docs/kanit/2026-10-16/edm-birim) GİB kod listesinde olan Çuval SA, Koli CT, Şişe BO, Rulo RO, Torba BG ve Hafta WEE kodlarını "Geçersiz Ölçü Birim
+// Kodu" (11059/11047) ile reddetti (iki şirket / on kullanıcı yük denemesinde Çuval'lı e-Faturalar düştü). Karşılığı kabul edilmeyen birim Adet (C62)
+// gider; birimin adı kalem notuna yazılır (unitNote).
 const UNIT_CODES = {
   adet: "C62", ad: "C62", tane: "C62", kg: "KGM", gr: "GRM", g: "GRM", ton: "TNE", lt: "LTR", l: "LTR", ml: "MLT", m: "MTR", metre: "MTR", cm: "CMT", mm: "MMT",
-  "m²": "MTK", m2: "MTK", "m³": "MTQ", m3: "MTQ", paket: "PA", kutu: "BX", koli: "CT", çift: "PR", takım: "SET", set: "SET", saat: "HUR", gün: "DAY", ay: "MON", yıl: "ANN",
-  dakika: "MIN", hafta: "WEE", rulo: "RO", şişe: "BO", torba: "BG", çuval: "SA", top: "C62", porsiyon: "C62", kişi: "C62", seans: "C62", ders: "C62",
+  "m²": "MTK", m2: "MTK", "m³": "MTQ", m3: "MTQ", paket: "PA", kutu: "BX", çift: "PR", takım: "SET", set: "SET", saat: "HUR", gün: "DAY", ay: "MON", yıl: "ANN",
+  dakika: "MIN", düzine: "DZN",
 };
+// Gerçek EDM'nin kabul ettiği kodlar (aynı kanıt; test/ebelge-240-birim.test.mjs program birimlerini buna karşı denetler).
+export const EDM_ACCEPTED_UNIT_CODES = Object.freeze(["C62", "KGM", "GRM", "TNE", "LTR", "MLT", "MTR", "CMT", "MMT", "MTK", "MTQ", "PA", "BX", "PR", "SET", "HUR", "DAY", "MON", "ANN", "MIN", "DZN", "NIU", "PK", "CMQ"]);
 export const unitCode = unit => UNIT_CODES[String(unit || "").trim().toLocaleLowerCase("tr-TR")] || "C62";
+// Adet dışında olup Adet koduyla giden birimin (Çuval, Koli, Şişe, Teneke, Hafta, Seans…) adı: alıcı belgede gerçek birimi görür.
+export const unitNote = unit => {
+  const name = String(unit || "").trim();
+  return name && unitCode(name) === "C62" && !["adet", "ad", "tane"].includes(name.toLocaleLowerCase("tr-TR")) ? `Birim: ${name}` : "";
+};
 // XML 1.0'da geçersiz karakterler (C0 denetim, U+FFFE/U+FFFF, eşsiz vekil yarısı) ayıklanır (2.4.0 bitiş turu, eleştirmen E5: belge şemadan düşüyordu).
 const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f￾￿]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/g, "");
 const amount = value => (Math.round((Number(value) || 0) * 100) / 100).toFixed(2);
@@ -213,6 +223,7 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
         "<cac:InvoiceLine>",
         tag("cbc:ID", index + 1),
         variant === "peppol" ? "" : tag("cbc:Note", line.description),
+        variant === "peppol" ? "" : tag("cbc:Note", unitNote(line.unit)),
         `<cbc:InvoicedQuantity unitCode="${unitCode(line.unit)}">${escape(line.qty)}</cbc:InvoicedQuantity>`,
         money("cbc:LineExtensionAmount", line.net, currency),
         discount > 0 ? `<cac:AllowanceCharge>${tag("cbc:ChargeIndicator", "false")}${variant === "peppol" ? tag("cbc:AllowanceChargeReason", "İskonto") : tag("cbc:MultiplierFactorNumeric", (Math.round((discount / ((Number(line.net) || 0) + discount || 1)) * 10000) / 10000).toString())}${money("cbc:Amount", discount, currency)}${money("cbc:BaseAmount", (Number(line.net) || 0) + discount, currency)}</cac:AllowanceCharge>` : "",
