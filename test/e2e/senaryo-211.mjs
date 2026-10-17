@@ -260,7 +260,7 @@ try {
     await admin.waitForSelector(".hof-cash-table tbody tr[data-kind]");
     const cash = await admin.textContent(".hof-cash-balance strong");
     ok(cash.trim() === tl(3000), `Kasa: güncel kasa ${cash.trim()} (taksit tahsilatı Kasa'ya düştü)`);
-    ok((await admin.textContent(".hof-cash-table")).includes("Taksit tahsilatı · Ali Çelik"), "Kasa satırı: Taksit tahsilatı · Ali Çelik");
+    ok((await admin.textContent(".hof-cash-table")).includes("Taksit Tahsilatı · Ali Çelik"), "Kasa satırı: Taksit Tahsilatı · Ali Çelik (2.4.3 yazım düzeni)");
     await auditLabels(admin, "Kasa");
     await closeTop(admin);
     const collect = (await call(admin, "/api/workspace/report-center/cari-tahsilat?preset=all")).data;

@@ -25,7 +25,9 @@
       const query = HOF.normalize(input.value);
       if (!query) return;
       const rows = [...document.querySelectorAll(".dynamic-table tbody tr")];
-      const match = rows.find(row => HOF.normalize(row.textContent).includes(query));
+      // 2.4.3 (keşif A18): tutar hücresi biçimli gösterilir (25.000,00); ham değer hücrenin title'ında — ikisinde de aranır.
+      const rowText = row => `${row.textContent} ${[...row.cells].map(cell => cell.getAttribute("title") || "").join(" ")}`;
+      const match = rows.find(row => HOF.normalize(rowText(row)).includes(query));
       if (match) {
         HOF.table?.revealRow(match);
         if (!match.classList.contains("selected")) match.click();

@@ -16,7 +16,28 @@
   let signature = "";
 
   const money = value => (value === null || value === undefined ? "" : HOF.formatMoney(value));
-  const who = item => item.person || item.caseNo || "Kayıt";
+  // 2.4.3 (keşif A21): takvimde ve bildirimde aynı adlı farklı kişiler (iki "Ahmet Yılmaz" carisi, aynı adlı iki kayıt) ayırt edilir — adın
+  // yanına Cari No (taksit kartının carisi), kart No'su, dosya no ya da telefon. Yalnız ad gerçekten çakışınca eklenir (öbürlerinde sade ad).
+  const identityOf = item => item.accountId || item.planId || item.caseKey || item.id;
+  let twinCache = { items: null, names: new Set() };
+  const twinNames = () => {
+    if (twinCache.items === data.items) return twinCache.names;
+    const keys = new Map();
+    for (const item of data.items || []) {
+      const name = HOF.normalize(item.person || "");
+      if (!name) continue;
+      if (!keys.has(name)) keys.set(name, new Set());
+      keys.get(name).add(identityOf(item));
+    }
+    twinCache = { items: data.items, names: new Set([...keys].filter(([, ids]) => ids.size > 1).map(([name]) => name)) };
+    return twinCache.names;
+  };
+  const tagOf = item => (item.accountRef ? `Cari No ${item.accountRef}` : item.refNo ? `No ${item.refNo}` : item.source !== "plan" && item.caseNo ? item.caseNo : item.phone || "");
+  const who = item => {
+    const name = item.person || item.caseNo || "Kayıt";
+    const tag = item.person && twinNames().has(HOF.normalize(item.person)) ? tagOf(item) : "";
+    return tag && tag !== name ? `${name} · ${tag}` : name;
+  };
   // v2.0.17: öbür sayfanın kalemi (item.foreign) pilde sayfa adıyla görünür; "Kayda Git" o sayfaya geçer ve (2.0.25) kaydı açar.
   const pageTag = item => (item.foreign && item.pageName ? ` · ${item.pageName}` : "");
   const stateText = item => {
@@ -212,6 +233,20 @@
       return button;
     };
     shown.forEach(item => track.appendChild(pill(item)));
+    // 2.4.3 (keşif A17): şerit tek Tab durağıdır (gezici sekme sırası) — 40 pil Tab ile tek tek geçilmez; şeritte ← → Home End ile gezilir.
+    // Önceden ana sayfada Tab sol menüye ve kayıt tablosuna ancak bütün pillerden sonra ulaşıyordu.
+    const originals = [...track.children];
+    originals.forEach((button, index) => (button.tabIndex = index === 0 ? 0 : -1));
+    track.addEventListener("keydown", event => {
+      const at = originals.indexOf(event.target.closest?.(".hof-payment-pill"));
+      if (at < 0) return;
+      const next = { ArrowRight: at + 1, ArrowDown: at + 1, ArrowLeft: at - 1, ArrowUp: at - 1, Home: 0, End: originals.length - 1 }[event.key];
+      if (next === undefined) return;
+      event.preventDefault();
+      const target = originals[Math.max(0, Math.min(originals.length - 1, next))];
+      originals.forEach(button => (button.tabIndex = button === target ? 0 : -1));
+      target.focus();
+    });
     // Kesintisiz kayma için ikinci kopya (ekran okuyucudan gizli). Tek pilde kaymaz.
     if (shown.length > 1) {
       shown.forEach(item => {
@@ -226,7 +261,7 @@
     anchor.after(band);
   }
 
-  HOF.dues = { data: () => data, reload: load, reloadSoon, drop };
+  HOF.dues = { data: () => data, reload: load, reloadSoon, drop, who };
   HOF.whenReady(() => {
     load();
     // Şerit özet kartlarının altında durur; ekran yeniden çizilince yerine döner.

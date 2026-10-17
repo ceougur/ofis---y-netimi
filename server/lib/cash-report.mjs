@@ -25,10 +25,10 @@ export function rangeLabel(from, to) {
 }
 
 const describe = entry => {
-  if (entry.source === "account") return { text: [entry.kind === "in" ? "Cari tahsilat" : "Cariye ödeme", entry.accountName, entry.description].filter(Boolean).join(" · "), origin: "Cari kartından" };
+  if (entry.source === "account") return { text: [entry.kind === "in" ? "Cari Tahsilat" : "Cariye Ödeme", entry.accountName, entry.description].filter(Boolean).join(" · "), origin: "Cari kartından" };
   if (entry.source === "stock") return { text: entry.description || "", origin: "Stok hareketinden" };
   if (entry.source === "invoice") return { text: entry.description || "", origin: "Faturadan" };
-  if (entry.source === "plan") return { text: [entry.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi", entry.planName, entry.description].filter(Boolean).join(" · "), origin: "Taksit kartından" };
+  if (entry.source === "plan") return { text: [entry.kind === "in" ? "Taksit Tahsilatı" : "Taksit Ödemesi / İadesi", entry.planName, entry.description].filter(Boolean).join(" · "), origin: "Taksit kartından" };
   if (entry.transferId) return { text: entry.description || "", origin: entry.kind === "in" ? "Bankadan kasaya aktarım" : "Kasadan bankaya yatırma" };
   if (entry.source !== "payment") return { text: entry.description || "", origin: entry.kind === "in" ? "Kasaya elle girilen tahsilat" : "Ödeme" };
   const title = entry.caseTitle || (String(entry.caseKey || "").startsWith("satir:") ? "" : entry.caseKey || "");
