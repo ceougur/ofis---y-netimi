@@ -771,6 +771,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   çıkmaz, 0 TL): 5/10/20 eşzamanlı kullanıcı fatura kes + gönder + iptal + liste/arama/rapor; 10.000+ faturalı veriyle; ölçüm p50/p95/p99, saniyede işlem, hata,
   numara benzersiz/boşluksuz, bakiye/stok/defter tutarlılığı, ekranda fatura listesi/form açılış süresi. Ders 15 gereği keşif testleri (A/B/C) BİTİNCE tek
   başına koşulur. Önceki ölçüm: gerçek EDM gönderim tavanı ~320/dk (docs/kanit/2026-10-16/edm-hiz) — bu kez programın kendi hızı.
+- KARAR (kullanıcı, 17.10.2026 ~19:50 UTC: "diğer testler de bitince yeni bulgular çıkarsa, şu an bulunan ve bulunacak tüm bulguları düzelterek zipi
+  kusursuz olarak teslim et") → keşif bulgularının (docs/2.4.4-ADAY-BULGULAR.md; 50 bulgu) ve fatura hız testi bulgularının HEPSİ 2.4.3'e girer (2.4.3 henüz
+  teslim edilmedi; ayrı 2.4.4 yok). Sıra: hız testi biter (ders 15: ölçüm sürerken bu makinede test koşulmaz) → alan başına düzeltme ajanları (worktree; her
+  bulgu için kırmızı test → düzeltme → komşular) → ana oturum birleştirir, ayrı kopyada kırmızı/yeşil yeniden koşar → tam npm test + BÜTÜN e2e (ortak arayüz
+  değişir) → keşif senaryolarının yeniden koşusu (bulgular kapandı mı) → bağımsız gözden geçirme + dar kontrol → son aday CI → Uzun Doğrulama → paket → teslim.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
