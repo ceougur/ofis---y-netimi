@@ -727,6 +727,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   açar — kurulum değişikliği, gerçek Windows'ta denenmeli; karar kullanıcıda.
 - KARAR (kullanıcı, 17.10.2026: "uzun doğrulamayı koş, kurala uyalım") → 2.4.2 son adayında Uzun Doğrulama GitHub'da bir kez; sonra imzalı paket + teslim + PR.
   İSTEK (aynı gün: "30 dk'da bir kontrol et") → send_later ile 30 dk denetimi (her seferinde yeniden kurulur); 2.4.2 teslim edilince ya da kullanıcı "durdur" deyince durur.
+  2.4.2 TESLİM EDİLDİ (17.10.2026 ~13:15 UTC): Uzun Doğrulama run 39025035201 24/24 YEŞİL; paketlenen e780aea (CI #810 YEŞİL; tam npm test 2674/2674;
+  yerel 33/33 e2e). İmzalı zip cd7846f5…, bildirge c50504dc…, kılavuz PDF 2f5fc5cd… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum exe b93579ca… (iki parça +
+  BIRLESTIR.bat/.md); arşiv 5 zip (bundle birleştirilip klonlandı, f8db38c). PR ceougur/ofis---y-netimi#32 açıldı (master; master 34ed6cc dalın atası).
+  30 dk denetimi DURDU (teslim). SIRADA: kullanıcı "birleştir" → PR CI + kapı yeşil → squash → yayın (v2.4.2, "DestekOfis 2.4.2", not "İyileştirmeler",
+  5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF 2f5fc5cd…).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
