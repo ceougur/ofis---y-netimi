@@ -674,7 +674,9 @@
       input.spellcheck = false;
       input.autocapitalize = "none";
     }
-    if (!input.getAttribute("autocomplete") || input.getAttribute("autocomplete") === "on" || input.dataset.secret) input.setAttribute("autocomplete", "off");
+    // Alanın kendi açık işareti korunur (ör. onay parolasında "one-time-code"); yalnız boş / "on" ve tarayıcıya "parola" diyen işaretler kapanır.
+    const mark = input.getAttribute("autocomplete") || "";
+    if (!mark || mark === "on" || (input.dataset.secret && /(^|\s)(new|current)-password$/.test(mark))) input.setAttribute("autocomplete", "off");
   };
   const QUIET = "input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=file]):not([type=button]):not([type=submit]), textarea";
   HOF.quietAutofill = root => {
