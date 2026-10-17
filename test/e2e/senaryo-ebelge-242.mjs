@@ -173,6 +173,20 @@ try {
   await shot(page, "ebelge-242-3-iptal");
   await closeAll(page);
 
+  console.log("\n■ 5 Test belgeleri kesildikten sonra Fatura Ayarları kaydedilir (kontrol turu K1: tam başlangıç haritası 400 alıyordu)");
+  const before5 = (await must("ayarlar", admin.get("/api/workspace/invoices/settings"))).testNumbers.earsiv.number;
+  await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
+  await page.waitForSelector(`${pageInv} [data-act="settings"]`);
+  await page.click(`${pageInv} [data-act="settings"]`);
+  await page.waitForSelector(`${pageInv} [data-s="defaults.dueDays"]`);
+  await page.click(`${pageInv} [data-s="defaults.dueDays"]`, { clickCount: 3 });
+  await page.keyboard.type("15", { delay: 50 });
+  await page.keyboard.press("Tab");
+  await page.click(`${pageInv} [data-act="save-settings"]`);
+  await page.waitForTimeout(1500);
+  const after5 = (await must("ayarlar", admin.get("/api/workspace/invoices/settings")));
+  ok(Number(after5.defaults.dueDays) === 15, `Fatura Ayarları kaydedildi (Vade Günü ${after5.defaults.dueDays})`);
+  ok(after5.testNumbers.earsiv.number === before5, `test başlangıcı değişmedi (${after5.testNumbers.earsiv.number})`);
   console.log("\n■ 4 Otomatik Seriler: Test Ortamında Sıradaki No");
   await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
   await page.waitForSelector(`${pageInv} [data-act="integrator"]`);
@@ -191,6 +205,8 @@ try {
   ok(seqOf(saved.earsiv.number) === current + 500, `kaydedildi: ${saved.earsiv.number}`);
   ok(seqOf(saved.efatura.number) > 100_000_000, `öbür test serisi korunur: ${saved.efatura.number}`);
   await shot(page, "ebelge-242-4-seriler");
+  await closeAll(page);
+
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
 } catch (error) {
   failed += 1;

@@ -242,7 +242,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         const seq = Math.trunc(Number(value));
         if (!Number.isFinite(seq) || seq < 1 || seq > 999_999_999) fail400("Sonraki numara 1 ile 999.999.999 arasında olmalı.", "start");
         // Test serisi (2.4.2): yalnız ileri alınır — kesilmiş son test numarasından küçük değer etkisizdi ve sessiz kalıyordu.
-        if (TEST_SERIES_SET.has(key.slice(0, 3))) {
+        // Yalnız DEĞİŞEN değer denetlenir: Fatura Ayarları ekranı her kayıtta tam haritayı (rastgele test başlangıcı dahil) geri gönderir (kontrol turu K1).
+        if (TEST_SERIES_SET.has(key.slice(0, 3)) && seq !== Number(previous.start?.[key])) {
           const last = store.get("SELECT COALESCE(MAX(seq), 0) AS n FROM invoices WHERE series = ? AND year = ? AND seq > 0", key.slice(0, 3), Number(key.slice(3))).n;
           if (seq <= last) fail400(`${key.slice(0, 3)} test serisinde son numara ${last}; sıradaki numara en az ${last + 1} olabilir (yalnız ileri alınır).`, "start", { code: "start-backward" });
         }

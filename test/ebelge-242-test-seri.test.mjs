@@ -194,6 +194,14 @@ describe("Gözden geçirme 2.4.2: sıfırlama, eski tarihli Hata belgesi, geri a
     assert.notEqual(second.number, first.number, "sıfırlamadan sonra aynı numara verilmez");
     assert.equal((await ctx.api.post(`/api/workspace/invoices/${second.id}/send`, {})).status, 200);
   });
+  test("K1 (kontrol turu): test belgesi kesildikten sonra Fatura Ayarları ekranının tam haritalı kaydı 200 (değişmeyen test başlangıcı denetlenmez)", async () => {
+    const s = (await ctx.api.get(SETTINGS)).data;
+    const doc = (await sale(ctx.api, ids.personId)).data;
+    assert.match(doc.number, /^TEA/);
+    const start = { ...(s.start || {}), ...Object.fromEntries(Object.values(s.testNumbers || {}).map(item => [`${item.series}${item.year}`, Number(JSON.parse(ctx.server.app.store.setting("invoice.settings", "{}")).start?.[`${item.series}${item.year}`])])) };
+    const saved = await ctx.api.put(SETTINGS, { seller: { ...s.seller, name: "Deneme Ofis Ltd. Şti." }, start });
+    assert.equal(saved.status, 200, JSON.stringify(saved.data));
+  });
   test("G5: test serisinin sıradaki numarası son kesilen numaranın gerisine alınamaz (açık ileti)", async () => {
     const last = seqOf((await ctx.api.get(SETTINGS)).data.testNumbers.earsiv.number) - 1;
     const back = await ctx.api.put(SETTINGS, { start: { [`TEA${year()}`]: last } });
