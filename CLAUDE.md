@@ -732,6 +732,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   BIRLESTIR.bat/.md); arşiv 5 zip (bundle birleştirilip klonlandı, f8db38c). PR ceougur/ofis---y-netimi#32 açıldı (master; master 34ed6cc dalın atası).
   30 dk denetimi DURDU (teslim). SIRADA: kullanıcı "birleştir" → PR CI + kapı yeşil → squash → yayın (v2.4.2, "DestekOfis 2.4.2", not "İyileştirmeler",
   5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF 2f5fc5cd…).
+  BİRLEŞTİ (kullanıcı "birleştir sen", 17.10.2026): PR #32 squash → `master` = b340bf6 (ağaç 825ba9a ile AYNI; PR CI #813 + kapı yeşil). Yayın bağlantısı
+  verildi; dal master'dan yeniden başlatıldı. SIRADA: kullanıcı v2.4.2'yi açar (5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
