@@ -725,6 +725,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   "adres, numara, şifre doldururken Google 'kaydet' diyor, kafa karıştırıyor" → giriş dışı formlarda autocomplete off + parola alanları gizli yazılı metin
   (hof-core.js); Edge'in gerçekten dinlediği kullanıcının bilgisayarında doğrulanır. Dinlemezse öneri: başlatıcı ayrı tarayıcı profiliyle (öneriler kapalı)
   açar — kurulum değişikliği, gerçek Windows'ta denenmeli; karar kullanıcıda.
+- KARAR (kullanıcı, 17.10.2026: "uzun doğrulamayı koş, kurala uyalım") → 2.4.2 son adayında Uzun Doğrulama GitHub'da bir kez; sonra imzalı paket + teslim + PR.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
