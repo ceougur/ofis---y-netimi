@@ -702,6 +702,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   etiket push'unda, CI pull_request (fork'a sır yok). DÜŞÜK: operatör girişinde genel 100 hata/15 dk kilidi kötüye kullanılıp operatör kilitlenebilir;
   varsayılan yönetici parolası açık depoda (ilk girişte değişir). DENENMEYEN: canlı uçlar (destek-ofis.vercel.app ağ kuralıyla kapalı; Vercel bağlantısı
   projeye yetkisiz 403), Supabase doğrudan (adres depoda yok), kurulum .exe içi (sıkıştırılmış).
+  CANLI (kullanıcı ağ iznini açtı, aynı gün): /.env, /.git/config, /supabase/lisans.sql, /vercel.json, /api/_lib/* → 404; /api/operator başlıksız/yabancı
+  köken 403, oturumsuz/sahte çerez 401, bilinmeyen işlem 400, GET 405; lisans check bozuk/SQL denemesi 400, bilinmeyen lisans 409; /api/lisans/v1/durum
+  yalnız keyId + signer/db (gizli yok); canlı sayfalarda anahtar/Supabase adresi yok (gitleaks 0); /admin CSP + DENY + HSTS + noindex. Operatör girişi
+  denenmedi (sahte "hatalı giriş" kaydı düşmesin). Sonuç: canlıda da açık yok.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
