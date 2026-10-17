@@ -7,7 +7,10 @@
 //      (signal null, status 1); iddia process.platform === "win32" koluyla birlikte yazılır.
 //   4. path.relative(…) sonucunu ayırıcısı çevrilmeden bir alana atamak — Windows'ta "server\\routes\\x.mjs" olur, "server/routes/x.mjs"
 //      ile karşılaştırma düşer (CI 515/516: banka-210-post-statik); .split(path.sep).join("/") ile çevrilir.
+//   5. Depodaki dosya adında Windows'ta geçersiz karakter (< > : " | ? * ya da sonda boşluk/nokta) — Windows'ta git checkout düşer, CI'nin
+//      Windows işleri hiç başlamaz (17.10.2026 CI #825 221482c: kanıt dosyası "ilk-test:banka-210-….txt").
 import { strict as assert } from "node:assert";
+import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { describe, it } from "node:test";
@@ -73,4 +76,33 @@ describe("platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta y
       assert.deepEqual(hits, [], `Windows'ta kırılan kalıp:\n${hits.join("\n")}`);
     });
   }
+});
+
+// Depodaki (git'in izlediği) bütün dosya adları; git yoksa (ör. git archive kopyası) dosya ağacı taranır.
+function trackedNames() {
+  try {
+    return execFileSync("git", ["ls-files", "-z"], { cwd: ROOT, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }).split("\0").filter(Boolean);
+  } catch {
+    const out = [];
+    const walk = (dir, rel) => {
+      for (const name of readdirSync(dir)) {
+        if (name === "node_modules" || name === ".git") continue;
+        const full = path.join(dir, name);
+        const relName = rel ? `${rel}/${name}` : name;
+        if (statSync(full).isDirectory()) walk(full, relName);
+        else out.push(relName);
+      }
+    };
+    walk(ROOT, "");
+    return out;
+  }
+}
+
+describe("platform taşınabilirliği: depodaki dosya adları Windows'ta açılır", () => {
+  it("dosya adlarında < > : \" | ? * yok, ad boşluk ya da noktayla bitmiyor", () => {
+    const names = trackedNames();
+    assert.ok(names.length > 100, `yalnız ${names.length} dosya bulundu`);
+    const bad = names.filter(name => name.split("/").some(part => /[<>:"|?*\\]/.test(part) || /[ .]$/.test(part)));
+    assert.deepEqual(bad, [], `Windows'ta geçersiz dosya adı:\n${bad.join("\n")}`);
+  });
 });
