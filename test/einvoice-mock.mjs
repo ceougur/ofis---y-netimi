@@ -74,7 +74,8 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
   const okEnvelope = body => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body>${body}</s:Body></s:Envelope>`;
   // resetOps (2.4.3, hız testi H4 zorla üretme — ders 20): bu kümedeki işlem keep-alive ile YENİDEN KULLANILAN bağlantıda gelirse sunucu isteği
   // İŞLEMEDEN bağlantıyı koparır (boşta kalan bağlantıyı tam istemcinin yeniden kullandığı anda kapatan sunucu; istemcide UND_ERR_SOCKET / ECONNRESET).
-  // Kopan istek state.resets'e yazılır; işlenmediği için state.calls'a girmez. "WSDL" GET isteğidir. Testler state.resetOps'u değiştirir.
+  // Kopan istek state.resets'e yazılır; işlenmediği için state.calls'a girmez. "WSDL" GET isteğidir. Testler state.resetOps'u (ve isteğe bağlı
+  // state.resetLimit: en çok kaç istek koparılsın) değiştirir.
   state.resetOps = new Set();
   state.resets = [];
   const seen = new WeakMap();
@@ -88,6 +89,11 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
         const op = req.method === "GET" ? "WSDL" : (/<(?:\w+:)?(\w+)Request[\s>]/.exec(raw.replace(/<(?:\w+:)?(Envelope|Header|Body)[\s>]/g, "")) || [])[1] || "";
         if (state.resetOps.has(op)) {
           state.resets.push(op);
+          // resetLimit: yalnız bu kadar istek koparılır, sonra resetOps boşalır (yinelenen isteğin hangi bağlantıya düştüğünden bağımsız sonuç).
+          if (Number.isFinite(state.resetLimit) && (state.resetLimit -= 1) <= 0) {
+            state.resetOps = new Set();
+            state.resetLimit = undefined;
+          }
           req.socket.destroy();
           return;
         }

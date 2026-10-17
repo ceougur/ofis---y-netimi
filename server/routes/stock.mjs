@@ -195,14 +195,14 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       unitPrice: priceOf(body.unitPrice),
       // v2.0.13: satış fiyatı (raf/etiket). Birim fiyat alış/maliyettir; çıkış formu satış fiyatıyla açılır.
       salePrice: priceOf(body.salePrice),
-      // 2.4.3 (H8): KDV oranı isteğe bağlı (boş = faturada formun varsayılanı). Gövdede hiç yoksa (eski istemci, kısmi düzenleme) önceki değer kalır.
-      vatRate: vatRateOf(body.vatRate, previous),
+      // 2.4.3 (H8): KDV oranı isteğe bağlı (boş = faturada formun varsayılanı). Düzenlemede gövde önceki kayıtla birleştirilir (PUT): alanı
+      // göndermeyen istemci (eski sürüm, kısmi düzenleme) oranı değiştirmez.
+      vatRate: vatRateOf(body.vatRate),
       note: limited(body.note, 1000, "Not"),
     };
   };
-  function vatRateOf(value, previous = null) {
-    if (value === undefined) return previous?.vatRate ?? null;
-    if (value === null || String(value).trim() === "") return null;
+  function vatRateOf(value) {
+    if (value === undefined || value === null || String(value).trim() === "") return null;
     const rate = Number(String(value).replace("%", "").replace(",", ".").trim());
     if (!VAT_RATES.includes(rate)) throw new HttpError(400, `KDV oranı ${VAT_RATES.map(item => `%${item}`).join(", ")} olabilir (boş bırakılırsa faturada seçilir).`, { field: "vatRate" });
     return rate;

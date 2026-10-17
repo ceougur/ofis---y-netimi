@@ -182,27 +182,34 @@ describe("2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğ
   });
 
   test("H4: yeniden kullanılan bağlantı koparsa yan etkisiz çağrı (mükellef sorgusu, durum) bir kez yinelenir; gönderim yinelenmez, belirsiz kalır", async () => {
-    edm.state.resetOps = new Set(["CheckUser", "GetInvoiceStatus", "Login"]);
+    // Her sorguda tam bir kopma (resetLimit 1): ilk deneme yeniden kullanılan bağlantıda koparılır, yineleme hangi bağlantıya düşerse düşsün işlenir.
+    await api.post("/api/workspace/invoices/check-user", { taxNo: BUYER_VKN }); // havuzda boşta bağlantı olsun
     try {
-      const resets = edm.state.resets.length;
       for (let i = 0; i < 4; i += 1) {
+        const resets = edm.state.resets.length;
+        edm.state.resetOps = new Set(["CheckUser"]);
+        edm.state.resetLimit = 1;
         const checked = await api.post("/api/workspace/invoices/check-user", { taxNo: BUYER_VKN });
+        assert.equal(edm.state.resets.length, resets + 1, `${i}. sorguda ön koşul oluşmadı: sahte EDM bağlantıyı koparmadı`);
         assert.equal(checked.status, 200, `${i}. sorgu: ${JSON.stringify(checked.data)}`);
         assert.equal(checked.data.registered, true);
       }
-      assert.ok(edm.state.resets.length > resets, `ön koşul oluşmadı: sahte EDM hiç bağlantı koparmadı (${edm.state.resets.length})`);
     } finally {
       edm.state.resetOps = new Set();
+      edm.state.resetLimit = undefined;
     }
     // Yan etkili çağrı: SendInvoice koparsa yinelenmez (istek ulaşmış olabilir) → belge "Sonucu Belirsiz", Gönderilecekler'de.
     const doc = (await sale(people[3], { eSend: "later" })).data;
     await api.post("/api/workspace/invoices/check-user", { taxNo: BUYER_VKN }); // bağlantı kullanılmış olsun
+    // Yalnız ilk gönderim isteği koparılır: program yinelerse ikinci istek işlenirdi (yan etkili çağrı yinelenmemeli — mutasyonla sınandı).
     edm.state.resetOps = new Set(["SendInvoice"]);
+    edm.state.resetLimit = 1;
     let sent;
     try {
       sent = await api.post(`/api/workspace/invoices/${doc.id}/send`, {});
     } finally {
       edm.state.resetOps = new Set();
+      edm.state.resetLimit = undefined;
     }
     assert.equal(sent.status, 502, JSON.stringify(sent.data));
     assert.ok(edm.state.resets.includes("SendInvoice"), "ön koşul: gönderim isteği koparıldı");
