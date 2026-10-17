@@ -776,6 +776,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   teslim edilmedi; ayrı 2.4.4 yok). Sıra: hız testi biter (ders 15: ölçüm sürerken bu makinede test koşulmaz) → alan başına düzeltme ajanları (worktree; her
   bulgu için kırmızı test → düzeltme → komşular) → ana oturum birleştirir, ayrı kopyada kırmızı/yeşil yeniden koşar → tam npm test + BÜTÜN e2e (ortak arayüz
   değişir) → keşif senaryolarının yeniden koşusu (bulgular kapandı mı) → bağımsız gözden geçirme + dar kontrol → son aday CI → Uzun Doğrulama → paket → teslim.
+- KARAR (kullanıcı, 17.10.2026 ~19:55 UTC; baş mimar da uygun buldu): "Form state yönetimini izole hale getir; dosya/resim yükleme formun genel state'ini
+  re-render etmesin ve kaydedilmemiş verileri ezmesin; sonra tüm formlar için regresyon testi yaz ve çalıştığından emin ol" (kaynak: kullanıcının D1 bulgusu,
+  Fatura Ayarları logo/kaşe seçimi kaydedilmemiş alanları siliyor). Uygulama (ortak çekirdek paketinin 1. maddesi): hof-core merkezî taslak koruma (yeniden
+  çizimde dokunulmuş alanlar korunur), dosya/resim seçimi yalnız kendi bölümünü günceller, kayıtlı veri yalnız Kaydet sonrası ekrana basar; REGRESYON: bütün
+  formlar e2e (doldur → her iç yeniden çizim tetikleyicisi → değerler yerinde) + kaynak tarama testi (dosya seçiminden tüm form yeniden çizimi yasak);
+  eski kodda kırmızı, CI Linux+Windows yeşil.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
