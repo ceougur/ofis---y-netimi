@@ -691,6 +691,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   "şirket açılamadı" 503 iletisi ham hata metni içerebilir (app.mjs:497); /api/health VAR ama veri tabanına dokunmuyor (açık); güncellemede deneme kipi +
   kendiliğinden önceki sürüme dönüş + 6 saatte bir yedek/30 kopya/geri yükleme VAR. ÖNERİ 2.4.2 (KARAR BEKLENİYOR): (1) sağlık ucu her şirket dosyasına
   küçük okuma (dönüşü de tetikler) ~½ gün, (2) 503 iletisini sadeleştir, (3) hatalı ortam değeri açılışta uyarı; (4) genel hız sınırı uzaktan bağlanma işine bağlanır.
+  KARAR (kullanıcı, 17.10.2026: "bunu istemiyorum şimdilik") → 2.4.2 önerisi YAPILMAZ (kayıtta kalır).
+- İSTEK (kullanıcı, 17.10.2026): "web sitesinde ya da hem web sitesi GitHub'ında hem program GitHub'ında açık API, unutulmuş şifre, sızıntı var mı — maliyetsiz
+  test yap" → BAŞLADI: iki deponun bütün git geçmişi (gitleaks + kendi desen taraması + bilinen gizlilerin parmak izi), GitHub gizli tarama, yayın dosyaları,
+  canlı uçlara yalnız OKUMA denemesi (yetkisiz istek reddediliyor mu). Değişiklik yapılmaz; bulgu → kullanıcıya rapor + öneri.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
