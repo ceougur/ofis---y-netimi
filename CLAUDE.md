@@ -713,6 +713,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   form "Kaydet ve Gönder" düğmesini ve "entegratöre gönderilir" metnini gösteriyor (hof-invoices.js:1849 sendable: calc.profile yoksa "" ≠ KAGIT → true). Olası
   neden kullanıcıda Fatura Ayarları "e-Fatura mükellefiyim / e-Arşiv kullanıcısıyım" kapalı (invoices.mjs:1109 → KAGIT). Kullanıcıya yol verildi. 2.4.2 ADAYI:
   KAGIT'ta düğme "Kaydet", metin kâğıt belge; entegratör bağlıyken işaretler kapalıysa kartta uyarı. Yeniden üretilip kırmızı testle düzeltilecek (karar kullanıcıda).
+- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: TEA2026000000001 "Hata" — EDM 11048 "Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız";
+  İptal Et → EDM 11017 "Fatura bulunamadı"): (a) test serisi TEF/TEA 000000001'den başlıyor, EDM test hesabı ORTAK → numara çakışır (bizim denemelerde başlangıç
+  API'den rastgele verilmişti; ekranda test serisi "Sıradaki No" alanı yok — invoices.mjs testNumbers yalnız gösterir) → her müşterinin ilk test faturası düşer;
+  (b) eStatus "error" + EDM'de yok (11017) belge ne iptal (remote iptal 11017) ne silinebiliyor; canLocalCancel "error"ı kapsamıyor (invoices.mjs:920).
+  ÖNERİ 2.4.2 (KARAR BEKLENİYOR): test serisi firmaya özgü büyük başlangıç + elle Sıradaki No; "error"da Yalnız Programda İptal Et (11017'de); 11048'e açık ileti;
+  + KAGIT'ta "Kaydet ve Gönder" kusuru. Kullanıcıya: test gönderimini düzeltmeye kadar beklet.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
