@@ -952,8 +952,19 @@
   );
 
   // F5 / sekmeyi kapatma: açık bir formda kaydedilmemiş değişiklik varsa tarayıcının "Siteden ayrılınsın mı?" sorusu.
+  // Programın kendi yenilemesi / yönlendirmesi (şirket değişti, yeni şirket açıldı, oturum düştü, güncelleme…) sorulmaz: Chromium'un Navigation
+  // API'si betikten başlayan belge değişikliğini (userInitiated false) beforeunload'dan ÖNCE bildirir. F5, sekmeyi kapatma ve adres çubuğu
+  // bu olayı üretmez; onlar sorulur. (Navigation API olmayan tarayıcıda programın yenilemesi de sorar — bilinen sınır.)
+  let scriptLeaving = 0;
+  window.navigation?.addEventListener?.("navigate", event => {
+    if (event.userInitiated || event.destination?.sameDocument) return;
+    clearTimeout(scriptLeaving);
+    scriptLeaving = setTimeout(() => {
+      scriptLeaving = 0;
+    }, 3000);
+  });
   window.addEventListener("beforeunload", event => {
-    if (!HOF.hasDirtyModal()) return;
+    if (scriptLeaving || !HOF.hasDirtyModal()) return;
     event.preventDefault();
     event.returnValue = "";
   });

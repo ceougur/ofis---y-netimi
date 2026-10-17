@@ -331,6 +331,19 @@ try {
     await sleep(500);
     page.off("dialog", onDialog);
     ok(dialogs.includes("beforeunload") && (await topDialog(page).locator('input[name="name"]').inputValue().catch(() => "")) === "Geri Tuşu Denemesi", `C5 F5: tarayıcı ayrılmayı sordu, form kaldı (${dialogs.join(",") || "soru yok"})`);
+    // C6: programın kendi yenilemesi (yeni şirket açıldı, şirket değişti, oturum düştü…) sorulmaz — senaryo-217'de "Yeni Şirket" kaydı yenilemeyi beklerken
+    // ilk denemede takıldı.
+    const scriptDialogs = [];
+    const onScriptDialog = dialog => {
+      scriptDialogs.push(dialog.type());
+      dialog.dismiss().catch(() => {});
+    };
+    page.on("dialog", onScriptDialog);
+    const reloaded = await Promise.all([page.waitForEvent("load", { timeout: 8000 }).then(() => true, () => false), page.evaluate(() => setTimeout(() => location.reload(), 50))]).then(([value]) => value);
+    page.off("dialog", onScriptDialog);
+    ok(reloaded && !scriptDialogs.length, `C6 programın yenilemesi dolu formda sorusuz yenilendi (${scriptDialogs.join(",") || "soru yok"})`);
+    await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open && window.HOF?.accounts?.open) && document.querySelectorAll(".dynamic-table tbody tr").length > 2, null, { timeout: 30000 });
+    await sleep(1500);
     await closeClean(page);
 
     // ======================================================================================================================================
