@@ -800,6 +800,8 @@
     if (line.itemId && line.itemKind !== "service" && line.available !== null && line.available !== undefined && STOCK_OUT_KINDS.has(form.kind) && !form.modifyId) {
       const qty = amountNum(line.qty);
       const after = Math.round((line.available - qty) * 1000) / 1000;
+      // Stok zaten eksiyse eski gösterim ("Stokta −20 Adet (eksi)", senaryo-217) korunur, sonuna kayıttan sonraki miktar eklenir.
+      if (line.available < 0 && qty > 0) return `<span class="hof-inv-warn" data-stock-warn>Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)} (eksi); bu miktarla ${esc(String(after).replace(".", ","))} ${esc(line.unit)} olur. Kaydederken sorulur.</span>`;
       if (qty > 0 && after < 0) return `<span class="hof-inv-warn" data-stock-warn>Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)}; bu miktar stoğu ${esc(String(after).replace(".", ","))} ${esc(line.unit)} (eksi) yapar. Kaydederken sorulur.</span>`;
     }
     return line.newItem && !line.itemId ? `<span class="hof-inv-newitem"><b>Yeni Stok Kartı Açılacak</b> · Satış Fiyatı <input data-l="${index}" data-f="newSalePrice" inputmode="decimal" value="${esc(line.newSalePrice)}" placeholder="isteğe bağlı" aria-label="Yeni stok kartının satış fiyatı"> <button type="button" class="hof-link-button" data-act="new-item-cancel" data-l="${index}">Vazgeç</button></span>` : line.itemId ? `${line.itemKind === "service" ? "Hizmet Kartı" : line.available !== null && line.available !== undefined ? (line.available < 0 ? `<span class="hof-inv-warn">Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)} (eksi)</span>` : `Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)}`) : "Stok Kartı"}` : line.name ? (offersNewItem(form) ? '<span class="hof-inv-warn">Stok kartı yok: gider sayılır, stoğa girmez. Mal ise listeden “+ Yeni Stok Kartı”nı seçin.</span>' : form.kind === "purchase" ? "Stoksuz: gider / hizmet kalemi" : "Stoksuz: hizmet kalemi") : "";
@@ -1984,8 +1986,10 @@
         saved = await withStockForce(force => (form.id ? HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}/issue`, { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } }) : HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) }, requestId: form.requestId })));
         if (saved.replayed) HOF.toast(`${kindLabel(saved.kind)} ${saved.displayNo || ""} zaten kaydedilmişti (önceki gönderim sunucuya ulaşmış); ikinci kez kaydedilmedi.`, { type: "info", timeout: 9000 });
         else HOF.toast(eSend === "later" ? `${kindLabel(saved.kind)} kaydedildi; Gönderilecekler'de bekliyor.` : `${kindLabel(saved.kind)} ${saved.displayNo || ""} kaydedildi.`, { type: "success" });
-        // 2.4.3 (hız testi H1): gönderilemeyen belgenin bildirimi numarayı, nedeni ve nerede beklediğini (Gönderilecekler) söyler; okunacak kadar kalır.
-        if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: saved.autoSend.ok ? 8000 : 20000 });
+        // 2.4.3 (hız testi H1): gönderilemeyen belgenin bildirimi numarayı, nedeni ve nerede beklediğini (Gönderilecekler) söyler; aynı neden kartta
+        // (e-Belge satırı) ve Gönderilecekler'de kalıcı görünür. Süre eskisi gibi 8 sn (uzun bildirim pencere düğmelerinin üstünde kalıp tıklamayı
+        // engelliyordu — senaryo-ebelge-242 adım 4); okuma süresine göre ayar ortak bildirim çekirdeğinin işi.
+        if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
       }
       view.form = null;
       HOF.emit("invoices-changed", saved);
