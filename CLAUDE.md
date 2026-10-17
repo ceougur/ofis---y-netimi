@@ -750,6 +750,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KARAR (kullanıcı, 17.10.2026: "önerilerin mantıklı") → 2.4.3 BAŞLADI: (1) numaralı belgede Düzenle belge türünü değiştiremez ("iptal edip yeniden
   kesin"); (2) e-Fatura carisinde posta kutusu seçilmemişse formda kaydetmeden uyarı + "Kaydet ve Gönder" numara harcamadan durur; buyer-alias
   iletisi mükellef olmayan cari yolunu da söyler; (3) "Ödeme şeklini yaz" varsayılan AÇIK.
+  KARAR (kullanıcı, aynı gün: "anayasamıza göre sen karar ver", cari kartı "e-Fatura mükellefi (bu cariye e-Fatura kesilir)" kafa karıştırıyor) → (4) işareti
+  yalnız Mükellef Sorgula koyar/kaldırır, metin "işaretliyse e-Fatura, değilse e-Arşiv kesilir". YAPILDI (kod + test, docs/2.4.3-DEGISIKLIKLER.md): ebelge-243
+  9/9 (eski b340bf6 kopyasında 7/9 kırmızı), e2e senaryo-ebelge-243 17/17 (eskide 8 kırmızı, TESTER aynen), komşu e-Belge/fatura 233/233.
+  DURAKLATILDI (kullanıcı, 17.10.2026 ~14:55 UTC: "akşam yardımcımla test edeceğiz, iki iş olmasın; planlayarak durdur, devam ya da düzeltilecekler
+  olursa söylerim"): tam npm test yarıda durduruldu (sonuç YOK), 30 dk raporu silindi. DEVAMDA: yardımcının bulguları eklenir → tam npm test +
+  e2e entegrator-240/ebelge-242/243 → sürüm 2.4.3 (package.json/lock, kılavuz kapak/dip + hap bilgi: kutu Mükellef Sorgula ile, PK uyarısı, ödeme
+  şekli) → CHANGELOG "İyileştirmeler" → KANIT → CI → bağımsız gözden geçirme → Uzun Doğrulama → imzalı paket → teslim → PR.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

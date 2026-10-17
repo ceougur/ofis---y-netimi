@@ -575,7 +575,9 @@
       { name: "dueDays", label: "Vade Günü", inputmode: "numeric", value: a.dueDays ? String(a.dueDays) : "", help: "Fatura vadesi kesim tarihinden bu kadar gün sonrasına yazılır; boşsa Fatura Ayarları'ndaki." },
       ...(edocOn()
         ? [
-            { name: "eInvoice", label: "e-Fatura mükellefi (bu cariye e-Fatura kesilir)", type: "checkbox", value: Number(a.eInvoice) === 1 },
+            // 2.4.3 (kullanıcı, 17.10.2026: "e-Arşiv değil mi, kafa karıştırıyor"): işareti yalnız Mükellef Sorgula koyar/kaldırır (wireTaxFields);
+            // elle işaretlenen mükellef olmayan kişiye TEF numaralı e-Fatura kesilip gönderilemiyordu (TESTER denemesi).
+            { name: "eInvoice", label: "e-Fatura mükellefi (Mükellef Sorgula belirler: işaretliyse e-Fatura, değilse e-Arşiv kesilir)", type: "checkbox", value: Number(a.eInvoice) === 1 },
             { name: "eAlias", label: "e-Fatura posta kutusu etiketi", maxlength: 160, value: a.eAlias || "", placeholder: "urn:mail:defaultpk@…" },
             { name: "eProfile", label: "e-Fatura senaryosu", type: "select", value: a.eProfile || "", options: [{ value: "", label: "Ayarlardaki Varsayılan" }, { value: "TEMELFATURA", label: "Temel Fatura" }, { value: "TICARIFATURA", label: "Ticari Fatura" }] },
           ]
@@ -608,6 +610,11 @@
     if (!edocOn()) return;
     const button = HOF.el("button", { type: "button", class: "hof-button hof-button-small hof-button-ghost" }, "Mükellef Sorgula");
     taxNo.closest(".hof-field").append(button);
+    const flag = dialog.querySelector('input[name="eInvoice"]');
+    flag?.addEventListener("click", event => {
+      event.preventDefault();
+      HOF.toast("e-Fatura mükellefiyeti elle işaretlenmez: VKN / TCKN alanının altındaki Mükellef Sorgula'ya basın.", { type: "info", timeout: 6000 });
+    });
     // Entegratör Ayarları "VKN / TCKN yazılınca mükellefiyet kendiliğinden sorgulansın": alandan çıkınca (10 ya da 11 hane, değiştiyse) bir kez.
     let lastChecked = taxNo.value.replace(/\D/g, "");
     taxNo.addEventListener("change", () => {

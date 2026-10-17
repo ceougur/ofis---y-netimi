@@ -106,10 +106,14 @@ const DEFAULTS = Object.freeze({
   // eView: e-Belge görünüm tasarımı (16.10.2026; lib/einvoice/gorunum.mjs). enabled kapalıysa entegratörün varsayılan görünümü; logo, banka
   // hesapları ve alt not Fatura Ayarları'ndaki değerlerdir (tek kaynak), burada yalnız gösterilip gösterilmeyeceği seçilir.
   eView: { enabled: true, logo: true, banks: true, footer: true, stamp: true, stampEfatura: false },
-  // eOptions (Wolvox karşılaştırmasının kalan maddeleri; kullanıcı kararı 16.10.2026 "isteğe bağlı olarak olsun"; hepsi varsayılan KAPALI):
+  // eOptions (Wolvox karşılaştırmasının kalan maddeleri; kullanıcı kararı 16.10.2026 "isteğe bağlı olarak olsun"):
   // balanceNote: cari bakiyesi e-Belgenin notuna; paymentMeans: ödeme şekli kodu (Nakit 10, Havale / EFT 42, Kart 48, Çek 20, Senet 60);
   // draftUpload: Gönder yerine EDM portalına taslak yükle (LoadInvoice; gönderim portaldan ya da programdan).
-  eOptions: { balanceNote: false, paymentMeans: false, draftUpload: false },
+  // 2.4.3 (kullanıcı kararı 17.10.2026): paymentMeans varsayılan AÇIK — kapalıyken nakit ödenen belgede görünüm "Ödeme Şekli: Havale / EFT"
+  // diyordu (IBAN varsa 42). eOptionsSet: kullanıcının kendisi kaydettiği seçenekler; 2.4.0–2.4.2'de ayar kaydedilirken seçenek dokunulmadan
+  // false yazılmış olabilir, işaretsiz false varsayılana döner (kullanıcının bilerek kapattığı korunur).
+  eOptions: { balanceNote: false, paymentMeans: true, draftUpload: false },
+  eOptionsSet: {},
   integrator: { id: "edm", env: "test", baseUrl: "", username: "", passwordSealed: "", senderAlias: "", mailboxAlias: "", autoSend: false, earchiveEmail: true, autoCheckUser: false, lastTest: null },
 });
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -166,6 +170,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!ADAPTERS[out.integrator.id]) out.integrator.id = DEFAULT_ADAPTER;
     if (!out.seller.name) out.seller.name = store.setting("office.name", "") || "";
     if (!Array.isArray(out.seller.banks)) out.seller.banks = [];
+    if (out.eOptionsSet?.paymentMeans !== true) out.eOptions.paymentMeans = DEFAULTS.eOptions.paymentMeans;
     return out;
   }
   // Logo: yalnız JPEG, data URL, en çok 150 KB ve 1200 piksel (PDF'e olduğu gibi gömülür; dev dosya her belgeyi şişirir).
@@ -254,7 +259,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       for (const key of Object.keys(DEFAULTS.eView)) if (body.eView[key] !== undefined) next.eView[key] = body.eView[key] === true;
     }
     if (body.eOptions && typeof body.eOptions === "object") {
-      for (const key of Object.keys(DEFAULTS.eOptions)) if (body.eOptions[key] !== undefined) next.eOptions[key] = body.eOptions[key] === true;
+      for (const key of Object.keys(DEFAULTS.eOptions)) {
+        if (body.eOptions[key] === undefined) continue;
+        next.eOptions[key] = body.eOptions[key] === true;
+        next.eOptionsSet = { ...(next.eOptionsSet || {}), [key]: true };
+      }
     }
     if (body.defaults && typeof body.defaults === "object") {
       const d = body.defaults;
@@ -1139,6 +1148,26 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     else reason = "Bu belge türü bu alıcıya kesilemez.";
     fail400(reason, "profile", { code: "profile-not-allowed", allowed });
   }
+  // 2.4.3 (kullanıcı denemesi 17.10.2026, TESTER): numara almış e-Belgenin türü düzenlemede değişmez — numara serisi türe bağlıdır (e-Fatura TEF /
+  // e-Arşiv TEA). Cari kartında e-Fatura işareti kaldırılınca Düzenle'de "e-Arşiv" seçilebiliyor, belge TEF numarasıyla e-Arşiv oluyordu. Temel ↔
+  // Ticari aynı seridir (serbest). Kâğıt belge (2.4.3 öncesi kural sürer) ve numarasız belge (Kes, Sonra Gönder: numara gönderimde) bu kurala girmez.
+  const PROFILE_GROUP = { TEMELFATURA: "efatura", TICARIFATURA: "efatura", EARSIVFATURA: "earsiv", ESMM: "esmm" };
+  function profileLock(kind, account, existing, body, s) {
+    if (!existing || existing.status === "draft" || !(Number(existing.seq) > 0) || !PROFILE_GROUP[existing.profile]) return;
+    const requested = text(body.profile) || existing.profile;
+    const allowed = allowedProfiles(kind, account, s);
+    const moved = PROFILE_GROUP[requested] !== PROFILE_GROUP[existing.profile];
+    if (!moved && allowed.includes(existing.profile)) return;
+    const why = moved ? "" : " Cari kartındaki e-Fatura mükellefiyeti değişmiş; belge bu türle kalamaz.";
+    throw new HttpError(409, `${existing.number} ${PROFILES[existing.profile]} olarak numara aldı; belge türü düzenlemede değişmez (numara serisi belge türüne bağlıdır).${why} Belgeyi İptal Et ile iptal edip Kopyala ile yeniden kesin: yeni belge doğru türden numara alır.`, { code: "profile-locked", profile: existing.profile });
+  }
+  // 2.4.3: e-Fatura alıcısının posta kutusu bilinmiyorsa belge numara almadan durur (önceden "Kaydet ve Gönder" numarayı verip gönderimde düşüyordu).
+  const aliasMissing = doc => edocEnabled && ["TEMELFATURA", "TICARIFATURA"].includes(doc.profile) && !["purchase", "sale_return"].includes(doc.kind) && !String(doc.party?.eAlias || "").trim();
+  const ALIAS_HINT = "Cari kartında Mükellef Sorgula'ya basın: alıcı mükellefse posta kutusunu seçin; mükellef değilse e-Fatura işareti kalkar ve fatura e-Arşiv olarak kesilir.";
+  function assertAliasBeforeNumber(doc, body) {
+    if (body?.eSend === "later" || !aliasMissing(doc)) return;
+    throw new HttpError(409, `Alıcının e-Fatura posta kutusu (PK) seçilmemiş; fatura kaydedilmedi, numara harcanmadı. ${ALIAS_HINT} Sonra faturayı yeniden kaydedin.`, { code: "buyer-alias" });
+  }
   const partySnapshot = (account, override = null) => {
     const party = {
       id: account.id,
@@ -1215,6 +1244,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // 2.4.1 (G1/G2): 2.4.0'da e-SMM serisinden numara almış makbuz düzenlenirken türü korunur (numarası TES/ESM; kâğıt belgeye geçmez, gönderilemez — 2.4.0'daki gibi).
     // Dar kontrol B1: bayrak açıkken işaret sonradan kaldırılsa da aynı kural (numaralı e-SMM makbuzu kâğıda dönmez).
     const legacyEsmm = kind === "smm" && existing && existing.status !== "draft" && existing.profile === "ESMM";
+    if (!legacyEsmm && meta.own) profileLock(kind, account, existing, body, s);
     const profile = legacyEsmm ? "ESMM" : original && !meta.own ? profileFor(kind, account, text(body.profile) || "KAGIT", s) : profileFor(kind, account, text(body.profile ?? (existing && existing.status === "draft" ? "" : existing?.profile) ?? ""), s);
     const currency = original ? original.currency : CURRENCIES[text(body.currency)] ? text(body.currency) : existing?.currency || "TRY";
     let rate = 1;
@@ -2107,6 +2137,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   function docWarnings(doc) {
     const out = [];
     if (!doc.meta.own) return out;
+    if (aliasMissing(doc)) out.push(`Alıcının e-Fatura posta kutusu (PK) seçilmemiş; belge gönderilemez. ${ALIAS_HINT}`);
     if (doc.despatchDate && daysBetween(doc.despatchDate, doc.date) > 7) out.push(`İrsaliye (teslim) tarihinden ${daysBetween(doc.despatchDate, doc.date)} gün sonra kesiliyor; fatura teslimden itibaren 7 gün içinde düzenlenmeli (VUK 231).`);
     else if (daysBetween(doc.date, today()) > 7) out.push(`Fatura tarihi bugünden ${daysBetween(doc.date, today())} gün önce; teslimden itibaren 7 gün içinde düzenlenmeli (VUK 231). Teslim tarihi buysa sorun yok.`);
     return out;
@@ -2341,6 +2372,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       return ok(res, detail(id, user));
     }
     const doc = documentInput(body, { mode: "issue" });
+    assertAliasBeforeNumber(doc, body);
     const payment = paymentInput(body, doc, user);
     const result = store.tx(() => {
       const written = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" });
@@ -2367,6 +2399,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const lines = linesOf(existing.id).map(line => ({ itemId: line.itemId, name: line.name, code: line.code, description: line.description, unit: line.unit, qty: line.qty, unitPrice: line.unitPrice, discountRate: line.discountRate, vatRate: line.vatRate, withholdingCode: line.withholdingCode, exemptionCode: line.exemptionCode, expenseCode: line.expenseCode, originLineId: line.originLineId }));
     const merged = { kind: existing.kind, scenario: existing.scenario, accountId: existing.accountId, originalId: existing.originalId, lines, buyer: parseJson(existing.partyJson, {}), payment: parseJson(existing.paymentJson, {}), ...body };
     const doc = documentInput(merged, { mode: "issue", existing });
+    assertAliasBeforeNumber(doc, body);
     const payment = paymentInput(merged, doc, user);
     writeIssued(user, doc, payment, { id: existing.id, force: forceOf(body), defer: body.eSend === "later" });
     const autoSend = await sendChoice(user, existing.id, body.eSend);
@@ -2941,7 +2974,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (ret.length) throw new HttpError(409, ret.join(" "), { code: "einvoice-return-reference", problems: ret });
     // e-Fatura alıcının posta kutusu etiketi bilinmeden gönderilmez (EDM istemcisi de reddeder ama numara verildikten sonra) — arayüz denemesi.
     if (["TEMELFATURA", "TICARIFATURA"].includes(doc.profile) && !["purchase", "sale_return"].includes(doc.kind) && !String(doc.party?.eAlias || "").trim()) {
-      throw new HttpError(409, "Alıcının e-Fatura posta kutusu etiketi bilinmiyor: cari kartında Mükellef Sorgula ile posta kutusunu seçin, sonra bu faturayı Düzenle ile yeniden kaydedip gönderin (belge alıcı bilgisini kaydedildiği anki cari kartından alır).", { code: "buyer-alias" });
+      throw new HttpError(409, "Alıcının e-Fatura posta kutusu etiketi bilinmiyor: cari kartında Mükellef Sorgula ile posta kutusunu seçin, sonra bu faturayı Düzenle ile yeniden kaydedip gönderin (belge alıcı bilgisini kaydedildiği anki cari kartından alır). Sorgu alıcının mükellef olmadığını söylerse bu belgeyi İptal Et ile iptal edip Kopyala ile yeniden kesin: e-Arşiv olarak kesilir.", { code: "buyer-alias" });
     }
     const mix = mixProblems(doc.profile, doc.lines || []);
     if (mix.length) throw new HttpError(409, mix.join(" "), { code: "einvoice-type-mix", problems: mix });

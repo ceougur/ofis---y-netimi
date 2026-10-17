@@ -73,9 +73,9 @@ after(async () => {
   await server?.close();
 });
 
-describe("Ek seçenekler: varsayılan kapalı, ayardan açılır", () => {
-  test("yeni kurulumda dördü de kapalı; ayar kaydedilip geri okunur", async () => {
-    assert.deepEqual(ids.defaults, { eOptions: { balanceNote: false, paymentMeans: false, draftUpload: false }, itemTracking: false });
+describe("Ek seçenekler: varsayılanlar (ödeme şekli açık, öbürleri kapalı), ayardan değişir", () => {
+  test("yeni kurulumda ödeme şekli açık, öbürleri kapalı; ayar kaydedilip geri okunur", async () => {
+    assert.deepEqual(ids.defaults, { eOptions: { balanceNote: false, paymentMeans: true, draftUpload: false }, itemTracking: false }); // 2.4.3: ödeme şekli varsayılan açık
     const saved = await options({ balanceNote: true, paymentMeans: true }, { itemTracking: true });
     assert.deepEqual(saved.eOptions, { balanceNote: true, paymentMeans: true, draftUpload: false });
     assert.equal(saved.defaults.itemTracking, true);
