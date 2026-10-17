@@ -1,0 +1,3166 @@
+{
+ "tarih": "2026-10-17T19:53:47.548Z",
+ "today": "2026-10-17",
+ "accounts": {
+  "efatura": [
+   {
+    "id": "account-b5d27c58-abb6-4c55-ada2-050fe90e856e",
+    "name": "Yapı Ahmetoğlu 001 A.Ş.",
+    "query": "Yapı Ahmetoğlu 001"
+   },
+   {
+    "id": "account-13ab083b-5aab-444c-afd2-7939bf9c1a08",
+    "name": "Gıda Mehmetoğlu 002 A.Ş.",
+    "query": "Gıda Mehmetoğlu 002"
+   },
+   {
+    "id": "account-319e84ab-1ff3-4e31-bc1e-ff4af8e2d42c",
+    "name": "Tekstil Ayşeoğlu 003 A.Ş.",
+    "query": "Tekstil Ayşeoğlu 003"
+   },
+   {
+    "id": "account-6b195a63-e35a-4cad-8733-9e70eea74c78",
+    "name": "Elektrik Fatmaoğlu 004 A.Ş.",
+    "query": "Elektrik Fatmaoğlu 004"
+   },
+   {
+    "id": "account-e8cfd947-6d82-439d-8f2a-452f1f6f9890",
+    "name": "Otomotiv Emineoğlu 005 A.Ş.",
+    "query": "Otomotiv Emineoğlu 005"
+   },
+   {
+    "id": "account-ad2c56fa-bddc-4ac0-a8e0-262e32644ff0",
+    "name": "Mobilya Mustafaoğlu 006 A.Ş.",
+    "query": "Mobilya Mustafaoğlu 006"
+   },
+   {
+    "id": "account-8edc7db4-6afb-4020-b5ea-599cc576f6d6",
+    "name": "Kırtasiye Alioğlu 007 A.Ş.",
+    "query": "Kırtasiye Alioğlu 007"
+   },
+   {
+    "id": "account-e4813500-104c-4580-99ea-367b679855a4",
+    "name": "Medikal Hüseyinoğlu 008 A.Ş.",
+    "query": "Medikal Hüseyinoğlu 008"
+   },
+   {
+    "id": "account-5135cb2b-36d2-4eb9-9e85-59b2920dc464",
+    "name": "Tarım Zeynepoğlu 009 A.Ş.",
+    "query": "Tarım Zeynepoğlu 009"
+   },
+   {
+    "id": "account-a7112ef6-ce7a-425a-b3ab-62696627f027",
+    "name": "Lojistik Elifoğlu 010 A.Ş.",
+    "query": "Lojistik Elifoğlu 010"
+   },
+   {
+    "id": "account-8ae0737a-a1a1-42dd-bd3d-3649f64025ea",
+    "name": "Turizm Muratoğlu 011 A.Ş.",
+    "query": "Turizm Muratoğlu 011"
+   },
+   {
+    "id": "account-aa75fc47-9121-4a12-9729-f22208dd89b0",
+    "name": "Bilişim Selinoğlu 012 A.Ş.",
+    "query": "Bilişim Selinoğlu 012"
+   },
+   {
+    "id": "account-e2aafdc6-3182-4407-8161-dbb477693538",
+    "name": "Yapı Burakoğlu 013 A.Ş.",
+    "query": "Yapı Burakoğlu 013"
+   },
+   {
+    "id": "account-b51913b6-2480-4bdd-a102-d422e9d4ccec",
+    "name": "Gıda Denizoğlu 014 A.Ş.",
+    "query": "Gıda Denizoğlu 014"
+   },
+   {
+    "id": "account-b43105bf-c141-4ccf-b036-068915a16b46",
+    "name": "Tekstil Cananoğlu 015 A.Ş.",
+    "query": "Tekstil Cananoğlu 015"
+   },
+   {
+    "id": "account-1d6b7dd6-4c3e-4a48-8ab0-bc40c897acad",
+    "name": "Elektrik Kemaloğlu 016 A.Ş.",
+    "query": "Elektrik Kemaloğlu 016"
+   },
+   {
+    "id": "account-8a23b711-d330-4424-b58c-ffa6033d9890",
+    "name": "Otomotiv Oyaoğlu 017 A.Ş.",
+    "query": "Otomotiv Oyaoğlu 017"
+   },
+   {
+    "id": "account-e40b6903-0cd2-403c-9c90-a54aec7edd44",
+    "name": "Mobilya Serkanoğlu 018 A.Ş.",
+    "query": "Mobilya Serkanoğlu 018"
+   },
+   {
+    "id": "account-d2289197-30c3-4b4a-af93-18633535edf6",
+    "name": "Kırtasiye Güloğlu 019 A.Ş.",
+    "query": "Kırtasiye Güloğlu 019"
+   },
+   {
+    "id": "account-4c9ec3f1-2796-4e21-aee6-c1c264215262",
+    "name": "Medikal Tuncayoğlu 020 A.Ş.",
+    "query": "Medikal Tuncayoğlu 020"
+   },
+   {
+    "id": "account-4c60cef5-6cb2-4e71-a516-9a20251f5da1",
+    "name": "Tarım Ahmetoğlu 021 A.Ş.",
+    "query": "Tarım Ahmetoğlu 021"
+   },
+   {
+    "id": "account-f05042f7-d21d-4a2e-8a26-f5376a07fb13",
+    "name": "Lojistik Mehmetoğlu 022 A.Ş.",
+    "query": "Lojistik Mehmetoğlu 022"
+   },
+   {
+    "id": "account-63e9b7df-c8bb-4cfd-aec0-43160c49953c",
+    "name": "Turizm Ayşeoğlu 023 A.Ş.",
+    "query": "Turizm Ayşeoğlu 023"
+   },
+   {
+    "id": "account-4f754b71-848a-4b60-8d50-90860a332114",
+    "name": "Bilişim Fatmaoğlu 024 A.Ş.",
+    "query": "Bilişim Fatmaoğlu 024"
+   },
+   {
+    "id": "account-52cb2699-1ad2-45ec-b22e-ec04bd729639",
+    "name": "Yapı Emineoğlu 025 A.Ş.",
+    "query": "Yapı Emineoğlu 025"
+   },
+   {
+    "id": "account-20ff7603-8ef6-493e-9a1d-8c025ecfbeb4",
+    "name": "Gıda Mustafaoğlu 026 A.Ş.",
+    "query": "Gıda Mustafaoğlu 026"
+   },
+   {
+    "id": "account-130c8fd8-2d15-4a0b-be82-0066b03f0582",
+    "name": "Tekstil Alioğlu 027 A.Ş.",
+    "query": "Tekstil Alioğlu 027"
+   },
+   {
+    "id": "account-910a1ca8-d888-4469-a084-cecca4ec3c00",
+    "name": "Elektrik Hüseyinoğlu 028 A.Ş.",
+    "query": "Elektrik Hüseyinoğlu 028"
+   },
+   {
+    "id": "account-6a7615da-6586-4ce1-b9ef-b56cd7a2a483",
+    "name": "Otomotiv Zeynepoğlu 029 A.Ş.",
+    "query": "Otomotiv Zeynepoğlu 029"
+   },
+   {
+    "id": "account-64f1ef1f-9102-4a69-af5d-d5caa477fe8e",
+    "name": "Mobilya Elifoğlu 030 A.Ş.",
+    "query": "Mobilya Elifoğlu 030"
+   },
+   {
+    "id": "account-31be343e-45c5-4373-91b2-38e53d4c7c9e",
+    "name": "Kırtasiye Muratoğlu 031 A.Ş.",
+    "query": "Kırtasiye Muratoğlu 031"
+   },
+   {
+    "id": "account-0813f12f-4126-417e-b10d-2842a287e6dc",
+    "name": "Medikal Selinoğlu 032 A.Ş.",
+    "query": "Medikal Selinoğlu 032"
+   },
+   {
+    "id": "account-ecd3443d-c0e3-4745-901d-0d91a9dbdb0d",
+    "name": "Tarım Burakoğlu 033 A.Ş.",
+    "query": "Tarım Burakoğlu 033"
+   },
+   {
+    "id": "account-058bc7b7-6026-4261-bed0-9aa3391702ae",
+    "name": "Lojistik Denizoğlu 034 A.Ş.",
+    "query": "Lojistik Denizoğlu 034"
+   },
+   {
+    "id": "account-8cadefe2-077b-4fff-aeec-914667eebd65",
+    "name": "Turizm Cananoğlu 035 A.Ş.",
+    "query": "Turizm Cananoğlu 035"
+   },
+   {
+    "id": "account-8d5d79f8-0a60-4b33-9895-4ed3f3a7d8e0",
+    "name": "Bilişim Kemaloğlu 036 A.Ş.",
+    "query": "Bilişim Kemaloğlu 036"
+   },
+   {
+    "id": "account-9465f7b9-b141-4b2a-931e-6ed8dd382c38",
+    "name": "Yapı Oyaoğlu 037 A.Ş.",
+    "query": "Yapı Oyaoğlu 037"
+   },
+   {
+    "id": "account-9520ca1e-7787-4396-b769-b3a559f7e198",
+    "name": "Gıda Serkanoğlu 038 A.Ş.",
+    "query": "Gıda Serkanoğlu 038"
+   },
+   {
+    "id": "account-e868602d-ae6f-4b32-843d-750fc0cbb5d4",
+    "name": "Tekstil Güloğlu 039 A.Ş.",
+    "query": "Tekstil Güloğlu 039"
+   },
+   {
+    "id": "account-7451dc8c-7f71-4c6e-967e-f3adab99f3a5",
+    "name": "Elektrik Tuncayoğlu 040 A.Ş.",
+    "query": "Elektrik Tuncayoğlu 040"
+   },
+   {
+    "id": "account-75c5843f-21dd-4691-a2a8-bdc5f641b88b",
+    "name": "Otomotiv Ahmetoğlu 041 A.Ş.",
+    "query": "Otomotiv Ahmetoğlu 041"
+   },
+   {
+    "id": "account-64be4b69-f561-4baa-92cd-05f92e9aba25",
+    "name": "Mobilya Mehmetoğlu 042 A.Ş.",
+    "query": "Mobilya Mehmetoğlu 042"
+   },
+   {
+    "id": "account-868c74cb-6c4a-4916-ba07-f94cfd5671e0",
+    "name": "Kırtasiye Ayşeoğlu 043 A.Ş.",
+    "query": "Kırtasiye Ayşeoğlu 043"
+   },
+   {
+    "id": "account-fcf8dff5-71b7-4b62-aabd-336ea125233f",
+    "name": "Medikal Fatmaoğlu 044 A.Ş.",
+    "query": "Medikal Fatmaoğlu 044"
+   },
+   {
+    "id": "account-a07a3767-45a6-4dd0-b6a7-8d83e9d51a03",
+    "name": "Tarım Emineoğlu 045 A.Ş.",
+    "query": "Tarım Emineoğlu 045"
+   },
+   {
+    "id": "account-1f964504-70f1-499c-a314-b1468bf8062a",
+    "name": "Lojistik Mustafaoğlu 046 A.Ş.",
+    "query": "Lojistik Mustafaoğlu 046"
+   },
+   {
+    "id": "account-b565bde6-026f-4fae-b1ee-bf2109cc04f4",
+    "name": "Turizm Alioğlu 047 A.Ş.",
+    "query": "Turizm Alioğlu 047"
+   },
+   {
+    "id": "account-9f27053a-587d-469c-bd8c-a3c7e5978fed",
+    "name": "Bilişim Hüseyinoğlu 048 A.Ş.",
+    "query": "Bilişim Hüseyinoğlu 048"
+   },
+   {
+    "id": "account-9babb677-26b4-4278-b61c-b033e6a19a59",
+    "name": "Yapı Zeynepoğlu 049 A.Ş.",
+    "query": "Yapı Zeynepoğlu 049"
+   },
+   {
+    "id": "account-a7ad4706-3a45-4bc3-a972-2fc71eb756f0",
+    "name": "Gıda Elifoğlu 050 A.Ş.",
+    "query": "Gıda Elifoğlu 050"
+   },
+   {
+    "id": "account-1ea51fef-67f0-402b-80fb-9fb1778c21e0",
+    "name": "Tekstil Muratoğlu 051 A.Ş.",
+    "query": "Tekstil Muratoğlu 051"
+   },
+   {
+    "id": "account-8f9e0e45-541d-4172-beaa-765807158c94",
+    "name": "Elektrik Selinoğlu 052 A.Ş.",
+    "query": "Elektrik Selinoğlu 052"
+   },
+   {
+    "id": "account-74b0807f-d883-433a-a60a-0606f4a77231",
+    "name": "Otomotiv Burakoğlu 053 A.Ş.",
+    "query": "Otomotiv Burakoğlu 053"
+   },
+   {
+    "id": "account-a26b4710-987b-4398-8f27-df55fbeca8c6",
+    "name": "Mobilya Denizoğlu 054 A.Ş.",
+    "query": "Mobilya Denizoğlu 054"
+   },
+   {
+    "id": "account-58ca5c33-0777-4200-83ea-e4e81ab12a5f",
+    "name": "Kırtasiye Cananoğlu 055 A.Ş.",
+    "query": "Kırtasiye Cananoğlu 055"
+   },
+   {
+    "id": "account-934051cd-c338-4111-9c93-58c0eb94122c",
+    "name": "Medikal Kemaloğlu 056 A.Ş.",
+    "query": "Medikal Kemaloğlu 056"
+   },
+   {
+    "id": "account-dea8f9eb-88b7-462b-8d97-ae10e8075d61",
+    "name": "Tarım Oyaoğlu 057 A.Ş.",
+    "query": "Tarım Oyaoğlu 057"
+   },
+   {
+    "id": "account-861634d5-2890-4ed4-860f-c588cddc94fa",
+    "name": "Lojistik Serkanoğlu 058 A.Ş.",
+    "query": "Lojistik Serkanoğlu 058"
+   },
+   {
+    "id": "account-c69468e0-cc89-4877-bf6d-9547e9f1a4d4",
+    "name": "Turizm Güloğlu 059 A.Ş.",
+    "query": "Turizm Güloğlu 059"
+   },
+   {
+    "id": "account-36af3c41-faba-454b-b8cd-e3ddea738e82",
+    "name": "Bilişim Tuncayoğlu 060 A.Ş.",
+    "query": "Bilişim Tuncayoğlu 060"
+   },
+   {
+    "id": "account-b10a9cf9-24fb-4d17-9470-b2ffc6889fb8",
+    "name": "Yapı Ahmetoğlu 061 A.Ş.",
+    "query": "Yapı Ahmetoğlu 061"
+   },
+   {
+    "id": "account-58a2626f-aab8-41e1-b31b-d0c68b3b67bf",
+    "name": "Gıda Mehmetoğlu 062 A.Ş.",
+    "query": "Gıda Mehmetoğlu 062"
+   },
+   {
+    "id": "account-b6b0641b-7ac7-470f-8eb5-27e1dccc379b",
+    "name": "Tekstil Ayşeoğlu 063 A.Ş.",
+    "query": "Tekstil Ayşeoğlu 063"
+   },
+   {
+    "id": "account-ca9ab4a8-ac6c-4d7c-8600-16ada14f4027",
+    "name": "Elektrik Fatmaoğlu 064 A.Ş.",
+    "query": "Elektrik Fatmaoğlu 064"
+   },
+   {
+    "id": "account-756e9c49-fa4a-49c5-ba33-793025e1008b",
+    "name": "Otomotiv Emineoğlu 065 A.Ş.",
+    "query": "Otomotiv Emineoğlu 065"
+   },
+   {
+    "id": "account-79229c84-5e7a-4232-80f8-7311c6bb7030",
+    "name": "Mobilya Mustafaoğlu 066 A.Ş.",
+    "query": "Mobilya Mustafaoğlu 066"
+   },
+   {
+    "id": "account-83ba96d8-01ff-4197-b56e-9523cf779ae3",
+    "name": "Kırtasiye Alioğlu 067 A.Ş.",
+    "query": "Kırtasiye Alioğlu 067"
+   },
+   {
+    "id": "account-1392d7ed-9af3-4191-9bd6-8721a43dcfb7",
+    "name": "Medikal Hüseyinoğlu 068 A.Ş.",
+    "query": "Medikal Hüseyinoğlu 068"
+   },
+   {
+    "id": "account-92d242df-8aec-4794-ba96-8a8c64baaaee",
+    "name": "Tarım Zeynepoğlu 069 A.Ş.",
+    "query": "Tarım Zeynepoğlu 069"
+   },
+   {
+    "id": "account-1d166d3f-ae3a-4387-b1c8-2bc563c53608",
+    "name": "Lojistik Elifoğlu 070 A.Ş.",
+    "query": "Lojistik Elifoğlu 070"
+   },
+   {
+    "id": "account-5a0355f6-d369-4a7d-8105-f0f48bcecd41",
+    "name": "Turizm Muratoğlu 071 A.Ş.",
+    "query": "Turizm Muratoğlu 071"
+   },
+   {
+    "id": "account-2f4c349e-bb78-494d-8d90-cf803459e521",
+    "name": "Bilişim Selinoğlu 072 A.Ş.",
+    "query": "Bilişim Selinoğlu 072"
+   },
+   {
+    "id": "account-8c33e6af-499d-4e68-94b4-b70311f0e814",
+    "name": "Yapı Burakoğlu 073 A.Ş.",
+    "query": "Yapı Burakoğlu 073"
+   },
+   {
+    "id": "account-619fe8ce-866f-4426-88ed-4609a00a1b46",
+    "name": "Gıda Denizoğlu 074 A.Ş.",
+    "query": "Gıda Denizoğlu 074"
+   },
+   {
+    "id": "account-998ed84a-50ae-41b9-8087-8a7b11dc916c",
+    "name": "Tekstil Cananoğlu 075 A.Ş.",
+    "query": "Tekstil Cananoğlu 075"
+   },
+   {
+    "id": "account-558965bd-87de-497c-a200-46ff4a25dad7",
+    "name": "Elektrik Kemaloğlu 076 A.Ş.",
+    "query": "Elektrik Kemaloğlu 076"
+   },
+   {
+    "id": "account-91ddc892-e7dd-4b21-b095-418b73191f80",
+    "name": "Otomotiv Oyaoğlu 077 A.Ş.",
+    "query": "Otomotiv Oyaoğlu 077"
+   },
+   {
+    "id": "account-2a7799da-739e-4c84-867b-addb6dcdd959",
+    "name": "Mobilya Serkanoğlu 078 A.Ş.",
+    "query": "Mobilya Serkanoğlu 078"
+   },
+   {
+    "id": "account-d6aa8df4-16c9-4fbc-9728-2b9bf40d91a2",
+    "name": "Kırtasiye Güloğlu 079 A.Ş.",
+    "query": "Kırtasiye Güloğlu 079"
+   },
+   {
+    "id": "account-37fa2961-05aa-41c2-a595-74b652142296",
+    "name": "Medikal Tuncayoğlu 080 A.Ş.",
+    "query": "Medikal Tuncayoğlu 080"
+   },
+   {
+    "id": "account-e5ed3c3b-a947-4632-831d-ca595e17d542",
+    "name": "Tarım Ahmetoğlu 081 A.Ş.",
+    "query": "Tarım Ahmetoğlu 081"
+   },
+   {
+    "id": "account-693c1caa-bc1a-432a-b452-3a4a9ee3ea00",
+    "name": "Lojistik Mehmetoğlu 082 A.Ş.",
+    "query": "Lojistik Mehmetoğlu 082"
+   },
+   {
+    "id": "account-23302262-0837-411a-a5e3-31115c0800fe",
+    "name": "Turizm Ayşeoğlu 083 A.Ş.",
+    "query": "Turizm Ayşeoğlu 083"
+   },
+   {
+    "id": "account-a77b9762-b130-4069-a193-4513135cbcb3",
+    "name": "Bilişim Fatmaoğlu 084 A.Ş.",
+    "query": "Bilişim Fatmaoğlu 084"
+   },
+   {
+    "id": "account-be213d0d-7456-4222-b77c-664193d206f6",
+    "name": "Yapı Emineoğlu 085 A.Ş.",
+    "query": "Yapı Emineoğlu 085"
+   },
+   {
+    "id": "account-a5fdefd8-91b4-4599-b609-1265dc8deb20",
+    "name": "Gıda Mustafaoğlu 086 A.Ş.",
+    "query": "Gıda Mustafaoğlu 086"
+   },
+   {
+    "id": "account-65155e06-6271-4e63-8fd5-51b005de8b30",
+    "name": "Tekstil Alioğlu 087 A.Ş.",
+    "query": "Tekstil Alioğlu 087"
+   },
+   {
+    "id": "account-84737db7-c7db-44ca-84bf-b963c88805d8",
+    "name": "Elektrik Hüseyinoğlu 088 A.Ş.",
+    "query": "Elektrik Hüseyinoğlu 088"
+   },
+   {
+    "id": "account-95663cec-1708-4c64-b7f6-2d0c4dc8a03c",
+    "name": "Otomotiv Zeynepoğlu 089 A.Ş.",
+    "query": "Otomotiv Zeynepoğlu 089"
+   },
+   {
+    "id": "account-b034e0d7-aeff-493d-a5e3-38f4bc162e97",
+    "name": "Mobilya Elifoğlu 090 A.Ş.",
+    "query": "Mobilya Elifoğlu 090"
+   },
+   {
+    "id": "account-eb473c39-9bce-4070-9d1a-a47d772e3173",
+    "name": "Kırtasiye Muratoğlu 091 A.Ş.",
+    "query": "Kırtasiye Muratoğlu 091"
+   },
+   {
+    "id": "account-49a6698d-7362-4622-bbb4-02097f70943f",
+    "name": "Medikal Selinoğlu 092 A.Ş.",
+    "query": "Medikal Selinoğlu 092"
+   },
+   {
+    "id": "account-79b38bc2-0d10-4b19-8315-7b99d919a086",
+    "name": "Tarım Burakoğlu 093 A.Ş.",
+    "query": "Tarım Burakoğlu 093"
+   },
+   {
+    "id": "account-a9c99a24-cdbe-4f82-9b2d-92edcbc25016",
+    "name": "Lojistik Denizoğlu 094 A.Ş.",
+    "query": "Lojistik Denizoğlu 094"
+   },
+   {
+    "id": "account-b406b18a-e0a4-4125-998c-9389ca935652",
+    "name": "Turizm Cananoğlu 095 A.Ş.",
+    "query": "Turizm Cananoğlu 095"
+   },
+   {
+    "id": "account-dbd43777-fd9a-4a59-bf1a-7119179db984",
+    "name": "Bilişim Kemaloğlu 096 A.Ş.",
+    "query": "Bilişim Kemaloğlu 096"
+   },
+   {
+    "id": "account-35a52b93-5733-4b14-8781-b6d02d9c7423",
+    "name": "Yapı Oyaoğlu 097 A.Ş.",
+    "query": "Yapı Oyaoğlu 097"
+   },
+   {
+    "id": "account-e4247b16-e28b-473c-bc34-85f8f1a2a386",
+    "name": "Gıda Serkanoğlu 098 A.Ş.",
+    "query": "Gıda Serkanoğlu 098"
+   },
+   {
+    "id": "account-43766ffe-eefe-476c-8796-d4a9191328d5",
+    "name": "Tekstil Güloğlu 099 A.Ş.",
+    "query": "Tekstil Güloğlu 099"
+   },
+   {
+    "id": "account-71155d0c-86f3-451e-ba46-7d3c215bc36f",
+    "name": "Elektrik Tuncayoğlu 100 A.Ş.",
+    "query": "Elektrik Tuncayoğlu 100"
+   },
+   {
+    "id": "account-04c2cf67-aa74-4f4c-8f3d-c1dab1701f44",
+    "name": "Otomotiv Ahmetoğlu 101 A.Ş.",
+    "query": "Otomotiv Ahmetoğlu 101"
+   },
+   {
+    "id": "account-05773ddf-bb67-4158-af4c-8ff3feb45938",
+    "name": "Mobilya Mehmetoğlu 102 A.Ş.",
+    "query": "Mobilya Mehmetoğlu 102"
+   },
+   {
+    "id": "account-3b00297d-4dcb-4f7a-aef5-e1c8c3b9b95d",
+    "name": "Kırtasiye Ayşeoğlu 103 A.Ş.",
+    "query": "Kırtasiye Ayşeoğlu 103"
+   },
+   {
+    "id": "account-aedf4080-c700-45ec-8d1d-d387d099f0b4",
+    "name": "Medikal Fatmaoğlu 104 A.Ş.",
+    "query": "Medikal Fatmaoğlu 104"
+   },
+   {
+    "id": "account-b6c28563-52d8-4dfa-ab2c-dc812fc5426c",
+    "name": "Tarım Emineoğlu 105 A.Ş.",
+    "query": "Tarım Emineoğlu 105"
+   },
+   {
+    "id": "account-ad1bb7a5-ca6e-47ed-b9a7-b3f23953592f",
+    "name": "Lojistik Mustafaoğlu 106 A.Ş.",
+    "query": "Lojistik Mustafaoğlu 106"
+   },
+   {
+    "id": "account-e107d25d-2294-4956-8478-6368008c37da",
+    "name": "Turizm Alioğlu 107 A.Ş.",
+    "query": "Turizm Alioğlu 107"
+   },
+   {
+    "id": "account-be237f1d-96c8-4f78-922e-e5c8cbb299b5",
+    "name": "Bilişim Hüseyinoğlu 108 A.Ş.",
+    "query": "Bilişim Hüseyinoğlu 108"
+   },
+   {
+    "id": "account-d176d502-27e2-4009-8724-caae748b5fb5",
+    "name": "Yapı Zeynepoğlu 109 A.Ş.",
+    "query": "Yapı Zeynepoğlu 109"
+   },
+   {
+    "id": "account-4b843496-cb27-4d31-8044-cf4738b2aad1",
+    "name": "Gıda Elifoğlu 110 A.Ş.",
+    "query": "Gıda Elifoğlu 110"
+   }
+  ],
+  "person": [
+   {
+    "id": "account-60dd11d6-207d-4e10-8c74-136e165c5248",
+    "name": "Ahmet Yılmaz 001",
+    "query": "Ahmet Yılmaz 001"
+   },
+   {
+    "id": "account-dae0120d-b7d3-4c91-9647-8ba84842e00d",
+    "name": "Mehmet Yılmaz 002",
+    "query": "Mehmet Yılmaz 002"
+   },
+   {
+    "id": "account-00e4e34d-dd58-45cc-a3e1-2044fc169ab6",
+    "name": "Ayşe Yılmaz 003",
+    "query": "Ayşe Yılmaz 003"
+   },
+   {
+    "id": "account-41842761-ccf7-426a-91d8-79925b8dcae6",
+    "name": "Fatma Yılmaz 004",
+    "query": "Fatma Yılmaz 004"
+   },
+   {
+    "id": "account-c61162b4-4e88-4c56-9016-8912e194b351",
+    "name": "Emine Yılmaz 005",
+    "query": "Emine Yılmaz 005"
+   },
+   {
+    "id": "account-3384b86c-2bc2-4372-9c48-2c08dbbf650b",
+    "name": "Mustafa Yılmaz 006",
+    "query": "Mustafa Yılmaz 006"
+   },
+   {
+    "id": "account-b115dbfd-9527-4f75-91cd-ec302bf1a675",
+    "name": "Ali Yılmaz 007",
+    "query": "Ali Yılmaz 007"
+   },
+   {
+    "id": "account-a85a97be-c360-446c-8cd9-ff2d6751902f",
+    "name": "Hüseyin Yılmaz 008",
+    "query": "Hüseyin Yılmaz 008"
+   },
+   {
+    "id": "account-195066bb-6826-4a6f-b61b-026e57f0659f",
+    "name": "Zeynep Yılmaz 009",
+    "query": "Zeynep Yılmaz 009"
+   },
+   {
+    "id": "account-7881ee3e-0b97-47c1-85ee-a004c4e3ea87",
+    "name": "Elif Yılmaz 010",
+    "query": "Elif Yılmaz 010"
+   },
+   {
+    "id": "account-803a881a-c59c-4868-be36-edfba97d0213",
+    "name": "Murat Yılmaz 011",
+    "query": "Murat Yılmaz 011"
+   },
+   {
+    "id": "account-40a13857-1297-4857-95e2-812f05767a83",
+    "name": "Selin Yılmaz 012",
+    "query": "Selin Yılmaz 012"
+   },
+   {
+    "id": "account-253846f9-53e3-41c2-ac53-eebbfec03d68",
+    "name": "Burak Yılmaz 013",
+    "query": "Burak Yılmaz 013"
+   },
+   {
+    "id": "account-b141eb8b-62d3-4c64-b269-6ad685b8aa46",
+    "name": "Deniz Yılmaz 014",
+    "query": "Deniz Yılmaz 014"
+   },
+   {
+    "id": "account-cc910df2-badc-47f1-a051-0c4d381c5231",
+    "name": "Canan Yılmaz 015",
+    "query": "Canan Yılmaz 015"
+   },
+   {
+    "id": "account-b063eb33-28ad-4fde-a642-4326211d46f1",
+    "name": "Kemal Yılmaz 016",
+    "query": "Kemal Yılmaz 016"
+   },
+   {
+    "id": "account-c5dc927a-40df-4a0e-818d-0f7154cf4724",
+    "name": "Oya Yılmaz 017",
+    "query": "Oya Yılmaz 017"
+   },
+   {
+    "id": "account-14825d51-fdde-4a76-96f7-e36bb888a39a",
+    "name": "Serkan Yılmaz 018",
+    "query": "Serkan Yılmaz 018"
+   },
+   {
+    "id": "account-a1a52554-8040-4216-8fd3-15eef0e883a8",
+    "name": "Gül Yılmaz 019",
+    "query": "Gül Yılmaz 019"
+   },
+   {
+    "id": "account-3bb624f9-4a82-444e-b338-c9955af62ada",
+    "name": "Tuncay Yılmaz 020",
+    "query": "Tuncay Yılmaz 020"
+   },
+   {
+    "id": "account-b376f54f-f032-472f-aa7f-d8af13befc71",
+    "name": "Ahmet Kaya 021",
+    "query": "Ahmet Kaya 021"
+   },
+   {
+    "id": "account-a611cfc1-808f-4def-927f-7ac5d93dd501",
+    "name": "Mehmet Kaya 022",
+    "query": "Mehmet Kaya 022"
+   },
+   {
+    "id": "account-14a66040-7793-4316-9c52-6e740cfbfcac",
+    "name": "Ayşe Kaya 023",
+    "query": "Ayşe Kaya 023"
+   },
+   {
+    "id": "account-1b3cbb3a-a805-4659-a1de-af871dc52415",
+    "name": "Fatma Kaya 024",
+    "query": "Fatma Kaya 024"
+   },
+   {
+    "id": "account-8219f676-7020-45d1-bb08-ee501cb0753c",
+    "name": "Emine Kaya 025",
+    "query": "Emine Kaya 025"
+   },
+   {
+    "id": "account-5aa4d112-4ce0-4928-a632-03279e2f92ca",
+    "name": "Mustafa Kaya 026",
+    "query": "Mustafa Kaya 026"
+   },
+   {
+    "id": "account-34db3dda-4e99-4e94-b139-3d8d7f031f2d",
+    "name": "Ali Kaya 027",
+    "query": "Ali Kaya 027"
+   },
+   {
+    "id": "account-65721a97-88a5-4a0b-9139-faa2702c8830",
+    "name": "Hüseyin Kaya 028",
+    "query": "Hüseyin Kaya 028"
+   },
+   {
+    "id": "account-09bb08d9-8cc2-487f-a23c-eb1895769633",
+    "name": "Zeynep Kaya 029",
+    "query": "Zeynep Kaya 029"
+   },
+   {
+    "id": "account-edbef99b-9c37-4147-a394-95a7db6d20c1",
+    "name": "Elif Kaya 030",
+    "query": "Elif Kaya 030"
+   },
+   {
+    "id": "account-291df90c-1eab-43ef-94de-80cf3a1d9fec",
+    "name": "Murat Kaya 031",
+    "query": "Murat Kaya 031"
+   },
+   {
+    "id": "account-6b6f9701-f89e-491a-b4f3-c5575b4464f2",
+    "name": "Selin Kaya 032",
+    "query": "Selin Kaya 032"
+   },
+   {
+    "id": "account-0a724395-a7e0-4db0-8dff-cd9ffd58153b",
+    "name": "Burak Kaya 033",
+    "query": "Burak Kaya 033"
+   },
+   {
+    "id": "account-182932fc-d5f6-42f3-966f-60db3d23981f",
+    "name": "Deniz Kaya 034",
+    "query": "Deniz Kaya 034"
+   },
+   {
+    "id": "account-a4662b6e-afd6-4c11-9a1a-ee5d837e5abb",
+    "name": "Canan Kaya 035",
+    "query": "Canan Kaya 035"
+   },
+   {
+    "id": "account-5ba21576-6c10-4826-99f9-50fba504c807",
+    "name": "Kemal Kaya 036",
+    "query": "Kemal Kaya 036"
+   },
+   {
+    "id": "account-2060ec8d-b820-4e2a-8d55-065c840186f7",
+    "name": "Oya Kaya 037",
+    "query": "Oya Kaya 037"
+   },
+   {
+    "id": "account-35715443-8fc6-42ab-8631-7f2fb82202ad",
+    "name": "Serkan Kaya 038",
+    "query": "Serkan Kaya 038"
+   },
+   {
+    "id": "account-242f415e-f5f6-4285-8f41-c98dd7dfffad",
+    "name": "Gül Kaya 039",
+    "query": "Gül Kaya 039"
+   },
+   {
+    "id": "account-fa31c09d-a95d-4cfc-877a-08e8a4592e9f",
+    "name": "Tuncay Kaya 040",
+    "query": "Tuncay Kaya 040"
+   },
+   {
+    "id": "account-a6f7f644-8398-477b-9900-8ce95aa6fec0",
+    "name": "Ahmet Demir 041",
+    "query": "Ahmet Demir 041"
+   },
+   {
+    "id": "account-da297fa3-0057-45ae-b5e1-247e260dfa5d",
+    "name": "Mehmet Demir 042",
+    "query": "Mehmet Demir 042"
+   },
+   {
+    "id": "account-27e1003f-710f-4d46-8ab1-031674275f38",
+    "name": "Ayşe Demir 043",
+    "query": "Ayşe Demir 043"
+   },
+   {
+    "id": "account-6a63a675-c860-4d71-9f8c-9904cf2b0b9a",
+    "name": "Fatma Demir 044",
+    "query": "Fatma Demir 044"
+   },
+   {
+    "id": "account-44b64fdb-cad6-452a-a253-30eaea19f8a1",
+    "name": "Emine Demir 045",
+    "query": "Emine Demir 045"
+   },
+   {
+    "id": "account-68eb3ba7-49ee-4cde-97d7-0455ba3ebc34",
+    "name": "Mustafa Demir 046",
+    "query": "Mustafa Demir 046"
+   },
+   {
+    "id": "account-3258de48-3784-4e1a-a661-de47d278ee85",
+    "name": "Ali Demir 047",
+    "query": "Ali Demir 047"
+   },
+   {
+    "id": "account-7fea6f5d-fc8e-4606-8e4e-8467b37fbad5",
+    "name": "Hüseyin Demir 048",
+    "query": "Hüseyin Demir 048"
+   },
+   {
+    "id": "account-f610d523-85aa-48c7-ac9f-4498d9f0ee60",
+    "name": "Zeynep Demir 049",
+    "query": "Zeynep Demir 049"
+   },
+   {
+    "id": "account-4dddf301-0315-4dbd-a132-1afec17c6b54",
+    "name": "Elif Demir 050",
+    "query": "Elif Demir 050"
+   },
+   {
+    "id": "account-2075c19c-f516-4460-b476-f0a5b3c8a3c9",
+    "name": "Murat Demir 051",
+    "query": "Murat Demir 051"
+   },
+   {
+    "id": "account-7926385c-95d6-4e75-a721-e08ecc7a536a",
+    "name": "Selin Demir 052",
+    "query": "Selin Demir 052"
+   },
+   {
+    "id": "account-5123484a-76b8-45c1-b8fe-5c040f468098",
+    "name": "Burak Demir 053",
+    "query": "Burak Demir 053"
+   },
+   {
+    "id": "account-dc6697e9-a042-4f65-b5ea-6e40c48dc9d5",
+    "name": "Deniz Demir 054",
+    "query": "Deniz Demir 054"
+   },
+   {
+    "id": "account-58441437-10a6-49ff-a933-4231068a2041",
+    "name": "Canan Demir 055",
+    "query": "Canan Demir 055"
+   },
+   {
+    "id": "account-1c520e17-f6a5-41de-b1ee-49842c16c6fc",
+    "name": "Kemal Demir 056",
+    "query": "Kemal Demir 056"
+   },
+   {
+    "id": "account-3fc1841e-c0bb-44dc-a5ca-53e90e430f88",
+    "name": "Oya Demir 057",
+    "query": "Oya Demir 057"
+   },
+   {
+    "id": "account-2ef265e7-e95a-4641-883d-bb0a699264ca",
+    "name": "Serkan Demir 058",
+    "query": "Serkan Demir 058"
+   },
+   {
+    "id": "account-d9788920-e58a-45ef-8a03-58accdd067c4",
+    "name": "Gül Demir 059",
+    "query": "Gül Demir 059"
+   },
+   {
+    "id": "account-0e49da9b-11b6-40d3-b590-ac7f8610a65e",
+    "name": "Tuncay Demir 060",
+    "query": "Tuncay Demir 060"
+   },
+   {
+    "id": "account-fda188f4-6f61-4666-b7c9-ed6064f15098",
+    "name": "Ahmet Şahin 061",
+    "query": "Ahmet Şahin 061"
+   },
+   {
+    "id": "account-dec09259-7348-4ae9-8dd2-57d61cd2e743",
+    "name": "Mehmet Şahin 062",
+    "query": "Mehmet Şahin 062"
+   },
+   {
+    "id": "account-505a38d8-6445-44c1-acc4-5fe6f69d9442",
+    "name": "Ayşe Şahin 063",
+    "query": "Ayşe Şahin 063"
+   },
+   {
+    "id": "account-90b0dbc6-1abf-40d1-954e-e1bb50e34a59",
+    "name": "Fatma Şahin 064",
+    "query": "Fatma Şahin 064"
+   },
+   {
+    "id": "account-54c6cb32-ac29-4d18-a090-469180a4d561",
+    "name": "Emine Şahin 065",
+    "query": "Emine Şahin 065"
+   },
+   {
+    "id": "account-0be9feb4-f9bd-45fd-9784-62d58ec87f23",
+    "name": "Mustafa Şahin 066",
+    "query": "Mustafa Şahin 066"
+   },
+   {
+    "id": "account-672a4a2d-672d-409a-99ef-32012351d2ae",
+    "name": "Ali Şahin 067",
+    "query": "Ali Şahin 067"
+   },
+   {
+    "id": "account-2a6214d6-79f3-447f-9bb3-36193e0fd725",
+    "name": "Hüseyin Şahin 068",
+    "query": "Hüseyin Şahin 068"
+   },
+   {
+    "id": "account-087d270c-7d1f-44d0-8651-d7121afe3399",
+    "name": "Zeynep Şahin 069",
+    "query": "Zeynep Şahin 069"
+   },
+   {
+    "id": "account-af3d6ddc-5e8a-411e-98d7-61dddc500c78",
+    "name": "Elif Şahin 070",
+    "query": "Elif Şahin 070"
+   },
+   {
+    "id": "account-e99a7892-eb01-4a62-ae1a-23df3e3d9ad5",
+    "name": "Murat Şahin 071",
+    "query": "Murat Şahin 071"
+   },
+   {
+    "id": "account-eb9d11c9-5e54-4d2a-918b-1c73e8f961a3",
+    "name": "Selin Şahin 072",
+    "query": "Selin Şahin 072"
+   },
+   {
+    "id": "account-cd819b65-bfe4-4e2d-a60c-31b0c13cfba7",
+    "name": "Burak Şahin 073",
+    "query": "Burak Şahin 073"
+   },
+   {
+    "id": "account-b2094adf-dcb9-4cfc-8b58-959137bb9380",
+    "name": "Deniz Şahin 074",
+    "query": "Deniz Şahin 074"
+   },
+   {
+    "id": "account-95726000-46f5-4bb4-808f-83a91cbe2162",
+    "name": "Canan Şahin 075",
+    "query": "Canan Şahin 075"
+   },
+   {
+    "id": "account-e1193607-9e55-4179-8be4-c46508779a59",
+    "name": "Kemal Şahin 076",
+    "query": "Kemal Şahin 076"
+   },
+   {
+    "id": "account-3adbd209-0d89-45fd-a294-a59249481f91",
+    "name": "Oya Şahin 077",
+    "query": "Oya Şahin 077"
+   },
+   {
+    "id": "account-1ff7061b-d37c-49fd-b3c9-174b743411a8",
+    "name": "Serkan Şahin 078",
+    "query": "Serkan Şahin 078"
+   },
+   {
+    "id": "account-f0335aca-41a4-4889-8e84-62cd63f06f64",
+    "name": "Gül Şahin 079",
+    "query": "Gül Şahin 079"
+   },
+   {
+    "id": "account-0c380794-c64e-4c45-8f90-e64bb0acb746",
+    "name": "Tuncay Şahin 080",
+    "query": "Tuncay Şahin 080"
+   },
+   {
+    "id": "account-f6ebe582-267b-4213-8c2d-be28764f33d7",
+    "name": "Ahmet Çelik 081",
+    "query": "Ahmet Çelik 081"
+   },
+   {
+    "id": "account-066b9839-22de-4adf-9b9a-f4e8c252a089",
+    "name": "Mehmet Çelik 082",
+    "query": "Mehmet Çelik 082"
+   },
+   {
+    "id": "account-e7cb6365-7801-49da-bcb2-cfa9a9694c95",
+    "name": "Ayşe Çelik 083",
+    "query": "Ayşe Çelik 083"
+   },
+   {
+    "id": "account-05baafae-8fe2-40dc-aaf0-019689c787a7",
+    "name": "Fatma Çelik 084",
+    "query": "Fatma Çelik 084"
+   },
+   {
+    "id": "account-9f81e0d5-f9d7-4117-bc1d-4d344e03402c",
+    "name": "Emine Çelik 085",
+    "query": "Emine Çelik 085"
+   },
+   {
+    "id": "account-e981e788-4c16-49c5-afe9-ccb48c94be27",
+    "name": "Mustafa Çelik 086",
+    "query": "Mustafa Çelik 086"
+   },
+   {
+    "id": "account-1ae8e4f0-c30b-48e2-baef-bd9cc2987ac1",
+    "name": "Ali Çelik 087",
+    "query": "Ali Çelik 087"
+   },
+   {
+    "id": "account-7d4d46ff-5db1-4edf-a8bb-2bc73addd828",
+    "name": "Hüseyin Çelik 088",
+    "query": "Hüseyin Çelik 088"
+   },
+   {
+    "id": "account-4c152448-ff1f-4a1b-b92f-889de8c10ee7",
+    "name": "Zeynep Çelik 089",
+    "query": "Zeynep Çelik 089"
+   },
+   {
+    "id": "account-ef0838c7-7a3e-4781-a880-90307579d5e3",
+    "name": "Elif Çelik 090",
+    "query": "Elif Çelik 090"
+   },
+   {
+    "id": "account-1b50be9c-329e-4d86-a55b-e23b2640d327",
+    "name": "Murat Çelik 091",
+    "query": "Murat Çelik 091"
+   },
+   {
+    "id": "account-cd15fc8a-b02c-4255-8f3b-39d17fb481c6",
+    "name": "Selin Çelik 092",
+    "query": "Selin Çelik 092"
+   },
+   {
+    "id": "account-a00e8a6d-631a-4332-b503-8ffcf07f0468",
+    "name": "Burak Çelik 093",
+    "query": "Burak Çelik 093"
+   },
+   {
+    "id": "account-68c77449-ed23-4ad6-9ee5-c3354130d16c",
+    "name": "Deniz Çelik 094",
+    "query": "Deniz Çelik 094"
+   },
+   {
+    "id": "account-bd2903a4-8095-4af0-88fa-1e5f5d0ec383",
+    "name": "Canan Çelik 095",
+    "query": "Canan Çelik 095"
+   },
+   {
+    "id": "account-beff7336-0b41-40d3-8a11-6ea22045bd18",
+    "name": "Kemal Çelik 096",
+    "query": "Kemal Çelik 096"
+   },
+   {
+    "id": "account-db3185b1-84a8-489a-8b3d-17411b671a1f",
+    "name": "Oya Çelik 097",
+    "query": "Oya Çelik 097"
+   },
+   {
+    "id": "account-2d1a9f19-27cc-48b1-921e-1f1a58d72805",
+    "name": "Serkan Çelik 098",
+    "query": "Serkan Çelik 098"
+   },
+   {
+    "id": "account-d6ed19fb-75b8-49c7-b90d-592ef22dddae",
+    "name": "Gül Çelik 099",
+    "query": "Gül Çelik 099"
+   },
+   {
+    "id": "account-a3f1eb69-88e0-4021-a362-0bf841ad8400",
+    "name": "Tuncay Çelik 100",
+    "query": "Tuncay Çelik 100"
+   }
+  ],
+  "firm": [
+   {
+    "id": "account-f77259e4-d9e3-4e7c-9d9b-6f64a37fad7c",
+    "name": "Elektrik Ticaret 001 Ltd. Şti.",
+    "query": "Elektrik Ticaret 001"
+   },
+   {
+    "id": "account-0ff20014-c9fd-4d95-a1a2-1ee00bab1489",
+    "name": "Otomotiv Ticaret 002 Ltd. Şti.",
+    "query": "Otomotiv Ticaret 002"
+   },
+   {
+    "id": "account-cc94aa6e-6f34-4e31-b19e-722482ac1f9b",
+    "name": "Mobilya Ticaret 003 Ltd. Şti.",
+    "query": "Mobilya Ticaret 003"
+   },
+   {
+    "id": "account-c9c24c8e-174e-49a0-9317-6ceb349aa363",
+    "name": "Kırtasiye Ticaret 004 Ltd. Şti.",
+    "query": "Kırtasiye Ticaret 004"
+   },
+   {
+    "id": "account-4c53b377-4f8d-4dfc-ad0c-663c5a20118d",
+    "name": "Medikal Ticaret 005 Ltd. Şti.",
+    "query": "Medikal Ticaret 005"
+   },
+   {
+    "id": "account-c52600ee-250a-459d-a591-22bb11edc906",
+    "name": "Tarım Ticaret 006 Ltd. Şti.",
+    "query": "Tarım Ticaret 006"
+   },
+   {
+    "id": "account-c7f04a09-b959-46c2-99d1-9cc870671d43",
+    "name": "Lojistik Ticaret 007 Ltd. Şti.",
+    "query": "Lojistik Ticaret 007"
+   },
+   {
+    "id": "account-66a27bb3-b737-4779-bd5c-27de078d1b48",
+    "name": "Turizm Ticaret 008 Ltd. Şti.",
+    "query": "Turizm Ticaret 008"
+   },
+   {
+    "id": "account-d024ac72-334a-4faf-a3ad-ffbb506c519f",
+    "name": "Bilişim Ticaret 009 Ltd. Şti.",
+    "query": "Bilişim Ticaret 009"
+   },
+   {
+    "id": "account-84cf7866-8091-45d1-bce4-3c48da9667bb",
+    "name": "Yapı Ticaret 010 Ltd. Şti.",
+    "query": "Yapı Ticaret 010"
+   },
+   {
+    "id": "account-3ae625d9-722a-4c41-a7b4-ce638cb8ad81",
+    "name": "Gıda Ticaret 011 Ltd. Şti.",
+    "query": "Gıda Ticaret 011"
+   },
+   {
+    "id": "account-0561d213-bff6-4c32-b069-1817e13d68da",
+    "name": "Tekstil Ticaret 012 Ltd. Şti.",
+    "query": "Tekstil Ticaret 012"
+   },
+   {
+    "id": "account-2ef4360a-7dbc-4e20-8c35-2bc87f42b948",
+    "name": "Elektrik Ticaret 013 Ltd. Şti.",
+    "query": "Elektrik Ticaret 013"
+   },
+   {
+    "id": "account-0f5d777a-5980-4550-8589-8bb68ae2e15a",
+    "name": "Otomotiv Ticaret 014 Ltd. Şti.",
+    "query": "Otomotiv Ticaret 014"
+   },
+   {
+    "id": "account-fee17842-86c0-475b-9c78-5ebffb32b53e",
+    "name": "Mobilya Ticaret 015 Ltd. Şti.",
+    "query": "Mobilya Ticaret 015"
+   },
+   {
+    "id": "account-f75f9759-fb0a-491b-95c7-aec58748113d",
+    "name": "Kırtasiye Ticaret 016 Ltd. Şti.",
+    "query": "Kırtasiye Ticaret 016"
+   },
+   {
+    "id": "account-91621572-7246-484f-9311-452b46b4477e",
+    "name": "Medikal Ticaret 017 Ltd. Şti.",
+    "query": "Medikal Ticaret 017"
+   },
+   {
+    "id": "account-58628cf4-e322-47e8-b3d9-d135fdc06a54",
+    "name": "Tarım Ticaret 018 Ltd. Şti.",
+    "query": "Tarım Ticaret 018"
+   },
+   {
+    "id": "account-2f5a9dd0-c866-49b3-bddf-637b229e5bbe",
+    "name": "Lojistik Ticaret 019 Ltd. Şti.",
+    "query": "Lojistik Ticaret 019"
+   },
+   {
+    "id": "account-898b3c2b-f421-4fbb-92ab-052af1b28e12",
+    "name": "Turizm Ticaret 020 Ltd. Şti.",
+    "query": "Turizm Ticaret 020"
+   },
+   {
+    "id": "account-f70d5fa6-1a1a-4356-a7b3-d4f439d99f7f",
+    "name": "Bilişim Ticaret 021 Ltd. Şti.",
+    "query": "Bilişim Ticaret 021"
+   },
+   {
+    "id": "account-740a9c74-d456-41d1-9ea9-1165cdc90e3a",
+    "name": "Yapı Ticaret 022 Ltd. Şti.",
+    "query": "Yapı Ticaret 022"
+   },
+   {
+    "id": "account-4a0680ec-af85-4690-b2b0-5c4c4973237d",
+    "name": "Gıda Ticaret 023 Ltd. Şti.",
+    "query": "Gıda Ticaret 023"
+   },
+   {
+    "id": "account-2ff2455c-a3f9-4f25-a03c-37d58a12672d",
+    "name": "Tekstil Ticaret 024 Ltd. Şti.",
+    "query": "Tekstil Ticaret 024"
+   },
+   {
+    "id": "account-60743f11-0c20-45eb-a358-fe939560b592",
+    "name": "Elektrik Ticaret 025 Ltd. Şti.",
+    "query": "Elektrik Ticaret 025"
+   },
+   {
+    "id": "account-b3ddd68b-3c30-4d62-9e5d-967677d1511c",
+    "name": "Otomotiv Ticaret 026 Ltd. Şti.",
+    "query": "Otomotiv Ticaret 026"
+   },
+   {
+    "id": "account-e3370aa6-b6af-44b6-96e3-ef04e0a61e1f",
+    "name": "Mobilya Ticaret 027 Ltd. Şti.",
+    "query": "Mobilya Ticaret 027"
+   },
+   {
+    "id": "account-b967bce4-ef2a-4c80-a0aa-5fb258f74ade",
+    "name": "Kırtasiye Ticaret 028 Ltd. Şti.",
+    "query": "Kırtasiye Ticaret 028"
+   },
+   {
+    "id": "account-56bad1ce-4a27-4747-9e2e-6ea0c49c4fed",
+    "name": "Medikal Ticaret 029 Ltd. Şti.",
+    "query": "Medikal Ticaret 029"
+   },
+   {
+    "id": "account-f3034a16-bb9c-4a9a-8730-091ce8682cfa",
+    "name": "Tarım Ticaret 030 Ltd. Şti.",
+    "query": "Tarım Ticaret 030"
+   },
+   {
+    "id": "account-83deb776-9a9e-4b47-be44-8b56bc9e442a",
+    "name": "Lojistik Ticaret 031 Ltd. Şti.",
+    "query": "Lojistik Ticaret 031"
+   },
+   {
+    "id": "account-69541d38-1850-4e4e-81d3-4dc490e41b06",
+    "name": "Turizm Ticaret 032 Ltd. Şti.",
+    "query": "Turizm Ticaret 032"
+   },
+   {
+    "id": "account-a20dbfdd-5c64-421e-950b-23d853fc3baf",
+    "name": "Bilişim Ticaret 033 Ltd. Şti.",
+    "query": "Bilişim Ticaret 033"
+   },
+   {
+    "id": "account-e720460c-e889-47bf-b3ad-247e634d3b4d",
+    "name": "Yapı Ticaret 034 Ltd. Şti.",
+    "query": "Yapı Ticaret 034"
+   },
+   {
+    "id": "account-4e25138b-8b55-4cd7-88b2-838dab0d0bcf",
+    "name": "Gıda Ticaret 035 Ltd. Şti.",
+    "query": "Gıda Ticaret 035"
+   },
+   {
+    "id": "account-693c3122-33dd-48a0-9eb5-8fd786b20f1c",
+    "name": "Tekstil Ticaret 036 Ltd. Şti.",
+    "query": "Tekstil Ticaret 036"
+   },
+   {
+    "id": "account-a6db5a35-d888-4975-afbb-e9150943bcc1",
+    "name": "Elektrik Ticaret 037 Ltd. Şti.",
+    "query": "Elektrik Ticaret 037"
+   },
+   {
+    "id": "account-0b2316b4-01d8-4d47-b3b9-4d6baf22419c",
+    "name": "Otomotiv Ticaret 038 Ltd. Şti.",
+    "query": "Otomotiv Ticaret 038"
+   },
+   {
+    "id": "account-29cea73d-5ac5-4c03-94e1-acd9122ac8aa",
+    "name": "Mobilya Ticaret 039 Ltd. Şti.",
+    "query": "Mobilya Ticaret 039"
+   },
+   {
+    "id": "account-83adee0e-59c3-4c4b-8221-364124e92be7",
+    "name": "Kırtasiye Ticaret 040 Ltd. Şti.",
+    "query": "Kırtasiye Ticaret 040"
+   },
+   {
+    "id": "account-c829a512-1952-409b-9d17-8ae53e5c623e",
+    "name": "Medikal Ticaret 041 Ltd. Şti.",
+    "query": "Medikal Ticaret 041"
+   },
+   {
+    "id": "account-a1285944-8776-46d0-ac44-add34219a909",
+    "name": "Tarım Ticaret 042 Ltd. Şti.",
+    "query": "Tarım Ticaret 042"
+   },
+   {
+    "id": "account-995f9ea3-05c8-445c-af8e-da36057660b3",
+    "name": "Lojistik Ticaret 043 Ltd. Şti.",
+    "query": "Lojistik Ticaret 043"
+   },
+   {
+    "id": "account-ee8a093c-6e52-4aea-bdd3-6f187c783de5",
+    "name": "Turizm Ticaret 044 Ltd. Şti.",
+    "query": "Turizm Ticaret 044"
+   },
+   {
+    "id": "account-fd51a0f0-de99-400c-9079-1b76005d08b0",
+    "name": "Bilişim Ticaret 045 Ltd. Şti.",
+    "query": "Bilişim Ticaret 045"
+   },
+   {
+    "id": "account-46fbba43-77a0-48b3-9fb2-25c7677300c4",
+    "name": "Yapı Ticaret 046 Ltd. Şti.",
+    "query": "Yapı Ticaret 046"
+   },
+   {
+    "id": "account-4307cd23-124b-4678-8d91-bfd1444644db",
+    "name": "Gıda Ticaret 047 Ltd. Şti.",
+    "query": "Gıda Ticaret 047"
+   },
+   {
+    "id": "account-a246588c-9612-46f5-b18b-1e088098e486",
+    "name": "Tekstil Ticaret 048 Ltd. Şti.",
+    "query": "Tekstil Ticaret 048"
+   },
+   {
+    "id": "account-cf5062be-e28b-4b41-ad26-f028eee25dca",
+    "name": "Elektrik Ticaret 049 Ltd. Şti.",
+    "query": "Elektrik Ticaret 049"
+   }
+  ],
+  "perakende": [
+   {
+    "id": "account-b84a22bb-0b15-4696-a234-06aaacce9c13",
+    "name": "Perakende Müşteri",
+    "query": "Perakende Müş"
+   }
+  ],
+  "supplier": [
+   {
+    "id": "account-5a3206a7-34b0-4b5a-a47a-8606537d78f5",
+    "name": "Mobilya Tedarik 001 San. A.Ş.",
+    "query": "Mobilya Tedarik 001"
+   },
+   {
+    "id": "account-496c8f13-cf32-4d5a-b065-81a72a07c0cc",
+    "name": "Kırtasiye Tedarik 002 San. A.Ş.",
+    "query": "Kırtasiye Tedarik 002"
+   },
+   {
+    "id": "account-c1177f80-64fc-4382-a4fe-e6f9707c8e94",
+    "name": "Medikal Tedarik 003 San. A.Ş.",
+    "query": "Medikal Tedarik 003"
+   },
+   {
+    "id": "account-5341c275-e713-4246-ae39-bb19358a3856",
+    "name": "Tarım Tedarik 004 San. A.Ş.",
+    "query": "Tarım Tedarik 004"
+   },
+   {
+    "id": "account-a931c8bc-8d5a-47be-a3c3-5c00d5aadd10",
+    "name": "Lojistik Tedarik 005 San. A.Ş.",
+    "query": "Lojistik Tedarik 005"
+   },
+   {
+    "id": "account-30270dc0-4ff4-4a33-8113-30cc76626355",
+    "name": "Turizm Tedarik 006 San. A.Ş.",
+    "query": "Turizm Tedarik 006"
+   },
+   {
+    "id": "account-0b6f00b5-94bb-4adf-990b-bc2e933569b9",
+    "name": "Bilişim Tedarik 007 San. A.Ş.",
+    "query": "Bilişim Tedarik 007"
+   },
+   {
+    "id": "account-41782489-690e-49b1-8876-d4b15bfb4a3f",
+    "name": "Yapı Tedarik 008 San. A.Ş.",
+    "query": "Yapı Tedarik 008"
+   },
+   {
+    "id": "account-650644ed-e928-4d2f-a1e2-42800fda80f0",
+    "name": "Gıda Tedarik 009 San. A.Ş.",
+    "query": "Gıda Tedarik 009"
+   },
+   {
+    "id": "account-bfbf0692-1508-425b-ab26-c70a2c672061",
+    "name": "Tekstil Tedarik 010 San. A.Ş.",
+    "query": "Tekstil Tedarik 010"
+   },
+   {
+    "id": "account-ad771ea8-5bb5-4e11-a5c8-1ede7da906cd",
+    "name": "Elektrik Tedarik 011 San. A.Ş.",
+    "query": "Elektrik Tedarik 011"
+   },
+   {
+    "id": "account-ea77bc63-0873-4d88-b306-123433a9830b",
+    "name": "Otomotiv Tedarik 012 San. A.Ş.",
+    "query": "Otomotiv Tedarik 012"
+   },
+   {
+    "id": "account-83fa72e4-5700-4a54-a566-9649d67187af",
+    "name": "Mobilya Tedarik 013 San. A.Ş.",
+    "query": "Mobilya Tedarik 013"
+   },
+   {
+    "id": "account-b9a197df-ee95-4ed8-8a36-9b54801125c7",
+    "name": "Kırtasiye Tedarik 014 San. A.Ş.",
+    "query": "Kırtasiye Tedarik 014"
+   },
+   {
+    "id": "account-52884568-adea-4f91-a478-3cc73a526752",
+    "name": "Medikal Tedarik 015 San. A.Ş.",
+    "query": "Medikal Tedarik 015"
+   },
+   {
+    "id": "account-fe37b22f-0745-4ee3-886c-5d746568e566",
+    "name": "Tarım Tedarik 016 San. A.Ş.",
+    "query": "Tarım Tedarik 016"
+   },
+   {
+    "id": "account-a198f8f2-e570-42e7-a806-a1a49c89ff54",
+    "name": "Lojistik Tedarik 017 San. A.Ş.",
+    "query": "Lojistik Tedarik 017"
+   },
+   {
+    "id": "account-1d365ab7-839e-4e15-bb62-d1a5a74c74b8",
+    "name": "Turizm Tedarik 018 San. A.Ş.",
+    "query": "Turizm Tedarik 018"
+   },
+   {
+    "id": "account-0d2b5079-e924-4789-8bc6-ee14388cb924",
+    "name": "Bilişim Tedarik 019 San. A.Ş.",
+    "query": "Bilişim Tedarik 019"
+   },
+   {
+    "id": "account-4b3f2021-9611-4d72-8c49-8aa597c72bc9",
+    "name": "Yapı Tedarik 020 San. A.Ş.",
+    "query": "Yapı Tedarik 020"
+   },
+   {
+    "id": "account-ab9f4740-cb73-435e-8495-fa2efac974a2",
+    "name": "Gıda Tedarik 021 San. A.Ş.",
+    "query": "Gıda Tedarik 021"
+   },
+   {
+    "id": "account-1b014285-4c7f-4698-82df-f0a4bd1f3f4d",
+    "name": "Tekstil Tedarik 022 San. A.Ş.",
+    "query": "Tekstil Tedarik 022"
+   },
+   {
+    "id": "account-9b30f268-ae90-43f8-8f58-39ef3dba5db1",
+    "name": "Elektrik Tedarik 023 San. A.Ş.",
+    "query": "Elektrik Tedarik 023"
+   },
+   {
+    "id": "account-d837d17d-6e72-481b-b9f6-046b0abf01a4",
+    "name": "Otomotiv Tedarik 024 San. A.Ş.",
+    "query": "Otomotiv Tedarik 024"
+   },
+   {
+    "id": "account-ea919bdb-95b8-490b-8a82-92b4058086ee",
+    "name": "Mobilya Tedarik 025 San. A.Ş.",
+    "query": "Mobilya Tedarik 025"
+   },
+   {
+    "id": "account-dd73010b-b75c-43bf-b89f-c527ca2dab18",
+    "name": "Kırtasiye Tedarik 026 San. A.Ş.",
+    "query": "Kırtasiye Tedarik 026"
+   },
+   {
+    "id": "account-c6e38c97-8864-4e3d-9f4d-b96f3f02e61f",
+    "name": "Medikal Tedarik 027 San. A.Ş.",
+    "query": "Medikal Tedarik 027"
+   },
+   {
+    "id": "account-cab77e33-ef1f-4baf-a83d-87eb8d2c07fb",
+    "name": "Tarım Tedarik 028 San. A.Ş.",
+    "query": "Tarım Tedarik 028"
+   },
+   {
+    "id": "account-eb0d8ba6-e64b-4e65-8ab5-58d98c306d00",
+    "name": "Lojistik Tedarik 029 San. A.Ş.",
+    "query": "Lojistik Tedarik 029"
+   },
+   {
+    "id": "account-489897ff-9d7f-41fd-8195-5085e1de1e19",
+    "name": "Turizm Tedarik 030 San. A.Ş.",
+    "query": "Turizm Tedarik 030"
+   },
+   {
+    "id": "account-025a2123-5528-4ef1-af3f-f85fbcfd0901",
+    "name": "Bilişim Tedarik 031 San. A.Ş.",
+    "query": "Bilişim Tedarik 031"
+   },
+   {
+    "id": "account-b3c4bd60-5a62-444e-b085-b8402393dfd3",
+    "name": "Yapı Tedarik 032 San. A.Ş.",
+    "query": "Yapı Tedarik 032"
+   },
+   {
+    "id": "account-05b80fdd-8c71-497f-a281-c9f316921036",
+    "name": "Gıda Tedarik 033 San. A.Ş.",
+    "query": "Gıda Tedarik 033"
+   },
+   {
+    "id": "account-3a0e8c0b-2eac-4176-a3ce-170a8085ccca",
+    "name": "Tekstil Tedarik 034 San. A.Ş.",
+    "query": "Tekstil Tedarik 034"
+   },
+   {
+    "id": "account-ddfca610-46ed-4ae4-b37f-ae85ce4cc34c",
+    "name": "Elektrik Tedarik 035 San. A.Ş.",
+    "query": "Elektrik Tedarik 035"
+   },
+   {
+    "id": "account-a267d0eb-3abf-46a2-9efe-0f4b4d14e75d",
+    "name": "Otomotiv Tedarik 036 San. A.Ş.",
+    "query": "Otomotiv Tedarik 036"
+   },
+   {
+    "id": "account-0ee9b676-1175-4cfc-95f7-24983056f8ab",
+    "name": "Mobilya Tedarik 037 San. A.Ş.",
+    "query": "Mobilya Tedarik 037"
+   },
+   {
+    "id": "account-16e01515-a113-47c5-914f-31e8b194b229",
+    "name": "Kırtasiye Tedarik 038 San. A.Ş.",
+    "query": "Kırtasiye Tedarik 038"
+   },
+   {
+    "id": "account-3dfa7f03-0ab6-4cff-865c-fc1ede6db5aa",
+    "name": "Medikal Tedarik 039 San. A.Ş.",
+    "query": "Medikal Tedarik 039"
+   },
+   {
+    "id": "account-bd1a1949-fd7a-4506-a4b7-79d3d2fc503f",
+    "name": "Tarım Tedarik 040 San. A.Ş.",
+    "query": "Tarım Tedarik 040"
+   }
+  ]
+ },
+ "items": [
+  {
+   "id": "stock-cdb94ef3-6211-4e60-933e-5cd9b8a20eb4",
+   "name": "P001 Çimento 50 Kg",
+   "code": "P001",
+   "salePrice": 285,
+   "cost": 199.5,
+   "vat": 20
+  },
+  {
+   "id": "stock-f0118bfd-0a25-4108-bc99-ab4cb7262453",
+   "name": "P002 Demir Q12",
+   "code": "P002",
+   "salePrice": 29.3,
+   "cost": 20.51,
+   "vat": 20
+  },
+  {
+   "id": "stock-a3de1ee9-5c09-4e9c-92f3-7196c3427f0a",
+   "name": "P003 Boya 15 Lt",
+   "code": "P003",
+   "salePrice": 1537,
+   "cost": 1075.9,
+   "vat": 20
+  },
+  {
+   "id": "stock-0b092176-d636-477a-bf36-271042a4ecec",
+   "name": "P004 Seramik 60x60",
+   "code": "P004",
+   "salePrice": 463.8,
+   "cost": 324.66,
+   "vat": 20
+  },
+  {
+   "id": "stock-bb73be9e-d029-4621-aa25-35b87ab74dde",
+   "name": "P005 Un Tip 550",
+   "code": "P005",
+   "salePrice": 21,
+   "cost": 14.7,
+   "vat": 1
+  },
+  {
+   "id": "stock-275e61cc-33f3-418f-be86-7c685b91b6ef",
+   "name": "P006 Makarna 500 Gr",
+   "code": "P006",
+   "salePrice": 26.33,
+   "cost": 18.43,
+   "vat": 1
+  },
+  {
+   "id": "stock-6c67549c-289a-4d1e-8cc4-720500cc1101",
+   "name": "P007 Ayçiçek Yağı 5 Lt",
+   "code": "P007",
+   "salePrice": 471.94,
+   "cost": 330.36,
+   "vat": 1
+  },
+  {
+   "id": "stock-ef88d157-af6d-4dcb-af7d-cafef7287517",
+   "name": "P008 Pamuklu Gömlek",
+   "code": "P008",
+   "salePrice": 450,
+   "cost": 315,
+   "vat": 10
+  },
+  {
+   "id": "stock-f68dc28f-b54e-4226-b4af-75e33f80b448",
+   "name": "P009 Havlu Takımı",
+   "code": "P009",
+   "salePrice": 659.2,
+   "cost": 461.44,
+   "vat": 10
+  },
+  {
+   "id": "stock-a742d509-3956-4e5c-912e-d9d8c150c8bf",
+   "name": "P010 LED Ampul",
+   "code": "P010",
+   "salePrice": 52.89,
+   "cost": 37.02,
+   "vat": 20
+  },
+  {
+   "id": "stock-e41689e2-e196-477c-be63-59a619d18df1",
+   "name": "P011 Kablo 2,5 mm",
+   "code": "P011",
+   "salePrice": 18.91,
+   "cost": 13.24,
+   "vat": 20
+  },
+  {
+   "id": "stock-9419b2e8-a438-4445-997f-78992932d061",
+   "name": "P012 Vida M8",
+   "code": "P012",
+   "salePrice": 1.4,
+   "cost": 0.98,
+   "vat": 20
+  },
+  {
+   "id": "stock-a7b2fa47-844e-4961-8d21-6866857c035c",
+   "name": "P013 Defter A4",
+   "code": "P013",
+   "salePrice": 39.67,
+   "cost": 27.77,
+   "vat": 20
+  },
+  {
+   "id": "stock-8de1db14-15d6-411c-9f27-a1be23445e1b",
+   "name": "P014 Toner Siyah",
+   "code": "P014",
+   "salePrice": 2230.2,
+   "cost": 1561.14,
+   "vat": 20
+  },
+  {
+   "id": "stock-3f704968-b937-4d60-aa35-584c3aaafcfe",
+   "name": "P015 Kahve 1 Kg",
+   "code": "P015",
+   "salePrice": 649.9,
+   "cost": 454.93,
+   "vat": 1
+  },
+  {
+   "id": "stock-6a305721-67ed-43ab-a827-556a70e2c43f",
+   "name": "P016 Çay 1 Kg",
+   "code": "P016",
+   "salePrice": 298.44,
+   "cost": 208.91,
+   "vat": 1
+  },
+  {
+   "id": "stock-fe2c57cc-cfa9-4c07-8457-56c182813522",
+   "name": "P017 Masa Sandalye",
+   "code": "P017",
+   "salePrice": 3445,
+   "cost": 2411.5,
+   "vat": 20
+  },
+  {
+   "id": "stock-9bec81e3-cf57-41d8-a486-9c7588514a63",
+   "name": "P018 Monitör 24",
+   "code": "P018",
+   "salePrice": 5993.91,
+   "cost": 4195.74,
+   "vat": 20
+  },
+  {
+   "id": "stock-1ef57e21-bfa6-4fd0-aecd-0e5ae15c79e3",
+   "name": "P019 Laptop Çanta",
+   "code": "P019",
+   "salePrice": 1006.88,
+   "cost": 704.82,
+   "vat": 20
+  },
+  {
+   "id": "stock-5a97b4cd-5edb-43ff-b994-60ccd3c7c16b",
+   "name": "P020 Eldiven Nitril",
+   "code": "P020",
+   "salePrice": 167.44,
+   "cost": 117.21,
+   "vat": 10
+  },
+  {
+   "id": "stock-a6aed2b6-82c3-4d36-a4fe-2295509dafab",
+   "name": "P021 Çimento 50 Kg",
+   "code": "P021",
+   "salePrice": 336.3,
+   "cost": 235.41,
+   "vat": 20
+  },
+  {
+   "id": "stock-9d39bb2f-5c03-4dde-a974-8b912d79877e",
+   "name": "P022 Demir Q12",
+   "code": "P022",
+   "salePrice": 28.45,
+   "cost": 19.92,
+   "vat": 20
+  },
+  {
+   "id": "stock-6946648f-6e5d-48a5-9f2a-7e84fcbc39a4",
+   "name": "P023 Boya 15 Lt",
+   "code": "P023",
+   "salePrice": 1493.5,
+   "cost": 1045.45,
+   "vat": 20
+  },
+  {
+   "id": "stock-183dcd54-9866-4f8c-962b-0fe6a571a393",
+   "name": "P024 Seramik 60x60",
+   "code": "P024",
+   "salePrice": 451.03,
+   "cost": 315.72,
+   "vat": 20
+  },
+  {
+   "id": "stock-2b33505c-ee7f-4ab5-81fc-4ed8a2036b75",
+   "name": "P025 Un Tip 550",
+   "code": "P025",
+   "salePrice": 20.44,
+   "cost": 14.31,
+   "vat": 1
+  },
+  {
+   "id": "stock-f5834cf1-df25-486d-9891-8604c880eaad",
+   "name": "P026 Makarna 500 Gr",
+   "code": "P026",
+   "salePrice": 25.65,
+   "cost": 17.95,
+   "vat": 1
+  },
+  {
+   "id": "stock-4100ab28-6883-49df-8e80-bbc43b3329ba",
+   "name": "P027 Ayçiçek Yağı 5 Lt",
+   "code": "P027",
+   "salePrice": 459.94,
+   "cost": 321.96,
+   "vat": 1
+  },
+  {
+   "id": "stock-7bccc238-0331-4d32-9fc4-fc334544c10a",
+   "name": "P028 Pamuklu Gömlek",
+   "code": "P028",
+   "salePrice": 531,
+   "cost": 371.7,
+   "vat": 10
+  },
+  {
+   "id": "stock-dcd941c8-fbf8-47d3-a80d-d50ed2609284",
+   "name": "P029 Havlu Takımı",
+   "code": "P029",
+   "salePrice": 640,
+   "cost": 448,
+   "vat": 10
+  },
+  {
+   "id": "stock-9e599ef1-13cf-4cad-93d8-4485a228f3c1",
+   "name": "P030 LED Ampul",
+   "code": "P030",
+   "salePrice": 51.4,
+   "cost": 35.98,
+   "vat": 20
+  },
+  {
+   "id": "stock-3d40a86f-0b72-43ce-93b0-4090ca3ab322",
+   "name": "P031 Kablo 2,5 mm",
+   "code": "P031",
+   "salePrice": 18.39,
+   "cost": 12.87,
+   "vat": 20
+  },
+  {
+   "id": "stock-4be27b2f-8325-4eb7-abd1-73182a0a85c9",
+   "name": "P032 Vida M8",
+   "code": "P032",
+   "salePrice": 1.36,
+   "cost": 0.95,
+   "vat": 20
+  },
+  {
+   "id": "stock-a05101ee-5e4d-4767-8291-77dd933e062b",
+   "name": "P033 Defter A4",
+   "code": "P033",
+   "salePrice": 38.64,
+   "cost": 27.05,
+   "vat": 20
+  },
+  {
+   "id": "stock-d52ccd0d-f073-4119-83d5-12507f01145b",
+   "name": "P034 Toner Siyah",
+   "code": "P034",
+   "salePrice": 2173.5,
+   "cost": 1521.45,
+   "vat": 20
+  },
+  {
+   "id": "stock-1f3d8f8f-df44-4ac0-8970-dcb51cd3be3f",
+   "name": "P035 Kahve 1 Kg",
+   "code": "P035",
+   "salePrice": 766.88,
+   "cost": 536.82,
+   "vat": 1
+  },
+  {
+   "id": "stock-8c292bc5-2e2c-45ed-8244-ad911e3bf7fd",
+   "name": "P036 Çay 1 Kg",
+   "code": "P036",
+   "salePrice": 289.75,
+   "cost": 202.83,
+   "vat": 1
+  },
+  {
+   "id": "stock-6edac0da-d4da-46a4-8bc3-2f8394520af5",
+   "name": "P037 Masa Sandalye",
+   "code": "P037",
+   "salePrice": 3347.5,
+   "cost": 2343.25,
+   "vat": 20
+  },
+  {
+   "id": "stock-23c28b38-ba17-4aea-9fc5-95c0f67e62c7",
+   "name": "P038 Monitör 24",
+   "code": "P038",
+   "salePrice": 5828.94,
+   "cost": 4080.26,
+   "vat": 20
+  },
+  {
+   "id": "stock-fca85723-3a74-4c20-b5a5-d63a794d3648",
+   "name": "P039 Laptop Çanta",
+   "code": "P039",
+   "salePrice": 979.91,
+   "cost": 685.94,
+   "vat": 20
+  },
+  {
+   "id": "stock-e45203c0-ee0e-478e-af54-ed38e7cdfc83",
+   "name": "P040 Eldiven Nitril",
+   "code": "P040",
+   "salePrice": 163.07,
+   "cost": 114.15,
+   "vat": 10
+  },
+  {
+   "id": "stock-6949b702-4b45-4558-8ecc-636eb5ae44b8",
+   "name": "P041 Çimento 50 Kg",
+   "code": "P041",
+   "salePrice": 327.75,
+   "cost": 229.43,
+   "vat": 20
+  },
+  {
+   "id": "stock-87f7cf77-6282-4fd7-bfc3-caa253d12e15",
+   "name": "P042 Demir Q12",
+   "code": "P042",
+   "salePrice": 33.57,
+   "cost": 23.5,
+   "vat": 20
+  },
+  {
+   "id": "stock-4087144a-439b-40fe-8bbe-7c16937ffff4",
+   "name": "P043 Boya 15 Lt",
+   "code": "P043",
+   "salePrice": 1450,
+   "cost": 1015,
+   "vat": 20
+  },
+  {
+   "id": "stock-f6862c79-bf98-45e0-8975-178e383bf1b9",
+   "name": "P044 Seramik 60x60",
+   "code": "P044",
+   "salePrice": 438.27,
+   "cost": 306.79,
+   "vat": 20
+  },
+  {
+   "id": "stock-dfc3598f-a72f-464b-879c-14a70eb49723",
+   "name": "P045 Un Tip 550",
+   "code": "P045",
+   "salePrice": 19.88,
+   "cost": 13.92,
+   "vat": 1
+  },
+  {
+   "id": "stock-e3fd27d1-488b-4c5e-bf8e-850f26324c6c",
+   "name": "P046 Makarna 500 Gr",
+   "code": "P046",
+   "salePrice": 24.96,
+   "cost": 17.47,
+   "vat": 1
+  },
+  {
+   "id": "stock-262db8cd-df5a-4c34-928a-2d55d0cd9787",
+   "name": "P047 Ayçiçek Yağı 5 Lt",
+   "code": "P047",
+   "salePrice": 447.94,
+   "cost": 313.56,
+   "vat": 1
+  },
+  {
+   "id": "stock-85473431-8794-46c7-b1e5-5cb4a4611444",
+   "name": "P048 Pamuklu Gömlek",
+   "code": "P048",
+   "salePrice": 517.5,
+   "cost": 362.25,
+   "vat": 10
+  },
+  {
+   "id": "stock-d2f36e8f-154c-4b6d-97ba-f3726bda22fa",
+   "name": "P049 Havlu Takımı",
+   "code": "P049",
+   "salePrice": 755.2,
+   "cost": 528.64,
+   "vat": 10
+  },
+  {
+   "id": "stock-21d250b8-181e-4821-9cd7-43bf8266e631",
+   "name": "P050 LED Ampul",
+   "code": "P050",
+   "salePrice": 49.9,
+   "cost": 34.93,
+   "vat": 20
+  },
+  {
+   "id": "stock-71dc4ee0-e2f0-4a81-9221-56987bb2a3ea",
+   "name": "P051 Kablo 2,5 mm",
+   "code": "P051",
+   "salePrice": 17.87,
+   "cost": 12.51,
+   "vat": 20
+  },
+  {
+   "id": "stock-c98c9393-58b9-4e72-b750-56bef6a17753",
+   "name": "P052 Vida M8",
+   "code": "P052",
+   "salePrice": 1.33,
+   "cost": 0.93,
+   "vat": 20
+  },
+  {
+   "id": "stock-b0892544-720c-4812-ad99-cf273ac79f09",
+   "name": "P053 Defter A4",
+   "code": "P053",
+   "salePrice": 37.61,
+   "cost": 26.33,
+   "vat": 20
+  },
+  {
+   "id": "stock-721cf6f8-af3d-4cf4-b2c3-e9c15900c214",
+   "name": "P054 Toner Siyah",
+   "code": "P054",
+   "salePrice": 2116.8,
+   "cost": 1481.76,
+   "vat": 20
+  },
+  {
+   "id": "stock-c5c4f03e-de06-4e88-9608-b440737c8329",
+   "name": "P055 Kahve 1 Kg",
+   "code": "P055",
+   "salePrice": 747.38,
+   "cost": 523.17,
+   "vat": 1
+  },
+  {
+   "id": "stock-b289c099-2aa0-4c49-8f2e-0cdda1e56966",
+   "name": "P056 Çay 1 Kg",
+   "code": "P056",
+   "salePrice": 341.91,
+   "cost": 239.34,
+   "vat": 1
+  },
+  {
+   "id": "stock-ca319381-4328-4675-8624-88db16254118",
+   "name": "P057 Masa Sandalye",
+   "code": "P057",
+   "salePrice": 3250,
+   "cost": 2275,
+   "vat": 20
+  },
+  {
+   "id": "stock-f9e24079-5f2f-4c54-975a-de78a35c5be2",
+   "name": "P058 Monitör 24",
+   "code": "P058",
+   "salePrice": 5663.97,
+   "cost": 3964.78,
+   "vat": 20
+  },
+  {
+   "id": "stock-b7b7da19-3259-4c8d-8ffa-0fecd9783034",
+   "name": "P059 Laptop Çanta",
+   "code": "P059",
+   "salePrice": 952.94,
+   "cost": 667.06,
+   "vat": 20
+  },
+  {
+   "id": "stock-d57ae1c2-43b6-4083-b210-26497646f32f",
+   "name": "P060 Eldiven Nitril",
+   "code": "P060",
+   "salePrice": 158.7,
+   "cost": 111.09,
+   "vat": 10
+  },
+  {
+   "id": "stock-4de42cf0-de68-4374-96a8-c3683ab390b8",
+   "name": "P061 Çimento 50 Kg",
+   "code": "P061",
+   "salePrice": 319.2,
+   "cost": 223.44,
+   "vat": 20
+  },
+  {
+   "id": "stock-739735a0-36e7-43e0-9a2e-dcebf366342a",
+   "name": "P062 Demir Q12",
+   "code": "P062",
+   "salePrice": 32.72,
+   "cost": 22.9,
+   "vat": 20
+  },
+  {
+   "id": "stock-f0e22fb4-0793-41e2-a158-fe6a28b29206",
+   "name": "P063 Boya 15 Lt",
+   "code": "P063",
+   "salePrice": 1711,
+   "cost": 1197.7,
+   "vat": 20
+  },
+  {
+   "id": "stock-ddb7f445-bd9e-4931-8ebd-b2fefb1c8e4b",
+   "name": "P064 Seramik 60x60",
+   "code": "P064",
+   "salePrice": 425.5,
+   "cost": 297.85,
+   "vat": 20
+  },
+  {
+   "id": "stock-ff5bdfd1-8cf8-494a-a8a7-56c274425b14",
+   "name": "P065 Un Tip 550",
+   "code": "P065",
+   "salePrice": 19.31,
+   "cost": 13.52,
+   "vat": 1
+  },
+  {
+   "id": "stock-898505fc-c254-40fa-8f6a-0b3e9f877138",
+   "name": "P066 Makarna 500 Gr",
+   "code": "P066",
+   "salePrice": 24.27,
+   "cost": 16.99,
+   "vat": 1
+  },
+  {
+   "id": "stock-95966a1a-4e22-4a21-8fae-e63525d34668",
+   "name": "P067 Ayçiçek Yağı 5 Lt",
+   "code": "P067",
+   "salePrice": 435.95,
+   "cost": 305.16,
+   "vat": 1
+  },
+  {
+   "id": "stock-dead33b6-b258-4f66-ac08-d53376377026",
+   "name": "P068 Pamuklu Gömlek",
+   "code": "P068",
+   "salePrice": 504,
+   "cost": 352.8,
+   "vat": 10
+  },
+  {
+   "id": "stock-ac71983f-4d77-4f50-91ba-1f5d9b923289",
+   "name": "P069 Havlu Takımı",
+   "code": "P069",
+   "salePrice": 736,
+   "cost": 515.2,
+   "vat": 10
+  },
+  {
+   "id": "stock-fbeb6e4a-b232-4898-95f9-8d42fc76f398",
+   "name": "P070 LED Ampul",
+   "code": "P070",
+   "salePrice": 58.88,
+   "cost": 41.22,
+   "vat": 20
+  },
+  {
+   "id": "stock-65f432f9-99f3-48d1-8078-4271c1036815",
+   "name": "P071 Kablo 2,5 mm",
+   "code": "P071",
+   "salePrice": 17.35,
+   "cost": 12.15,
+   "vat": 20
+  },
+  {
+   "id": "stock-2e230614-7c1a-42b4-bebe-013d3f33da3d",
+   "name": "P072 Vida M8",
+   "code": "P072",
+   "salePrice": 1.29,
+   "cost": 0.9,
+   "vat": 20
+  },
+  {
+   "id": "stock-4f581eef-915e-4ac4-8cc6-3c7addd246c3",
+   "name": "P073 Defter A4",
+   "code": "P073",
+   "salePrice": 36.57,
+   "cost": 25.6,
+   "vat": 20
+  },
+  {
+   "id": "stock-12c62429-185c-435c-8f50-94a96169b166",
+   "name": "P074 Toner Siyah",
+   "code": "P074",
+   "salePrice": 2060.1,
+   "cost": 1442.07,
+   "vat": 20
+  },
+  {
+   "id": "stock-dbe9b17d-f1eb-47fc-86a5-f73b3c65be47",
+   "name": "P075 Kahve 1 Kg",
+   "code": "P075",
+   "salePrice": 727.89,
+   "cost": 509.52,
+   "vat": 1
+  },
+  {
+   "id": "stock-1b59c463-f54f-4f85-858f-9588ad397c70",
+   "name": "P076 Çay 1 Kg",
+   "code": "P076",
+   "salePrice": 333.21,
+   "cost": 233.25,
+   "vat": 1
+  },
+  {
+   "id": "stock-908a5abd-d760-4303-9b6a-a2c947afab31",
+   "name": "P077 Masa Sandalye",
+   "code": "P077",
+   "salePrice": 3835,
+   "cost": 2684.5,
+   "vat": 20
+  },
+  {
+   "id": "stock-9acaabd4-d4cb-4c2d-b63f-155500d2bffc",
+   "name": "P078 Monitör 24",
+   "code": "P078",
+   "salePrice": 5499,
+   "cost": 3849.3,
+   "vat": 20
+  },
+  {
+   "id": "stock-5b910316-9004-4340-b152-2cc167f78dce",
+   "name": "P079 Laptop Çanta",
+   "code": "P079",
+   "salePrice": 925.97,
+   "cost": 648.18,
+   "vat": 20
+  },
+  {
+   "id": "stock-b24f662b-0041-4ecc-bbc4-a9309d5e7cac",
+   "name": "P080 Eldiven Nitril",
+   "code": "P080",
+   "salePrice": 154.34,
+   "cost": 108.04,
+   "vat": 10
+  },
+  {
+   "id": "stock-d480e9f3-7f6a-4109-812e-22aabf39694f",
+   "name": "P081 Çimento 50 Kg",
+   "code": "P081",
+   "salePrice": 310.65,
+   "cost": 217.46,
+   "vat": 20
+  },
+  {
+   "id": "stock-2897a663-cdfb-40b2-aea2-a8e56883bc00",
+   "name": "P082 Demir Q12",
+   "code": "P082",
+   "salePrice": 31.86,
+   "cost": 22.3,
+   "vat": 20
+  },
+  {
+   "id": "stock-f8dfd912-41d9-4b3e-8339-0cd1b1d95a10",
+   "name": "P083 Boya 15 Lt",
+   "code": "P083",
+   "salePrice": 1667.5,
+   "cost": 1167.25,
+   "vat": 20
+  },
+  {
+   "id": "stock-cef7cc6b-b476-4ee2-acf8-f68f1016ad57",
+   "name": "P084 Seramik 60x60",
+   "code": "P084",
+   "salePrice": 502.09,
+   "cost": 351.46,
+   "vat": 20
+  },
+  {
+   "id": "stock-64934903-354c-40e2-b2ba-d27bea337395",
+   "name": "P085 Un Tip 550",
+   "code": "P085",
+   "salePrice": 18.75,
+   "cost": 13.13,
+   "vat": 1
+  },
+  {
+   "id": "stock-73d72e93-2737-4c03-88aa-8e03e0840f05",
+   "name": "P086 Makarna 500 Gr",
+   "code": "P086",
+   "salePrice": 23.59,
+   "cost": 16.51,
+   "vat": 1
+  },
+  {
+   "id": "stock-e8032429-704f-4c7e-9199-16a5b80eee29",
+   "name": "P087 Ayçiçek Yağı 5 Lt",
+   "code": "P087",
+   "salePrice": 423.95,
+   "cost": 296.77,
+   "vat": 1
+  },
+  {
+   "id": "stock-752b1413-7092-4003-b53f-eccd3528e844",
+   "name": "P088 Pamuklu Gömlek",
+   "code": "P088",
+   "salePrice": 490.5,
+   "cost": 343.35,
+   "vat": 10
+  },
+  {
+   "id": "stock-d619b576-ae60-4fb5-a486-f4c97b44ca50",
+   "name": "P089 Havlu Takımı",
+   "code": "P089",
+   "salePrice": 716.8,
+   "cost": 501.76,
+   "vat": 10
+  },
+  {
+   "id": "stock-f295bb46-c338-4f71-8bc3-3f385b088e80",
+   "name": "P090 LED Ampul",
+   "code": "P090",
+   "salePrice": 57.38,
+   "cost": 40.17,
+   "vat": 20
+  },
+  {
+   "id": "stock-b08a34b4-b004-4362-8bd4-f21b7d80afd0",
+   "name": "P091 Kablo 2,5 mm",
+   "code": "P091",
+   "salePrice": 20.47,
+   "cost": 14.33,
+   "vat": 20
+  },
+  {
+   "id": "stock-5ffd3ee0-c1d3-4a6b-adfb-8674b47f56b1",
+   "name": "P092 Vida M8",
+   "code": "P092",
+   "salePrice": 1.25,
+   "cost": 0.88,
+   "vat": 20
+  },
+  {
+   "id": "stock-9e0bff22-8d07-4176-aa5c-35e50041ce1d",
+   "name": "P093 Defter A4",
+   "code": "P093",
+   "salePrice": 35.54,
+   "cost": 24.88,
+   "vat": 20
+  },
+  {
+   "id": "stock-d1d600d4-291a-435b-870e-6062e149e57c",
+   "name": "P094 Toner Siyah",
+   "code": "P094",
+   "salePrice": 2003.4,
+   "cost": 1402.38,
+   "vat": 20
+  },
+  {
+   "id": "stock-37a2cfff-636e-4ae4-a2fe-dbd34ae5143c",
+   "name": "P095 Kahve 1 Kg",
+   "code": "P095",
+   "salePrice": 708.39,
+   "cost": 495.87,
+   "vat": 1
+  },
+  {
+   "id": "stock-b1b0ddff-3131-4d6e-b066-f10e51253add",
+   "name": "P096 Çay 1 Kg",
+   "code": "P096",
+   "salePrice": 324.52,
+   "cost": 227.16,
+   "vat": 1
+  },
+  {
+   "id": "stock-90853686-e622-4ec1-b2bd-4584220adb6e",
+   "name": "P097 Masa Sandalye",
+   "code": "P097",
+   "salePrice": 3737.5,
+   "cost": 2616.25,
+   "vat": 20
+  },
+  {
+   "id": "stock-951bf031-64fd-47e2-afd3-ce4538621247",
+   "name": "P098 Monitör 24",
+   "code": "P098",
+   "salePrice": 6488.82,
+   "cost": 4542.17,
+   "vat": 20
+  },
+  {
+   "id": "stock-df1cec66-bc17-4e9f-a09d-e6ae18d0ff12",
+   "name": "P099 Laptop Çanta",
+   "code": "P099",
+   "salePrice": 899,
+   "cost": 629.3,
+   "vat": 20
+  },
+  {
+   "id": "stock-808a66ee-b23c-4eb2-ab0c-ef82df1014cf",
+   "name": "P100 Eldiven Nitril",
+   "code": "P100",
+   "salePrice": 149.97,
+   "cost": 104.98,
+   "vat": 10
+  },
+  {
+   "id": "stock-39542291-594e-46cf-97f3-58fedcce43f7",
+   "name": "P101 Çimento 50 Kg",
+   "code": "P101",
+   "salePrice": 302.1,
+   "cost": 211.47,
+   "vat": 20
+  },
+  {
+   "id": "stock-42f13ef5-1410-4fc0-b312-82aa7647ba5e",
+   "name": "P102 Demir Q12",
+   "code": "P102",
+   "salePrice": 31.01,
+   "cost": 21.71,
+   "vat": 20
+  },
+  {
+   "id": "stock-665db382-131c-4530-97c3-bf7125ccae79",
+   "name": "P103 Boya 15 Lt",
+   "code": "P103",
+   "salePrice": 1624,
+   "cost": 1136.8,
+   "vat": 20
+  },
+  {
+   "id": "stock-c4563179-a652-4025-bbbb-215147bf9661",
+   "name": "P104 Seramik 60x60",
+   "code": "P104",
+   "salePrice": 489.33,
+   "cost": 342.53,
+   "vat": 20
+  },
+  {
+   "id": "stock-d1918758-6842-4358-9871-94f3d9cb57f5",
+   "name": "P105 Un Tip 550",
+   "code": "P105",
+   "salePrice": 22.13,
+   "cost": 15.49,
+   "vat": 1
+  },
+  {
+   "id": "stock-cd35bdb5-8a84-4d63-9354-6f2f26f6783d",
+   "name": "P106 Makarna 500 Gr",
+   "code": "P106",
+   "salePrice": 22.9,
+   "cost": 16.03,
+   "vat": 1
+  },
+  {
+   "id": "stock-6b172828-febb-4984-9c20-b1fd9c08d957",
+   "name": "P107 Ayçiçek Yağı 5 Lt",
+   "code": "P107",
+   "salePrice": 411.95,
+   "cost": 288.36,
+   "vat": 1
+  },
+  {
+   "id": "stock-e91c220b-43f3-4ccb-a2a1-b61b4a366698",
+   "name": "P108 Pamuklu Gömlek",
+   "code": "P108",
+   "salePrice": 477,
+   "cost": 333.9,
+   "vat": 10
+  },
+  {
+   "id": "stock-cadbf4ef-2cf4-4252-a36c-7525390823a5",
+   "name": "P109 Havlu Takımı",
+   "code": "P109",
+   "salePrice": 697.6,
+   "cost": 488.32,
+   "vat": 10
+  },
+  {
+   "id": "stock-4741c6af-2967-4e6f-b58d-6265fe00ebf3",
+   "name": "P110 LED Ampul",
+   "code": "P110",
+   "salePrice": 55.89,
+   "cost": 39.12,
+   "vat": 20
+  },
+  {
+   "id": "stock-ad0edbfc-7d5b-448f-bf59-b6078b55edc9",
+   "name": "P111 Kablo 2,5 mm",
+   "code": "P111",
+   "salePrice": 19.95,
+   "cost": 13.96,
+   "vat": 20
+  },
+  {
+   "id": "stock-6a27b894-f341-4308-8e40-b327b038616b",
+   "name": "P112 Vida M8",
+   "code": "P112",
+   "salePrice": 1.48,
+   "cost": 1.04,
+   "vat": 20
+  },
+  {
+   "id": "stock-639ce409-b9a6-4e9e-8e97-cc61ab96940c",
+   "name": "P113 Defter A4",
+   "code": "P113",
+   "salePrice": 34.5,
+   "cost": 24.15,
+   "vat": 20
+  },
+  {
+   "id": "stock-01a22c01-98f4-48c0-8920-7abbae9fa594",
+   "name": "P114 Toner Siyah",
+   "code": "P114",
+   "salePrice": 1946.7,
+   "cost": 1362.69,
+   "vat": 20
+  },
+  {
+   "id": "stock-480c02fb-2733-4a72-8e69-34d5a136da82",
+   "name": "P115 Kahve 1 Kg",
+   "code": "P115",
+   "salePrice": 688.89,
+   "cost": 482.22,
+   "vat": 1
+  },
+  {
+   "id": "stock-51cde6c7-7e9b-4c19-acda-3b41026fc0a2",
+   "name": "P116 Çay 1 Kg",
+   "code": "P116",
+   "salePrice": 315.83,
+   "cost": 221.08,
+   "vat": 1
+  },
+  {
+   "id": "stock-90812ed2-03ab-47d8-977b-a6c8bf36594c",
+   "name": "P117 Masa Sandalye",
+   "code": "P117",
+   "salePrice": 3640,
+   "cost": 2548,
+   "vat": 20
+  },
+  {
+   "id": "stock-3141d9e0-913e-446d-ab35-1a98bcd352a8",
+   "name": "P118 Monitör 24",
+   "code": "P118",
+   "salePrice": 6323.85,
+   "cost": 4426.7,
+   "vat": 20
+  },
+  {
+   "id": "stock-3aa7eb45-7b66-4fe7-8b72-8737957804c6",
+   "name": "P119 Laptop Çanta",
+   "code": "P119",
+   "salePrice": 1060.82,
+   "cost": 742.57,
+   "vat": 20
+  },
+  {
+   "id": "stock-661fd73d-5293-4c9d-824e-d7910ef61f0a",
+   "name": "P120 Eldiven Nitril",
+   "code": "P120",
+   "salePrice": 145.6,
+   "cost": 101.92,
+   "vat": 10
+  },
+  {
+   "id": "stock-260d5671-8750-4134-9da2-e8a47ba3c187",
+   "name": "P121 Çimento 50 Kg",
+   "code": "P121",
+   "salePrice": 293.55,
+   "cost": 205.49,
+   "vat": 20
+  },
+  {
+   "id": "stock-42eb84d7-6790-45cf-901c-2fbab1d1a20c",
+   "name": "P122 Demir Q12",
+   "code": "P122",
+   "salePrice": 30.16,
+   "cost": 21.11,
+   "vat": 20
+  },
+  {
+   "id": "stock-cffbb840-ea50-4bf7-a5d3-ee70173d521e",
+   "name": "P123 Boya 15 Lt",
+   "code": "P123",
+   "salePrice": 1580.5,
+   "cost": 1106.35,
+   "vat": 20
+  },
+  {
+   "id": "stock-07a7e380-8a96-4e63-af03-108cc6cdc43e",
+   "name": "P124 Seramik 60x60",
+   "code": "P124",
+   "salePrice": 476.56,
+   "cost": 333.59,
+   "vat": 20
+  },
+  {
+   "id": "stock-ecebfa55-17c1-4b87-94be-2ee9c955246c",
+   "name": "P125 Un Tip 550",
+   "code": "P125",
+   "salePrice": 21.56,
+   "cost": 15.09,
+   "vat": 1
+  },
+  {
+   "id": "stock-996536cd-86fb-45b5-8f01-14ecd7792c6d",
+   "name": "P126 Makarna 500 Gr",
+   "code": "P126",
+   "salePrice": 27.02,
+   "cost": 18.91,
+   "vat": 1
+  },
+  {
+   "id": "stock-0370ed58-a557-423a-97db-010fe5b63d13",
+   "name": "P127 Ayçiçek Yağı 5 Lt",
+   "code": "P127",
+   "salePrice": 399.95,
+   "cost": 279.96,
+   "vat": 1
+  },
+  {
+   "id": "stock-29b7b157-86c6-41e4-8967-bc735ccf0c5f",
+   "name": "P128 Pamuklu Gömlek",
+   "code": "P128",
+   "salePrice": 463.5,
+   "cost": 324.45,
+   "vat": 10
+  },
+  {
+   "id": "stock-86dd43c9-ef42-4b7f-96fc-7f8e9dfc6da9",
+   "name": "P129 Havlu Takımı",
+   "code": "P129",
+   "salePrice": 678.4,
+   "cost": 474.88,
+   "vat": 10
+  },
+  {
+   "id": "stock-19744102-fc51-4f20-b9a3-3e38b8f4e79a",
+   "name": "P130 LED Ampul",
+   "code": "P130",
+   "salePrice": 54.39,
+   "cost": 38.07,
+   "vat": 20
+  },
+  {
+   "id": "stock-79d88f81-de77-4738-8943-9a4f32cfc2c6",
+   "name": "P131 Kablo 2,5 mm",
+   "code": "P131",
+   "salePrice": 19.43,
+   "cost": 13.6,
+   "vat": 20
+  },
+  {
+   "id": "stock-b258a80c-4d9d-4c42-b49b-0009f7337330",
+   "name": "P132 Vida M8",
+   "code": "P132",
+   "salePrice": 1.44,
+   "cost": 1.01,
+   "vat": 20
+  },
+  {
+   "id": "stock-31501f66-4385-4106-9e75-62bd270b0e23",
+   "name": "P133 Defter A4",
+   "code": "P133",
+   "salePrice": 40.71,
+   "cost": 28.5,
+   "vat": 20
+  },
+  {
+   "id": "stock-a3319492-a26d-4b63-bb7c-4ee48e8ad513",
+   "name": "P134 Toner Siyah",
+   "code": "P134",
+   "salePrice": 1890,
+   "cost": 1323,
+   "vat": 20
+  },
+  {
+   "id": "stock-580745dc-9229-4bf8-8e63-dfe47d378004",
+   "name": "P135 Kahve 1 Kg",
+   "code": "P135",
+   "salePrice": 669.4,
+   "cost": 468.58,
+   "vat": 1
+  },
+  {
+   "id": "stock-f3b73349-e525-4ca1-9f01-c75f06901a43",
+   "name": "P136 Çay 1 Kg",
+   "code": "P136",
+   "salePrice": 307.14,
+   "cost": 215,
+   "vat": 1
+  },
+  {
+   "id": "stock-802a1d73-a15b-4e56-95cb-7f22a0e81030",
+   "name": "P137 Masa Sandalye",
+   "code": "P137",
+   "salePrice": 3542.5,
+   "cost": 2479.75,
+   "vat": 20
+  },
+  {
+   "id": "stock-8b5aeb2c-9b74-407a-8305-60ba14778eac",
+   "name": "P138 Monitör 24",
+   "code": "P138",
+   "salePrice": 6158.88,
+   "cost": 4311.22,
+   "vat": 20
+  },
+  {
+   "id": "stock-483a26da-2a1f-4d05-bccf-216f08e32fc9",
+   "name": "P139 Laptop Çanta",
+   "code": "P139",
+   "salePrice": 1033.85,
+   "cost": 723.7,
+   "vat": 20
+  },
+  {
+   "id": "stock-fd111380-cccb-460c-97d2-d6d040a02a63",
+   "name": "P140 Eldiven Nitril",
+   "code": "P140",
+   "salePrice": 171.81,
+   "cost": 120.27,
+   "vat": 10
+  },
+  {
+   "id": "stock-ff9a132c-afa1-4318-abbf-26c78b136532",
+   "name": "P141 Çimento 50 Kg",
+   "code": "P141",
+   "salePrice": 285,
+   "cost": 199.5,
+   "vat": 20
+  },
+  {
+   "id": "stock-d26d13f7-3d4a-45d3-8461-c1db476d2cd7",
+   "name": "P142 Demir Q12",
+   "code": "P142",
+   "salePrice": 29.3,
+   "cost": 20.51,
+   "vat": 20
+  },
+  {
+   "id": "stock-ae16399d-075b-4bdc-a26a-6676913082e3",
+   "name": "P143 Boya 15 Lt",
+   "code": "P143",
+   "salePrice": 1537,
+   "cost": 1075.9,
+   "vat": 20
+  },
+  {
+   "id": "stock-05d795f1-021e-43b6-bf12-300214b8a0a5",
+   "name": "P144 Seramik 60x60",
+   "code": "P144",
+   "salePrice": 463.8,
+   "cost": 324.66,
+   "vat": 20
+  },
+  {
+   "id": "stock-9abd3f4b-3567-4296-9d72-1d14d65ab923",
+   "name": "P145 Un Tip 550",
+   "code": "P145",
+   "salePrice": 21,
+   "cost": 14.7,
+   "vat": 1
+  },
+  {
+   "id": "stock-a5bdf8ee-f22d-43e0-ac06-73511e78e736",
+   "name": "P146 Makarna 500 Gr",
+   "code": "P146",
+   "salePrice": 26.33,
+   "cost": 18.43,
+   "vat": 1
+  },
+  {
+   "id": "stock-25c823fc-25cb-4858-81fa-1e32430c6701",
+   "name": "P147 Ayçiçek Yağı 5 Lt",
+   "code": "P147",
+   "salePrice": 471.94,
+   "cost": 330.36,
+   "vat": 1
+  },
+  {
+   "id": "stock-65161e5e-042a-4bbb-8920-ba109e43f7cb",
+   "name": "P148 Pamuklu Gömlek",
+   "code": "P148",
+   "salePrice": 450,
+   "cost": 315,
+   "vat": 10
+  },
+  {
+   "id": "stock-daecc303-c178-4da6-81db-30a8f76e0023",
+   "name": "P149 Havlu Takımı",
+   "code": "P149",
+   "salePrice": 659.2,
+   "cost": 461.44,
+   "vat": 10
+  },
+  {
+   "id": "stock-ce9e2007-e2c2-4926-b39b-36ba7d391b36",
+   "name": "P150 LED Ampul",
+   "code": "P150",
+   "salePrice": 52.89,
+   "cost": 37.02,
+   "vat": 20
+  },
+  {
+   "id": "stock-116462b1-c91b-45b2-9816-ba600b2d3e33",
+   "name": "P151 Kablo 2,5 mm",
+   "code": "P151",
+   "salePrice": 18.91,
+   "cost": 13.24,
+   "vat": 20
+  },
+  {
+   "id": "stock-b719a05f-9c89-4caa-808e-828cd4c255dd",
+   "name": "P152 Vida M8",
+   "code": "P152",
+   "salePrice": 1.4,
+   "cost": 0.98,
+   "vat": 20
+  },
+  {
+   "id": "stock-9ccf1488-0530-41b0-9b8d-cec634e0b97e",
+   "name": "P153 Defter A4",
+   "code": "P153",
+   "salePrice": 39.67,
+   "cost": 27.77,
+   "vat": 20
+  },
+  {
+   "id": "stock-cad4e83d-577a-4be3-a2b8-b2198b474fa1",
+   "name": "P154 Toner Siyah",
+   "code": "P154",
+   "salePrice": 2230.2,
+   "cost": 1561.14,
+   "vat": 20
+  },
+  {
+   "id": "stock-75e7bf19-7928-4ad3-9145-4dd0bcd724e6",
+   "name": "P155 Kahve 1 Kg",
+   "code": "P155",
+   "salePrice": 649.9,
+   "cost": 454.93,
+   "vat": 1
+  },
+  {
+   "id": "stock-c319a70d-ab86-4a9b-b252-a02ba4018775",
+   "name": "P156 Çay 1 Kg",
+   "code": "P156",
+   "salePrice": 298.44,
+   "cost": 208.91,
+   "vat": 1
+  },
+  {
+   "id": "stock-d9e95882-c603-45a2-8388-51203ba6b4c9",
+   "name": "P157 Masa Sandalye",
+   "code": "P157",
+   "salePrice": 3445,
+   "cost": 2411.5,
+   "vat": 20
+  },
+  {
+   "id": "stock-39fe5d01-6807-4396-b9b0-9ea5fc9fbd43",
+   "name": "P158 Monitör 24",
+   "code": "P158",
+   "salePrice": 5993.91,
+   "cost": 4195.74,
+   "vat": 20
+  },
+  {
+   "id": "stock-3ef01afd-3d16-4202-827f-5bf926041de2",
+   "name": "P159 Laptop Çanta",
+   "code": "P159",
+   "salePrice": 1006.88,
+   "cost": 704.82,
+   "vat": 20
+  },
+  {
+   "id": "stock-95b4bff7-865a-4097-9c93-70bae999590c",
+   "name": "P160 Eldiven Nitril",
+   "code": "P160",
+   "salePrice": 167.44,
+   "cost": 117.21,
+   "vat": 10
+  },
+  {
+   "id": "stock-8cb8474f-bf0c-4611-9c86-d70806a76d4f",
+   "name": "P161 Çimento 50 Kg",
+   "code": "P161",
+   "salePrice": 336.3,
+   "cost": 235.41,
+   "vat": 20
+  },
+  {
+   "id": "stock-016d0fd6-b7cd-4d37-8608-84251fd7a689",
+   "name": "P162 Demir Q12",
+   "code": "P162",
+   "salePrice": 28.45,
+   "cost": 19.92,
+   "vat": 20
+  },
+  {
+   "id": "stock-abb2184b-c0be-4c33-86c8-4869b3eae1ac",
+   "name": "P163 Boya 15 Lt",
+   "code": "P163",
+   "salePrice": 1493.5,
+   "cost": 1045.45,
+   "vat": 20
+  },
+  {
+   "id": "stock-180e32fd-c506-4b4d-8ccc-56ab5e6d5be9",
+   "name": "P164 Seramik 60x60",
+   "code": "P164",
+   "salePrice": 451.03,
+   "cost": 315.72,
+   "vat": 20
+  },
+  {
+   "id": "stock-a9d32511-3dc1-4bb5-bd68-15ca672ed07b",
+   "name": "P165 Un Tip 550",
+   "code": "P165",
+   "salePrice": 20.44,
+   "cost": 14.31,
+   "vat": 1
+  },
+  {
+   "id": "stock-5e15c6fb-a3ae-4000-82b0-b6f2a04d0eaf",
+   "name": "P166 Makarna 500 Gr",
+   "code": "P166",
+   "salePrice": 25.65,
+   "cost": 17.95,
+   "vat": 1
+  },
+  {
+   "id": "stock-8a889efb-5e7c-4cc6-b935-9a96bf3480ed",
+   "name": "P167 Ayçiçek Yağı 5 Lt",
+   "code": "P167",
+   "salePrice": 459.94,
+   "cost": 321.96,
+   "vat": 1
+  },
+  {
+   "id": "stock-25cef73e-e108-43d6-b011-56c575532d3b",
+   "name": "P168 Pamuklu Gömlek",
+   "code": "P168",
+   "salePrice": 531,
+   "cost": 371.7,
+   "vat": 10
+  },
+  {
+   "id": "stock-11137516-378e-467a-a3bb-b2ed086898cd",
+   "name": "P169 Havlu Takımı",
+   "code": "P169",
+   "salePrice": 640,
+   "cost": 448,
+   "vat": 10
+  },
+  {
+   "id": "stock-07324eb4-5b49-41f8-84c8-da7d57e54afb",
+   "name": "P170 LED Ampul",
+   "code": "P170",
+   "salePrice": 51.4,
+   "cost": 35.98,
+   "vat": 20
+  },
+  {
+   "id": "stock-02c52ed7-2f0e-4cc8-9e8b-b161b6a2cbd5",
+   "name": "P171 Kablo 2,5 mm",
+   "code": "P171",
+   "salePrice": 18.39,
+   "cost": 12.87,
+   "vat": 20
+  },
+  {
+   "id": "stock-f812f96f-6cdc-42b3-a99d-6926f84861e0",
+   "name": "P172 Vida M8",
+   "code": "P172",
+   "salePrice": 1.36,
+   "cost": 0.95,
+   "vat": 20
+  },
+  {
+   "id": "stock-235ee1be-54a2-4dfe-83ae-cf2a9d8e8cb5",
+   "name": "P173 Defter A4",
+   "code": "P173",
+   "salePrice": 38.64,
+   "cost": 27.05,
+   "vat": 20
+  },
+  {
+   "id": "stock-9bb5118f-552d-4e3d-8eb9-d485ab1b5d88",
+   "name": "P174 Toner Siyah",
+   "code": "P174",
+   "salePrice": 2173.5,
+   "cost": 1521.45,
+   "vat": 20
+  },
+  {
+   "id": "stock-cac292eb-585b-434c-ae0c-bdb1e2b01b1f",
+   "name": "P175 Kahve 1 Kg",
+   "code": "P175",
+   "salePrice": 766.88,
+   "cost": 536.82,
+   "vat": 1
+  },
+  {
+   "id": "stock-dae1ff75-8f48-46f0-b6bd-a6269006744f",
+   "name": "P176 Çay 1 Kg",
+   "code": "P176",
+   "salePrice": 289.75,
+   "cost": 202.83,
+   "vat": 1
+  },
+  {
+   "id": "stock-c2692885-29fa-4b3d-9eed-0f071cca1845",
+   "name": "P177 Masa Sandalye",
+   "code": "P177",
+   "salePrice": 3347.5,
+   "cost": 2343.25,
+   "vat": 20
+  },
+  {
+   "id": "stock-f022d624-2128-46d0-ab32-04bb13673bf7",
+   "name": "P178 Monitör 24",
+   "code": "P178",
+   "salePrice": 5828.94,
+   "cost": 4080.26,
+   "vat": 20
+  },
+  {
+   "id": "stock-c7566a1b-9762-4d14-81b1-5acf94c04c13",
+   "name": "P179 Laptop Çanta",
+   "code": "P179",
+   "salePrice": 979.91,
+   "cost": 685.94,
+   "vat": 20
+  },
+  {
+   "id": "stock-840836af-461c-4849-b15e-a94aeae28942",
+   "name": "P180 Eldiven Nitril",
+   "code": "P180",
+   "salePrice": 163.07,
+   "cost": 114.15,
+   "vat": 10
+  },
+  {
+   "id": "stock-2706273d-4b56-4542-bf1a-155439d54eb3",
+   "name": "P181 Çimento 50 Kg",
+   "code": "P181",
+   "salePrice": 327.75,
+   "cost": 229.43,
+   "vat": 20
+  },
+  {
+   "id": "stock-eb5cf8dd-25c2-4160-b8e0-c23ac28f71fa",
+   "name": "P182 Demir Q12",
+   "code": "P182",
+   "salePrice": 33.57,
+   "cost": 23.5,
+   "vat": 20
+  },
+  {
+   "id": "stock-7ae3be8b-7e9b-4d20-814d-3fc13433e247",
+   "name": "P183 Boya 15 Lt",
+   "code": "P183",
+   "salePrice": 1450,
+   "cost": 1015,
+   "vat": 20
+  },
+  {
+   "id": "stock-fff906e4-97eb-4612-a701-1596a6db3678",
+   "name": "P184 Seramik 60x60",
+   "code": "P184",
+   "salePrice": 438.27,
+   "cost": 306.79,
+   "vat": 20
+  },
+  {
+   "id": "stock-7897a3c2-9cef-4dd2-aeea-24f282e1e5a6",
+   "name": "P185 Un Tip 550",
+   "code": "P185",
+   "salePrice": 19.88,
+   "cost": 13.92,
+   "vat": 1
+  },
+  {
+   "id": "stock-39d89019-0988-40d0-a718-9fef05895a0c",
+   "name": "P186 Makarna 500 Gr",
+   "code": "P186",
+   "salePrice": 24.96,
+   "cost": 17.47,
+   "vat": 1
+  },
+  {
+   "id": "stock-14239909-d391-493a-9cde-9bc93e0e69a4",
+   "name": "P187 Ayçiçek Yağı 5 Lt",
+   "code": "P187",
+   "salePrice": 447.94,
+   "cost": 313.56,
+   "vat": 1
+  },
+  {
+   "id": "stock-b0f7e464-a9d3-4091-9149-052332eb1af4",
+   "name": "P188 Pamuklu Gömlek",
+   "code": "P188",
+   "salePrice": 517.5,
+   "cost": 362.25,
+   "vat": 10
+  },
+  {
+   "id": "stock-4c75e576-bfcf-4106-ba71-3ae1225329d6",
+   "name": "P189 Havlu Takımı",
+   "code": "P189",
+   "salePrice": 755.2,
+   "cost": 528.64,
+   "vat": 10
+  },
+  {
+   "id": "stock-b38ce54a-6d05-4645-8ccc-87f82064e203",
+   "name": "P190 LED Ampul",
+   "code": "P190",
+   "salePrice": 49.9,
+   "cost": 34.93,
+   "vat": 20
+  },
+  {
+   "id": "stock-7db51e7e-c24f-4121-aa8b-ca140818fb89",
+   "name": "P191 Kablo 2,5 mm",
+   "code": "P191",
+   "salePrice": 17.87,
+   "cost": 12.51,
+   "vat": 20
+  },
+  {
+   "id": "stock-00463ea8-be30-4f1d-b1ef-c33163d44a12",
+   "name": "P192 Vida M8",
+   "code": "P192",
+   "salePrice": 1.33,
+   "cost": 0.93,
+   "vat": 20
+  },
+  {
+   "id": "stock-2d8e8b73-184d-4a40-a3eb-bbf4926daa13",
+   "name": "P193 Defter A4",
+   "code": "P193",
+   "salePrice": 37.61,
+   "cost": 26.33,
+   "vat": 20
+  },
+  {
+   "id": "stock-40f9d9ca-7648-4b92-9774-99cb263db1e8",
+   "name": "P194 Toner Siyah",
+   "code": "P194",
+   "salePrice": 2116.8,
+   "cost": 1481.76,
+   "vat": 20
+  },
+  {
+   "id": "stock-651727bb-9765-4a50-8f88-315b996cbf47",
+   "name": "P195 Kahve 1 Kg",
+   "code": "P195",
+   "salePrice": 747.38,
+   "cost": 523.17,
+   "vat": 1
+  },
+  {
+   "id": "stock-6a81570b-999a-436d-92fd-0837d882b543",
+   "name": "P196 Çay 1 Kg",
+   "code": "P196",
+   "salePrice": 341.91,
+   "cost": 239.34,
+   "vat": 1
+  },
+  {
+   "id": "stock-7677a89e-0f69-4e27-ba8c-56dec2562800",
+   "name": "P197 Masa Sandalye",
+   "code": "P197",
+   "salePrice": 3250,
+   "cost": 2275,
+   "vat": 20
+  },
+  {
+   "id": "stock-47dfb60c-758e-428c-bf0c-669d5c775907",
+   "name": "P198 Monitör 24",
+   "code": "P198",
+   "salePrice": 5663.97,
+   "cost": 3964.78,
+   "vat": 20
+  },
+  {
+   "id": "stock-bdd8f30f-e421-4d71-827d-0e7a384d4141",
+   "name": "P199 Laptop Çanta",
+   "code": "P199",
+   "salePrice": 952.94,
+   "cost": 667.06,
+   "vat": 20
+  },
+  {
+   "id": "stock-694908c0-15c1-42ff-b483-d53f51e8ca16",
+   "name": "P200 Eldiven Nitril",
+   "code": "P200",
+   "salePrice": 158.7,
+   "cost": 111.09,
+   "vat": 10
+  }
+ ],
+ "users": [
+  "ekran01",
+  "ekran02",
+  "ekran03",
+  "ekran04",
+  "ekran05",
+  "ekran06",
+  "ekran07",
+  "ekran08",
+  "api01",
+  "api02",
+  "api03",
+  "api04",
+  "api05",
+  "api06",
+  "api07",
+  "api08",
+  "api09",
+  "api10",
+  "api11",
+  "api12",
+  "api13",
+  "api14",
+  "api15"
+ ],
+ "counts": {
+  "satış (stok)": 5146,
+  "satış (hizmet)": 1276,
+  "alış (gider)": 468,
+  "alış (stok)": 2032,
+  "satıştan iade": 730,
+  "iptal (alış)": 373,
+  "alıştan iade (e-Belge)": 348,
+  "iptal (e-Arşiv)": 3
+ },
+ "fails": {},
+ "faturaSayisi": {
+  "n": 10000,
+  "c": 376,
+  "e": 6767
+ },
+ "mutabakat": true,
+ "edmGonderilen": 6770,
+ "sure": {
+  "cariUrunSn": 2,
+  "faturaSn": 507,
+  "toplamSn": 512
+ }
+}
