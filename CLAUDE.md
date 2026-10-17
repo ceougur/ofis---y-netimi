@@ -763,6 +763,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (4d546e9, test-temizlik-243; CI #820 YEŞİL); imzalı paket 4d546e9'dan (zip f4fe08b3…, kurulum 59069744…; denetim 4/4). KARAR (kullanıcı, 17.10.2026 ~18:45 UTC:
   "hatasız doğru düzgün olsun, gerektiği kadar bekleyelim") → Uzun Doğrulama PAKETLENEN commit 4d546e9'da baştan (run 39059370080, workflow_dispatch);
   yeşil → teslim + PR. (3e65842'deki kırmızı işin yeniden koşusu da sürüyor; yalnız ek bilgi.)
+- İSTEK (kullanıcı, 17.10.2026 ~18:50 UTC: "maliyetsiz olarak benim bugün karşılaştığım gibi UI sorunları ve mantık hatalarını, iyileştirmeleri gerçek kullanıcı
+  gibi test et: sayfa yapısı, tıklamada ekran yanıp sönmesi, veri giriş satırları hizalı mı, uyarılar makul sürede gidiyor mu, kullanımda sürtünme, genel program
+  testlerinde bakılan şeyler") → BAŞLADI: yerelde 2.4.3 (4d546e9) gerçek verili, tarayıcıyla (Playwright) keşif testi — alanlara bölünmüş ajanlar (yalnız bulgu;
+  ürün kodu DEĞİŞMEZ, 2.4.3 paketine dokunulmaz); ana oturum bulguları yeniden üretip kullanıcıya rapor eder; düzeltme kullanıcı kararıyla ayrı sürüm (2.4.4).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
