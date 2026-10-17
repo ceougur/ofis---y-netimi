@@ -681,6 +681,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   BİRLEŞTİ (kullanıcı, 17.10.2026: "geldim, githuba yüklemek için link ver, sende birleştir"): PR ceougur/ofis---y-netimi#31 squash → `master` = 34ed6cc
   (ağaç e188256 ile AYNI; uygulama dosyaları paket 40cb354 ile aynı; PR CI #800 + push #799 yeşil). Yayın bağlantısı verildi. SIRADA: kullanıcı v2.4.1'i açar
   (5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF 1ed34558…). Dal master'dan yeniden başlatıldı.
+  YAYIMLANDI (kullanıcı "yayımladım", 17.10.2026 06:32 UTC; `v2.4.1` = 34ed6cc; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı):
+  yayındaki 5 dosya + latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.1; gerçek eski güncelleyiciler (v2.4.0, v2.3.0, v2.2.0, v2.1.0 kodu) canlı
+  GitHub'da 2.4.1'i "available" gördü, 2.4.1 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#17 açıldı (PDF 1ed34558…; kullanıcı "birleştir" bekleniyor).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
