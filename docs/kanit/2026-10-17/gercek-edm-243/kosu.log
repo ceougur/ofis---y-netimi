@@ -1,0 +1,7 @@
+ayar 200
+A mükellefe e-Arşiv: 409 buyer-is-efatura belge sayısı 0 → 0 | cari işareti {"f":1,"al":""}
+B TESTER işaretli PK'sız: 409 buyer-alias belge sayısı 0 → 0
+C sorgu 200 {"registered":false}
+C e-Arşiv: 200 TEA2026840631815 EARSIVFATURA autoSend true e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.
+C ödeme şekli kodları: ["10"]
+SONUÇ_ID invoice-99cd551b-13eb-4868-bbd3-b96b6eac9902 TEA2026840631815 
