@@ -172,6 +172,8 @@ html.hof-auth-required #root {
 }
 .hof-field {
   display: grid;
+  /* 2.4.2 (kullanıcı ekranı, Yeni Cari → Kişi Türü): yanındaki alan (yardım yazısı + düğme) uzunken satırlar gerilip kutu büyüyordu */
+  align-content: start;
   gap: 6px;
   color: #4d6a5e;
   font-size: 12px;

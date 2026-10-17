@@ -1,0 +1,2 @@
+Yeni Cari → Kişi Türü kutusu yüksekliği (Chromium, 1900x1000): eski 74a55da select 79.7 px / input 43.9 px; yeni 43.6 / 43.9 px.
+Komut: REPO=<depo> OUT=<png> node olcum.mjs
