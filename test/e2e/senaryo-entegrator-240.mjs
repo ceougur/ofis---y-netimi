@@ -271,7 +271,8 @@ try {
   await page.click(`${modal} .hof-invoices-modal [data-act="integrator"]`);
   await page.click(`${card} [data-integ-tab="extras"]`);
   const extraChecks = await page.$$eval(`${card} [data-i^="opt."]`, nodes => nodes.map(node => `${node.dataset.i}:${node.checked}`));
-  ok(extraChecks.join(",") === "opt.balanceNote:false,opt.paymentMeans:false,opt.draftUpload:false", `Ek Seçenekler varsayılan kapalı: ${extraChecks.join(", ")}`);
+  // 2.4.3 (kullanıcı kararı 17.10.2026): ödeme şekli varsayılan AÇIK; öbürleri kapalı. Kutuya tıklamak onu kapatır (bilerek kapatılan korunur).
+  ok(extraChecks.join(",") === "opt.balanceNote:false,opt.paymentMeans:true,opt.draftUpload:false", `Ek Seçenekler varsayılanı (ödeme şekli açık): ${extraChecks.join(", ")}`);
   await page.click(`${card} [data-i="opt.draftUpload"]`);
   await page.click(`${card} [data-i="opt.paymentMeans"]`);
   await page.click(`${card} [data-integ-tab="view"]`);
@@ -279,7 +280,7 @@ try {
   ok(await page.$eval(`${card} [data-i="opt.draftUpload"]`, node => node.checked), "sekme dönüşünde işaret korunur");
   await page.click(`${card} [data-integ-act="save"]`);
   await page.waitForFunction(() => document.querySelector(".hof-toast")?.textContent?.includes("kaydedildi"), null, { timeout: 8000 }).catch(() => null);
-  ok(stored().eOptions?.draftUpload === true && stored().eOptions?.paymentMeans === true && stored().eOptions?.balanceNote === false, `kaydedildi (veri tabanı: ${JSON.stringify(stored().eOptions)})`);
+  ok(stored().eOptions?.draftUpload === true && stored().eOptions?.paymentMeans === false && stored().eOptionsSet?.paymentMeans === true && stored().eOptions?.balanceNote === false, `kaydedildi (veri tabanı: ${JSON.stringify(stored().eOptions)})`);
   await shot(page, "entegrator-9-ek-secenekler");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
     await page.keyboard.press("Escape");

@@ -575,7 +575,7 @@
       { name: "dueDays", label: "Vade Günü", inputmode: "numeric", value: a.dueDays ? String(a.dueDays) : "", help: "Fatura vadesi kesim tarihinden bu kadar gün sonrasına yazılır; boşsa Fatura Ayarları'ndaki." },
       ...(edocOn()
         ? [
-            // 2.4.3 (kullanıcı, 17.10.2026: "e-Arşiv değil mi, kafa karıştırıyor"): işareti yalnız Mükellef Sorgula koyar/kaldırır (wireTaxFields);
+            // 2.4.3 (kullanıcı, 17.10.2026: "e-Arşiv değil mi, kafa karıştırıyor"): işareti yalnız Mükellef Sorgula koyar (wireTaxFields; kaldırmak serbest);
             // elle işaretlenen mükellef olmayan kişiye TEF numaralı e-Fatura kesilip gönderilemiyordu (TESTER denemesi).
             { name: "eInvoice", label: "e-Fatura mükellefi (Mükellef Sorgula belirler: işaretliyse e-Fatura, değilse e-Arşiv kesilir)", type: "checkbox", value: Number(a.eInvoice) === 1 },
             { name: "eAlias", label: "e-Fatura posta kutusu etiketi", maxlength: 160, value: a.eAlias || "", placeholder: "urn:mail:defaultpk@…" },
@@ -611,7 +611,9 @@
     const button = HOF.el("button", { type: "button", class: "hof-button hof-button-small hof-button-ghost" }, "Mükellef Sorgula");
     taxNo.closest(".hof-field").append(button);
     const flag = dialog.querySelector('input[name="eInvoice"]');
+    // Gözden geçirme 2.4.3 (B6): işareti KALDIRMAK serbest (EDM'ye ulaşılamazken yanlış işaret kilitli kalmasın; mükellefse gönderimde sorgu yakalar).
     flag?.addEventListener("click", event => {
+      if (!flag.checked) return;
       event.preventDefault();
       HOF.toast("e-Fatura mükellefiyeti elle işaretlenmez: VKN / TCKN alanının altındaki Mükellef Sorgula'ya basın.", { type: "info", timeout: 6000 });
     });

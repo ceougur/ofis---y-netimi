@@ -1152,13 +1152,19 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // e-Arşiv TEA). Cari kartında e-Fatura işareti kaldırılınca Düzenle'de "e-Arşiv" seçilebiliyor, belge TEF numarasıyla e-Arşiv oluyordu. Temel ↔
   // Ticari aynı seridir (serbest). Kâğıt belge (2.4.3 öncesi kural sürer) ve numarasız belge (Kes, Sonra Gönder: numara gönderimde) bu kurala girmez.
   const PROFILE_GROUP = { TEMELFATURA: "efatura", TICARIFATURA: "efatura", EARSIVFATURA: "earsiv", ESMM: "esmm" };
+  // Gözden geçirme 2.4.3 (B2): kâğıt (FIS) numaralı belge de Düzenle'de e-Belge türüne geçemez — FIS numarasıyla e-Arşiv/e-Fatura EDM'ye gidiyordu.
+  // Gönderilecekler'den silinmiş (withdrawn) belge istisna: gönderimde e-Belge serisinden yeni numara alır.
   function profileLock(kind, account, existing, body, s) {
-    if (!existing || existing.status === "draft" || !(Number(existing.seq) > 0) || !PROFILE_GROUP[existing.profile]) return;
+    if (!existing || existing.status === "draft" || !(Number(existing.seq) > 0)) return;
     const requested = text(body.profile) || existing.profile;
+    if (existing.profile === "KAGIT") {
+      if (!PROFILE_GROUP[requested] || existing.eStatus === "withdrawn") return;
+    } else if (!PROFILE_GROUP[existing.profile]) return;
     const allowed = allowedProfiles(kind, account, s);
     const moved = PROFILE_GROUP[requested] !== PROFILE_GROUP[existing.profile];
     if (!moved && allowed.includes(existing.profile)) return;
-    const why = moved ? "" : " Cari kartındaki e-Fatura mükellefiyeti değişmiş; belge bu türle kalamaz.";
+    // B4: neden doğru söylenir — e-Belge işaretleri kapalıysa ayar, değilse carinin mükellefiyeti.
+    const why = moved ? "" : allowed.every(item => item === "KAGIT") ? " Fatura Ayarları'nda e-Fatura / e-Arşiv işaretleri kapalı; belge bu türle kalamaz." : " Cari kartındaki e-Fatura mükellefiyeti değişmiş; belge bu türle kalamaz.";
     throw new HttpError(409, `${existing.number} ${PROFILES[existing.profile]} olarak numara aldı; belge türü düzenlemede değişmez (numara serisi belge türüne bağlıdır).${why} Belgeyi İptal Et ile iptal edip Kopyala ile yeniden kesin: yeni belge doğru türden numara alır.`, { code: "profile-locked", profile: existing.profile });
   }
   // 2.4.3: e-Fatura alıcısının posta kutusu bilinmiyorsa belge numara almadan durur (önceden "Kaydet ve Gönder" numarayı verip gönderimde düşüyordu).
@@ -2373,6 +2379,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     const doc = documentInput(body, { mode: "issue" });
     assertAliasBeforeNumber(doc, body);
+    await assertArchiveBuyerBeforeNumber(user, doc, body);
     const payment = paymentInput(body, doc, user);
     const result = store.tx(() => {
       const written = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" });
@@ -2400,6 +2407,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const merged = { kind: existing.kind, scenario: existing.scenario, accountId: existing.accountId, originalId: existing.originalId, lines, buyer: parseJson(existing.partyJson, {}), payment: parseJson(existing.paymentJson, {}), ...body };
     const doc = documentInput(merged, { mode: "issue", existing });
     assertAliasBeforeNumber(doc, body);
+    await assertArchiveBuyerBeforeNumber(user, doc, body);
     const payment = paymentInput(merged, doc, user);
     writeIssued(user, doc, payment, { id: existing.id, force: forceOf(body), defer: body.eSend === "later" });
     const autoSend = await sendChoice(user, existing.id, body.eSend);
@@ -2983,7 +2991,24 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // kartında mükellefiyet sorgulanmamışsa program alıcıyı e-Arşiv sayar, EDM belgeyi e-Fatura kurallarıyla reddeder ("Geçersiz cbc:ProfileID
   // 'EARSIVFATURA'") ve numara harcanır. e-Arşiv, kimlik numaralı alıcıya gönderilmeden (numara verilmeden) önce mükellefiyet sorulur; mükellefse
   // cari kartı işaretlenir ve gönderim açık iletiyle durur. Sorgu yapılamazsa (bağlantı) gönderim sürer — sonucu entegratör söyler.
-  async function assertNotEFaturaBuyer(user, doc, link) {
+  // Gözden geçirme 2.4.3 (B3): numara hemen verilecekse (Kaydet ve Gönder) mükellefiyet KAYITTAN ÖNCE sorulur — önceden TEA numarası verilip gönderim
+  // "e-Fatura mükellefi" diye düşüyordu. Sorgu yapılamazsa (bağlantı) kayıt eskisi gibi sürer; gönderimdeki denetim yine koşar.
+  async function assertArchiveBuyerBeforeNumber(user, doc, body) {
+    if (!edocEnabled || body?.eSend === "later" || doc.profile !== "EARSIVFATURA") return;
+    const s = settings();
+    let link;
+    try {
+      link = integrator(s);
+    } catch {
+      return;
+    }
+    try {
+      await assertNotEFaturaBuyer(user, { profile: doc.profile, kind: doc.kind, party: doc.party, accountId: doc.account?.id || "", number: "" }, link, { beforeSave: true });
+    } catch (error) {
+      if (error?.extra?.code === "buyer-is-efatura") throw error;
+    }
+  }
+  async function assertNotEFaturaBuyer(user, doc, link, { beforeSave = false } = {}) {
     if (doc.profile !== "EARSIVFATURA" || doc.kind === "purchase" || doc.kind === "sale_return") return;
     const taxNo = String(doc.party?.taxNo || "").replace(/\D/g, "");
     if (![10, 11].includes(taxNo.length) || taxNo === "11111111111" || taxNo === "2222222222") return;
@@ -3005,9 +3030,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (own === taxNo) {
       accounts().taxIdentity.setEInvoice(user, doc.accountId, { registered: true, alias: aliases.length === 1 ? aliases[0] : "", title: result.title });
       const choose = aliases.length > 1 ? ` Alıcının ${aliases.length} posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin.` : "";
-      throw new HttpError(409, `Alıcı (${taxNo}) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi.${choose} Bu belgeyi iptal edip yeniden kaydedin: e-Fatura olarak kesilir.`, { code: "buyer-is-efatura", aliases });
+      const next = beforeSave ? " Fatura kaydedilmedi, numara harcanmadı; yeniden kaydedin: e-Fatura olarak kesilir." : " Bu belgeyi iptal edip yeniden kaydedin: e-Fatura olarak kesilir.";
+      throw new HttpError(409, `Alıcı (${taxNo}) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi.${choose}${next}`, { code: "buyer-is-efatura", aliases });
     }
-    throw new HttpError(409, `Belgedeki alıcı numarası (${taxNo}) e-Fatura mükellefine ait; ona e-Arşiv fatura kesilemez (GİB). Belgedeki numara carinin şimdiki numarasıyla aynı olmadığı için cari kartı işaretlenmedi: alıcı firmanın carisini VKN'siyle açıp faturayı ona e-Fatura olarak kesin; bu belgeyi iptal edin.`, { code: "buyer-is-efatura", aliases });
+    throw new HttpError(409, `Belgedeki alıcı numarası (${taxNo}) e-Fatura mükellefine ait; ona e-Arşiv fatura kesilemez (GİB). Belgedeki numara carinin şimdiki numarasıyla aynı olmadığı için cari kartı işaretlenmedi: alıcı firmanın carisini VKN'siyle açıp faturayı ona e-Fatura olarak kesin; ${beforeSave ? "fatura kaydedilmedi, numara harcanmadı" : "bu belgeyi iptal edin"}.`, { code: "buyer-is-efatura", aliases });
   }
   async function sendInvoice(user, id, options = {}) {
     const release = holdInvoice(id, "sending");

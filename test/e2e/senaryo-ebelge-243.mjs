@@ -127,6 +127,10 @@ try {
   await page.keyboard.press("Space");
   await page.waitForTimeout(200);
   ok(!(await page.$eval(`${dialog} input[name="eInvoice"]`, node => node.checked)), "boşluk tuşuyla da işaretlenmedi");
+  // Gözden geçirme B6: işareti KALDIRMAK serbest (EDM'ye ulaşılamazken yanlış işaret kilitli kalmasın).
+  await page.evaluate(selector => { document.querySelector(selector).checked = true; }, `${dialog} input[name="eInvoice"]`);
+  await page.click(`${dialog} input[name="eInvoice"]`);
+  ok(!(await page.$eval(`${dialog} input[name="eInvoice"]`, node => node.checked)), "işaretli kutu elle kaldırılabilir");
   await shot(page, "ebelge-243-2-kutu");
   await closeAll(page);
 

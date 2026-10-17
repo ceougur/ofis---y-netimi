@@ -97,12 +97,12 @@ describe("2.4.3: belge türü kilidi, posta kutusu numaradan önce, ödeme şekl
   });
 
   test("2a: numara almış e-Fatura Düzenle ile e-Arşive çevrilemez (önceden 200: TEF numaralı e-Arşiv)", async () => {
-    const account = (await api.post("/api/workspace/accounts", { ...FIRM, name: "Sonradan Mükellef Olmayan A.Ş.", taxNo: "1234567890" })).data;
+    const account = (await api.post("/api/workspace/accounts", { ...FIRM, name: "Sonradan Mükellef Olmayan A.Ş.", taxNo: "4840847211" })).data;
     const doc = (await sale(account.id)).data;
     assert.match(doc.number, /^TEF/);
     assert.equal(doc.profile, "TEMELFATURA");
     // Mükellef Sorgula "mükellef değil" der: işaret kalkar.
-    assert.equal((await api.put(`/api/workspace/accounts/${account.id}`, { ...FIRM, name: "Sonradan Mükellef Olmayan A.Ş.", taxNo: "1234567890", eInvoice: false, eAlias: "" })).status, 200);
+    assert.equal((await api.put(`/api/workspace/accounts/${account.id}`, { ...FIRM, name: "Sonradan Mükellef Olmayan A.Ş.", taxNo: "4840847211", eInvoice: false, eAlias: "" })).status, 200);
     const full = await card(doc.id);
     const toArchive = await api.post(`/api/workspace/invoices/${doc.id}/edit`, { kind: full.kind, scenario: full.scenario, accountId: account.id, issueDate: full.issueDate, profile: "EARSIVFATURA", lines: LINES, payment: { rest: "open" } });
     assert.equal(toArchive.status, 409, JSON.stringify(toArchive.data));
@@ -147,6 +147,24 @@ describe("2.4.3: belge türü kilidi, posta kutusu numaradan önce, ödeme şekl
     assert.equal((await card(doc.id)).profile, "EARSIVFATURA");
   });
 
+  test("1e (gözden geçirme B3): sorgulanmamış mükellefe e-Arşiv Kaydet ve Gönder numara harcamadan durur; cari işaretlenir", async () => {
+    const account = (await api.post("/api/workspace/accounts", { ...FIRM, name: "Sorgulanmamış Mükellef A.Ş.", eInvoice: false, eAlias: "" })).data;
+    const before = count();
+    const tea = (await api.post("/api/workspace/invoices/calc", { scenario: "service_sale", accountId: account.id, lines: LINES, payment: { rest: "open" } })).data.nextNumber;
+    assert.match(tea, /^TEA/);
+    const response = await sale(account.id, { eSend: "now" });
+    assert.equal(response.status, 409, JSON.stringify(response.data));
+    assert.equal(response.data.code, "buyer-is-efatura");
+    assert.match(response.data.error, /numara harcanmadı/);
+    assert.equal(count(), before, "belge yazılmadı");
+    assert.equal(server.app.store.get("SELECT e_invoice AS f FROM accounts WHERE id = ?", account.id).f, 1, "cari e-Fatura mükellefi olarak işaretlendi");
+    // Tek posta kutusu kendiliğinden yazıldı: yeniden kaydedince e-Fatura (TEF) olarak kesilir.
+    const again = await sale(account.id, { eSend: "now" });
+    assert.equal(again.status, 200, JSON.stringify(again.data));
+    assert.equal(again.data.profile, "TEMELFATURA");
+    assert.match(again.data.number, /^TEF/);
+  });
+
   test("3a: ödeme şekli varsayılan AÇIK — nakit peşin belge 10 (Nakit), Havale / EFT (42) değil", async () => {
     const settings = (await api.get("/api/workspace/invoices/settings")).data;
     assert.equal(settings.eOptions.paymentMeans, true);
@@ -166,5 +184,28 @@ describe("2.4.3: belge türü kilidi, posta kutusu numaradan önce, ödeme şekl
     assert.equal((await api.put("/api/workspace/invoices/settings", { defaults: { dueDays: 0 } })).status, 200);
     assert.equal((await api.get("/api/workspace/invoices/settings")).data.eOptions.paymentMeans, false, "başka ayar kaydı seçimi bozmaz");
     assert.equal((await api.put("/api/workspace/invoices/settings", { eOptions: { paymentMeans: true } })).status, 200);
+  });
+
+  test("2d (gözden geçirme B2, B4): kâğıt (FIS) numaralı belge Düzenle'de e-Belge olamaz; ayar kapalıyken ileti ayarı söyler", async () => {
+    const tef = (await sale(firmId)).data;
+    assert.match(tef.number, /^TEF/);
+    assert.equal((await api.put("/api/workspace/invoices/settings", { efatura: false, earsiv: false })).status, 200);
+    const paper = (await sale(firmId)).data;
+    assert.match(paper.number, /^FIS/);
+    const off = await card(tef.id);
+    const locked = await api.post(`/api/workspace/invoices/${tef.id}/edit`, { kind: off.kind, scenario: off.scenario, accountId: firmId, issueDate: off.issueDate, lines: LINES, payment: { rest: "open" }, note: "not" });
+    assert.equal(locked.status, 409, JSON.stringify(locked.data));
+    assert.match(locked.data.error, /Fatura Ayarları'nda e-Fatura \/ e-Arşiv işaretleri kapalı/);
+    assert.equal((await api.put("/api/workspace/invoices/settings", { efatura: true, earsiv: true })).status, 200);
+    const full = await card(paper.id);
+    for (const profile of ["TEMELFATURA", "EARSIVFATURA"]) {
+      const edited = await api.post(`/api/workspace/invoices/${paper.id}/edit`, { kind: full.kind, scenario: full.scenario, accountId: firmId, issueDate: full.issueDate, profile, lines: LINES, payment: { rest: "open" } });
+      assert.equal(edited.status, 409, `${profile}: ${JSON.stringify(edited.data)}`);
+      assert.equal(edited.data.code, "profile-locked");
+    }
+    const after = await card(paper.id);
+    assert.equal(after.profile, "KAGIT");
+    assert.match(after.number, /^FIS/);
+    assert.notEqual((await api.post(`/api/workspace/invoices/${paper.id}/send`, {})).status, 200, "FIS numarasıyla EDM'ye gitmez");
   });
 });
