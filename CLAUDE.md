@@ -373,3 +373,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   çizimde dokunulmuş alanlar korunur), dosya/resim seçimi yalnız kendi bölümünü günceller, kayıtlı veri yalnız Kaydet sonrası ekrana basar; REGRESYON: bütün
   formlar e2e (doldur → her iç yeniden çizim tetikleyicisi → değerler yerinde) + kaynak tarama testi (dosya seçiminden tüm form yeniden çizimi yasak);
   eski kodda kırmızı, CI Linux+Windows yeşil.
+- KARAR (kullanıcı, 17.10.2026 ~20:10 UTC; baş mimar 2.4.3'ü bugünkü hâliyle teslim + bulgular 2.4.4 önerdi): "gerileme olacaksa zaten 2.4.4 ayrı versende
+  olacak. gerileme olmayacak şekilde yap herşeyi" → BÜTÜN bulgular + form izolasyonu 2.4.3'te KALIR. GERİLEME GÜVENCESİ: (1) değişiklikten ÖNCE taban:
+  4d546e9'da bütün e2e (CI dışı dahil) + keşif senaryoları + tam npm test sonuçları kayda alınır; (2) her bulgu eski kodda kırmızı test → en küçük düzeltme →
+  komşu testler; (3) ortak çekirdek (form izolasyonu, kapatma onayı, bildirim, klavye) ÖNCE ve TEK BAŞINA birleşir, bütün e2e + CI yeşil olmadan alan
+  düzeltmeleri birleşmez; (4) alan paketleri sırayla birleşir, her birleşmede değişen alan + bütün e2e; (5) numara/iade/toplu gönderim para-numara
+  çekirdeği → mutasyon + dar kontrol turu (ders 32); (6) bitişte tabanla fark: önceden yeşil olan her test ve senaryo yine yeşil, keşif bulguları kapalı,
+  bağımsız gözden geçirme yalnız gerileme arar; (7) son aday CI + Uzun Doğrulama + gerçek EDM test ortamında e-Belge akışı yeniden.
