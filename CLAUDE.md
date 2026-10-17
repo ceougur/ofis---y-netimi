@@ -706,6 +706,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   köken 403, oturumsuz/sahte çerez 401, bilinmeyen işlem 400, GET 405; lisans check bozuk/SQL denemesi 400, bilinmeyen lisans 409; /api/lisans/v1/durum
   yalnız keyId + signer/db (gizli yok); canlı sayfalarda anahtar/Supabase adresi yok (gitleaks 0); /admin CSP + DENY + HSTS + noindex. Operatör girişi
   denenmedi (sahte "hatalı giriş" kaydı düşmesin). Sonuç: canlıda da açık yok.
+- SORU (kullanıcı, 17.10.2026; ekran: Entegratör Ayarları — EDM, Test Ortamı, kullanıcı adı/parola girili, Servis Adresi test adresi, GB/PK "Önce Etiketleri
+  Getir"): "test denemelerine başlayacağım, ayarlar doğru mu?" → doğru; sıra: Kaydet → Bağlantıyı Test Et → Etiketleri Getir + GB/PK seç + Kaydet; Firma VKN =
+  EDM test hesabının VKN'si; Servis Adresi boş da olabilir (canlıya geçerken boşalt); denemeyi ikinci şirkette yap.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
