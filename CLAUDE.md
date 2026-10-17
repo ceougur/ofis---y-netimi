@@ -685,6 +685,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yayındaki 5 dosya + latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.1; gerçek eski güncelleyiciler (v2.4.0, v2.3.0, v2.2.0, v2.1.0 kodu) canlı
   GitHub'da 2.4.1'i "available" gördü, 2.4.1 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#17 BİRLEŞTİ (kullanıcı "birleştir"; main cccfb25, main PDF 1ed34558… doğrulandı). 2.4.1 KAPANDI;
   açık: release.yml run 39010296441 (sürümlü exe) sonucu okunacak. Sonra: Pazar 18.10 planlı test, e-SMM (EDM'den servis/belge/yetki), fiyat/lisans, devir (22.10).
+- SORU (kullanıcı, 17.10.2026; bir videodan "canlıya çıkmadan 5 kontrol": hız sınırı, ortam değişkeni doğrulama, merkezi hata yönetimi, havuz + sağlık ucu,
+  geri dönüş/yedek — "bizde karşılığı var mı?") → koddan cevap verildi: giriş/sohbet hız sınırı VAR (auth.mjs:17, chat.mjs:155), genel API sınırı YOK (yerel ağda
+  yeterli; uzaktan bağlanma ile ZORUNLU); zorunlu gizli anahtar yok, varsayılan parola ilk girişte değişir; merkezi hata VAR (app.mjs:515 genel ileti) ama
+  "şirket açılamadı" 503 iletisi ham hata metni içerebilir (app.mjs:497); /api/health VAR ama veri tabanına dokunmuyor (açık); güncellemede deneme kipi +
+  kendiliğinden önceki sürüme dönüş + 6 saatte bir yedek/30 kopya/geri yükleme VAR. ÖNERİ 2.4.2 (KARAR BEKLENİYOR): (1) sağlık ucu her şirket dosyasına
+  küçük okuma (dönüşü de tetikler) ~½ gün, (2) 503 iletisini sadeleştir, (3) hatalı ortam değeri açılışta uyarı; (4) genel hız sınırı uzaktan bağlanma işine bağlanır.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
