@@ -96,9 +96,9 @@ const decodeContent = base64 => {
 const sessionError = (code, message) => String(code) === "10011" || /aktif\s*session|session\s*bulunamad|session.*(expired|not\s*found)|oturum.*(bulunamad|sona)/i.test(String(message || ""));
 
 /**
- * @param {{ baseUrl: string, username: string, password: string, fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, appName?: string }} options
+ * @param {{ baseUrl: string, username: string, password: string, env?: "test"|"live", fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, appName?: string }} options
  */
-export function createEdmClient({ baseUrl, username, password, fetchImpl = (...args) => globalThis.fetch(...args), timeoutMs = 45_000, useWsdl = true, appName = APP }) {
+export function createEdmClient({ baseUrl, username, password, env = "", fetchImpl = (...args) => globalThis.fetch(...args), timeoutMs = 45_000, useWsdl = true, appName = APP }) {
   const base = String(baseUrl || "").trim().replace(/\/+$/, "").replace(/\?.*$/, "");
   if (!/^https:\/\//i.test(base) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//i.test(`${base}/`)) throw new IntegratorError("EDM servis adresi https:// ile başlamalı.", { code: "integrator-url", status: 400 });
   if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura → Entegratör Ayarları).", { code: "integrator-credentials", status: 400 });
@@ -197,8 +197,17 @@ export function createEdmClient({ baseUrl, username, password, fetchImpl = (...a
       E("COMPRESSED", "N"),
     ]);
 
+  // 2.4.1: canlı adreste test hesabıyla giriş "Kullanıcı Bulunamadı! (EDM hata kodu 11010)" döner (docs/kanit/2026-10-16/canli-kart);
+  // EDM'nin iletisi kalır, sonuna seçili ortamın hangi hesabı istediği eklenir.
+  const LOGIN_HINT = { live: "Canlı Ortam'da EDM'nin canlı hesabının kullanıcı adı ve parolası girilir (test hesabı canlıda geçmez).", test: "Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)." }[env] || "";
   async function login() {
-    const body = await call("Login", E("LoginRequest", [header("-1"), E("USER_NAME", username), E("PASSWORD", password)]));
+    let body;
+    try {
+      body = await call("Login", E("LoginRequest", [header("-1"), E("USER_NAME", username), E("PASSWORD", password)]));
+    } catch (error) {
+      if (LOGIN_HINT && error instanceof IntegratorError && error.code === "integrator-rejected") error.message = `${error.message}. ${LOGIN_HINT}`;
+      throw error;
+    }
     const session = textOf(deep(body, "SESSION_ID"));
     if (!session) throw new IntegratorError("EDM oturum anahtarı vermedi; kullanıcı adı ya da parola yanlış olabilir.", { code: "integrator-login" });
     sessions.set(sessionKey, { id: session, at: Date.now() });

@@ -62,7 +62,7 @@ export function connect({ integrator, seller = {}, fetchImpl }) {
   };
   let client;
   try {
-    client = createEdmClient({ baseUrl: integratorUrl(integrator), username: integrator?.username, password: integrator?.password, fetchImpl });
+    client = createEdmClient({ baseUrl: integratorUrl(integrator), username: integrator?.username, password: integrator?.password, env: integrator?.env, fetchImpl });
   } catch (error) {
     throw toHttp(error);
   }
