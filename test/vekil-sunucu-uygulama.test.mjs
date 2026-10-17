@@ -81,7 +81,8 @@ describe("Vekil sunucu: program uçları ve EDM trafiği", () => {
     proxyPort = proxy.address().port;
     root = mkdtempSync(path.join(tmpdir(), "vekil-uygulama-"));
     // Servis adresi yerel olmayan bir ad (edm.test, vekil sunucunun arkasında): canlı kilidi test dışı adresi reddettiği için (2.4.0 bitiş turu Y1/E1)
-    // bu sınama canlı açık kurulumla yapılır; ortam yine "test" seçili.
+    // bu sınama canlı açık kurulumla yapılır. 2.4.1 (gözden geçirme G3): Servis Adresi Çalışma Ortamı'yla uyumlu olmalı — Test Ortamı yalnız test adresini
+    // kabul eder; test dışı ad (edm.test) bu yüzden Canlı Ortam'la sınanır (sınanan şey vekil yolu, ortam değil).
     server = await startTestServer({ edocEnabled: true, edocLive: true, outboundTls: { ca: cert }, env: { ...NO_ENV_PROXY, HUKUK_NETWORK_FILE: path.join(root, "ag-ayari.json") } });
     const client = server.client();
     api = { login: (...args) => client.login(...args), get: async url => unwrap(await client.get(url)), post: async (url, body) => unwrap(await client.post(url, body)), put: async (url, body) => unwrap(await client.put(url, body)) };
@@ -136,7 +137,7 @@ describe("Vekil sunucu: program uçları ve EDM trafiği", () => {
       seller: { name: "Deneme Ofis Ltd.", taxNo: OUR_VKN, taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara", email: "bilgi@deneme.com.tr" },
       efatura: true,
       earsiv: true,
-      integrator: { env: "test", baseUrl, username: "edmkullanici", password: "Gizli-Parola-1" },
+      integrator: { env: "live", baseUrl, username: "edmkullanici", password: "Gizli-Parola-1" },
     });
     assert.equal(saved.status, 200, JSON.stringify(saved.data));
     assert.deepEqual(saved.data.integrator.network, { source: "manual", address: `http://127.0.0.1:${proxyPort}` }, "Entegratör kartı yolu gösterir");
