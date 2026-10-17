@@ -695,6 +695,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - İSTEK (kullanıcı, 17.10.2026): "web sitesinde ya da hem web sitesi GitHub'ında hem program GitHub'ında açık API, unutulmuş şifre, sızıntı var mı — maliyetsiz
   test yap" → BAŞLADI: iki deponun bütün git geçmişi (gitleaks + kendi desen taraması + bilinen gizlilerin parmak izi), GitHub gizli tarama, yayın dosyaları,
   canlı uçlara yalnız OKUMA denemesi (yetkisiz istek reddediliyor mu). Değişiklik yapılmaz; bulgu → kullanıcıya rapor + öneri.
+  SONUÇ (17.10.2026; kullanıcı ek: "web sitesinin kodunu da okut"): SIZINTI YOK — gitleaks (iki depo, bütün geçmiş): site 0, program 20 (hepsi yanlış alarm:
+  senaryo adı, açık keyId, test parolası); özel anahtar/JWT/service_role/sb_secret 0; imza anahtarı ve EDM test hesabı parmak izi 0; yayındaki güncelleme
+  zip'i 251 dosya temiz. Site kodu okundu: gizliler Vercel ortamında, Supabase tabloları RLS + revoke, 3 RPC API sırrı ister (SHA-256), operatör parolası
+  bcrypt, IP başına 5/15 dk kilit, oturum HttpOnly+SameSite=Strict+köken+özel başlık, panelde her değer esc() + CSP. İş akışları: imza anahtarı yalnız
+  etiket push'unda, CI pull_request (fork'a sır yok). DÜŞÜK: operatör girişinde genel 100 hata/15 dk kilidi kötüye kullanılıp operatör kilitlenebilir;
+  varsayılan yönetici parolası açık depoda (ilk girişte değişir). DENENMEYEN: canlı uçlar (destek-ofis.vercel.app ağ kuralıyla kapalı; Vercel bağlantısı
+  projeye yetkisiz 403), Supabase doğrudan (adres depoda yok), kurulum .exe içi (sıkıştırılmış).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
