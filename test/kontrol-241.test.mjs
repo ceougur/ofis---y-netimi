@@ -3,6 +3,8 @@
 //      istiyordu). G2 (DÜŞÜK): düzenlemede tür KAGIT gelirse kâğıt makbuz TES numarasını taşıyordu.
 //  G3 (ORTA, 2.4.0'dan): canlı açık kurulumda (edocLive) Test Ortamı seçiliyken Servis Adresi'ne canlı adres yazılabiliyordu → test serisi (TEF/TEA,
 //      TEST şeridi) belge canlı EDM'ye gider; giriş iletisi de test hesabını isterdi. Tersi: Canlı Ortam + test adresi → yasal numaralı belge GİB'e gitmez.
+//  Dar kontrol turu (fa01323..c5606d5): B1 e-SMM açık kurulumda işaret kaldırılınca TES numaralı makbuz kâğıda dönüyordu; B2 Canlı Ortam + test adresinin
+//      yazım varyantı (sonda "/", büyük harf, :443) kabul ediliyordu; B3 Test Ortamı + aynı varyantlar yanlış reddediliyordu.
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
@@ -73,6 +75,30 @@ describe("G1/G2: 2.4.0'dan kalan e-SMM makbuzu ve taslağı 2.4.1'de", () => {
   });
 });
 
+describe("B1: e-SMM açık kurulumda işaret kaldırılınca numaralı e-SMM makbuzu türünü korur", () => {
+  let ctx;
+  before(async () => {
+    ctx = await boot({ esmmEnabled: true });
+  });
+  after(async () => {
+    await ctx?.server.close();
+  });
+  test("TES numaralı makbuz düzenlenince ESMM kalır; işaretsiz taslak kâğıt olur", async () => {
+    assert.equal((await ctx.api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, esmm: true })).status, 200);
+    const account = await ctx.api.post("/api/workspace/accounts", CLIENT);
+    const accountId = account.data.id || account.data.account?.id;
+    const issued = (await ctx.api.post("/api/workspace/invoices", { scenario: "smm", accountId, lines: LINES, payment: { rest: "open" } })).data;
+    assert.match(issued.number, /^TES\d{13}$/);
+    assert.equal((await ctx.api.put("/api/workspace/invoices/settings", { esmm: false })).status, 200);
+    for (const profile of ["ESMM", "KAGIT"]) {
+      const edited = await ctx.api.post(`/api/workspace/invoices/${issued.id}/edit`, { kind: "smm", scenario: "smm", accountId, issueDate: issued.issueDate, issueTime: issued.issueTime, profile, currency: "TRY", lines: [{ ...LINES[0], unitPrice: 1200 }], payment: { rest: "open" } });
+      assert.equal(edited.status, 200, `${profile}: ${JSON.stringify(edited.data)}`);
+      assert.equal(edited.data.profile, "ESMM", `${profile}: TES numaralı belge kâğıt olmaz`);
+      assert.equal(edited.data.number, issued.number);
+    }
+  });
+});
+
 describe("G3: Servis Adresi ile Çalışma Ortamı uyumlu olmalı (canlı açık kurulum)", () => {
   let ctx;
   let calls = 0;
@@ -90,6 +116,21 @@ describe("G3: Servis Adresi ile Çalışma Ortamı uyumlu olmalı (canlı açık
     const liveTest = await ctx.api.put("/api/workspace/invoices/settings", { integrator: { env: "live", baseUrl: EDM_URLS.test, username: "u", password: "p" } });
     assert.equal(liveTest.status, 400, JSON.stringify(liveTest.data));
     assert.equal(liveTest.data.code, "integrator-env-url");
+  });
+  test("B2/B3: adresin yazım varyantları (sonda /, büyük harf, :443) ortamına göre aynı sayılır", async () => {
+    const variants = url => [`${url}/`, url.replace("https://test.", "https://TEST.").replace("https://portal2.", "https://PORTAL2."), url.replace(".com.tr/", ".com.tr:443/")];
+    for (const baseUrl of variants(EDM_URLS.test)) {
+      const liveTest = await ctx.api.put("/api/workspace/invoices/settings", { integrator: { env: "live", baseUrl, username: "u", password: "p" } });
+      assert.equal(liveTest.status, 400, `Canlı + ${baseUrl}: ${JSON.stringify(liveTest.data)}`);
+      assert.equal(liveTest.data.code, "integrator-env-url");
+      const testTest = await ctx.api.put("/api/workspace/invoices/settings", { integrator: { env: "test", baseUrl, username: "u", password: "p" } });
+      assert.equal(testTest.status, 200, `Test + ${baseUrl}: ${JSON.stringify(testTest.data)}`);
+    }
+    for (const baseUrl of variants(EDM_URLS.live)) {
+      const testLive = await ctx.api.put("/api/workspace/invoices/settings", { integrator: { env: "test", baseUrl, username: "u", password: "p" } });
+      assert.equal(testLive.status, 400, `Test + ${baseUrl}: ${JSON.stringify(testLive.data)}`);
+    }
+    assert.equal((await ctx.api.put("/api/workspace/invoices/settings", { integrator: { env: "test", baseUrl: "" } })).status, 200);
   });
   test("uyumlu ayarlar kaydedilir (boş adres, ortamın kendi adresi)", async () => {
     for (const [env, baseUrl] of [["test", ""], ["test", EDM_URLS.test], ["live", ""], ["live", EDM_URLS.live]]) {

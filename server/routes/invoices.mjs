@@ -16,6 +16,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import path from "node:path";
 import { parseQty } from "../lib/accounts.mjs";
 import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl, testOnlyUrl } from "../lib/einvoice/adapters.mjs";
+import { EDM_URLS } from "../lib/einvoice/edm.mjs";
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
@@ -409,11 +410,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive, network: networkSummary() } };
   };
   const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true, autoCheckUser: s.integrator.autoCheckUser === true });
+  // Dar kontrol B2/B3: adres yazım varyantlarıyla (sonda "/", büyük harf, :443) karşılaştırılır — istemci (edm.mjs) sondaki "/"yi zaten atar.
+  const sameUrl = (a, b) => {
+    const norm = url => { try { const u = new URL(String(url).trim()); return `${u.protocol}//${u.host.toLowerCase()}${u.pathname.replace(/\/+$/, "")}`; } catch { return String(url).trim(); } };
+    return norm(a) === norm(b);
+  };
   function envUrlMismatch(env, baseUrl) {
     const value = String(baseUrl || "").trim();
     if (!value || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/\S*)?$/i.test(value)) return "";
-    if (env !== "live" && !testOnlyUrl(value)) return "Test Ortamı seçiliyken Servis Adresi yalnız entegratörün test adresi olabilir. Canlıya geçmek için Çalışma Ortamı'nda Canlı Ortam'ı seçin; Servis Adresi boş kalabilir.";
-    if (env === "live" && testOnlyUrl(value)) return "Canlı Ortam seçiliyken Servis Adresi test adresi olamaz; alanı boş bırakın (canlı adres kullanılır).";
+    const isTest = testOnlyUrl(value) || sameUrl(value, EDM_URLS.test);
+    if (env !== "live" && !isTest) return "Test Ortamı seçiliyken Servis Adresi yalnız entegratörün test adresi olabilir. Canlıya geçmek için Çalışma Ortamı'nda Canlı Ortam'ı seçin; Servis Adresi boş kalabilir.";
+    if (env === "live" && isTest) return "Canlı Ortam seçiliyken Servis Adresi test adresi olamaz; alanı boş bırakın (canlı adres kullanılır).";
     return "";
   }
   function integrator(s = settings()) {
@@ -1196,7 +1203,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const time = text(body.issueTime ?? existing?.issueTime ?? "") || nowTime();
     if (!TIME.test(time)) fail400("Fatura saati SS:DD biçiminde olmalı (ör. 14:30).", "issueTime");
     // 2.4.1 (G1/G2): 2.4.0'da e-SMM serisinden numara almış makbuz düzenlenirken türü korunur (numarası TES/ESM; kâğıt belgeye geçmez, gönderilemez — 2.4.0'daki gibi).
-    const legacyEsmm = kind === "smm" && !esmmEnabled && existing && existing.status !== "draft" && existing.profile === "ESMM";
+    // Dar kontrol B1: bayrak açıkken işaret sonradan kaldırılsa da aynı kural (numaralı e-SMM makbuzu kâğıda dönmez).
+    const legacyEsmm = kind === "smm" && existing && existing.status !== "draft" && existing.profile === "ESMM";
     const profile = legacyEsmm ? "ESMM" : original && !meta.own ? profileFor(kind, account, text(body.profile) || "KAGIT", s) : profileFor(kind, account, text(body.profile ?? (existing && existing.status === "draft" ? "" : existing?.profile) ?? ""), s);
     const currency = original ? original.currency : CURRENCIES[text(body.currency)] ? text(body.currency) : existing?.currency || "TRY";
     let rate = 1;
