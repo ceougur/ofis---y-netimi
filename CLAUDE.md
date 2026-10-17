@@ -738,6 +738,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yayındaki 5 dosya + latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.2; gerçek eski güncelleyiciler (v2.4.1, v2.4.0, v2.3.0, v2.2.0, v2.1.0 kodu)
   canlı GitHub'da 2.4.2'yi "available" gördü, 2.4.2 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#18 BİRLEŞTİ (kullanıcı "birleştir"; main 62883a0, main PDF 2f5fc5cd… doğrulandı). 2.4.2 KAPANDI;
   açık: kullanıcı Edge kaydetme önerilerinin kalktığını kendi makinesinde doğrulayacak (kalkmazsa ayrı tarayıcı profili önerisi). Sonra: Pazar 18.10 planlı test, e-SMM, fiyat/lisans, devir (22.10).
+- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: TEF2026358238234 TESTER, TCKN 12345678950, Belge Türü e-Fatura (Temel), gönderimde "posta kutusu" uyarısı):
+  TCKN EDM'de mükellef DEĞİL (CheckUser false) ama cari kartında "e-Fatura mükellefi" işaretli → belge TEF ile e-Fatura oldu, PK yok → 409 buyer-alias. Sahte
+  EDM'de yeniden üretildi (scratchpad/tester-repro): (a) işaret kaldırılınca Düzenle 400 profile-not-allowed — çıkmaz yol; (b) Düzenle'de belge türü e-Arşiv
+  seçilirse 200 ve belge TEF numarasıyla EARSIVFATURA olur (e-Fatura serisi numarası e-Arşiv belgesinde) — KUSUR. Kullanıcıya yol: İptal Et (EDM'ye gitmedi)
+  → cari Mükellef Sorgula (işaret kalkar) → Kopyala → TEA e-Arşiv olarak Kaydet ve Gönder. 2.4.3 ADAYI (karar kullanıcıda): numaralı belgede Düzenle belge
+  türünü (profil/seri) değiştiremez, ileti "iptal edip yeniden kesin"; formda cari seçilince e-Fatura mükellefi ama PK seçilmemişse kaydetmeden uyarı
+  ("Mükellef Sorgula"); buyer-alias iletisi carinin mükellef olmadığı durumda doğru yolu söylesin. TEF2026358238233 (TEST BILISIM) EDM'de SEND - SUCCEED (17:21 TR).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
