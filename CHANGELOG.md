@@ -2,6 +2,10 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.3 — İyileştirmeler
+
+- İyileştirmeler ve hata düzeltmeleri (e-Fatura / e-Arşiv). Ayrıntı: docs/2.4.3-DEGISIKLIKLER.md.
+
 ## 2.4.2 — İyileştirmeler
 
 - İyileştirmeler ve hata düzeltmeleri (e-Fatura / e-Arşiv test ortamı). Ayrıntı: docs/2.4.2-DEGISIKLIKLER.md.
