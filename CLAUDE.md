@@ -709,6 +709,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - SORU (kullanıcı, 17.10.2026; ekran: Entegratör Ayarları — EDM, Test Ortamı, kullanıcı adı/parola girili, Servis Adresi test adresi, GB/PK "Önce Etiketleri
   Getir"): "test denemelerine başlayacağım, ayarlar doğru mu?" → doğru; sıra: Kaydet → Bağlantıyı Test Et → Etiketleri Getir + GB/PK seç + Kaydet; Firma VKN =
   EDM test hesabının VKN'si; Servis Adresi boş da olabilir (canlıya geçerken boşalt); denemeyi ikinci şirkette yap.
+- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: onay "FIS2026000000001 … Kaydet ve Gönder … entegratöre gönderilir"): belge türü KAGIT (FIS serisi) olduğu hâlde
+  form "Kaydet ve Gönder" düğmesini ve "entegratöre gönderilir" metnini gösteriyor (hof-invoices.js:1849 sendable: calc.profile yoksa "" ≠ KAGIT → true). Olası
+  neden kullanıcıda Fatura Ayarları "e-Fatura mükellefiyim / e-Arşiv kullanıcısıyım" kapalı (invoices.mjs:1109 → KAGIT). Kullanıcıya yol verildi. 2.4.2 ADAYI:
+  KAGIT'ta düğme "Kaydet", metin kâğıt belge; entegratör bağlıyken işaretler kapalıysa kartta uyarı. Yeniden üretilip kırmızı testle düzeltilecek (karar kullanıcıda).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
