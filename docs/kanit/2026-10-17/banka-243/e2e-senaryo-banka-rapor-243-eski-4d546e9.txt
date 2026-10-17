@@ -1,0 +1,250 @@
+(node:5969) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ C3. Masraf formu: seçilen hesabın bakiyesi ve İşlemden Sonra; Engelle hesabında eksiye düşerken kırmızı + kural
+  ✗ Masraf (Vakıf) satırı: “” (beklenen bakiye ₺309.249,85, sonra ₺309.232,35)
+  ✗ Engelle hesabı (100 TL, masraf 150): kırmızı false, “”
+
+■ C3. Transfer formu: gönderen ve alıcı hesabın bakiyesi ve İşlemden Sonra (ücretli transferde gönderenden tutar + ücret çıkar)
+  ✗ Gönderen (Ziraat): “” (beklenen sonra ₺274.414,39)
+  ✗ Alıcı (Garanti): “” (beklenen sonra ₺400.791,21)
+  ✓ kaydedildi: Ziraat 274414.39, Garanti 400791.21 (sunucu = ekrandaki İşlemden Sonra)
+
+■ C3. Bakiye görme yetkisi yokken (sunucu bakiye göndermez) Masraf formunda bakiye satırı yok
+  ✓ bakiyesiz yanıtta satır yok
+
+■ C7. Hareketler → Başlangıç'a klavyeyle tarih: ara değerlerle istek yok, 400 yok; geçerli tarihte tek istek ve doğru liste
+  ✓ alan değeri 2026-09-09
+  ✗ istekler: 0002-09-09 → 400, 0020-09-09 → 400, 0202-09-09 → 200, 2026-09-09 → 200
+  ✓ liste yalnız 09.09.2026 ve sonrası (2 satır; en eski 2026-09-11)
+
+■ C11. Banka penceresi kapatılıp açılınca son sekme (Hareketler) ve süzgeç (Ziraat, 09.09.2026) hatırlanır
+  ✗ yeniden açılış: sekme overview, Hesap “”, Başlangıç boş
+  ✗ Süzgeçleri Temizle görünür (süzgecin açık olduğu belli)
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-act="mv-clear"]')[22m
+
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c/test/e2e/senaryo-banka-rapor-243.mjs:293:16
+    at async step (/home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c/test/e2e/senaryo-banka-rapor-243.mjs:72:5)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c/test/e2e/senaryo-banka-rapor-243.mjs:281:3
+
+■ C12. Uzun hesap adı Masraf ve Transfer seçicisinde kesilmez ya da tam adı ipucunda
+  ✗ Vakıf seçici: metin 476 px, alan 347 px, ipucu “”
+  ✗ tam ad alana sığıyor (476 ≤ 347)
+
+■ C14 / C15. Rapor Merkezi: Banka ve POS Hareketleri Banka grubunda; Banka Nakit Akış'ta ileriye dönük dönemler
+  ✗ Banka ve POS Hareketleri grubu: Kasa
+  ✗ Nakit Akış dönemleri: Bu Ay, Geçen Ay, Son 30 Gün, Bu Yıl, Tüm Zamanlar
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible [data-rc-main] [data-preset="next30"]')[22m
+
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c/test/e2e/senaryo-banka-rapor-243.mjs:328:16
+    at async step (/home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c/test/e2e/senaryo-banka-rapor-243.mjs:72:5)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c/test/e2e/senaryo-banka-rapor-243.mjs:321:3
+
+■ C9. Rapor Merkezi ekranında tutar ₺ önde (Banka → Hesaplar ile aynı metin); PDF/Excel bağları değişmez
+  ✗ Banka Bakiye Raporu Ziraat Dönem Sonu “274.414,39 TL” = ₺274.414,39
+  ✗ ekranda “… TL” biçimi yok (0,00 TL | 0,00 TL | 1.018,55 TL)
+  ✗ Banka → Hesaplar satırında aynı metin (“274.414,39 TL”): ZIR-TL Ziraat Bankası · Ana TL Hesabı Kızılay Şubesi Vadesiz TL TR34 0001 0000 0000 0001 2345 67 102.01 ₺274.414,39 Etkin Bakiye Doğrulandı
+
+■ C4. Süzgeç değişirken tablo kalkmaz (aria-busy), yükseklik çökmez; geç gelen eski yanıt yeni sonucu ezmez
+  ✗ yüklenirken tablo yerinde (boş, boş, boş, boş)
+  ✗ yükseklik çökmedi (önce 862, yüklenirken en az 492)
+  ✗ yüklenirken aria-busy (, , , )
+  ✗ gösterge: “”
+  ✓ son seçim (Garanti) ekranda; geç gelen Ziraat yanıtı ezmedi: Garanti BBVA · Ana TL Hesabı
+  ✗ rapor değişince yer tutucu: yükseklik 862 → 492, aria-busy null
+  ✓ boş dönem: “Bu dönemde kayıt yok. Tüm Zamanları Göster”
+
+■ C5. 1366×768: Banka Hareket Raporu'nun ilk satırı ve TOPLAM'ı ilk bakışta (kaydırmadan) görünür
+  ✗ ilk satır alt kenarı 758, TOPLAM 1000, görünen alan 750 (kaydırma 0)
+
+■ C6 / C12. 1920×1080 banka raporlarında yatay kaydırma yok, Bakiye görünür, Hesap en çok iki satır; 1280'de Hesaplar'ın Kod ve Tür hücresi tek satır
+  ✗ banka-hareket: kaydırma 875/822, son kolon “Bakiye” 1573 ≤ 1521, Hesap 8 satır
+  ✗ banka-bakiye: kaydırma 915/822, son kolon “Dönem Sonu” 1613 ≤ 1521, Hesap 4 satır
+  ✓ banka-masraf: kaydırma 822/822, son kolon “Açıklama” 1520 ≤ 1521, Hesap 0 satır
+  ✗ banka-gunluk: kaydırma 849/822, son kolon “Gün Sonu Bakiye” 1547 ≤ 1521, Hesap 0 satır
+  ✗ banka-aylik: kaydırma 935/822, son kolon “Ay Sonu Bakiye” 1633 ≤ 1521, Hesap 0 satır
+  ✗ cari-banka-hareketleri: kaydırma 822/822, son kolon “Giren” 1520 ≤ 1521, Hesap 5 satır
+  ✓ banka-pos-hareketleri: kaydırma 822/822, son kolon “Giren” 1520 ≤ 1521, Hesap 0 satır
+  ✓ kasa-banka-transfer: kaydırma 822/822, son kolon “Giren” 1520 ≤ 1521, Hesap 0 satır
+  ✗ bankalar-arasi-transfer: kaydırma 837/822, son kolon “Açıklama” 1535 ≤ 1521, Hesap 0 satır
+  ✗ 1280 Hesaplar Kod/Tür tek satır: 1/1 1/1 1/1 1/1 2/2
+
+ÖLÇÜM {
+ "c3Masraf": "",
+ "c7": {
+  "seen": [
+   {
+    "from": "0002-09-09",
+    "status": 400
+   },
+   {
+    "from": "0020-09-09",
+    "status": 400
+   },
+   {
+    "from": "0202-09-09",
+    "status": 200
+   },
+   {
+    "from": "2026-09-09",
+    "status": 200
+   }
+  ],
+  "value": "2026-09-09"
+ },
+ "c12": {
+  "text": "Türkiye Vakıflar Bankası T.A.O. · Kurumsal Ticari Mevduat Hesabı (TUR-TL)",
+  "width": 476,
+  "room": 347,
+  "title": ""
+ },
+ "c4": {
+  "before": 862.4375,
+  "samples": [
+   {
+    "height": 491.515625,
+    "table": false,
+    "busy": null
+   },
+   {
+    "height": 491.515625,
+    "table": false,
+    "busy": null
+   },
+   {
+    "height": 491.515625,
+    "table": false,
+    "busy": null
+   },
+   {
+    "height": 491.515625,
+    "table": false,
+    "busy": null
+   }
+  ]
+ },
+ "c5": {
+  "row": 758,
+  "total": 1000,
+  "bottom": 750,
+  "scrollTop": 0
+ },
+ "c6": [
+  {
+   "id": "banka-hareket",
+   "scroll": 875,
+   "client": 822,
+   "lastRight": 1573,
+   "boxRight": 1521,
+   "lastHead": "Bakiye",
+   "maxLines": 8
+  },
+  {
+   "id": "banka-bakiye",
+   "scroll": 915,
+   "client": 822,
+   "lastRight": 1613,
+   "boxRight": 1521,
+   "lastHead": "Dönem Sonu",
+   "maxLines": 4
+  },
+  {
+   "id": "banka-masraf",
+   "scroll": 822,
+   "client": 822,
+   "lastRight": 1520,
+   "boxRight": 1521,
+   "lastHead": "Açıklama",
+   "maxLines": 0
+  },
+  {
+   "id": "banka-gunluk",
+   "scroll": 849,
+   "client": 822,
+   "lastRight": 1547,
+   "boxRight": 1521,
+   "lastHead": "Gün Sonu Bakiye",
+   "maxLines": 0
+  },
+  {
+   "id": "banka-aylik",
+   "scroll": 935,
+   "client": 822,
+   "lastRight": 1633,
+   "boxRight": 1521,
+   "lastHead": "Ay Sonu Bakiye",
+   "maxLines": 0
+  },
+  {
+   "id": "cari-banka-hareketleri",
+   "scroll": 822,
+   "client": 822,
+   "lastRight": 1520,
+   "boxRight": 1521,
+   "lastHead": "Giren",
+   "maxLines": 5
+  },
+  {
+   "id": "banka-pos-hareketleri",
+   "scroll": 822,
+   "client": 822,
+   "lastRight": 1520,
+   "boxRight": 1521,
+   "lastHead": "Giren",
+   "maxLines": 0
+  },
+  {
+   "id": "kasa-banka-transfer",
+   "scroll": 822,
+   "client": 822,
+   "lastRight": 1520,
+   "boxRight": 1521,
+   "lastHead": "Giren",
+   "maxLines": 0
+  },
+  {
+   "id": "bankalar-arasi-transfer",
+   "scroll": 837,
+   "client": 822,
+   "lastRight": 1535,
+   "boxRight": 1521,
+   "lastHead": "Açıklama",
+   "maxLines": 0
+  }
+ ],
+ "c12Hesaplar": [
+  {
+   "code": 1,
+   "kind": 1,
+   "text": "ZIR-TL Ziraat Bankası · Ana TL Hesabı Kızılay Şubesi Vadesiz"
+  },
+  {
+   "code": 1,
+   "kind": 1,
+   "text": "GAR-TL Garanti BBVA · Ana TL Hesabı Vadesiz TL TR48 0006 200"
+  },
+  {
+   "code": 1,
+   "kind": 1,
+   "text": "TUR-TL Türkiye Vakıflar Bankası T.A.O. · Kurumsal Ticari Mev"
+  },
+  {
+   "code": 1,
+   "kind": 1,
+   "text": "AKB-TL Akbank · Küçük Hesap Vadesiz TL — 102.04 ₺100,00 Etki"
+  },
+  {
+   "code": 2,
+   "kind": 2,
+   "text": "GAR-KART Garanti BBVA · Şirket Kartı Öneri: Garanti BBVA · A"
+  }
+ ]
+}
+  ✓ sayfa hatası yok
+
+✗ senaryo-banka-rapor-243: 10 geçti, 29 kaldı · depo /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/banka243-eski-4d546e9 · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c/test/e2e/artifacts/senaryo-banka-rapor-243
+cikis 1

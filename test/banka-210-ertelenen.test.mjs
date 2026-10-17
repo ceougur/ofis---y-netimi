@@ -172,10 +172,10 @@ describe("2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'de
   // 2.3.0 (bilerek güncellendi): §8.10 kalan raporlar (İz 3.3; raporlar-230-banka) ve POS Satış / POS Komisyon (İz 5.3; rapor-230-iz5) geldi.
   // Hâlâ yok: POS Bekleyen / Valör raporları (Banka penceresinin POS sekmeleri), Banka Mutabakat Raporu (ekstre listeden çıktı, 13.10.2026),
   // Kur Değerleme Raporu (döviz ertelendi).
-  it("Rapor Merkezi: Banka grubu 19 rapor; Mutabakat, Kur Değerleme, POS Bekleyen / Valör listede yok ve 404 (ekran, PDF, Excel)", async () => {
+  it("Rapor Merkezi: Banka grubu 20 rapor (2.4.3: Banka ve POS Hareketleri dahil); Mutabakat, Kur Değerleme, POS Bekleyen / Valör listede yok ve 404 (ekran, PDF, Excel)", async () => {
     const catalog = await must("rapor listesi", ctx.api.get("/api/workspace/report-center"));
     const bank = catalog.reports.filter(report => report.group === "Banka").map(report => report.id).sort();
-    assert.deepEqual(bank, ["alt-hesap-mizani", "banka-aylik", "banka-bakiye", "banka-bazinda-bakiye", "banka-gunluk", "banka-hareket", "banka-masraf", "banka-nakit-akis", "bankalar-arasi-transfer", "cari-banka-hareketleri", "fatura-banka-hareketleri", "faturasi-beklenen-komisyonlar", "kasa-banka-transfer", "para-birimi-bazinda-bakiye", "pos-komisyon", "pos-odeme-takvimi", "pos-satis", "tahsildeki-cekler", "taksit-banka-hareketleri"], `Banka grubu: ${bank.join(", ")}`);
+    assert.deepEqual(bank, ["alt-hesap-mizani", "banka-aylik", "banka-bakiye", "banka-bazinda-bakiye", "banka-gunluk", "banka-hareket", "banka-masraf", "banka-nakit-akis", "banka-pos-hareketleri", "bankalar-arasi-transfer", "cari-banka-hareketleri", "fatura-banka-hareketleri", "faturasi-beklenen-komisyonlar", "kasa-banka-transfer", "para-birimi-bazinda-bakiye", "pos-komisyon", "pos-odeme-takvimi", "pos-satis", "tahsildeki-cekler", "taksit-banka-hareketleri"], `Banka grubu: ${bank.join(", ")}`);
     const titles = catalog.reports.map(report => report.title);
     for (const title of ["POS Bekleyen Raporu", "POS Valör Raporu", "Banka Mutabakat Raporu", "Kur Değerleme Raporu"]) assert.ok(!titles.includes(title), `listede ${title} olmamalı`);
     for (const title of ["POS Satış Raporu", "POS Komisyon Raporu", "Banka Nakit Akış Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Bankalar Arası Transfer Raporu"]) assert.ok(titles.includes(title), `listede ${title} olmalı (2.3.0)`);

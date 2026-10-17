@@ -199,6 +199,8 @@ async function compareReports(app, label, today, firstDay, banks, { viaWorker: u
         expected = plain(await old.center.run(user, id, new URLSearchParams(query)));
         // 2.3.0 İz 5.2 (bilerek): dönem metni "Tüm hareketler" → "Tüm Zamanlar"; eski fikstür eski metni yazar, sayılar aynıdır.
         if (typeof expected.subtitle === "string") expected.subtitle = expected.subtitle.split("Tüm hareketler").join("Tüm Zamanlar").split("Tüm zamanlar").join("Tüm Zamanlar");
+        // 2.4.3 (C14, bilerek): Banka ve POS Hareketleri Kasa grubundan Banka grubuna taşındı; satırlar ve sayılar aynıdır.
+        if (id === "banka-pos-hareketleri" && expected.group === "Kasa") expected.group = "Banka";
       } catch (caught) {
         error = caught;
       }

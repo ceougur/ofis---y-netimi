@@ -688,7 +688,9 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
     const role = await must("rol", api.post("/api/admin/roles", { name: "Finans Okuyucu 230", permissions: ["overview.view", "accounts.view"] }));
     const reader = apiOf(await createUser(ctx.server, api.client, { username: "r230-finans", role: role.id }));
     const list = await must("finans katalog", reader.get(RC));
-    assert.ok(!list.reports.some(report => report.group === "Banka"), "Finans Raporları rolü Banka grubunu görmez");
+    // 2.4.3 (C14, bilerek güncellendi): Banka grubunda yalnız Banka ve POS Hareketleri (Finans Raporları'yla açılır; eskiden Kasa grubundaydı).
+    assert.deepEqual(list.reports.filter(report => report.group === "Banka").map(report => report.id), ["banka-pos-hareketleri"], "Finans Raporları rolü Banka grubunda yalnız Banka ve POS Hareketleri'ni görür");
+    assert.ok(!list.choices, "hesap seçenekleri (Banka Raporları yetkisi) dönmez");
     for (const id of NEW_REPORTS) assert.equal((await reader.get(`${RC}/${id}`)).status, 403, `finans ${id}`);
     // Finans Raporları olan: Banka ve POS Hareketleri'nde Hesap süzgeci kullanabilir (Kasa grubu), ama 001'in hesabı adıyla değil kimliğiyle.
     assert.equal((await reader.get(`${RC}/banka-pos-hareketleri?payMethod=ccard`)).status, 200, "finans: Banka ve POS Hareketleri Kredi Kartı yolu");
