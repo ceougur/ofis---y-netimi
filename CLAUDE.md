@@ -757,6 +757,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   olursa söylerim"): tam npm test yarıda durduruldu (sonuç YOK), 30 dk raporu silindi. DEVAMDA: yardımcının bulguları eklenir → tam npm test +
   e2e entegrator-240/ebelge-242/243 → sürüm 2.4.3 (package.json/lock, kılavuz kapak/dip + hap bilgi: kutu Mükellef Sorgula ile, PK uyarısı, ödeme
   şekli) → CHANGELOG "İyileştirmeler" → KANIT → CI → bağımsız gözden geçirme → Uzun Doğrulama → imzalı paket → teslim → PR.
+  DEVAM (kullanıcı, 17.10.2026: "yardımcımın işi çıkmış, kalan adımlara devam"): sürüm 2.4.3 + kılavuz (3021d00); bağımsız gözden geçirme B1–B7 → B1–B4,
+  B6 düzeltildi (0352efd); tam npm test 2685/2685; gerçek EDM kanıtı; son aday 3e65842 [uzun-dogrulama] CI #819 YEŞİL. Uzun Doğrulama run 39045380135: 22/24
+  yeşil; "Mutabakat (windows, tohum 1)" 5.000 işlem TUTARLI ama test yardımcısının temizliği EPERM → kırmızı (+ kapı). Düzeltme yalnız test yardımcısında
+  (4d546e9, test-temizlik-243; CI #820 YEŞİL); imzalı paket 4d546e9'dan (zip f4fe08b3…, kurulum 59069744…; denetim 4/4). KARAR (kullanıcı, 17.10.2026 ~18:45 UTC:
+  "hatasız doğru düzgün olsun, gerektiği kadar bekleyelim") → Uzun Doğrulama PAKETLENEN commit 4d546e9'da baştan (run 39059370080, workflow_dispatch);
+  yeşil → teslim + PR. (3e65842'deki kırmızı işin yeniden koşusu da sürüyor; yalnız ek bilgi.)
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
