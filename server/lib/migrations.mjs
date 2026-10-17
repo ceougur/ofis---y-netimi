@@ -1255,6 +1255,16 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 28,
+    name: "v2.4.3 stok kartında KDV oranı (isteğe bağlı)",
+    up(store) {
+      // Fatura hız testi H8 (17.10.2026): KDV oranı stok kartında yoktu, her kalemde elle seçiliyordu. Faturada ürün seçilince kalemin KDV'si karttan
+      // önerilir (kullanıcı değiştirebilir). YALNIZ EKLEYİCİ: varsayılan NULL = tanımsız (bugünkü davranış: formun varsayılan oranı); eski sürüm aynı
+      // dosyayı okur, kolonu görmez; mutabakat kapısı stock_items'ın yalnız kind / deleted_at'ine bakar (para alanı değil).
+      store.raw("migration.v28", () => addColumn(store, "stock_items", "vat_rate", "REAL"));
+    },
+  },
 ];
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık

@@ -232,6 +232,8 @@
         { name: "unitPrice", label: "Alış Fiyatı (₺)", inputmode: "decimal", value: item?.unitPrice ? office().amountText?.(item.unitPrice) || item.unitPrice : "", placeholder: "Son alış fiyatı (maliyet, stok değeri)" },
         // v2.0.13: satış fiyatı ayrı; çıkış (satış) formu bu fiyatla açılır.
         { name: "salePrice", label: "Satış Fiyatı (₺)", inputmode: "decimal", value: item?.salePrice ? office().amountText?.(item.salePrice) || item.salePrice : "", placeholder: "Raf/etiket fiyatı (satışta önerilir)" },
+        // 2.4.3 (fatura hız testi H8): faturada bu ürün seçilince kalemin KDV oranı buradan gelir (kalemde değiştirilebilir); boşsa formun varsayılanı.
+        { name: "vatRate", label: "KDV Oranı", type: "select", value: item?.vatRate === null || item?.vatRate === undefined ? "" : String(item.vatRate), options: [{ value: "", label: "— Faturada Seçilir —" }, ...[0, 1, 10, 20].map(rate => ({ value: String(rate), label: `%${rate}` }))], help: "Faturada bu ürün seçilince kalemin KDV oranı buradan gelir; kalemde değiştirilebilir." },
         // İlk miktar (v2.0.8): stoğa girer. Kasa'ya kendiliğinden gider yazılmaz; "Kasa'ya yansıt" işaretlenirse
         // miktar × birim fiyat Kasa'dan "Stok ödemesi" olarak düşer (kullanıcı kararı).
         ...(item
@@ -465,7 +467,7 @@
   }
 
   // ---------- Excel'den yükleme ----------
-  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Bilgi (kartta saklanır)"], ["name", "Ürün Adı *"], ["code", "Stok Kodu"], ["unit", "Birim"], ["category", "Kategori"], ["qty", "Mevcut Miktar (açılış stoku)"], ["price", "Alış Fiyatı (birim fiyat)"], ["salePrice", "Satış Fiyatı"], ["min", "Kritik Seviye"], ["note", "Not"]];
+  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Bilgi (kartta saklanır)"], ["name", "Ürün Adı *"], ["code", "Stok Kodu"], ["unit", "Birim"], ["category", "Kategori"], ["qty", "Mevcut Miktar (açılış stoku)"], ["price", "Alış Fiyatı (birim fiyat)"], ["salePrice", "Satış Fiyatı"], ["vat", "KDV Oranı"], ["min", "Kritik Seviye"], ["note", "Not"]];
   async function importFromExcel() {
     const source = await office().chooseSheet?.({ title: "Ürünleri Toplu Yükle", eyebrow: moduleName().toLocaleUpperCase("tr-TR"), hint: "Binlerce kalem tek seferde açılır; miktar kolonu açılış stoku olur. Kolonları bir sonraki adımda eşlersiniz." });
     if (!source) return;
@@ -524,19 +526,28 @@
     const badge = document.querySelector('[data-badge="stock"]');
     if (badge) badge.textContent = alerts.length ? String(alerts.length) : "";
     if (!alerts.length) return;
-    const today = new Date().toISOString().slice(0, 10);
+    // 2.4.3 (keşif B8): gün kullanıcı başına sunucuda tutulur (yeni oturum / başka bilgisayar bildirimi yinelemez); tarayıcıdaki kayıt yalnız aynı
+    // gün sunucuya yeniden sormamak içindir (yerel gün, UTC değil).
+    const today = HOF.localToday ? HOF.localToday() : new Date().toISOString().slice(0, 10);
     let shown = "";
     try {
       shown = localStorage.getItem(ALERT_DAY) || "";
     } catch {
-      shown = today;
+      shown = "";
     }
     if (shown === today) return;
+    let show = false;
+    try {
+      ({ show } = await HOF.api("/api/workspace/stock/alerts/notified", { method: "POST", body: {}, background: true }));
+    } catch {
+      return;
+    }
     try {
       localStorage.setItem(ALERT_DAY, today);
     } catch {
-      // saklanamazsa her açılışta bir kez gösterilir
+      // saklanamazsa sunucu yine günde bir kez "göster" der
     }
+    if (!show) return;
     const names = alerts.slice(0, 4).map(item => `${item.name} (${qtyText(item.qty)} ${item.unit})`).join(", ");
     HOF.toast(`Kritik stok: ${names}${alerts.length > 4 ? ` ve ${alerts.length - 4} ürün daha` : ""}.`, { type: "error", timeout: 12000, action: { label: moduleName(), onClick: () => open() } });
   }

@@ -632,6 +632,10 @@
         dialog.querySelector('input[name="eInvoice"]').checked = result.registered;
         // Birden çok posta kutusu (gerçek EDM: bir firmada 11 PK görüldü, 16.10.2026): ilki sessizce yazılmaz, kullanıcı seçer.
         let alias = result.aliases[0] || "";
+        // 2.4.3 (keşif B6): pencere Vazgeç / Esc / × ile kapanırsa posta kutusu YAZILMAZ (önceden önerilen etiket yazılıp "yazıldı" deniyordu —
+        // yanlış PK'ye e-Fatura gider); alandaki önceki değer kalır.
+        let picked = true;
+        const aliasField = dialog.querySelector('input[name="eAlias"]');
         if (result.aliases.length > 1) {
           const preferred = result.aliases.find(item => /defaultpk@/i.test(item)) || result.aliases[0];
           alias = await new Promise(resolve => {
@@ -645,12 +649,17 @@
               onSubmit: data => {
                 chosen = data.alias;
               },
-              onClose: () => resolve(chosen || preferred),
+              onClose: () => resolve(chosen),
             });
           });
+          picked = Boolean(alias);
         }
-        dialog.querySelector('input[name="eAlias"]').value = alias;
-        HOF.toast(result.registered ? `e-Fatura mükellefi${result.title ? `: ${result.title}` : ""}. Posta kutusu etiketi yazıldı.` : "e-Fatura mükellefi değil; bu cariye e-Arşiv fatura kesilir.", { type: "success", timeout: 7000 });
+        if (picked) aliasField.value = alias;
+        // Unvan noktayla bitiyorsa (A.Ş.) ikinci nokta konmaz.
+        const who = result.title ? `: ${result.title}${/[.!?]$/.test(result.title.trim()) ? "" : "."}` : ".";
+        if (!result.registered) HOF.toast("e-Fatura mükellefi değil; bu cariye e-Arşiv fatura kesilir.", { type: "success", timeout: 7000 });
+        else if (picked) HOF.toast(`e-Fatura mükellefi${who} Posta kutusu etiketi yazıldı.`, { type: "success", timeout: 7000 });
+        else HOF.toast(`e-Fatura mükellefi${who} Posta kutusu seçilmedi; ${aliasField.value ? "önceki etiket korundu" : "etiket boş kaldı"}. e-Fatura kesmeden önce Mükellef Sorgula ile posta kutusunu seçin.`, { type: "info", timeout: 9000 });
       } catch (error) {
         HOF.toastError(error);
       } finally {

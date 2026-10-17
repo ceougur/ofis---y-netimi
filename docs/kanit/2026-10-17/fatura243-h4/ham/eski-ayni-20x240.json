@@ -1,0 +1,24 @@
+{
+ "root": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9",
+ "mode": "ayni",
+ "workers": 20,
+ "seconds": 240,
+ "prep": 1500,
+ "sureSn": 241,
+ "olayDongusuMs": {
+  "p50": 327,
+  "p99": 884,
+  "max": 1502
+ },
+ "istek": 5066,
+ "durum": {
+  "200": 4826,
+  "409": 240
+ },
+ "hata": {
+  "İptal 409 einvoice-sent Bu belge gönderildi. Önce GİB / entegratör tarafında iptal edin (e-Arşiv iptali ": 106,
+  "İptal 409 einvoice-processing e-Arşiv fatura EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Bi": 134
+ },
+ "autoSendFail": 0,
+ "autoSendMesaj": {}
+}
