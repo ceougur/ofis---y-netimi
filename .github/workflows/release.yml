@@ -65,6 +65,7 @@ jobs:
       - run: npm run test:senaryo-entegrator-240
       - run: npm run test:senaryo-ebelge-242
       - run: npm run test:senaryo-ebelge-243
+      - run: npm run test:senaryo-form-izolasyon-243
       - run: npm run test:banka-230-hareket-yaris
       - run: npm run test:banka-210-saat
       - run: npm run test:banka-210-kart-onbellek

@@ -10831,3 +10831,30 @@ input[type="search"]::-webkit-search-cancel-button {
 
 /* 2.4.2: tarayıcının parola yöneticisine görünmeyen gizli yazılı alan (hof-core.js quietAutofill) */
 .hof-secret { -webkit-text-security: disc; text-security: disc; }
+
+/* 2.4.3 (keşif B10): öneri listesinde klavyeyle işaretlenen satır (Aşağı / Yukarı ok) */
+.hof-case-picker-list li.is-active,
+.hof-inv-item-hits li.is-active {
+  background: var(--do-accent-soft);
+  outline: 2px solid var(--do-accent);
+  outline-offset: -2px;
+}
+/* 2.4.3 (keşif A6): aynı bildirim yığılmaz; tekrar sayısı ve kısa vurgu */
+.hof-toast-count {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font: 800 11px var(--do-font);
+}
+.hof-toast.is-repeat { animation: hof-toast-repeat 0.45s ease; }
+@keyframes hof-toast-repeat {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(-4px); }
+  60% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hof-toast.is-repeat { animation: none; }
+}
