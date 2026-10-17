@@ -745,6 +745,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   → cari Mükellef Sorgula (işaret kalkar) → Kopyala → TEA e-Arşiv olarak Kaydet ve Gönder. 2.4.3 ADAYI (karar kullanıcıda): numaralı belgede Düzenle belge
   türünü (profil/seri) değiştiremez, ileti "iptal edip yeniden kesin"; formda cari seçilince e-Fatura mükellefi ama PK seçilmemişse kaydetmeden uyarı
   ("Mükellef Sorgula"); buyer-alias iletisi carinin mükellef olmadığı durumda doğru yolu söylesin. TEF2026358238233 (TEST BILISIM) EDM'de SEND - SUCCEED (17:21 TR).
+  TEA2026732297197 (TESTER e-Arşiv) EDM'de SEND - SUCCEED (17:29 TR); iki belgenin resmî PDF karekodu çözüldü (senaryo/tutar programla aynı). GÖRÜNÜM: nakit
+  ödenen belgede "Ödeme Şekli: Havale / EFT" — Ek Seçenekler "Ödeme şeklini yaz" kapalıyken IBAN varsa 42 yazılıyor; kullanıcı seçeneği açtı.
+  KARAR (kullanıcı, 17.10.2026: "önerilerin mantıklı") → 2.4.3 BAŞLADI: (1) numaralı belgede Düzenle belge türünü değiştiremez ("iptal edip yeniden
+  kesin"); (2) e-Fatura carisinde posta kutusu seçilmemişse formda kaydetmeden uyarı + "Kaydet ve Gönder" numara harcamadan durur; buyer-alias
+  iletisi mükellef olmayan cari yolunu da söyler; (3) "Ödeme şeklini yaz" varsayılan AÇIK.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
