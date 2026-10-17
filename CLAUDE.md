@@ -736,7 +736,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   verildi; dal master'dan yeniden başlatıldı. SIRADA: kullanıcı v2.4.2'yi açar (5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı.
   YAYIMLANDI (kullanıcı "yayımladım", 17.10.2026 14:05 UTC; `v2.4.2` = b340bf6; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı):
   yayındaki 5 dosya + latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.2; gerçek eski güncelleyiciler (v2.4.1, v2.4.0, v2.3.0, v2.2.0, v2.1.0 kodu)
-  canlı GitHub'da 2.4.2'yi "available" gördü, 2.4.2 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#18 açıldı (PDF 2f5fc5cd…; kullanıcı "birleştir" bekleniyor).
+  canlı GitHub'da 2.4.2'yi "available" gördü, 2.4.2 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#18 BİRLEŞTİ (kullanıcı "birleştir"; main 62883a0, main PDF 2f5fc5cd… doğrulandı). 2.4.2 KAPANDI;
+  açık: kullanıcı Edge kaydetme önerilerinin kalktığını kendi makinesinde doğrulayacak (kalkmazsa ayrı tarayıcı profili önerisi). Sonra: Pazar 18.10 planlı test, e-SMM, fiyat/lisans, devir (22.10).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
