@@ -241,6 +241,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         if (!/^[A-Z0-9]{3}\d{4}$/.test(key)) continue;
         const seq = Math.trunc(Number(value));
         if (!Number.isFinite(seq) || seq < 1 || seq > 999_999_999) fail400("Sonraki numara 1 ile 999.999.999 arasında olmalı.", "start");
+        // Test serisi (2.4.2): yalnız ileri alınır — kesilmiş son test numarasından küçük değer etkisizdi ve sessiz kalıyordu.
+        if (TEST_SERIES_SET.has(key.slice(0, 3))) {
+          const last = store.get("SELECT COALESCE(MAX(seq), 0) AS n FROM invoices WHERE series = ? AND year = ? AND seq > 0", key.slice(0, 3), Number(key.slice(3))).n;
+          if (seq <= last) fail400(`${key.slice(0, 3)} test serisinde son numara ${last}; sıradaki numara en az ${last + 1} olabilir (yalnız ileri alınır).`, "start", { code: "start-backward" });
+        }
         next.start[key] = seq;
       }
     }
@@ -2676,7 +2681,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // Önce programdaki iptal denenir (iade, kilitli dönem, tahsil edilmiş çek, stok…); geçerse entegratör, sonra program.
     const remote = remoteEligible(existing) && !localOnly;
     // 8 gün kuralı GİB'e raporlanmış e-Arşiv içindir; portaldaki taslak (İz 7.3) GİB'e gitmedi, her zaman iptal edilir.
-    if (remote && existing.eStatus !== "draft" && daysBetween(existing.issueDate, today()) > 8) throw new HttpError(409, `e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (${dayText(existing.issueDate)} tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.`, { code: "einvoice-cancel-late" });
+    // "Hata"daki belge GİB'e raporlanmadı (gözden geçirme 2.4.2): 8 gün kuralı uygulanmaz; EDM'de yoksa yalnız programda iptal edilir.
+    if (remote && existing.eStatus !== "draft" && existing.eStatus !== "error" && daysBetween(existing.issueDate, today()) > 8) throw new HttpError(409, `e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (${dayText(existing.issueDate)} tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.`, { code: "einvoice-cancel-late" });
     if (remote) {
       cancel(user, existing.id, { ...options, confirmExternal: true, dryRun: true });
       const doc = detail(existing.id, user);

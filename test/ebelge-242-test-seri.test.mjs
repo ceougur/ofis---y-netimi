@@ -153,3 +153,51 @@ describe("EDM'nin kabul etmediği (Hata) belge iptal edilir; 11048 iletisi yol g
     });
   }
 });
+
+// Bağımsız gözden geçirme (2.4.2) — yeniden üretilen bulgular: G2 Şirket Verisini Sıfırla'dan sonra test serisi EDM'ye gitmiş numaraya dönüyordu (11048);
+// G3 8 günden eski "Hata"daki e-Arşiv ne iptal ne silinebiliyordu ("İade faturası kesin" — belge GİB'e hiç gitmedi); G5 test numarası geri alınabiliyordu (sessiz).
+describe("Gözden geçirme 2.4.2: sıfırlama, eski tarihli Hata belgesi, geri alınan test numarası", () => {
+  let edm;
+  let ctx;
+  let ids;
+  before(async () => {
+    resetEdmCaches();
+    edm = await startMockEdm();
+    ctx = await boot(edm, { testSeriesStart: null });
+    ids = await setup(ctx.api, edm);
+  });
+  after(async () => {
+    await ctx?.server.close();
+    await edm?.close();
+  });
+  test("G3 (sıra numarası tarih sırasına uymalı; önce eski tarihli): 10 gün önce tarihli, EDM'nin reddettiği (Hata) e-Arşiv İptal Et ile iptal edilir", async () => {
+    const day = new Date(Date.now() - 10 * 86_400_000);
+    const old = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
+    const next = (await ctx.api.get(SETTINGS)).data.testNumbers.earsiv.number;
+    edm.state.usedIds.add(next);
+    const doc = (await ctx.api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ids.personId, issueDate: old, lines: [{ name: "D", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" } })).data;
+    assert.equal(doc.number, next);
+    assert.notEqual((await ctx.api.post(`/api/workspace/invoices/${doc.id}/send`, {})).status, 200);
+    const cancelled = await ctx.api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "Numara çakıştı" });
+    assert.equal(cancelled.status, 200, JSON.stringify(cancelled.data));
+    assert.equal(cancelled.data.status, "cancelled");
+  });
+  test("G2: Şirket Verisini Sıfırla'dan sonra test numarası EDM'ye gitmiş numaraya dönmez", async () => {
+    const first = (await sale(ctx.api, ids.personId)).data;
+    assert.equal((await ctx.api.post(`/api/workspace/invoices/${first.id}/send`, {})).status, 200);
+    const list = (await ctx.api.get("/api/companies")).data;
+    const company = (list.companies || list)[0];
+    const reset = await ctx.api.post(`/api/companies/${company.id}/reset`, { mode: "movements", confirm: company.code, password: ADMIN_PASSWORD });
+    assert.equal(reset.status, 200, JSON.stringify(reset.data));
+    const again = await setup(ctx.api, edm);
+    const second = (await sale(ctx.api, again.personId)).data;
+    assert.notEqual(second.number, first.number, "sıfırlamadan sonra aynı numara verilmez");
+    assert.equal((await ctx.api.post(`/api/workspace/invoices/${second.id}/send`, {})).status, 200);
+  });
+  test("G5: test serisinin sıradaki numarası son kesilen numaranın gerisine alınamaz (açık ileti)", async () => {
+    const last = seqOf((await ctx.api.get(SETTINGS)).data.testNumbers.earsiv.number) - 1;
+    const back = await ctx.api.put(SETTINGS, { start: { [`TEA${year()}`]: last } });
+    assert.equal(back.status, 400, JSON.stringify(back.data));
+    assert.equal(back.data.code, "start-backward");
+  });
+});

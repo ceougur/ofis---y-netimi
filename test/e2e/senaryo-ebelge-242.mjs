@@ -127,6 +127,27 @@ try {
   ok(edm.state.sent.at(-1)?.id === number, `EDM'ye bu numarayla gitti (${edm.state.sent.at(-1)?.id})`);
   await closeAll(page);
 
+  console.log("\n■ 2b Fiyatı değiştirip HEMEN düğmeye basmak (gözden geçirme 2.4.2: düğmeler her hesaplamada yeniden çizilip tıklama kayboluyordu)");
+  for (let trial = 1; trial <= 3; trial += 1) {
+    await newSale(page);
+    await page.click(`${pageInv} [data-l="0"][data-f="unitPrice"]`, { clickCount: 3 });
+    await page.keyboard.type(String(940 + trial), { delay: 60 });
+    await page.click(`${pageInv} [data-act="issue-now"]`, { delay: 120 });
+    const opened = await page.waitForSelector(`${dialog} [data-answer="yes"]`, { timeout: 2500 }).then(() => true).catch(() => false);
+    ok(opened, `deneme ${trial}: onay penceresi açıldı (tıklama kaybolmadı)`);
+    await closeAll(page);
+  }
+  await newSale(page);
+  await page.focus(`${pageInv} [data-act="issue-now"]`);
+  await page.click(`${pageInv} [data-l="0"][data-f="unitPrice"]`, { clickCount: 3 });
+  await page.keyboard.type("950", { delay: 60 });
+  await page.keyboard.press("Tab");
+  await page.focus(`${pageInv} [data-act="issue-now"]`);
+  await page.waitForTimeout(1200);
+  const focused = await page.evaluate(() => document.activeElement?.dataset?.act || document.activeElement?.tagName);
+  ok(focused === "issue-now", `hesaplamadan sonra klavye odağı düğmede kalır (${focused})`);
+  await closeAll(page);
+
   console.log("\n■ 3 Numara EDM'de başkasınca kullanılmış (11048): ileti + İptal Et");
   const next = (await must("ayarlar", admin.get("/api/workspace/invoices/settings"))).testNumbers.earsiv.number;
   edm.state.usedIds.add(next);

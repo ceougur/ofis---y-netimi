@@ -1473,7 +1473,8 @@
     field.hidden = !edoc() || profiles.length < 2;
     form.profile = form.calc.profile;
     const actions = body()?.querySelector("[data-form-actions]");
-    if (actions && !form.busy) actions.innerHTML = formActions(form);
+    // Yalnız gönderilebilirlik değişince yeniden çizilir: her hesaplamada çizmek alandan düğmeye geçen tıklamayı ve klavye odağını düşürüyordu (gözden geçirme 2.4.2).
+    if (actions && !form.busy && sendable(form) !== form.drawnSendable) actions.innerHTML = formActions(form);
     updateUnitHint();
     field.querySelector("select").innerHTML = profiles.map(item => `<option value="${esc(item.id)}" ${item.id === form.calc.profile ? "selected" : ""}>${esc(item.label)}</option>`).join("");
     field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : "";
@@ -1850,7 +1851,7 @@
   // ya da sonra gönder (Gönderilecekler).
   // Formun düğmeleri (2.4.2, kullanıcı denemesi 17.10.2026): belge türü hesaplamadan sonra belli olur; kâğıt belgede "Kaydet ve Gönder" görünmez
   // (form açılırken tür bilinmiyordu, düğmeler hesaplamadan sonra yenilenmiyordu → kâğıt fatura "entegratöre gönderilir" diye kaydediliyordu).
-  const formActions = form => `<button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? `<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">${meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder"}</button>` : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}`;
+  const formActions = form => (form.drawnSendable = sendable(form), `<button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? `<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">${meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder"}</button>` : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}`);
   const sendable = form => edoc() && Boolean(meta.kinds[form.kind]?.send) && (form.calc?.profile || form.profile || "") !== "KAGIT";
   async function submitForm(mode, eSend = "") {
     const form = view.form;
