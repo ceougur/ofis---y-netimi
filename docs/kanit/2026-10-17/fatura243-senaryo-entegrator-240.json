@@ -1,0 +1,32 @@
+{
+  "ad": "fatura243-senaryo-entegrator-240",
+  "komut": "npm run test:senaryo-entegrator-240",
+  "commit": "64359bdb5103dd7996f43b96c8f86fb03e238517",
+  "dal": "worktree-agent-afe4a76beaa9ff8d6",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-17T21:55:02.339Z",
+  "sure_sn": 61.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 73,
+    "gecen": 73,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-17/fatura243-senaryo-entegrator-240.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afe4a76beaa9ff8d6",
+  "ham_cikti_sha256": "20a56a365cf0a449c00d4716d686074e1159b9a5ec04ced0fa0923961d2fe627",
+  "ham_cikti_bayt": 7899
+}
