@@ -26,6 +26,9 @@ export async function startTestServer(options = {}) {
     ...(options.edocEnabled ? { edocEnabled: true } : {}),
     ...(options.edocLive ? { edocLive: true } : {}),
     ...(options.esmmEnabled ? { esmmEnabled: true } : {}),
+    // 2.4.2: test serisi (TEF/TEA/TES) üretimde firmaya özgü rastgele büyük numaradan başlar (EDM test hesabı ortak). Eski testler numarayı
+    // 1'den bekler; üretim davranışını deneyen test testSeriesStart: null verir (üretimdeki gibi rastgele).
+    ...(options.testSeriesStart === null ? {} : { testSeriesStart: options.testSeriesStart || (() => 1) }),
     ...(options.fxEnabled ? { fxEnabled: true } : {}),
     // Bu sürümde olmayan banka özelliklerinin gizli ayarlarını değiştiren testler (doğrulama kuralları, Elle Banka Fişi).
     ...(options.bankLater ? { bankLater: true } : {}),

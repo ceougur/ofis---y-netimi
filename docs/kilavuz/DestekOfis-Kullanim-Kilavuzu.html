@@ -11,7 +11,7 @@
 <section class="cover">
   <div class="brand"><b>D</b> DestekOfis</div>
   <h1>Kısa Kullanım Kılavuzu</h1>
-  <p class="sub">Sürüm 2.4.1 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
+  <p class="sub">Sürüm 2.4.2 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
 </section>
 
 <p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>
@@ -323,7 +323,7 @@
 <ul>
   <li><b>İade:</b> kartta <b>İade</b> pili ya da senaryoda <i>Satıştan / Alıştan İade</i>; en üstteki arama ile iade edilecek faturayı bulun, kalem ve miktarı seçin. Para Kasa'dan geri verilir ya da cari borcundan düşer. Borçtan düşülen iade, faturayı taksitlendiren kartı (faturanın kendi kartı ya da Carinin Mevcut Borcu kartı) o kadar küçültür; iade iptal edilince kart geri büyür.</li>
   <li><b>Belgeyi verin:</b> kartta <b>Satış Faturası - PDF</b> / <b>Yazdır</b>, <b>WhatsApp</b> (PDF iner, sohbet açılır) ve <b>E-Posta</b> (PDF iner, cari kartındaki adrese hazır metinle e-posta penceresi açılır). Resmî e-Fatura bağlantısı açılana kadar belge <b>Müşteri Fişi</b> başlığıyla basılır; resmî fatura yerine geçmez.</li>
-  <li><b>e-Fatura / e-Arşiv denemesi:</b> Fatura → <b>Entegratör Ayarları</b> → Çalışma Ortamı <b>Test Ortamı</b>; kullanıcı adı ve parolayı EDM Bilişim'den test hesabı olarak isteyin → <b>Kaydet</b> → <b>Bağlantıyı Test Et</b>. Firma / Etiket Tanımları'nda "e-Fatura mükellefiyim" (ve gerekiyorsa "e-Arşiv kullanıcısıyım") işaretleyin. Test belgeleri <b>TEF / TEA</b> serisinden numara alır, <b>Test</b> olarak görünür ve yasal geçerliliği yoktur; denemeyi ikinci bir şirkette yapın (test faturaları da cari, stok ve kasaya işlenir). Gönderirken bağlantı koparsa önce <b>Durum Sorgula</b>; entegratöre hiç ulaşılamıyorsa yetkili kişi <b>Yalnız Programda İptal Et</b> ile belgeyi programda iptal edebilir.</li>
+  <li><b>e-Fatura / e-Arşiv denemesi:</b> Fatura → <b>Entegratör Ayarları</b> → Çalışma Ortamı <b>Test Ortamı</b>; kullanıcı adı ve parolayı EDM Bilişim'den test hesabı olarak isteyin → <b>Kaydet</b> → <b>Bağlantıyı Test Et</b> → <b>Etiketleri Getir</b>, Gönderici Birim (GB) ve Posta Kutusu (PK) seçip yeniden <b>Kaydet</b>. Firma / Etiket Tanımları'nda VKN, EDM test hesabının VKN'si olmalı; "e-Fatura mükellefiyim" (ve gerekiyorsa "e-Arşiv kullanıcısıyım") işaretleyin — işaretsizken fatura kâğıt belge (FIS) olarak kaydedilir. Test belgeleri <b>TEF / TEA</b> serisinden numara alır, <b>Test</b> olarak görünür ve yasal geçerliliği yoktur; denemeyi ikinci bir şirkette yapın (test faturaları da cari, stok ve kasaya işlenir). EDM'nin test hesabı ortaktır: “Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız” gelirse belgeyi <b>İptal Et</b> ile iptal edip yeniden kesin; gerekirse Otomatik Seriler → <b>Test Ortamında Sıradaki No</b>'yu ileri alın. Gönderirken bağlantı koparsa önce <b>Durum Sorgula</b>; entegratöre hiç ulaşılamıyorsa yetkili kişi <b>Yalnız Programda İptal Et</b> ile belgeyi programda iptal edebilir.</li>
   <li><b>Canlıya geçiş:</b> Denemeler bitince Entegratör Ayarları → Çalışma Ortamı <b>Canlı Ortam</b>; EDM'nin canlı kullanıcı adı ve parolasını girin → <b>Kaydet</b> → <b>Bağlantıyı Test Et</b> (“Kullanıcı Bulunamadı” gelirse test hesabı girilmiştir; EDM'nin canlı hesabını girin). Otomatik Seriler'de firmanızın kendi serisini seçin (TEF / TEA test serisi canlıda kullanılamaz). Canlıda gönderilen belge yasal belgedir; ilk faturayı küçük tutarla kendi firmanıza kesip EDM portalından kontrol edin.</li>
   <li><b>e-Faturada ölçü birimi:</b> Kg, Lt, Metre, M², Paket, Kutu, Saat, Gün gibi birimler e-Belgeye kendi adıyla gider. Çuval, Koli, Şişe, Rulo, Torba, Teneke, Hafta gibi birimler e-Fatura / e-Arşivde <b>Adet</b> olarak görünür; birimin adı kalemin altına not olarak yazılır. Stok kartı, programdaki fatura ve raporlar gerçek birimi gösterir.</li>
   <li><b>Toplu işler:</b> listede soldaki kutularla belgeleri seçin → <b>Seçilenleri PDF / Excel</b>; Taslaklar sekmesinde <b>Seçilenleri Kaydet</b> (eski tarihli önce), Satış/Alış sekmesinde <b>Seçilenleri İptal Et</b>. Kaydedilemeyen ya da iptal edilemeyen belge nedeniyle bildirilir ve seçili kalır.</li>
@@ -410,7 +410,7 @@
 </table>
 <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destekofis@proton.me</b></div>
 
-<p class="foot">DestekOfis 2.4.1 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+<p class="foot">DestekOfis 2.4.2 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
 </main>
 </body>
 </html>

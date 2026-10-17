@@ -635,7 +635,7 @@
       </div>
       <label class="hof-field hof-inv-note"><span>Not (Belgenin Altına Basılır)</span><textarea data-f="note" rows="2" maxlength="2000" placeholder="ör. Teslim adresi, garanti süresi, banka bilgisi…">${esc(form.note)}</textarea></label>
       <p class="hof-form-error" role="alert" data-form-error></p>
-      <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? `<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">${meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder"}</button>` : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}</div>`,
+      <div class="hof-actions" data-form-actions>${formActions(form)}</div>`,
     );
     if (!ret) mountAccountPicker();
     if (ret) renderReturn();
@@ -1472,6 +1472,8 @@
     const profiles = form.calc.profiles || [];
     field.hidden = !edoc() || profiles.length < 2;
     form.profile = form.calc.profile;
+    const actions = body()?.querySelector("[data-form-actions]");
+    if (actions && !form.busy) actions.innerHTML = formActions(form);
     updateUnitHint();
     field.querySelector("select").innerHTML = profiles.map(item => `<option value="${esc(item.id)}" ${item.id === form.calc.profile ? "selected" : ""}>${esc(item.label)}</option>`).join("");
     field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : "";
@@ -1846,6 +1848,9 @@
   }
   // e-Belge olarak gönderilecek belge mi (kendi kestiğimiz, e-Fatura / e-Arşiv / e-SMM)? Kesimde iki seçenek: hemen gönder
   // ya da sonra gönder (Gönderilecekler).
+  // Formun düğmeleri (2.4.2, kullanıcı denemesi 17.10.2026): belge türü hesaplamadan sonra belli olur; kâğıt belgede "Kaydet ve Gönder" görünmez
+  // (form açılırken tür bilinmiyordu, düğmeler hesaplamadan sonra yenilenmiyordu → kâğıt fatura "entegratöre gönderilir" diye kaydediliyordu).
+  const formActions = form => `<button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? `<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">${meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder"}</button>` : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}`;
   const sendable = form => edoc() && Boolean(meta.kinds[form.kind]?.send) && (form.calc?.profile || form.profile || "") !== "KAGIT";
   async function submitForm(mode, eSend = "") {
     const form = view.form;
@@ -1893,6 +1898,7 @@
         await runCalc();
         const c = form.calc;
         if (!c) throw new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin.");
+        if (eSend && !sendable(form)) eSend = "";
         const who = form.account.name;
         const numberText = c.nextNumber && eSend !== "later" ? `${c.nextNumber} numarasıyla ` : "";
         // v2.0.16 (müşteri): "Stoğa Mal Alışı"nda stok kartı olmayan kalem gider sayılır — kayıttan önce açıkça söylenir.
@@ -2832,7 +2838,7 @@
           </div>
         </div>
         <p class="hof-muted">Kalemde Seri No / Lot No alanları Fatura Ayarları → Varsayılanlar'dan açılır.</p>`,
-        series: `<div class="hof-inv-head">${E_SERIES.filter(([key]) => key !== "esmm" || st.esmmAvailable).map(([key, label]) => `<label class="hof-field"><span>${label}</span><input data-i-series="${key}" value="${esc(st.series?.[key] || "")}" maxlength="3"><small>Sıradaki: ${esc((st.nextNumbers || {})[key]?.number || "—")}${st.testNumbers?.[key] ? ` · Test ortamında: ${esc(st.testNumbers[key].number)}` : ""}</small></label>`).join("")}</div>
+        series: `<div class="hof-inv-head">${E_SERIES.filter(([key]) => key !== "esmm" || st.esmmAvailable).map(([key, label]) => `<label class="hof-field"><span>${label}</span><input data-i-series="${key}" value="${esc(st.series?.[key] || "")}" maxlength="3"><small>Sıradaki: ${esc((st.nextNumbers || {})[key]?.number || "—")}${st.testNumbers?.[key] ? ` · Test ortamında: ${esc(st.testNumbers[key].number)}` : ""}</small></label>${st.testNumbers?.[key] ? `<label class="hof-field"><span>Test Ortamında Sıradaki No (${esc(st.testNumbers[key].series)} ${st.testNumbers[key].year})</span><input data-i-test-start="${esc(st.testNumbers[key].series)}${st.testNumbers[key].year}" data-current="${st.testNumbers[key].seq}" inputmode="numeric" value="${st.testNumbers[key].seq}"><small>EDM'nin test hesabı ortaktır; numara başka firmanınkiyle çakışırsa ileri alın.</small></label>` : ""}`).join("")}</div>
         ${st.testNumbers ? `<p class="hof-muted" data-integ-test-series>Test ortamında gönderilen belgeler ${esc(Object.values(st.testSeries || {}).join(", "))} serisinden numara alır ve "Test" olarak işaretlenir; canlı ortama geçince yukarıdaki serileriniz 1'den başlar.</p>` : ""}
         <p class="hof-muted">Seri üç karakterdir (büyük harf ya da rakam; Türkçe harf yok). e-Belge numarası seri + yıl + 9 hane olur (ör. EFT2026000000001).</p>`,
       };
@@ -2854,6 +2860,7 @@
         } else draft[input.dataset.i] = input.type === "checkbox" ? input.checked : input.value;
       }
       for (const input of root.querySelectorAll("[data-i-series]")) (draft.series ||= {})[input.dataset.iSeries] = input.value.trim().toLocaleUpperCase("tr-TR");
+      for (const input of root.querySelectorAll("[data-i-test-start]")) (draft.testStart ||= {})[input.dataset.iTestStart] = { value: input.value.replace(/\D/g, ""), current: input.dataset.current };
     };
     const restore = () => {
       for (const input of root.querySelectorAll("[data-i]")) {
@@ -2864,6 +2871,7 @@
         else input.value = value;
       }
       for (const input of root.querySelectorAll("[data-i-series]")) if (draft.series?.[input.dataset.iSeries] !== undefined) input.value = draft.series[input.dataset.iSeries];
+      for (const input of root.querySelectorAll("[data-i-test-start]")) if (draft.testStart?.[input.dataset.iTestStart] !== undefined) input.value = draft.testStart[input.dataset.iTestStart].value;
     };
     const payload = () => {
       collect();
@@ -2874,6 +2882,9 @@
       for (const key of ["efatura", "earsiv", "esmm"]) if (draft[key] !== undefined) body[key] = draft[key];
       if (draft.efaturaProfile !== undefined) body.defaults = { efaturaProfile: draft.efaturaProfile };
       if (draft.series) body.series = draft.series;
+      // Test serisinin sıradaki numarası (2.4.2): yalnız değiştirilen gönderilir (sunucu öbür başlangıçları korur).
+      const testStart = Object.fromEntries(Object.entries(draft.testStart || {}).filter(([, item]) => item.value && item.value !== item.current).map(([key, item]) => [key, Number(item.value)]));
+      if (Object.keys(testStart).length) body.start = testStart;
       const eView = Object.fromEntries(["enabled", "logo", "banks", "footer", "stamp", "stampEfatura"].filter(key => draft[`view.${key}`] !== undefined).map(key => [key, draft[`view.${key}`]]));
       if (Object.keys(eView).length) body.eView = eView;
       const eOptions = Object.fromEntries(["balanceNote", "paymentMeans", "draftUpload"].filter(key => draft[`opt.${key}`] !== undefined).map(key => [key, draft[`opt.${key}`]]));

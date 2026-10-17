@@ -11,7 +11,7 @@
 //   iptal (cancelled): numara korunur; bütün defter etkileri birebir geri alınır. Tahsilatı olan taksit kartı, tahsil
 //                     ya da ciro edilmiş çek, satılmış mal (stok eksiye düşer), kilitli dönem ve iadesi olan fatura
 //                     iptali durdurur (iade faturası kesilir).
-import { randomUUID } from "node:crypto";
+import { randomInt, randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseQty } from "../lib/accounts.mjs";
@@ -130,6 +130,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const edocLive = edocEnabled && config.edocLive === true;
   // e-SMM gönderimi hazır olana dek kapalı (config.mjs esmmEnabled): eski "esmm: true" kaydı da etkisizdir (makbuz kâğıt).
   const esmmEnabled = edocEnabled && config.esmmEnabled === true;
+  // 2.4.2 (kullanıcı denemesi 17.10.2026): EDM'nin test hesabı ORTAKTIR; test serisi 1'den başlarsa numara başka firmanınkiyle çakışır (EDM 11048).
+  // Test serisi her yıl ilk kullanımda firmaya özgü rastgele büyük numaradan başlar; başlangıç ayara yazılır (önizleme ile kayıt aynı numarayı görür).
+  const testSeriesStart = typeof config.testSeriesStart === "function" ? config.testSeriesStart : () => randomInt(100_000_001, 900_000_000);
   // Fatura kapaması (lib/invoice-settle.mjs). config.legacyClosing yalnız testlerde: K1 öncesi kural (2.0.26 ile birebir karşılaştırmalar);
   // o kuralda iadenin geri ödenen kısmı da faturadan düşülür ve kartın hedefine geri eklenir (ownTarget, açılış onarımı, retarget).
   const settle = config.legacyClosing || settleInvoices;
@@ -232,7 +235,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const reserved = Object.entries(next.series).find(([, value]) => TEST_SERIES_SET.has(value));
     if (reserved) fail400(`${reserved[1]} serisi entegratörün test ortamına ayrılmıştır (TEF, TEA, TES). Fatura Ayarları → Seriler'de ${SERIES_LABELS[reserved[0]] || reserved[0]} serisini değiştirin.`, `series.${reserved[0]}`, { code: "series-reserved" });
     if (body.start && typeof body.start === "object") {
-      next.start = {};
+      // Kısmi kayıt öbür serilerin başlangıcını silmez (2.4.2; test serisinin rastgele başlangıcı da burada durur).
+      next.start = { ...(next.start || {}) };
       for (const [key, value] of Object.entries(body.start).slice(0, 40)) {
         if (!/^[A-Z0-9]{3}\d{4}$/.test(key)) continue;
         const seq = Math.trunc(Number(value));
@@ -1474,7 +1478,18 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (profile === "TEMELFATURA" || profile === "TICARIFATURA") return own.efatura;
     return s.series.paper;
   };
+  function ensureTestStart(series, year, s) {
+    const key = `${series}${year}`;
+    if (!TEST_SERIES_SET.has(series) || Number(s.start?.[key]) >= 1) return;
+    const seq = Math.trunc(Number(testSeriesStart())) || 1;
+    if (seq <= 1) return; // 1'den başlamak başlangıç yazılmamasıyla aynıdır (testlerin sabit başlangıcı)
+    const raw = parseJson(store.setting(SETTINGS_KEY, "{}"), {}) || {};
+    raw.start = { ...(raw.start || {}), [key]: seq };
+    store.setSetting(SETTINGS_KEY, JSON.stringify(raw));
+    s.start = { ...(s.start || {}), [key]: seq };
+  }
   function nextNumber(series, year, s = settings()) {
+    ensureTestStart(series, year, s);
     const max = store.get("SELECT COALESCE(MAX(seq), 0) AS n FROM invoices WHERE series = ? AND year = ? AND seq > 0", series, year).n;
     const seq = Math.max(max + 1, Number(s.start?.[`${series}${year}`]) || 1);
     if (seq > 999_999_999) throw new HttpError(409, `${series} serisinde ${year} yılı için numara kalmadı.`);
@@ -2671,7 +2686,20 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (current?.status === "processing") {
         throw new HttpError(409, "e-Arşiv fatura EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Birkaç dakika sonra Durum Sorgula ile bakıp yeniden deneyin.", { code: "einvoice-processing" });
       }
-      const result = await integrator().cancel({ invoice: doc });
+      let result;
+      try {
+        result = await integrator().cancel({ invoice: doc });
+      } catch (error) {
+        // 2.4.2 (kullanıcı denemesi 17.10.2026): EDM'nin reddettiği ("Hata") belge EDM'de yoktur — iptal "Fatura bulunamadı" (11017) döner.
+        // Belge yalnız programda iptal edilir (entegratörde iptal edilecek bir şey yok); başka her hata iptali durdurur.
+        if (!(remoteMissing(error) && existing.eStatus === "error")) throw error;
+        const row = cancel(user, existing.id, { ...options, confirmExternal: true });
+        store.tx(() => {
+          store.run("UPDATE invoices SET e_message = ? WHERE id = ?", "EDM belgeyi kabul etmemişti (EDM'de yok); yalnız programda iptal edildi.", existing.id);
+          audit(user, "invoice.e.local-cancel", existing.id, { number: existing.number, eStatus: "error", adapter: existing.eAdapter || "", reason: "integrator-missing" });
+        });
+        return { ...detail(row.id, user), notices };
+      }
       store.tx(() => {
         store.run("UPDATE invoices SET e_status = 'cancelled', e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", String(result.message || "").slice(0, 500), now(), now(), existing.id);
         audit(user, "invoice.e.cancelled", existing.id, { number: existing.number, adapter: existing.eAdapter });
@@ -3027,6 +3055,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         }
         // Kontrol turu K2: istek gitmiş olabilecek her hata (bağlantı, zaman aşımı, okunamayan yanıt) önceki durum ne olursa olsun (ör. "Hata"dan yeniden
         // gönderim) "belirsiz" yazılır. K5: isteğin hiç gitmediği bilinen hatalar (kanal, adres, kimlik, oturum) belirsiz sayılmaz, durum değişmez.
+        // 2.4.2 (kullanıcı denemesi 17.10.2026): EDM "Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız" (11048) — numara EDM'de
+        // kullanılmış; test hesabı ortak olduğu için çoğunlukla başka firmanın numarası. İleti ne yapılacağını söyler.
+        if (String(error?.extra?.integratorCode || error?.integratorCode || "") === "11048" && error instanceof Error) {
+          const testDoc = TEST_SERIES_SET.has(String(doc.number || "").slice(0, 3));
+          error.message = `${error.message} ${testDoc
+            ? "Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."
+            : "Bu numarayla EDM'ye daha önce belge gönderilmiş. Bu belgeyi İptal Et ile iptal edip yeniden kesin; gerekirse Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın."}`;
+        }
         const notSent = ["integrator-channel", "integrator-url", "integrator-credentials", "integrator-login", "integrator-session"].includes(code);
         if (notSent) setE(user, doc.id, { status: doc.eStatus || "none", message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
         else setE(user, doc.id, { status: rejected ? "error" : "none", adapter: link.id, message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
