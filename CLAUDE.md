@@ -673,6 +673,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   koşudan sonra yeniden gönderildi → "Alıcıya ulaştı"), EDM 20005 resmî PDF (sonra indi), test aracının karekod çözücüsü 300 dpi istedi, KDV/tevkifat kalem başına
   yuvarlama kural farkı; ürün kusuru YOK. 2.4.1'e kullanıcının bıraktığı canlı giriş iletisi de girdi (fa01323; gerçek canlı adreste doğrulandı). KANIT
   `docs/2.4.1-KANIT.md`. Sırada: tam npm test + bağımsız gözden geçirme → son aday [uzun-dogrulama] → CI + Uzun yeşil → imzalı paket + kurulum → teslim. Birleştirme/yayın kullanıcı dönünce.
+  2.4.1 TESLİM EDİLDİ (17.10.2026 ~05:50 UTC): paketlenen 40cb354 (ürün kodu cd15bf7; CI #798 YEŞİL; Uzun Doğrulama run 38999890454 23/23 + kapı YEŞİL;
+  tam npm test 2664/2664). Kapsam: e-SMM gizli, canlı giriş yönlendirmesi, gözden geçirme G1–G4 + dar kontrol B1–B3 (kontrol-241). İmzalı zip 1deabc76…,
+  bildirge f4819baf…, kılavuz PDF 1ed34558… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum exe 860bb8f2… (iki parça + BIRLESTIR.bat/.md); arşiv 6 zip. PR açıldı
+  (master; master 5b45c5d ağacı 4b4eca1 ile aynı → "ours" birleştirmesi). SIRADA: kullanıcı döner → "birleştir" → PR CI + kapı yeşil → squash → yayın (v2.4.1,
+  "DestekOfis 2.4.1", not "İyileştirmeler", 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı. e-SMM: kullanıcı EDM'den servis/belge/yetki ister.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
