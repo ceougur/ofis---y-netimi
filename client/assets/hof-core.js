@@ -198,6 +198,23 @@
     openModals.find(item => item.dialog === dialog)?.clean();
   };
   HOF.isTouched = node => touched.has(node);
+  // Başarılı yazma (Kaydet, "Kaydet ve Yeni", Taslak Olarak Kaydet…) taslağı kapatır: o pencerede dokunulmuş işaretleri kalkar — sonraki yeniden
+  // çizim (ör. Kurulum Sihirbazı'nda "Kaydet ve Yeni Hesap" boş formu) kayıtlı / boş değeri gösterir, eski yazılanı geri getirmez (senaryo-banka-210
+  // adım 2 ilk denemede yakaladı). Sorgu niteliğindeki yazmalar (hesapla, mükellef sorgula, önizle, bağlantıyı dene) kaydedilmemiş sayılmayı
+  // kaldırmaz; yalnız geri yazım işaretlerini kaldırır (yeniden çizimde programın yazdığı değer görünür).
+  const QUERY_WRITE = /\/(calc|check-user|preview|view-preview|test|aliases|search|check)(\?|$)/;
+  function writeOrigin() {
+    const active = document.activeElement;
+    return active?.closest?.(".hof-modal") || (lastPressed?.isConnected ? lastPressed.closest?.(".hof-modal") : null) || null;
+  }
+  // Formla ilgisiz arka plan yazmaları (ekran durumu, sohbet okundu bilgisi) taslağa dokunmaz.
+  const UNRELATED_WRITE = /^\/api\/(workspace\/client-state|chat\/|auth\/)/;
+  function noteWrite(dialog, path) {
+    const clean = String(path || "").split("?")[0];
+    const modal = openModals.find(item => item.dialog === dialog);
+    if (!modal || UNRELATED_WRITE.test(clean)) return;
+    modal.wrote(QUERY_WRITE.test(clean));
+  }
 
   // ---------- Oturum ve yetki ----------
   HOF.user = null;
@@ -284,6 +301,9 @@
   // açmaz (server/lib/idempotency.mjs). LAN'da (http://192.168…) crypto.randomUUID yoktur; getRandomValues her yerde var.
   HOF.requestId = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
   const sendApi = async (path, { method = "GET", body, signal, timeoutMs = 30000, requestId = "" } = {}) => {
+    // 2.4.3: yazma isteğini başlatan pencere (odaktaki ya da son basılan öğenin penceresi); başarılı yazmadan sonra o pencerenin taslağı
+    // "kaydedildi" sayılır (noteWrite).
+    const origin = method !== "GET" ? writeOrigin() : null;
     const init = { method, credentials: "same-origin", headers: { accept: "application/json" }, cache: "no-store" };
     if (requestId) init.headers["x-hof-request"] = requestId;
     if (body !== undefined) {
@@ -324,7 +344,10 @@
       else if (payload.code === "bank-account-required") HOF.emit("bank-choices-stale", payload);
       throw error;
     }
-    if (method !== "GET") noteLedgerChange(path);
+    if (method !== "GET") {
+      noteLedgerChange(path);
+      if (origin) noteWrite(origin, path);
+    }
     return payload.data === undefined ? payload : payload.data;
   };
 
@@ -830,6 +853,10 @@
       clean() {
         scopes.clear();
         for (const field of dialog.querySelectorAll("input, textarea, select")) touched.delete(field);
+      },
+      wrote(query) {
+        for (const field of dialog.querySelectorAll("input, textarea, select")) touched.delete(field);
+        if (!query) scopes.clear();
       },
       // Tarayıcının Geri tuşu: pencere içinde "← Liste" gibi bir geri düğmesi görünürse önce o (kart → liste), yoksa pencere kapanır.
       back() {

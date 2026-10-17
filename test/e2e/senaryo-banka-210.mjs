@@ -1471,13 +1471,14 @@ try {
     await admin.click(`${bankWin} [data-act="advanced"]`);
     await admin.waitForTimeout(300);
     await admin.selectOption(`${bankWin} [data-set="similar.enabled"]`, "false");
-    await escClose(admin);
+    // Bu adım sorunun kendisini sınar: Esc'e doğrudan basılır (escClose soruyu onaylardı).
+    await admin.keyboard.press("Escape");
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Kaydedilmemiş Değişiklik"), null, { timeout: 8000 });
     await shot(admin, "gg2-ayarlar-kaydedilmemis");
     await admin.click(`${top} [data-answer="no"]`);
     await admin.waitForTimeout(400);
     ok(Boolean(await admin.$(`${bankWin} [data-settings]`)) && (await admin.$eval(`${bankWin} [data-set="similar.enabled"]`, node => node.value)) === "false", "Vazgeç: Banka penceresi açık, değişiklik duruyor");
-    await escClose(admin);
+    await admin.keyboard.press("Escape");
     await answerYes(admin);
     await admin.waitForSelector(bankWin, { state: "detached", timeout: 8000 });
     ok((await must("ayarlar", api.get("/api/workspace/bank/settings"))).values.similar.enabled === true, "Kaydetmeden Çık: ayar değişmedi");
