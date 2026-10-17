@@ -1,0 +1,1645 @@
+  ✓ 001 Fatura Ayarları (logo, kaşe e-Faturada da, banka, alt not, Ortam Test) (200 )
+  ✓ 001 Bağlantıyı Test Et (200 )
+  ✓ 002 Fatura Ayarları (logo, kaşe e-Faturada da, banka, alt not, Ortam Test) (200 )
+  ✓ 002 Bağlantıyı Test Et (200 )
+01:29:42 PROGRAM KODLARI: {"tevkifat":[{"code":"602","num":9,"den":10},{"code":"604","num":5,"den":10},{"code":"606","num":9,"den":10},{"code":"612","num":9,"den":10},{"code":"616","num":5,"den":10}],"istisna":["301","302","304","350","351"],"tumIstisna":["301","302","304","350","351"],"smmScenario":"smm"}
+  ✓ tevkifat kodları programda var (602, 604, 606, 612, 616; eksik yok)
+  ✓ istisna kodları programda var (301, 302, 304, 350, 351; eksik yok)
+  ✓ 001 TCKN 10000000146 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {"registered":false,"title":"","aliases":[],"senderAliases":[],"type":"","taxNo")
+  ✓ 001 TCKN 10000000078 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {"registered":false,"title":"","aliases":[],"senderAliases":[],"type":"","taxNo")
+01:29:50 CARİ (ekrandan) Yıldız Hukuk Bürosu: {"id":"account-d50652c8-85af-448f-89af-89911c20f156","name":"Yıldız Hukuk Bürosu","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 001 Yıldız Hukuk Bürosu: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+01:29:56 CARİ (ekrandan) Kuzey Emlak Danışmanlık Ltd. Şti.: {"id":"account-0c562db1-8fa5-41a3-a0ad-a46a206ecef7","name":"Kuzey Emlak Danışmanlık Ltd. Şti.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 001 Kuzey Emlak Danışmanlık Ltd. Şti.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+01:30:01 CARİ (ekrandan) Marmara Gıda San. ve Tic. A.Ş.: {"id":"account-9c28e306-e3ff-49d9-bb3b-d0bc61e85cbf","name":"Marmara Gıda San. ve Tic. A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 001 Marmara Gıda San. ve Tic. A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+01:30:07 CARİ (ekrandan) Anadolu Turizm Otelcilik A.Ş.: {"id":"account-48a89b58-8dd9-4e8a-a7cb-dfe2deab92fc","name":"Anadolu Turizm Otelcilik A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 001 Anadolu Turizm Otelcilik A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+01:30:15 CARİ (ekrandan) Ayşe Yılmaz: {"id":"account-3884a9dc-4642-4f67-a4d3-591d47e6f4b8","name":"Ayşe Yılmaz","taxNo":"10000000146","eInvoice":0,"eAlias":""}
+  ✓ 001 Ayşe Yılmaz (TCKN): e-Arşiv alıcısı
+01:30:23 CARİ (ekrandan) Mehmet Kaya: {"id":"account-9853c0a2-a975-4aa3-9b91-8423c046647d","name":"Mehmet Kaya","taxNo":"10000000078","eInvoice":0,"eAlias":""}
+  ✓ 001 Mehmet Kaya (TCKN): e-Arşiv alıcısı
+01:30:31 CARİ (ekrandan) Güneş Kafe Gıda Ltd. Şti.: {"id":"account-4626b8bb-8ff1-4c9b-a354-963259d9dd48","name":"Güneş Kafe Gıda Ltd. Şti.","taxNo":"3000855478","eInvoice":0,"eAlias":""}
+  ✓ 001 Güneş Kafe Gıda Ltd. Şti. (VKN 3000855478, mükellef değil): e-Arşiv alıcısı
+  ✓ 002 TCKN 10000000146 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {"registered":false,"title":"","aliases":[],"senderAliases":[],"type":"","taxNo")
+  ✓ 002 TCKN 10000000078 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {"registered":false,"title":"","aliases":[],"senderAliases":[],"type":"","taxNo")
+01:30:38 CARİ (ekrandan) Başkent İnşaat Taahhüt A.Ş.: {"id":"account-9e8ba12b-76f3-4f12-8205-b7c9c9c98935","name":"Başkent İnşaat Taahhüt A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 002 Başkent İnşaat Taahhüt A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+01:30:44 CARİ (ekrandan) Ege Tekstil Konfeksiyon Ltd. Şti.: {"id":"account-4f2b95c3-1a20-45cf-8b7f-efae9fbdb8ab","name":"Ege Tekstil Konfeksiyon Ltd. Şti.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 002 Ege Tekstil Konfeksiyon Ltd. Şti.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+01:30:50 CARİ (ekrandan) Akdeniz Otelcilik ve Turizm A.Ş.: {"id":"account-719ebda3-714d-47d9-9912-8c4027d869f2","name":"Akdeniz Otelcilik ve Turizm A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 002 Akdeniz Otelcilik ve Turizm A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+01:30:55 CARİ (ekrandan) Toros Elektronik Ticaret A.Ş.: {"id":"account-07db071c-2f3b-41c1-ba19-ab31c3cf9dbb","name":"Toros Elektronik Ticaret A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 002 Toros Elektronik Ticaret A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+01:31:03 CARİ (ekrandan) Can Öztürk: {"id":"account-a538ea89-2238-4eb4-a503-0487678b07c0","name":"Can Öztürk","taxNo":"10000000146","eInvoice":0,"eAlias":""}
+  ✓ 002 Can Öztürk (TCKN): e-Arşiv alıcısı
+01:31:11 CARİ (ekrandan) Elif Şahin: {"id":"account-731d2194-e385-4bff-81eb-474a9145dd23","name":"Elif Şahin","taxNo":"10000000078","eInvoice":0,"eAlias":""}
+  ✓ 002 Elif Şahin (TCKN): e-Arşiv alıcısı
+01:31:19 CARİ (ekrandan) Deniz Oto Servis Ltd. Şti.: {"id":"account-e2dae958-2041-4bfd-ab8e-77fd831c9cab","name":"Deniz Oto Servis Ltd. Şti.","taxNo":"3003967260","eInvoice":0,"eAlias":""}
+  ✓ 002 Deniz Oto Servis Ltd. Şti. (VKN 3003967260, mükellef değil): e-Arşiv alıcısı
+01:31:22 OTURUMLAR: ["destek1","destek2","destek3","destek4","destek5","atlas1","atlas2","atlas3","atlas4","atlas5"]
+
+■ e-SMM denemesi (001, yönetici ekranından)
+01:31:31 BULGU e-SMM: {"senaryo":"smm","ayar":{"putStatus":400,"putCode":"esmm-unavailable","putIleti":"e-SMM gönderimi bu sürümde yok; serbest meslek makbuzu kâğıt olarak düzenlenir.","esmmAvailable":false,"esmm":false},"ekrandaIsaret":false,"formDugmeleri":["cancel-form:Vazgeç","save-draft:Taslak Olarak Kaydet","issue:Makbuzu Kaydet"],"kaydetDugmesi":"issue","kesim":{"no":"SMM2026000000001","profil":"KAGIT","eStatus":"none","eMessage":"","iletiler":["Serbest Meslek Makbuzu SMM2026000000001 kaydedildi.×","Serbest Meslek Makbuzu SMM2026000000001 kaydedildi.×"]},"kartGonder":{"not":"kartta e-Belge Gönder düğmesi yok"},"gonderApi":{"status":409,"code":"einvoice-paper","ileti":"Kâğıt belge / müşteri fişi e-Belge ola
+
+■ 10 kullanıcı aynı anda başlıyor — süre 80 dk, tempo 90 sn (±%50), tohum 3, seri başı 393757714
+01:31:31 BAŞLANGIÇ 0 dk — belge 0 (001: 0, 002: 0), durum {}, ekran hatası 0, iptal 0, sayfa hatası 0
+01:31:44 destek5 destek5-0001 eF-Ticari · Personel · KDV %20 issue-now: {"no":"TEF2026393757714","tip":"SATIS","e":"sent","tutar":142434,"sn":13.3}
+01:31:45 atlas3 atlas3-0001 eF-Temel · İnşaat · İstisna · KDV %0 issue-now: {"no":"TEF2026394257714","tip":"ISTISNA","e":"sent","tutar":17020,"sn":14}
+01:31:45 destek1 destek1-0001 eF-Temel · Temizlik · Tevkifat · KDV %20 issue-now: {"no":"TEF2026393757715","tip":"TEVKIFAT","e":"sent","tutar":28300.92,"sn":14.3}
+01:31:47 atlas1 atlas1-0001 eF-Temel · Gıda · KDV %10+%20 · İskonto issue-later: {"no":"TEF2026394257715","tip":"SATIS","e":"sent","tutar":11723.25,"sn":16.2}
+01:31:50 destek3 destek3-0001 eF-Temel · Emlak · KDV %20 issue-now: {"no":"TEF2026393757716","tip":"SATIS","e":"sent","tutar":208112.74,"sn":19}
+01:31:54 destek2 destek2-0001 eF-Temel · Turizm · KDV %10+%20 issue-now: {"no":"TEF2026393757717","tip":"SATIS","e":"sent","tutar":44846.86,"sn":22.7}
+01:31:57 atlas2 atlas2-0001 eA-Firma · Tekstil · Tevkifat · KDV %10+%20 · İskonto issue-later: {"no":"TEA2026394257714","tip":"TEVKIFAT","e":"sent","tutar":22371.21,"sn":25.5}
+01:31:58 atlas4 atlas4-0001 eF-Temel · Elektronik · Tevkifat · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257716","tip":"TEVKIFAT","e":"sent","tutar":84411.45,"sn":26.8}
+01:31:58 destek4 destek4-0001 eA-Firma · Turizm · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757714","tip":"SATIS","e":"sent","tutar":123340.43,"sn":27.4}
+01:32:00 atlas5 atlas5-0001 eF-Ticari · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257717","tip":"SATIS","e":"sent","tutar":2955.31,"sn":29.1}
+01:32:42 destek5 destek5-0002 eA-Kisi · Danışmanlık · KDV %20 issue-now: {"no":"TEA2026393757715","tip":"SATIS","e":"sent","tutar":40272,"sn":8.5}
+01:32:56 atlas3 atlas3-0002 eA-Firma · Elektronik · Tevkifat · KDV %20 issue-later: {"no":"TEA2026394257715","tip":"TEVKIFAT","e":"sent","tutar":127699.97,"sn":11.7}
+01:33:21 destek3 destek3-0002 eA-Kisi · Eğitim · KDV %20 issue-now: {"no":"TEA2026393757716","tip":"SATIS","e":"sent","tutar":10789.2,"sn":10}
+01:33:23 destek1 destek1-0002 eF-Temel · Arşiv · İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026393757718","tip":"SATIS","e":"sent","tutar":123264.69,"sn":16}
+01:33:27 atlas1 atlas1-0002 eF-Temel · Elektronik · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257718","tip":"SATIS","e":"sent","tutar":68065.27,"sn":16.3}
+01:33:43 destek2 destek2-0002 eA-Firma · Danışmanlık · Tevkifat · KDV %20 issue-now: {"no":"TEA2026393757717","tip":"TEVKIFAT","e":"sent","tutar":50393.73,"sn":9.3}
+01:33:50 atlas2 atlas2-0002 eF-Ticari · Tekstil · Tevkifat · KDV %20 issue-now: {"no":"TEF2026394257719","tip":"TEVKIFAT","e":"sent","tutar":105313.39,"sn":12}
+01:33:58 atlas5 atlas5-0002 eF-Temel · Tekstil · KDV %10+%20 · İskonto issue-later: {"no":"TEF2026394257720","tip":"SATIS","e":"sent","tutar":7186.19,"sn":15.6}
+01:34:00 atlas3 atlas3-0003 eA-Firma · İnşaat · Tevkifat · KDV %10+%20 issue-now: {"no":"TEA2026394257716","tip":"TEVKIFAT","e":"sent","tutar":12205.92,"sn":18.8}
+01:34:05 destek4 destek4-0002 eA-Kisi · Yemek · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757718","tip":"SATIS","e":"sent","tutar":91738.44,"sn":19}
+01:34:05 atlas4 atlas4-0002 eF-Temel · Gıda · KDV %1 issue-later: {"no":"TEF2026394257721","tip":"SATIS","e":"sent","tutar":201.88,"sn":10.9}
+01:34:29 destek1 destek1-0003 eA-Firma · Yemek · İstisna · KDV %0+%10+%20 issue-now: {"no":"TEA2026393757719","tip":"SATIS","e":"sent","tutar":103595,"sn":12.4}
+01:34:47 destek5 destek5-0003 eA-Kisi · Arşiv · KDV %20 issue-later: {"no":"TEA2026393757720","tip":"SATIS","e":"sent","tutar":116869.12,"sn":10.1}
+01:35:11 destek3 destek3-0003 eA-Kisi · Personel · KDV %20 · İskonto issue-now: {"no":"TEA2026393757721","tip":"SATIS","e":"sent","tutar":334038.2,"sn":14.9}
+01:35:20 atlas5 atlas5-0003 eF-Temel · Gıda · Tevkifat · KDV %1+%20 issue-now: {"no":"TEF2026394257722","tip":"TEVKIFAT","e":"sent","tutar":135227.26,"sn":13.6}
+01:35:24 atlas3 atlas3-0004 eA-Kisi · Gıda · KDV %1 issue-now: {"no":"TEA2026394257717","tip":"SATIS","e":"sent","tutar":1481.87,"sn":9.4}
+01:35:24 destek4 destek4-0003 eF-Temel · Danışmanlık · İstisna · KDV %0 issue-now: {"no":"TEF2026393757719","tip":"SATIS","e":"sent","tutar":6247.92,"sn":9.6}
+01:35:32 atlas4 atlas4-0003 eA-Kisi · Gıda · KDV %1 issue-now: {"no":"TEA2026394257718","tip":"SATIS","e":"sent","tutar":10134.07,"sn":11.5}
+01:35:36 atlas1 atlas1-0003 eF-Temel · Tekstil · KDV %1+%10 issue-now: {"no":"TEF2026394257723","tip":"SATIS","e":"sent","tutar":27811.18,"sn":15.1}
+01:35:42 destek1 destek1-0004 eF-Temel · Turizm · KDV %20 issue-later: {"no":"TEF2026393757720","tip":"SATIS","e":"sent","tutar":15275.41,"sn":8.9}
+01:35:49 destek2 destek2-0003 eA-Firma · Arşiv · Tevkifat · KDV %20 issue-later: {"no":"TEA2026393757722","tip":"TEVKIFAT","e":"sent","tutar":34265,"sn":10.3}
+01:36:04 atlas2 atlas2-0003 eF-Ticari · İnşaat · KDV %1+%20 issue-later: {"no":"TEF2026394257724","tip":"SATIS","e":"sent","tutar":184825.28,"sn":20.3}
+01:36:21 destek4 destek4-0004 eF-Ticari · Yemek · Tevkifat · KDV %10 issue-now: {"no":"TEF2026393757721","tip":"TEVKIFAT","e":"sent","tutar":7223.37,"sn":10}
+01:36:24 atlas3 atlas3-0005 eF-Temel · Gıda · KDV %1 issue-now: {"no":"TEF2026394257725","tip":"SATIS","e":"sent","tutar":1029.55,"sn":9}
+01:36:30 destek5 destek5-0004 eA-Kisi · Yazılım · KDV %20 issue-later: {"no":"TEA2026393757723","tip":"SATIS","e":"sent","tutar":3490.96,"sn":8.9}
+01:36:37 atlas4 atlas4-0004 eA-Kisi · Elektronik · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026394257719","tip":"SATIS","e":"sent","tutar":73511.33,"sn":12}
+01:36:54 destek1 destek1-0005 eF-Ticari · Danışmanlık · KDV %20 issue-now: {"no":"TEF2026393757722","tip":"SATIS","e":"sent","tutar":17510.4,"sn":8.5}
+01:37:19 atlas5 atlas5-0004 eA-Firma · Gıda · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026394257720","tip":"SATIS","e":"sent","tutar":89590.02,"sn":11.9}
+01:37:29 destek3 destek3-0004 eF-Ticari · Eğitim · Tevkifat · KDV %10+%20 issue-now: {"no":"TEF2026393757723","tip":"TEVKIFAT","e":"sent","tutar":68977.23,"sn":17.4}
+01:37:29 atlas1 atlas1-0004 eF-Ticari · İnşaat · KDV %10+%20 issue-now: {"no":"TEF2026394257726","tip":"SATIS","e":"sent","tutar":24920.88,"sn":15.6}
+01:37:29 destek5 destek5-0005 eA-Firma · Hukuk · KDV %20 issue-now: {"no":"TEA2026393757724","tip":"SATIS","e":"sent","tutar":66139.46,"sn":11.7}
+01:37:31 destek4 destek4-0005 eA-Kisi · Personel · KDV %20 issue-later: {"no":"TEA2026393757725","tip":"SATIS","e":"sent","tutar":127547.82,"sn":11.1}
+01:38:08 atlas2 atlas2-0004 eF-Temel · Tekstil · KDV %10+%20 issue-now: {"no":"TEF2026394257727","tip":"SATIS","e":"sent","tutar":81527.11,"sn":13.1}
+01:38:19 destek2 destek2-0004 eA-Firma · Yazılım · Tevkifat · KDV %20 · İskonto issue-now: {"no":"TEA2026393757726","tip":"TEVKIFAT","e":"sent","tutar":59818.4,"sn":18.1}
+01:38:36 atlas3 atlas3-0006 eF-Ticari · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257728","tip":"SATIS","e":"sent","tutar":19543.67,"sn":13.6}
+01:38:44 destek3 destek3-0005 eA-Kisi · Emlak · KDV %20 issue-now: {"no":"TEA2026393757727","tip":"SATIS","e":"sent","tutar":12020.64,"sn":9.2}
+01:38:47 destek1 destek1-0006 eA-Kisi · Eğitim · KDV %10 issue-now: {"no":"TEA2026393757728","tip":"SATIS","e":"sent","tutar":4192.96,"sn":9.6}
+01:38:51 atlas4 atlas4-0005 eA-Kisi · Tekstil · KDV %1+%10+%20 issue-now: {"no":"TEA2026394257721","tip":"SATIS","e":"sent","tutar":47081.07,"sn":19.4}
+01:39:06 atlas5 atlas5-0005 eA-Kisi · Tekstil · KDV %10+%20 issue-now: {"no":"TEA2026394257722","tip":"SATIS","e":"sent","tutar":84449.99,"sn":11.6}
+01:39:11 destek5 destek5-0006 eF-Ticari · Temizlik · KDV %20 · İskonto issue-later: {"no":"TEF2026393757724","tip":"SATIS","e":"sent","tutar":38260.34,"sn":9.9}
+01:39:35 destek4 destek4-0006 eA-Firma · Turizm · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757729","tip":"SATIS","e":"sent","tutar":50246.35,"sn":13.4}
+01:39:47 atlas1 atlas1-0005 eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%1+%20 · İskonto issue-later: {"no":"TEF2026394257729","tip":"TEVKIFAT","e":"sent","tutar":73935.38,"sn":15.5}
+01:39:55 atlas2 atlas2-0005 eA-Kisi · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEA2026394257723","tip":"SATIS","e":"sent","tutar":8088.91,"sn":12.3}
+01:39:57 destek2 destek2-0005 eF-Temel · Yemek · KDV %10+%20 · İskonto issue-later: {"no":"TEF2026393757725","tip":"SATIS","e":"sent","tutar":97151.88,"sn":11.8}
+01:40:03 atlas2 e-Arşiv İPTAL TEA2026394257714: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026394257714 iptal edildi; etkileri geri alındı.×"}
+01:40:09 atlas3 atlas3-0007 eF-Temel · İnşaat · Tevkifat · KDV %20 issue-now: {"no":"TEF2026394257730","tip":"TEVKIFAT","e":"sent","tutar":107564.09,"sn":11.9}
+01:40:22 atlas4 atlas4-0006 eA-Kisi · Elektronik · KDV %20 · İskonto issue-now: {"no":"TEA2026394257724","tip":"SATIS","e":"sent","tutar":148867.58,"sn":17.6}
+01:40:26 destek5 destek5-0007 eF-Temel · Temizlik · KDV %20 issue-now: {"no":"TEF2026393757726","tip":"SATIS","e":"sent","tutar":69317.42,"sn":9.7}
+01:40:54 destek3 destek3-0006 eF-Temel · Danışmanlık · KDV %20 issue-now: {"no":"TEF2026393757727","tip":"SATIS","e":"sent","tutar":186405.86,"sn":9.6}
+01:41:00 atlas5 atlas5-0006 eF-Ticari · Elektronik · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257731","tip":"SATIS","e":"sent","tutar":39191,"sn":11.2}
+01:41:03 destek3 e-Arşiv İPTAL TEA2026393757721: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757721 iptal edildi; etkileri geri alındı.×"}
+01:41:09 destek1 destek1-0007 eA-Firma · Eğitim · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757730","tip":"SATIS","e":"sent","tutar":97834.54,"sn":13.1}
+01:41:13 atlas2 atlas2-0006 eA-Firma · Tekstil · İstisna · KDV %0+%1+%20 issue-now: {"no":"TEA2026394257725","tip":"SATIS","e":"sent","tutar":2775.79,"sn":14.7}
+01:41:37 destek2 destek2-0006 eF-Ticari · Emlak · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026393757728","tip":"SATIS","e":"sent","tutar":263995.84,"sn":15}
+01:41:48 atlas1 atlas1-0006 eF-Temel · Tekstil · KDV %10 · İskonto issue-now: {"no":"TEF2026394257732","tip":"SATIS","e":"sent","tutar":6650.99,"sn":12.8}
+01:41:55 destek4 destek4-0007 eA-Kisi · Danışmanlık · KDV %20 issue-now: {"no":"TEA2026393757731","tip":"SATIS","e":"sent","tutar":70442.17,"sn":10.5}
+01:42:04 atlas3 atlas3-0008 eA-Firma · Tekstil · Tevkifat · KDV %10+%20 issue-now: {"no":"TEA2026394257726","tip":"TEVKIFAT","e":"sent","tutar":20663.33,"sn":17.3}
+01:42:08 atlas5 atlas5-0007 eF-Ticari · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257733","tip":"SATIS","e":"sent","tutar":1906.88,"sn":18}
+01:42:23 destek5 destek5-0008 eA-Kisi · Yazılım · KDV %20 issue-now: {"no":"TEA2026393757732","tip":"SATIS","e":"sent","tutar":85037.93,"sn":12}
+01:42:35 destek2 destek2-0007 eF-Ticari · Emlak · KDV %20 issue-now: {"no":"TEF2026393757729","tip":"SATIS","e":"sent","tutar":64152.67,"sn":12.2}
+01:42:37 destek1 destek1-0008 eF-Ticari · Emlak · KDV %20 · İskonto issue-later: {"no":"TEF2026393757730","tip":"SATIS","e":"sent","tutar":141764.1,"sn":13.7}
+01:42:47 atlas4 atlas4-0007 eA-Firma · Tekstil · KDV %10 issue-now: {"no":"TEA2026394257727","tip":"SATIS","e":"sent","tutar":14604.78,"sn":13.6}
+01:42:51 destek3 destek3-0007 eA-Kisi · Yazılım · KDV %20 · İskonto issue-now: {"no":"TEA2026393757733","tip":"SATIS","e":"sent","tutar":80588.95,"sn":11.4}
+01:43:02 destek4 destek4-0008 eF-Ticari · Temizlik · KDV %20 issue-now: {"no":"TEF2026393757731","tip":"SATIS","e":"sent","tutar":49529.28,"sn":8.3}
+01:43:14 atlas2 atlas2-0007 eF-Ticari · Elektronik · KDV %20 issue-later: {"no":"TEF2026394257734","tip":"SATIS","e":"sent","tutar":30983.89,"sn":9.5}
+01:43:16 atlas1 atlas1-0007 eA-Kisi · İnşaat · KDV %20 · İskonto issue-later: {"no":"TEA2026394257728","tip":"SATIS","e":"sent","tutar":87582.64,"sn":19.4}
+01:43:57 atlas5 atlas5-0008 eA-Kisi · Tekstil · KDV %10 · İskonto issue-now: {"no":"TEA2026394257729","tip":"SATIS","e":"sent","tutar":102.45,"sn":9.5}
+01:43:59 destek5 destek5-0009 eA-Kisi · Personel · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757734","tip":"SATIS","e":"sent","tutar":42161.74,"sn":10.8}
+01:44:14 atlas3 atlas3-0009 eF-Temel · Tekstil · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026394257735","tip":"SATIS","e":"sent","tutar":4110.3,"sn":12.7}
+01:44:23 destek1 destek1-0009 eF-Temel · Yazılım · Tevkifat+İstisna · KDV %0+%20 issue-now: {"no":"TEF2026393757732","tip":"TEVKIFAT","e":"sent","tutar":159320.07,"sn":13.6}
+01:44:26 destek2 destek2-0008 eF-Ticari · Temizlik · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026393757733","tip":"TEVKIFAT","e":"sent","tutar":50884.43,"sn":14.7}
+01:44:37 atlas1 atlas1-0008 eA-Firma · Gıda · Tevkifat · KDV %1+%20 issue-now: {"no":"TEA2026394257730","tip":"TEVKIFAT","e":"sent","tutar":22184.59,"sn":14.7}
+01:44:37 destek3 destek3-0008 eF-Temel · Eğitim · KDV %10 issue-now: {"no":"TEF2026393757734","tip":"SATIS","e":"sent","tutar":19962.8,"sn":9.3}
+01:44:43 destek4 destek4-0009 eA-Kisi · Danışmanlık · KDV %20 issue-later: {"no":"TEA2026393757735","tip":"SATIS","e":"sent","tutar":181511.39,"sn":15.9}
+01:44:44 atlas4 atlas4-0008 eF-Ticari · Elektronik · KDV %20 issue-later: {"no":"TEF2026394257736","tip":"SATIS","e":"sent","tutar":242.6,"sn":10.3}
+01:45:11 destek5 destek5-0010 eF-Ticari · Turizm · KDV %10+%20 issue-now: {"no":"TEF2026393757735","tip":"SATIS","e":"sent","tutar":81423.3,"sn":13.1}
+01:45:29 destek1 destek1-0010 eF-Temel · Yemek · KDV %10 · İskonto issue-later: {"no":"TEF2026393757736","tip":"SATIS","e":"sent","tutar":7330.58,"sn":8.5}
+01:45:44 atlas2 atlas2-0008 eF-Ticari · Tekstil · KDV %20 · İskonto issue-later: {"no":"TEF2026394257738","tip":"SATIS","e":"sent","tutar":97255.83,"sn":15}
+01:45:45 atlas5 atlas5-0009 eF-Temel · Elektronik · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026394257737","tip":"TEVKIFAT","e":"sent","tutar":72907.54,"sn":14.6}
+01:45:49 atlas1 atlas1-0009 eF-Temel · Elektronik · Tevkifat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257739","tip":"TEVKIFAT","e":"sent","tutar":6284.33,"sn":13.2}
+01:45:50 atlas3 atlas3-0010 eF-Ticari · İnşaat · KDV %1 issue-now: {"no":"TEF2026394257740","tip":"SATIS","e":"sent","tutar":1029.55,"sn":11.2}
+01:45:55 destek2 destek2-0009 eF-Ticari · Turizm · Tevkifat+İstisna · KDV %0+%20 issue-now: {"no":"TEF2026393757737","tip":"TEVKIFAT","e":"sent","tutar":46293.6,"sn":13.8}
+01:46:02 atlas4 atlas4-0009 eA-Kisi · Tekstil · KDV %10 · İskonto issue-now: {"no":"TEA2026394257731","tip":"SATIS","e":"sent","tutar":5336.1,"sn":9.9}
+01:46:17 destek5 destek5-0011 eA-Kisi · Eğitim · KDV %10+%20 · İskonto issue-later: {"no":"TEA2026393757736","tip":"SATIS","e":"sent","tutar":18235,"sn":10.4}
+01:46:31 ARA RAPOR 15 dk — belge 92 (001: 47, 002: 45), durum {"cancelled/cancelled":2,"issued/processing":4,"issued/sent":86}, ekran hatası 0, iptal 2, sayfa hatası 0
+01:46:43 atlas2 atlas2-0009 eA-Firma · İnşaat · KDV %1+%20 issue-now: {"no":"TEA2026394257732","tip":"SATIS","e":"sent","tutar":21615.8,"sn":11}
+01:46:51 destek4 destek4-0010 eA-Firma · Yemek · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757737","tip":"SATIS","e":"sent","tutar":80356.46,"sn":12.9}
+01:47:05 destek3 destek3-0009 eF-Temel · Turizm · İstisna · KDV %0+%10+%20 · İskonto issue-later: {"no":"TEF2026393757738","tip":"ISTISNA","e":"sent","tutar":119666.47,"sn":15.8}
+01:47:07 atlas1 atlas1-0010 eA-Kisi · Tekstil · KDV %1+%10 · İskonto issue-later: {"no":"TEA2026394257733","tip":"SATIS","e":"sent","tutar":19582.07,"sn":15.5}
+01:47:40 destek1 destek1-0011 eF-Temel · Danışmanlık · İstisna · KDV %0 issue-now: {"no":"TEF2026393757739","tip":"ISTISNA","e":"sent","tutar":5164.61,"sn":8.5}
+01:47:44 destek2 destek2-0010 eA-Kisi · Yemek · KDV %10 issue-later: {"no":"TEA2026393757738","tip":"SATIS","e":"sent","tutar":11365.2,"sn":8.9}
+01:47:48 destek1 e-Arşiv İPTAL TEA2026393757728: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757728 iptal edildi; etkileri geri alındı.×"}
+01:47:53 destek5 destek5-0012 eF-Temel · Personel · KDV %20 issue-now: {"no":"TEF2026393757740","tip":"SATIS","e":"sent","tutar":147280.39,"sn":8.8}
+01:47:57 atlas5 atlas5-0010 eA-Firma · Elektronik · KDV %20 issue-now: {"no":"TEA2026394257734","tip":"SATIS","e":"sent","tutar":201883.57,"sn":17.5}
+01:48:03 atlas3 atlas3-0011 eA-Kisi · İnşaat · KDV %1+%20 · İskonto issue-later: {"no":"TEA2026394257735","tip":"SATIS","e":"sent","tutar":1833.45,"sn":11.9}
+01:48:08 atlas4 atlas4-0010 eA-Firma · Tekstil · KDV %1+%10+%20 · İskonto issue-now: {"no":"TEA2026394257736","tip":"SATIS","e":"sent","tutar":12054.18,"sn":16.7}
+01:48:24 destek4 destek4-0011 eA-Kisi · Turizm · KDV %10 issue-now: {"no":"TEA2026393757739","tip":"SATIS","e":"sent","tutar":12029.6,"sn":8.3}
+01:48:48 atlas2 atlas2-0010 eA-Firma · Elektronik · KDV %20 · İskonto issue-later: {"no":"TEA2026394257737","tip":"SATIS","e":"sent","tutar":26249.99,"sn":9.5}
+01:49:08 atlas1 atlas1-0011 eA-Firma · Tekstil · Tevkifat · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026394257738","tip":"TEVKIFAT","e":"sent","tutar":25445.63,"sn":11.2}
+01:49:18 destek3 destek3-0010 eF-Temel · Danışmanlık · KDV %20 · İskonto issue-now: {"no":"TEF2026393757741","tip":"SATIS","e":"sent","tutar":28961.63,"sn":8.6}
+01:49:26 atlas3 atlas3-0012 eF-Temel · Elektronik · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257741","tip":"SATIS","e":"sent","tutar":97279.25,"sn":13.5}
+01:49:39 destek2 destek2-0011 eA-Kisi · Turizm · KDV %20 issue-now: {"no":"TEA2026393757740","tip":"SATIS","e":"sent","tutar":16625.57,"sn":8.6}
+01:49:48 destek1 destek1-0012 eA-Kisi · Temizlik · KDV %20 issue-now: {"no":"TEA2026393757741","tip":"SATIS","e":"sent","tutar":70345.02,"sn":10.1}
+01:49:58 destek5 destek5-0013 eF-Temel · Danışmanlık · Tevkifat · KDV %20 · İskonto issue-later: {"no":"TEF2026393757742","tip":"TEVKIFAT","e":"sent","tutar":113048.13,"sn":15.7}
+01:50:05 atlas4 atlas4-0011 eA-Firma · Tekstil · KDV %10 · İskonto issue-later: {"no":"TEA2026394257739","tip":"SATIS","e":"sent","tutar":3856.63,"sn":11.8}
+01:50:13 destek4 destek4-0012 eA-Kisi · Arşiv · KDV %20 issue-now: {"no":"TEA2026393757742","tip":"SATIS","e":"sent","tutar":6553.4,"sn":9.7}
+01:50:21 atlas5 atlas5-0011 eF-Temel · Tekstil · Tevkifat · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026394257742","tip":"TEVKIFAT","e":"sent","tutar":8512.77,"sn":16}
+01:50:31 destek3 destek3-0011 eA-Firma · Arşiv · Tevkifat+İstisna · KDV %0+%20 issue-later: {"no":"TEA2026393757743","tip":"TEVKIFAT","e":"sent","tutar":31536.29,"sn":18.6}
+01:50:32 atlas1 atlas1-0012 eF-Ticari · İnşaat · Tevkifat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257743","tip":"TEVKIFAT","e":"sent","tutar":7154.76,"sn":17.8}
+01:50:36 atlas2 atlas2-0011 eA-Firma · Gıda · KDV %1+%20 issue-now: {"no":"TEA2026394257740","tip":"SATIS","e":"sent","tutar":46786.14,"sn":23.7}
+01:51:00 atlas3 atlas3-0013 eF-Temel · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257744","tip":"SATIS","e":"sent","tutar":4700.62,"sn":10.7}
+01:51:01 destek1 destek1-0013 eF-Temel · Hukuk · KDV %20 issue-now: {"no":"TEF2026393757743","tip":"SATIS","e":"sent","tutar":38069.81,"sn":10.3}
+01:51:23 destek2 destek2-0012 eA-Firma · Eğitim · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757744","tip":"SATIS","e":"sent","tutar":68757.02,"sn":14}
+01:51:34 atlas4 atlas4-0012 eF-Ticari · Gıda · KDV %1+%20 issue-now: {"no":"TEF2026394257745","tip":"SATIS","e":"sent","tutar":10763.43,"sn":11.2}
+01:51:44 destek4 destek4-0013 eF-Temel · Eğitim · Tevkifat · KDV %10+%20 issue-later: {"no":"TEF2026393757744","tip":"TEVKIFAT","e":"sent","tutar":33440.09,"sn":14.2}
+01:51:47 destek3 destek3-0012 eF-Temel · Arşiv · KDV %20 issue-now: {"no":"TEF2026393757745","tip":"SATIS","e":"sent","tutar":55548.05,"sn":11.2}
+01:51:52 atlas5 atlas5-0012 eA-Firma · Tekstil · KDV %10 issue-later: {"no":"TEA2026394257741","tip":"SATIS","e":"sent","tutar":540.96,"sn":9.6}
+01:52:12 destek5 destek5-0014 eF-Temel · Emlak · Tevkifat · KDV %20 · İskonto issue-now: {"no":"TEF2026393757746","tip":"TEVKIFAT","e":"sent","tutar":240317.47,"sn":13.9}
+01:52:17 atlas1 atlas1-0013 eA-Firma · İnşaat · KDV %20 · İskonto issue-later: {"no":"TEA2026394257742","tip":"SATIS","e":"sent","tutar":17147.35,"sn":12.1}
+01:52:38 atlas2 atlas2-0012 eF-Temel · İnşaat · Tevkifat+İstisna · KDV %0+%20 issue-now: {"no":"TEF2026394257746","tip":"TEVKIFAT","e":"sent","tutar":85550.18,"sn":14.2}
+01:52:41 destek2 destek2-0013 eF-Temel · Turizm · Tevkifat · KDV %10+%20 issue-now: {"no":"TEF2026393757747","tip":"TEVKIFAT","e":"sent","tutar":83178.46,"sn":15.8}
+01:52:50 destek1 destek1-0014 eA-Kisi · Yemek · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757745","tip":"SATIS","e":"sent","tutar":6835.25,"sn":10.9}
+01:53:02 atlas4 atlas4-0013 eA-Firma · Gıda · KDV %1 · İskonto issue-now: {"no":"TEA2026394257743","tip":"SATIS","e":"sent","tutar":2174.11,"sn":12.4}
+01:53:11 atlas1 atlas1-0014 eF-Temel · Gıda · KDV %1 issue-now: {"no":"TEF2026394257747","tip":"SATIS","e":"sent","tutar":73.04,"sn":8.5}
+01:53:18 destek4 destek4-0014 eF-Ticari · Turizm · Tevkifat · KDV %10+%20 issue-now: {"no":"TEF2026393757748","tip":"TEVKIFAT","e":"sent","tutar":49366.74,"sn":11}
+01:53:23 atlas3 atlas3-0014 eA-Kisi · Gıda · KDV %10 issue-now: {"no":"TEA2026394257744","tip":"SATIS","e":"sent","tutar":2816,"sn":9.2}
+01:53:34 destek3 destek3-0013 eF-Temel · Danışmanlık · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-later: {"no":"TEF2026393757749","tip":"TEVKIFAT","e":"sent","tutar":44240.99,"sn":13.8}
+01:53:43 atlas2 atlas2-0013 eA-Kisi · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257745","tip":"SATIS","e":"sent","tutar":23323.8,"sn":17.9}
+01:53:43 destek5 destek5-0015 eA-Firma · Emlak · Tevkifat · KDV %20 · İskonto issue-later: {"no":"TEA2026393757746","tip":"TEVKIFAT","e":"sent","tutar":183624.24,"sn":11.9}
+01:53:57 destek2 destek2-0014 eF-Temel · Eğitim · İstisna · KDV %0+%10+%20 issue-now: {"no":"TEF2026393757750","tip":"ISTISNA","e":"sent","tutar":28724.2,"sn":11.8}
+01:54:07 atlas1 atlas1-0015 eA-Firma · Tekstil · KDV %10 issue-later: {"no":"TEA2026394257746","tip":"SATIS","e":"sent","tutar":3225.99,"sn":9.6}
+01:54:12 atlas4 atlas4-0014 eA-Kisi · Tekstil · KDV %10 issue-now: {"no":"TEA2026394257747","tip":"SATIS","e":"sent","tutar":3834.91,"sn":11.7}
+01:54:15 atlas5 atlas5-0013 eA-Kisi · Elektronik · KDV %20 issue-now: {"no":"TEA2026394257748","tip":"SATIS","e":"sent","tutar":11398.18,"sn":9.7}
+01:54:37 destek4 destek4-0015 eF-Ticari · Personel · KDV %10+%20 issue-now: {"no":"TEF2026393757751","tip":"SATIS","e":"sent","tutar":130952.1,"sn":10}
+01:54:52 destek1 destek1-0015 eA-Kisi · Yazılım · KDV %20 · İskonto issue-now: {"no":"TEA2026393757747","tip":"SATIS","e":"sent","tutar":45108.6,"sn":14.6}
+01:54:55 destek5 destek5-0016 eA-Firma · Temizlik · KDV %20 issue-later: {"no":"TEA2026393757748","tip":"SATIS","e":"sent","tutar":54145.19,"sn":11.2}
+01:55:05 atlas2 atlas2-0014 eA-Firma · Elektronik · KDV %20 issue-now: {"no":"TEA2026394257749","tip":"SATIS","e":"sent","tutar":44826.92,"sn":11.6}
+01:55:08 atlas1 atlas1-0016 eF-Ticari · Tekstil · KDV %10 issue-now: {"no":"TEF2026394257748","tip":"SATIS","e":"sent","tutar":1980,"sn":9.8}
+01:55:32 atlas3 atlas3-0015 eA-Kisi · İnşaat · KDV %10+%20 issue-now: {"no":"TEA2026394257750","tip":"SATIS","e":"sent","tutar":8305.68,"sn":11.7}
+01:55:36 atlas4 atlas4-0015 eF-Temel · Elektronik · Tevkifat · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257749","tip":"TEVKIFAT","e":"sent","tutar":31554.96,"sn":13.7}
+01:55:57 destek1 destek1-0016 eF-Temel · Hukuk · Tevkifat+İstisna · KDV %0+%20 issue-now: {"no":"TEF2026393757752","tip":"TEVKIFAT","e":"sent","tutar":30224.6,"sn":11.4}
+01:55:59 destek3 destek3-0014 eF-Ticari · Danışmanlık · KDV %20 issue-now: {"no":"TEF2026393757753","tip":"SATIS","e":"sent","tutar":73548.23,"sn":11.4}
+01:56:04 destek1 e-Arşiv İPTAL TEA2026393757730: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757730 iptal edildi; etkileri geri alındı.×"}
+01:56:05 destek2 destek2-0015 eA-Firma · Turizm · Tevkifat+İstisna · KDV %0+%10+%20 · İskonto issue-now: {"no":"TEA2026393757749","tip":"TEVKIFAT","e":"sent","tutar":130912.73,"sn":19.8}
+01:56:27 destek4 destek4-0016 eF-Ticari · Hukuk · KDV %20 issue-now: {"no":"TEF2026393757754","tip":"SATIS","e":"sent","tutar":35540.69,"sn":8}
+01:56:33 atlas5 atlas5-0014 eA-Kisi · Elektronik · KDV %20 · İskonto issue-now: {"no":"TEA2026394257751","tip":"SATIS","e":"sent","tutar":27749.99,"sn":9.4}
+01:56:45 destek5 destek5-0017 eA-Firma · Turizm · KDV %10 issue-later: {"no":"TEA2026393757750","tip":"SATIS","e":"sent","tutar":14364.24,"sn":8.8}
+01:56:49 atlas1 atlas1-0017 eF-Ticari · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257750","tip":"SATIS","e":"sent","tutar":1566,"sn":9.9}
+01:56:50 atlas3 atlas3-0016 eA-Firma · Elektronik · Tevkifat+İstisna · KDV %0+%20 issue-later: {"no":"TEA2026394257752","tip":"TEVKIFAT","e":"sent","tutar":6745.22,"sn":12.6}
+01:57:10 atlas2 atlas2-0015 eF-Ticari · Elektronik · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257751","tip":"SATIS","e":"sent","tutar":83260.68,"sn":11.1}
+01:57:15 destek3 destek3-0015 eF-Temel · Yazılım · KDV %20 issue-now: {"no":"TEF2026393757755","tip":"SATIS","e":"sent","tutar":26222.16,"sn":8.4}
+01:57:24 atlas4 atlas4-0016 eA-Firma · Elektronik · İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEA2026394257753","tip":"ISTISNA","e":"sent","tutar":174331.36,"sn":16}
+01:57:33 destek2 destek2-0016 eF-Temel · Yemek · KDV %10 issue-later: {"no":"TEF2026393757756","tip":"SATIS","e":"sent","tutar":1336.02,"sn":8}
+01:57:46 destek1 destek1-0017 eA-Firma · Eğitim · KDV %10 issue-now: {"no":"TEA2026393757751","tip":"SATIS","e":"sent","tutar":25255.45,"sn":8.8}
+01:57:53 destek5 destek5-0018 eF-Temel · Arşiv · İstisna · KDV %0 issue-now: {"no":"TEF2026393757757","tip":"ISTISNA","e":"sent","tutar":187.45,"sn":9.8}
+01:58:00 atlas5 atlas5-0015 eA-Firma · Elektronik · KDV %20 · İskonto issue-later: {"no":"TEA2026394257754","tip":"SATIS","e":"sent","tutar":168052.11,"sn":16.1}
+01:58:02 destek4 destek4-0017 eF-Ticari · Temizlik · Tevkifat · KDV %20 issue-now: {"no":"TEF2026393757758","tip":"TEVKIFAT","e":"sent","tutar":44826.04,"sn":14}
+01:58:10 destek4 e-Arşiv İPTAL TEA2026393757737: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757737 iptal edildi; etkileri geri alındı.×"}
+01:58:20 atlas1 atlas1-0018 eF-Ticari · Gıda · KDV %10+%20 issue-later: {"no":"TEF2026394257752","tip":"SATIS","e":"sent","tutar":41765.81,"sn":12.9}
+01:58:30 atlas2 atlas2-0016 eF-Ticari · Tekstil · KDV %10 issue-now: {"no":"TEF2026394257753","tip":"SATIS","e":"sent","tutar":4015,"sn":10.5}
+01:58:42 destek3 destek3-0016 eA-Kisi · Personel · KDV %20 issue-now: {"no":"TEA2026393757752","tip":"SATIS","e":"sent","tutar":76279.2,"sn":9.1}
+01:58:50 atlas3 atlas3-0017 eA-Kisi · Elektronik · KDV %1+%20 issue-now: {"no":"TEA2026394257755","tip":"SATIS","e":"sent","tutar":21928,"sn":15.1}
+01:59:19 atlas4 atlas4-0017 eF-Temel · Gıda · KDV %1 · İskonto issue-now: {"no":"TEF2026394257754","tip":"SATIS","e":"sent","tutar":2853.54,"sn":9.9}
+01:59:19 atlas1 atlas1-0019 eA-Kisi · Gıda · KDV %1 issue-now: {"no":"TEA2026394257756","tip":"SATIS","e":"sent","tutar":39.07,"sn":10}
+01:59:23 destek4 destek4-0018 eA-Firma · Turizm · KDV %10+%20 · İskonto issue-later: {"no":"TEA2026393757753","tip":"SATIS","e":"sent","tutar":121359.52,"sn":16.8}
+01:59:49 destek5 destek5-0019 eF-Ticari · Arşiv · KDV %20 issue-now: {"no":"TEF2026393757759","tip":"SATIS","e":"sent","tutar":56006.06,"sn":8.8}
+01:59:51 atlas5 atlas5-0016 eF-Temel · Tekstil · KDV %10+%20 issue-later: {"no":"TEF2026394257755","tip":"SATIS","e":"sent","tutar":12591.76,"sn":11.5}
+01:59:57 destek1 destek1-0018 eA-Kisi · Yazılım · KDV %20 issue-later: {"no":"TEA2026393757754","tip":"SATIS","e":"sent","tutar":3294.72,"sn":9.5}
+02:00:01 destek2 destek2-0017 eF-Temel · Personel · İstisna · KDV %0+%10+%20 · İskonto issue-later: {"no":"TEF2026393757760","tip":"ISTISNA","e":"error","tutar":176072.09,"sn":16.1}
+02:00:15 atlas3 atlas3-0018 eA-Kisi · Elektronik · KDV %20 · İskonto issue-later: {"no":"TEA2026394257757","tip":"SATIS","e":"sent","tutar":59317.79,"sn":13.5}
+02:00:34 atlas2 atlas2-0017 eA-Kisi · Gıda · KDV %20 · İskonto issue-now: {"no":"TEA2026394257758","tip":"SATIS","e":"sent","tutar":529.57,"sn":9.8}
+02:00:37 destek3 destek3-0017 eA-Firma · Danışmanlık · İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEA2026393757755","tip":"ISTISNA","e":"sent","tutar":41547.2,"sn":12.5}
+02:01:03 destek4 destek4-0019 eF-Temel · Yemek · KDV %10+%20 · İskonto issue-later: {"no":"TEF2026393757761","tip":"SATIS","e":"sent","tutar":143261.22,"sn":14.9}
+02:01:18 destek2 destek2-0018 eA-Firma · Hukuk · Tevkifat · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757756","tip":"TEVKIFAT","e":"sent","tutar":129789.57,"sn":18.5}
+02:01:19 destek1 destek1-0019 eA-Firma · Danışmanlık · KDV %20 · İskonto issue-now: {"no":"TEA2026393757757","tip":"SATIS","e":"sent","tutar":88050.52,"sn":13.7}
+02:01:27 destek2 e-Arşiv İPTAL TEA2026393757717: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757717 iptal edildi; etkileri geri alındı.×"}
+02:01:29 destek5 destek5-0020 eF-Temel · Emlak · KDV %20 issue-now: {"no":"TEF2026393757762","tip":"SATIS","e":"sent","tutar":65210.04,"sn":9.3}
+02:01:31 ARA RAPOR 30 dk — belge 180 (001: 93, 002: 87), durum {"cancelled/cancelled":6,"issued/error":1,"issued/processing":5,"issued/sent":169}, ekran hatası 0, iptal 6, sayfa hatası 0
+02:01:31 atlas1 atlas1-0020 eF-Temel · İnşaat · KDV %20 · İskonto issue-later: {"no":"TEF2026394257756","tip":"SATIS","e":"sent","tutar":3856.12,"sn":9.9}
+02:01:40 atlas4 atlas4-0018 eA-Kisi · Elektronik · KDV %20 issue-later: {"no":"TEA2026394257759","tip":"SATIS","e":"sent","tutar":125523.68,"sn":12.5}
+02:01:42 atlas2 atlas2-0018 eA-Kisi · Gıda · KDV %1 issue-now: {"no":"TEA2026394257760","tip":"SATIS","e":"sent","tutar":22.11,"sn":10}
+02:01:44 atlas5 atlas5-0017 eA-Kisi · Tekstil · KDV %10+%20 issue-later: {"no":"TEA2026394257761","tip":"SATIS","e":"sent","tutar":11722.2,"sn":14.1}
+02:02:09 atlas3 atlas3-0019 eA-Kisi · Elektronik · KDV %20 issue-now: {"no":"TEA2026394257762","tip":"SATIS","e":"sent","tutar":39000,"sn":9.5}
+02:02:19 destek1 destek1-0020 eF-Temel · Yemek · KDV %10 · İskonto issue-now: {"no":"TEF2026393757763","tip":"SATIS","e":"sent","tutar":11268.98,"sn":8.7}
+02:02:25 destek3 destek3-0018 eA-Firma · Arşiv · Tevkifat · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757758","tip":"TEVKIFAT","e":"sent","tutar":91546.76,"sn":17.1}
+02:02:27 destek2 destek2-0019 eF-Temel · Eğitim · Tevkifat · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026393757764","tip":"TEVKIFAT","e":"sent","tutar":25738.66,"sn":11.4}
+02:02:45 atlas4 atlas4-0019 eA-Kisi · Tekstil · KDV %10 issue-now: {"no":"TEA2026394257763","tip":"SATIS","e":"sent","tutar":8030,"sn":9.3}
+02:02:53 destek5 destek5-0021 eA-Kisi · Hukuk · KDV %20 · İskonto issue-now: {"no":"TEA2026393757759","tip":"SATIS","e":"sent","tutar":79376.73,"sn":12.3}
+02:03:08 atlas1 atlas1-0021 eF-Temel · Gıda · İstisna · KDV %0 issue-now: {"no":"TEF2026394257757","tip":"ISTISNA","e":"sent","tutar":239.06,"sn":9.2}
+02:03:21 destek4 destek4-0020 eA-Kisi · Emlak · KDV %20 · İskonto issue-now: {"no":"TEA2026393757760","tip":"SATIS","e":"sent","tutar":85014.13,"sn":9.9}
+02:03:29 atlas5 atlas5-0018 eA-Kisi · Gıda · KDV %1+%20 issue-later: {"no":"TEA2026394257764","tip":"SATIS","e":"sent","tutar":1999.53,"sn":11.6}
+02:03:36 destek3 destek3-0019 eA-Firma · Personel · KDV %20 issue-now: {"no":"TEA2026393757761","tip":"SATIS","e":"sent","tutar":115801.15,"sn":13.3}
+02:03:50 atlas2 atlas2-0019 eA-Kisi · Elektronik · KDV %20 issue-now: {"no":"TEA2026394257765","tip":"SATIS","e":"sent","tutar":88256.63,"sn":9.3}
+02:03:57 atlas2 e-Arşiv İPTAL TEA2026394257732: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026394257732 iptal edildi; etkileri geri alındı.×"}
+02:04:06 destek1 destek1-0021 eF-Temel · Yazılım · KDV %20 issue-now: {"no":"TEF2026393757765","tip":"SATIS","e":"sent","tutar":57715.2,"sn":8.5}
+02:04:12 atlas3 atlas3-0020 eA-Kisi · Elektronik · KDV %20 issue-now: {"no":"TEA2026394257766","tip":"SATIS","e":"sent","tutar":59203.08,"sn":9.2}
+02:04:18 atlas4 atlas4-0020 eF-Temel · İnşaat · KDV %20 issue-now: {"no":"TEF2026394257758","tip":"SATIS","e":"sent","tutar":2378.26,"sn":11.1}
+02:04:38 destek2 destek2-0020 eF-Ticari · Hukuk · KDV %20 issue-later: {"no":"TEF2026393757766","tip":"SATIS","e":"sent","tutar":56869.2,"sn":9.7}
+02:04:49 destek5 destek5-0022 eA-Kisi · Temizlik · KDV %20 issue-later: {"no":"TEA2026393757762","tip":"SATIS","e":"sent","tutar":33182.9,"sn":10.4}
+02:04:59 atlas2 atlas2-0020 eF-Temel · İnşaat · KDV %20 · İskonto issue-later: {"no":"TEF2026394257759","tip":"SATIS","e":"sent","tutar":2555.56,"sn":11.5}
+02:04:59 atlas5 atlas5-0019 eA-Firma · İnşaat · KDV %20 issue-now: {"no":"TEA2026394257767","tip":"SATIS","e":"sent","tutar":21946.21,"sn":16.9}
+02:05:29 atlas1 atlas1-0022 eA-Kisi · Gıda · KDV %1 issue-later: {"no":"TEA2026394257768","tip":"SATIS","e":"sent","tutar":242.25,"sn":9.6}
+02:05:31 destek4 destek4-0021 eF-Ticari · Yazılım · KDV %20 issue-later: {"no":"TEF2026393757767","tip":"SATIS","e":"sent","tutar":10665.54,"sn":12}
+02:05:32 destek3 destek3-0020 eF-Temel · Personel · KDV %20 issue-later: {"no":"TEF2026393757768","tip":"SATIS","e":"sent","tutar":53219.42,"sn":10.8}
+02:05:54 destek5 destek5-0023 eF-Temel · Arşiv · KDV %20 · İskonto issue-now: {"no":"TEF2026393757769","tip":"SATIS","e":"sent","tutar":38359.13,"sn":8.4}
+02:06:19 atlas4 atlas4-0021 eA-Firma · Tekstil · KDV %1+%10+%20 · İskonto issue-now: {"no":"TEA2026394257769","tip":"SATIS","e":"sent","tutar":9860.51,"sn":19.5}
+02:06:29 atlas3 atlas3-0021 eA-Kisi · Tekstil · KDV %20 · İskonto issue-later: {"no":"TEA2026394257770","tip":"SATIS","e":"sent","tutar":81163.03,"sn":9.6}
+02:06:34 atlas2 atlas2-0021 eF-Temel · İnşaat · Tevkifat · KDV %20 issue-now: {"no":"TEF2026394257760","tip":"TEVKIFAT","e":"sent","tutar":13233.78,"sn":12.3}
+02:06:34 destek1 destek1-0022 eF-Ticari · Arşiv · KDV %20 · İskonto issue-now: {"no":"TEF2026393757770","tip":"SATIS","e":"sent","tutar":73458.65,"sn":14.4}
+02:06:38 destek2 destek2-0021 eA-Firma · Yazılım · KDV %20 issue-now: {"no":"TEA2026393757763","tip":"SATIS","e":"sent","tutar":4305.76,"sn":10}
+02:07:06 destek5 destek5-0024 eA-Kisi · Danışmanlık · KDV %20 issue-now: {"no":"TEA2026393757764","tip":"SATIS","e":"sent","tutar":9841.4,"sn":8.8}
+02:07:13 atlas5 atlas5-0020 eA-Firma · Gıda · Tevkifat+İstisna · KDV %0+%1+%20 issue-now: {"no":"TEA2026394257771","tip":"TEVKIFAT","e":"sent","tutar":16245.86,"sn":14.3}
+02:07:26 atlas1 atlas1-0023 eA-Kisi · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEA2026394257772","tip":"SATIS","e":"sent","tutar":1573.18,"sn":11.2}
+02:07:41 destek2 destek2-0022 eF-Temel · Emlak · Tevkifat · KDV %20 issue-now: {"no":"TEF2026393757771","tip":"TEVKIFAT","e":"sent","tutar":110187.49,"sn":12}
+02:07:55 destek3 destek3-0021 eF-Temel · Eğitim · İstisna · KDV %0 issue-later: {"no":"TEF2026393757772","tip":"ISTISNA","e":"sent","tutar":1555.66,"sn":9.2}
+02:07:59 destek4 destek4-0022 eF-Temel · Yazılım · İstisna · KDV %0+%20 issue-now: {"no":"TEF2026393757773","tip":"SATIS","e":"sent","tutar":43474.11,"sn":13.9}
+02:08:09 atlas5 atlas5-0021 eF-Ticari · İnşaat · İstisna · KDV %0 issue-now: {"no":"TEF2026394257761","tip":"ISTISNA","e":"sent","tutar":1308.9,"sn":9.5}
+02:08:30 destek1 destek1-0023 eF-Ticari · Hukuk · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026393757774","tip":"TEVKIFAT","e":"sent","tutar":67412.66,"sn":11.6}
+02:08:33 atlas4 atlas4-0022 eA-Kisi · Gıda · KDV %1 issue-later: {"no":"TEA2026394257773","tip":"SATIS","e":"sent","tutar":9273.4,"sn":9.3}
+02:08:37 atlas3 atlas3-0022 eA-Kisi · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257774","tip":"SATIS","e":"sent","tutar":3813.74,"sn":16.2}
+02:08:50 atlas2 atlas2-0022 eA-Kisi · Tekstil · KDV %10 · İskonto issue-now: {"no":"TEA2026394257775","tip":"SATIS","e":"sent","tutar":4312,"sn":9.7}
+02:09:01 destek5 destek5-0025 eF-Temel · Yazılım · Tevkifat · KDV %20 · İskonto issue-now: {"no":"TEF2026393757775","tip":"TEVKIFAT","e":"sent","tutar":22628.85,"sn":15}
+02:09:02 destek3 destek3-0022 eF-Temel · Yazılım · Tevkifat · KDV %20 issue-now: {"no":"TEF2026393757776","tip":"TEVKIFAT","e":"sent","tutar":5139.85,"sn":17.5}
+02:09:07 destek5 e-Arşiv İPTAL TEA2026393757723: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757723 iptal edildi; etkileri geri alındı.×"}
+02:09:09 atlas1 atlas1-0024 eF-Ticari · Tekstil · İstisna · KDV %0+%10+%20 · İskonto issue-now: {"no":"TEF2026394257762","tip":"ISTISNA","e":"sent","tutar":17555.74,"sn":19.1}
+02:09:27 destek4 destek4-0023 eF-Temel · Arşiv · Tevkifat · KDV %20 · İskonto issue-later: {"no":"TEF2026393757777","tip":"TEVKIFAT","e":"sent","tutar":110579.81,"sn":13.6}
+02:09:49 atlas2 atlas2-0023 eA-Kisi · Gıda · KDV %1+%20 issue-now: {"no":"TEA2026394257776","tip":"SATIS","e":"sent","tutar":16569.56,"sn":13.4}
+02:09:52 destek2 destek2-0023 eA-Firma · Emlak · KDV %20 · İskonto issue-later: {"no":"TEA2026393757765","tip":"SATIS","e":"sent","tutar":144710.1,"sn":14.3}
+02:10:13 atlas5 atlas5-0022 eF-Temel · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257763","tip":"SATIS","e":"sent","tutar":4493.6,"sn":17}
+02:10:32 destek5 destek5-0026 eA-Kisi · Hukuk · KDV %20 issue-now: {"no":"TEA2026393757766","tip":"SATIS","e":"sent","tutar":40555.44,"sn":11.9}
+02:10:34 destek1 destek1-0024 eF-Temel · Eğitim · Tevkifat · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026393757778","tip":"TEVKIFAT","e":"sent","tutar":25708.3,"sn":14.9}
+02:10:37 destek3 destek3-0023 eA-Kisi · Yazılım · KDV %20 · İskonto issue-now: {"no":"TEA2026393757767","tip":"SATIS","e":"sent","tutar":94655.81,"sn":19.5}
+02:10:38 destek4 destek4-0024 eF-Ticari · Yazılım · KDV %20 · İskonto issue-now: {"no":"TEF2026393757779","tip":"SATIS","e":"sent","tutar":57675.23,"sn":15.7}
+02:10:44 destek4 e-Arşiv İPTAL TEA2026393757718: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757718 iptal edildi; etkileri geri alındı.×"}
+02:10:45 destek3 e-Arşiv İPTAL TEA2026393757758: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757758 iptal edildi; etkileri geri alındı.×"}
+02:10:54 atlas4 atlas4-0023 eA-Firma · İnşaat · Tevkifat · KDV %20 · İskonto issue-now: {"no":"TEA2026394257777","tip":"TEVKIFAT","e":"sent","tutar":6086.41,"sn":15.6}
+02:10:58 atlas3 atlas3-0023 eF-Ticari · Tekstil · KDV %1+%10+%20 · İskonto issue-now: {"no":"TEF2026394257764","tip":"SATIS","e":"sent","tutar":7914.23,"sn":14.9}
+02:11:17 atlas1 atlas1-0025 eF-Temel · Gıda · KDV %1 issue-now: {"no":"TEF2026394257765","tip":"SATIS","e":"sent","tutar":241.45,"sn":8.9}
+02:11:40 atlas5 atlas5-0023 eF-Temel · Elektronik · İstisna · KDV %0 issue-now: {"no":"TEF2026394257766","tip":"SATIS","e":"sent","tutar":34638.17,"sn":9.6}
+02:11:42 destek3 destek3-0024 eA-Kisi · Yemek · KDV %10+%20 issue-later: {"no":"TEA2026393757768","tip":"SATIS","e":"sent","tutar":21599.89,"sn":10.8}
+02:11:54 destek4 destek4-0025 eF-Ticari · Yazılım · İstisna · KDV %0 issue-now: {"no":"TEF2026393757780","tip":"SATIS","e":"sent","tutar":57521.56,"sn":9.3}
+02:12:08 destek2 destek2-0024 eF-Temel · Danışmanlık · İstisna · KDV %0+%20 issue-now: {"no":"TEF2026393757781","tip":"ISTISNA","e":"sent","tutar":113847.13,"sn":10.5}
+02:12:12 atlas2 atlas2-0024 eA-Kisi · Tekstil · KDV %1 issue-later: {"no":"TEA2026394257778","tip":"SATIS","e":"sent","tutar":2376.66,"sn":10}
+02:12:20 atlas4 atlas4-0024 eF-Ticari · Gıda · KDV %1 issue-now: {"no":"TEF2026394257767","tip":"SATIS","e":"sent","tutar":734.22,"sn":8.7}
+02:12:32 destek5 destek5-0027 eF-Temel · Turizm · KDV %20 issue-now: {"no":"TEF2026393757782","tip":"SATIS","e":"sent","tutar":15025.3,"sn":7.9}
+02:12:52 destek4 destek4-0026 eA-Kisi · Temizlik · KDV %20 · İskonto issue-now: {"no":"TEA2026393757769","tip":"SATIS","e":"sent","tutar":58400.23,"sn":11.9}
+02:12:54 destek1 destek1-0025 eA-Firma · Danışmanlık · KDV %20 issue-now: {"no":"TEA2026393757770","tip":"SATIS","e":"sent","tutar":129991.04,"sn":13.4}
+02:12:59 atlas3 atlas3-0024 eF-Temel · Elektronik · KDV %1+%20 issue-now: {"no":"TEF2026394257768","tip":"SATIS","e":"sent","tutar":83879.48,"sn":16.5}
+02:13:27 destek2 destek2-0025 eF-Temel · Emlak · KDV %20 issue-now: {"no":"TEF2026393757783","tip":"SATIS","e":"sent","tutar":35460.86,"sn":8.1}
+02:13:47 atlas1 atlas1-0026 eA-Kisi · Tekstil · KDV %10+%20 · İskonto issue-later: {"no":"TEA2026394257779","tip":"SATIS","e":"sent","tutar":2244.84,"sn":11.4}
+02:14:00 destek3 destek3-0025 eF-Temel · Arşiv · KDV %20 · İskonto issue-now: {"no":"TEF2026393757784","tip":"SATIS","e":"sent","tutar":80452.48,"sn":13.2}
+02:14:06 atlas5 atlas5-0024 eF-Temel · Elektronik · Tevkifat+İstisna · KDV %0+%20 issue-now: {"no":"TEF2026394257769","tip":"TEVKIFAT","e":"sent","tutar":42882.54,"sn":12}
+02:14:10 atlas4 atlas4-0025 eF-Ticari · İnşaat · KDV %1+%20 · İskonto issue-later: {"no":"TEF2026394257770","tip":"SATIS","e":"sent","tutar":430.44,"sn":14.8}
+02:14:22 atlas3 atlas3-0025 eA-Kisi · İnşaat · KDV %20 issue-now: {"no":"TEA2026394257780","tip":"SATIS","e":"sent","tutar":4390,"sn":9}
+02:14:31 destek2 destek2-0026 eF-Temel · Arşiv · Tevkifat · KDV %20 · İskonto issue-now: {"no":"TEF2026393757785","tip":"TEVKIFAT","e":"sent","tutar":28905.52,"sn":8.4}
+02:14:34 atlas2 atlas2-0025 eA-Firma · Elektronik · KDV %20 issue-now: {"no":"TEA2026394257781","tip":"SATIS","e":"sent","tutar":27712.08,"sn":9.9}
+02:14:38 destek5 destek5-0028 eF-Ticari · Turizm · KDV %10+%20 issue-later: {"no":"TEF2026393757786","tip":"SATIS","e":"sent","tutar":64652.23,"sn":12.3}
+02:14:51 destek1 destek1-0026 eA-Kisi · Emlak · KDV %20 · İskonto issue-later: {"no":"TEA2026393757771","tip":"SATIS","e":"sent","tutar":90593.88,"sn":12.1}
+02:14:56 destek4 destek4-0027 eF-Temel · Hukuk · KDV %20 issue-now: {"no":"TEF2026393757787","tip":"SATIS","e":"sent","tutar":73836.12,"sn":12.2}
+02:15:03 atlas1 atlas1-0027 eF-Temel · Tekstil · KDV %10 issue-now: {"no":"TEF2026394257771","tip":"SATIS","e":"sent","tutar":11043.12,"sn":11.4}
+02:15:10 destek3 destek3-0026 eF-Temel · Eğitim · İstisna · KDV %0+%20 issue-now: {"no":"TEF2026393757788","tip":"ISTISNA","e":"sent","tutar":28309.2,"sn":12.4}
+02:15:49 destek2 destek2-0027 eA-Kisi · Personel · KDV %20 issue-now: {"no":"TEA2026393757772","tip":"SATIS","e":"sent","tutar":88684.26,"sn":11.2}
+02:15:54 atlas5 atlas5-0025 eF-Temel · Elektronik · KDV %20 issue-later: {"no":"TEF2026394257772","tip":"SATIS","e":"sent","tutar":169326.77,"sn":14.6}
+02:15:58 destek4 destek4-0028 eF-Temel · Turizm · İstisna · KDV %0 issue-now: {"no":"TEF2026393757789","tip":"ISTISNA","e":"sent","tutar":5104.08,"sn":10.2}
+02:15:59 atlas4 atlas4-0026 eF-Ticari · Gıda · Tevkifat · KDV %1+%20 issue-now: {"no":"TEF2026394257773","tip":"TEVKIFAT","e":"sent","tutar":830.32,"sn":16.3}
+02:16:05 atlas2 atlas2-0026 eA-Firma · Gıda · KDV %1 · İskonto issue-now: {"no":"TEA2026394257782","tip":"SATIS","e":"sent","tutar":3405.22,"sn":16.4}
+02:16:09 atlas3 atlas3-0026 eF-Ticari · İnşaat · KDV %20 issue-now: {"no":"TEF2026394257774","tip":"SATIS","e":"sent","tutar":330.57,"sn":13.1}
+02:16:14 destek1 destek1-0027 eF-Temel · Turizm · KDV %10 issue-now: {"no":"TEF2026393757790","tip":"SATIS","e":"sent","tutar":15684.9,"sn":9.3}
+02:16:15 destek5 destek5-0029 eA-Kisi · Hukuk · KDV %20 issue-later: {"no":"TEA2026393757773","tip":"SATIS","e":"sent","tutar":10075.2,"sn":10.1}
+02:16:31 ARA RAPOR 45 dk — belge 267 (001: 137, 002: 130), durum {"cancelled/cancelled":10,"issued/error":1,"issued/processing":6,"issued/sent":250}, ekran hatası 0, iptal 10, sayfa hatası 0
+02:16:35 destek3 destek3-0027 eF-Temel · Yemek · KDV %10 issue-now: {"no":"TEF2026393757791","tip":"SATIS","e":"sent","tutar":42418.79,"sn":8.5}
+02:16:48 destek2 destek2-0028 eA-Kisi · Hukuk · KDV %20 · İskonto issue-now: {"no":"TEA2026393757774","tip":"SATIS","e":"sent","tutar":70101.42,"sn":11.2}
+02:17:01 atlas4 atlas4-0027 eF-Ticari · Gıda · KDV %1+%20 issue-now: {"no":"TEF2026394257775","tip":"SATIS","e":"sent","tutar":5705.07,"sn":13.4}
+02:17:04 atlas5 atlas5-0026 eA-Firma · Tekstil · Tevkifat+İstisna · KDV %0+%10+%20 issue-now: {"no":"TEA2026394257783","tip":"TEVKIFAT","e":"sent","tutar":150092.54,"sn":14.6}
+02:17:10 atlas3 atlas3-0027 eF-Temel · Gıda · KDV %1 issue-now: {"no":"TEF2026394257776","tip":"SATIS","e":"sent","tutar":1605.42,"sn":9.3}
+02:17:19 atlas2 atlas2-0027 eA-Kisi · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257784","tip":"SATIS","e":"sent","tutar":100961.86,"sn":19.8}
+02:17:22 destek4 destek4-0029 eF-Temel · Hukuk · KDV %20 · İskonto issue-now: {"no":"TEF2026393757792","tip":"SATIS","e":"sent","tutar":130610.42,"sn":13.6}
+02:17:24 atlas1 atlas1-0028 eA-Kisi · Tekstil · KDV %10 · İskonto issue-now: {"no":"TEA2026394257785","tip":"SATIS","e":"sent","tutar":10511.56,"sn":12.9}
+02:17:43 destek3 destek3-0028 eA-Kisi · Temizlik · KDV %20 issue-now: {"no":"TEA2026393757775","tip":"SATIS","e":"sent","tutar":57832.9,"sn":11.4}
+02:17:58 destek5 destek5-0030 eA-Kisi · Eğitim · KDV %20 issue-later: {"no":"TEA2026393757776","tip":"SATIS","e":"sent","tutar":28704.97,"sn":10.7}
+02:18:02 destek2 destek2-0029 eF-Ticari · Yazılım · KDV %20 · İskonto issue-now: {"no":"TEF2026393757793","tip":"SATIS","e":"sent","tutar":12172.1,"sn":12.4}
+02:18:12 atlas5 atlas5-0027 eF-Ticari · Tekstil · KDV %10 · İskonto issue-now: {"no":"TEF2026394257777","tip":"SATIS","e":"sent","tutar":7757.74,"sn":11.9}
+02:18:16 atlas4 atlas4-0028 eA-Firma · Gıda · KDV %1 issue-later: {"no":"TEA2026394257786","tip":"SATIS","e":"sent","tutar":3637.09,"sn":12.3}
+02:18:24 destek1 destek1-0028 eF-Temel · Eğitim · KDV %20 · İskonto issue-now: {"no":"TEF2026393757794","tip":"SATIS","e":"sent","tutar":6508.51,"sn":8.8}
+02:18:46 destek3 destek3-0029 eF-Ticari · Yemek · KDV %10+%20 issue-now: {"no":"TEF2026393757795","tip":"SATIS","e":"sent","tutar":2643.04,"sn":10.2}
+02:19:23 destek1 destek1-0029 eF-Temel · Eğitim · Tevkifat · KDV %10+%20 issue-later: {"no":"TEF2026393757796","tip":"TEVKIFAT","e":"sent","tutar":57343.47,"sn":12.3}
+02:19:32 atlas3 atlas3-0028 eA-Firma · Elektronik · KDV %20 issue-now: {"no":"TEA2026394257787","tip":"SATIS","e":"sent","tutar":75309.64,"sn":15.6}
+02:19:32 atlas2 atlas2-0028 eF-Temel · Elektronik · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257778","tip":"SATIS","e":"sent","tutar":69391.46,"sn":13.3}
+02:19:35 destek2 destek2-0030 eF-Ticari · Turizm · Tevkifat · KDV %10+%20 issue-later: {"no":"TEF2026393757797","tip":"TEVKIFAT","e":"sent","tutar":16366.19,"sn":14.8}
+02:19:42 atlas1 atlas1-0029 eA-Firma · İnşaat · Tevkifat · KDV %1+%20 issue-now: {"no":"TEA2026394257788","tip":"TEVKIFAT","e":"sent","tutar":9027.8,"sn":17.8}
+02:19:45 destek4 destek4-0030 eA-Kisi · Temizlik · KDV %20 issue-now: {"no":"TEA2026393757777","tip":"SATIS","e":"sent","tutar":36645.19,"sn":11.6}
+02:19:50 destek5 destek5-0031 eF-Ticari · Temizlik · KDV %20 issue-later: {"no":"TEF2026393757798","tip":"SATIS","e":"sent","tutar":76035.5,"sn":13.1}
+02:19:50 atlas5 atlas5-0028 eF-Ticari · İnşaat · KDV %1 issue-now: {"no":"TEF2026394257779","tip":"SATIS","e":"sent","tutar":2424.83,"sn":10.7}
+02:19:51 atlas4 atlas4-0029 eF-Temel · Elektronik · KDV %20 issue-later: {"no":"TEF2026394257780","tip":"SATIS","e":"sent","tutar":82716.36,"sn":10.8}
+02:19:53 destek4 e-Arşiv İPTAL TEA2026393757753: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757753 iptal edildi; etkileri geri alındı.×"}
+02:20:30 destek3 destek3-0030 eF-Temel · Personel · KDV %20 · İskonto issue-later: {"no":"TEF2026393757799","tip":"SATIS","e":"sent","tutar":99598.97,"sn":8.4}
+02:20:37 destek3 e-Arşiv İPTAL TEA2026393757752: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757752 iptal edildi; etkileri geri alındı.×"}
+02:20:37 destek1 destek1-0030 eF-Ticari · Yazılım · KDV %20 issue-now: {"no":"TEF2026393757800","tip":"SATIS","e":"sent","tutar":96149.13,"sn":10.6}
+02:20:50 atlas3 atlas3-0029 eA-Firma · Elektronik · KDV %20 issue-later: {"no":"TEA2026394257789","tip":"SATIS","e":"sent","tutar":78000,"sn":10.3}
+02:20:51 atlas4 atlas4-0030 eF-Temel · Tekstil · KDV %10 issue-later: {"no":"TEF2026394257781","tip":"SATIS","e":"sent","tutar":510.13,"sn":10.4}
+02:20:54 atlas5 atlas5-0029 eA-Firma · Tekstil · KDV %10 issue-now: {"no":"TEA2026394257790","tip":"SATIS","e":"sent","tutar":592.32,"sn":11.1}
+02:20:57 destek2 destek2-0031 eA-Firma · Danışmanlık · KDV %20 · İskonto issue-now: {"no":"TEA2026393757778","tip":"SATIS","e":"sent","tutar":89460.62,"sn":14.9}
+02:21:02 destek4 destek4-0031 eA-Firma · Arşiv · KDV %20 · İskonto issue-now: {"no":"TEA2026393757779","tip":"SATIS","e":"sent","tutar":27353.58,"sn":11.1}
+02:21:03 destek5 destek5-0032 eF-Ticari · Emlak · KDV %20 issue-now: {"no":"TEF2026393757801","tip":"SATIS","e":"sent","tutar":54801.34,"sn":9.3}
+02:21:49 destek1 destek1-0031 eA-Kisi · Danışmanlık · KDV %20 · İskonto issue-now: {"no":"TEA2026393757780","tip":"SATIS","e":"sent","tutar":231613.22,"sn":15.4}
+02:21:56 atlas2 atlas2-0029 eF-Ticari · İnşaat · Tevkifat · KDV %20 issue-now: {"no":"TEF2026394257782","tip":"TEVKIFAT","e":"sent","tutar":21784.94,"sn":16.4}
+02:21:59 atlas1 atlas1-0030 eF-Ticari · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257783","tip":"SATIS","e":"sent","tutar":7933.82,"sn":11.9}
+02:22:07 destek3 destek3-0031 eA-Kisi · Eğitim · KDV %20 issue-later: {"no":"TEA2026393757781","tip":"SATIS","e":"sent","tutar":53067.1,"sn":9.8}
+02:22:19 destek5 destek5-0033 eF-Temel · Emlak · KDV %20 issue-now: {"no":"TEF2026393757802","tip":"SATIS","e":"sent","tutar":162127.78,"sn":10.1}
+02:22:44 atlas3 atlas3-0030 eF-Ticari · İnşaat · KDV %10 issue-now: {"no":"TEF2026394257784","tip":"SATIS","e":"sent","tutar":5632,"sn":8.9}
+02:22:56 destek2 destek2-0032 eF-Temel · Temizlik · KDV %20 issue-later: {"no":"TEF2026393757803","tip":"SATIS","e":"sent","tutar":13393.44,"sn":9.3}
+02:23:04 atlas4 atlas4-0031 eA-Kisi · Elektronik · KDV %20 issue-later: {"no":"TEA2026394257791","tip":"SATIS","e":"sent","tutar":43100.25,"sn":18.3}
+02:23:05 destek4 destek4-0032 eF-Temel · Hukuk · KDV %20 issue-now: {"no":"TEF2026393757804","tip":"SATIS","e":"sent","tutar":127879.21,"sn":14.7}
+02:23:12 atlas5 atlas5-0030 eA-Firma · Elektronik · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257792","tip":"SATIS","e":"sent","tutar":111321.49,"sn":18.7}
+02:23:20 atlas2 atlas2-0030 eF-Temel · İnşaat · KDV %20 issue-later: {"no":"TEF2026394257785","tip":"SATIS","e":"sent","tutar":304.54,"sn":12.2}
+02:23:26 destek1 destek1-0032 eF-Temel · Arşiv · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026393757805","tip":"TEVKIFAT","e":"sent","tutar":68016.34,"sn":13.1}
+02:23:28 atlas2 e-Arşiv İPTAL TEA2026394257723: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026394257723 iptal edildi; etkileri geri alındı.×"}
+02:23:56 atlas1 atlas1-0031 eF-Temel · Elektronik · KDV %20 issue-later: {"no":"TEF2026394257786","tip":"SATIS","e":"sent","tutar":39256.06,"sn":11.5}
+02:24:04 atlas3 atlas3-0031 eF-Temel · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257787","tip":"SATIS","e":"sent","tutar":18090.85,"sn":13.4}
+02:24:06 destek2 destek2-0033 eA-Kisi · Eğitim · KDV %10+%20 issue-later: {"no":"TEA2026393757782","tip":"SATIS","e":"sent","tutar":87752.23,"sn":13}
+02:24:10 destek3 destek3-0032 eF-Temel · Danışmanlık · KDV %20 issue-now: {"no":"TEF2026393757806","tip":"SATIS","e":"sent","tutar":147092.71,"sn":14.1}
+02:24:22 destek5 destek5-0034 eF-Temel · Turizm · KDV %10 · İskonto issue-later: {"no":"TEF2026393757807","tip":"SATIS","e":"sent","tutar":18206.67,"sn":10.9}
+02:24:24 atlas4 atlas4-0032 eA-Firma · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257793","tip":"SATIS","e":"sent","tutar":158512.49,"sn":20}
+02:25:01 destek1 destek1-0033 eF-Ticari · Turizm · Tevkifat · KDV %10+%20 issue-now: {"no":"TEF2026393757808","tip":"TEVKIFAT","e":"sent","tutar":101662.24,"sn":16.2}
+02:25:01 atlas2 atlas2-0031 eA-Firma · Tekstil · KDV %10 issue-now: {"no":"TEA2026394257794","tip":"SATIS","e":"sent","tutar":2005.61,"sn":9.6}
+02:25:21 destek4 destek4-0033 eA-Firma · Emlak · KDV %20 issue-now: {"no":"TEA2026393757783","tip":"SATIS","e":"sent","tutar":119423.57,"sn":10.3}
+02:25:35 atlas1 atlas1-0032 eA-Kisi · İnşaat · KDV %20 issue-now: {"no":"TEA2026394257795","tip":"SATIS","e":"sent","tutar":88.96,"sn":11.8}
+02:25:42 atlas5 atlas5-0031 eA-Firma · Tekstil · KDV %10+%20 issue-now: {"no":"TEA2026394257796","tip":"SATIS","e":"sent","tutar":7148.45,"sn":16}
+02:25:43 destek3 destek3-0033 eF-Temel · Eğitim · KDV %10+%20 issue-later: {"no":"TEF2026393757809","tip":"SATIS","e":"sent","tutar":65461.87,"sn":12.4}
+02:25:49 atlas4 atlas4-0033 eA-Kisi · İnşaat · KDV %20 issue-later: {"no":"TEA2026394257797","tip":"SATIS","e":"sent","tutar":89889.46,"sn":21.5}
+02:25:53 destek5 destek5-0035 eF-Ticari · Yazılım · KDV %20 · İskonto issue-now: {"no":"TEF2026393757810","tip":"SATIS","e":"sent","tutar":32502.59,"sn":13.7}
+02:26:05 destek2 destek2-0034 eF-Ticari · Temizlik · KDV %20 issue-later: {"no":"TEF2026393757811","tip":"SATIS","e":"sent","tutar":252.36,"sn":9.8}
+02:26:05 atlas3 atlas3-0032 eF-Ticari · Tekstil · Tevkifat · KDV %10+%20 issue-now: {"no":"TEF2026394257788","tip":"TEVKIFAT","e":"sent","tutar":44250.3,"sn":15}
+02:26:20 destek1 destek1-0034 eF-Temel · Turizm · KDV %10 · İskonto issue-later: {"no":"TEF2026393757812","tip":"SATIS","e":"sent","tutar":24129.56,"sn":9.9}
+02:26:42 atlas2 atlas2-0032 eF-Temel · İnşaat · KDV %20 issue-later: {"no":"TEF2026394257789","tip":"SATIS","e":"sent","tutar":1381.44,"sn":8.8}
+02:26:59 destek3 destek3-0034 eA-Kisi · Danışmanlık · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757784","tip":"SATIS","e":"sent","tutar":162973.68,"sn":15}
+02:27:05 destek4 destek4-0034 eA-Kisi · Turizm · KDV %20 · İskonto issue-now: {"no":"TEA2026393757785","tip":"SATIS","e":"sent","tutar":1319.06,"sn":9.6}
+02:27:07 atlas3 atlas3-0033 eA-Kisi · Elektronik · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257798","tip":"SATIS","e":"sent","tutar":510.83,"sn":12.5}
+02:27:12 destek2 destek2-0035 eF-Temel · Yemek · KDV %10 · İskonto issue-later: {"no":"TEF2026393757813","tip":"SATIS","e":"sent","tutar":22742.67,"sn":8.9}
+02:27:22 atlas5 atlas5-0032 eA-Firma · Tekstil · İstisna · KDV %0+%1+%10+%20 · İskonto issue-now: {"no":"TEA2026394257799","tip":"ISTISNA","e":"sent","tutar":8312.2,"sn":16.4}
+02:27:38 atlas4 atlas4-0034 eA-Kisi · İnşaat · KDV %20 issue-now: {"no":"TEA2026394257800","tip":"SATIS","e":"sent","tutar":67537.14,"sn":13.3}
+02:27:43 atlas1 atlas1-0033 eA-Kisi · Gıda · KDV %1 · İskonto issue-now: {"no":"TEA2026394257801","tip":"SATIS","e":"sent","tutar":9736.29,"sn":15.3}
+02:27:51 atlas2 atlas2-0033 eA-Firma · Elektronik · KDV %20 · İskonto issue-later: {"no":"TEA2026394257802","tip":"SATIS","e":"sent","tutar":178355.34,"sn":11.9}
+02:27:58 destek1 destek1-0035 eA-Kisi · Turizm · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757786","tip":"SATIS","e":"sent","tutar":42299.5,"sn":10.4}
+02:28:10 destek3 destek3-0035 eA-Kisi · Hukuk · KDV %20 · İskonto issue-later: {"no":"TEA2026393757787","tip":"SATIS","e":"sent","tutar":97624.03,"sn":13.5}
+02:28:14 destek5 destek5-0036 eF-Temel · Danışmanlık · KDV %20 issue-now: {"no":"TEF2026393757814","tip":"SATIS","e":"sent","tutar":96001.2,"sn":9}
+02:28:36 destek4 destek4-0035 eF-Ticari · Yazılım · KDV %20 · İskonto issue-later: {"no":"TEF2026393757815","tip":"SATIS","e":"sent","tutar":31508.42,"sn":12.1}
+02:28:52 atlas5 atlas5-0033 eA-Firma · Tekstil · Tevkifat · KDV %1+%10+%20 · İskonto issue-later: {"no":"TEA2026394257803","tip":"TEVKIFAT","e":"sent","tutar":61325.78,"sn":16.3}
+02:28:55 destek2 destek2-0036 eF-Temel · Arşiv · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026393757816","tip":"TEVKIFAT","e":"sent","tutar":139493.46,"sn":15.2}
+02:28:56 atlas2 atlas2-0034 eF-Temel · Tekstil · KDV %10 issue-now: {"no":"TEF2026394257790","tip":"SATIS","e":"sent","tutar":7040,"sn":9.2}
+02:28:59 atlas1 atlas1-0034 eF-Temel · Elektronik · KDV %20 issue-later: {"no":"TEF2026394257791","tip":"SATIS","e":"sent","tutar":39000,"sn":9.2}
+02:29:10 destek1 destek1-0036 eF-Temel · Danışmanlık · KDV %20 issue-now: {"no":"TEF2026393757817","tip":"SATIS","e":"sent","tutar":155147.95,"sn":12.5}
+02:29:26 atlas4 atlas4-0035 eA-Kisi · İnşaat · KDV %20 issue-later: {"no":"TEA2026394257805","tip":"SATIS","e":"sent","tutar":568.44,"sn":11.5}
+02:29:27 atlas3 atlas3-0034 eA-Kisi · Elektronik · KDV %20 · İskonto issue-now: {"no":"TEA2026394257804","tip":"SATIS","e":"sent","tutar":199349.96,"sn":12.2}
+02:29:58 atlas5 atlas5-0034 eF-Temel · Elektronik · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026394257792","tip":"SATIS","e":"sent","tutar":93253.76,"sn":15.9}
+02:30:01 destek4 destek4-0036 eF-Temel · Danışmanlık · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026393757818","tip":"SATIS","e":"sent","tutar":122934.96,"sn":15.8}
+02:30:17 destek1 destek1-0037 eA-Kisi · Arşiv · KDV %10+%20 issue-later: {"no":"TEA2026393757788","tip":"SATIS","e":"sent","tutar":84628.47,"sn":15.5}
+02:30:29 destek2 destek2-0037 eF-Temel · Personel · KDV %10+%20 issue-later: {"no":"TEF2026393757819","tip":"SATIS","e":"sent","tutar":46350.45,"sn":12.4}
+02:30:30 destek5 destek5-0037 eA-Firma · Eğitim · KDV %20 · İskonto issue-now: {"no":"TEA2026393757789","tip":"SATIS","e":"sent","tutar":16296,"sn":10.1}
+02:30:31 atlas3 atlas3-0035 eF-Temel · İnşaat · KDV %20 issue-now: {"no":"TEF2026394257793","tip":"SATIS","e":"sent","tutar":20765.32,"sn":15.7}
+02:30:32 destek3 destek3-0036 eF-Temel · Yemek · KDV %10+%20 issue-later: {"no":"TEF2026393757820","tip":"SATIS","e":"sent","tutar":43605.7,"sn":12.2}
+02:30:53 atlas1 atlas1-0035 eA-Firma · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257806","tip":"SATIS","e":"sent","tutar":105401.42,"sn":12}
+02:31:02 atlas2 atlas2-0035 eA-Firma · Gıda · Tevkifat · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257807","tip":"TEVKIFAT","e":"sent","tutar":23446.38,"sn":17.8}
+02:31:18 destek1 destek1-0038 eF-Ticari · Arşiv · KDV %20 · İskonto issue-now: {"no":"TEF2026393757821","tip":"SATIS","e":"sent","tutar":35446.5,"sn":8.9}
+02:31:19 atlas4 atlas4-0036 eF-Temel · Elektronik · KDV %1+%20 issue-now: {"no":"TEF2026394257794","tip":"SATIS","e":"sent","tutar":63476.34,"sn":13.9}
+02:31:21 atlas5 atlas5-0035 eF-Temel · Tekstil · KDV %10+%20 issue-now: {"no":"TEF2026394257795","tip":"SATIS","e":"sent","tutar":78015.16,"sn":13.3}
+02:31:26 destek5 destek5-0038 eF-Temel · Eğitim · KDV %10+%20 issue-now: {"no":"TEF2026393757822","tip":"SATIS","e":"sent","tutar":38571.6,"sn":10.4}
+02:31:31 ARA RAPOR 60 dk — belge 361 (001: 185, 002: 176), durum {"cancelled/cancelled":13,"issued/error":1,"issued/processing":7,"issued/sent":340}, ekran hatası 0, iptal 13, sayfa hatası 0
+02:31:56 atlas3 atlas3-0036 eA-Kisi · Gıda · KDV %1+%10 issue-now: {"no":"TEA2026394257808","tip":"SATIS","e":"sent","tutar":34830.99,"sn":10.9}
+02:32:17 destek4 destek4-0037 eF-Temel · Eğitim · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026393757823","tip":"SATIS","e":"sent","tutar":82421.75,"sn":13.3}
+02:32:17 destek2 destek2-0038 eA-Kisi · Eğitim · KDV %20 issue-later: {"no":"TEA2026393757790","tip":"SATIS","e":"sent","tutar":20268,"sn":9.8}
+02:32:35 atlas5 atlas5-0036 eA-Firma · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257809","tip":"SATIS","e":"sent","tutar":43113.15,"sn":14.1}
+02:32:39 destek5 destek5-0039 eA-Firma · Danışmanlık · Tevkifat · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757791","tip":"TEVKIFAT","e":"sent","tutar":230758.64,"sn":17.5}
+02:32:46 destek3 destek3-0037 eA-Kisi · Eğitim · KDV %10+%20 issue-now: {"no":"TEA2026393757792","tip":"SATIS","e":"sent","tutar":33996.41,"sn":10.9}
+02:32:54 atlas2 atlas2-0036 eF-Temel · Tekstil · KDV %10 issue-now: {"no":"TEF2026394257796","tip":"SATIS","e":"sent","tutar":5942.29,"sn":9.4}
+02:32:54 atlas1 atlas1-0036 eF-Temel · Elektronik · KDV %20 issue-now: {"no":"TEF2026394257797","tip":"SATIS","e":"sent","tutar":67005.52,"sn":13.5}
+02:33:07 atlas4 atlas4-0037 eF-Temel · Elektronik · KDV %1+%20 issue-later: {"no":"TEF2026394257798","tip":"SATIS","e":"sent","tutar":95229.77,"sn":11.1}
+02:33:23 destek2 destek2-0039 eA-Firma · Arşiv · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEA2026393757793","tip":"TEVKIFAT","e":"sent","tutar":210338.7,"sn":13.3}
+02:33:29 destek2 e-Arşiv İPTAL TEA2026393757774: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757774 iptal edildi; etkileri geri alındı.×"}
+02:33:34 atlas3 atlas3-0037 eF-Temel · Tekstil · KDV %10 issue-now: {"no":"TEF2026394257799","tip":"SATIS","e":"sent","tutar":6336,"sn":9.2}
+02:33:40 destek1 destek1-0039 eF-Ticari · Arşiv · KDV %10+%20 issue-later: {"no":"TEF2026393757824","tip":"SATIS","e":"sent","tutar":102136.53,"sn":14.8}
+02:33:43 destek4 destek4-0038 eA-Kisi · Hukuk · KDV %20 issue-later: {"no":"TEA2026393757794","tip":"SATIS","e":"sent","tutar":75974.4,"sn":9.5}
+02:34:16 atlas5 atlas5-0037 eF-Temel · Elektronik · KDV %1+%20 · İskonto issue-now: {"no":"TEF2026394257800","tip":"SATIS","e":"sent","tutar":3569.39,"sn":10.9}
+02:34:29 destek5 destek5-0040 eF-Temel · Temizlik · Tevkifat+İstisna · KDV %0+%20 issue-now: {"no":"TEF2026393757825","tip":"TEVKIFAT","e":"sent","tutar":18184.58,"sn":11.4}
+02:34:45 destek3 destek3-0038 eF-Ticari · Eğitim · KDV %10+%20 · İskonto issue-later: {"no":"TEF2026393757826","tip":"SATIS","e":"sent","tutar":30542.46,"sn":12.1}
+02:34:49 atlas1 atlas1-0037 eF-Ticari · Tekstil · Tevkifat · KDV %1+%10+%20 · İskonto issue-now: {"no":"TEF2026394257801","tip":"TEVKIFAT","e":"sent","tutar":14219.51,"sn":19.6}
+02:34:53 destek3 e-Arşiv İPTAL TEA2026393757787: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757787 iptal edildi; etkileri geri alındı.×"}
+02:35:04 destek4 destek4-0039 eA-Firma · Turizm · İstisna · KDV %0+%10+%20 · İskonto issue-now: {"no":"TEA2026393757795","tip":"SATIS","e":"sent","tutar":30571.3,"sn":12.4}
+02:35:17 atlas2 atlas2-0037 eF-Temel · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257802","tip":"SATIS","e":"sent","tutar":72096.68,"sn":12.7}
+02:35:24 atlas2 e-Arşiv İPTAL TEA2026394257760: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026394257760 iptal edildi; etkileri geri alındı.×"}
+02:35:34 atlas4 atlas4-0038 eA-Kisi · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257810","tip":"SATIS","e":"sent","tutar":63304.47,"sn":12.4}
+02:35:37 destek2 destek2-0040 eA-Kisi · Yemek · KDV %10 issue-now: {"no":"TEA2026393757796","tip":"SATIS","e":"sent","tutar":27720,"sn":9.8}
+02:35:38 atlas3 atlas3-0038 eF-Temel · Tekstil · İstisna · KDV %0+%10+%20 issue-now: {"no":"TEF2026394257803","tip":"ISTISNA","e":"sent","tutar":31527.32,"sn":14.9}
+02:35:52 atlas5 atlas5-0038 eA-Kisi · Gıda · KDV %1+%20 · İskonto issue-later: {"no":"TEA2026394257811","tip":"SATIS","e":"sent","tutar":29255.44,"sn":20.5}
+02:35:59 atlas1 atlas1-0038 eF-Temel · Gıda · KDV %1 issue-now: {"no":"TEF2026394257804","tip":"SATIS","e":"sent","tutar":1105.08,"sn":11.1}
+02:36:05 destek1 destek1-0040 eF-Ticari · Yemek · Tevkifat · KDV %10 · İskonto issue-later: {"no":"TEF2026393757827","tip":"TEVKIFAT","e":"sent","tutar":57020.3,"sn":12.3}
+02:36:11 destek5 destek5-0041 eF-Temel · Turizm · İstisna · KDV %0+%10+%20 · İskonto issue-now: {"no":"TEF2026393757828","tip":"ISTISNA","e":"sent","tutar":93369.48,"sn":14.6}
+02:36:13 destek1 e-Arşiv İPTAL TEA2026393757747: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757747 iptal edildi; etkileri geri alındı.×"}
+02:36:50 destek3 destek3-0039 eF-Ticari · Personel · KDV %20 · İskonto issue-now: {"no":"TEF2026393757829","tip":"SATIS","e":"sent","tutar":118125.92,"sn":9.5}
+02:36:56 atlas4 atlas4-0039 eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%20 issue-now: {"no":"TEF2026394257805","tip":"TEVKIFAT","e":"sent","tutar":5928.7,"sn":11.6}
+02:37:06 atlas5 atlas5-0039 eF-Ticari · İnşaat · Tevkifat · KDV %1+%10+%20 · İskonto issue-now: {"no":"TEF2026394257806","tip":"TEVKIFAT","e":"sent","tutar":81985.14,"sn":21.5}
+02:37:10 atlas1 atlas1-0039 eF-Ticari · İnşaat · KDV %20 issue-now: {"no":"TEF2026394257807","tip":"SATIS","e":"sent","tutar":27570.62,"sn":9.6}
+02:37:12 destek4 destek4-0040 eF-Temel · Personel · Tevkifat · KDV %20 issue-later: {"no":"TEF2026393757830","tip":"TEVKIFAT","e":"sent","tutar":60939.06,"sn":9.1}
+02:37:27 atlas2 atlas2-0038 eF-Temel · Elektronik · KDV %20 · İskonto issue-now: {"no":"TEF2026394257808","tip":"SATIS","e":"sent","tutar":142229.82,"sn":12.6}
+02:37:36 destek2 destek2-0041 eA-Firma · Eğitim · KDV %20 issue-now: {"no":"TEA2026393757797","tip":"SATIS","e":"sent","tutar":18997.2,"sn":8.5}
+02:37:49 destek3 destek3-0040 eA-Kisi · Hukuk · KDV %20 issue-now: {"no":"TEA2026393757798","tip":"SATIS","e":"sent","tutar":27000,"sn":8.6}
+02:38:00 atlas3 atlas3-0039 eF-Temel · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257809","tip":"SATIS","e":"sent","tutar":10819.73,"sn":9.2}
+02:38:03 destek5 destek5-0042 eA-Kisi · Eğitim · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026393757799","tip":"SATIS","e":"sent","tutar":53065.56,"sn":10.4}
+02:38:16 atlas4 atlas4-0040 eF-Temel · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257810","tip":"SATIS","e":"sent","tutar":67144.54,"sn":13.5}
+02:38:35 destek1 destek1-0041 eA-Kisi · Emlak · KDV %20 issue-now: {"no":"TEA2026393757800","tip":"SATIS","e":"sent","tutar":33494.4,"sn":8.8}
+02:38:49 destek2 destek2-0042 eF-Temel · Danışmanlık · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026393757831","tip":"SATIS","e":"sent","tutar":114553.67,"sn":13.6}
+02:38:56 atlas2 atlas2-0039 eF-Ticari · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257811","tip":"SATIS","e":"sent","tutar":61596.64,"sn":13.7}
+02:38:57 destek2 e-Arşiv İPTAL TEA2026393757738: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757738 iptal edildi; etkileri geri alındı.×"}
+02:39:01 destek4 destek4-0041 eF-Temel · Yemek · KDV %10 issue-now: {"no":"TEF2026393757832","tip":"SATIS","e":"sent","tutar":891,"sn":9.6}
+02:39:03 atlas1 atlas1-0040 eA-Kisi · Tekstil · KDV %1+%10 · İskonto issue-now: {"no":"TEA2026394257812","tip":"SATIS","e":"sent","tutar":7967.34,"sn":13}
+02:39:06 atlas5 atlas5-0040 eA-Firma · İnşaat · KDV %20 issue-now: {"no":"TEA2026394257813","tip":"SATIS","e":"sent","tutar":64.8,"sn":9.3}
+02:39:10 destek3 destek3-0041 eA-Firma · Personel · KDV %20 issue-now: {"no":"TEA2026393757801","tip":"SATIS","e":"sent","tutar":52036.86,"sn":9.1}
+02:39:28 atlas3 atlas3-0040 eF-Temel · Gıda · KDV %20 issue-now: {"no":"TEF2026394257812","tip":"SATIS","e":"sent","tutar":188190.85,"sn":10.8}
+02:39:57 destek5 destek5-0043 eA-Firma · Temizlik · KDV %20 issue-later: {"no":"TEA2026393757802","tip":"SATIS","e":"sent","tutar":78904.08,"sn":9.3}
+02:40:02 destek1 destek1-0042 eA-Kisi · Arşiv · KDV %20 issue-later: {"no":"TEA2026393757803","tip":"SATIS","e":"sent","tutar":73172.04,"sn":12.7}
+02:40:09 destek1 e-Arşiv İPTAL TEA2026393757780: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757780 iptal edildi; etkileri geri alındı.×"}
+02:40:17 destek2 destek2-0043 eA-Kisi · Yazılım · KDV %20 · İskonto issue-now: {"no":"TEA2026393757804","tip":"SATIS","e":"sent","tutar":9923.21,"sn":14.3}
+02:40:27 atlas4 atlas4-0041 eF-Temel · Elektronik · KDV %10+%20 issue-now: {"no":"TEF2026394257813","tip":"SATIS","e":"sent","tutar":5224.27,"sn":10.8}
+02:40:29 destek3 destek3-0042 eA-Kisi · Hukuk · KDV %20 issue-now: {"no":"TEA2026393757805","tip":"SATIS","e":"sent","tutar":17236.84,"sn":9.2}
+02:40:42 destek4 destek4-0042 eA-Kisi · Personel · KDV %10+%20 · İskonto issue-later: {"no":"TEA2026393757806","tip":"SATIS","e":"sent","tutar":114968.17,"sn":10.6}
+02:41:03 atlas1 atlas1-0041 eF-Ticari · Gıda · KDV %1+%10 issue-later: {"no":"TEF2026394257814","tip":"SATIS","e":"sent","tutar":814.03,"sn":11.6}
+02:41:12 atlas5 atlas5-0041 eF-Temel · Gıda · KDV %1+%20 issue-later: {"no":"TEF2026394257815","tip":"SATIS","e":"sent","tutar":86807.92,"sn":13.9}
+02:41:15 atlas3 atlas3-0041 eF-Temel · Gıda · KDV %10 issue-now: {"no":"TEF2026394257816","tip":"SATIS","e":"sent","tutar":4118.7,"sn":10.1}
+02:41:16 destek5 destek5-0044 eF-Temel · Hukuk · KDV %20 issue-now: {"no":"TEF2026393757833","tip":"SATIS","e":"sent","tutar":30191.93,"sn":9.5}
+02:41:20 atlas2 atlas2-0040 eF-Temel · Elektronik · KDV %20 issue-later: {"no":"TEF2026394257817","tip":"SATIS","e":"sent","tutar":128632.86,"sn":13.2}
+02:41:24 destek2 destek2-0044 eF-Temel · Eğitim · KDV %10+%20 · İskonto issue-later: {"no":"TEF2026393757834","tip":"SATIS","e":"sent","tutar":18271.54,"sn":16.8}
+02:41:40 destek1 destek1-0043 eF-Temel · Yemek · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026393757835","tip":"SATIS","e":"sent","tutar":136063.54,"sn":12.6}
+02:41:46 atlas4 atlas4-0042 eF-Temel · İnşaat · KDV %20 issue-now: {"no":"TEF2026394257818","tip":"SATIS","e":"sent","tutar":1116.16,"sn":12}
+02:42:21 atlas1 atlas1-0042 eA-Firma · Gıda · KDV %20 · İskonto issue-now: {"no":"TEA2026394257814","tip":"SATIS","e":"sent","tutar":1146.78,"sn":9.5}
+02:42:24 destek3 destek3-0043 eA-Kisi · Arşiv · KDV %20 · İskonto issue-now: {"no":"TEA2026393757807","tip":"SATIS","e":"sent","tutar":13487.32,"sn":8.7}
+02:42:36 destek5 destek5-0045 eA-Kisi · Personel · KDV %20 · İskonto issue-now: {"no":"TEA2026393757808","tip":"SATIS","e":"sent","tutar":104189.05,"sn":11.3}
+02:42:40 destek4 destek4-0043 eF-Ticari · Yemek · KDV %10+%20 issue-later: {"no":"TEF2026393757836","tip":"SATIS","e":"sent","tutar":175779.54,"sn":15}
+02:42:51 atlas3 atlas3-0042 eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%20 issue-now: {"no":"TEF2026394257819","tip":"TEVKIFAT","e":"sent","tutar":9650.37,"sn":14.4}
+02:42:57 atlas4 atlas4-0043 eA-Kisi · Elektronik · KDV %20 · İskonto issue-later: {"no":"TEA2026394257815","tip":"SATIS","e":"sent","tutar":11318.33,"sn":13.7}
+02:43:13 destek1 destek1-0044 eF-Temel · Yemek · İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026393757837","tip":"ISTISNA","e":"sent","tutar":161255.07,"sn":14.9}
+02:43:17 destek2 destek2-0045 eF-Ticari · Turizm · KDV %10+%20 · İskonto issue-now: {"no":"TEF2026393757838","tip":"SATIS","e":"sent","tutar":77478.23,"sn":13.7}
+02:43:30 atlas5 atlas5-0042 eF-Ticari · Tekstil · Tevkifat · KDV %10+%20 issue-now: {"no":"TEF2026394257820","tip":"TEVKIFAT","e":"sent","tutar":23934.65,"sn":20.4}
+02:43:31 atlas1 atlas1-0043 eF-Temel · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257821","tip":"SATIS","e":"sent","tutar":70742.35,"sn":14.5}
+02:43:36 atlas2 atlas2-0041 eA-Kisi · Tekstil · KDV %1+%10+%20 · İskonto issue-now: {"no":"TEA2026394257816","tip":"SATIS","e":"sent","tutar":10419.94,"sn":15.5}
+02:43:47 destek3 destek3-0044 eF-Temel · Emlak · KDV %20 issue-now: {"no":"TEF2026393757839","tip":"SATIS","e":"sent","tutar":32535.96,"sn":9.6}
+02:43:50 atlas3 atlas3-0043 eA-Kisi · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257817","tip":"SATIS","e":"sent","tutar":75426.41,"sn":13.2}
+02:43:55 destek3 e-Arşiv İPTAL TEA2026393757755: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757755 iptal edildi; etkileri geri alındı.×"}
+02:43:58 atlas3 e-Arşiv İPTAL TEA2026394257798: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026394257798 iptal edildi; etkileri geri alındı.×"}
+02:44:29 destek4 destek4-0044 eA-Firma · Danışmanlık · KDV %20 issue-now: {"no":"TEA2026393757809","tip":"SATIS","e":"sent","tutar":22819.2,"sn":8.8}
+02:44:48 destek5 destek5-0046 eA-Firma · Temizlik · Tevkifat · KDV %20 issue-now: {"no":"TEA2026393757810","tip":"TEVKIFAT","e":"sent","tutar":470.53,"sn":9.2}
+02:45:02 atlas4 atlas4-0044 eF-Temel · İnşaat · Tevkifat+İstisna · KDV %0+%20 issue-later: {"no":"TEF2026394257822","tip":"TEVKIFAT","e":"sent","tutar":4146.09,"sn":11.3}
+02:45:05 destek2 destek2-0046 eA-Firma · Temizlik · KDV %20 issue-now: {"no":"TEA2026393757811","tip":"SATIS","e":"sent","tutar":53301.38,"sn":11.1}
+02:45:37 destek1 destek1-0045 eA-Firma · Yemek · Tevkifat+İstisna · KDV %0+%10+%20 issue-later: {"no":"TEA2026393757812","tip":"TEVKIFAT","e":"sent","tutar":29019.88,"sn":14}
+02:45:50 atlas3 atlas3-0044 eA-Firma · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEA2026394257818","tip":"SATIS","e":"sent","tutar":13084.97,"sn":16.8}
+02:45:51 atlas2 atlas2-0042 eF-Ticari · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257823","tip":"SATIS","e":"sent","tutar":12555.23,"sn":14.8}
+02:45:54 atlas1 atlas1-0044 eF-Temel · Elektronik · Tevkifat+İstisna · KDV %0+%1+%10+%20 issue-later: {"no":"TEF2026394257824","tip":"TEVKIFAT","e":"sent","tutar":165705.85,"sn":19.5}
+02:45:56 atlas5 atlas5-0043 eF-Temel · Tekstil · Tevkifat · KDV %10+%20 issue-now: {"no":"TEF2026394257825","tip":"TEVKIFAT","e":"sent","tutar":116528.07,"sn":19.5}
+02:46:14 destek2 destek2-0047 eA-Kisi · Danışmanlık · KDV %20 issue-later: {"no":"TEA2026393757813","tip":"SATIS","e":"sent","tutar":16900.45,"sn":10.4}
+02:46:17 destek3 destek3-0045 eA-Firma · Personel · Tevkifat · KDV %20 issue-later: {"no":"TEA2026393757814","tip":"TEVKIFAT","e":"sent","tutar":123064.02,"sn":9.5}
+02:46:28 destek5 destek5-0047 eF-Ticari · Yemek · KDV %10+%20 issue-now: {"no":"TEF2026393757840","tip":"SATIS","e":"sent","tutar":32283.63,"sn":10.6}
+02:46:31 ARA RAPOR 75 dk — belge 445 (001: 228, 002: 217), durum {"cancelled/cancelled":21,"issued/error":1,"issued/processing":7,"issued/sent":417}, ekran hatası 0, iptal 21, sayfa hatası 0
+02:46:33 destek4 destek4-0045 eA-Kisi · Emlak · KDV %20 issue-now: {"no":"TEA2026393757815","tip":"SATIS","e":"sent","tutar":68414.44,"sn":9.4}
+02:47:14 atlas2 atlas2-0043 eF-Ticari · Gıda · KDV %1+%20 · İskonto issue-later: {"no":"TEF2026394257826","tip":"SATIS","e":"sent","tutar":3509.14,"sn":16.1}
+02:47:19 atlas4 atlas4-0045 eA-Firma · Tekstil · KDV %10+%20 · İskonto issue-now: {"no":"TEA2026394257819","tip":"SATIS","e":"sent","tutar":19118.18,"sn":15.8}
+02:47:28 atlas5 atlas5-0044 eF-Temel · İnşaat · KDV %1 issue-now: {"no":"TEF2026394257827","tip":"SATIS","e":"sent","tutar":254.42,"sn":8.7}
+02:47:35 destek5 destek5-0048 eA-Firma · Hukuk · KDV %20 issue-now: {"no":"TEA2026393757816","tip":"SATIS","e":"sent","tutar":98875.5,"sn":11.1}
+02:47:36 atlas5 e-Arşiv İPTAL TEA2026394257754: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026394257754 iptal edildi; etkileri geri alındı.×"}
+02:47:40 destek3 destek3-0046 eA-Firma · Yemek · KDV %10 · İskonto issue-now: {"no":"TEA2026393757817","tip":"SATIS","e":"sent","tutar":2098.01,"sn":10.7}
+02:47:46 destek1 destek1-0046 eF-Temel · Arşiv · KDV %20 · İskonto issue-now: {"no":"TEF2026393757841","tip":"SATIS","e":"sent","tutar":155162.68,"sn":18.1}
+02:47:50 atlas1 atlas1-0045 eF-Temel · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257828","tip":"SATIS","e":"sent","tutar":329.89,"sn":11.6}
+02:47:58 atlas3 atlas3-0045 eA-Firma · Tekstil · Tevkifat · KDV %10+%20 issue-now: {"no":"TEA2026394257820","tip":"TEVKIFAT","e":"sent","tutar":97228.9,"sn":12.3}
+02:48:13 destek4 destek4-0046 eF-Ticari · Yemek · KDV %10 issue-now: {"no":"TEF2026393757842","tip":"SATIS","e":"sent","tutar":19321.25,"sn":8.8}
+02:48:23 destek2 destek2-0048 eF-Temel · Arşiv · KDV %20 issue-now: {"no":"TEF2026393757843","tip":"SATIS","e":"sent","tutar":4416,"sn":7.6}
+02:48:41 destek5 destek5-0049 eF-Temel · Personel · KDV %20 · İskonto issue-now: {"no":"TEF2026393757844","tip":"SATIS","e":"sent","tutar":309147.63,"sn":15.3}
+02:49:10 destek3 destek3-0047 eF-Temel · Danışmanlık · Tevkifat · KDV %20 · İskonto issue-later: {"no":"TEF2026393757845","tip":"TEVKIFAT","e":"sent","tutar":68573.95,"sn":11.7}
+02:49:15 atlas4 atlas4-0046 eA-Firma · Gıda · KDV %1+%20 · İskonto issue-now: {"no":"TEA2026394257821","tip":"SATIS","e":"sent","tutar":61605.16,"sn":18.4}
+02:49:27 atlas2 atlas2-0044 eF-Temel · İnşaat · Tevkifat · KDV %20 issue-later: {"no":"TEF2026394257829","tip":"TEVKIFAT","e":"sent","tutar":56969.9,"sn":13.6}
+02:49:34 atlas2 e-Arşiv İPTAL TEA2026394257765: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026394257765 iptal edildi; etkileri geri alındı.×"}
+02:49:43 destek1 destek1-0047 eF-Ticari · Yemek · Tevkifat · KDV %10+%20 issue-later: {"no":"TEF2026393757846","tip":"TEVKIFAT","e":"sent","tutar":10912.47,"sn":11.4}
+02:49:51 atlas5 atlas5-0045 eA-Firma · Tekstil · KDV %20 issue-now: {"no":"TEA2026394257822","tip":"SATIS","e":"sent","tutar":29999.99,"sn":9.2}
+02:49:53 atlas3 atlas3-0046 eA-Kisi · Tekstil · KDV %10+%20 · İskonto issue-later: {"no":"TEA2026394257823","tip":"SATIS","e":"sent","tutar":62615.36,"sn":17.9}
+02:50:07 atlas1 atlas1-0046 eF-Temel · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEF2026394257830","tip":"SATIS","e":"sent","tutar":22996.08,"sn":13.9}
+02:50:17 destek4 destek4-0047 eA-Kisi · Personel · KDV %10+%20 issue-later: {"no":"TEA2026393757818","tip":"SATIS","e":"sent","tutar":205305.71,"sn":14.2}
+02:50:23 destek5 destek5-0050 eF-Ticari · Yazılım · KDV %20 issue-now: {"no":"TEF2026393757847","tip":"SATIS","e":"sent","tutar":11252.45,"sn":9}
+02:50:37 destek2 destek2-0049 eF-Ticari · Temizlik · KDV %20 issue-later: {"no":"TEF2026393757848","tip":"SATIS","e":"sent","tutar":134508.56,"sn":12.3}
+02:50:40 destek3 destek3-0048 eA-Kisi · Eğitim · KDV %20 issue-now: {"no":"TEA2026393757819","tip":"SATIS","e":"sent","tutar":14465.47,"sn":9.5}
+02:50:45 destek1 destek1-0048 eF-Temel · Hukuk · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026393757849","tip":"TEVKIFAT","e":"sent","tutar":48717.17,"sn":12.3}
+02:50:45 atlas2 atlas2-0045 eF-Temel · İnşaat · KDV %20 issue-later: {"no":"TEF2026394257831","tip":"SATIS","e":"sent","tutar":80.58,"sn":9.5}
+02:50:48 destek3 e-Arşiv İPTAL TEA2026393757761: {"durum":"cancelled","e":"cancelled","deneme":1,"ileti":"Satış Faturası TEA2026393757761 iptal edildi; etkileri geri alındı.×"}
+02:51:36 destek5 destek5-0051 eA-Firma · Temizlik · KDV %20 issue-now: {"no":"TEA2026393757820","tip":"SATIS","e":"sent","tutar":13671.18,"sn":11.3}
+02:51:38 atlas4 atlas4-0047 eA-Kisi · İnşaat · KDV %20 issue-now: {"no":"TEA2026394257824","tip":"SATIS","e":"sent","tutar":45617.78,"sn":10.8}
+02:51:39 KESİM BİTTİ 80 dk — belge 472 (001: 243, 002: 229), durum {"cancelled/cancelled":24,"issued/error":1,"issued/processing":7,"issued/sent":440}, ekran hatası 0, iptal 24, sayfa hatası 0
+02:51:39 KESİM: {"sure_sn":4808,"planlanan":472,"kesilen":472,"ekranHatasi":0,"ortalamaBelgeSn":12.6}
+
+■ Durum Sorgula — 472 belge, son duruma kadar (en çok 40 dk)
+02:52:10 DURUM TURU 1: {"cancelled/cancelled":24,"issued/error":1,"issued/processing":19,"issued/sent":428,"acik":19}
+02:53:02 DURUM TURU 2: {"cancelled/cancelled":24,"issued/error":1,"issued/processing":16,"issued/sent":431,"acik":16}
+02:53:51 DURUM TURU 3: {"cancelled/cancelled":24,"issued/error":1,"issued/processing":11,"issued/sent":436,"acik":11}
+02:54:44 DURUM TURU 4: {"cancelled/cancelled":24,"issued/error":1,"issued/processing":7,"issued/sent":440,"acik":7}
+02:55:42 DURUM TURU 5: {"cancelled/cancelled":24,"issued/error":1,"issued/processing":5,"issued/sent":442,"acik":5}
+02:56:29 DURUM TURU 6: {"cancelled/cancelled":24,"issued/error":1,"issued/processing":4,"issued/sent":443,"acik":4}
+02:57:27 DURUM TURU 7: {"cancelled/cancelled":24,"issued/error":1,"issued/processing":2,"issued/sent":445,"acik":2}
+02:58:14 DURUM TURU 8: {"cancelled/cancelled":24,"issued/error":1,"issued/sent":447,"acik":0}
+
+■ XML ve PDF indiriliyor (en çok 6 eşzamanlı)
+  ✓ UBL XML indirildi 472/472 (iptal edilenlerin XML'i iptalden önce indirildi: 24)
+03:02:33 GÖZLEM iptal sonrası XML: ["TEA2026394257714: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}","TEA2026393757717: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}","TEA2026393757718: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}"]
+  ✗ EDM resmî PDF indirildi 470/472 — TEF2026393757760 resmi.pdf 409 {"ok":false,"error":"Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.","code":"einvoice-not-sent"} | TEF2026394257817 resmi.pdf 502 {"ok":false,"error":"EDM isteği reddetti: Sistem hatasi (EDM hata kodu 20005)","code":"integrator-rejected","detail":"T
+
+■ XSD + GİB şematronu + görünüm şablonu + karekod (4 işçi)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11177) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+03:10:03 DENETİM SÜRESİ (sn): 450
+03:10:03 GÖZLEM program-iptal-sonrasi karekodu: 0/24 okundu
+03:10:03 GÖZLEM resmi-iptal-sonrasi karekodu: 24/24 okundu
+  ✓ XML: XSD + GİB şematronu temiz 472/472
+  ✓ görünüm şablonu: logo + GİB logosu + Kaşe / İmza 472/472
+  ✗ karekod (EDM resmî PDF) çözüldü ve no/ettn/vkn/ödenecek belgeyle aynı 469/472 — TEF2026393757760: undefined | TEF2026394257817: undefined | TEF2026394257812: KAREKOD OKUNAMADI
+  ✓ karekod (programın PDF'i, her 5. belge) aynı 115/115
+
+■ Numara, ETTN, gönderim, son durum, tür
+  ✓ ekrandan kesilen belge 472 (planlanan 472)
+  ✓ ekran hatası yok (0; ayrıntı olaylar.jsonl)
+  ✓ 001 TEF2026 benzersiz + boşluksuz TEF2026393757714 … TEF2026393757849 (136; izlenen 136)
+  ✓ 001 TEA2026 benzersiz + boşluksuz TEA2026393757714 … TEA2026393757820 (107; izlenen 107)
+  ✓ 001 izlenmeyen satış belgesi yok (0)
+  ✓ 002 TEF2026 benzersiz + boşluksuz TEF2026394257714 … TEF2026394257831 (118; izlenen 118)
+  ✓ 002 TEA2026 benzersiz + boşluksuz TEA2026394257714 … TEA2026394257824 (111; izlenen 111)
+  ✓ 002 izlenmeyen satış belgesi yok (0)
+  ✓ ETTN'ler benzersiz (472)
+  ✗ her belge EDM'ye BİR kez gönderildi (invoice.e.sent) 471/472 — TEF2026393757760:0
+  ✗ her belge kesen kullanıcının adıyla gönderildi (1 aykırı)
+  ✗ son durumlar: 448 Gönderildi/Kabul, 24 e-Arşiv iptal — AYKIRI TEF2026393757760:issued/error EDM isteği reddetti: Gönderici (3230512384), 17.1059.2026 01:59:00 itibariyle GİB E-Fatura kapsamında bulunmuyor ve E-Fatura gönderilemez (EDM hata kodu 11059)
+  ✓ ekrandan e-Arşiv iptali 24/24 (belgelerin %5.1'i)
+  ✓ ekrandan Durum Sorgula 32/32
+  ✓ profil plana uygun (TEMEL/TİCARİ/e-Arşiv) 472/472
+  ✓ fatura tipi: tevkifatlı → TEVKIFAT, düz → SATIS (istisnalı/karışık bilgi olarak) 472/472
+03:10:03 DAĞILIM: {"belgeTuru":{"eF-Ticari":87,"eF-Temel":167,"eA-Firma":95,"eA-Kisi":123},"sektor":{"001 Personel":21,"002 İnşaat":57,"001 Temizlik":21,"002 Gıda":59,"001 Emlak":19,"001 Turizm":27,"002 Tekstil":60,"002 Elektronik":53,"001 Danışmanlık":29,"001 Eğitim":30,"001 Arşiv":25,"001 Yemek":27,"001 Yazılım":23,"001 Hukuk":21},"tip":{"SATIS":368,"ISTISNA":19,"TEVKIFAT":85},"gonderim":{"issue-now":340,"issue-later":132},"kdv":{"0":10,"1":22,"10":44,"20":214,"10+20":82,"1+20":45,"0+20":26,"0+10+20":11,"1+10":5,"1+10+20":8,"0+1+20":3,"0+1+10+20":2},"kalemSayisi":{"1":144,"2":136,"3":103,"4":52,"5":34,"6":3},"birim":{"Ay":147,"M²":56,"Takım":34,"Saat":110,"Adet":289,"Kişi":104,"Sefer":34,"Gün":62,"Metre":34
+  ✓ senaryo kapsamı: katalogdaki her tür/kod/birim/sektör/davranış koşuda çıktı
+
+■ Cari bakiyeleri, stok, defter bütünlüğü, şirket ayrımı
+  ✓ 001 Yıldız Hukuk Bürosu bakiyesi 1996086.93 = gönderilmiş (iptal hariç) 27 belge 1996086.93
+  ✓ 001 Kuzey Emlak Danışmanlık Ltd. Şti. bakiyesi 2270216.07 = gönderilmiş (iptal hariç) 34 belge 2270216.07
+  ✓ 001 Marmara Gıda San. ve Tic. A.Ş. bakiyesi 2833559.16 = gönderilmiş (iptal hariç) 38 belge 2833559.16
+  ✓ 001 Anadolu Turizm Otelcilik A.Ş. bakiyesi 2090204.9 = gönderilmiş (iptal hariç) 37 belge 2090204.90
+  ✓ 001 Ayşe Yılmaz bakiyesi 1102502.03 = gönderilmiş (iptal hariç) 22 belge 1102502.03
+  ✓ 001 Mehmet Kaya bakiyesi 1875441.93 = gönderilmiş (iptal hariç) 32 belge 1875441.93
+  ✓ 001 Güneş Kafe Gıda Ltd. Şti. bakiyesi 2660307.04 = gönderilmiş (iptal hariç) 36 belge 2660307.04
+  ✓ 001 defter bütünlüğü temiz (200 {"ok":true,"checks":[{"code":"balance","name":"Çift yönlü kayıt (borç = alacak)","ok":true,"difference":0},{"code":"gl:1)
+  ✓ 002 Başkent İnşaat Taahhüt A.Ş. bakiyesi 740866.97 = gönderilmiş (iptal hariç) 30 belge 740866.97
+  ✓ 002 Ege Tekstil Konfeksiyon Ltd. Şti. bakiyesi 894841.71 = gönderilmiş (iptal hariç) 27 belge 894841.71
+  ✓ 002 Akdeniz Otelcilik ve Turizm A.Ş. bakiyesi 1533476.2 = gönderilmiş (iptal hariç) 29 belge 1533476.20
+  ✓ 002 Toros Elektronik Ticaret A.Ş. bakiyesi 1043043 = gönderilmiş (iptal hariç) 32 belge 1043043.00
+  ✓ 002 Can Öztürk bakiyesi 1084247.06 = gönderilmiş (iptal hariç) 27 belge 1084247.06
+  ✓ 002 Elif Şahin bakiyesi 788895.68 = gönderilmiş (iptal hariç) 28 belge 788895.68
+  ✓ 002 Deniz Oto Servis Ltd. Şti. bakiyesi 2178099.22 = gönderilmiş (iptal hariç) 49 belge 2178099.22
+  ✓ 002 stok miktarları = açılış − satılan (iptal hariç; plan miktarları) 16/16
+  ✓ 002 defter bütünlüğü temiz (200 {"ok":true,"checks":[{"code":"balance","name":"Çift yönlü kayıt (borç = alacak)","ok":true,"difference":0},{"code":"gl:1)
+  ✓ iki şirketin verisi karışmadı (öbür şirkette görünen belge 0, cari 0)
+  ✓ 001 kullanıcısı 002'nin belgesini göremiyor (404)
+
+■ Kâhin (kahin.py, bağımsız)
+KÂHİN (KDV kuralı: oran başına yuvarlama): 472 belge — AYNI 431, FARKLI 41
+  FARKLI olanlardan satır başına yuvarlama kuralıyla AYNI çıkan (bilgi; hüküm değişmez): 36
+plan kaydı 472, sonucu olmayan plan 0 (ekranda yarım kalan deneme; tutar karşılaştırması yok)
+TEA2026393757721  FARKLI  eA-Kisi · Personel · KDV %20 · İskonto  beklenen ödenecek 334038.19  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      334038.19   gelen 334038.20
+    PayableAmount                                beklenen      334038.19   gelen 334038.20
+    TaxTotal/TaxAmount                           beklenen       55673.03   gelen 55673.04
+    TaxSubtotal %20 TaxAmount                    beklenen       55673.03   gelen 55673.04
+    program ödenecek (try_payable)               beklenen      334038.19   gelen 334038.20
+    karekod[resmi] vergidahil                    beklenen      334038.19   gelen 334038.20
+    karekod[resmi] odenecek                      beklenen      334038.19   gelen 334038.20
+    karekod[resmi] hesaplanankdv(20)             beklenen       55673.03   gelen 55673.04
+    karekod[program] vergidahil                  beklenen      334038.19   gelen 334038.20
+    karekod[program] odenecek                    beklenen      334038.19   gelen 334038.20
+    karekod[program] hesaplanankdv(20)           beklenen       55673.03   gelen 55673.04
+TEA2026393757726  FARKLI  eA-Firma · Yazılım · Tevkifat · KDV %20 · İskonto  beklenen ödenecek 59818.39  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       63158.83   gelen 63158.84
+    PayableAmount                                beklenen       59818.39   gelen 59818.40
+    TaxTotal/TaxAmount                           beklenen       10526.47   gelen 10526.48
+    TaxSubtotal %20 TaxAmount                    beklenen       10526.47   gelen 10526.48
+    program ödenecek (try_payable)               beklenen       59818.39   gelen 59818.40
+    karekod[resmi] vergidahil                    beklenen       63158.83   gelen 63158.84
+    karekod[resmi] odenecek                      beklenen       59818.39   gelen 59818.40
+    karekod[resmi] hesaplanankdv(20)             beklenen       10526.47   gelen 10526.48
+TEA2026393757729  FARKLI  eA-Firma · Turizm · KDV %10+%20 · İskonto  beklenen ödenecek 50246.36  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       50246.36   gelen 50246.35
+    PayableAmount                                beklenen       50246.36   gelen 50246.35
+    TaxTotal/TaxAmount                           beklenen        6192.98   gelen 6192.97
+    TaxSubtotal %20 TaxAmount                    beklenen        3575.27   gelen 3575.26
+    program ödenecek (try_payable)               beklenen       50246.36   gelen 50246.35
+    karekod[resmi] vergidahil                    beklenen       50246.36   gelen 50246.35
+    karekod[resmi] odenecek                      beklenen       50246.36   gelen 50246.35
+    karekod[resmi] hesaplanankdv(20)             beklenen        3575.27   gelen 3575.26
+    karekod[program] vergidahil                  beklenen       50246.36   gelen 50246.35
+    karekod[program] odenecek                    beklenen       50246.36   gelen 50246.35
+    karekod[program] hesaplanankdv(20)           beklenen        3575.27   gelen 3575.26
+TEA2026393757759  FARKLI  eA-Kisi · Hukuk · KDV %20 · İskonto  beklenen ödenecek 79376.74  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       79376.74   gelen 79376.73
+    PayableAmount                                beklenen       79376.74   gelen 79376.73
+    TaxTotal/TaxAmount                           beklenen       13229.46   gelen 13229.45
+  ✗ kâhin (görev kuralı: KDV oran başına yuvarlama): bütün belgeler AYNI (çıkış 1; KÂHİN (KDV kuralı: oran başına yuvarlama): 472 belge — AYNI 431, FARKLI 41; ayrıntı kahin-sonuc.txt)
+KÂHİN (KDV kuralı: satır başına yuvarlama): 472 belge — AYNI 467, FARKLI 5
+plan kaydı 472, sonucu olmayan plan 0 (ekranda yarım kalan deneme; tutar karşılaştırması yok)
+TEA2026393757793  FARKLI  eA-Firma · Arşiv · Tevkifat+İstisna · KDV %0+%20 · İskonto  beklenen ödenecek 210338.71  (karekod: program,resmi)
+    PayableAmount                                beklenen      210338.71   gelen 210338.70
+    WithholdingTaxTotal/TaxAmount                beklenen        9489.82   gelen 9489.83
+    Tevkifat 616 TaxAmount                       beklenen        9489.82   gelen 9489.83
+    program ödenecek (try_payable)               beklenen      210338.71   gelen 210338.70
+    karekod[resmi] odenecek                      beklenen      210338.71   gelen 210338.70
+    karekod[program] odenecek                    beklenen      210338.71   gelen 210338.70
+TEF2026393757733  FARKLI  eF-Ticari · Temizlik · Tevkifat+İstisna · KDV %0+%20 · İskonto  beklenen ödenecek 50884.44  (karekod: resmi)
+    PayableAmount                                beklenen       50884.44   gelen 50884.43
+    WithholdingTaxTotal/TaxAmount                beklenen        6613.63   gelen 6613.64
+    Tevkifat 612 TaxAmount                       beklenen        6613.63   gelen 6613.64
+    program ödenecek (try_payable)               beklenen       50884.44   gelen 50884.43
+    karekod[resmi] odenecek                      beklenen       50884.44   gelen 50884.43
+TEF2026393757760  FARKLI  eF-Temel · Personel · İstisna · KDV %0+%10+%20 · İskonto  beklenen ödenecek 176072.09  (karekod: resmi)
+    karekod[resmi]                               beklenen    okunur JSON   gelen PDF yok
+TEF2026394257812  FARKLI  eF-Temel · Gıda · KDV %20  beklenen ödenecek 188190.85  (karekod: program,resmi)
+    karekod[resmi]                               beklenen    okunur JSON   gelen KAREKOD OKUNAMADI
+TEF2026394257817  FARKLI  eF-Temel · Elektronik · KDV %20  beklenen ödenecek 128632.86  (karekod: resmi)
+  ✗ kâhin (KDV satır başına yuvarlama; kural kararı ana oturumda): bütün belgeler AYNI (çıkış 1; KÂHİN (KDV kuralı: satır başına yuvarlama): 472 belge — AYNI 467, FARKLI 5; ayrıntı kahin-sonuc-satir.txt)
+
+■ Diş kanıtı (dis-kaniti.mjs)
+(node:18056) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Diş kanıtı — tam kâhin çıkışı 1; AYNI 431/472; hedef belge TEF2026393757714
+  ✓ KONTROL (bozulmamış TEF2026393757714): kâhin çıkış 0 — KÂHİN (KDV kuralı: oran başına yuvarlama): 1 belge — AYNI 1, FARKLI 0
+  ✓ (a) plan: "Geçici Personel Temini" birim fiyatı 39565 → 39565.01: kâhin çıkış 1, TEF2026393757714 FARKLI (kırmızı)
+  ✓ (b) XML PayableAmount 142434.00 → 142435.00: kâhin çıkış 1, FARKLI (kırmızı)
+  ✓ (c) KONTROL TEF2026393757714 kendi PDF'iyle: çıkış 0 ✓ karekod TEF2026393757714.pdf ↔ TEF2026393757714 aynı
+  ✓ (c) TEF2026393757714 bilgisi + TEF2026394257714 PDF'i: çıkış 1 ✗ karekod TEF2026394257714.pdf ↔ TEF2026393757714 FARKLI: no TEF2026394257714 ≠ TEF2026393757714; ettn a8104a1b-54bb-4ba2-bbc8-5bd97c6958f6 ≠ c286452e-061e-4f4c-ac72-8d7cf6adbb16; odenecek 17020.00 ≠ 142434
+DİŞ KANITI: üç bozulma da kırmızı, kontroller yeşil
+  ✓ diş kanıtı: üç bozulma da kırmızı (çıkış 0)
+03:10:05 SAYFA HATALARI: yok
+  ✓ kullanıcı sayfalarında hata yok (0)
+SONUÇ: 63 geçti, 7 kaldı

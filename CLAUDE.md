@@ -669,6 +669,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   GERÇEK EDM KOŞUSU 22:14 UTC başladı (SURE_DK=270, 10 kullanıcı, TOHUM=1; günlük scratchpad/dayaniklilik-gercek/kosu.log; çıktı oraya, özet sonra depoya).
   Koşu sürerken server/ ve client/ DEĞİŞTİRİLMEZ. Ajan gözlemleri (BİLGİ): iptal edilmiş belgenin XML'i inmiyor (409), iptal PDF'inde karekod yok,
   PUT settings kısmi "start" haritası öbür serilerin başlangıcını sıfırlar (yalnız API; ekran tam harita gönderir).
+  DURUM (17.10.2026 ~03:30 UTC): dayanıklılık A (tohum 2) 465 belge 69/70, B (tohum 3) 472 belge 63/70 — kalan 7'nin kök nedeni: EDM geçici 11059 ret (1 belge;
+  koşudan sonra yeniden gönderildi → "Alıcıya ulaştı"), EDM 20005 resmî PDF (sonra indi), test aracının karekod çözücüsü 300 dpi istedi, KDV/tevkifat kalem başına
+  yuvarlama kural farkı; ürün kusuru YOK. 2.4.1'e kullanıcının bıraktığı canlı giriş iletisi de girdi (fa01323; gerçek canlı adreste doğrulandı). KANIT
+  `docs/2.4.1-KANIT.md`. Sırada: tam npm test + bağımsız gözden geçirme → son aday [uzun-dogrulama] → CI + Uzun yeşil → imzalı paket + kurulum → teslim. Birleştirme/yayın kullanıcı dönünce.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
