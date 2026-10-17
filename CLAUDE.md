@@ -678,6 +678,60 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   bildirge f4819baf…, kılavuz PDF 1ed34558… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum exe 860bb8f2… (iki parça + BIRLESTIR.bat/.md); arşiv 6 zip. PR açıldı
   (master; master 5b45c5d ağacı 4b4eca1 ile aynı → "ours" birleştirmesi). SIRADA: kullanıcı döner → "birleştir" → PR CI + kapı yeşil → squash → yayın (v2.4.1,
   "DestekOfis 2.4.1", not "İyileştirmeler", 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı. e-SMM: kullanıcı EDM'den servis/belge/yetki ister.
+  BİRLEŞTİ (kullanıcı, 17.10.2026: "geldim, githuba yüklemek için link ver, sende birleştir"): PR ceougur/ofis---y-netimi#31 squash → `master` = 34ed6cc
+  (ağaç e188256 ile AYNI; uygulama dosyaları paket 40cb354 ile aynı; PR CI #800 + push #799 yeşil). Yayın bağlantısı verildi. SIRADA: kullanıcı v2.4.1'i açar
+  (5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF 1ed34558…). Dal master'dan yeniden başlatıldı.
+  YAYIMLANDI (kullanıcı "yayımladım", 17.10.2026 06:32 UTC; `v2.4.1` = 34ed6cc; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı):
+  yayındaki 5 dosya + latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.1; gerçek eski güncelleyiciler (v2.4.0, v2.3.0, v2.2.0, v2.1.0 kodu) canlı
+  GitHub'da 2.4.1'i "available" gördü, 2.4.1 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#17 BİRLEŞTİ (kullanıcı "birleştir"; main cccfb25, main PDF 1ed34558… doğrulandı). 2.4.1 KAPANDI;
+  açık: release.yml run 39010296441 (sürümlü exe) sonucu okunacak. Sonra: Pazar 18.10 planlı test, e-SMM (EDM'den servis/belge/yetki), fiyat/lisans, devir (22.10).
+- SORU (kullanıcı, 17.10.2026; bir videodan "canlıya çıkmadan 5 kontrol": hız sınırı, ortam değişkeni doğrulama, merkezi hata yönetimi, havuz + sağlık ucu,
+  geri dönüş/yedek — "bizde karşılığı var mı?") → koddan cevap verildi: giriş/sohbet hız sınırı VAR (auth.mjs:17, chat.mjs:155), genel API sınırı YOK (yerel ağda
+  yeterli; uzaktan bağlanma ile ZORUNLU); zorunlu gizli anahtar yok, varsayılan parola ilk girişte değişir; merkezi hata VAR (app.mjs:515 genel ileti) ama
+  "şirket açılamadı" 503 iletisi ham hata metni içerebilir (app.mjs:497); /api/health VAR ama veri tabanına dokunmuyor (açık); güncellemede deneme kipi +
+  kendiliğinden önceki sürüme dönüş + 6 saatte bir yedek/30 kopya/geri yükleme VAR. ÖNERİ 2.4.2 (KARAR BEKLENİYOR): (1) sağlık ucu her şirket dosyasına
+  küçük okuma (dönüşü de tetikler) ~½ gün, (2) 503 iletisini sadeleştir, (3) hatalı ortam değeri açılışta uyarı; (4) genel hız sınırı uzaktan bağlanma işine bağlanır.
+  KARAR (kullanıcı, 17.10.2026: "bunu istemiyorum şimdilik") → 2.4.2 önerisi YAPILMAZ (kayıtta kalır).
+- İSTEK (kullanıcı, 17.10.2026): "web sitesinde ya da hem web sitesi GitHub'ında hem program GitHub'ında açık API, unutulmuş şifre, sızıntı var mı — maliyetsiz
+  test yap" → BAŞLADI: iki deponun bütün git geçmişi (gitleaks + kendi desen taraması + bilinen gizlilerin parmak izi), GitHub gizli tarama, yayın dosyaları,
+  canlı uçlara yalnız OKUMA denemesi (yetkisiz istek reddediliyor mu). Değişiklik yapılmaz; bulgu → kullanıcıya rapor + öneri.
+  SONUÇ (17.10.2026; kullanıcı ek: "web sitesinin kodunu da okut"): SIZINTI YOK — gitleaks (iki depo, bütün geçmiş): site 0, program 20 (hepsi yanlış alarm:
+  senaryo adı, açık keyId, test parolası); özel anahtar/JWT/service_role/sb_secret 0; imza anahtarı ve EDM test hesabı parmak izi 0; yayındaki güncelleme
+  zip'i 251 dosya temiz. Site kodu okundu: gizliler Vercel ortamında, Supabase tabloları RLS + revoke, 3 RPC API sırrı ister (SHA-256), operatör parolası
+  bcrypt, IP başına 5/15 dk kilit, oturum HttpOnly+SameSite=Strict+köken+özel başlık, panelde her değer esc() + CSP. İş akışları: imza anahtarı yalnız
+  etiket push'unda, CI pull_request (fork'a sır yok). DÜŞÜK: operatör girişinde genel 100 hata/15 dk kilidi kötüye kullanılıp operatör kilitlenebilir;
+  varsayılan yönetici parolası açık depoda (ilk girişte değişir). DENENMEYEN: canlı uçlar (destek-ofis.vercel.app ağ kuralıyla kapalı; Vercel bağlantısı
+  projeye yetkisiz 403), Supabase doğrudan (adres depoda yok), kurulum .exe içi (sıkıştırılmış).
+  CANLI (kullanıcı ağ iznini açtı, aynı gün): /.env, /.git/config, /supabase/lisans.sql, /vercel.json, /api/_lib/* → 404; /api/operator başlıksız/yabancı
+  köken 403, oturumsuz/sahte çerez 401, bilinmeyen işlem 400, GET 405; lisans check bozuk/SQL denemesi 400, bilinmeyen lisans 409; /api/lisans/v1/durum
+  yalnız keyId + signer/db (gizli yok); canlı sayfalarda anahtar/Supabase adresi yok (gitleaks 0); /admin CSP + DENY + HSTS + noindex. Operatör girişi
+  denenmedi (sahte "hatalı giriş" kaydı düşmesin). Sonuç: canlıda da açık yok.
+- SORU (kullanıcı, 17.10.2026; ekran: Entegratör Ayarları — EDM, Test Ortamı, kullanıcı adı/parola girili, Servis Adresi test adresi, GB/PK "Önce Etiketleri
+  Getir"): "test denemelerine başlayacağım, ayarlar doğru mu?" → doğru; sıra: Kaydet → Bağlantıyı Test Et → Etiketleri Getir + GB/PK seç + Kaydet; Firma VKN =
+  EDM test hesabının VKN'si; Servis Adresi boş da olabilir (canlıya geçerken boşalt); denemeyi ikinci şirkette yap.
+- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: onay "FIS2026000000001 … Kaydet ve Gönder … entegratöre gönderilir"): belge türü KAGIT (FIS serisi) olduğu hâlde
+  form "Kaydet ve Gönder" düğmesini ve "entegratöre gönderilir" metnini gösteriyor (hof-invoices.js:1849 sendable: calc.profile yoksa "" ≠ KAGIT → true). Olası
+  neden kullanıcıda Fatura Ayarları "e-Fatura mükellefiyim / e-Arşiv kullanıcısıyım" kapalı (invoices.mjs:1109 → KAGIT). Kullanıcıya yol verildi. 2.4.2 ADAYI:
+  KAGIT'ta düğme "Kaydet", metin kâğıt belge; entegratör bağlıyken işaretler kapalıysa kartta uyarı. Yeniden üretilip kırmızı testle düzeltilecek (karar kullanıcıda).
+- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: TEA2026000000001 "Hata" — EDM 11048 "Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız";
+  İptal Et → EDM 11017 "Fatura bulunamadı"): (a) test serisi TEF/TEA 000000001'den başlıyor, EDM test hesabı ORTAK → numara çakışır (bizim denemelerde başlangıç
+  API'den rastgele verilmişti; ekranda test serisi "Sıradaki No" alanı yok — invoices.mjs testNumbers yalnız gösterir) → her müşterinin ilk test faturası düşer;
+  (b) eStatus "error" + EDM'de yok (11017) belge ne iptal (remote iptal 11017) ne silinebiliyor; canLocalCancel "error"ı kapsamıyor (invoices.mjs:920).
+  ÖNERİ 2.4.2 (KARAR BEKLENİYOR): test serisi firmaya özgü büyük başlangıç + elle Sıradaki No; "error"da Yalnız Programda İptal Et (11017'de); 11048'e açık ileti;
+  + KAGIT'ta "Kaydet ve Gönder" kusuru. Kullanıcıya: test gönderimini düzeltmeye kadar beklet.
+- 2.4.2 BAŞLADI (kullanıcı "BAŞLA", 17.10.2026): test serisi firmaya özgü rastgele büyük başlangıç (TEF/TEA/TES; kullanıcı: "e-Faturada, e-SMM'de de"),
+  "Hata"daki belge İptal Et (EDM 11017 → programda), 11048 iletisi, kâğıt belgede "Kaydet ve Gönder" yok, Otomatik Seriler'de Test Ortamında Sıradaki No;
+  gözden geçirme G1–G5 + kontrol turu K1 düzeltildi (docs/2.4.2-DEGISIKLIKLER.md). İSTEK (kullanıcı, aynı gün; ekran Yeni Cari → Edge "Adres kaydedilsin mi?"):
+  "adres, numara, şifre doldururken Google 'kaydet' diyor, kafa karıştırıyor" → giriş dışı formlarda autocomplete off + parola alanları gizli yazılı metin
+  (hof-core.js); Edge'in gerçekten dinlediği kullanıcının bilgisayarında doğrulanır. Dinlemezse öneri: başlatıcı ayrı tarayıcı profiliyle (öneriler kapalı)
+  açar — kurulum değişikliği, gerçek Windows'ta denenmeli; karar kullanıcıda.
+- KARAR (kullanıcı, 17.10.2026: "uzun doğrulamayı koş, kurala uyalım") → 2.4.2 son adayında Uzun Doğrulama GitHub'da bir kez; sonra imzalı paket + teslim + PR.
+  İSTEK (aynı gün: "30 dk'da bir kontrol et") → send_later ile 30 dk denetimi (her seferinde yeniden kurulur); 2.4.2 teslim edilince ya da kullanıcı "durdur" deyince durur.
+  2.4.2 TESLİM EDİLDİ (17.10.2026 ~13:15 UTC): Uzun Doğrulama run 39025035201 24/24 YEŞİL; paketlenen e780aea (CI #810 YEŞİL; tam npm test 2674/2674;
+  yerel 33/33 e2e). İmzalı zip cd7846f5…, bildirge c50504dc…, kılavuz PDF 2f5fc5cd… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum exe b93579ca… (iki parça +
+  BIRLESTIR.bat/.md); arşiv 5 zip (bundle birleştirilip klonlandı, f8db38c). PR ceougur/ofis---y-netimi#32 açıldı (master; master 34ed6cc dalın atası).
+  30 dk denetimi DURDU (teslim). SIRADA: kullanıcı "birleştir" → PR CI + kapı yeşil → squash → yayın (v2.4.2, "DestekOfis 2.4.2", not "İyileştirmeler",
+  5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF 2f5fc5cd…).
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

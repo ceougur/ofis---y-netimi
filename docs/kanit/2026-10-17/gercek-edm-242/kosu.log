@@ -1,0 +1,26 @@
+(node:5212) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+■ A) 1'den başlayan test numarası (2.4.1 davranışı)
+(node:5212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+09:20:03 A AYAR: {"status":200,"testNumbers":{"efatura":{"series":"TEF","year":2026,"seq":1,"number":"TEF2026000000001"},"earsiv":{"series":"TEA","year":2026,"seq":1,"number":"TEA2026000000001"}}}
+09:20:09 A e-Arşiv GÖNDER TEA2026000000001: {"status":502,"err":"EDM isteği reddetti: UUID=03869429-f9d2-4c03-a472-e22c9d7140ae ID=TEA2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."}
+  ✓ e-Arşiv TEA2026000000001: gerçek EDM 11048 + yol gösteren ileti
+09:20:10 A e-Arşiv İPTAL: {"status":200,"docStatus":"cancelled","eMessage":"EDM belgeyi kabul etmemişti (EDM'de yok); yalnız programda iptal edildi."}
+  ✓ e-Arşiv: İptal Et gerçek EDM'de (11017) belgeyi programda iptal etti
+09:20:13 A e-Fatura GÖNDER TEF2026000000001: {"status":502,"err":"EDM isteği reddetti: UUID=81832ec7-18cb-4d36-b3a6-027280109c86 ID=TEF2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."}
+  ✓ e-Fatura TEF2026000000001: gerçek EDM 11048 + yol gösteren ileti
+09:20:13 A e-Fatura İPTAL: {"status":200,"docStatus":"cancelled","eMessage":"EDM isteği reddetti: UUID=81832ec7-18cb-4d36-b3a6-027280109c86 ID=TEF2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."}
+  ✓ e-Fatura: İptal Et gerçek EDM'de (11017) belgeyi programda iptal etti
+
+■ B) Üretim ayarı: rastgele büyük başlangıç
+09:20:13 B AYAR: {"status":200,"testNumbers":{"efatura":{"series":"TEF","year":2026,"seq":887617708,"number":"TEF2026887617708"},"earsiv":{"series":"TEA","year":2026,"seq":516299437,"number":"TEA2026516299437"}}}
+09:20:17 B e-Arşiv GÖNDER TEA2026516299437: {"status":200,"eStatus":"sent"}
+  ✓ e-Arşiv TEA2026516299437: 1'den başlamadı, EDM kabul etti
+09:20:19 B e-Fatura GÖNDER TEF2026887617708: {"status":200,"eStatus":"sent"}
+  ✓ e-Fatura TEF2026887617708: 1'den başlamadı, EDM kabul etti
+09:24:43 B e-Arşiv SON DURUM TEA2026516299437: {"eStatus":"sent"}
+  ✓ e-Arşiv TEA2026516299437: son durum sent
+09:24:43 B e-Fatura SON DURUM TEF2026887617708: {"eStatus":"processing"}
+  ✗ e-Fatura TEF2026887617708: son durum processing
+
+SONUÇ: 1 kaldı

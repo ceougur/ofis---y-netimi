@@ -77,6 +77,9 @@ export function loadConfig(overrides = {}) {
     // e-SMM gönderimi (2.4.1, kullanıcı kararı 16.10.2026: "e-SMM gizli"): EDM'de e-SMM ayrı servis/yetki; bağlanana kadar kapalı — işaret gizli, sunucu
     // reddeder, eski "esmm: true" kaydında makbuz kâğıt kalır (test/esmm-gizli-241.test.mjs). Ortam değişkeniyle açılmaz.
     esmmEnabled: overrides.esmmEnabled === true,
+    // Test serisi (TEF/TEA/TES) başlangıcı (2.4.2): üretimde boş → firmaya özgü rastgele büyük numara (EDM test hesabı ortak; 1'den başlayan numara
+    // başka firmanınkiyle çakışır). Testler sabit başlangıç verir (test/helpers.mjs).
+    testSeriesStart: typeof overrides.testSeriesStart === "function" ? overrides.testSeriesStart : null,
     // Döviz banka hesabı (v2.1.0 GG2): kur, değerleme ve döviz fişleriyle birlikte sonraki sürümde; o zamana kadar yalnız testler açar.
     fxEnabled: overrides.fxEnabled === true,
     // Bu sürümde olmayan banka özelliklerinin gizli ayarları (POS, Ekstre, Döviz, Elle Banka Fişi; lib/bank/settings.mjs NOT_YET): üretimde

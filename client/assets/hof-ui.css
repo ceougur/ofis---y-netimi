@@ -172,6 +172,8 @@ html.hof-auth-required #root {
 }
 .hof-field {
   display: grid;
+  /* 2.4.2 (kullanıcı ekranı, Yeni Cari → Kişi Türü): yanındaki alan (yardım yazısı + düğme) uzunken satırlar gerilip kutu büyüyordu */
+  align-content: start;
   gap: 6px;
   color: #4d6a5e;
   font-size: 12px;
@@ -10826,3 +10828,6 @@ input[type="search"]::-webkit-search-cancel-button {
   border-radius: 8px;
   background: #fff;
 }
+
+/* 2.4.2: tarayıcının parola yöneticisine görünmeyen gizli yazılı alan (hof-core.js quietAutofill) */
+.hof-secret { -webkit-text-security: disc; text-security: disc; }

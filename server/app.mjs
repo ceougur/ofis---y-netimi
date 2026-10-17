@@ -628,6 +628,20 @@ export function createApp(overrides = {}) {
       // Hesap kartları kalırken açılışları silindi: "Bakiye Doğrulandı" kalkar, kartta "Açılış Bakiyesi Gir" açılır (§5.6).
       if (mode !== "all" && has("bank_accounts")) store.run("UPDATE bank_accounts SET balance_confirmed = 0 WHERE balance_confirmed <> 0");
       if (resetNumbers) store.run("DELETE FROM settings WHERE key = 'plans.receiptSeq'");
+      // 2.4.2 (gözden geçirme): faturalar silinince test serisinin (TEF/TEA/TES) başlangıcı da silinir — kalsaydı sıradaki numara EDM'nin ortak test
+      // hesabına zaten gönderilmiş numaraya döner (11048); yeni rastgele başlangıç alınır. Firmanın kendi serisinin "Sıradaki No"su korunur.
+      if (has("invoices")) {
+        let invoice = null;
+        try {
+          invoice = JSON.parse(store.setting("invoice.settings", "") || "null");
+        } catch {
+          invoice = null;
+        }
+        if (invoice?.start && typeof invoice.start === "object") {
+          const kept = Object.fromEntries(Object.entries(invoice.start).filter(([key]) => !/^TE[FAS]\d{4}$/.test(key)));
+          if (Object.keys(kept).length !== Object.keys(invoice.start).length) store.setSetting("invoice.settings", JSON.stringify({ ...invoice, start: kept }));
+        }
+      }
       if (unlocked) {
         store.run("DELETE FROM settings WHERE key = ?", LOCK_KEY);
         audit(user, "ledger.period.unlocked", "period", { previous: unlocked, lockedUntil: "", reason: "company.reset", mode });

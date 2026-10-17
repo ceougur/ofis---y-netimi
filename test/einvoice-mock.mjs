@@ -69,7 +69,7 @@ export const incomingUbl = () => `<?xml version="1.0" encoding="UTF-8"?><Invoice
 export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
   // drafts: portala taslak (LoadInvoice) — gerçek EDM test ortamındaki davranış (docs/kanit/2026-10-16/edm-taslak): aynı ETTN ile yeniden yükleme
   // içeriği değiştirir; gönderilmiş belgeyi yükleme 11056; taslağı (CONTENT boş) ikinci kez gönderme 11028.
-  const state = { calls: [], sent: [], drafts: new Map(), cancelled: [], marked: [], sessions: new Set(), counter: 0, expireNext: false, statuses: new Map(), wsdlHits: 0, violations: [] };
+  const state = { calls: [], sent: [], drafts: new Map(), cancelled: [], marked: [], sessions: new Set(), counter: 0, expireNext: false, statuses: new Map(), wsdlHits: 0, violations: [], usedIds: new Set() };
   const fault = (code, message) => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>${message}</faultstring><detail><RequestFault xmlns="${NS}"><ERROR_CODE>${code}</ERROR_CODE><ERROR_SHORT_DES>${message}</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`;
   const okEnvelope = body => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body>${body}</s:Body></s:Envelope>`;
   const server = createServer((req, res) => {
@@ -159,6 +159,11 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
       }
       if (op === "SendInvoice") {
         const invoice = child(request, "INVOICE");
+        // Gerçek EDM test ortamı (17.10.2026, kullanıcı ekranı): test hesabı ORTAKTIR; başka firmanın kullandığı numara (ID) reddedilir (11048).
+        if (state.usedIds.has(invoice.attrs.ID) || state.sent.some(item => item.id === invoice.attrs.ID)) {
+          res.writeHead(500, { "content-type": "text/xml" }).end(fault(11048, `UUID=${invoice.attrs.UUID} ID=${invoice.attrs.ID} için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız`));
+          return;
+        }
         state.sent.push({ sender: child(request, "SENDER")?.attrs, receiver: child(request, "RECEIVER")?.attrs, id: invoice.attrs.ID, uuid: invoice.attrs.UUID, earchive: textOf(find(invoice, "HEADER/EARCHIVE")), order: invoice.children.map(item => item.name), xml: Buffer.from(textOf(child(invoice, "CONTENT")), "base64").toString("utf8") });
         state.statuses.set(invoice.attrs.UUID, ["SEND - WAIT_GIB_RESPONSE", "SEND - SUCCEED"]);
         respond(`<SendInvoiceResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN><INVOICE ID="${invoice.attrs.ID}" UUID="${invoice.attrs.UUID}"/></SendInvoiceResponse>`);
@@ -177,6 +182,11 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
         return;
       }
       if (op === "CancelInvoice") {
+        // Gerçek EDM (17.10.2026, kullanıcı ekranı): EDM'nin hiç kabul etmediği belgenin iptali "Fatura bulunamadı" (11017).
+        if (!state.statuses.has(child(request, "INVOICE")?.attrs.UUID)) {
+          res.writeHead(500, { "content-type": "text/xml" }).end(fault(11017, "Fatura bulunamadı"));
+          return;
+        }
         state.cancelled.push(child(request, "INVOICE")?.attrs.UUID);
         state.statuses.set(child(request, "INVOICE")?.attrs.UUID, ["CANCELLED - SUCCEED"]);
         respond(`<CancelInvoiceResponse xmlns="${NS}"><REQUEST_RETURN><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN></CancelInvoiceResponse>`);

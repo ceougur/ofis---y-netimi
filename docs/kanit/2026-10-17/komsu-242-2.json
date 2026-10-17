@@ -1,0 +1,32 @@
+{
+  "ad": "komsu-242-2",
+  "komut": "node --test --test-concurrency=4 test/asama0-226.test.mjs test/auth.test.mjs test/banka-210-acilis.test.mjs test/banka-210-altin.test.mjs test/banka-210-arayuz-hareket.test.mjs test/banka-210-arayuz.test.mjs test/banka-210-ariza.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-ayarlar.test.mjs test/banka-210-bozarim.test.mjs test/banka-210-dun-bugun.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-fis-kapi.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg-eski.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg2-ayar.test.mjs test/banka-210-gg2-fis.test.mjs test/banka-210-gg3-eski-satir.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-hesap.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-islem-no.test.mjs test/banka-210-istek-kimligi.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-post-kesinti.test.mjs test/banka-210-post.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-210-transfer.test.mjs test/banka-210-yargic.test.mjs test/banka-210-yetki-katalog.test.mjs test/banka-210-yetki-matrisi.test.mjs test/banka-220-cek-hesabi.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-kabul.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-46-iade-iptal.test.mjs test/banka-230-supheli-bozma.test.mjs test/bulgu-223.test.mjs test/ebelge-240-birim.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-240-ek-secenekler.test.mjs test/ebelge-240-gorunum.test.mjs test/ebelge-240-kontrol3.test.mjs test/ebelge-242-test-seri.test.mjs test/ebelge-uygunluk.test.mjs test/edm-gercek-sozlesme.test.mjs test/edm-giris-241.test.mjs test/edoc-uretim.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/einvoice-240-taslak.test.mjs test/einvoice-edm.test.mjs test/eksi-stok-217.test.mjs test/ertelenen-224.test.mjs test/esmm-gizli-241.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/guvenilirlik-221-ariza.test.mjs test/guvenilirlik-221-bulgular.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/hakem-k5-banka-eksi-kodu.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-kapama-k1.test.mjs test/inceleme-221.test.mjs test/inceleme-222.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/insight.test.mjs test/istek-kimligi-222.test.mjs test/kapama-rastgele-223.test.mjs test/karekod.test.mjs test/kontrol-241.test.mjs test/odeme-yolu-222.test.mjs test/permissions.test.mjs test/rapor-220.test.mjs test/rapor-230-iz5.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/sirketler-217.test.mjs test/supheli-230-karar.test.mjs test/supheli-240-k4-iptal.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/vekil-sunucu-uygulama.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs test/yetki-gorunurluk.test.mjs",
+  "commit": "e1cf10b694d9acdf378d8ca625939a91b17a8eb8",
+  "dal": "claude/hopeful-goodall-6nmtcj",
+  "kirli": 5,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-17T09:42:26.735Z",
+  "sure_sn": 193.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1398,
+    "gecen": 1398,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-17/komsu-242-2.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ac4b4a05338fabcf37d908b4aa99c847f4f2258ddc8b8bb5d7b6f655a08847be",
+  "ham_cikti_bayt": 529168
+}
