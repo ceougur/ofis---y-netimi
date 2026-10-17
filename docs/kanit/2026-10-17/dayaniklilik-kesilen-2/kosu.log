@@ -1,0 +1,76 @@
+  ✓ 001 Fatura Ayarları (logo, kaşe e-Faturada da, banka, alt not, Ortam Test) (200 )
+  ✓ 001 Bağlantıyı Test Et (200 )
+  ✓ 002 Fatura Ayarları (logo, kaşe e-Faturada da, banka, alt not, Ortam Test) (200 )
+  ✓ 002 Bağlantıyı Test Et (200 )
+23:16:37 PROGRAM KODLARI: {"tevkifat":[{"code":"602","num":9,"den":10},{"code":"604","num":5,"den":10},{"code":"606","num":9,"den":10},{"code":"612","num":9,"den":10},{"code":"616","num":5,"den":10}],"istisna":["301","302","304","350","351"],"tumIstisna":["301","302","304","350","351"],"smmScenario":"smm"}
+  ✓ tevkifat kodları programda var (602, 604, 606, 612, 616; eksik yok)
+  ✓ istisna kodları programda var (301, 302, 304, 350, 351; eksik yok)
+  ✓ 001 TCKN 10000000146 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {"registered":false,"title":"","aliases":[],"senderAliases":[],"type":"","taxNo")
+  ✓ 001 TCKN 10000000078 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {"registered":false,"title":"","aliases":[],"senderAliases":[],"type":"","taxNo")
+23:16:47 CARİ (ekrandan) Yıldız Hukuk Bürosu: {"id":"account-6a757240-c349-480d-9577-f16ead32b99c","name":"Yıldız Hukuk Bürosu","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 001 Yıldız Hukuk Bürosu: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+23:16:53 CARİ (ekrandan) Kuzey Emlak Danışmanlık Ltd. Şti.: {"id":"account-27b4daa1-3f48-4de5-90c2-2c852b188477","name":"Kuzey Emlak Danışmanlık Ltd. Şti.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 001 Kuzey Emlak Danışmanlık Ltd. Şti.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+23:16:58 CARİ (ekrandan) Marmara Gıda San. ve Tic. A.Ş.: {"id":"account-4e6fd847-8cf2-41bd-9154-6082eab0dcca","name":"Marmara Gıda San. ve Tic. A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 001 Marmara Gıda San. ve Tic. A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+23:17:04 CARİ (ekrandan) Anadolu Turizm Otelcilik A.Ş.: {"id":"account-d998ffbf-f6e0-4be8-8df1-655965f141a5","name":"Anadolu Turizm Otelcilik A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 001 Anadolu Turizm Otelcilik A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+23:17:12 CARİ (ekrandan) Ayşe Yılmaz: {"id":"account-4e9eb104-86e8-4994-ba65-07c6d69b25d4","name":"Ayşe Yılmaz","taxNo":"10000000146","eInvoice":0,"eAlias":""}
+  ✓ 001 Ayşe Yılmaz (TCKN): e-Arşiv alıcısı
+23:17:20 CARİ (ekrandan) Mehmet Kaya: {"id":"account-fbd53dfa-671c-4496-9979-44b479b847d7","name":"Mehmet Kaya","taxNo":"10000000078","eInvoice":0,"eAlias":""}
+  ✓ 001 Mehmet Kaya (TCKN): e-Arşiv alıcısı
+23:17:28 CARİ (ekrandan) Güneş Kafe Gıda Ltd. Şti.: {"id":"account-eebaa008-fee9-42e3-a27e-e47eb79cef95","name":"Güneş Kafe Gıda Ltd. Şti.","taxNo":"3000855478","eInvoice":0,"eAlias":""}
+  ✓ 001 Güneş Kafe Gıda Ltd. Şti. (VKN 3000855478, mükellef değil): e-Arşiv alıcısı
+  ✓ 002 TCKN 10000000146 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {"registered":false,"title":"","aliases":[],"senderAliases":[],"type":"","taxNo")
+  ✓ 002 TCKN 10000000078 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {"registered":false,"title":"","aliases":[],"senderAliases":[],"type":"","taxNo")
+23:17:36 CARİ (ekrandan) Başkent İnşaat Taahhüt A.Ş.: {"id":"account-91c185e3-4dee-47fb-bf6c-b7121a3bc82f","name":"Başkent İnşaat Taahhüt A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 002 Başkent İnşaat Taahhüt A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+23:17:42 CARİ (ekrandan) Ege Tekstil Konfeksiyon Ltd. Şti.: {"id":"account-8194ec1c-b028-4d1e-9eaf-0f6d3e0d72a6","name":"Ege Tekstil Konfeksiyon Ltd. Şti.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 002 Ege Tekstil Konfeksiyon Ltd. Şti.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+23:17:48 CARİ (ekrandan) Akdeniz Otelcilik ve Turizm A.Ş.: {"id":"account-0f0af531-f692-484c-92e5-c0eddbd394d9","name":"Akdeniz Otelcilik ve Turizm A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 002 Akdeniz Otelcilik ve Turizm A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+23:17:53 CARİ (ekrandan) Toros Elektronik Ticaret A.Ş.: {"id":"account-00225368-103c-4bb7-989c-370f3ff69dd0","name":"Toros Elektronik Ticaret A.Ş.","taxNo":"3230512384","eInvoice":1,"eAlias":"urn:mail:defaultpk@edmbilisim.com.tr"}
+  ✓ 002 Toros Elektronik Ticaret A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr
+23:18:01 CARİ (ekrandan) Can Öztürk: {"id":"account-ee19bc67-447b-409e-aed1-93ddc6ba8933","name":"Can Öztürk","taxNo":"10000000146","eInvoice":0,"eAlias":""}
+  ✓ 002 Can Öztürk (TCKN): e-Arşiv alıcısı
+23:18:09 CARİ (ekrandan) Elif Şahin: {"id":"account-b5c93fc7-43b9-4e82-9b70-784fdb2062cb","name":"Elif Şahin","taxNo":"10000000078","eInvoice":0,"eAlias":""}
+  ✓ 002 Elif Şahin (TCKN): e-Arşiv alıcısı
+23:18:17 CARİ (ekrandan) Deniz Oto Servis Ltd. Şti.: {"id":"account-9b39c85d-05e5-4d18-acc5-8d1ccbe00100","name":"Deniz Oto Servis Ltd. Şti.","taxNo":"3003967260","eInvoice":0,"eAlias":""}
+  ✓ 002 Deniz Oto Servis Ltd. Şti. (VKN 3003967260, mükellef değil): e-Arşiv alıcısı
+23:18:21 OTURUMLAR: ["destek1","destek2","destek3","destek4","destek5","atlas1","atlas2","atlas3","atlas4","atlas5"]
+
+■ e-SMM denemesi (001, yönetici ekranından)
+23:18:31 BULGU e-SMM: {"senaryo":"smm","ayar":{"putStatus":400,"putCode":"esmm-unavailable","putIleti":"e-SMM gönderimi bu sürümde yok; serbest meslek makbuzu kâğıt olarak düzenlenir.","esmmAvailable":false,"esmm":false},"ekrandaIsaret":false,"formDugmeleri":["cancel-form:Vazgeç","save-draft:Taslak Olarak Kaydet","issue:Makbuzu Kaydet"],"kaydetDugmesi":"issue","kesim":{"no":"SMM2026000000001","profil":"KAGIT","eStatus":"none","eMessage":"","iletiler":["Serbest Meslek Makbuzu SMM2026000000001 kaydedildi.×","Serbest Meslek Makbuzu SMM2026000000001 kaydedildi.×"]},"kartGonder":{"not":"kartta e-Belge Gönder düğmesi yok"},"gonderApi":{"status":409,"code":"einvoice-paper","ileti":"Kâğıt belge / müşteri fişi e-Belge ola
+
+■ 10 kullanıcı aynı anda başlıyor — süre 240 dk, tempo 90 sn (±%50), tohum 2, seri başı 313770417
+23:18:31 BAŞLANGIÇ 0 dk — belge 0 (001: 0, 002: 0), durum {}, ekran hatası 0, iptal 0, sayfa hatası 0
+23:18:46 destek4 destek4-0001 eF-Temel · Personel · KDV %20 issue-now: {"no":"TEF2026313770417","tip":"SATIS","e":"sent","tutar":134230.79,"sn":14.6}
+23:18:47 atlas5 atlas5-0001 eF-Temel · Elektronik · KDV %20 issue-now: {"no":"TEF2026314270417","tip":"SATIS","e":"sent","tutar":78000,"sn":16.1}
+23:18:49 destek3 destek3-0001 eF-Temel · Turizm · Tevkifat · KDV %10+%20 issue-now: {"no":"TEF2026313770418","tip":"TEVKIFAT","e":"sent","tutar":15187.26,"sn":17.8}
+23:18:52 atlas3 atlas3-0001 eF-Temel · Tekstil · KDV %10+%20 issue-now: {"no":"TEF2026314270418","tip":"SATIS","e":"sent","tutar":1493.22,"sn":21.6}
+23:18:54 destek5 destek5-0001 eA-Kisi · Hukuk · KDV %20 · İskonto issue-now: {"no":"TEA2026313770417","tip":"SATIS","e":"sent","tutar":55500.96,"sn":22.6}
+23:18:54 atlas1 atlas1-0001 eA-Kisi · İnşaat · KDV %20 issue-later: {"no":"TEA2026314270417","tip":"SATIS","e":"sent","tutar":3253.24,"sn":22.9}
+23:18:54 destek2 destek2-0001 eA-Firma · Yazılım · KDV %20 · İskonto issue-now: {"no":"TEA2026313770418","tip":"SATIS","e":"sent","tutar":52223.77,"sn":23.2}
+23:18:56 destek1 destek1-0001 eF-Ticari · Personel · Tevkifat+İstisna · KDV %0+%20 · İskonto issue-now: {"no":"TEF2026313770419","tip":"TEVKIFAT","e":"sent","tutar":116105.72,"sn":25.2}
+23:18:58 atlas4 atlas4-0001 eA-Kisi · Tekstil · KDV %10 · İskonto issue-now: {"no":"TEA2026314270418","tip":"SATIS","e":"sent","tutar":101308.67,"sn":27}
+23:18:59 atlas2 atlas2-0001 eF-Temel · Tekstil · KDV %10+%20 issue-now: {"no":"TEF2026314270419","tip":"SATIS","e":"sent","tutar":102779.34,"sn":28.2}
+23:19:42 destek4 destek4-0002 eF-Ticari · Danışmanlık · KDV %20 issue-later: {"no":"TEF2026313770420","tip":"SATIS","e":"sent","tutar":83800.8,"sn":8.8}
+23:20:06 destek5 destek5-0002 eF-Temel · Danışmanlık · KDV %20 · İskonto issue-now: {"no":"TEF2026313770421","tip":"SATIS","e":"sent","tutar":106530.85,"sn":12}
+23:20:07 atlas3 atlas3-0002 eF-Ticari · Gıda · KDV %1+%20 · İskonto issue-later: {"no":"TEF2026314270420","tip":"SATIS","e":"sent","tutar":1015.49,"sn":12.5}
+23:20:17 atlas5 atlas5-0002 eA-Kisi · Gıda · KDV %1 issue-now: {"no":"TEA2026314270419","tip":"SATIS","e":"sent","tutar":171.56,"sn":11.1}
+23:20:33 atlas4 atlas4-0002 eA-Kisi · İnşaat · KDV %20 · İskonto issue-now: {"no":"TEA2026314270420","tip":"SATIS","e":"sent","tutar":89.2,"sn":11}
+23:20:34 destek1 destek1-0002 eF-Temel · Temizlik · İstisna · KDV %0+%20 issue-later: {"no":"TEF2026313770422","tip":"ISTISNA","e":"sent","tutar":183665.31,"sn":15}
+23:20:34 destek2 destek2-0002 eA-Firma · Turizm · KDV %10 issue-now: {"no":"TEA2026313770419","tip":"SATIS","e":"sent","tutar":28842,"sn":10.5}
+23:20:38 destek3 destek3-0002 eA-Firma · Yemek · KDV %10 · İskonto issue-now: {"no":"TEA2026313770420","tip":"SATIS","e":"sent","tutar":23984.26,"sn":11.5}
+23:20:42 atlas1 atlas1-0002 eF-Ticari · Tekstil · KDV %10 issue-now: {"no":"TEF2026314270421","tip":"SATIS","e":"sent","tutar":5822.59,"sn":11.9}
+23:21:09 destek4 destek4-0003 eF-Ticari · Danışmanlık · KDV %20 issue-now: {"no":"TEF2026313770423","tip":"SATIS","e":"sent","tutar":21262.82,"sn":9.1}
+23:21:10 atlas3 atlas3-0003 eA-Firma · Elektronik · KDV %20 issue-now: {"no":"TEA2026314270421","tip":"SATIS","e":"sent","tutar":29999.99,"sn":9.6}
+23:21:22 atlas2 atlas2-0002 eA-Kisi · Elektronik · KDV %20 issue-now: {"no":"TEA2026314270422","tip":"SATIS","e":"sent","tutar":117000,"sn":9.2}
+23:21:40 destek5 destek5-0003 eF-Ticari · Temizlik · KDV %20 issue-now: {"no":"TEF2026313770424","tip":"SATIS","e":"sent","tutar":56380.34,"sn":10.5}
+23:21:43 destek2 destek2-0003 eF-Ticari · Danışmanlık · Tevkifat · KDV %20 · İskonto issue-now: {"no":"TEF2026313770425","tip":"TEVKIFAT","e":"sent","tutar":100601.23,"sn":16.1}
+23:22:09 atlas1 atlas1-0003 eA-Kisi · Tekstil · KDV %1 issue-now: {"no":"TEA2026314270423","tip":"SATIS","e":"sent","tutar":160.7,"sn":9.5}
+23:22:12 destek3 destek3-0003 eF-Temel · Emlak · Tevkifat+İstisna · KDV %0+%10+%20 issue-now: {"no":"TEF2026313770426","tip":"TEVKIFAT","e":"sent","tutar":118400.93,"sn":13.4}
+23:22:21 atlas5 atlas5-0003 eF-Ticari · Gıda · KDV %1 issue-now: {"no":"TEF2026314270422","tip":"SATIS","e":"sent","tutar":858.44,"sn":13.4}
+23:22:40 destek1 destek1-0003 eF-Ticari · Temizlik · KDV %10+%20 · İskonto issue-later: {"no":"TEF2026313770427","tip":"SATIS","e":"sent","tutar":136954.51,"sn":14.1}
+23:22:42 destek5 destek5-0004 eA-Kisi · Personel · KDV %20 · İskonto issue-now: {"no":"TEA2026313770421","tip":"SATIS","e":"sent","tutar":58330.17,"sn":11.3}
+23:22:48 atlas4 atlas4-0003 eF-Temel · Tekstil · KDV %10 · İskonto issue-later: {"no":"TEF2026314270423","tip":"SATIS","e":"sent","tutar":35357.49,"sn":11}
