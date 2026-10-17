@@ -10826,3 +10826,6 @@ input[type="search"]::-webkit-search-cancel-button {
   border-radius: 8px;
   background: #fff;
 }
+
+/* 2.4.2: tarayıcının parola yöneticisine görünmeyen gizli yazılı alan (hof-core.js quietAutofill) */
+.hof-secret { -webkit-text-security: disc; text-security: disc; }

@@ -719,6 +719,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (b) eStatus "error" + EDM'de yok (11017) belge ne iptal (remote iptal 11017) ne silinebiliyor; canLocalCancel "error"ı kapsamıyor (invoices.mjs:920).
   ÖNERİ 2.4.2 (KARAR BEKLENİYOR): test serisi firmaya özgü büyük başlangıç + elle Sıradaki No; "error"da Yalnız Programda İptal Et (11017'de); 11048'e açık ileti;
   + KAGIT'ta "Kaydet ve Gönder" kusuru. Kullanıcıya: test gönderimini düzeltmeye kadar beklet.
+- 2.4.2 BAŞLADI (kullanıcı "BAŞLA", 17.10.2026): test serisi firmaya özgü rastgele büyük başlangıç (TEF/TEA/TES; kullanıcı: "e-Faturada, e-SMM'de de"),
+  "Hata"daki belge İptal Et (EDM 11017 → programda), 11048 iletisi, kâğıt belgede "Kaydet ve Gönder" yok, Otomatik Seriler'de Test Ortamında Sıradaki No;
+  gözden geçirme G1–G5 + kontrol turu K1 düzeltildi (docs/2.4.2-DEGISIKLIKLER.md). İSTEK (kullanıcı, aynı gün; ekran Yeni Cari → Edge "Adres kaydedilsin mi?"):
+  "adres, numara, şifre doldururken Google 'kaydet' diyor, kafa karıştırıyor" → giriş dışı formlarda autocomplete off + parola alanları gizli yazılı metin
+  (hof-core.js); Edge'in gerçekten dinlediği kullanıcının bilgisayarında doğrulanır. Dinlemezse öneri: başlatıcı ayrı tarayıcı profiliyle (öneriler kapalı)
+  açar — kurulum değişikliği, gerçek Windows'ta denenmeli; karar kullanıcıda.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

@@ -207,6 +207,27 @@ try {
   await shot(page, "ebelge-242-4-seriler");
   await closeAll(page);
 
+  await closeAll(page);
+
+  console.log("\n■ 6 Tarayıcının \"kaydet\" önerileri (kullanıcı 17.10.2026): giriş dışındaki formlarda parola alanı yok, otomatik doldurma kapalı");
+  await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
+  await page.waitForSelector(`${pageInv} [data-act="integrator"]`);
+  await page.click(`${pageInv} [data-act="integrator"]`);
+  await page.waitForSelector(`${modal} [data-i="password"]`);
+  const scan = await page.evaluate(() => {
+    const fields = [...document.querySelectorAll("input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=file]), textarea")].filter(node => !node.closest("[data-autofill-keep]"));
+    return { total: fields.length, password: fields.filter(node => node.type === "password").length, open: fields.filter(node => (node.getAttribute("autocomplete") || "on") === "on").map(node => node.name || node.dataset.i || node.id) };
+  });
+  ok(scan.total > 5 && scan.password === 0 && !scan.open.length, `açık pencerelerdeki ${scan.total} alanda type="password" ${scan.password}, otomatik doldurması açık: ${scan.open.join(", ") || "yok"}`);
+  await closeAll(page);
+  const loginPage = await context.newPage();
+  await loginPage.goto(`${BASE}/admin.html`).catch(() => null);
+  await context.clearCookies();
+  await loginPage.goto(`${BASE}/`);
+  await loginPage.waitForSelector("#hof-auth input[name=password]");
+  const login = await loginPage.$eval("#hof-auth input[name=password]", node => ({ type: node.type, autocomplete: node.getAttribute("autocomplete") }));
+  ok(login.type === "password" && login.autocomplete === "current-password", `giriş formu olduğu gibi (tarayıcı giriş parolasını hatırlayabilir): ${JSON.stringify(login)}`);
+  await loginPage.close();
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
 } catch (error) {
   failed += 1;

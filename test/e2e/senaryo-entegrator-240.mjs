@@ -115,9 +115,12 @@ try {
   const focused = await page.evaluate(() => document.activeElement?.dataset?.i || "");
   ok(focused === "password", `Tab parolaya geçer (odak: ${focused})`);
   await page.keyboard.type("Gizli-Parola-1", { delay: 35 });
+  // 2.4.2 (kullanıcı: tarayıcının "kaydet" önerisi): parola alanı type="password" değil, gizli yazılı metin (tarayıcı parola saymaz).
+  const masked = await page.$eval(`${card} input[data-i="password"]`, input => ({ type: input.type, mask: getComputedStyle(input).webkitTextSecurity, autocomplete: input.getAttribute("autocomplete") }));
+  ok(masked.type === "text" && masked.mask === "disc" && masked.autocomplete === "off", `parola gizli yazılı, tarayıcı parolası değil (${JSON.stringify(masked)})`);
   await page.click(`${card} [data-integ-eye]`);
-  const shown = await page.$eval(`${card} input[data-i="password"]`, input => ({ type: input.type, value: input.value }));
-  ok(shown.type === "text" && shown.value === "Gizli-Parola-1", "Göster: yazılan parola görünür");
+  const shown = await page.$eval(`${card} input[data-i="password"]`, input => ({ mask: getComputedStyle(input).webkitTextSecurity, value: input.value }));
+  ok(shown.mask === "none" && shown.value === "Gizli-Parola-1", "Göster: yazılan parola görünür");
   await page.click(`${card} [data-integ-eye]`);
   await page.fill(`${card} input[data-i="baseUrl"]`, edm.url);
   await page.click(`${card} [data-integ-act="save"]`);

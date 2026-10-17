@@ -660,6 +660,56 @@
       });
     });
 
+  // ---------- Tarayıcının "kaydet" önerileri (2.4.2, kullanıcı 17.10.2026: "adres, numara, şifre doldururken Google 'kaydet' diyor, kafa
+  // karıştırıyor") ----------
+  // Giriş ve kendi parolanı değiştirme formları ([data-autofill-keep]) dışında: alanlarda otomatik doldurma kapalı (autocomplete="off");
+  // parola alanları type="text" + gizli yazı (.hof-secret) olur — Chromium'un (Edge/Chrome) parola yöneticisi yalnız type="password"
+  // alanları parola sayar ve kaydetmeyi önerir (EDM parolası, vekil sunucu parolası, onay parolası programın işidir, tarayıcının değil).
+  const quietField = input => {
+    if (input.closest("[data-autofill-keep]") || input.classList.contains("hof-autofill-trap")) return;
+    if (input.tagName === "INPUT" && input.type === "password") {
+      input.type = "text";
+      input.classList.add("hof-secret");
+      input.dataset.secret = "1";
+      input.spellcheck = false;
+      input.autocapitalize = "none";
+    }
+    if (!input.getAttribute("autocomplete") || input.getAttribute("autocomplete") === "on" || input.dataset.secret) input.setAttribute("autocomplete", "off");
+  };
+  const QUIET = "input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=file]):not([type=button]):not([type=submit]), textarea";
+  HOF.quietAutofill = root => {
+    if (!root || root.nodeType !== 1) return;
+    if (root.matches(QUIET)) quietField(root);
+    root.querySelectorAll(QUIET).forEach(quietField);
+    if (root.tagName === "FORM" && !root.closest("[data-autofill-keep]")) root.setAttribute("autocomplete", "off");
+    root.querySelectorAll("form").forEach(form => !form.closest("[data-autofill-keep]") && form.setAttribute("autocomplete", "off"));
+  };
+  // Gizli yazılı alanda Göster / Gizle (type değil sınıf değişir; type="password"a dönerse tarayıcı yine kaydetmeyi önerir).
+  HOF.toggleSecret = input => {
+    if (input.type === "password") {
+      input.type = "text";
+      return true;
+    }
+    if (input.dataset.secret !== "1") {
+      input.type = "password";
+      return false;
+    }
+    const show = input.classList.contains("hof-secret");
+    input.classList.toggle("hof-secret", !show);
+    return show;
+  };
+  const startQuiet = () => {
+    HOF.quietAutofill(document.body);
+    new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.type === "attributes") quietField(mutation.target);
+        else for (const node of mutation.addedNodes) HOF.quietAutofill(node);
+      }
+    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["type"] });
+  };
+  if (document.body) startQuiet();
+  else document.addEventListener("DOMContentLoaded", startQuiet, { once: true });
+
   // Alan tanımlarından erişilebilir form penceresi üretir.
   HOF.fieldHtml = field => {
     // Parola yöneticisine ayrılmış görünmeyen kullanıcı adı alanı (onay pencereleri, 2.0.25): tarayıcı kayıtlı kullanıcı

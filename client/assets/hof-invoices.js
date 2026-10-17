@@ -2907,8 +2907,7 @@
       }
       if (target.hasAttribute("data-integ-eye")) {
         const input = root.querySelector('[data-i="password"]');
-        const show = input.type === "password";
-        input.type = show ? "text" : "password";
+        const show = HOF.toggleSecret(input);
         target.textContent = show ? "Gizle" : "Göster";
         return;
       }

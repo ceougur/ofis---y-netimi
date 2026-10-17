@@ -19,7 +19,7 @@
         ${brand}
         <h1 id="hof-auth-title">Ofis hesabınızla giriş yapın</h1>
         <p class="hof-auth-help">Bu sunucuya bağlı tüm bilgisayarlar aynı merkezi çalışma alanını kullanır.</p>
-        <form class="hof-form" novalidate>
+        <form class="hof-form" novalidate data-autofill-keep>
           <label class="hof-field"><span>Kullanıcı Adı</span><input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus></label>
           <label class="hof-field"><span>Parola</span><span class="hof-password"><input name="password" type="password" autocomplete="current-password" required><button type="button" class="hof-password-toggle" aria-label="Parolayı göster">Göster</button></span></label>
           <p class="hof-form-error" role="alert">${HOF.esc(message)}</p>
@@ -90,7 +90,7 @@
       <h1 id="hof-auth-title">Parolamı Unuttum</h1>
       <div class="hof-auth-note"><b>Personel misiniz?</b> Parolanızı ofis yöneticiniz sıfırlar: Yönetim → Kullanıcılar → Parola sıfırla.</div>
       <p class="hof-auth-help"><b>Yönetici misiniz?</b> Yazdırıp sakladığınız <b>kurtarma anahtarıyla</b> ya da sunucu bilgisayarında üretilen <b>sunucu koduyla</b> yeni parola belirleyin. Eski parolanız sorulmaz; kayıtlarınız olduğu gibi kalır.</p>
-      <form class="hof-form" novalidate>
+      <form class="hof-form" novalidate data-autofill-keep>
         <label class="hof-field"><span>Yönetici Kullanıcı Adı</span><input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="ör. admin"><small>Ofiste tek yönetici varsa boş bırakabilirsiniz.</small></label>
         <label class="hof-field"><span>Kurtarma Anahtarı ya da Sunucu Kodu</span><input name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" required placeholder="XXXXX-XXXXX-XXXXX-XXXXX" class="hof-code-input"></label>
         <label class="hof-field"><span>Yeni Parola</span><input name="newPassword" type="password" autocomplete="new-password" minlength="10" required><small>En az 10 karakter; harf ve rakam içermeli.</small></label>
@@ -201,7 +201,7 @@
     new Promise(resolve => {
       const body = `
         <p class="hof-modal-text">${forced ? "Güvenliğiniz için devam etmeden önce size verilen geçici parolayı değiştirin." : "Yeni parolanız en az 10 karakter olmalı ve harf ile rakam içermelidir."}</p>
-        <form class="hof-form" novalidate>
+        <form class="hof-form" novalidate data-autofill-keep>
           <label class="hof-field"><span>Mevcut Parola</span><input name="currentPassword" type="password" autocomplete="current-password" required autofocus></label>
           <label class="hof-field"><span>Yeni Parola</span><input name="newPassword" type="password" autocomplete="new-password" minlength="10" required><small>En az 10 karakter; harf ve rakam içermeli.</small></label>
           <label class="hof-field"><span>Yeni Parola (tekrar)</span><input name="confirmPassword" type="password" autocomplete="new-password" required></label>
