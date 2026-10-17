@@ -2801,7 +2801,7 @@
         firm: `<div class="hof-inv-head">
           <label class="hof-check"><input type="checkbox" data-i="efatura" ${st.efatura ? "checked" : ""}><span>e-Fatura mükellefiyim</span></label>
           <label class="hof-check"><input type="checkbox" data-i="earsiv" ${st.earsiv ? "checked" : ""}><span>e-Arşiv kullanıcısıyım</span></label>
-          <label class="hof-check"><input type="checkbox" data-i="esmm" ${st.esmm ? "checked" : ""}><span>e-SMM kullanıcısıyım</span></label>
+          ${st.esmmAvailable ? `<label class="hof-check"><input type="checkbox" data-i="esmm" ${st.esmm ? "checked" : ""}><span>e-SMM kullanıcısıyım</span></label>` : ""}
           <label class="hof-field"><span>Varsayılan e-Fatura Senaryosu</span><select data-i="efaturaProfile"><option value="TEMELFATURA" ${st.defaults?.efaturaProfile !== "TICARIFATURA" ? "selected" : ""}>Temel Fatura</option><option value="TICARIFATURA" ${st.defaults?.efaturaProfile === "TICARIFATURA" ? "selected" : ""}>Ticari Fatura</option></select></label>
         </div>
         <dl class="hof-integ-firm" data-integ-firm><dt>Unvan</dt><dd>${esc(seller.name || "—")}</dd><dt>VKN / TCKN</dt><dd>${esc(seller.taxNo || "—")}</dd><dt>Vergi Dairesi</dt><dd>${esc(seller.taxOffice || "—")}</dd><dt>Adres</dt><dd>${esc([seller.address, seller.district, seller.city].filter(Boolean).join(", ") || "—")}</dd><dt>E-Posta</dt><dd>${esc(seller.email || "—")}</dd></dl>
@@ -2832,7 +2832,7 @@
           </div>
         </div>
         <p class="hof-muted">Kalemde Seri No / Lot No alanları Fatura Ayarları → Varsayılanlar'dan açılır.</p>`,
-        series: `<div class="hof-inv-head">${E_SERIES.map(([key, label]) => `<label class="hof-field"><span>${label}</span><input data-i-series="${key}" value="${esc(st.series?.[key] || "")}" maxlength="3"><small>Sıradaki: ${esc((st.nextNumbers || {})[key]?.number || "—")}${st.testNumbers?.[key] ? ` · Test ortamında: ${esc(st.testNumbers[key].number)}` : ""}</small></label>`).join("")}</div>
+        series: `<div class="hof-inv-head">${E_SERIES.filter(([key]) => key !== "esmm" || st.esmmAvailable).map(([key, label]) => `<label class="hof-field"><span>${label}</span><input data-i-series="${key}" value="${esc(st.series?.[key] || "")}" maxlength="3"><small>Sıradaki: ${esc((st.nextNumbers || {})[key]?.number || "—")}${st.testNumbers?.[key] ? ` · Test ortamında: ${esc(st.testNumbers[key].number)}` : ""}</small></label>`).join("")}</div>
         ${st.testNumbers ? `<p class="hof-muted" data-integ-test-series>Test ortamında gönderilen belgeler ${esc(Object.values(st.testSeries || {}).join(", "))} serisinden numara alır ve "Test" olarak işaretlenir; canlı ortama geçince yukarıdaki serileriniz 1'den başlar.</p>` : ""}
         <p class="hof-muted">Seri üç karakterdir (büyük harf ya da rakam; Türkçe harf yok). e-Belge numarası seri + yıl + 9 hane olur (ör. EFT2026000000001).</p>`,
       };

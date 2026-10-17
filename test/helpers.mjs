@@ -25,6 +25,7 @@ export async function startTestServer(options = {}) {
     // e-Belge bağlantısı programda kapalıdır; yalnız entegratör testleri açar.
     ...(options.edocEnabled ? { edocEnabled: true } : {}),
     ...(options.edocLive ? { edocLive: true } : {}),
+    ...(options.esmmEnabled ? { esmmEnabled: true } : {}),
     ...(options.fxEnabled ? { fxEnabled: true } : {}),
     // Bu sürümde olmayan banka özelliklerinin gizli ayarlarını değiştiren testler (doğrulama kuralları, Elle Banka Fişi).
     ...(options.bankLater ? { bankLater: true } : {}),

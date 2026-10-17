@@ -9,7 +9,8 @@
 //   7 Görünüm sekmesi (16.10.2026 İz 6): dört seçenek açık; Önizle → şablon TARAYICININ XSLT 1.0 işlemcisiyle (libxslt) çizilir, örnek belgenin
 //     sayıları ve logo görünür; Banka Hesaplarını Göster kapatılıp kaydedilir (veri tabanından okunur), önizlemede IBAN yok.
 //   8 Gönderilen faturada "Resmî Görüntü" (sahte EDM PDF'i); gönderilmemişte yok.
-//   14 Canlı ortam açık sürüm (edocLive: true): Canlı Ortam seçilebilir, notu yazılı; canlı kullanıcıyla kaydedilir ve bağlantı denenir (sahte EDM).
+//   14 Canlı ortam açık sürüm (edocLive: true): Canlı Ortam seçilebilir, notu yazılı; test hesabının adıyla "canlı hesabı girin" iletisi (2.4.1);
+//      canlı kullanıcıyla kaydedilir ve bağlantı denenir (sahte EDM).
 //   6 Yönetim → Sistem → Ağ Bağlantısı (vekil sunucu, 16.10.2026): Otomatik seçili; Elle Yazılan Adres insan hızında + Tab; Kaydet → dosyada,
 //     parola ekrana dönmez; Bağlantıyı Dene → istek sahte vekile gider (CONNECT), ret iletisi Türkçe; Entegratör kartında yol satırı.
 // Çıkış: "N geçti, M kaldı". Ekran görüntüleri EKRAN_DIR (yoksa geçici klasör).
@@ -150,7 +151,9 @@ try {
   ok(firm.includes(OUR_VKN) && firm.includes("Deneme Ofis Ltd."), `firma özeti Fatura Ayarları'ndan: ${firm.slice(0, 80)}`);
   ok(await page.$(`${card} [data-integ-act="firm"]`), "“Fatura Ayarları'nda Düzenle” düğmesi");
   await page.check(`${card} input[data-i="efatura"]`);
+  ok(!(await page.$(`${card} input[data-i="esmm"]`)), "e-SMM işareti gizli (2.4.1: e-SMM gönderimi EDM'ye bağlanana kadar)");
   await page.click(`${card} [data-integ-tab="series"]`);
+  ok(!(await page.$(`${card} input[data-i-series="esmm"]`)), "Otomatik Seriler'de e-SMM satırı yok");
   await page.fill(`${card} input[data-i-series="efatura"]`, "efx");
   await page.click(`${card} [data-integ-tab="connection"]`);
   ok(await page.$eval(`${card} input[data-i="autoCheckUser"]`, input => input.checked), "sekme dönüşünde işaretlenen kutu korunur");
@@ -456,10 +459,21 @@ try {
     ok(/Canlı Ortam'da gönderilen belgeler yasal belgedir/.test(liveNote) && /kendi serisinden/.test(liveNote), `canlı notu: ${liveNote}`);
     await livePage.check(`${card} input[data-i="env"][value="live"]`);
     await livePage.click(`${card} input[data-i="username"]`);
-    await livePage.keyboard.type("edmkullanici", { delay: 35 });
+    // 2.4.1: önce test hesabının adıyla (canlıda geçmez) — ileti canlı hesabı ister (gerçek EDM: "Kullanıcı Bulunamadı! (EDM hata kodu 11010)").
+    await livePage.keyboard.type("testhesabi", { delay: 35 });
     await livePage.keyboard.press("Tab");
     await livePage.keyboard.type("Gizli-Parola-1", { delay: 35 });
     await livePage.fill(`${card} input[data-i="baseUrl"]`, edm.url);
+    await livePage.click(`${card} [data-integ-act="save"]`);
+    await livePage.waitForFunction(selector => /Bağlantı denenmedi/.test(document.querySelector(selector)?.textContent || ""), `${card} [data-integ-status]`, { timeout: 10000 });
+    await livePage.click(`${card} [data-integ-act="test"]`);
+    await livePage.waitForFunction(selector => /Bağlantı kurulamadı/.test(document.querySelector(selector)?.textContent || ""), `${card} [data-integ-status]`, { timeout: 15000 });
+    const wrongLive = await status(livePage);
+    ok(/EDM isteği reddetti/.test(wrongLive) && /Canlı Ortam'da EDM'nin canlı hesabının kullanıcı adı ve parolası girilir/.test(wrongLive), `canlıda yanlış hesap: “${wrongLive}”`);
+    await shot(livePage, "entegrator-14-canli-yanlis-hesap");
+    await livePage.fill(`${card} input[data-i="username"]`, "");
+    await livePage.click(`${card} input[data-i="username"]`);
+    await livePage.keyboard.type("edmkullanici", { delay: 35 });
     await livePage.click(`${card} [data-integ-act="save"]`);
     await livePage.waitForFunction(selector => /Bağlantı denenmedi/.test(document.querySelector(selector)?.textContent || ""), `${card} [data-integ-status]`, { timeout: 10000 });
     const liveStored = JSON.parse(liveServer.app.store.setting("invoice.settings", "{}")).integrator;

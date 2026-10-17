@@ -1,0 +1,2 @@
+  ✓ canlıda yanlış hesap: “Durum: Bağlantı kurulamadı · 17.10.2026 03:24: EDM isteği reddetti: Kullanıcı adı veya şifre hatalı (EDM hata kodu 2001). Canlı Ortam'da EDM'nin canlı hesabının kullanıcı adı ve parolası girilir (test hesabı canlıda geçmez).”
+✓ senaryo-entegrator-240: 72 geçti, 0 kaldı

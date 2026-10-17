@@ -1,0 +1,1 @@
+{"code":"integrator-rejected","integratorCode":"11010","message":"EDM isteği reddetti: Kullanıcı Bulunamadı! (EDM hata kodu 11010). Canlı Ortam'da EDM'nin canlı hesabının kullanıcı adı ve parolası girilir (test hesabı canlıda geçmez)."}

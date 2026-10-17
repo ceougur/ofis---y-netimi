@@ -644,6 +644,40 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (1 belge+kanıt, 2–6 bundle parçaları; birleştirilip klonlandı, a11b0a7). PR açıldı.
   PR ceougur/ofis---y-netimi#30; master çakışması "ours" birleştirmesiyle giderildi (515222c, ağaç aynı). KARAR (kullanıcı, 16.10.2026 ~19:50 UTC: "CI yeşil
   olunca birleştir") → PR CI + kapı yeşil olunca squash birleştirme; sonra kullanıcı yayını açar (bağlantı verildi).
+  BİRLEŞTİ (16.10.2026 20:24 UTC): PR #30 squash → `master` = 5b45c5d (ağaç 4b4eca1 ile AYNI; uygulama dosyaları paket 652bdc7 ile aynı; head CI + kapı yeşil).
+  SIRADA: kullanıcı yayın açar (v2.4.0 → master, 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF ca4b478d…).
+  YAYIMLANDI (16.10.2026 20:36 UTC; `v2.4.0` = 5b45c5d; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı): yayındaki 5 dosya +
+  latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.0; gerçek eski güncelleyiciler (v2.3.0, v2.2.0, v2.1.0 kodu) canlı GitHub'da 2.4.0'ı
+  "available" gördü, 2.4.0 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#16 açıldı (PDF ca4b478d…; kullanıcı "birleştir" bekleniyor).
+  release.yml "Sürüm yayımla" master CI'yi bekliyor (sürümlü exe ekleyecek).
+  Site kılavuz PR'ı ceougur/destekofis#16 BİRLEŞTİ (kullanıcı "kılavuza hap bilgiyi koyduysan birleştir"; PDF'te e-Fatura denemesi, Canlıya geçiş, ölçü birimi,
+  görünüm maddeleri doğrulandı; main c8a7706, main PDF ca4b478d… doğrulandı). 30 dk raporu DURDU (site PR birleşti). 2.4.0 KAPANDI; açık: master 5b45c5d CI +
+  release.yml sonucu okunacak. Sonra: Pazar 18.10 planlı test, 2.4.1 adayı (canlı giriş iletisi), fiyat/lisans kararları, devir modülü kararı (22.10).
+- İSTEK (kullanıcı, 16.10.2026 ~20:45 UTC): "maliyeti olmayacak şekilde 4-5 saat sürecek; gerçek kullanıcılı, EDM test entegratörüne gönderilecek, sonra sonuçlar
+  incelenecek; çeşitli sektör/ürün/vergi oranı; e-Arşiv + e-SMM + e-Fatura; logolu, kaşeli, karekodlu; dişli test" → BAŞLADI: betik + bağımsız Python kâhin
+  + diş kanıtı (bozulmuş girdiyle kırmızı) docs/kanit/2026-10-16/edm-dayaniklilik (ajan yazıyor, yalnız sahte EDM'yle ayıklıyor); gerçek EDM koşusunu ana oturum
+  başlatır (270 dk, 2 şirket × 5 kullanıcı, ekrandan). BULGU (YÜKSEK, ana oturum yeniden üretti): e-SMM EDM'ye GÖNDERİLEMİYOR — "e-SMM kullanıcısıyım"
+  işaretlenince serbest meslek makbuzu TES/ESM serisinden numara alıyor (ProfileID ESMM) ama Gönder → 409 "Bu belge gönderilemez."; kartta işaret açık
+  (hof-invoices.js:2804). Canlıda avukat müşteri işaretlerse numara harcanır, belge GİB'e gitmez. KARAR BEKLENİYOR: 2.4.1'de işareti gizle (hızlı) ve/veya
+  EDM e-SMM servisini bağla (EDM paketi E-SMM klasörü; ayrı API).
+  KARAR (kullanıcı, 16.10.2026 ~21:00 UTC, bir süre ekran başında değil): "dayanıklılık testlerini yap, 30 dk bir kontrol et, düzeltme gerektiren bulgular
+  olursa uygula ve e-SMM gizli yaparak test sonucu ile zipi teslim et" → 2.4.1: e-SMM işareti gizli + sunucu reddeder (config.esmmEnabled, varsayılan kapalı;
+  eski "esmm: true" kayıtta makbuz kâğıt kalır); dayanıklılık koşusu son kodla; bulgu → yeniden üret → kırmızı test → düzelt; teslim: 5 dosya + arşiv +
+  test sonucu. Birleştirme/yayın kullanıcı dönünce. e-SMM gönderimi için EDM'den servis adresi + doküman + test yetkisi istenecek (metin kullanıcıya verildi).
+  DURUM (16.10.2026 22:20 UTC): e-SMM gizli birleşti (465cc33; test 0/3 → 3/3, e2e 71/71); dayanıklılık betiği + kâhin + diş kanıtı ce6777f (sahte EDM 68/69;
+  tek ✗ KDV yuvarlama KURAL FARKI: kâhin oran başına, program satır başına; 17/174 belge 1 kuruş, satır kuralıyla 174/174 aynı — hüküm: açıklanan fark).
+  GERÇEK EDM KOŞUSU 22:14 UTC başladı (SURE_DK=270, 10 kullanıcı, TOHUM=1; günlük scratchpad/dayaniklilik-gercek/kosu.log; çıktı oraya, özet sonra depoya).
+  Koşu sürerken server/ ve client/ DEĞİŞTİRİLMEZ. Ajan gözlemleri (BİLGİ): iptal edilmiş belgenin XML'i inmiyor (409), iptal PDF'inde karekod yok,
+  PUT settings kısmi "start" haritası öbür serilerin başlangıcını sıfırlar (yalnız API; ekran tam harita gönderir).
+  DURUM (17.10.2026 ~03:30 UTC): dayanıklılık A (tohum 2) 465 belge 69/70, B (tohum 3) 472 belge 63/70 — kalan 7'nin kök nedeni: EDM geçici 11059 ret (1 belge;
+  koşudan sonra yeniden gönderildi → "Alıcıya ulaştı"), EDM 20005 resmî PDF (sonra indi), test aracının karekod çözücüsü 300 dpi istedi, KDV/tevkifat kalem başına
+  yuvarlama kural farkı; ürün kusuru YOK. 2.4.1'e kullanıcının bıraktığı canlı giriş iletisi de girdi (fa01323; gerçek canlı adreste doğrulandı). KANIT
+  `docs/2.4.1-KANIT.md`. Sırada: tam npm test + bağımsız gözden geçirme → son aday [uzun-dogrulama] → CI + Uzun yeşil → imzalı paket + kurulum → teslim. Birleştirme/yayın kullanıcı dönünce.
+  2.4.1 TESLİM EDİLDİ (17.10.2026 ~05:50 UTC): paketlenen 40cb354 (ürün kodu cd15bf7; CI #798 YEŞİL; Uzun Doğrulama run 38999890454 23/23 + kapı YEŞİL;
+  tam npm test 2664/2664). Kapsam: e-SMM gizli, canlı giriş yönlendirmesi, gözden geçirme G1–G4 + dar kontrol B1–B3 (kontrol-241). İmzalı zip 1deabc76…,
+  bildirge f4819baf…, kılavuz PDF 1ed34558… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum exe 860bb8f2… (iki parça + BIRLESTIR.bat/.md); arşiv 6 zip. PR açıldı
+  (master; master 5b45c5d ağacı 4b4eca1 ile aynı → "ours" birleştirmesi). SIRADA: kullanıcı döner → "birleştir" → PR CI + kapı yeşil → squash → yayın (v2.4.1,
+  "DestekOfis 2.4.1", not "İyileştirmeler", 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı. e-SMM: kullanıcı EDM'den servis/belge/yetki ister.
 - SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
   iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
   (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne

@@ -1,0 +1,2 @@
+  ✓ sahte EDM sözleşme ihlali yok
+✓ senaryo-entegrator-240: 72 geçti, 0 kaldı

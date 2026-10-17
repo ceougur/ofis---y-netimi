@@ -1,0 +1,6455 @@
+{
+ "mode": "GERÇEK EDM TEST",
+ "tohum": 3,
+ "sure_dk": 80,
+ "tempo_sn": 90,
+ "seri": 393757714,
+ "bulgular": [
+  {
+   "konu": "e-SMM",
+   "senaryo": "smm",
+   "ayar": {
+    "putStatus": 400,
+    "putCode": "esmm-unavailable",
+    "putIleti": "e-SMM gönderimi bu sürümde yok; serbest meslek makbuzu kâğıt olarak düzenlenir.",
+    "esmmAvailable": false,
+    "esmm": false
+   },
+   "ekrandaIsaret": false,
+   "formDugmeleri": [
+    "cancel-form:Vazgeç",
+    "save-draft:Taslak Olarak Kaydet",
+    "issue:Makbuzu Kaydet"
+   ],
+   "kaydetDugmesi": "issue",
+   "kesim": {
+    "no": "SMM2026000000001",
+    "profil": "KAGIT",
+    "eStatus": "none",
+    "eMessage": "",
+    "iletiler": [
+     "Serbest Meslek Makbuzu SMM2026000000001 kaydedildi.×",
+     "Serbest Meslek Makbuzu SMM2026000000001 kaydedildi.×"
+    ]
+   },
+   "kartGonder": {
+    "not": "kartta e-Belge Gönder düğmesi yok"
+   },
+   "gonderApi": {
+    "status": 409,
+    "code": "einvoice-paper",
+    "ileti": "Kâğıt belge / müşteri fişi e-Belge olarak gönderilmez."
+   },
+   "son": {
+    "eStatus": "none"
+   },
+   "sonuc": "(b) e-SMM gizli (beklenen, 2.4.1 davranışı): işaret yok, API 400 esmm-unavailable, makbuz kâğıt SMM serisi"
+  }
+ ],
+ "kullanicilar": [
+  {
+   "login": "destek1",
+   "role": "muhasebe",
+   "company": "001"
+  },
+  {
+   "login": "destek2",
+   "role": "avukat",
+   "company": "001"
+  },
+  {
+   "login": "destek3",
+   "role": "muhasebe",
+   "company": "001"
+  },
+  {
+   "login": "destek4",
+   "role": "muhasebe",
+   "company": "001"
+  },
+  {
+   "login": "destek5",
+   "role": "avukat",
+   "company": "001"
+  },
+  {
+   "login": "atlas1",
+   "role": "muhasebe",
+   "company": "002"
+  },
+  {
+   "login": "atlas2",
+   "role": "avukat",
+   "company": "002"
+  },
+  {
+   "login": "atlas3",
+   "role": "muhasebe",
+   "company": "002"
+  },
+  {
+   "login": "atlas4",
+   "role": "muhasebe",
+   "company": "002"
+  },
+  {
+   "login": "atlas5",
+   "role": "avukat",
+   "company": "002"
+  }
+ ],
+ "dagilim": {
+  "belgeTuru": {
+   "eF-Ticari": 87,
+   "eF-Temel": 167,
+   "eA-Firma": 95,
+   "eA-Kisi": 123
+  },
+  "sektor": {
+   "001 Personel": 21,
+   "002 İnşaat": 57,
+   "001 Temizlik": 21,
+   "002 Gıda": 59,
+   "001 Emlak": 19,
+   "001 Turizm": 27,
+   "002 Tekstil": 60,
+   "002 Elektronik": 53,
+   "001 Danışmanlık": 29,
+   "001 Eğitim": 30,
+   "001 Arşiv": 25,
+   "001 Yemek": 27,
+   "001 Yazılım": 23,
+   "001 Hukuk": 21
+  },
+  "tip": {
+   "SATIS": 368,
+   "ISTISNA": 19,
+   "TEVKIFAT": 85
+  },
+  "gonderim": {
+   "issue-now": 340,
+   "issue-later": 132
+  },
+  "kdv": {
+   "0": 10,
+   "1": 22,
+   "10": 44,
+   "20": 214,
+   "10+20": 82,
+   "1+20": 45,
+   "0+20": 26,
+   "0+10+20": 11,
+   "1+10": 5,
+   "1+10+20": 8,
+   "0+1+20": 3,
+   "0+1+10+20": 2
+  },
+  "kalemSayisi": {
+   "1": 144,
+   "2": 136,
+   "3": 103,
+   "4": 52,
+   "5": 34,
+   "6": 3
+  },
+  "birim": {
+   "Ay": 147,
+   "M²": 56,
+   "Takım": 34,
+   "Saat": 110,
+   "Adet": 289,
+   "Kişi": 104,
+   "Sefer": 34,
+   "Gün": 62,
+   "Metre": 34,
+   "Kutu": 38,
+   "Paket": 56,
+   "Lt": 54,
+   "Kg": 52,
+   "Teneke": 29,
+   "Çuval": 22
+  },
+  "tevkifat": {
+   "602": 44,
+   "604": 6,
+   "606": 6,
+   "612": 21,
+   "616": 23
+  },
+  "istisna": {
+   "301": 6,
+   "302": 4,
+   "304": 7,
+   "350": 2,
+   "351": 33
+  },
+  "iskontolu": 196,
+  "karisikTevIst": 25
+ },
+ "araRaporlar": [
+  "01:31:31 BAŞLANGIÇ 0 dk — belge 0 (001: 0, 002: 0), durum {}, ekran hatası 0, iptal 0, sayfa hatası 0",
+  "01:46:31 ARA RAPOR 15 dk — belge 92 (001: 47, 002: 45), durum {\"cancelled/cancelled\":2,\"issued/processing\":4,\"issued/sent\":86}, ekran hatası 0, iptal 2, sayfa hatası 0",
+  "02:01:31 ARA RAPOR 30 dk — belge 180 (001: 93, 002: 87), durum {\"cancelled/cancelled\":6,\"issued/error\":1,\"issued/processing\":5,\"issued/sent\":169}, ekran hatası 0, iptal 6, sayfa hatası 0",
+  "02:16:31 ARA RAPOR 45 dk — belge 267 (001: 137, 002: 130), durum {\"cancelled/cancelled\":10,\"issued/error\":1,\"issued/processing\":6,\"issued/sent\":250}, ekran hatası 0, iptal 10, sayfa hatası 0",
+  "02:31:31 ARA RAPOR 60 dk — belge 361 (001: 185, 002: 176), durum {\"cancelled/cancelled\":13,\"issued/error\":1,\"issued/processing\":7,\"issued/sent\":340}, ekran hatası 0, iptal 13, sayfa hatası 0",
+  "02:46:31 ARA RAPOR 75 dk — belge 445 (001: 228, 002: 217), durum {\"cancelled/cancelled\":21,\"issued/error\":1,\"issued/processing\":7,\"issued/sent\":417}, ekran hatası 0, iptal 21, sayfa hatası 0",
+  "02:51:39 KESİM BİTTİ 80 dk — belge 472 (001: 243, 002: 229), durum {\"cancelled/cancelled\":24,\"issued/error\":1,\"issued/processing\":7,\"issued/sent\":440}, ekran hatası 0, iptal 24, sayfa hatası 0"
+ ],
+ "programKodlari": {
+  "tevkifat": [
+   {
+    "code": "602",
+    "num": 9,
+    "den": 10
+   },
+   {
+    "code": "604",
+    "num": 5,
+    "den": 10
+   },
+   {
+    "code": "606",
+    "num": 9,
+    "den": 10
+   },
+   {
+    "code": "612",
+    "num": 9,
+    "den": 10
+   },
+   {
+    "code": "616",
+    "num": 5,
+    "den": 10
+   }
+  ],
+  "istisna": [
+   "301",
+   "302",
+   "304",
+   "350",
+   "351"
+  ],
+  "tumIstisna": [
+   "301",
+   "302",
+   "304",
+   "350",
+   "351"
+  ],
+  "smmScenario": "smm"
+ },
+ "kesim": {
+  "sure_sn": 4808,
+  "planlanan": 472,
+  "kesilen": 472,
+  "ekranHatasi": 0,
+  "ortalamaBelgeSn": 12.6
+ },
+ "gozlemler": [
+  "İptal edilmiş e-Arşivin UBL XML'i programdan indirilemiyor (resmî PDF iniyor): TEA2026394257714: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+  "İptal edilmiş belgenin program PDF'inde karekod: 0/24 okundu (okunmayan TEA2026394257723, TEA2026394257732, TEA2026393757747, TEA2026394257754, TEA2026393757752); karekod denetimi iptalden önce indirilen PDF ile yapıldı",
+  "İptal edilmiş belgenin EDM resmî PDF'inde karekod: 24/24 okundu (okunmayan yok); karekod denetimi iptalden önce indirilen PDF ile yapıldı"
+ ],
+ "indirme": {
+  "xml": 472,
+  "pdf": 470,
+  "programPdf": 91,
+  "hata": [
+   "TEF2026393757760 resmi.pdf 409 {\"ok\":false,\"error\":\"Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.\",\"code\":\"einvoice-not-sent\"}",
+   "TEF2026394257817 resmi.pdf 502 {\"ok\":false,\"error\":\"EDM isteği reddetti: Sistem hatasi (EDM hata kodu 20005)\",\"code\":\"integrator-rejected\",\"detail\":\"T"
+  ],
+  "iptalSonrasiXml": [
+   "TEA2026394257714: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757717: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757718: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757721: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757723: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757728: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026394257723: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757730: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026394257732: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757737: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757738: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757747: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026394257754: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757752: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757753: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757755: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026394257760: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757758: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757761: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026394257765: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757774: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757780: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026394257798: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}",
+   "TEA2026393757787: 409 {\"ok\":false,\"error\":\"Yalnız kaydedilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.\"}"
+  ]
+ },
+ "gorunumOrnek": {
+  "gib": true,
+  "kase": true,
+  "logo": true,
+  "imgs": 4,
+  "alts": [
+   "",
+   "GİB",
+   "Kaşe / İmza",
+   "Karekod"
+  ]
+ },
+ "kahin": {
+  "oranBasina": {
+   "cikis": 1,
+   "ozet": "KÂHİN (KDV kuralı: oran başına yuvarlama): 472 belge — AYNI 431, FARKLI 41   FARKLI olanlardan satır başına yuvarlama kuralıyla AYNI çıkan (bilgi; hüküm değişmez): 36"
+  },
+  "satirBasina": {
+   "cikis": 1,
+   "ozet": "KÂHİN (KDV kuralı: satır başına yuvarlama): 472 belge — AYNI 467, FARKLI 5"
+  }
+ },
+ "dis": {
+  "cikis": 0
+ },
+ "belgeler": [
+  {
+   "no": "TEF2026393757714",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Personel · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 142434
+  },
+  {
+   "no": "TEF2026394257714",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · İnşaat · İstisna · KDV %0",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 17020
+  },
+  {
+   "no": "TEF2026393757715",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Temizlik · Tevkifat · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 28300.92
+  },
+  {
+   "no": "TEF2026394257715",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Gıda · KDV %10+%20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 11723.25
+  },
+  {
+   "no": "TEF2026393757716",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Emlak · KDV %20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 208112.74
+  },
+  {
+   "no": "TEF2026393757717",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Turizm · KDV %10+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 44846.86
+  },
+  {
+   "no": "TEA2026394257714",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Tekstil · Tevkifat · KDV %10+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 22371.21
+  },
+  {
+   "no": "TEF2026394257716",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Elektronik · Tevkifat · KDV %1+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 84411.45
+  },
+  {
+   "no": "TEA2026393757714",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Firma · Turizm · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 123340.43
+  },
+  {
+   "no": "TEF2026394257717",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Ticari · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2955.31
+  },
+  {
+   "no": "TEA2026393757715",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Danışmanlık · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 40272
+  },
+  {
+   "no": "TEA2026394257715",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Firma · Elektronik · Tevkifat · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 127699.97
+  },
+  {
+   "no": "TEA2026393757716",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Eğitim · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10789.2
+  },
+  {
+   "no": "TEF2026393757718",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Arşiv · İstisna · KDV %0+%20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 123264.69
+  },
+  {
+   "no": "TEF2026394257718",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Elektronik · KDV %1+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 68065.27
+  },
+  {
+   "no": "TEA2026393757717",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Danışmanlık · Tevkifat · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 50393.73
+  },
+  {
+   "no": "TEF2026394257719",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · Tekstil · Tevkifat · KDV %20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 105313.39
+  },
+  {
+   "no": "TEF2026394257720",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Tekstil · KDV %10+%20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7186.19
+  },
+  {
+   "no": "TEA2026394257716",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Firma · İnşaat · Tevkifat · KDV %10+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 12205.92
+  },
+  {
+   "no": "TEA2026393757718",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Yemek · KDV %10+%20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 91738.44
+  },
+  {
+   "no": "TEF2026394257721",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Gıda · KDV %1",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 201.88
+  },
+  {
+   "no": "TEA2026393757719",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Firma · Yemek · İstisna · KDV %0+%10+%20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 103595
+  },
+  {
+   "no": "TEA2026393757720",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Arşiv · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 116869.12
+  },
+  {
+   "no": "TEA2026393757721",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Personel · KDV %20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 334038.2
+  },
+  {
+   "no": "TEF2026394257722",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Gıda · Tevkifat · KDV %1+%20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 135227.26
+  },
+  {
+   "no": "TEA2026394257717",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Gıda · KDV %1",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1481.87
+  },
+  {
+   "no": "TEF2026393757719",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Danışmanlık · İstisna · KDV %0",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6247.92
+  },
+  {
+   "no": "TEA2026394257718",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Gıda · KDV %1",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10134.07
+  },
+  {
+   "no": "TEF2026394257723",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Tekstil · KDV %1+%10",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 27811.18
+  },
+  {
+   "no": "TEF2026393757720",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Turizm · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 15275.41
+  },
+  {
+   "no": "TEA2026393757722",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Arşiv · Tevkifat · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 34265
+  },
+  {
+   "no": "TEF2026394257724",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · İnşaat · KDV %1+%20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 184825.28
+  },
+  {
+   "no": "TEF2026393757721",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Yemek · Tevkifat · KDV %10",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7223.37
+  },
+  {
+   "no": "TEF2026394257725",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Gıda · KDV %1",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1029.55
+  },
+  {
+   "no": "TEA2026393757723",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Yazılım · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 3490.96
+  },
+  {
+   "no": "TEA2026394257719",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Elektronik · KDV %10+%20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 73511.33
+  },
+  {
+   "no": "TEF2026393757722",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Danışmanlık · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 17510.4
+  },
+  {
+   "no": "TEA2026394257720",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Gıda · KDV %10+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 89590.02
+  },
+  {
+   "no": "TEF2026393757723",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Ticari · Eğitim · Tevkifat · KDV %10+%20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 68977.23
+  },
+  {
+   "no": "TEF2026394257726",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · İnşaat · KDV %10+%20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 24920.88
+  },
+  {
+   "no": "TEA2026393757724",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Hukuk · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 66139.46
+  },
+  {
+   "no": "TEA2026393757725",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Personel · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 127547.82
+  },
+  {
+   "no": "TEF2026394257727",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · Tekstil · KDV %10+%20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 81527.11
+  },
+  {
+   "no": "TEA2026393757726",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Yazılım · Tevkifat · KDV %20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 59818.4
+  },
+  {
+   "no": "TEF2026394257728",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Ticari · İnşaat · KDV %20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 19543.67
+  },
+  {
+   "no": "TEA2026393757727",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Emlak · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 12020.64
+  },
+  {
+   "no": "TEA2026393757728",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Eğitim · KDV %10",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 4192.96
+  },
+  {
+   "no": "TEA2026394257721",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Tekstil · KDV %1+%10+%20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 47081.07
+  },
+  {
+   "no": "TEA2026394257722",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10+%20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 84449.99
+  },
+  {
+   "no": "TEF2026393757724",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Temizlik · KDV %20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 38260.34
+  },
+  {
+   "no": "TEA2026393757729",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Firma · Turizm · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 50246.35
+  },
+  {
+   "no": "TEF2026394257729",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%1+%20 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 73935.38
+  },
+  {
+   "no": "TEA2026394257723",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 8088.91
+  },
+  {
+   "no": "TEF2026393757725",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Yemek · KDV %10+%20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 97151.88
+  },
+  {
+   "no": "TEF2026394257730",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · İnşaat · Tevkifat · KDV %20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 107564.09
+  },
+  {
+   "no": "TEA2026394257724",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 148867.58
+  },
+  {
+   "no": "TEF2026393757726",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Temizlik · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 69317.42
+  },
+  {
+   "no": "TEF2026393757727",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Danışmanlık · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 186405.86
+  },
+  {
+   "no": "TEF2026394257731",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Ticari · Elektronik · KDV %1+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 39191
+  },
+  {
+   "no": "TEA2026393757730",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Firma · Eğitim · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 97834.54
+  },
+  {
+   "no": "TEA2026394257725",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Tekstil · İstisna · KDV %0+%1+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2775.79
+  },
+  {
+   "no": "TEF2026393757728",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Emlak · KDV %10+%20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 263995.84
+  },
+  {
+   "no": "TEF2026394257732",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Tekstil · KDV %10 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6650.99
+  },
+  {
+   "no": "TEA2026393757731",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Danışmanlık · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 70442.17
+  },
+  {
+   "no": "TEA2026394257726",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Firma · Tekstil · Tevkifat · KDV %10+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 20663.33
+  },
+  {
+   "no": "TEF2026394257733",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Ticari · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1906.88
+  },
+  {
+   "no": "TEA2026393757732",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Yazılım · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 85037.93
+  },
+  {
+   "no": "TEF2026393757729",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Emlak · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 64152.67
+  },
+  {
+   "no": "TEF2026393757730",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Emlak · KDV %20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 141764.1
+  },
+  {
+   "no": "TEA2026394257727",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Tekstil · KDV %10",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 14604.78
+  },
+  {
+   "no": "TEA2026393757733",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Yazılım · KDV %20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 80588.95
+  },
+  {
+   "no": "TEF2026393757731",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Temizlik · KDV %20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 49529.28
+  },
+  {
+   "no": "TEF2026394257734",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · Elektronik · KDV %20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 30983.89
+  },
+  {
+   "no": "TEA2026394257728",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 87582.64
+  },
+  {
+   "no": "TEA2026394257729",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 102.45
+  },
+  {
+   "no": "TEA2026393757734",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Personel · KDV %10+%20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 42161.74
+  },
+  {
+   "no": "TEF2026394257735",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Tekstil · KDV %10+%20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4110.3
+  },
+  {
+   "no": "TEF2026393757732",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Yazılım · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 159320.07
+  },
+  {
+   "no": "TEF2026393757733",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Temizlik · Tevkifat+İstisna · KDV %0+%20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 50884.43
+  },
+  {
+   "no": "TEA2026394257730",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Firma · Gıda · Tevkifat · KDV %1+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 22184.59
+  },
+  {
+   "no": "TEF2026393757734",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Eğitim · KDV %10",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 19962.8
+  },
+  {
+   "no": "TEA2026393757735",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Danışmanlık · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 181511.39
+  },
+  {
+   "no": "TEF2026394257736",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Ticari · Elektronik · KDV %20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 242.6
+  },
+  {
+   "no": "TEF2026393757735",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Turizm · KDV %10+%20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 81423.3
+  },
+  {
+   "no": "TEF2026393757736",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Yemek · KDV %10 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7330.58
+  },
+  {
+   "no": "TEF2026394257738",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · Tekstil · KDV %20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 97255.83
+  },
+  {
+   "no": "TEF2026394257737",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Elektronik · Tevkifat+İstisna · KDV %0+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 72907.54
+  },
+  {
+   "no": "TEF2026394257739",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Elektronik · Tevkifat · KDV %20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6284.33
+  },
+  {
+   "no": "TEF2026394257740",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Ticari · İnşaat · KDV %1",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1029.55
+  },
+  {
+   "no": "TEF2026393757737",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Turizm · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 46293.6
+  },
+  {
+   "no": "TEA2026394257731",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5336.1
+  },
+  {
+   "no": "TEA2026393757736",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Eğitim · KDV %10+%20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 18235
+  },
+  {
+   "no": "TEA2026394257732",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · İnşaat · KDV %1+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 21615.8
+  },
+  {
+   "no": "TEA2026393757737",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Firma · Yemek · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 80356.46
+  },
+  {
+   "no": "TEF2026393757738",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Turizm · İstisna · KDV %0+%10+%20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 119666.47
+  },
+  {
+   "no": "TEA2026394257733",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · Tekstil · KDV %1+%10 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 19582.07
+  },
+  {
+   "no": "TEF2026393757739",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Danışmanlık · İstisna · KDV %0",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5164.61
+  },
+  {
+   "no": "TEA2026393757738",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Yemek · KDV %10",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 11365.2
+  },
+  {
+   "no": "TEF2026393757740",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Personel · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 147280.39
+  },
+  {
+   "no": "TEA2026394257734",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Elektronik · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 201883.57
+  },
+  {
+   "no": "TEA2026394257735",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · İnşaat · KDV %1+%20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1833.45
+  },
+  {
+   "no": "TEA2026394257736",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Tekstil · KDV %1+%10+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 12054.18
+  },
+  {
+   "no": "TEA2026393757739",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Turizm · KDV %10",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 12029.6
+  },
+  {
+   "no": "TEA2026394257737",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Elektronik · KDV %20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 26249.99
+  },
+  {
+   "no": "TEA2026394257738",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Firma · Tekstil · Tevkifat · KDV %10+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 25445.63
+  },
+  {
+   "no": "TEF2026393757741",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Danışmanlık · KDV %20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 28961.63
+  },
+  {
+   "no": "TEF2026394257741",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Elektronik · KDV %1+%20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 97279.25
+  },
+  {
+   "no": "TEA2026393757740",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Turizm · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 16625.57
+  },
+  {
+   "no": "TEA2026393757741",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Temizlik · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 70345.02
+  },
+  {
+   "no": "TEF2026393757742",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Danışmanlık · Tevkifat · KDV %20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 113048.13
+  },
+  {
+   "no": "TEA2026394257739",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Tekstil · KDV %10 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3856.63
+  },
+  {
+   "no": "TEA2026393757742",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Arşiv · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6553.4
+  },
+  {
+   "no": "TEF2026394257742",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Tekstil · Tevkifat · KDV %10+%20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 8512.77
+  },
+  {
+   "no": "TEA2026393757743",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Firma · Arşiv · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 31536.29
+  },
+  {
+   "no": "TEF2026394257743",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · İnşaat · Tevkifat · KDV %20 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7154.76
+  },
+  {
+   "no": "TEA2026394257740",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Gıda · KDV %1+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 46786.14
+  },
+  {
+   "no": "TEF2026394257744",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4700.62
+  },
+  {
+   "no": "TEF2026393757743",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Hukuk · KDV %20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 38069.81
+  },
+  {
+   "no": "TEA2026393757744",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Eğitim · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 68757.02
+  },
+  {
+   "no": "TEF2026394257745",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Ticari · Gıda · KDV %1+%20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10763.43
+  },
+  {
+   "no": "TEF2026393757744",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Eğitim · Tevkifat · KDV %10+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 33440.09
+  },
+  {
+   "no": "TEF2026393757745",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Arşiv · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 55548.05
+  },
+  {
+   "no": "TEA2026394257741",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Tekstil · KDV %10",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 540.96
+  },
+  {
+   "no": "TEF2026393757746",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Emlak · Tevkifat · KDV %20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 240317.47
+  },
+  {
+   "no": "TEA2026394257742",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Firma · İnşaat · KDV %20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 17147.35
+  },
+  {
+   "no": "TEF2026394257746",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · İnşaat · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 85550.18
+  },
+  {
+   "no": "TEF2026393757747",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Turizm · Tevkifat · KDV %10+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 83178.46
+  },
+  {
+   "no": "TEA2026393757745",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Yemek · KDV %10+%20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6835.25
+  },
+  {
+   "no": "TEA2026394257743",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Gıda · KDV %1 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2174.11
+  },
+  {
+   "no": "TEF2026394257747",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Gıda · KDV %1",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 73.04
+  },
+  {
+   "no": "TEF2026393757748",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Turizm · Tevkifat · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 49366.74
+  },
+  {
+   "no": "TEA2026394257744",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Gıda · KDV %10",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2816
+  },
+  {
+   "no": "TEF2026393757749",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Danışmanlık · Tevkifat+İstisna · KDV %0+%20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 44240.99
+  },
+  {
+   "no": "TEA2026394257745",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 23323.8
+  },
+  {
+   "no": "TEA2026393757746",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Emlak · Tevkifat · KDV %20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 183624.24
+  },
+  {
+   "no": "TEF2026393757750",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Eğitim · İstisna · KDV %0+%10+%20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 28724.2
+  },
+  {
+   "no": "TEA2026394257746",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Firma · Tekstil · KDV %10",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3225.99
+  },
+  {
+   "no": "TEA2026394257747",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3834.91
+  },
+  {
+   "no": "TEA2026394257748",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 11398.18
+  },
+  {
+   "no": "TEF2026393757751",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Personel · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 130952.1
+  },
+  {
+   "no": "TEA2026393757747",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Yazılım · KDV %20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 45108.6
+  },
+  {
+   "no": "TEA2026393757748",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Temizlik · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 54145.19
+  },
+  {
+   "no": "TEA2026394257749",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Elektronik · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 44826.92
+  },
+  {
+   "no": "TEF2026394257748",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · Tekstil · KDV %10",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1980
+  },
+  {
+   "no": "TEA2026394257750",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · İnşaat · KDV %10+%20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 8305.68
+  },
+  {
+   "no": "TEF2026394257749",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Elektronik · Tevkifat · KDV %1+%20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 31554.96
+  },
+  {
+   "no": "TEF2026393757752",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Hukuk · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 30224.6
+  },
+  {
+   "no": "TEF2026393757753",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Ticari · Danışmanlık · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 73548.23
+  },
+  {
+   "no": "TEA2026393757749",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Turizm · Tevkifat+İstisna · KDV %0+%10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 130912.73
+  },
+  {
+   "no": "TEF2026393757754",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Hukuk · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 35540.69
+  },
+  {
+   "no": "TEA2026394257751",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 27749.99
+  },
+  {
+   "no": "TEA2026393757750",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Turizm · KDV %10",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 14364.24
+  },
+  {
+   "no": "TEF2026394257750",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · İnşaat · KDV %20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1566
+  },
+  {
+   "no": "TEA2026394257752",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Firma · Elektronik · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6745.22
+  },
+  {
+   "no": "TEF2026394257751",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · Elektronik · KDV %1+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 83260.68
+  },
+  {
+   "no": "TEF2026393757755",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Yazılım · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 26222.16
+  },
+  {
+   "no": "TEA2026394257753",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Elektronik · İstisna · KDV %0+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 174331.36
+  },
+  {
+   "no": "TEF2026393757756",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Yemek · KDV %10",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1336.02
+  },
+  {
+   "no": "TEA2026393757751",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Firma · Eğitim · KDV %10",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 25255.45
+  },
+  {
+   "no": "TEF2026393757757",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Arşiv · İstisna · KDV %0",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 187.45
+  },
+  {
+   "no": "TEA2026394257754",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Elektronik · KDV %20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 168052.11
+  },
+  {
+   "no": "TEF2026393757758",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Temizlik · Tevkifat · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 44826.04
+  },
+  {
+   "no": "TEF2026394257752",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · Gıda · KDV %10+%20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 41765.81
+  },
+  {
+   "no": "TEF2026394257753",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · Tekstil · KDV %10",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4015
+  },
+  {
+   "no": "TEA2026393757752",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Personel · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 76279.2
+  },
+  {
+   "no": "TEA2026394257755",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Elektronik · KDV %1+%20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 21928
+  },
+  {
+   "no": "TEF2026394257754",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Gıda · KDV %1 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2853.54
+  },
+  {
+   "no": "TEA2026394257756",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · Gıda · KDV %1",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 39.07
+  },
+  {
+   "no": "TEA2026393757753",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Firma · Turizm · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 121359.52
+  },
+  {
+   "no": "TEF2026393757759",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Arşiv · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 56006.06
+  },
+  {
+   "no": "TEF2026394257755",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Tekstil · KDV %10+%20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 12591.76
+  },
+  {
+   "no": "TEA2026393757754",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Yazılım · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3294.72
+  },
+  {
+   "no": "TEF2026393757760",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Personel · İstisna · KDV %0+%10+%20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/error",
+   "odenecek": 176072.09
+  },
+  {
+   "no": "TEA2026394257757",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 59317.79
+  },
+  {
+   "no": "TEA2026394257758",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Gıda · KDV %20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 529.57
+  },
+  {
+   "no": "TEA2026393757755",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Firma · Danışmanlık · İstisna · KDV %0+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 41547.2
+  },
+  {
+   "no": "TEF2026393757761",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Yemek · KDV %10+%20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 143261.22
+  },
+  {
+   "no": "TEA2026393757756",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Hukuk · Tevkifat · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 129789.57
+  },
+  {
+   "no": "TEA2026393757757",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Firma · Danışmanlık · KDV %20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 88050.52
+  },
+  {
+   "no": "TEF2026393757762",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Emlak · KDV %20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 65210.04
+  },
+  {
+   "no": "TEF2026394257756",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3856.12
+  },
+  {
+   "no": "TEA2026394257759",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 125523.68
+  },
+  {
+   "no": "TEA2026394257760",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Gıda · KDV %1",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 22.11
+  },
+  {
+   "no": "TEA2026394257761",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10+%20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 11722.2
+  },
+  {
+   "no": "TEA2026394257762",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 39000
+  },
+  {
+   "no": "TEF2026393757763",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Yemek · KDV %10 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 11268.98
+  },
+  {
+   "no": "TEA2026393757758",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Firma · Arşiv · Tevkifat · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 91546.76
+  },
+  {
+   "no": "TEF2026393757764",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Eğitim · Tevkifat · KDV %10+%20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 25738.66
+  },
+  {
+   "no": "TEA2026394257763",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 8030
+  },
+  {
+   "no": "TEA2026393757759",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Hukuk · KDV %20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 79376.73
+  },
+  {
+   "no": "TEF2026394257757",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Gıda · İstisna · KDV %0",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 239.06
+  },
+  {
+   "no": "TEA2026393757760",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Emlak · KDV %20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 85014.13
+  },
+  {
+   "no": "TEA2026394257764",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1999.53
+  },
+  {
+   "no": "TEA2026393757761",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Firma · Personel · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 115801.15
+  },
+  {
+   "no": "TEA2026394257765",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 88256.63
+  },
+  {
+   "no": "TEF2026393757765",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Yazılım · KDV %20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 57715.2
+  },
+  {
+   "no": "TEA2026394257766",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 59203.08
+  },
+  {
+   "no": "TEF2026394257758",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · İnşaat · KDV %20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2378.26
+  },
+  {
+   "no": "TEF2026393757766",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Hukuk · KDV %20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 56869.2
+  },
+  {
+   "no": "TEA2026393757762",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Temizlik · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 33182.9
+  },
+  {
+   "no": "TEF2026394257759",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2555.56
+  },
+  {
+   "no": "TEA2026394257767",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · İnşaat · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 21946.21
+  },
+  {
+   "no": "TEA2026394257768",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · Gıda · KDV %1",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 242.25
+  },
+  {
+   "no": "TEF2026393757767",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Yazılım · KDV %20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10665.54
+  },
+  {
+   "no": "TEF2026393757768",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Personel · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 53219.42
+  },
+  {
+   "no": "TEF2026393757769",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Arşiv · KDV %20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 38359.13
+  },
+  {
+   "no": "TEA2026394257769",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Tekstil · KDV %1+%10+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 9860.51
+  },
+  {
+   "no": "TEA2026394257770",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Tekstil · KDV %20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 81163.03
+  },
+  {
+   "no": "TEF2026394257760",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · İnşaat · Tevkifat · KDV %20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 13233.78
+  },
+  {
+   "no": "TEF2026393757770",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Arşiv · KDV %20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 73458.65
+  },
+  {
+   "no": "TEA2026393757763",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Yazılım · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4305.76
+  },
+  {
+   "no": "TEA2026393757764",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Danışmanlık · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 9841.4
+  },
+  {
+   "no": "TEA2026394257771",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Gıda · Tevkifat+İstisna · KDV %0+%1+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 16245.86
+  },
+  {
+   "no": "TEA2026394257772",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1573.18
+  },
+  {
+   "no": "TEF2026393757771",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Emlak · Tevkifat · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 110187.49
+  },
+  {
+   "no": "TEF2026393757772",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Eğitim · İstisna · KDV %0",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1555.66
+  },
+  {
+   "no": "TEF2026393757773",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Yazılım · İstisna · KDV %0+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 43474.11
+  },
+  {
+   "no": "TEF2026394257761",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Ticari · İnşaat · İstisna · KDV %0",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "ISTISNA",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1308.9
+  },
+  {
+   "no": "TEF2026393757774",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Hukuk · Tevkifat+İstisna · KDV %0+%20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 67412.66
+  },
+  {
+   "no": "TEA2026394257773",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Gıda · KDV %1",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 9273.4
+  },
+  {
+   "no": "TEA2026394257774",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3813.74
+  },
+  {
+   "no": "TEA2026394257775",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4312
+  },
+  {
+   "no": "TEF2026393757775",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Yazılım · Tevkifat · KDV %20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 22628.85
+  },
+  {
+   "no": "TEF2026393757776",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Yazılım · Tevkifat · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5139.85
+  },
+  {
+   "no": "TEF2026394257762",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · Tekstil · İstisna · KDV %0+%10+%20 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 17555.74
+  },
+  {
+   "no": "TEF2026393757777",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Arşiv · Tevkifat · KDV %20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 110579.81
+  },
+  {
+   "no": "TEA2026394257776",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 16569.56
+  },
+  {
+   "no": "TEA2026393757765",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Emlak · KDV %20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 144710.1
+  },
+  {
+   "no": "TEF2026394257763",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4493.6
+  },
+  {
+   "no": "TEA2026393757766",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Hukuk · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 40555.44
+  },
+  {
+   "no": "TEF2026393757778",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Eğitim · Tevkifat · KDV %10+%20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 25708.3
+  },
+  {
+   "no": "TEA2026393757767",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Yazılım · KDV %20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 94655.81
+  },
+  {
+   "no": "TEF2026393757779",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Yazılım · KDV %20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 57675.23
+  },
+  {
+   "no": "TEA2026394257777",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · İnşaat · Tevkifat · KDV %20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6086.41
+  },
+  {
+   "no": "TEF2026394257764",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Ticari · Tekstil · KDV %1+%10+%20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7914.23
+  },
+  {
+   "no": "TEF2026394257765",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Gıda · KDV %1",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 241.45
+  },
+  {
+   "no": "TEF2026394257766",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Elektronik · İstisna · KDV %0",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 34638.17
+  },
+  {
+   "no": "TEA2026393757768",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Yemek · KDV %10+%20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 21599.89
+  },
+  {
+   "no": "TEF2026393757780",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Yazılım · İstisna · KDV %0",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 57521.56
+  },
+  {
+   "no": "TEF2026393757781",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Danışmanlık · İstisna · KDV %0+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 113847.13
+  },
+  {
+   "no": "TEA2026394257778",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Tekstil · KDV %1",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2376.66
+  },
+  {
+   "no": "TEF2026394257767",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Ticari · Gıda · KDV %1",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 734.22
+  },
+  {
+   "no": "TEF2026393757782",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Turizm · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 15025.3
+  },
+  {
+   "no": "TEA2026393757769",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Temizlik · KDV %20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 58400.23
+  },
+  {
+   "no": "TEA2026393757770",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Firma · Danışmanlık · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 129991.04
+  },
+  {
+   "no": "TEF2026394257768",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Elektronik · KDV %1+%20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 83879.48
+  },
+  {
+   "no": "TEF2026393757783",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Emlak · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 35460.86
+  },
+  {
+   "no": "TEA2026394257779",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10+%20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2244.84
+  },
+  {
+   "no": "TEF2026393757784",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Arşiv · KDV %20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 80452.48
+  },
+  {
+   "no": "TEF2026394257769",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Elektronik · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 42882.54
+  },
+  {
+   "no": "TEF2026394257770",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Ticari · İnşaat · KDV %1+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 430.44
+  },
+  {
+   "no": "TEA2026394257780",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4390
+  },
+  {
+   "no": "TEF2026393757785",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Arşiv · Tevkifat · KDV %20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 28905.52
+  },
+  {
+   "no": "TEA2026394257781",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Elektronik · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 27712.08
+  },
+  {
+   "no": "TEF2026393757786",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Turizm · KDV %10+%20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 64652.23
+  },
+  {
+   "no": "TEA2026393757771",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Emlak · KDV %20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 90593.88
+  },
+  {
+   "no": "TEF2026393757787",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Hukuk · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 73836.12
+  },
+  {
+   "no": "TEF2026394257771",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Tekstil · KDV %10",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 11043.12
+  },
+  {
+   "no": "TEF2026393757788",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Eğitim · İstisna · KDV %0+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 28309.2
+  },
+  {
+   "no": "TEA2026393757772",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Personel · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 88684.26
+  },
+  {
+   "no": "TEF2026394257772",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Elektronik · KDV %20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 169326.77
+  },
+  {
+   "no": "TEF2026393757789",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Turizm · İstisna · KDV %0",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5104.08
+  },
+  {
+   "no": "TEF2026394257773",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Ticari · Gıda · Tevkifat · KDV %1+%20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 830.32
+  },
+  {
+   "no": "TEA2026394257782",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Gıda · KDV %1 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3405.22
+  },
+  {
+   "no": "TEF2026394257774",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Ticari · İnşaat · KDV %20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 330.57
+  },
+  {
+   "no": "TEF2026393757790",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Turizm · KDV %10",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 15684.9
+  },
+  {
+   "no": "TEA2026393757773",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Hukuk · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10075.2
+  },
+  {
+   "no": "TEF2026393757791",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Yemek · KDV %10",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 42418.79
+  },
+  {
+   "no": "TEA2026393757774",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Hukuk · KDV %20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 70101.42
+  },
+  {
+   "no": "TEF2026394257775",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Ticari · Gıda · KDV %1+%20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5705.07
+  },
+  {
+   "no": "TEA2026394257783",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Tekstil · Tevkifat+İstisna · KDV %0+%10+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 150092.54
+  },
+  {
+   "no": "TEF2026394257776",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Gıda · KDV %1",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1605.42
+  },
+  {
+   "no": "TEA2026394257784",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 100961.86
+  },
+  {
+   "no": "TEF2026393757792",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Hukuk · KDV %20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 130610.42
+  },
+  {
+   "no": "TEA2026394257785",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10511.56
+  },
+  {
+   "no": "TEA2026393757775",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Temizlik · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 57832.9
+  },
+  {
+   "no": "TEA2026393757776",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Eğitim · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 28704.97
+  },
+  {
+   "no": "TEF2026393757793",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Yazılım · KDV %20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 12172.1
+  },
+  {
+   "no": "TEF2026394257777",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Ticari · Tekstil · KDV %10 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7757.74
+  },
+  {
+   "no": "TEA2026394257786",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Gıda · KDV %1",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3637.09
+  },
+  {
+   "no": "TEF2026393757794",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Eğitim · KDV %20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6508.51
+  },
+  {
+   "no": "TEF2026393757795",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Ticari · Yemek · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2643.04
+  },
+  {
+   "no": "TEF2026393757796",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Eğitim · Tevkifat · KDV %10+%20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 57343.47
+  },
+  {
+   "no": "TEA2026394257787",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Firma · Elektronik · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 75309.64
+  },
+  {
+   "no": "TEF2026394257778",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · Elektronik · KDV %1+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 69391.46
+  },
+  {
+   "no": "TEF2026393757797",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Turizm · Tevkifat · KDV %10+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 16366.19
+  },
+  {
+   "no": "TEA2026394257788",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Firma · İnşaat · Tevkifat · KDV %1+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 9027.8
+  },
+  {
+   "no": "TEA2026393757777",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Temizlik · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 36645.19
+  },
+  {
+   "no": "TEF2026393757798",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Temizlik · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 76035.5
+  },
+  {
+   "no": "TEF2026394257779",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Ticari · İnşaat · KDV %1",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2424.83
+  },
+  {
+   "no": "TEF2026394257780",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Elektronik · KDV %20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 82716.36
+  },
+  {
+   "no": "TEF2026393757799",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Personel · KDV %20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 99598.97
+  },
+  {
+   "no": "TEF2026393757800",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Yazılım · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 96149.13
+  },
+  {
+   "no": "TEA2026394257789",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Firma · Elektronik · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 78000
+  },
+  {
+   "no": "TEF2026394257781",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Tekstil · KDV %10",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 510.13
+  },
+  {
+   "no": "TEA2026394257790",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Tekstil · KDV %10",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 592.32
+  },
+  {
+   "no": "TEA2026393757778",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Danışmanlık · KDV %20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 89460.62
+  },
+  {
+   "no": "TEA2026393757779",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Firma · Arşiv · KDV %20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 27353.58
+  },
+  {
+   "no": "TEF2026393757801",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Emlak · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 54801.34
+  },
+  {
+   "no": "TEA2026393757780",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Danışmanlık · KDV %20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 231613.22
+  },
+  {
+   "no": "TEF2026394257782",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · İnşaat · Tevkifat · KDV %20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 21784.94
+  },
+  {
+   "no": "TEF2026394257783",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7933.82
+  },
+  {
+   "no": "TEA2026393757781",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Eğitim · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 53067.1
+  },
+  {
+   "no": "TEF2026393757802",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Emlak · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 162127.78
+  },
+  {
+   "no": "TEF2026394257784",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Ticari · İnşaat · KDV %10",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5632
+  },
+  {
+   "no": "TEF2026393757803",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Temizlik · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 13393.44
+  },
+  {
+   "no": "TEA2026394257791",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 43100.25
+  },
+  {
+   "no": "TEF2026393757804",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Hukuk · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 127879.21
+  },
+  {
+   "no": "TEA2026394257792",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Elektronik · KDV %1+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 111321.49
+  },
+  {
+   "no": "TEF2026394257785",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · İnşaat · KDV %20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 304.54
+  },
+  {
+   "no": "TEF2026393757805",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Arşiv · Tevkifat+İstisna · KDV %0+%20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 68016.34
+  },
+  {
+   "no": "TEF2026394257786",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Elektronik · KDV %20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 39256.06
+  },
+  {
+   "no": "TEF2026394257787",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 18090.85
+  },
+  {
+   "no": "TEA2026393757782",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Eğitim · KDV %10+%20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 87752.23
+  },
+  {
+   "no": "TEF2026393757806",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Danışmanlık · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 147092.71
+  },
+  {
+   "no": "TEF2026393757807",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Turizm · KDV %10 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 18206.67
+  },
+  {
+   "no": "TEA2026394257793",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 158512.49
+  },
+  {
+   "no": "TEF2026393757808",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Turizm · Tevkifat · KDV %10+%20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 101662.24
+  },
+  {
+   "no": "TEA2026394257794",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Tekstil · KDV %10",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2005.61
+  },
+  {
+   "no": "TEA2026393757783",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Firma · Emlak · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 119423.57
+  },
+  {
+   "no": "TEA2026394257795",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 88.96
+  },
+  {
+   "no": "TEA2026394257796",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Tekstil · KDV %10+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7148.45
+  },
+  {
+   "no": "TEF2026393757809",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Eğitim · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 65461.87
+  },
+  {
+   "no": "TEA2026394257797",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 89889.46
+  },
+  {
+   "no": "TEF2026393757810",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Yazılım · KDV %20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 32502.59
+  },
+  {
+   "no": "TEF2026393757811",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Temizlik · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 252.36
+  },
+  {
+   "no": "TEF2026394257788",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Ticari · Tekstil · Tevkifat · KDV %10+%20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 44250.3
+  },
+  {
+   "no": "TEF2026393757812",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Turizm · KDV %10 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 24129.56
+  },
+  {
+   "no": "TEF2026394257789",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · İnşaat · KDV %20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1381.44
+  },
+  {
+   "no": "TEA2026393757784",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Danışmanlık · KDV %10+%20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 162973.68
+  },
+  {
+   "no": "TEA2026393757785",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Turizm · KDV %20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1319.06
+  },
+  {
+   "no": "TEA2026394257798",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Elektronik · KDV %1+%20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 510.83
+  },
+  {
+   "no": "TEF2026393757813",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Yemek · KDV %10 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 22742.67
+  },
+  {
+   "no": "TEA2026394257799",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Tekstil · İstisna · KDV %0+%1+%10+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 8312.2
+  },
+  {
+   "no": "TEA2026394257800",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 67537.14
+  },
+  {
+   "no": "TEA2026394257801",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · Gıda · KDV %1 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 9736.29
+  },
+  {
+   "no": "TEA2026394257802",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Elektronik · KDV %20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 178355.34
+  },
+  {
+   "no": "TEA2026393757786",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Turizm · KDV %10+%20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 42299.5
+  },
+  {
+   "no": "TEA2026393757787",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Hukuk · KDV %20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "cancelled/cancelled",
+   "odenecek": 97624.03
+  },
+  {
+   "no": "TEF2026393757814",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Danışmanlık · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 96001.2
+  },
+  {
+   "no": "TEF2026393757815",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Yazılım · KDV %20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 31508.42
+  },
+  {
+   "no": "TEA2026394257803",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Tekstil · Tevkifat · KDV %1+%10+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 61325.78
+  },
+  {
+   "no": "TEF2026393757816",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Arşiv · Tevkifat+İstisna · KDV %0+%20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 139493.46
+  },
+  {
+   "no": "TEF2026394257790",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · Tekstil · KDV %10",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7040
+  },
+  {
+   "no": "TEF2026394257791",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Elektronik · KDV %20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 39000
+  },
+  {
+   "no": "TEF2026393757817",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Danışmanlık · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 155147.95
+  },
+  {
+   "no": "TEA2026394257805",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 568.44
+  },
+  {
+   "no": "TEA2026394257804",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 199349.96
+  },
+  {
+   "no": "TEF2026394257792",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Elektronik · KDV %10+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 93253.76
+  },
+  {
+   "no": "TEF2026393757818",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Danışmanlık · KDV %10+%20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 122934.96
+  },
+  {
+   "no": "TEA2026393757788",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Arşiv · KDV %10+%20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 84628.47
+  },
+  {
+   "no": "TEF2026393757819",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Personel · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 46350.45
+  },
+  {
+   "no": "TEA2026393757789",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Eğitim · KDV %20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 16296
+  },
+  {
+   "no": "TEF2026394257793",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · İnşaat · KDV %20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 20765.32
+  },
+  {
+   "no": "TEF2026393757820",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Yemek · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 43605.7
+  },
+  {
+   "no": "TEA2026394257806",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Firma · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 105401.42
+  },
+  {
+   "no": "TEA2026394257807",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Firma · Gıda · Tevkifat · KDV %1+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 23446.38
+  },
+  {
+   "no": "TEF2026393757821",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Arşiv · KDV %20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 35446.5
+  },
+  {
+   "no": "TEF2026394257794",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Elektronik · KDV %1+%20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 63476.34
+  },
+  {
+   "no": "TEF2026394257795",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Tekstil · KDV %10+%20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 78015.16
+  },
+  {
+   "no": "TEF2026393757822",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Eğitim · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 38571.6
+  },
+  {
+   "no": "TEA2026394257808",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%10",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 34830.99
+  },
+  {
+   "no": "TEF2026393757823",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Eğitim · KDV %10+%20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 82421.75
+  },
+  {
+   "no": "TEA2026393757790",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Eğitim · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 20268
+  },
+  {
+   "no": "TEA2026394257809",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 43113.15
+  },
+  {
+   "no": "TEA2026393757791",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Danışmanlık · Tevkifat · KDV %10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 230758.64
+  },
+  {
+   "no": "TEA2026393757792",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Eğitim · KDV %10+%20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 33996.41
+  },
+  {
+   "no": "TEF2026394257796",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · Tekstil · KDV %10",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5942.29
+  },
+  {
+   "no": "TEF2026394257797",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Elektronik · KDV %20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 67005.52
+  },
+  {
+   "no": "TEF2026394257798",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Elektronik · KDV %1+%20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 95229.77
+  },
+  {
+   "no": "TEA2026393757793",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Arşiv · Tevkifat+İstisna · KDV %0+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 210338.7
+  },
+  {
+   "no": "TEF2026394257799",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Tekstil · KDV %10",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 6336
+  },
+  {
+   "no": "TEF2026393757824",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Arşiv · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 102136.53
+  },
+  {
+   "no": "TEA2026393757794",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Hukuk · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 75974.4
+  },
+  {
+   "no": "TEF2026394257800",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Elektronik · KDV %1+%20 · İskonto",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3569.39
+  },
+  {
+   "no": "TEF2026393757825",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Temizlik · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 18184.58
+  },
+  {
+   "no": "TEF2026393757826",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Ticari · Eğitim · KDV %10+%20 · İskonto",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 30542.46
+  },
+  {
+   "no": "TEF2026394257801",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · Tekstil · Tevkifat · KDV %1+%10+%20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 14219.51
+  },
+  {
+   "no": "TEA2026393757795",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Firma · Turizm · İstisna · KDV %0+%10+%20 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 30571.3
+  },
+  {
+   "no": "TEF2026394257802",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 72096.68
+  },
+  {
+   "no": "TEA2026394257810",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 63304.47
+  },
+  {
+   "no": "TEA2026393757796",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Yemek · KDV %10",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 27720
+  },
+  {
+   "no": "TEF2026394257803",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Tekstil · İstisna · KDV %0+%10+%20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 31527.32
+  },
+  {
+   "no": "TEA2026394257811",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 29255.44
+  },
+  {
+   "no": "TEF2026394257804",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Gıda · KDV %1",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1105.08
+  },
+  {
+   "no": "TEF2026393757827",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Yemek · Tevkifat · KDV %10 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 57020.3
+  },
+  {
+   "no": "TEF2026393757828",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Turizm · İstisna · KDV %0+%10+%20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 93369.48
+  },
+  {
+   "no": "TEF2026393757829",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Ticari · Personel · KDV %20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 118125.92
+  },
+  {
+   "no": "TEF2026394257805",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5928.7
+  },
+  {
+   "no": "TEF2026394257806",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Ticari · İnşaat · Tevkifat · KDV %1+%10+%20 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 81985.14
+  },
+  {
+   "no": "TEF2026394257807",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · İnşaat · KDV %20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 27570.62
+  },
+  {
+   "no": "TEF2026393757830",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Personel · Tevkifat · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 60939.06
+  },
+  {
+   "no": "TEF2026394257808",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · Elektronik · KDV %20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 142229.82
+  },
+  {
+   "no": "TEA2026393757797",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Eğitim · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 18997.2
+  },
+  {
+   "no": "TEA2026393757798",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Hukuk · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 27000
+  },
+  {
+   "no": "TEF2026394257809",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10819.73
+  },
+  {
+   "no": "TEA2026393757799",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Eğitim · KDV %10+%20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 53065.56
+  },
+  {
+   "no": "TEF2026394257810",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 67144.54
+  },
+  {
+   "no": "TEA2026393757800",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Emlak · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 33494.4
+  },
+  {
+   "no": "TEF2026393757831",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Danışmanlık · KDV %10+%20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 114553.67
+  },
+  {
+   "no": "TEF2026394257811",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · İnşaat · KDV %20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 61596.64
+  },
+  {
+   "no": "TEF2026393757832",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Temel · Yemek · KDV %10",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 891
+  },
+  {
+   "no": "TEA2026394257812",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Kisi · Tekstil · KDV %1+%10 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 7967.34
+  },
+  {
+   "no": "TEA2026394257813",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · İnşaat · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 64.8
+  },
+  {
+   "no": "TEA2026393757801",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Firma · Personel · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 52036.86
+  },
+  {
+   "no": "TEF2026394257812",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Gıda · KDV %20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 188190.85
+  },
+  {
+   "no": "TEA2026393757802",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Temizlik · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 78904.08
+  },
+  {
+   "no": "TEA2026393757803",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Kisi · Arşiv · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 73172.04
+  },
+  {
+   "no": "TEA2026393757804",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Yazılım · KDV %20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 9923.21
+  },
+  {
+   "no": "TEF2026394257813",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · Elektronik · KDV %10+%20",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 5224.27
+  },
+  {
+   "no": "TEA2026393757805",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Hukuk · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 17236.84
+  },
+  {
+   "no": "TEA2026393757806",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Personel · KDV %10+%20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 114968.17
+  },
+  {
+   "no": "TEF2026394257814",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Ticari · Gıda · KDV %1+%10",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 814.03
+  },
+  {
+   "no": "TEF2026394257815",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Gıda · KDV %1+%20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 86807.92
+  },
+  {
+   "no": "TEF2026394257816",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Gıda · KDV %10",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4118.7
+  },
+  {
+   "no": "TEF2026393757833",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Hukuk · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 30191.93
+  },
+  {
+   "no": "TEF2026394257817",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · Elektronik · KDV %20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 128632.86
+  },
+  {
+   "no": "TEF2026393757834",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Eğitim · KDV %10+%20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 18271.54
+  },
+  {
+   "no": "TEF2026393757835",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Yemek · KDV %10+%20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 136063.54
+  },
+  {
+   "no": "TEF2026394257818",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · İnşaat · KDV %20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1116.16
+  },
+  {
+   "no": "TEA2026394257814",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eA-Firma · Gıda · KDV %20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 1146.78
+  },
+  {
+   "no": "TEA2026393757807",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Arşiv · KDV %20 · İskonto",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 13487.32
+  },
+  {
+   "no": "TEA2026393757808",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Kisi · Personel · KDV %20 · İskonto",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 104189.05
+  },
+  {
+   "no": "TEF2026393757836",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Yemek · KDV %10+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 175779.54
+  },
+  {
+   "no": "TEF2026394257819",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 9650.37
+  },
+  {
+   "no": "TEA2026394257815",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · Elektronik · KDV %20 · İskonto",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 11318.33
+  },
+  {
+   "no": "TEF2026393757837",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Yemek · İstisna · KDV %0+%20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "ISTISNA",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 161255.07
+  },
+  {
+   "no": "TEF2026393757838",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Turizm · KDV %10+%20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 77478.23
+  },
+  {
+   "no": "TEF2026394257820",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Ticari · Tekstil · Tevkifat · KDV %10+%20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 23934.65
+  },
+  {
+   "no": "TEF2026394257821",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 70742.35
+  },
+  {
+   "no": "TEA2026394257816",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eA-Kisi · Tekstil · KDV %1+%10+%20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10419.94
+  },
+  {
+   "no": "TEF2026393757839",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Emlak · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 32535.96
+  },
+  {
+   "no": "TEA2026394257817",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 75426.41
+  },
+  {
+   "no": "TEA2026393757809",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Firma · Danışmanlık · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 22819.2
+  },
+  {
+   "no": "TEA2026393757810",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Temizlik · Tevkifat · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 470.53
+  },
+  {
+   "no": "TEF2026394257822",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eF-Temel · İnşaat · Tevkifat+İstisna · KDV %0+%20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4146.09
+  },
+  {
+   "no": "TEA2026393757811",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Firma · Temizlik · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 53301.38
+  },
+  {
+   "no": "TEA2026393757812",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eA-Firma · Yemek · Tevkifat+İstisna · KDV %0+%10+%20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 29019.88
+  },
+  {
+   "no": "TEA2026394257818",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Firma · İnşaat · KDV %20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 13084.97
+  },
+  {
+   "no": "TEF2026394257823",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · İnşaat · KDV %20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 12555.23
+  },
+  {
+   "no": "TEF2026394257824",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · Elektronik · Tevkifat+İstisna · KDV %0+%1+%10+%20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 165705.85
+  },
+  {
+   "no": "TEF2026394257825",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · Tekstil · Tevkifat · KDV %10+%20",
+   "cari": "Ege Tekstil Konfeksiyon Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 116528.07
+  },
+  {
+   "no": "TEA2026393757813",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eA-Kisi · Danışmanlık · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 16900.45
+  },
+  {
+   "no": "TEA2026393757814",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Firma · Personel · Tevkifat · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 123064.02
+  },
+  {
+   "no": "TEF2026393757840",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Yemek · KDV %10+%20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 32283.63
+  },
+  {
+   "no": "TEA2026393757815",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Emlak · KDV %20",
+   "cari": "Ayşe Yılmaz",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 68414.44
+  },
+  {
+   "no": "TEF2026394257826",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Ticari · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 3509.14
+  },
+  {
+   "no": "TEA2026394257819",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Tekstil · KDV %10+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 19118.18
+  },
+  {
+   "no": "TEF2026394257827",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eF-Temel · İnşaat · KDV %1",
+   "cari": "Akdeniz Otelcilik ve Turizm A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 254.42
+  },
+  {
+   "no": "TEA2026393757816",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Hukuk · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 98875.5
+  },
+  {
+   "no": "TEA2026393757817",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Firma · Yemek · KDV %10 · İskonto",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 2098.01
+  },
+  {
+   "no": "TEF2026393757841",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Arşiv · KDV %20 · İskonto",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 155162.68
+  },
+  {
+   "no": "TEF2026394257828",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 329.89
+  },
+  {
+   "no": "TEA2026394257820",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Firma · Tekstil · Tevkifat · KDV %10+%20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 97228.9
+  },
+  {
+   "no": "TEF2026393757842",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eF-Ticari · Yemek · KDV %10",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 19321.25
+  },
+  {
+   "no": "TEF2026393757843",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Temel · Arşiv · KDV %20",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 4416
+  },
+  {
+   "no": "TEF2026393757844",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Temel · Personel · KDV %20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 309147.63
+  },
+  {
+   "no": "TEF2026393757845",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eF-Temel · Danışmanlık · Tevkifat · KDV %20 · İskonto",
+   "cari": "Marmara Gıda San. ve Tic. A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 68573.95
+  },
+  {
+   "no": "TEA2026394257821",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Firma · Gıda · KDV %1+%20 · İskonto",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 61605.16
+  },
+  {
+   "no": "TEF2026394257829",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · İnşaat · Tevkifat · KDV %20",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 56969.9
+  },
+  {
+   "no": "TEF2026393757846",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Ticari · Yemek · Tevkifat · KDV %10+%20",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 10912.47
+  },
+  {
+   "no": "TEA2026394257822",
+   "sirket": "002",
+   "kullanici": "atlas5",
+   "senaryo": "eA-Firma · Tekstil · KDV %20",
+   "cari": "Deniz Oto Servis Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 29999.99
+  },
+  {
+   "no": "TEA2026394257823",
+   "sirket": "002",
+   "kullanici": "atlas3",
+   "senaryo": "eA-Kisi · Tekstil · KDV %10+%20 · İskonto",
+   "cari": "Elif Şahin",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 62615.36
+  },
+  {
+   "no": "TEF2026394257830",
+   "sirket": "002",
+   "kullanici": "atlas1",
+   "senaryo": "eF-Temel · İnşaat · KDV %20 · İskonto",
+   "cari": "Toros Elektronik Ticaret A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 22996.08
+  },
+  {
+   "no": "TEA2026393757818",
+   "sirket": "001",
+   "kullanici": "destek4",
+   "senaryo": "eA-Kisi · Personel · KDV %10+%20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 205305.71
+  },
+  {
+   "no": "TEF2026393757847",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eF-Ticari · Yazılım · KDV %20",
+   "cari": "Anadolu Turizm Otelcilik A.Ş.",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 11252.45
+  },
+  {
+   "no": "TEF2026393757848",
+   "sirket": "001",
+   "kullanici": "destek2",
+   "senaryo": "eF-Ticari · Temizlik · KDV %20",
+   "cari": "Yıldız Hukuk Bürosu",
+   "tip": "SATIS",
+   "profil": "TICARIFATURA",
+   "durum": "issued/sent",
+   "odenecek": 134508.56
+  },
+  {
+   "no": "TEA2026393757819",
+   "sirket": "001",
+   "kullanici": "destek3",
+   "senaryo": "eA-Kisi · Eğitim · KDV %20",
+   "cari": "Mehmet Kaya",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 14465.47
+  },
+  {
+   "no": "TEF2026393757849",
+   "sirket": "001",
+   "kullanici": "destek1",
+   "senaryo": "eF-Temel · Hukuk · Tevkifat+İstisna · KDV %0+%20 · İskonto",
+   "cari": "Kuzey Emlak Danışmanlık Ltd. Şti.",
+   "tip": "TEVKIFAT",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 48717.17
+  },
+  {
+   "no": "TEF2026394257831",
+   "sirket": "002",
+   "kullanici": "atlas2",
+   "senaryo": "eF-Temel · İnşaat · KDV %20",
+   "cari": "Başkent İnşaat Taahhüt A.Ş.",
+   "tip": "SATIS",
+   "profil": "TEMELFATURA",
+   "durum": "issued/sent",
+   "odenecek": 80.58
+  },
+  {
+   "no": "TEA2026393757820",
+   "sirket": "001",
+   "kullanici": "destek5",
+   "senaryo": "eA-Firma · Temizlik · KDV %20",
+   "cari": "Güneş Kafe Gıda Ltd. Şti.",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 13671.18
+  },
+  {
+   "no": "TEA2026394257824",
+   "sirket": "002",
+   "kullanici": "atlas4",
+   "senaryo": "eA-Kisi · İnşaat · KDV %20",
+   "cari": "Can Öztürk",
+   "tip": "SATIS",
+   "profil": "EARSIVFATURA",
+   "durum": "issued/sent",
+   "odenecek": 45617.78
+  }
+ ],
+ "eylemler": [
+  {
+   "tur": "durum",
+   "kullanici": "atlas1",
+   "no": "TEF2026394257715",
+   "eDurum": "processing",
+   "ileti": "EDM'de paketleniyor. PROCESSING×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas3",
+   "no": "TEA2026394257715",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek5",
+   "ok": null,
+   "not": "uygun gönderilmiş e-Arşiv yok"
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek1",
+   "no": "TEF2026393757715",
+   "eDurum": "processing",
+   "ileti": "Gönderiliyor; sonuç bekleniyor. PROCESSING×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas1",
+   "no": "TEF2026394257718",
+   "eDurum": "processing",
+   "ileti": "Gönderiliyor; sonuç bekleniyor. PROCESSING×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek5",
+   "no": "TEA2026393757723",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas2",
+   "no": "TEA2026394257714",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026394257714 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek3",
+   "no": "TEA2026393757721",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757721 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas2",
+   "ok": null,
+   "not": "uygun gönderilmiş e-Arşiv yok"
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas3",
+   "no": "TEA2026394257717",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas5",
+   "ok": null,
+   "not": "uygun gönderilmiş e-Arşiv yok"
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek5",
+   "no": "TEF2026393757735",
+   "eDurum": "processing",
+   "ileti": "Gönderiliyor; sonuç bekleniyor. PROCESSING×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek1",
+   "no": "TEA2026393757728",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757728 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek1",
+   "no": "TEF2026393757732",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas5",
+   "no": "TEF2026394257737",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek1",
+   "no": "TEA2026393757730",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757730 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek5",
+   "no": "TEF2026393757714",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı; alıcının kabul ya da red yanıtı bekleniyor (Ticari Fatura). WAIT_APPLICATION_RESPONSE×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek4",
+   "no": "TEA2026393757737",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757737 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas3",
+   "no": "TEA2026394257744",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas2",
+   "no": "TEA2026394257725",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek4",
+   "no": "TEA2026393757742",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek1",
+   "no": "TEF2026393757752",
+   "eDurum": "processing",
+   "ileti": "Gönderiliyor; sonuç bekleniyor. PROCESSING×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek2",
+   "no": "TEA2026393757717",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757717 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas4",
+   "no": "TEA2026394257736",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas2",
+   "no": "TEF2026394257751",
+   "eDurum": "processing",
+   "ileti": "Gönderiliyor; sonuç bekleniyor. PROCESSING×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas2",
+   "no": "TEA2026394257732",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026394257732 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek5",
+   "no": "TEA2026393757723",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757723 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek4",
+   "no": "TEA2026393757718",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757718 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek3",
+   "no": "TEA2026393757758",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757758 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas1",
+   "no": "TEA2026394257746",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek3",
+   "no": "TEF2026393757745",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek4",
+   "no": "TEA2026393757753",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757753 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek3",
+   "no": "TEA2026393757752",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757752 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek5",
+   "no": "TEF2026393757775",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas2",
+   "no": "TEA2026394257723",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026394257723 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas1",
+   "no": "TEF2026394257783",
+   "eDurum": "processing",
+   "ileti": "Gönderiliyor; sonuç bekleniyor. PROCESSING×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas5",
+   "no": "TEF2026394257733",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı; alıcının kabul ya da red yanıtı bekleniyor (Ticari Fatura). WAIT_APPLICATION_RESPONSE×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas5",
+   "no": "TEF2026394257733",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı; alıcının kabul ya da red yanıtı bekleniyor (Ticari Fatura). WAIT_APPLICATION_RESPONSE×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas1",
+   "no": "TEF2026394257726",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı; alıcının kabul ya da red yanıtı bekleniyor (Ticari Fatura). WAIT_APPLICATION_RESPONSE×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek1",
+   "no": "TEF2026393757730",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı; alıcının kabul ya da red yanıtı bekleniyor (Ticari Fatura). WAIT_APPLICATION_RESPONSE×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek1",
+   "no": "TEF2026393757800",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı; alıcının kabul ya da red yanıtı bekleniyor (Ticari Fatura). WAIT_APPLICATION_RESPONSE×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek2",
+   "no": "TEA2026393757774",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757774 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek3",
+   "no": "TEA2026393757787",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757787 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas2",
+   "no": "TEA2026394257760",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026394257760 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek1",
+   "no": "TEA2026393757747",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757747 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas4",
+   "no": "TEA2026394257769",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek3",
+   "no": "TEA2026393757784",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek2",
+   "no": "TEA2026393757738",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757738 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek1",
+   "no": "TEA2026393757780",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757780 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek3",
+   "no": "TEA2026393757755",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757755 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas3",
+   "no": "TEA2026394257798",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026394257798 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas4",
+   "no": "TEA2026394257805",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek1",
+   "no": "TEF2026393757790",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas2",
+   "no": "TEF2026394257734",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı; alıcının kabul ya da red yanıtı bekleniyor (Ticari Fatura). WAIT_APPLICATION_RESPONSE×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas5",
+   "no": "TEA2026394257754",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026394257754 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "atlas2",
+   "no": "TEA2026394257765",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026394257765 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "atlas3",
+   "no": "TEF2026394257730",
+   "eDurum": "sent",
+   "ileti": "Alıcıya ulaştı. SUCCEED×",
+   "ok": true
+  },
+  {
+   "tur": "iptal",
+   "kullanici": "destek3",
+   "no": "TEA2026393757761",
+   "denemeler": [
+    {
+     "durum": "cancelled",
+     "eDurum": "cancelled",
+     "formHatasi": "",
+     "ileti": "Satış Faturası TEA2026393757761 iptal edildi; etkileri geri alındı.×"
+    }
+   ],
+   "durum": "cancelled",
+   "eDurum": "cancelled",
+   "ok": true
+  },
+  {
+   "tur": "durum",
+   "kullanici": "destek5",
+   "no": "TEA2026393757736",
+   "eDurum": "sent",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED×",
+   "ok": true
+  }
+ ],
+ "sayfaHatalari": [],
+ "denetimler": [
+  {
+   "ok": true,
+   "what": "001 Fatura Ayarları (logo, kaşe e-Faturada da, banka, alt not, Ortam Test) (200 )"
+  },
+  {
+   "ok": true,
+   "what": "001 Bağlantıyı Test Et (200 )"
+  },
+  {
+   "ok": true,
+   "what": "002 Fatura Ayarları (logo, kaşe e-Faturada da, banka, alt not, Ortam Test) (200 )"
+  },
+  {
+   "ok": true,
+   "what": "002 Bağlantıyı Test Et (200 )"
+  },
+  {
+   "ok": true,
+   "what": "tevkifat kodları programda var (602, 604, 606, 612, 616; eksik yok)"
+  },
+  {
+   "ok": true,
+   "what": "istisna kodları programda var (301, 302, 304, 350, 351; eksik yok)"
+  },
+  {
+   "ok": true,
+   "what": "001 TCKN 10000000146 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {\"registered\":false,\"title\":\"\",\"aliases\":[],\"senderAliases\":[],\"type\":\"\",\"taxNo\")"
+  },
+  {
+   "ok": true,
+   "what": "001 TCKN 10000000078 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {\"registered\":false,\"title\":\"\",\"aliases\":[],\"senderAliases\":[],\"type\":\"\",\"taxNo\")"
+  },
+  {
+   "ok": true,
+   "what": "001 Yıldız Hukuk Bürosu: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr"
+  },
+  {
+   "ok": true,
+   "what": "001 Kuzey Emlak Danışmanlık Ltd. Şti.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr"
+  },
+  {
+   "ok": true,
+   "what": "001 Marmara Gıda San. ve Tic. A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr"
+  },
+  {
+   "ok": true,
+   "what": "001 Anadolu Turizm Otelcilik A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr"
+  },
+  {
+   "ok": true,
+   "what": "001 Ayşe Yılmaz (TCKN): e-Arşiv alıcısı"
+  },
+  {
+   "ok": true,
+   "what": "001 Mehmet Kaya (TCKN): e-Arşiv alıcısı"
+  },
+  {
+   "ok": true,
+   "what": "001 Güneş Kafe Gıda Ltd. Şti. (VKN 3000855478, mükellef değil): e-Arşiv alıcısı"
+  },
+  {
+   "ok": true,
+   "what": "002 TCKN 10000000146 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {\"registered\":false,\"title\":\"\",\"aliases\":[],\"senderAliases\":[],\"type\":\"\",\"taxNo\")"
+  },
+  {
+   "ok": true,
+   "what": "002 TCKN 10000000078 e-Fatura mükellefi değil (e-Arşiv alıcısı) (200 {\"registered\":false,\"title\":\"\",\"aliases\":[],\"senderAliases\":[],\"type\":\"\",\"taxNo\")"
+  },
+  {
+   "ok": true,
+   "what": "002 Başkent İnşaat Taahhüt A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr"
+  },
+  {
+   "ok": true,
+   "what": "002 Ege Tekstil Konfeksiyon Ltd. Şti.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr"
+  },
+  {
+   "ok": true,
+   "what": "002 Akdeniz Otelcilik ve Turizm A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr"
+  },
+  {
+   "ok": true,
+   "what": "002 Toros Elektronik Ticaret A.Ş.: e-Fatura mükellefi, posta kutusu urn:mail:defaultpk@edmbilisim.com.tr"
+  },
+  {
+   "ok": true,
+   "what": "002 Can Öztürk (TCKN): e-Arşiv alıcısı"
+  },
+  {
+   "ok": true,
+   "what": "002 Elif Şahin (TCKN): e-Arşiv alıcısı"
+  },
+  {
+   "ok": true,
+   "what": "002 Deniz Oto Servis Ltd. Şti. (VKN 3003967260, mükellef değil): e-Arşiv alıcısı"
+  },
+  {
+   "ok": true,
+   "what": "UBL XML indirildi 472/472 (iptal edilenlerin XML'i iptalden önce indirildi: 24)"
+  },
+  {
+   "ok": false,
+   "what": "EDM resmî PDF indirildi 470/472 — TEF2026393757760 resmi.pdf 409 {\"ok\":false,\"error\":\"Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.\",\"code\":\"einvoice-not-sent\"} | TEF2026394257817 resmi.pdf 502 {\"ok\":false,\"error\":\"EDM isteği reddetti: Sistem hatasi (EDM hata kodu 20005)\",\"code\":\"integrator-rejected\",\"detail\":\"T"
+  },
+  {
+   "ok": true,
+   "what": "XML: XSD + GİB şematronu temiz 472/472"
+  },
+  {
+   "ok": true,
+   "what": "görünüm şablonu: logo + GİB logosu + Kaşe / İmza 472/472"
+  },
+  {
+   "ok": false,
+   "what": "karekod (EDM resmî PDF) çözüldü ve no/ettn/vkn/ödenecek belgeyle aynı 469/472 — TEF2026393757760: undefined | TEF2026394257817: undefined | TEF2026394257812: KAREKOD OKUNAMADI"
+  },
+  {
+   "ok": true,
+   "what": "karekod (programın PDF'i, her 5. belge) aynı 115/115"
+  },
+  {
+   "ok": true,
+   "what": "ekrandan kesilen belge 472 (planlanan 472)"
+  },
+  {
+   "ok": true,
+   "what": "ekran hatası yok (0; ayrıntı olaylar.jsonl)"
+  },
+  {
+   "ok": true,
+   "what": "001 TEF2026 benzersiz + boşluksuz TEF2026393757714 … TEF2026393757849 (136; izlenen 136)"
+  },
+  {
+   "ok": true,
+   "what": "001 TEA2026 benzersiz + boşluksuz TEA2026393757714 … TEA2026393757820 (107; izlenen 107)"
+  },
+  {
+   "ok": true,
+   "what": "001 izlenmeyen satış belgesi yok (0)"
+  },
+  {
+   "ok": true,
+   "what": "002 TEF2026 benzersiz + boşluksuz TEF2026394257714 … TEF2026394257831 (118; izlenen 118)"
+  },
+  {
+   "ok": true,
+   "what": "002 TEA2026 benzersiz + boşluksuz TEA2026394257714 … TEA2026394257824 (111; izlenen 111)"
+  },
+  {
+   "ok": true,
+   "what": "002 izlenmeyen satış belgesi yok (0)"
+  },
+  {
+   "ok": true,
+   "what": "ETTN'ler benzersiz (472)"
+  },
+  {
+   "ok": false,
+   "what": "her belge EDM'ye BİR kez gönderildi (invoice.e.sent) 471/472 — TEF2026393757760:0"
+  },
+  {
+   "ok": false,
+   "what": "her belge kesen kullanıcının adıyla gönderildi (1 aykırı)"
+  },
+  {
+   "ok": false,
+   "what": "son durumlar: 448 Gönderildi/Kabul, 24 e-Arşiv iptal — AYKIRI TEF2026393757760:issued/error EDM isteği reddetti: Gönderici (3230512384), 17.1059.2026 01:59:00 itibariyle GİB E-Fatura kapsamında bulunmuyor ve E-Fatura gönderilemez (EDM hata kodu 11059)"
+  },
+  {
+   "ok": true,
+   "what": "ekrandan e-Arşiv iptali 24/24 (belgelerin %5.1'i)"
+  },
+  {
+   "ok": true,
+   "what": "ekrandan Durum Sorgula 32/32"
+  },
+  {
+   "ok": true,
+   "what": "profil plana uygun (TEMEL/TİCARİ/e-Arşiv) 472/472"
+  },
+  {
+   "ok": true,
+   "what": "fatura tipi: tevkifatlı → TEVKIFAT, düz → SATIS (istisnalı/karışık bilgi olarak) 472/472"
+  },
+  {
+   "ok": true,
+   "what": "senaryo kapsamı: katalogdaki her tür/kod/birim/sektör/davranış koşuda çıktı"
+  },
+  {
+   "ok": true,
+   "what": "001 Yıldız Hukuk Bürosu bakiyesi 1996086.93 = gönderilmiş (iptal hariç) 27 belge 1996086.93"
+  },
+  {
+   "ok": true,
+   "what": "001 Kuzey Emlak Danışmanlık Ltd. Şti. bakiyesi 2270216.07 = gönderilmiş (iptal hariç) 34 belge 2270216.07"
+  },
+  {
+   "ok": true,
+   "what": "001 Marmara Gıda San. ve Tic. A.Ş. bakiyesi 2833559.16 = gönderilmiş (iptal hariç) 38 belge 2833559.16"
+  },
+  {
+   "ok": true,
+   "what": "001 Anadolu Turizm Otelcilik A.Ş. bakiyesi 2090204.9 = gönderilmiş (iptal hariç) 37 belge 2090204.90"
+  },
+  {
+   "ok": true,
+   "what": "001 Ayşe Yılmaz bakiyesi 1102502.03 = gönderilmiş (iptal hariç) 22 belge 1102502.03"
+  },
+  {
+   "ok": true,
+   "what": "001 Mehmet Kaya bakiyesi 1875441.93 = gönderilmiş (iptal hariç) 32 belge 1875441.93"
+  },
+  {
+   "ok": true,
+   "what": "001 Güneş Kafe Gıda Ltd. Şti. bakiyesi 2660307.04 = gönderilmiş (iptal hariç) 36 belge 2660307.04"
+  },
+  {
+   "ok": true,
+   "what": "001 defter bütünlüğü temiz (200 {\"ok\":true,\"checks\":[{\"code\":\"balance\",\"name\":\"Çift yönlü kayıt (borç = alacak)\",\"ok\":true,\"difference\":0},{\"code\":\"gl:1)"
+  },
+  {
+   "ok": true,
+   "what": "002 Başkent İnşaat Taahhüt A.Ş. bakiyesi 740866.97 = gönderilmiş (iptal hariç) 30 belge 740866.97"
+  },
+  {
+   "ok": true,
+   "what": "002 Ege Tekstil Konfeksiyon Ltd. Şti. bakiyesi 894841.71 = gönderilmiş (iptal hariç) 27 belge 894841.71"
+  },
+  {
+   "ok": true,
+   "what": "002 Akdeniz Otelcilik ve Turizm A.Ş. bakiyesi 1533476.2 = gönderilmiş (iptal hariç) 29 belge 1533476.20"
+  },
+  {
+   "ok": true,
+   "what": "002 Toros Elektronik Ticaret A.Ş. bakiyesi 1043043 = gönderilmiş (iptal hariç) 32 belge 1043043.00"
+  },
+  {
+   "ok": true,
+   "what": "002 Can Öztürk bakiyesi 1084247.06 = gönderilmiş (iptal hariç) 27 belge 1084247.06"
+  },
+  {
+   "ok": true,
+   "what": "002 Elif Şahin bakiyesi 788895.68 = gönderilmiş (iptal hariç) 28 belge 788895.68"
+  },
+  {
+   "ok": true,
+   "what": "002 Deniz Oto Servis Ltd. Şti. bakiyesi 2178099.22 = gönderilmiş (iptal hariç) 49 belge 2178099.22"
+  },
+  {
+   "ok": true,
+   "what": "002 stok miktarları = açılış − satılan (iptal hariç; plan miktarları) 16/16"
+  },
+  {
+   "ok": true,
+   "what": "002 defter bütünlüğü temiz (200 {\"ok\":true,\"checks\":[{\"code\":\"balance\",\"name\":\"Çift yönlü kayıt (borç = alacak)\",\"ok\":true,\"difference\":0},{\"code\":\"gl:1)"
+  },
+  {
+   "ok": true,
+   "what": "iki şirketin verisi karışmadı (öbür şirkette görünen belge 0, cari 0)"
+  },
+  {
+   "ok": true,
+   "what": "001 kullanıcısı 002'nin belgesini göremiyor (404)"
+  },
+  {
+   "ok": false,
+   "what": "kâhin (görev kuralı: KDV oran başına yuvarlama): bütün belgeler AYNI (çıkış 1; KÂHİN (KDV kuralı: oran başına yuvarlama): 472 belge — AYNI 431, FARKLI 41; ayrıntı kahin-sonuc.txt)"
+  },
+  {
+   "ok": false,
+   "what": "kâhin (KDV satır başına yuvarlama; kural kararı ana oturumda): bütün belgeler AYNI (çıkış 1; KÂHİN (KDV kuralı: satır başına yuvarlama): 472 belge — AYNI 467, FARKLI 5; ayrıntı kahin-sonuc-satir.txt)"
+  },
+  {
+   "ok": true,
+   "what": "diş kanıtı: üç bozulma da kırmızı (çıkış 0)"
+  },
+  {
+   "ok": true,
+   "what": "kullanıcı sayfalarında hata yok (0)"
+  }
+ ],
+ "sonuc": {
+  "gecti": 63,
+  "kaldi": 7
+ }
+}

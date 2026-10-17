@@ -1,0 +1,795 @@
+KÂHİN (KDV kuralı: oran başına yuvarlama): 465 belge — AYNI 427, FARKLI 38
+  FARKLI olanlardan satır başına yuvarlama kuralıyla AYNI çıkan (bilgi; hüküm değişmez): 38
+plan kaydı 465, sonucu olmayan plan 0 (ekranda yarım kalan deneme; tutar karşılaştırması yok)
+
+TEA2026215566818  AYNI    eA-Firma · Yazılım · KDV %20 · İskonto  ödenecek 52223.77  (karekod: resmi)
+TEA2026215566819  AYNI    eA-Kisi · Hukuk · KDV %20 · İskonto  ödenecek 55500.96  (karekod: program,resmi)
+TEA2026215566820  AYNI    eA-Firma · Turizm · KDV %10  ödenecek 28842.00  (karekod: program,resmi)
+TEA2026215566821  AYNI    eA-Firma · Yemek · KDV %10 · İskonto  ödenecek 23984.26  (karekod: program,resmi)
+TEA2026215566822  FARKLI  eA-Kisi · Personel · KDV %20 · İskonto  beklenen ödenecek 58330.18  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       58330.18   gelen 58330.17
+    PayableAmount                                beklenen       58330.18   gelen 58330.17
+    TaxTotal/TaxAmount                           beklenen        9721.70   gelen 9721.69
+    TaxSubtotal %20 TaxAmount                    beklenen        9721.70   gelen 9721.69
+    program ödenecek (try_payable)               beklenen       58330.18   gelen 58330.17
+    karekod[resmi] vergidahil                    beklenen       58330.18   gelen 58330.17
+    karekod[resmi] odenecek                      beklenen       58330.18   gelen 58330.17
+    karekod[resmi] hesaplanankdv(20)             beklenen        9721.70   gelen 9721.69
+TEA2026215566823  AYNI    eA-Kisi · Yemek · KDV %10+%20  ödenecek 85573.06  (karekod: program,resmi)
+TEA2026215566824  AYNI    eA-Kisi · Emlak · KDV %20  ödenecek 44721.79  (karekod: resmi)
+TEA2026215566825  AYNI    eA-Firma · Arşiv · İstisna · KDV %0+%20  ödenecek 113066.58  (karekod: program,resmi)
+TEA2026215566826  AYNI    eA-Kisi · Emlak · KDV %20 · İskonto  ödenecek 53350.42  (karekod: resmi)
+TEA2026215566827  AYNI    eA-Kisi · Hukuk · KDV %20  ödenecek 18813.60  (karekod: resmi)
+TEA2026215566828  AYNI    eA-Firma · Eğitim · Tevkifat+İstisna · KDV %0+%10+%20 · İskonto  ödenecek 33214.15  (karekod: resmi)
+TEA2026215566829  AYNI    eA-Firma · Arşiv · KDV %20 · İskonto  ödenecek 33806.88  (karekod: resmi)
+TEA2026215566830  AYNI    eA-Firma · Eğitim · KDV %20  ödenecek 33292.80  (karekod: resmi)
+TEA2026215566831  AYNI    eA-Kisi · Eğitim · KDV %10  ödenecek 68098.80  (karekod: resmi)
+TEA2026215566832  AYNI    eA-Kisi · Eğitim · KDV %10+%20  ödenecek 51419.48  (karekod: resmi)
+TEA2026215566833  FARKLI  eA-Kisi · Yemek · KDV %10+%20  beklenen ödenecek 45524.82  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       45524.82   gelen 45524.81
+    PayableAmount                                beklenen       45524.82   gelen 45524.81
+    TaxTotal/TaxAmount                           beklenen        6398.14   gelen 6398.13
+    TaxSubtotal %20 TaxAmount                    beklenen        4970.94   gelen 4970.93
+    program ödenecek (try_payable)               beklenen       45524.82   gelen 45524.81
+    karekod[resmi] vergidahil                    beklenen       45524.82   gelen 45524.81
+    karekod[resmi] odenecek                      beklenen       45524.82   gelen 45524.81
+    karekod[resmi] hesaplanankdv(20)             beklenen        4970.94   gelen 4970.93
+    karekod[program] vergidahil                  beklenen       45524.82   gelen 45524.81
+    karekod[program] odenecek                    beklenen       45524.82   gelen 45524.81
+    karekod[program] hesaplanankdv(20)           beklenen        4970.94   gelen 4970.93
+TEA2026215566834  AYNI    eA-Kisi · Emlak · KDV %20  ödenecek 158123.65  (karekod: resmi)
+TEA2026215566835  AYNI    eA-Firma · Danışmanlık · KDV %20  ödenecek 186678.10  (karekod: resmi)
+TEA2026215566836  AYNI    eA-Kisi · Temizlik · KDV %20 · İskonto  ödenecek 137603.93  (karekod: resmi)
+TEA2026215566837  AYNI    eA-Kisi · Yazılım · KDV %20  ödenecek 879.58  (karekod: resmi)
+TEA2026215566838  AYNI    eA-Kisi · Turizm · KDV %20  ödenecek 13807.87  (karekod: program,resmi)
+TEA2026215566839  AYNI    eA-Kisi · Danışmanlık · KDV %20  ödenecek 101421.94  (karekod: program,resmi)
+TEA2026215566840  AYNI    eA-Kisi · Personel · KDV %20  ödenecek 46000.92  (karekod: resmi)
+TEA2026215566841  AYNI    eA-Kisi · Hukuk · KDV %20 · İskonto  ödenecek 69118.20  (karekod: program,resmi)
+TEA2026215566842  AYNI    eA-Kisi · Yemek · KDV %10+%20 · İskonto  ödenecek 16533.06  (karekod: resmi)
+TEA2026215566843  FARKLI  eA-Kisi · Personel · KDV %20 · İskonto  beklenen ödenecek 344769.37  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      344769.37   gelen 344769.38
+    PayableAmount                                beklenen      344769.37   gelen 344769.38
+    TaxTotal/TaxAmount                           beklenen       57461.56   gelen 57461.57
+    TaxSubtotal %20 TaxAmount                    beklenen       57461.56   gelen 57461.57
+    program ödenecek (try_payable)               beklenen      344769.37   gelen 344769.38
+    karekod[resmi] vergidahil                    beklenen      344769.37   gelen 344769.38
+    karekod[resmi] odenecek                      beklenen      344769.37   gelen 344769.38
+    karekod[resmi] hesaplanankdv(20)             beklenen       57461.56   gelen 57461.57
+TEA2026215566844  AYNI    eA-Kisi · Danışmanlık · KDV %20 · İskonto  ödenecek 92825.94  (karekod: program,resmi)
+TEA2026215566845  AYNI    eA-Kisi · Danışmanlık · KDV %20  ödenecek 76317.60  (karekod: program,resmi)
+TEA2026215566846  FARKLI  eA-Firma · Danışmanlık · Tevkifat · KDV %20  beklenen ödenecek 129488.54  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      132458.54   gelen 132458.55
+    PayableAmount                                beklenen      129488.54   gelen 129488.55
+    TaxTotal/TaxAmount                           beklenen       22076.42   gelen 22076.43
+    TaxSubtotal %20 TaxAmount                    beklenen       22076.42   gelen 22076.43
+    program ödenecek (try_payable)               beklenen      129488.54   gelen 129488.55
+    karekod[resmi] vergidahil                    beklenen      132458.54   gelen 132458.55
+    karekod[resmi] odenecek                      beklenen      129488.54   gelen 129488.55
+    karekod[resmi] hesaplanankdv(20)             beklenen       22076.42   gelen 22076.43
+TEA2026215566847  AYNI    eA-Firma · Yemek · Tevkifat · KDV %10+%20 · İskonto  ödenecek 16462.75  (karekod: program,resmi)
+TEA2026215566848  AYNI    eA-Firma · Danışmanlık · KDV %20  ödenecek 103113.37  (karekod: resmi)
+TEA2026215566849  AYNI    eA-Kisi · Hukuk · KDV %20 · İskonto  ödenecek 124578.72  (karekod: resmi)
+TEA2026215566850  AYNI    eA-Kisi · Emlak · KDV %20  ödenecek 38891.05  (karekod: resmi)
+TEA2026215566851  AYNI    eA-Kisi · Yemek · KDV %10  ödenecek 28665.78  (karekod: resmi)
+TEA2026215566852  AYNI    eA-Firma · Turizm · KDV %10  ödenecek 37632.41  (karekod: resmi)
+TEA2026215566853  AYNI    eA-Firma · Yazılım · KDV %20  ödenecek 39310.62  (karekod: program,resmi)
+TEA2026215566854  AYNI    eA-Kisi · Turizm · KDV %10+%20 · İskonto  ödenecek 11889.62  (karekod: resmi)
+TEA2026215566855  AYNI    eA-Kisi · Yazılım · KDV %20  ödenecek 22358.51  (karekod: resmi)
+TEA2026215566856  AYNI    eA-Firma · Personel · KDV %20 · İskonto  ödenecek 118266.30  (karekod: program,resmi)
+TEA2026215566857  AYNI    eA-Kisi · Temizlik · KDV %20 · İskonto  ödenecek 269585.78  (karekod: resmi)
+TEA2026215566858  AYNI    eA-Kisi · Turizm · KDV %10+%20  ödenecek 43831.58  (karekod: resmi)
+TEA2026215566859  AYNI    eA-Kisi · Hukuk · KDV %20  ödenecek 79188.24  (karekod: resmi)
+TEA2026215566860  AYNI    eA-Firma · Yemek · Tevkifat+İstisna · KDV %0+%10 · İskonto  ödenecek 19973.57  (karekod: program,resmi)
+TEA2026215566861  AYNI    eA-Kisi · Personel · KDV %20  ödenecek 174191.35  (karekod: resmi)
+TEA2026215566862  AYNI    eA-Kisi · Emlak · KDV %20 · İskonto  ödenecek 189386.84  (karekod: resmi)
+TEA2026215566863  AYNI    eA-Kisi · Arşiv · KDV %20  ödenecek 15484.14  (karekod: resmi)
+TEA2026215566864  AYNI    eA-Kisi · Danışmanlık · KDV %20 · İskonto  ödenecek 135462.35  (karekod: program,resmi)
+TEA2026215566865  AYNI    eA-Firma · Personel · KDV %20  ödenecek 95840.93  (karekod: program,resmi)
+TEA2026215566866  AYNI    eA-Kisi · Emlak · KDV %20  ödenecek 12986.70  (karekod: resmi)
+TEA2026215566867  AYNI    eA-Kisi · Turizm · KDV %10+%20 · İskonto  ödenecek 31025.15  (karekod: resmi)
+TEA2026215566868  AYNI    eA-Kisi · Danışmanlık · KDV %20  ödenecek 149366.69  (karekod: resmi)
+TEA2026215566869  AYNI    eA-Firma · Turizm · KDV %10+%20 · İskonto  ödenecek 46951.36  (karekod: resmi)
+TEA2026215566870  AYNI    eA-Kisi · Arşiv · KDV %20 · İskonto  ödenecek 30114.07  (karekod: resmi)
+TEA2026215566871  AYNI    eA-Kisi · Turizm · KDV %10  ödenecek 3027.64  (karekod: program,resmi)
+TEA2026215566872  AYNI    eA-Kisi · Yemek · KDV %10  ödenecek 1344.82  (karekod: resmi)
+TEA2026215566873  AYNI    eA-Firma · Turizm · Tevkifat · KDV %10+%20  ödenecek 247826.87  (karekod: resmi)
+TEA2026215566874  AYNI    eA-Firma · Yazılım · KDV %20  ödenecek 39618.07  (karekod: resmi)
+TEA2026215566875  AYNI    eA-Kisi · Danışmanlık · KDV %20 · İskonto  ödenecek 104233.94  (karekod: resmi)
+TEA2026215566876  AYNI    eA-Kisi · Yazılım · KDV %20 · İskonto  ödenecek 51953.28  (karekod: program,resmi)
+TEA2026215566877  AYNI    eA-Firma · Hukuk · Tevkifat · KDV %20  ödenecek 8492.52  (karekod: resmi)
+TEA2026215566878  AYNI    eA-Kisi · Personel · KDV %20  ödenecek 127810.46  (karekod: program,resmi)
+TEA2026215566879  AYNI    eA-Firma · Temizlik · KDV %20  ödenecek 27571.20  (karekod: resmi)
+TEA2026215566880  AYNI    eA-Kisi · Temizlik · KDV %20  ödenecek 279.00  (karekod: program,resmi)
+TEA2026215566881  AYNI    eA-Firma · Yazılım · KDV %20 · İskonto  ödenecek 10724.30  (karekod: program,resmi)
+TEA2026215566882  FARKLI  eA-Kisi · Eğitim · KDV %10+%20 · İskonto  beklenen ödenecek 128262.01  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      128262.01   gelen 128262.00
+    PayableAmount                                beklenen      128262.01   gelen 128262.00
+    TaxTotal/TaxAmount                           beklenen       18969.72   gelen 18969.71
+    TaxSubtotal %20 TaxAmount                    beklenen       16080.97   gelen 16080.96
+    program ödenecek (try_payable)               beklenen      128262.01   gelen 128262.00
+    karekod[resmi] vergidahil                    beklenen      128262.01   gelen 128262.00
+    karekod[resmi] odenecek                      beklenen      128262.01   gelen 128262.00
+    karekod[resmi] hesaplanankdv(20)             beklenen       16080.97   gelen 16080.96
+TEA2026215566883  AYNI    eA-Kisi · Danışmanlık · KDV %20  ödenecek 5674.14  (karekod: program,resmi)
+TEA2026215566884  AYNI    eA-Firma · Hukuk · KDV %20 · İskonto  ödenecek 60979.86  (karekod: resmi)
+TEA2026215566885  AYNI    eA-Firma · Yazılım · KDV %20  ödenecek 80601.24  (karekod: resmi)
+TEA2026215566886  AYNI    eA-Firma · Arşiv · KDV %20  ödenecek 13452.19  (karekod: resmi)
+TEA2026215566887  AYNI    eA-Kisi · Temizlik · KDV %20 · İskonto  ödenecek 95378.21  (karekod: program,resmi)
+TEA2026215566888  AYNI    eA-Firma · Turizm · KDV %20 · İskonto  ödenecek 23790.04  (karekod: resmi)
+TEA2026215566889  AYNI    eA-Kisi · Temizlik · KDV %20 · İskonto  ödenecek 16212.84  (karekod: resmi)
+TEA2026215566890  AYNI    eA-Kisi · Yazılım · KDV %20 · İskonto  ödenecek 9674.34  (karekod: resmi)
+TEA2026215566891  AYNI    eA-Firma · Hukuk · KDV %20 · İskonto  ödenecek 101882.27  (karekod: resmi)
+TEA2026215566892  AYNI    eA-Firma · Emlak · KDV %10+%20 · İskonto  ödenecek 283367.80  (karekod: program,resmi)
+TEA2026215566893  AYNI    eA-Firma · Personel · Tevkifat · KDV %20 · İskonto  ödenecek 58545.81  (karekod: resmi)
+TEA2026215566894  AYNI    eA-Kisi · Temizlik · KDV %20 · İskonto  ödenecek 34350.67  (karekod: resmi)
+TEA2026215566895  AYNI    eA-Kisi · Yazılım · KDV %20  ödenecek 25638.36  (karekod: resmi)
+TEA2026215566896  AYNI    eA-Firma · Turizm · KDV %10+%20  ödenecek 35152.64  (karekod: resmi)
+TEA2026215566897  AYNI    eA-Kisi · Danışmanlık · KDV %20 · İskonto  ödenecek 88832.95  (karekod: resmi)
+TEA2026215566898  AYNI    eA-Firma · Danışmanlık · İstisna · KDV %0+%20 · İskonto  ödenecek 190875.34  (karekod: program,resmi)
+TEA2026215566899  AYNI    eA-Kisi · Eğitim · KDV %10+%20  ödenecek 15946.80  (karekod: resmi)
+TEA2026215566900  AYNI    eA-Kisi · Eğitim · KDV %10+%20 · İskonto  ödenecek 116984.63  (karekod: resmi)
+TEA2026215566901  AYNI    eA-Kisi · Danışmanlık · KDV %20 · İskonto  ödenecek 25964.80  (karekod: resmi)
+TEA2026215566902  AYNI    eA-Kisi · Hukuk · KDV %20  ödenecek 80914.26  (karekod: resmi)
+TEA2026215566903  AYNI    eA-Firma · Arşiv · KDV %20 · İskonto  ödenecek 150292.90  (karekod: resmi)
+TEA2026215566904  AYNI    eA-Kisi · Hukuk · KDV %20  ödenecek 54270.00  (karekod: resmi)
+TEA2026215566905  AYNI    eA-Kisi · Arşiv · KDV %20  ödenecek 23939.35  (karekod: resmi)
+TEA2026215566906  AYNI    eA-Firma · Yemek · KDV %10+%20 · İskonto  ödenecek 79693.15  (karekod: resmi)
+TEA2026215566907  AYNI    eA-Firma · Hukuk · KDV %20 · İskonto  ödenecek 51678.40  (karekod: program,resmi)
+TEA2026215566908  AYNI    eA-Kisi · Yazılım · KDV %20  ödenecek 20355.19  (karekod: resmi)
+TEA2026215566909  AYNI    eA-Firma · Yemek · KDV %10+%20 · İskonto  ödenecek 56394.06  (karekod: resmi)
+TEA2026215566910  AYNI    eA-Kisi · Emlak · KDV %20  ödenecek 91328.40  (karekod: resmi)
+TEA2026215566911  AYNI    eA-Firma · Yemek · KDV %10  ödenecek 730.46  (karekod: program,resmi)
+TEA2026215566912  FARKLI  eA-Firma · Temizlik · KDV %20 · İskonto  beklenen ödenecek 87962.45  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       87962.45   gelen 87962.44
+    PayableAmount                                beklenen       87962.45   gelen 87962.44
+    TaxTotal/TaxAmount                           beklenen       14660.41   gelen 14660.40
+    TaxSubtotal %20 TaxAmount                    beklenen       14660.41   gelen 14660.40
+    program ödenecek (try_payable)               beklenen       87962.45   gelen 87962.44
+    karekod[resmi] vergidahil                    beklenen       87962.45   gelen 87962.44
+    karekod[resmi] odenecek                      beklenen       87962.45   gelen 87962.44
+    karekod[resmi] hesaplanankdv(20)             beklenen       14660.41   gelen 14660.40
+TEA2026215566913  AYNI    eA-Firma · Arşiv · KDV %20 · İskonto  ödenecek 29430.07  (karekod: resmi)
+TEA2026215566914  AYNI    eA-Kisi · Eğitim · KDV %20  ödenecek 27196.22  (karekod: resmi)
+TEA2026215566915  AYNI    eA-Firma · Eğitim · KDV %20 · İskonto  ödenecek 2878.20  (karekod: resmi)
+TEA2026215566916  AYNI    eA-Firma · Hukuk · İstisna · KDV %0+%10+%20 · İskonto  ödenecek 150693.63  (karekod: resmi)
+TEA2026215566917  AYNI    eA-Kisi · Turizm · KDV %10+%20  ödenecek 61003.70  (karekod: resmi)
+TEA2026215566918  AYNI    eA-Firma · Temizlik · İstisna · KDV %0+%20  ödenecek 94048.19  (karekod: resmi)
+TEA2026215566919  AYNI    eA-Kisi · Yazılım · KDV %20 · İskonto  ödenecek 26787.56  (karekod: resmi)
+TEA2026215566920  AYNI    eA-Firma · Arşiv · Tevkifat+İstisna · KDV %0+%20  ödenecek 26238.13  (karekod: resmi)
+TEA2026215566921  AYNI    eA-Firma · Yazılım · KDV %20 · İskonto  ödenecek 36207.88  (karekod: resmi)
+TEA2026215566922  AYNI    eA-Kisi · Personel · KDV %10+%20  ödenecek 125671.38  (karekod: resmi)
+TEA2026215566923  AYNI    eA-Kisi · Arşiv · KDV %20 · İskonto  ödenecek 90946.42  (karekod: resmi)
+TEA2026215566924  AYNI    eA-Kisi · Emlak · KDV %20 · İskonto  ödenecek 73415.48  (karekod: program,resmi)
+TEA2026215566925  AYNI    eA-Kisi · Personel · KDV %20  ödenecek 152716.80  (karekod: resmi)
+TEA2026215566926  AYNI    eA-Kisi · Hukuk · KDV %20  ödenecek 5271.24  (karekod: resmi)
+TEA2026215566927  AYNI    eA-Firma · Temizlik · KDV %10+%20 · İskonto  ödenecek 85657.08  (karekod: resmi)
+TEA2026215566928  AYNI    eA-Kisi · Danışmanlık · KDV %20 · İskonto  ödenecek 81773.70  (karekod: resmi)
+TEA2026215566929  AYNI    eA-Firma · Yemek · KDV %10  ödenecek 170.20  (karekod: resmi)
+TEA2026215566930  AYNI    eA-Kisi · Eğitim · KDV %20  ödenecek 1102.80  (karekod: program,resmi)
+TEA2026215566931  AYNI    eA-Kisi · Temizlik · KDV %20  ödenecek 25773.80  (karekod: program,resmi)
+TEF2026215566818  AYNI    eF-Temel · Personel · KDV %20  ödenecek 134230.79  (karekod: program,resmi)
+TEF2026215566819  AYNI    eF-Temel · Turizm · Tevkifat · KDV %10+%20  ödenecek 15187.26  (karekod: resmi)
+TEF2026215566820  AYNI    eF-Ticari · Personel · Tevkifat+İstisna · KDV %0+%20 · İskonto  ödenecek 116105.72  (karekod: resmi)
+TEF2026215566821  AYNI    eF-Ticari · Danışmanlık · KDV %20  ödenecek 83800.80  (karekod: program,resmi)
+TEF2026215566822  AYNI    eF-Temel · Danışmanlık · KDV %20 · İskonto  ödenecek 106530.85  (karekod: resmi)
+TEF2026215566823  FARKLI  eF-Temel · Temizlik · İstisna · KDV %0+%20  beklenen ödenecek 183665.32  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      183665.32   gelen 183665.31
+    PayableAmount                                beklenen      183665.32   gelen 183665.31
+    TaxTotal/TaxAmount                           beklenen       21611.89   gelen 21611.88
+    TaxSubtotal %20 TaxAmount                    beklenen       21611.89   gelen 21611.88
+    program ödenecek (try_payable)               beklenen      183665.32   gelen 183665.31
+    karekod[resmi] vergidahil                    beklenen      183665.32   gelen 183665.31
+    karekod[resmi] odenecek                      beklenen      183665.32   gelen 183665.31
+    karekod[resmi] hesaplanankdv(20)             beklenen       21611.89   gelen 21611.88
+TEF2026215566824  AYNI    eF-Ticari · Danışmanlık · KDV %20  ödenecek 21262.82  (karekod: program,resmi)
+TEF2026215566825  FARKLI  eF-Ticari · Danışmanlık · Tevkifat · KDV %20 · İskonto  beklenen ödenecek 100601.24  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    PayableAmount                                beklenen      100601.24   gelen 100601.23
+    WithholdingTaxTotal/TaxAmount                beklenen       16644.38   gelen 16644.39
+    Tevkifat 602 TaxAmount                       beklenen       16644.38   gelen 16644.39
+    Tevkifat 602 TaxableAmount (KDV)             beklenen       18493.76   gelen 18493.77
+    program ödenecek (try_payable)               beklenen      100601.24   gelen 100601.23
+    karekod[resmi] odenecek                      beklenen      100601.24   gelen 100601.23
+TEF2026215566826  AYNI    eF-Ticari · Temizlik · KDV %20  ödenecek 56380.34  (karekod: resmi)
+TEF2026215566827  AYNI    eF-Temel · Emlak · Tevkifat+İstisna · KDV %0+%10+%20  ödenecek 118400.93  (karekod: program,resmi)
+TEF2026215566828  AYNI    eF-Ticari · Temizlik · KDV %10+%20 · İskonto  ödenecek 136954.51  (karekod: resmi)
+TEF2026215566829  AYNI    eF-Temel · Danışmanlık · Tevkifat · KDV %20  ödenecek 92439.18  (karekod: resmi)
+TEF2026215566830  AYNI    eF-Ticari · Eğitim · KDV %20  ödenecek 4887.70  (karekod: program,resmi)
+TEF2026215566831  AYNI    eF-Ticari · Emlak · KDV %20 · İskonto  ödenecek 85886.18  (karekod: resmi)
+TEF2026215566832  AYNI    eF-Temel · Hukuk · KDV %20  ödenecek 36792.00  (karekod: resmi)
+TEF2026215566833  AYNI    eF-Temel · Yazılım · KDV %20  ödenecek 31989.60  (karekod: resmi)
+TEF2026215566834  AYNI    eF-Ticari · Yemek · KDV %10+%20  ödenecek 5453.44  (karekod: program,resmi)
+TEF2026215566835  AYNI    eF-Temel · Arşiv · KDV %20 · İskonto  ödenecek 38785.09  (karekod: resmi)
+TEF2026215566836  FARKLI  eF-Temel · Hukuk · KDV %20 · İskonto  beklenen ödenecek 190844.62  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      190844.62   gelen 190844.61
+    PayableAmount                                beklenen      190844.62   gelen 190844.61
+    TaxTotal/TaxAmount                           beklenen       31807.44   gelen 31807.43
+    TaxSubtotal %20 TaxAmount                    beklenen       31807.44   gelen 31807.43
+    program ödenecek (try_payable)               beklenen      190844.62   gelen 190844.61
+    karekod[resmi] vergidahil                    beklenen      190844.62   gelen 190844.61
+    karekod[resmi] odenecek                      beklenen      190844.62   gelen 190844.61
+    karekod[resmi] hesaplanankdv(20)             beklenen       31807.44   gelen 31807.43
+    karekod[program] vergidahil                  beklenen      190844.62   gelen 190844.61
+    karekod[program] odenecek                    beklenen      190844.62   gelen 190844.61
+    karekod[program] hesaplanankdv(20)           beklenen       31807.44   gelen 31807.43
+TEF2026215566837  AYNI    eF-Temel · Danışmanlık · KDV %20 · İskonto  ödenecek 23387.71  (karekod: resmi)
+TEF2026215566838  AYNI    eF-Temel · Arşiv · KDV %20 · İskonto  ödenecek 108204.35  (karekod: resmi)
+TEF2026215566839  AYNI    eF-Ticari · Eğitim · KDV %10  ödenecek 98943.50  (karekod: resmi)
+TEF2026215566840  AYNI    eF-Temel · Hukuk · KDV %20 · İskonto  ödenecek 82334.29  (karekod: program,resmi)
+TEF2026215566841  AYNI    eF-Ticari · Personel · KDV %20  ödenecek 96882.00  (karekod: resmi)
+TEF2026215566842  AYNI    eF-Temel · Yemek · Tevkifat · KDV %10+%20 · İskonto  ödenecek 1464.36  (karekod: resmi)
+TEF2026215566843  AYNI    eF-Temel · Yazılım · KDV %20  ödenecek 77246.28  (karekod: resmi)
+TEF2026215566844  FARKLI  eF-Temel · Temizlik · KDV %20  beklenen ödenecek 72400.82  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       72400.82   gelen 72400.83
+    PayableAmount                                beklenen       72400.82   gelen 72400.83
+    TaxTotal/TaxAmount                           beklenen       12066.80   gelen 12066.81
+    TaxSubtotal %20 TaxAmount                    beklenen       12066.80   gelen 12066.81
+    program ödenecek (try_payable)               beklenen       72400.82   gelen 72400.83
+    karekod[resmi] vergidahil                    beklenen       72400.82   gelen 72400.83
+    karekod[resmi] odenecek                      beklenen       72400.82   gelen 72400.83
+    karekod[resmi] hesaplanankdv(20)             beklenen       12066.80   gelen 12066.81
+TEF2026215566845  AYNI    eF-Ticari · Temizlik · KDV %20  ödenecek 33554.86  (karekod: program,resmi)
+TEF2026215566846  AYNI    eF-Temel · Eğitim · İstisna · KDV %0 · İskonto  ödenecek 3089.15  (karekod: resmi)
+TEF2026215566847  AYNI    eF-Temel · Yazılım · KDV %20 · İskonto  ödenecek 21632.06  (karekod: resmi)
+TEF2026215566848  AYNI    eF-Ticari · Personel · KDV %20  ödenecek 78653.33  (karekod: resmi)
+TEF2026215566849  AYNI    eF-Temel · Hukuk · KDV %20 · İskonto  ödenecek 42091.16  (karekod: resmi)
+TEF2026215566850  AYNI    eF-Temel · Turizm · KDV %10 · İskonto  ödenecek 16970.16  (karekod: resmi)
+TEF2026215566851  AYNI    eF-Ticari · Hukuk · KDV %20  ödenecek 38160.40  (karekod: resmi)
+TEF2026215566852  AYNI    eF-Ticari · Turizm · KDV %10+%20  ödenecek 12641.84  (karekod: resmi)
+TEF2026215566853  AYNI    eF-Temel · Emlak · KDV %20  ödenecek 28430.62  (karekod: resmi)
+TEF2026215566854  AYNI    eF-Ticari · Temizlik · Tevkifat · KDV %20 · İskonto  ödenecek 18784.84  (karekod: resmi)
+TEF2026215566855  AYNI    eF-Ticari · Danışmanlık · KDV %20  ödenecek 78106.58  (karekod: resmi)
+TEF2026215566856  AYNI    eF-Ticari · Emlak · Tevkifat · KDV %10+%20 · İskonto  ödenecek 212537.44  (karekod: program,resmi)
+TEF2026215566857  AYNI    eF-Ticari · Personel · İstisna · KDV %0+%20  ödenecek 100645.64  (karekod: resmi)
+TEF2026215566858  AYNI    eF-Ticari · Turizm · KDV %10+%20 · İskonto  ödenecek 76411.08  (karekod: resmi)
+TEF2026215566859  AYNI    eF-Ticari · Emlak · KDV %20  ödenecek 31189.20  (karekod: resmi)
+TEF2026215566860  AYNI    eF-Ticari · Hukuk · Tevkifat · KDV %20 · İskonto  ödenecek 32257.78  (karekod: resmi)
+TEF2026215566861  AYNI    eF-Ticari · Yazılım · KDV %20 · İskonto  ödenecek 7239.37  (karekod: resmi)
+TEF2026215566862  AYNI    eF-Temel · Arşiv · KDV %20  ödenecek 4929.60  (karekod: resmi)
+TEF2026215566863  AYNI    eF-Temel · Temizlik · İstisna · KDV %0+%20  ödenecek 29193.22  (karekod: resmi)
+TEF2026215566864  AYNI    eF-Ticari · Hukuk · Tevkifat · KDV %20  ödenecek 4262.74  (karekod: resmi)
+TEF2026215566865  FARKLI  eF-Temel · Yazılım · KDV %20 · İskonto  beklenen ödenecek 152025.44  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      152025.44   gelen 152025.45
+    PayableAmount                                beklenen      152025.44   gelen 152025.45
+    TaxTotal/TaxAmount                           beklenen       25337.57   gelen 25337.58
+    TaxSubtotal %20 TaxAmount                    beklenen       25337.57   gelen 25337.58
+    program ödenecek (try_payable)               beklenen      152025.44   gelen 152025.45
+    karekod[resmi] vergidahil                    beklenen      152025.44   gelen 152025.45
+    karekod[resmi] odenecek                      beklenen      152025.44   gelen 152025.45
+    karekod[resmi] hesaplanankdv(20)             beklenen       25337.57   gelen 25337.58
+TEF2026215566866  AYNI    eF-Temel · Turizm · Tevkifat · KDV %10+%20  ödenecek 18863.24  (karekod: program,resmi)
+TEF2026215566867  AYNI    eF-Ticari · Turizm · İstisna · KDV %0  ödenecek 3198.00  (karekod: resmi)
+TEF2026215566868  AYNI    eF-Temel · Eğitim · KDV %10+%20  ödenecek 82409.76  (karekod: resmi)
+TEF2026215566869  AYNI    eF-Ticari · Temizlik · Tevkifat · KDV %20 · İskonto  ödenecek 19099.88  (karekod: resmi)
+TEF2026215566870  AYNI    eF-Temel · Yemek · KDV %10  ödenecek 455.40  (karekod: resmi)
+TEF2026215566871  AYNI    eF-Temel · Emlak · KDV %20  ödenecek 73314.00  (karekod: resmi)
+TEF2026215566872  AYNI    eF-Temel · Yemek · Tevkifat+İstisna · KDV %0+%10 · İskonto  ödenecek 25769.93  (karekod: resmi)
+TEF2026215566873  FARKLI  eF-Ticari · Temizlik · KDV %20 · İskonto  beklenen ödenecek 154529.90  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      154529.90   gelen 154529.91
+    PayableAmount                                beklenen      154529.90   gelen 154529.91
+    TaxTotal/TaxAmount                           beklenen       25754.98   gelen 25754.99
+    TaxSubtotal %20 TaxAmount                    beklenen       25754.98   gelen 25754.99
+    program ödenecek (try_payable)               beklenen      154529.90   gelen 154529.91
+    karekod[resmi] vergidahil                    beklenen      154529.90   gelen 154529.91
+    karekod[resmi] odenecek                      beklenen      154529.90   gelen 154529.91
+    karekod[resmi] hesaplanankdv(20)             beklenen       25754.98   gelen 25754.99
+TEF2026215566874  AYNI    eF-Ticari · Emlak · KDV %20  ödenecek 48133.20  (karekod: resmi)
+TEF2026215566875  AYNI    eF-Ticari · Temizlik · KDV %20  ödenecek 49337.17  (karekod: resmi)
+TEF2026215566876  AYNI    eF-Temel · Danışmanlık · Tevkifat · KDV %20  ödenecek 38791.49  (karekod: resmi)
+TEF2026215566877  FARKLI  eF-Ticari · Arşiv · KDV %20 · İskonto  beklenen ödenecek 106236.04  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      106236.04   gelen 106236.03
+    PayableAmount                                beklenen      106236.04   gelen 106236.03
+    TaxTotal/TaxAmount                           beklenen       17706.01   gelen 17706.00
+    TaxSubtotal %20 TaxAmount                    beklenen       17706.01   gelen 17706.00
+    program ödenecek (try_payable)               beklenen      106236.04   gelen 106236.03
+    karekod[resmi] vergidahil                    beklenen      106236.04   gelen 106236.03
+    karekod[resmi] odenecek                      beklenen      106236.04   gelen 106236.03
+    karekod[resmi] hesaplanankdv(20)             beklenen       17706.01   gelen 17706.00
+TEF2026215566878  FARKLI  eF-Ticari · Danışmanlık · KDV %20 · İskonto  beklenen ödenecek 138339.04  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      138339.04   gelen 138339.03
+    PayableAmount                                beklenen      138339.04   gelen 138339.03
+    TaxTotal/TaxAmount                           beklenen       23056.51   gelen 23056.50
+    TaxSubtotal %20 TaxAmount                    beklenen       23056.51   gelen 23056.50
+    program ödenecek (try_payable)               beklenen      138339.04   gelen 138339.03
+    karekod[resmi] vergidahil                    beklenen      138339.04   gelen 138339.03
+    karekod[resmi] odenecek                      beklenen      138339.04   gelen 138339.03
+    karekod[resmi] hesaplanankdv(20)             beklenen       23056.51   gelen 23056.50
+TEF2026215566879  AYNI    eF-Temel · Eğitim · KDV %10+%20 · İskonto  ödenecek 72755.57  (karekod: resmi)
+TEF2026215566880  AYNI    eF-Temel · Emlak · KDV %20 · İskonto  ödenecek 115821.79  (karekod: resmi)
+TEF2026215566881  AYNI    eF-Temel · Arşiv · Tevkifat · KDV %20 · İskonto  ödenecek 26776.23  (karekod: program,resmi)
+TEF2026215566882  AYNI    eF-Ticari · Personel · Tevkifat+İstisna · KDV %0+%20 · İskonto  ödenecek 75511.83  (karekod: resmi)
+TEF2026215566883  AYNI    eF-Temel · Hukuk · KDV %20  ödenecek 53109.86  (karekod: resmi)
+TEF2026215566884  AYNI    eF-Temel · Arşiv · KDV %20  ödenecek 84154.22  (karekod: resmi)
+TEF2026215566885  AYNI    eF-Ticari · Hukuk · KDV %20  ödenecek 8947.20  (karekod: resmi)
+TEF2026215566886  AYNI    eF-Temel · Emlak · Tevkifat · KDV %20 · İskonto  ödenecek 287094.43  (karekod: resmi)
+TEF2026215566887  AYNI    eF-Temel · Turizm · KDV %10+%20  ödenecek 105695.94  (karekod: resmi)
+TEF2026215566888  AYNI    eF-Ticari · Arşiv · KDV %20 · İskonto  ödenecek 14677.49  (karekod: program,resmi)
+TEF2026215566889  AYNI    eF-Temel · Hukuk · KDV %20  ödenecek 31831.34  (karekod: resmi)
+TEF2026215566890  AYNI    eF-Ticari · Arşiv · Tevkifat · KDV %20 · İskonto  ödenecek 54680.67  (karekod: resmi)
+TEF2026215566891  AYNI    eF-Ticari · Arşiv · KDV %10+%20 · İskonto  ödenecek 70199.89  (karekod: resmi)
+TEF2026215566892  AYNI    eF-Temel · Hukuk · KDV %20  ödenecek 115447.80  (karekod: resmi)
+TEF2026215566893  AYNI    eF-Ticari · Temizlik · İstisna · KDV %0+%20 · İskonto  ödenecek 67078.03  (karekod: resmi)
+TEF2026215566894  AYNI    eF-Temel · Emlak · Tevkifat · KDV %20  ödenecek 118822.76  (karekod: resmi)
+TEF2026215566895  AYNI    eF-Temel · Hukuk · KDV %20  ödenecek 75971.52  (karekod: program,resmi)
+TEF2026215566896  AYNI    eF-Ticari · Danışmanlık · KDV %20 · İskonto  ödenecek 119328.19  (karekod: program,resmi)
+TEF2026215566897  AYNI    eF-Temel · Turizm · KDV %10+%20 · İskonto  ödenecek 106108.85  (karekod: resmi)
+TEF2026215566898  AYNI    eF-Temel · Yemek · İstisna · KDV %0+%10 · İskonto  ödenecek 73933.96  (karekod: program,resmi)
+TEF2026215566899  AYNI    eF-Ticari · Yazılım · KDV %20  ödenecek 7680.42  (karekod: resmi)
+TEF2026215566900  AYNI    eF-Ticari · Personel · KDV %10+%20 · İskonto  ödenecek 153589.18  (karekod: program,resmi)
+TEF2026215566901  AYNI    eF-Ticari · Turizm · KDV %20  ödenecek 6438.00  (karekod: resmi)
+TEF2026215566902  AYNI    eF-Temel · Danışmanlık · KDV %20  ödenecek 67916.03  (karekod: resmi)
+TEF2026215566903  AYNI    eF-Temel · Emlak · İstisna · KDV %0+%20 · İskonto  ödenecek 70195.11  (karekod: program,resmi)
+TEF2026215566904  AYNI    eF-Temel · Danışmanlık · KDV %20 · İskonto  ödenecek 185163.90  (karekod: program,resmi)
+TEF2026215566905  AYNI    eF-Ticari · Eğitim · Tevkifat+İstisna · KDV %0+%20  ödenecek 18868.68  (karekod: resmi)
+TEF2026215566906  AYNI    eF-Temel · Emlak · İstisna · KDV %0  ödenecek 11629.82  (karekod: resmi)
+TEF2026215566907  AYNI    eF-Temel · Yazılım · Tevkifat+İstisna · KDV %0+%20  ödenecek 28298.62  (karekod: resmi)
+TEF2026215566908  AYNI    eF-Temel · Danışmanlık · Tevkifat · KDV %10+%20 · İskonto  ödenecek 129544.74  (karekod: resmi)
+TEF2026215566909  AYNI    eF-Ticari · Yemek · KDV %10  ödenecek 32999.08  (karekod: resmi)
+TEF2026215566910  AYNI    eF-Ticari · Turizm · Tevkifat+İstisna · KDV %0+%10  ödenecek 1216.51  (karekod: resmi)
+TEF2026215566911  AYNI    eF-Temel · Eğitim · KDV %10 · İskonto  ödenecek 12187.38  (karekod: resmi)
+TEF2026215566912  AYNI    eF-Temel · Temizlik · KDV %20 · İskonto  ödenecek 142678.94  (karekod: resmi)
+TEF2026215566913  AYNI    eF-Temel · Turizm · KDV %10+%20  ödenecek 33874.68  (karekod: resmi)
+TEF2026215566914  AYNI    eF-Temel · Danışmanlık · İstisna · KDV %0  ödenecek 18391.05  (karekod: resmi)
+TEF2026215566915  AYNI    eF-Temel · Arşiv · KDV %20 · İskonto  ödenecek 33177.82  (karekod: program,resmi)
+TEF2026215566916  AYNI    eF-Ticari · Hukuk · KDV %20  ödenecek 67551.73  (karekod: resmi)
+TEF2026215566917  AYNI    eF-Ticari · Emlak · KDV %20  ödenecek 26076.86  (karekod: program,resmi)
+TEF2026215566918  FARKLI  eF-Ticari · Temizlik · KDV %20 · İskonto  beklenen ödenecek 42070.60  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       42070.60   gelen 42070.59
+    PayableAmount                                beklenen       42070.60   gelen 42070.59
+    TaxTotal/TaxAmount                           beklenen        7011.77   gelen 7011.76
+    TaxSubtotal %20 TaxAmount                    beklenen        7011.77   gelen 7011.76
+    program ödenecek (try_payable)               beklenen       42070.60   gelen 42070.59
+    karekod[resmi] vergidahil                    beklenen       42070.60   gelen 42070.59
+    karekod[resmi] odenecek                      beklenen       42070.60   gelen 42070.59
+    karekod[resmi] hesaplanankdv(20)             beklenen        7011.77   gelen 7011.76
+TEF2026215566919  AYNI    eF-Temel · Emlak · KDV %20  ödenecek 36144.00  (karekod: resmi)
+TEF2026215566920  AYNI    eF-Ticari · Personel · KDV %20  ödenecek 159997.90  (karekod: resmi)
+TEF2026215566921  AYNI    eF-Ticari · Emlak · İstisna · KDV %0  ödenecek 2824.06  (karekod: resmi)
+TEF2026215566922  AYNI    eF-Ticari · Yemek · KDV %10+%20 · İskonto  ödenecek 65489.12  (karekod: resmi)
+TEF2026215566923  AYNI    eF-Temel · Danışmanlık · Tevkifat · KDV %20  ödenecek 53862.73  (karekod: resmi)
+TEF2026215566924  AYNI    eF-Temel · Yazılım · Tevkifat · KDV %20 · İskonto  ödenecek 108378.46  (karekod: resmi)
+TEF2026215566925  AYNI    eF-Temel · Hukuk · KDV %20 · İskonto  ödenecek 7269.72  (karekod: resmi)
+TEF2026215566926  AYNI    eF-Temel · Yazılım · Tevkifat · KDV %20 · İskonto  ödenecek 68052.60  (karekod: resmi)
+TEF2026215566927  AYNI    eF-Temel · Temizlik · KDV %20 · İskonto  ödenecek 13442.69  (karekod: resmi)
+TEF2026215566928  AYNI    eF-Ticari · Emlak · İstisna · KDV %0  ödenecek 52914.88  (karekod: resmi)
+TEF2026215566929  AYNI    eF-Temel · Turizm · KDV %10+%20 · İskonto  ödenecek 11797.90  (karekod: resmi)
+TEF2026215566930  AYNI    eF-Temel · Yemek · KDV %10+%20  ödenecek 46567.52  (karekod: resmi)
+TEF2026215566931  AYNI    eF-Temel · Eğitim · KDV %10+%20 · İskonto  ödenecek 8871.97  (karekod: resmi)
+TEF2026215566932  AYNI    eF-Temel · Emlak · KDV %20 · İskonto  ödenecek 210442.08  (karekod: program,resmi)
+TEF2026215566933  AYNI    eF-Ticari · Yemek · KDV %10  ödenecek 2036.21  (karekod: resmi)
+TEF2026215566934  AYNI    eF-Ticari · Yazılım · İstisna · KDV %0  ödenecek 1490.01  (karekod: resmi)
+TEF2026215566935  AYNI    eF-Temel · Danışmanlık · Tevkifat · KDV %20  ödenecek 89490.11  (karekod: resmi)
+TEF2026215566936  AYNI    eF-Temel · Arşiv · KDV %10+%20 · İskonto  ödenecek 52462.60  (karekod: program,resmi)
+TEF2026215566937  AYNI    eF-Temel · Eğitim · KDV %10+%20  ödenecek 98617.82  (karekod: resmi)
+TEF2026215566938  AYNI    eF-Ticari · Arşiv · İstisna · KDV %0  ödenecek 4127.42  (karekod: resmi)
+TEF2026215566939  AYNI    eF-Temel · Danışmanlık · KDV %20 · İskonto  ödenecek 20298.12  (karekod: resmi)
+TEA2026216066818  AYNI    eA-Kisi · İnşaat · KDV %20  ödenecek 3253.24  (karekod: resmi)
+TEA2026216066819  AYNI    eA-Kisi · Tekstil · KDV %10 · İskonto  ödenecek 101308.67  (karekod: resmi)
+TEA2026216066820  AYNI    eA-Kisi · Gıda · KDV %1  ödenecek 171.56  (karekod: resmi)
+TEA2026216066821  AYNI    eA-Kisi · İnşaat · KDV %20 · İskonto  ödenecek 89.20  (karekod: program,resmi)
+TEA2026216066822  AYNI    eA-Firma · Elektronik · KDV %20  ödenecek 29999.99  (karekod: resmi)
+TEA2026216066823  AYNI    eA-Kisi · Elektronik · KDV %20  ödenecek 117000.00  (karekod: resmi)
+TEA2026216066824  AYNI    eA-Kisi · Tekstil · KDV %1  ödenecek 160.70  (karekod: program,resmi)
+TEA2026216066825  AYNI    eA-Kisi · Gıda · KDV %1+%10+%20  ödenecek 25069.78  (karekod: program,resmi)
+TEA2026216066826  AYNI    eA-Kisi · Elektronik · KDV %1  ödenecek 56.81  (karekod: resmi)
+TEA2026216066827  AYNI    eA-Kisi · İnşaat · KDV %20 · İskonto  ödenecek 28005.23  (karekod: program,resmi)
+TEA2026216066828  AYNI    eA-Kisi · Gıda · KDV %1+%20 · İskonto  ödenecek 7126.00  (karekod: program,resmi)
+TEA2026216066829  AYNI    eA-Kisi · Tekstil · KDV %1+%10+%20 · İskonto  ödenecek 12651.12  (karekod: resmi)
+TEA2026216066830  AYNI    eA-Firma · Elektronik · KDV %10+%20 · İskonto  ödenecek 122304.63  (karekod: program,resmi)
+TEA2026216066831  AYNI    eA-Kisi · Tekstil · KDV %10 · İskonto  ödenecek 85031.87  (karekod: resmi)
+TEA2026216066832  AYNI    eA-Firma · Tekstil · KDV %1+%20  ödenecek 5291.70  (karekod: resmi)
+TEA2026216066833  AYNI    eA-Kisi · Gıda · KDV %1 · İskonto  ödenecek 4512.56  (karekod: resmi)
+TEA2026216066834  AYNI    eA-Kisi · Tekstil · KDV %10+%20 · İskonto  ödenecek 4435.13  (karekod: resmi)
+TEA2026216066835  AYNI    eA-Kisi · Gıda · KDV %20  ödenecek 85.36  (karekod: resmi)
+TEA2026216066836  AYNI    eA-Kisi · Tekstil · KDV %20  ödenecek 1853.16  (karekod: program,resmi)
+TEA2026216066837  AYNI    eA-Kisi · Elektronik · KDV %20  ödenecek 39000.00  (karekod: resmi)
+TEA2026216066838  FARKLI  eA-Kisi · Elektronik · KDV %20  beklenen ödenecek 149346.26  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      149346.26   gelen 149346.27
+    PayableAmount                                beklenen      149346.26   gelen 149346.27
+    TaxTotal/TaxAmount                           beklenen       24891.04   gelen 24891.05
+    TaxSubtotal %20 TaxAmount                    beklenen       24891.04   gelen 24891.05
+    program ödenecek (try_payable)               beklenen      149346.26   gelen 149346.27
+    karekod[resmi] vergidahil                    beklenen      149346.26   gelen 149346.27
+    karekod[resmi] odenecek                      beklenen      149346.26   gelen 149346.27
+    karekod[resmi] hesaplanankdv(20)             beklenen       24891.04   gelen 24891.05
+TEA2026216066839  AYNI    eA-Kisi · İnşaat · KDV %20  ödenecek 19140.00  (karekod: program,resmi)
+TEA2026216066840  AYNI    eA-Kisi · Gıda · KDV %1+%20  ödenecek 12466.78  (karekod: program,resmi)
+TEA2026216066841  AYNI    eA-Kisi · Elektronik · KDV %20  ödenecek 419.88  (karekod: resmi)
+TEA2026216066842  AYNI    eA-Firma · Tekstil · KDV %1 · İskonto  ödenecek 37.08  (karekod: resmi)
+TEA2026216066843  AYNI    eA-Firma · Elektronik · İstisna · KDV %0+%20 · İskonto  ödenecek 18268.05  (karekod: resmi)
+TEA2026216066844  AYNI    eA-Firma · Tekstil · Tevkifat · KDV %10+%20  ödenecek 222436.01  (karekod: program,resmi)
+TEA2026216066845  AYNI    eA-Firma · Tekstil · KDV %1  ödenecek 92.52  (karekod: program,resmi)
+TEA2026216066846  AYNI    eA-Firma · İnşaat · KDV %20 · İskonto  ödenecek 12483.74  (karekod: resmi)
+TEA2026216066847  AYNI    eA-Firma · Tekstil · KDV %10  ödenecek 1483.11  (karekod: resmi)
+TEA2026216066848  AYNI    eA-Firma · Tekstil · İstisna · KDV %0+%10+%20 · İskonto  ödenecek 24393.46  (karekod: resmi)
+TEA2026216066849  FARKLI  eA-Kisi · Gıda · KDV %1+%20 · İskonto  beklenen ödenecek 113500.44  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      113500.44   gelen 113500.43
+    PayableAmount                                beklenen      113500.44   gelen 113500.43
+    TaxTotal/TaxAmount                           beklenen       18846.15   gelen 18846.14
+    TaxSubtotal %1 TaxAmount                     beklenen           4.46   gelen 4.45
+    program ödenecek (try_payable)               beklenen      113500.44   gelen 113500.43
+    karekod[resmi] vergidahil                    beklenen      113500.44   gelen 113500.43
+    karekod[resmi] odenecek                      beklenen      113500.44   gelen 113500.43
+    karekod[resmi] hesaplanankdv(1)              beklenen           4.46   gelen 4.45
+TEA2026216066850  AYNI    eA-Firma · Gıda · Tevkifat · KDV %1+%20  ödenecek 3927.44  (karekod: resmi)
+TEA2026216066851  AYNI    eA-Firma · Gıda · KDV %1+%10+%20 · İskonto  ödenecek 8962.27  (karekod: resmi)
+TEA2026216066852  AYNI    eA-Firma · İnşaat · Tevkifat · KDV %20  ödenecek 96636.59  (karekod: program,resmi)
+TEA2026216066853  AYNI    eA-Firma · Gıda · KDV %1  ödenecek 1353.03  (karekod: resmi)
+TEA2026216066854  AYNI    eA-Kisi · Gıda · KDV %1  ödenecek 242.25  (karekod: resmi)
+TEA2026216066855  AYNI    eA-Kisi · Gıda · KDV %1+%20  ödenecek 8253.49  (karekod: resmi)
+TEA2026216066856  FARKLI  eA-Kisi · İnşaat · KDV %20 · İskonto  beklenen ödenecek 13023.58  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       13023.58   gelen 13023.57
+    PayableAmount                                beklenen       13023.58   gelen 13023.57
+    TaxTotal/TaxAmount                           beklenen        2170.60   gelen 2170.59
+    TaxSubtotal %20 TaxAmount                    beklenen        2170.60   gelen 2170.59
+    program ödenecek (try_payable)               beklenen       13023.58   gelen 13023.57
+    karekod[resmi] vergidahil                    beklenen       13023.58   gelen 13023.57
+    karekod[resmi] odenecek                      beklenen       13023.58   gelen 13023.57
+    karekod[resmi] hesaplanankdv(20)             beklenen        2170.60   gelen 2170.59
+TEA2026216066857  AYNI    eA-Firma · Tekstil · KDV %20  ödenecek 37043.24  (karekod: program,resmi)
+TEA2026216066858  AYNI    eA-Kisi · Gıda · KDV %1 · İskonto  ödenecek 1390.77  (karekod: program,resmi)
+TEA2026216066859  AYNI    eA-Firma · Tekstil · KDV %10 · İskonto  ödenecek 11742.40  (karekod: resmi)
+TEA2026216066860  AYNI    eA-Kisi · Tekstil · KDV %10 · İskonto  ödenecek 104.74  (karekod: program,resmi)
+TEA2026216066861  AYNI    eA-Firma · Gıda · KDV %1  ödenecek 212.40  (karekod: program,resmi)
+TEA2026216066862  AYNI    eA-Kisi · Elektronik · KDV %10+%20 · İskonto  ödenecek 141007.72  (karekod: program,resmi)
+TEA2026216066863  AYNI    eA-Firma · Tekstil · KDV %10+%20 · İskonto  ödenecek 44511.07  (karekod: resmi)
+TEA2026216066864  AYNI    eA-Firma · İnşaat · KDV %1+%20 · İskonto  ödenecek 1689.42  (karekod: resmi)
+TEA2026216066865  AYNI    eA-Kisi · İnşaat · KDV %20  ödenecek 57933.79  (karekod: resmi)
+TEA2026216066866  AYNI    eA-Firma · Gıda · Tevkifat · KDV %1+%20  ödenecek 13709.62  (karekod: program,resmi)
+TEA2026216066867  AYNI    eA-Kisi · Gıda · KDV %1  ödenecek 891.81  (karekod: program,resmi)
+TEA2026216066868  AYNI    eA-Kisi · İnşaat · KDV %1+%20 · İskonto  ödenecek 14799.39  (karekod: resmi)
+TEA2026216066869  AYNI    eA-Firma · Tekstil · İstisna · KDV %0+%10  ödenecek 7964.24  (karekod: program,resmi)
+TEA2026216066870  AYNI    eA-Kisi · Elektronik · KDV %20 · İskonto  ödenecek 116967.24  (karekod: resmi)
+TEA2026216066871  AYNI    eA-Kisi · Tekstil · KDV %10  ödenecek 1310.67  (karekod: resmi)
+TEA2026216066872  AYNI    eA-Firma · İnşaat · KDV %20  ödenecek 345.24  (karekod: resmi)
+TEA2026216066873  AYNI    eA-Kisi · Tekstil · KDV %1+%10 · İskonto  ödenecek 26142.33  (karekod: resmi)
+TEA2026216066874  AYNI    eA-Firma · İnşaat · Tevkifat+İstisna · KDV %0+%20  ödenecek 38583.74  (karekod: resmi)
+TEA2026216066875  AYNI    eA-Kisi · Gıda · KDV %1 · İskonto  ödenecek 386.33  (karekod: resmi)
+TEA2026216066876  AYNI    eA-Kisi · Gıda · KDV %1+%20 · İskonto  ödenecek 10527.78  (karekod: resmi)
+TEA2026216066877  AYNI    eA-Kisi · Gıda · KDV %1 · İskonto  ödenecek 10262.43  (karekod: resmi)
+TEA2026216066878  AYNI    eA-Firma · Gıda · KDV %1  ödenecek 254.42  (karekod: resmi)
+TEA2026216066879  AYNI    eA-Firma · Elektronik · KDV %20  ödenecek 62142.24  (karekod: program,resmi)
+TEA2026216066880  AYNI    eA-Kisi · Elektronik · KDV %10+%20  ödenecek 35510.13  (karekod: program,resmi)
+TEA2026216066881  AYNI    eA-Kisi · Elektronik · KDV %10 · İskonto  ödenecek 4053.86  (karekod: resmi)
+TEA2026216066882  AYNI    eA-Firma · Gıda · Tevkifat · KDV %1+%10  ödenecek 555.97  (karekod: resmi)
+TEA2026216066883  FARKLI  eA-Kisi · Gıda · KDV %1  beklenen ödenecek 1588.79  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen        1588.79   gelen 1588.80
+    PayableAmount                                beklenen        1588.79   gelen 1588.80
+    TaxTotal/TaxAmount                           beklenen          15.73   gelen 15.74
+    TaxSubtotal %1 TaxAmount                     beklenen          15.73   gelen 15.74
+    program ödenecek (try_payable)               beklenen        1588.79   gelen 1588.80
+    karekod[resmi] vergidahil                    beklenen        1588.79   gelen 1588.80
+    karekod[resmi] odenecek                      beklenen        1588.79   gelen 1588.80
+    karekod[resmi] hesaplanankdv(1)              beklenen          15.73   gelen 15.74
+TEA2026216066884  AYNI    eA-Kisi · Elektronik · KDV %20  ödenecek 839.76  (karekod: resmi)
+TEA2026216066885  FARKLI  eA-Kisi · Elektronik · KDV %20 · İskonto  beklenen ödenecek 84420.35  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       84420.35   gelen 84420.34
+    PayableAmount                                beklenen       84420.35   gelen 84420.34
+    TaxTotal/TaxAmount                           beklenen       14070.06   gelen 14070.05
+    TaxSubtotal %20 TaxAmount                    beklenen       14070.06   gelen 14070.05
+    program ödenecek (try_payable)               beklenen       84420.35   gelen 84420.34
+    karekod[resmi] vergidahil                    beklenen       84420.35   gelen 84420.34
+    karekod[resmi] odenecek                      beklenen       84420.35   gelen 84420.34
+    karekod[resmi] hesaplanankdv(20)             beklenen       14070.06   gelen 14070.05
+    karekod[program] vergidahil                  beklenen       84420.35   gelen 84420.34
+    karekod[program] odenecek                    beklenen       84420.35   gelen 84420.34
+    karekod[program] hesaplanankdv(20)           beklenen       14070.06   gelen 14070.05
+TEA2026216066886  AYNI    eA-Firma · İnşaat · Tevkifat · KDV %10+%20  ödenecek 9548.70  (karekod: resmi)
+TEA2026216066887  AYNI    eA-Kisi · Tekstil · KDV %10  ödenecek 4950.00  (karekod: resmi)
+TEA2026216066888  AYNI    eA-Firma · Gıda · KDV %1  ödenecek 3053.03  (karekod: resmi)
+TEA2026216066889  AYNI    eA-Kisi · Tekstil · KDV %20  ödenecek 29999.99  (karekod: resmi)
+TEA2026216066890  AYNI    eA-Kisi · İnşaat · KDV %1+%20  ödenecek 296.62  (karekod: program,resmi)
+TEA2026216066891  AYNI    eA-Kisi · Elektronik · KDV %1+%20  ödenecek 148750.08  (karekod: resmi)
+TEA2026216066892  AYNI    eA-Firma · İnşaat · KDV %20  ödenecek 5684.38  (karekod: program,resmi)
+TEA2026216066893  AYNI    eA-Kisi · Elektronik · KDV %20 · İskonto  ödenecek 78319.04  (karekod: resmi)
+TEA2026216066894  AYNI    eA-Kisi · İnşaat · KDV %20  ödenecek 232.56  (karekod: resmi)
+TEA2026216066895  AYNI    eA-Kisi · Gıda · KDV %1+%10  ödenecek 7582.97  (karekod: program,resmi)
+TEA2026216066896  AYNI    eA-Kisi · Tekstil · KDV %10+%20  ödenecek 80845.51  (karekod: resmi)
+TEA2026216066897  AYNI    eA-Firma · Tekstil · KDV %10 · İskonto  ödenecek 21936.20  (karekod: resmi)
+TEA2026216066898  AYNI    eA-Firma · Gıda · KDV %1  ödenecek 1029.55  (karekod: resmi)
+TEA2026216066899  AYNI    eA-Firma · Elektronik · Tevkifat · KDV %20  ödenecek 22244.39  (karekod: resmi)
+TEA2026216066900  AYNI    eA-Kisi · Gıda · KDV %1+%20  ödenecek 4641.59  (karekod: resmi)
+TEA2026216066901  AYNI    eA-Firma · Elektronik · KDV %20 · İskonto  ödenecek 99450.00  (karekod: resmi)
+TEA2026216066902  AYNI    eA-Kisi · Tekstil · KDV %20 · İskonto  ödenecek 2393.32  (karekod: resmi)
+TEA2026216066903  AYNI    eA-Kisi · Tekstil · KDV %1+%10  ödenecek 9654.67  (karekod: program,resmi)
+TEA2026216066904  AYNI    eA-Kisi · Tekstil · KDV %10+%20 · İskonto  ödenecek 6911.91  (karekod: resmi)
+TEA2026216066905  AYNI    eA-Firma · Elektronik · KDV %10+%20 · İskonto  ödenecek 98994.64  (karekod: program,resmi)
+TEA2026216066906  AYNI    eA-Kisi · Tekstil · KDV %1+%10 · İskonto  ödenecek 4971.53  (karekod: resmi)
+TEA2026216066907  AYNI    eA-Kisi · Gıda · KDV %1+%20 · İskonto  ödenecek 2811.07  (karekod: resmi)
+TEA2026216066908  FARKLI  eA-Kisi · İnşaat · KDV %20 · İskonto  beklenen ödenecek 1267.58  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen        1267.58   gelen 1267.59
+    PayableAmount                                beklenen        1267.58   gelen 1267.59
+    TaxTotal/TaxAmount                           beklenen         211.26   gelen 211.27
+    TaxSubtotal %20 TaxAmount                    beklenen         211.26   gelen 211.27
+    program ödenecek (try_payable)               beklenen        1267.58   gelen 1267.59
+    karekod[resmi] vergidahil                    beklenen        1267.58   gelen 1267.59
+    karekod[resmi] odenecek                      beklenen        1267.58   gelen 1267.59
+    karekod[resmi] hesaplanankdv(20)             beklenen         211.26   gelen 211.27
+TEA2026216066909  FARKLI  eA-Kisi · Gıda · KDV %1 · İskonto  beklenen ödenecek 37.92  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen          37.92   gelen 37.91
+    PayableAmount                                beklenen          37.92   gelen 37.91
+    TaxTotal/TaxAmount                           beklenen           0.38   gelen 0.37
+    TaxSubtotal %1 TaxAmount                     beklenen           0.38   gelen 0.37
+    program ödenecek (try_payable)               beklenen          37.92   gelen 37.91
+    karekod[resmi] vergidahil                    beklenen          37.92   gelen 37.91
+    karekod[resmi] odenecek                      beklenen          37.92   gelen 37.91
+    karekod[resmi] hesaplanankdv(1)              beklenen           0.38   gelen 0.37
+TEA2026216066910  AYNI    eA-Firma · İnşaat · KDV %20  ödenecek 6196.56  (karekod: program,resmi)
+TEA2026216066911  AYNI    eA-Firma · Gıda · KDV %1  ödenecek 241.84  (karekod: resmi)
+TEA2026216066912  AYNI    eA-Firma · İnşaat · KDV %20 · İskonto  ödenecek 30340.48  (karekod: resmi)
+TEA2026216066913  AYNI    eA-Kisi · Tekstil · KDV %10+%20  ödenecek 27699.61  (karekod: resmi)
+TEA2026216066914  FARKLI  eA-Kisi · Gıda · KDV %1  beklenen ödenecek 430.50  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen         430.50   gelen 430.51
+    PayableAmount                                beklenen         430.50   gelen 430.51
+    TaxTotal/TaxAmount                           beklenen           4.26   gelen 4.27
+    TaxSubtotal %1 TaxAmount                     beklenen           4.26   gelen 4.27
+    program ödenecek (try_payable)               beklenen         430.50   gelen 430.51
+    karekod[resmi] vergidahil                    beklenen         430.50   gelen 430.51
+    karekod[resmi] odenecek                      beklenen         430.50   gelen 430.51
+    karekod[resmi] hesaplanankdv(1)              beklenen           4.26   gelen 4.27
+TEA2026216066915  AYNI    eA-Kisi · Tekstil · KDV %10+%20  ödenecek 15549.06  (karekod: resmi)
+TEA2026216066916  AYNI    eA-Kisi · Gıda · KDV %1+%20 · İskonto  ödenecek 41579.89  (karekod: resmi)
+TEA2026216066917  AYNI    eA-Kisi · Elektronik · KDV %20 · İskonto  ödenecek 13492.68  (karekod: resmi)
+TEF2026216066818  AYNI    eF-Temel · Elektronik · KDV %20  ödenecek 78000.00  (karekod: resmi)
+TEF2026216066819  AYNI    eF-Temel · Tekstil · KDV %10+%20  ödenecek 1493.22  (karekod: resmi)
+TEF2026216066820  AYNI    eF-Temel · Tekstil · KDV %10+%20  ödenecek 102779.34  (karekod: resmi)
+TEF2026216066821  AYNI    eF-Ticari · Gıda · KDV %1+%20 · İskonto  ödenecek 1015.49  (karekod: resmi)
+TEF2026216066822  AYNI    eF-Ticari · Tekstil · KDV %10  ödenecek 5822.59  (karekod: resmi)
+TEF2026216066823  AYNI    eF-Ticari · Gıda · KDV %1  ödenecek 858.44  (karekod: resmi)
+TEF2026216066824  AYNI    eF-Temel · Tekstil · KDV %10 · İskonto  ödenecek 35357.49  (karekod: resmi)
+TEF2026216066825  AYNI    eF-Temel · Elektronik · KDV %1  ödenecek 10.10  (karekod: resmi)
+TEF2026216066826  FARKLI  eF-Temel · Elektronik · Tevkifat · KDV %1+%20 · İskonto  beklenen ödenecek 136873.99  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      138456.01   gelen 138456.00
+    PayableAmount                                beklenen      136873.99   gelen 136873.98
+    TaxTotal/TaxAmount                           beklenen       21519.10   gelen 21519.09
+    TaxSubtotal %20 TaxAmount                    beklenen       21420.77   gelen 21420.76
+    program ödenecek (try_payable)               beklenen      136873.99   gelen 136873.98
+    karekod[resmi] vergidahil                    beklenen      138456.01   gelen 138456.00
+    karekod[resmi] odenecek                      beklenen      136873.99   gelen 136873.98
+    karekod[resmi] hesaplanankdv(20)             beklenen       21420.77   gelen 21420.76
+TEF2026216066827  AYNI    eF-Temel · Gıda · KDV %1  ödenecek 3290.70  (karekod: resmi)
+TEF2026216066828  AYNI    eF-Temel · Elektronik · KDV %20  ödenecek 36700.79  (karekod: program,resmi)
+TEF2026216066829  AYNI    eF-Ticari · Tekstil · KDV %10 · İskonto  ödenecek 2547.14  (karekod: resmi)
+TEF2026216066830  AYNI    eF-Temel · Gıda · KDV %1+%20  ödenecek 12250.70  (karekod: resmi)
+TEF2026216066831  AYNI    eF-Temel · Tekstil · KDV %20  ödenecek 60143.98  (karekod: program,resmi)
+TEF2026216066832  AYNI    eF-Temel · Tekstil · Tevkifat+İstisna · KDV %0+%20  ödenecek 1451.23  (karekod: resmi)
+TEF2026216066833  AYNI    eF-Temel · Gıda · İstisna · KDV %0+%1  ödenecek 710.55  (karekod: resmi)
+TEF2026216066834  AYNI    eF-Temel · Gıda · KDV %1+%20 · İskonto  ödenecek 1435.05  (karekod: resmi)
+TEF2026216066835  FARKLI  eF-Ticari · Elektronik · Tevkifat · KDV %20 · İskonto  beklenen ödenecek 185395.34  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      186324.86   gelen 186324.87
+    PayableAmount                                beklenen      185395.34   gelen 185395.35
+    TaxTotal/TaxAmount                           beklenen       31054.14   gelen 31054.15
+    TaxSubtotal %20 TaxAmount                    beklenen       31054.14   gelen 31054.15
+    program ödenecek (try_payable)               beklenen      185395.34   gelen 185395.35
+    karekod[resmi] vergidahil                    beklenen      186324.86   gelen 186324.87
+    karekod[resmi] odenecek                      beklenen      185395.34   gelen 185395.35
+    karekod[resmi] hesaplanankdv(20)             beklenen       31054.14   gelen 31054.15
+TEF2026216066836  AYNI    eF-Temel · İnşaat · Tevkifat · KDV %20 · İskonto  ödenecek 7814.86  (karekod: resmi)
+TEF2026216066837  AYNI    eF-Ticari · Gıda · KDV %1+%10+%20  ödenecek 19676.31  (karekod: resmi)
+TEF2026216066838  AYNI    eF-Temel · Elektronik · KDV %20 · İskonto  ödenecek 111038.29  (karekod: resmi)
+TEF2026216066839  AYNI    eF-Temel · Elektronik · İstisna · KDV %0+%20  ödenecek 30733.03  (karekod: resmi)
+TEF2026216066840  AYNI    eF-Temel · Tekstil · KDV %10 · İskonto  ödenecek 8279.04  (karekod: resmi)
+TEF2026216066841  AYNI    eF-Temel · Tekstil · İstisna · KDV %0+%10+%20  ödenecek 90305.82  (karekod: program,resmi)
+TEF2026216066842  AYNI    eF-Temel · İnşaat · Tevkifat · KDV %1+%20 · İskonto  ödenecek 17091.85  (karekod: resmi)
+TEF2026216066843  AYNI    eF-Temel · İnşaat · KDV %20 · İskonto  ödenecek 3024.83  (karekod: resmi)
+TEF2026216066844  AYNI    eF-Ticari · Tekstil · KDV %1+%10 · İskonto  ödenecek 61731.71  (karekod: resmi)
+TEF2026216066845  AYNI    eF-Temel · Tekstil · Tevkifat · KDV %10  ödenecek 2136.88  (karekod: program,resmi)
+TEF2026216066846  AYNI    eF-Ticari · Tekstil · KDV %10+%20 · İskonto  ödenecek 102982.56  (karekod: resmi)
+TEF2026216066847  AYNI    eF-Ticari · Tekstil · KDV %1 · İskonto  ödenecek 1515.19  (karekod: resmi)
+TEF2026216066848  AYNI    eF-Ticari · Gıda · KDV %20  ödenecek 16795.20  (karekod: resmi)
+TEF2026216066849  AYNI    eF-Temel · Elektronik · Tevkifat · KDV %20  ödenecek 109519.35  (karekod: program,resmi)
+TEF2026216066850  AYNI    eF-Temel · Tekstil · KDV %10  ödenecek 8448.00  (karekod: resmi)
+TEF2026216066851  AYNI    eF-Ticari · Elektronik · Tevkifat+İstisna · KDV %0+%20  ödenecek 63585.33  (karekod: resmi)
+TEF2026216066852  AYNI    eF-Temel · İnşaat · KDV %20 · İskonto  ödenecek 32058.19  (karekod: resmi)
+TEF2026216066853  AYNI    eF-Ticari · Elektronik · KDV %10 · İskonto  ödenecek 1307.75  (karekod: program,resmi)
+TEF2026216066854  AYNI    eF-Temel · Gıda · İstisna · KDV %0+%1  ödenecek 8321.02  (karekod: resmi)
+TEF2026216066855  AYNI    eF-Ticari · Elektronik · KDV %20  ödenecek 89999.96  (karekod: program,resmi)
+TEF2026216066856  FARKLI  eF-Ticari · Elektronik · Tevkifat · KDV %1+%20 · İskonto  beklenen ödenecek 9760.24  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       10809.34   gelen 10809.35
+    PayableAmount                                beklenen        9760.24   gelen 9760.25
+    TaxTotal/TaxAmount                           beklenen        1785.73   gelen 1785.74
+    TaxSubtotal %20 TaxAmount                    beklenen        1784.73   gelen 1784.74
+    program ödenecek (try_payable)               beklenen        9760.24   gelen 9760.25
+    karekod[resmi] vergidahil                    beklenen       10809.34   gelen 10809.35
+    karekod[resmi] odenecek                      beklenen        9760.24   gelen 9760.25
+    karekod[resmi] hesaplanankdv(20)             beklenen        1784.73   gelen 1784.74
+TEF2026216066857  AYNI    eF-Temel · Tekstil · KDV %10  ödenecek 640.23  (karekod: resmi)
+TEF2026216066858  AYNI    eF-Temel · Gıda · Tevkifat · KDV %1+%20  ödenecek 193517.13  (karekod: resmi)
+TEF2026216066859  AYNI    eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%1+%20 · İskonto  ödenecek 11291.00  (karekod: resmi)
+TEF2026216066860  AYNI    eF-Temel · Gıda · KDV %1  ödenecek 92.72  (karekod: program,resmi)
+TEF2026216066861  AYNI    eF-Temel · İnşaat · KDV %20 · İskonto  ödenecek 45945.64  (karekod: resmi)
+TEF2026216066862  FARKLI  eF-Temel · İnşaat · KDV %20  beklenen ödenecek 97147.97  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       97147.97   gelen 97147.96
+    PayableAmount                                beklenen       97147.97   gelen 97147.96
+    TaxTotal/TaxAmount                           beklenen       16191.33   gelen 16191.32
+    TaxSubtotal %20 TaxAmount                    beklenen       16191.33   gelen 16191.32
+    program ödenecek (try_payable)               beklenen       97147.97   gelen 97147.96
+    karekod[resmi] vergidahil                    beklenen       97147.97   gelen 97147.96
+    karekod[resmi] odenecek                      beklenen       97147.97   gelen 97147.96
+    karekod[resmi] hesaplanankdv(20)             beklenen       16191.33   gelen 16191.32
+    karekod[program] vergidahil                  beklenen       97147.97   gelen 97147.96
+    karekod[program] odenecek                    beklenen       97147.97   gelen 97147.96
+    karekod[program] hesaplanankdv(20)           beklenen       16191.33   gelen 16191.32
+TEF2026216066863  AYNI    eF-Temel · Elektronik · Tevkifat · KDV %20 · İskonto  ödenecek 105942.48  (karekod: resmi)
+TEF2026216066864  AYNI    eF-Temel · Gıda · KDV %1  ödenecek 902.03  (karekod: program,resmi)
+TEF2026216066865  AYNI    eF-Temel · İnşaat · KDV %1 · İskonto  ödenecek 127.84  (karekod: resmi)
+TEF2026216066866  AYNI    eF-Temel · Tekstil · KDV %10 · İskonto  ödenecek 5170.55  (karekod: resmi)
+TEF2026216066867  AYNI    eF-Temel · Tekstil · KDV %10 · İskonto  ödenecek 6899.20  (karekod: resmi)
+TEF2026216066868  AYNI    eF-Temel · Elektronik · İstisna · KDV %0+%20  ödenecek 96067.70  (karekod: program,resmi)
+TEF2026216066869  AYNI    eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%1+%20  ödenecek 87152.46  (karekod: resmi)
+TEF2026216066870  AYNI    eF-Temel · Elektronik · Tevkifat · KDV %20  ödenecek 60115.52  (karekod: program,resmi)
+TEF2026216066871  FARKLI  eF-Temel · İnşaat · KDV %1+%20 · İskonto  beklenen ödenecek 4713.21  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen        4713.21   gelen 4713.20
+    PayableAmount                                beklenen        4713.21   gelen 4713.20
+    TaxTotal/TaxAmount                           beklenen         193.29   gelen 193.28
+    TaxSubtotal %20 TaxAmount                    beklenen         155.88   gelen 155.87
+    program ödenecek (try_payable)               beklenen        4713.21   gelen 4713.20
+    karekod[resmi] vergidahil                    beklenen        4713.21   gelen 4713.20
+    karekod[resmi] odenecek                      beklenen        4713.21   gelen 4713.20
+    karekod[resmi] hesaplanankdv(20)             beklenen         155.88   gelen 155.87
+    karekod[program] vergidahil                  beklenen        4713.21   gelen 4713.20
+    karekod[program] odenecek                    beklenen        4713.21   gelen 4713.20
+    karekod[program] hesaplanankdv(20)           beklenen         155.88   gelen 155.87
+TEF2026216066872  AYNI    eF-Ticari · Tekstil · KDV %1+%10+%20 · İskonto  ödenecek 38035.61  (karekod: resmi)
+TEF2026216066873  AYNI    eF-Ticari · Gıda · KDV %1 · İskonto  ödenecek 961.04  (karekod: resmi)
+TEF2026216066874  AYNI    eF-Temel · Gıda · KDV %1  ödenecek 3413.07  (karekod: program,resmi)
+TEF2026216066875  AYNI    eF-Ticari · Tekstil · Tevkifat · KDV %10  ödenecek 1436.32  (karekod: resmi)
+TEF2026216066876  FARKLI  eF-Temel · Elektronik · KDV %20 · İskonto  beklenen ödenecek 124523.68  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      124523.68   gelen 124523.67
+    PayableAmount                                beklenen      124523.68   gelen 124523.67
+    TaxTotal/TaxAmount                           beklenen       20753.95   gelen 20753.94
+    TaxSubtotal %20 TaxAmount                    beklenen       20753.95   gelen 20753.94
+    program ödenecek (try_payable)               beklenen      124523.68   gelen 124523.67
+    karekod[resmi] vergidahil                    beklenen      124523.68   gelen 124523.67
+    karekod[resmi] odenecek                      beklenen      124523.68   gelen 124523.67
+    karekod[resmi] hesaplanankdv(20)             beklenen       20753.95   gelen 20753.94
+TEF2026216066877  AYNI    eF-Ticari · Elektronik · KDV %20  ödenecek 91962.46  (karekod: program,resmi)
+TEF2026216066878  AYNI    eF-Temel · Tekstil · KDV %1 · İskonto  ödenecek 187.34  (karekod: program,resmi)
+TEF2026216066879  AYNI    eF-Temel · Elektronik · KDV %20  ödenecek 145595.09  (karekod: resmi)
+TEF2026216066880  AYNI    eF-Temel · Elektronik · Tevkifat+İstisna · KDV %0+%1+%20 · İskonto  ödenecek 365977.51  (karekod: resmi)
+TEF2026216066881  AYNI    eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%20  ödenecek 95904.78  (karekod: resmi)
+TEF2026216066882  AYNI    eF-Ticari · Gıda · KDV %1  ödenecek 36.56  (karekod: resmi)
+TEF2026216066883  AYNI    eF-Ticari · Gıda · KDV %20  ödenecek 54036.00  (karekod: resmi)
+TEF2026216066884  AYNI    eF-Ticari · Gıda · KDV %1+%10 · İskonto  ödenecek 38505.37  (karekod: resmi)
+TEF2026216066885  AYNI    eF-Ticari · Elektronik · KDV %10+%20  ödenecek 74151.00  (karekod: resmi)
+TEF2026216066886  AYNI    eF-Temel · Tekstil · KDV %1+%10  ödenecek 5156.39  (karekod: program,resmi)
+TEF2026216066887  AYNI    eF-Temel · Elektronik · KDV %20  ödenecek 29999.99  (karekod: program,resmi)
+TEF2026216066888  AYNI    eF-Temel · Elektronik · KDV %20  ödenecek 89999.96  (karekod: resmi)
+TEF2026216066889  AYNI    eF-Temel · Gıda · Tevkifat · KDV %20  ödenecek 12227.71  (karekod: resmi)
+TEF2026216066890  AYNI    eF-Temel · İnşaat · KDV %10+%20  ödenecek 31907.11  (karekod: resmi)
+TEF2026216066891  AYNI    eF-Temel · Elektronik · Tevkifat · KDV %20  ödenecek 49202.50  (karekod: program,resmi)
+TEF2026216066892  AYNI    eF-Ticari · İnşaat · Tevkifat · KDV %20  ödenecek 8963.30  (karekod: resmi)
+TEF2026216066893  FARKLI  eF-Ticari · İnşaat · Tevkifat · KDV %20 · İskonto  beklenen ödenecek 4123.34  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen        4251.05   gelen 4251.04
+    PayableAmount                                beklenen        4123.34   gelen 4123.33
+    TaxTotal/TaxAmount                           beklenen         708.51   gelen 708.50
+    TaxSubtotal %20 TaxAmount                    beklenen         708.51   gelen 708.50
+    program ödenecek (try_payable)               beklenen        4123.34   gelen 4123.33
+    karekod[resmi] vergidahil                    beklenen        4251.05   gelen 4251.04
+    karekod[resmi] odenecek                      beklenen        4123.34   gelen 4123.33
+    karekod[resmi] hesaplanankdv(20)             beklenen         708.51   gelen 708.50
+TEF2026216066894  AYNI    eF-Temel · İnşaat · KDV %1+%20 · İskonto  ödenecek 7234.47  (karekod: resmi)
+TEF2026216066895  AYNI    eF-Ticari · Elektronik · Tevkifat · KDV %20 · İskonto  ödenecek 125082.19  (karekod: resmi)
+TEF2026216066896  FARKLI  eF-Temel · İnşaat · KDV %1+%20 · İskonto  beklenen ödenecek 26598.45  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       26598.45   gelen 26598.46
+    PayableAmount                                beklenen       26598.45   gelen 26598.46
+    TaxTotal/TaxAmount                           beklenen        4184.89   gelen 4184.90
+    TaxSubtotal %20 TaxAmount                    beklenen        4169.21   gelen 4169.22
+    program ödenecek (try_payable)               beklenen       26598.45   gelen 26598.46
+    karekod[resmi] vergidahil                    beklenen       26598.45   gelen 26598.46
+    karekod[resmi] odenecek                      beklenen       26598.45   gelen 26598.46
+    karekod[resmi] hesaplanankdv(20)             beklenen        4169.21   gelen 4169.22
+TEF2026216066897  AYNI    eF-Ticari · Gıda · Tevkifat · KDV %1+%20  ödenecek 11531.09  (karekod: resmi)
+TEF2026216066898  FARKLI  eF-Temel · Tekstil · Tevkifat · KDV %1+%10+%20 · İskonto  beklenen ödenecek 13243.71  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       13359.81   gelen 13359.82
+    PayableAmount                                beklenen       13243.71   gelen 13243.72
+    TaxTotal/TaxAmount                           beklenen        1257.69   gelen 1257.70
+    TaxSubtotal %10 TaxAmount                    beklenen        1017.87   gelen 1017.88
+    program ödenecek (try_payable)               beklenen       13243.71   gelen 13243.72
+    karekod[resmi] vergidahil                    beklenen       13359.81   gelen 13359.82
+    karekod[resmi] odenecek                      beklenen       13243.71   gelen 13243.72
+    karekod[resmi] hesaplanankdv(10)             beklenen        1017.87   gelen 1017.88
+    karekod[program] vergidahil                  beklenen       13359.81   gelen 13359.82
+    karekod[program] odenecek                    beklenen       13243.71   gelen 13243.72
+    karekod[program] hesaplanankdv(10)           beklenen        1017.87   gelen 1017.88
+TEF2026216066899  AYNI    eF-Temel · Gıda · KDV %20  ödenecek 105.08  (karekod: resmi)
+TEF2026216066900  FARKLI  eF-Temel · İnşaat · KDV %20 · İskonto  beklenen ödenecek 15453.82  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       15453.82   gelen 15453.81
+    PayableAmount                                beklenen       15453.82   gelen 15453.81
+    TaxTotal/TaxAmount                           beklenen        2575.64   gelen 2575.63
+    TaxSubtotal %20 TaxAmount                    beklenen        2575.64   gelen 2575.63
+    program ödenecek (try_payable)               beklenen       15453.82   gelen 15453.81
+    karekod[resmi] vergidahil                    beklenen       15453.82   gelen 15453.81
+    karekod[resmi] odenecek                      beklenen       15453.82   gelen 15453.81
+    karekod[resmi] hesaplanankdv(20)             beklenen        2575.64   gelen 2575.63
+TEF2026216066901  AYNI    eF-Temel · Elektronik · KDV %20 · İskonto  ödenecek 163441.90  (karekod: resmi)
+TEF2026216066902  AYNI    eF-Temel · Elektronik · KDV %20  ödenecek 4198.80  (karekod: resmi)
+TEF2026216066903  AYNI    eF-Temel · Gıda · KDV %1 · İskonto  ödenecek 3172.39  (karekod: resmi)
+TEF2026216066904  AYNI    eF-Temel · İnşaat · Tevkifat · KDV %20  ödenecek 27550.17  (karekod: resmi)
+TEF2026216066905  AYNI    eF-Ticari · Elektronik · KDV %20  ödenecek 30529.63  (karekod: resmi)
+TEF2026216066906  AYNI    eF-Ticari · İnşaat · KDV %20 · İskonto  ödenecek 37095.25  (karekod: resmi)
+TEF2026216066907  FARKLI  eF-Temel · Gıda · KDV %1+%20 · İskonto  beklenen ödenecek 111259.17  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      111259.17   gelen 111259.18
+    PayableAmount                                beklenen      111259.17   gelen 111259.18
+    TaxTotal/TaxAmount                           beklenen       18067.54   gelen 18067.55
+    TaxSubtotal %1 TaxAmount                     beklenen          30.04   gelen 30.05
+    program ödenecek (try_payable)               beklenen      111259.17   gelen 111259.18
+    karekod[resmi] vergidahil                    beklenen      111259.17   gelen 111259.18
+    karekod[resmi] odenecek                      beklenen      111259.17   gelen 111259.18
+    karekod[resmi] hesaplanankdv(1)              beklenen          30.04   gelen 30.05
+TEF2026216066908  AYNI    eF-Ticari · İnşaat · KDV %1+%20  ödenecek 24138.87  (karekod: resmi)
+TEF2026216066909  AYNI    eF-Temel · İnşaat · KDV %1+%20  ödenecek 489.21  (karekod: resmi)
+TEF2026216066910  AYNI    eF-Ticari · İnşaat · KDV %1 · İskonto  ödenecek 56.06  (karekod: resmi)
+TEF2026216066911  AYNI    eF-Temel · Elektronik · Tevkifat · KDV %20 · İskonto  ödenecek 83138.18  (karekod: resmi)
+TEF2026216066912  FARKLI  eF-Temel · Elektronik · KDV %20  beklenen ödenecek 178413.48  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen      178413.48   gelen 178413.49
+    PayableAmount                                beklenen      178413.48   gelen 178413.49
+    TaxTotal/TaxAmount                           beklenen       29735.58   gelen 29735.59
+    TaxSubtotal %20 TaxAmount                    beklenen       29735.58   gelen 29735.59
+    program ödenecek (try_payable)               beklenen      178413.48   gelen 178413.49
+    karekod[resmi] vergidahil                    beklenen      178413.48   gelen 178413.49
+    karekod[resmi] odenecek                      beklenen      178413.48   gelen 178413.49
+    karekod[resmi] hesaplanankdv(20)             beklenen       29735.58   gelen 29735.59
+    karekod[program] vergidahil                  beklenen      178413.48   gelen 178413.49
+    karekod[program] odenecek                    beklenen      178413.48   gelen 178413.49
+    karekod[program] hesaplanankdv(20)           beklenen       29735.58   gelen 29735.59
+TEF2026216066913  FARKLI  eF-Ticari · Gıda · Tevkifat · KDV %20  beklenen ödenecek 72014.63  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen       77179.78   gelen 77179.77
+    PayableAmount                                beklenen       72014.63   gelen 72014.62
+    TaxTotal/TaxAmount                           beklenen       12863.30   gelen 12863.29
+    TaxSubtotal %20 TaxAmount                    beklenen       12863.30   gelen 12863.29
+    program ödenecek (try_payable)               beklenen       72014.63   gelen 72014.62
+    karekod[resmi] vergidahil                    beklenen       77179.78   gelen 77179.77
+    karekod[resmi] odenecek                      beklenen       72014.63   gelen 72014.62
+    karekod[resmi] hesaplanankdv(20)             beklenen       12863.30   gelen 12863.29
+TEF2026216066914  AYNI    eF-Temel · Tekstil · KDV %20  ödenecek 256.06  (karekod: program,resmi)
+TEF2026216066915  AYNI    eF-Ticari · Gıda · KDV %1+%20  ödenecek 4981.36  (karekod: program,resmi)
+TEF2026216066916  AYNI    eF-Ticari · İnşaat · KDV %20  ödenecek 61.82  (karekod: resmi)
+TEF2026216066917  AYNI    eF-Temel · Elektronik · KDV %1+%10 · İskonto  ödenecek 702.73  (karekod: resmi)
+TEF2026216066918  AYNI    eF-Temel · İnşaat · KDV %20 · İskonto  ödenecek 315.77  (karekod: program,resmi)
+TEF2026216066919  AYNI    eF-Temel · İnşaat · İstisna · KDV %0+%20 · İskonto  ödenecek 21190.59  (karekod: resmi)
+TEF2026216066920  AYNI    eF-Temel · Gıda · KDV %1  ödenecek 131.73  (karekod: resmi)
+TEF2026216066921  AYNI    eF-Ticari · Elektronik · Tevkifat · KDV %10+%20  ödenecek 33392.05  (karekod: resmi)
+TEF2026216066922  FARKLI  eF-Temel · Gıda · KDV %1+%20  beklenen ödenecek 123.90  (karekod: resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen         123.90   gelen 123.89
+    PayableAmount                                beklenen         123.90   gelen 123.89
+    TaxTotal/TaxAmount                           beklenen          10.25   gelen 10.24
+    TaxSubtotal %1 TaxAmount                     beklenen           0.66   gelen 0.65
+    program ödenecek (try_payable)               beklenen         123.90   gelen 123.89
+    karekod[resmi] vergidahil                    beklenen         123.90   gelen 123.89
+    karekod[resmi] odenecek                      beklenen         123.90   gelen 123.89
+    karekod[resmi] hesaplanankdv(1)              beklenen           0.66   gelen 0.65
+TEF2026216066923  AYNI    eF-Ticari · Tekstil · KDV %1+%10+%20 · İskonto  ödenecek 96785.17  (karekod: resmi)
+TEF2026216066924  AYNI    eF-Temel · Gıda · KDV %1  ödenecek 3229.98  (karekod: resmi)
+TEF2026216066925  AYNI    eF-Ticari · Gıda · İstisna · KDV %0+%1 · İskonto  ödenecek 25689.88  (karekod: program,resmi)
+TEF2026216066926  AYNI    eF-Ticari · Elektronik · Tevkifat · KDV %10+%20  ödenecek 85423.96  (karekod: resmi)
+TEF2026216066927  AYNI    eF-Ticari · Elektronik · KDV %1+%20  ödenecek 422.51  (karekod: program,resmi)
+TEF2026216066928  AYNI    eF-Temel · İnşaat · KDV %20  ödenecek 57.54  (karekod: resmi)
+TEF2026216066929  AYNI    eF-Temel · Gıda · Tevkifat+İstisna · KDV %0+%1+%20 · İskonto  ödenecek 4584.03  (karekod: program,resmi)
+TEF2026216066930  AYNI    eF-Temel · Elektronik · Tevkifat · KDV %20 · İskonto  ödenecek 36340.45  (karekod: resmi)
+TEF2026216066931  AYNI    eF-Temel · Gıda · KDV %1  ödenecek 25.89  (karekod: program,resmi)
+TEF2026216066932  AYNI    eF-Temel · Tekstil · KDV %10+%20  ödenecek 63897.67  (karekod: resmi)
+TEF2026216066933  AYNI    eF-Temel · Tekstil · KDV %1+%10 · İskonto  ödenecek 483.22  (karekod: program,resmi)
+TEF2026216066934  AYNI    eF-Temel · Elektronik · KDV %20 · İskonto  ödenecek 77759.60  (karekod: resmi)
+TEF2026216066935  AYNI    eF-Temel · Gıda · Tevkifat · KDV %1+%20  ödenecek 120060.79  (karekod: resmi)
+TEF2026216066936  AYNI    eF-Temel · Tekstil · Tevkifat · KDV %1+%10+%20  ödenecek 80398.11  (karekod: resmi)
+TEF2026216066937  FARKLI  eF-Temel · Tekstil · KDV %10  beklenen ödenecek 5473.63  (karekod: program,resmi)  [BİLGİ: satır başına yuvarlamayla AYNI]
+    TaxInclusiveAmount                           beklenen        5473.63   gelen 5473.64
+    PayableAmount                                beklenen        5473.63   gelen 5473.64
+    TaxTotal/TaxAmount                           beklenen         497.60   gelen 497.61
+    TaxSubtotal %10 TaxAmount                    beklenen         497.60   gelen 497.61
+    program ödenecek (try_payable)               beklenen        5473.63   gelen 5473.64
+    karekod[resmi] vergidahil                    beklenen        5473.63   gelen 5473.64
+    karekod[resmi] odenecek                      beklenen        5473.63   gelen 5473.64
+    karekod[resmi] hesaplanankdv(10)             beklenen         497.60   gelen 497.61
+    karekod[program] vergidahil                  beklenen        5473.63   gelen 5473.64
+    karekod[program] odenecek                    beklenen        5473.63   gelen 5473.64
+    karekod[program] hesaplanankdv(10)           beklenen         497.60   gelen 497.61
+TEF2026216066938  AYNI    eF-Temel · Elektronik · Tevkifat · KDV %20 · İskonto  ödenecek 155518.83  (karekod: resmi)
+TEF2026216066939  AYNI    eF-Ticari · Gıda · Tevkifat+İstisna · KDV %0+%20 · İskonto  ödenecek 1193.27  (karekod: program,resmi)
+TEF2026216066940  AYNI    eF-Ticari · Elektronik · Tevkifat · KDV %10  ödenecek 2388.51  (karekod: program,resmi)
+TEF2026216066941  AYNI    eF-Temel · İnşaat · KDV %20  ödenecek 20757.77  (karekod: resmi)
+TEF2026216066942  AYNI    eF-Temel · Elektronik · KDV %20  ödenecek 135839.02  (karekod: resmi)
+TEF2026216066943  AYNI    eF-Ticari · Tekstil · Tevkifat · KDV %1+%10+%20 · İskonto  ödenecek 20651.77  (karekod: resmi)
+TEF2026216066944  AYNI    eF-Ticari · İnşaat · KDV %10+%20  ödenecek 39981.58  (karekod: resmi)
+TEF2026216066945  AYNI    eF-Temel · Elektronik · KDV %1+%20  ödenecek 117161.90  (karekod: resmi)
+TEF2026216066946  AYNI    eF-Ticari · Tekstil · KDV %1+%10+%20 · İskonto  ödenecek 41931.55  (karekod: resmi)

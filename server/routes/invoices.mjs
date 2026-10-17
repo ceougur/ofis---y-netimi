@@ -16,6 +16,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import path from "node:path";
 import { parseQty } from "../lib/accounts.mjs";
 import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl, testOnlyUrl } from "../lib/einvoice/adapters.mjs";
+import { EDM_URLS } from "../lib/einvoice/edm.mjs";
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
@@ -127,6 +128,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
   const edocLive = edocEnabled && config.edocLive === true;
+  // e-SMM gönderimi hazır olana dek kapalı (config.mjs esmmEnabled): eski "esmm: true" kaydı da etkisizdir (makbuz kâğıt).
+  const esmmEnabled = edocEnabled && config.esmmEnabled === true;
   // Fatura kapaması (lib/invoice-settle.mjs). config.legacyClosing yalnız testlerde: K1 öncesi kural (2.0.26 ile birebir karşılaştırmalar);
   // o kuralda iadenin geri ödenen kısmı da faturadan düşülür ve kartın hedefine geri eklenir (ownTarget, açılış onarımı, retarget).
   const settle = config.legacyClosing || settleInvoices;
@@ -212,6 +215,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (body.efatura !== undefined) next.efatura = body.efatura === true;
     if (body.earsiv !== undefined) next.earsiv = body.earsiv === true;
     if (next.earsiv && !next.efatura) fail400("e-Arşiv için önce e-Fatura mükellefi olmak gerekir (GİB): e-Fatura kutusunu da işaretleyin.", "earsiv");
+    if (body.esmm === true && !esmmEnabled) fail400("e-SMM gönderimi bu sürümde yok; serbest meslek makbuzu kâğıt olarak düzenlenir.", "esmm", { code: "esmm-unavailable" });
     if (body.esmm !== undefined) next.esmm = body.esmm === true;
     if (body.series && typeof body.series === "object") {
       for (const key of Object.keys(DEFAULTS.series)) {
@@ -278,6 +282,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (baseUrl && !/^https:\/\/[^\s/]+\/\S+$/i.test(baseUrl) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/\S*$/i.test(baseUrl)) fail400("Servis adresi https:// ile başlayan tam adres olmalı; boş bırakılırsa seçilen ortamın adresi kullanılır.", "integrator.baseUrl");
       // Canlı kilidi Servis Adresi'nden de delinmez (bitiş turu Y1/E1): kilit açılana dek yalnız test ortamının adresi (ya da boş).
       if (!edocLive && !testOnlyUrl(baseUrl)) fail400("Canlı ortam açılana kadar Servis Adresi yalnız entegratörün test adresi olabilir; alanı boş bırakın (Test Ortamı'nın adresi kullanılır).", "integrator.baseUrl", { code: "integrator-live-locked" });
+      // 2.4.1 (G3): canlı açıkken de ortam ↔ adres uyumlu olmalı — Test Ortamı + canlı adres test serisi belgeyi canlıya, Canlı Ortam + test adresi yasal numaralı belgeyi teste gönderirdi.
+      const mismatch = envUrlMismatch(env, baseUrl);
+      if (mismatch) fail400(mismatch, "integrator.baseUrl", { code: "integrator-env-url" });
       const username = input.username === undefined ? prev.username : limited(input.username, 120, "Kullanıcı Adı");
       let passwordSealed = prev.passwordSealed;
       if (input.clearPassword === true) passwordSealed = "";
@@ -396,12 +403,26 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const networkSummary = () => (edocEnabled && config.describeNetwork ? config.describeNetwork().effective : null);
   // Entegratör bağlantı ayrıntısı (kullanıcı adı, servis adresi, son test iletisi, vekil) yalnız Fatura Ayarları yetkisine (bitiş turu E10); öbürleri
   // yalnız ortamı ve bağlantının kurulu olup olmadığını görür.
-  const publicSettings = (s, full = true) => {
+  const publicSettings = (raw, full = true) => {
+    const s = esmmEnabled || !raw.esmm ? raw : { ...raw, esmm: false };
     const { passwordSealed, ...rest } = s.integrator;
     if (!full) return { ...s, integrator: { id: rest.id, env: rest.env, label: ADAPTERS[s.integrator.id]?.label || "", configured: Boolean(rest.username && passwordSealed), autoSend: rest.autoSend === true, autoCheckUser: rest.autoCheckUser === true, liveAllowed: edocLive } };
     return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive, network: networkSummary() } };
   };
   const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true, autoCheckUser: s.integrator.autoCheckUser === true });
+  // Dar kontrol B2/B3: adres yazım varyantlarıyla (sonda "/", büyük harf, :443) karşılaştırılır — istemci (edm.mjs) sondaki "/"yi zaten atar.
+  const sameUrl = (a, b) => {
+    const norm = url => { try { const u = new URL(String(url).trim()); return `${u.protocol}//${u.host.toLowerCase()}${u.pathname.replace(/\/+$/, "")}`; } catch { return String(url).trim(); } };
+    return norm(a) === norm(b);
+  };
+  function envUrlMismatch(env, baseUrl) {
+    const value = String(baseUrl || "").trim();
+    if (!value || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/\S*)?$/i.test(value)) return "";
+    const isTest = testOnlyUrl(value) || sameUrl(value, EDM_URLS.test);
+    if (env !== "live" && !isTest) return "Test Ortamı seçiliyken Servis Adresi yalnız entegratörün test adresi olabilir. Canlıya geçmek için Çalışma Ortamı'nda Canlı Ortam'ı seçin; Servis Adresi boş kalabilir.";
+    if (env === "live" && isTest) return "Canlı Ortam seçiliyken Servis Adresi test adresi olamaz; alanı boş bırakın (canlı adres kullanılır).";
+    return "";
+  }
   function integrator(s = settings()) {
     requireEdoc();
     const cfg = s.integrator;
@@ -410,6 +431,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (cfg.env === "live" && !edocLive) throw new HttpError(409, "Entegratör ayarında Canlı Ortam seçili ama canlı ortam henüz açılmadı (test ortamındaki kabulden sonra açılır). Entegratör Ayarları'nda Test Ortamı'nı seçin.", { code: "integrator-live-locked" });
     // Bitiş turu Y1/E1: veri tabanında (eski kayıt, yedekten geri yükleme) test dışı bir Servis Adresi kalmışsa da ağa çıkılmaz.
     if (!edocLive && !testOnlyUrl(cfg.baseUrl)) throw new HttpError(409, "Entegratör ayarındaki Servis Adresi test ortamının adresi değil; canlı ortam henüz açılmadı. Entegratör Ayarları'nda Servis Adresi'ni boşaltın.", { code: "integrator-live-locked" });
+    const mismatch = envUrlMismatch(cfg.env, cfg.baseUrl);
+    if (mismatch) throw new HttpError(409, mismatch, { code: "integrator-env-url" });
     if (!cfg.username || !cfg.passwordSealed) throw new HttpError(409, `${ADAPTERS[cfg.id]?.label || "Entegratör"} web servis kullanıcı adı ve parolası girilmemiş. Fatura → Entegratör Ayarları'ndan girin.`, { code: "integrator-not-configured" });
     const password = secrets().open(cfg.passwordSealed);
     if (!password) throw new HttpError(409, "Kayıtlı entegratör parolası bu bilgisayarda açılamadı (veriler başka bilgisayardan taşınmış olabilir). Fatura → Entegratör Ayarları'nda parolayı yeniden girin.", { code: "integrator-password" });
@@ -1081,13 +1104,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // bize nasıl geldiğidir (bilgi).
   const allowedProfiles = (kind, account, s) => {
     if (!edocEnabled) return ["KAGIT"];
-    if (kind === "smm") return s.esmm ? ["ESMM"] : ["KAGIT"];
+    if (kind === "smm") return esmmEnabled && s.esmm ? ["ESMM"] : ["KAGIT"];
     if (!INVOICE_KINDS[kind].own) return ["KAGIT", "EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"];
     if (!s.efatura) return ["KAGIT"];
     if (Number(account.eInvoice) === 1) return ["TEMELFATURA", "TICARIFATURA"];
     return s.earsiv ? ["EARSIVFATURA"] : ["KAGIT"];
   };
   function profileFor(kind, account, requested, s) {
+    // 2.4.1 (gözden geçirme G1): e-SMM kapalıyken 2.4.0'dan kalan taslağın / formun "ESMM" isteği kâğıt makbuz sayılır (gizli işareti isteyen 400 yok).
+    if (kind === "smm" && requested === "ESMM" && !(esmmEnabled && s.esmm)) requested = "";
     const allowed = allowedProfiles(kind, account, s);
     const auto = kind === "smm" || !INVOICE_KINDS[kind].own ? allowed[0] : allowed.includes("TEMELFATURA") ? (allowed.includes(account.eProfile) ? account.eProfile : s.defaults.efaturaProfile || "TEMELFATURA") : allowed[0];
     if (!requested || !PROFILES[requested]) return auto;
@@ -1177,7 +1202,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (original && date < original.issueDate) fail400(`İade tarihi, asıl faturanın tarihinden (${dayText(original.issueDate)}) önce olamaz.`, "issueDate", { code: "return-before-original" });
     const time = text(body.issueTime ?? existing?.issueTime ?? "") || nowTime();
     if (!TIME.test(time)) fail400("Fatura saati SS:DD biçiminde olmalı (ör. 14:30).", "issueTime");
-    const profile = original && !meta.own ? profileFor(kind, account, text(body.profile) || "KAGIT", s) : profileFor(kind, account, text(body.profile ?? (existing && existing.status === "draft" ? "" : existing?.profile) ?? ""), s);
+    // 2.4.1 (G1/G2): 2.4.0'da e-SMM serisinden numara almış makbuz düzenlenirken türü korunur (numarası TES/ESM; kâğıt belgeye geçmez, gönderilemez — 2.4.0'daki gibi).
+    // Dar kontrol B1: bayrak açıkken işaret sonradan kaldırılsa da aynı kural (numaralı e-SMM makbuzu kâğıda dönmez).
+    const legacyEsmm = kind === "smm" && existing && existing.status !== "draft" && existing.profile === "ESMM";
+    const profile = legacyEsmm ? "ESMM" : original && !meta.own ? profileFor(kind, account, text(body.profile) || "KAGIT", s) : profileFor(kind, account, text(body.profile ?? (existing && existing.status === "draft" ? "" : existing?.profile) ?? ""), s);
     const currency = original ? original.currency : CURRENCIES[text(body.currency)] ? text(body.currency) : existing?.currency || "TRY";
     let rate = 1;
     if (original) rate = Number(original.rate) || 1;
@@ -1455,14 +1483,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Ayarlar ekranı: bu yıl her serinin sıradaki numarası (kâğıt / iç seri; e-Belge açıksa e-Belge serileri de).
   function nextNumbers(s) {
     const year = Number(today().slice(0, 4));
-    const keys = edocEnabled ? Object.keys(s.series) : ["paper", "smm", "internal"];
+    const keys = edocEnabled ? Object.keys(s.series).filter(key => key !== "esmm" || esmmEnabled) : ["paper", "smm", "internal"];
     return Object.fromEntries(keys.map(key => [key, { series: s.series[key], year, ...nextNumber(s.series[key], year, s) }]));
   }
   // Test ortamındayken e-Belgenin gerçekte alacağı numara (TEST_SERIES); canlıdaysa boş.
   function testNumbers(s) {
     if (!edocEnabled || liveEnv(s)) return null;
     const year = Number(today().slice(0, 4));
-    return Object.fromEntries(Object.entries(TEST_SERIES).map(([key, series]) => [key, { series, year, ...nextNumber(series, year, s) }]));
+    return Object.fromEntries(Object.entries(TEST_SERIES).filter(([key]) => key !== "esmm" || esmmEnabled).map(([key, series]) => [key, { series, year, ...nextNumber(series, year, s) }]));
   }
   // VUK md. 231 ve GİB: aynı seride numara sırası ile tarih sırası uyuşmalı — yeni fatura serinin son faturasından eski
   // tarihli olamaz (iptal edilmiş numara da sırada yer tutar).
@@ -2092,7 +2120,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       eStates: E_STATES,
       adapters: edocEnabled ? Object.entries(ADAPTERS).map(([id, value]) => adapterInfo(id, value)) : [],
       edocEnabled,
-      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: edocEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
+      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: esmmEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
       today: today(),
       repeated: repeated.length,
       lockedUntil: period?.lockedUntil?.() || "",
@@ -2105,7 +2133,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.get("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = requireView(req);
     const s = settings();
-    ok(res, { ...publicSettings(s, canUser(user, "invoices.settings")), edocEnabled, nextNumbers: nextNumbers(s), testNumbers: testNumbers(s), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
+    ok(res, { ...publicSettings(s, canUser(user, "invoices.settings")), edocEnabled, esmmAvailable: esmmEnabled, nextNumbers: nextNumbers(s), testNumbers: testNumbers(s), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
   });
   router.put("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = auth.requirePermission(req, "invoices.settings");
@@ -2119,7 +2147,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       audit(user, "invoice.settings.updated", "settings", { efatura: next.efatura, earsiv: next.earsiv, series: next.series, integrator: integratorLog });
     });
     publish(user, { kind: "invoices", settings: true });
-    ok(res, { ...publicSettings(next), edocEnabled, nextNumbers: nextNumbers(next), testNumbers: testNumbers(next), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
+    ok(res, { ...publicSettings(next), edocEnabled, esmmAvailable: esmmEnabled, nextNumbers: nextNumbers(next), testNumbers: testNumbers(next), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
   });
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);

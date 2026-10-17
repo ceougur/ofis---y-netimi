@@ -1,0 +1,159 @@
+TAP version 13
+# (node:23416) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G1/G2: 2.4.0'dan kalan e-SMM makbuzu ve taslağı 2.4.1'de
+    # Subtest: Düzenle formunun hesaplaması (tür ESMM gelir) 400 vermez
+    not ok 1 - Düzenle formunun hesaplaması (tür ESMM gelir) 400 vermez
+      ---
+      duration_ms: 7.918211
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:53:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"e-SMM için Fatura Ayarları'nda e-SMM kullanıcısı olduğunuzu işaretleyin.","code":"profile-not-allowed","field":"profile","allowed":["KAGIT"]}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/kontrol-241.test.mjs:55:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: eski makbuz düzenlenir: türü ve TES numarası korunur (tür ESMM ya da KAGIT gelse de); kâğıt belgeye TES numarası geçmez
+    not ok 2 - eski makbuz düzenlenir: türü ve TES numarası korunur (tür ESMM ya da KAGIT gelse de); kâğıt belgeye TES numarası geçmez
+      ---
+      duration_ms: 8.39616
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:57:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ESMM: {"ok":false,"error":"e-SMM için Fatura Ayarları'nda e-SMM kullanıcısı olduğunuzu işaretleyin.","code":"profile-not-allowed","field":"profile","allowed":["KAGIT"]}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/kontrol-241.test.mjs:60:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: eski e-SMM taslağı formdan kaydedilir (tür ESMM gelir): kâğıt makbuz, SMM serisi
+    not ok 3 - eski e-SMM taslağı formdan kaydedilir (tür ESMM gelir): kâğıt makbuz, SMM serisi
+      ---
+      duration_ms: 6.878376
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"e-SMM için Fatura Ayarları'nda e-SMM kullanıcısı olduğunuzu işaretleyin.","code":"profile-not-allowed","field":"profile","allowed":["KAGIT"]}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/kontrol-241.test.mjs:67:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - G1/G2: 2.4.0'dan kalan e-SMM makbuzu ve taslağı 2.4.1'de
+  ---
+  duration_ms: 545.394601
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: G3: Servis Adresi ile Çalışma Ortamı uyumlu olmalı (canlı açık kurulum)
+    # Subtest: Test Ortamı + canlı adres reddedilir; Canlı Ortam + test adresi reddedilir
+    not ok 1 - Test Ortamı + canlı adres reddedilir; Canlı Ortam + test adresi reddedilir
+      ---
+      duration_ms: 5.369343
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"seller":{"name":"Deneme Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"A","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","banks":[],"logo":"","stamp":""},"efatura":true,"earsiv":true,"esmm":false,"series":{"paper":"FIS","earsiv":"EAR","efatura":"EFT","smm":"SMM","esmm":"ESM","internal":"IAD"},"start":{},"defaults":{"vatRate":20,"pricesIncludeVat":false,"stoppageRate":20,"efaturaProfile":"TEMELFATURA","dueDays":0,"footer":"","saleScenario":"","purchaseScenario":"","signatureArea":true,"itemTracking":false},"eView":{"enabled":true,"logo":true,"banks":true,"footer":true,"stamp":true,"stampEfatura":false},"eOptions":{"balanceNote":false,"paymentMeans":false,"draftUpload":false},"integrator":{"id":"edm","env":"test","baseUrl":"https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc","username":"u","senderAlias":"","mailboxAlias":"","autoSend":false,"earchiveEmail":true,"autoCheckUser":false,"lastTest":null,"hasPassword":true,"url":"https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc","label":"EDM Bilişim","liveAllowed":true,"network":{"source":"env","address":"http://127.0.0.1:34629"}},"edocEnabled":true,"esmmAvailable":false,"nextNumbers":{"paper":{"series":"FIS","year":2026,"seq":1,"number":"FIS2026000000001"},"earsiv":{"series":"EAR","year":2026,"seq":1,"number":"EAR2026000000001"},"efatura":{"series":"EFT","year":2026,"seq":1,"number":"EFT2026000000001"},"smm":{"series":"SMM","year":2026,"seq":1,"number":"SMM2026000000001"},"internal":{"series":"IAD","year":2026,"seq":1,"number":"IAD2026000000001"}},"testNumbers":{"efatura":{"series":"TEF","year":2026,"seq":1,"number":"TEF2026000000001"},"earsiv":{"series":"TEA","year":2026,"seq":1,"number":"TEA2026000000001"}},"testSeries":{"efatura":"TEF","earsiv":"TEA","esmm":"TES"},"bankAccounts":{"active":false,"accounts":[],"suggestions":[]},"problems":{"KAGIT":[],"EARSIVFATURA":[],"TEMELFATURA":[]}}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/kontrol-241.test.mjs:88:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: uyumlu ayarlar kaydedilir (boş adres, ortamın kendi adresi)
+    ok 2 - uyumlu ayarlar kaydedilir (boş adres, ortamın kendi adresi)
+      ---
+      duration_ms: 15.037381
+      type: 'test'
+      ...
+    # Subtest: veri tabanında kalmış uyumsuz kayıt (Test Ortamı + canlı adres) ağa çıkmadan reddedilir
+    not ok 3 - veri tabanında kalmış uyumsuz kayıt (Test Ortamı + canlı adres) ağa çıkmadan reddedilir
+      ---
+      duration_ms: 7.078192
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"EDM'ye bağlanılamadı: ağa çıkılmamalı","code":"integrator-unreachable","detail":"","integratorCode":""}
+        
+        502 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 502
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/kontrol-241.test.mjs:105:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - G3: Servis Adresi ile Çalışma Ortamı uyumlu olmalı (canlı açık kurulum)
+  ---
+  duration_ms: 302.842519
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:76:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1194.749273

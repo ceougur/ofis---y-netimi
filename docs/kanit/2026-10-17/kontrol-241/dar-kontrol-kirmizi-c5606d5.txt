@@ -1,0 +1,125 @@
+TAP version 13
+# (node:26279) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G1/G2: 2.4.0'dan kalan e-SMM makbuzu ve taslağı 2.4.1'de
+    # Subtest: Düzenle formunun hesaplaması (tür ESMM gelir) 400 vermez
+    ok 1 - Düzenle formunun hesaplaması (tür ESMM gelir) 400 vermez
+      ---
+      duration_ms: 6.075038
+      type: 'test'
+      ...
+    # Subtest: eski makbuz düzenlenir: türü ve TES numarası korunur (tür ESMM ya da KAGIT gelse de); kâğıt belgeye TES numarası geçmez
+    ok 2 - eski makbuz düzenlenir: türü ve TES numarası korunur (tür ESMM ya da KAGIT gelse de); kâğıt belgeye TES numarası geçmez
+      ---
+      duration_ms: 30.368083
+      type: 'test'
+      ...
+    # Subtest: eski e-SMM taslağı formdan kaydedilir (tür ESMM gelir): kâğıt makbuz, SMM serisi
+    ok 3 - eski e-SMM taslağı formdan kaydedilir (tür ESMM gelir): kâğıt makbuz, SMM serisi
+      ---
+      duration_ms: 20.715012
+      type: 'test'
+      ...
+    1..3
+ok 1 - G1/G2: 2.4.0'dan kalan e-SMM makbuzu ve taslağı 2.4.1'de
+  ---
+  duration_ms: 566.484187
+  type: 'suite'
+  ...
+# Subtest: B1: e-SMM açık kurulumda işaret kaldırılınca numaralı e-SMM makbuzu türünü korur
+    # Subtest: TES numaralı makbuz düzenlenince ESMM kalır; işaretsiz taslak kâğıt olur
+    not ok 1 - TES numaralı makbuz düzenlenince ESMM kalır; işaretsiz taslak kâğıt olur
+      ---
+      duration_ms: 43.523314
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ESMM: TES numaralı belge kâğıt olmaz
+        
+        'KAGIT' !== 'ESMM'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ESMM'
+      actual: 'KAGIT'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/kontrol-241.test.mjs:96:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - B1: e-SMM açık kurulumda işaret kaldırılınca numaralı e-SMM makbuzu türünü korur
+  ---
+  duration_ms: 240.274979
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:78:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: G3: Servis Adresi ile Çalışma Ortamı uyumlu olmalı (canlı açık kurulum)
+    # Subtest: Test Ortamı + canlı adres reddedilir; Canlı Ortam + test adresi reddedilir
+    ok 1 - Test Ortamı + canlı adres reddedilir; Canlı Ortam + test adresi reddedilir
+      ---
+      duration_ms: 8.079746
+      type: 'test'
+      ...
+    # Subtest: B2/B3: adresin yazım varyantları (sonda /, büyük harf, :443) ortamına göre aynı sayılır
+    not ok 2 - B2/B3: adresin yazım varyantları (sonda /, büyük harf, :443) ortamına göre aynı sayılır
+      ---
+      duration_ms: 5.119748
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Canlı + https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc/: {"seller":{"name":"Deneme Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"A","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","banks":[],"logo":"","stamp":""},"efatura":true,"earsiv":true,"esmm":false,"series":{"paper":"FIS","earsiv":"EAR","efatura":"EFT","smm":"SMM","esmm":"ESM","internal":"IAD"},"start":{},"defaults":{"vatRate":20,"pricesIncludeVat":false,"stoppageRate":20,"efaturaProfile":"TEMELFATURA","dueDays":0,"footer":"","saleScenario":"","purchaseScenario":"","signatureArea":true,"itemTracking":false},"eView":{"enabled":true,"logo":true,"banks":true,"footer":true,"stamp":true,"stampEfatura":false},"eOptions":{"balanceNote":false,"paymentMeans":false,"draftUpload":false},"integrator":{"id":"edm","env":"live","baseUrl":"https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc/","username":"u","senderAlias":"","mailboxAlias":"","autoSend":false,"earchiveEmail":true,"autoCheckUser":false,"lastTest":null,"hasPassword":true,"url":"https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc/","label":"EDM Bilişim","liveAllowed":true,"network":{"source":"env","address":"http://127.0.0.1:34629"}},"edocEnabled":true,"esmmAvailable":false,"nextNumbers":{"paper":{"series":"FIS","year":2026,"seq":1,"number":"FIS2026000000001"},"earsiv":{"series":"EAR","year":2026,"seq":1,"number":"EAR2026000000001"},"efatura":{"series":"EFT","year":2026,"seq":1,"number":"EFT2026000000001"},"smm":{"series":"SMM","year":2026,"seq":1,"number":"SMM2026000000001"},"internal":{"series":"IAD","year":2026,"seq":1,"number":"IAD2026000000001"}},"testNumbers":null,"testSeries":{"efatura":"TEF","earsiv":"TEA","esmm":"TES"},"bankAccounts":{"active":false,"accounts":[],"suggestions":[]},"problems":{"KAGIT":[],"EARSIVFATURA":[],"TEMELFATURA":[]}}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/kontrol-241.test.mjs:124:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: uyumlu ayarlar kaydedilir (boş adres, ortamın kendi adresi)
+    ok 3 - uyumlu ayarlar kaydedilir (boş adres, ortamın kendi adresi)
+      ---
+      duration_ms: 11.549434
+      type: 'test'
+      ...
+    # Subtest: veri tabanında kalmış uyumsuz kayıt (Test Ortamı + canlı adres) ağa çıkmadan reddedilir
+    ok 4 - veri tabanında kalmış uyumsuz kayıt (Test Ortamı + canlı adres) ağa çıkmadan reddedilir
+      ---
+      duration_ms: 4.920853
+      type: 'test'
+      ...
+    1..4
+not ok 3 - G3: Servis Adresi ile Çalışma Ortamı uyumlu olmalı (canlı açık kurulum)
+  ---
+  duration_ms: 239.234128
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/kontrol-241.test.mjs:102:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 8
+# suites 3
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1369.586235
