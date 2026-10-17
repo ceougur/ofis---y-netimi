@@ -281,6 +281,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (baseUrl && !/^https:\/\/[^\s/]+\/\S+$/i.test(baseUrl) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/\S*$/i.test(baseUrl)) fail400("Servis adresi https:// ile başlayan tam adres olmalı; boş bırakılırsa seçilen ortamın adresi kullanılır.", "integrator.baseUrl");
       // Canlı kilidi Servis Adresi'nden de delinmez (bitiş turu Y1/E1): kilit açılana dek yalnız test ortamının adresi (ya da boş).
       if (!edocLive && !testOnlyUrl(baseUrl)) fail400("Canlı ortam açılana kadar Servis Adresi yalnız entegratörün test adresi olabilir; alanı boş bırakın (Test Ortamı'nın adresi kullanılır).", "integrator.baseUrl", { code: "integrator-live-locked" });
+      // 2.4.1 (G3): canlı açıkken de ortam ↔ adres uyumlu olmalı — Test Ortamı + canlı adres test serisi belgeyi canlıya, Canlı Ortam + test adresi yasal numaralı belgeyi teste gönderirdi.
+      const mismatch = envUrlMismatch(env, baseUrl);
+      if (mismatch) fail400(mismatch, "integrator.baseUrl", { code: "integrator-env-url" });
       const username = input.username === undefined ? prev.username : limited(input.username, 120, "Kullanıcı Adı");
       let passwordSealed = prev.passwordSealed;
       if (input.clearPassword === true) passwordSealed = "";
@@ -406,6 +409,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive, network: networkSummary() } };
   };
   const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true, autoCheckUser: s.integrator.autoCheckUser === true });
+  function envUrlMismatch(env, baseUrl) {
+    const value = String(baseUrl || "").trim();
+    if (!value || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/\S*)?$/i.test(value)) return "";
+    if (env !== "live" && !testOnlyUrl(value)) return "Test Ortamı seçiliyken Servis Adresi yalnız entegratörün test adresi olabilir. Canlıya geçmek için Çalışma Ortamı'nda Canlı Ortam'ı seçin; Servis Adresi boş kalabilir.";
+    if (env === "live" && testOnlyUrl(value)) return "Canlı Ortam seçiliyken Servis Adresi test adresi olamaz; alanı boş bırakın (canlı adres kullanılır).";
+    return "";
+  }
   function integrator(s = settings()) {
     requireEdoc();
     const cfg = s.integrator;
@@ -414,6 +424,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (cfg.env === "live" && !edocLive) throw new HttpError(409, "Entegratör ayarında Canlı Ortam seçili ama canlı ortam henüz açılmadı (test ortamındaki kabulden sonra açılır). Entegratör Ayarları'nda Test Ortamı'nı seçin.", { code: "integrator-live-locked" });
     // Bitiş turu Y1/E1: veri tabanında (eski kayıt, yedekten geri yükleme) test dışı bir Servis Adresi kalmışsa da ağa çıkılmaz.
     if (!edocLive && !testOnlyUrl(cfg.baseUrl)) throw new HttpError(409, "Entegratör ayarındaki Servis Adresi test ortamının adresi değil; canlı ortam henüz açılmadı. Entegratör Ayarları'nda Servis Adresi'ni boşaltın.", { code: "integrator-live-locked" });
+    const mismatch = envUrlMismatch(cfg.env, cfg.baseUrl);
+    if (mismatch) throw new HttpError(409, mismatch, { code: "integrator-env-url" });
     if (!cfg.username || !cfg.passwordSealed) throw new HttpError(409, `${ADAPTERS[cfg.id]?.label || "Entegratör"} web servis kullanıcı adı ve parolası girilmemiş. Fatura → Entegratör Ayarları'ndan girin.`, { code: "integrator-not-configured" });
     const password = secrets().open(cfg.passwordSealed);
     if (!password) throw new HttpError(409, "Kayıtlı entegratör parolası bu bilgisayarda açılamadı (veriler başka bilgisayardan taşınmış olabilir). Fatura → Entegratör Ayarları'nda parolayı yeniden girin.", { code: "integrator-password" });
@@ -1092,6 +1104,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return s.earsiv ? ["EARSIVFATURA"] : ["KAGIT"];
   };
   function profileFor(kind, account, requested, s) {
+    // 2.4.1 (gözden geçirme G1): e-SMM kapalıyken 2.4.0'dan kalan taslağın / formun "ESMM" isteği kâğıt makbuz sayılır (gizli işareti isteyen 400 yok).
+    if (kind === "smm" && requested === "ESMM" && !(esmmEnabled && s.esmm)) requested = "";
     const allowed = allowedProfiles(kind, account, s);
     const auto = kind === "smm" || !INVOICE_KINDS[kind].own ? allowed[0] : allowed.includes("TEMELFATURA") ? (allowed.includes(account.eProfile) ? account.eProfile : s.defaults.efaturaProfile || "TEMELFATURA") : allowed[0];
     if (!requested || !PROFILES[requested]) return auto;
@@ -1181,7 +1195,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (original && date < original.issueDate) fail400(`İade tarihi, asıl faturanın tarihinden (${dayText(original.issueDate)}) önce olamaz.`, "issueDate", { code: "return-before-original" });
     const time = text(body.issueTime ?? existing?.issueTime ?? "") || nowTime();
     if (!TIME.test(time)) fail400("Fatura saati SS:DD biçiminde olmalı (ör. 14:30).", "issueTime");
-    const profile = original && !meta.own ? profileFor(kind, account, text(body.profile) || "KAGIT", s) : profileFor(kind, account, text(body.profile ?? (existing && existing.status === "draft" ? "" : existing?.profile) ?? ""), s);
+    // 2.4.1 (G1/G2): 2.4.0'da e-SMM serisinden numara almış makbuz düzenlenirken türü korunur (numarası TES/ESM; kâğıt belgeye geçmez, gönderilemez — 2.4.0'daki gibi).
+    const legacyEsmm = kind === "smm" && !esmmEnabled && existing && existing.status !== "draft" && existing.profile === "ESMM";
+    const profile = legacyEsmm ? "ESMM" : original && !meta.own ? profileFor(kind, account, text(body.profile) || "KAGIT", s) : profileFor(kind, account, text(body.profile ?? (existing && existing.status === "draft" ? "" : existing?.profile) ?? ""), s);
     const currency = original ? original.currency : CURRENCIES[text(body.currency)] ? text(body.currency) : existing?.currency || "TRY";
     let rate = 1;
     if (original) rate = Number(original.rate) || 1;

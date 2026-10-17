@@ -205,7 +205,7 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
     try {
       body = await call("Login", E("LoginRequest", [header("-1"), E("USER_NAME", username), E("PASSWORD", password)]));
     } catch (error) {
-      if (LOGIN_HINT && error instanceof IntegratorError && error.code === "integrator-rejected") error.message = `${error.message}. ${LOGIN_HINT}`;
+      if (LOGIN_HINT && error instanceof IntegratorError && error.code === "integrator-rejected") error.message = `${error.message}${/[.!?]$/.test(error.message) ? "" : "."} ${LOGIN_HINT}`;
       throw error;
     }
     const session = textOf(deep(body, "SESSION_ID"));
