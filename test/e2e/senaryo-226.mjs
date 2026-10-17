@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-226");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -80,7 +81,7 @@ const must = async (label, promise) => {
 };
 const closeAll = async () => {
   for (let i = 0; i < 8 && (await page.$(modal)); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
     const yes = await page.$(`${modal} [data-answer="yes"]`);
     if (yes) await yes.click();

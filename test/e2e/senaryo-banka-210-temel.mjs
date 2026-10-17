@@ -32,6 +32,7 @@ import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock, moveClock } from "../helpers.mjs";
 import { checkoutTag, tagCommit } from "../guvenilirlik/surumler.mjs";
 import { fetchCutWatch } from "./tarayici-kesme.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210-temel");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -67,7 +68,7 @@ const bankWin = ".hof-bank-modal";
 const pause = ms => page.waitForTimeout(ms);
 const closeAll = async () => {
   for (let index = 0; index < 6 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(300);
   }
 };
@@ -484,7 +485,7 @@ try {
       const voucherTypes = await optionsOf('form.hof-bank-voucher select[name="type"]');
       ok(!voucherTypes.some(label => /Döviz|Değerleme|POS|Tahsile/.test(label)), `Planlı İşlem türleri: ${voucherTypes.join(", ")}`);
       await shot("planli-islem-formu");
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await pause(400);
     }
     await page.click(`${bankWin} [data-act="v-other"]`).catch(() => null);
@@ -492,7 +493,7 @@ try {
       const formText = await visibleText("form.hof-bank-voucher .hof-field");
       ok(!laterIn(formText).length && !/\b646\b|\b656\b/.test(formText), `Diğer İşlem formunda Kambiyo/Elle Banka Fişi yok${laterIn(formText).length ? `: ${laterIn(formText).join(", ")}` : ""}`);
       await shot("diger-islem-formu");
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await pause(400);
     }
     await closeAll();

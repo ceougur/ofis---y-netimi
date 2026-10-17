@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-rapor");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -61,7 +62,7 @@ const round = value => Math.round(value * 100) / 100;
 const text = (selector, on = page) => on.$eval(selector, node => node.innerText.replace(/\s+/g, " ").trim());
 const modal = ".hof-modal-backdrop.is-visible";
 const closeTop = async (on = page) => {
-  await on.keyboard.press("Escape");
+  await escClose(on);
   await on.waitForTimeout(250);
 };
 const step = async (title, fn) => {

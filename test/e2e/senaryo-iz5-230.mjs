@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-iz5-230");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -61,7 +62,7 @@ const closeModals = async page => {
   for (let i = 0; i < 6 && (await page.$(modal)); i += 1) {
     const button = (await page.$(`${modal} [data-done]`)) || (await page.$(`${modal} [data-keep]`)) || (await page.$(`${modal} [data-general]`));
     if (button) await button.click();
-    else await page.keyboard.press("Escape");
+    else await escClose(page);
     await page.waitForTimeout(400);
   }
 };
@@ -135,7 +136,7 @@ try {
   ok(/Alınan/.test(tab), `Enter → Fatura penceresi “Alınan” (Alış Faturaları) sekmesinde (${tab})`);
   ok((await admin.$eval("#hof-search input", node => node.value)) === "", "açıldıktan sonra kutu temizlendi");
   await shot(admin, "fatura-alinan-sekmesi");
-  await admin.keyboard.press("Escape");
+  await escClose(admin);
   await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 5000 });
 
   console.log("\n■ 5.5: “cari h” → Tüm Cari Hareketleri raporu; “çek” → çekle ilgili her şey; ok tuşu + Enter; Esc kapatır");
@@ -152,15 +153,15 @@ try {
   await admin.keyboard.press("ArrowDown");
   const activeLabel = await admin.$eval("#hof-search-panel .hof-search-item.is-active", node => [...node.childNodes].filter(child => !(child.nodeType === 1 && child.classList.contains("hof-search-path"))).map(child => child.textContent).join("").trim());
   ok(activeLabel === list[1]?.label, `ArrowDown → ikinci sonuç etkin (${activeLabel})`);
-  await admin.keyboard.press("Escape");
+  await escClose(admin);
   ok(await admin.$eval("#hof-search-panel", node => node.hidden) && (await admin.$eval("#hof-search input", node => node.value)) === "", "Esc listeyi kapatır ve kutuyu temizler");
   list = await typeQuery(admin, "xqzv");
   ok(list.length === 0 && /sonuç yok/.test(await admin.$eval("#hof-search-panel", node => node.textContent)), "eşleşme yoksa “sonuç yok” yazar");
-  await admin.keyboard.press("Escape");
+  await escClose(admin);
   // Cari/kayıt adı bu kutuya girmez: tablodaki kişi adı ("Mehmet") sonuç vermez.
   list = await typeQuery(admin, "mehmet");
   ok(list.length === 0, "tablodaki kişi adı (Mehmet) Hızlı Arama'ya girmez");
-  await admin.keyboard.press("Escape");
+  await escClose(admin);
 
   console.log("\n■ 5.5 Personel: rapor yetkisi yok → Rapor grubu gelmez; fatura yetkisi yok → Yeni Alış Faturası gelmez");
   const staffContext = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
@@ -174,7 +175,7 @@ try {
   ok(!list.some(item => item.label === "Yeni Alış Faturası") && !list.some(item => /^Alış Faturaları/.test(item.label)), `personelde fatura sonuçları yok (${list.map(i => i.label).join(" | ") || "boş"})`);
   list = await typeQuery(staff, "cari");
   ok(list.some(item => item.label === "Cari" || /^Cari Listesi/.test(item.label)), "personel Cari sayfasını bulur (yetkisi var)");
-  await staff.keyboard.press("Escape");
+  await escClose(staff);
   await staffContext.close();
 
   console.log("\n■ 5.6 İşlem geçmişi: 3 not + 1 telefon → 3 satır + Daha Fazla Göster (1) → tamamı");
@@ -279,7 +280,7 @@ try {
   await admin.waitForSelector(modal, { timeout: 10000 });
   const taskTitle = await admin.$eval(`${modal} .hof-modal-title, ${modal} h2`, node => node.textContent.trim());
   ok(taskTitle === "Görevler", `Kayda Git → “${taskTitle}” penceresi`);
-  await admin.keyboard.press("Escape");
+  await escClose(admin);
   await context.close();
 } catch (error) {
   failed += 1;

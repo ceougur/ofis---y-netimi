@@ -22,6 +22,7 @@ import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
 import { BUYER_VKN, MULTI_VKN, OUR_VKN, startMockEdm } from "../einvoice-mock.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const PASS = "Personel-2026!";
 const LOGO = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
@@ -168,7 +169,7 @@ try {
   await shot(page, "entegrator-3-seriler");
 
   console.log("\n■ 4b Cari formu: VKN yazılıp alandan çıkınca mükellefiyet kendiliğinden sorgulanır; iki posta kutusu varsa kullanıcı seçer");
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await page.waitForTimeout(300);
   await page.evaluate(() => window.HOF.accounts.newFor({}));
   const formOpen = await page.waitForSelector(`${modal} input[name="taxNo"]`, { timeout: 8000 }).then(() => true).catch(() => false);
@@ -189,7 +190,7 @@ try {
     ok(eInvoice, "seçilen PK forma yazıldı, e-Fatura mükellefi işaretli");
   }
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 
@@ -232,7 +233,7 @@ try {
   });
   ok(onTop, "önizleme penceresi Entegratör kartının üstünde (görünür, kartın arkasında kalmıyor)");
   await shot(page, "entegrator-7-gorunum-onizleme");
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await page.waitForTimeout(250);
   await page.click(`${card} [data-i="view.banks"]`);
   await page.click(`${card} [data-integ-act="save"]`);
@@ -244,7 +245,7 @@ try {
   await frame2.waitForSelector("table.kalem");
   ok(!(await frame2.$eval("body", body => body.innerText)).includes("TR33 0006"), "banka kapalıyken önizlemede IBAN yok");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 
@@ -262,7 +263,7 @@ try {
   ok(officialPdf.status() === 200 && officialBody.subarray(0, 5).toString("latin1") === "%PDF-" && officialBody.toString("latin1").includes(issuedDoc.number), `Resmî Görüntü EDM'nin PDF'ini açar (${officialPdf.status()}, ${officialBody.length} bayt)`);
   await shot(page, "entegrator-8-resmi-goruntu");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 
@@ -283,7 +284,7 @@ try {
   ok(stored().eOptions?.draftUpload === true && stored().eOptions?.paymentMeans === false && stored().eOptionsSet?.paymentMeans === true && stored().eOptions?.balanceNote === false, `kaydedildi (veri tabanı: ${JSON.stringify(stored().eOptions)})`);
   await shot(page, "entegrator-9-ek-secenekler");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
   await must("seri / lot alanları", admin.put("/api/workspace/invoices/settings", { defaults: { itemTracking: true } }));
@@ -318,7 +319,7 @@ try {
   const sentDraft = edm.state.sent.find(item => item.uuid === ettn);
   ok(Boolean(sentDraft?.fromDraft) && server.app.store.get("SELECT e_status AS s FROM invoices WHERE id = ?", tracked.id).s === "sent", "Taslağı Gönder: EDM'deki taslak gönderildi, durum Gönderildi");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 
@@ -335,7 +336,7 @@ try {
   ok(!seriesText.includes("[object Object]") && /Sıradaki: EFX\d{13}/.test(seriesText) && /Test ortamında: TEF\d{13}/.test(seriesText), `Otomatik Seriler: sıradaki numara ve test serisi doğru yazılır (${seriesText.slice(0, 160)}…)`);
   await shot(page, "entegrator-10-test-seri");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 
@@ -356,7 +357,7 @@ try {
   await page.$eval(`${modal} [data-stamp-field]`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
   await shot(page, "entegrator-11-kase-imza");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 
@@ -387,7 +388,7 @@ try {
   ok(amountLabel === "Belge Tutarı (İptal Edildi)", `iptal edilmiş belgenin tutar başlığı: “${amountLabel}”`);
   await shot(page, "entegrator-12-yalniz-programda-iptal");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 
@@ -408,7 +409,7 @@ try {
   await page.waitForFunction(sel => document.querySelector(sel)?.hidden, `${modal} [data-unit-hint]`, { timeout: 5000 });
   ok(true, "Kg yazılınca ipucu kalkar (EDM'nin kabul ettiği kod)");
   for (let index = 0; index < 4 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
     const yes = await page.$(`${modal} [data-answer="yes"]`);
     if (yes) await yes.click();

@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "ui-ux-217");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -39,7 +40,7 @@ const findings = []; // { screen, check, ok, detail }
 let shotNo = 0;
 const shot = async name => { shotNo += 1; const file = `${String(shotNo).padStart(2, "0")}-${name}.png`; await page.screenshot({ path: path.join(OUT, file) }); return file; };
 const closeAll = async () => {
-  for (let i = 0; i < 8 && (await page.$(modal)); i += 1) { await page.keyboard.press("Escape"); await page.waitForTimeout(250); }
+  for (let i = 0; i < 8 && (await page.$(modal)); i += 1) { await escClose(page); await page.waitForTimeout(250); }
   for (let i = 0; i < 4 && (await page.$(modal)); i += 1) { await page.locator(`${modal} .hof-modal-close`).last().click({ timeout: 2000 }).catch(() => null); await page.waitForTimeout(250); }
   if (await page.$(modal)) await page.evaluate(() => document.querySelectorAll(".hof-modal-backdrop").forEach(node => node.remove()));
   await page.evaluate(() => { document.getElementById("hof-chat")?.setAttribute("hidden", ""); document.querySelector("#hof-pages .hof-pages-menu")?.setAttribute("hidden", ""); document.querySelectorAll(".hof-session-menu").forEach(m => m.setAttribute("hidden", "")); });
@@ -127,7 +128,7 @@ try {
   await page.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
   await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${modal} [data-mode="replace"]`)]);
   await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 }).catch(() => null);
-  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => page.keyboard.press("Escape"));
+  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(page));
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await page.waitForSelector("#hof-sidecard [data-action=invoices]", { timeout: 20000 });
   const sup = (await call("/api/workspace/accounts", { name: "Akçansa Bayi", type: "supplier" })).data.id;
@@ -157,12 +158,12 @@ try {
   }));
   findings.push({ screen: "Ana ekran", check: "Şeritler yer kavgası yapmıyor (3 sn: ≤ 4 DOM değişimi, takvim şeridi aynı düğüm)", ok: churn.count <= 4 && churn.sameBand, detail: `${churn.count} değişim · ${churn.order}` });
   await screen("Şirket seçici menüsü", async () => { await page.click("#hof-company [data-toggle]"); await page.waitForSelector("#hof-company .hof-session-menu:not([hidden])"); });
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await screen("+ Sayfa menüsü", async () => { await page.click("#hof-pages [data-add]"); await page.waitForSelector("#hof-pages .hof-pages-menu:not([hidden])"); });
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await screen("Zil — bildirim listesi", async () => { await page.click(".topbar .top-actions > .icon-button"); await page.waitForSelector(modal, { timeout: 8000 }); });
   await screen("Tahsilat Takvimi pil kartı", async () => { await page.hover(".hof-payment-promises-viewport"); await page.$eval(".hof-payment-promises .hof-payment-pill:not([aria-hidden])", node => node.click()); await page.waitForSelector(".hof-payment-action-card", { timeout: 5000 }); });
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await screen("Detay kartı (tablodaki kayıt)", async () => { await page.click(".dynamic-table tbody tr"); await page.waitForTimeout(800); });
   await screen("Görevler", async () => openWindow("tasks"));
   await screen("Mesajlar", async () => { await page.click('#hof-sidecard [data-action="messages"]'); await page.waitForSelector("#hof-chat:not([hidden])", { timeout: 8000 }); await page.waitForTimeout(600); });

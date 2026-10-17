@@ -16,6 +16,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
 import { ADMIN_PASSWORD, installPageClock } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const PASS = "Personel-2026!";
 const pad = n => String(n).padStart(2, "0");
@@ -75,7 +76,7 @@ const num = text => Number(String(text || "").replace(/[^\d,-]/g, "").replace(/\
 const kurus = value => Math.round(Number(value) * 100);
 const closeAll = async page => {
   for (let index = 0; index < 8 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 };

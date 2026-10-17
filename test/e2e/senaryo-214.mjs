@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-214");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -72,7 +73,7 @@ const pad = value => String(value).padStart(2, "0");
 const iso = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 const shift = days => iso(new Date(Date.now() + days * 86_400_000));
 const closeTop = async page => {
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await page.waitForTimeout(250);
 };
 const admin = await newPage();
@@ -128,7 +129,7 @@ try {
     await admin.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
     await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click(`${modal} [data-mode="replace"]`)]);
     await admin.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
-    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => admin.keyboard.press("Escape"));
+    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(admin));
     await admin.waitForTimeout(1200);
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
     await admin.waitForSelector(".dynamic-table tbody tr", { timeout: 20000 });

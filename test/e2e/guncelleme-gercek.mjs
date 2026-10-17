@@ -18,6 +18,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { ADMIN_PASSWORD, buildTestRelease, counts, prepareInstall, releaseEntry, sleep, STAFF, startFeed, startService, waitFor } from "../guncelleme-gercek/ortak.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "guncelleme-gercek");
 rmSync(OUT, { recursive: true, force: true });
@@ -113,7 +114,7 @@ try {
   const bellText = (await admin.textContent(".hof-alert-list")).replace(/\s+/g, " ");
   ok(/Sistem/.test(bellText) && /DestekOfis 9\.0\.1/.test(bellText) && /bir sonraki açılışında kendiliğinden kurar/.test(bellText), "yöneticinin zilinde 'DestekOfis 9.0.1 — İndirildi ve doğrulandı; sunucu bir sonraki açılışında kendiliğinden kurar'");
   await admin.screenshot({ path: path.join(OUT, "00-zil-yonetici-yeni-surum-hazir.png") });
-  await admin.keyboard.press("Escape").catch(() => null);
+  await escClose(admin).catch(() => null);
   await admin.goto(`${recorder.url}/admin.html#system`);
   await admin.waitForSelector("#adm-update-body .adm-update-available", { timeout: 30_000 });
   const panel = (await admin.textContent("#adm-update")).replace(/\s+/g, " ");

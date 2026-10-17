@@ -30,6 +30,7 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
+import { escClose } from "./esc-kapat.mjs";
 
 const ROOT = process.env.DEPO ? path.resolve(process.env.DEPO) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const { createApp } = await import(pathToFileURL(path.join(ROOT, "server", "app.mjs")).href);
@@ -165,7 +166,7 @@ const precondition = (cond, what) => {
 const pause = ms => page.waitForTimeout(ms);
 const closeAll = async () => {
   for (let i = 0; i < 8 && (await page.$(MODAL)); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(250);
   }
 };
@@ -190,7 +191,7 @@ const openFee = async (accountId, cents, mark) => {
 const afterStep = async () => {
   const formOpen = await page.waitForSelector(FORM, { state: "detached", timeout: 5000 }).then(() => false).catch(() => true);
   if (formOpen && (await page.$(FORM))) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(300);
   }
 };

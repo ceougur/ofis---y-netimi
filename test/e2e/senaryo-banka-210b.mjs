@@ -25,6 +25,7 @@ import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
 import { fetchCutWatch } from "./tarayici-kesme.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210b");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -80,7 +81,7 @@ const has = (text, needle) => String(text).includes(needle);
 const pause = ms => page.waitForTimeout(ms);
 const closeAll = async () => {
   for (let index = 0; index < 6 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(300);
   }
 };

@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-222");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -66,7 +67,7 @@ const api = createClient(BASE);
 const get = async url => unwrap(await api.get(url));
 const closeAll = async () => {
   for (let i = 0; i < 6 && (await admin.$(modal)); i += 1) {
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForTimeout(250);
   }
 };

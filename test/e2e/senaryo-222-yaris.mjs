@@ -27,6 +27,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const TRIALS = Number(process.env.TRIALS || 20);
 const CPU = Number(process.env.CPU || 1);
@@ -106,7 +107,7 @@ const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r
 const api = createClient(BASE);
 const closeAll = async () => {
   for (let i = 0; i < 6 && (await admin.$(modal)); i += 1) {
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForTimeout(250);
   }
 };

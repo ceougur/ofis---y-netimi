@@ -8,6 +8,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const PASS = "Prova-Admin-2026!";
 const modal = ".hof-modal-backdrop.is-visible";
@@ -75,7 +76,7 @@ for (const set of DATASETS) {
     await page.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
     await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${modal} [data-mode="replace"]`)]);
     await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 }).catch(() => null);
-    await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => page.keyboard.press("Escape"));
+    await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(page));
     await page.goto(`${BASE}/`, { waitUntil: "load" });
     await page.waitForSelector("#hof-toolbar-new", { timeout: 20000 });
     await page.waitForFunction(() => window.HOF?.insight?.()?.primary && (window.HOF.data?.rows || []).length > 0, null, { timeout: 20000 });

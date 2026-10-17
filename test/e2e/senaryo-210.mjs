@@ -15,6 +15,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-210");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -137,7 +138,7 @@ try {
       await admin.evaluate(() => document.activeElement?.blur());
       await admin.waitForTimeout(100);
       colors.push([name, await admin.$eval(`${modal} input[type="search"]`, node => `${getComputedStyle(node).backgroundColor}|${getComputedStyle(node).borderTopColor}|${getComputedStyle(node).borderRadius}`)]);
-      await admin.keyboard.press("Escape");
+      await escClose(admin);
       await admin.waitForTimeout(300);
     }
     ok(new Set(colors.map(item => item[1])).size === 1 && colors[0][1].startsWith("rgb(233, 245, 238)"), `m15: Cari, Taksitler, Stok, Çek/Senet arama kutuları aynı: ${colors.map(item => item.join(" ")).join(" · ")}`);
@@ -150,7 +151,7 @@ try {
     });
     ok(menu.top >= 0 && menu.bottom <= menu.h && menu.left >= 0 && menu.right <= menu.w, `m1: Şirket seçici kartı ekranın içinde (${Math.round(menu.left)},${Math.round(menu.top)} → ${Math.round(menu.right)},${Math.round(menu.bottom)})`);
     await shot(admin, "sirket-secici");
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.goto(`${BASE}/admin.html`);
     await admin.waitForSelector(".adm-home");
     ok((await admin.textContent(".adm-home")).trim() === "Ana Ekran", "m13: yönetim panelinde “Ana Ekran” düğmesi");
@@ -184,7 +185,7 @@ try {
     ok((await filter("creditor")) === "Tedarikçi Ltd", "m5: “Alacaklılar” süzgeci");
     ok((await filter("nonzero")) === "Borçlu Veli,Tedarikçi Ltd", "m5: “Sadece bakiyesi olanlar” süzgeci (kapalı hesap yok)");
     ok((await filter("all")).split(",").length >= 3, "m5: “Tümü”");
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     const ekstre = await call(admin, `/api/workspace/overview/ekstre?account=${debtor.id}&preset=all`);
     const subtitle = JSON.stringify(ekstre.data || {});
     ok(!/bize borçlu|biz borçluyuz/i.test(subtitle), "m6: cari ekstre verisinde eski ifade yok");
@@ -361,7 +362,7 @@ try {
     const bellAfter = Number(await admin.evaluate(() => document.querySelector(".hof-bell-badge")?.textContent || "0"));
     ok(bellAfter === bellBefore - 1, `m9: zil sayısı ${bellBefore} → ${bellAfter}`);
     ok(!(await admin.evaluate(() => window.HOF.alerts.list().some(item => item.title === "Çek Sahibi Ahmet"))), "m9: bildirim listesinden de kalktı");
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
   });
 
   await step("E. “+ Sayfa”: Excel dosyasından aktarma; formüller programda çalışır (m8)", async () => {

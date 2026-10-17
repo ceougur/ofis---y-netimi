@@ -56,6 +56,7 @@ import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
 import { pdfText, xlsxSheets } from "../banka-210-ortak.mjs";
 import { fetchCutWatch } from "./tarayici-kesme.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -199,7 +200,7 @@ const must = async (label, promise) => {
 const textOf = (page, selector) => page.$eval(selector, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
 const has = (text, needle) => String(text).includes(needle);
 const closeTop = async page => {
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await page.waitForTimeout(300);
 };
 const answerYes = async page => {
@@ -1470,13 +1471,13 @@ try {
     await admin.click(`${bankWin} [data-act="advanced"]`);
     await admin.waitForTimeout(300);
     await admin.selectOption(`${bankWin} [data-set="similar.enabled"]`, "false");
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Kaydedilmemiş Değişiklik"), null, { timeout: 8000 });
     await shot(admin, "gg2-ayarlar-kaydedilmemis");
     await admin.click(`${top} [data-answer="no"]`);
     await admin.waitForTimeout(400);
     ok(Boolean(await admin.$(`${bankWin} [data-settings]`)) && (await admin.$eval(`${bankWin} [data-set="similar.enabled"]`, node => node.value)) === "false", "Vazgeç: Banka penceresi açık, değişiklik duruyor");
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await answerYes(admin);
     await admin.waitForSelector(bankWin, { state: "detached", timeout: 8000 });
     ok((await must("ayarlar", api.get("/api/workspace/bank/settings"))).values.similar.enabled === true, "Kaydetmeden Çık: ayar değişmedi");
