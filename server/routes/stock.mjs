@@ -660,9 +660,19 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     publish: (user, itemIds) => itemIds.forEach(itemId => changed(user, { itemId })),
   };
   // Sol menüdeki rozet: kritik seviyedeki ya da tükenen (kritik seviyesi tanımlı) ürün sayısı ve adları.
+  // 2.4.3 H2 (fatura yükte hız testi): rozet açık her pencereden, başkasının her kaydından sonra istenir (5 pencerede 10 dk'da 1.619 istek);
+  // her istek bütün stok hareketlerini okuyordu (20.000 hareket ~35 ms). Sonuç veri tabanına bir yazma olana kadar saklanır: total_changes()
+  // bu bağlantının her INSERT/UPDATE/DELETE'inde artar, data_version başka bir bağlantının kesinleşen yazmasında değişir (fatura listesindeki
+  // ödeme durumu önbelleğiyle aynı kural). Veri tabanı işleminin içinde (yazma henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır.
+  let alertsCache = { key: "", value: null };
   function alerts() {
+    const inTx = store.inTransaction;
+    const key = `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}`;
+    if (!inTx && alertsCache.key === key && alertsCache.value) return alertsCache.value.map(item => ({ ...item }));
     const data = list({ role: "admin" }, { state: "low" });
-    return data.items.map(item => ({ id: item.id, name: item.name, qty: item.qty, unit: item.unit, minQty: item.minQty }));
+    const value = data.items.map(item => ({ id: item.id, name: item.name, qty: item.qty, unit: item.unit, minQty: item.minQty }));
+    if (!inTx) alertsCache = { key, value: value.map(item => ({ ...item })) };
+    return value;
   }
   const deletedList = () =>
     store.all("SELECT i.id, i.name, i.unit, i.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName FROM stock_items i LEFT JOIN users u ON u.id = i.deleted_by WHERE i.deleted_at IS NOT NULL").map(item => ({

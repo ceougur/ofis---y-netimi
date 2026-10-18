@@ -72,6 +72,7 @@ jobs:
       - run: npm run test:acilis-yanit-yaris
       - run: npm run test:banka-210-ekran-aciklama
       - run: npm run test:guncelleme-gercek
+      - run: npm run test:hiz-243-arka-plan
 
   windows:
     name: Windows kurulum paketi

@@ -32,9 +32,18 @@
   async function load() {
     const ticket = ++request;
     try {
-      const result = await HOF.api("/api/workspace/dues", { background: true });
+      // 2.4.3 H2 (fatura yükte hız testi): elimizdeki takvimin sürümü gönderilir; sunucuda içerik aynıysa yalnız "değişmedi" döner (10.000
+      // faturalı veride yanıt 2,8 MB idi ve açık her pencere başkasının her kaydında yeniden alıyordu). Ekran ve bildirimler yine yenilenir.
+      const since = data.version ? `?since=${encodeURIComponent(data.version)}` : "";
+      const result = await HOF.api(`/api/workspace/dues${since}`, { background: true });
       if (ticket !== request) return;
-      data = result;
+      if (result?.unchanged) {
+        // Beklenmez (sunucu yalnız aynı sürüme "değişmedi" der); yine de elimizdeki takvim o sürüm değilse tamamı istenir.
+        if (result.version !== data.version) {
+          data = { ...data, version: "" };
+          return load();
+        }
+      } else data = result;
       loadedAt = Date.now();
       render();
       HOF.emit("dues", data);
@@ -47,7 +56,8 @@
     const before = (data.items || []).length;
     const items = (data.items || []).filter(item => !match(item));
     if (items.length === before) return;
-    data = { ...data, items };
+    // Yerelde düşürülen takvim artık sunucunun o sürümü değildir: sonraki yenileme tamamını alır (sunucu kalemi hâlâ veriyorsa geri gelir).
+    data = { ...data, items, version: "" };
     closeCard();
     render();
     HOF.emit("dues", data);
