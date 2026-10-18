@@ -75,7 +75,8 @@ export const PERMISSIONS = Object.freeze({
   "invoices.settings": ["admin", "muhasebe"],
   // Finans raporları (v2.0.7'de "ANLIK DURUM ve raporlar"): Raporlar penceresi — mizan, cari ekstre, nakit akış, tüm
   // raporlar. v2.0.10'dan beri ana ekrandaki ANLIK DURUM kartını AÇMAZ (overview.card); kişiye verilebilir.
-  "overview.view": ["admin"],
+  // 2.4.3 (kullanıcı kararı 18.10.2026): muhasebe varsayılan olarak görür; yönetici kişiden kaldırabilir.
+  "overview.view": ["admin", "muhasebe"],
   // ANLIK DURUM kartı (v2.0.10): yalnız yönetici ekranında (müşteri kararı; tüm sektörlerde).
   "overview.card": ["admin"],
   // Görev atama, herkesin görevleri ve performans raporu (KPI) yalnızca avukat ve yönetici içindir;

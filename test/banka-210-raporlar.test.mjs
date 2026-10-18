@@ -579,6 +579,9 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
       }
     }
     const accountant = apiOf(await createUser(ctx.server, api.client, { username: "rapor-muhasebe", role: "muhasebe" }));
+    // 2.4.3 H9 (bilerek güncellendi): muhasebe Finans Raporları'nı varsayılan olarak görür; Banka Raporları kapısını ayrı sınamak için bu kişiden kaldırılır.
+    const accountantId = (await must("kullanıcılar", api.get("/api/admin/users"))).find(user => user.username === "rapor-muhasebe").id;
+    await must("finans raporlarını kaldır", api.client.patch(`/api/admin/users/${accountantId}`, { grants: { add: [], remove: ["overview.view"] } }).then(unwrap));
     const catalog = await must("muhasebe katalog", accountant.get(RC));
     // 2.3.0 İz 1.7 (bilerek güncellendi): Şüpheli Alacaklar raporu Şüpheli Alacak İşlemleri YA DA finans raporları yetkisiyle açılır (plan §3.11b/5);
     // muhasebe accounts.doubtful ile onu da görür.
@@ -586,14 +589,14 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     assert.equal((await accountant.get(`${RC}/banka-bakiye?preset=all`)).status, 200);
     assert.equal((await accountant.get(`${RC}/kasa-hareketleri`)).status, 403);
     const users = await must("kullanıcılar", api.get("/api/admin/users"));
-    await must("yetki kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "rapor-muhasebe").id}`, { grants: { add: [], remove: ["bank.reports"] } }).then(unwrap));
+    await must("yetki kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "rapor-muhasebe").id}`, { grants: { add: [], remove: ["overview.view", "bank.reports"] } }).then(unwrap));
     // 2.3.0 İz 1.7 (bilerek güncellendi): Şüpheli Alacak İşlemleri yetkisi kaldığı için katalog açık, yalnız Şüpheli Alacaklar listelenir.
     const narrowed = await accountant.get(RC);
     assert.equal(narrowed.status, 200, "Banka Raporları kaldırılınca katalog (Şüpheli Alacaklar kalır)");
     assert.deepEqual(narrowed.data.reports.map(report => report.id), ["supheli-alacaklar"], "yalnız Şüpheli Alacaklar");
     for (const id of ALL_BANK_REPORTS) assert.equal((await accountant.raw("GET", `${RC}/${id}/xlsx?preset=all`)).status, 403, `muhasebe ${id}`);
     assert.equal((await accountant.raw("GET", `${RC}/supheli-alacaklar/xlsx?preset=all`)).status, 200, "Banka Raporları kalkınca Şüpheli Alacaklar yine açık (accounts.doubtful)");
-    await must("şüpheli yetkisini kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "rapor-muhasebe").id}`, { grants: { add: [], remove: ["bank.reports", "accounts.doubtful"] } }).then(unwrap));
+    await must("şüpheli yetkisini kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "rapor-muhasebe").id}`, { grants: { add: [], remove: ["overview.view", "bank.reports", "accounts.doubtful"] } }).then(unwrap));
     assert.equal((await accountant.get(RC)).status, 403, "Şüpheli Alacak İşlemleri de kaldırılınca katalog kapalı");
     assert.equal((await accountant.raw("GET", `${RC}/supheli-alacaklar/xlsx?preset=all`)).status, 403, "Şüpheli Alacaklar da kapalı");
     const role = await must("rol", api.post("/api/admin/roles", { name: "Finans Okuyucu", permissions: ["overview.view", "accounts.view"] }));
