@@ -372,6 +372,20 @@ def uygula(d, adim):
         return tur_gonder(d, adlar)
     if i == "esz_tumunu_gonder":
         # K19: iki oturum aynı anda Tümünü Gönder: sonuç tek turla aynı; "zaten gönderildi" hata değildir.
+        # K32 (baş mimar kararı 18.10.2026): bağlantı hiç kurulamadıysa program o istekte verdiği numarayı, serinin son numarasıysa geri
+        # bırakır; araya başka numara girdiyse (iki oturum) belge numaralı "belirsiz" kalır → ağ yokken eşzamanlı turda, her seride en eski
+        # gönderilebilir belgenin numaralı kalması da geçerli (çatal).
+        if not d.ag:
+            sonuc = [d]
+            for seri_tur in ("earsiv", "efatura"):
+                xs = [b for b in d.sira_listesi(None) if b["tur"] == seri_tur and b["numara"] == "" and d.ozce_gonderilebilir(b) and not d.tutan(b)]
+                if xs:
+                    w = d.kopya(f"{xs[0]['ad']}: ağ yokken eşzamanlı turda numaralı belirsiz kaldı (K32)")
+                    b = w.belgeler[xs[0]["ad"]]
+                    seri, yil = w.seri_yil(b)
+                    b.update(numara=numara(seri, yil, w.son(seri, yil)[0] + 1), hata=True)
+                    sonuc.append(w)
+            return sonuc
         # Bekleyen tek atımlık arıza, iki oturumdan hangisinin hangi belgeyi önce gönderdiğine göre herhangi bir gönderime düşebilir:
         # her olası sıra ayrı dünya (çatal).
         if d.ariza is None:

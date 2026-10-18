@@ -127,6 +127,19 @@ def _tur_secileni_unutur(d, adim):
     return None
 
 
+def _esz_ag_yokken_catal_yok(d, adim):
+    if adim["islem"] == "esz_tumunu_gonder" and not d.ag:
+        return [d]
+    return None
+
+
+def _esz_ag_yokken_hep_numara(d, adim):
+    if adim["islem"] == "esz_tumunu_gonder" and not d.ag:
+        r = ORJ["uygula"](d, adim)
+        return r[1:] or r
+    return None
+
+
 def _gonder_ag_yok_saymaz(d, ad):
     ag = d.ag
     d.ag = True
@@ -170,6 +183,8 @@ MUTANTLAR = [
     ("M2 kalıcı engelli de bekletir (O1 benzeri, K9)", lambda: setattr(D, "tutan", _tutan_engelliler_de)),
     ("M2b PK'sız (geçici engel) bekletmez (K9, 18.10 kararı)", lambda: setattr(D, "gecici_engelli", lambda self, b: False)),
     ("M21 Listeden Sil FIS sıra-tarih denetimi yok (K31)", lambda: setattr(D, "fis_engeli", lambda self, b: False)),
+    ("M22 ağ yokken eşzamanlı turda numara hep kalır (K32)", lambda: setattr(M, "uygula", _uygula_sarmali(_esz_ag_yokken_hep_numara))),
+    ("M23 ağ yokken eşzamanlı turda belirsiz çatalı yok (K32)", lambda: setattr(M, "uygula", _uygula_sarmali(_esz_ag_yokken_catal_yok))),
     ("M3 PK'sız e-Fatura engel sayılmaz (K2)", lambda: setattr(D, "engel", _engel_pk_yok_degil)),
     ("M4 mükellefe e-Arşiv engel sayılmaz (K3)", lambda: setattr(D, "engel", _engel_alici_efatura_degil)),
     ("M5 tarih engeli yok (K6)", lambda: setattr(D, "tarih_engeli", lambda self, b: False)),
