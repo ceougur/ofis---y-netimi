@@ -236,6 +236,11 @@ try {
         const ac = await api.put("/api/workspace/invoices/settings", { efatura: true, earsiv: true });
         if (ac.status !== 200) throw new Error(`e-dönüşüm açılamadı ${ac.status}`);
       }
+    } else if (i === "tur_sirasinda_sil" && !id) {
+      // Silinecek belge programda yok (kaydı reddedilmişti): yalnız tur koşar (model de öyle yapar).
+      const tur = await api.post("/api/workspace/invoices/send-pending", { all: true });
+      kayit.yanit = { atlandi: "belge yok; yalnız tur" };
+      kayit.ek = { tur: ozet(tur), sonuclar: (tur.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "" })) };
     } else if (adim.belge && !id && i !== "tumunu_gonder") {
       kayit.yanit = { atlandi: "belge yok" };
     } else if (i === "kart_gonder") {

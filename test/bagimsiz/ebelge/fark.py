@@ -147,6 +147,7 @@ def esitle(d, kayit, edm_kabul, senaryo_cari):
         d.cariler[k]["pk"] = bool(c["eAlias"])
     d.ag = kayit["ag"] == "var"
     d.ariza = kayit["arizaBekliyor"] or None
+    d.ariza_atla = 0
     d.bugun = kayit["bugun"]
     gor = set()
     for ad, b in kayit["gozlem"].items():
@@ -175,6 +176,7 @@ class Degismez:
         self.iptal_edilmis = set()  # ad (önceki adımda iptal görülen ve gönderilmemiş)
         self.silinmis = set()  # ad (önceki adımda listeden silinmiş görülen)
         self.gorulen = {}
+        self.fis_sira_bozuk = False
 
     def denetle(self, adim, kayit, denemeler, cariler_tur):
         ihlal = []
@@ -335,6 +337,7 @@ def karsilastir(senaryo, p):
         once = kilit.dunyalar[0].kopya()
         kilit.adim(adim)
         d = kilit.sec(gz, uzaklik)
+        d_notlar = list(d.notlar)
         f = alan_farki(M.goruntu(d), gz)
         if d.yanit and ys and d.yanit != ys:
             f.append({"belge": adim.get("belge", ""), "alan": "yanit", "model": d.yanit, "program": kayit["yanit"].get("status"), "kod": kayit["yanit"].get("kod")})
@@ -360,10 +363,29 @@ def karsilastir(senaryo, p):
         for x in yeni_ihlal:
             x["sinif"] = siniflandir(senaryo, p, x)
         ihlaller.extend(yeni_ihlal)
+        # Tek atımlık arıza modelde ve programda farklı belgeye düştüyse (model başka belgeyi önce gönderdi), o adımdaki sınıfsız
+        # farklar arızanın kaymasının sonucudur; kayan belge programda O1/O3 ile bekletildiyse O1 ardılıdır.
+        prog_ariza = {g_ad for dn in denemeler_adim.get(adim["no"], []) if dn.get("ariza")
+                      for g_ad, b in kayit["gozlem"].items() if b["ettn"] == dn["uuid"]}
+        model_ariza = {n.split(":")[0] for n in d_notlar if any(t in n for t in ("geçici hata", "kopma_"))}
+        if prog_ariza and model_ariza and prog_ariza != model_ariza:
+            m_ad = sorted(model_ariza)[0]
+            mb = once.belgeler.get(m_ad)
+            o1 = bool(mb and mb.get("var") is True and _engelli_eski(once, mb))
+            for x in f:
+                if x["sinif"] == "BASKA":
+                    x["sinif"] = (f"BEKLENEN-O1-ARDIL (arıza modelde {m_ad}, programda {sorted(prog_ariza)[0]} belgesine düştü; {m_ad} eski engelli bekleyen arkasında)"
+                                  if o1 else f"ARDIL-ARIZA-KAYDI (arıza modelde {m_ad}, programda {sorted(prog_ariza)[0]} belgesine düştü)")
+        if any(i["kod"] == "I2" and "FIS" in i["ileti"] for i in yeni_ihlal):
+            dg.fis_sira_bozuk = True
         for x in f:
+            if adim["islem"] == "kagit_kaydet" and x["alan"] == "var" and x["sinif"] == "BASKA" and dg.fis_sira_bozuk:
+                x["sinif"] = "BASKA-FIS-SIRA-ARDIL (FIS serisi önceden sıra-tarih bozuk; kâğıt kaydı son numaranın tarihine göre denetleniyor)"
             if x["alan"] == "yanit" and x["sinif"] == "BASKA":
                 if adim["islem"] == "tur_sirasinda_sil" and any(i["kod"] == "I8" for i in yeni_ihlal):
                     x["sinif"] = "BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti)"
+                elif adim["islem"] == "kagit_kaydet" and dg.fis_sira_bozuk:
+                    x["sinif"] = "BASKA-FIS-SIRA-ARDIL (FIS serisi önceden sıra-tarih bozuk; kâğıt kaydı son numaranın tarihine göre denetleniyor)"
                 elif adim["islem"] == "duzenle_tarih" and x.get("kod") == "chronology" and x["model"] == "2xx":
                     x["sinif"] = "BASKA-DUZENLE-SIRA (numarasız bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor)"
         esitle(d, kayit, edm_kabul, senaryo_cari)

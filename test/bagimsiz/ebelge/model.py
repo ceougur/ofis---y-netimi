@@ -69,6 +69,7 @@ class Dunya:
         self.sira = 0
         self.ag = True
         self.ariza = None  # bir sonraki SendInvoice'a uygulanacak tek atımlık arıza
+        self.ariza_atla = 0  # eşzamanlı turda arıza kaçıncı gönderime düşer (iki oturumun sırası belirsiz)
         self.yanit = None  # beklenen yanıt sınıfı: "2xx" | "4xx" | None (bakılmaz)
         self.notlar = []  # çatal seçimlerinin açıklaması
         self.edm_kabul_sayisi = 0  # bilgi
@@ -188,7 +189,11 @@ def gonder(d, ad):
     if not numarali:
         seri, yil = d.seri_yil(b)
         b["numara"] = numara(seri, yil, d.son(seri, yil)[0] + 1)
-    ariza, d.ariza = d.ariza, None
+    if d.ariza is not None and d.ariza_atla > 0:
+        d.ariza_atla -= 1
+        ariza = None
+    else:
+        ariza, d.ariza = d.ariza, None
     if ariza is None:
         b["edm"] = True
         b["prog"] = True
@@ -356,7 +361,18 @@ def uygula(d, adim):
         return tur_gonder(d, adlar)
     if i == "esz_tumunu_gonder":
         # K19: iki oturum aynı anda Tümünü Gönder: sonuç tek turla aynı; "zaten gönderildi" hata değildir.
-        return tur_gonder(d, None)
+        # Bekleyen tek atımlık arıza, iki oturumdan hangisinin hangi belgeyi önce gönderdiğine göre herhangi bir gönderime düşebilir:
+        # her olası sıra ayrı dünya (çatal).
+        if d.ariza is None:
+            return tur_gonder(d, None)
+        sonuc = []
+        for k in range(max(1, len(d.sira_listesi(None)))):
+            w = d.kopya(f"eşzamanlı turda arıza {k + 1}. gönderime düştü" if k else None)
+            w.ariza_atla = k
+            for x in tur_gonder(w, None):
+                x.ariza_atla = 0
+                sonuc.append(x)
+        return sonuc
     if i == "tur_sirasinda_sil":
         x = adim["belge"]
         b = d.belgeler.get(x)
