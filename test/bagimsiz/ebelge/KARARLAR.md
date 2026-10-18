@@ -79,3 +79,16 @@ belge numaralandı; eski belge kalıcı tarih engeline düşer) · BEKLENEN-O2 (
 BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor) · BEKLENEN-AG (ağ yokken numara) · BASKA-ESZ (eşzamanlı turda
 "gönderiliyor" hata olarak döndü) · BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi; 18.10'dan sonra K31 ile model de reddi bekler) · BASKA-DUZENLE-SIRA (numarasız
 bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor) · *-ARDIL (aynı adımdaki asıl farkın sonucu) · BASKA (sınıfsız: önce incelenir).
+
+## 18.10.2026 ek kararlar (baş mimar)
+- K32 — bağlantı HİÇ kurulamadıysa ve numara o istekte verilmiş ve serinin son numarasıysa program numarayı geri bırakır (belge numarasız
+  Gönderilecekler'e döner); araya başka numara girdiyse belge numaralı "belirsiz" kalır. Tek oturumda K12 ile aynı sonuç (numarasız); iki oturumlu
+  turda (ağ yok) her serinin en eski gönderilebilir belgesinin numaralı belirsiz kalması çatal. Kaynak: baş mimar kararı 18.10.2026.
+- I15 istisnası — istek EDM'ye gönderildikten sonra kopan / zaman aşımına uğrayan belge "belirsiz" (integrator-uncertain) döner; eşzamanlı turda
+  hata sayılmaz (sonunda gönderilmiş ya da belirsiz kalması ikisi de geçerli; numara/EDM tekliği değişmezleri aynen). Kaynak: baş mimar kararı
+  18.10.2026, K14 ile tutarlılık.
+- Koşucu: Tümünü Gönder parça parça (istek başına ≤20 belge / ~10 sn; yanıt `remaining`, `attempted`, `cursor`); istemci gibi `after: cursor` ile
+  kalan bitene ya da ilerleme durana kadar döngü (kara kutu yoklamasıyla öğrenildi; uygulama kodu okunmadı).
+- 18.10 kâhin düzeltmesi (ders 6): eşzamanlı turda kâhinin enjekte ettiği tek atımlık EDM hatası bir oturumun isteğine düşerse o oturumun
+  "integrator-rejected" sonucu gerçek EDM yanıtıdır; belgeyi öbür oturum gönderebilir. I15 o adımda arızanın düştüğü belgeyi istisna tutar
+  (duzeltme3 940516a tohum 4 adım 167'de görüldü; yeniden koşuda 0 ihlal).

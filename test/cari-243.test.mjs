@@ -76,7 +76,9 @@ describe("2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLA
     let data = await activity("2026/201");
     assert.deepEqual(data.items.filter(item => item.type === "account-entry").map(item => item.amount), [300]);
     assert.equal(data.paidTotal, 300);
-    await ok200("bağı kaldır", api.put(`/api/workspace/accounts/${account.id}`, { ...detail, fields: detail.fields || [], caseKey: "", caseTitle: "" }));
+    // 2.4.3 UX1: form kaydedilen kartın güncel sürümüyle (updatedAt) yeniden açılır; eski sürümle yazmak 409 account-stale (bilerek).
+    const fresh = await ok200("kart (güncel)", api.get(`/api/workspace/accounts/${account.id}`));
+    await ok200("bağı kaldır", api.put(`/api/workspace/accounts/${account.id}`, { ...fresh, fields: fresh.fields || [], caseKey: "", caseTitle: "" }));
     data = await activity("2026/201");
     assert.equal(data.items.filter(item => item.type === "account-entry").length, 0, "bağ kalkınca düşer");
     assert.equal(data.paidTotal, 0);

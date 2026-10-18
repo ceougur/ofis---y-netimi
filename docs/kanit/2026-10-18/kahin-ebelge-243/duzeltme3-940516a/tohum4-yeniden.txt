@@ -1,0 +1,6 @@
+[ebelge-t4-i200] adım 200 · fark 0 · ihlal 0 · saf model son fark 14 · çatal seçimi 45 · 9.9 sn
+# tests 1
+# pass 1
+# fail 0
+# kahin fark 0 ihlal 0
+cikis=0

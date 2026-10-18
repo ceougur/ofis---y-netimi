@@ -1,0 +1,285 @@
+{
+ "ad": "ebelge-t6-i200",
+ "tohum": 6,
+ "islem": 200,
+ "bugun": "2026-02-26",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 41,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 2,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 8,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 9,
+   "aday": 2,
+   "secilen": [
+    "B5: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 14,
+   "aday": 2,
+   "secilen": [
+    "B2: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 15,
+   "aday": 2,
+   "secilen": [
+    "B7: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 16,
+   "aday": 2,
+   "secilen": [
+    "B2: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 17,
+   "aday": 2,
+   "secilen": [
+    "B8: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 18,
+   "aday": 2,
+   "secilen": [
+    "B9: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 19,
+   "aday": 2,
+   "secilen": [
+    "B10: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 25,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 26,
+   "aday": 2,
+   "secilen": [
+    "B14: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 43,
+   "aday": 2,
+   "secilen": [
+    "B3: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 45,
+   "aday": 2,
+   "secilen": [
+    "B21: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 52,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 60,
+   "aday": 3,
+   "secilen": [
+    "B12: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 68,
+   "aday": 2,
+   "secilen": [
+    "B3: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 70,
+   "aday": 2,
+   "secilen": [
+    "B32: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 74,
+   "aday": 2,
+   "secilen": [
+    "B30: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 79,
+   "aday": 2,
+   "secilen": [
+    "B28: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 85,
+   "aday": 2,
+   "secilen": [
+    "B37: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 87,
+   "aday": 2,
+   "secilen": [
+    "B38: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 91,
+   "aday": 2,
+   "secilen": [
+    "B41: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 97,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 108,
+   "aday": 3,
+   "secilen": [
+    "B45: tur sırasında silindi",
+    "B45: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 118,
+   "aday": 2,
+   "secilen": [
+    "B45: tur sırasında silme reddedildi"
+   ]
+  },
+  {
+   "adim": 129,
+   "aday": 2,
+   "secilen": [
+    "B56: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 134,
+   "aday": 2,
+   "secilen": [
+    "B54: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 138,
+   "aday": 2,
+   "secilen": [
+    "B58: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 142,
+   "aday": 2,
+   "secilen": [
+    "B60: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 144,
+   "aday": 2,
+   "secilen": [
+    "B61: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 150,
+   "aday": 3,
+   "secilen": [
+    "B63: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 152,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 159,
+   "aday": 2,
+   "secilen": [
+    "B69: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 164,
+   "aday": 2,
+   "secilen": [
+    "B70: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 168,
+   "aday": 2,
+   "secilen": [
+    "B73: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 173,
+   "aday": 2,
+   "secilen": [
+    "B75: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 179,
+   "aday": 3,
+   "secilen": [
+    "B31: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 180,
+   "aday": 2,
+   "secilen": [
+    "B78: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 197,
+   "aday": 2,
+   "secilen": [
+    "B84: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 2549,
+  "withdrawn": 544,
+  "sent": 3458,
+  "none": 519,
+  "processing": 381,
+  "error": 19
+ },
+ "kucultulmus": null,
+ "sure": 9.9
+}

@@ -176,6 +176,12 @@ async function fetchOne(api, request, side = "eski", company = null) {
     // 2.1.0 Aşama 14: altıdan çok özet kutusu iki sıraya dizilir (Banka ve POS Hareketleri'nde 7–8 kutu; tek sırada tutar kesiliyordu) →
     // tablo sayfalara başka yerden bölünür ve uzun özet başlığı satır kırmaz. Bu raporda sayfa başlıkları (şirket · rapor, "Sayfa n / m", alt
     // başlık, kolon başlıkları) atılır ve satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
+    // 2.4.3 (uzman UI7/UI9; bilerek): Kasa Dökümü PDF'inin gösterge/satır adları yazım düzeninde ve hareket sayısı binlik ayraçlı. Eski taraf aynı
+    // biçime çevrilir; tutarlar, satırlar ve sıraları birebir karşılaştırılır.
+    if (request.url.includes("/cash.pdf") && side !== "yeni") {
+      for (const [from, to] of [["Devreden kasa", "Devreden Kasa"], ["Dönem tahsilatı", "Dönem Tahsilatı"], ["Dönem ödemesi", "Dönem Ödemesi"], ["Dönem sonu kasa", "Dönem Sonu Kasa"], ["Dönem toplamı", "Dönem Toplamı"], ["Kasa dökümü", "Kasa Dökümü"]]) text = text.split(from).join(to);
+      text = text.replace(/(\d+) hareket · fark/g, (_, count) => `${Number(count).toLocaleString("tr-TR")} hareket · fark`);
+    }
     if (request.url.includes("/banka-pos-hareketleri/")) return { status: 200, body: textNorm(withoutPageHeads(text).replace(/\s+/g, " ")), company: label };
     return { status: 200, body: textNorm(request.url.includes("/hesap-mizani/") ? text.replace(/\s+/g, " ") : text), company: label };
   }

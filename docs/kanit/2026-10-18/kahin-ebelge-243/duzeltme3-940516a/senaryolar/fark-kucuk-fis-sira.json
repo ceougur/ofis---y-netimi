@@ -1,0 +1,18 @@
+{
+ "ad": "kucuk-fis-sira",
+ "tohum": 1,
+ "islem": 7,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [],
+ "eStatusDegerleri": {
+  "waiting": 11,
+  "none": 2
+ },
+ "kucultulmus": null,
+ "sure": 1.0
+}

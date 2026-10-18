@@ -284,7 +284,11 @@ class Degismez:
                 if not s.get("ok") and (not s.get("kod") or not s.get("ileti", "x")):
                     # I19 (baş mimar kararı 18.10.2026): tur sonucunda gönderilmeyen belgenin kodu ve iletisi dolu (neden yazılır).
                     ek("I19", f"{ad}: tur sonucu ok:false ama kod/ileti boş (kod '{s.get('kod', '')}')", belge=ad)
-                if adim["islem"] == "esz_tumunu_gonder" and not s.get("ok") and g[ad]["ettn"] in self.kabul_id and gonderildi_mi(g[ad]["eStatus"]) is True:
+                # Baş mimar kararı 18.10.2026 (K14 ile tutarlı): istek EDM'ye gittikten sonra kopan / zaman aşımına uğrayan belge "belirsiz"
+                # (integrator-uncertain) döner — eşzamanlı turda hata sayılmaz (sonunda gönderilmiş ya da belirsiz kalması ikisi de geçerli).
+                # Bu adımda kâhinin enjekte ettiği arızanın düştüğü belge: o oturumun aldığı hata gerçek EDM yanıtıdır (I15 dışı).
+                arizali = {dn["uuid"] for dn in denemeler if dn.get("ariza")}
+                if adim["islem"] == "esz_tumunu_gonder" and g[ad]["ettn"] not in arizali and s.get("kod") != "integrator-uncertain" and not s.get("ok") and g[ad]["ettn"] in self.kabul_id and gonderildi_mi(g[ad]["eStatus"]) is True:
                     ek("I15", f"{ad}: eşzamanlı turda gönderilen belge için hata yanıtı ({s.get('kod')})", belge=ad)
         # durum güncelle
         for ad, b in g.items():

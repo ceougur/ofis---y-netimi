@@ -270,6 +270,12 @@ class Arizalar(unittest.TestCase):
         d, _ = kos([{"islem": "ariza", "tur": "kopma_sonra"}, K("B1", "K1", "2026-06-17", "simdi"), {"islem": "durum_sorgula", "belge": "B1"}], sec=sec)
         self.assertTrue(d.belgeler["B1"]["prog"])
 
+    def test_esz_ag_yokken_belirsiz_numara_catali_K32(self):
+        _, adaylar = kos([{"islem": "ag", "durum": "yok"}, K("B1", "K1", "2026-06-16"), K("B2", "K1", "2026-06-17"), {"islem": "esz_tumunu_gonder"}])
+        durum = sorted((no(a, "B1"), no(a, "B2")) for a in adaylar)
+        self.assertEqual(durum, [("", ""), ("TEA2026000000001", "")])
+        self.assertTrue(all(not a.belgeler["B1"]["edm"] for a in adaylar))
+
     def test_esz_tek_tur_gibi_K19(self):
         a, _ = kos([K("B1", "K1", "2026-06-15"), K("B2", "K2", "2026-06-16"), {"islem": "esz_tumunu_gonder"}])
         b, _ = kos([K("B1", "K1", "2026-06-15"), K("B2", "K2", "2026-06-16"), T])
@@ -396,6 +402,19 @@ class DegismezDenetimi(unittest.TestCase):
         k = self.kayit({"B1": ("", "2026-06-16", "TEMELFATURA", "waiting", "issued")},
                        ek={"sonuclar": [{"ad": "B1", "ok": False, "numara": "", "kod": "series-waiting", "ileti": "Daha eski belge bekliyor"}]})
         self.assertNotIn("I19", self.kodlar({"no": 2, "islem": "tumunu_gonder"}, k))
+
+    def test_esz_belirsiz_hata_sayilmaz_I15(self):
+        kab = [{"id": "TEA2026000000001", "uuid": "u-B1", "earchive": "true", "vkn": "10000000146", "alias": ""}]
+        k = self.kayit({"B1": ("TEA2026000000001", "2026-06-16", "EARSIVFATURA", "sent", "issued")}, kabul=kab,
+                       ek={"sonuclar": [[{"ad": "B1", "ok": True, "numara": "TEA2026000000001"}], [{"ad": "B1", "ok": False, "numara": "", "kod": "integrator-uncertain", "ileti": "belirsiz"}]]})
+        self.assertNotIn("I15", self.kodlar({"no": 1, "islem": "esz_tumunu_gonder"}, k))
+
+    def test_esz_enjekte_arizali_belge_I15_disi(self):
+        kab = [{"id": "TEA2026000000001", "uuid": "u-B1", "earchive": "true", "vkn": "10000000146", "alias": ""}]
+        k = self.kayit({"B1": ("TEA2026000000001", "2026-06-16", "EARSIVFATURA", "sent", "issued")}, kabul=kab,
+                       ek={"sonuclar": [[{"ad": "B1", "ok": True, "numara": "TEA2026000000001"}], [{"ad": "B1", "ok": False, "numara": "", "kod": "integrator-rejected", "ileti": "x"}]]})
+        self.assertNotIn("I15", self.kodlar({"no": 1, "islem": "esz_tumunu_gonder"}, k, [{"id": "TEA2026000000001", "uuid": "u-B1", "ariza": "gecici_hata"}]))
+        self.assertIn("I15", self.kodlar({"no": 2, "islem": "esz_tumunu_gonder"}, k, [{"id": "TEA2026000000001", "uuid": "u-B1", "ariza": ""}]))
 
     def test_sonda_tutarsizlik_I18(self):
         k = self.kayit({"B1": ("TEA2026000000001", "2026-06-16", "EARSIVFATURA", "waiting", "issued")},
