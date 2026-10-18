@@ -50,7 +50,7 @@
   --do-gold-soft: #fbf3e2;
   --do-danger: #b3473a;
   --do-danger-soft: #fdeeeb;
-  --do-warn: #a86b12;
+  --do-warn: #8a5810;
   --do-warn-soft: #fdf4e3;
   --do-radius: 14px;
   --do-radius-small: 10px;
@@ -406,7 +406,9 @@ html.hof-auth-required #root {
 }
 .hof-eyebrow {
   margin: 0 0 6px;
-  color: #5f8c74;
+  /* 2.4.3 (uzman UI10): #5f8c74 beyazda 3,83:1 idi (10px); AA 4,5:1 → #4e7a62 (4,9:1). Tablo başlığı ve ikincil yazı #6d8276 → #567064
+     (5,0:1 açık yeşil zeminde), uyarı rengi #a86b12 → #8a5810 (5,5:1). */
+  color: #4e7a62;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -915,7 +917,7 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
   text-align: left;
 }
 .hof-table th {
-  color: #6d8276;
+  color: #567064;
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -4863,16 +4865,16 @@ body.hof-free-wide .hof-free-wrap {
 .hof-payment-pill.is-overdue .hof-payment-pill-icon { background: #fbe4df; color: #b3473a; }
 .hof-payment-pill.is-overdue .hof-payment-pill-state { background: #fbe4df; color: #b3473a; }
 .hof-payment-pill.is-today .hof-payment-pill-icon,
-.hof-payment-pill.is-month .hof-payment-pill-icon { background: #fdf0d8; color: #a86b12; }
+.hof-payment-pill.is-month .hof-payment-pill-icon { background: #fdf0d8; color: #8a5810; }
 .hof-payment-pill.is-today .hof-payment-pill-state,
-.hof-payment-pill.is-month .hof-payment-pill-state { background: #fdf0d8; color: #a86b12; }
+.hof-payment-pill.is-month .hof-payment-pill-state { background: #fdf0d8; color: #8a5810; }
 .hof-due-facts { display: grid; gap: 4px; margin: 10px 0 0; }
 .hof-due-facts > div { display: flex; justify-content: space-between; gap: 10px; font-size: 10.5px; }
-.hof-due-facts dt { color: #789086; }
+.hof-due-facts dt { color: #5d7569; }
 .hof-due-facts dd { margin: 0; color: #24573e; font-weight: 800; text-align: right; }
 .hof-due-facts dd small { color: var(--do-faint); font-weight: 600; }
 .hof-due-facts dd.is-overdue { color: #b3473a; }
-.hof-due-facts dd.is-today, .hof-due-facts dd.is-month { color: #a86b12; }
+.hof-due-facts dd.is-today, .hof-due-facts dd.is-month { color: #8a5810; }
 .hof-payment-mark { background: #f4f8f5; color: #2d5f45; }
 .hof-payment-go { display: block; width: 100%; margin-top: 8px; padding: 6px; border: 0; border-radius: 8px; background: transparent; color: #2d6747; font-size: 10.5px; font-weight: 800; cursor: pointer; }
 .hof-payment-go:hover { background: #edf7ef; }
@@ -4926,11 +4928,11 @@ body.hof-notice-open .hof-toasts { bottom: calc(18px + var(--hof-notice-space, 1
   font-weight: 900;
 }
 .hof-notice.is-late .hof-notice-icon { background: #fbe4df; color: #b3473a; }
-.hof-notice.is-soon .hof-notice-icon { background: #fdf0d8; color: #a86b12; }
+.hof-notice.is-soon .hof-notice-icon { background: #fdf0d8; color: #8a5810; }
 .hof-notice-body { min-width: 0; }
 .hof-notice-eyebrow { margin: 0 0 3px; color: var(--do-muted); font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; }
 .hof-notice.is-late .hof-notice-eyebrow { color: #b3473a; }
-.hof-notice.is-soon .hof-notice-eyebrow { color: #a86b12; }
+.hof-notice.is-soon .hof-notice-eyebrow { color: #8a5810; }
 .hof-notice-title { display: block; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
 .hof-notice-text { margin: 3px 0 0; color: var(--do-ink-soft); font-size: 12px; line-height: 1.45; }
 .hof-notice-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
@@ -6425,7 +6427,7 @@ body.hof-dense .dynamic-table th {
   background: #f4f9f6;
 }
 .hof-plans-table td small.is-warn {
-  color: #a86b12;
+  color: #8a5810;
 }
 .hof-plan-badge {
   display: inline-block;
@@ -6438,10 +6440,10 @@ body.hof-dense .dynamic-table th {
   white-space: nowrap;
 }
 .hof-plan-badge.is-late { background: #fbe4df; color: #b3473a; }
-.hof-plan-badge.is-soon { background: #fdf0d8; color: #a86b12; }
+.hof-plan-badge.is-soon { background: #fdf0d8; color: #8a5810; }
 .hof-plan-badge.is-done { background: #dcefe3; color: #177245; }
 .hof-plan-badge.is-info { background: var(--do-accent-soft); color: var(--do-accent); }
-.hof-plan-badge.is-muted { background: #eef1ef; color: #6d8276; }
+.hof-plan-badge.is-muted { background: #eef1ef; color: #567064; }
 .hof-plan-head {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -6500,7 +6502,7 @@ body.hof-dense .dynamic-table th {
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6d8276;
+  color: #567064;
 }
 .hof-plan-section span {
   padding: 1px 7px;
@@ -6517,7 +6519,7 @@ body.hof-dense .dynamic-table th {
   color: #b3473a;
 }
 .hof-plan-items tr.is-paid td {
-  color: #6d8276;
+  color: #567064;
 }
 .hof-plan-items td small,
 .hof-plans-entries td small {
@@ -6668,9 +6670,15 @@ body.hof-dense .dynamic-table th {
 .hof-plans-list {
   max-height: max(320px, calc(100vh - 430px));
 }
+/* 2.4.3 (uzman UI3c): stok listesinde kod kolonu taksit kartının 56px "No" kuralını alıp "STK-2.0.21-001" kodunu üç satıra bölüyordu; stok kodu ve
+   barkod (EAN-13) tek satırda tam görünür. */
+.hof-stock-table .hof-plan-no {
+  width: auto;
+  white-space: nowrap;
+}
 .hof-plans-table .hof-plan-no {
   width: 56px;
-  color: #6d8276;
+  color: #567064;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
 }
@@ -6770,7 +6778,7 @@ body.hof-dense .dynamic-table th {
   background: #fff;
 }
 .hof-plan-facts dt {
-  color: #6d8276;
+  color: #567064;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -6782,6 +6790,14 @@ body.hof-dense .dynamic-table th {
   font-size: 13.5px;
   font-weight: 600;
   overflow-wrap: anywhere;
+}
+/* 2.4.3 (uzman UI6): değerin altındaki ikinci satır (ör. e-Fatura posta kutusu etiketi) "Mükellefurn:mail:…" diye bitişik yazılıyordu. */
+.hof-plan-facts dd .hof-fact-sub {
+  display: block;
+  margin-top: 2px;
+  color: var(--do-faint);
+  font-size: 12px;
+  font-weight: 500;
 }
 .hof-plan-facts dd a {
   color: var(--do-accent);
@@ -6828,7 +6844,7 @@ body.hof-dense .dynamic-table th {
   align-items: center;
   gap: 8px;
   margin: 0;
-  color: #6d8276;
+  color: #567064;
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -6855,7 +6871,7 @@ body.hof-dense .dynamic-table th {
 }
 .hof-plan-chips button b {
   margin-left: 2px;
-  color: #6d8276;
+  color: #567064;
   font-weight: 800;
 }
 .hof-plan-chips button[aria-pressed="true"] {
@@ -6883,7 +6899,7 @@ body.hof-dense .dynamic-table th {
   padding: 1px 6px;
   border-radius: 6px;
   background: #eef1ef;
-  color: #6d8276;
+  color: #567064;
   font-size: 10.5px;
   font-weight: 700;
   vertical-align: 1px;
@@ -7326,7 +7342,7 @@ body.hof-dense .dynamic-table th {
   color: #b3473a;
 }
 .hof-acc-balance.is-zero {
-  color: #6d8276;
+  color: #567064;
 }
 .hof-acc-table .hof-acc-check,
 .hof-acc-table th.hof-acc-check {
@@ -7388,7 +7404,7 @@ body.hof-dense .dynamic-table th {
   font-weight: 400;
 }
 .hof-stock-qty.is-low {
-  color: #a86b12;
+  color: #8a5810;
 }
 .hof-stock-qty.is-out {
   color: #b3473a;
@@ -8314,7 +8330,8 @@ button.hof-source-card:focus-visible {
   display: grid;
   padding: 14px 16px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #1f6a50 0%, #2f8465 60%, #3e9a74 100%);
+  /* 2.4.3 (uzman UI10): açık uçta beyaz yazı 3,45:1, alt satır 2,78:1 idi; koyu uçlar ≥ 4,9:1. */
+  background: linear-gradient(135deg, #1f6a50 0%, #23704f 60%, #267356 100%);
   box-shadow: 0 12px 26px rgba(31, 106, 80, 0.22);
   color: #fff;
   font: 700 13px/1.25 var(--do-display);
@@ -8325,7 +8342,7 @@ button.hof-source-card:focus-visible {
 }
 .hof-rc-hero small {
   margin-top: 4px;
-  color: #d6ecdf;
+  color: #e3f2e9;
   font: 600 11px var(--do-font);
 }
 .hof-rc-nav input[type="search"] {
@@ -8810,7 +8827,7 @@ button.hof-source-card:focus-visible {
 }
 .hof-transfer-table td small {
   display: block;
-  color: var(--do-muted, #6d8276);
+  color: var(--do-muted, #567064);
   font-size: 11.5px;
 }
 .hof-transfer-check {
@@ -8822,7 +8839,7 @@ button.hof-source-card:focus-visible {
 }
 .hof-transfer-table tr.is-exists td,
 .hof-transfer-table tr.is-closed td {
-  color: #6d8276;
+  color: #567064;
 }
 .hof-transfer-first {
   display: block;
@@ -8887,7 +8904,7 @@ button.hof-source-card:focus-visible {
 }
 .hof-transfer-imports li small {
   display: block;
-  color: #6d8276;
+  color: #567064;
 }
 .hof-transfer-result {
   margin: 0 0 10px;
@@ -9748,7 +9765,9 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-wa-person { display: flex; flex-direction: column; margin-bottom: 8px; }
 .hof-wa-person span { color: var(--do-muted); font-size: .85rem; }
 .hof-wa-actions { flex-wrap: wrap; }
-.hof-button.hof-whatsapp { background: #25d366; border-color: #25d366; color: #fff; }
+/* 2.4.3 (uzman UI1): beyaz yazı #25d366 zeminde 1,98:1 okunmuyordu; koyu WhatsApp yeşili #1e7e45 (5,09:1). */
+.hof-button.hof-whatsapp { background: #1e7e45; border-color: #1e7e45; color: #fff; }
+.hof-button.hof-whatsapp:hover:not(:disabled) { background: #186a3a; border-color: #186a3a; color: #fff; }
 .hof-wa-done { text-align: center; padding: 20px 0; }
 .hof-wa-done strong { font-size: 1.2rem; }
 @media (max-width: 760px) { .hof-wa-grid, .hof-wa-head { grid-template-columns: 1fr 1fr; } .hof-wa-grid { grid-template-columns: 1fr; } }
@@ -11078,4 +11097,15 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 @media (prefers-reduced-motion: reduce) {
   .hof-toast.is-repeat { animation: none; }
+}
+
+/* 2.4.3 (uzman UI10): React kabuğunun marka alt yazısı (#89948f, 3,12:1) programın soluk yazı rengiyle (4,7:1). */
+.brand-subtitle {
+  color: var(--do-faint) !important;
+}
+/* 2.4.3 (uzman UI11): Stok listesinde 5 özet kartı; 5. kart ("Stok Değeri") tek başına ikinci satıra düşüp listeye yer bırakmıyordu. */
+@media (min-width: 900px) {
+  .hof-kpis.hof-stock-kpis {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }

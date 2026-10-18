@@ -80,10 +80,11 @@ export function cashPdf(report, { from = "", to = "", officeName = "", userName 
       if (userName) page.text(M, top + 21, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
       top += 72;
       const cards = [
-        ["Devreden kasa", report.opening || 0, ink],
-        ["Dönem tahsilatı", report.period.in, green],
-        ["Dönem ödemesi", report.period.out, red],
-        ["Dönem sonu kasa", closing, ink],
+        // 2.4.3 (uzman UI7): rapor/PDF başlıkları ve göstergeler yazım düzeninde (öbür PDF'ler "Borç Toplamı", "TOPLAM").
+        ["Devreden Kasa", report.opening || 0, ink],
+        ["Dönem Tahsilatı", report.period.in, green],
+        ["Dönem Ödemesi", report.period.out, red],
+        ["Dönem Sonu Kasa", closing, ink],
       ];
       const gap = 8;
       const cardWidth = (W - gap * 3) / 4;
@@ -118,7 +119,7 @@ export function cashPdf(report, { from = "", to = "", officeName = "", userName 
 
   newPage(true);
   const textWidth = col.text - cellPad * 2;
-  if (from) row({ lines: ["Devreden kasa"], sub: `${dayText(from)} öncesindeki bakiye`, balance: report.opening || 0, bold: true, fill: "#fafafa" });
+  if (from) row({ lines: ["Devreden Kasa"], sub: `${dayText(from)} öncesindeki bakiye`, balance: report.opening || 0, bold: true, fill: "#fafafa" });
   if (!report.entries.length) row({ lines: ["Bu aralıkta kasa hareketi yok."] });
   report.entries.forEach((entry, index) => {
     const { text, origin } = describe(entry);
@@ -134,13 +135,14 @@ export function cashPdf(report, { from = "", to = "", officeName = "", userName 
       fill: index % 2 ? "#fcfcfd" : null,
     });
   });
-  row({ lines: ["Dönem toplamı"], sub: `${report.entries.length} hareket · fark ${tl(report.period.net)}`, incoming: report.period.in, outgoing: report.period.out, balance: closing, bold: true, fill: "#f3f4f6" });
+  // 2.4.3 (uzman UI9): hareket sayısı binlik ayraçla ("1.849 hareket").
+  row({ lines: ["Dönem Toplamı"], sub: `${report.entries.length.toLocaleString("tr-TR")} hareket · fark ${tl(report.period.net)}`, incoming: report.period.in, outgoing: report.period.out, balance: closing, bold: true, fill: "#f3f4f6" });
 
   const total = doc.pages.length;
   doc.pages.forEach((item, index) => {
     const footer = A4.height - 28;
     item.line(M, footer - 12, M + W, footer - 12, { color: "#e5e7eb", width: 0.5 });
-    item.text(M, footer, `DestekOfis · Kasa dökümü · ${range}`, { size: 7.5, color: muted });
+    item.text(M, footer, `DestekOfis · Kasa Dökümü · ${range}`, { size: 7.5, color: muted });
     item.text(M, footer, `Sayfa ${index + 1} / ${total}`, { size: 7.5, color: muted, align: "right", width: W });
   });
   return doc.toBuffer({ now });
