@@ -459,3 +459,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - KARAR (kullanıcı, 18.10.2026 ~19:30 UTC; B paketi kapsamı): 2.4.3'te → UX2, UX3, UX5 (fatura), UX6, UX28, UI4, UI2, UX12, UX24, UX23, UX14, UX26, KÖ1, KÖ2.
   2.4.4'e ERTELENDİ → UI11 (düğme adlarının birleştirilmesi + fatura penceresi çift başlık), UI5, UI9 (fatura), UI3a, UX15, UX16, UX17, UX18, UX20, UX25,
   UX27, UX9, UX10 (fatura). Ertelenenler iş listesinde "2.4.4", sürüm notunda ve teslimde BİLİNEN SINIRLAR'da yazılır.
+- KARAR (kullanıcı önerisi, 18.10.2026 ~21:45 UTC; baş mimar anayasaya uygun buldu): son aday Uzun Doğrulama'da (GitHub) koşarken AYNI commit'te gerçek EDM test
+  ortamı denemesi (MM1 dahil) ve imzalı paket + kurulum hazırlanır; TESLİM ancak Uzun Doğrulama yeşil okunduktan sonra. Ön koşul: sürüm belgeleri ve kılavuz
+  PDF son adaydan ÖNCE biter (paketin içinde). Uzun Doğrulama kırmızı çıkıp kod değişirse paket ve etkilenen EDM adımı yeni commit'te yeniden yapılır.
