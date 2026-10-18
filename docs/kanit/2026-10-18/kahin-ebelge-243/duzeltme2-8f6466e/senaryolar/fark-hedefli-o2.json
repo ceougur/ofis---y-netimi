@@ -1,0 +1,28 @@
+{
+ "ad": "hedefli-o2",
+ "tohum": 0,
+ "islem": 6,
+ "bugun": "2026-06-17",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 4,
+   "aday": 3,
+   "secilen": [
+    "B3: tur sırasında silindi",
+    "B3: silinince FIS numarası aldı"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 6,
+  "withdrawn": 3,
+  "sent": 6
+ },
+ "kucultulmus": null,
+ "sure": 2.2
+}

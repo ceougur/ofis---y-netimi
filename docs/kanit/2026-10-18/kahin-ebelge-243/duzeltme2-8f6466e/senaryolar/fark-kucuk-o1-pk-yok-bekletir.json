@@ -1,0 +1,32 @@
+{
+ "ad": "kucuk-o1-pk-yok-bekletir",
+ "tohum": 1,
+ "islem": 14,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 12,
+   "aday": 2,
+   "secilen": [
+    "B17: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 13,
+   "aday": 2,
+   "secilen": []
+  }
+ ],
+ "eStatusDegerleri": {
+  "none": 23,
+  "waiting": 13,
+  "sent": 14
+ },
+ "kucultulmus": null,
+ "sure": 2.0
+}

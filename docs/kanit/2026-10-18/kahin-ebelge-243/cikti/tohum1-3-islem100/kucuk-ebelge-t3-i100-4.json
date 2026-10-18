@@ -1,0 +1,161 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "ebelge-t3-i100-4-kucuk",
+ "tohum": 3,
+ "bugun": "2026-12-27",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B4",
+   "tarih": "2026-12-22",
+   "no": 1
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B10",
+   "cari": "K2",
+   "tarih": "2026-12-29",
+   "gonder": "sonra",
+   "no": 3
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 9,
+   "no": 4
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 5
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B14",
+   "cari": "K5",
+   "tarih": "2027-01-07",
+   "gonder": "simdi",
+   "no": 6
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B16",
+   "cari": "K2",
+   "tarih": "2027-01-05",
+   "gonder": "simdi",
+   "no": 7
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 8
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B17",
+   "cari": "K1",
+   "tarih": "2027-01-05",
+   "gonder": "simdi",
+   "no": 9
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B18",
+   "cari": "K2",
+   "tarih": "2027-01-08",
+   "gonder": "simdi",
+   "no": 10
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B19",
+   "cari": "K2",
+   "tarih": "2027-01-07",
+   "gonder": "sonra",
+   "no": 11
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B20",
+   "cari": "K2",
+   "tarih": "2027-01-06",
+   "gonder": "simdi",
+   "no": 12
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B21",
+   "cari": "K5",
+   "tarih": "2026-12-30",
+   "gonder": "sonra",
+   "no": 13
+  },
+  {
+   "islem": "esz_tumunu_gonder",
+   "no": 14
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B22",
+   "cari": "K1",
+   "tarih": "2027-01-06",
+   "gonder": "sonra",
+   "no": 15
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B23",
+   "cari": "K3",
+   "tarih": "2027-01-01",
+   "gonder": "sonra",
+   "no": 16
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B24",
+   "cari": "K1",
+   "tarih": "2026-12-30",
+   "gonder": "sonra",
+   "no": 17
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B19",
+   "no": 18
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B25",
+   "cari": "K1",
+   "tarih": "2027-01-06",
+   "gonder": "simdi",
+   "no": 19
+  },
+  {
+   "islem": "ag",
+   "durum": "yok",
+   "no": 20
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 21
+  },
+  {
+   "islem": "tur_sirasinda_sil",
+   "belge": "B22",
+   "no": 22
+  }
+ ]
+}

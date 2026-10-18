@@ -1,0 +1,225 @@
+{
+ "ad": "ebelge-t3-i100",
+ "tohum": 3,
+ "islem": 100,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 4,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 18,
+   "aday": 2,
+   "secilen": [
+    "B8: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 20,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 22,
+   "aday": 2,
+   "secilen": [
+    "B4: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 26,
+   "aday": 2,
+   "secilen": [
+    "B11: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 27,
+   "aday": 3,
+   "secilen": [
+    "B12: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 29,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 33,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 36,
+   "aday": 2,
+   "secilen": [
+    "B17: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 38,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 39,
+   "aday": 2,
+   "secilen": [
+    "B20: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 42,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 43,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 45,
+   "aday": 2,
+   "secilen": [
+    "B19: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 46,
+   "aday": 2,
+   "secilen": [
+    "B25: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 48,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 51,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 55,
+   "aday": 2,
+   "secilen": [
+    "B28: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 57,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 59,
+   "aday": 2,
+   "secilen": [
+    "B31: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 64,
+   "aday": 2,
+   "secilen": [
+    "B9: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 67,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 70,
+   "aday": 2,
+   "secilen": [
+    "B36: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 72,
+   "aday": 2,
+   "secilen": [
+    "B38: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 73,
+   "aday": 3,
+   "secilen": [
+    "B37: tur sırasında silindi",
+    "B37: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 76,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 80,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 82,
+   "aday": 2,
+   "secilen": [
+    "B40: tarih sırasına uymayan düzenleme reddedildi"
+   ]
+  },
+  {
+   "adim": 85,
+   "aday": 4,
+   "secilen": [
+    "B41: tur sırasında silme reddedildi",
+    "B41: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 86,
+   "aday": 2,
+   "secilen": [
+    "B42: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 90,
+   "aday": 3,
+   "secilen": [
+    "B41: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 96,
+   "aday": 2,
+   "secilen": [
+    "B45: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 97,
+   "aday": 2,
+   "secilen": [
+    "B46: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 656,
+  "sent": 891,
+  "none": 116,
+  "processing": 144,
+  "withdrawn": 137,
+  "error": 2
+ },
+ "kucultulmus": null,
+ "sure": 6.8
+}

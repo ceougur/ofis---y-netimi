@@ -1,0 +1,58 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "kucuk-fis-sira",
+ "tohum": 1,
+ "bugun": "2026-12-27",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K2",
+   "tarih": "2026-12-27",
+   "gonder": "sonra",
+   "no": 1
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 2
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_once",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K2",
+   "tarih": "2026-12-25",
+   "gonder": "sonra",
+   "no": 4
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 5
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B7",
+   "cari": "K1",
+   "tarih": "2026-12-29",
+   "no": 6
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B5",
+   "no": 7
+  }
+ ]
+}

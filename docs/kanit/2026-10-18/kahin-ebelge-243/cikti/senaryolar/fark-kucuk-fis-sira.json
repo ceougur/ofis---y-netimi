@@ -1,0 +1,38 @@
+{
+ "ad": "kucuk-fis-sira",
+ "tohum": 1,
+ "islem": 7,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [
+  {
+   "adim": 7,
+   "islem": "listeden_sil",
+   "kod": "I2",
+   "ileti": "FIS2026: 2 (B5, 2026-12-25) önceki 1 (B7, 2026-12-29) belgesinden eski tarihli",
+   "yineleme": 0,
+   "seri": "FIS2026",
+   "belge": "B5",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 7,
+   "aday": 2,
+   "secilen": [
+    "B5: silinince FIS numarası aldı"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 10,
+  "none": 2,
+  "withdrawn": 1
+ },
+ "kucultulmus": null,
+ "sure": 1.4
+}

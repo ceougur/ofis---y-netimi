@@ -1,0 +1,32 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "ebelge-t3-i100-2-kucuk",
+ "tohum": 3,
+ "bugun": "2026-12-27",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "gun_ilerlet",
+   "gun": 9,
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B21",
+   "cari": "K5",
+   "tarih": "2026-12-30",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "esz_tumunu_gonder",
+   "no": 3
+  }
+ ]
+}

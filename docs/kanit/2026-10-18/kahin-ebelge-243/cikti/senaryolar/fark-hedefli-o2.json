@@ -1,0 +1,47 @@
+{
+ "ad": "hedefli-o2",
+ "tohum": 0,
+ "islem": 6,
+ "bugun": "2026-06-17",
+ "farkSayisi": 1,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 0,
+ "farklar": [
+  {
+   "belge": "B3",
+   "alan": "yanit",
+   "model": "4xx",
+   "program": 200,
+   "kod": "",
+   "adim": 4,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti)"
+  }
+ ],
+ "ihlaller": [
+  {
+   "adim": 4,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I8",
+   "ileti": "B3: tur sürerken Listeden Sil kabul edildi ama belge EDM'ye gitti",
+   "yineleme": 0,
+   "belge": "B3",
+   "sinif": "BEKLENEN-O2 (tur sürerken Listeden Sil)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 4,
+   "aday": 3,
+   "secilen": [
+    "B3: tur sırasında silme reddedildi"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 6,
+  "sent": 9
+ },
+ "kucultulmus": null,
+ "sure": 2.7
+}

@@ -1,0 +1,6 @@
+{"dil":"destekofis-ebelge/1","ad":"hedefli-o2","tohum":0,"bugun":"2026-06-17","cariler":{"K1":"kisi","K2":"mukellef","K3":"mukellef_pksiz","K4":"gizli_mukellef","K5":"kisi"},
+"adimlar":[{"no":1,"islem":"kaydet","belge":"B1","cari":"K1","tarih":"2026-06-15","gonder":"sonra"},
+{"no":2,"islem":"kaydet","belge":"B2","cari":"K5","tarih":"2026-06-16","gonder":"sonra"},
+{"no":3,"islem":"kaydet","belge":"B3","cari":"K1","tarih":"2026-06-17","gonder":"sonra"},
+{"no":4,"islem":"tur_sirasinda_sil","belge":"B3"},
+{"no":5,"islem":"ag","durum":"var"},{"no":6,"islem":"tumunu_gonder","kapsam":"hepsi"}]}

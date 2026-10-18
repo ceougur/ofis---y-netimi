@@ -1,0 +1,57 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "ebelge-t2-i100-2-kucuk",
+ "tohum": 2,
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "gun_ilerlet",
+   "gun": 3,
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B9",
+   "cari": "K1",
+   "tarih": "2026-06-20",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 3
+  },
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B1",
+   "tarih": "2026-06-21",
+   "no": 4
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 5
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_once",
+   "no": 6
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B14",
+   "cari": "K5",
+   "tarih": "2026-06-22",
+   "gonder": "simdi",
+   "no": 7
+  }
+ ]
+}
