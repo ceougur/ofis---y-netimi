@@ -73,7 +73,7 @@ export function connect({ integrator, seller = {}, fetchImpl }) {
     contractReport: wrap(() => client.contractReport({ refresh: true })),
     test: wrap(() => client.test()),
     checkUser: wrap(taxNo => client.checkUser(taxNo)),
-    ensureSession: wrap(() => client.ensureSession()),
+    ensureSession: wrap(options => client.ensureSession(options)),
     send: wrap(({ invoice, xml }) =>
       client.send({ xml, number: invoice.number, uuid: invoice.ettn, earchive: earchive(invoice), senderVkn: seller.taxNo || "", senderAlias: integrator.senderAlias || "", receiverVkn: invoice.party?.taxNo || "", receiverAlias: invoice.party?.eAlias || "" }),
     ),

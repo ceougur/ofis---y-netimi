@@ -2039,7 +2039,9 @@
         // (e-Belge satırı) ve Gönderilecekler'de kalıcı görünür. Süre eskisi gibi 8 sn (uzun bildirim pencere düğmelerinin üstünde kalıp tıklamayı
         // engelliyordu — senaryo-ebelge-242 adım 4); okuma süresine göre ayar ortak bildirim çekirdeğinin işi.
         // Dar kontrol 2.4.3 (O1): seride daha eski tarihli gönderilmemiş belge varken numara verilmedi — hata değil, belge Gönderilecekler'de bekler.
+        // Ek 1 / kâhin BEKLENEN-AG: giriş reddedildi ya da EDM'ye ulaşılamadı — belge numarasız Gönderilecekler'de; ileti tam (önek yok).
         if (saved.autoSend?.code === "einvoice-order") HOF.toast(saved.autoSend.message, { type: "info", timeout: 12000 });
+        else if (saved.autoSend?.held) HOF.toast(saved.autoSend.message, { type: "error", timeout: 12000 });
         else if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
       }
       view.form = null;

@@ -222,7 +222,7 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
   });
 
   for (const mode of ["ids", "all"]) {
-    test(`S3 (${mode}): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye neden 'başka oturumda gönderiliyor'`, async () => {
+    test(`S3 (${mode}): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)`, async () => {
       await s3(mode);
     });
   }
@@ -242,13 +242,17 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     assert.equal(ctx.sends() - before, 6, "EDM'ye toplam 6 gönderim");
     for (const doc of cards) assert.equal(ctx.sentCount(doc.ettn), 1, `${doc.number} bir kez`);
     assert.equal(a.data.sent + b.data.sent, 6);
-    const notSent = b.data.results.filter(item => !item.ok);
-    assert.ok(notSent.length > 0, `ön koşul: ikinci istek birincinin tuttuğu belgeye denk geldi (${JSON.stringify(b.data).slice(0, 300)})`);
-    // Ön koşul (ders 20): öbür oturumun numara vermeden tuttuğu belge yüzünden bekletilen (sırası korunan) belge var.
-    assert.ok(notSent.some(item => item.skipped), `ön koşul: bekletilen belge oluştu (${JSON.stringify(b.data.results.map(item => [item.ok, item.skipped || false]))})`);
-    for (const item of notSent) {
-      assert.match(item.message, /başka oturumda/, item.message);
-      assert.doesNotMatch(item.message, /gönderilemedi\./, item.message);
+    // Dar kontrol 2.4.3 (kâhin BASKA-ESZ — beklenti BİLEREK değişti): ikinci istek öbür oturumun gönderdiği belgede gönderimin bitmesini bekler;
+    // belge gittiyse "başka oturumda gönderildi" (ok, done; gönderilen sayısına girmez), hiçbir belge hata ya da bekletme olarak dönmez.
+    const others = b.data.results.filter(item => item.done);
+    assert.ok(others.length > 0, `ön koşul: ikinci istek birincinin tuttuğu belgeye denk geldi (${JSON.stringify(b.data).slice(0, 300)})`);
+    for (const item of others) {
+      assert.equal(item.ok, true);
+      assert.equal(item.message, "Bu belge başka oturumda gönderildi.");
+    }
+    for (const r of [a, b]) {
+      assert.equal(r.data.failed, 0, JSON.stringify(r.data.results.filter(item => !item.ok)));
+      assert.ok(r.data.results.every(item => item.ok), JSON.stringify(r.data.results.filter(item => !item.ok)));
     }
     const ordered = [...cards].sort((x, y) => x.issueDate.localeCompare(y.issueDate));
     for (let i = 1; i < ordered.length; i += 1) assert.ok(seqOf(ordered[i].number) > seqOf(ordered[i - 1].number) || ordered[i].issueDate === ordered[i - 1].issueDate, "numara tarih sırasında");
@@ -257,8 +261,9 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
   test("5b: canlı ortamda test serili numaralı gönderilmemiş belge — rozet ve Gönderilecekler tutarlı; 'Test serisi canlıda gönderilmez; İptal Edin'", async () => {
     const ctx = await setup({ edocLive: true });
     open.push(ctx);
+    // Dar kontrol 2.4.3 (kâhin BEKLENEN-AG): ağ yokken Kaydet ve Gönder artık numara vermez; numaralı gönderilmemiş belge düz Kaydet ile oluşur.
     assert.equal((await ctx.integrator(DEAD)).status, 200);
-    const doc = await ctx.sale(ctx.people[0], { eSend: "now" });
+    const doc = await ctx.sale(ctx.people[0], {});
     assert.match(doc.number, /^TEA2026/, "ön koşul: test serisinden numara aldı, gönderilemedi");
     const inTest = await ctx.card(doc.id);
     assert.equal(inTest.eUnsent, true, "test ortamında Gönderilmedi");

@@ -2478,8 +2478,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     const doc = documentInput(body, { mode: "issue" });
     assertAliasBeforeNumber(doc, body);
+    const contactSince = Date.now();
     await assertArchiveBuyerBeforeNumber(user, doc, body);
-    const loginHold = await sendLoginBlock(doc, body);
+    const loginHold = await sendLoginBlock(doc, body, contactSince);
     const payment = paymentInput(body, doc, user);
     const result = store.tx(() => {
       const written = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" || Boolean(loginHold) });
@@ -2507,8 +2508,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const merged = { kind: existing.kind, scenario: existing.scenario, accountId: existing.accountId, originalId: existing.originalId, lines, buyer: parseJson(existing.partyJson, {}), payment: parseJson(existing.paymentJson, {}), ...body };
     const doc = documentInput(merged, { mode: "issue", existing });
     assertAliasBeforeNumber(doc, body);
+    const contactSince = Date.now();
     await assertArchiveBuyerBeforeNumber(user, doc, body);
-    const loginHold = await sendLoginBlock(doc, body);
+    const loginHold = await sendLoginBlock(doc, body, contactSince);
     const payment = paymentInput(merged, doc, user);
     const written = writeIssued(user, doc, payment, { id: existing.id, force: forceOf(body), defer: body.eSend === "later" || Boolean(loginHold) });
     const autoSend = loginHold ? loginHoldResult(loginHold) : written.orderHeld ? orderHeldResult(written.orderHeld) : await sendChoice(user, existing.id, body.eSend);
@@ -3131,10 +3133,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   const orderText = (count, where) => `Bu seride daha eski tarihli gönderilmemiş ${count.toLocaleString("tr-TR")} belge var; GİB sıra kuralı gereği önce onlar gönderilmeli. ${where} — Tümünü Gönder ile eskiden yeniye gönderin.`;
   // Kayıtta numarası ertelenen belgenin yanıtı (autoSend yerine): hata değil, belge Gönderilecekler'de numarasız bekler.
-  // Dar kontrol 2.4.3 (ek 1): kayıtta hemen gönderilecek belge (Kaydet ve Gönder; otomatik gönderim açıkken Kaydet / Seçilenleri Kaydet) için
-  // entegratöre giriş numara verilmeden denenir; giriş REDDEDİLİRSE belge numara almadan Gönderilecekler'e girer. Bağlantı yoksa eski davranış
-  // sürer (2.4.3 H1: bugünün belgesi numarasını alır, "Gönderilmedi" bekler). Oturum önbellekteyse ağa çıkılmaz.
-  async function sendLoginBlock(doc, body) {
+  // Dar kontrol 2.4.3 (ek 1, kâhin BEKLENEN-AG): kayıtta hemen gönderilecek belge (Kaydet ve Gönder; otomatik gönderim açıkken Kaydet / Seçilenleri
+  // Kaydet) için entegratöre erişim ve giriş numara verilmeden denenir; giriş REDDEDİLİRSE ya da EDM'ye ULAŞILAMAZSA belge numara almadan
+  // Gönderilecekler'e girer (önceki 2.4.3 H1 davranışı — bugünün belgesi numarasını alıp "Gönderilmedi" bekliyordu — kalktı). Oturum
+  // önbellekteyse ağa çıkılmaz.
+  async function sendLoginBlock(doc, body, since = Date.now()) {
     if (!edocEnabled || body?.eSend === "later" || !doc.meta?.own || !doc.meta?.send || doc.profile === "KAGIT") return "";
     const s = settings();
     if (body?.eSend !== "now" && s.integrator?.autoSend !== true) return "";
@@ -3145,13 +3148,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       return "";
     }
     try {
-      await link.ensureSession?.();
+      await link.ensureSession?.({ since });
     } catch (error) {
-      if (loginRejected(error)) return String(error?.message || error).slice(0, 300);
+      if (loginRejected(error)) return { code: "integrator-login", detail: String(error?.message || error).slice(0, 300) };
+      if ((error?.extra?.code || error?.code) === "integrator-unreachable") return { code: "integrator-unreachable", detail: "" };
     }
     return "";
   }
-  const loginHoldResult = detailText => ({ ok: false, pending: true, held: true, code: "integrator-login", number: "", message: `Entegratör girişi reddedildi (kullanıcı adı/parola): ${detailText} Belge numara verilmeden Gönderilecekler'e eklendi; Entegratör Ayarları'nı düzeltip Tümünü Gönder ile gönderin.` });
+  const loginHoldResult = hold =>
+    hold.code === "integrator-unreachable"
+      ? { ok: false, pending: true, held: true, code: "integrator-unreachable", number: "", message: "EDM'ye ulaşılamadı; belge numarasız Gönderilecekler'e eklendi, bağlantı gelince Tümünü Gönder ile gönderin." }
+      : { ok: false, pending: true, held: true, code: "integrator-login", number: "", message: `Entegratör girişi reddedildi (kullanıcı adı/parola): ${hold.detail} Belge numara verilmeden Gönderilecekler'e eklendi; Entegratör Ayarları'nı düzeltip Tümünü Gönder ile gönderin.` };
   const orderHeldResult = count => ({ ok: false, pending: true, held: true, code: "einvoice-order", number: "", message: orderText(count, "Belge Gönderilecekler'e eklendi") });
   function numberForSend(user, id, { listedOnly = false } = {}) {
     return store.tx(() => {
@@ -3259,7 +3266,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       release();
     }
   }
-  async function sendInvoiceOnce(user, id, { draft = false, listedOnly = false } = {}) {
+  async function sendInvoiceOnce(user, id, { draft = false, listedOnly = false, contactSince = Date.now() } = {}) {
     requireEdoc();
     // Dar kontrol 2.4.3: ağa çıkmadan bilinen sonuçlar önce söylenir (mükellef sorgusu ve numara harcanmaz) — D2: başka oturumda gönderilmiş;
     // O2: Tümünü Gönder sürerken Listeden Silinmiş; O3: alıcı e-Fatura mükellefi (kalıcı); O1: seride daha eski tarihli gönderilebilir bekleyen var.
@@ -3302,7 +3309,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         // numara almadan Gönderilecekler'de kalır (önceden numara girişten önce veriliyordu; her belge numara alıp düşüyordu).
         if (["waiting", "withdrawn"].includes(pre.eStatus) && link.ensureSession) {
           try {
-            await link.ensureSession();
+            // contactSince: EDM'den bu andan sonra yanıt alındıysa (bu istekteki mükellef sorgusu; turda önceki belge) yeniden ulaşılmaz.
+            await link.ensureSession({ since: contactSince });
           } catch (error) {
             if (loginRejected(error)) throw new HttpError(502, `Entegratör girişi reddedildi (kullanıcı adı/parola): ${String(error?.message || error).slice(0, 300)} Belge numara verilmeden Gönderilecekler'de kaldı; Entegratör Ayarları'nı düzeltip yeniden deneyin.`, { code: "integrator-login", stage: "login" });
             throw error;
@@ -3394,6 +3402,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const s = settings();
       const series = s.series.paper;
       const year = Number(row.issueDate.slice(0, 4));
+      // Dar kontrol 2.4.3 (kâhin BASKA-FIS-SIRA): Müşteri Fişi serisi de numara–tarih sırasına uyar (kâğıt kaydındaki kural, assertChronology):
+      // belge serinin son fişinden eski tarihliyse fiş numarası verilmez.
+      const last = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year);
+      if (last && last.issueDate > row.issueDate) throw new HttpError(409, `${series} serisinde son belge ${last.number} ${dayText(last.issueDate)} tarihli; bu belge (${dayText(row.issueDate)}) ondan eski. Belgenin tarihini düzeltin ya da İptal Edin.`, { code: "chronology" });
       const { seq, number } = nextNumber(series, year, s);
       store.run("UPDATE invoices SET profile = 'KAGIT', series = ?, year = ?, seq = ?, number = ?, e_status = 'withdrawn', updated_by = ?, updated_at = ? WHERE id = ?", series, year, seq, number, user.id, now(), row.id);
       renumberNotes(row.id, number);
@@ -3536,6 +3548,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         ? `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) şu anda başka oturumda gönderiliyor. Gönderim bitince listeyi yenileyin; kalan belge olursa Tümünü Gönder'e yeniden basın.`
         : reason === "outside"
           ? `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) Gönderilecekler'de ve bu gönderime dahil değil. Önce o gönderilmeli: Gönderilecekler'deki Tümünü Gönder eski tarihliden başlar.`
+          : reason === "alias"
+            ? `Gönderilmedi, sırasını koruyarak bekliyor: daha eski tarihli belgenin (${blocker.number || blocker.accountName}, ${dayText(blocker.issueDate)}) posta kutusu seçilmeli (Mükellef Sorgula / Posta Kutusu Seçin). O belge gönderilince bu belge de gönderilir.`
           : reason === "order"
             ? `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) de sırasını bekliyor. Önce daha eski tarihli belgeler gönderilmeli; Tümünü Gönder'e yeniden basın.`
             : `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) gönderilemedi. O belge gönderilmeden bu belge numara alırsa eski belge e-Belge olamaz; önce onu düzeltip yeniden gönderin.`;
@@ -3543,73 +3557,104 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     let attempted = 0;
     let reached = 0;
     let stopped = null;
+    // Dar kontrol 2.4.3 (kâhin BASKA-ESZ): belge öbür oturumda gönderiliyorsa (einvoice-sending) o gönderimin bitmesi beklenir (en çok süre
+    // bütçesi kadar): gittiyse "başka oturumda gönderildi" (hata değil, ok), gitmediyse (öbür oturumda düştü) bu oturum bir kez dener.
+    const releasedWithin = async (invoiceId, ms) => {
+      const until = Date.now() + ms;
+      while (busy.has(invoiceId)) {
+        if (Date.now() >= until) return false;
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      return true;
+    };
+    const sentElsewhere = invoiceId => {
+      const now = invoiceRow(invoiceId);
+      return now.status === "issued" && !E_SENDABLE.has(now.eStatus || "none") ? now : null;
+    };
     for (const id of order) {
       // Y1: parça sınırı (deneme sayısı) ya da süre bütçesi — her istekte en az bir belge denenir (ilerleme).
       if (all && (attempted >= SEND_CHUNK || (attempted > 0 && Date.now() - started >= SEND_BUDGET_MS))) break;
       if (all && stopped) break;
       reached += 1;
       if (stopped) {
-        results.push({ id, ok: false, skipped: true, reason: "stopped", message: `Gönderilmedi (numara verilmedi): ${stopped.message}` });
+        results.push({ id, ok: false, skipped: true, reason: "stopped", code: stopped.code, message: `Gönderilmedi (numara verilmedi): ${stopped.message}` });
         continue;
       }
       let row;
       try {
         row = invoiceRow(id);
       } catch {
-        results.push({ id, ok: false, message: "Fatura bulunamadı; silinmiş olabilir." });
+        results.push({ id, ok: false, code: "invoice-missing", message: "Fatura bulunamadı; silinmiş olabilir." });
         continue;
       }
       const key = unnumberedSeries(row);
       const blocker = key ? held.get(key) : null;
       if (blocker && blocker.issueDate < row.issueDate) {
-        results.push({ id, ok: false, skipped: true, reason: blocker.reason, message: skipText(blocker.reason, blocker) });
+        results.push({ id, ok: false, skipped: true, reason: blocker.reason, code: "einvoice-held", blockerCode: blocker.code || "", message: skipText(blocker.reason, blocker) });
         continue;
       }
       const older = key ? outside.get(key) : null;
       if (older && older.issueDate < row.issueDate) {
-        results.push({ id, ok: false, skipped: true, reason: "outside", message: skipText("outside", { accountName: older.accountName || "", issueDate: older.issueDate }) });
+        results.push({ id, ok: false, skipped: true, reason: "outside", code: "einvoice-held", message: skipText("outside", { accountName: older.accountName || "", issueDate: older.issueDate }) });
         continue;
       }
       attempted += 1;
-      try {
-        const sent = await sendInvoice(user, row.id, { draft: draftFirst(row.id), listedOnly: true });
-        results.push({ id, ok: true, number: invoiceRow(id).number, status: sent.status });
-      } catch (error) {
-        const code = error?.extra?.code || error?.code || "";
-        // Gözden geçirme 2.4.3 (S3): iki kişi aynı anda Tümünü Gönder — belge öbür oturumda gönderiliyor; neden doğru söylenir.
-        const busy = code === "einvoice-sending";
-        // Dar kontrol 2.4.3 (D2): belge bu arada başka oturumda gönderildi — hata değil; iletisi değişmez.
-        if (code === "einvoice-already-sent") {
-          results.push({ id, ok: false, done: true, code, message: ALREADY_SENT_TEXT });
-          continue;
-        }
-        // O2: tur sürerken Listeden Silindi — Müşteri Fişi kalır; seriyi bekletmez.
-        if (code === "einvoice-withdrawn") {
-          results.push({ id, ok: false, skipped: true, reason: "withdrawn", code, message: WITHDRAWN_TEXT });
-          continue;
-        }
-        // O1: seride daha eski tarihli gönderilebilir bekleyen var (ör. tur sürerken tarihi ileri alındı, başka oturumda eski tarihli belge kaydedildi).
-        const waitOrder = code === "einvoice-order";
-        noteSendFailure(user, row.id, error);
-        const permanent = PERMANENT_SEND_CODES.has(code);
-        let state = "";
+      let retried = false;
+      for (;;) {
         try {
-          state = invoiceRow(id).eStatus;
-        } catch {
-          state = "";
+          // Kâhin BEKLENEN-AG: EDM'ye erişim bu tur içinde doğrulanmadıysa numara vermeden önce denenir (turun ilk belgesi).
+          const sent = await sendInvoice(user, row.id, { draft: draftFirst(row.id), listedOnly: true, contactSince: started });
+          results.push({ id, ok: true, number: invoiceRow(id).number, status: sent.status });
+          break;
+        } catch (error) {
+          const code = error?.extra?.code || error?.code || "";
+          // Gözden geçirme 2.4.3 (S3) ve kâhin BASKA-ESZ: iki kişi aynı anda Tümünü Gönder — belge öbür oturumda gönderiliyor.
+          if (code === "einvoice-sending" && !retried && (await releasedWithin(row.id, Math.max(2000, SEND_BUDGET_MS)))) {
+            const other = sentElsewhere(id);
+            if (other) {
+              results.push({ id, ok: true, done: true, code, number: other.number, status: other.eStatus, message: ALREADY_SENT_TEXT });
+              break;
+            }
+            retried = true;
+            continue;
+          }
+          const busyNow = code === "einvoice-sending";
+          // Dar kontrol 2.4.3 (D2): belge bu arada başka oturumda gönderildi — hata değil (ok, done); iletisi değişmez.
+          if (code === "einvoice-already-sent") {
+            const other = sentElsewhere(id);
+            results.push({ id, ok: true, done: true, code, number: other?.number || "", message: ALREADY_SENT_TEXT });
+            break;
+          }
+          // O2: tur sürerken Listeden Silindi — Müşteri Fişi kalır; seriyi bekletmez.
+          if (code === "einvoice-withdrawn") {
+            results.push({ id, ok: false, skipped: true, reason: "withdrawn", code, message: WITHDRAWN_TEXT });
+            break;
+          }
+          // O1: seride daha eski tarihli gönderilebilir bekleyen var (ör. tur sürerken tarihi ileri alındı, başka oturumda eski tarihli belge kaydedildi).
+          const waitOrder = code === "einvoice-order";
+          noteSendFailure(user, row.id, error);
+          const permanent = PERMANENT_SEND_CODES.has(code);
+          let state = "";
+          try {
+            state = invoiceRow(id).eStatus;
+          } catch {
+            state = "";
+          }
+          if (key && !permanent && ["waiting", "withdrawn"].includes(state) && !held.has(key)) held.set(key, { issueDate: row.issueDate, accountName: row.accountName || "", number: row.number || "", code, reason: busyNow ? "busy" : waitOrder ? "order" : code === "buyer-alias" ? "alias" : "failed" });
+          results.push({ id, ok: false, code: code || "einvoice-failed", ...(busyNow ? { busy: true } : {}), ...(waitOrder ? { skipped: true, reason: "order" } : {}), ...(permanent ? { permanent: true } : {}), message: busyNow ? "Bu belge şu anda başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin." : error?.message || String(error) || "Gönderilemedi." });
+          // BİLGİ (r7): bağlantı / entegratör hesabı hatası bütün belgelerde aynı düşer — tur durur, kalanlara numara verilmez.
+          const cause = code === "buyer-check-failed" ? error?.extra?.cause || "" : code;
+          if (loginRejected(error)) stopped = { code: "integrator-login", message: LOGIN_REJECTED_TEXT };
+          else if (TURN_STOP_CODES.has(cause)) stopped = { code: cause, message: cause === "integrator-unreachable" ? UNREACHABLE_TEXT : `${error?.message || error} Kalan belgelere numara verilmedi; ayarı düzeltip yeniden deneyin.` };
+          break;
         }
-        if (key && !permanent && ["waiting", "withdrawn"].includes(state) && !held.has(key)) held.set(key, { issueDate: row.issueDate, accountName: row.accountName || "", reason: busy ? "busy" : waitOrder ? "order" : "failed" });
-        results.push({ id, ok: false, code, ...(busy ? { busy: true } : {}), ...(waitOrder ? { skipped: true, reason: "order" } : {}), ...(permanent ? { permanent: true } : {}), message: busy ? "Bu belge şu anda başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin." : error?.message || String(error) });
-        // BİLGİ (r7): bağlantı / entegratör hesabı hatası bütün belgelerde aynı düşer — tur durur, kalanlara numara verilmez.
-        const cause = code === "buyer-check-failed" ? error?.extra?.cause || "" : code;
-        if (loginRejected(error)) stopped = { code: "integrator-login", message: LOGIN_REJECTED_TEXT };
-        else if (TURN_STOP_CODES.has(cause)) stopped = { code: cause, message: cause === "integrator-unreachable" ? UNREACHABLE_TEXT : `${error?.message || error} Kalan belgelere numara verilmedi; ayarı düzeltip yeniden deneyin.` };
       }
     }
     const remaining = all ? order.length - reached : 0;
     const byInput = new Map(results.map(item => [item.id, item]));
     const sorted = (all ? ids : [...order, ...ids.filter(id => !order.includes(id))]).filter(id => byInput.has(id)).map(id => byInput.get(id));
-    ok(res, { results: sorted, sent: sorted.filter(item => item.ok).length, failed: sorted.filter(item => !item.ok && !item.done).length, skipped: sorted.filter(item => item.skipped).length, done: sorted.filter(item => item.done).length, remaining, ...(stopped ? { stopped } : {}) });
+    // "Başka oturumda gönderildi" (done) ve "gönderiliyor" (busy) bilgi sayılır: gönderilen ya da gönderilemeyen sayısına girmez.
+    ok(res, { results: sorted, sent: sorted.filter(item => item.ok && !item.done).length, failed: sorted.filter(item => !item.ok && !item.busy).length, skipped: sorted.filter(item => item.skipped).length, done: sorted.filter(item => item.done).length, remaining, ...(stopped ? { stopped } : {}) });
   });
   router.post("/api/workspace/invoices/:id/send", async ({ req, res, params }) => {
     const user = requireManage(req);

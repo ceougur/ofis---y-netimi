@@ -14,7 +14,7 @@
 import assert from "node:assert/strict";
 import { after, describe, test } from "node:test";
 import { resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
-import { BUYER_VKN, OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
+import { BUYER_VKN, MULTI_VKN, OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
 import { ADMIN_PASSWORD, startTestServer } from "./helpers.mjs";
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
@@ -30,9 +30,12 @@ const ORDER_RE = /^Bu seride daha eski tarihli gönderilmemiş (\d+) belge var; 
 async function setup({ sendDelayMs = 0, checkDelayMs = sendDelayMs, slowTaxNo = "", slowMs = 0, edocSendBudgetMs = 0 } = {}) {
   resetEdmCaches();
   const edm = await startMockEdm();
+  // net.down: ağ yok (bağlantı reddedildi; istek EDM'ye hiç ulaşmaz) — oturum önbellekteyken de (kâhin hedefli-ag-yokken-numara).
+  const net = { down: false };
   const fetchImpl = async (input, init) => {
     const url = String(typeof input === "string" || input instanceof URL ? input : input.url);
     if (!url.startsWith("http://127.0.0.1")) throw new Error(`ağa çıkılmaz (test): ${url}`);
+    if (net.down) throw Object.assign(new TypeError("fetch failed"), { cause: { code: "ECONNREFUSED" } });
     const raw = String(init?.body || "");
     if (sendDelayMs && /SendInvoiceRequest/.test(raw)) await sleep(sendDelayMs);
     if (checkDelayMs && /CheckUserRequest/.test(raw)) await sleep(checkDelayMs);
@@ -91,7 +94,7 @@ async function setup({ sendDelayMs = 0, checkDelayMs = sendDelayMs, slowTaxNo = 
     await server.close();
     await edm.close();
   };
-  return { edm, server, client, api, integrator, people, day, sale, card, pendingTab, sends, sentCount, sendAll, seriesOk, close };
+  return { edm, net, server, client, api, integrator, people, day, sale, card, pendingTab, sends, sentCount, sendAll, seriesOk, close };
 }
 
 describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", () => {
@@ -446,6 +449,97 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     assert.equal(ctx.edm.state.calls.filter(call => call.op === "CheckUser").length, checks, "ikinci turda yeniden sorulmaz");
     const now = await ctx.sale(ctx.people[1], { issueDate: ctx.day(0), eSend: "now" });
     assert.equal(now.autoSend?.ok, true, `yeni belge bekletilmez: ${JSON.stringify(now.autoSend)}`);
+  });
+
+  // Dar kontrol 2.4.3 ek 6–9 (bağımsız kâhin, kahin-243 senaryoları; ana oturum yeniden üretti).
+  test("Ek 6 (kâhin hedefli-ag-yokken-numara): oturum önbellekteyken ağ kesilir — Kaydet ve Gönder numara vermez; ileti; bağlantı gelince sırayla gider", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const acc = (await ctx.api.post("/api/workspace/accounts", retail(1))).data.id;
+    const first = await ctx.sale(acc, { issueDate: ctx.day(-2), eSend: "now" });
+    assert.equal(first.autoSend?.ok, true, "ön koşul: ağ varken gönderildi (oturum önbellekte)");
+    ctx.net.down = true;
+    const archive = await ctx.sale(acc, { issueDate: ctx.day(-1), eSend: "now" });
+    const person = await ctx.sale(ctx.people[1], { issueDate: ctx.day(-1), eSend: "now" });
+    for (const saved of [archive, person]) {
+      assert.equal(saved.number, "", `ağ yokken numara verilmedi (${saved.number})`);
+      assert.equal(saved.autoSend?.code, "integrator-unreachable", JSON.stringify(saved.autoSend));
+      assert.equal(saved.autoSend.message, "EDM'ye ulaşılamadı; belge numarasız Gönderilecekler'e eklendi, bağlantı gelince Tümünü Gönder ile gönderin.");
+      assert.equal((await ctx.card(saved.id)).eStatus, "waiting");
+    }
+    // Tümünü Gönder ve kartta Gönder de ağ yokken numara vermez.
+    const t = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
+    assert.equal(t.data.stopped?.code, "integrator-unreachable", JSON.stringify(t.data).slice(0, 300));
+    const k = await ctx.api.post(`/api/workspace/invoices/${archive.id}/send`, {});
+    assert.notEqual(k.status, 200);
+    assert.deepEqual([(await ctx.card(archive.id)).number, (await ctx.card(person.id)).number], ["", ""]);
+    ctx.net.down = false;
+    await ctx.sendAll();
+    const cards = await Promise.all([first, archive, person].map(d => ctx.card(d.id)));
+    assert.equal(ctx.seriesOk(cards).length, 3);
+    for (const c of cards) assert.equal(ctx.sentCount(c.ettn), 1);
+  });
+
+  test("Ek 7 (kâhin kucuk-esz-gonderiliyor-hata): iki oturum aynı anda Tümünü Gönder — öbür oturumda gönderilen belge ikinci yanıtta hata değil", async () => {
+    const ctx = await setup({ sendDelayMs: 600, checkDelayMs: 0 });
+    open.push(ctx);
+    const acc = (await ctx.api.post("/api/workspace/accounts", retail(1))).data.id;
+    const doc = await ctx.sale(acc, { issueDate: ctx.day(0), eSend: "later" });
+    const other = ctx.server.client();
+    await other.login("admin", ADMIN_PASSWORD);
+    const [a, b] = await Promise.all([ctx.api.post("/api/workspace/invoices/send-pending", { all: true }), sleep(150).then(async () => unwrap(await other.post("/api/workspace/invoices/send-pending", { all: true })))]);
+    const items = [...a.data.results, ...b.data.results].filter(item => item.id === doc.id);
+    assert.equal(items.length, 2, `ön koşul: iki yanıt da belgeyi gördü (${JSON.stringify(items)})`);
+    for (const item of items) assert.equal(item.ok, true, `hata değil: ${JSON.stringify(item)}`);
+    const second = items.find(item => item.done);
+    assert.ok(second, `ön koşul: ikinci oturum belgeyi gönderilirken gördü (${JSON.stringify(items)})`);
+    assert.equal(second.message, "Bu belge başka oturumda gönderildi.");
+    assert.equal(a.data.failed + b.data.failed, 0);
+    assert.equal(a.data.sent + b.data.sent, 1, "gönderilen sayısı bir");
+    assert.equal(ctx.sentCount((await ctx.card(doc.id)).ettn), 1);
+  });
+
+  test("Ek 8 (kâhin kucuk-fis-sira): Listeden Sil, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const older = await ctx.sale(ctx.people[0], { issueDate: ctx.day(-3), eSend: "later" });
+    const newer = await ctx.sale(ctx.people[1], { issueDate: ctx.day(-1), eSend: "later" });
+    const w1 = await ctx.api.post(`/api/workspace/invoices/${newer.id}/withdraw`, {});
+    assert.equal(w1.status, 200, JSON.stringify(w1.data).slice(0, 300));
+    const fis = w1.data.number;
+    assert.match(fis, /^FIS2026/);
+    const w2 = await ctx.api.post(`/api/workspace/invoices/${older.id}/withdraw`, {});
+    assert.equal(w2.status, 409, JSON.stringify(w2.data).slice(0, 300));
+    assert.equal(w2.data.code, "chronology");
+    assert.equal(w2.data.error, `FIS serisinde son belge ${fis} ${ctx.day(-1).split("-").reverse().join(".")} tarihli; bu belge (${ctx.day(-3).split("-").reverse().join(".")}) ondan eski. Belgenin tarihini düzeltin ya da İptal Edin.`);
+    const c = await ctx.card(older.id);
+    assert.deepEqual([c.eStatus, c.number], ["waiting", ""], "belge Gönderilecekler'de, numarasız kaldı");
+    const sameDay = await ctx.sale(ctx.people[2], { issueDate: ctx.day(-1), eSend: "later" });
+    assert.equal((await ctx.api.post(`/api/workspace/invoices/${sameDay.id}/withdraw`, {})).status, 200, "aynı tarih serbest");
+    // FIS serisinde numara sırası = tarih sırası.
+    const fisRows = ctx.server.app.store.all("SELECT number, issue_date AS d FROM invoices WHERE series = 'FIS' AND seq > 0 ORDER BY seq");
+    for (let i = 1; i < fisRows.length; i += 1) assert.ok(fisRows[i].d >= fisRows[i - 1].d, JSON.stringify(fisRows));
+  });
+
+  test("Ek 9 (kâhin kucuk-o1-pk-yok-bekletir, I19): PK'sız eski e-Fatura yeni e-Faturayı bekletir (doğru) — her gönderilmeyen sonucun kodu ve iletisi dolu", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const multi = (await ctx.api.post("/api/workspace/accounts", { name: "Çok Kutulu Ticaret A.Ş.", type: "customer", partyKind: "company", taxNo: MULTI_VKN, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 12", district: "Çankaya", city: "Ankara", eInvoice: true, eAlias: "" })).data;
+    const firm = (await ctx.api.post("/api/workspace/accounts", { name: "Alıcı Ticaret A.Ş.", type: "customer", partyKind: "company", taxNo: BUYER_VKN, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 10", district: "Çankaya", city: "Ankara", eInvoice: true, eAlias: "urn:mail:defaultpk@alici.com.tr" })).data;
+    const old = await ctx.sale(multi.id, { issueDate: ctx.day(-2), eSend: "later" });
+    const fresh = await ctx.sale(firm.id, { issueDate: ctx.day(-1), eSend: "later" });
+    assert.deepEqual([old.profile, fresh.profile], ["TEMELFATURA", "TEMELFATURA"]);
+    const r = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
+    const o = r.data.results.find(x => x.id === old.id);
+    const f = r.data.results.find(x => x.id === fresh.id);
+    assert.equal(o.code, "buyer-alias", JSON.stringify(o));
+    assert.ok(!o.permanent, "geçici");
+    assert.equal(f.ok, false);
+    assert.equal(f.skipped, true);
+    assert.equal(f.code, "einvoice-held", JSON.stringify(f));
+    assert.match(f.message, /^Gönderilmedi, sırasını koruyarak bekliyor: daha eski tarihli belgenin \(.+, \d\d\.\d\d\.\d{4}\) posta kutusu seçilmeli \(Mükellef Sorgula \/ Posta Kutusu Seçin\)\. O belge gönderilince bu belge de gönderilir\.$/);
+    for (const item of r.data.results.filter(x => !x.ok)) assert.ok(item.code && item.message, `kod ve ileti dolu: ${JSON.stringify(item)}`);
+    assert.equal((await ctx.card(fresh.id)).number, "", "yeni belge numara almadı (GİB sırası)");
   });
 
   test("BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider", async () => {

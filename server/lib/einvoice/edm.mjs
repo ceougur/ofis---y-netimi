@@ -39,6 +39,10 @@ const CONTRACT_TTL = 12 * 60 * 60 * 1000;
 const SESSION_TTL = 20 * 60 * 1000;
 const sessions = new Map();
 const contracts = new Map();
+// Dar kontrol 2.4.3 (kâhin BEKLENEN-AG): EDM'den son yanıt alınan an (oturum anahtarı başına). Önbellekteki oturum ağın hâlâ açık olduğunu
+// göstermez; numara vermeden önceki denetim (ensureSession) son yanıt eskiyse EDM'ye gerçekten ulaşır.
+const contacts = new Map();
+const CONTACT_FRESH_MS = 30_000;
 
 // EDM belge durumları (docs: e-Fatura / e-Arşiv Durumları) → program durumu + Türkçe açıklama.
 const EDM_STATES = Object.freeze({
@@ -180,6 +184,7 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
     const endpoint = endpointOf(contract);
     const request = soapRequest({ version: contract?.version || "1.1", action, body: renderTree(shaped.tree), addressing: contract?.addressing, to: endpoint });
     const response = await http(endpoint, { method: "POST", headers: request.headers, body: request.xml }, wait, { retry: SAFE_OPERATIONS.has(operation) });
+    contacts.set(sessionKey, Date.now());
     let tree;
     try {
       tree = parseXml(response.text);
@@ -267,8 +272,13 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
     endpoint: base,
     contractReport,
     // Dar kontrol 2.4.3 (ek 1): oturum (geçerli önbellekte yoksa giriş). Numara ancak giriş başarılıysa verilir.
-    async ensureSession() {
-      await withSession(async () => null);
+    // Önbellekteki oturum geçerli VE EDM'den `since` anından sonra yanıt alındıysa (ör. aynı istekteki mükellef sorgusu) ağa çıkılmaz; değilse
+    // yeniden giriş yapılır (erişim + hesap denetimi). since verilmezse son 30 sn.
+    async ensureSession({ since = Date.now() - CONTACT_FRESH_MS } = {}) {
+      const cached = sessions.get(sessionKey);
+      if (cached && Date.now() - cached.at < SESSION_TTL && (contacts.get(sessionKey) || 0) >= since) return;
+      sessions.delete(sessionKey);
+      await login();
     },
     async test() {
       const report = await contractReport({ refresh: true });
@@ -435,4 +445,5 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
 export function resetEdmCaches() {
   sessions.clear();
   contracts.clear();
+  contacts.clear();
 }

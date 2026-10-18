@@ -140,7 +140,9 @@ describe("2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğ
     }
   });
 
-  test("H1: EDM'ye ulaşılamazken Kaydet ve Gönder — numara verilir, neden belgede yazar, Gönderilecekler'de görünür; bağlantı düzelince bir kez gönderilir", async () => {
+  // Dar kontrol 2.4.3 (kâhin BEKLENEN-AG, baş mimar kararı — beklenti BİLEREK değişti): EDM'ye ulaşılamazken Kaydet ve Gönder artık numara VERMEZ;
+  // belge numarasız Gönderilecekler'de bekler, ileti bunu söyler. Bağlantı düzelince Tümünü Gönder bir kez gönderir (H1'in görünürlük kısmı aynen).
+  test("H1: EDM'ye ulaşılamazken Kaydet ve Gönder — numara verilmez, ileti söyler, Gönderilecekler'de görünür; bağlantı düzelince bir kez gönderilir", async () => {
     assert.equal((await integrator(DEAD)).status, 200);
     let archive;
     let efatura;
@@ -153,27 +155,27 @@ describe("2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğ
       assert.equal((await integrator(edm.url)).status, 200);
     }
     for (const saved of [archive.data, efatura.data]) {
-      assert.match(saved.number, /^TE[AF]2026/, "kayıt numara aldı");
+      assert.equal(saved.number, "", "kayıt numara almadı");
       assert.equal(saved.autoSend?.ok, false);
       assert.equal(saved.autoSend.pending, true);
-      assert.match(saved.autoSend.message, new RegExp(`${saved.number} numarasıyla kaydedildi`));
-      assert.match(saved.autoSend.message, /Gönderilecekler/);
+      assert.equal(saved.autoSend.code, "integrator-unreachable");
+      assert.equal(saved.autoSend.message, "EDM'ye ulaşılamadı; belge numarasız Gönderilecekler'e eklendi, bağlantı gelince Tümünü Gönder ile gönderin.");
       const doc = await card(saved.id);
-      assert.ok(doc.eMessage, "neden belgede yazar");
-      assert.equal(doc.eUnsent, true);
+      assert.equal(doc.eStatus, "waiting");
       assert.equal(doc.canSend, true);
     }
     const pending = await pendingTab();
     const ids = pending.invoices.map(item => item.id);
     assert.ok(ids.includes(archive.data.id) && ids.includes(efatura.data.id), "ikisi de Gönderilecekler'de");
     assert.equal(pending.tabCounts.pending, pending.invoices.length, "sekme sayısı = liste");
-    const numbers = [archive.data.number, efatura.data.number];
     const first = await api.post("/api/workspace/invoices/send-pending", { ids });
     assert.equal(first.status, 200, JSON.stringify(first.data));
     for (const saved of [archive.data, efatura.data]) {
       const row = first.data.results.find(item => item.id === saved.id);
       assert.equal(row.ok, true, JSON.stringify(row));
     }
+    const numbers = await Promise.all([archive.data, efatura.data].map(async saved => (await card(saved.id)).number));
+    for (const number of numbers) assert.match(number, /^TE[AF]2026/, "gönderimde numara aldı");
     const second = await api.post("/api/workspace/invoices/send-pending", { ids: [archive.data.id, efatura.data.id] });
     assert.equal(second.data.sent, 0, "ikinci kez gönderilmez");
     for (const saved of [archive.data, efatura.data]) {
