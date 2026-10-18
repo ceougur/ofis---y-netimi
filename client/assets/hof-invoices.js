@@ -2491,6 +2491,8 @@
     try {
       const result = await HOF.api("/api/workspace/invoices/bulk-issue", { method: "POST", body: { ids: docs.map(doc => doc.id) } });
       bulkOutcome(result, "kaydedildi", "kaydedilemedi");
+      // Dar kontrol 2.4.3: entegratör girişi reddedildi / EDM'ye ulaşılamadı — belgeler numarasız Gönderilecekler'de (tek ileti).
+      if (result.notice) HOF.toast(result.notice, { type: "error", timeout: 12000 });
     } catch (error) {
       HOF.toastError(error);
     }

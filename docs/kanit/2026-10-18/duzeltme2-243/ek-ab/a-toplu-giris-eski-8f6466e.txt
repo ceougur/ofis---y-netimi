@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+    # Subtest: Ek 1 (Seçilenleri Kaydet, hemen gönderim açık): yanlış parolada aynı istekte YALNIZ BİR giriş denenir; taslaklar numarasız Gönderilecekler'de, tek ileti
+    not ok 1 - Ek 1 (Seçilenleri Kaydet, hemen gönderim açık): yanlış parolada aynı istekte YALNIZ BİR giriş denenir; taslaklar numarasız Gönderilecekler'de, tek ileti
+      ---
+      duration_ms: 1204.77033
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-8f6466e/test/gg243-dar-kontrol-gonderim.test.mjs:430:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı istekte tek giriş denemesi (hesap kilitlenmesin): 6
+        
+        6 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 6
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-8f6466e/test/gg243-dar-kontrol-gonderim.test.mjs:444:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 18)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+  ---
+  duration_ms: 1233.789763
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-8f6466e/test/gg243-dar-kontrol-gonderim.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2296.188828

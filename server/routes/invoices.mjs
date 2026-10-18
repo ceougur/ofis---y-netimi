@@ -2501,7 +2501,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     ok(res, detail(existing.id, user));
   });
   // Taslağı kes: gövdedeki alanlar taslağın üstüne yazılır (Düzenle ve Kes); toplu kesmede yalnız zorlama ve e-Belge seçimi gelir.
-  async function issueDraft(user, id, body) {
+  // access (isteğe bağlı; Seçilenleri Kaydet): aynı istekteki taslakların ortak erişim sonucu. Giriş reddedildi ya da EDM'ye ulaşılamadıysa
+  // öbür taslaklar için entegratöre YENİDEN gidilmez (dar kontrol 2.4.3: EDM hesabı ardışık hatalı girişte kilitlenebilir).
+  async function issueDraft(user, id, body, access = null) {
     const existing = invoiceRow(id);
     if (existing.status !== "draft") throw new HttpError(409, "Bu fatura zaten kaydedilmiş.", { code: "invoice-not-draft" });
     const lines = linesOf(existing.id).map(line => ({ itemId: line.itemId, name: line.name, code: line.code, description: line.description, unit: line.unit, qty: line.qty, unitPrice: line.unitPrice, discountRate: line.discountRate, vatRate: line.vatRate, withholdingCode: line.withholdingCode, exemptionCode: line.exemptionCode, expenseCode: line.expenseCode, originLineId: line.originLineId }));
@@ -2509,8 +2511,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const doc = documentInput(merged, { mode: "issue", existing });
     assertAliasBeforeNumber(doc, body);
     const contactSince = Date.now();
-    await assertArchiveBuyerBeforeNumber(user, doc, body);
-    const loginHold = await sendLoginBlock(doc, body, contactSince);
+    const known = access?.hold && sendWouldContact(doc, body) ? access.hold : "";
+    if (!known) await assertArchiveBuyerBeforeNumber(user, doc, body);
+    const loginHold = known || (await sendLoginBlock(doc, body, contactSince));
+    if (loginHold && access) access.hold = loginHold;
     const payment = paymentInput(merged, doc, user);
     const written = writeIssued(user, doc, payment, { id: existing.id, force: forceOf(body), defer: body.eSend === "later" || Boolean(loginHold) });
     const autoSend = loginHold ? loginHoldResult(loginHold) : written.orderHeld ? orderHeldResult(written.orderHeld) : await sendChoice(user, existing.id, body.eSend);
@@ -2579,13 +2583,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const autoSend = edocEnabled && settings().integrator?.autoSend === true;
     const options = { force: body.force === true, cashForce: body.cashForce === true, eSend: body.eSend === "later" ? "later" : body.eSend === "now" ? "now" : edocEnabled && !autoSend ? "later" : "" };
     const results = [];
+    const access = {};
     for (const row of rows) {
       if (row.missing) {
         results.push({ id: row.id, ...bulkError(row.missing) });
         continue;
       }
       try {
-        const doc = await issueDraft(user, row.id, options);
+        const doc = await issueDraft(user, row.id, options, access);
         results.push({ id: row.id, ok: true, number: doc.number, displayNo: doc.displayNo, accountName: doc.accountName, payable: doc.payableTotal, ...(doc.autoSend ? { autoSend: doc.autoSend } : {}) });
       } catch (error) {
         results.push({ id: row.id, accountName: row.accountName, ...bulkError(error) });
@@ -2595,7 +2600,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // issueDraft'ın await'i gerçek G/Ç'ye inmez, döngü tek parça koşardı.
       await new Promise(resolve => setImmediate(resolve));
     }
-    ok(res, { results, issued: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length });
+    // Erişim sonucu tek ileti (her taslağa ayrı ayrı yazılmaz; ekran bir kez gösterir).
+    ok(res, { results, issued: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length, ...(access.hold ? { notice: loginHoldResult(access.hold).message.replace("belge numarasız Gönderilecekler'e eklendi", "belgeler numarasız Gönderilecekler'e eklendi").replace("Belge numara verilmeden Gönderilecekler'e eklendi", "Belgeler numara verilmeden Gönderilecekler'e eklendi") } : {}) });
   });
   router.post("/api/workspace/invoices/bulk-cancel", async ({ req, res }) => {
     const user = requireManage(req);
@@ -3137,10 +3143,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Kaydet) için entegratöre erişim ve giriş numara verilmeden denenir; giriş REDDEDİLİRSE ya da EDM'ye ULAŞILAMAZSA belge numara almadan
   // Gönderilecekler'e girer (önceki 2.4.3 H1 davranışı — bugünün belgesi numarasını alıp "Gönderilmedi" bekliyordu — kalktı). Oturum
   // önbellekteyse ağa çıkılmaz.
+  // Kayıtta hemen gönderim denenecek mi (entegratöre gidilecek mi)?
+  function sendWouldContact(doc, body) {
+    if (!edocEnabled || body?.eSend === "later" || !doc.meta?.own || !doc.meta?.send || doc.profile === "KAGIT") return false;
+    return body?.eSend === "now" || settings().integrator?.autoSend === true;
+  }
   async function sendLoginBlock(doc, body, since = Date.now()) {
-    if (!edocEnabled || body?.eSend === "later" || !doc.meta?.own || !doc.meta?.send || doc.profile === "KAGIT") return "";
+    if (!sendWouldContact(doc, body)) return "";
     const s = settings();
-    if (body?.eSend !== "now" && s.integrator?.autoSend !== true) return "";
     let link;
     try {
       link = integrator(s);

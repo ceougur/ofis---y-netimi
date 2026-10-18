@@ -427,6 +427,33 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     assert.equal(ctx.sends(), 0);
   });
 
+  test("Ek 1 (Seçilenleri Kaydet, hemen gönderim açık): yanlış parolada aynı istekte YALNIZ BİR giriş denenir; taslaklar numarasız Gönderilecekler'de, tek ileti", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const acc = [];
+    for (let i = 0; i < 2; i += 1) acc.push((await ctx.api.post("/api/workspace/accounts", retail(i))).data.id);
+    const drafts = [];
+    for (const [i, accountId] of [acc[0], ctx.people[0], acc[1], ctx.people[1]].entries()) drafts.push(await ctx.sale(accountId, { issueDate: ctx.day(-4 + i), status: "draft" }));
+    assert.equal((await ctx.api.put("/api/workspace/invoices/settings", { integrator: { autoSend: true } })).status, 200);
+    await wrongPassword(ctx);
+    const logins = () => ctx.edm.state.calls.filter(call => call.op === "Login").length;
+    const before = logins();
+    const bulk = await ctx.api.post("/api/workspace/invoices/bulk-issue", { ids: drafts.map(d => d.id) });
+    assert.equal(bulk.status, 200, JSON.stringify(bulk.data).slice(0, 300));
+    assert.equal(bulk.data.issued, 4, JSON.stringify(bulk.data.results).slice(0, 400));
+    assert.equal(logins() - before, 1, `aynı istekte tek giriş denemesi (hesap kilitlenmesin): ${logins() - before}`);
+    assert.match(bulk.data.notice || "", /^Entegratör girişi reddedildi \(kullanıcı adı\/parola\): .+ Belgeler numara verilmeden Gönderilecekler'e eklendi; Entegratör Ayarları'nı düzeltip Tümünü Gönder ile gönderin\.$/);
+    for (const d of drafts) {
+      const c = await ctx.card(d.id);
+      assert.deepEqual([c.status, c.number, c.eStatus], ["issued", "", "waiting"]);
+    }
+    assert.equal(ctx.sends(), 0);
+    assert.equal((await ctx.integrator(ctx.edm.url)).status, 200);
+    await ctx.sendAll();
+    const cards = await Promise.all(drafts.map(d => ctx.card(d.id)));
+    assert.equal(ctx.seriesOk(cards).length, 4);
+  });
+
   test("Ek 2 (O3 kenar): belgedeki alıcı numarası carinin şimdiki numarasından farklı ve mükellef — kartta da kalıcı engel; yeni belgeyi bekletmez", async () => {
     const ctx = await setup();
     open.push(ctx);
