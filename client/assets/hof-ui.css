@@ -493,6 +493,34 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
   font: 800 12px var(--do-font);
   cursor: pointer;
 }
+/* Kullanıcı kararı 18.10.2026: hata / uyarı bildiriminde "Kopyala" (bildirim tıklamayı geçirir; düğme kendi tıklamasını alır). */
+.hof-toast-copy {
+  padding: 6px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-ink);
+  font: 700 12px var(--do-font);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.hof-toast-copy:hover,
+.hof-toast-copy:focus-visible {
+  background: rgba(0, 0, 0, 0.05);
+}
+.hof-toast:has(.hof-toast-copybox) {
+  flex-wrap: wrap;
+}
+.hof-toast-copybox {
+  flex: 1 0 100%;
+  min-height: 60px;
+  padding: 6px 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 8px;
+  font: 500 12px/1.4 var(--do-font);
+  resize: vertical;
+  pointer-events: auto;
+}
 .hof-toast-close {
   display: inline-grid;
   place-items: center;

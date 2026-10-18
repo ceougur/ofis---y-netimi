@@ -790,75 +790,52 @@ try {
     // Kök neden (CPU ×6 yavaşlatmayla üretildi, ekran görüntüsü): "Dışa Aktar" menüsü (z-index 80) sayfanın altına açılınca alttaki sabit lisans
     // şeridinin (z-index 99960) ARKASINDA kalıyor; "Excel Dosyası (.xlsx)" tıklanamıyor, indirme hiç başlamıyor. Kırmızı, menünün şeritle
     // çakıştığı yerleşime (sayfa kaydırması, şeridin o an görünmesi) bağlı. Ön koşul burada ZORLA kurulur: şerit gösterilir (yoksa ürünün kendi
-    // sınıfıyla), düğme menü şeritle çakışacak yüksekliğe kaydırılır; çakışma ölçülmeden sonuç sayılmaz.
+    // sınıfıyla) ve menü öğesinin üstüne konur; çakışma ölçülmeden sonuç sayılmaz.
     console.log("\n■ E Dışa Aktar menüsü alttaki lisans şeridinin üstünde (run.mjs ara sıra kırmızısı, zorla)");
-    // Dar pencere: şerit metni birden çok satıra kırılır, şerit yükselir (run.mjs'teki gibi menünün ilk öğesini örter).
-    const plain = await browser.newContext({ viewport: { width: 1100, height: 900 }, locale: "tr-TR", acceptDownloads: true });
-    const exportPage = await newPage(plain);
-    await login(exportPage);
-    await exportPage.waitForSelector("#hof-toolbar-export", { timeout: 30000 });
-    await sleep(1500);
-    await exportPage.evaluate(() => {
-      if (document.getElementById("hof-license-bar")) return;
-      const bar = window.HOF.el("aside", { id: "hof-license-bar", class: "hof-license-bar is-info" }, '<div class="hof-license-text"><strong>Ücretsiz deneme henüz başlamadı</strong><span>Deneme şeridi (test için ürünün kendi sınıfıyla).</span></div>');
-      document.body.appendChild(bar);
-    });
-    const menuHeight = await exportPage.evaluate(async () => {
-      document.querySelector("#hof-toolbar-export").click();
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const height = document.querySelector(".hof-export-menu")?.offsetHeight || 0;
-      document.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-      document.body.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-      return height;
-    });
-    await exportPage.keyboard.press("Escape");
-    await sleep(300);
-    // Kaydırma: menünün ilk öğesinin ("Excel Dosyası (.xlsx)") ortası şeridin dikey ortasına düşsün; menü yukarı dönmesin (alt ucu görünür
-    // yüksekliğin 12 px üstünde kalır). İlk açılışta öğenin menü içindeki yeri ölçülür.
-    const itemOffset = await exportPage.evaluate(async () => {
-      document.querySelector("#hof-toolbar-export").click();
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const menu = document.querySelector(".hof-export-menu");
-      const item = menu?.querySelector('[data-export="tab"]');
-      return menu && item ? item.getBoundingClientRect().top + item.offsetHeight / 2 - menu.getBoundingClientRect().top : 0;
-    });
-    await exportPage.keyboard.press("Escape");
-    await sleep(300);
-    await exportPage.evaluate(
-      ([height, offset]) => {
-        const button = document.querySelector("#hof-toolbar-export");
-        const bar = document.getElementById("hof-license-bar").getBoundingClientRect();
-        const lowest = window.innerHeight - 12 - height - 8 - 1; // düğmenin altı bundan aşağıda olursa menü yukarı döner
-        const wanted = Math.min(lowest, (bar.top + bar.bottom) / 2 - offset - 8);
-        window.scrollBy(0, button.getBoundingClientRect().bottom - wanted);
-      },
-      [menuHeight, itemOffset],
-    );
-    await sleep(300);
-    await exportPage.click("#hof-toolbar-export");
-    await exportPage.waitForSelector(".hof-export-menu");
-    const geometry = await exportPage.evaluate(() => {
-      const item = document.querySelector('.hof-export-menu [data-export="tab"]').getBoundingClientRect();
-      const bar = document.getElementById("hof-license-bar").getBoundingClientRect();
-      const top = Math.max(item.top, bar.top);
-      const bottom = Math.min(item.bottom, bar.bottom);
-      const left = Math.max(item.left, bar.left);
-      const right = Math.min(item.right, bar.right);
-      const overlap = bottom - top >= 2 && right - left >= 2;
-      const hit = overlap ? document.elementFromPoint((left + right) / 2, (top + bottom) / 2) : null;
-      const cx = item.left + item.width / 2;
-      const cy = item.top + item.height / 2;
-      return { overlap, centerCovered: cx > bar.left && cx < bar.right && cy > bar.top && cy < bar.bottom, onItem: Boolean(hit?.closest('[data-export="tab"]')), hit: hit ? `${hit.tagName}.${String(hit.className).split(" ")[0]}` : "", item: [Math.round(item.top), Math.round(item.bottom)], bar: [Math.round(bar.top), Math.round(bar.bottom)] };
-    });
-    ok(geometry.overlap, `E1 ön koşul oluştu: "Excel Dosyası (.xlsx)" öğesi lisans şeridiyle çakışıyor (${JSON.stringify(geometry)})`);
-    if (geometry.overlap) {
-      // Çakışan bölgede üstte kalan menü öğesi olmalı (eski kodda şerit üstteydi: tıklama şeride gidiyordu).
-      ok(geometry.onItem, `E2 çakışan bölgede üstte menü öğesi var, şerit değil (${geometry.hit})`);
-      const got = await Promise.all([exportPage.waitForEvent("download", { timeout: 15000 }).then(item => item.suggestedFilename(), () => ""), exportPage.click('.hof-export-menu [data-export="tab"]', { timeout: 15000 }).catch(() => null)]).then(([name]) => name);
-      // Tıklama öğenin ortasına gider: ortası şeridin altındaysa (run.mjs'teki durum) eski kodda indirme hiç başlamazdı.
-      ok(/\.xlsx$/.test(got), `E3 şerit varken Excel indirildi (${got || "indirme yok"}; öğenin ortası şeridin altında: ${geometry.centerCovered ? "evet" : "hayır"})`);
+    // Ana oturum ek maddesi (CI #828 37b64e8, 172/173): önceki kurulum sayfayı kaydırıp menüyü şeride indirmeye çalışıyordu; CI'nin yerleşiminde
+    // sayfa yeterince kaymadı (öğe 691–748, şerit 762'den başlıyor) ve ön koşul kurulamadı. Artık ortamdan BAĞIMSIZ: menü açıldıktan sonra öğenin
+    // gerçek dikdörtgeni ölçülür, lisans şeridi (sabit, z-index'i ürünün kendisi) öğenin ORTASINI kesinlikle örtecek biçimde o dikdörtgenin üstüne
+    // taşınır (yalnız konum/boyut; katman sırası ürünün CSS'i). İki pencere yüksekliğinde (768, 900) denenir; E2/E3 yalnız ön koşul gerçekten
+    // oluşunca sayılır.
+    for (const height of [768, 900]) {
+      const sized = await browser.newContext({ viewport: { width: 1100, height }, locale: "tr-TR", acceptDownloads: true });
+      try {
+        const sizedPage = await newPage(sized);
+        await login(sizedPage);
+        await sizedPage.waitForSelector("#hof-toolbar-export", { timeout: 30000 });
+        await sleep(1500);
+        await sizedPage.evaluate(() => {
+          if (document.getElementById("hof-license-bar")) return;
+          const bar = window.HOF.el("aside", { id: "hof-license-bar", class: "hof-license-bar is-info" }, '<div class="hof-license-text"><strong>Ücretsiz deneme henüz başlamadı</strong><span>Deneme şeridi (test için ürünün kendi sınıfıyla).</span></div>');
+          document.body.appendChild(bar);
+        });
+        await sizedPage.click("#hof-toolbar-export");
+        await sizedPage.waitForSelector('.hof-export-menu [data-export="tab"]');
+        await sleep(300);
+        const geometry = await sizedPage.evaluate(() => {
+          const node = document.querySelector('.hof-export-menu [data-export="tab"]');
+          const bar = document.getElementById("hof-license-bar");
+          const item = node.getBoundingClientRect();
+          // Şerit öğenin üstüne: öğenin her yanından 6 px taşar (ortası kesinlikle örtülür); konum sabit, katman sırası değişmez.
+          Object.assign(bar.style, { top: `${Math.max(0, item.top - 6)}px`, bottom: "auto", left: `${Math.max(0, item.left - 6)}px`, transform: "none", width: `${item.width + 12}px`, minHeight: `${item.height + 12}px`, maxHeight: "none", margin: "0" });
+          const box = bar.getBoundingClientRect();
+          const cx = item.left + item.width / 2;
+          const cy = item.top + item.height / 2;
+          const centerCovered = cx > box.left && cx < box.right && cy > box.top && cy < box.bottom;
+          const hit = document.elementFromPoint(cx, cy);
+          return { height: window.innerHeight, centerCovered, onItem: Boolean(hit?.closest('[data-export="tab"]')), onBar: Boolean(hit?.closest("#hof-license-bar")), hit: hit ? `${hit.tagName}.${String(hit.className).split(" ")[0]}` : "", item: [Math.round(item.left), Math.round(item.top), Math.round(item.right), Math.round(item.bottom)], bar: [Math.round(box.left), Math.round(box.top), Math.round(box.right), Math.round(box.bottom)], z: [getComputedStyle(document.querySelector(".hof-export-menu")).zIndex, getComputedStyle(bar).zIndex] };
+        });
+        ok(geometry.centerCovered, `E1 (${height}) ön koşul oluştu: "Excel Dosyası (.xlsx)" öğesinin ortası lisans şeridinin içinde (${JSON.stringify(geometry)})`);
+        if (geometry.centerCovered) {
+          // Üstte kalan menü öğesi olmalı (eski kodda menü z-index 80 < şerit 99960: tıklama şeride gidiyordu).
+          ok(geometry.onItem && !geometry.onBar, `E2 (${height}) öğenin ortasında üstte menü öğesi var, şerit değil (${geometry.hit}; z ${geometry.z.join(" / ")})`);
+          const got = await Promise.all([sizedPage.waitForEvent("download", { timeout: 15000 }).then(item => item.suggestedFilename(), () => ""), sizedPage.mouse.click(geometry.item[0] + (geometry.item[2] - geometry.item[0]) / 2, geometry.item[1] + (geometry.item[3] - geometry.item[1]) / 2).catch(() => null)]).then(([name]) => name);
+          ok(/\.xlsx$/.test(got), `E3 (${height}) şerit öğenin üstündeyken öğenin ortasına tıklama Excel'i indirdi (${got || "indirme yok"})`);
+        }
+      } finally {
+        await sized.close();
+      }
     }
-    await plain.close();
   });
   // ======================================================================================================================================
   const inventory = formInventory();

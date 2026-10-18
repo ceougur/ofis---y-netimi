@@ -503,8 +503,8 @@
             loadList();
           }
           refreshAlerts();
-          const skipped = result.skipped.length ? ` ${result.skippedTotal || result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
-          HOF.toast(`${result.created} ürün açıldı${result.opening ? `, ${result.opening} ürüne açılış stoku yazıldı` : ""}${result.updated ? `, ${result.updated} ürün güncellendi` : ""}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: 9000 });
+          // Gözden geçirme 2.4.3 (5c): metin sunucudan (atlanan satır ile alanı boş bırakılan satır ayrı sayılır).
+          HOF.toast(result.message, { type: result.created || result.updated ? "success" : "error", timeout: 9000 });
         },
       });
     } catch (error) {

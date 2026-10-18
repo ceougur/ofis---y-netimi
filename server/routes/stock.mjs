@@ -585,7 +585,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       return Number.isFinite(value) && value >= 0 ? Math.round(value * 10000) / 10000 : 0;
     };
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, updated: 0, skipped: [], opening: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    // skipped: aktarılmayan satırlar; notes: aktarılan ama bir alanı boş bırakılan satırlar (KDV oranı tanınmadı, Stok Kodu başka üründe).
+    const report = { created: 0, updated: 0, skipped: [], skippedTotal: 0, notes: [], vatUnknown: 0, codeCleared: 0, opening: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
     let skippedTotal = 0;
     const skip = (index, reason) => {
       skippedTotal += 1;
@@ -599,9 +600,11 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         if (!name) return skip(index, "Ürün adı boş");
         const kind = /^(hizmet|servis|işçilik|iscilik)/i.test(cell(row, col.kind)) ? "service" : "product";
         const input = { kind, name, code: cell(row, col.code).slice(0, 60), unit: unitLabel(cell(row, col.unit) || defaultUnit), category: cell(row, col.category).slice(0, 80), minQty: number(row, col.min), unitPrice: money(row, col.price), salePrice: money(row, col.salePrice), vatRate: col.vat >= 0 ? vatCell(cell(row, col.vat)) : null, note: cell(row, col.note).slice(0, 1000) };
+        // Gözden geçirme 2.4.3 (5c): satır AKTARILIR, yalnız alan boş kalır — "atlandı" sayılmaz (notes; bildirim "N satırda KDV Oranı tanınmadı").
         if (input.vatRate === undefined) {
           input.vatRate = null;
-          if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason: `KDV oranı “${cell(row, col.vat)}” tanınmadı (%0, %1, %10, %20); boş bırakıldı` });
+          report.vatUnknown = (report.vatUnknown || 0) + 1;
+          if (report.notes.length < 500) report.notes.push({ row: headerAt + index + 2, reason: `KDV oranı “${cell(row, col.vat)}” tanınmadı (%0, %1, %10, %20); boş bırakıldı` });
         }
         const fields = extraColumns.map(column => ({ label: headers[column].slice(0, 80), value: cell(row, column).slice(0, 1000) })).filter(field => field.value);
         // İki ayrı indeksli arama (kodla, sonra ad + birimle): binlerce satırda da hızlı.
@@ -611,7 +614,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         // v2.0.16: Stok Kodu tektir; başka üründe kullanılan kod bu satıra yazılmaz (ürün yine aktarılır, rapora düşer).
         if (input.code && store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND code = ? COLLATE NOCASE AND id <> ?", input.code, existing?.id || "")) {
           report.codeCleared = (report.codeCleared || 0) + 1;
-          if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason: `Stok Kodu “${input.code}” başka üründe; kod boş bırakıldı` });
+          if (report.notes.length < 500) report.notes.push({ row: headerAt + index + 2, reason: `Stok Kodu “${input.code}” başka üründe; kod boş bırakıldı` });
           input.code = "";
         }
         if (existing) {
@@ -630,8 +633,15 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         }
         report.created += 1;
       });
-      audit(user, "stock.imported", "import", { created: report.created, updated: report.updated, skipped: report.skipped.length, file: limited(body.fileName, 200, "Dosya adı") });
+      audit(user, "stock.imported", "import", { created: report.created, updated: report.updated, skipped: report.skippedTotal, file: limited(body.fileName, 200, "Dosya adı") });
     });
+    // Bildirim metni tek yerde (ekran bunu gösterir): atlanan satır ile alanı boş bırakılan satır ayrı sayılır.
+    const n = value => value.toLocaleString("tr-TR");
+    const parts = [`${n(report.created)} ürün açıldı${report.opening ? `, ${n(report.opening)} ürüne açılış stoku yazıldı` : ""}${report.updated ? `, ${n(report.updated)} ürün güncellendi` : ""}.`];
+    if (report.skippedTotal) parts.push(`${n(report.skippedTotal)} satır atlandı (${[...new Set(report.skipped.map(item => item.reason))].join("; ")}).`);
+    if (report.vatUnknown) parts.push(`${n(report.vatUnknown)} satırda KDV Oranı tanınmadı, boş bırakıldı (faturada seçilir; %0, %1, %10, %20 olabilir).`);
+    if (report.codeCleared) parts.push(`${n(report.codeCleared)} satırda Stok Kodu başka üründe kullanıldığı için kod boş bırakıldı.`);
+    report.message = parts.join(" ");
     changed(user, {});
     ok(res, report);
   });
