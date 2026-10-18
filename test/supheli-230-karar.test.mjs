@@ -173,7 +173,7 @@ describe("Karar 3 — Alacak Yaşlandırma: 'Vade Gecikme (Gün)' ve 'Şüpheli 
     // Geciken: 01.09 kartı 1.000 / 2 taksit, vadeler 20.09 (18 gün gecikmiş) ve 20.10 (gelmemiş).
     const late = await customer(api, "Geciken Müşteri");
     await newPlan(api, late, 1000, "2026-09-01", "2026-09-20", 2);
-    // Yalnız şüphelisi olan cari: gecikmiş vade kalemi yok → Vade Gecikme boş.
+    // Yalnız şüphelisi olan cari: vade kalemi yok; faturasız borç (10.09) MM5'ten beri hareket tarihiyle yaşlanır.
     const doubtfulOnly = await customer(api, "Yalnız Şüpheli");
     await debt(api, doubtfulOnly.id, 2000, "2026-09-10");
     await must("al", take(api, doubtfulOnly.id, { amount: 2000, date: "2026-10-01", reason: "lawsuit" }));
@@ -191,9 +191,12 @@ describe("Karar 3 — Alacak Yaşlandırma: 'Vade Gecikme (Gün)' ve 'Şüpheli 
     assert.equal(String(late[gap]), "18", "en eski açık kalem 20.09 → 18 gün");
     assert.equal(late[colOf(report, "1–30 Gün")], "500,00 TL");
     assert.equal(late[colOf(report, "Vadesi Gelmemiş")], "500,00 TL");
-    assert.equal(String(only[gap]), "", "gecikmiş kalem yoksa boş");
+    // MM5 (2.4.3, bilerek güncellendi; kullanıcı kararı 18.10.2026): şüphelinin altındaki faturasız borç (Borç Yaz 10.09) hareket tarihiyle dilime girer
+    // — kolon adı "dilimlere dahil" artık doğru: 28 gün → 1–30 dilimi 2.000, Toplam 2.000 (şüpheli ikinci kez eklenmez). Önceden Toplam 0, gecikme boştu.
+    assert.equal(String(only[gap]), "28", "faturasız borç 10.09 → 28 gün");
+    assert.equal(only[colOf(report, "1–30 Gün")], "2.000,00 TL");
     assert.equal(only[sup], "2.000,00 TL");
-    assert.equal(only[colOf(report, "Toplam")], "0,00 TL", "şüpheli Toplam'a ikinci kez girmez");
+    assert.equal(only[colOf(report, "Toplam")], "2.000,00 TL", "şüpheli dilimlerde; Toplam'a bir kez girer");
     assert.equal(String(report.footer[gap] ?? ""), "", "TOPLAM satırında gecikme günü toplanmaz");
     assert.equal(report.footer[sup], "2.000,00 TL");
     assert.match(report.subtitle, /dilimlere dahil/, "alt başlık kuralı söyler");
