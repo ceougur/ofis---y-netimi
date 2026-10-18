@@ -961,6 +961,22 @@
           event.stopPropagation();
           return;
         }
+        // 2.4.3 (uzman UX26): pencere içinde "Esc'te geri" işaretli görünür bir adım varsa (data-esc-back; ör. Fatura Ayarları → "← Liste") Esc
+        // önce o adıma döner, pencere kapanmaz. Kaydedilmemiş değişiklik varsa ortak soru sorulur ("Forma Dön" ile kalınır).
+        const step = [...dialog.querySelectorAll("[data-esc-back]")].find(button => !button.disabled && button.getClientRects().length);
+        if (step) {
+          event.stopPropagation();
+          if (closed || asking) return;
+          if (!api.isDirty()) return void step.click();
+          asking = true;
+          HOF.closeQuestion().then(ok => {
+            asking = false;
+            if (ok !== false && step.isConnected) step.click();
+          }, () => {
+            asking = false;
+          });
+          return;
+        }
         userClose();
       } else if (event.key === "Enter" && (event.ctrlKey || event.metaKey) && !event.altKey) {
         // A16: Ctrl+Enter formu kaydeder (Not Ekle ve çok satırlı not alanları dahil; Enter metin alanında yeni satırdır).

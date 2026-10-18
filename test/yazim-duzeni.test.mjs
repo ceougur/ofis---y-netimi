@@ -72,7 +72,6 @@ const SENTENCES = new Set([
     "Ofis hesabınızla giriş yapın",
     "Programın kurulu olduğu",
     "Resimli kullanım kılavuzunu açın",
-    "Stok eksiye düşecek",
     "Yeni sürümü kendiliğinden kur (sunucu açılışında, 15 dakika boşta kalınca ya da mesai dışında; kapalıyken yalnız haber verilir)",
     "Sunucuya bağlanılamadı",
     "Süre dolunca veriler kaybolmaz:",

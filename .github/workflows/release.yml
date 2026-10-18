@@ -88,6 +88,7 @@ jobs:
       - run: npm run test:gg243-banka-kart-aciklama
       - run: npm run test:gg243-dar2-ekran
       - run: npm run test:uiux-a-243
+      - run: npm run test:uiux-b-243
 
   windows:
     name: Windows kurulum paketi
