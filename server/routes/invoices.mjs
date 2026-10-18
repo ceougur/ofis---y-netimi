@@ -1002,7 +1002,32 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     ids: text(params.get("ids")).split(",").map(value => value.trim()).filter(Boolean).slice(0, 5000),
     sort: SORTS.has(text(params.get("sort"))) ? text(params.get("sort")) : "date",
   });
-  function list(user, query) {
+  // 2.4.3 H3 (fatura yükte hız testi): liste ucu her istekte bütün belgeleri ağır sütunlarıyla (alıcı/satıcı JSON'u, defter, ödeme) okuyup
+  // her birini şekillendiriyor, sonra 200'ünü gönderiyordu: 10.000 belgede 200 satırlık sayfa 215–354 ms, tek satırlık numara araması
+  // 267 ms; menü rozeti (limit=1) de aynı işi yapıyordu. page verilince ({ offset, limit }) süzgeç, ödeme durumu, sıralama ve toplamlar
+  // hafif satırlardan AYNI kuralla hesaplanır; ağır sütunlar ve satırın tam şekli yalnız sayfadaki satırlar için okunur. Sonuç eski
+  // list() + dilimle satır satır aynıdır (test/fatura-liste-243-fark.test.mjs). page yoksa (PDF / Excel) bütün satırlar şekillenir.
+  const LIST_SQL = `SELECT i.id, i.kind, i.status, i.number, i.issue_date AS issueDate, i.issue_time AS issueTime, i.account_id AS accountId, i.party_json AS partyJson,
+      i.try_net AS tryNet, i.try_vat AS tryVat, i.try_payable AS tryPayable, i.e_status AS eStatus, i.created_at AS createdAt, i.note, i.order_no AS orderNo,
+      i.despatch_no AS despatchNo, i.paper_no AS paperNo, i.ettn, COALESCE(a.name, '') AS accountName, COALESCE(a.tax_no, '') AS accountTaxNo
+    FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id LEFT JOIN users u ON u.id = i.created_by LEFT JOIN invoices o ON o.id = i.original_id`;
+  // Süzgeç, sıralama ve toplamın okuduğu alanlar; değerler shape() ile aynı (party: Cari adı yalnız cari sıralamasında gerekir).
+  const leanRow = (row, state, party) => ({
+    id: row.id,
+    kind: row.kind,
+    status: row.status,
+    displayNo: displayNo(row),
+    issueDate: row.issueDate,
+    issueTime: row.issueTime,
+    createdAt: row.createdAt,
+    accountName: party ? parseJson(row.partyJson, {}).name || row.accountName : "",
+    tryNet: row.tryNet,
+    tryVat: row.tryVat,
+    tryPayable: row.tryPayable,
+    payState: state?.state || (row.status === "draft" ? "draft" : row.status === "cancelled" ? "cancelled" : ""),
+    open: state?.open ?? 0,
+  });
+  function list(user, query, page = null) {
     const where = [];
     const args = [];
     if (query.ids?.length) {
@@ -1062,14 +1087,21 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       args.push(query.item);
     }
     const needle = String(query.q || "").toLocaleLowerCase("tr-TR").trim();
-    let rows = store.all(`${INVOICE_SQL}${where.length ? ` WHERE ${where.join(" AND ")}` : ""}`, ...args);
+    // 2.4.3 H3: sayfalı istekte (liste ucu) önce hafif sütunlar; ağır sütunlar yalnız sayfadaki satırlar için (aşağıda). Süzgeçler aynı.
+    let rows = store.all(`${page ? LIST_SQL : INVOICE_SQL}${where.length ? ` WHERE ${where.join(" AND ")}` : ""}`, ...args);
     if (needle) {
       const lineHits = new Set(store.all("SELECT DISTINCT invoice_id AS id FROM invoice_lines WHERE lower(name) LIKE ? OR lower(code) LIKE ?", `%${needle}%`, `%${needle}%`).map(row => row.id));
       rows = rows.filter(row => lineHits.has(row.id) || `${row.number} ${row.accountName} ${parseJson(row.partyJson, {}).name || ""} ${row.accountTaxNo} ${row.note} ${row.orderNo} ${row.despatchNo} ${row.paperNo} ${row.ettn}`.toLocaleLowerCase("tr-TR").includes(needle));
     }
     const states = paymentStates(rows.filter(row => row.status === "issued"));
-    const posCash = posCashSet(rows.filter(row => row.status === "issued").map(row => row.id));
-    let shaped = rows.map(row => ({ ...shape(row, states.get(row.id)), posCash: posCash.has(row.id) }));
+    // Sayfalı istekte ödeme durumu süzgeci, sıralama ve toplamlar hafif satırla (leanRow: shape() ile aynı değerler) yapılır; tam şekil
+    // yalnız sayfadaki satırlar için kurulur (aşağıda). Sayfasız istek (PDF / Excel) eski yoldan: önce bütün satırlar şekillenir.
+    let shaped;
+    if (page) shaped = rows.map(row => leanRow(row, states.get(row.id), query.sort === "party"));
+    else {
+      const posCash = posCashSet(rows.filter(row => row.status === "issued").map(row => row.id));
+      shaped = rows.map(row => ({ ...shape(row, states.get(row.id)), posCash: posCash.has(row.id) }));
+    }
     if (query.pay) shaped = shaped.filter(row => (query.pay === "open" ? ["open", "partial", "overdue", "installment"].includes(row.payState) : query.pay === "unpaid" ? row.payState === "open" : row.payState === query.pay));
     const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
     const compare = {
@@ -1079,6 +1111,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       party: (a, b) => collator.compare(a.accountName, b.accountName),
     }[query.sort];
     shaped.sort(compare);
+    let invoices = shaped;
+    if (page) {
+      const chosen = shaped.slice(page.offset, page.offset + page.limit);
+      const full = new Map(store.all(`${INVOICE_SQL} WHERE i.id IN (SELECT value FROM json_each(?))`, JSON.stringify(chosen.map(item => item.id))).map(row => [row.id, row]));
+      const posCash = posCashSet(chosen.filter(item => item.status === "issued").map(item => item.id));
+      invoices = chosen.map(item => ({ ...shape(full.get(item.id), states.get(item.id)), posCash: posCash.has(item.id) }));
+    }
     // Toplamlar yalnız kesilmiş faturalardan (taslak ve iptal hariç); iade faturaları ters işaretle.
     const totals = { count: shaped.length, issued: 0, sale: 0, purchase: 0, net: 0, vat: 0, payable: 0, open: 0, overdue: 0 };
     for (const row of shaped) {
@@ -1093,7 +1132,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       totals.open = roundMoney(totals.open + (row.open || 0));
       if (row.payState === "overdue") totals.overdue = roundMoney(totals.overdue + (row.open || 0));
     }
-    return { invoices: shaped, totals, tabCounts: tabCounts(query.account), canManage: canUser(user, "invoices.manage") };
+    const out = { invoices, totals, tabCounts: tabCounts(query.account), canManage: canUser(user, "invoices.manage") };
+    if (page) out.total = shaped.length;
+    return out;
   }
   // Sekme sayıları (cari kartından açıldıysa o carininkiler).
   function tabCounts(accountId = "") {
@@ -2238,10 +2279,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);
     safeRepeats();
-    const data = list(user, listQuery(url.searchParams));
     const limit = Math.min(5000, Math.max(1, Math.trunc(Number(url.searchParams.get("limit")) || 200)));
     const offset = Math.max(0, Math.trunc(Number(url.searchParams.get("offset")) || 0));
-    ok(res, { ...data, invoices: data.invoices.slice(offset, offset + limit), total: data.invoices.length, offset, limit, hasMore: offset + limit < data.invoices.length });
+    const data = list(user, listQuery(url.searchParams), { offset, limit });
+    ok(res, { ...data, offset, limit, hasMore: offset + limit < data.total });
   });
   // ---------- Tekrarlayan fatura ----------
   const REPEAT_SQL = "SELECT id, template_id AS templateId, every_months AS everyMonths, next_date AS nextDate, until_date AS untilDate, active, made, last_invoice_id AS lastInvoiceId FROM invoice_repeats";
@@ -3776,5 +3817,5 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     doc.paymentDraft = {};
     return writeDraft(user, doc);
   }
-  return { openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, issueBankFee, issueBankFeeReturn, createCommissionDraft };
+  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, issueBankFee, issueBankFeeReturn, createCommissionDraft };
 }

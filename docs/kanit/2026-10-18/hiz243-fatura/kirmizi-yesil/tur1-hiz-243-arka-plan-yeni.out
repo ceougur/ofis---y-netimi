@@ -1,0 +1,11 @@
+1) ilk açılış: takvim tamamı gelir, şeritte açık faturanın kalemi
+✗ beklenmeyen hata: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-payment-promises .hof-payment-pill') to be visible[22m
+[2m    45 × locator resolved to hidden <button type="button" data-hof-ui="" class="hof-payment-pill is-upcoming" title="Takvim Ticaret · Tahsil Edilecek Fatura FIS2026000000001 · 11.10.2026 · ₺24,00 · 3 gün kaldı">…</button>[22m
+
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a477c416a56bc423c/test/e2e/hiz-243-arka-plan.mjs:95:14
+  ✓ sayfa hatası yok
+takvim istekleri: 2 (sürümlü 1, değişmedi 1, toplam 652 bayt)
+
+✗ hiz-243-arka-plan: 1 geçti, 1 kaldı

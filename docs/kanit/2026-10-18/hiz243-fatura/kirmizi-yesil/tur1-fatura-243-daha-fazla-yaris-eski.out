@@ -1,0 +1,21 @@
+Tur 1
+    ön koşul: oluştu (Daha Fazla isteği 3, yenileme 14)
+  ✗ Daha Fazla satır getirdi (20 sn'de gelmedi; 200 satır)
+  ✗ liste = sunucunun ilk 200 satırı (çift 0)
+Tur 2
+    ön koşul: oluştu (Daha Fazla isteği 3, yenileme 14)
+  ✗ Daha Fazla satır getirdi (20 sn'de gelmedi; 200 satır)
+  ✗ liste = sunucunun ilk 200 satırı (çift 0)
+Tur 3
+    ön koşul: oluştu (Daha Fazla isteği 3, yenileme 14)
+  ✗ Daha Fazla satır getirdi (20 sn'de gelmedi; 200 satır)
+  ✗ liste = sunucunun ilk 200 satırı (çift 0)
+Tur 4
+    ön koşul: oluştu (Daha Fazla isteği 3, yenileme 15)
+  ✗ Daha Fazla satır getirdi (20 sn'de gelmedi; 200 satır)
+  ✗ liste = sunucunun ilk 200 satırı (çift 0)
+  ✓ sayfa hatası yok
+
+ön koşulu oluşmayan deneme: 0
+
+✗ fatura-243-daha-fazla-yaris: 1 geçti, 8 kaldı

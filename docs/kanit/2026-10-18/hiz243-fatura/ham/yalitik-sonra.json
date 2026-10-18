@@ -1,0 +1,147 @@
+{
+ "uclar": {
+  "GET /api/workspace/invoices?tab=sale&limit=200 (liste açılışı)": {
+   "status": 200,
+   "p50": 107,
+   "max": 127,
+   "yanitBayt": 241856
+  },
+  "GET /api/workspace/invoices?tab=all&limit=200": {
+   "status": 200,
+   "p50": 145,
+   "max": 189,
+   "yanitBayt": 241510
+  },
+  "GET /api/workspace/invoices?tab=sale&offset=200&limit=200 (Daha Fazla)": {
+   "status": 200,
+   "p50": 103,
+   "max": 141,
+   "yanitBayt": 244856
+  },
+  "GET /api/workspace/invoices?tab=all&q=<numara> (liste arama)": {
+   "status": 200,
+   "p50": 165,
+   "max": 207,
+   "yanitBayt": 1630
+  },
+  "GET /api/workspace/invoices?tab=pending": {
+   "status": 200,
+   "p50": 20,
+   "max": 21,
+   "yanitBayt": 311
+  },
+  "GET /api/workspace/dues (arka plan)": {
+   "status": 200,
+   "p50": 50,
+   "max": 54,
+   "yanitBayt": 2783405
+  },
+  "GET /api/workspace/dues?since=<sürüm> (arka plan, ekranın ikinci isteği)": {
+   "status": 200,
+   "p50": 11,
+   "max": 12,
+   "yanitBayt": 97
+  },
+  "GET /api/workspace/invoices?tab=sale&pay=overdue&limit=1 (menü rozeti)": {
+   "status": 200,
+   "p50": 88,
+   "max": 123,
+   "yanitBayt": 1671
+  },
+  "GET /api/workspace/invoices?tab=sale&limit=200 (her istekten önce bir yazma)": {
+   "status": 200,
+   "p50": 398,
+   "max": 450,
+   "yanitBayt": 241856
+  },
+  "GET /api/workspace/stock/alerts (her istekten önce bir yazma)": {
+   "status": 200,
+   "p50": 33,
+   "max": 47,
+   "yanitBayt": 21
+  },
+  "GET /api/workspace/bank/badge (arka plan)": {
+   "status": 200,
+   "p50": 1,
+   "max": 1,
+   "yanitBayt": 30
+  },
+  "GET /api/workspace/stock/alerts (arka plan)": {
+   "status": 200,
+   "p50": 1,
+   "max": 1,
+   "yanitBayt": 21
+  },
+  "GET /api/workspace/cheques (arka plan)": {
+   "status": 200,
+   "p50": 23,
+   "max": 27,
+   "yanitBayt": 307006
+  },
+  "GET /api/workspace/tasks (arka plan)": {
+   "status": 200,
+   "p50": 1,
+   "max": 1,
+   "yanitBayt": 21
+  },
+  "GET /api/workspace/invoices/:id (kart)": {
+   "status": 200,
+   "p50": 14,
+   "max": 15,
+   "yanitBayt": 6658
+  },
+  "GET /api/workspace/invoices/:id/fatura.pdf": {
+   "status": 200,
+   "p50": 40,
+   "max": 44,
+   "yanitBayt": 45304
+  },
+  "GET /api/workspace/invoices/meta": {
+   "status": 200,
+   "p50": 2,
+   "max": 2,
+   "yanitBayt": 8284
+  },
+  "POST /api/workspace/invoices/calc (4 kalem)": {
+   "status": 200,
+   "p50": 2,
+   "max": 2,
+   "yanitBayt": 1817
+  },
+  "GET /api/workspace/accounts/search?q=": {
+   "status": 200,
+   "p50": 6,
+   "max": 7,
+   "yanitBayt": 319
+  },
+  "GET /api/workspace/invoices/items?q=": {
+   "status": 200,
+   "p50": 3,
+   "max": 4,
+   "yanitBayt": 222
+  },
+  "GET /api/workspace/invoices/last-prices": {
+   "status": 200,
+   "p50": 1,
+   "max": 5,
+   "yanitBayt": 70
+  },
+  "GET /api/workspace/report-center/fatura-satis (Bu Yıl)": {
+   "status": 403,
+   "p50": 1,
+   "max": 2,
+   "yanitBayt": 50
+  }
+ },
+ "hacim": {
+  "invoices": 10000,
+  "invoice_lines": 22735,
+  "account_entries": 13806,
+  "stock_moves": 20233,
+  "cheques": 964,
+  "accounts": 324,
+  "stock_items": 200,
+  "gl_entries": "yok",
+  "gl_lines": "yok"
+ }
+}

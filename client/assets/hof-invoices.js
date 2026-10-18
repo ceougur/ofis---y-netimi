@@ -175,8 +175,30 @@
 
   // 2.1.0 (bağımsız inceleme H4): Daha Fazla ile arka plan yenilemesi çakışınca yanıt yalnız isteğin gittiği listeye eklenir (HOF.listGate
   // retry); arka plan yenilemesi Daha Fazla ile açılan satırları korur (önceden ilk 200'e dönüyordu).
+  // 2.4.3 H5 (fatura yükte hız testi): yükte başka personelin her kaydı açık listeyi arka planda yeniler (en sık 1,5 sn'de bir); her yenileme
+  // yazıldığında sürmekte olan "Daha Fazla"nın yanıtı eskir ve kapı onu yeniler — üç denemede de araya yenileme girince tıklama sessizce
+  // kayboluyordu (30 sn bekleme; test/e2e/fatura-243-daha-fazla-yaris.mjs ile zorla üretildi). Daha Fazla sürerken yeni arka plan yenilemesi
+  // başlatılmaz; bekletilir ve Daha Fazla bitince yapılır (değişiklik kaçmaz). O an zaten sürmekte olan yenileme yalnız ilk denemeyi eskitir.
+  let moreBusy = 0;
+  let refreshHeld = null;
   function loadList(more = false, options = {}) {
-    return HOF.listRetry(() => loadListOnce(more, options));
+    if (options.quiet && !more && moreBusy) {
+      if (!refreshHeld) {
+        let release;
+        refreshHeld = { promise: new Promise(resolve => (release = resolve)), release };
+      }
+      return refreshHeld.promise;
+    }
+    if (!more) return HOF.listRetry(() => loadListOnce(more, options));
+    moreBusy += 1;
+    return HOF.listRetry(() => loadListOnce(true, options)).finally(() => {
+      moreBusy -= 1;
+      const held = moreBusy ? null : refreshHeld;
+      if (!held) return;
+      refreshHeld = null;
+      // Bekletilen yenileme şimdi; yenileyicinin (HOF.refresher) beklediği söz onun bitişiyle (hatasıyla da) tamamlanır.
+      held.release(view.mode === "list" ? HOF.listRetry(() => loadListOnce(false, { quiet: true })) : null);
+    });
   }
   async function loadListOnce(more = false, { quiet = false } = {}) {
     // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.

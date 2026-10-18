@@ -1,0 +1,167 @@
+YAKALANDI M1 takvim sürümü sabit (içerik değişse de aynı) ['# fail 1']
+YAKALANDI M2 takvim sürümünde yetki bayrakları yok ['# fail 1']
+YAKALANDI M3 kritik stok önbelleği yazmada geçersizleşmez (anahtar sabit) ['# fail 1']
+YAKALANDI M4 kritik stok önbelleği ortak nesneyi döndürür (kopya yok) ['# fail 1']
+YAKALANDI M5 liste: hafif satırda açık tutar 0 ['# fail 2']
+KAÇTI     M6 liste: hafif satırda ödeme durumu yalnız durumdan (taslak/iptal ayrımı yok) ['# fail 0']
+KAÇTI     M7 liste: cari sıralamasında alıcı adı yerine cari kartı adı ['# fail 0']
+YAKALANDI M8 liste: sayfa bir satır kayık ['# fail 3']
+YAKALANDI M9 liste: POS bayrağı sayfada okunmaz ['# fail 1']
+YAKALANDI M10 liste: toplam belge sayısı sayfadan ['# fail 3']
+KAÇTI     M11 liste: hafif sorguda alıcı JSON'u yok (arama alıcı adını bulamaz) ['# fail 0']
+YAKALANDI M12 liste: sayfalı istekte de bütün satırlar ağır okunur (eski davranış) ['# fail 1']
+[
+ {
+  "mutasyon": "M1 takvim sürümü sabit (içerik değişse de aynı)",
+  "test": "test/hiz-243-arka-plan.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 1"
+  ],
+  "kirmizi": [
+   "not ok 1 - takvim: aynı sürüme 'değişmedi' (küçük yanıt), içerik değişince tamamı yeni sürümle",
+   "not ok 1 - arka plan yenilemesi ucuz, güncellik bozulmaz (2.4.3 H2)"
+  ]
+ },
+ {
+  "mutasyon": "M2 takvim sürümünde yetki bayrakları yok",
+  "test": "test/hiz-243-arka-plan.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 1"
+  ],
+  "kirmizi": [
+   "not ok 2 - takvim sürümü kişinin görebildiği kalem türlerini taşır (faturayı göremeyen başkasının sürümüyle 'değişmedi' almaz)",
+   "not ok 1 - arka plan yenilemesi ucuz, güncellik bozulmaz (2.4.3 H2)"
+  ]
+ },
+ {
+  "mutasyon": "M3 kritik stok önbelleği yazmada geçersizleşmez (anahtar sabit)",
+  "test": "test/hiz-243-arka-plan.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 1"
+  ],
+  "kirmizi": [
+   "not ok 3 - kritik stok rozeti: veri değişmeden ikinci istek stok hareketlerini yeniden okumaz; değişince hemen tazedir",
+   "not ok 1 - arka plan yenilemesi ucuz, güncellik bozulmaz (2.4.3 H2)"
+  ]
+ },
+ {
+  "mutasyon": "M4 kritik stok önbelleği ortak nesneyi döndürür (kopya yok)",
+  "test": "test/hiz-243-arka-plan.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 1"
+  ],
+  "kirmizi": [
+   "not ok 3 - kritik stok rozeti: veri değişmeden ikinci istek stok hareketlerini yeniden okumaz; değişince hemen tazedir",
+   "not ok 1 - arka plan yenilemesi ucuz, güncellik bozulmaz (2.4.3 H2)"
+  ]
+ },
+ {
+  "mutasyon": "M5 liste: hafif satırda açık tutar 0",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 2"
+  ],
+  "kirmizi": [
+   "not ok 2 - her sekme × sıralama × ödeme durumu (ilk sayfa) ve tohumlu 400 süzgeç/arama/sayfa birleşimi: yanıt eski yolla bayt bayt aynı",
+   "not ok 1 - fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt",
+   "not ok 1 - POS'lu, nakit, açık, iptal edilmiş satışlar; her sayfa dilimi",
+   "not ok 2 - fatura listesi (2.4.3 H3): POS peşinli satışların posCash bayrağı sayfalı uçta eski yolla aynı"
+  ]
+ },
+ {
+  "mutasyon": "M6 liste: hafif satırda ödeme durumu yalnız durumdan (taslak/iptal ayrımı yok)",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 0,
+  "yakalandi": false,
+  "ozet": [
+   "# fail 0"
+  ],
+  "kirmizi": []
+ },
+ {
+  "mutasyon": "M7 liste: cari sıralamasında alıcı adı yerine cari kartı adı",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 0,
+  "yakalandi": false,
+  "ozet": [
+   "# fail 0"
+  ],
+  "kirmizi": []
+ },
+ {
+  "mutasyon": "M8 liste: sayfa bir satır kayık",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 3"
+  ],
+  "kirmizi": [
+   "not ok 2 - her sekme × sıralama × ödeme durumu (ilk sayfa) ve tohumlu 400 süzgeç/arama/sayfa birleşimi: yanıt eski yolla bayt bayt aynı",
+   "not ok 3 - sayfa dışındaki belgeler ağır sütunlarla okunmaz (menü rozeti limit=1, ilk sayfa, numara araması)",
+   "not ok 1 - fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt",
+   "not ok 1 - POS'lu, nakit, açık, iptal edilmiş satışlar; her sayfa dilimi"
+  ]
+ },
+ {
+  "mutasyon": "M9 liste: POS bayrağı sayfada okunmaz",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 1"
+  ],
+  "kirmizi": [
+   "not ok 1 - POS'lu, nakit, açık, iptal edilmiş satışlar; her sayfa dilimi",
+   "not ok 2 - fatura listesi (2.4.3 H3): POS peşinli satışların posCash bayrağı sayfalı uçta eski yolla aynı"
+  ]
+ },
+ {
+  "mutasyon": "M10 liste: toplam belge sayısı sayfadan",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 3"
+  ],
+  "kirmizi": [
+   "not ok 2 - her sekme × sıralama × ödeme durumu (ilk sayfa) ve tohumlu 400 süzgeç/arama/sayfa birleşimi: yanıt eski yolla bayt bayt aynı",
+   "not ok 3 - sayfa dışındaki belgeler ağır sütunlarla okunmaz (menü rozeti limit=1, ilk sayfa, numara araması)",
+   "not ok 1 - fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt",
+   "not ok 1 - POS'lu, nakit, açık, iptal edilmiş satışlar; her sayfa dilimi"
+  ]
+ },
+ {
+  "mutasyon": "M11 liste: hafif sorguda alıcı JSON'u yok (arama alıcı adını bulamaz)",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 0,
+  "yakalandi": false,
+  "ozet": [
+   "# fail 0"
+  ],
+  "kirmizi": []
+ },
+ {
+  "mutasyon": "M12 liste: sayfalı istekte de bütün satırlar ağır okunur (eski davranış)",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 1"
+  ],
+  "kirmizi": [
+   "not ok 3 - sayfa dışındaki belgeler ağır sütunlarla okunmaz (menü rozeti limit=1, ilk sayfa, numara araması)",
+   "not ok 1 - fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
+  ]
+ }
+]

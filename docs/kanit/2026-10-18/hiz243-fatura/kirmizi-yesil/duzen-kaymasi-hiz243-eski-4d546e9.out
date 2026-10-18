@@ -1,0 +1,9 @@
+  ✓ liste: pencere yerinde (130,26 1100×848; listede 130,26 1100×848)
+  ✗ senaryo seçimi: pencere yerinde (130,143 1100×614; listede 130,26 1100×848)
+  ✗ form: pencere yerinde (40,76 1280×748; listede 130,26 1100×848)
+  ✓ liste (dönüş): pencere yerinde (130,26 1100×848; listede 130,26 1100×848)
+  ✗ kart: pencere yerinde (130,87 1100×725; listede 130,26 1100×848)
+  ✗ pencerenin kendisinden kaynaklanan düzen kayması yok (0.538)
+  ✓ sayfa hatası yok
+
+✗ fatura-243-duzen-kaymasi: 3 geçti, 4 kaldı

@@ -1,0 +1,22 @@
+rapor yetkisi (overview.view) verilen personel: 23
+03:17:27 düzey once-D2: 8 ekran + 2 API, 600 sn; sunucu açılış 1285 ms
+03:18:37   60 sn: 168 işlem, 23 belge, ekran hata 1, api hata 0
+03:19:37   120 sn: 327 işlem, 49 belge, ekran hata 1, api hata 0
+03:20:37   180 sn: 477 işlem, 71 belge, ekran hata 2, api hata 0
+03:21:37   240 sn: 652 işlem, 94 belge, ekran hata 2, api hata 0
+03:22:37   300 sn: 825 işlem, 119 belge, ekran hata 2, api hata 0
+03:23:37   360 sn: 954 işlem, 136 belge, ekran hata 2, api hata 1
+03:24:37   420 sn: 1074 işlem, 152 belge, ekran hata 4, api hata 1
+03:25:37   480 sn: 1194 işlem, 173 belge, ekran hata 7, api hata 1
+03:26:37   540 sn: 1340 işlem, 192 belge, ekran hata 8, api hata 1
+03:27:37   600 sn: 1483 işlem, 214 belge, ekran hata 8, api hata 1
+  ✓ cari bakiyeleri: program farkı = bağımsız defter (145 cari değişti; uyuşmayan 0)
+  ✓ stok miktarları: program farkı = bağımsız defter (189 ürün; uyuşmayan 0)
+  ✓ Kasa (100): program farkı 303708.26 = defter 303708.26
+  ✓ fatura tutarı: kâhin = program (222 belge; uyuşmayan 0)
+  ✓ Mutabakat Testi (ledger/integrity) temiz
+  ✓ çift fatura yok: koşuda yazılan 222 belge = 200 dönen kayıt 222
+  ✓ numaralar: 6 seri/yıl, 7664 numaralı belge — benzersiz + boşluksuz + tarih sırası (sorun yok)
+  ✓ kendi numaramızla yinelenen belge yok (0)
+  ✓ sahte EDM: koşuda 133 gönderim, yinelenen numara 0
+03:28:18 bitti: 222 belge (20.9/dk), denetim 9 geçti / 0 kaldı, ekran hata 8, api hata 1, karakter kaybı 0

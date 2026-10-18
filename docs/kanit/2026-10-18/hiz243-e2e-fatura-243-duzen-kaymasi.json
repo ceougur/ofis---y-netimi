@@ -1,0 +1,32 @@
+{
+  "ad": "hiz243-e2e-fatura-243-duzen-kaymasi",
+  "komut": "npm run -s test:fatura-243-duzen-kaymasi",
+  "commit": "4d1624ed9c4a6bd1214c9db53aa71490151972ba",
+  "dal": "worktree-agent-a477c416a56bc423c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T04:35:00.725Z",
+  "sure_sn": 13.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-18/hiz243-e2e-fatura-243-duzen-kaymasi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a477c416a56bc423c",
+  "ham_cikti_sha256": "0ee1dc2d75c6a7a13e9fa65774bfe4a3b9b9d2b41b9d8a8694756db6d629f05f",
+  "ham_cikti_bayt": 522
+}
