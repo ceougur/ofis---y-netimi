@@ -33,6 +33,8 @@ writeFileSync(excel, buildXlsx([{ name: "Müşteriler", columns: COLS, rows: [{ 
 const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f93" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
+// Ders 34: escClose günlüğüne o anki veri tabanı sayıları (soru çıktığında form gerçekten kaydedilmemiş mi).
+globalThis.__escKapatEk = () => ({ fatura: app.store.get("SELECT COUNT(*) AS n FROM invoices").n, cari: app.store.get("SELECT COUNT(*) AS n FROM accounts").n });
 const browser = await chromium.launch();
 const errors = [];
 const newPage = async () => {
