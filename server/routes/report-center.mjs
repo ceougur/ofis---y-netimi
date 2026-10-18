@@ -1646,13 +1646,15 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
           headers: ["Cari No", "Cari", "Tür", "Telefon", "Grup", "Borç", "Alacak", "Bakiye", "Durum", "Geciken"],
           types: ["", "", "", "", "", "money", "money", "money", "", "money"],
           rows: data.accounts.map(row => [row.refNo, row.name, TYPE_TEXT[row.type] || "", row.phone, [row.groupName, row.subgroupName].filter(Boolean).join(" › "), money(row.debit), money(row.credit), money(Math.abs(row.balance)), sideText(row.balance), row.overdue ? money(row.overdue) : ""]),
-          // v2.0.20 (kullanıcı: "100 bin toplam, ödenen 10 bin, kalan 90 bin görmek istiyorum"): anlaşılan (toplam borç),
-          // ödenen (toplam alacak: tahsilat, Excel'de ödenmiş açılış, çek dahil) ve kalan (net bakiye) yan yana.
+          // v2.0.20 (kullanıcı: "100 bin toplam, ödenen 10 bin, kalan 90 bin görmek istiyorum"): toplam borç, toplam alacak ve net yan yana.
+          // MM9 (2.4.3, uzman mali müşavir; kullanıcı kararı 18.10.2026): ticari işletmeye uyan adlar — "Anlaşılan / Ödenen" kalktı (tedarikçi faturası
+          // "ödenen" değildir); bakiyeler ayrı: Müşteri Alacakları (borçlu carilerin bakiyesi) ve Tedarikçi Borçları (alacaklı carilerin bakiyesi); net
+          // ayrıca, ne olduğu adında yazılı (önceki "Kalan (Alacaklı)" müşteri ve tedarikçiyi adsız netliyordu).
           summary: (() => {
             const debit = roundMoney(data.accounts.reduce((sum, row) => sum + (Number(row.debit) || 0), 0));
             const credit = roundMoney(data.accounts.reduce((sum, row) => sum + (Number(row.credit) || 0), 0));
-            const net = roundMoney(debit - credit);
-            return [["Cari", String(data.totals.count)], ["Toplam Borç (Anlaşılan)", money(debit)], ["Toplam Alacak (Ödenen)", money(credit)], [`Kalan (${sideText(net)})`, money(Math.abs(net))], ["Borçlular", money(data.totals.debtor)], ["Alacaklılar", money(data.totals.creditor)], ["Geciken Taksit", money(data.totals.overdue)]];
+            const net = roundMoney(data.accounts.reduce((sum, row) => sum + (Number(row.balance) || 0), 0));
+            return [["Cari", String(data.totals.count)], ["Toplam Borç", money(debit)], ["Toplam Alacak", money(credit)], ["Müşteri Alacakları (Borçlu Cariler)", money(data.totals.debtor)], ["Tedarikçi Borçları (Alacaklı Cariler)", money(data.totals.creditor)], ["Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları)", money(net)], ["Geciken Taksit", money(data.totals.overdue)]];
           })(),
           footer: netFooter(data.accounts.reduce((sum, row) => sum + (Number(row.balance) || 0), 0)),
         };
