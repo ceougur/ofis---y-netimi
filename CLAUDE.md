@@ -404,3 +404,16 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   API, Kopyala (http) gerçek Windows + Edge uygulama penceresinde denenmedi → teslimde kısa elle kabul listesi (KANIT 5) verilecek.
   (6) çekirdeğin ana dal CI'si (37b64e8) kırmızı (form-izolasyon E1 ön koşulu CI yerleşiminde kurulamadı) — birleşim (birlesim2-243) bu düzelip CI
   yeşil olmadan ana dala alınmaz.
+- DAR KONTROL TURU (18.10.2026, d64ebf8; ders 32): numara/gönderim düzeltmelerinde YÜKSEK Y1 (Tümünü Gönder istemcide 30 sn zaman aşımı; gerçek EDM
+  hızında GG1 turları işlemez — ana oturum yeniden üretti: 30 sn'de hata, sunucu arkada 170/170), ORTA O1 (Kaydet ve Gönder / Kaydet / kartta Gönder eski
+  numarasız bekleyeni kalıcı kronoloji engeline düşürür — ana oturum yeniden üretti, 3 yolun 3'ü), O2 (tur sürerken Listeden Silinen belge e-Belge gider),
+  O3 (buyer-is-efatura seriyi bekletir), DÜŞÜK D1–D4 + ağ yokken turun numara vermesi. O1–O3/D4 2.4.3 ÖNCESİNDEN de var. Hepsi 2.4.3'te düzeltiliyor
+  (dal duzeltme2-243); bitince ayrı kopyada kırmızı/yeşil + yeni dar kontrol.
+- İSTEK (kullanıcı, 18.10.2026 ~12:20 UTC: "son uzun koşu başlamadan son adayı, bağımsız kahin, yargıç, eleştirmenden geçir (uzman ui, uzman ux ve uzman mali
+  müşavir gözüyle sadece koddan değil gerçek kullanıcı olarak da yapılsın bağımsız bu işlem) anayasamız ve derslerimize göz at") → PLAN: duzeltme2 birleşip CI
+  yeşil olunca SON ADAY → Uzun Doğrulama'dan ÖNCE bağımsız tur: (a) KÂHİN: plandan/mevzuattan, kodu görmeden yazılmış Python temiz oda modeli (mevcut kâhin
+  sürümü + 2.4.3 değişen kurallar: numara/kronoloji, iade, KDV) programla kara kutu karşılaştırma (ders 5); (b) YARGIÇ + ELEŞTİRMEN, üç uzman gözü — UZMAN UI
+  (görsel düzen, hizalama, yanıp sönme, dar ekran), UZMAN UX (iş akışı sürtünmesi, klavye, ileti açıklığı, geri alma), UZMAN MALİ MÜŞAVİR (TDHP/VUK/GİB
+  e-Belge kuralları, mizan/ekstre/KDV/iade/çek-senet doğruluğu); her biri hem KODDAN hem GERÇEK KULLANICI olarak tarayıcıda sıfırdan iş akışı (kişi → cari →
+  fatura → tahsilat → kasa/banka → rapor) yürütür; birbirinin ve düzeltme ajanlarının raporunu GÖRMEZ (ders 16); bulgu ancak ana oturum yeniden üretince
+  sayılır (ders 6); düzeltme → dar kontrol (ders 32) → sonra Uzun Doğrulama.
