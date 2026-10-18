@@ -147,6 +147,9 @@ const foldGateCode = code => (/^gl:\d+$/.test(code) ? `gl:${foldCode(code.slice(
 export function normDocumentNames(text) {
   let out = String(text);
   for (const [code, { legacy, current }] of Object.entries(DOCUMENT_NAMES)) out = out.split(legacy).join(`${code}-AD`).split(current).join(`${code}-AD`);
+  // 2.4.3 MM3 (bilerek): 689'un adı Tekdüzen adı "Diğer Olağandışı Gider ve Zararlar" (önceden "Kapatılan Kartlardan Vazgeçilen Alacaklar"; gecikme
+  // zammı da 689'a yazılır). Tutar ve kod değişmez — iki ad aynı belirtece.
+  out = out.split("Kapatılan Kartlardan Vazgeçilen Alacaklar").join("689-AD").split("Diğer Olağandışı Gider ve Zararlar").join("689-AD");
   return out;
 }
 /** Mizan hesapları (TL): 121 → 101, 321 → 103 katlanır; ad eski ad. Dönüş aynı biçim (TL), kod sırasıyla. */
