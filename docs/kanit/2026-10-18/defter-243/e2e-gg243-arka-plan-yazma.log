@@ -1,0 +1,22 @@
+
+> destekofis@2.4.3 test:gg243-arka-plan-yazma
+> node --disable-warning=ExperimentalWarning test/e2e/gg243-arka-plan-yazma.mjs
+
+1) yazarken arka plan yazması (kritik stok bildirimi, background)
+  ✓ ön koşul: form kaydedilmemiş sayılıyor
+  ✓ ön koşul: arka plan yazması gitti (["POST /api/workspace/stock/alerts/notified"])
+  ✓ arka plan yazmasından sonra form hâlâ kaydedilmemiş
+  ✓ 1: Esc "Kaydedilmemiş Değişiklik" sordu
+  ✓ 1: yazılanlar yerinde (Yazılmış Ama Kaydedilmemiş Cari | 0533 111 22 33)
+2) kullanıcı hareketi olmadan giden işaretsiz yazma (son düğme tıklamasından 15 sn sonra)
+  ✓ ön koşul: işaretsiz yazma gitti
+  ✓ form hâlâ kaydedilmemiş
+  ✓ 2: Esc "Kaydedilmemiş Değişiklik" sordu
+  ✓ 2: yazılanlar yerinde (Yazılmış Ama Kaydedilmemiş Cari | 0533 111 22 33 | deneme@ornek.com)
+3) karşı sınama: kullanıcının Kaydet'i taslağı kapatır
+  ✓ Kaydet'ten sonra kaydedilmemiş değişiklik yok
+  ✓ Kaydet'ten sonra Esc soru sormaz
+  ✓ cari kaydedildi (sunucudan okundu)
+  ✓ sayfa hatası yok
+
+✓ gg243-arka-plan-yazma: 13 geçti, 0 kaldı

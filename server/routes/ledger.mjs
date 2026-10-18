@@ -60,8 +60,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     const cashRef = refOf("cash_entries", "c");
     // Yargıç Y2/Y3: Kasa açılışı işaretten (göç 22; v21 ve öncesi dosyada kolon yok: 0 — sıradan giriş).
     const cashOpening = store.all("PRAGMA table_info(cash_entries)").some(column => column.name === "is_opening") ? "c.is_opening" : "0";
+    // 2.4.3 MM3 (göç 29): Kasa'dan vergi ödemesinin ayrıntısı (B 360 · B 689 / A 100). v28 ve öncesi dosyada kolon yok: ''.
+    const cashTax = store.all("PRAGMA table_info(cash_entries)").some(column => column.name === "tax_json") ? "c.tax_json" : "''";
     out.cashEntries = all(
-      `SELECT c.id, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, ${cashOpening} AS isOpening, ${cashRef} AS ref,
+      `SELECT c.id, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, ${cashOpening} AS isOpening, ${cashTax} AS taxJson, ${cashRef} AS ref,
               CASE WHEN c.transfer_id <> '' THEN COALESCE((SELECT ${cashRef === "''" ? "''" : "t.fin_ref"} FROM cash_entries t WHERE t.transfer_id = c.transfer_id AND t.id <> c.id LIMIT 1), '') ELSE '' END AS bankRef
        FROM cash_entries c${where("c", [[set?.cash, own("m_cash")]])}`,
       wanted(set?.cash),
@@ -115,6 +117,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       );
     }
     if (has("stock_moves")) out.stockMoves = all(`SELECT m.id, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, ${refOf("stock_moves", "m")} AS ref FROM stock_moves m WHERE ${X}m.pay = 'cash' AND m.amount > 0${where("m", [[set?.moves, own("m_moves")]], "AND")}`, wanted(set?.moves));
+    // MM4 (2.4.3, göç 29): açılış stoku — işaretli (is_opening) yalnız miktar girişi; değeri miktar × hareketin birim fiyatı (kuruşa yuvarlanır). Ürün
+    // sonradan silinse de açılış deftere girer (aralıklı envanter: 153 = dönem başı + alışlar; peşin alım gibi). v28 ve öncesi dosyada kolon yok: satır yok.
+    if (has("stock_moves") && store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "is_opening")) {
+      out.stockOpenings = all(
+        `SELECT m.id, m.qty, m.unit_price AS unitPrice, m.date, m.note, COALESCE(i.name, '') AS itemName, COALESCE(i.unit, '') AS unit FROM stock_moves m LEFT JOIN stock_items i ON i.id = m.item_id
+         WHERE ${X}m.is_opening = 1 AND m.kind = 'in' AND m.pay = 'none'${where("m", [[set?.moves, own("m_moves")]], "AND")}`,
+        wanted(set?.moves),
+      );
+    }
     // Banka Fişi satırları (v2.1.0): THP kodu, alt hesap ve kuruş yazım anında saklanır.
     if (has("bank_lines") && has("fin_events")) {
       out.bankLines = all(`SELECT l.event_id AS eventId, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
@@ -167,6 +178,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     // (carinin bütün satırlarıyla; yalnız para satırı / evrak / fatura süzgecinde yüklenmez: ayırma carinin tam geçmişini ister, o denetimler
     // kontrol hesabına bakmaz).
     if (!filter || set?.parties) out.doubtful = doubtfulRows(store, { parties: filter ? filter.parties : null });
+    // 2.4.3 MM3: KDV Mahsup Fişleri (etkin ve geri alınmış; geri alınanın ters kaydı aynı gün). Süzgeçli kurulumda (kapının dokunulan varlıkları)
+    // yüklenmez: mahsup tablosuna yazım tam kapıya düşer (integrity-scope "kapsam dışı").
+    if (!filter && has("vat_offsets")) out.vatOffsets = store.all("SELECT id, month, date, out_minor AS outMinor, in_minor AS inMinor, carry_in_minor AS carryInMinor, carry_out_minor AS carryOutMinor, payable_minor AS payableMinor, status FROM vat_offsets ORDER BY date, created_at, rowid");
     return out;
   }
   // Carisiz evrakın karşı hesabı gelir/gider (602 / 770): journal() cariyi kontrol hesabı sayar; burada düzeltilir.
@@ -250,6 +264,24 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       out[391] = roundMoney(sums.v391 / 100);
       out[360] = roundMoney(sums.v360 / 100);
       out[193] = roundMoney(sums.v193 / 100);
+    }
+    // 2.4.3 MM3 — Vergi Ödemesi ve KDV Mahsup Fişi (ikinci yükleyici: kendi tablolarından SQL; yevmiye general-ledger'ın kuralıyla). 360: bankadan
+    // ödenen vergi (Banka Fişi satırı, ters kaydı dahil) + Kasa'dan ödenen vergi (cash_entries.tax_json) borç; etkin mahsubun ödenecek KDV'si alacak.
+    // 391 / 191: etkin mahsubun ayı kapatan tutarları; 190 (yalnız mahsup kullanılmışsa satır açılır): yeni devreden − kullanılan devreden.
+    if (has("bank_lines")) {
+      const paid = store.get("SELECT COALESCE(SUM(CASE side WHEN 'D' THEN try_minor ELSE -try_minor END), 0) AS n FROM bank_lines WHERE gl = '360'").n;
+      if (paid) out[360] = roundMoney((out[360] || 0) + paid / 100);
+    }
+    if (store.all("PRAGMA table_info(cash_entries)").some(column => column.name === "tax_json")) {
+      const paid = store.get("SELECT COALESCE(SUM(CAST(json_extract(tax_json, '$.taxMinor') AS INTEGER)), 0) AS n FROM cash_entries WHERE tax_json <> '' AND kind = 'out' AND json_valid(tax_json)").n;
+      if (paid) out[360] = roundMoney((out[360] || 0) + paid / 100);
+    }
+    if (has("vat_offsets") && store.get("SELECT 1 AS found FROM vat_offsets LIMIT 1")) {
+      const v = store.get("SELECT COALESCE(SUM(out_minor), 0) AS o, COALESCE(SUM(in_minor), 0) AS i, COALESCE(SUM(carry_out_minor - carry_in_minor), 0) AS c, COALESCE(SUM(payable_minor), 0) AS p FROM vat_offsets WHERE status = 'active'");
+      out[391] = roundMoney((out[391] || 0) + v.o / 100);
+      out[191] = roundMoney((out[191] || 0) - v.i / 100);
+      out[190] = roundMoney(v.c / 100);
+      out[360] = roundMoney((out[360] || 0) - v.p / 100);
     }
     // Banka Fişi'nin stopaj satırı (faizden kesilen; §3.11): 193'e eklenir.
     if (has("bank_lines")) {

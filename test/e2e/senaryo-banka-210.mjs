@@ -1802,10 +1802,12 @@ try {
     ok(cash + z + g === 170000, `Kasa + Banka ${cash + z + g} (= 150.000 + 20.000)`);
     // Bağımsız mizan modeli (kabul 16 sonu; plan §12.5'in 2.1.0 karşılığı): 100 10.000 · 102.01 90.000 · 102.02 70.000 · 120 0 · 391 −3.333,33 ·
     // 500 −150.000 · 600 −16.666,67.
-    const want = { 100: 1_000_000, 102: 16_000_000, 120: 0, 391: -333_333, 500: -15_000_000, 600: -1_666_667 };
+    // 2.4.3 MM4 (bilerek güncellendi; kullanıcı kararı 18.10.2026, plan §12.5 sayısının yerine): Ürün A'nın açılış stoku (10 Adet × 10.000 = 100.000)
+    // Ana Defter'e açılış fişi olarak girer (B 153 / A 500) → 500 −250.000, 153 100.000 (aralıklı envanter: satış 153'ü azaltmaz). Öbür hesaplar aynı.
+    const want = { 100: 1_000_000, 102: 16_000_000, 120: 0, 153: 10_000_000, 391: -333_333, 500: -25_000_000, 600: -1_666_667 };
     const got = await trial();
     const off = Object.entries(want).filter(([code, minor]) => (got[code] || 0) !== minor);
-    ok(!off.length, off.length ? `mizan modelden farklı: ${off.map(([code, minor]) => `${code} program ${(got[code] || 0) / 100} / model ${minor / 100}`).join("; ")}` : "mizan bağımsız modelle aynı (100, 102, 120, 391, 500, 600)");
+    ok(!off.length, off.length ? `mizan modelden farklı: ${off.map(([code, minor]) => `${code} program ${(got[code] || 0) / 100} / model ${minor / 100}`).join("; ")}` : "mizan bağımsız modelle aynı (100, 102, 120, 153, 391, 500, 600)");
     const subs = await subTrial();
     ok(subs[kabul.ziraat.glSub] === 9_000_000 && subs[kabul.garanti.glSub] === 7_000_000, `alt hesaplar ${kabul.ziraat.glSub} ${subs[kabul.ziraat.glSub] / 100}, ${kabul.garanti.glSub} ${subs[kabul.garanti.glSub] / 100}`);
     await tab(admin, "overview");

@@ -449,5 +449,7 @@ export function registerBankRoutes(router, context) {
   // 2.3.0 İz 3.3 (plan §8.9, §8.10; eşleme 301): planlı işlemler Nakit Akış / Banka Nakit Akış Raporu (flows), Vade Takip (flows) ve Zil'e (dueItems)
   // bu okuma yollarıyla girer (routes/overview.mjs, routes/dues.mjs, routes/report-center.mjs); fingerprint zilin önbellek anahtarına.
   service.plans = { flows: vouchers.planFlows, dueItems: vouchers.planDueItems, fingerprint: vouchers.plansFingerprint, cardDues: vouchers.cardDueFlows };
+  // 2.4.3 MM3: Vergi Ödemesi (bankadan) — routes/tax.mjs bu yolla Banka Fişi "tax_payment" yazar (K7 ve Ters Kaydet Banka Fişi'nin kuralıyla).
+  service.taxPayment = vouchers.taxPayment;
   return service;
 }

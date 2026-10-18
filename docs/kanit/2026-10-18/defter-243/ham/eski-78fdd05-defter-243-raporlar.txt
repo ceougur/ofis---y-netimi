@@ -1,0 +1,165 @@
+TAP version 13
+# (node:9015) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.3 MM5–MM9 — rapor düzeltmeleri
+    # Subtest: MM5: Alacak Yaşlandırma faturasız borcu hareket tarihiyle yaşlandırır; carinin dilimleri = borç bakiyesi; toplam 10.700 (kâhin)
+    not ok 1 - MM5: Alacak Yaşlandırma faturasız borcu hareket tarihiyle yaşlandırır; carinin dilimleri = borç bakiyesi; toplam 10.700 (kâhin)
+      ---
+      duration_ms: 75.669309
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:125:3'
+      failureType: 'testCodeFailure'
+      error: 'Eski Müşteri satırı yok: [["Avanslı Müşteri","49","1.000,00 TL","1.000,00 TL","1.000,00 TL","0,00 TL","0,00 TL","","2.000,00 TL","3.000,00 TL"],["Faturalı Müşteri","10","0,00 TL","1.200,00 TL","0,00 TL","0,00 TL","0,00 TL","","1.200,00 TL","1.200,00 TL"],["Çek Veren","","700,00 TL","0,00 TL","0,00 TL","0,00 TL","0,00 TL","","0,00 TL","700,00 TL"],["Çekli Müşteri","","0,00 TL","0,00 TL","0,00 TL","0,00 TL","0,00 TL","2.000,00 TL","0,00 TL","0,00 TL"]]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:136:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: MM5: Nakit Akışı gecikmiş girişlerde faturasız cari alacağı (bugünden önceki parçalar) görünür; taksit ve fatura kalemi değişmez
+    not ok 2 - MM5: Nakit Akışı gecikmiş girişlerde faturasız cari alacağı (bugünden önceki parçalar) görünür; taksit ve fatura kalemi değişmez
+      ---
+      duration_ms: 21.68172
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:151:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + {}
+        - {
+        -   'Eski Müşteri|2026-01-02': 500000,
+        -   'Faturalı Müşteri|2026-10-15': 30000,
+        -   'Çekli Müşteri|2026-08-16': 200000
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Eski Müşteri|2026-01-02: 500000
+        Çekli Müşteri|2026-08-16: 200000
+        Faturalı Müşteri|2026-10-15: 30000
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:155:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: MM6: Banka Nakit Akış Raporu Çek Hesabı bağlı verilen çeki vadesinde çıkış sayar (hesapsız çek girmez); her dönem seçeneği
+    not ok 3 - MM6: Banka Nakit Akış Raporu Çek Hesabı bağlı verilen çeki vadesinde çıkış sayar (hesapsız çek girmez); her dönem seçeneği
+      ---
+      duration_ms: 26.081545
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:163:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [["20.10.2026","Başlangıç","Bugünkü Gerçek Banka","","","","","50.000,00 TL"]]
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:166:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: MM7: Stok Durumu, Kategoriye Göre ve Stok Hareket Özeti aynı gün aynı değer (eksi stok eksi değer: 5.000 − 400 = 4.600); süzgeçler
+    not ok 4 - MM7: Stok Durumu, Kategoriye Göre ve Stok Hareket Özeti aynı gün aynı değer (eksi stok eksi değer: 5.000 − 400 = 4.600); süzgeçler
+      ---
+      duration_ms: 58.958464
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:180:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        500000 !== 460000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 460000
+      actual: 500000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:185:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: MM8: Yevmiye Defteri özetinde Madde = farklı madde sayısı (tam sayı), Satır = satır sayısı; boş dönem 0
+    not ok 5 - MM8: Yevmiye Defteri özetinde Madde = farklı madde sayısı (tam sayı), Satır = satır sayısı; boş dönem 0
+      ---
+      duration_ms: 31.990461
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: 'tam sayı: 16.5'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: '16.5'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:201:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: MM9: Cari Listesi özeti — Toplam Borç / Toplam Alacak, Müşteri Alacakları ve Tedarikçi Borçları ayrı, net açık adla; her süzgeç
+    not ok 6 - MM9: Cari Listesi özeti — Toplam Borç / Toplam Alacak, Müşteri Alacakları ve Tedarikçi Borçları ayrı, net açık adla; her süzgeç
+      ---
+      duration_ms: 30.077475
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: 'eski ad: Toplam Borç (Anlaşılan)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:213:85)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Mutabakat Testi temiz
+    ok 7 - Mutabakat Testi temiz
+      ---
+      duration_ms: 16.00142
+      type: 'test'
+      ...
+    1..7
+not ok 1 - 2.4.3 MM5–MM9 — rapor düzeltmeleri
+  ---
+  duration_ms: 1408.602986
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-raporlar.test.mjs:38:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 1
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1974.883852

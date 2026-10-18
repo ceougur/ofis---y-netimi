@@ -17,6 +17,7 @@ import { dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { reconcileReceivables } from "../lib/receivable-aging.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => {
@@ -35,7 +36,7 @@ const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "
 // legacy (2.1.0 temel sürüm, küçük düzeltmeler): eski sürümden kalan, hesaba atanmamış İLERİ TARİHLİ havale / POS satırı (102.00 / 108.00).
 // Önceden "Kasa (ileri tarihli)" yazılıyordu (Nakit Kasa'da olmayan bir hareket). Ekran (hof-overview.js ROW_LABELS), PDF ve Excel aynı adı yazar.
 // 2.3.0 İz 3.3 (plan §8.9 "Planlı Banka"; eşleme 301): planlı banka işlemleri (bank_plans; deftere girmemiş) kaynak "bank".
-const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", bank: "Planlı Banka İşlemi" };
+const SOURCE_TEXT = { unbilled: "Faturasız Cari Alacağı", plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", bank: "Planlı Banka İşlemi" };
 // Satırın kaynak adı (PDF/Excel): akışın kendi kaynağı (flow; ör. bankada tahsildeki evrak "deposit", plan §8.9) varsa o, yoksa süzgeç kaynağı.
 const sourceText = row => SOURCE_TEXT[row.flow] || SOURCE_TEXT[row.source] || row.source;
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
@@ -365,6 +366,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (cheques()?.flows) flows.push(...cheques().flows({ expected: true }));
     // Vadeli (açık hesap) faturaların ödenmemiş kısmı vadesinde beklenen giriş (satış) ya da çıkıştır (alış).
     for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) flows.push(invoiceFlow(item));
+    // MM5 (2.4.3, uzman mali müşavir; kullanıcı kararı 18.10.2026): faturasız cari alacağı (devir, Borç Yaz, karşılıksız çek, veresiye satış — carinin
+    // bakiyesinden açık taksit ve vadeli satış faturası düşülünce kalan; lib/receivable-aging.mjs, Alacak Yaşlandırma ile aynı kural) hareket tarihinde
+    // beklenen giriştir (vadesi yok: hareket günü vadedir — geçmiş tarihliler gecikmiş girişlerde, Alacak Yaşlandırma'daki dilimiyle aynı). Taksit ve
+    // fatura kalemleri değişmez (kaleme bağlanmamış tahsilat burada kalemi küçültmez; carinin girişi en az bakiyesi kadardır).
+    flows.push(...unbilledFlows(day));
     // Tablolardaki ödeme günleri ve ödeme sözleri (v2.0.9, tahsilat takvimiyle aynı kalemler) beklenen giriştir. Taksit
     // kartı olan kişinin sözü kartındaki taksitle aynı parayı anlatır; nakit tahmininde ikinci kez sayılmaz.
     if (withTable) for (const item of await tableItems()) if (!item.deadline && item.amount > 0 && !(item.promise && item.carded)) flows.push(tableFlow(item, { projection: true }));
@@ -381,6 +387,15 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     flows.push(...(bankService()?.plans?.cardDues?.(day) || []));
     const result = projection({ today: day, from: range.from, to: range.to, cashToday: start.total, flows, includeOverdue });
     return { ...result, start, requested: range, withTable, group, periods: group ? groupFlows(result, group) : null };
+  }
+  function unbilledFlows(day) {
+    if (!accounts()?.list) return [];
+    const items = [];
+    for (const item of plans()?.openItems ? plans().openItems(day) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });
+    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });
+    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: account.balance }));
+    return reconcileReceivables(store, { accounts: live, items, day })
+      .unbilled.map(item => ({ date: item.date, direction: "in", amount: item.amount, source: "unbilled", label: "Faturasız Cari Alacağı", party: item.name, ref: { type: "account", id: item.accountId } }));
   }
   // Nakit akış başlangıcı (v2.1.0, K10; plan §8.9 ve karar 32): "Bugünkü Nakit ve Banka" = Nakit Kasa (bugüne kadar) + Gerçek Banka (Σ 102,
   // hesaba atanmış). Hesabı Atanmamış Eski Hareketler (102.00 + 108.00) ayrı satırdır, başlangıca GİRMEZ. Değerler ANLIK DURUM'un Kasa ve Banka

@@ -305,6 +305,8 @@
     const preview = center.preview;
     const isNum = index => preview.types[index] === "money" || preview.types[index] === "number";
     const shown = (cell, index) => (preview.types[index] === "money" ? screenMoney(cell) : cell);
+    // 2.4.3 UX24: TOPLAM satırları (yönü karışık raporda "TOPLAM Satış", "TOPLAM Alış", "Net"); eski yanıtta tek footer.
+    const totals = preview ? (Array.isArray(preview.footers) && preview.footers.length ? preview.footers : preview.footer ? [preview.footer] : []) : [];
     // 2.4.3 (C4): yer tutucu (rapor değişti) önceki sonucun yüksekliğini korur — pencere çöküp açılmaz (düzen kayması yok).
     const hold = !preview && ready && center.holdHeight ? ` style="min-height:${Math.round(center.holdHeight)}px"` : "";
     const table = preview
@@ -314,11 +316,11 @@
             ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
         }</tbody>${
-          preview.footer && preview.rows.length
-            ? `<tfoot><tr class="hof-rc-total">${preview.footer.map((cell, index) => `<td class="${isNum(index) ? "num" : ""}">${esc(shown(cell, index))}</td>`).join("")}</tr></tfoot>`
+          totals.length && preview.rows.length
+            ? `<tfoot>${totals.map(line => `<tr class="hof-rc-total">${line.map((cell, index) => `<td class="${isNum(index) ? "num" : ""}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")}</tfoot>`
             : ""
         }</table></div>
-        <p class="hof-rep-note">${preview.total > preview.rows.length ? `Ekranda ilk ${preview.rows.length.toLocaleString("tr-TR")} satır; tamamı (${preview.total.toLocaleString("tr-TR")} satır) PDF ve Excel'de.${preview.footer ? " TOPLAM satırı bütün satırları kapsar." : ""}` : `${preview.total.toLocaleString("tr-TR")} satır.`} PDF en çok 20.000 satır yazar; Excel sınırsızdır.</p>`
+        <p class="hof-rep-note">${preview.total > preview.rows.length ? `Ekranda ilk ${preview.rows.length.toLocaleString("tr-TR")} satır; tamamı (${preview.total.toLocaleString("tr-TR")} satır) PDF ve Excel'de.${totals.length ? " TOPLAM satırı bütün satırları kapsar." : ""}` : `${preview.total.toLocaleString("tr-TR")} satır.`} PDF en çok 20.000 satır yazar; Excel sınırsızdır.</p>`
       : `<p class="hof-empty"${hold}>${ready ? "Rapor hazırlanıyor…" : "Önce cariyi seçin."}</p>`;
     // 2.4.3 (C5): açıklama ilk bakışta en çok iki satır (uzun açıklama 1366×768'de tabloyu ekranın altına itiyordu); tam metin üzerine gelince
     // (ipucu) ve açıklamaya tıklayınca açılır.
@@ -326,6 +328,7 @@
         <span class="hof-rep-export ${ready ? "" : "is-disabled"}" role="group" aria-label="Dışa aktar">
           <a class="hof-rep-out is-pdf" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/pdf?${esc(qs)}` : "#"}" target="_blank" rel="noopener" ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>PDF İndir</a>
           <a class="hof-rep-out is-xlsx" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/xlsx?${esc(qs)}` : "#"}" download ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>Excel İndir</a>
+          ${(report.actions || []).map(action => `<button type="button" class="hof-button hof-button-small" data-rc-action="${esc(action.id)}">${esc(action.label)}</button>`).join("")}
         </span></header>
       ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button><span class="hof-rc-busy" data-rc-busy role="status" hidden>Güncelleniyor…</span></div>` : ""}
       <div class="hof-rc-result" data-rc-result>${table}</div>`;
@@ -417,6 +420,8 @@
       return HOF.toast("Önce cariyi seçin.", { type: "error" });
     }
     if (target.dataset.report) return select(target.dataset.report);
+    // 2.4.3 MM3: raporun iş düğmesi (sunucu katalogda yalnız yetkiliye verir) — KDV Özeti → KDV Mahsup Fişi Oluştur; pencere kapanınca rapor yenilenir.
+    if (target.dataset.rcAction === "vat-offset") return HOF.vatOffset?.({ onDone: () => run() });
     if (target.dataset.bankTab) return HOF.bank?.open ? HOF.bank.open({ tab: target.dataset.bankTab }) : null;
     if (target.dataset.preset) {
       Object.assign(center.params, { preset: target.dataset.preset }, presetRange(target.dataset.preset));

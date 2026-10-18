@@ -1,0 +1,32 @@
+{
+  "ad": "defter-243/e2e-senaryo-k8-230",
+  "komut": "npm run test:senaryo-k8-230",
+  "commit": "4f5436b8aceee74513ed87468e77f9f0ffdcc45f",
+  "dal": "defter-243",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T19:38:29.927Z",
+  "sure_sn": 12.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-18/defter-243/e2e-senaryo-k8-230.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243",
+  "ham_cikti_sha256": "6aa3611d323ac7526433040be22236f91de9b867dd0329601ebe1af556b3a5eb",
+  "ham_cikti_bayt": 2194
+}

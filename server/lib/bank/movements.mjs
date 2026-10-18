@@ -422,7 +422,8 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       form: event.src_table ? null : formOf(event, lines, fee),
       actions: {
         reverse: { allowed: !block, reason: block?.reason || "", code: block?.code || "" },
-        correct: { allowed: !block, reason: block?.reason || "", code: block?.code || "" },
+        // 2.4.3 MM3: Vergi Ödemesi düzeltilmez (Ters Kaydet + yeniden giriş; lib/bank/vouchers.mjs correct 409 tax-payment-correct).
+        correct: !block && event.type === "tax_payment" ? { allowed: false, reason: "Vergi Ödemesi düzeltilmez; Ters Kaydet ile geri alıp Vergi Ödemesi'nden doğru tutarla yeniden girin.", code: "tax-payment-correct" } : { allowed: !block, reason: block?.reason || "", code: block?.code || "" },
         // GG2 (düşük): modülden gelen hareketin açıklaması kendi penceresinde (Cari, Kasa, Taksit…); Banka'da değiştirilseydi iki ekranda iki
         // açıklama olurdu. Banka Fişi'nin açıklaması burada (kilitli dönemde de).
         info: event.src_table ? { allowed: false, reason: `${block?.reason || MODULE_REASONS[event.src_table] || ""} Açıklaması da orada değiştirilir.`.trim(), code: "bank-event-module" } : { allowed: true, reason: "" },

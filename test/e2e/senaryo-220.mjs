@@ -147,12 +147,15 @@ try {
   ok(mizan.foot[1]?.startsWith("TOPLAM") && money(mizan.foot[4]) === 100000 && money(mizan.foot[5]) === 15000 && money(mizan.foot[6]) === 85000 && mizan.foot[7] === "Borçlu", `Mizan TOPLAM: ${mizan.foot.filter(Boolean).join(" · ")}`);
   await shot("mizan-toplam");
 
-  console.log("\n■ Cari Listesi ve Bakiyeler: anlaşılan / ödenen / kalan kartları ve TOPLAM satırı");
+  console.log("\n■ Cari Listesi ve Bakiyeler: toplam borç / toplam alacak / müşteri alacakları / net kartları ve TOPLAM satırı");
   await openCenterReport("cari-listesi");
   let state = await centerState();
-  ok(money(state.cards["Toplam Borç (Anlaşılan)"]) === 100000, `Toplam Borç (Anlaşılan) ${state.cards["Toplam Borç (Anlaşılan)"]}`);
-  ok(money(state.cards["Toplam Alacak (Ödenen)"]) === 15000, `Toplam Alacak (Ödenen) ${state.cards["Toplam Alacak (Ödenen)"]}`);
-  ok(money(state.cards["Kalan (Borçlu)"]) === 85000, `Kalan (Borçlu) ${state.cards["Kalan (Borçlu)"]}`);
+  // MM9 (2.4.3, bilerek güncellendi): kart adları ticari işletmeye uygun — Toplam Borç, Toplam Alacak, Müşteri Alacakları, Tedarikçi Borçları, Net Bakiye.
+  const NET = "Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları)";
+  ok(money(state.cards["Toplam Borç"]) === 100000, `Toplam Borç ${state.cards["Toplam Borç"]}`);
+  ok(money(state.cards["Toplam Alacak"]) === 15000, `Toplam Alacak ${state.cards["Toplam Alacak"]}`);
+  ok(money(state.cards["Müşteri Alacakları (Borçlu Cariler)"]) === 85000, `Müşteri Alacakları ${state.cards["Müşteri Alacakları (Borçlu Cariler)"]}`);
+  ok(money(state.cards[NET]) === 85000, `${NET} ${state.cards[NET]}`);
   ok(state.footLabel === "TOPLAM" && money(state.foot["Borç"]) === 100000 && money(state.foot["Alacak"]) === 15000 && money(state.foot["Bakiye"]) === 85000 && state.foot["Durum"] === "Borçlu", `TOPLAM satırı: Borç ${state.foot["Borç"]} · Alacak ${state.foot["Alacak"]} · Bakiye ${state.foot["Bakiye"]} ${state.foot["Durum"]}`);
   const phone = await lastModal(box => {
     const cell = box.querySelector("[data-rc-main] tbody td.is-nowrap");

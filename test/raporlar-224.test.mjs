@@ -344,9 +344,10 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
         if (value !== null) assert.ok(text.includes(String(cell).trim()), `${tag} PDF: satırdaki "${cell}" PDF'te yok`);
       }
     }
-    if (data.footer) {
+    const totals = Array.isArray(data.footers) ? data.footers : data.footer ? [data.footer] : []; // 2.4.3 UX24: yönü karışık raporda birden çok TOPLAM satırı
+    if (totals.length) {
       assert.ok(text.includes("TOPLAM"), `${tag} PDF: TOPLAM satırı yok`);
-      for (const cell of data.footer) if (moneyOf(cell) !== null) assert.ok(text.includes(cell), `${tag} PDF: TOPLAM hücresi "${cell}" yok`);
+      for (const line of totals) for (const cell of line) if (moneyOf(cell) !== null) assert.ok(text.includes(cell), `${tag} PDF: TOPLAM hücresi "${cell}" yok`);
     }
     const xlsx = await get(id, q, "xlsx");
     assert.equal(xlsx.status, 200, `${tag} Excel: ${xlsx.status}`);
@@ -354,7 +355,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     const all = xlsxRows(xlsx.buffer);
     const sheet = all.slice(Math.max(0, all.findIndex(row => row.length > 1)));
     if (data.total > data.rows.length || !data.headers.length) return;
-    assert.equal(sheet.length, 1 + data.rows.length + (data.footer ? 1 : 0), `${tag} Excel: satır sayısı (başlık + ${data.rows.length} + TOPLAM)`);
+    assert.equal(sheet.length, 1 + data.rows.length + totals.length, `${tag} Excel: satır sayısı (başlık + ${data.rows.length} + TOPLAM)`);
     const cellValue = cell => moneyOf(cell) ?? numberOf(cell);
     const same = (excel, screen, where) => {
       const expected = cellValue(screen);
@@ -363,7 +364,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
       assert.equal(actual, expected, `${tag} Excel ${where}: ${excel} ≠ ekrandaki ${screen}`);
     };
     data.rows.forEach((row, r) => row.forEach((cell, c) => same(sheet[r + 1]?.[c], cell, `satır ${r + 1} kolon "${data.headers[c]}"`)));
-    if (data.footer) data.footer.forEach((cell, c) => same(sheet.at(-1)?.[c], cell, `TOPLAM kolon "${data.headers[c]}"`));
+    totals.forEach((line, k) => line.forEach((cell, c) => same(sheet[1 + data.rows.length + k]?.[c], cell, `TOPLAM ${k + 1} kolon "${data.headers[c]}"`)));
   }
 
   // ---------- Süzgeç seçenekleri (istemcideki listeyle aynı: client/assets/hof-report-center.js) ----------

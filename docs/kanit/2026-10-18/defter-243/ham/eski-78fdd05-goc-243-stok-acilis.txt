@@ -1,0 +1,48 @@
+TAP version 13
+# (node:2547) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: göç v29: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+    # Subtest: eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+    not ok 1 - eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+      ---
+      duration_ms: 2596.152212
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-wt-78fdd05/test/goc-243-stok-acilis.test.mjs:26:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The expression evaluated to a falsy value:
+        
+          assert.ok(LATEST_VERSION >= 29)
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-wt-78fdd05/test/goc-243-stok-acilis.test.mjs:63:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - göç v29: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+  ---
+  duration_ms: 2609.700935
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-wt-78fdd05/test/goc-243-stok-acilis.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3287.466379

@@ -1,0 +1,244 @@
+TAP version 13
+# (node:16360) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.3 MM3 — Vergi Ödemesi ve KDV Mahsup Fişi
+    # Subtest: başlangıç (kâhin): 391 = −3.400, 191 = 2.200, 360 = −2.360
+    ok 1 - başlangıç (kâhin): 391 = −3.400, 191 = 2.200, 360 = −2.360
+      ---
+      duration_ms: 9.915752
+      type: 'test'
+      ...
+    # Subtest: KDV Mahsup Fişi Eylül: ön izleme B 391 2.000 / A 191 1.200 / A 360 800; oluşturulunca Eylül sonu 391 = 191 = 0; aynı ay ikinci kez 409
+    not ok 2 - KDV Mahsup Fişi Eylül: ön izleme B 391 2.000 / A 191 1.200 / A 360 800; oluşturulunca Eylül sonu 391 = 191 = 0; aynı ay ikinci kez 409
+      ---
+      duration_ms: 12.353596
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön izleme: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:60:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Ekim: indirilecek fazla → B 391 400 / A 191 1.000 / B 190 600 (devreden); Kasım: devreden kullanılır → B 391 1.000 / A 190 600 / A 360 400
+    not ok 3 - Ekim: indirilecek fazla → B 391 400 / A 191 1.000 / B 190 600 (devreden); Kasım: devreden kullanılır → B 391 1.000 / A 190 600 / A 360 400
+      ---
+      duration_ms: 6.310652
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ekim ön izleme: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:76:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sıra: Aralık bitmeden mahsup yok; önceki aya yeni mahsup ve sondan olmayan geri alma 409
+    not ok 4 - sıra: Aralık bitmeden mahsup yok; önceki aya yeni mahsup ve sondan olmayan geri alma 409
+      ---
+      duration_ms: 6.3999
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Aralık: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:93:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Vergi Ödemesi bankadan (KDV 800) ve Kasa'dan (Muhtasar 2.000 + gecikme 50): 360 düşer, 689 = 50, 100 / 102 azalır; Banka Fişi tax_payment
+    not ok 5 - Vergi Ödemesi bankadan (KDV 800) ve Kasa'dan (Muhtasar 2.000 + gecikme 50): 360 düşer, 689 = 50, 100 / 102 azalır; Banka Fişi tax_payment
+      ---
+      duration_ms: 4.93007
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bankadan KDV: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:102:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 360 bakiyesini aşan ödeme uyarı verir (409 tax-exceeds); Yine de Kaydet (exceedOk) geçer; Ters Kaydet 360'ı geri getirir; Düzelt 409
+    not ok 6 - 360 bakiyesini aşan ödeme uyarı verir (409 tax-exceeds); Yine de Kaydet (exceedOk) geçer; Ters Kaydet 360'ı geri getirir; Düzelt 409
+      ---
+      duration_ms: 4.708815
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:121:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aşan KDV ödemesi: 404 {"ok":false,"error":"Endpoint bulunamadı."} Endpoint bulunamadı.
+        
+        404 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:123:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: plan §3.11 aynen: Diğer Gider satırına 360 yazılamaz (400 bank-gl-forbidden); Kasa'daki vergi satırı Kasa'dan düzeltilmez (409); silinir ve geri gelir
+    not ok 7 - plan §3.11 aynen: Diğer Gider satırına 360 yazılamaz (400 bank-gl-forbidden); Kasa'daki vergi satırı Kasa'dan düzeltilmez (409); silinir ve geri gelir
+      ---
+      duration_ms: 9.856407
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:135:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasa'dan düzeltme: 404 {"ok":false,"error":"Kasa hareketi bulunamadı. Başka biri silmiş olabilir."} Kasa hareketi bulunamadı. Başka biri silmiş olabilir.
+        
+        404 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:137:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: mahsuptan sonra o aya KDV'li kayıt gelince uyarı (liste ve KDV Özeti); geri al + yeniden yap düzeltir; geri alma ters kayıttır
+    not ok 8 - mahsuptan sonra o aya KDV'li kayıt gelince uyarı (liste ve KDV Özeti); geri al + yeniden yap düzeltir; geri alma ters kayıttır
+      ---
+      duration_ms: 33.978241
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        liste: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:154:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: dönem kilidi: Eylül kilitliyken Eylül mahsubu geri alınamaz ve Eylül'e yeni mahsup yazılamaz; kilit açılınca geri alınır
+    not ok 9 - dönem kilidi: Eylül kilitliyken Eylül mahsubu geri alınamaz ve Eylül'e yeni mahsup yazılamaz; kilit açılınca geri alınır
+      ---
+      duration_ms: 31.293313
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:174:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        liste: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:176:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: personel 403 (vergi, ödeme, mahsup); muhasebe yapar; Rapor Merkezi KDV Özeti'nde düğme yalnız yetkiliye
+    not ok 10 - yetki: personel 403 (vergi, ödeme, mahsup); muhasebe yapar; Rapor Merkezi KDV Özeti'nde düğme yalnız yetkiliye
+      ---
+      duration_ms: 122.770981
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:199:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        personel get /api/workspace/tax
+        
+        404 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:202:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..10
+not ok 1 - 2.4.3 MM3 — Vergi Ödemesi ve KDV Mahsup Fişi
+  ---
+  duration_ms: 1274.586914
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-vergi.test.mjs:25:1'
+  failureType: 'subtestsFailed'
+  error: '9 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 1
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1825.996152
