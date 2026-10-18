@@ -1809,9 +1809,17 @@
       return scheduleCalc(0);
     }
     if (act === "line-remove") {
-      form.lines.splice(Number(target.dataset.l), 1);
+      const removed = Number(target.dataset.l);
+      form.lines.splice(removed, 1);
       if (!form.lines.length) form.lines.push(blankLine());
       renderLines();
+      // Dar kontrol 2.4.3 (D1, GG4 komşusu): silinen kalemin × düğmesinden sonra odak BAŞKA kalemin ×'ine geçmez (ilk/orta kalemde aynı data-l'li
+      // düğme bir sonraki kalemindir; ikinci Enter onu da siliyordu). Güvenli hedef: aynı konumdaki (yoksa son) kalemin ilk yazılabilir alanı,
+      // o da yoksa "+ Kalem Ekle".
+      const position = Math.min(removed, form.lines.length - 1);
+      const row = body()?.querySelector(`[data-lines] tr[data-line="${position}"]`);
+      const safe = row?.querySelector("input:not([readonly]):not([disabled]), select:not([disabled])") || body()?.querySelector('[data-act="add-line"]') || row?.querySelector("input");
+      safe?.focus({ preventScroll: true });
       return scheduleCalc(0);
     }
     if (act === "line-more") {
