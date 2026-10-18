@@ -82,7 +82,9 @@
     ["all", "Tümü", () => true],
     ["debit", "Borç", line => line.debit > 0],
     ["credit", "Alacak", line => line.credit > 0],
-    ["cash", "Kasa", line => line.kind === "in" || line.kind === "out" || line.kind === "plan-in"],
+    // 2.4.3 (uzman UX19): süzgeç "Kasa" adını taşıyıp havale / POS tahsilatlarını da sayıyordu (Kasa = yalnız nakit kararıyla çelişen ad). Süzgeç
+    // carinin tahsilat ve ödemelerini (her yol; taksit tahsilatı ve iadesi dahil, açılış devri hariç) gösterir, adı da bunu söyler.
+    ["cash", "Tahsilat / Ödeme", line => line.kind === "in" || line.kind === "out" || ((line.kind === "plan-in" || line.kind === "plan-out") && !line.opening)],
     ["plan", "Taksit", line => line.origin === "plan"],
   ];
   const canManage = () => HOF.can("accounts.manage");
@@ -374,7 +376,7 @@
           ${account.taxOffice ? `<div><dt>Vergi Dairesi</dt><dd>${esc(account.taxOffice)}</dd></div>` : ""}
           ${account.iban ? `<div><dt>IBAN</dt><dd>${esc(String(account.iban).replace(/(.{4})/g, "$1 ").trim())}</dd></div>` : ""}
           ${Number(account.dueDays) ? `<div><dt>Vade Günü</dt><dd>${esc(String(account.dueDays))} gün</dd></div>` : ""}
-          ${HOF.invoices?.edocEnabled?.() && account.taxNo ? `<div><dt>e-Fatura</dt><dd>${Number(account.eInvoice) === 1 ? `Mükellef${account.eAlias ? `<small>${esc(account.eAlias)}</small>` : ""}` : "Mükellef değil (e-Arşiv)"}</dd></div>` : ""}
+          ${HOF.invoices?.edocEnabled?.() && account.taxNo ? `<div><dt>e-Fatura</dt><dd>${Number(account.eInvoice) === 1 ? `Mükellef${account.eAlias ? `<small class="hof-fact-sub">${esc(account.eAlias)}</small>` : ""}` : "Mükellef değil (e-Arşiv)"}</dd></div>` : ""}
           <div><dt>Tablodaki Kayıt</dt><dd>${caseCell}</dd></div>
           <div><dt>Kartı Açan</dt><dd>${esc(account.actorName || "—")} · ${esc(HOF.formatDate(account.createdAt))}</dd></div>
           ${account.fields.map(field => `<div><dt title="Excel’den gelen alan">${esc(field.label)}</dt><dd>${esc(field.value || "—")}</dd></div>`).join("")}
@@ -584,8 +586,8 @@
             // 2.4.3 (kullanıcı, 17.10.2026: "e-Arşiv değil mi, kafa karıştırıyor"): işareti yalnız Mükellef Sorgula koyar (wireTaxFields; kaldırmak serbest);
             // elle işaretlenen mükellef olmayan kişiye TEF numaralı e-Fatura kesilip gönderilemiyordu (TESTER denemesi).
             { name: "eInvoice", label: "e-Fatura mükellefi (Mükellef Sorgula belirler: işaretliyse e-Fatura, değilse e-Arşiv kesilir)", type: "checkbox", value: Number(a.eInvoice) === 1 },
-            { name: "eAlias", label: "e-Fatura posta kutusu etiketi", maxlength: 160, value: a.eAlias || "", placeholder: "urn:mail:defaultpk@…" },
-            { name: "eProfile", label: "e-Fatura senaryosu", type: "select", value: a.eProfile || "", options: [{ value: "", label: "Ayarlardaki Varsayılan" }, { value: "TEMELFATURA", label: "Temel Fatura" }, { value: "TICARIFATURA", label: "Ticari Fatura" }] },
+            { name: "eAlias", label: "e-Fatura Posta Kutusu Etiketi", maxlength: 160, value: a.eAlias || "", placeholder: "urn:mail:defaultpk@…" },
+            { name: "eProfile", label: "e-Fatura Senaryosu", type: "select", value: a.eProfile || "", options: [{ value: "", label: "Ayarlardaki Varsayılan" }, { value: "TEMELFATURA", label: "Temel Fatura" }, { value: "TICARIFATURA", label: "Ticari Fatura" }] },
           ]
         : []),
     ];
@@ -619,7 +621,12 @@
     const flag = dialog.querySelector('input[name="eInvoice"]');
     // Gözden geçirme 2.4.3 (B6): işareti KALDIRMAK serbest (EDM'ye ulaşılamazken yanlış işaret kilitli kalmasın; mükellefse gönderimde sorgu yakalar).
     flag?.addEventListener("click", event => {
-      if (!flag.checked) return;
+      if (!flag.checked) {
+        // 2.4.3 (uzman UX5 / KÖ4): işareti elle kaldırmak serbest (B6) ama artık sessiz değil — sonucu ve doğru yolu söyler. Posta kutusu etiketi
+        // silinmez (yeniden mükellef çıkarsa aynı etiket kullanılır).
+        HOF.toast("e-Fatura mükellefi işareti kaldırıldı: kaydedince bu cariye e-Arşiv kesilir. Cari gerçekten mükellefse gönderimde yakalanır; emin değilseniz Mükellef Sorgula'ya basın.", { type: "info", timeout: 9000 });
+        return;
+      }
       event.preventDefault();
       HOF.toast("e-Fatura mükellefiyeti elle işaretlenmez: VKN / TCKN alanının altındaki Mükellef Sorgula'ya basın.", { type: "info", timeout: 6000 });
     });
@@ -630,6 +637,26 @@
       if (!HOF.invoices?.autoCheckUser?.() || ![10, 11].includes(digits.length) || digits === lastChecked || button.disabled) return;
       lastChecked = digits;
       button.click();
+    });
+    // 2.4.3 (uzman UX13): sorgunun döndüğü GİB unvanı yazılan addan farklıysa sessiz geçilmez; öneri olarak gösterilir, kullanıcı tek tıkla
+    // "Unvanı Bununla Değiştir" der ya da yazdığını bırakır (yaygın programlar sorgu unvanını önerir; e-Fatura alıcı unvanıyla gider).
+    const nameInput = dialog.querySelector('input[name="name"]');
+    const titleOffer = HOF.el("p", { class: "hof-case-suggest", "data-gib-title": "", hidden: "" });
+    taxNo.closest(".hof-field").append(titleOffer);
+    const offerTitle = title => {
+      const gib = String(title || "").trim();
+      const differs = Boolean(gib && nameInput && HOF.normalize(gib) !== HOF.normalize(nameInput.value));
+      titleOffer.hidden = !differs;
+      titleOffer.innerHTML = differs ? `GİB'deki unvan: <b>${esc(gib)}</b> (yazdığınız: “${esc(nameInput.value.trim() || "—")}”). <button type="button" class="hof-link" data-gib-title-use>Unvanı Bununla Değiştir</button>` : "";
+      titleOffer.dataset.gibTitle = differs ? gib : "";
+    };
+    titleOffer.addEventListener("click", event => {
+      if (!event.target.closest("[data-gib-title-use]") || !nameInput) return;
+      nameInput.value = titleOffer.dataset.gibTitle;
+      nameInput.dispatchEvent(new Event("input", { bubbles: true }));
+      titleOffer.hidden = true;
+      titleOffer.innerHTML = "";
+      nameInput.focus();
     });
     button.addEventListener("click", async () => {
       button.disabled = true;
@@ -661,6 +688,7 @@
           picked = Boolean(alias);
         }
         if (picked) aliasField.value = alias;
+        offerTitle(result.title);
         // Unvan noktayla bitiyorsa (A.Ş.) ikinci nokta konmaz.
         const who = result.title ? `: ${result.title}${/[.!?]$/.test(result.title.trim()) ? "" : "."}` : ".";
         if (!result.registered) HOF.toast("e-Fatura mükellefi değil; bu cariye e-Arşiv fatura kesilir.", { type: "success", timeout: 7000 });
@@ -672,6 +700,35 @@
         button.disabled = false;
       }
     });
+  }
+  // 2.4.3 (uzman UX1): eşzamanlı düzenlemede (409 account-stale) güncel cari forma basılır: kullanıcının DEĞİŞTİRDİĞİ alan (dokunulmuş ve formun
+  // açıldığı değerden farklı) korunur, öbürleri güncel değeri alır; "kayıtlı değer" de güncellenir (kapatırken soru doğru kalır).
+  function refreshUntouched(dialog, fresh) {
+    if (!dialog || !fresh) return;
+    for (const node of dialog.querySelectorAll("input[name], textarea[name], select[name]")) {
+      if (node.type === "hidden" || !(node.name in fresh)) continue;
+      const raw = fresh[node.name];
+      if (node.type === "checkbox") {
+        const next = raw === true || Number(raw) === 1;
+        const edited = HOF.isTouched?.(node) && node.checked !== node.defaultChecked;
+        node.defaultChecked = next;
+        if (!edited) node.checked = next;
+        continue;
+      }
+      const next = node.name === "dueDays" ? (Number(raw) ? String(raw) : "") : String(raw ?? "");
+      if (node.tagName === "SELECT") {
+        const saved = ([...node.options].find(option => option.defaultSelected) || node.options[0])?.value ?? "";
+        const edited = HOF.isTouched?.(node) && node.value !== saved;
+        if (![...node.options].some(option => option.value === next)) continue;
+        for (const option of node.options) option.defaultSelected = option.value === next;
+        if (!edited) node.value = next;
+        continue;
+      }
+      const edited = HOF.isTouched?.(node) && node.value !== node.defaultValue;
+      const typed = node.value;
+      node.defaultValue = next;
+      node.value = edited ? typed : next;
+    }
   }
   // options.onSaved(result): başka ekrandan (ör. fatura formu "+ Yeni Cari") açıldığında kayıt sonrası Cari penceresi
   // açılmaz; sonuç çağırana verilir.
@@ -791,7 +848,7 @@
           if (nameInput.value.trim()) check();
         }
       },
-      onSubmit: async data => {
+      onSubmit: async (data, modalApi) => {
         if (!account) {
           // Kaydederken: aynı ad + aynı telefon varsa (ya da ikisinde de telefon yoksa) açıkça sorulur.
           const same = await samePeople(data.name);
@@ -813,7 +870,20 @@
         }
         const payload = { ...taxPayload(data), name: data.name, type: data.type, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, email: data.email, address: data.address, note: data.note, fields: fieldsBox ? fieldsBox.read() : [], caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(office().groupBody ? office().groupBody(data) : {}) };
         if (!account) Object.assign(payload, { openingBalance: data.openingBalance, openingSide: data.openingSide || "auto" });
-        const result = account ? await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/accounts", { method: "POST", body: payload });
+        let result;
+        try {
+          // 2.4.3 (uzman UX1): düzenlemede formun açıldığı andaki sürüm (updatedAt) gider; arada başka biri kaydettiyse sunucu 409 account-stale
+          // döner (çek ve tablo hücresindeki kalıp). Önceden ikinci kaydeden, ilkinin değişikliğini (ör. telefon) sessizce siliyordu.
+          result = account ? await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`, { method: "PUT", body: { ...payload, updatedAt: account.updatedAt || "" } }) : await HOF.api("/api/workspace/accounts", { method: "POST", body: payload });
+        } catch (error) {
+          if (!account || error?.data?.code !== "account-stale") throw error;
+          // Güncel hâl yüklenir: kullanıcının değiştirdiği alanlar formda kalır, değiştirmedikleri güncel değeri alır; sonraki Kaydet yeni sürümle gider.
+          const fresh = await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`);
+          refreshUntouched(modalApi.dialog, fresh);
+          account = fresh;
+          if (view.id === fresh.id) applyAccount(fresh);
+          throw new Error("Bu cari siz düzenlerken başka biri tarafından değiştirildi; güncel hâli yüklendi. Değiştirdiğiniz alanlar formda duruyor; kontrol edip yeniden kaydedin.");
+        }
         HOF.toast(account ? "Cari güncellendi." : "Cari açıldı.", { type: "success" });
         if (typeof options.onSaved === "function") {
           HOF.emit("accounts-changed", { accountId: result.id });
@@ -1038,7 +1108,7 @@
       ],
       submitLabel: "Değersiz Alacak Yaz",
       onSubmit: async (data, dialog) => {
-        const go = await HOF.confirm({ title: "Değersiz Alacak Yaz", message: `${String(data.amount).trim()} ₺ değersiz alacak yazılacak: ${account.name} carisinin bakiyesi o tutar kadar kapanır, tutar gider olarak defterde kalır. Kayıt Silinenler'den geri yüklenebilir. Devam edilsin mi?`, confirmLabel: "Değersiz Alacak Yaz", danger: true });
+        const go = await HOF.confirm({ title: "Değersiz Alacak Yaz", message: `${String(data.amount).trim()} ₺ değersiz alacak yazılacak: ${account.name} carisinin bakiyesi o tutar kadar kapanır, tutar gider olarak defterde kalır. Kayıt sonra silinirse ${HOF.trashHint()} Devam edilsin mi?`, confirmLabel: "Değersiz Alacak Yaz", danger: true });
         if (!go) {
           const error = dialog?.dialog?.querySelector(".hof-form-error");
           if (error) error.textContent = "Kaydedilmedi: değersiz alacak yazımı onaylanmadı.";
@@ -1070,12 +1140,12 @@
   }
   async function doubtfulDelete(account, { recordId, provisionId = "", entryId = "" }) {
     const what = provisionId ? "karşılık" : entryId ? "değersiz alacak satırı" : "şüpheli alacak kaydı";
-    const ok = await HOF.confirm({ title: provisionId ? "Karşılığı Sil" : entryId ? "Değersiz Alacak Satırını Sil" : "Şüpheli Alacak Kaydını Sil", message: `Bu ${what} silinecek; defter kaydı ters kayıtla düşer, Yönetim → Silinenler'den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: provisionId ? "Karşılığı Sil" : entryId ? "Değersiz Alacak Satırını Sil" : "Şüpheli Alacak Kaydını Sil", message: `Bu ${what} silinecek; defter kaydı ters kayıtla düşer. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(doubtfulUrl(account.id, `/${encodeURIComponent(recordId)}${provisionId ? `/provisions/${encodeURIComponent(provisionId)}` : entryId ? `/write-offs/${encodeURIComponent(entryId)}` : ""}`), { method: "DELETE" });
       await doubtfulRefresh(account.id);
-      HOF.toast(`${what[0].toLocaleUpperCase("tr-TR")}${what.slice(1)} silindi; Silinenler'den geri yüklenebilir.`, { type: "success" });
+      HOF.toast(`${what[0].toLocaleUpperCase("tr-TR")}${what.slice(1)} silindi. ${HOF.trashHint()}`, { type: "success" });
     } catch (error) {
       HOF.toastError(error);
     }
@@ -1141,7 +1211,7 @@
     });
   }
   async function deleteEntry(account, entry) {
-    const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${money(entry.amount)} tutarındaki ${ENTRY_LABEL[entry.kind].toLocaleLowerCase("tr-TR")} silinecek; bakiye${entry.kind === "in" || entry.kind === "out" ? " ve Kasa" : ""} yeniden hesaplanır. Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${money(entry.amount)} tutarındaki ${ENTRY_LABEL[entry.kind].toLocaleLowerCase("tr-TR")} silinecek; bakiye${entry.kind === "in" || entry.kind === "out" ? " ve Kasa" : ""} yeniden hesaplanır. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       // Banka hesabına bağlı tahsilat silinince hesabın bakiyesi düşer: eksi bakiye sorusu (K7) "Yine de Sil" ile adrese eklenir.
@@ -1164,7 +1234,7 @@
   async function deleteAccount(account) {
     // 2.4.3 (keşif A5): silinemeyen caride düğme pasiftir; yine de basılırsa (eski görünüm) onay sorulmadan nedeni söylenir.
     if (account.deleteBlock) return HOF.toast(account.deleteBlock, { type: "error" });
-    const ok = await HOF.confirm({ title: "Cariyi Sil", message: `“${account.name}” silinecek. Hareketleri Kasa’dan düşer; Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Cariyi Sil", message: `“${account.name}” silinecek. Hareketleri Kasa’dan düşer. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`, { method: "DELETE" });

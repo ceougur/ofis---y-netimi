@@ -500,6 +500,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const previous = accountRow(params.id);
     const body = await readJson(req);
     const result = store.tx(() => {
+      // 2.4.3 (uzman UX1): iyimser eşzamanlılık (çek: routes/cheques.mjs "cheque-stale"; tablo hücresi: workspace.mjs). Form, açıldığı andaki
+      // sürümü (updatedAt) gönderir; arada başka biri (ya da gönderimde mükellefiyeti düzelten sunucu) kaydettiyse 409 — ikinci kaydeden ilkinin
+      // değişikliğini sessizce silmez. Sürüm göndermeyen çağrılar (Pasife Al / Aktif Et, eski istemci) eskisi gibi yazar.
+      const current = store.get("SELECT updated_at AS updatedAt FROM accounts WHERE id = ?", previous.id);
+      if (body.updatedAt && current && body.updatedAt !== current.updatedAt) throw new HttpError(409, "Bu cari siz düzenlerken başka biri tarafından değiştirildi.", { code: "account-stale", updatedAt: current.updatedAt });
       const wantedRef = limited(body.refNo, 30, "Cari No");
       if (wantedRef && wantedRef !== previous.refNo && store.get("SELECT 1 AS found FROM accounts WHERE deleted_at IS NULL AND ref_no = ? AND id <> ?", wantedRef, previous.id)) throw new HttpError(409, `${wantedRef} numarası başka bir caride kullanılıyor.`);
       // Görünen grup adları birleştirilmez: grup boşaltılınca eski adla yeniden açılmasın.
@@ -1353,9 +1358,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // e-Faturanın satıcısı için cari: önce VKN/TCKN ile aranır (kişi bir kez girilir), yoksa vergi bilgileriyle açılır.
   const taxIdentity = {
     findByTaxNo: taxNo => (taxNo ? store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND tax_no = ? ORDER BY created_at LIMIT 1", String(taxNo).replace(/\s+/g, ""))?.id || "" : ""),
-    setEInvoice(user, accountId, { registered, alias = "", title = "" }) {
+    setEInvoice(user, accountId, { registered, alias = "", aliases = null, title = "" }) {
       const row = accountRow(accountId);
-      store.run("UPDATE accounts SET e_invoice = ?, e_alias = ?, updated_by = ?, updated_at = ? WHERE id = ?", registered ? 1 : 0, registered ? String(alias).slice(0, 160) : "", user.id, now(), row.id);
+      // 2.4.3 (uzman UX5): mükellefin birden çok posta kutusu varken (alias boş gelir) kullanıcının daha önce Mükellef Sorgula ile SEÇTİĞİ etiket
+      // silinmez; liste verilmişse etiket listede olmalıdır (başka mükellefin etiketi kalmaz). Önceden işaret geri konurken etiket boşalıyordu.
+      const keep = registered && !alias && row.eAlias && (!Array.isArray(aliases) || aliases.includes(row.eAlias)) ? row.eAlias : "";
+      store.run("UPDATE accounts SET e_invoice = ?, e_alias = ?, updated_by = ?, updated_at = ? WHERE id = ?", registered ? 1 : 0, registered ? String(alias || keep).slice(0, 160) : "", user.id, now(), row.id);
       audit(user, "account.einvoice.checked", row.id, { registered, alias, title });
       touched(user, row);
       return accountRow(row.id);
