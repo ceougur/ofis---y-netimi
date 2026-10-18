@@ -195,6 +195,10 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     konmaz, "_" ile). Windows'ta git checkout düşer, CI'nin Windows işleri hiç başlamaz. Denetim test/platform-tasinabilirlik.test.mjs (5. kalıp).
     (17.10: taban kanıtı "ilk-test:banka-210-….txt" → CI #825 221482c Windows 22+24 kırmızı; Linux'ta görünmedi.)
 
+34. TESTİ GEÇİREN YARDIMCI ÜRÜN DAVRANIŞINI GİZLEMEZ. Soru/onay penceresini kendiliğinden yanıtlayan test yardımcısı (ör. esc-kapat.mjs "Kaydetmeden
+    Kapat") her yanıtı nedeniyle günlüğe yazar ve beklenen "soru var/yok" bildirilir; yanıtlanan her soru meşru mu yanlış mı sınıflanır. (18.10: 2.4.3
+    çekirdeğinde escClose 46 e2e'de soruyu sessizce geçiyordu; kaydedilmiş/temiz formda çıkan yanlış soru yeşil testlerin arkasında kalırdı.)
+
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
@@ -390,3 +394,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Dal h9-243 127ab3c (test yetki-243-muhasebe-finans eski 0/2 → 2/2; finans kapısını sınayan 4 test kişiden kaldırarak sınamayı sürdürür).
 - KARAR (kullanıcı, 18.10.2026 ~08:00 UTC: "evet kopyala düğmesi ekle"): 2.4.3 çekirdeğinde bildirim tıklamayı geçirdiği için metni seçilemiyor → hata
   ve uyarı bildirimlerine "Kopyala" düğmesi (tam metin panoya; güvenli olmayan http bağlamında yedek yol). Düzeltme ajanına (duzeltme-gg243) eklendi.
+- İSTEK (kullanıcı, 18.10.2026 ~08:25 UTC, ikinci kez: "anayasamızı ve derslerimizi gözden geçir yeniden") → SONUÇ: (1) ders 26 yine ihlal — iş listesi
+  (docs/2.4.3-IS-LISTESI.md) BELGE_YOLLARI dışında, her güncellemesi tam CI başlattı (f6c032a, 8811afb, 5f50a2e) → önlem: iş listesi kodla birlikte
+  gönderilir; kalıcı çözüm olarak docs/*-IS-LISTESI.md BELGE_YOLLARI'na eklenecek (kanit.mjs + ci.yml + kanit-araci testi; sonraki kod push'unda).
+  (2) ders 34 eklendi: esc-kapat.mjs soruyu sessizce geçiyordu (yanlış soruları gizler) → düzeltme ajanına günlük + sınıflama + beklenti verildi.
+  (3) KANIT 4: yeni e2e'lerin eski kodda kırmızısı yalnız ajan raporundan → form-izolasyon-243 ana oturumca eski/yeni kodda yeniden koşuluyor.
+  (4) ders 9: çekirdek 134 form çağrısının 115'i ekrandan ayrıca açılmadı (ortak çekirdekle korunuyor) → DENENMEYEN'e adıyla yazılacak; keşif
+  yeniden koşusu bu formlardan Excel eşleme, geri yükleme, toplu işlem, POS, çek işlemlerini kapsayacak. (5) ders 14/18: Geri tuşu, F5 sorusu, Navigation
+  API, Kopyala (http) gerçek Windows + Edge uygulama penceresinde denenmedi → teslimde kısa elle kabul listesi (KANIT 5) verilecek.
+  (6) çekirdeğin ana dal CI'si (37b64e8) kırmızı (form-izolasyon E1 ön koşulu CI yerleşiminde kurulamadı) — birleşim (birlesim2-243) bu düzelip CI
+  yeşil olmadan ana dala alınmaz.
