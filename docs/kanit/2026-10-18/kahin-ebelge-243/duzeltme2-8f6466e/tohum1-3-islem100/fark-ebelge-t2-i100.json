@@ -1,0 +1,178 @@
+{
+ "ad": "ebelge-t2-i100",
+ "tohum": 2,
+ "islem": 100,
+ "bugun": "2026-06-17",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 1,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 2,
+   "aday": 2,
+   "secilen": [
+    "B2: Kaydet ve Gönder reddedildi (alici-efatura)"
+   ]
+  },
+  {
+   "adim": 6,
+   "aday": 3,
+   "secilen": [
+    "B1: tur sırasında silindi",
+    "B1: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 8,
+   "aday": 2,
+   "secilen": [
+    "B1: gönderilemedi, liste dışında kaldı"
+   ]
+  },
+  {
+   "adim": 17,
+   "aday": 2,
+   "secilen": [
+    "B4: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 18,
+   "aday": 2,
+   "secilen": [
+    "B6: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 28,
+   "aday": 2,
+   "secilen": [
+    "B3: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 37,
+   "aday": 2,
+   "secilen": [
+    "B1: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 40,
+   "aday": 3,
+   "secilen": [
+    "B11: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 42,
+   "aday": 2,
+   "secilen": [
+    "B12: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 49,
+   "aday": 2,
+   "secilen": [
+    "B1: gönderilemedi, liste dışında kaldı"
+   ]
+  },
+  {
+   "adim": 62,
+   "aday": 2,
+   "secilen": [
+    "B23: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 65,
+   "aday": 2,
+   "secilen": [
+    "B24: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 68,
+   "aday": 2,
+   "secilen": [
+    "B26: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 75,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 78,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 79,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 80,
+   "aday": 2,
+   "secilen": [
+    "B13: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 82,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 83,
+   "aday": 2,
+   "secilen": [
+    "B33: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 84,
+   "aday": 2,
+   "secilen": [
+    "B34: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 86,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 92,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 98,
+   "aday": 2,
+   "secilen": [
+    "B38: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 250,
+  "withdrawn": 105,
+  "sent": 925,
+  "none": 138,
+  "error": 23,
+  "processing": 88
+ },
+ "kucultulmus": null,
+ "sure": 9.4
+}
