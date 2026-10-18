@@ -1,0 +1,66 @@
+
+> destekofis@2.4.3 test:senaryo-iz5-230
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz5-230.mjs
+
+
+■ Kurulum: yönetici girer; 5 kayıtlık Rehber.xlsx; personel hesabı açılır
+  ✓ sayfa yüklendi
+  ✓ personel hesabı açıldı
+
+■ 5.5 Hızlı Arama: kutu menünün üstünde; Ctrl+K odaklar; “alış f” → Enter → Alınan (Alış Faturaları) sekmesi
+  ✓ Ara kutusu Operasyon Merkezi kartının hemen üstünde, kenar çubuğunda
+  ✓ “alış f” → Alış Faturaları sekmesi (Alış Faturaları (Alınan) | Yeni Alış Faturası | Alış Faturaları | Cari Bazında Satış ve Alış)
+  ✓ “alış f” → Yeni Alış Faturası işlemi
+  ✓ “alış f” → Alış Faturaları raporu (Rapor grubu)
+  ✓ her sonuç “alış” ile başlayan sözcük taşır (sözcük başı eşleşme)
+  ✓ ilk sonuç Sayfa grubunda (Sayfa: Alış Faturaları (Alınan))
+  ✓ Enter → Fatura penceresi “Alınan” (Alış Faturaları) sekmesinde (Alınan)
+  ✓ açıldıktan sonra kutu temizlendi
+
+■ 5.5: “cari h” → Tüm Cari Hareketleri raporu; “çek” → çekle ilgili her şey; ok tuşu + Enter; Esc kapatır
+  ✓ “cari h” → Tüm Cari Hareketleri (Rapor) (Cari ve Banka Hareketleri | Tüm Cari Hareketleri)
+  ✓ “çek” → 9 sonuç
+  ✓ her sonuçta “çek” ile başlayan sözcük var
+  ✓ Çek / Senet sayfası listede
+  ✓ çek raporları listede
+  ✓ Türkçe harf duyarsız: “CEK” de Çek / Senet'i bulur
+  ✓ ArrowDown → ikinci sonuç etkin (Alınan Çek / Senet)
+  ✓ Esc listeyi kapatır ve kutuyu temizler
+  ✓ eşleşme yoksa “sonuç yok” yazar
+  ✓ tablodaki kişi adı (Mehmet) Hızlı Arama'ya girmez
+
+■ 5.5 Personel: rapor yetkisi yok → Rapor grubu gelmez; fatura yetkisi yok → Yeni Alış Faturası gelmez
+  ✓ personelde “cari h” Rapor grubu yok (boş)
+  ✓ personelde fatura sonuçları yok (boş)
+  ✓ personel Cari sayfasını bulur (yetkisi var)
+
+■ 5.6 İşlem geçmişi: 3 not + 1 telefon → 3 satır + Daha Fazla Göster (1) → tamamı
+  ✓ 4 işlemden yalnız 3 satır görünür (3)
+  ✓ düğme: “Daha Fazla Göster (1)”
+  ✓ görünen üçü en yeniler; en eski gizli
+  ✓ Daha Fazla Göster → 4 satır, düğme kalktı
+  ✓ her not satırında Düzelt (✎)
+  ✓ telefon satırında Sil (×)
+
+■ 5.6: notu düzelt (✎) → metin değişir, “düzeltildi” yazar; sil (×) → onay → listeden düşer
+  ✓ düzeltme penceresi mevcut metinle açılır
+  ✓ pencere başlığı Not Düzelt
+  ✓ düzeltilen not: “✎Birinci görüşme yapıldı; evrak istendiOfis yöneticisi · 18.10.2026 07:04 · düzeltildi (Of”
+  ✓ sunucuda not metni ve düzeltme izi (veri tabanından okundu)
+  ✓ düzeltmeden sonra açık liste korunur (Daha Fazla tercihi kart açıkken kalır)
+  ✓ silme onayı: Not Sil + Silinenler'den geri yüklenebilir
+  ✓ silinen not listeden düştü (3 satır)
+  ✓ sunucuda 2 not kaldı
+
+■ 5.6: Yönetim → Silinenler → Not satırı → Geri Yükle → kartta yeniden görünür
+  ✓ Silinenler'de Not satırı: 18.10.2026 07:04Ofis yöneticisiNotBirinci görüşme yapıldı; evrak istendiKayıt: 22821911000Kaydın işl
+  ✓ İşlem Geçmişi süzgeci yalnız not satırını gösterir
+  ✓ kart yeniden açılınca tercih sıfır: 3 satır + “Daha Fazla Göster (1)”
+  ✓ geri yüklenen not kartta yeniden görünür
+
+■ 5.6: görev satırında Kayda Git → Görevler penceresi
+  ✓ görev satırında Kayda Git var, Düzelt/Sil yok
+  ✓ Kayda Git → “Görevler” penceresi
+  ✓ sayfa hatası yok
+
+SONUÇ: 44 geçti, 0 kaldı
