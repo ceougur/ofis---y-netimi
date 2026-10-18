@@ -3,48 +3,21 @@
  "tohum": 1,
  "islem": 14,
  "bugun": "2026-12-27",
- "farkSayisi": 4,
- "ihlalSayisi": 0,
- "safModelSonFark": 4,
- "farklar": [
+ "farkSayisi": 0,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [
   {
-   "belge": "B18",
-   "alan": "numara",
-   "model": "TEF2026000000002",
-   "program": "",
    "adim": 14,
    "islem": "esz_tumunu_gonder",
-   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"
-  },
-  {
+   "kod": "I19",
+   "ileti": "B18: tur sonucu ok:false ama kod/ileti boş (kod '')",
+   "yineleme": 1,
    "belge": "B18",
-   "alan": "edm",
-   "model": true,
-   "program": false,
-   "adim": 14,
-   "islem": "esz_tumunu_gonder",
-   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"
-  },
-  {
-   "belge": "B18",
-   "alan": "gonderildi",
-   "model": true,
-   "program": false,
-   "adim": 14,
-   "islem": "esz_tumunu_gonder",
-   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"
-  },
-  {
-   "belge": "B18",
-   "alan": "bekleyen",
-   "model": false,
-   "program": true,
-   "adim": 14,
-   "islem": "esz_tumunu_gonder",
-   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"
+   "sinif": "BEKLENEN-I19 (bekletilen/gönderilmeyen belgenin tur sonucu kodsuz ya da iletisiz)"
   }
  ],
- "ihlaller": [],
  "catalSecimleri": [
   {
    "adim": 12,

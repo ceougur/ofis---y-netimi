@@ -1,16 +1,16 @@
 {
   "ad": "kahin-ebelge-senaryolar",
   "komut": "npm run test:kahin-ebelge -- --senaryo test/bagimsiz/ebelge/senaryolar --cikti docs/kanit/2026-10-18/kahin-ebelge-243/cikti/senaryolar",
-  "commit": "4986b6f733b1051927182c900b37d7b12691bd2c",
+  "commit": "f62109c24eda8c96654a4c4201be5b28e5f023eb",
   "dal": "kahin-243",
-  "kirli": 0,
-  "izlenmeyen": 1,
+  "kirli": 31,
+  "izlenmeyen": 0,
   "platform": "linux 6.18.44-fc-v139 x64",
   "node": "v22.22.0",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-10-18T13:40:14.690Z",
-  "sure_sn": 15.7,
+  "basladi": "2026-10-18T14:10:33.835Z",
+  "sure_sn": 16.5,
   "cikis_kodu": 1,
   "sinyal": null,
   "zaman_asimi": false,
@@ -27,6 +27,6 @@
   "basarisiz_testler": [],
   "ham_cikti": "docs/kanit/2026-10-18/kahin-ebelge-243/2026-10-18/kahin-ebelge-senaryolar.log",
   "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kahin-243",
-  "ham_cikti_sha256": "94d5631d6061799b5573bdd7304aa8374f3446f999d3854622d3046f05425345",
-  "ham_cikti_bayt": 2592
+  "ham_cikti_sha256": "d648d6fe15d645091dd8979926c311f5a341c7b67f4795c8d5016ee33489b53f",
+  "ham_cikti_bayt": 2464
 }

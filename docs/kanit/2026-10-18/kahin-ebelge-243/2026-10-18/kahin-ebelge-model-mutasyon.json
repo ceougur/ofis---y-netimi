@@ -1,23 +1,23 @@
 {
   "ad": "kahin-ebelge-model-mutasyon",
   "komut": "python3 test/bagimsiz/ebelge/mutasyon.py",
-  "commit": "4986b6f733b1051927182c900b37d7b12691bd2c",
+  "commit": "f62109c24eda8c96654a4c4201be5b28e5f023eb",
   "dal": "kahin-243",
-  "kirli": 0,
-  "izlenmeyen": 1,
+  "kirli": 29,
+  "izlenmeyen": 0,
   "platform": "linux 6.18.44-fc-v139 x64",
   "node": "v22.22.0",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-10-18T13:39:19.417Z",
-  "sure_sn": 54.7,
+  "basladi": "2026-10-18T14:09:36.305Z",
+  "sure_sn": 57.4,
   "cikis_kodu": 0,
   "sinyal": null,
   "zaman_asimi": false,
   "ozet": {
     "bicim": "node:test",
-    "toplam": 20,
-    "gecen": 20,
+    "toplam": 21,
+    "gecen": 21,
     "basarisiz": 0,
     "iptal": 0,
     "atlanan": 0
@@ -27,6 +27,6 @@
   "basarisiz_testler": [],
   "ham_cikti": "docs/kanit/2026-10-18/kahin-ebelge-243/2026-10-18/kahin-ebelge-model-mutasyon.log",
   "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/kahin-243",
-  "ham_cikti_sha256": "d7cd403cccecbe9dcc29c36edd1bd0f1b524dfc820fc11839cb09c0d20b124c7",
-  "ham_cikti_bayt": 4071
+  "ham_cikti_sha256": "67ac27f94a45fcb76a70633487199649694864db7f209e457cb7ea01d7d65cec",
+  "ham_cikti_bayt": 4241
 }

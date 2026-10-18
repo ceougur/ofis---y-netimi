@@ -4,7 +4,7 @@
  "islem": 4,
  "bugun": "2026-12-27",
  "farkSayisi": 4,
- "ihlalSayisi": 0,
+ "ihlalSayisi": 1,
  "safModelSonFark": 4,
  "farklar": [
   {
@@ -44,7 +44,17 @@
    "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
   }
  ],
- "ihlaller": [],
+ "ihlaller": [
+  {
+   "adim": 4,
+   "islem": "tumunu_gonder",
+   "kod": "I19",
+   "ileti": "B10: tur sonucu ok:false ama kod/ileti boş (kod '')",
+   "yineleme": 0,
+   "belge": "B10",
+   "sinif": "BEKLENEN-I19 (bekletilen/gönderilmeyen belgenin tur sonucu kodsuz ya da iletisiz)"
+  }
+ ],
  "catalSecimleri": [
   {
    "adim": 2,
@@ -56,5 +66,5 @@
   "waiting": 5
  },
  "kucultulmus": null,
- "sure": 1.5
+ "sure": 1.9
 }
