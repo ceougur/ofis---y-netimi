@@ -425,7 +425,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       ...(uniform ? { footerUniform: groupHeader } : {}),
     };
   }
-  const BANK_FLOW_SOURCE = Object.freeze({ pos: "POS", posBlocked: K10_LABELS.posBlocked, posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", plan: "Planlı Banka İşlemi", transfer: "Planlanan Transfer", cardDue: "Kart Borcu (Son Ödeme Günü)" });
+  const BANK_FLOW_SOURCE = Object.freeze({ pos: "POS", posBlocked: K10_LABELS.posBlocked, posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", givenCheque: "Verilen Çek ve Senet", plan: "Planlı Banka İşlemi", transfer: "Planlanan Transfer", cardDue: "Kart Borcu (Son Ödeme Günü)" });
   // Rapor Merkezi grup sırası (2.3.0 İz 5.4; kullanıcı kararı 15.10.2026): tek sıralama listesi — tanım sırasından bağımsız, kararlı sıralama
   // (grubun içindeki rapor sırası tanım sırasıdır). Listede olmayan grup sona gider.
   const GROUP_ORDER = Object.freeze(["Cari", "Kasa", "Stok", "Fatura", "Çek / Senet", "Taksit", "Banka", "Ana Defter", "Kayıtlar", "Ofis"]);
@@ -1542,7 +1542,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       title: "Banka Nakit Akış Raporu",
       // 2.4.3 (C15): ileriye dönük rapor — ekranda geçmiş dönem düğmeleri (Geçen Ay, Son 30 Gün) yerine ileriye dönük dönemler.
       presets: "future",
-      description: "Gerçek Banka'nın (hesaba atanmış 102) önümüzdeki günlerdeki beklenen seyri: bugünkü Gerçek Banka ile başlar; bankaya geçecek POS tutarları valör gününde (Blokeli POS ve Komisyon Tahsili ayrı), tahsildeki çek ve senetler beklenen gün, planlı banka işlemleri (masraf, faiz, diğer, kart borcu, kredi) planlı tarihinde, kart borcu son ödeme gününde. Planlanan bankalar arası transferler ayrı kolondur: iki hesap arasında yer değiştirir, toplamı değiştirmez. Hesabı Atanmamış Eski Hareketler ve bekleyen POS başlangıca girmez; tarihi geçmiş bekleyen kalemler projeksiyona girmez, özette sayılır.",
+      description: "Gerçek Banka'nın (hesaba atanmış 102) önümüzdeki günlerdeki beklenen seyri: bugünkü Gerçek Banka ile başlar; bankaya geçecek POS tutarları valör gününde (Blokeli POS ve Komisyon Tahsili ayrı), tahsildeki çek ve senetler beklenen gün, Çek Hesabı seçili verilen çek ve senetler vadesinde çıkış, planlı banka işlemleri (masraf, faiz, diğer, kart borcu, kredi) planlı tarihinde, kart borcu son ödeme gününde. Planlanan bankalar arası transferler ayrı kolondur: iki hesap arasında yer değiştirir, toplamı değiştirmez. Hesabı Atanmamış Eski Hareketler ve bekleyen POS başlangıca girmez; tarihi geçmiş bekleyen kalemler projeksiyona girmez, özette sayılır.",
       params: ["range"],
       permission: "bank.reports",
       standalone: true,
@@ -1560,7 +1560,14 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
         const push = (kind, flow) => flows.push({ kind, source: BANK_FLOW_SOURCE[kind], in: 0, out: 0, transfer: 0, ...flow });
         const posBank = new Map((service?.pos?.list?.() || []).map(item => [item.id, item.bankAccountId]));
         for (const flow of service?.pos?.flows?.() || []) push(flow.source, { date: flow.date, label: flow.label, account: label(posBank.get(flow.ref?.id)), [flow.direction === "out" ? "out" : "in"]: toCents(flow.amount) });
-        for (const flow of cheques()?.flows ? cheques().flows({ expected: true }) : []) if (flow.flow === "deposit") push("deposit", { date: flow.date, label: flow.label, account: label(flow.bankAccountId), in: toCents(flow.amount) });
+        // MM6 (2.4.3, uzman mali müşavir): Çek Hesabı (verilen senette ödeme hesabı) bağlı verilen evrak vadesinde o hesaptan çıkıştır — Genel Nakit Akışı
+        // aynı evrakı zaten çıkış sayıyordu; bu rapor saymıyordu (bankadaki karşılık riski 2.000 fazla görünüyordu). Yalnız Gerçek Banka'ya giren (102,
+        // silinmemiş) hesap; hesabı seçilmemiş verilen evrak bankaya bağlanmaz (Genel Nakit Akışı'nda kalır).
+        const realBank = new Set(rows.filter(row => String(row.gl) === "102" && !["card", "loan"].includes(row.kind)).map(row => row.id));
+        for (const flow of cheques()?.flows ? cheques().flows({ expected: true }) : []) {
+          if (flow.flow === "deposit") push("deposit", { date: flow.date, label: flow.label, account: label(flow.bankAccountId), in: toCents(flow.amount) });
+          else if (flow.direction === "out" && flow.bankAccountId && realBank.has(flow.bankAccountId)) push("givenCheque", { date: flow.date, label: flow.label, account: label(flow.bankAccountId), out: toCents(flow.amount) });
+        }
         for (const plan of service?.plans?.flows?.() || []) {
           if (plan.internal) push("transfer", { date: plan.date, label: plan.label, account: `${plan.accountLabel} → ${plan.toAccountLabel}`, transfer: toCents(plan.amount) });
           else push("plan", { date: plan.date, label: plan.label, account: plan.accountLabel, [plan.direction === "out" ? "out" : "in"]: toCents(plan.amount) });
