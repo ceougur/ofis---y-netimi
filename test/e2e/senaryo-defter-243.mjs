@@ -159,6 +159,26 @@ try {
     ok(await integrityOk(), "Mutabakat Testi temiz");
   });
 
+  await step("UX24 KDV Özeti ve Açık Faturalar: yönler ayrı TOPLAM satırında, altta Net (ekranda)", async () => {
+    const footOf = () => page.$$eval(`${MODAL} [data-rc-main] .hof-rc-table tfoot tr`, rows => rows.map(row => [...row.querySelectorAll("td")].map(td => td.textContent.trim())));
+    const digits = text => String(text || "").replace(/[^\d,]/g, "");
+    await openReports("kdv-ozeti");
+    const kdv = await footOf();
+    // Kâhin (Eylül verisi, elle): Satış 1 belge 10.000 / KDV 2.000; Alış 3 belge 16.000 / KDV 1.200 / tevkifat 360; Net KDV 2.000 − 1.200 = 800.
+    ok(JSON.stringify(kdv.map(row => row[1])) === JSON.stringify(["TOPLAM Satış", "TOPLAM Alış", "Net KDV (Ödenecek)"]), `KDV Özeti TOPLAM satırları ${JSON.stringify(kdv.map(row => row[1]))}`);
+    ok(kdv[0]?.[3] === "1" && digits(kdv[0]?.[4]) === "10000,00" && digits(kdv[0]?.[5]) === "2000,00", `TOPLAM Satış ${JSON.stringify(kdv[0])}`);
+    ok(kdv[1]?.[3] === "3" && digits(kdv[1]?.[4]) === "16000,00" && digits(kdv[1]?.[5]) === "1200,00" && digits(kdv[1]?.[6]) === "360,00", `TOPLAM Alış ${JSON.stringify(kdv[1])}`);
+    ok(digits(kdv[2]?.[5]) === "800,00", `Net KDV ${JSON.stringify(kdv[2])} (kâhin 800)`);
+    await shot("ux24-kdv-ozeti-toplam");
+    await openReports("acik-faturalar");
+    const open = await footOf();
+    const summary = await summaryOf();
+    ok(JSON.stringify(open.map(row => row[2]).slice(0, 2)) === JSON.stringify(["TOPLAM Alacak", "TOPLAM Borç"]) && /^Net \((Alacak|Borç) Fazlası\)$/.test(open[2]?.[2] || ""), `Açık Faturalar TOPLAM satırları ${JSON.stringify(open.map(row => row[2]))}`);
+    ok(digits(open[0]?.[6]) === digits(summary["Açık Alacak"]) && digits(open[1]?.[6]) === digits(summary["Açık Borç"]), `TOPLAM Alacak ${open[0]?.[6]} = ${summary["Açık Alacak"]}; TOPLAM Borç ${open[1]?.[6]} = ${summary["Açık Borç"]}`);
+    await shot("ux24-acik-faturalar-toplam");
+    await closeAll();
+  });
+
   await step("MM3a Banka → Hareketler → + Vergi Ödemesi: Muhtasar ve Stopaj 2.000 + gecikme 50; 360'ı aşan KDV 5.000 sorulur, Vazgeç → yazılmaz", async () => {
     await closeAll();
     await page.click('#hof-sidecard [data-action="bank"]');

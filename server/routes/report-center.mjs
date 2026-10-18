@@ -143,6 +143,42 @@ export function footerRow({ headers = [], types = [], rows = [], footer, footerU
   out[label >= 0 ? label : 0] = out[label >= 0 ? label : 0] || "TOPLAM";
   return out;
 }
+// 2.4.3 UX24: yönü karışık raporda (satış/alış, alacak/borç) tek TOPLAM yerine her yön için ayrı TOPLAM satırı ve bir Net satırı. footerGroups:
+// { column, groups: [{ label, values }], net?: { label, cells: { Kolon: değer } } }. Gruplar satırlardan (yukarıdaki kural) hesaplanır, etiket
+// grup kolonuna yazılır; Net satırının hücrelerini rapor verir (yön işaretleri rapora özgü). Tek yön kalırsa (süzgeç) tek TOPLAM satırı döner.
+// Dönen: TOPLAM satırları dizisi (boş dizi = TOPLAM yok). Ekran, PDF ve Excel bu dizinin hepsini aynı sırayla yazar.
+export function footerRows({ headers = [], types = [], rows = [], footer, footerUniform, footerGroups }) {
+  if (footer === false || !rows.length) return [];
+  const index = footerGroups ? headers.indexOf(footerGroups.column) : -1;
+  const mixed = index >= 0 && new Set(rows.map(row => String(row[index] ?? "").trim())).size > 1;
+  if (!mixed) {
+    const single = footerRow({ headers, types, rows, footer, footerUniform: footerGroups ? undefined : footerUniform });
+    return single ? [single] : [];
+  }
+  const out = [];
+  for (const group of footerGroups.groups || []) {
+    const values = new Set(group.values);
+    const subset = rows.filter(row => values.has(String(row[index] ?? "").trim()));
+    if (!subset.length) continue;
+    const line = footerRow({ headers, types, rows: subset });
+    if (!line) continue;
+    const auto = line.indexOf("TOPLAM");
+    if (auto >= 0) line[auto] = "";
+    line[index] = group.label;
+    out.push(line);
+  }
+  const net = footerGroups.net;
+  if (net && out.length > 1) {
+    const line = headers.map(() => "");
+    line[index] = net.label;
+    for (const [header, value] of Object.entries(net.cells || {})) {
+      const at = headers.indexOf(header);
+      if (at >= 0) line[at] = value;
+    }
+    out.push(line);
+  }
+  return out;
+}
 
 export function registerReportCenter(router, { store, auth, audit, dataset, tax = () => null, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, doubtful = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
   const today = () => isoDay(clock());
@@ -1924,7 +1960,29 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           headers: ["Ay", "Belge Türü", "KDV %", "Belge", "Matrah", "KDV", "Tevkifat"],
           types: ["", "", "number", "number", "money", "money", "money"],
           rows: list.map(row => [monthLabel(row.month), KIND[row.kind] || row.kind, `%${row.rate}`, String(row.count), money(roundMoney(row.net)), money(roundMoney(row.vat)), money(roundMoney(row.withheld))]),
-          footerUniform: "Belge Türü", // hesaplanan (satış) ve indirilecek (alış) KDV toplanmaz; özet ayrı ayrı verir
+          // 2.4.3 UX24: hesaplanan (satış) ve indirilecek (alış) KDV tek TOPLAM'da toplanmaz; her belge yönü kendi TOPLAM satırında, altta Net KDV
+          // (satış KDV'si − alıcının kestiği tevkifat − satıştan iade; eksi alış KDV'si, artı alıştan iade) = özetteki Ödenecek / Devreden KDV.
+          footerGroups: {
+            column: "Belge Türü",
+            groups: [
+              { label: "TOPLAM Satış", values: [KIND.sale, KIND.smm] },
+              { label: "TOPLAM Satıştan İade", values: [KIND.sale_return] },
+              { label: "TOPLAM Alış", values: [KIND.purchase] },
+              { label: "TOPLAM Alıştan İade", values: [KIND.purchase_return] },
+            ],
+            net: (() => {
+              const net = roundMoney(list.reduce((sum, row) => {
+                const vat = roundMoney(row.vat);
+                const withheld = roundMoney(row.withheld);
+                if (row.kind === "sale" || row.kind === "smm") return sum + vat - withheld;
+                if (row.kind === "sale_return") return sum - (vat - withheld);
+                if (row.kind === "purchase") return sum - vat;
+                if (row.kind === "purchase_return") return sum + vat;
+                return sum;
+              }, 0));
+              return { label: net >= 0 ? "Net KDV (Ödenecek)" : "Net KDV (Devreden)", cells: { KDV: money(Math.abs(net)) } };
+            })(),
+          },
           summary: [
             ["Hesaplanan KDV (391)", money(roundMoney(heads.output))],
             ["İndirilecek KDV (191)", money(roundMoney(heads.input))],
@@ -2115,7 +2173,19 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           types: ["", "", "", "", "", "money", "money", "", ""],
           rows: list.map(item => [dayText(item.dueDate), item.number, item.isReturn ? (item.side === "sale" ? "Alacak (Alıştan İade)" : "Borç (Satıştan İade)") : item.side === "sale" ? "Alacak (Satış)" : "Borç (Alış)", item.accountName, dayText(item.issueDate), money(item.payable), money(item.open), item.days < 0 && !item.isReturn ? `${-item.days} gün` : "", bucket(item.days)]),
           summary: [["Açık Alacak", money(sum("sale"))], ["Açık Borç", money(sum("purchase"))]],
-          footerUniform: "Taraf", // alacak (satış) ve borç (alış) faturaları toplanmaz; cari süzülünce tek taraf kalır
+          // 2.4.3 UX24: alacak (satış, alıştan iade) ve borç (alış, satıştan iade) tek TOPLAM'da toplanmaz; her yön kendi TOPLAM satırında
+          // (= özetteki Açık Alacak / Açık Borç), altta Net (Alacak − Borç). Cari ya da tek yön kalınca tek TOPLAM satırı.
+          footerGroups: {
+            column: "Taraf",
+            groups: [
+              { label: "TOPLAM Alacak", values: ["Alacak (Satış)", "Alacak (Alıştan İade)"] },
+              { label: "TOPLAM Borç", values: ["Borç (Alış)", "Borç (Satıştan İade)"] },
+            ],
+            net: (() => {
+              const net = roundMoney(sum("sale") - sum("purchase"));
+              return { label: net >= 0 ? "Net (Alacak Fazlası)" : "Net (Borç Fazlası)", cells: { Kalan: money(Math.abs(net)) } };
+            })(),
+          },
         };
       },
     },
@@ -2717,8 +2787,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     if (report.worker && offload && !inline && !store.inTransaction) return offload({ id: report.id, query, user: workerUser(user), limit, time: clock().toISOString() });
     const result = await report.build(query, user);
     const rows = result.rows.slice(0, MAX_ROWS);
-    const footer = footerRow({ headers: result.headers, types: result.types || [], rows, footer: result.footer, footerUniform: result.footerUniform });
-    return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, footer, summary: result.summary || [], tabs: result.tabs || null, query };
+    // 2.4.3 UX24: footers (bir ya da birden çok TOPLAM satırı); footer yalnız tek satırlık TOPLAM için (eski okurlar).
+    const footers = footerRows({ headers: result.headers, types: result.types || [], rows, footer: result.footer, footerUniform: result.footerUniform, footerGroups: result.footerGroups });
+    const footer = footers.length === 1 ? footers[0] : null;
+    return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, footer, footers, summary: result.summary || [], tabs: result.tabs || null, query };
   }
   router.get("/api/workspace/report-center", async ({ req, res }) => {
     const user = enter(req);

@@ -305,6 +305,8 @@
     const preview = center.preview;
     const isNum = index => preview.types[index] === "money" || preview.types[index] === "number";
     const shown = (cell, index) => (preview.types[index] === "money" ? screenMoney(cell) : cell);
+    // 2.4.3 UX24: TOPLAM satırları (yönü karışık raporda "TOPLAM Satış", "TOPLAM Alış", "Net"); eski yanıtta tek footer.
+    const totals = preview ? (Array.isArray(preview.footers) && preview.footers.length ? preview.footers : preview.footer ? [preview.footer] : []) : [];
     // 2.4.3 (C4): yer tutucu (rapor değişti) önceki sonucun yüksekliğini korur — pencere çöküp açılmaz (düzen kayması yok).
     const hold = !preview && ready && center.holdHeight ? ` style="min-height:${Math.round(center.holdHeight)}px"` : "";
     const table = preview
@@ -314,11 +316,11 @@
             ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
         }</tbody>${
-          preview.footer && preview.rows.length
-            ? `<tfoot><tr class="hof-rc-total">${preview.footer.map((cell, index) => `<td class="${isNum(index) ? "num" : ""}">${esc(shown(cell, index))}</td>`).join("")}</tr></tfoot>`
+          totals.length && preview.rows.length
+            ? `<tfoot>${totals.map(line => `<tr class="hof-rc-total">${line.map((cell, index) => `<td class="${isNum(index) ? "num" : ""}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")}</tfoot>`
             : ""
         }</table></div>
-        <p class="hof-rep-note">${preview.total > preview.rows.length ? `Ekranda ilk ${preview.rows.length.toLocaleString("tr-TR")} satır; tamamı (${preview.total.toLocaleString("tr-TR")} satır) PDF ve Excel'de.${preview.footer ? " TOPLAM satırı bütün satırları kapsar." : ""}` : `${preview.total.toLocaleString("tr-TR")} satır.`} PDF en çok 20.000 satır yazar; Excel sınırsızdır.</p>`
+        <p class="hof-rep-note">${preview.total > preview.rows.length ? `Ekranda ilk ${preview.rows.length.toLocaleString("tr-TR")} satır; tamamı (${preview.total.toLocaleString("tr-TR")} satır) PDF ve Excel'de.${totals.length ? " TOPLAM satırı bütün satırları kapsar." : ""}` : `${preview.total.toLocaleString("tr-TR")} satır.`} PDF en çok 20.000 satır yazar; Excel sınırsızdır.</p>`
       : `<p class="hof-empty"${hold}>${ready ? "Rapor hazırlanıyor…" : "Önce cariyi seçin."}</p>`;
     // 2.4.3 (C5): açıklama ilk bakışta en çok iki satır (uzun açıklama 1366×768'de tabloyu ekranın altına itiyordu); tam metin üzerine gelince
     // (ipucu) ve açıklamaya tıklayınca açılır.
