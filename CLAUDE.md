@@ -417,3 +417,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   e-Belge kuralları, mizan/ekstre/KDV/iade/çek-senet doğruluğu); her biri hem KODDAN hem GERÇEK KULLANICI olarak tarayıcıda sıfırdan iş akışı (kişi → cari →
   fatura → tahsilat → kasa/banka → rapor) yürütür; birbirinin ve düzeltme ajanlarının raporunu GÖRMEZ (ders 16); bulgu ancak ana oturum yeniden üretince
   sayılır (ders 6); düzeltme → dar kontrol (ders 32) → sonra Uzun Doğrulama.
+  KARAR (kullanıcı, 18.10.2026 ~12:40 UTC: "önerini yap"): tek tur, DÖRT bağımsız ajan — kâhin modelini yazan (koşuları GitHub'da, ücretsiz) + UZMAN UI +
+  UZMAN UX + UZMAN MALİ MÜŞAVİR (bu oturumda, para yok, kullanım limitinden); yargıç/eleştirmen rolü her uzmanda (önce hata ara, sonra kendi bulgusunu
+  çürütmeye çalış); ayrı yargıç ajanı yok, süzgeç ana oturumun yeniden üretmesi (ders 6); ikinci tur yalnız yeniden üretilmiş bulgu varsa, dar kapsamlı.
