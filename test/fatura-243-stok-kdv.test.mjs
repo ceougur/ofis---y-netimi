@@ -58,7 +58,9 @@ describe("2.4.3: stok kartında KDV oranı, ayrışık stok göstergeleri, günd
     assert.equal(preview.roles[3], "price", "Birim Fiyat yine fiyat");
     const done = (await api.post("/api/workspace/stock/import", { matrix, headerAt: preview.headerAt, roles: preview.roles })).data;
     assert.equal(done.created, 4, JSON.stringify(done));
-    assert.ok(done.skipped.some(item => /KDV oranı “abc” tanınmadı/.test(item.reason)), JSON.stringify(done.skipped));
+    // Gözden geçirme 2.4.3 (5c): satır aktarılır, yalnız oran boş kalır — "atlandı" değil, not (notes) olarak raporlanır.
+    assert.ok(done.notes.some(item => /KDV oranı “abc” tanınmadı/.test(item.reason)), JSON.stringify(done.notes));
+    assert.equal(done.skippedTotal, 0, JSON.stringify(done.skipped));
     assert.deepEqual([await hit("Un 1 Kg"), await hit("Boya 15 Lt"), await hit("Kitap"), await hit("Garip Ürün")].map(item => item.vatRate), [1, 20, 10, null]);
     // "KDV Dahil Fiyat" bir fiyat kolonudur, KDV oranı sayılmaz.
     const dahil = (await api.post("/api/workspace/stock/import/preview", { matrix: [["Ürün Adı", "KDV Dahil Fiyat"], ["X", "12"]] })).data;
