@@ -679,6 +679,15 @@
               intro: `${result.title || "Bu mükellef"} için ${result.aliases.length} posta kutusu (PK) etiketi var. Faturanın gideceği etiketi seçin; bilmiyorsanız müşterinize sorun.`,
               fields: [{ name: "alias", label: "Posta Kutusu (PK)", type: "select", value: preferred, options: result.aliases.map(item => ({ value: item, label: item })) }],
               submitLabel: "Seç",
+              // 2.4.3 (uzman UX21): açılır listede Enter seçer (önceden Tab ile "Seç"e gitmek gerekiyordu; seçim kutusunda Enter formu göndermez).
+              onOpen: pickDialog => {
+                const select = pickDialog.querySelector('select[name="alias"]');
+                select?.addEventListener("keydown", event => {
+                  if (event.key !== "Enter" || event.altKey || event.ctrlKey || event.metaKey) return;
+                  event.preventDefault();
+                  select.closest("form")?.requestSubmit();
+                });
+              },
               onSubmit: data => {
                 chosen = data.alias;
               },
