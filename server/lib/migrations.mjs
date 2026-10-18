@@ -1265,6 +1265,19 @@ export const MIGRATIONS = [
       store.raw("migration.v28", () => addColumn(store, "stock_items", "vat_rate", "REAL"));
     },
   },
+  {
+    version: 29,
+    name: "v2.4.3 iade e-Belgesinde asıl faturanın e-Belge referansı",
+    up(store) {
+      // Dar kontrol 2 (MM1, mali müşavir): kâğıt (16 karakter olmayan) numaralı asıl faturanın iadesi e-Belge olarak kesilemiyordu (GİB şematronu
+      // BillingReference/ID uzunluğu 16). İade formunda "İade Edilen Belge No (e-Belge Referansı)": asıl numara 16 karakter değilse tamamlanmış değer
+      // önerilir, kullanıcı onaylar; asıl kayıt değişmez. YALNIZ EKLEYİCİ: varsayılan boş = asıl faturanın numarası (bugünkü davranış); eski sürüm aynı
+      // dosyayı okur, kolonu görmez; mutabakat kapısı ve kilit izi invoices'ın bu kolonunu okumaz (para alanı değil).
+      store.raw("migration.v29", () => {
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'")) addColumn(store, "invoices", "return_ref", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
 ];
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık

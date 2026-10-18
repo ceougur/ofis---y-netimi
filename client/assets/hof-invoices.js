@@ -533,6 +533,9 @@
       rate: source && source.currency !== "TRY" ? amountText(source.rate) : "",
       number: draft?.kind && !isOwn(draft.kind) ? draft.number || "" : "",
       paperNo: draft?.paperNo || "",
+      // MM1: iade e-Belgesinin asıl fatura referansı (asıl numara 16 karakter değilse); kullanıcı yazdıysa öneri üstüne yazılmaz.
+      returnRef: draft?.returnRef || "",
+      returnRefTouched: Boolean(draft?.returnRef),
       orderNo: draft?.orderNo || "",
       orderDate: draft?.orderDate || "",
       despatchNo: draft?.despatchNo || "",
@@ -579,7 +582,8 @@
       // excludeReturn (v2.0.17): iade düzenlenirken asıl faturanın kalanı bu iadenin kendi miktarı hariç gelir.
       const original = doc || (await HOF.api(`/api/workspace/invoices/${encodeURIComponent(originalId)}${excludeReturn ? `?excludeReturn=${encodeURIComponent(excludeReturn)}` : ""}`));
       const left = new Map((original.returnable || []).map(item => [item.id, item.left]));
-      form.original = { id: original.id, number: original.displayNo || original.number, issueDate: original.issueDate, accountName: original.accountName, payableTotal: original.payableTotal, currency: original.currency };
+      form.original = { id: original.id, number: original.displayNo || original.number, rawNumber: original.number || "", issueDate: original.issueDate, accountName: original.accountName, payableTotal: original.payableTotal, currency: original.currency };
+      if (!form.returnRefTouched) form.returnRef = returnRefNeeded(form) ? returnRefSuggestion(form.original.rawNumber) : "";
       form.account = { id: original.accountId, name: original.accountName };
       form.currency = original.currency;
       form.rate = original.currency !== "TRY" ? amountText(original.rate) : "";
@@ -669,6 +673,7 @@
     );
     if (!ret) mountAccountPicker();
     if (ret) renderReturn();
+    if (ret) syncReturnRef();
     renderLines();
     renderPay();
     renderTotals();
@@ -715,6 +720,56 @@
     scheduleCalc(0);
   }
 
+  // MM1 (2.4.3, mali müşavir): kâğıt (16 karakter olmayan) numaralı asıl faturanın iadesi e-Belge olarak kesilebilsin. GİB iade e-Belgesinde asıl
+  // faturayı 16 karakterlik numarayla ister (yalnız uzunluk); asıl kaydın numarası değiştirilmez (VUK). Form açılırken uyarı ve önerilen değer
+  // görünür ("A 004512" → "A000000000004512"); kullanıcı düzeltebilir. Değer 16 karakter (harf/rakam) değilse Kaydet düğmeleri pasif, nedeni yazılı.
+  // Öneri kuralı sunucudakiyle aynı (invoices.mjs returnRefSuggestion).
+  const returnRefSuggestion = number => {
+    const alnum = String(number || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
+    if (!alnum || alnum.length > 16) return "";
+    const prefix = /^[A-Z]*/.exec(alnum)[0];
+    return `${prefix}${alnum.slice(prefix.length).padStart(16 - prefix.length, "0")}`;
+  };
+  const returnRefValue = form => String(form.returnRef || "").replace(/\s+/g, "").toUpperCase();
+  const returnRefNeeded = form => Boolean(form && isReturn(form.kind) && form.original && meta?.kinds?.[form.kind]?.send && edoc() && (form.calc?.profile || form.profile || "") !== "KAGIT" && String(form.original.rawNumber ?? form.original.number ?? "").trim().length !== 16);
+  const returnRefBlock = form => {
+    if (!returnRefNeeded(form)) return "";
+    const value = returnRefValue(form);
+    if (/^[0-9A-Z]{16}$/.test(value)) return "";
+    return value.length === 16 ? "İade Edilen Belge No (e-Belge Referansı) yalnız harf ve rakam içermeli; kaydetmek için düzeltin." : `İade Edilen Belge No (e-Belge Referansı) 16 karakter olmalı (şu an ${value.length}); kaydetmek için düzeltin.`;
+  };
+  function returnRefField(form) {
+    if (!returnRefNeeded(form)) return "";
+    const original = String(form.original.rawNumber ?? form.original.number ?? "").trim();
+    return `<label class="hof-field hof-inv-return-ref"><span>İade Edilen Belge No (e-Belge Referansı)</span><input data-return-ref-input maxlength="20" autocomplete="off" spellcheck="false" value="${esc(form.returnRef)}" aria-describedby="hof-inv-return-ref-note"><small class="hof-inv-warn" id="hof-inv-return-ref-note" data-return-ref-note>Asıl faturanın numarası (${esc(original || "yok")}) 16 karakter değil; GİB, iade e-Belgesinde asıl faturayı 16 karakterlik numarayla ister. Önerilen değeri kontrol edin, gerekirse düzeltin. Asıl fatura kaydı değişmez; gerçek numara belgenin açıklamasında yazar.</small></label>`;
+  }
+  // Alan gerekli olup olmadığı değişince (belge türü hesaplamadan sonra belli olur) yeniden çizilir; yazarken çizilmez (odak korunur).
+  function syncReturnRef() {
+    const form = view.form;
+    if (!form) return;
+    const needed = returnRefNeeded(form);
+    const slot = body()?.querySelector("[data-return-ref]");
+    if (slot && slot.dataset.needed !== String(needed)) {
+      if (needed && !form.returnRefTouched && !form.returnRef) form.returnRef = returnRefSuggestion(form.original?.rawNumber ?? form.original?.number);
+      slot.dataset.needed = String(needed);
+      slot.innerHTML = returnRefField(form);
+    }
+    const block = returnRefBlock(form);
+    const actions = body()?.querySelector("[data-form-actions]");
+    if (!actions) return;
+    if (!form.busy) actions.querySelectorAll('[data-act="issue"], [data-act="issue-now"], [data-act="issue-later"]').forEach(button => (button.disabled = Boolean(block)));
+    let note = actions.querySelector("[data-return-ref-block]");
+    if (block && !note) {
+      note = document.createElement("small");
+      note.className = "hof-inv-warn";
+      note.dataset.returnRefBlock = "";
+      actions.prepend(note);
+    }
+    if (note) {
+      note.textContent = block;
+      note.hidden = !block;
+    }
+  }
   // İade edilecek faturayı bulan arama (en üstte).
   function renderReturn() {
     const form = view.form;
@@ -723,7 +778,7 @@
     const side = form.kind === "purchase_return" ? "purchase" : "sale";
     const hits = form.returnHits;
     slot.innerHTML = form.original
-      ? `<div class="hof-inv-return-chosen"><span>İade Edilen Fatura</span><b><a href="#" data-open-invoice="${esc(form.original.id)}">${esc(form.original.number)}</a></b><small>${esc(form.original.accountName)} · ${esc(HOF.formatDate(form.original.issueDate))} · ${esc(curMoney(form.original.payableTotal, form.original.currency))}</small>${form.id ? "" : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="change-original">Başka Fatura Seç</button>'}</div>`
+      ? `<div class="hof-inv-return-chosen"><span>İade Edilen Fatura</span><b><a href="#" data-open-invoice="${esc(form.original.id)}">${esc(form.original.number)}</a></b><small>${esc(form.original.accountName)} · ${esc(HOF.formatDate(form.original.issueDate))} · ${esc(curMoney(form.original.payableTotal, form.original.currency))}</small>${form.id ? "" : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="change-original">Başka Fatura Seç</button>'}</div><div data-return-ref>${returnRefField(form)}</div>`
       : `<label class="hof-field hof-inv-return-search"><span>İade Edilecek ${side === "purchase" ? "Alış" : "Satış"} Faturasını Bulun</span><input type="search" data-return-q value="${esc(form.returnQuery)}" placeholder="Fatura no, cari adı, ürün ya da VKN yazın…" autocomplete="off"><small>Yalnız iade edilebilir miktarı kalan kaydedilmiş faturalar listelenir.</small></label>
         <ul class="hof-inv-return-hits">${
           hits === null
@@ -1431,6 +1486,7 @@
     ...(form.stoppageRate !== "" ? { stoppageRate: form.stoppageRate } : {}),
     number: form.number,
     paperNo: form.paperNo,
+    ...(isReturn(form.kind) ? { returnRef: returnRefNeeded(form) ? returnRefValue(form) : "" } : {}),
     orderNo: form.orderNo,
     orderDate: form.orderDate,
     despatchNo: form.despatchNo,
@@ -1543,6 +1599,7 @@
     const actions = body()?.querySelector("[data-form-actions]");
     // Yalnız gönderilebilirlik değişince yeniden çizilir: her hesaplamada çizmek alandan düğmeye geçen tıklamayı ve klavye odağını düşürüyordu (gözden geçirme 2.4.2).
     if (actions && !form.busy && sendable(form) !== form.drawnSendable) actions.innerHTML = formActions(form);
+    syncReturnRef();
     updateUnitHint();
     field.querySelector("select").innerHTML = profiles.map(item => `<option value="${esc(item.id)}" ${item.id === form.calc.profile ? "selected" : ""}>${esc(item.label)}</option>`).join("");
     field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : "";
@@ -1555,6 +1612,11 @@
     const form = view.form;
     const target = event.target;
     if (!form) return;
+    if (target.matches("[data-return-ref-input]")) {
+      form.returnRef = target.value;
+      form.returnRefTouched = true;
+      return syncReturnRef();
+    }
     if (target.matches("[data-return-q]")) {
       form.returnQuery = target.value;
       return searchReturnable(target.value.trim());
@@ -1977,6 +2039,7 @@
       if (view.form !== form) return;
     }
     if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.");
+    if (mode !== "draft" && returnRefBlock(form)) return fail(returnRefBlock(form));
     if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`);
     if (!usedLines(form).length) return fail(isReturn(form.kind) ? "İade edilecek en az bir kalemin miktarını yazın. İade etmeyeceğiniz kalemi × ile çıkarın ya da miktarını 0 yapın." : "En az bir kalem yazın.");
     // v2.0.23 (Bulgu 1): tutarı yazılmamış ya da geçersiz ödeme satırı sessizce atılmaz (önceden evrak kayıtta düşüyordu,
@@ -2054,6 +2117,7 @@
     } finally {
       form.busy = false;
       body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = false));
+      if (view.form === form && isReturn(form.kind)) syncReturnRef();
     }
   }
   // Stok eksiye düşecekse sorulur; onaylanırsa aynı istek "force" ile yeniden gönderilir (Kasa eksi uyarısını HOF.api sorar).
@@ -2621,31 +2685,36 @@
     if (!total) return;
     const go = await HOF.confirm({ title: "Gönderilecekler Gönderilsin mi?", message: `Gönderilecekler'deki ${total.toLocaleString("tr-TR")} belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz olanlar önce entegratöre sorulur, orada varsa yeniden gönderilmez.`, confirmLabel: "Tümünü Gönder" });
     if (!go || view.sendProgress) return;
-    // Sunucu Gönderilecekler'in tamamını kendisi seçer ({ all: true }); bir istekte en çok 20 belge (ya da ~10 sn) gider, kalan varsa ve ilerleme
-    // oldukça istemci yineler.
+    // Sunucu Gönderilecekler'in tamamını kendisi seçer ({ all: true }); bir istekte en çok 20 belge (ya da ~10 sn) gider, kalan varsa istemci
+    // yineler. Dar kontrol 2 (B1): tur bir imleçle ilerler — sunucunun döndürdüğü imleç (ulaşılan son belge) sonraki isteğe verilir; bir turda her
+    // belge en çok bir kez denenir. Döngü "gönderilen > 0" ile değil, imleç ilerledikçe ve kalan oldukça sürer (önceden kuyruğun başında
+    // reddedilen belgeler varken ilk istek 0 gönderip döngüyü bitiriyordu).
     const results = [];
     const seen = new Set();
     let sent = 0;
     let remaining = 0;
     let stopped = null;
+    let cursor = null;
     view.sendProgress = { done: 0, total };
     showSendProgress();
     try {
       for (let turn = 0; turn < 100000; turn += 1) {
         const timeoutMs = Number(HOF.invoices?.sendPendingTimeoutMs) > 0 ? Number(HOF.invoices.sendPendingTimeoutMs) : SEND_PENDING_TIMEOUT_MS;
-        const result = await HOF.api("/api/workspace/invoices/send-pending", { method: "POST", body: { all: true }, timeoutMs });
+        const result = await HOF.api("/api/workspace/invoices/send-pending", { method: "POST", body: cursor ? { all: true, after: cursor } : { all: true }, timeoutMs });
         sent += result.sent;
         remaining = result.remaining || 0;
         stopped = result.stopped || null;
+        const moved = Boolean(result.cursor) && JSON.stringify(result.cursor) !== JSON.stringify(cursor);
+        cursor = result.cursor || cursor;
         // Kalıcı engelli belgeler her istekte yeniden listelenir; bir kez sayılır.
         for (const item of result.results) {
           if (seen.has(item.id)) continue;
           seen.add(item.id);
           results.push(item);
         }
-        view.sendProgress = { done: Math.min(total, sent), total: Math.max(total, sent) };
+        view.sendProgress = { done: Math.min(total, seen.size), total: Math.max(total, seen.size) };
         showSendProgress();
-        if (stopped || !remaining || !result.sent) break;
+        if (stopped || !remaining || !moved) break;
       }
     } catch (error) {
       view.sendProgress = null;
@@ -2666,7 +2735,18 @@
     const failed = results.filter(item => !item.ok && !item.skipped && !item.busy && !item.done);
     const held = results.filter(item => item.skipped && !["busy", "withdrawn", "stopped"].includes(item.reason));
     const parts = [`${sent.toLocaleString("tr-TR")} belge gönderildi`];
-    if (failed.length) parts.push(`${failed.length.toLocaleString("tr-TR")} belge gönderilemedi: ${failed[0].message}`);
+    // B1: gönderilemeyenler nedenleriyle (aynı nedenden kaç belge; en çok üç neden, kalanı belgelerin kartında).
+    if (failed.length) {
+      const reasons = new Map();
+      for (const item of failed) {
+        const key = item.code || item.message || "";
+        if (!reasons.has(key)) reasons.set(key, { count: 0, message: item.message || "Gönderilemedi." });
+        reasons.get(key).count += 1;
+      }
+      const listed = [...reasons.values()].slice(0, 3).map(reason => (reasons.size > 1 ? `${reason.count.toLocaleString("tr-TR")} belge: ${reason.message}` : reason.message));
+      const more = reasons.size > 3 ? ` (${(reasons.size - 3).toLocaleString("tr-TR")} başka neden; ayrıntı belgelerin kartında)` : "";
+      parts.push(`${failed.length.toLocaleString("tr-TR")} belge gönderilemedi: ${listed.join(" ")}${more}`);
+    }
     if (stopped) parts.push(`${stopped.message} Kalan belgelere numara verilmedi; Gönderilecekler'de bekliyor`);
     if (done.length) parts.push(`${done.length.toLocaleString("tr-TR")} belge başka oturumda gönderildi`);
     if (busy.length) parts.push(`${busy.length.toLocaleString("tr-TR")} belge başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin`);

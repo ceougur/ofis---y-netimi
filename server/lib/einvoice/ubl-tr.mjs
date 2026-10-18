@@ -177,7 +177,8 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const references = [
     doc.orderNo ? `<cac:OrderReference>${tag("cbc:ID", doc.orderNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.orderDate || doc.issueDate)}</cac:OrderReference>` : "",
     // GİB (IADEInvioceCheck): iade faturasında asıl fatura DocumentTypeCode "IADE" ile gösterilir.
-    doc.originalNumber ? `<cac:BillingReference><cac:InvoiceDocumentReference>${tag("cbc:ID", doc.originalNumber)}${tag("cbc:IssueDate", doc.originalDate || "")}${variant !== "peppol" && doc.typeCode === "IADE" ? tag("cbc:DocumentTypeCode", "IADE") : ""}</cac:InvoiceDocumentReference></cac:BillingReference>` : "",
+    // MM1 (2.4.3): asıl numara 16 karakter değilse iade formundaki e-Belge referansı (returnRef) yazılır; gerçek numara açıklamada (Note) kalır.
+    doc.originalNumber ? `<cac:BillingReference><cac:InvoiceDocumentReference>${tag("cbc:ID", doc.returnRef || doc.originalNumber)}${tag("cbc:IssueDate", doc.originalDate || "")}${variant !== "peppol" && doc.typeCode === "IADE" ? tag("cbc:DocumentTypeCode", "IADE") : ""}</cac:InvoiceDocumentReference></cac:BillingReference>` : "",
     doc.despatchNo ? `<cac:DespatchDocumentReference>${tag("cbc:ID", doc.despatchNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.despatchDate || doc.issueDate)}</cac:DespatchDocumentReference>` : "",
     // e-Arşiv gönderim şekli (GİB e-Arşiv kılavuzu): alıcının e-postası varsa ELEKTRONIK (entegratör e-postayla iletir),
     // yoksa KAGIT (çıktısı verilir).

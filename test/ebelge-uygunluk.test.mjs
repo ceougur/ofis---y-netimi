@@ -149,7 +149,7 @@ describe("Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 �
     const before = server.app.store.get("SELECT COUNT(*) AS n FROM invoices").n;
     const back = await api.post("/api/workspace/invoices", { kind: "purchase_return", originalId: purchase.id, lines: [{ originLineId: purchase.lines[0].id, qty: 1 }], payment: { rest: "open" }, force: true });
     assert.equal(back.status, 400, JSON.stringify(back.data));
-    assert.match(JSON.stringify(back.data), /16 haneli/);
+    assert.match(JSON.stringify(back.data), /16 karakterlik/); // 2.4.3 (MM1): ileti "asıl faturanın numarasını düzeltin" demez; e-Belge referansını ister
     assert.match(JSON.stringify(back.data), /A-4711/);
     assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM invoices").n, before, "reddedilen iade kayıt açmamalı");
   });

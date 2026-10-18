@@ -204,8 +204,11 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     open.push(ctx);
     const sent = await ctx.sale(ctx.people[0], { issueDate: ctx.day(-1), eSend: "now" });
     assert.equal(sent.autoSend?.ok, true, JSON.stringify(sent.autoSend));
-    // Seride D-1 numaralı → D-3 bekleyen kalıcı kronoloji engelli (sendBlock).
-    const stuck = await ctx.sale(ctx.people[1], { issueDate: ctx.day(-3), eSend: "later" });
+    // Seride D-1 numaralı → D-3 bekleyen kalıcı kronoloji engelli (sendBlock). Dar kontrol 2 (B5): böyle bir belge artık kayıtta reddedilir; durum
+    // eski sürüm verisindeki gibi kurulur (D-1 ile kaydedilir, tarihi D-3'e çekilir).
+    assert.equal((await ctx.api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.people[1], lines: LINES, payment: { rest: "open" }, issueDate: ctx.day(-3), eSend: "later" })).data.code, "chronology");
+    const stuck = await ctx.sale(ctx.people[1], { issueDate: ctx.day(-1), eSend: "later" });
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", ctx.day(-3), stuck.id);
     assert.equal((await ctx.card(stuck.id)).canSend, false);
     const sameDay = await ctx.sale(ctx.people[2], { issueDate: ctx.day(0), eSend: "later" });
     const now = await ctx.sale(ctx.people[2], { issueDate: ctx.day(0), eSend: "now" });
@@ -229,9 +232,12 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
         sleep(250 + seed * 30).then(async () => extra.push(unwrap(await other.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.people[1], lines: LINES, payment: { rest: "open" }, issueDate: ctx.day(-6), eSend: "later" })))),
         sleep(350 + seed * 10).then(async () => extra.push(unwrap(await other.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.people[2], lines: LINES, payment: { rest: "open" }, issueDate: ctx.day(0), eSend: "now" })))),
       ]);
-      for (const e of extra) assert.equal(e.status, 200, JSON.stringify(e.data).slice(0, 300));
+      // Dar kontrol 2 (B5): geriye tarihli Sonra Gönder, tur o tarihten yeni belgeyi numaralandırdıysa kayıtta reddedilir (chronology) — yarışın iki
+      // sonucu da doğrudur; reddedilen kayıt açmaz.
+      for (const e of extra) assert.ok(e.status === 200 || (e.status === 400 && e.data.code === "chronology"), JSON.stringify(e.data).slice(0, 300));
+      const kept = extra.filter(e => e.status === 200);
       await ctx.sendAll();
-      const cards = await Promise.all([...docs.map(d => d.id), ...extra.map(e => e.data.id)].map(id => ctx.card(id)));
+      const cards = await Promise.all([...docs.map(d => d.id), ...kept.map(e => e.data.id)].map(id => ctx.card(id)));
       ctx.seriesOk(cards);
       for (const c of cards) {
         assert.equal(c.sendBlock || "", "", `kalıcı engele düşen yok: ${c.issueDate} ${c.sendBlock}`);
@@ -334,7 +340,9 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     const ctx = await setup();
     open.push(ctx);
     for (const d of [-5, -3, 0]) assert.equal((await ctx.sale(ctx.people[1], { issueDate: ctx.day(d), eSend: "now" })).autoSend?.ok, true);
-    const w = await ctx.sale(ctx.people[0], { issueDate: ctx.day(-4), eSend: "later" });
+    // Dar kontrol 2 (B5): D-4 ile "Kes, Sonra Gönder" artık kayıtta reddedilir; kalıcı engelli bekleyen eski sürüm verisindeki gibi kurulur.
+    const w = await ctx.sale(ctx.people[0], { issueDate: ctx.day(0), eSend: "later" });
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", ctx.day(-4), w.id);
     const before = await ctx.card(w.id);
     assert.equal(before.canSend, false, "ön koşul: kalıcı kronoloji engelli");
     const edit = date => ctx.api.post(`/api/workspace/invoices/${w.id}/edit`, { scenario: "service_sale", accountId: ctx.people[0], lines: LINES, payment: { rest: "open" }, issueDate: date, number: "" });
