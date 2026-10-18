@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 import { BUYER_VKN, OUR_VKN, startMockEdm, vkn } from "./einvoice-mock.mjs";
+import { TODAY as POS_TODAY, bootBank, must, openAcceptanceAccounts, openPos, posInvoice, ziraatPos } from "./banka-220-pos-ortak.mjs";
 
 const unwrap = response => (response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data);
 const rng = seed => () => {
@@ -118,6 +119,16 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
     // 240 gün, gün başına 5–8 işlem (tarih ileri akar: VUK sırası); saat bazen aynı, bazen farklı.
     for (let day = 240; day >= 0; day -= 1) {
       const date = addDays(TODAY, -day);
+      // Yolun ortasında iki cari yeniden adlandırılır: eski faturalarda alıcı adı (party_json) cari kartının adından farklı olur — liste
+      // aramada alıcı adını da arar, Cari sıralaması alıcı adıyla yapılır (eski yolla aynı olmalı).
+      if (day === 120) {
+        for (const [index, name] of [[0, "Zeytin Yapı 01 A.Ş."], [7, "Ahenk Ticaret 02 Ltd. Şti."]]) {
+          const renamed = await api.put(`/api/workspace/accounts/${customers[index].id}`, { name });
+          assert.equal(renamed.status, 200, JSON.stringify(renamed.data).slice(0, 300));
+          customers[index].oldName = customers[index].name;
+          customers[index].name = name;
+        }
+      }
       const count = int(5, 8);
       for (let k = 0; k < count; k += 1) {
         const op = random();
@@ -204,6 +215,9 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
         doc.accountName.toLocaleUpperCase("tr-TR").slice(0, 5),
         "çınar",
         "ÇINAR",
+        "Çınar Yapı",
+        "Ticaret 02",
+        "Zeytin",
         "ıslak",
         "FRK-1",
         "ürün 0",
@@ -278,6 +292,42 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
       assert.ok(read() <= found.invoices.length, `numara araması ${read()} belgeyi ağır sütunlarla okudu (sonuç ${found.invoices.length})`);
     } finally {
       store.all = original;
+    }
+  });
+});
+
+// POS peşinli satış (posCash: İptal / Sil penceresinin "POS İşlemi" seçimi) yalnız sayfadaki satırlar için okunur; eski yolla aynı olmalı.
+describe("fatura listesi (2.4.3 H3): POS peşinli satışların posCash bayrağı sayfalı uçta eski yolla aynı", () => {
+  test("POS'lu, nakit, açık, iptal edilmiş satışlar; her sayfa dilimi", async () => {
+    const ctx = await bootBank();
+    try {
+      const acc = await openAcceptanceAccounts(ctx.api);
+      const customer = await must("cari", ctx.api.post("/api/workspace/accounts", { name: "POS Müşterisi", type: "customer", registeredOn: "2026-10-01" }));
+      const item = await must("ürün", ctx.api.post("/api/workspace/stock", { kind: "goods", code: "P", name: "Ürün P", unit: "Adet", openingQty: "500" }));
+      await openPos(ctx.api, ziraatPos(acc.ziraat.id));
+      const ids = [];
+      for (let i = 0; i < 12; i += 1) {
+        const doc = i % 3 === 0
+          ? await must(`POS ${i}`, posInvoice(ctx.api, { accountId: customer.id, itemId: item.id, name: "Ürün P", qty: 1 + i, unitPrice: 100, date: POS_TODAY, extra: { similarOk: true } }))
+          : await must(`satış ${i}`, ctx.api.post("/api/workspace/invoices", { kind: "sale", accountId: customer.id, issueDate: POS_TODAY, lines: [{ itemId: item.id, name: "Ürün P", qty: 1 + i, unitPrice: 100, vatRate: 20 }], payment: i % 3 === 1 ? { cash: [{ amount: 50, method: "cash" }], rest: "open" } : { rest: "open" }, force: true, similarOk: true }));
+        ids.push(doc.id);
+      }
+      await must("iptal", ctx.api.post(`/api/workspace/invoices/${ids[6]}/cancel`, { reason: "deneme", posOutcome: "refunded", force: true, stockForce: true, cashForce: true }));
+      const invoices = ctx.server.app.context.invoices;
+      const admin = { role: "admin", permissions: [] };
+      let posRows = 0;
+      for (const tab of ["all", "sale", "cancelled"]) {
+        for (const [offset, limit] of [[0, 200], [0, 1], [1, 2], [3, 4], [5, 5], [10, 3]]) {
+          const params = new URLSearchParams({ tab, offset: String(offset), limit: String(limit) });
+          const response = unwrap(await ctx.api.get(`/api/workspace/invoices?${params}`));
+          const expected = oldPage(params, invoices.list(admin, invoices.listQuery(params)));
+          assert.equal(JSON.stringify(response), JSON.stringify(expected), `${params}: yanıt eski yolla aynı`);
+          posRows += response.invoices.filter(row => row.posCash).length;
+        }
+      }
+      assert.ok(posRows >= 6, `sayfalarda POS'lu satır (posCash) görüldü: ${posRows}`);
+    } finally {
+      await ctx.server.close();
     }
   });
 });

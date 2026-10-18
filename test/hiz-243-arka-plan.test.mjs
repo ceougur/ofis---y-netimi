@@ -106,10 +106,14 @@ describe("arka plan yenilemesi ucuz, güncellik bozulmaz (2.4.3 H2)", () => {
       const edit = await admin.put(`/api/workspace/stock/${item}`, { name: card.name, code: card.code, unit: card.unit, unitPrice: card.unitPrice, salePrice: card.salePrice, minQty: 1, kind: card.kind });
       assert.equal(edit.status, 200, JSON.stringify(edit.data).slice(0, 300));
       assert.ok(!(await alerts()).some(entry => entry.id === item), "kritik seviye 1 olunca rozetten düştü");
-      // Dönen liste ortak değildir: çağıranın değiştirmesi sonraki yanıtı bozmaz.
-      const first = await alerts();
-      first.push({ id: "uydurma" });
-      assert.ok(!(await alerts()).some(entry => entry.id === "uydurma"));
+      // Saklanan liste ortak değildir: programın içinden çağıranın (stock.alerts) değiştirmesi sonraki yanıtı bozmaz.
+      const stock = server.app.context.stock;
+      stock.alerts();
+      const shared = stock.alerts();
+      shared.push({ id: "uydurma" });
+      if (shared[0]) shared[0].qty = -999;
+      const later = await alerts();
+      assert.ok(!later.some(entry => entry.id === "uydurma" || entry.qty === -999), `saklanan liste bozulmadı (${JSON.stringify(later)})`);
     } finally {
       store.all = original;
     }

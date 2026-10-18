@@ -6,14 +6,18 @@
 //  2. takvimi DEĞİŞTİREN kayıt (vadesi yarın açık satış) → yeni kalem şeritte belirir (güncellik bugünkü kadar çabuk: en çok 15 sn);
 //  3. tahsilatla kapanan kalem şeritten düşer;
 //  4. kritik stok rozeti başka oturumun satışıyla dolar, kritik seviye düşürülünce boşalır (sunucudaki rozet önbelleği güncelliği bozmaz).
-// Eski kodda (4d546e9) adım 1 kırmızıdır (istek sürümsüz, yanıt tam takvim).
+// Eski kodda (4d546e9) adım 2 kırmızıdır (istek sürümsüz, yanıt tam takvim); DEPO=<eski kopya> ile koşulur.
 // Çıkış: "N geçti, M kaldı" (kanıt aracının senaryo biçimi).
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
-import { createApp } from "../../server/app.mjs";
-import { createClient, installPageClock } from "../helpers.mjs";
+
+// Eski kodla (kırmızı kanıt): DEPO=<eski kopya> verilirse sunucu ve istemci o kopyadan yüklenir.
+const ROOT = process.env.DEPO ? path.resolve(process.env.DEPO) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+const { createApp } = await import(pathToFileURL(path.join(ROOT, "server", "app.mjs")).href);
+const { createClient, installPageClock } = await import(pathToFileURL(path.join(ROOT, "test", "helpers.mjs")).href);
 
 const PASS = "Prova-Admin-2026!";
 const NOW = "2026-10-08T12:00:00+03:00";
