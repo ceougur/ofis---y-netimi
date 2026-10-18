@@ -207,6 +207,29 @@ try {
       idAd[yabanci[0]] = ad;
     } else if (yabanci.length > 1) throw new Error(`${ad}: birden çok eşlenmemiş belge`);
   };
+  // Tümünü Gönder istemci gibi (2.4.3 parça parça): bir istek en çok ~20 belge / ~10 sn işler, yanıt `remaining` + `attempted` + `cursor`
+  // döndürür; aynı tur `after: cursor` ile kalan bitene ya da ilerleme durana kadar sürer (kara kutu yoklamasıyla öğrenildi). Sonuçlar
+  // birleştirilir; ilk başarısız HTTP yanıtı (yoksa sonuncusu) turun yanıtıdır.
+  const turGonder = async (istemci, body) => {
+    let son = null;
+    let hata = null;
+    const results = [];
+    let parca = 0;
+    for (let after; ; ) {
+      const r = await istemci.post("/api/workspace/invoices/send-pending", after === undefined ? body : { ...body, after });
+      parca += 1;
+      son = r;
+      if (r.status !== 200) {
+        hata = hata || r;
+        break;
+      }
+      results.push(...(r.data?.results || []));
+      if (!(r.data?.remaining > 0) || !(r.data?.attempted > 0) || !r.data?.cursor || parca > 500) break;
+      after = r.data.cursor;
+    }
+    const y = hata || son;
+    return { status: y.status, data: y.status === 200 ? { ...y.data, results, parca } : y.data };
+  };
   const ozet = r => ({ status: r.status, kod: r.data?.error?.code || r.data?.code || r.data?.error || "", veri: JSON.stringify(r.data).slice(0, 400) });
   const govde = (ad, extra = {}) => ({ kind: "sale", scenario: "service_sale", accountId: cariId[belgeCari[ad]], lines: LINES, payment: { rest: "open" }, ...extra });
 
@@ -238,7 +261,7 @@ try {
       }
     } else if (i === "tur_sirasinda_sil" && !id) {
       // Silinecek belge programda yok (kaydı reddedilmişti): yalnız tur koşar (model de öyle yapar).
-      const tur = await api.post("/api/workspace/invoices/send-pending", { all: true });
+      const tur = await turGonder(api, { all: true });
       kayit.yanit = { atlandi: "belge yok; yalnız tur" };
       kayit.ek = { tur: ozet(tur), sonuclar: (tur.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" })) };
     } else if (adim.belge && !id && i !== "tumunu_gonder") {
@@ -247,11 +270,11 @@ try {
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/send`, {}));
     } else if (i === "tumunu_gonder") {
       const body = adim.kapsam === "secili" ? { ids: adim.belgeler.map(ad => belgeId[ad]).filter(Boolean) } : { all: true };
-      const r = await api.post("/api/workspace/invoices/send-pending", body);
+      const r = await turGonder(api, body);
       kayit.yanit = ozet(r);
       kayit.ek = { sonuclar: (r.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" })) };
     } else if (i === "esz_tumunu_gonder") {
-      const [a, b] = await Promise.all([api.post("/api/workspace/invoices/send-pending", { all: true }), api2.post("/api/workspace/invoices/send-pending", { all: true })]);
+      const [a, b] = await Promise.all([turGonder(api, { all: true }), turGonder(api2, { all: true })]);
       kayit.yanit = ozet(a);
       kayit.ek = {
         ikinci: ozet(b),
@@ -264,7 +287,7 @@ try {
       const silindi = new Promise(resolve => {
         vekil.onSend = () => resolve(api2.post(`/api/workspace/invoices/${id}/withdraw`, {}).then(r => ((silme = { ...ozet(r), sira: "tur-icinde" }), r)));
       });
-      const tur = await api.post("/api/workspace/invoices/send-pending", { all: true });
+      const tur = await turGonder(api, { all: true });
       if (vekil.onSend) {
         vekil.onSend = null;
         const r = await api2.post(`/api/workspace/invoices/${id}/withdraw`, {});
