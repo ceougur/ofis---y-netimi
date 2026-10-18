@@ -1,0 +1,32 @@
+{
+  "ad": "defter-243/e2e-senaryo-banka-210-temel",
+  "komut": "npm run test:senaryo-banka-210-temel",
+  "commit": "4f5436b8aceee74513ed87468e77f9f0ffdcc45f",
+  "dal": "defter-243",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T19:01:11.698Z",
+  "sure_sn": 63,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 80,
+    "gecen": 80,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-18/defter-243/e2e-senaryo-banka-210-temel.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243",
+  "ham_cikti_sha256": "551079bdb14c3d3de2fb5b9ad4bddb77c991ffc54b8c3fbd9c19de7d59f2870c",
+  "ham_cikti_bayt": 13096
+}
