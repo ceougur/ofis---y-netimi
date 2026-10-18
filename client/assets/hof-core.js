@@ -403,8 +403,13 @@
     // pencereyi yeniler.
     [/^\/api\/workspace\/bank\b/, ["bank", "cash", "accounts", "invoices", "plans", "cheques"]],
   ];
+  // 2.4.3 H2 (fatura yükte hız testi): yalnız hesaplayan / ön izleyen POST istekleri (fatura toplamı, e-Belge görünüm ön izlemesi, Excel
+  // ön izlemeleri) hiçbir şey yazmaz. Önceden faturada her Tab / miktar değişikliğinde (POST /invoices/calc) "bu ekranda para/stok değişti"
+  // sayılıyor; kritik stok rozeti ve açık para pencereleri beklemeden yeniden isteniyordu (5 pencerede 10 dk'da 1.402 hesap → 1.619 rozet isteği).
+  const READ_ONLY_POSTS = [/^\/api\/workspace\/invoices\/(calc|view-preview)$/, /^\/api\/workspace\/[a-z-]+\/import\/preview$/];
   function noteLedgerChange(path) {
     const clean = String(path || "").split("?")[0];
+    if (READ_ONLY_POSTS.some(pattern => pattern.test(clean))) return;
     const hit = LEDGER_PATHS.find(([pattern]) => pattern.test(clean));
     if (hit) HOF.emit("ledger:changed", { kinds: hit[1], local: true, path: clean });
   }
