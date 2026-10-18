@@ -146,7 +146,7 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
             sales.push({ id: created.data.id, accountId: who.id, lineId: created.data.lines?.[0]?.id });
             // Dar kontrol 2.4.3 (O1): seride daha eski tarihli bekleyen varken Kaydet numara vermez, belgeyi Gönderilecekler'e koyar. Bu veride
             // entegratör hesabı geçersizdir; "Kaydet ve Gönder" (ek 1: giriş reddedilince numara verilmez) yerine düz Kaydet (numaralı, "Gönderilmedi")
-            // kullanılır. Tümünü Gönder bekleyeni eritemez: kullanıcı gibi bekleyenler eski tarihliden başlayarak Listeden Silinir (Müşteri Fişi;
+            // kullanılır. Tümünü Gönder bekleyeni eritemez: kullanıcı gibi bekleyenler eski tarihliden başlayarak Müşteri Fişi olarak bırakılır (Müşteri Fişi;
             // fiş serisi de numara–tarih sırasına uyar). Son 5 günde silinmez — sonda bekleyen belge kalsın.
             if (created.data.autoSend?.code === "einvoice-order" && day > 5) {
               const pending = await api.get("/api/workspace/invoices?tab=pending&limit=5000");

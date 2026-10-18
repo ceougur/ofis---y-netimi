@@ -108,7 +108,7 @@ describe("2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğ
     assert.equal((await card(fresh.id)).number, "", "yeni belge numara almadı");
     assert.equal((await card(fresh.id)).eStatus, "waiting");
     assert.equal(edm.state.calls.filter(call => call.op === "SendInvoice").length, before, "EDM'ye gönderim yok");
-    // Eski belge listeden silinince (Müşteri Fişi) yeni belge gönderilir.
+    // Eski belge Müşteri Fişi olarak bırakılınca (Müşteri Fişi) yeni belge gönderilir.
     assert.equal((await api.post(`/api/workspace/invoices/${old.id}/withdraw`, {})).status, 200);
     const again = await api.post("/api/workspace/invoices/send-pending", { ids: [fresh.id] });
     assert.equal(again.data.sent, 1, JSON.stringify(again.data.results));

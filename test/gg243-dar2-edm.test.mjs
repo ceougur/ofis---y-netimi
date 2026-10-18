@@ -55,7 +55,9 @@ describe("gg243 dar kontrol 2: EDM istemcisi bağlantı sınıfı, oturum kanıt
       await client.ensureSession();
       const error = await errorOf(sendDoc(client));
       assert.equal(error.code, "integrator-unreachable", `${code}: ${error.code} ${error.message}`);
-      assert.match(error.message, new RegExp(`EDM'ye bağlanılamadı: ${code}`));
+      // 2.4.3 (uzman UX14): iletide teknik kod yok; kod detail'de.
+      assert.equal(error.message, "EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin.");
+      assert.equal(error.detail, code);
     }
   });
 
@@ -66,7 +68,8 @@ describe("gg243 dar kontrol 2: EDM istemcisi bağlantı sınıfı, oturum kanıt
       await client.ensureSession();
       const error = await errorOf(sendDoc(client));
       assert.equal(error.code, "integrator-uncertain", `${code}: ${error.code} ${error.message}`);
-      assert.match(error.message, code === "abort" ? /^EDM yanıt vermedi \(zaman aşımı\); istek EDM'ye ulaşmış olabilir\.$/ : new RegExp(`^EDM ile bağlantı istek gönderildikten sonra koptu \\(${code}\\); istek EDM'ye ulaşmış olabilir\\.$`));
+      assert.match(error.message, code === "abort" ? /^EDM yanıt vermedi \(zaman aşımı\); istek EDM'ye ulaşmış olabilir\.$/ : /^EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir\.$/);
+      if (code !== "abort") assert.equal(error.detail, code, "kod detail'de (UX14)");
       assert.equal(ops.SendInvoice, 1, `${code}: gönderim bir kez`);
     }
   });

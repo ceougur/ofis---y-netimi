@@ -318,7 +318,7 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     assert.equal(sent.data.paperNo, withdrawn.data.number, "fiş numarası izi kalır");
     assert.equal(sent.data.eStatus, "sent");
   });
-  test("Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); listeden silinebilir", async () => {
+  test("Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi olarak bırakılabilir", async () => {
     const yesterday = new Date(Date.now() - 86_400_000);
     const day = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, "0")}-${String(yesterday.getDate()).padStart(2, "0")}`;
     if (day.slice(0, 4) !== String(new Date().getFullYear())) return; // yılbaşında seri yeniden başlar

@@ -4,12 +4,12 @@
 //               istek en çok 20 belgeyi dener ya da süre bütçesi (üretimde 10 sn) dolunca durur; kalan sayısı döner (istemci yineler).
 //   O1  ORTA    Kaydet ve Gönder, düz Kaydet ve kartta e-Belge Gönder, aynı seride daha eski tarihli numarasız bekleyen varken yeni belgeye numara
 //               veriyordu → eskiler kalıcı kronoloji engeline düşüyordu. Bütün numara yolları aynı kural: yeni belge numarasız Gönderilecekler'de kalır.
-//   O2  ORTA    Tümünü Gönder sürerken Listeden Silinen belge yine e-Belge olarak EDM'ye gidiyordu.
+//   O2  ORTA    Tümünü Gönder sürerken Müşteri Fişi olarak bırakılan belge yine e-Belge olarak EDM'ye gidiyordu.
 //   O3  ORTA    alıcısı e-Fatura mükellefi olan numarasız e-Arşiv (buyer-is-efatura) geçici sayılıp bütün seriyi her turda bekletiyordu; kartta canSend.
 //   D2  DÜŞÜK   eşzamanlı gönderimde "zaten iletildi" hata sayılıyor, gönderilmiş belgenin iletisi eziliyordu.
 //   D4  DÜŞÜK   numarasız bekleyenin tarihi Düzenle ile ileri alınamıyordu (seq = 0'da "sonraki belge" serinin ilk numaralısıydı).
 //   BİLGİ       bağlantı yokken Tümünü Gönder her belgeye numara verip hiçbirini gönderemiyordu → ilk "EDM'ye ulaşılamadı"da tur durur.
-// Nasıl bozulur: sıra (eski belge sonradan / yeni belge önce), iki oturum aynı anda, tur sürerken Listeden Sil / Düzenle, kalıcı ve geçici engel karışık,
+// Nasıl bozulur: sıra (eski belge sonradan / yeni belge önce), iki oturum aynı anda, tur sürerken Müşteri Fişi Olarak Bırak / Düzenle, kalıcı ve geçici engel karışık,
 // bağlantı kopuk, aynı gün, büyük kuyruk (istek başına sınır).
 import assert from "node:assert/strict";
 import { after, describe, test } from "node:test";
@@ -247,7 +247,7 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     });
   }
 
-  test("O2: Tümünü Gönder sürerken Listeden Silinen belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)", async () => {
+  test("O2: Tümünü Gönder sürerken Müşteri Fişi olarak bırakılan belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)", async () => {
     const ctx = await setup({ sendDelayMs: 150, checkDelayMs: 0 });
     open.push(ctx);
     const docs = [];
@@ -260,13 +260,13 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     await sleep(300);
     const w = unwrap(await other.post(`/api/workspace/invoices/${target.id}/withdraw`, {}));
     assert.equal(w.status, 200, JSON.stringify(w.data).slice(0, 300));
-    assert.equal(w.data.eStatus, "withdrawn", "ön koşul: tur hedefe ulaşmadan listeden silindi");
+    assert.equal(w.data.eStatus, "withdrawn", "ön koşul: tur hedefe ulaşmadan Müşteri Fişi olarak bırakıldı");
     const r = await turn;
     const item = r.data.results.find(x => x.id === target.id);
     assert.equal(item?.ok, false, JSON.stringify(item));
     assert.equal(item.skipped, true);
     assert.equal(item.reason, "withdrawn");
-    assert.equal(item.message, "Gönderilmedi: belge gönderim sürerken Listeden Silindi (Müşteri Fişi olarak kaldı).");
+    assert.equal(item.message, "Gönderilmedi: belge gönderim sürerken Müşteri Fişi olarak bırakıldı.");
     assert.equal(r.data.sent, 7, "öbür belgeler gitti (silinen seriyi bekletmez)");
     const c = await ctx.card(target.id);
     assert.equal(c.profile, "KAGIT");
@@ -534,7 +534,7 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     assert.equal(ctx.sentCount((await ctx.card(doc.id)).ettn), 1);
   });
 
-  test("Ek 8 (kâhin kucuk-fis-sira): Listeden Sil, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest", async () => {
+  test("Ek 8 (kâhin kucuk-fis-sira): Müşteri Fişi Olarak Bırak, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest", async () => {
     const ctx = await setup();
     open.push(ctx);
     const older = await ctx.sale(ctx.people[0], { issueDate: ctx.day(-3), eSend: "later" });

@@ -665,6 +665,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     statusLabel: { draft: "Taslak", issued: "Kaydedildi", cancelled: "İptal Edildi" }[row.status] || row.status,
     number: row.number,
     displayNo: displayNo(row),
+    // 2.4.3 (uzman UX28): müşteri numara vermediği için programın iç seriden numara verdiği satıştan iade (düzenlemede "Müşterinin İade Faturası No"
+    // kutusu boş ve salt okunur gelir; iç numara açıklamada).
+    internalNumber: row.kind === "sale_return" && Number(row.seq) > 0,
     ettn: row.ettn,
     issueDate: row.issueDate,
     issueTime: row.issueTime,
@@ -1338,7 +1341,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!meta.return || !original || String(original.number || "").trim().length === 16) return "";
     return limited(String(body.returnRef ?? existing?.returnRef ?? "").replace(/\s+/g, "").toUpperCase(), 40, "İade Edilen Belge No");
   }
-  function documentInput(body, { mode = "issue", existing = null, fromBank = false } = {}) {
+  // exceptReturnId (2.4.3, uzman UX2): ön hesapta (calc) düzenlenen iade belgesinin kimliği — iadenin kendi miktarı "önce iade edilen"e sayılmaz
+  // (kayıt yolu existing ile aynısını yapar). Yalnız aynı asıl faturanın kayıtlı iadesiyse kullanılır (calc ucunda denetlenir).
+  function documentInput(body, { mode = "issue", existing = null, fromBank = false, exceptReturnId = "" } = {}) {
     const s = settings();
     const scenario = SCENARIOS[text(body.scenario)] ? text(body.scenario) : existing?.scenario || "";
     const kind = INVOICE_KINDS[text(body.kind)] ? text(body.kind) : SCENARIOS[scenario]?.kind || existing?.kind || "";
@@ -1353,7 +1358,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       original = invoiceRow(originalId);
       if (original.kind !== meta.of) fail400(`${meta.label} yalnız ${INVOICE_KINDS[meta.of].label.toLocaleLowerCase("tr-TR")} için kaydedilir.`, "originalId");
       if (original.status !== "issued") fail400("İptal edilmiş ya da taslak faturanın iadesi olmaz.", "originalId");
-      if (original.eStatus === "waiting") fail400("Bu belge henüz entegratöre gönderilmedi (Gönderilecekler). İadeden önce gönderin ya da listeden silin.", "originalId", { code: "invoice-waiting" });
+      if (original.eStatus === "waiting") fail400("Bu belge henüz entegratöre gönderilmedi (Gönderilecekler). İadeden önce gönderin ya da Müşteri Fişi olarak bırakın.", "originalId", { code: "invoice-waiting" });
       const fee = fromBank ? null : bankFeeOf(original.id);
       if (fee) throw new HttpError(409, bankFeeText(fee), { code: "invoice-bank-fee", eventNo: fee.no });
     }
@@ -1387,7 +1392,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const given = numberOf(body.stoppageRate ?? existing?.stoppageRate, "Stopaj oranı", "stoppageRate", { min: 0, max: 40 });
       stoppageRate = given ?? (kind === "smm" && account.partyKind !== "person" && classifyTaxId(account.taxNo).kind !== "tckn" ? s.defaults.stoppageRate : 0);
     }
-    const lines = linesInput(kind, Array.isArray(body.lines) ? body.lines : [], { original, s, existingId: existing?.id || "" });
+    const lines = linesInput(kind, Array.isArray(body.lines) ? body.lines : [], { original, s, existingId: existing?.id || exceptReturnId || "" });
     let computed;
     try {
       computed = computeInvoice(lines, { pricesIncludeVat, discountRate, stoppageRate });
@@ -2458,7 +2463,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.post("/api/workspace/invoices/calc", async ({ req, res }) => {
     requireView(req);
     const body = await readJson(req, { limit: 2_000_000 });
-    const doc = documentInput(body, { mode: "draft" });
+    // 2.4.3 (uzman UX2): tam iade Düzenle'de hiç kaydedilemiyordu — ön hesap düzenlenen iadenin kendi miktarını "önce iade edilen" sayıyordu
+    // ("en çok 0 Adet iade edilebilir"). Form düzenlenen belgenin kimliğini gönderir; yalnız aynı asıl faturanın iadesiyse dışarıda bırakılır.
+    const editedId = text(body.existingId);
+    const exceptReturnId = editedId && text(body.originalId) ? store.get("SELECT id FROM invoices WHERE id = ? AND original_id = ? AND kind IN ('sale_return', 'purchase_return')", editedId, text(body.originalId))?.id || "" : "";
+    const doc = documentInput(body, { mode: "draft", exceptReturnId });
     const t = doc.computed.totals;
     ok(res, {
       kind: doc.kind,
@@ -3151,7 +3160,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const withdrawOpen = row.eStatus === "waiting" && !(lastPaper && lastPaper.issueDate > row.issueDate);
     const head = `${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; bu belge (${dayText(row.issueDate)}) daha eski tarihli olduğu için e-Belge olarak gönderilemez.`;
     return withdrawOpen
-      ? `${head} Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.`
+      ? `${head} “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.`
       : `${head} İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.`;
   }
   // Dar kontrol 2.4.3 (O3): belgeye özgü, kullanıcı müdahalesi olmadan düzelmeyecek gönderim engelleri KALICIDIR — aynı serinin yeni belgelerini
@@ -3175,7 +3184,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (code === "buyer-check-failed") return extra.stage === "login" && ["integrator-rejected", "integrator-login"].includes(extra.cause);
     return stage === "login" && code === "integrator-rejected";
   }
-  const WITHDRAWN_TEXT = "Gönderilmedi: belge gönderim sürerken Listeden Silindi (Müşteri Fişi olarak kaldı).";
+  const WITHDRAWN_TEXT = "Gönderilmedi: belge gönderim sürerken Müşteri Fişi olarak bırakıldı.";
   const ALREADY_SENT_TEXT = "Bu belge başka oturumda gönderildi.";
   // O3: alıcısı e-Fatura mükellefi olarak işaretlenmiş (Mükellef Sorgula ya da gönderimdeki sorgu) carinin numarasız e-Arşiv belgesi. Kalıcı:
   // e-Arşiv olarak hiç gönderilemez. Belgedeki numara carinin şimdiki numarasıyla aynıysa (sorgunun cariyi işaretleme koşulu) anlaşılır.
@@ -3363,8 +3372,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // (perakende) cariye belgede yazılan firma numarası o cariyi e-Fatura mükellefi yapmaz (sonraki kişi satışları yanlış kutuya giderdi).
     const own = doc.accountId ? String(store.get("SELECT tax_no AS taxNo FROM accounts WHERE id = ?", doc.accountId)?.taxNo || "").replace(/\D/g, "") : "";
     if (own === taxNo) {
-      accounts().taxIdentity.setEInvoice(user, doc.accountId, { registered: true, alias: aliases.length === 1 ? aliases[0] : "", title: result.title });
-      const choose = aliases.length > 1 ? ` Alıcının ${aliases.length} posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin.` : "";
+      // 2.4.3 (uzman UX5): çok posta kutulu mükellefte kullanıcının daha önce seçtiği etiket (listedeyse) korunur; ileti korunan kutuyu söyler,
+      // seçim gerekiyorsa bunu söyler (önceden seçili kutu korunsa da "Mükellef Sorgula ile seçin" deniyordu).
+      const marked = accounts().taxIdentity.setEInvoice(user, doc.accountId, { registered: true, alias: aliases.length === 1 ? aliases[0] : "", aliases, title: result.title });
+      const kept = aliases.length > 1 && marked?.eAlias ? marked.eAlias : "";
+      const choose = kept ? ` Önceden seçtiğiniz posta kutusu (${kept}) korundu.` : aliases.length > 1 ? ` Alıcının ${aliases.length} posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin.` : "";
       const next = beforeSave ? " Fatura kaydedilmedi, numara harcanmadı; yeniden kaydedin: e-Fatura olarak kesilir." : " Bu belgeyi iptal edip yeniden kaydedin: e-Fatura olarak kesilir.";
       throw new HttpError(409, `Alıcı (${taxNo}) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi.${choose}${next}`, { code: "buyer-is-efatura", aliases });
     }
@@ -3519,7 +3531,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   function withdraw(user, id) {
     const result = store.tx(() => {
       const row = invoiceRow(id);
-      if (row.status !== "issued" || row.eStatus !== "waiting") throw new HttpError(409, "Yalnız Gönderilecekler'deki belge listeden silinir.", { code: "invoice-not-waiting" });
+      if (row.status !== "issued" || row.eStatus !== "waiting") throw new HttpError(409, "Yalnız Gönderilecekler'deki belge Müşteri Fişi olarak bırakılır.", { code: "invoice-not-waiting" });
       const s = settings();
       const series = s.series.paper;
       const year = Number(row.issueDate.slice(0, 4));
@@ -3580,7 +3592,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const row = store.get("SELECT status, e_status AS eStatus, e_message AS eMessage FROM invoices WHERE id = ?", id);
     const message = String(error?.message || error || "").slice(0, 500);
     if (!row || row.status !== "issued" || row.eStatus === "draft" || !message || row.eMessage === message) return;
-    setE(user, id, { status: row.eStatus || "none", message }, "invoice.e.send-failed", { code: error?.extra?.code || error?.code || "", stage: "before-send" });
+    setE(user, id, { status: row.eStatus || "none", message }, "invoice.e.send-failed", { code: error?.extra?.code || error?.code || "", stage: "before-send", detail: String(error?.extra?.detail || error?.detail || "").slice(0, 200) });
   }
   // Kaydedilip gönderilemeyen belgenin yanıtı: numara, neden ve nerede beklediği (Gönderilecekler) açıkça söylenir.
   function unsentResult(id, error) {
@@ -3893,6 +3905,21 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!classifyTaxId(taxNo).ok) fail400("Önce Firma / Etiket Tanımları'nda firmanın VKN'sini (ya da TCKN'sini) yazıp kaydedin.", "seller.taxNo", { code: "seller-tax-id" });
     const result = await integrator(s).checkUser(taxNo);
     ok(res, { taxNo, registered: result.registered, title: result.title, senders: result.senderAliases || [], mailboxes: result.aliases || [] });
+  });
+  // 2.4.3 (KÖ1, kullanıcı kararı 18.10.2026): faturada "Nihai Tüketici" hızlı seçeneği — kimliği bilinmeyen perakende alıcı için TEK cari
+  // (TCKN 11111111111; GİB e-Arşiv'de kimliği bilinmeyen nihai tüketici). Varsa en eski kayıt yeniden kullanılır (çift cari açılmaz), yoksa ilk
+  // kullanımda açılır; il / ilçe firmanın adresinden (e-Arşiv alıcıda il zorunlu). Tutar sınırı (ANONYMOUS_LIMIT) belge denetiminde (partyProblems).
+  router.post("/api/workspace/invoices/retail-account", async ({ req, res }) => {
+    const user = requireManage(req);
+    const existingId = accounts().taxIdentity.findByTaxNo(ANONYMOUS_TCKN);
+    let id = existingId;
+    if (!id) {
+      const seller = settings().seller || {};
+      id = store.tx(() => accounts().taxIdentity.findByTaxNo(ANONYMOUS_TCKN) || accounts().taxIdentity.createForParty(user, { name: "Nihai Tüketici", taxNo: ANONYMOUS_TCKN, partyKind: "person", firstName: "Nihai", familyName: "Tüketici", city: seller.city || "", district: seller.district || "", country: "Türkiye" }, "customer"));
+      publish(user, { kind: "accounts", accountId: id });
+    }
+    const row = store.get("SELECT id, name FROM accounts WHERE id = ?", id);
+    ok(res, { id: row.id, name: row.name, created: !existingId });
   });
   // Mükellef sorgusu: VKN/TCKN GİB e-Fatura kullanıcısı mı, posta kutusu etiketi ne? Cari verilirse kartına yazılır.
   router.post("/api/workspace/invoices/check-user", async ({ req, res }) => {

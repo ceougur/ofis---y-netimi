@@ -16,7 +16,7 @@
 //   D1 YÜKSEK  gönderim sürerken Sil → belge EDM'de geçerli, programda silinir; numara yeniden verilir.
 //   D2 YÜKSEK  gönderim sürerken Düzenle → defter 6.000 TL, GİB'e giden belge 1.200 TL.
 // Dar kontrol turu 6 (c3f0abd..eae82f3):
-//   E1 ORTA    gönderim mükellef sorgusunu beklerken "Listeden Sil" → fiş numarası harcanır, belge yine e-Arşiv olarak gider.
+//   E1 ORTA    gönderim mükellef sorgusunu beklerken "Müşteri Fişi Olarak Bırak" → fiş numarası harcanır, belge yine e-Arşiv olarak gider.
 //   E2 DÜŞÜK   kimliğin başına boşluk eklenmiş Düzenle isteği kilidi deler (D2 geri gelir).
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
@@ -293,7 +293,7 @@ describe("Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)", () => {
     assert.equal(row.payableTotal ?? row.tryPayable, payable, `defter ${row.payableTotal ?? row.tryPayable} ↔ gönderilen ${payable}`);
   });
 
-  test("E1: mükellef sorgusu sürerken Listeden Sil reddedilir; belge fişe dönmez", async () => {
+  test("E1: mükellef sorgusu sürerken Müşteri Fişi Olarak Bırak reddedilir; belge fişe dönmez", async () => {
     const doc = (await sale(personId, { eSend: "later" })).data;
     let open;
     holdOp = /CheckUserRequest/;

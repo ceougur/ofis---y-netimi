@@ -203,7 +203,7 @@ describe("gg243 dar kontrol 2: gönderim sonrası kopma belirsizdir, tur sürer 
     assert.equal(r.data.sent, 11, "kalan 11 belge gitti");
     const broken = r.data.results.find(item => !item.ok);
     assert.equal(broken.code, "integrator-uncertain", JSON.stringify(broken));
-    assert.match(broken.message, /istek gönderildikten sonra koptu .*istek EDM'ye ulaşmış olabilir\./);
+    assert.match(broken.message, /istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir\./);
     const c = await ctx.card(broken.id);
     assert.ok(c.number, "numara korunur (K14)");
     assert.equal(c.eStatusLabel, "Sonucu Belirsiz");

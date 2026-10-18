@@ -148,8 +148,11 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
       // B2: yan etkisiz işlem (retry) yinelemeden sonra da düştüyse EDM şu an kullanılamıyor (yan etkisi yok → ulaşılamadı). Yan etkili işlemde
       // (gönderim, taslak, iptal) yalnız bağlantının hiç kurulamadığı kesinse "ulaşılamadı"; değilse "belirsiz".
       const definite = retry || notConnected(error);
-      if (definite) throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin." : `EDM'ye bağlanılamadı: ${error?.cause?.code || error?.message || error}`, { code: "integrator-unreachable" });
-      throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı); istek EDM'ye ulaşmış olabilir." : `EDM ile bağlantı istek gönderildikten sonra koptu (${error?.cause?.code || error?.code || error?.message || error}); istek EDM'ye ulaşmış olabilir.`, { code: "integrator-uncertain" });
+      // 2.4.3 (uzman UX14): kullanıcı iletisinde teknik kod (UND_ERR_SOCKET, ECONNREFUSED…) yazmaz; kod `detail`te kalır (yanıtta ve işlem
+      // geçmişinde — invoice.e.send-failed kaydı) tanı için okunur.
+      const detail = String(error?.cause?.code || error?.code || error?.message || error || "").slice(0, 200);
+      if (definite) throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin." : "EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin.", { code: "integrator-unreachable", detail });
+      throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı); istek EDM'ye ulaşmış olabilir." : "EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir.", { code: "integrator-uncertain", detail });
     } finally {
       clearTimeout(timer);
     }

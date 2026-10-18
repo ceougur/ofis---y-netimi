@@ -5,7 +5,7 @@
 //               kullanıcı onaylar; BillingReference/ID'ye o, IssueDate'e asıl tarih; gerçek numara açıklamada; asıl kayda dokunulmaz.
 //   MM2 YÜKSEK  Ticari profilli tedarikçiye alıştan iade TICARIFATURA + IADE kesiliyordu; GİB şematronu reddeder. Karar: iade belgesinde yalnız TEMELFATURA.
 //   B5  ORTA    "Kes, Sonra Gönder" serinin son numaralısından eski tarihle kaydediliyor, doğar doğmaz kalıcı kronoloji engeline düşüyordu (D4 kuralı yok).
-//   B7  DÜŞÜK   kronoloji engelli belgenin iletisi "Listeden Sil ile Müşteri Fişi olarak bırakın" diyordu; Müşteri Fişi sırası (K31) izin vermiyorsa o yol kapalı.
+//   B7  DÜŞÜK   kronoloji engelli belgenin iletisi "Müşteri Fişi Olarak Bırak ile Müşteri Fişi olarak bırakın" diyordu; Müşteri Fişi sırası (K31) izin vermiyorsa o yol kapalı.
 // Nasıl bozulur: asıl numara boşluklu/tireli/uzun, kullanıcı öneriyi bozar (15/17 karakter, işaret), asıl 16 haneli e-Belge (davranış aynı kalmalı),
 // carinin ve ayarın varsayılanı Ticari, Düzenle'de eski Ticari iade; aynı gün / eski gün; Müşteri Fişi serisinde daha yeni fiş.
 import assert from "node:assert/strict";
@@ -200,7 +200,7 @@ describe("gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji 
     await ctx.must("TEF eski", ctx.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.ids.ticari, issueDate: ctx.day(-9), lines: LINES, payment: { rest: "open" }, eSend: "later" }));
   });
 
-  test("B7: kronoloji engelli bekleyenin iletisi yalnız açık yolu söyler — Müşteri Fişi sırası izin vermiyorsa Listeden Sil önerilmez", async () => {
+  test("B7: kronoloji engelli bekleyenin iletisi yalnız açık yolu söyler — Müşteri Fişi sırası izin vermiyorsa Müşteri Fişi Olarak Bırak önerilmez", async () => {
     const ctx = await setup();
     open.push(ctx);
     // Ön koşul (programın kendi yolu): kimliksiz cariye mükellef numaralı e-Arşiv bekleyen (kalıcı engelli; seriyi bekletmez), sonra seride daha yeni
@@ -214,13 +214,13 @@ describe("gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji 
     const fresh = await ctx.must("bugün Kaydet ve Gönder", ctx.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.ids.ayse, issueDate: ctx.day(-3), lines: LINES, payment: { rest: "open" }, eSend: "now" }));
     assert.equal(fresh.number, "TEA2026000000002", `kalıcı engelli eski belge bekletmedi: ${JSON.stringify(fresh.autoSend)}`);
     const card1 = await ctx.must("kart", ctx.api.get(`/api/workspace/invoices/${stuck.id}`));
-    assert.equal(card1.sendBlock, `${head} Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.`);
-    // Müşteri Fişi serisine daha yeni fiş girer (başka bekleyen Listeden Silinir: FIS numarası 17.10).
+    assert.equal(card1.sendBlock, `${head} “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.`);
+    // Müşteri Fişi serisine daha yeni fiş girer (başka bekleyen Müşteri Fişi olarak bırakılır: FIS numarası 17.10).
     const other = await ctx.must("bekleyen", ctx.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.ids.ayse, issueDate: ctx.day(-1), lines: LINES, payment: { rest: "open" }, eSend: "later" }));
-    await ctx.must("Listeden Sil", ctx.post(`/api/workspace/invoices/${other.id}/withdraw`, {}));
+    await ctx.must("Müşteri Fişi Olarak Bırak", ctx.post(`/api/workspace/invoices/${other.id}/withdraw`, {}));
     const card2 = await ctx.must("kart", ctx.api.get(`/api/workspace/invoices/${stuck.id}`));
     assert.equal(card2.sendBlock, `${head} İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.`);
-    // İleti doğru: Listeden Sil gerçekten reddedilir (K31), İptal Et çalışır.
+    // İleti doğru: Müşteri Fişi Olarak Bırak gerçekten reddedilir (K31), İptal Et çalışır.
     const withdraw = await ctx.post(`/api/workspace/invoices/${stuck.id}/withdraw`, {});
     assert.equal(withdraw.status, 409);
     assert.equal(withdraw.data.code, "chronology");

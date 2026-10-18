@@ -140,7 +140,7 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     assert.equal(all.data.sent, 3, JSON.stringify(all.data.results));
   });
 
-  test("S1: kalıcı kronoloji engelli eski belge, gönderilebilir yeni belgeyi bekletmez; iletisi Listeden Sil / İptal Et yolunu söyler", async () => {
+  test("S1: kalıcı kronoloji engelli eski belge, gönderilebilir yeni belgeyi bekletmez; iletisi Müşteri Fişi Olarak Bırak / İptal Et yolunu söyler", async () => {
     const ctx = await setup();
     open.push(ctx);
     const sent = await ctx.sale(ctx.people[0], { issueDate: ctx.day(0), eSend: "now" });
@@ -163,11 +163,11 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
       }
       assert.equal(byId[old.id].ok, false);
       assert.ok(!byId[old.id].skipped, "kalıcı engelli belge 'bekletildi' sayılmaz");
-      assert.match(byId[old.id].message, /Listeden Sil/);
+      assert.match(byId[old.id].message, /Müşteri Fişi Olarak Bırak/);
       assert.match(byId[old.id].message, /İptal Et/);
     }
     assert.match((await ctx.card(fresh.id)).number, /^TEA2026/);
-    assert.match(oldCard.sendBlock, /Listeden Sil/);
+    assert.match(oldCard.sendBlock, /Müşteri Fişi Olarak Bırak/);
     assert.match(oldCard.sendBlock, /İptal Et/);
   });
 
