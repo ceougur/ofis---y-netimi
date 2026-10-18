@@ -266,7 +266,7 @@ describe("2.3.0 İz 5 — Hareketler PDF/Excel, Tüm Zamanlar, POS Satış / Kom
     }
     const accountant = apiOf(await createUser(ctx.server, api.client, { username: "iz5-muhasebe-2", role: "muhasebe" }));
     const users = await must("kullanıcılar", api.get("/api/admin/users"));
-    await must("rapor yetkisini kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "iz5-muhasebe-2").id}`, { grants: { add: [], remove: ["bank.reports"] } }));
+    await must("rapor yetkisini kaldır", api.client.patch(`/api/admin/users/${users.find(user => user.username === "iz5-muhasebe-2").id}`, { grants: { add: [], remove: ["overview.view", "bank.reports"] } })); // 2.4.3 H9 (bilerek güncellendi): muhasebe Finans Raporları'nı varsayılan görür; Banka grubu kapısını ayrı sınamak için o da kaldırılır.
     // 2.3.0 İz 1.7 ile birleşince (bilerek güncellendi): muhasebenin Şüpheli Alacak İşlemleri yetkisi katalogda yalnız Şüpheli Alacaklar'ı bırakır;
     // Banka grubu yine kapalı (aşağıdaki hareket dışa aktarımı bank.view ile ayrı).
     const narrowed = await accountant.get(RC);
