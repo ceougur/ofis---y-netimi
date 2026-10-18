@@ -447,3 +447,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - UI/UX A PAKETİ (dal uiux-a-243, 5 commit; ana oturum birim eski 7/9 kırmızı → 9/9): UX1, UX4, UX5(cari)/KÖ4, UX7, UX8, UX10(çekirdek), UX11, UX13, UX19
   (ad "Tahsilat / Ödeme" — yalnız nakit para çekirdeğine dokunurdu), UX21, UX22, UI1, UI3b/c, UI6–UI10, UI11 (fatura dışı); 24 madde B paketine (fatura ekranı).
   KARAR (kullanıcı, 18.10.2026 ~18:30 UTC: "önerin gibi yap"): UI11 dışa aktarım düğmeleri bütün modüllerde tek ad ("PDF" / "Excel", aynı görünüm) → B paketi.
+- KARAR (kullanıcı, 18.10.2026 ~19:10 UTC: "uygula"; token tasarrufu): (1) DAR KONTROL 3 kapsamı = e-Belge numara/gönderim akışı (sunucu + ekrandaki
+  Tümünü Gönder döngüsü) + Vergi Ödemesi / KDV Mahsup kayıtları + stok açılışının deftere girmesi; genel UI/UX değişiklikleri dışarıda (ajan testleri +
+  tam e2e sınar). (2) 30 dk denetim raporu değişiklik yoksa TEK SATIR; kırmızı/yeni bulgu/karar gerekince ayrıntılı. Kalan iş tahmini ~20 sa, ~3,5–5 M token.
