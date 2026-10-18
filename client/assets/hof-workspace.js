@@ -560,7 +560,7 @@
   }
 
   async function deleteCashEntry(entry, after) {
-    const ok = await HOF.confirm({ title: entry.transferId ? "Transferi Sil" : "Kasa Hareketini Sil", message: entry.transferId ? `${HOF.formatMoney(entry.amount)} tutarındaki transfer (${entry.description}) iki tarafıyla birlikte silinecek: Kasa'daki nakit hareket ve banka tarafındaki karşı hareket. Silinenler'den geri yüklenebilir.` : `${HOF.formatMoney(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} (${entry.description}) silinecek. Silme işlem kayıtlarında saklanır.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: entry.transferId ? "Transferi Sil" : "Kasa Hareketini Sil", message: entry.transferId ? `${HOF.formatMoney(entry.amount)} tutarındaki transfer (${entry.description}) iki tarafıyla birlikte silinecek: Kasa'daki nakit hareket ve banka tarafındaki karşı hareket. ${HOF.trashHint()}` : `${HOF.formatMoney(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} (${entry.description}) silinecek. Silme işlem kayıtlarında saklanır.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       const path = `/api/workspace/cash/${encodeURIComponent(entry.id)}`;
@@ -885,7 +885,9 @@
     ["users", "Kullanıcılar ve Yetkiler", "users.manage"],
     ["backups", "Yedekler", "system.manage"],
     ["audit", "Değişiklik Geçmişi", "audit.view"],
-    ["trash", "Silinenler", "records.delete"],
+    // 2.4.3 (uzman UX7): Silinenler yönetim panelindedir; panel yalnız yöneticiye açılır (silme yetkisi olan ikinci rol "Bu sayfa
+    // yöneticiler içindir" sayfasına düşüyordu).
+    ["trash", "Silinenler", "users.manage"],
     ["companies", "Şirketler", "system.manage"],
     ["system", "Sistem Ayarları", "system.manage"],
     ["license", "Lisans", "license.manage"],
@@ -1123,7 +1125,7 @@
     const what = item.type === "note" ? `“${String(item.text || "").slice(0, 80)}${String(item.text || "").length > 80 ? "…" : ""}” notu` : item.type === "phone" ? `${item.label}: ${item.phone} telefonu` : `“${item.title}” haczi`;
     const ok = await HOF.confirm({
       title: `${HISTORY_LABEL[item.type]} Sil`,
-      message: `${what}${title ? ` (${title})` : ""} işlem geçmişinden silinecek. Yönetim → Silinenler'den geri yüklenebilir; silme işlem kayıtlarında saklanır.`,
+      message: `${what}${title ? ` (${title})` : ""} işlem geçmişinden silinecek. ${HOF.trashHint()} Silme işlem kayıtlarında saklanır.`,
       confirmLabel: "Sil",
       danger: true,
     });

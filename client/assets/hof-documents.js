@@ -612,7 +612,7 @@
   async function remove(id) {
     const item = documents.find(entry => entry.id === id);
     if (!item) return false;
-    const ok = await HOF.confirm({ title: "Belgeyi Sil", message: `“${item.name}” bu kayıttan kaldırılacak. Hemen “Geri al” ile, 30 gün içinde de Yönetim → Silinenler'den geri getirilebilir.`, confirmLabel: "Belgeyi Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Belgeyi Sil", message: `“${item.name}” bu kayıttan kaldırılacak. ${HOF.can("users.manage") ? "Hemen “Geri al” ile, 30 gün içinde de Yönetim → Silinenler'den geri getirilebilir." : "Hemen “Geri al” ile geri getirilebilir; 30 gün içinde yöneticiniz de Yönetim → Silinenler'den geri yükleyebilir."}`, confirmLabel: "Belgeyi Sil", danger: true });
     if (!ok) return false;
     try {
       await HOF.api(`/api/workspace/documents/${encodeURIComponent(id)}`, { method: "DELETE" });
