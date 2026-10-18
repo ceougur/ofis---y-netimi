@@ -1,0 +1,210 @@
+[
+ {
+  "mutasyon": "M1 stok açılışı karşı hesap 500→602",
+  "dosya": "server/lib/general-ledger.mjs",
+  "testler": [
+   "test/defter-243-stok-acilis.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 7,
+  "pass": 0,
+  "fail": 7,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M2 stok açılışı değeri 0",
+  "dosya": "server/lib/general-ledger.mjs",
+  "testler": [
+   "test/defter-243-stok-acilis.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 7,
+  "pass": 0,
+  "fail": 7,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M3 göç işaretlemesi yok",
+  "dosya": "server/lib/migrations.mjs",
+  "testler": [
+   "test/goc-243-stok-acilis.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 1,
+  "pass": 0,
+  "fail": 1,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M4 Kasa vergi ödemesi 360→770",
+  "dosya": "server/lib/general-ledger.mjs",
+  "testler": [
+   "test/defter-243-vergi.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 10,
+  "pass": 5,
+  "fail": 5,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M5 beklenen 360 Kasa ödemesi işareti ters",
+  "dosya": "server/routes/ledger.mjs",
+  "testler": [
+   "test/defter-243-vergi.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 10,
+  "pass": 5,
+  "fail": 5,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M6 mahsup devreden 190 tarafı ters",
+  "dosya": "server/lib/general-ledger.mjs",
+  "testler": [
+   "test/defter-243-vergi.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 10,
+  "pass": 2,
+  "fail": 8,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M7 mahsup önceki devreden kullanılmaz",
+  "dosya": "server/routes/tax.mjs",
+  "testler": [
+   "test/defter-243-vergi.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 10,
+  "pass": 2,
+  "fail": 8,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M8 Diğer Gider'e 360 açılır",
+  "dosya": "server/lib/bank/voucher.mjs",
+  "testler": [
+   "test/defter-243-vergi.test.mjs"
+  ],
+  "cikis": 0,
+  "tests": 10,
+  "pass": 10,
+  "fail": 0,
+  "cancelled": 0,
+  "yakalandi": false
+ },
+ {
+  "mutasyon": "M8b yasak liste istisnası her role",
+  "dosya": "server/lib/bank/voucher.mjs",
+  "testler": [
+   "test/defter-243-vergi.test.mjs"
+  ],
+  "cikis": 0,
+  "tests": 10,
+  "pass": 10,
+  "fail": 0,
+  "cancelled": 0,
+  "yakalandi": false
+ },
+ {
+  "mutasyon": "M9 faturasız FIFO en eskiden",
+  "dosya": "server/lib/receivable-aging.mjs",
+  "testler": [
+   "test/defter-243-raporlar.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 7,
+  "pass": 5,
+  "fail": 2,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M10 kaleme bağlanmamış tahsilat düşülmez",
+  "dosya": "server/lib/receivable-aging.mjs",
+  "testler": [
+   "test/defter-243-raporlar.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 7,
+  "pass": 6,
+  "fail": 1,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M11 banka nakit akışı verilen çek yok",
+  "dosya": "server/routes/report-center.mjs",
+  "testler": [
+   "test/defter-243-raporlar.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 7,
+  "pass": 6,
+  "fail": 1,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M12 vergi aşım uyarısı yok",
+  "dosya": "server/routes/tax.mjs",
+  "testler": [
+   "test/defter-243-vergi.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 10,
+  "pass": 6,
+  "fail": 4,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M13 mahsup aynı ay iki kez",
+  "dosya": "server/routes/tax.mjs",
+  "testler": [
+   "test/defter-243-vergi.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 10,
+  "pass": 3,
+  "fail": 7,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M14 kapı stock:opening hiç denetlemez",
+  "dosya": "server/lib/integrity.mjs",
+  "testler": [
+   "test/defter-243-kapi.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 3,
+  "pass": 2,
+  "fail": 1,
+  "cancelled": 0,
+  "yakalandi": true
+ },
+ {
+  "mutasyon": "M15 kapı tax rolü tür denetimi yok",
+  "dosya": "server/lib/bank/checks.mjs",
+  "testler": [
+   "test/defter-243-kapi.test.mjs"
+  ],
+  "cikis": 1,
+  "tests": 3,
+  "pass": 2,
+  "fail": 1,
+  "cancelled": 0,
+  "yakalandi": true
+ }
+]

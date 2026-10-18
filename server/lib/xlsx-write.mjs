@@ -188,13 +188,18 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
       rowsXml.push(`<row r="${r}">${cells}</row>`);
     });
     // TOPLAM satırı (v2.0.20): kalın, verinin altında; süzgeç (autoFilter) alanının DIŞINDA kalır, sıralamada yerinden oynamaz.
-    const footerRowNo = sheet.rows.length + headRow + 1;
-    if (sheet.footer && columns.length) {
-      const cells = columns.map((column, index) => cell(`${columnName(index)}${footerRowNo}`, typedCell(sheet.footer[column]) || { text: "" }, boldText(), true)).join("");
-      rowsXml.push(`<row r="${footerRowNo}">${cells}</row>`);
+    // 2.4.3 UX24: sheet.footers (birden çok TOPLAM satırı: "TOPLAM Satış", "TOPLAM Alış", "Net") verilirse footer yerine sırayla yazılır.
+    const footerLines = Array.isArray(sheet.footers) && sheet.footers.length ? sheet.footers : sheet.footer ? [sheet.footer] : [];
+    const footerRowNo = sheet.rows.length + headRow + footerLines.length;
+    if (columns.length) {
+      footerLines.forEach((line, lineIndex) => {
+        const r = sheet.rows.length + headRow + 1 + lineIndex;
+        const cells = columns.map((column, index) => cell(`${columnName(index)}${r}`, typedCell(line[column]) || { text: "" }, boldText(), true)).join("");
+        rowsXml.push(`<row r="${r}">${cells}</row>`);
+      });
     }
     const last = `${columnName(Math.max(0, columns.length - 1))}${sheet.rows.length + headRow}`;
-    const extent = sheet.footer && columns.length ? `${columnName(Math.max(0, columns.length - 1))}${footerRowNo}` : columns.length || !top ? last : `A${preamble.length}`;
+    const extent = footerLines.length && columns.length ? `${columnName(Math.max(0, columns.length - 1))}${footerRowNo}` : columns.length || !top ? last : `A${preamble.length}`;
     const body = `${XML_HEADER}<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
 <dimension ref="A1:${extent}"/>
 <sheetViews><sheetView workbookViewId="0"${sheetIndex === 0 ? ' tabSelected="1"' : ""}>${columns.length ? `<pane ySplit="${headRow}" topLeftCell="A${headRow + 1}" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A${headRow + 1}" sqref="A${headRow + 1}"/>` : ""}</sheetView></sheetViews>

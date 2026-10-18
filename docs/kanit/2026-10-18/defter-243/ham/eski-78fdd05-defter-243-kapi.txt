@@ -1,0 +1,79 @@
+TAP version 13
+# (node:23889) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.3 MM3 / MM4 — kapının yeni denetimleri bozmayı yakalar
+    # Subtest: stock:opening: açılış maddesi yevmiyeden düşerse kırmızı; düzelince yeşil
+    not ok 1 - stock:opening: açılış maddesi yevmiyeden düşerse kırmızı; düzelince yeşil
+      ---
+      duration_ms: 31.042672
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-kapi.test.mjs:24:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-kapi.test.mjs:26:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: bank:voucher: Diğer Gider fişine 360 (tax_payable) elle yazılırsa kırmızı
+    ok 2 - bank:voucher: Diğer Gider fişine 360 (tax_payable) elle yazılırsa kırmızı
+      ---
+      duration_ms: 99.913569
+      type: 'test'
+      ...
+    # Subtest: balance: Kasa vergi satırının ayrıntısı tutarla uyuşmazsa madde dengesiz (kırmızı)
+    not ok 3 - balance: Kasa vergi satırının ayrıntısı tutarla uyuşmazsa madde dengesiz (kırmızı)
+      ---
+      duration_ms: 9.481685
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-kapi.test.mjs:55:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kasa'dan vergi: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-kapi.test.mjs:56:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 2.4.3 MM3 / MM4 — kapının yeni denetimleri bozmayı yakalar
+  ---
+  duration_ms: 596.732184
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-kapi.test.mjs:11:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1111.845232

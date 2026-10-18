@@ -1,0 +1,37 @@
+
+■ MM3b KDV Özeti → KDV Mahsup Fişi Oluştur (Eylül): ön izleme, onay, liste
+  ✗ düğme: KDV Mahsup Fişi Oluştur
+  ✗ beklenmeyen hata: TypeError: Cannot read properties of null (reading 'click')
+    at file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:140:18
+    at async step (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:61:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:136:3
+
+■ MM3a Banka → Hareketler → + Vergi Ödemesi: Muhtasar ve Stopaj 2.000 + gecikme 50; 360'ı aşan KDV 5.000 sorulur, Vazgeç → yazılmaz
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-act="v-tax"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:167:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:61:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:162:3
+
+■ MM3a Kasa → Vergi Ödemesi: KDV 800 nakit; Kasa eksi sorusu → Yine de Kaydet; 360 ve 100
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible [data-tax]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:199:16
+    at async step (/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:61:5)
+    at async file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/senaryo-defter-243.mjs:196:3
+
+■ MM5 Alacak Yaşlandırma: Faturasız Alacak kolonu (Eski Müşteri 5.000 → 90+); MM9 Cari Listesi kartları
+  ✗ Faturasız Alacak kolonu
+  ✗ Eski Müşteri 90+ = undefined
+  ✗ kartlar: Cari | Toplam Borç (Anlaşılan) | Toplam Alacak (Ödenen) | Kalan (Borçlu) | Borçlular | Alacaklılar | Geciken Taksit
+
+■ yetki: Uzman (Kasa ve Banka yetkili, vergi yetkisi yok) Vergi Ödemesi ve KDV Mahsup düğmesini görmez
+  ✓ Kasa'da Vergi Ödemesi yok
+  ✓ Banka Hareketler'de + Vergi Ödemesi yok
+  ✓ sayfa hatası yok
+
+✗ senaryo-defter-243: 3 geçti, 7 kaldı · depo /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05 · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243/test/e2e/artifacts/senaryo-defter-243

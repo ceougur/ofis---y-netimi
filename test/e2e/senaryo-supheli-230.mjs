@@ -316,7 +316,9 @@ try {
   // Karar 15.10.2026: "Vade Gecikme (Gün)" kolonu ve "Şüpheli Alacak (dilimlere dahil)" başlığı.
   rc = await waitRc(page, view => /Alacak Yaşlandırma/.test(view.text) && view.heads.includes("Şüpheli Alacak (dilimlere dahil)") && view.heads.includes("Vade Gecikme (Gün)"));
   const agingRow = rc.rows.find(cells => cells[0] === "İcralık Müşteri");
-  ok(agingRow && kurus(num(agingRow[rc.heads.indexOf("Şüpheli Alacak (dilimlere dahil)")])) === 200000 && kurus(num(agingRow[rc.heads.indexOf("Toplam")])) === 0 && agingRow[rc.heads.indexOf("Vade Gecikme (Gün)")] === "", `Alacak Yaşlandırma: Şüpheli Alacak (dilimlere dahil) 2.000, Toplam 0, Vade Gecikme boş (${agingRow?.join(" | ")})`);
+  // 2.4.3 MM5 (bilerek güncellendi; kullanıcı kararı 18.10.2026): şüphelinin altındaki faturasız borç hareket tarihiyle dilime girer — kolon adı "dilimlere
+  // dahil" artık doğru; Toplam carinin borç bakiyesi (2.000; şüpheli ikinci kez eklenmez). Borç bugün tarihli: Vadesi Gelmemiş, Vade Gecikme boş.
+  ok(agingRow && kurus(num(agingRow[rc.heads.indexOf("Şüpheli Alacak (dilimlere dahil)")])) === 200000 && kurus(num(agingRow[rc.heads.indexOf("Faturasız Alacak (dilimlere dahil)")])) === 200000 && kurus(num(agingRow[rc.heads.indexOf("Toplam")])) === 200000 && agingRow[rc.heads.indexOf("Vade Gecikme (Gün)")] === "", `Alacak Yaşlandırma: Şüpheli Alacak (dilimlere dahil) 2.000, Faturasız 2.000, Toplam 2.000, Vade Gecikme boş (${agingRow?.join(" | ")})`);
 
   await page.click(`${modal} [data-rc-list] [data-report="hesap-mizani"]`);
   rc = await waitRc(page, view => /Hesap Planı Mizanı/.test(view.text) && view.rows.some(cells => cells[0] === "128"));

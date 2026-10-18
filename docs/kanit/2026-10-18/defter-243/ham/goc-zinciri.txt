@@ -1,0 +1,175 @@
+TAP version 13
+# K1 surum-2.0.16-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# Subtest: göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)
+    # Subtest: surum-2.0.16-zincir
+    ok 1 - surum-2.0.16-zincir
+      ---
+      duration_ms: 917.10248
+      type: 'test'
+      ...
+# K1 surum-2.0.17-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.17-zincir 002 · Şahin İnşaat Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.17-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+    # Subtest: surum-2.0.17-zincir
+    ok 2 - surum-2.0.17-zincir
+      ---
+      duration_ms: 1989.232231
+      type: 'test'
+      ...
+# K1 surum-2.0.18-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 002 · Şahin İnşaat Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 004 · Çağdaş Eğitim Kurumları: durumu değişen belge 0
+    # Subtest: surum-2.0.18-zincir
+    ok 3 - surum-2.0.18-zincir
+      ---
+      duration_ms: 2556.252106
+      type: 'test'
+      ...
+# K1 surum-2.0.19-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 004 · Çağdaş Eğitim Kurumları: durumu değişen belge 0
+    # Subtest: surum-2.0.19-zincir
+    ok 4 - surum-2.0.19-zincir
+      ---
+      duration_ms: 2931.992076
+      type: 'test'
+      ...
+# K1 surum-2.0.20-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.20-zincir
+    ok 5 - surum-2.0.20-zincir
+      ---
+      duration_ms: 2588.053103
+      type: 'test'
+      ...
+# K1 surum-2.0.21-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 1 — IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.21-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 1 — IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.21-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.21-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.21-zincir
+    ok 6 - surum-2.0.21-zincir
+      ---
+      duration_ms: 3148.614834
+      type: 'test'
+      ...
+# K1 surum-2.0.22-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 2 — IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.22-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 2 — IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.22-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.22-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.22-zincir
+    ok 7 - surum-2.0.22-zincir
+      ---
+      duration_ms: 3286.563865
+      type: 'test'
+      ...
+# K1 surum-2.0.23-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 3 — IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.23-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 3 — IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.23-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.23-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.23-zincir
+    ok 8 - surum-2.0.23-zincir
+      ---
+      duration_ms: 3175.931929
+      type: 'test'
+      ...
+# K1 surum-2.0.24-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 4 — IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.24-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 4 — IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.24-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.24-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.24-zincir
+    ok 9 - surum-2.0.24-zincir
+      ---
+      duration_ms: 3244.686278
+      type: 'test'
+      ...
+# K1 surum-2.0.25-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 5 — IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.25-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 5 — IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.25-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.25-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.25-zincir
+    ok 10 - surum-2.0.25-zincir
+      ---
+      duration_ms: 3170.594478
+      type: 'test'
+      ...
+# K1 surum-2.0.26-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.26-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.26-zincir
+    ok 11 - surum-2.0.26-zincir
+      ---
+      duration_ms: 2995.162788
+      type: 'test'
+      ...
+# K1 surum-2.0.19-cakisma 001 · Şirket 1: durumu değişen belge 0
+# K1 surum-2.0.19-cakisma 005 · Resmi Şirket: durumu değişen belge 0
+# K1 surum-2.0.19-cakisma 002 · Gayri Resmi Şirket: durumu değişen belge 0
+    # Subtest: surum-2.0.19-cakisma
+    ok 12 - surum-2.0.19-cakisma
+      ---
+      duration_ms: 1789.122076
+      type: 'test'
+      ...
+# K1 surum-2.0.19-eski 001 · Eski Hukuk Bürosu: durumu değişen belge 0
+# K1 surum-2.0.19-eski 002 · Yeni Büro Ltd. Şti.: durumu değişen belge 0
+    # Subtest: surum-2.0.19-eski
+    ok 13 - surum-2.0.19-eski
+      ---
+      duration_ms: 1401.670017
+      type: 'test'
+      ...
+# K1 surum-2.0.26-turler 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-turler 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-turler 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.26-turler 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.26-turler
+    ok 14 - surum-2.0.26-turler
+      ---
+      duration_ms: 3519.274747
+      type: 'test'
+      ...
+    1..14
+ok 1 - göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)
+  ---
+  duration_ms: 36718.059155
+  type: 'suite'
+  ...
+# Subtest: 2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir
+    # Subtest: surum-2.0.21-zincir
+    ok 1 - surum-2.0.21-zincir
+      ---
+      duration_ms: 8507.23708
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.26-zincir
+    ok 2 - surum-2.0.26-zincir
+      ---
+      duration_ms: 11214.253593
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.26-turler
+    ok 3 - surum-2.0.26-turler
+      ---
+      duration_ms: 12079.657291
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir
+  ---
+  duration_ms: 31802.012478
+  type: 'suite'
+  ...
+1..2
+# tests 17
+# suites 2
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69111.373702

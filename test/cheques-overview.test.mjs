@@ -429,7 +429,12 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       const allMoney = (await admin.get("/api/workspace/cash?method=all")).data.data;
       const noncash = (await admin.get("/api/workspace/cash?method=noncash")).data.data;
       const unassignedToday = noncash.entries.filter(entry => entry.date <= TODAY).reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
-      near(flow.closing, allMoney.totals.balance - unassignedToday + planRemaining + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
+      // MM5 (2.4.3, bilerek güncellendi): faturasız cari alacağı da beklenen giriştir — her borçlu carinin bakiyesinin açık taksitlerini aşan kısmı
+      // (bağımsız formül: Σ max(0, bakiye − carinin açık taksit kalanı); bu testte fatura yok).
+      const planOf = new Map();
+      for (const plan of openPlans.plans || []) if (plan.accountId) planOf.set(plan.accountId, (planOf.get(plan.accountId) || 0) + Math.max(0, plan.totals?.remaining ?? 0));
+      const unbilled = list.accounts.reduce((sum, account) => sum + Math.max(0, Math.round(account.balance * 100) - Math.round((planOf.get(account.id) || 0) * 100)), 0) / 100;
+      near(flow.closing, allMoney.totals.balance - unassignedToday + planRemaining + unbilled + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
       near(flow.cashToday, cashToday, `${label}: nakit akışı başlangıcı = Nakit Kasa (bugüne kadar; banka hesabı yok, Gerçek Banka 0)`);
     };
     for (let step = 1; step <= 400; step += 1) {

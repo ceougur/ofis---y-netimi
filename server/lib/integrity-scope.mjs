@@ -51,9 +51,9 @@ const ACCOUNT_LEDGER_FIELDS = ["kind", "gl", "gl_sub", "currency"];
 // Kilit izinin (lib/integrity.mjs LOCK_SQL) satır alanları: kilitli dönemdeki satırda bunlardan biri değişirse, satır eklenir ya da silinirse iz değişir.
 const LOCK_FIELDS = {
   payments: { date: row => row.date, fields: ["amount", "date", "method", "fin_ref", "event_id"] },
-  cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id"] },
+  cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id", "tax_json"] },
   account_entries: { date: row => row.date, fields: ["account_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "fx_currency", "fx_minor", "fx_rate_e6", "fx_source"] },
-  stock_moves: { date: row => row.date, fields: ["item_id", "kind", "qty", "amount", "date", "pay", "method", "account_id", "fin_ref", "event_id"] },
+  stock_moves: { date: row => row.date, fields: ["item_id", "kind", "qty", "amount", "date", "pay", "method", "account_id", "fin_ref", "event_id", "unit_price", "is_opening"] },
   plan_entries: { date: row => row.date, fields: ["plan_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
   cheque_events: { date: row => row.date, fields: ["cheque_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
   invoices: { date: row => (row.status !== "draft" ? row.issue_date : null), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat"] },

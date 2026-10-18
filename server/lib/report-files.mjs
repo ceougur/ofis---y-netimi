@@ -29,6 +29,7 @@ export function reportPdf(data, { now, companyLabel = "", userName = "", brand =
     types: data.types,
     rows: clipped ? data.rows.slice(0, pdfRows) : data.rows,
     footer: data.footer,
+    footers: data.footers || null,
     summary: data.summary || [],
     officeName: companyLabel,
     userName,
@@ -41,9 +42,11 @@ export function reportXlsx(data, { now, companyLabel = "", userName = "" } = {})
   const unique = data.headers.map((header, index) => (data.headers.indexOf(header) === index && header ? header : `${header || "Kolon"} ${index + 1}`));
   const rows = data.rows.map(row => Object.fromEntries(unique.map((header, index) => [header, row[index] ?? ""])));
   const footer = data.footer ? Object.fromEntries(unique.map((header, index) => [header, data.footer[index] ?? ""])) : null;
+  // 2.4.3 UX24: birden çok TOPLAM satırı (yönü karışık rapor) — ekran ve PDF ile aynı satırlar, aynı sıra.
+  const footers = Array.isArray(data.footers) && data.footers.length ? data.footers.map(line => Object.fromEntries(unique.map((header, index) => [header, line[index] ?? ""]))) : null;
   const made = stampText(now.toISOString());
   const preamble = [{ text: companyLabel, bold: true }, { text: data.title, bold: true }, { text: data.subtitle || "" }, { text: `Oluşturma: ${made}${userName ? ` · Hazırlayan: ${userName}` : ""}` }];
-  const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer, preamble }];
+  const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer, footers, preamble }];
   const summary = data.summary || [];
   if (summary.length) {
     sheets.push({

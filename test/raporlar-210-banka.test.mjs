@@ -350,14 +350,15 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
     assert.ok(text.includes(data.title), `${tag} PDF: başlık`);
     for (const row of data.rows) for (const cell of row) if (moneyOf(cell) !== null) assert.ok(text.includes(String(cell).trim()), `${tag} PDF: "${cell}" yok`);
-    if (data.footer) for (const cell of data.footer) if (moneyOf(cell) !== null) assert.ok(text.includes(cell), `${tag} PDF: TOPLAM "${cell}" yok`);
+    const totals = Array.isArray(data.footers) ? data.footers : data.footer ? [data.footer] : []; // 2.4.3 UX24: yönü karışık raporda birden çok TOPLAM satırı
+    for (const line of totals) for (const cell of line) if (moneyOf(cell) !== null) assert.ok(text.includes(cell), `${tag} PDF: TOPLAM "${cell}" yok`);
     const xlsx = await get(id, q, "xlsx");
     assert.equal(xlsx.status, 200, `${tag} Excel: ${xlsx.status}`);
     // 2.2.0 İz 1.1: tablonun üstündeki başlık bloğu (tek hücreli satırlar: şirket, rapor adı, kapsam, oluşturma) atlanır.
     const all = xlsxRows(xlsx.buffer);
     const sheet = all.slice(Math.max(0, all.findIndex(row => row.length > 1)));
     if (data.total > data.rows.length || !data.headers.length) return;
-    assert.equal(sheet.length, 1 + data.rows.length + (data.footer ? 1 : 0), `${tag} Excel: satır sayısı`);
+    assert.equal(sheet.length, 1 + data.rows.length + totals.length, `${tag} Excel: satır sayısı`);
     const cellValue = cell => moneyOf(cell) ?? numberOf(cell);
     const same = (excel, screen, where) => {
       const expected = cellValue(screen);
@@ -366,7 +367,7 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
       assert.equal(actual, expected, `${tag} Excel ${where}: ${excel} ≠ ekrandaki ${screen}`);
     };
     data.rows.forEach((row, r) => row.forEach((cell, c) => same(sheet[r + 1]?.[c], cell, `satır ${r + 1} "${data.headers[c]}"`)));
-    if (data.footer) data.footer.forEach((cell, c) => same(sheet.at(-1)?.[c], cell, `TOPLAM "${data.headers[c]}"`));
+    totals.forEach((line, k) => line.forEach((cell, c) => same(sheet[1 + data.rows.length + k]?.[c], cell, `TOPLAM ${k + 1} "${data.headers[c]}"`)));
   }
 
   const OPTIONS = {

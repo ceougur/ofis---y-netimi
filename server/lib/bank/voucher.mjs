@@ -27,7 +27,22 @@ export const ROLE_GL = Object.freeze({
   fx_gain: ["646"],
   fx_loss: ["656"],
   stoppage: ["193"],
+  // MM3 (2.4.3, uzman mali müşavir; kullanıcı kararı 18.10.2026): Vergi Ödemesi fişinin satırları — ödenen vergi B 360 (Ödenecek Vergi ve Fonlar),
+  // gecikme zammı / faizi B 689 (Diğer Olağandışı Gider ve Zararlar; KKEG). YALNIZ "tax_payment" türünde (ve onun ters kaydında): Diğer Gider
+  // satırına (expense) 360 / 391 yazılamaz kuralı (plan §3.11 beyaz liste) AYNEN kalır (glAllowed).
+  tax_payable: ["360"],
+  late_charge: ["689"],
 });
+/** Yalnız belirli işlem türlerinde yazılabilen roller (MM3): Vergi Ödemesi ve ters kaydı. */
+export const ROLE_TYPES = Object.freeze({ tax_payable: new Set(["tax_payment", "reversal"]), late_charge: new Set(["tax_payment", "reversal"]) });
+/** Satır rolü bu THP koduna (ve verilirse bu işlem türünde) yazılabilir mi? 360 yasak listededir; yalnız tax_payable rolüyle (Vergi Ödemesi) açılır. */
+export function glAllowed(role, gl, type = "") {
+  const allowed = ROLE_GL[role];
+  if (!allowed || !allowed.includes(String(gl))) return false;
+  if (ROLE_TYPES[role] && type && !ROLE_TYPES[role].has(type)) return false;
+  if (FORBIDDEN_GL.has(String(gl)) && !(role === "tax_payable" && String(gl) === "360")) return false;
+  return true;
+}
 export const MONEY_ROLES = Object.freeze(new Set(["bank", "pos", "card", "loan"]));
 /** Para rolünün yolu (fin_events.method; moneyLines'ın yol türetmesiyle aynı). */
 export const ROLE_METHOD = Object.freeze({ bank: "bank", pos: "card", card: "card", loan: "loan" });
@@ -40,13 +55,15 @@ export const FORBIDDEN_GL = Object.freeze(new Set(["100", "101", "103", "120", "
 const forbidden = (message, extra = {}) => new HttpError(400, message, { code: "bank-gl-forbidden", ...extra });
 
 /** Satırların kuralları: rol tanınır, THP kodu beyaz listede, tutar artı tamsayı, taraf D/C, borç = alacak. Hata: 400. */
-export function assertLines(lines) {
+export function assertLines(lines, { type = "" } = {}) {
   let debit = 0;
   let credit = 0;
   for (const line of lines) {
     const allowed = ROLE_GL[line.role];
     if (!allowed) throw forbidden(`Banka fişinde tanınmayan satır rolü (${line.role}).`);
-    if (FORBIDDEN_GL.has(String(line.gl)) || !allowed.includes(String(line.gl))) throw forbidden(`${line.gl} hesabı bu satıra (${line.role}) yazılamaz. İzinli: ${allowed.join(", ")}.`, { gl: String(line.gl), role: line.role });
+    // MM3: Vergi Ödemesi rolleri (tax_payable, late_charge) yalnız kendi türlerinde; tür verilmeyen çağrıda (Elle Banka Fişi, açılış, …) yazılamaz.
+    if (ROLE_TYPES[line.role] && !ROLE_TYPES[line.role].has(type)) throw forbidden(`${line.role} satırı yalnız Vergi Ödemesi fişinde yazılır.`, { gl: String(line.gl), role: line.role });
+    if (!glAllowed(line.role, line.gl, type)) throw forbidden(`${line.gl} hesabı bu satıra (${line.role}) yazılamaz. İzinli: ${allowed.join(", ")}.`, { gl: String(line.gl), role: line.role });
     if (!Number.isSafeInteger(line.tryMinor) || line.tryMinor <= 0) throw new HttpError(400, "Banka fişi satırının tutarı sıfırdan büyük olmalı.", { code: "amount-range" });
     if (line.side !== "D" && line.side !== "C") throw new HttpError(400, "Banka fişi satırının tarafı borç ya da alacak olmalı.", { code: "bank-voucher" });
     if (line.side === "D") debit += line.tryMinor;
@@ -182,6 +199,20 @@ export function interestOutLines({ account, amountMinor, taxMinor = 0, gl = "780
 /** Diğer gelir / gider (§3.7 #18): giriş B 102.k / A gelir (642, 646, 649); çıkış B gider (653, 656, 659, 770, 780) / A 102.k. */
 export function otherLines({ account, direction, amountMinor, gl }) {
   return direction === "in" ? [moneyLine(account, "D", amountMinor), plainLine("income", gl, "C", amountMinor)] : [plainLine("expense", gl, "D", amountMinor), moneyLine(account, "C", amountMinor)];
+}
+/** Vergi türleri (MM3): ödenen verginin türü yevmiye satırının açıklamasında ve 360 bakiye uyarısında kullanılır (360 alt hesabı açılmaz). */
+export const TAX_TYPES = Object.freeze({ kdv: "KDV", muhtasar: "Muhtasar ve Stopaj", other: "Diğer Vergi" });
+export const LATE_MEMO = "Gecikme Zammı / Faizi (KKEG)";
+/**
+ * Vergi Ödemesi (MM3; bankadan): B 360 vergi · B 689 gecikme zammı / faizi (varsa) / A 102.k toplam. taxType: TAX_TYPES anahtarı. Kasa'dan nakit
+ * ödeme bu fişle değil Kasa satırıyla yazılır (routes/tax.mjs; yevmiye B 360 · B 689 / A 100).
+ */
+export function taxPaymentLines({ account, taxMinor, lateMinor = 0, taxType = "kdv" }) {
+  const lines = [];
+  if (taxMinor > 0) lines.push(plainLine("tax_payable", "360", "D", taxMinor, `Ödenen Vergi · ${TAX_TYPES[taxType] || TAX_TYPES.other}`));
+  if (lateMinor > 0) lines.push(plainLine("late_charge", "689", "D", lateMinor, LATE_MEMO));
+  lines.push(moneyLine(account, "C", taxMinor + lateMinor));
+  return lines;
 }
 /** Kurumsal kart borcu ödemesi (§3.7 #16): B 309.k / A 102.k (iç hareket). */
 export function cardPaymentLines({ bank, card, amountMinor }) {

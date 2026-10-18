@@ -248,7 +248,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         const pay = PAY.has(text(body.openingPay)) ? text(body.openingPay) : "none";
         openingMove =
           pay === "none"
-            ? { kind: "in", qty: opening, unitPrice: input.unitPrice, amount: 0, date: period ? period.movementDate(body, { field: "openingDate" }) : dateOf(body.openingDate, "Tarih", today()), note: "Açılış stoku", pay: "none", accountId: "" }
+            ? { kind: "in", qty: opening, unitPrice: input.unitPrice, amount: 0, date: period ? period.movementDate(body, { field: "openingDate" }) : dateOf(body.openingDate, "Tarih", today()), note: "Açılış stoku", pay: "none", accountId: "", isOpening: true }
             : moveInput({ kind: "in", qty: opening, unitPrice: input.unitPrice, pay, accountId: body.openingAccountId, date: body.openingDate, note: limited(body.openingNote, 300, "Açıklama") || "İlk alım" }, user, { ...input, id });
         if (openingMove.pay === "cash") cash?.guardOut?.(openingMove.amount, openingMove.date, body.cashForce === true, openingMove.method);
         const moveId = insertMove(user, id, openingMove);
@@ -332,6 +332,9 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   });
 
   // ---------- Hareketler ----------
+  // MM4 (2.4.3, göç 29): açılış stoku (elde olan; para yazılmaz) işaretle tanınır — Ana Defter B 153 / A 500 (miktar × birim fiyat). Yalnız giriş, yalnız
+  // miktar (pay 'none'), faturasız ve iadesiz hareket açılış olabilir; açılış hareketi peşin/açık hesaba çevrilirse işaret düşer (alım olur).
+  const openingFlag = move => (move.isOpening && move.kind === "in" && move.pay === "none" && !move.invoiceId && !move.reason ? 1 : 0);
   function insertMove(user, itemId, move) {
     const id = newId("smove");
     const method = move.pay === "cash" ? methodInput(move.method) : "cash";
@@ -340,8 +343,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const finRef = move.pay === "cash" ? move.finRef || "" : "";
     const eventId = bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method, fin_ref: finRef, pos: finRef ? move.pos || null : null });
     store.run(
-      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", method, move.accountId || "", move.invoiceId || "", finRef, eventId, user.id, now(),
+      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, fin_ref, event_id, is_opening, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", method, move.accountId || "", move.invoiceId || "", finRef, eventId, openingFlag(move), user.id, now(),
     );
     return id;
   }
@@ -444,7 +447,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     ok(res, { ...detail(item.id, user), moveId: id, trimmedPlans: trimmed });
   });
   const moveOf = (itemId, moveId) => {
-    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
+    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, is_opening AS isOpening, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
     if (!move) throw new HttpError(404, "Stok hareketi bulunamadı. Başka biri silmiş olabilir.");
     return move;
   };
@@ -484,7 +487,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         k7.capture();
         // Peşin ↔ açık hesap geçişi: para satırı olmaktan çıkan hareketin olayı iptal olur, yeniden peşin olan yeni olay alır.
         const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", fin_ref: finRef, event_id: previous.eventId, pos: finRef ? posMetaOf(body) : null });
-        store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, finRef, eventId, user.id, now(), previous.id);
+        store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, fin_ref = ?, event_id = ?, is_opening = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, finRef, eventId, openingFlag({ ...input, isOpening: Number(previous.isOpening) === 1 }), user.id, now(), previous.id);
         touched = syncAccount(user, item, previous.id, input, previous.accountId);
         audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input, finRef });
         return { id: previous.id };
@@ -635,7 +638,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         const id = insertItem(user, input, fields);
         const qty = kind === "service" ? 0 : number(row, col.qty);
         if (qty > 0) {
-          insertMove(user, id, { kind: "in", qty, unitPrice: input.unitPrice, amount: 0, date: today(), note: "Açılış stoku (Excel)", pay: "none", accountId: "" });
+          insertMove(user, id, { kind: "in", qty, unitPrice: input.unitPrice, amount: 0, date: today(), note: "Açılış stoku (Excel)", pay: "none", accountId: "", isOpening: true });
           report.opening += 1;
         }
         report.created += 1;
@@ -758,7 +761,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     // 400 — önceden sessizce nakit sayılıyordu).
     period?.restoreDate(payload.date, "Bu stok hareketi");
     const pay = payload.pay === "account" && !accounts()?.exists(payload.accountId) ? "none" : PAY.has(payload.pay) ? payload.pay : "none";
-    const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "" };
+    const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "", isOpening: Number(payload.isOpening) === 1 };
     // GG2 (K13/7): peşin satış/alışın banka hesabı bağı da döner (hesap silinmişse bağsız; söylenir).
     const kept = pay === "cash" ? bank.keepRef(payload.finRef, { method: move.method, date: move.date }) : { ref: "", dropped: "" };
     // Yargıç K2 (plan §3.8, §9.2/7, §3.9): banka bağlı satırda kaynak modül yetkisi + bank.move, pasif hesap 400, K7 son durumla.
@@ -773,9 +776,9 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         k7.capture();
         if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
           store.run(
-            "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, fin_ref, event_id, is_opening, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             entry.ref, item.id, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason, move.method, move.accountId, kept.ref,
-            bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method: move.method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+            bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method: move.method, event_id: payload.eventId || "" }), openingFlag(move), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
           );
           syncAccount(user, item, entry.ref, move);
         }

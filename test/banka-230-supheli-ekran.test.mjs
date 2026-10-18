@@ -230,14 +230,17 @@ describe("Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DUR
     for (const tail of ["", "/pdf", "/xlsx"]) expectStatus(await personel.get(`${RC}/supheli-alacaklar${tail}`), 403, "", `personel rapor${tail}`);
   });
 
-  it("Alacak Yaşlandırma: 'Şüpheli Alacak (dilimlere dahil)' kolonu ABC 1.000 (Toplam'a ikinci kez girmez: vade kalemi yok → Toplam 0), XYZ satırı yok; özette aynı ad (karar 15.10.2026)", async () => {
+  it("Alacak Yaşlandırma: 'Şüpheli Alacak (dilimlere dahil)' kolonu ABC 1.000 (dilimlere dahil: Toplam = carinin bakiyesi, şüpheli ikinci kez girmez), XYZ satırı yok; özette aynı ad (karar 15.10.2026)", async () => {
     const report = await must("yaşlandırma", ctx.api.get(`${RC}/alacak-yaslandirma`));
     const sup = col(report, "Şüpheli Alacak (dilimlere dahil)");
     const total = col(report, "Toplam");
     const row = report.rows.find(cells => cells[0] === "ABC Ltd.");
     assert.ok(row, "ABC satırı (yalnız şüphelisi olan cari de listelenir)");
     assert.equal(moneyOf(row[sup]), 1000);
-    assert.equal(moneyOf(row[total]), 0, "şüpheli Toplam'a girmez");
+    // MM5 (2.4.3, bilerek güncellendi; kullanıcı kararı 18.10.2026): carinin dilimleri = borç bakiyesi (şüpheli dahil, bir kez); önceden Toplam 0.
+    const abc = (await must("cari listesi", ctx.api.get("/api/workspace/accounts?status=all"))).accounts.find(item => item.name === "ABC Ltd.");
+    assert.equal(moneyOf(row[total]), abc.balance, "Toplam = carinin borç bakiyesi (şüpheli dilimlerde, ikinci kez girmez)");
+    assert.ok(abc.balance >= 1000);
     assert.ok(!report.rows.some(cells => cells[0] === "XYZ A.Ş."), "kapanan kayıt satır açmaz");
     assert.equal(moneyOf(Object.fromEntries(report.summary)["Şüpheli Alacak (dilimlere dahil)"]), 1000);
     assert.equal(moneyOf(report.footer[sup]), 1000, "TOPLAM şüpheli");

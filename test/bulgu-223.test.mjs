@@ -326,7 +326,9 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
       if (variant === "Alacak Yaz") assert.equal((await entry(acc, "credit", "2025-04-05", 2000, { note: "İskonto" })).status, 200);
       else await must("alış", api.post("/api/workspace/invoices", { scenario: "expense_purchase", accountId: acc.id, issueDate: "2025-04-05", number: `AL-${n}`, lines: [{ name: "Hizmet alımı", qty: 1, unitPrice: 2000, vatRate: 0 }], payment: { rest: "open", dueDate: "2025-04-05" } }));
       assert.equal((await inv(f.id)).open, 2000);
-      assert.equal(await agingOf(acc), "7.000,00 TL", "yaşlandırma: kart 5.000 + kapsanmayan fatura 2.000");
+      // MM5 (2.4.3, bilerek güncellendi; kullanıcı kararı 18.10.2026): yaşlandırma carinin borç bakiyesi kadardır — kart 5.000 + fatura 2.000 − kaleme
+      // bağlanmamış alacak 2.000 (FIFO: en eski kalemden düşer) = 5.000. Önceden 7.000 (bakiyeden fazla alacak).
+      assert.equal(await agingOf(acc), "5.000,00 TL", "yaşlandırma: carinin bakiyesi (kart 5.000 + fatura 2.000 − kaleme bağlanmamış alacak 2.000)");
       const dues = await must("takvim", api.get("/api/workspace/dues"));
       assert.deepEqual(dues.items.filter(i => i.id === `invoice|${f.id}`).map(i => i.amount), [2000], "takvimde fatura 2.000");
       const flow = await must("nakit akış", api.get("/api/workspace/overview/nakit-akisi?from=2025-01-01&to=2026-12-31&overdue=1&table=0"));
