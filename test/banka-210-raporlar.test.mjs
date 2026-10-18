@@ -272,7 +272,9 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
   it("katalog: Banka grubu dört rapor; süzgeçleri ve hesap seçenekleri (bakiye dönmez)", async () => {
     const catalog = await must("katalog", api.get(RC));
     const bank = catalog.reports.filter(report => report.group === "Banka");
-    assert.deepEqual(bank.map(report => report.id), ALL_BANK_REPORTS);
+    // 2.4.3 (C14, bilerek güncellendi): Banka ve POS Hareketleri Banka grubunda (… ve Banka Hareketleri raporlarının yanında); Banka Raporları
+    // yetkisi istemez (Finans Raporları yeter), bu yüzden yetki listelerinde (ALL_BANK_REPORTS) yok.
+    assert.deepEqual(bank.map(report => report.id), [...ALL_BANK_REPORTS.slice(0, -1), "banka-pos-hareketleri", ...ALL_BANK_REPORTS.slice(-1)]);
     assert.deepEqual(Object.fromEntries(bank.filter(report => BANK_REPORTS.includes(report.id)).map(report => [report.id, report.params])), { "banka-bakiye": ["range", "bankGroup"], "banka-hareket": ["range", "bankAccount", "bankMove"], "banka-masraf": ["range", "feeAccount"], "alt-hesap-mizani": ["range"], "tahsildeki-cekler": [], "pos-odeme-takvimi": ["range", "posTerminal", "posKind"], "faturasi-beklenen-komisyonlar": ["range", "posTerminal"] });
     assert.deepEqual(bank.filter(report => BANK_REPORTS.includes(report.id)).map(report => report.title), ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı", "Tahsildeki Çek ve Senetler", "POS Ödeme Takvimi", "Faturası Beklenen Komisyonlar"]);
     assert.deepEqual(catalog.choices.bankAccount.map(([value]) => value), ["", acc.Z.id, acc.G.id, acc.K.id, acc.L.id, "unassigned"]);
@@ -597,7 +599,8 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     const role = await must("rol", api.post("/api/admin/roles", { name: "Finans Okuyucu", permissions: ["overview.view", "accounts.view"] }));
     const reader = apiOf(await createUser(ctx.server, api.client, { username: "rapor-finans", role: role.id }));
     const list = await must("finans katalog", reader.get(RC));
-    assert.ok(!list.reports.some(report => report.group === "Banka"), "Finans Raporları rolü Banka grubunu görmez");
+    // 2.4.3 (C14, bilerek güncellendi): Banka grubunda yalnız Banka ve POS Hareketleri (Finans Raporları'yla açılır); hesap seçenekleri yine dönmez.
+    assert.deepEqual(list.reports.filter(report => report.group === "Banka").map(report => report.id), ["banka-pos-hareketleri"], "Finans Raporları rolü Banka grubunda yalnız Banka ve POS Hareketleri'ni görür");
     assert.ok(!list.choices, "hesap seçenekleri dönmez");
     for (const id of ALL_BANK_REPORTS) assert.equal((await reader.get(`${RC}/${id}`)).status, 403, `finans ${id}`);
   });

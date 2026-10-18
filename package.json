@@ -40,6 +40,7 @@
     "test:senaryo-banka-210b": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210b.mjs",
     "test:senaryo-banka-210-temel": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210-temel.mjs",
     "test:senaryo-banka-210-eski-satir": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210-eski-satir.mjs",
+    "test:senaryo-banka-rapor-243": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-rapor-243.mjs",
     "test:senaryo-banka-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-220.mjs",
     "test:senaryo-pos-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-pos-220.mjs",
     "test:senaryo-tahsile-ver-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tahsile-ver-220.mjs",

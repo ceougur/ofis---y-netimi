@@ -208,9 +208,14 @@ const answerYes = async page => {
   await page.click(`${top} [data-answer="yes"]`);
   await page.waitForTimeout(400);
 };
+// 2.4.3 (C11, bilerek): Banka penceresi oturum içinde son sekmesiyle açılır; bu senaryonun adımları eski açılış gibi Genel Bakış'tan başlar.
 const openBank = async page => {
   await page.click('#hof-sidecard [data-action="bank"]');
   await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 15000 });
+  if (!(await page.$(`${bankWin} .hof-bank-tabs [data-tab="overview"][aria-selected="true"]`))) {
+    await page.click(`${bankWin} .hof-bank-tabs [data-tab="overview"]`);
+    await page.waitForTimeout(500);
+  }
   await page.waitForTimeout(500);
 };
 const tab = async (page, id) => {
@@ -2344,8 +2349,12 @@ try {
   const preview = page =>
     page.evaluate(selector => {
       const main = document.querySelector(`${selector} [data-rc-main]`);
-      const text = node => node.textContent.replace(/\s+/g, " ").trim();
+      // 2.4.3 (C9, bilerek): ekranda tutar "₺87.984,25" (öbür pencerelerle aynı); bu senaryonun beklentileri sunucunun ve PDF/Excel'in
+      // "87.984,25 TL" biçiminde yazılı — ekran metni karşılaştırmadan önce o biçime çevrilir (ekran biçiminin kendisi senaryo-banka-rapor-243'te).
+      const fileForm = value => value.replace(/([-−]?)₺(\d{1,3}(?:\.\d{3})*,\d{2})/g, "$1$2 TL");
+      const text = node => fileForm(node.textContent.replace(/\s+/g, " ").trim());
       return {
+        busy: main?.getAttribute("aria-busy") === "true",
         title: main?.querySelector("h3") ? text(main.querySelector("h3")) : "",
         heads: [...(main?.querySelectorAll("thead th") || [])].map(text),
         rows: [...(main?.querySelectorAll("tbody tr") || [])].map(row => [...row.querySelectorAll("td")].map(text)),
@@ -2357,7 +2366,7 @@ try {
   const waitPreview = async (page, check, ms = 8000) => {
     const deadline = Date.now() + ms;
     let last = await preview(page);
-    while (!check(last) && Date.now() < deadline) {
+    while ((last.busy || !check(last)) && Date.now() < deadline) {
       await page.waitForTimeout(250);
       last = await preview(page);
     }
@@ -2425,7 +2434,7 @@ try {
     ok(groups.some(group => group.endsWith("Banka")), `Banka grubu: ${groups.join(", ")}`);
     const items = await admin.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
     // 2.3.0 (bilerek güncellendi): §8.10 kalan raporlar (İz 3.3) ve POS Satış / Komisyon (İz 5.3); grup sırası İz 5.4 (Cari önce, Banka Taksit'ten sonra).
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar|POS Satış Raporu|POS Komisyon Raporu|Günlük Banka Raporu|Aylık Banka Raporu|Banka Bazında Bakiye|Para Birimi Bazında Bakiye|Bankalar Arası Transfer Raporu|Kasa ve Banka Transfer Raporu|Cari ve Banka Hareketleri|Fatura ve Banka Hareketleri|Taksit ve Banka Hareketleri|Banka Nakit Akış Raporu", `Banka raporları (2.3.0): ${items.join(", ")}`);
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar|POS Satış Raporu|POS Komisyon Raporu|Günlük Banka Raporu|Aylık Banka Raporu|Banka Bazında Bakiye|Para Birimi Bazında Bakiye|Bankalar Arası Transfer Raporu|Kasa ve Banka Transfer Raporu|Cari ve Banka Hareketleri|Fatura ve Banka Hareketleri|Taksit ve Banka Hareketleri|Banka ve POS Hareketleri|Banka Nakit Akış Raporu", `Banka raporları (2.3.0; 2.4.3 C14 Banka ve POS Hareketleri): ${items.join(", ")}`);
     const groupNames = groups.map(group => group.replace(/^[^\p{L}]+/u, "").trim());
     ok(groupNames.join("|") === "Cari|Kasa|Stok|Fatura|Çek / Senet|Taksit|Banka|Ana Defter|Kayıtlar|Ofis".split("|").filter(name => groupNames.includes(name)).join("|"), `grup sırası (İz 5.4): ${groupNames.join(" · ")}`);
     await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);

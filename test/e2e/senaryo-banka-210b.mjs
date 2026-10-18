@@ -113,9 +113,14 @@ const yesToAll = async (rounds = 10) => {
     await yes.click();
   }
 };
+// 2.4.3 (C11, bilerek): Banka penceresi oturum içinde son sekmesiyle açılır; bu senaryonun adımları eski açılış gibi Genel Bakış'tan başlar.
 const openBank = async () => {
   await page.click('#hof-sidecard [data-action="bank"]');
   await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 15000 });
+  if (!(await page.$(`${bankWin} .hof-bank-tabs [data-tab="overview"][aria-selected="true"]`))) {
+    await page.click(`${bankWin} .hof-bank-tabs [data-tab="overview"]`);
+    await page.waitForTimeout(500);
+  }
   await pause(500);
 };
 const tab = async id => {

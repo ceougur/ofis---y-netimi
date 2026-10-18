@@ -9,7 +9,9 @@
 //  3 ve 6–8 (11.10.2026, açıklama metni): "Hesapsız (Açılıştan Önce)" seçilince formun açıklaması "seçilen banka hesabına girer" DEMEZ; açılıştan
 //     önceki hareketin hiçbir hesaba girmediğini ve Hesabı Atanmamış Eski Hareketler'de kaldığını söyler (cari Tahsilat/Ödeme, Kasa ↔ Banka,
 //     seçicinin altındaki not, fatura peşin satırı).
+//  2b (2.4.3 T1): yavaş ağda seçici gelmeden Kaydet → iki hesapta yazılmaz ("Banka Hesabı seçin"), seçici gelince seçilen hesaba yazılır.
 // Çalıştırma: npm run test:senaryo-banka-210-eski-satir (ekran görüntüleri artifacts/senaryo-banka-210-eski-satir/).
+// Zorla kip (ders 20): BANKA210_YARIS=1500 npm run test:senaryo-banka-210-eski-satir — seçici listesi geciktirilir (ön koşul sayısı çıktının sonunda).
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -79,6 +81,8 @@ const entriesOf = async id => (await must("cari", api.get(`/api/workspace/accoun
 const summary = () => must("özet", api.get("/api/workspace/bank/summary"));
 
 const ctx = {};
+const YARIS = Number(process.env.BANKA210_YARIS || 0);
+const yarisSayac = { choices: 0, seciciYok: 0 };
 try {
   await api.login("admin", PASS);
   await must("sihirbazı kapat", api.post("/api/workspace/bank/setup/dismiss", {}));
@@ -87,6 +91,12 @@ try {
   page = await context.newPage();
   page.on("pageerror", error => errors.push(`pageerror ${error.message}`));
   await installPageClock(page, app.config.now);
+  // Ders 20 (2.4.3 T1): BANKA210_YARIS=<ms> → seçici listesi (/bank/choices) geciktirilir; form alanları seçiciden önce görünür (yavaş makine).
+  if (YARIS) await page.route("**/api/workspace/bank/choices*", async route => {
+    yarisSayac.choices += 1;
+    await new Promise(resolve => setTimeout(resolve, YARIS));
+    await route.continue().catch(() => null);
+  });
   await page.goto(`${BASE}/`);
   await page.fill("#hof-auth input[name=username]", "admin");
   await page.fill("#hof-auth input[name=password]", PASS);
@@ -115,6 +125,10 @@ try {
     await page.click(`.hof-accounts-modal [data-edit-entry="${ctx.oldId}"]`);
     const form = `${top} .hof-form`;
     await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    if (!(await page.$(`${form} select[name="bankAccountId"]`))) yarisSayac.seciciYok += 1;
+    // T1 (2.4.3): seçici, hesap listesi (/bank/choices) gelince kurulur; tutar alanı ondan önce görünür. Liste gelmeden okunan seçici boştu
+    // (CI dışı tabanda 1/2 kırmızı; zorla kipte her koşu). Ürün doğru: seçici gelmeden kaydedilse de yanlış hesaba yazılmaz (adım 2b).
+    await page.waitForSelector(`${form} select[name="bankAccountId"]`, { timeout: 15000 });
     const pick = await page.$$eval(`${form} select[name="bankAccountId"] option`, nodes => nodes.map(node => node.textContent.trim())).catch(() => []);
     ok(pick[0] === "Atanmamış (Eski Hareket)" && pick.includes("Hesapsız (Açılıştan Önce)"), `Banka Hesabı seçicisi: ${pick.join(" | ")}`);
     await page.fill(`${form} input[name="amount"]`, "1.200");
@@ -129,6 +143,48 @@ try {
     const view = await summary();
     ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 120_000, `Gerçek Banka ${view.realBank.minor / 100} (değişmedi), Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
     await closeAll();
+  });
+
+  // 2.4.3 T1 (ders 20 — ürün mü test mi): yavaş ağda kullanıcı seçici gelmeden Kaydet'e basarsa hesap kimliği gönderilmez. İki hesapta sunucu
+  // hesabı kendisi SEÇMEMELİ (yanlış hesaba yazmamalı): 400 "Banka Hesabı seçin", satır yazılmaz; seçici sonra gelir, kullanıcı seçip kaydeder.
+  await step("2b. Yavaş ağ: Tahsilat → Havale/EFT, seçici gelmeden Kaydet → yazılmaz, \"Banka Hesabı seçin\"; seçici gelince seçilen hesaba yazılır", async () => {
+    const slow = async route => {
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      await route.continue().catch(() => null);
+    };
+    await page.route("**/api/workspace/bank/choices*", slow);
+    try {
+      await openAbc();
+      const before = (await entriesOf(ctx.abc.id)).length;
+      const bankBefore = await summary();
+      await page.click('.hof-accounts-modal [data-entry="in"]');
+      const form = `${top} .hof-form`;
+      await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+      await page.fill(`${form} input[name="amount"]`, "250");
+      await page.selectOption(`${form} select[name="method"]`, "bank");
+      const early = !(await page.$(`${form} select[name="bankAccountId"]`));
+      ok(early, "ön koşul: Kaydet'e basılırken Banka Hesabı seçicisi henüz yok");
+      await page.click(`${form} button[type="submit"]`);
+      await page.waitForFunction(sel => (document.querySelector(sel)?.innerText || "").trim().length > 0, `${form} .hof-form-error`, { timeout: 10000 }).catch(() => null);
+      const error = await textOf(`${form} .hof-form-error`);
+      const after = await entriesOf(ctx.abc.id);
+      const bankAfter = await summary();
+      ok(/Banka Hesabı seçin/.test(error) && after.length === before && bankAfter.realBank.minor === bankBefore.realBank.minor && bankAfter.unassigned.bankMinor === bankBefore.unassigned.bankMinor, `yazılmadı (satır ${after.length - before}, Gerçek Banka ${bankAfter.realBank.minor / 100}, Atanmamış ${bankAfter.unassigned.bankMinor / 100}); ileti “${error}”`);
+      await page.waitForSelector(`${form} select[name="bankAccountId"]`, { timeout: 10000 });
+      await page.selectOption(`${form} select[name="bankAccountId"]`, ctx.garanti.id);
+      await page.click(`${form} button[type="submit"]`);
+      await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible .hof-form input[name="amount"]'), null, { timeout: 15000 }).catch(() => null);
+      const list = await entriesOf(ctx.abc.id);
+      const added = list.find(entry => !after.some(old => old.id === entry.id));
+      ok(list.length === before + 1 && added?.amount === 250 && added?.finRef === ctx.garanti.id, `seçilen hesaba yazıldı: ${list.length - before} satır, tutar ${added?.amount}, hesap ${added?.finRef === ctx.garanti.id ? "Garanti" : `“${added?.finRef}”`}`);
+      // Sonraki adımların toplamları değişmesin: satır API'den silinir.
+      if (added) await must("sil", api.del(`/api/workspace/accounts/${ctx.abc.id}/entries/${added.id}`));
+      const view = await summary();
+      ok(view.realBank.minor === 15_000_000 && view.unassigned.bankMinor === 120_000, `silindi: Gerçek Banka ${view.realBank.minor / 100}, Hesabı Atanmamış ${view.unassigned.bankMinor / 100}`);
+    } finally {
+      await page.unroute("**/api/workspace/bank/choices*", slow);
+      await closeAll();
+    }
   });
 
   await step("3. Tahsilat → Havale/EFT → \"Hesapsız (Açılıştan Önce)\", tarih 15.09 → kaydedilir, hesapsız (B1, çok hesap)", async () => {
@@ -261,6 +317,7 @@ try {
   failed += 1;
   console.log(`✗ kurulum hatası: ${error.stack || error.message}`);
 } finally {
+  if (YARIS) console.log(`\n  zorla kip (BANKA210_YARIS=${YARIS} ms): geciktirilen seçici isteği ${yarisSayac.choices}, adım 2'de seçici henüz yokken okunan form ${yarisSayac.seciciYok}`);
   ok(errors.length === 0, `sayfa hatası yok${errors.length ? `: ${errors.slice(0, 3).join(" | ")}` : ""}`);
   console.log(`\n${failed ? "✗" : "✓"} senaryo-banka-210-eski-satir: ${passed} geçti, ${failed} kaldı · ekran görüntüleri ${OUT}`);
   await browser.close();

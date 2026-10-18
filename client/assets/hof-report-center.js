@@ -27,6 +27,20 @@
     ["thisYear", "Bu Yıl"],
     ["all", "Tüm Zamanlar"],
   ];
+  // 2.4.3 (C15): ileriye dönük rapor (sunucu presets: "future"; Banka Nakit Akış Raporu) geçmiş dönem sunmaz. "Bu Ay" ileriye dönük raporda
+  // bugünden ay sonuna kadardır (sunucu başlangıcı bugünle kırpar); "Tüm Beklenenler" sınırsız (preset=all).
+  const FUTURE_PRESETS = [
+    ["next7", "Önümüzdeki 7 Gün"],
+    ["next30", "Önümüzdeki 30 Gün"],
+    ["next90", "Önümüzdeki 90 Gün"],
+    ["thisMonth", "Bu Ay"],
+    ["all", "Tüm Beklenenler"],
+  ];
+  const presetsOf = report => (report?.presets === "future" ? FUTURE_PRESETS : PRESETS);
+  // 2.4.3 (C9): ekranda para biçimi programın öbür pencereleriyle aynı ("₺1.234,56"; HOF.formatMoney). Sunucunun rapor metni ("1.234,56 TL")
+  // yalnız ekranda, para kolonlarında, TOPLAM'da ve özet kartlarında çevrilir; PDF ve Excel "TL" kalır (belge biçimi).
+  const SCREEN_TL = /([-−]?)(\d{1,3}(?:\.\d{3})*,\d{2}) TL\b/g;
+  const screenMoney = value => String(value ?? "").replace(SCREEN_TL, "$1₺$2");
   const todayIso = () => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
@@ -41,6 +55,9 @@
         lastMonth: { from: iso(y, m - 1, 1), to: iso(y, m, 0) },
         last30: { from: iso(y, m, d - 30), to: today },
         thisYear: { from: iso(y, 1, 1), to: iso(y, 12, 31) },
+        next7: { from: today, to: iso(y, m, d + 7) },
+        next30: { from: today, to: iso(y, m, d + 30) },
+        next90: { from: today, to: iso(y, m, d + 90) },
         // "Tüm zamanlar": açık tarih gönderilir (sunucu boş aralığı "bu ay" sayardı; kullanıcı yanlış dönem görürdü).
         all: { from: iso(y - 50, 1, 1), to: today },
       }[preset] || { from: "", to: "" }
@@ -165,7 +182,9 @@
   };
   const initialRange = report => {
     const saved = rememberedRanges()[report.id];
-    if (saved?.preset && PRESETS.some(([id]) => id === saved.preset)) return { preset: saved.preset, ...presetRange(saved.preset) };
+    if (saved?.preset && presetsOf(report).some(([id]) => id === saved.preset)) return { preset: saved.preset, ...presetRange(saved.preset) };
+    // İleriye dönük raporda hatırlanan geçmiş aralık (2.4.3'ten önceki "Geçen Ay") kullanılmaz.
+    if (report.presets === "future" && saved && !saved.preset && saved.to && saved.to < todayIso()) return { preset: "all", ...presetRange("all") };
     if (saved && (saved.from || saved.to)) return { preset: "", from: saved.from || "", to: saved.to || "" };
     return { preset: report.preset || "all", ...presetRange(report.preset || "all") };
   };
@@ -186,6 +205,8 @@
     if (report.id === "cek-portfoy") params.status = "open";
     center.params = params;
     center.account = null;
+    // 2.4.3 (C4): yer tutucu önceki sonucun yüksekliğinde (rapor değişince pencere çöküp açılmaz).
+    center.holdHeight = root()?.querySelector("[data-rc-result]")?.offsetHeight || 0;
     center.preview = null;
     renderNav();
     renderMain();
@@ -208,7 +229,7 @@
     const parts = [];
     if (report.params.includes("account")) parts.push('<div class="hof-rc-param hof-rc-account" data-account-slot></div>');
     if (report.params.includes("range")) {
-      parts.push(`<div class="hof-rc-param hof-rc-range"><div class="hof-rep-presets">${PRESETS.map(([id, label]) => `<button type="button" class="hof-rep-chip ${p.preset === id ? "is-on" : ""}" data-preset="${id}">${esc(label)}</button>`).join("")}</div>
+      parts.push(`<div class="hof-rc-param hof-rc-range"><div class="hof-rep-presets">${presetsOf(report).map(([id, label]) => `<button type="button" class="hof-rep-chip ${p.preset === id ? "is-on" : ""}" data-preset="${id}">${esc(label)}</button>`).join("")}</div>
         <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-param="from" value="${esc(p.preset === "all" ? "" : p.from || "")}"></label>
         <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-param="to" value="${esc(p.to || "")}"></label></div>`);
     }
@@ -231,6 +252,8 @@
   const NAME_HEADERS = new Set(["Cari", "Ad", "Kart", "Kalem", "Ürün", "Ürün / Hizmet", "Cari / Kişi", "Kimden / Kime", "Kayıt", "İlgili Cari", "Hesap Adı"]);
   // Telefon numarası da "0532 100 00 / 01" diye ikiye kırılmasın.
   const NOWRAP_HEADERS = new Set(["Telefon"]);
+  // 2.4.3 (C6): banka raporlarının "Hesap" kolonu (Ziraat Bankası · Ana TL Hesabı) en çok iki satır.
+  const ACCOUNT_HEADERS = new Set(["Hesap", "Banka Hesabı"]);
   const cellClass = (preview, index) =>
     preview.types[index] === "money" || preview.types[index] === "number"
       ? "num"
@@ -238,11 +261,14 @@
         ? "is-name"
         : NOWRAP_HEADERS.has(preview.headers[index])
           ? "is-nowrap"
-          : "";
+          : ACCOUNT_HEADERS.has(preview.headers[index])
+            ? "is-account"
+            : "";
   // TOPLAM satırı ilk bakışta görünsün (v2.0.20): tablo kutusu pencerenin görünen alanına sığacak yüksekliği alır; uzun tablo
   // kendi kutusunda kayar, TOPLAM kutunun altında sabit kalır. Sabit 50vh, süzgeç alanı uzun raporlarda (Cari Bazında Tahsilat)
   // TOPLAM'ı pencerenin altına itiyordu. Pencere içeriği zaten sığıyorsa kutu olduğu gibi kalır. Alçak ekranda (dizüstü) tabloya
-  // 280 px'ten az yer kalırsa kutu küçültülmez (50vh kalır): pencere bir kez kaydırılınca tablo TOPLAM'ıyla birlikte görünür.
+  // 160 px'ten az yer kalırsa kutu küçültülmez (50vh kalır): pencere bir kez kaydırılınca tablo TOPLAM'ıyla birlikte görünür.
+  // 2.4.3 (C5): eşik 280 → 160 px (başlık, süzgeç ve özet sıkılaştı): 1366×768'de kutu başlık + birkaç satır + TOPLAM'la ilk bakışta görünür.
   function fitTable() {
     const box = root()?.querySelector("[data-rc-main] .hof-rc-table");
     const frame = box?.closest(".hof-modal");
@@ -251,7 +277,7 @@
     const bottom = Math.min(frame.getBoundingClientRect().bottom, window.innerHeight) - (parseFloat(getComputedStyle(frame).paddingBottom) || 0);
     const top = box.getBoundingClientRect().top + frame.scrollTop;
     const room = bottom - top - (note ? note.offsetHeight + 12 : 0);
-    box.style.maxHeight = room >= 280 ? `${Math.floor(room)}px` : "";
+    box.style.maxHeight = room >= 160 ? `${Math.floor(room)}px` : "";
   }
   let fitQueued = false;
   window.addEventListener("resize", () => {
@@ -277,46 +303,89 @@
     const ready = !needsAccount(report);
     const qs = queryString();
     const preview = center.preview;
+    const isNum = index => preview.types[index] === "money" || preview.types[index] === "number";
+    const shown = (cell, index) => (preview.types[index] === "money" ? screenMoney(cell) : cell);
+    // 2.4.3 (C4): yer tutucu (rapor değişti) önceki sonucun yüksekliğini korur — pencere çöküp açılmaz (düzen kayması yok).
+    const hold = !preview && ready && center.holdHeight ? ` style="min-height:${Math.round(center.holdHeight)}px"` : "";
     const table = preview
-      ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(value)}</b></span>`).join("")}</div>
-        <div class="hof-rep-table hof-rc-table"><table class="hof-table"><thead><tr>${preview.headers.map((header, index) => `<th class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
+      ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(screenMoney(value))}</b></span>`).join("")}</div>
+        <div class="hof-rep-table hof-rc-table"><table class="hof-table"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
-            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(cell)}</td>`).join("")}</tr>`).join("")
+            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
         }</tbody>${
           preview.footer && preview.rows.length
-            ? `<tfoot><tr class="hof-rc-total">${preview.footer.map((cell, index) => `<td class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : ""}">${esc(cell)}</td>`).join("")}</tr></tfoot>`
+            ? `<tfoot><tr class="hof-rc-total">${preview.footer.map((cell, index) => `<td class="${isNum(index) ? "num" : ""}">${esc(shown(cell, index))}</td>`).join("")}</tr></tfoot>`
             : ""
         }</table></div>
         <p class="hof-rep-note">${preview.total > preview.rows.length ? `Ekranda ilk ${preview.rows.length.toLocaleString("tr-TR")} satır; tamamı (${preview.total.toLocaleString("tr-TR")} satır) PDF ve Excel'de.${preview.footer ? " TOPLAM satırı bütün satırları kapsar." : ""}` : `${preview.total.toLocaleString("tr-TR")} satır.`} PDF en çok 20.000 satır yazar; Excel sınırsızdır.</p>`
-      : `<p class="hof-empty">${ready ? "Rapor hazırlanıyor…" : "Önce cariyi seçin."}</p>`;
-    main.innerHTML = `<header class="hof-rc-head"><div><p class="hof-eyebrow">${esc(report.group)}</p><h3>${esc(preview?.title || report.title)}</h3><p>${esc(report.description)}</p>${preview?.subtitle ? `<small class="hof-rc-scope">${esc(preview.subtitle)}</small>` : ""}</div>
+      : `<p class="hof-empty"${hold}>${ready ? "Rapor hazırlanıyor…" : "Önce cariyi seçin."}</p>`;
+    // 2.4.3 (C5): açıklama ilk bakışta en çok iki satır (uzun açıklama 1366×768'de tabloyu ekranın altına itiyordu); tam metin üzerine gelince
+    // (ipucu) ve açıklamaya tıklayınca açılır.
+    main.innerHTML = `<header class="hof-rc-head"><div><p class="hof-eyebrow">${esc(report.group)}</p><h3>${esc(preview?.title || report.title)}</h3><p class="hof-rc-desc" title="${esc(report.description)}" data-rc-desc>${esc(report.description)}</p>${preview?.subtitle ? `<small class="hof-rc-scope">${esc(preview.subtitle)}</small>` : ""}</div>
         <span class="hof-rep-export ${ready ? "" : "is-disabled"}" role="group" aria-label="Dışa aktar">
           <a class="hof-rep-out is-pdf" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/pdf?${esc(qs)}` : "#"}" target="_blank" rel="noopener" ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>PDF İndir</a>
           <a class="hof-rep-out is-xlsx" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/xlsx?${esc(qs)}` : "#"}" download ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>Excel İndir</a>
         </span></header>
-      ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button></div>` : ""}
-      ${table}`;
+      ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button><span class="hof-rc-busy" data-rc-busy role="status" hidden>Güncelleniyor…</span></div>` : ""}
+      <div class="hof-rc-result" data-rc-result>${table}</div>`;
+    // Sonuç gelene kadar meşgul (aria-busy): ekran okuyucu ve testler eski sonucu yeni sanmaz.
+    setBusy(Boolean(ready && !preview));
     const slot = main.querySelector("[data-account-slot]");
     if (slot && HOF.accounts?.picker) {
       const field = HOF.accounts.picker({ value: center.account || {}, label: report.accountRequired ? "Cari" : "Cari (Boş Bırakılırsa Tüm Cariler)", onPick: account => {
         center.account = account && account.id ? { id: account.id, name: account.name } : null;
-        center.preview = null;
+        // 2.4.3 (C4): cari süzgeci değişince de eski sonuç yeni gelene kadar yerinde (soluk) kalır.
         if (!needsAccount(report)) run();
-        else renderMain();
+        else {
+          center.preview = null;
+          renderMain();
+        }
       } });
       if (field) slot.appendChild(field);
     }
     fitTable();
   }
 
+  /** Meşgul işareti (2.4.3 C4): [data-rc-main] aria-busy + hafif "Güncelleniyor…" yazısı; eski tablo yerinde soluk durur. */
+  function setBusy(on) {
+    const main = root()?.querySelector("[data-rc-main]");
+    if (!main) return;
+    main.setAttribute("aria-busy", on ? "true" : "false");
+    main.classList.toggle("is-loading", on);
+    const badge = main.querySelector("[data-rc-busy]");
+    if (badge) badge.hidden = !on;
+  }
+  /** Süzgeç değişince sonuç gelmeden önce: dönem düğmeleri, tarih alanları ve dışa aktarma bağları yeni süzgeci gösterir (tablo yerinde). */
+  function syncControls(report) {
+    const main = root()?.querySelector("[data-rc-main]");
+    if (!main) return;
+    const p = center.params;
+    main.querySelectorAll(".hof-rc-range [data-preset]").forEach(chip => chip.classList.toggle("is-on", chip.dataset.preset === p.preset));
+    const from = main.querySelector('[data-param="from"]');
+    const to = main.querySelector('[data-param="to"]');
+    if (from) from.value = p.preset === "all" ? "" : p.from || "";
+    if (to) to.value = p.to || "";
+    const qs = queryString();
+    for (const [kind, ext] of [["is-pdf", "pdf"], ["is-xlsx", "xlsx"]]) {
+      const link = main.querySelector(`.hof-rep-out.${kind}`);
+      if (link && !link.hasAttribute("aria-disabled")) link.setAttribute("href", `/api/workspace/report-center/${encodeURIComponent(report.id)}/${ext}?${qs}`);
+    }
+  }
   // quiet (v2.0.11, canlı yenileme): ön izleme "Yükleniyor"a düşmeden yerinde tazelenir.
+  // 2.4.3 (C4): süzgeç / dönem değişiminde de tablo kaldırılmaz (yanıp sönme ve düzen kayması yoktu): eski sonuç soluk durur, "Güncelleniyor…"
+  // görünür, yeni sonuç gelince yerine yazılır. Rapor değişince (select) önceki rapor gösterilmez; yer tutucu önceki yüksekliği korur. Geç gelen
+  // eski yanıt (ticket) yeni sonucu ezmez.
   async function run({ quiet = false } = {}) {
     if (!center) return;
     const report = current();
     if (!report || needsAccount(report)) return renderMain();
     const ticket = (center.ticket = (center.ticket || 0) + 1);
-    if (!quiet || !center.preview) {
+    const stale = Boolean(center.preview && center.preview.id === report.id);
+    if (!quiet && stale) {
+      syncControls(report);
+      setBusy(true);
+    } else if (!quiet || !center.preview) {
       center.preview = null;
       renderMain();
     }
@@ -324,15 +393,23 @@
       const preview = await HOF.api(`/api/workspace/report-center/${encodeURIComponent(report.id)}?${queryString()}`);
       if (!center || ticket !== center.ticket) return;
       center.preview = preview;
+      center.holdHeight = 0;
       renderMain();
     } catch (error) {
       if (!center || ticket !== center.ticket) return;
       HOF.toastError(error);
+      // Eski sonuç yeni süzgecin sonucu sanılmasın: yer tutucuda hata yazılır.
+      center.preview = null;
+      center.holdHeight = 0;
+      renderMain();
+      setBusy(false);
       const main = root()?.querySelector("[data-rc-main] .hof-empty");
       if (main) main.textContent = error.message;
     }
   }
   function onClick(event) {
+    const desc = event.target.closest?.("[data-rc-desc]");
+    if (desc) return desc.classList.toggle("is-open");
     const target = event.target.closest("button, a");
     if (!target || !center) return;
     if (target.matches(".hof-rep-out[aria-disabled]")) {

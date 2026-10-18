@@ -68,6 +68,7 @@ jobs:
       - run: npm run test:senaryo-form-izolasyon-243
       - run: npm run test:senaryo-fatura-243
       - run: npm run test:senaryo-cari-243
+      - run: npm run test:senaryo-banka-rapor-243
       - run: npm run test:banka-230-hareket-yaris
       - run: npm run test:banka-210-saat
       - run: npm run test:banka-210-kart-onbellek

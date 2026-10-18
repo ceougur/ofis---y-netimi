@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+    # Subtest: Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+    ok 1 - Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+      ---
+      duration_ms: 376.603548
+      type: 'test'
+      ...
+    1..1
+ok 1 - kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+  ---
+  duration_ms: 377.878736
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 3.023485
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 11382.383183
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5197
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 441.277912
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 596.893183
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1421.080623
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5448, moneyLines denetimi 493
+    1..5
+ok 2 - hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 20483.573519
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 3.289388
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 10919.756712
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 4964
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 414.433043
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 618.675381
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1346.477925
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5145, moneyLines denetimi 493
+    1..5
+ok 3 - hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 19611.260677
+  type: 'suite'
+  ...
+# Subtest: 2.4.3 C14 / C15 — Rapor Merkezi kataloğu
+    # Subtest: C14: Banka ve POS Hareketleri Banka grubunda, Taksit ve Banka Hareketleri'nden sonra, Banka Nakit Akış'tan önce; grup sırası bozulmaz
+    ok 1 - C14: Banka ve POS Hareketleri Banka grubunda, Taksit ve Banka Hareketleri'nden sonra, Banka Nakit Akış'tan önce; grup sırası bozulmaz
+      ---
+      duration_ms: 6.842592
+      type: 'test'
+      ...
+    # Subtest: C14 yetki: Finans Raporları rolü raporu Banka grubunda görür ve açar; hesap seçenekleri dönmez; Banka Raporları raporları kapalı kalır; personel 403
+    ok 2 - C14 yetki: Finans Raporları rolü raporu Banka grubunda görür ve açar; hesap seçenekleri dönmez; Banka Raporları raporları kapalı kalır; personel 403
+      ---
+      duration_ms: 203.910173
+      type: 'test'
+      ...
+    # Subtest: C15: Banka Nakit Akış Raporu katalogda ileriye dönük (presets future); öbür raporlarda presets yok; ileriye dönük aralık kapsamda
+    ok 3 - C15: Banka Nakit Akış Raporu katalogda ileriye dönük (presets future); öbür raporlarda presets yok; ileriye dönük aralık kapsamda
+      ---
+      duration_ms: 19.797872
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.4.3 C14 / C15 — Rapor Merkezi kataloğu
+  ---
+  duration_ms: 632.838642
+  type: 'suite'
+  ...
+1..4
+# tests 14
+# suites 4
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 41831.679349
