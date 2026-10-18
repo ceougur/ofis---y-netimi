@@ -311,6 +311,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const service = ledger();
     let groups = null;
     let chequeSubs = null;
+    let lastEntries = null;
     if (service?.check) {
       // Cari listesi bir kez hesaplanır: Ana Defter'in beklenen bakiyeleri (120/320/336) ve cari bazında denetim aynı
       // listeyi kullanır (v2.0.22; önceden her yazmada iki kez hesaplanıyordu — aynı veri, aynı sonuç).
@@ -318,6 +319,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       lap("accounts");
       const { reconciliation, entries, groups: moneyGroups } = service.check({ accountList: list });
       groups = moneyGroups || null;
+      lastEntries = entries;
       lap("ledger");
       drift = chequeDriftOf(entries);
       chequeSubs = subBalances(entries, CHEQUE_MAIN);
@@ -425,6 +427,29 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       }
       checks.push({ code: "stock:qty", name: "Stok miktarı (girişler − çıkışlar)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
       lap("stock");
+    }
+    // MM4 (2.4.3, göç 29): açılış stoku ↔ Ana Defter — her işaretli açılış hareketi yevmiyede tek madde B 153 / A 500, tutarı miktar × birim fiyat
+    // (bu denetimde tamsayı aritmetiğiyle, yevmiyeden bağımsız: miktar 1/1000, fiyat 1/10000 → kuruş, yarım yukarı). Fazla, eksik ya da başka
+    // hesaba yazılmış madde sapmadır. Yalnız açılış stoku olan veride görünür (denetim listesi 2.4.2 ile aynı kalır).
+    if (lastEntries && hasColumn("stock_moves", "is_opening") && store.get("SELECT 1 AS found FROM stock_moves WHERE is_opening = 1 LIMIT 1")) {
+      const want = new Map();
+      for (const row of store.all("SELECT id, qty, unit_price AS price FROM stock_moves WHERE is_opening = 1 AND kind = 'in' AND pay = 'none'")) {
+        const units = BigInt(Math.round((Number(row.qty) || 0) * 1000)) * BigInt(Math.round((Number(row.price) || 0) * 10000));
+        want.set(`stock-open:${row.id}`, Number((units + 50_000n) / 100_000n));
+      }
+      const wrong = [];
+      const seen = new Set();
+      for (const entry of lastEntries) {
+        if (!entry.id.startsWith("stock-open:")) continue;
+        seen.add(entry.id);
+        const value = want.get(entry.id);
+        const debit = entry.lines.filter(line => line.account === "153").reduce((sum, line) => sum + line.debit - line.credit, 0);
+        const credit = entry.lines.filter(line => line.account === "500").reduce((sum, line) => sum + line.credit - line.debit, 0);
+        const other = entry.lines.some(line => line.account !== "153" && line.account !== "500");
+        if (value === undefined || debit !== value || credit !== value || other) wrong.push(`${entry.id}: defter 153 ${debit / 100} / 500 ${credit / 100} · hareket ${value === undefined ? "yok" : value / 100}`);
+      }
+      for (const [id, value] of want) if (value && !seen.has(id)) wrong.push(`${id}: hareket ${value / 100} · defterde yok`);
+      checks.push({ code: "stock:opening", name: "Açılış Stoku ↔ Ana Defter (B 153 / A 500)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
     }
     // Kuruş ve işaret: 12,345 TL ya da −5 TL gibi tutar yok.
     for (const [table, column, where] of AMOUNT_COLUMNS) {

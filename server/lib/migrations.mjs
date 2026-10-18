@@ -1265,6 +1265,25 @@ export const MIGRATIONS = [
       store.raw("migration.v28", () => addColumn(store, "stock_items", "vat_rate", "REAL"));
     },
   },
+  {
+    version: 29,
+    name: "v2.4.3 stok açılışı işareti (Ana Defter B 153 / A 500)",
+    up(store) {
+      // Uzman mali müşavir MM4 (kullanıcı kararı 18.10.2026): ürün kartındaki açılış stoku ve Excel'den ürün yüklemedeki miktar (elde olan stok; para
+      // yazılmaz) Ana Defter'e açılış fişi olarak girer: B 153 / A 500 (miktar × birim fiyat) — Kasa, banka, cari ve taksit açılışlarıyla aynı karşı hesap.
+      // Açılış İŞARETTEN tanınır (Kasa açılışı göç 22 gibi; Yargıç 2.2.0 Y2/Y3: metinden değil). Kullanıcı kararı gereği ESKİ verideki açılışlar da
+      // mizana gelir: programın kendi yazdığı açılış hareketleri (giriş, yalnız miktar, faturasız, iadesiz; açıklaması programın yazdığı "Açılış stoku" ya
+      // da "Açılış stoku (Excel)") bir kez işaretlenir. Kilit izi (LOCK_SQL stock_moves) kolonu okumaz: iz değişmez; kapanmış dönemin mizanında 153 / 500
+      // açılış kadar değişir (bilinçli, kullanıcı kararı). Eski sürüm (2.4.2) kolonu görmez; açtığı yeni açılış işaretsiz kalır.
+      store.raw("migration.v29", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'stock_moves'")) return;
+        addColumn(store, "stock_moves", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+        const invoiceCol = store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "invoice_id") ? "AND invoice_id = ''" : "";
+        const reasonCol = store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "reason") ? "AND reason = ''" : "";
+        store.run(`UPDATE stock_moves SET is_opening = 1 WHERE kind = 'in' AND pay = 'none' ${invoiceCol} ${reasonCol} AND note IN ('Açılış stoku', 'Açılış stoku (Excel)')`);
+      });
+    },
+  },
 ];
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık

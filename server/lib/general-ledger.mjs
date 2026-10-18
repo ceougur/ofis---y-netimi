@@ -71,6 +71,8 @@ const cents = value => Math.round((Number(value) || 0) * 100);
  * (cash_entries.is_opening; Yargıç 2.2.0 Y2/Y3) tanınır.
  */
 const opening = note => /^açılış/i.test(String(note || "").trim());
+/** Açılış stoku hareketinin değeri (TL, kuruşa yuvarlı): miktar × birim fiyat (MM4; yevmiye ve Mutabakat Testi aynı kural). */
+export const stockOpeningValue = row => roundMoney((Number(row.qty) || 0) * (Number(row.unitPrice) || 0));
 /** Hesabı atanmamış (fin_ref '') eski ve yeni banka/POS hareketlerinin alt hesapları (§3.11). */
 export const UNASSIGNED_SUBS = Object.freeze({ "102.00": "Hesabı Atanmamış Eski Hareketler", "108.00": "Hesabı Atanmamış Eski Hareketler" });
 
@@ -243,6 +245,9 @@ export function journal(rows) {
     else if (row.reason === "return") post(id, row.date, "Stok (peşin satış iadesi)", row.note, "610", moneyOf(row), row.amount);
     else post(id, row.date, "Stok (peşin alım)", row.note, "153", moneyOf(row), row.amount);
   }
+  // MM4 (2.4.3; kullanıcı kararı 18.10.2026): açılış stoku (ürün kartındaki açılış miktarı, Excel'den ürün yüklemedeki miktar) — B 153 / A 500, tutar
+  // miktar × birim fiyat (kuruşa yuvarlanır). Karşı hesap Kasa / banka / cari / taksit açılışlarıyla aynı (500). Para satırı değildir (Kasa'ya yazmaz).
+  for (const row of rows.stockOpenings || []) post(`stock-open:${row.id}`, row.date, "Stok açılışı", `Açılış stoku${row.itemName ? `: ${row.itemName}` : ""}`, "153", "500", stockOpeningValue(row));
   // Çok satırlı madde (kuruş). Borç ve alacak toplamı eşit değilse madde yine yazılır; mizan "dengesiz" der (kapı yakalar).
   const postLines = (id, date, source, text, lines) => {
     const kept = lines.filter(line => line.amount > 0).map(line => {

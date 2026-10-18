@@ -115,6 +115,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       );
     }
     if (has("stock_moves")) out.stockMoves = all(`SELECT m.id, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, ${refOf("stock_moves", "m")} AS ref FROM stock_moves m WHERE ${X}m.pay = 'cash' AND m.amount > 0${where("m", [[set?.moves, own("m_moves")]], "AND")}`, wanted(set?.moves));
+    // MM4 (2.4.3, göç 29): açılış stoku — işaretli (is_opening) yalnız miktar girişi; değeri miktar × hareketin birim fiyatı (kuruşa yuvarlanır). Ürün
+    // sonradan silinse de açılış deftere girer (aralıklı envanter: 153 = dönem başı + alışlar; peşin alım gibi). v28 ve öncesi dosyada kolon yok: satır yok.
+    if (has("stock_moves") && store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "is_opening")) {
+      out.stockOpenings = all(
+        `SELECT m.id, m.qty, m.unit_price AS unitPrice, m.date, m.note, COALESCE(i.name, '') AS itemName, COALESCE(i.unit, '') AS unit FROM stock_moves m LEFT JOIN stock_items i ON i.id = m.item_id
+         WHERE ${X}m.is_opening = 1 AND m.kind = 'in' AND m.pay = 'none'${where("m", [[set?.moves, own("m_moves")]], "AND")}`,
+        wanted(set?.moves),
+      );
+    }
     // Banka Fişi satırları (v2.1.0): THP kodu, alt hesap ve kuruş yazım anında saklanır.
     if (has("bank_lines") && has("fin_events")) {
       out.bankLines = all(`SELECT l.event_id AS eventId, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));

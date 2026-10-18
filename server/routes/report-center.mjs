@@ -23,7 +23,7 @@ import { STATUS_LABELS, typeLabel } from "../lib/bank/event-types.mjs";
 import { waysFor } from "../lib/bank/money-lines.mjs";
 import { TRANSFER_CHANNELS } from "../lib/bank/vouchers.mjs";
 import { TAX_LABELS, taxChoiceOf } from "../lib/bank/pos-math.mjs";
-import { CHART } from "../lib/general-ledger.mjs";
+import { CHART, stockOpeningValue } from "../lib/general-ledger.mjs";
 import { DOUBTFUL_REASONS, DOUBTFUL_STATUS_LABELS } from "../lib/doubtful-gl.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -2344,21 +2344,27 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       preset: "thisYear",
       build(query) {
         const range = rangeOf(query, "thisYear");
+        // MM4 (2.4.3): açılış stoku (işaretli, yalnız miktar) "Açılış Stoku" adıyla ve değeriyle (miktar × birim fiyat; Ana Defter B 153 / A 500 ile aynı
+        // kural) görünür; Para kolonu "Açılış Bakiyesi". Giriş Tutarı açılışı da kapsar; açılış ayrıca özetlenir (yevmiyedeki 153 açılışıyla aynı).
+        const opening = store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "is_opening") ? "m.is_opening" : "0";
         const list = store.all(
-          `SELECT m.date, m.kind, m.reason, m.qty, m.unit_price AS unitPrice, m.amount, m.pay, m.note, i.name, i.code, i.unit, COALESCE(a.name, '') AS accountName, COALESCE(u.display_name, '') AS actorName
+          `SELECT m.date, m.kind, m.reason, m.qty, m.unit_price AS unitPrice, m.amount, m.pay, m.note, ${opening} AS isOpening, i.name, i.code, i.unit, COALESCE(a.name, '') AS accountName, COALESCE(u.display_name, '') AS actorName
            FROM stock_moves m JOIN stock_items i ON i.id = m.item_id LEFT JOIN accounts a ON a.id = m.account_id LEFT JOIN users u ON u.id = m.created_by
            WHERE (? = '' OR m.date >= ?) AND (? = '' OR m.date <= ?) ORDER BY m.date, m.created_at`,
           range.from, range.from, range.to, range.to,
-        );
+        ).map(row => (Number(row.isOpening) === 1 && row.kind === "in" && row.pay === "none" ? { ...row, opening: true, amount: stockOpeningValue(row) } : row));
         const pay = { none: "Yalnız miktar", cash: "Kasa", account: "Cari" };
-        const total = { in: 0, out: 0 };
-        for (const row of list) total[row.kind] = roundMoney(total[row.kind] + row.amount);
+        const total = { in: 0, out: 0, opening: 0 };
+        for (const row of list) {
+          total[row.kind] = roundMoney(total[row.kind] + row.amount);
+          if (row.opening) total.opening = roundMoney(total.opening + row.amount);
+        }
         return {
           subtitle: rangeText(range),
           headers: ["Tarih", "Stok Kodu", "Kalem", "Hareket", "Miktar", "Birim", "Birim Fiyat", "Tutar", "Para", "Cari", "Açıklama", "Giren"],
           types: ["", "", "", "", "number", "", "money", "money", "", "", "", ""],
-          rows: list.map(row => [dayText(row.date), row.code, row.name, row.reason === "return" ? "Satış İadesi" : row.reason === "preturn" ? "Alıştan İade" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
-          summary: [["Hareket", String(list.length)], ["Giriş Tutarı", money(total.in)], ["Çıkış Tutarı", money(total.out)]],
+          rows: list.map(row => [dayText(row.date), row.code, row.name, row.opening ? "Açılış Stoku" : row.reason === "return" ? "Satış İadesi" : row.reason === "preturn" ? "Alıştan İade" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", row.opening ? "Açılış Bakiyesi" : pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
+          summary: [["Hareket", String(list.length)], ["Giriş Tutarı", money(total.in)], ["Çıkış Tutarı", money(total.out)], ...(total.opening ? [["Açılış Stoku Değeri", money(total.opening)]] : [])],
           footerUniform: "Hareket", // giriş ve çıkış toplanmaz
         };
       },
