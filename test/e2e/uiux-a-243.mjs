@@ -402,6 +402,7 @@ try {
     const ticks = await page.$$eval("svg text.hof-chart-tick[text-anchor='end']", nodes => nodes.map(node => node.textContent.trim()));
     const short = ticks.filter(text => /Mn|B/.test(text));
     ok(short.length > 0 && short.every(text => /^-?₺\d/.test(text) && !/₺$/.test(text)), `eksen tutarları simge başta (${JSON.stringify(ticks.slice(0, 6))})`);
+    ok(ticks.includes("₺0"), `eksen sıfırı da simgeli "₺0" (${JSON.stringify(ticks.slice(0, 3))})`);
     await closeAll(page);
   });
 

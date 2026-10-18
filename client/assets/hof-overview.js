@@ -624,7 +624,7 @@
     const mid = new Date((t0 + t1) / 2).toISOString().slice(0, 10);
     const low = d.lowest;
     figure.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tahmini nakit ve banka ${HOF.formatDate(d.from)} – ${HOF.formatDate(end)}; en düşük ${money(low.balance)} (${HOF.formatDate(low.date)})">
-        ${ticks.map(value => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(value).toFixed(1)}" y2="${y(value).toFixed(1)}" class="${value === 0 ? "hof-chart-zero" : "hof-chart-grid"}"/><text x="${pad.l - 8}" y="${(y(value) + 3.5).toFixed(1)}" class="hof-chart-tick" text-anchor="end">${value === 0 ? "0" : esc(compactMoney(value))}</text>`).join("")}
+        ${ticks.map(value => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(value).toFixed(1)}" y2="${y(value).toFixed(1)}" class="${value === 0 ? "hof-chart-zero" : "hof-chart-grid"}"/><text x="${pad.l - 8}" y="${(y(value) + 3.5).toFixed(1)}" class="hof-chart-tick" text-anchor="end">${value === 0 ? "₺0" : esc(compactMoney(value))}</text>`).join("")}
         <path d="${area}" class="hof-chart-area"/>
         <path d="${path}" class="hof-chart-line"/>
         <circle cx="${x(low.date).toFixed(1)}" cy="${y(low.balance).toFixed(1)}" r="4.5" class="hof-chart-low ${low.balance < 0 ? "is-bad" : ""}"/>

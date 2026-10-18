@@ -800,7 +800,8 @@ try {
     await admin.click('.hof-rep [data-tab="flow"]');
     await admin.waitForSelector(".hof-rep [data-chart] svg .hof-chart-line", { state: "attached", timeout: 10000 });
     const ticks = await admin.$$eval(".hof-rep [data-chart] .hof-chart-tick", nodes => nodes.map(node => node.textContent));
-    expect(ticks.some(text => text === "0 ₺"), `eksen sıfırı içerir: ${ticks.join(" | ")}`);
+    // 2.4.3 (uzman UI9): eksen tutarları simge başta ("₺0", "₺10 B"); önceden "0 ₺", "10 B ₺".
+    expect(ticks.some(text => text === "₺0"), `eksen sıfırı içerir: ${ticks.join(" | ")}`);
     await admin.screenshot({ path: path.join(artifacts, "04e-nakit-akisi.png") });
     // v2.0.9: rapor merkezi aynı pencerenin "Tüm raporlar" sekmesidir.
     await admin.click('.hof-rep [data-tab="all"]');

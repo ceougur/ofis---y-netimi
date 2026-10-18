@@ -1,4 +1,4 @@
-(node:2571) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:6739) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 A) UX4: Yeni Cari doldurulur → Esc → soruda odak "Forma Dön" → Enter form açık kalır, yazılan durur
   ✓ yeni cari açılınca odak ilk alanda (INPUT[name]|)
@@ -50,7 +50,8 @@ I) UI1 / UI10 / UI3c / UI11: kontrast ve yerleşim
   ✓ Rapor Merkezi kartı ≥ 4,5:1 ([{"text":"63 hazır rapor10 bölüm · her b","ratio":5.72},{"text":"10 bölüm · her biri PDF ve Exc","ratio":4.95}])
 J) UI9 ve UI11: kısaltılmış tutar simge başta (Nakit Akış grafiği); görünüm seçeneği
   ✓ görünüm seçeneği (Tek Tek Hareketler)
-  ✓ eksen tutarları simge başta (["0","₺10 Mn","₺20 Mn","₺30 Mn","07.11.2026"])
+  ✓ eksen tutarları simge başta (["₺0","₺10 Mn","₺20 Mn","₺30 Mn","07.11.2026"])
+  ✓ eksen sıfırı da simgeli "₺0" (["₺0","₺10 Mn","₺20 Mn"])
 K) UX11 / UX22: Yönetim — muhasebe rol açıklaması; yeni kullanıcının ilk parolası
   ✓ muhasebe açıklaması güncel (Personelin yaptıkları + Kasa, Cari, Taksit, Stok, Çek/Senet, Banka ve Fatura yönetimi; Finans Raporları (mizan, cari eks)
   ✓ İlk Parola alanı boş geliyor
@@ -66,5 +67,5 @@ M) UX7: muhasebe tahsilatı silerken doğru yol
   ✓ muhasebeye yetkisine göre yol (Kasa yeniden hesaplanır. Yöneticiniz Yönetim → Silinenler’den geri yükleyebilir.)
   ✓ sayfa hatası yok
 
-✓ uiux-a-243: 50 geçti, 0 kaldı
+✓ uiux-a-243: 51 geçti, 0 kaldı
 cikis=0
