@@ -76,7 +76,9 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     for (const ctx of open) await ctx.close();
   });
 
-  test("S2: 203 bekleyen — Tümünü Gönder (all) hepsini eskiden yeniye gönderir; bir turda en eski 200, kalan sayısı söylenir; numara tarih sırasında", async () => {
+  // Dar kontrol 2.4.3 (Y1 — beklenti BİLEREK değişti): bir istek en çok 20 belgeyi dener (ya da 10 sn bütçe); önceden 200'dü. İstemci kalan bitene dek
+  // yineler (hof-invoices.js sendPending). Özellik aynı: en eskiler önce, kalan sayısı doğru, sonunda 203'ü de bir kez gider.
+  test("S2: 203 bekleyen — Tümünü Gönder (all) hepsini eskiden yeniye gönderir; bir istekte en eski 20, kalan sayısı söylenir; numara tarih sırasında", async () => {
     const ctx = await setup();
     open.push(ctx);
     const older = [];
@@ -91,12 +93,18 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     assert.equal(page.pendingTotal, 203, "Tümünü Gönder düğmesinin sayısı = Gönderilecekler toplamı (sekme sayısı)");
     const first = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
     assert.equal(first.status, 200, JSON.stringify(first.data));
-    assert.equal(first.data.sent, 200, JSON.stringify(first.data).slice(0, 400));
-    assert.equal(first.data.remaining, 3, "bir turda en çok 200; kalan sayısı");
-    for (const id of older) assert.equal((await ctx.card(id)).eStatus !== "waiting", true, "en eski belgeler ilk turda gönderildi");
-    const second = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
-    assert.equal(second.data.sent, 3, JSON.stringify(second.data));
-    assert.equal(second.data.remaining, 0);
+    assert.equal(first.data.sent, 20, JSON.stringify(first.data).slice(0, 400));
+    assert.equal(first.data.remaining, 183, "bir istekte en çok 20; kalan sayısı");
+    for (const id of older) assert.equal((await ctx.card(id)).eStatus !== "waiting", true, "en eski belgeler ilk istekte gönderildi");
+    let total = first.data.sent;
+    let last = first.data;
+    for (let turn = 0; turn < 20 && last.remaining; turn += 1) {
+      last = (await ctx.api.post("/api/workspace/invoices/send-pending", { all: true })).data;
+      assert.equal(last.remaining, Math.max(0, 203 - total - last.sent), "kalan sayısı her istekte doğru");
+      total += last.sent;
+    }
+    assert.equal(total, 203);
+    assert.equal(last.remaining, 0);
     assert.equal((await ctx.pendingTab()).tabCounts.pending, 0, "Gönderilecekler boşaldı");
     const docs = await Promise.all([...older, ...newer].map(ctx.card));
     for (const doc of docs) {
@@ -179,7 +187,10 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     assert.equal(byId[old.id].ok, false);
     assert.ok(!byId[old.id].skipped);
     assert.equal(byId[fresh.id].skipped, true, JSON.stringify(byId[fresh.id]));
-    assert.match(byId[fresh.id].message, /sırasını koruyarak/);
+    // Dar kontrol 2.4.3 (bilgi, r7 — beklenti BİLEREK değişti): bağlantı yokken tur ilk "EDM'ye ulaşılamadı"da durur; kalan belge "numara verilmedi"
+    // diye listelenir (önceden "sırasını koruyarak" bekletiliyordu; ikisinde de numara almaz).
+    assert.match(byId[fresh.id].message, /numara verilmedi.*EDM'ye ulaşılamadı/);
+    assert.equal(result.data.stopped?.code, "integrator-unreachable");
     assert.equal((await ctx.card(fresh.id)).number, "", "yeni belge numara almadı");
     const again = await ctx.api.post("/api/workspace/invoices/send-pending", { ids: [fresh.id, old.id] });
     assert.equal(again.data.sent, 2, JSON.stringify(again.data.results));
@@ -201,7 +212,10 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     }
     const byId = Object.fromEntries(result.data.results.map(item => [item.id, item]));
     assert.equal(byId[old.id].ok, false);
-    assert.equal(byId[fresh.id].skipped, true, JSON.stringify(result.data));
+    // Dar kontrol 2.4.3 (bilgi, r7 — beklenti BİLEREK değişti): tur durur; yeni belgeye hiç ulaşılmaz (kalan sayısında), numara almaz.
+    assert.equal(byId[fresh.id], undefined, JSON.stringify(result.data));
+    assert.equal(result.data.remaining, 1);
+    assert.equal(result.data.stopped?.code, "integrator-unreachable");
     assert.equal((await ctx.card(fresh.id)).number, "");
     const again = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
     assert.equal(again.data.sent, 2, JSON.stringify(again.data.results));

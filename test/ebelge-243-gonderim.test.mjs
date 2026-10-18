@@ -9,7 +9,7 @@
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
-import { BUYER_VKN, OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
+import { BUYER_VKN, MULTI_VKN, OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
 import { ADMIN_PASSWORD, startTestServer } from "./helpers.mjs";
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
@@ -86,17 +86,22 @@ describe("2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğ
   });
 
   test("B1 komşu: aynı serideki eski belge gönderilemezse daha yeni numarasız belge bu turda numara almaz (kronoloji korunur)", async () => {
-    // Firma VKN'si e-Fatura mükellefi ama cari işaretsiz → e-Arşiv olarak bekler; gönderimde mükellef sorgusu reddeder (numara verilmeden).
-    const unmarked = (await api.post("/api/workspace/accounts", { name: "İşaretsiz Mükellef A.Ş.", type: "customer", taxNo: BUYER_VKN, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 12", district: "Çankaya", city: "Ankara" })).data;
-    const old = (await sale(unmarked.id, { issueDate: day(-1), eSend: "later" })).data;
-    const fresh = (await sale(people[3], { issueDate: day(0), eSend: "later" })).data;
-    assert.equal(old.profile, "EARSIVFATURA");
+    // Dar kontrol 2.4.3 (O3, baş mimar kararı — beklenti BİLEREK değişti): önceki kurgu (cari işaretsiz e-Fatura mükellefine e-Arşiv; gönderimde
+    // "buyer-is-efatura") artık KALICI engeldir, seriyi bekletmez (test/gg243-dar-kontrol-gonderim.test.mjs O3). B1 korumasını sınamak için GEÇİCİ,
+    // düzeltilebilir bir neden: birden çok posta kutulu mükellefin kutusu seçilmemiş e-Faturası (buyer-alias; numara verilmeden durur). Kutu
+    // seçilip belge Düzenle ile yeniden kaydedilince AYNI seride numara alır — yeni belge önüne geçmemeli.
+    const multi = (await api.post("/api/workspace/accounts", { name: "Çok Kutulu Ticaret A.Ş.", type: "customer", taxNo: MULTI_VKN, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 12", district: "Çankaya", city: "Ankara", eInvoice: true, eAlias: "" })).data;
+    const old = (await sale(multi.id, { issueDate: day(-1), eSend: "later" })).data;
+    const fresh = (await sale(firmId, { issueDate: day(0), eSend: "later" })).data;
+    assert.equal(old.profile, "TEMELFATURA");
+    assert.equal(fresh.profile, "TEMELFATURA");
     const before = edm.state.calls.filter(call => call.op === "SendInvoice").length;
     const result = await api.post("/api/workspace/invoices/send-pending", { ids: [fresh.id, old.id] });
     assert.equal(result.status, 200, JSON.stringify(result.data));
     const byId = Object.fromEntries(result.data.results.map(item => [item.id, item]));
     assert.equal(byId[old.id].ok, false);
-    assert.match(byId[old.id].message, /e-Fatura mükellefi/);
+    assert.equal(byId[old.id].code, "buyer-alias", JSON.stringify(byId[old.id]));
+    assert.ok(!byId[old.id].permanent, "geçici (düzeltilebilir)");
     assert.equal(byId[fresh.id].ok, false);
     assert.equal(byId[fresh.id].skipped, true);
     assert.match(byId[fresh.id].message, /sırasını koruyarak/);

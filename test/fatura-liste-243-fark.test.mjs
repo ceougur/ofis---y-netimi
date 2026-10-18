@@ -144,6 +144,17 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
             made.sale += 1;
             if (later) made.waiting += 1;
             sales.push({ id: created.data.id, accountId: who.id, lineId: created.data.lines?.[0]?.id });
+            // Dar kontrol 2.4.3 (O1): seride daha eski tarihli bekleyen varken "Kaydet ve Gönder" numara vermez, belgeyi Gönderilecekler'e koyar.
+            // Bu veride entegratör hesabı geçersizdir (gönderim hep düşer; "Gönderilmedi" durumları için), Tümünü Gönder bekleyeni eritemez: kullanıcı
+            // gibi bekleyenler Listeden Silinir (Müşteri Fişi). Son 5 günde silinmez — sonda bekleyen belge kalsın. (Önceki veride bu bekleyenler
+            // kalıcı kronoloji engeline düşüyordu; O1 bunu önler.)
+            if (created.data.autoSend?.code === "einvoice-order" && day > 5) {
+              const pending = await api.get("/api/workspace/invoices?tab=pending&limit=5000");
+              for (const item of pending.invoices.filter(row => row.eStatus === "waiting")) {
+                const withdrawn = await api.post(`/api/workspace/invoices/${item.id}/withdraw`, {});
+                assert.equal(withdrawn.status, 200, JSON.stringify(withdrawn.data).slice(0, 300));
+              }
+            }
           }
         } else if (op < 0.65) {
           const sup = pick(suppliers);
@@ -159,6 +170,7 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
           const orig = sales.splice(int(Math.max(0, sales.length - 40), sales.length - 1), 1)[0];
           const created = await api.post("/api/workspace/invoices", { kind: "sale_return", originalId: orig.id, issueDate: date, lines: [{ originLineId: orig.lineId, qty: 1 }], payment: {}, force: true, cashForce: true, eSend: "later" });
           if (created.status === 200) made.sale_return += 1;
+          else refuse("sale_return", created);
         } else if (op < 0.82 && purchases.length > 10) {
           const orig = purchases.splice(int(Math.max(0, purchases.length - 40), purchases.length - 1), 1)[0];
           const created = await api.post("/api/workspace/invoices", { kind: "purchase_return", originalId: orig.id, issueDate: date, lines: [{ originLineId: orig.lineId, qty: 1 }], payment: {}, force: true, cashForce: true, eSend: "later" });

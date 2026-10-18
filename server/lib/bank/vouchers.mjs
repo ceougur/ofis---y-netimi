@@ -498,7 +498,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
         // tahsilatı yazılır, başlık satırsız ters kayıtla (iade faturasına bağlı) "ters kaydedildi" olur. Kapanmış dönem değişmez.
         const date = today();
         const back = invoices().issueBankFeeReturn(user, { invoiceId: event.invoice_id, date, bankAccountId: event.bank_ref, note: reason || `Banka'dan Ters Kaydet · ${event.no}` });
-        const reversal = bank.reverse(event.id, { date, description: `Ters Kayıt · ${event.no} · İade Faturası ${back.number}`, returnInvoiceId: back.id });
+        const reversal = bank.reverse(event.id, { date, description: `Ters Kayıt · ${event.no} · İade Faturası ${back.number || "(gönderilecek)"}`, returnInvoiceId: back.id });
         return { id: reversal.id, reversalId: reversal.id, cancelled: false };
       }
       invoices().cancel(user, event.invoice_id, { reason: reason || `Banka'dan Ters Kaydet · ${event.no}`, fromBank: true });
