@@ -151,7 +151,10 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
       // 2.4.3 (uzman UX14): kullanıcı iletisinde teknik kod (UND_ERR_SOCKET, ECONNREFUSED…) yazmaz; kod `detail`te kalır (yanıtta ve işlem
       // geçmişinde — invoice.e.send-failed kaydı) tanı için okunur.
       const detail = String(error?.cause?.code || error?.code || error?.message || error || "").slice(0, 200);
-      if (definite) throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin." : "EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin.", { code: "integrator-unreachable", detail });
+      // Vekil sunucu hatası programın kendi Türkçe iletisini taşır ("Vekil sunucuya bağlanılamadı (adres): KOD"); ileti korunur, sondaki kod atılır.
+      const proxy = [error, error?.cause].find(item => item?.code === "proxy-unreachable");
+      const proxyText = proxy ? String(proxy.message || "").replace(/:\s*[A-Z][A-Z0-9_]+$/, "").trim() : "";
+      if (definite) throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin." : proxyText ? `EDM'ye bağlanılamadı: ${proxyText}. Ağ ayarındaki vekil sunucu adresini kontrol edin.` : "EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin.", { code: "integrator-unreachable", detail });
       throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı); istek EDM'ye ulaşmış olabilir." : "EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir.", { code: "integrator-uncertain", detail });
     } finally {
       clearTimeout(timer);

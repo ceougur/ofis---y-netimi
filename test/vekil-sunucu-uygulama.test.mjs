@@ -164,6 +164,8 @@ describe("Vekil sunucu: program uçları ve EDM trafiği", () => {
     const unreachable = await api.post("/api/workspace/invoices/integrator/test", {});
     assert.notEqual(unreachable.status, 200);
     assert.match(JSON.stringify(unreachable.data), /Vekil sunucuya bağlanılamadı/);
+    // 2.4.3 (uzman UX14): kullanıcı iletisinde teknik kod yok (kod detail'de).
+    assert.doesNotMatch(String(unreachable.data.error || ""), /ECONN|UND_ERR|EPIPE/, unreachable.data.error);
     await api.put("/api/admin/network", { mode: "manual", address: `127.0.0.1:${proxyPort}` });
   });
 
