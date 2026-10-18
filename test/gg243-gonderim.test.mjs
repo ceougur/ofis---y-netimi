@@ -145,7 +145,9 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     open.push(ctx);
     const sent = await ctx.sale(ctx.people[0], { issueDate: ctx.day(0), eSend: "now" });
     assert.equal(sent.autoSend?.ok, true, JSON.stringify(sent.autoSend));
-    const old = await ctx.sale(ctx.people[1], { issueDate: ctx.day(-1), eSend: "later" });
+    // Dar kontrol 2 (B5): D-1 ile "Kes, Sonra Gönder" artık kayıtta reddedilir; kalıcı engelli eski belge eski sürüm verisindeki gibi kurulur.
+    const old = await ctx.sale(ctx.people[1], { issueDate: ctx.day(0), eSend: "later" });
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", ctx.day(-1), old.id);
     const fresh = await ctx.sale(ctx.people[2], { issueDate: ctx.day(0), eSend: "later" });
     const oldCard = await ctx.card(old.id);
     assert.equal(oldCard.canSend, false, "ön koşul: eski belge kalıcı engelli");

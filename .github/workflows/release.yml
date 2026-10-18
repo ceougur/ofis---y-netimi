@@ -86,6 +86,7 @@ jobs:
       - run: npm run test:gg243-tumunu-gonder
       - run: npm run test:gg243-odak-silme-diger
       - run: npm run test:gg243-banka-kart-aciklama
+      - run: npm run test:gg243-dar2-ekran
 
   windows:
     name: Windows kurulum paketi

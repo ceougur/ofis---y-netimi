@@ -72,6 +72,7 @@
     "test:gg243-tumunu-gonder": "node --disable-warning=ExperimentalWarning test/e2e/gg243-tumunu-gonder.mjs",
     "test:gg243-odak-silme-diger": "node --disable-warning=ExperimentalWarning test/e2e/gg243-odak-silme-diger.mjs",
     "test:gg243-banka-kart-aciklama": "node --disable-warning=ExperimentalWarning test/e2e/gg243-banka-kart-aciklama.mjs",
+    "test:gg243-dar2-ekran": "node --disable-warning=ExperimentalWarning test/e2e/gg243-dar2-ekran.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "test:guvenilirlik": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs",
     "test:kahin-ebelge": "python3 test/bagimsiz/ebelge/fark.py",

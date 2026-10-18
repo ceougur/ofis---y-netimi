@@ -1,0 +1,308 @@
+[ebelge-t4-i200] ihlal:I15 / BASKA-ESZ: ilk adım 80; küçültülüyor (bütçe 40)
+  küçültme 1/40: 80 → 40 adım TUTTU
+  küçültme 2/40: 40 → 20 adım TUTTU
+  küçültme 3/40: 20 → 10 adım -
+  küçültme 4/40: 20 → 10 adım -
+  küçültme 5/40: 20 → 15 adım -
+  küçültme 6/40: 20 → 15 adım TUTTU
+  küçültme 7/40: 15 → 10 adım TUTTU
+  küçültme 8/40: 10 → 5 adım -
+  küçültme 9/40: 10 → 5 adım -
+  küçültme 10/40: 10 → 5 adım -
+  küçültme 11/40: 10 → 8 adım TUTTU
+  küçültme 12/40: 8 → 6 adım TUTTU
+  küçültme 13/40: 6 → 4 adım -
+  küçültme 14/40: 6 → 4 adım TUTTU
+  küçültme 15/40: 4 → 2 adım -
+  küçültme 16/40: 4 → 2 adım -
+  küçültme 17/40: 4 → 2 adım -
+  küçültme 18/40: 4 → 3 adım -
+  küçültme 19/40: 4 → 3 adım -
+  küçültme 20/40: 4 → 3 adım -
+  küçültme 21/40: 4 → 3 adım -
+[ebelge-t4-i200] adım 200 · fark 0 · ihlal 2 · saf model son fark 14 · çatal seçimi 45 · 68.4 sn
+    I15              BASKA-ESZ                                2
+    KÜÇÜLTÜLMÜŞ ihlal:I15 / BASKA-ESZ (4 adım, 21 koşu):
+      {"islem": "gun_ilerlet", "gun": 2, "no": 1}
+      {"islem": "ariza", "tur": "kopma_sonra", "no": 2}
+      {"islem": "kaydet", "belge": "B40", "cari": "K2", "tarih": "2026-12-29", "gonder": "sonra", "no": 3}
+      {"islem": "esz_tumunu_gonder", "no": 4}
+      → {"adim": 4, "islem": "esz_tumunu_gonder", "kod": "I15", "ileti": "B40: eşzamanlı turda gönderilen belge için hata yanıtı (integrator-uncertain)", "yineleme": 0, "belge": "B40", "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"}
+[ebelge-t5-i200] adım 200 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 55 · 17.0 sn
+[ebelge-t6-i200] fark:numara / BEKLENEN-O3: ilk adım 179; küçültülüyor (bütçe 40)
+  küçültme 1/40: 179 → 90 adım -
+  küçültme 2/40: 179 → 90 adım -
+  küçültme 3/40: 179 → 178 adım -
+  küçültme 4/40: 179 → 135 adım -
+  küçültme 5/40: 179 → 135 adım -
+  küçültme 6/40: 179 → 135 adım -
+  küçültme 7/40: 179 → 135 adım -
+  küçültme 8/40: 179 → 176 adım -
+  küçültme 9/40: 179 → 157 adım -
+  küçültme 10/40: 179 → 157 adım -
+  küçültme 11/40: 179 → 157 adım -
+  küçültme 12/40: 179 → 157 adım -
+  küçültme 13/40: 179 → 157 adım -
+  küçültme 14/40: 179 → 157 adım -
+  küçültme 15/40: 179 → 157 adım -
+  küçültme 16/40: 179 → 157 adım -
+  küçültme 17/40: 179 → 176 adım -
+  küçültme 18/40: 179 → 168 adım -
+  küçültme 19/40: 179 → 168 adım -
+  küçültme 20/40: 179 → 168 adım -
+  küçültme 21/40: 179 → 168 adım -
+  küçültme 22/40: 179 → 168 adım -
+  küçültme 23/40: 179 → 168 adım -
+  küçültme 24/40: 179 → 168 adım -
+  küçültme 25/40: 179 → 168 adım -
+  küçültme 26/40: 179 → 168 adım -
+  küçültme 27/40: 179 → 168 adım -
+  küçültme 28/40: 179 → 168 adım -
+  küçültme 29/40: 179 → 168 adım -
+  küçültme 30/40: 179 → 168 adım TUTTU
+  küçültme 31/40: 168 → 157 adım -
+  küçültme 32/40: 168 → 157 adım -
+  küçültme 33/40: 168 → 157 adım -
+  küçültme 34/40: 168 → 165 adım -
+  küçültme 35/40: 168 → 157 adım -
+  küçültme 36/40: 168 → 157 adım -
+  küçültme 37/40: 168 → 157 adım -
+  küçültme 38/40: 168 → 157 adım -
+  küçültme 39/40: 168 → 157 adım -
+  küçültme 40/40: 168 → 157 adım -
+[ebelge-t6-i200] adım 200 · fark 4 · ihlal 0 · saf model son fark 41 · çatal seçimi 38 · 496.8 sn
+    fark:bekleyen    BEKLENEN-O3                              1
+    fark:edm         BEKLENEN-O3                              1
+    fark:gonderildi  BEKLENEN-O3                              1
+    fark:numara      BEKLENEN-O3                              1
+    KÜÇÜLTÜLMÜŞ fark:numara / BEKLENEN-O3 (168 adım, 40 koşu):
+      {"islem": "ag", "durum": "yok", "no": 1}
+      {"islem": "kaydet", "belge": "B1", "cari": "K4", "tarih": "2026-02-25", "gonder": "simdi", "no": 2}
+      {"islem": "kaydet", "belge": "B2", "cari": "K2", "tarih": "2026-02-18", "gonder": "simdi", "no": 3}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 4}
+      {"islem": "kaydet", "belge": "B3", "cari": "K2", "tarih": "2026-02-18", "gonder": "sonra", "no": 5}
+      {"islem": "kaydet", "belge": "B4", "cari": "K1", "tarih": "2026-02-25", "gonder": "simdi", "no": 6}
+      {"islem": "duzenle_tarih", "belge": "B3", "tarih": "2026-02-26", "no": 7}
+      {"islem": "kaydet", "belge": "B5", "cari": "K4", "tarih": "2026-02-17", "gonder": "sonra", "no": 8}
+      {"islem": "listeden_sil", "belge": "B5", "no": 9}
+      {"islem": "kaydet", "belge": "B6", "cari": "K5", "tarih": "2026-02-24", "gonder": "sonra", "no": 10}
+      {"islem": "ag", "durum": "var", "no": 11}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 12}
+      {"islem": "iptal", "belge": "B5", "no": 13}
+      {"islem": "iptal", "belge": "B2", "no": 14}
+      {"islem": "kaydet", "belge": "B7", "cari": "K3", "tarih": "2026-02-26", "gonder": "simdi", "no": 15}
+      {"islem": "iptal", "belge": "B2", "no": 16}
+      {"islem": "kaydet", "belge": "B8", "cari": "K1", "tarih": "2026-02-24", "gonder": "sonra", "no": 17}
+      {"islem": "kaydet", "belge": "B9", "cari": "K5", "tarih": "2026-02-24", "gonder": "simdi", "no": 18}
+      {"islem": "kaydet", "belge": "B10", "cari": "K1", "tarih": "2026-02-12", "gonder": "sonra", "no": 19}
+      {"islem": "gun_ilerlet", "gun": 3, "no": 20}
+      {"islem": "iptal", "belge": "B9", "no": 21}
+      {"islem": "ariza", "tur": "gecici_hata", "no": 22}
+      {"islem": "kaydet", "belge": "B11", "cari": "K5", "tarih": "2026-02-27", "gonder": "sonra", "no": 23}
+      {"islem": "kaydet", "belge": "B12", "cari": "K2", "tarih": "2026-02-26", "gonder": "sonra", "no": 24}
+      {"islem": "kaydet", "belge": "B13", "cari": "K3", "tarih": "2026-03-01", "gonder": "sonra", "no": 25}
+      {"islem": "kaydet", "belge": "B14", "cari": "K1", "tarih": "2026-02-18", "gonder": "sonra", "no": 26}
+      {"islem": "kagit_kaydet", "belge": "B15", "cari": "K2", "tarih": "2026-02-27", "no": 27}
+      {"islem": "kart_gonder", "belge": "B14", "no": 28}
+      {"islem": "kaydet", "belge": "B16", "cari": "K4", "tarih": "2026-02-27", "gonder": "simdi", "no": 29}
+      {"islem": "durum_sorgula", "belge": "B6", "no": 30}
+      {"islem": "iptal", "belge": "B13", "no": 31}
+      {"islem": "kagit_kaydet", "belge": "B17", "cari": "K2", "tarih": "2026-02-27", "no": 32}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 33}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B10", "B14", "B5"], "no": 34}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 35}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B7"], "no": 36}
+      {"islem": "gun_ilerlet", "gun": 2, "no": 37}
+      {"islem": "kart_gonder", "belge": "B16", "no": 38}
+      {"islem": "kaydet", "belge": "B18", "cari": "K1", "tarih": "2026-03-05", "gonder": "sonra", "no": 39}
+      {"islem": "listeden_sil", "belge": "B8", "no": 40}
+      {"islem": "kaydet", "belge": "B19", "cari": "K2", "tarih": "2026-03-05", "gonder": "sonra", "no": 41}
+      {"islem": "kart_gonder", "belge": "B1", "no": 42}
+      {"islem": "iptal", "belge": "B3", "no": 43}
+      {"islem": "kaydet", "belge": "B20", "cari": "K2", "tarih": "2026-03-02", "gonder": "sonra", "no": 44}
+      {"islem": "kaydet", "belge": "B21", "cari": "K5", "tarih": "2026-02-22", "gonder": "sonra", "no": 45}
+      {"islem": "kaydet", "belge": "B22", "cari": "K5", "tarih": "2026-03-05", "gonder": "simdi", "no": 46}
+      {"islem": "kaydet", "belge": "B23", "cari": "K1", "tarih": "2026-02-28", "gonder": "simdi", "no": 47}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 48}
+      {"islem": "durum_sorgula", "belge": "B2", "no": 49}
+      {"islem": "duzenle_tarih", "belge": "B10", "tarih": "2026-02-19", "no": 50}
+      {"islem": "kaydet", "belge": "B24", "cari": "K5", "tarih": "2026-03-06", "gonder": "sonra", "no": 51}
+      {"islem": "kaydet", "belge": "B25", "cari": "K3", "tarih": "2026-03-03", "gonder": "sonra", "no": 52}
+      {"islem": "kaydet", "belge": "B26", "cari": "K5", "tarih": "2026-03-03", "gonder": "sonra", "no": 53}
+      {"islem": "kart_gonder", "belge": "B8", "no": 54}
+      {"islem": "kaydet", "belge": "B27", "cari": "K1", "tarih": "2026-03-05", "gonder": "simdi", "no": 55}
+      {"islem": "duzenle_tarih", "belge": "B20", "tarih": "2026-03-01", "no": 56}
+      {"islem": "gun_ilerlet", "gun": 2, "no": 57}
+      {"islem": "duzenle_tarih", "belge": "B6", "tarih": "2026-03-05", "no": 58}
+      {"islem": "duzenle_tarih", "belge": "B10", "tarih": "2026-03-03", "no": 59}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 60}
+      {"islem": "kaydet", "belge": "B28", "cari": "K5", "tarih": "2026-03-06", "gonder": "sonra", "no": 61}
+      {"islem": "kaydet", "belge": "B29", "cari": "K2", "tarih": "2026-03-09", "gonder": "sonra", "no": 62}
+      {"islem": "duzenle_tarih", "belge": "B11", "tarih": "2026-02-28", "no": 63}
+      {"islem": "kaydet", "belge": "B30", "cari": "K1", "tarih": "2026-03-08", "gonder": "sonra", "no": 64}
+      {"islem": "kart_gonder", "belge": "B28", "no": 65}
+      {"islem": "duzenle_tarih", "belge": "B4", "tarih": "2026-02-28", "no": 66}
+      {"islem": "kaydet", "belge": "B31", "cari": "K2", "tarih": "2026-03-05", "gonder": "sonra", "no": 67}
+      {"islem": "iptal", "belge": "B3", "no": 68}
+      {"islem": "kart_gonder", "belge": "B1", "no": 69}
+      {"islem": "kaydet", "belge": "B32", "cari": "K2", "tarih": "2026-02-22", "gonder": "sonra", "no": 70}
+      {"islem": "kaydet", "belge": "B33", "cari": "K4", "tarih": "2026-03-04", "gonder": "sonra", "no": 71}
+      {"islem": "kart_gonder", "belge": "B14", "no": 72}
+      {"islem": "kart_gonder", "belge": "B33", "no": 73}
+      {"islem": "listeden_sil", "belge": "B30", "no": 74}
+      {"islem": "kaydet", "belge": "B34", "cari": "K2", "tarih": "2026-03-05", "gonder": "sonra", "no": 75}
+      {"islem": "gun_ilerlet", "gun": 9, "no": 76}
+      {"islem": "tur_sirasinda_sil", "belge": "B20", "no": 77}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B13", "B25", "B5"], "no": 78}
+      {"islem": "iptal", "belge": "B28", "no": 79}
+      {"islem": "kaydet", "belge": "B35", "cari": "K4", "tarih": "2026-03-14", "gonder": "sonra", "no": 80}
+      {"islem": "kaydet", "belge": "B36", "cari": "K1", "tarih": "2026-03-17", "gonder": "simdi", "no": 81}
+      {"islem": "ag", "durum": "yok", "no": 82}
+      {"islem": "ag", "durum": "var", "no": 83}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B16", "B9"], "no": 84}
+      {"islem": "kaydet", "belge": "B37", "cari": "K5", "tarih": "2026-03-01", "gonder": "sonra", "no": 85}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B19", "B33", "B34"], "no": 86}
+      {"islem": "kaydet", "belge": "B38", "cari": "K1", "tarih": "2026-03-13", "gonder": "simdi", "no": 87}
+      {"islem": "kaydet", "belge": "B39", "cari": "K1", "tarih": "2026-03-17", "gonder": "sonra", "no": 88}
+      {"islem": "kagit_kaydet", "belge": "B40", "cari": "K3", "tarih": "2026-03-15", "no": 89}
+      {"islem": "kart_gonder", "belge": "B33", "no": 90}
+      {"islem": "kaydet", "belge": "B41", "cari": "K1", "tarih": "2026-03-15", "gonder": "sonra", "no": 91}
+      {"islem": "kaydet", "belge": "B42", "cari": "K1", "tarih": "2026-03-17", "gonder": "simdi", "no": 92}
+      {"islem": "kaydet", "belge": "B43", "cari": "K5", "tarih": "2026-03-17", "gonder": "sonra", "no": 93}
+      {"islem": "kaydet", "belge": "B44", "cari": "K2", "tarih": "2026-03-16", "gonder": "sonra", "no": 94}
+      {"islem": "kart_gonder", "belge": "B31", "no": 95}
+      {"islem": "ag", "durum": "yok", "no": 96}
+      {"islem": "esz_tumunu_gonder", "no": 97}
+      {"islem": "ag", "durum": "var", "no": 98}
+      {"islem": "kaydet", "belge": "B45", "cari": "K2", "tarih": "2026-03-16", "gonder": "sonra", "no": 99}
+      {"islem": "duzenle_tur", "belge": "B4", "profil": "TEMELFATURA", "no": 100}
+      {"islem": "kaydet", "belge": "B46", "cari": "K1", "tarih": "2026-03-17", "gonder": "sonra", "no": 101}
+      {"islem": "duzenle_tarih", "belge": "B19", "tarih": "2026-03-16", "no": 102}
+      {"islem": "kaydet", "belge": "B47", "cari": "K2", "tarih": "2026-03-06", "gonder": "sonra", "no": 103}
+      {"islem": "duzenle_tarih", "belge": "B11", "tarih": "2026-03-14", "no": 104}
+      {"islem": "kaydet", "belge": "B48", "cari": "K4", "tarih": "2026-03-15", "gonder": "sonra", "no": 105}
+      {"islem": "kaydet", "belge": "B49", "cari": "K4", "tarih": "2026-03-17", "gonder": "simdi", "no": 106}
+      {"islem": "kart_gonder", "belge": "B25", "no": 107}
+      {"islem": "tur_sirasinda_sil", "belge": "B45", "no": 108}
+      {"islem": "kaydet", "belge": "B50", "cari": "K2", "tarih": "2026-03-17", "gonder": "sonra", "no": 109}
+      {"islem": "kart_gonder", "belge": "B1", "no": 110}
+      {"islem": "gun_ilerlet", "gun": 3, "no": 111}
+      {"islem": "kaydet", "belge": "B51", "cari": "K4", "tarih": "2026-03-11", "gonder": "sonra", "no": 112}
+      {"islem": "kaydet", "belge": "B52", "cari": "K1", "tarih": "2026-03-20", "gonder": "sonra", "no": 113}
+      {"islem": "iptal", "belge": "B14", "no": 114}
+      {"islem": "kart_gonder", "belge": "B44", "no": 115}
+      {"islem": "duzenle_tur", "belge": "B23", "profil": "TEMELFATURA", "no": 116}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 117}
+      {"islem": "tur_sirasinda_sil", "belge": "B45", "no": 118}
+      {"islem": "duzenle_tur", "belge": "B42", "profil": "TEMELFATURA", "no": 119}
+      {"islem": "duzenle_tarih", "belge": "B48", "tarih": "2026-03-15", "no": 120}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 121}
+      {"islem": "ariza", "tur": "kopma_once", "no": 122}
+      {"islem": "kaydet", "belge": "B53", "cari": "K2", "tarih": "2026-03-11", "gonder": "simdi", "no": 123}
+      {"islem": "kaydet", "belge": "B54", "cari": "K2", "tarih": "2026-03-18", "gonder": "sonra", "no": 124}
+      {"islem": "tur_sirasinda_sil", "belge": "B47", "no": 125}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B50"], "no": 126}
+      {"islem": "tur_sirasinda_sil", "belge": "B47", "no": 127}
+      {"islem": "kaydet", "belge": "B55", "cari": "K2", "tarih": "2026-03-20", "gonder": "simdi", "no": 128}
+      {"islem": "kaydet", "belge": "B56", "cari": "K3", "tarih": "2026-03-20", "gonder": "simdi", "no": 129}
+      {"islem": "kaydet", "belge": "B57", "cari": "K4", "tarih": "2026-03-18", "gonder": "sonra", "no": 130}
+      {"islem": "kart_gonder", "belge": "B55", "no": 131}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 132}
+      {"islem": "kaydet", "belge": "B61", "cari": "K3", "tarih": "2026-03-19", "gonder": "simdi", "no": 133}
+      {"islem": "kaydet", "belge": "B62", "cari": "K4", "tarih": "2026-03-20", "gonder": "sonra", "no": 134}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 135}
+      {"islem": "kaydet", "belge": "B63", "cari": "K1", "tarih": "2026-03-20", "gonder": "sonra", "no": 136}
+      {"islem": "kaydet", "belge": "B64", "cari": "K2", "tarih": "2026-03-14", "gonder": "sonra", "no": 137}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B55", "B64"], "no": 138}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 139}
+      {"islem": "kart_gonder", "belge": "B33", "no": 140}
+      {"islem": "kaydet", "belge": "B65", "cari": "K3", "tarih": "2026-03-20", "gonder": "sonra", "no": 141}
+      {"islem": "kagit_kaydet", "belge": "B66", "cari": "K2", "tarih": "2026-03-17", "no": 142}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B30", "B32", "B61"], "no": 143}
+      {"islem": "duzenle_tarih", "belge": "B32", "tarih": "2026-03-19", "no": 144}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 145}
+      {"islem": "kaydet", "belge": "B67", "cari": "K5", "tarih": "2026-03-20", "gonder": "sonra", "no": 146}
+      {"islem": "kaydet", "belge": "B68", "cari": "K2", "tarih": "2026-03-20", "gonder": "simdi", "no": 147}
+      {"islem": "kaydet", "belge": "B69", "cari": "K1", "tarih": "2026-03-19", "gonder": "simdi", "no": 148}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B14", "B33"], "no": 149}
+      {"islem": "kart_gonder", "belge": "B53", "no": 150}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 151}
+      {"islem": "iptal", "belge": "B25", "no": 152}
+      {"islem": "kaydet", "belge": "B70", "cari": "K1", "tarih": "2026-03-09", "gonder": "sonra", "no": 153}
+      {"islem": "kaydet", "belge": "B71", "cari": "K2", "tarih": "2026-03-20", "gonder": "sonra", "no": 154}
+      {"islem": "ag", "durum": "yok", "no": 155}
+      {"islem": "kaydet", "belge": "B72", "cari": "K5", "tarih": "2026-03-21", "gonder": "sonra", "no": 156}
+      {"islem": "kaydet", "belge": "B73", "cari": "K1", "tarih": "2026-03-17", "gonder": "sonra", "no": 157}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 158}
+      {"islem": "durum_sorgula", "belge": "B27", "no": 159}
+      {"islem": "gun_ilerlet", "gun": 2, "no": 160}
+      {"islem": "kaydet", "belge": "B74", "cari": "K1", "tarih": "2026-03-20", "gonder": "sonra", "no": 161}
+      {"islem": "kaydet", "belge": "B75", "cari": "K5", "tarih": "2026-03-11", "gonder": "sonra", "no": 162}
+      {"islem": "ag", "durum": "var", "no": 163}
+      {"islem": "kaydet", "belge": "B76", "cari": "K3", "tarih": "2026-03-23", "gonder": "sonra", "no": 164}
+      {"islem": "kaydet", "belge": "B77", "cari": "K5", "tarih": "2026-03-22", "gonder": "simdi", "no": 165}
+      {"islem": "duzenle_tarih", "belge": "B43", "tarih": "2026-03-07", "no": 166}
+      {"islem": "ariza", "tur": "kopma_once", "no": 167}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 168}
+      → {"belge": "B74", "alan": "numara", "model": "TEA2026000000019", "program": "", "adim": 168, "islem": "tumunu_gonder", "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"}
+      → {"belge": "B77", "alan": "numara", "model": "TEA2026000000020", "program": "", "adim": 168, "islem": "tumunu_gonder", "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"}
+[ebelge-t7-i200] adım 200 · fark 0 · ihlal 0 · saf model son fark 27 · çatal seçimi 39 · 14.6 sn
+[ebelge-t8-i200] ihlal:I15 / BASKA-ESZ: ilk adım 67; küçültülüyor (bütçe 40)
+  küçültme 1/40: 67 → 34 adım -
+  küçültme 2/40: 67 → 34 adım -
+  küçültme 3/40: 67 → 66 adım -
+  küçültme 4/40: 67 → 51 adım TUTTU
+  küçültme 5/40: 51 → 35 adım TUTTU
+  küçültme 6/40: 35 → 19 adım TUTTU
+  küçültme 7/40: 19 → 3 adım -
+  küçültme 8/40: 19 → 16 adım -
+  küçültme 9/40: 19 → 3 adım -
+  küçültme 10/40: 19 → 16 adım -
+  küçültme 11/40: 19 → 11 adım -
+  küçültme 12/40: 19 → 11 adım -
+  küçültme 13/40: 19 → 16 adım -
+  küçültme 14/40: 19 → 15 adım -
+  küçültme 15/40: 19 → 15 adım -
+  küçültme 16/40: 19 → 15 adım -
+  küçültme 17/40: 19 → 15 adım -
+  küçültme 18/40: 19 → 16 adım -
+  küçültme 19/40: 19 → 17 adım TUTTU
+  küçültme 20/40: 17 → 15 adım -
+  küçültme 21/40: 17 → 15 adım -
+  küçültme 22/40: 17 → 15 adım -
+  küçültme 23/40: 17 → 15 adım TUTTU
+  küçültme 24/40: 15 → 13 adım -
+  küçültme 25/40: 15 → 13 adım -
+  küçültme 26/40: 15 → 13 adım -
+  küçültme 27/40: 15 → 13 adım TUTTU
+  küçültme 28/40: 13 → 12 adım -
+  küçültme 29/40: 13 → 11 adım -
+  küçültme 30/40: 13 → 11 adım -
+  küçültme 31/40: 13 → 11 adım -
+  küçültme 32/40: 13 → 11 adım -
+  küçültme 33/40: 13 → 11 adım -
+  küçültme 34/40: 13 → 11 adım -
+  küçültme 35/40: 13 → 12 adım -
+  küçültme 36/40: 13 → 12 adım TUTTU
+  küçültme 37/40: 12 → 11 adım -
+  küçültme 38/40: 12 → 11 adım -
+  küçültme 39/40: 12 → 11 adım TUTTU
+  küçültme 40/40: 11 → 10 adım TUTTU
+[ebelge-t8-i200] adım 200 · fark 0 · ihlal 1 · saf model son fark 0 · çatal seçimi 37 · 93.2 sn
+    I15              BASKA-ESZ                                1
+    KÜÇÜLTÜLMÜŞ ihlal:I15 / BASKA-ESZ (10 adım, 40 koşu):
+      {"islem": "ag", "durum": "yok", "no": 1}
+      {"islem": "gun_ilerlet", "gun": 2, "no": 2}
+      {"islem": "kaydet", "belge": "B25", "cari": "K4", "tarih": "2026-12-20", "gonder": "simdi", "no": 3}
+      {"islem": "ag", "durum": "yok", "no": 4}
+      {"islem": "ag", "durum": "var", "no": 5}
+      {"islem": "kaydet", "belge": "B26", "cari": "K4", "tarih": "2027-01-01", "gonder": "sonra", "no": 6}
+      {"islem": "ariza", "tur": "kopma_sonra", "no": 7}
+      {"islem": "kaydet", "belge": "B27", "cari": "K2", "tarih": "2026-12-31", "gonder": "simdi", "no": 8}
+      {"islem": "kaydet", "belge": "B28", "cari": "K5", "tarih": "2026-12-28", "gonder": "simdi", "no": 9}
+      {"islem": "esz_tumunu_gonder", "no": 10}
+      → {"adim": 10, "islem": "esz_tumunu_gonder", "kod": "I15", "ileti": "B28: eşzamanlı turda gönderilen belge için hata yanıtı (integrator-uncertain)", "yineleme": 0, "belge": "B28", "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"}
+# tests 5
+# pass 2
+# fail 3
+# kahin fark 4 ihlal 3

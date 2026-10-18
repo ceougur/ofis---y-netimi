@@ -1,0 +1,36 @@
+{
+ "ad": "ebelge-t4-i200-1-kucuk",
+ "tohum": 4,
+ "islem": 4,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [
+  {
+   "adim": 4,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B40: eşzamanlı turda gönderilen belge için hata yanıtı (integrator-unreachable)",
+   "yineleme": 0,
+   "belge": "B40",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 4,
+   "aday": 3,
+   "secilen": [
+    "B40: kopma_sonra, edm=True, program=True"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 1,
+  "processing": 1
+ },
+ "kucultulmus": null,
+ "sure": 1.7
+}

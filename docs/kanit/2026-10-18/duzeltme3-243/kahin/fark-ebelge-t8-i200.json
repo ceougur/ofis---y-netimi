@@ -1,0 +1,369 @@
+{
+ "ad": "ebelge-t8-i200",
+ "tohum": 8,
+ "islem": 200,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [
+  {
+   "adim": 67,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B29: eşzamanlı turda gönderilen belge için hata yanıtı (integrator-uncertain)",
+   "yineleme": 0,
+   "belge": "B29",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 2,
+   "aday": 2,
+   "secilen": [
+    "B2: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 12,
+   "aday": 2,
+   "secilen": [
+    "B5: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 13,
+   "aday": 2,
+   "secilen": [
+    "B6: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 14,
+   "aday": 3,
+   "secilen": [
+    "B4: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 19,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 31,
+   "aday": 2,
+   "secilen": [
+    "B14: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 32,
+   "aday": 2,
+   "secilen": [
+    "B15: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 33,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 38,
+   "aday": 2,
+   "secilen": [
+    "B19: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 40,
+   "aday": 2,
+   "secilen": [
+    "B10: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 46,
+   "aday": 2,
+   "secilen": [
+    "B22: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 50,
+   "aday": 2,
+   "secilen": [
+    "B13: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 56,
+   "aday": 2,
+   "secilen": [
+    "B25: Kaydet ve Gönder reddedildi (alici-efatura)"
+   ]
+  },
+  {
+   "adim": 64,
+   "aday": 2,
+   "secilen": [
+    "B28: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 67,
+   "aday": 12,
+   "secilen": [
+    "B29: kopma_sonra, edm=True, program=True"
+   ]
+  },
+  {
+   "adim": 72,
+   "aday": 2,
+   "secilen": [
+    "B32: Kaydet ve Gönder reddedildi (alici-efatura)"
+   ]
+  },
+  {
+   "adim": 74,
+   "aday": 2,
+   "secilen": [
+    "B33: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 77,
+   "aday": 2,
+   "secilen": [
+    "B35: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 78,
+   "aday": 3,
+   "secilen": [
+    "B24: tur sırasında silindi",
+    "B24: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 79,
+   "aday": 2,
+   "secilen": [
+    "B36: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 84,
+   "aday": 2,
+   "secilen": [
+    "B38: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 89,
+   "aday": 2,
+   "secilen": [
+    "B39: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 93,
+   "aday": 2,
+   "secilen": [
+    "B41: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 96,
+   "aday": 2,
+   "secilen": [
+    "B42: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 111,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 118,
+   "aday": 2,
+   "secilen": [
+    "B50: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 130,
+   "aday": 3,
+   "secilen": [
+    "B54: tur sırasında silindi",
+    "B54: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 148,
+   "aday": 2,
+   "secilen": [
+    "B60: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 162,
+   "aday": 2,
+   "secilen": [
+    "B62: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 172,
+   "aday": 2,
+   "secilen": [
+    "B66: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 174,
+   "aday": 2,
+   "secilen": [
+    "B67: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 180,
+   "aday": 2,
+   "secilen": [
+    "B68: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 182,
+   "aday": 2,
+   "secilen": [
+    "B69: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 189,
+   "aday": 2,
+   "secilen": [
+    "B71: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 191,
+   "aday": 2,
+   "secilen": [
+    "B72: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  },
+  {
+   "adim": 192,
+   "aday": 2,
+   "secilen": [
+    "B73: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 194,
+   "aday": 2,
+   "secilen": [
+    "B75: tarih sırasına uymayan kayıt reddedildi"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "sent": 1485,
+  "waiting": 2433,
+  "processing": 842,
+  "error": 1,
+  "none": 447,
+  "cancelled": 198,
+  "withdrawn": 575
+ },
+ "kucultulmus": [
+  {
+   "imza": "ihlal:I15",
+   "sinif": "BASKA-ESZ",
+   "kosu": 40,
+   "adimlar": [
+    {
+     "islem": "ag",
+     "durum": "yok",
+     "no": 1
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 2,
+     "no": 2
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B25",
+     "cari": "K4",
+     "tarih": "2026-12-20",
+     "gonder": "simdi",
+     "no": 3
+    },
+    {
+     "islem": "ag",
+     "durum": "yok",
+     "no": 4
+    },
+    {
+     "islem": "ag",
+     "durum": "var",
+     "no": 5
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B26",
+     "cari": "K4",
+     "tarih": "2027-01-01",
+     "gonder": "sonra",
+     "no": 6
+    },
+    {
+     "islem": "ariza",
+     "tur": "kopma_sonra",
+     "no": 7
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B27",
+     "cari": "K2",
+     "tarih": "2026-12-31",
+     "gonder": "simdi",
+     "no": 8
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B28",
+     "cari": "K5",
+     "tarih": "2026-12-28",
+     "gonder": "simdi",
+     "no": 9
+    },
+    {
+     "islem": "esz_tumunu_gonder",
+     "no": 10
+    }
+   ],
+   "sorunlar": [
+    {
+     "adim": 10,
+     "islem": "esz_tumunu_gonder",
+     "kod": "I15",
+     "ileti": "B28: eşzamanlı turda gönderilen belge için hata yanıtı (integrator-uncertain)",
+     "yineleme": 0,
+     "belge": "B28",
+     "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+    }
+   ]
+  }
+ ],
+ "sure": 93.2
+}
