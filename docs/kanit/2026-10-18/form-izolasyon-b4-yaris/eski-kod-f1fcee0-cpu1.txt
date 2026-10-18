@@ -1,0 +1,26 @@
+  eski-test #1: ön koşul OLUŞTU · KIRMIZI
+  eski-test #2: ön koşul OLUŞTU · KIRMIZI
+  eski-test #3: ön koşul OLUŞTU · KIRMIZI
+  eski-test #4: ön koşul OLUŞTU · KIRMIZI
+  eski-test #5: ön koşul OLUŞTU · KIRMIZI
+  altina #1: ön koşul OLUŞTU · KIRMIZI
+  altina #2: ön koşul OLUŞTU · KIRMIZI
+  altina #3: ön koşul OLUŞTU · KIRMIZI
+  altina #4: ön koşul OLUŞTU · KIRMIZI
+  altina #5: ön koşul OLUŞTU · KIRMIZI
+  uzaklas #1: ön koşul OLUŞTU · KIRMIZI
+  uzaklas #2: ön koşul OLUŞTU · KIRMIZI
+  uzaklas #3: ön koşul OLUŞTU · KIRMIZI
+  uzaklas #4: ön koşul OLUŞTU · KIRMIZI
+  uzaklas #5: ön koşul OLUŞTU · KIRMIZI
+  yeni-test #1: ön koşul OLUŞTU · yeşil
+  yeni-test #2: ön koşul oluşmadı · yeşil
+  yeni-test #3: ön koşul oluşmadı · yeşil
+  yeni-test #4: ön koşul oluşmadı · yeşil
+  yeni-test #5: ön koşul oluşmadı · yeşil
+
+CPU=1 LEAD=0 TRIALS=5
+eski-test: 5 deneme · ön koşul oluştu 5 · ön koşullu kırmızı 5 · ön koşulsuz kırmızı 0
+altina: 5 deneme · ön koşul oluştu 5 · ön koşullu kırmızı 5 · ön koşulsuz kırmızı 0
+uzaklas: 5 deneme · ön koşul oluştu 5 · ön koşullu kırmızı 5 · ön koşulsuz kırmızı 0
+yeni-test: 5 deneme · ön koşul oluştu 1 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0

@@ -1,0 +1,38 @@
+  eski-test #1: ön koşul OLUŞTU · KIRMIZI
+  eski-test #2: ön koşul OLUŞTU · KIRMIZI
+  eski-test #3: ön koşul OLUŞTU · KIRMIZI
+  eski-test #4: ön koşul OLUŞTU · KIRMIZI
+  eski-test #5: ön koşul OLUŞTU · KIRMIZI
+  eski-test #6: ön koşul OLUŞTU · KIRMIZI
+  eski-test #7: ön koşul OLUŞTU · KIRMIZI
+  eski-test #8: ön koşul OLUŞTU · KIRMIZI
+  altina #1: ön koşul OLUŞTU · yeşil
+  altina #2: ön koşul OLUŞTU · yeşil
+  altina #3: ön koşul OLUŞTU · yeşil
+  altina #4: ön koşul OLUŞTU · yeşil
+  altina #5: ön koşul OLUŞTU · yeşil
+  altina #6: ön koşul OLUŞTU · yeşil
+  altina #7: ön koşul OLUŞTU · yeşil
+  altina #8: ön koşul OLUŞTU · yeşil
+  uzaklas #1: ön koşul OLUŞTU · yeşil
+  uzaklas #2: ön koşul OLUŞTU · yeşil
+  uzaklas #3: ön koşul OLUŞTU · yeşil
+  uzaklas #4: ön koşul OLUŞTU · yeşil
+  uzaklas #5: ön koşul OLUŞTU · yeşil
+  uzaklas #6: ön koşul OLUŞTU · yeşil
+  uzaklas #7: ön koşul OLUŞTU · yeşil
+  uzaklas #8: ön koşul OLUŞTU · yeşil
+  yeni-test #1: ön koşul oluşmadı · yeşil
+  yeni-test #2: ön koşul OLUŞTU · yeşil
+  yeni-test #3: ön koşul OLUŞTU · yeşil
+  yeni-test #4: ön koşul OLUŞTU · yeşil
+  yeni-test #5: ön koşul OLUŞTU · yeşil
+  yeni-test #6: ön koşul OLUŞTU · yeşil
+  yeni-test #7: ön koşul OLUŞTU · yeşil
+  yeni-test #8: ön koşul OLUŞTU · yeşil
+
+CPU=4 LEAD=0 TRIALS=8
+eski-test: 8 deneme · ön koşul oluştu 8 · ön koşullu kırmızı 8 · ön koşulsuz kırmızı 0
+altina: 8 deneme · ön koşul oluştu 8 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0
+uzaklas: 8 deneme · ön koşul oluştu 8 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0
+yeni-test: 8 deneme · ön koşul oluştu 7 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0
