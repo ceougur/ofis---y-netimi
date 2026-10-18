@@ -1,0 +1,32 @@
+{
+  "ad": "cari243-e2e-senaryo-213",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-213.mjs",
+  "commit": "e03cdc13c55ec37e98a05a08cf5593ff9ea0d136",
+  "dal": "worktree-agent-abcf4d3fd9efc13ab",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T01:27:39.329Z",
+  "sure_sn": 47.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-18/cari243-e2e-senaryo-213.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abcf4d3fd9efc13ab",
+  "ham_cikti_sha256": "30dc590b957d7e5c28ca4b9e4ff05ba0823fe89a1257fa13f01c53d09dac0753",
+  "ham_cikti_bayt": 5110
+}
