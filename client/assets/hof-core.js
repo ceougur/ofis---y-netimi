@@ -891,15 +891,19 @@
   // ---------- Tarayıcının Geri tuşu ve sayfayı yenileme (2.4.3, keşif C10) ----------
   // Pencere açılınca geçmişe tek bir "pencere" kaydı eklenir; Geri tuşu programdan çıkmak yerine önce açık pencereyi (içinde "← Liste"
   // varsa önce kartı) kapatır. Son pencere kapanınca kayıt geri alınır. Adres değişmez (React yönlendiricisi aynı adresi görür).
+  // Kayıt bu belgeye özgü işaret taşır: sayfa yenilenince (F5, programın yenilemesi) geçmişte eski belgenin işareti kalır; ona güvenilip
+  // history.back() denirse tarayıcı ÖNCEKİ belgeye döner, program yeniden yüklenir (run.mjs'te Excel indirmesi bu yüzden gelmedi).
+  const HISTORY_MARK = `hof-${Math.random().toString(36).slice(2, 10)}`;
+  const guardActive = () => history.state?.hofModal === HISTORY_MARK;
   let historyGuard = false;
   let ignorePops = 0;
   function armHistoryGuard() {
-    if (historyGuard || history.state?.hofModal) {
+    if (guardActive()) {
       historyGuard = true;
       return;
     }
     try {
-      history.pushState({ ...(history.state && typeof history.state === "object" ? history.state : {}), hofModal: true }, "");
+      history.pushState({ ...(history.state && typeof history.state === "object" ? history.state : {}), hofModal: HISTORY_MARK }, "");
       historyGuard = true;
     } catch {
       /* geçmiş yazılamıyorsa (ör. sandbox) Geri tuşu eskisi gibi çalışır */
@@ -908,7 +912,7 @@
   function dropHistoryGuard() {
     if (!historyGuard) return;
     historyGuard = false;
-    if (!history.state?.hofModal) return;
+    if (!guardActive()) return;
     ignorePops += 1;
     try {
       history.back();
@@ -920,7 +924,7 @@
     if (ignorePops) {
       ignorePops -= 1;
       // Geri alınan kayıt beklenirken yeni pencere açıldıysa kayıt yeniden kurulur.
-      if (openModals.length && !history.state?.hofModal) {
+      if (openModals.length && !guardActive()) {
         historyGuard = false;
         armHistoryGuard();
       }
