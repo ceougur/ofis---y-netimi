@@ -1886,8 +1886,17 @@
       return body()?.querySelector(`[data-pay="cheques"][data-i="${form.pay.cheques.length - 1}"][data-f="amount"]`)?.focus();
     }
     if (act === "pay-remove") {
-      form.pay[target.dataset.pay].splice(Number(target.dataset.i), 1);
-      return renderPay();
+      const group = target.dataset.pay;
+      const removed = Number(target.dataset.i);
+      form.pay[group].splice(removed, 1);
+      renderPay();
+      // Dar kontrol 2.4.3 (ek 4): silinen ödeme satırından sonra odak başka satırın ×'ine gitmez, kaybolmaz: aynı konumdaki (yoksa son) satırın
+      // tutarı, satır kalmadıysa ilk "+ …" ekleme düğmesi.
+      const left = form.pay[group].length;
+      const slot = body()?.querySelector("[data-pay]");
+      const safe = (left ? slot?.querySelector(`[data-pay="${group}"][data-i="${Math.min(removed, left - 1)}"][data-f="amount"]`) : null) || slot?.querySelector('[data-act="pay-add-cash"], [data-act="pay-add-cheque"]');
+      safe?.focus({ preventScroll: true });
+      return undefined;
     }
     if (act === "pay-endorse") {
       try {

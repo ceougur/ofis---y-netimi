@@ -2506,10 +2506,17 @@
           box.querySelector("[data-fee]:last-of-type [data-fee-name]")?.focus();
           return;
         }
-        case "fee-remove":
-          act.closest("[data-fee]")?.remove();
+        case "fee-remove": {
+          // Dar kontrol 2.4.3 (ek 4): kaldırılan türden sonra odak kaybolmaz ve başka türün ×'ine gitmez: sonraki (yoksa önceki) türün adı,
+          // tür kalmadıysa "+ Tür Ekle".
+          const row = act.closest("[data-fee]");
+          const box = act.closest(".hof-bank-fees");
+          const nextRow = row?.nextElementSibling?.matches?.("[data-fee]") ? row.nextElementSibling : row?.previousElementSibling?.matches?.("[data-fee]") ? row.previousElementSibling : null;
+          row?.remove();
           view.dirty = true;
+          (nextRow?.querySelector("[data-fee-name]") || box?.querySelector('[data-act="fee-add"]'))?.focus({ preventScroll: true });
           return;
+        }
         // ----- Aşama 4: Hareketler, İşlem Kartı, fiş formları, Planlı İşlemler -----
         case "mv-more":
           return loadMoves(act.dataset.movesKey === "account" ? accountMoves : moves, { more: true });

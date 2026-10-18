@@ -70,6 +70,7 @@
     "test:gg243-kopyala": "node --disable-warning=ExperimentalWarning test/e2e/gg243-kopyala.mjs",
     "test:gg243-odak-kalem-sil": "node --disable-warning=ExperimentalWarning test/e2e/gg243-odak-kalem-sil.mjs",
     "test:gg243-tumunu-gonder": "node --disable-warning=ExperimentalWarning test/e2e/gg243-tumunu-gonder.mjs",
+    "test:gg243-odak-silme-diger": "node --disable-warning=ExperimentalWarning test/e2e/gg243-odak-silme-diger.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "test:guvenilirlik": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs",
     "mutabakat": "node --disable-warning=ExperimentalWarning tools/mutabakat.mjs",

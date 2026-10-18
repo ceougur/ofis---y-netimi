@@ -84,6 +84,7 @@ jobs:
       - run: npm run test:gg243-kopyala
       - run: npm run test:gg243-odak-kalem-sil
       - run: npm run test:gg243-tumunu-gonder
+      - run: npm run test:gg243-odak-silme-diger
 
   windows:
     name: Windows kurulum paketi
