@@ -92,7 +92,8 @@ const badge = () => page.$eval('[data-badge="stock"]', node => node.textContent.
 
 try {
   console.log("1) ilk açılış: takvim tamamı gelir, şeritte açık faturanın kalemi");
-  await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 20000 });
+  // Şerit kayan bir bant; pil görünür alanın dışında olabilir (yerleşik olması yeter).
+  await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { state: "attached", timeout: 20000 });
   ok((await pills()).length === 1, `şeritte 1 kalem (${(await pills()).length})`);
   const first = duesCalls.find(call => call.items !== null);
   ok(first && first.version, `ilk yanıt tam ve sürümlü (${first ? `${first.bytes} bayt, sürüm ${first.version || "yok"}` : "yanıt yok"})`);
