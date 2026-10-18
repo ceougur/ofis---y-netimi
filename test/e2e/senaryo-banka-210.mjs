@@ -2625,7 +2625,7 @@ try {
     await admin.waitForTimeout(600);
   });
 
-  await step("49. Yetki: muhasebe Raporlar'da yalnız Banka grubunu görür (Finans Raporları yok); personelde Banka raporu 403", async () => {
+  await step("49. Yetki: muhasebe Raporlar'da Finans Raporları (2.4.3 H9: varsayılan) ve Banka grubunu görür; personelde Banka raporu 403", async () => {
     const muhasebe = await newPage();
     current = muhasebe;
     await login(muhasebe, "muhasebe1", USER_PASS);
@@ -2637,7 +2637,9 @@ try {
     // Birleşme (İz 3.3 + 1.7 + 5.4): raporlar Cari grubu önce; Cari grubunda yalnız Şüpheli Alacaklar, geri kalan her şey Banka grubu (katalogdan grup adıyla okunur).
     const byGroup = await muhasebe.$$eval(`${modal} .hof-rc-group`, nodes => nodes.map(node => [node.querySelector("p")?.textContent.trim() || "", [...node.querySelectorAll("[data-report]")].map(item => item.dataset.report)]));
     const cariReports = (byGroup.find(([name]) => name.endsWith("Cari")) || ["", []])[1];
-    ok(groups.length === 2 && groups[0].endsWith("Cari") && groups[1].endsWith("Banka") && cariReports.join(",") === "supheli-alacaklar", `muhasebenin Tüm Raporlar'ı: ${groups.join(", ")} · Cari: ${cariReports.join(", ")}`);
+    // 2.4.3 H9 (bilerek güncellendi; kullanıcı kararı 18.10.2026): muhasebe Finans Raporları'nı varsayılan olarak görür — Cari grubu tam (mizan dahil),
+    // Kasa ve Banka grupları da listelenir. Banka grubu kapısının (bank.reports) ayrı sınaması birim testlerde (banka-210-raporlar R6, rapor-230-iz5).
+    ok(groups[0].endsWith("Cari") && groups.some(name => name.endsWith("Kasa")) && groups.some(name => name.endsWith("Banka")) && cariReports.includes("supheli-alacaklar") && cariReports.includes("mizan"), `muhasebenin Tüm Raporlar'ı: ${groups.join(", ")} · Cari: ${cariReports.join(", ")}`);
     await muhasebe.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
     const data = await waitPreview(muhasebe, view => view.rows.length > 0);
     ok(data.title === "Banka Bakiye Raporu" && data.rows.length > 0, "muhasebe Banka Bakiye Raporu'nu açar");
