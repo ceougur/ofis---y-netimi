@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: uiux-b-243 sunucu
+    # Subtest: UX2: tam iade Düzenle'de ön hesap ve kayıt geçer; kısmi iade ve öbür iadenin miktarı korunur; başka faturanın iadesi kimliği sayılmaz
+    ok 1 - UX2: tam iade Düzenle'de ön hesap ve kayıt geçer; kısmi iade ve öbür iadenin miktarı korunur; başka faturanın iadesi kimliği sayılmaz
+      ---
+      duration_ms: 617.872572
+      type: 'test'
+      ...
+    # Subtest: UX5: çok posta kutulu alıcıda gönderimde işaret geri konurken seçili kutu korunur ve ileti bunu söyler; listede olmayan etiket silinir
+    ok 2 - UX5: çok posta kutulu alıcıda gönderimde işaret geri konurken seçili kutu korunur ve ileti bunu söyler; listede olmayan etiket silinir
+      ---
+      duration_ms: 395.004592
+      type: 'test'
+      ...
+    # Subtest: UX14: bağlantı hatası iletisinde teknik kod yok; kod detail'de
+    ok 3 - UX14: bağlantı hatası iletisinde teknik kod yok; kod detail'de
+      ---
+      duration_ms: 18.936476
+      type: 'test'
+      ...
+    # Subtest: KÖ1: Nihai Tüketici carisi ilk kullanımda açılır, sonra aynısı döner (çift açılmaz, eşzamanlı da); sınır üstü e-Arşiv engellenir
+    ok 4 - KÖ1: Nihai Tüketici carisi ilk kullanımda açılır, sonra aynısı döner (çift açılmaz, eşzamanlı da); sınır üstü e-Arşiv engellenir
+      ---
+      duration_ms: 617.433397
+      type: 'test'
+      ...
+    # Subtest: KÖ2: Gönderilecekler'den fişe çevirme iletileri 'Müşteri Fişi olarak bırak' der
+    ok 5 - KÖ2: Gönderilecekler'den fişe çevirme iletileri 'Müşteri Fişi olarak bırak' der
+      ---
+      duration_ms: 297.590235
+      type: 'test'
+      ...
+    1..5
+ok 1 - uiux-b-243 sunucu
+  ---
+  duration_ms: 2029.645566
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2422.840797

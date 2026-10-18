@@ -1,0 +1,64 @@
+A) UX2 + UX28: tam iade Düzenle'de kaydedilir; müşteri no kutusunda iç numara yok
+  ✓ UX28: "Müşterinin İade Faturası No" kutusu boş ("")
+  ✓ UX28: iç numara açıklamada (Program iç numara verdi: IAD2026000000001 (düzenlemede değişmez).)
+  ✓ UX2: "Değişiklikleri Kaydet" onayı açıldı (form hatası: yok)
+  ✓ UX2: 'en çok 0 Adet iade edilebilir' hatası yok
+  ✓ UX2: veri tabanında not yazıldı, numara aynı ({"note":"Kutu hasarlı döndü","number":"IAD2026000000001","status":"issued"})
+  ✓ UX2: iade miktarı 2 kaldı (2)
+B) UX6: Kaydet ve Gönder onayı gönderilen belgeyi Düzenle'ye yönlendirmez
+  ✓ onayda doğru yol (Ayşe Kaya için TEA2026290904283 numarasıyla satış faturası kaydedilecek: ₺1.200,00. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Gönderildi…)
+  ✓ onay 'Düzenle ile düzeltilir' demiyor
+  ✓ Vazgeç: belge kaydedilmedi (veri tabanı)
+  ✓ komşu: Kaydet, Sonra Gönder onayında Düzenle yolu yerinde
+C) UI2 + UX12: form hatası tek kopya (bildirim yok); alan değişince temizlenir
+  ✓ formda hata satırı (Müşteriyi (cariyi) seçin.)
+  ✓ aynı ileti ayrıca bildirim olarak çıkmadı ([])
+  ✓ UX12: kalem değişince eski ileti temizlendi
+  ✓ ön koşul: ileti yeniden çıktı
+  ✓ UX12: cari seçilince eski ileti temizlendi
+D) UI4 + UX23: kod yazıp Tab → ürün seçilir; eksi stok sorusu başlığı
+  ✓ Tab ile ürün seçildi ({"name":"Barkodlu Ürün","price":"20"})
+  ✓ fiyat stok kartından geldi (20)
+  ✓ odak Miktar'da (INPUT[f=qty]|)
+  ✓ UX23: soru başlığı yazım düzeninde (Stok Eksiye Düşecek)
+  ✓ fatura kaydedildi (veri tabanı)
+  ✓ kalem stok kartına bağlı, miktar 3 ({"id":"invoice-d9aebcfb-a9e5-45dd-8dd2-775433a4d253","itemId":"stock-87929dd4-d1e9-45c1-af18-ac3227977961","qty":3})
+F) KÖ2: "Müşteri Fişi Olarak Bırak"
+  ✓ düğme adı (Müşteri Fişi Olarak Bırak)
+  ✓ onay başlığı (Müşteri Fişi Olarak Bırakılsın mı?)
+  ✓ onay metni (e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır. Stok, cari, Kasa, taksit ve çek/senet etkileri ger…)
+  ✓ onayda odak Vazgeç'te (BUTTON[answer=no]|Vazgeç)
+  ✓ veri tabanında Müşteri Fişi ({"e":"withdrawn","number":"FIS2026000000002"})
+  ✓ bildirim yeni adla
+E) UI4: eşleşmeyen kod → satırda "Bu kodla ürün yok"
+  ✓ satırda not (Bu kodla ürün yok; adı yazın ya da kodu düzeltin.)
+  ✓ ad boş kaldı (yanlış ürün seçilmedi)
+G) KÖ1: "Nihai Tüketici" tek cari; sınır üstü engel
+  ✓ Nihai Tüketici düğmesi cari seçicinin yanında
+  ✓ ilk kullanımda tek cari açıldı ({"id":"account-80fa6056-50f0-4536-aae5-072070c9c332","name":"Nihai Tüketici","city":"Ankara"})
+  ✓ fatura Nihai Tüketici carisine kaydedildi ({"accountId":"account-80fa6056-50f0-4536-aae5-072070c9c332","profile":"EARSIVFATURA"})
+  ✓ ikinci kullanımda aynı cari (çift açılmadı)
+  ✓ sınır üstü kaydetmeden durdu (Fatura kaydedilemez: Cari (alıcı): 30.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunlu)
+  ✓ sınır üstü belge kaydedilmedi (veri tabanı)
+H) UX5: sunucu mükellefiyeti gönderimde düzeltince açık form e-Fatura'ya döner, seçili kutu korunur
+  ✓ ön koşul: form e-Arşiv numarası gösteriyor (Kaydedilince Verilecek NoTEA2026290904283)
+  ✓ ileti korunan kutuyu söylüyor (Alıcı (2223334447) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi. Önceden seçtiğiniz posta kutusu (urn:mail:defaultpk@coklu.com.tr) korundu. Fatura kaydedilmedi,)
+  ✓ açık form yeniden hesaplandı: e-Fatura numarası (Kaydedilince Verilecek NoTEF2026561312104)
+  ✓ cari işaretli, kutu korundu ({"e":1,"alias":"urn:mail:defaultpk@coklu.com.tr"})
+  ✓ yeniden kaydedince e-Fatura kesildi ({"profile":"","number":"TEF2026561312104","accountId":"account-99a30eab-6606-481c-9c4d-e48f4b7e6c23"})
+I) UX26: Fatura Ayarları'nda Esc listeye döner (pencere kapanmaz); değişiklik varsa sorar
+  ✓ Esc: ayarlardan listeye döndü, pencere açık ({"open":true,"h3":"Fatura","list":true})
+  ✓ değişiklik varken Esc: Kaydedilmemiş Değişiklik sorusu
+  ✓ Forma Dön: ayarlarda kalındı, yazılan duruyor
+  ✓ Kaydetmeden Kapat: listeye dönüldü, pencere açık ({"open":true,"list":true})
+  ✓ listede Esc pencereyi kapatır (eski davranış yerinde)
+J) UX14: Tümünü Gönder iletisinde teknik kod ve tekrarlanan neden yok
+  ✓ sonuç bildirimi geldi (e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır. | 0 belge gönderildi; 1 belge gönderilemedi: EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin. Belge EDM'ye ulaşmadı; numara verilmedi,)
+  ✓ bildirimde teknik kod yok
+  ✓ aynı neden iki kez yazılmadı
+K) UX3: gece yarısını geçen açık pencerede yeni fatura bugünün tarihini alır (31.12 → 01.01)
+  ✓ yeni formun tarihi 01.01.2027 ({"value":"2027-01-01","max":"2027-01-01"})
+  ✓ tarih sınırı da bugün (2027-01-01)
+  ✓ sayfa hatası yok
+
+✓ uiux-b-243: 51 geçti, 0 kaldı

@@ -1,0 +1,66 @@
+TAP version 13
+# Subtest: Vekil sunucu: program uçları ve EDM trafiği
+    # Subtest: Ağ Bağlantısı ayarı: varsayılan Otomatik; elle adres kaydedilir; parola ekrana ve işlem kaydına çıkmaz, boş bırakılınca korunur
+    ok 1 - Ağ Bağlantısı ayarı: varsayılan Otomatik; elle adres kaydedilir; parola ekrana ve işlem kaydına çıkmaz, boş bırakılınca korunur
+      ---
+      duration_ms: 34.191482
+      type: 'test'
+      ...
+    # Subtest: Yetkisiz kullanıcı ağ ayarını göremez ve değiştiremez
+    ok 2 - Yetkisiz kullanıcı ağ ayarını göremez ve değiştiremez
+      ---
+      duration_ms: 156.70352
+      type: 'test'
+      ...
+    # Subtest: EDM: Bağlantıyı Test Et istekleri vekil sunucudan geçer; vekil kapatılınca aynı adrese ulaşılamaz
+    ok 3 - EDM: Bağlantıyı Test Et istekleri vekil sunucudan geçer; vekil kapatılınca aynı adrese ulaşılamaz
+      ---
+      duration_ms: 92.32005
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Dene: kaydedilmiş ayarla güncelleme sunucusuna gidilir, yol ve süre yazılır
+    ok 4 - Bağlantıyı Dene: kaydedilmiş ayarla güncelleme sunucusuna gidilir, yol ve süre yazılır
+      ---
+      duration_ms: 275.754478
+      type: 'test'
+      ...
+    # Subtest: İkinci şirket aynı (makine geneli) ayarı görür
+    ok 5 - İkinci şirket aynı (makine geneli) ayarı görür
+      ---
+      duration_ms: 148.088602
+      type: 'test'
+      ...
+    1..5
+ok 1 - Vekil sunucu: program uçları ve EDM trafiği
+  ---
+  duration_ms: 1085.846323
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu: bağlantılar (kaynak denetimi)
+    # Subtest: servis yöneticisi güncelleyiciye vekil fetch'i verir ve uygulamaya aynı ayar dosyasını geçirir
+    ok 1 - servis yöneticisi güncelleyiciye vekil fetch'i verir ve uygulamaya aynı ayar dosyasını geçirir
+      ---
+      duration_ms: 0.634244
+      type: 'test'
+      ...
+    # Subtest: lisans, E-Tablolar ve entegratör programın (vekil) fetch'ini kullanır
+    ok 2 - lisans, E-Tablolar ve entegratör programın (vekil) fetch'ini kullanır
+      ---
+      duration_ms: 2.537698
+      type: 'test'
+      ...
+    1..2
+ok 2 - Vekil sunucu: bağlantılar (kaynak denetimi)
+  ---
+  duration_ms: 3.879576
+  type: 'suite'
+  ...
+1..2
+# tests 7
+# suites 2
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1459.535133
