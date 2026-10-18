@@ -2378,7 +2378,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       id: "stok-ozet",
       group: "Stok",
       title: "Stok Hareket Özeti (envanter)",
-      description: "Her ürün için dönem başı miktar, dönem girişi, dönem çıkışı ve dönem sonu miktar; birim fiyat ve dönem sonu değer.",
+      description: "Her ürün için dönem başı miktar, dönem girişi, dönem çıkışı ve dönem sonu miktar; birim fiyat ve dönem sonu değer (miktar × birim fiyat; eksi stokta eksi değer, Stok Durumu ile aynı kural).",
       params: ["range", "category"],
       preset: "thisYear",
       build(query) {
@@ -2397,13 +2397,18 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
           moves.set(row.itemId, row);
         const out = [];
         let value = 0;
+        let negatives = 0;
         for (const item of items) {
           const move = moves.get(item.id) || { opening: 0, qtyIn: 0, qtyOut: 0 };
           const opening = Math.round(move.opening * 1000) / 1000;
           const closing = Math.round((move.opening + move.qtyIn - move.qtyOut) * 1000) / 1000;
           if (!opening && !move.qtyIn && !move.qtyOut) continue;
-          const worth = roundMoney(Math.max(0, closing) * (Number(item.unitPrice) || 0));
+          // MM7 (2.4.3, uzman mali müşavir): değer kuralı Stok Durumu, Kategoriye Göre Stok Değeri ve Stok ekranıyla AYNI — dönem sonu miktar × birim fiyat,
+          // eksi stokta eksi değer (v2.0.17 müşteri kararı: eksiye düşen ürün kaça düştüğünü gösterir; değeri eksi miktar × son maliyet, yaygın
+          // programlardaki gibi — girilmemiş alış ya da sayım farkı kadar). Önceden bu rapor eksiyi 0 sayıyordu: aynı gün iki rapor farklı toplam veriyordu.
+          const worth = roundMoney(closing * (Number(item.unitPrice) || 0));
           value = roundMoney(value + worth);
+          if (closing < 0) negatives += 1;
           out.push([item.code, item.name, item.category, item.unit, qty(opening), qty(move.qtyIn), qty(move.qtyOut), qty(closing), money(item.unitPrice), money(worth)]);
         }
         return {
@@ -2411,7 +2416,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
           headers: ["Stok Kodu", "Ürün", "Kategori", "Birim", "Dönem Başı", "Giriş", "Çıkış", "Dönem Sonu", "Birim Fiyat", "Dönem Sonu Değer"],
           types: ["", "", "", "", "number", "number", "number", "number", "money", "money"],
           rows: out,
-          summary: [["Ürün", String(out.length)], ["Dönem Sonu Değer", money(value)]],
+          summary: [["Ürün", String(out.length)], ...(negatives ? [["Eksi Stok", String(negatives)]] : []), ["Dönem Sonu Değer", money(value)]],
         };
       },
     },
