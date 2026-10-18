@@ -368,6 +368,86 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     assert.equal(seqOf(t.number), Math.max(...cards.map(c => seqOf(c.number))), "ileri alınan belge en son numarayı aldı");
   });
 
+  // Dar kontrol 2.4.3 ek 1 (kullanıcı kararı: bütün bulgular 2.4.3'te): numara entegratör GİRİŞİNDEN SONRA verilir. Yanlış kullanıcı adı/parolada
+  // EDM girişte "isteği reddetti" der (integrator-rejected); önceden tur durmuyor, numara girişten önce verildiği için her belge numara alıp düşüyordu.
+  const wrongPassword = async ctx => {
+    assert.equal((await ctx.api.put("/api/workspace/invoices/settings", { integrator: { env: "test", baseUrl: ctx.edm.url, username: "edmkullanici", password: "Yanlis-Parola-9", senderAlias: "urn:mail:defaultgb@deneme.com.tr" } })).status, 200);
+    resetEdmCaches();
+  };
+  const LOGIN_TEXT = "Entegratör girişi reddedildi (kullanıcı adı/parola). Kalan belgelere numara verilmedi; Entegratör Ayarları'nı düzeltip yeniden deneyin.";
+  test("Ek 1 (tur): yanlış parolada Tümünü Gönder ilk girişte durur; HİÇBİR belge numara almaz; parola düzelince hepsi sırayla gider", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const acc = [];
+    for (let i = 0; i < 2; i += 1) acc.push((await ctx.api.post("/api/workspace/accounts", retail(i))).data.id);
+    const docs = [];
+    for (let i = 0; i < 4; i += 1) docs.push(await ctx.sale(i < 2 ? acc[i] : ctx.people[i - 2], { issueDate: ctx.day(-5 + i), eSend: "later" }));
+    await wrongPassword(ctx);
+    const r = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
+    assert.equal(r.status, 200, JSON.stringify(r.data).slice(0, 300));
+    assert.deepEqual(r.data.stopped, { code: "integrator-login", message: LOGIN_TEXT });
+    assert.equal(r.data.sent, 0);
+    const cards = await Promise.all(docs.map(d => ctx.card(d.id)));
+    assert.deepEqual(cards.map(c => c.number), ["", "", "", ""], "hiçbir belge numara almadı");
+    assert.ok(cards.every(c => c.eStatus === "waiting"), "hepsi Gönderilecekler'de");
+    assert.equal(ctx.sends(), 0);
+    assert.equal(ctx.edm.state.calls.filter(call => call.op === "Login").length, 1, "tur ilk reddedilen girişte durdu (tek giriş denemesi; hesap kilitlenmesin)");
+    assert.equal((await ctx.integrator(ctx.edm.url)).status, 200);
+    await ctx.sendAll();
+    const after = await Promise.all(docs.map(d => ctx.card(d.id)));
+    assert.equal(ctx.seriesOk(after).length, 4);
+    for (const c of after) assert.equal(ctx.sentCount(c.ettn), 1);
+  });
+
+  test("Ek 1 (kartta e-Belge Gönder ve Kaydet ve Gönder): yanlış parolada numara verilmez; iletiler girişin reddedildiğini söyler", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const acc = (await ctx.api.post("/api/workspace/accounts", retail(1))).data.id;
+    const waiting = await ctx.sale(acc, { issueDate: ctx.day(-1), eSend: "later" });
+    await wrongPassword(ctx);
+    const r = await ctx.api.post(`/api/workspace/invoices/${waiting.id}/send`, {});
+    assert.equal(r.status, 502, JSON.stringify(r.data).slice(0, 300));
+    assert.equal(r.data.code, "integrator-login");
+    assert.match(String(r.data.error), /^Entegratör girişi reddedildi \(kullanıcı adı\/parola\): .+ Belge numara verilmeden Gönderilecekler'de kaldı; Entegratör Ayarları'nı düzeltip yeniden deneyin\.$/);
+    assert.equal((await ctx.card(waiting.id)).number, "", "kartta Gönder: numara verilmedi");
+    // TCKN'li alıcı (mükellef sorgusu girişle başlar) da aynı neden.
+    const person = await ctx.sale(ctx.people[1], { issueDate: ctx.day(-1), eSend: "later" });
+    const p = await ctx.api.post(`/api/workspace/invoices/${person.id}/send`, {});
+    assert.equal(p.data.code, "integrator-login", JSON.stringify(p.data).slice(0, 300));
+    assert.equal((await ctx.card(person.id)).number, "");
+    // Kaydet ve Gönder (bugün, eski bekleyen YOK sayılsın diye ayrı seri değil: bekleyenler aynı gün değil → O1 de erteler; sıra O1'den önce giriş).
+    const now = await ctx.sale(acc, { issueDate: ctx.day(-1), eSend: "now" });
+    assert.equal(now.autoSend?.code, "integrator-login", JSON.stringify(now.autoSend));
+    assert.match(now.autoSend.message, /^Entegratör girişi reddedildi \(kullanıcı adı\/parola\): .+ Belge numara verilmeden Gönderilecekler'e eklendi; Entegratör Ayarları'nı düzeltip Tümünü Gönder ile gönderin\.$/);
+    const c = await ctx.card(now.id);
+    assert.deepEqual([c.number, c.eStatus], ["", "waiting"]);
+    assert.equal(ctx.sends(), 0);
+  });
+
+  test("Ek 2 (O3 kenar): belgedeki alıcı numarası carinin şimdiki numarasından farklı ve mükellef — kartta da kalıcı engel; yeni belgeyi bekletmez", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const firm = await ctx.api.post("/api/workspace/accounts", { name: "Numarası Değişen Firma", type: "customer", partyKind: "company", taxNo: BUYER_VKN, taxOffice: "Kadıköy", address: "Moda 1", district: "Kadıköy", city: "İstanbul" });
+    assert.equal(firm.status, 200);
+    const old = await ctx.sale(firm.data.id, { issueDate: ctx.day(-3), eSend: "later" });
+    assert.equal((await ctx.card(old.id)).profile, "EARSIVFATURA");
+    const changed = await ctx.api.put(`/api/workspace/accounts/${firm.data.id}`, { taxNo: "1234567890" });
+    assert.equal(changed.status, 200, JSON.stringify(changed.data).slice(0, 300));
+    const t1 = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
+    const o1 = t1.data.results.find(x => x.id === old.id);
+    assert.equal(o1?.code, "buyer-is-efatura", JSON.stringify(o1));
+    assert.equal(o1.permanent, true);
+    const c = await ctx.card(old.id);
+    assert.equal(c.canSend, false, "kartta gönderilemez (turda kalıcı sayılan engelle tutarlı)");
+    assert.equal(c.sendBlock, `Belgedeki alıcı numarası (${BUYER_VKN}) e-Fatura mükellefine ait; bu belge e-Arşiv olarak gönderilemez (GİB). İptal Et ile iptal edin; alıcı firmanın carisini VKN'siyle açıp faturayı ona e-Fatura olarak kesin.`);
+    const checks = ctx.edm.state.calls.filter(call => call.op === "CheckUser").length;
+    const t2 = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
+    assert.equal(t2.data.results.find(x => x.id === old.id)?.permanent, true);
+    assert.equal(ctx.edm.state.calls.filter(call => call.op === "CheckUser").length, checks, "ikinci turda yeniden sorulmaz");
+    const now = await ctx.sale(ctx.people[1], { issueDate: ctx.day(0), eSend: "now" });
+    assert.equal(now.autoSend?.ok, true, `yeni belge bekletilmez: ${JSON.stringify(now.autoSend)}`);
+  });
+
   test("BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider", async () => {
     const ctx = await setup();
     open.push(ctx);

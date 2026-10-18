@@ -221,10 +221,12 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
       body = await call("Login", E("LoginRequest", [header("-1"), E("USER_NAME", username), E("PASSWORD", password)]));
     } catch (error) {
       if (LOGIN_HINT && error instanceof IntegratorError && error.code === "integrator-rejected") error.message = `${error.message}${/[.!?]$/.test(error.message) ? "" : "."} ${LOGIN_HINT}`;
+      // Dar kontrol 2.4.3 (ek 1): hatanın giriş adımında olduğu işaretlenir — "EDM isteği reddetti" girişte ise belge değil hesap reddedilmiştir.
+      if (error instanceof IntegratorError) error.stage = "login";
       throw error;
     }
     const session = textOf(deep(body, "SESSION_ID"));
-    if (!session) throw new IntegratorError("EDM oturum anahtarı vermedi; kullanıcı adı ya da parola yanlış olabilir.", { code: "integrator-login" });
+    if (!session) throw Object.assign(new IntegratorError("EDM oturum anahtarı vermedi; kullanıcı adı ya da parola yanlış olabilir.", { code: "integrator-login" }), { stage: "login" });
     sessions.set(sessionKey, { id: session, at: Date.now() });
     return session;
   }
@@ -264,6 +266,10 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
   return {
     endpoint: base,
     contractReport,
+    // Dar kontrol 2.4.3 (ek 1): oturum (geçerli önbellekte yoksa giriş). Numara ancak giriş başarılıysa verilir.
+    async ensureSession() {
+      await withSession(async () => null);
+    },
     async test() {
       const report = await contractReport({ refresh: true });
       sessions.delete(sessionKey);

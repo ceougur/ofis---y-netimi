@@ -2479,13 +2479,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const doc = documentInput(body, { mode: "issue" });
     assertAliasBeforeNumber(doc, body);
     await assertArchiveBuyerBeforeNumber(user, doc, body);
+    const loginHold = await sendLoginBlock(doc, body);
     const payment = paymentInput(body, doc, user);
     const result = store.tx(() => {
-      const written = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" });
+      const written = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" || Boolean(loginHold) });
       requests.remember(requestKey, hash, written.id);
       return written;
     });
-    const autoSend = result.orderHeld ? orderHeldResult(result.orderHeld) : await sendChoice(user, result.id, body.eSend);
+    const autoSend = loginHold ? loginHoldResult(loginHold) : result.orderHeld ? orderHeldResult(result.orderHeld) : await sendChoice(user, result.id, body.eSend);
     ok(res, { ...detail(result.id, user), ...(autoSend ? { autoSend } : {}) });
   });
   router.put("/api/workspace/invoices/:id", async ({ req, res, params }) => {
@@ -2507,9 +2508,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const doc = documentInput(merged, { mode: "issue", existing });
     assertAliasBeforeNumber(doc, body);
     await assertArchiveBuyerBeforeNumber(user, doc, body);
+    const loginHold = await sendLoginBlock(doc, body);
     const payment = paymentInput(merged, doc, user);
-    const written = writeIssued(user, doc, payment, { id: existing.id, force: forceOf(body), defer: body.eSend === "later" });
-    const autoSend = written.orderHeld ? orderHeldResult(written.orderHeld) : await sendChoice(user, existing.id, body.eSend);
+    const written = writeIssued(user, doc, payment, { id: existing.id, force: forceOf(body), defer: body.eSend === "later" || Boolean(loginHold) });
+    const autoSend = loginHold ? loginHoldResult(loginHold) : written.orderHeld ? orderHeldResult(written.orderHeld) : await sendChoice(user, existing.id, body.eSend);
     return { ...detail(existing.id, user), ...(autoSend ? { autoSend } : {}) };
   }
   // Portaldaki taslak (İz 7.3) EDM portalından gönderilmiş olabilir (bitiş turu, eleştirmen E2: taslak portaldan 1.200 TL gönderildi, programda
@@ -3043,6 +3045,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     store.run("UPDATE plans SET note = REPLACE(note, ?, ?) WHERE invoice_id = ?", PENDING_TAG, number, id);
     store.run("UPDATE cheques SET note = REPLACE(note, ?, ?) WHERE invoice_id = ?", PENDING_TAG, number, id);
     store.run("UPDATE account_entries SET note = REPLACE(note, ?, ?) WHERE source = 'cheque' AND source_id IN (SELECT id FROM cheques WHERE invoice_id = ?)", PENDING_TAG, number, id);
+    // Dar kontrol 2.4.3 (ek 3): Banka → Ters Kaydet'in iade faturası numarasız ertelenirse (O1) banka işleminin açıklaması da "(gönderilecek)"
+    // yazar; numara verilince o da değişir (açıklama para alanı değildir — K6).
+    store.run("UPDATE fin_events SET description = REPLACE(description, ?, ?) WHERE invoice_id = ? AND instr(description, ?) > 0", PENDING_TAG, number, id, PENDING_TAG);
   }
   // Sonra gönderilecek (ya da listeden silinip yeniden gönderilen) belgeye e-Belge numarası: gönderim anında, serinin
   // sırasıyla. Belge serideki son gönderilen belgeden eski tarihliyse gönderilmez (VUK 231 / GİB: numara ve tarih sırası).
@@ -3070,18 +3075,50 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Bağlantı / entegratör hesabı hatası bütün belgelerde aynı düşer: Tümünü Gönder ilk görüldüğünde durur, kalanlara numara verilmez (BİLGİ, r7).
   const TURN_STOP_CODES = new Set(["integrator-unreachable", "integrator-url", "integrator-credentials", "integrator-login"]);
   const UNREACHABLE_TEXT = "EDM'ye ulaşılamadı; bağlantı gelince yeniden deneyin.";
+  const LOGIN_REJECTED_TEXT = "Entegratör girişi reddedildi (kullanıcı adı/parola). Kalan belgelere numara verilmedi; Entegratör Ayarları'nı düzeltip yeniden deneyin.";
+  // Dar kontrol 2.4.3 (ek 1): entegratör GİRİŞİ reddedildi mi (yanlış kullanıcı adı/parola, hesap)? EDM girişte de "isteği reddetti" der; ayıran
+  // adımdır (stage: login). Mükellef sorgusundan sarılarak gelen hata (buyer-check-failed) da sayılır.
+  function loginRejected(error) {
+    const extra = error?.extra || {};
+    const code = extra.code || error?.code || "";
+    const stage = extra.stage || error?.stage || "";
+    if (code === "integrator-login") return true;
+    if (code === "buyer-check-failed") return extra.stage === "login" && ["integrator-rejected", "integrator-login"].includes(extra.cause);
+    return stage === "login" && code === "integrator-rejected";
+  }
   const WITHDRAWN_TEXT = "Gönderilmedi: belge gönderim sürerken Listeden Silindi (Müşteri Fişi olarak kaldı).";
   const ALREADY_SENT_TEXT = "Bu belge başka oturumda gönderildi.";
   // O3: alıcısı e-Fatura mükellefi olarak işaretlenmiş (Mükellef Sorgula ya da gönderimdeki sorgu) carinin numarasız e-Arşiv belgesi. Kalıcı:
   // e-Arşiv olarak hiç gönderilemez. Belgedeki numara carinin şimdiki numarasıyla aynıysa (sorgunun cariyi işaretleme koşulu) anlaşılır.
+  // Dar kontrol 2.4.3 (ek 2): belgedeki alıcı numarası carinin şimdiki numarasından farklıysa cari işaretlenmez; o numaranın mükellefiyeti
+  // entegratörün son sorgu sonucundan (registry) okunur — turda kalıcı sayılan engel kartta da kalıcı görünür, yeni belgeleri bekletmez.
+  // Kayıt: her mükellef sorgusu (gönderim öncesi denetim, Mükellef Sorgula) numaranın son sonucunu yazar; mükellef değil diyen sorgu siler.
+  const REGISTRY_KEY = "einvoice.taxpayers";
+  const REGISTRY_MAX = 5000;
+  const taxDigits = value => String(value || "").replace(/\D/g, "");
+  function registryOf() {
+    return parseJson(store.setting(REGISTRY_KEY, "{}"), {}) || {};
+  }
+  function noteTaxpayer(taxNo, registered) {
+    const key = taxDigits(taxNo);
+    if (![10, 11].includes(key.length)) return;
+    const registry = registryOf();
+    if (Boolean(registry[key]) === Boolean(registered)) return;
+    if (registered) registry[key] = now();
+    else delete registry[key];
+    const keys = Object.keys(registry);
+    if (keys.length > REGISTRY_MAX) for (const old of keys.sort((a, b) => String(registry[a]).localeCompare(String(registry[b]))).slice(0, keys.length - REGISTRY_MAX)) delete registry[old];
+    store.setSetting(REGISTRY_KEY, JSON.stringify(registry));
+  }
   function buyerBlockOf(row) {
     if (row.status !== "issued" || row.eStatus !== "waiting" || row.profile !== "EARSIVFATURA" || row.kind === "purchase" || row.kind === "sale_return") return "";
+    const partyTaxNo = taxDigits(parseJson(store.get("SELECT party_json AS partyJson FROM invoices WHERE id = ?", row.id)?.partyJson, {})?.taxNo);
+    if (![10, 11].includes(partyTaxNo.length) || partyTaxNo === "11111111111" || partyTaxNo === "2222222222") return "";
     const account = row.accountId ? store.get("SELECT tax_no AS taxNo, e_invoice AS eInvoice FROM accounts WHERE id = ?", row.accountId) : null;
-    if (!account || Number(account.eInvoice) !== 1) return "";
-    const digits = value => String(value || "").replace(/\D/g, "");
-    const partyTaxNo = digits(parseJson(store.get("SELECT party_json AS partyJson FROM invoices WHERE id = ?", row.id)?.partyJson, {})?.taxNo);
-    if (!partyTaxNo || partyTaxNo !== digits(account.taxNo)) return "";
-    return "Alıcı e-Fatura mükellefi (cari kartında işaretli); bu belge e-Arşiv olarak gönderilemez (GİB). İptal Et ile iptal edip yeniden kesin: e-Fatura olarak kesilir. Mükellefiyet bilgisi yanlışsa cari kartında Mükellef Sorgula ile yenileyin.";
+    if (account && partyTaxNo === taxDigits(account.taxNo)) {
+      return Number(account.eInvoice) === 1 ? "Alıcı e-Fatura mükellefi (cari kartında işaretli); bu belge e-Arşiv olarak gönderilemez (GİB). İptal Et ile iptal edip yeniden kesin: e-Fatura olarak kesilir. Mükellefiyet bilgisi yanlışsa cari kartında Mükellef Sorgula ile yenileyin." : "";
+    }
+    return registryOf()[partyTaxNo] ? `Belgedeki alıcı numarası (${partyTaxNo}) e-Fatura mükellefine ait; bu belge e-Arşiv olarak gönderilemez (GİB). İptal Et ile iptal edin; alıcı firmanın carisini VKN'siyle açıp faturayı ona e-Fatura olarak kesin.` : "";
   }
   // O1: aynı serinin (seri + yıl), verilen tarihten ESKİ tarihli, gönderilebilir (kalıcı engelsiz) numarasız bekleyenlerinin sayısı. Bütün numara
   // verme yolları bunu sorar: kayıtta numara (writeIssued) ve gönderimde numara (numberForSend). Aynı gün sırayı bozmaz (kronoloji katı: tarih).
@@ -3094,6 +3131,27 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   const orderText = (count, where) => `Bu seride daha eski tarihli gönderilmemiş ${count.toLocaleString("tr-TR")} belge var; GİB sıra kuralı gereği önce onlar gönderilmeli. ${where} — Tümünü Gönder ile eskiden yeniye gönderin.`;
   // Kayıtta numarası ertelenen belgenin yanıtı (autoSend yerine): hata değil, belge Gönderilecekler'de numarasız bekler.
+  // Dar kontrol 2.4.3 (ek 1): kayıtta hemen gönderilecek belge (Kaydet ve Gönder; otomatik gönderim açıkken Kaydet / Seçilenleri Kaydet) için
+  // entegratöre giriş numara verilmeden denenir; giriş REDDEDİLİRSE belge numara almadan Gönderilecekler'e girer. Bağlantı yoksa eski davranış
+  // sürer (2.4.3 H1: bugünün belgesi numarasını alır, "Gönderilmedi" bekler). Oturum önbellekteyse ağa çıkılmaz.
+  async function sendLoginBlock(doc, body) {
+    if (!edocEnabled || body?.eSend === "later" || !doc.meta?.own || !doc.meta?.send || doc.profile === "KAGIT") return "";
+    const s = settings();
+    if (body?.eSend !== "now" && s.integrator?.autoSend !== true) return "";
+    let link;
+    try {
+      link = integrator(s);
+    } catch {
+      return "";
+    }
+    try {
+      await link.ensureSession?.();
+    } catch (error) {
+      if (loginRejected(error)) return String(error?.message || error).slice(0, 300);
+    }
+    return "";
+  }
+  const loginHoldResult = detailText => ({ ok: false, pending: true, held: true, code: "integrator-login", number: "", message: `Entegratör girişi reddedildi (kullanıcı adı/parola): ${detailText} Belge numara verilmeden Gönderilecekler'e eklendi; Entegratör Ayarları'nı düzeltip Tümünü Gönder ile gönderin.` });
   const orderHeldResult = count => ({ ok: false, pending: true, held: true, code: "einvoice-order", number: "", message: orderText(count, "Belge Gönderilecekler'e eklendi") });
   function numberForSend(user, id, { listedOnly = false } = {}) {
     return store.tx(() => {
@@ -3119,6 +3177,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       else if (row.number) {
         // Fiş numarasıyla yazılmış açıklamalar e-Belge numarasına döner.
         for (const [table, where] of [["account_entries", "source = 'invoice' AND source_id = ?"], ["stock_moves", "invoice_id = ?"], ["plans", "invoice_id = ?"], ["cheques", "invoice_id = ?"]]) store.run(`UPDATE ${table} SET note = REPLACE(note, ?, ?) WHERE ${where}`, row.number, number, row.id);
+        store.run("UPDATE fin_events SET description = REPLACE(description, ?, ?) WHERE invoice_id = ? AND instr(description, ?) > 0", row.number, number, row.id, row.number);
       }
       audit(user, "invoice.numbered", row.id, { number, series, from: row.eStatus });
       return number;
@@ -3173,8 +3232,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // Dar kontrol turu 3 (B5): sorgu yapılamadıysa (bağlantı, giriş, zaman aşımı) numara verilmeden durulur — mükellefe giden e-Arşiv numarası
       // hiç gönderilemeyecek bir belgede kalmasın. Belge Gönderilecekler'de, numarasız kalır.
       const where = doc.number ? "Belge gönderilmedi" : "Belge numara verilmeden Gönderilecekler'de kaldı";
-      throw new HttpError(502, `Alıcının e-Fatura mükellefiyeti entegratöre sorulamadı (${String(error?.message || error).slice(0, 200)}). ${where}; bağlantı düzelince yeniden gönderin.`, { code: "buyer-check-failed", cause: error?.extra?.code || error?.code || "" });
+      // Dar kontrol 2.4.3 (ek 1): sorgu entegratör GİRİŞİ reddedildiği için yapılamadıysa neden açıkça söylenir.
+      if (loginRejected(error)) throw new HttpError(502, `Entegratör girişi reddedildi (kullanıcı adı/parola): ${String(error?.message || error).slice(0, 300)} ${where}; Entegratör Ayarları'nı düzeltip yeniden deneyin.`, { code: "integrator-login", stage: "login" });
+      throw new HttpError(502, `Alıcının e-Fatura mükellefiyeti entegratöre sorulamadı (${String(error?.message || error).slice(0, 200)}). ${where}; bağlantı düzelince yeniden gönderin.`, { code: "buyer-check-failed", cause: error?.extra?.code || error?.code || "", stage: error?.extra?.stage || error?.stage || "" });
     }
+    noteTaxpayer(taxNo, Boolean(result?.registered));
     if (!result?.registered) return;
     // Posta kutusu yalnız tekse kendiliğinden yazılır; birden çoksa kullanıcı cari kartında seçer (yanlış kutuya fatura gitmesin).
     const aliases = result.aliases || [];
@@ -3236,6 +3298,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         const checked = withdrawn ? { ...pre, profile: invoiceRow(id).eProfile } : pre;
         preflight(checked, s);
         await assertNotEFaturaBuyer(user, checked, link);
+        // Dar kontrol 2.4.3 (ek 1): numara entegratör oturumu kurulduktan SONRA verilir — yanlış kullanıcı adı/parola ya da kapalı bağlantıda belge
+        // numara almadan Gönderilecekler'de kalır (önceden numara girişten önce veriliyordu; her belge numara alıp düşüyordu).
+        if (["waiting", "withdrawn"].includes(pre.eStatus) && link.ensureSession) {
+          try {
+            await link.ensureSession();
+          } catch (error) {
+            if (loginRejected(error)) throw new HttpError(502, `Entegratör girişi reddedildi (kullanıcı adı/parola): ${String(error?.message || error).slice(0, 300)} Belge numara verilmeden Gönderilecekler'de kaldı; Entegratör Ayarları'nı düzeltip yeniden deneyin.`, { code: "integrator-login", stage: "login" });
+            throw error;
+          }
+        }
       }
     }
     numberForSend(user, id, { listedOnly });
@@ -3530,7 +3602,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         results.push({ id, ok: false, code, ...(busy ? { busy: true } : {}), ...(waitOrder ? { skipped: true, reason: "order" } : {}), ...(permanent ? { permanent: true } : {}), message: busy ? "Bu belge şu anda başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin." : error?.message || String(error) });
         // BİLGİ (r7): bağlantı / entegratör hesabı hatası bütün belgelerde aynı düşer — tur durur, kalanlara numara verilmez.
         const cause = code === "buyer-check-failed" ? error?.extra?.cause || "" : code;
-        if (TURN_STOP_CODES.has(cause)) stopped = { code: cause, message: cause === "integrator-unreachable" ? UNREACHABLE_TEXT : `${error?.message || error} Kalan belgelere numara verilmedi; ayarı düzeltip yeniden deneyin.` };
+        if (loginRejected(error)) stopped = { code: "integrator-login", message: LOGIN_REJECTED_TEXT };
+        else if (TURN_STOP_CODES.has(cause)) stopped = { code: cause, message: cause === "integrator-unreachable" ? UNREACHABLE_TEXT : `${error?.message || error} Kalan belgelere numara verilmedi; ayarı düzeltip yeniden deneyin.` };
       }
     }
     const remaining = all ? order.length - reached : 0;
@@ -3632,6 +3705,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const id = classifyTaxId(taxNo);
     if (!id.ok) fail400("Geçerli bir VKN (10 hane) ya da TC kimlik numarası (11 hane) yazın.", "taxNo");
     const result = await integrator().checkUser(taxNo);
+    noteTaxpayer(taxNo, Boolean(result?.registered));
     let accountId = "";
     if (text(body.accountId)) accountId = accounts().taxIdentity.setEInvoice(user, text(body.accountId), { registered: result.registered, alias: result.aliases[0] || "", title: result.title }).id;
     ok(res, { ...result, taxNo, accountId });

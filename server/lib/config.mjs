@@ -76,6 +76,9 @@ export function loadConfig(overrides = {}) {
     edocLive: overrides.edocLive === true,
     // Dar kontrol 2.4.3 (Y1): "Tümünü Gönder" bir istekte en çok 20 belgeyi ya da bu süre bütçesini (ms) işler, kalan sayısını döner; istemci
     // kalan bitene dek yineler (tarayıcının istek zaman aşımına düşmez). Testler kısa verir; ortam değişkeniyle verilmez.
+    // İptal öncesi "işleniyor" durumunun yeniden sorulma aralıkları (ms; 2.4.3 H7). Yalnız testler verir (üretimde 1 sn + 2 sn); dar kontrol 2.4.3
+    // (ek 5): önceden bu alan yapılandırmaya hiç geçmiyordu, testlerin verdiği kısa aralık yok sayılıyordu.
+    edocStatusPollMs: Array.isArray(overrides.edocStatusPollMs) ? overrides.edocStatusPollMs.map(Number).filter(value => Number.isFinite(value) && value >= 0) : undefined,
     edocSendBudgetMs: Number.isFinite(overrides.edocSendBudgetMs) && overrides.edocSendBudgetMs > 0 ? overrides.edocSendBudgetMs : 10_000,
     // e-SMM gönderimi (2.4.1, kullanıcı kararı 16.10.2026: "e-SMM gizli"): EDM'de e-SMM ayrı servis/yetki; bağlanana kadar kapalı — işaret gizli, sunucu
     // reddeder, eski "esmm: true" kaydında makbuz kâğıt kalır (test/esmm-gizli-241.test.mjs). Ortam değişkeniyle açılmaz.
