@@ -1,0 +1,64 @@
+(node:3122) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+A) UX4: Yeni Cari doldurulur → Esc → soruda odak "Forma Dön" → Enter form açık kalır, yazılan durur
+  ✓ yeni cari açılınca odak ilk alanda (INPUT[name]|)
+  ✗ soruda odak güvenli düğmede (BUTTON[answer=yes]|Kaydetmeden Kapat)
+  ✗ Enter formu kapatmadı, yazılan duruyor ((form kapandı))
+  ✓ veri tabanında kayıt yok (kaydedilmedi)
+B) UX10: sunucu alanı söyleyen hata (IBAN geçersiz) → odak IBAN alanında
+  ✗ hata sonrası odak hatalı alanda (BODY)
+C) UX4/UX10: faturadan "+ Yeni Cari" kaydedilince odak × düğmesinde değil
+  ✓ ön koşul: cari açıldı (veri tabanı)
+  ✗ odak × düğmesinde ya da boşta değil (BUTTON.close|×)
+D) UX4: Hareketi Sil onayında odak Vazgeç; Enter hareketi silmez
+  ✗ silme onayında odak Vazgeç'te (BUTTON[answer=yes]|Sil)
+  ✓ yöneticiye yol: Yönetim → Silinenler (e Kasa yeniden hesaplanır. Yönetim → Silinenler’den geri yüklenebilir.)
+  ✗ Enter hareketi silmedi (veri tabanı)
+E) UX19: hareket süzgeci adı ve sayısı; UI6 posta kutusu ayrı satırda
+  ✗ "Kasa" adlı süzgeç yok (Tümü 1 | Borç 0 | Alacak 1 | Kasa 1 | Taksit 0)
+  ✗ "Tahsilat / Ödeme" süzgeci var (Tümü 1 | Borç 0 | Alacak 1 | Kasa 1 | Taksit 0)
+  ✓ ön koşul: havale tahsilatı girildi (200)
+  ✗ posta kutusu etiketi "Mükellef"in altında ayrı satırda ({"display":"inline","text":"Mükellefurn:mail:defaultpk@alici.com.tr"})
+F) UX5/KÖ4 ve UI7: düzenle → e-Fatura işaretini kaldır → bilgi iletisi; alan adları yazım düzeninde
+  ✗ alan adları: e-Fatura posta kutusu etiketi | e-Fatura senaryosu
+  ✗ işaret kalktı ve bilgi iletisi çıktı (Hareket silindi.)
+  ✓ posta kutusu etiketi silinmedi (formda)
+G) UX13: Mükellef Sorgula — GİB unvanı yazılandan farklı → öneri, tek tıkla uygulanır
+  ✗ GİB unvanı öneri olarak gösterildi ()
+G2) UX21: Posta Kutusu Seçin penceresinde açılır listede Enter seçer
+  ✓ odak posta kutusu listesinde (SELECT[alias]|urn:mail:muhasebepk@coklu.com.)
+  ✗ Enter seçimi onayladı, pencere kapandı
+    bildirimler: 
+  ✗ seçilen posta kutusu forma yazıldı ( / urn:mail:defaultpk@coklu.com.tr)
+H) UX8: taksit kartı "Kartı Kapat" onaylı; odak Vazgeç, Enter kapatmaz
+  ✗ düğme adı ayırt edici (Kapat)
+  ✗ kalan varken onay soruldu
+  ✗ kart açık kaldı (veri tabanı)
+I) UI1 / UI10 / UI3c / UI11: kontrast ve yerleşim
+  ✗ WhatsApp düğmeleri ≥ 4,5:1 ([{"text":"Tümüne WhatsApp Ekstre","ratio":1.98},{"text":"Tümüne WhatsApp Mesaj","ratio":1.98}])
+  ✗ tablo başlıkları ≥ 4,5:1 (en düşük 3.84)
+  ✗ pencere üst yazısı ≥ 4,5:1 ([{"text":"OPERASYON","ratio":3.83}])
+  ✓ stok kodları (STK-2.0.21-001, 8690123456789) tek satırda
+  ✓ "Stok Kodu" başlığı tek satırda
+  ✗ 5 özet kartı tek sırada (üst: 211, 211, 211, 211, 302)
+  ✗ Çek / Senet başlığı bir kez (2)
+  ✗ Rapor Merkezi kartı ≥ 4,5:1 ([{"text":"63 hazır rapor10 bölüm · her b","ratio":3.45},{"text":"10 bölüm · her biri PDF ve Exc","ratio":2.78}])
+J) UI9 ve UI11: kısaltılmış tutar simge başta (Nakit Akış grafiği); görünüm seçeneği
+  ✗ görünüm seçeneği (Hareket Hareket)
+  ✗ eksen tutarları simge başta (["0 ₺","10 Mn ₺","20 Mn ₺","30 Mn ₺","07.11.2026"])
+K) UX11 / UX22: Yönetim — muhasebe rol açıklaması; yeni kullanıcının ilk parolası
+  ✗ muhasebe açıklaması güncel (Personelin yaptıkları + Kasa, Cari, Taksit, Stok ve Çek/Senet yönetimi. Görev atama ve raporlar yok.)
+  ✗ İlk Parola alanı boş geliyor
+  ✗ K bölümü yarıda kaldı: locator.click: Timeout 15000ms exceeded.
+L) UX1: iki kişi aynı cariyi düzenler (yönetici + muhasebe)
+  ✓ ön koşul: yöneticinin telefonu kaydedildi
+  ✗ muhasebeye açık ileti ()
+  ✗ yöneticinin telefonu silinmedi (veri tabanı)
+  ✗ muhasebenin yazdığı e-posta duruyor, telefon güncel hâliyle geldi ({})
+  ✗ L bölümü yarıda kaldı: locator.click: Timeout 15000ms exceeded.
+M) UX7: muhasebe tahsilatı silerken doğru yol
+  ✗ M bölümü yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+  ✓ sayfa hatası yok
+
+✗ uiux-a-243: 11 geçti, 33 kaldı
+cikis=1

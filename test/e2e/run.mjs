@@ -600,6 +600,10 @@ try {
     await admin.click(".hof-plans-table tbody tr[data-plan]");
     await admin.waitForSelector('.hof-plans [data-act="close"]', { timeout: 10000 });
     await admin.click('.hof-plans [data-act="close"]');
+    // 2.4.3 (uzman UX8): kalanı olan kart sorulmadan kapanmaz; soru beklenir (ders 34: sessizce geçilmez) ve bilerek "Kartı Kapat" denir.
+    const closeAsk = await admin.waitForSelector('.hof-modal-backdrop.is-visible:last-of-type [data-answer="yes"]', { timeout: 5000 }).catch(() => null);
+    expect(closeAsk && /Kartı Kapat/.test(await closeAsk.textContent()), "kalanı olan kart kapatılırken onay soruldu");
+    await closeAsk.click();
     await admin.waitForSelector('.hof-plans [data-act="reopen"]', { timeout: 10000 });
     await admin.click('.hof-plans [data-close]');
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop") && ![...document.querySelectorAll(".hof-payment-pill")].some(pill => pill.textContent.includes("taksit")), null, { timeout: 10000 });
@@ -659,6 +663,10 @@ try {
     await admin.click("#hof-case-plan [data-open-plan]");
     await admin.waitForSelector('.hof-plans [data-act="close"]', { timeout: 10000 });
     await admin.click('.hof-plans [data-act="close"]');
+    // 2.4.3 (uzman UX8): kalanı olan kart sorulmadan kapanmaz; soru beklenir (ders 34: sessizce geçilmez) ve bilerek "Kartı Kapat" denir.
+    const closeAsk = await admin.waitForSelector('.hof-modal-backdrop.is-visible:last-of-type [data-answer="yes"]', { timeout: 5000 }).catch(() => null);
+    expect(closeAsk && /Kartı Kapat/.test(await closeAsk.textContent()), "kalanı olan kart kapatılırken onay soruldu");
+    await closeAsk.click();
     await admin.waitForSelector('.hof-plans [data-act="reopen"]', { timeout: 10000 });
     await admin.click(".hof-plans [data-close]");
     // Kart kapanınca taksit bölümü kalkar (2.0.18: detay kartında cari kutusu yok, bölüm gizlenir).

@@ -1,0 +1,70 @@
+(node:2571) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+A) UX4: Yeni Cari doldurulur → Esc → soruda odak "Forma Dön" → Enter form açık kalır, yazılan durur
+  ✓ yeni cari açılınca odak ilk alanda (INPUT[name]|)
+  ✓ soruda odak güvenli düğmede (BUTTON[answer=no]|Forma Dön)
+  ✓ Enter formu kapatmadı, yazılan duruyor (Esc Deneme Kişisi)
+  ✓ veri tabanında kayıt yok (kaydedilmedi)
+B) UX10: sunucu alanı söyleyen hata (IBAN geçersiz) → odak IBAN alanında
+  ✓ hata sonrası odak hatalı alanda (INPUT[iban]|)
+C) UX4/UX10: faturadan "+ Yeni Cari" kaydedilince odak × düğmesinde değil
+  ✓ ön koşul: cari açıldı (veri tabanı)
+  ✓ odak × düğmesinde ya da boşta değil (INPUT|)
+D) UX4: Hareketi Sil onayında odak Vazgeç; Enter hareketi silmez
+  ✓ silme onayında odak Vazgeç'te (BUTTON[answer=no]|Vazgeç)
+  ✓ yöneticiye yol: Yönetim → Silinenler (e Kasa yeniden hesaplanır. Yönetim → Silinenler’den geri yüklenebilir.)
+  ✓ Enter hareketi silmedi (veri tabanı)
+E) UX19: hareket süzgeci adı ve sayısı; UI6 posta kutusu ayrı satırda
+  ✓ "Kasa" adlı süzgeç yok (Tümü 2 | Borç 0 | Alacak 2 | Tahsilat / Ödeme 2 | Taksit 0)
+  ✓ "Tahsilat / Ödeme" süzgeci var (Tümü 2 | Borç 0 | Alacak 2 | Tahsilat / Ödeme 2 | Taksit 0)
+  ✓ ön koşul: havale tahsilatı girildi (200)
+  ✓ posta kutusu etiketi "Mükellef"in altında ayrı satırda ({"display":"block","text":"Mükellefurn:mail:defaultpk@alici.com.tr"})
+F) UX5/KÖ4 ve UI7: düzenle → e-Fatura işaretini kaldır → bilgi iletisi; alan adları yazım düzeninde
+  ✓ alan adları: e-Fatura Posta Kutusu Etiketi | e-Fatura Senaryosu
+  ✓ işaret kalktı ve bilgi iletisi çıktı (e-Fatura mükellefi işareti kaldırıldı: kaydedince bu cariye e-Arşiv kesilir. Cari gerçekten mükellefse gönderimde yakalanır; emin değilseniz)
+  ✓ posta kutusu etiketi silinmedi (formda)
+G) UX13: Mükellef Sorgula — GİB unvanı yazılandan farklı → öneri, tek tıkla uygulanır
+  ✓ GİB unvanı öneri olarak gösterildi (GİB'deki unvan: ALICI TİCARET A.Ş. (yazdığınız: “Beta Yazılım A.Ş.”). Unvanı Bununla Değiş)
+  ✓ Unvanı Bununla Değiştir → ad güncellendi
+  ✓ veri tabanında GİB unvanıyla kaydedildi
+G2) UX21: Posta Kutusu Seçin penceresinde açılır listede Enter seçer
+  ✓ odak posta kutusu listesinde (SELECT[alias]|urn:mail:muhasebepk@coklu.com.)
+  ✓ Enter seçimi onayladı, pencere kapandı
+    bildirimler: Cari açıldı. | e-Fatura mükellefi: ÇOKLU A.Ş. Posta kutusu etiketi yazıldı.
+  ✓ seçilen posta kutusu forma yazıldı (urn:mail:defaultpk@coklu.com.tr / urn:mail:defaultpk@coklu.com.tr)
+H) UX8: taksit kartı "Kartı Kapat" onaylı; odak Vazgeç, Enter kapatmaz
+  ✓ düğme adı ayırt edici (Kartı Kapat)
+  ✓ kalan varken onay soruldu
+  ✓ odak Vazgeç'te (BUTTON[answer=no]|Vazgeç)
+  ✓ soruda kalan tutar (Kalan ₺3.000,00 açıkken “Kira Kartı” kartı kapatılsın mı? Kapalı kart uyarı verm)
+  ✓ kart açık kaldı (veri tabanı)
+  ✓ onaylanınca kart kapandı (veri tabanı)
+I) UI1 / UI10 / UI3c / UI11: kontrast ve yerleşim
+  ✓ WhatsApp düğmeleri ≥ 4,5:1 ([{"text":"Tümüne WhatsApp Ekstre","ratio":5.09},{"text":"Tümüne WhatsApp Mesaj","ratio":5.09}])
+  ✓ tablo başlıkları ≥ 4,5:1 (en düşük 5.03)
+  ✓ pencere üst yazısı ≥ 4,5:1 ([{"text":"OPERASYON","ratio":4.9}])
+  ✓ stok kodları (STK-2.0.21-001, 8690123456789) tek satırda
+  ✓ "Stok Kodu" başlığı tek satırda
+  ✓ 5 özet kartı tek sırada (üst: 211, 211, 211, 211, 211)
+  ✓ Çek / Senet başlığı bir kez (1)
+  ✓ Rapor Merkezi kartı ≥ 4,5:1 ([{"text":"63 hazır rapor10 bölüm · her b","ratio":5.72},{"text":"10 bölüm · her biri PDF ve Exc","ratio":4.95}])
+J) UI9 ve UI11: kısaltılmış tutar simge başta (Nakit Akış grafiği); görünüm seçeneği
+  ✓ görünüm seçeneği (Tek Tek Hareketler)
+  ✓ eksen tutarları simge başta (["0","₺10 Mn","₺20 Mn","₺30 Mn","07.11.2026"])
+K) UX11 / UX22: Yönetim — muhasebe rol açıklaması; yeni kullanıcının ilk parolası
+  ✓ muhasebe açıklaması güncel (Personelin yaptıkları + Kasa, Cari, Taksit, Stok, Çek/Senet, Banka ve Fatura yönetimi; Finans Raporları (mizan, cari eks)
+  ✓ İlk Parola alanı boş geliyor
+  ✓ Parola Üret güçlü parola yazdı ve tamamını seçti (14 karakter, seçili: true)
+  ✓ yazılan parola aynen kaydedildi (giriş 200)
+L) UX1: iki kişi aynı cariyi düzenler (yönetici + muhasebe)
+  ✓ ön koşul: yöneticinin telefonu kaydedildi
+  ✓ muhasebeye açık ileti (Bu cari siz düzenlerken başka biri tarafından değiştirildi; güncel hâli yüklendi. Değiştirdiğiniz alanlar form)
+  ✓ yöneticinin telefonu silinmedi (veri tabanı)
+  ✓ muhasebenin yazdığı e-posta duruyor, telefon güncel hâliyle geldi ({"email":"zeynep@ornek.com","phone":"05551234567"})
+  ✓ yeniden kaydedince ikisi de yerinde ({"phone":"05551234567","email":"zeynep@ornek.com"})
+M) UX7: muhasebe tahsilatı silerken doğru yol
+  ✓ muhasebeye yetkisine göre yol (Kasa yeniden hesaplanır. Yöneticiniz Yönetim → Silinenler’den geri yükleyebilir.)
+  ✓ sayfa hatası yok
+
+✓ uiux-a-243: 50 geçti, 0 kaldı
+cikis=0
