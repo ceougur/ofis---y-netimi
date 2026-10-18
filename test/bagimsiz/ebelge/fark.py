@@ -4,7 +4,7 @@
 
 Kullanım (depo kökünden):
   python3 test/bagimsiz/ebelge/fark.py --tohum 1 --islem 100 [--kucult] [--butce 40] [--cikti <klasör>]
-  python3 test/bagimsiz/ebelge/fark.py --senaryo <senaryo.json> [--kucult]
+  python3 test/bagimsiz/ebelge/fark.py --senaryo <senaryo.json | klasör> [--kucult]   # ör. test/bagimsiz/ebelge/senaryolar
   python3 test/bagimsiz/ebelge/fark.py --tohumlar 1-5 --islem 300            # birden çok tohum (Uzun Doğrulama)
 
 Ne yapar:
@@ -572,8 +572,11 @@ def main():
     os.makedirs(x.cikti, exist_ok=True)
     senaryolar = []
     if x.senaryo:
-        with open(x.senaryo, encoding="utf-8") as f:
-            senaryolar.append(json.load(f))
+        # Dosya ya da klasör (klasördeki bütün *.json — ör. test/bagimsiz/ebelge/senaryolar: küçültülmüş bulgu dizileri)
+        yollar = sorted(os.path.join(x.senaryo, n) for n in os.listdir(x.senaryo) if n.endswith(".json")) if os.path.isdir(x.senaryo) else [x.senaryo]
+        for yol in yollar:
+            with open(yol, encoding="utf-8") as f:
+                senaryolar.append(json.load(f))
     elif x.tohumlar:
         bas, _, son = x.tohumlar.partition("-")
         senaryolar = [uretici.uret(t, x.islem) for t in range(int(bas), int(son or bas) + 1)]

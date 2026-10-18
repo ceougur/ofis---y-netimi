@@ -1,0 +1,10 @@
+{"dil":"destekofis-ebelge/1","ad":"hedefli-ag","tohum":0,"bugun":"2026-06-17","cariler":{"K1":"kisi","K2":"mukellef","K3":"mukellef_pksiz","K4":"gizli_mukellef","K5":"kisi"},
+"adimlar":[{"no":1,"islem":"kaydet","belge":"B1","cari":"K1","tarih":"2026-06-15","gonder":"simdi"},
+{"no":2,"islem":"kaydet","belge":"B2","cari":"K2","tarih":"2026-06-15","gonder":"simdi"},
+{"no":3,"islem":"ag","durum":"yok"},
+{"no":4,"islem":"kaydet","belge":"B3","cari":"K1","tarih":"2026-06-16","gonder":"simdi"},
+{"no":5,"islem":"kaydet","belge":"B4","cari":"K2","tarih":"2026-06-16","gonder":"simdi"},
+{"no":6,"islem":"kaydet","belge":"B5","cari":"K5","tarih":"2026-06-17","gonder":"sonra"},
+{"no":7,"islem":"tumunu_gonder","kapsam":"hepsi"},
+{"no":8,"islem":"kart_gonder","belge":"B5"},
+{"no":9,"islem":"ag","durum":"var"},{"no":10,"islem":"tumunu_gonder","kapsam":"hepsi"}]}

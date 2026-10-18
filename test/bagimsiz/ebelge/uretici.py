@@ -93,8 +93,14 @@ def uret(tohum, islem=100):
         elif secim == "esz":
             ekle({"islem": "esz_tumunu_gonder"})
         elif secim == "tur_sil":
+            # Çoğunlukla turda önünde gönderilebilir başka belge olan bir bekleyen (silme tur sürerken işlensin — K15);
+            # yoksa herhangi bir bekleyen.
+            d0 = m.dunyalar[0]
+            sira = [b for b in d0.sira_listesi(None) if d0.engel(b) is None and not d0.tarih_engeli(b)]
             xs = belgeler(lambda b: b["tur"] != "kagit" and not b["prog"] and not b["iptal"] and not b["silindi"])
-            if xs:
+            if len(sira) >= 2 and r.random() < 0.8:
+                ekle({"islem": "tur_sirasinda_sil", "belge": r.choice(sira[1:])["ad"]})
+            elif xs:
                 ekle({"islem": "tur_sirasinda_sil", "belge": r.choice(xs)["ad"]})
         elif secim == "listeden_sil":
             xs = belgeler(lambda b: b["tur"] != "kagit" and not b["prog"] and not b["iptal"])
