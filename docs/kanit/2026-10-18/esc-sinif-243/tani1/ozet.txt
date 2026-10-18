@@ -1,0 +1,6 @@
+ADAY-MEŞRU	senaryo-ebelge-242.mjs	adım senaryo-ebelge-242.mjs:83 ← senaryo-ebelge-242.mjs:141	×3	«Fatura»	neden:kapsam	kapsam:form-2	dokunulan:0 değişen:0 dolu:10	["cari=Ayşe Demir*","kalem0.name(1. kalem adı)=Danışmanlık*","kalem0.unitPrice(Birim fiyat)=941*"]
+ADAY-MEŞRU	senaryo-ebelge-242.mjs	adım senaryo-ebelge-242.mjs:83 ← senaryo-ebelge-242.mjs:152	×1	«Fatura»	neden:kapsam	kapsam:form-5	dokunulan:0 değişen:0 dolu:10	["cari=Ayşe Demir*","kalem0.name(1. kalem adı)=Danışmanlık*","kalem0.unitPrice(Birim fiyat)=950*"]
+ADAY-MEŞRU	senaryo-ebelge-243.mjs	adım senaryo-ebelge-243.mjs:83 ← senaryo-ebelge-243.mjs:119	×1	«Fatura»	neden:kapsam	kapsam:form-1	dokunulan:0 değişen:0 dolu:11	["cari=TESTER*","kalem0.name(1. kalem adı)=Hizmet Satışı*","kalem0.unitPrice(Birim fiyat)=869*"]
+KURAL-GERİ-ALINMIŞ	senaryo-ebelge-243.mjs	adım senaryo-ebelge-243.mjs:83 ← senaryo-ebelge-243.mjs:140	×1	«Yeni Cari»	neden:kapsam	kapsam:<form>	dokunulan:1 değişen:0 dolu:4	["eInvoice(e-Fatura mükellefi (Mükellef Sorgula belirler: işaretliyse e)=false"]
+ADAY-MEŞRU	senaryo-217.mjs	adım senaryo-217.mjs:91 ← senaryo-217.mjs:253 ← senaryo-217.mjs:64	×1	«Fatura»	neden:kapsam	kapsam:form-1	dokunulan:0 değişen:0 dolu:9	["kalem0.name(1. kalem adı)=Çay 1 Kg","kalem0.unitPrice(Birim fiyat)=80"]
+toplam soru 7, adım 5, ŞÜPHELİ / ELLE-BAK / sınıflanamayan 0

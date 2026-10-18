@@ -1,0 +1,32 @@
+{
+  "ad": "esc-sinif-senaryo-ebelge-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ebelge-243.mjs",
+  "commit": "9a278d85d7b666b04bae7d50d07b6487e8367ce1",
+  "dal": "esc-sinif-243",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T11:58:39.111Z",
+  "sure_sn": 23.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../esc-sinif-243-kanit/2026-10-18/esc-sinif-senaryo-ebelge-243.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/esc-sinif-243",
+  "ham_cikti_sha256": "c643fd0f92480f89880b6515d6b000a242c08c0829f7bb8a9dd1abfd1ff199d5",
+  "ham_cikti_bayt": 1668
+}

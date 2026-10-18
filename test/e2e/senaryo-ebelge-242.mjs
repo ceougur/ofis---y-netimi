@@ -87,6 +87,8 @@ const closeAll = async page => {
   }
 };
 const lastId = () => server.app.store.get("SELECT id FROM invoices ORDER BY rowid DESC LIMIT 1")?.id;
+// Ders 34: escClose günlüğüne o anki veri tabanı sayıları (soru çıktığında form gerçekten kaydedilmemiş mi).
+globalThis.__escKapatEk = () => ({ fatura: server.app.store.get("SELECT COUNT(*) AS n FROM invoices").n, cari: server.app.store.get("SELECT COUNT(*) AS n FROM accounts").n });
 
 try {
   const context = await browser.newContext({ viewport: { width: 1360, height: 900 }, locale: "tr-TR" });

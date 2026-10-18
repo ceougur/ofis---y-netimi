@@ -1,0 +1,43 @@
+Ders 34 — escClose ("Kaydedilmemiş Değişiklik" sorusunu kendiliğinden "Kaydetmeden Kapat" ile geçen yardımcı) soru sınıflaması
+Taban: birlesim2-243 32e9963. Günlük genişletmesi + özet aracı: commit 9a278d8 (dal esc-sinif-243). Ürün kodu DEĞİŞMEDİ.
+Özet aracı: node test/e2e/esc-kapat-ozet.mjs <esc-gunluk.jsonl>  (elle bakılacak soru varsa çıkış 1)
+
+KÖK NEDEN (günlüğün kör noktası): hof-core isDirty() iki kaynaklıdır — (1) dokunulmuş + kayıtlı değerinden farklı alan,
+(2) KAPSAM: [data-hof-form] (fatura formu "form-N") ya da <form> penceresinde kullanıcı eliyle bir alana dokunduysa kapsam
+ekranda kaldıkça kirli. Fatura kalem satırları ve cari seçici her hesaplamada yeniden çizilir; yeni düğüm "dokunulmuş" değil →
+eski günlükte touched=[] görünüp ŞÜPHELİ sanıldı. Yeni satır: neden / kapsam / dolu alanlar / altBaslik / zincir / ek (veri tabanı).
+
+SINIF (her soru)                                                     | o anda farklı olan (kaydedilmemiş)                         | DB
+ebelge-242:141 (2b, 3 deneme) Fatura · Yeni Satış · Hizmet   MEŞRU   | cari Ayşe Demir, kalem Danışmanlık 941/942/943; onay Esc   | fatura 2 (değişmedi)
+ebelge-242:152 (odak denemesi) Fatura · Yeni Satış           MEŞRU   | cari Ayşe Demir, kalem Danışmanlık 950; kaydedilmedi      | fatura 2
+ebelge-243:119 (adım 1) Fatura · Yeni Satış                  MEŞRU   | cari TESTER, kalem Hizmet Satışı 869; Kaydet ve Gönder     | fatura 0
+                                                                     | engellendi (numara harcanmadı)                             |
+ebelge-243:142 (adım 2) Yeni Cari                            MEŞRU*  | e-Fatura kutusu: test betikle checked=true yaptı (defaultChecked false),
+                                                                     | gerçek tıklama işareti kaldırdı → change olayı → <form> kapsamı kirli.
+                                                                     | *Kural gereği (KURAL-GERİ-ALINMIŞ): değer açılıştakine döndü, kullanıcı
+                                                                     | eli ekranda görünen durumu değiştirdi. Gerçek kullanımda kutu yalnız
+                                                                     | Mükellef Sorgula ile (VKN yazıldıktan sonra) işaretlenir → form zaten kirli.
+                                                                     | Engellenen tıklama/boşluk formu kirletmez: yeni denetim 20/20 yeşil.
+217:253 (madde 7) Fatura · Yeni Satış · Stoktan Satış         MEŞRU   | "Çay" yazıldı, öneriden Çay 1 Kg (80) seçildi; kaydedilmedi | fatura 2 (API'den)
+entegrator-240:193 Yeni Cari                                 MEŞRU   | Ad Çoklu A.Ş., VKN 2223334447 (PK seçildi, cari kaydedilmedi)
+entegrator-240:412 Fatura                                    MEŞRU   | kalem birimi Kg (kaydedilmedi)
+banka-210:426 Açılışı Düzelt                                 MEŞRU   | 100.500 (ileri tarih reddedildi)
+banka-210:1740 Bankadan Kasaya Aktar                         MEŞRU   | 60.000 (Eksi Bakiye → Vazgeç; yazılmadı)
+220-yedek:184 Yedekten Geri Yükle                            MEŞRU   | onay 001 + parola (yanlış şirket reddedildi)
+223:292 Fatura · Yeni Alış · Stoğa Mal Alışı                 MEŞRU   | cari, kalem Fren Balata ×2 @100, çek K-3 tutar "Ziraat" (geçersiz, kayıt durdu)
+banka-210-eski-satir:241 Tahsilat                            MEŞRU   | 77 (açılıştan önce reddedildi)
+banka-210-eski-satir:261 Tahsilat düzelt                     MEŞRU   | 1.250 (Kurulum Geçmişi reddi)
+banka-210b:460 Bankalar Arası Transfer                       MEŞRU   | 75000 (Eksi Bakiye → Vazgeç)
+supheli-230:257 Şüpheli Alacağa Al                           MEŞRU   | 7000 (> 6000, form hatası)
+212:153 / 212:159 Yeni Taksit Kartı                          MEŞRU   | ad Deniz Ak / tarih + cari (kaydedilmedi)
+213:372 Yeni Cari                                            MEŞRU   | Tülay Arıkan (aynı ad uyarısı ekranı; kaydedilmedi)
+214:288 Yeni Cari                                            MEŞRU   | "deneme" (canlı yenileme sırasında yazım; kaydedilmedi)
+YANLIŞ soru: 0. Ürün hatası yok → kırmızı/yeşil düzeltme kanıtı gerekmedi.
+
+KURAL GÖZLEMİ (karar ana oturumda; hata değil): <form> / [data-hof-form] penceresinde alana yazıp silmek de soruyu çıkarır
+(tani2-yoklama: Yeni Cari adına "x" + Backspace → ad="" hasDirtyModal=true). Kapsam kuralı yeniden çizilen formlarda veri kaybını
+önlemek için bilerek konmuş (hof-core.js "kapanana kadar"); Not Defteri / Word'deki "değiştirildi" bayrağı gibi.
+
+KLASÖRLER: son/ (9a278d8, tools/kanit.mjs kos: 242 21/21, 243 20/20, 217 65/65, çıkış 0) · tani1/ (genişletilmiş günlük, commit
+öncesi çalışma kopyası) · tani2-yoklama/ (geçici yaz-sil yoklaması; commit'lenmedi) · tani3/ (öbür 10 senaryo, hepsi çıkış 0) ·
+onceki-gunluk.jsonl + onceki-gunluk-ozet.txt (tam e2e'nin eski günlüğü; yeni araçla 4 adım sınıflanamaz → çıkış 1).
