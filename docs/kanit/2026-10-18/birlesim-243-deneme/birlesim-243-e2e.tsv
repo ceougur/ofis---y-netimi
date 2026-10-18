@@ -1,0 +1,51 @@
+test:e2e	0	1602s	50 adım başarılı.
+test:senaryo	0	2038s	45/45 denetim geçti
+test:senaryo-rapor	0	308s	82/82 denetim geçti. Ekran görüntüleri: /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/birlesim-243/test/e2e/a
+test:senaryo-taslak	0	139s	30/30 denetim geçti. Ekran görüntüleri: /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/birlesim-243/test/e2e/a
+test:senaryo-210	0	46s	57/57 denetim geçti. Ekran görüntüleri: /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/birlesim-243/test/e2e/a
+test:senaryo-211	0	135s	57/57 denetim geçti. Ekran görüntüleri: /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/birlesim-243/test/e2e/a
+test:senaryo-212	0	131s	21/21 denetim geçti. Ekran görüntüleri: /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/birlesim-243/test/e2e/a
+test:senaryo-213	0	89s	64 / 64 kontrol geçti.
+test:senaryo-214	0	1403s	48 / 48 kontrol geçti.
+test:senaryo-215	0	175s	73 / 73 kontrol geçti.
+test:senaryo-216	0	1383s	54 / 54 kontrol geçti.
+test:senaryo-217	0	1247s	65 / 65 kontrol geçti.
+test:senaryo-218	0	192s	50 / 50 denetim geçti.
+test:senaryo-219	0	110s	Senaryo 2.0.19: 42 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-219
+test:senaryo-220	0	155s	Senaryo 2.0.20: 24 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220
+test:senaryo-220-yedek	0	14s	Senaryo 2.0.20 (yedek): 28 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek
+test:senaryo-221	0	11s	Senaryo 2.0.21: 28 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-221
+test:senaryo-222	0	201s	Senaryo 2.0.22: 56 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222
+test:senaryo-223	0	155s	TAMAM: 29 denetim geçti, 0 başarısız.
+test:senaryo-224	0	133s	TAMAM: 63 denetim geçti, 0 başarısız.
+test:senaryo-225	0	59s	Senaryo 2.0.25: 46 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-225
+test:senaryo-225-uyari	0	264s	# fail 0
+test:senaryo-226	0	27s	TAMAM: 25 denetim geçti, 0 başarısız.
+test:senaryo-iz1-sayfa	0	40s	SONUÇ: 21 geçti, 0 kaldı
+test:senaryo-iz1-kasa-acilis	0	27s	SONUÇ: 21 geçti, 0 kaldı
+test:senaryo-banka-210	0	562s	TAMAM: 424 denetim geçti, 0 başarısız. Ekran görüntüleri: /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/bi
+test:senaryo-banka-210b	0	176s	✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad
+test:senaryo-banka-210-temel	0	123s	✓ senaryo-banka-210-temel: 80 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scrat
+test:senaryo-banka-210-eski-satir	0	45s	✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/
+test:senaryo-banka-rapor-243	0	110s	✓ senaryo-banka-rapor-243: 38 geçti, 0 kaldı · depo /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/birlesim-2
+test:senaryo-banka-220	0	173s	✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/
+test:senaryo-pos-220	0	182s	✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/b
+test:senaryo-tahsile-ver-220	0	87s	✓ senaryo-tahsile-ver-220: 140 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scra
+test:senaryo-k8-230	0	42s	✓ senaryo-k8-230: 17 geçti, 0 kaldı
+test:senaryo-iz32-230	0	68s	✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/b
+test:senaryo-supheli-230	0	71s	✓ senaryo-supheli-230: 67 geçti, 0 kaldı
+test:senaryo-iz5-230	0	101s	SONUÇ: 44 geçti, 0 kaldı
+test:senaryo-entegrator-240	0	111s	✓ senaryo-entegrator-240: 73 geçti, 0 kaldı
+test:senaryo-ebelge-242	0	54s	21 geçti, 0 kaldı
+test:senaryo-ebelge-243	0	65s	19 geçti, 0 kaldı
+test:senaryo-fatura-243	0	250s	31 geçti, 0 kaldı
+test:senaryo-cari-243	0	188s	45 geçti, 0 kaldı
+test:banka-210-kart-onbellek	0	135s	✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı
+test:banka-210-daha-fazla	0	105s	✓ banka-210-daha-fazla-yaris: 31 geçti, 0 kaldı
+test:banka-230-hareket-yaris	0	48s	✓ banka-230-hareket-yaris: 37 geçti, 0 kaldı
+test:acilis-yanit-yaris	0	82s	TAMAM: 12 denetim geçti, 0 başarısız.
+test:banka-210-ekran-aciklama	0	89s	✓ banka-210-ekran-aciklama-yetki: 11 geçti, 0 kaldı
+test:banka-210-saat	0	33s	TAMAM: 12 denetim geçti, 0 başarısız.
+test:senaryo-whatsapp	0	193s	45 / 45 kontrol geçti.
+test:guncelleme-gercek	0	297s	TAMAM: 22 denetim geçti, 0 başarısız.
+BITTI

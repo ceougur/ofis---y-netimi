@@ -1,0 +1,31 @@
+
+■ Kurulum: yönetici; küçük bir tablo; muhasebe kullanıcısı; Kasa'da 5 gün önce bir tahsilat (ilk hareket)
+  ✓ sıradan Kasa girişi 649'da (gelir)
+
+■ Yönetici: Kasa → Açılış Bakiyesi → tutar (klavyeyle) → tarih ilk hareketten SONRA → neden ekranda; ilk hareketin günü → kaydedilir
+  ✓ Kasa penceresinde “Açılış Bakiyesi” düğmesi
+  ✓ pencere başlığı “Kasa Açılış Bakiyesi”
+  ✓ ilk hareketin tarihi yardım metninde
+  ✓ tarih ilk hareketin günüyle dolu gelir
+  ✓ ilk hareketten sonraki tarih reddedildi, neden ekranda
+  ✓ reddedilen istek açılış yazmadı
+  ✓ Kasa'da açılış satırı: “Açılış Bakiyesi · Kasa açılışı (devreden nakit)”
+  ✓ aynı günde önce açılış (25.000), sonra tahsilat (26.000): yürüyen bakiye açılışla başlar
+  ✓ Nakit Kasa göstergesi ₺26.000,00 (25.000 + 1.000)
+  ✓ Ana Defter: 100 = 26.000 · 500 = −25.000 (açılış) · 649 = −1.000 (yalnız gelir) — {"100":26000,"500":-25000,"649":-1000}
+  ✓ Mutabakat Testi tamam
+
+■ Yönetici: açılış satırındaki ✎ → “Kasa Açılış Bakiyesini Düzelt” (dolu) → 30.000 → aynı satır düzelir
+  ✓ düzeltme penceresi
+  ✓ tutar dolu geldi
+  ✓ Nakit Kasa 31.000 (30.000 + 1.000)
+  ✓ tek açılış satırı, aynı satır düzeldi
+  ✓ Ana Defter 500 = −30.000 (-30000)
+
+■ Muhasebe (Kasa yetkili, yönetici değil): Açılış Bakiyesi düğmesi yok; açılış satırında düzelt/sil yok; sıradan satırlarda var
+  ✓ Açılış Bakiyesi düğmesi yok
+  ✓ açılış satırında ✎ ve × yok
+  ✓ sıradan Kasa satırında ✎ var
+  ✓ sayfa hatası yok
+
+SONUÇ: 21 geçti, 0 kaldı
