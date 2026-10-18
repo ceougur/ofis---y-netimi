@@ -384,3 +384,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   düzeltmeleri birleşmez; (4) alan paketleri sırayla birleşir, her birleşmede değişen alan + bütün e2e; (5) numara/iade/toplu gönderim para-numara
   çekirdeği → mutasyon + dar kontrol turu (ders 32); (6) bitişte tabanla fark: önceden yeşil olan her test ve senaryo yine yeşil, keşif bulguları kapalı,
   bağımsız gözden geçirme yalnız gerileme arar; (7) son aday CI + Uzun Doğrulama + gerçek EDM test ortamında e-Belge akışı yeniden.
+- KARAR (kullanıcı, 18.10.2026 ~06:25 UTC, H9 sorusuna "a) evet görsün"): Muhasebe rolü Finans Raporları'nı (mizan, ekstre, Rapor Merkezi, Vade
+  Takip) VARSAYILAN olarak görür (permissions.mjs overview.view += muhasebe); yönetici kişiden kaldırabilir (kişiye özel "remove"); özel roller kendi
+  listesiyle kalır; ANLIK DURUM kartı yine yalnız yönetici. Güncellemeyle mevcut muhasebe kullanıcılarına da açılır (kaldırılmışlar kapalı kalır).
+  Dal h9-243 127ab3c (test yetki-243-muhasebe-finans eski 0/2 → 2/2; finans kapısını sınayan 4 test kişiden kaldırarak sınamayı sürdürür).
