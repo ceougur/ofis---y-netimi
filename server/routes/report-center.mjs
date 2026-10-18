@@ -2432,15 +2432,22 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       id: "kayit-tahsilatlari",
       group: "Kayıtlar",
       title: "Kayıt Kartından Tahsilatlar",
-      description: "Tablodaki kişilerin kartından girilen tahsilatlar (taksit ve cari dışındaki).",
+      // 2.4.3 (keşif A2): kayıt bir cariye bağlıysa kayıt kartından girilen tahsilat cari defterine yazılır; o carinin tahsilatları da burada
+      // (Kayıt kolonunda Cari No ile). Taksit tahsilatları Taksit Tahsilatları raporunda.
+      description: "Tablodaki kişilerin kartından girilen tahsilatlar; kayda bağlı carinin tahsilatları dahil (taksit hariç).",
       params: ["range"],
       preset: "thisYear",
       build(query) {
         const range = rangeOf(query, "thisYear");
         const list = store.all(
-          `SELECT p.date, p.amount, p.note, p.case_key AS caseKey, p.case_title AS caseTitle, COALESCE(u.display_name, '') AS actorName FROM payments p LEFT JOIN users u ON u.id = p.created_by
-           WHERE (? = '' OR p.date >= ?) AND (? = '' OR p.date <= ?) ORDER BY p.date, p.created_at`,
-          range.from, range.from, range.to, range.to,
+          `SELECT p.date, p.amount, p.note, p.case_key AS caseKey, p.case_title AS caseTitle, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt, '' AS refNo FROM payments p LEFT JOIN users u ON u.id = p.created_by
+           WHERE (? = '' OR p.date >= ?) AND (? = '' OR p.date <= ?)
+           UNION ALL
+           SELECT e.date, e.amount, e.note, a.case_key AS caseKey, a.case_title AS caseTitle, COALESCE(u.display_name, '') AS actorName, e.created_at AS createdAt, CASE WHEN a.ref_no <> '' THEN a.ref_no ELSE '—' END AS refNo
+           FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL AND a.case_key <> '' LEFT JOIN users u ON u.id = e.created_by
+           WHERE e.kind = 'in' AND (? = '' OR e.date >= ?) AND (? = '' OR e.date <= ?)
+           ORDER BY 1, 7`,
+          range.from, range.from, range.to, range.to, range.from, range.from, range.to, range.to,
         );
         const title = caseTitles(list.filter(row => !row.caseTitle).map(row => row.caseKey));
         const total = roundMoney(list.reduce((sum, row) => sum + row.amount, 0));
@@ -2448,7 +2455,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
           subtitle: rangeText(range),
           headers: ["Tarih", "Kayıt", "Tutar", "Açıklama", "Giren"],
           types: ["", "", "money", "", ""],
-          rows: list.map(row => [dayText(row.date), row.caseTitle || title(row.caseKey), money(row.amount), row.note, row.actorName]),
+          rows: list.map(row => [dayText(row.date), `${row.caseTitle || title(row.caseKey)}${row.refNo ? ` · Cari No ${row.refNo}` : ""}`, money(row.amount), row.note, row.actorName]),
           summary: [["Tahsilat", String(list.length)], ["Toplam", money(total)]],
         };
       },

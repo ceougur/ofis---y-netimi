@@ -950,7 +950,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       write: () => {
         k7.capture();
         store.run("DELETE FROM plan_entries WHERE id = ?", previous.id);
-        trash?.add({ kind: "plan-entry", ref: previous.id, title: plan.name, detail: previous.note || (previous.opening ? "Açılış (devir)" : previous.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"), payload: { ...previous, opening: previous.opening ? 1 : 0, planId: plan.id, planName: plan.name }, user });
+        trash?.add({ kind: "plan-entry", ref: previous.id, title: plan.name, detail: previous.note || (previous.opening ? "Açılış (devir)" : previous.kind === "in" ? "Taksit Tahsilatı" : "Taksit Ödemesi / İadesi"), payload: { ...previous, opening: previous.opening ? 1 : 0, planId: plan.id, planName: plan.name }, user });
         audit(user, "plan.entry.deleted", previous.id, { planId: plan.id, ...previous });
         syncInvoiceCard(user, plan.id);
         return { id: previous.id };
@@ -1264,6 +1264,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
           days: item.days,
           state: item.state === "today" ? "today" : item.state === "overdue" ? "overdue" : "upcoming",
           phone: plan.phone,
+          // 2.4.3 (keşif A21): aynı adlı kişiler takvimde ve bildirimde Cari No / kart No ile ayırt edilir.
+          accountId: plan.accountId || "",
+          accountRef: plan.accountRef || "",
+          refNo: plan.refNo || "",
         });
       }
     }

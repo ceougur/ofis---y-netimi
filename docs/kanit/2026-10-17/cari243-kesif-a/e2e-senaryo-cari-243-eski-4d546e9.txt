@@ -1,0 +1,68 @@
+
+■ A1 + A3 Yeni Cari "Ahmet Yılmaz": kayıt kendiliğinden bağlanmaz, aynı adlı cari varken onay sorulur
+  ✗ tablodaki aynı adlı kayıt kendiliğinden seçilmedi (caseKey “2026/100”)
+  ✗ öneri gösterildi: “”
+  ✗ onay soruldu, ayırt edici bilgiyle: “”
+  ✗ Vazgeç: cari açılmadı (3 → 4), form açık
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ A1 (bağla) + A2 "Mehmet Demir": öneriden bağlanır; kayıttan tahsilat cariye, İşlem Geçmişi'nde ve raporda görünür
+  ✗ "Bu Kayda Bağla" ile kayıt seçildi (caseKey “2026/101”)
+  ✓ cari No 5 kayda bağlı (2026/101)
+  ✗ tahsilat formu hangi cariye yazılacağını söylüyor: “× Mehmet Demir Tahsilat Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak gire”
+  ✓ tahsilat carinin defterinde: 500
+  ✗ İşlem Geçmişi: “İŞLEM GEÇMİŞİBu kayıtta henüz işlem yok. Yukarıdaki düğmelerle not, telefon veya tahsilat ekleyebilirsiniz.”
+  ✗ "Kayıt Kartından Tahsilatlar" raporunda: []
+
+■ A5 Taksit kartı olan caride Sil pasif, nedeni yazılı; A8 "bakiyeye dahil"
+  ✗ Sil pasif (false); neden: “”
+  ✗ kart göstergesi: “₺8.000,00Borç Toplamı₺1.000,00Alacak Toplamı · Tahsil ₺1.000,00₺7.000,00Bakiye · Borçlu₺3.000,00Taksitten Kalan · 1 geciken”
+  ✗ liste göstergesi: “₺8.200,00Borçlular · 2 cari₺500,00Alacaklılar · 1 cari₺4.200,00Taksitlerden Kalan₺1.600,00Geciken · 2 taksit”
+  ✗ "Cari Listesi - PDF" 52 px, seçici 36 px (tek satır)
+
+■ A7 Banka hesabı yokken Kasadan Bankaya Yatır kaydedilmez
+  ✓ "Banka Hesabı Tanımla" yolu: “Banka Hesabı TanımlaTanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”
+  ✗ kaydedilmedi: “”
+  ✗ Kasa değişmedi (1500 → 500), transfer 0 → 2
+
+■ C2 + C13 POS tahsilatı açıklaması; müşteride "Kredi Kartına İade" yok, tedarikçide var
+  ✗ seçim penceresi hangi cari: “× Ahmet Yılmaz Tahsilat Bu carinin açık taksit kartı var. Ta”
+  ✗ POS açıklaması: “Cariden POS ile tahsil edildi: bakiyeden düşer; Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır.”
+  ✗ müşteri tahsilatında Kredi Kartına İade kutusu yok
+  ✓ tedarikçi tahsilatında Kredi Kartına İade kutusu var
+
+■ A22 Cari ekstre PDF'inde alt TOPLAM satırı; A15 Kasa satırında "Cari Tahsilat"
+  ✗ TOPLAM satırı: []
+  ✗ Kasa satırı başlık yazımıyla (Cari tahsilat · Mehmet DemirCari)
+
+■ A21 takvimde aynı adlı iki cari ayırt edilir; A9 bildirim turu 1 + özet, dizüstünde küçük
+  ✗ pillerde Cari No: ["Ahmet Yılmaz","Ahmet Yılmaz","Ahmet Yılmaz"]
+  ✓ tek adlılara ek yazılmaz
+
+■ A17 Tab: önce "Tabloya Atla", takvim tek durak; A18 tablo yana kaymaz, tutar biçimli
+  ✗ ilk Tab durağı: “”
+  ✗ Enter → odak kayıt tablosunun arama kutusunda
+  ✗ takvim şeridi Tab durağı: 3
+  ✗ 1366'da tablo yana kaymıyor (519 / 504)
+  ✗ tutar biçimli “25000,00”, ham değer title'da “25000,00”
+  ✓ ham tutarla arama kaydı buluyor (2026/109)
+
+■ A13 "Toplam Borç" kutu başlığı 1280 ve 1366'da kesilmez
+  ✗ 1280: “Toplam Borç / Ödemeler” kesik true
+  ✗ 1366: “Toplam Borç / Ödemeler” kesik false
+
+■ A20 personel ana sayfasında üst boşluk yok; A19 personele olmayan yol gösterilmez
+  ✗ içerik alanının üstü ile ilk bölüm arası 55 px (önceden ~55)
+  ✗ personel iletisi: “Bu sayfa yöneticiler içindir Yönetim paneli yalnız yönetici hesaplarında açılır. İşlem geçmişi yetkiniz varsa sol menüdeki Raporlar → Tüm raporlar → İşlem geçmi”
+
+■ A14 Sayfalar şeridi geç gelse de tablo itilmez (istek 1,5 sn geciktirilir)
+  ✓ ön koşul: sayfa listesi isteği geciktirildi (1)
+  ✗ şerit geldikten sonraki kayma 0.0110 (toplam 0.0119; [{"value":0.01102991353136587,"at":1659,"sources":["workspace-grid"]}])
+
+■ A9 bildirim: tur 1 + özet, dizüstünde küçük
+  ✗ ilk bildirimin sırası “1/3” (önceden 1/5: beş bildirim dönüyordu)
+  ✗ 1366×768'de bildirim 365×126 px (önceden 372×128)
+  ✓ sayfa hatası yok ()
+
+8 geçti, 33 kaldı
+çıkış 1

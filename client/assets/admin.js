@@ -1673,6 +1673,9 @@
     }
     // v2.0.10: Yönetim paneli yalnız yönetici rolündedir (kullanıcı ve rol yönetimi yönetime özgüdür).
     if (!HOF.can("users.manage")) {
+      // 2.4.3 (keşif A19): İşlem Geçmişi yolu yalnız onu görebilen kişiye söylenir (personelin menüsünde Raporlar yok).
+      const audit = $("#adm-denied-audit");
+      if (audit) audit.hidden = !HOF.can("audit.view");
       $("#adm-denied").hidden = false;
       return;
     }

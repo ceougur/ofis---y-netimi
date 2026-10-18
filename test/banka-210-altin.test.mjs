@@ -51,7 +51,18 @@ const STAMP = /\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}(:\d{2})?/g;
 // sayılar ve satırlar değişmez — iki taraf aynı belirtece.
 const OLD_ALL = "Tüm hareketler";
 const NEW_ALL = "Tüm Zamanlar";
-const normAll = value => value.split(OLD_ALL).join("ALL-AD").split("Tüm zamanlar").join("ALL-AD").split(NEW_ALL).join("ALL-AD");
+// 2.4.3 (keşif A15, bilerek): hareket türü adları başlık yazımıyla ("Cari tahsilat" → "Cari Tahsilat", "Taksit tahsilatı" → "Taksit Tahsilatı" …;
+// Kasa Dökümü PDF'i, cari defteri). Sayılar ve satırlar değişmez — iki taraf aynı belirtece.
+const MOVE_NAMES = [
+  ["Cari tahsilat", "Cari Tahsilat", "CARI-TAHSILAT-AD"],
+  ["Cariye ödeme", "Cariye Ödeme", "CARIYE-ODEME-AD"],
+  ["Taksit ödemesi/iadesi", "Taksit Ödemesi / İadesi", "TAKSIT-ODEME-IADE-AD"],
+  ["Taksit tahsilatı", "Taksit Tahsilatı", "TAKSIT-TAHSILAT-AD"],
+  ["Taksit iadesi", "Taksit İadesi", "TAKSIT-IADE-AD"],
+  ["Karşılıksız çek / senet (taksit)", "Karşılıksız Çek / Senet (taksit)", "KARSILIKSIZ-TAKSIT-AD"],
+];
+const normMoves = value => MOVE_NAMES.reduce((text, [before, after, token]) => text.split(before).join(token).split(after).join(token), value);
+const normAll = value => normMoves(value.split(OLD_ALL).join("ALL-AD").split("Tüm zamanlar").join("ALL-AD").split(NEW_ALL).join("ALL-AD"));
 const norm649 = value => JSON.parse(normAll(normDocumentNames(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD"))));
 const textNorm = value => normAll(normDocumentNames(value.replace(STAMP, "TARİH SAAT").split(OLD_649).join("649-AD").split(NEW_649).join("649-AD")));
 /** Yeni tarafın Ana Defter / Mutabakat Testi / Hesap Planı Mizanı / Defter Mutabakatı JSON'u eski düzende (121 → 101, 321 → 103; eski adlar). */

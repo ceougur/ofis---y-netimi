@@ -57,7 +57,8 @@
       for (const [key, row] of wanted) {
         let match = 0;
         for (let index = 0; index < Math.min(3, cells.length, heads.length); index += 1) {
-          if (String(row[heads[index]] ?? "").trim() === cells[index].textContent.trim()) match += 1;
+          // 2.4.3: hücrenin ham değeri title'da (tutar kolonu ekranda biçimli gösterilir).
+          if (String(row[heads[index]] ?? "").trim() === (cells[index].getAttribute("title") ?? cells[index].textContent).trim()) match += 1;
         }
         if (match >= Math.min(2, cells.length)) return key;
       }

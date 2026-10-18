@@ -244,7 +244,7 @@
       title: `Yeni veri: ${staged.label}`,
       eyebrow: "VERİ",
       size: "wide",
-      body: `<p class="hof-modal-text">${number(staged.rowCount)} kayıt okundu${staged.tabs.length ? ` (${number(staged.tabs.length)} sekme)` : ""}. Şu anki sayfa: <b>${esc(staged.session?.current || staged.current.label || "Çalışma verisi")}</b>, ${number(staged.current.rowCount)} kayıt. Nasıl açılsın?</p>
+      body: `<p class="hof-modal-text">${number(staged.rowCount)} kayıt okundu${staged.tabs.length ? ` (${number(staged.tabs.length)} sekme)` : ""}. Şu anki sayfa: <b>${esc(staged.session?.current || staged.current.label || "Çalışma Verisi")}</b>, ${number(staged.current.rowCount)} kayıt. Nasıl açılsın?</p>
         ${readingHtml(staged.reading)}
         ${schemaHtml(staged.schema)}
         ${mappingHtml(staged.mapping)}
@@ -470,7 +470,7 @@
       eyebrow: "AYARLAR",
       size: "wide",
       body: `<section class="hof-data-summary">
-          <div><b>${esc(data.label || (data.rowCount ? "Çalışma verisi" : "Veri yok"))}</b><span>${number(data.rowCount)} kayıt${data.tabs?.length ? ` · ${number(data.tabs.length)} sekme` : ""}${data.recordCount ? ` · uygulamada eklenen ${number(data.recordCount)} kayıt` : ""}</span><small>${esc(sourceLine(data))}</small></div>
+          <div><b>${esc(data.label || (data.rowCount ? "Çalışma Verisi" : "Veri Yok"))}</b><span>${number(data.rowCount)} kayıt${data.tabs?.length ? ` · ${number(data.tabs.length)} sekme` : ""}${data.recordCount ? ` · uygulamada eklenen ${number(data.recordCount)} kayıt` : ""}</span><small>${esc(sourceLine(data))}</small></div>
           ${data.lastSyncError ? `<p class="hof-alert">Son eşitlemede Google Sheets'e ulaşılamadı: ${esc(data.lastSyncError)} Son eşitlenen veri kullanılmaya devam ediyor.</p>` : ""}
           ${data.syncHold ? `<p class="hof-alert">Sheet'in yapısı değişmiş görünüyor (${number(data.syncHold.added)} yeni, ${number(data.syncHold.missing)} kayıp satır). Yanlışlıkla veri çoğalmasın diye otomatik eşitleme durduruldu. <button type="button" class="hof-button hof-button-small" data-review>İncele ve karar ver</button></p>` : ""}
           ${data.missingCount ? `<p class="hof-alert hof-alert-soft">${number(data.missingCount)} kayıt bağlı Sheet'te artık yok; tabloda duruyor. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-missing>Listeyi Gör</button></p>` : ""}

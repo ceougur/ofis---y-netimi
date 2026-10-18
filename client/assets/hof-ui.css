@@ -4932,6 +4932,17 @@ body.hof-notice-open .hof-toasts { bottom: calc(18px + var(--hof-notice-space, 1
 @media (prefers-reduced-motion: reduce) {
   .hof-notice { transition: none; }
 }
+/* 2.4.3 (keşif A9): dizüstü ekranlarda (≤ 1499 px genişlik ya da ≤ 860 px yükseklik) bildirim daha küçük: dar ve
+   alçak — detay kartının alt kısmını daha az örter (1366×768'de 372×128 px idi). "Gerçekleştirildi" açıklaması küçük yazıyla kalır. */
+@media (max-width: 1499px), (max-height: 860px) {
+  .hof-notices { width: min(312px, calc(100vw - 36px)); right: 14px; bottom: 14px; }
+  .hof-notice { gap: 9px; padding: 10px 10px 12px 11px; border-radius: 12px; }
+  .hof-notice-icon { width: 28px; height: 28px; border-radius: 9px; font-size: 14px; }
+  .hof-notice-title { font-size: 13px; }
+  .hof-notice-text { font-size: 11.5px; line-height: 1.35; }
+  .hof-notice-actions { margin-top: 6px; }
+  .hof-notice-hint { margin-top: 4px; font-size: 10.5px; line-height: 1.3; }
+}
 @media (max-width: 560px) {
   .hof-notices { right: 10px; bottom: 10px; width: calc(100vw - 20px); }
   body.hof-notice-open .hof-toasts { bottom: calc(10px + var(--hof-notice-space, 172px)); }
@@ -6606,6 +6617,25 @@ body.hof-dense .dynamic-table th {
 }
 .hof-plan-output .hof-button svg {
   margin-right: 2px;
+}
+/* 2.4.3 (keşif A12): süzgeç satırındaki PDF / Yazdır / Excel düğmeleri tek satır ve seçicilerle aynı boy (36 px); Cari listesinde ikinci
+   satırda kalan genişliği kullanır ("Cari Listesi - PDF" önceden üç satıra kırılıyordu). */
+.hof-plans-filters .hof-plan-output .hof-button {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  white-space: nowrap;
+}
+@media (min-width: 1101px) {
+  .hof-acc-filters > .hof-plan-output {
+    grid-column: span 4;
+    justify-self: start;
+  }
+}
+@media (max-width: 1100px) {
+  .hof-plans-filters > .hof-plan-output {
+    flex-wrap: wrap;
+  }
 }
 .hof-plans-list {
   max-height: max(320px, calc(100vh - 430px));
@@ -9035,6 +9065,38 @@ input[type="search"]::-webkit-search-cancel-button {
 .main-shell .content-wrap > .welcome-row.hof-has-pulse {
   justify-content: center;
 }
+/* 2.4.3 (keşif A17): klavyeyle gezinti — sayfa başında "Tabloya Atla" / "Menüye Atla" (yalnız odakta görünür) ve zilin odak çerçevesi. */
+.hof-skip a {
+  position: fixed;
+  left: 12px;
+  top: -60px;
+  z-index: 10000;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--do-accent, #1f5f46);
+  color: #fff;
+  font: 700 13px/1.2 var(--do-font);
+  text-decoration: none;
+}
+.hof-skip a:focus,
+.hof-skip a:focus-visible {
+  top: 12px;
+  outline: 3px solid #fff;
+  outline-offset: 0;
+  box-shadow: 0 0 0 5px var(--do-accent, #1f5f46);
+}
+.hof-skip a + a:focus {
+  left: 150px;
+}
+.topbar .top-actions > .icon-button:focus-visible {
+  outline: 2px solid var(--do-accent, #1f5f46);
+  outline-offset: 2px;
+}
+/* 2.4.3 (keşif A20): ANLIK DURUM kartı yoksa (ör. personel) başlık satırı gizlidir; altındaki ilk bölümün (akıllı özet) üst boşluğu da
+   kalkar — önceden içerik alanının üstünde ~55 px boş bant kalıyordu. */
+.main-shell .content-wrap > .welcome-row:not(:has(> #hof-pulse)) + * {
+  margin-top: 0;
+}
 .main-shell .content-wrap > .welcome-row > .hof-pulse {
   flex: 1 1 100%;
   width: 100%;
@@ -9109,6 +9171,13 @@ input[type="search"]::-webkit-search-cancel-button {
 @media (max-width: 1099px) {
   .workspace-grid {
     grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+/* 2.4.3 (keşif A18): 1100–1499 px'te detay kartı 500 px'e sabitlenince 5 kolonlu kayıt tablosu yana kayıyordu (1366×768: TUTAR kesik).
+   Bu aralıkta detay kartı en az 400 px, tablo payı büyür; 1500 px ve üstü eski oran. */
+@media (min-width: 1100px) and (max-width: 1499px) {
+  .workspace-grid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(400px, 0.7fr) !important;
   }
 }
 .hof-toolbar-export {
@@ -9769,6 +9838,11 @@ input[type="search"]::-webkit-search-cancel-button {
   border: 1px solid var(--do-border);
   border-radius: 16px;
   background: linear-gradient(160deg, #fff, #f3f9f5);
+}
+/* 2.4.3 (keşif A14): liste gelene kadar şeridin yerini tutan boş satır (hof-sessions.js holdPlace); yükseklik dolu şeritle aynı. */
+.hof-pages.is-pending {
+  min-height: 56px;
+  box-sizing: border-box;
 }
 .hof-pages-head {
   display: inline-flex;

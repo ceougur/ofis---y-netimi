@@ -327,6 +327,19 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     const key = caseKeyOf(params.key);
     const list = (sql, type) => store.all(sql, key).map(row => ({ ...row, type }));
     const planEntries = plans()?.entriesForCase ? plans().entriesForCase(key, dataset.currentKey()) : [];
+    // 2.4.3 (keşif A2): kayıt bir cariye bağlıysa kayıt kartından girilen tahsilat cari defterine yazılır (hof-workspace.js actions.payment);
+    // o carinin tahsilat ve ödemeleri de kişinin geçmişinde görünür ve Toplam Tahsilat'a girer (önceden geçmişte yalnız not görünüyordu).
+    // Bağ /cases/:key/account ile aynı kuralla (açık veri oturumu) bulunur; Cari Görüntüleme yetkisi olmayana gösterilmez.
+    const linkedAccount = canUser(user, "accounts.view") ? store.get("SELECT id, ref_no AS refNo, name FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? ORDER BY created_at LIMIT 1", key, dataset.currentKey()) : null;
+    const accountEntries = linkedAccount
+      ? store
+          .all(
+            `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.created_by AS actorId, e.created_at AS createdAt, e.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
+             FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? AND e.kind IN ('in', 'out')`,
+            linkedAccount.id,
+          )
+          .map(entry => ({ ...entry, type: "account-entry", accountId: linkedAccount.id, accountRefNo: linkedAccount.refNo || "", accountName: linkedAccount.name }))
+      : [];
     const items = [
       // 2.3.0 İz 5.6: not / telefon / haciz satırları düzeltilip silinebilir; düzeltme izi (updatedAt, updatedByName) tahsilattaki gibi.
       ...list(`SELECT n.id, n.note AS text, n.created_at AS createdAt, n.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(e.display_name, '') AS updatedByName FROM notes n LEFT JOIN users u ON u.id = n.created_by LEFT JOIN users e ON e.id = n.updated_by WHERE n.case_key = ?`, "note"),
@@ -337,11 +350,13 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
       ...visibleTasks(user, list(`SELECT t.id, t.title, COALESCE(a.display_name, t.assignee) AS assignee, t.assignee_id AS assigneeId, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, t.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users a ON a.id = t.assignee_id WHERE t.case_key = ?`, "task")),
       // Kayda bağlı taksit kartlarının tahsilat ve ödemeleri (v2.0.6): karttan girilen tahsilat kişinin geçmişinde de görünür.
       ...planEntries.map(entry => ({ ...entry, type: "plan-entry" })),
+      ...accountEntries,
       // v2.0.1: eskiden yeniye (yeni eklenen en altta), tıpkı bir defter gibi.
     ].sort((a, b) => (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0));
     const totals = store.get("SELECT COALESCE(SUM(amount), 0) AS paid FROM payments WHERE case_key = ?", key);
     const planPaid = planEntries.reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
-    ok(res, { caseKey: key, items, paidTotal: Math.round((totals.paid + planPaid) * 100) / 100, planPaid: Math.round(planPaid * 100) / 100 });
+    const accountPaid = accountEntries.reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
+    ok(res, { caseKey: key, items, paidTotal: Math.round((totals.paid + planPaid + accountPaid) * 100) / 100, planPaid: Math.round(planPaid * 100) / 100, accountPaid: Math.round(accountPaid * 100) / 100, account: linkedAccount ? { id: linkedAccount.id, refNo: linkedAccount.refNo || "", name: linkedAccount.name } : null });
   });
 
   router.post("/api/workspace/cases/:key/notes", async ({ req, res, params }) => {

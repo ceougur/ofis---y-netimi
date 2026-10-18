@@ -552,7 +552,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         shownRows.push(row);
       }
     }
-    const label = sget(S.label, "") || "Çalışma verisi";
+    const label = sget(S.label, "") || "Çalışma Verisi";
     const error = linkedUrl() ? sget(S.lastSyncError, "") : "";
     if (!shownRows.length && !rows.length) {
       return { connected: false, sourceUrl: activeKey(), syncedAt: null, rows: [], tabs: [], message: error || "Henüz veri yüklenmedi." };

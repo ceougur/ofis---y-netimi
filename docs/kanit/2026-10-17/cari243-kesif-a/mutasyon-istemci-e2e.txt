@@ -1,0 +1,14 @@
+MC1 A1 öneri yine kendiliğinden bağlar: çıkış 1, 38 geçti, 6 kaldı -> YAKALANDI
+     ✗ tablodaki aynı adlı kayıt kendiliğinden seçilmedi (caseKey “2026/100”)
+     ✗ öneri gösterildi: “”
+     ✗ "Yine de Aç": yeni cari No 4, kayda bağlı DEĞİL (case_key “2026/100”)
+     ✗ yeni cariye para yazılmadı (hareket 1, tahsilat 321)
+     ✗ tahsilat kaydın defterinde: 0
+     ✗ "Bu Kayda Bağla" ile kayıt seçildi (caseKey “2026/101”)
+MC2 A3 aynı ad onayı yok: çıkış 1, 39 geçti, 2 kaldı -> YAKALANDI
+     ✗ Vazgeç: cari açılmadı (3 → 4), form açık
+     ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+MC3 A7 hesapsız aktarım engeli yok: çıkış 1, 42 geçti, 2 kaldı -> YAKALANDI
+     ✗ kaydedilmedi: “”
+     ✗ Kasa değişmedi (1821 → 821), transfer 0 → 2
+bitti
