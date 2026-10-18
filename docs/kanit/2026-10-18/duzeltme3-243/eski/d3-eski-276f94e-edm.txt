@@ -1,0 +1,105 @@
+TAP version 13
+# Subtest: gg243 dar kontrol 2: EDM istemcisi bağlantı sınıfı, oturum kanıtı, sözleşme önbelleği
+    # Subtest: B2: bağlantı kurulamadı sınıfı (ECONNREFUSED, ENOTFOUND, EAI_AGAIN, EHOSTUNREACH, bağlanma zaman aşımı, TLS) → ulaşılamadı; gönderim yapılmaz
+    ok 1 - B2: bağlantı kurulamadı sınıfı (ECONNREFUSED, ENOTFOUND, EAI_AGAIN, EHOSTUNREACH, bağlanma zaman aşımı, TLS) → ulaşılamadı; gönderim yapılmaz
+      ---
+      duration_ms: 179.773333
+      type: 'test'
+      ...
+    # Subtest: B2: gönderim isteği gittikten sonra kopma (UND_ERR_SOCKET, ECONNRESET, EPIPE) ya da yanıt zaman aşımı → belirsiz; gönderim YİNELENMEZ
+    not ok 2 - B2: gönderim isteği gittikten sonra kopma (UND_ERR_SOCKET, ECONNRESET, EPIPE) ya da yanıt zaman aşımı → belirsiz; gönderim YİNELENMEZ
+      ---
+      duration_ms: 25.079213
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-edm.test.mjs:62:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        UND_ERR_SOCKET: integrator-unreachable EDM'ye bağlanılamadı: UND_ERR_SOCKET
+        + actual - expected
+        
+        + 'integrator-unreachable'
+        - 'integrator-uncertain'
+                        ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'integrator-uncertain'
+      actual: 'integrator-unreachable'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-edm.test.mjs:68:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B2: yan etkisiz işlem (mükellef sorgusu) kopmada bir kez yinelenir; yine düşerse ulaşılamadı (tur durur)
+    ok 3 - B2: yan etkisiz işlem (mükellef sorgusu) kopmada bir kez yinelenir; yine düşerse ulaşılamadı (tur durur)
+      ---
+      duration_ms: 23.736128
+      type: 'test'
+      ...
+    # Subtest: B3: geçerli oturum + 5 dk içinde yanıt = erişim kanıtı; bağlantı hatası kanıtı siler; parola değişince ya da 5 dk sonra giriş
+    not ok 4 - B3: geçerli oturum + 5 dk içinde yanıt = erişim kanıtı; bağlantı hatası kanıtı siler; parola değişince ya da 5 dk sonra giriş
+      ---
+      duration_ms: 36.671889
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-edm.test.mjs:87:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bağlantı hatasından sonra giriş
+        
+        1 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-edm.test.mjs:99:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B6: ağ yokken WSDL okunamazsa varsayılan sözleşme önbelleğe yazılmaz; ağ gelince sözleşme okunur, istekler sözleşmeye uygun gider
+    not ok 5 - B6: ağ yokken WSDL okunamazsa varsayılan sözleşme önbelleğe yazılmaz; ağ gelince sözleşme okunur, istekler sözleşmeye uygun gider
+      ---
+      duration_ms: 17.925989
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-edm.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ağ gelince sözleşme okundu
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-edm.test.mjs:134:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - gg243 dar kontrol 2: EDM istemcisi bağlantı sınıfı, oturum kanıtı, sözleşme önbelleği
+  ---
+  duration_ms: 300.723772
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-edm.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 553.99945

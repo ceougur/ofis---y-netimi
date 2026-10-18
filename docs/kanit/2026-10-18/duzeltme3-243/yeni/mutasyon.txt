@@ -1,0 +1,18 @@
+M1 geri bırakma serinin son numarası denetimi yok: çıkış=1 # tests 1 # pass 0 # fail 1 → YAKALANDI
+M2 geri bırakma hiç yok: çıkış=1 # tests 3 # pass 2 # fail 1 → YAKALANDI
+M3 belirsizde de geri bırak: çıkış=1 # tests 2 # pass 1 # fail 1 → YAKALANDI
+M4 açıklamalar yer tutucuya dönmez: çıkış=1 # tests 3 # pass 2 # fail 1 → YAKALANDI
+M5 imleç yok sayılır: çıkış=1 # tests 3 # pass 1 # fail 2 → YAKALANDI
+M6 imleçten öncekiler bekletmez: çıkış=1 # tests 3 # pass 2 # fail 1 → YAKALANDI
+M7 kopma = ulaşılamadı: çıkış=1 # tests 3 # pass 2 # fail 1 → YAKALANDI
+M8 ensureSession hep giriş: çıkış=1 # tests 1 # pass 0 # fail 1 → YAKALANDI
+M9 oturum anahtarında parola yok: çıkış=1 # tests 4 # pass 3 # fail 1 → YAKALANDI
+M10 bağlantı hatası kanıtı silmez: çıkış=1 # tests 1 # pass 0 # fail 1 → YAKALANDI
+M11 ağ hatası sözleşmesi önbelleğe: çıkış=1 # tests 1 # pass 0 # fail 1 → YAKALANDI
+M12 Kes, Sonra Gönder kronolojisi yok: çıkış=1 # tests 2 # pass 1 # fail 1 → YAKALANDI
+M13 B7 Müşteri Fişi sırası okunmaz: çıkış=1 # tests 2 # pass 1 # fail 1 → YAKALANDI
+M14 iade Ticari serbest: çıkış=1 # tests 2 # pass 0 # fail 2 → YAKALANDI
+M15 UBL referansı yok sayar: çıkış=1 # tests 2 # pass 0 # fail 2 → YAKALANDI
+M16 olderPending tabanı yıl başı: çıkış=1 # tests 2 # pass 1 # fail 1 → YAKALANDI
+M17 kayıt defterindeki alıcı sayılır: çıkış=1 # tests 1 # pass 0 # fail 1 → YAKALANDI
+M18 olderPending seri süzgeci yok: çıkış=1 # tests 1 # pass 0 # fail 1 → YAKALANDI

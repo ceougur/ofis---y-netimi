@@ -69,7 +69,9 @@ for (let i = 0; i < 20; i += 1) badDocs.push(await must("reddedilecek", api.post
 for (let i = 0; i < 3; i += 1) await must("ilk tur", api.post("/api/workspace/invoices/send-pending", { all: true }));
 const goodDocs = [];
 for (let i = 0; i < 30; i += 1) goodDocs.push(await must("bekleyen", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: good[i % 2], issueDate: day(-9 + Math.floor(i / 5)), lines: LINE, payment: { rest: "open" }, eSend: "later" })));
-const row = id => app.store.get("SELECT number, issue_date AS issueDate, e_status AS eStatus, ettn, return_ref AS returnRef FROM invoices WHERE id = ?", id);
+const row = id => app.store.get("SELECT number, issue_date AS issueDate, e_status AS eStatus, ettn FROM invoices WHERE id = ?", id);
+// Eski kodda (DEPO) kolon yok: B bölümü return_ref okumayı kolon varsa yapar (kırmızı kanıt A bölümünden okunur).
+const hasReturnRef = app.store.all("PRAGMA table_info(invoices)").some(column => column.name === "return_ref");
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1360, height: 900 }, locale: "tr-TR" });
@@ -151,7 +153,7 @@ try {
   await page.click(sendNow);
   await page.waitForSelector(`${dialog} [data-answer="yes"]`);
   await page.click(`${dialog} [data-answer="yes"]`);
-  const lastReturn = () => app.store.get("SELECT id, number, return_ref AS returnRef, e_status AS eStatus, profile FROM invoices WHERE kind = 'purchase_return' ORDER BY rowid DESC LIMIT 1");
+  const lastReturn = () => app.store.get(`SELECT id, number, ${hasReturnRef ? "return_ref" : "''"} AS returnRef, e_status AS eStatus, profile FROM invoices WHERE kind = 'purchase_return' ORDER BY rowid DESC LIMIT 1`);
   const t0 = Date.now(); // saat: gerçek (bekleme sınırı)
   while (Date.now() - t0 < 20000 && !(lastReturn() && lastReturn().eStatus !== "none")) await sleep(200); // saat: gerçek (bekleme sınırı)
   const saved = Boolean(lastReturn());

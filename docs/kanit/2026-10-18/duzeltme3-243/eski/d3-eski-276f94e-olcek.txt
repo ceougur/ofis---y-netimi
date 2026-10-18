@@ -1,0 +1,49 @@
+TAP version 13
+# (node:30882) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: gg243 dar kontrol 2: olderPending ve kayıt defteri maliyeti (B4)
+    # Subtest: B4 kural aynen: yalnız aynı seri + yıl, serinin son numaralısından eski (kalıcı engelli) ve alıcısı mükellef kayıtlı bekleyen sayılmaz
+    ok 1 - B4 kural aynen: yalnız aynı seri + yıl, serinin son numaralısından eski (kalıcı engelli) ve alıcısı mükellef kayıtlı bekleyen sayılmaz
+      ---
+      duration_ms: 1126.680766
+      type: 'test'
+      ...
+# Kaydet ve Gönder p50: kayıt defteri boş 43.4 ms, 5.000 kayıt 235.2 ms; Gönderilecekler: 33.0 → 20.0 ms
+    # Subtest: B4 maliyet: Kaydet ve Gönder ve Tümünü Gönder süresi kayıt defterinin büyüklüğünden bağımsız (5.000 kayıt, 150 bekleyen)
+    not ok 2 - B4 maliyet: Kaydet ve Gönder ve Tümünü Gönder süresi kayıt defterinin büyüklüğünden bağımsız (5.000 kayıt, 150 bekleyen)
+      ---
+      duration_ms: 7117.02595
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-olcek.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: 'Kaydet ve Gönder kayıt defterine bağlı kalmamalı — Kaydet ve Gönder p50: kayıt defteri boş 43.4 ms, 5.000 kayıt 235.2 ms; Gönderilecekler: 33.0 → 20.0 ms'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-olcek.test.mjs:128:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - gg243 dar kontrol 2: olderPending ve kayıt defteri maliyeti (B4)
+  ---
+  duration_ms: 8301.758233
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243-eski-276f94e/test/gg243-dar2-olcek.test.mjs:62:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8872.164932

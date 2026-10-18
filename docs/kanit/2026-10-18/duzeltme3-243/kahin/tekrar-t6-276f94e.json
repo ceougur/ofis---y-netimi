@@ -1,0 +1,3583 @@
+{
+ "ad": "ebelge-t6-i200-1-kucuk",
+ "tohum": 6,
+ "islem": 168,
+ "bugun": "2026-02-26",
+ "farkSayisi": 84,
+ "ihlalSayisi": 365,
+ "safModelSonFark": 63,
+ "farklar": [
+  {
+   "belge": "B19",
+   "alan": "numara",
+   "model": "TEF2026000000015",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B19",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B19",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B19",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B31",
+   "alan": "numara",
+   "model": "TEF2026000000007",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B31",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B31",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B31",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B32",
+   "alan": "numara",
+   "model": "TEF2026000000021",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B32",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B32",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B32",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B34",
+   "alan": "numara",
+   "model": "TEF2026000000008",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B34",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B34",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B34",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B35",
+   "alan": "numara",
+   "model": "TEF2026000000012",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B35",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B35",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B35",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B44",
+   "alan": "numara",
+   "model": "TEF2026000000016",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B44",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B44",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B44",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B47",
+   "alan": "numara",
+   "model": "TEF2026000000009",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B47",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B47",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B47",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B48",
+   "alan": "numara",
+   "model": "TEF2026000000014",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B48",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B48",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B48",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B49",
+   "alan": "numara",
+   "model": "TEF2026000000017",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B49",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B49",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B49",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B50",
+   "alan": "numara",
+   "model": "TEF2026000000018",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B50",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B50",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B50",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B51",
+   "alan": "numara",
+   "model": "TEF2026000000010",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B51",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B51",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B51",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B53",
+   "alan": "numara",
+   "model": "TEF2026000000011",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B53",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B53",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B53",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B54",
+   "alan": "numara",
+   "model": "TEF2026000000019",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B54",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B54",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B54",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B55",
+   "alan": "numara",
+   "model": "TEF2026000000022",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B55",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B55",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B55",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B57",
+   "alan": "numara",
+   "model": "TEF2026000000020",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B57",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B57",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B57",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B62",
+   "alan": "numara",
+   "model": "TEF2026000000023",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B62",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B62",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B62",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B64",
+   "alan": "numara",
+   "model": "TEF2026000000013",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B64",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B64",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B64",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B68",
+   "alan": "numara",
+   "model": "TEF2026000000024",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B68",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B68",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B68",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B71",
+   "alan": "numara",
+   "model": "TEF2026000000025",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B71",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B71",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B71",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B74",
+   "alan": "numara",
+   "model": "TEA2026000000020",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  },
+  {
+   "belge": "B74",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  },
+  {
+   "belge": "B74",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  },
+  {
+   "belge": "B74",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  },
+  {
+   "belge": "B77",
+   "alan": "numara",
+   "model": "TEA2026000000021",
+   "program": "",
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  },
+  {
+   "belge": "B77",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  },
+  {
+   "belge": "B77",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  },
+  {
+   "belge": "B77",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 168,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  }
+ ],
+ "ihlaller": [
+  {
+   "adim": 12,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000001",
+   "yineleme": 0,
+   "belge": "B6",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 12,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000002",
+   "yineleme": 0,
+   "belge": "B4",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 60,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000003",
+   "yineleme": 0,
+   "belge": "B11",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 60,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000004",
+   "yineleme": 0,
+   "belge": "B23",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 60,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000005",
+   "yineleme": 0,
+   "belge": "B10",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 60,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000006",
+   "yineleme": 0,
+   "belge": "B26",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 60,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000007",
+   "yineleme": 0,
+   "belge": "B18",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 60,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000008",
+   "yineleme": 0,
+   "belge": "B22",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 60,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000009",
+   "yineleme": 0,
+   "belge": "B27",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 60,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000010",
+   "yineleme": 0,
+   "belge": "B24",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 65,
+   "islem": "kart_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000011",
+   "yineleme": 0,
+   "belge": "B28",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 81,
+   "islem": "kaydet",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000012",
+   "yineleme": 0,
+   "belge": "B36",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 92,
+   "islem": "kaydet",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000013",
+   "yineleme": 0,
+   "belge": "B42",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 108,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000014",
+   "yineleme": 0,
+   "belge": "B39",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 108,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000015",
+   "yineleme": 0,
+   "belge": "B43",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 108,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000016",
+   "yineleme": 0,
+   "belge": "B46",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 117,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000017",
+   "yineleme": 0,
+   "belge": "B52",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 145,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000018",
+   "yineleme": 0,
+   "belge": "B63",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 151,
+   "islem": "tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000019",
+   "yineleme": 0,
+   "belge": "B67",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 2,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 8,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 9,
+   "aday": 2,
+   "secilen": [
+    "B5: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 14,
+   "aday": 2,
+   "secilen": [
+    "B2: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 15,
+   "aday": 2,
+   "secilen": [
+    "B7: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 16,
+   "aday": 2,
+   "secilen": [
+    "B2: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 17,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 18,
+   "aday": 2,
+   "secilen": [
+    "B9: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 19,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 25,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 26,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 43,
+   "aday": 2,
+   "secilen": [
+    "B3: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 45,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 50,
+   "aday": 2,
+   "secilen": [
+    "B10: tarih sırasına uymayan düzenleme reddedildi"
+   ]
+  },
+  {
+   "adim": 52,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 60,
+   "aday": 3,
+   "secilen": [
+    "B12: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 68,
+   "aday": 2,
+   "secilen": [
+    "B3: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 70,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 74,
+   "aday": 2,
+   "secilen": [
+    "B30: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 79,
+   "aday": 2,
+   "secilen": [
+    "B28: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 85,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 87,
+   "aday": 2,
+   "secilen": [
+    "B38: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 91,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 108,
+   "aday": 3,
+   "secilen": [
+    "B45: tur sırasında silindi",
+    "B45: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 118,
+   "aday": 2,
+   "secilen": [
+    "B45: tur sırasında silme reddedildi"
+   ]
+  },
+  {
+   "adim": 129,
+   "aday": 2,
+   "secilen": [
+    "B56: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 133,
+   "aday": 2,
+   "secilen": [
+    "B61: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 139,
+   "aday": 3,
+   "secilen": [
+    "B63: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 141,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 148,
+   "aday": 2,
+   "secilen": [
+    "B69: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 153,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 157,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 162,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 168,
+   "aday": 3,
+   "secilen": [
+    "B33: kopma_once, edm=False, program=False"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 2848,
+  "withdrawn": 336,
+  "sent": 2237,
+  "none": 415,
+  "processing": 273,
+  "error": 18
+ },
+ "kucultulmus": null,
+ "sure": 11.6
+}

@@ -1,0 +1,32 @@
+TAP version 13
+# (node:30757) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: gg243 dar kontrol 2: olderPending ve kayıt defteri maliyeti (B4)
+    # Subtest: B4 kural aynen: yalnız aynı seri + yıl, serinin son numaralısından eski (kalıcı engelli) ve alıcısı mükellef kayıtlı bekleyen sayılmaz
+    ok 1 - B4 kural aynen: yalnız aynı seri + yıl, serinin son numaralısından eski (kalıcı engelli) ve alıcısı mükellef kayıtlı bekleyen sayılmaz
+      ---
+      duration_ms: 1001.458925
+      type: 'test'
+      ...
+# Kaydet ve Gönder p50: kayıt defteri boş 31.7 ms, 5.000 kayıt 50.3 ms; Gönderilecekler: 33.7 → 20.3 ms
+    # Subtest: B4 maliyet: Kaydet ve Gönder ve Tümünü Gönder süresi kayıt defterinin büyüklüğünden bağımsız (5.000 kayıt, 150 bekleyen)
+    ok 2 - B4 maliyet: Kaydet ve Gönder ve Tümünü Gönder süresi kayıt defterinin büyüklüğünden bağımsız (5.000 kayıt, 150 bekleyen)
+      ---
+      duration_ms: 6123.545204
+      type: 'test'
+      ...
+    1..2
+ok 1 - gg243 dar kontrol 2: olderPending ve kayıt defteri maliyeti (B4)
+  ---
+  duration_ms: 7183.845408
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7759.261908

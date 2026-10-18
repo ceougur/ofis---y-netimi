@@ -1,0 +1,284 @@
+{
+ "ad": "ebelge-t8-i200-1-kucuk",
+ "tohum": 8,
+ "islem": 10,
+ "bugun": "2026-12-27",
+ "farkSayisi": 1,
+ "ihlalSayisi": 33,
+ "safModelSonFark": 0,
+ "farklar": [
+  {
+   "belge": "B28",
+   "alan": "numara",
+   "model": "TEA2026000000001",
+   "program": "",
+   "adim": 9,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  }
+ ],
+ "ihlaller": [
+  {
+   "adim": 10,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I11",
+   "ileti": "e-Fatura posta kutusu olmadan gitti: TEA2026000000001",
+   "yineleme": 0,
+   "belge": "B28",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": 10,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B28: eşzamanlı turda gönderilen belge için hata yanıtı (integrator-unreachable)",
+   "yineleme": 0,
+   "belge": "B28",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: USER_NAME ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "Login: PASSWORD ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: SENDER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: RECEIVER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "SendInvoice: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "CheckUser: USER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: kök ad alanı http://schemas.i2i.com/ei/wsdl",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: SOAPAction ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: REQUEST_HEADER ad alanı ",
+   "sinif": "BASKA"
+  },
+  {
+   "adim": "I0",
+   "islem": "",
+   "kod": "I0",
+   "ileti": "GetInvoiceStatus: INVOICE ad alanı ",
+   "sinif": "BASKA"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 3,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 9,
+   "aday": 3,
+   "secilen": [
+    "B28: kopma_sonra, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 10,
+   "aday": 4,
+   "secilen": [
+    "B28: kopma_sonra, edm=True, program=True"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 11,
+  "processing": 1
+ },
+ "kucultulmus": null,
+ "sure": 1.9
+}

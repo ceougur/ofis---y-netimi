@@ -1,0 +1,76 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "ebelge-t8-i200-1-kucuk",
+ "tohum": 8,
+ "bugun": "2026-12-27",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "ag",
+   "durum": "yok",
+   "no": 1
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 2,
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B25",
+   "cari": "K4",
+   "tarih": "2026-12-20",
+   "gonder": "simdi",
+   "no": 3
+  },
+  {
+   "islem": "ag",
+   "durum": "yok",
+   "no": 4
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 5
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B26",
+   "cari": "K4",
+   "tarih": "2027-01-01",
+   "gonder": "sonra",
+   "no": 6
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 7
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B27",
+   "cari": "K2",
+   "tarih": "2026-12-31",
+   "gonder": "simdi",
+   "no": 8
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B28",
+   "cari": "K5",
+   "tarih": "2026-12-28",
+   "gonder": "simdi",
+   "no": 9
+  },
+  {
+   "islem": "esz_tumunu_gonder",
+   "no": 10
+  }
+ ]
+}

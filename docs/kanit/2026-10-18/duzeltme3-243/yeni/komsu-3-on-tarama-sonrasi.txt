@@ -1,0 +1,374 @@
+TAP version 13
+# Subtest: gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+    # Subtest: Y1: Tümünü Gönder bir istekte en çok 20 belgeyi dener; kalan sayısı döner, yinelenince hepsi eskiden yeniye gider
+    ok 1 - Y1: Tümünü Gönder bir istekte en çok 20 belgeyi dener; kalan sayısı döner, yinelenince hepsi eskiden yeniye gider
+      ---
+      duration_ms: 2994.905738
+      type: 'test'
+      ...
+    # Subtest: Y1: süre bütçesi dolunca istek erken döner (en az bir belge); kalanlar sonraki isteklerde
+    ok 2 - Y1: süre bütçesi dolunca istek erken döner (en az bir belge); kalanlar sonraki isteklerde
+      ---
+      duration_ms: 2757.637033
+      type: 'test'
+      ...
+    # Subtest: O1 (kaydet-ve-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 3 - O1 (kaydet-ve-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 416.33042
+      type: 'test'
+      ...
+    # Subtest: O1 (duz-kaydet): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 4 - O1 (duz-kaydet): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 449.874132
+      type: 'test'
+      ...
+    # Subtest: O1 (kartta-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 5 - O1 (kartta-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 424.891339
+      type: 'test'
+      ...
+    # Subtest: O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de
+    ok 6 - O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de
+      ---
+      duration_ms: 527.490808
+      type: 'test'
+      ...
+    # Subtest: O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz
+    ok 7 - O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz
+      ---
+      duration_ms: 470.116115
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 1): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 8 - O1 yarış (tohum 1): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 2601.349679
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 2): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 9 - O1 yarış (tohum 2): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 2798.320461
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 3): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 10 - O1 yarış (tohum 3): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 5849.520414
+      type: 'test'
+      ...
+    # Subtest: O2: Tümünü Gönder sürerken Listeden Silinen belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)
+    ok 11 - O2: Tümünü Gönder sürerken Listeden Silinen belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)
+      ---
+      duration_ms: 1921.724377
+      type: 'test'
+      ...
+    # Subtest: O3: alıcısı e-Fatura mükellefi olan numarasız e-Arşiv KALICI sayılır — seriyi bekletmez; kartta gönderilemez ve nedeni yazar
+    ok 12 - O3: alıcısı e-Fatura mükellefi olan numarasız e-Arşiv KALICI sayılır — seriyi bekletmez; kartta gönderilemez ve nedeni yazar
+      ---
+      duration_ms: 502.999032
+      type: 'test'
+      ...
+    # Subtest: D2 (all): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+    ok 13 - D2 (all): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+      ---
+      duration_ms: 1403.22498
+      type: 'test'
+      ...
+    # Subtest: D2 (ids): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+    ok 14 - D2 (ids): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+      ---
+      duration_ms: 1451.407496
+      type: 'test'
+      ...
+    # Subtest: D4: numarasız bekleyenin tarihi Düzenle ile serinin son numaralı belgesine kadar ileri alınır; ondan eskiye alınamaz
+    ok 15 - D4: numarasız bekleyenin tarihi Düzenle ile serinin son numaralı belgesine kadar ileri alınır; ondan eskiye alınamaz
+      ---
+      duration_ms: 480.327127
+      type: 'test'
+      ...
+    # Subtest: D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez
+    ok 16 - D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez
+      ---
+      duration_ms: 2433.075416
+      type: 'test'
+      ...
+    # Subtest: Ek 1 (tur): yanlış parolada Tümünü Gönder ilk girişte durur; HİÇBİR belge numara almaz; parola düzelince hepsi sırayla gider
+    ok 17 - Ek 1 (tur): yanlış parolada Tümünü Gönder ilk girişte durur; HİÇBİR belge numara almaz; parola düzelince hepsi sırayla gider
+      ---
+      duration_ms: 493.158861
+      type: 'test'
+      ...
+    # Subtest: Ek 1 (kartta e-Belge Gönder ve Kaydet ve Gönder): yanlış parolada numara verilmez; iletiler girişin reddedildiğini söyler
+    ok 18 - Ek 1 (kartta e-Belge Gönder ve Kaydet ve Gönder): yanlış parolada numara verilmez; iletiler girişin reddedildiğini söyler
+      ---
+      duration_ms: 393.529185
+      type: 'test'
+      ...
+    # Subtest: Ek 1 (Seçilenleri Kaydet, hemen gönderim açık): yanlış parolada aynı istekte YALNIZ BİR giriş denenir; taslaklar numarasız Gönderilecekler'de, tek ileti
+    ok 19 - Ek 1 (Seçilenleri Kaydet, hemen gönderim açık): yanlış parolada aynı istekte YALNIZ BİR giriş denenir; taslaklar numarasız Gönderilecekler'de, tek ileti
+      ---
+      duration_ms: 505.831325
+      type: 'test'
+      ...
+    # Subtest: Ek 2 (O3 kenar): belgedeki alıcı numarası carinin şimdiki numarasından farklı ve mükellef — kartta da kalıcı engel; yeni belgeyi bekletmez
+    ok 20 - Ek 2 (O3 kenar): belgedeki alıcı numarası carinin şimdiki numarasından farklı ve mükellef — kartta da kalıcı engel; yeni belgeyi bekletmez
+      ---
+      duration_ms: 338.057825
+      type: 'test'
+      ...
+    # Subtest: Ek 6 (kâhin hedefli-ag-yokken-numara): oturum önbellekteyken ağ kesilir — Kaydet ve Gönder numara vermez; ileti; bağlantı gelince sırayla gider
+    ok 21 - Ek 6 (kâhin hedefli-ag-yokken-numara): oturum önbellekteyken ağ kesilir — Kaydet ve Gönder numara vermez; ileti; bağlantı gelince sırayla gider
+      ---
+      duration_ms: 540.340469
+      type: 'test'
+      ...
+    # Subtest: Ek 7 (kâhin kucuk-esz-gonderiliyor-hata): iki oturum aynı anda Tümünü Gönder — öbür oturumda gönderilen belge ikinci yanıtta hata değil
+    ok 22 - Ek 7 (kâhin kucuk-esz-gonderiliyor-hata): iki oturum aynı anda Tümünü Gönder — öbür oturumda gönderilen belge ikinci yanıtta hata değil
+      ---
+      duration_ms: 1165.262664
+      type: 'test'
+      ...
+    # Subtest: Ek 8 (kâhin kucuk-fis-sira): Listeden Sil, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest
+    ok 23 - Ek 8 (kâhin kucuk-fis-sira): Listeden Sil, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest
+      ---
+      duration_ms: 561.758453
+      type: 'test'
+      ...
+    # Subtest: Ek 9 (kâhin kucuk-o1-pk-yok-bekletir, I19): PK'sız eski e-Fatura yeni e-Faturayı bekletir (doğru) — her gönderilmeyen sonucun kodu ve iletisi dolu
+    ok 24 - Ek 9 (kâhin kucuk-o1-pk-yok-bekletir, I19): PK'sız eski e-Fatura yeni e-Faturayı bekletir (doğru) — her gönderilmeyen sonucun kodu ve iletisi dolu
+      ---
+      duration_ms: 424.904833
+      type: 'test'
+      ...
+    # Subtest: BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider
+    ok 25 - BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider
+      ---
+      duration_ms: 821.134299
+      type: 'test'
+      ...
+    1..25
+ok 1 - gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+  ---
+  duration_ms: 33206.899561
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: Tümünü Gönder imleci (B1)
+    # Subtest: B1: kuyruğun başında 20 reddedilen belge varken bir basışta 30 yeni belge gider; her belge turda en çok bir kez denenir
+    ok 1 - B1: kuyruğun başında 20 reddedilen belge varken bir basışta 30 yeni belge gider; her belge turda en çok bir kez denenir
+      ---
+      duration_ms: 3430.858006
+      type: 'test'
+      ...
+    # Subtest: B1: imleçten önce gönderilemeyen numarasız eski belge, sonraki istekteki aynı serinin yeni belgelerini bekletir (bir kez denenir)
+    ok 2 - B1: imleçten önce gönderilemeyen numarasız eski belge, sonraki istekteki aynı serinin yeni belgelerini bekletir (bir kez denenir)
+      ---
+      duration_ms: 1378.568326
+      type: 'test'
+      ...
+    # Subtest: B1: bozuk ya da eksik imleç turu baştan başlatır (hata değil)
+    ok 3 - B1: bozuk ya da eksik imleç turu baştan başlatır (hata değil)
+      ---
+      duration_ms: 365.216471
+      type: 'test'
+      ...
+    1..3
+ok 2 - gg243 dar kontrol 2: Tümünü Gönder imleci (B1)
+  ---
+  duration_ms: 5219.159244
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: gönderim sonrası kopma belirsizdir, tur sürer (B2)
+    # Subtest: B2: tek SendInvoice'ın bağlantısı istek gittikten sonra koparsa tur durmaz; o belge Sonucu Belirsiz, sonraki turda yinelemesiz gider
+    ok 1 - B2: tek SendInvoice'ın bağlantısı istek gittikten sonra koparsa tur durmaz; o belge Sonucu Belirsiz, sonraki turda yinelemesiz gider
+      ---
+      duration_ms: 915.07878
+      type: 'test'
+      ...
+    # Subtest: B2: bağlantı hiç kurulamazsa (ECONNREFUSED) tur yine durur, kalanlara numara verilmez (K12)
+    ok 2 - B2: bağlantı hiç kurulamazsa (ECONNREFUSED) tur yine durur, kalanlara numara verilmez (K12)
+      ---
+      duration_ms: 454.007827
+      type: 'test'
+      ...
+    1..2
+ok 3 - gg243 dar kontrol 2: gönderim sonrası kopma belirsizdir, tur sürer (B2)
+  ---
+  duration_ms: 1410.266965
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: oturum önbelleği erişim kanıtıdır, numara ağ yokken verilmez (B3)
+    # Subtest: B3: ısınmadan sonra 10 e-Fatura Kaydet ve Gönder, 10 kartta Gönder ve 45 belgelik Tümünü Gönder yeniden giriş yapmaz
+    ok 1 - B3: ısınmadan sonra 10 e-Fatura Kaydet ve Gönder, 10 kartta Gönder ve 45 belgelik Tümünü Gönder yeniden giriş yapmaz
+      ---
+      duration_ms: 3801.806335
+      type: 'test'
+      ...
+    # Subtest: B3: parola değişince önbellekteki oturum kanıt sayılmaz — giriş numaradan önce; yanlış parolada numara harcanmaz
+    ok 2 - B3: parola değişince önbellekteki oturum kanıt sayılmaz — giriş numaradan önce; yanlış parolada numara harcanmaz
+      ---
+      duration_ms: 352.467096
+      type: 'test'
+      ...
+    # Subtest: B3 + K12: kanıt önbellekten gelirken ağ giderse Kaydet ve Gönder, kartta Gönder ve Tümünü Gönder numara vermez (verilen geri bırakılır)
+    ok 3 - B3 + K12: kanıt önbellekten gelirken ağ giderse Kaydet ve Gönder, kartta Gönder ve Tümünü Gönder numara vermez (verilen geri bırakılır)
+      ---
+      duration_ms: 575.301054
+      type: 'test'
+      ...
+    # Subtest: B3 + K12: araya başka belgenin numarası girdiyse geri bırakılmaz (seride boşluk açılmaz); belge numaralı, gönderilmemiş kalır
+    ok 4 - B3 + K12: araya başka belgenin numarası girdiyse geri bırakılmaz (seride boşluk açılmaz); belge numaralı, gönderilmemiş kalır
+      ---
+      duration_ms: 605.756739
+      type: 'test'
+      ...
+    1..4
+ok 4 - gg243 dar kontrol 2: oturum önbelleği erişim kanıtıdır, numara ağ yokken verilmez (B3)
+  ---
+  duration_ms: 5396.829737
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: kâğıt asıllı alış faturasının iadesi (MM1)
+    # Subtest: MM1: asıl no 'A 004512' — referanssız kayıt nedenli 400 (asıl kaydı düzeltin demez); önerilen referansla iade kesilir, UBL GİB'e UYGUN, asıl kayıt değişmez
+    ok 1 - MM1: asıl no 'A 004512' — referanssız kayıt nedenli 400 (asıl kaydı düzeltin demez); önerilen referansla iade kesilir, UBL GİB'e UYGUN, asıl kayıt değişmez
+      ---
+      duration_ms: 4525.70267
+      type: 'test'
+      ...
+    # Subtest: MM1: kullanıcının düzelttiği referans (öneriden farklı) korunur; Düzenle'de referans kalır; asıl 16 haneli e-Belgede davranış aynı (referans yok sayılır)
+    ok 2 - MM1: kullanıcının düzelttiği referans (öneriden farklı) korunur; Düzenle'de referans kalır; asıl 16 haneli e-Belgede davranış aynı (referans yok sayılır)
+      ---
+      duration_ms: 382.071042
+      type: 'test'
+      ...
+    1..2
+ok 5 - gg243 dar kontrol 2: kâğıt asıllı alış faturasının iadesi (MM1)
+  ---
+  duration_ms: 4937.354842
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: iade belgesinde e-Fatura profili yalnız Temel Fatura (MM2)
+    # Subtest: MM2: Ticari profilli tedarikçiye (ve varsayılan senaryo Ticari iken) alıştan iade TEMELFATURA kesilir; Ticari isteği Temel'e döner; UBL GİB'e UYGUN
+    ok 1 - MM2: Ticari profilli tedarikçiye (ve varsayılan senaryo Ticari iken) alıştan iade TEMELFATURA kesilir; Ticari isteği Temel'e döner; UBL GİB'e UYGUN
+      ---
+      duration_ms: 1288.010245
+      type: 'test'
+      ...
+    # Subtest: MM2: eski sürümde Ticari Fatura olarak kaydedilmiş iade gönderilmeden önce nedenli durur; Düzenle ile Temel Fatura olur (numara aynı) ve gönderilir
+    ok 2 - MM2: eski sürümde Ticari Fatura olarak kaydedilmiş iade gönderilmeden önce nedenli durur; Düzenle ile Temel Fatura olur (numara aynı) ve gönderilir
+      ---
+      duration_ms: 415.250567
+      type: 'test'
+      ...
+    1..2
+ok 6 - gg243 dar kontrol 2: iade belgesinde e-Fatura profili yalnız Temel Fatura (MM2)
+  ---
+  duration_ms: 1731.680856
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji engelli belgenin iletisi (B7)
+    # Subtest: B5: serinin son numaralısından eski tarihli Kes, Sonra Gönder kaydedilmez (D4 iletisi); aynı gün ve daha yeni kaydedilir
+    ok 1 - B5: serinin son numaralısından eski tarihli Kes, Sonra Gönder kaydedilmez (D4 iletisi); aynı gün ve daha yeni kaydedilir
+      ---
+      duration_ms: 362.301055
+      type: 'test'
+      ...
+    # Subtest: B7: kronoloji engelli bekleyenin iletisi yalnız açık yolu söyler — Müşteri Fişi sırası izin vermiyorsa Listeden Sil önerilmez
+    ok 2 - B7: kronoloji engelli bekleyenin iletisi yalnız açık yolu söyler — Müşteri Fişi sırası izin vermiyorsa Listeden Sil önerilmez
+      ---
+      duration_ms: 434.701653
+      type: 'test'
+      ...
+    1..2
+ok 7 - gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji engelli belgenin iletisi (B7)
+  ---
+  duration_ms: 831.858367
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: olderPending ve kayıt defteri maliyeti (B4)
+    # Subtest: B4 kural aynen: yalnız aynı seri + yıl, serinin son numaralısından eski (kalıcı engelli) ve alıcısı mükellef kayıtlı bekleyen sayılmaz
+    ok 1 - B4 kural aynen: yalnız aynı seri + yıl, serinin son numaralısından eski (kalıcı engelli) ve alıcısı mükellef kayıtlı bekleyen sayılmaz
+      ---
+      duration_ms: 655.286449
+      type: 'test'
+      ...
+# Kaydet ve Gönder p50: kayıt defteri boş 24.4 ms, 5.000 kayıt 22.7 ms; Gönderilecekler: 18.2 → 14.6 ms
+    # Subtest: B4 maliyet: Kaydet ve Gönder ve Tümünü Gönder süresi kayıt defterinin büyüklüğünden bağımsız (5.000 kayıt, 150 bekleyen)
+    ok 2 - B4 maliyet: Kaydet ve Gönder ve Tümünü Gönder süresi kayıt defterinin büyüklüğünden bağımsız (5.000 kayıt, 150 bekleyen)
+      ---
+      duration_ms: 3623.602517
+      type: 'test'
+      ...
+    1..2
+ok 8 - gg243 dar kontrol 2: olderPending ve kayıt defteri maliyeti (B4)
+  ---
+  duration_ms: 4320.484968
+  type: 'suite'
+  ...
+# Subtest: gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi
+    # Subtest: S2: 203 bekleyen — Tümünü Gönder (all) hepsini eskiden yeniye gönderir; bir istekte en eski 20, kalan sayısı söylenir; numara tarih sırasında
+    ok 1 - S2: 203 bekleyen — Tümünü Gönder (all) hepsini eskiden yeniye gönderir; bir istekte en eski 20, kalan sayısı söylenir; numara tarih sırasında
+      ---
+      duration_ms: 13467.64136
+      type: 'test'
+      ...
+    # Subtest: S2 komşu: seçili kimliklerle gönderim, gönderime dahil olmayan daha eski numarasız bekleyenden önce yenisini numaralandırmaz
+    ok 2 - S2 komşu: seçili kimliklerle gönderim, gönderime dahil olmayan daha eski numarasız bekleyenden önce yenisini numaralandırmaz
+      ---
+      duration_ms: 547.860893
+      type: 'test'
+      ...
+    # Subtest: S1: kalıcı kronoloji engelli eski belge, gönderilebilir yeni belgeyi bekletmez; iletisi Listeden Sil / İptal Et yolunu söyler
+    ok 3 - S1: kalıcı kronoloji engelli eski belge, gönderilebilir yeni belgeyi bekletmez; iletisi Listeden Sil / İptal Et yolunu söyler
+      ---
+      duration_ms: 408.385123
+      type: 'test'
+      ...
+    # Subtest: B1 korunur: eski belge GEÇİCİ nedenle (bağlantı) gönderilemezse aynı serideki yeni belge numara almaz; bağlantı düzelince ikisi de sırayla gider
+    ok 4 - B1 korunur: eski belge GEÇİCİ nedenle (bağlantı) gönderilemezse aynı serideki yeni belge numara almaz; bağlantı düzelince ikisi de sırayla gider
+      ---
+      duration_ms: 396.617439
+      type: 'test'
+      ...
+    # Subtest: B1 korunur ({ all: true }): geçici hatada yeni belge eski numarasızın önüne geçmez
+    ok 5 - B1 korunur ({ all: true }): geçici hatada yeni belge eski numarasızın önüne geçmez
+      ---
+      duration_ms: 426.345364
+      type: 'test'
+      ...
+    # Subtest: S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+    ok 6 - S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+      ---
+      duration_ms: 3683.487471
+      type: 'test'
+      ...
+    # Subtest: S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+    ok 7 - S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+      ---
+      duration_ms: 3753.540648
+      type: 'test'
+      ...
+    # Subtest: 5b: canlı ortamda test serili numaralı gönderilmemiş belge — rozet ve Gönderilecekler tutarlı; 'Test serisi canlıda gönderilmez; İptal Edin'
+    ok 8 - 5b: canlı ortamda test serili numaralı gönderilmemiş belge — rozet ve Gönderilecekler tutarlı; 'Test serisi canlıda gönderilmez; İptal Edin'
+      ---
+      duration_ms: 339.948893
+      type: 'test'
+      ...
+    1..8
+ok 9 - gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi
+  ---
+  duration_ms: 23168.029718
+  type: 'suite'
+  ...
+1..9
+# tests 50
+# suites 9
+# pass 50
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 49474.309271
